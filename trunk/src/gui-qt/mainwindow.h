@@ -205,6 +205,16 @@ class AtenForm : public QMainWindow
 	void on_TranslateNegYButton_clicked(bool on) { translate_selection(1, -1); }
 	void on_TranslateNegZButton_clicked(bool on) { translate_selection(2, -1); }
 
+	// Position Page Functions
+	private:
+	void flip_selection(int axis);
+	private slots:
+	void on_FlipXButton_clicked(bool checked) { flip_selection(0); }
+	void on_FlipYButton_clicked(bool checked) { flip_selection(1); }
+	void on_FlipZButton_clicked(bool checked) { flip_selection(2); }
+	void on_DefineCentreButton_clicked(bool checked);
+	void on_CentreSelectionButton_clicked(bool checked);
+
 	// Cell Page Functions
 	public:
 	void refresh_cellpage();
@@ -218,6 +228,7 @@ class AtenForm : public QMainWindow
 	void on_CellAngleBSpin_valueChanged(double d) { cell_changed(); }
 	void on_CellAngleCSpin_valueChanged(double d) { cell_changed(); }
 	void on_CellReplicateButton_clicked(bool checked);
+	void on_CellScaleButton_clicked(bool checked);
 
 	// Minimiser Page Functions
 	private slots:

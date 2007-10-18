@@ -23,3 +23,28 @@
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 
+void AtenForm::flip_selection(int axis)
+{
+}
+
+void AtenForm::on_DefineCentreButton_clicked(bool checked)
+{
+	// Get centre of current selection
+	vec3<double> centre = master.get_currentmodel()->selection_get_cog();
+	ui.CentreXSpin->setValue(centre.x);
+	ui.CentreYSpin->setValue(centre.y);
+	ui.CentreZSpin->setValue(centre.z);
+}
+
+void AtenForm::on_CentreSelectionButton_clicked(bool checked)
+{
+	vec3<double> centre, cog;
+	centre.x = ui.CentreXSpin->value();
+	centre.y = ui.CentreYSpin->value();
+	centre.z = ui.CentreZSpin->value();
+	model *m = master.get_currentmodel();
+	cog = m->selection_get_cog();
+	centre -= cog;
+	m->translate_selection_local(centre);
+	gui.refresh();
+}

@@ -248,7 +248,7 @@ void AtenForm::switch_stack(int buttonid, bool checked)
 		ui.SelectAtomsButton->setChecked(TRUE);
 		gui.mainview.set_selectedmode(UA_PICKSELECT);
 	}
-	master.get_currentmodel()->project_all();
+	master.get_currentmodel()->log_change(LOG_CAMERA);
 }
 
 void AtenForm::refresh_modeltabs()

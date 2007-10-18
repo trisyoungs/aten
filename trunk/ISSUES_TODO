@@ -22,10 +22,10 @@ General To-Do list:
 	- Ability to evaluate numerical expressions in filters (and scripts)
 
 General Qt To-Do list:
-	- Forcefield Qt stack page and manager/edit window
+	- Forcefield stack page and manager/edit window
 	- Prefs window (partial)
-	- Minimiser Qt stack page (partial)
-	- Disorder Qt stack page (partial)
+	- Minimiser stack page (partial)
+	- Disorder stack page (partial)
 	- Trajectory playback
 	- Progress dialogs are not application modal
 

@@ -33,10 +33,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>2</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
-     <number>2</number>
+     <number>6</number>
     </property>
     <item>
      <layout class="QHBoxLayout" >
@@ -205,7 +205,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>8</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -1822,14 +1822,14 @@
                     <widget class="QPushButton" name="RotateDefineOriginButton" >
                      <property name="sizePolicy" >
                       <sizepolicy>
-                       <hsizetype>0</hsizetype>
+                       <hsizetype>7</hsizetype>
                        <vsizetype>0</vsizetype>
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
                      <property name="toolTip" >
-                      <string>Define the rotation origin from the current atom selection</string>
+                      <string>Define rotation origin from the current atom selection</string>
                      </property>
                      <property name="text" >
                       <string>Define</string>
@@ -1996,14 +1996,14 @@
                     <widget class="QPushButton" name="RotateDefineAxisButton" >
                      <property name="sizePolicy" >
                       <sizepolicy>
-                       <hsizetype>0</hsizetype>
+                       <hsizetype>7</hsizetype>
                        <vsizetype>0</vsizetype>
                        <horstretch>0</horstretch>
                        <verstretch>0</verstretch>
                       </sizepolicy>
                      </property>
                      <property name="toolTip" >
-                      <string>Define the rotation axis from the current atom selection</string>
+                      <string>Define translation axis from current selection</string>
                      </property>
                      <property name="text" >
                       <string>Define</string>
@@ -2151,7 +2151,7 @@
                  <widget class="QGroupBox" name="TranslateFrameGroup" >
                   <property name="sizePolicy" >
                    <sizepolicy>
-                    <hsizetype>0</hsizetype>
+                    <hsizetype>7</hsizetype>
                     <vsizetype>0</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
@@ -2463,6 +2463,12 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>4</number>
+                  </property>
+                  <property name="value" >
+                   <double>1.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -2491,10 +2497,10 @@
       <widget class="QWidget" name="PositionPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="spacing" >
-         <number>4</number>
+         <number>6</number>
         </property>
         <item>
          <widget class="QGroupBox" name="PositionGroup" >
@@ -2538,6 +2544,9 @@
                 </property>
                 <item>
                  <widget class="QPushButton" name="FlipXButton" >
+                  <property name="enabled" >
+                   <bool>false</bool>
+                  </property>
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>0</hsizetype>
@@ -2551,6 +2560,9 @@
                     <width>30</width>
                     <height>30</height>
                    </size>
+                  </property>
+                  <property name="toolTip" >
+                   <string>Flip current selection about X axis</string>
                   </property>
                   <property name="text" >
                    <string/>
@@ -2565,6 +2577,9 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="FlipYButton" >
+                  <property name="enabled" >
+                   <bool>false</bool>
+                  </property>
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>0</hsizetype>
@@ -2578,6 +2593,9 @@
                     <width>30</width>
                     <height>30</height>
                    </size>
+                  </property>
+                  <property name="toolTip" >
+                   <string>Flip current selection about Y axis</string>
                   </property>
                   <property name="text" >
                    <string/>
@@ -2592,6 +2610,9 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="FlipZButton" >
+                  <property name="enabled" >
+                   <bool>false</bool>
+                  </property>
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>0</hsizetype>
@@ -2605,6 +2626,9 @@
                     <width>30</width>
                     <height>30</height>
                    </size>
+                  </property>
+                  <property name="toolTip" >
+                   <string>Flip current selection about Z axis</string>
                   </property>
                   <property name="text" >
                    <string/>
@@ -2636,6 +2660,140 @@
             </widget>
            </item>
            <item>
+            <widget class="QGroupBox" name="CentreGroup" >
+             <property name="sizePolicy" >
+              <sizepolicy>
+               <hsizetype>1</hsizetype>
+               <vsizetype>5</vsizetype>
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title" >
+              <string>Centre</string>
+             </property>
+             <layout class="QHBoxLayout" >
+              <property name="margin" >
+               <number>4</number>
+              </property>
+              <property name="spacing" >
+               <number>4</number>
+              </property>
+              <item>
+               <layout class="QGridLayout" >
+                <property name="margin" >
+                 <number>0</number>
+                </property>
+                <property name="spacing" >
+                 <number>2</number>
+                </property>
+                <item row="1" column="1" >
+                 <widget class="QDoubleSpinBox" name="CentreYSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1" >
+                 <widget class="QDoubleSpinBox" name="CentreXSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0" >
+                 <widget class="QLabel" name="label_39" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text" >
+                   <string>X</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1" >
+                 <widget class="QDoubleSpinBox" name="CentreZSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" >
+                 <widget class="QLabel" name="label_40" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text" >
+                   <string>Y</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0" >
+                 <widget class="QLabel" name="label_41" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text" >
+                   <string>Z</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2" >
+                 <widget class="QPushButton" name="DefineCentreButton" >
+                  <property name="toolTip" >
+                   <string>Define centre from current selection</string>
+                  </property>
+                  <property name="text" >
+                   <string>Define</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="2" >
+                 <widget class="QPushButton" name="CentreSelectionButton" >
+                  <property name="toolTip" >
+                   <string>Centre current selection at specified coordinates</string>
+                  </property>
+                  <property name="text" >
+                   <string>Centre</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
             <spacer>
              <property name="orientation" >
               <enum>Qt::Vertical</enum>
@@ -2656,10 +2814,10 @@
       <widget class="QWidget" name="CellPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="spacing" >
-         <number>4</number>
+         <number>6</number>
         </property>
         <item>
          <widget class="QGroupBox" name="CellGroup" >
@@ -2668,10 +2826,10 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>9</number>
            </property>
            <property name="spacing" >
-            <number>4</number>
+            <number>6</number>
            </property>
            <item>
             <widget class="QGroupBox" name="CellDefinitionGroup" >
@@ -3276,6 +3434,9 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="CellReplicateButton" >
+                  <property name="toolTip" >
+                   <string>Replicate current cell</string>
+                  </property>
                   <property name="text" >
                    <string>Replicate</string>
                   </property>
@@ -3301,9 +3462,126 @@
            </item>
            <item>
             <widget class="QGroupBox" name="CellScaleGroup" >
+             <property name="sizePolicy" >
+              <sizepolicy>
+               <hsizetype>1</hsizetype>
+               <vsizetype>5</vsizetype>
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="title" >
               <string>Scale</string>
              </property>
+             <layout class="QHBoxLayout" >
+              <property name="margin" >
+               <number>4</number>
+              </property>
+              <property name="spacing" >
+               <number>4</number>
+              </property>
+              <item>
+               <layout class="QGridLayout" >
+                <property name="margin" >
+                 <number>0</number>
+                </property>
+                <property name="spacing" >
+                 <number>2</number>
+                </property>
+                <item row="2" column="1" >
+                 <widget class="QDoubleSpinBox" name="CellScaleZSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="0" >
+                 <widget class="QLabel" name="label_42" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text" >
+                   <string>X</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="0" >
+                 <widget class="QLabel" name="label_43" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text" >
+                   <string>Y</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1" >
+                 <widget class="QDoubleSpinBox" name="CellScaleXSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0" >
+                 <widget class="QLabel" name="label_44" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text" >
+                   <string>Z</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1" >
+                 <widget class="QDoubleSpinBox" name="CellScaleYSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="2" >
+                 <widget class="QPushButton" name="CellScaleButton" >
+                  <property name="toolTip" >
+                   <string>Scale current cell</string>
+                  </property>
+                  <property name="text" >
+                   <string>Scale</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
             </widget>
            </item>
            <item>
