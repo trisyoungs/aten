@@ -31,7 +31,8 @@ Full instructions can be found in the manual. Briefly:
 	Use --with-qt=frameworks to use native Qt installation on Macs (otherwise
 		the Fink / MacPorts version will be used and detected with pkg-config).
 
-3) Run 'make'.
+3) Run 'make'. Note that, at present, no optimisation options are passed to the
+	compiler (you can do so with the environment variable CXXFLAGS).
 
 4) Run 'make install' as root or, if you wish, put the code where you want it.
 	Note for custom installs: the contents of the 'data' directory must be
