@@ -1,0 +1,40 @@
+Issues with the current version:
+	- Closing main window with [x] does not ask to save modified models.
+	- Save image provokes GLXBadExtension error (on some cards), affects canvas on others.
+	- Spherical regions in disordered builder have poor randomness.
+	- Interpolation of surface triangles is 'simple' (0.5 along edges)
+	- OpenGL transparency issues (polygon artefacts - need ordering?)
+
+General To-Do list:
+	- Ewald sum (fourier calculation, reciprocal cell?) for non-orthogonal cells
+	- Molecular dynamics
+	- Trajectory playback / use of camera/rotation from parent model
+	- Calculate average molecule geometry (analyse)
+	- Complete spacegroups list
+	- UFF - oxidation state, energy conversion, torsions, angle periodicity
+	- Improve SD minimiser
+	- Add NR / simplex minimisers
+	- View along cell axes (or Miller planes)
+	- Reset view (whole model on screen)
+	- Cambridge database import filter (need to be able to evaluate numerical expressions)
+	- Accelrys MSI import filter
+	- EPSR Ato import / export? filters
+	- Ability to evaluate numerical expressions in filters (and scripts)
+
+General Qt To-Do list:
+	- Forcefield Qt stack page and manager/edit window
+	- Prefs window (partial)
+	- Minimiser Qt stack page (partial)
+	- Disorder Qt stack page (partial)
+	- Trajectory playback
+	- Progress dialogs are not application modal
+
+Manual To-Do list:
+	- Section on forcefields
+	- Section on Qt GUI
+	- Filters Handbook is incomplete 
+
+Optimisation To-Do list:
+	- Hemispherical Ewald summmation
+	- Filters / variable_list - can enum and store common variable pointers (e.g. "e", "r.x") to save lookup time
+	- For large systems (10000+ atoms) autocreate_patterns() is a bottleneck, as is model::copy(model*)

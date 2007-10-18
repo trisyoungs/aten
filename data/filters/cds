@@ -1,0 +1,16 @@
+# Cambridge Database Filter
+# Last modified: 16/10/2007
+importfilter
+	name "Cambridge Database Structure"
+	nickname cds
+	extension "dat,fdat"
+	glob *.*dat
+	# Record 1: Directory information (single line)
+	# Contained information (first col = 0):
+	# 0 (#), 1-8 (refcode), 9 (crys.sys), 10 (category), 11-16 (accession date), 17-22 (unused), 23-25 (ncards),
+	# 26-28 (nrfrac), 29-31 (nrem), 32-34 (ndis), 35-37 (nerr), 38-40 (number of symm pos), 41-43 (nrad),
+	# 44-46 (natoms), 47-49 (nsatoms), 50-52 (unused), 53-55 (ncon), 56 (cell), 57 (intf), 58 (atom 'r' format),
+	# 59 (centre of symmetry), 60 (err), 61 (rpa), 62 (td), 63 (pd), 64 (unused), 65 (cbl), 66 (esd of C-C),
+	# 67 (polymeric structure), 68-77 (irrelevant), 78-79 (year)
+	readline "*@1 title@8 "
+end

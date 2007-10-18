@@ -1,0 +1,841 @@
+\chapter{Scriptors Handbook}
+\index{scripts}
+\index{command-line options!-s}
+\index{command-line options!{-}{-}script}
+
+The scripting and interactive modes of \progname{} allow most program procedures and actions to be controlled $via$ a series of text commands contained in a file or typed in directly. Files containing script commands are passed with the \qte{-s $file$} or \qte{{-}{-}script $file$} command-line options and are executed immediately following parsing of the commands in the file. Alternatively, a compound sequence of commands can be provided on the command line with the \qte{-c} or \qte{{-}{-}command} switches. As with filters, variables must be preceded with a \qte{\$}, so compound commands given on the command line must, for example, be enclosed with single-quotes to prevent the shell from expanding these variables itself.
+
+
+\section{Inside the Script}
+When performing a whole sequence of commands to perform actions without a visible workspace (i.e. the GUI), managing and using objects becomes more difficult. When dealing with models and forcefields in these cases, \progname{} does not use explicit references to different objects in order to accomplish tasks. For example, typically one might wish to:
+
+\begin{itemize}
+	\item Load a model $X$
+	\item Edit $X$
+	\item Edit $X$ a bit more
+	\item Load a forcefield $Y$
+	\item Associate a forcefield $Y$ with $X$
+	\item Minimise a model $X$ with a forcefield $Y$
+	\item Save a model $X$
+	\item Go and have tea
+\end{itemize}
+
+Here, explicit references to the model $X$ and forcefield $Y$ are required every time they are used, which is verbose and rather incoherent with the same procedure when \qte{at the desk}. Instead, \progname{} uses the notion of $current$ objects ($i.e.$ those on the desk in front of you, as opposed to those waiting on the shelf behind you) which are the focus of all the commands, and means that no references to objects (models, forcefields etc.) are given to the commands, in the same spirit as the GUI where commands are implicitly executed on the model currently displayed. Obvious exceptions to this are those commands that provide methods to select other objects, thereby making them $current$.
+Thus, whenever an object is created or loaded it becomes the current object of that type, receiving the effects of all commands relevant to it, and remains current (on the desk) until replaced (moved to the shelf) by another object of the same type being loaded, created, or selected. In the example above, all references to $X$ and $Y$ could then be removed since when the model and forcefield are loaded they become the current objects of their respective type, and the remaining commands work implicitly on these current objects.
+
+Objects in scripts are referred to by names associated with them on their creation or loading, and may then be selected by reference to this name at a later stage.
+
+
+\section{Quick Command Examples}
+\index{scripts!examples}
+
+\section{Command Reference}
+\index{script commands}
+%\subsection{Command \qte{translate}}
+%\begin{description}
+%	\item[]
+%	\item[]
+%\end{description}
+%translate atom <dx> <dy> <dz> - Translate active atom
+%translate selection <dx> <dy> <dz> - Translate selection
+
+\subsection{Analysis}
+\index{script commands!analysis}
+Adds quantities / properties to be calculated to a pending joblist. The \qte{model} and \qte{traj} subcommands calculate the pending properties in the joblist for the current model / frame and accumulate the data. The \qte{finalise} subcommand is used to normalise the calculated data and generate suitable averages from the accumulated data.\\
+\begin{description}
+
+	\item[analyse\its] Calculates all properties in the pending joblist for the current frame (or model if no trajectory is associated).
+	\index{script commands!analyse}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{analyse}.
+	\end{itemize}
+
+	\item[finalise\its] Finalises the quantities in the pending jobs list, performing the necessary averages.
+	\index{script commands!finalise}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{finalise} XXX.
+	\end{itemize}
+
+	\item[pdens $name$ $site1$ $site2$ XXX\its] Adds a 3D probability distribution function $name$ to the pending jobs list for the model. Two sites must be specified, the first being the central species about which to calculate the distribution of the second. Axes must be specified for the first site with the \qte{setaxes} command.
+	\index{script commands!pdens}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{pdens} XXX.
+	\end{itemize}
+
+	\item[rdf $name$ $site1$ $site2$ $rmin$ $binwidth$ $nbins$\its] Adds a radial distribution function $name$ to the pending jobs list for the model. Two sites must be specified. The RDF is calculated over the distance range bounded by $rmin$ and $rmin + binwidth*nbins$.
+	\index{script commands!rdf}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{rdf cog N 0.0 0.1 200} calculates an RDF between the sites \qte{cog} and \qte{N} over the distance range 0.0 - 20.0 \AA{}.
+	\end{itemize}
+
+\end{description}
+
+\subsection{Bonding}
+\index{script commands!bonding}
+Create bonds and perform automatic bonding operations.\\
+\begin{description}
+
+	\item[augment\its] Augments bonds in the current model.
+	\index{script commands!augment}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{augment}.
+	\end{itemize}
+
+	\item[rebond\its] Calculate bonding in the current model.
+	\index{script commands!rebond}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{rebond}.
+	\end{itemize}
+
+	\item[clearbonds\its] Delete all bonds in the current model.
+	\index{script commands!clearbonds}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{clearbonds}.
+	\end{itemize}
+
+	\item[bondpatterns\its] Calculate bonds within pattern molecules.
+	\index{script commands!bondpatterns}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{bondpatterns}.
+	\end{itemize}
+
+	\item[bondselection\its] Calculate bonds restricted to current atom selection.
+	\index{script commands!bondselection}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{bondselection}.
+	\end{itemize}
+
+	\item[bondtol $tol$\its] Adjust the bond calculation tolerance.
+	\index{script commands!bondtol}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{bondtol 1.20}.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Building}
+\index{script commands!building}
+Tools to build molecules from scratch, or finalise unfinished models. The drawing frame is represented as a set of three orthogonal vectors defining the reference coordinate system (set initially to the Cartesian axes) centred at an arbitrary origin (the pen position). Subsequent rotations operate on these coordinate axes.\\\\
+\begin{description}
+
+	\item[addhydrogen\its] Satisfy the valencies of all atoms in the current model by adding hydrogens to heavy atoms.
+	\index{script commands!addhydrogen\its}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{addhydrogen}.
+	\end{itemize}
+
+	\item[addatom $el$\its] Create a new atom of element $el$ at the current pen position.
+	\index{script commands!addatom}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{addatom N} places a nitrogen atom at the current pen coordinates.
+	\end{itemize}
+
+	\item[addchain $el$ [$bondtype$]\its] Create a new atom of element $el$ at the current pen position, bound to the last drawn atom with a single bond (or of type $bondtype$ if one was specified).
+	\index{script commands!addchain}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{addchain C} places a carbon atom at the current pen coordinates, and creates a single bond with the last drawn atom.
+		\item $e.g.$ \ttqte{addchain O double} places an oxygen atom at the current pen coordinates, and creates a double bond with the last drawn atom.
+	\end{itemize}
+
+	\item[endchain\its] 'Ends the current chain (so that the next drawn 'chain' atom will not be bound to the last drawn atom).
+	\index{script commands!endchain}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{endchain}.
+	\end{itemize}
+
+	\item[locate $dx$ $dy$ $dz$\its] Sets the pen position to the coordinates specified (in Angstroms).
+	\begin{itemize}
+		\item $e.g.$ \ttqte{pen set 0.0 0.0 0.0} moves the pen back to the coordinate origin.
+	\end{itemize}
+
+	\item[move $dx$ $dy$ $dz$\its] Moves the pen position by the amounts specified (in Angstroms).
+	\begin{itemize}
+		\item $e.g.$ \ttqte{pen move 1.0 1.0 0.0} moves the pen +1 Angstrom in both the $x$ and $y$ directions.
+	\end{itemize}
+
+	\item[rotx $angle$\its] Rotates the reference coordinate system about the $x$ axis by $angle$ degrees.
+	\begin{itemize}
+		\item $e.g.$ \ttqte{pen rotx 90.0} rotates around the $x$ axis by 90$^\circ$.
+	\end{itemize}
+
+	\item[roty $angle$\its] Rotates the reference coordinate system about the $y$ axis by $angle$ degrees.
+	\begin{itemize}
+		\item $e.g.$ \ttqte{pen roty 45.0} rotates around the $y$ axis by 45$^\circ$.
+	\end{itemize}
+
+	\item[rotz $angle$\its] Rotates the reference coordinate system about the $z$ axis by $angle$ degrees.
+	\begin{itemize}
+		\item $e.g.$ \ttqte{pen rotz 109.5} rotates around the $z$ axis by 109.5$^\circ$.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Cell Editing}
+\index{script commands!cell editing}
+Unit cell actions.\\
+\begin{description}
+
+	\item[printcell\its] Prints the cell parameters of the current model.
+	\index{script commands!printcell}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printcell}
+	\end{itemize}
+
+	\item[removecell\its] Clears any cell description (removes periodic boundary conditions) from the current model.
+	\index{script commands!removecell}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{removecell}
+	\end{itemize}
+
+	\item[scalecell $x$ $y$ $z$\its] Scale unit cell (and centres-of-geometry of molecules within it) by the scale factors $x$, $y$, and $z$.
+	\index{script commands!scalecell}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{scalecell 1.0 2.0 1.0} doubles the length of the $y$-axis of the system, stretching the positions of the molecules to reflect the new size. $x$ and $z$ axes remain unchanged.
+	\end{itemize}
+
+	\item[setcell $a$ $b$ $c$ $\alpha$ $\beta$ $\gamma$\its] Set cell lengths and angles of current model. This command will add a cell to a model currently without a unit cell specification.
+	\index{script commands!setcell}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{setcell 20.0 10.0 10.0 90.0 90.0 90.0} adds an orthorhombic cell with side lengths 20x10x10 \AA to the current model.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Charges}
+\index{script commands!charges}
+Assign partial charges to models, atoms, and patterns. Charges are specified in units of $e$.\\
+\begin{description}
+
+	\item[chargeatom $id$ $q$\its] Assign a charge of $q$ to atom $id$ in the current model.
+	\index{script commands!chargeatom}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{chargeatom 12 -0.2} assigns a charge of $-0.2$ to the twelfth atom.
+	\end{itemize}
+
+	\item[chargeff\its] Assigns charges to all atoms in the current model based on the forcefield associated to the model and the current types of the atoms.
+	\index{script commands!chargeff}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{chargeff}.
+	\end{itemize}
+
+	\item[chargefrommodel\its] Copies charges of all atoms in the current model to the atoms of the current trajectory frame.
+	\index{script commands!chargefrommodel}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{chargefrommodel}.
+	\end{itemize}
+
+	\item[chargepatom $id$ $q$\its] Assigns a charge of $q$ to atom $id$ in each molecule of the current pattern.
+	\index{script commands!chargepatom}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{chargepatom 3 0.1} assigns a charge of 0.1 to the third atom in each molecule of the current pattern.
+	\end{itemize}
+
+	\item[chargeselection $q$\its] Assigns a charge of $q$ to each selected atom in the current model.
+	\index{script commands!chargeselection}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{chargeselection 1.0} gives each atom in the current model's selection a charge of 1.0.
+	\end{itemize}
+
+	\item[chargetype $fftype$ $q$\its] Assigns a charge of $q$ to each atom that is of type $fftype$ in the current model.
+	\index{script commands!chargetype}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{chargetype OW -0.8} gives a charge of $-0.8$ to every atom that is of type \qte{OW}.
+	\end{itemize}
+
+	\item[clearcharges\its] Clears all charges in the current model, setting them to zero.
+	\index{script commands!clearcharges}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{clearcharges}.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Disordered Building}
+\index{script commands!disordered building}
+Build periodic disordered systems from individual components using Monte Carlo methods.\\
+\begin{description}
+
+	\item[addcomponent $model$ $nmols$ $name$\its] Specify that $nmols$ copies of the $model$ are to be added (or attempted to be added) during the build process. The component is referenced by the other commands from the provided $name$.
+	\index{script commands!addcomponent}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{addcomponent butane 300 bulk} requests that the \qte{butane} model should be entered into the list of components, referenced by the name \qte{bulk}, and that the disordered builder should attempt to create 300 copies of the model in the new system.
+	\end{itemize}
+
+	\item[setcellcentre $name$\its] Sets the coordinates of the centre of the region defined for component $name$ to the center of the cell.
+	\index{script commands!setcellcentre}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{setcellcentre propanol} sets the centre of the shape for \qte{propanol} to be the centre of the unit cell.
+	\end{itemize}
+
+	\item[setcenter $name$ $x$ $y$ $z$\its] Sets the coordinates of the centre of the region defined for component $name$.
+	\index{script commands!setcenter}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{setcenter propanol 5.0 7.0 6.0} sets the centre of the \qte{propanol} region to [5.0 7.0 6.0].
+	\end{itemize}
+
+	\item[setgeometry $name$ $x$ $y$ $z$ [$l$]\its] Sets the geometry of the region for component $name$. The $x$, $y$, and $z$ values determine the total extent of the region along each principal axis.
+	\index{script commands!setgeometry}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{setgeometry propanol 10.0 10.0 3.0} sets the geometry of the region for the \qte{propanol} component. For example, if the region was of type \qte{sphere} this would create an elongated ellipsoid.
+	\end{itemize}
+
+	\item[setoverlap $name$ $true|false$\its] Determines whether additions into the region are allowed to overlap with regions defined for other components. Default is true.
+	\index{script commands!setoverlap}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{setoverlap lysine false} restricts the \qte{lysine} component to the subspace of its defined region that does not overlap with any other region.
+	\end{itemize}
+
+	\item[printcomponents\its] Prints the current component list to be used in the disordered builder.
+	\index{script commands!printcomponents}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printcomponents}.
+	\end{itemize}
+
+	\item[setshape $name$ $shape$\its] Sets the type of the allowed insertion region for the specified model (which should have already been \qte{add}ed). Valid $shape$s are \qte{cell}, \qte{cuboid}, \qte{spheroid}, and \qte{cylinder}.
+	\index{script commands!setshape}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{setshape propanol sphere} restricts the component \qte{propanol} to a spherical region of the cell.
+	\end{itemize}
+
+	\item[disorder $ncycle$\its] Start the disordered builder, requesting $ncycle$ cycles of Monte Carlo moves.
+	\index{script commands!disorder}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{disorder 50} runs 50 cycles of the disordered builder.
+	\end{itemize}
+
+	\item[vdwscale $scale$\its] Sets the scaling factor for VDW radii to use in the disordered builder.
+	\index{script commands!vdwscale}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{vdwscale 0.75} scales all VDW radii by 0.75 in the calculation.
+	\end{itemize}
+
+\end{description}
+
+\subsection{Energy Calculation}
+\index{script commands!energy calculation}
+Calculate energies for models and trajectory frames. All printing commands refer to the last energy calculated for either the model or a trajectory frame.\\
+\begin{description}
+
+	\item[frameenergy\its] Calculate energy of the current frame of the trajectory associated with the current model.
+	\index{script commands!frameenergy}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{frameenergy}.
+	\end{itemize}
+
+	\item[modelenergy\its] Calculate the energy of the current model, which can then be printed out (in whole or by parts) by the other subcommands.
+	\index{script commands!modelenergy}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{modelenergy}.
+	\end{itemize}
+
+	\item[printelec\its] Prints out the electrostatic energy decomposition matrix.
+	\index{script commands!printelec}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printelec}.
+	\end{itemize}
+
+	\item[printewald\its] Prints the components of the Ewald sum energy.
+	\index{script commands!printewald}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printewald}.
+	\end{itemize}
+
+	\item[printinter\its] Prints out the total inter-pattern energy decomposition matrix.
+	\index{script commands!printinter}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printinter}.
+	\end{itemize}
+
+	\item[printintra\its] Prints out the total intramolecular energy decomposition matrix.
+	\index{script commands!printintra}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printintra}.
+	\end{itemize}
+
+	\item[printenergy\its] Prints the elements of the calculated energy in a list.
+	\index{script commands!printenergy}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printenergy}.
+	\end{itemize}
+
+	\item[printsummary\its] Print out a one-line summary of the calculated energy.
+	\index{script commands!printsummary}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printsummary}.
+	\end{itemize}
+
+	\item[printvdw\its] Prints out the VDW energy decomposition matrix.
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printvdw}.
+	\end{itemize}
+
+\end{description}
+
+\subsection{Expression}
+\index{script commands!expression}
+Manage the energy setup and forcefield expression.\\
+\begin{description}
+
+	\item[createexpression\its] Creates a suitable energy description for the current model.
+	\index{script commands!createexpression}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{createexpression}.
+	\end{itemize}
+
+	\item[ecut $distance$\its] Sets the electrostatic cutoff (for Coulomb sum and real-space part of Ewald sum) to $distance$.
+	\index{script commands!ecut}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{ecut 14.5} sets the electrostatic cutoff distance to 14.5 \AA.
+	\end{itemize}
+
+	\item[elec $style ...$\its] Selects the method of calculation for electrostatic energy and forces (default is \qte{none}).
+	\index{script commands!elec}
+	\begin{itemize}
+		\item \ttqte{elec none} turns off electrostatics.
+		\item \ttqte{elec coulomb} uses the coulomb sum.
+		\item \ttqte{elec ewald $alpha$ $kx$ $ky$ $kz$} selects the Ewald sum with convergence parameter $alpha$ and $k$-vectors specified.
+		\item $e.g.$ \ttqte{elec ewald 0.2 9 9 9}.
+		\item \ttqte{elec ewaldauto $precision$} selects Ewald sum with automatic parameter generation governed by precision specified.
+		\item $e.g.$ \ttqte{elec ewaldauto 5.0e-6} auto-calculates $alpha$ and $kmax$ with XXX precision of 5.0e-6.
+	\end{itemize}
+
+	\item[intra $on|off$\its] Controls calculation of intramolecular terms in energy / force calculations (on by default).
+	\index{script commands!intra}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{intra off} turns intramolecular energy / force calculation off.
+	\end{itemize}
+
+	\item[printexpression\its] Prints the current expression setup.
+	\index{script commands!printexpression}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printexpression}
+	\end{itemize}
+
+	\item[vcut $distance$\its] Sets the van der Waals cutoff to $distance$.
+	\index{script commands!vcut}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{vcut 20.0} sets van der Waals cutoff distance to 20.0 \AA.
+	\end{itemize}
+
+	\item[vdw $on|off$\its] Controls calculation of van der Waals terms in energy / force calculations (on by default).
+	\index{script commands!vdw}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{vdw off} turns van der Waals energy / force calculation off.
+	\end{itemize}
+
+\end{description}
+
+\subsection{Forcefields}
+\index{script commands!forcefields}
+Basic forcefield management.\\
+\begin{description}
+
+	\item[ffmodel\its] Associates current forcefield to the current model.
+	\index{script commands!ffmodel\its}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{ffmodel}.
+	\end{itemize}
+
+	\item[ffpattern\its] Associates current forcefield to the current pattern.
+	\index{script commands!ffpattern}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{ffpattern}.
+	\end{itemize}
+
+	\item[ffpatternid $id$\its] 
+	\index{script commands!ffpatternid}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{ffpatternid 3}.
+	\end{itemize}
+
+	\item[loadff $file$ $name$\its] Load a forcefield from $file$ and reference it by $name$. Becomes the current forcefield.
+	\index{script commands!loadff}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{loadff /home/foo/complex.ff waterff} loads a forcefield called \qte{complex.ff} and names it \qte{waterff}.
+	\end{itemize}
+
+	\item[selectff $name$\its] Selects the forcefield $name$ and makes it the current forcefield. If a forcefield of that name is not loaded an error is returned.
+	\index{script commands!selectff}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectff organicff} makes the forcefield \qte{organicff} current.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Forces}
+\index{script commands!forces}
+Calculate forces for models and trajectory frames.\\
+\begin{description}
+
+	\item[frameforces\its] Calculate the atomic forces of the current frame of the trajectory associated with the current model.
+	\index{script commands!frameforces}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{frameforces}.
+	\end{itemize}
+
+	\item[modelforces\its] Calculate the atomic forces of the current model.
+	\index{script commands!modelforces}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{modelforces}.
+	\end{itemize}
+
+	\item[printforces\its] Print out the forces of the current model.
+	\index{script commands!printforces}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printforces}.
+	\end{itemize}
+
+\end{description}
+
+\subsection{Command \qte{mc}}
+\index{script commands!mc}
+Change parameters for Monte Carlo-based calculations. Energy values are given in the current working unit of energy in the program.\\
+\begin{description}
+
+	\item[mcaccept $move$ $emax$\its] Sets the energy difference $emax$ for the movetype $move$ above which moves will be rejected.
+	\index{script commands!mcaccept}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{mcaccept translate 0.0} requests that only translation moves that lower the overall energy will be accepted.
+		\item $e.g.$ \ttqte{mcaccept insert 200.0} requests that insertion moves will be accepted provided the total energy does not rise more than 200.0 units.
+	\end{itemize}
+
+	\item[mcmaxstep $move$ $size$\its] Sets the maximal stepsize for the move type $move$.
+	\index{script commands!mcmaxstep}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{mcmaxstep translate 5.0} sets the maximum translation displacement to 5 \AA.
+		\item $e.g.$ \ttqte{mcmaxstep rotate 30.0} sets the maximum rotation to 30$^\circ$.
+	\end{itemize}
+
+	\item[mcntrials $move$ $n$\its] Sets the number of times $n$ that the move type $move$ should be attempted in each cycle.
+	\index{script commands!mcntrials}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{mcntrials insert 50} requests that there will be 50 insertion attempts per cycle per molecule type.
+	\end{itemize}
+
+	\item[printmc\its] Prints the current Monte Carlo parameters.
+	\index{script commands!printmc}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printmc}
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Minimisation}
+\index{script commands!minimisation}
+Perform geometry minimisation on models.\\
+\begin{description}
+
+	\item[converge $econv$ $fconv$\its] Sets the convergence criteria of the minimisation methods. Energy and force convergence values are given in the current working unit of energy in the program.
+	\index{script commands!converge}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{converge 1e-6 1e-4} sets the energy and RMS force convergence criteria to 1x$10^{-6}$ and 1x$10^{-4}$ respectively.
+	\end{itemize}
+
+	\item[mcminimise $maxsteps$\its] Optimises the current model using a Monte Carlo minimisation method.
+	\index{script commands!mcminimise}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{mcminimise 20} runs a geometry optimisation for a maximum of 20 cycles.
+	\end{itemize}
+
+	\item[sdminimise $maxsteps$ $maxtrials$ $stepsize$\its] Optimises the current model using the Steepest Descent method.
+	\index{script commands!sdminimise}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{sdminimise 100 50 0.5} minimises the current model for a maximum of 100 Steepest Descent steps, with the maximum line trials per step set to 50, and the XXX
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Models}
+\index{script commands!models}
+Basic model management.\\
+\begin{description}{\setlength{\itemsep}{2em}}
+
+	\item[listmodels\its] Lists all models currently available in the workspace.
+	\index{script commands!listmodels}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{listmodels}.
+	\end{itemize}
+
+	\item[loadmodel $file$ $name$\its] Load a model from $file$, referenced by $name$, which becomes the current model.
+	\index{script commands!loadmodel}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{loadmodel /home/foo/coords/test.xyz mymodel} loads a model called test.xyz and gives it the name \qte{mymodel}.
+	\end{itemize}
+
+	\item[newmodel $name$\its] Create a new model, referenced by $name$, which becomes the current model.
+	\index{script commands!newmodel}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{newmodel emptymodel} creats a new model called \qte{emptymodel} and makes it current.
+	\end{itemize}
+
+	\item[printmodel\its] Print out information on the current model and its atoms.
+	\index{script commands!printmodel}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printmodel} outputs something like:
+		\begin{verbatim}
+			XXX Some crap here.
+		\end{verbatim}
+	\end{itemize}
+
+	\item[savemodel $format$ $file$\its] Save the current model to $file$ in $format$.
+	\index{script commands!savemodel}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{savemodel xyz /home/foo/newcoords/test.config} saves the current model in \qte{xyz} format to the filename given.
+	\end{itemize}
+
+	\item[selectmodel $name$\its] Make $name$ the current model. If $name$ cannot be found an error is returned.
+	\index{script commands!selectmodel}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectmodel othermodel} makes the model called \qte{othermodel} current.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Patterns}
+\index{script commands!patterns}
+Automatically or manually create pattern descriptions for models.\\
+\begin{description}
+
+	\item[addpattern $nmols$ $natoms$ $name$\its] Add a new pattern node to the current model, spanning $nmols$ molecules of $natoms$ atoms each, and called $name$.
+	\index{script commands!addpattern}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{addpattern 100 3 water} creates a new pattern description of 100 molecules of 3 atoms each (i.e. 100 water molecules) in the current model.
+	\end{itemize}
+
+	\item[clearpatterns\its] Delete the pattern description of the current model.
+	\index{script commands!clearpatterns}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{clearpatterns}.
+	\end{itemize}
+
+	\item[createpatterns\its] Automatically detect and create the pattern description for the current model.
+	\index{script commands!createpatterns}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{createpatterns}.
+	\end{itemize}
+
+	\item[printpatterns\its] Prints out the current pattern description of the current model.
+	\index{script commands!printpatterns}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printpatterns}.
+	\end{itemize}
+
+	\item[selectpattern $name$\its] Selects the pattern $name$ in the current model to be the current pattern. If the pattern cannot be found an error is returned.
+	\index{script commands!selectpattern}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectpattern formate} selects a pattern named \qte{formate}.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Selection}
+\index{script commands!selection}
+Select atoms or groups of atoms.\\
+\begin{description}
+
+	\item[invert\its] Inverts the selection of all atoms in the current model.
+	\index{script commands!invert}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{invert}.
+	\end{itemize}
+
+	\item[selectall\its] Select all atoms in the current model.
+	\index{script commands!selectall}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectall}.
+	\end{itemize}
+
+	\item[selectatom $id$\its] Select atom $id$ in the current model.
+	\index{script commands!selectatom}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectatom 45} selects the 45th atom.
+	\end{itemize}
+
+	\item[selectatomtype $element$ $description$\its] Select atoms that are $element$ and match the type $description$ giveen.
+	\index{script commands!selectatomtype}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectatomtype C ''-H(n=2)''} selects all carbon atoms that are bounr to two hydrogens.
+	\end{itemize}
+
+	\item[selectelement $el$\its] Select all atoms that are element $el$ in the current model.
+	\index{script commands!selectelement}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectelement Br} selects all bromine atoms.
+	\end{itemize}
+
+	\item[selectnone\its] Deselect all atoms in the current model.
+	\index{script commands!selectnone}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectnone}.
+	\end{itemize}
+
+	\item[selecttype $fftype$\its] Select all atoms with forcefield type $fftype$ in the current model.
+	\index{script commands!selecttype}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selecttype CT} selects all atoms that are of type \qte{CT}.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Sites}
+\index{script commands!sites}
+Describe sites within molecules for use in analysis.\\
+\begin{description}
+
+	\item[addsite $name$ $pattern$ ``$atomlist$``\its] Creates a new site $name$ for the current model, based on the molecule of $pattern$, and placed at the geometric centre of the atom ids given in $atomlist$. If no atoms are given, the centre of geometry of all atoms is used. The new site becomes the current site.
+	\index{script commands!addsite}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{addsite watercentre h2o} adds a site called \qte{watercentre} based on the pattern called \qte{h2o} and located at the centre of geometry of all atoms.
+		\item $e.g.$ \ttqte{addsite oxy methanol 5} adds a site called \qte{oxy} based on the pattern called \qte{methanol} and located at the fifth atom in each molecule.
+	\end{itemize}
+
+	\item[printsites\its] Prints the list of sites defined for the current model.
+	\index{script commands!printsites}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printsites}.
+	\end{itemize}
+
+	\item[selectsite $name$\its] Selects (makes current) the site referenced by $name$. If the site cannot be found an error is returned.
+	\index{script commands!selectsite}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selectsite carb1} makes the site \qte{carb1} the current site.
+	\end{itemize}
+
+	\item[setaxes \qte{$atomlist$} \qte{$atomlist$}\its] Sets the local x (first set of atom ids) and y (second set of atom ids) axes for the current site. Each of the two axes is constructed by taking the vector from the site centre (defined by the list of atoms given to \qte{addsite}) and the geometric centre of the list of atoms provided here. The y axis is orthogonalised with respect to the x axis and the z axis constructed from the cross product of the two orthogonal vectors.
+	\index{script commands!setaxes}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{setaxes '1,2' '6'} sets the x axis definition of the current site to be the vector between the site centre and the average position of the first two atoms, and the y axis definition to be the vector between the site centre and the position of the sixth atom.
+	\end{itemize}
+
+\end{description}
+
+
+\subsection{Options}
+\index{script commands!options}
+Control miscellaneous aspects of the program and its behaviour. Boolean arguments are specified as on/off, but may also take the form yes/no or true/false.\\
+\begin{description}
+
+	\item[atomdetail $i$\its]
+		Sets the number of slices / stacks to use in the rendering of polygonal spheres.
+	
+	\item[bonddetail $i$\its]
+		Sets the number of slices / stacks to use in the rendering of polygonal tubes.
+
+	\item[densityunits $units$\its] Set the density units to use in output. See Section \ref{sec:prefs} for a list of possibilities.
+	\index{script commands!densityunits}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{densityunits gpercm3} gives densities in g cm$^{-3}$.
+	\end{itemize}
+
+	\item[energyunits $units$\its] Set the unit of energy to use in output. See Section \ref{sec:prefs} for a list of possibilities.
+	\index{script commands!energyunits}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{energyunits kcal} shows energy values in units of kcal mol$^{-1}$.
+	\end{itemize}
+
+	\item[gl $option$ $on|off$\its]
+	%linealias|polyalias|backcull|fog]
+		Enables various OpenGL features (all are disabled by default).
+		\begin{description}
+			\item[linealias] Enable line aliasing
+			\item[polyalias] Enable polygon aliasing (Note - has odd effects in the current version)
+			\item[backcull] Enable backface culling of polygons
+			\item[fog] Enable depth cueing.
+		\end{description}
+	
+	\item[key $button$ $action$\its]
+		Sets the action of the modifier keys that change normal mouse actions into their alternatives. Valid modifier keys are \qte{shift}, \qte{ctrl}, and \qte{alt}. Valid actions are:
+			\begin{description}
+				\item[zrotate] Changes a normal $x$/$y$ rotation action into rotation about the world $z$-axis
+				\item[transform] Performs rotations and translations on the model coordinates rather than the view (i.e. a {it translate} action will translate the selected model coordinates instead of the camera)
+				\item[none] The key does nothing. At all.
+			\end{description}
+
+	\item[mouse $button$ $action$\its]
+		Sets the action of the specified button. Valid $button$s are \qte{left}, \qte{middle}, and \qte{right}. Valid actions are:
+			\begin{description}
+				\item[none] Gives you a useless button
+				\item[rotate] Free rotation of the model around the $x$ and $y$ axes
+				\item[zrotate] Rotation of the model around the $z$ axis
+				\item[translate] Shifts the model in the world $xy$ plane of the current view (i.e. in the plane of the screen)
+				\item[zoom] Moves the model back and forth along the local z-axis (into the screen) on moving the mouse up and down respectively
+				\item[interact] Performs almost every other action including selection, drawing etc.
+			\end{description}
+	
+	\item[movestyle $viewstyle$\its]
+		The drawing style to use for models when rotating, manipulating etc. For those with lots of atoms and mid-range graphics cards, {\it stick} is probably a sensible option.
+	
+
+	\item[radius $viewstyle$ $f$]
+		Sets the standard atom radius to use in the different drawing styles, although the effect of the radius differs between styles. For \qte{tube} and \qte{sphere} $f$ defines the actual radius (and consequently the selection hotspot radius) of on-screen atoms in Angstroms. For the \qte{stick} style it determines only the hotspot radius of the atoms. The \qte{scaled} style uses $f$ as a scaling factor applied to the elemental radii defined in the elements definition file \qte{elements.dat}.
+
+	\item[shininess $i$\its]
+		Sets the shininess of materials. $i$ should be in the range 0-255.
+	
+	\item[show $object$ $on|off$\its]
+		Sets the visibility of objects in the rendering canvas. Valid $object$s are:
+		\begin{description}
+			\item[atoms] Atoms and bonds within the model
+			\item[cell] The unit cell
+			\item[cellaxes] Cell axis arrows at the origin of the unit cell
+			\item[cellrepeat] Repeat units of the unit cell
+			\item[forcearrows] Atomic force arrows
+			\item[globe] The rotation globe displaying the cartesian axes
+			\item[labels] Atomic labels
+			\item[measurements] Geometry measurements
+			\item[regions] Regions for components in the disordered builder
+		\end{description}
+
+	\item[style $viewstyle$\its]
+		The default drawing style to use for all new models. Valid $viewstyle$s are \qte{stick}, \qte{tube}, \qte{sphere}, and \qte{scaled}.
+
+\end{description}
+
+
+\subsection{Trajectories}
+\index{script commands!trajectories}
+Open and select frames from the trajectory file associated to the current model.\\
+\begin{description}
+
+	\item[firstframe\its] Select the first frame from trajectory of current model.
+	\index{script commands!firstframe}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{firstframe}.
+	\end{itemize}
+
+	\item[lastframe\its] Select last frame in trajectory of current model.
+	\index{script commands!lastframe\its}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{lastframe\its}.
+	\end{itemize}
+
+	\item[loadtrajectory $file$\its] Associate trajectory in $file$ with current model.
+	\index{script commands!loadtrajectory}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{loadtrajectory /home/foo/md/water.HISf} opens and associated the DL\_POLY trajectory file \qte{water.HISf} with the current model.
+	\end{itemize}
+
+	\item[nextframe\its] Select next frame from trajectory of current model.
+	\index{script commands!nextframe\its}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{nextframe}.
+	\end{itemize}
+
+	\item[prevframe\its] Select the previous frame from the trajectory of the current model.
+	\index{script commands!prevframe\its}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{prevframe}.
+	\end{itemize}
+
+\end{description}
+

@@ -1,0 +1,56 @@
+/*
+	*** Qt custom treewidget
+	*** src/gui-qt/ttreewidget.uih
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef H_TTREEWIDGET_H
+#define H_TTREEWIDGET_H
+
+#include "templates/reflist.h"
+#include "gui-qt/ttreewidgetatom.h"
+#include <QtGui/QTreeWidget>
+#include <QtCore/QObject>
+
+class TTreeWidget : public QTreeWidget
+{
+	Q_OBJECT
+
+	public:
+	TTreeWidget(QWidget *parent) : QTreeWidget(parent) {};
+	//~TCanvas();
+
+	private:
+	// List of TTreeViewWidgets that this TTreeWidget contains
+	reflist<TTreeWidgetAtom> atomitems;
+
+	public:
+	// Clear list of TTreeViewWidgets 
+	void clear_atomitems() { atomitems.clear(); }
+
+	public:
+	// Add a TTreeViewAtoms to the list (which we will remember in a reflist<>
+	TTreeWidgetAtom *addTreeItem(QTreeWidgetItem *parent)
+	{
+		atomitems.add(new TTreeWidgetAtom(parent));
+		return atomitems.last()->item;
+	}
+	// Return the reflist of TTreeViewAtoms
+	refitem<TTreeWidgetAtom> *get_atomitems() { return atomitems.first(); }
+};
+
+#endif
