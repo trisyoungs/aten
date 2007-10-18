@@ -1,0 +1,60 @@
+#
+# Control
+#
+# Mouse bindings
+# 'mouse left|middle|right|wheel = none|rotate|translate|interact|zoom|zrotate'
+# 'key shift|ctrl|alt = none|manipulate|zrotate'
+mouse 	left	interact
+mouse	right	rotate
+mouse	middle	translate
+mouse	wheel	zoom
+# Key bindings
+key	shift	zrotate
+key	ctrl	transform
+key	alt	none
+
+#
+# View preferences
+#
+# Model styles
+style	 	sphere		# Default model drawing style
+movestyle	stick		# Style to use when rotating / translating etc.
+# Style settings
+radius	stick	0.15		# Used as the selection 'hotspot' radius
+radius	tube	0.095
+radius	sphere	0.35
+radius	scaled	1.0		# Used as scaling factor for atom radii defined in elements.dat
+# GL Options
+gl linealias	on		# Enable line aliasing
+#gl polyalias	on		# Enable polygon aliasing
+#gl backcull	on		# Enable backface culling
+gl fog		off		# Enable depth cueing
+shininess	10		# Shininess of materials
+# Detail settings (slices/stacks per object)
+atomdetail	10
+bonddetail	7
+# Objects / Labels
+show	globe		yes	# Rotation globe
+show	measurements 	yes	# Measurements
+show	labels		yes	# Atom labels
+
+#
+# Pre-load Forcefields
+#
+#loadff "/home/tris/src/csmodel/ff/uff.ff"
+
+#
+# Methods
+#
+energyunits	kj		# Internal energy unit - j|kj|cal|kcal|ha
+densityunits	gpercm		# Density unit - gpercm|atomsperang
+
+#
+# Colours
+#
+colour	pen		0.0	0.0	0.0	# General 'pen' colour
+colour	bg		1.0	1.0	1.0	# Workspace background
+colour	schemelo	0.0	0.0	1.0	# Colour scale - lowest
+colour	schememid	0.7	0.7	0.7	# Colour scale - mid-point
+colour	schemehi	1.0	0.0	0.0	# Colour scale - highest
+colour	specular	1.0	0.9	0.75	# Specular reflection colour

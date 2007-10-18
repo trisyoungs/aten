@@ -1,0 +1,26 @@
+# XMol-style XYZ coordinates files
+importmodel
+	name "XMol XYZ Coordinates"
+	nickname xyz
+	extension xyz
+	glob *.xyz
+	readline "$natoms"
+	readline "$title@100"
+	repeat $n $natoms
+		readline "$e $r.x $r.y $r.z"
+		addatom
+	end
+	rebond
+	centre
+end
+exportmodel
+	name "XMol XYZ Coordinates"
+	extension xyz
+	glob *.xyz
+	nickname xyz
+	writeline "$natoms"
+	writeline "$title"
+	foratoms $i
+		writeline "$i.symbol@3 $i.r.x@12.3 $i.r.y@12.3 $i.r.z@12.3"
+	end
+end

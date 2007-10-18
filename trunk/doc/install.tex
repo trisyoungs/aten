@@ -1,0 +1,91 @@
+\chapter{Four Step Installation}
+\label{sec:install}
+
+\section{\emph{Disclaimer}}
+\label{sec:disclaimer}
+
+\progname{} has been compiled successfully on Linux machines running SuSE 9.3, OpenSuSE 10.2, and RedHat Enterprise 4, an Intel iMac running OS X 10.4.10, and XXX. No doubt with (or without) tweaking it will run on other systems.\\
+
+\progname{} is in development, and as such might contain a bug or two. Should you come across a crash or an issue that needs to be fixed, \emph{please} report them so they can be fixed.\\
+
+In addition, I can't accept responsibility for any loss of data / work / sleep / expensive computers / cats / coordinates etc., use at your own risk etc., and so on...\\
+
+\section{Ingredients for Linux}
+\label{sec:linuxinstall}
+\begin{itemize}
+	\item GNU Autotools 2.6
+	\item A C++ compiler (e.g. g++, icc)
+	\item OpenGL and glut (e.g. from freeglut)
+	\item pkg-config
+	\item GTK+2.0 (version 2.4 or above) or Qt4 (version 4.2 or above) if you want a GUI
+	\item GtkGLExt if you want the GTK+ GUI
+\end{itemize}
+
+\section{Ingredients for Mac OS X}
+\label{sec:macinstall}
+\begin{itemize}
+	\item GNU Autotools 2.6
+	\item A C++ compiler (e.g. g++, icc)
+	\item OpenGL and glut frameworks
+	\item pkg-config (if using Fink or MacPorts versions of GTK+ or Qt)
+	\item GTK+ (version 2.4 or above) or Qt (version 4.1 or above) if you want a GUI
+\end{itemize}
+
+When installing Qt you have several choices. Either you can get the Fink or MacPorts versions, or the native version from the TrollTech website (http://trolltech.com). Depending on which you get you might need to add in extra flags to {\sffamily configure}. The Fink and MacPorts versions provide pkg-config files to enable them to be detected and configured (and no extra {\sffamily configure} options are necessary), but the native OS X version from TrollTech does not. So, if you use the TrollTech version you must run {\sffamily configure} with the {\sffamily {-}{-}with-qt=framework} option.\\
+
+You may find that the version of GNU Autotools you have is not recent enough. Check with {\sffamily autoconf {-}{-}version} - 2.59 is not sufficient! An up-to-date version can be installed via Fink.\\
+
+\section{Installation}
+
+\begin{description}
+	\item[Step 1:\its] Get the source.
+	\begin{itemize}
+		\item Download the source distribution from the website and unpack the .tgz file, or get the latest tree from the SVN repository.
+		\item Run {\sffamily ./autogen.sh} to generate the {\sffamily configure} script if you got the distribution using svn.
+	\end{itemize}
+\end{description}
+
+\begin{description}
+	\item[Step 2:\its] Configure the build (Run {\sffamily./configure})
+	\begin{itemize}
+		\item Most all dependencies should be detected by the scripts provided, ensuring a pain-free build (or quick detection of problems).
+		\item Select a GUI. Running {\sffamily./configure} with no options detects the operating system and builds in the Qt GUI. This can be overriden with the {\sffamily {-}{-}with-gui} switch:
+		\begin{itemize}
+			\item {\sffamily./configure {-}{-}with-gui=qt} builds in the Qt GUI (default).
+			\item {\sffamily./configure {-}{-}with-gui=gtk} builds in the legacy GTK+ GUI.
+			\item {\sffamily./configure {-}{-}with-gui=none} builds a command-line only executable.
+		\end{itemize}
+	\end{itemize}
+	Common issues:\\
+	\emph{$configure$ complains \dqte{Could not find GLUT header. Is freeglut/Mesa installed?}}
+	\begin{itemize}
+		\item You need some form of OpenGL implementation installed. Try the freeglut packages, and don't forget to install the freeglut-devel package as well.
+	\end{itemize}
+\end{description}
+
+\begin{description}
+	\item[Step 3:\its] Compile the source (Run {\sffamily make})
+	\begin{itemize}
+		\item Once configured successfully, run {\sffamily make} to compile the source and build the program.
+		\item Go make some tea or brew some coffee.
+	\end{itemize}
+	Common issues:\\
+	\emph{When linking I get \dqte{Undefined references to \qte{pango\_x\_font\_subfont\_xlfd}} (or similar).}
+	\begin{itemize}
+		\item The version of gtkglext you have installed is a bit retro (version 1.0.6 uses tokens from the pango subsystem that have since been made obsolete) so download and install version 1.2.0 from gtkglext.sourceforge.net.
+	\end{itemize}
+
+\end{description}
+
+\begin{description}
+	\item[Step 4:\its] Install (Run {\sffamily make install} or {\sffamily cp src/aten $<$destination$>$})
+	\begin{itemize}
+		\item After compilation is complete, you're left with the \progname{} executable in the src/ directory.
+		\item Either run {\sffamily make install} to place the program in {\sffamily /usr/local/bin} if you have root priveledges, or copy the program to a local location of your choice and run it from there.
+		\item The default stock of filters and spacegroup definitions is installed in the default locations if you run {\sffamily make install} (on Linux systems this is typically /usr/local/share/aten).
+		\item Aten is directed to this location via the \$ATENDATA environment variable which should be set before running the program.
+		\item If you haven't (or can't) run {\sffamily make install} then set \$ATENDATA to the /data directory in the source tree.
+	\end{itemize}
+\end{description}
+
+

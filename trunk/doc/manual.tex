@@ -1,0 +1,56 @@
+\documentclass[a4paper,10pt]{report}
+
+% Packages
+\usepackage{geometry}
+\usepackage{makeidx}
+\usepackage{srcltx}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{wrapfig}
+
+% Setup margins
+\geometry{a4paper,left=2.5cm,right=2.5cm,top=2cm,bottom=2cm,includeheadfoot}
+
+% Create index
+\makeindex
+
+\begin{document}
+
+% New List Environment
+\newenvironment{optlist}[1]
+  {
+    \begin{flushleft}\textbf{#1}\end{flushleft}
+    \begin{list}{}{}
+  }
+  { \end{list} }
+
+% User-Defined Commands
+\newcommand{\progname}{{\sffamily Aten}}
+\newcommand{\qte}[1]{\lq{}#1\rq{}}
+\newcommand{\ttqte}[1]{\lq{}{\ttfamily#1}\rq{}}
+\newcommand{\dqte}[1]{``#1''}
+\newcommand{\its}{\hspace{20cm}}
+
+\title{\progname{} version 0.40 \\ User's Guide}
+\author{T. Youngs}
+\maketitle
+
+\tableofcontents
+
+% Include sections
+\include{install}
+\include{quickstart}
+\include{features}
+\include{gui}
+\include{expression}
+\include{typing}
+\include{ff}
+\include{filtershandbook}
+\include{scriptorshandbook}
+\include{cli}
+
+% Create index
+\printindex
+
+\end{document}
