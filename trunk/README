@@ -28,7 +28,7 @@ Full instructions can be found in the manual. Briefly:
 2) Run './configure' without options use standard locations and build in the Qt GUI.
 	Use --prefix to specify the install location
 	Use --with-gui to specify a different gui (currently 'qt', 'gtk', or 'none')
-	Use --with-qt=frameworks to use native Qt installation on Macs (otherwise
+	Use --with-qt=framework to use native Qt installation on Macs (otherwise
 		the Fink / MacPorts version will be used and detected with pkg-config).
 
 3) Run 'make'. Note that, at present, no optimisation options are passed to the
