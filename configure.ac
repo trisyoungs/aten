@@ -69,8 +69,10 @@ AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|<blank>],
     [Configures the build to use OS X Qt frameworks instead of pkg-config[default=]])], ,
     [with_qt=])
 
+
 # Pre-initialise pkg-config since we don't know where the first PKG_CHECK_MODULES will occur
 PKG_PROG_PKG_CONFIG
+
 
 # Set automake conditionals to false by default
 AM_CONDITIONAL(MAKEGTKGUI, false)
