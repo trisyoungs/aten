@@ -97,3 +97,13 @@ void AtenForm::on_CellReplicateButton_clicked(bool checked)
 	master.get_currentmodel()->replicate_cell(neg, pos);
 	gui.refresh();
 }
+
+void AtenForm::on_CellScaleButton_clicked(bool checked)
+{
+	vec3<double> scale;
+	scale.x = ui.CellScaleXSpin->value();
+	scale.y = ui.CellScaleYSpin->value();
+	scale.z = ui.CellScaleZSpin->value();
+	master.get_currentmodel()->scale_cell(scale);
+	gui.refresh();
+}

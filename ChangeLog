@@ -1,0 +1,7 @@
+2007-10-17   tris
+	* Qt: Added cell scaling. Added selection positioning.
+	gui-qt/mainwindow_funcs.cpp: Fixed canvas projection on widgetstack show/hide.
+
+2007-10-17   tris
+
+	* Version 0.90 (first release)
