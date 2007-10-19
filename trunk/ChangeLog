@@ -1,3 +1,6 @@
+2007-10-18   tris
+	* gui/canvas.cpp: Use trajparent's modelview matrix.
+
 2007-10-17   tris
 	* Qt: Added cell scaling. Added selection positioning.
 	gui-qt/mainwindow_funcs.cpp: Fixed canvas projection on widgetstack show/hide.
