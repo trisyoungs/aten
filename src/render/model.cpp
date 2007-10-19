@@ -61,7 +61,13 @@ void canvas_master::render_model_atoms()
 		if (i->get_element() > 118) { i = i->next; continue; }
 		// Push the current matrix, translate to the atoms coordinates and set the drawing colour
 		glPushMatrix();
+		  //tempcol[0] = i->colour[0]*0.70;
+		  //tempcol[1] = i->colour[1]*0.70;
+		  //tempcol[2] = i->colour[2]*0.70;
+		  //tempcol[3] = INT_MAX;
 		  glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, i->colour);
+		  //glMaterialiv(GL_FRONT, GL_AMBIENT, i->colour);
+		  //glMaterialiv(GL_FRONT, GL_DIFFUSE, tempcol);
 		  ri = i->r;
 		  glTranslated(ri.x,ri.y,ri.z);
 		  // Grab atom style and toggle lighting state if DS_INDIVIDUAL is the main drawing style

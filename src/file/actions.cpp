@@ -33,30 +33,29 @@ bool filter::do_actions(command_node<filter_command> *&fn)
 		// Recalculate bonding model
 		case (FC_REBOND):
 			if (activemodel == NULL) break;
-			if (prefs.get_bond_on_load() == PS_NO) break;
-			activemodel->clear_bonding();
-			activemodel->calculate_bonding();
+			if (prefs.get_bond_on_load() != PS_NO)
+			{
+				activemodel->clear_bonding();
+				activemodel->calculate_bonding();
+			}
 			result = TRUE;
 			break;
 		// Do crystal packing in model
 		case (FC_PACK):
 			if (activemodel == NULL) break;
-			if (prefs.get_pack_on_load() == PS_NO) break;
-			activemodel->apply_spacegroup_symmops(NULL);
+			if (prefs.get_pack_on_load() != PS_NO) activemodel->apply_spacegroup_symmops(NULL);
 			result = TRUE;
 			break;
 		// Centre model at 0,0,0
 		case (FC_CENTRE):
 			if (activemodel == NULL) break;
-			if (prefs.get_centre_on_load() == PS_NO) break;
-			activemodel->centre();
+			if (prefs.get_centre_on_load() != PS_NO) activemodel->centre();
 			result = TRUE;
 			break;
 		// Fold atoms into unit cell
 		case (FC_FOLD):
 			if (activemodel == NULL) break;
-			if (prefs.get_fold_on_load() == PS_NO) break;
-			activemodel->fold_all_atoms();
+			if (prefs.get_fold_on_load() != PS_NO) activemodel->fold_all_atoms();
 			result = TRUE;
 			break;
 		// Convert fractional coordinates to real coordinates

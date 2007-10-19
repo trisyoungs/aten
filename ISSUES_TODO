@@ -8,7 +8,6 @@ Issues with the current version:
 General To-Do list:
 	- Ewald sum (fourier calculation, reciprocal cell?) for non-orthogonal cells
 	- Molecular dynamics
-	- Trajectory playback / use of camera/rotation from parent model
 	- Calculate average molecule geometry (analyse)
 	- Complete spacegroups list
 	- UFF - oxidation state, energy conversion, torsions, angle periodicity

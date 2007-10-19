@@ -391,7 +391,8 @@ void canvas_master::set_selectedmode(user_action ua)
 void canvas_master::begin_mode(mouse_button button)
 {
 	dbg_begin(DM_CALLS,"widgetcanvas::begin_mode");
-	bool manipulate, zrotate;
+	static bool manipulate, zrotate;
+	static int n;
 	// Do the requested action as defined in the control panel, but only if another action
 	// isn't currently in progress. Set the user_action based on the mouse button that sent
 	// the signal, current selection / draw modes and key modifier states.
@@ -402,11 +403,12 @@ void canvas_master::begin_mode(mouse_button button)
 		dbg_end(DM_CALLS,"canvas_master::begin_mode");
 		return;
 	}
+	// Note the mouse button pressed
 	mb[button] = TRUE;
 	// Check for modifier keys
 	zrotate = FALSE;
 	manipulate = FALSE;
-	for (int n=0; n<3; n++)
+	for (n=0; n<3; n++)
 	{
 		if (keymod[n])
 		{
@@ -622,12 +624,16 @@ void canvas_master::mode_motion(double x, double y)
 	// Actively update variables when moving the mouse (possibly while performing a given action)
 	dbg_begin(DM_CALLS,"canvas_master::mode_motion");
 	static vec3<double> delta;
+	static model *viewtarget;
 	if (displaymodel == NULL)
 	{
 		printf("Pointless canvas_master::mode_motion - datamodel == NULL.\n");
 		dbg_end(DM_CALLS,"canvas_master::mode_motion");
 		return;
 	}
+	// For view operations when we have a trajectory, apply all movement to the parent model
+	viewtarget = displaymodel->get_trajparent();
+	if (viewtarget == NULL) viewtarget = displaymodel;
 	// Calculate new delta.
 	delta.set(x,y,0.0);
 	delta = delta - r_mouselast;
@@ -637,13 +643,13 @@ void canvas_master::mode_motion(double x, double y)
 		case (UA_NONE):
 			break;
 		case (UA_ROTATEXY):
-			displaymodel->rotate(delta.x/2.0,delta.y/2.0);
+			viewtarget->rotate(delta.x/2.0,delta.y/2.0);
 			break;
 		case (UA_ROTATEZ):
-			displaymodel->zrotate(delta.x/2.0);
+			viewtarget->zrotate(delta.x/2.0);
 			break;
 		case (UA_MOVECAM):
-			displaymodel->adjust_camera(delta/15.0,0.0);
+			viewtarget->adjust_camera(delta/15.0,0.0);
 			break;
 		case (UA_MANIPROTXY):
 			displaymodel->rotate_selection_world(delta.x/2.0,delta.y/2.0);
@@ -656,8 +662,8 @@ void canvas_master::mode_motion(double x, double y)
 			displaymodel->translate_selection_world(delta);
 			break;
 		case (UA_ZOOMCAM):
-			if (prefs.using_perspective()) displaymodel->adjust_camera(0.0,0.0,delta.y,0.0);
-			else displaymodel->adjust_ortho_size(delta.y);
+			if (prefs.using_perspective()) viewtarget->adjust_camera(0.0,0.0,delta.y,0.0);
+			else viewtarget->adjust_ortho_size(delta.y);
 			break;
 		default:
 			break;
