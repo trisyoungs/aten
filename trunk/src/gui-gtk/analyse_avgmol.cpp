@@ -1,6 +1,7 @@
 /*
 	*** GTK average molecule window
 	*** src/gui-gtk/analyse_avgmol.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

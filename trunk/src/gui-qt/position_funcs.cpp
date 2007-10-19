@@ -1,6 +1,7 @@
 /*
 	*** Qt position functions interface
 	*** src/gui-qt/position_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

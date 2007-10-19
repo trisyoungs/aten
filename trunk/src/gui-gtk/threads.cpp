@@ -1,6 +1,7 @@
 /*
 	*** GTK thread routines
 	*** src/gui-gtk/threads.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

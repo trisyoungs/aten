@@ -1,6 +1,7 @@
 /*
 	*** Qt cell functions interface
 	*** src/gui-qt/cell_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

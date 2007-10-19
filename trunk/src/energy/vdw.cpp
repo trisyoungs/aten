@@ -1,6 +1,7 @@
 /*
 	*** van der Waals energy / force calculation
 	*** src/energy/vdw.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

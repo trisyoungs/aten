@@ -1,6 +1,7 @@
 /*
 	*** Monte Carlo molecule component
 	*** src/classes/component.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

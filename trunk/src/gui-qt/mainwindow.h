@@ -1,6 +1,7 @@
 /*
 	*** Qt main window
 	*** src/gui-qt/mainwindow.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

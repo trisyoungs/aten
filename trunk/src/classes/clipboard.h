@@ -1,6 +1,7 @@
 /*
 	*** Clipboard
 	*** src/classes/clipboard.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Temporary header to link DL_POLY field export
 	*** src/file/temp_dlpfield.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

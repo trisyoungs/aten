@@ -1,6 +1,7 @@
 /*
 	*** Script molecule site functions
 	*** src/script/site.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

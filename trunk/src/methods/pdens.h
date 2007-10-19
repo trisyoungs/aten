@@ -1,6 +1,7 @@
 /*
 	*** Probability density calculation
 	*** src/methods/pdens.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

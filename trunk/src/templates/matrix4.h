@@ -1,6 +1,7 @@
 /*
 	*** 4x4 Matrix class
 	*** src/templates/matrix4.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** GTK cell expand window
 	*** src/gui-gtk/cell_expand.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

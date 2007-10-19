@@ -1,6 +1,7 @@
 /*
 	*** Script selection functions
 	*** src/script/select.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

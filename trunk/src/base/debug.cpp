@@ -1,6 +1,7 @@
 /*
 	*** Debug / messaging routines
 	*** src/base/debug.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

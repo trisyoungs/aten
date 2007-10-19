@@ -1,6 +1,7 @@
 /*
 	*** GTK cell repeat window
 	*** src/gui-gtk/cell_rep.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

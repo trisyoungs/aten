@@ -1,6 +1,7 @@
 /*
 	*** Monte Carlo methods
 	*** src/methods/mc.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

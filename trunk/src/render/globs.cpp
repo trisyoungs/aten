@@ -1,6 +1,7 @@
 /*
 	*** OpenGL objects
 	*** src/render/globs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

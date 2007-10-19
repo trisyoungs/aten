@@ -1,6 +1,7 @@
 /*
 	*** Crystal spacegroups / generators
 	*** src/classes/spacegroup.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

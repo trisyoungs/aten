@@ -1,6 +1,7 @@
 /*
 	*** Qt context menu functions
 	*** src/gui-qt/contextmenu_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

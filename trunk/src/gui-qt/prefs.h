@@ -1,6 +1,7 @@
 /*
 	*** Qt prefs window declaration
 	*** src/gui-qt/prefs.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

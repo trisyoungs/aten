@@ -1,6 +1,7 @@
 /*
 	*** Script analyse functions
 	*** src/script/analyse.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

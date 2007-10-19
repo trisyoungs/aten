@@ -1,6 +1,7 @@
 /*
 	*** GTK periodic table window
 	*** src/gui-gtk/ptable.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

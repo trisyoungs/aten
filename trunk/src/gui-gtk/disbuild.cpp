@@ -1,6 +1,7 @@
 /*
 	*** GTK disordered builder window
 	*** src/gui-gtk/disbuild.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Qt disorder functions interface
 	*** src/gui-qt/disorder_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

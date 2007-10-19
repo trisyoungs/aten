@@ -1,6 +1,7 @@
 /*
 	*** GTK labeling window
 	*** src/gui-gtk/label.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Basic atom
 	*** src/classes/atom.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

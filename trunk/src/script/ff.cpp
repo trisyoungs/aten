@@ -1,6 +1,7 @@
 /*
 	*** Script forcefield functions
 	*** src/script/ff.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

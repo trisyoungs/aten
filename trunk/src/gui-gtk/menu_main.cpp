@@ -1,6 +1,7 @@
 /*
 	*** GTK main menu
 	*** src/gui-gtk/menu_main.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

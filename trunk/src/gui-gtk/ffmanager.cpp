@@ -1,6 +1,7 @@
 /*
 	*** GTK forcefield manager window
 	*** src/gui-gtk/ffmanager.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

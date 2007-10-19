@@ -1,6 +1,7 @@
 /*
 	*** Qt user interface stub
 	*** src/gui-qt/gui-qt.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

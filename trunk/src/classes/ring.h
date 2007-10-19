@@ -1,6 +1,7 @@
 /*
 	*** Atom ring
 	*** src/classes/ring.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Filter commands
 	*** src/file/filtercommands.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Qt canvas functions
 	*** src/gui-qt/tcanvas_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** GTK canvas
 	*** src/gui-gtk/canvas-gtk.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

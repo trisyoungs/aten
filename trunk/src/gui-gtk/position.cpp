@@ -1,6 +1,7 @@
 /*
 	*** GTK atom position window
 	*** src/gui-gtk/position.cpp
+	Copyright T. Youngs 2007
 	This file is part of Aten.
 
 	Aten is free software: you can redistribute it and/or modify

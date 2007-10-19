@@ -1,6 +1,7 @@
 /*
 	*** Molecular restraint
 	*** src/classes/restraint.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

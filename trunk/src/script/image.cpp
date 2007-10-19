@@ -1,6 +1,7 @@
 /*
 	*** Script image functions
 	*** src/script/image.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

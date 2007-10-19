@@ -1,6 +1,7 @@
 /*
 	*** GTK general prefs window
 	*** src/gui-gtk/prefs_general.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

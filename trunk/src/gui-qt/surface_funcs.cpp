@@ -1,6 +1,7 @@
 /*
 	*** Qt surface functions interface
 	*** src/gui-qt/surface_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

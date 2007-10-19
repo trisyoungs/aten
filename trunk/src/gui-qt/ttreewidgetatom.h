@@ -1,6 +1,7 @@
 /*
 	*** Qt treewidget atom item
 	*** src/gui-qt/ttreewidgetatom.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

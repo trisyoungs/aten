@@ -1,6 +1,7 @@
 /*
 	*** Filter field export
 	*** src/file/exportfield.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

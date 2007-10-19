@@ -1,6 +1,7 @@
 /*
 	*** GTK stub
 	*** src/gui-gtk/gui-gtk.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 
