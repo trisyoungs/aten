@@ -1,6 +1,7 @@
 /*
 	*** GTK load trajectory window
 	*** src/gui-gtk/load_traj.cpp
+	Copyright T. Youngs 2007
 	This file is part of Aten.
 
 	Aten is free software: you can redistribute it and/or modify

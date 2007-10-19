@@ -1,6 +1,7 @@
 /*
 	*** GTK cell view window
 	*** src/gui-gtk/cell_view.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

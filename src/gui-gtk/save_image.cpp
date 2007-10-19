@@ -1,6 +1,7 @@
 /*
 	*** GTK save image window
 	*** src/gui-gtk/save_image.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

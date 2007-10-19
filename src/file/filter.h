@@ -1,6 +1,7 @@
 /*
 	*** File filter definition
 	*** src/file/filter.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

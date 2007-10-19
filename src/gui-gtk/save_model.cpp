@@ -1,6 +1,7 @@
 /*
 	*** GTK save model window
 	*** src/gui-gtk/save_model.cpp
+	Copyright T. Youngs 2007
 	This file is part of Aten.
 
 	Aten is free software: you can redistribute it and/or modify

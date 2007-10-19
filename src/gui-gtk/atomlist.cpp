@@ -1,6 +1,7 @@
 /*
 	*** GTK atom list window
 	*** src/gui-gtk/atomlist.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

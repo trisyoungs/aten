@@ -1,6 +1,7 @@
 /*
 	*** Variable filter commands
 	*** src/file/variables.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** GTK load forcefield window
 	*** src/gui-gtk/load_ff.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

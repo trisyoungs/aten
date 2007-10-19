@@ -1,6 +1,7 @@
 /*
 	*** Qt main window functions
 	*** src/gui-qt/mainwindow_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

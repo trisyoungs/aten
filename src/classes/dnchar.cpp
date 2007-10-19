@@ -1,6 +1,7 @@
 /*
 	*** Dynamic character array
 	*** src/classes/dnchar.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Qt atom transform interface
 	*** src/gui-qt/transform_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Temporary routine to export DL_POLY field file
 	*** src/file/temp_dlpfield.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

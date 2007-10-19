@@ -1,6 +1,7 @@
 /*
 	*** Coulomb energy / force calculation
 	*** src/energy/coulomb.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

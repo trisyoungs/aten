@@ -1,6 +1,7 @@
 /*
 	*** Qt canvas
 	*** src/gui-qt/canvas-qt.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

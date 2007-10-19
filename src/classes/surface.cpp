@@ -1,6 +1,7 @@
 /*
 	*** Surface (grid data) structure
 	*** src/classes/surface.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

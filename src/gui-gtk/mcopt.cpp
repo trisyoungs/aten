@@ -1,6 +1,7 @@
 /*
 	*** GTK Monte Carlo options window
 	*** src/gui-gtk/mcopt.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

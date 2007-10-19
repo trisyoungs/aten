@@ -1,6 +1,7 @@
 /*
 	*** GTK atomtype selector window
 	*** src/gui-gtk/atselect.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

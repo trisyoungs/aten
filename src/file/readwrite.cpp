@@ -1,6 +1,7 @@
 /*
 	*** Basic read / write filter functions
 	*** src/file/readwrite.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

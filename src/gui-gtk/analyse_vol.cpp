@@ -1,6 +1,7 @@
 /*
 	*** GTK volume analyse window
 	*** src/gui-gtk/analyse_vol.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

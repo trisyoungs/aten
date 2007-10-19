@@ -1,6 +1,7 @@
 /*
 	*** GTK icons
 	*** src/gui-gtk/icons.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** Script command syntax
 	*** src/script/scriptsyntax.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

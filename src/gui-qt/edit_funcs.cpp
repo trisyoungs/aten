@@ -1,6 +1,7 @@
 /*
 	*** Qt edit functions interface
 	*** src/gui-qt/edit_funcs.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

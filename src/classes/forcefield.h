@@ -1,6 +1,7 @@
 /*
 	*** Molecular mechanics forcefield
 	*** src/classes/forcefield.h
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

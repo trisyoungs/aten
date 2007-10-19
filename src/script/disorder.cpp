@@ -1,6 +1,7 @@
 /*
 	*** Script disorder functions
 	*** src/script/disorder.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

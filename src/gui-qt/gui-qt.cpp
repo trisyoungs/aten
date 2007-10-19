@@ -1,6 +1,7 @@
 /*
 	*** Qt user interface functions
 	*** src/gui-qt/gui-qt.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

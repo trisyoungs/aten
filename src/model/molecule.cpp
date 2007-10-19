@@ -1,6 +1,7 @@
 /*
 	*** Model molecule functions
 	*** src/model/molecule.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 

@@ -1,6 +1,7 @@
 /*
 	*** GTK atom menu
 	*** src/gui-gtk/menu_atom.cpp
+	Copyright T. Youngs 2007
 
 	This file is part of Aten.
 
