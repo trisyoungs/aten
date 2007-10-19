@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
 kileprversion=1
 kileversion=1.9.3
-lastDocument=cli.tex
+lastDocument=install.tex
 masterDocument=manual.tex
 name=Aten Manual
 pkg_extIsRegExp=false
@@ -28,11 +28,11 @@ open=false
 
 [item:cli.tex]
 archive=true
-column=49
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=29
-open=true
+line=12
+open=false
 
 [item:expression.tex]
 archive=true
@@ -40,7 +40,7 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=25
-open=true
+open=false
 
 [item:features.tex]
 archive=true
@@ -48,7 +48,7 @@ column=31
 encoding=UTF-8
 highlight=LaTeX
 line=4
-open=true
+open=false
 
 [item:figures/pattern1.eps]
 archive=true
@@ -72,14 +72,14 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=331
-open=true
+open=false
 
 [item:install.tex]
 archive=true
-column=59
+column=23
 encoding=UTF-8
 highlight=LaTeX
-line=69
+line=47
 open=true
 
 [item:manual.tex]
@@ -88,7 +88,7 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=51
-open=true
+open=false
 
 [item:prefs.tex]
 archive=true
@@ -96,7 +96,7 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=0
-open=true
+open=false
 
 [item:quickstart.tex]
 archive=true
@@ -104,7 +104,7 @@ column=411
 encoding=UTF-8
 highlight=LaTeX
 line=21
-open=true
+open=false
 
 [item:scriptorshandbook.tex]
 archive=true
@@ -112,7 +112,7 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=801
-open=true
+open=false
 
 [item:typing.tex]
 archive=true
@@ -120,7 +120,7 @@ column=0
 encoding=UTF-8
 highlight=LaTeX
 line=107
-open=true
+open=false
 
 [item:variables.tex]
 archive=true
@@ -128,4 +128,4 @@ column=53
 encoding=UTF-8
 highlight=LaTeX
 line=23
-open=true
+open=false
