@@ -43,6 +43,11 @@ You may find that the version of GNU Autotools you have is not recent enough. Ch
 		\item Download the source distribution from the website and unpack the .tgz file, or get the latest tree from the SVN repository.
 		\item Run {\sffamily ./autogen.sh} to generate the {\sffamily configure} script if you got the distribution using svn.
 	\end{itemize}
+	Common issues:\\
+	\emph{(MAC) Running {\sffamily ./autogen.sh}, autoconf fails with \qte{configure.ac:16: error: possibly undefined macro: AC\_DEFINE}.}
+	\begin{itemize}
+		\item This is related to the version of pkg-config you have installed (e.g. version 0.15.1 gives this error, but version 0.21 does not) with Fink / MacPorts. Upgrade to the latest version. Incidentally, the line-number reported (16) is not the actual location of the error -- autoconf reports this wrongly (the actual error occurs around line 89 with the \qte{PKG\_CHECK\_MODULES(GTK28, ..., [AC\_DEFINE...} command).
+	\end{itemize}
 \end{description}
 
 \begin{description}
