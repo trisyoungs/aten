@@ -84,21 +84,22 @@ void symmop::set(const char *xyzstr)
 	// String format is, for example, "-y,x,z,0.0,0.0,0.5", corresponding to a matrix whose rows are (0,-1,0), (1,0,0), and (0,0,1) respectively,
 	// and a translation vector of (0,0,0.5)
 	dbg_begin(DM_CALLS,"symmop::set");
-	int n,m,i;
-	dnchar temps, s, dat;
+	static int n,m,i;
+	static dnchar temps, s;
+	static char dat[32];
 	s = xyzstr;
 	vec3<double> v;
-	char c;
+	char *c;
 	// First three args are x, y, and z vectors in the rotation matrix
 	for (n=0; n<3; n++)
 	{
-		dat = parser.get_next_delim(s,PO_DEFAULTS);
+		strcpy(dat,parser.get_next_delim(s,PO_DEFAULTS));
 		i = 1;
 		v.zero();
 		//for (m=0, c=dat[m]; c != '\0'; m++, c = dat[m])
-		for (m=0; dat[m] != '\0'; m++)
+		for (c = dat; *c != '\0'; c++)
 		{
-			switch (dat[m])
+			switch (*c)
 			{
 				case ('-'):
 					i = -1;
@@ -107,7 +108,7 @@ void symmop::set(const char *xyzstr)
 				case ('y'):
 				case ('z'):
 					// Construct unit vector, and set in the matrix
-					v.set(c-120,i);
+					v.set(*c-120,i);
 					rotation.set(n,v.x,v.y,v.z);
 					break;
 				default:

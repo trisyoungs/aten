@@ -93,7 +93,7 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 			result = TRUE;
 			break;
 		// Set unit cell data (from lengths/angles)
-		case (FC_SETCELLV):
+		case (FC_SETCELL):
 			if (activemodel == NULL) break;
 			vec1.set(commands.variables.get_as_double("cell.a"), commands.variables.get_as_double("cell.b"), commands.variables.get_as_double("cell.c"));
 			vec2.set(commands.variables.get_as_double("cell.alpha"), commands.variables.get_as_double("cell.beta"), commands.variables.get_as_double("cell.gamma"));
@@ -109,6 +109,12 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 			mat.rows[2].set(commands.variables.get_as_double("cell.a.z"), commands.variables.get_as_double("cell.b.z"), commands.variables.get_as_double("cell.c.z"));
 			activecell->set(mat);
 			activemodel->log_change(LOG_VISUAL);
+			result = TRUE;
+			break;
+		// Set spacegroup
+		case (FC_SETSPACEGROUP):
+			if (activemodel == NULL) break;
+			activemodel->set_spacegroup(fn->datavar[0]->get_as_int());
 			result = TRUE;
 			break;
 		// Config SETs

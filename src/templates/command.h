@@ -30,6 +30,7 @@
 #include "model/model.h"
 #include "classes/pattern.h"
 #include "file/parse.h"
+#include "base/sysfunc.h"
 
 // Command node basic commands
 enum basic_command {
@@ -52,6 +53,10 @@ enum basic_command {
 	BC_LET,
 	BC_INCREASE,
 	BC_DECREASE,
+	BC_EVAL,
+	BC_EVALI,
+
+	BC_PRINT,
 
 	BC_GOTO,
 	BC_GOTONONIF,
@@ -704,12 +709,20 @@ template <class T> bool command_node<T>::add_variables(const char *cmd, const ch
 		// Check for specifiers that don't require variables to be created...
 		switch (v[n])
 		{
+			// Formats
 			case ('F'):
 			case ('f'):
 				create_format(arg.get(), vars);
 				continue;
+			// Discard
 			case ('X'):
 			case ('x'):
+				continue;
+			// String as-is
+			case ('s'):
+			case ('S'):
+				datavar[varcount] = vars.add();
+				datavar[varcount]->set(arg.get());
 				continue;
 			case ('='):
 				if (strcmp(arg.get(),"=") != 0)
@@ -1025,6 +1038,11 @@ template <class T> bool command_list<T>::do_basic(command_node<T> *&fn, model *m
 	dbg_begin(DM_CALLS,"command_list::do_basic");
 	bool result = TRUE;
 	bool done = FALSE;
+	static format varformat;
+	static dnchar printstr, var;
+	static char srcstr[512];
+	static char *c;
+	static bool vardone;
 	basic_command cmd = fn->get_basic_command(), cmd2;
 	switch (cmd)
 	{
@@ -1120,6 +1138,15 @@ template <class T> bool command_list<T>::do_basic(command_node<T> *&fn, model *m
 			else fn->datavar[0]->set(fn->datavar[2]->get_as_char());
 			fn = fn->next;
 			break;
+		// Evaluate expression and assign to variable
+		case (BC_EVAL):
+			fn->datavar[0]->set(evaluate(fn->datavar[2]->get_as_char(), &variables));
+			fn = fn->next;
+			break;
+		case (BC_EVALI):
+			fn->datavar[0]->set(atoi(evaluate(fn->datavar[2]->get_as_char(), &variables)));
+			fn = fn->next;
+			break;
 		// Increase variable by '1'
 		case (BC_INCREASE):
 			fn->datavar[0]->increase(1);
@@ -1128,6 +1155,61 @@ template <class T> bool command_list<T>::do_basic(command_node<T> *&fn, model *m
 		// Decrease variable by 1
 		case (BC_DECREASE):
 			fn->datavar[0]->decrease(1);
+			fn = fn->next;
+			break;
+		// Print formatted string
+		case (BC_PRINT):
+			// Go through supplied string, converting variables as we go
+			printstr.create_empty(512);
+			strcpy(srcstr, fn->datavar[0]->get_as_char());
+			for (c = srcstr; *c != '\0'; c++)
+			{
+				// If the character is not '$', just add it to printstr
+				if (*c != '$')
+				{
+					printstr += *c;
+					continue;
+				}
+				// This is the start of a variable format
+				// Clear the variable string and skip past the '$'
+				var.create_empty(64);
+				var += '$';
+				c++;
+				// Add characters to 'var' until we find the end of the format
+				// Demand that vars are formatted as ${name[@format]}, or terminated by a space
+				vardone = FALSE;
+				while (*c != ' ')
+				{
+					switch (*c)
+					{
+						case ('{'):
+							c++;
+							break;
+						case ('\0'):
+							c--;
+						case ('}'):
+							vardone = TRUE;
+							break;
+						case (' '):
+							vardone = TRUE;
+							c--;
+							break;
+						default:
+							var += *c;
+							c++;
+							break;
+					}
+					if (vardone) break;
+				}
+				// Now have variable (and format) in 'var'.
+				// Create a quick format and add this to the printstr.
+				varformat.create(var.get(), variables);
+				//printf("Variable part = [%s]\n",var.get());
+				//printf("Current PRINTSTR = [%s]\n",printstr.get());
+				printstr.cat(varformat.create_string());
+			}
+			// Final string to print is now in printstr...
+			msg(DM_NONE,"%s\n",printstr.get());
 			fn = fn->next;
 			break;
 		default:

@@ -15,10 +15,8 @@ General To-Do list:
 	- Add NR / simplex minimisers
 	- View along cell axes (or Miller planes)
 	- Reset view (whole model on screen)
-	- Cambridge database import filter (need to be able to evaluate numerical expressions)
 	- Accelrys MSI import filter
 	- EPSR Ato import / export? filters
-	- Ability to evaluate numerical expressions in filters (and scripts)
 
 General Qt To-Do list:
 	- Forcefield stack page and manager/edit window

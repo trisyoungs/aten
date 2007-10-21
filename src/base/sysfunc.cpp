@@ -24,6 +24,8 @@
 #include "base/constants.h"
 #include "file/parse.h"
 #include "base/debug.h"
+#include "classes/variables.h"
+#include <math.h>
 
 const char *upper_case(const char *s)
 {
@@ -184,4 +186,136 @@ int sinlist(const char *search, const char *list)
 	}
 	dbg_end(DM_PARSE,"sinlist");
 	return result;
+}
+
+// Evaluate numerical expression and return simplified result
+// This is a recursive routine, to be called on sub-expressions (i.e. bracketed parts)
+char operators[] = "^*/%+-";
+const char *evaluate(const char *s, variable_list *vars)
+{
+	int lbracket, rbracket, n, m, leftarg, rightarg;
+	char scopy[128], substr[128], subresult[128], arg[128];
+	char *c;
+	static double a, b, x;
+	static bool isop;
+	// Grab original string and work on scopy from now on
+	strcpy(scopy,s);
+	// Resolve brackets into results
+	do
+	{
+		lbracket = -1;
+		rbracket = -1;
+		n=0;
+		// Store position of each '(' we find, and break when we get the first ')'
+		for (c = scopy; *c != '\0'; c++)
+		{
+			if (*c == '(') lbracket = n;
+			if (*c == ')')
+			{
+				rbracket = n;
+				break;
+			}
+			n++;
+		}
+		// Check for mis-matched brackets
+		if (((lbracket == -1) && (rbracket != -1)) || ((lbracket != -1) && (rbracket == -1)))
+		{
+			printf("evaluate - Mis-matched brackets in expression.\n");
+			return "0";
+		}
+		// Get substring and evaluate it
+		m = rbracket-lbracket;
+		//printf("Bracketpos = %i %i len=%i\n",lbracket,rbracket, m);
+		// If we've found brackets, recursively evaluate the sub expression first
+		if ((lbracket != -1) && (rbracket != -1))
+		{
+			strncpy(substr, &scopy[lbracket+1], m);
+			substr[(rbracket-lbracket)-1] = '\0';
+			//printf("SUBSTRING to evaluate = %s\n",substr);
+			strcpy(subresult, evaluate(substr, vars));
+			//printf("RESULT of SUBSTRING EVALUATE = %s\n",subresult);
+			// Grab part of expression before left bracket
+			strncpy(substr, scopy, lbracket);
+			substr[lbracket] = '\0';
+			strcat(substr, subresult);
+			strcat(substr, &scopy[rbracket+1]);
+			// Copy final string back to scopy
+			strcpy(scopy, substr);
+		}
+	} while ((lbracket != -1) && (rbracket != -1));
+	// Evaluate now bracketless expression
+	// Parse the string into operators and values
+	if (!parser.get_args_expression(scopy))
+	{
+		printf("evaluate - Error parsing expression.\n");
+		return "0";
+	}
+	// Cycle over operators (in precedence) and replace with evaluated result.
+	// Store position of last non-blank argument we encounter to use with token
+	for (c = operators; *c != '\0'; c++)
+	{
+		leftarg = -1;
+		for (n=0; n<parser.get_nargs()-1; n++)
+		{
+			isop = parser.is_operator(n, *c);
+			if ((!parser.is_blank(n)) && (!isop)) leftarg = n;
+			if (!isop) continue;
+			// Find next non-blank argument
+			rightarg = -1;
+			for (m=n+1; m<parser.get_nargs(); m++)
+				if (!parser.is_blank(m))
+				{
+					rightarg = m;
+					break;
+				}
+			// Check argument availability
+			if ((leftarg != -1) && (rightarg != -1))
+			{
+				//printf("left / right args %i %i\n",leftarg,rightarg);
+				// If either argument is a variable, grab its value
+				strcpy(arg,parser.argc(leftarg));
+				if (arg[0] == '$') a = vars->get_as_double(&arg[1]);
+				else a = atof(arg);
+				strcpy(arg,parser.argc(rightarg));
+				if (arg[0] == '$') b = vars->get_as_double(&arg[1]);
+				else b = atof(arg);
+				switch (*c)
+				{
+					case ('^'):
+						x = pow(a,b);
+						break;
+					case ('*'):
+						x = a * b;
+						break;
+					case ('/'):
+						x = a / b;
+						break;
+					case ('%'):
+						x = int(a)%(int(b));
+						break;
+					case ('+'):
+						x = a + b;
+						break;
+					case ('-'):
+						x = a - b;
+						break;
+				}
+				// Store result and blank arguments
+				parser.set_arg(n,ftoa(x));
+				parser.set_arg(leftarg,"");
+				parser.set_arg(rightarg,"");
+				// Set new leftmost and rightmost arguments
+				leftarg = n;
+				rightarg = -1;
+			}
+			else
+			{
+				printf("evalute - Operator was missing an argument.\n");
+				return "0";
+			} 
+		}
+	}
+	// Look for non-blank argument and set it as result
+	for (n=0; n<parser.get_nargs(); n++)
+		if (!parser.is_blank(n)) return parser.argc(n);
 }

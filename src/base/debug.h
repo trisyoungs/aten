@@ -39,9 +39,9 @@ void remove_debuglevel(debug_mode);	// Remove a debug level from the debug outpu
 bool debuglevel_active(debug_mode);	// Returns whether the specified debug level is set
 
 // Messaging Functions
-void msg(debug_mode,char*...);
-void dbg_begin(debug_mode,char*);
-void dbg_end(debug_mode,char*);
+void msg(debug_mode, const char* ...);
+void dbg_begin(debug_mode, const char*);
+void dbg_end(debug_mode, const char*);
 
 /*
 // Dynamic Memory debugging ('MEMDEBUG')

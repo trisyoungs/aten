@@ -39,7 +39,7 @@ void remove_debuglevel(debug_mode dm) { if (debug_output&dm) debug_output -= dm;
 bool debuglevel_active(debug_mode dm) { return ((debug_output&dm) ? TRUE : FALSE); }
 
 // Standard message
-void msg(debug_mode dm, char *fmt ...)
+void msg(debug_mode dm, const char *fmt ...)
 {
 	// Print to the text view in the main window if it has been initialised.
 	// Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
@@ -65,7 +65,7 @@ void msg(debug_mode dm, char *fmt ...)
 }
 
 // Function enter
-void dbg_begin(debug_mode dm,char *func)
+void dbg_begin(debug_mode dm, const char *func)
 {
 	// Debug Messaging - Enter Function
 	if (!debuglevel_active(dm)) return;
@@ -76,7 +76,7 @@ void dbg_begin(debug_mode dm,char *func)
 }
 
 // Function leave
-void dbg_end(debug_mode dm,char *func)
+void dbg_end(debug_mode dm, const char *func)
 {
 	// Debug Messaging - Leave Function
 	if (!debuglevel_active(dm)) return;

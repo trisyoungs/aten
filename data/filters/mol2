@@ -28,7 +28,7 @@ importmodel
 			# Crystal cell information
 			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
 			readline "$cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma $sg.group $sg.setting"
-			setcellvectors
+			setcell
 		end
 	end
 end
