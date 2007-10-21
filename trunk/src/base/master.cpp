@@ -32,7 +32,6 @@ master_data::master_data()
 	modelid = 0;
 	currentmodel = NULL;
 	currentff = NULL;
-	scheme = AC_ELEMENT;
 
 	// Modes
 	program_mode = PM_GUI;

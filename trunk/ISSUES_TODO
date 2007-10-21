@@ -4,6 +4,8 @@ Issues with the current version:
 	- Spherical regions in disordered builder have poor randomness.
 	- Interpolation of surface triangles is 'simple' (0.5 along edges)
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
+	- Crash on close when a surface is loaded?
+	- Colour schemes other than AC_ELEMENT need to be fixed.
 
 General To-Do list:
 	- Ewald sum (fourier calculation, reciprocal cell?) for non-orthogonal cells

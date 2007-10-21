@@ -89,14 +89,15 @@ void AtenPrefs::finalise_ui()
 // Element Page
 */
 
-void AtenPrefs::set_element_colour(int component, int value)
+void AtenPrefs::set_element_colour(int type, int component, int value)
 {
 	int el = ui.ElementList->currentRow();
-	elements.set_colour(el, component, int((double(value) / 255.0) * INT_MAX));
+	if (type == 0) elements.set_ambient(el, component, int((double(value) / 255.0) * INT_MAX));
+	else elements.set_diffuse(el, component, int((double(value) / 255.0) * INT_MAX));
 	// Re-set atom colours in model(s)
 	for (model *m = master.get_models(); m != NULL; m = m->next)
 	{
-		m->set_atom_colours(NULL);
+		//m->set_atom_colours(NULL);
 		m->log_change(LOG_VISUAL);
 	}
 	gui.mainview.postredisplay();
@@ -109,10 +110,16 @@ void AtenPrefs::on_ElementList_currentRowChanged(int row)
 	ui.ElementSymbolLabel->setText(elements.symbol(row));
 	ui.ElementMassLabel->setText(ftoa(elements.mass(row)));
 	GLint *colour;
-	colour = elements.colour(row);
-	ui.ElementRedSpin->setValue( int((double(colour[0]) / INT_MAX) * 255) );
-	ui.ElementGreenSpin->setValue( int((double(colour[1]) / INT_MAX) * 255) );
-	ui.ElementBlueSpin->setValue( int((double(colour[2]) / INT_MAX) * 255) );
+	colour = elements.ambient(row);
+	ui.ElementARedSpin->setValue( int((double(colour[0]) / INT_MAX) * 255) );
+	ui.ElementAGreenSpin->setValue( int((double(colour[1]) / INT_MAX) * 255) );
+	ui.ElementABlueSpin->setValue( int((double(colour[2]) / INT_MAX) * 255) );
+	ui.ElementAAlphaSpin->setValue( int((double(colour[3]) / INT_MAX) * 255) );
+	colour = elements.diffuse(row);
+	ui.ElementDRedSpin->setValue( int((double(colour[0]) / INT_MAX) * 255) );
+	ui.ElementDGreenSpin->setValue( int((double(colour[1]) / INT_MAX) * 255) );
+	ui.ElementDBlueSpin->setValue( int((double(colour[2]) / INT_MAX) * 255) );
+	ui.ElementDAlphaSpin->setValue( int((double(colour[3]) / INT_MAX) * 255) );
 	//ui. TODO Set preview color
 }
 

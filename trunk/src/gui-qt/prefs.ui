@@ -129,7 +129,7 @@
         </sizepolicy>
        </property>
        <property name="currentIndex" >
-        <number>3</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="ElementsPage" >
         <layout class="QHBoxLayout" >
@@ -154,10 +154,10 @@
            </property>
            <layout class="QVBoxLayout" >
             <property name="margin" >
-             <number>9</number>
+             <number>4</number>
             </property>
             <property name="spacing" >
-             <number>6</number>
+             <number>4</number>
             </property>
             <item>
              <widget class="QListWidget" name="ElementList" />
@@ -188,10 +188,10 @@
              </property>
              <layout class="QGridLayout" >
               <property name="margin" >
-               <number>9</number>
+               <number>4</number>
               </property>
               <property name="spacing" >
-               <number>6</number>
+               <number>4</number>
               </property>
               <item row="1" column="1" >
                <widget class="QLabel" name="ElementSymbolLabel" >
@@ -277,10 +277,10 @@
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
-               <number>9</number>
+               <number>4</number>
               </property>
               <property name="spacing" >
-               <number>6</number>
+               <number>4</number>
               </property>
               <item>
                <widget class="QDoubleSpinBox" name="doubleSpinBox" >
@@ -308,7 +308,7 @@
             <widget class="QGroupBox" name="ElementColourGroup" >
              <property name="sizePolicy" >
               <sizepolicy>
-               <hsizetype>7</hsizetype>
+               <hsizetype>1</hsizetype>
                <vsizetype>7</vsizetype>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
@@ -319,10 +319,10 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>9</number>
+               <number>4</number>
               </property>
               <property name="spacing" >
-               <number>6</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QGridLayout" >
@@ -330,10 +330,10 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>6</number>
+                 <number>2</number>
                 </property>
-                <item row="1" column="1" >
-                 <widget class="QSpinBox" name="ElementGreenSpin" >
+                <item row="1" column="2" >
+                 <widget class="QSpinBox" name="ElementDRedSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -347,15 +347,38 @@
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="0" >
-                 <widget class="QLabel" name="label_9" >
-                  <property name="text" >
-                   <string>Blue</string>
+                <item row="2" column="2" >
+                 <widget class="QSpinBox" name="ElementDGreenSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximum" >
+                   <number>255</number>
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1" >
-                 <widget class="QSpinBox" name="ElementRedSpin" >
+                <item row="4" column="1" >
+                 <widget class="QSpinBox" name="ElementAAlphaSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximum" >
+                   <number>255</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="1" >
+                 <widget class="QSpinBox" name="ElementAGreenSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -370,21 +393,28 @@
                  </widget>
                 </item>
                 <item row="1" column="0" >
-                 <widget class="QLabel" name="label_8" >
-                  <property name="text" >
-                   <string>Green</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="0" >
                  <widget class="QLabel" name="label_4" >
                   <property name="text" >
-                   <string>Red</string>
+                   <string>R</string>
                   </property>
                  </widget>
                 </item>
-                <item row="2" column="1" >
-                 <widget class="QSpinBox" name="ElementBlueSpin" >
+                <item row="2" column="0" >
+                 <widget class="QLabel" name="label_8" >
+                  <property name="text" >
+                   <string>G</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="0" >
+                 <widget class="QLabel" name="label_26" >
+                  <property name="text" >
+                   <string>A</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="2" >
+                 <widget class="QSpinBox" name="ElementDBlueSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -395,6 +425,80 @@
                   </property>
                   <property name="maximum" >
                    <number>255</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="4" column="2" >
+                 <widget class="QSpinBox" name="ElementDAlphaSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximum" >
+                   <number>255</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="1" >
+                 <widget class="QSpinBox" name="ElementABlueSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximum" >
+                   <number>255</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="3" column="0" >
+                 <widget class="QLabel" name="label_9" >
+                  <property name="text" >
+                   <string>B</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="1" column="1" >
+                 <widget class="QSpinBox" name="ElementARedSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximum" >
+                   <number>255</number>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1" >
+                 <widget class="QLabel" name="label_27" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text" >
+                   <string>Ambient</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="2" >
+                 <widget class="QLabel" name="label_28" >
+                  <property name="text" >
+                   <string>Diffuse</string>
                   </property>
                  </widget>
                 </item>
@@ -1441,9 +1545,9 @@
   <tabstop>doubleSpinBox</tabstop>
   <tabstop>ElementList</tabstop>
   <tabstop>CategoryList</tabstop>
-  <tabstop>ElementBlueSpin</tabstop>
-  <tabstop>ElementRedSpin</tabstop>
-  <tabstop>ElementGreenSpin</tabstop>
+  <tabstop>ElementABlueSpin</tabstop>
+  <tabstop>ElementARedSpin</tabstop>
+  <tabstop>ElementAGreenSpin</tabstop>
   <tabstop>StickRadiusSpin</tabstop>
   <tabstop>SphereRadiusSpin</tabstop>
   <tabstop>ScaledRadiusSpin</tabstop>

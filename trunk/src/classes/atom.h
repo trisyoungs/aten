@@ -44,9 +44,6 @@ draw_style DS_from_text(const char*);
 const char *text_from_DS(draw_style);
 const char **get_DS_strings();
 
-// Atom colouring scheme
-enum atom_colour { AC_ELEMENT, AC_CHARGE, AC_VELOCITY, AC_FORCE, AC_NITEMS };
-
 // Atom labels
 enum atom_label { AL_ID=1, AL_ELEMENT=2, AL_FFTYPE=4, AL_FFEQUIV=8, AL_CHARGE=16, AL_NITEMS=5 };
 atom_label AL_from_text(const char*);
@@ -146,6 +143,8 @@ class atom
 	atom_env get_env() { return env; }
 	// Check the environment of the atom against the supplied value
 	bool is_env(atom_env ae) { return (env == ae ? TRUE : FALSE); }
+	// Whether the atom will be moved in minimisations etc.
+	bool fixed;
 
 	/*
 	// Bonds / Bonding
@@ -241,18 +240,6 @@ class atom
 	double get_screen_radius() { return screenrad; }
 
 	/*
-	// Characterisation / Typing
-	*/
-	private:
-	// Returns the angle between this and two other atoms
-	//double get_angle(atom*,atom*);
-
-	public:
-	// Whether the atom will be moved in minimisations etc.
-	bool fixed;
-
-
-	/*
 	// Rendering
 	*/
 	protected:
@@ -261,15 +248,9 @@ class atom
 	// How to draw this atom (and its associated bonds)
 	draw_style style;
 	// Bitvector for atom labelling
-	int labels;
+	short int labels;
 
 	public:
-	// Colour (and alpha) of the atom
-	GLint colour[4];
-	// Set the atom's colour to the RGB values specified
-	void set_colour(GLint r, GLint g, GLint b);
-	// Set the atom's colour to the RGB colour array specified
-	void set_colour(GLint *c) { set_colour(c[0],c[1],c[2]); }
 	// Set's the drawn flag of the atom to match that of atoms_head
 	void set_drawn(bool b) { drawn = b; }
 	// Returns the atom's drawn flag

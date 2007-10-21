@@ -2,6 +2,8 @@
 	* templates/command.h: added 'string-as-is' variable specifier.
 	* file/parse.h: fixed get_next_delim().
 	* added Cambridge Database 'cds' filter.
+	* classes/atom.h: removed atom colour reference.
+	indexed colours now looked up in render subsystem.
 
 2007-10-20	tris
 	* templates/command.h, base/sysfunc.h|cpp, file/parse.h|cpp: added expression evaluation.

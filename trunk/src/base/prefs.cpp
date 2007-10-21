@@ -108,6 +108,10 @@ const char **get_GG_strings()
 prefs_data::prefs_data()
 {
 	// Rendering - Style
+	colour_scheme = AC_ELEMENT;
+	scale_segments = 2;
+	scale_colours = NULL;
+	set_scale_colours();
 	render_atom_size[DS_STICK] = 0.1;      // Only used as a selection radius
 	render_atom_size[DS_TUBE] = 0.095;
 	render_atom_size[DS_SPHERE] = 0.35;
@@ -121,9 +125,9 @@ prefs_data::prefs_data()
 	render_perspective = TRUE;
 	render_fov = 20.0;
 	spotlight_on = TRUE;
-	spotlight_components[SL_AMBIENT][0] = (GLint) (0.2 * INT_MAX);
-	spotlight_components[SL_AMBIENT][1] = (GLint) (0.2 * INT_MAX);
-	spotlight_components[SL_AMBIENT][2] = (GLint) (0.2 * INT_MAX);
+	spotlight_components[SL_AMBIENT][0] = (GLint) (0.0 * INT_MAX);
+	spotlight_components[SL_AMBIENT][1] = (GLint) (0.0 * INT_MAX);
+	spotlight_components[SL_AMBIENT][2] = (GLint) (0.0 * INT_MAX);
 	spotlight_components[SL_AMBIENT][3] = (GLint) (1.0 * INT_MAX);
 	spotlight_components[SL_DIFFUSE][0] = (GLint) (0.8 * INT_MAX);
 	spotlight_components[SL_DIFFUSE][1] = (GLint) (0.8 * INT_MAX);
@@ -133,9 +137,9 @@ prefs_data::prefs_data()
 	spotlight_components[SL_SPECULAR][1] = (GLint) (0.7 * INT_MAX);
 	spotlight_components[SL_SPECULAR][2] = (GLint) (0.7 * INT_MAX);
 	spotlight_components[SL_SPECULAR][3] = (GLint) (1.0 * INT_MAX);
-	spotlight_components[SL_POSITION][0] = 20;
-	spotlight_components[SL_POSITION][1] = 20;
-	spotlight_components[SL_POSITION][2] = 20;
+	spotlight_components[SL_POSITION][0] = 1;
+	spotlight_components[SL_POSITION][1] = 1;
+	spotlight_components[SL_POSITION][2] = 1;
 	spotlight_components[SL_POSITION][3] = 0;
 
 	// GL Options
@@ -184,9 +188,9 @@ prefs_data::prefs_data()
 	set_colour(COL_SPECREFLECT, 1.0, 0.9, 0.75, 1.0);
 	set_colour(COL_PEN, 0.0, 0.0, 0.0, 1.0);
 	set_colour(COL_BG, 1.0, 1.0, 1.0, 1.0);
-	set_colour(COL_ACSCHEMELO, 1.0, 0.0, 0.0, 1.0);
-	set_colour(COL_ACSCHEMEMID, 0.7, 0.7, 0.7, 1.0);
-	set_colour(COL_ACSCHEMEHI, 0.0, 0.0, 1.0, 1.0);
+	set_colour(COL_SCHEMELO, 1.0, 0.0, 0.0, 1.0);
+	set_colour(COL_SCHEMEMID, 0.7, 0.7, 0.7, 1.0);
+	set_colour(COL_SCHEMEHI, 0.0, 0.0, 1.0, 1.0);
 	colour_scheme_lo[AC_ELEMENT] = 0.0;
 	colour_scheme_lo[AC_CHARGE] = -1.0;
 	colour_scheme_lo[AC_VELOCITY] = 0.0;
@@ -323,6 +327,7 @@ void prefs_data::set_internal_units(energy_unit eu)
 	elec_convert = COULCONVERT / energy_factors[energy_internal];
 }
 
+// Convert energy from specified unit to current internal unit
 double prefs_data::convert_energy(double energy, energy_unit from)
 {
 	// Convert supplied value to units of J/mol
@@ -332,3 +337,73 @@ double prefs_data::convert_energy(double energy, energy_unit from)
 	return energy;
 }
 
+// Set number of segments in colour scale
+void prefs_data::set_scale_segments(int nsegments)
+{
+	scale_segments = nsegments;
+	set_scale_colours();
+}
+
+// Get colour scale segment
+void prefs_data::get_scale_colour(int n, GLint *v)
+{
+	// Check range of requested colour
+	if ((n < 0) || (n > (3+2*scale_segments))) 
+	{
+		printf("prefs::get_scale_colour - Requested colour is out of range.\n");
+		v[0] = scale_colours[0][0];
+		v[1] = scale_colours[0][1];
+		v[2] = scale_colours[0][2];
+		v[3] = scale_colours[0][3];
+	}
+	else
+	{
+		v[0] = scale_colours[n][0];
+		v[1] = scale_colours[n][1];
+		v[2] = scale_colours[n][2];
+		v[3] = scale_colours[n][3];
+	}
+}
+
+// Set colours in colour scale
+void prefs_data::set_scale_colours()
+{
+	static int lastnsegments = -1, n;
+	static GLint newcol[4];
+	static double delta;
+	// Check current value of scale_segments against last value. If different, recreate array
+	if (lastnsegments != scale_segments)
+	{
+		if (scale_colours != NULL)
+		{
+			for (n=0; n<(3+scale_segments*2); n++) delete[] scale_colours[n];
+			delete[] scale_colours;
+		}
+		// Create new array
+		scale_colours = new GLint*[3+scale_segments*2];
+		for (n=0; n<(3+scale_segments*2); n++) scale_colours[n] = new GLint[3];
+		lastnsegments = scale_segments;
+	}
+	// Set values of lo, mid, and hi colours.
+	scale_colours[0][0] = colours[COL_SCHEMELO][0];
+	scale_colours[0][1] = colours[COL_SCHEMELO][1];
+	scale_colours[0][2] = colours[COL_SCHEMELO][2];
+	scale_colours[0][3] = colours[COL_SCHEMELO][3];
+	scale_colours[scale_segments+1][0] = colours[COL_SCHEMEMID][0];
+	scale_colours[scale_segments+1][1] = colours[COL_SCHEMEMID][1];
+	scale_colours[scale_segments+1][2] = colours[COL_SCHEMEMID][2];
+	scale_colours[scale_segments+1][3] = colours[COL_SCHEMEMID][3];
+	scale_colours[scale_segments*2+2][0] = colours[COL_SCHEMEHI][0];
+	scale_colours[scale_segments*2+2][1] = colours[COL_SCHEMEHI][1];
+	scale_colours[scale_segments*2+2][2] = colours[COL_SCHEMEHI][2];
+	scale_colours[scale_segments*2+2][3] = colours[COL_SCHEMEHI][3];
+	// Interpolate between the lo and mid points.
+	delta = 1.0 / (scale_segments + 1);	
+	for (n=0; n<scale_segments; n++)
+	{
+		scale_colours[n+1][0] = (GLint) (scale_colours[0][0] + (colours[COL_SCHEMEMID][0]-scale_colours[0][0]) * n * delta);
+		scale_colours[n+1][1] = (GLint) (scale_colours[0][1] + (colours[COL_SCHEMEMID][1]-scale_colours[0][1]) * n * delta);
+		scale_colours[n+1][2] = (GLint) (scale_colours[0][2] + (colours[COL_SCHEMEMID][2]-scale_colours[0][2]) * n * delta);
+		scale_colours[n+1][3] = (GLint) (scale_colours[0][3] + (colours[COL_SCHEMEMID][3]-scale_colours[0][3]) * n * delta);
+	}
+}

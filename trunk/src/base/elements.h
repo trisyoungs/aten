@@ -31,6 +31,10 @@
 // Element
 struct element
 {
+	// Constructor / Destructor
+	element();
+	~element();
+
 	// Mass of element
         double mass;
 	// Element name
@@ -41,14 +45,12 @@ struct element
 	char ucsymbol[10];	
 	// Rough elemental radius (for bond calculation etc.)
         double radius;
-	// Drawing colour
-        GLint colour[4];
+	// Ambient colour
+        GLint ambient[4];
+	// Diffuse colour
+	GLint diffuse[4];
 	// Maximal bond order about the element 
 	int valency;
-
-	// Constructor / Destructor
-	element();
-	~element();
 };
 
 // Element map
@@ -68,9 +70,9 @@ class element_map
 	// Constructor / Destructor
 	element_map();
 	~element_map();
-	// Returns atomic number of element in string
+	// Return atomic number of element in string
 	int find(const char*);
-	// Returns atomic number of element in string, specifying algorithm
+	// Return atomic number of element in string, specifying algorithm
 	int find(const char*, zmap_type);
 	// Initialise element data
 	void initialise();
@@ -89,27 +91,37 @@ class element_map
 	double radius(int i) { return el[i].radius; }
 	// Return valency of atomic number 'i'
 	int valency(int i) { return el[i].valency; }
-	// Return the drawing colour of the element
-	GLint *colour(int i) { return el[i].colour; }
-	// Set colour component of element
-	void set_colour(int i, int rgb, int value) { el[i].colour[rgb] = value; }
+	// Return the ambient colour of the element
+	GLint *ambient(int i) { return el[i].ambient; }
+	// Copy the ambient colour of the element in the array provided
+	void ambient(int i, GLint *v);
+	// Set ambient colour component of element
+	void set_ambient(int i, int rgb, int value) { el[i].ambient[rgb] = value; }
+	// Return the diffuse colour of the element
+	GLint *diffuse(int i) { return el[i].diffuse; }
+	// Copy the diffuse colour of the element in the array provided
+	void diffuse(int i, GLint *v);
+	// Set ambient colour component of element
+	void set_diffuse(int i, int rgb, int value) { el[i].diffuse[rgb] = value; }
 
 	/*
 	// Data by atom*
 	*/
 	public:
-	// Returns atomic mass of atomic number 'i'
+	// Return atomic mass of atomic number 'i'
 	double mass(atom *i) { return mass(i->get_element()); }
-	// Returns name of atomic number 'i'
+	// Return name of atomic number 'i'
 	const char *name(atom *i) { return name(i->get_element()); }
-	// Returns symbol of atomic number 'i'
+	// Return symbol of atomic number 'i'
 	const char *symbol(atom *i) { return symbol(i->get_element()); }
-	// Returns effective radius of atomic number 'i'
+	// Return effective radius of atomic number 'i'
 	double radius(atom *i) { return radius(i->get_element()); }
-	// Returns valency of atomic number 'i'
+	// Return valency of atomic number 'i'
 	int valency(atom *i) { return valency(i->get_element()); }
-	// Returns the drawing colour of the element
-	GLint *colour(atom *i) { return colour(i->get_element()); }
+	// Return the ambient colour of the element
+	GLint *ambient(atom *i) { return ambient(i->get_element()); }
+	// Return the diffuse colour of the element
+	GLint *diffuse(atom *i) { return diffuse(i->get_element()); }
 };
 
 extern element_map elements;

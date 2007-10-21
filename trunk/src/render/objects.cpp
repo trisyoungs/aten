@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "base/prefs.h"
+#include "base/elements.h"
 #include "classes/cell.h"
 #include "classes/atom.h"
 #include "render/globs.h"
@@ -188,23 +189,30 @@ void canvas_master::render_rotation_globe(double *rmat, double camrot)
 	glViewport(0,0,(int)w,(int)h);
 }
 
-void canvas_master::gl_cylinderbond(atom *i, atom *j, const vec3<double> &rj, double rij)
+void canvas_master::gl_cylinderbond(atom *i, atom *j, const vec3<double> &rj, double rij, GLint *ia, GLint *id, GLint *ja, GLint *jd)
 {
 	// Determine spherical coordinates
-	double phi = DEGRAD * acos(rj.z/rij);		// Angle out of XZ plane
+	static double phi;
+	static short int cindexi, cindexj;
+	// Calculate angle out of XZ plane
+	phi = DEGRAD * acos(rj.z/rij);
 	glPushMatrix();
 	  // Special case where the bond is exactly in the XY plane.
 	  if ((180.0 - phi) < 0.0001)
 	  {
 		//if (rj->z < 0.0) phi = -phi;
-	  	//glRotatef(phi, -rj->y/rj->z , rj->x/rj->z ,0.0f);
+		//glRotatef(phi, -rj->y/rj->z , rj->x/rj->z ,0.0f);
 		glRotatef(phi,1.0,0.0,0.0);
 	  }
 	  else glRotatef(phi, -rj.y/rij , rj.x/rij ,0.0f);
 	  glScalef(1.0f,1.0f,rij);
-	  glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, i->colour);
+	  // Draw half from atom 'j'
+	  glMaterialiv(GL_FRONT, GL_AMBIENT, ia);
+	  glMaterialiv(GL_FRONT, GL_DIFFUSE, id);
 	  glCallList(globs.lists[GLOB_BOND]);
-	  glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, j->colour);
+	  // Draw half from atom 'j'
+	  glMaterialiv(GL_FRONT, GL_AMBIENT, ja);
+	  glMaterialiv(GL_FRONT, GL_DIFFUSE, jd);
 	  glTranslatef(0.0f,0.0f,1.0);
 	  glCallList(globs.lists[GLOB_BOND]);
 	glPopMatrix();
@@ -264,15 +272,15 @@ void canvas_master::gl_ellipsoid(const vec3<double> &centre, const vec3<double> 
 	glPopMatrix();
 }
 
-void canvas_master::gl_stickbond(atom* i, atom* j, const vec3<double> &v)
+void canvas_master::gl_stickbond(atom* i, atom* j, const vec3<double> &v, GLint *ia, GLint *ja)
 {
-	glColor3iv(i->colour);
+	glColor3iv(ia);
 	i->is_selected() ? glLineWidth(3.0) : glLineWidth(1.0);
 	glBegin(GL_LINES);
 	  glVertex3f(0.0f,0.0f,0.0f);
 	  glVertex3f(v.x,v.y,v.z);
 	glEnd();
-	glColor3iv(j->colour);
+	glColor3iv(ja);
 	j->is_selected() ? glLineWidth(3.0) : glLineWidth(1.0);
 	glBegin(GL_LINES);
 	  glVertex3f(v.x,v.y,v.z);
