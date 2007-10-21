@@ -104,6 +104,8 @@ class line_parser
 	float argf(int i) { return (float) argd(i); }
 	// Returns whether the specified argument is empty
 	bool is_blank(int i) { return (arguments[i][0] == '\0' ? TRUE : FALSE); }
+	// Set argument manually
+	void set_arg(int i, const char *s) { arguments[i] = s; }
 
 	/*
 	// Atom type parsing
@@ -113,6 +115,13 @@ class line_parser
 	const char *parse_atstring(dnchar&);
 	// Remove keyword from string and return it
 	const char *trim_atkeyword(dnchar&);
+
+	/*
+	// Numerical Expression Parsing
+	*/
+	public:
+	bool get_args_expression(const char *);
+	bool is_operator(int, char);
 };
 
 extern line_parser parser;

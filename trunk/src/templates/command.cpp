@@ -42,6 +42,10 @@ const char *BC_keywords[BC_NITEMS] = {
 	"let,V=?",
 	"inc,V",
 	"dec,V",
+	"eval,V=s",
+	"evali,V=s",
+
+	"print,s",
 
 	"_GOTO_",
 	"_GOTONONIF_",

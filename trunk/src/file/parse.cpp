@@ -241,11 +241,14 @@ void line_parser::get_args_delim(const char *s, int options)
 }
 
 // Cut next delimited argument from supplied string
-const char *line_parser::get_next_delim(dnchar&,int options)
+const char *line_parser::get_next_delim(dnchar &s, int options)
 {
+	static int result;
 	optmask = options;
-	if (get_next_arg(-1)) return temparg.get();
-	else return "";
+	line = s.get();
+	result = get_next_arg(-1);
+	s = line.get();
+	return (result ? temparg.get() : "");
 }
 
 // Parse string into lines
@@ -492,4 +495,75 @@ const char *line_parser::trim_atkeyword(dnchar &source)
 		}
 	dbg_end(DM_PARSE,"parser::trim_atkeywd");
 	return keywd.get();
+}
+
+// Parse tokens in numerical expression
+bool line_parser::get_args_expression(const char *s)
+{
+	dbg_begin(DM_PARSE,"parser::get_args_expression");
+	nargs = 0; 
+	for (int n=0; n<MAXARGS; n++) arguments[n].clear();
+	static int n, arglen;
+	static bool result;
+	static char arg[MAXARGLENGTH];
+	static const char *c;
+	result = TRUE;
+	arglen = 0;
+	for (c = &s[0]; *c != '\0'; c++)
+	{
+		switch (*c)
+		{
+			// Skip delimiters
+			case (9):	// Horizontal Tab
+			case (' '):	// Space
+				break;
+			// Expression tokens
+			case ('+'):
+			case ('-'):
+			case ('/'):
+			case ('*'):
+			case ('^'):
+			case ('%'):
+				// No current other argument - must be error
+				if (arglen == 0)
+				{
+					result = FALSE;
+					break;
+				}
+				// Store current argument
+				arg[arglen] = '\0';
+				arguments[nargs] = arg;
+				nargs++;
+				arg[0] = *c;
+				arg[1] = '\0';
+				arguments[nargs] = arg;
+				nargs++;
+				arglen = 0;
+				break;
+			// Normal character
+			default: 
+				arg[arglen] = *c;
+				arglen ++;
+				break;
+		}
+	}
+	// Store current argument
+	if (arglen != 0)
+	{
+		arg[arglen] = '\0';
+		arguments[nargs] = arg;
+		nargs++;
+	}
+	//for (int i=0; i<nargs; i++) printf("EXPR ARG %i = [%s]\n",i,arguments[i].get());
+	dbg_end(DM_PARSE,"parser::get_args_expression");
+	return result;
+}
+
+// Return whether specified argument is an operator
+bool line_parser::is_operator(int argno, char op)
+{
+	// Check length.
+	if (arguments[argno].length() != 1) return FALSE;
+	// Check character
+	return (arguments[argno][0] == op ? TRUE : FALSE);
 }

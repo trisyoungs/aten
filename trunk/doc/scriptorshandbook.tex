@@ -41,25 +41,37 @@ Objects in scripts are referred to by names associated with them on their creati
 
 \subsection{Analysis}
 \index{script commands!analysis}
-Adds quantities / properties to be calculated to a pending joblist. The \qte{model} and \qte{traj} subcommands calculate the pending properties in the joblist for the current model / frame and accumulate the data. The \qte{finalise} subcommand is used to normalise the calculated data and generate suitable averages from the accumulated data.\\
+Adds quantities / properties to be calculated to a pending joblist. The \qte{modelanalyse} and \qte{frameanalyse} subcommands calculate the pending properties in the joblist for the current model / frame and accumulate the data. The \qte{finalise} subcommand is used to normalise the calculated data and generate suitable averages from the accumulated data.\\
 \begin{description}
-
-	\item[analyse\its] Calculates all properties in the pending joblist for the current frame (or model if no trajectory is associated).
-	\index{script commands!analyse}
-	\begin{itemize}
-		\item $e.g.$ \ttqte{analyse}.
-	\end{itemize}
 
 	\item[finalise\its] Finalises the quantities in the pending jobs list, performing the necessary averages.
 	\index{script commands!finalise}
 	\begin{itemize}
-		\item $e.g.$ \ttqte{finalise} XXX.
+		\item $e.g.$ \ttqte{finalise}.
 	\end{itemize}
 
-	\item[pdens $name$ $site1$ $site2$ XXX\its] Adds a 3D probability distribution function $name$ to the pending jobs list for the model. Two sites must be specified, the first being the central species about which to calculate the distribution of the second. Axes must be specified for the first site with the \qte{setaxes} command.
+	\item[frameanalyse\its] Calculates all properties in the pending joblist for the current frame.
+	\index{script commands!frameanalyse}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{frameanalyse}.
+	\end{itemize}
+
+	\item[modelanalyse\its] Calculates all properties in the pending joblist for the current model.
+	\index{script commands!modelanalyse}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{modelanalyse}.
+	\end{itemize}
+
+	\item[pdens $name$ $site1$ $site2$ $spacing$ $npoints$\its] Adds a 3D probability distribution function $name$ to the pending jobs list for the model. Two sites must be specified, the first being the central species about which to calculate the distribution of the second. Axes must be specified for the first site with the \qte{setaxes} command. $spacing$ gives the spacing between grid points (assuming a cubic grid) while $npoints$ determines the number of grid points to use in each positive / negative direction.
 	\index{script commands!pdens}
 	\begin{itemize}
-		\item $e.g.$ \ttqte{pdens} XXX.
+		\item $e.g.$ \ttqte{pdens mydens OHO centre 0.1 40} requests the calculation of a probability density called \qte{mydens} between the central site \qte{OHO} and the site \qte{centre}, with 40 gridpoints in each positive / negative direction with a spacing of 0.1 \AA{} (giving a grid extent of 4 \AA{} in each positive / negative direction, i.e. a grid of 81x81x81 points).
+	\end{itemize}
+
+	\item[printjobs\its] Prints a summary of the pending jobs list.
+	\index{script commands!printjobs}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{printjobs}.
 	\end{itemize}
 
 	\item[rdf $name$ $site1$ $site2$ $rmin$ $binwidth$ $nbins$\its] Adds a radial distribution function $name$ to the pending jobs list for the model. Two sites must be specified. The RDF is calculated over the distance range bounded by $rmin$ and $rmin + binwidth*nbins$.

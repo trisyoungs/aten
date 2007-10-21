@@ -69,6 +69,8 @@ void format::create(const char *fmt, variable_list &vlist)
 	int n, m, pos1, pos2;
 	static char arg[100], specifier[32], length[32], precision[32];
 	format_node *fn;
+	// Clear any existing node list
+	nodes.clear();
 	// First, parseline the formatting string
 	parser.get_args_delim(fmt,PO_DEFAULTS);
 	// Now, step through the args[] array and convert the substrings into format nodes

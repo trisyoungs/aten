@@ -298,22 +298,30 @@ Definitions of the target file type and how to recognise it. Should be supplied 
 \end{description}
 
 
-\subsection{Reading / Writing File Data}
-Commands to parse data from files and variables.\\
+\subsection{Reading / Writing Data}
+Commands to parse data from files and variables. Note that the style of the formatting strings differs between read and write commands.\\
 \begin{description}
 
 	\item[readline $format$\its]
 	\index{filter commands!readline}
-	Reads in the next line of the file (i.e., up to the carriage-return / newline marker) and splits up the data it finds into the variables specified in the $format$.
+	Reads in the next line of the file (i.e., up to the carriage-return / newline marker) and splits up the data it finds into the variables specified in the $format$. The format string contains variables with optional length specifiers, separated by delimiters (e.g. spaces, commas) which serve only to separate variables -- they do not represent actual whitespace between data items in the file.
 	\begin{itemize}
 		\item $e.g.$ \ttqte{readline \dqte{\$n \$m \$title}} puts the first three whitespace-delimited items found on the next line in the file into the variables $n$, $m$, and $title$.
 	\end{itemize}
 
 	\item[writeline $format$\its]
 	\index{filter commands!writeline}
-	Constructs a string according to the $format$ given and writes it out to the file, appending a newline at the end.
+	Constructs a string according to the $format$ given and writes it out to the file. A newline is automatically appended to the end.
 	\begin{itemize}
 		\item $e.g.$ \ttqte{writeline \dqte{NATOMS = \$natoms}} outputs a new line to the file, looking like \qte{NATOMS = 20}.
+	\end{itemize}
+
+	\item[print $format$\its]
+	\index{filter commands!print}
+	Print a message to the screen, optionally containing variables. Here, whitespace has its usual meaning since it is a simple text string. Variables to print out are written in the standard way, beginning with \qte{\$} and optionally having a length specifier. Individual variables are assumed to be terminated by either whitespace or the end of the line. If the output of characters directly after the variable is required (or variables sitting side-by-side are necessary), the variable name may be enclosed in curly brackets (e.g. \$\{$name$[@$format$]\}). A newline is automatically appended to the end.
+	\begin{itemize}
+		\item $e.g.$ \ttqte{print \dqte{Number of atoms = \$natoms}} writes a line to the screen looking like \dqte{Number of atoms = 11}, assuming that the variable $natoms$ has a value 11.
+		\item $e.g.$ \ttqte{print \dqte{Atoms (\$\{natoms\}), bonds (\$\{nbonds\})}} writes a line to the screen looking like \dqte{Atoms (11), bonds (8)}, assuming that the variables $natoms$ and $bonds$ have values of 11 and 8 respectively.
 	\end{itemize}
 
 \end{description}
@@ -560,9 +568,9 @@ Commands to perform plain repeat loops and loops over patterns, molecules, atoms
 In particular, methods to set a handful of related variables for use in the filter, and to create / describe atoms from sets of known variables.\\
 \begin{description}
 
-	\item[setcellaxes\its]
-	\index{filter commands!setcellaxes}
-	Set the unit cell for the model / trajectory frame from cell length and angle variables already set in the filter. Lengths should be given in Angstroms and angles in degerees. The command expects to find values in:
+	\item[setcell\its]
+	\index{filter commands!setcell}
+	Set the unit cell for the model / trajectory frame from cell length and angle variables already set in the filter. Lengths should be given in Angstroms and angles in degrees. The command expects to find values in:
 	\begin{description}
 		\item[$cell.a$]
 		\item[$cell.b$]
@@ -574,8 +582,8 @@ In particular, methods to set a handful of related variables for use in the filt
 			Angles between cell axes.
 	\end{description}
 
-	\item[setcellvectors\its]
-	\index{filter commands!setcellvectors}
+	\item[setcellaxes\its]
+	\index{filter commands!setcellaxes}
 	Set the unit cell for the model / trajectory frame from an axis matrix definition already set in the filter. Unit of length for axis definitions is \AA{}ngstroms. The command expects to find values in:
 	\begin{description}
 		\item[$cell.a.x$]
@@ -592,6 +600,9 @@ In particular, methods to set a handful of related variables for use in the filt
 			Vector components of the cell's $C$ vector.
 	\end{description}
 
+	\item[setspacegroup $spgrp$\its]
+	\index{filter commands!setspacegroup}
+	Set the spacegroup for a periodic model, allowing symmetry copies of atoms to be generated with the \qte{pack} command.
 
 \end{description}
 
