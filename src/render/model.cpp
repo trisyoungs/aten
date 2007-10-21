@@ -37,7 +37,9 @@ void canvas_master::render_model_atoms()
 	// Draw atoms and bonds from the model structure.
 	// If altcoords != NULL, use atomic coordinates from here instead
 	static draw_style style_i, style_j, renderstyle;
-	static GLint tempcol[4];
+	static GLint ia[4], id[4], ja[4], jd[4];
+	static short int cindex;
+	static atom_colours scheme;
 	static double radius, rij;
 	static vec3<double> ri, rj, rk, ijk;
 	static bool drawcheck;
@@ -48,6 +50,7 @@ void canvas_master::render_model_atoms()
 	displaymodel->project_all();
 
 	renderstyle = prefs.render_style;
+	scheme = prefs.get_colour_scheme();
 	i = displaymodel->get_atoms();
 	if (i != NULL) drawcheck = !i->get_drawn();	// Grab the inverse of the first atom's drawn flag for our checks
 	
@@ -62,13 +65,23 @@ void canvas_master::render_model_atoms()
 		if (i->get_element() > 118) { i = i->next; continue; }
 		// Push the current matrix, translate to the atoms coordinates and set the drawing colour
 		glPushMatrix();
-		  //tempcol[0] = i->colour[0]*0.70;
-		  //tempcol[1] = i->colour[1]*0.70;
-		  //tempcol[2] = i->colour[2]*0.70;
-		  //tempcol[3] = INT_MAX;
-		  glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, i->colour);
-		  //glMaterialiv(GL_FRONT, GL_AMBIENT, i->colour);
-		  //glMaterialiv(GL_FRONT, GL_DIFFUSE, tempcol);
+		  // Define atom colours
+		  if (scheme == AC_ELEMENT)
+		  {
+			cindex = i->get_element();
+			elements.ambient(cindex, ia);
+			elements.diffuse(cindex, id);
+		  }
+		  else
+		  {
+			printf("Colour scale selection for atoms is not yet done.\n");
+			cindex = 0;
+			prefs.get_scale_colour(cindex, ia);
+			prefs.get_scale_colour(cindex, id);
+		  }
+		  glMaterialiv(GL_FRONT, GL_AMBIENT, ia);
+		  glMaterialiv(GL_FRONT, GL_DIFFUSE, id);
+		  // Get position
 		  ri = i->r;
 		  glTranslated(ri.x,ri.y,ri.z);
 		  // Grab atom style and toggle lighting state if DS_INDIVIDUAL is the main drawing style
@@ -78,17 +91,17 @@ void canvas_master::render_model_atoms()
 		  	style_i == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 		  }
 		  else style_i = renderstyle;
-		  //
+		  /*
 		  // Draw the atom.
 		  // If the atom's style is DS_STICK, then we only draw if it is unbound.
-		  //
+		  */
 		  if (style_i == DS_STICK)
 		  {
-			glColor3iv(i->colour);
+			glColor3iv(ia);
 			if (i->get_nbonds() == 0)
 			{
 				i->is_selected() ? glLineWidth(3.0) : glLineWidth(2.0);
-			  	glCallList(globs.lists[GLOB_STICKATOM]); 
+				glCallList(globs.lists[GLOB_STICKATOM]); 
 			}
 		  }
 		  else
@@ -99,24 +112,38 @@ void canvas_master::render_model_atoms()
 				radius = prefs.screenradius(i);
 				glPushMatrix();
 				  glScalef(radius,radius,radius);
-			  	  glCallList(globs.lists[GLOB_UNITATOM]); 
+				  glCallList(globs.lists[GLOB_UNITATOM]); 
 				glPopMatrix();
 			}
 			else style_i == DS_SPHERE ? glCallList(globs.lists[GLOB_SPHEREATOM]) : glCallList(globs.lists[GLOB_TUBEATOM]);
 		  }
-		  //
+		  /*
 		  // Draw the bonds.
 		  // Render entire bonds and not halves - use the drawn flags of the bound atoms to decide which bonds to
 		  // draw and which to skip (or, in other words, not draw twice!). At the beginning of the render, all
 		  // i->drawn flags are in the same state, either TRUE or FALSE, and are toggled as they are drawn.
-		  // For DS_INDIVIDUAL, tube bonds are only drawn if both atom styles are *not* DS_STICK. Otherwise, we
-		  // use stick bonds.
+		  // For DS_INDIVIDUAL, tube bonds are only drawn if both atom styles are *not* DS_STICK. Otherwise, we use stick bonds
+		  */
 		  bref = i->get_bonds();
 		  while (bref != NULL)
 		  {
 			j = (atom*) bref->item->get_partner(i);
 			if ((j->get_drawn() == drawcheck) || (j->is_hidden())) { bref = bref->next; continue; }
+			// Get atom j's style and colour
 		  	renderstyle == DS_INDIVIDUAL ? style_j = j->get_style() : style_j = renderstyle;
+			if (scheme == AC_ELEMENT)
+			{
+				cindex = j->get_element();
+				elements.ambient(cindex, ja);
+				elements.diffuse(cindex, jd);
+			}
+			else
+			{
+				printf("Colour scale selection for atoms is not yet done.\n");
+				cindex = 0;
+				prefs.get_scale_colour(cindex, ja);
+				prefs.get_scale_colour(cindex, jd);
+			}
 			// We are centred on atom i, so get the vector to atom j. Its more useful to have the midpoint of the bond, so scale by 0.5 too.
 			rj = j->r - ri;
 			rij = rj.magnitude();
@@ -128,31 +155,31 @@ void canvas_master::render_model_atoms()
 			{
 				// Neither atom is DS_STICK, so draw cylinder bonds.
 				rij *= 0.5;
-				// CHange sign of z-coordinate (OpenGL -ve to Preferred +ve z into screen)
+				// Change sign of z-coordinate (OpenGL -ve to Preferred +ve z into screen)
 				switch (bref->item->type)
 				{
 					case (BT_SINGLE):	// Single bond
-						gl_cylinderbond(i,j,rj,rij);
+						gl_cylinderbond(i,j,rj,rij,ia,id,ja,jd);
 						break;
 					case (BT_DOUBLE):	// Double bond
 						ijk = i->find_bond_plane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslatef(ijk.x,ijk.y,ijk.z);
-						gl_cylinderbond(i,j,rj,rij);
+						gl_cylinderbond(i,j,rj,rij,ia,id,ja,jd);
 						glTranslatef(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						gl_cylinderbond(i,j,rj,rij);
+						gl_cylinderbond(i,j,rj,rij,ia,id,ja,jd);
 						glTranslatef(ijk.x,ijk.y,ijk.z);
 						break;
 					case (BT_TRIPLE):	// Triple bond
 						ijk = i->find_bond_plane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
-						gl_cylinderbond(i,j,rj,rij);
+						gl_cylinderbond(i,j,rj,rij,ia,id,ja,jd);
 						glTranslatef(ijk.x,ijk.y,ijk.z);
-						gl_cylinderbond(i,j,rj,rij);
+						gl_cylinderbond(i,j,rj,rij,ia,id,ja,jd);
 						glTranslatef(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						gl_cylinderbond(i,j,rj,rij);
+						gl_cylinderbond(i,j,rj,rij,ia,id,ja,jd);
 						glTranslatef(ijk.x,ijk.y,ijk.z);
 						break;
 				}
@@ -163,7 +190,7 @@ void canvas_master::render_model_atoms()
 				switch (bref->item->type)
 				{
 					case (BT_SINGLE):	// Single bond
-						gl_stickbond(i,j,rj);
+						gl_stickbond(i,j,rj,ia,ja);
 						break;
 					case (BT_DOUBLE):	// Double bond
 						// Must define a plane in which the bond will lay
@@ -171,9 +198,9 @@ void canvas_master::render_model_atoms()
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslatef(ijk.x,ijk.y,ijk.z);
-						gl_stickbond(i,j,rj);
+						gl_stickbond(i,j,rj,ia,ja);
 						glTranslatef(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						gl_stickbond(i,j,rj);
+						gl_stickbond(i,j,rj,ia,ja);
 						glTranslatef(ijk.x,ijk.y,ijk.z);
 						break;
 					case (BT_TRIPLE):	// Triple bond
@@ -184,11 +211,11 @@ void canvas_master::render_model_atoms()
 						rk.z = rj.x;
 						rk.normalise();
 						rk *= 0.1;
-						gl_stickbond(i,j,rj);
+						gl_stickbond(i,j,rj,ia,ja);
 						glTranslatef(rk.x,rk.y,rk.z);
-						gl_stickbond(i,j,rj);
+						gl_stickbond(i,j,rj,ia,ja);
 						glTranslatef(-2.0*rk.x,-2.0*rk.y,-2.0*rk.z);
-						gl_stickbond(i,j,rj);
+						gl_stickbond(i,j,rj,ia,ja);
 						glTranslatef(rk.x,rk.y,rk.z);
 						break;
 				}
@@ -199,7 +226,6 @@ void canvas_master::render_model_atoms()
 		i = i->next;
 	}
 	// Second pass to render selected sphere atoms (transparency)
-	tempcol[3] = (GLint) (0.5 * INT_MAX);
 	// Enable alpha component (if we weren't aliasing anyway)
 	if (!prefs.get_gl_option(GO_LINEALIASING) && !prefs.get_gl_option(GO_POLYALIASING)) glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);		// Make sure lighting is on
@@ -211,10 +237,24 @@ void canvas_master::render_model_atoms()
 		if (style_i == DS_STICK) continue;
 		if (!i->is_selected()) continue;
 		if (i->is_hidden()) continue;
-		tempcol[0] = i->colour[0];
-		tempcol[1] = i->colour[1];
-		tempcol[2] = i->colour[2];
-		glMaterialiv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE,tempcol);
+		// Define atom colours
+		if (scheme == AC_ELEMENT)
+		{
+			cindex = i->get_element();
+			elements.ambient(cindex, ia);
+			elements.diffuse(cindex, id);
+		}
+		else
+		{
+			printf("Colour scale selection for atoms is not yet done.\n");
+			cindex = 0;
+			prefs.get_scale_colour(cindex, ia);
+			prefs.get_scale_colour(cindex, id);
+		}
+		ia[3] = ia[3] / 2;
+		id[3] = id[3] / 2;
+		glMaterialiv(GL_FRONT, GL_AMBIENT, ia);
+		glMaterialiv(GL_FRONT, GL_DIFFUSE, id);
 		glPushMatrix();
 		  ri = i->r;
 		  glTranslated(ri.x,ri.y,ri.z);
@@ -245,7 +285,7 @@ void canvas_master::render_model_objects()
 	{
 		el = i->get_element();
 		if (el <= 118) continue;
-		glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, i->colour);
+		glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, elements.ambient(i->get_element()));
 		switch (el)
 		{
 			case (119): 	// Ellipsoid - coords = coords, velocities = lookat, forces = scaling
@@ -450,7 +490,7 @@ void canvas_master::render_model_2d()
 	// Add text
 	//textbitmap(1.0,h-12.0,displaymodel->get_name());
 	// Draw on colour scale if necessary
-	if (master.get_colour_scheme() != AC_ELEMENT)
+	if (prefs.get_colour_scheme() != AC_ELEMENT)
 	{
 		float midy = h / 2;
 		//glBegin(
@@ -471,7 +511,7 @@ void canvas_master::render_model_regions()
 	component *c = mc.get_components();
 	while (c != NULL)
 	{
-		colour = elements.colour(i);
+		colour = elements.ambient(i);
 		tempcol[0] = colour[0];
 		tempcol[1] = colour[1];
 		tempcol[2] = colour[2];
@@ -518,6 +558,7 @@ void canvas_master::render_model_forcearrows()
 	dbg_end(DM_CALLS,"canvas_master::render_model_forcearrows");
 }
 
+// Render model cell
 void canvas_master::render_model_cell()
 {
 	// Draw the unit cell of the model

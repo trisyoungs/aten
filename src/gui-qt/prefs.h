@@ -43,12 +43,17 @@ class AtenPrefs : public QDialog
 	// Element Page
 	*/
 	private:
-	void set_element_colour(int component, int value);
+	void set_element_colour(int type, int component, int value);
 	private slots:
 	void on_ElementList_currentRowChanged(int row);
-	void on_ElementRedSpin_valueChanged(int value) { set_element_colour(0, value); }
-	void on_ElementGreenSpin_valueChanged(int value) { set_element_colour(1, value); }
-	void on_ElementBlueSpin_valueChanged(int value) { set_element_colour(2, value); }
+	void on_ElementARedSpin_valueChanged(int value) { set_element_colour(0, 0, value); }
+	void on_ElementAGreenSpin_valueChanged(int value) { set_element_colour(0, 1, value); }
+	void on_ElementABlueSpin_valueChanged(int value) { set_element_colour(0, 2, value); }
+	void on_ElementAAlphaSpin_valueChanged(int value) { set_element_colour(0, 3, value); }
+	void on_ElementDRedSpin_valueChanged(int value) { set_element_colour(1, 0, value); }
+	void on_ElementDGreenSpin_valueChanged(int value) { set_element_colour(1, 1, value); }
+	void on_ElementDBlueSpin_valueChanged(int value) { set_element_colour(1, 2, value); }
+	void on_ElementDAlphaSpin_valueChanged(int value) { set_element_colour(1, 3, value); }
 
 	/*
 	// View Page

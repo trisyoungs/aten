@@ -58,9 +58,8 @@ atom::atom()
 	style = DS_STICK;
 	fixed = FALSE;
 	labels = 0;
-	colour[3] = INT_MAX;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_ATOM] ++;
+		memdbg.create[MD_ATOM] ++;
 	#endif
 }
 
@@ -69,7 +68,7 @@ atom::~atom()
 {
 	clear_bonds();
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_ATOM] ++;
+		memdbg.destroy[MD_ATOM] ++;
 	#endif
 }
 
@@ -113,10 +112,8 @@ void atom::copy(atom *source)
 // Copy atom style
 void atom::copy_style(atom *source)
 {
-	colour[0] = source->colour[0];
-	colour[1] = source->colour[1];
-	colour[2] = source->colour[2];
 	style = source->style;
+	hidden = source->hidden;
 }
 
 // Print
@@ -124,7 +121,7 @@ void atom::print()
 {
 	msg(DM_NONE,"Atom ID %i (%s):\n",id,elements.name(this));
 	msg(DM_NONE,"    Selected : %s,  Hidden : %s\n",(selected ? "Yes" : "No"),(hidden ? "Yes" : "No"));
-	msg(DM_NONE,"  Draw Style : %s,  RGB : %8.4f %8.4f %8.4f\n",text_from_DS(style),colour[0],colour[1],colour[2]);
+	msg(DM_NONE,"  Draw Style : %s\n",text_from_DS(style));
 	msg(DM_NONE," Model Coord : %8.4f %8.4f %8.4f\n",r.x,r.y,r.z);
 	msg(DM_NONE," World Coord : %8.4f %8.4f %8.4f\n",worldr.x,worldr.y,worldr.z);
 	msg(DM_NONE,"Screen Coord : %8.4f %8.4f \n",screenr.x,screenr.y,screenr.z);
@@ -143,18 +140,6 @@ void atom::print_summary()
 	msg(DM_NONE," %-5i  %-3s  %-8s",id,elements.symbol(this),(fftype != NULL ? fftype->get_name() : "None"));
 	msg(DM_NONE," %13.6e %13.6e %13.6e  %13.6e  ",r.x,r.y,r.z,q);
 	msg(DM_NONE,"%c  \n",(selected ? 'x' : ' '));
-}
-
-/*
-// Colour
-*/
-
-// Set colour by RGB
-void atom::set_colour(GLint r, GLint g, GLint b)
-{
-	colour[0] = r;
-	colour[1] = g;
-	colour[2] = b;
 }
 
 /*

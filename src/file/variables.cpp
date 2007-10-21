@@ -63,7 +63,6 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 				if (has_zmapping) i = activemodel->add_atom(elements.find(v->get_as_char(),zmapping));
 				else i = activemodel->add_atom(elements.find(v->get_as_char()));
 				v->reset();
-				activemodel->set_atom_colours(i);
 			}
 			// Set variable values
 			commands.variables.get_atom_variables(i);

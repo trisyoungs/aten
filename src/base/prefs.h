@@ -23,13 +23,18 @@
 #define H_PREFS_H
 
 #include "energy/forms.h"
-#include "classes/atom.h"
 #include "templates/vector3.h"
+#include "base/constants.h"
+#include "classes/atom.h"
+
 #ifdef IS_MAC
 	#include "OpenGL/gl.h"
 #else
 	#include "GL/gl.h"
 #endif
+
+// Atom colouring scheme
+enum atom_colours { AC_ELEMENT, AC_CHARGE, AC_VELOCITY, AC_FORCE, AC_NITEMS };
 
 // Preferences switches
 enum file_prefswitch { PS_ASFILTER=-1, PS_NO, PS_YES };
@@ -64,7 +69,7 @@ const char **get_KA_strings();
 key_action KA_from_text(const char*);
 
 // Colours
-enum colour { COL_PEN, COL_BG, COL_ACSCHEMELO, COL_ACSCHEMEMID, COL_ACSCHEMEHI, COL_SPECREFLECT, COL_NITEMS };
+enum colour { COL_PEN, COL_BG, COL_SCHEMELO, COL_SCHEMEMID, COL_SCHEMEHI, COL_SPECREFLECT, COL_NITEMS };
 const char *text_from_COL(colour);
 colour COL_from_text(const char*);
 
@@ -95,6 +100,7 @@ enum spotlight_component { SL_AMBIENT, SL_DIFFUSE, SL_SPECULAR, SL_POSITION, SL_
 
 // Forward declarations
 class unitcell;
+class atom;
 
 // Prefs
 class prefs_data
@@ -190,6 +196,12 @@ class prefs_data
 	bool spotlight_on;
 	// Spotlight components
 	GLint spotlight_components[SL_NITEMS][4];
+	// Atom colouring style
+	atom_colours colour_scheme;
+	// Number of segments between lo/hi and mid colours in colour scale
+	int scale_segments;
+	// Graduated colour scale colours
+	GLint **scale_colours;
 
 	public:
 	// Sets the specified atom size to the given value
@@ -226,6 +238,18 @@ class prefs_data
 	void set_spotlight(spotlight_component sc, int i, GLint value) { spotlight_components[sc][i] = value; }
 	// Return spotlight ambient component
 	GLint *get_spotlight(spotlight_component sc) { return spotlight_components[sc]; }
+	// Set atom colour scheme
+	void set_colour_scheme(atom_colours ac) { colour_scheme = ac; }
+	// Return atom colour scheme
+	atom_colours get_colour_scheme() { return colour_scheme; }
+	// Set number of segments in colour scale
+	void set_scale_segments(int nsegments);
+	// Get number of segments in colour scale
+	int get_scale_segments() { return scale_segments; }
+	// Set colour scale colours
+	void set_scale_colours();
+	// Copy colour scale segment into supplied array
+	void get_scale_colour(int n, GLint *v);
 
 	/*
 	// GL Options

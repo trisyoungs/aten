@@ -120,10 +120,10 @@ class canvas_master
 	// Draw a circle
 	void gl_circle(double, double, double);
 	// Draw a cylinder (tube) bond between atoms
-	void gl_cylinderbond(atom*, atom*, const vec3<double>&,double);
+	void gl_cylinderbond(atom*, atom*, const vec3<double>&, double, GLint*, GLint*, GLint*, GLint*);
 	void gl_ellipsoid(const vec3<double>&, const vec3<double>&, const vec3<double>&);
 	// Draw a line bond between atoms
-	void gl_stickbond(atom*, atom*, const vec3<double>&);
+	void gl_stickbond(atom*, atom*, const vec3<double>&, GLint *ia, GLint *ja);
 	// Draw the unit cell of the model
 	void gl_cell(unitcell*);
 	// Draw a line arrow

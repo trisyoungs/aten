@@ -32,7 +32,6 @@ atom *model::add_atom(int newel)
 	dbg_begin(DM_CALLS,"model::add_atom");
 	atom *newatom = atoms.add();
 	newatom->set_element(newel);
-	set_atom_colours(newatom);
 	newatom->set_id(atoms.size() - 1);
 	// Should be safe to take the flag from the first atom in the model
 	if (atoms.size() != 0) newatom->set_drawn(atoms.first()->get_drawn());
@@ -91,7 +90,6 @@ void model::transmute_atom(atom *i, int el)
 		mass -= elements.mass(i);
 		i->set_element(el);
 		mass += elements.mass(i);
-		set_atom_colours(i);
 		calculate_density();
 		log_change(LOG_STRUCTURE);
 	}
@@ -136,70 +134,6 @@ atom *model::find_atom_by_tempi(int tempi)
 		i = i->next;
 	}
 	return NULL;
-}
-
-// Set colours of all atoms
-void model::set_atom_colours(atom *onlythis)
-{
-	dbg_begin(DM_CALLS,"model::set_atom_colours");
-	GLint *col;
-	static vec3<float> lodelta, hidelta, locol, midcol, hicol, newcolour;
-	double lopoint, hipoint, midpoint, quantity, lorange, hirange, largest, smallest;
-	atom *i;
-	atom_colour scheme = master.get_colour_scheme();
-	i = (onlythis == NULL ? atoms.first() : onlythis);
-	if (scheme == AC_ELEMENT)
-	{
-		while (i != NULL)
-		{
-			i->set_colour(elements.colour(i));
-			if (i == onlythis) break;
-			i = i->next;
-		}
-	}
-	else
-	{
-		// We need a colour scale in order to define the atoms colour
-		col = prefs.get_colour(COL_ACSCHEMELO);
-		locol.set(col[0], col[1], col[2]);
-		col = prefs.get_colour(COL_ACSCHEMEMID);
-		midcol.set(col[0], col[1], col[2]);
-		col = prefs.get_colour(COL_ACSCHEMEHI);
-		hicol.set(col[0], col[1], col[2]);
-		lodelta = midcol - locol;
-		hidelta = midcol - hicol;
-		lopoint = prefs.get_colour_scheme_lo(scheme);
-		hipoint = prefs.get_colour_scheme_hi(scheme);
-		midpoint = (hipoint + lopoint) * 0.5;
-		lorange = midpoint - lopoint;
-		hirange = midpoint - hipoint;
-		largest = -1.0e9;
-		smallest = 1.0e9;
-		// Now loop over atoms
-		while (i != NULL)
-		{
-			switch (scheme)
-			{
-				case (AC_CHARGE): quantity = i->get_charge(); break;
-				case (AC_VELOCITY): quantity = i->v.magnitude(); break;
-				case (AC_FORCE): quantity = i->f.magnitude(); break;
-			}
-			// Pick and set colour
-			if (quantity < midpoint) quantity < lopoint ? newcolour = locol : newcolour = locol + lodelta * ((quantity-lopoint) / lorange);
-			else quantity > hipoint ? newcolour = hicol : newcolour = midcol + hidelta * ((quantity-midpoint) / hirange);
-	//printf("lo mid hi points = %8.4f %8.4f %8.4f\n",lopoint,midpoint,hipoint);
-	//printf("lo hi ranges     = %8.4f %8.4f\n",lorange,hirange);
-	//printf("quantity = %8.4f, q/lh = %8.4f\n",quantity, quantity / (quantity < midpoint ? lorange : hirange));
-			i->set_colour(int(newcolour.x), int(newcolour.y), int(newcolour.z));
-			// Store extremes
-			if (quantity > largest) largest = quantity;
-			if (quantity < smallest) smallest = quantity;
-			if (i == onlythis) break;
-			i = i->next;
-			if (i == NULL) msg(DM_NONE,"For atom colouring, quantity range is %s to %s.\n",ftoa(smallest),ftoa(largest));
-		}
-	}
-	dbg_end(DM_CALLS,"model::set_atom_colours");
 }
 
 // Renumber Atoms

@@ -52,7 +52,6 @@ void model::hydrogen_satisfy()
 		}
 		i = i->next;
 	}
-	set_atom_colours(NULL);
 	project_all();
 	dbg_end(DM_CALLS,"model::hydrogen_satisfy");
 }

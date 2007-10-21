@@ -92,7 +92,6 @@ void filter::finalise_model_import(const char *filename)
 	if (prefs.get_coords_in_bohr()) activemodel->bohr_to_angstrom();
 	activemodel->renumber_atoms();
 	activemodel->reset_view();
-	activemodel->set_atom_colours(NULL);
 	activemodel->calculate_mass();
 	activemodel->calculate_density();
 	// Print out some useful info on the model that we've just read in

@@ -163,8 +163,6 @@ class model
 	atom *find_atom(int);
 	// Returns the (first) atom with matching tempi
 	atom *find_atom_by_tempi(int);
-	// Set colours for all atoms
-	void set_atom_colours(atom *i);
 	// Move selected atoms one place 'up' in the list
 	void shift_selection_up();
 	// Move selected atoms one place 'down' in the list

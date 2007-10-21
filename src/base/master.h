@@ -54,8 +54,6 @@ class master_data
 	int modelid;
 	// Current active model for editing
 	model *currentmodel;
-	// Atomic colouring scheme to use.
-	atom_colour scheme;
 	// List of models
 	list<model> models;
 
@@ -84,10 +82,6 @@ class master_data
 	void dereference_ff(forcefield*);
 	// Find model by name
 	model *find_model(const char*);
-	// Set the atomic colour scheme
-	void set_colour_scheme(atom_colour ac) { scheme = ac; }
-	// Return the current atomic colouring scheme
-	atom_colour get_colour_scheme() { return scheme; }
 
 	/*
 	// Import / Export
