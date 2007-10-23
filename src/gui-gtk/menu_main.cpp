@@ -222,9 +222,7 @@ void mainmenu_colourchange(GtkMenuItem *widget, gpointer data)
 	dbg_begin(DM_CALLS,"mainmenu_colourchange");
 	int n;
 	for (n=0; n<AC_NITEMS; n++)
-		if (widget == menu_colscheme[n]) master.set_colour_scheme( (atom_colour) n);
-	// Call routine to colour atoms here...
-	master.get_currentmodel()->set_atom_colours(NULL);
+		if (widget == menu_colscheme[n]) prefs.set_colour_scheme( (atom_colours) n);
 	gui.refresh();
 	dbg_end(DM_CALLS,"mainmenu_colourchange");
 }

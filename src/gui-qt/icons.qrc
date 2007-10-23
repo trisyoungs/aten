@@ -59,6 +59,7 @@
         <file>icons/traj_playpause.svg</file>
         <file>icons/traj_prev.svg</file>
     </qresource>
+    <qresource prefix="/prefs" />
     <qresource prefix="/select" >
         <file>icons/select_all.svg</file>
         <file>icons/select_atoms.svg</file>

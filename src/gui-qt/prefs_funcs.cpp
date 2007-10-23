@@ -81,6 +81,16 @@ void AtenPrefs::finalise_ui()
 	ui.LightPositionXSpin->setValue(c[0]);
 	ui.LightPositionYSpin->setValue(c[1]);
 	ui.LightPositionZSpin->setValue(c[2]);
+	ui.ShininessSpin->setValue(prefs.get_shininess());
+
+	// Set controls in interaction page
+	ui.LeftMouseCombo->setCurrentIndex(prefs.get_mb_action(MB_LEFT));
+	ui.MiddleMouseCombo->setCurrentIndex(prefs.get_mb_action(MB_MIDDLE));
+	ui.RightMouseCombo->setCurrentIndex(prefs.get_mb_action(MB_RIGHT));
+	ui.WheelMouseCombo->setCurrentIndex(prefs.get_mb_action(MB_WHEEL));
+	ui.ShiftButtonCombo->setCurrentIndex(prefs.get_keymod_action(MK_SHIFT));
+	ui.CtrlButtonCombo->setCurrentIndex(prefs.get_keymod_action(MK_CTRL));
+	ui.AltButtonCombo->setCurrentIndex(prefs.get_keymod_action(MK_ALT));
 
 	dbg_end(DM_CALLS,"AtenPrefs::finalise_ui");
 }
@@ -120,7 +130,7 @@ void AtenPrefs::on_ElementList_currentRowChanged(int row)
 	ui.ElementDGreenSpin->setValue( int((double(colour[1]) / INT_MAX) * 255) );
 	ui.ElementDBlueSpin->setValue( int((double(colour[2]) / INT_MAX) * 255) );
 	ui.ElementDAlphaSpin->setValue( int((double(colour[3]) / INT_MAX) * 255) );
-	//ui. TODO Set preview color
+	ui.ElementRadiusSpin->setValue(elements.radius(row));
 }
 
 /*
@@ -169,7 +179,7 @@ void AtenPrefs::set_visible_object(view_object vo, int state)
 {
 	prefs.set_visible(vo, (state == Qt::Checked ? TRUE : FALSE));
 	master.get_currentmodel()->log_change(LOG_VISUAL);
-	gui.refresh();	
+	gui.refresh();
 }
 
 /*
@@ -188,4 +198,25 @@ void AtenPrefs::spotlight_changed(spotlight_component so, int i, double value)
 	prefs.set_spotlight(so, i, (GLint) (value * INT_MAX));
 	gui.mainview.init_gl();
 	gui.refresh();	
+}
+
+void AtenPrefs::on_ShininessSpin_valueChanged(int value)
+{
+	prefs.set_shininess(value);
+	master.get_currentmodel()->log_change(LOG_VISUAL);
+	gui.refresh();
+}
+
+/*
+// Interact Page
+*/
+
+void AtenPrefs::mouse_action_changed(mouse_button mb, mouse_action ma)
+{
+	prefs.set_mb_action(mb, ma);
+}
+
+void AtenPrefs::key_modifier_changed(modifier_key km, key_action ka)
+{
+	prefs.set_keymod_action(km, ka);
 }

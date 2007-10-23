@@ -76,11 +76,11 @@ class AtenPrefs : public QDialog
 	void on_GlobeVisibleCheck_stateChanged(int state) { set_visible_object(VO_GLOBE, state); }
 
 	/*
-	// Lighting PAge
+	// Lighting Page
 	*/
 	private:
 	void spotlight_changed(spotlight_component so, int i, double value);
-	public slots:
+	private slots:
 	void on_SpotlightGroup_clicked(bool checked);
 	void on_AmbientRedSpin_valueChanged(double value) { spotlight_changed(SL_AMBIENT, 0, value); }
 	void on_AmbientGreenSpin_valueChanged(double value) { spotlight_changed(SL_AMBIENT, 1, value); }
@@ -94,6 +94,22 @@ class AtenPrefs : public QDialog
 	void on_LightPositionXSpin_valueChanged(double value) { spotlight_changed(SL_POSITION, 0, value); }
 	void on_LightPositionYSpin_valueChanged(double value) { spotlight_changed(SL_POSITION, 1, value); }
 	void on_LightPositionZSpin_valueChanged(double value) { spotlight_changed(SL_POSITION, 2, value); }
+	void on_ShininessSpin_valueChanged(int value);
+
+	/*
+	// Interaction page
+	*/
+	private:
+	void mouse_action_changed(mouse_button mb, mouse_action ma);
+	void key_modifier_changed(modifier_key km, key_action ka);
+	private slots:
+	void on_LeftMouseCombo_currentIndexChanged(int ma) { mouse_action_changed(MB_LEFT, (mouse_action) ma); }
+	void on_MiddleMouseCombo_currentIndexChanged(int ma) { mouse_action_changed(MB_MIDDLE, (mouse_action) ma); }
+	void on_RightMouseCombo_currentIndexChanged(int ma) { mouse_action_changed(MB_RIGHT, (mouse_action) ma); }
+	void on_WheelMouseCombo_currentIndexChanged(int ma) { mouse_action_changed(MB_WHEEL, (mouse_action) ma); }
+	void on_ShiftButtonCombo_currentIndexChanged(int ka) { key_modifier_changed(MK_SHIFT, (key_action) ka); }
+	void on_CtrlButtonCombo_currentIndexChanged(int ka) { key_modifier_changed(MK_CTRL, (key_action) ka); }
+	void on_AltButtonCombo_currentIndexChanged(int ka) { key_modifier_changed(MK_ALT, (key_action) ka); }
 
 	/*
 	// Widgets

@@ -206,27 +206,27 @@ class prefs_data
 	public:
 	// Sets the specified atom size to the given value
 	void set_atom_size(draw_style ds, double f) { render_atom_size[(int)ds] = f; }
-	// Returns the specified atom size
+	// Return the specified atom size
 	GLdouble get_atom_size(draw_style ds) { return render_atom_size[(int)ds]; }
 	// Sets the tube size in DS_TUBE
 	void set_tube_size(double f) { render_tube_size = f; }
-	// Returns the tube size used in DS_TUBE
+	// Return the tube size used in DS_TUBE
 	GLdouble get_tube_size() { return render_tube_size; }
 	// Sets the detail for atom quadrics
 	void set_atom_detail(int n) { render_atom_detail = n; }
-	// Returns the current detail of atom quadrics
+	// Return the current detail of atom quadrics
 	int get_atom_detail() { return render_atom_detail; }
 	// Sets the detail for bond quadrics
 	void set_bond_detail(int n) { render_bond_detail = n; }
-	// Returns the current detail of bond quadrics
+	// Return the current detail of bond quadrics
 	int get_bond_detail() { return render_bond_detail; }
 	// Sets the scale of selected atoms
 	void set_selection_scale(double f) { render_selection_scale = f; }
-	// Returns the scale of selected atoms
+	// Return the scale of selected atoms
 	GLdouble get_selection_scale() { return render_selection_scale; }
 	// Sets the current (dynamic) scale of selected atoms
 	void set_selection_scale_current(double f) { render_selection_scale_current = f; }
-	// Returns whether perspective viewing is enabled
+	// Return whether perspective viewing is enabled
 	bool using_perspective() { return render_perspective; }
 	// Sets perspective viewing on/off
 	void set_perspective(bool b) { render_perspective = b; }
@@ -269,21 +269,21 @@ class prefs_data
 	void add_gl_option(gl_option go) { if (!(gloptions&go)) gloptions += go; }
 	// Unsets the bit for the specified option (if it is not unset already)
 	void remove_gl_option(gl_option go) { if (gloptions&go) gloptions -= go; }
-	// Returns whether a given option is set
+	// Return whether a given option is set
 	bool get_gl_option(gl_option go) { return (gloptions&go ? TRUE : FALSE); }
 	// Sets the start depth of depth cueing
 	void set_fog_near(int i) { gl_fog_near = i; }
-	// Returns depth cue start depth
+	// Return depth cue start depth
 	GLint get_fog_near() { return gl_fog_near; }
 	// Sets the end depth of depth cueing
 	void set_fog_far(int i) { gl_fog_far = i; }
-	// Returns depth cue end depth
+	// Return depth cue end depth
 	GLint get_fog_far() { return gl_fog_far; }
-	// Returns the Z depth of the near clipping plane
+	// Return the Z depth of the near clipping plane
 	GLdouble get_clip_near() { return gl_clip_near; }
 	// Sets the shininess of GL objects
 	void set_shininess(int n) { gl_shininess = n; }
-	// Resutnr the current shininess of GL objects
+	// Return the current shininess of GL objects
 	int get_shininess() { return gl_shininess; }
 
 	/*
@@ -302,13 +302,13 @@ class prefs_data
 	void set_colour(colour c, GLint r, GLint g, GLint b, GLint a);
 	// Set the specified colour to the RGB values supplied
 	void set_colour(colour c, double r, double g, double b, double a);
-	// Returns the specified colour
+	// Return the specified colour
 	GLint *get_colour(colour c) { return colours[c]; }
-	// Returns the low limit for the scheme specified
+	// Return the low limit for the scheme specified
 	double get_colour_scheme_lo(int i) { return colour_scheme_lo[i]; }
 	// Sets the low limit for the scheme specified
 	void set_colour_scheme_lo(int i, double d) { colour_scheme_lo[i] = d; }
-	// Returns the high limit for the scheme specified
+	// Return the high limit for the scheme specified
 	double get_colour_scheme_hi(int i) { return colour_scheme_hi[i]; }
 	// Sets the high limit for the scheme specified
 	void set_colour_scheme_hi(int i, double d) { colour_scheme_hi[i] = d; }
@@ -355,11 +355,11 @@ class prefs_data
 	void set_load_all_coords(bool b) { file_load_all_coords = b; }
 	// Whether all geometries in a non-trajectory file should be loaded
 	bool load_all_coords() { return file_load_all_coords; }
-	// Returns the cache limit for trajectory files
+	// Return the cache limit for trajectory files
 	int get_cache_limit() { return file_cache_limit; }
 	// Sets the style of element conversion to use
 	void set_zmapping(zmap_type i) { file_zmap_type = i; }
-	// Returns the style of element conversion in use
+	// Return the style of element conversion in use
 	zmap_type get_zmapping() { return file_zmap_type; }
 	// Sets whether to convert coords from Bohr to Angstrom on load
 	void set_coords_in_bohr(bool b) { file_coords_in_bohr = b; }
@@ -392,27 +392,27 @@ class prefs_data
 	bool patterns_use_bonds;
 
 	public:
-	// Returns the bonding tolerance for automatic calculation
+	// Return the bonding tolerance for automatic calculation
 	double get_bond_tolerance() { return build_bond_tolerance; }
 	// Sets the bonding tolerance
 	void set_bond_tolerance(double v) { build_bond_tolerance = v; }
 	// Sets the position of the drawing guide
 	void set_draw_depth(double v) { build_draw_depth = v; }
-	// Returns the current position of the drawing guide
+	// Return the current position of the drawing guide
 	double get_draw_depth() { return build_draw_depth; }
 	// Sets the visibility of the drawing guide
 	void set_guide_visible(bool b) { build_show_guide = b; }
-	// Returns whether the draw guide is visible
+	// Return whether the draw guide is visible
 	bool is_guide_visible() { return build_show_guide; }
 	// Sets the shape of the drawing guide
 	void set_guide_shape(guide_geometry g) { build_guide_shape = g; }
 	// Sets the action for the specified mouse button
 	void set_mb_action(mouse_button mb, mouse_action ma) { mb_action[mb] = ma; }
-	// Returns the action associated with the specified mouse button
+	// Return the action associated with the specified mouse button
 	mouse_action get_mb_action(mouse_button mb) { return mb_action[mb]; }
 	// Sets the modifier key for the specified action
 	void set_keymod_action(modifier_key mk, key_action ka) { keymod_action[mk] = ka; }
-	// Returns the action associated with the specified keymod button
+	// Return the action associated with the specified keymod button
 	key_action get_keymod_action(modifier_key mk) { return keymod_action[mk]; }
 
 	/*
@@ -427,15 +427,15 @@ class prefs_data
 	public:
 	// Set the model update frequency
 	void set_mupdate(int n) { method_mupdate = n; }
-	// Returns the model update frequency
+	// Return the model update frequency
 	int get_mupdate() { return method_mupdate; }
 	// Set the energy update frequency
 	void set_eupdate(int n) { method_eupdate = n; }
-	// Returns the energy update frequency
+	// Return the energy update frequency
 	int get_eupdate() { return method_eupdate; }
-	// Returns whether to update the energy, given the cycle number
+	// Return whether to update the energy, given the cycle number
 	bool update_energy(int n) { return (n%method_eupdate == 0 ? TRUE : FALSE); }
-	// Returns the maximum ring size allowed
+	// Return the maximum ring size allowed
 	int get_maxringsize() { return method_maxringsize; }
 
 	/*
@@ -453,11 +453,11 @@ class prefs_data
 	double elec_convert;
 	// Sets the current internal energy unit
 	void set_internal_units(energy_unit eu);
-	// Returns the working energy units
+	// Return the working energy units
 	energy_unit get_internal_units() { return energy_internal; }
 	// Set the density unit to use
 	void set_density_units(density_unit du) { density_internal = du; }
-	// Returns the current density units to use
+	// Return the current density units to use
 	density_unit get_density_units() { return density_internal; }
 	// Convert the units of the given quantity
 	double convert_energy(double,energy_unit);
@@ -490,32 +490,32 @@ class prefs_data
 	public:
 	// Sets the electrostatic model to use in energy/force calculation
 	void set_electrostatics(elec_type e) { method_electrostatics = e; }
-	// Returns the type of electrostatic treatment to use
+	// Return the type of electrostatic treatment to use
 	elec_type get_electrostatics() { return method_electrostatics; }
 	// Sets whether to calculate intramolecular interactions
 	void set_calc_intra(bool b) { method_calc_intra = b; }
-	// Returns whether to calculate intramolocular interactions
+	// Return whether to calculate intramolocular interactions
 	bool calc_intra() { return method_calc_intra; }
 	// Sets whether to calculate VDW interactions
 	void set_calc_vdw(bool b) { method_calc_vdw = b; }
-	// Returns whether to calculate VDW interactions
+	// Return whether to calculate VDW interactions
 	bool calc_vdw() { return method_calc_vdw; }
 	// Sets whether to calculate electrostatic interactions
 	void set_calc_elec(bool b) { method_calc_elec = b; }
-	// Returns whether to calculate electrostatic interactions
+	// Return whether to calculate electrostatic interactions
 	bool calc_elec() { return method_calc_elec; }
 	// Sets the Ewald k-vector extents
 	void set_ewald_kvec(int a, int b, int c) { ewald_kvec.set(a,b,c); }
 	void set_ewald_kvec(vec3<int> v) { ewald_kvec = v; }
-	// Returns the Ewald k-vector extents
+	// Return the Ewald k-vector extents
 	vec3<int> get_ewald_kvec() { return ewald_kvec; }
 	// Sets the Ewald precision
 	void set_ewald_precision(double d) { ewald_precision = d; }
-	// Returns the Ewald precision
+	// Return the Ewald precision
 	double get_ewald_precision() { return ewald_precision; }
 	// Set the Gaussian width to use in the Ewald sum
 	void set_ewald_alpha(double d) { ewald_alpha = d; }
-	// Returns the Ewald alpha value
+	// Return the Ewald alpha value
 	double get_ewald_alpha() { return ewald_alpha; }
 	// Set the short-range and electrostatic cutoffs
 	void set_cutoffs(double ,double);
@@ -524,15 +524,15 @@ class prefs_data
 	bool valid_ewaldauto;
 	// Sets the VDW cutoff radius to use
 	void set_vdw_cutoff(double d) { vdw_cut = d; }
-	// Returns the VDW cutoff radius
+	// Return the VDW cutoff radius
 	double get_vdw_cutoff() { return vdw_cut; }
 	// Sets the electrostatic cutoff radius to use
 	void set_elec_cutoff(double d) { elec_cut = d; }
-	// Returns the electrostatic cutoff radius
+	// Return the electrostatic cutoff radius
 	double get_elec_cutoff() { return elec_cut; }
 	// Sets the vdw radius scaling factor
 	void set_vdw_radius_scale(double d) { vdw_radius_scale = d; }
-	// Returns the VDW radius scaling factor
+	// Return the VDW radius scaling factor
 	double get_vdw_radius_scale() { return vdw_radius_scale; }
 	// Set the charge source for the model
 	void set_chargesource(charge_source cs) { qsource = cs; }
@@ -551,7 +551,7 @@ class prefs_data
 	public:
 	// Sets whether to show the GUI
 	void set_showgui(bool b) { showgui = b; }
-	// Returns whether the GUI should be shown
+	// Return whether the GUI should be shown
 	bool show_gui() { return showgui; }
 	// Set font to use in textbuffer
 	void set_msg_font(const char *c) { gui_msg_font = c; }
