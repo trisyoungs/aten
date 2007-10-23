@@ -78,9 +78,6 @@ void colourwin_change_colour(GtkWidget *sender, gpointer data)
 	{
 		case (COL_PEN) : break;
 		case (COL_BG) : gui.mainview.init_gl(); break;
-		case (COL_ACSCHEMELO) : master.get_currentmodel()->set_atom_colours(NULL); break;
-		case (COL_ACSCHEMEMID) : master.get_currentmodel()->set_atom_colours(NULL); break;
-		case (COL_ACSCHEMEHI) : master.get_currentmodel()->set_atom_colours(NULL); break;
 		case (COL_SPECREFLECT) : break;
 		default : printf("colourwin_change : Didn't recognise CURRENTCOL.\n");
 	}
