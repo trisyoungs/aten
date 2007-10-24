@@ -28,13 +28,10 @@
 atom *model::add_atom(int newel)
 {
 	// Private function to create a new atom in the model.
-	// No list linking is performed here
 	dbg_begin(DM_CALLS,"model::add_atom");
 	atom *newatom = atoms.add();
 	newatom->set_element(newel);
 	newatom->set_id(atoms.size() - 1);
-	// Should be safe to take the flag from the first atom in the model
-	if (atoms.size() != 0) newatom->set_drawn(atoms.first()->get_drawn());
 	mass += elements.mass(newel);
 	calculate_density();
 	lastatomdrawn = newatom;

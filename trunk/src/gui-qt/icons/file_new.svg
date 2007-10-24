@@ -15,8 +15,8 @@
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/tris/src/aten-devel/src/gui-qt/icons"
-   sodipodi:docname="model_new.svg"
+   sodipodi:docbase="/home/tris/src/aten/src/gui-qt/icons"
+   sodipodi:docname="file_new.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs4">
@@ -66,15 +66,6 @@
        y1="7.9464054"
        x2="78.915184"
        y2="89.205368" />
-    <linearGradient
-       inkscape:collect="always"
-       xlink:href="#linearGradient3186"
-       id="linearGradient3232"
-       gradientUnits="userSpaceOnUse"
-       x1="18.799059"
-       y1="7.9464054"
-       x2="78.915184"
-       y2="89.205368" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -88,15 +79,15 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1.7324116"
      inkscape:cx="80.439391"
-     inkscape:cy="51.87532"
+     inkscape:cy="51.586705"
      inkscape:document-units="px"
      inkscape:current-layer="g2180"
      width="100px"
      height="100px"
      inkscape:window-width="1024"
      inkscape:window-height="714"
-     inkscape:window-x="0"
-     inkscape:window-y="6" />
+     inkscape:window-x="5"
+     inkscape:window-y="52" />
   <metadata
      id="metadata7">
     <rdf:RDF>

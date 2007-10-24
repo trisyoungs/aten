@@ -54,7 +54,6 @@ atom::atom()
 	selected = FALSE;
 	hidden = FALSE;
 	screenrad = 0.0;
-	drawn = FALSE;
 	style = DS_STICK;
 	fixed = FALSE;
 	labels = 0;

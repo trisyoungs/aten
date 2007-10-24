@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "methods/mc.h"
 #include "base/master.h"
-#include "classes/component.h"
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 
@@ -39,10 +39,29 @@ void AtenForm::refresh_components()
 
 void AtenForm::refresh_component_data()
 {
+	// Get current component
+	int comp = ui.ComponentList->currentRow();
+	if (comp == -1) return;
+	component *c = mc.get_component_by_index(comp);
+	// Set controls
+	ui.PopulationSpin->setValue(c->get_nrequested());
+	ui.ComponentRegionCombo->setCurrentIndex(c->area.get_shape());
+	vec3<double> v;
+	v = c->area.get_size();
+	ui.ComponentSizeXSpin->setValue(v.x);
+	ui.ComponentSizeYSpin->setValue(v.y);
+	ui.ComponentSizeZSpin->setValue(v.z);
+	v = c->area.get_centre();
+	ui.ComponentPosXSpin->setValue(v.x);
+	ui.ComponentPosYSpin->setValue(v.y);
+	ui.ComponentPosZSpin->setValue(v.z);
+	ui.ComponentTranslateCheck->setChecked(c->get_allowed(MT_TRANSLATE));
+	ui.ComponentRotateCheck->setChecked(c->get_allowed(MT_ROTATE));
 }
 
 void AtenForm::on_ComponentList_itemSelectionChanged()
 {
+	refresh_component_data();
 }
 
 // Add the current model to the component list
@@ -67,16 +86,32 @@ void AtenForm::on_DeleteComponentButton_clicked(bool checked)
 
 void AtenForm::on_PopulationSpin_valueChanged(int value)
 {
+	int comp = ui.ComponentList->currentRow();
+	if (comp == -1) return;
+	component *c = mc.get_component_by_index(comp);
+	c->set_nrequested(value);
 }
 
 void AtenForm::on_ComponentTranslateCheck_clicked(bool checked)
 {
+	int comp = ui.ComponentList->currentRow();
+	if (comp == -1) return;
+	component *c = mc.get_component_by_index(comp);
+	c->set_allowed(MT_TRANSLATE, checked);
 }
 
 void AtenForm::on_ComponentRotateCheck_clicked(bool checked)
 {
+	int comp = ui.ComponentList->currentRow();
+	if (comp == -1) return;
+	component *c = mc.get_component_by_index(comp);
+	c->set_allowed(MT_ROTATE, checked);
 }
 
 void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
+	int comp = ui.ComponentList->currentRow();
+	if (comp == -1) return;
+	component *c = mc.get_component_by_index(comp);
+	c->area.set_shape( (region_shape) index);
 }

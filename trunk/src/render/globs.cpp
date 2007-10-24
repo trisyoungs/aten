@@ -121,16 +121,16 @@ void gl_objects::generate_static()
 	  gluSphere(quadric1,1.1,atomdetail*2,atomdetail);
 	glEndList();
 	/*
-	// Bonds
+	// Cylinders (bonds)
 	*/
-	// Bond half
+	// Solid cylinder
 	gluQuadricDrawStyle(quadric1,GLU_FILL);
-	glNewList(lists[GLOB_BOND],GL_COMPILE);
+	glNewList(lists[GLOB_CYLINDER],GL_COMPILE);
 	  gluCylinder(quadric2,prefs.render_tube_size,prefs.render_tube_size,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
 	glEndList();
-	// Wireframe bond half
+	// Wireframe cylinder
 	gluQuadricDrawStyle(quadric1,GLU_LINE);
-	glNewList(lists[GLOB_WIREBOND],GL_COMPILE);
+	glNewList(lists[GLOB_WIRECYLINDER],GL_COMPILE);
 	  gluCylinder(quadric2,prefs.render_tube_size*1.25,prefs.render_tube_size*1.25,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
 	glEndList();
 	/*

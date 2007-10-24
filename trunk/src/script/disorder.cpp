@@ -22,7 +22,7 @@
 #include "script/script.h"
 #include "base/master.h"
 #include "base/debug.h"
-#include "classes/component.h"
+#include "methods/mc.h"
 
 // Disorder builder-related script commands (root=SR_DISORDER)
 bool script::command_disorder(command_node<script_command>  *cmd)
