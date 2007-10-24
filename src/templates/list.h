@@ -93,9 +93,9 @@ template <class T> class list
 
 	public:
 	// Shift item up (towards head)
-	T* shift_up(T*);
+	void shift_up(T*);
 	// Shift item down (towards tail)
-	T* shift_down(T*);
+	void shift_down(T*);
 	// Move item to end of list
 	void move_to_end(T*);			
 	// Move item to start of list
@@ -109,7 +109,7 @@ template <class T> list<T>::list()
 	list_tail = NULL;
 	nitems = 0;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_LIST] ++;
+		memdbg.create[MD_LIST] ++;
 	#endif
 }
 
@@ -124,7 +124,7 @@ template <class T> list<T>::~list()
 {
 	clear();
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_LIST] ++;
+		memdbg.destroy[MD_LIST] ++;
 	#endif
 }
 
@@ -307,23 +307,21 @@ template <class T> void list<T>::swap(T* item1, T* item2)
 }
 
 // Shift item towards head
-template <class T> T *list<T>::shift_up(T* item)
+template <class T> void list<T>::shift_up(T* item)
 {
 	// If the item is already at the head of the list, return NULL.
-	if (list_head == item) return NULL;
+	if (list_head == item) return;
 	T* other = item->prev;
 	swap(other,item);
-	return other;
 }
 
 // Shift item towards tail
-template <class T> T *list<T>::shift_down(T* item)
+template <class T> void list<T>::shift_down(T* item)
 {
 	// If the item is already at the tail of the list, return NULL.
-	if (list_tail == item) return NULL;
+	if (list_tail == item) return;
 	T* other = item->next;
 	swap(other,item);
-	return other;
 }
 
 // Move item to end

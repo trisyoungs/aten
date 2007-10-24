@@ -125,6 +125,7 @@ void AtenForm::finalise_ui()
 	// Add permanent statusbar widgets
 	statuslabel = new QLabel(this,0);
 	ui.MainWindowStatusBar->insertPermanentWidget(0,statuslabel,0);
+	statuslabel->setFrameStyle(QFrame::NoFrame);
 
 	// Create open model dialog
 	openmodeldialog = new QFileDialog(this);

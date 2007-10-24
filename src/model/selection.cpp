@@ -25,25 +25,25 @@
 void model::shift_selection_up()
 {
 	dbg_begin(DM_CALLS,"model::shift_selection_up");
-	int tempid;
-	atom *i, *j;
+	int tempid, n;
+	atom *i, *j, *next;
 	// For each selected atom in the model, shift it one place back 'up' in the atom list
 	i = atoms.first();
-	while (i != NULL)
+	for (n=0; n<atoms.size(); n++)
 	{
-		if (i->is_selected())
+		next = i->next;
+		if (i->is_selected() && (i != atoms.first()))
 		{
-			j = atoms.shift_up(i);
-			if (j != NULL)
-			{
-				tempid = j->get_id();
-				j->set_id(i->get_id());
-				i->set_id(tempid);
-				i = j;
-			}
+			// Shift atom up
+			atoms.shift_up(i);
+			// Swap atomids with the new 'next' atom
+			tempid = i->next->get_id();
+			i->next->set_id(i->get_id());
+			i->set_id(tempid);
 		}
-		i = i->next;
+		i = next;
 	}
+	log_change(LOG_STRUCTURE);
 	dbg_end(DM_CALLS,"model::shift_selection_up");
 }
 
@@ -51,22 +51,25 @@ void model::shift_selection_up()
 void model::shift_selection_down()
 {
 	dbg_begin(DM_CALLS,"model::shift_selection_down");
-	int tempid;
-	atom *i, *j;
+	int tempid, n;
+	atom *i, *j, *next;
 	// For each selected atom in the model, shift it one place back 'up' in the atom list
-	for (i = atoms.first(); i != NULL; i = i->next)
+	i = atoms.last();
+	for (n=0; n<atoms.size(); n++)
 	{
-		if (i->is_selected())
+		next = i->prev;
+		if (i->is_selected() && (i != atoms.last()))
 		{
-			j = atoms.shift_down(i);
-			if (j != NULL)
-			{
-				tempid = j->get_id();
-				j->set_id(i->get_id());
-				i->set_id(tempid);
-			}
+			// Shift atom up
+			atoms.shift_down(i);
+			// Swap atomids with the new 'next' atom
+			tempid = i->prev->get_id();
+			i->prev->set_id(i->get_id());
+			i->set_id(tempid);
 		}
+		i = next;
 	}
+	log_change(LOG_STRUCTURE);
 	dbg_end(DM_CALLS,"model::shift_selection_down");
 }
 
@@ -74,19 +77,19 @@ void model::shift_selection_down()
 void model::move_selection_to_start()
 {
 	dbg_begin(DM_CALLS,"model::move_selection_to_start");
-	int tempid;
-	atom *oldtail, *i;
+	int n;
+	atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
-	oldtail = atoms.last();
 	i = atoms.first();
-	while (i != NULL)
+	for (n=0; n<atoms.size(); n++)
 	{
-		if (i->is_selected()) atoms.move_to_end(i);
-		if (i == oldtail) break;
-		i = i->next;
+		next = i->next;
+		if (i->is_selected()) atoms.move_to_start(i);
+		i = next;
 	}
 	// Renumber atoms
 	renumber_atoms();
+	log_change(LOG_STRUCTURE);
 	dbg_end(DM_CALLS,"model::move_selection_to_start");
 }
 
@@ -94,19 +97,19 @@ void model::move_selection_to_start()
 void model::move_selection_to_end()
 {
 	dbg_begin(DM_CALLS,"model::move_selection_to_end");
-	int tempid;
-	atom *oldhead, *i;
+	int n;
+	atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
-	oldhead = atoms.last();
 	i = atoms.last();
-	while (i != NULL)
+	for (n=0; n<atoms.size(); n++)
 	{
+		next = i->prev;
 		if (i->is_selected()) atoms.move_to_end(i);
-		if (i == oldhead) break;
-		i = i->next;
+		i = next;
 	}
 	// Renumber atoms
 	renumber_atoms();
+	log_change(LOG_STRUCTURE);
 	dbg_end(DM_CALLS,"model::move_selection_to_end");
 }
 

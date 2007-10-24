@@ -1,3 +1,7 @@
+2007-10-23	tris
+	* model/selection.cpp: fixed atom shift routines.
+	added atom shift functions to Qt GUI.
+
 2007-10-21	tris
 	* templates/command.h: added 'string-as-is' variable specifier.
 	* file/parse.h: fixed get_next_delim().
