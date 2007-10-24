@@ -96,7 +96,7 @@ void canvas_master::gl_circle(double x, double y, double r)
 {
 	//r += master.lineardelta;
 	glPushMatrix();
-	  glTranslatef(x,y,0.0);
+	  glTranslated(x,y,0.0);
 	  glScalef(r,r,r);
 	  glCallList(globs.lists[GLOB_CIRCLE]);
 	glPopMatrix();
@@ -111,7 +111,7 @@ void canvas_master::gl_arrow(const vec3<double> &origin, const vec3<double> &v)
 	perp *= 0.1;
 	v2 *= 0.9;
 	glPushMatrix();
-	  glTranslatef(origin.x,origin.y,origin.z);
+	  glTranslated(origin.x,origin.y,origin.z);
 	  glPushMatrix();
 	    glBegin(GL_LINES);
 	      glVertex3d(0.0,0.0,0.0);
@@ -157,7 +157,7 @@ void canvas_master::gl_subsel_3d()
 			case (DS_SCALED): 
 				radius = prefs.screenradius(i);
 				glPushMatrix();
-				  glScalef(radius,radius,radius);
+				  glScaled(radius,radius,radius);
 				  glCallList(globs.lists[GLOB_WIREUNITATOM]);
 				glPopMatrix();
 				break;
@@ -189,32 +189,20 @@ void canvas_master::render_rotation_globe(double *rmat, double camrot)
 	glViewport(0,0,(int)w,(int)h);
 }
 
-void canvas_master::gl_cylinderbond(atom *i, atom *j, const vec3<double> &rj, double rij, GLint *ia, GLint *id, GLint *ja, GLint *jd)
+void canvas_master::gl_cylinder(const vec3<double> &rj, double rij, bool addwire)
 {
 	// Determine spherical coordinates
 	static double phi;
-	static short int cindexi, cindexj;
 	// Calculate angle out of XZ plane
 	phi = DEGRAD * acos(rj.z/rij);
 	glPushMatrix();
 	  // Special case where the bond is exactly in the XY plane.
-	  if ((180.0 - phi) < 0.0001)
-	  {
-		//if (rj->z < 0.0) phi = -phi;
-		//glRotatef(phi, -rj->y/rj->z , rj->x/rj->z ,0.0f);
-		glRotatef(phi,1.0,0.0,0.0);
-	  }
-	  else glRotatef(phi, -rj.y/rij , rj.x/rij ,0.0f);
-	  glScalef(1.0f,1.0f,rij);
-	  // Draw half from atom 'j'
-	  glMaterialiv(GL_FRONT, GL_AMBIENT, ia);
-	  glMaterialiv(GL_FRONT, GL_DIFFUSE, id);
-	  glCallList(globs.lists[GLOB_BOND]);
-	  // Draw half from atom 'j'
-	  glMaterialiv(GL_FRONT, GL_AMBIENT, ja);
-	  glMaterialiv(GL_FRONT, GL_DIFFUSE, jd);
-	  glTranslatef(0.0f,0.0f,1.0);
-	  glCallList(globs.lists[GLOB_BOND]);
+	  if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
+	  else glRotated(phi, -rj.y/rij , rj.x/rij ,0.0f);
+	  glScaled(1.0,1.0,rij);
+	  // Draw cylinder (bond)
+	  glCallList(globs.lists[GLOB_CYLINDER]);
+	  if (addwire) glCallList(globs.lists[GLOB_WIRECYLINDER]);
 	glPopMatrix();
 }
 
@@ -270,20 +258,4 @@ void canvas_master::gl_ellipsoid(const vec3<double> &centre, const vec3<double> 
 	    glCallList(globs.lists[GLOB_UNITATOM]);
 	  glPopMatrix();
 	glPopMatrix();
-}
-
-void canvas_master::gl_stickbond(atom* i, atom* j, const vec3<double> &v, GLint *ia, GLint *ja)
-{
-	glColor3iv(ia);
-	i->is_selected() ? glLineWidth(3.0) : glLineWidth(1.0);
-	glBegin(GL_LINES);
-	  glVertex3f(0.0f,0.0f,0.0f);
-	  glVertex3f(v.x,v.y,v.z);
-	glEnd();
-	glColor3iv(ja);
-	j->is_selected() ? glLineWidth(3.0) : glLineWidth(1.0);
-	glBegin(GL_LINES);
-	  glVertex3f(v.x,v.y,v.z);
-	  glVertex3f(v.x*2.0,v.y*2.0,v.z*2.0);
-	glEnd();
 }

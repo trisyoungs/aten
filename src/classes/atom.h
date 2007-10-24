@@ -243,18 +243,12 @@ class atom
 	// Rendering
 	*/
 	protected:
-	// Drawing flag (alternates between renders)
-	bool drawn;
 	// How to draw this atom (and its associated bonds)
 	draw_style style;
 	// Bitvector for atom labelling
 	short int labels;
 
 	public:
-	// Set's the drawn flag of the atom to match that of atoms_head
-	void set_drawn(bool b) { drawn = b; }
-	// Returns the atom's drawn flag
-	bool get_drawn() { return drawn; }
 	// Sets the drawing style of the atom
 	void set_style(draw_style ds) { style = ds; }
 	// Returns the drawing style of the atom

@@ -21,10 +21,10 @@
 
 #include "classes/region.h"
 #include "classes/cell.h"
-#include "classes/component.h"
 #include "templates/reflist.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
+#include "methods/mc.h"
 
 // MC Regions
 const char *RS_strings[RS_NITEMS] = { "Cell", "Cuboid", "Spheroid", "Cylinder" };

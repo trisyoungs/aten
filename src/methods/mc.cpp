@@ -20,11 +20,9 @@
 */
 
 #include "classes/pattern.h"
-#include "classes/region.h"
 #include "model/model.h"
 #include "methods/mc.h"
 #include "base/master.h"
-#include "classes/component.h"
 #include "base/sysfunc.h"
 #include "base/mathfunc.h"
 #include "base/prefs.h"
@@ -40,7 +38,7 @@ const char *text_from_MT(mc_move i)
 mc_move MT_from_text(const char *s)
 	{ return (mc_move) enum_search("Monte Carlo move",MT_NITEMS,MT_keywords,s); }
 
-// Constructor
+// Constructors
 mc_methods::mc_methods()
 {
 	// Set initial values
@@ -66,6 +64,34 @@ mc_methods::mc_methods()
 	acceptratio_size = 0;
 	vdw_radius_scale = 1.0;
 	ncycles = 100;
+}
+
+component::component()
+{
+	// Set initial values for component
+	compmodel = NULL;
+	comppattern = NULL;
+	nrequested = 0;
+	nfilled = 0;
+	id = 0;
+	prev = NULL;
+	next = NULL;
+	allowed_moves[MT_INSERT] = TRUE;
+	allowed_moves[MT_DELETE] = FALSE;
+	allowed_moves[MT_TRANSLATE] = TRUE;
+	allowed_moves[MT_ROTATE] = TRUE;
+	allowed_moves[MT_ZMATRIX] = FALSE;
+	#ifdef MEMDEBUG
+		memdbg.create[MD_COMPONENT] ++;
+	#endif
+}
+
+// Destructor
+component::~component()
+{
+	#ifdef MEMDEBUG
+		memdbg.destroy[MD_COMPONENT] ++;
+	#endif
 }
 
 // Create ratio acceptance array

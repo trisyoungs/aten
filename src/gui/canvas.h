@@ -119,11 +119,10 @@ class canvas_master
 	void gl_subsel_3d();
 	// Draw a circle
 	void gl_circle(double, double, double);
-	// Draw a cylinder (tube) bond between atoms
-	void gl_cylinderbond(atom*, atom*, const vec3<double>&, double, GLint*, GLint*, GLint*, GLint*);
+	// Draw a cylinder along vector supplied
+	void gl_cylinder(const vec3<double> &vec, double length, bool addwire);
+	// Draw ellipsoid
 	void gl_ellipsoid(const vec3<double>&, const vec3<double>&, const vec3<double>&);
-	// Draw a line bond between atoms
-	void gl_stickbond(atom*, atom*, const vec3<double>&, GLint *ia, GLint *ja);
 	// Draw the unit cell of the model
 	void gl_cell(unitcell*);
 	// Draw a line arrow
