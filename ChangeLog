@@ -1,6 +1,6 @@
 2007-10-23	tris
 	* model/selection.cpp: fixed atom shift routines.
-	* Qt: added atom shift functions.
+	* Qt: added atom shift functions. fixed zoomout hotkey. fixed crash on prevframe action.
 	* atom numbering in canvas and atomlist now 0->(N-1).
 
 2007-10-21	tris

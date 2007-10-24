@@ -170,6 +170,13 @@ void model::seek_first_frame()
 {
 	// Seek to the first frame in the trajectory
 	dbg_begin(DM_CALLS,"model::seek_first_frame");
+	// Check that a trajectory exists!
+	if (totalframes == 0)
+	{
+		msg(DM_NONE,"No trajectory is available.\n");
+		dbg_end(DM_CALLS,"model::seek_first_frame");
+		return;
+	}
 	if (frameposition == 1)
 	{
 		msg(DM_NONE,"Already at start of trajectory.\n");
@@ -194,6 +201,13 @@ void model::seek_next_frame()
 {
 	// Seek to the next frame in the trajectory
 	dbg_begin(DM_CALLS,"model::seek_next_frame");
+	// Check that a trajectory exists!
+	if (totalframes == 0)
+	{
+		msg(DM_NONE,"No trajectory is available.\n");
+		dbg_end(DM_CALLS,"model::seek_next_frame");
+		return;
+	}
 	bool success;
 	if (frameposition == totalframes)
 	{
@@ -214,6 +228,13 @@ void model::seek_previous_frame()
 {
 	// Seek to the previous frame in the trajectory
 	dbg_begin(DM_CALLS,"model::seek_previous_frame");
+	// Check that a trajectory exists!
+	if (totalframes == 0)
+	{
+		msg(DM_NONE,"No trajectory is available.\n");
+		dbg_end(DM_CALLS,"model::seek_previous_frame");
+		return;
+	}
 	if (frameposition == 1)
 	{
 		msg(DM_NONE,"Already at start of trajectory.\n");
@@ -239,6 +260,13 @@ void model::seek_last_frame()
 {
 	// Seek to the last frame in the trajectory
 	dbg_begin(DM_CALLS,"model::seek_last_frame");
+	// Check that a trajectory exists!
+	if (totalframes == 0)
+	{
+		msg(DM_NONE,"No trajectory is available.\n");
+		dbg_end(DM_CALLS,"model::seek_last_frame");
+		return;
+	}
 	if (trajcached) currentframe = frames.last();
 	else
 	{
