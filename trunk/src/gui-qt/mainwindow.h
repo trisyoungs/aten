@@ -160,6 +160,9 @@ class AtenForm : public QMainWindow
 	// Atom Page Functions
 	public:
 	void refresh_atompage();
+	private:
+	void peek_scroll_bar();
+	void poke_scroll_bar();
 	private slots:
 	void on_AtomTreeList_itemSelectionChanged();
 	void on_ShiftUpButton_clicked(bool checked);
