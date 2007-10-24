@@ -26,11 +26,13 @@
 #include "gui-qt/mainwindow.h"
 #include <QtGui/QTreeWidget>
 #include <QtCore/QMimeData>
+#include <QtGui/QScrollBar>
 
 // Local Variables
 int liststructure_point = -1, listselection_point = -1;
 model *list_lastmodel = NULL;
 bool REFRESHING = FALSE;
+int listposition;
 
 /*
 // TTreeWidgetAtom Functions
@@ -46,7 +48,7 @@ void TTreeWidgetAtom::set_columns()
 	if (i == NULL) printf("TTreeWidgetAtom::set_columns <<<< Atom has not yet been set.\n");
 	else
 	{
-		setText(TWA_ID, itoa(i->get_id()));
+		setText(TWA_ID, itoa(i->get_id()+1));
 		setText(TWA_ELEMENT, elements.symbol(i));
 		setText(TWA_RX, ftoa(i->r.x));
 		setText(TWA_RY, ftoa(i->r.y));
@@ -171,11 +173,23 @@ void AtenForm::refresh_atompage()
 	dbg_end(DM_CALLS,"AtenForm::refresh_atompage");
 }
 
+void AtenForm::peek_scroll_bar()
+{
+	listposition = ui.AtomTreeList->verticalScrollBar()->sliderPosition();
+}
+
+void AtenForm::poke_scroll_bar()
+{
+	ui.AtomTreeList->verticalScrollBar()->setSliderPosition(listposition);
+}
+
 void AtenForm::on_ShiftUpButton_clicked(bool checked)
 {
 	master.get_currentmodel()->shift_selection_up();
 	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	peek_scroll_bar();
 	refresh_atompage();
+	poke_scroll_bar();
 	gui.mainview.postredisplay();
 }
 
@@ -183,7 +197,9 @@ void AtenForm::on_ShiftDownButton_clicked(bool checked)
 {
 	master.get_currentmodel()->shift_selection_down();
 	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	peek_scroll_bar();
 	refresh_atompage();
+	poke_scroll_bar();
 	gui.mainview.postredisplay();
 }
 

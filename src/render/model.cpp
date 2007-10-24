@@ -319,7 +319,7 @@ void canvas_master::render_model_labels()
 		// Now add on all parts of the label that are required
 		if (labels&AL_ID)
 		{
-			strcat(text,itoa(i->get_id()));
+			strcat(text,itoa(i->get_id()+1));
 			strcat(text," ");
 		}
 		if (labels&AL_ELEMENT)
