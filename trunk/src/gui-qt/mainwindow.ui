@@ -39,16 +39,6 @@
      <number>2</number>
     </property>
     <item>
-     <layout class="QHBoxLayout" >
-      <property name="margin" >
-       <number>0</number>
-      </property>
-      <property name="spacing" >
-       <number>2</number>
-      </property>
-     </layout>
-    </item>
-    <item>
      <layout class="QVBoxLayout" >
       <property name="margin" >
        <number>0</number>
@@ -6151,7 +6141,7 @@
     <string>Zoom In</string>
    </property>
    <property name="shortcut" >
-    <string>Ctrl+Shift++</string>
+    <string>Ctrl+Shift+=</string>
    </property>
   </action>
   <action name="actionViewZoomOut" >
@@ -6373,11 +6363,6 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
-   <class>TTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>ttreewidget.uih</header>
-  </customwidget>
-  <customwidget>
    <class>TTabBar</class>
    <extends>QWidget</extends>
    <header>ttabbar.uih</header>
@@ -6386,6 +6371,11 @@
    <class>TCanvas</class>
    <extends>QWidget</extends>
    <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>ttreewidget.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
