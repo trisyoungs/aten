@@ -170,3 +170,35 @@ void AtenForm::refresh_atompage()
 	REFRESHING = FALSE;
 	dbg_end(DM_CALLS,"AtenForm::refresh_atompage");
 }
+
+void AtenForm::on_ShiftUpButton_clicked(bool checked)
+{
+	master.get_currentmodel()->shift_selection_up();
+	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	refresh_atompage();
+	gui.mainview.postredisplay();
+}
+
+void AtenForm::on_ShiftDownButton_clicked(bool checked)
+{
+	master.get_currentmodel()->shift_selection_down();
+	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	refresh_atompage();
+	gui.mainview.postredisplay();
+}
+
+void AtenForm::on_MoveToStartButton_clicked(bool checked)
+{
+	master.get_currentmodel()->move_selection_to_start();
+	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	refresh_atompage();
+	gui.mainview.postredisplay();
+}
+
+void AtenForm::on_MoveToEndButton_clicked(bool checked)
+{
+	master.get_currentmodel()->move_selection_to_end();
+	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	refresh_atompage();
+	gui.mainview.postredisplay();
+}

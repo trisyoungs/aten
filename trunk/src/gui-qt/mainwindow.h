@@ -162,7 +162,10 @@ class AtenForm : public QMainWindow
 	void refresh_atompage();
 	private slots:
 	void on_AtomTreeList_itemSelectionChanged();
-
+	void on_ShiftUpButton_clicked(bool checked);
+	void on_ShiftDownButton_clicked(bool checked);
+	void on_MoveToStartButton_clicked(bool checked);
+	void on_MoveToEndButton_clicked(bool checked);
 
 	// Edit Page Functions
 	private slots:
