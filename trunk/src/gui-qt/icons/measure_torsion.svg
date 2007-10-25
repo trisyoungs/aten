@@ -185,6 +185,11 @@
        fy="63.345894"
        r="33.113495" />
   </defs>
+  <path
+     style="fill:#e6e6e3;fill-opacity:1;fill-rule:evenodd;stroke:#e1e0e6;stroke-width:0.62617165px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 92.54663,41.25526 C 69.83333,41.24329 52.85829,41.23434 21.27022,41.2177 C 21.28594,28.24564 37.26462,17.72601 56.93691,17.73637 C 76.6092,17.74674 92.56236,28.2832 92.54663,41.25526 z "
+     id="path3830"
+     sodipodi:nodetypes="ccsc" />
   <use
      x="0"
      y="0"
@@ -193,6 +198,10 @@
      transform="translate(-0.8163265,47.959184)"
      width="100"
      height="100" />
+  <path
+     id="path3876"
+     style="fill:#e6e6e3;fill-opacity:1;fill-rule:evenodd;stroke:#e1e0e6;stroke-width:0.23070447px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 95.61571,19.10343 C 95.61644,23.25938 92.24758,26.62882 88.09163,26.62882 C 83.93568,26.62882 80.56682,23.25938 80.56755,19.10343 C 80.56682,14.94748 83.93568,11.57803 88.09163,11.57803 C 92.24758,11.57803 95.61644,14.94748 95.61571,19.10343 L 95.61571,19.10343 z " />
   <use
      x="0"
      y="0"
@@ -226,18 +235,9 @@
      d="M 87.51803,19.23973 C 56.0998,43.35995 56.10091,43.3591 56.10091,43.3591"
      id="path3826" />
   <path
-     style="fill:#e6e6e3;fill-opacity:1;fill-rule:evenodd;stroke:#e1e0e6;stroke-width:0.62617165px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 92.54663,41.25526 C 69.83333,41.24329 52.85829,41.23434 21.27022,41.2177 C 21.28594,28.24564 37.26462,17.72601 56.93691,17.73637 C 76.6092,17.74674 92.56236,28.2832 92.54663,41.25526 z "
-     id="path3830"
-     sodipodi:nodetypes="ccsc" />
-  <path
      style="fill:#e6e6e3;fill-opacity:1;fill-rule:evenodd;stroke:#e1e0e6;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
      d="M 57.01741,51.65763 C 57.01741,81.096364 57.01741,81.095333 57.01741,81.095333"
      id="path3854" />
-  <path
-     id="path3876"
-     style="fill:#e6e6e3;fill-opacity:1;fill-rule:evenodd;stroke:#e1e0e6;stroke-width:0.23070447px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 95.61571,19.10343 C 95.61644,23.25938 92.24758,26.62882 88.09163,26.62882 C 83.93568,26.62882 80.56682,23.25938 80.56755,19.10343 C 80.56682,14.94748 83.93568,11.57803 88.09163,11.57803 C 92.24758,11.57803 95.61644,14.94748 95.61571,19.10343 L 95.61571,19.10343 z " />
   <path
      style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
      d="M 48.269164,44.235769 C 48.269164,73.6745 48.269164,73.673469 48.269164,73.673469"

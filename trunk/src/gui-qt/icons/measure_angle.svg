@@ -157,6 +157,10 @@
        fy="63.345894"
        r="33.113495" />
   </defs>
+  <path
+     id="path3691"
+     style="fill:#eaede8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.2710996px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 26.65819,28.427684 C 26.65904,33.311317 22.70032,37.270737 17.81668,37.270737 C 12.93305,37.270737 8.97432,33.311317 8.97518,28.427684 C 8.97432,23.54405 12.93305,19.58463 17.81668,19.58463 C 22.70032,19.58463 26.65904,23.54405 26.65819,28.427684 L 26.65819,28.427684 z " />
   <use
      x="0"
      y="0"
@@ -222,10 +226,6 @@
      style="fill:none;fill-rule:evenodd;stroke:#e8edea;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:3, 3;stroke-dashoffset:0;stroke-opacity:1"
      d="M 18.4239,28.683634 C 41.42722,70.513443 40.77595,70.923693 40.77595,70.923693"
      id="path3687" />
-  <path
-     id="path3691"
-     style="fill:#eaede8;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.2710996px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 26.65819,28.427684 C 26.65904,33.311317 22.70032,37.270737 17.81668,37.270737 C 12.93305,37.270737 8.97432,33.311317 8.97518,28.427684 C 8.97432,23.54405 12.93305,19.58463 17.81668,19.58463 C 22.70032,19.58463 26.65904,23.54405 26.65819,28.427684 L 26.65819,28.427684 z " />
   <path
      style="fill:none;fill-rule:evenodd;stroke:#e8edea;stroke-width:2.78739214;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:2.78739208, 2.78739208;stroke-dashoffset:0;stroke-opacity:1"
      d="M 91.209695,53.226538 C 39.58218,69.316272 41.04386,69.474074 41.04386,69.474074"

@@ -1,5 +1,5 @@
 # DL_POLY Unformatted Trajectory file filter.
-# Last modified: 10/10/07.
+# Last modified: 25/10/07.
 importtrajectory
 	name "DL_POLY Unformatted History"
 	extension "HISu"
@@ -51,13 +51,13 @@ importtrajectory
 		if $cell.type <> none
 			readint $recsize
 			readdouble $cell.a.x
-			readdouble $cell.b.x
-			readdouble $cell.c.x
 			readdouble $cell.a.y
-			readdouble $cell.b.y
-			readdouble $cell.c.y
 			readdouble $cell.a.z
+			readdouble $cell.b.x
+			readdouble $cell.b.y
 			readdouble $cell.b.z
+			readdouble $cell.c.x
+			readdouble $cell.c.y
 			readdouble $cell.c.z
 			readint $recsize
 			setcellaxes

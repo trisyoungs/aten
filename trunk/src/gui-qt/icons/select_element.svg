@@ -49,6 +49,13 @@
      inkscape:current-layer="svg2" />
   <defs
      id="defs4" />
+  <rect
+     style="fill:#e4e7e3;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="rect2359"
+     width="19.222904"
+     height="19.222904"
+     x="60.919491"
+     y="11.530915" />
   <use
      x="0"
      y="0"
@@ -65,13 +72,6 @@
      transform="translate(-48.610688,49.590742)"
      width="100"
      height="100" />
-  <rect
-     style="fill:#e4e7e3;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-     id="rect2359"
-     width="19.222904"
-     height="19.222904"
-     x="60.919491"
-     y="11.530915" />
   <path
      style="fill:#e4e7e3;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.69662297;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
      d="M 53.514849,50.905084 L 60.450389,94.163932 L 70.766229,88.208074 L 77.694109,100.20751 L 84.122379,96.496142 L 77.194499,84.496712 L 87.510339,78.540859 L 53.514849,50.905084 z "

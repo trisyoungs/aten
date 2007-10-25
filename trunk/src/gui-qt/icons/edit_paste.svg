@@ -138,29 +138,6 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <use
-       x="0"
-       y="0"
-       xlink:href="#g2195"
-       id="use2524"
-       transform="translate(5.4836851,4.3292251)"
-       width="100"
-       height="100" />
-    <use
-       x="0"
-       y="0"
-       xlink:href="#g2195"
-       id="use2526"
-       transform="translate(10.101525,9.2356802)"
-       width="100"
-       height="100" />
-    <rect
-       style="fill:#dddddd;fill-opacity:1;stroke:none;stroke-width:1.23961592;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2193"
-       width="65.064819"
-       height="76.740128"
-       x="15.341747"
-       y="10.354609" />
     <g
        style="fill:#dddddd;fill-opacity:1;stroke:none"
        id="g2195"
@@ -196,6 +173,29 @@
            sodipodi:nodetypes="cccc" />
       </g>
     </g>
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g2195"
+       id="use2524"
+       transform="translate(5.4836851,4.3292251)"
+       width="100"
+       height="100" />
+    <use
+       x="0"
+       y="0"
+       xlink:href="#g2195"
+       id="use2526"
+       transform="translate(10.101525,9.2356802)"
+       width="100"
+       height="100" />
+    <rect
+       style="fill:#dddddd;fill-opacity:1;stroke:none;stroke-width:1.23961592;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2193"
+       width="65.064819"
+       height="76.740128"
+       x="15.341747"
+       y="10.354609" />
     <g
        style="fill:#dddddd;fill-opacity:1;stroke:none"
        id="g2209"

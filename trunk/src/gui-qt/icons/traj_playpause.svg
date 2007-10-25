@@ -97,6 +97,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
+    <rect
+       style="fill:#e5e5e1;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.55747831;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1"
+       id="rect3599"
+       width="11.314877"
+       height="52.196865"
+       x="-79.709969"
+       y="39.977123"
+       transform="scale(-1,1)" />
     <use
        x="0"
        y="0"
@@ -122,12 +130,12 @@
        d="M 19.560448,46.069131 L 53.940331,65.918366 L 19.560448,85.7676 L 19.560448,46.069131 z "
        transform="matrix(1.3517309,0,0,1.3517309,-5.7752661,-23.103052)" />
     <rect
-       style="fill:#e5e5e1;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.55747831;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1"
-       id="rect3599"
+       style="fill:url(#linearGradient3619);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1"
+       id="rect3343"
        width="11.314877"
        height="52.196865"
-       x="-79.709969"
-       y="39.977123"
+       x="-70.463379"
+       y="23.973734"
        transform="scale(-1,1)" />
     <use
        x="0"
@@ -153,13 +161,5 @@
        inkscape:randomized="0"
        d="M 19.560448,46.069131 L 53.940331,65.918366 L 19.560448,85.7676 L 19.560448,46.069131 z "
        transform="matrix(1.3517309,0,0,1.3517309,-15.021857,-39.106443)" />
-    <rect
-       style="fill:url(#linearGradient3619);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:2.63393869;stroke-opacity:1"
-       id="rect3343"
-       width="11.314877"
-       height="52.196865"
-       x="-70.463379"
-       y="23.973734"
-       transform="scale(-1,1)" />
   </g>
 </svg>
