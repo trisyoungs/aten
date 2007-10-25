@@ -43,6 +43,8 @@ gui_qt::gui_qt()
 	#ifdef MEMDEBUG
 		printf("Constructor : gui_qt\n");
 	#endif
+	trajectory_playing = FALSE;
+	trajectory_timerid = -1;
 	progress = NULL;
 }
 
@@ -122,17 +124,35 @@ void gui_qt::show(gui_window gw)
 // Update trajectory controls
 void gui_qt::update_trajcontrols()
 {
-	// (De)Sensitize trajectory control widgets
-	model *m = master.get_currentmodel();
-	//if (m->traj.get_totalframes() != 0)
-	//{
-		// Desensitise all but play/pause if the trajectory is currently playing...
-		//if (m->traj.get_playing()) for (int n=0; n<4; n++) gtk_widget_set_sensitive(GTK_WIDGET(trajcontrols[n]),FALSE);
-		//else for (int n=0; n<4; n++) gtk_widget_set_sensitive(GTK_WIDGET(trajcontrols[n]),TRUE);
-		// Play/pause is always active...
-		//gtk_widget_set_sensitive(GTK_WIDGET(trajcontrols[4]),TRUE);
-	//}
-	//else for (int n=0; n<5; n++) gtk_widget_set_sensitive(GTK_WIDGET(trajcontrols[n]),FALSE);
+	// First see if the model has a trajectory associated to it
+	if (master.get_currentmodel()->get_totalframes() == 0)
+	{
+		mainwindow->ui.actionFrameFirst->setDisabled(TRUE);
+		mainwindow->ui.actionFramePrevious->setDisabled(TRUE);
+		mainwindow->ui.actionFrameNext->setDisabled(TRUE);
+		mainwindow->ui.actionFrameLast->setDisabled(TRUE);
+		mainwindow->ui.actionPlayPause->setDisabled(TRUE);
+	}
+	else
+	{
+		// If the trajectory is playing, desensitise all but the play/pause button
+		if (trajectory_playing)
+		{
+			mainwindow->ui.actionFrameFirst->setDisabled(TRUE);
+			mainwindow->ui.actionFramePrevious->setDisabled(TRUE);
+			mainwindow->ui.actionFrameNext->setDisabled(TRUE);
+			mainwindow->ui.actionFrameLast->setDisabled(TRUE);
+			mainwindow->ui.actionPlayPause->setDisabled(FALSE);
+		}
+		else
+		{
+			mainwindow->ui.actionFrameFirst->setDisabled(FALSE);
+			mainwindow->ui.actionFramePrevious->setDisabled(FALSE);
+			mainwindow->ui.actionFrameNext->setDisabled(FALSE);
+			mainwindow->ui.actionFrameLast->setDisabled(FALSE);
+			mainwindow->ui.actionPlayPause->setDisabled(FALSE);
+		}
+	}
 }
 
 // Change msgbox font
@@ -255,6 +275,8 @@ void gui_qt::refresh()
 	mainwindow->refresh_cellpage();
 	// Update the forcefield list
 	mainwindow->refresh_forcefieldpage();
+	// Update trajectory playback controls
+	gui.update_trajcontrols();
 	// Request redraw of the main canvas
 	mainview.postredisplay();
 	// If the model save_point is recent, disable save button
@@ -409,4 +431,13 @@ void gui_qt::progress_terminate()
 	progress->setValue(progress->maximum());
 	delete progress;
 	progress = NULL;
+}
+
+// Stop trajectory playback
+void gui_qt::stop_trajectory_playback()
+{
+	mainwindow->ui.ModelView->killTimer(trajectory_timerid);
+	mainwindow->ui.actionPlayPause->setChecked(FALSE);
+	trajectory_playing = FALSE;
+	refresh();
 }

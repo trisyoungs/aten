@@ -138,7 +138,6 @@ class AtenForm : public QMainWindow
 	void on_actionFrameFirst_triggered(bool checked);
 	void on_actionFrameLast_triggered(bool checked);
 	void on_actionPlayPause_triggered(bool checked);
-	void on_actionPlayPause_timerEvent(QTimerEvent *event);
 
 	/*
 	// Widget Stack Functions
@@ -338,8 +337,6 @@ class AtenForm : public QMainWindow
 	QFileDialog *openffdialog;
 	// Surface File Dialogs
 	QFileDialog *opensurfacedialog, *savesurfacedialog;
-	// Trajectory playback timer
-	QTimer *TrajectoryTimer;
 
 	private slots:
 

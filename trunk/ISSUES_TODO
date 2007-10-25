@@ -14,7 +14,7 @@ General To-Do list:
 	- Complete spacegroups list
 	- UFF - oxidation state, energy conversion, torsions, angle periodicity
 	- Improve SD minimiser
-	- Add NR / simplex minimisers
+	- Add NR / simplex / other minimisers
 	- View along cell axes (or Miller planes)
 	- Accelrys MSI import filter
 	- EPSR Ato import / export? filters
@@ -24,12 +24,11 @@ General Qt To-Do list:
 	- Prefs window (partial)
 	- Minimiser stack page (partial)
 	- Disorder stack page (partial)
-	- Trajectory playback
 	- Progress dialogs are not application modal
 
 Manual To-Do list:
 	- Section on forcefields
-	- Section on Qt GUI
+	- Section on GUIs
 	- Filters Handbook is incomplete 
 
 Optimisation To-Do list:

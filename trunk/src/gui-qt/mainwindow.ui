@@ -33,7 +33,7 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>9</number>
+     <number>2</number>
     </property>
     <property name="spacing" >
      <number>6</number>
@@ -3978,10 +3978,10 @@
       <widget class="QWidget" name="DisorderPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="spacing" >
-         <number>6</number>
+         <number>2</number>
         </property>
         <item>
          <widget class="QGroupBox" name="DisorderGroup" >
@@ -5974,6 +5974,9 @@
    </property>
   </action>
   <action name="actionPlayPause" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/playback/icons/traj_playpause.svg</iconset>
    </property>

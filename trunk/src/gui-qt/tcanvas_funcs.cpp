@@ -25,6 +25,9 @@
 #include "gui/gui.h"
 #include <QtGui/QMouseEvent>
 
+// Local variables
+bool DONTDRAW = FALSE;
+
 TCanvas::TCanvas(QWidget *parent)
 {
 	canvas = NULL;
@@ -116,3 +119,19 @@ void TCanvas::wheelEvent(QWheelEvent *event)
 	else gui.mainview.inform_scroll(FALSE);
 }
 
+void TCanvas::timerEvent(QTimerEvent *event)
+{
+	// Move on to the next frame in the trajectory
+	// Check that we're not still drawing the last frame from the last timerEvent
+	if (DONTDRAW) printf("Still drawing previous frame.\n");
+	else
+	{
+		DONTDRAW = TRUE;
+		model *m = master.get_currentmodel();
+		m->seek_next_frame();
+		if (m->get_frameposition() == m->get_totalframes()) gui.stop_trajectory_playback();
+		gui.update_labels();
+		gui.mainview.postredisplay();
+		DONTDRAW = FALSE;
+	}
+}
