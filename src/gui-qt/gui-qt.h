@@ -136,6 +136,27 @@ class gui_qt : public gui_master
 	widgetcanvas mainview;
 
 	/*
+	// Trajectory State
+	*/
+	private:
+	// Whether the trajectory is currently playing
+	bool trajectory_playing;
+	// ID of rtrajectory timer
+	int trajectory_timerid;
+
+	public:
+	// Return state of trajectory playback
+	bool get_trajectory_playing() { return trajectory_playing; }
+	// Set state of trajectory playback
+	void set_trajectory_playing(bool b) { trajectory_playing = b; }
+	// Return trajectory timer id
+	int get_trajectory_timerid() { return trajectory_timerid; }
+	// Set state of trajectory playback
+	void set_trajectory_timerid(int i) { trajectory_timerid = i; }
+	// Stop trajectory playback
+	void stop_trajectory_playback();
+
+	/*
 	// Progress Dialog
 	*/
 	private:

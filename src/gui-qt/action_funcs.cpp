@@ -437,14 +437,18 @@ void AtenForm::on_actionFrameLast_triggered(bool checked)
 
 void AtenForm::on_actionPlayPause_triggered(bool checked)
 {
-	// If we're already playing, stop the timer
-}
-
-void AtenForm::on_actionPlayPause_timerEvent(QTimerEvent *event)
-{
-	// Move on to the next frame in the trajectory
-	model *m = master.get_currentmodel();
-	m->seek_next_frame();
+	// If button is depressed, begin playback
+	if (checked)
+	{
+		gui.set_trajectory_timerid(ui.ModelView->startTimer(100));
+		gui.set_trajectory_playing(TRUE);
+	}
+	else
+	{
+		ui.ModelView->killTimer(gui.get_trajectory_timerid());
+		gui.set_trajectory_playing(FALSE);
+	}
+	gui.update_trajcontrols();
 }
 
 /*

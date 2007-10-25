@@ -1,6 +1,6 @@
 2007-10-25	tris
 	* completed svg optimisation.
-	* fixed trajectory camera adjustment.
+	* trajectory playback: camera adjustment, Qt timer playback.
 	* filters/dlp.hisu: fixed cell read.
 	* file/variables.cpp: fixed FC_SET* commands.
 
