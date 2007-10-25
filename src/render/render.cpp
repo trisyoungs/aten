@@ -69,9 +69,19 @@ void canvas_master::render_scene(model *source)
 	// Clear colour and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// Grab rotation matrix for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
-	trajparent == NULL ? displaymodel->get_rotation_matrix(rotmat) : trajparent->get_rotation_matrix(rotmat);
-	camrot = (trajparent == NULL ? displaymodel->get_camrot() : trajparent->get_camrot());
+	// Grab rotation & camera matrices, and camera rotation for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
+	if (trajparent == NULL)
+	{
+		displaymodel->get_rotation_matrix(rotmat);
+		displaymodel->get_camera_matrix(cammat);
+		camrot = displaymodel->get_camrot();
+	}
+	else
+	{
+		trajparent->get_rotation_matrix(rotmat);
+		trajparent->get_camera_matrix(cammat);
+		camrot = trajparent->get_camrot();
+	}
 
 	// Draw on the rotation globe
 	if (prefs.should_render(VO_GLOBE)) render_rotation_globe(rotmat, camrot);
@@ -96,7 +106,6 @@ void canvas_master::render_scene(model *source)
 	// Reset GLs modelview matrix and apply camera matrix from model
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	displaymodel->get_camera_matrix(cammat);
 	glMultMatrixd(cammat);
 
 	// Draw guide if visible

@@ -199,27 +199,6 @@
        x2="90.625114"
        y2="63.345894" />
   </defs>
-  <use
-     x="0"
-     y="0"
-     xlink:href="#g2455"
-     id="use2461"
-     transform="translate(50.957601,0.1592425)"
-     width="100"
-     height="100" />
-  <path
-     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#e4e3e3;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 12.636381,58.695097 L 98.191781,58.695097"
-     id="path4498"
-     sodipodi:nodetypes="cc" />
-  <use
-     x="0"
-     y="0"
-     xlink:href="#g2464"
-     id="use2471"
-     transform="translate(50.957601,0)"
-     width="100"
-     height="100" />
   <g
      id="g2455">
     <path
@@ -239,10 +218,18 @@
        style="fill:url(#radialGradient2449);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="path3478" />
   </g>
+  <use
+     x="0"
+     y="0"
+     xlink:href="#g2455"
+     id="use2461"
+     transform="translate(50.957601,0.1592425)"
+     width="100"
+     height="100" />
   <path
-     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 6.1082224,46.683045 L 91.663628,46.683045"
-     id="path3261"
+     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#e4e3e3;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 12.636381,58.695097 L 98.191781,58.695097"
+     id="path4498"
      sodipodi:nodetypes="cc" />
   <g
      id="g2464">
@@ -267,4 +254,17 @@
          d="M 76.481136,19.842065 C 76.481731,23.241371 73.726216,25.99737 70.326909,25.99737 C 66.927602,25.99737 64.172087,23.241371 64.172682,19.842065 C 64.172087,16.442758 66.927602,13.68676 70.326909,13.68676 C 73.726216,13.68676 76.481731,16.442758 76.481136,19.842065 L 76.481136,19.842065 z " />
     </g>
   </g>
+  <use
+     x="0"
+     y="0"
+     xlink:href="#g2464"
+     id="use2471"
+     transform="translate(50.957601,0)"
+     width="100"
+     height="100" />
+  <path
+     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 6.1082224,46.683045 L 91.663628,46.683045"
+     id="path3261"
+     sodipodi:nodetypes="cc" />
 </svg>

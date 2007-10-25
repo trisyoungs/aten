@@ -221,6 +221,10 @@ void canvas_master::inform_keydown(key_code key)
 {
 	// Check datamodel...
 	if (displaymodel == NULL) return;
+	static model *viewtarget;
+	// For view operations when we have a trajectory, apply all movement to the parent model
+	viewtarget = displaymodel->get_trajparent();
+	if (viewtarget == NULL) viewtarget = displaymodel;
 	switch (key)
 	{
 		case (KC_SHIFT_L):
@@ -243,19 +247,19 @@ void canvas_master::inform_keydown(key_code key)
 			break;
 		//case (GDK_Escape): master.check_before_close(); break;
 		case (KC_LEFT):
-			displaymodel->rotate(-10.0,0.0);
+			viewtarget->rotate(-10.0,0.0);
 			postredisplay();
 			break;
 		case (KC_RIGHT):
-			displaymodel->rotate(10.0,0.0);
+			viewtarget->rotate(10.0,0.0);
 			postredisplay();
 			break;
 		case (KC_UP):
-			displaymodel->rotate(0.0,-10.0);
+			viewtarget->rotate(0.0,-10.0);
 			postredisplay();
 			break;
 		case (KC_DOWN):
-			displaymodel->rotate(0.0,10.0);
+			viewtarget->rotate(0.0,10.0);
 			postredisplay();
 			break;
 	}
@@ -677,12 +681,16 @@ void canvas_master::mode_scroll(bool scrollup)
 	// Handle mouse-wheel scroll events.
 	// Do the requested wheel action as defined in the control panel
 	dbg_begin(DM_CALLS,"canvas_master::mode_scroll");
+	static model *viewtarget;
 	if (displaymodel == NULL)
 	{
 		printf("Pointless canvas_master::mode_scroll - datamodel == NULL.\n");
 		dbg_end(DM_CALLS,"canvas_master::mode_scroll");
 		return;
 	}
+	// For view operations when we have a trajectory, apply all movement to the parent model
+	viewtarget = displaymodel->get_trajparent();
+	if (viewtarget == NULL) viewtarget = displaymodel;
 	switch (prefs.get_mb_action(MB_WHEEL))
 	{
 		case (MA_NONE):
@@ -691,14 +699,14 @@ void canvas_master::mode_scroll(bool scrollup)
 			use_selectedmode();
 			break;
 		case (MA_VIEWROTATE):
-			scrollup ? displaymodel->rotate(1.0,0.0) : displaymodel->rotate(-1.0,0.0);
+			scrollup ? viewtarget->rotate(1.0,0.0) : viewtarget->rotate(-1.0,0.0);
 			break;
 		case (MA_VIEWTRANSLATE):
 			break;
 		case (MA_VIEWZOOM):
 			if (prefs.using_perspective())
-				scrollup ? displaymodel->adjust_camera(0.0,0.0,-5.0,0.0) : displaymodel->adjust_camera(0.0,0.0,5.0,0.0);
-			else scrollup ? displaymodel->adjust_ortho_size(1.0) : displaymodel->adjust_ortho_size(-1.0);
+				scrollup ? viewtarget->adjust_camera(0.0,0.0,-5.0,0.0) : viewtarget->adjust_camera(0.0,0.0,5.0,0.0);
+			else scrollup ? viewtarget->adjust_ortho_size(1.0) : viewtarget->adjust_ortho_size(-1.0);
 			break;
 	}
 	postredisplay();

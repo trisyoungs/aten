@@ -177,6 +177,11 @@
        x2="90.625114"
        y2="63.345894" />
   </defs>
+  <path
+     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#e4eae8;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 50.90041,98.197967 L 12.78727,98.197967 L 12.78727,12.642564 L 50.90041,12.642564"
+     id="path3291"
+     sodipodi:nodetypes="cccc" />
   <use
      x="0"
      y="0"
@@ -195,6 +200,10 @@
      sodipodi:ry="16.939291"
      d="M 122.4841 47.27103 A 16.939291 16.939291 0 1 1  88.605516,47.27103 A 16.939291 16.939291 0 1 1  122.4841 47.27103 z"
      transform="translate(-72.092861,-14.946585)" />
+  <path
+     id="path3295"
+     style="fill:#e7e8e1;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.33620161px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 93.46536,32.324445 C 93.46642,38.380837 88.55704,43.291077 82.50065,43.291077 C 76.44426,43.291077 71.53488,38.380837 71.53594,32.324445 C 71.53488,26.268054 76.44426,21.357815 82.50065,21.357815 C 88.55704,21.357815 93.46642,26.268054 93.46536,32.324445 L 93.46536,32.324445 z " />
   <use
      x="0"
      y="0"
@@ -211,35 +220,6 @@
      transform="translate(48.937607,45.442064)"
      width="100"
      height="100" />
-  <use
-     x="0"
-     y="0"
-     xlink:href="#path4651"
-     id="use2642"
-     transform="translate(49.131804,45.247867)"
-     width="100"
-     height="100" />
-  <use
-     x="0"
-     y="0"
-     xlink:href="#g3248"
-     id="use2630"
-     transform="translate(-48.937607,45.247867)"
-     width="100"
-     height="100" />
-  <use
-     x="0"
-     y="0"
-     xlink:href="#g3248"
-     id="use2632"
-     transform="translate(0.1941969,45.442064)"
-     width="100"
-     height="100" />
-  <path
-     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#e4eae8;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 50.90041,98.197967 L 12.78727,98.197967 L 12.78727,12.642564 L 50.90041,12.642564"
-     id="path3291"
-     sodipodi:nodetypes="cccc" />
   <path
      sodipodi:type="arc"
      style="fill:#afafff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -253,20 +233,11 @@
   <use
      x="0"
      y="0"
-     xlink:href="#g3248"
-     id="use2628"
-     transform="translate(-48.937607,0)"
+     xlink:href="#path4651"
+     id="use2642"
+     transform="translate(49.131804,45.247867)"
      width="100"
      height="100" />
-  <path
-     id="path3295"
-     style="fill:#e7e8e1;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.33620161px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 93.46536,32.324445 C 93.46642,38.380837 88.55704,43.291077 82.50065,43.291077 C 76.44426,43.291077 71.53488,38.380837 71.53594,32.324445 C 71.53488,26.268054 76.44426,21.357815 82.50065,21.357815 C 88.55704,21.357815 93.46642,26.268054 93.46536,32.324445 L 93.46536,32.324445 z " />
-  <path
-     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 43.246983,89.460748 L 5.1338449,89.460748 L 5.1338449,3.9053431 L 43.246983,3.9053431"
-     id="rect4688"
-     sodipodi:nodetypes="cccc" />
   <g
      id="g3248"
      transform="translate(36.517985,-46.191645)">
@@ -283,6 +254,35 @@
        style="fill:url(#radialGradient3258);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        id="path3254" />
   </g>
+  <use
+     x="0"
+     y="0"
+     xlink:href="#g3248"
+     id="use2630"
+     transform="translate(-48.937607,45.247867)"
+     width="100"
+     height="100" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#g3248"
+     id="use2632"
+     transform="translate(0.1941969,45.442064)"
+     width="100"
+     height="100" />
+  <use
+     x="0"
+     y="0"
+     xlink:href="#g3248"
+     id="use2628"
+     transform="translate(-48.937607,0)"
+     width="100"
+     height="100" />
+  <path
+     style="opacity:0.64130435;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:6, 3;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 43.246983,89.460748 L 5.1338449,89.460748 L 5.1338449,3.9053431 L 43.246983,3.9053431"
+     id="rect4688"
+     sodipodi:nodetypes="cccc" />
   <use
      x="0"
      y="0"

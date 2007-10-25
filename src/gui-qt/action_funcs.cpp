@@ -89,6 +89,7 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 {
 	// If the source action is not checked, ignore the signal
 	if (!action->isChecked()) return;
+	model *m, *trajframe;
 	draw_style ds = DS_STICK;
 	if (action == ui.actionStyleStick) ds = DS_STICK;
 	else if (action == ui.actionStyleTube) ds = DS_TUBE;
@@ -97,9 +98,16 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 	else if (action == ui.actionStyleIndividual) ds = DS_INDIVIDUAL;
 	// Activate the new draw style
 	prefs.set_static_style(ds);
-	// 'Click' the corresponding menu item
-	master.get_currentmodel()->project_all();
-	master.get_currentmodel()->log_change(LOG_VISUAL);
+	// Inform the displayed model
+	m = master.get_currentmodel();
+	m->project_all();
+	m->log_change(LOG_VISUAL);
+	trajframe = m->get_currentframe();
+	if (trajframe != NULL)
+	{
+		trajframe->project_all();
+		trajframe->log_change(LOG_VISUAL);
+	}
 	gui.mainview.postredisplay();
 }
 

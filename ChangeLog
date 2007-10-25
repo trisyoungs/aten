@@ -1,10 +1,18 @@
+2007-10-25	tris
+	* completed svg optimisation.
+	* fixed trajectory camera adjustment.
+	* filters/dlp.hisu: fixed cell read.
+	* file/variables.cpp: fixed FC_SET* commands.
+
+2007-10-24	tris
+	* model rendering updated.
+	* optimised svg icons (partial).
+
 2007-10-23	tris
 	* model/selection.cpp: fixed atom shift routines.
 	* Qt: added atom shift functions. fixed zoomout hotkey.
 	fixed crash on prevframe action. updated disorder stack page.
 	* atom numbering in canvas and atomlist now 0->(N-1).
-	* model rendering updated.
-	* optimised svg icons (partial).
 
 2007-10-21	tris
 	* templates/command.h: added 'string-as-is' variable specifier.
