@@ -1,10 +1,10 @@
-\chapter{Four Step Installation}
+\chapter{Installation}
 \label{sec:install}
 
 \section{\emph{Disclaimer}}
 \label{sec:disclaimer}
 
-\progname{} has been compiled successfully on Linux machines running SuSE 9.3, OpenSuSE 10.2, and RedHat Enterprise 4, an Intel iMac running OS X 10.4.10, and XXX. No doubt with (or without) tweaking it will run on other systems.\\
+\progname{} has been compiled successfully on Linux machines running SuSE 9.3 (with the GTK gui), OpenSuSE 10.2, and RedHat Enterprise 4, an Intel iMac running OS X 10.4.10, and XXX. No doubt with (or without) tweaking it will run on other systems.\\
 
 \progname{} is in development, and as such might contain a bug or two. Should you come across a crash or an issue that needs to be fixed, \emph{please} report them so they can be fixed.\\
 
@@ -35,7 +35,45 @@ When installing Qt you have several choices. Either you can get the Fink or MacP
 
 You may find that the version of GNU Autotools you have is not recent enough. Check with {\sffamily autoconf {-}{-}version} - 2.59 is not sufficient! An up-to-date version can be installed via Fink.\\
 
-\section{Installation}
+\section{Configuration Options}
+
+Possible {\sffamily configure} options are listed here. Most are present just to work around compilation issues, but some provide functionality in the program (in particular, the choice of GUI to build in).
+
+\begin{description}
+
+	\item[{-}{-}with-gl-includedir]
+		Sets the location of the OpenGL headers.
+	\begin{description}
+		\item[e.g. {-}{-}with-gl-includedir=/usr/include]
+			Sets the location of the OpenGL headers (GL/GL.h etc.) to /usr/include.
+	\end{description}
+
+	\item[{-}{-}with-gui] Specifies GUI to compile with the program. Valid options are:
+	\begin{description}
+		\item[{-}{-}with-gui=none\its]
+			No GUI should be compiled (i.e. create a command-line only version)
+		\item[{-}{-}with-gui=gtk\its]
+			Compile the legacy GTK+ GUI.
+		\item[{-}{-}with-gui=qt\its]
+			Compile the Qt4 GUI (default).
+	\end{description}
+
+	\item[{-}{-}with-qt] Specifies which installation of Qt4 to use on Apple Macs. Valid options are:
+	\begin{description}
+		\item[{-}{-}with-qt=framework]
+			Indicates that the Qt4 framework installation (downloaded from TrollTech.com) rather than a Fink or Macports version should be used.
+	\end{description}
+
+	\item[{-}{-}with-qtdir] Sets the location of the Qt4 development tools ({\sffamily moc}, {\sffamily uic}, and {\sffamily rcc}). This should only need to be set if you also have Qt3 installed and your \$PATH favours the older version's binaries.
+	\begin{description}
+		\item[e.g. {-}{-}with-qtdir=/usr/local/bin]
+			Sets the location of the Qt4 development tools to /usr/local/bin.
+	\end{description}
+
+\end{description}
+
+
+\section{Four Step Installation}
 
 \begin{description}
 	\item[Step 1:\its] Get the source.
@@ -78,6 +116,10 @@ You may find that the version of GNU Autotools you have is not recent enough. Ch
 	\emph{When linking I get \dqte{Undefined references to \qte{pango\_x\_font\_subfont\_xlfd}} (or similar).}
 	\begin{itemize}
 		\item The version of gtkglext you have installed is a bit retro (version 1.0.6 uses tokens from the pango subsystem that have since been made obsolete) so download and install version 1.2.0 from gtkglext.sourceforge.net.
+	\end{itemize}
+	\emph{When the Qt GUI is building, I get a version error for {\sffamily moc} along the lines of \qte{uic: File generated with too recent version of Qt Designer (4.0 vs. 3.*.*)}.}
+	\begin{itemize}
+		\item If you have both Qt4 and Qt3 installed \$PATH is often set so that the Qt3 binaries are found first. Reconfigure the build with {\sffamily configure {-}{-}with-qdtir=$path$} where $path$ is the location of the Qt4 binaries {\sffamily moc}, {\sffamily uic}, and {\sffamily rcc}.
 	\end{itemize}
 
 \end{description}
