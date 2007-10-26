@@ -62,6 +62,9 @@ QTDIR=""
 AC_ARG_WITH([qtdir],[AC_HELP_STRING([--with-qtdir=<dir>],
     [Specify location of Qt4 developer tools (moc, uic, and rcc) [default=""]])], ,
     [with_qtdir=])
+if test "x$with_qtdir" != "x"; then
+  QTDIR="$with_qtdir/"
+fi
 
 
 # Add in Apple configuration arguments
