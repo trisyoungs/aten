@@ -59,20 +59,12 @@ class component
 	int nrequested, nfilled;
 	// Lists which MC move types are allowed for this component
 	bool allowed_moves[MT_NITEMS];
-	// ID of the component in the list
-	int id;
 	// Name of the component
 	dnchar name;
 
 	public:
 	// Type of region the component is limited to
 	region area;
-	// Return the ID of the component
-	int get_id() { return id; }
-	// Set the ID of the component
-	void set_id(int i) { id = i; }
-	// Decrease the id of the component by 1
-	void decrease_id() { id --; }
 	// Set the component's model
 	void set_model(model *m) { compmodel = m; }
 	// Return the component's model
@@ -168,23 +160,11 @@ class mc_methods
 	/*
 	// Component list (for disorder builder)
 	*/
-	private:
+	public:
 	// List of component models to use in MC insertion
 	list<component> components;
-
-	public:
-	// Return the list of components
-	component *get_components() { return components.first(); }
-	// Return the number of components in the list
-	int get_ncomponents() { return components.size(); }
-	// Adds a component to the list
-	component *add_component();
-	// Removes a component from the list
-	void remove_component(component*);
 	// Return the component with name specified
 	component *get_component_by_name(const char*);
-	// Return the component with index specified
-	component *get_component_by_index(int i) { return components[i]; }
 };
 
 extern mc_methods mc;

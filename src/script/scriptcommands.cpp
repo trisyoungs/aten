@@ -75,7 +75,6 @@ const char *SC_data[SC_NITEMS] = {
 	"addcomponent,GGG",
 	"disorder,G",
 	"printcomponents",
-	"setcellcentre,G",
 	"setcentre,GGGG",
 	"setgeometry,GGGG|g",
 	"setoverlap,GG",

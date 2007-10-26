@@ -488,28 +488,27 @@ void canvas_master::render_model_regions()
 {
 	// Draw on insertion regions
 	static vec3<double> centre, size;
-	static GLint *colour, tempcol[4];
+	static GLint colour[4];
 	int i = 0;
-	tempcol[3] = (GLint) (0.4 * INT_MAX);
-	glEnable(GL_BLEND);		// Enable alpha component
-	glEnable(GL_LIGHTING);		// Make sure lighting is on
-	component *c = mc.get_components();
-	while (c != NULL)
+	// Enable alpha component and make sure lighting is on
+	glEnable(GL_BLEND);
+	glEnable(GL_LIGHTING);
+	for (component *c = mc.components.first(); c != NULL; c = c->next)
 	{
-		colour = elements.ambient(i);
-		tempcol[0] = colour[0];
-		tempcol[1] = colour[1];
-		tempcol[2] = colour[2];
-		glMaterialiv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE,tempcol);
+		elements.ambient(i, colour);
+		colour[3] = (GLint) (0.4 * INT_MAX);
+		glMaterialiv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE,colour);
 		glPushMatrix();
-		  c->area.get_usecellcentre() ? centre = displaymodel->cell.get_origin() : centre = c->area.get_centre();
+		  centre = c->area.get_centre();
 		  size = c->area.get_size();
 		  switch (c->area.get_shape())
 		  {
+			case (RS_CELL):
+				break;
 			case (RS_CUBOID):
 				glTranslated(centre.x,centre.y,centre.z);
 				glScaled(size.x,size.y,size.z);
-				glutWireCube(1.0);
+				glutSolidCube(1.0);
 				break;
 			case (RS_SPHEROID):
 				glTranslated(centre.x,centre.y,centre.z);
@@ -518,12 +517,13 @@ void canvas_master::render_model_regions()
 				break;
 			default:
 				printf("render_model_regions :: Region type not done.\n");
+				break;
 		  }
 		glPopMatrix();
-		c = c->next;
 		i ++;
 	}
-	glDisable(GL_BLEND);
+	// Turn off blending (if not antialiasing)
+	if (!prefs.get_gl_option(GO_LINEALIASING) && !prefs.get_gl_option(GO_POLYALIASING)) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
 }
 

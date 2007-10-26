@@ -35,6 +35,15 @@ void AtenForm::refresh_forcefieldpage()
 		item = new QListWidgetItem(ui.ForcefieldList);
 		item->setText(ff->get_name());
 	}
+	// Select the current FF.
+	if (master.get_currentff() == NULL) ui.ForcefieldList->setCurrentRow(0);
+	else ui.ForcefieldList->setCurrentRow(master.get_currentff_id());
+}
+
+void AtenForm::on_ForcefieldList_currentRowChanged(int row)
+{
+	// Set the current forcefield in master to reflect the list change
+	master.set_currentff_by_id(row);
 }
 
 void AtenForm::on_LoadForcefieldButton_clicked(bool checked)
@@ -43,8 +52,8 @@ void AtenForm::on_LoadForcefieldButton_clicked(bool checked)
 	if (openffdialog->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = openmodeldialog->selectedFilter();
-		filename = openmodeldialog->selectedFiles().first();
+		QString filter = openffdialog->selectedFilter();
+		filename = openffdialog->selectedFiles().first();
 		master.load_ff(qPrintable(filename));
 		refresh_forcefieldpage();
 	}

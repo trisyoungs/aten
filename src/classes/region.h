@@ -50,8 +50,6 @@ class region
 	region_shape shape;
 	// Coordinates of the centre of any defined region
 	vec3<double> centre;
-	// Whether 'centre' should be set to the box centre automatically
-	bool usecellcentre;
 	// Size of the region
 	vec3<double> size;
 	// Length of cylindrical region
@@ -72,10 +70,6 @@ class region
 	void set_size(vec3<double> v) { size = v; }
 	// Returns the size of the defined region
 	vec3<double> get_size() { return size; }
-	// Sets whether to use the cell centre as the region centre
-	void set_usecellcentre(bool b) { usecellcentre = b; }
-	// Returns whether to use the cell centre as the region centre
-	bool get_usecellcentre() { return usecellcentre; }
 	// Sets the length of the region (for some region types)
 	void set_length(double v) { length = v; }
 	// Returns the region length

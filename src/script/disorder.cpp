@@ -47,7 +47,7 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			m = master.find_model(cmd->datavar[1]->get_as_char());
 			if (m != NULL)
 			{
-				c = mc.add_component();
+				c = mc.components.add();
 				c->set_model(m);
 				c->set_nrequested(cmd->datavar[2]->get_as_int());
 				c->set_name(cmd->datavar[0]->get_as_char());
@@ -60,7 +60,7 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			break;
 		case (SC_PRINTCOMPONENTS):	// Print current component list ('printcomponents')
 			msg(DM_NONE,"Current component list:\n");
-			c = mc.get_components();
+			c = mc.components.first();
 			c != NULL ? printf("Name         Nmols  I D T R Z  Model         Region       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
 				: printf("None.\n");
 			while (c != NULL)
@@ -82,7 +82,7 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			}
 			break;
 		case (SC_DISORDER):		// Performs MC insertion ('disorder <ncycles>')
-			if (mc.get_ncomponents() == 0)
+			if (mc.components.size() == 0)
 			{
 				msg(DM_NONE,"MC insertion requires a list of components.\n");
 				break;
@@ -92,7 +92,6 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			mc.disorder(m2);
 			break;
 		case (SC_SETCENTRE):
-		case (SC_SETCELLCENTRE):
 		case (SC_SETOVERLAP):
 		case (SC_SETSHAPE):
 		case (SC_SETGEOMETRY):
@@ -111,11 +110,7 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 					if (rs != RS_NITEMS) c->area.set_shape(rs);
 					break;
 				case (SC_SETCENTRE):	// Set region centre to position ('setcentre <name> <x y z>')
-					c->area.set_usecellcentre(FALSE);
 					c->area.set_centre(cmd->get_vector3d(1));
-					break;
-				case (SC_SETCELLCENTRE):// Set region centre to cell centre ('setcellcentre <name>')
-					c->area.set_usecellcentre(TRUE);
 					break;
 				case (SC_SETGEOMETRY):	// Set geometry of region ('setgeometry <name> <x y z> [l]')
 					c->area.set_size(cmd->get_vector3d(1));

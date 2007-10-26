@@ -1,4 +1,5 @@
 Issues with the current version:
+	- Energy calculation is erroneous (intermolecular VDW?)
 	- Closing main window with [x] does not ask to save modified models.
 	- Save image provokes GLXBadExtension error (on some cards), affects canvas on others.
 	- Spherical regions in disordered builder have poor randomness.
@@ -22,8 +23,7 @@ General To-Do list:
 General Qt To-Do list:
 	- Forcefield stack page and manager/edit window
 	- Prefs window (partial)
-	- Minimiser stack page (partial)
-	- Disorder stack page (partial)
+	- Minimiser stack page (partial - needs current energy/forces - convergence controls useless)
 	- Progress dialogs are not application modal
 
 Manual To-Do list:

@@ -75,7 +75,6 @@ const char *SC_syntax[SC_NITEMS] = {
 	"addcomponent <name> <model> <nmols>",
 	"disorder <nsteps>",
 	"printcomponents",
-	"setcellcentre <name>",
 	"setcentre <name> <x> <y> <z>",
 	"setgeometry <name> <x> <y> <z> [l]",
 	"setoverlap <name> yes|no",
