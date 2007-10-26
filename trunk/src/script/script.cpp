@@ -286,7 +286,6 @@ void script::run()
 				case (SC_ADDCOMPONENT):
 				case (SC_DISORDER):
 				case (SC_PRINTCOMPONENTS):
-				case (SC_SETCELLCENTRE):
 				case (SC_SETCENTRE):
 				case (SC_SETGEOMETRY):
 				case (SC_SETOVERLAP):

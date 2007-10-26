@@ -40,7 +40,6 @@ region::region()
 {
 	shape = RS_CELL;
 	centre.zero();
-	usecellcentre = TRUE;
 	allowoverlap = TRUE;
 	size.set(5.0,5.0,5.0);
 	length = 5.0;
@@ -91,15 +90,13 @@ bool region::check_coords(const vec3<double> &v, unitcell *cell)
 		case (RS_CELL):
 			break;
 		case (RS_CUBOID):
-			if (usecellcentre) tempv = v + cell->get_origin();
-			else tempv = v - centre;
+			tempv = v - centre;
 			if (fabs(tempv.x) > 0.5*size.x) result = FALSE;
 			else if (fabs(tempv.y) > 0.5*size.y) result = FALSE;
 			else if (fabs(tempv.z) > 0.5*size.z) result = FALSE;
 			break;
 		case (RS_SPHEROID):
-			if (usecellcentre) tempv = v + cell->get_origin();
-			else tempv = v - centre;
+			tempv = v - centre;
 			// Scale test point by spheroid size
 			tempv /= size;
 			if (tempv.magnitude() > 1.0) result = FALSE;
@@ -138,8 +135,7 @@ vec3<double> region::random_coords(unitcell *cell, component *c)
 				v.x *= cs_random() - 0.5;
 				v.y *= cs_random() - 0.5;
 				v.z *= cs_random() - 0.5;
-				if (usecellcentre) v -= cell->get_origin();
-				else v += centre;
+				v += centre;
 				break;
 			case (RS_SPHEROID):
 				//tempv.set(cs_random(),(cs_random()-0.5)*PI,(cs_random()-0.5)*PI);
@@ -147,8 +143,7 @@ vec3<double> region::random_coords(unitcell *cell, component *c)
 				v.x = tempv.x * sin(tempv.y) * cos(tempv.z) * size.x;
 				v.y = tempv.x * sin(tempv.y) * sin(tempv.z) * size.y;
 				v.z = tempv.x * cos(tempv.y)                * size.z;
-				if (usecellcentre) v -= cell->get_origin();
-				else v += centre;
+				v += centre;
 				break;
 			case (RS_CYLINDER):
 				printf("region::random_coords - Cylinder moves not done yet...\n");
@@ -162,7 +157,7 @@ vec3<double> region::random_coords(unitcell *cell, component *c)
 		else done = TRUE;
 		if ((!done) && (nattempts == 100))
 		{
-			printf("Failed to find position in '%s' region that doesn't overlap within %i trials.\n", text_from_RS(shape), 100);
+			printf("Failed to find position in region '%s' that doesn't overlap within %i trials.\n", text_from_RS(shape), 100);
 			done = TRUE;
 		}
 	} while (!done);

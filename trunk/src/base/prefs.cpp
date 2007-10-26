@@ -159,7 +159,7 @@ prefs_data::prefs_data()
 	render_objects[VO_CELL] = TRUE;
 	render_objects[VO_CELLAXES] = TRUE;
 	render_objects[VO_CELLREPEAT] = FALSE;
-	render_objects[VO_REGIONS] = FALSE;
+	render_objects[VO_REGIONS] = TRUE;
 	render_objects[VO_FORCEARROWS] = FALSE;
 	render_objects[VO_SURFACES] = TRUE;
 	render_style = DS_STICK;

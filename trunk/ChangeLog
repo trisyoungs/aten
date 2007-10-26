@@ -1,5 +1,6 @@
 2007-10-26
 	* fixed --with-qtdir.
+	* Qt: disorder stack page. fixed crash on forcefield load.
 
 2007-10-25
 	* completed svg optimisation.

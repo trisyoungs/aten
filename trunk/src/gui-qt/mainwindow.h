@@ -250,6 +250,7 @@ class AtenForm : public QMainWindow
 	void on_EditForcefieldButton_clicked(bool checked);
 	void on_AssignFFToCurrentButton_clicked(bool checked);
 	void on_AssignFFToAllButton_clicked(bool checked);
+	void on_ForcefieldList_currentRowChanged(int row);
 
 	// Surface Page Functions
 	public:
@@ -283,6 +284,7 @@ class AtenForm : public QMainWindow
 	private:
 	void refresh_components();
 	void refresh_component_data();
+	void set_component_coords(int centsize, int element, double value);
 	private slots:
 	void on_ComponentList_itemSelectionChanged();
 	void on_AddComponentButton_clicked(bool checked);
@@ -291,6 +293,15 @@ class AtenForm : public QMainWindow
 	void on_ComponentTranslateCheck_clicked(bool checked);
 	void on_ComponentRotateCheck_clicked(bool checked);
 	void on_ComponentRegionCombo_currentIndexChanged(int index);
+	void on_ShowRegionsCheck_clicked(bool checked);
+	void on_DisorderStartButton_clicked(bool checked);
+	void on_VDWScaleSpin_valueChanged(double d);
+	void on_ComponentCentreXSpin_valueChanged(double d) { set_component_coords(0,0,d); }
+	void on_ComponentCentreYSpin_valueChanged(double d) { set_component_coords(0,1,d); }
+	void on_ComponentCentreZSpin_valueChanged(double d) { set_component_coords(0,2,d); }
+	void on_ComponentSizeXSpin_valueChanged(double d) { set_component_coords(1,0,d); }
+	void on_ComponentSizeYSpin_valueChanged(double d) { set_component_coords(2,1,d); }
+	void on_ComponentSizeZSpin_valueChanged(double d) { set_component_coords(3,2,d); }
 
 	/*
 	// Atom Popup Functions

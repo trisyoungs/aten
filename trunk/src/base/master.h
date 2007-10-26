@@ -110,14 +110,18 @@ class master_data
 	forcefield *currentff;
 
 	public:
-	// Returns the first ff in the list
+	// Return the first ff in the list
 	forcefield *get_ffs() { return ffs.first(); }
-	// Returns the number of loaded forcefields
+	// Return the number of loaded forcefields
 	int get_nffs() { return ffs.size(); }
 	// Set active forcefield
 	void set_currentff(forcefield *ff) { currentff = ff; }
-	// Returns the active forcefield
+	// Set active forcefield by ID
+	void set_currentff_by_id(int id) { currentff = ffs[id]; }
+	// Return the active forcefield
 	forcefield *get_currentff() { return currentff; }
+	// Return ID of current forcefield
+	int get_currentff_id() { return ffs.index_of(currentff); }
 	// Remove specified forcefield
 	void remove_ff(forcefield*);
 	// Load the specified forcefield
@@ -171,11 +175,11 @@ class master_data
 	bool use_timer;
 	// Sets the current timer_per_second
 	void set_timer_period(int);
-	// Returns the current timer_per_second
+	// Return the current timer_per_second
 	int get_timer_period() { return timer_period; }
 	// Sets the length scale of the timer event
 	void set_timer_eventsize(int);
-	// Returns the length scale of the timer event
+	// Return the length scale of the timer event
 	int get_timer_eventsize() { return timer_eventsize; }
 	// Idle function (called by (*)(void*)onidle)
 	bool on_idle();

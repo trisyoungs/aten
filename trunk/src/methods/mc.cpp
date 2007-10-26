@@ -73,7 +73,6 @@ component::component()
 	comppattern = NULL;
 	nrequested = 0;
 	nfilled = 0;
-	id = 0;
 	prev = NULL;
 	next = NULL;
 	allowed_moves[MT_INSERT] = TRUE;
@@ -114,26 +113,6 @@ void mc_methods::create_ratioarray(int newsize)
 /*
 // Component management routines
 */
-
-// Add component
-component *mc_methods::add_component()
-{
-	component *newcomp = components.add();
-	newcomp->set_id(components.size() - 1);
-	return newcomp;
-}
-
-// Remove component
-void mc_methods::remove_component(component *xcomp)
-{
-	component *c = xcomp->next;
-	while (c != NULL)
-	{
-	        c->decrease_id();
-	        c = c->next;
-	}
-	components.remove(xcomp);
-}
 
 // Find by ID
 component *mc_methods::get_component_by_name(const char *search)

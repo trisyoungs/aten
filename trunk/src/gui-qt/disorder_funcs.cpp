@@ -28,13 +28,13 @@ void AtenForm::refresh_components()
 {
 	ui.ComponentList->clear();
 	QListWidgetItem *item;
-	for (component *c = mc.get_components(); c != NULL; c = c->next)
+	for (component *c = mc.components.first(); c != NULL; c = c->next)
 	{
 		item = new QListWidgetItem(ui.ComponentList);
 		item->setText(c->get_model()->get_name());
 	}
 	// Select the last component in the list
-	ui.ComponentList->setCurrentRow(mc.get_ncomponents()-1);
+	ui.ComponentList->setCurrentRow(mc.components.size()-1);
 }
 
 void AtenForm::refresh_component_data()
@@ -42,7 +42,7 @@ void AtenForm::refresh_component_data()
 	// Get current component
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.get_component_by_index(comp);
+	component *c = mc.components[comp];
 	// Set controls
 	ui.PopulationSpin->setValue(c->get_nrequested());
 	ui.ComponentRegionCombo->setCurrentIndex(c->area.get_shape());
@@ -52,11 +52,33 @@ void AtenForm::refresh_component_data()
 	ui.ComponentSizeYSpin->setValue(v.y);
 	ui.ComponentSizeZSpin->setValue(v.z);
 	v = c->area.get_centre();
-	ui.ComponentPosXSpin->setValue(v.x);
-	ui.ComponentPosYSpin->setValue(v.y);
-	ui.ComponentPosZSpin->setValue(v.z);
+	ui.ComponentCentreXSpin->setValue(v.x);
+	ui.ComponentCentreYSpin->setValue(v.y);
+	ui.ComponentCentreZSpin->setValue(v.z);
 	ui.ComponentTranslateCheck->setChecked(c->get_allowed(MT_TRANSLATE));
 	ui.ComponentRotateCheck->setChecked(c->get_allowed(MT_ROTATE));
+}
+
+void AtenForm::set_component_coords(int centsize, int element, double value)
+{
+	// Get current component
+	static vec3<double> v;
+	int comp = ui.ComponentList->currentRow();
+	if (comp == -1) return;
+	component *c = mc.components[comp];
+	if (centsize == 0)
+	{
+		v = c->area.get_centre();
+		v.set(element, value);
+		c->area.set_centre(v);
+	}
+	else
+	{
+		v = c->area.get_size();
+		v.set(element, value);
+		c->area.set_size(v);
+	}
+	gui.mainview.postredisplay();
 }
 
 void AtenForm::on_ComponentList_itemSelectionChanged()
@@ -75,20 +97,27 @@ void AtenForm::on_AddComponentButton_clicked(bool checked)
 		return;
 	}
 	// Add it to mc's component list and refresh the list
-	component *comp = mc.add_component();
+	component *comp = mc.components.add();
 	comp->set_model(m);
 	refresh_components();
 }
 
 void AtenForm::on_DeleteComponentButton_clicked(bool checked)
 {
+	int comp = ui.ComponentList->currentRow();
+	if (comp == -1) return;
+	component *c = mc.components[comp];
+	mc.components.remove(c);
+	// Refresh the components list and GUI (for regions)
+	refresh_components();
+	gui.mainview.postredisplay();
 }
 
 void AtenForm::on_PopulationSpin_valueChanged(int value)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.get_component_by_index(comp);
+	component *c = mc.components[comp];
 	c->set_nrequested(value);
 }
 
@@ -96,7 +125,7 @@ void AtenForm::on_ComponentTranslateCheck_clicked(bool checked)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.get_component_by_index(comp);
+	component *c = mc.components[comp];
 	c->set_allowed(MT_TRANSLATE, checked);
 }
 
@@ -104,7 +133,7 @@ void AtenForm::on_ComponentRotateCheck_clicked(bool checked)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.get_component_by_index(comp);
+	component *c = mc.components[comp];
 	c->set_allowed(MT_ROTATE, checked);
 }
 
@@ -112,6 +141,25 @@ void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.get_component_by_index(comp);
+	component *c = mc.components[comp];
 	c->area.set_shape( (region_shape) index);
+	gui.mainview.postredisplay();
 }
+
+void AtenForm::on_ShowRegionsCheck_clicked(bool checked)
+{
+	prefs.set_visible(VO_REGIONS, checked);
+	gui.mainview.postredisplay();
+}
+
+void AtenForm::on_DisorderStartButton_clicked(bool checked)
+{
+	mc.set_ncycles(ui.DisorderCyclesSpin->value());
+	mc.disorder(master.get_currentmodel());
+}
+
+void AtenForm::on_VDWScaleSpin_valueChanged(double d)
+{
+	prefs.set_vdw_radius_scale(d);
+}
+
