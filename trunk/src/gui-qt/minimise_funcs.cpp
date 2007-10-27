@@ -33,8 +33,8 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 {
 	double econverge, fconverge;
 	// Get the convergence values from the window controls
-	econverge = ui.EnergyConvergeSpin->value();
-	fconverge = ui.ForcesConvergeSpin->value();
+	econverge = pow(10,ui.EnergyConvergeSpin->value());
+	fconverge = pow(10,ui.ForcesConvergeSpin->value());
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{

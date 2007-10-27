@@ -42,41 +42,19 @@ sd_methods::sd_methods()
 /*
 // Line Search Subroutines
 */
-void sd_methods::normalise_forces()
-{
-	// 'Normalise' the forces in linecfg such that the largest force is equal to the maximum cartesian step size
-	dbg_begin(DM_CALLS,"sd_methods::normalise_forces");
-	double maxfrc;
-	static vec3<double> f;
-	atom **modelatoms = workmodel.get_staticatoms();
-	int i;
-	// Find the largest force
-	maxfrc = 0.0;
-	for (i=0; i<workmodel.get_natoms(); i++)
-	{
-		f = modelatoms[i]->f;
-		if (fabs(f.x) > maxfrc) maxfrc = fabs(f.x);
-		if (fabs(f.y) > maxfrc) maxfrc = fabs(f.y);
-		if (fabs(f.z) > maxfrc) maxfrc = fabs(f.z);
-	}
-	// Normalise with respect to this force
-	maxfrc = maxfrc / maxstep;
-	for (i=0; i<workmodel.get_natoms(); i++) modelatoms[i]->f /= maxfrc;
-	dbg_end(DM_CALLS,"sd_methods::normalise_forces");
-}
 
 void sd_methods::gradient_move(model *srcmodel)
 {
-	// Generate a new set of coordinates in workmodel following the normalised gradient vector present within it, with stepsize stepsize, and from the coordinates given in the source model provided.
+	// Generate a new set of coordinates in workmodel following the normalised gradient vector present in srcmodel, with the stepsize given
 	dbg_begin(DM_CALLS,"sd_methods::gradient_move");
 	int i;
 	atom **srcatoms = srcmodel->get_staticatoms();
 	atom **destatoms = workmodel.get_staticatoms();
 	for (i=0; i<srcmodel->get_natoms(); i++)
 	{
-		destatoms[i]->r.x = srcatoms[i]->r.x + destatoms[i]->f.x * stepsize;
-		destatoms[i]->r.y = srcatoms[i]->r.y + destatoms[i]->f.y * stepsize;
-		destatoms[i]->r.z = srcatoms[i]->r.z + destatoms[i]->f.z * stepsize;
+		destatoms[i]->r.x = srcatoms[i]->r.x + srcatoms[i]->f.x * stepsize;
+		destatoms[i]->r.y = srcatoms[i]->r.y + srcatoms[i]->f.y * stepsize;
+		destatoms[i]->r.z = srcatoms[i]->r.z + srcatoms[i]->f.z * stepsize;
 	}
 	dbg_end(DM_CALLS,"sd_methods::gradient_move");
 }
@@ -88,7 +66,7 @@ void sd_methods::gradient_move(model *srcmodel)
 void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
-	dbg_begin(DM_CALLS,"linesearch::minimise");
+	dbg_begin(DM_CALLS,"sd_methods::minimise");
 	int cycle, m, i;
 	double enew, ecurrent, edelta;
 	bool linefailed, converged;
@@ -99,30 +77,32 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	// First, create expression for the current model and assign charges
 	if (!srcmodel->create_expression())
 	{
-	        dbg_end(DM_CALLS,"linesearch::minimise");
+	        dbg_end(DM_CALLS,"sd_methods::minimise");
 	        return;
 	}
-	srcmodel->assign_charges(prefs.get_chargesource());
 	
 	// Create a local working copy of the model
 	workmodel.clear();
 	workmodel.copy(srcmodel);
 	// Calculate initial reference energy
 	ecurrent = srcmodel->total_energy(srcmodel);
+	srcmodel->energy.print();
+
 	// Reset stepsize
-	stepsize = 1.0;
+	stepsize = 0.5;
 	converged = FALSE;
-	
+	maxlinetrials = 1000;
 	msg(DM_NONE,"%10i  %15.5f \n",0,ecurrent);
 	for (cycle=0; cycle<maxiterations; cycle++)
 	{
-		// Calculate gradient vector (forces) for the current model coordinates
-		//linecfg->copy(cfg,CFG_R);
-		srcmodel->calculate_forces(&workmodel);
-		workmodel.zero_forces_fixed();
-		normalise_forces();
+		// Calculate gradient vector for the current model coordinates
+		srcmodel->zero_forces();
+		srcmodel->calculate_forces(srcmodel);
+		srcmodel->zero_forces_fixed();
+		srcmodel->normalise_forces();
 		// Perform linesearch along the gradient vector until we decrease the energy
 		linefailed = TRUE;
+		stepsize = 0.5;
 		for (m=0; m<maxlinetrials; m++)
 		{
 			gradient_move(srcmodel);
@@ -139,12 +119,12 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 			else
 			{
 				// Energy increased, so change step size and repeat
-				stepsize *= 0.9;
+				stepsize *= 0.75;
 			}
 		}
 		if (linefailed)
 		{
-			msg(DM_NONE,"linesearch::minimise - Failed to find lower point along gradient within 'maxlinetrials'.\n");
+			msg(DM_NONE,"sd_methods::minimise - Failed to find lower point along gradient within 'maxlinetrials'.\n");
 			break;
 		}
 		// Print out the step data
@@ -165,11 +145,9 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	if (converged) msg(DM_NONE,"Steepest descent converged in %i steps.\n",cycle+1);
 	else msg(DM_NONE,"Steepest descent did not converge within %i steps.\n",maxiterations);
 	// Copy config data to model and delete working configurations
-	srcmodel->copy_atom_data(&workmodel,AD_R);
+	//if (cycle != 0) srcmodel->copy_atom_data(&workmodel,AD_R);
 	srcmodel->calculate_forces(srcmodel);
-	srcmodel->render_from_self();
 	srcmodel->log_change(LOG_COORDS);
-	//xmodel->project_all();
-	dbg_end(DM_CALLS,"linesearch::minimise");
+	dbg_end(DM_CALLS,"sd_methods::minimise");
 }
 

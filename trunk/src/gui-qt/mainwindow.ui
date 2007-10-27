@@ -195,7 +195,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>6</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -3897,30 +3897,18 @@
               <property name="spacing" >
                <number>4</number>
               </property>
-              <item row="1" column="1" >
-               <widget class="QDoubleSpinBox" name="ForcesConvergeSpin" >
+              <item row="0" column="0" >
+               <widget class="QLabel" name="label_9" >
                 <property name="sizePolicy" >
                  <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
+                  <hsizetype>1</hsizetype>
+                  <vsizetype>5</vsizetype>
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
-               </widget>
-              </item>
-              <item row="0" column="1" >
-               <widget class="QDoubleSpinBox" name="EnergyConvergeSpin" >
-                <property name="sizePolicy" >
-                 <sizepolicy>
-                  <hsizetype>7</hsizetype>
-                  <vsizetype>0</vsizetype>
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="buttonSymbols" >
-                 <enum>QAbstractSpinBox::UpDownArrows</enum>
+                <property name="text" >
+                 <string>Energy:</string>
                 </property>
                </widget>
               </item>
@@ -3935,12 +3923,12 @@
                  </sizepolicy>
                 </property>
                 <property name="text" >
-                 <string>Forces</string>
+                 <string>Forces:</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0" >
-               <widget class="QLabel" name="label_9" >
+              <item row="0" column="1" >
+               <widget class="QLabel" name="label_26" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>1</hsizetype>
@@ -3950,7 +3938,67 @@
                  </sizepolicy>
                 </property>
                 <property name="text" >
-                 <string>Energy</string>
+                 <string>1.0E</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2" >
+               <widget class="QSpinBox" name="EnergyConvergeSpin" >
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>7</hsizetype>
+                  <vsizetype>0</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximum" >
+                 <number>1</number>
+                </property>
+                <property name="minimum" >
+                 <number>-10</number>
+                </property>
+                <property name="value" >
+                 <number>-4</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2" >
+               <widget class="QSpinBox" name="ForcesConvergeSpin" >
+                <property name="enabled" >
+                 <bool>false</bool>
+                </property>
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>7</hsizetype>
+                  <vsizetype>0</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximum" >
+                 <number>1</number>
+                </property>
+                <property name="minimum" >
+                 <number>-10</number>
+                </property>
+                <property name="value" >
+                 <number>-3</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" >
+               <widget class="QLabel" name="label_45" >
+                <property name="sizePolicy" >
+                 <sizepolicy>
+                  <hsizetype>1</hsizetype>
+                  <vsizetype>5</vsizetype>
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text" >
+                 <string>1.0E</string>
                 </property>
                </widget>
               </item>

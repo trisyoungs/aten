@@ -1,5 +1,4 @@
 Issues with the current version:
-	- Energy calculation is erroneous (intermolecular VDW?)
 	- Closing main window with [x] does not ask to save modified models.
 	- Save image provokes GLXBadExtension error (on some cards), affects canvas on others.
 	- Spherical regions in disordered builder have poor randomness.

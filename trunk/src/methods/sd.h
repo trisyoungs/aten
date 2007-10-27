@@ -63,8 +63,6 @@ class sd_methods
 	void set_maxlinetrials(int i) { maxlinetrials = i; }
 	// Get the maximum line trials
 	int get_maxlinetrials() { return maxlinetrials; }
-	// 'Normalise' the forces in workcfg to represent the maximum cartesian displacement
-	void normalise_forces();
 	// Generate a new config following the gradient vector in workcfg
 	void gradient_move(model*);
 	// Minimise the specified model
