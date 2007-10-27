@@ -11,6 +11,7 @@ importmodel
 		if $keywd = MOLECULE
 			# Molecule information
 			readline "$title@100"
+			newmodel $title
 			readline "$natoms $nbonds"
 			# Skip the next three lines, which are type of molecule, charges used XXX, and user comment
 			skipline 4

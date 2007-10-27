@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>762</width>
-    <height>583</height>
+    <height>578</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -33,10 +33,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>2</number>
+     <number>0</number>
     </property>
     <property name="spacing" >
-     <number>6</number>
+     <number>2</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -271,38 +271,115 @@
             </widget>
            </item>
            <item>
-            <layout class="QGridLayout" >
+            <layout class="QHBoxLayout" >
              <property name="margin" >
               <number>0</number>
              </property>
              <property name="spacing" >
               <number>2</number>
              </property>
-             <item row="0" column="1" >
-              <widget class="QPushButton" name="ShiftDownButton" >
-               <property name="text" >
-                <string>Shift Down</string>
+             <item>
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Horizontal</enum>
                </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QPushButton" name="MoveToStartButton" >
-               <property name="text" >
-                <string>Move To Start</string>
+               <property name="sizeHint" >
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
                </property>
-              </widget>
+              </spacer>
              </item>
-             <item row="0" column="0" >
+             <item>
               <widget class="QPushButton" name="ShiftUpButton" >
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="toolTip" >
+                <string>Move selected atoms up one place in list</string>
+               </property>
                <property name="text" >
-                <string>Shift Up</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/arrows/icons/arrow_up.svg</iconset>
                </property>
               </widget>
              </item>
-             <item row="1" column="1" >
-              <widget class="QPushButton" name="MoveToEndButton" >
+             <item>
+              <widget class="QPushButton" name="ShiftDownButton" >
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="toolTip" >
+                <string>Move selected atoms down one place in list</string>
+               </property>
                <property name="text" >
-                <string>Move To End</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/arrows/icons/arrow_down.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer>
+               <property name="orientation" >
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType" >
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" >
+                <size>
+                 <width>8</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="MoveToStartButton" >
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="toolTip" >
+                <string>Move selected atoms to start of list</string>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/arrows/icons/arrow_upline.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="MoveToEndButton" >
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="toolTip" >
+                <string>Move selected atoms to end of list</string>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/arrows/icons/arrow_downline.svg</iconset>
                </property>
               </widget>
              </item>
@@ -957,27 +1034,12 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="ElementSelectButton" >
-                  <property name="maximumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Select drawing element</string>
-                  </property>
+                 <widget class="QLineEdit" name="ElementEdit" >
                   <property name="text" >
-                   <string/>
+                   <string>O</string>
                   </property>
-                  <property name="icon" >
-                   <iconset resource="icons.qrc" >:/build/icons/build_ptable.svg</iconset>
-                  </property>
-                  <property name="checkable" >
-                   <bool>false</bool>
-                  </property>
-                  <property name="autoExclusive" >
-                   <bool>false</bool>
+                  <property name="maxLength" >
+                   <number>32767</number>
                   </property>
                  </widget>
                 </item>
@@ -1654,7 +1716,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>4</number>
+         <number>2</number>
         </property>
         <item>
          <widget class="QGroupBox" name="TransformGroup" >
@@ -1683,10 +1745,10 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>4</number>
               </property>
               <property name="spacing" >
-               <number>0</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -1694,29 +1756,37 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>4</number>
+                 <number>2</number>
                 </property>
                 <item>
                  <widget class="QGroupBox" name="RotateOriginGroup" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="title" >
                    <string>Origin</string>
                   </property>
                   <layout class="QVBoxLayout" >
                    <property name="margin" >
-                    <number>0</number>
+                    <number>4</number>
                    </property>
                    <property name="spacing" >
                     <number>4</number>
                    </property>
                    <item>
-                    <layout class="QHBoxLayout" >
+                    <layout class="QGridLayout" >
                      <property name="margin" >
                       <number>0</number>
                      </property>
                      <property name="spacing" >
-                      <number>4</number>
+                      <number>0</number>
                      </property>
-                     <item>
+                     <item row="0" column="0" >
                       <widget class="QLabel" name="label" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -1731,7 +1801,37 @@
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item row="2" column="0" >
+                      <widget class="QLabel" name="label_3" >
+                       <property name="sizePolicy" >
+                        <sizepolicy>
+                         <hsizetype>0</hsizetype>
+                         <vsizetype>0</vsizetype>
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text" >
+                        <string>Z</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="1" column="0" >
+                      <widget class="QLabel" name="label_2" >
+                       <property name="sizePolicy" >
+                        <sizepolicy>
+                         <hsizetype>0</hsizetype>
+                         <vsizetype>0</vsizetype>
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text" >
+                        <string>Y</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1" >
                       <widget class="QDoubleSpinBox" name="RotateOriginXSpin" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -1752,32 +1852,7 @@
                        </property>
                       </widget>
                      </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" >
-                     <property name="margin" >
-                      <number>0</number>
-                     </property>
-                     <property name="spacing" >
-                      <number>4</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_2" >
-                       <property name="sizePolicy" >
-                        <sizepolicy>
-                         <hsizetype>0</hsizetype>
-                         <vsizetype>0</vsizetype>
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text" >
-                        <string>Y</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
+                     <item row="1" column="1" >
                       <widget class="QDoubleSpinBox" name="RotateOriginYSpin" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -1798,32 +1873,7 @@
                        </property>
                       </widget>
                      </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" >
-                     <property name="margin" >
-                      <number>0</number>
-                     </property>
-                     <property name="spacing" >
-                      <number>4</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_3" >
-                       <property name="sizePolicy" >
-                        <sizepolicy>
-                         <hsizetype>0</hsizetype>
-                         <vsizetype>0</vsizetype>
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text" >
-                        <string>Z</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
+                     <item row="2" column="1" >
                       <widget class="QDoubleSpinBox" name="RotateOriginZSpin" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -1847,47 +1897,87 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="RotateDefineOriginButton" >
-                     <property name="sizePolicy" >
-                      <sizepolicy>
-                       <hsizetype>7</hsizetype>
-                       <vsizetype>0</vsizetype>
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
+                    <layout class="QHBoxLayout" >
+                     <property name="margin" >
+                      <number>0</number>
                      </property>
-                     <property name="toolTip" >
-                      <string>Define rotation origin from the current atom selection</string>
+                     <property name="spacing" >
+                      <number>2</number>
                      </property>
-                     <property name="text" >
-                      <string>Define</string>
-                     </property>
-                    </widget>
+                     <item>
+                      <spacer>
+                       <property name="orientation" >
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" >
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="RotateDefineOriginButton" >
+                       <property name="sizePolicy" >
+                        <sizepolicy>
+                         <hsizetype>7</hsizetype>
+                         <vsizetype>0</vsizetype>
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize" >
+                        <size>
+                         <width>30</width>
+                         <height>30</height>
+                        </size>
+                       </property>
+                       <property name="toolTip" >
+                        <string>Define rotation origin from the current atom selection</string>
+                       </property>
+                       <property name="text" >
+                        <string/>
+                       </property>
+                       <property name="icon" >
+                        <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </widget>
                 </item>
                 <item>
                  <widget class="QGroupBox" name="RotateOriginGroup_2" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>1</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="title" >
                    <string>Axis</string>
                   </property>
                   <layout class="QVBoxLayout" >
                    <property name="margin" >
-                    <number>0</number>
+                    <number>4</number>
                    </property>
                    <property name="spacing" >
                     <number>4</number>
                    </property>
                    <item>
-                    <layout class="QHBoxLayout" >
+                    <layout class="QGridLayout" >
                      <property name="margin" >
                       <number>0</number>
                      </property>
                      <property name="spacing" >
-                      <number>4</number>
+                      <number>0</number>
                      </property>
-                     <item>
+                     <item row="0" column="0" >
                       <widget class="QLabel" name="label_4" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -1902,7 +1992,37 @@
                        </property>
                       </widget>
                      </item>
-                     <item>
+                     <item row="1" column="0" >
+                      <widget class="QLabel" name="label_5" >
+                       <property name="sizePolicy" >
+                        <sizepolicy>
+                         <hsizetype>0</hsizetype>
+                         <vsizetype>0</vsizetype>
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text" >
+                        <string>Y</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="2" column="0" >
+                      <widget class="QLabel" name="label_6" >
+                       <property name="sizePolicy" >
+                        <sizepolicy>
+                         <hsizetype>0</hsizetype>
+                         <vsizetype>0</vsizetype>
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="text" >
+                        <string>Z</string>
+                       </property>
+                      </widget>
+                     </item>
+                     <item row="0" column="1" >
                       <widget class="QDoubleSpinBox" name="RotateAxisXSpin" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -1926,32 +2046,7 @@
                        </property>
                       </widget>
                      </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" >
-                     <property name="margin" >
-                      <number>0</number>
-                     </property>
-                     <property name="spacing" >
-                      <number>4</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_5" >
-                       <property name="sizePolicy" >
-                        <sizepolicy>
-                         <hsizetype>0</hsizetype>
-                         <vsizetype>0</vsizetype>
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text" >
-                        <string>Y</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
+                     <item row="1" column="1" >
                       <widget class="QDoubleSpinBox" name="RotateAxisYSpin" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -1972,32 +2067,7 @@
                        </property>
                       </widget>
                      </item>
-                    </layout>
-                   </item>
-                   <item>
-                    <layout class="QHBoxLayout" >
-                     <property name="margin" >
-                      <number>0</number>
-                     </property>
-                     <property name="spacing" >
-                      <number>4</number>
-                     </property>
-                     <item>
-                      <widget class="QLabel" name="label_6" >
-                       <property name="sizePolicy" >
-                        <sizepolicy>
-                         <hsizetype>0</hsizetype>
-                         <vsizetype>0</vsizetype>
-                         <horstretch>0</horstretch>
-                         <verstretch>0</verstretch>
-                        </sizepolicy>
-                       </property>
-                       <property name="text" >
-                        <string>Z</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item>
+                     <item row="2" column="1" >
                       <widget class="QDoubleSpinBox" name="RotateAxisZSpin" >
                        <property name="sizePolicy" >
                         <sizepolicy>
@@ -2021,22 +2091,54 @@
                     </layout>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="RotateDefineAxisButton" >
-                     <property name="sizePolicy" >
-                      <sizepolicy>
-                       <hsizetype>7</hsizetype>
-                       <vsizetype>0</vsizetype>
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                      </sizepolicy>
+                    <layout class="QHBoxLayout" >
+                     <property name="margin" >
+                      <number>0</number>
                      </property>
-                     <property name="toolTip" >
-                      <string>Define translation axis from current selection</string>
+                     <property name="spacing" >
+                      <number>2</number>
                      </property>
-                     <property name="text" >
-                      <string>Define</string>
-                     </property>
-                    </widget>
+                     <item>
+                      <spacer>
+                       <property name="orientation" >
+                        <enum>Qt::Horizontal</enum>
+                       </property>
+                       <property name="sizeHint" >
+                        <size>
+                         <width>40</width>
+                         <height>20</height>
+                        </size>
+                       </property>
+                      </spacer>
+                     </item>
+                     <item>
+                      <widget class="QPushButton" name="RotateDefineAxisButton" >
+                       <property name="sizePolicy" >
+                        <sizepolicy>
+                         <hsizetype>7</hsizetype>
+                         <vsizetype>0</vsizetype>
+                         <horstretch>0</horstretch>
+                         <verstretch>0</verstretch>
+                        </sizepolicy>
+                       </property>
+                       <property name="maximumSize" >
+                        <size>
+                         <width>30</width>
+                         <height>30</height>
+                        </size>
+                       </property>
+                       <property name="toolTip" >
+                        <string>Define translation axis from current selection</string>
+                       </property>
+                       <property name="text" >
+                        <string/>
+                       </property>
+                       <property name="icon" >
+                        <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+                       </property>
+                      </widget>
+                     </item>
+                    </layout>
                    </item>
                   </layout>
                  </widget>
@@ -2798,11 +2900,20 @@
                 </item>
                 <item row="0" column="2" >
                  <widget class="QPushButton" name="DefineCentreButton" >
+                  <property name="maximumSize" >
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
                   <property name="toolTip" >
                    <string>Define centre from current selection</string>
                   </property>
                   <property name="text" >
-                   <string>Define</string>
+                   <string/>
+                  </property>
+                  <property name="icon" >
+                   <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
                   </property>
                  </widget>
                 </item>
@@ -4004,7 +4115,7 @@
               <number>0</number>
              </property>
              <property name="spacing" >
-              <number>0</number>
+              <number>2</number>
              </property>
              <item>
               <spacer>
@@ -4014,7 +4125,7 @@
                <property name="sizeHint" >
                 <size>
                  <width>40</width>
-                 <height>20</height>
+                 <height>30</height>
                 </size>
                </property>
               </spacer>
@@ -4023,27 +4134,65 @@
               <widget class="QPushButton" name="AddComponentButton" >
                <property name="sizePolicy" >
                 <sizepolicy>
-                 <hsizetype>1</hsizetype>
-                 <vsizetype>0</vsizetype>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>5</vsizetype>
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
                <property name="toolTip" >
                 <string>Add current model as a component</string>
                </property>
                <property name="text" >
-                <string>+</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/basic/icons/basic_plus.svg</iconset>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="DeleteComponentButton" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>5</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
                <property name="toolTip" >
                 <string>Remove current component</string>
                </property>
                <property name="text" >
-                <string>-</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/basic/icons/basic_minus.svg</iconset>
                </property>
               </widget>
              </item>
@@ -4149,7 +4298,7 @@
                  </sizepolicy>
                 </property>
                 <property name="currentIndex" >
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <item>
                  <property name="text" >
@@ -4492,8 +4641,8 @@
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -4519,15 +4668,18 @@
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
                 <string>Remove forcefield</string>
                </property>
                <property name="text" >
-                <string>R</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/basic/icons/basic_minus.svg</iconset>
                </property>
               </widget>
              </item>
@@ -4543,8 +4695,8 @@
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -4558,18 +4710,42 @@
             </layout>
            </item>
            <item>
-            <widget class="QPushButton" name="AssignFFToAllButton" >
-             <property name="text" >
-              <string>Assign to All</string>
+            <layout class="QGridLayout" >
+             <property name="margin" >
+              <number>0</number>
              </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QPushButton" name="AssignFFToCurrentButton" >
-             <property name="text" >
-              <string>Assign to Current</string>
+             <property name="spacing" >
+              <number>2</number>
              </property>
-            </widget>
+             <item row="1" column="0" >
+              <widget class="QPushButton" name="TypeModelButton" >
+               <property name="text" >
+                <string>Type</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1" >
+              <widget class="QPushButton" name="AssignFFToAllButton" >
+               <property name="text" >
+                <string>Assign to All</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" >
+              <widget class="QPushButton" name="AssignFFToCurrentButton" >
+               <property name="text" >
+                <string>Assign</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1" >
+              <widget class="QPushButton" name="UntypeModelButton" >
+               <property name="text" >
+                <string>Untype</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -4638,10 +4814,16 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
                <property name="maximumSize" >
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -4649,6 +4831,39 @@
                </property>
                <property name="icon" >
                 <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="RemoveSurfaceButton" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>5</hsizetype>
+                 <vsizetype>5</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="toolTip" >
+                <string>Delete the selected surface</string>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/basic/icons/basic_minus.svg</iconset>
                </property>
               </widget>
              </item>
@@ -4662,10 +4877,16 @@
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>16</width>
+                 <height>16</height>
+                </size>
+               </property>
                <property name="maximumSize" >
                 <size>
-                 <width>32</width>
-                 <height>32</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >

@@ -44,7 +44,7 @@ energystore::energystore()
 	size = 0;
 	calculated = FALSE;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_ENERGYSTORE] ++;
+		memdbg.create[MD_ENERGYSTORE] ++;
 	#endif
 }
 
@@ -53,7 +53,7 @@ energystore::~energystore()
 {
 	deallocate();
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_ENERGYSTORE] ++;
+		memdbg.destroy[MD_ENERGYSTORE] ++;
 	#endif
 }
 

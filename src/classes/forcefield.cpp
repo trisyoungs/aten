@@ -302,35 +302,42 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 	// Convert units of all the energetic parameters within the forcefield from the unit supplied into program internal units (specified in prefs)
 	// Check for 'NULL' pointers for ff_param variables (for e.g. rule-based forcefields)
 	dbg_begin(DM_CALLS,"forcefield::convert_parameters");
-	ffparams p;
+	ffparams *p;
 	ffbound *b;
 	ffatom *ffa;
-	// VDW
-	// Note: First loop (for VDW) is from 1,n+1 instead of 0,n since we askip the dummy atom type which is n=0, present for all ffs.
+	int n;
+	// VDW and Generator Data
+	// Note: First loop (for VDW) is from 1,n+1 instead of 0,n since we skip the dummy atom type which is n=0, present for all ffs.
 	for (ffa = atomtypes.first(); ffa != NULL; ffa = ffa->next)
 	{
-		p = ffa->params;
+		p = &ffa->params;
 		switch (ffa->get_funcform())
 		{
 			case (VF_UNSPECIFIED):
 				break;
 			case (VF_LJ):
-				p.data[VF_LJ_EPS] = prefs.convert_energy(p.data[VF_LJ_EPS],ff_eunit);
+				p->data[VF_LJ_EPS] = prefs.convert_energy(p->data[VF_LJ_EPS],ff_eunit);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this VDW type.\n");
+		}
+		// Only convert those parameters for which the 'convertgen[]' flag is TRUE
+		if (ffa->generator != NULL)
+		{
+			for (n=0; n<ngendata; n++)
+				if (convertgen[n]) ffa->generator[n] = prefs.convert_energy(ffa->generator[n],ff_eunit);
 		}
 	}
 	// Bonds 
 	for (b = bonds.first(); b != NULL; b = b->next)
 	{
-		p = b->params;
+		p = &b->params;
 		switch (b->funcform.bondfunc)
-			{
+		{
 			case (BF_UNSPECIFIED):
 				break;
 			case (BF_HARMONIC):
-				p.data[BF_HARMONIC_K] = prefs.convert_energy(p.data[BF_HARMONIC_K],ff_eunit);
+				p->data[BF_HARMONIC_K] = prefs.convert_energy(p->data[BF_HARMONIC_K],ff_eunit);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this bond type.\n");
@@ -339,13 +346,13 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 	// Angles
 	for (b = angles.first(); b != NULL; b = b->next)
 	{
-		p = b->params;
+		p = &b->params;
 		switch (b->funcform.anglefunc)
 		{
 			case (AF_UNSPECIFIED):
 				break;
 			case (AF_HARMONIC):
-				p.data[AF_HARMONIC_K] = prefs.convert_energy(p.data[AF_HARMONIC_K],ff_eunit);
+				p->data[AF_HARMONIC_K] = prefs.convert_energy(p->data[AF_HARMONIC_K],ff_eunit);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this angle type.\n");
@@ -354,24 +361,22 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 	// Torsions
 	for (b = torsions.first(); b != NULL; b = b->next)
 	{
-		p = b->params;
+		p = &b->params;
 		switch (b->funcform.torsionfunc)
 		{
 			case (TF_UNSPECIFIED):
 				break;
 			case (TF_COSINE):
-				p.data[TF_COSINE_K] = prefs.convert_energy(p.data[TF_COSINE_K],ff_eunit);
+				p->data[TF_COSINE_K] = prefs.convert_energy(p->data[TF_COSINE_K],ff_eunit);
 				break;
 			case (TF_COS3):
-				p.data[TF_COS3_K1] = prefs.convert_energy(p.data[TF_COS3_K1],ff_eunit);
-				p.data[TF_COS3_K2] = prefs.convert_energy(p.data[TF_COS3_K2],ff_eunit);
-				p.data[TF_COS3_K3] = prefs.convert_energy(p.data[TF_COS3_K3],ff_eunit);
+				p->data[TF_COS3_K1] = prefs.convert_energy(p->data[TF_COS3_K1],ff_eunit);
+				p->data[TF_COS3_K2] = prefs.convert_energy(p->data[TF_COS3_K2],ff_eunit);
+				p->data[TF_COS3_K3] = prefs.convert_energy(p->data[TF_COS3_K3],ff_eunit);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this torsion type.\n");
 		}
 	}
-	// TODO Generator data
-	// Only convert those parameters for which the 'genconvert[]' flag is TRUE
 	dbg_end(DM_CALLS,"forcefield::convert_parameters");
 }

@@ -35,15 +35,9 @@ model *filter::import_model(const char *filename)
 		return NULL;
 	}
 	msg(DM_NONE,"Load   : %s (%s)\n",filename,name.get());
-	// Get the preliminary model target
-	// If the current model is empty, use it...
-	activemodel = master.get_currentmodel();
-	//printf("Currentmodel = %li\n",currentmodel);
-	if (activemodel == NULL) activemodel = master.add_model();
-	else if (activemodel->get_natoms() != 0) activemodel = master.add_model();
-	set_target(activemodel);
 	// Re-set reserved variables
 	commands.variables.set("title","Unnamed");
+	set_target(NULL);
 	// Set element mapping type to that specified in file
 	zmap_type temp_zmap = prefs.get_zmapping();
 	if (has_zmapping) prefs.set_zmapping(zmapping);
@@ -84,8 +78,6 @@ model *filter::import_model(const char *filename)
 void filter::finalise_model_import(const char *filename)
 {
 	dbg_begin(DM_CALLS,"filter::finalise_model_import");
-	// Set name of model from 'title' variable
-	activemodel->set_name(commands.variables.get_as_char("title"));
 	activemodel->set_filename(filename);
 	activemodel->set_filter(partner);
 	// Do various necessary calculations

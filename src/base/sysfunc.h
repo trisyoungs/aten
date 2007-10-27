@@ -36,6 +36,7 @@ const char *upper_case(const char*);
 const char *lower_case(const char*);
 const char *get_before_comma(const char*);
 const char *get_after_comma(const char*);
+const char *strip_trailing(const char*);
 
 // Enum search
 int enum_search(const char*, int, const char**, const char*);

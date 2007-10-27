@@ -25,7 +25,7 @@
 #include <QtGui/QTreeWidget>
 
 // Enum detailing atom data columns
-enum twa_column { TWA_ID, TWA_ELEMENT, TWA_RX, TWA_RY, TWA_RZ };
+enum twa_column { TWA_ID=1, TWA_ELEMENT, TWA_RX, TWA_RY, TWA_RZ };
 
 // Forward Declarations
 class atom;

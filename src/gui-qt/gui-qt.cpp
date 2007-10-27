@@ -275,6 +275,8 @@ void gui_qt::refresh()
 	mainwindow->refresh_cellpage();
 	// Update the forcefield list
 	mainwindow->refresh_forcefieldpage();
+	// Update the disorder page
+	mainwindow->refresh_disorderpage();
 	// Update trajectory playback controls
 	gui.update_trajcontrols();
 	// Request redraw of the main canvas

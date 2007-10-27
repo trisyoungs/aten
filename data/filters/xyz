@@ -6,6 +6,7 @@ importmodel
 	glob *.xyz
 	readline "$natoms"
 	readline "$title@100"
+	newmodel $title
 	repeat $n $natoms
 		readline "$e $r.x $r.y $r.z"
 		addatom

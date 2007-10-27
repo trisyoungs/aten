@@ -111,8 +111,6 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 	// Add totals into energystore
 	estore->add(ET_VDWINTRA,energy_intra,id);
 	estore->add(ET_VDWINTER,energy_inter,id,id);
-	//estore->vdw_intra[id] += energy_intra;
-	//estore->vdw_inter[id][id] += energy_inter;
 	dbg_end(DM_CALLS,"pattern::vdw_intrapattern_energy");
 }
 
@@ -174,7 +172,6 @@ void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energyst
 		aoff1 += natoms;
 	}
 	estore->add(ET_VDWINTER,energy_inter,id,xpnode->id);
-	//estore->vdw_inter[id][xpnode->id] += energy_inter;
 	dbg_end(DM_CALLS,"pattern::vdw_interpattern_energy");
 }
 

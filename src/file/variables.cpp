@@ -20,6 +20,7 @@
 */
 
 #include "file/filter.h"
+#include "base/master.h"
 #include "base/sysfunc.h"
 #include "base/elements.h"
 #include "model/model.h"
@@ -35,10 +36,17 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 	static mat3<double> mat;
 	static bond_type bt;
 	static atom *i, *j, **modelatoms;
-	static model *parent;
+	static model *parent, *newmodel;
 	bool result = FALSE;
 	switch (fn->get_command())
 	{
+		// Create new model (and make it the target)
+		case (FC_NEWMODEL):
+			newmodel = master.add_model();
+			newmodel->set_name(strip_trailing(fn->datavar[0]->get_as_char()));
+			set_target(newmodel);
+			result = TRUE;
+			break;
 		// Set data for atom 'n' in model
 		case (FC_SETATOM):
 			if (activemodel == NULL) break;

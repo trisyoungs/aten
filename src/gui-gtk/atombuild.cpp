@@ -113,7 +113,7 @@ void buildwin_click_element(GtkRadioToolButton *widget, gpointer data)
 	// Sketching element changed, so update the master.sketchelement variable
 	dbg_begin(DM_CALLS,"buildwin_click_element");
 	int el = atoi((char*) data);
-	master.sketchelement = el;
+	master.set_sketchelement(el);
 	dbg_end(DM_CALLS,"buildwin_click_element");
 }
 
@@ -121,7 +121,7 @@ void buildwin_click_other_element(GtkRadioToolButton *widget, gpointer data)
 {
 	// Set element from text of toolbutton label
 	const char *elname = gtk_label_get_text(GTK_LABEL(other_element_label));
-	master.sketchelement = elements.find(elname);
+	master.set_sketchelement(elements.find(elname));
 }
 
 void buildwin_click_hydrogen_add(GtkButton *widget, gpointer data)

@@ -330,11 +330,12 @@ void prefs_data::set_internal_units(energy_unit eu)
 // Convert energy from specified unit to current internal unit
 double prefs_data::convert_energy(double energy, energy_unit from)
 {
+	static double result;
 	// Convert supplied value to units of J/mol
-	energy *= energy_factors[from];
+	result = energy * energy_factors[from];
 	// Then, convert to internal units
-	energy /= energy_factors[energy_internal];
-	return energy;
+	result /= energy_factors[energy_internal];
+	return result;
 }
 
 // Set number of segments in colour scale

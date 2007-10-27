@@ -90,7 +90,7 @@ class model
 	public:
 	// Increment specified log point of the model
 	void log_change(change_log);
-	// Returns the log quantity specified
+	// Return the log quantity specified
 	int get_log(change_log cl) { return logs[cl]; }
 	// Reset all logs to zero
 	void reset_logs() { for (int i=0; i<LOG_NITEMS; i++) logs[i] = 0; }
@@ -100,19 +100,19 @@ class model
 	bool is_modified() { return (save_point == (logs[LOG_STRUCTURE] + logs[LOG_COORDS]) ? FALSE : TRUE); }
 	// Sets the filename of the model
 	void set_filename(const char *s) { filename = s; }
-	// Returns the stored filename of the model
+	// Return the stored filename of the model
 	const char *get_filename() { return filename.get(); }
 	// Sets the file filter of the model
 	void set_filter(filter *f) { filefilter = f; }
-	// Returns the stored file filter of the model
+	// Return the stored file filter of the model
 	filter *get_filter() { return filefilter; }
 	// Sets the name of the model
 	void set_name(const char *s) { name = s; }
-	// Returns the name of the model
+	// Return the name of the model
 	const char *get_name() { return name.get(); }
-	// Returns the mass of the molecule
+	// Return the mass of the molecule
 	double get_mass() { return mass; }
-	// Returns the density of the model
+	// Return the density of the model
 	double get_density() { return density; }
 	// Clear all data in model
 	void clear();
@@ -145,9 +145,9 @@ class model
 	public:
 	// Create a new atom
 	atom *add_atom(int);
-	// Returns the start of the atom list
+	// Return the start of the atom list
 	atom *get_atoms() { return atoms.first(); }
-	// Returns the number of atoms in the model
+	// Return the number of atoms in the model
 	int get_natoms() { return atoms.size(); }
 	// Delete specified atom
 	void delete_atom(atom *target);
@@ -161,7 +161,7 @@ class model
 	void reset_tempi(int);
 	// Return pointer to the atom with the specified id
 	atom *find_atom(int);
-	// Returns the (first) atom with matching tempi
+	// Return the (first) atom with matching tempi
 	atom *find_atom_by_tempi(int);
 	// Move selected atoms one place 'up' in the list
 	void shift_selection_up();
@@ -200,11 +200,11 @@ class model
 	void set_spacegroup(int i) { spgrp = i; }
 	// Sets the spacegroup setting
 	void set_spacegroupsetting(int i) { spgrpsetting = i; }
-	// Returns the spacegroup of the model
+	// Return the spacegroup of the model
 	int get_spacegroup() { return spgrp; }
 	// Adds a symmetry operator to the list
 	symmop *add_symmop() { return symmops.add(); }
-	// Returns the first symmop in the list
+	// Return the first symmop in the list
 	symmop *get_symmops() { return symmops.first(); }
 	// Apply the given symmetry operator to the atoms in the model
 	void apply_symmop(symmop*,atom*);
@@ -252,7 +252,7 @@ class model
 	void select_all();
 	// Select no atoms
 	void select_none();
-	// Returns the number of selected atoms
+	// Return the number of selected atoms
 	int get_nselected() { return nselected; }
 	// Invert current atom selection
 	void selection_invert();
@@ -274,7 +274,7 @@ class model
 	void select_element(int);
 	// Select all atoms within cutoff of specified atom
 	void select_radial(atom*, double);
-	// Returns the first selected atom in the model (if any)
+	// Return the first selected atom in the model (if any)
 	atom *get_first_selected();
 
 	/*
@@ -299,11 +299,11 @@ class model
 	GLuint displaylist;
 	// Called when, e.g. the camera position or view rotation has changed
 	void calculate_viewmatrix();
-	// Returns the GL-compatible array from the ModelMAT structure
+	// Return the GL-compatible array from the ModelMAT structure
 	void get_rotation_matrix(double *m) { rotation.get_column_major(m); }
-	// Returns the GL-compatible array from the ModelMAT structure
+	// Return the GL-compatible array from the ModelMAT structure
 	void get_camera_matrix(double *m) { camera.get_column_major(m); }
-	// Returns the current camera z-rotation
+	// Return the current camera z-rotation
 	double get_camrot() { return camrot; }
 	// Rotate the model about the x and y axes
 	void rotate(double, double);
@@ -315,7 +315,7 @@ class model
 	void adjust_camera(const vec3<double> &v, double r) { adjust_camera(v.x,v.y,v.z,r); }
 	// Adjusts the orthographic size (zoom)
 	void adjust_ortho_size(double);
-	// Returns the size of the orthographic projection
+	// Return the size of the orthographic projection
 	double get_ortho_size() { return ortho_size; }
 	// Reset the camera to show the entire model
 	void reset_camera(const vec3<double>&);
@@ -402,7 +402,7 @@ class model
 	energystore energy;
 	// Create total energy function shell for the model
 	bool create_expression();
-	// Returns whether the expression is valid
+	// Return whether the expression is valid
 	bool expression_is_valid() { return (expression_point == logs[LOG_STRUCTURE] ? TRUE : FALSE); }
 	// Manually invalidates the expression
 	void invalidate_expression() { expression_point --; }
@@ -435,9 +435,11 @@ class model
 	void own_pattern(pattern*, bool);
 	// Number of nodes in pattern
 	int get_npatterns() { return patterns.size(); }
-	// Returns the first pattern node of the model
+	// Return the first pattern node of the model
 	pattern *get_patterns() { return patterns.first(); }
-	// Returns the last pattern node of the model
+	// Return the pattern with the ID specified
+	pattern *get_pattern(int id);
+	// Return the last pattern node of the model
 	pattern *get_last_pattern() { return patterns.last(); }
 	// Find pattern by name
 	pattern *find_pattern(const char*);
@@ -447,7 +449,7 @@ class model
 	void create_pattern_molecules();
 	// Clear the current pattern definition
 	void clear_patterns();
-	// Returns whether the patterns are valid
+	// Return whether the patterns are valid
 	bool patterns_are_valid() { return (patterns_point == logs[LOG_STRUCTURE] ? TRUE : FALSE); }
 	// Sets the 'fixed' property of all current patterns
 	void set_patterns_fixed(int);
@@ -483,7 +485,7 @@ class model
 	atom *lastatomdrawn;
 
 	public:
-	// Returns the last atom drawn in the model
+	// Return the last atom drawn in the model
 	atom *get_lastatomdrawn() { return lastatomdrawn; }
 	// Set the last atom drawn in the model
 	void set_lastatomdrawn(atom *i) { lastatomdrawn = i; }
@@ -582,11 +584,11 @@ class model
 	void set_trajfilter(filter *f) { trajfilefilter = f; }
 	// Return the trajectory file pointer
 	ifstream *get_trajfile() { return trajfile; }
-	// Returns the current frame pointer
+	// Return the current frame pointer
 	model *get_currentframe() { return currentframe; }
-	// Returns the total number of frames in the trajectory (file or cached)
+	// Return the total number of frames in the trajectory (file or cached)
 	int get_totalframes() { return totalframes; }
-	// Returns the current integer frame position
+	// Return the current integer frame position
 	int get_frameposition() { return frameposition; }
 	// Seek to first frame
 	void seek_first_frame();
@@ -611,7 +613,7 @@ class model
 	void render_from_frames() { render_source = currentframe; }
 	// Set the drawing style of the current atom selection
 	void selection_set_style(draw_style);
-	// Returns the current rendering source for the model
+	// Return the current rendering source for the model
 	model *get_render_source() {return render_source; }
 
 	/*
@@ -639,7 +641,7 @@ class model
 	measurement *find_measurement(geom_type,reflist<atom>&);
 
 	public:
-	// Returns first measurement in the list
+	// Return first measurement in the list
 	measurement *get_measurements() { return measurements.first(); }
 	// Clear all measurements
 	void clear_measurements() { measurements.clear(); }
@@ -688,7 +690,7 @@ class model
 	// Selection Actions
 	*/
 	public:
-	// Returns the empirical formula of the selected atoms
+	// Return the empirical formula of the selected atoms
 	void selection_get_empirical(dnchar&);
 	// Get selection's centre of geometry
 	vec3<double> selection_get_cog();

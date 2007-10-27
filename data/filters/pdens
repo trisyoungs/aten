@@ -1,11 +1,11 @@
 # Simple-style surface definition
 # Last modified: 10/10/07
-
 importsurface
 	name "Probability Densities from pdens"
 	nickname pdens
 	extension pdens
 	glob *.pdens*
+	newsurface NewSurf
 	# First line contains number of gridpoints in each direction x,y,z
 	readline "$nx $ny $nz"
 	setgridsize $nx $ny $nz

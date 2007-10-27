@@ -3,11 +3,18 @@
         <file>icons/arrow_anticlockwise.svg</file>
         <file>icons/arrow_clockwise.svg</file>
         <file>icons/arrow_down.svg</file>
+        <file>icons/arrow_downline.svg</file>
         <file>icons/arrow_in.svg</file>
         <file>icons/arrow_left.svg</file>
         <file>icons/arrow_out.svg</file>
         <file>icons/arrow_right.svg</file>
         <file>icons/arrow_up.svg</file>
+        <file>icons/arrow_upline.svg</file>
+    </qresource>
+    <qresource prefix="/basic" >
+        <file>icons/basic_define.svg</file>
+        <file>icons/basic_minus.svg</file>
+        <file>icons/basic_plus.svg</file>
     </qresource>
     <qresource prefix="/bond" >
         <file>icons/bond_augment.svg</file>

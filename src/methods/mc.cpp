@@ -251,15 +251,15 @@ bool mc_methods::minimise(model* srcmodel, double econ, double fcon)
 bool mc_methods::disorder(model* destmodel)
 {
 	// Monte Carlo Insertion
-	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
 	dbg_begin(DM_CALLS,"mc::insert");
-	int n, m, cycle, move, mol, noldatoms;
+	int n, m, cycle, move, mol, noldatoms, noldpatterns;
 	int pnmols;
+	char s[256], t[32];
 	component *c;
 	double enew, ecurrent, elastcycle, edelta, phi, theta, ecurrent_vdw, ecurrent_elec;
 	double penalty;
 	unitcell *cell;
-	pattern *p, *destlastp;
+	pattern *p;
 	region *r;
 	vec3<double> v, cog;
 
@@ -273,10 +273,9 @@ bool mc_methods::disorder(model* destmodel)
 		dbg_end(DM_CALLS,"mc::disorder");
 		return FALSE;
 	}
-	destlastp = destmodel->get_last_pattern();
+	noldpatterns = destmodel->get_npatterns();
 	noldatoms = destmodel->get_natoms();
 	cell = &destmodel->cell;
-	//destmodel->assign_charges(prefs.get_chargesource());
 	// Fix all patterns in the destmodel
 	destmodel->set_patterns_fixed(destmodel->get_npatterns());
 
@@ -295,8 +294,6 @@ bool mc_methods::disorder(model* destmodel)
 			return FALSE;
 		}
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
-		// Assign charges
-		//m->assign_charges(prefs.get_chargesource());
 		// Copy the model and paste it 'nrequested' times into destmodel
 		master.privclip.copy_all(m);
 		for (mol=0; mol<c->get_nrequested(); mol++) master.privclip.paste_to_model(destmodel);
@@ -304,15 +301,6 @@ bool mc_methods::disorder(model* destmodel)
 		p = destmodel->add_pattern(c->get_nrequested(), m->get_natoms(), m->get_name());
 		p->set_expectedmols(c->get_nrequested());
 		c->set_pattern(p);
-		// Now we cut the pattern from its parent model, log a structure change so we invalidate the old model, and make the destmodel the new owner.
-		//p = m->get_patterns();
-		//p->set_expectedmols(c->get_nrequested());
-		//p->set_nmols(c->get_nrequested());
-		//m->cut_pattern(p);
-		//destmodel->own_pattern(p,FALSE);
-		//c->set_pattern(p);
-		//regions.add(&comp->area,0,0);
-		//totalatoms += c->get_nrequested() * m->get_natoms();
         }
 
 	// Create master expression for the new (filled) model
@@ -331,8 +319,8 @@ bool mc_methods::disorder(model* destmodel)
 			p->get_startatom(),p->get_startatom() + p->get_totalatoms(),p->get_name());
 	}
 
-	// Reset number of molecules in component patterns to zero
-	for (p = (destlastp != NULL ? destlastp : destmodel->get_patterns()); p != NULL; p = p->next) p->set_nmols(0);
+	// Reset number of molecules in component patterns to zero (except those for the original patterns of the model)
+	for (p = destmodel->get_pattern(noldpatterns); p != NULL; p = p->next) p->set_nmols(0);
 
 	// Hide unused atoms to begin with
 	atom **modelatoms = destmodel->get_staticatoms();
@@ -365,13 +353,15 @@ bool mc_methods::disorder(model* destmodel)
 
 	elastcycle = ecurrent;
 	msg(DM_NONE," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.get_vdw(), destmodel->energy.get_elec());
+
 	// Loop over MC cycles
+	if (gui.exists()) gui.progress_create("Building disordered system", ncycles);
 	for (cycle=0; cycle<ncycles; cycle++)
 	{
 		msg(DM_VERBOSE,"Begin cycle %i...\n",cycle);
+		if (gui.exists() && (!gui.progress_update(cycle))) break;
+
 		// Loop over patterns and regions together
-		//p = destmodel->get_patterns();
-		//regref = regions.first();
 		for (c = components.first(); c != NULL; c = c->next)
 		{
 			// Get pointers to variables
@@ -386,9 +376,6 @@ bool mc_methods::disorder(model* destmodel)
 			}
 			//r = regref->item;
 			msg(DM_VERBOSE,"Pattern region is '%s'.\n",text_from_RS(r->get_shape()));
-
-			// Copy the target molecule for MT_INSERT
-			//master.privclip.copy_all(&p->molecule);
 
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MT_DELETE; move>-1; move--)
@@ -501,28 +488,30 @@ bool mc_methods::disorder(model* destmodel)
 				if (ntrials[move] != 0) acceptratio[p->get_id()][move] /= ntrials[move];
 			}
 
-			//p = p->next;
-			//regref = regref->next;
 		}
 		if (prefs.update_energy(cycle))
 		{
 			// Print start of first line (current energy and difference)
-			//msg(DM_NONE,"%7i  %13.6e %13.6e %13.6e %13.6e   %6.2f %6.2f %6.2f %6.2f %6.2f\n", cycle+1, ecurrent, ecurrent-elastcycle, ecurrent_vdw,ecurrent_elec, aratio[MT_TRANSLATE]*100.0, aratio[MT_ROTATE]*100.0, aratio[MT_ZMATRIX]*100.0, aratio[MT_INSERT]*100.0, aratio[MT_DELETE]*100.0);
 			msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, ecurrent_vdw, ecurrent_elec);
-			p = destmodel->get_patterns();
-			while (p != NULL)
+			for (p = destmodel->get_patterns(); p != NULL; p = p->next)
 			{
 				n = p->get_id();
-				msg(DM_NONE,"%-8s %-4i (%-4i)", p->get_name(), p->get_nmols(), p->get_expectedmols());
+				s[0] = '\n';
+				if (p == destmodel->get_patterns())
+					sprintf(s,"%-8s %-4i (%-4i)", p->get_name(), p->get_nmols(), p->get_expectedmols());
+				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->get_name(), p->get_nmols(), p->get_expectedmols());
 				for (m=0; m<MT_NITEMS; m++)
-					msg(DM_NONE," %3i",int(acceptratio[n][m]*100.0));
-				p = p->next;
-				if (p != NULL) msg(DM_NONE,"\n%65s"," ");
-				else msg(DM_NONE,"\n");
+				{
+					sprintf(t," %3i", int(acceptratio[n][m]*100.0));
+					strcat(s,t);
+				}
+				strcat(s,"\n");
+				msg(DM_NONE,s);
 			}
 		}
 		elastcycle = ecurrent;
-	}	
+	}
+	if (gui.exists()) gui.progress_terminate();
 	
 	// Print out final data
 	// Print out pattern list info here
@@ -532,7 +521,7 @@ bool mc_methods::disorder(model* destmodel)
 	p = destmodel->get_patterns();
 	while (p != NULL)
 	{
-		printf("  %2i  %-20s  %6i\n",p->get_id(),p->get_name(),p->get_nmols());
+		msg(DM_NONE,"  %2i  %-20s  %6i\n",p->get_id(),p->get_name(),p->get_nmols());
 		p = p->next;
 	}
 

@@ -24,8 +24,25 @@
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 
+void AtenForm::refresh_disorderpage()
+{
+	model *m = master.get_currentmodel();
+	// (De)sensitize controls
+	if (m->cell.get_type() == CT_NONE)
+	{
+		ui.DisorderStartButton->setDisabled(TRUE);
+		ui.AddComponentButton->setDisabled(FALSE);
+	}
+	else
+	{
+		ui.DisorderStartButton->setDisabled(FALSE);
+		ui.AddComponentButton->setDisabled(TRUE);
+	}
+}
+
 void AtenForm::refresh_components()
 {
+	ui.ComponentList->setCurrentRow(-1);
 	ui.ComponentList->clear();
 	QListWidgetItem *item;
 	for (component *c = mc.components.first(); c != NULL; c = c->next)
@@ -160,6 +177,6 @@ void AtenForm::on_DisorderStartButton_clicked(bool checked)
 
 void AtenForm::on_VDWScaleSpin_valueChanged(double d)
 {
-	prefs.set_vdw_radius_scale(d);
+	mc.set_vdw_radius_scale(d);
 }
 

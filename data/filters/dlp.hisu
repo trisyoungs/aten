@@ -63,7 +63,6 @@ importtrajectory
 			setcellaxes
 		end
 		# Create atoms in model all at once, since we need to reference them all at different points
-		#createatoms $natoms
 		modeltemplate
 		# X-Coordinates
 		readint $recsize

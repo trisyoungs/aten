@@ -310,7 +310,7 @@ const char *evaluate(const char *s, variable_list *vars)
 			}
 			else
 			{
-				printf("evalute - Operator was missing an argument.\n");
+				printf("evaluate - Operator was missing an argument.\n");
 				return "0";
 			} 
 		}
@@ -318,4 +318,17 @@ const char *evaluate(const char *s, variable_list *vars)
 	// Look for non-blank argument and set it as result
 	for (n=0; n<parser.get_nargs(); n++)
 		if (!parser.is_blank(n)) return parser.argc(n);
+}
+
+// Strip trailing whitespace from string
+const char *strip_trailing(const char *s)
+{
+	int len, n;
+	static char result[512];
+	len = strlen(s);
+	// Go backwards through string and find first non-whitespace character
+	for (n=len-1; n>=0; n--) if (s[n] != ' ') break;
+	strncpy(result,s,n+1);
+	result[n+1] = '\0';
+	return result;
 }

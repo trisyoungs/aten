@@ -8,6 +8,7 @@ importmodel
 	nickname dlpoly
 	zmap ff
 	readline "$title@100"
+	newmodel $title
 	readline "$keytrj $imcon"
 	if $imcon <> 0
 		readline "$cell.a.x $cell.a.y $cell.a.z"
