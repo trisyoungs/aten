@@ -32,7 +32,7 @@ void AtenForm::on_SelectExpandButton_clicked(bool on)
 
 void AtenForm::on_ElementUserButton_clicked(bool on)
 {
-	master.sketchelement = elements.find(qPrintable(ui.ElementUserButton->text()));
+	master.set_sketchelement(elements.find(qPrintable(ui.ElementUserButton->text())));
 }
 
 void AtenForm::on_BondCalcButton_clicked(bool on)
@@ -64,4 +64,21 @@ void AtenForm::on_BondAugmentButton_clicked(bool on)
 {
 	master.get_currentmodel()->augment_bonding();
 	gui.refresh();
+}
+
+void AtenForm::on_ElementEdit_editingFinished()
+{
+	// Get the contents of the line edit and check that it is an element symbol
+	int el = elements.find(qPrintable(ui.ElementEdit->text()));
+	if (el == -1)
+	{
+		msg(DM_NONE,"Unknown element '%s'\n",qPrintable(ui.ElementEdit->text()));
+		ui.ElementEdit->setText(ui.ElementUserButton->text());
+	}
+	else
+	{
+		// Set the text of the user element button and select it
+		ui.ElementUserButton->setText(elements.symbol(el));
+		ui.ElementUserButton->setChecked(TRUE);
+	}
 }

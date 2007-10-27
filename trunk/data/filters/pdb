@@ -8,6 +8,7 @@ importmodel
 		readline "$keyword@6 $line@100"
 		if $keyword = HEADER
 			readvar $line "$title@100"
+			newmodel $title
 		elseif $keyword = CRYST1
 			readvar $line "$cell.a@9 $cell.b@9 $cell.c@9 $cell.alpha@7 $cell.beta@7 $cell.gamma@7"
 			setcell

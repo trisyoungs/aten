@@ -544,7 +544,7 @@ void canvas_master::end_mode(mouse_button button)
 			// Make sure we don't draw on top of an existing atom
 			if (atom_hover == NULL)
 			{
-				atom *i = displaymodel->add_atom(master.sketchelement);
+				atom *i = displaymodel->add_atom(master.get_sketchelement());
 				i->r = displaymodel->guide_to_model(r_mousedown);
 				displaymodel->project_atom(i);
 			}
@@ -556,7 +556,7 @@ void canvas_master::end_mode(mouse_button button)
 			if (atom_hover == NULL)
 			{
 				// No atom under the mouse, so draw an atom
-				atom *i = displaymodel->add_atom(master.sketchelement);
+				atom *i = displaymodel->add_atom(master.get_sketchelement());
 				i->r = displaymodel->guide_to_model(r_mousedown);
 				displaymodel->project_atom(i);
 				// If lastsketched holds an atom, add a bond as well
@@ -574,7 +574,7 @@ void canvas_master::end_mode(mouse_button button)
 			}
 			break;
 		case (UA_TRANSATOM):
-			displaymodel->transmute_atom(atom_hover, master.sketchelement);
+			displaymodel->transmute_atom(atom_hover, master.get_sketchelement());
 			break;
 		case (UA_DELATOM):
 			displaymodel->delete_atom(atom_hover);

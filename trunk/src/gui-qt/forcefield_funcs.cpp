@@ -79,3 +79,15 @@ void AtenForm::on_AssignFFToAllButton_clicked(bool checked)
 {
 	for (model *m = master.get_models(); m != NULL; m = m->next) m->set_ff(master.get_currentff());
 }
+
+void AtenForm::on_TypeModelButton_clicked(bool checked)
+{
+	if (master.get_currentmodel()->type_all()) gui.mainview.postredisplay();
+}
+
+void AtenForm::on_UntypeModelButton_clicked(bool checked)
+{
+	master.get_currentmodel()->remove_typing();
+	gui.mainview.postredisplay();
+}
+

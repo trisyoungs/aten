@@ -246,7 +246,7 @@ class forcefield
 	*/
 	private:
 	// List pointers for torsion data
-	list<ffbound> torsions; 		
+	list<ffbound> torsions;
 
 	public:
 	// Generate angle parameters (rule-based forcefield)

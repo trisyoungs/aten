@@ -212,8 +212,15 @@ class master_data
 	/*
 	// Building
 	*/
+	private:
 	// Selected drawing element
 	int sketchelement;
+
+	public:
+	// Set current drawing element
+	void set_sketchelement(int el) { sketchelement = el; }
+	// Return current drawing element
+	int get_sketchelement() { return sketchelement; }
 
 	/*
 	// Progress Indicators

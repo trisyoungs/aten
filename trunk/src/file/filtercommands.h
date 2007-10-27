@@ -32,6 +32,9 @@ enum filter_command {
 	FC_ZMAP,
 	FC_PARTNER,
 	
+	FC_NEWMODEL,
+	FC_NEWSURFACE,
+
 	FC_REBOND,
 	FC_PACK,
 	FC_CENTRE,

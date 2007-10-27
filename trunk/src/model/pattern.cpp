@@ -25,6 +25,12 @@
 #include "base/master.h"
 #include "base/elements.h"
 
+// Return n'th pattern node
+pattern *model::get_pattern(int id)
+{
+	return patterns[id];
+}
+
 // Add Pattern Node
 pattern *model::add_pattern(int mols, int numatoms, const char *patname)
 {

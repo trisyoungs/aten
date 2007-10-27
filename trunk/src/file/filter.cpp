@@ -194,9 +194,16 @@ void filter::print()
 void filter::set_target(model *m)
 {
 	dbg_begin(DM_CALLS,"filter::set_target[model]");
-	if (m == NULL) printf("filter::set_target[model] <<<< NULL model pointer passed >>>>\n");
-	activemodel = m;
-	activecell = &m->cell;
+	if (m == NULL)
+	{
+		activemodel = NULL;
+		activecell = NULL;
+	}
+	else
+	{
+		activemodel = m;
+		activecell = &m->cell;
+	}
 	dbg_end(DM_CALLS,"filter::set_target[model]");
 }
 

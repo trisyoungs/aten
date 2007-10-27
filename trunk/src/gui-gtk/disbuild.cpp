@@ -26,7 +26,6 @@
 #include "base/master.h"
 #include "model/model.h"
 #include "methods/mc.h"
-#include "classes/component.h"
 
 // Variables
 component *CURRENTCOMP = NULL;
@@ -60,7 +59,7 @@ void disbuildwin_list_delete_current()
 	{
 		mcfill_clist.get(&selected_row, CL_COL_COMP, &selcomp);
 		mcfill_clist.remove(&selected_row);
-		mc.remove_component(selcomp);
+		mc.components.remove(selcomp);
 	}
 	dbg_end(DM_CALLS,"disbuildwin_list_delete_current");
 }
@@ -80,15 +79,12 @@ void disbuildwin_list_update()
 {
 	// Update the component data in the mcfill_clist.
 	dbg_begin(DM_CALLS,"gui::disbuildwin_list_update");
-	component *c;
 	GtkTreeIter iter;
 	// Must empty the list and build it again.
 	mcfill_clist.clear();
-	c = mc.get_components();
-	while (c != NULL)
+	for (component *c = mc.components.first(); c != NULL; c = c->next)
 	{
 		disbuildwin_list_add(c);
-		c = c->next;
 	}
 	dbg_end(DM_CALLS,"gui::disbuildwin_list_update");
 }
@@ -109,18 +105,6 @@ void disbuildwin_controls_update()
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(mcfill_size[1]),size.y);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(mcfill_size[2]),size.z);
 		gtk_combo_box_set_active(GTK_COMBO_BOX(mcfill_regioncombo),CURRENTCOMP->area.get_shape());
-		if (CURRENTCOMP->area.get_usecellcentre())
-		{
-			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mcfill_usecellcentre),TRUE);
-			//mat3<double> craptemp;
-			vec3<double> tempv;
-			tempv.set(0.5,0.5,0.5);
-			//craptemp = cell->get_axes();
-			tempv *= master.get_currentmodel()->cell.get_axes();
-			CURRENTCOMP->area.set_centre(tempv);
-			//*v *= craptemp;
-		}
-		else gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mcfill_usecellcentre),FALSE);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(mcfill_centre[0]),centre.x);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(mcfill_centre[1]),centre.y);
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(mcfill_centre[2]),centre.z);
@@ -145,7 +129,7 @@ void disbuildwin_click_addbtn(GtkButton *widget, gpointer data)
 	{
 		// 'sel' now holds the information of the selected row.
 		mcfill_mlist->get(&sel, ML_COL_MODEL, &xmodel);
-		comp = mc.add_component();
+		comp = mc.components.add();
 		comp->set_model(xmodel);
 		// Add this new element to the clist treeview
 		disbuildwin_list_add(comp);
@@ -213,11 +197,6 @@ void mcfill_change_size(GtkSpinButton *widget, gpointer data)
 	else if (widget == GTK_SPIN_BUTTON(mcfill_size[2])) oldpos.set(2,gtk_spin_button_get_value(widget));
 	CURRENTCOMP->area.set_size(oldpos);
 	gui.refresh();
-}
-
-void mcfill_click_usecellcentre(GtkCheckButton *widget, gpointer data)
-{
-	if (CURRENTCOMP != NULL) CURRENTCOMP->area.set_usecellcentre(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
 }
 
 void mcfill_click_mcoptions(GtkButton *widget, gpointer data)
@@ -355,7 +334,6 @@ void gui_gtk::disbuildwin_create_method(GtkNotebook *notebook)
 	cs_label("X",table,0,1,2,3);
 	cs_label("Y",table,0,1,3,4);
 	cs_label("Z",table,0,1,4,5);
-	mcfill_usecellcentre = cs_check("Use Cell",TRUE,table,1,2,5,6,mcfill_click_usecellcentre,NULL);
 	adj = cs_adjustment(5.0,0.0,10000.0,1,10);
 	mcfill_centre[0] = cs_spin(adj,10.0,2,table,1,2,2,3,mcfill_change_centre,NULL);
 	adj = cs_adjustment(5.0,0.0,10000.0,1,10);

@@ -32,6 +32,9 @@ const char* FC_data[FC_NITEMS] =  {
 	"zmap,G",
 	"partner,G",
 
+	"newmodel,G",
+	"newsurface,G",
+
 	"rebond",
 	"pack",
 	"centre",

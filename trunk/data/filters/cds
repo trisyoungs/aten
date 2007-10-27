@@ -13,6 +13,7 @@ importmodel
 	# 59 (centre of symmetry), 60 (err), 61 (rpa), 62 (td), 63 (pd), 64 (unused), 65 (cbl), 66 (esd of C-C),
 	# 67 (polymeric structure), 68-77 (irrelevant), 78-79 (year)
 	readline "*@1 $title@8 *@17 $nf@3 $nr@3 $nd@3 $ne@3 $nsymm@3 *@3 $natm@3 $nsatm@3 *@3 $ncon@3 $cell@1 $atfor@1"
+	newmodel $title
 	print "Number of symmetry-unique (related) atoms = $natm (${nsatm})"
 	# Record 2: Unit cell definition (if %cell == 1)
 	# Contained information (first col = 0):

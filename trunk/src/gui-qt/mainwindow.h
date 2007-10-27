@@ -191,9 +191,11 @@ class AtenForm : public QMainWindow
 	void on_BondCalcSelButton_clicked(bool on);
 	void on_BondClearSelButton_clicked(bool on);
 	void on_BondAugmentButton_clicked(bool on);
-	void on_ElementCButton_clicked(bool on) { if (on) master.sketchelement = 6; }
-	void on_ElementNButton_clicked(bool on) { if (on) master.sketchelement = 7; }
+	void on_ElementHButton_clicked(bool on) { if (on) master.set_sketchelement(1); }
+	void on_ElementCButton_clicked(bool on) { if (on) master.set_sketchelement(6); }
+	void on_ElementNButton_clicked(bool on) { if (on) master.set_sketchelement(7); }
 	void on_ElementUserButton_clicked(bool on);
+	void on_ElementEdit_editingFinished();
 
 	// Transformation Page Functions
 	private:
@@ -250,6 +252,8 @@ class AtenForm : public QMainWindow
 	void on_EditForcefieldButton_clicked(bool checked);
 	void on_AssignFFToCurrentButton_clicked(bool checked);
 	void on_AssignFFToAllButton_clicked(bool checked);
+	void on_TypeModelButton_clicked(bool checked);
+	void on_UntypeModelButton_clicked(bool checked);
 	void on_ForcefieldList_currentRowChanged(int row);
 
 	// Surface Page Functions

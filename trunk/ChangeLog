@@ -1,3 +1,8 @@
+2007-10-27
+	* Qt: updated / misc fixes.
+	* classes/forcefield.h: convert_parameters fixed.
+	* filters: now require use of FC_NEWMODEL / FC_NEWSURFACE.
+
 2007-10-26
 	* fixed --with-qtdir.
 	* Qt: disorder stack page. fixed crash on forcefield load.
