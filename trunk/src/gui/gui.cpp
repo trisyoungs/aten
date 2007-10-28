@@ -159,6 +159,24 @@ void gui_master::select_ff(forcefield *ff)
 	 if (is_available) printf("gui_master::select_ff - Not defined.\n");
 }
 
+// Add surface to list
+void gui_master::add_surface(surface *m)
+{
+	 if (is_available) printf("gui_master::add_surface - Not defined.\n");
+}
+
+// Remove surface from list
+void gui_master::remove_surface(surface *m)
+{
+	 if (is_available) printf("gui_master::remove_surface - Not defined.\n");
+}
+
+// Select surface in list and show in main/sub windows
+void gui_master::select_surface(surface *m)
+{
+	 if (is_available) printf("gui_master::select_surface - Not defined.\n");
+}
+
 // Create GUI file filters from filter list
 void gui_master::init_filters()
 {

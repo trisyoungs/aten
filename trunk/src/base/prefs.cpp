@@ -382,7 +382,7 @@ void prefs_data::set_scale_colours()
 		}
 		// Create new array
 		scale_colours = new GLint*[3+scale_segments*2];
-		for (n=0; n<(3+scale_segments*2); n++) scale_colours[n] = new GLint[3];
+		for (n=0; n<(3+scale_segments*2); n++) scale_colours[n] = new GLint[4];
 		lastnsegments = scale_segments;
 	}
 	// Set values of lo, mid, and hi colours.

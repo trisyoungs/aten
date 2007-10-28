@@ -348,7 +348,7 @@ void render_surface_grid(surface *s)
 void cube_it(surface *s, surface_style ss)
 {
 	int i, j, k, n, cubetype, *faces;
-	vec3<double> r;
+	vec3<double> r, normal;
 	vec3<int> npoints = s->get_npoints();
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2;
 	// Grab the data pointer and surface cutoff
@@ -374,13 +374,13 @@ void cube_it(surface *s, surface_style ss)
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.get_shininess());
 	glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, s->get_colour());
 	// Generate surface
-	for (i=0; i<npoints.x-1; i++)
+	for (i=1; i<npoints.x-1; i++)
 	{
 		xdata = data[i];
-		for (j=0; j<npoints.y-1; j++)
+		for (j=1; j<npoints.y-1; j++)
 		{
 			ydata = xdata[j];
-			for (k=0; k<npoints.z-1; k++)
+			for (k=1; k<npoints.z-1; k++)
 			{
 				// Grab values that form vertices of cube.
 				vertex[0] = data[i][j][k];
@@ -406,26 +406,22 @@ void cube_it(surface *s, surface_style ss)
 				for (n = 0; n<15; n++)
 				{
 					if (faces[n] == -1) break;
-					//printf("Face edge = %i, %i %i  ", faces[n], edgevertices[faces[n]][0], edgevertices[faces[n]][1]);
 					// Get edge vectors, interpolate, and set tri-points
 					a = vertex[edgevertices[faces[n]][0]];
 					b = vertex[edgevertices[faces[n]][1]];
-					//ipol = (cutoff - b) / (a-b);
-					ipol = 0.5;
+					ipol = (cutoff - a) / (b-a);
+					//printf("IPOL %f %f %f %f\n",a,b,cutoff,ipol);
+					//ipol = 1.0;
 					v1 = vertexpos[edgevertices[faces[n]][0]];
 					v2 = vertexpos[edgevertices[faces[n]][1]];
-					r.set(v2[0]+v1[0], v2[1]+v1[1], v2[2]+v1[2]);
+					r.set(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2]);
 					r *= ipol;
-					r.add(i,j,k);
-					//printf("  %f  %f  %f\n", r.x, r.y, r.z);
-					//evec = edgevectors[faces[n]];
+					normal = r;
+					r.add(i+v1[0], j+v1[1], k+v1[2]);
 					// Set triangle coordinates and add cube position
-					//r.set(ipol*evec[0], ipol*evec[1], ipol*evec[2]);
-					//r.add(i,j,k);
+					glNormal3d(normal.x, normal.y, normal.z);
 					glVertex3d(r.x, r.y, r.z);
-					
 				}
-				
 			}
 		}
 	  }
@@ -442,7 +438,7 @@ void canvas_master::render_surfaces()
 	static vec3<double> origin;
 	static double axes[16];
 	static mat4<double> mat;
-	for (surface *s = master.surfaces.first(); s != NULL; s = s->next)
+	for (surface *s = master.get_surfaces(); s != NULL; s = s->next)
 	{
 		// Check visibility
 		if (!s->get_visible()) continue;

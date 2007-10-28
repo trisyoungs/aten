@@ -156,6 +156,11 @@ class surface
 	void set_style(surface_style ss) { style = ss; log++; }
 	// Return the rendering style of the surface
 	surface_style get_style() { return style; }
+	// Set the colour of the surface
+	void set_colour(int r, int g, int b);
+	void set_colour(double r, double g, double b);
+	// Set transparency of the surface
+	void set_transparency(int a) { colour[3] = a; log++; }
 	// Return the colour of the surface
 	GLint *get_colour() { return colour; }
 };

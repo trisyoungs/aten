@@ -45,6 +45,11 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 			if (inputfile == NULL) break;
 			parser.get_args_formatted(fn->datavar[0]->get_as_char(),PO_DEFAULTS,fn->get_format());
 			break;
+		// Get next whitespace-delimited argument from file
+		case (FC_READNEXT):
+			if (inputfile == NULL) break;
+			fn->datavar[0]->set(parser.get_arg_delim(inputfile));
+			break;
 		// Skip line(s) of file
 		case (FC_SKIPLINE):
 			if (inputfile == NULL) break;

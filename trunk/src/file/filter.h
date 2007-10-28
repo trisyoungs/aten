@@ -135,6 +135,10 @@ class filter
 	surface *activesurface;
 	// Set target to model
 	void set_target(model*);
+	// Set target to surface
+	void set_target(surface*);
+	// Reset all targets
+	void reset_targets();
 
 	/*
 	// File	

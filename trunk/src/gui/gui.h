@@ -30,6 +30,7 @@ enum gui_window { GW_MAIN, GW_ATOMBUILDER, GW_ATOMLABEL, GW_ATOMLIST, GW_ATOMSEL
 // Forward definitions
 class filter;
 class model;
+class surface;
 class forcefield;
 
 // GUI Interface
@@ -137,6 +138,12 @@ class gui_master
 	virtual void remove_ff(forcefield*);
 	// Select forcefield in list
 	virtual void select_ff(forcefield*);
+	// Add surface (adds new surface to list)
+	virtual void add_surface(surface*);
+	// Remove surface from list
+	virtual void remove_surface(surface*);
+	// Select surface (show in main/sub windows)
+	virtual void select_surface(surface*);
 
 	/*
 	// GUI file filters

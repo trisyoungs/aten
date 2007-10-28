@@ -43,6 +43,7 @@ const char* FC_data[FC_NITEMS] =  {
 
 	"readline,F",
 	"readvar,VF",
+	"readnext,V",
 	"writeline,F",
 	"writevar,VF",
 	"skipline,|g",

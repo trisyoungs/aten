@@ -12,6 +12,7 @@
         <file>icons/arrow_upline.svg</file>
     </qresource>
     <qresource prefix="/basic" >
+        <file>icons/basic_colour.svg</file>
         <file>icons/basic_define.svg</file>
         <file>icons/basic_minus.svg</file>
         <file>icons/basic_plus.svg</file>

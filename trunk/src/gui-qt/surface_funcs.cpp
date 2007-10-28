@@ -23,19 +23,20 @@
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 #include <QtGui/QFileDialog>
+#include <QtGui/QColorDialog>
 
 void AtenForm::refresh_surfacespage()
 {
 	// Clear and refresh the surfaces list
 	ui.SurfaceList->clear();
 	QListWidgetItem *item;
-	for (surface *s = master.surfaces.first(); s != NULL; s = s->next)
+	for (surface *s = master.get_surfaces(); s != NULL; s = s->next)
 	{
 		item = new QListWidgetItem(ui.SurfaceList);
 		item->setText(s->get_name());
 	}
 	// Select the first item
-	if (master.surfaces.size() != 0) ui.SurfaceList->setCurrentRow(0);
+	if (master.get_nsurfaces() != 0) ui.SurfaceList->setCurrentRow(0);
 }
 
 void AtenForm::refresh_surfaceinfo()
@@ -44,7 +45,7 @@ void AtenForm::refresh_surfaceinfo()
 	surface *s;
 	int row = ui.SurfaceList->currentRow();
 	if (row == -1) return;
-	else s = master.surfaces[row];
+	else s = master.get_surface(row);
 	// Set minimum, maximum, and cutoff
 	ui.SurfaceMinimumLabel->setText(ftoa(s->get_minimum()));
 	ui.SurfaceCutoffSpin->setMinimum(s->get_minimum());
@@ -58,7 +59,6 @@ void AtenForm::refresh_surfaceinfo()
 	ui.SurfaceOriginZSpin->setValue(origin.z);
 	// Set axes
 	mat3<double> axes = s->get_axes();
-	axes.print();
 	ui.SurfaceAxesAXSpin->setValue(axes.rows[0].x);
 	ui.SurfaceAxesAYSpin->setValue(axes.rows[0].y);
 	ui.SurfaceAxesAZSpin->setValue(axes.rows[0].z);
@@ -68,7 +68,10 @@ void AtenForm::refresh_surfaceinfo()
 	ui.SurfaceAxesCXSpin->setValue(axes.rows[2].x);
 	ui.SurfaceAxesCYSpin->setValue(axes.rows[2].y);
 	ui.SurfaceAxesCZSpin->setValue(axes.rows[2].z);
-
+	// Set colour and transparency
+	GLint *col = s->get_colour();
+	ui.SurfaceColourFrame->set_colour(col[0], col[1], col[2]);
+	ui.SurfaceTransparencySpin->setValue( (double) col[3] / INT_MAX );
 }
 
 void AtenForm::surface_origin_changed(int component, double value)
@@ -77,7 +80,7 @@ void AtenForm::surface_origin_changed(int component, double value)
 	surface *s;
 	int row = ui.SurfaceList->currentRow();
 	if (row == -1) return;
-	else s = master.surfaces[row];
+	else s = master.get_surface(row);
 	// Get and re-set origin
 	static vec3<double> o;
 	o = s->get_origin();
@@ -92,7 +95,7 @@ void AtenForm::surface_axis_changed(int r, int component, double value)
 	surface *s;
 	int row = ui.SurfaceList->currentRow();
 	if (row == -1) return;
-	else s = master.surfaces[row];
+	else s = master.get_surface(row);
 	// Get and re-set axes
 	static mat3<double> axes;
 	axes = s->get_axes();
@@ -148,7 +151,7 @@ void AtenForm::on_SurfaceCutoffSpin_valueChanged(double d)
 	// Get current surface in list
 	int row = ui.SurfaceList->currentRow();
 	if (row == -1) return;
-	surface *s = master.surfaces[row];
+	surface *s = master.get_surface(row);
 	s->set_cutoff(d);
 	gui.mainview.postredisplay();
 }
@@ -158,7 +161,38 @@ void AtenForm::on_SurfaceStyleCombo_currentIndexChanged(int index)
 	// Get current surface in list
 	int row = ui.SurfaceList->currentRow();
 	if (row == -1) return;
-	surface *s = master.surfaces[row];
+	surface *s = master.get_surface(row);
 	s->set_style(surface_style (index));
+	gui.mainview.postredisplay();
+}
+
+void AtenForm::on_SurfaceColourButton_clicked(bool checked)
+{
+	// Get current surface in list
+	int row = ui.SurfaceList->currentRow();
+	if (row == -1) return;
+	surface *s = master.get_surface(row);
+	// Get current surface colour and convert into a QColor
+	GLint *glcol = s->get_colour();
+	QColor oldcol, newcol;
+	oldcol.setRedF( double(glcol[0]) / INT_MAX );
+	oldcol.setGreenF( double(glcol[1]) / INT_MAX );
+	oldcol.setBlueF( double(glcol[2]) / INT_MAX );
+	oldcol.setAlphaF( double(glcol[3]) / INT_MAX );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour
+	s->set_colour(newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.SurfaceColourFrame->set_colour(newcol);
+	gui.mainview.postredisplay();
+}
+
+void AtenForm::on_SurfaceTransparencySpin_valueChanged(double value)
+{
+	// Get current surface in list
+	int row = ui.SurfaceList->currentRow();
+	if (row == -1) return;
+	surface *s = master.get_surface(row);
+	s->set_transparency( int (value * INT_MAX));
 	gui.mainview.postredisplay();
 }

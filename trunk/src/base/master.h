@@ -132,9 +132,21 @@ class master_data
 	/*
 	// Surfaces
 	*/
-	public:
-	// Currently loaded surface
+	private:
+	// Currently loaded surfaces
 	list<surface> surfaces;
+
+	public:
+	// Return list of surfaces
+	surface *get_surfaces() { return surfaces.first(); }
+	// Return number of surfaces loaded
+	int get_nsurfaces() { return surfaces.size(); }
+	// Return specified surface
+	surface *get_surface(int id) { return surfaces[id]; }
+	// Add new surface
+	surface *add_surface();
+	// Remove surface
+	void remove_surface(surface *s);
 
 	/*
 	// Clipboards

@@ -190,7 +190,7 @@ void filter::print()
 	dbg_end(DM_CALLS,"filter::print");
 }
 
-// Set targets
+// Set targets (model)
 void filter::set_target(model *m)
 {
 	dbg_begin(DM_CALLS,"filter::set_target[model]");
@@ -205,6 +205,23 @@ void filter::set_target(model *m)
 		activecell = &m->cell;
 	}
 	dbg_end(DM_CALLS,"filter::set_target[model]");
+}
+
+// Set targets (surface)
+void filter::set_target(surface *s)
+{
+	dbg_begin(DM_CALLS,"filter::set_target[surface]");
+	if (s == NULL) activesurface = NULL;
+	else activesurface = s;
+	dbg_end(DM_CALLS,"filter::set_target[surface]");
+}
+
+// Reset targets
+void filter::reset_targets()
+{
+	activemodel = NULL;
+	activecell = NULL;
+	activesurface = NULL;
 }
 
 // Set input file

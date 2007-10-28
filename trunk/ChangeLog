@@ -1,3 +1,7 @@
+2007-10-28
+	* Qt: command toolbar. surfaces page updated.
+	* filters: Gaussian cube file added.
+
 2007-10-27
 	* Qt: updated / misc fixes.
 	* classes/forcefield.h: convert_parameters fixed.

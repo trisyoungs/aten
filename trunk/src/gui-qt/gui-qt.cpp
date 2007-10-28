@@ -87,9 +87,6 @@ void gui_qt::run(int argc, char **argv)
 	mainwindow->show();
 	does_exist = TRUE;
 
-	// Set GUI controls linked to preferences values
-	set_controls();
-
 	// Prepare first model in list
 	master.set_currentmodel(master.get_models());
 	master.get_currentmodel()->calculate_viewmatrix();
@@ -102,6 +99,9 @@ void gui_qt::run(int argc, char **argv)
 		tabid = mainwindow->ui.ModelTabs->addTab(m->get_name());
 		m->reset_view();
 	}
+
+	// Refresh the surfaces list
+	mainwindow->refresh_surfacespage();
 
 	// Start timer
 	if (master.use_timer) master.start_timer_events();
@@ -158,11 +158,6 @@ void gui_qt::update_trajcontrols()
 // Change msgbox font
 void gui_qt::change_msg_font(const char *font)
 {
-	// Remove the old font tag from the text buffer's tag table
-	//GtkTextTagTable* table = gtk_text_buffer_get_tag_table(statusbuf);
-	//gtk_text_tag_table_remove(table,msgtag);
-	// Now create a new tag based on the info from the font button
-	//msgtag = gtk_text_buffer_create_tag(statusbuf,"font","font",font,NULL);
 }
 
 // Update labels

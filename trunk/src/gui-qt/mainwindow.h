@@ -39,6 +39,7 @@ const char *extension_from_PF(pixmap_format);
 class QFileDialog;
 class QLabel;
 class QTimer;
+class QLineEdit;
 
 class AtenForm : public QMainWindow
 {
@@ -138,6 +139,24 @@ class AtenForm : public QMainWindow
 	void on_actionFrameFirst_triggered(bool checked);
 	void on_actionFrameLast_triggered(bool checked);
 	void on_actionPlayPause_triggered(bool checked);
+
+	/*
+	// Command Actions
+	*/
+	private:
+	QLineEdit *command_edit;
+	private slots:
+	void execute_command();
+
+	/*
+	// Toolbar Actions
+	*/
+	private slots:
+	void on_actionFileToolBarVisibility_triggered(bool v) { ui.FileToolBar->setVisible(v); }
+	void on_actionEditToolBarVisibility_triggered(bool v) { ui.EditToolBar->setVisible(v); }
+	void on_actionStyleToolBarVisibility_triggered(bool v) { ui.StyleToolBar->setVisible(v); }
+	void on_actionTrajectoryToolBarVisibility_triggered(bool v) { ui.TrajectoryToolBar->setVisible(v); }
+	void on_actionCommandToolBarVisibility_triggered(bool v) { ui.CommandToolBar->setVisible(v); }
 
 	/*
 	// Widget Stack Functions
@@ -281,6 +300,8 @@ class AtenForm : public QMainWindow
 	void on_SurfaceAxesCXSpin_valueChanged(double d) { surface_axis_changed(2,0, d); }
 	void on_SurfaceAxesCYSpin_valueChanged(double d) { surface_axis_changed(2,1, d); }
 	void on_SurfaceAxesCZSpin_valueChanged(double d) { surface_axis_changed(2,2, d); }
+	void on_SurfaceColourButton_clicked(bool checked);
+	void on_SurfaceTransparencySpin_valueChanged(double d);
 
 	// Disorder Page Functions
 	public:
@@ -352,9 +373,6 @@ class AtenForm : public QMainWindow
 	QFileDialog *openffdialog;
 	// Surface File Dialogs
 	QFileDialog *opensurfacedialog, *savesurfacedialog;
-
-	private slots:
-
 };
 
 #endif

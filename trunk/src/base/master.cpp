@@ -152,6 +152,30 @@ model *master_data::find_model(const char *s)
 }
 
 /*
+// Surface Management Routines
+*/
+
+// Add new surface
+surface *master_data::add_surface()
+{
+	surface *s = surfaces.add();
+	gui.add_surface(s);
+	gui.select_surface(s);
+	return s;
+}
+
+// Remove surface
+void master_data::remove_surface(surface *xsurf)
+{
+	surface *s;
+	xsurf->next != NULL ? s = xsurf->next : s = xsurf->prev;
+	gui.remove_surface(xsurf);
+	gui.select_surface(s);
+	// Finally, delete the old surface
+	surfaces.remove(xsurf);
+}
+
+/*
 // Forcefield Management routines
 */
 
