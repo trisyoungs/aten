@@ -43,6 +43,7 @@ enum filter_command {
 	
 	FC_READLINE,
 	FC_READVAR,
+	FC_READNEXT,
 	FC_WRITELINE,
 	FC_WRITEVAR,
 	FC_SKIPLINE,

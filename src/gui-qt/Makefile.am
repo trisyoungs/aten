@@ -20,7 +20,7 @@ SUFFIXES: .ui .uih .qrc
 	$(CXX) -I../ $(CXXFLAGS) $(QTGUI_CFLAGS) -c -o $@ $*.cpp
 	rm $*.cpp
 
-libguiqt_a_SOURCES = icons.qrc prefs.ui mainwindow.ui mainwindow_funcs.cpp atomlist_funcs.cpp disorder_funcs.cpp forcefield_funcs.cpp transform_funcs.cpp edit_funcs.cpp cell_funcs.cpp position_funcs.cpp surface_funcs.cpp minimise_funcs.cpp contextmenu_funcs.cpp action_funcs.cpp prefs_funcs.cpp gui-qt.cpp tcanvas_funcs.cpp canvas-qt.cpp ttabbar.uih tcanvas.uih ttreewidget.uih ttimer.uih
+libguiqt_a_SOURCES = icons.qrc prefs.ui mainwindow.ui mainwindow_funcs.cpp atomlist_funcs.cpp disorder_funcs.cpp forcefield_funcs.cpp transform_funcs.cpp edit_funcs.cpp cell_funcs.cpp position_funcs.cpp surface_funcs.cpp minimise_funcs.cpp contextmenu_funcs.cpp action_funcs.cpp prefs_funcs.cpp gui-qt.cpp tcanvas_funcs.cpp tcolourframe_funcs.cpp canvas-qt.cpp ttabbar.uih tcanvas.uih tcolourframe.uih ttreewidget.uih
 
 noinst_HEADERS = canvas-qt.h gui-qt.h mainwindow.h prefs.h ttreewidgetatom.h
 

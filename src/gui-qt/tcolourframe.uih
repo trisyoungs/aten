@@ -1,6 +1,6 @@
 /*
-	*** Qt custom timer
-	*** src/gui-qt/ttimer.uih
+	*** Qt 'Colour' Frame
+	*** src/gui-qt/tcolourframe.uih
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,26 +19,28 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_TTIMER_H
-#define H_TTIMER_H
+#ifndef H_TCOLOURFRAME_H
+#define H_TCOLOURFRAME_H
 
-#include <QtCore/QTimer>
-#include <QtGui/QWidget>
+#include <QtGui/QFrame>
+#include <QtCore/QObject>
 
-class TTimer : public QWidget
+class TColourFrame : public QFrame
 {
 	Q_OBJECT
 
 	public:
-	TTimer(QWidget*)
-	{
-	};
+	TColourFrame(QWidget *parent = 0);
+
+	protected:
+	void paintEvent(QPaintEvent *event);
 
 	private:
-	QTimer timer;
+	QBrush brush;
 
-	//protected:
-	//void timerEvent(QTimerEvent *event);
+	public:
+	void set_colour(QColor &c) { brush.setColor(c); }
+	void set_colour(int r, int g, int b);
 };
 
 #endif

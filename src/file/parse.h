@@ -81,6 +81,8 @@ class line_parser
 	int get_args_delim(ifstream*, int);
 	// Skip 'n' lines from file
 	int skip_lines(ifstream*, int);
+	// Get next arg delimited from file stream
+	const char *get_arg_delim(ifstream*);
 	// Parse file with format
 	int get_args_formatted(ifstream*, int, format*);
 	// Parse file with format

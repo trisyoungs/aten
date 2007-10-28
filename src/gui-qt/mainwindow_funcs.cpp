@@ -73,6 +73,15 @@ void AtenForm::finalise_ui()
 		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
 	}
 
+	// Hide trajectory and command toolbars initially
+	ui.TrajectoryToolBar->setVisible(FALSE);
+	ui.CommandToolBar->setVisible(FALSE);
+
+	// Add text edit to CommandToolBar
+	command_edit = new QLineEdit(this);
+	ui.CommandToolBar->addWidget(command_edit);
+	QObject::connect(command_edit, SIGNAL(editingFinished()), this, SLOT(execute_command()));
+
 	// Create QActionGroup for perspective / orthographic views
 	QActionGroup *viewtypeGroup = new QActionGroup(this);
 	viewtypeGroup->addAction(ui.actionViewOrthographic);
@@ -119,8 +128,6 @@ void AtenForm::finalise_ui()
 	stackbuttons[SP_DISORDER] = ui.ShowDisorderPageButton;
 	stackbuttons[SP_FORCEFIELD] = ui.ShowForcefieldsPageButton;
 	stackbuttons[SP_SURFACE] = ui.ShowSurfacesPageButton;
-
-	// Create timer widget for actionPlayPause
 
 	// Add permanent statusbar widgets
 	statuslabel = new QLabel(this,0);
@@ -264,4 +271,15 @@ void AtenForm::refresh_modeltabs()
 		count ++;
 	}
 	dbg_end(DM_CALLS,"AtenForm::refresh_modeltabs");
+}
+
+void AtenForm::execute_command()
+{
+	// Clear old script commands
+	master.cmd_script.commands.clear();
+	// Grab the current text of the line edit
+	parser.get_args_delim(qPrintable(command_edit->text()), PO_DEFAULTS);
+	if (master.cmd_script.cache_command()) master.cmd_script.run();
+	gui.refresh();
+	command_edit->setText("");
 }

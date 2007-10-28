@@ -51,6 +51,8 @@ void canvas_master::render_model_atoms()
 	i = displaymodel->get_atoms();
 	cell = &displaymodel->cell;
 	
+	// Set polygon fill mode and specular reflection
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glMaterialiv(GL_FRONT, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.gl_shininess);
 
@@ -559,12 +561,12 @@ void canvas_master::render_model_cell()
 		double glmat[16];
 		mat.get_column_major(glmat);
 		glPushMatrix();
-			glMultMatrixd(glmat);
-			if (prefs.should_render(VO_CELL)) glCallList(globs.lists[GLOB_WIREUNITCUBE]);
-			vec3<double> l = displaymodel->cell.get_lengths();
-			glTranslated(-0.5,-0.5,-0.5);
-			glScaled(1.0/l.x,1.0/l.y,1.0/l.z);
-			if (prefs.should_render(VO_CELLAXES)) glCallList(globs.lists[GLOB_CELLAXES]);
+		  glMultMatrixd(glmat);
+		  if (prefs.should_render(VO_CELL)) glCallList(globs.lists[GLOB_WIREUNITCUBE]);
+		  vec3<double> l = displaymodel->cell.get_lengths();
+		  glTranslated(-0.5,-0.5,-0.5);
+		  glScaled(1.0/l.x,1.0/l.y,1.0/l.z);
+		  if (prefs.should_render(VO_CELLAXES)) glCallList(globs.lists[GLOB_CELLAXES]);
 		glPopMatrix();
 		// Here, translate the initial drawing position to be 0,0,0 in cell coordinates
 		origin = displaymodel->cell.get_origin();

@@ -22,8 +22,6 @@
 #include "model/model.h"
 #include "base/master.h"
 #include "base/elements.h"
-//#include <math.h>
-//#include <iostream>
 
 // Constructors
 model::model()

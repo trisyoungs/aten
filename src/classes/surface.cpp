@@ -80,9 +80,9 @@ void surface::clear()
 	visible = TRUE;
 	if (data == NULL) return;
 	int i, j;
-	for (i = 0; i<npoints.y; i++)
+	for (i = 0; i<npoints.x; i++)
 	{
-		for (j = 0; j<npoints.z; j++) delete[] data[i][j];
+		for (j = 0; j<npoints.y; j++) delete[] data[i][j];
 		delete[] data[i];
 	}
 	delete[] data;
@@ -110,17 +110,17 @@ void surface::set_limits(double d)
 void surface::set_data(int x, int y, int z, double d)
 {
 	// Check limits against npoints vector
-	if ((x < 1) || (x > npoints.x))
+	if ((x < 0) || (x >= npoints.x))
 	{
 		msg(DM_NONE,"surface::set_data(x,y,z) - X index is outside array bounds.\n");
 		return;
 	}
-	else if ((y < 1) || (y > npoints.y))
+	else if ((y < 0) || (y >= npoints.y))
 	{
 		msg(DM_NONE,"surface::set_data(x,y,z) - Y index is outside array bounds.\n");
 		return;
 	}
-	else if ((z < 1) || (z > npoints.z))
+	else if ((z < 0) || (z >= npoints.z))
 	{
 		msg(DM_NONE,"surface::set_data(x,y,z) - Z index is outside array bounds.\n");
 		return;
@@ -157,5 +157,22 @@ void surface::set_next_data(double d)
 	}
 	// Set new minimum / maximum
 	set_limits(d);
+}
+
+// Set surface colour
+void surface::set_colour(int r, int g, int b)
+{
+	colour[0] = r;
+	colour[1] = g;
+	colour[2] = b;
+	log ++;
+}
+
+void surface::set_colour(double r, double g, double b)
+{
+	colour[0] = (GLint) (r * INT_MAX);
+	colour[1] = (GLint) (g * INT_MAX);
+	colour[2] = (GLint) (b * INT_MAX);
+	log ++;
 }
 

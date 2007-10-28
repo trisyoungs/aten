@@ -34,12 +34,6 @@ void filter::import_surface(const char *filename)
 		return;
 	}
 	msg(DM_NONE,"Load   : %s (%s)\n",filename,name.get());
-	// Get the preliminary surface target
-	activesurface = master.surfaces.add();
-	activesurface->set_name(filename);
-	printf("Surface = %li\n",activesurface);
-	// Re-set reserved variables
-	//commands.variables.set("title","Unnamed");
 	// Open file...
 	if (!set_input(filename))
 	{
@@ -47,6 +41,8 @@ void filter::import_surface(const char *filename)
 		dbg_end(DM_CALLS,"filter::import_surface");
 		return;
 	}
+	// Reset target variables
+	reset_targets();
 	// Run the import commands on the file...
 	command_node<filter_command> *fn = commands.commandlist.first();
 	while (fn != NULL)

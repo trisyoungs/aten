@@ -36,7 +36,7 @@ bool filter::do_surface(command_node<filter_command> *&fn)
 		case (FC_ADDGRIDPOINT):
 			if (activesurface == NULL) break;
 			veci = fn->get_vector3i(0);
-			activesurface->set_data(veci.x, veci.y, veci.z, fn->datavar[3]->get_as_double());
+			activesurface->set_data(veci.x-1, veci.y-1, veci.z-1, fn->datavar[3]->get_as_double());
 			break;
 		// Add next gridpoint in sequence
 		case (FC_ADDNEXTGRIDPOINT):

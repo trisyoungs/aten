@@ -4,7 +4,7 @@ Issues with the current version:
 	- Spherical regions in disordered builder have poor randomness.
 	- Interpolation of surface triangles is 'simple' (0.5 along edges)
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
-	- Crash on close when a surface is loaded?
+	- Surfaces need correct surface normals
 	- Colour schemes other than AC_ELEMENT need to be fixed.
 
 General To-Do list:
@@ -22,7 +22,7 @@ General To-Do list:
 General Qt To-Do list:
 	- Forcefield stack page and manager/edit window
 	- Prefs window (partial)
-	- Minimiser stack page (partial - needs current energy/forces - convergence controls useless)
+	- Minimiser stack page (partial - needs current energy/forces)
 	- Progress dialogs are not application modal
 
 Manual To-Do list:

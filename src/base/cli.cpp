@@ -29,7 +29,7 @@ enum short_opt { SO_A=97, SO_BOHR, SO_COMMAND, SO_DEBUG, SO_E,
 		SO_P, SO_Q, SO_R, SO_SCRIPT, SO_T,
 		SO_U, SO_VERBOSE, SO_W, SO_X, SO_Y, SO_ZMAP,
 		SO_LASTITEM };
-enum long_opt { LO_FOLD, LO_NOFOLD, LO_BOND, LO_NOBOND, LO_CENTRE, LO_NOCENTRE, LO_PACK, LO_NOPACK, LO_DEBUGTYPING, LO_DEBUGPARSE, LO_DEBUGMORE, LO_DEBUGALL, LO_DEBUGFILTERS, LO_NITEMS };
+enum long_opt { LO_FOLD, LO_NOFOLD, LO_BOND, LO_NOBOND, LO_CENTRE, LO_NOCENTRE, LO_PACK, LO_NOPACK, LO_DEBUGTYPING, LO_DEBUGPARSE, LO_DEBUGMORE, LO_DEBUGALL, LO_DEBUGFILTERS, LO_SURFACE, LO_NITEMS };
 
 // Prepare options list
 void master_data::prepare_cli()
@@ -59,6 +59,7 @@ void master_data::prepare_cli()
 	add_cli_option("debugall",no_argument,LO_DEBUGALL,FALSE);
 	add_cli_option("debugparse",no_argument,LO_DEBUGPARSE,FALSE);
 	add_cli_option("debugfilters",no_argument,LO_DEBUGFILTERS,FALSE);
+	add_cli_option("surface",required_argument,LO_SURFACE,FALSE);
 	add_cli_option("0",0,0,0);
 }
 
@@ -93,6 +94,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	bool done = FALSE;
 	model *m;
 	script *s;
+	filter *f;
 	zmap_type zm;
 	//printf("PROPER_PARSE = %i [%s]\n",argc,shortopts.c_str());
 	while (!done)
@@ -218,6 +220,11 @@ int master_data::parse_cli(int argc, char *argv[])
 					add_debuglevel(DM_PARSE);
 					add_debuglevel(DM_TYPING);
 					break;
+				// Load surface
+				case (LO_SURFACE):
+					f = master.probe_file(optarg, FT_SURFACE_IMPORT);
+					if (f != NULL) f->import_surface(optarg);
+					break;
 				default:
 					printf("Unrecognised command-line option '%s'.\n",argv[index]);
 					dbg_end(DM_CALLS,"cli::parse");
@@ -229,7 +236,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	while (optind < argc)
 	{
 		ntried ++;
-		filter *f = master.probe_file(argv[optind], FT_MODEL_IMPORT);
+		f = master.probe_file(argv[optind], FT_MODEL_IMPORT);
 		if (f != NULL) m = f->import_model(argv[optind]);
 		optind++;
 	}

@@ -232,6 +232,21 @@ int line_parser::get_args_delim(ifstream *xfile, int options)
 	return 0;
 }
 
+// Get next argument (delimited) from file stream
+const char *line_parser::get_arg_delim(ifstream *xfile)
+{
+	dbg_begin(DM_PARSE,"parser::get_args[file]");
+	static char result[512];
+	static int length;
+	static bool done;
+	// Clear old result
+	result[0] = '\0';
+	length = 0;
+	done = FALSE;
+	*xfile >> result;
+	return result;
+}
+
 // Parse all arguments (delimited) from string
 void line_parser::get_args_delim(const char *s, int options)
 {

@@ -1,10 +1,14 @@
-pdb
-xyz
+# Model formats
+cds
 dlp.model
 dlp.hisf
 dlp.hisu
 dlp.field
 mol2
-pdens
-cds
+pdb
+xyz
 #msi
+
+# Surface formats
+pdens
+cube

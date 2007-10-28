@@ -24,6 +24,3 @@ importsurface
 		end
 	end
 end
-
-exportsurface
-end

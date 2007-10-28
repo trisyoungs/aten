@@ -37,7 +37,7 @@ model *filter::import_model(const char *filename)
 	msg(DM_NONE,"Load   : %s (%s)\n",filename,name.get());
 	// Re-set reserved variables
 	commands.variables.set("title","Unnamed");
-	set_target(NULL);
+	reset_targets();
 	// Set element mapping type to that specified in file
 	zmap_type temp_zmap = prefs.get_zmapping();
 	if (has_zmapping) prefs.set_zmapping(zmapping);
