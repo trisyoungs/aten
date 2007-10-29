@@ -301,6 +301,8 @@ bool mc_methods::disorder(model* destmodel)
 		p = destmodel->add_pattern(c->get_nrequested(), m->get_natoms(), m->get_name());
 		p->set_expectedmols(c->get_nrequested());
 		c->set_pattern(p);
+		// Set the forcefield of the new pattern fo that of the source model
+		p->set_ff(m->get_ff());
         }
 
 	// Create master expression for the new (filled) model
@@ -355,15 +357,16 @@ bool mc_methods::disorder(model* destmodel)
 	msg(DM_NONE," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.get_vdw(), destmodel->energy.get_elec());
 
 	// Loop over MC cycles
-	if (gui.exists()) gui.progress_create("Building disordered system", ncycles);
+	if (gui.exists()) gui.progress_create("Building disordered system", ncycles * components.size() * MT_NITEMS);
 	for (cycle=0; cycle<ncycles; cycle++)
 	{
 		msg(DM_VERBOSE,"Begin cycle %i...\n",cycle);
-		if (gui.exists() && (!gui.progress_update(cycle))) break;
 
 		// Loop over patterns and regions together
+		ncomp = 0;
 		for (c = components.first(); c != NULL; c = c->next)
 		{
+			ncomp ++;
 			// Get pointers to variables
 			p = c->get_pattern();
 			r = &c->area;
@@ -374,12 +377,13 @@ bool mc_methods::disorder(model* destmodel)
 				msg(DM_VERBOSE,"Pattern '%s' is fixed.\n",p->get_name());
 				continue;
 			}
-			//r = regref->item;
 			msg(DM_VERBOSE,"Pattern region is '%s'.\n",text_from_RS(r->get_shape()));
 
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MT_DELETE; move>-1; move--)
 			{
+				if (gui.exists() && (!gui.progress_update(cycle * ncomp * (MT_NITEMS-move)))) break;
+
 				acceptratio[p->get_id()][move] = 0;
 				// If this move type isn't allowed then continue onto the next
 				if (!allowed[move]) continue;
