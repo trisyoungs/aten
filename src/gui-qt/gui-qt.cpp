@@ -220,6 +220,7 @@ void gui_qt::add_model(model *m)
 	if (!does_exist) return;
 	// Create new tab in ModelTabs QTabBar
 	int tabid = mainwindow->ui.ModelTabs->addTab(m->get_name());
+	m->reset_view();
 }
 
 // Remove model from list
@@ -268,8 +269,6 @@ void gui_qt::refresh()
 	mainwindow->refresh_atompage();
 	// Update the contents of the cell page
 	mainwindow->refresh_cellpage();
-	// Update the forcefield list
-	mainwindow->refresh_forcefieldpage();
 	// Update the disorder page
 	mainwindow->refresh_disorderpage();
 	// Update trajectory playback controls
