@@ -93,6 +93,7 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	converged = FALSE;
 	maxlinetrials = 1000;
 	msg(DM_NONE,"%10i  %15.5f \n",0,ecurrent);
+	gui.progress_create("Minimising (SD)", maxiterations*maxlinetrials);
 	for (cycle=0; cycle<maxiterations; cycle++)
 	{
 		// Calculate gradient vector for the current model coordinates
@@ -105,6 +106,11 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 		stepsize = 0.5;
 		for (m=0; m<maxlinetrials; m++)
 		{
+			if (!gui.progress_update(cycle*maxlinetrials + m))
+			{
+				linefailed = TRUE;
+				break;
+			}
 			gradient_move(srcmodel);
 			enew = srcmodel->total_energy(&workmodel);
 			edelta = enew - ecurrent;
@@ -119,7 +125,7 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 			else
 			{
 				// Energy increased, so change step size and repeat
-				stepsize *= 0.75;
+				stepsize *= 0.1;
 			}
 		}
 		if (linefailed)
@@ -129,10 +135,6 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 		}
 		// Print out the step data
 		if (prefs.update_energy(cycle+1)) msg(DM_NONE,"%10i  %15.5f   %15.5f\n",cycle+1,ecurrent,edelta);
-		// Refresh the model and the main window
-		
-		//if ((cycle+1)%prefs.modelupdate == 0) xmodel->copy_workcfg_to_model(TRUE);
-		gui.process_events();
 		// Check for convergence
 		if (fabs(edelta) < econ)
 		{
@@ -140,12 +142,13 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 			break;
 		}
 	}
+	gui.progress_terminate();
+
 	msg(DM_NONE,"\nFinal step:\n");
 	msg(DM_NONE,"%10i  %15.5f   %15.5f\n",cycle+1,ecurrent,edelta);
 	if (converged) msg(DM_NONE,"Steepest descent converged in %i steps.\n",cycle+1);
 	else msg(DM_NONE,"Steepest descent did not converge within %i steps.\n",maxiterations);
 	// Copy config data to model and delete working configurations
-	//if (cycle != 0) srcmodel->copy_atom_data(&workmodel,AD_R);
 	srcmodel->calculate_forces(srcmodel);
 	srcmodel->log_change(LOG_COORDS);
 	dbg_end(DM_CALLS,"sd_methods::minimise");

@@ -253,7 +253,7 @@ bool mc_methods::disorder(model* destmodel)
 	// Monte Carlo Insertion
 	dbg_begin(DM_CALLS,"mc::insert");
 	int n, m, cycle, move, mol, noldatoms, noldpatterns;
-	int pnmols;
+	int pnmols, ncomp;
 	char s[256], t[32];
 	component *c;
 	double enew, ecurrent, elastcycle, edelta, phi, theta, ecurrent_vdw, ecurrent_elec;
