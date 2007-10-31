@@ -146,7 +146,7 @@ void pattern::angle_forces(model *srcmodel)
 			fk *= du_dtheta / mag_kj;
 			// Add contributions into force arrays
 			modelatoms[i]->f += fi;
-			modelatoms[j]->f -= -(fi + fk);
+			modelatoms[j]->f -= fi + fk;
 			modelatoms[k]->f += fk;
 		}
 		aoff += natoms;
