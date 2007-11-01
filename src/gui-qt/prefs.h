@@ -121,6 +121,8 @@ class AtenPrefs : public QDialog
 	Ui::PrefsDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
 	void finalise_ui();
+	// Set controls to reflect program variables
+	void set_controls();
 };
 
 #endif

@@ -48,8 +48,13 @@ void AtenPrefs::finalise_ui()
 		item->setText(elements.name(i));
 	}
 	ui.ElementList->setCurrentRow(0);
+}
 
-	// Set controls in View Page
+// Set controls
+void AtenPrefs::set_controls()
+{
+	dbg_begin(DM_CALLS,"AtenPrefs::set_controls");
+	// Set controls in view page
 	ui.StickRadiusSpin->setValue(prefs.get_atom_size(DS_STICK));
 	ui.TubeRadiusSpin->setValue(prefs.get_atom_size(DS_TUBE));
 	ui.SphereRadiusSpin->setValue(prefs.get_atom_size(DS_SPHERE));
@@ -91,8 +96,7 @@ void AtenPrefs::finalise_ui()
 	ui.ShiftButtonCombo->setCurrentIndex(prefs.get_keymod_action(MK_SHIFT));
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.get_keymod_action(MK_CTRL));
 	ui.AltButtonCombo->setCurrentIndex(prefs.get_keymod_action(MK_ALT));
-
-	dbg_end(DM_CALLS,"AtenPrefs::finalise_ui");
+	dbg_begin(DM_CALLS,"AtenPrefs::set_controls");
 }
 
 /*

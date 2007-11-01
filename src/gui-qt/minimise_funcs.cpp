@@ -32,13 +32,18 @@ enum min_method { MM_STEEPEST, MM_NEWTON, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS }
 void AtenForm::on_MinimiseButton_clicked(bool checked)
 {
 	double econverge, fconverge;
+	int maxcycles;
 	// Get the convergence values from the window controls
 	econverge = pow(10,ui.EnergyConvergeSpin->value());
 	fconverge = pow(10,ui.ForcesConvergeSpin->value());
+	maxcycles = ui.MinimiseCyclesSpin->value();
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (MM_STEEPEST):
+			sd.set_maxcycles(maxcycles);
+			sd.set_maxlinetrials(ui.SDMaxLineTrialsSpin->value());
+			sd.set_maxstep(ui.SDMaxStepSpin->value());
 			sd.minimise(master.get_currentmodel(),econverge,fconverge);
 			break;
 		case (MM_NEWTON):

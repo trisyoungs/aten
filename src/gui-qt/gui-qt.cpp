@@ -83,6 +83,10 @@ void gui_qt::run(int argc, char **argv)
 	mainwindow->finalise_ui();
 	prefsdialog->finalise_ui();
 
+	// Set controls in the windows
+	mainwindow->set_controls();
+	prefsdialog->set_controls();
+
 	// Show the widgets in the GUI and flag it as existing
 	mainwindow->show();
 	does_exist = TRUE;
