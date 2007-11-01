@@ -100,8 +100,9 @@ void gui_qt::run(int argc, char **argv)
 		m->reset_view();
 	}
 
-	// Refresh the surfaces list
+	// Refresh the surfaces and forcefield lists
 	mainwindow->refresh_surfacespage();
+	mainwindow->refresh_forcefieldpage();
 
 	// Start timer
 	if (master.use_timer) master.start_timer_events();

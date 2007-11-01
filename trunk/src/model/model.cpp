@@ -89,7 +89,8 @@ void model::log_change(change_log cl)
 {
 	if (cl >= LOG_TOTAL) printf("Invalid log quantity passed.\n");
 	logs[cl] ++;
-	logs[LOG_TOTAL] ++;
+	// For all logs except LOG_CAMERA we also update the total log
+	if (cl != LOG_CAMERA) logs[LOG_TOTAL] ++;
 }
 
 // Clear
@@ -98,6 +99,12 @@ void model::clear()
 	clear_atoms();
 	patterns.clear();
 	frames.clear();
+	// Reset logs and log points
+	for (int n=0; n<LOG_NITEMS; n++) logs[n] = 0;
+	patterns_point = -1;
+	expression_point = -1;
+	projection_point = -1;
+	staticatoms_point = -1;
 }
 
 // Calculate mass

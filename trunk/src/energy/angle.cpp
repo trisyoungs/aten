@@ -30,7 +30,7 @@ void pattern::angle_energy(model *srcmodel, energystore *estore)
 {
 	dbg_begin(DM_CALLS,"pattern::angle_energy");
 	static int i,j,k,aoff,m1;
-	static double forcek, nn, s, eq, r, theta, dp, energy;
+	static double forcek, n, s, eq, r, theta, dp, energy, c0, c1, c2;
 	static ffparams params;
 	static patbound *pb;
 	static vec3<double> vecij, veckj;
@@ -60,18 +60,28 @@ void pattern::angle_energy(model *srcmodel, energystore *estore)
 					theta -= eq;
 					energy += 0.5 * forcek * theta * theta;
 					break;
-				case (AF_COSINE):
+				//case (AF_COSINE):
 					// U(theta) = forcek * (1 + cos(s*theta - eq))
-					printf("Angle - cosine...\n");
-					break;
-				case (AF_UFFCOSINE):
-					// U(theta) = (forcek / n*n) * (1 + s*cos(n*theta))
+					//printf("Angle - cosine...\n");
+					//break;
+				case (AF_UFFCOSINE1):
+					// U(theta) = (forcek / n*n) * (1 + cos(n*theta))
 					forcek = params.data[AF_UFFCOSINE_K];
-					nn = params.data[AF_UFFCOSINE_N];
-					s = params.data[AF_UFFCOSINE_S];
-					eq = params.data[AF_UFFCOSINE_EQ];
-		printf("Energy %8.4f %8.4f %8.4f %8.4f\n",forcek,nn,s,eq);
-					energy += (forcek / (nn*nn)) * (1.0 + s * cos(nn * theta));
+					n = params.data[AF_UFFCOSINE_N];
+					//printf("Energy %8.4f %8.4f %8.4f\n",forcek,n,eq);
+					energy += (forcek / (n*n)) * (1.0 + cos(n * theta));
+					break;
+				case (AF_UFFCOSINE2):
+					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
+					forcek = params.data[AF_UFFCOSINE_K];
+					eq = params.data[AF_UFFCOSINE_EQ] / DEGRAD;
+					c2 = 1.0 / (4 * sin(eq)*sin(eq));
+					c1 = -4.0 * c2 * cos(eq);
+					c0 = c2 * (2.0 * cos(eq)*cos(eq) + 1.0);
+					energy += forcek * (c0 + c1 * cos(theta) + c2 * cos(2.0 * theta));
+					break;
+				default:
+					printf("No equation coded for angle energy type %i.\n",pb->get_data()->get_funcform().anglefunc);
 					break;
 			}
 		}
@@ -88,7 +98,7 @@ void pattern::angle_forces(model *srcmodel)
 	dbg_begin(DM_CALLS,"pattern::angle_forces");
 	int i,j,k,aoff,m1;
 	static vec3<double> vec_ij, vec_kj, fi, fk;
-	static double forcek, eq, dp, theta, mag_ij, mag_kj, nn, s;
+	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx;
 	static double du_dtheta, dtheta_dcostheta;
 	static ffparams params;
 	static patbound *pb;
@@ -120,23 +130,34 @@ void pattern::angle_forces(model *srcmodel)
 					printf("pattern::angle_forces <<<< Angle function is UNSPECIFIED >>>>\n");
 					du_dtheta = 0.0;
 					break;
-				case (AF_COSINE):
-					printf("Angle - cosine...\n");
-					break;
+				//case (AF_COSINE):
+				//	printf("Angle - cosine...\n");
+				//	break;
 				case (AF_HARMONIC): 
 					// F(theta) = forcek * (theta - eq)
 					forcek = params.data[AF_HARMONIC_K];
 					eq = params.data[AF_HARMONIC_EQ] / DEGRAD;
 					du_dtheta = dtheta_dcostheta * forcek * (theta - eq);
 					break;
-				case (AF_UFFCOSINE):
-					// F(theta) = forcek 
+				case (AF_UFFCOSINE1):
+					// F(theta) = (forcek / 2*n) * (1 - sin(n*theta))
 					forcek = params.data[AF_UFFCOSINE_K];
-					nn = params.data[AF_UFFCOSINE_N];
-					s = params.data[AF_UFFCOSINE_S];
-					eq = params.data[AF_UFFCOSINE_EQ];
-					printf("Angle - UFF cosine...\n");
-					//du_dtheta = dtheta_dcostheta * forcek;
+					n = params.data[AF_UFFCOSINE_N];
+					du_dtheta = dtheta_dcostheta * (forcek / n) * sin(n*theta);
+					break;
+				case (AF_UFFCOSINE2):
+					// F(theta) = forcek * (c0 - c1 * sin(theta) - c2 * sin(2*theta))
+					forcek = params.data[AF_UFFCOSINE_K];
+					eq = params.data[AF_UFFCOSINE_EQ] / DEGRAD;
+					cosx = cos(eq);
+					sinx = sin(eq);
+					c2 = 1.0 / (4 * sinx*sinx);
+					c1 = -4.0 * c2 * cosx;
+					c0 = c2 * (2.0 * cosx*cosx + 1.0);
+					du_dtheta = dtheta_dcostheta * forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
+					break;
+				default:
+					printf("No equation coded for angle forces type %i.\n",pb->get_data()->get_funcform().anglefunc);
 					break;
 			}
 			// Calculate atomic forces

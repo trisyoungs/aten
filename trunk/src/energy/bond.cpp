@@ -53,12 +53,14 @@ void pattern::bond_energy(model *srcmodel, energystore *estore)
 					break;
 				case (BF_HARMONIC): 
 					// U = 0.5 * forcek * (r - eq)**2
-					forcek = params.data[BF_HARMONIC_K];
-					forcek = fabs(forcek);
+					forcek = fabs(params.data[BF_HARMONIC_K]);
 					eq = params.data[BF_HARMONIC_EQ];
 					r = cell->distance(modelatoms[i]->r, modelatoms[j]->r);
 					r -= eq;
 					energy += 0.5 * forcek * r * r;
+					break;
+				default:
+					printf("No equation coded for bond energy type %i.\n",pb->get_data()->get_funcform().bondfunc);
 					break;
 			}
 		}
@@ -103,6 +105,9 @@ void pattern::bond_forces(model *srcmodel)
 					forcek = params.data[BF_HARMONIC_K];
 					eq = params.data[BF_HARMONIC_EQ];
 					du_dr = forcek * (rij - eq) / rij;
+					break;
+				default:
+					printf("No equation coded for bond forces type %i.\n",pb->get_data()->get_funcform().bondfunc);
 					break;
 			}
 			// Calculate forces

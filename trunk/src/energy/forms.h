@@ -48,12 +48,12 @@ bond_func BF_from_text(const char*);
 enum bond_harmonic { BF_HARMONIC_K, BF_HARMONIC_EQ };
 
 // Angle potential forms
-enum angle_func { AF_UNSPECIFIED, AF_HARMONIC, AF_COSINE, AF_UFFCOSINE, AF_NITEMS };
+enum angle_func { AF_UNSPECIFIED, AF_HARMONIC, AF_COSINE, AF_UFFCOSINE1, AF_UFFCOSINE2, AF_NITEMS };
 const char *text_from_AF(angle_func);
 angle_func AF_from_text(const char*);
 enum angle_harmonic { AF_HARMONIC_K, AF_HARMONIC_EQ };
 enum angle_cosine { AF_COSINE_K, AF_COSINE_S, AF_COSINE_EQ };
-enum angle_uffcosine { AF_UFFCOSINE_K, AF_UFFCOSINE_N, AF_UFFCOSINE_S, AF_UFFCOSINE_EQ };
+enum angle_uffcosine { AF_UFFCOSINE_K, AF_UFFCOSINE_N, AF_UFFCOSINE_EQ };
 
 // Torsion potential forms
 enum torsion_func { TF_UNSPECIFIED, TF_COSINE, TF_COS3, TF_NITEMS };

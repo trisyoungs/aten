@@ -21,6 +21,7 @@
 
 #include "classes/measurement.h"
 #include "classes/atom.h"
+#include "classes/cell.h"
 
 // Geometry types
 int GT_natoms[GT_NITEMS] = { 0,2,3,4 };
@@ -48,3 +49,22 @@ measurement::~measurement()
 	#endif
 }
 
+// Calculate
+void measurement::calculate(unitcell *cell)
+{
+	switch (type)
+	{
+		case (GT_DISTANCE):
+			value = cell->distance(atoms[0],atoms[1]);
+			break;
+		case (GT_ANGLE):
+			value = cell->angle(atoms[0],atoms[1],atoms[2]) * DEGRAD;
+			break;
+		case (GT_TORSION):
+			value = cell->torsion(atoms[0],atoms[1],atoms[2],atoms[3]) * DEGRAD;
+			break;
+		default:
+			printf("measurement::calculate <<<< Unrecognised geometry type >>>>\n");
+			break;
+	}
+}

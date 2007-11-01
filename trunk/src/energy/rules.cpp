@@ -80,6 +80,7 @@ ffbound *forcefield::generate_bond(atom *i, atom *j)
 			double Zj = ffj->generator[5];
 			// Create new bond definition in the forcefield space and set its parameters
 			newbond = bonds.add();
+			newbond->set_bond_style(BF_HARMONIC);
 			newbond->params.data[BF_HARMONIC_EQ] = sumr + rBO - rEN;
 			newbond->params.data[BF_HARMONIC_K] = 664.12 * ( (Zi * Zj) / (sumr + sumr + sumr) );
 			msg(DM_VERBOSE,"UFF Bond  : eq, k = %8.4f %8.4f\n",newbond->params.data[BF_HARMONIC_EQ],newbond->params.data[BF_HARMONIC_K]);
@@ -110,6 +111,7 @@ ffbound *forcefield::generate_angle(atom *i, atom *j, atom *k)
 			// rik2 = rij**2 + rjk**2 - 2 * rij * rjk * cos(eq)
 			// k = beta (Zi * Zk / rik**5) * rij * rjk * (rij * rjk * (1-cos**2(eq)) - rik**2 * cos(eq))
 			double ri, rj, rk, rij, rjk, rBO, rEN, chii, chij, chik, chi, rik2, rik5, Zi, Zk, beta, forcek;
+			int n;
 			newangle = angles.add();
 			ri = ffi->generator[0];
 			rj = ffj->generator[0];
@@ -139,15 +141,20 @@ ffbound *forcefield::generate_angle(atom *i, atom *j, atom *k)
 			forcek = beta * (Zi * Zk / rik5) * rij * rjk;
 			forcek = forcek * (3.0 * rij * rjk * (1.0 - cos(eq)*cos(eq)) - rik2 * cos(eq));
 			//printf("          : eq, rik2, rik5, beta, forcek = %8.4f %8.4f %8.4f %8.4f %8.4f\n",eq,rik2,rik5,beta,forcek);
-			// Determine 'n' based on the geometry of the central atom 'j'
-			int nn = 1;
 			// Store vars in forcefield node
 			newangle->params.data[AF_UFFCOSINE_K] = forcek;
-			newangle->params.data[AF_UFFCOSINE_EQ] = eq;
-			newangle->params.data[AF_UFFCOSINE_S] = 1;
-			newangle->params.data[AF_UFFCOSINE_N] = nn;
-			msg(DM_VERBOSE,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, s = %i, n = %i\n",ffi->name.get(),
-				ffj->name.get(),ffk->name.get(),forcek,eq,1,nn);
+			newangle->params.data[AF_UFFCOSINE_EQ] = ffj->generator[1];
+			// Determine 'n' based on the geometry of the central atom 'j'
+			if (ffj->generator[1] > 170.0) n = 1;
+			else if (ffj->generator[1] > 115.0) n = 3;
+			else if (ffj->generator[1] > 95.0) n = 2;
+			else n = 4;
+			newangle->params.data[AF_UFFCOSINE_N] = n;
+			// Set function style
+			if (n == 2) newangle->set_angle_style(AF_UFFCOSINE2);
+			else newangle->set_angle_style(AF_UFFCOSINE1);
+			msg(DM_VERBOSE,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n",ffi->name.get(),
+				ffj->name.get(),ffk->name.get(),forcek,eq,n);
 
 			break;
 	}

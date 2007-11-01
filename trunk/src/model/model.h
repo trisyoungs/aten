@@ -495,17 +495,6 @@ class model
 	void hydrogen_satisfy();
 
 	/*
-	// Measurements
-	*/
-	public:
-	// Measure distances between atoms
-	void measure_distance(atom*, atom*);
-	// Measure angles between atoms
-	void measure_angle(atom*, atom*, atom*);
-	// Measure torsions between atoms
-	void measure_torsion(atom*, atom*, atom*, atom*);
-
-	/*
 	// Geometry (using staticatoms[])
 	*/
 	public:
@@ -659,6 +648,14 @@ class model
 	void add_measurement(geom_type, reflist<atom>&);
 	// Add measurements of specific type in current selection
 	void add_measurements_in_selection(geom_type);
+	// Measure distances between atoms
+	void measure_distance(atom*, atom*);
+	// Measure angles between atoms
+	void measure_angle(atom*, atom*, atom*);
+	// Measure torsions between atoms
+	void measure_torsion(atom*, atom*, atom*, atom*);
+	// Update stored measurements
+	void update_measurements();
 
 	/*
 	// Sites
