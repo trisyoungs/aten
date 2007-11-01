@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>762</width>
+    <width>857</width>
     <height>578</height>
    </rect>
   </property>
@@ -33,10 +33,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>0</number>
+     <number>9</number>
     </property>
     <property name="spacing" >
-     <number>4</number>
+     <number>6</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -195,7 +195,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>8</number>
+       <number>5</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -3762,10 +3762,10 @@
       <widget class="QWidget" name="MinimiserPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="spacing" >
-         <number>4</number>
+         <number>6</number>
         </property>
         <item>
          <widget class="QGroupBox" name="MinimiserGroup" >
@@ -3774,16 +3774,16 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>9</number>
            </property>
            <property name="spacing" >
-            <number>4</number>
+            <number>6</number>
            </property>
            <item>
             <widget class="QGroupBox" name="groupBox" >
              <property name="sizePolicy" >
               <sizepolicy>
-               <hsizetype>7</hsizetype>
+               <hsizetype>1</hsizetype>
                <vsizetype>1</vsizetype>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
@@ -3830,6 +3830,44 @@
                  </property>
                 </item>
                </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" >
+                <property name="margin" >
+                 <number>0</number>
+                </property>
+                <property name="spacing" >
+                 <number>6</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_46" >
+                  <property name="text" >
+                   <string>Max Cycles</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="MinimiseCyclesSpin" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>7</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="maximum" >
+                   <number>500</number>
+                  </property>
+                  <property name="singleStep" >
+                   <number>2</number>
+                  </property>
+                  <property name="value" >
+                   <number>100</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
               <item>
                <layout class="QHBoxLayout" >
@@ -4009,7 +4047,7 @@
             <widget class="QGroupBox" name="MethodOptionsGroup" >
              <property name="sizePolicy" >
               <sizepolicy>
-               <hsizetype>7</hsizetype>
+               <hsizetype>1</hsizetype>
                <vsizetype>1</vsizetype>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
@@ -4020,10 +4058,10 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>0</number>
               </property>
               <property name="spacing" >
-               <number>4</number>
+               <number>0</number>
               </property>
               <item>
                <widget class="QStackedWidget" name="MethodOptionsStack" >
@@ -4038,13 +4076,13 @@
                 <property name="currentIndex" >
                  <number>0</number>
                 </property>
-                <widget class="QWidget" name="MethodSDOptionsPage" >
+                <widget class="QWidget" name="MinimiseSDPage" >
                  <layout class="QGridLayout" >
                   <property name="margin" >
-                   <number>0</number>
+                   <number>9</number>
                   </property>
                   <property name="spacing" >
-                   <number>4</number>
+                   <number>6</number>
                   </property>
                   <item row="0" column="0" >
                    <widget class="QLabel" name="label_20" >
@@ -4061,18 +4099,27 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="1" column="0" >
-                   <widget class="QLabel" name="label_21" >
+                  <item row="0" column="1" >
+                   <widget class="QDoubleSpinBox" name="SDMaxStepSpin" >
                     <property name="sizePolicy" >
                      <sizepolicy>
-                      <hsizetype>1</hsizetype>
-                      <vsizetype>5</vsizetype>
+                      <hsizetype>7</hsizetype>
+                      <vsizetype>0</vsizetype>
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <property name="text" >
-                     <string>Max Line Trials</string>
+                    <property name="decimals" >
+                     <number>3</number>
+                    </property>
+                    <property name="maximum" >
+                     <double>1.000000000000000</double>
+                    </property>
+                    <property name="singleStep" >
+                     <double>0.100000000000000</double>
+                    </property>
+                    <property name="value" >
+                     <double>0.000000000000000</double>
                     </property>
                    </widget>
                   </item>
@@ -4088,21 +4135,18 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="1" >
-                   <widget class="QDoubleSpinBox" name="SDMaxStepSpin" >
+                  <item row="1" column="0" >
+                   <widget class="QLabel" name="label_21" >
                     <property name="sizePolicy" >
                      <sizepolicy>
-                      <hsizetype>7</hsizetype>
-                      <vsizetype>0</vsizetype>
+                      <hsizetype>1</hsizetype>
+                      <vsizetype>5</vsizetype>
                       <horstretch>0</horstretch>
                       <verstretch>0</verstretch>
                      </sizepolicy>
                     </property>
-                    <property name="singleStep" >
-                     <double>0.100000000000000</double>
-                    </property>
-                    <property name="value" >
-                     <double>0.000000000000000</double>
+                    <property name="text" >
+                     <string>Max Line Trials</string>
                     </property>
                    </widget>
                   </item>
@@ -5898,7 +5942,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>762</width>
+     <width>857</width>
      <height>25</height>
     </rect>
    </property>
@@ -6121,6 +6165,9 @@
    <addaction name="actionFrameLast" />
   </widget>
   <widget class="QToolBar" name="CommandToolBar" >
+   <property name="windowTitle" >
+    <string>Command Prompt</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>

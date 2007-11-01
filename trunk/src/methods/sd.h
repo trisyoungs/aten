@@ -40,7 +40,7 @@ class sd_methods
 	// Maximum cartesian displacement (in any vector)
 	double maxstep;
 	// Maximum number of iterations to take in one minimisation
-	int maxiterations;
+	int maxcycles;
 	// Maximum number of attempts at finding a new point along the gradient vector
 	int maxlinetrials;
 
@@ -54,9 +54,9 @@ class sd_methods
 	// Get the maximum cartesian step size
 	double get_maxstep() { return maxstep; }
 	// Set the maximum iterations
-	void set_maxiterations(int i) { maxiterations = i; }
+	void set_maxcycles(int i) { maxcycles = i; }
 	// Get the maximum iterations
-	int get_maxiterations() { return maxiterations; }
+	int get_maxcycles() { return maxcycles; }
 	// Set the maximum line trials
 	void set_maxlinetrials(int i) { maxlinetrials = i; }
 	// Get the maximum line trials

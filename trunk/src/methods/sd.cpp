@@ -35,7 +35,7 @@ sd_methods::sd_methods()
 	// Set initial values
 	stepsize = 1.0;
 	maxstep = 0.5;
-	maxiterations = 500;
+	maxcycles = 500;
 	maxlinetrials = 50;
 }
 
@@ -68,7 +68,7 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	// Line Search (Steepest Descent) energy minimisation.
 	dbg_begin(DM_CALLS,"sd_methods::minimise");
 	int cycle, m, i;
-	double enew, ecurrent, edelta;
+	double enew, ecurrent, edelta, step;
 	bool linefailed, converged;
 	atom **modelatoms = srcmodel->get_staticatoms();
 
@@ -89,14 +89,13 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	ecurrent = srcmodel->total_energy(srcmodel);
 	srcmodel->energy.print();
 
-	// Reset stepsize
-	stepsize = 0.5;
+	// Reset stepsize and maxlinetrials (from sd class)
+	step = stepsize;
 	converged = FALSE;
-	maxlinetrials = 500;
 
 	msg(DM_NONE,"%10i  %15.5f \n",0,ecurrent);
-	gui.progress_create("Minimising (SD)", maxiterations*maxlinetrials);
-	for (cycle=0; cycle<maxiterations; cycle++)
+	gui.progress_create("Minimising (SD)", maxcycles*maxlinetrials);
+	for (cycle=0; cycle<maxcycles; cycle++)
 	{
 		// Calculate gradient vector for the current model coordinates
 		srcmodel->zero_forces();
@@ -151,7 +150,7 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	msg(DM_NONE,"\nFinal step:\n");
 	msg(DM_NONE,"%10i  %15.5f   %15.5f\n",cycle+1,ecurrent,edelta);
 	if (converged) msg(DM_NONE,"Steepest descent converged in %i steps.\n",cycle+1);
-	else msg(DM_NONE,"Steepest descent did not converge within %i steps.\n",maxiterations);
+	else msg(DM_NONE,"Steepest descent did not converge within %i steps.\n",maxcycles);
 	// Copy config data to model and delete working configurations
 	srcmodel->calculate_forces(srcmodel);
 	srcmodel->update_measurements();

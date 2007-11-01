@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "base/elements.h"
+#include "methods/sd.h"
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 #include <QtGui/QFileDialog>
@@ -63,15 +64,6 @@ void AtenForm::finalise_ui()
 	alignmentGroup->addAction(ui.actionStyleSphere);
 	alignmentGroup->addAction(ui.actionStyleScaled);
 	alignmentGroup->addAction(ui.actionStyleIndividual);
-	// Set correct draw_style on toolbar
-	switch (prefs.get_static_style())
-	{
-		case (DS_STICK): ui.actionStyleStick->setChecked(true); break;
-		case (DS_TUBE): ui.actionStyleTube->setChecked(true); break;
-		case (DS_SPHERE): ui.actionStyleSphere->setChecked(true); break;
-		case (DS_SCALED): ui.actionStyleScaled->setChecked(true); break;
-		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
-	}
 
 	// Hide trajectory and command toolbars initially
 	ui.TrajectoryToolBar->setVisible(FALSE);
@@ -99,7 +91,15 @@ void AtenForm::finalise_ui()
 	QButtonGroup *editGroup = new QButtonGroup(this);
 	editGroup->addButton(ui.SelectAtomsButton);
 	editGroup->addButton(ui.SelectMoleculesButton);
-	editGroup->addButton(ui.SelectElementsButton);
+	// Set correct draw_style on toolbar
+	switch (prefs.get_static_style())
+	{
+		case (DS_STICK): ui.actionStyleStick->setChecked(true); break;
+		case (DS_TUBE): ui.actionStyleTube->setChecked(true); break;
+		case (DS_SPHERE): ui.actionStyleSphere->setChecked(true); break;
+		case (DS_SCALED): ui.actionStyleScaled->setChecked(true); break;
+		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
+	}	editGroup->addButton(ui.SelectElementsButton);
 	editGroup->addButton(ui.DrawAtomButton);
 	editGroup->addButton(ui.DrawChainButton);
 	editGroup->addButton(ui.DrawDeleteButton);
@@ -198,6 +198,25 @@ void AtenForm::finalise_ui()
 	dbg_end(DM_CALLS,"AtenForm::finalise_ui");
 }
 
+// Set controls
+void AtenForm::set_controls()
+{
+	dbg_begin(DM_CALLS,"AtenForm::set_controls");
+	// Set correct draw_style on toolbar
+	switch (prefs.get_static_style())
+	{
+		case (DS_STICK): ui.actionStyleStick->setChecked(true); break;
+		case (DS_TUBE): ui.actionStyleTube->setChecked(true); break;
+		case (DS_SPHERE): ui.actionStyleSphere->setChecked(true); break;
+		case (DS_SCALED): ui.actionStyleScaled->setChecked(true); break;
+		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
+	}
+	// Set controls in minimiser page
+	ui.SDMaxStepSpin->setValue(sd.get_maxstep());
+	ui.SDMaxLineTrialsSpin->setValue(sd.get_maxlinetrials());
+	dbg_end(DM_CALLS,"AtenForm::set_controls");
+}
+
 /*
 // Input
 */
@@ -279,6 +298,8 @@ void AtenForm::execute_command()
 	master.cmd_script.commands.clear();
 	// Grab the current text of the line edit
 	parser.get_args_delim(qPrintable(command_edit->text()), PO_DEFAULTS);
+	// Check for no commands given
+	if (parser.get_nargs() == 0) return;
 	if (master.cmd_script.cache_command()) master.cmd_script.run();
 	gui.refresh();
 	command_edit->setText("");
