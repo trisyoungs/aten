@@ -43,13 +43,13 @@ sd_methods::sd_methods()
 // Line Search Subroutines
 */
 
-void sd_methods::gradient_move(model *srcmodel)
+void sd_methods::gradient_move(model *srcmodel, model *destmodel)
 {
-	// Generate a new set of coordinates in workmodel following the normalised gradient vector present in srcmodel, with the stepsize given
+	// Generate a new set of coordinates in destmodel following the normalised gradient vector present in srcmodel, with the stepsize given
 	dbg_begin(DM_CALLS,"sd_methods::gradient_move");
 	int i;
 	atom **srcatoms = srcmodel->get_staticatoms();
-	atom **destatoms = workmodel.get_staticatoms();
+	atom **destatoms = destmodel->get_staticatoms();
 	for (i=0; i<srcmodel->get_natoms(); i++)
 	{
 		destatoms[i]->r.x = srcatoms[i]->r.x + srcatoms[i]->f.x * stepsize;
@@ -70,6 +70,7 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	int cycle, m, i;
 	double enew, ecurrent, edelta;
 	bool linefailed, converged;
+	atom **modelatoms = srcmodel->get_staticatoms();
 
 	/*
 	// Prepare the calculation
@@ -82,8 +83,8 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	}
 	
 	// Create a local working copy of the model
-	workmodel.clear();
-	workmodel.copy(srcmodel);
+	model *destmodel = new model;
+	destmodel->copy(srcmodel);
 	// Calculate initial reference energy
 	ecurrent = srcmodel->total_energy(srcmodel);
 	srcmodel->energy.print();
@@ -91,7 +92,8 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	// Reset stepsize
 	stepsize = 0.5;
 	converged = FALSE;
-	maxlinetrials = 1000;
+	maxlinetrials = 500;
+
 	msg(DM_NONE,"%10i  %15.5f \n",0,ecurrent);
 	gui.progress_create("Minimising (SD)", maxiterations*maxlinetrials);
 	for (cycle=0; cycle<maxiterations; cycle++)
@@ -100,7 +102,9 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 		srcmodel->zero_forces();
 		srcmodel->calculate_forces(srcmodel);
 		srcmodel->zero_forces_fixed();
-		srcmodel->normalise_forces();
+		//srcmodel->normalise_forces();
+		// Divide all forces through by 1000.0 (to 'get' kJ/mol)
+		for (m = 0; m<srcmodel->get_natoms(); m++) modelatoms[m]->f /= 1000.0;
 		// Perform linesearch along the gradient vector until we decrease the energy
 		linefailed = TRUE;
 		stepsize = 0.5;
@@ -111,14 +115,14 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 				linefailed = TRUE;
 				break;
 			}
-			gradient_move(srcmodel);
-			enew = srcmodel->total_energy(&workmodel);
+			gradient_move(srcmodel, destmodel);
+			enew = srcmodel->total_energy(destmodel);
 			edelta = enew - ecurrent;
 			if (edelta < 0.0)
 			{
-				// New point found, so copy workmodel coordinates to model, set new energy, and exit
+				// New point found, so copy destmodel coordinates to model, set new energy, and exit
 				ecurrent = enew;
-				srcmodel->copy_atom_data(&workmodel, AD_R);
+				srcmodel->copy_atom_data(destmodel, AD_R);
 				linefailed = FALSE;
 				break;
 			}
@@ -150,6 +154,7 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 	else msg(DM_NONE,"Steepest descent did not converge within %i steps.\n",maxiterations);
 	// Copy config data to model and delete working configurations
 	srcmodel->calculate_forces(srcmodel);
+	srcmodel->update_measurements();
 	srcmodel->log_change(LOG_COORDS);
 	dbg_end(DM_CALLS,"sd_methods::minimise");
 }

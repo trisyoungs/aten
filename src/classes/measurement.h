@@ -28,6 +28,7 @@ int natoms_from_GT(geom_type);
 
 // Forward Declarations
 class atom;
+class unitcell;
 
 // Measurement
 class measurement
@@ -55,8 +56,8 @@ class measurement
 	void set_type(geom_type gt) { type = gt; }
 	// Return type of measurement
 	geom_type get_type() { return type; }
-	// Set value of measurement
-	void set_value(double d) { value = d; }
+	// Calculate measurement value
+	void calculate(unitcell *cell);
 	// Return value of the measurement
 	double get_value() { return value; }
 	// Set atom

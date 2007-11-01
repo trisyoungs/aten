@@ -115,25 +115,7 @@ void model::add_measurement(geom_type gt, atom* first, ...)
 	}
 	va_end(vars);
 	// If we succeeded in adding all the atoms we required, set the value of the measurement
-	if (newm != NULL)
-	{
-		atoms = newm->get_atoms();
-		switch (gt)
-		{
-			case (GT_DISTANCE):
-				newm->set_value(cell.distance(first,atoms[1]));
-				break;
-			case (GT_ANGLE):
-				newm->set_value(cell.angle(first,atoms[1],atoms[2]) * DEGRAD);
-				break;
-			case (GT_TORSION):
-				newm->set_value(cell.torsion(first,atoms[1],atoms[2],atoms[3]) * DEGRAD);
-				break;
-			default:
-				printf("model::add_measurement <<<< Unrecognised geometry type >>>>\n");
-				break;
-		}
-	}
+	if (newm != NULL) newm->calculate(&cell);
 	dbg_end(DM_CALLS,"model::add_measurement");
 }
 
@@ -347,7 +329,7 @@ double model::calculate_angle(int i, int j, int k)
 {
 	// Make sure we have a staticatoms array
 	atom **temp = get_staticatoms();
-	return cell.angle(staticatoms[i], staticatoms[j], staticatoms[k]);
+	return cell.angle(temp[i], temp[j], temp[k]);
 }
 
 // Calculate angle
@@ -356,4 +338,12 @@ double model::calculate_torsion(int i, int j, int k, int l)
 	// Make sure we have a staticatoms array
 	atom **temp = get_staticatoms();
 	return cell.torsion(staticatoms[i], staticatoms[j], staticatoms[k], staticatoms[l]);
+}
+
+// Update measurements
+void model::update_measurements()
+{
+	dbg_begin(DM_CALLS,"model::update_measurements");
+	for (measurement *m = measurements.first(); m != NULL; m = m->next) m->calculate(&cell);
+	dbg_end(DM_CALLS,"model::update_measurements");
 }

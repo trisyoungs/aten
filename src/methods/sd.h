@@ -43,8 +43,6 @@ class sd_methods
 	int maxiterations;
 	// Maximum number of attempts at finding a new point along the gradient vector
 	int maxlinetrials;
-	// Working model to use to store old coordinates before gradient moves
-	model workmodel;
 
 	public:
 	// Set the stepsize
@@ -64,7 +62,7 @@ class sd_methods
 	// Get the maximum line trials
 	int get_maxlinetrials() { return maxlinetrials; }
 	// Generate a new config following the gradient vector in workcfg
-	void gradient_move(model*);
+	void gradient_move(model *oldf, model *newr);
 	// Minimise the specified model
 	void minimise(model*, double, double);
 };

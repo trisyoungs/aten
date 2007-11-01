@@ -59,6 +59,7 @@ void surface::create()
 	dbg_begin(DM_CALLS,"surface::create");
 	clear();
 	int i, j;
+	if (data != NULL) clear();
 	data = new double**[npoints.x];
 	for (i = 0; i<npoints.x; i++)
 	{
@@ -86,6 +87,7 @@ void surface::clear()
 		delete[] data[i];
 	}
 	delete[] data;
+	data = NULL;
 	dbg_end(DM_CALLS,"surface::clear");
 }
 

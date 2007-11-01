@@ -339,7 +339,7 @@ double unitcell::angle(const vec3<double> &r1, const vec3<double> &r2, const vec
 	// Result is returned in radians.
 	dbg_begin(DM_MORECALLS,"unitcell::angle");
 	static vec3<double> vecij, veckj;
-	double dp, a;
+	static double dp, a;
 	vecij = mimd(r1,r2);
 	veckj = mimd(r3,r2);
 	// Normalise vectors and calculate dot product and angle.
