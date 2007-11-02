@@ -76,10 +76,10 @@ open=true
 
 [item:install.tex]
 archive=true
-column=91
+column=57
 encoding=UTF-8
 highlight=LaTeX
-line=50
+line=92
 open=true
 
 [item:manual.tex]
@@ -92,11 +92,11 @@ open=false
 
 [item:quickstart.tex]
 archive=true
-column=411
+column=6
 encoding=UTF-8
 highlight=LaTeX
-line=21
-open=false
+line=41
+open=true
 
 [item:scriptorshandbook.tex]
 archive=true

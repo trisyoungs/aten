@@ -260,9 +260,4 @@ generator 7
 126	No6+3	1.6790	90.00	3.2480	0.0110	12.000	3.8882	3.475
 127	Lw6+3	1.6980	90.00	3.2360	0.0110	12.000	3.8882	3.5
 end
-vdw  lj
-end
-bonds harmonic
-end
-angles uff
-end
+convert 4

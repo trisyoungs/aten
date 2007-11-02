@@ -26,8 +26,7 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *FF_dictionary[FFK_NITEMS] = { "_NULL_", "name", "units", "rules", "types", "generator", "equivalents", "vdw",
-	"bonds", "angles", "torsions", "vscale", "escale" };
+const char *FF_dictionary[FFK_NITEMS] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };
 ff_dict FFK_from_text(const char *s)
 	{ return (ff_dict) enum_search("forcefield keyword",FFK_NITEMS,FF_dictionary,s); }
 
@@ -40,9 +39,8 @@ bool forcefield::load(const char *filename)
 {
 	dbg_begin(DM_CALLS,"forcefield::load");
 	bool done, okay;
-	int success;
+	int success, n, m, count;
 	energy_unit ffunit = EU_J, newunit;
-	int n,count,m;
 	ifstream fffile(filename,ios::in);
 	if (!fffile.good())
 	{
@@ -51,7 +49,7 @@ bool forcefield::load(const char *filename)
 		dbg_end(DM_CALLS,"forcefield::load");
 		return FALSE;
 	}
-	// Grab the path of the forcefield   TODO Remove this? Will it ever be used?
+	// Grab the path of the forcefield
 	path.set(filename);
 	// Now follows blocks of keywords
 	done = FALSE;
@@ -99,6 +97,12 @@ bool forcefield::load(const char *filename)
 			case (FFK_EQUIVALENTS):
 				okay = read_equivalents(fffile);
 				break;
+			case (FFK_CONVERT):
+				// Check that generator data has been initialised
+				if (ngendata == 0) msg(DM_NONE, "\t: ERROR - Energetic parameters to convert must be specified *after* 'generator' keyword.\n");
+				else for (n=1; n<parser.get_nargs(); n++) convertgen[parser.argi(n)-1] = TRUE;
+				okay = !(ngendata == 0);
+				break;
 			case (FFK_VDW):
 				okay = read_vdw(fffile);
 				break;
@@ -125,7 +129,6 @@ bool forcefield::load(const char *filename)
 				msg(DM_NONE,"Unrecognised forcefield keyword '%s'\n.",parser.argc(0));
 				break;
 		}
-		//else if (keywd == "convertgen") TODO
 		// Check on 'okay'
 		if (!okay)
 		{
@@ -204,9 +207,12 @@ bool forcefield::read_generator(ifstream &fffile)
 	int count, success, n;
 	ffatom *ffa;
 	bool done = FALSE;
-	// Get number of generator data supplied for each atomtype and create convertgen array
-	ngendata = parser.argi(1);
-	convertgen = new bool[ngendata];
+	// If we are setting ngendata for the first time, allocate convertgen as well
+	if (ngendata == 0)
+	{
+		convertgen = new bool[ngendata];
+		ngendata = parser.argi(1);
+	}
 	count = 0;
 	do
 	{

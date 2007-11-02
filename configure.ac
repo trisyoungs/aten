@@ -117,7 +117,11 @@ if test "$with_gui" = "qt"; then
     QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
     QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
   fi
-  GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
+  if test "x$with_qt" = "x"; then
+    PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
+    PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
+  fi
+  GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lglut"
   GUI_CFLAGS="$QTGUI_CFLAGS"
 fi
 

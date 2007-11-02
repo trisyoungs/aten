@@ -198,7 +198,7 @@ void model::set_hidden(atom *i, bool hidden)
 }
 
 // Normalise forces
-void model::normalise_forces()
+void model::normalise_forces(double norm)
 {
 	// 'Normalise' the forces in linecfg such that the largest force is equal to the maximum cartesian step size
 	dbg_begin(DM_CALLS,"model::normalise_forces");
@@ -216,6 +216,7 @@ void model::normalise_forces()
 		if (fabs(f.z) > maxfrc) maxfrc = fabs(f.z);
 	}
 	// Normalise with respect to this force
+	maxfrc *= norm;
 	for (i=0; i<atoms.size(); i++) modelatoms[i]->f /= maxfrc;
 	dbg_end(DM_CALLS,"model::normalise_forces");
 }
