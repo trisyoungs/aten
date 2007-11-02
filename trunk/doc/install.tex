@@ -31,9 +31,36 @@ In addition, I can't accept responsibility for any loss of data / work / sleep /
 	\item GTK+ (version 2.4 or above) or Qt (version 4.1 or above) if you want a GUI
 \end{itemize}
 
-When installing Qt you have several choices. Either you can get the Fink or MacPorts versions, or the native version from the TrollTech website (http://trolltech.com). Depending on which you get you might need to add in extra flags to {\sffamily configure}. The Fink and MacPorts versions provide pkg-config files to enable them to be detected and configured (and no extra {\sffamily configure} options are necessary), but the native OS X version from TrollTech does not. So, if you use the TrollTech version you must run {\sffamily configure} with the {\sffamily {-}{-}with-qt=framework} option.\\
+\subsection{Which Qt4?}
 
-You may find that the version of GNU Autotools you have is not recent enough. Check with {\sffamily autoconf {-}{-}version} - 2.59 is not sufficient! An up-to-date version can be installed via Fink.\\
+To build against the qt4-x11 package available $via$ Fink run:\\
+
+\indent {\sffamily configure {-}{-}with-qt=fink} ...\\
+
+This will set most of the necessary environment variables, namely:\\
+{\sffamily
+\begin{itemize}
+	\item QTGUI\_CFLAGS='-I/sw/lib/qt4-x11/include -I/usr/X11R6/include'
+	\item QTGUI\_LIBS='-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL'
+	\item QTOPENGL\_CFLAGS='-I/sw/lib/qt4-x11/include'
+	\item QTOPENGL\_LIBS='-I/sw/lib/qt4-x11/lib'
+\end{itemize}
+}
+
+You may also need to direct the build process to the correct Qt4 development binaries either by setting your \$PATH to \qte{/sw/lib/qt4-x11/bin:\$\{PATH\}} or by using the {\sffamily {-}{-}with-qtdir} option to {\sffamily configure}.\\
+
+The native Qt4 package is available as a disk image installer at no cost directly from http://trolltech.com. Specify that the build use the frameworks provided instead:\\
+
+\indent {\sffamily configure {-}{-}with-qt=framework} ...\\
+
+\subsection{Autotools}
+You may find that the version of GNU Autotools you have is not recent enough. Check with {\sffamily autoconf {-}{-}version} - 2.59 is not sufficient! An up-to-date version can be installed via Fink. Known good versions are listed here, but don't assume that these are the only versions that will work:\\
+
+{\sffamily
+\indent libtool  :  1.5.22-1000\\
+\indent autoconf :  XXX\\
+\indent automake :  1.9.6-3\\
+}
 
 \section{Configuration Options}
 
@@ -64,7 +91,7 @@ Possible {\sffamily configure} options are listed here. Most are present just to
 			Indicates that the Qt4 framework installation (downloaded from TrollTech.com) rather than a Fink or Macports version should be used.
 	\end{description}
 
-	\item[{-}{-}with-qtdir] Sets the location of the Qt4 development tools ({\sffamily moc}, {\sffamily uic}, and {\sffamily rcc}). This should only need to be set if you also have Qt3 installed and your \$PATH favours the older version's binaries.
+	\item[{-}{-}with-qtdir] Sets the location of the Qt4 development tools ({\sffamily moc}, {\sffamily uic}, and {\sffamily rcc}). This should only need to be set if you have Qt3 installed and your \$PATH favours the older version's binaries.
 	\begin{description}
 		\item[e.g. {-}{-}with-qtdir=/usr/local/bin]
 			Sets the location of the Qt4 development tools to /usr/local/bin.

@@ -5975,6 +5975,23 @@
     <addaction name="actionModelNext" />
     <addaction name="actionModelPrevious" />
    </widget>
+   <widget class="QMenu" name="menuTools" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionCommandToolBarVisibility" />
+     <addaction name="actionEditToolBarVisibility" />
+     <addaction name="actionFileToolBarVisibility" />
+     <addaction name="actionStyleToolBarVisibility" />
+     <addaction name="actionTrajectoryToolBarVisibility" />
+    </widget>
+    <addaction name="actionPreferences" />
+    <addaction name="menuToolbars" />
+   </widget>
    <widget class="QMenu" name="EdiTMenu" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -6001,6 +6018,16 @@
      <addaction name="actionSchemeCharge" />
      <addaction name="actionSchemeForces" />
     </widget>
+    <widget class="QMenu" name="menuStyle_2" >
+     <property name="title" >
+      <string>Style</string>
+     </property>
+     <addaction name="actionStyleStick" />
+     <addaction name="actionStyleTube" />
+     <addaction name="actionStyleSphere" />
+     <addaction name="actionStyleScaled" />
+     <addaction name="actionStyleIndividual" />
+    </widget>
     <addaction name="actionViewReset" />
     <addaction name="actionViewZoomIn" />
     <addaction name="actionViewZoomOut" />
@@ -6008,6 +6035,7 @@
     <addaction name="actionViewPerspective" />
     <addaction name="actionViewOrthographic" />
     <addaction name="separator" />
+    <addaction name="menuStyle_2" />
     <addaction name="menuColour_Scheme" />
     <addaction name="separator" />
     <addaction name="actionViewModel" />
@@ -6040,23 +6068,6 @@
     <addaction name="separator" />
     <addaction name="actionAtomSetVisible" />
     <addaction name="actionAtomSetInvisible" />
-   </widget>
-   <widget class="QMenu" name="menuTools" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-     <addaction name="actionCommandToolBarVisibility" />
-     <addaction name="actionEditToolBarVisibility" />
-     <addaction name="actionFileToolBarVisibility" />
-     <addaction name="actionStyleToolBarVisibility" />
-     <addaction name="actionTrajectoryToolBarVisibility" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="menuToolbars" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EdiTMenu" />
@@ -6828,16 +6839,6 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
-   <class>TColourFrame</class>
-   <extends>QFrame</extends>
-   <header>tcolourframe.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
-  </customwidget>
-  <customwidget>
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>ttreewidget.uih</header>
@@ -6846,6 +6847,16 @@
    <class>TTabBar</class>
    <extends>QWidget</extends>
    <header>ttabbar.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TColourFrame</class>
+   <extends>QFrame</extends>
+   <header>tcolourframe.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TCanvas</class>
+   <extends>QWidget</extends>
+   <header>tcanvas.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

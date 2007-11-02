@@ -67,9 +67,9 @@ if test "x$with_qtdir" != "x"; then
 fi
 
 
-# Add in Apple configuration arguments
-AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|<blank>],
-    [Configures the build to use OS X Qt frameworks instead of pkg-config[default=]])], ,
+# Add in Apple Qt configuration arguments
+AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
+    [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
     [with_qt=])
 
 
@@ -104,13 +104,18 @@ if test "$with_gui" = "qt"; then
   GUI_OBJECTS="gui-qt/libguiqt.a gui/libguimaster.a render/librender.a"
   AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
   AC_DEFINE([HAS_GUI], [], [Whether a GUI has been specified])
-  if test "x$with_qt" = "xframework"; then
+  if test "$with_qt" = "framework"; then
     QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore"
     QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
-  else
+  fi
+  if test "$with_qt" = "fink"; then
     PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
     PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
+    QTGUI_LIBS="-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL"
+    QTGUI_CFLAGS="-I/sw/lib/qt4-x11/include -I/usr/X11R6/include"
     QTGUI_LIBS="$QTGUI_LIBS -lglut"
+    QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
+    QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
   fi
   GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
   GUI_CFLAGS="$QTGUI_CFLAGS"
