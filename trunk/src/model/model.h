@@ -171,8 +171,8 @@ class model
 	void move_selection_to_start();
 	// Move selection to end of the list
 	void move_selection_to_end();
-	// Normalise forces (make largest component equal to 1.0)
-	void normalise_forces();
+	// Normalise forces (make largest component equal to specified value)
+	void normalise_forces(double norm);
 	// Zero forces on all atoms
 	void zero_forces();
 	// Zero forces on all atoms that have their 'fixed' property set to true

@@ -88,7 +88,9 @@ Possible {\sffamily configure} options are listed here. Most are present just to
 	\item[{-}{-}with-qt] Specifies which installation of Qt4 to use on Apple Macs. Valid options are:
 	\begin{description}
 		\item[{-}{-}with-qt=framework]
-			Indicates that the Qt4 framework installation (downloaded from TrollTech.com) rather than a Fink or Macports version should be used.
+			Use the Qt4 framework provided by TrollTech's own installation.
+		\item[{-}{-}with-qt=fink]
+			Use the Fink installation of Qt4 (qt4-x11).
 	\end{description}
 
 	\item[{-}{-}with-qtdir] Sets the location of the Qt4 development tools ({\sffamily moc}, {\sffamily uic}, and {\sffamily rcc}). This should only need to be set if you have Qt3 installed and your \$PATH favours the older version's binaries.

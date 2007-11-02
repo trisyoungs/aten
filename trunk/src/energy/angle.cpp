@@ -96,7 +96,7 @@ void pattern::angle_energy(model *srcmodel, energystore *estore)
 void pattern::angle_forces(model *srcmodel)
 {
 	dbg_begin(DM_CALLS,"pattern::angle_forces");
-	int i,j,k,aoff,m1;
+	static int i,j,k,aoff,m1;
 	static vec3<double> vec_ij, vec_kj, fi, fk;
 	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx;
 	static double du_dtheta, dtheta_dcostheta;
@@ -121,7 +121,7 @@ void pattern::angle_forces(model *srcmodel)
 			mag_kj = vec_kj.mag_and_normalise();
 			dp = vec_ij.dp(vec_kj);
 			theta = acos(dp);
-			dtheta_dcostheta = 1.0 / sin(theta);
+			dtheta_dcostheta = -1.0 / sin(theta);
 			params = pb->get_data()->get_params();
 			// Generate forces
 			switch (pb->get_data()->get_funcform().anglefunc)
@@ -166,9 +166,9 @@ void pattern::angle_forces(model *srcmodel)
 			fk = vec_ij - vec_kj * dp;
 			fk *= du_dtheta / mag_kj;
 			// Add contributions into force arrays
-			modelatoms[i]->f += fi;
-			modelatoms[j]->f -= fi + fk;
-			modelatoms[k]->f += fk;
+			modelatoms[i]->f -= fi;
+			modelatoms[j]->f += fi + fk;
+			modelatoms[k]->f -= fk;
 		}
 		aoff += natoms;
 	}

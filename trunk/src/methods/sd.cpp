@@ -43,7 +43,7 @@ sd_methods::sd_methods()
 // Line Search Subroutines
 */
 
-void sd_methods::gradient_move(model *srcmodel, model *destmodel)
+void sd_methods::gradient_move(model *srcmodel, model *destmodel, double delta)
 {
 	// Generate a new set of coordinates in destmodel following the normalised gradient vector present in srcmodel, with the stepsize given
 	dbg_begin(DM_CALLS,"sd_methods::gradient_move");
@@ -52,9 +52,9 @@ void sd_methods::gradient_move(model *srcmodel, model *destmodel)
 	atom **destatoms = destmodel->get_staticatoms();
 	for (i=0; i<srcmodel->get_natoms(); i++)
 	{
-		destatoms[i]->r.x = srcatoms[i]->r.x + srcatoms[i]->f.x * stepsize;
-		destatoms[i]->r.y = srcatoms[i]->r.y + srcatoms[i]->f.y * stepsize;
-		destatoms[i]->r.z = srcatoms[i]->r.z + srcatoms[i]->f.z * stepsize;
+		destatoms[i]->r.x = srcatoms[i]->r.x + srcatoms[i]->f.x * delta;
+		destatoms[i]->r.y = srcatoms[i]->r.y + srcatoms[i]->f.y * delta;
+		destatoms[i]->r.z = srcatoms[i]->r.z + srcatoms[i]->f.z * delta;
 	}
 	dbg_end(DM_CALLS,"sd_methods::gradient_move");
 }
@@ -101,12 +101,13 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 		srcmodel->zero_forces();
 		srcmodel->calculate_forces(srcmodel);
 		srcmodel->zero_forces_fixed();
-		//srcmodel->normalise_forces();
+		// Normalise forces so that the largest component is 'maxstep'
+		srcmodel->normalise_forces(maxstep);
 		// Divide all forces through by 1000.0 (to 'get' kJ/mol)
-		for (m = 0; m<srcmodel->get_natoms(); m++) modelatoms[m]->f /= 1000.0;
+		//for (m = 0; m<srcmodel->get_natoms(); m++) modelatoms[m]->f /= 1000.0;
 		// Perform linesearch along the gradient vector until we decrease the energy
 		linefailed = TRUE;
-		stepsize = 0.5;
+		//step = stepsize;
 		for (m=0; m<maxlinetrials; m++)
 		{
 			if (!gui.progress_update(cycle*maxlinetrials + m))
@@ -114,7 +115,7 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 				linefailed = TRUE;
 				break;
 			}
-			gradient_move(srcmodel, destmodel);
+			gradient_move(srcmodel, destmodel, step);
 			enew = srcmodel->total_energy(destmodel);
 			edelta = enew - ecurrent;
 			if (edelta < 0.0)
@@ -128,12 +129,12 @@ void sd_methods::minimise(model* srcmodel, double econ, double fcon)
 			else
 			{
 				// Energy increased, so change step size and repeat
-				stepsize *= 0.1;
+				step *= 0.1;
 			}
 		}
 		if (linefailed)
 		{
-			msg(DM_NONE,"sd_methods::minimise - Failed to find lower point along gradient within 'maxlinetrials'.\n");
+			msg(DM_NONE,"sd_methods::minimise - Failed to find lower point along gradient within %i line trials.\n", maxlinetrials);
 			break;
 		}
 		// Print out the step data
