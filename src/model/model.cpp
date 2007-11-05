@@ -330,13 +330,13 @@ void model::bohr_to_angstrom()
 	// Convert coordinates and cell from Bohr to Angstrom
 	dbg_begin(DM_CALLS,"model::bohr_to_angstrom");
 	// Coordinates
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r = i->r * 0.529;
+	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r = i->r * ANGBOHR;
 	// Cell
 	cell_type ct = cell.get_type();
 	if (ct != CT_NONE)
 	{
 		vec3<double> lengths = cell.get_lengths();
-		lengths *= 0.529;
+		lengths *= ANGBOHR;
 		cell.set(lengths,cell.get_angles());
 	}
 	log_change(LOG_COORDS);

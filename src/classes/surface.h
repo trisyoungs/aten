@@ -163,6 +163,12 @@ class surface
 	void set_transparency(int a) { colour[3] = a; log++; }
 	// Return the colour of the surface
 	GLint *get_colour() { return colour; }
+
+	/*
+	// Transformations
+	*/
+	public:
+	void bohr_to_angstrom();
 };
 
 #endif

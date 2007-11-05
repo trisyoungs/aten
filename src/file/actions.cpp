@@ -21,6 +21,7 @@
 
 #include "file/filter.h"
 #include "model/model.h"
+#include "classes/surface.h"
 #include "base/sysfunc.h"
 
 // Read commands
@@ -31,7 +32,7 @@ bool filter::do_actions(command_node<filter_command> *&fn)
 	bool result = FALSE;
 	switch (fn->get_command())
 	{
-		// Recalculate bonding model
+		// Recalculate bonding in model
 		case (FC_REBOND):
 			if (activemodel == NULL) break;
 			if (prefs.get_bond_on_load() != PS_NO)
@@ -63,6 +64,32 @@ bool filter::do_actions(command_node<filter_command> *&fn)
 		case (FC_FRACTOREAL):
 			if (activemodel == NULL) break;
 			activemodel->frac_coords_to_real();
+			result = TRUE;
+			break;
+		// Finalise current model
+		case (FC_FINALISEMODEL):
+			if (activemodel == NULL) break;
+			if (partner != NULL) activemodel->set_filename(filename.get());
+			activemodel->set_filter(partner);
+			// Do various necessary calculations
+			if (prefs.get_coords_in_bohr()) activemodel->bohr_to_angstrom();
+			activemodel->renumber_atoms();
+			activemodel->reset_view();
+			activemodel->calculate_mass();
+			activemodel->calculate_density();
+			// Print out some useful info on the model that we've just read in
+			msg(DM_NONE,"Atoms  : %i\n",activemodel->get_natoms());
+			msg(DM_NONE,"Cell   : %s\n",text_from_CT(activemodel->cell.get_type()));
+			if (activemodel->cell.get_type() != 0) activemodel->cell.print();
+			// Lastly, reset all the log points and start afresh
+			activemodel->reset_logs();
+			activemodel->update_save_point();
+			result = TRUE;
+			break;
+		// Finalise current surface
+		case (FC_FINALISESURFACE):
+			if (activesurface == NULL) break;
+			if (prefs.get_coords_in_bohr()) activesurface->bohr_to_angstrom();
 			result = TRUE;
 			break;
 		default:

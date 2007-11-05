@@ -145,7 +145,7 @@ prefs_data::prefs_data()
 	// GL Options
 	gloptions = 0;
 	gl_shininess = 10;
-	gl_clip_near = 3.0;
+	gl_clip_near = 1.0;
 	gl_clip_far = 1000.0;
 	gl_fog_near = 1;
 	gl_fog_far = 200;

@@ -144,6 +144,8 @@ class filter
 	// File	
 	*/
 	private:
+	// Filename that's the source of ifstream or ofstream
+	dnchar filename;
 	// Pointer to input file
 	ifstream *inputfile;
 	// Pointer to output file
@@ -162,8 +164,6 @@ class filter
 	bool open(const char *filterfile);
 	// Import model file
 	model *import_model(const char *modelfile);
-	// Perform post-load actions on new models
-	void finalise_model_import(const char *modelfile);
 	// Export model to filename (in model)
 	void export_model(model *source);
 	// Export forcefield spec to file

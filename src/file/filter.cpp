@@ -225,11 +225,12 @@ void filter::reset_targets()
 }
 
 // Set input file
-bool filter::set_input(const char *filename)
+bool filter::set_input(const char *sourcefile)
 {
 	dbg_begin(DM_CALLS,"filter::set_input[filename]");
 	if (inputfile != NULL) printf("filter::set_input[filename] <<<< Inputfile already set >>>>\n");
-	inputfile = new ifstream(filename,ios::in);
+	inputfile = new ifstream(sourcefile,ios::in);
+	filename = sourcefile;
 	dbg_end(DM_CALLS,"filter::set_input[filename]");
 	if (!inputfile->good()) return FALSE;
 	else return TRUE;
@@ -241,16 +242,18 @@ bool filter::set_input(ifstream *ifs)
 	dbg_begin(DM_CALLS,"filter::set_input[ifstream]");
 	if (inputfile != NULL) printf("filter::set_input[pointer] <<<< Inputfile already set >>>>\n");
 	inputfile = ifs;
+	filename.clear();
 	dbg_end(DM_CALLS,"filter::set_input[ifstream]");
 	if (!inputfile->good()) return FALSE;
 	else return TRUE;
 }
 
 // Set output file
-bool filter::set_output(const char *filename)
+bool filter::set_output(const char *destfile)
 {
 	dbg_begin(DM_CALLS,"filter::set_output");
-	outputfile = new ofstream(filename,ios::out);
+	outputfile = new ofstream(destfile,ios::out);
+	filename = destfile;
 	dbg_end(DM_CALLS,"filter::set_output");
 	if (!outputfile->good()) return FALSE;
 	else return TRUE;
@@ -272,5 +275,6 @@ void filter::close_files()
 	}
 	inputfile = NULL;
 	outputfile = NULL;
+	filename.clear();
 	dbg_end(DM_CALLS,"filter::close_files");
 }

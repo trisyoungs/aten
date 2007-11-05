@@ -68,30 +68,6 @@ model *filter::import_model(const char *filename)
 	close_files();
 	// Reset element mapping style
 	prefs.set_zmapping(temp_zmap);
-	// Post-process file
-	finalise_model_import(filename);
 	dbg_end(DM_CALLS,"filter::import_model");
 	return activemodel;
-}
-
-// Apply final actions to imported models
-void filter::finalise_model_import(const char *filename)
-{
-	dbg_begin(DM_CALLS,"filter::finalise_model_import");
-	activemodel->set_filename(filename);
-	activemodel->set_filter(partner);
-	// Do various necessary calculations
-	if (prefs.get_coords_in_bohr()) activemodel->bohr_to_angstrom();
-	activemodel->renumber_atoms();
-	activemodel->reset_view();
-	activemodel->calculate_mass();
-	activemodel->calculate_density();
-	// Print out some useful info on the model that we've just read in
-	msg(DM_NONE,"Atoms  : %i\n",activemodel->get_natoms());
-	msg(DM_NONE,"Cell   : %s\n",text_from_CT(activemodel->cell.get_type()));
-	if (activemodel->cell.get_type() != 0) activemodel->cell.print();
-	// Lastly, reset all the log points and start afresh
-	activemodel->reset_logs();
-	activemodel->update_save_point();
-	dbg_end(DM_CALLS,"filter::finalise_model_import");
 }

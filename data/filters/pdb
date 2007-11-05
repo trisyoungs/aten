@@ -20,4 +20,5 @@ importmodel
 		#end
 	end
 	rebond
+	finalisemodel
 end

@@ -43,6 +43,9 @@ void filter::import_surface(const char *filename)
 	}
 	// Reset target variables
 	reset_targets();
+	// Set element mapping type to that specified in file
+	zmap_type temp_zmap = prefs.get_zmapping();
+	if (has_zmapping) prefs.set_zmapping(zmapping);
 	// Run the import commands on the file...
 	command_node<filter_command> *fn = commands.commandlist.first();
 	while (fn != NULL)
@@ -62,5 +65,7 @@ void filter::import_surface(const char *filename)
 		}
 	}
 	close_files();
+	// Reset element mapping style
+	prefs.set_zmapping(temp_zmap);
 	dbg_end(DM_CALLS,"filter::import_surface");
 }

@@ -13,6 +13,7 @@ importmodel
 	end
 	rebond
 	centre
+	finalisemodel
 end
 exportmodel
 	name "XMol XYZ Coordinates"

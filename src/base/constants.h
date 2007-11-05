@@ -43,6 +43,9 @@
 // Degrees per Radian
 #define DEGRAD 57.295779578552
 
+// Angstroms per Bohr
+#define ANGBOHR 0.529177249
+
 /*
 // Conversion from atomic units to J/mol for Electrostatic Energy / Forces
 //

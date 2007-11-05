@@ -253,7 +253,7 @@ bool mc_methods::disorder(model* destmodel)
 	// Monte Carlo Insertion
 	dbg_begin(DM_CALLS,"mc::insert");
 	int n, m, cycle, move, mol, noldatoms, noldpatterns;
-	int pnmols, ncomp;
+	int pnmols, prog;
 	char s[256], t[32];
 	component *c;
 	double enew, ecurrent, elastcycle, edelta, phi, theta, ecurrent_vdw, ecurrent_elec;
@@ -358,15 +358,14 @@ bool mc_methods::disorder(model* destmodel)
 
 	// Loop over MC cycles
 	if (gui.exists()) gui.progress_create("Building disordered system", ncycles * components.size() * MT_NITEMS);
+	prog = 0;
 	for (cycle=0; cycle<ncycles; cycle++)
 	{
 		msg(DM_VERBOSE,"Begin cycle %i...\n",cycle);
 
 		// Loop over patterns and regions together
-		ncomp = 0;
 		for (c = components.first(); c != NULL; c = c->next)
 		{
-			ncomp ++;
 			// Get pointers to variables
 			p = c->get_pattern();
 			r = &c->area;
@@ -374,6 +373,7 @@ bool mc_methods::disorder(model* destmodel)
 			// If the pattern is fixed, move on
 			if (p->is_fixed())
 			{
+				prog += MT_NITEMS;
 				msg(DM_VERBOSE,"Pattern '%s' is fixed.\n",p->get_name());
 				continue;
 			}
@@ -382,7 +382,8 @@ bool mc_methods::disorder(model* destmodel)
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MT_DELETE; move>-1; move--)
 			{
-				if (gui.exists() && (!gui.progress_update(cycle * ncomp * (MT_NITEMS-move)))) break;
+				prog ++;
+				if (gui.exists() && (!gui.progress_update(prog))) break;
 
 				acceptratio[p->get_id()][move] = 0;
 				// If this move type isn't allowed then continue onto the next
