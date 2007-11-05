@@ -178,3 +178,12 @@ void surface::set_colour(double r, double g, double b)
 	log ++;
 }
 
+// Convert Bohr to Angstrom
+void surface::bohr_to_angstrom()
+{
+	// Only the axes and origin need to be modified...
+	axes.rows[0] *= ANGBOHR;
+	axes.rows[1] *= ANGBOHR;
+	axes.rows[2] *= ANGBOHR;
+	origin *= ANGBOHR;
+}

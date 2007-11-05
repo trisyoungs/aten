@@ -127,4 +127,6 @@ importmodel
 	# Finalise the packing in the model
 	pack
 	fold
+	# Perform pos-load operations
+	finalisemodel
 end

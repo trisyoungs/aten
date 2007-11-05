@@ -32,4 +32,5 @@ importmodel
 			setcell
 		end
 	end
+	finalisemodel
 end

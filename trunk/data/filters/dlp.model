@@ -29,6 +29,7 @@ importmodel
 	end
 	rebond
 	fold
+	finalisemodel
 end
 exportmodel
 	name "DL_POLY Configuration"

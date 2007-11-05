@@ -25,6 +25,8 @@ importsurface
 		readline "$e * $r.x $r.y $r.z"
 		addatom
 	end
+	finalisemodel
+	rebond
 	# Volumetric data (five points per line)
 	repeat $i $nx
 		repeat $j $ny
@@ -34,4 +36,5 @@ importsurface
 			end
 		end
 	end
+	finalisesurface
 end

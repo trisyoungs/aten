@@ -50,11 +50,11 @@ types
 #59             
 #60             
 # United atom acetic acid : JPC,95,3315(1991)
-#61	C		C	"-C(nbonds=1),-O,-O(bond=double)"	# Co in CCOOH
-#62	O		O	""	# Oc in CCOOH     UA acid                                 
-#63	OH		O	""	# Oh in CCOOH                                             
-#64	C3		C	""	# CH3 in CH3COOH                                          
-#65	HO		H	""	# H  in CCOOH                                             
+61	C		C	"-C(nbonds=1),-O,-O(bond=double)"	# Co in CCOOH
+62	O		O	""	# Oc in CCOOH     UA acid                                 
+63	OH		O	""	# Oh in CCOOH                                             
+64	C3		C	""	# CH3 in CH3COOH                                          
+65	HO		H	""	# H  in CCOOH                                             
 # Types 66 - 77 : JACS,106,6638 (1984)
 66	C4		C	""	# CH4 
 67	C3		C	""	# CH3 (C1) ETHANE                                         
@@ -89,7 +89,7 @@ types
 # Methylcyanide : Mol.Phys.,63,547 (1988)
 94	NZ		N	""	# N IN CH3CN
 95	CZ		C	""	# C IN CH3CN
-#96	C3		C	""	# CH3 IN CH3CN  united atom    "                          
+96	C3		C	""	# CH3 IN CH3CN  united atom
 #97	OW		O	""	# O TIP5P Water   unpublished                             
 #98	HW		H	""	# H TIP5P Water      "                                    
 #99	LP		He	""	# M TIP5P Water      "                                    
@@ -115,13 +115,13 @@ types
 #117	HW		H	""	# H TIP3F Water unpublished                               
 118	C2		C	""	# CH2 Methylenechloride  C-Cl=1.772                       
 119	Cl		Cl	""	# Cl  Methylenechloride  ClCCl = 111.8                    
-120	CH		C	""	# CH  Chloroform JPC,94,1683 (1990)                       
-121	Cl		Cl	""	# Cl  Chloroform C-Cl=1.758 ClCCl = 111.3                 
-122	CT		C	"-Cl[n=4]"	# C   CCl4                                                
+120	CH		C	"-Cl(n=3),-H"	# CH  Chloroform JPC,94,1683 (1990)                       
+121	Cl		Cl	"-$120"		# Cl  Chloroform C-Cl=1.758 ClCCl = 111.3                 
+122	CT		C	"-Cl(n=4)"	# C   CCl4                                                
 123	Cl		Cl	"-$122"		# Cl  CCl4                                                
-124	SZ		S	""	# DMSO UA unpublished                                     
-125	OY		O	""	# DMSO                                                    
-126	C3		C	""	# DMSO                                                    
+124	SZ		S	"-C(nbonds=1,n=2),-O(bond=double)"	# DMSO UA unpublished
+125	OY		O	"-$124"		# DMSO
+126	C3		C	"-$124"		# DMSO                                                    
 127	NT		N	""	# Ammonia - OPLS-AA                                       
 128	H		H	""	# Ammonia                                                 
 129	O		O	""	# O in DMF - united atom                                  
@@ -131,18 +131,18 @@ types
 133	OW		O	""	# O  SPC  Water                                           
 134	HW		H	""	# H  SPC  Water                                           
 # Start of OPLS-AA Parameters
-135	CT		C	""	# CH3    all-atom C: alkanes
-136	CT		C	""	# CH2    all-atom C: alkanes
-137	CT		C	""	# CH     all-atom C: alkanes
-138	CT		C	""	# CH4    all-atom C: methane                              
-139	CT		C	""	# C      all-atom C: alkanes                              
-140	HC		H	""	# H      all-atom H: alkanes                              
-141	CM		C	""	# alkene C (R2-C=) all atom                               
-142	CM		C	""	# alkene C (RH-C=) all atom                               
-143	CM		C	""	# alkene C (H2-Ceq) all atom                               
-144	HC		H	""	# alkene H (H-Ceq)  all atom                               
-145	CA		C	""	# Benzene C - 12 site JACS,112,4768-90                    
-146	HA		H	""	# Benzene H - 12 site        "                            
+135	CT		C	"-H(n=3),-C"		# CH3    all-atom C: alkanes
+136	CT		C	"-H(n=2),-C,-C"		# CH2    all-atom C: alkanes
+137	CT		C	"-H,-C(n=3)"		# CH     all-atom C: alkanes
+138	CT		C	"-H(n=4)"		# CH4    all-atom C: methane
+139	CT		C	"-C(n=4)"		# C      all-atom C: alkanes
+140	HC		H	"-C"			# H      all-atom H: alkanes
+141	CM		C	"-C(bond=double),-C(n=2,bond=single)"	# alkene C (R2-C=) all atom
+142	CM		C	"-C(bond=double),-C,-H"	# alkene C (RH-C=) all atom                               
+143	CM		C	"-C(bond=double),-H,-H"	# alkene C (H2-C=) all atom
+144	HC		H	"-C(bond=double),-H"	# alkene H (H-C=)  all atom
+145	CA		C	"ring(size=6,-C(n=5)),-H"	# Benzene C - 12 site JACS,112,4768-90
+146	HA		H	"-C(ring(size=6,-C(n=5)))"	# Benzene H - 12 site        "
 147	CA		C	""	# Naphthalene fusion C (C9)                               
 148	CT		C	""	# all-atom C: CH3, toluene                                
 149	CT		C	""	# all-atom C: CH2, ethyl benzene                          
@@ -496,7 +496,7 @@ types
 497	OY		O	""	# sulfoxide - all atom                                    
 498	CT		C	""	# CH3 all-atom C: sulfoxide                               
 499	CT		C	""	# CH2 all-atom C: sulfoxide                               
-500	Cstar	C	""	# CG in TRP                                               
+500	Cstar		C	""	# CG in TRP                                               
 501	CB		C	""	# CD C in TRP                                             
 502	CN		C	""	# CE C in TRP                                             
 503	NA		N	""	# NE in TRP                                               
@@ -785,17 +785,17 @@ types
 786	F		F	""	# F in PF6-                                               
 787	N		N	""	# N in NO3- F. van Veggel                                 
 788	O		O	""	# O in NO3- r(NO) eq                                       
-#789	789_			""	#                                                         
+#789              
 790	CA		C	""	# C(CF3) trifluoromethylbenzene test                      
 791	CT		C	""	# CF3           " test                                    
 792	F		F	""	# F             " test                                    
-#793	793_			""	#                                                         
-#794	794_			""	#                                                         
+#793              
+#794              
 795	OW		O	""	# O TIP4F Water  JCP 115, 10758 (2001)            
 796	HW		H	""	# H TIP4F Water      "                                    
 797	LP		Es	""	# M TIP4F Water      "                                    
-#798	798_			""	#                                                         
-#799	799_			""	#                                                         
+#798              
+#799              
 #800-899 reserved for QM/MM output
 900	NT		N	""	# N      primary   amines                                 
 901	NT		N	""	# N      secondary amines JACS 121, 4827 (1999)                       
@@ -853,9 +853,7 @@ types
 953	N3		N	""	# glycine zwit. 6-31G* CHELPG charges                     
 954	O2		O	""	# glycine zwit. 6-31G* CHELPG charges                     
 955	H3		H	""	# glycine zwit. 6-31G* CHELPG charges                     
-#	#_			""	# #
-#Alkyl	-_#Alkyl		Halides	""	# #Alkyl Halides - JPCB 015
-#	#_			""	# #
+#Alkyl Halides - JPCB 015
 956	F		F	""	# F  in monoalkyl fluorides
 957	CT		C	""	# RCH2F  "     "   
 958	HC		H	""	# H in RCHF       
@@ -900,27 +898,27 @@ types
 996	HO		H	""	# HO in hydroxamic acid                                   
 997	CT		C	""	# C in CHROR  - benzyl ethers; C(CHROR) is #221           
 998	CT		C	""	# C in CRROR  - benzyl ethers; C(CRROR) is #221           
-#999	999_			""	#                                                         
+#999              
 1000	C!		C	""	# 3-phenyl pyrrole C3                                     
 1001	C!		C	""	# 3-phenyl pyrrole C3'                                    
 1002	C!		C	""	# 4-phenyl imidazole C4                                   
 1003	C!		C	""	# 4-phenyl imidazole C4'                                  
 1004	CA		C	""	# diphenylmethane Cipso                                   
 1005	Zn		Zn	""	# JACS 113, 8262 (1991)                                   
-#1006	1006_			""	#                                                         
-#1007	1007_			""	#                                                         
-#1008	1008_			""	#                                                         
-#1009	1009_			""	#                                                         
-#1010	1010_			""	#                                                         
+#1006               
+#1007               
+#1008               
+#1009               
+#1010               
 1011	CT		C	""	# C(I)  iodoalkane  - primary                 
 1012	CT		C	""	# C(I)  iodoalkane  - secondary               
 1013	CT		C	""	# C(I)  iodoalkane  - tertiary                
 1014	I		I	""	# I     iodoalkane                            
 1015	HC		H	""	# H in  RCHI                                              
-#1020	1020_			""	#                                                         
+#1020               
 1021	N		N	""	# N of secondary N-phenyl sulfonamide                     
 1022	CA		C	""	# benzene C on N of N-phenyl sulfonamide                  
-#1023	1023_			""	#                                                         
+#1023               
 1032	CA		C	""	# ipso C in benzoate ion                                  
 1033	N		N	""	# N: N-phenylurea                                         
 1034	CA		C	""	# ipso C in N-phenylurea                                  
@@ -935,17 +933,17 @@ types
 1043	C		C	""	# C: CeqO in tert formamide.                               
 1044	O		O	""	# O: CeqO in tert formamide.                               
 1045	HC		H	""	# H on CO:  tert formamide                                
-#1046	1046_			""	#                                                         
-#1047	1047_			""	#                                                         
-#1048	1048_			""	#                                                         
-#1049	1049_			""	#                                                         
-#1050	1050_			""	#                                                         
+#1046               
+#1047               
+#1048               
+#1049               
+#1050               
 1100	F		F	""	# F-   1100-1114 provide                                  
 1101	Cl		Cl	""	# Cl-  sigmas that yield the                              
 1102	Br		Br	""	# Br-  correct free energies                              
 1103	I		I	""	# I-   of hydration for                                   
 1104	ions		these	""	#      these ions using                                   
-1105	1105_		GB/SA	""	#          GB/SA                                          
+#1105                    
 1106	Li		Li	""	# Li+  The epsilons are                                   
 1107	Na		Na	""	# Na+  unchanged from                                     
 1108	K		K	""	# K+   400-414.                                           
@@ -955,8 +953,8 @@ types
 1112	Ca		Ca	""	# Ca++                                                    
 1113	Sr		Sr	""	# Sr++                                                    
 1114	Ba		Ba	""	# Ba++                                                    
-1115	1115_			""	#                                                         
-1116	1116_			""	#                                                         
+#1115               
+#1116               
 1120	CT		C	""	# C in  CH3NR3+    July 2005                              
 1121	CT		C	""	# C in  RCH2NR3+   WLJ                                    
 1122	CT		C	""	# C in  R2CHNR3+                                          
@@ -966,8 +964,8 @@ types
 1126	CA		C	""	# Cipso (ArNR3+)                                          
 1127	N3		N	""	# N (ArNR2H+)                                             
 1128	CA		C	""	# Cipso (ArNR2H+)                                         
-1129	1129_			""	#                                                         
-1130	1130_			""	#                                                         
+#1129               
+#1130               
 1200	CT		C	""	# CB in N-Me HIS                                          
 1233	S		S	""	# S   thiazole jlj0003                                    
 1234	CR		C	""	# C2  thiazole jlj0003                                    
@@ -976,7 +974,6 @@ types
 1237	CW		C	""	# C5  thiazole jlj0003                                    
 1239	HA		H	""	# H4  thiazole jlj0003                                    
 1240	HA		H	""	# H5  thiazole jlj0003                                    
-			""	#                                                         
 end
 
 # Lennard-Jones parameters
@@ -1051,9 +1048,9 @@ vdw lj
 94	NZ	-0.430	0.170	3.200
 95	CZ	0.280	0.150	3.650
 96	C3	0.150	0.207	3.775
-97	OW	0.0	0.16	3.12
-98	HW	0.241	0.0	0.0
-99	LP	-0.241	0.0	0.0
+#97	OW	0.0	0.16	3.12
+#98	HW	0.241	0.0	0.0
+#99	LP	-0.241	0.0	0.0
 100	DM	0.0	0.0	0.0
 101	He	0.000	0.020	2.556
 102	Ne	0.0	0.069	2.780
@@ -1066,8 +1063,8 @@ vdw lj
 109	C3	0.25	0.170	3.800
 110	C2	0.25	0.118	3.800
 # TIP3P (TIP3F and TIP4P Water Models in separate forcefields)
-111	OW	-0.834	0.1521	3.15061
-112	HW	0.417	0.0	0.0
+#111	OW	-0.834	0.1521	3.15061
+#112	HW	0.417	0.0	0.0
 #113	OW	0.0	0.1550	3.15365
 #114	HW	0.520	0.0	0.0
 #115	LP	-1.040	0.0	0.0
@@ -1949,7 +1946,7 @@ C	CA	400.	1.490
 C	CB	447.	1.419
 C	CD	469.	1.40
 C	CH	317.	1.522
-C	CJ	410.	1.444
+#C	CJ	410.	1.444
 C	CM	410.	1.444
 C	CT	317.	1.522
 Cdoll	CY	317.	1.522
@@ -1964,7 +1961,7 @@ C	O	570.	1.229
 Cdoll	O	570.	1.229
 C	O2	656.	1.25
 C	OH	450.	1.364
-C	Seq	400.	1.640
+#C	Seq	400.	1.640
 NO	ON	550.	1.225
 CT	NO	375.	1.490
 CA	NO	400.	1.460
@@ -1976,8 +1973,8 @@ CM	OH	450.	1.370
 C	OS	214.	1.327
 Cstar	C2	317.	1.495
 Cstar	CB	388.	1.459
-Cstar	CG	546.	1.352
-Cstar	CC	546.	1.352
+#Cstar	CG	546.	1.352
+#Cstar	CC	546.	1.352
 Cstar	CT	317.	1.495
 CS	CT	317.	1.495
 Cstar	CW	546.	1.352
@@ -1998,7 +1995,7 @@ C2	C3	260.	1.526
 C3	C3	260.	1.526
 C2	CA	317.	1.51
 C2	CD	317.	1.51
-C2	CC	317.	1.504
+#C2	CC	317.	1.504
 C2	CH	260.	1.526
 C2	N	337.	1.449
 C2	N2	337.	1.463
@@ -2039,7 +2036,7 @@ C!	CM	385.	1.460
 C!	NA	385.	1.440
 CA	CB	469.	1.404
 CA	CD	469.	1.40
-CA	CJ	427.	1.433
+#CA	CJ	427.	1.433
 CA	CM	427.	1.433
 CA	CN	469.	1.40
 CA	CT	317.	1.51
@@ -2080,31 +2077,31 @@ CB	NA	436.	1.374
 CB	NB	414.	1.391
 CB	NC	461.	1.354
 CR	NC	461.	1.354
-CC	CF	512.	1.375
-CC	CG	518.	1.371
-CC	CT	317.	1.504
-CC	CV	512.	1.375
+#CC	CF	512.	1.375
+#CC	CG	518.	1.371
+#CC	CT	317.	1.504
+#CC	CV	512.	1.375
 CW	CW	512.	1.375
-CC	CW	518.	1.371
-CC	NA	422.	1.385
-CC	NB	410.	1.394
+#CC	CW	518.	1.371
+#CC	NA	422.	1.385
+#CC	NB	410.	1.394
 CD	CD	469.	1.40
 CD	CN	469.	1.40
-CA	CC	469.	1.40
-CD	CC	469.	1.40
+#CA	CC	469.	1.40
+#CD	CC	469.	1.40
 CE	Nstar	440.	1.371
 CE	NB	529.	1.304
-CF	NB	410.	1.394
-CG	NA	427.	1.381
+#CF	NB	410.	1.394
+#CG	NA	427.	1.381
 CH	CH	260.	1.526
 CH	N	337.	1.449
 CH	Nstar	337.	1.475
 CH	OH	386.	1.425
 CH	OS	320.	1.425
-CI	NC	502.	1.324
-CJ	CJ	549.	1.350
-CJ	CM	549.	1.350
-CJ	Nstar	448.	1.365
+#CI	NC	502.	1.324
+#CJ	CJ	549.	1.350
+#CJ	CM	549.	1.350
+#CJ	Nstar	448.	1.365
 CK	HA	340.	1.08
 CK	H5	367.	1.08
 CK	Nstar	440.	1.371
@@ -2134,8 +2131,8 @@ HC	CZ	420.	1.080
 CM	Nstar	448.	1.365
 CM	NA	448.	1.365
 CN	NA	428.	1.38
-CP	NA	477.	1.343
-CP	NB	488.	1.335
+#CP	NA	477.	1.343
+#CP	NB	488.	1.335
 CQ	HA	367.	1.08
 CQ	H5	367.	1.08
 CQ	NC	502.	1.324
@@ -2265,7 +2262,7 @@ CT	C2	260.	1.526
 CA	NB	414.	1.391
 CA	N	427.	1.381
 CB	CT	317.	1.51
-CC	CB	520.	1.370
+#CC	CB	520.	1.370
 CT	F	367.	1.332
 C2	F	367.	1.38
 CA	F	420.	1.354
@@ -2359,8 +2356,8 @@ CH	C	N	70.	116.6
 CH	C	O	80.	120.4
 CH	C	O2	65.	117.
 CH	C	OH	70.	115.
-CJ	C	NA	70.	114.1
-CJ	C	O	80.	125.3
+#CJ	C	NA	70.	114.1
+#CJ	C	O	80.	125.3
 CM	C	NA	70.	114.1
 CM	C	O	80.	125.3
 Ceq	C	O	80.	124.
@@ -2371,7 +2368,7 @@ CA	C	N	70.	115.5
 CM	C	N	70.	115.5
 CT	C	O	80.	120.4
 CA	C	O	80.	120.4
-CT	C	Seq	70.	125.0
+#CT	C	Seq	70.	125.0
 CT	NO	ON	80.	117.5
 CA	NO	ON	80.	117.5
 CT	CT	NO	63.	111.1
@@ -2381,7 +2378,7 @@ HC	C	N	40.	114.
 HC	C	OS	40.	115.
 HC	C	OH	40.	115.
 O	C	HC	35.	123.0
-Seq	C	HC	35.	127.0
+#Seq	C	HC	35.	127.0
 NC	C	HC	35.	122.0
 CT	C	OH	70.	108.
 CT	C	CT	70.	116.
@@ -2421,7 +2418,7 @@ F	C	CT	80.	111.0
 N	C	O	80.	122.9
 NM	C	O	80.	122.9
 N	C	N	70.	114.2
-N	C	Seq	70.	125.0
+#N	C	Seq	70.	125.0
 Nstar	C	NA	70.	115.4
 Nstar	C	NC	70.	118.6
 NA	C	NA	70.	118.6
@@ -2438,17 +2435,17 @@ O	C	OH	80.	121.0
 O2	C	O2	80.	126.0
 C2	Cstar	CB	70.	128.6
 C2	CA	CB	70.	128.6
-C2	Cstar	CG	70.	125.
-C2	Cstar	CC	70.	125.
+#C2	Cstar	CG	70.	125.
+#C2	Cstar	CC	70.	125.
 C2	Cstar	CW	70.	125.
-CB	Cstar	CG	85.	106.4
+#CB	Cstar	CG	85.	106.4
 CB	Cstar	CT	70.	128.6
 CB	Cstar	CW	85.	106.4
 CT	Cstar	CW	70.	125.
-C2	CS	CG	70.	125.
-C2	CS	CC	70.	125.
+#C2	CS	CG	70.	125.
+#C2	CS	CC	70.	125.
 C2	CS	CW	70.	125.
-CB	CS	CG	85.	106.4
+#CB	CS	CG	85.	106.4
 CB	CS	CT	70.	128.6
 CB	CS	CW	85.	106.4
 CT	CS	CW	70.	125.
@@ -2489,7 +2486,7 @@ C3	C2	CH	63.0	112.4
 C3	C2	OS	80.0	109.5
 CA	C2	CH	63.	114.
 CD	C2	CH	63.	114.
-CC	C2	CH	63.0	113.1
+#CC	C2	CH	63.0	113.1
 CH	C2	CH	63.0	112.4
 CH	C2	OH	80.0	109.5
 CH	C2	OS	80.0	109.5
@@ -2597,12 +2594,12 @@ CV	CW	OS	70.	108.0
 HA	CR	OS	35.	117.0
 OS	CM	HC	35.	114.5
 CB	CA	HA	35.	120.0
-CC	CA	HA	35.	120.0
+#CC	CA	HA	35.	120.0
 CB	CA	N2	70.	123.5
 CB	CA	NC	70.	117.3
 CD	CA	CD	85.	120.
-CJ	CA	N2	70.	120.1
-CJ	CA	NC	70.	121.5
+#CJ	CA	N2	70.	120.1
+#CJ	CA	NC	70.	121.5
 CM	CA	N2	70.	120.1
 CA	CA	N2	70.	120.1
 CM	CA	NC	70.	121.5
@@ -2632,12 +2629,12 @@ Cstar	CB	CA	85.	134.9
 Cstar	CB	CD	85.	134.9
 CA	CB	CA	85.	134.9
 Cstar	CB	CN	85.	108.8
-CA	CB	CC	85.	108.8
-Cstar	CB	CC	85.	108.8
+#CA	CB	CC	85.	108.8
+#Cstar	CB	CC	85.	108.8
 CS	CB	CA	85.	134.9
 CS	CB	CD	85.	134.9
 CS	CB	CN	85.	108.8
-CS	CB	CC	85.	108.8
+#CS	CB	CC	85.	108.8
 CA	CB	CB	85.	117.3
 CA	CB	CN	85.	116.2
 CA	CB	NB	70.	132.4
@@ -2655,39 +2652,39 @@ NA	CB	NC	70.	126.2
 NB	CB	N	70.	126.2
 NB	CR	N	70.	126.2
 NA	CR	NC	70.	126.2
-C2	CC	CF	70.	131.9
-C2	CC	CG	70.	129.05
-C2	CC	CV	70.	131.9
-C2	CC	CW	70.	129.05
-C2	CC	NA	70.	122.2
-C2	CC	NB	70.	121.05
-CF	CC	NA	70.	105.9
-CG	CC	NA	70.	108.75
-CG	CC	NB	70.	109.9
-CT	CC	CV	70.	120.00
+#C2	CC	CF	70.	131.9
+#C2	CC	CG	70.	129.05
+#C2	CC	CV	70.	131.9
+#C2	CC	CW	70.	129.05
+#C2	CC	NA	70.	122.2
+#C2	CC	NB	70.	121.05
+#CF	CC	NA	70.	105.9
+#CG	CC	NA	70.	108.75
+#CG	CC	NB	70.	109.9
+#CT	CC	CV	70.	120.00
 CT	CW	CV	70.	130.7
 CT	CV	CW	70.	130.7
 CT	CX	CX	70.	130.7
 CT	CW	CW	70.	120.00
-CT	CC	CW	70.	120.00
-CT	CC	NA	70.	120.00
-CT	CC	NB	70.	120.00
-CV	CC	NA	70.	120.00
+#CT	CC	CW	70.	120.00
+#CT	CC	NA	70.	120.00
+#CT	CC	NB	70.	120.00
+#CV	CC	NA	70.	120.00
 CW	CW	NA	70.	120.0
-CW	CC	NA	70.	120.00
-CW	CC	NB	70.	120.00
+#CW	CC	NA	70.	120.00
+#CW	CC	NB	70.	120.00
 C	CD	CD	85.	120.
 CA	CD	CD	85.	120.
 CB	CD	CD	85.	120.
 CD	CD	CD	85.	120.
 CD	CD	CN	85.	120.
-CD	CD	CC	85.	120.
-Nstar	CE	NB	70.	113.9
-CC	CF	NB	70.	109.9
+#CD	CD	CC	85.	120.
+#Nstar	CE	NB	70.	113.9
+#CC	CF	NB	70.	109.9
 Cstar	CG	NA	70.	108.7
 CA	CA	NA	70.	108.7
-Cstar	CC	NA	70.	108.7
-CC	CG	NA	70.	105.9
+#Cstar	CC	NA	70.	108.7
+#CC	CG	NA	70.	105.9
 C	CH	C2	63.0	111.1
 C	CH	C3	63.0	111.1
 C	CH	CH	63.0	111.1
@@ -2707,26 +2704,26 @@ CH	CH	Nstar	80.0	109.5
 CH	CH	OH	80.0	109.5
 CH	CH	OS	80.0	109.5
 Nstar	CH	OS	80.0	109.5
-NC	CI	NC	70.	129.1
-C	CJ	CJ	85.	120.7
-CA	CJ	CJ	85.	117.0
-CJ	CJ	Nstar	70.	121.2
-CM	CJ	Nstar	70.	121.2
+#NC	CI	NC	70.	129.1
+#C	CJ	CJ	85.	120.7
+#CA	CJ	CJ	85.	117.0
+#CJ	CJ	Nstar	70.	121.2
+#CM	CJ	Nstar	70.	121.2
 Nstar	CK	NB	70.	113.9
 NA	CK	NB	70.	113.9
 NA	CK	H5	35.	123.05
 Nstar	CK	H5	35.	123.05
 NB	CK	H5	35.	123.05
 C	CM	C3	85.	119.7
-C	CM	CJ	85.	120.7
+#C	CM	CJ	85.	120.7
 C	CM	CM	85.	120.7
 C	CM	CT	70.	119.7
 C	CA	CT	70.	119.7
 C	CM	HC	35.	119.7
-C3	CM	CJ	85.	119.7
+#C3	CM	CJ	85.	119.7
 CA	CM	CM	85.	117.0
 CA	CM	HC	35.	123.3
-CJ	CM	CT	85.	119.7
+#CJ	CM	CT	85.	119.7
 CM	CM	CT	70.	124.0
 CM	Ceq	Ceq	70.	124.0
 CM	Ceq	C	70.	118.7
@@ -2755,17 +2752,17 @@ HC	CM	NA	35.	119.1
 CA	CN	CB	85.	122.7
 CA	CN	NA	70.	132.8
 CB	CN	CD	85.	122.7
-CB	CC	CA	85.	122.7
-CB	CC	CD	85.	122.7
+#CB	CC	CA	85.	122.7
+#CB	CC	CD	85.	122.7
 CB	CA	CW	63.0	106.4
 CB	CA	CT	70.	128.6
 CB	CN	NA	70.	104.4
-CB	CC	NA	70.	104.4
+#CB	CC	NA	70.	104.4
 CD	CN	NA	70.	132.8
-CA	CC	NA	70.	132.8
-CD	CC	NA	70.	132.8
-NA	CP	NA	70.	110.75
-NA	CP	NB	70.	111.6
+#CA	CC	NA	70.	132.8
+#CD	CC	NA	70.	132.8
+#NA	CP	NA	70.	110.75
+#NA	CP	NB	70.	111.6
 HA	CQ	NC	35.	115.45
 H5	CQ	NC	35.	115.45
 NC	CQ	NC	70.	129.1
@@ -2797,11 +2794,11 @@ CS	CT	HC	35.	109.5
 CA	CT	CT	63.	114.
 CA	CT	HC	35.	109.5
 CA	N3	H3	35.	109.5
-CC	CT	CT	63.0	113.1
+#CC	CT	CT	63.0	113.1
 CW	CT	CT	63.0	114.0
 CV	CT	CT	63.0	114.0
 CX	CT	CT	63.0	114.0
-CC	CT	HC	35.	109.5
+#CC	CT	HC	35.	109.5
 CM	CT	HC	35.	109.5
 Ceq	CT	HC	35.	109.5
 CT	CT	CT	58.35	112.7
@@ -2889,10 +2886,10 @@ CY	Ndoll	CT	50.	126.0
 Ndoll	CT	CT	80.	110.0
 Ndoll	CT	HC	35.	109.5
 Ndoll	CT	C	80.	113.0
-CY	Odoll	CY	60.	90.0
-CY	CY	Odoll	50.	90.0
-CT	CY	Odoll	37.5	117.2
-HC	CY	Odoll	37.5	117.2
+#CY	Odoll	CY	60.	90.0
+#CY	CY	Odoll	50.	90.0
+#CT	CY	Odoll	37.5	117.2
+#HC	CY	Odoll	37.5	117.2
 HC	CT	N	35.	109.5
 HC	CT	NM	35.	109.5
 HC	CT	Nstar	35.	109.5
@@ -2914,14 +2911,14 @@ HC	CT	P+	41.	109.5
 HC	CT	SH	35.	109.5
 Nstar	CT	OS	50.	109.5
 Nstar	CO	OS	50.	109.5
-CC	CV	HA	35.	120.0
-CC	CV	NB	70.	120.00
+#CC	CV	HA	35.	120.0
+#CC	CV	NB	70.	120.00
 CW	CW	NB	70.	120.00
 HA	CV	NB	35.	120.0
 Cstar	CW	HA	35.	120.0
 Cstar	CW	NA	70.	108.7
-CC	CW	HA	35.	120.0
-CC	CW	NA	70.	120.00
+#CC	CW	HA	35.	120.0
+#CC	CW	NA	70.	120.00
 H4	CW	NA	35.	120.0
 HA	CA	NA	35.	120.0
 C	N	C2	50.	121.9
@@ -2947,23 +2944,23 @@ H	N	H	35.	120.
 H	N2	H	35.	113.
 H3	N	H3	35.	120.
 C	Nstar	CH	70.	117.6
-C	Nstar	CJ	70.	121.6
+#C	Nstar	CJ	70.	121.6
 C	Nstar	CM	70.	121.6
 C	NA	CM	70.	121.6
 C	Nstar	CT	70.	117.6
 C	Nstar	CO	70.	117.6
 C	Nstar	H	35.	119.2
 C3	Nstar	CB	70.	125.8
-C3	Nstar	CE	70.	128.8
+#C3	Nstar	CE	70.	128.8
 C3	Nstar	CK	70.	128.8
-CB	Nstar	CE	70.	105.4
+#CB	Nstar	CE	70.	105.4
 CB	Nstar	CH	70.	125.8
-CE	Nstar	CH	70.	128.8
-CE	Nstar	CT	70.	128.8
-CE	Nstar	H	35.	127.3
-CH	Nstar	CJ	70.	121.2
+#CE	Nstar	CH	70.	128.8
+#CE	Nstar	CT	70.	128.8
+#CE	Nstar	H	35.	127.3
+#CH	Nstar	CJ	70.	121.2
 CH	Nstar	CK	70.	128.8
-CJ	Nstar	CT	70.	121.2
+#CJ	Nstar	CT	70.	121.2
 CJ	Nstar	H	35.	119.2
 CM	Nstar	CT	70.	121.2
 CM	Nstar	CO	70.	121.2
@@ -2996,18 +2993,18 @@ C	N	CQ	70.	125.2
 C	NA	H	35.	116.8
 CA	NA	H	35.	118.0
 CQ	N	H	35.	118.0
-CC	NA	CP	70.	107.30
-CC	NA	CR	70.	120.00
-CC	NA	H	35.	120.00
-CG	NA	CN	70.	111.6
-CA	NA	CC	70.	111.6
-CC	NA	CC	70.	111.6
-CG	NA	CP	70.	107.3
-CG	NA	CR	70.	107.3
-CG	NA	H	35.	126.35
+#CC	NA	CP	70.	107.30
+#CC	NA	CR	70.	120.00
+#CC	NA	H	35.	120.00
+#CG	NA	CN	70.	111.6
+#CA	NA	CC	70.	111.6
+#CC	NA	CC	70.	111.6
+#CG	NA	CP	70.	107.3
+#CG	NA	CR	70.	107.3
+#CG	NA	H	35.	126.35
 CN	NA	CW	70.	111.6
 CN	NA	H	35.	123.1
-CP	NA	H	35.	126.35
+#CP	NA	H	35.	126.35
 CR	NA	H	35.	120.00
 CW	NA	H	35.	120.00
 CX	NA	H	35.	120.00
@@ -3023,21 +3020,21 @@ CB	NA	CT	70.	125.8
 CB	NA	H	30.	125.8
 CK	NA	CT	70.	128.8
 CK	NA	H	30.	128.8
-CB	NB	CE	70.	103.8
+#CB	NB	CE	70.	103.8
 CB	NB	CK	70.	103.8
-CC	NB	CP	70.	105.3
-CC	NB	CR	70.	117.0
-CF	NB	CP	70.	105.3
-CF	NB	CR	70.	105.3
+#CC	NB	CP	70.	105.3
+#CC	NB	CR	70.	117.0
+#CF	NB	CP	70.	105.3
+#CF	NB	CR	70.	105.3
 CR	NB	CV	70.	110.0
 CR	NB	CB	70.	110.0
 CR	NB	CW	70.	110.0
 C	NC	CA	70.	120.5
 CA	NC	CB	70.	112.2
-CA	NC	CI	70.	118.6
+#CA	NC	CI	70.	118.6
 CA	NC	CQ	70.	118.6
 CQ	NC	CQ	70.	118.6
-CB	NC	CI	70.	111.0
+#CB	NC	CI	70.	111.0
 CB	NC	CQ	70.	111.0
 CR	NC	CQ	70.	111.0
 C2	NT	H	43.2	108.1
@@ -3221,9 +3218,9 @@ CA	N	H	35.	119.8
 CB	CT	HC	35.	109.5
 CA	CB	CT	70.	120.
 CB	CA	NA	70.	108.7
-CA	CA	CC	85.	120.
+#CA	CA	CC	85.	120.
 CB	CB	CT	70.	120.
-CB	CB	CC	85.	120.
+#CB	CB	CC	85.	120.
 CB	CT	CT	63.	114.
 CT	CT	F	50.	109.5
 C2	C2	F	50.	109.5
@@ -3487,8 +3484,8 @@ HC	CT	Cstar	CW	0.000	0.000	0.480	0.0
 HC	CT	Cstar	CB	0.000	0.000	0.000	0.0
 CT	CT	Cstar	CW	0.714	0.000	0.000	0.0
 CT	CT	Cstar	CB	0.000	0.000	0.000	0.0
-HC	CT	CC	N*	0.000	0.000	0.419	0.0
-CT	CT	CC	N*	2.366	0.262	0.505	0.0
+#HC	CT	CC	N*	0.000	0.000	0.419	0.0
+#CT	CT	CC	N*	2.366	0.262	0.505	0.0
 HC	CT	N3	H	0.000	0.000	0.261	0.0
 CT	CT	N3	H	0.000	0.000	0.347	0.0
 HC	CT	CT	N3	0.000	0.000	0.384	0.0
@@ -4030,13 +4027,13 @@ N	C	OH	HO	2.000	5.000	0.0	0.0
 HC	NC	NZ	NZ	0.0	0.0	0.0	0.0
 CT	NC	NZ	NZ	0.0	0.0	0.0	0.0
 CT	CT	NC	NZ	0.0	0.0	0.0	0.0
-HC	CT	C	Seq	0.0	0.0	0.0	0.0
-Seq	C	N	H	1.000	5.000	0.000	0.0
-Seq	C	N	CT	0.000	6.500	0.000	0.0
-Seq	C	N	CA	0.000	6.500	0.000	0.0
-Seq	C	N	CM	0.000	6.500	0.000	0.0
-Seq	C	OS	CT	0.000	5.000	0.000	0.0
-Seq	C	OH	HO	0.000	5.500	0.00	0.0
+#HC	CT	C	Seq	0.0	0.0	0.0	0.0
+#Seq	C	N	H	1.000	5.000	0.000	0.0
+#Seq	C	N	CT	0.000	6.500	0.000	0.0
+#Seq	C	N	CA	0.000	6.500	0.000	0.0
+#Seq	C	N	CM	0.000	6.500	0.000	0.0
+#Seq	C	OS	CT	0.000	5.000	0.000	0.0
+#Seq	C	OH	HO	0.000	5.500	0.00	0.0
 CT	S	CA	CA	0.000	0.600	0.000	0.0
 							
 O	C	C	CT	0.000	0.500	0.000	0.0

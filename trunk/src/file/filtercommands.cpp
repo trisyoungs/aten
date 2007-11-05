@@ -34,6 +34,8 @@ const char* FC_data[FC_NITEMS] =  {
 
 	"newmodel,G",
 	"newsurface,G",
+	"finalisemodel",
+	"finalisesurface",
 
 	"rebond",
 	"pack",
