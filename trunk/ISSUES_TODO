@@ -35,3 +35,4 @@ Optimisation To-Do list:
 	- Hemispherical Ewald summmation
 	- Filters / variable_list - can enum and store common variable pointers (e.g. "e", "r.x") to save lookup time
 	- For large systems (10000+ atoms) autocreate_patterns() is a bottleneck, as is model::copy(model*)
+	- Disorder builder - avoid needless energy calculation

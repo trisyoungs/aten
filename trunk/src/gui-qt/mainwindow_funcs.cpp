@@ -128,6 +128,7 @@ void AtenForm::finalise_ui()
 	stackbuttons[SP_DISORDER] = ui.ShowDisorderPageButton;
 	stackbuttons[SP_FORCEFIELD] = ui.ShowForcefieldsPageButton;
 	stackbuttons[SP_GRID] = ui.ShowGridsPageButton;
+	stackbuttons[SP_ANALYSE] = ui.ShowAnalysePageButton;
 
 	// Add permanent statusbar widgets
 	statuslabel = new QLabel(this,0);
