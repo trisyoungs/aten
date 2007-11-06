@@ -28,7 +28,7 @@
 #include "gui-qt/ui_prefs.h"
 
 // Stack Pages
-enum stack_page { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_NITEMS };
+enum stack_page { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
 
 // Image Formats
 enum pixmap_format { PF_BMP, PF_JPG, PF_PNG, PF_PPM, PF_XBM, PF_X11, PF_NITEMS };
@@ -176,6 +176,7 @@ class AtenForm : public QMainWindow
 	void on_ShowDisorderPageButton_clicked(bool checked) { switch_stack(SP_DISORDER, checked); }
 	void on_ShowForcefieldsPageButton_clicked(bool checked) { switch_stack(SP_FORCEFIELD, checked); }
 	void on_ShowGridsPageButton_clicked(bool checked) { switch_stack(SP_GRID, checked); }
+	void on_ShowAnalysePageButton_clicked(bool checked) { switch_stack(SP_ANALYSE, checked); }
 
 	// Atom Page Functions
 	public:
