@@ -150,6 +150,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			}
 		}
 		refresh_modeltabs();
+		master.get_currentmodel()->log_change(LOG_VISUAL);
 		gui.refresh();
 	}
 }

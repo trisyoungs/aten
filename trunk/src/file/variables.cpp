@@ -37,7 +37,7 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 	static bond_type bt;
 	static atom *i, *j, **modelatoms;
 	static model *parent, *newmodel;
-	static surface *newsurface;
+	static grid *newgrid;
 	bool result = FALSE;
 	switch (fn->get_command())
 	{
@@ -48,11 +48,11 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 			set_target(newmodel);
 			result = TRUE;
 			break;
-		// Create new surface (and make it the filter target)
-		case (FC_NEWSURFACE):
-			newsurface = master.add_surface();
-			newsurface->set_name(strip_trailing(fn->datavar[0]->get_as_char()));
-			set_target(newsurface);
+		// Create new grid (and make it the filter target)
+		case (FC_NEWGRID):
+			newgrid = master.add_grid();
+			newgrid->set_name(strip_trailing(fn->datavar[0]->get_as_char()));
+			set_target(newgrid);
 			result = TRUE;
 			break;
 		// Set data for atom 'n' in model

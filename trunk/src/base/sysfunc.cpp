@@ -97,7 +97,7 @@ int enum_search(const char *name, int maxn, const char **itemlist, const char *q
 			break;
 		}
 	}
-	if ((result == maxn) && (strcmp(name,"NULL") != 0)) printf("Unrecognised %s '%s'\n",name,query);
+	if ((result == maxn) && (name[0] != '#')) printf("Unrecognised %s '%s'\n",name,query);
 	return result;
 }
 
@@ -116,7 +116,7 @@ int enum_search_data(const char *name, int maxn, const char **itemlist, const ch
 			break;
 		}
 	}
-	if ((result == maxn) && (strcmp(name,"NULL") != 0)) printf("Unrecognised %s '%s'\n",name,query);
+	if ((result == maxn) && (name[0] != '#')) printf("Unrecognised %s '%s'\n",name,query);
 	return result;
 }
 

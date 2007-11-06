@@ -19,18 +19,18 @@ types
 10	HCW	H	"-C(-N(-C(n=2)),-C,ring(size=5))"			# H on carbon adjacent to N and C
 11	HC	H	"-C(-C,-H)"					# Hydrogen on other carbon in R group
 12	H1	H	"-C(-N,-H)"					# Hydrogen on first carbon in R group
-13	NA	N	"nbonds=3,ring(size=5,-N,-C(n=3)),-C(n=3)"	# Nitrogen with alkyl group attached
+13	NA	N	"nbonds=3,ring(size=5,N,C(n=3)),C(n=3)"		# Nitrogen with alkyl group attached
 # Alkylimidazolium
-21	NAH	N	"nbonds=3,ring(size=5,-N,-C(n=3)),-C(n=2),-H"	# Nitrogen with hydrogen attached
+21	NAH	N	"nbonds=3,ring(size=5,N,C(n=3)),-C(n=2),-H"	# Nitrogen with hydrogen attached
 22	CRH	C	"nbonds=3,-N(-C,-C),-N(-H),ring(size=5)"	# Carbon adjacent to two nitrogens
 23	CWH	C	"nbonds=3,-N(-C,-H),-C,ring(size=5)"		# Carbon adjavent to N with H attached
 24	HNA	H	"-N(-C(n=2),ring(size=5)"			# Nitrogen with hydrogen attached
 # Alkylpyridinium - Perkin 2, p2365 (1999)
-31	NAP	N	"nbonds=3,ring(size=6,-C(n=5))"			
+31	NAP	N	"nbonds=3,ring(size=6,C(n=5))"			
 32	CA1	C	"nbonds=3,ring(size=6),-N,-C,-H"		# Carbon in ring, adjacent to ring nitrogen (ortho)
 33	CA2	C	"nbonds=3,ring(size=6),-C,-H,-C"		# Carbon in ring, adjacent to two carbons (meta)
 34	CA3	C	"nbonds=3,ring(size=6),-C(n=2,-C(-N))"		# Carbon in ring, adjacent to two carbons (para)
-35	HAP	H	"nbonds=1,-C(ring(size=6,-C(n=5),-N),-C)"	# Hydrogen on ring carbon
+35	HAP	H	"nbonds=1,-C(ring(size=6,C(n=5),N),-C)"		# Hydrogen on ring carbon
 # Ammonium (also pyrrolidinium) - OPLS-AA / JACS 121, p4827 (1999) / AMBER
 41	N3	N	""
 42	H	H	""
@@ -74,10 +74,10 @@ types
 900	Cxx	C	"nbonds=3,ring(size=6),-C,-C,-C"		# Carbon in ring with CN group attached
 901	CNx	C	"nbonds=2,-N(bond=triple),-C(ring(size=6))"	# Carbon of cyano group
 902	NCx	N	"nbonds=1,-C(bond=triple,-C(ring(size=6)))"	# Nitrogen of cyano group
-903	CWn	C	"nbonds=3,ring(size=6,-C(n=5))"			# Aromatic C in (methyl)napthalene
-904	CTn	C	"nbonds=4,-C(ring(size=6,-C(n=5)))"		# Aliphatic C in methylnapthalene
-905	HWn	H	"-C(ring(size=6,-C(n=5)))"			# Aromatic H in (methyl)napthalene
-906	HTn	H	"-C(nbonds=4,-C(ring(size=6,-C(n=5))))"		# Aliphatic H in methylnapthalene
+903	CWn	C	"nbonds=3,ring(size=6,C(n=5))"			# Aromatic C in (methyl)napthalene
+904	CTn	C	"nbonds=4,-C(ring(size=6,C(n=5)))"		# Aliphatic C in methylnapthalene
+905	HWn	H	"-C(ring(size=6,C(n=5)))"			# Aromatic H in (methyl)napthalene
+906	HTn	H	"-C(nbonds=4,-C(ring(size=6,C(n=5))))"		# Aliphatic H in methylnapthalene
 end
 vdw  lj
 #FFID	Type	Charge	VDW1		VDW2	VDW3

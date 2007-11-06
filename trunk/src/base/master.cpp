@@ -156,23 +156,23 @@ model *master_data::find_model(const char *s)
 */
 
 // Add new surface
-surface *master_data::add_surface()
+grid *master_data::add_grid()
 {
-	surface *s = surfaces.add();
-	gui.add_surface(s);
-	gui.select_surface(s);
-	return s;
+	grid *g = grids.add();
+	gui.add_grid(g);
+	gui.select_grid(g);
+	return g;
 }
 
 // Remove surface
-void master_data::remove_surface(surface *xsurf)
+void master_data::remove_grid(grid *xgrid)
 {
-	surface *s;
-	xsurf->next != NULL ? s = xsurf->next : s = xsurf->prev;
-	gui.remove_surface(xsurf);
-	gui.select_surface(s);
+	grid *g;
+	xgrid->next != NULL ? g = xgrid->next : g = xgrid->prev;
+	gui.remove_grid(xgrid);
+	gui.select_grid(g);
 	// Finally, delete the old surface
-	surfaces.remove(xsurf);
+	grids.remove(xgrid);
 }
 
 /*
@@ -407,7 +407,7 @@ bool master_data::open_filters(const char *path, bool isdatadir)
 		msg(DM_NONE,"Found (import/export): Models (%i/%i) ", filters[FT_MODEL_IMPORT].size(), filters[FT_MODEL_EXPORT].size());
 		msg(DM_NONE,"Trajectory (%i/%i) ", filters[FT_TRAJECTORY_IMPORT].size(), filters[FT_TRAJECTORY_EXPORT].size());
 		msg(DM_NONE,"Field (%i/%i) ", filters[FT_FIELD_IMPORT].size(), filters[FT_FIELD_EXPORT].size());
-		msg(DM_NONE,"Surface (%i/%i)\n", filters[FT_SURFACE_IMPORT].size(), filters[FT_SURFACE_EXPORT].size());
+		msg(DM_NONE,"Grid (%i/%i)\n", filters[FT_GRID_IMPORT].size(), filters[FT_GRID_EXPORT].size());
 	}
 	dbg_end(DM_CALLS,"master::open_filters");
 	return TRUE;
@@ -465,17 +465,18 @@ void master_data::partner_filters()
 	dbg_begin(DM_CALLS,"master::partner_filters");
 	// Loop through import filters and search / set export partners
 	filter *imp, *exp;
-	dnchar nickname;
-	printf("Import/Export:");
+	dnchar nickname, ext;
+	printf("Model Formats:");
 	for (imp = filters[FT_MODEL_IMPORT].first(); imp != NULL; imp = imp->next)
 	{
 		printf(" %s[r", imp->get_nickname());
 		// Grab partnernick (or nickname if partnernick is empty)
 		nickname = (imp->partnernick_set() ? imp->get_partnernick() : imp->get_nickname());
+		ext = imp->get_extension();
 		for (exp = filters[FT_MODEL_EXPORT].first(); exp != NULL; exp = exp->next)
 		{
-			// Check the export filter nickname against our stored nickname
-			if (nickname == exp->get_nickname())
+			// Check the export filter nickname and extension against our stored nickname
+			if ((nickname == exp->get_nickname()) && (ext == exp->get_extension()))
 			{
 				imp->set_partner(exp);
 				printf("w]");

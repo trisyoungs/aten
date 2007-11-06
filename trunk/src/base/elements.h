@@ -38,11 +38,13 @@ struct element
 	// Mass of element
         double mass;
 	// Element name
-	char name[20];		
+	char name[20];
+	// Uppercase element name
+	char ucname[20];
 	// Element symbol
-	char symbol[10];	
+	char symbol[10];
 	// Uppercase Element symbol
-	char ucsymbol[10];	
+	char ucsymbol[10];
 	// Rough elemental radius (for bond calculation etc.)
         double radius;
 	// Ambient colour
@@ -63,6 +65,8 @@ class element_map
 	int number_to_z(const char*);
 	// Convert string from alpha to element number
 	int alpha_to_z(const char*);
+	// Convert string from name to element number
+	int name_to_z(const char*);
 	// Convert string from fftype to element number
 	int ff_to_z(const char*);
 

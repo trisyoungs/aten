@@ -26,13 +26,13 @@
 #include "templates/command.h"
 
 // Filter Types
-enum filter_type { FT_MODEL_IMPORT, FT_MODEL_EXPORT, FT_TRAJECTORY_IMPORT, FT_TRAJECTORY_EXPORT, FT_FIELD_IMPORT, FT_FIELD_EXPORT, FT_SURFACE_IMPORT, FT_SURFACE_EXPORT, FT_NITEMS };
+enum filter_type { FT_MODEL_IMPORT, FT_MODEL_EXPORT, FT_TRAJECTORY_IMPORT, FT_TRAJECTORY_EXPORT, FT_FIELD_IMPORT, FT_FIELD_EXPORT, FT_GRID_IMPORT, FT_GRID_EXPORT, FT_NITEMS };
 const char *text_from_FT(filter_type);
 filter_type FT_from_text(const char*);
 
 // Forward Declarations
 class model;
-class surface;
+class grid;
 class pattern;
 class unitcell;
 class ffbound;
@@ -132,11 +132,11 @@ class filter
 	// Active cell in filter
 	unitcell *activecell;
 	// Active surface in filter
-	surface *activesurface;
+	grid *activegrid;
 	// Set target to model
 	void set_target(model*);
 	// Set target to surface
-	void set_target(surface*);
+	void set_target(grid*);
 	// Reset all targets
 	void reset_targets();
 

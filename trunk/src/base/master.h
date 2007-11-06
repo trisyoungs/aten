@@ -23,7 +23,7 @@
 #define H_MASTER_H
 
 #include "classes/clipboard.h"
-#include "classes/surface.h"
+#include "classes/grid.h"
 #include "file/filter.h"
 #include "script/script.h"
 #include <getopt.h>
@@ -130,23 +130,23 @@ class master_data
 	forcefield *find_ff(const char*);
 
 	/*
-	// Surfaces
+	// Volumetric Grid Data
 	*/
 	private:
-	// Currently loaded surfaces
-	list<surface> surfaces;
+	// Currently loaded grids
+	list<grid> grids;
 
 	public:
 	// Return list of surfaces
-	surface *get_surfaces() { return surfaces.first(); }
+	grid *get_grids() { return grids.first(); }
 	// Return number of surfaces loaded
-	int get_nsurfaces() { return surfaces.size(); }
+	int get_ngrids() { return grids.size(); }
 	// Return specified surface
-	surface *get_surface(int id) { return surfaces[id]; }
+	grid *get_grid(int id) { return grids[id]; }
 	// Add new surface
-	surface *add_surface();
+	grid *add_grid();
 	// Remove surface
-	void remove_surface(surface *s);
+	void remove_grid(grid *s);
 
 	/*
 	// Clipboards

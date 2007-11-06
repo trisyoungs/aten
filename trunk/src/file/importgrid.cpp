@@ -27,7 +27,7 @@ void filter::import_surface(const char *filename)
 {
 	dbg_begin(DM_CALLS,"filter::import_surface");
 	// Check the obvious first...
-	if (type != FT_SURFACE_IMPORT)
+	if (type != FT_GRID_IMPORT)
 	{
 		printf("filter::import_surface <<<< This filter does not provide surface importing >>>>\n");
 		dbg_end(DM_CALLS,"filter::import_surface");

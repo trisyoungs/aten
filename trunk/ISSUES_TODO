@@ -2,7 +2,6 @@ Issues with the current version:
 	- Closing main window with [x] does not ask to save modified models.
 	- Save image provokes GLXBadExtension error (on some cards), affects canvas on others.
 	- Spherical regions in disordered builder have poor randomness.
-	- Interpolation of surface triangles is 'simple' (0.5 along edges)
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
 	- Surfaces need correct surface normals
 	- Colour schemes other than AC_ELEMENT need to be fixed.
@@ -12,23 +11,25 @@ General To-Do list:
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)
 	- Complete spacegroups list
-	- UFF - oxidation state, energy conversion, torsions, angle periodicity
-	- Improve SD minimiser
+	- UFF - oxidation state, torsions
 	- Add NR / simplex / other minimisers
-	- View along cell axes (or Miller planes)
+	- View along cell axes
+	- View Miller planes
 	- Accelrys MSI import filter
 	- EPSR Ato import / export? filters
+	- Distance rulers
 
 General Qt To-Do list:
 	- Forcefield stack page and manager/edit window
 	- Prefs window (partial)
 	- Minimiser stack page (partial - needs current energy/forces)
-	- Progress dialogs are not application modal
+	- Progress dialogs are not application modal. Move to statusbar widget?
 
 Manual To-Do list:
 	- Section on forcefields
-	- Section on GUIs
-	- Filters Handbook is incomplete 
+	- Section on Qt GUI
+	- Filters Handbook is incomplete
+	- Tutorials
 
 Optimisation To-Do list:
 	- Hemispherical Ewald summmation

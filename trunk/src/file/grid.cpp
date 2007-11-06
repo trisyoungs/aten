@@ -20,7 +20,7 @@
 */
 
 #include "file/filter.h"
-#include "classes/surface.h"
+#include "classes/grid.h"
 
 // Surface commands
 bool filter::do_surface(command_node<filter_command> *&fn)
@@ -34,42 +34,42 @@ bool filter::do_surface(command_node<filter_command> *&fn)
 	{
 		// Add grid point data at specified indices
 		case (FC_ADDGRIDPOINT):
-			if (activesurface == NULL) break;
+			if (activegrid == NULL) break;
 			veci = fn->get_vector3i(0);
-			activesurface->set_data(veci.x-1, veci.y-1, veci.z-1, fn->datavar[3]->get_as_double());
+			activegrid->set_data(veci.x-1, veci.y-1, veci.z-1, fn->datavar[3]->get_as_double());
 			break;
 		// Add next gridpoint in sequence
 		case (FC_ADDNEXTGRIDPOINT):
-			if (activesurface == NULL) break;
-			activesurface->set_next_data(fn->datavar[0]->get_as_double());
+			if (activegrid == NULL) break;
+			activegrid->set_next_data(fn->datavar[0]->get_as_double());
 			break;
 		// Set grid axes (nine doubles)
 		case (FC_SETGRID):
-			if (activesurface == NULL) break;
+			if (activegrid == NULL) break;
 			mat.set(0, fn->get_vector3d(0));
 			mat.set(1, fn->get_vector3d(3));
 			mat.set(2, fn->get_vector3d(6));
-			activesurface->set_axes(mat);
+			activegrid->set_axes(mat);
 			break;
 		// Set cubic grid (one double)
 		case (FC_SETGRIDCUBIC):
-			if (activesurface == NULL) break;
-			activesurface->set_axes(fn->datavar[0]->get_as_double());
+			if (activegrid == NULL) break;
+			activegrid->set_axes(fn->datavar[0]->get_as_double());
 			break;
 		// Set origin (lower-left-hand corner of grid)
 		case (FC_SETGRIDORIGIN):
-			if (activesurface == NULL) break;
-			activesurface->set_origin(fn->get_vector3d(0));
+			if (activegrid == NULL) break;
+			activegrid->set_origin(fn->get_vector3d(0));
 			break;
 		// Set orthorhombic grid (three doubles)
 		case (FC_SETGRIDORTHO):
-			if (activesurface == NULL) break;
-			activesurface->set_axes(fn->get_vector3d(0));
+			if (activegrid == NULL) break;
+			activegrid->set_axes(fn->get_vector3d(0));
 			break;
 		// Set extent of grid (number of points in each direction)
 		case (FC_SETGRIDSIZE):
-			if (activesurface == NULL) break;
-			activesurface->set_npoints(fn->get_vector3i(0));
+			if (activegrid == NULL) break;
+			activegrid->set_npoints(fn->get_vector3i(0));
 			break;
 		default:
 			result = FALSE;

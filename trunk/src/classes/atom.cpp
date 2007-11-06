@@ -339,20 +339,20 @@ void atom::add_hydrogens(int nhydrogen, hadd_geom geometry, model *xmodel)
 atom_geom atom::get_geometry(model *parent)
 {
 	dbg_begin(DM_CALLS,"atom::get_geometry");
-	atom_geom result = AG_NONE;
-	double angle;
-	//bond *b1, *b2;
-	bond *b1, *b2;
-	refitem<bond> *bref1, *bref2;
+	static atom_geom result;
+	static double angle;
+	static bond *b1, *b2;
+	static refitem<bond> *bref1, *bref2;
+	result = AG_UNSPECIFIED;
 	// Separate the tests by number of bound atoms...
 	switch (get_nbonds())
 	{
 		// Simple cases first
 		case (0):
-			result = AG_FREEORSINGLE;
+			result = AG_UNBOUND;
 			break;
 		case (1):
-			result = AG_FREEORSINGLE;
+			result = AG_ONEBOND;
 			break;
 		case (5):
 			result = AG_TRIGBIPYRAMID;

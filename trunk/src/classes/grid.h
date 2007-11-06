@@ -1,6 +1,6 @@
 /*
-	*** Surface (grid data) structure
-	*** src/classes/surface.h
+	*** Grid data structure
+	*** src/classes/grid.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_SURFACE_H
-#define H_SURFACE_H
+#ifndef H_GRID_H
+#define H_GRID_H
 
 #include "templates/vector3.h"
 #include "classes/dnchar.h"
@@ -35,29 +35,29 @@
 // Surface rendering styles
 enum surface_style { SS_GRID, SS_POINTS, SS_TRIANGLES, SS_SOLID };
 
-// Surface Class
-class surface
+// 3D Grid Class
+class grid
 {
 	public:
 	// Constructor / Destructor
-	surface();
-	~surface();
+	grid();
+	~grid();
 	// List pointers
-	surface *prev, *next;
+	grid *prev, *next;
 
 	/*
 	// Identity
 	*/
 	private:
-	// Name of the surface
+	// Name of the grid data
 	dnchar name;
 	// Log for changes to grid, display style etc.
 	int log;
 
 	public:
-	// Set name of surface
+	// Set name of grid data
 	void set_name(const char *s) { name = s; }
-	// Return name of surface
+	// Return name of grid data
 	const char *get_name() { return name.get(); }
 
 	/*
@@ -92,7 +92,7 @@ class surface
 	void set_axes(const mat3<double> m) { axes = m; log++; }
 	// Return the grid axes
 	mat3<double> get_axes() { return axes; }
-	// Set surface origin
+	// Set data origin
 	void set_origin(const vec3<double> v) { origin = v; log++; }
 	// Return the origin of the grid data
 	vec3<double> get_origin() { return origin; }
@@ -104,9 +104,9 @@ class surface
 	double get_minimum() { return min; }
 	// Return maximum value in data[]
 	double get_maximum() { return max; }
-	// Set cutoff for surface
+	// Set isovalue cutoff for surface
 	void set_cutoff(double d) { cutoff = d; log++; }
-	// Return cutoff for surface
+	// Return isovalue cutoff for surface
 	double get_cutoff() { return cutoff; }
 	// Return data array
 	double ***get_data() { return data; }
@@ -142,7 +142,7 @@ class surface
 	GLint colour[4];
 
 	public:
-	// Return the display list of the surface
+	// Return the surface display list
 	GLuint get_displaylist() { return displaylist; }
 	// Return whether re-rendering is necessary
 	bool should_rerender() { return (render_point == log ? FALSE : TRUE); }

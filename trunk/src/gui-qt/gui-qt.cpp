@@ -105,7 +105,7 @@ void gui_qt::run(int argc, char **argv)
 	}
 
 	// Refresh the surfaces and forcefield lists
-	mainwindow->refresh_surfacespage();
+	mainwindow->refresh_gridspage();
 	mainwindow->refresh_forcefieldpage();
 
 	// Start timer
@@ -192,7 +192,7 @@ void gui_qt::update_labels()
 		s += " selected</b>) ";
 	}
 	s += ftoa(m->get_mass());
-	s += " g ";
+	s += " g mol<sup>-1</sup> ";
 	cell_type ct = m->cell.get_type();
 	if (ct != CT_NONE)
 	{
