@@ -222,7 +222,7 @@ int master_data::parse_cli(int argc, char *argv[])
 					break;
 				// Load surface
 				case (LO_SURFACE):
-					f = master.probe_file(optarg, FT_SURFACE_IMPORT);
+					f = master.probe_file(optarg, FT_GRID_IMPORT);
 					if (f != NULL) f->import_surface(optarg);
 					break;
 				default:

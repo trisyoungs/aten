@@ -35,7 +35,7 @@ const char* FC_data[FC_NITEMS] =  {
 	"newmodel,G",
 	"newsurface,G",
 	"finalisemodel",
-	"finalisesurface",
+	"finalisegrid",
 
 	"rebond",
 	"pack",
@@ -54,6 +54,8 @@ const char* FC_data[FC_NITEMS] =  {
 	"readdouble,G",
 	"readchars,Vg",
 	"skipchars",
+
+	"find,gV|V",
 
 	"addatom",
 	"addbond,GG|G",

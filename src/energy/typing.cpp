@@ -137,7 +137,7 @@ void pattern::assign_hybrids()
 	for (int n=0; n<natoms; n++)
 	{
 		// Set to AE_UNBOUND to begin with
-		i->set_env(AE_UNBOUND);
+		i->set_env(AE_UNSPECIFIED);
 		// Work out the hybridisation based on the bond types connected to the atom.
 		// We can increase the hybridisation at any point, but never decrease it.
 		refitem<bond> *bref = i->get_bonds();
@@ -169,7 +169,7 @@ bool pattern::type_atoms(forcefield *xff)
 	// accept a different atom type if we manage to match a complete set containing more rules.
 	// Return FALSE if one or more atoms could not be typed
 	dbg_begin(DM_CALLS,"pattern::type_atoms");
-	int a,n,newmatch,bestmatch;
+	int a, n, newmatch, bestmatch, nfailed;
 	atomtype *at;
 	atom *i;
 	ffatom *ffa;
@@ -184,11 +184,19 @@ bool pattern::type_atoms(forcefield *xff)
 	}
 	// Loop over atoms in the pattern's molecule
 	i = firstatom;
+	nfailed = 0;
 	for (a=0; a<natoms; a++)
 	{
 		msg(DM_TYPING,"pattern::type_atoms : FFTyping atom number %i, element %s\n",a,elements.symbol(i->get_element()));
 		bestmatch = 0;
 		i->set_fftype(NULL);
+		// Check for element 'XX' first
+		if (i->get_element() == 0)
+		{
+			msg(DM_NONE,"Failed to type atom %i since it has no element type.\n",i->get_id()+1);
+			nfailed ++;
+			result = FALSE;
+		}
 		// Loop over forcefield atom types
 		for (ffa = xff->get_atomtypes(); ffa != NULL; ffa = ffa->next)
 		{
@@ -209,13 +217,16 @@ bool pattern::type_atoms(forcefield *xff)
 			}
 		}
 		msg(DM_TYPING,"pattern::type_atoms : FFType for atom is : %i\n",i->get_fftype());
-		if (i->get_fftype() == 0)
+		if (i->get_fftype() == NULL)
 		{
-			msg(DM_NONE,"Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->get_id(),i->get_nbonds());
+			msg(DM_NONE,"Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->get_id()+1,i->get_nbonds());
+			nfailed ++;
 			result = FALSE;
 		}
 		i = i->next;
 	}
+	// Print warning if we failed...
+	if (nfailed != 0) msg(DM_NONE,"Failed to type %i atoms in pattern '%s'.\n",nfailed,name.get());
 	dbg_end(DM_CALLS,"pattern::type_atoms");
 	return result;
 }

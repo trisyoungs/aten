@@ -1,6 +1,6 @@
 /*
-	*** Surface (grid data) structure
-	*** src/classes/surface.cpp
+	*** Grid data structure
+	*** src/classes/grid.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/surface.h"
+#include "classes/grid.h"
 #include "base/debug.h"
 #include "base/constants.h"
 #ifdef IS_MAC
@@ -29,7 +29,7 @@
 #endif
 
 // Constructor
-surface::surface()
+grid::grid()
 {
 	prev = NULL;
 	next = NULL;
@@ -48,15 +48,15 @@ surface::surface()
 }
 
 // Destructor
-surface::~surface()
+grid::~grid()
 {
 	clear();
 }
 
 // Create data array (from npoints vector)
-void surface::create()
+void grid::create()
 {
-	dbg_begin(DM_CALLS,"surface::create");
+	dbg_begin(DM_CALLS,"grid::create");
 	clear();
 	int i, j;
 	if (data != NULL) clear();
@@ -66,13 +66,13 @@ void surface::create()
 		data[i] = new double*[npoints.y];
 		for (j = 0; j<npoints.y; j++) data[i][j] = new double[npoints.z];
 	}
-	dbg_end(DM_CALLS,"surface::create");
+	dbg_end(DM_CALLS,"grid::create");
 }
 
 // Clear data array
-void surface::clear()
+void grid::clear()
 {
-	dbg_begin(DM_CALLS,"surface::clear");
+	dbg_begin(DM_CALLS,"grid::clear");
 	datafull = FALSE;
 	min = 10000.0;
 	max = -10000.0;
@@ -88,43 +88,43 @@ void surface::clear()
 	}
 	delete[] data;
 	data = NULL;
-	dbg_end(DM_CALLS,"surface::clear");
+	dbg_end(DM_CALLS,"grid::clear");
 }
 
 // Set grid extent (and data[])
-void surface::set_npoints(vec3<int> v)
+void grid::set_npoints(vec3<int> v)
 {
-	dbg_begin(DM_CALLS,"surface::set_npoints");
+	dbg_begin(DM_CALLS,"grid::set_npoints");
 	npoints = v;
 	log ++;
 	create();
-	dbg_end(DM_CALLS,"surface::set_npoints");
+	dbg_end(DM_CALLS,"grid::set_npoints");
 }
 
 // Update minimum / maximum based on supplied value
-void surface::set_limits(double d)
+void grid::set_limits(double d)
 {
 	if (d < min) min = d;
 	else if (d > max) max = d;
 }
 
 // Set specific point in data array
-void surface::set_data(int x, int y, int z, double d)
+void grid::set_data(int x, int y, int z, double d)
 {
 	// Check limits against npoints vector
 	if ((x < 0) || (x >= npoints.x))
 	{
-		msg(DM_NONE,"surface::set_data(x,y,z) - X index is outside array bounds.\n");
+		msg(DM_NONE,"grid::set_data(x,y,z) - X index is outside array bounds.\n");
 		return;
 	}
 	else if ((y < 0) || (y >= npoints.y))
 	{
-		msg(DM_NONE,"surface::set_data(x,y,z) - Y index is outside array bounds.\n");
+		msg(DM_NONE,"grid::set_data(x,y,z) - Y index is outside array bounds.\n");
 		return;
 	}
 	else if ((z < 0) || (z >= npoints.z))
 	{
-		msg(DM_NONE,"surface::set_data(x,y,z) - Z index is outside array bounds.\n");
+		msg(DM_NONE,"grid::set_data(x,y,z) - Z index is outside array bounds.\n");
 		return;
 	}
 	// Okay, so store data
@@ -134,12 +134,12 @@ void surface::set_data(int x, int y, int z, double d)
 }
 
 // Set 'next' point in data array
-void surface::set_next_data(double d)
+void grid::set_next_data(double d)
 {
 	// Check limit
 	if (datafull == TRUE)
 	{
-		msg(DM_NONE,"surface::set_next_data - Array already full.\n");
+		msg(DM_NONE,"grid::set_next_data - Array already full.\n");
 		return;
 	}
 	// Set current point referenced by currentpoint
@@ -162,7 +162,7 @@ void surface::set_next_data(double d)
 }
 
 // Set surface colour
-void surface::set_colour(int r, int g, int b)
+void grid::set_colour(int r, int g, int b)
 {
 	colour[0] = r;
 	colour[1] = g;
@@ -170,7 +170,7 @@ void surface::set_colour(int r, int g, int b)
 	log ++;
 }
 
-void surface::set_colour(double r, double g, double b)
+void grid::set_colour(double r, double g, double b)
 {
 	colour[0] = (GLint) (r * INT_MAX);
 	colour[1] = (GLint) (g * INT_MAX);
@@ -179,7 +179,7 @@ void surface::set_colour(double r, double g, double b)
 }
 
 // Convert Bohr to Angstrom
-void surface::bohr_to_angstrom()
+void grid::bohr_to_angstrom()
 {
 	// Only the axes and origin need to be modified...
 	axes.rows[0] *= ANGBOHR;

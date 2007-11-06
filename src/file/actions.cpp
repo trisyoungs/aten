@@ -21,7 +21,7 @@
 
 #include "file/filter.h"
 #include "model/model.h"
-#include "classes/surface.h"
+#include "classes/grid.h"
 #include "base/sysfunc.h"
 
 // Read commands
@@ -87,9 +87,9 @@ bool filter::do_actions(command_node<filter_command> *&fn)
 			result = TRUE;
 			break;
 		// Finalise current surface
-		case (FC_FINALISESURFACE):
-			if (activesurface == NULL) break;
-			if (prefs.get_coords_in_bohr()) activesurface->bohr_to_angstrom();
+		case (FC_FINALISEGRID):
+			if (activegrid == NULL) break;
+			if (prefs.get_coords_in_bohr()) activegrid->bohr_to_angstrom();
 			result = TRUE;
 			break;
 		default:

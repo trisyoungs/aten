@@ -127,7 +127,7 @@ void AtenForm::finalise_ui()
 	stackbuttons[SP_MINIMISER] = ui.ShowMinimiserPageButton;
 	stackbuttons[SP_DISORDER] = ui.ShowDisorderPageButton;
 	stackbuttons[SP_FORCEFIELD] = ui.ShowForcefieldsPageButton;
-	stackbuttons[SP_SURFACE] = ui.ShowSurfacesPageButton;
+	stackbuttons[SP_GRID] = ui.ShowGridsPageButton;
 
 	// Add permanent statusbar widgets
 	statuslabel = new QLabel(this,0);
@@ -185,15 +185,15 @@ void AtenForm::finalise_ui()
 	filters << "Forcefields (*.ff)";
 	openffdialog->setFilters(filters);
 
-	// Create open surface dialog
-	opensurfacedialog = new QFileDialog(this);
-	opensurfacedialog->setWindowTitle("Open Surface");
-	opensurfacedialog->setDirectory(master.workdir.get());
-	opensurfacedialog->setFileMode(QFileDialog::ExistingFile);
+	// Create open grid dialog
+	opengriddialog = new QFileDialog(this);
+	opengriddialog->setWindowTitle("Open Surface");
+	opengriddialog->setDirectory(master.workdir.get());
+	opengriddialog->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.filters[FT_SURFACE_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
-	opensurfacedialog->setFilters(filters);
+	for (f = master.filters[FT_GRID_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
+	opengriddialog->setFilters(filters);
 
 	dbg_end(DM_CALLS,"AtenForm::finalise_ui");
 }

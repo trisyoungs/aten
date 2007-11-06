@@ -30,17 +30,22 @@
 
 string leader = "";
 
+// Atom typing commands
+const char *TC_keywords[TC_NITEMS] = { "sp", "sp2", "sp3", "aromatic", "ring", "nbonds", "bond", "n", "os" };
+type_command TC_from_text(const char *s)
+	{ return (type_command) enum_search("#",TC_NITEMS,TC_keywords,s); }
+
 // Atom environment
-const char *AG_keywords[AG_NITEMS] = { "none", "free", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+const char *AE_strings[AE_NITEMS] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
+const char *text_from_AE(atom_env i)
+	{ return AE_strings[i]; }
+
+// Geometries about atomic centres
+const char *AG_keywords[AG_NITEMS] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
 atom_geom AG_from_text(const char *s)
 	{ return (atom_geom) enum_search("atom geometry",AG_NITEMS,AG_keywords,s); }
 const char *text_from_AG(atom_geom i)
 	{ return AG_keywords[i]; }
-
-// Geometries about atomic centres
-const char *AE_strings[AE_NITEMS+1] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
-const char *text_from_AE(atom_env i)
-	{ return AE_strings[i+1]; }
 
 // Constructors
 atomtype::atomtype()
@@ -48,18 +53,18 @@ atomtype::atomtype()
 	// Must set all values to the 'don't care / unspecifed state'
 	el = 0;
 	env = AE_UNSPECIFIED;
-	geom = AG_NONE;
+	geom = AG_UNSPECIFIED;
 	os = 99;
 	nallowedel = 0;
 	nbonds = -1;
-	allowed_el = NULL;
-	bound_bond = BT_UNSPECIFIED;
+	allowedel = NULL;
+	boundbond = BT_UNSPECIFIED;
 	nrepeat = 1;
 	acyclic = FALSE;
 	prev = NULL;
 	next = NULL;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_ATOMTYPE] ++;
+		memdbg.create[MD_ATOMTYPE] ++;
 	#endif
 }
 
@@ -69,7 +74,7 @@ ringtype::ringtype()
 	prev = NULL;
 	next = NULL;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_RINGTYPE] ++;
+		memdbg.create[MD_RINGTYPE] ++;
 	#endif
 }
 
@@ -77,16 +82,16 @@ ringtype::ringtype()
 atomtype::~atomtype()
 {
 	// Need to destroy all ring structures and bound atom list
-	if (allowed_el != NULL) delete[] allowed_el;
+	if (allowedel != NULL) delete[] allowedel;
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_ATOMTYPE] ++;
+		memdbg.destroy[MD_ATOMTYPE] ++;
 	#endif
 }
 
 ringtype::~ringtype()
 {
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_RINGTYPE] ++;
+		memdbg.destroy[MD_RINGTYPE] ++;
 	#endif
 }
 
@@ -106,7 +111,7 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 	parser.get_args_delim(ellist,PO_DEFAULTS);
 	// Use 'nargs' to allocate element list
 	nallowedel = parser.get_nargs();
-	allowed_el = new int[nallowedel];
+	allowedel = new int[nallowedel];
 	count = 0;
 	// Go through items in 'element' list...
 	msg(DM_TYPING,"  %i atom types/elements given for atomtype : ",nallowedel);
@@ -128,7 +133,7 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 					// TODO Does this need a warning? Will we be able to handle recursive typeid checks properly?
 					msg(DM_NONE,"Forcefield type ID/name %s has not yet been defined in the forcefield.\n",temp.get());
 				}
-				else allowed_types.add(ffa);
+				else allowedtypes.add(ffa);
 			}
 			else printf("atomtype::set_elements <<<< Type ID/Name found in list, but no forcefield passed >>>>\n");
 			msg(DM_TYPING,"%s ",parser.argc(n));
@@ -144,7 +149,7 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 			}
 			else
 			{
-				allowed_el[count] = el;
+				allowedel[count] = el;
 				count ++;
 				msg(DM_TYPING,"%s ",parser.argc(n));
 			}
@@ -160,7 +165,7 @@ void atomtype::print()
 	leader += "--";
 	printf("%s Element :",leader.c_str());
 	if (nallowedel == 0) printf(" Any");
-	else for (int n=0; n<nallowedel; n++) printf(" %s",elements.name(allowed_el[n]));
+	else for (int n=0; n<nallowedel; n++) printf(" %s",elements.name(allowedel[n]));
 	printf("\n");
 	printf("%s  Repeat : %i\n",leader.c_str(),nrepeat);
 	if (boundlist.size() != 0)
@@ -214,17 +219,15 @@ void ringtype::expand(const char *data, forcefield *ff)
 		keywd = parser.trim_atkeyword(optlist);
 		msg(DM_TYPING,"       Keyword : [%s]\n",keywd.get());
 		msg(DM_TYPING,"       Options : [%s]\n",optlist.get());
-		if (keywd == "size")	// Ring size specifier
-			ringsize = atoi(optlist.get());
-		else if (keywd[0] == '-')	// An atom in the ring
+		// Check keyword - either 'size', or  an element
+		if (keywd == "size") ringsize = atoi(optlist.get());	 // Ring size specifier
+		else
 		{
-			keywd.erase(0,1);	// Remove keyword '-'
 			atomtype *newat = ringatoms.add();
 			newat->set_elements(keywd.get(),ff);
 			newat->expand(optlist.get(),ff);
 		}
-		else
-			msg(DM_NONE,"ringtype::expand - Unrecognised command (%s) in atomtype description.\n",keywd.get());
+		//else msg(DM_NONE,"ringtype::expand - Unrecognised command (%s) in atomtype description.\n",keywd.get());
 
 	} while (!def.empty());
 	dbg_end(DM_CALLS,"ringtype::expand");
@@ -243,8 +246,13 @@ void atomtype::expand(const char *data, forcefield *ff)
 	// The supplied string should contain a keyword followed by (optional) bracketed list of specs.
 	// Parent ring structure must be supplied when descending into a ring options structure.
 	dbg_begin(DM_CALLS,"atomtype::expand");
-	dnchar keywd, optlist, def;
-	int n;
+	static dnchar keywd, optlist, def;
+	static ringtype *newring;
+	static bool found;
+	static char c;
+	static int n;
+	static atom_geom ag;
+	static type_command tc;
 	msg(DM_TYPING,"atomtype::expand - Received string [%s]\n",data);
 	if (data[0] == '\0')
 	{
@@ -260,43 +268,75 @@ void atomtype::expand(const char *data, forcefield *ff)
 		keywd = parser.trim_atkeyword(optlist);
 		msg(DM_TYPING,"       Keyword : [%s]\n",keywd.get());
 		msg(DM_TYPING,"       Options : [%s]\n",optlist.get());
-		if (keywd[0] == '-')	// 'Bound to' specifier
+		// Check for 'bound to' specifiers first ('-' or '=')
+		// Bound atom spec - create new subnode and add it to the bound list.
+		// Format is either '-X(options...)' or '-[X1,X2,X3](options...)' (single or list of elements respectively)
+		found = FALSE;
+		c = keywd[0];
+		if ((c == '-') || (c == '='))
 		{
-			// Bound atom spec - create new subnode and add it to the bound list.
-			// Format is either '-X(options...)' or '-[X1,X2,X3](options...)' (single or list of elements respectively)
-			// Remove leading '-', add bound atom and set its element list
+			// Remove leading character, add bound atom and set its element list
 			keywd.erasestart(1);
 			atomtype *newat = boundlist.add();
 			newat->set_elements(keywd.get(),ff);
+			if (c == '=') boundbond = BT_DOUBLE;
 			newat->expand(optlist.get(),ff);
+			found = TRUE;
 		}
-		else if (keywd == "sp")		// Hybridisation / environment settings (no options)
-			env = AE_SP;
-		else if (keywd == "sp2")
-			env = AE_SP2;
-		else if (keywd == "sp3")
-			env = AE_SP3;
-		else if (keywd == "aromatic")
-			env = AE_AROMATIC;
-		else if (keywd == "unbound")
-			env = AE_UNBOUND;
-		else if (keywd == "ring")	// Ring description (pass to ring->expand)
+		// Check for keywords (if it wasn't a bound specifier)
+		if (!found)
 		{
-			ringtype *newring = ringlist.add();
-			newring->expand(optlist.get(),ff);
+			tc = TC_from_text(keywd.get());
+			// Set 'found' to TRUE - we will set it to FALSE again if we don't recognise the command
+			found = TRUE;
+			switch (tc)
+			{
+				// Hybridisation / environment settings (no options)
+				case (TC_SP):
+					env = AE_SP;
+					break;
+				case (TC_SP2):
+					env = AE_SP2;
+					break;
+				case (TC_SP3):
+					env = AE_SP3;
+					break;
+				case (TC_AROMATIC):
+					env = AE_AROMATIC;
+					break;
+				// Ring specification (possible options)
+				case (TC_RING):
+					newring = ringlist.add();
+					newring->expand(optlist.get(),ff);
+					break;
+				// Request exact bond number
+				case (TC_NBONDS):
+					nbonds = atoi(optlist.get());
+					break;
+				// Request exact bond type (bond=bond_type)
+				case (TC_BOND):
+					boundbond = BT_from_text(optlist.get());
+					break;
+				// Number of times to match (n=int)
+				case (TC_REPEAT):
+					nrepeat = atoi(optlist.get());
+					break;
+				// Oxidation state of element (os=int)
+				case (TC_OS):
+					os = atoi(optlist.get());
+					break;
+				default:
+					found = FALSE;
+					break;
+			}
 		}
-		else if (keywd == "nbonds")	// Request exact bond number (nbonds=int)
-			nbonds = atoi(optlist.get());
-		else if (keywd == "bond")	// Request exact bond type (bond=bond_type)
-			bound_bond = BT_from_text(optlist.get());
-		else if (keywd == "n")		// Number of times to match (n=int)
-			nrepeat = atoi(optlist.get());
-		else if (keywd == "os")		// Oxidation state of element (os=int)
-			os = atoi(optlist.get());
-		else if (keywd == "geom")	// Local geometry about atom (geom=type)
-			geom = AG_from_text(optlist.get());
-		else
-			msg(DM_NONE,"atomtype::expand : Unrecognised command (%s) in atomtype description.\n", keywd.get());
+		// Check for geometry specifications (if it wasn't a bound specifier or type command)
+		if (!found)
+		{
+			ag = AG_from_text(keywd.get());
+			if (ag != AG_NITEMS) geom = ag;
+			else msg(DM_NONE,"atomtype::expand : Unrecognised command (%s) in atomtype description.\n", keywd.get());
+		}
 	} while (!def.empty());
 	dbg_end(DM_CALLS,"atomtype::expand");
 }
@@ -317,12 +357,12 @@ int atomtype::match_in_list(reflist<atom> *alist, list<ring> *ringdata, model *p
 		// See if the atom has already been used elsewhere in the current round of typing
 		//if (boundi->item->tempi != 0) {boundi = boundi->next; continue;}
 		// Extra check for bond type definition here
-		if (bound_bond == BT_UNSPECIFIED)
+		if (boundbond == BT_UNSPECIFIED)
 		{
 			msg(DM_TYPING,"match_in_list : ...Atom passed bond type check [no value specified in type]\n");
 			bondscore = 1;
 		}
-		else bound_bond == boundi->data2 ? bondscore = 1 : bondscore = 0;
+		else boundbond == boundi->data2 ? bondscore = 1 : bondscore = 0;
 		// Now do proper atom type check (if we passed the bond check)
 		if (bondscore != 0) score = match_atom(boundi->item, ringdata, parent);
 		if ((bondscore + score) > 1) break;
@@ -365,13 +405,13 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 		for (n=0; n<nallowedel; n++)
 		{
 			// If its an element, just check the element of the atom.
-			if (i->is_element(allowed_el[n]))
+			if (i->is_element(allowedel[n]))
 			{
 				found = TRUE;
 				break;
 			}
 		}
-		if (!found) for (rd = allowed_types.first(); rd != NULL; rd = rd->next)
+		if (!found) for (rd = allowedtypes.first(); rd != NULL; rd = rd->next)
 		{
 		printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",rd->item->get_ffid(),rd->item->get_name());
 			// Does this atom match the type descriptions asked for?
@@ -445,7 +485,7 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 		}
 	}
 	// Local atom geometry check
-	if (geom == AG_NONE) msg(DM_TYPING,"......Atom passed bond number check [none specified]\n");
+	if (geom == AG_UNSPECIFIED) msg(DM_TYPING,"......Atom passed bond geometry check [none specified]\n");
 	else
 	{
 		if (i->get_geometry(parent) == geom)

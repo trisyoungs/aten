@@ -1,6 +1,6 @@
 # Simple-style surface definition
 # Last modified: 10/10/07
-importsurface
+importgrid
 	name "Probability Densities from pdens"
 	nickname pdens
 	extension pdens
@@ -23,5 +23,5 @@ importsurface
 			end
 		end
 	end
-	finalisesurface
+	finalisegrid
 end

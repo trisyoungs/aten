@@ -319,14 +319,14 @@ int facetriples[256][15] = {
 };
 
 // Render grid points (no surface)
-void render_surface_grid(surface *s)
+void render_surface_grid(grid *g)
 {
 	int i, j, k;
-	vec3<int> npoints = s->get_npoints();
+	vec3<int> npoints = g->get_npoints();
 	double ***data, **xdata, *ydata, cutoff;
 	// Grab the data pointer and cutoff
-	data = s->get_data();
-	cutoff = s->get_cutoff();
+	data = g->get_data();
+	cutoff = g->get_cutoff();
 	glBegin(GL_POINTS);
 	  for (i=0; i<npoints.x; i++)
 	  {
@@ -345,15 +345,15 @@ void render_surface_grid(surface *s)
 }
 
 // Render isosurface with Marching Cubes
-void cube_it(surface *s, surface_style ss)
+void cube_it(grid *g, surface_style ss)
 {
 	int i, j, k, n, cubetype, *faces;
 	vec3<double> r, normal;
-	vec3<int> npoints = s->get_npoints();
+	vec3<int> npoints = g->get_npoints();
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2;
 	// Grab the data pointer and surface cutoff
-	data = s->get_data();
-	cutoff = s->get_cutoff();
+	data = g->get_data();
+	cutoff = g->get_cutoff();
 	// Set glBegin based on the surface style
 	switch (ss)
 	{
@@ -372,7 +372,7 @@ void cube_it(surface *s, surface_style ss)
 	// Set colour / transparency for surface
 	glMaterialiv(GL_FRONT, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.get_shininess());
-	glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, s->get_colour());
+	glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->get_colour());
 	// Generate surface
 	for (i=1; i<npoints.x-1; i++)
 	{
@@ -438,36 +438,36 @@ void canvas_master::render_surfaces()
 	static vec3<double> origin;
 	static double axes[16];
 	static mat4<double> mat;
-	for (surface *s = master.get_surfaces(); s != NULL; s = s->next)
+	for (grid *g = master.get_grids(); g != NULL; g = g->next)
 	{
 		// Check visibility
-		if (!s->get_visible()) continue;
+		if (!g->get_visible()) continue;
 		// Get GL display list and check render point
-		list = s->get_displaylist();
+		list = g->get_displaylist();
 
-		if (s->should_rerender())
+		if (g->should_rerender())
 		{
 			if (list != -1) glDeleteLists(list,1);
 			glNewList(list,GL_COMPILE);
-			  switch (s->get_style())
+			  switch (g->get_style())
 			  {
 				case (SS_GRID):
-					render_surface_grid(s);
+					render_surface_grid(g);
 					break;
 				default:
-					cube_it(s, s->get_style());
+					cube_it(g, g->get_style());
 					break;
 			  }
 			glEndList();
-			s->update_renderpoint();
+			g->update_renderpoint();
 		}
 		// Draw surface - push current GL matrix
 		glPushMatrix();
 		  // Centre on cell origin (lower left-hand corner)
-		  origin = s->get_origin();
+		  origin = g->get_origin();
 		  glTranslated(origin.x, origin.y, origin.z);
 		  // Apply matrix transform to get proper grid axes / shear
-		  mat = s->get_axes();
+		  mat = g->get_axes();
 		  mat.get_column_major(axes);
 		  glMatrixMode(GL_MODELVIEW);
 		  glMultMatrixd(axes);

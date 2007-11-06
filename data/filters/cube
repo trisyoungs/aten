@@ -1,6 +1,6 @@
 # Gaussian Cube Format
 # Last modified: 28/10/07
-importsurface
+importgrid
 	name "Gaussian CUBE"
 	nickname cube
 	extension cube
@@ -36,5 +36,5 @@ importsurface
 			end
 		end
 	end
-	finalisesurface
+	finalisegrid
 end

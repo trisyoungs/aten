@@ -198,6 +198,7 @@ void element_map::initialise()
 		parser.get_args_delim(elementdata[n],PO_SKIPBLANKS);
 		el[n].mass = parser.argd(1);
 		strcpy(el[n].name,parser.argc(2));
+		strcpy(el[n].ucname,upper_case(parser.argc(2)));
 		strcpy(el[n].symbol,parser.argc(3));
 		strcpy(el[n].ucsymbol,upper_case(parser.argc(3)));
 		el[n].radius = parser.argd(4);
@@ -268,6 +269,26 @@ int element_map::alpha_to_z(const char *s)
 	return result;
 }
 
+// Convert string from name to element number
+int element_map::name_to_z(const char *s)
+{
+	// Ignore numbers. Convert up to non-alpha character.
+	static char cleaned[32];
+	int n, len = 0, result = -1;
+	for (n=0; s[n] != '\0'; n++)
+		if (s[n] > 64 && s[n] < 91) { cleaned[len] = s[n]; len++; }
+		else if (s[n] > 96 && s[n] < 123) { cleaned[len] = toupper(s[n]); len++; }
+		else if (s[n] == '_') break;
+	cleaned[len] = '\0';
+	for (n=0; n<NELEMENTS; n++)
+		if (strcmp(el[n].ucname,cleaned) == 0) 
+		{
+			result = n;
+			break;
+		}
+	return result;
+}
+
 // Convert string from fftype to element number
 int element_map::ff_to_z(const char *s)
 {
@@ -310,8 +331,15 @@ int element_map::find(const char *query)
 			// Then, try alpha conversion
 			result = alpha_to_z(query);
 			if (result != -1) break;
+			// Then, try name conversion
+			result = name_to_z(query);
+			if (result != -1) break;
 			// Finally, try FF conversion
 			result = ff_to_z(query);
+			break;
+		// Name search
+		case (ZM_NAME):
+			result = name_to_z(query);
 			break;
 		// Search loaded forcefields for atom names
 		case (ZM_FORCEFIELD):

@@ -159,22 +159,22 @@ void gui_master::select_ff(forcefield *ff)
 	 if (is_available) printf("gui_master::select_ff - Not defined.\n");
 }
 
-// Add surface to list
-void gui_master::add_surface(surface *m)
+// Add grid to list
+void gui_master::add_grid(grid *g)
 {
-	 if (is_available) printf("gui_master::add_surface - Not defined.\n");
+	 if (is_available) printf("gui_master::add_grid - Not defined.\n");
 }
 
-// Remove surface from list
-void gui_master::remove_surface(surface *m)
+// Remove grid from list
+void gui_master::remove_grid(grid *g)
 {
-	 if (is_available) printf("gui_master::remove_surface - Not defined.\n");
+	 if (is_available) printf("gui_master::remove_grid - Not defined.\n");
 }
 
-// Select surface in list and show in main/sub windows
-void gui_master::select_surface(surface *m)
+// Select grid in list and show in main/sub windows
+void gui_master::select_grid(grid *g)
 {
-	 if (is_available) printf("gui_master::select_surface - Not defined.\n");
+	 if (is_available) printf("gui_master::select_grid - Not defined.\n");
 }
 
 // Create GUI file filters from filter list

@@ -26,7 +26,7 @@
 #include <fstream>
 
 // Filter types
-const char *FT_strings[FT_NITEMS] = { "importmodel", "exportmodel", "importtrajectory", "exporttrajectory", "importfield", "exportfield", "importsurface", "exportsurface" };
+const char *FT_strings[FT_NITEMS] = { "importmodel", "exportmodel", "importtrajectory", "exporttrajectory", "importfield", "exportfield", "importgrid", "exportgrid" };
 const char *text_from_FT(filter_type ft)
 	{ return FT_strings[ft]; }
 filter_type FT_from_text(const char *s)
@@ -207,13 +207,13 @@ void filter::set_target(model *m)
 	dbg_end(DM_CALLS,"filter::set_target[model]");
 }
 
-// Set targets (surface)
-void filter::set_target(surface *s)
+// Set targets (grid)
+void filter::set_target(grid *g)
 {
-	dbg_begin(DM_CALLS,"filter::set_target[surface]");
-	if (s == NULL) activesurface = NULL;
-	else activesurface = s;
-	dbg_end(DM_CALLS,"filter::set_target[surface]");
+	dbg_begin(DM_CALLS,"filter::set_target[grid]");
+	if (g == NULL) activegrid = NULL;
+	else activegrid = g;
+	dbg_end(DM_CALLS,"filter::set_target[grid]");
 }
 
 // Reset targets
@@ -221,7 +221,7 @@ void filter::reset_targets()
 {
 	activemodel = NULL;
 	activecell = NULL;
-	activesurface = NULL;
+	activegrid = NULL;
 }
 
 // Set input file

@@ -29,9 +29,10 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 {
 	dbg_begin(DM_CALLS,"filter::do_readwrite");
 	atom *i;
-	int readi;
+	char c;
+	int readi, iresult;
 	double readd;
-	static char readc[512];
+	static char readc[512], linefromfile[MAXLINELENGTH];
 	bool result = TRUE;
 	switch (fn->get_command())
 	{
@@ -81,6 +82,25 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 		case (FC_SKIPCHARS):
 			if (inputfile == NULL) break;
 			inputfile->read((char*) &readc, fn->datavar[0]->get_as_int());
+			break;
+		// Search for line containing specified string
+		case (FC_FIND):
+			if (inputfile == NULL) break;
+			iresult = -1;
+			do
+			{
+				// Get line from file
+				inputfile->getline(linefromfile,MAXLINELENGTH-1);
+				// Check for string
+				if (strstr(linefromfile,fn->datavar[0]->get_as_char()) != '\0')
+				{
+					iresult = 1;
+					// Store the line if a second variable was given
+					if (fn->datavar[2] != NULL) fn->datavar[2]->set(linefromfile);
+				}
+				else if (inputfile->eof() || inputfile->fail()) iresult = 0;
+			} while (iresult == -1);
+			fn->datavar[1]->set(iresult);
 			break;
 		// Write line with format
 		case (FC_WRITELINE):

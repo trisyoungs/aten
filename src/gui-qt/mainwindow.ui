@@ -4844,7 +4844,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="SurfacePage" >
+      <widget class="QWidget" name="GridPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -4853,7 +4853,7 @@
          <number>2</number>
         </property>
         <item>
-         <widget class="QGroupBox" name="SurfacesGroup" >
+         <widget class="QGroupBox" name="GridGroup" >
           <property name="sizePolicy" >
            <sizepolicy>
             <hsizetype>5</hsizetype>
@@ -4863,7 +4863,7 @@
            </sizepolicy>
           </property>
           <property name="title" >
-           <string>Surfaces</string>
+           <string>Grids</string>
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
@@ -4873,7 +4873,7 @@
             <number>4</number>
            </property>
            <item>
-            <widget class="QListWidget" name="SurfaceList" />
+            <widget class="QListWidget" name="GridList" />
            </item>
            <item>
             <layout class="QHBoxLayout" >
@@ -4897,7 +4897,7 @@
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="LoadSurfaceButton" >
+              <widget class="QPushButton" name="LoadGridButton" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>5</hsizetype>
@@ -4927,7 +4927,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="RemoveSurfaceButton" >
+              <widget class="QPushButton" name="RemoveGridButton" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>5</hsizetype>
@@ -4960,7 +4960,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="SaveSurfaceButton" >
+              <widget class="QPushButton" name="SaveGridButton" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>5</hsizetype>
@@ -5018,7 +5018,7 @@
               </widget>
              </item>
              <item row="2" column="1" >
-              <widget class="QLabel" name="SurfaceMaximumLabel" >
+              <widget class="QLabel" name="GridMaximumLabel" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -5040,7 +5040,7 @@
               </widget>
              </item>
              <item row="0" column="1" >
-              <widget class="QLabel" name="SurfaceMinimumLabel" >
+              <widget class="QLabel" name="GridMinimumLabel" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -5071,7 +5071,7 @@
             </layout>
            </item>
            <item>
-            <widget class="QGroupBox" name="SurfaceOriginGroup" >
+            <widget class="QGroupBox" name="GridOriginGroup" >
              <property name="sizePolicy" >
               <sizepolicy>
                <hsizetype>1</hsizetype>
@@ -5114,7 +5114,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceOriginXSpin" >
+                 <widget class="QDoubleSpinBox" name="GridOriginXSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5132,7 +5132,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceOriginYSpin" >
+                 <widget class="QDoubleSpinBox" name="GridOriginYSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5150,7 +5150,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceOriginZSpin" >
+                 <widget class="QDoubleSpinBox" name="GridOriginZSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5200,7 +5200,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesAXSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesAXSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5221,7 +5221,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesAYSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesAYSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5242,7 +5242,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesAZSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesAZSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5288,7 +5288,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesBXSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesBXSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5309,7 +5309,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesBYSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesBYSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5330,7 +5330,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesBZSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesBZSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5376,7 +5376,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesCXSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesCXSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5397,7 +5397,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesCYSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesCYSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5418,7 +5418,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceAxesCZSpin" >
+                 <widget class="QDoubleSpinBox" name="GridAxesCZSpin" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>7</hsizetype>
@@ -5893,7 +5893,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="ShowSurfacesPageButton" >
+       <widget class="QPushButton" name="ShowGridsPageButton" >
         <property name="minimumSize" >
          <size>
           <width>16</width>

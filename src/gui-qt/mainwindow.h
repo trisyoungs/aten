@@ -28,7 +28,7 @@
 #include "gui-qt/ui_prefs.h"
 
 // Stack Pages
-enum stack_page { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_SURFACE, SP_NITEMS };
+enum stack_page { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_NITEMS };
 
 // Image Formats
 enum pixmap_format { PF_BMP, PF_JPG, PF_PNG, PF_PPM, PF_XBM, PF_X11, PF_NITEMS };
@@ -175,7 +175,7 @@ class AtenForm : public QMainWindow
 	void on_ShowMinimiserPageButton_clicked(bool checked) { switch_stack(SP_MINIMISER, checked); }
 	void on_ShowDisorderPageButton_clicked(bool checked) { switch_stack(SP_DISORDER, checked); }
 	void on_ShowForcefieldsPageButton_clicked(bool checked) { switch_stack(SP_FORCEFIELD, checked); }
-	void on_ShowSurfacesPageButton_clicked(bool checked) { switch_stack(SP_SURFACE, checked); }
+	void on_ShowGridsPageButton_clicked(bool checked) { switch_stack(SP_GRID, checked); }
 
 	// Atom Page Functions
 	public:
@@ -279,29 +279,29 @@ class AtenForm : public QMainWindow
 
 	// Surface Page Functions
 	public:
-	void refresh_surfacespage();
+	void refresh_gridspage();
 	private:
-	void refresh_surfaceinfo();
-	void surface_origin_changed(int component, double value);
-	void surface_axis_changed(int row, int component, double value);
+	void refresh_gridinfo();
+	void grid_origin_changed(int component, double value);
+	void grid_axis_changed(int row, int component, double value);
 	private slots:
-	void on_LoadSurfaceButton_clicked(bool checked);
-	void on_SaveSurfaceButton_clicked(bool checked);
-	void on_SurfaceList_currentRowChanged(int row);
+	void on_LoadGridButton_clicked(bool checked);
+	void on_SaveGridButton_clicked(bool checked);
+	void on_GridList_currentRowChanged(int row);
 	void on_SurfaceStyleCombo_currentIndexChanged(int index);
 	void on_SurfaceCutoffSpin_valueChanged(double d);
-	void on_SurfaceOriginXSpin_valueChanged(double d) { surface_origin_changed(0, d); }
-	void on_SurfaceOriginYSpin_valueChanged(double d) { surface_origin_changed(1, d); }
-	void on_SurfaceOriginZSpin_valueChanged(double d) { surface_origin_changed(2, d); }
-	void on_SurfaceAxesAXSpin_valueChanged(double d) { surface_axis_changed(0,0, d); }
-	void on_SurfaceAxesAYSpin_valueChanged(double d) { surface_axis_changed(0,1, d); }
-	void on_SurfaceAxesAZSpin_valueChanged(double d) { surface_axis_changed(0,2, d); }
-	void on_SurfaceAxesBXSpin_valueChanged(double d) { surface_axis_changed(1,0, d); }
-	void on_SurfaceAxesBYSpin_valueChanged(double d) { surface_axis_changed(1,1, d); }
-	void on_SurfaceAxesBZSpin_valueChanged(double d) { surface_axis_changed(1,2, d); }
-	void on_SurfaceAxesCXSpin_valueChanged(double d) { surface_axis_changed(2,0, d); }
-	void on_SurfaceAxesCYSpin_valueChanged(double d) { surface_axis_changed(2,1, d); }
-	void on_SurfaceAxesCZSpin_valueChanged(double d) { surface_axis_changed(2,2, d); }
+	void on_GridOriginXSpin_valueChanged(double d) { grid_origin_changed(0, d); }
+	void on_GridOriginYSpin_valueChanged(double d) { grid_origin_changed(1, d); }
+	void on_GridOriginZSpin_valueChanged(double d) { grid_origin_changed(2, d); }
+	void on_GridAxesAXSpin_valueChanged(double d) { grid_axis_changed(0,0, d); }
+	void on_GridAxesAYSpin_valueChanged(double d) { grid_axis_changed(0,1, d); }
+	void on_GridAxesAZSpin_valueChanged(double d) { grid_axis_changed(0,2, d); }
+	void on_GridAxesBXSpin_valueChanged(double d) { grid_axis_changed(1,0, d); }
+	void on_GridAxesBYSpin_valueChanged(double d) { grid_axis_changed(1,1, d); }
+	void on_GridAxesBZSpin_valueChanged(double d) { grid_axis_changed(1,2, d); }
+	void on_GridAxesCXSpin_valueChanged(double d) { grid_axis_changed(2,0, d); }
+	void on_GridAxesCYSpin_valueChanged(double d) { grid_axis_changed(2,1, d); }
+	void on_GridAxesCZSpin_valueChanged(double d) { grid_axis_changed(2,2, d); }
 	void on_SurfaceColourButton_clicked(bool checked);
 	void on_SurfaceTransparencySpin_valueChanged(double d);
 
@@ -373,8 +373,8 @@ class AtenForm : public QMainWindow
 	QFileDialog *saveimagedialog;
 	// Forcefield File Dialog
 	QFileDialog *openffdialog;
-	// Surface File Dialogs
-	QFileDialog *opensurfacedialog, *savesurfacedialog;
+	// Grid File Dialogs
+	QFileDialog *opengriddialog, *savegriddialog;
 };
 
 #endif

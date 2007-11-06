@@ -53,7 +53,7 @@ const char *BC_keywords[BC_NITEMS] = {
 	"_OTHER_"
 	};
 basic_command BC_from_text(const char* s)
-	{ return (basic_command) enum_search_data("NULL",BC_NITEMS,BC_keywords,s); }
+	{ return (basic_command) enum_search_data("#",BC_NITEMS,BC_keywords,s); }
 const char *text_from_BC(basic_command bc)
 	{ return get_before_comma(BC_keywords[bc]); }
 const char *vars_from_BC(basic_command bc)

@@ -26,13 +26,17 @@
 #include "templates/list.h"
 #include "templates/reflist.h"
 
+// Atom typing commands
+enum type_command { TC_SP, TC_SP2, TC_SP3, TC_AROMATIC, TC_RING, TC_NBONDS, TC_BOND, TC_REPEAT, TC_OS, TC_NITEMS };
+type_command TC_from_text(const char*);
+
 // Atom environment
-enum atom_env { AE_UNSPECIFIED=-1, AE_UNBOUND, AE_SP3, AE_SP2, AE_SP, AE_AROMATIC, AE_NITEMS };
+enum atom_env { AE_UNSPECIFIED, AE_NOBONDS, AE_SP3, AE_SP2, AE_SP, AE_AROMATIC, AE_NITEMS };
 const char *text_from_AE(atom_env);
 
 // Geometries about atomic centres
-enum atom_geom { AG_NONE, AG_FREEORSINGLE, AG_LINEAR, AG_TSHAPE, AG_TRIGPLANAR, AG_TETRAHEDRAL, AG_SQPLANAR, AG_TRIGBIPYRAMID, AG_OCTAHEDRAL, AG_NITEMS };
-atom_geom AG_from_text(const char *);
+enum atom_geom { AG_UNSPECIFIED, AG_UNBOUND, AG_ONEBOND, AG_LINEAR, AG_TSHAPE, AG_TRIGPLANAR, AG_TETRAHEDRAL, AG_SQPLANAR, AG_TRIGBIPYRAMID, AG_OCTAHEDRAL, AG_NITEMS };
+atom_geom AG_from_text(const char*);
 const char *text_from_AG(atom_geom);
 
 // Forward declarations
@@ -111,15 +115,15 @@ class atomtype
 	*/
 	private:
 	// List of elements that the bound atom may be (can be empty for 'unspecified' [*])
-	int *allowed_el;
+	int *allowedel;
 	// List of ffatom types that the bound atom may be
-	reflist<ffatom> allowed_types;
+	reflist<ffatom> allowedtypes;
 	// Number of elements specified in bound_el[]
 	int nallowedel;
 	// Number of times this match is required
 	int nrepeat;
 	// Type of bond to bound (parent) atom
-	bond_type bound_bond;
+	bond_type boundbond;
 
 	public:
 	// Expand the allowed_el array with the element string provided
