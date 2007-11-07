@@ -136,35 +136,35 @@ void AtenForm::finalise_ui()
 	statuslabel->setFrameStyle(QFrame::NoFrame);
 
 	// Create open model dialog
-	openmodeldialog = new QFileDialog(this);
-	openmodeldialog->setFileMode(QFileDialog::ExistingFiles);
-	openmodeldialog->setDirectory(master.workdir.get());
-	openmodeldialog->setWindowTitle("Open Model(s)");
+	dialog[FT_MODEL_IMPORT] = new QFileDialog(this);
+	dialog[FT_MODEL_IMPORT]->setFileMode(QFileDialog::ExistingFiles);
+	dialog[FT_MODEL_IMPORT]->setDirectory(master.workdir.get());
+	dialog[FT_MODEL_IMPORT]->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
 	for (f = master.filters[FT_MODEL_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
-	openmodeldialog->setFilters(filters);
+	dialog[FT_MODEL_IMPORT]->setFilters(filters);
 
 	// Create open trajectory dialog
-	opentrajdialog = new QFileDialog(this);
-	opentrajdialog->setFileMode(QFileDialog::ExistingFile);
-	opentrajdialog->setDirectory(master.workdir.get());
-	opentrajdialog->setWindowTitle("Add Trajectory");
+	dialog[FT_TRAJECTORY_IMPORT] = new QFileDialog(this);
+	dialog[FT_TRAJECTORY_IMPORT]->setFileMode(QFileDialog::ExistingFile);
+	dialog[FT_TRAJECTORY_IMPORT]->setDirectory(master.workdir.get());
+	dialog[FT_TRAJECTORY_IMPORT]->setWindowTitle("Add Trajectory");
 	filters.clear();
 	filters << "All files (*)";
 	for (f = master.filters[FT_TRAJECTORY_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
-	opentrajdialog->setFilters(filters);
+	dialog[FT_TRAJECTORY_IMPORT]->setFilters(filters);
 
 	// Create save model dialog
-	savemodeldialog = new QFileDialog(this);
-	savemodeldialog->setWindowTitle("Save Model");
-	savemodeldialog->setAcceptMode(QFileDialog::AcceptSave);
-	savemodeldialog->setDirectory(master.workdir.get());
-	savemodeldialog->setConfirmOverwrite(TRUE);
-	savemodeldialog->setFileMode(QFileDialog::AnyFile);
+	dialog[FT_MODEL_EXPORT] = new QFileDialog(this);
+	dialog[FT_MODEL_EXPORT]->setWindowTitle("Save Model");
+	dialog[FT_MODEL_EXPORT]->setAcceptMode(QFileDialog::AcceptSave);
+	dialog[FT_MODEL_EXPORT]->setDirectory(master.workdir.get());
+	dialog[FT_MODEL_EXPORT]->setConfirmOverwrite(TRUE);
+	dialog[FT_MODEL_EXPORT]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next) filters << f->get_description();
 	// Check for empty filters list (causes crash)
-	if (!filters.empty()) savemodeldialog->setFilters(filters);
+	if (!filters.empty()) dialog[FT_MODEL_EXPORT]->setFilters(filters);
 
 	// Create save image dialog
 	saveimagedialog = new QFileDialog(this);
@@ -177,24 +177,24 @@ void AtenForm::finalise_ui()
 	saveimagedialog->setFilters(filters);
 
 	// Create open forcefield dialog
-	openffdialog = new QFileDialog(this);
-	openffdialog->setWindowTitle("Open Forcefield");
-	openffdialog->setDirectory(master.workdir.get());
-	openffdialog->setFileMode(QFileDialog::ExistingFile);
+	dialog[FT_FIELD_IMPORT] = new QFileDialog(this);
+	dialog[FT_FIELD_IMPORT]->setWindowTitle("Open Forcefield");
+	dialog[FT_FIELD_IMPORT]->setDirectory(master.workdir.get());
+	dialog[FT_FIELD_IMPORT]->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
 	filters << "Forcefields (*.ff)";
-	openffdialog->setFilters(filters);
+	dialog[FT_FIELD_IMPORT]->setFilters(filters);
 
 	// Create open grid dialog
-	opengriddialog = new QFileDialog(this);
-	opengriddialog->setWindowTitle("Open Surface");
-	opengriddialog->setDirectory(master.workdir.get());
-	opengriddialog->setFileMode(QFileDialog::ExistingFile);
+	dialog[FT_GRID_IMPORT] = new QFileDialog(this);
+	dialog[FT_GRID_IMPORT]->setWindowTitle("Open Grid");
+	dialog[FT_GRID_IMPORT]->setDirectory(master.workdir.get());
+	dialog[FT_GRID_IMPORT]->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
 	for (f = master.filters[FT_GRID_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
-	opengriddialog->setFilters(filters);
+	dialog[FT_GRID_IMPORT]->setFilters(filters);
 
 	dbg_end(DM_CALLS,"AtenForm::finalise_ui");
 }

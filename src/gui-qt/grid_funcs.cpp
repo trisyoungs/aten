@@ -110,25 +110,25 @@ void AtenForm::on_LoadGridButton_clicked(bool checked)
 	grid *g;
 	QString filename;
 	QStringList filenames;
-	if (opengriddialog->exec() == 1)
+	if (dialog[FT_GRID_IMPORT]->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = opengriddialog->selectedFilter();
+		QString filter = dialog[FT_GRID_IMPORT]->selectedFilter();
 		// Find the corresponding Aten filter that was selected
 		for (f = master.filters[FT_GRID_IMPORT].first(); f != NULL; f = f->next)
 			if (strcmp(f->get_description(),qPrintable(filter)) == 0) break;
 		// Get selected filename list
-		filenames = opengriddialog->selectedFiles();
+		filenames = dialog[FT_GRID_IMPORT]->selectedFiles();
 		// Loop over selected files
 		for (int i = 0; i < filenames.size(); ++i)
 		{
 			filename = filenames.at(i);
 			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-			if (f != NULL) f->import_surface(qPrintable(filename));
+			if (f != NULL) f->import_grid(qPrintable(filename));
 			else
 			{
 				f = master.probe_file(qPrintable(filename), FT_GRID_IMPORT);
-				if (f != NULL) f->import_surface(qPrintable(filename));
+				if (f != NULL) f->import_grid(qPrintable(filename));
 			}
 		}
 		refresh_gridspage();

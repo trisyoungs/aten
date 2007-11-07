@@ -22,23 +22,23 @@
 #include "file/filter.h"
 #include "base/master.h"
 
-// Import surface using filter
-void filter::import_surface(const char *filename)
+// Import grid using filter
+void filter::import_grid(const char *filename)
 {
-	dbg_begin(DM_CALLS,"filter::import_surface");
+	dbg_begin(DM_CALLS,"filter::import_grid");
 	// Check the obvious first...
 	if (type != FT_GRID_IMPORT)
 	{
-		printf("filter::import_surface <<<< This filter does not provide surface importing >>>>\n");
-		dbg_end(DM_CALLS,"filter::import_surface");
+		printf("filter::import_grid <<<< This filter does not provide surface importing >>>>\n");
+		dbg_end(DM_CALLS,"filter::import_grid");
 		return;
 	}
 	msg(DM_NONE,"Load   : %s (%s)\n",filename,name.get());
 	// Open file...
 	if (!set_input(filename))
 	{
-		msg(DM_NONE,"Error opening surface file '%s'.\n",filename);
-		dbg_end(DM_CALLS,"filter::import_surface");
+		msg(DM_NONE,"Error opening grid file '%s'.\n",filename);
+		dbg_end(DM_CALLS,"filter::import_grid");
 		return;
 	}
 	// Reset target variables
@@ -50,7 +50,7 @@ void filter::import_surface(const char *filename)
 	command_node<filter_command> *fn = commands.commandlist.first();
 	while (fn != NULL)
 	{
-		msg(DM_FILTERS,"(((( Import Surface : Command '%s' ))))\n", (fn->get_basic_command() != BC_OTHER ? text_from_BC(fn->get_basic_command()) : text_from_FC(fn->get_command())));
+		msg(DM_FILTERS,"(((( Import Grid : Command '%s' ))))\n", (fn->get_basic_command() != BC_OTHER ? text_from_BC(fn->get_basic_command()) : text_from_FC(fn->get_command())));
 		if (fn->get_basic_command() == BC_TERMINATE) break;
 		// Try flow control commands first, then do filter-specific commands
 		if (commands.do_basic(fn, activemodel, inputfile)) continue;
@@ -60,12 +60,12 @@ void filter::import_surface(const char *filename)
 		else if (do_variables(fn)) continue;
 		else
 		{
-			printf("filter::import_surface <<<< Command '%s' has no defined action >>>>\n", (fn->get_basic_command() != BC_OTHER ? text_from_BC(fn->get_basic_command()) : text_from_FC(fn->get_command())));
+			printf("filter::import_grid <<<< Command '%s' has no defined action >>>>\n", (fn->get_basic_command() != BC_OTHER ? text_from_BC(fn->get_basic_command()) : text_from_FC(fn->get_command())));
 			fn = fn->next;
 		}
 	}
 	close_files();
 	// Reset element mapping style
 	prefs.set_zmapping(temp_zmap);
-	dbg_end(DM_CALLS,"filter::import_surface");
+	dbg_end(DM_CALLS,"filter::import_grid");
 }

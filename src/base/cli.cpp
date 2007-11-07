@@ -223,7 +223,7 @@ int master_data::parse_cli(int argc, char *argv[])
 				// Load surface
 				case (LO_SURFACE):
 					f = master.probe_file(optarg, FT_GRID_IMPORT);
-					if (f != NULL) f->import_surface(optarg);
+					if (f != NULL) f->import_grid(optarg);
 					break;
 				default:
 					printf("Unrecognised command-line option '%s'.\n",argv[index]);

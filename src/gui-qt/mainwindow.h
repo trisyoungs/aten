@@ -364,18 +364,14 @@ class AtenForm : public QMainWindow
 	public:
 	// Main text label for status bar in main window
 	QLabel *statuslabel;
-	// Model File Dialogs
-	QFileDialog *openmodeldialog, *savemodeldialog;
-	filter *savemodelfilter;
-	dnchar savemodelfilename;
-	// Trajectory File Dialog
-	QFileDialog *opentrajdialog;
-	// Image File Dialog
+	// File dialogs for filter types
+	QFileDialog *dialog[FT_NITEMS];
+	// File dialog for save image
 	QFileDialog *saveimagedialog;
-	// Forcefield File Dialog
-	QFileDialog *openffdialog;
-	// Grid File Dialogs
-	QFileDialog *opengriddialog, *savegriddialog;
+	// Filter set from save model dialog
+	filter *savemodelfilter;
+	// Filename set from save model dialog
+	dnchar savemodelfilename;
 };
 
 #endif

@@ -11,7 +11,6 @@ General To-Do list:
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)
 	- Complete spacegroups list
-	- UFF - oxidation state, torsions
 	- Add NR / simplex / other minimisers
 	- View along cell axes
 	- View Miller planes
@@ -19,11 +18,18 @@ General To-Do list:
 	- EPSR Ato import / export? filters
 	- Distance rulers
 
+Forcefield To-Do list:
+	- UFF - oxidation state, torsions
+	- GAFF
+	- OPLS
+
 General Qt To-Do list:
 	- Forcefield stack page and manager/edit window
+		+ Need method to apply forcefield to all or selected pattern
 	- Prefs window (partial)
 	- Minimiser stack page (partial - needs current energy/forces)
 	- Progress dialogs are not application modal. Move to statusbar widget?
+	- Toolbar (with hotkeys) to set mode of left mouse button
 
 Manual To-Do list:
 	- Section on forcefields

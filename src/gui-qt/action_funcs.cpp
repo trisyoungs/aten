@@ -128,15 +128,15 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 	model *m;
 	QString filename;
 	QStringList filenames;
-	if (openmodeldialog->exec() == 1)
+	if (dialog[FT_MODEL_IMPORT]->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = openmodeldialog->selectedFilter();
+		QString filter = dialog[FT_MODEL_IMPORT]->selectedFilter();
 		// Find the corresponding Aten filter that was selected
 		for (f = master.filters[FT_MODEL_IMPORT].first(); f != NULL; f = f->next)
 			if (strcmp(f->get_description(),qPrintable(filter)) == 0) break;
 		// Get selected filename list
-		filenames = openmodeldialog->selectedFiles();
+		filenames = dialog[FT_MODEL_IMPORT]->selectedFiles();
 		// Loop over selected files
 		for (int i = 0; i < filenames.size(); ++i)
 		{
@@ -160,13 +160,13 @@ bool AtenForm::run_savemodel_dialog()
 	savemodelfilter = NULL;
 	savemodelfilename.clear();
 	filter *f;
-	if (savemodeldialog->exec() == 1)
+	if (dialog[FT_MODEL_EXPORT]->exec() == 1)
 	{
 		// Get selected filename (only grab first
 		//QString filename = savemodeldialog->selectedFiles().first();
-		savemodelfilename = qPrintable(savemodeldialog->selectedFiles().first());
+		savemodelfilename = qPrintable(dialog[FT_MODEL_EXPORT]->selectedFiles().first());
 		// Get selected filter
-		QString filter = savemodeldialog->selectedFilter();
+		QString filter = dialog[FT_MODEL_EXPORT]->selectedFilter();
 		// Find the filter that was selected
 		for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next)
 			if (strcmp(f->get_description(),qPrintable(filter)) == 0) break;
@@ -280,13 +280,13 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
 	filter *f;
 	model *m = master.get_currentmodel();
-	if (opentrajdialog->exec() == 1)
+	if (dialog[FT_TRAJECTORY_IMPORT]->exec() == 1)
 	{
 		// Get selected filename
-		QStringList filenames = opentrajdialog->selectedFiles();
+		QStringList filenames = dialog[FT_TRAJECTORY_IMPORT]->selectedFiles();
 		QString filename = filenames.first();
 		// Get selected filter
-		QString filter = opentrajdialog->selectedFilter();
+		QString filter = dialog[FT_TRAJECTORY_IMPORT]->selectedFilter();
 		// Find the filter that was selected
 		for (f = master.filters[FT_TRAJECTORY_IMPORT].first(); f != NULL; f = f->next)
 			if (strcmp(f->get_description(),qPrintable(filter)) == 0) break;

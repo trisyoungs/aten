@@ -83,7 +83,7 @@ enum guide_geometry { GG_SQUARE, GG_HEXAGONAL, GG_NITEMS };
 const char **get_GG_strings();
 
 // Energy Units
-enum energy_unit { EU_J, EU_KJ, EU_CAL, EU_KCAL, EU_HARTREE, EU_NITEMS };
+enum energy_unit { EU_J, EU_KJ, EU_CAL, EU_KCAL, EU_EV, EU_HARTREE, EU_NITEMS };
 const char *text_from_EU(energy_unit);
 energy_unit EU_from_text(const char*);
 

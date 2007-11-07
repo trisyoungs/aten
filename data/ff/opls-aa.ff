@@ -1,12 +1,14 @@
 # OPLS-AA Forcefield (November 2005)
 # Thanks to W. L. Jorgensen for supplying this data.
-# Original comments from the file are included in "#--" lines
+# Original comments from the file are included in hashed (#) lines
 #
-# NOTE:
-# Some atom names have been changed to remove symbols:
+# NOTES:
+# Some atom names have been changed to avoid symbol conflicts with Aten's typing engine:
 #	'*' -> star   (e.g. 'C*' -> 'Cstar')
 #	'$' -> doll   (e.g. 'C$' -> 'Cdoll')
 #	'=' -> eq     (e.g. 'C=' -> 'Ceq')
+# Force constants for bond and angle functions are multiplied by two from the original
+# parameter set since the harmonic functions in Aten have a pre-factor of 0.5 applied.
 
 # References:
 # W. L. Jorgensen, D. S. Maxwell, and J. Tirado-Rives, J. Am. Chem. Soc. 118, 11225-11236 (1996).
@@ -150,12 +152,12 @@ types
 151	Cl		Cl	""	# Cl in alkyl chlorides                                   
 152	CT		C	""	# RCH2Cl "     "                                          
 153	HC		H	""	# H in RCH2Cl                                             
-154	OH		O	""	# all-atom O: mono alcohols                               
-155	HO		H	""	# all-atom H(O): mono alcohols                            
-156	HC		H	""	# all-atom H(C): methanol                                 
-157	CT		C	""	# all-atom C: CH3 & CH2, alcohols                         
-158	CT		C	""	# all-atom C: CH, alcohols                                
-159	CT		C	""	# all-atom C: C, alcohols                                 
+154	OH		O	"-H,-C"		# all-atom O: mono alcohols                               
+155	HO		H	"-O(-C)"	# all-atom H(O): mono alcohols                            
+156	HC		H	"-H(-C(-H(n=3,-O)))"	# all-atom H(C): methanol                                 
+157	CT		C	"-H(n=2),-O(-H)"	# all-atom C: CH3 & CH2, alcohols                         
+158	CT		C	"-H,-O(-H)"	# all-atom C: CH, alcohols                                
+159	CT		C	"nbonds=4,-O(-H)"	# all-atom C: C, alcohols                                 
 160	CT		C	""	# CH2    Trifluoroethanol                                 
 161	CT		C	""	# CF3           "                                         
 162	OH		O	""	# OH            "                                         
