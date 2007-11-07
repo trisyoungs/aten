@@ -182,8 +182,6 @@ class prefs_data
 	GLdouble render_tube_size;
 	// Size scaling for atom selection transparency
 	GLdouble render_selection_scale;
-	// Current size scaling for atom selection transparency, used in the idle function
-	GLdouble render_selection_scale_current;
 	// Detail of atom quadric (slices/stacks)
 	int render_atom_detail;
 	// Detail of bond quadric (slices/stacks)
@@ -224,8 +222,6 @@ class prefs_data
 	void set_selection_scale(double f) { render_selection_scale = f; }
 	// Return the scale of selected atoms
 	GLdouble get_selection_scale() { return render_selection_scale; }
-	// Sets the current (dynamic) scale of selected atoms
-	void set_selection_scale_current(double f) { render_selection_scale_current = f; }
 	// Return whether perspective viewing is enabled
 	bool using_perspective() { return render_perspective; }
 	// Sets perspective viewing on/off
@@ -375,7 +371,7 @@ class prefs_data
 	// Depth for drawing guide
 	double build_draw_depth;
 	// Spacing of grid on drawing guide
-	float build_guide_spacing;
+	double build_guide_spacing;
 	// Extent (+- guide_spacing in xy plane) of drawing guide 
 	int build_guide_extent;
 	// Number of ticks between gridpoints of guide

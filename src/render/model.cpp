@@ -98,7 +98,7 @@ void canvas_master::render_model_atoms()
 		  {
 			glColor3iv(ambient);
 			i->is_selected() ? glLineWidth(3.0) : glLineWidth(1.0);
-			if (i->get_nbonds() == 0) glCallList(globs.lists[GLOB_STICKATOM]); 
+			if (i->get_nbonds() == 0) glCallList(list[GLOB_STICKATOM]); 
 		  }
 		  else
 		  {
@@ -108,10 +108,10 @@ void canvas_master::render_model_atoms()
 				radius = prefs.screenradius(i);
 				glPushMatrix();
 				  glScaled(radius,radius,radius);
-				  glCallList(globs.lists[GLOB_UNITATOM]); 
+				  glCallList(list[GLOB_UNITATOM]); 
 				glPopMatrix();
 			}
-			else style_i == DS_SPHERE ? glCallList(globs.lists[GLOB_SPHEREATOM]) : glCallList(globs.lists[GLOB_TUBEATOM]);
+			else style_i == DS_SPHERE ? glCallList(list[GLOB_SPHEREATOM]) : glCallList(list[GLOB_TUBEATOM]);
 		  }
 		  /*
 		  // Draw the bonds.
@@ -249,10 +249,10 @@ void canvas_master::render_model_atoms()
 			radius = prefs.screenradius(i);
 			glPushMatrix();
 			  glScalef(radius,radius,radius);
-			  glCallList(globs.lists[GLOB_SELUNITATOM]);
+			  glCallList(list[GLOB_SELUNITATOM]);
 			glPopMatrix();
 		  }
-		  else style_i == DS_SPHERE ? glCallList(globs.lists[GLOB_SELSPHEREATOM]) : glCallList(globs.lists[GLOB_SELTUBEATOM]);
+		  else style_i == DS_SPHERE ? glCallList(list[GLOB_SELSPHEREATOM]) : glCallList(list[GLOB_SELTUBEATOM]);
 		glPopMatrix();
 	}
 	// Turn off blending (if not antialiasing)
@@ -424,7 +424,7 @@ void canvas_master::render_model_3d()
 			glPushMatrix();
 		  	  glTranslatef(worldr.x,worldr.y,worldr.z);
 			  glScalef(radius,radius,radius);
-			  glCallList(globs.lists[GLOB_SELSPHEREATOM]);
+			  glCallList(list[GLOB_SELSPHEREATOM]);
 			glPopMatrix();
 			break;
 		case (UA_GEOMSELECT):
@@ -515,7 +515,7 @@ void canvas_master::render_model_regions()
 			case (RS_SPHEROID):
 				glTranslated(centre.x,centre.y,centre.z);
 				glScaled(size.x,size.y,size.z);
-				glCallList(globs.lists[GLOB_UNITATOM]);
+				glCallList(list[GLOB_UNITATOM]);
 				break;
 			default:
 				printf("render_model_regions :: Region type not done.\n");
@@ -562,11 +562,11 @@ void canvas_master::render_model_cell()
 		mat.get_column_major(glmat);
 		glPushMatrix();
 		  glMultMatrixd(glmat);
-		  if (prefs.should_render(VO_CELL)) glCallList(globs.lists[GLOB_WIREUNITCUBE]);
+		  if (prefs.should_render(VO_CELL)) glCallList(list[GLOB_WIREUNITCUBE]);
 		  vec3<double> l = displaymodel->cell.get_lengths();
 		  glTranslated(-0.5,-0.5,-0.5);
 		  glScaled(1.0/l.x,1.0/l.y,1.0/l.z);
-		  if (prefs.should_render(VO_CELLAXES)) glCallList(globs.lists[GLOB_CELLAXES]);
+		  if (prefs.should_render(VO_CELLAXES)) glCallList(list[GLOB_CELLAXES]);
 		glPopMatrix();
 		// Here, translate the initial drawing position to be 0,0,0 in cell coordinates
 		origin = displaymodel->cell.get_origin();

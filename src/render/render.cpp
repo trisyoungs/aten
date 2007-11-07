@@ -112,7 +112,7 @@ void canvas_master::render_scene(model *source)
 	if (prefs.build_show_guide)
 	{
 		glTranslatef(0.0f,0.0f,-prefs.build_draw_depth);
-		glCallList(globs.lists[GLOB_GUIDE]);
+		glCallList(list[GLOB_GUIDE]);
 		glTranslatef(0.0f,0.0f,prefs.build_draw_depth);
 	}
 
@@ -125,12 +125,12 @@ void canvas_master::render_scene(model *source)
 	// Draw the main model parts
 	// If render_point matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
 	glPushMatrix();
-	  if (render_point == displaymodel->get_log(LOG_TOTAL)) glCallList(list_modelcontents);
+	  if (render_point == displaymodel->get_log(LOG_TOTAL)) glCallList(list[GLOB_MODEL]);
 	  else
 	  {
 		msg(DM_VERBOSE,"Recreating display list for model '%s'...", displaymodel->get_name());
-		glDeleteLists(list_modelcontents,1);
-		glNewList(list_modelcontents,GL_COMPILE_AND_EXECUTE);
+		glDeleteLists(list[GLOB_MODEL],1);
+		glNewList(list[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
 		  render_model_cell();
 		  // Draw the model's atoms, bonds, and selection
@@ -173,7 +173,7 @@ void canvas_master::render_scene(model *source)
 					if ((i == 0) && (j == 0) && (k == 0)) continue;
 					glPushMatrix();
 					glTranslated(k*cz.x,k*cz.y,k*cz.z);
-					glCallList(list_modelcontents);
+					glCallList(list[GLOB_MODEL]);
 					glPopMatrix();
 				}
 				glPopMatrix();

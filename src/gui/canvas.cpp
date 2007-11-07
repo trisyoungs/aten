@@ -24,11 +24,6 @@
 #include "gui/gui.h"
 #include "gui/canvas.h"
 
-// Static variables
-bool canvas_master::mb[MB_NITEMS];
-bool canvas_master::keymod[MK_NITEMS];
-gl_objects canvas_master::globs;
-
 // Constructor
 canvas_master::canvas_master()
 {
@@ -38,7 +33,7 @@ canvas_master::canvas_master()
 	displaymodel = NULL;
 	activemode = UA_NONE;
 	selectedmode = UA_PICKSELECT;
-	list_modelcontents = 0;
+	list[0] = -1;
 }
 
 // Destructor
@@ -99,9 +94,13 @@ void canvas_master::init_gl()
 	dbg_begin(DM_CALLS,"canvas_master::init_gl");
 	if (begin_gl())
 	{
-		// Create model list (if necessary)
-		if (list_modelcontents == 0) list_modelcontents = glGenLists(1);
-		// Clear colour (with alpha = 0)
+		// Create lists for globs
+		if (list[0] != -1) list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
+		for (int n=1; n<GLOB_NITEMS; n++) list[n] = list[GLOB_STICKATOM]+n;
+		// Fill display lists
+		create_lists();
+
+		// Clear colour
 		GLint *clrcol = prefs.get_colour(COL_BG);
 		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 		glClearDepth(1.0);
@@ -160,7 +159,7 @@ void canvas_master::init_gl()
 		end_gl();
 	}
 	else printf("Failed to set-up OpenGL on canvas.\n");
-	dbg_end(DM_CALLS,"canvas_master::setup_gl");
+	dbg_end(DM_CALLS,"canvas_master::init_gl");
 }
 
 // Create display lists
@@ -176,10 +175,227 @@ void canvas_master::create_lists()
 	gluQuadricDrawStyle(quadric2, GLU_FILL);	// Set drawing style of the quadric to solid.
 	gluQuadricNormals(quadric2, GL_SMOOTH);		// Set up normals for shading.
 	gluQuadricTexture(quadric2, GL_FALSE);		// Turn off texturing.
-	// Create display lists for globs
-	lists[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
-	for (int n=0; n<GLOB_NITEMS; n++) lists[n] = lists[GLOB_STICKATOM]+n;
-	
+
+	int n,m, atomdetail, extent, ticks;
+	double delta, tickdelta, tickheight, ticktop, tickbottom, spacing;
+	// Grab some oft-used values
+	atomdetail = prefs.render_atom_detail;
+	spacing = prefs.build_guide_spacing;
+	extent = prefs.build_guide_extent;
+	ticks = prefs.build_guide_ticks;
+
+	/*
+	// Selected Atoms
+	*/
+	gluQuadricDrawStyle(quadric1, GLU_FILL);      // Set drawing style of the quadric to solid.
+	// Enlarged sphere (for selections with DS_TUBE)
+	glNewList(list[GLOB_SELTUBEATOM],GL_COMPILE);
+	  gluSphere(quadric1,prefs.render_tube_size*prefs.render_selection_scale,atomdetail,atomdetail*2);
+	glEndList();
+	// Enlarged sphere (for selections with DS_SPHERE)
+	glNewList(list[GLOB_SELSPHEREATOM],GL_COMPILE);
+	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE]*prefs.render_selection_scale,atomdetail,atomdetail*2);
+	glEndList();
+	// Enlarged sphere (for selections with DS_SCALED)
+	glNewList(list[GLOB_SELUNITATOM],GL_COMPILE);
+	  gluSphere(quadric1,prefs.render_selection_scale,atomdetail,atomdetail*2);
+	glEndList();
+
+	/*
+	// Atoms
+	*/
+	// Stick Atom (for DS_STICK)
+	glNewList(list[GLOB_STICKATOM],GL_COMPILE);
+	  glBegin(GL_LINES);
+	    glVertex3f(-0.5f,0.0f,0.0f); glVertex3f(0.5f,0.0f,0.0f);
+	    glVertex3f(0.0f,-0.5f,0.0f); glVertex3f(0.0f,0.5f,0.0f);
+	    glVertex3f(0.0f,0.0f,-0.5f); glVertex3f(0.0f,0.0f,0.5f);
+	  glEnd();
+	glEndList();
+	gluQuadricDrawStyle(quadric1,GLU_FILL);      // Set drawing style of the quadric to solid.
+	// Atom Sphere (for DS_TUBE)
+	glNewList(list[GLOB_TUBEATOM],GL_COMPILE);
+	  gluSphere(quadric1,prefs.render_atom_size[DS_TUBE],atomdetail*2,atomdetail);
+	glEndList();
+	// Atom Sphere (for DS_SPHERE)
+	glNewList(list[GLOB_SPHEREATOM],GL_COMPILE);
+	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE],atomdetail*2,atomdetail);
+	  //sphere(10,10,prefs.render_atom_size[DS_SPHERE]);
+	gluQuadricDrawStyle(quadric1,GLU_FILL);      // Set drawing style of the quadric to solid.
+	glEndList();
+	// Unit Atom Sphere (for DS_SCALED)
+	glNewList(list[GLOB_UNITATOM],GL_COMPILE);
+	  gluSphere(quadric1,1.0,atomdetail*2,atomdetail);
+	glEndList();
+	gluQuadricDrawStyle(quadric1,GLU_LINE);      // Set drawing style of the quadric to solid.
+	// Wire Atom Sphere (for DS_TUBE)
+	glNewList(list[GLOB_WIRETUBEATOM],GL_COMPILE);
+	  gluSphere(quadric1,prefs.render_tube_size*1.1,atomdetail*2,atomdetail);
+	glEndList();
+	// Wire Atom Sphere (for DS_SPHERE)
+	glNewList(list[GLOB_WIRESPHEREATOM],GL_COMPILE);
+	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE]*1.1,atomdetail*2,atomdetail);
+	glEndList();
+	// Wire Unit Atom Sphere (for DS_SCALED)
+	glNewList(list[GLOB_WIREUNITATOM],GL_COMPILE);
+	  gluSphere(quadric1,1.1,atomdetail*2,atomdetail);
+	glEndList();
+	/*
+	// Cylinders (bonds)
+	*/
+	// Solid cylinder
+	gluQuadricDrawStyle(quadric1,GLU_FILL);
+	glNewList(list[GLOB_CYLINDER],GL_COMPILE);
+	  gluCylinder(quadric2,prefs.render_tube_size,prefs.render_tube_size,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
+	glEndList();
+	// Wireframe cylinder
+	gluQuadricDrawStyle(quadric1,GLU_LINE);
+	glNewList(list[GLOB_WIRECYLINDER],GL_COMPILE);
+	  gluCylinder(quadric2,prefs.render_tube_size*1.25,prefs.render_tube_size*1.25,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
+	glEndList();
+	/*
+	// Others
+	*/
+	// View axes
+	glNewList(list[GLOB_GLOBE],GL_COMPILE);
+	  glBegin(GL_LINES);
+	    // X
+	    glVertex3f(0.6f,0.0f,0.0f); glVertex3f(0.0f,0.0f,0.0f);
+	    glVertex3f(0.65f,-0.05f,0.0f); glVertex3f(0.85f,0.05f,0.0f);
+	    glVertex3f(0.65f,0.05f,0.0f); glVertex3f(0.85f,-0.05f,0.0f);
+	    // Y
+	    glVertex3f(0.0f,0.6f,0.0f); glVertex3f(0.0f,0.0f,0.0f);
+	    glVertex3f(0.0f,0.65f,0.0f); glVertex3f(0.0f,0.75f,0.0f);
+	    glVertex3f(0.0f,0.75f,0.0f); glVertex3f(0.05f,0.85f,0.0f);
+	    glVertex3f(0.0f,0.75f,0.0f); glVertex3f(-0.05f,0.85f,0.0f);
+	    // Z
+	    glVertex3f(0.0f,0.0f,0.6f); glVertex3f(0.0f,0.0f,0.0f);
+	    glVertex3f(-0.05f,0.0f,0.65f); glVertex3f(0.05f,0.0f,0.65f);
+	    glVertex3f(0.05f,0.0f,0.65f); glVertex3f(-0.05f,0.0f,0.85f);
+	    glVertex3f(-0.05f,0.0f,0.85f); glVertex3f(0.05f,0.0f,0.85f);
+	  glEnd();
+	  gluQuadricDrawStyle(quadric1,GLU_LINE);
+	  gluSphere(quadric1,0.5,10,20);
+	glEndList();
+	// Drawing guide
+	delta = extent * spacing;
+	tickdelta = spacing / ticks;
+	tickheight = spacing * 0.05;
+	glNewList(list[GLOB_GUIDE],GL_COMPILE);
+	  glBegin(GL_LINES);
+	    for (n=-extent; n<=extent; n++)
+	    {
+		// Horizontal gridlines
+	  	glVertex3f(-delta,spacing*n,0.0f); glVertex3f(delta,spacing*n,0.0f);
+		// Vertical gridlines
+	  	glVertex3f(spacing*n,-delta,0.0f); glVertex3f(spacing*n,delta,0.0f);
+		// Tick marks
+		n == -extent ? tickbottom = spacing*n : tickbottom = spacing*n-tickheight;
+		n == extent ? ticktop = spacing*n : ticktop = spacing*n+tickheight;
+		for (m=0; m<ticks*extent*2; m++)
+			if (m % ticks != 0)
+			{
+				// Ticks on horizontal gridlines
+				glVertex3f(-delta+m*tickdelta,ticktop,0.0f);
+				glVertex3f(-delta+m*tickdelta,tickbottom,0.0f);
+				// Ticks on vertical gridlines
+				glVertex3f(ticktop,-delta+m*tickdelta,0.0f);
+				glVertex3f(tickbottom,-delta+m*tickdelta,0.0f);
+			}
+	    }
+	  glEnd();
+	glEndList();
+	// Unit Circle
+	int nsegs = 36;
+	glNewList(list[GLOB_CIRCLE],GL_COMPILE);
+	  glBegin(GL_LINE_LOOP);
+	    for (int i=0; i < nsegs; i++)
+	    {
+		float degInRad = i*(360.0/nsegs)/DEGRAD;
+		glVertex2f(cos(degInRad),sin(degInRad));
+	    }
+	  glEnd();
+	glEndList();
+	// Unit Wire Cube (centred at origin)
+	glNewList(list[GLOB_WIREUNITCUBE],GL_COMPILE);
+	  glBegin(GL_LINE_LOOP);
+	    glVertex3d(-0.5,-0.5,-0.5);
+	    glVertex3d(0.5,-0.5,-0.5);
+	    glVertex3d(0.5,0.5,-0.5);
+	    glVertex3d(-0.5,0.5,-0.5);
+	    glVertex3d(-0.5,-0.5,-0.5);
+	    glVertex3d(-0.5,-0.5,0.5);
+	    glVertex3d(0.5,-0.5,0.5);
+	    glVertex3d(0.5,0.5,0.5);
+	    glVertex3d(-0.5,0.5,0.5);
+	    glVertex3d(-0.5,-0.5,0.5);
+	  glEnd();
+	  glBegin(GL_LINES);
+	    glVertex3d(-0.5,0.5,-0.5);
+	    glVertex3d(-0.5,0.5,0.5);
+	    glVertex3d(0.5,-0.5,-0.5);
+	    glVertex3d(0.5,-0.5,0.5);
+	    glVertex3d(0.5,0.5,-0.5);
+	    glVertex3d(0.5,0.5,0.5);
+	  glEnd();
+	glEndList();
+	// Unit Solid Cube (centred at origin)
+	glNewList(list[GLOB_UNITCUBE],GL_COMPILE);
+	  glBegin(GL_QUADS);
+	    glVertex3d(-0.5,-0.5,-0.5);
+	    glVertex3d(0.5,-0.5,-0.5);
+	    glVertex3d(0.5,0.5,-0.5);
+	    glVertex3d(-0.5,0.5,-0.5);
+	    glVertex3d(-0.5,-0.5,0.5);
+	    glVertex3d(0.5,-0.5,0.5);
+	    glVertex3d(0.5,0.5,0.5);
+	    glVertex3d(-0.5,0.5,0.5);
+
+	    glVertex3d(-0.5,-0.5,-0.5);
+	    glVertex3d(-0.5,-0.5,0.5);
+	    glVertex3d(0.5,-0.5,0.5);
+	    glVertex3d(0.5,-0.5,-0.5);
+	    glVertex3d(-0.5,0.5,-0.5);
+	    glVertex3d(-0.5,0.5,0.5);
+	    glVertex3d(0.5,0.5,0.5);
+	    glVertex3d(0.5,0.5,-0.5);
+
+	    glVertex3d(-0.5,-0.5,-0.5);
+	    glVertex3d(-0.5,0.5,-0.5);
+	    glVertex3d(-0.5,0.5,0.5);
+	    glVertex3d(-0.5,-0.5,0.5);
+	    glVertex3d(0.5,-0.5,-0.5);
+	    glVertex3d(0.5,0.5,-0.5);
+	    glVertex3d(0.5,0.5,0.5);
+	    glVertex3d(0.5,-0.5,0.5);
+	  glEnd();
+	glEndList();
+	// Cell Axis Arrows
+	glNewList(list[GLOB_CELLAXES],GL_COMPILE);
+	  double asize = 0.5, awidth = 0.2, posoffset = 0.5;
+	  for (int i=0; i<3; i++)
+	  {
+		glPushMatrix();
+		  if (i == 1) glRotated(-90.0,0.0,1.0,0.0);
+		  else if (i == 2) glRotated(90.0,0.0,0.0,1.0);
+		  glPushMatrix();
+		    glScaled(0.5,awidth,awidth);
+		    glTranslated(0.5,0.0,0.0);
+		    glCallList(list[GLOB_UNITCUBE]);
+		  glPopMatrix();
+		  glTranslated(posoffset,0.0,0.0);
+		  glBegin(GL_TRIANGLE_FAN);
+		    glVertex3d(asize,0.0,0.0);
+		    glVertex3d(0.0,awidth,awidth);
+		    glVertex3d(0.0,awidth,-awidth);
+		    glVertex3d(0.0,-awidth,-awidth);
+		    glVertex3d(0.0,-awidth,awidth);
+		    glVertex3d(0.0,awidth,awidth);
+		  glEnd();
+		glPopMatrix();
+	  }
+	glEndList();
+
 	dbg_end(DM_CALLS,"canvas_master::create_lists");
 }
 

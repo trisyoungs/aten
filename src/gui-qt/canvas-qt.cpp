@@ -85,7 +85,6 @@ void widgetcanvas::realize()
 	dbg_begin(DM_CALLS,"widgetcanvas::realize");
 	valid = TRUE;
 	init_gl();
-	canvas_master::globs.initialise();
 	dbg_end(DM_CALLS,"widgetcanvas::realize");
 }
 

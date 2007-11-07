@@ -29,7 +29,7 @@ General Qt To-Do list:
 	- Prefs window (partial)
 	- Minimiser stack page (partial - needs current energy/forces)
 	- Progress dialogs are not application modal. Move to statusbar widget?
-	- Toolbar (with hotkeys) to set mode of left mouse button
+	- List of non-periodic models in disorder stack page (with checkboxes?)
 
 Manual To-Do list:
 	- Section on forcefields

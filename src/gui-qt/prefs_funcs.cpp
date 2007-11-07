@@ -143,7 +143,7 @@ void AtenPrefs::on_ElementList_currentRowChanged(int row)
 
 void update_after_viewprefs()
 {
-	canvas_master::globs.recreate_all();
+	gui.mainview.create_lists();
 	master.get_currentmodel()->project_all();
 	master.get_currentmodel()->log_change(LOG_VISUAL);
 	gui.refresh();

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>870</width>
+    <width>875</width>
     <height>578</height>
    </rect>
   </property>
@@ -195,7 +195,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>5</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -5981,7 +5981,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>870</width>
+     <width>875</width>
      <height>25</height>
     </rect>
    </property>
@@ -5999,37 +5999,6 @@
     <addaction name="actionFileSaveImage" />
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
-   </widget>
-   <widget class="QMenu" name="ModelMenu" >
-    <property name="title" >
-     <string>&amp;Model</string>
-    </property>
-    <addaction name="actionFFManager" />
-    <addaction name="actionFFType" />
-    <addaction name="actionFFUntype" />
-    <addaction name="separator" />
-    <addaction name="actionFoldAtoms" />
-    <addaction name="actionFoldMolecules" />
-    <addaction name="separator" />
-    <addaction name="actionModelNext" />
-    <addaction name="actionModelPrevious" />
-   </widget>
-   <widget class="QMenu" name="menuTools" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <widget class="QMenu" name="menuToolbars" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-     <addaction name="actionCommandToolBarVisibility" />
-     <addaction name="actionEditToolBarVisibility" />
-     <addaction name="actionFileToolBarVisibility" />
-     <addaction name="actionStyleToolBarVisibility" />
-     <addaction name="actionTrajectoryToolBarVisibility" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="menuToolbars" />
    </widget>
    <widget class="QMenu" name="EdiTMenu" >
     <property name="title" >
@@ -6107,6 +6076,38 @@
     <addaction name="separator" />
     <addaction name="actionAtomSetVisible" />
     <addaction name="actionAtomSetInvisible" />
+   </widget>
+   <widget class="QMenu" name="ModelMenu" >
+    <property name="title" >
+     <string>&amp;Model</string>
+    </property>
+    <addaction name="actionFFManager" />
+    <addaction name="actionFFType" />
+    <addaction name="actionFFUntype" />
+    <addaction name="separator" />
+    <addaction name="actionFoldAtoms" />
+    <addaction name="actionFoldMolecules" />
+    <addaction name="separator" />
+    <addaction name="actionModelNext" />
+    <addaction name="actionModelPrevious" />
+   </widget>
+   <widget class="QMenu" name="menuTools" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="menuToolbars" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionCommandToolBarVisibility" />
+     <addaction name="actionEditToolBarVisibility" />
+     <addaction name="actionFileToolBarVisibility" />
+     <addaction name="actionStyleToolBarVisibility" />
+     <addaction name="actionTrajectoryToolBarVisibility" />
+     <addaction name="actionMouseToolBarVisibility" />
+    </widget>
+    <addaction name="actionPreferences" />
+    <addaction name="menuToolbars" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EdiTMenu" />
@@ -6224,6 +6225,17 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="MouseToolBar" >
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="actionMouseInteract" />
+   <addaction name="actionMouseRotate" />
+   <addaction name="actionMouseTranslate" />
   </widget>
   <action name="actionFileOpen" >
    <property name="icon" >
@@ -6874,19 +6886,76 @@
     <string>Trajectory</string>
    </property>
   </action>
+  <action name="actionMouseInteract" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/mouse/icons/mouse_interact.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Interact</string>
+   </property>
+   <property name="shortcut" >
+    <string>F1</string>
+   </property>
+   <property name="shortcutContext" >
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="actionMouseRotate" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/mouse/icons/mouse_rotate.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Rotate</string>
+   </property>
+   <property name="shortcut" >
+    <string>F2</string>
+   </property>
+   <property name="shortcutContext" >
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="actionMouseTranslate" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/mouse/icons/mouse_translate.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Translate</string>
+   </property>
+   <property name="shortcut" >
+    <string>F3</string>
+   </property>
+   <property name="shortcutContext" >
+    <enum>Qt::ApplicationShortcut</enum>
+   </property>
+  </action>
+  <action name="actionMouseZRotate" >
+   <property name="text" >
+    <string>ZRotate</string>
+   </property>
+  </action>
+  <action name="actionMouseToolBarVisibility" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Mouse</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
-  <customwidget>
-   <class>TTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>ttreewidget.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TTabBar</class>
-   <extends>QWidget</extends>
-   <header>ttabbar.uih</header>
-  </customwidget>
   <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
@@ -6896,6 +6965,16 @@
    <class>TCanvas</class>
    <extends>QWidget</extends>
    <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>ttreewidget.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TTabBar</class>
+   <extends>QWidget</extends>
+   <header>ttabbar.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
