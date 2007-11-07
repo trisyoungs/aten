@@ -35,40 +35,6 @@
 enum glob_list { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_WIRECYLINDER,
 	GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_NITEMS };
 
-class gl_objects
-{
-	private:
-	// Quadric objects
-	GLUquadricObj *quadric1, *quadric2;
 
-	/*
-	// Display Lists
-	*/
-	private:
-	// Create static globs for rendering
-	void generate_static();
-	// Create globs for rendering that are prone to change regularly
-	void generate_dynamic();
-	// Delete static globs
-	void clear_static();
-	// Delete dynamic globs
-	void clear_dynamic();
-	// Custom sphere
-	void sphere(int, int, double);
-
-	public:
-	// Sorted display list ID's
-	GLuint lists[GLOB_NITEMS];
-	// Create display lists for globs
-	void initialise();
-	// Initial create all 
-	void create_all();
-	// Delete before exit
-	void delete_all();
-	// Recreate all GL objects
-	void recreate_all();
-	// Recreate only dynamic GL objects
-	void recreate_dynamic();
-};
 
 #endif

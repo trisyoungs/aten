@@ -40,18 +40,6 @@ master_data::master_data()
 	sketchelement = 6;
 	homedir = "/tmp";
 
-	// Timer variables
-	time_last = clock();
-	time_current = clock();
-	timer_changedelta = 1;
-	timer_eventcurrent = 1;
-	timer_status = TM_INACTIVE;
-	timer_eventsize = 15;
-	timer_period = 10;
-	timer_delay = CLOCKS_PER_SEC / timer_period;
-	use_timer = FALSE;
-	clocks_per_ms = CLOCKS_PER_SEC / 1000;
-
 	// Clipboards
 	privclip.set_quiet(TRUE);
 
@@ -265,97 +253,6 @@ void master_data::dereference_ff(forcefield *xff)
 		m = m->next;
 	}
 	dbg_end(DM_CALLS,"master::dereference_ff");
-}
-
-/*
-// Timer Events
-*/
-
-void master_data::set_timer_period(int newinterval)
-{
-	// Sets timer variables based on the value of 'timer_per_second'
-	timer_period = newinterval;
-	timer_delay = CLOCKS_PER_SEC / timer_period;
-}
-
-void master_data::set_timer_eventsize(int newsize)
-{
-	// Sets timer variables based on the value of 'timer_per_second'
-	// If events are currently running, stop them first, then restart
-	if (timer_status == TM_ACTIVE)
-	{
-		stop_timer_events();
-		timer_eventsize = newsize;
-		timer_eventcurrent = 1;
-		timer_changedelta = 1;
-		start_timer_events();
-	}
-	else timer_eventsize = newsize;
-}
-
-bool master_data::on_idle()
-{
-	#ifdef HAS_GUI
-		// Idle function
-		static int n = 0;
-		// Get current time
-		time_current = clock();
-		// Check against last time + timer delay and perform actions if we're due
-		if (time_current > (time_last + timer_delay))
-		{
-			// Update changing variable
-			if (timer_eventcurrent == 0 || timer_eventcurrent == timer_eventsize) timer_changedelta = -timer_changedelta;
-			timer_eventcurrent += timer_changedelta;
-			timer_eventscaled = float(timer_eventcurrent) / timer_eventsize;
-			// Now update other variables
-			// -- Selection scale
-			float maxscale = prefs.get_selection_scale();
-			prefs.set_selection_scale_current(1.0 + (maxscale - 1.0) * timer_eventscaled);
-			canvas_master::globs.recreate_dynamic();
-			// Lastly, store new last_time
-			gui.refresh();
-			time_last = clock();
-			#ifdef SPEEDTEST
-				printf("SPEEDTEST : %i renders per second.\n",speedtest_numrenders);
-				speedtest_numrenders = 0;
-			#endif
-		}
-		#ifdef SPEEDTEST
-			currentmodel->rotate(-1.0,0.0);
-			gui.postredisplay();
-		#endif
-	#endif
-	// END TEST
-	// Check to see if a request has been lodged for these events to be stopped
-	if (timer_status == TM_REQUEST_STOP)
-	{
-		timer_status == TM_INACTIVE;
-		return FALSE;
-	}
-	else return TRUE;
-}
-
-bool on_idle_wrapper(void *data)
-{
-	// Call the master's on_idle function...
-	return master.on_idle();
-}
-
-void master_data::start_timer_events()
-{
-	// Activate the timer (if it isn't already)
-	if (timer_status != TM_INACTIVE) return;
-	timer_status = TM_ACTIVE;
-	// TODO g_idle_add_full(G_PRIORITY_DEFAULT_IDLE,on_idle_wrapper,NULL,NULL);
-}
-
-void master_data::stop_timer_events()
-{
-	// Deactivate timer events.
-	// Request the timer to stop by setting timer_status to TM_REQUEST_STOP, and wait until timer_status becomes TM_INACTIVE.
-	if (timer_status != TM_ACTIVE) return;
-	timer_status = TM_REQUEST_STOP;
-	// TODO while (timer_status != TM_INACTIVE) if (gtk_events_pending()) gtk_main_iteration();
 }
 
 // Load filters

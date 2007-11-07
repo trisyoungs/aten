@@ -41,6 +41,10 @@ enum user_action { UA_NONE,
 // Keyboard Key Codes (translated from GTK/KDE keysyms)
 enum key_code { KC_OTHER, KC_ESCAPE, KC_SHIFT_L, KC_SHIFT_R, KC_CONTROL_L, KC_CONTROL_R, KC_ALT_L, KC_ALT_R, KC_LEFT, KC_RIGHT, KC_UP, KC_DOWN, KC_NITEMS };
 
+// GL Objects
+enum glob_list { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_WIRECYLINDER,
+	GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_NITEMS };
+
 // Forward declarations
 class atom;
 class bond;
@@ -76,8 +80,6 @@ class canvas_master
 	~canvas_master();
 	// Set the internal name of the canvas
 	void set_name(const char *s) { name = s; }
-	// Objects for GL rendering
-	static gl_objects globs;
 	// Return the current height of the drawing area
 	float get_height() { return h; }
 	// Return the current width of the drawing area
@@ -98,6 +100,17 @@ class canvas_master
 	virtual void expose();
 	// Swap buffers
 	virtual void swap_buffers();
+
+	/*
+	// Rendering display lists
+	*/
+	private:
+	// Quadric objects
+	GLUquadricObj *quadric1, *quadric2;
+	// Create static globs for rendering
+	void create_lists();
+	// Display list ID's
+	GLuint list[GLOB_NITEMS];
 
 	/*
 	// General Rendering Objects / Calls
