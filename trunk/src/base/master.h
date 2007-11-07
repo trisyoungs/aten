@@ -30,9 +30,6 @@
 
 #define MAXCLIOPTS 50
 
-// Timer events status
-enum timer_mode { TM_INACTIVE, TM_REQUEST_STOP, TM_ACTIVE };
-
 // Program Modes
 enum prog_mode { PM_SCRIPT, PM_BATCH, PM_INTERACTIVE, PM_CONSOLE, PM_GUI };
 
@@ -158,47 +155,9 @@ class master_data
 	clipboard privclip;
 
 	/*
-	// System Variables
+	// Locations
 	*/
-	private:
-	// Previous ticks count registered by on_idle()
-	clock_t time_last;
-	// Current ticks count registered by on_idle()
-	clock_t time_current;
-	// Current delta (+1 or -1) of the changing variable
-	int timer_changedelta;
-	// Changing variable (1 - prefs.timer_eventsize)
-	int timer_eventcurrent;
-	// Scaled changing var (between 0.0 and 1.0)
-	float timer_eventscaled;
-	// Number of 'ticks' per second for changing var
-	int timer_delay;
-	// Whether timer events are currently active
-	timer_mode timer_status;
-	// Number of steps in the changing var
-	int timer_eventsize;
-	// Number of times per second to perform idle 'events'
-	int timer_period;
-
 	public:
-	// Number of clock cycles per millisecond
-	int clocks_per_ms;
-	// Whether to use timer events
-	bool use_timer;
-	// Sets the current timer_per_second
-	void set_timer_period(int);
-	// Return the current timer_per_second
-	int get_timer_period() { return timer_period; }
-	// Sets the length scale of the timer event
-	void set_timer_eventsize(int);
-	// Return the length scale of the timer event
-	int get_timer_eventsize() { return timer_eventsize; }
-	// Idle function (called by (*)(void*)onidle)
-	bool on_idle();
-	// Activate timer events
-	void start_timer_events();
-	// Deactivate timer events
-	void stop_timer_events();
 	// Location of user's home directory
 	dnchar homedir;
 	// Current working directory

@@ -108,9 +108,6 @@ void gui_qt::run(int argc, char **argv)
 	mainwindow->refresh_gridspage();
 	mainwindow->refresh_forcefieldpage();
 
-	// Start timer
-	if (master.use_timer) master.start_timer_events();
-
 	int n = app->exec();
 	dbg_end(DM_CALLS,"gui_qt::run");
 }
