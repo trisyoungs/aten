@@ -320,6 +320,7 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this VDW type.\n");
+				break;
 		}
 		// Only convert those parameters for which the 'convertgen[]' flag is TRUE
 		if (ffa->generator != NULL)
@@ -341,6 +342,7 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this bond type.\n");
+				break;
 		}
 	}
 	// Angles
@@ -356,6 +358,7 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this angle type.\n");
+				break;
 		}
 	}
 	// Torsions
@@ -376,6 +379,7 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this torsion type.\n");
+				break;
 		}
 	}
 	dbg_end(DM_CALLS,"forcefield::convert_parameters");

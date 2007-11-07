@@ -680,6 +680,7 @@ void variable_list::set_patbound_variables(const char *varname, patbound *pb)
 				break;
 			default:	
 				printf("variable_list::set_patbound_variables <<<< Funcform not defined >>>>\n");
+				break;
 		}
 		
 	}

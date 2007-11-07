@@ -1,5 +1,5 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 10/10/07
+# Last modified: 07/11/2007
 exportfield
 	name "DL_POLY Forcefield Specification"
 	nickname dlpoly
@@ -31,7 +31,6 @@ exportfield
 		end
 		# Angles in pattern
 		writeline "angles *@2 $p.nangles"
-		warn "Warning TEST"
 		forffangles $a $p
 			# Convert functional form to be recognised by DL_POLY
 			if $a.funcform = harmonic
@@ -45,9 +44,9 @@ exportfield
 		forfftorsions $t $p
 			# Convert functional form to be recognised by DL_POLY
 			if $t.funcform = cosine
-				writeline "cos@8 $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.param_a@10.4 $t.param_b@10.4"
+				writeline "cos@8 $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4"
 			elseif $t.funcform = cos3
-				writeline "cos3@8 $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.param_a@10.4 $t.param_b@10.4"
+				writeline "cos3@8 $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4"
 			else
 				warn "Functional form of torsion term not accounted for in export filter."
 			end

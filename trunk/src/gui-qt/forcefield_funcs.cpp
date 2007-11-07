@@ -49,11 +49,11 @@ void AtenForm::on_ForcefieldList_currentRowChanged(int row)
 void AtenForm::on_LoadForcefieldButton_clicked(bool checked)
 {
 	QString filename;
-	if (openffdialog->exec() == 1)
+	if (dialog[FT_FIELD_IMPORT]->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = openffdialog->selectedFilter();
-		filename = openffdialog->selectedFiles().first();
+		QString filter = dialog[FT_FIELD_IMPORT]->selectedFilter();
+		filename = dialog[FT_FIELD_IMPORT]->selectedFiles().first();
 		master.load_ff(qPrintable(filename));
 		refresh_forcefieldpage();
 	}

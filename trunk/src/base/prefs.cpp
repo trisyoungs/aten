@@ -79,8 +79,8 @@ density_unit DU_from_text(const char *s)
 	{ return (density_unit) enum_search("density units",DU_NITEMS,DU_keywords,s); }
 
 // Energy Units
-const char *EU_strings[EU_NITEMS] = { "J/mol", "kJ/mol", "cal/mol", "kcal/mol", "Hartrees" };
-const char *EU_keywords[EU_NITEMS] = { "j", "kj", "cal", "kcal", "ha" };
+const char *EU_strings[EU_NITEMS] = { "J/mol", "kJ/mol", "cal/mol", "kcal/mol", "eV/mol", "Ha/mol" };
+const char *EU_keywords[EU_NITEMS] = { "j", "kj", "cal", "kcal", "ev", "ha" };
 const char *text_from_EU(energy_unit i)
 	{ return EU_strings[i]; }
 energy_unit EU_from_text(const char *s)
@@ -220,7 +220,8 @@ prefs_data::prefs_data()
 	energy_factors[EU_KJ] = 1000.0;
 	energy_factors[EU_CAL] = 4.184;
 	energy_factors[EU_KCAL] = 4184.0;
-	energy_factors[EU_HARTREE] = 1.0;
+	energy_factors[EU_EV] = 96485.14925;
+	energy_factors[EU_HARTREE] = 2625494.616;
 	set_internal_units(EU_KJ);
 	density_internal = DU_GPERCM;
 

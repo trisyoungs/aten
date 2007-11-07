@@ -170,8 +170,8 @@ class filter
 	void export_field(model *source, const char *filename);
 	// Open trajectory file
 	bool read_trajectory(model *dest, bool isheader);
-	// Import surface file
-	void import_surface(const char *surfacefile);
+	// Import grid file
+	void import_grid(const char *gridfile);
 };
 
 #endif
