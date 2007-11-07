@@ -24,7 +24,6 @@
 #include "base/elements.h"
 #include "classes/cell.h"
 #include "classes/atom.h"
-#include "render/globs.h"
 #include "gui/gui.h"
 #ifdef IS_MAC
 	#include <GLUT/glut.h>
@@ -98,7 +97,7 @@ void canvas_master::gl_circle(double x, double y, double r)
 	glPushMatrix();
 	  glTranslated(x,y,0.0);
 	  glScalef(r,r,r);
-	  glCallList(globs.lists[GLOB_CIRCLE]);
+	  glCallList(list[GLOB_CIRCLE]);
 	glPopMatrix();
 }
 
@@ -151,14 +150,14 @@ void canvas_master::gl_subsel_3d()
 		  renderstyle == DS_INDIVIDUAL ? style_i = i->get_style() : style_i = renderstyle;
 		  switch (style_i)
 		  {
-			case (DS_STICK): glCallList(globs.lists[GLOB_WIRETUBEATOM]); break;
-			case (DS_TUBE):	glCallList(globs.lists[GLOB_WIRETUBEATOM]); break;
-			case (DS_SPHERE): glCallList(globs.lists[GLOB_WIRESPHEREATOM]); break;
+			case (DS_STICK): glCallList(list[GLOB_WIRETUBEATOM]); break;
+			case (DS_TUBE):	glCallList(list[GLOB_WIRETUBEATOM]); break;
+			case (DS_SPHERE): glCallList(list[GLOB_WIRESPHEREATOM]); break;
 			case (DS_SCALED): 
 				radius = prefs.screenradius(i);
 				glPushMatrix();
 				  glScaled(radius,radius,radius);
-				  glCallList(globs.lists[GLOB_WIREUNITATOM]);
+				  glCallList(list[GLOB_WIREUNITATOM]);
 				glPopMatrix();
 				break;
 		  }
@@ -180,11 +179,11 @@ void canvas_master::render_rotation_globe(double *rmat, double camrot)
 	glMultMatrixd(pmat);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(camrot*DEGRAD,0.0f,0.0f,1.0f);
+	glRotated(camrot*DEGRAD,0.0,0.0,1.0);
 	glMultMatrixd(rmat);
 	glLineWidth(1.0);
 	glDisable(GL_LIGHTING);
-	glCallList(globs.lists[GLOB_GLOBE]);
+	glCallList(list[GLOB_GLOBE]);
 	// Reset the viewport back to the entire canvas
 	glViewport(0,0,(int)w,(int)h);
 }
@@ -201,8 +200,8 @@ void canvas_master::gl_cylinder(const vec3<double> &rj, double rij, bool addwire
 	  else glRotated(phi, -rj.y/rij , rj.x/rij ,0.0f);
 	  glScaled(1.0,1.0,rij);
 	  // Draw cylinder (bond)
-	  glCallList(globs.lists[GLOB_CYLINDER]);
-	  if (addwire) glCallList(globs.lists[GLOB_WIRECYLINDER]);
+	  glCallList(list[GLOB_CYLINDER]);
+	  if (addwire) glCallList(list[GLOB_WIRECYLINDER]);
 	glPopMatrix();
 }
 
@@ -229,7 +228,7 @@ void canvas_master::gl_ellipsoid(vec3<double> *pos, vec3<double> *lookat, vec3<d
 	    }
 	    else glRotatef(phi, -direction.y , direction.x ,0.0f);
 	    glScaled(scale->x,scale->y,scale->z);
-	    glCallList(globs.lists[GLOB_SPHEREATOM]);
+	    glCallList(list[GLOB_SPHEREATOM]);
 	  glPopMatrix();
 	glPopMatrix();
 }
@@ -255,7 +254,7 @@ void canvas_master::gl_ellipsoid(const vec3<double> &centre, const vec3<double> 
 	  glPushMatrix();
 	    rotmat.get_row_major(r);
 	    glMultMatrixd(r);
-	    glCallList(globs.lists[GLOB_UNITATOM]);
+	    glCallList(list[GLOB_UNITATOM]);
 	  glPopMatrix();
 	glPopMatrix();
 }

@@ -118,7 +118,6 @@ prefs_data::prefs_data()
 	render_atom_size[DS_SCALED] = 1.0;     // Used as a general scaling factor for all atoms
 	render_tube_size = 0.1;
 	render_selection_scale = 1.5;
-	render_selection_scale_current = 1.5;
 	render_globe_size = 75;
 	render_atom_detail = 20;
 	render_bond_detail = 6;

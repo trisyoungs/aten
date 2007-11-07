@@ -24,8 +24,12 @@
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"
-#include "render/globs.h"
 #include "base/prefs.h"
+#ifdef IS_MAC
+	#include <GLUT/glut.h>
+#else
+	#include <GL/glut.h>
+#endif
 
 // Actions
 enum user_action { UA_NONE,
@@ -43,7 +47,7 @@ enum key_code { KC_OTHER, KC_ESCAPE, KC_SHIFT_L, KC_SHIFT_R, KC_CONTROL_L, KC_CO
 
 // GL Objects
 enum glob_list { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_WIRECYLINDER,
-	GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_NITEMS };
+	GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_MODEL, GLOB_NITEMS };
 
 // Forward declarations
 class atom;
@@ -107,10 +111,12 @@ class canvas_master
 	private:
 	// Quadric objects
 	GLUquadricObj *quadric1, *quadric2;
-	// Create static globs for rendering
-	void create_lists();
 	// Display list ID's
 	GLuint list[GLOB_NITEMS];
+
+	public:
+	// Create globs for rendering
+	void create_lists();
 
 	/*
 	// General Rendering Objects / Calls
@@ -165,8 +171,6 @@ class canvas_master
 	// Scene Rendering
 	*/
 	private:
-	// GL Display list of the last scene drawn
-	GLuint list_modelcontents;
 	// Render the rotation globe
 	void render_rotation_globe(double *rotmat, double camrot);
 	// Render the model specified

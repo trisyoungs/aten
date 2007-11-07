@@ -37,17 +37,20 @@ void TCanvas::initializeGL()
 {
 	// Call the realize method of the associated widgetcanvas.
 	if (canvas != NULL) canvas->realize();
+	else printf("NO CANVAS SET INIT\n");
 }
 
 void TCanvas::paintGL()
 {
 	if (canvas != NULL) canvas->render_scene(master.get_currentmodel()->get_render_source());
+	else printf("NO CANVAS SET PAINT\n");
 	swapBuffers();
 }
 
 void TCanvas::resizeGL(int width, int height)
 {
 	if (canvas != NULL) canvas->configure();
+	else printf("NO CANVAS SET RESIZE\n");
 }
 
 void TCanvas::mousePressEvent(QMouseEvent *event)

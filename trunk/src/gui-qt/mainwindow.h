@@ -95,6 +95,14 @@ class AtenForm : public QMainWindow
 	void on_StyleToolBar_actionTriggered(QAction *action);
 
 	/*
+	// Mouse Toolbat
+	*/
+	private slots:
+	void on_actionMouseInteract_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_INTERACT); }
+	void on_actionMouseRotate_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_VIEWROTATE); }
+	void on_actionMouseTranslate_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_VIEWTRANSLATE); }
+
+	/*
 	// File Actions
 	*/
 	public:
@@ -159,7 +167,7 @@ class AtenForm : public QMainWindow
 	void on_actionStyleToolBarVisibility_triggered(bool v) { ui.StyleToolBar->setVisible(v); }
 	void on_actionTrajectoryToolBarVisibility_triggered(bool v) { ui.TrajectoryToolBar->setVisible(v); }
 	void on_actionCommandToolBarVisibility_triggered(bool v) { ui.CommandToolBar->setVisible(v); }
-
+	void on_actionMouseToolBarVisibility_triggered(bool v) { ui.MouseToolBar->setVisible(v); }
 	/*
 	// Widget Stack Functions
 	*/

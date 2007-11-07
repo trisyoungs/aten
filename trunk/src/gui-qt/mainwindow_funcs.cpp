@@ -65,9 +65,16 @@ void AtenForm::finalise_ui()
 	alignmentGroup->addAction(ui.actionStyleScaled);
 	alignmentGroup->addAction(ui.actionStyleIndividual);
 
-	// Hide trajectory and command toolbars initially
+	// Create QActionGroup for Mouse toolbar
+	QActionGroup *mousegroup = new QActionGroup(this);
+	mousegroup->addAction(ui.actionMouseInteract);
+	mousegroup->addAction(ui.actionMouseRotate);
+	mousegroup->addAction(ui.actionMouseTranslate);
+
+	// Hide some toolbars initially
 	ui.TrajectoryToolBar->setVisible(FALSE);
 	ui.CommandToolBar->setVisible(FALSE);
+	ui.MouseToolBar->setVisible(FALSE);
 
 	// Add text edit to CommandToolBar
 	command_edit = new QLineEdit(this);

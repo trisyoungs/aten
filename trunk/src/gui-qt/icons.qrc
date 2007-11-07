@@ -60,6 +60,11 @@
         <file>icons/measure_distance.svg</file>
         <file>icons/measure_torsion.svg</file>
     </qresource>
+    <qresource prefix="/mouse" >
+        <file>icons/mouse_interact.svg</file>
+        <file>icons/mouse_rotate.svg</file>
+        <file>icons/mouse_translate.svg</file>
+    </qresource>
     <qresource prefix="/playback" >
         <file>icons/traj_first.svg</file>
         <file>icons/traj_last.svg</file>
