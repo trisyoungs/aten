@@ -82,3 +82,8 @@ void AtenForm::on_ElementEdit_editingFinished()
 		ui.ElementUserButton->setChecked(TRUE);
 	}
 }
+
+void AtenForm::on_AddHydrogenButton_clicked(bool on)
+{
+	printf("TODO\n");
+}

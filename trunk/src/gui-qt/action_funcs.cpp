@@ -303,6 +303,51 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 	}
 }
 
+void AtenForm::on_actionFileLoadForcefield_triggered(bool checked)
+{
+	QString filename;
+	if (dialog[FT_FIELD_IMPORT]->exec() == 1)
+	{
+		// Get selected filter in file dialog
+		QString filter = dialog[FT_FIELD_IMPORT]->selectedFilter();
+		filename = dialog[FT_FIELD_IMPORT]->selectedFiles().first();
+		master.load_ff(qPrintable(filename));
+		refresh_forcefieldpage();
+	}
+}
+
+void AtenForm::on_actionFileLoadGridData_triggered(bool checked)
+{
+	filter *f;
+	grid *g;
+	QString filename;
+	QStringList filenames;
+	if (dialog[FT_GRID_IMPORT]->exec() == 1)
+	{
+		// Get selected filter in file dialog
+		QString filter = dialog[FT_GRID_IMPORT]->selectedFilter();
+		// Find the corresponding Aten filter that was selected
+		for (f = master.filters[FT_GRID_IMPORT].first(); f != NULL; f = f->next)
+			if (strcmp(f->get_description(),qPrintable(filter)) == 0) break;
+		// Get selected filename list
+		filenames = dialog[FT_GRID_IMPORT]->selectedFiles();
+		// Loop over selected files
+		for (int i = 0; i < filenames.size(); ++i)
+		{
+			filename = filenames.at(i);
+			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+			if (f != NULL) f->import_grid(qPrintable(filename));
+			else
+			{
+				f = master.probe_file(qPrintable(filename), FT_GRID_IMPORT);
+				if (f != NULL) f->import_grid(qPrintable(filename));
+			}
+		}
+		refresh_gridspage();
+		gui.refresh();
+	}
+}
+
 void AtenForm::on_actionFileQuit_triggered(bool checked)
 {
 	gui.close_application();

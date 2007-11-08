@@ -46,19 +46,6 @@ void AtenForm::on_ForcefieldList_currentRowChanged(int row)
 	master.set_currentff_by_id(row);
 }
 
-void AtenForm::on_LoadForcefieldButton_clicked(bool checked)
-{
-	QString filename;
-	if (dialog[FT_FIELD_IMPORT]->exec() == 1)
-	{
-		// Get selected filter in file dialog
-		QString filter = dialog[FT_FIELD_IMPORT]->selectedFilter();
-		filename = dialog[FT_FIELD_IMPORT]->selectedFiles().first();
-		master.load_ff(qPrintable(filename));
-		refresh_forcefieldpage();
-	}
-}
-
 void AtenForm::on_RemoveForcefieldButton_clicked(bool checked)
 {
 	master.remove_ff(master.get_currentff());
@@ -78,6 +65,11 @@ void AtenForm::on_AssignFFToCurrentButton_clicked(bool checked)
 void AtenForm::on_AssignFFToAllButton_clicked(bool checked)
 {
 	for (model *m = master.get_models(); m != NULL; m = m->next) m->set_ff(master.get_currentff());
+}
+
+void AtenForm::on_AssignFFToPatternButton_clicked(bool checked)
+{
+	printf("TODO\n");
 }
 
 void AtenForm::on_TypeModelButton_clicked(bool checked)

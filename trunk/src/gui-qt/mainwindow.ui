@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>875</width>
+    <width>878</width>
     <height>578</height>
    </rect>
   </property>
@@ -36,7 +36,7 @@
      <number>0</number>
     </property>
     <property name="spacing" >
-     <number>2</number>
+     <number>4</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -195,7 +195,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>1</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -448,7 +448,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="SelectAtomsButton" >
@@ -663,7 +663,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="DrawAtomButton" >
@@ -877,7 +877,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="ElementHButton" >
@@ -1066,7 +1066,7 @@
              <property name="sizePolicy" >
               <sizepolicy>
                <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
+               <vsizetype>1</vsizetype>
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -1087,7 +1087,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="BondCalcButton" >
@@ -1264,60 +1264,11 @@
                    <enum>Qt::Horizontal</enum>
                   </property>
                   <property name="sizeType" >
-                   <enum>QSizePolicy::Fixed</enum>
+                   <enum>QSizePolicy::Expanding</enum>
                   </property>
                   <property name="sizeHint" >
                    <size>
                     <width>8</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="BondAugmentButton" >
-                  <property name="sizePolicy" >
-                   <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Augment bonding in model</string>
-                  </property>
-                  <property name="text" >
-                   <string/>
-                  </property>
-                  <property name="icon" >
-                   <iconset resource="icons.qrc" >:/bond/icons/bond_augment.svg</iconset>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer>
-                  <property name="orientation" >
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType" >
-                   <enum>QSizePolicy::MinimumExpanding</enum>
-                  </property>
-                  <property name="sizeHint" >
-                   <size>
-                    <width>10</width>
                     <height>20</height>
                    </size>
                   </property>
@@ -1331,7 +1282,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>0</number>
+                 <number>2</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="BondSingleButton" >
@@ -1512,6 +1463,92 @@
                   </property>
                   <property name="sizeType" >
                    <enum>QSizePolicy::MinimumExpanding</enum>
+                  </property>
+                  <property name="sizeHint" >
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="EditToolsGroup" >
+             <property name="sizePolicy" >
+              <sizepolicy>
+               <hsizetype>7</hsizetype>
+               <vsizetype>1</vsizetype>
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title" >
+              <string>Tools</string>
+             </property>
+             <layout class="QVBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>0</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout" >
+                <property name="margin" >
+                 <number>0</number>
+                </property>
+                <property name="spacing" >
+                 <number>2</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="BondAugmentButton" >
+                  <property name="sizePolicy" >
+                   <sizepolicy>
+                    <hsizetype>0</hsizetype>
+                    <vsizetype>0</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="minimumSize" >
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize" >
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip" >
+                   <string>Augment bonding in model</string>
+                  </property>
+                  <property name="text" >
+                   <string/>
+                  </property>
+                  <property name="icon" >
+                   <iconset resource="icons.qrc" >:/bond/icons/bond_augment.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="AddHydrogenButton" >
+                  <property name="text" >
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation" >
+                   <enum>Qt::Horizontal</enum>
                   </property>
                   <property name="sizeHint" >
                    <size>
@@ -4509,7 +4546,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="ForcefieldGroup" >
@@ -4526,7 +4563,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -4554,33 +4591,6 @@
                 </size>
                </property>
               </spacer>
-             </item>
-             <item>
-              <widget class="QPushButton" name="LoadForcefieldButton" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>5</hsizetype>
-                 <vsizetype>5</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize" >
-                <size>
-                 <width>30</width>
-                 <height>30</height>
-                </size>
-               </property>
-               <property name="toolTip" >
-                <string>Load forcefield</string>
-               </property>
-               <property name="text" >
-                <string/>
-               </property>
-               <property name="icon" >
-                <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
-               </property>
-              </widget>
              </item>
              <item>
               <widget class="QPushButton" name="RemoveForcefieldButton" >
@@ -4636,42 +4646,88 @@
             </layout>
            </item>
            <item>
-            <layout class="QGridLayout" >
-             <property name="margin" >
-              <number>0</number>
+            <widget class="QGroupBox" name="AssociateGroup" >
+             <property name="sizePolicy" >
+              <sizepolicy>
+               <hsizetype>5</hsizetype>
+               <vsizetype>1</vsizetype>
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-             <property name="spacing" >
-              <number>2</number>
+             <property name="title" >
+              <string>Associate</string>
              </property>
-             <item row="1" column="0" >
-              <widget class="QPushButton" name="TypeModelButton" >
-               <property name="text" >
-                <string>Type</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1" >
-              <widget class="QPushButton" name="AssignFFToAllButton" >
-               <property name="text" >
-                <string>Assign to All</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" >
-              <widget class="QPushButton" name="AssignFFToCurrentButton" >
-               <property name="text" >
-                <string>Assign</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1" >
-              <widget class="QPushButton" name="UntypeModelButton" >
-               <property name="text" >
-                <string>Untype</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+             <layout class="QGridLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>4</number>
+              </property>
+              <item row="1" column="1" colspan="2" >
+               <widget class="QComboBox" name="FFPatternCombo" />
+              </item>
+              <item row="1" column="0" >
+               <widget class="QPushButton" name="AssignFFToPatternButton" >
+                <property name="text" >
+                 <string>To Pattern</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0" colspan="2" >
+               <widget class="QPushButton" name="AssignFFToCurrentButton" >
+                <property name="text" >
+                 <string>To Model</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2" >
+               <widget class="QPushButton" name="AssignFFToAllButton" >
+                <property name="text" >
+                 <string>To All</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="TypingGroup" >
+             <property name="sizePolicy" >
+              <sizepolicy>
+               <hsizetype>5</hsizetype>
+               <vsizetype>1</vsizetype>
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title" >
+              <string>Typing</string>
+             </property>
+             <layout class="QHBoxLayout" >
+              <property name="margin" >
+               <number>4</number>
+              </property>
+              <property name="spacing" >
+               <number>4</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="TypeModelButton" >
+                <property name="text" >
+                 <string>Apply</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="UntypeModelButton" >
+                <property name="text" >
+                 <string>Remove</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -5981,25 +6037,10 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>875</width>
+     <width>878</width>
      <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="actionRecentFiles" />
-    <addaction name="separator" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
-   </widget>
    <widget class="QMenu" name="EdiTMenu" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -6108,6 +6149,24 @@
     </widget>
     <addaction name="actionPreferences" />
     <addaction name="menuToolbars" />
+   </widget>
+   <widget class="QMenu" name="FileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionFileNew" />
+    <addaction name="actionFileOpen" />
+    <addaction name="actionFileAddTrajectory" />
+    <addaction name="actionRecentFiles" />
+    <addaction name="actionFileSave" />
+    <addaction name="actionFileSaveAs" />
+    <addaction name="separator" />
+    <addaction name="actionFileLoadForcefield" />
+    <addaction name="actionFileLoadGridData" />
+    <addaction name="separator" />
+    <addaction name="actionFileSaveImage" />
+    <addaction name="separator" />
+    <addaction name="actionFileQuit" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EdiTMenu" />
@@ -6220,13 +6279,16 @@
     <string>Command Prompt</string>
    </property>
    <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
+    <enum>Qt::Vertical</enum>
    </property>
    <attribute name="toolBarArea" >
-    <number>4</number>
+    <number>2</number>
    </attribute>
   </widget>
   <widget class="QToolBar" name="MouseToolBar" >
+   <property name="windowTitle" >
+    <string>Mouse</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -6242,7 +6304,7 @@
     <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
    </property>
    <property name="text" >
-    <string>&amp;Open</string>
+    <string>&amp;Open Model</string>
    </property>
    <property name="toolTip" >
     <string>Open an existing model</string>
@@ -6256,7 +6318,7 @@
     <iconset resource="icons.qrc" >:/file/icons/file_save.svg</iconset>
    </property>
    <property name="text" >
-    <string>Save</string>
+    <string>Save Model</string>
    </property>
    <property name="toolTip" >
     <string>Save the current model</string>
@@ -6270,7 +6332,7 @@
     <iconset resource="icons.qrc" >:/file/icons/file_new.svg</iconset>
    </property>
    <property name="text" >
-    <string>New</string>
+    <string>&amp;New Model</string>
    </property>
    <property name="toolTip" >
     <string>Create a new, empty model</string>
@@ -6357,7 +6419,7 @@
     <iconset resource="icons.qrc" >:/file/icons/file_saveas.svg</iconset>
    </property>
    <property name="text" >
-    <string>Save As</string>
+    <string>Save Model As</string>
    </property>
    <property name="toolTip" >
     <string>Save the current model under a different filename</string>
@@ -6953,9 +7015,24 @@
     <string>Mouse</string>
    </property>
   </action>
+  <action name="actionFileLoadForcefield" >
+   <property name="text" >
+    <string>Load &amp;Forcefield</string>
+   </property>
+  </action>
+  <action name="actionFileLoadGridData" >
+   <property name="text" >
+    <string>Load &amp;Grid Data</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
+  <customwidget>
+   <class>TTabBar</class>
+   <extends>QWidget</extends>
+   <header>ttabbar.uih</header>
+  </customwidget>
   <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
@@ -6970,11 +7047,6 @@
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>ttreewidget.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TTabBar</class>
-   <extends>QWidget</extends>
-   <header>ttabbar.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
