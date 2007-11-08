@@ -46,7 +46,7 @@ enum user_action { UA_NONE,
 enum key_code { KC_OTHER, KC_ESCAPE, KC_SHIFT_L, KC_SHIFT_R, KC_CONTROL_L, KC_CONTROL_R, KC_ALT_L, KC_ALT_R, KC_LEFT, KC_RIGHT, KC_UP, KC_DOWN, KC_NITEMS };
 
 // GL Objects
-enum glob_list { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_WIRECYLINDER,
+enum glob_list { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_WIRECYLINDER, GLOB_SELWIRECYLINDER, 
 	GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_MODEL, GLOB_NITEMS };
 
 // Forward declarations
@@ -139,7 +139,7 @@ class canvas_master
 	// Draw a circle
 	void gl_circle(double, double, double);
 	// Draw a cylinder along vector supplied
-	void gl_cylinder(const vec3<double> &vec, double length, bool addwire);
+	void gl_cylinder(const vec3<double> &vec, double length, int style);
 	// Draw ellipsoid
 	void gl_ellipsoid(const vec3<double>&, const vec3<double>&, const vec3<double>&);
 	// Draw the unit cell of the model
@@ -175,18 +175,18 @@ class canvas_master
 	void render_rotation_globe(double *rotmat, double camrot);
 	// Render the model specified
 	void render_model_atoms();
-	// Render other objects from the current model
-	void render_model_objects();
+	// Render glyphs in the current model
+	void render_model_glyphs();
 	// Add labels to the model
 	void render_model_labels();
 	// Add geometry measurements to the model
 	void render_model_measurements();
 	// Add extra 3D objects
-	void render_model_3d();
+	void render_extra_3d();
 	// Add extra 2D objects
-	void render_model_2d();
+	void render_extra_2d();
 	// Draw regions specified for MC insertion
-	void render_model_regions();
+	void render_regions();
 	// Draw model force arrows
 	void render_model_forcearrows();
 	// Render model cell

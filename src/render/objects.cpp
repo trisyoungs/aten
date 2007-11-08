@@ -188,8 +188,13 @@ void canvas_master::render_rotation_globe(double *rmat, double camrot)
 	glViewport(0,0,(int)w,(int)h);
 }
 
-void canvas_master::gl_cylinder(const vec3<double> &rj, double rij, bool addwire)
+void canvas_master::gl_cylinder(const vec3<double> &rj, double rij, int style)
 {
+	/* Styles are:
+		0 = solid
+		1 = wireframe
+		2 = solid + expanded wireframe
+	*/
 	// Determine spherical coordinates
 	static double phi;
 	// Calculate angle out of XZ plane
@@ -200,8 +205,9 @@ void canvas_master::gl_cylinder(const vec3<double> &rj, double rij, bool addwire
 	  else glRotated(phi, -rj.y/rij , rj.x/rij ,0.0f);
 	  glScaled(1.0,1.0,rij);
 	  // Draw cylinder (bond)
-	  glCallList(list[GLOB_CYLINDER]);
-	  if (addwire) glCallList(list[GLOB_WIRECYLINDER]);
+	  if (style == 0) glCallList(list[GLOB_CYLINDER]);
+	  else if (style == 1) glCallList(list[GLOB_WIRECYLINDER]);
+	  if (style == 2) glCallList(list[GLOB_SELWIRECYLINDER]);
 	glPopMatrix();
 }
 

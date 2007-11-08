@@ -95,7 +95,7 @@ void canvas_master::init_gl()
 	if (begin_gl())
 	{
 		// Create lists for globs
-		if (list[0] != -1) list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
+		if (list[0] == -1) list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
 		for (int n=1; n<GLOB_NITEMS; n++) list[n] = list[GLOB_STICKATOM]+n;
 		// Fill display lists
 		create_lists();
@@ -251,7 +251,12 @@ void canvas_master::create_lists()
 	// Wireframe cylinder
 	gluQuadricDrawStyle(quadric1,GLU_LINE);
 	glNewList(list[GLOB_WIRECYLINDER],GL_COMPILE);
-	  gluCylinder(quadric2,prefs.render_tube_size*1.25,prefs.render_tube_size*1.25,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
+	  gluCylinder(quadric2,prefs.render_tube_size,prefs.render_tube_size,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
+	glEndList();
+	// Selected wireframe cylinder
+	gluQuadricDrawStyle(quadric1,GLU_LINE);
+	glNewList(list[GLOB_SELWIRECYLINDER],GL_COMPILE);
+	  gluCylinder(quadric2,prefs.render_tube_size*prefs.render_selection_scale,prefs.render_tube_size*prefs.render_selection_scale,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
 	glEndList();
 	/*
 	// Others

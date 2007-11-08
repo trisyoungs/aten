@@ -136,7 +136,7 @@ void canvas_master::render_scene(model *source)
 		  // Draw the model's atoms, bonds, and selection
 		  if (prefs.should_render(VO_ATOMS)) render_model_atoms();
 		  // Render any other objects associated with the model
-		  render_model_objects();
+		  render_model_glyphs();
 		  // Render force arrows
 		  if (prefs.should_render(VO_FORCEARROWS)) render_model_forcearrows();
 		glEndList();
@@ -146,9 +146,9 @@ void canvas_master::render_scene(model *source)
 	  // Render surfaces
 	  if (prefs.should_render(VO_SURFACES)) render_surfaces();
 	  // Render MC regions
-	  if ((displaymodel->cell.get_type() != CT_NONE) && prefs.should_render(VO_REGIONS)) render_model_regions();
+	  if ((displaymodel->cell.get_type() != CT_NONE) && prefs.should_render(VO_REGIONS)) render_regions();
 	  glColor3iv(prefs.colours[COL_PEN]);
-	  render_model_3d();
+	  render_extra_3d();
 	glPopMatrix();
 
 	// Draw replicated cells (using display list)
@@ -192,7 +192,7 @@ void canvas_master::render_scene(model *source)
 	if (prefs.should_render(VO_LABELS)) render_model_labels();
 	if (prefs.should_render(VO_MEASUREMENTS)) render_model_measurements();
 
-	render_model_2d();
+	render_extra_2d();
 	glDisable(GL_COLOR_MATERIAL);
 
 	glFlush();

@@ -44,8 +44,7 @@ void canvas_master::inform_mousedown(mouse_button button, double x, double y)
 			subsel.add(atom_hover,0,0);
 			msg(DM_VERBOSE,"Adding atom %i to canvas subselection.\n",atom_hover);
 		}
-		else
-			msg(DM_VERBOSE,"Atom %i is already in canvas subselection.\n",atom_hover);
+		else msg(DM_VERBOSE,"Atom %i is already in canvas subselection.\n",atom_hover);
 	}
 	// Activate mode...
 	begin_mode(button);
@@ -199,6 +198,7 @@ void canvas_master::begin_mode(mouse_button button)
 	dbg_begin(DM_CALLS,"widgetcanvas::begin_mode");
 	static bool manipulate, zrotate;
 	static int n;
+	static atom *i;
 	// Do the requested action as defined in the control panel, but only if another action
 	// isn't currently in progress. Set the user_action based on the mouse button that sent
 	// the signal, current selection / draw modes and key modifier states.
@@ -237,6 +237,20 @@ void canvas_master::begin_mode(mouse_button button)
 			// Main interactor - selection, sketching, measuring
 			case (MA_INTERACT):
 				use_selectedmode();
+				// Some modes require actions to be done when the button is first depressed
+				switch (activemode)
+				{
+					case (UA_DRAWCHAIN):
+						// If there is currently no atom under the mouse, draw one...
+						if (atom_hover == NULL)
+						{
+							i = displaymodel->add_atom(master.get_sketchelement());
+							i->r = displaymodel->guide_to_model(r_mousedown);
+							displaymodel->project_atom(i);
+							atom_hover = i;
+						}
+						break;
+				}
 				break;
 			case (MA_VIEWROTATE):
 				prefs.apply_staticstyle();
@@ -270,7 +284,7 @@ void canvas_master::end_mode(mouse_button button)
 	dbg_begin(DM_CALLS,"canvas_master::end_mode");
 	bool manipulate;
 	double area, radius;
-	atom *atoms[4], *i, *lasti;
+	atom *atoms[4], *i;
 	if (displaymodel == NULL)
 	{
 		printf("Pointless canvas_master::end_mode - datamodel == NULL.\n");
@@ -352,27 +366,17 @@ void canvas_master::end_mode(mouse_button button)
 			break;
 		// Draw chains of atoms
 		case (UA_DRAWCHAIN):
-			// Grab last atom added to the model first since it will be overwritten as soon as we draw the next atom
-			lasti = displaymodel->get_lastatomdrawn();
-			if (atom_hover == NULL)
+			// If there is no atom under the mouse we draw one
+			i = displaymodel->atom_on_screen(r_mouseup.x,r_mouseup.y);
+			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom
-				atom *i = displaymodel->add_atom(master.get_sketchelement());
-				i->r = displaymodel->guide_to_model(r_mousedown);
+				i = displaymodel->add_atom(master.get_sketchelement());
+				i->r = displaymodel->guide_to_model(r_mouseup);
 				displaymodel->project_atom(i);
-				// If lastsketched holds an atom, add a bond as well
-				if (lasti != NULL) displaymodel->bond_atoms(i,lasti,BT_SINGLE);
 			}
-			else
-			{
-				// An existing atom was clicked.
-				// If we have a previously drawn atom, bond them, then set it to NULL. Otherwise, do nothing.
-				if (lasti != NULL)
-				{
-					displaymodel->bond_atoms(lasti, atom_hover, BT_SINGLE);
-					displaymodel->set_lastatomdrawn(atom_hover);
-				}
-			}
+			// Now bond the atoms, unless atom_hover and i are the same (i.e. the button was clicked and not moved)
+			if (atom_hover != i) displaymodel->bond_atoms(i,atom_hover,BT_SINGLE);
 			break;
 		case (UA_TRANSATOM):
 			displaymodel->transmute_atom(atom_hover, master.get_sketchelement());
