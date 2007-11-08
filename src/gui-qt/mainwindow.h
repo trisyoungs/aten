@@ -95,7 +95,7 @@ class AtenForm : public QMainWindow
 	void on_StyleToolBar_actionTriggered(QAction *action);
 
 	/*
-	// Mouse Toolbat
+	// Mouse Toolbar
 	*/
 	private slots:
 	void on_actionMouseInteract_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_INTERACT); }
@@ -116,6 +116,8 @@ class AtenForm : public QMainWindow
 	void on_actionFileClose_triggered(bool checked);
 	void on_actionFileSaveImage_triggered(bool checked);
 	void on_actionFileQuit_triggered(bool checked);
+	void on_actionFileLoadForcefield_triggered(bool checked);
+	void on_actionFileLoadGridData_triggered(bool checked);
 
 	/*
 	// View Actions
@@ -220,12 +222,13 @@ class AtenForm : public QMainWindow
 	void on_BondClearButton_clicked(bool on);
 	void on_BondCalcSelButton_clicked(bool on);
 	void on_BondClearSelButton_clicked(bool on);
-	void on_BondAugmentButton_clicked(bool on);
 	void on_ElementHButton_clicked(bool on) { if (on) master.set_sketchelement(1); }
 	void on_ElementCButton_clicked(bool on) { if (on) master.set_sketchelement(6); }
 	void on_ElementNButton_clicked(bool on) { if (on) master.set_sketchelement(7); }
 	void on_ElementUserButton_clicked(bool on);
 	void on_ElementEdit_editingFinished();
+	void on_BondAugmentButton_clicked(bool on);
+	void on_AddHydrogenButton_clicked(bool on);
 
 	// Transformation Page Functions
 	private:
@@ -277,11 +280,11 @@ class AtenForm : public QMainWindow
 	public:
 	void refresh_forcefieldpage();
 	private slots:
-	void on_LoadForcefieldButton_clicked(bool checked);
 	void on_RemoveForcefieldButton_clicked(bool checked);
 	void on_EditForcefieldButton_clicked(bool checked);
 	void on_AssignFFToCurrentButton_clicked(bool checked);
 	void on_AssignFFToAllButton_clicked(bool checked);
+	void on_AssignFFToPatternButton_clicked(bool clicked);
 	void on_TypeModelButton_clicked(bool checked);
 	void on_UntypeModelButton_clicked(bool checked);
 	void on_ForcefieldList_currentRowChanged(int row);
@@ -294,7 +297,6 @@ class AtenForm : public QMainWindow
 	void grid_origin_changed(int component, double value);
 	void grid_axis_changed(int row, int component, double value);
 	private slots:
-	void on_LoadGridButton_clicked(bool checked);
 	void on_SaveGridButton_clicked(bool checked);
 	void on_GridList_currentRowChanged(int row);
 	void on_SurfaceStyleCombo_currentIndexChanged(int index);
