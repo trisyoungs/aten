@@ -23,6 +23,7 @@
 #define H_SD_H
 
 #include "model/model.h"
+#include "methods/linemin.h"
 
 // Steepest Descent methods
 class sd_methods
@@ -61,8 +62,6 @@ class sd_methods
 	void set_maxlinetrials(int i) { maxlinetrials = i; }
 	// Get the maximum line trials
 	int get_maxlinetrials() { return maxlinetrials; }
-	// Generate a new config following the gradient vector in workcfg
-	void gradient_move(model *oldf, model *newr, double delta);
 	// Minimise the specified model
 	void minimise(model*, double, double);
 };
