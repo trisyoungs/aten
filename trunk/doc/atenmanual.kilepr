@@ -84,11 +84,11 @@ open=false
 
 [item:manual.tex]
 archive=true
-column=0
+column=32
 encoding=UTF-8
 highlight=LaTeX
-line=51
-open=false
+line=34
+open=true
 
 [item:quickstart.tex]
 archive=true
@@ -103,7 +103,7 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=697
+line=502
 open=true
 
 [item:typing.tex]
