@@ -36,7 +36,7 @@ types
 10	Ne		Ne	""    
 11	Na		Na	""    
 12	Mg		Mg	""    
-13	Al		Al	""    
+13	Al		Al	"nbonds=0"
 14	Si		Si	""    
 15	P		P	""
 16	S		S	""    
@@ -130,9 +130,9 @@ types
 129	O		O	""	# O in DMF - united atom                                  
 130	N		N	""	# N in DMF - united atom                                  
 131	C		C	""	# C in C=O for UA formamide, DMF.                         
-132	C3		C	""	# CH3 in HCON(CH3)2 DMF                                   
-133	OW		O	""	# O  SPC  Water                                           
-134	HW		H	""	# H  SPC  Water                                           
+132	C3		C	""	# CH3 in HCON(CH3)2 DMF
+133	OW		O	"nbonds=2,-H(n=2)"	# O  SPC  Water
+134	HW		H	"-$133"			# H  SPC  Water
 # Start of OPLS-AA Parameters
 135	CT		C	"-H(n=3),-C"		# CH3    all-atom C: alkanes
 136	CT		C	"-H(n=2),-C,-C"		# CH2    all-atom C: alkanes

@@ -170,11 +170,11 @@ const char *SC_data[SC_NITEMS] = {
 	// Selection commands
 	"selectall",
 	"selectatom,G",
-	"selectatomtype,GG",
 	"selectelement,G",
+	"selectfftype,G",
 	"invert",
 	"selectnone",
-	"selecttype,G",
+	"selecttype,gg",
 
 	// Site commands
 	"addsite,GG|g",

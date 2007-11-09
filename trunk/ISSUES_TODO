@@ -31,6 +31,8 @@ General Qt To-Do list:
 	- Minimiser stack page (partial - needs current energy/forces)
 	- Progress dialogs are not application modal. Move to statusbar widget?
 	- List of non-periodic models in disorder stack page (with checkboxes?)
+	- Better editability in the atom list stack page
+	- Command toolbar starts off in a silly place (RHS of stack page buttons)
 
 Manual To-Do list:
 	- Section on forcefields

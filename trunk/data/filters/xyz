@@ -4,6 +4,8 @@ importmodel
 	nickname xyz
 	extension xyz
 	glob *.xyz
+	id 2
+
 	readline "$natoms"
 	readline "$title@100"
 	newmodel $title
@@ -20,6 +22,8 @@ exportmodel
 	extension xyz
 	glob *.xyz
 	nickname xyz
+	id 2
+
 	writeline "$natoms"
 	writeline "$title"
 	foratoms $i

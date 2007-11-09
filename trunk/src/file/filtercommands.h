@@ -30,7 +30,7 @@ enum filter_command {
 	FC_GLOB,
 	FC_EXACT,
 	FC_ZMAP,
-	FC_PARTNER,
+	FC_ID,
 	
 	FC_NEWMODEL,
 	FC_NEWGRID,

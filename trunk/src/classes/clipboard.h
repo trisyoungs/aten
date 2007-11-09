@@ -99,18 +99,18 @@ class clipboard
 	void delete_atom(clipatom*);
 	// List of copied atoms
 	list<clipatom> atoms;
-	// Whether to notify about copies etc.
-	bool quiet;
 
 	public:
-	// Sets the quietness of the clipboard
-	void set_quiet(bool b) { quiet = b; }
 	// Clear the contents of the clipboard
 	void clear();
 	// After copying, fix the internal IDs to describe bonding
 	void fix_bond_ids();
 	// Copy specified atom to clipboard
 	void copy_atom(atom*);
+	// Return number of atoms in clipboard
+	int get_natoms() { return atoms.size(); }
+	// Return list of copied atoms
+	clipatom *get_atoms() { return atoms.first(); }
 
 	/*
 	// Bonds
@@ -122,6 +122,10 @@ class clipboard
 	void copy_bonds_for_atoms();
 	// For bonds bound to clipatom* (clipi|j) set bondi|j to atom*
 	void bonds_set_newptr(clipatom*, atom*);
+
+	public:
+	// Check for presence of bond in list
+	bool has_bond(int ii, int jj); 
 
 	/*
 	// Model

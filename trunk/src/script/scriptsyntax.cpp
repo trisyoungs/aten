@@ -170,11 +170,11 @@ const char *SC_syntax[SC_NITEMS] = {
 	// Selection commands
 	"selectall",
 	"selectatom <id>",
-	"selectatomtype <element> <typedesc>",
 	"selectelement <el>",
+	"selectfftype <typename>",
 	"invert",
 	"selectnone",
-	"selecttype <typename>",
+	"selecttype <element> <typedesc>",
 
 	// Site commands
 	"addsite <name> <pattern> [atomlist]",

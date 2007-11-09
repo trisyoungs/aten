@@ -672,16 +672,16 @@ Select atoms or groups of atoms.\\
 		\item $e.g.$ \ttqte{selectatom 45} selects the 45th atom.
 	\end{itemize}
 
-	\item[selectatomtype $element$ $description$\its] Select atoms that are $element$ and match the type $description$ giveen.
-	\index{script commands!selectatomtype}
-	\begin{itemize}
-		\item $e.g.$ \ttqte{selectatomtype C ''-H(n=2)''} selects all carbon atoms that are bounr to two hydrogens.
-	\end{itemize}
-
 	\item[selectelement $el$\its] Select all atoms that are element $el$ in the current model.
 	\index{script commands!selectelement}
 	\begin{itemize}
 		\item $e.g.$ \ttqte{selectelement Br} selects all bromine atoms.
+	\end{itemize}
+
+	\item[selectfftype $fftype$\its] Select all atoms with forcefield type $fftype$ in the current model.
+	\index{script commands!selecttype}
+	\begin{itemize}
+		\item $e.g.$ \ttqte{selecttype CT} selects all atoms that are of type \qte{CT}.
 	\end{itemize}
 
 	\item[selectnone\its] Deselect all atoms in the current model.
@@ -690,10 +690,10 @@ Select atoms or groups of atoms.\\
 		\item $e.g.$ \ttqte{selectnone}.
 	\end{itemize}
 
-	\item[selecttype $fftype$\its] Select all atoms with forcefield type $fftype$ in the current model.
-	\index{script commands!selecttype}
+	\item[selecttype $element$ $description$\its] Select atoms that are $element$ and match the type $description$ giveen.
+	\index{script commands!selectatomtype}
 	\begin{itemize}
-		\item $e.g.$ \ttqte{selecttype CT} selects all atoms that are of type \qte{CT}.
+		\item $e.g.$ \ttqte{selectatomtype C ''-H(n=2)''} selects all carbon atoms that are bounr to two hydrogens.
 	\end{itemize}
 
 \end{description}

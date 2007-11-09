@@ -42,6 +42,8 @@ void AtenForm::on_actionEditCopy_triggered(bool checked)
 {
 	// Copy the selected atoms in the model into the paste buffer
 	master.userclip.copy_selection(master.get_currentmodel());
+	msg(DM_NONE,"%i atoms copied to clipboard.\n",master.userclip.get_natoms());
+	msg(DM_VERBOSE, "Copied selection (%i atoms) from model %s\n",master.userclip.get_natoms(), master.get_currentmodel()->get_name());
 }
 
 void AtenForm::on_actionEditPaste_triggered(bool checked)
@@ -261,7 +263,6 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	// Create a QPixmap of the current scene
 	QPixmap pixmap = ui.ModelView->renderPixmap(0,0,FALSE);
 	// Get filename from user
-	return;
 	int n;
 	if (saveimagedialog->exec() == 1)
 	{

@@ -40,9 +40,6 @@ master_data::master_data()
 	sketchelement = 6;
 	homedir = "/tmp";
 
-	// Clipboards
-	privclip.set_quiet(TRUE);
-
 	#ifdef MEMDEBUG
 		printf("Constructor : master_data\n");
 	#endif
@@ -362,22 +359,46 @@ void master_data::partner_filters()
 	dbg_begin(DM_CALLS,"master::partner_filters");
 	// Loop through import filters and search / set export partners
 	filter *imp, *exp;
-	dnchar nickname, ext;
+	int importid;
 	printf("Model Formats:");
 	for (imp = filters[FT_MODEL_IMPORT].first(); imp != NULL; imp = imp->next)
 	{
 		printf(" %s[r", imp->get_nickname());
-		// Grab partnernick (or nickname if partnernick is empty)
-		nickname = (imp->partnernick_set() ? imp->get_partnernick() : imp->get_nickname());
-		ext = imp->get_extension();
-		for (exp = filters[FT_MODEL_EXPORT].first(); exp != NULL; exp = exp->next)
+		importid = imp->get_id();
+		exp = NULL;
+		if (importid != -1)
 		{
-			// Check the export filter nickname and extension against our stored nickname
-			if ((nickname == exp->get_nickname()) && (ext == exp->get_extension()))
+			// Search for export filter with same ID as the importfilter
+			for (exp = filters[FT_MODEL_EXPORT].first(); exp != NULL; exp = exp->next)
 			{
-				imp->set_partner(exp);
-				printf("w]");
-				break;
+				if (importid == exp->get_id())
+				{
+					imp->set_partner(exp);
+					printf("w]");
+					break;
+				}
+			}
+		}
+		if (exp == NULL) printf("o]");
+	}
+	printf("\n");
+	printf("Grid Formats:");
+	for (imp = filters[FT_GRID_IMPORT].first(); imp != NULL; imp = imp->next)
+	{
+		printf(" %s[r", imp->get_nickname());
+		importid = imp->get_id();
+		exp = NULL;
+		if (importid != -1)
+		{
+			// Search for export filter with same ID as the importfilter
+			for (exp = filters[FT_GRID_EXPORT].first(); exp != NULL; exp = exp->next)
+			{
+				if (importid == exp->get_id())
+				{
+					imp->set_partner(exp);
+					printf("w]");
+					break;
+				}
 			}
 		}
 		if (exp == NULL) printf("o]");

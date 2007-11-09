@@ -30,7 +30,7 @@ const char* FC_data[FC_NITEMS] =  {
 	"glob,G",
 	"exact,G",
 	"zmap,G",
-	"partner,G",
+	"id,G",
 
 	"newmodel,G",
 	"newsurface,G",

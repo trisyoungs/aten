@@ -82,6 +82,7 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 	if (checked) cell_changed();
 	else master.get_currentmodel()->cell.remove();
 	master.get_currentmodel()->log_change(LOG_VISUAL);
+	master.get_currentmodel()->project_all();
 	gui.refresh();
 }
 

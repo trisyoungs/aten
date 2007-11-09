@@ -408,6 +408,8 @@ void model::copy(model *srcmodel)
 	// Copy all atoms with privclip
 	master.privclip.copy_all(srcmodel);
 	master.privclip.paste_to_model(this);
+	// Copy unit cell
+	cell = srcmodel->cell;
 }
 
 // Copy atom data from specified model

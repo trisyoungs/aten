@@ -373,11 +373,11 @@ void script::run()
 
 				case (SC_SELECTALL):
 				case (SC_SELECTATOM):
-				case (SC_SELECTATOMTYPE):
 				case (SC_SELECTELEMENT):
+				case (SC_SELECTFFTYPE):
 				case (SC_SELECTINVERT):
-				case (SC_SELECTTYPE):
 				case (SC_SELECTNONE):
+				case (SC_SELECTTYPE):
 					result = command_select(cmd);
 					break;
 

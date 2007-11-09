@@ -45,6 +45,7 @@ filter::filter()
 	zmapping = ZM_ALPHA;
 	name.set("unnamed");
 	glob.set("*");
+	id = -1;
 	partner = NULL;
 	activemodel = NULL;
 	activecell = NULL;
@@ -133,9 +134,9 @@ bool filter::load(ifstream &filterfile)
 				case (FC_GLOB):
 					glob = parser.argc(1);
 					break;
-				// Set partner filter nickname
-				case (FC_PARTNER):
-					partnernick = parser.argc(1);
+				// Set filter ID
+				case (FC_ID):
+					id = parser.argi(1);
 					break;
 				// Set element zmapping to use for import
 				case (FC_ZMAP):
