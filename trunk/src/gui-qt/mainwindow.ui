@@ -6041,20 +6041,6 @@
      <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="EdiTMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
-   </widget>
    <widget class="QMenu" name="ViewMenu" >
     <property name="title" >
      <string>&amp;View</string>
@@ -6167,6 +6153,23 @@
     <addaction name="actionFileSaveImage" />
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
+   </widget>
+   <widget class="QMenu" name="EdiTMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="actionRedo" />
+    <addaction name="separator" />
+    <addaction name="actionEditCut" />
+    <addaction name="actionEditCopy" />
+    <addaction name="actionEditPaste" />
+    <addaction name="actionEditDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEditInvert" />
+    <addaction name="separator" />
+    <addaction name="actionEditSelectAll" />
+    <addaction name="actionEditSelectNone" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EdiTMenu" />
@@ -6430,7 +6433,7 @@
     <iconset resource="icons.qrc" >:/edit/icons/edit_cut.svg</iconset>
    </property>
    <property name="text" >
-    <string>Cut</string>
+    <string>&amp;Cut</string>
    </property>
    <property name="toolTip" >
     <string>Cut the current selection</string>
@@ -6444,7 +6447,7 @@
     <iconset resource="icons.qrc" >:/edit/icons/edit_copy.svg</iconset>
    </property>
    <property name="text" >
-    <string>Copy</string>
+    <string>C&amp;opy</string>
    </property>
    <property name="toolTip" >
     <string>Copy the current selection</string>
@@ -6458,7 +6461,7 @@
     <iconset resource="icons.qrc" >:/edit/icons/edit_paste.svg</iconset>
    </property>
    <property name="text" >
-    <string>Paste</string>
+    <string>&amp;Paste</string>
    </property>
    <property name="toolTip" >
     <string>Paste the contents of the clipboard to the current model</string>
@@ -6472,7 +6475,7 @@
     <iconset resource="icons.qrc" >:/edit/icons/edit_delete.svg</iconset>
    </property>
    <property name="text" >
-    <string>Delete</string>
+    <string>&amp;Delete</string>
    </property>
    <property name="toolTip" >
     <string>Delete the current selection</string>
@@ -6486,7 +6489,7 @@
     <iconset resource="icons.qrc" >:/select/icons/select_invert.svg</iconset>
    </property>
    <property name="text" >
-    <string>Invert Selection</string>
+    <string>&amp;Invert Selection</string>
    </property>
    <property name="toolTip" >
     <string>Invert the current selection</string>
@@ -6500,7 +6503,7 @@
     <iconset resource="icons.qrc" >:/select/icons/select_all.svg</iconset>
    </property>
    <property name="text" >
-    <string>Select All</string>
+    <string>Select &amp;All</string>
    </property>
    <property name="toolTip" >
     <string>Select all atoms in the model</string>
@@ -6514,7 +6517,7 @@
     <iconset resource="icons.qrc" >:/select/icons/select_none.svg</iconset>
    </property>
    <property name="text" >
-    <string>Select None</string>
+    <string>Select &amp;None</string>
    </property>
    <property name="toolTip" >
     <string>Unselect all atoms</string>
@@ -7023,6 +7026,22 @@
   <action name="actionFileLoadGridData" >
    <property name="text" >
     <string>Load &amp;Grid Data</string>
+   </property>
+  </action>
+  <action name="actionUndo" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Undo</string>
+   </property>
+  </action>
+  <action name="actionRedo" >
+   <property name="enabled" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>&amp;Redo</string>
    </property>
   </action>
  </widget>
