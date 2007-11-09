@@ -27,7 +27,6 @@
 // Constructors
 clipboard::clipboard()
 {
-	quiet = FALSE;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_CLIPBOARD] ++;
 	#endif
@@ -80,6 +79,7 @@ void clipboard::copy_atom(atom *i)
         // Initialise the new clipatom
 	clipatom *newatom = atoms.add();
 	newatom->copy_from_atom(i);
+	newatom->set_id(atoms.size()-1);
 	dbg_end(DM_CALLS,"clipboard::copy_atom");
 }
 
@@ -185,8 +185,6 @@ void clipboard::copy_selection(model *m)
 	}
 	// Copy bonds
 	copy_bonds_for_atoms();
-	if (!quiet) msg(DM_NONE,"%i atoms copied to clipboard.\n",atoms.size());
-	msg(DM_VERBOSE, "Copied selection (%i atoms) from model %s\n",atoms.size(), m->get_name());
 	dbg_end(DM_CALLS,"clipboard::copy_selection");
 }
 
@@ -345,4 +343,18 @@ void clipboard::paste_to_model(model *m, vec3<double> t)
 void clipboard::translate(const vec3<double> &v)
 {
 	for (clipatom *i = atoms.first(); i != NULL; i = i->get_next()) i->r += v;
+}
+
+// Look for bond in list
+bool clipboard::has_bond(int ii, int jj)
+{
+	// Given the two atom ids (which should correspond to those of the clipboard's atoms list) see if we copied a bond between them
+	static int idi, idj;
+	for (clipbond *b = bonds.first(); b != NULL; b = b->get_next())
+	{
+		idi = b->get_clipi()->get_id();
+		idj = b->get_clipj()->get_id();
+		if (((ii == idi) && (jj == idj)) || ((ii == idj) && (jj == idi))) return TRUE;
+	}
+	return FALSE;
 }

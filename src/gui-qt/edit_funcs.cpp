@@ -79,6 +79,7 @@ void AtenForm::on_ElementEdit_editingFinished()
 	{
 		// Set the text of the user element button and select it
 		ui.ElementUserButton->setText(elements.symbol(el));
+		master.set_sketchelement(el);
 		ui.ElementUserButton->setChecked(TRUE);
 	}
 }

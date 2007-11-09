@@ -55,6 +55,8 @@ class filter
 	// Properties
 	*/
 	private:
+	// Filter ID
+	int id;
 	// Type of data the filter describes
 	filter_type type;
 	// Long name of the filter
@@ -65,8 +67,6 @@ class filter
 	dnchar extension;
 	// File filter glob (for gui)
 	dnchar glob;
-	// Partner filter nickname
-	dnchar partnernick;
 	// Partner filter
 	filter *partner;
 	// Filter description
@@ -81,6 +81,8 @@ class filter
 	zmap_type zmapping;
 
 	public:
+	// Return the ID of the filter
+	int get_id() { return id; }
 	// Return the descriptive name of the filter
 	const char *get_name() { return name.get(); }
 	// Return the short nickname of the filter
@@ -91,10 +93,6 @@ class filter
 	const char *get_exactnames() { return exactnames.get(); }
 	// Return whether filter has an extension
 	bool get_has_extension() { return has_extension; }
-	// Return the partner nickname set in the filter
-	const char *get_partnernick() { return partnernick.get(); }
-	// Return whether partnernick has been set
-	bool partnernick_set() { return (partnernick.empty() ? FALSE : TRUE); }
 	// Set the partner filter
 	void set_partner(filter *f) { partner = f; }
 	// Return the partner filter

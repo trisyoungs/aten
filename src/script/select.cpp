@@ -30,9 +30,12 @@ bool script::command_select(command_node<script_command> *cmd)
 {
 	dbg_begin(DM_CALLS,"script::command_select");
 	bool result = TRUE;
-	atom *i;
-	ffatom *ffa;
-	forcefield *ff;
+	static atom *i;
+        static int count, el, matchscore, atomscore, n;
+	static atomtype *testat;
+	static pattern *p;
+	static ffatom *ffa;
+	static forcefield *ff;
 	model *m = check_activemodel(text_from_SC(cmd->get_command()));
 	if (m == NULL)
 	{
@@ -54,8 +57,8 @@ bool script::command_select(command_node<script_command> *cmd)
 		case (SC_SELECTELEMENT):
 			m->select_element(elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA));
 			break;
-		// Select by forcefield type ('selecttype <fftype>')
-		case (SC_SELECTTYPE):
+		// Select by forcefield type ('selecffttype <fftype>')
+		case (SC_SELECTFFTYPE):
 			for (i = m->get_atoms(); i != NULL; i = i->next)
 			{
 				ff = m->get_ff();
@@ -70,7 +73,49 @@ bool script::command_select(command_node<script_command> *cmd)
 		case (SC_SELECTNONE):
 			m->select_none();
 			break;
- 		//case (SC_SELECT_ATOMTYPE):
+		// Select by supplied atom type description ('selecttype <el> <typedesc>')
+ 		case (SC_SELECTTYPE):
+			testat = new atomtype();
+			testat->el = elements.find(cmd->datavar[0]->get_as_char());
+			testat->expand(cmd->datavar[1]->get_as_char(),NULL);
+			// Apply it to the atoms in the model, selecting atoms that match
+			count = 0;
+			matchscore = 0;
+			if (m->autocreate_patterns())
+			{
+				// Prepare for typing
+				m->describe_atoms();
+				// Loop over patterns and select atoms
+				p = m->get_patterns();
+				while (p != NULL)
+				{
+					i = p->get_firstatom();
+					for (n=0; n<p->get_natoms(); n++)
+					{
+						p->reset_tempi(0);
+						i->tempi = 1;
+						if (i->get_element() == testat->el)
+						{
+							atomscore = testat->match_atom(i,p->get_ringlist(),m);
+							if (atomscore != 0)
+							{
+								m->select_atom(i);
+								count ++;
+								matchscore = atomscore;
+							}
+						}
+						i = i->next;
+					}
+					p = p->next;
+				}
+				// Write results
+				msg(DM_NONE,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
+				// Update model and delete temporary atomtype
+				m->log_change(LOG_SELECTION);
+				delete testat;
+			}
+			else msg(DM_NONE,"Can't test atomtype description without a valid pattern definition!\n");
+			break;
 		// Invert selection
 		case (SC_SELECTINVERT):
 			m->selection_invert();

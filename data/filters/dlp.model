@@ -6,7 +6,9 @@ importmodel
 	glob *CON*
 	exact "CONFIG,REVCON,config,revcon"
 	nickname dlpoly
+	id 1
 	zmap ff
+
 	readline "$title@100"
 	newmodel $title
 	readline "$keytrj $imcon"
@@ -36,6 +38,8 @@ exportmodel
 	extension CONFIG
 	glob *CON*
 	nickname dlpoly
+	id 1
+
 	writeline "title"
 	let $keytrj = 0
 	# Convert celltype string to DL_POLY-style integer

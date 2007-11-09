@@ -305,7 +305,7 @@ void AtenForm::execute_command()
 	// Clear old script commands
 	master.cmd_script.commands.clear();
 	// Grab the current text of the line edit
-	parser.get_args_delim(qPrintable(command_edit->text()), PO_DEFAULTS);
+	parser.get_args_delim(qPrintable(command_edit->text()), PO_USEQUOTES);
 	// Check for no commands given
 	if (parser.get_nargs() == 0) return;
 	if (master.cmd_script.cache_command()) master.cmd_script.run();

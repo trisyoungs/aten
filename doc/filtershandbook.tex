@@ -159,11 +159,14 @@ Used in an \qte{exportmodel} section, this allows one to specify the saving of d
 \subsection{Filter Partners}
 \index{filter partners}
 
-When filters have been provided that allow both the import and export of model data
+When filters have been provided that allow both the import and export of model data it is prudent to associate the pair together so that Aten knows how to immediately save data that it has loaded in. Each filter has a numerical ID associated to it that can be used to link import and export filters together. For example, if a model import filter has an ID of 7, and a model export filter also has this ID, then it will be assumed that the two are linked, and that loading with import filter ID 7 and then saving with export filter ID 7 should lead to exactly (or nearly) the same file. If the ID for a filter is not set it defaults to -1, and it is assumed that no partner exists.\\
 
-\index{filter commands!nickname}
+\index{filter commands!id}
+\begin{verbatim}
+	id 7
+\end{verbatim}
 
-
+IDs are local to specific filter sections, so they may be reused for different types of import / export. So, for example, a grid import / export filter pair may also have use ID of 7.
 
 \section{Getting Data -- Format Strings}
 \index{format strings}

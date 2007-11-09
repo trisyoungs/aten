@@ -10,11 +10,11 @@ vdw  lj
 1	HW	0.4	0.0	0.0	
 2	OX	-0.8	0.000	3.166
 3	Oany	-0.8	0.000	3.166
-4	OW	-0.8	0.156	3.166
+4	OW	-0.8	0.000	3.166
 end
 bonds harmonic
 HW	OW	1000.0	1.0
 end
 angles harmonic
-HW	OW	HW	200.0	109.4
+HW	OW	HW	000.0	109.4
 end

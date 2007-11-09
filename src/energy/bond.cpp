@@ -115,7 +115,7 @@ void pattern::bond_forces(model *srcmodel)
 			modelatoms[i]->f += fi;
 			modelatoms[j]->f -= fi;
 		}
-		aoff = aoff + natoms;
+		aoff += natoms;
 	}
 	dbg_end(DM_CALLS,"pattern::bond_forces");
 }

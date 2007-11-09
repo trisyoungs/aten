@@ -193,18 +193,14 @@ bool model::autocreate_patterns()
 {
 	// Determine the pattern (molecule) layout of the model
 	dbg_begin(DM_CALLS,"model::autocreate_patterns");
-	int n, atomid, nsel2, lastnatoms, nmols, npat, laststart, totalselected;
+	int n, atomid, nsel2, nmols, idi, idj, idoff;
 	bool same;
-	//string atomdna, bonddna, lastatomdna, lastbonddna, emp, lastemp;
-	static dnchar atomdna, bonddna, lastatomdna, lastbonddna, emp, lastemp;
-	atomdna.create_empty(1024);
-	bonddna.create_empty(1024);
-	lastatomdna.create_empty(1024);
-	lastbonddna.create_empty(1024);
+	static dnchar emp;
+	clipboard patclip;
 	emp.create_empty(1024);
-	lastemp.create_empty(1024);
 	pattern *p;
-	atom *i, *j;
+	refitem<bond> *rb;
+	atom *i, *isel, *clipi;
 	// Check current pattern first...
 	if (patterns_are_valid())
 	{
@@ -214,8 +210,7 @@ bool model::autocreate_patterns()
 	// Delete all old nodes first.
 	msg(DM_NONE,"Autodetecting patterns for model '%s'..\n",name.get());
 	patterns.clear();
-	reset_tempi(0);
-	totalselected = 0;
+	//reset_tempi(0);
 	// If there are no atoms in the molecule, exit here.
 	if (atoms.size() == 0)
 	{
@@ -224,12 +219,7 @@ bool model::autocreate_patterns()
 		dbg_end(DM_CALLS,"model::autocreate_patterns");
 		return TRUE;
 	}
-	// To autodetect, we start off at atoms_head in the model, tree-select this atom and copy the selection to the clipboard. With the reflist so created on the clipboard, we make a 'fingerprint' of the selection from the element symbols of the atoms (in order). This is then the criteria which we match subsequent selections. Find the next 'not-yet-selected' atom and perform another tree selection. Check against the previous fingerprint, and if its the same just increase the nmols counter by one. If it's different, assume its the start of a new type of molecule and reset the counters.
-	lastnatoms = 0;
-	laststart = 0;
-	lastatomdna = "_NULL_";
-	lastemp = "_NULL_";
-	lastbonddna = "_NULL_";
+	// To autodetect, we start off at atoms_head in the model, tree-select this atom and copy the selection to the clipboard. Use the clipboard to check subsequent selections, and if its the same just increase the nmols counter by one. If it's different, assume its the start of a new type of molecule and reset the counters.
 	atomid = 0;
 	nmols = 0;
 	i = atoms.first();
@@ -238,39 +228,11 @@ bool model::autocreate_patterns()
 		select_none();
 		// Select molecule starting at atom 'i' and calculate fingerprint
 		select_tree(i);
-		selection_get_atom_fingerprint(atomdna);
-		selection_get_bond_fingerprint(bonddna);
-		selection_get_empirical(emp);
-		// Compare this with the previous fingerprints
-		same = TRUE;
-		if (lastnatoms != nselected) same = FALSE;
-		if (atomdna != lastatomdna) same = FALSE;
-		if (bonddna != lastbonddna) same = FALSE;
-		if (same) nmols ++;
-		else
-		{
-			// Not the same as the last stored pattern, so start a new one
-			// Store the old pattern data first (if there was one)
-			if (lastnatoms != 0)
-			{
-				msg(DM_VERBOSE,"New pattern found:\n");
-				msg(DM_VERBOSE,"Pattern Atom DNA = [%s]\n",lastatomdna.get());
-				msg(DM_VERBOSE,"Pattern Bond DNA = [%s]\n",lastbonddna.get());
-				p = add_pattern(nmols,lastnatoms,lastemp.get());
-				// Check the newly-created pattern
-				//if (!p->validate()) result = FALSE;
-			}
-			laststart = atomid;
-			lastnatoms = nselected;
-			lastatomdna = atomdna;
-			lastbonddna = bonddna;
-			lastemp = emp;
-			nmols = 1;
-		}
 		// We insist that the molecule consists of consecutively ordered atoms, otherwise we can't proceed, so count the number of selected
 		// atoms in those that we now skip (if != nselected then we must force a 1*N pattern)
 		nsel2 = 0;
 		atomid += nselected;
+		selection_get_empirical(emp);
 		for (n=0; n<nselected; n++)
 		{
 			if (i->is_selected()) nsel2 ++;
@@ -281,26 +243,84 @@ bool model::autocreate_patterns()
 			msg(DM_NONE,"Warning - model cannot be divided into molecules because of non-ordered atoms.\nPattern for model will be 1*N.\n");
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
 			patterns.clear();
-			laststart = 0;
-			nmols = 1;
-			lastnatoms = atoms.size();
-			lastemp = "All";
-			lastatomdna = "---";
-			lastbonddna = "---";
+			nmols = 0;
+			select_all();
+			selection_get_empirical(emp);
+			msg(DM_NONE,"Added default pattern: %s\n",emp.get());
+			p = add_pattern(1,atoms.size(),emp.get());
 			break;
 		}
+		// If this is the first pass (molecule), copy the selection. If not, compare it
+		if (nmols == 0)
+		{
+			patclip.copy_selection(this);
+			selection_get_empirical(emp);
+			nmols = 1;
+		}
+		else
+		{
+			// Compare clipboard contents with current selection
+			same = TRUE;
+			// Number of atoms....
+			if (nselected != patclip.get_natoms()) same = FALSE;
+			else
+			{
+				// Ordering of elements...
+				clipi = patclip.get_atoms();
+				for (isel = get_first_selected(); isel != NULL; isel = isel->get_next_selected())
+				{
+					if (clipi->get_element() != isel->get_element())
+					{
+						same = FALSE;
+						break;
+					}
+					clipi = clipi->next;
+				}
+				// Bonding between atoms...
+				idoff = get_first_selected()->get_id();
+				if (same) for (isel = get_first_selected(); isel != NULL; isel = isel->get_next_selected())
+				{
+					// Convert IDs so they start at zero (i.e. subtract ID of current atom 'i')
+					idi = isel->get_id() - idoff;
+					for (rb = isel->get_bonds(); rb != NULL; rb = rb->next)
+					{
+						idj = rb->item->get_partner(isel)->get_id() - idoff;
+						if (idi < idj) continue;
+						if (!patclip.has_bond(idi,idj))
+						{
+							same = FALSE;
+							break;
+						}
+					}
+					if (!same) break;
+				}
+			}
+			// If we get to here with same == TRUE then we increase nmols. Otherwise, we create a new pattern.
+			if (same) nmols ++;
+			else
+			{
+				// Not the same as the last stored pattern, so start a new one
+				msg(DM_NONE,"New pattern found: %s\n",emp.get());
+				p = add_pattern(nmols,patclip.get_natoms(),emp.get());
+				patclip.copy_selection(this);
+				selection_get_empirical(emp);
+				nmols = 1;
+			}
+		}
 	}
-	// Store last pattern data
-	msg(DM_VERBOSE,"Pattern Name = %s\n",lastemp.get());
-	msg(DM_VERBOSE,"Pattern Atom DNA = [%s]\n",lastatomdna.get());
-	msg(DM_VERBOSE,"Pattern Bond DNA = [%s]\n",lastbonddna.get());
-	p = add_pattern(nmols,lastnatoms,lastemp.get());
+	// Store last pattern data 
+	if (nmols != 0)
+	{
+		msg(DM_NONE,"New pattern found: %s\n",emp.get());
+		p = add_pattern(nmols,patclip.get_natoms(),emp.get());
+	}
+
+	// Deselect all atoms
+	select_none();
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
 	patterns_point = logs[LOG_STRUCTURE];
 
-	// Update pattern lists
-	//gui.update_pattern_list(); TODO
 	dbg_end(DM_CALLS,"model::autocreate_patterns");
 	return TRUE;
 }
