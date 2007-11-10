@@ -26,6 +26,7 @@
 #include "gui-qt/mainwindow.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QProgressBar>
 
 // Image Formats
 const char *PF_filters[PF_NITEMS] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
@@ -139,8 +140,23 @@ void AtenForm::finalise_ui()
 
 	// Add permanent statusbar widgets
 	statuslabel = new QLabel(this,0);
-	ui.MainWindowStatusBar->insertPermanentWidget(0,statuslabel,0);
-	statuslabel->setFrameStyle(QFrame::NoFrame);
+	ui.MainWindowStatusBar->addPermanentWidget(statuslabel,0);
+	statuslabel->setFrameShape(QFrame::NoFrame);
+	statuslabel->setFrameShadow(QFrame::Plain);
+	progressindicator = new QFrame(this);
+	progressindicator->setContentsMargins(0,0,0,0);
+	QHBoxLayout *layout = new QHBoxLayout(progressindicator);
+	layout->setMargin(0);
+	progressbar = new QProgressBar(this);
+	progresslabel = new QLabel(this,0);
+	progressbutton = new QPushButton(this);
+	progressbutton->setText("Cancel");
+	QObject::connect(progressbutton, SIGNAL(clicked()), this, SLOT(progress_cancel()));
+	layout->addWidget(progressbar,255);
+	layout->addWidget(progresslabel,0);
+	layout->addWidget(progressbutton,0);
+	ui.MainWindowStatusBar->insertPermanentWidget(0,progressindicator,128);
+	progressindicator->setVisible(FALSE);
 
 	// Create open model dialog
 	dialog[FT_MODEL_IMPORT] = new QFileDialog(this);
@@ -309,4 +325,9 @@ void AtenForm::execute_command()
 	if (master.cmd_script.cache_command()) master.cmd_script.run();
 	gui.refresh();
 	command_edit->setText("");
+}
+
+void AtenForm::progress_cancel()
+{
+	gui.notify_progress_canceled();
 }

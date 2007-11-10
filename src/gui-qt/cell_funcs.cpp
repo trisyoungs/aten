@@ -72,6 +72,7 @@ void AtenForm::cell_changed()
 	angles.set(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	master.get_currentmodel()->cell.set(lengths, angles);
 	master.get_currentmodel()->log_change(LOG_VISUAL);
+	master.get_currentmodel()->calculate_density();
 	gui.refresh();
 	cellpage_refreshing = FALSE;
 }

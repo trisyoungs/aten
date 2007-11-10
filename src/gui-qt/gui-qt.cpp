@@ -26,7 +26,7 @@
 #include "gui-qt/prefs.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
-#include <QtGui/QProgressDialog>
+#include <QtGui/QProgressBar>
 
 #ifdef IS_MAC
 	#include <GLUT/glut.h>
@@ -45,7 +45,6 @@ gui_qt::gui_qt()
 	#endif
 	trajectory_playing = FALSE;
 	trajectory_timerid = -1;
-	progress = NULL;
 }
 
 // Destructor
@@ -383,13 +382,20 @@ void gui_qt::progress_create(const char *jobtitle, int stepstodo)
 		return;
 	}
 	// Check that a progress dialog isn't already running
-	if (progress != NULL)
+	if (mainwindow->progressindicator->isVisible())
 	{
 		printf("Weird programmatical event - second progress dialog creation request!\n");
 		return;
 	}
-	progress = new QProgressDialog(jobtitle, "Abort", 0, stepstodo);
-	progress->setModal(TRUE);
+	mainwindow->progressbar->setMaximum(stepstodo);
+	mainwindow->progressbar->setValue(0);
+	mainwindow->progresslabel->setText(jobtitle);
+	mainwindow->progressindicator->setVisible(TRUE);
+	progress_canceled = FALSE;
+	// Disable some key widgets on the main form
+	mainwindow->ui.MainWindowStack->setEnabled(FALSE);
+	mainwindow->ui.ModelViewFrame->setEnabled(FALSE);
+	mainwindow->ui.StackButtonsFrame->setEnabled(FALSE);
 }
 
 // Update the progress dialog
@@ -401,15 +407,15 @@ bool gui_qt::progress_update(int currentstep)
 		gui.text_progress_update(currentstep);
 		return TRUE;
 	}
-	if (progress == NULL)
+	if (!mainwindow->progressindicator->isVisible())
 	{
 		printf("Weird programmatical event - tried to update a non-existent progress dialog!\n");
 		return TRUE;
 	}
-	progress->setValue(currentstep);
+	mainwindow->progressbar->setValue(currentstep);
 	app->processEvents();
 	// Check to see if the abort button was pressed
-	return (progress->wasCanceled() ? FALSE : TRUE);
+	return (!progress_canceled);
 }
 
 // Terminate the progress dialog
@@ -421,14 +427,16 @@ void gui_qt::progress_terminate()
 		gui.text_progress_terminate();
 		return;
 	}
-	if (progress == NULL)
+	if (!mainwindow->progressindicator->isVisible())
 	{
 		printf("Weird programmatical event - tried to terminate a non-existent progress dialog!\n");
 		return;
 	}
-	progress->setValue(progress->maximum());
-	delete progress;
-	progress = NULL;
+	// Hide the progress bar and re-enable widgets
+	mainwindow->progressindicator->setVisible(FALSE);
+	mainwindow->ui.MainWindowStack->setEnabled(TRUE);
+	mainwindow->ui.ModelViewFrame->setEnabled(TRUE);
+	mainwindow->ui.StackButtonsFrame->setEnabled(TRUE);
 }
 
 // Stop trajectory playback
