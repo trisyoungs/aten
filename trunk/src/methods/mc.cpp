@@ -28,8 +28,6 @@
 #include "base/prefs.h"
 #include "gui/gui.h"
 
-mc_methods mc;
-
 // Monte Carlo move types
 const char *MT_strings[MT_NITEMS] = { "Translation", "Rotation", "Z-Matrix", "Insertion", "Deletion" };
 const char *MT_keywords[MT_NITEMS] = { "translate", "rotate", "zmatrix", "insert", "delete" };
@@ -39,7 +37,7 @@ mc_move MT_from_text(const char *s)
 	{ return (mc_move) enum_search("Monte Carlo move",MT_NITEMS,MT_keywords,s); }
 
 // Constructors
-mc_methods::mc_methods()
+mc_method::mc_method()
 {
 	// Set initial values
 	maxstep[MT_TRANSLATE] = 5.0;
@@ -94,7 +92,7 @@ component::~component()
 }
 
 // Create ratio acceptance array
-void mc_methods::create_ratioarray(int newsize)
+void mc_method::create_ratioarray(int newsize)
 {
 	int n, m;
 	if (acceptratio != NULL)
@@ -115,7 +113,7 @@ void mc_methods::create_ratioarray(int newsize)
 */
 
 // Find by ID
-component *mc_methods::get_component_by_name(const char *search)
+component *mc_method::get_component_by_name(const char *search)
 {
 	for (component *c = components.first(); c != NULL; c = c->next)
 		if (strcmp(c->get_model()->get_name(),search) == 0) return c;
@@ -123,7 +121,7 @@ component *mc_methods::get_component_by_name(const char *search)
 }
 
 // MC Geometry Minimise
-bool mc_methods::minimise(model* srcmodel, double econ, double fcon)
+bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 {
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
@@ -248,7 +246,7 @@ bool mc_methods::minimise(model* srcmodel, double econ, double fcon)
 }
 
 // MC Insertion
-bool mc_methods::disorder(model* destmodel)
+bool mc_method::disorder(model* destmodel)
 {
 	// Monte Carlo Insertion
 	dbg_begin(DM_CALLS,"mc::insert");

@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/master.h"
 #include "script/script.h"
 #include "methods/mc.h"
 #include "base/debug.h"
@@ -39,7 +40,7 @@ bool script::command_mc(command_node<script_command> *cmd)
 			for (int n=0; n<MT_NITEMS; n++)
 			{
 				mt = (mc_move) n;
-				msg(DM_NONE,"%11s   %3s   %4i   %8.3f   %8.2e\n",text_from_MT(mt), (mc.get_allowed(mt) ? "Yes" : "No"), mc.get_ntrials(mt), mc.get_maxstep(mt), mc.get_eaccept(mt));
+				msg(DM_NONE,"%11s   %3s   %4i   %8.3f   %8.2e\n",text_from_MT(mt), (master.mc.get_allowed(mt) ? "Yes" : "No"), master.mc.get_ntrials(mt), master.mc.get_maxstep(mt), master.mc.get_eaccept(mt));
 			}
 			break;
 		case (SC_MCACCEPT):	// Set MC move parameters
@@ -52,16 +53,16 @@ bool script::command_mc(command_node<script_command> *cmd)
 			switch (cmdi)
 			{
 				case (SC_MCMAXSTEP):	// Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-					mc.set_maxstep(mt,cmd->datavar[1]->get_as_double());
+					master.mc.set_maxstep(mt,cmd->datavar[1]->get_as_double());
 					break;
 				case (SC_MCNTRIALS):	// Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-					mc.set_ntrials(mt,cmd->datavar[1]->get_as_int());
+					master.mc.set_ntrials(mt,cmd->datavar[1]->get_as_int());
 					break;
 				case (SC_MCACCEPT):	// Sets acceptance energy for moves ('mc accept <move> <energy>')
-					mc.set_eaccept(mt,cmd->datavar[1]->get_as_double());
+					master.mc.set_eaccept(mt,cmd->datavar[1]->get_as_double());
 					break;
 				case (SC_MCALLOW):	// Sets allowances for moves ('mc allow <move> <on|off>')
-					mc.set_allowed(mt,cmd->datavar[1]->get_as_bool());
+					master.mc.set_allowed(mt,cmd->datavar[1]->get_as_bool());
 					break;
 			}
 			break;

@@ -347,6 +347,7 @@ void script::run()
 					break;
 
 				case (SC_CONVERGE):
+				case (SC_LINETOL):
 				case (SC_MCMINIMISE):
 				case (SC_SIMPLEXMINIMISE):
 				case (SC_SDMINIMISE):

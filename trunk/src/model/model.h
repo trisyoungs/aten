@@ -171,12 +171,6 @@ class model
 	void move_selection_to_start();
 	// Move selection to end of the list
 	void move_selection_to_end();
-	// Normalise forces (make largest component equal to specified value)
-	void normalise_forces(double norm);
-	// Zero forces on all atoms
-	void zero_forces();
-	// Zero forces on all atoms that have their 'fixed' property set to true
-	void zero_forces_fixed();
 	// Return (and autocreate if necessary) the static atoms array
 	atom **get_staticatoms();
 	// Set visibility of specified atom
@@ -393,7 +387,7 @@ class model
 	void remove_typing();
 
 	/*
-	// Energy
+	// Energy / Forces
 	*/
 	private:
 	// Atom changeid at which the expression was/is valid
@@ -418,6 +412,14 @@ class model
 	void calculate_forces(model*);
 	// Prints out atomic forces
 	void print_forces();
+	// Calculate RMS of current forces
+	double calculate_rms_force();
+	// Normalise forces (make largest component equal to specified value)
+	void normalise_forces(double norm);
+	// Zero forces on all atoms
+	void zero_forces();
+	// Zero forces on all atoms that have their 'fixed' property set to true
+	void zero_forces_fixed();
 
 	/*
 	// Pattern / Molecule

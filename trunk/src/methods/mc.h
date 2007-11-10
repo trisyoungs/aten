@@ -92,14 +92,14 @@ class component
 };
 
 // Monte Carlo
-class mc_methods
+class mc_method
 {
 	/*
 	// Main Routines
 	*/
 	public:
 	// Constructor
-	mc_methods();
+	mc_method();
 	// Minimise the specified model
 	bool minimise(model*, double, double);
 	// Run disordered builder
@@ -166,7 +166,5 @@ class mc_methods
 	// Return the component with name specified
 	component *get_component_by_name(const char*);
 };
-
-extern mc_methods mc;
 
 #endif

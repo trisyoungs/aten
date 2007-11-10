@@ -133,8 +133,9 @@ const char *SC_syntax[SC_NITEMS] = {
 	// Minimisation commands
 	"cgminimise",
 	"converge <energy> <forces>",
+	"linetol <tolerance>",
 	"mcminimise <maxsteps>",
-	"sdminimise",
+	"sdminimise <maxsteps>",
 	"simplexminimise",
 
 	// Model commands

@@ -323,9 +323,8 @@ double unitcell::distance(const vec3<double> &r1, const vec3<double> &r2) const
 	dbg_begin(DM_MORECALLS,"unitcell::distance");
 	static vec3<double> mimi;
 	mimi = mimd(r1,r2);
-	double d = mimi.magnitude();
 	dbg_end(DM_MORECALLS,"unitcell::distance");
-	return d;
+	return mimi.magnitude();
 }
 
 double unitcell::distance(atom *i, atom *j) const

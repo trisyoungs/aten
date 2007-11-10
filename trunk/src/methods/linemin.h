@@ -29,10 +29,22 @@ class model;
 class linemin
 {
 	public:
+	// Constructor
+	linemin();
+
+	private:
+	// Tolerance for root finding
+	double tolerance;
+
+	public:
+	// Set the tolerance
+	void set_tolerance(double t) { tolerance = t; }
+	// Return current tolerance
+	double get_tolerance() { return tolerance; }
 	// Generate a new config following the supplied gradient vector
 	void gradient_move(model *source, model *dest, double delta);
-	// Minimise the specified model
-	void line_minimise(model *source, double tol);
+	// Minimise the specified model (srcmodel should already contain desired forces (i.e. gradient vector)) along which to minimise)
+	double line_minimise(model *source);
 };
 
 #endif

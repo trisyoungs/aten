@@ -45,13 +45,13 @@ void AtenForm::refresh_components()
 	ui.ComponentList->setCurrentRow(-1);
 	ui.ComponentList->clear();
 	QListWidgetItem *item;
-	for (component *c = mc.components.first(); c != NULL; c = c->next)
+	for (component *c = master.mc.components.first(); c != NULL; c = c->next)
 	{
 		item = new QListWidgetItem(ui.ComponentList);
 		item->setText(c->get_model()->get_name());
 	}
 	// Select the last component in the list
-	ui.ComponentList->setCurrentRow(mc.components.size()-1);
+	ui.ComponentList->setCurrentRow(master.mc.components.size()-1);
 }
 
 void AtenForm::refresh_component_data()
@@ -59,7 +59,7 @@ void AtenForm::refresh_component_data()
 	// Get current component
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.components[comp];
+	component *c = master.mc.components[comp];
 	// Set controls
 	ui.PopulationSpin->setValue(c->get_nrequested());
 	ui.ComponentRegionCombo->setCurrentIndex(c->area.get_shape());
@@ -82,7 +82,7 @@ void AtenForm::set_component_coords(int centsize, int element, double value)
 	static vec3<double> v;
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.components[comp];
+	component *c = master.mc.components[comp];
 	if (centsize == 0)
 	{
 		v = c->area.get_centre();
@@ -113,8 +113,8 @@ void AtenForm::on_AddComponentButton_clicked(bool checked)
 		msg(DM_NONE,"Model is periodic - can't add to component list.\n");
 		return;
 	}
-	// Add it to mc's component list and refresh the list
-	component *comp = mc.components.add();
+	// Add it to master.mc.s component list and refresh the list
+	component *comp = master.mc.components.add();
 	comp->set_model(m);
 	refresh_components();
 }
@@ -123,8 +123,8 @@ void AtenForm::on_DeleteComponentButton_clicked(bool checked)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.components[comp];
-	mc.components.remove(c);
+	component *c = master.mc.components[comp];
+	master.mc.components.remove(c);
 	// Refresh the components list and GUI (for regions)
 	refresh_components();
 	gui.mainview.postredisplay();
@@ -134,7 +134,7 @@ void AtenForm::on_PopulationSpin_valueChanged(int value)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.components[comp];
+	component *c = master.mc.components[comp];
 	c->set_nrequested(value);
 }
 
@@ -142,7 +142,7 @@ void AtenForm::on_ComponentTranslateCheck_clicked(bool checked)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.components[comp];
+	component *c = master.mc.components[comp];
 	c->set_allowed(MT_TRANSLATE, checked);
 }
 
@@ -150,7 +150,7 @@ void AtenForm::on_ComponentRotateCheck_clicked(bool checked)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.components[comp];
+	component *c = master.mc.components[comp];
 	c->set_allowed(MT_ROTATE, checked);
 }
 
@@ -158,7 +158,7 @@ void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	component *c = mc.components[comp];
+	component *c = master.mc.components[comp];
 	c->area.set_shape( (region_shape) index);
 	gui.mainview.postredisplay();
 }
@@ -171,12 +171,12 @@ void AtenForm::on_ShowRegionsCheck_clicked(bool checked)
 
 void AtenForm::on_DisorderStartButton_clicked(bool checked)
 {
-	mc.set_ncycles(ui.DisorderCyclesSpin->value());
-	mc.disorder(master.get_currentmodel());
+	master.mc.set_ncycles(ui.DisorderCyclesSpin->value());
+	master.mc.disorder(master.get_currentmodel());
 }
 
 void AtenForm::on_VDWScaleSpin_valueChanged(double d)
 {
-	mc.set_vdw_radius_scale(d);
+	master.mc.set_vdw_radius_scale(d);
 }
 

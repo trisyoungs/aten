@@ -131,6 +131,7 @@ enum script_command {
 	// Minimisation Commands
 	SC_CGMINIMISE,
 	SC_CONVERGE,
+	SC_LINETOL,
 	SC_MCMINIMISE,
 	SC_SDMINIMISE,
 	SC_SIMPLEXMINIMISE,

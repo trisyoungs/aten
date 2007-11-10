@@ -302,7 +302,7 @@ void pattern::vdw_interpattern_forces(model *srcmodel, pattern *xpnode)
 			{
 				i++;
 				paramsi = pai->get_data()->get_params();
-				f_i = modelatoms[i]->f;
+				f_i = modelatoms[i+aoff1]->f;
 				j = -1;
 				for (paj = xpnode->atoms.first(); paj != NULL; paj = paj->next)
 				{

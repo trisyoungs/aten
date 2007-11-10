@@ -24,6 +24,8 @@
 
 #include "classes/clipboard.h"
 #include "classes/grid.h"
+#include "methods/sd.h"
+#include "methods/mc.h"
 #include "file/filter.h"
 #include "script/script.h"
 #include <getopt.h>
@@ -211,7 +213,7 @@ class master_data
 	// Array of long CLI options
 	option longopts[MAXCLIOPTS];
 	// Add long option to list
-	void add_cli_option(char*,int,int,bool);
+	void add_cli_option(const char*, int, int, bool);
 	// Print usage information
 	void print_usage();
 	// Number of CLI options added
@@ -223,7 +225,17 @@ class master_data
 	// Prepare CLI options
 	void prepare_cli();
 	// Parse command line options
-	int parse_cli(int,char**);
+	int parse_cli(int, char**);
+
+	/*
+	// Methods / Algorithms
+	*/
+	public:
+	// Steepest descent minimiser
+	sd_method sd;
+	// Monte Carlo methods
+	mc_method mc;
+
 };
 
 extern master_data master;

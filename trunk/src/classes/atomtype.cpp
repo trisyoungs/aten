@@ -246,7 +246,7 @@ void atomtype::expand(const char *data, forcefield *ff)
 	// The supplied string should contain a keyword followed by (optional) bracketed list of specs.
 	// Parent ring structure must be supplied when descending into a ring options structure.
 	dbg_begin(DM_CALLS,"atomtype::expand");
-	static dnchar keywd, optlist, def;
+	dnchar keywd, optlist, def;
 	static ringtype *newring;
 	static bool found;
 	static char c;
@@ -359,7 +359,7 @@ int atomtype::match_in_list(reflist<atom> *alist, list<ring> *ringdata, model *p
 		// Extra check for bond type definition here
 		if (boundbond == BT_UNSPECIFIED)
 		{
-			msg(DM_TYPING,"match_in_list : ...Atom passed bond type check [no value specified in type]\n");
+			//msg(DM_TYPING,"match_in_list : ...Atom passed bond type check [no value specified in type]\n");
 			bondscore = 1;
 		}
 		else boundbond == boundi->data2 ? bondscore = 1 : bondscore = 0;
@@ -389,15 +389,23 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 	// see how well the description matches the actual atom, returning as an int. Cycle data is 
 	// available in (pattern->)rings. Exit and return 0 as soon as a test fails.
 	dbg_begin(DM_CALLS,"atomtype::match_atom");
+	static int level = 0;
 	int typescore, atomscore, ringscore, n;
 	bool found;
+	atomtype *bat;
+	ringtype *atr;
+	ring *r;
+	refitem<ring> *refring;
 	reflist<atom> atomchecklist;
 	reflist<ring> ringchecklist;
 	refitem<ffatom> *rd;
 	// Set the scoring to one (which will be the case if there are no specifications to match)
 	typescore = 1;
+	level ++;
+	msg(DM_TYPING,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n",this, level, elements.symbol(i), i->get_nbonds(), text_from_AE(i->get_env()));
 	// Element check
-	if (nallowedel == 0) msg(DM_TYPING,"......Atom passed element check [none specified]\n");
+	msg(DM_TYPING,"(%li %2i) ... Element  ",this,level);
+	if (nallowedel == 0) msg(DM_TYPING,"[defaulted]\n");
 	else
 	{
 		// Check through list of elements/types that this atom is allowed to be
@@ -413,7 +421,7 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 		}
 		if (!found) for (rd = allowedtypes.first(); rd != NULL; rd = rd->next)
 		{
-		printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",rd->item->get_ffid(),rd->item->get_name());
+			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",rd->item->get_ffid(),rd->item->get_name());
 			// Does this atom match the type descriptions asked for?
 			n = rd->item->get_atomtype()->match_atom(i,ringdata,parent);
 			if (n > 0)
@@ -425,201 +433,194 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 		if (found)
 		{
 			typescore++;
-			msg(DM_TYPING,"......Atom passed element check [match]\n");
+			msg(DM_TYPING,"[passed]\n");
 		}
 		else
 		{
-			msg(DM_TYPING,"......Atom FAILED element check [is %i, type needs %i]\n",i->get_element(),el);
+			msg(DM_TYPING,"[failed - is %i, but type needs %i]\n",i->get_element(),el);
+			level --;
 			dbg_end(DM_CALLS,"atomtype::match_atom");
 			return 0;
 		}
 	}
 	// Atom environment check
-	if (env == AE_UNSPECIFIED) msg(DM_TYPING,"......Atom passed atom environment check [none specified]\n");
+	msg(DM_TYPING,"(%li %2i) ... Environment  ",this,level);
+	if (env == AE_UNSPECIFIED) msg(DM_TYPING," [defaulted]\n");
 	else
 	{
 		if (i->is_env(env))
 		{
 			typescore++;
-			msg(DM_TYPING,"......Atom passed atom environment check [matched %s]\n",text_from_AE(i->get_env()));
+			msg(DM_TYPING,"[passed - matched '%s']\n",text_from_AE(i->get_env()));
 		}
 		else
 		{
-			msg(DM_TYPING,"......Atom FAILED atom environment check [is %s, type needs %s]\n",
-				text_from_AE(i->get_env()),text_from_AE(env));
+			msg(DM_TYPING,"[failed - is '%s', but type needs %s]\n", text_from_AE(i->get_env()), text_from_AE(env));
+			level --;
 			dbg_end(DM_CALLS,"atomtype::match_atom");
 			return 0;
 		}
 	}
 	// Oxidation state check
-	if (os == 99) msg(DM_TYPING,"......Atom passed oxidation state check [none specified]\n");
+	msg(DM_TYPING,"(%li %2i) ... Oxidation state  ",this,level);
+	if (os == 99) msg(DM_TYPING,"[defaulted]\n");
 	else
 	{
 		if (i->is_os(os))
 		{
 			typescore++;
-			msg(DM_TYPING,"......Atom passed oxidation state check [matched %i]\n",i->get_os());
+			msg(DM_TYPING,"[passed - matched '%i']\n",i->get_os());
 		}
 		else
 		{
-			msg(DM_TYPING,"......Atom FAILED oxidation state check [is %s, type needs %s]\n",
-				i->get_os(),os);
+			msg(DM_TYPING,"[failed - is '%s', but type needs '%s']\n", i->get_os(), os);
+			level --;
 			dbg_end(DM_CALLS,"atomtype::match_atom");
 			return 0;
 		}
 	}
 	// Number of bound atoms check
-	if (nbonds == -1) msg(DM_TYPING,"......Atom passed bond number check [none specified]\n");
+	msg(DM_TYPING,"(%li %2i) ... Bond number  ",this,level);
+	if (nbonds == -1) msg(DM_TYPING,"[defaulted]\n");
 	else
 	{
 		if (i->is_nbonds(nbonds))
 		{
 			typescore++;
-			msg(DM_TYPING,"......Atom passed bond number check [matched %i]\n",i->get_nbonds());
+			msg(DM_TYPING,"[passed - matched '%i']\n",i->get_nbonds());
 		}
 		else
 		{
-			msg(DM_TYPING,"......Atom FAILED bond number check [is %i, type needs %i]\n",i->get_nbonds(),nbonds);
+			msg(DM_TYPING,"[failed - is '%i', but type needs '%i']\n",i->get_nbonds(),nbonds);
+			level --;
 			dbg_end(DM_CALLS,"atomtype::match_atom");
 			return 0;
 		}
 	}
 	// Local atom geometry check
-	if (geom == AG_UNSPECIFIED) msg(DM_TYPING,"......Atom passed bond geometry check [none specified]\n");
+	msg(DM_TYPING,"(%li %2i) ... Geometry  ",this,level);
+	if (geom == AG_UNSPECIFIED) msg(DM_TYPING,"[defaulted]\n");
 	else
 	{
 		if (i->get_geometry(parent) == geom)
 		{
 			typescore++;
-			msg(DM_TYPING,"......Atom passed geometry check [matched %s]\n",text_from_AG(geom));
+			msg(DM_TYPING,"[passed - matched '%s']\n",text_from_AG(geom));
 		}
 		else
 		{
-			msg(DM_TYPING,"......Atom FAILED geometry check [is %s, type needs %s]\n",text_from_AG(i->get_geometry(parent)),
-				text_from_AG(geom));
+			msg(DM_TYPING,"[failed - is '%s', but type needs '%s']\n",text_from_AG(i->get_geometry(parent)), text_from_AG(geom));
+			level --;
 			dbg_end(DM_CALLS,"atomtype::match_atom");
 			return 0;
 		}
 	}
 	// List of bound atoms check
-	msg(DM_TYPING,"......Begin bound atom check...\n");
-	atomtype *bat = boundlist.first();
-	if (bat != NULL)
+	if (boundlist.first() == NULL) msg(DM_TYPING,"(%li %2i) ... Bound atoms  [defaulted]\n",this,level);
+	else
 	{
 		// Fill the atomchecklist with the atoms bound to our current atom.
 		i->add_bound_to_reflist(&atomchecklist);
 		//i->tempi = 1;
-		while (bat != NULL)
+		for (bat = boundlist.first(); bat != NULL; bat = bat->next)
 		{
 			for (n=0; n<bat->nrepeat; n++)
 			{
+				msg(DM_TYPING,"(%li %2i) ... Bound atom %li (%i/%i):\n",this,level,bat,n+1,bat->nrepeat);
 				// Check the atomlist for a match to the bound atomtype
 				atomscore = bat->match_in_list(&atomchecklist,ringdata,parent);
 				if (atomscore != 0)
 				{
-					msg(DM_TYPING,".........Atom passed bound atom check [matched element]\n");
+					msg(DM_TYPING,"(%li %2i) ... Bound atom %li (%i/%i) [passed]\n",this,level,bat,n+1,bat->nrepeat);
 					typescore += atomscore;
 				}
 				else
 				{
-					msg(DM_TYPING,".........Atom FAILED bound atom check [element not in list]\n");
+					msg(DM_TYPING,"(%li %2i) ... Bound atom %li (%i/%i) [failed]\n",this,level,bat,n+1,bat->nrepeat);
+					level --;
 					dbg_end(DM_CALLS,"atomtype::match_atom");
 					return 0;
 				}
 			}
-			bat = bat->next;
 		}
 	}
-	else
-	{
-		//typescore ++;
-		msg(DM_TYPING,"......Atom passed bound atoms check [no bound atoms defined in type]\n");
-	}
 	// Ring check
-	ringtype *atr = ringlist.first();
-	if (atr == NULL)
-	{
-		msg(DM_TYPING,"......Atom passed basic ring check [no rings defined in atom type]\n");
-		//typescore ++;
-	}
+	if (ringlist.first() == NULL) msg(DM_TYPING,"(%li %2i) ... Rings  [defaulted]\n",this,level);
 	else
 	{
 		// Get list of rings out test atom is involved in
 		ringchecklist.clear();
-		ring *r = ringdata->first();
-		while (r != NULL)
-		{
-			// Search the list of atoms in this ring for 'i'
-			if (r->atoms.search(i) != NULL) ringchecklist.add(r,0,0);
-			r = r->next;
-		}
+		// Search the list of atoms in this ring for 'i'
+		for (r = ringdata->first(); r != NULL; r = r->next) if (r->atoms.search(i) != NULL) ringchecklist.add(r,0,0);
 		// Loop over ring specifications in atom type
-		while (atr != NULL)
+		for (atr = ringlist.first(); atr != NULL; atr = atr->next)
 		{
+			msg(DM_TYPING,"(%li %2i) ... Ring (%li):\n",this,level,atr);
 			// Loop over rings our atom is involved in, searching for a match.
-			refitem<ring> *inring = ringchecklist.first();
-			while (inring != NULL)
+			for (refring = ringchecklist.first(); refring != NULL; refring = refring->next)
 			{
 				// Size check
+				msg(DM_TYPING,"(%li %2i) ... ... Size  ",this,level);
 				if (atr->ringsize == -1)
 				{
-					msg(DM_TYPING,".........Atom passed ring size check [no size defined]\n");
+					
+					msg(DM_TYPING,"[defaulted]\n");
 					ringscore = 1;
 				}
-				else if (atr->ringsize == inring->item->atoms.size())
+				else if (atr->ringsize == refring->item->atoms.size())
 				{
-					msg(DM_TYPING,".........Atom passed ring size check [matched %i]\n",atr->ringsize);
+					msg(DM_TYPING,"[passed - matched '%i']\n",atr->ringsize);
 					ringscore = 1;
 				}
 				else
 				{
-					msg(DM_TYPING,".........Atom FAILED ring size check [sizes do not match]\n");
+					msg(DM_TYPING,"[failed]\n");
 					ringscore = 0;
 				}
 				// Get the list of other atoms in this ring ready for searching.
 				if (ringscore != 0)
 				{
+					msg(DM_TYPING,"(%li %2i) ... ... Atoms:\n",this,level);
 					atomchecklist.clear();
-					inring->item->add_atoms_to_reflist(&atomchecklist,i);
+					refring->item->add_atoms_to_reflist(&atomchecklist,i);
 					// Now go through list of specified atomtypes in this ringtype
-					bat = atr->ringatoms.first();
-					while (bat != NULL)
+					for (bat = atr->ringatoms.first(); bat != NULL; bat = bat->next)
 					{
+						msg(DM_TYPING,"(%li %2i) ... ... ... Atom (%li)  ",this,level,bat);
 						atomscore = bat->match_in_list(&atomchecklist,ringdata,parent);
 						if (atomscore != 0)
 						{
-							msg(DM_TYPING,"............Atom passed ring atom check [matched element]\n");
+							msg(DM_TYPING,"[passed]\n");
 							ringscore += atomscore;
 						}
 						else
 						{
-							msg(DM_TYPING,"............Atom FAILED ring atom check [element]\n");
+							msg(DM_TYPING,"[failed]\n");
 							// Don't fully return just yet - move onto next ring...
 							ringscore = 0;
 							break;
 						}
-						bat = bat->next;
 					}
 					if (ringscore != 0) break;
 				}
-				inring = inring->next;
 			}
-			// Check 'inring' - if NULL then we did not manage to find a match for the ring
-			if (inring != NULL)
+			// Check 'refring' - if NULL then we did not manage to find a match for the ring
+			if (refring != NULL)
 			{
-				msg(DM_TYPING,"......Atom passed full ring check [match]\n");
+				msg(DM_TYPING,"(%li %2i) ... Ring (%li)  [passed]\n",this,level,atr);
 				typescore += ringscore;
 			}
 			else
 			{
-				msg(DM_TYPING,"......Atom FAILED full ring check [no match]\n");
+				msg(DM_TYPING,"(%li %2i) ... Ring (%li)  [failed]\n",this,level,atr);
+				level --;
 				dbg_end(DM_CALLS,"atomtype::match_atom");
 				return 0;
 			}
-			atr = atr->next;
 		}
 	}
 	// All checks completed, so return the final typing score
+	level --;
 	dbg_end(DM_CALLS,"atomtype::match_atom");
 	return typescore;
 }
