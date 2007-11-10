@@ -25,47 +25,24 @@
 #include "model/model.h"
 #include "methods/linemin.h"
 
-// Steepest Descent methods
-class sd_methods
+// Steepest Descent Minimiser
+class sd_method : public linemin
 {
 	public:
 	// Constructor
-	sd_methods();
+	sd_method();
 
-	/*
-	// Control Options
-	*/
 	private:
-	// Stepsize to take in direction
-	double stepsize;
-	// Maximum cartesian displacement (in any vector)
-	double maxstep;
-	// Maximum number of iterations to take in one minimisation
-	int maxcycles;
-	// Maximum number of attempts at finding a new point along the gradient vector
-	int maxlinetrials;
+	// Maximum number of iterations to perform
+	int ncycles;
 
 	public:
-	// Set the stepsize
-	void set_stepsize(double d) { stepsize = d; }
-	// Get the stepsize
-	double get_stepsize() { return stepsize; }
-	// Set the maximum cartesian step
-	void set_maxstep(double d) { maxstep = d; }
-	// Get the maximum cartesian step size
-	double get_maxstep() { return maxstep; }
-	// Set the maximum iterations
-	void set_maxcycles(int i) { maxcycles = i; }
-	// Get the maximum iterations
-	int get_maxcycles() { return maxcycles; }
-	// Set the maximum line trials
-	void set_maxlinetrials(int i) { maxlinetrials = i; }
-	// Get the maximum line trials
-	int get_maxlinetrials() { return maxlinetrials; }
+	// Set maximum number of cycles to perform
+	void set_ncycles(int i) { ncycles = i; }
+	// Get maximum number of  for MC move
+	int get_ncycles() { return ncycles; }
 	// Minimise the specified model
-	void minimise(model*, double, double);
+	void minimise(model *source, double econ, double fcon);
 };
-
-extern sd_methods sd;
 
 #endif

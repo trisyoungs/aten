@@ -81,7 +81,7 @@ class atomtype
 	// List pointers, used in bound atom list and list of atoms in rings
 	atomtype *prev, *next;
 	// Element (only used in head of atomtype tree, specifies the absolute element that the type describes)
-	int el; 				
+	int el;
 	// Add data to the structure from the supplied string
 	void expand(const char*, forcefield*);
 	// See if this type matches any atoms in the list provided
@@ -95,7 +95,7 @@ class atomtype
 	// High-level descriptors
 	*/
 	private:
-	// Environment of atom 
+	// Environment of atom
 	atom_env env;
 	// Geometry of bonding about atom
 	atom_geom geom;

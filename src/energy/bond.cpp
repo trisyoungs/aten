@@ -43,7 +43,7 @@ void pattern::bond_energy(model *srcmodel, energystore *estore)
 	{
 		for (pb = bonds.first(); pb != NULL; pb = pb->next)
 		{
-			i = pb->get_atomid(0)+ aoff;
+			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(1) + aoff;
 			params = pb->get_data()->get_params();
 			switch (pb->get_data()->get_funcform().bondfunc)

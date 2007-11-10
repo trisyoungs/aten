@@ -133,8 +133,9 @@ const char *SC_data[SC_NITEMS] = {
 	// Minimisation commands
 	"cgminimise",
 	"converge,GG",
+	"linetol,G",
 	"mcminimise,G",
-	"sdminimise",
+	"sdminimise,G",
 	"simplexminimise",
 
 	// Model commands

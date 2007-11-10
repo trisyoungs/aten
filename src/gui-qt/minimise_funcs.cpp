@@ -31,29 +31,29 @@ enum min_method { MM_STEEPEST, MM_NEWTON, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS }
 
 void AtenForm::on_MinimiseButton_clicked(bool checked)
 {
-	double econverge, fconverge;
+	double econverge, fconverge, linetol;
 	int maxcycles;
 	// Get the convergence values from the window controls
 	econverge = pow(10,ui.EnergyConvergeSpin->value());
-	fconverge = pow(10,ui.ForcesConvergeSpin->value());
+	fconverge = pow(10,ui.ForceConvergeSpin->value());
 	maxcycles = ui.MinimiseCyclesSpin->value();
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (MM_STEEPEST):
-			sd.set_maxcycles(maxcycles);
-			sd.set_maxlinetrials(ui.SDMaxLineTrialsSpin->value());
-			sd.set_maxstep(ui.SDMaxStepSpin->value());
-			sd.minimise(master.get_currentmodel(),econverge,fconverge);
+			master.sd.set_ncycles(maxcycles);
+			master.sd.set_tolerance(pow(10,ui.SDLineToleranceSpin->value()));
+			master.sd.minimise(master.get_currentmodel(),econverge,fconverge);
 			break;
 		case (MM_NEWTON):
 			msg(DM_NONE,"Newton-Raphson minimiser not yet written!\n");
 			break;
 		case (MM_MONTECARLO):
-			mc.minimise(master.get_currentmodel(),econverge,fconverge);
+			master.mc.minimise(master.get_currentmodel(),econverge,fconverge);
 			break;
 		case (MM_SIMPLEX):
 			msg(DM_NONE,"Simplex minimiser not yet written!\n");
 			break;
 	}
+	gui.mainview.postredisplay();
 }

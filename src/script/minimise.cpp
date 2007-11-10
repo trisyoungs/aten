@@ -19,14 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/master.h"
 #include "script/script.h"
 #include "base/debug.h"
 #include "methods/mc.h"
-#include "methods/sd.h"
 #include "classes/cell.h"
 
 // Local variables
-double econverge = 0.001, fconverge = 0.01;
+double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
 // Minimiser-related script commands
 bool script::command_minimise(command_node<script_command> *cmd)
@@ -46,14 +46,20 @@ bool script::command_minimise(command_node<script_command> *cmd)
 			econverge = cmd->datavar[0]->get_as_double();
 			fconverge = cmd->datavar[1]->get_as_double();
 			break;
+		// Set line minimiser tolerance
+		case (SC_LINETOL):
+			linetolerance = cmd->datavar[0]->get_as_double();
+			break;
 		// Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
 		case (SC_MCMINIMISE):
-			mc.set_ncycles(cmd->datavar[0]->get_as_int());
-			mc.minimise(m, econverge, fconverge);
+			master.mc.set_ncycles(cmd->datavar[0]->get_as_int());
+			master.mc.minimise(m, econverge, fconverge);
 			break;
 		// Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
 		case (SC_SDMINIMISE):
-			sd.minimise(m, econverge, fconverge);
+			master.sd.set_tolerance(linetolerance);
+			master.sd.set_ncycles(cmd->datavar[0]->get_as_int());
+			master.sd.minimise(m, econverge, fconverge);
 			break;
 		default:
 			printf("Error - missed minimise command?\n");

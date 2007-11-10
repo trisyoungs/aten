@@ -63,6 +63,7 @@ void AtenForm::rotate_selection(double direction)
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
 	master.get_currentmodel()->rotate_selection_vector(o, v, direction * ui.RotateAngleSpin->value());
+	master.get_currentmodel()->update_measurements();
 	gui.refresh();
 }
 
@@ -99,5 +100,6 @@ void AtenForm::translate_selection(int axis, int dir)
 		tvec *= double(dir) * step;
 		master.get_currentmodel()->translate_selection_local(tvec);
 	}
+	master.get_currentmodel()->update_measurements();
 	gui.refresh();
 }

@@ -479,3 +479,20 @@ void model::copy_atom_data(model *srcmodel, int dat, int startatom, int ncopy)
 	}
 	dbg_end(DM_CALLS,"model::copy_atom_data[range]");
 }
+
+// Calculate and return RMS of current atomic forces
+double model::calculate_rms_force()
+{
+	dbg_begin(DM_CALLS,"model::calculate_rms_force");
+	double rmsforce = 0.0;
+	atom **modelatoms = get_staticatoms();
+	for (int i=0; i<atoms.size(); i++)
+	{
+		rmsforce += modelatoms[i]->f.x * modelatoms[i]->f.x;
+		rmsforce += modelatoms[i]->f.y * modelatoms[i]->f.y;
+		rmsforce += modelatoms[i]->f.z * modelatoms[i]->f.z;
+	}
+	rmsforce /= atoms.size();
+	dbg_end(DM_CALLS,"model::calculate_rms_force");
+	return sqrt(rmsforce);
+}

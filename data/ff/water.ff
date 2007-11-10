@@ -16,5 +16,5 @@ bonds harmonic
 HW	OW	1000.0	1.0
 end
 angles harmonic
-HW	OW	HW	000.0	109.4
+HW	OW	HW	100.0	109.4
 end

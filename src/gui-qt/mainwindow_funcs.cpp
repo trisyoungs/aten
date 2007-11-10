@@ -220,8 +220,6 @@ void AtenForm::set_controls()
 		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
 	}
 	// Set controls in minimiser page
-	ui.SDMaxStepSpin->setValue(sd.get_maxstep());
-	ui.SDMaxLineTrialsSpin->setValue(sd.get_maxlinetrials());
 	dbg_end(DM_CALLS,"AtenForm::set_controls");
 }
 

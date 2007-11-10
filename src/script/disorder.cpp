@@ -22,7 +22,6 @@
 #include "script/script.h"
 #include "base/master.h"
 #include "base/debug.h"
-#include "methods/mc.h"
 
 // Disorder builder-related script commands (root=SR_DISORDER)
 bool script::command_disorder(command_node<script_command>  *cmd)
@@ -47,7 +46,7 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			m = master.find_model(cmd->datavar[1]->get_as_char());
 			if (m != NULL)
 			{
-				c = mc.components.add();
+				c = master.mc.components.add();
 				c->set_model(m);
 				c->set_nrequested(cmd->datavar[2]->get_as_int());
 				c->set_name(cmd->datavar[0]->get_as_char());
@@ -60,7 +59,7 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			break;
 		case (SC_PRINTCOMPONENTS):	// Print current component list ('printcomponents')
 			msg(DM_NONE,"Current component list:\n");
-			c = mc.components.first();
+			c = master.mc.components.first();
 			c != NULL ? printf("Name         Nmols  I D T R Z  Model         Region       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
 				: printf("None.\n");
 			while (c != NULL)
@@ -82,21 +81,21 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			}
 			break;
 		case (SC_DISORDER):		// Performs MC insertion ('disorder <ncycles>')
-			if (mc.components.size() == 0)
+			if (master.mc.components.size() == 0)
 			{
 				msg(DM_NONE,"MC insertion requires a list of components.\n");
 				break;
 			}
 			msg(DM_NONE,"Performing disordered build for model '%s'\n",m2->get_name());
-			mc.set_ncycles(cmd->datavar[0]->get_as_int());
-			mc.disorder(m2);
+			master.mc.set_ncycles(cmd->datavar[0]->get_as_int());
+			master.mc.disorder(m2);
 			break;
 		case (SC_SETCENTRE):
 		case (SC_SETOVERLAP):
 		case (SC_SETSHAPE):
 		case (SC_SETGEOMETRY):
 			// Commands that set region data - all need a valid component
-			c = mc.get_component_by_name(cmd->datavar[0]->get_as_char());
+			c = master.mc.get_component_by_name(cmd->datavar[0]->get_as_char());
 			if (c == NULL)
 			{
 				msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n",cmd->datavar[0]->get_as_char());
@@ -123,7 +122,7 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 			}
 			break;
 		case (SC_VDWSCALE):	// Set vdw radius scaling for method ('vdwscale <scale>')
-			mc.set_vdw_radius_scale(cmd->datavar[0]->get_as_double());
+			master.mc.set_vdw_radius_scale(cmd->datavar[0]->get_as_double());
 			break;
 		default:
 			printf("Error - missed expr command?\n");

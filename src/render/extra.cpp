@@ -20,6 +20,7 @@
 */
 
 #include "model/model.h"
+#include "base/master.h"
 #include "base/elements.h"
 #include "methods/mc.h"
 #include "gui/canvas.h"
@@ -163,7 +164,7 @@ void canvas_master::render_regions()
 	// Enable alpha component and make sure lighting is on
 	glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);
-	for (component *c = mc.components.first(); c != NULL; c = c->next)
+	for (component *c = master.mc.components.first(); c != NULL; c = c->next)
 	{
 		elements.ambient(i, colour);
 		colour[3] = (GLint) (0.4 * INT_MAX);

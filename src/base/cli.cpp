@@ -64,7 +64,7 @@ void master_data::prepare_cli()
 }
 
 // Add CLI options
-void master_data::add_cli_option(char *name, int has_arg, int enumid, bool has_shortopt)
+void master_data::add_cli_option(const char *name, int has_arg, int enumid, bool has_shortopt)
 {
 	// Add a new option entry in the opts array
 	if (nopts == MAXCLIOPTS)

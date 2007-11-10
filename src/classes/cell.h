@@ -76,7 +76,7 @@ class unitcell
 
 	public:
 	// Remove the cell definition (i.e. set 'type' to CT_NONE)
-	void remove() { type = CT_NONE; }
+	void remove() { type = CT_NONE; origin.zero(); }
 	// Set lengths and angles and calculates matrix
 	void set(const vec3<double>&, const vec3<double>&);
 	// Set matrix and calculates lengths and angles

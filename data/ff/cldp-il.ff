@@ -7,7 +7,7 @@ types
 # Cations
 #
 # Dialkylimidazolium - JPCb 108, p2038 (2004)
-1	C1	C	"nbonds=4,-[N](ring),-H,-H"			# First tetrahedral carbon in R group on ring nitrogen
+1	C1	C	"nbonds=4,-N(ring),-H,-H"			# First tetrahedral carbon in R group on ring nitrogen
 2	C2	C	"nbonds=4,-C(-[N,P]),-H(n=2),-C"		# Second carbon in R group (> ethyl)
 3	CE	C	"nbonds=4,-C(-[N,P]),-H(n=3)"			# Terminal carbon of ethyl R group
 4	CS	C	"nbonds=4,-C(n=2),-H(n=2)"			# General carbon in R group
@@ -16,7 +16,7 @@ types
 7	CW	C	"nbonds=3,-N(-C,-C),-C,ring(size=5)"		# Carbon adjacent to nitrogen (with alkyl group) and carbon
 8	HA	H	"nbonds=1"					# ???
 9	HCR	H	"-C(-N(-C(n=2),n=2),ring(size=5))"		# H on carbon adjacent to two N
-10	HCW	H	"-C(-N(-C(n=2)),-C,ring(size=5))"			# H on carbon adjacent to N and C
+10	HCW	H	"-C(-N(-C(n=2)),-C,ring(size=5))"		# H on carbon adjacent to N and C
 11	HC	H	"-C(-C,-H)"					# Hydrogen on other carbon in R group
 12	H1	H	"-C(-N,-H)"					# Hydrogen on first carbon in R group
 13	NA	N	"nbonds=3,ring(size=5,N,C(n=3)),C(n=3)"		# Nitrogen with alkyl group attached
@@ -165,17 +165,17 @@ NA	NAH NAP
 end
 bonds harmonic
 # Alkanes - OPLS-AA / JACS 118, p11225 (1996) / JPC 100, p18010 (1996)
-HC	CT	0	1.090	#RES 2845.0
+HC	CT	2845	1.090	#RES 2845.0
 CT	CT	2242	1.529
 # Dialkylimidazolium - JPCb 108, p2038 (2004)
-CR	HA	0	1.080	#RES 2845.0
-CW	HA	0	1.080	#RES 2845.0
+CR	HA	2845	1.080	#RES 2845.0
+CW	HA	2845	1.080	#RES 2845.0
 CR	NA	3992	1.315
 CW	NA	3574	1.378
 CW	CW	4352	1.341
 NA	CT	2820	1.466
 #alkylimidazolium - OPLS-AA
-NA	HA	0	1.010	#RES 3632.0
+NA	HA	3632	1.010	#RES 3632.0
 # Pyridinium - OPLS-AA / Theochem 424, p145 (1998)
 CA	HA	0	1.080	#RES 3071.0
 CA	CA	3925	1.380
