@@ -40,6 +40,9 @@ class QFileDialog;
 class QLabel;
 class QTimer;
 class QLineEdit;
+class QProgressBar;
+class QPushButton;
+class QFrame;
 
 class AtenForm : public QMainWindow
 {
@@ -369,11 +372,23 @@ class AtenForm : public QMainWindow
 	void on_actionPreferences_triggered(bool checked);
 
 	/*
+	// Local Routines
+	*/
+	private slots:
+	// Cancel progress dialog
+	void progress_cancel();
+
+	/*
 	// Local Widgets
 	*/
 	public:
 	// Main text label for status bar in main window
 	QLabel *statuslabel;
+	// Statusbar progress indicator widgets
+	QProgressBar *progressbar;
+	QLabel *progresslabel;
+	QPushButton *progressbutton;
+	QFrame *progressindicator;
 	// File dialogs for filter types
 	QFileDialog *dialog[FT_NITEMS];
 	// File dialog for save image

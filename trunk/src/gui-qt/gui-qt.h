@@ -160,10 +160,12 @@ class gui_qt : public gui_master
 	// Progress Dialog
 	*/
 	private:
-	// Progress dialog widget
-	QProgressDialog *progress;
+	// Indicator that the 'Cancel' button was pressed
+	bool progress_canceled;
 
 	public:
+	// Notify that the progress indicator should be canceled
+	void notify_progress_canceled() { progress_canceled; }
 	// Instantiate a progress dialog
 	virtual void progress_create(const char *jobtitle, int stepstodo);
 	// Update the progress dialog
