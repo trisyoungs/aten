@@ -28,12 +28,17 @@
 #include "base/elements.h"
 #include "file/parse.h"
 
-string leader = "";
+int printlevel = 0;
 
 // Atom typing commands
-const char *TC_keywords[TC_NITEMS] = { "sp", "sp2", "sp3", "aromatic", "ring", "nbonds", "bond", "n", "os" };
-type_command TC_from_text(const char *s)
-	{ return (type_command) enum_search("#",TC_NITEMS,TC_keywords,s); }
+const char *ATC_keywords[ATC_NITEMS] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os" };
+atomtype_command ATC_from_text(const char *s)
+	{ return (atomtype_command) enum_search("#",ATC_NITEMS,ATC_keywords,s); }
+
+// Ring typing commands
+const char *RTC_keywords[RTC_NITEMS] = { "size", "n" };
+ringtype_command RTC_from_text(const char *s)
+	{ return (ringtype_command) enum_search("#",RTC_NITEMS,RTC_keywords,s); }
 
 // Atom environment
 const char *AE_strings[AE_NITEMS] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
@@ -71,6 +76,7 @@ atomtype::atomtype()
 ringtype::ringtype()
 {
 	ringsize = -1;
+	nrepeat = 1;
 	prev = NULL;
 	next = NULL;
 	#ifdef MEMDEBUG
@@ -162,23 +168,23 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 // Print Atom Type data
 void atomtype::print()
 {
-	leader += "--";
-	printf("%s Element :",leader.c_str());
+	printlevel ++;
+	printf("(%3i) Element :",printlevel);
 	if (nallowedel == 0) printf(" Any");
 	else for (int n=0; n<nallowedel; n++) printf(" %s",elements.name(allowedel[n]));
 	printf("\n");
-	printf("%s  Repeat : %i\n",leader.c_str(),nrepeat);
+	printf("(%3i)  Repeat : %i\n",printlevel,nrepeat);
 	if (boundlist.size() != 0)
 	{
-		printf("%s   Atoms : \n",leader.c_str());
+		printf("(%3i)   Atoms : \n",printlevel);
 		for (atomtype *xat = boundlist.first(); xat != NULL; xat = xat->next) xat->print();
 	}
 	if (ringlist.size() != 0)
 	{
-		printf("%s   Rings : \n",leader.c_str());
+		printf("(%3i)   Rings : \n",printlevel);
 		for (ringtype *xring = ringlist.first(); xring != NULL; xring = xring->next) xring->print();
 	}
-	leader.erase(leader.length()-2,leader.length());
+	printlevel --;
 }
 
 /*
@@ -188,14 +194,14 @@ void atomtype::print()
 // Print
 void ringtype::print()
 {
-	leader += "--";
-	printf("%s   Size : %i\n",leader.c_str(),ringsize);
+	printlevel ++;
+	printf("(%3i)   Size : %i\n",printlevel,ringsize);
 	if (ringatoms.size() != 0)
 	{
-		printf("%s Contains :\n",leader.c_str());
+		printf("(%3i) Contains :\n",printlevel);
 		for (atomtype *xat = ringatoms.first(); xat != NULL; xat = xat->next) xat->print();
 	}
-	leader.erase(leader.length()-2,2);
+	printlevel --;
 }
 
 /*
@@ -206,8 +212,12 @@ void ringtype::expand(const char *data, forcefield *ff)
 {
 	// Separate function (to prevent brain melting) to recursively create a ring definition.
 	// At least allows the restriction (and addition) of commands to the ring command.
-	dnchar keywd, optlist, def;
 	dbg_begin(DM_CALLS,"ringtype::expand");
+	dnchar keywd, optlist, def;
+	static char c;
+	static bool found;
+	static ringtype_command rtc;
+	static atomtype *newat;
 	msg(DM_TYPING,"expand[ring] : Received string [%s]\n",data);
 	// Grab the next command, trip the keyword and option list (if there is one).
 	def.set(data);
@@ -219,16 +229,42 @@ void ringtype::expand(const char *data, forcefield *ff)
 		keywd = parser.trim_atkeyword(optlist);
 		msg(DM_TYPING,"       Keyword : [%s]\n",keywd.get());
 		msg(DM_TYPING,"       Options : [%s]\n",optlist.get());
-		// Check keyword - either 'size', or  an element
-		if (keywd == "size") ringsize = atoi(optlist.get());	 // Ring size specifier
-		else
+		found = FALSE;
+		// Check for atomtype specifier ('-' or '='). Both mean the same here...
+		c = keywd[0];
+		if ((c == '-') || (c == '='))
 		{
-			atomtype *newat = ringatoms.add();
+			// Remove leading character, add bound atom and set its element list
+			keywd.erasestart(1);
+			newat = ringatoms.add();
 			newat->set_elements(keywd.get(),ff);
 			newat->expand(optlist.get(),ff);
+			//if (c == '=') boundbond = BT_DOUBLE;
+			newat->expand(optlist.get(),ff);
+			found = TRUE;
 		}
-		//else msg(DM_NONE,"ringtype::expand - Unrecognised command (%s) in atomtype description.\n",keywd.get());
-
+		// Check for keywords (if it wasn't a bound specifier)
+		if (!found)
+		{
+			rtc = RTC_from_text(keywd.get());
+			// Set 'found' to TRUE - we will set it to FALSE again if we don't recognise the command
+			found = TRUE;
+			switch (rtc)
+			{
+				// Size specifier
+				case (RTC_SIZE):
+					ringsize = atoi(optlist.get());
+					break;
+				// Repeat specifier
+				case (RTC_REPEAT):
+					nrepeat = atoi(optlist.get());
+					break;
+				// Unrecognised
+				default:
+					msg(DM_NONE,"ringtype::expand - Unrecognised command (%s) in atomtype description.\n",keywd.get());
+					break;
+			}
+		}
 	} while (!def.empty());
 	dbg_end(DM_CALLS,"ringtype::expand");
 }
@@ -252,7 +288,7 @@ void atomtype::expand(const char *data, forcefield *ff)
 	static char c;
 	static int n;
 	static atom_geom ag;
-	static type_command tc;
+	static atomtype_command atc;
 	msg(DM_TYPING,"atomtype::expand - Received string [%s]\n",data);
 	if (data[0] == '\0')
 	{
@@ -286,43 +322,47 @@ void atomtype::expand(const char *data, forcefield *ff)
 		// Check for keywords (if it wasn't a bound specifier)
 		if (!found)
 		{
-			tc = TC_from_text(keywd.get());
+			atc = ATC_from_text(keywd.get());
 			// Set 'found' to TRUE - we will set it to FALSE again if we don't recognise the command
 			found = TRUE;
-			switch (tc)
+			switch (atc)
 			{
 				// Hybridisation / environment settings (no options)
-				case (TC_SP):
+				case (ATC_SP):
 					env = AE_SP;
 					break;
-				case (TC_SP2):
+				case (ATC_SP2):
 					env = AE_SP2;
 					break;
-				case (TC_SP3):
+				case (ATC_SP3):
 					env = AE_SP3;
 					break;
-				case (TC_AROMATIC):
+				case (ATC_AROMATIC):
 					env = AE_AROMATIC;
 					break;
 				// Ring specification (possible options)
-				case (TC_RING):
+				case (ATC_RING):
 					newring = ringlist.add();
 					newring->expand(optlist.get(),ff);
 					break;
+				// Disallow rings
+				case (ATC_NORING):
+					acyclic = TRUE;
+					break;
 				// Request exact bond number
-				case (TC_NBONDS):
+				case (ATC_NBONDS):
 					nbonds = atoi(optlist.get());
 					break;
 				// Request exact bond type (bond=bond_type)
-				case (TC_BOND):
+				case (ATC_BOND):
 					boundbond = BT_from_text(optlist.get());
 					break;
 				// Number of times to match (n=int)
-				case (TC_REPEAT):
+				case (ATC_REPEAT):
 					nrepeat = atoi(optlist.get());
 					break;
 				// Oxidation state of element (os=int)
-				case (TC_OS):
+				case (ATC_OS):
 					os = atoi(optlist.get());
 					break;
 				default:
@@ -555,68 +595,71 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 		// Loop over ring specifications in atom type
 		for (atr = ringlist.first(); atr != NULL; atr = atr->next)
 		{
-			msg(DM_TYPING,"(%li %2i) ... Ring (%li):\n",this,level,atr);
-			// Loop over rings our atom is involved in, searching for a match.
-			for (refring = ringchecklist.first(); refring != NULL; refring = refring->next)
+			for (n=0; n<atr->nrepeat; n++)
 			{
-				// Size check
-				msg(DM_TYPING,"(%li %2i) ... ... Size  ",this,level);
-				if (atr->ringsize == -1)
+				msg(DM_TYPING,"(%li %2i) ... Ring (%li) (%i/%i):\n",this,level,atr,n+1,atr->nrepeat);
+				// Loop over rings our atom is involved in, searching for a match.
+				for (refring = ringchecklist.first(); refring != NULL; refring = refring->next)
 				{
-					
-					msg(DM_TYPING,"[defaulted]\n");
-					ringscore = 1;
+					// Size check
+					msg(DM_TYPING,"(%li %2i) ... ... Size  ",this,level);
+					if (atr->ringsize == -1)
+					{
+						
+						msg(DM_TYPING,"[defaulted]\n");
+						ringscore = 1;
+					}
+					else if (atr->ringsize == refring->item->atoms.size())
+					{
+						msg(DM_TYPING,"[passed - matched '%i']\n",atr->ringsize);
+						ringscore = 1;
+					}
+					else
+					{
+						msg(DM_TYPING,"[failed]\n");
+						ringscore = 0;
+					}
+					// Get the list of other atoms in this ring ready for searching.
+					if (ringscore != 0)
+					{
+						msg(DM_TYPING,"(%li %2i) ... ... Atoms:\n",this,level);
+						atomchecklist.clear();
+						refring->item->add_atoms_to_reflist(&atomchecklist,i);
+						// Now go through list of specified atomtypes in this ringtype
+						for (bat = atr->ringatoms.first(); bat != NULL; bat = bat->next)
+						{
+							msg(DM_TYPING,"(%li %2i) ... ... ... Atom (%li)  ",this,level,bat);
+							atomscore = bat->match_in_list(&atomchecklist,ringdata,parent);
+							if (atomscore != 0)
+							{
+								msg(DM_TYPING,"[passed]\n");
+								ringscore += atomscore;
+							}
+							else
+							{
+								msg(DM_TYPING,"[failed]\n");
+								// Don't fully return just yet - move onto next ring...
+								ringscore = 0;
+								break;
+							}
+						}
+						if (ringscore != 0) break;
+					}
 				}
-				else if (atr->ringsize == refring->item->atoms.size())
+				// Check 'refring' - if NULL then we did not manage to find a match for the ring
+				if (refring != NULL)
 				{
-					msg(DM_TYPING,"[passed - matched '%i']\n",atr->ringsize);
-					ringscore = 1;
+					msg(DM_TYPING,"(%li %2i) ... Ring (%li)  [passed]\n",this,level,atr);
+					typescore += ringscore;
 				}
 				else
 				{
-					msg(DM_TYPING,"[failed]\n");
-					ringscore = 0;
+					msg(DM_TYPING,"(%li %2i) ... Ring (%li)  [failed]\n",this,level,atr);
+					level --;
+					dbg_end(DM_CALLS,"atomtype::match_atom");
+					return 0;
 				}
-				// Get the list of other atoms in this ring ready for searching.
-				if (ringscore != 0)
-				{
-					msg(DM_TYPING,"(%li %2i) ... ... Atoms:\n",this,level);
-					atomchecklist.clear();
-					refring->item->add_atoms_to_reflist(&atomchecklist,i);
-					// Now go through list of specified atomtypes in this ringtype
-					for (bat = atr->ringatoms.first(); bat != NULL; bat = bat->next)
-					{
-						msg(DM_TYPING,"(%li %2i) ... ... ... Atom (%li)  ",this,level,bat);
-						atomscore = bat->match_in_list(&atomchecklist,ringdata,parent);
-						if (atomscore != 0)
-						{
-							msg(DM_TYPING,"[passed]\n");
-							ringscore += atomscore;
-						}
-						else
-						{
-							msg(DM_TYPING,"[failed]\n");
-							// Don't fully return just yet - move onto next ring...
-							ringscore = 0;
-							break;
-						}
-					}
-					if (ringscore != 0) break;
-				}
-			}
-			// Check 'refring' - if NULL then we did not manage to find a match for the ring
-			if (refring != NULL)
-			{
-				msg(DM_TYPING,"(%li %2i) ... Ring (%li)  [passed]\n",this,level,atr);
-				typescore += ringscore;
-			}
-			else
-			{
-				msg(DM_TYPING,"(%li %2i) ... Ring (%li)  [failed]\n",this,level,atr);
-				level --;
-				dbg_end(DM_CALLS,"atomtype::match_atom");
-				return 0;
-			}
+			} //End of loop over repeats
 		}
 	}
 	// All checks completed, so return the final typing score

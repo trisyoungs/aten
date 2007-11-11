@@ -236,8 +236,8 @@ void canvas_master::render_model_atoms()
 		}
 		ambient[3] = ambient[3] / 2;
 		diffuse[3] = diffuse[3] / 2;
-		glMaterialiv(GL_FRONT, GL_AMBIENT, ambient);
-		glMaterialiv(GL_FRONT, GL_DIFFUSE, diffuse);
+		glMaterialiv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+		glMaterialiv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 		glPushMatrix();
 		  ri = i->r;
 		  glTranslated(ri.x,ri.y,ri.z);

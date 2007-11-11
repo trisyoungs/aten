@@ -61,11 +61,16 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	if (event->button() == Qt::LeftButton) button = MB_LEFT;
 	else if (event->button() == Qt::MidButton) button = MB_MIDDLE;
 	else if (event->button() == Qt::RightButton) button = MB_RIGHT;
+	else
+	{
+		dbg_end(DM_CALLS,"TCanvas::mousePressEvent");
+		return;
+	}
 	// Do the requested action as defined in the edit panel, but only if another action
 	// isn't currently in progress. Set the user_action based on the mouse button that sent
 	// the signal, current selection / draw modes and key modifier states.
 	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
-	if (button == 2)
+	if (button == MB_RIGHT)
 	{
 		atom *tempi = master.get_currentmodel()->atom_on_screen(event->x(), event->y());
 		if (tempi != NULL)
@@ -77,7 +82,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		}
 	}
 	// If the left mouse button is double-clicked over an atom, show the atomlist window
-	if (button == 0 && event->type() == QEvent::MouseButtonDblClick)
+	if ((button == MB_LEFT) && (event->type() == QEvent::MouseButtonDblClick))
 	{
 		atom *tempi = canvas->get_atom_hover();
 		if (tempi != NULL)
@@ -102,6 +107,11 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 	if (event->button() == Qt::LeftButton) button = MB_LEFT;
 	else if (event->button() == Qt::MidButton) button = MB_MIDDLE;
 	else if (event->button() == Qt::RightButton) button = MB_RIGHT;
+	else
+	{
+		dbg_end(DM_CALLS,"TCanvas::mouseReleaseEvent");
+		return;
+	}
 	// Finalize the requested action
 	gui.mainview.inform_mouseup(button,event->x(),event->y());
 	gui.refresh();

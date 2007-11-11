@@ -43,7 +43,7 @@
      id="base"
      inkscape:zoom="4.07"
      inkscape:cx="50"
-     inkscape:cy="50.420613"
+     inkscape:cy="50.297763"
      inkscape:window-x="5"
      inkscape:window-y="52"
      inkscape:current-layer="svg2" />
@@ -192,18 +192,20 @@
   </defs>
   <path
      id="path3289"
-     style="fill:#e0deda;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-     d="M 97.219818,63.209352 C 97.222697,79.653416 83.892957,92.985491 67.448892,92.985491 C 51.004828,92.985491 37.675088,79.653416 37.677967,63.209352 C 37.675088,46.765288 51.004828,33.433213 67.448892,33.433213 C 83.892957,33.433213 97.222697,46.765288 97.219818,63.209352 z " />
+     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     d="M 90.831239,46.124498 C 90.834399,64.17335 76.2038,78.806512 58.154947,78.806512 C 40.106096,78.806512 25.475497,64.17335 25.478657,46.124498 C 25.475497,28.075647 40.106096,13.442485 58.154947,13.442485 C 76.2038,13.442485 90.834399,28.075647 90.831239,46.124498 z " />
   <use
      x="0"
      y="0"
      xlink:href="#path3289"
      id="use2393"
-     transform="matrix(0.4676798,0,0,0.4676798,5.5604288,53.674961)"
+     transform="matrix(0.4676798,0,0,0.4676798,0.8879234,52.198075)"
      width="100"
-     height="100" />
+     height="100"
+     style="fill:#282828;fill-opacity:1" />
   <g
-     id="g2386">
+     id="g2386"
+     transform="matrix(1.0975907,0,0,1.0975907,-0.7743447,-8.4211916)">
     <path
        d="M 80.278556,46.028995 C 80.281435,62.473059 66.951695,75.805134 50.50763,75.805134 C 34.063566,75.805134 20.733827,62.473059 20.736706,46.028995 C 20.733827,29.584931 34.063566,16.252856 50.50763,16.252856 C 66.951695,16.252856 80.281435,29.584931 80.278556,46.028995 z "
        style="fill:#ff0000;fill-rule:evenodd;stroke:#000000;stroke-width:0.91284072px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
@@ -222,7 +224,7 @@
      y="0"
      xlink:href="#g2386"
      id="use2391"
-     transform="matrix(0.4553966,0,0,0.4553966,1.2167032,52.343116)"
+     transform="matrix(0.4553966,0,0,0.4553966,0.9137314,52.865108)"
      width="100"
      height="100" />
 </svg>

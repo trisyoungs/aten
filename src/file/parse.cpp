@@ -43,9 +43,10 @@ bool line_parser::get_next_arg(int destarg)
 	// Get the next input chunk from the internal string and put into argument specified
 	dbg_begin(DM_PARSE,"parser::get_next_arg");
 	static int n, arglen;
-	static bool done;
+	static bool done, hadquotes;
 	static char c, quotechar, arg[MAXARGLENGTH];
 	done = FALSE;
+	hadquotes = FALSE;
 	quotechar = '\0';
 	end_of_line = FALSE;
 	arglen = 0;
@@ -78,7 +79,12 @@ bool line_parser::get_next_arg(int destarg)
 			case (39):	// Single quotes
 				if (!(optmask&PO_USEQUOTES)) break;
 				if (quotechar == '\0') quotechar = c;
-				else if (quotechar == c) quotechar = '\0';
+				else if (quotechar == c)
+				{
+					quotechar = '\0';
+					hadquotes = TRUE;
+					done = TRUE;
+				}
 				else
 				{
 					arg[arglen] = c;
@@ -111,9 +117,10 @@ bool line_parser::get_next_arg(int destarg)
 	if (destarg == -1) temparg = arg;
 	else arguments[destarg] = arg;
 	// Strip off the characters up to position 'n', but not including position 'n' itself
-	line.erasestart(n);
+	line.erasestart(n+1);
+	//printf("Rest of line is now [%s]\n",line.get());
 	dbg_end(DM_PARSE,"parser::get_next_arg");
-	return (arglen == 0 ? FALSE : TRUE);
+	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
 }
 
 // Rip next n characters

@@ -27,8 +27,12 @@
 #include "templates/reflist.h"
 
 // Atom typing commands
-enum type_command { TC_SP, TC_SP2, TC_SP3, TC_AROMATIC, TC_RING, TC_NBONDS, TC_BOND, TC_REPEAT, TC_OS, TC_NITEMS };
-type_command TC_from_text(const char*);
+enum atomtype_command { ATC_SP, ATC_SP2, ATC_SP3, ATC_AROMATIC, ATC_RING, ATC_NORING, ATC_NBONDS, ATC_BOND, ATC_REPEAT, ATC_OS, ATC_NITEMS };
+atomtype_command ATC_from_text(const char*);
+
+// Ring typing commands
+enum ringtype_command { RTC_SIZE, RTC_REPEAT, RTC_NITEMS };
+ringtype_command RTC_from_text(const char*);
 
 // Atom environment
 enum atom_env { AE_UNSPECIFIED, AE_NOBONDS, AE_SP3, AE_SP2, AE_SP, AE_AROMATIC, AE_NITEMS };
@@ -65,6 +69,8 @@ class ringtype
 	list<atomtype> ringatoms;
 	// Add data to the structure from the supplied string
 	void expand(const char*, forcefield*);
+	// Number of times this match is required
+	int nrepeat;
 	// Print the information contained in the structure
 	void print();
 	// Friend classes
