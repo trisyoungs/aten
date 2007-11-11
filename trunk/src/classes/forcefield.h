@@ -76,6 +76,8 @@ class ffatom
 	dnchar name;
 	// Equivalent name of atom type for intramolecular searching
 	dnchar equiv;
+	// Description of atom type
+	dnchar description;
 	// Atomtype description
 	atomtype typedesc;
 	// Pointer to parameter data

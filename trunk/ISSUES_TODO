@@ -25,6 +25,8 @@ Forcefield To-Do list:
 	- OPLS
 
 General Qt To-Do list:
+	- 'Throttle' for translating atoms with the mouse is far too strong
+	- AddHydrogen needs an icon
 	- Forcefield stack page and manager/edit window
 		+ Need method to apply forcefield to all or selected pattern
 	- Prefs window (partial)

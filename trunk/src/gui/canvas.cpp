@@ -194,6 +194,7 @@ void canvas_master::create_lists()
 	glEndList();
 	// Enlarged sphere (for selections with DS_SPHERE)
 	glNewList(list[GLOB_SELSPHEREATOM],GL_COMPILE);
+	  //gl_sphere(prefs.render_atom_size[DS_SPHERE]*prefs.render_selection_scale);
 	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE]*prefs.render_selection_scale,atomdetail,atomdetail*2);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SCALED)
@@ -220,7 +221,7 @@ void canvas_master::create_lists()
 	// Atom Sphere (for DS_SPHERE)
 	glNewList(list[GLOB_SPHEREATOM],GL_COMPILE);
 	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE],atomdetail*2,atomdetail);
-	  //sphere(10,10,prefs.render_atom_size[DS_SPHERE]);
+	  //gl_sphere(prefs.render_atom_size[DS_SPHERE]);
 	gluQuadricDrawStyle(quadric1,GLU_FILL);      // Set drawing style of the quadric to solid.
 	glEndList();
 	// Unit Atom Sphere (for DS_SCALED)

@@ -264,3 +264,62 @@ void canvas_master::gl_ellipsoid(const vec3<double> &centre, const vec3<double> 
 	  glPopMatrix();
 	glPopMatrix();
 }
+
+void canvas_master::gl_sphere(double radius)
+{
+	// Don't use this to render objects to the view - create a display list first!
+	int slices = prefs.get_atom_detail();
+	int stacks = slices * 2;
+	double x[2][slices],y[2][slices],z[2],r,rad;
+	double zstep = 2.0 * radius / stacks;
+	double delta = 0.01;
+	int n, m, row1 = 0, row2 = 1, t;
+	z[row1] = -radius;
+	// Initialise all elements of first array to 0.0
+	for (n=0; n<slices; n++)
+	{
+		x[row1][n] = 0.0;
+		y[row1][n] = 0.0;
+	}
+	glBegin(GL_QUADS);
+	  for (n=1; n<=stacks; n++)
+	  {
+		z[row2] = z[row1] + zstep;
+		rad = cos((z[row2]/radius) * (PI/2.0) + (PI/2));
+		//      z[row2] = rad * radius;
+		// Fill the x and y array 'row2' with the coordinates of the circle
+		//r = sqrt(1 - (z[row2]/radius) * (z[row2]/radius));
+		r = sqrt(1 - rad*rad);
+		//printf("sin=%9.4f %9.4f\n",rad,r);
+		for (m=0; m<slices; m++)
+		{
+			rad = m*(TWOPI/slices);
+			x[row2][m] = cos(rad) * r * radius;
+			y[row2][m] = sin(rad) * r * radius;
+		}
+		// Draw QUADS between points...
+		for (m=1; m<slices; m++)
+		{
+			glNormal3d(x[row2][m],y[row2][m],z[row2]);
+			glVertex3d(x[row2][m],y[row2][m],z[row2]);
+
+			glNormal3d(x[row2][m-1],y[row2][m-1],z[row2]);
+			glVertex3d(x[row2][m-1],y[row2][m-1],z[row2]);
+			glNormal3d(x[row1][m-1],y[row1][m-1],z[row1]);
+			glVertex3d(x[row1][m-1],y[row1][m-1],z[row1]);
+			glNormal3d(x[row1][m],y[row1][m],z[row1]);
+			glVertex3d(x[row1][m],y[row1][m],z[row1]);
+		}
+		// Final set of quads - between first and last points
+		glVertex3d(x[row1][slices-1],y[row1][slices-1],z[row1]);
+		glVertex3d(x[row1][0],y[row1][0],z[row1]);
+		glVertex3d(x[row2][0],y[row2][0],z[row2]);
+		glVertex3d(x[row2][slices-1],y[row2][slices-1],z[row2]);
+		// Swap rows
+		t = row2;
+		row2 = row1;
+		row1 = t;
+	  }
+	glEnd();
+}
+

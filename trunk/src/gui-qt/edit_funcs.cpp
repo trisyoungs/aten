@@ -86,5 +86,6 @@ void AtenForm::on_ElementEdit_editingFinished()
 
 void AtenForm::on_AddHydrogenButton_clicked(bool on)
 {
-	printf("TODO\n");
+	master.get_currentmodel()->hydrogen_satisfy();
+	gui.refresh();
 }

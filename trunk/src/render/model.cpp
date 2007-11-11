@@ -63,7 +63,13 @@ void canvas_master::render_model_labels()
 		if (labels&AL_FFTYPE)
 		{
 			strcat(text,"[");
-			strcat(text,ffa == NULL ? "None" : ffa->get_name());
+			if (ffa == NULL) strcat(text, "None");
+			else
+			{
+				strcat(text,itoa(ffa->get_ffid()));
+				strcat(text," ");
+				strcat(text,ffa->get_name());
+			}
 			strcat(text,"] ");
 		}
 		if (labels&AL_FFEQUIV)

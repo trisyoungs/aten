@@ -33,10 +33,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>9</number>
+     <number>0</number>
     </property>
     <property name="spacing" >
-     <number>6</number>
+     <number>2</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -6052,7 +6052,7 @@
      <x>0</x>
      <y>0</y>
      <width>724</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="ViewMenu" >
@@ -6202,9 +6202,12 @@
    </property>
    <property name="iconSize" >
     <size>
-     <width>24</width>
-     <height>24</height>
+     <width>20</width>
+     <height>20</height>
     </size>
+   </property>
+   <property name="toolButtonStyle" >
+    <enum>Qt::ToolButtonIconOnly</enum>
    </property>
    <attribute name="toolBarArea" >
     <number>4</number>
@@ -6224,8 +6227,8 @@
    </property>
    <property name="iconSize" >
     <size>
-     <width>24</width>
-     <height>24</height>
+     <width>20</width>
+     <height>20</height>
     </size>
    </property>
    <attribute name="toolBarArea" >
@@ -6246,8 +6249,8 @@
    </property>
    <property name="iconSize" >
     <size>
-     <width>24</width>
-     <height>24</height>
+     <width>20</width>
+     <height>20</height>
     </size>
    </property>
    <attribute name="toolBarArea" >
@@ -6278,8 +6281,8 @@
    </property>
    <property name="iconSize" >
     <size>
-     <width>24</width>
-     <height>24</height>
+     <width>20</width>
+     <height>20</height>
     </size>
    </property>
    <attribute name="toolBarArea" >
@@ -6298,6 +6301,12 @@
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
+   <property name="iconSize" >
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
@@ -6308,6 +6317,12 @@
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="iconSize" >
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
    </property>
    <attribute name="toolBarArea" >
     <number>4</number>
@@ -7067,6 +7082,11 @@
    <header>ttreewidget.uih</header>
   </customwidget>
   <customwidget>
+   <class>TCanvas</class>
+   <extends>QWidget</extends>
+   <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
    <header>tcolourframe.uih</header>
@@ -7075,11 +7095,6 @@
    <class>TTabBar</class>
    <extends>QWidget</extends>
    <header>ttabbar.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
