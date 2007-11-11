@@ -351,7 +351,7 @@ void AtenForm::on_actionFileLoadGridData_triggered(bool checked)
 
 void AtenForm::on_actionFileQuit_triggered(bool checked)
 {
-	gui.close_application();
+	if (gui.save_before_close()) gui.app->exit(0);
 }
 
 /*

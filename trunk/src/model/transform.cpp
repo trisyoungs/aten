@@ -26,7 +26,6 @@
 
 // Variables
 vec3<double> cog, localcog;
-double unitrad;
 
 // Prepare model for atom transform
 void model::prepare_transform()
@@ -51,7 +50,7 @@ void model::prepare_transform()
 	// Calculate a unit radius for the centre of geometry
 	localcog = cog;
 	vec4<double> pvec = world_to_screen(localcog);
-	unitrad = pvec.w;
+	translatescale = pvec.w;
 	dbg_end(DM_CALLS,"model::prepare_transform");
 }
 
@@ -77,8 +76,8 @@ void model::rotate_selection_world(double dx, double dy)
 	static double rotx, roty, theta, cosx, cosy, sinx, siny;
 	static vec3<double> origin, newr;
 	static mat3<double> rotmat;
-	rotx = dy/10.0;
-	roty = dx/10.0;
+	rotx = dy / 10.0;
+	roty = dx / 10.0;
 	cosx = cos(rotx);
 	cosy = cos(roty);
 	sinx = sin(rotx);

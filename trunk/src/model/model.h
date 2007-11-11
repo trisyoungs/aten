@@ -507,9 +507,15 @@ class model
 	/*
 	// Transformations
 	*/
+	private:
+	// Length scale to use for world translations through GUI
+	double translatescale;
+
 	public:
 	// Prepare for atom manipulation
 	void prepare_transform();
+	// Return the translation scale
+	double get_translatescale() { return translatescale; }
 	// Finalize atom transform
 	void finalize_transform();
 	// Rotate the atom selection

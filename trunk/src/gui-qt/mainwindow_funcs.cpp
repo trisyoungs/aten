@@ -239,6 +239,12 @@ void AtenForm::set_controls()
 	dbg_end(DM_CALLS,"AtenForm::set_controls");
 }
 
+void AtenForm::closeEvent(QCloseEvent *event)
+{
+	if (gui.save_before_close()) event->accept();
+	else event->ignore();
+}
+
 /*
 // Input
 */

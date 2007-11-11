@@ -27,7 +27,7 @@
 #include "gui-qt/mainwindow.h"
 
 // Minimisation algorithms
-enum min_method { MM_STEEPEST, MM_NEWTON, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
+enum min_method { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
 
 void AtenForm::on_MinimiseButton_clicked(bool checked)
 {
@@ -45,8 +45,10 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 			master.sd.set_tolerance(pow(10,ui.SDLineToleranceSpin->value()));
 			master.sd.minimise(master.get_currentmodel(),econverge,fconverge);
 			break;
-		case (MM_NEWTON):
-			msg(DM_NONE,"Newton-Raphson minimiser not yet written!\n");
+		case (MM_CONJUGATE):
+			master.cg.set_ncycles(maxcycles);
+			master.cg.set_tolerance(pow(10,ui.CGLineToleranceSpin->value()));
+			master.cg.minimise(master.get_currentmodel(),econverge,fconverge);
 			break;
 		case (MM_MONTECARLO):
 			master.mc.minimise(master.get_currentmodel(),econverge,fconverge);

@@ -90,8 +90,8 @@ class gui_qt : public gui_master
 	void update_labels();
 	// Process events from GUI
 	void process_events();
-	// Terminate GUI
-	void close_application();
+	// Save before close
+	bool save_before_close();
 
 	/*
 	// Object management
@@ -121,13 +121,11 @@ class gui_qt : public gui_master
 	/*
 	// Windows / Dialogs
 	*/
-	private:
+	public:
 	// Main Qt widget for the interface
 	AtenForm *mainwindow;
 	// Main application structure
 	QApplication *app;
-
-	public:
 	// Preferences Dialog
 	AtenPrefs *prefsdialog;
 	// Call the atompopup menu

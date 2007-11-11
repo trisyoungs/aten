@@ -1,6 +1,6 @@
 /*
-	*** Steepest descent minimiser
-	*** src/methods/sd.h
+	*** Conjugate gradient minimiser
+	*** src/methods/cg.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,18 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_SD_H
-#define H_SD_H
+#ifndef H_CG_H
+#define H_CG_H
 
 #include "model/model.h"
 #include "methods/linemin.h"
 
-// Steepest Descent Minimiser
-class sd_method : public linemin
+// Conjugate gradient minimiser
+class cg_method : public linemin
 {
 	public:
 	// Constructor
-	sd_method();
+	cg_method();
 
 	private:
 	// Maximum number of iterations to perform
@@ -39,7 +39,7 @@ class sd_method : public linemin
 	public:
 	// Set maximum number of cycles to perform
 	void set_ncycles(int i) { ncycles = i; }
-	// Get maximum number of  for MC move
+	// Get maximum number of cycles
 	int get_ncycles() { return ncycles; }
 	// Minimise the specified model
 	void minimise(model *source, double econ, double fcon);

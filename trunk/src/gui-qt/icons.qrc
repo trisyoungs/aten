@@ -29,6 +29,7 @@
         <file>icons/bond_triple.svg</file>
     </qresource>
     <qresource prefix="/build" >
+        <file>icons/build_addh.svg</file>
         <file>icons/build_atom.svg</file>
         <file>icons/build_chain.svg</file>
         <file>icons/build_delete.svg</file>

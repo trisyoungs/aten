@@ -43,7 +43,7 @@
      id="base"
      inkscape:zoom="3.6074882"
      inkscape:cx="26.663349"
-     inkscape:cy="38.235688"
+     inkscape:cy="38.097087"
      inkscape:window-x="10"
      inkscape:window-y="75"
      inkscape:current-layer="svg2" />
@@ -52,16 +52,16 @@
   <rect
      style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
      id="rect2359"
-     width="19.222904"
-     height="19.222904"
-     x="10.572154"
-     y="5.5693998" />
+     width="27.821047"
+     height="27.821047"
+     x="15.017012"
+     y="7.2872109" />
   <use
      x="0"
      y="0"
      xlink:href="#rect2359"
      id="use2698"
-     transform="translate(32.602089,25.089387)"
+     transform="translate(45.798551,23.28307)"
      width="100"
      height="100"
      style="fill:#282828;fill-opacity:1" />
@@ -70,7 +70,7 @@
      y="0"
      xlink:href="#rect2359"
      id="use2700"
-     transform="translate(-7.0305103,37.671091)"
+     transform="translate(-10.175161,54.520854)"
      width="100"
      height="100"
      style="fill:#282828;fill-opacity:1" />
@@ -80,7 +80,7 @@
      id="path2375" />
   <g
      id="g2249"
-     transform="translate(-44.694389,-50.746796)">
+     transform="matrix(1.4472863,0,0,1.4472863,-64.969499,-74.218448)">
     <rect
        y="53.225677"
        x="53.435287"
@@ -95,7 +95,7 @@
   </g>
   <g
      id="g2286"
-     transform="translate(36.898851,-25.910152)">
+     transform="matrix(1.4472863,0,0,1.4472863,51.733274,-51.301169)">
     <rect
        y="53.225677"
        x="4.2703981"
@@ -110,7 +110,7 @@
   </g>
   <g
      id="g2300"
-     transform="translate(-3.1142117,35.529035)">
+     transform="matrix(1.4472863,0,0,1.4472863,-4.7910781,50.647381)">
     <rect
        y="4.7034764"
        x="4.4989777"
