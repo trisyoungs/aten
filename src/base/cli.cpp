@@ -92,7 +92,6 @@ int master_data::parse_cli(int argc, char *argv[])
 	// Parse program options using getopt_long.
 	int index = 1, ntried = 0;
 	bool done = FALSE;
-	model *m;
 	script *s;
 	filter *f;
 	zmap_type zm;
@@ -237,7 +236,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	{
 		ntried ++;
 		f = master.probe_file(argv[optind], FT_MODEL_IMPORT);
-		if (f != NULL) m = f->import_model(argv[optind]);
+		if (f != NULL) f->import_model(argv[optind]);
 		optind++;
 	}
 	if (ntried == 0) return 0;

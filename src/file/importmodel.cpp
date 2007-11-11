@@ -24,7 +24,7 @@
 #include "base/master.h"
 
 // Import model using filter
-model *filter::import_model(const char *filename)
+void filter::import_model(const char *filename)
 {
 	dbg_begin(DM_CALLS,"filter::import_model");
 	// Check the obvious first...
@@ -32,7 +32,7 @@ model *filter::import_model(const char *filename)
 	{
 		printf("filter::import_model <<<< This filter does not provide model importing >>>>\n");
 		dbg_end(DM_CALLS,"filter::import_model");
-		return NULL;
+		return;
 	}
 	msg(DM_NONE,"Load   : %s (%s)\n",filename,name.get());
 	// Re-set reserved variables
@@ -46,7 +46,7 @@ model *filter::import_model(const char *filename)
 	{
 		msg(DM_NONE,"Error opening model file '%s'.\n",filename);
 		dbg_end(DM_CALLS,"filter::import_model");
-		return NULL;
+		return;
 	}
 	// Run the import commands on the file...
 	command_node<filter_command> *fn = commands.commandlist.first();
@@ -69,5 +69,4 @@ model *filter::import_model(const char *filename)
 	// Reset element mapping style
 	prefs.set_zmapping(temp_zmap);
 	dbg_end(DM_CALLS,"filter::import_model");
-	return activemodel;
 }

@@ -1,5 +1,5 @@
 Issues with the current version:
-	- Save image provokes GLXBadExtension error when correct 3D graphics drivers not installed.
+	- Save image provokes GLXBadExtension error when incorrect/no 3D graphics driver installed.
 	- Spherical regions in disordered builder have poor randomness.
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
 	- Surfaces need correct surface normals
@@ -31,7 +31,6 @@ General Qt To-Do list:
 	- Prefs window (partial)
 	- List of non-periodic models in disorder stack page (with checkboxes?)
 	- Better editability in the atom list stack page
-	- Recent files
 
 Manual To-Do list:
 	- Section on forcefields

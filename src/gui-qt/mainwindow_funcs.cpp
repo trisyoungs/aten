@@ -42,7 +42,6 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
 	int i;
 	for (i=0; i<SP_NITEMS; i++) stackbuttons[i] = NULL;
-	for (i=0; i < MAXRECENTFILES; i++) actionRecentFile[i] = NULL;
 	ui.setupUi(this);
 }
 
@@ -52,7 +51,7 @@ void AtenForm::finalise_ui()
 	dbg_begin(DM_CALLS,"AtenForm::finalise_ui");
 	filter *f;
 	int n;
-	char temp[128];
+	char temp[256];
 	QStringList filters;
 
 	// Set the title of the main window to reflect the version
@@ -62,26 +61,30 @@ void AtenForm::finalise_ui()
 	setWindowTitle(temp);
 
 	// Initialise application name, organisation and author, and create settings structure
-	QCoreApplication::setOrganizationName("MySoft");
-	QCoreApplication::setOrganizationDomain("mysoft.com");
-	QCoreApplication::setApplicationName("Star Runner");
+	QCoreApplication::setOrganizationDomain("www.projectaten.org");
+	QCoreApplication::setApplicationName("Aten");
 	settings = new QSettings;
 
-	// Set up recent files list
-	nrecentfiles = 0;
+	// Set up recent files list (create all actions first)
+	for (n=0; n<MAXRECENTFILES; n++)
+	{
+		actionRecentFile[n] = new QAction(this);
+		actionRecentFile[n]->setVisible(FALSE);
+		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(load_recent()));
+		ui.RecentMenu->addAction(actionRecentFile[n]);
+	}
+	// -- Now populate list
 	for (n=0; n<MAXRECENTFILES; n++)
 	{
 		// Construct settings value to search for
 		strcpy(temp,"RecentFile");
-		strcat(temp,itoa(n+1));
-		if (settings->contains(temp))
-		{
-			recentfiles[nrecentfiles] = qPrintable(settings->value(temp).toString());
-			actionRecentFile[nrecentfiles] = new QAction(this);
-			nrecentfiles ++;
-		}
-		else break;
+		strcat(temp,itoa(n));
+		if (settings->contains(temp)) add_recent(qPrintable(settings->value(temp).toString()));
 	}
+
+	// Set editable items in the Atom List
+	ui.AtomTreeList->setEditTriggers(QAbstractItemView::DoubleClicked);
+
 	// Create QActionGroup for draw styles
 	QActionGroup *alignmentGroup = new QActionGroup(this);
 	alignmentGroup->addAction(ui.actionStyleStick);
@@ -265,7 +268,11 @@ void AtenForm::set_controls()
 
 void AtenForm::closeEvent(QCloseEvent *event)
 {
-	if (gui.save_before_close()) event->accept();
+	if (gui.save_before_close())
+	{
+		save_settings();
+		event->accept();
+	}
 	else event->ignore();
 }
 
@@ -357,7 +364,82 @@ void AtenForm::execute_command()
 	command_edit->setText("");
 }
 
+// Cancel progress indicator
 void AtenForm::progress_cancel()
 {
 	gui.notify_progress_canceled();
+}
+
+// Save program settings
+void AtenForm::save_settings()
+{
+	char temp[128];
+	// Save the recent file entries
+	for (int i=0; i<MAXRECENTFILES; i++)
+	{
+		// Create name tag
+		strcpy(temp,"RecentFile");
+		strcat(temp,itoa(i));
+		if (actionRecentFile[i]->isVisible()) settings->setValue(temp,actionRecentFile[i]->data().toString());
+		else settings->remove(temp);
+	}
+}
+
+// Load recent file
+void AtenForm::load_recent()
+{
+	dnchar filename;
+	model *m;
+	filter *f;
+	// Cast sending QAction and grab filename
+	QAction *action = qobject_cast<QAction*> (sender());
+	if (!action)
+	{
+		printf("AtenForm::load_recent - Sender was not a QAction.\n");
+		return;
+	}
+	// Grab the filename from the action
+	filename = qPrintable(action->data().toString());
+	// See if any loaded model filename matches this filename
+	for (m = master.get_models(); m != NULL; m = m->next)
+	{
+		if (filename == m->get_filename())
+		{
+			printf("Matched filename to model.\n");
+			master.set_currentmodel(m);
+			return;
+		}
+	}
+	// If we get to here then the model is not currently loaded...
+	f = master.probe_file(filename.get(), FT_MODEL_IMPORT);
+	if (f != NULL) f->import_model(filename.get());
+
+}
+
+// Add file to top of recent list
+void AtenForm::add_recent(const char *filename)
+{
+	// Find unused (i.e. still hidden) recent file action
+	int last, n;
+	char temp[512];
+	for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
+	// 'last' now holds the first empty slot in the recent files list.
+	// If 'last' == MAXRECENTFILES then shuffle top 'n-1' down a position and add at '0'.
+	if (last == MAXRECENTFILES)
+	{
+		// Push the top items down the list
+		for (n=MAXRECENTFILES-2; n>=0; n--)
+		{
+			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
+			sprintf(temp,"&%i %s", n, remove_path(qPrintable(actionRecentFile[n]->data().toString())));
+			actionRecentFile[n+1]->setText(temp);
+			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
+		}
+		last = 0;
+	}
+	// Set the new data
+	sprintf(temp,"&%i %s",last,remove_path(filename));
+	actionRecentFile[last]->setText(temp);
+	actionRecentFile[last]->setData(filename);
+	actionRecentFile[last]->setVisible(TRUE);
 }

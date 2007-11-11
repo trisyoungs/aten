@@ -42,7 +42,7 @@ bool script::command_model(command_node<script_command> *cmd)
 			break;
 		case (SC_LOADMODEL):	// Load model ('loadmodel <name> <filename>')
 			f = master.probe_file(cmd->datavar[1]->get_as_char(), FT_MODEL_IMPORT);
-			if (f != NULL) m = f->import_model(cmd->datavar[1]->get_as_char());
+			if (f != NULL) f->import_model(cmd->datavar[1]->get_as_char());
 			else
 			{
 				result = FALSE;

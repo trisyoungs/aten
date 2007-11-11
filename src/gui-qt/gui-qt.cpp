@@ -239,6 +239,8 @@ void gui_qt::select_model(model *m)
 	int id = master.get_currentmodelindex();
 	// Select corresponding tab
 	mainwindow->ui.ModelTabs->setCurrentIndex(id);
+	// Update main window
+	gui.refresh();
 }
 
 // Add ff to list

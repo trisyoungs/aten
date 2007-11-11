@@ -144,11 +144,11 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		{
 			filename = filenames.at(i);
 			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-			if (f != NULL) m = f->import_model(qPrintable(filename));
-			else
+			if (f == NULL) f = master.probe_file(qPrintable(filename), FT_MODEL_IMPORT);
+			if (f != NULL)
 			{
-				f = master.probe_file(qPrintable(filename), FT_MODEL_IMPORT);
-				if (f != NULL) m = f->import_model(qPrintable(filename));
+				f->import_model(qPrintable(filename));
+				add_recent(qPrintable(filename));
 			}
 		}
 		refresh_modeltabs();
@@ -351,7 +351,9 @@ void AtenForm::on_actionFileLoadGridData_triggered(bool checked)
 
 void AtenForm::on_actionFileQuit_triggered(bool checked)
 {
-	if (gui.save_before_close()) gui.app->exit(0);
+	if (!gui.save_before_close()) return;
+	save_settings();
+	gui.app->exit(0);
 }
 
 /*
