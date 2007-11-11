@@ -35,6 +35,8 @@ enum pixmap_format { PF_BMP, PF_JPG, PF_PNG, PF_PPM, PF_XBM, PF_X11, PF_NITEMS }
 const char *filter_from_PF(pixmap_format);
 const char *extension_from_PF(pixmap_format);
 
+#define MAXRECENTFILES 5
+
 // Forward Declarations
 class QFileDialog;
 class QLabel;
@@ -43,6 +45,7 @@ class QLineEdit;
 class QProgressBar;
 class QPushButton;
 class QFrame;
+class QSettings;
 
 class AtenForm : public QMainWindow
 {
@@ -400,6 +403,30 @@ class AtenForm : public QMainWindow
 	filter *savemodelfilter;
 	// Filename set from save model dialog
 	dnchar savemodelfilename;
+
+	/*
+	// Settings
+	*/
+	private:
+	// Settings structure
+	QSettings *settings;
+	// Save settings
+	void save_settings();
+
+	/*
+	// Recent files
+	*/
+	private:
+	// QActions for file menu
+	QAction *actionRecentFile[MAXRECENTFILES];
+	// Most recent filenames
+	dnchar recentfiles[MAXRECENTFILES];
+	// Number of recent files in list
+	int nrecentfiles;
+
+	public:
+	// Add file to top of recent list
+	void add_recent(const char*);
 };
 
 #endif
