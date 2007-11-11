@@ -43,7 +43,7 @@
      id="base"
      inkscape:zoom="1.7288761"
      inkscape:cx="51.515554"
-     inkscape:cy="-12.215771"
+     inkscape:cy="-12.504976"
      inkscape:window-x="60"
      inkscape:window-y="52"
      inkscape:current-layer="svg2" />
@@ -96,8 +96,8 @@
        r="42.138133" />
   </defs>
   <path
-     style="fill:#e0dde0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 58.387647,79.094456 L 39.959153,81.637038 L 66.733892,31.954902 L 93.508621,81.637038 L 75.614287,79.094456 C 75.614287,81.056831 75.419927,105.80118 75.614287,107.71261 L 58.387647,107.71261 L 58.387647,79.094456 z "
+     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 46.241028,63.477374 L 27.812534,66.019956 L 54.587273,16.33782 L 81.362002,66.019956 L 63.467668,63.477374 C 63.467668,65.439749 63.273308,90.184098 63.467668,92.095528 L 46.241028,92.095528 L 46.241028,63.477374 z "
      id="path4225"
      sodipodi:nodetypes="cccccccc" />
   <g

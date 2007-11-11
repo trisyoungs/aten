@@ -100,8 +100,8 @@ class gui_master
 	virtual void update_labels();
 	// Process events from GUI
 	virtual void process_events();
-	// Terminate GUI
-	virtual void close_application();
+	// Save before close
+	virtual bool save_before_close();
 
 	/*
 	// Progress Dialog

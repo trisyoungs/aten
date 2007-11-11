@@ -1,6 +1,5 @@
 Issues with the current version:
-	- Closing main window with [x] does not ask to save modified models.
-	- Save image provokes GLXBadExtension error (on some cards), affects canvas on others.
+	- Save image provokes GLXBadExtension error when correct 3D graphics drivers not installed.
 	- Spherical regions in disordered builder have poor randomness.
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
 	- Surfaces need correct surface normals
@@ -22,17 +21,17 @@ General To-Do list:
 Forcefield To-Do list:
 	- UFF - oxidation state, torsions
 	- GAFF
-	- OPLS
+	- Tripos 5.2
+	- OPLS (types)
 
 General Qt To-Do list:
-	- 'Throttle' for translating atoms with the mouse is far too strong
 	- AddHydrogen needs an icon
 	- Forcefield stack page and manager/edit window
 		+ Need method to apply forcefield to all or selected pattern
 	- Prefs window (partial)
-	- Progress dialogs are not application modal. Move to statusbar widget?
 	- List of non-periodic models in disorder stack page (with checkboxes?)
 	- Better editability in the atom list stack page
+	- Recent files
 
 Manual To-Do list:
 	- Section on forcefields

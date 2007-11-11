@@ -469,6 +469,7 @@ void canvas_master::mode_motion(double x, double y)
 			break;
 		case (UA_MANIPTRANS):
 			delta.y = -delta.y;
+			delta /= displaymodel->get_translatescale();
 			displaymodel->translate_selection_world(delta);
 			break;
 		case (UA_ZOOMCAM):

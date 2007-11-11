@@ -103,15 +103,16 @@ Ah, now here we have a proper problem! An asymmetric substituted pyridine. Lets 
     13	N_py	N	"ring(size=6,aromatic)"			# Pyridine N
 \end{verbatim}
 
+XXX
 
 \section{Command Reference}
 \label{sec:typingcommands}
 \index{typing commands}
 
-All type descriptions in files should be enclosed in double-quotes to prevent delimited parsing of the string. Commands may be separated by spaces or commas, and are case-sensitive. Type descriptions may not span more than one line.
+All type descriptions in files should be enclosed in double-quotes to prevent delimited parsing of strings. Commands may be separated by spaces or commas, but type descriptions may not span more than one line.
 
 '-' (bound to)
-Specifies a connection to another element, but not the exact type of the connection itself (i.e. the bond type, which may be specified with the \qte{bond} keyword in brackets after the element specifier). Immediately following the \qte{--} should be either an element symbol, a type id, or a type name (the last two must be preceeded by a \qte{\$} symbol in order to distinguish them from being plain element symbols). Lists of the elements/type ids/type names may be given in square brackets, separated by commas or spaces, allowing multiple possibilities for matching the connection.
+Specifies a connection to another element, but not the exact type of the connection itself (i.e. the bond type, which may be specified with the \qte{bond} keyword in brackets after the element specifier). Immediately following the \qte{--} should be either an element symbol or a type id (the latter must be preceeded by a distinguishing \qte{\$}). Lists of the elements/type ids/type names may be given in square brackets, separated by commas or spaces, allowing multiple possibilities for matching the connection.
 
 Examples:
 

@@ -117,10 +117,10 @@ void gui_master::process_events()
 	 if (is_available) printf("gui_master::process_events - Not defined.\n");
 }
 
-// Terminate GUI
-void gui_master::close_application()
+// Save before close
+bool gui_master::save_before_close()
 {
-	 if (is_available) printf("gui_master::close_application - Not defined.\n");
+	 if (is_available) printf("gui_master::save_before_close - Not defined.\n");
 }
 
 // Add model to list

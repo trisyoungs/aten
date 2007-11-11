@@ -43,7 +43,7 @@
      id="base"
      inkscape:zoom="3.4648232"
      inkscape:cx="-2.4811976"
-     inkscape:cy="39.786973"
+     inkscape:cy="39.642665"
      inkscape:window-x="15"
      inkscape:window-y="98"
      inkscape:current-layer="svg2" />
@@ -119,18 +119,18 @@
   </defs>
   <g
      id="g4260"
-     transform="matrix(1.1772353,0,0,1.1772353,-1.704275,-0.2714296)"
-     style="fill:#e4e3e1;fill-opacity:1;stroke:#e0e3e3;stroke-width:1.69889569;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
+     transform="matrix(1.1772353,0,0,1.1772353,-7.4765753,-15.27941)"
+     style="fill:#282828;fill-opacity:1;stroke:#282828;stroke-width:1.69889569;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">
     <path
        sodipodi:nodetypes="cccccccccc"
        d="M 34.277023,72.820825 L 34.277026,82.843158 L 65.623657,82.843158 L 65.623655,72.820825 M 84.911909,57.484168 L 84.911907,67.5065 L 61.408767,69.37077 L 38.7826,69.37077 L 14.57786,67.5065 L 14.57786,57.484168"
-       style="fill:#e4e3e1;fill-opacity:1;fill-rule:evenodd;stroke:#e0e3e3;stroke-width:1.69889569;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:#282828;stroke-width:1.69889569;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="path4262" />
     <path
        sodipodi:nodetypes="cccccccc"
        id="path4264"
        d="M 38.782598,58.214824 L 14.577862,56.350554 L 49.744889,36.023229 L 84.911908,56.350554 L 61.408763,58.214824 C 61.408763,59.138645 65.368375,70.78738 65.623654,71.687211 L 34.277023,71.687211 L 38.782598,58.214824 z "
-       style="fill:#e4e3e1;fill-opacity:1;fill-rule:evenodd;stroke:#e0e3e3;stroke-width:1.69889569;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+       style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:#282828;stroke-width:1.69889569;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
   </g>
   <g
      id="g3277"

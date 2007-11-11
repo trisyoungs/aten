@@ -62,6 +62,9 @@ class AtenForm : public QMainWindow
 	// Set controls to reflect program variables
 	void set_controls();
 
+	protected:
+	void closeEvent(QCloseEvent *event);
+
 	/*
 	// Input
 	*/

@@ -300,7 +300,7 @@ void gui_qt::print_message(const char *s)
 	mainwindow->ui.TextDisplay->append(str);
 }
 
-void gui_qt::close_application()
+bool gui_qt::save_before_close()
 {
 	// Check the status of all models, asking to save before close if necessary
 	char text[512];
@@ -320,7 +320,7 @@ void gui_qt::close_application()
 					break;
 				// Cancel quit and return to app
 				case (QMessageBox::Cancel):
-					return;
+					return FALSE;
 				// Save model before quit
 				case (QMessageBox::Save):
 					// If model has a filter set, just save it
@@ -332,13 +332,12 @@ void gui_qt::close_application()
 						m->set_filename(mainwindow->savemodelfilename.get());
 						mainwindow->savemodelfilter->export_model(m);
 					}
-					else return;
+					else return FALSE;
 					break;
 			}
 		}
 	}
-	// Close the GUI
-	app->exit(0);
+	return TRUE;
 }
 
 // Convert Qt keysym to key_code

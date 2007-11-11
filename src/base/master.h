@@ -25,6 +25,7 @@
 #include "classes/clipboard.h"
 #include "classes/grid.h"
 #include "methods/sd.h"
+#include "methods/cg.h"
 #include "methods/mc.h"
 #include "file/filter.h"
 #include "script/script.h"
@@ -233,6 +234,8 @@ class master_data
 	public:
 	// Steepest descent minimiser
 	sd_method sd;
+	// Conjugate gradient minimiser
+	cg_method cg;
 	// Monte Carlo methods
 	mc_method mc;
 

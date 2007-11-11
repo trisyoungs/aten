@@ -43,9 +43,9 @@
      id="base"
      inkscape:zoom="1.7288761"
      inkscape:cx="51.515554"
-     inkscape:cy="-12.215771"
-     inkscape:window-x="0"
-     inkscape:window-y="29"
+     inkscape:cy="-12.504976"
+     inkscape:window-x="20"
+     inkscape:window-y="121"
      inkscape:current-layer="svg2" />
   <defs
      id="defs4">
@@ -96,8 +96,8 @@
        r="42.138133" />
   </defs>
   <path
-     style="fill:#e0dde0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 70.210481,60.330697 L 72.753062,41.902203 L 23.070926,68.676942 L 72.753062,95.451671 L 70.210481,77.557337 C 72.172855,77.557337 96.917203,77.362977 98.828639,77.557337 L 98.828639,60.330697 L 70.210481,60.330697 z "
+     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 60.377503,45.870436 L 62.920084,27.441942 L 13.237948,54.216681 L 62.920084,80.99141 L 60.377503,63.097076 C 62.339877,63.097076 87.084225,62.902716 88.995661,63.097076 L 88.995661,45.870436 L 60.377503,45.870436 z "
      id="path4225"
      sodipodi:nodetypes="cccccccc" />
   <g

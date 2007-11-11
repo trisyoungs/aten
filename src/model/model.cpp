@@ -40,6 +40,7 @@ model::model()
 	density = 0.0;
 	staticatoms = NULL;
 	staticatoms_point = -1;
+	translatescale = 1.0;
 	ff = NULL;
 	plist = NULL;
 	save_point = 0;

@@ -43,9 +43,9 @@
      id="base"
      inkscape:zoom="1.7324116"
      inkscape:cx="43.218867"
-     inkscape:cy="60.974587"
-     inkscape:window-x="0"
-     inkscape:window-y="6"
+     inkscape:cy="60.685972"
+     inkscape:window-x="60"
+     inkscape:window-y="52"
      inkscape:current-layer="svg2" />
   <defs
      id="defs4">
@@ -118,13 +118,13 @@
        r="42.138133" />
   </defs>
   <path
-     style="fill:#e4e4e4;fill-opacity:1;fill-rule:evenodd;stroke:#e4e4e4;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 94.142225,14.576702 L 94.142225,26.396427 C 89.404935,26.396427 29.670126,26.263067 25.05577,26.396427 L 25.05577,14.576702 L 94.142225,14.576702 z "
+     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:#282828;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 86.638234,6.4954814 L 86.638234,18.315206 C 81.900944,18.315206 22.166135,18.181846 17.551779,18.315206 L 17.551779,6.4954814 L 86.638234,6.4954814 z "
      id="path3155"
      sodipodi:nodetypes="ccccc" />
   <path
-     style="fill:#e0dde0;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
-     d="M 61.652953,82.767925 L 43.224459,85.310507 L 69.999198,35.628371 L 96.773927,85.310507 L 78.879593,82.767925 C 78.879593,84.7303 78.685233,109.47465 78.879593,111.38608 L 61.652953,111.38608 L 61.652953,82.767925 z "
+     style="fill:#282828;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:4.0367074;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1"
+     d="M 43.181591,73.532244 L 24.753097,76.074826 L 51.527836,26.39269 L 78.302565,76.074826 L 60.408231,73.532244 C 60.408231,75.494619 60.213871,100.23897 60.408231,102.1504 L 43.181591,102.1504 L 43.181591,73.532244 z "
      id="path4225"
      sodipodi:nodetypes="cccccccc" />
   <g
