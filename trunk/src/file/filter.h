@@ -161,7 +161,7 @@ class filter
 	// Import commands into the structure from file supplied
 	bool open(const char *filterfile);
 	// Import model file
-	model *import_model(const char *modelfile);
+	void import_model(const char *modelfile);
 	// Export model to filename (in model)
 	void export_model(model *source);
 	// Export forcefield spec to file

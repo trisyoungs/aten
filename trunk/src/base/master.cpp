@@ -75,6 +75,7 @@ void master_data::set_currentmodel(model *m)
 	dbg_begin(DM_CALLS,"master::set_currentmodel");
 	// Set currentmodel and tell the mainview canvas to display it
 	currentmodel = m;
+	gui.select_model(m);
 	currentmodel->calculate_viewmatrix();
 	currentmodel->project_all();
 	dbg_end(DM_CALLS,"master::set_currentmodel");

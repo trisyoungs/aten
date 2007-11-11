@@ -126,6 +126,7 @@ void AtenForm::refresh_atompage()
 			{
 				// Add the atom
 				item = ui.AtomTreeList->addTreeItem(pat);
+				//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 				item->set_atom(i);
 				item->set_columns();
 				// Set the row selection property here.
@@ -146,6 +147,7 @@ void AtenForm::refresh_atompage()
 				{
 					// Create atom in the pattern root node
 					item = ui.AtomTreeList->addTreeItem(pat);
+					//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 					item->set_atom(i);
 					item->set_columns();
 					// Set the row selection property here

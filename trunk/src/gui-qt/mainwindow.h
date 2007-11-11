@@ -416,13 +416,13 @@ class AtenForm : public QMainWindow
 	/*
 	// Recent files
 	*/
+	private slots:
+	// Load recent file
+	void load_recent();
+
 	private:
-	// QActions for file menu
+	// Pointers to recent file actions
 	QAction *actionRecentFile[MAXRECENTFILES];
-	// Most recent filenames
-	dnchar recentfiles[MAXRECENTFILES];
-	// Number of recent files in list
-	int nrecentfiles;
 
 	public:
 	// Add file to top of recent list

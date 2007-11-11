@@ -195,7 +195,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -6122,14 +6122,14 @@
      <x>0</x>
      <y>0</y>
      <width>724</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="ViewMenu" >
     <property name="title" >
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="menuColour_Scheme" >
+    <widget class="QMenu" name="SchemeMenu" >
      <property name="title" >
       <string>Colour Scheme</string>
      </property>
@@ -6137,7 +6137,7 @@
      <addaction name="actionSchemeCharge" />
      <addaction name="actionSchemeForces" />
     </widget>
-    <widget class="QMenu" name="menuStyle_2" >
+    <widget class="QMenu" name="StyleMenu" >
      <property name="title" >
       <string>Style</string>
      </property>
@@ -6154,8 +6154,8 @@
     <addaction name="actionViewPerspective" />
     <addaction name="actionViewOrthographic" />
     <addaction name="separator" />
-    <addaction name="menuStyle_2" />
-    <addaction name="menuColour_Scheme" />
+    <addaction name="StyleMenu" />
+    <addaction name="SchemeMenu" />
     <addaction name="separator" />
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
@@ -6164,7 +6164,7 @@
     <property name="title" >
      <string>Atom</string>
     </property>
-    <widget class="QMenu" name="menuStyle" >
+    <widget class="QMenu" name="AtomStyleMenu" >
      <property name="title" >
       <string>Style</string>
      </property>
@@ -6173,7 +6173,7 @@
      <addaction name="actionAtomStyleSphere" />
      <addaction name="actionAtomStyleScaled" />
     </widget>
-    <widget class="QMenu" name="menuLabels" >
+    <widget class="QMenu" name="AtomLabelsMenu" >
      <property name="title" >
       <string>Labels</string>
      </property>
@@ -6182,8 +6182,8 @@
      <addaction name="actionAtomLabelElement" />
      <addaction name="actionAtomLabelFFType" />
     </widget>
-    <addaction name="menuStyle" />
-    <addaction name="menuLabels" />
+    <addaction name="AtomStyleMenu" />
+    <addaction name="AtomLabelsMenu" />
     <addaction name="separator" />
     <addaction name="actionAtomSetVisible" />
     <addaction name="actionAtomSetInvisible" />
@@ -6202,11 +6202,11 @@
     <addaction name="actionModelNext" />
     <addaction name="actionModelPrevious" />
    </widget>
-   <widget class="QMenu" name="menuTools" >
+   <widget class="QMenu" name="ToolsMenu" >
     <property name="title" >
      <string>Settings</string>
     </property>
-    <widget class="QMenu" name="menuToolbars" >
+    <widget class="QMenu" name="ToolbarMenu" >
      <property name="title" >
       <string>Toolbars</string>
      </property>
@@ -6218,32 +6218,13 @@
      <addaction name="actionMouseToolBarVisibility" />
     </widget>
     <addaction name="actionPreferences" />
-    <addaction name="menuToolbars" />
+    <addaction name="ToolbarMenu" />
    </widget>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="actionRecentFiles" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="separator" />
-    <addaction name="actionFileLoadForcefield" />
-    <addaction name="actionFileLoadGridData" />
-    <addaction name="separator" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
-   </widget>
-   <widget class="QMenu" name="EdiTMenu" >
+   <widget class="QMenu" name="EditMenu" >
     <property name="title" >
      <string>&amp;Edit</string>
     </property>
     <addaction name="actionUndo" />
-    <addaction name="actionRedo" />
     <addaction name="separator" />
     <addaction name="actionEditCut" />
     <addaction name="actionEditCopy" />
@@ -6255,12 +6236,35 @@
     <addaction name="actionEditSelectAll" />
     <addaction name="actionEditSelectNone" />
    </widget>
+   <widget class="QMenu" name="FileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="RecentMenu" >
+     <property name="title" >
+      <string>Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="actionFileNew" />
+    <addaction name="actionFileOpen" />
+    <addaction name="actionFileAddTrajectory" />
+    <addaction name="RecentMenu" />
+    <addaction name="actionFileSave" />
+    <addaction name="actionFileSaveAs" />
+    <addaction name="separator" />
+    <addaction name="actionFileLoadForcefield" />
+    <addaction name="actionFileLoadGridData" />
+    <addaction name="separator" />
+    <addaction name="actionFileSaveImage" />
+    <addaction name="separator" />
+    <addaction name="actionFileQuit" />
+   </widget>
    <addaction name="FileMenu" />
-   <addaction name="EdiTMenu" />
+   <addaction name="EditMenu" />
    <addaction name="ViewMenu" />
    <addaction name="AtomMenu" />
    <addaction name="ModelMenu" />
-   <addaction name="menuTools" />
+   <addaction name="ToolsMenu" />
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar" />
   <widget class="QToolBar" name="FileToolBar" >
@@ -6877,11 +6881,6 @@
     <string>Close File</string>
    </property>
   </action>
-  <action name="actionRecentFiles" >
-   <property name="text" >
-    <string>Recent Files</string>
-   </property>
-  </action>
   <action name="actionAtomStyleStick" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/draw_styles/icons/style_stick.svg</iconset>
@@ -7133,14 +7132,6 @@
    </property>
    <property name="text" >
     <string>&amp;Undo</string>
-   </property>
-  </action>
-  <action name="actionRedo" >
-   <property name="enabled" >
-    <bool>false</bool>
-   </property>
-   <property name="text" >
-    <string>&amp;Redo</string>
    </property>
   </action>
  </widget>
