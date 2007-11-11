@@ -27,6 +27,7 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
+#include <QtCore/QSettings>
 
 // Image Formats
 const char *PF_filters[PF_NITEMS] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
@@ -39,7 +40,9 @@ const char *extension_from_PF(pixmap_format pf)
 // Constructor
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
-	for (int i=0; i<SP_NITEMS; i++) stackbuttons[i] = NULL;
+	int i;
+	for (i=0; i<SP_NITEMS; i++) stackbuttons[i] = NULL;
+	for (i=0; i < MAXRECENTFILES; i++) actionRecentFile[i] = NULL;
 	ui.setupUi(this);
 }
 
@@ -49,15 +52,36 @@ void AtenForm::finalise_ui()
 	dbg_begin(DM_CALLS,"AtenForm::finalise_ui");
 	filter *f;
 	int n;
-	char title[128];
+	char temp[128];
 	QStringList filters;
 
 	// Set the title of the main window to reflect the version
-	strcpy(title,"Aten (beta ");
-	strcat(title,PACKAGE_VERSION);
-	strcat(title,")");
-	setWindowTitle(title);
+	strcpy(temp,"Aten (beta ");
+	strcat(temp,PACKAGE_VERSION);
+	strcat(temp,")");
+	setWindowTitle(temp);
 
+	// Initialise application name, organisation and author, and create settings structure
+	QCoreApplication::setOrganizationName("MySoft");
+	QCoreApplication::setOrganizationDomain("mysoft.com");
+	QCoreApplication::setApplicationName("Star Runner");
+	settings = new QSettings;
+
+	// Set up recent files list
+	nrecentfiles = 0;
+	for (n=0; n<MAXRECENTFILES; n++)
+	{
+		// Construct settings value to search for
+		strcpy(temp,"RecentFile");
+		strcat(temp,itoa(n+1));
+		if (settings->contains(temp))
+		{
+			recentfiles[nrecentfiles] = qPrintable(settings->value(temp).toString());
+			actionRecentFile[nrecentfiles] = new QAction(this);
+			nrecentfiles ++;
+		}
+		else break;
+	}
 	// Create QActionGroup for draw styles
 	QActionGroup *alignmentGroup = new QActionGroup(this);
 	alignmentGroup->addAction(ui.actionStyleStick);
