@@ -86,6 +86,7 @@ class ffatom
 	double *generator;
 	// Atomic charge
 	double q;
+
 	public:
 	// Set functional form of VDW
 	void set_style(vdw_func vf) { vdwstyle = vf; }

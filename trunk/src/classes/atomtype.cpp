@@ -31,7 +31,7 @@
 int printlevel = 0;
 
 // Atom typing commands
-const char *ATC_keywords[ATC_NITEMS] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os" };
+const char *ATC_keywords[ATC_NITEMS] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh" };
 atomtype_command ATC_from_text(const char *s)
 	{ return (atomtype_command) enum_search("#",ATC_NITEMS,ATC_keywords,s); }
 
@@ -66,6 +66,7 @@ atomtype::atomtype()
 	boundbond = BT_UNSPECIFIED;
 	nrepeat = 1;
 	acyclic = FALSE;
+	nhydrogen = -1;
 	prev = NULL;
 	next = NULL;
 	#ifdef MEMDEBUG
@@ -208,16 +209,18 @@ void ringtype::print()
 // Expand Functions
 */
 
-void ringtype::expand(const char *data, forcefield *ff)
+void ringtype::expand(const char *data, forcefield *ff, ffatom *parent)
 {
 	// Separate function (to prevent brain melting) to recursively create a ring definition.
 	// At least allows the restriction (and addition) of commands to the ring command.
 	dbg_begin(DM_CALLS,"ringtype::expand");
 	dnchar keywd, optlist, def;
 	static char c;
+	static int level = 0;
 	static bool found;
 	static ringtype_command rtc;
 	static atomtype *newat;
+	level ++;
 	msg(DM_TYPING,"expand[ring] : Received string [%s]\n",data);
 	// Grab the next command, trip the keyword and option list (if there is one).
 	def.set(data);
@@ -238,9 +241,8 @@ void ringtype::expand(const char *data, forcefield *ff)
 			keywd.erasestart(1);
 			newat = ringatoms.add();
 			newat->set_elements(keywd.get(),ff);
-			newat->expand(optlist.get(),ff);
+			newat->expand(optlist.get(),ff,parent);
 			//if (c == '=') boundbond = BT_DOUBLE;
-			newat->expand(optlist.get(),ff);
 			found = TRUE;
 		}
 		// Check for keywords (if it wasn't a bound specifier)
@@ -261,16 +263,18 @@ void ringtype::expand(const char *data, forcefield *ff)
 					break;
 				// Unrecognised
 				default:
-					msg(DM_NONE,"ringtype::expand - Unrecognised command (%s) in atomtype description.\n",keywd.get());
+					if (parent != NULL) msg(DM_NONE,"Unrecognised command '%s' found while expanding ring at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->get_ffid(), parent->get_name());
+					else msg(DM_NONE,"ringtype::expand - Unrecognised command (%s).\n", keywd.get());
 					break;
 			}
 		}
 	} while (!def.empty());
+	level --;
 	dbg_end(DM_CALLS,"ringtype::expand");
 }
 
 // Master creation routine, returning the head node of an atomtype structure.
-void atomtype::expand(const char *data, forcefield *ff)
+void atomtype::expand(const char *data, forcefield *ff, ffatom *parent)
 {
 	// Expands the structure with the commands contained in the supplied string.
 	// Format is : X(options,...) where X is the element symbol and 'options' is zero or more of:
@@ -281,17 +285,20 @@ void atomtype::expand(const char *data, forcefield *ff)
 	// Options are comma-separated. Defaults are 'don't care' where applicable.
 	// The supplied string should contain a keyword followed by (optional) bracketed list of specs.
 	// Parent ring structure must be supplied when descending into a ring options structure.
+	// Parent pointer is used for error reporting
 	dbg_begin(DM_CALLS,"atomtype::expand");
 	dnchar keywd, optlist, def;
 	static ringtype *newring;
 	static bool found;
 	static char c;
-	static int n;
+	static int n, level = 0;
 	static atom_geom ag;
 	static atomtype_command atc;
+	level ++;
 	msg(DM_TYPING,"atomtype::expand - Received string [%s]\n",data);
 	if (data[0] == '\0')
 	{
+		level --;
 		dbg_end(DM_CALLS,"atomtype::expand");
 		return;
 	}
@@ -316,7 +323,7 @@ void atomtype::expand(const char *data, forcefield *ff)
 			atomtype *newat = boundlist.add();
 			newat->set_elements(keywd.get(),ff);
 			if (c == '=') boundbond = BT_DOUBLE;
-			newat->expand(optlist.get(),ff);
+			newat->expand(optlist.get(),ff,parent);
 			found = TRUE;
 		}
 		// Check for keywords (if it wasn't a bound specifier)
@@ -343,7 +350,7 @@ void atomtype::expand(const char *data, forcefield *ff)
 				// Ring specification (possible options)
 				case (ATC_RING):
 					newring = ringlist.add();
-					newring->expand(optlist.get(),ff);
+					newring->expand(optlist.get(),ff,parent);
 					break;
 				// Disallow rings
 				case (ATC_NORING):
@@ -365,6 +372,10 @@ void atomtype::expand(const char *data, forcefield *ff)
 				case (ATC_OS):
 					os = atoi(optlist.get());
 					break;
+				// Request no attached hydrogens
+				case (ATC_NHYDROGENS):
+					nhydrogen = atoi(optlist.get());
+					break;
 				default:
 					found = FALSE;
 					break;
@@ -375,9 +386,15 @@ void atomtype::expand(const char *data, forcefield *ff)
 		{
 			ag = AG_from_text(keywd.get());
 			if (ag != AG_NITEMS) geom = ag;
-			else msg(DM_NONE,"atomtype::expand : Unrecognised command (%s) in atomtype description.\n", keywd.get());
+			else
+			{
+				if (parent != NULL) msg(DM_NONE,"Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->get_ffid(), parent->get_name());
+				else msg(DM_NONE,"Unrecognised command '%s' found while expanding atom.\n", keywd.get());
+				break;
+			}
 		}
 	} while (!def.empty());
+	level --;
 	dbg_end(DM_CALLS,"atomtype::expand");
 }
 
@@ -438,11 +455,27 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 	refitem<ring> *refring;
 	reflist<atom> atomchecklist;
 	reflist<ring> ringchecklist;
+	refitem<atom> *ri;
 	refitem<ffatom> *rd;
 	// Set the scoring to one (which will be the case if there are no specifications to match)
 	typescore = 1;
 	level ++;
 	msg(DM_TYPING,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n",this, level, elements.symbol(i), i->get_nbonds(), text_from_AE(i->get_env()));
+	// Type check (if this atom has already been assigned a type, compare it against this type)
+	msg(DM_TYPING,"(%li %2i) ... Type comparison  ",this,level);
+	bat = i->get_fftype()->get_atomtype();
+	if (bat == NULL) msg(DM_TYPING,"[defaulted (untyped)]\n");
+	else if (bat != this)
+	{
+
+	}
+	else
+	{
+		msg(DM_TYPING,"[passed]\n");
+		level --;
+		dbg_end(DM_CALLS,"atomtype::match_atom");
+		return 1;
+	}
 	// Element check
 	msg(DM_TYPING,"(%li %2i) ... Element  ",this,level);
 	if (nallowedel == 0) msg(DM_TYPING,"[defaulted]\n");
@@ -555,13 +588,33 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 			return 0;
 		}
 	}
+	// Construct bound atom list for subsequent checks...
+	i->add_bound_to_reflist(&atomchecklist);
+	// Hydrogen check
+	msg(DM_TYPING,"(%li %2i) ... Attached hydrogens  ",this,level);
+	if (nhydrogen == -1) msg(DM_TYPING,"[defaulted]\n");
+	else
+	{
+		// Get number of hydrogen atoms appearing in the atomchecklist...
+		n = 0;
+		for (ri = atomchecklist.first(); ri != NULL; ri = ri->next) if (ri->item->get_element() == 1) n++;
+		if (nhydrogen == n)
+		{
+			typescore++;
+			msg(DM_TYPING,"[passed - matched '%i']\n",n);
+		}
+		else
+		{
+			msg(DM_TYPING,"[failed - is '%i', but type needs '%i']\n",n,nhydrogen);
+			level --;
+			dbg_end(DM_CALLS,"atomtype::match_atom");
+			return 0;
+		}
+	}
 	// List of bound atoms check
 	if (boundlist.first() == NULL) msg(DM_TYPING,"(%li %2i) ... Bound atoms  [defaulted]\n",this,level);
 	else
 	{
-		// Fill the atomchecklist with the atoms bound to our current atom.
-		i->add_bound_to_reflist(&atomchecklist);
-		//i->tempi = 1;
 		for (bat = boundlist.first(); bat != NULL; bat = bat->next)
 		{
 			for (n=0; n<bat->nrepeat; n++)
