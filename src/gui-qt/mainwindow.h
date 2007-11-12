@@ -46,6 +46,8 @@ class QProgressBar;
 class QPushButton;
 class QFrame;
 class QSettings;
+class QActionGroup;
+class QButtonGroup;
 
 class AtenForm : public QMainWindow
 {
@@ -95,6 +97,7 @@ class AtenForm : public QMainWindow
 	void on_actionEditDelete_triggered(bool checked);
 	void on_actionEditSelectAll_triggered(bool checked);
 	void on_actionEditSelectNone_triggered(bool checked);
+	void on_actionEditSelectExpand_triggered(bool checked);
 	void on_actionEditInvert_triggered(bool checked);
 
 	/*
@@ -110,6 +113,16 @@ class AtenForm : public QMainWindow
 	void on_actionMouseInteract_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_INTERACT); }
 	void on_actionMouseRotate_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_VIEWROTATE); }
 	void on_actionMouseTranslate_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_VIEWTRANSLATE); }
+
+	/*
+	// Select Toolbar
+	*/
+	private:
+	void set_useraction(bool checked, user_action ua);
+	private slots:
+	void on_actionSelectAtoms_triggered(bool on) { set_useraction(on, UA_PICKSELECT); }
+	void on_actionSelectMolecules_triggered(bool on) { set_useraction(on, UA_PICKFRAG); }
+	void on_actionSelectElement_triggered(bool on) { set_useraction(on, UA_PICKELEMENT); }
 
 	/*
 	// File Actions
@@ -179,6 +192,8 @@ class AtenForm : public QMainWindow
 	void on_actionTrajectoryToolBarVisibility_triggered(bool v) { ui.TrajectoryToolBar->setVisible(v); }
 	void on_actionCommandToolBarVisibility_triggered(bool v) { ui.CommandToolBar->setVisible(v); }
 	void on_actionMouseToolBarVisibility_triggered(bool v) { ui.MouseToolBar->setVisible(v); }
+	void on_actionSelectToolBarVisibility_triggered(bool v) { ui.SelectToolBar->setVisible(v); }
+
 	/*
 	// Widget Stack Functions
 	*/
@@ -212,21 +227,14 @@ class AtenForm : public QMainWindow
 
 	// Edit Page Functions
 	private slots:
-	void on_SelectAtomsButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_PICKSELECT); }
-	void on_SelectMoleculesButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_PICKFRAG); }
-	void on_SelectElementsButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_PICKELEMENT); }
-	void on_SelectExpandButton_clicked(bool on);
-	void on_DrawAtomButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_DRAWATOM); }
-	void on_DrawChainButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_DRAWCHAIN); }
-	void on_DrawDeleteButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_DELATOM); }
-	void on_DrawTransmuteButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_TRANSATOM); }
-	void on_MeasureDistanceButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_GEOMDIST); }
-	void on_MeasureAngleButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_GEOMANGLE); }
-	void on_MeasureTorsionButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_GEOMTORSION); }
-	void on_BondSingleButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_BONDSINGLE); }
-	void on_BondDoubleButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_BONDDOUBLE); }
-	void on_BondTripleButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_BONDTRIPLE); }
-	void on_BondDeleteButton_clicked(bool on) { if (on) gui.mainview.set_selectedmode(UA_DELBOND); }
+	void on_DrawAtomButton_clicked(bool on) { if (on) set_useraction(on, UA_DRAWATOM); }
+	void on_DrawChainButton_clicked(bool on) { if (on) set_useraction(on, UA_DRAWCHAIN); }
+	void on_DrawDeleteButton_clicked(bool on) { if (on) set_useraction(on, UA_DELATOM); }
+	void on_DrawTransmuteButton_clicked(bool on) { if (on) set_useraction(on, UA_TRANSATOM); }
+	void on_BondSingleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDSINGLE); }
+	void on_BondDoubleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDDOUBLE); }
+	void on_BondTripleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDTRIPLE); }
+	void on_BondDeleteButton_clicked(bool on) { if (on) set_useraction(on, UA_DELBOND); }
 	void on_BondCalcButton_clicked(bool on);
 	void on_BondClearButton_clicked(bool on);
 	void on_BondCalcSelButton_clicked(bool on);
@@ -238,6 +246,12 @@ class AtenForm : public QMainWindow
 	void on_ElementEdit_editingFinished();
 	void on_BondAugmentButton_clicked(bool on);
 	void on_AddHydrogenButton_clicked(bool on);
+
+	// Analyse page functions
+	private slots:
+	void on_MeasureDistanceButton_clicked(bool on) { if (on) set_useraction(on, UA_GEOMDIST); }
+	void on_MeasureAngleButton_clicked(bool on) { if (on) set_useraction(on, UA_GEOMANGLE); }
+	void on_MeasureTorsionButton_clicked(bool on) { if (on) set_useraction(on, UA_GEOMTORSION); }
 
 	// Transformation Page Functions
 	private:
@@ -403,6 +417,12 @@ class AtenForm : public QMainWindow
 	filter *savemodelfilter;
 	// Filename set from save model dialog
 	dnchar savemodelfilename;
+	// QButtonGroup for stackpage buttons
+	QButtonGroup *uaGroup;
+	// QActionGroup for SelectToolBar actions
+	QActionGroup *selectGroup;
+	// Dummy button for uaGroup (so we can have none selected)
+	QPushButton *dummybutton;
 
 	/*
 	// Settings

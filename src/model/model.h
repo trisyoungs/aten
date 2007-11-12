@@ -487,6 +487,8 @@ class model
 	private:
 	// Last atom sketched in the model
 	atom *lastatomdrawn;
+	// Iteratively add hydrogens to the specified atom in the desired general geometry
+	void add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry);
 
 	public:
 	// Return the last atom drawn in the model
@@ -495,6 +497,7 @@ class model
 	void set_lastatomdrawn(atom *i) { lastatomdrawn = i; }
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogen_satisfy();
+
 
 	/*
 	// Geometry (using staticatoms[])

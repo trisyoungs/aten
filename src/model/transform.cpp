@@ -190,6 +190,7 @@ void model::translate_selection_local(const vec3<double> &tvec)
 	dbg_begin(DM_CALLS,"model::translate_selection_local");
 	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected()) i->r += tvec;
 	log_change(LOG_VISUAL);
+	project_selection();
 	dbg_end(DM_CALLS,"model::translate_selection_local");
 }
 

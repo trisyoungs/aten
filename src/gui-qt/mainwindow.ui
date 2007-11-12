@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>724</width>
+    <width>735</width>
     <height>578</height>
    </rect>
   </property>
@@ -195,15 +195,15 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>0</number>
+         <number>9</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>6</number>
         </property>
         <item>
          <widget class="QGroupBox" name="AtomListGroup" >
@@ -220,10 +220,10 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>9</number>
            </property>
            <property name="spacing" >
-            <number>4</number>
+            <number>6</number>
            </property>
            <item>
             <widget class="TTreeWidget" name="AtomTreeList" >
@@ -410,233 +410,6 @@
            <property name="spacing" >
             <number>4</number>
            </property>
-           <item>
-            <widget class="QGroupBox" name="SelectGroup" >
-             <property name="sizePolicy" >
-              <sizepolicy>
-               <hsizetype>7</hsizetype>
-               <vsizetype>0</vsizetype>
-               <horstretch>255</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize" >
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-             <property name="sizeIncrement" >
-              <size>
-               <width>1</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="title" >
-              <string>Select</string>
-             </property>
-             <layout class="QHBoxLayout" >
-              <property name="margin" >
-               <number>0</number>
-              </property>
-              <property name="spacing" >
-               <number>0</number>
-              </property>
-              <item>
-               <layout class="QHBoxLayout" >
-                <property name="margin" >
-                 <number>0</number>
-                </property>
-                <property name="spacing" >
-                 <number>2</number>
-                </property>
-                <item>
-                 <widget class="QPushButton" name="SelectAtomsButton" >
-                  <property name="sizePolicy" >
-                   <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Select atoms or groups of atoms</string>
-                  </property>
-                  <property name="text" >
-                   <string/>
-                  </property>
-                  <property name="icon" >
-                   <iconset resource="icons.qrc" >:/select/icons/select_atoms.svg</iconset>
-                  </property>
-                  <property name="checkable" >
-                   <bool>true</bool>
-                  </property>
-                  <property name="checked" >
-                   <bool>true</bool>
-                  </property>
-                  <property name="autoExclusive" >
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="SelectMoleculesButton" >
-                  <property name="sizePolicy" >
-                   <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Select bound groups of atoms</string>
-                  </property>
-                  <property name="text" >
-                   <string/>
-                  </property>
-                  <property name="icon" >
-                   <iconset resource="icons.qrc" >:/select/icons/select_molecules.svg</iconset>
-                  </property>
-                  <property name="checkable" >
-                   <bool>true</bool>
-                  </property>
-                  <property name="autoExclusive" >
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="SelectElementsButton" >
-                  <property name="sizePolicy" >
-                   <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Select elements</string>
-                  </property>
-                  <property name="text" >
-                   <string/>
-                  </property>
-                  <property name="icon" >
-                   <iconset resource="icons.qrc" >:/select/icons/select_element.svg</iconset>
-                  </property>
-                  <property name="checkable" >
-                   <bool>true</bool>
-                  </property>
-                  <property name="autoExclusive" >
-                   <bool>true</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer>
-                  <property name="orientation" >
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeType" >
-                   <enum>QSizePolicy::Fixed</enum>
-                  </property>
-                  <property name="sizeHint" >
-                   <size>
-                    <width>8</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="SelectExpandButton" >
-                  <property name="sizePolicy" >
-                   <sizepolicy>
-                    <hsizetype>0</hsizetype>
-                    <vsizetype>0</vsizetype>
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="maximumSize" >
-                   <size>
-                    <width>30</width>
-                    <height>30</height>
-                   </size>
-                  </property>
-                  <property name="toolTip" >
-                   <string>Expand the current selection to bound atoms</string>
-                  </property>
-                  <property name="text" >
-                   <string/>
-                  </property>
-                  <property name="icon" >
-                   <iconset resource="icons.qrc" >:/select/icons/select_expand.svg</iconset>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <spacer>
-                  <property name="orientation" >
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" >
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
            <item>
             <widget class="QGroupBox" name="DrawGroup" >
              <property name="sizePolicy" >
@@ -4024,10 +3797,10 @@
                 <widget class="QWidget" name="MethodCGOptionsPage" >
                  <layout class="QVBoxLayout" >
                   <property name="margin" >
-                   <number>9</number>
+                   <number>0</number>
                   </property>
                   <property name="spacing" >
-                   <number>6</number>
+                   <number>2</number>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" >
@@ -6121,7 +5894,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>724</width>
+     <width>735</width>
      <height>25</height>
     </rect>
    </property>
@@ -6202,40 +5975,6 @@
     <addaction name="actionModelNext" />
     <addaction name="actionModelPrevious" />
    </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <widget class="QMenu" name="ToolbarMenu" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-     <addaction name="actionCommandToolBarVisibility" />
-     <addaction name="actionEditToolBarVisibility" />
-     <addaction name="actionFileToolBarVisibility" />
-     <addaction name="actionStyleToolBarVisibility" />
-     <addaction name="actionTrajectoryToolBarVisibility" />
-     <addaction name="actionMouseToolBarVisibility" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="ToolbarMenu" />
-   </widget>
-   <widget class="QMenu" name="EditMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionUndo" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
-   </widget>
    <widget class="QMenu" name="FileMenu" >
     <property name="title" >
      <string>&amp;File</string>
@@ -6258,6 +5997,42 @@
     <addaction name="actionFileSaveImage" />
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
+   </widget>
+   <widget class="QMenu" name="EditMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionUndo" />
+    <addaction name="separator" />
+    <addaction name="actionEditCut" />
+    <addaction name="actionEditCopy" />
+    <addaction name="actionEditPaste" />
+    <addaction name="actionEditDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEditInvert" />
+    <addaction name="actionEditSelectExpand" />
+    <addaction name="separator" />
+    <addaction name="actionEditSelectAll" />
+    <addaction name="actionEditSelectNone" />
+   </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="ToolbarMenu" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionCommandToolBarVisibility" />
+     <addaction name="actionEditToolBarVisibility" />
+     <addaction name="actionFileToolBarVisibility" />
+     <addaction name="actionSelectToolBarVisibility" />
+     <addaction name="actionStyleToolBarVisibility" />
+     <addaction name="actionTrajectoryToolBarVisibility" />
+     <addaction name="actionMouseToolBarVisibility" />
+    </widget>
+    <addaction name="actionPreferences" />
+    <addaction name="ToolbarMenu" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -6334,9 +6109,6 @@
    <addaction name="actionEditCut" />
    <addaction name="actionEditPaste" />
    <addaction name="actionEditDelete" />
-   <addaction name="actionEditSelectAll" />
-   <addaction name="actionEditSelectNone" />
-   <addaction name="actionEditInvert" />
   </widget>
   <widget class="QToolBar" name="TrajectoryToolBar" >
    <property name="sizePolicy" >
@@ -6404,6 +6176,31 @@
    <addaction name="actionMouseInteract" />
    <addaction name="actionMouseRotate" />
    <addaction name="actionMouseTranslate" />
+  </widget>
+  <widget class="QToolBar" name="SelectToolBar" >
+   <property name="windowTitle" >
+    <string>Selection</string>
+   </property>
+   <property name="orientation" >
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="iconSize" >
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>4</number>
+   </attribute>
+   <addaction name="actionSelectAtoms" />
+   <addaction name="actionSelectMolecules" />
+   <addaction name="actionSelectElement" />
+   <addaction name="separator" />
+   <addaction name="actionEditSelectExpand" />
+   <addaction name="actionEditSelectAll" />
+   <addaction name="actionEditSelectNone" />
+   <addaction name="actionEditInvert" />
   </widget>
   <action name="actionFileOpen" >
    <property name="icon" >
@@ -6623,7 +6420,7 @@
     <string>Select &amp;None</string>
    </property>
    <property name="toolTip" >
-    <string>Unselect all atoms</string>
+    <string>Deselect all atoms</string>
    </property>
    <property name="shortcut" >
     <string>Ctrl+D</string>
@@ -6688,6 +6485,12 @@
    </property>
   </action>
   <action name="actionSelectAtoms" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/select/icons/select_atoms.svg</iconset>
    </property>
@@ -6696,11 +6499,17 @@
    </property>
   </action>
   <action name="actionSelectMolecules" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/select/icons/select_molecules.svg</iconset>
    </property>
    <property name="text" >
     <string>Select Molecules</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select bound fragments / molecules</string>
    </property>
   </action>
   <action name="actionDrawAtom" >
@@ -6726,19 +6535,28 @@
    </property>
   </action>
   <action name="actionSelectElement" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/select/icons/select_element.svg</iconset>
    </property>
    <property name="text" >
     <string>Select by Element</string>
    </property>
+   <property name="toolTip" >
+    <string>Select all atoms of selected element</string>
+   </property>
   </action>
-  <action name="actionSelectionExpand" >
+  <action name="actionEditSelectExpand" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/select/icons/select_expand.svg</iconset>
    </property>
    <property name="text" >
-    <string>Expand</string>
+    <string>&amp;Expand Selection</string>
+   </property>
+   <property name="toolTip" >
+    <string>Expand current selection</string>
    </property>
   </action>
   <action name="actionMeasureDistance" >
@@ -7134,14 +6952,26 @@
     <string>&amp;Undo</string>
    </property>
   </action>
+  <action name="actionSelectToolBarVisibility" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Select</string>
+   </property>
+   <property name="iconText" >
+    <string>Select</string>
+   </property>
+   <property name="toolTip" >
+    <string>Select</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
-  <customwidget>
-   <class>TTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>ttreewidget.uih</header>
-  </customwidget>
   <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
@@ -7156,6 +6986,11 @@
    <class>TCanvas</class>
    <extends>QWidget</extends>
    <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>ttreewidget.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

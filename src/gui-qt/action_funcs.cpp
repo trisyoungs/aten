@@ -83,6 +83,12 @@ void AtenForm::on_actionEditInvert_triggered(bool checked)
 	gui.refresh();
 }
 
+void AtenForm::on_actionEditSelectExpand_triggered(bool on)
+{
+	master.get_currentmodel()->selection_expand();
+	gui.refresh();
+}
+
 /*
 // Draw style Actions
 */

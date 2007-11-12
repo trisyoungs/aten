@@ -275,7 +275,7 @@ vec4<double> &model::world_to_screen(const vec3<double> &v)
 		x2 = vmat[0] + vmat[2]*(screenr.x+1)/2.0;
 		radius = fabs(x2 - x1);
 		// Store info and return
-		result.w = radius * 2.0;
+		result.w = radius;
 	#endif
 	dbg_end(DM_CALLS,"model::world_to_screen");
 	return result;

@@ -86,12 +86,18 @@ void AtenForm::finalise_ui()
 	ui.AtomTreeList->setEditTriggers(QAbstractItemView::DoubleClicked);
 
 	// Create QActionGroup for draw styles
-	QActionGroup *alignmentGroup = new QActionGroup(this);
-	alignmentGroup->addAction(ui.actionStyleStick);
-	alignmentGroup->addAction(ui.actionStyleTube);
-	alignmentGroup->addAction(ui.actionStyleSphere);
-	alignmentGroup->addAction(ui.actionStyleScaled);
-	alignmentGroup->addAction(ui.actionStyleIndividual);
+	QActionGroup *styleGroup = new QActionGroup(this);
+	styleGroup->addAction(ui.actionStyleStick);
+	styleGroup->addAction(ui.actionStyleTube);
+	styleGroup->addAction(ui.actionStyleSphere);
+	styleGroup->addAction(ui.actionStyleScaled);
+	styleGroup->addAction(ui.actionStyleIndividual);
+
+	// Create QActionGroup for selections
+	selectGroup = new QActionGroup(this);
+	selectGroup->addAction(ui.actionSelectAtoms);
+	selectGroup->addAction(ui.actionSelectMolecules);
+	selectGroup->addAction(ui.actionSelectElement);
 
 	// Create QActionGroup for Mouse toolbar
 	QActionGroup *mousegroup = new QActionGroup(this);
@@ -122,10 +128,6 @@ void AtenForm::finalise_ui()
 	// Hide the stack widget initially
 	ui.MainWindowStack->hide();
 
-	// Create master button group for the Edit stackpage
-	QButtonGroup *editGroup = new QButtonGroup(this);
-	editGroup->addButton(ui.SelectAtomsButton);
-	editGroup->addButton(ui.SelectMoleculesButton);
 	// Set correct draw_style on toolbar
 	switch (prefs.get_static_style())
 	{
@@ -134,18 +136,28 @@ void AtenForm::finalise_ui()
 		case (DS_SPHERE): ui.actionStyleSphere->setChecked(true); break;
 		case (DS_SCALED): ui.actionStyleScaled->setChecked(true); break;
 		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
-	}	editGroup->addButton(ui.SelectElementsButton);
-	editGroup->addButton(ui.DrawAtomButton);
-	editGroup->addButton(ui.DrawChainButton);
-	editGroup->addButton(ui.DrawDeleteButton);
-	editGroup->addButton(ui.DrawTransmuteButton);
-	editGroup->addButton(ui.MeasureDistanceButton);
-	editGroup->addButton(ui.MeasureAngleButton);
-	editGroup->addButton(ui.MeasureTorsionButton);
-	editGroup->addButton(ui.BondSingleButton);
-	editGroup->addButton(ui.BondDoubleButton);
-	editGroup->addButton(ui.BondTripleButton);
-	editGroup->addButton(ui.BondDeleteButton);
+	}
+
+	// Create master group for stackpage buttons that change user action modes
+	uaGroup = new QButtonGroup(this);
+	uaGroup->addButton(ui.DrawAtomButton);
+	uaGroup->addButton(ui.DrawChainButton);
+	uaGroup->addButton(ui.DrawDeleteButton);
+	uaGroup->addButton(ui.DrawTransmuteButton);
+	uaGroup->addButton(ui.MeasureDistanceButton);
+	uaGroup->addButton(ui.MeasureAngleButton);
+	uaGroup->addButton(ui.MeasureTorsionButton);
+	uaGroup->addButton(ui.BondSingleButton);
+	uaGroup->addButton(ui.BondDoubleButton);
+	uaGroup->addButton(ui.BondTripleButton);
+	uaGroup->addButton(ui.BondDeleteButton);
+	// --- Add dummy button so we can have none of the others selected
+	dummybutton = new QPushButton(this);
+	dummybutton->setCheckable(TRUE);
+	dummybutton->setChecked(TRUE);
+	dummybutton->setVisible(FALSE);
+	uaGroup->addButton(dummybutton);
+
 	// Create a subgroup for the element select buttons
 	QButtonGroup *elementGroup = new QButtonGroup(this);
 	elementGroup->addButton(ui.ElementHButton);
@@ -266,6 +278,7 @@ void AtenForm::set_controls()
 	dbg_end(DM_CALLS,"AtenForm::set_controls");
 }
 
+// Catch window close event
 void AtenForm::closeEvent(QCloseEvent *event)
 {
 	if (gui.save_before_close())
@@ -279,6 +292,26 @@ void AtenForm::closeEvent(QCloseEvent *event)
 /*
 // Input
 */
+
+// Change user interaction mode
+void AtenForm::set_useraction(bool on, user_action ua)
+{
+	// We pass all changes to the user interaction mode through here.
+	// This way we can 'link' the selectToolBar and all the other buttons....
+	if (!on) return;
+	if ((ua > UA_NONE) && (ua < UA_GEOMSELECT))
+	{
+		// One of the select actions in selectGroup
+		dummybutton->setChecked(TRUE);
+	}
+	else
+	{
+		// One of the buttons in uaGroup
+		QAction *action = selectGroup->checkedAction();
+		if (action != NULL) action->setChecked(FALSE);
+	}
+	gui.mainview.set_selectedmode(ua);
+}
 
 void AtenForm::keyPressEvent(QKeyEvent *event)
 {
@@ -322,18 +355,11 @@ void AtenForm::switch_stack(int buttonid, bool checked)
 		ui.MainWindowStack->show();
 		// If the new visible page is the atom list, do a quick refresh of it
 		if (buttonid == SP_ATOMS) refresh_atompage();
-		// If the checked page button is not the Edit Page, make sure we're in select mode
-		if (buttonid != SP_EDIT)
-		{
-			ui.SelectAtomsButton->setChecked(TRUE);
-			gui.mainview.set_selectedmode(UA_PICKSELECT);
-		}
 	}
 	else
 	{
 		ui.MainWindowStack->hide();
-		ui.SelectAtomsButton->setChecked(TRUE);
-		gui.mainview.set_selectedmode(UA_PICKSELECT);
+		set_useraction(TRUE, UA_PICKSELECT);
 	}
 	master.get_currentmodel()->log_change(LOG_CAMERA);
 }

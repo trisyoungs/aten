@@ -24,12 +24,6 @@
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 
-void AtenForm::on_SelectExpandButton_clicked(bool on)
-{
-	master.get_currentmodel()->selection_expand();
-	gui.refresh();
-}
-
 void AtenForm::on_ElementUserButton_clicked(bool on)
 {
 	master.set_sketchelement(elements.find(qPrintable(ui.ElementUserButton->text())));

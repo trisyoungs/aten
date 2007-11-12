@@ -2,7 +2,7 @@ Issues with the current version:
 	- Save image provokes GLXBadExtension error when incorrect/no 3D graphics driver installed.
 	- Spherical regions in disordered builder have poor randomness.
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
-	- Surfaces need correct surface normals
+	- Surfaces need correct vertex normals
 	- Colour schemes other than AC_ELEMENT need to be fixed.
 
 General To-Do list:
