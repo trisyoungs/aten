@@ -268,8 +268,6 @@ class atom
 	// Adjustment
 	*/
 	public:
-	// Iteratively add hydrogens to the atom in the desired general geometry
-	void add_hydrogens(int,hadd_geom,model*);
 	// Augment atom with its bound neighbours
 	void augment();
 	// Alter bondorder between this atom and supplied atom

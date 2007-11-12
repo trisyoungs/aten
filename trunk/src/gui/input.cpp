@@ -66,11 +66,8 @@ void canvas_master::inform_mouseup(mouse_button button, double x, double y)
 // Inform mouse move
 void canvas_master::inform_mousemove(double x, double y)
 {
-	// If drawing a model, see if an atom is under this position
-	//if (displaymodel != NULL) atom_hover = displaymodel->atom_on_screen(x,y);
 	// Perform action associated with mode (if any)
 	if (activemode != UA_NONE) mode_motion(x,y);
-	postredisplay();
 	r_mouselast.set(x,y,0.0);
 }
 
@@ -469,7 +466,7 @@ void canvas_master::mode_motion(double x, double y)
 			break;
 		case (UA_MANIPTRANS):
 			delta.y = -delta.y;
-			delta /= displaymodel->get_translatescale();
+			delta /= displaymodel->get_translatescale() * 2.0;
 			displaymodel->translate_selection_world(delta);
 			break;
 		case (UA_ZOOMCAM):
@@ -479,6 +476,7 @@ void canvas_master::mode_motion(double x, double y)
 		default:
 			break;
 	}
+	postredisplay();
 	dbg_end(DM_CALLS,"canvas_master::mode_motion");
 }
 
