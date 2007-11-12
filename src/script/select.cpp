@@ -77,7 +77,7 @@ bool script::command_select(command_node<script_command> *cmd)
  		case (SC_SELECTTYPE):
 			testat = new atomtype();
 			testat->el = elements.find(cmd->datavar[0]->get_as_char());
-			testat->expand(cmd->datavar[1]->get_as_char(),NULL);
+			testat->expand(cmd->datavar[1]->get_as_char(),NULL,NULL);
 			// Apply it to the atoms in the model, selecting atoms that match
 			count = 0;
 			matchscore = 0;

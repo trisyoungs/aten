@@ -10,11 +10,9 @@ General To-Do list:
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)
 	- Complete spacegroups list
-	- Add CG / simplex / other minimisers
+	- Add CG (needs testing) / simplex / other minimisers
 	- View along cell axes
 	- View Miller planes
-	- Accelrys MSI import filter
-	- EPSR Ato import / export? filters
 	- Distance rulers
 	- Undo / Redo
 
@@ -24,10 +22,17 @@ Forcefield To-Do list:
 	- Tripos 5.2
 	- OPLS (types)
 
+Filters To-Do list:
+	- Accelrys MSI import
+	- EPSR Ato import / export?
+	- Full pdb import (from spec)
+	- 'within' function
+
 General Qt To-Do list:
 	- AddHydrogen needs an icon
 	- Forcefield stack page and manager/edit window
 		+ Need method to apply forcefield to all or selected pattern
+		+ Method of assigning individual types by hand (also in atom context menu?)
 	- Prefs window (partial)
 	- List of non-periodic models in disorder stack page (with checkboxes?)
 	- Better editability in the atom list stack page

@@ -27,7 +27,7 @@
 #include "templates/reflist.h"
 
 // Atom typing commands
-enum atomtype_command { ATC_SP, ATC_SP2, ATC_SP3, ATC_AROMATIC, ATC_RING, ATC_NORING, ATC_NBONDS, ATC_BOND, ATC_REPEAT, ATC_OS, ATC_NITEMS };
+enum atomtype_command { ATC_SP, ATC_SP2, ATC_SP3, ATC_AROMATIC, ATC_RING, ATC_NORING, ATC_NBONDS, ATC_BOND, ATC_REPEAT, ATC_OS, ATC_NHYDROGENS, ATC_NITEMS };
 atomtype_command ATC_from_text(const char*);
 
 // Ring typing commands
@@ -68,7 +68,7 @@ class ringtype
 	// Optional specification of atoms in ring
 	list<atomtype> ringatoms;
 	// Add data to the structure from the supplied string
-	void expand(const char*, forcefield*);
+	void expand(const char *commands, forcefield *parentff, ffatom *parent);
 	// Number of times this match is required
 	int nrepeat;
 	// Print the information contained in the structure
@@ -89,7 +89,7 @@ class atomtype
 	// Element (only used in head of atomtype tree, specifies the absolute element that the type describes)
 	int el;
 	// Add data to the structure from the supplied string
-	void expand(const char*, forcefield*);
+	void expand(const char *commands, forcefield *parentff, ffatom *parent);
 	// See if this type matches any atoms in the list provided
 	int match_in_list(reflist<atom>*, list<ring>*, model*);
 	// See if this type matches the atom (+ ring data of pattern)
@@ -120,6 +120,8 @@ class atomtype
 	// Bound atoms descriptors
 	*/
 	private:
+	// Specifies number of attached hydrogens
+	int nhydrogen;
 	// List of elements that the bound atom may be (can be empty for 'unspecified' [*])
 	int *allowedel;
 	// List of ffatom types that the bound atom may be
