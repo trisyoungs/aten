@@ -461,21 +461,6 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 	typescore = 1;
 	level ++;
 	msg(DM_TYPING,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n",this, level, elements.symbol(i), i->get_nbonds(), text_from_AE(i->get_env()));
-	// Type check (if this atom has already been assigned a type, compare it against this type)
-	msg(DM_TYPING,"(%li %2i) ... Type comparison  ",this,level);
-	bat = i->get_fftype()->get_atomtype();
-	if (bat == NULL) msg(DM_TYPING,"[defaulted (untyped)]\n");
-	else if (bat != this)
-	{
-
-	}
-	else
-	{
-		msg(DM_TYPING,"[passed]\n");
-		level --;
-		dbg_end(DM_CALLS,"atomtype::match_atom");
-		return 1;
-	}
 	// Element check
 	msg(DM_TYPING,"(%li %2i) ... Element  ",this,level);
 	if (nallowedel == 0) msg(DM_TYPING,"[defaulted]\n");

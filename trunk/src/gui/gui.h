@@ -116,7 +116,7 @@ class gui_master
 	// Instantiate a text-based progress dialog
 	void text_progress_create(const char *jobtitle, int stepstodo);
 	// Update the text progress dialog
-	bool text_progress_update(int currentstep);
+	void text_progress_update(int currentstep);
 	// Terminate the progress dialog
 	void text_progress_terminate();
 	// Variables for the position and maximum of the text progress dialog

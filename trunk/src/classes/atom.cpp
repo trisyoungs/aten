@@ -259,7 +259,7 @@ atom_geom atom::get_geometry(model *parent)
 {
 	dbg_begin(DM_CALLS,"atom::get_geometry");
 	static atom_geom result;
-	static double angle;
+	static double angle, largest;
 	static bond *b1, *b2;
 	static refitem<bond> *bref1, *bref2;
 	result = AG_UNSPECIFIED;
@@ -283,7 +283,7 @@ atom_geom atom::get_geometry(model *parent)
 		case (2):
 			b1 = get_bonds()->item;
 			b2 = get_bonds()->next->item;
-			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this));
+			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
 			result = (angle > 170.0 ? AG_LINEAR : AG_TETRAHEDRAL);
 			break;
 		case (3):
@@ -291,12 +291,15 @@ atom_geom atom::get_geometry(model *parent)
 			bref2 = get_bonds()->next;
 			b1 = bref1->item;
 			b2 = bref2->item;
-			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this));
+			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
+			largest = angle;
 			b2 = bref2->next->item;
-			angle += parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this));
+			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
+			if (angle > largest) largest = angle;
 			b1 = bref1->next->item;
-			angle += parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this));
-			result = (angle > 118.0 ? AG_TRIGPLANAR : (angle < 100.0 ? AG_TSHAPE : AG_TETRAHEDRAL));
+			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
+			if (angle > largest) largest = angle;
+			result = (largest > 170.0 ? AG_TSHAPE : (largest > 115.0 ? AG_TRIGPLANAR : AG_TETRAHEDRAL));
 			break;
 		case (4):
 			// Two possibilities - tetrahedral or square planar. Tetrahedral will have an
@@ -308,13 +311,13 @@ atom_geom atom::get_geometry(model *parent)
 				bref2 = bref1->next;
 				while (bref2 != NULL)
 				{
-					angle += parent->cell.angle(bref1->item->get_partner(this),this,bref2->item->get_partner(this));
-					printf("Case 4: added an angle.\n");
+					angle += parent->cell.angle(bref1->item->get_partner(this),this,bref2->item->get_partner(this)) * DEGRAD;
+					//printf("Case 4: added an angle.\n");
 					bref2 = bref2->next;
 				}
 				bref1 = bref1->next;
 			}
-			result = (angle > 115.0 ? AG_SQPLANAR : AG_TETRAHEDRAL);
+			result = ((angle/6.0) > 115.0 ? AG_SQPLANAR : AG_TETRAHEDRAL);
 			break;
 	}
 	dbg_end(DM_CALLS,"atom::get_geometry");

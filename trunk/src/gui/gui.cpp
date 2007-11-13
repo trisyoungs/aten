@@ -121,6 +121,7 @@ void gui_master::process_events()
 bool gui_master::save_before_close()
 {
 	 if (is_available) printf("gui_master::save_before_close - Not defined.\n");
+	return FALSE;
 }
 
 // Add model to list
@@ -191,6 +192,7 @@ void gui_master::progress_create(const char *jobtitle, int stepstodo)
 // Update the progress dialog
 bool gui_master::progress_update(int currentstep)
 {
+	return FALSE;
 }
 
 // Terminate the progress dialog
@@ -210,7 +212,7 @@ void gui_master::text_progress_create(const char *jobtitle, int stepstodo)
 }
 
 // Update the text progress dialog
-bool gui_master::text_progress_update(int currentstep)
+void gui_master::text_progress_update(int currentstep)
 {
 	static char *twister = "-\\|/";
 	static char *c = twister;
