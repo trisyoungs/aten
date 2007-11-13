@@ -173,6 +173,7 @@ enum script_command {
 	SC_SELECTFFTYPE,
 	SC_SELECTINVERT,
 	SC_SELECTNONE,
+	SC_SELECTOVERLAPS,
 	SC_SELECTTYPE,
 	
 	// Site Commands

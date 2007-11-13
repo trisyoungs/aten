@@ -33,7 +33,7 @@ element_map elements;
 // Default Element Data
 */
 
-// Format: ID   Mass    Name            Symbol  Radius  R       G       B       Valency 
+// Format: ID   Mass    Name            Symbol  Radius  Vlncy	AmbientRGB		DiffuseRGB
 const char *elementdata[] = {
 	"0	0.000	Dummy		XX	0.500	0	0.5,0.5,0.5		0.375,0.375,0.375",
 	"1	1.008	Hydrogen	H	0.320	1	0.87,0.87,0.87		0.78,0.78,0.78",

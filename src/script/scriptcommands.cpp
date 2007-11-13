@@ -175,6 +175,7 @@ const char *SC_data[SC_NITEMS] = {
 	"selectfftype,G",
 	"invert",
 	"selectnone",
+	"selectoverlaps,g",
 	"selecttype,gg",
 
 	// Site commands

@@ -316,7 +316,7 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 }
 
 // Frac to Real
-void model::frac_coords_to_real()
+void model::frac_to_real()
 {
 	dbg_begin(DM_CALLS,"model::frac_coords_to_real");
 	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r = cell.frac_to_real(i->r);

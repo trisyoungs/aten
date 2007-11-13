@@ -25,6 +25,7 @@
 #include "classes/bond.h"
 #include "base/prefs.h"
 #include "base/master.h"
+#include "base/elements.h"
 #include "gui/gui.h"
 
 // Select Atom
@@ -312,4 +313,23 @@ atom *model::get_first_selected()
 	}
 	dbg_end(DM_CALLS,"model::get_first_selected");
 	return result;
+}
+
+// Select overlapping atoms
+void model::select_overlaps(double tolerance)
+{
+	dbg_begin(DM_CALLS,"model::select_overlaps");
+	atom *i, *j;
+	double deltar;
+	vec3<double> v;
+	for (i = atoms.first(); i != atoms.last(); i = i->next)
+	{
+		for (j = i->next; j != NULL; j = j->next)
+		{
+			v = i->r - j->r;
+			deltar = v.magnitude();
+			if (deltar < tolerance) msg(DM_NONE,"Atom %i (%s) is %f from atom %i (%s).\n", i->get_id()+1, elements.symbol(i), deltar, j->get_id()+1, elements.symbol(j));
+		}
+	}
+	dbg_end(DM_CALLS,"model::select_overlaps");
 }
