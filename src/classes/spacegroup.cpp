@@ -215,7 +215,7 @@ void spacegroup_list::load(const char *filename)
 	ifstream spgrpfile(filename,ios::in);
 	if (!spgrpfile.good())
 	{
-		printf("Couldn't open spacegroup definitions. Have you set $ATENDATA?\n",filename);
+		printf("Couldn't open spacegroup definitions. Have you set $ATENDATA?\n");
 		spgrpfile.close();
 		dbg_end(DM_CALLS,"spacegroup_list::load");
 		return;

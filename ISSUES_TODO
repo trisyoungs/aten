@@ -33,7 +33,7 @@ General Qt To-Do list:
 	- Forcefield stack page and manager/edit window
 		+ Need method to apply forcefield to all or selected pattern
 		+ Method of assigning individual types by hand (also in atom context menu?)
-	- Prefs window (partial)
+	- Prefs window (partial) - colour editor (e.g. for COL_PEN, COL_BG etc.)
 	- List of non-periodic models in disorder stack page (with checkboxes?)
 	- Better editability in the atom list stack page
 
