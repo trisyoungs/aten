@@ -175,6 +175,7 @@ const char *SC_syntax[SC_NITEMS] = {
 	"selectfftype <typename>",
 	"invert",
 	"selectnone",
+	"selectoverlaps <tolerance>",
 	"selecttype <element> <typedesc>",
 
 	// Site commands

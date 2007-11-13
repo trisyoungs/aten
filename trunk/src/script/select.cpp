@@ -120,6 +120,10 @@ bool script::command_select(command_node<script_command> *cmd)
 		case (SC_SELECTINVERT):
 			m->selection_invert();
 			break;
+		// Detect and select overlapping atoms
+		case (SC_SELECTOVERLAPS):
+			m->select_overlaps(cmd->datavar[0]->get_as_double());
+			break;
 		default:
 			printf("Error - missed select command?\n");
 			result = FALSE;

@@ -372,6 +372,7 @@ void script::run()
 					result = command_pattern(cmd);
 					break;
 
+				case (SC_SELECTOVERLAPS):
 				case (SC_SELECTALL):
 				case (SC_SELECTATOM):
 				case (SC_SELECTELEMENT):

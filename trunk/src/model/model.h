@@ -175,6 +175,8 @@ class model
 	atom **get_staticatoms();
 	// Set visibility of specified atom
 	void set_hidden(atom *i, bool hidden);
+	// Prints out the coordinates of the atoms in the model
+	void print_coords();
 
 	/*
 	// Unit Cell
@@ -229,6 +231,14 @@ class model
 	void clear_bonding();
 	// Calculate bonding in the model
 	void calculate_bonding();
+	// Augment bonding in the model
+	void augment_bonding();
+	// Calculate bonding in current atom selection
+	void selection_calculate_bonding();
+	// Bond all atom pairs in current atom selection
+	void selection_bond_all();
+	// Clear bonding in current atom selection
+	void selection_clear_bonding();
 
 	/*
 	// Selection
@@ -272,6 +282,8 @@ class model
 	void select_radial(atom*, double);
 	// Return the first selected atom in the model (if any)
 	atom *get_first_selected();
+	// Detect and select overlapping atoms
+	void select_overlaps(double tolerance);
 
 	/*
 	// Basic View
@@ -344,19 +356,6 @@ class model
 	void selection_set_fixed();
 	// Sets the 'fixed' variable of all selected atoms to FALSE
 	void selection_set_free();
-
-	/*
-	// Bonding
-	*/
-	public:
-	// Augment bonding in the model
-	void augment_bonding();
-	// Calculate bonding in current atom selection
-	void selection_calculate_bonding();
-	// Bond all atom pairs in current atom selection
-	void selection_bond_all();
-	// Clear bonding in current atom selection
-	void selection_clear_bonding();
 
 	/*
 	// Forcefield
@@ -498,13 +497,13 @@ class model
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogen_satisfy();
 
-
 	/*
 	// Geometry (using staticatoms[])
 	*/
 	public:
 	// Calculate angle
 	double calculate_angle(int, int, int);
+	// Calculate torsion
 	double calculate_torsion(int, int, int, int);
 
 	/*
@@ -629,7 +628,7 @@ class model
 	// Convert from Angstrom to Bohr
 	void angstrom_to_bohr();
 	// COnvert fractional coordinates to real coordinates
-	void frac_coords_to_real();
+	void frac_to_real();
 
 	/*
 	// Measurements
@@ -693,8 +692,6 @@ class model
 	constraint *constraints;
 	constraint *constraints_tail;
 	int nconstraints;
-	// Prints out the coordinates of the atoms in the model
-	void print_coords();
 
 	/*
 	// Selection Actions

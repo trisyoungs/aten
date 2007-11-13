@@ -63,7 +63,7 @@ bool filter::do_actions(command_node<filter_command> *&fn)
 		// Convert fractional coordinates to real coordinates
 		case (FC_FRACTOREAL):
 			if (activemodel == NULL) break;
-			activemodel->frac_coords_to_real();
+			activemodel->frac_to_real();
 			result = TRUE;
 			break;
 		// Finalise current model
