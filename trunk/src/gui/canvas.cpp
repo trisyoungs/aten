@@ -31,6 +31,7 @@ canvas_master::canvas_master()
 	render_point = -1;
 	drawing = FALSE;
 	displaymodel = NULL;
+	drawpixelwidth = 1.0;
 	activemode = UA_NONE;
 	selectedmode = UA_PICKSELECT;
 	list[0] = -1;
@@ -85,6 +86,21 @@ bool canvas_master::begin_gl()
 void canvas_master::end_gl()
 {
 	printf("canvas_master::end_gl - Not defined\n");
+}
+
+// Calculate drawing pixel width
+void canvas_master::calculate_drawpixelwidth()
+{
+	// Get the Angstrom width of a single pixel at the current draw depth in the current view
+	static vec3<double> r1, r2;
+	if (displaymodel != NULL)
+	{
+		r1 = displaymodel->guide_to_model(w/2,h/2);
+		r2 = displaymodel->guide_to_model(w/2+1,h/2);
+		r2 -= r1;
+		drawpixelwidth = r2.x;
+	}
+	else drawpixelwidth = 1.0;
 }
 
 // Set GL options
@@ -448,6 +464,8 @@ void canvas_master::do_projection()
 		glGetDoublev(GL_PROJECTION_MATRIX,pmat); // Store the resulting projection and
 		GlobePMAT.set_from_column_major(pmat);
 		glMatrixMode(GL_MODELVIEW);
+		// Calculate the new drawpixelwidth
+		calculate_drawpixelwidth();
 		end_gl();
 	}
 	else printf("canvas_master::do_projection <<<< Failed to reset projection matrix >>>>\n");

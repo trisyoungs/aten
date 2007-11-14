@@ -281,7 +281,7 @@ vec4<double> &model::world_to_screen(const vec3<double> &v)
 	return result;
 }
 
-vec3<double> model::guide_to_model(const vec3<double> &sr)
+vec3<double> model::guide_to_model(double sx, double sy)
 {
 	// Convert the screen coordinates passed to a position on the drawing guide, and then into model coordinates
 	dbg_begin(DM_CALLS,"model::guide_to_model");
@@ -289,15 +289,14 @@ vec3<double> model::guide_to_model(const vec3<double> &sr)
 	static vec3<double> newpoint;
 	double radius, depth;
 	#ifdef HAS_GUI
-
 		depth = prefs.get_draw_depth();
 		// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
 		newpoint.set(0.0,0.0,depth);
 		guidepoint = world_to_screen(newpoint);
 		radius = guidepoint.w;
 		// Now, calculate the position of the clicked point on the guide
-		newpoint.x = sr.x - (gui.mainview.get_width() / 2.0 );
-		newpoint.y = (gui.mainview.get_height() - sr.y) - (gui.mainview.get_height() / 2.0 );
+		newpoint.x = sx - (gui.mainview.get_width() / 2.0 );
+		newpoint.y = (gui.mainview.get_height() - sy) - (gui.mainview.get_height() / 2.0 );
 		newpoint /= radius;
 		newpoint.z = depth + camr.z;
 		// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.

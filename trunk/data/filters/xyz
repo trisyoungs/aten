@@ -27,6 +27,6 @@ exportmodel
 	writeline "$natoms"
 	writeline "$title"
 	foratoms $i
-		writeline "$i.symbol@3 $i.r.x@12.3 $i.r.y@12.3 $i.r.z@12.3"
+		writeline "$i.symbol@3 $i.r.x@12.6 $i.r.y@12.6 $i.r.z@12.6"
 	end
 end

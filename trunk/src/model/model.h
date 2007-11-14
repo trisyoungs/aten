@@ -299,12 +299,12 @@ class model
 	vec3<double> camr;
 	// Size of view for orthographic projection
 	double ortho_size;
-	// Project the specified world coordinates into 2D screen coords
-	vec4<double> &world_to_screen(const vec3<double>&);
 
 	public:
 	// Pre-generated display list for atoms
 	GLuint displaylist;
+	// Project the specified world coordinates into 2D screen coords
+	vec4<double> &world_to_screen(const vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
 	void calculate_viewmatrix();
 	// Return the GL-compatible array from the ModelMAT structure
@@ -622,7 +622,8 @@ class model
 	*/
 	public:
 	// Convert screen coordinates into modelspace coordinates
-	vec3<double> guide_to_model(const vec3<double>&);
+	vec3<double> guide_to_model(const vec3<double> &v) { return guide_to_model(v.x, v.y); }
+	vec3<double> guide_to_model(double x, double y);
 	// Convert from Bohr to Angstrom
 	void bohr_to_angstrom();
 	// Convert from Angstrom to Bohr
