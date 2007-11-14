@@ -325,14 +325,14 @@ void model::select_overlaps(double tolerance)
 	select_none();
 	for (i = atoms.first(); i != atoms.last(); i = i->next)
 	{
+		if (j->is_selected()) continue;
 		for (j = i->next; j != NULL; j = j->next)
 		{
-			if (j->is_selected()) continue;
 			v = i->r - j->r;
 			deltar = v.magnitude();
 			if (deltar < tolerance)
 			{
-				msg(DM_NONE,"Atom %i (%s) is %f from atom %i (%s).\n", i->get_id()+1, elements.symbol(i), deltar, j->get_id()+1, elements.symbol(j));
+				msg(DM_NONE,"Atom %i (%s) is %f from atom %i (%s).\n", j->get_id()+1, elements.symbol(j), deltar, i->get_id()+1, elements.symbol(i));
 				select_atom(j);
 			}
 		}
