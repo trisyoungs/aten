@@ -29,6 +29,7 @@
 #include "classes/measurement.h"
 #include "classes/glyph.h"
 #include "classes/site.h"
+#include "classes/undolevel.h"
 #include "base/prefs.h"
 #include "methods/quantity.h"
 #ifdef IS_MAC
@@ -711,6 +712,25 @@ class model
 
 	public:
 	glyph *add_glyph();
+
+	/*
+	// Undo / Redo
+	*/
+	private:
+	// Pointer to current 'state' of the model in the list
+	undolevel *currentundostate;
+	// List of undo levels for the model
+	list<undolevel> undolevels;
+	// Signal to begin recording new changes
+	void begin_undostate();
+	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
+	void end_undostate();
+	// Private, static list of changes
+	list<change> currentchanges;
+
+	public:
+	// Return the current undo level pointer
+	undolevel *get_currentundostate() { return currentundostate; }
 };
 
 #endif
