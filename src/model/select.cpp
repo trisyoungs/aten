@@ -325,7 +325,7 @@ void model::select_overlaps(double tolerance)
 	select_none();
 	for (i = atoms.first(); i != atoms.last(); i = i->next)
 	{
-		if (j->is_selected()) continue;
+		if (i->is_selected()) continue;
 		for (j = i->next; j != NULL; j = j->next)
 		{
 			v = i->r - j->r;
