@@ -77,6 +77,8 @@ class canvas_master
 	bool valid;
 	// Flag indicating if we are currently drawing to this canvas
 	bool drawing;
+	// Model 'width' of a single pixel at the current draw depth...
+	double drawpixelwidth;
 
 	public:
 	// Constructor / Destructor
@@ -94,6 +96,10 @@ class canvas_master
 	bool is_valid() { return valid; }
 	// Set the validity of the canvas
 	void set_valid(bool);
+	// Recalculate drawing pixel width
+	void calculate_drawpixelwidth();
+	// Return the corrent drawing pixel width
+	double get_drawpixelwidth();
 	// Update Canvas
 	virtual void postredisplay();
 	// Called when context is initialised and ready

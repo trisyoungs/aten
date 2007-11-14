@@ -186,6 +186,7 @@ void canvas_master::set_selectedmode(user_action ua)
 			subselect_enabled = FALSE;
 			break;
 	}
+	gui.mainview.postredisplay();
 	dbg_end(DM_CALLS,"canvas_master::set_selectedmode");
 }
 
@@ -472,6 +473,7 @@ void canvas_master::mode_motion(double x, double y)
 		case (UA_ZOOMCAM):
 			if (prefs.using_perspective()) viewtarget->adjust_camera(0.0,0.0,delta.y,0.0);
 			else viewtarget->adjust_ortho_size(delta.y);
+			calculate_drawpixelwidth();
 			break;
 		default:
 			break;
@@ -511,6 +513,7 @@ void canvas_master::mode_scroll(bool scrollup)
 			if (prefs.using_perspective())
 				scrollup ? viewtarget->adjust_camera(0.0,0.0,-5.0,0.0) : viewtarget->adjust_camera(0.0,0.0,5.0,0.0);
 			else scrollup ? viewtarget->adjust_ortho_size(1.0) : viewtarget->adjust_ortho_size(-1.0);
+			calculate_drawpixelwidth();
 			break;
 	}
 	postredisplay();

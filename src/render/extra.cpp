@@ -110,7 +110,8 @@ void canvas_master::render_extra_2d()
 {
 	dbg_begin(DM_CALLS,"canvas_master::render_extra_2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
-	int dx,dy,n;
+	static int n, i;
+	static double dx, dy, halfw;
 	// First set up a 2D drawing area...
 	glMatrixMode(GL_PROJECTION);		// Swap to projection matrix...
 	glLoadIdentity();			// ...clear it...
@@ -119,22 +120,50 @@ void canvas_master::render_extra_2d()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	// We add various 2D features depending on the current interaction mode.
+	// Some we draw when the mode is active, some whtn it is just selected
+	// Those for active modes (when button is down)...
 	switch (activemode)
 	{
-		case (UA_NONE): break;
+		case (UA_NONE):
+			break;
+		// Only selection mode where we draw a selection box
 		case (UA_PICKSELECT):
 		case (UA_GEOMSELECT):
 		case (UA_POSSELECT):
-			// Only selection mode where we draw a selection box
 			glEnable(GL_LINE_STIPPLE);
 			glLineStipple(1,0x5555);
 			gl_rectangle(r_mousedown.x,h-r_mousedown.y,r_mouselast.x,h-r_mouselast.y);
 			glDisable(GL_LINE_STIPPLE);
 			break;
+		// Draw line from last atom in selection list (if any) to the current mouse pos
 		case (UA_GEOMDIST):
 		case (UA_GEOMANGLE):
 		case (UA_GEOMTORSION):
-			// Draw line from last atom in selection list (if any) to the current mouse pos
+			break;
+	}
+	// ...and those for selected modes (whether the button is down or not).
+	switch (selectedmode)
+	{
+		// Draw on distance ruler for drawing modes
+		case (UA_DRAWATOM):
+		case (UA_DRAWCHAIN):
+			// Get angstrom length
+			dx = 1.0 / drawpixelwidth;
+			halfw = w / 2.0;
+			i = int( halfw / dx);
+			glBegin(GL_LINES);
+			  for (n = -i; n <= i; n++)
+			  {
+				glVertex2d(halfw + n*dx, 10);
+				glVertex2d(halfw + n*dx, 20);
+				glVertex2d(halfw + (n+0.5)*dx, 10);
+				glVertex2d(halfw + (n+0.5)*dx, 15);
+			  }
+			  glVertex2d(halfw - i*dx, 11);
+			  glVertex2d(halfw + i*dx, 11);
+			glEnd();
+			for (n = -i; n < 0; n++) textbitmap(halfw + n*dx - 8, 1, itoa(n));
+			for (n = 0; n <= i; n++) textbitmap(halfw + n*dx - 3, 1, itoa(n));
 			break;
 	}
 	// If the mouse is hovering over an atom, draw a circle around it...
