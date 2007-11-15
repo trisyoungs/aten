@@ -3,7 +3,8 @@ Issues with the current version:
 	- Spherical regions in disordered builder have poor randomness.
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
 	- Surfaces need correct vertex normals
-	- Colour schemes other than AC_ELEMENT need to be fixed.
+	- Colour schemes other than AC_ELEMENT need to be fixed
+	- Switching between perspective / orthographic views loses current rotation/zoom
 
 General To-Do list:
 	- Ewald sum (fourier calculation, reciprocal cell?) for non-orthogonal cells

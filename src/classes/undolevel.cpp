@@ -19,6 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "classes/undolevel.h"
+
 // Constructors
 change::change()
 {
