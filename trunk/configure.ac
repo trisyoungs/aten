@@ -109,13 +109,13 @@ if test "$with_gui" = "qt"; then
     QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
   fi
   if test "$with_qt" = "fink"; then
-    PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
-    PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
     QTGUI_LIBS="-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL"
     QTGUI_CFLAGS="-I/sw/lib/qt4-x11/include -I/usr/X11R6/include"
     QTGUI_LIBS="$QTGUI_LIBS -lglut"
     QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
     QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
+    PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
+    PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
   fi
   if test "x$with_qt" = "x"; then
     PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)

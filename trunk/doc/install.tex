@@ -58,8 +58,10 @@ You may find that the version of GNU Autotools you have is not recent enough. Ch
 
 {\sffamily
 \indent libtool  :  1.5.22-1000\\
-\indent autoconf :  XXX\\
+\indent autoconf :  2.60-4\\
+\indent aclocal  :  XX\\
 \indent automake :  1.9.6-3\\
+\indent m4       :  XXX\\
 }
 
 \section{Configuration Options}
@@ -102,20 +104,37 @@ Possible {\sffamily configure} options are listed here. Most are present just to
 \end{description}
 
 
-\section{Four Step Installation}
+\section{Four\textonehalf Step Installation}
 
 \begin{description}
 	\item[Step 1:\its] Get the source.
 	\begin{itemize}
-		\item Download the source distribution from the website and unpack the .tgz file, or get the latest tree from the SVN repository.
-		\item Run {\sffamily ./autogen.sh} to generate the {\sffamily configure} script if you got the distribution using svn.
+		\item To download the tarball: go to http://aten.googlecode.com and select the relevant file from the Downloads page.
+		\item To get via {\sffamily svn}: run \qte{\sffamily svn co http://aten.googlecode.com/svn/trunk aten} to download the current tree to a new directory \qte{\sffamily aten} in the current directory.
+	\end{itemize}
+\end{description}
+
+
+\begin{description}
+	\item[Step 1a:\its] Set up the build (if you downloaded the source with {\sffamily svn})
+	\begin{itemize}
+		\item Run {\sffamily ./autogen.sh} to generate the {\sffamily configure} script..
 	\end{itemize}
 	Common issues:\\
-	\emph{(MAC) Running {\sffamily ./autogen.sh}, autoconf fails with \qte{configure.ac:16: error: possibly undefined macro: AC\_DEFINE}.}
+	\emph{(MAC) Running {\sffamily ./autogen.sh}, {\sffamily autoconf} fails with \qte{configure.ac:16: error: possibly undefined macro: AC\_DEFINE}.}
 	\begin{itemize}
 		\item This is related to the version of pkg-config you have installed (e.g. version 0.15.1 gives this error, but version 0.21 does not) with Fink / MacPorts. Upgrade to the latest version. Incidentally, the line-number reported (16) is not the actual location of the error -- autoconf reports this wrongly (the actual error occurs around line 89 with the \qte{PKG\_CHECK\_MODULES(GTK28, ..., [AC\_DEFINE...} command).
 	\end{itemize}
+	\emph{(MAC) Running {\sffamily ./autogen.sh}, {\sffamily aclocal} \qte{/sw/share/aclocal/pkg.m4:5: warning: underquoted definition of PKG\_CHECK\_MODULES}.}
+	\begin{itemize}
+		\item If there is no {\sffamily pkgconfig} installed, this is likely to give rise to said spurious error. Install {\sffamily pkgconfig} to proceed.
+	\end{itemize}
+	\emph{(MAC) {\sffamily autogen.sh}m seems to work, but {\sffamily aclocal} complains about \qte{underquoted definition of AM\_PATH\_*}.}
+	\begin{itemize}
+		\item These warnings should nothave affected the generation of a working {\sffamily ./configure} script. So you may as well move on to the next step.
+	\end{itemize}
 \end{description}
+
 
 \begin{description}
 	\item[Step 2:\its] Configure the build (Run {\sffamily./configure})
@@ -134,6 +153,7 @@ Possible {\sffamily configure} options are listed here. Most are present just to
 		\item You need some form of OpenGL implementation installed. Try the freeglut packages, and don't forget to install the freeglut-devel package as well.
 	\end{itemize}
 \end{description}
+
 
 \begin{description}
 	\item[Step 3:\its] Compile the source (Run {\sffamily make})

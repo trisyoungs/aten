@@ -38,7 +38,7 @@ const char *text_from_DS(draw_style i)
 // Atom labels
 const char *AL_keywords[AL_NITEMS] = { "id", "element", "fftype", "ffequiv", "charge" };
 atom_label AL_from_text(const char *s)
-	{ return (atom_label) pow(2,enum_search("atom label type",AL_NITEMS,AL_keywords,s)); }
+	{ return (atom_label) int(pow(2,enum_search("atom label type",AL_NITEMS,AL_keywords,s))); }
 
 // Constructors
 atom::atom()
