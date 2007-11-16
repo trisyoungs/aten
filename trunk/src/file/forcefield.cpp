@@ -211,8 +211,8 @@ bool forcefield::read_generator(ifstream &fffile)
 	// If we are setting ngendata for the first time, allocate convertgen as well
 	if (ngendata == 0)
 	{
-		convertgen = new bool[ngendata];
 		ngendata = parser.argi(1);
+		convertgen = new bool[ngendata];
 	}
 	count = 0;
 	do
