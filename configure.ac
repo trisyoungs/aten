@@ -15,7 +15,7 @@ AC_CANONICAL_TARGET
 MAC_LIBS=""
 if test "$target_vendor" = "apple"; then
   AC_DEFINE([IS_MAC], [], [Whether operating system is an Apple])
-  MAC_LIBS="-framework OpenGL -framework GLUT"
+  MAC_LIBS="-framework OpenGL"
 fi
 AC_SUBST(MAC_LIBS)
 
@@ -34,7 +34,7 @@ AC_CHECK_HEADERS([string.h])
 if test "$target_vendor" != "apple"; then
   AC_CHECK_HEADERS([GL/glut.h], ,[AC_MSG_ERROR([Could not find GLUT header. Is freeglut/Mesa installed?])])
 else
-  AC_CHECK_HEADERS([GLUT/glut.h], ,[AC_MSG_ERROR([Could not find GLUT header. Is the OpenGL/GLUT framework installed?])])
+  AC_CHECK_HEADERS([GLUT/glut.h], ,[AC_MSG_ERROR([Could not find GLUT header. Is GLUT installed?])])
 fi
 
 
@@ -71,6 +71,9 @@ fi
 AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
     [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
     [with_qt=])
+AC_ARG_WITH([glut],[AC_HELP_STRING([--with-glut=framework|<none>],
+    [Determines which installation of GLUT to use on OS X (should not be set for Linux)[default=<none>]])], ,
+    [with_glut=])
 
 
 # Pre-initialise pkg-config since we don't know where the first PKG_CHECK_MODULES will occur
@@ -94,7 +97,7 @@ if test "$with_gui" = "gtk"; then
   PKG_CHECK_MODULES(PANGO, pango >= 1.0.0)
   PKG_CHECK_MODULES(GTKGLEXT, gtkglext-1.0 >= 1.0.0)
   PKG_CHECK_MODULES(GTHREAD, gthread-2.0 >= 2.0.0)
-  GUI_LDLIBS="$GTKGLEXT_LIBS $GTHREAD_LIBS -lglut"
+  GUI_LDLIBS="$GTKGLEXT_LIBS $GTHREAD_LIBS"
   GUI_CFLAGS="$GTKGLEXT_CFLAGS"
 fi
 
@@ -111,7 +114,6 @@ if test "$with_gui" = "qt"; then
   if test "$with_qt" = "fink"; then
     QTGUI_LIBS="-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL"
     QTGUI_CFLAGS="-I/sw/lib/qt4-x11/include -I/usr/X11R6/include"
-    QTGUI_LIBS="$QTGUI_LIBS -lglut"
     QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
     QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
     PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
@@ -121,12 +123,19 @@ if test "$with_gui" = "qt"; then
     PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
     PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
   fi
-  GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lglut"
+  GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
   GUI_CFLAGS="$QTGUI_CFLAGS"
 fi
 
 if test "$with_gui" = "none"; then
   GUI_OBJECTS="gui/libguimaster.a"
+fi
+
+# Setup GLUT reference
+if test "x$with_glut" = "xframework"; then
+  MAC_LIBS="$MAC_LIBS -framework GLUT"
+else
+  GUI_LDLIBS="$GUI_LDLIBS -lglut"
 fi
 
 
