@@ -261,6 +261,13 @@ bool mc_method::disorder(model* destmodel)
 	region *r;
 	vec3<double> v, cog;
 
+	printf("INFO: At start of disordered builder, we think there are %i defined components\n",master.mc.components.size());
+	printf("INFO: They are:\n");
+	for (n=0; n<master.mc.components.size(); n++)
+	{
+		c = master.mc.components[n];
+		printf("INFO:      component %li, model %li, nrequested %i\n",c,c->get_model(),c->get_nrequested());
+	}
 	/*
 	// Prepare the calculation
 	*/
@@ -536,8 +543,9 @@ bool mc_method::disorder(model* destmodel)
 		p = p->next;
 	}
 
-	// Reset VDW scale ratio
+	// Reset VDW scale ratio and intramolecular status
 	prefs.set_vdw_radius_scale(1.0);
+	prefs.set_calc_intra(intrastatus);
 
 	// Remove all hidden atoms in the model (unused molecule space)
 	atom *i, *j;
