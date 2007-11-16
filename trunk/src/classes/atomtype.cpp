@@ -107,11 +107,11 @@ ringtype::~ringtype()
 */
 
 // Set element list in atomtype
-void atomtype::set_elements(const char *ellist, forcefield *ff)
+void atomtype::set_elements(const char *ellist, forcefield *ff, ffatom *parent)
 {
 	// Add elements from the comma-separated ellist string as possible matches for this atomtype
 	dbg_begin(DM_CALLS,"atomtype::set_elements");
-	int n, count;
+	int n, count, parentid;
 	ffatom *ffa;
 	dnchar temp;
 	// Find number of elements given in list...
@@ -120,6 +120,7 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 	nallowedel = parser.get_nargs();
 	allowedel = new int[nallowedel];
 	count = 0;
+	parentid = parent->get_ffid();
 	// Go through items in 'element' list...
 	msg(DM_TYPING,"  %i atom types/elements given for atomtype : ",nallowedel);
 	for (n=0; n<parser.get_nargs(); n++)
@@ -130,11 +131,15 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 			// Copy string and remove leading '$'
 			temp = parser.argc(n);
 			temp.erasestart(1);
-			// Search for the atomtype pointer with ffid in 'temp' in the forcefield supplied
-			if (ff != NULL)
+			// Safety check for an atomtype referencing itself
+			if (parentid == temp.as_integer())
 			{
-				// Were we given a number (ffid) or a string (type name)?
-				ffa = (temp.is_numeric() ? ff->find_type(temp.as_integer()) : ff->find_type(temp.get()));
+				msg(DM_NONE,"WARNING - Atomtype '%i/%s' references itself in its description (removed).\n",parentid,parent->get_name());
+			}
+			else if (ff != NULL)
+			{
+				// Search for the atomtype pointer with ffid in 'temp' in the forcefield supplied
+				ffa = ff->find_type(temp.as_integer());
 				if (ffa == NULL)
 				{
 					// TODO Does this need a warning? Will we be able to handle recursive typeid checks properly?
@@ -240,7 +245,7 @@ void ringtype::expand(const char *data, forcefield *ff, ffatom *parent)
 			// Remove leading character, add bound atom and set its element list
 			keywd.erasestart(1);
 			newat = ringatoms.add();
-			newat->set_elements(keywd.get(),ff);
+			newat->set_elements(keywd.get(),ff,parent);
 			newat->expand(optlist.get(),ff,parent);
 			//if (c == '=') boundbond = BT_DOUBLE;
 			found = TRUE;
@@ -321,7 +326,7 @@ void atomtype::expand(const char *data, forcefield *ff, ffatom *parent)
 			// Remove leading character, add bound atom and set its element list
 			keywd.erasestart(1);
 			atomtype *newat = boundlist.add();
-			newat->set_elements(keywd.get(),ff);
+			newat->set_elements(keywd.get(),ff,parent);
 			if (c == '=') boundbond = BT_DOUBLE;
 			newat->expand(optlist.get(),ff,parent);
 			found = TRUE;

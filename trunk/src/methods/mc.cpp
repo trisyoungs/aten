@@ -277,6 +277,14 @@ bool mc_method::disorder(model* destmodel)
 	// Fix all patterns in the destmodel
 	destmodel->set_patterns_fixed(destmodel->get_npatterns());
 
+	// Check that there were actually components specified
+	if (components.size() == 0)
+	{
+		msg(DM_NONE,"No components have been specified for inclusion into the model.\n");
+		dbg_end(DM_CALLS,"mc::disorder");
+		return FALSE;
+	}
+
 	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
 	msg(DM_NONE,"Preparing destination model...\n");
 	for (c = components.first(); c != NULL; c = c->next)

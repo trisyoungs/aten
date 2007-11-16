@@ -15,6 +15,7 @@ General To-Do list:
 	- View along cell axes
 	- View Miller planes
 	- Undo / Redo
+	- Export EPS
 
 Forcefield To-Do list:
 	- UFF - oxidation state, torsions
@@ -36,6 +37,8 @@ General Qt To-Do list:
 	- Prefs window (partial) - colour editor (e.g. for COL_PEN, COL_BG etc.)
 	- List of non-periodic models in disorder stack page (with checkboxes?)
 	- Better editability in the atom list stack page
+	- Bond tolerance widget in Edit page
+	- Remember positions / visibility of toolbars (QSettings)
 
 Manual To-Do list:
 	- Section on forcefields
