@@ -1,0 +1,46 @@
+# DL_POLY Formatted Trajectory file filter.
+# Last modified: 10/10/07.
+importtrajectory
+	name "DL_POLY Formatted History"
+	extension "HISf"
+	glob *HISf
+	nickname dlpoly
+	exact "HISTORY"
+	# DL_POLY formatted history files may contain a header.
+	# When aten is trying to read the header, the variable 'header' will be 'true' (and 'frame' will be 'false')
+	if $header = true
+		# Check first 8 characters of first line - if it reads 'timestep' then this trajectory doesn't have a header
+		readline "$title@8"
+		if $title = timestep
+			rewind
+		end
+		if $title <> timestep
+			skipline
+		end
+	else
+		# Frame header - '"timestep"	nstep	natms	keytrj	imcon	tstep'
+		readline "* $nstep $natoms $keytrj $imcon $tstep"
+		# Read cell if its present
+		if $imcon > 0
+			readline "$cell.a.x@12 $cell.b.x@12 $cell.c.x@12"
+			readline "$cell.a.y@12 $cell.b.y@12 $cell.c.y@12"
+			readline "$cell.a.z@12 $cell.b.z@12 $cell.c.z@12"
+			setcellaxes
+		end
+		# Now the atoms
+		modeltemplate
+		repeat $n $natoms
+			readline "$e $id $mass $q"
+			readline "$r.x@12 $r.y@12 $r.z@12"
+			if $keytrj > 0
+				readline "$v.x@12 $v.y@12 $v.z@12"
+			end
+			if $keytrj > 1
+				readline "$f.x@12 $f.y@12 $f.z@12"
+			end
+			setatom $n
+		end
+		fold
+		rebond
+	end
+end
