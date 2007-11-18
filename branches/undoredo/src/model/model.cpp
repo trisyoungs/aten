@@ -56,7 +56,6 @@ model::model()
 	char newname[16];
 	sprintf(newname,"Unnamed%03i",master.get_modelid());
 	name = newname;
-	lastatomdrawn = NULL;
 	trajparent = NULL;
 	trajfilefilter = NULL;
 	trajfile = NULL;

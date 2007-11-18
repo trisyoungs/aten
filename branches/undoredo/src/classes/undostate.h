@@ -23,11 +23,14 @@
 #define H_UNDOLEVEL_H
 
 // State change targets
-enum undo_event { UE_ADDATOM, UE_DELETEATOM, UE_ADDBOND, UE_DELETEBOND, UE_ADDGEOMETRY, UE_DELETEGEOMETRY, UE_TRANSMUTE, UE_NITEMS };
+enum undo_event { UE_ADDATOM, UE_DELETEATOM, UE_ADDBOND, UE_DELETEBOND, UE_ADDGEOMETRY, UE_DELETEGEOMETRY, UE_SELECTATOM, UE_DESELECTATOM, UE_TRANSMUTE, UE_NITEMS };
 
 #include "classes/atom.h"
 #include "classes/dnchar.h"
 #include "templates/list.h"
+
+// Forward declarations
+class model;
 
 // Single change
 class change
@@ -45,23 +48,27 @@ class change
 	private:
 	// Type of change
 	undo_event type;
-	// Data (atom ids etc.) describing the object before the change
+	// Data describing the object before the change
 	atom olddata;
-	// Data (atom ids etc.) describing the object after the change
+	// Data describing the object after the change
 	atom newdata;
+	// Generally-applicable data
+	int data[3];
 
 	public:
-	// Set change data
+	// Set change data (atoms)
 	void set(undo_event ec, atom *old, atom *nu);
+	// Set change data (integers)
+	void set(undo_event ec, int i, int j, int k);
 
 	/*
 	// Actions
 	*/
 	public:
-	// Perform stored state change
-	void perform();
-	// Reverse stored state change
-	void reverse();
+	// Revert (undo) stored change
+	void revert(model *m);
+	// Perform (redo) stored change
+	void perform(model *m);
 };
 
 // Undo state
@@ -89,9 +96,9 @@ class undostate
 	// Return the current text associated with the state
 	const char *get_text() { return text.get(); }
 	// Revert (undo) the changes specified in the state
-	void revert();
+	void revert(model *m);
 	// Perform (redo) the changes specified in the state
-	void perform();
+	void perform(model *m);
 };
 
 #endif

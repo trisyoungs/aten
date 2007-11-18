@@ -37,6 +37,12 @@ void model::select_atom(atom *i)
 		i->set_selected(TRUE);
 		nselected ++;
 		log_change(LOG_SELECTION);
+		// Add the change to the undo state (if there is one)
+		if (recordingstate != NULL)
+		{
+			change *newchange = recordingstate->changes.add();
+			newchange->set(UE_SELECTATOM,NULL,i);
+		}
 	}
 	dbg_end(DM_MORECALLS,"model::select_atom");
 }
@@ -50,6 +56,12 @@ void model::deselect_atom(atom *i)
 		i->set_selected(FALSE);
 		nselected --;
 		log_change(LOG_SELECTION);
+		// Add the change to the undo state (if there is one)
+		if (recordingstate != NULL)
+		{
+			change *newchange = recordingstate->changes.add();
+			newchange->set(UE_DESELECTATOM,NULL,i);
+		}
 	}
 	dbg_end(DM_MORECALLS,"model::deselect_atom");
 }

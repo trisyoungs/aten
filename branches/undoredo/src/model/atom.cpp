@@ -34,8 +34,6 @@ atom *model::add_atom(int newel, vec3<double> pos)
 	newatom->r = pos;
 	mass += elements.mass(newel);
 	calculate_density();
-	lastatomdrawn = newatom;
-	//project_atom(i);
 	log_change(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
 	if (recordingstate != NULL)
@@ -52,8 +50,26 @@ atom *model::add_copy(atom *source)
 {
 	dbg_begin(DM_CALLS,"model::add_copy");
 	atom *newatom = atoms.add();
-	lastatomdrawn = newatom;
-	//project_atom(i);
+	newatom->copy(source);
+	log_change(LOG_STRUCTURE);
+	mass += elements.mass(newatom->get_element());
+	calculate_density();
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_ADDATOM,NULL,newatom);
+	}
+	dbg_end(DM_CALLS,"model::add_copy");
+	return newatom;
+}
+
+// Add atom copy at specified position in list
+atom *model::add_copy(atom *afterthis, atom *source)
+{
+	dbg_begin(DM_CALLS,"model::add_copy");
+	atom *newatom = atoms.insert(afterthis);
+	printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
 	log_change(LOG_STRUCTURE);
 	mass += elements.mass(newatom->get_element());
@@ -161,16 +177,25 @@ atom *model::find_atom_by_tempi(int tempi)
 }
 
 // Renumber Atoms
-void model::renumber_atoms()
+void model::renumber_atoms(atom *from)
 {
 	dbg_begin(DM_CALLS,"model::renumber_atoms");
-	int count = 0;
-	atom *i = atoms.first();
-	while (i != NULL)
+	static int count;
+	static atom *i;
+	if (from == NULL)
+	{
+		count = 0;
+		i = atoms.first();
+	}
+	else
+	{
+		count = from->get_id();
+		i = from->next;
+	}
+	for (i = i; i != NULL; i = i->next)
 	{
 		i->set_id(count);
 		count ++;
-		i = i->next;
 	}
 	dbg_end(DM_CALLS,"model::renumber_atoms");
 }

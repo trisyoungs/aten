@@ -51,6 +51,9 @@ void model::end_undostate()
 		dbg_end(DM_CALLS,"model::end_undostate");
 		return;
 	}
+	// Delete all redo (i.e. future) states from the undo list
+	if (currentundostate == NULL) undolevels.clear();
+	else for (undostate *u = currentundostate->next; u != NULL; u = u->next) undolevels.remove(u);
 	// Add the new state to the end of the undo level list
 	undolevels.own(recordingstate);
 	// Set the current undo level to the new state and nullify the pointer
@@ -70,7 +73,7 @@ void model::undo()
 	else
 	{
 		// Undo the changes
-		currentundostate->revert();
+		currentundostate->revert(this);
 		// Set new undo/redo pointers
 		currentredostate = currentundostate;
 		currentundostate = currentundostate->prev;
@@ -82,5 +85,14 @@ void model::undo()
 void model::redo()
 {
 	dbg_begin(DM_CALLS,"model::redo");
+	if (currentredostate == NULL) msg(DM_NONE,"Nothing to undo.\n");
+	else
+	{
+		// Undo the changes
+		currentredostate->perform(this);
+		// Set new undo/redo pointers
+		currentundostate = currentredostate;
+		currentredostate = currentredostate->next;
+	}
 	dbg_end(DM_CALLS,"model::redo");
 }

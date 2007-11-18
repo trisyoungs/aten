@@ -41,6 +41,12 @@ void model::bond_atoms(atom *i, atom *j, bond_type bt)
 		newbond->bondj = j;
 		j->accept_bond(newbond);
 		log_change(LOG_STRUCTURE);
+		// Add the change to the undo state (if there is one)
+		if (recordingstate != NULL)
+		{
+			change *newchange = recordingstate->changes.add();
+			newchange->set(UE_ADDBOND,i->get_id(),j->get_id(),bt);
+		}
 	}
 	dbg_end(DM_CALLS,"model::bond_atoms");
 }

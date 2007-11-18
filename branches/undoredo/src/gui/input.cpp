@@ -180,8 +180,6 @@ void canvas_master::set_selectedmode(user_action ua)
 			subselect_enabled = TRUE;
 			subsel.clear();
 			break;
-		case (UA_DRAWCHAIN):
-			displaymodel->set_lastatomdrawn(NULL);
 		default:
 			subselect_enabled = FALSE;
 			break;
@@ -368,6 +366,8 @@ void canvas_master::end_mode(mouse_button button)
 		case (UA_DRAWCHAIN):
 			// If there is no atom under the mouse we draw one
 			i = displaymodel->atom_on_screen(r_mouseup.x,r_mouseup.y);
+			if ((atom_hover == i) && (i != NULL)) break;
+			displaymodel->begin_undostate("Draw Chain");
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom
@@ -376,6 +376,7 @@ void canvas_master::end_mode(mouse_button button)
 			}
 			// Now bond the atoms, unless atom_hover and i are the same (i.e. the button was clicked and not moved)
 			if (atom_hover != i) displaymodel->bond_atoms(i,atom_hover,BT_SINGLE);
+			displaymodel->end_undostate();
 			break;
 		case (UA_TRANSATOM):
 			displaymodel->transmute_atom(atom_hover, master.get_sketchelement());

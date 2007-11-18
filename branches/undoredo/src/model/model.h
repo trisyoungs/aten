@@ -148,6 +148,8 @@ class model
 	atom *add_atom(int el, vec3<double> r);
 	// Create copy of supplied atom
 	atom *add_copy(atom *source);
+	// Create copy of supplied atom at the specified position
+	atom *add_copy(atom *after, atom *source);
 	// Return the start of the atom list
 	atom *get_atoms() { return atoms.first(); }
 	// Return the number of atoms in the model
@@ -159,7 +161,7 @@ class model
 	// Perform alchemy on an atom 
 	void transmute_atom(atom *target, int element);
 	// Renumber atoms in the model
-	void renumber_atoms();
+	void renumber_atoms(atom *from = NULL);
 	// Reset tempi values of all atoms
 	void reset_tempi(int);
 	// Return pointer to the atom with the specified id
@@ -487,16 +489,10 @@ class model
 	// Model Building
 	*/
 	private:
-	// Last atom sketched in the model
-	atom *lastatomdrawn;
 	// Iteratively add hydrogens to the specified atom in the desired general geometry
 	void add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry);
 
 	public:
-	// Return the last atom drawn in the model
-	atom *get_lastatomdrawn() { return lastatomdrawn; }
-	// Set the last atom drawn in the model
-	void set_lastatomdrawn(atom *i) { lastatomdrawn = i; }
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogen_satisfy();
 
