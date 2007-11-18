@@ -145,8 +145,8 @@ class pattern
 	model molecule;
 	// Sets up variables in pattern
 	void initialise(int, int, int, int);
-	// Takes the supplied atom and places it in the local list 
-	atom *append_atom(int);
+	// Takes the supplied atom and places a copy in the local list 
+	atom *append_copy(atom *source);
 	// Delete a number of atoms from the end of the list
 	void delete_atoms_from_end(int);
 	// Perform checks to determine the validity of the pattern

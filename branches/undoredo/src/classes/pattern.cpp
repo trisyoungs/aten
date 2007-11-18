@@ -444,7 +444,7 @@ void pattern::propagate_bondtypes()
 */
 
 // Append atom
-atom *pattern::append_atom(int el)
+atom *pattern::append_copy(atom *source)
 {
 	// Append the supplied atom to the pattern's 'local' atom list
 	dbg_begin(DM_CALLS,"pattern::append_atom[pattern]");
@@ -452,7 +452,7 @@ atom *pattern::append_atom(int el)
 	firstatom == NULL ? firstatom = newatom : lastatom->next = newatom;
 	newatom->prev = lastatom;
 	lastatom = newatom;
-	newatom->set_element(el);
+	newatom->copy(source);
 	totalatoms ++;
 	dbg_end(DM_CALLS,"pattern::append_atom[pattern]");
 	return newatom;

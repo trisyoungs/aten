@@ -115,8 +115,11 @@ class gui_qt : public gui_master
 	// Non-virtual functions follow, for local use within gui-qt
 	//
 	*/
-
+	public:
+	// Convert Qt key code value to internal key
 	key_code convert_to_KC(int);
+	// Update Undo/Redo menu items
+	void update_undoredo();
 
 	/*
 	// Windows / Dialogs

@@ -242,8 +242,9 @@ void canvas_master::begin_mode(mouse_button button)
 						// If there is currently no atom under the mouse, draw one...
 						if (atom_hover == NULL)
 						{
-							i = displaymodel->add_atom(master.get_sketchelement());
-							i->r = displaymodel->guide_to_model(r_mousedown);
+							displaymodel->begin_undostate("Draw Chain");
+							i = displaymodel->add_atom(master.get_sketchelement(), displaymodel->guide_to_model(r_mousedown));
+							displaymodel->end_undostate();
 							displaymodel->project_atom(i);
 							atom_hover = i;
 						}
@@ -357,8 +358,9 @@ void canvas_master::end_mode(mouse_button button)
 			// Make sure we don't draw on top of an existing atom
 			if (atom_hover == NULL)
 			{
-				atom *i = displaymodel->add_atom(master.get_sketchelement());
-				i->r = displaymodel->guide_to_model(r_mousedown);
+				displaymodel->begin_undostate("Draw Atom");
+				atom *i = displaymodel->add_atom(master.get_sketchelement(), displaymodel->guide_to_model(r_mousedown));
+				displaymodel->end_undostate();
 				displaymodel->project_atom(i);
 			}
 			break;
@@ -369,8 +371,7 @@ void canvas_master::end_mode(mouse_button button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom
-				i = displaymodel->add_atom(master.get_sketchelement());
-				i->r = displaymodel->guide_to_model(r_mouseup);
+				i = displaymodel->add_atom(master.get_sketchelement(), displaymodel->guide_to_model(r_mouseup));
 				displaymodel->project_atom(i);
 			}
 			// Now bond the atoms, unless atom_hover and i are the same (i.e. the button was clicked and not moved)

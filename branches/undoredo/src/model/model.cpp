@@ -50,7 +50,10 @@ model::model()
 	constraints_tail = NULL; 
 	nconstraints = 0;
 	filefilter = NULL;
-	char newname[32];
+	currentundostate = NULL;
+	currentredostate = NULL;
+	recordingstate = NULL;
+	char newname[16];
 	sprintf(newname,"Unnamed%03i",master.get_modelid());
 	name = newname;
 	lastatomdrawn = NULL;

@@ -31,6 +31,18 @@
 // Editing Actions
 */
 
+void AtenForm::on_actionEditUndo_triggered(bool checked)
+{
+	master.get_currentmodel()->undo();
+	gui.refresh();
+}
+
+void AtenForm::on_actionEditRedo_triggered(bool checked)
+{
+	master.get_currentmodel()->redo();
+	gui.refresh();
+}
+
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
 	// Cut the selected atoms from the model, copying to the paste buffer

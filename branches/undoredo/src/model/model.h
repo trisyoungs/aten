@@ -29,7 +29,7 @@
 #include "classes/measurement.h"
 #include "classes/glyph.h"
 #include "classes/site.h"
-#include "classes/undolevel.h"
+#include "classes/undostate.h"
 #include "base/prefs.h"
 #include "methods/quantity.h"
 #ifdef IS_MAC
@@ -145,7 +145,9 @@ class model
 	
 	public:
 	// Create a new atom
-	atom *add_atom(int);
+	atom *add_atom(int el, vec3<double> r);
+	// Create copy of supplied atom
+	atom *add_copy(atom *source);
 	// Return the start of the atom list
 	atom *get_atoms() { return atoms.first(); }
 	// Return the number of atoms in the model
@@ -717,20 +719,26 @@ class model
 	// Undo / Redo
 	*/
 	private:
-	// Pointer to current 'state' of the model in the list
-	undolevel *currentundostate;
+	// Pointer to current 'states' of the model in the list
+	undostate *currentundostate, *currentredostate;
 	// List of undo levels for the model
-	list<undolevel> undolevels;
-	// Signal to begin recording new changes
-	void begin_undostate();
-	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
-	void end_undostate();
-	// Private, static list of changes
-	list<change> currentchanges;
+	list<undostate> undolevels;
+	// Current state that we're adding changes to
+	undostate *recordingstate;
 
 	public:
 	// Return the current undo level pointer
-	undolevel *get_currentundostate() { return currentundostate; }
+	undostate *get_currentundostate() { return currentundostate; }
+	// Return the current redo level pointer
+	undostate *get_currentredostate() { return currentredostate; }
+	// Signal to begin recording new changes
+	void begin_undostate(const char *text);
+	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
+	void end_undostate();
+	// Perform the undo action pointed to by 'currentundostate'
+	void undo();
+	// Perform the redo action pointed to by 'currentredostate'
+	void redo();
 };
 
 #endif

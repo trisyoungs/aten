@@ -491,13 +491,9 @@ const char *line_parser::trim_atkeyword(dnchar &source)
 			case (13):	// Carriage Return - Signals end of the keyword.
 				done = TRUE;
 				break;
-			case (61):	// "=" - Signals keyword/single option delimiter (unless first character)
-				if (n == 0) keywd += source[n];
-				else
-				{
-					done = TRUE;
-					equals = TRUE;
-				}
+			case (61):	// "=" - Signals keyword/single option delimiter
+				done = TRUE;
+				equals = TRUE;
 				break;
 			case (91):	// '['
 			case (93):	// ']'

@@ -125,21 +125,6 @@ void clipatom::copy_from_atom(atom *i)
 	dbg_end(DM_CALLS,"clipatom::copy_from_atom");
 }
 
-// Copy to atom
-void clipatom::copy_to_atom(atom *i)
-{
-	dbg_begin(DM_CALLS,"clipatom::copy_to_atom");
-	i->r = r;
-	i->f = f;
-	i->v = v;
-	i->set_charge(q);
-	i->set_element(el);
-	i->set_style(style);
-	i->set_env(env);
-	i->set_fftype(fftype);
-	dbg_end(DM_CALLS,"clipatom::copy_to_atom");
-}
-
 // Copy bonds for atoms
 void clipboard::copy_bonds_for_atoms()
 {
@@ -233,8 +218,7 @@ void clipboard::paste_to_model(model *m)
 	while (i != NULL)
 	{
 		// Create a new atom in the target model
-		pastedi = m->add_atom(i->get_element());
-		i->copy_to_atom(pastedi);
+		pastedi = m->add_copy(pastedi);
 		m->select_atom(pastedi);
 		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
 		bonds_set_newptr(i,pastedi);
@@ -259,8 +243,7 @@ void clipboard::paste_to_pattern(model *m, pattern *p)
 	for (clipatom *i = atoms.first(); i != NULL; i = i->get_next())
 	{
 		// Create a new atom in the target model
-		pastedi = p->append_atom(i->get_element());
-		i->copy_to_atom(pastedi);
+		pastedi = p->append_copy(pastedi);
 		m->select_atom(pastedi);
 		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
 		bonds_set_newptr(i,pastedi);
@@ -324,8 +307,7 @@ void clipboard::paste_to_model(model *m, vec3<double> t)
 	for (clipatom *i = atoms.first(); i != NULL; i = i->get_next())
 	{
 		// Create a new atom in the target model
-		pastedi = m->add_atom(i->get_element());
-		i->copy_to_atom(pastedi);
+		pastedi = m->add_copy(pastedi);
 		// Translate the new atom
 		pastedi->r += t;
 		m->select_atom(pastedi);

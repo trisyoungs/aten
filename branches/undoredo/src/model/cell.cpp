@@ -95,8 +95,7 @@ void model::apply_symmop(symmop* so, atom *lastatom)
 	while (i != NULL)
 	{
 		// Add a new atom and get the position of the old atom
-		newatom = add_atom(i->get_element());
-		newr = i->r;
+		newatom = add_atom(i->get_element(), i->r);
 		// Apply the rotation and translation
 		newr *= rotmat;
 		newr -= trans;

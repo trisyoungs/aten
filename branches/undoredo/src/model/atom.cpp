@@ -25,19 +25,46 @@
 #include "base/master.h"
 
 // Add atom
-atom *model::add_atom(int newel)
+atom *model::add_atom(int newel, vec3<double> pos)
 {
-	// Private function to create a new atom in the model.
 	dbg_begin(DM_CALLS,"model::add_atom");
 	atom *newatom = atoms.add();
 	newatom->set_element(newel);
 	newatom->set_id(atoms.size() - 1);
+	newatom->r = pos;
 	mass += elements.mass(newel);
 	calculate_density();
 	lastatomdrawn = newatom;
 	//project_atom(i);
 	log_change(LOG_STRUCTURE);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_ADDATOM,NULL,newatom);
+	}
 	dbg_end(DM_CALLS,"model::add_atom");
+	return newatom;
+}
+
+// Add atom copy
+atom *model::add_copy(atom *source)
+{
+	dbg_begin(DM_CALLS,"model::add_copy");
+	atom *newatom = atoms.add();
+	lastatomdrawn = newatom;
+	//project_atom(i);
+	newatom->copy(source);
+	log_change(LOG_STRUCTURE);
+	mass += elements.mass(newatom->get_element());
+	calculate_density();
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_ADDATOM,NULL,newatom);
+	}
+	dbg_end(DM_CALLS,"model::add_copy");
 	return newatom;
 }
 
@@ -71,8 +98,8 @@ void model::delete_atom(atom *xatom)
 	if (xatom == NULL) msg(DM_NONE,"No atom to delete.\n");
 	else
 	{
-		remove_atom(xatom);
 		remove_measurements(xatom);
+		remove_atom(xatom);
 	}
 	dbg_end(DM_CALLS,"model::delete_atom");
 }
