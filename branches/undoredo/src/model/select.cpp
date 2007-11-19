@@ -41,7 +41,7 @@ void model::select_atom(atom *i)
 		if (recordingstate != NULL)
 		{
 			change *newchange = recordingstate->changes.add();
-			newchange->set(UE_SELECTATOM,NULL,i);
+			newchange->set(UE_SELECTATOM,i->get_id(),-1,-1);
 		}
 	}
 	dbg_end(DM_MORECALLS,"model::select_atom");
@@ -60,7 +60,7 @@ void model::deselect_atom(atom *i)
 		if (recordingstate != NULL)
 		{
 			change *newchange = recordingstate->changes.add();
-			newchange->set(UE_DESELECTATOM,NULL,i);
+			newchange->set(UE_DESELECTATOM,i->get_id(),-1,-1);
 		}
 	}
 	dbg_end(DM_MORECALLS,"model::deselect_atom");
@@ -78,12 +78,8 @@ void model::selection_toggle(atom *i)
 void model::selection_invert()
 {
 	dbg_begin(DM_CALLS,"model::selection_invert");
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
+	for (atom *i = atoms.first(); i != NULL; i = i->next)
 		i->is_selected() ? deselect_atom(i) : select_atom(i);
-		i = i->next;
-	}
 	dbg_end(DM_CALLS,"model::selection_invert");
 }
 
@@ -123,8 +119,7 @@ void model::selection_expand()
 		i = i->next;
 	}
 	// Now use the temporary state to find atoms where we select atomic neighbours
-	i = atoms.first();
-	while (i != NULL)
+	for (i = atoms.first(); i != NULL; i = i->next)
 	{
 		if (i->tempi == TRUE)
 		{
@@ -135,7 +130,6 @@ void model::selection_expand()
 				bref = bref->next;
 			}
 		}
-		i = i->next;
 	}
 	dbg_end(DM_CALLS,"model::selection_expand");
 }
@@ -144,12 +138,7 @@ void model::selection_expand()
 void model::select_all()
 {
 	dbg_begin(DM_CALLS,"model::select_all");
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		select_atom(i);
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (!i->is_selected()) select_atom(i);
 	dbg_end(DM_CALLS,"model::select_all");
 }
 
@@ -157,12 +146,7 @@ void model::select_all()
 void model::select_none()
 {
 	dbg_begin(DM_CALLS,"model::select_none");
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		deselect_atom(i);
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) deselect_atom(i);
 	nselected = 0;
 	dbg_end(DM_CALLS,"model::select_none");
 }

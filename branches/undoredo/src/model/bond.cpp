@@ -34,6 +34,7 @@ void model::bond_atoms(atom *i, atom *j, bond_type bt)
 	if (i == j) msg(DM_NONE,"Cannot bond an atom to itself!\n");
 	else
 	{
+		printf("Bonding atoms %i and %i\n",i->get_id(),j->get_id());
 		bond *newbond = new bond;
 		newbond->type = bt;
 		newbond->bondi = i;
@@ -66,8 +67,15 @@ void model::bond_atoms(int ii, int jj, bond_type bt)
 		{
 			printf("Couldn't locate one or both atoms in bond with specified ids %i and %i\n",ii,jj);
 			dbg_end(DM_CALLS,"model::bond_atoms[int]");
+			return;
 		}
 		bond_atoms(i,j,bt);
+		// Add the change to the undo state (if there is one)
+		if (recordingstate != NULL)
+		{
+			change *newchange = recordingstate->changes.add();
+			newchange->set(UE_ADDBOND,ii,jj,bt);
+		}
 	}
 	dbg_end(DM_CALLS,"model::bond_atoms[int]");
 }
@@ -85,9 +93,17 @@ void model::unbond_atoms(atom *i, atom *j)
 		dbg_end(DM_CALLS,"model::unbond_atoms");
 		return;
 	}
+	// Store type for use later
+	bond_type bt = b->type;
 	b->bondi->detach_bond(b);
 	b->bondj->detach_bond(b);
 	log_change(LOG_STRUCTURE);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_DELETEBOND,i->get_id(),j->get_id(),bt);
+	}
 	dbg_end(DM_CALLS,"model::unbond_atoms");
 }
 

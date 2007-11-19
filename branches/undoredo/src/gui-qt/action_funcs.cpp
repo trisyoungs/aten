@@ -68,7 +68,10 @@ void AtenForm::on_actionEditPaste_triggered(bool checked)
 void AtenForm::on_actionEditDelete_triggered(bool checked)
 {
 	// Delete the selected atoms in the model
-	master.get_currentmodel()->selection_delete();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Delete Selection");
+	m->selection_delete();
+	m->end_undostate();
 	// Clear the main canvas' selection array to be on the safe side, since we might have deleted an atom in it!
 	gui.mainview.clear_subsel();
 	gui.refresh();
@@ -77,27 +80,39 @@ void AtenForm::on_actionEditDelete_triggered(bool checked)
 void AtenForm::on_actionEditSelectAll_triggered(bool checked)
 {
 	// Select all atoms in the current model
-	master.get_currentmodel()->select_all();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Select All");
+	m->select_all();
+	m->end_undostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditSelectNone_triggered(bool checked)
 {
-	// Select all atoms in the current model
-	master.get_currentmodel()->select_none();
+	// Deselect all atoms in the current model
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Select None");
+	m->select_none();
+	m->end_undostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditInvert_triggered(bool checked)
 {
 	// Invert selection in the current model
-	master.get_currentmodel()->selection_invert();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Invert Selection");
+	m->selection_invert();
+	m->end_undostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditSelectExpand_triggered(bool on)
 {
-	master.get_currentmodel()->selection_expand();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Expand Selection");
+	m->selection_expand();
+	m->end_undostate();
 	gui.refresh();
 }
 

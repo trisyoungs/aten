@@ -44,10 +44,17 @@ void model::begin_undostate(const char *text)
 void model::end_undostate()
 {
 	dbg_begin(DM_CALLS,"model::end_undostate");
-	// Make sure that we have a valid state to store
+	// Make sure that we have a valid state to store...
 	if (recordingstate == NULL)
 	{
 		printf("model::end_undostate <<<< No state to store >>>>\n");
+		dbg_end(DM_CALLS,"model::end_undostate");
+		return;
+	}
+	// ...and that it contains something
+	if (recordingstate->changes.size() == 0)
+	{
+		recordingstate = NULL;
 		dbg_end(DM_CALLS,"model::end_undostate");
 		return;
 	}
@@ -73,7 +80,7 @@ void model::undo()
 	else
 	{
 		// Undo the changes
-		currentundostate->revert(this);
+		currentundostate->reverse(this);
 		// Set new undo/redo pointers
 		currentredostate = currentundostate;
 		currentundostate = currentundostate->prev;
@@ -85,7 +92,7 @@ void model::undo()
 void model::redo()
 {
 	dbg_begin(DM_CALLS,"model::redo");
-	if (currentredostate == NULL) msg(DM_NONE,"Nothing to undo.\n");
+	if (currentredostate == NULL) msg(DM_NONE,"Nothing to redo.\n");
 	else
 	{
 		// Undo the changes

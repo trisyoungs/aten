@@ -298,6 +298,7 @@ void canvas_master::end_mode(mouse_button button)
 		case (UA_GEOMSELECT):
 		case (UA_POSSELECT):
 			area = fabs(r_mouseup.x - r_mousedown.x) * fabs(r_mouseup.y - r_mousedown.y);
+			displaymodel->begin_undostate("Change Selection");
 			// If SHIFT is not held down, deselect the current selection
 			if (!keymod[MK_SHIFT]) displaymodel->select_none();
 			// Do either point select or box select based on the size of the selected area
@@ -310,17 +311,23 @@ void canvas_master::end_mode(mouse_button button)
 				else if (atom_hover != NULL) displaymodel->select_atom(atom_hover);
 			}
 			else displaymodel->select_box(r_mousedown.x, r_mousedown.y, r_mouseup.x, r_mouseup.y);
+			displaymodel->end_undostate();
 			break;
 		// Now do the rest
 		case (UA_PICKFRAG):
+			displaymodel->begin_undostate("Select Molecule");
 			if (!keymod[MK_SHIFT]) displaymodel->select_none();
 			if (atom_hover != NULL) displaymodel->select_tree(atom_hover);
+			displaymodel->end_undostate();
 			break;
 		case (UA_PICKELEMENT):
+			displaymodel->begin_undostate("Select Element");
 			if (!keymod[MK_SHIFT]) displaymodel->select_none();
 			if (atom_hover != NULL) displaymodel->select_element(atom_hover);
+			displaymodel->end_undostate();
 			break;
 		case (UA_PICKRADIAL):
+			displaymodel->begin_undostate("Select Radial");
 			if (!keymod[MK_SHIFT]) displaymodel->select_none();
 			if (atom_hover != NULL)
 			{
@@ -328,6 +335,7 @@ void canvas_master::end_mode(mouse_button button)
 				radius /= ((atom*) atom_hover)->get_screen_radius() * prefs.screenradius((atom*) atom_hover);
 				displaymodel->select_radial(atom_hover,radius);
 			}
+			displaymodel->end_undostate();
 			break;
 		// Measurements
 		case (UA_GEOMDIST):
@@ -382,7 +390,9 @@ void canvas_master::end_mode(mouse_button button)
 			displaymodel->transmute_atom(atom_hover, master.get_sketchelement());
 			break;
 		case (UA_DELATOM):
+			displaymodel->begin_undostate("Delete Atom");
 			displaymodel->delete_atom(atom_hover);
+			displaymodel->end_undostate();
 			break;
 		case (UA_PROBEATOM):
 			if (atom_hover != NULL) atom_hover->print();
@@ -394,11 +404,18 @@ void canvas_master::end_mode(mouse_button button)
 			// Must be two atoms in subselection to continue
 			if (subsel.size() != 2) break;
 			subsel.fill_array(2,atoms);
-			if (atoms[0]->find_bond(atoms[1]) == NULL) displaymodel->bond_atoms(atoms[0],atoms[1],bond_type(activemode-UA_BONDSINGLE+1));
+			if (atoms[0]->find_bond(atoms[1]) == NULL)
+			{
+				displaymodel->begin_undostate("Bond Atoms");
+				displaymodel->bond_atoms(atoms[0],atoms[1],bond_type(activemode-UA_BONDSINGLE+1));
+				displaymodel->end_undostate();
+			}
 			else
 			{
+				displaymodel->begin_undostate("Change Bond");
 				displaymodel->unbond_atoms(atoms[0],atoms[1]);
 				displaymodel->bond_atoms(atoms[0],atoms[1],bond_type(activemode-UA_BONDSINGLE+1));
+				displaymodel->end_undostate();
 			}
 			subsel.clear();
 			break;
@@ -406,7 +423,12 @@ void canvas_master::end_mode(mouse_button button)
 			// Must be two atoms in subselection to continue
 			if (subsel.size() != 2) break;
 			subsel.fill_array(2,atoms);
-			if (atoms[0]->find_bond(atoms[1]) != NULL) displaymodel->unbond_atoms(atoms[0],atoms[1]);
+			if (atoms[0]->find_bond(atoms[1]) != NULL)
+			{
+				displaymodel->begin_undostate("Delete Bond");
+				displaymodel->unbond_atoms(atoms[0],atoms[1]);
+				displaymodel->end_undostate();
+			}
 			subsel.clear();
 			break;
 		case (UA_ROTATEXY):

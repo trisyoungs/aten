@@ -39,7 +39,7 @@ atom *model::add_atom(int newel, vec3<double> pos)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_ADDATOM,NULL,newatom);
+		newchange->set(UE_ADDATOM,newatom);
 	}
 	dbg_end(DM_CALLS,"model::add_atom");
 	return newatom;
@@ -58,7 +58,7 @@ atom *model::add_copy(atom *source)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_ADDATOM,NULL,newatom);
+		newchange->set(UE_ADDATOM,newatom);
 	}
 	dbg_end(DM_CALLS,"model::add_copy");
 	return newatom;
@@ -71,6 +71,7 @@ atom *model::add_copy(atom *afterthis, atom *source)
 	atom *newatom = atoms.insert(afterthis);
 	printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
+	renumber_atoms( (afterthis != NULL ? afterthis->prev : NULL) );
 	log_change(LOG_STRUCTURE);
 	mass += elements.mass(newatom->get_element());
 	calculate_density();
@@ -78,7 +79,7 @@ atom *model::add_copy(atom *afterthis, atom *source)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_ADDATOM,NULL,newatom);
+		newchange->set(UE_ADDATOM,newatom);
 	}
 	dbg_end(DM_CALLS,"model::add_copy");
 	return newatom;
@@ -93,13 +94,14 @@ void model::remove_atom(atom *xatom)
 	if (mass < 0.0) mass = 0.0;
 	calculate_density();
 	// Renumber the ids of all atoms in the list after this one
-	atom *i = xatom->next;
-	while (i != NULL)
-	{
-		i->decrease_id();
-		i = i->next;
-	}
+	for (atom *i = xatom->next; i != NULL; i = i->next) i->decrease_id();
 	if (xatom->is_selected()) deselect_atom(xatom);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_DELETEATOM,xatom);
+	}
 	atoms.remove(xatom);
 	log_change(LOG_STRUCTURE);
 	dbg_end(DM_CALLS,"model::remove_atom");

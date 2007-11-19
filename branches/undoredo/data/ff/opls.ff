@@ -751,8 +751,8 @@ types
 730	Br		Br	"-$729"					"Br: bromobenzene"
 731	CA		C	"ring(size=6,-C(n=6)),-I"		"C(I): iodobenzene - tentative"
 732	I		I	"-$731"					"I: iodobenzene - tentative"
-733	CY		C	"-C(ring(size=6,-C(n=6))),ring(-C(n=3))""all-atom C: CH, cyclopropyl/butyl benzene"
-735	CA		C	"ring(size=6,-C(n=6)),-S(-H)"		"C(S): thiophenol"
+733	CY		C	"-C(ring(size=6,-C(n=5))),ring(-C(n=2))""all-atom C: CH, cyclopropyl/butyl benzene"
+735	CA		C	"ring(size=6,-C(n=5)),-S(-H)"		"C(S): thiophenol"
 734	SH		S	"-$735"					"all-atom S: thiophenol (HS is #204)"
 736	CA		C	""	"CG of Benzamidine" XXX
 737	CA		C	""	"CD of Benzamidine"
