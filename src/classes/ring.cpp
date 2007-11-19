@@ -30,7 +30,7 @@ ring::ring()
 	prev = NULL;
 	next = NULL;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_RING] ++;
+		memdbg.create[MD_RING] ++;
 	#endif
 }
 
@@ -39,7 +39,7 @@ ring::~ring()
 {
 	atoms.clear();
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_RING] ++;
+		memdbg.destroy[MD_RING] ++;
 	#endif
 }
 

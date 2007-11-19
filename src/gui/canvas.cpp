@@ -34,7 +34,7 @@ canvas_master::canvas_master()
 	drawpixelwidth = 1.0;
 	activemode = UA_NONE;
 	selectedmode = UA_PICKSELECT;
-	list[0] = -1;
+	list[0] = 0;
 }
 
 // Destructor
@@ -111,7 +111,7 @@ void canvas_master::init_gl()
 	if (begin_gl())
 	{
 		// Create lists for globs
-		if (list[0] == -1) list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
+		if (list[0] == 0) list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
 		for (int n=1; n<GLOB_NITEMS; n++) list[n] = list[GLOB_STICKATOM]+n;
 		// Fill display lists
 		create_lists();

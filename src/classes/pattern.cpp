@@ -553,8 +553,7 @@ void pattern::find_rings()
 	atom *i;
 	refitem<bond> *bref;
 	ring *r, path;
-	// Set the initial states of the atoms. i->tempi maintains the maximum possible number of rings that
-	// each atom can form based on the number of bonds it has.
+	// Set the initial states of the atoms. i->tempi maintains the maximum possible number of rings that each atom can form based on the number of bonds it has.
 	i = firstatom;
 	for (n=0; n<natoms; n++)
 	{

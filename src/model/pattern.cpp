@@ -478,60 +478,16 @@ void model::charge_pattern_atom(pattern *p, int id, double q)
 	dbg_end(DM_CALLS,"model::charge_pattern_atom");
 }
 
-/* Recreate model from patterns
-void model::recreate_from_patterns(model *srcmodel)
+// Find pattern for given atom
+pattern *model::get_pattern(atom *i)
 {
-	dbg_begin(DM_CALLS,"model::recreate_from_patterns");
-	// From the coordinates in the source model supplied and the reflist of patterns supplied, clear and recreate the model to contain a copy of the config. For each pattern node, paste in 'n' copies of the representative pattern model (to retain bonding) and then set coordinates from the source model.
-	int n, m, cfgi;
+	dbg_begin(DM_CALLS,"model::get_pattern[atom]");
+	int id = i->get_id();
 	pattern *p;
-	patatom *pa;
-	atom *i;
-	gui.pause_rendering();
-	atoms.clear();
-	msg(DM_NONE,"Reconstructing model from pattern / model combination:\n");
-	msg(DM_NONE,"There are %i patterns in the model...\n",patterns.size());
-	// Paste in molecules
-	msg(DM_NONE,"Creating atom space...");
 	for (p = patterns.first(); p != NULL; p = p->next)
-	{
-		master.privclip.copy_all(&p->molecule);
-		for (n=0; n<p->get_nmols(); n++) master.privclip.paste_to_model(this);
-	}
-	msg(DM_NONE,"Done.\n");
-	// Adjust atom properties
-	msg(DM_NONE,"Setting atom properties...");
-	i = atoms.first();
-	vec3<double> *cfgr = cfg->get_r();
-	for (p = patterns.first(); p != NULL; p = p->next)
-	{
-		cfgi = p->get_startatom();
-		for (n=0; n<p->get_nmols(); n++)
-			for (pa = p->atoms.first(); pa != NULL; pa = pa->next)
-			{
-				i->set_coords(cfgr[cfgi]);
-				i->set_fftype(pa->get_data());
-				cfgi ++;
-				i = i->next;
-			}
-	}
-	msg(DM_NONE,"Done.\n");
-	// Set start / end atom pointers in patterns
-	msg(DM_NONE,"Setting atom pointers in patterns...");
-	i = atoms.first();
-	for (p = patterns.first(); p != NULL; p = p->next)
-	{
-		// Set the starting atom of the pattern (and new totalatoms)
-		p->set_firstatom(i);
-		p->calc_totalatoms();
-		// Skip through atoms in pattern to get the next starting atom
-		for (n=0; n<p->get_nmols(); n++)
-			for (m=0; m<p->get_natoms(); m++) i = i->next;
-		// Set lastatom - if i == NULL (as will be the case for the last pattern) use the model pointer
-		p->set_lastatom( i == NULL ? atoms.last() : i );
-	}
-	msg(DM_NONE,"Done.\n");
-	gui.resume_rendering();
-	dbg_end(DM_CALLS,"model::recreate_from_patterns");
-} */
+		if ((id >= p->get_startatom()) && (id <= p->get_endatom())) break;
+	dbg_end(DM_CALLS,"model::get_pattern[atom]");
+	return p;
+}
+
 

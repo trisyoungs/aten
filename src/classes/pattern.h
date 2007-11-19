@@ -281,14 +281,15 @@ class pattern
 	list<ring> rings;
 	// Recursive prep - locates and marks atoms on their 'ring potential'
 	void ring_markatoms(atom*);
-	void ring_search(atom*,ring*,int&);// Recursive ring-search routine
+	// Recursive ring-search routine
+	void ring_search(atom*,ring*,int&);
 
 	public:
 	// Returns a pointer to the ring list structure
-	list<ring>* get_ringlist() { return &rings; };
+	list<ring>* get_ringlist() { return &rings; }
 	// Returns the first ring in the ring list
-	ring *get_rings() { return rings.first(); };
-	// Automatically augment bond types in the pattern.
+	ring *get_rings() { return rings.first(); }
+	// Automatically augment bond types in the pattern
 	void augment_bonding();
 	// Reset the atom environment flags
 	void clear_hybrids();

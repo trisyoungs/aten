@@ -32,6 +32,7 @@ bool script::command_ff(command_node<script_command> *cmd)
 	dbg_begin(DM_CALLS,"script::command_ff");
 	bool result = TRUE;
 	forcefield *ff;
+	ffatom *ffa;
 	model *m;
 	switch (cmd->get_command())
 	{
@@ -85,6 +86,45 @@ bool script::command_ff(command_node<script_command> *cmd)
 				}
 				else m->plist[nodeid]->set_ff(master.get_currentff());
 			}
+			else result = FALSE;
+			break;
+		// Test specified type ID of current forcefield
+		case (SC_TYPETEST):
+			m = check_activemodel(text_from_SC(cmd->get_command()));
+			ff = master.get_currentff();
+			if ((m == NULL) || (ff == NULL))
+			{
+				result = FALSE;
+				break;
+			}
+			// Find the specified type...
+			ffa = ff->find_type(cmd->datavar[0]->get_as_int());
+			if (ffa == NULL)
+			{
+				msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",cmd->datavar[0]->get_as_int(),ff->get_name());
+				result = FALSE;
+			}
+			else
+			{
+				if (m->autocreate_patterns())
+				{
+					// Prepare for typing
+					m->describe_atoms();
+					// Get atom, element, and the atom's pattern
+					atom *i = m->get_staticatoms()[cmd->datavar[1]->get_as_int()-1];
+					int el = i->get_element();
+					pattern *p = m->get_pattern(i);
+					int score = ffa->get_atomtype()->match_atom(i,p->get_ringlist(),m,i);
+					if (score != 0) msg(DM_NONE,"Atom %i matched type %i (%s) with score %i.\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name(), score);
+					else msg(DM_NONE,"Atom %i did not match type %i (%s).\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name());
+				}
+				else result = FALSE;
+			}
+			break;
+		// Perform typing on current model
+		case (SC_TYPEMODEL):
+			m = check_activemodel(text_from_SC(cmd->get_command()));
+			if (m != NULL) result = m->type_all();
 			else result = FALSE;
 			break;
 		default:
