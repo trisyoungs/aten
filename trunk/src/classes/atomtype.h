@@ -31,7 +31,7 @@ enum atomtype_command { ATC_SP, ATC_SP2, ATC_SP3, ATC_AROMATIC, ATC_RING, ATC_NO
 atomtype_command ATC_from_text(const char*);
 
 // Ring typing commands
-enum ringtype_command { RTC_SIZE, RTC_REPEAT, RTC_NITEMS };
+enum ringtype_command { RTC_SIZE, RTC_REPEAT, RTC_NOTSELF, RTC_NITEMS };
 ringtype_command RTC_from_text(const char*);
 
 // Atom environment
@@ -73,6 +73,8 @@ class ringtype
 	int nrepeat;
 	// Print the information contained in the structure
 	void print();
+	// Flag that the owner bound atom (if any) should not itself appear in the ring
+	bool selfabsent;
 	// Friend classes
 	friend class atomtype;
 };
@@ -91,9 +93,9 @@ class atomtype
 	// Add data to the structure from the supplied string
 	void expand(const char *commands, forcefield *parentff, ffatom *parent);
 	// See if this type matches any atoms in the list provided
-	int match_in_list(reflist<atom>*, list<ring>*, model*);
+	int match_in_list(reflist<atom>*, list<ring>*, model*, atom*);
 	// See if this type matches the atom (+ ring data of pattern)
-	int match_atom(atom*, list<ring>*, model*);
+	int match_atom(atom*, list<ring>*, model*, atom*);
 	// Print the information contained in the structure
 	void print();
 

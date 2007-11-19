@@ -96,7 +96,7 @@ bool script::command_select(command_node<script_command> *cmd)
 						i->tempi = 1;
 						if (i->get_element() == testat->el)
 						{
-							atomscore = testat->match_atom(i,p->get_ringlist(),m);
+							atomscore = testat->match_atom(i,p->get_ringlist(),m,i);
 							if (atomscore != 0)
 							{
 								m->select_atom(i);

@@ -207,7 +207,7 @@ bool pattern::type_atoms(forcefield *xff)
 			reset_tempi(0);
 			// See how well this ff description matches the environment of our atom 'i'
 			msg(DM_TYPING,"pattern::type_atoms : Matching type id %i\n",ffa->get_ffid());
-			newmatch = at->match_atom(i,&rings,ownermodel);
+			newmatch = at->match_atom(i,&rings,ownermodel,i);
 			msg(DM_TYPING,"pattern::type_atoms : ...Total match score for type %i = %i\n",ffa->get_ffid(),newmatch);
 			if (newmatch > bestmatch)
 			{

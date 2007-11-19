@@ -109,6 +109,8 @@ enum script_command {
 	SC_FFPATTERNID,
 	SC_LOADFF,
 	SC_SELECTFF,
+	SC_TYPEMODEL,
+	SC_TYPETEST,
 
 	// Field Commands
 	SC_SAVEFIELD,

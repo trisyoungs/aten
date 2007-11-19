@@ -321,6 +321,8 @@ void script::run()
 				case (SC_FFPATTERNID):
 				case (SC_LOADFF):
 				case (SC_SELECTFF):
+				case (SC_TYPEMODEL):
+				case (SC_TYPETEST):
 					result = command_ff(cmd);
 					break;
 				case (SC_SAVEFIELD):

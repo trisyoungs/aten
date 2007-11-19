@@ -443,6 +443,8 @@ class model
 	pattern *get_patterns() { return patterns.first(); }
 	// Return the pattern with the ID specified
 	pattern *get_pattern(int id);
+	// Return the pattern that the specified atom is in
+	pattern *get_pattern(atom *i);
 	// Return the last pattern node of the model
 	pattern *get_last_pattern() { return patterns.last(); }
 	// Find pattern by name

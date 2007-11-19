@@ -111,6 +111,8 @@ const char *SC_syntax[SC_NITEMS] = {
 	"ffpatternid <patternid>",
 	"loadff <name> <filename>",
 	"selectff <name>",
+	"typemodel",
+	"typetest <ffid> <atomid>",
 
 	// Field commands
 	"savefield <filename>",

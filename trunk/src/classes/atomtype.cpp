@@ -36,7 +36,7 @@ atomtype_command ATC_from_text(const char *s)
 	{ return (atomtype_command) enum_search("#",ATC_NITEMS,ATC_keywords,s); }
 
 // Ring typing commands
-const char *RTC_keywords[RTC_NITEMS] = { "size", "n" };
+const char *RTC_keywords[RTC_NITEMS] = { "size", "n", "notself" };
 ringtype_command RTC_from_text(const char *s)
 	{ return (ringtype_command) enum_search("#",RTC_NITEMS,RTC_keywords,s); }
 
@@ -78,6 +78,7 @@ ringtype::ringtype()
 {
 	ringsize = -1;
 	nrepeat = 1;
+	selfabsent = FALSE;
 	prev = NULL;
 	next = NULL;
 	#ifdef MEMDEBUG
@@ -266,6 +267,10 @@ void ringtype::expand(const char *data, forcefield *ff, ffatom *parent)
 				case (RTC_REPEAT):
 					nrepeat = atoi(optlist.get());
 					break;
+				// Presence of self specifier
+				case (RTC_NOTSELF):
+					selfabsent = TRUE;
+					break;
 				// Unrecognised
 				default:
 					if (parent != NULL) msg(DM_NONE,"Unrecognised command '%s' found while expanding ring at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->get_ffid(), parent->get_name());
@@ -407,33 +412,25 @@ void atomtype::expand(const char *data, forcefield *ff, ffatom *parent)
 // Match Functions
 */
 
-int atomtype::match_in_list(reflist<atom> *alist, list<ring> *ringdata, model *parent)
+int atomtype::match_in_list(reflist<atom> *alist, list<ring> *ringdata, model *parent, atom *topatom)
 {
 	dbg_begin(DM_CALLS,"atomtype::match_in_list");
 	// Search the atomlist supplied for a match to this atomtype.
 	// If we find one, remove the corresponding atom from the atomlist.
 	int score = 0, bondscore;
-	refitem<atom> *boundi = alist->first();
-	while (boundi != NULL)
+	refitem<atom> *boundi;
+	for (boundi = alist->first(); boundi != NULL; boundi = boundi->next)
 	{
-		// See if the atom has already been used elsewhere in the current round of typing
-		//if (boundi->item->tempi != 0) {boundi = boundi->next; continue;}
 		// Extra check for bond type definition here
-		if (boundbond == BT_UNSPECIFIED)
-		{
-			//msg(DM_TYPING,"match_in_list : ...Atom passed bond type check [no value specified in type]\n");
-			bondscore = 1;
-		}
+		if (boundbond == BT_UNSPECIFIED) bondscore = 1;
 		else boundbond == boundi->data2 ? bondscore = 1 : bondscore = 0;
 		// Now do proper atom type check (if we passed the bond check)
-		if (bondscore != 0) score = match_atom(boundi->item, ringdata, parent);
+		if (bondscore != 0) score = match_atom(boundi->item, ringdata, parent, topatom);
 		if ((bondscore + score) > 1) break;
-		boundi = boundi->next;
 	}
 	// If boundi is NULL then we finished the loop without finding a match to this atomtype.
 	if (boundi != NULL)
 	{
-		//boundi->item->tempi = 1;
 		alist->remove(boundi);
 		dbg_end(DM_CALLS,"atomtype::match_in_list");
 		return bondscore+score;
@@ -445,7 +442,7 @@ int atomtype::match_in_list(reflist<atom> *alist, list<ring> *ringdata, model *p
 	}
 }
 
-int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
+int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent, atom *topatom)
 {
 	// Given the supplied atom pointer and ring data pointer (passed from pattern)
 	// see how well the description matches the actual atom, returning as an int. Cycle data is 
@@ -486,7 +483,7 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 		{
 			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",rd->item->get_ffid(),rd->item->get_name());
 			// Does this atom match the type descriptions asked for?
-			n = rd->item->get_atomtype()->match_atom(i,ringdata,parent);
+			n = rd->item->get_atomtype()->match_atom(i,ringdata,parent,topatom);
 			if (n > 0)
 			{
 				found = TRUE;
@@ -611,7 +608,7 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 			{
 				msg(DM_TYPING,"(%li %2i) ... Bound atom %li (%i/%i):\n",this,level,bat,n+1,bat->nrepeat);
 				// Check the atomlist for a match to the bound atomtype
-				atomscore = bat->match_in_list(&atomchecklist,ringdata,parent);
+				atomscore = bat->match_in_list(&atomchecklist,ringdata,parent,topatom);
 				if (atomscore != 0)
 				{
 					msg(DM_TYPING,"(%li %2i) ... Bound atom %li (%i/%i) [passed]\n",this,level,bat,n+1,bat->nrepeat);
@@ -634,7 +631,8 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 		// Get list of rings out test atom is involved in
 		ringchecklist.clear();
 		// Search the list of atoms in this ring for 'i'
-		for (r = ringdata->first(); r != NULL; r = r->next) if (r->atoms.search(i) != NULL) ringchecklist.add(r,0,0);
+		for (r = ringdata->first(); r != NULL; r = r->next)
+			if (r->atoms.search(i) != NULL) ringchecklist.add(r,0,0);
 		// Loop over ring specifications in atom type
 		for (atr = ringlist.first(); atr != NULL; atr = atr->next)
 		{
@@ -644,35 +642,43 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 				// Loop over rings our atom is involved in, searching for a match.
 				for (refring = ringchecklist.first(); refring != NULL; refring = refring->next)
 				{
+					// Initialise score
+					ringscore = 0;
+					// Check for presence of top atom 
+					if (atr->selfabsent)
+					{
+						 if (refring->item->atoms.search(topatom) != NULL) continue;
+						else ringscore ++;
+					}
 					// Size check
 					msg(DM_TYPING,"(%li %2i) ... ... Size  ",this,level);
 					if (atr->ringsize == -1)
 					{
 						
 						msg(DM_TYPING,"[defaulted]\n");
-						ringscore = 1;
+						ringscore ++;
 					}
 					else if (atr->ringsize == refring->item->atoms.size())
 					{
 						msg(DM_TYPING,"[passed - matched '%i']\n",atr->ringsize);
-						ringscore = 1;
+						ringscore ++;
 					}
 					else
 					{
 						msg(DM_TYPING,"[failed]\n");
-						ringscore = 0;
+						continue;
 					}
 					// Get the list of other atoms in this ring ready for searching.
-					if (ringscore != 0)
+					msg(DM_TYPING,"(%li %2i) ... ... Atoms:\n", this, level);
+					atomchecklist.clear();
+					refring->item->add_atoms_to_reflist(&atomchecklist,NULL);
+					// Now go through list of specified atomtypes in this ringtype
+					for (bat = atr->ringatoms.first(); bat != NULL; bat = bat->next)
 					{
-						msg(DM_TYPING,"(%li %2i) ... ... Atoms:\n",this,level);
-						atomchecklist.clear();
-						refring->item->add_atoms_to_reflist(&atomchecklist,i);
-						// Now go through list of specified atomtypes in this ringtype
-						for (bat = atr->ringatoms.first(); bat != NULL; bat = bat->next)
+						for (n=0; n<bat->nrepeat; n++)
 						{
-							msg(DM_TYPING,"(%li %2i) ... ... ... Atom (%li)  ",this,level,bat);
-							atomscore = bat->match_in_list(&atomchecklist,ringdata,parent);
+							msg(DM_TYPING,"(%li %2i) ... ... ... Atom (%li) (%i/%i)  ",this,level,bat,n+1,bat->nrepeat);
+							atomscore = bat->match_in_list(&atomchecklist, ringdata, parent, topatom);
 							if (atomscore != 0)
 							{
 								msg(DM_TYPING,"[passed]\n");
@@ -686,14 +692,19 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent)
 								break;
 							}
 						}
-						if (ringscore != 0) break;
+						// If ringscore gets reset to 0, we know to break the atoms search
+						if (ringscore == 0) break;
 					}
+					// If we have a match, break out now...
+					if (ringscore != 0) break;
 				}
 				// Check 'refring' - if NULL then we did not manage to find a match for the ring
 				if (refring != NULL)
 				{
 					msg(DM_TYPING,"(%li %2i) ... Ring (%li)  [passed]\n",this,level,atr);
 					typescore += ringscore;
+					// Remove matched ring from list
+					ringchecklist.remove(refring);
 				}
 				else
 				{

@@ -111,6 +111,8 @@ const char *SC_data[SC_NITEMS] = {
 	"ffpatternid,G",
 	"loadff,GG",
 	"selectff,G",
+	"typemodel",
+	"typetest,GG",
 
 	// Field commands
 	"savefield,G",
