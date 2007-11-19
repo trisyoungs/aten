@@ -261,13 +261,6 @@ bool mc_method::disorder(model* destmodel)
 	region *r;
 	vec3<double> v, cog;
 
-	printf("INFO: At start of disordered builder, we think there are %i defined components\n",master.mc.components.size());
-	printf("INFO: They are:\n");
-	for (n=0; n<master.mc.components.size(); n++)
-	{
-		c = master.mc.components[n];
-		printf("INFO:      component %li, model %li, nrequested %i\n",c,c->get_model(),c->get_nrequested());
-	}
 	/*
 	// Prepare the calculation
 	*/

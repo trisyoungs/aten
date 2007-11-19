@@ -107,19 +107,15 @@ void AtenForm::on_ComponentList_itemSelectionChanged()
 void AtenForm::on_AddComponentButton_clicked(bool checked)
 {
 	// If the current model is periodic, refuse to add it
-	printf("INFO: Grabbing current model...\n");
 	model *m = master.get_currentmodel();
-	printf("INFO: Got current model as %li - '%s'\n",m, m->get_name());
 	if (m->cell.get_type() != CT_NONE)
 	{
 		msg(DM_NONE,"Model is periodic - can't add to component list.\n");
 		return;
 	}
 	// Add it to master.mc.s component list and refresh the list
-	printf("INFO: Adding new MC component...\n");
 	component *comp = master.mc.components.add();
 	comp->set_model(m);
-	printf("INFO: New component is %li, model is %li, nrequested = %i\n",comp, comp->get_model(), comp->get_nrequested());
 	refresh_components();
 }
 
@@ -136,15 +132,10 @@ void AtenForm::on_DeleteComponentButton_clicked(bool checked)
 
 void AtenForm::on_PopulationSpin_valueChanged(int value)
 {
-	printf("INFO: PopSpin - determining current row...\n");
 	int comp = ui.ComponentList->currentRow();
-	printf("INFO: Current row is %i...\n",comp);
 	if (comp == -1) return;
-	printf("INFO: Grabbing component with this id...\n");
 	component *c = master.mc.components[comp];
-	printf("INFO: Component is %li, model is %li, old nrequested is %i\n",c,c->get_model(), c->get_nrequested());
 	c->set_nrequested(value);
-	printf("INFO: New nrequested is %i\n",c->get_nrequested());
 }
 
 void AtenForm::on_ComponentTranslateCheck_clicked(bool checked)
