@@ -49,6 +49,7 @@ filter::filter()
 	partner = NULL;
 	activemodel = NULL;
 	activecell = NULL;
+	readopts = PO_DEFAULTS;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_FILTER] ++;
 	#endif

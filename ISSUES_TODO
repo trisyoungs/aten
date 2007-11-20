@@ -30,7 +30,6 @@ Filters To-Do list:
 	- 'within' function
 
 General Qt To-Do list:
-	- AddHydrogen needs an icon
 	- Forcefield stack page and manager/edit window
 		+ Need method to apply forcefield to all or selected pattern
 		+ Method of assigning individual types by hand (also in atom context menu?)

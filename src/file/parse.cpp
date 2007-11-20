@@ -26,6 +26,11 @@
 
 line_parser parser;
 
+// Parse options
+const char *PO_strings[PO_NITEMS] = { "__DEFAULT__", "usequotes", "skipblanks", "stripbrackets", "__DUMMY__" };
+parse_option PO_from_text(const char *s)
+	{ return (parse_option) int(pow(2,enum_search("parse option",PO_NITEMS,PO_strings,s))); }
+
 // Constructor
 line_parser::line_parser()
 {

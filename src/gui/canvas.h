@@ -257,7 +257,9 @@ class canvas_master
 	// Set the active mode to the current user mode
 	void use_selectedmode() { activemode = selectedmode; }
 	// Sets the currently selected interact mode
-	void set_selectedmode(user_action);	
+	void set_selectedmode(user_action);
+	// Return the currently selected mode
+	user_action get_selectedmode() { return selectedmode; }
 	// Inform the canvas of a mouse down event
 	void inform_mousedown(mouse_button, double, double);
 	// Inform the canvas of a mouse up event

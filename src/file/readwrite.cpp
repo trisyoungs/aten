@@ -32,6 +32,7 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 	char c;
 	int readi, iresult;
 	double readd;
+	parse_option po;
 	static char readc[512], linefromfile[MAXLINELENGTH];
 	bool result = TRUE;
 	switch (fn->get_command())
@@ -39,12 +40,12 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 		// Read line and parse with format
 		case (FC_READLINE):
 			if (inputfile == NULL) break;
-			parser.get_args_formatted(inputfile,PO_DEFAULTS,fn->get_format());
+			parser.get_args_formatted(inputfile,readopts,fn->get_format());
 			break;
 		// Parse given variable with format
 		case (FC_READVAR):
 			if (inputfile == NULL) break;
-			parser.get_args_formatted(fn->datavar[0]->get_as_char(),PO_DEFAULTS,fn->get_format());
+			parser.get_args_formatted(fn->datavar[0]->get_as_char(),readopts,fn->get_format());
 			break;
 		// Get next whitespace-delimited argument from file
 		case (FC_READNEXT):
@@ -116,6 +117,24 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 		case (FC_ERROR):
 			msg(DM_NONE,"Filter Error: %s\n",fn->datavar[0]->get_as_char());
 			result = FALSE;
+			break;
+		// Add file read option
+		case (FC_ADDREADOPTION):
+			// Get parse option from variable
+			po = PO_from_text(fn->datavar[0]->get_as_char());
+			if (po != PO_NITEMS)
+			{
+				if (!(readopts&po)) readopts += po;
+			}
+			break;
+		// Remove file read option
+		case (FC_REMOVEREADOPTION):
+			// Get parse option from variable
+			po = PO_from_text(fn->datavar[0]->get_as_char());
+			if (po != PO_NITEMS)
+			{
+				if (readopts&po) readopts -= po;
+			}
 			break;
 		default:
 			result = FALSE;

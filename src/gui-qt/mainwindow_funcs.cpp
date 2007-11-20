@@ -268,13 +268,16 @@ void AtenForm::set_controls()
 	// Set correct draw_style on toolbar
 	switch (prefs.get_static_style())
 	{
-		case (DS_STICK): ui.actionStyleStick->setChecked(true); break;
-		case (DS_TUBE): ui.actionStyleTube->setChecked(true); break;
-		case (DS_SPHERE): ui.actionStyleSphere->setChecked(true); break;
-		case (DS_SCALED): ui.actionStyleScaled->setChecked(true); break;
-		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
+		case (DS_STICK): ui.actionStyleStick->setChecked(TRUE); break;
+		case (DS_TUBE): ui.actionStyleTube->setChecked(TRUE); break;
+		case (DS_SPHERE): ui.actionStyleSphere->setChecked(TRUE); break;
+		case (DS_SCALED): ui.actionStyleScaled->setChecked(TRUE); break;
+		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(TRUE); break;
 	}
-	// Set controls in minimiser page
+	// Set some menu items
+	prefs.using_perspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
+	// Set controls on edit page
+	ui.BondToleranceSpin->setValue(prefs.get_bond_tolerance());
 	dbg_end(DM_CALLS,"AtenForm::set_controls");
 }
 
@@ -299,7 +302,7 @@ void AtenForm::set_useraction(bool on, user_action ua)
 	// We pass all changes to the user interaction mode through here.
 	// This way we can 'link' the selectToolBar and all the other buttons....
 	if (!on) return;
-	if ((ua > UA_NONE) && (ua < UA_GEOMSELECT))
+	if ((ua >= UA_PICKSELECT) && (ua <= UA_PICKRADIAL))
 	{
 		// One of the select actions in selectGroup
 		dummybutton->setChecked(TRUE);
@@ -348,6 +351,7 @@ void AtenForm::switch_stack(int buttonid, bool checked)
 {
 	// If the state of the button is *not* checked then we hide the stack since no buttons are checked. Otherwise, uncheck all other buttons and show the corresponding widget in the stack for this button.
 	int n;
+	user_action ua = gui.mainview.get_selectedmode();
 	if (checked)
 	{
 		for (n=0; n<SP_NITEMS; n++) if (n != buttonid) stackbuttons[n]->setChecked(FALSE);
@@ -355,12 +359,21 @@ void AtenForm::switch_stack(int buttonid, bool checked)
 		ui.MainWindowStack->show();
 		// If the new visible page is the atom list, do a quick refresh of it
 		if (buttonid == SP_ATOMS) refresh_atompage();
+		// Change to plain selection mode 
 	}
 	else
 	{
 		ui.MainWindowStack->hide();
-		set_useraction(TRUE, UA_PICKSELECT);
+
 	}
+		// Choose a plain selection mode again...
+		if ((ua == UA_NONE) || (ua > UA_PICKRADIAL))
+		{
+			ui.actionSelectAtoms->setChecked(TRUE);
+			set_useraction(TRUE, UA_PICKSELECT);
+		}
+	//ui.actionSelectAtoms->setChecked(TRUE);
+	//set_useraction(TRUE, UA_PICKSELECT);
 	master.get_currentmodel()->log_change(LOG_CAMERA);
 }
 

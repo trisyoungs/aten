@@ -55,6 +55,9 @@ const char* FC_data[FC_NITEMS] =  {
 	"readchars,Vg",
 	"skipchars",
 
+	"addreadoption,g",
+	"removereadoption,g",
+
 	"find,gV|V",
 
 	"addatom",
