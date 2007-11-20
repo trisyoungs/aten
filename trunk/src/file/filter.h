@@ -79,6 +79,8 @@ class filter
 	bool has_zmapping;
 	// Type of element mapping to use
 	zmap_type zmapping;
+	// Current read options for the filter
+	int readopts;
 
 	public:
 	// Return the ID of the filter

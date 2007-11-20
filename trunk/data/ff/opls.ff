@@ -238,7 +238,7 @@ types
 229	CT		C	""	"C on N: secondary N-CHR2 amide" XXX
 230	CT		C	""	"C on N: secondary N-CR3 amide"
 231	C		C	"=O,-C(ring(size=6,-C(n=6)),n=2)"	"C: C=O in benzophenone"
-232	C		C	"-C(ring(size=6,-C(n=6))),=O,H"		"C: C=O in benzaldehyde"
+232	C		C	"-C(ring(size=6,-C(n=6))),=O,-H"	"C: C=O in benzaldehyde"
 233	C		C	"-C(ring(size=6,-C(n=6))),=O,-C(nh=3)"	"C: C=O in acetophenone"
 234	C		C	"-C(ring(size=6,-C(n=6))),=O,-N(nh=2)"	"C: C=O in benzamide"
 235	C		C	"=O,-N"					"C: C=O in amide. Acyl R in amides is neutral - use alkane params"
@@ -403,8 +403,8 @@ types
 # UA dimethylphosphate anion
 393	P		P	"=O,-O(n=3)"				"P: UA DMP- (see 440 for AA)"
 394	O2		O	"=$393"					"O=: UA DMP- (see 440 for AA)"
-395	OS		O	"-$393,-C"			"	"O-: UA DMP- (see 440 for AA)" (see 440 for AA)"
-396	CT		C	"-$395"					"C(H3): UA DMP- (see 440 for AA)" (see 440 for AA)"
+395	OS		O	"-$393,-C"				"O-: UA DMP- (see 440 for AA)"
+396	CT		C	"-$395"					"C(H3): UA DMP- (see 440 for AA)"
 397	CM		C	""	"F3C-C5 thymine; trifluorothymine" XXX
 398	Cl		Cl	"-C(-Cl,-Cl,=C)"			"chloroalkene Cl (Cl2-C=) - tentative"
 399	CM		C	"-Cl,-Cl,=C"				"chloroalkene C (Cl2-C=) - tentative"
@@ -732,7 +732,7 @@ types
 711	CY		C	"ring(size=3,-C(n=3)),nh=2"		"C(H2): cyclopropane"
 712	CY		C	"ring(size=3,-C(n=3)),nh=1,-C"		"C(HR): cyclopropane"
 713	CY		C	"ring(size=3,-C(n=3)),-C,-C"		"C(R2): cyclopropane"
-714	CA		C	"ring(size=5,-C(n=5),nh=1"		"C: C5H5- cyclopentadienyl anion"
+714	CA		C	"ring(size=5,-C(n=5)),nh=1"		"C: C5H5- cyclopentadienyl anion"
 715	HA		H	"-$714"					"H: C5H5- cyclopentadienyl anion"
 716	CA		C	""					"C: C5H5  cyclopentadienyl radical" XXX
 717	HA		H	""					"H: C5H5  cyclopentadienyl radical" XXX

@@ -231,6 +231,7 @@ class AtenForm : public QMainWindow
 	void on_DrawChainButton_clicked(bool on) { if (on) set_useraction(on, UA_DRAWCHAIN); }
 	void on_DrawDeleteButton_clicked(bool on) { if (on) set_useraction(on, UA_DELATOM); }
 	void on_DrawTransmuteButton_clicked(bool on) { if (on) set_useraction(on, UA_TRANSATOM); }
+	void on_BondToleranceSpin_valueChanged(double d) { prefs.set_bond_tolerance(d); }
 	void on_BondSingleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDSINGLE); }
 	void on_BondDoubleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDDOUBLE); }
 	void on_BondTripleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDTRIPLE); }
