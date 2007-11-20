@@ -135,6 +135,7 @@ bool line_parser::get_next_n(int length)
 	dbg_begin(DM_PARSE,"parser::get_next_n");
 	temparg.create_empty(length+1);
 	int arglen = 0;
+	char c;
 	if (line.length() == 0)
 	{
 		dbg_end(DM_PARSE,"parser::get_next_n");
@@ -143,15 +144,23 @@ bool line_parser::get_next_n(int length)
 	if (length > line.length()) length = line.length();
 	for (int n=0; n<length; n++)
 	{
-		//switch (line[n])
-		//{
+		c = line[n];
+		switch (c)
+		{
+			// Brackets
+			case ('('):	// Left parenthesis
+			case (')'):	// Right parenthesis
+				if (optmask&PO_STRIPBRACKETS) break;
+				temparg += c;
+				arglen ++;
+				break;
 		//	case (32):      // Space - ignore to get left-justified data
 		//		break;
-		//	default:
-		temparg += line[n];
-		arglen ++;
-		//break;
-		//}
+			default:
+				temparg += c;
+				arglen ++;
+				break;
+		}
 	}
 	line.erasestart(length);
 	dbg_end(DM_PARSE,"parser::get_next_n");

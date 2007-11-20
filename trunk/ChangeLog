@@ -1,5 +1,8 @@
+2007-11-19
+	* filters: FC_ADDREADOPTION, FC_REMOVEREADOPTION for parser control.
+
 2007-11-11
-	* atom typing updated.
+	* typing: engine updated.
 	* retouched icons.
 
 2007-11-10

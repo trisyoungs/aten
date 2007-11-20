@@ -33,7 +33,7 @@ using namespace std;
 #define MAXLINELENGTH 1024
 
 // Parse Options
-enum parse_option { PO_DEFAULTS=0, PO_USEQUOTES=1, PO_SKIPBLANKS=2, PO_STRIPBRACKETS=4, PO_DUMMY=8, PO_NITEMS=5};
+enum parse_option { PO_DEFAULTS=1, PO_USEQUOTES=2, PO_SKIPBLANKS=4, PO_STRIPBRACKETS=8, PO_DUMMY=16, PO_NITEMS=5};
 parse_option PO_from_text(const char*);
 
 // Forward declarations
