@@ -29,7 +29,7 @@
 prefs_data prefs;
 
 // GL Options
-const char *GO_keywords[GO_NITEMS] = { "fog", "linealias", "polyalias", "backcull" };
+const char *GO_keywords[GO_NITEMS] = { "fog", "linealias", "polyalias", "backcull", "__DUMMY__" };
 gl_option GO_from_text(const char *s)
 	{ return (gl_option) int(pow(2,enum_search("GL option",GO_NITEMS,GO_keywords,s))); }
 

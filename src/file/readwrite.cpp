@@ -124,7 +124,9 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 			po = PO_from_text(fn->datavar[0]->get_as_char());
 			if (po != PO_NITEMS)
 			{
+				printf("Read option was %i, adding %i\n",readopts,po);
 				if (!(readopts&po)) readopts += po;
+				printf("Read option now %i\n",readopts);
 			}
 			break;
 		// Remove file read option

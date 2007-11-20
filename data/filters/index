@@ -8,7 +8,7 @@ gamess
 mol2
 pdb
 xyz
-#msi
+msi
 
 # Surface formats
 pdens

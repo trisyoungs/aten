@@ -44,7 +44,7 @@ enum view_object { VO_ATOMS, VO_CELL, VO_CELLAXES, VO_CELLREPEAT, VO_FORCEARROWS
 view_object VO_from_text(const char*);
 
 // GL Options
-enum gl_option { GO_FOG=1, GO_LINEALIASING=2, GO_POLYALIASING=4, GO_BACKCULLING=8, GO_NITEMS=4 };
+enum gl_option { GO_FOG=1, GO_LINEALIASING=2, GO_POLYALIASING=4, GO_BACKCULLING=8, GO_DUMMY=16, GO_NITEMS=5 };
 gl_option GO_from_text(const char*);
 
 // Mouse buttons
