@@ -17,7 +17,6 @@ importmodel
 	repeat $n
 		# Read in whole lines and work with them instead of always using readline
 		readline "$line@100"
-	print "line = $line"
 		# Parse the stored $line
 		readvar $line "$ident $type $data $a $b $c"
 		# Assume that lines are long enough to not force more than one data argument onto the next line
@@ -26,7 +25,6 @@ importmodel
 			readline $c
 		end
 		# Check for block specifiers
-		print "IDENT = $ident"
 		if $ident <> A
 			if $type = Model
 				let $newblock = M
@@ -95,7 +93,10 @@ importmodel
 		end
 	end
 	# Add on unit cell if one was specified
-	#if 
+	if $cellvar > 2
+		setcellaxes
+		fold
+	end
 	centre
 	finalisemodel
 end

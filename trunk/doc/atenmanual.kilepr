@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
 kileprversion=1
 kileversion=1.9.3
-lastDocument=scriptorshandbook.tex
+lastDocument=filtershandbook.tex
 masterDocument=manual.tex
 name=Aten Manual
 pkg_extIsRegExp=false
@@ -68,10 +68,10 @@ open=false
 
 [item:filtershandbook.tex]
 archive=true
-column=388
+column=10
 encoding=UTF-8
 highlight=LaTeX
-line=181
+line=245
 open=true
 
 [item:install.tex]
@@ -100,7 +100,7 @@ open=false
 
 [item:scriptorshandbook.tex]
 archive=true
-column=0
+column=21
 encoding=UTF-8
 highlight=LaTeX
 line=502

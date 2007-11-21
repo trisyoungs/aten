@@ -24,7 +24,7 @@ Forcefield To-Do list:
 	- OPLS (types)
 
 Filters To-Do list:
-	- Accelrys MSI import
+	- Strongly-typed variables?
 	- EPSR Ato import / export?
 	- Full pdb import (from spec)
 	- 'within' function
