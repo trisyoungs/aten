@@ -171,7 +171,7 @@ IDs are local to specific filter sections, so they may be reused for different t
 \section{Getting Data -- Format Strings}
 \index{format strings}
 \index{formatted input}
-So, now the file has been recognised, what happens next? We either read data in, or write data out. Enter \qte{format strings}. In nearly every way like FORMATs in Fortran and C/C++ $printf$ formats, these provide the interface to pass data between files and the program, and the sequence of commands is almost exactly like you would do in either of these programming languages. But for the uninitiated, don't panic! It's dead easy. Of course, in either language you use variables to store the data in the interim, and within filters this is no different. The basic (sub)processes in a filter are:
+So, now the file has been recognised, what happens next? We either read data in, or write data out. Enter \qte{format strings}. A lot like a hybrid between FORMATs in Fortran and C/C++ $printf$ formats, these provide the interface to pass data between files and the program, and the sequence of commands is almost exactly like you would do in either of these programming languages. But for the uninitiated, don't panic! It's dead easy. Of course, in either language you use variables to store the data in the interim, and within filters this is no different. The basic (sub)processes in a filter are:
 
 \begin{enumerate}
 	\item Read data from a file.
@@ -192,7 +192,7 @@ Na      0.0    -1.0     0.0
 Simply, elements and coordinates. Assuming that there's a filter command called \qte{readline} (there is) that reads in a line from a file and splits up the data on the line into a list of variables that you provide, if you were writing a command to describe one line of this data you would just say:
 
 \begin{verbatim}
-	readline "e r.x r.y r.z"
+	readline "$e $r.x $r.y $r.z"
 \end{verbatim}
 
 The quoted part of the command is considered as the $format string$, and each element within it denotes a variable. After the command has completed, within the filter you can access the first item on the line that was read in by referencing the variable \qte{e}, the second with \qte{r.x}, and so on. These variables are all properties of an atom, but how do they actually become an atom? Well, these four are examples of so-called \qte{recognised} variables -- ones that the program looks for when storing or retrieving data (which depends on whether the filter itself is importing or exporting data). The command to create a new atom in the model we're currently reading in is \qte{addatom}, which, when run, looks for a number of specific variables from which to take data to set the properties of the new atom. In our example, it will find the variables \qte{e}, \qte{r.x}, \qte{r.y}, and \qte{r.z} and use them to set the element number and coordinates (it will also look for other variables which we have \textbf{not} set to any values, but won't complain when it can't find them). The situation is similar for other aspects of the model ($e.g.$ the unit cell), as well as for when we are writing data to a file instead of reading it -- the reverse process occurs, where we select an atom from the model (which sets the relevant variables) and then write out data using a format string containing these variables. \\

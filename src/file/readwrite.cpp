@@ -122,21 +122,13 @@ bool filter::do_readwrite(command_node<filter_command> *&fn)
 		case (FC_ADDREADOPTION):
 			// Get parse option from variable
 			po = PO_from_text(fn->datavar[0]->get_as_char());
-			if (po != PO_NITEMS)
-			{
-				printf("Read option was %i, adding %i\n",readopts,po);
-				if (!(readopts&po)) readopts += po;
-				printf("Read option now %i\n",readopts);
-			}
+			if ((po != PO_NITEMS) && (!(readopts&po))) readopts += po;
 			break;
 		// Remove file read option
 		case (FC_REMOVEREADOPTION):
 			// Get parse option from variable
 			po = PO_from_text(fn->datavar[0]->get_as_char());
-			if (po != PO_NITEMS)
-			{
-				if (readopts&po) readopts -= po;
-			}
+			if ((po != PO_NITEMS) && (readopts&po)) readopts -= po;
 			break;
 		default:
 			result = FALSE;
