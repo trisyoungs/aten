@@ -695,11 +695,12 @@ template <class T> bool command_node<T>::add_variables(const char *cmd, const ch
 		varcount ++;
 		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
 		// Is this a required argument?
-		if (parser.is_blank(argcount))
+		//if ((parser.is_blank(argcount)) || (argcount >= parser.get_nargs()))
+		if (argcount >= parser.get_nargs())
 		{
 			if (required)
 			{
-				printf("Script command '%s' requires argument %i\n", cmd, argcount);
+				printf("Command '%s' requires argument %i\n", cmd, argcount);
 				result = FALSE;
 				break;
 			}
@@ -737,6 +738,8 @@ template <class T> bool command_node<T>::add_variables(const char *cmd, const ch
 		// Now for specifiers that require variables of a certain type.
 		// Capital letters enforce type onto a variable
 		datavar[varcount] = vars.get(arg.get());
+		// If datavar[varcount] is NULL then the argument was probably blank.
+		if (datavar[varcount] == NULL) datavar[varcount] = vars.add();
 		vt = datavar[varcount]->get_type();
 		switch (v[n])
 		{

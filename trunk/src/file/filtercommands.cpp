@@ -77,6 +77,7 @@ const char* FC_data[FC_NITEMS] =  {
 	"setvx,GG",
 	"setvy,GG",
 	"setvz,GG",
+	"settitle,G",
 
 	"addpoint,GGGG",
 	"addnextpoint,G",

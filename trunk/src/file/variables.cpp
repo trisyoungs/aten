@@ -204,6 +204,12 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 			activemodel->bond_atoms(ii, jj, bt);
 			result = TRUE;
 			break;
+		// Set title of model
+		case (FC_SETTITLE):
+			if (activemodel == NULL) break;
+			activemodel->set_name(fn->datavar[0]->get_as_char());
+			result = TRUE;
+			break;
 		default:
 			break;
 	}
