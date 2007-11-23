@@ -1,0 +1,30 @@
+# Protein databank coordinates import. Residue data etc. is ignored.
+importmodel
+	name "Protein Databank PDB"
+	nickname pdb
+	extension pdb
+	glob *.pdb
+	let $found = 0
+	repeat $n
+		readline "$keyword@6 $line@100"
+		if $keyword = HEADER
+			readvar $line "$title@100"
+			newmodel $title
+			let $found = 1
+		elseif $keyword = CRYST1
+			readvar $line "$cell.a@9 $cell.b@9 $cell.c@9 $cell.alpha@7 $cell.beta@7 $cell.gamma@7"
+			setcell
+		elseif $keyword = HETATM
+			readvar $line "*@5 $e@4 *@1 *@1 *@3 *@1 *@1 *@4 *@1 *@3 $r.x@8 $r.y@8 $r.z@8 *@6 *@6 *@6 *@4 *@2 *@2"
+			addatom
+		end
+		#elseif $keyword = CONECT
+		#end
+	end
+	if $found = 0
+		error "No HEADER record found in file. Nothing loaded."
+	else
+		rebond
+		finalisemodel
+	end
+end

@@ -1,0 +1,67 @@
+\chapter{Variables and Format Strings}
+
+Variables are handy things. Within filters in \progname{} they are particularly important, since the filter engine basically provides a way to write simple programs to import data into the program with variables providing the glue in the \qte{read--parse--act} model. Variables in filters have the following properties:
+
+\begin{enumerate}
+	\item They are all regarded as character strings unless used in a specific context (see later)
+	\item They do not have to be created before use as they are associative (created when needed)
+	\item Names must be composed of the alphabetic characters a-z and A-Z only
+	\item Names are case-sensitive
+	\item Variables are local to individual filters
+\end{enumerate}
+
+Variables are, for the most part, used in format strings to tell \progname{} how to parse lines (or other variables). In the XXX
+
+
+
+
+\subsection{Why didn't you say how long (how many characters) each item takes up in the file?}
+
+Written as it is above, the format string provides no data on the character length of each item, which implicitly tells the program to parse it with common sense. You might call it \qte{free-format} input, where certain characters are considered to be nothing more than whitespace separating interesting stuff. In \progname{}, spaces and tabs are considered equivalent and a number of consecutive tabs/spaces are taken to mean a separator between data items and nothing more. Commas are also recognised as separators between arguments. Thus, the \qte{readline} given above would eually well be able to read any line from:
+
+\begin{verbatim}
+Na 0.0 1.0 0.0 1.0
+Cl<tab>	1.0<tab>	0.0,0.0  <tab>    <tab>  -1.0
+Na,0.0,-1.0 , 0.0 ,     1.0
+\end{verbatim}
+
+Of course, you'll need to give a character length to the specifiers for some types of input (and most types of output). All variables/format specifiers can be given length specifiers (see Section \ref{sec:variables}).
+Similarly, a file containing data organised as coordinates followed by elements...
+
+\begin{verbatim}
+0.0     1.0     0.0     Na
+1.0     0.0     0.0     Cl
+0.0    -1.0     0.0     Na
+\end{verbatim}
+
+...can be read in with the format string ``begin x y z e end''. Note that in these two examples only the type of data to expect is specified -- no details on the length of these data are given to any of the identifiers. Where the character-width of the data is omitted, single or consecutive delimiters such as spaces and tabs are assumed to separate items. In a similar manner, a format string used to import data may be used to write out data in the same style. In this case, if field widths are not given each record is separated by a default delimiter.
+
+\section{Field Lengths}
+Since input and output is free-format by default, no field-length (record-width) specifiers need be given -- an identifier will take data from the line until it finds the next occurrence of a delimiter. When stricter control of this is necessary, such quantities immediately follow the format identifier -- e.g. \qte{x8} results in x coordinates being assumed as 8 characters long in the input file. Consider one of the above examples where the data have been output with ill-chosen field widths (in Fortran, ``(a2,4f8.5)'') such that occasionally the data for separate quantities are not separated by any delimiters at all:
+
+\begin{verbatim}
+Na 0.00000 1.00000 0.00000 1.00000
+Cl 1.00000 0.00000 0.00000-1.00000
+Na 0.00000-1.00000 0.00000 1.00000
+\end{verbatim}
+
+The format string ``begin e x y z q end'' is acceptable for the first atom, but will encounter a value of \qte{0.00000-1.00000} for the second atom’s z coordinate and the third atom’s x-coordinate. This may be overcome using field-lengths for the identifiers corresponding to those of the Fortran format given above, resulting in a format string of ``begin e2 x8 y8 z8 q8 end''. Field-lengths need not be provided for all identifiers, but the results of parsing fixed-length values after reading in delimited data may be unpredictable. For example:
+
+\begin{verbatim}
+K   1.405 5.232 6.608
+Cl -4.147 7.690 3.265
+\end{verbatim}
+
+Although the columns of data line up, using a format of ``begin e x6 y6 z6 end'' will not function correctly. Since the free-format reading of arguments from lines of text in files stops at the first delimiting character, the starting position for the beginning of the \qte{x6} identifier will be different for K and Cl. To avoid confusion, specify either no field-lengths or all field-lengths in a format string.
+
+Where extraneous data exist on lines in the file and can just be discarded use the \qte{*} identifier. For example:
+
+\begin{verbatim}
+O   water  red    0.0 0.0 0.0   charge  -0.8  residue1
+H   water  white -0.9 0.4 0.0   charge   0.4  residue1
+H   water  white  0.9 0.4 0.0   charge   0.4  residue1
+\end{verbatim}
+
+The unwanted text fields can be skipped with ``begin e * * x y z * q end''. Note that the last item on each line (\qte{residue1}) does not need to be discarded -- any remaining data on the line which is not accounted for by an identifier is ignored.
+
+
