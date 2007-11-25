@@ -41,7 +41,7 @@ void model::select_atom(atom *i)
 		if (recordingstate != NULL)
 		{
 			change *newchange = recordingstate->changes.add();
-			newchange->set(UE_SELECTATOM,i->get_id(),-1,-1);
+			newchange->set(UE_SELECT,i->get_id());
 		}
 	}
 	dbg_end(DM_MORECALLS,"model::select_atom");
@@ -60,7 +60,7 @@ void model::deselect_atom(atom *i)
 		if (recordingstate != NULL)
 		{
 			change *newchange = recordingstate->changes.add();
-			newchange->set(UE_DESELECTATOM,i->get_id(),-1,-1);
+			newchange->set(-UE_SELECT,i->get_id());
 		}
 	}
 	dbg_end(DM_MORECALLS,"model::deselect_atom");
@@ -96,8 +96,7 @@ void model::selection_delete()
 		if (i->is_selected())
 		{
 			tempi = i->next;
-			i->clear_bonds();
-			remove_atom(i);
+			delete_atom(i);
 			i = tempi;
 		}
 		else i = i->next;

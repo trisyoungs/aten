@@ -108,7 +108,7 @@ class pattern
 	*/
 	private:
 	// Parent model
-	model *ownermodel;
+	model *parent;
 	// Internal ID of the pattern (order in the pnode* list)
 	int id;
 	// Internally numbered atom IDs which this node ends at
@@ -189,10 +189,10 @@ class pattern
 	void set_expectedmols(int n) { expectedmols = n; }
 	// Returns the expected number of molecules in the pattern
 	int get_expectedmols() { return expectedmols; }
-	// Sets the owning model
-	void set_owner(model *m) { ownermodel = m; }
+	// Sets the parent model
+	void set_parent(model *m) { parent = m; }
 	// Returns the model for which the pattern was created
-	model *get_owner() { return ownermodel; }
+	model *get_parent() { return parent; }
 	// Sets the 'fixed' property of the pattern
 	void set_fixed(bool b) { fixed = b; }
 	// Returns whether the pattern is fixed
@@ -281,15 +281,14 @@ class pattern
 	list<ring> rings;
 	// Recursive prep - locates and marks atoms on their 'ring potential'
 	void ring_markatoms(atom*);
-	void ring_search(atom*,ring*,int&);// Recursive ring-search routine
+	// Recursive ring-search routine
+	void ring_search(atom*, ring*, int&);
 
 	public:
 	// Returns a pointer to the ring list structure
-	list<ring>* get_ringlist() { return &rings; };
+	list<ring>* get_ringlist() { return &rings; }
 	// Returns the first ring in the ring list
-	ring *get_rings() { return rings.first(); };
-	// Automatically augment bond types in the pattern.
-	void augment_bonding();
+	ring *get_rings() { return rings.first(); }
 	// Reset the atom environment flags
 	void clear_hybrids();
 	// Set atom hybridisations
@@ -298,6 +297,8 @@ class pattern
 	bool type_atoms(forcefield*);
 	// Locate ring structures in the pattern
 	void find_rings();
+	// Augment atoms in pattern
+	void augment();
 
 	/*
 	// Data Propagation

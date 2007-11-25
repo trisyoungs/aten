@@ -52,13 +52,12 @@ void model::describe_atoms()
 {
 	// Locate ring structures, augment bonding, and assign atom hybridisations in all patterns.
 	dbg_begin(DM_CALLS,"model::describe_atoms");
-	pattern *p = patterns.first();
-	while (p != NULL)
+	for (pattern *p = patterns.first(); p != NULL; p = p->next)
 	{
 		// 1) Locate ring structures
 		p->find_rings();
 		// Augment bonding in model
-		p->augment_bonding();
+		p->augment();
 		// 2) Reset atom environments
 		p->clear_hybrids();
 		printstuff(p);
@@ -66,13 +65,7 @@ void model::describe_atoms()
 		p->assign_hybrids();
 		printstuff(p);
 		// 4) Go through the ring list and see if any are aromatic
-		ring *r = p->get_rings();
-		while (r != NULL)
-		{
-			if (r->is_aromatic()) r->set_aromatic();
-			r = r->next;
-		}
-		p = p->next;
+		for (ring *r = p->get_rings(); r != NULL; r = r->next) if (r->is_aromatic()) r->set_aromatic();
 	}
 	dbg_end(DM_CALLS,"model::describe_atoms");
 }
@@ -207,7 +200,7 @@ bool pattern::type_atoms(forcefield *xff)
 			reset_tempi(0);
 			// See how well this ff description matches the environment of our atom 'i'
 			msg(DM_TYPING,"pattern::type_atoms : Matching type id %i\n",ffa->get_ffid());
-			newmatch = at->match_atom(i,&rings,ownermodel);
+			newmatch = at->match_atom(i,&rings,parent);
 			msg(DM_TYPING,"pattern::type_atoms : ...Total match score for type %i = %i\n",ffa->get_ffid(),newmatch);
 			if (newmatch > bestmatch)
 			{

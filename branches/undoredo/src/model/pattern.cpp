@@ -39,7 +39,7 @@ pattern *model::add_pattern(int mols, int numatoms, const char *patname)
 	pattern *lastp = patterns.last();
 	int start = (lastp == NULL ? 0 : lastp->get_startatom() + lastp->get_nmols() * lastp->get_natoms());
 	pattern *newpnode = patterns.add();
-	newpnode->set_owner(this);
+	newpnode->set_parent(this);
 	newpnode->set_name(patname);
 	newpnode->initialise(patterns.size()-1,start,mols,numatoms);
 	msg(DM_VERBOSE,"New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n",patname,start,mols,numatoms);
@@ -80,7 +80,7 @@ void model::own_pattern(pattern *source, bool own)
 	source->set_contents(start,-1,-1);
 	source->set_id(patterns.size()-1);
 	//source->set_id(patterns.size()-1);
-	if (own) source->set_owner(this);
+	if (own) source->set_parent(this);
 	dbg_end(DM_CALLS,"model::add_pattern");
 }
 

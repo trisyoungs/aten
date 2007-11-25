@@ -39,7 +39,7 @@ atom *model::add_atom(int newel, vec3<double> pos)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_ADDATOM,newatom);
+		newchange->set(UE_ATOM,newatom);
 	}
 	dbg_end(DM_CALLS,"model::add_atom");
 	return newatom;
@@ -51,6 +51,7 @@ atom *model::add_copy(atom *source)
 	dbg_begin(DM_CALLS,"model::add_copy");
 	atom *newatom = atoms.add();
 	newatom->copy(source);
+	newatom->set_id(atoms.size() - 1);
 	log_change(LOG_STRUCTURE);
 	mass += elements.mass(newatom->get_element());
 	calculate_density();
@@ -58,7 +59,7 @@ atom *model::add_copy(atom *source)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_ADDATOM,newatom);
+		newchange->set(UE_ATOM,newatom);
 	}
 	dbg_end(DM_CALLS,"model::add_copy");
 	return newatom;
@@ -79,7 +80,7 @@ atom *model::add_copy(atom *afterthis, atom *source)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_ADDATOM,newatom);
+		newchange->set(UE_ATOM,newatom);
 	}
 	dbg_end(DM_CALLS,"model::add_copy");
 	return newatom;
@@ -100,7 +101,7 @@ void model::remove_atom(atom *xatom)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_DELETEATOM,xatom);
+		newchange->set(-UE_ATOM,xatom);
 	}
 	atoms.remove(xatom);
 	log_change(LOG_STRUCTURE);
@@ -116,7 +117,19 @@ void model::delete_atom(atom *xatom)
 	if (xatom == NULL) msg(DM_NONE,"No atom to delete.\n");
 	else
 	{
+		// Remove measurements
 		remove_measurements(xatom);
+		// Delete All Bonds To Specific Atom
+		refitem<bond> *bref = xatom->get_bonds();
+		while (bref != NULL)
+		{
+			// Need to detach the bond from both atoms involved
+			bond *b = bref->item;
+			atom *j = b->get_partner(xatom);
+			unbond_atoms(xatom,j,b);
+			bref = xatom->get_bonds();
+		}
+		// Finally, delete the atom
 		remove_atom(xatom);
 	}
 	dbg_end(DM_CALLS,"model::delete_atom");
@@ -155,26 +168,20 @@ void model::clear_atoms()
 atom *model::find_atom(int id)
 {
 	// Find an atom according to its internal id
-	atom *i = atoms.first();
-	while (i != NULL)
+	if ((id >= atoms.size()) || (id < 0))
 	{
-		if (i->get_id() == id) return i;
-		i = i->next;
+		msg(DM_NONE,"Atom id %i is out of range for model '%s'\n",id,name.get());
+		return NULL;
 	}
-	msg(DM_NONE,"Atom id %i is out of range for model '%s'\n",id,name.get());
-	return NULL;
+	atom **modelatoms = get_staticatoms();
+	return modelatoms[id];
 }
 
 // Find atom by tempi
 atom *model::find_atom_by_tempi(int tempi)
 {
 	// Find an atom according to its tempi value
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->tempi == tempi) return i;
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->tempi == tempi) return i;
 	return NULL;
 }
 

@@ -22,15 +22,19 @@
 #ifndef H_UNDOLEVEL_H
 #define H_UNDOLEVEL_H
 
-// State change targets
-enum undo_event { UE_ADDATOM,  UE_ADDBOND, UE_ADDGEOMETRY, UE_SELECTATOM, UE_TRANSMUTE, UE_INVERTER, UE_DELETEATOM, UE_DELETEBOND, UE_DELETEGEOMETRY, UE_DESELECTATOM, UE_UNTRANSMUTE, UE_NITEMS };
+// State change events
+enum undo_event { UE_NONE, UE_ATOM, UE_BOND, UE_GEOMETRY, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER };
 
-#include "classes/atom.h"
+// State change directions
+enum undo_dir { UD_PLUS, UD_MINUS };
+
 #include "classes/dnchar.h"
 #include "templates/list.h"
+#include "templates/matrix3.h"
 
 // Forward declarations
 class model;
+class atom;
 
 // Single change
 class change
@@ -48,16 +52,20 @@ class change
 	private:
 	// Type of change
 	undo_event type;
-	// Atom data describing the object
+	// Direction of change
+	undo_dir direction;
+	// Atom data describing the change
 	atom *atomdata[2];
+	// Matrix data describing the change
+	mat3<double> *matrixdata[2];
 	// Generally-applicable data
-	int data[3];
+	int data[4];
 
 	public:
 	// Set change data (atoms)
-	void set(undo_event ec, atom *i, atom *i = NULL);
+	void set(int ec, atom *i, atom *j = NULL);
 	// Set change data (integers)
-	void set(undo_event ec, int i, int j, int k = 0);
+	void set(int ec, int i, int j = 0, int k = 0, int l = 0);
 
 	/*
 	// Actions

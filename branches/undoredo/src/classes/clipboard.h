@@ -42,15 +42,15 @@ class clipbond : public linkbond
 	// Destructor
 	~clipbond();
 	// Sets the pointer clipi
-	void set_clipi(clipatom *i) { clipi = i; };
+	void set_clipi(clipatom *i) { clipi = i; }
 	// Returns the pointer clipi
-	clipatom *get_clipi() { return clipi; };
+	clipatom *get_clipi() { return clipi; }
 	// Sets the pointer clipj
-	void set_clipj(clipatom *j) { clipj = j; };
+	void set_clipj(clipatom *j) { clipj = j; }
 	// Returns the pointer clipj
-	clipatom *get_clipj() { return clipj; };
+	clipatom *get_clipj() { return clipj; }
 	// Return next clipbond in list
-	clipbond *get_next() { return (next == NULL ? NULL : (clipbond*) next); };
+	clipbond *get_next() { return (next == NULL ? NULL : (clipbond*) next); }
 };
 
 // Clipboard Atom
@@ -61,7 +61,7 @@ class clipatom : public atom
 	clipatom();
 	~clipatom();
 	// Get the next clipatom in the list
-	clipatom* get_next() { return (next == NULL ? NULL : (clipatom*) next); };
+	clipatom* get_next() { return (next == NULL ? NULL : (clipatom*) next); }
 
 	/*
 	// New / Old Pointers
@@ -72,7 +72,7 @@ class clipatom : public atom
 
 	public:
 	// Returns the atom pointer of the cloned atom
-	atom *get_oldptr() { return oldptr; };
+	atom *get_oldptr() { return oldptr; }
 
 	/*
 	// Atom Cloning

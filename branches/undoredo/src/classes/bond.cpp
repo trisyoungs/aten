@@ -77,36 +77,3 @@ linkbond::~linkbond()
 	memdbg.destroy[MD_LINKBOND] ++;
 	#endif
 }
-
-// Augment ring atom
-void ring::augment_atom(refitem<atom> *refatom)
-{
-	dbg_begin(DM_CALLS,"ring::augment_atom");
-	// Assumes current bond order differences are in i->tempi
-	atom *i, *j;
-	i = refatom->item;
-	if (i->tempi < 0)
-	{
-		// Atom has fewer bonds than expected, so try to augment within ring.
-		j = get_next(refatom)->item;
-		if (j->tempi < 0) i->alter_bondorder(j,+1);
-		if (i->tempi != 0)
-		{
-			j = get_prev(refatom)->item;
-			if (j->tempi < 0) i->alter_bondorder(j,+1);
-		}
-	}
-	else if (i->tempi > 0)
-	{
-		// Atom has more bonds than expected, so try to de-augment within ring.
-		j = get_next(refatom)->item;
-		if (j->tempi > 0) i->alter_bondorder(j,-1);
-		if (i->tempi != 0)
-		{
-			j = get_prev(refatom)->item;
-			if (j->tempi > 0) i->alter_bondorder(j,-1);
-		}
-	}
-	dbg_end(DM_CALLS,"ring::augment_atom");
-}
-

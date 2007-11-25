@@ -46,7 +46,10 @@ void AtenForm::on_actionEditRedo_triggered(bool checked)
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
 	// Cut the selected atoms from the model, copying to the paste buffer
-	master.userclip.cut_selection(master.get_currentmodel());
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Cut");
+	master.userclip.cut_selection(m);
+	m->end_undostate();
 	gui.refresh();
 }
 
@@ -61,7 +64,10 @@ void AtenForm::on_actionEditCopy_triggered(bool checked)
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
 	// Paste the buffered atoms into the model
-	master.userclip.paste_to_model(master.get_currentmodel());
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Paste");
+	master.userclip.paste_to_model(m);
+	m->end_undostate();
 	gui.refresh();
 }
 

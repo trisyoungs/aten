@@ -65,7 +65,7 @@ void model::end_undostate()
 	undolevels.own(recordingstate);
 	// Set the current undo level to the new state and nullify the pointer
 	currentundostate = recordingstate;
-	printf("Undo list now has %i states\n",undolevels.size());
+	msg(DM_VERBOSE,"Undo list now has %i states (%i events caught in last state).\n",undolevels.size(),currentundostate->changes.size());
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentredostate = NULL;
 	recordingstate = NULL;

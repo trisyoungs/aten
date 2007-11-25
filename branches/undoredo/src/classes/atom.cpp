@@ -65,7 +65,6 @@ atom::atom()
 // Destructors
 atom::~atom()
 {
-	clear_bonds();
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_ATOM] ++;
 	#endif
@@ -240,23 +239,6 @@ double atom::get_bond_order(atom *j)
 	return order;
 }
 
-// Delete All Bonds To Specific Atom
-void atom::clear_bonds()
-{
-	dbg_begin(DM_MORECALLS,"atom::clear_bonds");
-	refitem<bond> *bref = get_bonds();
-        while (bref != NULL)
-        {
-		// Need to detach the bond from both atoms involved
-		bond *oldbond = bref->item;
-		atom *j = oldbond->get_partner(this);
-		j->detach_bond(oldbond);
-		detach_bond(oldbond);
-		bref = get_bonds();
-        }
-	dbg_end(DM_MORECALLS,"atom::clear_bonds");
-}
-
 // Determine bonding geometry
 atom_geom atom::get_geometry(model *parent)
 {
@@ -337,66 +319,6 @@ void atom::add_bound_to_reflist(reflist<atom> *rlist)
 		rlist->add(bref->item->get_partner(this),0,bref->item->type);
 		bref = bref->next;
 	}
-}
-
-// Augment atom
-void atom::augment()
-{
-	// Augment the current atom by increasing the bond order to its neighbours.
-	// Assumes current bond order differences are in i->tempi.
-	// Cycle through the bound atoms increasing / decreasing the bond order as much as we can for each.
-	// Stop when we have no more atoms or the bond order difference is zero.
-	dbg_begin(DM_CALLS,"atom::augment");
-	refitem<bond> *bref = get_bonds();
-	while (bref != NULL)
-	{
-		if (tempi == 0) break;
-		if (tempi < 0) alter_bondorder(bref->item->get_partner(this),+1);
-		else if (tempi > 0) alter_bondorder(bref->item->get_partner(this),-1);
-		bref = bref->next;
-	}
-	dbg_end(DM_CALLS,"atom::augment");
-}
-
-// Change bond order between this atom and 'j'
-void atom::alter_bondorder(atom *j, int change)
-{
-	// Increase the type of the bond between this atom and 'j' by as much as both atoms will allow.
-	// Assumes current bond order differences are held in i->tempi.
-	dbg_begin(DM_CALLS,"atom::alter_bondorder");
-	short int maxchg;
-	int n;
-	// Calc max difference that we can (must) change the bond by...
-	abs(tempi) < abs(j->tempi) ? maxchg = tempi : maxchg = j->tempi;
-	maxchg /= 2;
-	// Sanity check
-	if (change == +1 && maxchg >= 0)
-	{
-		dbg_end(DM_CALLS,"atom::alter_bondorder");
-		return;
-	}
-	if (change == -1 && maxchg <= 0)
-	{
-		dbg_end(DM_CALLS,"atom::alter_bondorder");
-		return;
-	}
-	// Find bond between this atom and 'j'
-	bond *b = find_bond(j);
-	if (b != NULL)
-	{
-		// Store current bond order
-		int bo = b->type;
-		for (n=0; n<abs(maxchg); n++)
-		{
-			change == +1 ? bo ++ : bo --;
-			j->tempi -= (2*maxchg);
-			tempi -= (2*maxchg);
-			//change == +1 ? bo ++ : bo --;
-		}
-		b->type = (bond_type) bo;
-	}
-	else printf("Augmenting failed to find bond to j on atom i.\n");
-	dbg_end(DM_CALLS,"atom::alter_bondorder");
 }
 
 // Find plane of three atoms

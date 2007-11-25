@@ -282,6 +282,7 @@ void canvas_master::end_mode(mouse_button button)
 	bool manipulate;
 	double area, radius;
 	atom *atoms[4], *i;
+	bond *b;
 	if (displaymodel == NULL)
 	{
 		printf("Pointless canvas_master::end_mode - datamodel == NULL.\n");
@@ -404,7 +405,8 @@ void canvas_master::end_mode(mouse_button button)
 			// Must be two atoms in subselection to continue
 			if (subsel.size() != 2) break;
 			subsel.fill_array(2,atoms);
-			if (atoms[0]->find_bond(atoms[1]) == NULL)
+			b = atoms[0]->find_bond(atoms[1]);
+			if (b == NULL)
 			{
 				displaymodel->begin_undostate("Bond Atoms");
 				displaymodel->bond_atoms(atoms[0],atoms[1],bond_type(activemode-UA_BONDSINGLE+1));
@@ -413,8 +415,7 @@ void canvas_master::end_mode(mouse_button button)
 			else
 			{
 				displaymodel->begin_undostate("Change Bond");
-				displaymodel->unbond_atoms(atoms[0],atoms[1]);
-				displaymodel->bond_atoms(atoms[0],atoms[1],bond_type(activemode-UA_BONDSINGLE+1));
+				displaymodel->change_bond(b,bond_type(activemode-UA_BONDSINGLE+1));
 				displaymodel->end_undostate();
 			}
 			subsel.clear();
