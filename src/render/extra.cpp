@@ -151,6 +151,7 @@ void canvas_master::render_extra_2d()
 			dx = 1.0 / drawpixelwidth;
 			halfw = w / 2.0;
 			i = int( halfw / dx);
+			if (i < 2) break;
 			glBegin(GL_LINES);
 			  for (n = -i; n <= i; n++)
 			  {

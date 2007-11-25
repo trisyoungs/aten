@@ -5,6 +5,7 @@ Issues with the current version:
 	- Surfaces need correct vertex normals
 	- Colour schemes other than AC_ELEMENT need to be fixed
 	- Switching between perspective / orthographic views loses current rotation/zoom
+	- Drawing guide is not displayed if camera moves beyond z = 0.0 (general drawing problem)
 
 General To-Do list:
 	- Ewald sum (fourier calculation, reciprocal cell?) for non-orthogonal cells
