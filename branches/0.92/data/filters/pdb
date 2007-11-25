@@ -1,0 +1,51 @@
+# Protein databank coordinates import. Residue data etc. is ignored.
+importmodel
+	name "Protein Databank PDB"
+	nickname pdb
+	extension pdb
+	glob *.pdb
+	# Create default model
+	newmodel "PDB File"
+	repeat $n
+		readline "$keyword@6 $line@100"
+		if $keyword = HEADER
+			readvar $line "$title@100"
+			settitle $title
+		elseif $keyword = CRYST1
+			readvar $line "$cell.a@9 $cell.b@9 $cell.c@9 $cell.alpha@7 $cell.beta@7 $cell.gamma@7"
+			setcell
+		elseif $keyword = HETATM
+			#readvar $line "*@5 $e@4 *@1 *@1 *@3 *@1 *@1 *@4 *@1 *@3 $r.x@8 $r.y@8 $r.z@8 *@6 *@6 *@6 *@4 *@2 *@2"
+			readvar $line "$id@5 $name@5 *@14 $r.x@8 $r.y@8 $r.z@8 *@22 $e@2"
+			if $e = ""
+				let $e = $name
+			end
+			addatom
+		elseif $keyword = ATOM
+			readvar $line "$id@5 $name@5 *@14 $r.x@8 $r.y@8 $r.z@8 *@22 $e@2"
+			if $e = ""
+				let $e = $name
+			end
+			addatom
+		elseif $keyword = CONECT
+			readvar $line "*@6 $i@5 $bondi@5 $bondj@5 $bondk@5 $bondl@5"
+			if $bondi > 0
+				addbond $i $bondi
+			end
+			if $bondj > 0
+				addbond $i $bondj
+			end
+			if $bondk > 0
+				addbond $i $bondk
+			end
+			if $bondl > 0
+				addbond $i $bondl
+			end
+		end
+	end
+	if $found = n
+		warn "No HEADER record found in file."
+	end
+	rebond
+	finalisemodel
+end

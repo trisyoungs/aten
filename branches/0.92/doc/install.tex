@@ -1,0 +1,187 @@
+\chapter{Installation}
+\label{sec:install}
+
+\section{\emph{Disclaimer}}
+\label{sec:disclaimer}
+
+\progname{} has been compiled successfully on Linux machines running SuSE 9.3 (with the GTK gui), OpenSuSE 10.2, and RedHat Enterprise 4, an Intel iMac running OS X 10.4.10, and XXX. No doubt with (or without) tweaking it will run on other systems.\\
+
+\progname{} is in development, and as such might contain a bug or two. Should you come across a crash or an issue that needs to be fixed, \emph{please} report them so they can be fixed.\\
+
+In addition, I can't accept responsibility for any loss of data / work / sleep / expensive computers / cats / coordinates etc., use at your own risk etc., and so on...\\
+
+\section{Ingredients for Linux}
+\label{sec:linuxinstall}
+\begin{itemize}
+	\item GNU Autotools 2.6
+	\item A C++ compiler (e.g. g++, icc)
+	\item OpenGL and glut (e.g. from freeglut)
+	\item pkg-config
+	\item GTK+2.0 (version 2.4 or above) or Qt4 (version 4.2 or above) if you want a GUI
+	\item GtkGLExt if you want the GTK+ GUI
+\end{itemize}
+
+\section{Ingredients for Mac OS X}
+\label{sec:macinstall}
+\begin{itemize}
+	\item GNU Autotools 2.6
+	\item A C++ compiler (e.g. g++, icc)
+	\item OpenGL and glut frameworks
+	\item pkg-config (if using Fink or MacPorts versions of GTK+ or Qt)
+	\item GTK+ (version 2.4 or above) or Qt (version 4.1 or above) if you want a GUI
+\end{itemize}
+
+\subsection{Which Qt4?}
+
+To build against the qt4-x11 package available $via$ Fink run:\\
+
+\indent {\sffamily configure {-}{-}with-qt=fink} ...\\
+
+This will set most of the necessary environment variables, namely:\\
+{\sffamily
+\begin{itemize}
+	\item QTGUI\_CFLAGS='-I/sw/lib/qt4-x11/include -I/usr/X11R6/include'
+	\item QTGUI\_LIBS='-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL'
+	\item QTOPENGL\_CFLAGS='-I/sw/lib/qt4-x11/include'
+	\item QTOPENGL\_LIBS='-I/sw/lib/qt4-x11/lib'
+\end{itemize}
+}
+
+You may also need to direct the build process to the correct Qt4 development binaries either by setting your \$PATH to \qte{/sw/lib/qt4-x11/bin:\$\{PATH\}} or by using the {\sffamily {-}{-}with-qtdir} option to {\sffamily configure}.\\
+
+The native Qt4 package is available as a disk image installer at no cost directly from http://trolltech.com. Specify that the build use the frameworks provided instead:\\
+
+\indent {\sffamily configure {-}{-}with-qt=framework} ...\\
+
+\subsection{Autotools}
+You may find that the version of GNU Autotools you have is not recent enough. Check with {\sffamily autoconf {-}{-}version} - 2.59 is not sufficient! An up-to-date version can be installed via Fink. Known good versions are listed here, but don't assume that these are the only versions that will work:\\
+
+{\sffamily
+\indent libtool  :  1.5.22-1000\\
+\indent autoconf :  2.60-4\\
+\indent aclocal  :  XX\\
+\indent automake :  1.9.6-3\\
+\indent m4       :  XXX\\
+}
+
+\section{Configuration Options}
+
+Possible {\sffamily configure} options are listed here. Most are present just to work around compilation issues, but some provide functionality in the program (in particular, the choice of GUI to build in).
+
+\begin{description}
+
+	\item[{-}{-}with-gl-includedir]
+		Sets the location of the OpenGL headers.
+	\begin{description}
+		\item[e.g. {-}{-}with-gl-includedir=/usr/include]
+			Sets the location of the OpenGL headers (GL/GL.h etc.) to /usr/include.
+	\end{description}
+
+	\item[{-}{-}with-gui] Specifies GUI to compile with the program. Valid options are:
+	\begin{description}
+		\item[{-}{-}with-gui=none\its]
+			No GUI should be compiled (i.e. create a command-line only version)
+		\item[{-}{-}with-gui=gtk\its]
+			Compile the legacy GTK+ GUI.
+		\item[{-}{-}with-gui=qt\its]
+			Compile the Qt4 GUI (default).
+	\end{description}
+
+	\item[{-}{-}with-qt] Specifies which installation of Qt4 to use on Apple Macs. Valid options are:
+	\begin{description}
+		\item[{-}{-}with-qt=framework]
+			Use the Qt4 framework provided by TrollTech's own installation.
+		\item[{-}{-}with-qt=fink]
+			Use the Fink installation of Qt4 (qt4-x11).
+	\end{description}
+
+	\item[{-}{-}with-qtdir] Sets the location of the Qt4 development tools ({\sffamily moc}, {\sffamily uic}, and {\sffamily rcc}). This should only need to be set if you have Qt3 installed and your \$PATH favours the older version's binaries.
+	\begin{description}
+		\item[e.g. {-}{-}with-qtdir=/usr/local/bin]
+			Sets the location of the Qt4 development tools to /usr/local/bin.
+	\end{description}
+
+\end{description}
+
+
+\section{Four\textonehalf Step Installation}
+
+\begin{description}
+	\item[Step 1:\its] Get the source.
+	\begin{itemize}
+		\item To download the tarball: go to http://aten.googlecode.com and select the relevant file from the Downloads page.
+		\item To get via {\sffamily svn}: run \qte{\sffamily svn co http://aten.googlecode.com/svn/trunk aten} to download the current tree to a new directory \qte{\sffamily aten} in the current directory.
+	\end{itemize}
+\end{description}
+
+
+\begin{description}
+	\item[Step 1a:\its] Set up the build (if you downloaded the source with {\sffamily svn})
+	\begin{itemize}
+		\item Run {\sffamily ./autogen.sh} to generate the {\sffamily configure} script..
+	\end{itemize}
+	Common issues:\\
+	\emph{(MAC) Running {\sffamily ./autogen.sh}, {\sffamily autoconf} fails with \qte{configure.ac:16: error: possibly undefined macro: AC\_DEFINE}.}
+	\begin{itemize}
+		\item This is related to the version of pkg-config you have installed (e.g. version 0.15.1 gives this error, but version 0.21 does not) with Fink / MacPorts. Upgrade to the latest version. Incidentally, the line-number reported (16) is not the actual location of the error -- autoconf reports this wrongly (the actual error occurs around line 89 with the \qte{PKG\_CHECK\_MODULES(GTK28, ..., [AC\_DEFINE...} command).
+	\end{itemize}
+	\emph{(MAC) Running {\sffamily ./autogen.sh}, {\sffamily aclocal} \qte{/sw/share/aclocal/pkg.m4:5: warning: underquoted definition of PKG\_CHECK\_MODULES}.}
+	\begin{itemize}
+		\item If there is no {\sffamily pkgconfig} installed, this is likely to give rise to said spurious error. Install {\sffamily pkgconfig} to proceed.
+	\end{itemize}
+	\emph{(MAC) {\sffamily autogen.sh}m seems to work, but {\sffamily aclocal} complains about \qte{underquoted definition of AM\_PATH\_*}.}
+	\begin{itemize}
+		\item These warnings should nothave affected the generation of a working {\sffamily ./configure} script. So you may as well move on to the next step.
+	\end{itemize}
+\end{description}
+
+
+\begin{description}
+	\item[Step 2:\its] Configure the build (Run {\sffamily./configure})
+	\begin{itemize}
+		\item Most all dependencies should be detected by the scripts provided, ensuring a pain-free build (or quick detection of problems).
+		\item Select a GUI. Running {\sffamily./configure} with no options detects the operating system and builds in the Qt GUI. This can be overriden with the {\sffamily {-}{-}with-gui} switch:
+		\begin{itemize}
+			\item {\sffamily./configure {-}{-}with-gui=qt} builds in the Qt GUI (default).
+			\item {\sffamily./configure {-}{-}with-gui=gtk} builds in the legacy GTK+ GUI.
+			\item {\sffamily./configure {-}{-}with-gui=none} builds a command-line only executable.
+		\end{itemize}
+	\end{itemize}
+	Common issues:\\
+	\emph{$configure$ complains \dqte{Could not find GLUT header. Is freeglut/Mesa installed?}}
+	\begin{itemize}
+		\item You need some form of OpenGL implementation installed. Try the freeglut packages, and don't forget to install the freeglut-devel package as well.
+	\end{itemize}
+\end{description}
+
+
+\begin{description}
+	\item[Step 3:\its] Compile the source (Run {\sffamily make})
+	\begin{itemize}
+		\item Once configured successfully, run {\sffamily make} to compile the source and build the program.
+		\item Go make some tea or brew some coffee.
+	\end{itemize}
+	Common issues:\\
+	\emph{When linking I get \dqte{Undefined references to \qte{pango\_x\_font\_subfont\_xlfd}} (or similar).}
+	\begin{itemize}
+		\item The version of gtkglext you have installed is a bit retro (version 1.0.6 uses tokens from the pango subsystem that have since been made obsolete) so download and install version 1.2.0 from gtkglext.sourceforge.net.
+	\end{itemize}
+	\emph{When the Qt GUI is building, I get a version error for {\sffamily moc} along the lines of \qte{uic: File generated with too recent version of Qt Designer (4.0 vs. 3.*.*)}.}
+	\begin{itemize}
+		\item If you have both Qt4 and Qt3 installed \$PATH is often set so that the Qt3 binaries are found first. Reconfigure the build with {\sffamily configure {-}{-}with-qdtir=$path$} where $path$ is the location of the Qt4 binaries {\sffamily moc}, {\sffamily uic}, and {\sffamily rcc}.
+	\end{itemize}
+
+\end{description}
+
+\begin{description}
+	\item[Step 4:\its] Install (Run {\sffamily make install} or {\sffamily cp src/aten $<$destination$>$})
+	\begin{itemize}
+		\item After compilation is complete, you're left with the \progname{} executable in the src/ directory.
+		\item Either run {\sffamily make install} to place the program in {\sffamily /usr/local/bin} if you have root priveledges, or copy the program to a local location of your choice and run it from there.
+		\item The default stock of filters and spacegroup definitions is installed in the default locations if you run {\sffamily make install} (on Linux systems this is typically /usr/local/share/aten).
+		\item Aten is directed to this location via the \$ATENDATA environment variable which should be set before running the program.
+		\item If you haven't (or can't) run {\sffamily make install} then set \$ATENDATA to the /data directory in the source tree.
+	\end{itemize}
+\end{description}
+
+
