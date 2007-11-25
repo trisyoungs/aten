@@ -1,0 +1,40 @@
+# Gaussian Cube Format
+# Last modified: 28/10/07
+importgrid
+	name "Gaussian CUBE"
+	nickname cube
+	extension cube
+	glob *.cube
+	zmap numeric
+	# Lines 1-2: Comments (use first as title)
+	readline "$title@100"
+	newsurface $title
+	skipline
+	# Line 3: Number of atoms and coordinate origin of surface
+	readline "$natoms $ox $oy $oz"
+	setgridorigin $ox $oy $oz
+	# Lines 4-6: Number of voxels and axis vector
+	readline "$nx $xx $xy $xz"
+	readline "$ny $yx $yy $yz"
+	readline "$nz $zx $zy $zz"
+	setgridsize $nx $ny $nz
+	setgrid $xx $xy $xz $yx $yy $yz $zx $zy $zz
+	# Molecule Definition
+	newmodel $title
+	repeat $n $natoms
+		readline "$e * $r.x $r.y $r.z"
+		addatom
+	end
+	finalisemodel
+	rebond
+	# Volumetric data (five points per line)
+	repeat $i $nx
+		repeat $j $ny
+			repeat $k $nz
+				readnext $data
+				addpoint $i $j $k $data
+			end
+		end
+	end
+	finalisegrid
+end
