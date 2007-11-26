@@ -38,14 +38,12 @@
 	#include "GL/gl.h"
 #endif
 
-// Change logs
-enum change_log { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };
-
 // Forward Declarations
 class canvas_master;
 class forcefield;
 class bond;
 class constraint;
+class undostate;
 class pattern;
 class filter;
 class energystore;
@@ -642,26 +640,22 @@ class model
 	private:
 	// List of measurements
 	list<measurement> measurements;
-	// Find specific measurement
-	measurement *find_measurement(geom_type,atom*,...);
-	// Find specific measurement
-	measurement *find_measurement(geom_type,reflist<atom>&);
 
 	public:
 	// Return first measurement in the list
 	measurement *get_measurements() { return measurements.first(); }
 	// Clear all measurements
 	void clear_measurements() { measurements.clear(); }
+	// Find specific measurement
+	measurement *find_measurement(geom_type, atom*, ...);
 	// Clear specific type of measurements
 	void remove_measurements(geom_type);
 	// Delete specific measurement
-	void remove_measurement(measurement *me) { measurements.remove(me); }
+	void remove_measurement(measurement *me);
 	// Delete all measurements involving supplied atom
 	void remove_measurements(atom*);
 	// Add measurement (list of atoms)
 	void add_measurement(geom_type, atom*, ...);
-	// Add measurement (reflist of atoms)
-	void add_measurement(geom_type, reflist<atom>&);
 	// Add measurements of specific type in current selection
 	void add_measurements_in_selection(geom_type);
 	// Measure distances between atoms

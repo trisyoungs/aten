@@ -342,22 +342,28 @@ void canvas_master::end_mode(mouse_button button)
 		case (UA_GEOMDIST):
 			// Must be two atoms in subselection to continue
 			if (subsel.size() != 2) break;
+			displaymodel->begin_undostate("Measure Distance");
 			subsel.fill_array(2,atoms);
 			displaymodel->measure_distance(atoms[0],atoms[1]);
+			displaymodel->end_undostate();
 			subsel.clear();
 			break;
 		case (UA_GEOMANGLE):
 			// Must be two atoms in subselection to continue
 			if (subsel.size() != 3) break;
+			displaymodel->begin_undostate("Measure Angle");
 			subsel.fill_array(3,atoms);
 			displaymodel->measure_angle(atoms[0],atoms[1],atoms[2]);
+			displaymodel->end_undostate();
 			subsel.clear();
 			break;
 		case (UA_GEOMTORSION):
 			// Must be two atoms in subselection to continue
 			if (subsel.size() != 4) break;
+			displaymodel->begin_undostate("Measure Torsion");
 			subsel.fill_array(4,atoms);
 			displaymodel->measure_torsion(atoms[0],atoms[1],atoms[2],atoms[3]);
+			displaymodel->end_undostate();
 			subsel.clear();
 			break;
 		// Draw single atom
@@ -388,7 +394,9 @@ void canvas_master::end_mode(mouse_button button)
 			displaymodel->end_undostate();
 			break;
 		case (UA_TRANSATOM):
+			displaymodel->begin_undostate("Transmute");
 			displaymodel->transmute_atom(atom_hover, master.get_sketchelement());
+			displaymodel->end_undostate();
 			break;
 		case (UA_DELATOM):
 			displaymodel->begin_undostate("Delete Atom");

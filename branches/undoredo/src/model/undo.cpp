@@ -37,6 +37,8 @@ void model::begin_undostate(const char *text)
 	// Create a new state for us to add to
 	recordingstate = new undostate;
 	recordingstate->set_text(text);
+	recordingstate->set_startlog(LOG_STRUCTURE, logs[LOG_STRUCTURE]);
+	recordingstate->set_startlog(LOG_COORDS, logs[LOG_COORDS]);
 	dbg_end(DM_CALLS,"model::begin_undostate");
 }
 
@@ -58,6 +60,8 @@ void model::end_undostate()
 		dbg_end(DM_CALLS,"model::end_undostate");
 		return;
 	}
+	recordingstate->set_endlog(LOG_STRUCTURE, logs[LOG_STRUCTURE]);
+	recordingstate->set_endlog(LOG_COORDS, logs[LOG_COORDS]);
 	// Delete all redo (i.e. future) states from the undo list
 	if (currentundostate == NULL) undolevels.clear();
 	else for (undostate *u = currentundostate->next; u != NULL; u = u->next) undolevels.remove(u);
@@ -81,6 +85,8 @@ void model::undo()
 	{
 		// Undo the changes
 		currentundostate->reverse(this);
+		logs[LOG_STRUCTURE] = currentundostate->get_startlog(LOG_STRUCTURE);
+		logs[LOG_COORDS] = currentundostate->get_startlog(LOG_COORDS);
 		// Set new undo/redo pointers
 		currentredostate = currentundostate;
 		currentundostate = currentundostate->prev;
@@ -97,6 +103,8 @@ void model::redo()
 	{
 		// Undo the changes
 		currentredostate->perform(this);
+		logs[LOG_STRUCTURE] = currentredostate->get_endlog(LOG_STRUCTURE);
+		logs[LOG_COORDS] = currentredostate->get_endlog(LOG_COORDS);
 		// Set new undo/redo pointers
 		currentundostate = currentredostate;
 		currentredostate = currentredostate->next;

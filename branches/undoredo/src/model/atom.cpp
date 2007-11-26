@@ -21,6 +21,7 @@
 
 #include "model/model.h"
 #include "classes/atom.h"
+#include "classes/undostate.h"
 #include "base/elements.h"
 #include "base/master.h"
 
@@ -70,7 +71,7 @@ atom *model::add_copy(atom *afterthis, atom *source)
 {
 	dbg_begin(DM_CALLS,"model::add_copy");
 	atom *newatom = atoms.insert(afterthis);
-	printf("Adding copy after... %li %li\n",afterthis,source);
+	//printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
 	renumber_atoms( (afterthis != NULL ? afterthis->prev : NULL) );
 	log_change(LOG_STRUCTURE);
@@ -97,6 +98,7 @@ void model::remove_atom(atom *xatom)
 	// Renumber the ids of all atoms in the list after this one
 	for (atom *i = xatom->next; i != NULL; i = i->next) i->decrease_id();
 	if (xatom->is_selected()) deselect_atom(xatom);
+	log_change(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
 	if (recordingstate != NULL)
 	{
@@ -104,7 +106,6 @@ void model::remove_atom(atom *xatom)
 		newchange->set(-UE_ATOM,xatom);
 	}
 	atoms.remove(xatom);
-	log_change(LOG_STRUCTURE);
 	dbg_end(DM_CALLS,"model::remove_atom");
 }
 
@@ -142,11 +143,21 @@ void model::transmute_atom(atom *i, int el)
 	if (i == NULL) msg(DM_NONE,"No atom to transmute.\n");
 	else
 	{
-		mass -= elements.mass(i);
-		i->set_element(el);
-		mass += elements.mass(i);
-		calculate_density();
-		log_change(LOG_STRUCTURE);
+		int oldel = i->get_element();
+		if (oldel != el)
+		{
+			mass -= elements.mass(i);
+			i->set_element(el);
+			mass += elements.mass(i);
+			calculate_density();
+			log_change(LOG_STRUCTURE);
+			// Add the change to the undo state (if there is one)
+			if (recordingstate != NULL)
+			{
+				change *newchange = recordingstate->changes.add();
+				newchange->set(UE_TRANSMUTE,i->get_id(),oldel,el);
+			}
+		}
 	}
 	dbg_end(DM_CALLS,"model::transmute_atom");
 }

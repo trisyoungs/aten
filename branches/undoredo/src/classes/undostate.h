@@ -22,12 +22,16 @@
 #ifndef H_UNDOLEVEL_H
 #define H_UNDOLEVEL_H
 
+// Change logs
+enum change_log { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };
+
 // State change events
-enum undo_event { UE_NONE, UE_ATOM, UE_BOND, UE_GEOMETRY, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER };
+enum undo_event { UE_NONE, UE_ATOM, UE_BOND, UE_MEASUREMENT, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER };
 
 // State change directions
 enum undo_dir { UD_PLUS, UD_MINUS };
 
+#include "model/model.h"
 #include "classes/dnchar.h"
 #include "templates/list.h"
 #include "templates/matrix3.h"
@@ -59,13 +63,15 @@ class change
 	// Matrix data describing the change
 	mat3<double> *matrixdata[2];
 	// Generally-applicable data
-	int data[4];
+	int data[5];
 
 	public:
 	// Set change data (atoms)
 	void set(int ec, atom *i, atom *j = NULL);
 	// Set change data (integers)
-	void set(int ec, int i, int j = 0, int k = 0, int l = 0);
+	void set(int ec, int i, int j = -1, int k = -1, int l = -1, int m = -1);
+	// Set change data (matrices)
+	void set(int ec, mat3<double> *m1, mat3<double> *m2 = NULL);
 
 	/*
 	// Actions
@@ -93,10 +99,22 @@ class undostate
 	private:
 	// Short text describing the change
 	dnchar text;
+	// Logs at start of state
+	int startlogs[LOG_NITEMS];
+	// Logs at end of state
+	int endlogs[LOG_NITEMS];
 
 	public:
 	// List of atomic changes for this level
 	list<change> changes;
+	// Set log point at start of state
+	void set_startlog(change_log log, int value) { startlogs[log] = value; }
+	// Get structure log point at start of state
+	int get_startlog(change_log log) { return startlogs[log]; }
+	// Set log point at end of state
+	void set_endlog(change_log log, int value) { endlogs[log] = value; }
+	// Get structure log point at end of state
+	int get_endlog(change_log log) { return endlogs[log]; }
 	// Set the text associated with the current undo state
 	void set_text(const char *s) { text = s; }
 	// Return the current text associated with the state

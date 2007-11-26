@@ -23,6 +23,7 @@
 #include "classes/atom.h"
 #include "classes/bond.h"
 #include "classes/pattern.h"
+#include "classes/undostate.h"
 #include "base/prefs.h"
 #include "base/elements.h"
 
