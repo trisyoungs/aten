@@ -68,16 +68,17 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 		case (FC_ADDATOM):
 			if (activemodel == NULL) break;
 			// Set element
+			vec1.zero();
 			v = commands.variables.find("e");
 			if (v == NULL)
 			{
 				printf("'addatom' - No element 'e' variable set for new atom.\n");
-				i = activemodel->add_atom(0);
+				i = activemodel->add_atom(0, vec1);
 			}
 			else
 			{
-				if (has_zmapping) i = activemodel->add_atom(elements.find(v->get_as_char(),zmapping));
-				else i = activemodel->add_atom(elements.find(v->get_as_char()));
+				if (has_zmapping) i = activemodel->add_atom(elements.find(v->get_as_char(),zmapping), vec1);
+				else i = activemodel->add_atom(elements.find(v->get_as_char()), vec1);
 				v->reset();
 			}
 			// Set variable values
@@ -87,7 +88,8 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 		// Create 'n' new atoms at once in model
 		case (FC_CREATEATOMS):
 			if (activemodel == NULL) break;
-			for (atomid = 0; atomid < fn->datavar[0]->get_as_int(); atomid++) i = activemodel->add_atom(0);
+			vec1.zero();
+			for (atomid = 0; atomid < fn->datavar[0]->get_as_int(); atomid++) i = activemodel->add_atom(0, vec1);
 			result = TRUE;
 			break;
 		// Use parent model as atom template
@@ -100,9 +102,10 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 				break;
 			}
 			// Create the atoms template
+			vec1.zero();
 			for (i = parent->get_atoms(); i != NULL; i = i->next)
 			{
-				j = activemodel->add_atom(i->get_element());
+				j = activemodel->add_atom(i->get_element(), vec1);
 				j->copy_style(i);
 			}
 			result = TRUE;

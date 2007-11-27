@@ -100,7 +100,7 @@ void pdens::accumulate(model *sourcemodel)
 	static vec3<double> centre1, centre2, mimd;
 	static vec3<int> gridpoint;
 	static mat3<double> axes;
-	unitcell *cell = &sourcemodel->cell;
+	unitcell *cell = sourcemodel->get_cell();
 	double n, m, o;
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites[0]->get_pattern()->get_nmols(); m1++)
@@ -148,7 +148,7 @@ void pdens::finalise(model *sourcemodel)
 	int n, m, o;
 	double factor, numdensity;
 	// Normalise the pdens w.r.t. number of frames, number of central molecules, and number density of system
-	numdensity = sites[1]->get_pattern()->get_nmols() / sourcemodel->cell.get_volume() * (stepsize * stepsize * stepsize);
+	numdensity = sites[1]->get_pattern()->get_nmols() / sourcemodel->get_volume() * (stepsize * stepsize * stepsize);
 	factor = double(acc) * sites[0]->get_pattern()->get_nmols() * numdensity;
 	for (n=0; n<totalsteps; n++)
 		for (m=0; m<totalsteps; m++)

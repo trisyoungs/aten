@@ -137,7 +137,7 @@ class atomtype
 
 	public:
 	// Expand the allowed_el array with the element string provided
-	void set_elements(const char *ellist, forcefield *ff, ffatom *parent);
+	void set_elements(const char*, forcefield*);
 };
 
 #endif

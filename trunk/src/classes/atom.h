@@ -164,8 +164,6 @@ class atom
 	void accept_bond(bond *b) { bonds.add(b,0,0); }
 	// Delete the specified bond from the atom's local reference list
 	void detach_bond(bond*);
-	// Delete all bonds to specified atom (and the relevant partners)
-	void clear_bonds();
 	// Return the total bond order of the atom
 	int total_bond_order();
 	// Return the number of bonds of specified type to the atom
@@ -263,15 +261,6 @@ class atom
 	void remove_label(atom_label al) { if (labels&al) labels -= al; }
 	// Clear all labels from the atom
 	void clear_labels() { labels = 0; }
-
-	/*
-	// Adjustment
-	*/
-	public:
-	// Augment atom with its bound neighbours
-	void augment();
-	// Alter bondorder between this atom and supplied atom
-	void alter_bondorder(atom*,int);
 };
 
 #endif

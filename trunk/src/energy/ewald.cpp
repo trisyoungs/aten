@@ -85,7 +85,7 @@ void pattern::ewald_real_intrapattern_energy(model *srcmodel, energystore *estor
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
 	{
@@ -139,7 +139,7 @@ void pattern::ewald_real_interpattern_energy(model *srcmodel, pattern *xpnode, e
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	aoff1 = startatom;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -267,7 +267,7 @@ void pattern::ewald_correct_energy(model *srcmodel, energystore *estore)
 	alpha = prefs.get_ewald_alpha();
 	static vec3<double> mim_i;
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 
 	// Correct the reciprocal Ewald energy for charges interacting with themselves
 	chargesum = 0.0;
@@ -324,7 +324,7 @@ void pattern::ewald_real_intrapattern_forces(model *srcmodel)
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
@@ -392,7 +392,7 @@ void pattern::ewald_real_interpattern_forces(model *srcmodel, pattern *xpnode)
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 
 	aoff1 = startatom;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -516,7 +516,7 @@ void pattern::ewald_correct_forces(model *srcmodel)
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)

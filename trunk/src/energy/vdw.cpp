@@ -42,7 +42,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 	cutoff = prefs.get_vdw_cutoff();
 	vrs = prefs.get_vdw_radius_scale();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	aoff = startatom;
@@ -128,7 +128,7 @@ void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energyst
 	cutoff = prefs.get_vdw_cutoff();
 	vrs = prefs.get_vdw_radius_scale();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	aoff1 = startatom;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -193,7 +193,7 @@ void pattern::vdw_intrapattern_forces(model *srcmodel)
 	cutoff = prefs.get_vdw_cutoff();
 	vrs = prefs.get_vdw_radius_scale();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
 	{
@@ -286,7 +286,7 @@ void pattern::vdw_interpattern_forces(model *srcmodel, pattern *xpnode)
 	cutoff = prefs.get_vdw_cutoff();
 	vrs = prefs.get_vdw_radius_scale();
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	aoff1 = startatom;
 	// TODO Move loops so that we can load temporary forces for i then calculate all other forces on it in one go.
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"

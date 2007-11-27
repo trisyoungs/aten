@@ -21,23 +21,69 @@
 
 #include "model/model.h"
 #include "classes/atom.h"
+#include "classes/undostate.h"
 #include "base/elements.h"
 #include "base/master.h"
 
 // Add atom
-atom *model::add_atom(int newel)
+atom *model::add_atom(int newel, vec3<double> pos)
 {
-	// Private function to create a new atom in the model.
 	dbg_begin(DM_CALLS,"model::add_atom");
 	atom *newatom = atoms.add();
 	newatom->set_element(newel);
 	newatom->set_id(atoms.size() - 1);
+	newatom->r = pos;
 	mass += elements.mass(newel);
 	calculate_density();
-	lastatomdrawn = newatom;
-	//project_atom(i);
 	log_change(LOG_STRUCTURE);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_ATOM,newatom);
+	}
 	dbg_end(DM_CALLS,"model::add_atom");
+	return newatom;
+}
+
+// Add atom copy
+atom *model::add_copy(atom *source)
+{
+	dbg_begin(DM_CALLS,"model::add_copy");
+	atom *newatom = atoms.add();
+	newatom->copy(source);
+	newatom->set_id(atoms.size() - 1);
+	log_change(LOG_STRUCTURE);
+	mass += elements.mass(newatom->get_element());
+	calculate_density();
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_ATOM,newatom);
+	}
+	dbg_end(DM_CALLS,"model::add_copy");
+	return newatom;
+}
+
+// Add atom copy at specified position in list
+atom *model::add_copy(atom *afterthis, atom *source)
+{
+	dbg_begin(DM_CALLS,"model::add_copy");
+	atom *newatom = atoms.insert(afterthis);
+	//printf("Adding copy after... %li %li\n",afterthis,source);
+	newatom->copy(source);
+	renumber_atoms( (afterthis != NULL ? afterthis->prev : NULL) );
+	log_change(LOG_STRUCTURE);
+	mass += elements.mass(newatom->get_element());
+	calculate_density();
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_ATOM,newatom);
+	}
+	dbg_end(DM_CALLS,"model::add_copy");
 	return newatom;
 }
 
@@ -50,15 +96,16 @@ void model::remove_atom(atom *xatom)
 	if (mass < 0.0) mass = 0.0;
 	calculate_density();
 	// Renumber the ids of all atoms in the list after this one
-	atom *i = xatom->next;
-	while (i != NULL)
-	{
-		i->decrease_id();
-		i = i->next;
-	}
+	for (atom *i = xatom->next; i != NULL; i = i->next) i->decrease_id();
 	if (xatom->is_selected()) deselect_atom(xatom);
-	atoms.remove(xatom);
 	log_change(LOG_STRUCTURE);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(-UE_ATOM,xatom);
+	}
+	atoms.remove(xatom);
 	dbg_end(DM_CALLS,"model::remove_atom");
 }
 
@@ -71,8 +118,20 @@ void model::delete_atom(atom *xatom)
 	if (xatom == NULL) msg(DM_NONE,"No atom to delete.\n");
 	else
 	{
-		remove_atom(xatom);
+		// Remove measurements
 		remove_measurements(xatom);
+		// Delete All Bonds To Specific Atom
+		refitem<bond> *bref = xatom->get_bonds();
+		while (bref != NULL)
+		{
+			// Need to detach the bond from both atoms involved
+			bond *b = bref->item;
+			atom *j = b->get_partner(xatom);
+			unbond_atoms(xatom,j,b);
+			bref = xatom->get_bonds();
+		}
+		// Finally, delete the atom
+		remove_atom(xatom);
 	}
 	dbg_end(DM_CALLS,"model::delete_atom");
 }
@@ -84,11 +143,21 @@ void model::transmute_atom(atom *i, int el)
 	if (i == NULL) msg(DM_NONE,"No atom to transmute.\n");
 	else
 	{
-		mass -= elements.mass(i);
-		i->set_element(el);
-		mass += elements.mass(i);
-		calculate_density();
-		log_change(LOG_STRUCTURE);
+		int oldel = i->get_element();
+		if (oldel != el)
+		{
+			mass -= elements.mass(i);
+			i->set_element(el);
+			mass += elements.mass(i);
+			calculate_density();
+			log_change(LOG_STRUCTURE);
+			// Add the change to the undo state (if there is one)
+			if (recordingstate != NULL)
+			{
+				change *newchange = recordingstate->changes.add();
+				newchange->set(UE_TRANSMUTE,i->get_id(),oldel,el);
+			}
+		}
 	}
 	dbg_end(DM_CALLS,"model::transmute_atom");
 }
@@ -110,40 +179,43 @@ void model::clear_atoms()
 atom *model::find_atom(int id)
 {
 	// Find an atom according to its internal id
-	atom *i = atoms.first();
-	while (i != NULL)
+	if ((id >= atoms.size()) || (id < 0))
 	{
-		if (i->get_id() == id) return i;
-		i = i->next;
+		msg(DM_NONE,"Atom id %i is out of range for model '%s'\n",id,name.get());
+		return NULL;
 	}
-	msg(DM_NONE,"Atom id %i is out of range for model '%s'\n",id,name.get());
-	return NULL;
+	atom **modelatoms = get_staticatoms();
+	return modelatoms[id];
 }
 
 // Find atom by tempi
 atom *model::find_atom_by_tempi(int tempi)
 {
 	// Find an atom according to its tempi value
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->tempi == tempi) return i;
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->tempi == tempi) return i;
 	return NULL;
 }
 
 // Renumber Atoms
-void model::renumber_atoms()
+void model::renumber_atoms(atom *from)
 {
 	dbg_begin(DM_CALLS,"model::renumber_atoms");
-	int count = 0;
-	atom *i = atoms.first();
-	while (i != NULL)
+	static int count;
+	static atom *i;
+	if (from == NULL)
+	{
+		count = 0;
+		i = atoms.first();
+	}
+	else
+	{
+		count = from->get_id();
+		i = from->next;
+	}
+	for (i = i; i != NULL; i = i->next)
 	{
 		i->set_id(count);
 		count ++;
-		i = i->next;
 	}
 	dbg_end(DM_CALLS,"model::renumber_atoms");
 }

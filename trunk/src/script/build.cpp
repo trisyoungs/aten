@@ -43,14 +43,12 @@ bool script::command_build(command_node<script_command> *cmd)
 	{
 		// Draw unbound atom ('addatom <el>')
 		case (SC_ADDATOM):
-			i = m->add_atom(elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA));
-			i->r = penpos;
+			i = m->add_atom(elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA), penpos);
 			activeatom = i;
 			break;
 		// Draw atom with bond to 'activeatom' ('addchain <el>')
 		case (SC_ADDCHAIN):
-			i = m->add_atom(elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA));
-			i->r = penpos;
+			i = m->add_atom(elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA), penpos);
 			if (check_activeatom("addchain"))
 			{
 				m->bond_atoms(activeatom,i,BT_SINGLE);

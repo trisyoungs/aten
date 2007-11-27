@@ -58,7 +58,7 @@ class ring
 	// Sets the atom environments of the atoms in the ring to AE_AROMATIC
 	void set_aromatic();
 	// Augments the specified atom within the ring
-	void augment_atom(refitem<atom>*);
+	void augment_atom(refitem<atom>*, model *parent);
 	// Comparison operator between two rings
 	//bool same_as(ring*);
 	// Print out the data contained in the structure

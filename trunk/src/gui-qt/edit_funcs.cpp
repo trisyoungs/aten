@@ -31,32 +31,47 @@ void AtenForm::on_ElementUserButton_clicked(bool on)
 
 void AtenForm::on_BondCalcButton_clicked(bool on)
 {
-	master.get_currentmodel()->clear_bonding();
-	master.get_currentmodel()->calculate_bonding();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Calculate Bonding");
+	m->clear_bonding();
+	m->calculate_bonding();
+	m->end_undostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondClearButton_clicked(bool on)
 {
-	master.get_currentmodel()->clear_bonding();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Clear Bonding");
+	m->clear_bonding();
+	m->end_undostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondCalcSelButton_clicked(bool on)
 {
-	master.get_currentmodel()->selection_calculate_bonding();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Calculate Bonding (Selection)");
+	m->selection_calculate_bonding();
+	m->end_undostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondClearSelButton_clicked(bool on)
 {
-	master.get_currentmodel()->selection_clear_bonding();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Clear Bonding (Selection)");
+	m->selection_clear_bonding();
+	m->end_undostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondAugmentButton_clicked(bool on)
 {
-	master.get_currentmodel()->augment_bonding();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Augment Bonding");
+	m->augment_bonding();
+	m->end_undostate();
 	gui.refresh();
 }
 
@@ -80,6 +95,9 @@ void AtenForm::on_ElementEdit_editingFinished()
 
 void AtenForm::on_AddHydrogenButton_clicked(bool on)
 {
-	master.get_currentmodel()->hydrogen_satisfy();
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Hydrogen Satisfy");
+	m->hydrogen_satisfy();
+	m->end_undostate();
 	gui.refresh();
 }

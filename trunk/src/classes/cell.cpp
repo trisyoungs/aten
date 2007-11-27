@@ -404,7 +404,6 @@ vec3<double> unitcell::real_to_frac(const vec3<double> &v) const
 vec3<double> unitcell::frac_to_real(const vec3<double> &v) const
 {
 	// Convert the real coordinates supplied into fractional cell coordinates
-	//vec3<double> temp = v * axes;
 	return (v * axes_t);
 }
 

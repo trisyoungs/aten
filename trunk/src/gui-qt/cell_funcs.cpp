@@ -31,7 +31,7 @@ void AtenForm::refresh_cellpage()
 	if (cellpage_refreshing) return;
 	else cellpage_refreshing = TRUE;
 	// Update the widgets on the page to reflect the current model's unit cell
-	unitcell *cell = &master.get_currentmodel()->cell;
+	unitcell *cell = master.get_currentmodel()->get_cell();
 	cell_type ct = cell->get_type();
 	if (cell->get_type() == CT_NONE)
 	{
@@ -70,9 +70,13 @@ void AtenForm::cell_changed()
 	static vec3<double> lengths, angles;
 	lengths.set(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value());
 	angles.set(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
-	master.get_currentmodel()->cell.set(lengths, angles);
-	master.get_currentmodel()->log_change(LOG_VISUAL);
-	master.get_currentmodel()->calculate_density();
+	// Make changes
+	model *m = master.get_currentmodel();
+	if (m->get_celltype() == CT_NONE) m->begin_undostate("Add Cell");
+	else m->begin_undostate("Change Cell");
+	m->set_cell(lengths, angles);
+	m->end_undostate();
+	m->calculate_density();
 	gui.refresh();
 	cellpage_refreshing = FALSE;
 }
@@ -81,9 +85,13 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 {
 	// If the group is checked we store the current spin values in the current model.
 	if (checked) cell_changed();
-	else master.get_currentmodel()->cell.remove();
-	master.get_currentmodel()->log_change(LOG_VISUAL);
-	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	else
+	{
+		model *m = master.get_currentmodel();
+		m->begin_undostate("Remove Cell");
+		m->remove_cell();
+		m->end_undostate();
+	}
 	gui.refresh();
 }
 

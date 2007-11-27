@@ -204,7 +204,7 @@ void filter::set_target(model *m)
 	else
 	{
 		activemodel = m;
-		activecell = &m->cell;
+		activecell = m->get_cell();
 	}
 	dbg_end(DM_CALLS,"filter::set_target[model]");
 }

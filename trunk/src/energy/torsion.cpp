@@ -46,7 +46,7 @@ void pattern::torsion_energy(model *srcmodel, energystore *estore)
 			j = pb->get_atomid(1) + aoff;
 			k = pb->get_atomid(2) + aoff;
 			l = pb->get_atomid(3) + aoff;
-			phi = srcmodel->calculate_torsion(i,j,k,l);
+			phi = srcmodel->torsion(i,j,k,l);
 			params = pb->get_data()->get_params();
 			// Calculate energy
 			switch (pb->get_data()->get_funcform().torsionfunc)
@@ -119,7 +119,7 @@ void pattern::torsion_forces(model *srcmodel)
 	static ffparams params;
 	patbound *pb;
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)

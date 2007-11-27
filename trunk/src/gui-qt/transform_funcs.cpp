@@ -91,12 +91,12 @@ void AtenForm::translate_selection(int axis, int dir)
 	else if (ui.TranslateCellFrameRadio->isChecked())
 	{
 		// Translate selection in the cell axes of the model
-		if (master.get_currentmodel()->cell.get_type() == CT_NONE)
+		if (master.get_currentmodel()->get_celltype() == CT_NONE)
 		{
 			msg(DM_NONE,"No unit cell defined for model.\n");
 			return;
 		}
-		tvec = master.get_currentmodel()->cell.get_axes().get(axis);
+		tvec = master.get_currentmodel()->get_cell()->get_axes().get(axis);
 		tvec *= double(dir) * step;
 		master.get_currentmodel()->translate_selection_local(tvec);
 	}

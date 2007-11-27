@@ -273,7 +273,7 @@ bool mc_method::disorder(model* destmodel)
 	}
 	noldpatterns = destmodel->get_npatterns();
 	noldatoms = destmodel->get_natoms();
-	cell = &destmodel->cell;
+	cell = destmodel->get_cell();
 	// Fix all patterns in the destmodel
 	destmodel->set_patterns_fixed(destmodel->get_npatterns());
 

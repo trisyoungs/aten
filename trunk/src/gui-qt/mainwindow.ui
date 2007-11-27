@@ -6034,6 +6034,25 @@
     <addaction name="actionModelNext" />
     <addaction name="actionModelPrevious" />
    </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="ToolbarMenu" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionCommandToolBarVisibility" />
+     <addaction name="actionEditToolBarVisibility" />
+     <addaction name="actionFileToolBarVisibility" />
+     <addaction name="actionSelectToolBarVisibility" />
+     <addaction name="actionStyleToolBarVisibility" />
+     <addaction name="actionTrajectoryToolBarVisibility" />
+     <addaction name="actionMouseToolBarVisibility" />
+    </widget>
+    <addaction name="actionPreferences" />
+    <addaction name="ToolbarMenu" />
+   </widget>
    <widget class="QMenu" name="FileMenu" >
     <property name="title" >
      <string>&amp;File</string>
@@ -6061,7 +6080,8 @@
     <property name="title" >
      <string>&amp;Edit</string>
     </property>
-    <addaction name="actionUndo" />
+    <addaction name="actionEditUndo" />
+    <addaction name="actionEditRedo" />
     <addaction name="separator" />
     <addaction name="actionEditCut" />
     <addaction name="actionEditCopy" />
@@ -6073,25 +6093,6 @@
     <addaction name="separator" />
     <addaction name="actionEditSelectAll" />
     <addaction name="actionEditSelectNone" />
-   </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <widget class="QMenu" name="ToolbarMenu" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-     <addaction name="actionCommandToolBarVisibility" />
-     <addaction name="actionEditToolBarVisibility" />
-     <addaction name="actionFileToolBarVisibility" />
-     <addaction name="actionSelectToolBarVisibility" />
-     <addaction name="actionStyleToolBarVisibility" />
-     <addaction name="actionTrajectoryToolBarVisibility" />
-     <addaction name="actionMouseToolBarVisibility" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="ToolbarMenu" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -7003,12 +7004,15 @@
     <string>Load &amp;Grid Data</string>
    </property>
   </action>
-  <action name="actionUndo" >
+  <action name="actionEditUndo" >
    <property name="enabled" >
     <bool>false</bool>
    </property>
    <property name="text" >
     <string>&amp;Undo</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Z</string>
    </property>
   </action>
   <action name="actionSelectToolBarVisibility" >
@@ -7026,6 +7030,14 @@
    </property>
    <property name="toolTip" >
     <string>Select</string>
+   </property>
+  </action>
+  <action name="actionEditRedo" >
+   <property name="text" >
+    <string>Redo</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Y</string>
    </property>
   </action>
  </widget>

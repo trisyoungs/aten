@@ -44,7 +44,7 @@ void pattern::angle_energy(model *srcmodel, energystore *estore)
 			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(1) + aoff;
 			k = pb->get_atomid(2) + aoff;
-			theta = srcmodel->calculate_angle(i,j,k);
+			theta = srcmodel->angle(i,j,k);
 			// Grab pointer to function data
 			params = pb->get_data()->get_params();
 			// Calculate energy contribution
@@ -103,7 +103,7 @@ void pattern::angle_forces(model *srcmodel)
 	static ffparams params;
 	static patbound *pb;
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
 	{

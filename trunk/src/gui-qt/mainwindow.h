@@ -91,6 +91,8 @@ class AtenForm : public QMainWindow
 	// Editing Actions
 	*/
 	private slots:
+	void on_actionEditUndo_triggered(bool checked);
+	void on_actionEditRedo_triggered(bool checked);
 	void on_actionEditCut_triggered(bool checked);
 	void on_actionEditCopy_triggered(bool checked);
 	void on_actionEditPaste_triggered(bool checked);
@@ -398,6 +400,10 @@ class AtenForm : public QMainWindow
 	private slots:
 	// Cancel progress dialog
 	void progress_cancel();
+
+	public:
+	// Update undo/redo labels
+	void update_undoredo();
 
 	/*
 	// Local Widgets

@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "model/model.h"
 #include "classes/ring.h"
 #include "classes/bond.h"
 #include "base/elements.h"
@@ -205,4 +206,36 @@ void ring::add_atoms_to_reflist(reflist<atom> *rlist, atom *i)
 		if (ra->item != i) rlist->add(ra->item,0,0);
 		ra = ra->next;
 	}
+}
+
+// Augment ring atom
+void ring::augment_atom(refitem<atom> *refatom, model *parent)
+{
+	dbg_begin(DM_CALLS,"ring::augment_atom");
+	// Assumes current bond order differences are in i->tempi
+	atom *i, *j;
+	i = refatom->item;
+	if (i->tempi < 0)
+	{
+		// Atom has fewer bonds than expected, so try to augment within ring.
+		j = get_next(refatom)->item;
+		if (j->tempi < 0) parent->augment_bond(i,j,+1);
+		if (i->tempi != 0)
+		{
+			j = get_prev(refatom)->item;
+			if (j->tempi < 0) parent->augment_bond(i,j,+1);
+		}
+	}
+	else if (i->tempi > 0)
+	{
+		// Atom has more bonds than expected, so try to de-augment within ring.
+		j = get_next(refatom)->item;
+		if (j->tempi > 0) parent->augment_bond(i,j,-1);
+		if (i->tempi != 0)
+		{
+			j = get_prev(refatom)->item;
+			if (j->tempi > 0) parent->augment_bond(i,j,-1);
+		}
+	}
+	dbg_end(DM_CALLS,"ring::augment_atom");
 }

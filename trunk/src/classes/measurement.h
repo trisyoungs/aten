@@ -64,7 +64,6 @@ class measurement
 	void set_atom(int n, atom *i) { atoms[n] = i; }
 	// Return atoms array
 	atom **get_atoms() { return atoms; }
-
 };
 
 #endif

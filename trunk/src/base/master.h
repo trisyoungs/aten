@@ -106,7 +106,7 @@ class master_data
 	private:
 	// List of loaded forcefields
 	list<forcefield> ffs;
-	// Currently-selected FF
+	// Currently-selected FF (in GUI, selection in ff_flist)
 	forcefield *currentff;
 
 	public:
@@ -117,13 +117,11 @@ class master_data
 	// Set active forcefield
 	void set_currentff(forcefield *ff) { currentff = ff; }
 	// Set active forcefield by ID
-	void set_currentff(int id) { currentff = ffs[id]; }
+	void set_currentff_by_id(int id) { currentff = ffs[id]; }
 	// Return the active forcefield
 	forcefield *get_currentff() { return currentff; }
-	// Return nth item in the forcefield list
-	forcefield *get_ff(int n) { return ffs[n]; }
 	// Return ID of current forcefield
-	int get_currentffindex() { return ffs.index_of(currentff); }
+	int get_currentff_id() { return ffs.index_of(currentff); }
 	// Remove specified forcefield
 	void remove_ff(forcefield*);
 	// Load the specified forcefield

@@ -76,13 +76,13 @@ class unitcell
 
 	public:
 	// Remove the cell definition (i.e. set 'type' to CT_NONE)
-	void remove() { type = CT_NONE; origin.zero(); }
+	void reset() { type = CT_NONE; origin.zero(); }
 	// Set lengths and angles and calculates matrix
-	void set(const vec3<double>&, const vec3<double>&);
+	void set(const vec3<double> &lengths, const vec3<double> &angles);
 	// Set matrix and calculates lengths and angles
-	void set(const mat3<double>&);
+	void set(const mat3<double> &axes);
 	// Set lengths and calculates matrix
-	void set_lengths(const vec3<double> &l) { set(l,angles); }
+	void set_lengths(const vec3<double> &lengths) { set(lengths,angles); }
 	// Set individual length
 	void set_length(int i, double d) { lengths.set(i,d); }
 	// Set individual angle

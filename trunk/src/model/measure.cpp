@@ -60,10 +60,38 @@ void model::measure_torsion(atom *i, atom *j, atom *k, atom *l)
 	dbg_end(DM_CALLS,"model::measure_torsion");
 }
 
+// Remove specific measurement
+void model::remove_measurement(measurement *me)
+{
+	dbg_begin(DM_CALLS,"model::remove_measurement");
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		atom **atoms = me->get_atoms();
+		geom_type type = me->get_type();
+		switch (type)
+		{
+			case (GT_DISTANCE):
+				newchange->set(-UE_MEASUREMENT, type, atoms[0]->get_id(), atoms[1]->get_id());
+				break;
+			case (GT_ANGLE):
+				newchange->set(-UE_MEASUREMENT, type, atoms[0]->get_id(), atoms[1]->get_id(), atoms[2]->get_id());
+				break;
+			case (GT_TORSION):
+				newchange->set(-UE_MEASUREMENT, type, atoms[0]->get_id(), atoms[1]->get_id(), atoms[2]->get_id(), atoms[3]->get_id());
+				break;
+		}
+	}
+	measurements.remove(me);
+	dbg_end(DM_CALLS,"model::remove_measurement");
+}
+
 // Clear measurements of specific type
 void model::remove_measurements(geom_type gt)
 {
 	dbg_begin(DM_CALLS,"model::remove_measurements");
+	printf("model::remove_measurements not done.\n");
 	dbg_end(DM_CALLS,"model::remove_measurements");
 }
 
@@ -74,8 +102,7 @@ void model::remove_measurements(atom *xatom)
 	dbg_begin(DM_CALLS,"model::remove_measurements[atom]");
 	int n;
 	bool remove;
-	measurement *lastm, *m;
-	lastm = NULL;
+	measurement *nextm, *m;
 	static atom **atoms;
 	m = measurements.first();
 	while (m != NULL)
@@ -83,7 +110,13 @@ void model::remove_measurements(atom *xatom)
 		remove = FALSE;
 		atoms = m->get_atoms();
 		for (n=0; n<natoms_from_GT(m->get_type()); n++) if (atoms[n] == xatom) remove = TRUE;
-		remove ? measurements.remove_and_get_next(m) : m = m->next;
+		if (remove)
+		{
+			nextm = m->next;
+			remove_measurement(m);
+			m = nextm;
+		}
+		else m = m->next;
 	}
 	dbg_end(DM_CALLS,"model::remove_measurements[atom]");
 }
@@ -115,36 +148,29 @@ void model::add_measurement(geom_type gt, atom* first, ...)
 	}
 	va_end(vars);
 	// If we succeeded in adding all the atoms we required, set the value of the measurement
-	if (newm != NULL) newm->calculate(&cell);
+	if (newm != NULL)
+	{
+		newm->calculate(&cell);
+		// Add the change to the undo state (if there is one)
+		if (recordingstate != NULL)
+		{
+			change *newchange = recordingstate->changes.add();
+			atoms = newm->get_atoms();
+			switch (gt)
+			{
+				case (GT_DISTANCE):
+					newchange->set(UE_MEASUREMENT, gt, atoms[0]->get_id(), atoms[1]->get_id());
+					break;
+				case (GT_ANGLE):
+					newchange->set(UE_MEASUREMENT, gt, atoms[0]->get_id(), atoms[1]->get_id(), atoms[2]->get_id());
+					break;
+				case (GT_TORSION):
+					newchange->set(UE_MEASUREMENT, gt, atoms[0]->get_id(), atoms[1]->get_id(), atoms[2]->get_id(), atoms[3]->get_id());
+					break;
+			}
+		}
+	}
 	dbg_end(DM_CALLS,"model::add_measurement");
-}
-
-// Add Measurement (reflist)
-void model::add_measurement(geom_type gt, reflist<atom> &rl)
-{
-	dbg_begin(DM_CALLS,"model::add_measurement[reflist]");
-	// Check number of atoms supplied
-	if (rl.size() != natoms_from_GT(gt))
-	{
-		printf("add_measurement : Not enough atoms in supplied list to add measurement - needed %i, got %i.\n",natoms_from_GT(gt),rl.size());
-		dbg_end(DM_CALLS,"model::add_measurement[reflist]");
-		return;
-	}
-	refitem<atom> *ri = rl.first();
-	// Pass to atom routine
-	switch (gt)
-	{
-		case (GT_DISTANCE):
-			add_measurement(gt,ri->item,ri->next->item);
-			break;
-		case (GT_ANGLE):
-			add_measurement(gt,ri->item,ri->next->item,ri->next->next->item);
-			break;
-		case (GT_TORSION):
-			add_measurement(gt,ri->item,ri->next->item,ri->next->next->item, ri->next->next->next->item);
-			break;
-	}
-	dbg_end(DM_CALLS,"model::add_measurement[reflist]");
 }
 
 // Add measurements in selection
@@ -294,46 +320,24 @@ measurement *model::find_measurement(geom_type gt, atom* first, ...)
 	return result;
 }
 
-// Find Measurement (reflist)
-measurement *model::find_measurement(geom_type gt, reflist<atom> &rl)
+// Calculate distance
+double model::distance(int i, int j)
 {
-	dbg_begin(DM_CALLS,"model::find_measurement[reflist]");
-	measurement *result;
-	// Check number of atoms supplied
-	if (rl.size() != natoms_from_GT(gt))
-	{
-		printf("find_measurement : Not enough atoms in supplied list to add measurement - needed %i, got %i.\n",natoms_from_GT(gt),rl.size());
-		dbg_end(DM_CALLS,"model::find_measurement[reflist]");
-		return NULL;
-	}
-	refitem<atom> *ri = rl.first();
-	// Pass to atom routine
-	switch (gt)
-	{
-		case (GT_DISTANCE):
-			result = find_measurement(gt,ri->item,ri->next->item);
-			break;
-		case (GT_ANGLE):
-			result = find_measurement(gt,ri->item,ri->next->item,ri->next->next->item);
-			break;
-		case (GT_TORSION):
-			result = find_measurement(gt,ri->item,ri->next->item,ri->next->next->item, ri->next->next->next->item);
-			break;
-	}
-	dbg_end(DM_CALLS,"model::find_measurement[reflist]");
-	return result;
+	// Make sure we have a staticatoms array
+	atom **temp = get_staticatoms();
+	return cell.distance(temp[i], temp[j]);
 }
 
-// Calculate angle
-double model::calculate_angle(int i, int j, int k)
+// Calculate angle (radians)
+double model::angle(int i, int j, int k)
 {
 	// Make sure we have a staticatoms array
 	atom **temp = get_staticatoms();
 	return cell.angle(temp[i], temp[j], temp[k]);
 }
 
-// Calculate angle
-double model::calculate_torsion(int i, int j, int k, int l)
+// Calculate angle (radians)
+double model::torsion(int i, int j, int k, int l)
 {
 	// Make sure we have a staticatoms array
 	atom **temp = get_staticatoms();

@@ -93,7 +93,7 @@ void rdf::accumulate(model *sourcemodel)
 	dbg_begin(DM_CALLS,"rdf::accumulate");
 	int m1, m2, bin;
 	static vec3<double> centre1, centre2, mimd;
-	unitcell *cell = &sourcemodel->cell;
+	unitcell *cell = sourcemodel->get_cell();
 	double dist;
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites[0]->get_pattern()->get_nmols(); m1++)
@@ -126,7 +126,7 @@ void rdf::finalise(model *sourcemodel)
 	// Normalise the rdf w.r.t. number of frames and number of central molecules
 	for (n=0; n<nbins; n++) data[n] /= double(acc) * sites[0]->get_pattern()->get_nmols() ;
 	// Normalise according to number density of sites in RDF shells
-	numdensity = sites[1]->get_pattern()->get_nmols() / sourcemodel->cell.get_volume();
+	numdensity = sites[1]->get_pattern()->get_nmols() / sourcemodel->get_volume();
 	for (n=0; n<nbins; n++)
 	{
 		r1 = lower + double(n) * binwidth;

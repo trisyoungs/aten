@@ -30,6 +30,50 @@
 #include <math.h>
 #include <iostream>
 
+// Set cell (vectors)
+void model::set_cell(vec3<double> lengths, vec3<double> angles)
+{
+	dbg_begin(DM_CALLS,"model::set_cell[vectors]");
+	mat3<double> oldaxes = cell.get_axes_transpose();
+	// Set new axes 
+	cell.set(lengths, angles);
+	log_change(LOG_VISUAL);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_CELL, &oldaxes, &cell.get_axes_transpose());
+	}
+	dbg_end(DM_CALLS,"model::set_cell[vectors]");
+}
+
+// Set cell (axes)
+void model::set_cell(mat3<double> axes)
+{
+	dbg_begin(DM_CALLS,"model::set_cell[axes]");
+	mat3<double> oldaxes = cell.get_axes_transpose();
+	// Set new axes 
+	cell.set(axes);
+	log_change(LOG_VISUAL);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_CELL, &oldaxes, &axes);
+	}
+	dbg_end(DM_CALLS,"model::set_cell[axes]");
+}
+
+// Remove cell
+void model::remove_cell()
+{
+	dbg_begin(DM_CALLS,"model::remove_cell");
+	cell.reset();
+	log_change(LOG_VISUAL);
+	log_change(LOG_STRUCTURE);
+	dbg_end(DM_CALLS,"model::remove_cell");
+}
+
 // Fold All Atoms
 void model::fold_all_atoms()
 {
@@ -95,8 +139,7 @@ void model::apply_symmop(symmop* so, atom *lastatom)
 	while (i != NULL)
 	{
 		// Add a new atom and get the position of the old atom
-		newatom = add_atom(i->get_element());
-		newr = i->r;
+		newatom = add_atom(i->get_element(), i->r);
 		// Apply the rotation and translation
 		newr *= rotmat;
 		newr -= trans;

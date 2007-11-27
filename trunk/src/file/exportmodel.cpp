@@ -45,7 +45,7 @@ void filter::export_model(model *sourcemodel)
 	int n;
 	// Set up variables
 	commands.variables.set_model_variables(sourcemodel);
-	commands.variables.set_cell_variables(&sourcemodel->cell);
+	commands.variables.set_cell_variables(sourcemodel->get_cell());
 	// Open file and set target
 	if (!set_output(sourcemodel->get_filename()))
 	{

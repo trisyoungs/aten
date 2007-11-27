@@ -189,7 +189,7 @@ void gui_qt::update_labels()
 	}
 	s += ftoa(m->get_mass());
 	s += " g mol<sup>-1</sup> ";
-	cell_type ct = m->cell.get_type();
+	cell_type ct = m->get_celltype();
 	if (ct != CT_NONE)
 	{
 		s += "(";
@@ -267,7 +267,7 @@ void gui_qt::refresh()
 {
 	if (!does_exist) return;
 	// Update labels on status bar
-	gui.update_labels();
+	update_labels();
 	// Update contents of the atom list
 	mainwindow->refresh_atompage();
 	// Update the contents of the cell page
@@ -275,7 +275,9 @@ void gui_qt::refresh()
 	// Update the disorder page
 	mainwindow->refresh_disorderpage();
 	// Update trajectory playback controls
-	gui.update_trajcontrols();
+	update_trajcontrols();
+	// Update Undo/Redo menuitems
+	mainwindow->update_undoredo();
 	// Request redraw of the main canvas
 	mainview.postredisplay();
 	// If the model save_point is recent, disable save button

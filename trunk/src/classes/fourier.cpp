@@ -168,7 +168,7 @@ void fourier_data::prepare(model *srcmodel, vec3<int> newkvec)
 		clear();
 		create(srcmodel->get_natoms(), newkvec, newkmax);
 	}
-	cell = &srcmodel->cell;
+	cell = srcmodel->get_cell();
 	// Now we have suitable arrays, we can calculate and store the reciprocal coordinate vectors
 	calculate(srcmodel);
 	dbg_end(DM_CALLS,"fourier::prepare");
