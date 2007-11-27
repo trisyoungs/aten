@@ -79,8 +79,8 @@ bool filter::do_actions(command_node<filter_command> *&fn)
 			activemodel->calculate_density();
 			// Print out some useful info on the model that we've just read in
 			msg(DM_NONE,"Atoms  : %i\n",activemodel->get_natoms());
-			msg(DM_NONE,"Cell   : %s\n",text_from_CT(activemodel->cell.get_type()));
-			if (activemodel->cell.get_type() != 0) activemodel->cell.print();
+			msg(DM_NONE,"Cell   : %s\n",text_from_CT(activemodel->get_celltype()));
+			if (activemodel->get_celltype() != 0) activemodel->get_cell()->print();
 			// Lastly, reset all the log points and start afresh
 			activemodel->reset_logs();
 			activemodel->update_save_point();

@@ -39,8 +39,8 @@ bool script::command_cell(command_node<script_command> *cmd)
 	{
 		// Print cell information ('printcell')
 		case (SC_PRINTCELL):
-			msg(DM_NONE,"Unit cell type for model '%s' is %s\n",m->get_name(),text_from_CT(m->cell.get_type()));
-			if (m->cell.get_type() != 0) m->cell.print();
+			msg(DM_NONE,"Unit cell type for model '%s' is %s\n",m->get_name(),text_from_CT(m->get_celltype()));
+			if (m->get_celltype() != 0) m->get_cell()->print();
 			break;
 		// Replicate cell ('replicate <negx negy negz> <posx posy posz>')
 		case (SC_REPLICATECELL):
@@ -50,7 +50,7 @@ bool script::command_cell(command_node<script_command> *cmd)
 			break;
 		// Set/create unit cell ('setcell <a b c> <alpha beta gamma>')
 		case (SC_SETCELL):
-			m->cell.set(cmd->get_vector3d(0),cmd->get_vector3d(3));
+			m->set_cell(cmd->get_vector3d(0),cmd->get_vector3d(3));
 			m->log_change(LOG_VISUAL);
 			m->calculate_density();
 			break;

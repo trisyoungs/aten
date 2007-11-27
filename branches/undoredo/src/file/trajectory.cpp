@@ -55,14 +55,14 @@ bool filter::read_trajectory(model *destmodel, bool readheader)
 			return FALSE;	
 		}
 		commands.variables.set("natoms",parent->get_natoms());
-		commands.variables.set("cell.type",lower_case(text_from_CT(parent->cell.get_type())));
+		commands.variables.set("cell.type",lower_case(text_from_CT(parent->get_celltype())));
 		set_target(destmodel);
 		destmodel->clear();
 	}
 	else
 	{
 		commands.variables.set("natoms",destmodel->get_natoms());
-		commands.variables.set("cell.type",lower_case(text_from_CT(destmodel->cell.get_type())));
+		commands.variables.set("cell.type",lower_case(text_from_CT(destmodel->get_celltype())));
 	}
 	// Run the header import commands on the file...
 	command_node<filter_command> *fn = commands.commandlist.first();

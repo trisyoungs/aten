@@ -73,7 +73,7 @@ void restraints::add_ij(reflist<atom> &rl)
 	refitem<atom> *ri = rl.first();
 	newdist->i = ri->item;
 	newdist->j = ri->next->item;
-	newdist->rij = ownermodel->cell.distance(newdist->i,newdist->j);
+	newdist->rij = ownermodel->distance(newdist->i, newdist->j);
 	dbg_end(DM_CALLS,"restraints::add_ij");
 }
 

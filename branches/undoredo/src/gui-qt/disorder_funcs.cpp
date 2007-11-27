@@ -28,7 +28,7 @@ void AtenForm::refresh_disorderpage()
 {
 	model *m = master.get_currentmodel();
 	// (De)sensitize controls
-	if (m->cell.get_type() == CT_NONE)
+	if (m->get_celltype() == CT_NONE)
 	{
 		ui.DisorderStartButton->setDisabled(TRUE);
 		ui.AddComponentButton->setDisabled(FALSE);
@@ -108,7 +108,7 @@ void AtenForm::on_AddComponentButton_clicked(bool checked)
 {
 	// If the current model is periodic, refuse to add it
 	model *m = master.get_currentmodel();
-	if (m->cell.get_type() != CT_NONE)
+	if (m->get_celltype() != CT_NONE)
 	{
 		msg(DM_NONE,"Model is periodic - can't add to component list.\n");
 		return;

@@ -26,7 +26,7 @@
 enum change_log { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };
 
 // State change events
-enum undo_event { UE_NONE, UE_ATOM, UE_BOND, UE_MEASUREMENT, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER };
+enum undo_event { UE_NONE, UE_ATOM, UE_BOND, UE_MEASUREMENT, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER, UE_CELL };
 
 // State change directions
 enum undo_dir { UD_PLUS, UD_MINUS };

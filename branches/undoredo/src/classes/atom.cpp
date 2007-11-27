@@ -268,7 +268,7 @@ atom_geom atom::get_geometry(model *parent)
 		case (2):
 			b1 = get_bonds()->item;
 			b2 = get_bonds()->next->item;
-			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
+			angle = parent->angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
 			result = (angle > 170.0 ? AG_LINEAR : AG_TETRAHEDRAL);
 			break;
 		case (3):
@@ -276,13 +276,13 @@ atom_geom atom::get_geometry(model *parent)
 			bref2 = get_bonds()->next;
 			b1 = bref1->item;
 			b2 = bref2->item;
-			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
+			angle = parent->angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
 			largest = angle;
 			b2 = bref2->next->item;
-			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
+			angle = parent->angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
 			if (angle > largest) largest = angle;
 			b1 = bref1->next->item;
-			angle = parent->cell.angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
+			angle = parent->angle(b1->get_partner(this),this,b2->get_partner(this)) * DEGRAD;
 			if (angle > largest) largest = angle;
 			result = (largest > 170.0 ? AG_TSHAPE : (largest > 115.0 ? AG_TRIGPLANAR : AG_TETRAHEDRAL));
 			break;
@@ -296,7 +296,7 @@ atom_geom atom::get_geometry(model *parent)
 				bref2 = bref1->next;
 				while (bref2 != NULL)
 				{
-					angle += parent->cell.angle(bref1->item->get_partner(this),this,bref2->item->get_partner(this)) * DEGRAD;
+					angle += parent->angle(bref1->item->get_partner(this),this,bref2->item->get_partner(this)) * DEGRAD;
 					//printf("Case 4: added an angle.\n");
 					bref2 = bref2->next;
 				}

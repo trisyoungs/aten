@@ -318,7 +318,7 @@ vec3<double> pattern::calculate_cog(model *srcmodel, int mol)
 	int offset = startatom + mol*natoms;
 	msg(DM_VERBOSE,"pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nmols=%i)\n", name.get(), mol, offset, nmols);
 	static vec3<double> cog, mim_i;
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	cog.zero();
 	atom **modelatoms = srcmodel->get_staticatoms();
 	for (int a1=offset; a1<offset+natoms; a1++)
@@ -344,7 +344,7 @@ vec3<double> pattern::calculate_com(model *srcmodel, int mol)
 	int offset = startatom + mol*natoms;
 	com.zero();
 	msg(DM_VERBOSE,"molecule_com : Offset = %i\n",offset);
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	atom **modelatoms = srcmodel->get_staticatoms();
 	for (int a1=offset; a1<offset+natoms; a1++)
 	{

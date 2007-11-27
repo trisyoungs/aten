@@ -219,6 +219,21 @@ void change::reverse(model *m)
 				m->transmute_atom(i,data[2]);
 			}
 			break;
+		// Cell change - from matrix[1] to matrix[0] (UD_PLUS) or vice versa (UD_MINUS)
+		case (UE_CELL):
+			if (direction == UD_PLUS)
+			{
+				msg(DM_VERBOSE,"Reversing cell change\n");
+				if (matrixdata[0] == NULL) m->remove_cell();
+				else m->set_cell(*matrixdata[0]);
+			}
+			else
+			{
+				msg(DM_VERBOSE,"Reversing cell change\n");
+				if (matrixdata[1] == NULL) m->remove_cell();
+				else m->set_cell(*matrixdata[1]);
+			}
+			break;
 		default:
 			printf("Don't know how to reverse change (type = %i)\n", type);
 			break;

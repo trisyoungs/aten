@@ -191,10 +191,26 @@ class model
 	int spgrpsetting;
 	// List of symmetry generators for crystal structure (read in from file)
 	list<symmop> symmops;
-
-	public:
 	// Cell definition (also contains reciprocal cell definition)
 	unitcell cell;
+
+	public:
+	// Return pointer to unit cell structure
+	unitcell *get_cell() { return &cell; }
+	// Return type of unit cell
+	cell_type get_celltype() { return cell.get_type(); }
+	// Return volume of cell
+	double get_volume() { return cell.get_volume(); }
+	// Return cell axes (untransposed)
+	mat3<double> get_cellaxes() { return cell.get_axes(); }
+	// Return cell origin
+	vec3<double> get_cellorigin() { return cell.get_origin(); }
+	// Set cell (vectors)
+	void set_cell(vec3<double> lengths, vec3<double> angles);
+	// Set cell (axes)
+	void set_cell(mat3<double> axes);
+	// Remove cell definition
+	void remove_cell();
 	// Fold all atoms into the cell
 	void fold_all_atoms();
 	// Sets the spacegroup of the model
@@ -504,10 +520,15 @@ class model
 	// Geometry (using staticatoms[])
 	*/
 	public:
+	// Calculate distance
+	double distance(int, int);
+	double distance(atom *i, atom *j) { return cell.distance(i,j); }
 	// Calculate angle
-	double calculate_angle(int, int, int);
+	double angle(int, int, int);
+	double angle(atom *i, atom *j, atom *k) { return cell.angle(i,j,k); }
 	// Calculate torsion
-	double calculate_torsion(int, int, int, int);
+	double torsion(int, int, int, int);
+	double torsion(atom *i, atom *j, atom *k, atom *l) { return cell.torsion(i,j,k,l); }
 
 	/*
 	// Transformations

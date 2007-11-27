@@ -189,7 +189,7 @@ void gui_qt::update_labels()
 	}
 	s += ftoa(m->get_mass());
 	s += " g mol<sup>-1</sup> ";
-	cell_type ct = m->cell.get_type();
+	cell_type ct = m->get_celltype();
 	if (ct != CT_NONE)
 	{
 		s += "(";
