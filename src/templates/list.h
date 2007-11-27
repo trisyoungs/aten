@@ -63,8 +63,10 @@ template <class T> class list
 	T *first() { return list_head; }
 	// Returns the list tail
 	T *last() { return list_tail; }
-	// Add an item to the list
+	// Append an item to the list
 	T *add();
+	// Insert an item into the list (after supplied item)
+	T *insert(T* before);
 	// Element access operator
 	T *operator[](int);
 	// Add the item into this list
@@ -97,9 +99,9 @@ template <class T> class list
 	// Shift item down (towards tail)
 	void shift_down(T*);
 	// Move item to end of list
-	void move_to_end(T*);			
+	void move_to_end(T*);
 	// Move item to start of list
-	void move_to_start(T*);			
+	void move_to_start(T*);
 };
 
 // Constructors
@@ -140,8 +142,26 @@ template <class T> T* list<T>::add()
 	return newitem;
 }
 
+// Insert new item after supplied item
+template <class T> T *list<T>::insert(T* newprev)
+{
+	T *newitem = new T;
+	// Get pointer to next item after newprev (our newnext)
+	T *newnext = (newprev == NULL ? list_head : newprev->next);
+	// Re-point newprev and the new item
+	if (newprev != NULL) newprev->next = newitem;
+	else list_head = newitem;
+	newitem->prev = newprev;
+	// Re-point newnext and the new item
+	if (newnext != NULL) newnext->prev = newitem;
+	else list_tail = newitem;
+	newitem->next = newnext;
+	nitems ++;
+	return newitem;
+}
+
 // Element access operator
-template <class T> T* list<T>::operator[](int index)
+template <class T> T *list<T>::operator[](int index)
 {
 	if (index >= nitems)
 	{

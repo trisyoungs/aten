@@ -40,7 +40,7 @@ void canvas_master::render_model_labels()
 	static ffatom *ffa;
 	static vec3<double> cellorigin;
 	// If we have a unit cell we must account for the origin translation
-	cellorigin = displaymodel->cell.get_origin();
+	cellorigin = displaymodel->get_cellorigin();
 	for (atom *i = displaymodel->get_atoms(); i != NULL; i = i->next)
 	{
 		// Check if atom has labels
@@ -97,7 +97,7 @@ void canvas_master::render_model_measurements()
 	static char text[256];
 	static atom **atoms;
 	// Grab cell origin to get correct positioning
-	cellorigin = displaymodel->cell.get_origin();
+	cellorigin = displaymodel->get_cellorigin();
 	glPushMatrix();
 	  glTranslated(cellorigin.x, cellorigin.y, cellorigin.z);
 	  // Go through list of measurements
@@ -170,23 +170,27 @@ void canvas_master::render_model_cell()
 	glColor3iv(prefs.colours[COL_PEN]);
 	glLineWidth(1.0f);
 	static vec3<double> origin;
-	if (displaymodel->cell.get_type() != CT_NONE)
+	if (displaymodel->get_celltype() != CT_NONE)
 	{
 		// All cell types are transformations of a unit cube.
 		// So, multiply modelview matrix by cell axes matrix and draw a unit cube
-		mat4<double> mat = displaymodel->cell.get_axes_as_mat4();
+		mat4<double> mat = displaymodel->get_cell()->get_axes_as_mat4();
 		double glmat[16];
 		mat.get_column_major(glmat);
 		glPushMatrix();
 		  glMultMatrixd(glmat);
 		  if (prefs.should_render(VO_CELL)) glCallList(list[GLOB_WIREUNITCUBE]);
-		  vec3<double> l = displaymodel->cell.get_lengths();
-		  glTranslated(-0.5,-0.5,-0.5);
-		  glScaled(1.0/l.x,1.0/l.y,1.0/l.z);
-		  if (prefs.should_render(VO_CELLAXES)) glCallList(list[GLOB_CELLAXES]);
+		  vec3<double> l = displaymodel->get_cell()->get_lengths();
+		  // Render cell axis arrows
+		  if (prefs.should_render(VO_CELLAXES))
+		  {
+			glTranslated(-0.5,-0.5,-0.5);
+			glScaled(1.0/l.x,1.0/l.y,1.0/l.z);
+			glCallList(list[GLOB_CELLAXES]);
+		  }
 		glPopMatrix();
 		// Here, translate the initial drawing position to be 0,0,0 in cell coordinates
-		origin = displaymodel->cell.get_origin();
+		origin = displaymodel->get_cellorigin();
 		glTranslated(origin.x,origin.y,origin.z);
 	}
 }

@@ -146,7 +146,7 @@ void canvas_master::render_scene(model *source)
 	  // Render surfaces
 	  if (prefs.should_render(VO_SURFACES)) render_surfaces();
 	  // Render MC regions
-	  if ((displaymodel->cell.get_type() != CT_NONE) && prefs.should_render(VO_REGIONS)) render_regions();
+	  if ((displaymodel->get_celltype() != CT_NONE) && prefs.should_render(VO_REGIONS)) render_regions();
 	  glColor3iv(prefs.colours[COL_PEN]);
 	  render_extra_3d();
 	glPopMatrix();
@@ -156,7 +156,7 @@ void canvas_master::render_scene(model *source)
 	{
 		static mat3<double> cellmat;
 		static vec3<double> cx, cy, cz;
-		cellmat = displaymodel->cell.get_axes();
+		cellmat = displaymodel->get_cellaxes();
 		cx = cellmat.rows[0];
 		cy = cellmat.rows[1];
 		cz = cellmat.rows[2];

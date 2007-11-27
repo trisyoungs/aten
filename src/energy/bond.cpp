@@ -35,7 +35,7 @@ void pattern::bond_energy(model *srcmodel, energystore *estore)
 	static ffparams params;
 	patbound *pb;
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	energy = 0.0;
 	aoff = startatom;
 	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startatom,nmols,natoms,nbonds);
@@ -81,7 +81,7 @@ void pattern::bond_forces(model *srcmodel)
 	static ffparams params;
 	patbound *pb;
 	atom **modelatoms = srcmodel->get_staticatoms();
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
 	{

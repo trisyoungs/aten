@@ -47,7 +47,7 @@ void canvas_master::render_model_atoms()
 	renderstyle = prefs.render_style;
 	scheme = prefs.get_colour_scheme();
 	i = displaymodel->get_atoms();
-	cell = &displaymodel->cell;
+	cell = displaymodel->get_cell();
 	
 	// Set polygon fill mode and specular reflection
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

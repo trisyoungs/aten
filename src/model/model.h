@@ -29,7 +29,7 @@
 #include "classes/measurement.h"
 #include "classes/glyph.h"
 #include "classes/site.h"
-#include "classes/undolevel.h"
+#include "classes/undostate.h"
 #include "base/prefs.h"
 #include "methods/quantity.h"
 #ifdef IS_MAC
@@ -38,14 +38,12 @@
 	#include "GL/gl.h"
 #endif
 
-// Change logs
-enum change_log { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };
-
 // Forward Declarations
 class canvas_master;
 class forcefield;
 class bond;
 class constraint;
+class undostate;
 class pattern;
 class filter;
 class energystore;
@@ -145,7 +143,11 @@ class model
 	
 	public:
 	// Create a new atom
-	atom *add_atom(int);
+	atom *add_atom(int el, vec3<double> r);
+	// Create copy of supplied atom
+	atom *add_copy(atom *source);
+	// Create copy of supplied atom at the specified position
+	atom *add_copy(atom *after, atom *source);
 	// Return the start of the atom list
 	atom *get_atoms() { return atoms.first(); }
 	// Return the number of atoms in the model
@@ -157,7 +159,7 @@ class model
 	// Perform alchemy on an atom 
 	void transmute_atom(atom *target, int element);
 	// Renumber atoms in the model
-	void renumber_atoms();
+	void renumber_atoms(atom *from = NULL);
 	// Reset tempi values of all atoms
 	void reset_tempi(int);
 	// Return pointer to the atom with the specified id
@@ -189,10 +191,26 @@ class model
 	int spgrpsetting;
 	// List of symmetry generators for crystal structure (read in from file)
 	list<symmop> symmops;
-
-	public:
 	// Cell definition (also contains reciprocal cell definition)
 	unitcell cell;
+
+	public:
+	// Return pointer to unit cell structure
+	unitcell *get_cell() { return &cell; }
+	// Return type of unit cell
+	cell_type get_celltype() { return cell.get_type(); }
+	// Return volume of cell
+	double get_volume() { return cell.get_volume(); }
+	// Return cell axes (untransposed)
+	mat3<double> get_cellaxes() { return cell.get_axes(); }
+	// Return cell origin
+	vec3<double> get_cellorigin() { return cell.get_origin(); }
+	// Set cell (vectors)
+	void set_cell(vec3<double> lengths, vec3<double> angles);
+	// Set cell (axes)
+	void set_cell(mat3<double> axes);
+	// Remove cell definition
+	void remove_cell();
 	// Fold all atoms into the cell
 	void fold_all_atoms();
 	// Sets the spacegroup of the model
@@ -222,12 +240,18 @@ class model
 	// Bonding
 	*/
 	public:
+	// Augment specified bond
+	void augment_bond(bond *b, int change);
+	// Augment bond between supplied atoms
+	void augment_bond(atom *i, atom *j, int change);
 	// Add bond of specified type between atoms
-	void bond_atoms(atom*, atom*, bond_type);
+	void bond_atoms(atom *i, atom *j, bond_type bt);
 	// Add bond of specified type between atoms (by id)
-	void bond_atoms(int, int, bond_type);
+	void bond_atoms(int ii, int jj, bond_type bt);
 	// Delete bond between specified atoms
-	void unbond_atoms(atom*, atom*);
+	void unbond_atoms(atom *i, atom *j, bond *b = NULL);
+	// Change type of specified bond
+	void change_bond(bond *b, bond_type bt);
 	// Clear all bonding in model
 	void clear_bonding();
 	// Calculate bonding in the model
@@ -487,16 +511,10 @@ class model
 	// Model Building
 	*/
 	private:
-	// Last atom sketched in the model
-	atom *lastatomdrawn;
 	// Iteratively add hydrogens to the specified atom in the desired general geometry
 	void add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry);
 
 	public:
-	// Return the last atom drawn in the model
-	atom *get_lastatomdrawn() { return lastatomdrawn; }
-	// Set the last atom drawn in the model
-	void set_lastatomdrawn(atom *i) { lastatomdrawn = i; }
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogen_satisfy();
 
@@ -504,10 +522,15 @@ class model
 	// Geometry (using staticatoms[])
 	*/
 	public:
+	// Calculate distance
+	double distance(int, int);
+	double distance(atom *i, atom *j) { return cell.distance(i,j); }
 	// Calculate angle
-	double calculate_angle(int, int, int);
+	double angle(int, int, int);
+	double angle(atom *i, atom *j, atom *k) { return cell.angle(i,j,k); }
 	// Calculate torsion
-	double calculate_torsion(int, int, int, int);
+	double torsion(int, int, int, int);
+	double torsion(atom *i, atom *j, atom *k, atom *l) { return cell.torsion(i,j,k,l); }
 
 	/*
 	// Transformations
@@ -640,26 +663,22 @@ class model
 	private:
 	// List of measurements
 	list<measurement> measurements;
-	// Find specific measurement
-	measurement *find_measurement(geom_type,atom*,...);
-	// Find specific measurement
-	measurement *find_measurement(geom_type,reflist<atom>&);
 
 	public:
 	// Return first measurement in the list
 	measurement *get_measurements() { return measurements.first(); }
 	// Clear all measurements
 	void clear_measurements() { measurements.clear(); }
+	// Find specific measurement
+	measurement *find_measurement(geom_type, atom*, ...);
 	// Clear specific type of measurements
 	void remove_measurements(geom_type);
 	// Delete specific measurement
-	void remove_measurement(measurement *me) { measurements.remove(me); }
+	void remove_measurement(measurement *me);
 	// Delete all measurements involving supplied atom
 	void remove_measurements(atom*);
 	// Add measurement (list of atoms)
 	void add_measurement(geom_type, atom*, ...);
-	// Add measurement (reflist of atoms)
-	void add_measurement(geom_type, reflist<atom>&);
 	// Add measurements of specific type in current selection
 	void add_measurements_in_selection(geom_type);
 	// Measure distances between atoms
@@ -719,20 +738,26 @@ class model
 	// Undo / Redo
 	*/
 	private:
-	// Pointer to current 'state' of the model in the list
-	undolevel *currentundostate;
+	// Pointer to current 'states' of the model in the list
+	undostate *currentundostate, *currentredostate;
 	// List of undo levels for the model
-	list<undolevel> undolevels;
-	// Signal to begin recording new changes
-	void begin_undostate();
-	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
-	void end_undostate();
-	// Private, static list of changes
-	list<change> currentchanges;
+	list<undostate> undolevels;
+	// Current state that we're adding changes to
+	undostate *recordingstate;
 
 	public:
 	// Return the current undo level pointer
-	undolevel *get_currentundostate() { return currentundostate; }
+	undostate *get_currentundostate() { return currentundostate; }
+	// Return the current redo level pointer
+	undostate *get_currentredostate() { return currentredostate; }
+	// Signal to begin recording new changes
+	void begin_undostate(const char *text);
+	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
+	void end_undostate();
+	// Perform the undo action pointed to by 'currentundostate'
+	void undo();
+	// Perform the redo action pointed to by 'currentredostate'
+	void redo();
 };
 
 #endif

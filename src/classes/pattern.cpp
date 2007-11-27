@@ -28,7 +28,7 @@
 // Constructors
 pattern::pattern()
 {
-	ownermodel = NULL;
+	parent = NULL;
 	id = 0;
 	prev = NULL;
 	next = NULL;
@@ -102,7 +102,7 @@ void pattern::initialise(int patid, int start, int mols, int atomsmol)
 {
 	// Initialise atom pointers / values in pattern.
 	dbg_begin(DM_CALLS,"pattern::initialise");
-	if (ownermodel == NULL)
+	if (parent == NULL)
 	{
 		printf("Owner model has not been set in pattern!\n");
 		dbg_end(DM_CALLS,"pattern::initialise");
@@ -116,7 +116,7 @@ void pattern::initialise(int patid, int start, int mols, int atomsmol)
 	startatom = start;		// Starting atom (integer position in atom list)
 	endatom = start + natoms - 1;	// Last atom in first molecule (integer position in atom list)
 	// Set atom pointers
-	if (startatom > ownermodel->get_natoms())
+	if (startatom > parent->get_natoms())
 	{
 		// Can't get first atom (probably the pattern extends past natoms)
 		msg(DM_NONE,"Initial atom in pattern is past end of model's atom list (%i).\n",endatom);
@@ -125,7 +125,7 @@ void pattern::initialise(int patid, int start, int mols, int atomsmol)
 	else
 	{
 		// Get the first atom in the list
-		atom *i = ownermodel->get_atoms();
+		atom *i = parent->get_atoms();
 		// Skip past atoms until we get to startatom (ranges from 0 upwards)
 		for (int n=0; n<startatom; n++) i = (atom*) i->next;
 		firstatom = i;
@@ -249,7 +249,7 @@ bool pattern::validate()
 	dbg_begin(DM_CALLS,"pattern::validate");
 	bool result, ok;
 	result = TRUE;
-	int mnatoms = ownermodel->get_natoms();
+	int mnatoms = parent->get_natoms();
 	int elcomp1[NELEMENTS+1], elcomp2[NELEMENTS+1], a, m;
 	// Set all test flags to FALSE
 	test_atomlimit = FALSE;
@@ -318,7 +318,7 @@ vec3<double> pattern::calculate_cog(model *srcmodel, int mol)
 	int offset = startatom + mol*natoms;
 	msg(DM_VERBOSE,"pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nmols=%i)\n", name.get(), mol, offset, nmols);
 	static vec3<double> cog, mim_i;
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	cog.zero();
 	atom **modelatoms = srcmodel->get_staticatoms();
 	for (int a1=offset; a1<offset+natoms; a1++)
@@ -344,7 +344,7 @@ vec3<double> pattern::calculate_com(model *srcmodel, int mol)
 	int offset = startatom + mol*natoms;
 	com.zero();
 	msg(DM_VERBOSE,"molecule_com : Offset = %i\n",offset);
-	unitcell *cell = &srcmodel->cell;
+	unitcell *cell = srcmodel->get_cell();
 	atom **modelatoms = srcmodel->get_staticatoms();
 	for (int a1=offset; a1<offset+natoms; a1++)
 	{
@@ -444,7 +444,7 @@ void pattern::propagate_bondtypes()
 */
 
 // Append atom
-atom *pattern::append_atom(int el)
+atom *pattern::append_copy(atom *source)
 {
 	// Append the supplied atom to the pattern's 'local' atom list
 	dbg_begin(DM_CALLS,"pattern::append_atom[pattern]");
@@ -452,7 +452,7 @@ atom *pattern::append_atom(int el)
 	firstatom == NULL ? firstatom = newatom : lastatom->next = newatom;
 	newatom->prev = lastatom;
 	lastatom = newatom;
-	newatom->set_element(el);
+	newatom->copy(source);
 	totalatoms ++;
 	dbg_end(DM_CALLS,"pattern::append_atom[pattern]");
 	return newatom;
@@ -683,79 +683,3 @@ void pattern::ring_search(atom *i, ring *currentpath, int &ringpotential)
 	}
 	dbg_end(DM_CALLS,"pattern::ring_search");
 }
-
-// Augment bonding in pattern
-void pattern::augment_bonding()
-{
-	/*
-	Assign bond types to the pattern, i.e. automatically determine double, triple, resonant bonds etc.
-	We do this by assuming that the structure is chemically 'correct' - i.e. each element is bound to a likely
-	number of other elements. If hydrogens are missing then the results will be unpredictable.
-	For ions, we do the best we can and force correct bond orders on carbon atoms at the expense of 
-	incorrect bond orders on heteroatoms (if possible).
-	*/
-	dbg_begin(DM_CALLS,"pattern::augment_bonding");
-	atom *i;
-	refitem<bond> *bref;
-	int n,nheavy;
-	msg(DM_NONE,"Augmenting bonds in pattern %s...\n",name.get());
-	/*
-	We do not reset the present bonding assignments, only check if they're correct. If we find an atom whose
-	bond order is too high, we only decrease it if we can find a bound atom in a similar situation.
-	So, for the atom 'i':
-	-- If its total bond order is equal to its natural valency, do nothing and move on.
-	-- If its total bond order is less, get the bound atom with the highest unoccupied valency and increase
-		the bond as much as possible. If 'i' is still not satisfied, repeat until all bound atoms have been
-		tried.
-	-- If its total bond order is higher, search for an atom that also has a too-high bond order. If one is found,
-		decrease the bond enough to re-balance. If we can't find one, stop and throw an error.
-
-	Perform this task in three stages to make the whole process more robust. First, do it for rings where we
-	only bond within the cycle. Then, do it for terminal atoms or heavy atoms bound to only one other heavy
-	atom. Then, do it for the rest.
-	*/
-	// Calculate current bond orders for atoms in the pattern.
-	i = firstatom;
-	for (n=0; n<natoms; n++)
-	{
-		i->tempi = i->total_bond_order() - 2*elements.valency(i->get_element());
-		i = i->next;
-	}
-	// Stage 1 - Augment heavy atoms with only one heavy atom bond
-	i = firstatom;
-	for (n=0; n<natoms; n++)
-	{
-		// Calculate number of heavy atoms attached
-		nheavy = 0;
-		bref = i->get_bonds();
-		while (bref != NULL)
-		{
-			if (bref->item->get_partner(i)->get_element() != 1) nheavy ++;
-			bref = bref->next;
-		}
-		if (nheavy == 1 && i->tempi != 0) i->augment();
-		i = i->next;
-	}
-	// Stage 2 - Augment within cycles
-	ring *r = rings.first();
-	while (r != NULL)
-	{
-		refitem<atom> *ra = r->atoms.first();
-		while (ra != NULL)
-		{	// Get atoms bond order difference
-			i = ra->item;
-			if (i->tempi != 0) r->augment_atom(ra);
-			ra = ra->next;
-		}
-		r = r->next;
-	}
-	// Stage 3 - Second pass, augmenting all atoms
-	i = firstatom;
-	for (n=0; n<natoms; n++)
-	{
-		if (i->tempi != 0) i->augment();
-		i = i->next;
-	}
-	dbg_end(DM_CALLS,"pattern::augment_bonding");
-}
-

@@ -37,22 +37,18 @@ void AtenForm::refresh_forcefieldpage()
 	}
 	// Select the current FF.
 	if (master.get_currentff() == NULL) ui.ForcefieldList->setCurrentRow(0);
-	else ui.ForcefieldList->setCurrentRow(master.get_currentffindex());
+	else ui.ForcefieldList->setCurrentRow(master.get_currentff_id());
 }
 
 void AtenForm::on_ForcefieldList_currentRowChanged(int row)
 {
 	// Set the current forcefield in master to reflect the list change
-	master.set_currentff(row);
+	master.set_currentff_by_id(row);
 }
 
 void AtenForm::on_RemoveForcefieldButton_clicked(bool checked)
 {
-	// Get current forcefield
-	int f = ui.ForcefieldList->currentRow();
-	if (f == -1) return;
-	forcefield *ff = master.get_ff(f);
-	master.remove_ff(ff);
+	master.remove_ff(master.get_currentff());
 	refresh_forcefieldpage();
 }
 

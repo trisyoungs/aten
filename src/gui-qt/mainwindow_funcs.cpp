@@ -482,3 +482,37 @@ void AtenForm::add_recent(const char *filename)
 	actionRecentFile[last]->setData(filename);
 	actionRecentFile[last]->setVisible(TRUE);
 }
+
+// Update undo/redo actions in Edit menu
+void AtenForm::update_undoredo()
+{
+	static char text[128];
+	model *m = master.get_currentmodel();
+	// Check the model's state pointers
+	if (m->get_currentundostate() == NULL)
+	{
+		ui.actionEditUndo->setText("Undo");
+		ui.actionEditUndo->setEnabled(FALSE);
+	}
+	else
+	{
+		strcpy(text,"Undo (");
+		strcat(text,m->get_currentundostate()->get_text());
+		strcat(text,")");
+		ui.actionEditUndo->setText(text);
+		ui.actionEditUndo->setEnabled(TRUE);
+	}
+	if (m->get_currentredostate() == NULL)
+	{
+		ui.actionEditRedo->setText("Redo");
+		ui.actionEditRedo->setEnabled(FALSE);
+	}
+	else
+	{
+		strcpy(text,"Redo (");
+		strcat(text,m->get_currentredostate()->get_text());
+		strcat(text,")");
+		ui.actionEditRedo->setText(text);
+		ui.actionEditRedo->setEnabled(TRUE);
+	}
+}
