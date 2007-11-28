@@ -219,7 +219,7 @@ void clipboard::paste_to_model(model *m)
 	{
 		// Create a new atom in the target model
 		pastedi = m->add_copy(i);
-		printf("Pasted atom has id %i\n",pastedi->get_id());
+		//printf("Pasted atom has id %i\n",pastedi->get_id());
 		m->select_atom(pastedi);
 		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
 		bonds_set_newptr(i,pastedi);

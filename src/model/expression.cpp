@@ -151,9 +151,13 @@ bool pattern::fill_expression(model *xmodel)
 	patatom *pa;
 	patbound *pb;
 	forcefield *xff;
-	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;	// Counters for incomplete aspects of the expression
-	ffatom *ti, *tj, *tk, *tl;	// Temp vars for fftype storage
-	int bonding[natoms][7];		// Lists of unique bound atoms (used by angle and torsion generation routines)
+	// Counters for incomplete aspects of the expression
+	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;
+	incomplete = FALSE;
+	// Temp vars for fftype storage
+	ffatom *ti, *tj, *tk, *tl;
+	// Lists of unique bound atoms (used by angle and torsion generation routines)
+	int bonding[natoms][7];
 	int count, ii, jj, kk, ll;
 	// If there is no specified pattern forcefield, use the parent model's instead
 	ff == NULL ? xff = xmodel->get_ff() : xff = ff;
@@ -250,8 +254,8 @@ bool pattern::fill_expression(model *xmodel)
 		}
 		ai = ai->next;
 	}
-	msg(DM_NONE,"... Expected %i bonds, found %i",bonds.size(),count);
-	ibonds == 0 ? msg(DM_NONE,"\n") : msg(DM_NONE," (%i missing)\n",ibonds);
+	if (ibonds == 0) msg(DM_NONE,"... Expected %i bonds, found %i.\n",bonds.size(),count);
+	else msg(DM_NONE,"... Expected %i bonds, found %i (%i missing).\n",bonds.size(),count,ibonds);
 	// Construct the angle list.
 	// Use the list of bound atoms in the bonding[][] array generated above
 	count = 0;
@@ -302,8 +306,8 @@ bool pattern::fill_expression(model *xmodel)
 			}
 		}
 	}
-	msg(DM_NONE,"... Expected %i angles, found %i",angles.size(),count);
-	iangles == 0 ? msg(DM_NONE,"\n") : msg(DM_NONE," (%i missing)\n",iangles);
+	if (iangles == 0) msg(DM_NONE,"... Expected %i angles, found %i.\n",angles.size(),count);
+	else msg(DM_NONE,"... Expected %i angles, found %i (%i missing).\n",angles.size(),count,iangles);
 	// Construct the torsion list.
 	// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
 	count = 0;
@@ -367,8 +371,8 @@ bool pattern::fill_expression(model *xmodel)
 			}
 		}
 	}
-	msg(DM_NONE,"... Expected %i torsions, found %i",torsions.size(),count);
-	itorsions == 0 ? msg(DM_NONE,"\n") : msg(DM_NONE," (%i missing)\n",itorsions);
+	if (itorsions == 0) msg(DM_NONE,"... Expected %i torsions, found %i.\n",torsions.size(),count);
+	else msg(DM_NONE,"... Expected %i torsions, found %i (%i missing).\n",torsions.size(),count,itorsions);
 	// Print out a warning if the expression is incomplete.
 	if (incomplete) msg(DM_NONE,"!!! Expression is incomplete.\n");
 	dbg_end(DM_CALLS,"pattern::fill_expression");

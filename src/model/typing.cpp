@@ -57,7 +57,7 @@ void model::describe_atoms()
 		// 1) Locate ring structures
 		p->find_rings();
 		// Augment bonding in model
-		p->augment();
+		//p->augment();   TODO TGAY
 		// 2) Reset atom environments
 		p->clear_hybrids();
 		printstuff(p);

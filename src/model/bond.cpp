@@ -429,10 +429,12 @@ void pattern::augment()
 	i = firstatom;
 	for (n=0; n<natoms; n++)
 	{
+		printf("%li  i->tempi = %i\n",i,i->tempi);
 		if (i->tempi != 0)
 		{
 			for (bref = i->get_bonds(); bref != NULL; bref = bref->next)
 			{
+				printf("%li    bond   i->tempi = %i\n",i,i->tempi);
 				if (i->tempi == 0) break;
 				if (i->tempi < 0) parent->augment_bond(bref->item,+1);
 				else if (i->tempi > 0) parent->augment_bond(bref->item,-1);

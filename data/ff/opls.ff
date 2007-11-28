@@ -808,6 +808,7 @@ types
 784	HC		H	""	"H in CH3PR3+"
 785	P		P	""	"P in PF6-"
 786	F		F	""	"F in PF6-"
+# Nitrate anion
 787	N		N	""	"N in NO3- F. van Veggel"
 788	O		O	""	"O in NO3- r(NO) eq"
 #789
@@ -2320,7 +2321,7 @@ end
 
 # Angles
 angles harmonic
-#HW	OW	HW	150.0	109.5
+HW	OW	HW	150.0	109.5
 #HW	OW	LP	100.0	54.75
 OU	U	OU	300.0	180.0
 HC	Cstar	CW	70.0	126.8
