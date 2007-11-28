@@ -29,7 +29,7 @@ enum short_opt { SO_A=97, SO_BOHR, SO_COMMAND, SO_DEBUG, SO_E,
 		SO_P, SO_Q, SO_R, SO_SCRIPT, SO_T,
 		SO_U, SO_VERBOSE, SO_W, SO_X, SO_Y, SO_ZMAP,
 		SO_LASTITEM };
-enum long_opt { LO_FOLD, LO_NOFOLD, LO_BOND, LO_NOBOND, LO_CENTRE, LO_NOCENTRE, LO_PACK, LO_NOPACK, LO_DEBUGTYPING, LO_DEBUGPARSE, LO_DEBUGMORE, LO_DEBUGALL, LO_DEBUGFILTERS, LO_SURFACE, LO_NITEMS };
+enum long_opt { LO_FOLD, LO_NOFOLD, LO_BOND, LO_NOBOND, LO_CENTRE, LO_NOCENTRE, LO_PACK, LO_NOPACK, LO_DEBUGTYPING, LO_DEBUGPARSE, LO_DEBUGMORE, LO_DEBUGALL, LO_DEBUGFILTERS, LO_SURFACE, LO_CACHE, LO_NITEMS };
 
 // Prepare options list
 void master_data::prepare_cli()
@@ -47,6 +47,7 @@ void master_data::prepare_cli()
 	add_cli_option("zmap",required_argument,SO_ZMAP,TRUE);
 	add_cli_option("help",no_argument,SO_HELP,TRUE);
 	// Long options
+	add_cli_option("cache",required_argument,LO_CACHE,TRUE);
 	add_cli_option("fold",no_argument,LO_FOLD,FALSE);
 	add_cli_option("nofold",no_argument,LO_NOFOLD,FALSE);
 	add_cli_option("bond",no_argument,LO_BOND,FALSE);
@@ -162,6 +163,10 @@ int master_data::parse_cli(int argc, char *argv[])
 				/*
 				// Long options
 				*/
+				// Set trajectory cache limit
+				case (LO_CACHE):
+					prefs.set_cache_limit(atoi(optarg));
+					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (LO_FOLD):
 					prefs.set_fold_on_load(PS_YES);

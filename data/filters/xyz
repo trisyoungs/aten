@@ -1,4 +1,5 @@
 # XMol-style XYZ coordinates files
+# Last modified: 27/11/07.
 importmodel
 	name "XMol XYZ Coordinates"
 	nickname xyz
@@ -28,5 +29,24 @@ exportmodel
 	writeline "$title"
 	foratoms $i
 		writeline "$i.symbol@3 $i.r.x@12.6 $i.r.y@12.6 $i.r.z@12.6"
+	end
+end
+importtrajectory
+	name "XMol XYZ Coordinates"
+	extension "xyz"
+	glob *xyz
+	nickname xyz
+
+	# No header in XYZ trajectories, so only check for frames
+	if $header <> true
+		readline "$natoms"
+		readline "$title"
+		# Now the atoms
+		modeltemplate
+		repeat $n $natoms
+			readline "$e $r.x $r.y $r.z"
+			setatom $n
+		end
+		#rebond
 	end
 end

@@ -111,9 +111,9 @@ void canvas_master::render_scene(model *source)
 	// Draw guide if visible
 	if (prefs.build_show_guide)
 	{
-		glTranslatef(0.0f,0.0f,-prefs.build_draw_depth);
+		glTranslated(0.0,0.0,-prefs.build_draw_depth);
 		glCallList(list[GLOB_GUIDE]);
-		glTranslatef(0.0f,0.0f,prefs.build_draw_depth);
+		glTranslated(0.0,0.0,prefs.build_draw_depth);
 	}
 
 	// Apply model's rotation matrix (which we grabbed earlier)
