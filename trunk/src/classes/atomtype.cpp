@@ -134,8 +134,7 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 			// Search for the atomtype pointer with ffid in 'temp' in the forcefield supplied
 			if (ff != NULL)
 			{
-				// Were we given a number (ffid) or a string (type name)?
-				ffa = (temp.is_numeric() ? ff->find_type(temp.as_integer()) : ff->find_type(temp.get()));
+				ffa = ff->find_type(temp.as_integer());
 				if (ffa == NULL)
 				{
 					// TODO Does this need a warning? Will we be able to handle recursive typeid checks properly?
@@ -449,6 +448,7 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent, atom *top
 	atomtype *bat;
 	ringtype *atr;
 	ring *r;
+	ffatom *ffa;
 	refitem<ring> *refring;
 	reflist<atom> atomchecklist;
 	reflist<ring> ringchecklist;
@@ -476,7 +476,10 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent, atom *top
 		}
 		if (!found) for (rd = allowedtypes.first(); rd != NULL; rd = rd->next)
 		{
-			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",rd->item->get_ffid(),rd->item->get_name());
+			ffa = rd->item;
+			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",ffa->get_ffid(),ffa->get_name());
+			// Check element of type first....
+			if (i->get_element() != ffa->get_atomtype()->el) continue;
 			// Does this atom match the type descriptions asked for?
 			n = rd->item->get_atomtype()->match_atom(i,ringdata,parent,topatom);
 			if (n > 0)
