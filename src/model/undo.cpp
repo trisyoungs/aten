@@ -64,7 +64,7 @@ void model::end_undostate()
 	recordingstate->set_endlog(LOG_COORDS, logs[LOG_COORDS]);
 	// Delete all redo (i.e. future) states from the undo list
 	if (currentundostate == NULL) undolevels.clear();
-	else for (undostate *u = currentundostate->next; u != NULL; u = u->next) undolevels.remove(u);
+	else for (undostate *u = currentundostate->next; u != NULL; u = undolevels.remove_and_get_next(u)); 
 	// Add the new state to the end of the undo level list
 	undolevels.own(recordingstate);
 	// Set the current undo level to the new state and nullify the pointer
