@@ -47,6 +47,7 @@ importtrajectory
 			readline "$e $r.x $r.y $r.z"
 			setatom $n
 		end
-		#rebond
+		rebond
+		centre
 	end
 end

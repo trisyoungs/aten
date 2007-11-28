@@ -3,6 +3,7 @@ Issues with the current version:
 	- Spherical regions in disordered builder have poor randomness.
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
 	- Surfaces need correct vertex normals
+	- Bad crash (x-server killed) on exit after loading surface
 	- Colour schemes other than AC_ELEMENT need to be fixed
 	- Switching between perspective / orthographic views loses current rotation/zoom
 	- Drawing guide is not displayed if camera moves beyond z = 0.0 (general drawing problem)

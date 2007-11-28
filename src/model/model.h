@@ -630,18 +630,18 @@ class model
 	// View / Rendering
 	*/
 	private:
-	// Pointer to config if draw_source == RS_CONFIG
-	model *render_source;
+	// Whether to render from self (TRUE) or trajectory frame (FALSE)
+	bool renderfromself;
 
 	public:
 	// Render from self
-	void render_from_self() { render_source = this; }
+	void render_from_self() { renderfromself = TRUE; }
 	// Render from trajectory
-	void render_from_frames() { render_source = currentframe; }
+	void render_from_frames() { renderfromself = FALSE; }
 	// Set the drawing style of the current atom selection
 	void selection_set_style(draw_style);
 	// Return the current rendering source for the model
-	model *get_render_source() {return render_source; }
+	model *get_render_source() { return (renderfromself ? this : currentframe); }
 
 	/*
 	// Coordinate Transformations

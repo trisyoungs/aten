@@ -332,13 +332,15 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 		for (f = master.filters[FT_TRAJECTORY_IMPORT].first(); f != NULL; f = f->next)
 			if (strcmp(f->get_description(),qPrintable(filter)) == 0) break;
 		// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (f != NULL) m->initialise_trajectory(qPrintable(filename), f);
-		else
+		if (f == NULL) f = master.probe_file(qPrintable(filename), FT_TRAJECTORY_IMPORT);
+		if (f != NULL)
 		{
-			f = master.probe_file(qPrintable(filename), FT_TRAJECTORY_IMPORT);
-			if (f != NULL) m->initialise_trajectory(qPrintable(filename), f);
-			else msg(DM_NONE, "Couldn't determine trajectory file format.\n");
+			m->initialise_trajectory(qPrintable(filename), f);
+			// Ensure trajectory toolbar is visible and View->Trajectory is selected
+			ui.TrajectoryToolBar->setVisible(TRUE);
+			ui.actionViewTrajectory->setChecked(TRUE);
 		}
+		else msg(DM_NONE, "Couldn't determine trajectory file format.\n");
 		gui.refresh();
 	}
 }
