@@ -176,7 +176,7 @@ void gui_qt::update_labels()
 		s += itoa(m->get_frameposition());
 		s += " of ";
 		s += itoa(m->get_totalframes());
-		s += ")";
+		s += ") ";
 	}
 	// Model information
 	s += itoa(m->get_natoms());
@@ -284,7 +284,7 @@ void gui_qt::refresh()
 	mainwindow->ui.actionFileSave->setEnabled(master.get_currentmodel()->is_modified());
 	// Enable the Atom menu if one or more atoms are selected
 	mainwindow->ui.AtomMenu->setEnabled( master.get_currentmodel()->get_nselected() == 0 ? FALSE : TRUE);
-	// Enable View->Trajectory menu item if as trajectory is associated
+	// Enable View->Trajectory menu item if a trajectory is associated
 	mainwindow->ui.actionViewTrajectory->setEnabled( master.get_currentmodel()->get_currentframe() == NULL ? FALSE : TRUE);
 }
 

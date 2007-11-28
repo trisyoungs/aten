@@ -64,7 +64,7 @@ model::model()
 	framesize = 0;
 	ncachedframes = 0;
 	totalframes = 0;
-	render_source = this;
+	renderfromself = TRUE;
 	trajcached = FALSE;
 	frameposition = 0;
 	trajplaying = FALSE;
