@@ -325,7 +325,7 @@ class prefs_data
 	bool file_load_all_coords;
 	// Convert coordinates from Bohr to Angstrom on load
 	bool file_coords_in_bohr;
-	// Size limit (bytes) for caching trajectory frames
+	// Size limit (kbytes) for caching trajectory frames
 	int file_cache_limit;
 	// Type of name->Z mapping to use
 	zmap_type file_zmap_type;
@@ -351,6 +351,8 @@ class prefs_data
 	void set_load_all_coords(bool b) { file_load_all_coords = b; }
 	// Whether all geometries in a non-trajectory file should be loaded
 	bool load_all_coords() { return file_load_all_coords; }
+	// Set the cache limit (in kb) for trajectory files
+	void set_cache_limit(int i) { file_cache_limit = i; }
 	// Return the cache limit for trajectory files
 	int get_cache_limit() { return file_cache_limit; }
 	// Sets the style of element conversion to use

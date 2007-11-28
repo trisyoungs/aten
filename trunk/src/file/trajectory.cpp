@@ -82,5 +82,5 @@ bool filter::read_trajectory(model *destmodel, bool readheader)
 		}
 	}
 	dbg_end(DM_CALLS,"filter::read_trajectory");
-	return TRUE;
+	return (inputfile->eof() ? FALSE : TRUE);
 }
