@@ -129,7 +129,7 @@ void AtenForm::finalise_ui()
 	ui.MainWindowStack->hide();
 
 	// Set correct draw_style on toolbar
-	switch (prefs.get_static_style())
+	switch (prefs.get_render_style())
 	{
 		case (DS_STICK): ui.actionStyleStick->setChecked(true); break;
 		case (DS_TUBE): ui.actionStyleTube->setChecked(true); break;
@@ -266,7 +266,7 @@ void AtenForm::set_controls()
 {
 	dbg_begin(DM_CALLS,"AtenForm::set_controls");
 	// Set correct draw_style on toolbar
-	switch (prefs.get_static_style())
+	switch (prefs.get_render_style())
 	{
 		case (DS_STICK): ui.actionStyleStick->setChecked(TRUE); break;
 		case (DS_TUBE): ui.actionStyleTube->setChecked(TRUE); break;

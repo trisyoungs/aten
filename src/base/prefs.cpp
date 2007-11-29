@@ -162,8 +162,6 @@ prefs_data::prefs_data()
 	render_objects[VO_FORCEARROWS] = FALSE;
 	render_objects[VO_SURFACES] = TRUE;
 	render_style = DS_STICK;
-	render_static_style = DS_STICK;
-	render_dynamic_style = DS_STICK;
 
 	// Build
 	build_show_guide = FALSE;
@@ -284,10 +282,10 @@ void prefs_data::load(const char *filename)
 
 double prefs_data::screenradius(atom *i)
 {
-	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on the drawing style
+	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
 	draw_style dstyle;
 	double radius;
-	render_static_style == DS_INDIVIDUAL ? dstyle = i->get_style() : dstyle = render_static_style;
+	render_style == DS_INDIVIDUAL ? dstyle = i->get_style() : dstyle = render_style;
 	return (dstyle == DS_SCALED) ? (elements.radius(i) * prefs.render_atom_size[DS_SCALED]) : prefs.render_atom_size[dstyle];
 }
 

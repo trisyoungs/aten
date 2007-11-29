@@ -14,7 +14,6 @@ Issues with the current version:
 
 General To-Do list:
 	- Allow model load option overrides such as nocentre, rebond etc.
-	- Move style is redundant because of display lists - remove.
 	- Ewald sum (fourier calculation, reciprocal cell?) for non-orthogonal cells
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)

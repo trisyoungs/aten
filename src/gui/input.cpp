@@ -250,7 +250,6 @@ void canvas_master::begin_mode(mouse_button button)
 				}
 				break;
 			case (MA_VIEWROTATE):
-				prefs.apply_staticstyle();
 				// Check for multiple key modifiers first.
 				if (manipulate && zrotate) activemode = UA_MANIPROTZ;
 				else if (manipulate) activemode = UA_MANIPROTXY;
@@ -260,11 +259,9 @@ void canvas_master::begin_mode(mouse_button button)
 				if (manipulate) displaymodel->prepare_transform();
 				break;
 			case (MA_VIEWZOOM):
-				prefs.apply_staticstyle();
 				activemode = UA_ZOOMCAM;
 				break;
 			case (MA_VIEWTRANSLATE):
-				prefs.apply_staticstyle();
 				activemode = UA_MOVECAM;
 				manipulate ? activemode = UA_MANIPTRANS : activemode = UA_MOVECAM;
 				if (manipulate) displaymodel->prepare_transform();
@@ -454,7 +451,6 @@ void canvas_master::end_mode(mouse_button button)
 			printf("No button_up handler defined for user_action %i.\n", activemode);
 			break;
 	}
-	prefs.apply_staticstyle();
 	activemode = UA_NONE;
 	postredisplay();
 	dbg_end(DM_CALLS,"canvas_master::end_mode");
