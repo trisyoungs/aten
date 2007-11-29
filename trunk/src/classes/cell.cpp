@@ -24,6 +24,8 @@
 #include "base/sysfunc.h"
 #include "base/constants.h"
 #include <math.h>
+#include <algorithm>
+using namespace std;
 
 // Cell types
 const char *CT_strings[CT_NITEMS] = { "None", "Cubic", "Orthorhombic", "Parallelepiped" };
@@ -370,19 +372,15 @@ double unitcell::torsion(const vec3<double> &i, const vec3<double> &j, const vec
 	veckj = -vecjk;
 	// Vector k->l (minimum image of l w.r.t. k (in turn w.r.t. j))
 	veckl = mimd(mim_k,l);
-	vecji.print();
-	vecjk.print();
-	veckj.print();
-	veckl.print();
 	// Calculate cross products
 	xpj = vecjk * vecji;
 	xpj.normalise();
-	xpj.print();
 	xpk = veckj * veckl;
 	xpk.normalise();
-	xpk.print();
 	dp = xpj.dp(xpk);
-	dp = (dp < 0 ? max(dp,-1) : min(dp,1));
+	//dp = (dp < 0 ? (dp < -1 ? : min(dp,1));
+	if (dp < -1) dp = -1;
+	else if (dp > 1) dp = 1;
 	angle = acos(dp);
 	// Calculate sign of torsion
 	dp = xpj.dp(veckl);

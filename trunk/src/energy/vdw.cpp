@@ -35,7 +35,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 	dbg_begin(DM_CALLS,"pattern::vdw_intrapattern_energy");
 	static int n,aoff,m1,i,j;
 	static vec3<double> mim_i;
-	static double sigma, sigmar, epsilon, rij, energy_inter, energy_intra, cutoff, vrs;
+	static double sigma, sigmar6, epsilon, rij, energy_inter, energy_intra, cutoff, vrs;
 	static ffparams paramsi, paramsj;
 	patatom *pai, *paj;
 	patbound *pb;
@@ -73,9 +73,9 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 						case (VF_LJ): // U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
 							epsilon = 4.0 * sqrt( paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS] );
 							sigma = ( paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA] ) * 0.5 * vrs;
-							sigmar = pow((sigma / rij),6);
-							conmat[i][j] == 0 ? energy_inter += epsilon * (sigmar*sigmar - sigmar)
-								: energy_intra += epsilon * (sigmar*sigmar - sigmar);
+							sigmar6 = pow((sigma / rij),6);
+							conmat[i][j] == 0 ? energy_inter += epsilon * (sigmar6*sigmar6 - sigmar6)
+								: energy_intra += epsilon * (sigmar6*sigmar6 - sigmar6);
 							break;
 					}
 				}
@@ -101,8 +101,8 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 					epsilon = 4.0 * sqrt( paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS] );
 					sigma = ( paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA] ) * 0.5 * vrs;
 					epsilon *= pb->get_data()->get_params().data[TF_VSCALE];
-					sigmar = pow((sigma / rij),6);
-					energy_intra += epsilon * (sigmar*sigmar - sigmar);
+					sigmar6 = pow((sigma / rij),6);
+					energy_intra += epsilon * (sigmar6*sigmar6 - sigmar6);
 					break;
 			}
 		}
@@ -122,7 +122,7 @@ void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energyst
 	dbg_begin(DM_CALLS,"pattern::vdw_interpattern_energy");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish;
 	static vec3<double> mim_i;
-	static double sigma, sigmar, epsilon, rij, energy_inter, cutoff, vrs;
+	static double sigma, sigmar6, epsilon, rij, energy_inter, cutoff, vrs;
 	patatom *pai, *paj;
 	static ffparams paramsi, paramsj;
 	cutoff = prefs.get_vdw_cutoff();
@@ -161,8 +161,8 @@ void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energyst
 						case (VF_LJ): 
 							epsilon = 4.0*sqrt(paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS]);
 							sigma = 0.5 * (paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA]) * vrs;
-							sigmar = pow((sigma / rij),6);
-							energy_inter += epsilon * (sigmar*sigmar - sigmar);
+							sigmar6 = pow((sigma / rij),6);
+							energy_inter += epsilon * (sigmar6*sigmar6 - sigmar6);
 							break;
 					}
 				}
