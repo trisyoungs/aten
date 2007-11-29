@@ -137,8 +137,7 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 	else if (action == ui.actionStyleSphere) ds = DS_SPHERE;
 	else if (action == ui.actionStyleScaled) ds = DS_SCALED;
 	else if (action == ui.actionStyleIndividual) ds = DS_INDIVIDUAL;
-	// Activate the new draw style
-	prefs.set_static_style(ds);
+	prefs.set_render_style(ds);
 	// Inform the displayed model
 	m = master.get_currentmodel();
 	m->project_all();

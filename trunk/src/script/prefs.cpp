@@ -96,11 +96,7 @@ bool script::command_prefs(command_node<script_command> *cmd)
 		// View Styles
 		case (SC_STYLE):
 			ds = DS_from_text(cmd->datavar[0]->get_as_char());
-			if (ds != DS_NITEMS) prefs.set_static_style(ds);
-			break;
-		case (SC_MOVESTYLE):
-			ds = DS_from_text(cmd->datavar[0]->get_as_char());
-			if (ds != DS_NITEMS) prefs.set_dynamic_style(ds);
+			if (ds != DS_NITEMS) prefs.set_render_style(ds);
 			break;
 		// Colours
 		case (SC_COLOUR):

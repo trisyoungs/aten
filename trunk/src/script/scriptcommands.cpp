@@ -164,7 +164,6 @@ const char *SC_data[SC_NITEMS] = {
 	"gl,GG",
 	"key,GG",
 	"mouse,GG",
-	"movestyle,G",
 	"radius,GG",
 	"shininess,G",
 	"show,GG",

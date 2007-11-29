@@ -393,7 +393,6 @@ void script::run()
 				case (SC_GL):
 				case (SC_KEY):
 				case (SC_MOUSE):
-				case (SC_MOVESTYLE):
 				case (SC_RADIUS):
 				case (SC_SHININESS):
 				case (SC_SHOW):

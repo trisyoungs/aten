@@ -131,12 +131,8 @@ class prefs_data
 	double render_label_scale;
 	// Size in pixels of the viewport to draw the rotation globe in.
 	int render_globe_size;
-	// Current (dynamic) rendering style of models
+	// Rendering style of models
 	draw_style render_style;
-	// Rendering style when not manipulating model
-	draw_style render_static_style;
-	// Rendering style when manipulating model
-	draw_style render_dynamic_style;
 
 	public:
 	// Set the visibility of an object
@@ -145,20 +141,10 @@ class prefs_data
 	bool should_render(view_object vo) { return render_objects[vo]; }
 	// Return the radius of an atom calculated from the element and draw style
 	double screenradius(atom*); 
-	// Set the current drawing style of the main view
-	void set_static_style(draw_style ds) { render_static_style = render_style = ds; }
+	// Set the drawing style of models
+	void set_render_style(draw_style ds) { render_style = ds; }
 	// Return the current drawing style of models
-	draw_style get_static_style() { return render_style; }
-	// Set the current drawing style of the main view
-	void set_dynamic_style(draw_style ds) { render_dynamic_style = ds; }
-	// Return the static drawing style of models
-	draw_style get_dynamic_style() { return render_static_style; }
-	// Return the dynamic drawing style of models
-	draw_style get_style() { return render_dynamic_style; }
-	// Apply the current move style to prefs.render_style
-	void apply_dynamicstyle() { render_style = render_dynamic_style; }
-	// Apply the current static style to prefs.render_style
-	void apply_staticstyle() { render_style = render_static_style; }
+	draw_style get_render_style() { return render_style; }
 	// Set the scale of labels in the model
 	void set_label_scale(double v) { render_label_scale = v; }
 	// Return the current label scale

@@ -162,7 +162,6 @@ enum script_command {
 	SC_GL,
 	SC_KEY,
 	SC_MOUSE,
-	SC_MOVESTYLE,
 	SC_RADIUS,
 	SC_SHININESS,
 	SC_SHOW,

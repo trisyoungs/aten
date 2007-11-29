@@ -164,7 +164,6 @@ const char *SC_syntax[SC_NITEMS] = {
 	"gl <option> on|off",
 	"key ctrl|shift|alt <action>",
 	"mouse left|middle|right|wheel <action>",
-	"movestyle <style>",
 	"radius <style> <r>",
 	"shininess <n>",
 	"show <object> yes|no",
