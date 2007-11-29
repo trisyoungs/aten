@@ -84,7 +84,7 @@ void canvas_master::render_model_labels()
 			strcat(text,ftoa(i->get_charge()));
 			strcat(text," e)");
 		}
-		textbitmap(cellorigin + i->r,text);
+		textbitmap(cellorigin + i->r(), text);
 	}
 	dbg_end(DM_CALLS,"canvas_master::render_model_labels");
 }
@@ -108,17 +108,17 @@ void canvas_master::render_model_measurements()
 		  switch (m->get_type())
 		  {
 			case (GT_DISTANCE):
-				ri = atoms[0]->r;
-				rj = atoms[1]->r;
+				ri = atoms[0]->r();
+				rj = atoms[1]->r();
 				labpos = (ri + rj) * 0.5;
 				glVertex3d(ri.x, ri.y, ri.z);
 				glVertex3d(rj.x, rj.y, rj.z);
 				sprintf(text,"%f A",m->get_value());
 				break;
 			case (GT_ANGLE):
-				ri = atoms[0]->r;
-				rj = atoms[1]->r;
-				rk = atoms[2]->r;
+				ri = atoms[0]->r();
+				rj = atoms[1]->r();
+				rk = atoms[2]->r();
 				labpos = rj;
 				glVertex3d(ri.x, ri.y, ri.z);
 				glVertex3d(rj.x, rj.y, rj.z);
@@ -126,10 +126,10 @@ void canvas_master::render_model_measurements()
 				sprintf(text,"%f Deg",m->get_value());
 				break;
 			case (GT_TORSION):
-				ri = atoms[0]->r;
-				rj = atoms[1]->r;
-				rk = atoms[2]->r;
-				rl = atoms[3]->r;
+				ri = atoms[0]->r();
+				rj = atoms[1]->r();
+				rk = atoms[2]->r();
+				rl = atoms[3]->r();
 				glVertex3d(ri.x, ri.y, ri.z);
 				glVertex3d(rj.x, rj.y, rj.z);
 				glVertex3d(rk.x, rk.y, rk.z);
@@ -150,14 +150,10 @@ void canvas_master::render_model_measurements()
 void canvas_master::render_model_forcearrows()
 {
 	dbg_begin(DM_CALLS,"canvas_master::render_model_forcearrows");
-	static vec3<double> f;
 	for (atom *i = displaymodel->get_atoms(); i != NULL; i = i->next)
 	{
-		// Grab force vector from atom
-		f = i->f;
-		// Scale forces to more reasonable values
-		f /= 30.0;
-		gl_arrow(i->r,f);
+		// Scale forces to more reasonable values  TODO User scaling
+		gl_arrow(i->r(),i->f() / 30.0);
 	}
 	dbg_end(DM_CALLS,"canvas_master::render_model_forcearrows");
 }

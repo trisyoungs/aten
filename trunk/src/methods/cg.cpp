@@ -42,6 +42,7 @@ void cg_method::minimise(model* srcmodel, double econ, double fcon)
 	int cycle, m, i;
 	double enew, ecurrent, edelta, rmscurrent, rmsnew, fdelta, g_old_sq, gamma, g_current_sq;
 	double *g_old;
+	vec3<double> f;
 	atom **modelatoms;
 	bool linedone, converged;
 
@@ -98,9 +99,10 @@ void cg_method::minimise(model* srcmodel, double econ, double fcon)
 		// Store old forces and calculate new forces at the new line-minimised position
 		for (i=0; i<srcmodel->get_natoms()*3; i += 3)
 		{
-			g_old[i] = -modelatoms[i/3]->f.x;
-			g_old[i+1] = -modelatoms[i/3]->f.y;
-			g_old[i+2] = -modelatoms[i/3]->f.z;
+			f = modelatoms[i/3]->f();
+			g_old[i] = -f.x;
+			g_old[i+1] = -f.y;
+			g_old[i+2] = -f.z;
 		}
 		srcmodel->calculate_forces(srcmodel);
 
@@ -118,18 +120,21 @@ void cg_method::minimise(model* srcmodel, double econ, double fcon)
 			for (i=0; i<srcmodel->get_natoms()*3; i++) g_old_sq += g_old[i] * g_old[i];
 			for (i=0; i<srcmodel->get_natoms(); i++)
 			{
-				g_current_sq += modelatoms[i]->f.x * modelatoms[i]->f.x;
-				g_current_sq += modelatoms[i]->f.y * modelatoms[i]->f.y;
-				g_current_sq += modelatoms[i]->f.z * modelatoms[i]->f.z;
+				f = modelatoms[i]->f();
+				g_current_sq += f.x * f.x;
+				g_current_sq += f.y * f.y;
+				g_current_sq += f.z * f.z;
 			}
 			// Calculate gamma
 			gamma = g_current_sq / g_old_sq;
 			// Calculate new gradient vector
 			for (int i=0; i<srcmodel->get_natoms()*3; i += 3)
 			{
-				modelatoms[i/3]->f.x = g_old[i] + gamma * modelatoms[i/3]->f.x;
-				modelatoms[i/3]->f.y = g_old[i+1] + gamma * modelatoms[i/3]->f.y;
-				modelatoms[i/3]->f.z = g_old[i+2] + gamma * modelatoms[i/3]->f.z;
+				f = modelatoms[i/3]->f();
+				f.x = g_old[i] + gamma * f.x;
+				f.y = g_old[i+1] + gamma * f.y;
+				f.z = g_old[i+2] + gamma * f.z;
+				modelatoms[i/3]->f() = f;
 			}
 		}
 	}

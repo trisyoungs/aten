@@ -86,20 +86,26 @@ class atom
 	/*
 	// Coordinates
 	*/
+	protected:
+	vec3<double> rr;
 	public:
-	vec3<double> r;
+	vec3<double> &r() { return rr; }
 
 	/*
 	// Forces
 	*/
+	protected:
+	vec3<double> ff;
 	public:
-	vec3<double> f;
+	vec3<double> &f() { return ff; }
 
 	/*
 	// Velocities
 	*/
+	protected:
+	vec3<double> vv;
 	public:
-	vec3<double> v;
+	vec3<double> &v() { return vv; }
 
 	/*
 	// Character
@@ -113,6 +119,8 @@ class atom
 	short int os;
 	// Forcefield atom type
 	ffatom *fftype;
+	// Whether the assigned forcefield type is fixed
+	bool fftypefixed;
 	// Chemical environment of atom
 	atom_env env;
 
@@ -135,6 +143,10 @@ class atom
 	void set_fftype(ffatom *ffa) { fftype = ffa; }
 	// Return the forcefield type of the atom
 	ffatom *get_fftype() { return fftype; }
+	// Set the fixed status of the assigned atom type
+	void set_fftypefixed(bool b) { fftypefixed = b; }
+	// Return the fixed status of the assigned atom type
+	bool get_fftypefixed() { return fftypefixed; }
 	// Check the ff type of the atom against the supplied value
 	bool fftype_is(ffatom *type) { return (fftype == type ? TRUE : FALSE); }
 	// Set the environment of the atom
@@ -218,23 +230,18 @@ class atom
 	*/
 	private:
 	// 2D coordinates (screen) and 2D depth
-	vec3<double> screenr;
+	vec3<double> rr_screen;
 	// Screen radius for selection
 	double screenrad;
 	// World (GL) coordinates, transformed by camera and rotation matrices
-	vec3<double> worldr;
+	vec3<double> rr_world;
 
 	public:
 	// World (GL Transformed) coordinates
-	void set_world_coords(vec3<double> v) { worldr = v; }
-	void set_world_coords(vec4<double> v) { worldr.set(v.x,v.y,v.z); }
-	void set_world_coords(double x, double y, double z) { worldr.set(x,y,z); }
-	void adjust_world_coords(vec3<double> v) { worldr += v; }
-	vec3<double> get_world_coords()	{ return worldr; }
+	vec3<double> &worldr() { return rr_world; }
 	// Screen (two-dimensional) coordinates
-	void set_screen_coords(double a, double b, double c) { screenr.set(a,b,c); }
+	vec3<double> &screenr() { return rr_screen; }
 	void set_screen_radius(double a) { screenrad = a; }
-	vec3<double> get_screen_coords() { return screenr; }
 	double get_screen_radius() { return screenrad; }
 
 	/*

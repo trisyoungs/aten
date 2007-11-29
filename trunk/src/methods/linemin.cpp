@@ -38,9 +38,9 @@ void linemin::gradient_move(model *srcmodel, model *destmodel, double delta)
 	atom **destatoms = destmodel->get_staticatoms();
 	for (i=0; i<srcmodel->get_natoms(); i++)
 	{
-		destatoms[i]->r.x = srcatoms[i]->r.x + srcatoms[i]->f.x * delta;
-		destatoms[i]->r.y = srcatoms[i]->r.y + srcatoms[i]->f.y * delta;
-		destatoms[i]->r.z = srcatoms[i]->r.z + srcatoms[i]->f.z * delta;
+		destatoms[i]->r().x = srcatoms[i]->r().x + srcatoms[i]->f().x * delta;
+		destatoms[i]->r().y = srcatoms[i]->r().y + srcatoms[i]->f().y * delta;
+		destatoms[i]->r().z = srcatoms[i]->r().z + srcatoms[i]->f().z * delta;
 	}
 	dbg_end(DM_CALLS,"linemin::gradient_move");
 }

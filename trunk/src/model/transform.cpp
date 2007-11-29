@@ -45,7 +45,7 @@ void model::prepare_transform()
 	}
 	cog.zero();
 	// Reference point for mim will be the updating cog
-	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) cog += i->get_world_coords();
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) cog += i->worldr();
 	cog /= nselected;
 	// Calculate a unit radius for the centre of geometry
 	localcog = cog;
@@ -91,9 +91,9 @@ void model::rotate_selection_world(double dx, double dy)
 	{
 		if (!i->is_selected()) continue;
 		// Rotate this atom's position about the geometric centre of all selected atoms.
-		newr = i->get_world_coords() - localcog;
+		newr = i->worldr() - localcog;
 		newr = (rotmat * newr) + localcog;
-		i->r = (view_inverse * newr) - origin;
+		i->r() = (view_inverse * newr) - origin;
 	}
 	log_change(LOG_VISUAL);
 	project_selection();
@@ -117,7 +117,7 @@ void model::rotate_selection_vector(vec3<double> origin, vec3<double> vector, do
 	// Generate target coordinate system, defined from xaxis == v and orthogonal vectors from first atom
 	vector.normalise();
 	u.rows[0] = vector;
-	tempv = i->r - origin;
+	tempv = i->r() - origin;
 	tempv.normalise();
 	u.rows[1] = tempv - vector * tempv.dp(vector);
 	u.rows[1].normalise();
@@ -139,9 +139,9 @@ void model::rotate_selection_vector(vec3<double> origin, vec3<double> vector, do
 	// Loop over atoms
 	while (i != NULL)
 	{
-		tempv = gr * i->r;
+		tempv = gr * i->r();
 		tempv += Igr * origin;
-		i->r = tempv;
+		i->r() = tempv;
 		i = i->get_next_selected();
 	}
 	log_change(LOG_STRUCTURE);
@@ -173,10 +173,10 @@ void model::translate_selection_world(const vec3<double> &v)
 	origin = cell.get_origin();
 	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected())
 	{
-		newr = i->get_world_coords();
+		newr = i->worldr();
 		newr.add(v.x,v.y,v.z);
 		newr = (view_inverse * newr) - origin;
-		i->r = newr;
+		i->r() = newr;
 	}
 	log_change(LOG_VISUAL);
 	project_selection();
@@ -188,7 +188,7 @@ void model::translate_selection_local(const vec3<double> &tvec)
 {
 	// Translate the model's current selection by the vector supplied.
 	dbg_begin(DM_CALLS,"model::translate_selection_local");
-	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected()) i->r += tvec;
+	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected()) i->r() += tvec;
 	log_change(LOG_VISUAL);
 	project_selection();
 	dbg_end(DM_CALLS,"model::translate_selection_local");
@@ -204,11 +204,11 @@ void model::mirror_selection_local(int axis)
 	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected())
 	{
 		// Get coordinates relative to COG
-		mimd = cell.mimd(i->r, cog);
+		mimd = cell.mimd(i->r(), cog);
 		// Flip specified coordinate
 		mimd.set(axis, -mimd.get(axis));
 		// Store new coordinate
-		i->r = mimd + cog;
+		i->r() = mimd + cog;
 	}
 	log_change(LOG_VISUAL);
 	project_selection();

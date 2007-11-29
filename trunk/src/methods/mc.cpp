@@ -69,7 +69,7 @@ component::component()
 	// Set initial values for component
 	compmodel = NULL;
 	comppattern = NULL;
-	nrequested = 0;
+	nrequested = 10;
 	nfilled = 0;
 	prev = NULL;
 	next = NULL;
@@ -104,8 +104,7 @@ void mc_method::create_ratioarray(int newsize)
 	for (n=0; n<newsize; n++) acceptratio[n] = new double[MT_NITEMS];
 	acceptratio_size = newsize;
 	// Zero the elements
-	for (n=0; n<newsize; n++)
-		for (m=0; m<MT_NITEMS; m++) acceptratio[n][m] = 0.0;
+	for (n=0; n<newsize; n++) for (m=0; m<MT_NITEMS; m++) acceptratio[n][m] = 0.0;
 }
 
 /*

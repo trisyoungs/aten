@@ -38,7 +38,7 @@ bool script::command_transform(command_node<script_command> *cmd)
 	{
 		// Translate activeatom ('translateatom <dx dy dz>')
 		case (SC_TRANSLATEATOM):
-			if (check_activeatom(text_from_SC(cmd->get_command()))) activeatom->r += cmd->get_vector3d(0);
+			if (check_activeatom(text_from_SC(cmd->get_command()))) activeatom->r() += cmd->get_vector3d(0);
 			else return FALSE;
 			break;
 		// Translate selection ('translate <dx dy dz>')

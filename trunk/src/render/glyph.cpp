@@ -42,7 +42,7 @@ void canvas_master::render_model_glyphs()
 		switch (el)
 		{
 			case (119): 	// Ellipsoid - coords = coords, velocities = lookat, forces = scaling
-				gl_ellipsoid(i->r,i->v,i->f);
+				gl_ellipsoid(i->r(),i->v(),i->f());
 				break;
 		}
 	}

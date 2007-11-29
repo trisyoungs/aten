@@ -101,11 +101,11 @@ void model::reset_view()
 		// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 		for (i = atoms.first(); i != NULL; i = i->next)
 		{
-			z = i->r.absmax();
+			z = i->r().absmax();
 			if (z > largest) largest = z;
 		}
-		target.r = cell.get_origin();
-		target.r.add(0.0,0.0,cell.get_lengths().z+largest);
+		target.r() = cell.get_origin();
+		target.r().add(0.0,0.0,cell.get_lengths().z+largest);
 		newcam.set(0.0,0.0,0.0);
 		reset_camera(newcam);
 		// Now, adjust camera matrix so that this atom is on-screen.
@@ -116,7 +116,7 @@ void model::reset_view()
 				// Project our local atom and grab the z screen coordinate
 				calculate_viewmatrix();
 				project_atom(&target);
-				z = target.get_world_coords().z;
+				z = target.worldr().z;
 				adjust_camera(0.0,0.0,-1.0,0.0);
 			} while (z > -5.0);
 		// Recalculate viewing matrix
@@ -218,12 +218,12 @@ void model::project_atom(atom *i)
 		static double srx, sry, srz;
 		static GLint *vmat;
 		// Projection formula is : worldr = P x M x modelr 
-		modelr.set(i->r, 1.0);
+		modelr.set(i->r(), 1.0);
 		// We also need to add on the cell origin (which basically means subtract a half-cell in 3D)
 		modelr += cell.get_origin();
 		// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 		worldr = view * modelr;
-		i->set_world_coords(worldr);
+		i->worldr() = worldr;
 		// Calculate 2D screen coordinates - Multiply world coordinates by P
 		screenr = gui.mainview.PMAT * worldr;
 		screenr.x /= screenr.w;
@@ -232,7 +232,7 @@ void model::project_atom(atom *i)
 		vmat = gui.mainview.VMAT;
 		srx = vmat[0] + vmat[2]*(screenr.x+1)/2.0;
 		sry = vmat[1] + vmat[3]*(screenr.y+1)/2.0;
-		i->set_screen_coords(srx,sry,srz);
+		i->screenr().set(srx,sry,srz);
 		// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
 		worldr.x += prefs.screenradius(i);
 		screenr = gui.mainview.PMAT * worldr;

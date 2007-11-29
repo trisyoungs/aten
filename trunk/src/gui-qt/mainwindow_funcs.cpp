@@ -83,7 +83,7 @@ void AtenForm::finalise_ui()
 	}
 
 	// Set editable items in the Atom List
-	ui.AtomTreeList->setEditTriggers(QAbstractItemView::DoubleClicked);
+	ui.AtomTree->setEditTriggers(QAbstractItemView::DoubleClicked);
 
 	// Create QActionGroup for draw styles
 	QActionGroup *styleGroup = new QActionGroup(this);

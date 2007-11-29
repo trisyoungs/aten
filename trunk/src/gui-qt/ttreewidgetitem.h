@@ -1,6 +1,6 @@
 /*
-	*** Qt treewidget atom item
-	*** src/gui-qt/ttreewidgetatom.h
+	*** Qt treewidget item
+	*** src/gui-qt/ttreewidgetitem.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -24,35 +24,48 @@
 
 #include <QtGui/QTreeWidget>
 
-// Enum detailing atom data columns
-enum twa_column { TWA_ID=1, TWA_ELEMENT, TWA_RX, TWA_RY, TWA_RZ };
+// Atom data columns
+enum twa_column { TW_A_ID=1, TW_A_ELEMENT, TW_A_RX, TW_A_RY, TW_A_RZ };
+
+// FFAtom data columns
+enum twffa_column { TW_FFA_NAME=0, TW_FFA_DESCRIPTION };
 
 // Forward Declarations
 class atom;
+class ffatom;
 
-class TTreeWidgetAtom : public QTreeWidgetItem
+class TTreeWidgetItem : public QTreeWidgetItem
 {
 	public:
 	// Constructor
-	TTreeWidgetAtom(QTreeWidgetItem *parent = 0);
+	TTreeWidgetItem(QTreeWidgetItem *parent = 0);
 
 	/*
-	// Atom Pointer
+	// Pointers
 	*/
 	private:
 	atom *i;
+	ffatom *ffa;
+	
 
 	public:
 	// Set the atom pointer in the widget
 	void set_atom(atom *source) { i = source; }
 	// Return the atom pointer in the widget
 	atom *get_atom() { return i; }
+	// Set the ffatom pointer in the widget
+	void set_ffatom(ffatom *source) { ffa = source; }
+	// Return the ffatom pointer in the widget
+	ffatom *get_ffatom() { return ffa; }
 
 	/*
 	// Set Data functions
 	*/
 	public:
-	void set_columns();
+	// Set column data from atom pointer
+	void set_atom_columns();
+	// Set column data from ffatom pointer
+	void set_ffatom_columns();
 };
 
 #endif

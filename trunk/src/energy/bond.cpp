@@ -55,7 +55,7 @@ void pattern::bond_energy(model *srcmodel, energystore *estore)
 					// U = 0.5 * forcek * (r - eq)**2
 					forcek = fabs(params.data[BF_HARMONIC_K]);
 					eq = params.data[BF_HARMONIC_EQ];
-					r = cell->distance(modelatoms[i]->r, modelatoms[j]->r);
+					r = cell->distance(modelatoms[i]->r(), modelatoms[j]->r());
 					r -= eq;
 					energy += 0.5 * forcek * r * r;
 					break;
@@ -90,7 +90,7 @@ void pattern::bond_forces(model *srcmodel)
 			// Calculate bond vector
 			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(1) + aoff;
-			mim_i = cell->mimd(modelatoms[j]->r, modelatoms[i]->r);
+			mim_i = cell->mimd(modelatoms[j]->r(), modelatoms[i]->r());
 			rij = mim_i.magnitude();
 			// Select energy function
 			params = pb->get_data()->get_params();
@@ -112,8 +112,8 @@ void pattern::bond_forces(model *srcmodel)
 			}
 			// Calculate forces
 			fi = mim_i * du_dr;
-			modelatoms[i]->f += fi;
-			modelatoms[j]->f -= fi;
+			modelatoms[i]->f() += fi;
+			modelatoms[j]->f() -= fi;
 		}
 		aoff += natoms;
 	}

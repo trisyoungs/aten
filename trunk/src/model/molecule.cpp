@@ -40,12 +40,12 @@ void model::position_molecule(pattern *p, int mol, const vec3<double> &v)
 		{
 			// Get local coordinates of atom - mim with and then subtract centre of geometry
 			//newpos = modelatoms[n];
-			newpos = cell.mim(modelatoms[n]->r,cog);
+			newpos = cell.mim(modelatoms[n]->r(),cog);
 			newpos -= cog;
 			// Re-position
 			newpos += v;
 			// Store new positions
-			modelatoms[n]->r = newpos;
+			modelatoms[n]->r() = newpos;
 		}
 	}
 	else printf("model::position_molecule : Requested a molecule past end of config contents. (%s %i)\n",p->get_name(),mol); 
@@ -62,7 +62,7 @@ void model::translate_molecule(pattern *p, int mol, const vec3<double> &v)
 	pnatoms = p->get_natoms();
 	offset = p->get_startatom() + pnatoms * mol;
 	msg(DM_VERBOSE,"model::translate_molecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms.size());
-	if (offset < atoms.size()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->r += v;
+	if (offset < atoms.size()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->r() += v;
 	else printf("model::translate_molecule : Requested a molecule past end of model contents. (%s %i)\n", p->get_name(), mol); 
 	dbg_end(DM_CALLS,"model::translate_molecule");
 }
@@ -95,10 +95,10 @@ void model::rotate_molecule(pattern *p, int mol, double rotx, double roty)
 		for (n=offset; n<offset+pnatoms; n++)
 		{
 			// Get local coordinates of atom, i.e. subtract centre of geometry
-			newpos = rotmat * (modelatoms[n]->r - cog);
+			newpos = rotmat * (modelatoms[n]->r() - cog);
 			newpos += cog;
 			// Store the new position
-			modelatoms[n]->r = newpos;
+			modelatoms[n]->r() = newpos;
 		}
 	else printf("model::rotate_molecule : Requested a molecule past end of model contents. (%s %i)\n", p->get_name(), mol); 
 	dbg_end(DM_CALLS,"model::rotate_molecule");

@@ -113,9 +113,9 @@ void clipatom::copy_from_atom(atom *i)
 {
 	dbg_begin(DM_CALLS,"clipatom::copy_from_atom");
 	// Atom data
-	r = i->r;
-	f = i->f;
-	v = i->v;
+	rr = i->r();
+	ff = i->f();
+	vv = i->v();
 	q = i->get_charge();
 	el = i->get_element();
 	style = i->get_style();
@@ -275,7 +275,7 @@ void clipboard::paste_to_model(model *destmodel, pattern *p, int mol)
 	while (i != NULL)
 	{
 		// Just put position data into the config (overwriting anything that might be there already)
-		modelatoms[cfgi]->r = i->r;
+		modelatoms[cfgi]->r() = i->r();
 		modelatoms[cfgi]->set_charge(i->get_charge());
 		cfgi ++;
 		i = i->get_next();
@@ -310,7 +310,7 @@ void clipboard::paste_to_model(model *m, vec3<double> t)
 		// Create a new atom in the target model
 		pastedi = m->add_copy(pastedi);
 		// Translate the new atom
-		pastedi->r += t;
+		pastedi->r() += t;
 		m->select_atom(pastedi);
 		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
 		bonds_set_newptr(i,pastedi);
@@ -325,7 +325,7 @@ void clipboard::paste_to_model(model *m, vec3<double> t)
 // Translate Clipped Atoms
 void clipboard::translate(const vec3<double> &v)
 {
-	for (clipatom *i = atoms.first(); i != NULL; i = i->get_next()) i->r += v;
+	for (clipatom *i = atoms.first(); i != NULL; i = i->get_next()) i->r() += v;
 }
 
 // Look for bond in list

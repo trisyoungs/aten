@@ -7,7 +7,9 @@ Issues with the current version:
 	- Colour schemes other than AC_ELEMENT need to be fixed
 	- Switching between perspective / orthographic views loses current rotation/zoom
 	- Drawing guide is not displayed if camera moves beyond z = 0.0 (general drawing problem)
-	- Automatic bond augmenting needs rewrite
+	- Automatic bond augmenting needs rewrite (currently disabled)
+	- Loading forcefield with command box does not update GUI list
+	- Numbering of new models is disparate since many routines create new (hidden) models
 
 General To-Do list:
 	- Move style is redundant because of display lists - remove.

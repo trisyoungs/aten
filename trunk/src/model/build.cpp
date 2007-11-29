@@ -141,7 +141,7 @@ void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
 				break;
 		}
 		// Now add the atom at the position specified in newhpos.
-		newh = add_atom(1, newhpos + target->r);
+		newh = add_atom(1, newhpos + target->r());
 		bond_atoms(newh,target,BT_SINGLE);
 		project_atom(newh);
 	}

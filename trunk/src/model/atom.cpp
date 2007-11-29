@@ -32,7 +32,7 @@ atom *model::add_atom(int newel, vec3<double> pos)
 	atom *newatom = atoms.add();
 	newatom->set_element(newel);
 	newatom->set_id(atoms.size() - 1);
-	newatom->r = pos;
+	newatom->r() = pos;
 	mass += elements.mass(newel);
 	calculate_density();
 	log_change(LOG_STRUCTURE);
@@ -250,7 +250,7 @@ atom **model::get_staticatoms()
 void model::zero_forces()
 {
 	dbg_begin(DM_CALLS,"model::zero_forces");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->f.zero();
+	for (atom *i = atoms.first(); i != NULL; i = i->next) i->f().zero();
 	dbg_end(DM_CALLS,"model::zero_forces");
 }
 
@@ -258,7 +258,7 @@ void model::zero_forces()
 void model::zero_forces_fixed()
 {
 	dbg_begin(DM_CALLS,"model::zero_forces");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->fixed) i->f.zero();
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->fixed) i->f().zero();
 	dbg_end(DM_CALLS,"model::zero_forces");
 }
 
@@ -282,13 +282,13 @@ void model::normalise_forces(double norm)
 	maxfrc = 0.0;
 	for (i=0; i<atoms.size(); i++)
 	{
-		f = modelatoms[i]->f;
+		f = modelatoms[i]->f();
 		if (fabs(f.x) > maxfrc) maxfrc = fabs(f.x);
 		if (fabs(f.y) > maxfrc) maxfrc = fabs(f.y);
 		if (fabs(f.z) > maxfrc) maxfrc = fabs(f.z);
 	}
 	// Normalise with respect to this force
 	maxfrc *= norm;
-	for (i=0; i<atoms.size(); i++) modelatoms[i]->f /= maxfrc;
+	for (i=0; i<atoms.size(); i++) modelatoms[i]->f() /= maxfrc;
 	dbg_end(DM_CALLS,"model::normalise_forces");
 }

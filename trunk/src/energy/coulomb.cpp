@@ -52,7 +52,7 @@ void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore)
 			{
 				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
 				{
-					mim_i = cell->mimd(modelatoms[i+aoff]->r,modelatoms[j+aoff]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff]->r(),modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff]->get_charge() * modelatoms[j+aoff]->get_charge()) / (rij * rij);
@@ -65,7 +65,7 @@ void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore)
 		{
 			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r,modelatoms[j]->r);
+			mim_i = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
 			energy  = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij * rij);
@@ -107,7 +107,7 @@ void pattern::coulomb_interpattern_energy(model *srcmodel, pattern *xpnode, ener
 				for (a2=0; a2<xpnode->natoms; a2++)
 		  		{
 					j = a2 + aoff2;
-					mim_i = cell->mimd(modelatoms[i]->r,modelatoms[j]->r);
+					mim_i = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 	//printf("Coulomb ij %i %i %8.4f %8.4f %8.4f \n",i,j,xcfg->q[i],xcfg->q[j],rij);
@@ -143,35 +143,35 @@ void pattern::coulomb_intrapattern_forces(model *srcmodel)
 		for (i=0; i<natoms; i++)
 		{
 			// Copy forces for atom i
-			f_i = modelatoms[i+aoff]->f;
+			f_i = modelatoms[i+aoff]->f();
 			for (j=i+1; j<natoms; j++)
 			{
 				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
 				{
-					mim_i = cell->mimd(modelatoms[i+aoff]->r, modelatoms[j+aoff]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					factor = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij*rij*rij);
 					tempf = mim_i * factor;
 					f_i += tempf;
-					modelatoms[j+aoff]->f -= tempf;
+					modelatoms[j+aoff]->f() -= tempf;
 				}
 			}
 			// Re-load forces back into main array
-			modelatoms[i+aoff]->f = f_i;
+			modelatoms[i+aoff]->f() = f_i;
 		}
 		// Add on contributions from torsions (which are scaled)
 		for (pb = torsions.first(); pb != NULL; pb = pb->next)
 		{
 			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r, modelatoms[j]->r);
+			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
 			factor = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij*rij*rij);
 			factor *= pb->get_data()->get_params().data[TF_ESCALE];
-			modelatoms[i+aoff]->f += tempf;
-			modelatoms[j+aoff]->f -= tempf;
+			modelatoms[i+aoff]->f() += tempf;
+			modelatoms[j+aoff]->f() -= tempf;
 		}
 		aoff += natoms;
 	}
@@ -201,11 +201,11 @@ void pattern::coulomb_interpattern_forces(model *srcmodel, pattern *xpnode)
 			{
 				i = a1 + aoff1;
 				// Copy forces to temporary vector
-				f_i = modelatoms[i]->f;
+				f_i = modelatoms[i]->f();
 				for (a2=0; a2<xpnode->natoms; a2++)
 		  		{
 					j = a2 + aoff2;
-					mim_i = cell->mimd(modelatoms[i]->r, modelatoms[j]->r);
+					mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 					rij = mim_i.magnitude();
 					if (rij < cutoff)
 					{
@@ -213,12 +213,12 @@ void pattern::coulomb_interpattern_forces(model *srcmodel, pattern *xpnode)
 						factor = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij*rij*rij);
 						tempf = mim_i * factor;
 						f_i += tempf;
-						modelatoms[j]->f -= tempf;
+						modelatoms[j]->f() -= tempf;
 					}
 				}
 			}
 			// Replace forces in main array
-			modelatoms[i]->f = f_i;
+			modelatoms[i]->f() = f_i;
 			aoff2 += xpnode->natoms;
 		}
 		aoff1 += natoms;

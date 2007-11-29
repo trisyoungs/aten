@@ -23,7 +23,7 @@
 #define H_TTREEWIDGET_H
 
 #include "templates/reflist.h"
-#include "gui-qt/ttreewidgetatom.h"
+#include "gui-qt/ttreewidgetitem.h"
 #include <QtGui/QTreeWidget>
 #include <QtCore/QObject>
 
@@ -37,7 +37,7 @@ class TTreeWidget : public QTreeWidget
 
 	private:
 	// List of TTreeViewWidgets that this TTreeWidget contains
-	reflist<TTreeWidgetAtom> atomitems;
+	reflist<TTreeWidgetItem> atomitems;
 
 	public:
 	// Clear list of TTreeViewWidgets 
@@ -45,13 +45,13 @@ class TTreeWidget : public QTreeWidget
 
 	public:
 	// Add a TTreeViewAtoms to the list (which we will remember in a reflist<>
-	TTreeWidgetAtom *addTreeItem(QTreeWidgetItem *parent)
+	TTreeWidgetItem *addTreeItem(QTreeWidgetItem *parent)
 	{
-		atomitems.add(new TTreeWidgetAtom(parent));
+		atomitems.add(new TTreeWidgetItem(parent));
 		return atomitems.last()->item;
 	}
 	// Return the reflist of TTreeViewAtoms
-	refitem<TTreeWidgetAtom> *get_atomitems() { return atomitems.first(); }
+	refitem<TTreeWidgetItem> *get_atomitems() { return atomitems.first(); }
 };
 
 #endif

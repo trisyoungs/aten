@@ -279,7 +279,7 @@ void model::print_coords()
 	dbg_begin(DM_CALLS,"model::print_coords");
 	for (atom *i = atoms.first(); i != NULL; i = i->next)
 	{
-		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n",i->get_id(),elements.symbol(i),i->r.x,i->r.y,i->r.z,i->get_charge());
+		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->get_id(), elements.symbol(i), i->r().x, i->r().y, i->r().z, i->get_charge());
 	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->get_id(),elements.symbol(i),r.x,r.y,r.z,
 	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
 	}
@@ -292,14 +292,14 @@ void model::centre()
 	dbg_begin(DM_CALLS,"model::centre");
 	vec3<double> cog;
 	atom *i;
-	for (i = atoms.first(); i != NULL; i = i->next) cog += i->r;
+	for (i = atoms.first(); i != NULL; i = i->next) cog += i->r();
 	// Get the centre of geometry and adjust atomic coordinates...
 	cog /= -atoms.size();
 	for (i = atoms.first(); i != NULL; i = i->next)
 	{
-		i->r += cog;
+		i->r() += cog;
 		// BEGIN HACK TODO Remove!
-		if (i->get_element() > 118) i->v += cog;
+		if (i->get_element() > 118) i->v() += cog;
 		// END HACK
 	}
 	dbg_end(DM_CALLS,"model::centre");
@@ -333,7 +333,7 @@ void model::bohr_to_angstrom()
 	// Convert coordinates and cell from Bohr to Angstrom
 	dbg_begin(DM_CALLS,"model::bohr_to_angstrom");
 	// Coordinates
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r = i->r * ANGBOHR;
+	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
 	cell_type ct = cell.get_type();
 	if (ct != CT_NONE)
@@ -399,7 +399,7 @@ void model::print_forces()
 {
 	for (atom *i = atoms.first(); i != NULL; i = i->next)
 	{
-		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->get_id(), elements.symbol(i), i->f.x, i->f.y, i->f.z);
+		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->get_id(), elements.symbol(i), i->f().x, i->f().y, i->f().z);
 	}
 }
 
@@ -431,9 +431,9 @@ void model::copy_atom_data(model *srcmodel, int dat)
 	for (i = atoms.first(); i != NULL; i = i->next)
 	{
 		// Copy data items referenced in 'dat'
-		if ((dat&AD_R) || (dat == AD_ALL)) i->r = j->r;
-		if ((dat&AD_F) || (dat == AD_ALL)) i->f = j->f;
-		if ((dat&AD_V) || (dat == AD_ALL)) i->v = j->v;
+		if ((dat&AD_R) || (dat == AD_ALL)) i->r() = j->r();
+		if ((dat&AD_F) || (dat == AD_ALL)) i->f() = j->f();
+		if ((dat&AD_V) || (dat == AD_ALL)) i->v() = j->v();
 		if ((dat&AD_Z) || (dat == AD_ALL)) i->set_element(j->get_element());
 		if ((dat&AD_Q) || (dat == AD_ALL)) i->set_charge(j->get_charge());
 		if ((dat&AD_FIXFREE) || (dat == AD_ALL)) i->fixed = j->fixed;
@@ -470,9 +470,9 @@ void model::copy_atom_data(model *srcmodel, int dat, int startatom, int ncopy)
 			for (int n=startatom; n<finishatom; n++)
 			{
 				// Copy data items referenced in 'dat'
-				if ((dat&AD_R) || (dat == AD_ALL)) ii[n]->r = jj[n]->r;
-				if ((dat&AD_F) || (dat == AD_ALL)) ii[n]->f = jj[n]->f;
-				if ((dat&AD_V) || (dat == AD_ALL)) ii[n]->v = jj[n]->v;
+				if ((dat&AD_R) || (dat == AD_ALL)) ii[n]->r() = jj[n]->r();
+				if ((dat&AD_F) || (dat == AD_ALL)) ii[n]->f() = jj[n]->f();
+				if ((dat&AD_V) || (dat == AD_ALL)) ii[n]->v() = jj[n]->v();
 				if ((dat&AD_Z) || (dat == AD_ALL)) ii[n]->set_element(jj[n]->get_element());
 				if ((dat&AD_Q) || (dat == AD_ALL)) ii[n]->set_charge(jj[n]->get_charge());
 				if ((dat&AD_FIXFREE) || (dat == AD_ALL)) ii[n]->fixed = jj[n]->fixed;
@@ -491,9 +491,9 @@ double model::calculate_rms_force()
 	atom **modelatoms = get_staticatoms();
 	for (int i=0; i<atoms.size(); i++)
 	{
-		rmsforce += modelatoms[i]->f.x * modelatoms[i]->f.x;
-		rmsforce += modelatoms[i]->f.y * modelatoms[i]->f.y;
-		rmsforce += modelatoms[i]->f.z * modelatoms[i]->f.z;
+		rmsforce += modelatoms[i]->f().x * modelatoms[i]->f().x;
+		rmsforce += modelatoms[i]->f().y * modelatoms[i]->f().y;
+		rmsforce += modelatoms[i]->f().z * modelatoms[i]->f().z;
 	}
 	rmsforce /= atoms.size();
 	dbg_end(DM_CALLS,"model::calculate_rms_force");

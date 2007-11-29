@@ -221,7 +221,7 @@ class AtenForm : public QMainWindow
 	void peek_scroll_bar();
 	void poke_scroll_bar();
 	private slots:
-	void on_AtomTreeList_itemSelectionChanged();
+	void on_AtomTree_itemSelectionChanged();
 	void on_ShiftUpButton_clicked(bool checked);
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
@@ -305,6 +305,7 @@ class AtenForm : public QMainWindow
 	// Forcefield Page Functions
 	public:
 	void refresh_forcefieldpage();
+	void refresh_forcefieldtypelist();
 	private slots:
 	void on_RemoveForcefieldButton_clicked(bool checked);
 	void on_EditForcefieldButton_clicked(bool checked);
@@ -314,6 +315,11 @@ class AtenForm : public QMainWindow
 	void on_TypeModelButton_clicked(bool checked);
 	void on_UntypeModelButton_clicked(bool checked);
 	void on_ForcefieldList_currentRowChanged(int row);
+	void on_ManualTypeSetButton_clicked(bool checked);
+	void on_ManualTypeClearButton_clicked(bool checked);
+	void on_ManualTypeTestButton_clicked(bool checked);
+	void on_ManualTypeEdit_editingFinished();
+
 
 	// Surface Page Functions
 	public:
