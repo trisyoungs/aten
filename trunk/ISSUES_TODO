@@ -10,6 +10,7 @@ Issues with the current version:
 	- Automatic bond augmenting needs rewrite (currently disabled)
 	- Loading forcefield with command box does not update GUI list
 	- Numbering of new models is disparate since many routines create new (hidden) models
+	- Crash on model close in GUI?
 
 General To-Do list:
 	- Move style is redundant because of display lists - remove.
