@@ -76,7 +76,7 @@ void sd_method::minimise(model* srcmodel, double econ, double fcon)
 		srcmodel->zero_forces_fixed();
 		// We need to (do we?) define some sort of length scale so we take sensible steps along the gradient vector.
 		//srcmodel->normalise_forces(1.0);
-		for (i=0; i<srcmodel->get_natoms(); i++) modelatoms[i]->f /= elements.mass(modelatoms[i]);
+		for (i=0; i<srcmodel->get_natoms(); i++) modelatoms[i]->f() /= elements.mass(modelatoms[i]);
 
 		// Perform linesearch along the gradient vector
 		if (!gui.progress_update(cycle)) linedone = TRUE;

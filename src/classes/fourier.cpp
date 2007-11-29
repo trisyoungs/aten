@@ -118,9 +118,9 @@ void fourier_data::calculate(model *srcmodel, int startatom, int atomstodo)
 		rcos[0][i].z = 1.0; rsin[kmax][i].z = 0.0;
 		// Calculate first vector in the positive k-direction
 		tempmat = cell->get_recip();
-		pos.x = tempmat.rows[0].dp(modelatoms[i]->r);
-		pos.y = tempmat.rows[1].dp(modelatoms[i]->r);
-		pos.z = tempmat.rows[2].dp(modelatoms[i]->r);
+		pos.x = tempmat.rows[0].dp(modelatoms[i]->r());
+		pos.y = tempmat.rows[1].dp(modelatoms[i]->r());
+		pos.z = tempmat.rows[2].dp(modelatoms[i]->r());
 		rcos[1][i].x = cos(pos.x);
 		rcos[1][i].y = cos(pos.y);
 		rcos[1][i].z = cos(pos.z);

@@ -48,6 +48,7 @@ atom::atom()
 	os = 0;
 	env = AE_UNSPECIFIED;
 	fftype = NULL;
+	fftypefixed = FALSE;
 	next = NULL;
 	prev = NULL;
 	tempi = 0;
@@ -91,18 +92,18 @@ atom *atom::get_next_selected()
 void atom::reset()
 {
 	el = 0;
-	r.zero();
-	f.zero();
-	v.zero();
+	rr.zero();
+	ff.zero();
+	vv.zero();
 	id = -1;
 }
 
 // Copy atom data
 void atom::copy(atom *source)
 {
-	r = source->r;
-	f = source->f;
-	v = source->v;
+	rr = source->rr;
+	ff = source->ff;
+	vv = source->vv;
 	q = source->q;
 	el = source->el;
 	style = source->style;
@@ -123,11 +124,11 @@ void atom::print()
 	msg(DM_NONE,"Atom ID %i (%s):\n",id,elements.name(this));
 	msg(DM_NONE,"    Selected : %s,  Hidden : %s\n",(selected ? "Yes" : "No"),(hidden ? "Yes" : "No"));
 	msg(DM_NONE,"  Draw Style : %s\n",text_from_DS(style));
-	msg(DM_NONE," Model Coord : %8.4f %8.4f %8.4f\n",r.x,r.y,r.z);
-	msg(DM_NONE," World Coord : %8.4f %8.4f %8.4f\n",worldr.x,worldr.y,worldr.z);
-	msg(DM_NONE,"Screen Coord : %8.4f %8.4f \n",screenr.x,screenr.y,screenr.z);
-	msg(DM_NONE,"  Velocities : %8.4f %8.4f %8.4f\n",v.x,v.y,v.z);
-	msg(DM_NONE,"      Forces : %8.4f %8.4f %8.4f\n",f.x,f.y,f.z);
+	msg(DM_NONE," Model Coord : %8.4f %8.4f %8.4f\n",rr.x,rr.y,rr.z);
+	msg(DM_NONE," World Coord : %8.4f %8.4f %8.4f\n",rr_world.x,rr_world.y,rr_world.z);
+	msg(DM_NONE,"Screen Coord : %8.4f %8.4f \n",rr_screen.x,rr_screen.y,rr_screen.z);
+	msg(DM_NONE,"  Velocities : %8.4f %8.4f %8.4f\n",vv.x,vv.y,vv.z);
+	msg(DM_NONE,"      Forces : %8.4f %8.4f %8.4f\n",ff.x,ff.y,ff.z);
 	msg(DM_NONE,"      Charge : %8.4f\n",q);
 	msg(DM_NONE,"      FFType : %s\n",(fftype != NULL ? fftype->get_name() : "None"));
 	msg(DM_NONE," Environment : %s\n",text_from_AE(env));
@@ -139,7 +140,7 @@ void atom::print_summary()
 {
 	// Print format : " Id     El   FFType         X             Y             Z              Q        S"
 	msg(DM_NONE," %-5i  %-3s  %-8s",id,elements.symbol(this),(fftype != NULL ? fftype->get_name() : "None"));
-	msg(DM_NONE," %13.6e %13.6e %13.6e  %13.6e  ",r.x,r.y,r.z,q);
+	msg(DM_NONE," %13.6e %13.6e %13.6e  %13.6e  ",rr.x,rr.y,rr.z,q);
 	msg(DM_NONE,"%c  \n",(selected ? 'x' : ' '));
 }
 
@@ -329,12 +330,12 @@ vec3<double> atom::find_bond_plane(atom *j, bond *b, const vec3<double> &rij)
 	refitem<bond> *brefi = bonds.first();
 	refitem<bond> *brefj = j->bonds.first();
 	if (bonds.size() != 1)	// Can define from another bond on 'this'
-		b == brefi->item ? rk = brefi->next->item->get_partner(this)->r : rk = brefi->item->get_partner(this)->r;
+		b == brefi->item ? rk = brefi->next->item->get_partner(this)->rr : rk = brefi->item->get_partner(this)->rr;
 	else if (j->bonds.size() != 1)// Can define from another bond on j
-		this == brefj->item->get_partner(j) ? rk = brefj->next->item->get_partner(j)->r : rk = brefj->item->get_partner(j)->r;
+		this == brefj->item->get_partner(j) ? rk = brefj->next->item->get_partner(j)->rr : rk = brefj->item->get_partner(j)->rr;
 	else rk.zero();		// Default, just in case
 	// Now, take cross product of rij and (repositioned) rk -> perpendicular vector
-	rk -= r;
+	rk -= rr;
 	xp1 = rij * rk;
 	// Cross product of this new vector with rij -> bond plane vector.
 	// Get this vector, normalise and take a fraction of it

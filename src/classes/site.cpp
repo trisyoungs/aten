@@ -66,11 +66,11 @@ vec3<double> site::calculate_centre(model *srcmodel, int mol)
 	if (atoms.size() != 0)
 	{
 		li = atoms.first();
-		centre = modelatoms[offset + li->data]->r;
+		centre = modelatoms[offset + li->data]->r();
 		firstid = centre;
 		for (li = li->next; li != NULL; li = li->next)
 		{
-			mim = cell->mim(modelatoms[offset + li->data]->r, firstid);
+			mim = cell->mim(modelatoms[offset + li->data]->r(), firstid);
 			centre += mim;
 		}
 		// Take average
@@ -79,11 +79,11 @@ vec3<double> site::calculate_centre(model *srcmodel, int mol)
 	else
 	{
 		// Use all atoms for centre. Grab first as the MIM point
-		centre = modelatoms[offset]->r;
+		centre = modelatoms[offset]->r();
 		firstid = centre;
 		for (n=1; n<sourcepattern->get_natoms(); n++)
 		{
-			mim = cell->mim(modelatoms[offset + n]->r, firstid);
+			mim = cell->mim(modelatoms[offset + n]->r(), firstid);
 			centre += mim;
 		}
 		// Take average
@@ -109,7 +109,7 @@ mat3<double> site::calculate_axes(model *srcmodel, int mol)
 	v1.zero();
 	for (li = xaxisatoms.first(); li != NULL; li = li->next)
 	{
-		mim = cell->mim(modelatoms[offset + li->data]->r, centre);
+		mim = cell->mim(modelatoms[offset + li->data]->r(), centre);
 		v1 += mim;
 	}
 	// Take average and subtract site centre to get vector
@@ -120,7 +120,7 @@ mat3<double> site::calculate_axes(model *srcmodel, int mol)
 	v2.zero();
 	for (li = yaxisatoms.first(); li != NULL; li = li->next)
 	{
-		mim = cell->mim(modelatoms[offset + li->data]->r, centre);
+		mim = cell->mim(modelatoms[offset + li->data]->r(), centre);
 		v2 += mim;
 	}
 	// Take average and subtract site centre to get vector

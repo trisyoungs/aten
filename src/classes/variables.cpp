@@ -593,15 +593,15 @@ void variable_list::set_atom_variables(const char *varname, atom *i)
 		ffatom *ffa = i->get_fftype();
 		set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->get_name()));
 		set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->get_equiv()));
-		v = i->r;
+		v = i->r();
 		set(varname,"r.x",v.x);
 		set(varname,"r.y",v.y);
 		set(varname,"r.z",v.z);
-		v = i->f;
+		v = i->f();
 		set(varname,"f.x",v.x);
 		set(varname,"f.y",v.y);
 		set(varname,"f.z",v.z);
-		v = i->v;
+		v = i->v();
 		set(varname,"v.x",v.x);
 		set(varname,"v.y",v.y);
 		set(varname,"v.z",v.z);
@@ -719,7 +719,7 @@ void variable_list::get_atom_variables(atom *i)
 	v = find("r.z");
 	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
 	if (v != NULL) v->reset();
-	i->r = vec1;
+	i->r() = vec1;
 	// Set forces
 	v = find("f.x");
 	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
@@ -730,7 +730,7 @@ void variable_list::get_atom_variables(atom *i)
 	v = find("f.z");
 	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
 	if (v != NULL) v->reset();
-	i->f = vec1;
+	i->f() = vec1;
 	// Set velocities
 	v = find("v.x");
 	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
@@ -741,6 +741,6 @@ void variable_list::get_atom_variables(atom *i)
 	v = find("v.z");
 	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
 	if (v != NULL) v->reset();
-	i->v = vec1;
+	i->v() = vec1;
 	dbg_end(DM_CALLS,"variable_list::get_atom_variables");
 }

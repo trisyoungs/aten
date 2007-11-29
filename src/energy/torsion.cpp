@@ -134,9 +134,9 @@ void pattern::torsion_forces(model *srcmodel)
 			l = pb->get_atomid(3) + aoff;
 			params = pb->get_data()->get_params();
 			// Calculate vectors between atoms
-			rij = cell->mimd(modelatoms[i]->r, modelatoms[j]->r);
-			rkj = cell->mimd(modelatoms[k]->r, modelatoms[j]->r);
-			rlk = cell->mimd(modelatoms[l]->r, modelatoms[k]->r);
+			rij = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
+			rkj = cell->mimd(modelatoms[k]->r(), modelatoms[j]->r());
+			rlk = cell->mimd(modelatoms[l]->r(), modelatoms[k]->r());
 			mag_ij = rij.magnitude();
 			mag_kj = rkj.magnitude();
 			mag_lk = rlk.magnitude();
@@ -220,10 +220,10 @@ void pattern::torsion_forces(model *srcmodel)
 			fl.y = -du_dphi * dcos_dxpk.dp(dxpk_dlk.rows[1]);
 			fl.z = -du_dphi * dcos_dxpk.dp(dxpk_dlk.rows[2]);
 
-			modelatoms[i]->f += fi;
-			modelatoms[j]->f += fj;
-			modelatoms[k]->f += fk;
-			modelatoms[l]->f += fl;
+			modelatoms[i]->f() += fi;
+			modelatoms[j]->f() += fj;
+			modelatoms[k]->f() += fk;
+			modelatoms[l]->f() += fl;
 
 		}
 		aoff += natoms;

@@ -114,8 +114,8 @@ void pattern::angle_forces(model *srcmodel)
 			j = pb->get_atomid(1) + aoff;
 			k = pb->get_atomid(2) + aoff;
 			// Minimum image w.r.t. atom j
-			vec_ij = cell->mimd(modelatoms[i]->r,modelatoms[j]->r);
-			vec_kj = cell->mimd(modelatoms[k]->r,modelatoms[j]->r);
+			vec_ij = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
+			vec_kj = cell->mimd(modelatoms[k]->r(),modelatoms[j]->r());
 			// Normalise vectors, calculate dot product and angle.
 			mag_ij = vec_ij.mag_and_normalise();
 			mag_kj = vec_kj.mag_and_normalise();
@@ -166,9 +166,9 @@ void pattern::angle_forces(model *srcmodel)
 			fk = vec_ij - vec_kj * dp;
 			fk *= du_dtheta / mag_kj;
 			// Add contributions into force arrays
-			modelatoms[i]->f -= fi;
-			modelatoms[j]->f += fi + fk;
-			modelatoms[k]->f -= fk;
+			modelatoms[i]->f() -= fi;
+			modelatoms[j]->f() += fi + fk;
+			modelatoms[k]->f() -= fk;
 		}
 		aoff += natoms;
 	}

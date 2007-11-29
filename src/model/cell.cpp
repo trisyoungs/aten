@@ -112,7 +112,7 @@ void model::fold_all_molecules()
 					cell.fold(i);
 					first = i;
 				}
-				else i->r = cell.mim(i,first);
+				else i->r() = cell.mim(i,first);
 				i = i->next;
 			}
 		}
@@ -139,11 +139,11 @@ void model::apply_symmop(symmop* so, atom *lastatom)
 	while (i != NULL)
 	{
 		// Add a new atom and get the position of the old atom
-		newatom = add_atom(i->get_element(), i->r);
+		newatom = add_atom(i->get_element(), i->r());
 		// Apply the rotation and translation
 		newr *= rotmat;
 		newr -= trans;
-		newatom->r = newr;
+		newatom->r() = newr;
 		if (i == lastatom) break;
 		i = i->next;
 	}
@@ -226,7 +226,7 @@ void model::scale_cell(const vec3<double> &scale)
 			for (m=0; m<p->get_natoms(); m++)
 			{
 				newpos = cell.mim(i,oldcog) - oldcog + newcog;
-				i->r = newpos;
+				i->r() = newpos;
 				i = i->next;
 			}
 		}
@@ -339,7 +339,7 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 	{
 		delatom = FALSE;
 		// Convert coordinates to fractional coords and test them
-		fracr = cellinverse * i->r;
+		fracr = cellinverse * i->r();
 		if ((fracr.x < 0) || (fracr.x >= 1)) delatom = TRUE;
 		else if ((fracr.y < 0) || (fracr.y >= 1)) delatom = TRUE;
 		else if ((fracr.z < 0) || (fracr.z >= 1)) delatom = TRUE;
@@ -362,6 +362,6 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 void model::frac_to_real()
 {
 	dbg_begin(DM_CALLS,"model::frac_coords_to_real");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r = cell.frac_to_real(i->r);
+	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r() = cell.frac_to_real(i->r());
 	dbg_end(DM_CALLS,"model::frac_coords_to_real");
 }

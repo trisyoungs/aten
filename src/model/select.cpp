@@ -169,8 +169,8 @@ atom *model::atom_on_screen(double x1, double y1)
 		while (i != NULL)
 		{
 			if (i->is_hidden()) { i = i->next; continue; }
-			wr = -i->get_world_coords();
-			sr = i->get_screen_coords();
+			wr = -i->worldr();
+			sr = i->screenr();
 			if (wr.z > nclip)
 			{
 				dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
@@ -207,7 +207,7 @@ void model::select_box(double x1, double y1, double x2, double y2)
 		while (i != NULL)
 		{
 			if (i->is_hidden()) { i = i->next; continue; }
-			vec3<double> sr = i->get_screen_coords();
+			vec3<double> sr = i->screenr();
 			if ((sr.x >= x1) && (sr.x <= x2))
 				if ((sr.y >= y1) && (sr.y <= y2)) select_atom(i);
 			i = i->next;
@@ -323,7 +323,7 @@ void model::select_overlaps(double tolerance)
 		if (i->is_selected()) continue;
 		for (j = i->next; j != NULL; j = j->next)
 		{
-			v = i->r - j->r;
+			v = i->r() - j->r();
 			deltar = v.magnitude();
 			if (deltar < tolerance)
 			{

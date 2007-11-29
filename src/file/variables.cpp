@@ -159,31 +159,31 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 			switch (fn->get_command())
 			{
 				case (FC_SETRX):
-					modelatoms[atomid]->r.set(0,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->r().set(0,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETRY):
-					modelatoms[atomid]->r.set(1,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->r().set(1,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETRZ):
-					modelatoms[atomid]->r.set(2,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->r().set(2,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETFX):
-					modelatoms[atomid]->f.set(0,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->f().set(0,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETFY):
-					modelatoms[atomid]->f.set(1,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->f().set(1,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETFZ):
-					modelatoms[atomid]->f.set(2,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->f().set(2,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETVX):
-					modelatoms[atomid]->v.set(0,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->v().set(0,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETVY):
-					modelatoms[atomid]->v.set(1,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->v().set(1,fn->datavar[1]->get_as_double());
 					break;
 				case (FC_SETVZ):
-					modelatoms[atomid]->v.set(2,fn->datavar[1]->get_as_double());
+					modelatoms[atomid]->v().set(2,fn->datavar[1]->get_as_double());
 					break;
 			}
 			result = TRUE;

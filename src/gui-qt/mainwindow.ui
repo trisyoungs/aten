@@ -33,10 +33,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>2</number>
+     <number>4</number>
     </property>
     <property name="spacing" >
-     <number>2</number>
+     <number>4</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -44,7 +44,7 @@
        <number>0</number>
       </property>
       <property name="spacing" >
-       <number>0</number>
+       <number>4</number>
       </property>
       <item>
        <widget class="TTabBar" native="1" name="ModelTabs" >
@@ -86,7 +86,7 @@
          </property>
          <layout class="QVBoxLayout" >
           <property name="margin" >
-           <number>4</number>
+           <number>0</number>
           </property>
           <property name="spacing" >
            <number>4</number>
@@ -195,7 +195,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>1</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -203,7 +203,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="AtomListGroup" >
@@ -223,10 +223,10 @@
             <number>0</number>
            </property>
            <property name="spacing" >
-            <number>2</number>
+            <number>4</number>
            </property>
            <item>
-            <widget class="TTreeWidget" name="AtomTreeList" >
+            <widget class="TTreeWidget" name="AtomTree" >
              <property name="sizePolicy" >
               <sizepolicy>
                <hsizetype>7</hsizetype>
@@ -271,12 +271,22 @@
             </widget>
            </item>
            <item>
+            <widget class="QProgressBar" name="AtomListProgress" >
+             <property name="value" >
+              <number>0</number>
+             </property>
+             <property name="orientation" >
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" >
              <property name="margin" >
               <number>0</number>
              </property>
              <property name="spacing" >
-              <number>2</number>
+              <number>4</number>
              </property>
              <item>
               <spacer>
@@ -396,7 +406,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="EditGroup" >
@@ -408,7 +418,7 @@
             <number>0</number>
            </property>
            <property name="spacing" >
-            <number>2</number>
+            <number>4</number>
            </property>
            <item>
             <widget class="QGroupBox" name="DrawGroup" >
@@ -425,10 +435,10 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>2</number>
+               <number>0</number>
               </property>
               <property name="spacing" >
-               <number>2</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -436,7 +446,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="DrawAtomButton" >
@@ -650,7 +660,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="ElementHButton" >
@@ -849,10 +859,10 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>2</number>
+               <number>0</number>
               </property>
               <property name="spacing" >
-               <number>2</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -860,7 +870,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="BondCalcButton" >
@@ -1055,7 +1065,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_49" >
@@ -1096,7 +1106,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="BondSingleButton" >
@@ -1306,10 +1316,10 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>2</number>
+               <number>0</number>
               </property>
               <property name="spacing" >
-               <number>2</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -1317,7 +1327,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="BondAugmentButton" >
@@ -1419,7 +1429,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="TransformGroup" >
@@ -1428,7 +1438,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -1448,7 +1458,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>0</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -1459,7 +1469,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QGroupBox" name="RotateOriginGroup" >
@@ -1476,7 +1486,7 @@
                   </property>
                   <layout class="QVBoxLayout" >
                    <property name="margin" >
-                    <number>4</number>
+                    <number>0</number>
                    </property>
                    <property name="spacing" >
                     <number>4</number>
@@ -1605,7 +1615,7 @@
                       <number>0</number>
                      </property>
                      <property name="spacing" >
-                      <number>2</number>
+                      <number>4</number>
                      </property>
                      <item>
                       <spacer>
@@ -1667,7 +1677,7 @@
                   </property>
                   <layout class="QVBoxLayout" >
                    <property name="margin" >
-                    <number>4</number>
+                    <number>0</number>
                    </property>
                    <property name="spacing" >
                     <number>4</number>
@@ -1799,7 +1809,7 @@
                       <number>0</number>
                      </property>
                      <property name="spacing" >
-                      <number>2</number>
+                      <number>4</number>
                      </property>
                      <item>
                       <spacer>
@@ -1854,7 +1864,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_8" >
@@ -1970,7 +1980,7 @@
                <number>0</number>
               </property>
               <property name="spacing" >
-               <number>0</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -1978,7 +1988,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>0</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QGroupBox" name="TranslateFrameGroup" >
@@ -1998,7 +2008,7 @@
                     <number>0</number>
                    </property>
                    <property name="spacing" >
-                    <number>0</number>
+                    <number>4</number>
                    </property>
                    <item>
                     <widget class="QRadioButton" name="TranslateModelFrameRadio" >
@@ -2057,7 +2067,7 @@
                    <number>0</number>
                   </property>
                   <property name="spacing" >
-                   <number>2</number>
+                   <number>4</number>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" >
@@ -2065,7 +2075,7 @@
                      <number>0</number>
                     </property>
                     <property name="spacing" >
-                     <number>2</number>
+                     <number>4</number>
                     </property>
                     <item>
                      <spacer>
@@ -2123,7 +2133,7 @@
                      <number>0</number>
                     </property>
                     <property name="spacing" >
-                     <number>2</number>
+                     <number>4</number>
                     </property>
                     <item>
                      <widget class="QPushButton" name="TranslateNegXButton" >
@@ -2178,7 +2188,7 @@
                      <number>0</number>
                     </property>
                     <property name="spacing" >
-                     <number>2</number>
+                     <number>4</number>
                     </property>
                     <item>
                      <widget class="QPushButton" name="TranslateNegZButton" >
@@ -2333,7 +2343,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="PositionGroup" >
@@ -2342,7 +2352,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -2365,7 +2375,7 @@
                <number>0</number>
               </property>
               <property name="spacing" >
-               <number>0</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -2373,7 +2383,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>0</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QPushButton" name="FlipXButton" >
@@ -2507,7 +2517,7 @@
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>0</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -2518,7 +2528,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item row="1" column="1" >
                  <widget class="QDoubleSpinBox" name="CentreYSpin" >
@@ -2659,7 +2669,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="CellGroup" >
@@ -2668,7 +2678,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -2689,7 +2699,7 @@
                <number>0</number>
               </property>
               <property name="spacing" >
-               <number>2</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -2697,7 +2707,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <layout class="QVBoxLayout" >
@@ -2705,7 +2715,7 @@
                    <number>0</number>
                   </property>
                   <property name="spacing" >
-                   <number>2</number>
+                   <number>4</number>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" >
@@ -2896,7 +2906,7 @@
                    <number>0</number>
                   </property>
                   <property name="spacing" >
-                   <number>2</number>
+                   <number>4</number>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" >
@@ -2904,7 +2914,7 @@
                      <number>0</number>
                     </property>
                     <property name="spacing" >
-                     <number>0</number>
+                     <number>4</number>
                     </property>
                     <item>
                      <spacer>
@@ -3104,7 +3114,7 @@
                <number>0</number>
               </property>
               <property name="spacing" >
-               <number>2</number>
+               <number>4</number>
               </property>
               <item>
                <layout class="QHBoxLayout" >
@@ -3335,7 +3345,7 @@
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>0</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -3346,7 +3356,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item row="2" column="1" >
                  <widget class="QDoubleSpinBox" name="CellScaleZSpin" >
@@ -3468,7 +3478,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="MinimiserGroup" >
@@ -3477,10 +3487,10 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="spacing" >
-            <number>2</number>
+            <number>4</number>
            </property>
            <item>
             <widget class="QGroupBox" name="groupBox" >
@@ -3540,7 +3550,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_46" >
@@ -3788,7 +3798,7 @@
                    <number>0</number>
                   </property>
                   <property name="spacing" >
-                   <number>2</number>
+                   <number>4</number>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" >
@@ -3796,7 +3806,7 @@
                      <number>0</number>
                     </property>
                     <property name="spacing" >
-                     <number>2</number>
+                     <number>4</number>
                     </property>
                     <item>
                      <widget class="QLabel" name="label_20" >
@@ -3859,7 +3869,7 @@
                    <number>0</number>
                   </property>
                   <property name="spacing" >
-                   <number>2</number>
+                   <number>4</number>
                   </property>
                   <item>
                    <layout class="QHBoxLayout" >
@@ -3867,7 +3877,7 @@
                      <number>0</number>
                     </property>
                     <property name="spacing" >
-                     <number>2</number>
+                     <number>4</number>
                     </property>
                     <item>
                      <widget class="QLabel" name="label_47" >
@@ -3955,7 +3965,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="DisorderGroup" >
@@ -3964,7 +3974,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -3978,7 +3988,7 @@
               <number>0</number>
              </property>
              <property name="spacing" >
-              <number>2</number>
+              <number>4</number>
              </property>
              <item>
               <spacer>
@@ -4097,8 +4107,14 @@
                <property name="maximum" >
                 <number>100000</number>
                </property>
+               <property name="minimum" >
+                <number>1</number>
+               </property>
                <property name="singleStep" >
                 <number>10</number>
+               </property>
+               <property name="value" >
+                <number>1</number>
                </property>
               </widget>
              </item>
@@ -4191,7 +4207,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item row="1" column="1" >
                  <widget class="QDoubleSpinBox" name="ComponentCentreXSpin" >
@@ -4358,7 +4374,7 @@
               <number>0</number>
              </property>
              <property name="spacing" >
-              <number>2</number>
+              <number>4</number>
              </property>
              <item row="1" column="1" >
               <widget class="QDoubleSpinBox" name="VDWScaleSpin" >
@@ -4463,10 +4479,10 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>0</number>
            </property>
            <property name="spacing" >
-            <number>2</number>
+            <number>4</number>
            </property>
            <item>
             <widget class="QListWidget" name="ForcefieldList" />
@@ -4528,6 +4544,12 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="minimumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
                </property>
                <property name="maximumSize" >
                 <size>
@@ -4603,7 +4625,7 @@
               </sizepolicy>
              </property>
              <property name="title" >
-              <string>Typing</string>
+              <string>Automatic Typing</string>
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
@@ -4629,6 +4651,116 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_3" >
+             <property name="title" >
+              <string>Manual Typing</string>
+             </property>
+             <layout class="QVBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>4</number>
+              </property>
+              <item>
+               <layout class="QHBoxLayout" >
+                <property name="margin" >
+                 <number>0</number>
+                </property>
+                <property name="spacing" >
+                 <number>4</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_343" >
+                  <property name="text" >
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="ManualTypeEdit" >
+                  <property name="text" >
+                   <string>H</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <widget class="QTableWidget" name="FFTypeTable" >
+                <property name="alternatingRowColors" >
+                 <bool>true</bool>
+                </property>
+                <property name="selectionMode" >
+                 <enum>QAbstractItemView::SingleSelection</enum>
+                </property>
+                <property name="selectionBehavior" >
+                 <enum>QAbstractItemView::SelectRows</enum>
+                </property>
+                <property name="gridStyle" >
+                 <enum>Qt::NoPen</enum>
+                </property>
+                <column>
+                 <property name="text" >
+                  <string>ID</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text" >
+                  <string>Name</string>
+                 </property>
+                </column>
+                <column>
+                 <property name="text" >
+                  <string>Description</string>
+                 </property>
+                </column>
+               </widget>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" >
+                <property name="margin" >
+                 <number>0</number>
+                </property>
+                <property name="spacing" >
+                 <number>4</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="ManualTypeSetButton" >
+                  <property name="toolTip" >
+                   <string>Set selected atoms to this type</string>
+                  </property>
+                  <property name="text" >
+                   <string>Set</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="ManualTypeClearButton" >
+                  <property name="toolTip" >
+                   <string>Clear atom types in selection</string>
+                  </property>
+                  <property name="text" >
+                   <string>Clear</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="ManualTypeTestButton" >
+                  <property name="toolTip" >
+                   <string>Test selected atom type on selection</string>
+                  </property>
+                  <property name="text" >
+                   <string>Test</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -4640,7 +4772,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="GridGroup" >
@@ -4787,7 +4919,7 @@
               <number>0</number>
              </property>
              <property name="spacing" >
-              <number>2</number>
+              <number>4</number>
              </property>
              <item row="1" column="1" >
               <widget class="QDoubleSpinBox" name="SurfaceCutoffSpin" >
@@ -4886,7 +5018,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_31" >
@@ -4972,7 +5104,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_36" >
@@ -5060,7 +5192,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_32" >
@@ -5148,7 +5280,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_33" >
@@ -5291,7 +5423,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="TColourFrame" name="SurfaceColourFrame" >
@@ -5341,7 +5473,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>2</number>
+                 <number>4</number>
                 </property>
                 <item>
                  <widget class="QLabel" name="label_38" >
@@ -5389,7 +5521,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>2</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="MeasureGroup" >
@@ -5589,7 +5721,7 @@
         <number>0</number>
        </property>
        <property name="spacing" >
-        <number>2</number>
+        <number>4</number>
        </property>
        <item>
         <widget class="QPushButton" name="ShowAtomPageButton" >
@@ -5954,7 +6086,7 @@
      <x>0</x>
      <y>0</y>
      <width>745</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="ViewMenu" >
@@ -7044,11 +7176,6 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
-   <class>TColourFrame</class>
-   <extends>QFrame</extends>
-   <header>tcolourframe.uih</header>
-  </customwidget>
-  <customwidget>
    <class>TTabBar</class>
    <extends>QWidget</extends>
    <header>ttabbar.uih</header>
@@ -7057,6 +7184,11 @@
    <class>TCanvas</class>
    <extends>QWidget</extends>
    <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TColourFrame</class>
+   <extends>QFrame</extends>
+   <header>tcolourframe.uih</header>
   </customwidget>
   <customwidget>
    <class>TTreeWidget</class>

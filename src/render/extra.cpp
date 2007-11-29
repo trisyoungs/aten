@@ -55,7 +55,7 @@ void canvas_master::render_extra_3d()
 			// Convert the pixel radius into model coordinate radius. We will have the selection 'hotspot'
 			// radius of the atom from its screen projection, which itself depends on the drawing style...
 			radius *= prefs.screenradius(i);
-			r = i->get_world_coords();
+			r = i->worldr();
 			glPushMatrix();
 			  glTranslatef(r.x,r.y,r.z);
 			  glScalef(radius,radius,radius);
@@ -65,11 +65,11 @@ void canvas_master::render_extra_3d()
 		// Draw on bond and new atom for chain drawing
 		case (UA_DRAWCHAIN):
 			if (atom_hover == NULL) break;
-			r = atom_hover->r;
+			r = atom_hover->r();
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			i = displaymodel->atom_on_screen(r_mouselast.x, r_mouselast.y);
 			if (i == NULL) mouse = displaymodel->guide_to_model(r_mouselast);
-			else mouse = i->r;
+			else mouse = i->r();
 			mouse -= r;
 			glPushMatrix();
 			  glTranslated(r.x,r.y,r.z);
@@ -170,7 +170,7 @@ void canvas_master::render_extra_2d()
 	// If the mouse is hovering over an atom, draw a circle around it...
 	if (atom_hover != NULL)
 	{
-		vec3<double> hoverpos = ((atom*) atom_hover)->get_screen_coords();
+		vec3<double> hoverpos = ((atom*) atom_hover)->screenr();
 		gl_circle(hoverpos.x,hoverpos.y,((atom*) atom_hover)->get_screen_radius());
 	}
 	// Add text

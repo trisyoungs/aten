@@ -87,16 +87,14 @@ class ffatom
 	// Atomic charge
 	double q;
 
+	/*
+	// Set / Get
+	*/
 	public:
 	// Set functional form of VDW
 	void set_style(vdw_func vf) { vdwstyle = vf; }
 	// Returns the funcional VDW form
 	vdw_func get_style() { return vdwstyle; }
-
-	/*
-	// Get
-	*/
-	public:
 	// Returns the functional form of the potential
 	vdw_func get_funcform() { return vdwstyle; }
 	// Returns the ffid of the type
@@ -107,6 +105,8 @@ class ffatom
 	const char *get_name() { return name.get(); }
 	// Returns the equivalent name of the type
 	const char *get_equiv() { return equiv.get(); }
+	// Returns the description of the type
+	const char *get_description() { return description.get(); }
 	// Returns the atomtype description
 	atomtype *get_atomtype() { return &typedesc; }
 	// Returns ffparams structure
@@ -130,6 +130,7 @@ class ffbound
 	dnchar types[MAXFFBOUNDTYPES];
 	// Pointer to parameter data
 	ffparams params;
+
 	public:
 	// Set the type of bound interaction
 	void set_type(ff_component fc) { type = fc; }

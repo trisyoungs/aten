@@ -21,7 +21,7 @@
 
 #include "base/master.h"
 #include "base/elements.h"
-#include "gui-qt/ttreewidgetatom.h"
+#include "gui-qt/ttreewidgetitem.h"
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 #include <QtGui/QTreeWidget>
@@ -35,39 +35,17 @@ bool REFRESHING = FALSE;
 int listposition;
 
 /*
-// TTreeWidgetAtom Functions
-*/
-
-TTreeWidgetAtom::TTreeWidgetAtom(QTreeWidgetItem *parent) : QTreeWidgetItem(parent)
-{
-	i = NULL;
-}
-
-void TTreeWidgetAtom::set_columns()
-{
-	if (i == NULL) printf("TTreeWidgetAtom::set_columns <<<< Atom has not yet been set.\n");
-	else
-	{
-		setText(TWA_ID, itoa(i->get_id()+1));
-		setText(TWA_ELEMENT, elements.symbol(i));
-		setText(TWA_RX, ftoa(i->r.x));
-		setText(TWA_RY, ftoa(i->r.y));
-		setText(TWA_RZ, ftoa(i->r.z));
-	}
-}
-
-/*
 // Atom Tree List Management
 */
 
-void AtenForm::on_AtomTreeList_itemSelectionChanged()
+void AtenForm::on_AtomTree_itemSelectionChanged()
 {
 	if (REFRESHING) return;
-	dbg_begin(DM_CALLS,"AtenForm::on_AtomTreeList_selectionChanged");
-	// Selection has changed, so go through the reflist of TTreeWidgetAtoms and check their selection status
+	dbg_begin(DM_CALLS,"AtenForm::on_AtomTree_selectionChanged");
+	// Selection has changed, so go through the reflist of TTreeWidgetItems and check their selection status
 	model *m = master.get_currentmodel();
 	atom *i;
-	for (refitem<TTreeWidgetAtom> *ri = ui.AtomTreeList->get_atomitems(); ri != NULL; ri = ri->next)
+	for (refitem<TTreeWidgetItem> *ri = ui.AtomTree->get_atomitems(); ri != NULL; ri = ri->next)
 	{
 		//printf("atomitem = %li\n",ri->item);
 		//printf("atomitem atom = %li\n", ri->item->get_atom());
@@ -75,7 +53,7 @@ void AtenForm::on_AtomTreeList_itemSelectionChanged()
 		ri->item->isSelected() ? m->select_atom(i) : m->deselect_atom(i);
 	}
 	gui.mainview.postredisplay();
-	dbg_end(DM_CALLS,"AtenForm::on_AtomTreeList_selectionChanged");
+	dbg_end(DM_CALLS,"AtenForm::on_AtomTree_selectionChanged");
 }
 
 void AtenForm::refresh_atompage()
@@ -90,8 +68,8 @@ void AtenForm::refresh_atompage()
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
 	REFRESHING = TRUE;
 	pattern *p;
-	TTreeWidgetAtom *item;
-	refitem<TTreeWidgetAtom> *ri;
+	TTreeWidgetItem *item;
+	refitem<TTreeWidgetItem> *ri;
 	atom *i;
 	int n;
 	model *m = master.get_currentmodel();
@@ -105,8 +83,8 @@ void AtenForm::refresh_atompage()
 	if (liststructure_point != (m->get_log(LOG_STRUCTURE) + m->get_log(LOG_COORDS)))
 	{
 		// Clear the current list
-		ui.AtomTreeList->clear();
-		ui.AtomTreeList->clear_atomitems();
+		ui.AtomTree->clear();
+		ui.AtomTree->clear_atomitems();
 		// If there are no atoms in the current model, exit now.
 		if (m->get_natoms() == 0)
 		{
@@ -119,18 +97,18 @@ void AtenForm::refresh_atompage()
 		if (m->get_npatterns() == 0)
 		{
 			// Create new root node for all atoms
-			QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTreeList);
-			ui.AtomTreeList->setItemExpanded(pat, TRUE);
+			QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTree);
+			ui.AtomTree->setItemExpanded(pat, TRUE);
 			pat->setText(0, tr("All"));
 			for (i = m->get_atoms(); i != NULL; i = i->next)
 			{
 				// Add the atom
-				item = ui.AtomTreeList->addTreeItem(pat);
+				item = ui.AtomTree->addTreeItem(pat);
 				//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 				item->set_atom(i);
-				item->set_columns();
+				item->set_atom_columns();
 				// Set the row selection property here.
-				ui.AtomTreeList->setItemSelected(item, i->is_selected());
+				ui.AtomTree->setItemSelected(item, i->is_selected());
 			}
 		}
 		else
@@ -140,18 +118,18 @@ void AtenForm::refresh_atompage()
 			for (p = m->get_patterns(); p != NULL; p = p->next)
 			{
 				// Create new root node for the pattern
-				QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTreeList);
-				ui.AtomTreeList->setItemExpanded(pat, TRUE);
+				QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTree);
+				ui.AtomTree->setItemExpanded(pat, TRUE);
 				pat->setText(0, p->get_name());
 				for (n = 0; n<p->get_totalatoms(); n++)
 				{
 					// Create atom in the pattern root node
-					item = ui.AtomTreeList->addTreeItem(pat);
+					item = ui.AtomTree->addTreeItem(pat);
 					//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 					item->set_atom(i);
-					item->set_columns();
+					item->set_atom_columns();
 					// Set the row selection property here
-					ui.AtomTreeList->setItemSelected(item, i->is_selected());
+					ui.AtomTree->setItemSelected(item, i->is_selected());
 					i = i->next;
 				}
 			}
@@ -163,11 +141,11 @@ void AtenForm::refresh_atompage()
 	else if (listselection_point != m->get_log(LOG_SELECTION))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
-		// Grab the list of TTreeWidgetAtoms
-		for (ri = ui.AtomTreeList->get_atomitems(); ri != NULL; ri = ri->next)
+		// Grab the list of TTreeWidgetItems
+		for (ri = ui.AtomTree->get_atomitems(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item->get_atom();
-			ui.AtomTreeList->setItemSelected(ri->item, i->is_selected());
+			ui.AtomTree->setItemSelected(ri->item, i->is_selected());
 		}
 		listselection_point = m->get_log(LOG_SELECTION);
 	}
@@ -177,12 +155,12 @@ void AtenForm::refresh_atompage()
 
 void AtenForm::peek_scroll_bar()
 {
-	listposition = ui.AtomTreeList->verticalScrollBar()->sliderPosition();
+	listposition = ui.AtomTree->verticalScrollBar()->sliderPosition();
 }
 
 void AtenForm::poke_scroll_bar()
 {
-	ui.AtomTreeList->verticalScrollBar()->setSliderPosition(listposition);
+	ui.AtomTree->verticalScrollBar()->setSliderPosition(listposition);
 }
 
 void AtenForm::on_ShiftUpButton_clicked(bool checked)

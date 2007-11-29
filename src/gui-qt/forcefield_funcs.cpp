@@ -20,14 +20,19 @@
 */
 
 #include "base/master.h"
+#include "base/elements.h"
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"
 #include <QtGui/QListWidgetItem>
+#include <QtGui/QTableWidgetItem>
 #include <QtGui/QFileDialog>
 
+// Local variables
+int typelist_element = 1;
+
+// Update the list of loaded forcefields
 void AtenForm::refresh_forcefieldpage()
 {
-	// Update the list of loaded forcefields
 	ui.ForcefieldList->clear();
 	QListWidgetItem *item;
 	for (forcefield *ff = master.get_ffs(); ff != NULL; ff = ff->next)
@@ -40,46 +45,109 @@ void AtenForm::refresh_forcefieldpage()
 	else ui.ForcefieldList->setCurrentRow(master.get_currentff_id());
 }
 
-void AtenForm::on_ForcefieldList_currentRowChanged(int row)
+// Update list of forcefield types in typelist
+void AtenForm::refresh_forcefieldtypelist()
 {
-	// Set the current forcefield in master to reflect the list change
-	master.set_currentff_by_id(row);
+	ui.FFTypeTable->clear();
+	QTableWidgetItem *item;
+	int count = 0;
+	forcefield *ff = master.get_currentff();
+	if (ff == NULL) return;
+	for (ffatom *ffa = ff->get_atomtypes(); ffa != NULL; ffa = ffa->next)
+	{
+		if (ffa->get_atomtype()->el != typelist_element) continue;
+		ui.FFTypeTable->setRowCount(count+1);
+		item = new QTableWidgetItem(itoa(ffa->get_ffid()));
+		ui.FFTypeTable->setItem(count, 0, item);
+		item = new QTableWidgetItem(ffa->get_name());
+		ui.FFTypeTable->setItem(count, 1, item);
+		item = new QTableWidgetItem(ffa->get_description());
+		ui.FFTypeTable->setItem(count, 2, item);
+		count ++;
+	}
+	// Select the topmost item
+	//if (master.get_currentff() == NULL) ui.ForcefieldList->setCurrentRow(0);
+	//else ui.ForcefieldList->setCurrentRow(master.get_currentff_id());
 }
 
+// Set the current forcefield in master to reflect the list change
+void AtenForm::on_ForcefieldList_currentRowChanged(int row)
+{
+	master.set_currentff_by_id(row);
+	// Update type list
+	refresh_forcefieldtypelist();
+}
+
+// Remove selected forcefield in list
 void AtenForm::on_RemoveForcefieldButton_clicked(bool checked)
 {
 	master.remove_ff(master.get_currentff());
 	refresh_forcefieldpage();
 }
 
+// Call forcefield editor
 void AtenForm::on_EditForcefieldButton_clicked(bool checked)
 {
 	printf("Forcefield editor not yet implemented.\n");
 }
 
+// Assign current forcefield to model
 void AtenForm::on_AssignFFToCurrentButton_clicked(bool checked)
 {
 	master.get_currentmodel()->set_ff(master.get_currentff());
 }
 
+// Assign current forcefield to all models
 void AtenForm::on_AssignFFToAllButton_clicked(bool checked)
 {
 	for (model *m = master.get_models(); m != NULL; m = m->next) m->set_ff(master.get_currentff());
 }
 
+// Assign current forcefield to pattern
 void AtenForm::on_AssignFFToPatternButton_clicked(bool checked)
 {
 	printf("TODO\n");
 }
 
+// Perform automatic atom typing
 void AtenForm::on_TypeModelButton_clicked(bool checked)
 {
 	if (master.get_currentmodel()->type_all()) gui.mainview.postredisplay();
 }
 
+// Remove typing from model
 void AtenForm::on_UntypeModelButton_clicked(bool checked)
 {
 	master.get_currentmodel()->remove_typing();
 	gui.mainview.postredisplay();
 }
 
+// Set the selected atoms to have the specified forcefield type
+void AtenForm::on_ManualTypeSetButton_clicked(bool checked)
+{
+}
+
+// Clear type definitions from the selected atoms
+void AtenForm::on_ManualTypeClearButton_clicked(bool checked)
+{
+}
+
+// Test selected atom type on current atom selection
+void AtenForm::on_ManualTypeTestButton_clicked(bool checked)
+{
+}
+
+// Change target element in type list
+void AtenForm::on_ManualTypeEdit_editingFinished()
+{
+	// Get the contents of the line edit and check that it is an element symbol
+	int el = elements.find(qPrintable(ui.ManualTypeEdit->text()));
+	if (el == -1)
+	{
+		msg(DM_NONE,"Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
+		ui.ManualTypeEdit->setText("H");
+		typelist_element = 1;
+	}
+	else typelist_element = el;
+	refresh_forcefieldtypelist();
+}

@@ -60,7 +60,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 				j++;
 				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
 				{
-					mim_i = cell->mimd(modelatoms[i+aoff]->r, modelatoms[j+aoff]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					paramsj = atoms[j]->get_data()->get_params();
@@ -86,7 +86,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 		{
 			i = pb->get_atomid(0);
 			j = pb->get_atomid(3);
-			mim_i = cell->mimd(modelatoms[i+aoff]->r, modelatoms[j+aoff]->r);
+			mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
 			paramsi = atoms[i]->get_data()->get_params();
@@ -148,7 +148,7 @@ void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energyst
 				for (paj = xpnode->atoms.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
-					mim_i = cell->mimd(modelatoms[i+aoff1]->r, modelatoms[j+aoff2]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					paramsj = paj->get_data()->get_params();
@@ -204,14 +204,14 @@ void pattern::vdw_intrapattern_forces(model *srcmodel)
 			i++;
 			paramsi = pai->get_data()->get_params();
 			// Store temporary forces to avoid unnecessary array lookups
-			f_i = modelatoms[i+aoff]->f;
+			f_i = modelatoms[i+aoff]->f();
 			j = i;
 			for (paj = pai->next; paj != NULL; paj = paj->next)
 			{
 				j++;
 				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
 				{
-					mim_i = cell->mimd(modelatoms[i+aoff]->r, modelatoms[j+aoff]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					paramsj = paj->get_data()->get_params();
@@ -232,18 +232,18 @@ void pattern::vdw_intrapattern_forces(model *srcmodel)
 					// Add the forces (mim_i contains dx, dy, dz between i and j)
 					tempf = mim_i * factor;
 					f_i += tempf;
-					modelatoms[j+aoff]->f -= tempf;
+					modelatoms[j+aoff]->f() -= tempf;
 				}
 			}
 			// Put the temporary forces back into the main array
-			modelatoms[i+aoff]->f = f_i;
+			modelatoms[i+aoff]->f() = f_i;
 		}
 		// Add scaled contributions from torsions
 		for (pb = torsions.first(); pb != NULL; pb = pb->next)
 		{
 			i = pb->get_atomid(0);
 			j = pb->get_atomid(3);
-			mim_i = cell->mimd(modelatoms[i+aoff]->r, modelatoms[j+aoff]->r);
+			mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
 			paramsi = atoms[i]->get_data()->get_params();
@@ -264,8 +264,8 @@ void pattern::vdw_intrapattern_forces(model *srcmodel)
 					break;
 			}
 			tempf = mim_i * factor;
-			modelatoms[i+aoff]->f += tempf;
-			modelatoms[j+aoff]->f -= tempf;
+			modelatoms[i+aoff]->f() += tempf;
+			modelatoms[j+aoff]->f() -= tempf;
 		}
 		aoff += natoms;
 	}
@@ -302,12 +302,12 @@ void pattern::vdw_interpattern_forces(model *srcmodel, pattern *xpnode)
 			{
 				i++;
 				paramsi = pai->get_data()->get_params();
-				f_i = modelatoms[i+aoff1]->f;
+				f_i = modelatoms[i+aoff1]->f();
 				j = -1;
 				for (paj = xpnode->atoms.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
-					mim_i = cell->mimd(modelatoms[i+aoff1]->r, modelatoms[j+aoff2]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					paramsj = paj->get_data()->get_params();
@@ -328,10 +328,10 @@ void pattern::vdw_interpattern_forces(model *srcmodel, pattern *xpnode)
 					// Add the forces (mim_i contains dx, dy, dz between i and j)
 					tempf = mim_i * factor;
 					f_i += tempf;
-					modelatoms[j+aoff2]->f -= tempf;
+					modelatoms[j+aoff2]->f() -= tempf;
 				}
 				// Store temporary force array back into main force array
-				modelatoms[i+aoff1]->f = f_i;
+				modelatoms[i+aoff1]->f() = f_i;
 			}
 			aoff2 += xpnode->natoms;
 		}

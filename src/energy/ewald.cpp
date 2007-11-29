@@ -96,7 +96,7 @@ void pattern::ewald_real_intrapattern_energy(model *srcmodel, energystore *estor
 			{
 				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
 				{
-					mim_i = cell->mimd(modelatoms[i+aoff]->r, modelatoms[j+aoff]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff]->get_charge() * modelatoms[j+aoff]->get_charge()) * cserfc(alpha*rij) / rij;
@@ -109,7 +109,7 @@ void pattern::ewald_real_intrapattern_energy(model *srcmodel, energystore *estor
 		{
 			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r, modelatoms[j]->r);
+			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
 			energy  = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) * cserfc(alpha*rij) / rij;
@@ -157,7 +157,7 @@ void pattern::ewald_real_interpattern_energy(model *srcmodel, pattern *xpnode, e
 				for (j=0; j<xpnode->natoms; j++)
 		  		{
 					atomj = j + aoff2;
-					mim_i = cell->mimd(modelatoms[atomi]->r, modelatoms[atomj]->r);
+					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
 					if (rij < cutoff) energy  += (modelatoms[atomj]->get_charge() * cserfc(alpha*rij) / rij);
 				}
@@ -294,7 +294,7 @@ void pattern::ewald_correct_energy(model *srcmodel, energystore *estore)
 					// For torsions (conmat == 3) scale by escale.
 					qprod = modelatoms[i+aoff]->get_charge() * modelatoms[j+aoff]->get_charge();
 					if (conmat[i][j] == 3) qprod *= 0.5;
-					mim_i = cell->mimd(modelatoms[i+aoff]->r, modelatoms[j+aoff]->r);
+					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					molcorrect += qprod *( cserf(alpha*rij)/rij );
 				}
@@ -334,13 +334,13 @@ void pattern::ewald_real_intrapattern_forces(model *srcmodel)
 		{
 			atomi = i+aoff;
 			// Copy i's forces from the main array into a temporary array
-			f_i = modelatoms[atomi]->f;
+			f_i = modelatoms[atomi]->f();
 			for (j=i+1; j<natoms; j++)
 			{
 				atomj = j+aoff;
 				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
 				{
-					mim_i = cell->mimd(modelatoms[atomi]->r, modelatoms[atomj]->r);
+					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					alpharij = alpha * rij;
@@ -352,18 +352,18 @@ void pattern::ewald_real_intrapattern_forces(model *srcmodel)
 					//tempf.y = mim_i.y * factor;
 					//tempf.z = mim_i.z * factor;
 					f_i += tempf;
-					modelatoms[atomj]->f -= tempf;
+					modelatoms[atomj]->f() -= tempf;
 				}
 			}
 			// Re-store forces on atom i
-			modelatoms[atomi]->f = f_i;
+			modelatoms[atomi]->f() = f_i;
 		}
 		// Add on scaled contributions from torsions
 		for (pb = torsions.first(); pb != NULL; pb = pb->next)
 		{
 			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r, modelatoms[j]->r);
+			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
 			alpharij = alpha * rij;
@@ -373,8 +373,8 @@ void pattern::ewald_real_intrapattern_forces(model *srcmodel)
 			factor *= pb->get_data()->get_params().data[TF_ESCALE];
 			// Sum forces
 			tempf = mim_i * factor;
-			modelatoms[i]->f += tempf;
-			modelatoms[j]->f -= tempf;
+			modelatoms[i]->f() += tempf;
+			modelatoms[j]->f() -= tempf;
 		}
 		aoff += natoms;
 	}
@@ -407,11 +407,11 @@ void pattern::ewald_real_interpattern_forces(model *srcmodel, pattern *xpnode)
 			{
 				atomi = i + aoff1;
 				// Copy the current forces on i
-				f_i = modelatoms[atomi]->f;
+				f_i = modelatoms[atomi]->f();
 				for (j=0; j<xpnode->natoms; j++)
 		  		{
 					atomj = j + aoff2;
-					mim_i = cell->mimd(modelatoms[atomi]->r ,modelatoms[atomj]->r);
+					mim_i = cell->mimd(modelatoms[atomi]->r() ,modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
 					if (rij < cutoff)
 					{
@@ -424,11 +424,11 @@ void pattern::ewald_real_interpattern_forces(model *srcmodel, pattern *xpnode)
 						tempf.y = mim_i.y * factor;
 						tempf.z = mim_i.z * factor;
 						f_i += tempf;
-						modelatoms[atomj]->f -= tempf;
+						modelatoms[atomj]->f() -= tempf;
 					}
 				}
 				// Store the new forces on atom i
-				modelatoms[atomi]->f = f_i;
+				modelatoms[atomi]->f() = f_i;
 			}
 			aoff2 += xpnode->natoms;
 		}
@@ -498,7 +498,7 @@ void pattern::ewald_reciprocal_forces(model *srcmodel)
 		{
 			force = exp1 * (xyzsin[i]*sumcos - xyzcos[i]*sumsin) * factor;
 	//printf("force = %20.14e\n",force);
-			modelatoms[i]->f += kvec * force;
+			modelatoms[i]->f() += kvec * force;
 	//if (i == 0) printf("%i %i %i  %8.4f %8.4f %8.4f %8.4f\n",kx,ky,kz,force,kvec.x,kvec.y,kvec.z);
 		}
 	}
@@ -526,13 +526,13 @@ void pattern::ewald_correct_forces(model *srcmodel)
 		{
 			atomi = i+aoff;
 			// Copy i's forces from the main array into a temporary array
-			f_i = modelatoms[atomi]->f;
+			f_i = modelatoms[atomi]->f();
 			for (j=i+1; j<natoms; j++)
 			{
 				atomj = j+aoff;
 				if ((conmat[i][j] < 3) && (conmat[i][j] > 0))
 				{
-					mim_i = cell->mimd(modelatoms[atomi]->r, modelatoms[atomj]->r);
+					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
 					if (rij < cutoff)
 					{
@@ -544,19 +544,19 @@ void pattern::ewald_correct_forces(model *srcmodel)
 						// Sum forces
 						tempf = mim_i * factor;
 						f_i -= tempf;
-						modelatoms[atomj]->f += tempf;
+						modelatoms[atomj]->f() += tempf;
 					}
 				}
 			}
 			// Re-store forces on atom i
-			modelatoms[atomi]->f = f_i;
+			modelatoms[atomi]->f() = f_i;
 		}
 		// Subtract scaled contributions from torsions
 		for (pb = torsions.first(); pb != NULL; pb = pb->next)
 		{
 			i = pb->get_atomid(0) + aoff;
 			j = pb->get_atomid(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r, modelatoms[j]->r);
+			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
 			alpharij = alpha * rij;
@@ -566,8 +566,8 @@ void pattern::ewald_correct_forces(model *srcmodel)
 			factor *= pb->get_data()->get_params().data[TF_ESCALE];
 			// Sum forces
 			tempf = mim_i * factor;
-			modelatoms[i]->f -= tempf;
-			modelatoms[j]->f += tempf;
+			modelatoms[i]->f() -= tempf;
+			modelatoms[j]->f() += tempf;
 		}
 		aoff += natoms;
 	}

@@ -143,16 +143,22 @@ void canvas_master::gl_subsel_3d()
 	while (ri != NULL)
 	{
 		i = (atom*) ri->item;
-		ir = i->r;
+		ir = i->r();
 		// Draw a wireframe sphere at the atoms position
 		glPushMatrix();
 		  glTranslated(ir.x,ir.y,ir.z);
 		  renderstyle == DS_INDIVIDUAL ? style_i = i->get_style() : style_i = renderstyle;
 		  switch (style_i)
 		  {
-			case (DS_STICK): glCallList(list[GLOB_WIRETUBEATOM]); break;
-			case (DS_TUBE):	glCallList(list[GLOB_WIRETUBEATOM]); break;
-			case (DS_SPHERE): glCallList(list[GLOB_WIRESPHEREATOM]); break;
+			case (DS_STICK):
+				glCallList(list[GLOB_WIRETUBEATOM]);
+				break;
+			case (DS_TUBE):
+				glCallList(list[GLOB_WIRETUBEATOM]);
+				break;
+			case (DS_SPHERE):
+				glCallList(list[GLOB_WIRESPHEREATOM]);
+				break;
 			case (DS_SCALED): 
 				radius = prefs.screenradius(i);
 				glPushMatrix();

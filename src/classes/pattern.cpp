@@ -324,7 +324,7 @@ vec3<double> pattern::calculate_cog(model *srcmodel, int mol)
 	for (int a1=offset; a1<offset+natoms; a1++)
 	{
 		// Do minimum image w.r.t. first atom in molecule
-		mim_i = cell->mim(modelatoms[a1]->r, modelatoms[offset]->r);
+		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
 		cog += mim_i;
 	}
 	cog /= natoms;
@@ -349,7 +349,7 @@ vec3<double> pattern::calculate_com(model *srcmodel, int mol)
 	for (int a1=offset; a1<offset+natoms; a1++)
 	{
 		// Do minimum image w.r.t. first atom in molecule
-		mim_i = cell->mim(modelatoms[a1]->r, modelatoms[offset]->r);
+		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
 		com += mim_i * elements.mass(modelatoms[a1]->get_element());
 		massnorm += elements.mass(modelatoms[a1]->get_element());
 	}

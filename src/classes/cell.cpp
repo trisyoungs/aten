@@ -257,23 +257,23 @@ vec3<double> unitcell::mimd(const vec3<double> &r1, const vec3<double> &r2) cons
 // Minimimum image routines with atom and vector pointers
 vec3<double> unitcell::mim(atom *i, const vec3<double> &r2) const
 {
-	return mim(i->r,r2);
+	return mim(i->r(),r2);
 }
 
 vec3<double> unitcell::mimd(atom *i, const vec3<double> &r2) const
 {
-	return mimd(i->r,r2);
+	return mimd(i->r(),r2);
 }
 
 // Minimimum image routines with atom pointers
 vec3<double> unitcell::mim(atom *i, atom *j) const
 {
-	return mim(i->r,j->r);
+	return mim(i->r(),j->r());
 }
 
 vec3<double> unitcell::mimd(atom *i, atom *j) const
 {
-	return mimd(i->r,j->r);
+	return mimd(i->r(),j->r());
 }
 
 // Fold atom
@@ -310,7 +310,7 @@ void unitcell::fold(vec3<double> &r) const
 
 void unitcell::fold(atom *i) const
 {
-	fold(i->r);
+	fold(i->r());
 }
 
 /*
@@ -329,7 +329,7 @@ double unitcell::distance(const vec3<double> &r1, const vec3<double> &r2) const
 
 double unitcell::distance(atom *i, atom *j) const
 {
-	return distance(i->r,j->r);
+	return distance(i->r(),j->r());
 }
 
 double unitcell::angle(const vec3<double> &r1, const vec3<double> &r2, const vec3<double> &r3) const
@@ -352,7 +352,7 @@ double unitcell::angle(const vec3<double> &r1, const vec3<double> &r2, const vec
 
 double unitcell::angle(atom *i, atom *j, atom *k) const
 {
-	return angle(i->r,j->r,k->r);
+	return angle(i->r(),j->r(),k->r());
 }
 
 double unitcell::torsion(const vec3<double> &i, const vec3<double> &j, const vec3<double> &k, const vec3<double> &l) const
@@ -386,7 +386,7 @@ double unitcell::torsion(const vec3<double> &i, const vec3<double> &j, const vec
 
 double unitcell::torsion(atom *i, atom *j, atom *k, atom *l) const
 {
-	return torsion(i->r,j->r,k->r,l->r);
+	return torsion(i->r(),j->r(),k->r(),l->r());
 }
 
 /*

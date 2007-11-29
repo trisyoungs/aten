@@ -79,7 +79,7 @@ void canvas_master::render_model_atoms()
 		  glMaterialiv(GL_FRONT, GL_AMBIENT, ambient);
 		  glMaterialiv(GL_FRONT, GL_DIFFUSE, diffuse);
 		  // Get position
-		  ri = i->r;
+		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);
 		  // Grab atom style and toggle lighting state if DS_INDIVIDUAL is the main drawing style
 		  if (renderstyle == DS_INDIVIDUAL)
@@ -239,7 +239,7 @@ void canvas_master::render_model_atoms()
 		glMaterialiv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 		glMaterialiv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 		glPushMatrix();
-		  ri = i->r;
+		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);
 		  // Draw on the transparent highlight
 		  if (style_i == DS_SCALED)
