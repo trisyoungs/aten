@@ -125,6 +125,11 @@ const char *SC_syntax[SC_NITEMS] = {
 
 	//"image 
 
+	// Labeling commands
+	"clearlabels",
+	"addlabel <label>",
+	"removelabel <label>",
+
 	// MC commands
 	"mcaccept <movetype> <energy>",
 	"mcallow <movetype> yes|no",

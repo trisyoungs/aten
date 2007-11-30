@@ -325,6 +325,7 @@ void script::run()
 				case (SC_TYPETEST):
 					result = command_ff(cmd);
 					break;
+
 				case (SC_SAVEFIELD):
 				case (SC_SAVEFIELD2):
 					result = command_field(cmd);
@@ -374,6 +375,9 @@ void script::run()
 					result = command_pattern(cmd);
 					break;
 
+				case (SC_CLEARLABELS):
+				case (SC_ADDLABEL):
+				case (SC_REMOVELABEL):
 				case (SC_SELECTOVERLAPS):
 				case (SC_SELECTALL):
 				case (SC_SELECTATOM):

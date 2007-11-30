@@ -234,6 +234,20 @@ void change::reverse(model *m)
 				else m->set_cell(*matrixdata[1]);
 			}
 			break;
+		// Atom label change - from data[2] to data[1] (UD_PLUS) or vice versa (UD_MINUS)
+		case (UE_LABEL):
+			i = modelatoms[data[0]];
+			if (direction == UD_PLUS)
+			{
+				msg(DM_VERBOSE,"Reversing atom label change - atom %i, from %i to %i\n",data[0],data[2],data[1]);
+				i->set_labels(data[1]);
+			}
+			else
+			{
+				msg(DM_VERBOSE,"Reversing atom label change - atom %i, from %i to %i\n",data[0],data[1],data[2]);
+				i->set_labels(data[2]);
+			}
+			break;
 		default:
 			printf("Don't know how to reverse change (type = %i)\n", type);
 			break;

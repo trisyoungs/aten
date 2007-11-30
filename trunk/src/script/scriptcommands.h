@@ -123,6 +123,11 @@ enum script_command {
 
 	//image_
 
+	// Labeling commands
+	SC_CLEARLABELS,
+	SC_ADDLABEL,
+	SC_REMOVELABEL,
+
 	// MC Commands
 	SC_MCACCEPT,
 	SC_MCALLOW,

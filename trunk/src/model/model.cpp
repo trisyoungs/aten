@@ -215,59 +215,67 @@ void model::remove_typing()
 // Labelling
 */
 
-// Clear atom labelling
-void model::clear_atom_labels()
+// Add label to atom
+void model::add_label(atom *i, atom_label al)
 {
-	atom *i = atoms.first();
-	while (i != NULL)
+	int oldlabels = i->get_labels();
+	i->add_label(al);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
 	{
-		i->clear_labels();
-		i = i->next;
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_LABEL,i->get_id(),oldlabels,i->get_labels());
 	}
+}
+
+// Remove atom label
+void model::remove_label(atom *i, atom_label al)
+{
+	int oldlabels = i->get_labels();
+	i->remove_label(al);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(-UE_LABEL,i->get_id(),oldlabels,i->get_labels());
+	}
+}
+
+// Clear labelling from atom
+void model::clear_labels(atom *i)
+{
+	int oldlabels = i->get_labels();
+	i->clear_labels();
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_LABEL,i->get_id(),oldlabels,0);
+	}
+}
+
+// Clear atom labelling
+void model::clear_all_labels()
+{
+	for (atom *i = atoms.first(); i != NULL; i = i->next) clear_labels(i);
 }
 
 // Clear all labels in selection
-void model::selection_clear_atom_labels()
+void model::selection_clear_labels()
 {
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->is_selected()) i->clear_labels();
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) clear_labels(i);
 }
 
-// Clear specific labels in selection
-void model::selection_clear_atom_labels(atom_label al)
+// Remove specific labels in selection
+void model::selection_remove_labels(atom_label al)
 {
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->is_selected()) i->remove_label(al);
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) remove_label(i, al);
 }
 
 // Add atom labels
-void model::set_atom_labels(atom_label al)
+void model::selection_add_labels(atom_label al)
 {
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		i->add_label(al);
-		i = i->next;
-	}
-}
-
-// Add labels to selected atoms
-void model::selection_set_atom_labels(atom_label al)
-{
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->is_selected()) i->add_label(al);
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) add_label(i, al);
 }
 
 /*

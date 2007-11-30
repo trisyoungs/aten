@@ -260,6 +260,8 @@ class atom
 	draw_style get_style() { return style; }
 	// Returns TRUE id the atom has at least one label specified
 	bool has_labels() { return (labels == 0 ? FALSE : TRUE); }
+	// Set label bitvector to specified value
+	void set_labels(int l) { labels = l; }
 	// Returns the label bitmask of the atom
 	int get_labels() { return labels; }
 	// Set the bit for the specified label (if it is not set already)

@@ -379,6 +379,7 @@ class AtenForm : public QMainWindow
 	private:
 	void set_atomstyle(draw_style ds);
 	void set_atomlabel(atom_label al);
+	void remove_atomlabels(bool all);
 	void set_atomhidden(bool hidden);
 
 	private slots:
@@ -391,6 +392,8 @@ class AtenForm : public QMainWindow
 	void on_actionAtomLabelFFType_triggered(bool checked) { set_atomlabel(AL_FFTYPE); }
 	void on_actionAtomLabelElement_triggered(bool checked) { set_atomlabel(AL_ELEMENT); }
 	void on_actionAtomLabelFFEquiv_triggered(bool checked) { set_atomlabel(AL_FFEQUIV); }
+	void on_actionAtomLabelClear_triggered(bool checked) { remove_atomlabels(FALSE); }
+	void on_actionAtomLabelClearAll_triggered(bool checked) { remove_atomlabels(TRUE); }
 	void on_actionAtomSetVisible_triggered(bool checked) { set_atomhidden(FALSE); }
 	void on_actionAtomSetInvisible_triggered(bool checked) { set_atomhidden(TRUE); }
 
