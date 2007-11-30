@@ -31,6 +31,7 @@ bool script::command_select(command_node<script_command> *cmd)
 	dbg_begin(DM_CALLS,"script::command_select");
 	bool result = TRUE;
 	static atom *i;
+	static atom_label al;
         static int count, el, matchscore, atomscore, n;
 	static atomtype *testat;
 	static pattern *p;
@@ -55,7 +56,8 @@ bool script::command_select(command_node<script_command> *cmd)
 			break;
 		// Select by element ('selectelement <el>')
 		case (SC_SELECTELEMENT):
-			m->select_element(elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA));
+			el = elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA);
+			for (i = m->get_atoms(); i != NULL; i = i->next) if (i->get_element() == el) m->select_atom(i);
 			break;
 		// Select by forcefield type ('selecffttype <fftype>')
 		case (SC_SELECTFFTYPE):
@@ -123,6 +125,19 @@ bool script::command_select(command_node<script_command> *cmd)
 		// Detect and select overlapping atoms
 		case (SC_SELECTOVERLAPS):
 			m->select_overlaps(cmd->datavar[0]->get_as_double());
+			break;
+		// Clear labels in selection
+		case (SC_CLEARLABELS):
+			m->selection_clear_labels();
+			break;
+		// Add label to current selection
+		case (SC_ADDLABEL):
+			al = AL_from_text(cmd->datavar[0]->get_as_char());
+			if (al != AL_NITEMS) m->selection_add_labels(al);
+		// Remove label from current selection
+		case (SC_REMOVELABEL):
+			al = AL_from_text(cmd->datavar[0]->get_as_char());
+			if (al != AL_NITEMS) m->selection_remove_labels(al);
 			break;
 		default:
 			printf("Error - missed select command?\n");

@@ -364,17 +364,23 @@ class model
 	/*
 	// Labelling
 	*/
+	private:
+	// Add label to atom
+	void add_label(atom *i, atom_label al);
+	// Remove atom label
+	void remove_label(atom *i, atom_label al);
+	// Clear labelling from atom
+	void clear_labels(atom *i);
+
 	public:
 	// Clear all atom labelling
-	void clear_atom_labels();
+	void clear_all_labels();
 	// Clear all atom labelling from the current selection
-	void selection_clear_atom_labels();
+	void selection_clear_labels();
 	// Clear specified atom labelling from the current selection
-	void selection_clear_atom_labels(atom_label);
-	// Set the specified label for all atoms
-	void set_atom_labels(atom_label);
+	void selection_remove_labels(atom_label);
 	// Set the specified label for all atoms currently selected
-	void selection_set_atom_labels(atom_label);
+	void selection_add_labels(atom_label);
 	// Set the visibility property for all selected atoms
 	void selection_set_hidden(bool);
 	// Sets the 'fixed' variable of all selected atoms to TRUE

@@ -1,11 +1,17 @@
+2007-11-30
+	* labels: improved handling with scripts and Qt
+
 2007-11-28
 	* trajectory improvements / fixes.
 
 2007-11-27
 	* added undo/redo.
 
+------------
+Version 0.92
+------------
+
 2007-11-25
-	* Version 0.92
 	* filters: msi, improved pdb.
 	* render: drawing guide.
 
@@ -30,16 +36,22 @@
 	* Qt: new icons. misc widget fixes / links.
 	* ff: added energy conversion for rule-based FFs.
 
+-------------
+Version 0.91a
+-------------
+
 2007-10-31
-	* Version 0.91a
 	* forces: minor fix.
 
 2007-10-28
 	* Qt: command toolbar. surfaces page updated.
 	* filters: Gaussian cube file added.
 
+------------
+Version 0.91
+------------
+
 2007-10-27
-	* Version 0.91
 	* Qt: updated / misc fixes.
 	* classes/forcefield.h: convert_parameters fixed.
 	* filters: now require use of FC_NEWMODEL / FC_NEWSURFACE.
@@ -81,5 +93,9 @@
 	* Qt: Added cell scaling. Added selection positioning.
 	gui-qt/mainwindow_funcs.cpp: Fixed canvas projection on widgetstack show/hide.
 
+-------------
+Version 0.90
+-------------
+
 2007-10-17
-	* Version 0.90 (first release)
+	* First release

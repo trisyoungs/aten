@@ -50,9 +50,30 @@ void AtenForm::set_atomstyle(draw_style ds)
 // Set atom labels
 void AtenForm::set_atomlabel(atom_label al)
 {
-	if (target == NULL) master.get_currentmodel()->selection_set_atom_labels(al);
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Add Labels");
+	if (target == NULL) m->selection_add_labels(al);
 	else target->add_label(al);
 	target = NULL;
+	m->end_undostate();
+}
+
+// Clear atom labels
+void AtenForm::remove_atomlabels(bool all)
+{
+	model *m = master.get_currentmodel();
+	if (all)
+	{
+		m->begin_undostate("Clear All Labels");
+		master.get_currentmodel()->clear_all_labels();
+	}
+	else
+	{
+		m->begin_undostate("Clear All Labels");
+		master.get_currentmodel()->selection_clear_labels();
+	}
+	m->end_undostate();
+	gui.refresh();
 }
 
 // Set atom labels

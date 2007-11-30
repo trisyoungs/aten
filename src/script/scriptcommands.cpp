@@ -125,6 +125,11 @@ const char *SC_data[SC_NITEMS] = {
 
 	//"image 
 
+	// Labeling commands
+	"clearlabels",
+	"addlabel,G",
+	"removelabel,G",
+
 	// MC commands
 	"mcaccept,GG",
 	"mcallow,GG",
