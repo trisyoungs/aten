@@ -65,7 +65,7 @@ bool script::command_select(command_node<script_command> *cmd)
 			{
 				ff = m->get_ff();
 				if (ff == NULL) break;
-				ffa = i->get_fftype();
+				ffa = i->get_type();
 				if (ffa != NULL)
 				{
 					if (ff->match_type(ffa->get_name(),cmd->datavar[0]->get_as_char()) != 0) m->select_atom(i);
@@ -76,7 +76,7 @@ bool script::command_select(command_node<script_command> *cmd)
 			m->select_none();
 			break;
 		// Select by supplied atom type description ('selecttype <el> <typedesc>')
- 		case (SC_SELECTTYPE):
+		case (SC_SELECTTYPE):
 			testat = new atomtype();
 			testat->el = elements.find(cmd->datavar[0]->get_as_char());
 			testat->expand(cmd->datavar[1]->get_as_char(),NULL,NULL);

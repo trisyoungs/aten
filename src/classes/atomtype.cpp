@@ -457,7 +457,7 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent, atom *top
 	// Set the scoring to one (which will be the case if there are no specifications to match)
 	typescore = 1;
 	level ++;
-	msg(DM_TYPING,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n",this, level, elements.symbol(i), i->get_nbonds(), text_from_AE(i->get_env()));
+	msg(DM_TYPING,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements.symbol(i), i->get_nbonds(), text_from_AE(i->get_env()));
 	// Element check
 	msg(DM_TYPING,"(%li %2i) ... Element  ",this,level);
 	if (nallowedel == 0) msg(DM_TYPING,"[defaulted]\n");

@@ -67,19 +67,14 @@ class clipatom : public atom
 	// New / Old Pointers
 	*/
 	private:
-	// Atom pointers (original model data and new (pasted) atom)
+	// Atom pointer (newly pastedp atom)
 	atom *oldptr;
 
 	public:
+	// Set old atom pointer
+	void set_oldptr(atom *i) { oldptr = i; }
 	// Returns the atom pointer of the cloned atom
 	atom *get_oldptr() { return oldptr; }
-
-	/*
-	// Atom Cloning
-	*/
-	public:
-	// Copy the atom data to this clipatom
-	void copy_from_atom(atom*);
 };
 
 // Clipboard

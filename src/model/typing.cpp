@@ -47,6 +47,14 @@ void printstuff(pattern *p)
 	}
 }
 
+// Set type of specified atom
+void model::set_atom_type(atom *i, ffatom *ffa, bool fixed)
+{
+	//static ffatom *oldtype;
+	i->set_type(ffa);
+	i->set_fixed_type(fixed);
+}
+
 // Describe atoms in model
 void model::describe_atoms()
 {
@@ -188,7 +196,7 @@ bool pattern::type_atoms(forcefield *xff)
 		}
 		msg(DM_TYPING,"pattern::type_atoms : FFTyping atom number %i, element %s\n",a,elements.symbol(i->get_element()));
 		bestmatch = 0;
-		i->set_fftype(NULL);
+		parent->set_atom_type(i, NULL, FALSE);
 		// Check for element 'XX' first
 		if (i->get_element() == 0)
 		{
@@ -203,7 +211,6 @@ bool pattern::type_atoms(forcefield *xff)
 			at = ffa->get_atomtype();
 			// First, check element is the same, otherwise skip
 			if (i->get_element() != at->el) continue;
-			reset_tempi(0);
 			// See how well this ff description matches the environment of our atom 'i'
 			msg(DM_TYPING,"pattern::type_atoms : Matching type id %i\n",ffa->get_ffid());
 			newmatch = at->match_atom(i,&rings,parent,i);
@@ -212,11 +219,11 @@ bool pattern::type_atoms(forcefield *xff)
 			{
 				// Better match found...
 				bestmatch = newmatch;
-				i->set_fftype(ffa);
+				i->set_type(ffa);
 			}
 		}
-		msg(DM_TYPING,"pattern::type_atoms : FFType for atom is : %i\n",i->get_fftype());
-		if (i->get_fftype() == NULL)
+		msg(DM_TYPING,"pattern::type_atoms : FFType for atom is : %i\n",i->get_type());
+		if (i->get_type() == NULL)
 		{
 			msg(DM_NONE,"Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->get_id()+1,i->get_nbonds());
 			nfailed ++;
@@ -228,4 +235,12 @@ bool pattern::type_atoms(forcefield *xff)
 	if (nfailed != 0) msg(DM_NONE,"Failed to type %i atoms in pattern '%s'.\n",nfailed,name.get());
 	dbg_end(DM_CALLS,"pattern::type_atoms");
 	return result;
+}
+
+// Set atomtypes of selected atoms
+void model::selection_set_type(ffatom *ffa, bool fixed)
+{
+	dbg_begin(DM_CALLS,"pattern::selection_set_type");
+	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected()) set_atom_type(i, ffa, fixed);
+	dbg_end(DM_CALLS,"pattern::selection_set_type");
 }

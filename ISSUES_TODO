@@ -41,7 +41,6 @@ General Qt To-Do list:
 		+ Method of assigning individual types by hand (also in atom context menu?)
 	- Prefs window (partial) - colour editor (e.g. for COL_PEN, COL_BG etc.)
 	- Better editability in the atom list stack page
-	- Bond tolerance widget in Edit page
 	- Remember positions / visibility of toolbars (QSettings)
 
 Manual To-Do list:

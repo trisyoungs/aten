@@ -42,7 +42,6 @@ model::model()
 	staticatoms_point = -1;
 	translatescale = 1.0;
 	ff = NULL;
-	plist = NULL;
 	save_point = 0;
 	patterns_point = -1;
 	expression_point = -1;
@@ -80,7 +79,6 @@ model::~model()
 	atoms.clear();
 	patterns.clear();
 	measurements.clear();
-	if (plist != NULL) delete[] plist;
 	if (staticatoms != NULL) delete[] staticatoms;
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_MODEL] ++;
@@ -116,12 +114,7 @@ void model::calculate_mass()
 	// Calculate the mass of the atoms in the model.
 	dbg_begin(DM_CALLS,"model::calculate_mass");
 	mass = 0.0;
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		mass += elements.mass(i);
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) mass += elements.mass(i);
 	dbg_end(DM_CALLS,"model::calculate_mass");
 }
 
@@ -166,13 +159,13 @@ void model::assign_charges(charge_source qs)
 					int count = 0;
 					while (count < ptotalatoms)
 					{
-						i->set_charge(i->get_fftype()->get_charge());
+						i->set_charge(i->get_type()->get_charge());
 						i = i->next;
 						count ++;
 					}
 					// Charge atoms in representative pattern molecule
 					for (i = p->molecule.get_atoms(); i != NULL; i = i->next)
-						i->set_charge(i->get_fftype()->get_charge());
+						i->set_charge(i->get_type()->get_charge());
 				}
 				p = p->next;
 			}
@@ -202,12 +195,7 @@ void model::remove_typing()
 {
 	// Remove all atom typing from the current model
 	dbg_begin(DM_CALLS,"model::remove_typing");
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		i->set_fftype(NULL);
-		i = i->next;
-	}
+	for (atom *i = atoms.first(); i != NULL; i = i->next) set_atom_type(i, NULL, FALSE);
 	dbg_end(DM_CALLS,"model::remove_typing");
 }
 

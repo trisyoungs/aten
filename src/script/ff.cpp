@@ -78,13 +78,13 @@ bool script::command_ff(command_node<script_command> *cmd)
 			m = check_activemodel(text_from_SC(cmd->get_command()));
 			if (m != NULL)
 			{
-				int nodeid = cmd->datavar[0]->get_as_int();
+				int nodeid = cmd->datavar[0]->get_as_int() - 1;
 				if ((nodeid < 0) || (nodeid > m->get_npatterns()))
 				{
-					msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i patterns).\n",nodeid,m->get_npatterns());
+					msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, m->get_npatterns());
 					result = FALSE;
 				}
-				else m->plist[nodeid]->set_ff(master.get_currentff());
+				else m->get_pattern(nodeid)->set_ff(master.get_currentff());
 			}
 			else result = FALSE;
 			break;

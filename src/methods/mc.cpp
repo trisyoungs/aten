@@ -164,8 +164,7 @@ bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 	// Cycle through move types; try and perform ntrials for each; move on.
 	// For each attempt, select a random molecule in a random pattern
 	nmoves = 0;
-	// Make the reference list of pattern pointers for convenience
-	npats = srcmodel->make_plist();
+	npats = srcmodel->get_npatterns();
 	pattern *p = NULL;
 	// Loop over MC cycles
 	for (cycle=0; cycle<ncycles; cycle++)
@@ -180,7 +179,7 @@ bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 			{
 				// Select random pattern and molecule
 				npats != 1 ? randpat = cs_randomi(npats) : randpat = 0;
-				p = srcmodel->plist[randpat];
+				p = srcmodel->get_pattern(randpat);
 				randmol = cs_randomi(p->get_nmols());
 	
 				// Copy the coordinates of the current molecule

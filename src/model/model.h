@@ -409,12 +409,16 @@ class model
 	// Typing
 	*/
 	public:
+	// Set type of specified atom
+	void set_atom_type(atom *i, ffatom *ffa, bool fixed);
 	// Determine hybridicities of atoms
 	void describe_atoms();
 	// Assign forcefield types to all atoms
 	bool type_all();
 	// Remove forcefield types from all atoms
 	void remove_typing();
+	// Set atomtypes of selected atoms
+	void selection_set_type(ffatom *ffa, bool fixed);
 
 	/*
 	// Energy / Forces
@@ -489,13 +493,8 @@ class model
 	bool patterns_are_valid() { return (patterns_point == logs[LOG_STRUCTURE] ? TRUE : FALSE); }
 	// Sets the 'fixed' property of all current patterns
 	void set_patterns_fixed(int);
-	int pattern_maxmols();
-	// Generate array of public pointers to pattern nodes (in **plist)
-	int make_plist();
-	// Temporary array of pattern pointers (convenience variables)
-	pattern **plist;
 	// Calculates the atom locality of the supplied atom
-	atomaddress *locate_atom(atom*);
+	atomaddress locate_atom(atom*);
 	// Creates a string of the element symbols in the selection
 	void selection_get_atom_fingerprint(dnchar&);
 	// Creates a characteristic string of the bonds in the selection

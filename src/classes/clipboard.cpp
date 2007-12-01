@@ -78,7 +78,8 @@ void clipboard::copy_atom(atom *i)
 	dbg_begin(DM_CALLS,"clipboard::copy_atom");
         // Initialise the new clipatom
 	clipatom *newatom = atoms.add();
-	newatom->copy_from_atom(i);
+	newatom->copy(i);
+	newatom->set_oldptr(i);
 	newatom->set_id(atoms.size()-1);
 	dbg_end(DM_CALLS,"clipboard::copy_atom");
 }
@@ -106,23 +107,6 @@ void clipboard::bonds_set_newptr(clipatom *clipptr, atom *newptr)
 		b = b->get_next();
 	}
 	dbg_end(DM_CALLS,"clipboard::bonds_set_newptr");
-}
-
-// Copy atom
-void clipatom::copy_from_atom(atom *i)
-{
-	dbg_begin(DM_CALLS,"clipatom::copy_from_atom");
-	// Atom data
-	rr = i->r();
-	ff = i->f();
-	vv = i->v();
-	q = i->get_charge();
-	el = i->get_element();
-	style = i->get_style();
-	oldptr = i;
-	env = i->get_env();
-	fftype = i->get_fftype();
-	dbg_end(DM_CALLS,"clipatom::copy_from_atom");
 }
 
 // Copy bonds for atoms

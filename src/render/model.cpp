@@ -46,7 +46,7 @@ void canvas_master::render_model_labels()
 		// Check if atom has labels
 		if (!i->has_labels()) continue;
 		labels = i->get_labels();
-		ffa = i->get_fftype();
+		ffa = i->get_type();
 		// Blank label string
 		text[0] = '\0';
 		// Now add on all parts of the label that are required

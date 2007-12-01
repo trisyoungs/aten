@@ -125,17 +125,62 @@ void AtenForm::on_UntypeModelButton_clicked(bool checked)
 // Set the selected atoms to have the specified forcefield type
 void AtenForm::on_ManualTypeSetButton_clicked(bool checked)
 {
+	// Check selected forcefield against that assigned to the model
+	model *m = master.get_currentmodel();
+	forcefield *ff = master.get_currentff();
+	if ((m == NULL) || (ff == NULL)) return;
+	if (m->get_ff() != ff)
+	{
+		msg(DM_NONE,"The type you are trying to assign is in a different forcefield to that assigned to the model.\n");
+		return;
+	}
+	// Get the selected row in the FFTypeList
+	int row = ui.FFTypeTable->currentRow();
+	if (row == -1) return;
+	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
+	ffatom *ffa = ff->find_type(atoi(qPrintable(item->text())));
+	if (ffa != NULL) m->selection_set_type(ffa, TRUE);
+	gui.mainview.postredisplay();
 }
 
 // Clear type definitions from the selected atoms
 void AtenForm::on_ManualTypeClearButton_clicked(bool checked)
 {
-	
+	master.get_currentmodel()->selection_set_type(NULL, FALSE);
+	gui.mainview.postredisplay();
 }
 
 // Test selected atom type on current atom selection
 void AtenForm::on_ManualTypeTestButton_clicked(bool checked)
 {
+	forcefield *ff = master.get_currentff();
+	int row = ui.FFTypeTable->currentRow();
+	if (row == -1) return;
+	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
+	ffatom *ffa = ff->find_type(atoi(qPrintable(item->text())));
+	if (ffa != NULL)
+	{
+		model *m = master.get_currentmodel();
+		atomtype *at = ffa->get_atomtype();
+		if (m->autocreate_patterns())
+		{
+			msg(DM_NONE,"Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->get_name(), ffa->get_ffid(), ff->get_name());
+			// Prepare for typing
+			m->describe_atoms();
+			int matchscore;
+			for (atom *i = m->get_first_selected(); i != NULL; i = i->get_next_selected())
+			{
+				// Get the pattern in which the atom exists
+				pattern *p = m->get_pattern(i);
+				if (i->get_element() == at->el)
+				{
+					matchscore = at->match_atom(i, p->get_ringlist(), m, i);
+					msg(DM_NONE,"Atom %i (%s) matched type with score %i.\n", i->get_id()+1, elements.symbol(i), matchscore);
+				}
+				else msg(DM_NONE,"Atom %i (%s) is the wrong element for this type.\n", i->get_id()+1, elements.symbol(i));
+			}
+		}
+	}
 }
 
 // Change target element in type list

@@ -375,7 +375,7 @@ void pattern::propagate_atomtypes()
 	for (n=0; n<natoms; n++)
 	{
 		i->set_env(j->get_env());
-		i->set_fftype(j->get_fftype());
+		i->set_type(j->get_type());
 		i = i->next;
 		j = j->next;
 	}
@@ -387,7 +387,7 @@ void pattern::propagate_atomtypes()
 		for (m=0; m<natoms; m++)
 		{
 			j->set_env(i->get_env());
-			j->set_fftype(i->get_fftype());
+			j->set_type(i->get_type());
 			i = i->next;
 			j = j->next;
 		}

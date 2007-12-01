@@ -47,7 +47,6 @@ pattern *model::add_pattern(int mols, int numatoms, const char *patname)
 	{
 		msg(DM_NONE,"Pattern description completed (spans %i atoms).\n",atoms.size());
 		energy.resize(patterns.size());
-		int npat = make_plist();
 		// Create representative molecules
 		msg(DM_NONE,"Creating representative molecules...");
 		create_pattern_molecules();
@@ -84,37 +83,6 @@ void model::own_pattern(pattern *source, bool own)
 	dbg_end(DM_CALLS,"model::add_pattern");
 }
 
-// Create pointer list of patterns
-int model::make_plist()
-{
-	// Make an array of pattern pointers for convenience. Returns the number of patterns in the list.
-	dbg_begin(DM_CALLS,"model::make_plist");
-	if (plist != NULL) delete[] plist;
-	// Determine the size of the new list first
-	pattern *p = patterns.first();
-	int count = 0;
-	while (p != NULL)
-	{
-		if (!p->is_fixed()) count ++;
-		p = p->next;
-	}
-	plist = new pattern*[count];
-	// Fill the list
-	p = patterns.first();
-	count = 0;
-	while (p != NULL)
-	{
-		if (!p->is_fixed())
-		{
-			plist[count] = p;
-			count ++;
-		}
-		p = p->next;
-	}
-	dbg_end(DM_CALLS,"model::make_plist");
-	return count;
-}
-
 // Set 'fixed' propety of patterns
 void model::set_patterns_fixed(int upto)
 {
@@ -133,16 +101,17 @@ void model::set_patterns_fixed(int upto)
 }
 
 // Determine the locality of the supplied atom
-atomaddress *model::locate_atom(atom *i)
+atomaddress model::locate_atom(atom *i)
 {
 	dbg_begin(DM_CALLS,"model::locate_atom");
 	int n, patternno, molno, atomno, id;
 	pattern *p;
+	atomaddress result;
 	if (!autocreate_patterns())
 	{
 		msg(DM_NONE,"model::locate_atom : No valid pattern available for model.\n");
 		dbg_end(DM_CALLS,"model::locate_atom");
-		return NULL;
+		return result;
 	}
 	id = i->get_id();
 	// First, find the pattern the atom is covered by
@@ -161,20 +130,19 @@ atomaddress *model::locate_atom(atom *i)
 	{
 		printf("Fatal error - could not find owner pattern for atom!\n");
 		dbg_end(DM_CALLS,"model::locate_atom");
-		return NULL;
+		return result;
 	}
 	// Next, find its molecule id
 	id -= p->get_startatom();
 	molno = id / p->get_natoms();
 	// Finally, get the atom offset
 	atomno = id % p->get_natoms();
-	// Create structure, store values, and return
-	atomaddress *newaddress = new atomaddress;
-	newaddress->set_pattern(p);
-	newaddress->set_molecule(molno);
-	newaddress->set_offset(atomno);
+	// Store values, and return
+	result.set_pattern(p);
+	result.set_molecule(molno);
+	result.set_offset(atomno);
 	dbg_end(DM_CALLS,"model::locate_atom");
-	return newaddress;
+	return result;
 }
 
 // Clar patterns
@@ -210,7 +178,6 @@ bool model::autocreate_patterns()
 	// Delete all old nodes first.
 	msg(DM_NONE,"Autodetecting patterns for model '%s'..\n",name.get());
 	patterns.clear();
-	//reset_tempi(0);
 	// If there are no atoms in the molecule, exit here.
 	if (atoms.size() == 0)
 	{
@@ -261,18 +228,36 @@ bool model::autocreate_patterns()
 		{
 			// Compare clipboard contents with current selection
 			same = TRUE;
-			// Number of atoms....
+			// Check number of atoms first....
 			if (nselected != patclip.get_natoms()) same = FALSE;
 			else
 			{
-				// Ordering of elements...
+				/*
+				// Atoms
+				*/
 				clipi = patclip.get_atoms();
 				for (isel = get_first_selected(); isel != NULL; isel = isel->get_next_selected())
 				{
+					// Element check
 					if (clipi->get_element() != isel->get_element())
 					{
 						same = FALSE;
 						break;
+					}
+					// Fixed forcefield type check
+					if (clipi->has_fixed_type() != isel->has_fixed_type())
+					{
+						same = FALSE;
+						break;
+					}
+					else if (clipi->has_fixed_type())
+					{
+						// Both have fixed type - make sure types are the same
+						if (clipi->get_type() != isel->get_type())
+						{
+							same = FALSE;
+							break;
+						}
 					}
 					clipi = clipi->next;
 				}
