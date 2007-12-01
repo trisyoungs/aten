@@ -1,0 +1,92 @@
+\chapter{Command Line Options}
+\label{sec:cli}
+\index{command-line options}
+\index{cli}
+
+
+\begin{optlist}{Import}
+
+	\item[-f $file$, {-}{-}ff $file$]
+	\index{command-line options!-f}
+	\index{command-line options!{-}{-}ff}
+		Loads the specified forcefield file before any models specified on the command line.
+
+	\item[{-}{-}fold, {-}{-}nofold\its]
+	\index{command-line options!{-}{-}fold}
+	\index{command-line options!{-}{-}nofold}
+		Force or prevent initial folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, overriding filter directives.
+	
+	\item[{-}{-}pack, {-}{-}nopack\its]
+	\index{command-line options!{-}{-}pack}
+	\index{command-line options!{-}{-}nopack}
+		Force or prevent generation of symmetry-equivalent atoms from spacegroup information in loaded models, overriding filter directives.
+	
+	\item[{-}{-}bond, {-}{-}nobond\its]
+	\index{command-line options!{-}{-}bond}
+	\index{command-line options!{-}{-}nobond}
+		Force or prevent (re)calculation of bonding in loaded models, overriding filter directives.
+	
+	\item[{-}{-}centre, {-}{-}nocentre\its]
+	\index{command-line options!{-}{-}centre}
+	\index{command-line options!{-}{-}nocentre}
+		Prevent translation of non-periodic models’ centre-of-geometry to the origin, overriding filter directives.
+	
+	\item[-b, {-}{-}bohr\its]
+	\index{command-line options!{-}{-}bohr}
+		Specifies that the unit of length used in loaded models is Bohr rather than Angstrom, and should be converted to the latter.
+
+\end{optlist}
+
+
+\begin{optlist}{Output / Debugging}
+
+	\item[-d, {-}{-}debug\its]
+	\index{command-line options!-d}
+	\index{command-line options!{-}{-}debug}
+		Enables debugging of subroutine calls.
+	
+	\item[{-}{-}debugtyping\its]
+	\index{command-line options!{-}{-}debugtyping}
+		Enables output from the atom typing routines.
+	
+	\item[{-}{-}debugfilters\its]
+	\index{command-line options!{-}{-}debugfilters}
+		Enables output from the filter routines.
+	
+	\item[{-}{-}debugall\its]
+	\index{command-line options!{-}{-}debugall}
+		Enables output from the most all routines.
+
+	\item[{-}{-}debugparse\its]
+	\index{command-line options!{-}{-}debugparse}
+		Enables output from the file parsing routines.
+		
+	\item[{-}{-}verbose\its]
+	\index{command-line options!{-}{-}verbose}
+		Switch on verbose reporting of program actions.
+
+\end{optlist}
+
+\begin{optlist}{Modes}
+
+	\item[-c ``$commands...$'', {-}{-}command ``$commands...$''\its]
+	\index{command-line options!-c}
+	\index{command-line options!{-}{-}command}
+		The command or compound command given is executed directly after processing of all other command line options is complete, including the loading of models. Commands should be separated with semicolons.
+
+	\item[-s $file$, {-}{-}script $file$\its]
+	\index{command-line options!-s}
+	\index{command-line options!{-}{-}script}
+		Specifies that the script $file$ is to be loaded and run immediately following loading of all models on the command line (if any are specified). Once the script is completed, unless it is terminated by the \qte{quit} command the GUI will start (if it has not been started already), with all models (and the results of their manipulation by commands in the script) available.
+
+	\item[-i, {-}{-}interactive\its]
+	\index{command-line options!-s}
+	\index{command-line options!{-}{-}script}
+		Starts \progname{} in interactive mode, where script commands are typed and executed immediately. The GUI is not started by default, but may be invoked (see Section \ref{sec:scripts}).
+ 
+\end{optlist}
+
+
+XXX Other options
+
+-c, --convert $format$ 

@@ -1,0 +1,101 @@
+2007-11-30
+	* labels: improved handling with scripts and Qt
+
+2007-11-28
+	* trajectory improvements / fixes.
+
+2007-11-27
+	* added undo/redo.
+
+------------
+Version 0.92
+------------
+
+2007-11-25
+	* filters: msi, improved pdb.
+	* render: drawing guide.
+
+2007-11-19
+	* filters: FC_ADDREADOPTION, FC_REMOVEREADOPTION for parser control.
+
+2007-11-11
+	* typing: engine updated.
+	* retouched icons.
+
+2007-11-10
+	* steepest descent minimiser finished.
+
+2007-11-06
+	* typing: rearranged / added new typing commands.
+	* filters: GAMESS-US.
+
+2007-11-05
+	* filters: FC_FINALISE* commands for models/surfaces.
+
+2007-11-03
+	* Qt: new icons. misc widget fixes / links.
+	* ff: added energy conversion for rule-based FFs.
+
+-------------
+Version 0.91a
+-------------
+
+2007-10-31
+	* forces: minor fix.
+
+2007-10-28
+	* Qt: command toolbar. surfaces page updated.
+	* filters: Gaussian cube file added.
+
+------------
+Version 0.91
+------------
+
+2007-10-27
+	* Qt: updated / misc fixes.
+	* classes/forcefield.h: convert_parameters fixed.
+	* filters: now require use of FC_NEWMODEL / FC_NEWSURFACE.
+
+2007-10-26
+	* fixed --with-qtdir.
+	* Qt: disorder stack page. fixed crash on forcefield load.
+
+2007-10-25
+	* completed svg optimisation.
+	* trajectory playback: camera adjustment, Qt timer playback.
+	* filters/dlp.hisu: fixed cell read.
+	* file/variables.cpp: fixed FC_SET* commands.
+
+2007-10-24
+	* model rendering updated.
+	* optimised svg icons (partial).
+
+2007-10-23
+	* model/selection.cpp: fixed atom shift routines.
+	* Qt: added atom shift functions. fixed zoomout hotkey.
+	fixed crash on prevframe action. updated disorder stack page.
+	* atom numbering in canvas and atomlist now 0->(N-1).
+
+2007-10-21
+	* templates/command.h: added 'string-as-is' variable specifier.
+	* file/parse.h: fixed get_next_delim().
+	* added Cambridge Database 'cds' filter.
+	* classes/atom.h: removed atom colour reference.
+	indexed colours now looked up in render subsystem.
+
+2007-10-20
+	* templates/command.h, base/sysfunc.h|cpp, file/parse.h|cpp: added expression evaluation.
+
+2007-10-18
+	* gui/canvas.cpp: Use trajparent's modelview matrix.
+
+2007-10-17
+	* Qt: Added cell scaling. Added selection positioning.
+	gui-qt/mainwindow_funcs.cpp: Fixed canvas projection on widgetstack show/hide.
+
+-------------
+Version 0.90
+-------------
+
+2007-10-17
+	* First release
