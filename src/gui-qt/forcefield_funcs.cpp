@@ -130,6 +130,7 @@ void AtenForm::on_ManualTypeSetButton_clicked(bool checked)
 // Clear type definitions from the selected atoms
 void AtenForm::on_ManualTypeClearButton_clicked(bool checked)
 {
+	
 }
 
 // Test selected atom type on current atom selection
