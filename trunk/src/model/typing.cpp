@@ -180,6 +180,12 @@ bool pattern::type_atoms(forcefield *xff)
 	nfailed = 0;
 	for (a=0; a<natoms; a++)
 	{
+		// Check to see if this atom type has been manually set
+		if (i->has_fixed_type())
+		{
+			i = i->next;
+			continue;
+		}
 		msg(DM_TYPING,"pattern::type_atoms : FFTyping atom number %i, element %s\n",a,elements.symbol(i->get_element()));
 		bestmatch = 0;
 		i->set_fftype(NULL);

@@ -144,9 +144,9 @@ class atom
 	// Return the forcefield type of the atom
 	ffatom *get_fftype() { return fftype; }
 	// Set the fixed status of the assigned atom type
-	void set_fftypefixed(bool b) { fftypefixed = b; }
+	void set_fixed_type(bool b) { fftypefixed = b; }
 	// Return the fixed status of the assigned atom type
-	bool get_fftypefixed() { return fftypefixed; }
+	bool has_fixed_type() { return fftypefixed; }
 	// Check the ff type of the atom against the supplied value
 	bool fftype_is(ffatom *type) { return (fftype == type ? TRUE : FALSE); }
 	// Set the environment of the atom
