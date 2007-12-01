@@ -184,9 +184,8 @@ bool forcefield::read_types(ifstream &fffile)
 		ffa->name = parser.argc(1);
 		ffa->equiv = parser.argc(1);
 		ffa->typedesc.el = elements.find(parser.argc(2),ZM_ALPHA);
-		ffa->typedesc.expand(parser.argc(3),this,ffa);
 		ffa->description = parser.argc(4);
-		//printf("ATOMTYPE %i : Description = %s\n",n,parser.argc(3));
+		ffa->typedesc.expand(parser.argc(3),this,ffa);
 	} while (!done);
 	if (atomtypes.size() == 1)
 	{

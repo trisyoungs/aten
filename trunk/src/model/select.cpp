@@ -110,26 +110,13 @@ void model::selection_delete()
 void model::selection_expand()
 {
 	dbg_begin(DM_CALLS,"model::selection_expand");
-	// Grab the current selection state - store it in i->tempi
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		(i->is_selected()) ? i->tempi = TRUE : i->tempi = FALSE;
-		i = i->next;
-	}
+	atom *i;
+	refitem<bond> *bref;
+	// Store the current selection state in i->tempi
+	for (i = atoms.first(); i != NULL; i = i->next) i->tempi = i->is_selected();
 	// Now use the temporary state to find atoms where we select atomic neighbours
 	for (i = atoms.first(); i != NULL; i = i->next)
-	{
-		if (i->tempi == TRUE)
-		{
-			refitem<bond> *bref = i->get_bonds();
-			while (bref != NULL)
-			{
-				select_atom(bref->item->get_partner(i));
-				bref = bref->next;
-			}
-		}
-	}
+		if (i->tempi) for (bref = i->get_bonds(); bref != NULL; bref = bref->next) select_atom(bref->item->get_partner(i));
 	dbg_end(DM_CALLS,"model::selection_expand");
 }
 

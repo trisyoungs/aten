@@ -118,9 +118,9 @@ class atom
 	// Oxidation state (used by typing routines)
 	short int os;
 	// Forcefield atom type
-	ffatom *fftype;
+	ffatom *type;
 	// Whether the assigned forcefield type is fixed
-	bool fftypefixed;
+	bool typefixed;
 	// Chemical environment of atom
 	atom_env env;
 
@@ -140,15 +140,15 @@ class atom
 	// Return the oxidation state of the atom
 	short int get_os() { return os; }
 	// Set the forcefield type of the atom
-	void set_fftype(ffatom *ffa) { fftype = ffa; }
+	void set_type(ffatom *ffa) { type = ffa; }
 	// Return the forcefield type of the atom
-	ffatom *get_fftype() { return fftype; }
+	ffatom *get_type() { return type; }
 	// Set the fixed status of the assigned atom type
-	void set_fixed_type(bool b) { fftypefixed = b; }
+	void set_fixed_type(bool b) { typefixed = b; }
 	// Return the fixed status of the assigned atom type
-	bool has_fixed_type() { return fftypefixed; }
+	bool has_fixed_type() { return typefixed; }
 	// Check the ff type of the atom against the supplied value
-	bool fftype_is(ffatom *type) { return (fftype == type ? TRUE : FALSE); }
+	bool type_is(ffatom *type) { return (type == type ? TRUE : FALSE); }
 	// Set the environment of the atom
 	void set_env(atom_env ae) { env = ae; }
 	// Return the environment of the atom

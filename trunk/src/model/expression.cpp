@@ -154,7 +154,7 @@ bool pattern::fill_expression(model *xmodel)
 	// Counters for incomplete aspects of the expression
 	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;
 	incomplete = FALSE;
-	// Temp vars for fftype storage
+	// Temp vars for type storage
 	ffatom *ti, *tj, *tk, *tl;
 	// Lists of unique bound atoms (used by angle and torsion generation routines)
 	int bonding[natoms][7];
@@ -171,8 +171,8 @@ bool pattern::fill_expression(model *xmodel)
 	{
 		count ++;
 		pa->set_atom(ai);
-		pa->set_data(ai->get_fftype());
-		if (ai->get_fftype() == 0)
+		pa->set_data(ai->get_type());
+		if (ai->get_type() == 0)
 		{
 			msg(DM_NONE,"... No FF definition for atom %i (%s).\n",count+1,elements.symbol(ai));
 			incomplete = TRUE;
@@ -181,7 +181,7 @@ bool pattern::fill_expression(model *xmodel)
 		// If the forcefield is rule-based, generate the required parameters first
 		if (xff->get_rules() != FFR_NORULES) xff->generate_vdw(ai);
 		// Point to the data
-		//pa->data = pa->fftype->get_params()->get_data();
+		//pa->data = pa->type->get_params()->get_data();
 		ai = ai->next;
 	}
 	// Construct the bond list.
@@ -200,8 +200,8 @@ bool pattern::fill_expression(model *xmodel)
 		{
 			// Get relative IDs and check if i > j
 			aj = bref->item->get_partner(ai);
-			ti = ai->get_fftype();
-			tj = aj->get_fftype();
+			ti = ai->get_type();
+			tj = aj->get_type();
 			jj = aj->get_id() - startatom;
 			// Quick check to ensure the bond is within the same molecule...
 			if (jj > endatom)
@@ -269,9 +269,9 @@ bool pattern::fill_expression(model *xmodel)
 				ai = atoms[bonding[jj][ii]]->get_atom();
 				aj = atoms[jj]->get_atom();
 				ak = atoms[bonding[jj][kk]]->get_atom();
-				ti = ai->get_fftype();
-				tj = aj->get_fftype();
-				tk = ak->get_fftype();
+				ti = ai->get_type();
+				tj = aj->get_type();
+				tk = ak->get_type();
 				angles[count]->set_atomid(0,bonding[jj][ii]);
 				angles[count]->set_atomid(1,jj);
 				angles[count]->set_atomid(2,bonding[jj][kk]);
@@ -331,10 +331,10 @@ bool pattern::fill_expression(model *xmodel)
 				aj = atoms[jj]->get_atom();
 				ak = atoms[kk]->get_atom();
 				al = atoms[bonding[kk][ll]]->get_atom();
-				ti = ai->get_fftype();
-				tj = aj->get_fftype();
-				tk = ak->get_fftype();
-				tl = al->get_fftype();
+				ti = ai->get_type();
+				tj = aj->get_type();
+				tk = ak->get_type();
+				tl = al->get_type();
 				torsions[count]->set_atomid(0,bonding[jj][ii]);
 				torsions[count]->set_atomid(1,jj);
 				torsions[count]->set_atomid(2,kk);

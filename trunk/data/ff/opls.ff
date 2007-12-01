@@ -123,7 +123,7 @@ types
 # UA chloroform : JPC,94,1683 (1990)
 120	CH		C	"-Cl(n=3),nbonds=3"			"CH UA Chloroform"
 121	Cl		Cl	"-$120"					"Cl UA Chloroform"
-# Chloroform
+# Carbon tetrachloride
 122	CT		C	"-Cl(n=4)"				"C   CCl4"
 123	Cl		Cl	"-$122"					"Cl  CCl4"
 # UA DMSO
@@ -145,8 +145,8 @@ types
 136	CT		C	"-H(n=2),-C,-C"				"C(H2) AA alkanes"
 137	CT		C	"-H,-C(n=3)"				"C(H) AA alkanes"
 138	CT		C	"-H(n=4)"				"C(H4) AA methane"
-139	CT		C	"-C(n=4)"				"C      all-atom C: alkanes"
-140	HC		H	"-C"					"H      all-atom H: alkanes"
+139	CT		C	"-C(n=4)"				"all-atom C: alkanes"
+140	HC		H	"-C"					"all-atom H: alkanes"
 141	CM		C	"-C(bond=double),-C(n=2,bond=single)"	"alkene C (R2-C=) all atom"
 142	CM		C	"-C(bond=double),-C,-H"			"alkene C (RH-C=) all atom"
 143	CM		C	"-C(bond=double),-H,-H"			"alkene C (H2-C=) all atom"

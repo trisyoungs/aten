@@ -590,7 +590,7 @@ void variable_list::set_atom_variables(const char *varname, atom *i)
 		set(varname,"name",elements.name(i));
 		set(varname,"z",i->get_element());
 		set(varname,"id",i->get_id()+1);
-		ffatom *ffa = i->get_fftype();
+		ffatom *ffa = i->get_type();
 		set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->get_name()));
 		set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->get_equiv()));
 		v = i->r();

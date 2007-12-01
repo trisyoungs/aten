@@ -36,7 +36,7 @@ const char *text_from_DS(draw_style i)
 	{ return DS_strings[i]; }
 
 // Atom labels
-const char *AL_keywords[AL_NITEMS] = { "id", "element", "fftype", "ffequiv", "charge" };
+const char *AL_keywords[AL_NITEMS] = { "id", "element", "type", "ffequiv", "charge" };
 atom_label AL_from_text(const char *s)
 	{ return (atom_label) int(pow(2,enum_search("atom label type",AL_NITEMS,AL_keywords,s))); }
 
@@ -47,8 +47,8 @@ atom::atom()
 	el = 0;
 	os = 0;
 	env = AE_UNSPECIFIED;
-	fftype = NULL;
-	fftypefixed = FALSE;
+	type = NULL;
+	typefixed = FALSE;
 	next = NULL;
 	prev = NULL;
 	tempi = 0;
@@ -108,7 +108,8 @@ void atom::copy(atom *source)
 	el = source->el;
 	style = source->style;
 	env = source->env;
-	fftype = source->fftype;
+	type = source->type;
+	typefixed = source->typefixed;
 }
 
 // Copy atom style
@@ -130,7 +131,7 @@ void atom::print()
 	msg(DM_NONE,"  Velocities : %8.4f %8.4f %8.4f\n",vv.x,vv.y,vv.z);
 	msg(DM_NONE,"      Forces : %8.4f %8.4f %8.4f\n",ff.x,ff.y,ff.z);
 	msg(DM_NONE,"      Charge : %8.4f\n",q);
-	msg(DM_NONE,"      FFType : %s\n",(fftype != NULL ? fftype->get_name() : "None"));
+	msg(DM_NONE,"      FFType : %s\n",(type != NULL ? type->get_name() : "None"));
 	msg(DM_NONE," Environment : %s\n",text_from_AE(env));
 	msg(DM_NONE,"        O.S. : %i\n",os);
 }
@@ -139,7 +140,7 @@ void atom::print()
 void atom::print_summary()
 {
 	// Print format : " Id     El   FFType         X             Y             Z              Q        S"
-	msg(DM_NONE," %-5i  %-3s  %-8s",id,elements.symbol(this),(fftype != NULL ? fftype->get_name() : "None"));
+	msg(DM_NONE," %-5i  %-3s  %-8s",id,elements.symbol(this),(type != NULL ? type->get_name() : "None"));
 	msg(DM_NONE," %13.6e %13.6e %13.6e  %13.6e  ",rr.x,rr.y,rr.z,q);
 	msg(DM_NONE,"%c  \n",(selected ? 'x' : ' '));
 }

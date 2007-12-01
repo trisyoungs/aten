@@ -30,7 +30,7 @@ void forcefield::generate_vdw(atom *i)
 	// Simplest of all generation routines - creates the params() data for VDW interactions.
 	dbg_begin(DM_CALLS,"forcefield::generate_vdw");
 	double sigma, epsilon;
-	ffatom *ffi = i->get_fftype();
+	ffatom *ffi = i->get_type();
 	switch (rules)
 	{
 		case (FFR_NORULES):
@@ -55,8 +55,8 @@ ffbound *forcefield::generate_bond(atom *i, atom *j)
 	// Creates bond forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
 	dbg_begin(DM_CALLS,"forcefield::generate_bond");
-	ffatom *ffi = i->get_fftype();
-	ffatom *ffj = j->get_fftype();
+	ffatom *ffi = i->get_type();
+	ffatom *ffj = j->get_type();
 	ffbound *newbond = NULL;
 	switch (rules)
 	{
@@ -96,9 +96,9 @@ ffbound *forcefield::generate_angle(atom *i, atom *j, atom *k)
 	// Creates angle forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
 	dbg_begin(DM_CALLS,"forcefield::generate_angle");
-	ffatom *ffi = i->get_fftype();
-	ffatom *ffj = j->get_fftype();
-	ffatom *ffk = k->get_fftype();
+	ffatom *ffi = i->get_type();
+	ffatom *ffj = j->get_type();
+	ffatom *ffk = k->get_type();
 	ffbound *newangle = NULL;
 	switch (rules)
 	{

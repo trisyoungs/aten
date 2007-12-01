@@ -78,7 +78,7 @@ bool savedlpfield(const char *filename, model *sourcemodel)
 		i = p->get_firstatom();
 		for (n=0; n<p->get_natoms(); n++)
 		{
-			ffa = i->get_fftype();
+			ffa = i->get_type();
 			if (ffa == NULL)
 			{
 				msg(DM_NONE,"Warning : No forcefield type associated with atom '%i' of pattern '%s'. Using element...\n",n,p->get_name());

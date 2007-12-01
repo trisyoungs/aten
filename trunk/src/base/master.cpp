@@ -241,7 +241,7 @@ void master_data::dereference_ff(forcefield *xff)
 				atom *i = p->get_firstatom();
 				for (int n=0; n<p->get_totalatoms(); n++)
 				{
-					i->set_fftype(NULL);
+					i->set_type(NULL);
 					i = i->next;
 				}
 				p->set_ff(NULL);
