@@ -20,8 +20,11 @@
 */
 
 #include "model/model.h"
+#include "classes/pattern.h"
 #include "base/master.h"
 #include "gui/gui.h"
+#include "file/parse.h"
+#include <fstream>
 
 master_data master;
 

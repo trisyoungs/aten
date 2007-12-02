@@ -23,7 +23,7 @@
 #define H_FILTER_H
 
 #include "file/filtercommands.h"
-#include "templates/command.h"
+#include "command/commandlist.h"
 
 // Filter Types
 enum filter_type { FT_MODEL_IMPORT, FT_MODEL_EXPORT, FT_TRAJECTORY_IMPORT, FT_TRAJECTORY_EXPORT, FT_FIELD_IMPORT, FT_FIELD_EXPORT, FT_GRID_IMPORT, FT_GRID_EXPORT, FT_NITEMS };
@@ -79,8 +79,6 @@ class filter
 	bool has_zmapping;
 	// Type of element mapping to use
 	zmap_type zmapping;
-	// Current read options for the filter
-	int readopts;
 
 	public:
 	// Return the ID of the filter
@@ -111,67 +109,20 @@ class filter
 	/*
 	// Command actions
 	*/
-	private:
+	public:
 	// Command list
-	command_list<filter_command> commands;
-	// Execute variable commands (mainly model-based)
-	bool do_variables(command_node<filter_command>*&);
-	// Execute read and write commands
-	bool do_readwrite(command_node<filter_command>*&);
-	// Execute model actions
-	bool do_actions(command_node<filter_command>*&);
-	// Execute surface-related actions
-	bool do_surface(command_node<filter_command>*&);
+	commandlist commands;
 
 	/*
 	// Storage targets
 	*/
 	private:
-	// Active model in filter
-	model *activemodel;
-	// Active cell in filter
-	unitcell *activecell;
-	// Active surface in filter
-	grid *activegrid;
 	// Set target to model
 	void set_target(model*);
 	// Set target to surface
 	void set_target(grid*);
 	// Reset all targets
 	void reset_targets();
-
-	/*
-	// File	
-	*/
-	private:
-	// Filename that's the source of ifstream or ofstream
-	dnchar filename;
-	// Pointer to input file
-	ifstream *inputfile;
-	// Pointer to output file
-	ofstream *outputfile;
-
-	public:
-	// Open input file
-	bool set_input(const char *filename);
-	// Set file pointer
-	bool set_input(ifstream *file);
-	// Set output file
-	bool set_output(const char *filename);
-	// Close input/output file(s)
-	void close_files();
-	// Import commands into the structure from file supplied
-	bool open(const char *filterfile);
-	// Import model file
-	void import_model(const char *modelfile);
-	// Export model to filename (in model)
-	void export_model(model *source);
-	// Export forcefield spec to file
-	void export_field(model *source, const char *filename);
-	// Open trajectory file
-	bool read_trajectory(model *dest, bool isheader);
-	// Import grid file
-	void import_grid(const char *gridfile);
 };
 
 #endif

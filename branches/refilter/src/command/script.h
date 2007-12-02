@@ -22,8 +22,7 @@
 #ifndef H_SCRIPT_H
 #define H_SCRIPT_H
 
-#include "script/scriptcommands.h"
-#include "templates/command.h"
+#include "command/commandlist.h"
 #include "templates/vector3.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
@@ -71,7 +70,7 @@ class script
 
 	public:
 	// List of converted commands from file
-	command_list<script_command> commands;
+	commandlist<script_command> commands;
 
 	/*
 	// Command Subroutines

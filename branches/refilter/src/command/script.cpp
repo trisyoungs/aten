@@ -1,6 +1,6 @@
 /*
 	*** Script functions
-	*** src/script/script.cpp
+	*** src/command/script.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script/script.h"
-#include "script/scriptcommands.h"
+#include "command/commands.h"
+#include "command/scriptcommands.h"
 #include "base/master.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"
@@ -141,73 +141,7 @@ bool script::load(const char *filename)
 	return TRUE;
 }
 
-// Cache script commands from line containing semicolon-separated commands
-bool script::cache_line(const char *s)
-{
-	dbg_begin(DM_CALLS,"script::cache_line");
-	// Use a local parser to split up the semi-colon'd line into individual commands
-	static line_parser lines;
-	// Prepare the new script
-	commands.clear();
-	lines.get_lines_delim(s);
-	for (int n=0; n<lines.get_nargs(); n++)
-	{
-		// Parse the argument in our local line_parser and call cache_command())
-		parser.get_args_delim(lines.argc(n), PO_USEQUOTES+PO_SKIPBLANKS);
-		if (!cache_command())
-		{
-			dbg_end(DM_CALLS,"script::cache_line");
-			return FALSE;
-		}
-	}
-	dbg_end(DM_CALLS,"script::cache_line");
-	return TRUE;
-}
 
-// Cache text command
-bool script::cache_command()
-{
-	dbg_begin(DM_CALLS,"script::cache_command");
-	script_command sc;
-	basic_command bc;
-	command_node<script_command> *fn;
-	int success;
-	bool result = TRUE;
-	// Assume that the main parser object contains the data we require.
-	// Check for basic commands (local to command_nodes) first.
-	bc = BC_from_text(parser.argc(0));
-	if (bc != BC_NITEMS)
-	{
-		// Add the command to the list
-		if (!commands.add_basic(bc))
-		{
-			msg(DM_NONE,"script::load - Error adding basic command '%s'.\n", parser.argc(0));
-			result = FALSE;
-		}
-	}
-	else
-	{
-		// Find the script command and add this to the command list
-		sc = SC_from_text(parser.argc(0));
-		if (sc != SC_NITEMS)
-		{
-			// If add_other() returns FALSE then we encountered an error
-			if (!commands.add_other(sc, text_from_SC(sc), vars_from_SC(sc)))
-			{
-				msg(DM_NONE,"Error adding script command '%s'.\n", parser.argc(0));
-				msg(DM_NONE,  "Command usage is '%s'.\n", syntax_from_SC(sc));
-				result = FALSE;
-			}
-		}
-		else
-		{
-			msg(DM_NONE,"Unrecognised command '%s' in script.\n", parser.argc(0));
-			result = FALSE;
-		}
-	}
-	dbg_end(DM_CALLS,"script::cache_command");
-	return result;
-}
 
 // Execute script
 void script::run()

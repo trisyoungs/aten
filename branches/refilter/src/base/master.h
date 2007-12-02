@@ -24,11 +24,12 @@
 
 #include "classes/clipboard.h"
 #include "classes/grid.h"
+#include "classes/forcefield.h"
 #include "methods/sd.h"
 #include "methods/cg.h"
 #include "methods/mc.h"
 #include "file/filter.h"
-#include "script/script.h"
+#include "command/commandlist.h"
 #include <getopt.h>
 
 #define MAXCLIOPTS 50
@@ -179,9 +180,9 @@ class master_data
 	// Sets the current program mode
 	void set_program_mode(prog_mode pm) { program_mode = pm; }
 	// Cached script data
-	list<script> scripts;
+	list<commandlist> scripts;
 	// Script to store temporary typed commands
-	script cmd_script;
+	commandlist cmd_script;
 
 	/*
 	// Building

@@ -1,6 +1,6 @@
 /*
 	*** Script molecule site functions
-	*** src/script/site.cpp
+	*** src/command/site.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script/script.h"
+#include "command/commands.h"
 #include "base/debug.h"
 #include "classes/pattern.h"
 

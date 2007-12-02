@@ -1,6 +1,6 @@
 /*
 	*** Script forcefield functions
-	*** src/script/ff.cpp
+	*** src/command/ff.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script/script.h"
+#include "command/commands.h"
 #include "base/master.h"
 #include "base/prefs.h"
 #include "base/debug.h"

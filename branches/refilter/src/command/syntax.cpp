@@ -1,6 +1,6 @@
 /*
 	*** Script command syntax
-	*** src/script/scriptsyntax.cpp
+	*** src/command/scriptsyntax.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script/scriptcommands.h"
+#include "command/scriptcommands.h"
 #include "base/sysfunc.h"
 #include <string.h>
 

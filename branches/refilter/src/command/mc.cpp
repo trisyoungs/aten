@@ -1,6 +1,6 @@
 /*
 	*** Script Monte Carlo functions
-	*** src/script/mc.cpp
+	*** src/command/mc.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -20,7 +20,7 @@
 */
 
 #include "base/master.h"
-#include "script/script.h"
+#include "command/commands.h"
 #include "methods/mc.h"
 #include "base/debug.h"
 #include "classes/pattern.h"

@@ -1,6 +1,6 @@
 /*
 	*** Script bonding functions
-	*** src/script/bonds.cpp
+	*** src/command/bonds.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script/script.h"
+#include "command/commands.h"
 #include "base/prefs.h"
 #include "base/elements.h"
 #include "base/sysfunc.h"

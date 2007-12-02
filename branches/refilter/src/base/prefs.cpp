@@ -254,8 +254,7 @@ void prefs_data::load(const char *filename)
 		return;
 	}
 	// Create script structure and initialise
-	script prefscript;
-	prefscript.commands.clear();
+	commandlist prefscript;
 	while (!prefsfile.eof())
 	{
 		success = parser.get_args_delim(&prefsfile,PO_USEQUOTES+PO_SKIPBLANKS);
@@ -269,15 +268,13 @@ void prefs_data::load(const char *filename)
 		if (!prefscript.cache_command()) break;
 	}
 	// Check the flowstack - it should contain just the BC_ROOTNODE branch
-	if (prefscript.commands.get_topbranch_type() != BC_ROOTNODE)
+	if (!prefscript.validate())
 	{
-		int i = prefscript.commands.get_branchstack_size() - 1;
-		msg(DM_NONE,"Loops in prefs? : %i block%s not been terminated.>>>\n",i ,(i == 1 ? " has" : "s have"));
 		dbg_end(DM_CALLS,"prefs::load");
 		return;
 	}
 	dbg_end(DM_CALLS,"prefs::load");
-	prefscript.run();
+	prefscript.execute("","");
 }
 
 double prefs_data::screenradius(atom *i)

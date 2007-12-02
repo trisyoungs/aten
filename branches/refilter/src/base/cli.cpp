@@ -93,7 +93,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	// Parse program options using getopt_long.
 	int index = 1, ntried = 0;
 	bool done = FALSE;
-	script *s;
+	commandlist *cl;
 	filter *f;
 	zmap_type zm;
 	//printf("PROPER_PARSE = %i [%s]\n",argc,shortopts.c_str());
@@ -124,21 +124,21 @@ int master_data::parse_cli(int argc, char *argv[])
 					break;
 				// Read script commands from passed string
 				case (SO_COMMAND):
-					s = master.scripts.add();
-					if (s->cache_line(optarg)) master.set_program_mode(PM_SCRIPT);
+					cl = master.scripts.add();
+					if (cl->cache_line(optarg)) master.set_program_mode(PM_SCRIPT);
 					else
 					{
-						master.scripts.remove(s);
+						master.scripts.remove(cl);
 						return -1;
 					}
 					break;
 				// Cache a script file
 				case (SO_SCRIPT):
-					s = master.scripts.add();
-					if (s->load(optarg)) master.set_program_mode(PM_SCRIPT);
+					cl = master.scripts.add();
+					if (cl->load(optarg)) master.set_program_mode(PM_SCRIPT);
 					else
 					{
-						master.scripts.remove(s);
+						master.scripts.remove(cl);
 						return -1;
 					}
 					break;
@@ -227,7 +227,7 @@ int master_data::parse_cli(int argc, char *argv[])
 				// Load surface
 				case (LO_SURFACE):
 					f = master.probe_file(optarg, FT_GRID_IMPORT);
-					if (f != NULL) f->import_grid(optarg);
+					if (f != NULL) f->commands.execute(optarg,"");
 					break;
 				default:
 					printf("Unrecognised command-line option '%s'.\n",argv[index]);
@@ -241,7 +241,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	{
 		ntried ++;
 		f = master.probe_file(argv[optind], FT_MODEL_IMPORT);
-		if (f != NULL) f->import_model(argv[optind]);
+		if (f != NULL) f->commands.execute(argv[optind],"");
 		optind++;
 	}
 	if (ntried == 0) return 0;

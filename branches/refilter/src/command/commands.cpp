@@ -1,6 +1,6 @@
 /*
-	*** Script command definitions
-	*** src/script/scriptcommands.cpp
+	*** Command definitions
+	*** src/command/commands.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,12 +19,39 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script/scriptcommands.h"
+#include "command/scriptcommands.h"
 #include "base/sysfunc.h"
 #include <string.h>
 
-// Script command data
-const char *SC_data[SC_NITEMS] = {
+// Command action keywords
+const char *CA_data[DA_NITEMS] = {
+	"_ROOTNODE_",
+
+	"repeat,G|g",
+	"foratoms,A|Pg",
+	"forbonds",
+	"forpatterns,P",
+	"formolecules",
+	"forffbonds,BP",
+	"forffangles,BP",
+	"forfftorsions,BP",
+
+	"if,VX?",
+	"elseif,VX?",
+	"else",
+	"end",
+
+	"let,V=?",
+	"inc,V",
+	"dec,V",
+	"eval,V=s",
+	"evali,V=s",
+
+	"print,s",
+
+	"_GOTO_",
+	"_GOTONONIF_",
+	"_TERMINATE_",
 
 	// Analysis
 	"finalise",

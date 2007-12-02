@@ -1,6 +1,6 @@
 /*
-	*** Script analyse functions
-	*** src/script/analyse.cpp
+	*** Analysis command functions
+	*** src/command/analyse.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,10 +19,41 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "script/script.h"
+#include "command/commands.h"
 #include "base/debug.h"
 #include "methods/rdf.h"
 #include "methods/pdens.h"
+
+
+int command_functions::function_CA_FINALISE(command*&, model *m, grid *g, pattern *p, forcefield *f)
+{
+}
+
+int command_functions::function_CA_FRAMEANALYSE(command*&, model *m, grid *g, pattern *p, forcefield *f)
+{
+}
+
+int command_functions::function_CA_MODELANALYSE(command*&, model *m, grid *g, pattern *p, forcefield *f)
+{
+	for (calculable *calc = m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(m);
+	break;
+}
+
+int command_functions::function_CA_PDENS(command*&, model *m, grid *g, pattern *p, forcefield *f)
+{
+}
+
+int command_functions::function_CA_PRINTJOBS(command*&, model *m, grid *g, pattern *p, forcefield *f)
+{
+}
+
+int command_functions::function_CA_RDF(command*&, model *m, grid *g, pattern *p, forcefield *f)
+{
+}
+
+int command_functions::function_CA_SAVEQUANTITIES(command*&, model *m, grid *g, pattern *p, forcefield *f)
+{
+}
 
 // Analysis-related script commands (root=SR_ANALYSE)
 bool script::command_analyse(command_node<script_command> *cmd)
