@@ -25,6 +25,11 @@
 // Forward declarations
 class command;
 class command_functions;
+class model;
+class atom;
+class forcefield;
+class grid;
+class pattern;
 
 // Command actions
 enum command_action {
@@ -237,221 +242,236 @@ enum command_action {
 	CA_NITEMS
 	};
 
+// Pointer structure
+struct objects
+{
+	// Convenience structure to pass bundle of object pointers
+	model *m;
+	pattern *p;
+	atom *i;
+	forcefield *f;
+	grid *g;
+};
+
 // Function pointer typedef
-typedef int (command_functions::*commandfunc)(command*&, model *m, grid *g, pattern *p, forcefield *f);
+typedef int (command_functions::*commandfunc)(command *&c, objects &obj);
+
+// Function return values
+enum command_return { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAILED, CR_FAILEDSTOP };
 
 // Encompassing class for command actions
 class command_functions
 {
 
+	// Command Functions
 	public:
 	int commandfunc[CA_NITEMS];
 
-	int function_CA_ROOTNODE(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_ROOTNODE(command *&c, objects &obj);
 
-	int function_CA_REPEAT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FORATOMS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FORBONDS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FORPATTERNS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FORMOLECULES(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FORFFBONDS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FORFFANGLES(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FORFFTORSIONS(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_REPEAT(command *&c, objects &obj);
+	int function_CA_FORATOMS(command *&c, objects &obj);
+	int function_CA_FORBONDS(command *&c, objects &obj);
+	int function_CA_FORPATTERNS(command *&c, objects &obj);
+	int function_CA_FORMOLECULES(command *&c, objects &obj);
+	int function_CA_FORFFBONDS(command *&c, objects &obj);
+	int function_CA_FORFFANGLES(command *&c, objects &obj);
+	int function_CA_FORFFTORSIONS(command *&c, objects &obj);
 
-	int function_CA_IF(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ELSEIF(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ELSE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_END(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_IF(command *&c, objects &obj);
+	int function_CA_ELSEIF(command *&c, objects &obj);
+	int function_CA_ELSE(command *&c, objects &obj);
+	int function_CA_END(command *&c, objects &obj);
 
-	int function_CA_LET(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_INCREASE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_DECREASE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_EVAL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_EVALI(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_LET(command *&c, objects &obj);
+	int function_CA_INCREASE(command *&c, objects &obj);
+	int function_CA_DECREASE(command *&c, objects &obj);
+	int function_CA_EVAL(command *&c, objects &obj);
+	int function_CA_EVALI(command *&c, objects &obj);
 
-	int function_CA_PRINT(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_PRINT(command *&c, objects &obj);
 
-	int function_CA_GOTO(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_GOTONONIF(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_TERMINATE(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_GOTO(command *&c, objects &obj);
+	int function_CA_GOTONONIF(command *&c, objects &obj);
+	int function_CA_TERMINATE(command *&c, objects &obj);
 
 	// Analyse commands
-	int function_CA_FINALISE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FRAMEANALYSE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MODELANALYSE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PDENS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTJOBS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_RDF(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SAVEQUANTITIES(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_FINALISE(command *&c, objects &obj);
+	int function_CA_FRAMEANALYSE(command *&c, objects &obj);
+	int function_CA_MODELANALYSE(command *&c, objects &obj);
+	int function_CA_PDENS(command *&c, objects &obj);
+	int function_CA_PRINTJOBS(command *&c, objects &obj);
+	int function_CA_RDF(command *&c, objects &obj);
+	int function_CA_SAVEQUANTITIES(command *&c, objects &obj);
 
 	// Bond commands
-	int function_CA_AUGMENT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_REBOND(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CLEARBONDS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_BONDTOLERANCE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_BONDPATTERNS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_BONDSELECTION(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_AUGMENT(command *&c, objects &obj);
+	int function_CA_REBOND(command *&c, objects &obj);
+	int function_CA_CLEARBONDS(command *&c, objects &obj);
+	int function_CA_BONDTOLERANCE(command *&c, objects &obj);
+	int function_CA_BONDPATTERNS(command *&c, objects &obj);
+	int function_CA_BONDSELECTION(command *&c, objects &obj);
 
 	// Build commands
-	int function_CA_ADDHYDROGEN(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ADDATOM(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ADDCHAIN(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_DELETE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ENDCHAIN(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_LOCATE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MOVE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ROTX(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ROTY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ROTZ(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_TRANSMUTE(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_ADDHYDROGEN(command *&c, objects &obj);
+	int function_CA_ADDATOM(command *&c, objects &obj);
+	int function_CA_ADDCHAIN(command *&c, objects &obj);
+	int function_CA_DELETE(command *&c, objects &obj);
+	int function_CA_ENDCHAIN(command *&c, objects &obj);
+	int function_CA_LOCATE(command *&c, objects &obj);
+	int function_CA_MOVE(command *&c, objects &obj);
+	int function_CA_ROTX(command *&c, objects &obj);
+	int function_CA_ROTY(command *&c, objects &obj);
+	int function_CA_ROTZ(command *&c, objects &obj);
+	int function_CA_TRANSMUTE(command *&c, objects &obj);
 
 	// Cell commands
-	int function_CA_PRINTCELL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_REPLICATECELL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CAALECELL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SETCELL(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_PRINTCELL(command *&c, objects &obj);
+	int function_CA_REPLICATECELL(command *&c, objects &obj);
+	int function_CA_CAALECELL(command *&c, objects &obj);
+	int function_CA_SETCELL(command *&c, objects &obj);
 
 	// Charge commands
-	int function_CA_CHARGEATOM(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CHARGEFF(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CHARGEFROMMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CHARGEPATOM(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CHARGESELECTION(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CHARGETYPE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CLEARCHARGES(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_CHARGEATOM(command *&c, objects &obj);
+	int function_CA_CHARGEFF(command *&c, objects &obj);
+	int function_CA_CHARGEFROMMODEL(command *&c, objects &obj);
+	int function_CA_CHARGEPATOM(command *&c, objects &obj);
+	int function_CA_CHARGESELECTION(command *&c, objects &obj);
+	int function_CA_CHARGETYPE(command *&c, objects &obj);
+	int function_CA_CLEARCHARGES(command *&c, objects &obj);
 
 	// Disordered build commands
-	int function_CA_ADDCOMPONENT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_DISORDER(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTCOMPONENTS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SETCENTRE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SETGEOMETRY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SETOVERLAP(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SETSHAPE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_VDWCAALE(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_ADDCOMPONENT(command *&c, objects &obj);
+	int function_CA_DISORDER(command *&c, objects &obj);
+	int function_CA_PRINTCOMPONENTS(command *&c, objects &obj);
+	int function_CA_SETCENTRE(command *&c, objects &obj);
+	int function_CA_SETGEOMETRY(command *&c, objects &obj);
+	int function_CA_SETOVERLAP(command *&c, objects &obj);
+	int function_CA_SETSHAPE(command *&c, objects &obj);
+	int function_CA_VDWCAALE(command *&c, objects &obj);
 
 	// Element Commands
-	int function_CA_SETELEMENTCOLOUR(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SETELEMENTRADIUS(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_SETELEMENTCOLOUR(command *&c, objects &obj);
+	int function_CA_SETELEMENTRADIUS(command *&c, objects &obj);
 
 	// Energy Commands
-	int function_CA_FRAMEENERGY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MODELENERGY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTELEC(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTEWALD(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTINTER(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTINTRA(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTENERGY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTSUMMARY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTVDW(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_FRAMEENERGY(command *&c, objects &obj);
+	int function_CA_MODELENERGY(command *&c, objects &obj);
+	int function_CA_PRINTELEC(command *&c, objects &obj);
+	int function_CA_PRINTEWALD(command *&c, objects &obj);
+	int function_CA_PRINTINTER(command *&c, objects &obj);
+	int function_CA_PRINTINTRA(command *&c, objects &obj);
+	int function_CA_PRINTENERGY(command *&c, objects &obj);
+	int function_CA_PRINTSUMMARY(command *&c, objects &obj);
+	int function_CA_PRINTVDW(command *&c, objects &obj);
 
 	// Expression Commands
-	int function_CA_CREATEEXPRESSION(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ECUT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ELEC(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_INTRA(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTEXPRESSION(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_VCUT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_VDW(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_CREATEEXPRESSION(command *&c, objects &obj);
+	int function_CA_ECUT(command *&c, objects &obj);
+	int function_CA_ELEC(command *&c, objects &obj);
+	int function_CA_INTRA(command *&c, objects &obj);
+	int function_CA_PRINTEXPRESSION(command *&c, objects &obj);
+	int function_CA_VCUT(command *&c, objects &obj);
+	int function_CA_VDW(command *&c, objects &obj);
 
 	// Forcefield Commands
-	int function_CA_FFMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FFPATTERN(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_FFPATTERNID(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_LOADFF(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTFF(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_TYPEMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_TYPETEST(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_FFMODEL(command *&c, objects &obj);
+	int function_CA_FFPATTERN(command *&c, objects &obj);
+	int function_CA_FFPATTERNID(command *&c, objects &obj);
+	int function_CA_LOADFF(command *&c, objects &obj);
+	int function_CA_SELECTFF(command *&c, objects &obj);
+	int function_CA_TYPEMODEL(command *&c, objects &obj);
+	int function_CA_TYPETEST(command *&c, objects &obj);
 
 	// Field Commands
-	int function_CA_SAVEFIELD(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SAVEFIELD2(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_SAVEFIELD(command *&c, objects &obj);
+	int function_CA_SAVEFIELD2(command *&c, objects &obj);
 
 	// Force Commands
-	int function_CA_FRAMEFORCES(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MODELFORCES(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTFORCES(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_FRAMEFORCES(command *&c, objects &obj);
+	int function_CA_MODELFORCES(command *&c, objects &obj);
+	int function_CA_PRINTFORCES(command *&c, objects &obj);
 
 	//image_
 
 	// Labeling commands
-	int function_CA_CLEARLABELS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ADDLABEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_REMOVELABEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_CLEARLABELS(command *&c, objects &obj);
+	int function_CA_ADDLABEL(command *&c, objects &obj);
+	int function_CA_REMOVELABEL(command *&c, objects &obj);
 
 	// MC Commands
-	int function_CA_MCACCEPT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MCALLOW(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MCMAXSTEP(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MCNTRIALS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTMC(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_MCACCEPT(command *&c, objects &obj);
+	int function_CA_MCALLOW(command *&c, objects &obj);
+	int function_CA_MCMAXSTEP(command *&c, objects &obj);
+	int function_CA_MCNTRIALS(command *&c, objects &obj);
+	int function_CA_PRINTMC(command *&c, objects &obj);
 
 	// Minimisation Commands
-	int function_CA_CGMINIMISE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CONVERGE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_LINETOL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MCMINIMISE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SDMINIMISE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SIMPLEXMINIMISE(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_CGMINIMISE(command *&c, objects &obj);
+	int function_CA_CONVERGE(command *&c, objects &obj);
+	int function_CA_LINETOL(command *&c, objects &obj);
+	int function_CA_MCMINIMISE(command *&c, objects &obj);
+	int function_CA_SDMINIMISE(command *&c, objects &obj);
+	int function_CA_SIMPLEXMINIMISE(command *&c, objects &obj);
 	
 	// Model Commands
-	int function_CA_LISTMODELS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_LOADMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_NEWMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SAVEMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTMODEL(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_LISTMODELS(command *&c, objects &obj);
+	int function_CA_LOADMODEL(command *&c, objects &obj);
+	int function_CA_NEWMODEL(command *&c, objects &obj);
+	int function_CA_PRINTMODEL(command *&c, objects &obj);
+	int function_CA_SAVEMODEL(command *&c, objects &obj);
+	int function_CA_SELECTMODEL(command *&c, objects &obj);
 
 	// Pattern Commands
-	int function_CA_ADDPATTERN(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CLEARPATTERNS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_CREATEPATTERNS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTPATTERNS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTPATTERN(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_ADDPATTERN(command *&c, objects &obj);
+	int function_CA_CLEARPATTERNS(command *&c, objects &obj);
+	int function_CA_CREATEPATTERNS(command *&c, objects &obj);
+	int function_CA_PRINTPATTERNS(command *&c, objects &obj);
+	int function_CA_SELECTPATTERN(command *&c, objects &obj);
 
 	// Preferences Commands
-	int function_CA_ATOMDETAIL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_BONDDETAIL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_COLOUR(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_DENSITYUNITS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_ENERGYUNITS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_GL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_KEY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MOUSE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_RADIUS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SHININESS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SHOW(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_STYLE(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_ATOMDETAIL(command *&c, objects &obj);
+	int function_CA_BONDDETAIL(command *&c, objects &obj);
+	int function_CA_COLOUR(command *&c, objects &obj);
+	int function_CA_DENSITYUNITS(command *&c, objects &obj);
+	int function_CA_ENERGYUNITS(command *&c, objects &obj);
+	int function_CA_GL(command *&c, objects &obj);
+	int function_CA_KEY(command *&c, objects &obj);
+	int function_CA_MOUSE(command *&c, objects &obj);
+	int function_CA_RADIUS(command *&c, objects &obj);
+	int function_CA_SHININESS(command *&c, objects &obj);
+	int function_CA_SHOW(command *&c, objects &obj);
+	int function_CA_STYLE(command *&c, objects &obj);
 
 	// Select Commands
-	int function_CA_SELECTALL(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTATOM(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTELEMENT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTFFTYPE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTINVERT(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTNONE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTOVERLAPS(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTTYPE(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_SELECTALL(command *&c, objects &obj);
+	int function_CA_SELECTATOM(command *&c, objects &obj);
+	int function_CA_SELECTELEMENT(command *&c, objects &obj);
+	int function_CA_SELECTFFTYPE(command *&c, objects &obj);
+	int function_CA_SELECTINVERT(command *&c, objects &obj);
+	int function_CA_SELECTNONE(command *&c, objects &obj);
+	int function_CA_SELECTOVERLAPS(command *&c, objects &obj);
+	int function_CA_SELECTTYPE(command *&c, objects &obj);
 	
 	// Site Commands
-	int function_CA_ADDSITE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PRINTSITES(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SELECTSITE(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_SETAXES(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_ADDSITE(command *&c, objects &obj);
+	int function_CA_PRINTSITES(command *&c, objects &obj);
+	int function_CA_SELECTSITE(command *&c, objects &obj);
+	int function_CA_SETAXES(command *&c, objects &obj);
 	
 	// Trajectory Commands
-	int function_CA_FIRSTFRAME(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_LASTFRAME(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_LOADTRAJECTORY(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_NEXTFRAME(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_PREVFRAME(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_FIRSTFRAME(command *&c, objects &obj);
+	int function_CA_LASTFRAME(command *&c, objects &obj);
+	int function_CA_LOADTRAJECTORY(command *&c, objects &obj);
+	int function_CA_NEXTFRAME(command *&c, objects &obj);
+	int function_CA_PREVFRAME(command *&c, objects &obj);
 
 	// Translation Commands
-	int function_CA_TRANSLATEATOM(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_TRANSLATESELECTION(command*&, model *m, grid *g, pattern *p, forcefield *f);
-	int function_CA_MIRRORSELECTION(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_TRANSLATEATOM(command *&c, objects &obj);
+	int function_CA_TRANSLATESELECTION(command *&c, objects &obj);
+	int function_CA_MIRRORSELECTION(command *&c, objects &obj);
 
-	int function_CA_QUIT(command*&, model *m, grid *g, pattern *p, forcefield *f);
+	int function_CA_QUIT(command *&c, objects &obj);
 };
 
 command_action CA_from_text(const char*);

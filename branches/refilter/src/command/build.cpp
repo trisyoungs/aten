@@ -1,5 +1,5 @@
 /*
-	*** Script build functions
+	*** Build command functions
 	*** src/command/build.cpp
 	Copyright T. Youngs 2007
 
@@ -19,10 +19,53 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
-#include "base/prefs.h"
-#include "base/elements.h"
-#include "base/debug.h"
+#include "command/commandlist.h"
+#include "model/model.h"
+
+// Build commands
+int command_functions::function_CA_ADDHYDROGEN(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_ADDATOM(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_ADDCHAIN(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_DELETE(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_ENDCHAIN(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_LOCATE(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_MOVE(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_ROTX(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_ROTY(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_ROTZ(command *&c, objects &obj)
+{
+}
+
+int command_functions::function_CA_TRANSMUTE(command *&c, objects &obj)
+{
+}
 
 // Build-related script commands (root=SR_BUILD)
 bool script::command_build(command_node<script_command> *cmd)

@@ -1,5 +1,5 @@
 /*
-	*** Script bonding functions
+	*** Bonding command functions
 	*** src/command/bonds.cpp
 	Copyright T. Youngs 2007
 
@@ -19,50 +19,48 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
-#include "base/prefs.h"
-#include "base/elements.h"
-#include "base/sysfunc.h"
-#include "base/debug.h"
+#include "command/commandlist.h"
+#include "model/model.h"
 
-// Bonding-related script commands (root=SR_BONDS)
-bool script::command_bonds(command_node<script_command> *cmd)
+// Augment bonds in current model ('augment')
+int command_functions::function_CA_AUGMENT(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_bonds");
-	bool result = TRUE;
-	model *m = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m == NULL)
-	{
-		dbg_end(DM_CALLS,"script::command_bonds");
-		return FALSE;
-	}
-	atom *i;
-	switch (cmd->get_command())
-	{
-		case (SC_AUGMENT):		// Augment bonds in current model ('augment')
-			m->augment_bonding();
-			break;
-		case (SC_REBOND):		// Calculate bonds in current model ('rebond')
-			m->calculate_bonding();
-			break;
-		case (SC_CLEARBONDS):		// Clear bonds in current model ('clearbonds')
-			m->clear_bonding();
-			break;
-		case (SC_BONDTOLERANCE):	// Change bond tolerance ('bondtol <d>')
-			prefs.set_bond_tolerance(cmd->datavar[0]->get_as_double());
-			break;
-		case (SC_BONDPATTERNS):		// Calculate bonds restricted to pattern molecules ('bondpatterns')
-			m->pattern_calculate_bonding();
-			break;
-		case (SC_BONDSELECTION):	// Calculate bonds restricted to current selection ('bondselection')
-			m->selection_calculate_bonding();
-			break;
-		default:
-			printf("Error - missed bonds command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_bonds");
-	return result;
+	obj.m->augment_bonding();
+	return CR_SUCCESS;
 }
 
+// Calculate bonds in current model ('rebond')
+int command_functions::function_CA_REBOND(command *&c, objects &obj)
+{
+	obj.m->calculate_bonding();
+	return CR_SUCCESS;
+}
+
+// Clear bonds in current model ('clearbonds')
+int command_functions::function_CA_CLEARBONDS(command *&c, objects &obj)
+{
+	obj.m->clear_bonding();
+	return CR_SUCCESS;
+}
+
+// Change bond tolerance ('bondtol <d>')
+int command_functions::function_CA_BONDTOLERANCE(command *&c, objects &obj)
+{
+	prefs.set_bond_tolerance(c->datavar[0]->get_as_double());
+	return CR_SUCCESS;
+}
+
+// Calculate bonds restricted to pattern molecules ('bondpatterns')
+int command_functions::function_CA_BONDPATTERNS(command *&c, objects &obj)
+{
+	obj.m->pattern_calculate_bonding();
+	return CR_SUCCESS;
+
+}
+
+// Calculate bonds restricted to current selection ('bondselection')
+int command_functions::function_CA_BONDSELECTION(command *&c, objects &obj)
+{
+	obj.m->selection_calculate_bonding();
+	return CR_SUCCESS;
+}

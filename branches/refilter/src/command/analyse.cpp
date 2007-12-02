@@ -19,114 +19,74 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "command/commandlist.h"
 #include "base/debug.h"
 #include "methods/rdf.h"
 #include "methods/pdens.h"
+#include "model/model.h"
 
+// Finalise calculated quantites ('finalise')
+int command_functions::function_CA_FINALISE(command *&c, objects &obj)
+{
+	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
+	return CR_SUCCESS;
+}
 
-int command_functions::function_CA_FINALISE(command*&, model *m, grid *g, pattern *p, forcefield *f)
+// Accumulate data for current frame ('frameanalyse')
+int command_functions::function_CA_FRAMEANALYSE(command *&c, objects &obj)
+{
+	// Grab trajectory config for analysis
+	model *frame = obj.m->get_currentframe();
+	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
+	return CR_SUCCESS;
+}
+
+// Accumulate data for current model ('modelanalyse')
+int command_functions::function_CA_MODELANALYSE(command *&c, objects &obj)
+{
+	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
+	return CR_SUCCESS;
+}
+
+// Request calculation of a 3Ddens ('analyse pdens <name> <site1> <site2> <grid> <nsteps> <filename>')
+int command_functions::function_CA_PDENS(command *&c, objects &obj)
+{
+	pdens *newpdens = new pdens;
+	obj.m->pending_quantities.own(newpdens);
+	// Set pdens name and destination filename
+	newpdens->set_name(c->datavar[0]->get_as_char());
+	newpdens->set_filename(c->datavar[5]->get_as_char());
+	// Associate sites to quantity
+	newpdens->set_site(0,obj.m->find_site(c->datavar[1]->get_as_char()));
+	newpdens->set_site(1,obj.m->find_site(c->datavar[2]->get_as_char()));
+	newpdens->set_range(c->datavar[3]->get_as_double(), c->datavar[4]->get_as_int());
+	return (newpdens->initialise() ? CR_SUCCESS : CR_FAILED);
+}
+
+// Print current job list ('printjobs')
+int command_functions::function_CA_PRINTJOBS(command *&c, objects &obj)
 {
 }
 
-int command_functions::function_CA_FRAMEANALYSE(command*&, model *m, grid *g, pattern *p, forcefield *f)
+// Request calculation of an RDF ('rdf <name> <site1> <site2> <rmin> <binwidth> <nbins> <filename>')
+int command_functions::function_CA_RDF(command *&c, objects &obj)
 {
+	rdf *newrdf = new rdf;
+	obj.m->pending_quantities.own(newrdf);
+	// Set RDF name and destination filename
+	newrdf->set_name(c->datavar[0]->get_as_char());
+	newrdf->set_filename(c->datavar[6]->get_as_char());
+	// Associate sites to quantity
+	newrdf->set_site(0,obj.m->find_site(c->datavar[1]->get_as_char()));
+	newrdf->set_site(1,obj.m->find_site(c->datavar[2]->get_as_char()));
+	newrdf->set_range(c->datavar[3]->get_as_double(), c->datavar[4]->get_as_double(), c->datavar[5]->get_as_int());
+	return (newrdf->initialise() ? CR_SUCCESS : CR_FAILED);
 }
 
-int command_functions::function_CA_MODELANALYSE(command*&, model *m, grid *g, pattern *p, forcefield *f)
+// Save calculated quantities to filenames provided ('savequantities')
+int command_functions::function_CA_SAVEQUANTITIES(command *&c, objects &obj)
 {
-	for (calculable *calc = m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(m);
-	break;
+	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->save();
+	return CR_SUCCESS;
 }
 
-int command_functions::function_CA_PDENS(command*&, model *m, grid *g, pattern *p, forcefield *f)
-{
-}
-
-int command_functions::function_CA_PRINTJOBS(command*&, model *m, grid *g, pattern *p, forcefield *f)
-{
-}
-
-int command_functions::function_CA_RDF(command*&, model *m, grid *g, pattern *p, forcefield *f)
-{
-}
-
-int command_functions::function_CA_SAVEQUANTITIES(command*&, model *m, grid *g, pattern *p, forcefield *f)
-{
-}
-
-// Analysis-related script commands (root=SR_ANALYSE)
-bool script::command_analyse(command_node<script_command> *cmd)
-{
-	dbg_begin(DM_CALLS,"script::command_analyse");
-	bool result = TRUE;
-	model *m, *framemodel;
-	m = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m == NULL)
-	{
-		dbg_end(DM_CALLS,"script::command_analyse");
-		return FALSE;
-	}
-	calculable *calc;
-	rdf *newrdf;
-	pdens *newpdens;
-	site *s;
-	switch (cmd->get_command())
-	{
-		// Accumulate data for current model ('modelanalyse')
-		case (SC_MODELANALYSE):
-			// Create temporary config for analysis
-			for (calc = m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(m);
-			break;
-		// Accumulate data for current frame ('frameanalyse')
-		case (SC_FRAMEANALYSE):
-			// Grab trajectory config for analysis
-			framemodel = m->get_currentframe();
-			for (calc = m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(framemodel);
-			break;
-		// Finalise calculated quantites ('finalise')
-		case (SC_FINALISE):
-			// Run 'finalise' method on each quantity
-			for (calc = m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->finalise(m);
-			break;
-		// Print current job list ('printjobs')
-		case (SC_PRINTJOBS):
-			break;
-		// Request calculation of an RDF ('rdf <name> <site1> <site2> <rmin> <binwidth> <nbins> <filename>')
-		case (SC_RDF):
-			newrdf = new rdf;
-			m->pending_quantities.own(newrdf);
-			// Set RDF name and destination filename
-			newrdf->set_name(cmd->datavar[0]->get_as_char());
-			newrdf->set_filename(cmd->datavar[6]->get_as_char());
-			// Associate sites to quantity
-			newrdf->set_site(0,m->find_site(cmd->datavar[1]->get_as_char()));
-			newrdf->set_site(1,m->find_site(cmd->datavar[2]->get_as_char()));
-			newrdf->set_range(cmd->datavar[3]->get_as_double(), cmd->datavar[4]->get_as_double(), cmd->datavar[5]->get_as_int());
-			if (!newrdf->initialise()) result = FALSE;
-			break;
-		// Request calculation of a 3Ddens ('analyse pdens <name> <site1> <site2> <grid> <nsteps> <filename>')
-		case (SC_PDENS):
-			newpdens = new pdens;
-			m->pending_quantities.own(newpdens);
-			// Set pdens name and destination filename
-			newpdens->set_name(cmd->datavar[0]->get_as_char());
-			newpdens->set_filename(cmd->datavar[5]->get_as_char());
-			// Associate sites to quantity
-			newpdens->set_site(0,m->find_site(cmd->datavar[1]->get_as_char()));
-			newpdens->set_site(1,m->find_site(cmd->datavar[2]->get_as_char()));
-			newpdens->set_range(cmd->datavar[3]->get_as_double(), cmd->datavar[4]->get_as_int());
-			if (!newpdens->initialise()) result = FALSE;
-			break;
-		// Save calculated quantities to filenames provided ('savequantities')
-		case (SC_SAVEQUANTITIES):
-			for (calc = m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->save();
-			break;
-		default:
-			printf("Error - missed analyse command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_analyse");
-	return result;
-}
