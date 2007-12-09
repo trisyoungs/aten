@@ -41,23 +41,23 @@ bool script::command_field(command_node<script_command> *cmd)
 	switch (cmd->get_command())
 	{
 		case (SC_SAVEFIELD):	// Save field definition ('savefield <filename>')
-			savedlpfield(cmd->datavar[0]->get_as_char(),m);
+			savedlpfield(cmd->argc(0),m);
 			break;
 		case (SC_SAVEFIELD2):	// NEW Save field definition ('savefield2 <format> <file>')
 			// Find filter with a nickname matching that given in argc(0)
 			for (f = master.filters[FT_FIELD_EXPORT].first(); f != NULL; f = f->next)
 			{
-				//printf("Checking %s against %s\n",f->get_nickname(),cmd->datavar[0]->get_as_char());
-				if (strcmp(f->get_nickname(), cmd->datavar[0]->get_as_char()) == 0) break;
+				//printf("Checking %s against %s\n",f->get_nickname(),cmd->argc(0));
+				if (strcmp(f->get_nickname(), cmd->argc(0)) == 0) break;
 			}
 			// Check that a suitable format was found
 			if (f == NULL)
 			{
-				msg(DM_NONE,"script : No field export filter was found that matches the extension '%s'.\nNot saved.\n",cmd->datavar[0]->get_as_char());
+				msg(DM_NONE,"script : No field export filter was found that matches the extension '%s'.\nNot saved.\n",cmd->argc(0));
 				result = FALSE;
 				break;
 			}
-			f->export_field(m,cmd->datavar[1]->get_as_char());
+			f->export_field(m,cmd->argc(1));
 			break;
 		default:
 			printf("Error - missed field command?\n");

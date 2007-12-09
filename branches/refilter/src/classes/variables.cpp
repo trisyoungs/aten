@@ -29,7 +29,7 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VT_keywords[VT_NITEMS] = { "undefined", "constant", "generic", "atom*", "bond*", "pattern*", "model*", "patbound*" };
+const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "bond*", "pattern*", "model*", "patbound*" };
 const char *text_from_VT(variable_type vt)
 	{ return VT_keywords[vt]; }
 
@@ -39,7 +39,7 @@ variable::variable()
 	prev = NULL;
 	next = NULL;
 	name.set("unnamed");
-	type = VT_UNDEFINED;
+	type = VT_NITEMS;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_VARIABLE] ++;
 	#endif

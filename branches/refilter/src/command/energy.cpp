@@ -33,16 +33,16 @@ bool script::command_expr(command_node<script_command> *cmd)
 	switch (cmd->get_command())
 	{
 		case (SC_VCUT):		// Set VDW cutoff ('vcut <cut>')
-			prefs.set_vdw_cutoff(cmd->datavar[0]->get_as_double());
+			prefs.set_vdw_cutoff(cmd->argd(0));
 			break;
 		case (SC_ECUT):		// Set electrostatics cutoff ('ecut <cut>')
-			prefs.set_elec_cutoff(cmd->datavar[0]->get_as_double());
+			prefs.set_elec_cutoff(cmd->argd(0));
 			break;
 		case (SC_VDW):		// Turn on/off calculation of vdw ('vdw on|off')
 			prefs.set_calc_vdw(cmd->datavar[0]->get_as_bool());
 			break;
 		case (SC_ELEC):		// Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
-			et = EM_from_text(cmd->datavar[0]->get_as_char());
+			et = EM_from_text(cmd->argc(0));
 			if (et == EM_NITEMS)
 			{
 				result = FALSE;
@@ -53,11 +53,11 @@ bool script::command_expr(command_node<script_command> *cmd)
 			switch (et)
 			{
 				case (EM_EWALD):	// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
-					prefs.set_ewald_alpha(cmd->datavar[1]->get_as_double());
+					prefs.set_ewald_alpha(cmd->argd(1));
 					prefs.set_ewald_kvec(cmd->get_vector3i(2));
 					break;
 				case (EM_EWALDAUTO):	// Set ewald precision
-					prefs.set_ewald_precision(cmd->datavar[1]->get_as_double());
+					prefs.set_ewald_precision(cmd->argd(1));
 					break;
 			}
 			break;

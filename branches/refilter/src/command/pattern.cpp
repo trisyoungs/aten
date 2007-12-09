@@ -44,7 +44,7 @@ bool script::command_pattern(command_node<script_command> *cmd)
 			m->clear_patterns();
 			break;
 		case (SC_ADDPATTERN):		// Add manual pattern definition ('addpattern <name> <nmols> <natoms>')
-			m->add_pattern(cmd->datavar[1]->get_as_int(), cmd->datavar[2]->get_as_int(), cmd->datavar[0]->get_as_char());
+			m->add_pattern(cmd->argi(1), cmd->argi(2), cmd->argc(0));
 			// TODO Add 'check_pattern(pattern*) method to model*
 			break;
 		case (SC_PRINTPATTERNS):	// Print pattern definition for current model ('printpatterns')
@@ -59,7 +59,7 @@ bool script::command_pattern(command_node<script_command> *cmd)
 			}
 			break;
 		case (SC_SELECTPATTERN):	// Select working pattern from model ('selectpattern <name>')
-			p = m->find_pattern(cmd->datavar[0]->get_as_char());
+			p = m->find_pattern(cmd->argc(0));
 			if (p != NULL) activepattern = p;
 			else result = FALSE;
 			break;

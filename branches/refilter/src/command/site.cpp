@@ -59,18 +59,18 @@ bool script::command_site(command_node<script_command> *cmd)
 		// Add site definition to model ('addsite <name> <pattern> <"atomids...">')
 		case (SC_ADDSITE):
 			// First, check that the pattern name provided refers to a pattern of the current model
-			p = m->find_pattern(cmd->datavar[1]->get_as_char());
+			p = m->find_pattern(cmd->argc(1));
 			if (p == NULL) result = FALSE;
 			else
 			{
 				s = m->sites.add();
 				activesite = s;
-				s->set_name(cmd->datavar[0]->get_as_char());
+				s->set_name(cmd->argc(0));
 				s->set_pattern(p);
 				// Parse the atom list which should have been given as: "1,2,3,4,5......"
 				if (cmd->datavar[2] != NULL)
 				{
-					parser.get_args_delim(cmd->datavar[2]->get_as_char(), PO_DEFAULTS);
+					parser.get_args_delim(cmd->argc(2), PO_DEFAULTS);
 					for (n=0; n<parser.get_nargs(); n++)
 					{
 						li = s->atoms.add();
@@ -88,7 +88,7 @@ bool script::command_site(command_node<script_command> *cmd)
 			if (s != NULL)
 			{
 				// Parse atom list for x-axis
-				parser.get_args_delim(cmd->datavar[0]->get_as_char(), PO_DEFAULTS);
+				parser.get_args_delim(cmd->argc(0), PO_DEFAULTS);
 				for (n=0; n<parser.get_nargs(); n++)
 				{
 					li = s->xaxisatoms.add();
@@ -96,7 +96,7 @@ bool script::command_site(command_node<script_command> *cmd)
 					li->data = parser.argi(n) - 1;
 				}
 				// Parse atom list for y-axis
-				parser.get_args_delim(cmd->datavar[1]->get_as_char(), PO_DEFAULTS);
+				parser.get_args_delim(cmd->argc(1), PO_DEFAULTS);
 				for (n=0; n<parser.get_nargs(); n++)
 				{
 					li = s->yaxisatoms.add();

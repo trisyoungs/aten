@@ -27,7 +27,7 @@
 #include "base/sysfunc.h"
 
 // Variable Types
-enum variable_type { VT_UNDEFINED, VT_GENERICCONSTANT, VT_GENERIC, VT_ATOM, VT_BOND, VT_PATTERN, VT_MODEL, VT_PATBOUND, VT_NITEMS };
+enum variable_type { VT_CHAR, VT_INT, VT_DOUBLE, VT_ATOM, VT_BOND, VT_PATTERN, VT_MODEL, VT_PATBOUND, VT_NITEMS };
 const char *text_from_VT(variable_type);
 
 // Forward Declarations
@@ -57,8 +57,11 @@ class variable
 	// Value of variable
 	void *ptrvalue;
 	dnchar charvalue;
+	int intvalue;
+	double doublevalue;
 	// Content type of variable
 	variable_type type;
+
 	public:
 	// Print contents of variable
 	void print();
@@ -80,7 +83,6 @@ class variable
 	void set(model*);
 	// Set value of variable (patbound*)
 	void set(patbound*);
-
 	// Copy pointer contents of source variable
 	void copy_pointer(variable *v) { ptrvalue = v->ptrvalue; }
 	// Sets the content type of the variable
@@ -134,8 +136,6 @@ class variable_list
 	const char *get_as_char(const char*);
 	// Retrieve (don't add) a named variable as a double
 	double get_as_double(const char*);
-	// Retrieve (don't add) a named variable as a float
-	float get_as_float(const char*);
 	// Retrieve (don't add) a named variable as an integer
 	int get_as_int(const char*);
 	// Retrieve (or add) a named/typed variable to the list

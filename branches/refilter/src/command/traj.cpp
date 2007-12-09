@@ -39,8 +39,8 @@ bool script::command_traj(command_node<script_command> *cmd)
 	switch (cmd->get_command())
 	{
 		case (SC_LOADTRAJECTORY):	// Open and associate trajectory ('loadtrajectory <file>')
-			f = master.probe_file(cmd->datavar[0]->get_as_char(), FT_TRAJECTORY_IMPORT);
-			if (f != NULL) result = m->initialise_trajectory(cmd->datavar[0]->get_as_char(),f);
+			f = master.probe_file(cmd->argc(0), FT_TRAJECTORY_IMPORT);
+			if (f != NULL) result = m->initialise_trajectory(cmd->argc(0),f);
 			else result = FALSE;
 			break;
 		case (SC_FIRSTFRAME):		// Skip to first frame ('firstframe')

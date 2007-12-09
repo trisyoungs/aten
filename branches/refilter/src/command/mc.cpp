@@ -48,18 +48,18 @@ bool script::command_mc(command_node<script_command> *cmd)
 		case (SC_MCNTRIALS):
 		case (SC_MCMAXSTEP):
 			// Check that a valid move type has been given
-			mt = MT_from_text(cmd->datavar[0]->get_as_char());
+			mt = MT_from_text(cmd->argc(0));
 			if (mt == MT_NITEMS) break;
 			switch (cmdi)
 			{
 				case (SC_MCMAXSTEP):	// Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-					master.mc.set_maxstep(mt,cmd->datavar[1]->get_as_double());
+					master.mc.set_maxstep(mt,cmd->argd(1));
 					break;
 				case (SC_MCNTRIALS):	// Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-					master.mc.set_ntrials(mt,cmd->datavar[1]->get_as_int());
+					master.mc.set_ntrials(mt,cmd->argi(1));
 					break;
 				case (SC_MCACCEPT):	// Sets acceptance energy for moves ('mc accept <move> <energy>')
-					master.mc.set_eaccept(mt,cmd->datavar[1]->get_as_double());
+					master.mc.set_eaccept(mt,cmd->argd(1));
 					break;
 				case (SC_MCALLOW):	// Sets allowances for moves ('mc allow <move> <on|off>')
 					master.mc.set_allowed(mt,cmd->datavar[1]->get_as_bool());

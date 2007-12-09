@@ -54,13 +54,13 @@ int command_functions::function_CA_PDENS(command *&c, objects &obj)
 	pdens *newpdens = new pdens;
 	obj.m->pending_quantities.own(newpdens);
 	// Set pdens name and destination filename
-	newpdens->set_name(c->datavar[0]->get_as_char());
-	newpdens->set_filename(c->datavar[5]->get_as_char());
+	newpdens->set_name(c->argc(0));
+	newpdens->set_filename(c->argc(5));
 	// Associate sites to quantity
-	newpdens->set_site(0,obj.m->find_site(c->datavar[1]->get_as_char()));
-	newpdens->set_site(1,obj.m->find_site(c->datavar[2]->get_as_char()));
-	newpdens->set_range(c->datavar[3]->get_as_double(), c->datavar[4]->get_as_int());
-	return (newpdens->initialise() ? CR_SUCCESS : CR_FAILED);
+	newpdens->set_site(0,obj.m->find_site(c->argc(1)));
+	newpdens->set_site(1,obj.m->find_site(c->argc(2)));
+	newpdens->set_range(c->argd(3), c->argi(4));
+	return (newpdens->initialise() ? CR_SUCCESS : CR_FAIL);
 }
 
 // Print current job list ('printjobs')
@@ -74,13 +74,13 @@ int command_functions::function_CA_RDF(command *&c, objects &obj)
 	rdf *newrdf = new rdf;
 	obj.m->pending_quantities.own(newrdf);
 	// Set RDF name and destination filename
-	newrdf->set_name(c->datavar[0]->get_as_char());
-	newrdf->set_filename(c->datavar[6]->get_as_char());
+	newrdf->set_name(c->argc(0));
+	newrdf->set_filename(c->argc(6));
 	// Associate sites to quantity
-	newrdf->set_site(0,obj.m->find_site(c->datavar[1]->get_as_char()));
-	newrdf->set_site(1,obj.m->find_site(c->datavar[2]->get_as_char()));
-	newrdf->set_range(c->datavar[3]->get_as_double(), c->datavar[4]->get_as_double(), c->datavar[5]->get_as_int());
-	return (newrdf->initialise() ? CR_SUCCESS : CR_FAILED);
+	newrdf->set_site(0,obj.m->find_site(c->argc(1)));
+	newrdf->set_site(1,obj.m->find_site(c->argc(2)));
+	newrdf->set_range(c->argd(3), c->argd(4), c->argi(5));
+	return (newrdf->initialise() ? CR_SUCCESS : CR_FAIL);
 }
 
 // Save calculated quantities to filenames provided ('savequantities')

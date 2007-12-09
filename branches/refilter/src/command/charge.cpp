@@ -19,65 +19,63 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "command/commandlist.h"
 #include "base/debug.h"
-#include "base/prefs.h"
 #include "classes/pattern.h"
 
-// Charge-related script commands (root=SR_CHARGE)
-bool script::command_charge(command_node<script_command> *cmd)
+// Assign charge to a single atom in the model ('chargeatom <id> <q>')
+int command_functions::function_CA_CHARGEATOM(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_charge");
-	bool result = TRUE;
-	atom *i;
-	pattern *p;
-	model *frame;
-	model *m = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m == NULL)
+	atom *i = obj.m->find_atom(c->argi(0));
+	if (i != NULL) i->set_charge(c->argi(1));
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
+// Assign charges from forcefield atom types ('chargeff')
+int command_functions::function_CA_CHARGEFF(command *&c, objects &obj)
+{
+	obj.m->assign_charges(QS_FF);
+	return CR_SUCCESS;
+}
+
+// Copy atomic charges from model to model's current trajectory frame
+int command_functions::function_CA_CHARGEFROMMODEL(command *&c, objects &obj)
+{
+	model *frame = obj.m->get_currentframe();
+	if (frame == NULL) 
 	{
-		dbg_end(DM_CALLS,"script::command_charge");
-		return FALSE;
+		msg(DM_NONE,"Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
+		return CR_FAIL;
 	}
-	switch (cmd->get_command())
-	{
-		case (SC_CLEARCHARGES):		// Clears charge in current model ('clearcharges')
-			m->clear_charges();
-			break;
-		case (SC_CHARGEFF):	// Assign charges from forcefield atom types ('chargeff')
-			m->assign_charges(QS_FF);
-			m->get_currentframe();
-			break;
-		case (SC_CHARGEATOM):	// Assign charge to a single atom in the model ('chargeatom <id> <q>')
-			i = m->find_atom(cmd->datavar[0]->get_as_int());
-			if (i != NULL) i->set_charge(cmd->datavar[1]->get_as_int());
-			else result = FALSE;
-			break;
-		case (SC_CHARGETYPE):	// Assign charges to a specified forcefield type ('chargetype <atomtype> <q>')
-			printf("Not implemented yet!\n");
-			result = FALSE;
-			break;
-		case (SC_CHARGEPATOM):	// Assign charge to a pattern atom, propagated over the model ('chargepatom <patname> <id> <q>')
-			if (!check_activepattern("chargepatom")) result = FALSE;
-			else m->charge_pattern_atom(activepattern,cmd->datavar[0]->get_as_int(),cmd->datavar[1]->get_as_double());
-			break;
-		case (SC_CHARGESELECTION):	// Assign charge to selected atoms in model ('chargeselection <q>')
-			for (i = m->get_first_selected(); i != NULL; i = i->get_next_selected())
-				i->set_charge(cmd->datavar[0]->get_as_double());
-			break;
-		case (SC_CHARGEFROMMODEL):	// Copy atomic charges from model to model's current trajectory frame
-			frame = m->get_currentframe();
-			if (frame == NULL) 
-			{
-				msg(DM_NONE,"Error - 'chargefrommodel' requires an active trajectory frame for the current model.\n");
-				result = FALSE;
-			}
-			else frame->copy_atom_data(m, AD_Q);
-			break;
-		default:
-			printf("Error - missed charge command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_charge");
-	return result;
+	else frame->copy_atom_data(obj.m, AD_Q);
+	return CR_SUCCESS;
+}
+
+// Assign charge to a pattern atom, propagated over the model ('chargepatom <patname> <id> <q>')
+int command_functions::function_CA_CHARGEPATOM(command *&c, objects &obj)
+{
+	obj.m->charge_pattern_atom(obj.p,c->argi(0),c->argd(1));
+	return CR_SUCCESS;
+}
+
+// Assign charge to selected atoms in model ('chargeselection <q>')
+int command_functions::function_CA_CHARGESELECTION(command *&c, objects &obj)
+{
+	for (atom *i = obj.m->get_first_selected(); i != NULL; i = i->get_next_selected())
+		i->set_charge(c->argd(0));
+}
+
+// Assign charges to a specified forcefield type ('chargetype <atomtype> <q>')
+int command_functions::function_CA_CHARGETYPE(command *&c, objects &obj)
+{
+	printf("Not implemented yet!\n");
+	return CR_FAIL;
+}
+
+// Clears charge in current model ('clearcharges')
+int command_functions::function_CA_CLEARCHARGES(command *&c, objects &obj)
+{
+	obj.m->clear_charges();
+	return CR_SUCCESS;
 }

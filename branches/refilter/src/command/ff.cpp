@@ -38,18 +38,18 @@ bool script::command_ff(command_node<script_command> *cmd)
 	{
 		// Load forcefield ('loadff <name> <filename>')
 		case (SC_LOADFF):
-			ff = master.load_ff(cmd->datavar[1]->get_as_char());
+			ff = master.load_ff(cmd->argc(1));
 			if (ff != NULL)
 			{
-				ff->set_name(cmd->datavar[0]->get_as_char());
+				ff->set_name(cmd->argc(0));
 				master.set_currentff(ff);
-				msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n",cmd->datavar[1]->get_as_char(),cmd->datavar[0]->get_as_char());
+				msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n",cmd->argc(1),cmd->argc(0));
 			}
 			else result = FALSE;
 			break;
 		// Select current forcefield ('selectff <name>')
 		case (SC_SELECTFF):
-			ff = master.find_ff(cmd->datavar[0]->get_as_char());
+			ff = master.find_ff(cmd->argc(0));
 			if (ff != NULL) master.set_currentff(ff);
 			else
 			{
@@ -78,7 +78,7 @@ bool script::command_ff(command_node<script_command> *cmd)
 			m = check_activemodel(text_from_SC(cmd->get_command()));
 			if (m != NULL)
 			{
-				int nodeid = cmd->datavar[0]->get_as_int() - 1;
+				int nodeid = cmd->argi(0) - 1;
 				if ((nodeid < 0) || (nodeid > m->get_npatterns()))
 				{
 					msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, m->get_npatterns());
@@ -98,10 +98,10 @@ bool script::command_ff(command_node<script_command> *cmd)
 				break;
 			}
 			// Find the specified type...
-			ffa = ff->find_type(cmd->datavar[0]->get_as_int());
+			ffa = ff->find_type(cmd->argi(0));
 			if (ffa == NULL)
 			{
-				msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",cmd->datavar[0]->get_as_int(),ff->get_name());
+				msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",cmd->argi(0),ff->get_name());
 				result = FALSE;
 			}
 			else
@@ -111,7 +111,7 @@ bool script::command_ff(command_node<script_command> *cmd)
 					// Prepare for typing
 					m->describe_atoms();
 					// Get atom, element, and the atom's pattern
-					atom *i = m->get_staticatoms()[cmd->datavar[1]->get_as_int()-1];
+					atom *i = m->get_staticatoms()[cmd->argi(1)-1];
 					int el = i->get_element();
 					pattern *p = m->get_pattern(i);
 					int score = ffa->get_atomtype()->match_atom(i,p->get_ringlist(),m,i);

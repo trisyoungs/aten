@@ -23,6 +23,128 @@
 #include "base/master.h"
 #include "base/debug.h"
 
+// Adds component to list ('addcomponent <name> <model> <nmols>')
+int command_functions::function_CA_ADDCOMPONENT(command *&c, objects &obj)
+{
+	model *compm = master.find_model(c->argc(1));
+	if (compm != NULL)
+	{
+		component *newcomp = master.mc.components.add();
+		newcomp->set_model(compm);
+		newcomp->set_nrequested(c->argi(2));
+		newcomp->set_name(c->argc(0));
+	}
+	else
+	{
+		msg(DM_NONE,"Couldn't find model '%s' specified in 'addcomponent'\n", c->argc(1));
+		return CR_FAIL;
+	}
+	return CR_SUCCESS;
+}
+
+// Performs MC insertion ('disorder <ncycles>')
+int command_functions::function_CA_DISORDER(command *&c, objects &obj)
+{
+	if (master.mc.components.size() == 0)
+	{
+		msg(DM_NONE,"Disordered builder requires a list of components.\n");
+		return CR_FAIL;
+	}
+	msg(DM_NONE,"Performing disordered build for model '%s'\n", obj.m->get_name());
+	master.mc.set_ncycles(c->argi(0));
+	master.mc.disorder(obj.m);
+	return CR_SUCCESS;
+}
+
+// Print current component list ('printcomponents')
+int command_functions::function_CA_PRINTCOMPONENTS(command *&c, objects &obj)
+{
+	msg(DM_NONE,"Current component list:\n");
+	vec3<double> v1, v2;
+	component *comp = master.mc.components.first();
+	comp != NULL ? printf("Name         Nmols  I D T R Z  Model         Region       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
+		: printf("None.\n");
+	while (comp != NULL)
+	{
+		v1 = comp->area.get_centre();
+		v2 = comp->area.get_size();
+		printf("%-10s  %5i  %s %s %s %s %s  %-12s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
+			comp->get_name(),comp->get_nrequested(),
+			(comp->get_allowed(MT_INSERT) ? "+" : " "),
+			(comp->get_allowed(MT_DELETE) ? "+" : " "),
+			(comp->get_allowed(MT_TRANSLATE) ? "+" : " "),
+			(comp->get_allowed(MT_ROTATE) ? "+" : " "),
+			(comp->get_allowed(MT_ZMATRIX) ? "+" : " "),
+			comp->get_model()->get_name(),
+			text_from_RS(comp->area.get_shape()),
+			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
+			(comp->area.get_allowoverlap() ? "Yes" : "No"));
+		comp = comp->next;
+	}
+	return CR_SUCCESS;
+}
+
+// Set region centre to position ('setcentre <name> <x y z>')
+int command_functions::function_CA_SETCENTRE(command *&c, objects &obj)
+{
+	component *comp = master.mc.get_component_by_name(c->argc(0));
+	if (comp == NULL)
+	{
+		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		return CR_FAIL;
+	}
+	comp->area.set_centre(c->get_vector3d(1));
+	return CR_SUCCESS;
+}
+
+// Set geometry of region ('setgeometry <name> <x y z> [l]')
+int command_functions::function_CA_SETGEOMETRY(command *&c, objects &obj)
+{
+	component *comp = master.mc.get_component_by_name(c->argc(0));
+	if (comp == NULL)
+	{
+		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		return CR_FAIL;
+	}
+	comp->area.set_size(c->get_vector3d(1));
+	if (!c->was_given(4)) comp->area.set_length(c->argd(4));
+	return CR_SUCCESS;
+}
+
+// Set overlap flag ('setoverlap <name> true|false')
+int command_functions::function_CA_SETOVERLAP(command *&c, objects &obj)
+{
+	component *comp = master.mc.get_component_by_name(c->argc(0));
+	if (comp == NULL)
+	{
+		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		return CR_FAIL;
+	}
+	comp->area.set_allowoverlap(c->argb(1));
+	return CR_SUCCESS;
+}
+
+// Set shape for region ('setshape <name> <shape>')
+int command_functions::function_CA_SETSHAPE(command *&c, objects &obj)
+{
+	component *comp = master.mc.get_component_by_name(c->argc(0));
+	if (comp == NULL)
+	{
+		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		return CR_FAIL;
+	}
+	region_shape rs = RS_from_text(c->argc(1));
+	if (rs != RS_NITEMS) comp->area.set_shape(rs);
+	return CR_SUCCESS;
+}
+
+// Set vdw radius scaling for method ('vdwscale <scale>')
+int command_functions::function_CA_VDWSCALE(command *&c, objects &obj)
+{
+	master.mc.set_vdw_radius_scale(c->argd(0));
+	return CR_SUCCESS;
+}
+
 // Disorder builder-related script commands (root=SR_DISORDER)
 bool script::command_disorder(command_node<script_command>  *cmd)
 {
@@ -42,88 +164,10 @@ bool script::command_disorder(command_node<script_command>  *cmd)
 	int cmdi = cmd->get_command();
 	switch (cmdi)
 	{
-		case (SC_ADDCOMPONENT):		// Adds component to list ('addcomponent <name> <model> <nmols>')
-			m = master.find_model(cmd->datavar[1]->get_as_char());
-			if (m != NULL)
-			{
-				c = master.mc.components.add();
-				c->set_model(m);
-				c->set_nrequested(cmd->datavar[2]->get_as_int());
-				c->set_name(cmd->datavar[0]->get_as_char());
-			}
-			else
-			{
-				msg(DM_NONE,"script : Couldn't find model specified in 'addcomponent'\n");
-				result = FALSE;
-			}
-			break;
-		case (SC_PRINTCOMPONENTS):	// Print current component list ('printcomponents')
-			msg(DM_NONE,"Current component list:\n");
-			c = master.mc.components.first();
-			c != NULL ? printf("Name         Nmols  I D T R Z  Model         Region       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
-				: printf("None.\n");
-			while (c != NULL)
-			{
-				v1 = c->area.get_centre();
-				v2 = c->area.get_size();
-				printf("%-10s  %5i  %s %s %s %s %s  %-12s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
-					c->get_name(),c->get_nrequested(),
-					(c->get_allowed(MT_INSERT) ? "+" : " "),
-					(c->get_allowed(MT_DELETE) ? "+" : " "),
-					(c->get_allowed(MT_TRANSLATE) ? "+" : " "),
-					(c->get_allowed(MT_ROTATE) ? "+" : " "),
-					(c->get_allowed(MT_ZMATRIX) ? "+" : " "),
-					c->get_model()->get_name(),
-					text_from_RS(c->area.get_shape()),
-					v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
-					(c->area.get_allowoverlap() ? "Yes" : "No"));
-				c = c->next;
-			}
-			break;
-		case (SC_DISORDER):		// Performs MC insertion ('disorder <ncycles>')
-			if (master.mc.components.size() == 0)
-			{
-				msg(DM_NONE,"MC insertion requires a list of components.\n");
-				break;
-			}
-			msg(DM_NONE,"Performing disordered build for model '%s'\n",m2->get_name());
-			master.mc.set_ncycles(cmd->datavar[0]->get_as_int());
-			master.mc.disorder(m2);
-			break;
-		case (SC_SETCENTRE):
-		case (SC_SETOVERLAP):
-		case (SC_SETSHAPE):
-		case (SC_SETGEOMETRY):
-			// Commands that set region data - all need a valid component
-			c = master.mc.get_component_by_name(cmd->datavar[0]->get_as_char());
-			if (c == NULL)
-			{
-				msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n",cmd->datavar[0]->get_as_char());
-				dbg_end(DM_CALLS,"script::command_region");
-				return FALSE;
-			}
-			switch (cmdi)
-			{
-				case (SC_SETSHAPE):	// Set shape for region ('setshape <name> <shape>')
-					rs = RS_from_text(cmd->datavar[1]->get_as_char());
-					if (rs != RS_NITEMS) c->area.set_shape(rs);
-					break;
-				case (SC_SETCENTRE):	// Set region centre to position ('setcentre <name> <x y z>')
-					c->area.set_centre(cmd->get_vector3d(1));
-					break;
-				case (SC_SETGEOMETRY):	// Set geometry of region ('setgeometry <name> <x y z> [l]')
-					c->area.set_size(cmd->get_vector3d(1));
-					if (cmd->datavar[4] != NULL) c->area.set_length(cmd->datavar[4]->get_as_double());
-					break;
-				case (SC_SETOVERLAP):	// Set overlap flag ('setoverlap <name> true|false')
-					printf("Setting overlap flag..\n");
-					c->area.set_allowoverlap(cmd->datavar[1]->get_as_bool());
-					break;
-			}
-			break;
-		case (SC_VDWSCALE):	// Set vdw radius scaling for method ('vdwscale <scale>')
-			master.mc.set_vdw_radius_scale(cmd->datavar[0]->get_as_double());
-			break;
+
+
+
+
 		default:
 			printf("Error - missed expr command?\n");
 			result = FALSE;

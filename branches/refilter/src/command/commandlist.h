@@ -29,6 +29,7 @@
 #include "templates/vector3.h"
 #include "command/commands.h"
 #include "classes/variables.h"
+#include "base/constants.h"
 
 // If Conditions
 enum if_condition { IF_EQUAL=1, IF_LESS=2, IF_LEQUAL=3, IF_GREATER=4, IF_GEQUAL=5, IF_NEQUAL=6, IF_NITEMS };
@@ -52,14 +53,14 @@ class command
 	// Command
 	*/
 	private:
-	// Parent list
-	commandlist *parent;
 	// Basic command that this node performs
 	command_action action;
 	// Pointer to action function
 	commandfunc function;
 
 	public:
+	// Parent list
+	commandlist *parent;
 	// Set command
 	void set_command(command_action ca) { action = ca; }
 	// Get command
@@ -138,19 +139,31 @@ class command
 	/*
 	// Data Variables
 	*/
-	public:
+	private:
 	// Data variables
-	variable *datavar[MAXDATAVARS];
+	variable *args[MAXDATAVARS];
+
+	public:
 	// Set variables from parser arguments
 	bool add_variables(const char*, const char*, variable_list&);
+	// Return argument as character
+	const char *argc(int argno) { return (args[argno] == NULL ?  "NULL" : args[argno]->get_as_char()); }
+	// Return argument as integer
+	int argi(int argno) { return (args[argno] == NULL ?  0 : args[argno]->get_as_int()); }
+	// Return argument as double
+	double argd(int argno) { return (args[argno] == NULL ? 0.0 : args[argno]->get_as_double()); }
+	// Return argument as bool
+	bool argb(int argno) { return (args[argno] == NULL ? -1 : args[argno]->get_as_bool()); }
 	// Return arguments as vec3<double>
 	vec3<double> get_vector3d(int);
 	// Return arguments as vec3<float>
 	vec3<float> get_vector3f(int);
 	// Return arguments as vec3<int>
 	vec3<int> get_vector3i(int);
+	// Returns whether argument was provided
+	bool was_given(int argno) { return (args[argno] == NULL ? FALSE : TRUE); }
 	// Print data variables
-	void print_datavars();
+	void print_args();
 };
 
 // Command List Structore
@@ -210,6 +223,15 @@ class commandlist
 	public:
 	// Associative variable list
 	variable_list variables;
+
+	/*
+	// Local Variables
+	*/
+	public:
+	// Pen orientation matrix
+	mat3<double> penorient;
+	// Pen position
+	vec3<double> penpos;
 
 	/*
 	// Files

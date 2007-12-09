@@ -35,7 +35,16 @@ class pattern;
 enum command_action {
 	CA_ROOTNODE,
 
-	CA_REPEAT,
+	CA_CHAR,
+	CA_INT,
+	CA_DOUBLE,
+	CA_ATOM,
+	CA_BOND,
+	CA_PATTERN,
+	CA_MODEL,
+	CA_PATBOUND,
+
+	CA_FOR,
 	CA_FORATOMS,
 	CA_FORBONDS,
 	CA_FORPATTERNS,
@@ -53,7 +62,6 @@ enum command_action {
 	CA_INCREASE,
 	CA_DECREASE,
 	CA_EVAL,
-	CA_EVALI,
 
 	CA_PRINT,
 
@@ -114,7 +122,7 @@ enum command_action {
 	CA_SETGEOMETRY,
 	CA_SETOVERLAP,
 	CA_SETSHAPE,
-	CA_VDWCAALE,
+	CA_VDWSCALE,
 
 	// Element Commands
 	CA_SETELEMENTCOLOUR,
@@ -257,7 +265,7 @@ struct objects
 typedef int (command_functions::*commandfunc)(command *&c, objects &obj);
 
 // Function return values
-enum command_return { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAILED, CR_FAILEDSTOP };
+enum command_return { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAIL, CR_FAILCONTINUE };
 
 // Encompassing class for command actions
 class command_functions
@@ -328,7 +336,7 @@ class command_functions
 	// Cell commands
 	int function_CA_PRINTCELL(command *&c, objects &obj);
 	int function_CA_REPLICATECELL(command *&c, objects &obj);
-	int function_CA_CAALECELL(command *&c, objects &obj);
+	int function_CA_SCALECELL(command *&c, objects &obj);
 	int function_CA_SETCELL(command *&c, objects &obj);
 
 	// Charge commands
@@ -348,7 +356,7 @@ class command_functions
 	int function_CA_SETGEOMETRY(command *&c, objects &obj);
 	int function_CA_SETOVERLAP(command *&c, objects &obj);
 	int function_CA_SETSHAPE(command *&c, objects &obj);
-	int function_CA_VDWCAALE(command *&c, objects &obj);
+	int function_CA_VDWSCALE(command *&c, objects &obj);
 
 	// Element Commands
 	int function_CA_SETELEMENTCOLOUR(command *&c, objects &obj);

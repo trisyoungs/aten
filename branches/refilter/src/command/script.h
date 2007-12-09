@@ -43,10 +43,7 @@ class script
 	private:
 	// Active pattern within the script
 	pattern *activepattern;
-	// Pen orientation matrix
-	mat3<double> penorient;
-	// Pen position
-	vec3<double> penpos;
+
 	// Active atom within the script
 	atom *activeatom;
 	// Active bond within the script

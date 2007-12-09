@@ -47,7 +47,7 @@ bool script::command_transform(command_node<script_command> *cmd)
 			break;
 		// Mirror selection along specified axis
 		case (SC_MIRRORSELECTION):
-			m->mirror_selection_local(cmd->datavar[0]->get_as_int());
+			m->mirror_selection_local(cmd->argi(0));
 			break;
 		default:
 			printf("Error - missed translate command?\n");

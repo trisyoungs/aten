@@ -43,22 +43,22 @@ bool script::command_minimise(command_node<script_command> *cmd)
 	{
 		// Set convergence criteria
 		case (SC_CONVERGE):
-			econverge = cmd->datavar[0]->get_as_double();
-			fconverge = cmd->datavar[1]->get_as_double();
+			econverge = cmd->argd(0);
+			fconverge = cmd->argd(1);
 			break;
 		// Set line minimiser tolerance
 		case (SC_LINETOL):
-			linetolerance = cmd->datavar[0]->get_as_double();
+			linetolerance = cmd->argd(0);
 			break;
 		// Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
 		case (SC_MCMINIMISE):
-			master.mc.set_ncycles(cmd->datavar[0]->get_as_int());
+			master.mc.set_ncycles(cmd->argi(0));
 			master.mc.minimise(m, econverge, fconverge);
 			break;
 		// Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
 		case (SC_SDMINIMISE):
 			master.sd.set_tolerance(linetolerance);
-			master.sd.set_ncycles(cmd->datavar[0]->get_as_int());
+			master.sd.set_ncycles(cmd->argi(0));
 			master.sd.minimise(m, econverge, fconverge);
 			break;
 		default:

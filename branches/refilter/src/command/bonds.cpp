@@ -46,7 +46,7 @@ int command_functions::function_CA_CLEARBONDS(command *&c, objects &obj)
 // Change bond tolerance ('bondtol <d>')
 int command_functions::function_CA_BONDTOLERANCE(command *&c, objects &obj)
 {
-	prefs.set_bond_tolerance(c->datavar[0]->get_as_double());
+	prefs.set_bond_tolerance(c->argd(0));
 	return CR_SUCCESS;
 }
 

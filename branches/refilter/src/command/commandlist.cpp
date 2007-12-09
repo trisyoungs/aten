@@ -19,8 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "templates/command.h"
+#include "command/commandlist.h"
+#include "file/format.h"
+#include "file/parse.h"
 #include "base/sysfunc.h"
+#include "base/constants.h"
 
 // If Conditions
 const char *IC_strings[6] = { "eq", "l", "le", "g", "ge", "neq" };
@@ -32,7 +35,7 @@ command::command()
 {
 	next = NULL;
 	prev = NULL;
-	for (int i=0; i<MAXDATAVARS; i++) datavar[i] = NULL;
+	for (int i=0; i<MAXDATAVARS; i++) args[i] = NULL;
 	action = CA_ROOTNODE;
 	function = NULL;
 	ptr = NULL;
@@ -58,67 +61,67 @@ command::~command()
 // Clear command list and reinitialise
 void commandlist::clear()
 {
-	commandlist.clear();
+	commands.clear();
 	branchstack.clear();
 	branchcmdstack.clear();
-	push_branch(&commandlist, BC_ROOTNODE, NULL);
+	push_branch(&commands, CA_ROOTNODE, NULL);
 }
 
 // Print data variables
-template <class T> void command::print_datavars()
+void command::print_args()
 {
-	dbg_begin(DM_CALLS,"command::print_datavars");
+	dbg_begin(DM_CALLS,"command::print_args");
 	int i;
 	for (int i=0; i<MAXDATAVARS; i++)
 	{
-		printf("%2i %20li",i,datavar[i]);
-		if (datavar[i] == NULL) printf ("None.\n");
+		printf("%2i %20li",i,args[i]);
+		if (args[i] == NULL) printf ("None.\n");
 		else
 		{
-			printf("%12s [%10s]",datavar[i]->get_name(), text_from_VT(datavar[i]->get_type()));
-			if (datavar[i]->get_type() < VT_ATOM) printf("%20s\n",datavar[i]->get_as_char());
-			else printf("%li\n",datavar[i]->get_as_pointer(VT_UNDEFINED));
+			printf("%12s [%10s]",args[i]->get_name(), text_from_VT(args[i]->get_type()));
+			if (args[i]->get_type() < VT_ATOM) printf("%20s\n",args[i]->get_as_char());
+			else printf("%li\n",args[i]->get_as_pointer(VT_ATOM));
 		}
 	}
-	dbg_end(DM_CALLS,"command::print_datavars");
+	dbg_end(DM_CALLS,"command::print_args");
 }
 
 
 // Return arguments as vec3<double>
-template <class T> vec3<double> command::get_vector3d(int i)
+vec3<double> command::get_vector3d(int i)
 {
 	dbg_begin(DM_CALLS,"command::get_vector3d");
         static vec3<double> result;
         if (i > (MAXDATAVARS-3)) printf("command::get_vector3d - Starting point too close to MAXDATAVARS.\n");
-        result.set(datavar[i]->get_as_double(),datavar[i+1]->get_as_double(),datavar[i+2]->get_as_double());
+        result.set(args[i]->get_as_double(),args[i+1]->get_as_double(),args[i+2]->get_as_double());
 	dbg_end(DM_CALLS,"command::get_vector3d");
         return result;
 }
 
 // Return arguments as vec3<float>
-template <class T> vec3<float> command::get_vector3f(int i)
+vec3<float> command::get_vector3f(int i)
 {
 	dbg_begin(DM_CALLS,"command::get_vector3f");
         static vec3<float> result;
         if (i > (MAXDATAVARS-3)) printf("command::get_vector3f - Starting point too close to MAXDATAVARS.\n");
-        result.set(datavar[i]->get_as_float(),datavar[i+1]->get_as_float(),datavar[i+2]->get_as_float());
+        result.set(args[i]->get_as_float(),args[i+1]->get_as_float(),args[i+2]->get_as_float());
 	dbg_end(DM_CALLS,"command::get_vector3f");
         return result;
 }
 
 // Return arguments as vec3<int>
-template <class T> vec3<int> command::get_vector3i(int i)
+vec3<int> command::get_vector3i(int i)
 {
 	dbg_begin(DM_CALLS,"command::get_vector3i");
 	static vec3<int> result;
 	if (i > (MAXDATAVARS-3)) printf("command::get_vector3i - Starting point too close to MAXDATAVARS.\n");
-        result.set(datavar[i]->get_as_int(),datavar[i+1]->get_as_int(),datavar[i+2]->get_as_int());
+        result.set(args[i]->get_as_int(),args[i+1]->get_as_int(),args[i+2]->get_as_int());
 	dbg_end(DM_CALLS,"command::get_vector3i");
 	return result;
 }
 
 // Create branch
-template <class T> list< command > *command::create_branch()
+list<command> *command::create_branch()
 {
 	dbg_begin(DM_CALLS,"command::create_branch");
 	if (branch != NULL) printf("command::create_branch <<<< Already has a branch >>>>\n");
@@ -128,7 +131,7 @@ template <class T> list< command > *command::create_branch()
 }
 
 // Create branch
-template <class T> void command::create_format(const char *s, variable_list &vars)
+void command::create_format(const char *s, variable_list &vars)
 {
 	dbg_begin(DM_CALLS,"command::create_format");
 	if (fmt != NULL) printf("command::create_branch <<<< Already has a format >>>>\n");
@@ -140,252 +143,8 @@ template <class T> void command::create_format(const char *s, variable_list &var
 	dbg_end(DM_CALLS,"command::create_format");
 }
 
-// Initialise For Loop
-template <class T> bool command::loop_initialise(variable_list &vars, model *m)
-{
-	dbg_begin(DM_CALLS,"command::loop_initialise");
-	// Variable that we're iterating is datavar[0].
-	// datavar[1] contains a pointer to another variable type which may influence the range of the loop
-	variable *countvar, *rangevar;
-	variable_type counttype, rangetype;
-	pattern *p;
-	atom *i;
-	int n;
-	// Obvious check first - is this a loop node?
-	if (basiccommand >= BC_IF)
-	{
-		printf("command::loop_initialise <<<< This is not a loop node! >>>>\n");
-		dbg_end(DM_CALLS,"command::loop_initialise");
-		return FALSE;
-	}
-	// Grab pointers to count and range variables
-	countvar = datavar[0];
-	rangevar = datavar[1];
-	// Check vars...
-	if (countvar == NULL)
-	{
-		printf("command::loop_initialise <<<< Count variable in loop has not been set >>>>\n");
-		dbg_end(DM_CALLS,"command::loop_initialise");
-		return FALSE;
-	}
-	counttype = countvar->get_type();
-	//countvar->print();
-	if (rangevar == NULL) rangetype = VT_UNDEFINED;
-	else rangetype = rangevar->get_type();
-	msg(DM_VERBOSE,"Initialising loop : count variable is '%s', type = '%s'\n", countvar->get_name(), text_from_VT(counttype));
-	// Start off the loop
-	switch (counttype)
-	{
-		// Integer loop - starts at 1
-		case (VT_GENERIC):
-			countvar->set(1);
-			break;
-		// Atom loop - start depends on second variable.
-		case (VT_ATOM):
-			// If no second variable is given, use the source model
-			if (rangevar == NULL) countvar->set(m->get_atoms());
-			//else if (rangetype == VT_MODEL) countvar->set(rangevar->get_as_model()->get_atoms());
-			else if (rangetype == VT_PATTERN)
-			{
-				p = (pattern*) rangevar->get_as_pointer(VT_PATTERN);
-				if (p == NULL)
-				{
-					printf("command::loop_initialise <<<< atom:pattern rangevar is NULL >>>>\n");
-					dbg_end(DM_CALLS,"command::loop_initialise");
-					return FALSE;
-				}
-				msg(DM_VERBOSE,"                  : range variable is '%s', type = 'pattern*' (%s)\n", rangevar->get_name(), p->get_name());
-				// Check for subrange variable (integer molecule)
-				if (datavar[2] == NULL) countvar->set(p->get_firstatom());
-				else
-				{
-					// Get first atom and skip on nmolatoms * (datavar[2]-1)
-					i = p->get_firstatom();
-					for (n = 0; n < p->get_natoms() * (datavar[2]->get_as_int() - 1); n++) i = i->next;
-					countvar->set(i);
-				}
-			}
-			else
-			{
-				msg(DM_NONE,"Range variable '%s' is not of suitable type (%s) for atom loop.\n", rangevar->get_name(), text_from_VT(rangevar->get_type()));
-				dbg_end(DM_CALLS,"command::loop_initialise");
-				return FALSE;
-			}
-			// Set atom variables from the atom pointer
-			vars.set_atom_variables(countvar->get_name(), (atom*) countvar->get_as_pointer(VT_ATOM));
-			break;
-		// Pattern loop over patterns in model
-		case (VT_PATTERN):
-			/* if (rangetype != VT_MODEL)
-			{
-				printf("filter::loop_initialise <<<< Range variable '%s' is not of suitable type for pattern loop >>>>\n",rangevar->get_name());
-				dbg_end(DM_CALLS,"filter::loop_initialise");
-				return FALSE;
-			}
-			*/
-			countvar->set(m->get_patterns());
-			// Set pattern variables from the pattern pointer
-			vars.set_pattern_variables(countvar->get_name(), (pattern*) countvar->get_as_pointer(VT_PATTERN));
-			break;
-		// Loop over forcefield terms of pattern
-		case (VT_PATBOUND):
-			// Second variable supplied must be a pattern variable from which we take the ff terms
-			if (rangetype == VT_PATTERN)
-			{
-				p = (pattern*) rangevar->get_as_pointer(VT_PATTERN);
-				switch (basiccommand)
-				{
-					case (BC_FORFFBONDS):
-						countvar->set(p->bonds.first());
-						break;
-					case (BC_FORFFANGLES):
-						countvar->set(p->angles.first());
-						break;
-					case (BC_FORFFTORSIONS):
-						countvar->set(p->torsions.first());
-						break;
-					default:
-						printf("command::loop_initialise <<<< ffbound interaction not in list >>>>\n");
-						break;
-				}
-			}
-			else
-			{
-				msg(DM_NONE,"Range variable '%s' is not of suitable type (%s) for 'ffbound' loop.\n", rangevar->get_name(), text_from_VT(rangevar->get_type()));
-				dbg_end(DM_CALLS,"command::loop_initialise");
-				return FALSE;
-			}
-			// Set patbound variables from the patbound pointer
-			vars.set_patbound_variables(countvar->get_name(), (patbound*) countvar->get_as_pointer(VT_PATBOUND));
-			break;
-		default:
-			printf("Kick Developer - Loops over '%s' are missing.\n",text_from_VT(counttype));
-			dbg_end(DM_CALLS,"command::loop_initialise");
-			return FALSE;
-			break;
-	}
-	loop_running = TRUE;
-	loopcount = 1;
-	// Check on niterations
-	bool result = loop_check();
-	if (result) msg(DM_VERBOSE,"Loop is initialised and running.\n");
-	else msg(DM_VERBOSE,"Loop terminated on initialisation.\n");
-	dbg_end(DM_CALLS,"command::loop_initialise");
-	return result;
-}
-
-// Do loop iteration
-template <class T> bool command::loop_iterate(variable_list &vars)
-{
-	dbg_begin(DM_CALLS,"command::loop_iterate");
-	atom *i;
-	pattern *p;
-	// Grab variables
-	variable *countvar = datavar[0];
-	if (countvar == NULL)
-	{
-		printf("command::loop_iterate <<<< Count var in loop has not been set >>>>\n");
-		dbg_end(DM_CALLS,"command::loop_iterate");
-		return FALSE;
-	}
-	// Increase loop counter
-	countvar->increase(1);
-	loopcount ++;
-	// Set new variables from loop variable
-	switch (countvar->get_type())
-	{
-		case (VT_GENERIC):
-			break;
-		case (VT_ATOM):
-			// Set atom variables from the atom pointer
-			vars.set_atom_variables(countvar->get_name(), (atom*) countvar->get_as_pointer(VT_ATOM));
-			break;
-		case (VT_PATTERN):
-			// Set patbound variables from the patbound pointer
-			vars.set_pattern_variables(countvar->get_name(), (pattern*) countvar->get_as_pointer(VT_PATTERN));
-			break;
-		case (VT_PATBOUND):
-			// Set patbound variables from the patbound pointer
-			vars.set_patbound_variables(countvar->get_name(), (patbound*) countvar->get_as_pointer(VT_PATBOUND));
-			break;
-		default:
-			printf("command::loop_iterate <<<< Don't know how to set variables from var of type '%s' >>>>\n", text_from_VT(countvar->get_type()));
-			break;
-	}
-	// Check for completed loop on exit
-	dbg_end(DM_CALLS,"command::loop_iterate");
-	return loop_check();
-}
-
-// Check for loop termination
-template <class T> bool command::loop_check()
-{
-	dbg_begin(DM_CALLS,"command::loop_check");
-	// Grab variables
-	variable *countvar, *rangevar;
-	atom *i;
-	pattern *p;
-	patbound *pb;
-	countvar = datavar[0];
-	if (countvar == NULL)
-	{
-		printf("command::loop_check <<<< Count var in loop has not been set >>>>\n");
-		dbg_end(DM_CALLS,"command::loop_check");
-		return FALSE;
-	}
-	rangevar = datavar[1];
-	switch (countvar->get_type())
-	{
-		// Integer loop - goes forever, unless a loop maximum is given in rangevar
-		case (VT_GENERIC):
-			if (rangevar != NULL)
-			{
-				if (countvar->get_as_int() > rangevar->get_as_int()) loop_running = FALSE;
-			}
-			break;
-		// Atom loops - end with pointer equal to NULL (model) or last atom in specified pattern/molecule
-		case (VT_ATOM):
-			// Check type of rangevar (if there is one)
-			i = (atom*) countvar->get_as_pointer(VT_ATOM);
-			//printf("atom variable = %li\n",i);
-			if (rangevar == NULL)
-			{
-				if (i == NULL) loop_running = FALSE;
-			}
-			else if (rangevar->get_type() == VT_PATTERN)
-			{
-				p = (pattern*) rangevar->get_as_pointer(VT_PATTERN);
-				// If no molecule variable is specified, check for last atom in pattern
-				if (datavar[2] == NULL)
-				{
-					if (loopcount > p->get_totalatoms()) loop_running = FALSE;
-				}
-				else
-				{
-					if (loopcount > p->get_natoms()) loop_running = FALSE;
-				}
-			}
-			break;
-		// Pattern loops - end with pointer equal to NULL
-		case (VT_PATTERN):
-			p = (pattern*) countvar->get_as_pointer(VT_PATTERN);
-			if (p == NULL) loop_running = FALSE;
-			break;
-		// Pattern ffbound loops - end with pointer equal to NULL
-		case (VT_PATBOUND):
-			pb = (patbound*) countvar->get_as_pointer(VT_PATBOUND);
-			if (pb == NULL) loop_running = FALSE;
-			break;
-		default:
-			printf("Don't know how to check loop of type '%s'\n",text_from_VT(countvar->get_type()));
-			break;
-	}
-	dbg_end(DM_CALLS,"command::loop_check");
-	return loop_running;
-}
-
 // Set if condition test
-template <class T> bool command::set_iftest(const char *s)
+bool command::set_iftest(const char *s)
 {
 	dbg_begin(DM_CALLS,"command::set_iftest");
 	bool result = TRUE;
@@ -415,26 +174,26 @@ template <class T> bool command::set_iftest(const char *s)
 }
 
 // Evaluate condition
-template <class T> bool command::if_evaluate()
+bool command::if_evaluate()
 {
 	dbg_begin(DM_CALLS,"command::if_evaluate");
 	// Do all as comparisons as floats, except for equalities
 	bool result;
 	static dnchar value1, value2;
 	static double d1, d2;
-	//print_datavars();
+	//print_argss();
 	if ((iftest == IF_EQUAL) || (iftest == IF_NEQUAL))
 	{
 		// Grab current variable values into the value1/value2 character arrays (if var != NULL)
-		value1 = datavar[0]->get_as_char();
-		value2 = datavar[2]->get_as_char();
+		value1 = args[0]->get_as_char();
+		value2 = args[2]->get_as_char();
 	}
 	else
 	{
-		d1 = datavar[0]->get_as_double();
-		d2 = datavar[2]->get_as_double();
+		d1 = args[0]->get_as_double();
+		d2 = args[2]->get_as_double();
 	}
-	msg(DM_VERBOSE,"IF TEST = var1(%s)=[%s] (%s) var2(%s)=[%s]\n", datavar[0]->get_name(), datavar[0]->get_as_char(), text_from_IC(iftest), datavar[2]->get_name(), datavar[2]->get_as_char());
+	msg(DM_VERBOSE,"IF TEST = var1(%s)=[%s] (%s) var2(%s)=[%s]\n", args[0]->get_name(), args[0]->get_as_char(), text_from_IC(iftest), args[2]->get_name(), args[2]->get_as_char());
 	// Do comparison
 	switch (iftest)
 	{
@@ -463,16 +222,16 @@ template <class T> bool command::if_evaluate()
 }
 
 // Add variables to command
-template <class T> bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
+bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 {
 	dbg_begin(DM_CALLS,"command::add_variables");
-	bool result = TRUE, required = TRUE;
+	bool required = TRUE;
 	int n, argcount, varcount;
 	dnchar arg;
 	variable_type vt;
-	//printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
+	printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
 	// Are there arguments in the parser that we shouldn't have been given.
-	if ((parser.get_nargs() - 1) > (strlen(v) - (index(v,'|') != NULL ? 1 : 0)))
+	if ((parser.get_nargs() - 1) > strlen(v))
 	{
 		printf("Too many arguments (%i) given to command '%s' (which expects %i at most).\n", (parser.get_nargs()-1), cmd, strlen(v));
 		dbg_end(DM_CALLS,"command::add_variables");
@@ -482,12 +241,8 @@ template <class T> bool command::add_variables(const char *cmd, const char *v, v
 	varcount = -1;
 	for (n = 0; v[n] != '\0'; n++)
 	{
-		// Check for bar, which we take to mean 'start of optional variables'
-		if (v[n] == '|')
-		{
-			required = FALSE;
-			continue;
-		}
+		// Check for lowercase letter (optional argument)
+		required = (v[n] > 90 ? FALSE : TRUE);
 		argcount ++;
 		varcount ++;
 		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
@@ -498,8 +253,8 @@ template <class T> bool command::add_variables(const char *cmd, const char *v, v
 			if (required)
 			{
 				printf("Command '%s' requires argument %i\n", cmd, argcount);
-				result = FALSE;
-				break;
+				dbg_end(DM_CALLS,"command::add_variables");
+				return FALSE;
 			}
 			else break;	// No more arguments, so may as well quit.
 		}
@@ -508,114 +263,39 @@ template <class T> bool command::add_variables(const char *cmd, const char *v, v
 		switch (v[n])
 		{
 			// Formats
-			case ('F'):
 			case ('f'):
 				create_format(arg.get(), vars);
 				continue;
 			// Discard
-			case ('X'):
 			case ('x'):
 				continue;
 			// String as-is
 			case ('s'):
-			case ('S'):
-				datavar[varcount] = vars.add();
-				datavar[varcount]->set(arg.get());
+				args[varcount] = vars.add();
+				args[varcount]->set(arg.get());
 				continue;
 			case ('='):
 				if (strcmp(arg.get(),"=") != 0)
 				{
 					printf("Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
-					result = FALSE;
 					dbg_end(DM_CALLS,"command::add_variables");
 					return FALSE;
 				}
 				else continue;
 		}
-		// Now for specifiers that require variables of a certain type.
-		// Capital letters enforce type onto a variable
-		datavar[varcount] = vars.get(arg.get());
-		// If datavar[varcount] is NULL then the argument was probably blank.
-		if (datavar[varcount] == NULL) datavar[varcount] = vars.add();
-		vt = datavar[varcount]->get_type();
-		switch (v[n])
+		// Now for variable specifiers.
+		// First, check that the variable has been declared
+		args[varcount] = vars.find(arg.get());
+		if (args[varcount] == NULL)
 		{
-			// Atom - may be 'atom*' or 'integer' (or forced as 'atom*')
-			case ('A'):
-				result = datavar[varcount]->set_type(VT_ATOM);
-				break;
-			case ('a'):
-				if ((vt != VT_ATOM) && (vt != VT_GENERIC))
-				{
-					printf("Argument %i (%s) to command '%s' must be a variable of type 'atom*' or 'integer'.\n", argcount, arg.get(), cmd);
-					result = FALSE;
-				}
-				break;
-			case ('B'):
-				result = datavar[varcount]->set_type(VT_PATBOUND);
-				break;
-			case ('b'):
-				if (vt != VT_PATBOUND)
-				{
-					printf("Argument %i (%s) to command '%s' must be a variable of type 'patbound*'.\n", argcount, arg.get(), cmd);
-					result = FALSE;
-				}
-				break;
-			case ('G'):
-				if (vt != VT_GENERICCONSTANT) result = datavar[varcount]->set_type(VT_GENERIC);
-				break;
-			case ('g'):
-				if (vt != VT_GENERICCONSTANT)
-				{
-					result = datavar[varcount]->set_type(VT_GENERIC);
-					vt = datavar[varcount]->get_type();
-				}
-				if ((vt != VT_GENERIC) && (vt != VT_GENERICCONSTANT))
-				{
-					printf("Argument %i (%s) to command '%s' must be a variable of type 'generic' or a constant value.\n", argcount, arg.get(), cmd);
-					result = FALSE;
-				}
-				break;
-			case ('M'):
-				result = datavar[varcount]->set_type(VT_MODEL);
-				break;
-			case ('m'):
-				if ((vt != VT_MODEL) && (vt != VT_GENERIC) && (vt != VT_GENERICCONSTANT))
-				{
-					printf("Argument %i (%s) to command '%s' must be a variable of type 'model*' or 'generic', or a constant value.\n", argcount, arg.get(), cmd);
-					result = FALSE;
-				}
-				break;
-			case ('P'):
-				result = datavar[varcount]->set_type(VT_PATTERN);
-				break;
-			case ('p'):
-				if (vt != VT_PATTERN)
-				{
-					printf("Argument %i (%s) to command '%s' must be a variable of type 'pattern*'.\n", varcount, arg.get(), cmd);
-					result = FALSE;
-				}
-				break;
-			case ('V'):
-			case ('v'):
-				if (vt == VT_GENERICCONSTANT)
-				{
-					printf("Argument %i (%s) to command '%s' must be a variable.\n", argcount, arg.get(), cmd);
-					result = FALSE;
-				}
-				break;
-			case ('?'):
-				break;
-			default:
-				printf("command::add_variables <<<< Unrecognised internal variable specifier '%c' >>>>\n", v[n]);
-				result = FALSE;
-				break;
+			printf("Variable '%s' has not been declared.\n", arg.get());
+			dbg_end(DM_CALLS,"command::add_variables");
+			return FALSE;
 		}
-		// Exit if we encountered an error
-		if (!result) break;
+		// We are not concerned about the variable's type here - this will just generate errors (or warnings) later on as commands are run
 	}
 	dbg_end(DM_CALLS,"command::add_variables");
-	return result;
+	return TRUE;
 }
 
 // Push branch on to stack
@@ -623,7 +303,7 @@ void commandlist::push_branch(list<command> *branch, command_action ca, command 
 {
 	branchstack.add(branch);
 	command *cn = branchcmdstack.add();
-	cn->set_command_action(bc);
+	cn->set_command(ca);
 	cn->set_pointer(basenode);
 }
 
@@ -647,7 +327,7 @@ command_action commandlist::get_topbranch_type()
 		printf("commandlist::get_topbranch_type <<<< No branches in branch list! >>>>\n");
 		return CA_NITEMS;
 	}
-	else return branchcmdstack.last()->get_command_action();
+	else return branchcmdstack.last()->get_command();
 }
 
 // Return base node of topmost branch
@@ -662,7 +342,7 @@ command* commandlist::get_topbranch_basenode()
 }
 
 // Add command to topmost branch
-command* commandlist::add_topbranch_command(command_action bc, command *nodeptr)
+command* commandlist::add_topbranch_command(command_action ca, command *nodeptr)
 {
 	if (branchstack.size() == 0)
 	{
@@ -670,7 +350,7 @@ command* commandlist::add_topbranch_command(command_action bc, command *nodeptr)
 		return NULL;
 	}
 	command *cn = branchstack.last()->item->add();
-	cn->set_command_action(bc);
+	cn->set_command(ca);
 	cn->set_pointer(nodeptr);
 	return cn;
 }
@@ -688,76 +368,103 @@ bool commandlist::add_command(command_action ca)
 	bool result = TRUE, varresult = TRUE;
 	switch (ca)
 	{
+		/*
+		// Variable Declaration
+		// All arguments to commands are names of variables to create
+		*/
+		case (CA_CHAR):
+		case (CA_INT):
+		case (CA_DOUBLE):
+		case (CA_ATOM):
+		case (CA_BOND):
+		case (CA_PATTERN):
+		case (CA_MODEL):
+		case (CA_PATBOUND):
+			for (n=1; n<parser.get_nargs(); n++)
+			{
+				// Check for existing variable with same name
+				v = variables.find(parser.argc(n));
+				if (v != NULL)
+				{
+					printf("Variable '%s': redeclared as type [%s], was [%s].\n", parser.argc(n), text_from_VT((variable_type) (ca - CA_CHAR)),  text_from_VT(v->get_type()));
+					result = FALSE;
+				}
+				else
+				{
+					v = variables.get(parser.argc(n));
+					v->set_type((variable_type) (ca - CA_CHAR));
+				}
+			}
 		// 'If' statement (if 'x condition y')
-		case (BC_IF):
-			fn = add_topbranch_command(BC_IF, NULL);
-			push_branch(fn->create_branch(), BC_IF, fn);
-			varresult = fn->add_variables(text_from_BC(ca), vars_from_BC(ca), variables);
+		case (CA_IF):
+			fn = add_topbranch_command(CA_IF, NULL);
+			push_branch(fn->create_branch(), CA_IF, fn);
+			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
 			if (!fn->set_iftest(parser.argc(2))) result = FALSE;
 			break;
-		// 'Else If' statement (acts as BC_END to previous 'if' or 'elseif' branch.
-		case (BC_ELSEIF):
+		// 'Else If' statement (acts as CA_END to previous 'if' or 'elseif' branch.
+		case (CA_ELSEIF):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
 			branchca = get_topbranch_type();
-			if ((branchca != BC_IF) && (branchca != BC_ELSEIF))
+			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
 			{
 				msg(DM_NONE,"Error: 'elseif' used without previous if/elseif.\n");
 				result = FALSE;
 				break;
 			}
 			// Add GOTONONIF command to topmost branch to end the if sequence
-			fn = add_topbranch_command(BC_GOTONONIF, get_topbranch_basenode());
+			fn = add_topbranch_command(CA_GOTONONIF, get_topbranch_basenode());
 			// Pop topmost (previous IF/ELSEIF) branch
 			pop_branch();
 			// Add new command node to new topmost branch and get variables
-			fn = add_topbranch_command(BC_ELSEIF, NULL);
-			//printf("New node is %li, command = %s\n",fn,BC_keywords[cmd]);
+			fn = add_topbranch_command(CA_ELSEIF, NULL);
+			//printf("New node is %li, command = %s\n",fn,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
-			push_branch(fn->create_branch(), BC_ELSEIF, fn);
-			varresult = fn->add_variables(text_from_BC(ca), vars_from_BC(ca), variables);
+			push_branch(fn->create_branch(), CA_ELSEIF, fn);
+			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
 			if (!fn->set_iftest(parser.argc(2))) result = FALSE;
 			break;
-		// 'Else' statement (acts as BC_END to previous 'if' or 'elseif' branch.
-		case (BC_ELSE):
+		// 'Else' statement (acts as CA_END to previous 'if' or 'elseif' branch.
+		case (CA_ELSE):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
 			branchca = get_topbranch_type();
-			if ((branchca != BC_IF) && (branchca != BC_ELSEIF))
+			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
 			{
 				msg(DM_NONE,"Error: 'else' used without previous if/elseif.\n");
 				result = FALSE;
 				break;
 			}
 			// Add GOTONONIF command to current topbranch to terminate that branch
-			fn = add_topbranch_command(BC_GOTONONIF, get_topbranch_basenode());
+			fn = add_topbranch_command(CA_GOTONONIF, get_topbranch_basenode());
 			// Pop previous branch from stack and add new command to new topmost branch
 			pop_branch();
 			// Add new node to new top branch
-			fn = add_topbranch_command(BC_ELSE, NULL);
-			//printf("New node is %li, command = %s\n",fn,BC_keywords[cmd]);
+			fn = add_topbranch_command(CA_ELSE, NULL);
+			//printf("New node is %li, command = %s\n",fn,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
-			push_branch(fn->create_branch(), BC_ELSE, fn);
+			push_branch(fn->create_branch(), CA_ELSE, fn);
 			break;
 		// Loop for n iterations (or until file ends)
-		case (BC_REPEAT):
-			//fn->datavar[0]->set(0);
-			fn = add_topbranch_command(BC_REPEAT, NULL);
-			push_branch(fn->create_branch(), BC_REPEAT, fn);
-			varresult = fn->add_variables(text_from_BC(ca), vars_from_BC(ca), variables);
+		case (CA_FOR):
+			//fn->args[0]->set(0);
+			fn = add_topbranch_command(CA_FOR, NULL);
+			push_branch(fn->create_branch(), CA_FOR, fn);
+			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
 			break;
 		// Loops over items
-		case (BC_FORPATTERNS):		// Loop over patterns in model
-		case (BC_FORMOLECULES):		// Loop over molecules in pattern
-		case (BC_FORATOMS):		// Loop over atoms
-		case (BC_FORBONDS):		// Loop over bonds in model
-		case (BC_FORFFBONDS):		// Loop over pattern's ff bonds
-		case (BC_FORFFANGLES):		// Loop over pattern's ff angles
-		case (BC_FORFFTORSIONS):	// Loop over pattern's ff torsions
+		case (CA_FORPATTERNS):		// Loop over patterns in model
+		case (CA_FORMOLECULES):		// Loop over molecules in pattern
+		case (CA_FORATOMS):		// Loop over atoms
+		case (CA_FORBONDS):		// Loop over bonds in model
+		case (CA_FORFFBONDS):		// Loop over pattern's ff bonds
+		case (CA_FORFFANGLES):		// Loop over pattern's ff angles
+		case (CA_FORFFTORSIONS):	// Loop over pattern's ff torsions
 			fn = add_topbranch_command(ca, NULL);
 			push_branch(fn->create_branch(), ca, fn);
-			varresult = fn->add_variables(text_from_BC(ca), vars_from_BC(ca), variables);
+			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
 			break;
 		// End the topmost branch in the stack
-		case (BC_END):
+		case (CA_END):
 			if (branchstack.size() == 0)
 			{
 				msg(DM_NONE,"commandlist::add_command - 'end' does not end a block.\n");
@@ -769,27 +476,26 @@ bool commandlist::add_command(command_action ca)
 			switch (branchca)
 			{
 				// For repeats, jump back to node at start of loop (the branch owner)
-				case (BC_REPEAT):
-				case (BC_FORATOMS):
-				case (BC_FORPATTERNS):
-				case (BC_FORMOLECULES):
-				case (BC_FORFFBONDS):
-				case (BC_FORFFANGLES):
-				case (BC_FORFFTORSIONS):
-					add_topbranch_command(BC_GOTO, get_topbranch_basenode());
+				case (CA_FOR):
+				case (CA_FORATOMS):
+				case (CA_FORPATTERNS):
+				case (CA_FORMOLECULES):
+				case (CA_FORFFBONDS):
+				case (CA_FORFFANGLES):
+				case (CA_FORFFTORSIONS):
+					add_topbranch_command(CA_GOTO, get_topbranch_basenode());
 					break;
 				// For IFs, jump to node containing IF/ELSEIF/ELSE branch (the branch owner)
-				case (BC_IF):
-				case (BC_ELSEIF):
-				case (BC_ELSE):
-					add_topbranch_command(BC_GOTONONIF, get_topbranch_basenode());
+				case (CA_IF):
+				case (CA_ELSEIF):
+				case (CA_ELSE):
+					add_topbranch_command(CA_GOTONONIF, get_topbranch_basenode());
 					break;
-				case (BC_OTHER):
-				case (BC_ROOTNODE):
-					add_topbranch_command(BC_TERMINATE, NULL);
+				case (CA_ROOTNODE):
+					add_topbranch_command(CA_TERMINATE, NULL);
 					break;
 				default:
-					printf("commandlist::add_basic <<<< No END action defined for command '%s' >>>>\n",text_from_BC(branchca));
+					printf("commandlist::add_basic <<<< No END action defined for command '%s' >>>>\n",text_from_CA(branchca));
 					result = FALSE;
 					break;
 			}
@@ -799,13 +505,13 @@ bool commandlist::add_command(command_action ca)
 		// All other commands do not alter the flow of the commandlist...
 		default:
 			fn = add_topbranch_command(ca, NULL);
-			varresult = fn->add_variables(text_from_BC(ca), vars_from_BC(ca), variables);
+			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
 			break;
 	}
 	// Check variable assignment result
 	if (!varresult)
 	{
-		msg(DM_NONE,"Error: Command '%s' was not given the correct variables.\n", text_from_BC(ca));
+		msg(DM_NONE,"Error: Command '%s' was not given the correct variables.\n", text_from_CA(ca));
 		result = FALSE;
 	}
 	dbg_end(DM_CALLS,"commandlist::add_command");
@@ -833,47 +539,29 @@ bool commandlist::cache_line(const char *s)
 	return TRUE;
 }
 
-
 // Cache command arguments in line_parser
 bool commandlist::cache_command()
 {
 	dbg_begin(DM_CALLS,"commandlist::cache_command");
-	script_command sc;
-	basic_command bc;
-	command *fn;
+	command_action ca;
 	int success;
 	bool result = TRUE;
 	// Assume that the main parser object contains the data we require.
-	// Check for basic commands (local to command_nodes) first.
-	bc = BC_from_text(parser.argc(0));
-	if (bc != BC_NITEMS)
+	ca = CA_from_text(parser.argc(0));
+	if (ca != CA_NITEMS)
 	{
-		// Add the command to the list
-		if (!commands.add_basic(bc))
+		// If add_command() returns FALSE then we encountered an error
+		if (!add_command(ca))
 		{
-			msg(DM_NONE,"commandlist::load - Error adding basic command '%s'.\n", parser.argc(0));
+			msg(DM_NONE,"Error adding command '%s'.\n", parser.argc(0));
+			msg(DM_NONE,  "Command usage is '%s'.\n", syntax_from_CA(ca));
 			result = FALSE;
 		}
 	}
 	else
 	{
-		// Find the script command and add this to the command list
-		sc = SC_from_text(parser.argc(0));
-		if (sc != SC_NITEMS)
-		{
-			// If add_other() returns FALSE then we encountered an error
-			if (!commands.add_other(sc, text_from_SC(sc), vars_from_SC(sc)))
-			{
-				msg(DM_NONE,"Error adding script command '%s'.\n", parser.argc(0));
-				msg(DM_NONE,  "Command usage is '%s'.\n", syntax_from_SC(sc));
-				result = FALSE;
-			}
-		}
-		else
-		{
-			msg(DM_NONE,"Unrecognised command '%s' in script.\n", parser.argc(0));
-			result = FALSE;
-		}
+		msg(DM_NONE,"Unrecognised command '%s' in script.\n", parser.argc(0));
+		result = FALSE;
 	}
 	dbg_end(DM_CALLS,"commandlist::cache_command");
 	return result;

@@ -37,12 +37,12 @@ bool script::command_model(command_node<script_command> *cmd)
 	{
 		case (SC_NEWMODEL):	// Create new model ('newmodel <name>')
 			m = master.add_model();
-			m->set_name(cmd->datavar[0]->get_as_char());
+			m->set_name(cmd->argc(0));
 			msg(DM_NONE,"script : Create model '%s'\n",m->get_name());
 			break;
 		case (SC_LOADMODEL):	// Load model ('loadmodel <name> <filename>')
-			f = master.probe_file(cmd->datavar[1]->get_as_char(), FT_MODEL_IMPORT);
-			if (f != NULL) f->import_model(cmd->datavar[1]->get_as_char());
+			f = master.probe_file(cmd->argc(1), FT_MODEL_IMPORT);
+			if (f != NULL) f->import_model(cmd->argc(1));
 			else
 			{
 				result = FALSE;
@@ -50,13 +50,13 @@ bool script::command_model(command_node<script_command> *cmd)
 			}
 			if (m != NULL)
 			{
-				m->set_name(cmd->datavar[0]->get_as_char());
+				m->set_name(cmd->argc(0));
 				activeatom = m->get_atoms();
-				msg(DM_NONE,"script : Model '%s' loaded, name '%s'\n",cmd->datavar[1]->get_as_char(),m->get_name());
+				msg(DM_NONE,"script : Model '%s' loaded, name '%s'\n",cmd->argc(1),m->get_name());
 			}
 			else
 			{
-				msg(DM_NONE,"script : Model '%s' couldn't be loaded.'\n",cmd->datavar[1]->get_as_char());
+				msg(DM_NONE,"script : Model '%s' couldn't be loaded.'\n",cmd->argc(1));
 				result = FALSE;
 			}
 			break;
@@ -66,16 +66,16 @@ bool script::command_model(command_node<script_command> *cmd)
 			{
 				// Find filter with a nickname matching that given in argc(0)
 				for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next)
-					if (strcmp(f->get_nickname(),cmd->datavar[0]->get_as_char()) == 0) break;
+					if (strcmp(f->get_nickname(),cmd->argc(0)) == 0) break;
 				// Check that a suitable format was found
 				if (f == NULL)
 				{
-					msg(DM_NONE,"script : No model export filter was found that matches the nickname '%s'.\nNot saved.\n",cmd->datavar[0]->get_as_char());
+					msg(DM_NONE,"script : No model export filter was found that matches the nickname '%s'.\nNot saved.\n",cmd->argc(0));
 					result = FALSE;
 					break;
 				}
 				m->set_filter(f);
-				m->set_filename(cmd->datavar[1]->get_as_char());
+				m->set_filename(cmd->argc(1));
 				f->export_model(m);
 			}
 			break;
@@ -84,7 +84,7 @@ bool script::command_model(command_node<script_command> *cmd)
 			if (m != NULL) m->print();
 			break;
 		case (SC_SELECTMODEL):	// Select working model ('selectmodel <name>')
-			m = master.find_model(cmd->datavar[0]->get_as_char());
+			m = master.find_model(cmd->argc(0));
 			if (m != NULL) 
 			{
 				master.set_currentmodel(m);

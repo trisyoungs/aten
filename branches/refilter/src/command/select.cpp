@@ -51,12 +51,12 @@ bool script::command_select(command_node<script_command> *cmd)
 			break;
 		// Select by atom ('selectatom <n>')
 		case (SC_SELECTATOM):
-			i = m->find_atom(cmd->datavar[0]->get_as_int());
+			i = m->find_atom(cmd->argi(0));
 			if (i != NULL) m->select_atom(i);
 			break;
 		// Select by element ('selectelement <el>')
 		case (SC_SELECTELEMENT):
-			el = elements.find(cmd->datavar[0]->get_as_char(),ZM_ALPHA);
+			el = elements.find(cmd->argc(0),ZM_ALPHA);
 			for (i = m->get_atoms(); i != NULL; i = i->next) if (i->get_element() == el) m->select_atom(i);
 			break;
 		// Select by forcefield type ('selecffttype <fftype>')
@@ -68,7 +68,7 @@ bool script::command_select(command_node<script_command> *cmd)
 				ffa = i->get_type();
 				if (ffa != NULL)
 				{
-					if (ff->match_type(ffa->get_name(),cmd->datavar[0]->get_as_char()) != 0) m->select_atom(i);
+					if (ff->match_type(ffa->get_name(),cmd->argc(0)) != 0) m->select_atom(i);
 				}
 			}
 		// Select no atoms ('selectnone')
@@ -78,8 +78,8 @@ bool script::command_select(command_node<script_command> *cmd)
 		// Select by supplied atom type description ('selecttype <el> <typedesc>')
 		case (SC_SELECTTYPE):
 			testat = new atomtype();
-			testat->el = elements.find(cmd->datavar[0]->get_as_char());
-			testat->expand(cmd->datavar[1]->get_as_char(),NULL,NULL);
+			testat->el = elements.find(cmd->argc(0));
+			testat->expand(cmd->argc(1),NULL,NULL);
 			// Apply it to the atoms in the model, selecting atoms that match
 			count = 0;
 			matchscore = 0;
@@ -124,7 +124,7 @@ bool script::command_select(command_node<script_command> *cmd)
 			break;
 		// Detect and select overlapping atoms
 		case (SC_SELECTOVERLAPS):
-			m->select_overlaps(cmd->datavar[0]->get_as_double());
+			m->select_overlaps(cmd->argd(0));
 			break;
 		// Clear labels in selection
 		case (SC_CLEARLABELS):
@@ -132,11 +132,11 @@ bool script::command_select(command_node<script_command> *cmd)
 			break;
 		// Add label to current selection
 		case (SC_ADDLABEL):
-			al = AL_from_text(cmd->datavar[0]->get_as_char());
+			al = AL_from_text(cmd->argc(0));
 			if (al != AL_NITEMS) m->selection_add_labels(al);
 		// Remove label from current selection
 		case (SC_REMOVELABEL):
-			al = AL_from_text(cmd->datavar[0]->get_as_char());
+			al = AL_from_text(cmd->argc(0));
 			if (al != AL_NITEMS) m->selection_remove_labels(al);
 			break;
 		default:

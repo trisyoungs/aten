@@ -44,43 +44,43 @@ bool script::command_prefs(command_node<script_command> *cmd)
 	{
 		// Set energy unit to use in output ('energyunits <unit>')
 		case (SC_ENERGYUNITS):
-			if (EU_from_text(cmd->datavar[0]->get_as_char()) == EU_NITEMS) result = FALSE;
-			else prefs.set_internal_units(EU_from_text(cmd->datavar[0]->get_as_char()));
+			if (EU_from_text(cmd->argc(0)) == EU_NITEMS) result = FALSE;
+			else prefs.set_internal_units(EU_from_text(cmd->argc(0)));
 			break;
 		// Set density unit to use in output ('densityunits <unit>')
 		case (SC_DENSITYUNITS):
-			if (DU_from_text(cmd->datavar[0]->get_as_char()) == DU_NITEMS) result = FALSE;
-			else prefs.set_density_units(DU_from_text(cmd->datavar[0]->get_as_char()));
+			if (DU_from_text(cmd->argc(0)) == DU_NITEMS) result = FALSE;
+			else prefs.set_density_units(DU_from_text(cmd->argc(0)));
 			break;
 		// Mouse bindings
 		case (SC_MOUSE):
-			mb = MB_from_text(cmd->datavar[0]->get_as_char());
-			ma = MA_from_text(cmd->datavar[1]->get_as_char());
+			mb = MB_from_text(cmd->argc(0));
+			ma = MA_from_text(cmd->argc(1));
 			if ((ma != MA_NITEMS) && (mb != MB_NITEMS)) prefs.set_mb_action(mb,ma);
 			break;
 		// Key bindings
 		case (SC_KEY):
-			mk = MK_from_text(cmd->datavar[0]->get_as_char());
-			ka = KA_from_text(cmd->datavar[1]->get_as_char());
+			mk = MK_from_text(cmd->argc(0));
+			ka = KA_from_text(cmd->argc(1));
 			if ((mk != MK_NITEMS) && (ka != KA_NITEMS)) prefs.set_keymod_action(mk, ka);
 			break;
 		// Atom and bond quadric detail
 		case (SC_ATOMDETAIL):
-			prefs.set_atom_detail(cmd->datavar[0]->get_as_int());
+			prefs.set_atom_detail(cmd->argi(0));
 			break;
 		case (SC_BONDDETAIL):
-			prefs.set_bond_detail(cmd->datavar[0]->get_as_int());
+			prefs.set_bond_detail(cmd->argi(0));
 			break;
 		// OpenGL
 		case (SC_SHININESS):
-			prefs.set_shininess(cmd->datavar[0]->get_as_int());
+			prefs.set_shininess(cmd->argi(0));
 			break;
 		case (SC_RADIUS):
-			ds = DS_from_text(cmd->datavar[0]->get_as_char());
-			if (ds != DS_NITEMS) prefs.set_atom_size(ds, cmd->datavar[1]->get_as_double());
+			ds = DS_from_text(cmd->argc(0));
+			if (ds != DS_NITEMS) prefs.set_atom_size(ds, cmd->argd(1));
 			break;
 		case (SC_GL):
-			go = GO_from_text(cmd->datavar[0]->get_as_char());
+			go = GO_from_text(cmd->argc(0));
 			if (go != GO_NITEMS)
 			{
 				if (cmd->datavar[1]->get_as_bool()) prefs.add_gl_option(go);
@@ -90,18 +90,18 @@ bool script::command_prefs(command_node<script_command> *cmd)
 			break;
 		// Render Objects
 		case (SC_SHOW):
-			vo = VO_from_text(cmd->datavar[0]->get_as_char());
+			vo = VO_from_text(cmd->argc(0));
 			prefs.set_visible(vo, cmd->datavar[1]->get_as_bool());
 			break;
 		// View Styles
 		case (SC_STYLE):
-			ds = DS_from_text(cmd->datavar[0]->get_as_char());
+			ds = DS_from_text(cmd->argc(0));
 			if (ds != DS_NITEMS) prefs.set_render_style(ds);
 			break;
 		// Colours
 		case (SC_COLOUR):
 			colvec = cmd->get_vector3d(1);
-			c = COL_from_text(cmd->datavar[0]->get_as_char());
+			c = COL_from_text(cmd->argc(0));
 			if (c != COL_NITEMS) prefs.set_colour(c, colvec.x, colvec.y, colvec.z, 1.0);
 			break;
 		default:
