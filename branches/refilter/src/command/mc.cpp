@@ -19,58 +19,57 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
-#include "command/commands.h"
+#include "command/commandlist.h"
 #include "methods/mc.h"
+#include "base/master.h"
 #include "base/debug.h"
-#include "classes/pattern.h"
 
-// Monte Carlo-related script commands (root=SR_MC)
-bool script::command_mc(command_node<script_command> *cmd)
+// Sets acceptance energy for moves ('mc accept <move> <energy>')
+int command_functions::function_CA_MCACCEPT(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_mc");
-	bool result = TRUE;
+	mc_move mt = MT_from_text(c->argc(0));
+	if (mt == MT_NITEMS) return CR_FAIL;
+	master.mc.set_eaccept(mt, c->argd(1));
+	return CR_SUCCESS;
+}
+
+// Sets allowances for moves ('mc allow <move> <on|off>')
+int command_functions::function_CA_MCALLOW(command *&c, objects &obj)
+{
+	mc_move mt = MT_from_text(c->argc(0));
+	if (mt == MT_NITEMS) return CR_FAIL;
+	master.mc.set_allowed(mt, c->argb(1));
+	return CR_SUCCESS;
+}
+
+// Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
+int command_functions::function_CA_MCMAXSTEP(command *&c, objects &obj)
+{
+	mc_move mt = MT_from_text(c->argc(0));
+	if (mt == MT_NITEMS) return CR_FAIL;
+	master.mc.set_maxstep(mt, c->argd(1));
+	return CR_SUCCESS;
+}
+
+// Sets ntrials for moves ('mc ntrials <move> <ntrials>')
+int command_functions::function_CA_MCNTRIALS(command *&c, objects &obj)
+{
+	mc_move mt = MT_from_text(c->argc(0));
+	if (mt == MT_NITEMS) return CR_FAIL;
+	master.mc.set_ntrials(mt, c->argi(1));
+	return CR_SUCCESS;
+}
+
+// Prints the current MC params ('printmc')
+int command_functions::function_CA_PRINTMC(command *&c, objects &obj)
+{
+	msg(DM_NONE,"Current Monte Carlo Parameters are:\n");
+	msg(DM_NONE,"Move        Allowed  NTrials  MaxStep   EAccept :\n");
 	mc_move mt;
-	int cmdi = cmd->get_command();	
-	switch (cmdi)
+	for (int n=0; n<MT_NITEMS; n++)
 	{
-		case (SC_PRINTMC):	// Prints the current MC params ('printmc')
-			msg(DM_NONE,"Current Monte Carlo Parameters are:\n");
-			msg(DM_NONE,"Move        Allowed  NTrials  MaxStep   EAccept :\n");
-			for (int n=0; n<MT_NITEMS; n++)
-			{
-				mt = (mc_move) n;
-				msg(DM_NONE,"%11s   %3s   %4i   %8.3f   %8.2e\n",text_from_MT(mt), (master.mc.get_allowed(mt) ? "Yes" : "No"), master.mc.get_ntrials(mt), master.mc.get_maxstep(mt), master.mc.get_eaccept(mt));
-			}
-			break;
-		case (SC_MCACCEPT):	// Set MC move parameters
-		case (SC_MCALLOW):
-		case (SC_MCNTRIALS):
-		case (SC_MCMAXSTEP):
-			// Check that a valid move type has been given
-			mt = MT_from_text(cmd->argc(0));
-			if (mt == MT_NITEMS) break;
-			switch (cmdi)
-			{
-				case (SC_MCMAXSTEP):	// Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-					master.mc.set_maxstep(mt,cmd->argd(1));
-					break;
-				case (SC_MCNTRIALS):	// Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-					master.mc.set_ntrials(mt,cmd->argi(1));
-					break;
-				case (SC_MCACCEPT):	// Sets acceptance energy for moves ('mc accept <move> <energy>')
-					master.mc.set_eaccept(mt,cmd->argd(1));
-					break;
-				case (SC_MCALLOW):	// Sets allowances for moves ('mc allow <move> <on|off>')
-					master.mc.set_allowed(mt,cmd->datavar[1]->get_as_bool());
-					break;
-			}
-			break;
-		default:
-			printf("Error - missed charge command?\n");
-			result = FALSE;
-			break;
+		mt = (mc_move) n;
+		msg(DM_NONE,"%11s   %3s   %4i   %8.3f   %8.2e\n", text_from_MT(mt), (master.mc.get_allowed(mt) ? "Yes" : "No"), master.mc.get_ntrials(mt), master.mc.get_maxstep(mt), master.mc.get_eaccept(mt));
 	}
-	dbg_end(DM_CALLS,"script::command_charge");
-	return result;
+	return CR_SUCCESS;
 }

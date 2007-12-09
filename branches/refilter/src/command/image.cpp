@@ -19,26 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "command/commandlist.h"
 #include "base/debug.h"
 
-// Image-related script commands (root=SR_IMAGE)
-bool script::command_image(command_node<script_command> *cmd)
-{
-	dbg_begin(DM_CALLS,"script::command_image");
-	bool result = TRUE;
-	if (!check_activemodel(text_from_SC(cmd->get_command())))
-	{
-		dbg_end(DM_CALLS,"script::command_image");
-		return FALSE;
-	}
-	switch (cmd->get_command())
-	{
-		default:
-			printf("Error - missed image command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_image");
-	return result;
-}

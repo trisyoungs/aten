@@ -25,86 +25,87 @@
 #include "classes/forcefield.h"
 #include "file/filter.h"
 
-// Model-related script commands (root=SR_MODEL)
-bool script::command_model(command_node<script_command> *cmd)
+// Print loaded models ('listmodels')
+int command_functions::function_CA_LISTMODELS(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_model");
-	bool result = TRUE;
-	model *m;
-	int n;
-	filter *f;
-	switch (cmd->get_command())
-	{
-		case (SC_NEWMODEL):	// Create new model ('newmodel <name>')
-			m = master.add_model();
-			m->set_name(cmd->argc(0));
-			msg(DM_NONE,"script : Create model '%s'\n",m->get_name());
-			break;
-		case (SC_LOADMODEL):	// Load model ('loadmodel <name> <filename>')
-			f = master.probe_file(cmd->argc(1), FT_MODEL_IMPORT);
-			if (f != NULL) f->import_model(cmd->argc(1));
-			else
-			{
-				result = FALSE;
-				break;
-			}
-			if (m != NULL)
-			{
-				m->set_name(cmd->argc(0));
-				activeatom = m->get_atoms();
-				msg(DM_NONE,"script : Model '%s' loaded, name '%s'\n",cmd->argc(1),m->get_name());
-			}
-			else
-			{
-				msg(DM_NONE,"script : Model '%s' couldn't be loaded.'\n",cmd->argc(1));
-				result = FALSE;
-			}
-			break;
-		case (SC_SAVEMODEL):	// Save current model ('savemodel <format> <filename>')
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			if (m != NULL)
-			{
-				// Find filter with a nickname matching that given in argc(0)
-				for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next)
-					if (strcmp(f->get_nickname(),cmd->argc(0)) == 0) break;
-				// Check that a suitable format was found
-				if (f == NULL)
-				{
-					msg(DM_NONE,"script : No model export filter was found that matches the nickname '%s'.\nNot saved.\n",cmd->argc(0));
-					result = FALSE;
-					break;
-				}
-				m->set_filter(f);
-				m->set_filename(cmd->argc(1));
-				f->export_model(m);
-			}
-			break;
-		case (SC_PRINTMODEL):	// Print all information for model ('printmodel')
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			if (m != NULL) m->print();
-			break;
-		case (SC_SELECTMODEL):	// Select working model ('selectmodel <name>')
-			m = master.find_model(cmd->argc(0));
-			if (m != NULL) 
-			{
-				master.set_currentmodel(m);
-				//gui.select_model(m);
-				activepattern = NULL;
-				activeatom = m->get_atoms();
-			}
-			else result = FALSE;
-			break;
-		case (SC_LISTMODELS):	// Print loaded models ('listmodels')
-			if (master.get_nmodels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
-			for (m = master.get_models(); m != NULL; m = m->next)
-				msg(DM_NONE,"%15s %5i  %15s\n",m->get_name(),m->get_natoms(),(m->get_ff() != NULL ? m->get_ff()->get_name() : "None"));
-			break;
-		default:	// Not recognised
-			printf("Error - missed model command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_model");
-	return result;
+	if (master.get_nmodels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
+	for (model *m = master.get_models(); m != NULL; m = m->next)
+		msg(DM_NONE,"%15s %5i  %15s\n", m->get_name(),m->get_natoms(),(m->get_ff() != NULL ? m->get_ff()->get_name() : "None"));
+	return CR_SUCCESS;
 }
 
+// Load model ('loadmodel <filename> [name]')
+int command_functions::function_CA_LOADMODEL(command *&c, objects &obj)
+{
+	filter *f = master.probe_file(c->argc(0), FT_MODEL_IMPORT);
+	if (f != NULL)
+	{
+		if (f->execute(c->argc(0)))
+		{
+			model *m = master.get_currentmodel();
+			if (c->was_given(1)) m->set_name(c->argc(1));
+			obj.i = obj.m->get_atoms();
+			msg(DM_NONE,"script : Model '%s' loaded, name '%s'\n", c->argc(0), m->get_name());
+			return CR_SUCCESS;
+		}
+		else
+		{
+			msg(DM_NONE,"script : Model '%s' couldn't be loaded.'\n", c->argc(1));
+			return CR_FAIL;
+		}
+	}
+	else return CR_FAIL;
+}
+
+// Create new model ('newmodel <name>')
+int command_functions::function_CA_NEWMODEL(command *&c, objects &obj)
+{
+	model *m = master.add_model();
+	m->set_name(c->argc(0));
+	msg(DM_NONE,"script : Create model '%s'\n", m->get_name());
+	return CR_SUCCESS;
+}
+
+// Print all information for model ('printmodel')
+int command_functions::function_CA_PRINTMODEL(command *&c, objects &obj)
+{
+	obj.m->print();
+	return CR_SUCCESS;
+}
+
+// Save current model ('savemodel <format> <filename>')
+int command_functions::function_CA_SAVEMODEL(command *&c, objects &obj)
+{
+	// Find filter with a nickname matching that given in argc(0)
+	filter *f;
+	for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next)
+		if (strcmp(f->get_nickname(),c->argc(0)) == 0) break;
+	// Check that a suitable format was found
+	if (f == NULL)
+	{
+		msg(DM_NONE,"script : No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
+		return CR_FAIL;
+	}
+	obj.m->set_filter(f);
+	obj.m->set_filename(c->argc(1));
+	return (f->execute_with_model(obj.m, c->argc(1)) ? CR_SUCCESS : CR_FAIL);
+}
+
+// Select working model ('selectmodel <name>')
+int command_functions::function_CA_SELECTMODEL(command *&c, objects &obj)
+{
+	model *m = master.find_model(c->argc(0));
+	if (m != NULL) 
+	{
+		master.set_currentmodel(m);
+		//gui.select_model(m);
+		obj.p = NULL;
+		obj.i = m->get_atoms();
+		return CR_SUCCESS;
+	}
+	else
+	{
+		msg(DM_NONE,"No model named '%s' is loaded.\n", c->argc(0));
+		return CR_FAIL;
+	}
+}

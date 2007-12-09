@@ -227,7 +227,7 @@ int master_data::parse_cli(int argc, char *argv[])
 				// Load surface
 				case (LO_SURFACE):
 					f = master.probe_file(optarg, FT_GRID_IMPORT);
-					if (f != NULL) f->commands.execute(optarg,"");
+					if (f != NULL) f->execute(optarg);
 					break;
 				default:
 					printf("Unrecognised command-line option '%s'.\n",argv[index]);
@@ -241,7 +241,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	{
 		ntried ++;
 		f = master.probe_file(argv[optind], FT_MODEL_IMPORT);
-		if (f != NULL) f->commands.execute(argv[optind],"");
+		if (f != NULL) f->execute(argv[optind]);
 		optind++;
 	}
 	if (ntried == 0) return 0;

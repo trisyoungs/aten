@@ -25,45 +25,29 @@
 #include "file/temp_dlpfield.h"
 #include "file/filter.h"
 
-// Field-related script commands (root=SR_FIELD)
-bool script::command_field(command_node<script_command> *cmd)
+// Save field definition ('savefield <filename>')
+int command_functions::function_CA_SAVEFIELD(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_field");
-	bool result = TRUE;
-	atom *i;
+	savedlpfield(c->argc(0),obj.m);
+	return CR_SUCCESS;
+}
+
+// Save field definition ('savefield2 <format> <file>')
+int command_functions::function_CA_SAVEFIELD2(command *&c, objects &obj)
+{
+	// Find filter with a nickname matching that given in argc(0)
 	filter *f;
-	model *m = check_activemodel("Field commands");
-	if (m == NULL)
+	for (f = master.filters[FT_FIELD_EXPORT].first(); f != NULL; f = f->next)
 	{
-		dbg_end(DM_CALLS,"script::command_field");
-		return FALSE;
+		//printf("Checking %s against %s\n",f->get_nickname(),cmd->argc(0));
+		if (strcmp(f->get_nickname(), c->argc(0)) == 0) break;
 	}
-	switch (cmd->get_command())
+	// Check that a suitable format was found
+	if (f == NULL)
 	{
-		case (SC_SAVEFIELD):	// Save field definition ('savefield <filename>')
-			savedlpfield(cmd->argc(0),m);
-			break;
-		case (SC_SAVEFIELD2):	// NEW Save field definition ('savefield2 <format> <file>')
-			// Find filter with a nickname matching that given in argc(0)
-			for (f = master.filters[FT_FIELD_EXPORT].first(); f != NULL; f = f->next)
-			{
-				//printf("Checking %s against %s\n",f->get_nickname(),cmd->argc(0));
-				if (strcmp(f->get_nickname(), cmd->argc(0)) == 0) break;
-			}
-			// Check that a suitable format was found
-			if (f == NULL)
-			{
-				msg(DM_NONE,"script : No field export filter was found that matches the extension '%s'.\nNot saved.\n",cmd->argc(0));
-				result = FALSE;
-				break;
-			}
-			f->export_field(m,cmd->argc(1));
-			break;
-		default:
-			printf("Error - missed field command?\n");
-			result = FALSE;
-			break;
+		msg(DM_NONE,"script : No field export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
+		return CR_FAIL;
 	}
-	dbg_end(DM_CALLS,"script::command_field");
-	return result;
+	f->execute_with_model(obj.m, c->argc(1));
+	return CR_SUCCESS;
 }

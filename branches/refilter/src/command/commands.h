@@ -257,7 +257,7 @@ struct objects
 	model *m;
 	pattern *p;
 	atom *i;
-	forcefield *f;
+	forcefield *ff;
 	grid *g;
 };
 

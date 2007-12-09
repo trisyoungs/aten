@@ -24,9 +24,10 @@
 
 #include "file/filtercommands.h"
 #include "command/commandlist.h"
+#include <fstream>
 
 // Filter Types
-enum filter_type { FT_MODEL_IMPORT, FT_MODEL_EXPORT, FT_TRAJECTORY_IMPORT, FT_TRAJECTORY_EXPORT, FT_FIELD_IMPORT, FT_FIELD_EXPORT, FT_GRID_IMPORT, FT_GRID_EXPORT, FT_NITEMS };
+enum filter_type { FT_MODEL_IMPORT, FT_TRAJECTORY_IMPORT, FT_FIELD_IMPORT, FT_GRID_IMPORT, FT_MODEL_EXPORT,  FT_TRAJECTORY_EXPORT, FT_FIELD_EXPORT, FT_GRID_EXPORT, FT_NITEMS };
 const char *text_from_FT(filter_type);
 filter_type FT_from_text(const char*);
 
@@ -107,22 +108,28 @@ class filter
 	const char *get_description() { return description.get(); }
 
 	/*
-	// Command actions
-	*/
-	public:
-	// Command list
-	commandlist commands;
-
-	/*
-	// Storage targets
+	// Files
 	*/
 	private:
-	// Set target to model
-	void set_target(model*);
-	// Set target to surface
-	void set_target(grid*);
+	// Input (source) file
+	ifstream inputfile;
+	// Output (destination) file
+	ofstream outputfile;
+
+	/*
+	// Command actions
+	*/
+	private:
+	// Command list
+	commandlist commands;
 	// Reset all targets
 	void reset_targets();
+
+	public:
+	// Execute filter
+	bool execute(const char *filename);
+	bool execute_with_model(model *m, const char *filename);
+	bool execute_with_grid(grid *g, const char *filename);
 };
 
 #endif

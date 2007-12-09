@@ -19,55 +19,53 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "command/commandlist.h"
 #include "base/debug.h"
+#include "model/model.h"
 #include "classes/pattern.h"
 
-// Pattern-related script commands
-bool script::command_pattern(command_node<script_command> *cmd)
+// Add manual pattern definition ('addpattern <name> <nmols> <natoms>')
+int command_functions::function_CA_ADDPATTERN(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_pattern");
-	bool result = TRUE;
-	pattern *p;
-	model *m = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m == NULL)
+	obj.m->add_pattern(c->argi(1), c->argi(2), c->argc(0));
+	// TODO Add 'check_pattern(pattern*) method to model*
+	return CR_SUCCESS;
+}
+
+// Clear current pattern definition ('clearpatterns')
+int command_functions::function_CA_CLEARPATTERNS(command *&c, objects &obj)
+{
+	obj.m->clear_patterns();
+	return CR_SUCCESS;
+}
+
+// Autocreate pattern definition ('createpatterns')
+int command_functions::function_CA_CREATEPATTERNS(command *&c, objects &obj)
+{
+	obj.m->autocreate_patterns();
+	return CR_SUCCESS;
+}
+
+// Print pattern definition for current model ('printpatterns')
+int command_functions::function_CA_PRINTPATTERNS(command *&c, objects &obj)
+{
+	msg(DM_NONE,"Pattern info for model '%s':\n", obj.m->get_name());
+	obj.m->autocreate_patterns();
+	pattern *p = obj.m->get_patterns();
+	p != NULL ? printf("  ID  nmols  starti  finali  name\n") : printf("None.\n");
+	while (p != NULL)
 	{
-		dbg_end(DM_CALLS,"script::command_pattern");
-		return FALSE;
+		msg(DM_NONE,"  %2i  %5i  %6i  %6i  %s\n", p->get_id(), p->get_nmols(), p->get_startatom(), p->get_endatom(), p->get_name());
+		p = p->next;
 	}
-	switch (cmd->get_command())
-	{
-		case (SC_CREATEPATTERNS):	// Autocreate pattern definition ('createpatterns')
-			m->autocreate_patterns();
-			break;
-		case (SC_CLEARPATTERNS):	// Clear current pattern definition ('clearpatterns')
-			m->clear_patterns();
-			break;
-		case (SC_ADDPATTERN):		// Add manual pattern definition ('addpattern <name> <nmols> <natoms>')
-			m->add_pattern(cmd->argi(1), cmd->argi(2), cmd->argc(0));
-			// TODO Add 'check_pattern(pattern*) method to model*
-			break;
-		case (SC_PRINTPATTERNS):	// Print pattern definition for current model ('printpatterns')
-			msg(DM_NONE,"Pattern info for model '%s':\n",m->get_name());
-			m->autocreate_patterns();
-			p = m->get_patterns();
-			p != NULL ? printf("  ID  nmols  starti  finali  name\n") : printf("None.\n");
-			while (p != NULL)
-			{
-				msg(DM_NONE,"  %2i  %5i  %6i  %6i  %s\n",p->get_id(),p->get_nmols(), p->get_startatom(), p->get_endatom(), p->get_name());
-				p = p->next;
-			}
-			break;
-		case (SC_SELECTPATTERN):	// Select working pattern from model ('selectpattern <name>')
-			p = m->find_pattern(cmd->argc(0));
-			if (p != NULL) activepattern = p;
-			else result = FALSE;
-			break;
-		default:
-			printf("Error - missed pattern command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_pattern");
-	return result;
+	return CR_SUCCESS;
+}
+
+// Select working pattern from model ('selectpattern <name>')
+int command_functions::function_CA_SELECTPATTERN(command *&c, objects &obj)
+{
+	pattern *p = obj.m->find_pattern(c->argc(0));
+	if (p != NULL) obj.p = p;
+	else return CR_FAIL;
+	return CR_SUCCESS;
 }

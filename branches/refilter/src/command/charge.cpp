@@ -1,5 +1,5 @@
 /*
-	*** Script charge functions
+	*** Charge command functions
 	*** src/command/charge.cpp
 	Copyright T. Youngs 2007
 

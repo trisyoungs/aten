@@ -1,5 +1,5 @@
 /*
-	*** Script disorder functions
+	*** Disorder command functions
 	*** src/command/disorder.cpp
 	Copyright T. Youngs 2007
 
@@ -144,36 +144,3 @@ int command_functions::function_CA_VDWSCALE(command *&c, objects &obj)
 	master.mc.set_vdw_radius_scale(c->argd(0));
 	return CR_SUCCESS;
 }
-
-// Disorder builder-related script commands (root=SR_DISORDER)
-bool script::command_disorder(command_node<script_command>  *cmd)
-{
-	dbg_begin(DM_CALLS,"script::command_disorder");
-	bool result = TRUE;
-	atom *i;
-	model *m;
-	vec3<double> v1,v2;
-	region_shape rs;
-	component *c;
-	model *m2 = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m2 == NULL)
-	{
-		dbg_end(DM_CALLS,"script::command_disorder");
-		return FALSE;
-	}
-	int cmdi = cmd->get_command();
-	switch (cmdi)
-	{
-
-
-
-
-		default:
-			printf("Error - missed expr command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_disorder");
-	return result;
-}
-

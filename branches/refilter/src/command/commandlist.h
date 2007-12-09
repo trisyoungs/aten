@@ -243,14 +243,6 @@ class commandlist
 	ofstream *outfile;
 	// Parser read options for this commandlist
 	int readopts;
-
-	public:
-	// Open input file
-	bool set_input(const char *filename);
-	// Set file pointer
-	bool set_input(ifstream *file);
-	// Set output file
-	bool set_output(const char *filename);
 	// Close input/output file(s)
 	void close_files();
 };

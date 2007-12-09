@@ -109,7 +109,7 @@ const char *SC_syntax[SC_NITEMS] = {
 	"ffmodel",
 	"ffpattern",
 	"ffpatternid <patternid>",
-	"loadff <name> <filename>",
+	"loadff <filename> [name]",
 	"selectff <name>",
 	"typemodel",
 	"typetest <ffid> <atomid>",
@@ -147,7 +147,7 @@ const char *SC_syntax[SC_NITEMS] = {
 
 	// Model commands
 	"listmodels",
-	"loadmodel <name> <filename>",
+	"loadmodel <filename> [name]",
 	"newmodel <name>",
 	"printmodel",
 	"savemodel <format> <filename>",

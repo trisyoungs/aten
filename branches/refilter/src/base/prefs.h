@@ -451,7 +451,7 @@ class prefs_data
 	*/
 	private:
 	// Method of electrostatic calculation
-	elec_type method_electrostatics;
+	elec_method method_electrostatics;
 	// Whether to calculate VDW interactions
 	bool method_calc_vdw;
 	// Whether to calculate electrostatic interactions
@@ -473,9 +473,9 @@ class prefs_data
 
 	public:
 	// Sets the electrostatic model to use in energy/force calculation
-	void set_electrostatics(elec_type e) { method_electrostatics = e; }
+	void set_electrostatics(elec_method em) { method_electrostatics = em; }
 	// Return the type of electrostatic treatment to use
-	elec_type get_electrostatics() { return method_electrostatics; }
+	elec_method get_electrostatics() { return method_electrostatics; }
 	// Sets whether to calculate intramolecular interactions
 	void set_calc_intra(bool b) { method_calc_intra = b; }
 	// Return whether to calculate intramolocular interactions

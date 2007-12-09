@@ -1,5 +1,5 @@
 /*
-	*** Script forcefield functions
+	*** Forcefield command functions
 	*** src/command/ff.cpp
 	Copyright T. Youngs 2007
 
@@ -19,120 +19,106 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "command/commandlist.h"
 #include "base/master.h"
 #include "base/prefs.h"
 #include "base/debug.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 
-// Forcefield-related script commands (root=SR_FF)
-bool script::command_ff(command_node<script_command> *cmd)
+// Associate current ff to current model ('ffmodel')
+int command_functions::function_CA_FFMODEL(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_ff");
-	bool result = TRUE;
-	forcefield *ff;
-	ffatom *ffa;
-	model *m;
-	switch (cmd->get_command())
-	{
-		// Load forcefield ('loadff <name> <filename>')
-		case (SC_LOADFF):
-			ff = master.load_ff(cmd->argc(1));
-			if (ff != NULL)
-			{
-				ff->set_name(cmd->argc(0));
-				master.set_currentff(ff);
-				msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n",cmd->argc(1),cmd->argc(0));
-			}
-			else result = FALSE;
-			break;
-		// Select current forcefield ('selectff <name>')
-		case (SC_SELECTFF):
-			ff = master.find_ff(cmd->argc(0));
-			if (ff != NULL) master.set_currentff(ff);
-			else
-			{
-				msg(DM_NONE,"Forcefield '%s' is not loaded.\n");
-				result = FALSE;
-			}
-			break;
-		// Associate current ff to current model ('ffmodel')
-		case (SC_FFMODEL):
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			if (m != NULL) m->set_ff(master.get_currentff());
-			else result = FALSE;
-			break;
-		// Set current forcefield for named pattern ('ffpattern')
-		case (SC_FFPATTERN):
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			if (m != NULL)
-			{
-				if (check_activepattern(text_from_SC(cmd->get_command()))) activepattern->set_ff(master.get_currentff());
-				else result = FALSE;
-			}
-			else result = FALSE;
-			break;
-		// Set current forcefield for pattern id given ('ffpatternid <id>')
-		case (SC_FFPATTERNID):
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			if (m != NULL)
-			{
-				int nodeid = cmd->argi(0) - 1;
-				if ((nodeid < 0) || (nodeid > m->get_npatterns()))
-				{
-					msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, m->get_npatterns());
-					result = FALSE;
-				}
-				else m->get_pattern(nodeid)->set_ff(master.get_currentff());
-			}
-			else result = FALSE;
-			break;
-		// Test specified type ID of current forcefield
-		case (SC_TYPETEST):
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			ff = master.get_currentff();
-			if ((m == NULL) || (ff == NULL))
-			{
-				result = FALSE;
-				break;
-			}
-			// Find the specified type...
-			ffa = ff->find_type(cmd->argi(0));
-			if (ffa == NULL)
-			{
-				msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",cmd->argi(0),ff->get_name());
-				result = FALSE;
-			}
-			else
-			{
-				if (m->autocreate_patterns())
-				{
-					// Prepare for typing
-					m->describe_atoms();
-					// Get atom, element, and the atom's pattern
-					atom *i = m->get_staticatoms()[cmd->argi(1)-1];
-					int el = i->get_element();
-					pattern *p = m->get_pattern(i);
-					int score = ffa->get_atomtype()->match_atom(i,p->get_ringlist(),m,i);
-					if (score != 0) msg(DM_NONE,"Atom %i matched type %i (%s) with score %i.\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name(), score);
-					else msg(DM_NONE,"Atom %i did not match type %i (%s).\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name());
-				}
-				else result = FALSE;
-			}
-			break;
-		// Perform typing on current model
-		case (SC_TYPEMODEL):
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			if (m != NULL) result = m->type_all();
-			else result = FALSE;
-			break;
-		default:
-			printf("Error - missed ff command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_ff");
-	return result;
+	obj.m->set_ff(obj.ff);
+	return CR_SUCCESS;
 }
 
+// Set current forcefield for named pattern ('ffpattern')
+int command_functions::function_CA_FFPATTERN(command *&c, objects &obj)
+{
+	obj.p->set_ff(obj.ff);
+	return CR_SUCCESS;
+}
+
+// Set current forcefield for pattern id given ('ffpatternid <id>')
+int command_functions::function_CA_FFPATTERNID(command *&c, objects &obj)
+{
+	int nodeid = c->argi(0) - 1;
+	if ((nodeid < 0) || (nodeid > obj.m->get_npatterns()))
+	{
+		msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i atterns).\n", nodeid, obj.m->get_npatterns());
+		return CR_FAIL;
+	}
+	else obj.m->get_pattern(nodeid)->set_ff(obj.ff);
+	return CR_SUCCESS;
+}
+
+// Load forcefield ('loadff <filename> [nickname]')
+int command_functions::function_CA_LOADFF(command *&c, objects &obj)
+{
+	forcefield *ff = master.load_ff(c->argc(1));
+	if (ff != NULL)
+	{
+		master.set_currentff(ff);
+		if (c->was_given(1)) ff->set_name(c->argc(1));
+		msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->get_name());
+		return CR_SUCCESS;
+	}
+	else return CR_FAIL;
+}
+
+// Select current forcefield ('selectff <name>')
+int command_functions::function_CA_SELECTFF(command *&c, objects &obj)
+{
+	forcefield *ff = master.find_ff(c->argc(0));
+	if (ff != NULL)
+	{
+		master.set_currentff(ff);
+		return CR_SUCCESS;
+	}
+	else
+	{
+		msg(DM_NONE,"Forcefield '%s' is not loaded.\n", c->argc(0));
+		return CR_FAIL;
+	}
+}
+
+// Perform typing on current model
+int command_functions::function_CA_TYPEMODEL(command *&c, objects &obj)
+{
+	return (obj.m->type_all() ? CR_SUCCESS : CR_FAIL);
+}
+
+// Test specified type ID of current forcefield
+int command_functions::function_CA_TYPETEST(command *&c, objects &obj)
+{
+	if (obj.ff == NULL)
+	{
+		msg(DM_NONE,"No forcefield loaded.\n");
+		return CR_FAIL;
+	}
+	// Find the specified type...
+	ffatom *ffa = obj.ff->find_type(c->argi(0));
+	if (ffa == NULL)
+	{
+		msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->get_name());
+		return CR_FAIL;
+	}
+	else
+	{
+		if (obj.m->autocreate_patterns())
+		{
+			// Prepare for typing
+			obj.m->describe_atoms();
+			// Get atom, element, and the atom's pattern
+			atom *i = obj.m->get_staticatoms()[c->argi(1)-1];
+			int el = i->get_element();
+			pattern *p = obj.m->get_pattern(i);
+			int score = ffa->get_atomtype()->match_atom(i,p->get_ringlist(),obj.m,i);
+			if (score != 0) msg(DM_NONE,"Atom %i matched type %i (%s) with score %i.\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name(), score);
+			else msg(DM_NONE,"Atom %i did not match type %i (%s).\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name());
+		}
+		else return CR_FAIL;
+	}
+	return CR_SUCCESS;
+}

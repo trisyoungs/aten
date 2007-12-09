@@ -141,7 +141,7 @@ const char *CA_data[CA_NITEMS] = {
 	"ffmodel",
 	"ffpattern",
 	"ffpatternid,r",
-	"loadff,rr",
+	"loadff,ro",
 	"selectff,r",
 	"typemodel",
 	"typetest,r",
@@ -179,7 +179,7 @@ const char *CA_data[CA_NITEMS] = {
 
 	// Model commands
 	"listmodels",
-	"loadmodel,rr",
+	"loadmodel,ro",
 	"newmodel,r",
 	"printmodel",
 	"savemodel,rr",

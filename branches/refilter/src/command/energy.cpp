@@ -1,5 +1,5 @@
 /*
-	*** Script energy functions
+	*** Energy command functions
 	*** src/command/energy.cpp
 	Copyright T. Youngs 2007
 
@@ -22,162 +22,72 @@
 #include "command/commands.h"
 #include "base/prefs.h"
 #include "base/debug.h"
+#include "model/model.h"
 
-// Expression-related script commands (root=SR_EXPRESSION)
-bool script::command_expr(command_node<script_command> *cmd)
+// Calculate energy of current trajectory frame ('frameenergy')
+int command_functions::function_CA_FRAMEENERGY(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_expr");
-	bool result = TRUE;
-	elec_type et;
-	model *m;
-	switch (cmd->get_command())
-	{
-		case (SC_VCUT):		// Set VDW cutoff ('vcut <cut>')
-			prefs.set_vdw_cutoff(cmd->argd(0));
-			break;
-		case (SC_ECUT):		// Set electrostatics cutoff ('ecut <cut>')
-			prefs.set_elec_cutoff(cmd->argd(0));
-			break;
-		case (SC_VDW):		// Turn on/off calculation of vdw ('vdw on|off')
-			prefs.set_calc_vdw(cmd->datavar[0]->get_as_bool());
-			break;
-		case (SC_ELEC):		// Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
-			et = EM_from_text(cmd->argc(0));
-			if (et == EM_NITEMS)
-			{
-				result = FALSE;
-				break;
-			}
-			prefs.set_electrostatics(et);
-			prefs.set_calc_elec((et == EM_OFF ? FALSE : TRUE));
-			switch (et)
-			{
-				case (EM_EWALD):	// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
-					prefs.set_ewald_alpha(cmd->argd(1));
-					prefs.set_ewald_kvec(cmd->get_vector3i(2));
-					break;
-				case (EM_EWALDAUTO):	// Set ewald precision
-					prefs.set_ewald_precision(cmd->argd(1));
-					break;
-			}
-			break;
-		case (SC_CREATEEXPRESSION):	// Create energy expression for current model ('createexpression'}
-			m = check_activemodel(text_from_SC(cmd->get_command()));
-			if (m == NULL)
-			{
-				dbg_end(DM_CALLS,"script::command_expr");
-				return FALSE;
-			}
-			else
-			{
-				m->autocreate_patterns();
-				m->create_expression();
-			}
-			break;
-		case (SC_INTRA):	// Turn on/off calculation of intra ('intra on|off')
-			prefs.set_calc_intra(cmd->datavar[0]->get_as_bool());
-			break;
-		case (SC_PRINTEXPRESSION):// Print expression setup ('printexpression')
-			msg(DM_NONE,"Current Energy Setup:\n");
-			msg(DM_NONE,"Intramolecular Terms : %s\n",(prefs.calc_intra() ? "On" : "Off"));
-			msg(DM_NONE,"       van der Waals : %s\n",(prefs.calc_vdw() ? "On" : "Off"));
-			msg(DM_NONE,"      Electrostatics : %s (%s)\n",(prefs.calc_elec() ? "On" : "Off"), text_from_EM(prefs.get_electrostatics()));
-			msg(DM_NONE,"             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.get_vdw_cutoff(), prefs.get_elec_cutoff());
-			break;
-		default:
-			printf("Error - missed expr command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_expr");
-	return result;
-}
-
-// Energy-related script commands (root=SR_ENERGY)
-bool script::command_energy(command_node<script_command> *cmd)
-{
-	dbg_begin(DM_CALLS,"script::command_energy");
-	bool result = TRUE;
 	double energy;
-	model *mframe;
-	model *m = check_activemodel("Energy commands");
-	if (m == NULL)
-	{
-		dbg_end(DM_CALLS,"script::command_energy");
-		return FALSE;
-	}
-	switch (cmd->get_command())
-	{
-		case (SC_MODELENERGY):		// Calculate energy of current model contents ('modelenergy')
-			if (m->create_expression()) energy = m->total_energy(m);
-			else result = FALSE;
-			break;
-		case (SC_FRAMEENERGY):		// Calculate energy of current trajectory frame ('frameenergy')
-			mframe = m->get_currentframe();
-			if (m->create_expression()) energy = m->total_energy(mframe);
-			else result = FALSE;
-			break;
-		case (SC_PRINTENERGY):		// Print long energy decomposition of model ('printenergy')
-			m->energy.print();
-			break;
-		case (SC_PRINTSUMMARY):		// Print short energy decomposition of model ('printsummary')
-			m->energy.print_summary();
-			break;
-		case (SC_PRINTEWALD):	// Print out Ewald energy decomposition of model ('printewald')
-			m->energy.print_ewald();
-			break;
-		case (SC_PRINTVDW):	// Print out VDW decomposition matrix ('printvdw')
-			m->energy.print_vdwmatrix(m);
-			break;
-		case (SC_PRINTELEC):	// Print out electrostatic decomposition matrix ('printelec')
-			m->energy.print_elecmatrix(m);
-			break;
-		case (SC_PRINTINTER):	// Print out interpattern decomposition matrix ('printinter')
-			m->energy.print_intermatrix(m);
-			break;
-		case (SC_PRINTINTRA):	// Print out intramolecular decomposition matrix ('printintra')
-			m->energy.print_intramatrix(m);
-			break;
-		default:
-			printf("Error - missed energy command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_energy");
-	return result;
+	model *frame = obj.m->get_currentframe();
+	if (obj.m->create_expression()) energy = obj.m->total_energy(frame);
+	else return CR_FAIL;
+	return CR_SUCCESS;
 }
 
-// Force-related script commands (root=SR_FORCES)
-bool script::command_forces(command_node<script_command> *cmd)
+// Calculate energy of current model contents ('modelenergy')
+int command_functions::function_CA_MODELENERGY(command *&c, objects &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_forces");
-	bool result = TRUE;
-	model *mframe;
-	model *m = check_activemodel("Force commands");
-	if (m == NULL)
-	{
-		dbg_end(DM_CALLS,"script::command_forces");
-		return FALSE;
-	}
-	switch (cmd->get_command())
-	{
-		case (SC_MODELFORCES):		// Calculate atomic forces of model ('modelforces')
-			if (m->create_expression()) m->calculate_forces(m);
-			else result = FALSE;
-			break;
-		case (SC_FRAMEFORCES):		// Calculate forces at trajectory configuration ('frameforces')
-			mframe = m->get_currentframe();
-			if (m->create_expression()) m->calculate_forces(mframe);
-			else result = FALSE;
-			break;
-		case (SC_PRINTFORCES):		// Print forces of model ('printforces')
-			m->print_forces();
-			break;
-		default:
-			printf("Error - missed expr command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_forces");
-	return result;
+	double energy;
+	if (obj.m->create_expression()) energy = obj.m->total_energy(obj.m);
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
+// Print out electrostatic decomposition matrix ('printelec')
+int command_functions::function_CA_PRINTELEC(command *&c, objects &obj)
+{
+	obj.m->energy.print_elecmatrix(obj.m);
+	return CR_SUCCESS;
+}
+
+// Print long energy decomposition of model ('printenergy')
+int command_functions::function_CA_PRINTENERGY(command *&c, objects &obj)
+{
+	obj.m->energy.print();
+	return CR_SUCCESS;
+}
+
+// Print out Ewald energy decomposition of model ('printewald')
+int command_functions::function_CA_PRINTEWALD(command *&c, objects &obj)
+{
+	obj.m->energy.print_ewald();
+	return CR_SUCCESS;
+}
+
+// Print out interpattern decomposition matrix ('printinter')
+int command_functions::function_CA_PRINTINTER(command *&c, objects &obj)
+{
+	obj.m->energy.print_intermatrix(obj.m);
+	return CR_SUCCESS;
+}
+
+// Print out intramolecular decomposition matrix ('printintra')
+int command_functions::function_CA_PRINTINTRA(command *&c, objects &obj)
+{
+	obj.m->energy.print_intramatrix(obj.m);
+	return CR_SUCCESS;
+}
+
+// Print short energy decomposition of model ('printsummary')
+int command_functions::function_CA_PRINTSUMMARY(command *&c, objects &obj)
+{
+	obj.m->energy.print_summary();
+	return CR_SUCCESS;
+}
+
+// Print out VDW decomposition matrix ('printvdw')
+int command_functions::function_CA_PRINTVDW(command *&c, objects &obj)
+{
+	obj.m->energy.print_vdwmatrix(obj.m);
+	return CR_SUCCESS;
 }
