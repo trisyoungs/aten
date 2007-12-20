@@ -25,38 +25,16 @@
 
 // Command action keywords
 const char *CA_data[CA_NITEMS] = {
-	"_ROOTNODE_",
 
+	// Variables
 	"integer",
 	"double",
 	"character",
 	"atom",
 	"pattern",
 
-	"for,rro",
-	"foratoms,roo",
-	"forbonds",
-	"forpatterns,r",
-	"formolecules",
-	"forffbonds,rr",
-	"forffangles,rr",
-	"forfftorsions,rr",
-
-	"if,rxe",
-	"elseif,rxe",
-	"else",
-	"end",
-
-	"let,rxe",
-	"inc,r",
-	"dec,r",
-	"eval,r=e",
-
-	"print,s",
-
-	"_GOTO_",
-	"_GOTONONIF_",
-	"_TERMINATE_",
+	// Root node
+	"_ROOTNODE_",
 
 	// Analysis
 	"finalise",
@@ -137,6 +115,26 @@ const char *CA_data[CA_NITEMS] = {
 	"vcut,r",
 	"vdw,r",
 
+	// Field commands
+	"savefield,r",
+	"savefield2,rr",
+
+	// Flow control
+	"else",
+	"elseif,rxe",
+	"end",
+	"for,roo",
+	"_GOTO_",
+	"_GOTONONIF_",
+	"if,rxe",
+	"repeat,r",
+	"_TERMINATE_",
+
+	// Force commands
+	"frameforces",
+	"modelforces",
+	"printforces",
+
 	// Forcefield commands
 	"ffmodel",
 	"ffpattern",
@@ -145,15 +143,6 @@ const char *CA_data[CA_NITEMS] = {
 	"selectff,r",
 	"typemodel",
 	"typetest,r",
-
-	// Field commands
-	"savefield,r",
-	"savefield2,rr",
-
-	// Force commands
-	"frameforces",
-	"modelforces",
-	"printforces",
 
 	//"image 
 
@@ -168,6 +157,9 @@ const char *CA_data[CA_NITEMS] = {
 	"mcmaxstep,rr",
 	"mcntrials,rr",
 	"printmc",
+
+	// Messaging
+	"print,s",
 
 	// Minimisation commands
 	"cgminimise",
@@ -233,6 +225,12 @@ const char *CA_data[CA_NITEMS] = {
 	"translateatom,rrr",
 	"translate,rrr",
 	"mirror,r",
+
+	// Variables
+	"dec,r",
+	"eval,r=e",
+	"inc,r",
+	"let,rxe",
 
 	"quit"
 

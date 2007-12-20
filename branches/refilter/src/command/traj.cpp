@@ -1,5 +1,5 @@
 /*
-	*** Script trajectory functions
+	*** Trajectory command functions
 	*** src/command/traj.cpp
 	Copyright T. Youngs 2007
 
@@ -24,42 +24,58 @@
 #include "base/debug.h"
 #include "file/filter.h"
 
-// Trajectory-related script commands (root=SR_TRAJ)
-bool script::command_traj(command_node<script_command> *cmd)
+// Skip to first frame ('firstframe')
+int command_functions::function_CA_FIRSTFRAME(command *&c, bundle &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_traj");
-	bool result = TRUE;
-	filter *f;
-	model *m = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m == NULL)
+	if (obj.m->get_totalframes() == 0)
 	{
-		dbg_end(DM_CALLS,"script::command_traj");
-		return FALSE;
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		return CR_FAIL;
 	}
-	switch (cmd->get_command())
+	obj.m->seek_first_frame();
+	return CR_SUCCESS;
+}
+
+// Skip to last frame ('lastframe')
+int command_functions::function_CA_LASTFRAME(command *&c, bundle &obj)
+{
+	if (obj.m->get_totalframes() == 0)
 	{
-		case (SC_LOADTRAJECTORY):	// Open and associate trajectory ('loadtrajectory <file>')
-			f = master.probe_file(cmd->argc(0), FT_TRAJECTORY_IMPORT);
-			if (f != NULL) result = m->initialise_trajectory(cmd->argc(0),f);
-			else result = FALSE;
-			break;
-		case (SC_FIRSTFRAME):		// Skip to first frame ('firstframe')
-			if (check_traj(text_from_SC(cmd->get_command()))) m->seek_first_frame();
-			break;
-		case (SC_PREVFRAME):		// Go to previous frame ('prevframe')
-			if (check_traj(text_from_SC(cmd->get_command()))) m->seek_previous_frame();
-			break;
-		case (SC_NEXTFRAME):		// Go to next frame ('nextframe')
-			if (check_traj(text_from_SC(cmd->get_command()))) m->seek_next_frame();
-			break;
-		case (SC_LASTFRAME):		// Skip to last frame ('lastframe')
-			if (check_traj(text_from_SC(cmd->get_command()))) m->seek_last_frame();
-			break;
-		default:
-			printf("Error - missed traj command?\n");
-			result = FALSE;
-			break;
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		return CR_FAIL;
 	}
-	dbg_end(DM_CALLS,"script::command_traj");
-	return result;
+	obj.m->seek_last_frame();
+	return CR_SUCCESS;
+}
+
+// Open and associate trajectory ('loadtrajectory <file>')
+int command_functions::function_CA_LOADTRAJECTORY(command *&c, bundle &obj)
+{
+	filter *f = master.probe_file(c->argc(0), FT_TRAJECTORY_IMPORT);
+	if (f == NULL) return CR_FAIL;
+	return (obj.m->initialise_trajectory(c->argc(0),f) ? CR_SUCCESS : CR_FAIL);
+}
+
+// Go to next frame ('nextframe')
+int command_functions::function_CA_NEXTFRAME(command *&c, bundle &obj)
+{
+	if (obj.m->get_totalframes() == 0)
+	{
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		return CR_FAIL;
+	}
+	obj.m->seek_next_frame();
+	return CR_SUCCESS;
+}
+
+// Go to previous frame ('prevframe')
+int command_functions::function_CA_PREVFRAME(command *&c, bundle &obj)
+{
+	if (obj.m->get_totalframes() == 0)
+	{
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		return CR_FAIL;
+	}
+	obj.m->seek_previous_frame();
+	return CR_SUCCESS;
 }

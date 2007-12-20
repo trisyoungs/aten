@@ -1,5 +1,5 @@
 /*
-	*** Script selection functions
+	*** Selection command functions
 	*** src/command/select.cpp
 	Copyright T. Youngs 2007
 
@@ -19,132 +19,121 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "command/commandlist.h"
+#include "model/model.h"
 #include "base/elements.h"
 #include "base/sysfunc.h"
 #include "base/debug.h"
 #include "classes/forcefield.h"
+#include "classes/pattern.h"
 
-// Selection-related script commands
-bool script::command_select(command_node<script_command> *cmd)
+// Select all ('selectall')
+int command_functions::function_CA_SELECTALL(command *&c, bundle &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_select");
-	bool result = TRUE;
-	static atom *i;
-	static atom_label al;
-        static int count, el, matchscore, atomscore, n;
-	static atomtype *testat;
-	static pattern *p;
-	static ffatom *ffa;
-	static forcefield *ff;
-	model *m = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m == NULL)
-	{
-		dbg_end(DM_CALLS,"script::command_select");
-		return FALSE;
-	}
-	switch (cmd->get_command())
-	{
-		// Select all ('selectall')
-		case (SC_SELECTALL):
-			m->select_all();
-			break;
-		// Select by atom ('selectatom <n>')
-		case (SC_SELECTATOM):
-			i = m->find_atom(cmd->argi(0));
-			if (i != NULL) m->select_atom(i);
-			break;
-		// Select by element ('selectelement <el>')
-		case (SC_SELECTELEMENT):
-			el = elements.find(cmd->argc(0),ZM_ALPHA);
-			for (i = m->get_atoms(); i != NULL; i = i->next) if (i->get_element() == el) m->select_atom(i);
-			break;
-		// Select by forcefield type ('selecffttype <fftype>')
-		case (SC_SELECTFFTYPE):
-			for (i = m->get_atoms(); i != NULL; i = i->next)
-			{
-				ff = m->get_ff();
-				if (ff == NULL) break;
-				ffa = i->get_type();
-				if (ffa != NULL)
-				{
-					if (ff->match_type(ffa->get_name(),cmd->argc(0)) != 0) m->select_atom(i);
-				}
-			}
-		// Select no atoms ('selectnone')
-		case (SC_SELECTNONE):
-			m->select_none();
-			break;
-		// Select by supplied atom type description ('selecttype <el> <typedesc>')
-		case (SC_SELECTTYPE):
-			testat = new atomtype();
-			testat->el = elements.find(cmd->argc(0));
-			testat->expand(cmd->argc(1),NULL,NULL);
-			// Apply it to the atoms in the model, selecting atoms that match
-			count = 0;
-			matchscore = 0;
-			if (m->autocreate_patterns())
-			{
-				// Prepare for typing
-				m->describe_atoms();
-				// Loop over patterns and select atoms
-				p = m->get_patterns();
-				while (p != NULL)
-				{
-					i = p->get_firstatom();
-					for (n=0; n<p->get_natoms(); n++)
-					{
-						p->reset_tempi(0);
-						i->tempi = 1;
-						if (i->get_element() == testat->el)
-						{
-							atomscore = testat->match_atom(i,p->get_ringlist(),m,i);
-							if (atomscore != 0)
-							{
-								m->select_atom(i);
-								count ++;
-								matchscore = atomscore;
-							}
-						}
-						i = i->next;
-					}
-					p = p->next;
-				}
-				// Write results
-				msg(DM_NONE,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
-				// Update model and delete temporary atomtype
-				m->log_change(LOG_SELECTION);
-				delete testat;
-			}
-			else msg(DM_NONE,"Can't test atomtype description without a valid pattern definition!\n");
-			break;
-		// Invert selection
-		case (SC_SELECTINVERT):
-			m->selection_invert();
-			break;
-		// Detect and select overlapping atoms
-		case (SC_SELECTOVERLAPS):
-			m->select_overlaps(cmd->argd(0));
-			break;
-		// Clear labels in selection
-		case (SC_CLEARLABELS):
-			m->selection_clear_labels();
-			break;
-		// Add label to current selection
-		case (SC_ADDLABEL):
-			al = AL_from_text(cmd->argc(0));
-			if (al != AL_NITEMS) m->selection_add_labels(al);
-		// Remove label from current selection
-		case (SC_REMOVELABEL):
-			al = AL_from_text(cmd->argc(0));
-			if (al != AL_NITEMS) m->selection_remove_labels(al);
-			break;
-		default:
-			printf("Error - missed select command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_select");
-	return result;
+	obj.m->select_all();
+	return CR_SUCCESS;
 }
 
+// Select by atom ('selectatom <n>')
+int command_functions::function_CA_SELECTATOM(command *&c, bundle &obj)
+{
+	atom *i = obj.m->find_atom(c->argi(0));
+	if (i != NULL) obj.m->select_atom(i);
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
+// Select by element ('selectelement <el>')
+int command_functions::function_CA_SELECTELEMENT(command *&c, bundle &obj)
+{
+	int el = elements.find(c->argc(0), ZM_ALPHA);
+	for (atom *i = obj.m->get_atoms(); i != NULL; i = i->next) if (i->get_element() == el) obj.m->select_atom(i);
+	return CR_SUCCESS;
+}
+
+// Select by forcefield type ('selecffttype <fftype>')
+int command_functions::function_CA_SELECTFFTYPE(command *&c, bundle &obj)
+{
+	forcefield *ff = obj.m->get_ff();
+	if (ff == NULL)
+	{
+		msg(DM_NONE,"No forcefield associated to model.\n");
+		return CR_FAIL;
+	}
+	ffatom *ffa;
+	for (atom *i = obj.m->get_atoms(); i != NULL; i = i->next)
+	{
+		ffa = i->get_type();
+		if (ffa != NULL)
+		{
+			if (ff->match_type(ffa->get_name(),c->argc(0)) != 0) obj.m->select_atom(i);
+		}
+	}
+	return CR_SUCCESS;
+}
+
+// Invert selection
+int command_functions::function_CA_SELECTINVERT(command *&c, bundle &obj)
+{
+	obj.m->selection_invert();
+	return CR_SUCCESS;
+}
+
+// Select no atoms ('selectnone')
+int command_functions::function_CA_SELECTNONE(command *&c, bundle &obj)
+{
+	obj.m->select_none();
+	return CR_SUCCESS;
+}
+
+// Detect and select overlapping atoms
+int command_functions::function_CA_SELECTOVERLAPS(command *&c, bundle &obj)
+{
+	obj.m->select_overlaps(c->argd(0));
+	return CR_SUCCESS;
+}
+
+// Select by supplied atom type description ('selecttype <el> <typedesc>')
+int command_functions::function_CA_SELECTTYPE(command *&c, bundle &obj)
+{
+	atomtype testat;
+	testat.el = elements.find(c->argc(0));
+	testat.expand(c->argc(1),NULL,NULL);
+	// Apply it to the atoms in the model, selecting atoms that match
+	int count = 0, matchscore, atomscore;
+	if (obj.m->autocreate_patterns())
+	{
+		// Prepare for typing
+		obj.m->describe_atoms();
+		// Loop over patterns and select atoms
+		pattern *p = obj.m->get_patterns();
+		while (p != NULL)
+		{
+			atom *i = p->get_firstatom();
+			for (int n=0; n<p->get_natoms(); n++)
+			{
+				p->reset_tempi(0);
+				i->tempi = 1;
+				if (i->get_element() == testat.el)
+				{
+					atomscore = testat.match_atom(i,p->get_ringlist(),obj.m,i);
+					if (atomscore != 0)
+					{
+						obj.m->select_atom(i);
+						count ++;
+						matchscore = atomscore;
+					}
+				}
+				i = i->next;
+			}
+			p = p->next;
+		}
+		// Write results
+		msg(DM_NONE,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
+		// Update model and delete temporary atomtype
+		obj.m->log_change(LOG_SELECTION);
+		return CR_SUCCESS;
+	}
+	else msg(DM_NONE,"Can't test atomtype description without a valid pattern definition!\n");
+	return CR_FAIL;
+}

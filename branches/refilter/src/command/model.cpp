@@ -1,5 +1,5 @@
 /*
-	*** Script model functions
+	*** Model command functions
 	*** src/command/model.cpp
 	Copyright T. Youngs 2007
 
@@ -26,7 +26,7 @@
 #include "file/filter.h"
 
 // Print loaded models ('listmodels')
-int command_functions::function_CA_LISTMODELS(command *&c, objects &obj)
+int command_functions::function_CA_LISTMODELS(command *&c, bundle &obj)
 {
 	if (master.get_nmodels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
 	for (model *m = master.get_models(); m != NULL; m = m->next)
@@ -35,7 +35,7 @@ int command_functions::function_CA_LISTMODELS(command *&c, objects &obj)
 }
 
 // Load model ('loadmodel <filename> [name]')
-int command_functions::function_CA_LOADMODEL(command *&c, objects &obj)
+int command_functions::function_CA_LOADMODEL(command *&c, bundle &obj)
 {
 	filter *f = master.probe_file(c->argc(0), FT_MODEL_IMPORT);
 	if (f != NULL)
@@ -58,7 +58,7 @@ int command_functions::function_CA_LOADMODEL(command *&c, objects &obj)
 }
 
 // Create new model ('newmodel <name>')
-int command_functions::function_CA_NEWMODEL(command *&c, objects &obj)
+int command_functions::function_CA_NEWMODEL(command *&c, bundle &obj)
 {
 	model *m = master.add_model();
 	m->set_name(c->argc(0));
@@ -67,14 +67,14 @@ int command_functions::function_CA_NEWMODEL(command *&c, objects &obj)
 }
 
 // Print all information for model ('printmodel')
-int command_functions::function_CA_PRINTMODEL(command *&c, objects &obj)
+int command_functions::function_CA_PRINTMODEL(command *&c, bundle &obj)
 {
 	obj.m->print();
 	return CR_SUCCESS;
 }
 
 // Save current model ('savemodel <format> <filename>')
-int command_functions::function_CA_SAVEMODEL(command *&c, objects &obj)
+int command_functions::function_CA_SAVEMODEL(command *&c, bundle &obj)
 {
 	// Find filter with a nickname matching that given in argc(0)
 	filter *f;
@@ -92,7 +92,7 @@ int command_functions::function_CA_SAVEMODEL(command *&c, objects &obj)
 }
 
 // Select working model ('selectmodel <name>')
-int command_functions::function_CA_SELECTMODEL(command *&c, objects &obj)
+int command_functions::function_CA_SELECTMODEL(command *&c, bundle &obj)
 {
 	model *m = master.find_model(c->argc(0));
 	if (m != NULL) 

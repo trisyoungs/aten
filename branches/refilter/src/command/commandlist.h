@@ -85,20 +85,18 @@ class command
 	// Loop Data
 	*/
 	private:
-	// Internal counter for loop
-	int loopcount;
 	// Whether the loop is currently executing
-	bool loop_running;
+	bool loopactive;
 
 	public:
-	// Set loop running status
-	void set_loop_running(bool b) { loop_running = b; }
-	// Get loop running status
-	bool get_loop_running() { return loop_running; }
+	// Set status of loop
+	void set_loopactive(bool b) { loopactive = b; }
+	// Get status of loop
+	bool get_loopactive() { return loopactive; }
 	// Initialise loop
-	bool loop_initialise(variable_list&, model*);
+	bool loop_initialise(model*);
 	// Iterate loop
-	bool loop_iterate(variable_list&);
+	bool loop_iterate();
 	// Check loop for termination
 	bool loop_check();
 
@@ -146,6 +144,8 @@ class command
 	public:
 	// Set variables from parser arguments
 	bool add_variables(const char*, const char*, variable_list&);
+	// Return variable argument
+	variable *arg(int argno) { return args[argno]; }
 	// Return argument as character
 	const char *argc(int argno) { return (args[argno] == NULL ?  "NULL" : args[argno]->get_as_char()); }
 	// Return argument as integer
@@ -160,8 +160,10 @@ class command
 	vec3<float> get_vector3f(int);
 	// Return arguments as vec3<int>
 	vec3<int> get_vector3i(int);
-	// Returns whether argument was provided
-	bool was_given(int argno) { return (args[argno] == NULL ? FALSE : TRUE); }
+	// Returns whether argument 'n' was provided
+	bool has_argument(int argno) { return (args[argno] == NULL ? FALSE : TRUE); }
+	// Return variable type of argument
+	variable_type argt(int argno) { return (args[argno] == NULL ? VT_NITEMS : args[argno]->get_type()); }
 	// Print data variables
 	void print_args();
 };
@@ -245,6 +247,12 @@ class commandlist
 	int readopts;
 	// Close input/output file(s)
 	void close_files();
+
+	public:
+	// Get input stream
+	ifstream *get_infile() { return infile; }
+	// Get output stream
+	ofstream *get_outfile() { return outfile; }
 };
 
 #endif

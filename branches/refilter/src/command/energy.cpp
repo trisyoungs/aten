@@ -25,7 +25,7 @@
 #include "model/model.h"
 
 // Calculate energy of current trajectory frame ('frameenergy')
-int command_functions::function_CA_FRAMEENERGY(command *&c, objects &obj)
+int command_functions::function_CA_FRAMEENERGY(command *&c, bundle &obj)
 {
 	double energy;
 	model *frame = obj.m->get_currentframe();
@@ -35,7 +35,7 @@ int command_functions::function_CA_FRAMEENERGY(command *&c, objects &obj)
 }
 
 // Calculate energy of current model contents ('modelenergy')
-int command_functions::function_CA_MODELENERGY(command *&c, objects &obj)
+int command_functions::function_CA_MODELENERGY(command *&c, bundle &obj)
 {
 	double energy;
 	if (obj.m->create_expression()) energy = obj.m->total_energy(obj.m);
@@ -44,49 +44,49 @@ int command_functions::function_CA_MODELENERGY(command *&c, objects &obj)
 }
 
 // Print out electrostatic decomposition matrix ('printelec')
-int command_functions::function_CA_PRINTELEC(command *&c, objects &obj)
+int command_functions::function_CA_PRINTELEC(command *&c, bundle &obj)
 {
 	obj.m->energy.print_elecmatrix(obj.m);
 	return CR_SUCCESS;
 }
 
 // Print long energy decomposition of model ('printenergy')
-int command_functions::function_CA_PRINTENERGY(command *&c, objects &obj)
+int command_functions::function_CA_PRINTENERGY(command *&c, bundle &obj)
 {
 	obj.m->energy.print();
 	return CR_SUCCESS;
 }
 
 // Print out Ewald energy decomposition of model ('printewald')
-int command_functions::function_CA_PRINTEWALD(command *&c, objects &obj)
+int command_functions::function_CA_PRINTEWALD(command *&c, bundle &obj)
 {
 	obj.m->energy.print_ewald();
 	return CR_SUCCESS;
 }
 
 // Print out interpattern decomposition matrix ('printinter')
-int command_functions::function_CA_PRINTINTER(command *&c, objects &obj)
+int command_functions::function_CA_PRINTINTER(command *&c, bundle &obj)
 {
 	obj.m->energy.print_intermatrix(obj.m);
 	return CR_SUCCESS;
 }
 
 // Print out intramolecular decomposition matrix ('printintra')
-int command_functions::function_CA_PRINTINTRA(command *&c, objects &obj)
+int command_functions::function_CA_PRINTINTRA(command *&c, bundle &obj)
 {
 	obj.m->energy.print_intramatrix(obj.m);
 	return CR_SUCCESS;
 }
 
 // Print short energy decomposition of model ('printsummary')
-int command_functions::function_CA_PRINTSUMMARY(command *&c, objects &obj)
+int command_functions::function_CA_PRINTSUMMARY(command *&c, bundle &obj)
 {
 	obj.m->energy.print_summary();
 	return CR_SUCCESS;
 }
 
 // Print out VDW decomposition matrix ('printvdw')
-int command_functions::function_CA_PRINTVDW(command *&c, objects &obj)
+int command_functions::function_CA_PRINTVDW(command *&c, bundle &obj)
 {
 	obj.m->energy.print_vdwmatrix(obj.m);
 	return CR_SUCCESS;

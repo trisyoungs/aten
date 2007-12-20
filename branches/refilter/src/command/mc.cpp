@@ -1,5 +1,5 @@
 /*
-	*** Script Monte Carlo functions
+	*** Monte Carlo command functions
 	*** src/command/mc.cpp
 	Copyright T. Youngs 2007
 
@@ -25,7 +25,7 @@
 #include "base/debug.h"
 
 // Sets acceptance energy for moves ('mc accept <move> <energy>')
-int command_functions::function_CA_MCACCEPT(command *&c, objects &obj)
+int command_functions::function_CA_MCACCEPT(command *&c, bundle &obj)
 {
 	mc_move mt = MT_from_text(c->argc(0));
 	if (mt == MT_NITEMS) return CR_FAIL;
@@ -34,7 +34,7 @@ int command_functions::function_CA_MCACCEPT(command *&c, objects &obj)
 }
 
 // Sets allowances for moves ('mc allow <move> <on|off>')
-int command_functions::function_CA_MCALLOW(command *&c, objects &obj)
+int command_functions::function_CA_MCALLOW(command *&c, bundle &obj)
 {
 	mc_move mt = MT_from_text(c->argc(0));
 	if (mt == MT_NITEMS) return CR_FAIL;
@@ -43,7 +43,7 @@ int command_functions::function_CA_MCALLOW(command *&c, objects &obj)
 }
 
 // Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-int command_functions::function_CA_MCMAXSTEP(command *&c, objects &obj)
+int command_functions::function_CA_MCMAXSTEP(command *&c, bundle &obj)
 {
 	mc_move mt = MT_from_text(c->argc(0));
 	if (mt == MT_NITEMS) return CR_FAIL;
@@ -52,7 +52,7 @@ int command_functions::function_CA_MCMAXSTEP(command *&c, objects &obj)
 }
 
 // Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-int command_functions::function_CA_MCNTRIALS(command *&c, objects &obj)
+int command_functions::function_CA_MCNTRIALS(command *&c, bundle &obj)
 {
 	mc_move mt = MT_from_text(c->argc(0));
 	if (mt == MT_NITEMS) return CR_FAIL;
@@ -61,7 +61,7 @@ int command_functions::function_CA_MCNTRIALS(command *&c, objects &obj)
 }
 
 // Prints the current MC params ('printmc')
-int command_functions::function_CA_PRINTMC(command *&c, objects &obj)
+int command_functions::function_CA_PRINTMC(command *&c, bundle &obj)
 {
 	msg(DM_NONE,"Current Monte Carlo Parameters are:\n");
 	msg(DM_NONE,"Move        Allowed  NTrials  MaxStep   EAccept :\n");

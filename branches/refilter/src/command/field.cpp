@@ -1,5 +1,5 @@
 /*
-	*** Script field functions
+	*** Field command functions
 	*** src/command/field.cpp
 	Copyright T. Youngs 2007
 
@@ -26,14 +26,14 @@
 #include "file/filter.h"
 
 // Save field definition ('savefield <filename>')
-int command_functions::function_CA_SAVEFIELD(command *&c, objects &obj)
+int command_functions::function_CA_SAVEFIELD(command *&c, bundle &obj)
 {
 	savedlpfield(c->argc(0),obj.m);
 	return CR_SUCCESS;
 }
 
 // Save field definition ('savefield2 <format> <file>')
-int command_functions::function_CA_SAVEFIELD2(command *&c, objects &obj)
+int command_functions::function_CA_SAVEFIELD2(command *&c, bundle &obj)
 {
 	// Find filter with a nickname matching that given in argc(0)
 	filter *f;

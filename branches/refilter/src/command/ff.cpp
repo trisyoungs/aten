@@ -27,21 +27,21 @@
 #include "classes/pattern.h"
 
 // Associate current ff to current model ('ffmodel')
-int command_functions::function_CA_FFMODEL(command *&c, objects &obj)
+int command_functions::function_CA_FFMODEL(command *&c, bundle &obj)
 {
 	obj.m->set_ff(obj.ff);
 	return CR_SUCCESS;
 }
 
 // Set current forcefield for named pattern ('ffpattern')
-int command_functions::function_CA_FFPATTERN(command *&c, objects &obj)
+int command_functions::function_CA_FFPATTERN(command *&c, bundle &obj)
 {
 	obj.p->set_ff(obj.ff);
 	return CR_SUCCESS;
 }
 
 // Set current forcefield for pattern id given ('ffpatternid <id>')
-int command_functions::function_CA_FFPATTERNID(command *&c, objects &obj)
+int command_functions::function_CA_FFPATTERNID(command *&c, bundle &obj)
 {
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->get_npatterns()))
@@ -54,13 +54,13 @@ int command_functions::function_CA_FFPATTERNID(command *&c, objects &obj)
 }
 
 // Load forcefield ('loadff <filename> [nickname]')
-int command_functions::function_CA_LOADFF(command *&c, objects &obj)
+int command_functions::function_CA_LOADFF(command *&c, bundle &obj)
 {
 	forcefield *ff = master.load_ff(c->argc(1));
 	if (ff != NULL)
 	{
 		master.set_currentff(ff);
-		if (c->was_given(1)) ff->set_name(c->argc(1));
+		if (c->has_argument(1)) ff->set_name(c->argc(1));
 		msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->get_name());
 		return CR_SUCCESS;
 	}
@@ -68,7 +68,7 @@ int command_functions::function_CA_LOADFF(command *&c, objects &obj)
 }
 
 // Select current forcefield ('selectff <name>')
-int command_functions::function_CA_SELECTFF(command *&c, objects &obj)
+int command_functions::function_CA_SELECTFF(command *&c, bundle &obj)
 {
 	forcefield *ff = master.find_ff(c->argc(0));
 	if (ff != NULL)
@@ -84,13 +84,13 @@ int command_functions::function_CA_SELECTFF(command *&c, objects &obj)
 }
 
 // Perform typing on current model
-int command_functions::function_CA_TYPEMODEL(command *&c, objects &obj)
+int command_functions::function_CA_TYPEMODEL(command *&c, bundle &obj)
 {
 	return (obj.m->type_all() ? CR_SUCCESS : CR_FAIL);
 }
 
 // Test specified type ID of current forcefield
-int command_functions::function_CA_TYPETEST(command *&c, objects &obj)
+int command_functions::function_CA_TYPETEST(command *&c, bundle &obj)
 {
 	if (obj.ff == NULL)
 	{

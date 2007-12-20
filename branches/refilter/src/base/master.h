@@ -5,7 +5,7 @@
 
 	This file is part of Aten.
 
-	Aten is free software: you can redistribute it and/or modify
+	Atexn is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
 	the Free Software Foundation, either version 3 of the License, or
 	(at your option) any later version.
@@ -25,6 +25,7 @@
 #include "classes/clipboard.h"
 #include "classes/grid.h"
 #include "classes/forcefield.h"
+#include "classes/bundle.h"
 #include "methods/sd.h"
 #include "methods/cg.h"
 #include "methods/mc.h"
@@ -48,13 +49,18 @@ class master_data
 	void clear();
 
 	/*
+	// Current Objects
+	*/
+	public:
+	// Current object bundle
+	bundle current;
+
+	/*
 	// Models
 	*/
 	private:
 	// Internal count for naming new models.
 	int modelid;
-	// Current active model for editing
-	model *currentmodel;
 	// List of models
 	list<model> models;
 
@@ -62,13 +68,13 @@ class master_data
 	// Sets the current active model for editing
 	void set_currentmodel(model*);
 	// Return current active model for editing
-	model *get_currentmodel() { return currentmodel; }
+	model *get_currentmodel() { return current.m; }
 	// Return first item in the model list
 	model *get_models() { return models.first(); }
 	// Return nth item in the model list
 	model *get_model(int n) { return models[n]; }
 	// Return the current model's index in the model list
-	int get_currentmodelindex() { return models.index_of(currentmodel); }
+	int get_currentmodelindex() { return models.index_of(current.m); }
 	// Return index of specified model
 	int get_modelindex(model *m) { return models.index_of(m); }
 	// Return the number of models in the model list
@@ -107,8 +113,6 @@ class master_data
 	private:
 	// List of loaded forcefields
 	list<forcefield> ffs;
-	// Currently-selected FF (in GUI, selection in ff_flist)
-	forcefield *currentff;
 
 	public:
 	// Return the first ff in the list
@@ -116,13 +120,13 @@ class master_data
 	// Return the number of loaded forcefields
 	int get_nffs() { return ffs.size(); }
 	// Set active forcefield
-	void set_currentff(forcefield *ff) { currentff = ff; }
+	void set_currentff(forcefield *ff) { current.ff = ff; }
 	// Set active forcefield by ID
-	void set_currentff_by_id(int id) { currentff = ffs[id]; }
+	void set_currentff_by_id(int id) { current.ff = ffs[id]; }
 	// Return the active forcefield
-	forcefield *get_currentff() { return currentff; }
+	forcefield *get_currentff() { return current.ff; }
 	// Return ID of current forcefield
-	int get_currentff_id() { return ffs.index_of(currentff); }
+	int get_currentff_id() { return ffs.index_of(current.ff); }
 	// Remove specified forcefield
 	void remove_ff(forcefield*);
 	// Load the specified forcefield

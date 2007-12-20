@@ -1,5 +1,5 @@
 /*
-	*** Script transformation functions
+	*** Transformation command functions
 	*** src/command/transform.cpp
 	Copyright T. Youngs 2007
 
@@ -19,41 +19,30 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
-#include "base/debug.h"
+#include "command/commandlist.h"
+#include "model/model.h"
+#include "classes/atom.h"
 
-// Model transform script commands
-bool script::command_transform(command_node<script_command> *cmd)
+// Translate activeatom ('translateatom <dx dy dz>')
+int command_functions::function_CA_TRANSLATEATOM(command *&c, bundle &obj)
 {
-	dbg_begin(DM_CALLS,"script::command_translate");
-	bool result = TRUE;
-	atom *i;
-	model *m = check_activemodel(text_from_SC(cmd->get_command()));
-	if (m == NULL)
-	{
-		dbg_end(DM_CALLS,"script::command_translate");
-		return FALSE;
-	}
-	switch (cmd->get_command())
-	{
-		// Translate activeatom ('translateatom <dx dy dz>')
-		case (SC_TRANSLATEATOM):
-			if (check_activeatom(text_from_SC(cmd->get_command()))) activeatom->r() += cmd->get_vector3d(0);
-			else return FALSE;
-			break;
-		// Translate selection ('translate <dx dy dz>')
-		case (SC_TRANSLATESELECTION):
-			m->translate_selection_local(cmd->get_vector3d(0));
-			break;
-		// Mirror selection along specified axis
-		case (SC_MIRRORSELECTION):
-			m->mirror_selection_local(cmd->argi(0));
-			break;
-		default:
-			printf("Error - missed translate command?\n");
-			result = FALSE;
-			break;
-	}
-	dbg_end(DM_CALLS,"script::command_translate");
-	return result;
+	obj.i->r() += c->get_vector3d(0);
+	return CR_SUCCESS;
 }
+
+// Translate selection ('translate <dx dy dz>')
+int command_functions::function_CA_TRANSLATESELECTION(command *&c, bundle &obj)
+{
+	obj.m->translate_selection_local(c->get_vector3d(0));
+	return CR_SUCCESS;
+}
+
+// Mirror selection along specified axis
+int command_functions::function_CA_MIRRORSELECTION(command *&c, bundle &obj)
+{
+	obj.m->mirror_selection_local(c->argi(0));
+	return CR_SUCCESS;
+}
+
+
+

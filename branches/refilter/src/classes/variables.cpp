@@ -72,9 +72,14 @@ void variable::print()
 {
 	switch (type)
 	{
-		case (VT_GENERIC):
-		case (VT_GENERICCONSTANT):
-			printf("Variable '%s', type '%s', value '%s'.\n", name.get(), text_from_VT(type), get_as_char());
+		case (VT_CHAR):
+			printf("Variable '%s', type 'char', value '%s'.\n", name.get(), get_as_char());
+			break;
+		case (VT_INT):
+			printf("Variable '%s', type 'int', value '%i'.\n", name.get(), get_as_int());
+			break;
+		case (VT_DOUBLE):
+			printf("Variable '%s', type 'double', value '%f'.\n", name.get(), get_as_double());
 			break;
 		case (VT_ATOM):
 		case (VT_BOND):
@@ -83,37 +88,33 @@ void variable::print()
 		case (VT_PATBOUND):
 			printf("Variable '%s', type '%s', value '%li'.\n", name.get(), text_from_VT(type), ptrvalue);
 			break;
-		case (VT_UNDEFINED):
-			printf("Variable '%s', no type.\n", name.get());
-			break;
 	}
-}
-
-// Set constant
-void variable::set_constant(const char *s)
-{
-	type = VT_GENERICCONSTANT;
-	charvalue.set(s);
 }
 
 // Set (char)
 void variable::set(const char *s)
 {
-	if (type == VT_UNDEFINED) type = VT_GENERIC;
-	switch (type)
-	{
-		case (VT_GENERIC):
-			charvalue.set(s);
-			break;
-		default:
-			printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'generic' >>>>\n", name.get(), text_from_VT(type));
-	}
+	if (type == VT_CHAR) charvalue.set(s);
+	else printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'char' >>>>\n", name.get(), text_from_VT(type));
+}
+
+// Set (int)
+void variable::set(int i)
+{
+	if (type == VT_INT) intvalue = i;
+	else printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'int' >>>>\n", name.get(), text_from_VT(type));
+}
+
+// Set (double)
+void variable::set(double d)
+{
+	if (type == VT_DOUBLE) doublevalue = d;
+	else printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'double' >>>>\n", name.get(), text_from_VT(type));
 }
 
 // Set (atom*)
 void variable::set(atom *i)
 {
-	if (type == VT_UNDEFINED) type = VT_ATOM;
 	if (type != VT_ATOM)
 	{
 		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'atom*' >>>>\n",name.get(), text_from_VT(type));
@@ -126,7 +127,6 @@ void variable::set(atom *i)
 // Set (pattern)
 void variable::set(pattern *p)
 {
-	if (type == VT_UNDEFINED) type = VT_PATTERN;
 	if (type != VT_PATTERN)
 	{
 		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'pattern*' >>>>\n",name.get(), text_from_VT(type));
@@ -139,7 +139,6 @@ void variable::set(pattern *p)
 // Set (model)
 void variable::set(model *m)
 {
-	if (type == VT_UNDEFINED) type = VT_MODEL;
 	if (type != VT_MODEL)
 	{
 		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'model*' >>>>\n",name.get(), text_from_VT(type));
@@ -152,7 +151,6 @@ void variable::set(model *m)
 // Set (patbound)
 void variable::set(patbound *pb)
 {
-	if (type == VT_UNDEFINED) type = VT_PATBOUND;
 	if (type != VT_PATBOUND)
 	{
 		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'patbound*' >>>>\n",name.get(), text_from_VT(type));
@@ -162,29 +160,17 @@ void variable::set(patbound *pb)
 	msg(DM_VERBOSE,"PatBound variable '%s' set to '%li'\n",name.get(),pb);
 }
 
-// Set type
-bool variable::set_type(variable_type vt)
-{
-	// Check previous type - if they're not the same (and isn't VT_UNDEFINED) raise an error.
-	// We won't allow variables to be re-cast in the script
-	if (type == VT_UNDEFINED) type = vt;
-	else if (type != vt)
-	{
-		printf("variable::set_type <<<< Cannot re-cast variable '%s' from '%s' to '%s' >>>>\n", name.get(), text_from_VT(type), text_from_VT(vt));
-		return FALSE;
-	}
-	type = vt;
-	return TRUE;
-}
-
 // Get as char
 const char *variable::get_as_char()
 {
 	switch (type)
 	{
-		case (VT_GENERICCONSTANT):
-		case (VT_GENERIC):
+		case (VT_CHAR):
 			return charvalue.get();
+		case (VT_INT):
+			return itoa(intvalue);
+		case (VT_DOUBLE):
+			return ftoa(doublevalue);
 		default:
 			msg(DM_VERBOSE,"variable::get_as_char <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
 	}
@@ -196,9 +182,12 @@ int variable::get_as_int()
 {
 	switch (type)
 	{
-		case (VT_GENERICCONSTANT):
-		case (VT_GENERIC):
+		case (VT_CHAR):
 			return atoi(charvalue.get());
+		case (VT_INT):
+			return intvalue;
+		case (VT_DOUBLE):
+			return int(doublevalue);
 		default:
 			msg(DM_VERBOSE,"variable::get_as_int <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
 	}
@@ -210,25 +199,14 @@ double variable::get_as_double()
 {
 	switch (type)
 	{
-		case (VT_GENERICCONSTANT):
-		case (VT_GENERIC):
+		case (VT_CHAR):
 			return atof(charvalue.get());
+		case (VT_INT):
+			return double(intvalue);
+		case (VT_DOUBLE):
+			return doublevalue;
 		default:
 			msg(DM_VERBOSE,"variable::get_as_double <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
-	}
-	return 0.0;
-}
-
-// Get as float
-float variable::get_as_float()
-{
-	switch (type)
-	{
-		case (VT_GENERICCONSTANT):
-		case (VT_GENERIC):
-			return float(atof(charvalue.get()));
-		default:
-			msg(DM_VERBOSE,"variable::get_as_float <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
 	}
 	return 0.0;
 }
@@ -238,10 +216,10 @@ bool variable::get_as_bool()
 {
 	switch (type)
 	{
-		case (VT_GENERICCONSTANT):
-		case (VT_GENERIC):
+		case (VT_CHAR):
 			return charvalue.as_bool();
-			break;
+		case (VT_INT):
+			return (intvalue < 1 ? FALSE : TRUE);
 		default:
 			msg(DM_VERBOSE,"variable::get_as_bool <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
 	}
@@ -251,7 +229,7 @@ bool variable::get_as_bool()
 // Get as gpointer
 void *variable::get_as_pointer(variable_type vt)
 {
-	if ((type != vt) && (vt != VT_UNDEFINED))
+	if (type != vt)
 	{
 		printf("variable::get_as_pointer <<<< Tried to get variable '%s' which is of type '%s' but thought it was of type '%s' >>>>\n", name.get(), text_from_VT(type), text_from_VT(vt));
 		return NULL;
@@ -264,8 +242,14 @@ void variable::reset()
 {
 	switch (type)
 	{
-		case (VT_GENERIC):
+		case (VT_CHAR):
 			charvalue.set("");
+			break;
+		case (VT_INT):
+			intvalue = 0;
+			break;
+		case (VT_DOUBLE):
+			doublevalue = 0.0;
 			break;
 		case (VT_ATOM):
 		case (VT_BOND):
@@ -282,9 +266,11 @@ void variable::increase(int n)
 {
 	switch (type)
 	{
-		case (VT_GENERIC):
-			charvalue.set(itoa(atoi(charvalue.get()) + 1));
+		case (VT_INT):
+			intvalue ++;
 			break;
+		case (VT_DOUBLE):
+			doublevalue += 1.0;
 		case (VT_ATOM):
 			ptrvalue = ( (atom*) ptrvalue)->next;
 			break;
@@ -311,14 +297,17 @@ void variable::decrease(int n)
 {
 	switch (type)
 	{
-		case (VT_GENERIC):
-			charvalue.set(itoa(atoi(charvalue.get()) - 1));
+		case (VT_INT):
+			intvalue --;
+			break;
+		case (VT_DOUBLE):
+			doublevalue -= 1.0;
 			break;
 		case (VT_ATOM):
 			ptrvalue = ( (atom*) ptrvalue)->prev;
 			break;
 		case (VT_BOND):
-			printf("Can't increase with bond->prev\n");
+			printf("Can't decrease with bond->prev\n");
 			//ptrvalue = ( (bond*) ptrvalue)->prev;
 			break;
 		case (VT_PATTERN):
@@ -429,14 +418,6 @@ double variable_list::get_as_double(const char *s)
 	// Try to 'find' the variable, returning 0.0 if it's not in the list
 	variable *v = find(s);
 	return (v == NULL ? 0.0 : v->get_as_double());
-}
-
-// Retrieve (don't add) as float
-float variable_list::get_as_float(const char *s)
-{
-	// Try to 'find' the variable, returning 0.0 if it's not in the list
-	variable *v = find(s);
-	return (v == NULL ? 0.0 : v->get_as_float());
 }
 
 // Retrieve (don't add) as integer

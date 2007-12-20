@@ -23,35 +23,35 @@
 #include "model/model.h"
 
 // Augment bonds in current model ('augment')
-int command_functions::function_CA_AUGMENT(command *&c, objects &obj)
+int command_functions::function_CA_AUGMENT(command *&c, bundle &obj)
 {
 	obj.m->augment_bonding();
 	return CR_SUCCESS;
 }
 
 // Calculate bonds in current model ('rebond')
-int command_functions::function_CA_REBOND(command *&c, objects &obj)
+int command_functions::function_CA_REBOND(command *&c, bundle &obj)
 {
 	obj.m->calculate_bonding();
 	return CR_SUCCESS;
 }
 
 // Clear bonds in current model ('clearbonds')
-int command_functions::function_CA_CLEARBONDS(command *&c, objects &obj)
+int command_functions::function_CA_CLEARBONDS(command *&c, bundle &obj)
 {
 	obj.m->clear_bonding();
 	return CR_SUCCESS;
 }
 
 // Change bond tolerance ('bondtol <d>')
-int command_functions::function_CA_BONDTOLERANCE(command *&c, objects &obj)
+int command_functions::function_CA_BONDTOLERANCE(command *&c, bundle &obj)
 {
 	prefs.set_bond_tolerance(c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Calculate bonds restricted to pattern molecules ('bondpatterns')
-int command_functions::function_CA_BONDPATTERNS(command *&c, objects &obj)
+int command_functions::function_CA_BONDPATTERNS(command *&c, bundle &obj)
 {
 	obj.m->pattern_calculate_bonding();
 	return CR_SUCCESS;
@@ -59,7 +59,7 @@ int command_functions::function_CA_BONDPATTERNS(command *&c, objects &obj)
 }
 
 // Calculate bonds restricted to current selection ('bondselection')
-int command_functions::function_CA_BONDSELECTION(command *&c, objects &obj)
+int command_functions::function_CA_BONDSELECTION(command *&c, bundle &obj)
 {
 	obj.m->selection_calculate_bonding();
 	return CR_SUCCESS;

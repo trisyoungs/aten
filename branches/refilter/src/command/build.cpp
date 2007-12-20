@@ -24,21 +24,21 @@
 #include "model/model.h"
 
 // Add hydrogens to model ('addhydrogen')
-int command_functions::function_CA_ADDHYDROGEN(command *&c, objects &obj)
+int command_functions::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
 {
 	obj.m->hydrogen_satisfy();
 	return CR_SUCCESS;
 }
 
 // Draw unbound atom ('addatom <el>')
-int command_functions::function_CA_ADDATOM(command *&c, objects &obj)
+int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
 {
 	obj.i = obj.m->add_atom(elements.find(c->argc(0), ZM_ALPHA),  c->parent->penpos);
 	return CR_SUCCESS;
 }
 
 // Draw atom with bond to 'activeatom' ('addchain <el>')
-int command_functions::function_CA_ADDCHAIN(command *&c, objects &obj)
+int command_functions::function_CA_ADDCHAIN(command *&c, bundle &obj)
 {
 	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->parent->penpos);
 	if (obj.i != NULL) obj.m->bond_atoms(obj.i,i,BT_SINGLE);
@@ -47,14 +47,14 @@ int command_functions::function_CA_ADDCHAIN(command *&c, objects &obj)
 }
 
 // Delete current selection ('delete')
-int command_functions::function_CA_DELETE(command *&c, objects &obj)
+int command_functions::function_CA_DELETE(command *&c, bundle &obj)
 {
 	obj.m->selection_delete();
 	return CR_SUCCESS;
 }
 
 // Terminate chain ('endchain')
-int command_functions::function_CA_ENDCHAIN(command *&c, objects &obj)
+int command_functions::function_CA_ENDCHAIN(command *&c, bundle &obj)
 {
 	// TODO end chain with atom id (optional argument)
 	obj.i = NULL;
@@ -62,7 +62,7 @@ int command_functions::function_CA_ENDCHAIN(command *&c, objects &obj)
 }
 
 // Set pen coordinates ('locate <dx dy dz>')
-int command_functions::function_CA_LOCATE(command *&c, objects &obj)
+int command_functions::function_CA_LOCATE(command *&c, bundle &obj)
 {
 	c->parent->penpos.x = c->argd(0);
 	c->parent->penpos.y = c->argd(1);
@@ -71,7 +71,7 @@ int command_functions::function_CA_LOCATE(command *&c, objects &obj)
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
-int command_functions::function_CA_MOVE(command *&c, objects &obj)
+int command_functions::function_CA_MOVE(command *&c, bundle &obj)
 {
 	c->parent->penpos += c->parent->penorient.rows[0] * c->argd(0);
 	c->parent->penpos += c->parent->penorient.rows[1] * c->argd(1);
@@ -80,7 +80,7 @@ int command_functions::function_CA_MOVE(command *&c, objects &obj)
 }
 
 // Rotate pen orientation about x axis ('rotx <theta>')
-int command_functions::function_CA_ROTX(command *&c, objects &obj)
+int command_functions::function_CA_ROTX(command *&c, bundle &obj)
 {
 	mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
@@ -92,7 +92,7 @@ int command_functions::function_CA_ROTX(command *&c, objects &obj)
 }
 
 // Rotate pen orientation about y axis ('roty <theta>')
-int command_functions::function_CA_ROTY(command *&c, objects &obj)
+int command_functions::function_CA_ROTY(command *&c, bundle &obj)
 {
 	mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
@@ -104,7 +104,7 @@ int command_functions::function_CA_ROTY(command *&c, objects &obj)
 }
 
 // Rotate pen orientation about z axis ('rotz <theta>')
-int command_functions::function_CA_ROTZ(command *&c, objects &obj)
+int command_functions::function_CA_ROTZ(command *&c, bundle &obj)
 {
 	mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
@@ -116,7 +116,7 @@ int command_functions::function_CA_ROTZ(command *&c, objects &obj)
 }
 
 // Transmute the current selection ('transmute <el>')
-int command_functions::function_CA_TRANSMUTE(command *&c, objects &obj)
+int command_functions::function_CA_TRANSMUTE(command *&c, bundle &obj)
 {
 	int el = elements.find(c->argc(0));
 	for (atom *i = obj.m->get_first_selected(); i != NULL; i = i->get_next_selected()) obj.m->transmute_atom(i,el);

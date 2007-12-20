@@ -41,8 +41,7 @@ command::command()
 	ptr = NULL;
 	branch = NULL;
 	fmt = NULL;
-	loopcount = 0;
-	loop_running = FALSE;
+	loopactive = FALSE;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_COMMANDNODE] ++;
 	#endif
@@ -444,21 +443,8 @@ bool commandlist::add_command(command_action ca)
 			// Add new branch to this node for new if test to run
 			push_branch(fn->create_branch(), CA_ELSE, fn);
 			break;
-		// Loop for n iterations (or until file ends)
+		// Loop for n iterations (or until file ends) or over items
 		case (CA_FOR):
-			//fn->args[0]->set(0);
-			fn = add_topbranch_command(CA_FOR, NULL);
-			push_branch(fn->create_branch(), CA_FOR, fn);
-			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
-			break;
-		// Loops over items
-		case (CA_FORPATTERNS):		// Loop over patterns in model
-		case (CA_FORMOLECULES):		// Loop over molecules in pattern
-		case (CA_FORATOMS):		// Loop over atoms
-		case (CA_FORBONDS):		// Loop over bonds in model
-		case (CA_FORFFBONDS):		// Loop over pattern's ff bonds
-		case (CA_FORFFANGLES):		// Loop over pattern's ff angles
-		case (CA_FORFFTORSIONS):	// Loop over pattern's ff torsions
 			fn = add_topbranch_command(ca, NULL);
 			push_branch(fn->create_branch(), ca, fn);
 			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
@@ -477,12 +463,6 @@ bool commandlist::add_command(command_action ca)
 			{
 				// For repeats, jump back to node at start of loop (the branch owner)
 				case (CA_FOR):
-				case (CA_FORATOMS):
-				case (CA_FORPATTERNS):
-				case (CA_FORMOLECULES):
-				case (CA_FORFFBONDS):
-				case (CA_FORFFANGLES):
-				case (CA_FORFFTORSIONS):
 					add_topbranch_command(CA_GOTO, get_topbranch_basenode());
 					break;
 				// For IFs, jump to node containing IF/ELSEIF/ELSE branch (the branch owner)

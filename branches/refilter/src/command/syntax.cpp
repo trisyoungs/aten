@@ -1,5 +1,5 @@
 /*
-	*** Script command syntax
+	*** Command syntax
 	*** src/command/scriptsyntax.cpp
 	Copyright T. Youngs 2007
 
@@ -19,12 +19,22 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/scriptcommands.h"
+#include "command/commandlist.h"
 #include "base/sysfunc.h"
 #include <string.h>
 
 // Script command data
-const char *SC_syntax[SC_NITEMS] = {
+const char *CA_syntax[CA_NITEMS] = {
+
+	// Variables
+	"integer <variables>",
+	"double <variables>",
+	"character <variables>",
+	"atom <variables>",
+	"pattern <variables>",
+
+	// Root node
+	"_ROOTNODE_",
 
 	// Analysis
 	"finalise",
@@ -105,6 +115,25 @@ const char *SC_syntax[SC_NITEMS] = {
 	"vcut <cutoff>",
 	"vdw on|off",
 
+	// Field commands
+	"savefield <filename>",
+	"savefield2 <format> <filename>",
+
+	// Flow control
+	"else",
+	"elseif,rxe",
+	"end",
+	"for <variable> [start] [end]",
+	"_GOTO_",
+	"_GOTONONIF_",
+	"if,rxe",
+	"_TERMINATE_",
+
+	// Force commands
+	"frameforces",
+	"modelforces",
+	"printforces",
+
 	// Forcefield commands
 	"ffmodel",
 	"ffpattern",
@@ -113,15 +142,6 @@ const char *SC_syntax[SC_NITEMS] = {
 	"selectff <name>",
 	"typemodel",
 	"typetest <ffid> <atomid>",
-
-	// Field commands
-	"savefield <filename>",
-	"savefield2 <format> <filename> ",
-
-	// Force commands
-	"frameforces",
-	"modelforces",
-	"printforces",
 
 	//"image 
 
@@ -136,6 +156,9 @@ const char *SC_syntax[SC_NITEMS] = {
 	"mcmaxstep <movetype> <step>",
 	"mcntrials <movetype> <ntrials>",
 	"printmc",
+
+	// Messaging
+	"print"
 
 	// Minimisation commands
 	"cgminimise",
@@ -202,8 +225,14 @@ const char *SC_syntax[SC_NITEMS] = {
 	"translate <dx> <dy> <dz>",
 	"mirror <axis>",
 
+	// Variable commands
+	"dec <variable>",
+	"eval,r=e",
+	"inc <variable>",
+	"let,rxe",
+
 	"quit"
 
 	};
-const char *syntax_from_SC(script_command sc)
-	{ return SC_syntax[sc]; }
+const char *syntax_from_SC(command_action ca)
+	{ return CA_syntax[ca]; }

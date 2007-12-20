@@ -1,5 +1,5 @@
 /*
-	*** Script pattern functions
+	*** Pattern command functions
 	*** src/command/pattern.cpp
 	Copyright T. Youngs 2007
 
@@ -25,7 +25,7 @@
 #include "classes/pattern.h"
 
 // Add manual pattern definition ('addpattern <name> <nmols> <natoms>')
-int command_functions::function_CA_ADDPATTERN(command *&c, objects &obj)
+int command_functions::function_CA_ADDPATTERN(command *&c, bundle &obj)
 {
 	obj.m->add_pattern(c->argi(1), c->argi(2), c->argc(0));
 	// TODO Add 'check_pattern(pattern*) method to model*
@@ -33,21 +33,21 @@ int command_functions::function_CA_ADDPATTERN(command *&c, objects &obj)
 }
 
 // Clear current pattern definition ('clearpatterns')
-int command_functions::function_CA_CLEARPATTERNS(command *&c, objects &obj)
+int command_functions::function_CA_CLEARPATTERNS(command *&c, bundle &obj)
 {
 	obj.m->clear_patterns();
 	return CR_SUCCESS;
 }
 
 // Autocreate pattern definition ('createpatterns')
-int command_functions::function_CA_CREATEPATTERNS(command *&c, objects &obj)
+int command_functions::function_CA_CREATEPATTERNS(command *&c, bundle &obj)
 {
 	obj.m->autocreate_patterns();
 	return CR_SUCCESS;
 }
 
 // Print pattern definition for current model ('printpatterns')
-int command_functions::function_CA_PRINTPATTERNS(command *&c, objects &obj)
+int command_functions::function_CA_PRINTPATTERNS(command *&c, bundle &obj)
 {
 	msg(DM_NONE,"Pattern info for model '%s':\n", obj.m->get_name());
 	obj.m->autocreate_patterns();
@@ -62,7 +62,7 @@ int command_functions::function_CA_PRINTPATTERNS(command *&c, objects &obj)
 }
 
 // Select working pattern from model ('selectpattern <name>')
-int command_functions::function_CA_SELECTPATTERN(command *&c, objects &obj)
+int command_functions::function_CA_SELECTPATTERN(command *&c, bundle &obj)
 {
 	pattern *p = obj.m->find_pattern(c->argc(0));
 	if (p != NULL) obj.p = p;

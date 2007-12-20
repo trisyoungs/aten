@@ -1,6 +1,6 @@
 /*
-	*** Forces command functions
-	*** src/command/energy.cpp
+	*** Labelling command functions
+	*** src/command/labels.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,29 +21,28 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/prefs.h"
-#include "base/debug.h"
 
-// Calculate forces at trajectory configuration ('frameforces')
-int command_functions::function_CA_FRAMEFORCES(command *&c, bundle &obj)
+// Clear labels in selection
+int command_functions::function_CA_CLEARLABELS(command *&c, bundle &obj)
 {
-	model *frame = obj.m->get_currentframe();
-	if (obj.m->create_expression()) obj.m->calculate_forces(frame);
+	obj.m->selection_clear_labels();
+	return CR_SUCCESS;
+}
+
+// Add label to current selection
+int command_functions::function_CA_ADDLABEL(command *&c, bundle &obj)
+{
+	atom_label al = AL_from_text(c->argc(0));
+	if (al != AL_NITEMS) obj.m->selection_add_labels(al);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
-// Calculate atomic forces of model ('modelforces')
-int command_functions::function_CA_MODELFORCES(command *&c, bundle &obj)
+// Remove label from current selection
+int command_functions::function_CA_REMOVELABEL(command *&c, bundle &obj)
 {
-	if (obj.m->create_expression()) obj.m->calculate_forces(obj.m);
+	atom_label al = AL_from_text(c->argc(0));
+	if (al != AL_NITEMS) obj.m->selection_remove_labels(al);
 	else return CR_FAIL;
-	return CR_SUCCESS;
-}
-
-// Print forces of model ('printforces')
-int command_functions::function_CA_PRINTFORCES(command *&c, bundle &obj)
-{
-	obj.m->print_forces();
 	return CR_SUCCESS;
 }

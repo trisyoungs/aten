@@ -1,6 +1,6 @@
 /*
-	*** Image command functions
-	*** src/command/image.cpp
+	*** Pointer bundle
+	*** src/classes/bundle.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,6 +19,36 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
-#include "base/debug.h"
+#ifndef H_BUNDLE_H
+#define H_BUNDLE_H
 
+// Forward declarations
+class atom;
+class model;
+class site;
+class forcefield;
+class grid;
+class pattern;
+
+// Pointer bundle
+// Convenience structure to hold/pass a bundle of current object pointers
+struct bundle
+{
+	// Constructor
+	bundle();
+
+	// Model pointer
+	model *m;
+	// Pattern pointer
+	pattern *p;
+	// Atom pointer
+	atom *i;
+	//Forcefield pointer
+	forcefield *ff;
+	// Grid pointer
+	grid *g;
+	// Site pointer
+	site *s;
+};
+
+#endif

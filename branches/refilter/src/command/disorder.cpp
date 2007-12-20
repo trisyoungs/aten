@@ -24,7 +24,7 @@
 #include "base/debug.h"
 
 // Adds component to list ('addcomponent <name> <model> <nmols>')
-int command_functions::function_CA_ADDCOMPONENT(command *&c, objects &obj)
+int command_functions::function_CA_ADDCOMPONENT(command *&c, bundle &obj)
 {
 	model *compm = master.find_model(c->argc(1));
 	if (compm != NULL)
@@ -43,7 +43,7 @@ int command_functions::function_CA_ADDCOMPONENT(command *&c, objects &obj)
 }
 
 // Performs MC insertion ('disorder <ncycles>')
-int command_functions::function_CA_DISORDER(command *&c, objects &obj)
+int command_functions::function_CA_DISORDER(command *&c, bundle &obj)
 {
 	if (master.mc.components.size() == 0)
 	{
@@ -57,7 +57,7 @@ int command_functions::function_CA_DISORDER(command *&c, objects &obj)
 }
 
 // Print current component list ('printcomponents')
-int command_functions::function_CA_PRINTCOMPONENTS(command *&c, objects &obj)
+int command_functions::function_CA_PRINTCOMPONENTS(command *&c, bundle &obj)
 {
 	msg(DM_NONE,"Current component list:\n");
 	vec3<double> v1, v2;
@@ -85,7 +85,7 @@ int command_functions::function_CA_PRINTCOMPONENTS(command *&c, objects &obj)
 }
 
 // Set region centre to position ('setcentre <name> <x y z>')
-int command_functions::function_CA_SETCENTRE(command *&c, objects &obj)
+int command_functions::function_CA_SETCENTRE(command *&c, bundle &obj)
 {
 	component *comp = master.mc.get_component_by_name(c->argc(0));
 	if (comp == NULL)
@@ -98,7 +98,7 @@ int command_functions::function_CA_SETCENTRE(command *&c, objects &obj)
 }
 
 // Set geometry of region ('setgeometry <name> <x y z> [l]')
-int command_functions::function_CA_SETGEOMETRY(command *&c, objects &obj)
+int command_functions::function_CA_SETGEOMETRY(command *&c, bundle &obj)
 {
 	component *comp = master.mc.get_component_by_name(c->argc(0));
 	if (comp == NULL)
@@ -107,12 +107,12 @@ int command_functions::function_CA_SETGEOMETRY(command *&c, objects &obj)
 		return CR_FAIL;
 	}
 	comp->area.set_size(c->get_vector3d(1));
-	if (!c->was_given(4)) comp->area.set_length(c->argd(4));
+	if (!c->has_argument(4)) comp->area.set_length(c->argd(4));
 	return CR_SUCCESS;
 }
 
 // Set overlap flag ('setoverlap <name> true|false')
-int command_functions::function_CA_SETOVERLAP(command *&c, objects &obj)
+int command_functions::function_CA_SETOVERLAP(command *&c, bundle &obj)
 {
 	component *comp = master.mc.get_component_by_name(c->argc(0));
 	if (comp == NULL)
@@ -125,7 +125,7 @@ int command_functions::function_CA_SETOVERLAP(command *&c, objects &obj)
 }
 
 // Set shape for region ('setshape <name> <shape>')
-int command_functions::function_CA_SETSHAPE(command *&c, objects &obj)
+int command_functions::function_CA_SETSHAPE(command *&c, bundle &obj)
 {
 	component *comp = master.mc.get_component_by_name(c->argc(0));
 	if (comp == NULL)
@@ -139,7 +139,7 @@ int command_functions::function_CA_SETSHAPE(command *&c, objects &obj)
 }
 
 // Set vdw radius scaling for method ('vdwscale <scale>')
-int command_functions::function_CA_VDWSCALE(command *&c, objects &obj)
+int command_functions::function_CA_VDWSCALE(command *&c, bundle &obj)
 {
 	master.mc.set_vdw_radius_scale(c->argd(0));
 	return CR_SUCCESS;

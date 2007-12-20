@@ -1,6 +1,6 @@
 /*
-	*** Image command functions
-	*** src/command/image.cpp
+	*** Pointer bundle
+	*** src/classes/bundle.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,6 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commandlist.h"
-#include "base/debug.h"
+#include "classes/bundle.h"
 
+// Constructor
+bundle::bundle()
+{
+	m = 0;
+	s = 0;
+	ff = 0;
+	g = 0;
+	i = 0;
+	p = 0;
+}

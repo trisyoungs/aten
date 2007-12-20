@@ -24,7 +24,7 @@
 #include "model/model.h"
 
 // Print cell information ('printcell')
-int command_functions::function_CA_PRINTCELL(command *&c, objects &obj)
+int command_functions::function_CA_PRINTCELL(command *&c, bundle &obj)
 {
 	msg(DM_NONE,"Unit cell type for model '%s' is %s\n", obj.m->get_name(), text_from_CT(obj.m->get_celltype()));
 	if (obj.m->get_celltype() != 0) obj.m->get_cell()->print();
@@ -32,7 +32,7 @@ int command_functions::function_CA_PRINTCELL(command *&c, objects &obj)
 }
 
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
-int command_functions::function_CA_REPLICATECELL(command *&c, objects &obj)
+int command_functions::function_CA_REPLICATECELL(command *&c, bundle &obj)
 {
 	vec3<double> v1, v2;
 	v1 = c->get_vector3d(0);
@@ -42,14 +42,14 @@ int command_functions::function_CA_REPLICATECELL(command *&c, objects &obj)
 }
 
 // Scale cell and molecule COGs ('scalecell <x y z>')
-int command_functions::function_CA_SCALECELL(command *&c, objects &obj)
+int command_functions::function_CA_SCALECELL(command *&c, bundle &obj)
 {
 	obj.m->scale_cell(c->get_vector3d(0));
 	return CR_SUCCESS;
 }
 
 // Set/create unit cell ('setcell <a b c> <alpha beta gamma>')
-int command_functions::function_CA_SETCELL(command *&c, objects &obj)
+int command_functions::function_CA_SETCELL(command *&c, bundle &obj)
 {
 	obj.m->set_cell(c->get_vector3d(0), c->get_vector3d(3));
 	obj.m->log_change(LOG_VISUAL);

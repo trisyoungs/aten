@@ -31,10 +31,10 @@ ff_rules FFR_from_text(const char *s)
 
 // Electrostatic model
 const char *EM_keywords[EM_NITEMS] = { "off", "coulomb", "ewald", "ewaldauto" };
-const char *text_from_EM(elec_type i)
+const char *text_from_EM(elec_method i)
 	{ return EM_keywords[i]; }
-elec_type EM_from_text(const char *s)
-	{ return (elec_type) enum_search("electrostatics method",EM_NITEMS,EM_keywords,s); }
+elec_method EM_from_text(const char *s)
+	{ return (elec_method) enum_search("electrostatics method",EM_NITEMS,EM_keywords,s); }
 
 // VDW potential forms
 const char *VF_strings[VF_NITEMS] = { "Unspecified", "Lennard-Jones 12-6", "Buckingham exp6" };

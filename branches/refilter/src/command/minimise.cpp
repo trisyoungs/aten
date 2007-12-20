@@ -1,5 +1,5 @@
 /*
-	*** Script minimiser functions
+	*** Minimiser command functions
 	*** src/command/minimise.cpp
 	Copyright T. Youngs 2007
 
@@ -29,12 +29,12 @@
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
 
-int command_functions::function_CA_CGMINIMISE(command *&c, objects &obj)
+int command_functions::function_CA_CGMINIMISE(command *&c, bundle &obj)
 {
 }
 
 // Set convergence criteria
-int command_functions::function_CA_CONVERGE(command *&c, objects &obj)
+int command_functions::function_CA_CONVERGE(command *&c, bundle &obj)
 {
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
@@ -42,14 +42,14 @@ int command_functions::function_CA_CONVERGE(command *&c, objects &obj)
 }
 
 // Set line minimiser tolerance
-int command_functions::function_CA_LINETOL(command *&c, objects &obj)
+int command_functions::function_CA_LINETOL(command *&c, bundle &obj)
 {
 	linetolerance = c->argd(0);
 	return CR_SUCCESS;
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
-int command_functions::function_CA_MCMINIMISE(command *&c, objects &obj)
+int command_functions::function_CA_MCMINIMISE(command *&c, bundle &obj)
 {
 	master.mc.set_ncycles(c->argi(0));
 	master.mc.minimise(obj.m, econverge, fconverge);
@@ -57,7 +57,7 @@ int command_functions::function_CA_MCMINIMISE(command *&c, objects &obj)
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
-int command_functions::function_CA_SDMINIMISE(command *&c, objects &obj)
+int command_functions::function_CA_SDMINIMISE(command *&c, bundle &obj)
 {
 	master.sd.set_tolerance(linetolerance);
 	master.sd.set_ncycles(c->argi(0));
@@ -65,6 +65,6 @@ int command_functions::function_CA_SDMINIMISE(command *&c, objects &obj)
 	return CR_SUCCESS;
 }
 
-int command_functions::function_CA_SIMPLEXMINIMISE(command *&c, objects &obj)
+int command_functions::function_CA_SIMPLEXMINIMISE(command *&c, bundle &obj)
 {
 }

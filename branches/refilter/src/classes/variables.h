@@ -73,8 +73,10 @@ class variable
 	void set_constant(const char*);
 	// Set value of variable (char)
 	void set(const char*);
-	void set(int i) { set(itoa(i)); }
-	void set(double d) { set(ftoa(d)); }
+	// Set value of variable (int)
+	void set(int i);
+	// Set value of variable (double)
+	void set(double d);
 	// Set value of variable (atom*)
 	void set(atom*);
 	// Set value of variable (pattern*)
@@ -98,7 +100,7 @@ class variable
 	// Get value of variable as double
 	double get_as_double();
 	// Get value of variable as float
-	float get_as_float();
+	float get_as_float() { float(get_as_double()); }
 	// Get value of variable as a boolean
 	bool get_as_bool();
 	// Get value of variable as gpointer (desired type is specified so a check can be made)

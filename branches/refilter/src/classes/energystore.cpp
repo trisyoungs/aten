@@ -367,7 +367,7 @@ void energystore::print_elecmatrix(model *m)
 		dbg_end(DM_CALLS,"energystore::print_elecmatrix");
 		return;
 	}
-	elec_type et = prefs.get_electrostatics();
+	elec_method et = prefs.get_electrostatics();
 	count1 = 0;
 	// Print out electrostatic energy decomposition
 	printf("Electrostatic Interaction Energy:\n      Pattern          Intra  ");
@@ -419,7 +419,7 @@ void energystore::print_intermatrix(model *m)
 		dbg_end(DM_CALLS,"energystore::print_intermatrix");
 		return;
 	}
-	elec_type et = prefs.get_electrostatics();
+	elec_method et = prefs.get_electrostatics();
 	// Print out total interpattern energy decomposition
 	printf("Total Interaction Energy:\n      Pattern          Intra  ");
 	for (p1 = m->get_patterns(); p1 != NULL; p1 = p1->next) printf("%13s  ",p1->get_name());
