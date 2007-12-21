@@ -309,6 +309,7 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 				tvec = oldaxes.rows[0] * ii;
 				tvec += oldaxes.rows[1] * jj;
 				tvec += oldaxes.rows[2] * kk;
+				tvec.print();
 				master.privclip.paste_to_model(this,tvec);
 				msg(DM_VERBOSE,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
 				if (!master.update_progress(++count))

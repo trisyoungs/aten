@@ -31,7 +31,7 @@ void pattern::torsion_energy(model *srcmodel, energystore *estore)
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
 	dbg_begin(DM_CALLS,"pattern::torsion_energy");
 	int n,i,j,k,l,aoff,m1;
-	static double k1, k2, k3, eq, phi, energy, period;
+	static double k0, k1, k2, k3, k4, eq, phi, energy, period;
 	patbound *pb;
 	static ffparams params;
 	vec3<double> vecij, veckj;
@@ -62,11 +62,27 @@ void pattern::torsion_energy(model *srcmodel, energystore *estore)
 					energy += k1 * (1.0 + cos(period*phi - eq));
 					break;
 				case (TF_COS3):
-					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1+cos(2*phi)) + k3*(1+cos(3*phi)) )
+					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) )
 					k1 = params.data[TF_COS3_K1];
 					k2 = params.data[TF_COS3_K2];
 					k3 = params.data[TF_COS3_K3];
 					energy += 0.5 * (k1 * (1.0 + cos(phi)) + k2 * (1.0 - cos(2.0*phi)) + k3 * (1.0 + cos(3.0*phi)));
+					break;
+				case (TF_COS4):
+					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) + k4*(1-cos(4*phi)) )
+					k1 = params.data[TF_COS4_K1];
+					k2 = params.data[TF_COS4_K2];
+					k3 = params.data[TF_COS4_K3];
+					k4 = params.data[TF_COS4_K4];
+					energy += 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) + k4*(1.0-cos(4.0*phi)) );
+					break;
+				case (TF_COS3C):
+					// U(phi) = k0 + 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) )
+					k0 = params.data[TF_COS3C_K0];
+					k1 = params.data[TF_COS3C_K1];
+					k2 = params.data[TF_COS3C_K2];
+					k3 = params.data[TF_COS3C_K3];
+					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
 					break;
 			}
 			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->get_atomid(0),pb->get_atomid(1),pb->get_atomid(2),pb->get_atomid(3), phi,energy);
@@ -118,6 +134,7 @@ void pattern::torsion_forces(model *srcmodel)
 	static double cosphi, phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
 	static vec3<double> fi, fj, fk, fl;
 	static ffparams params;
+	static double k0, k1, k2, k3, k4;
 	patbound *pb;
 	atom **modelatoms = srcmodel->get_staticatoms();
 	unitcell *cell = srcmodel->get_cell();
@@ -196,11 +213,25 @@ void pattern::torsion_forces(model *srcmodel)
 					break;
 				case (TF_COS3):
 					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
-					double k1, k2, k3;
 					k1 = -params.data[TF_COS3_K1];
 					k2 = 2.0 * params.data[TF_COS3_K2];
 					k3 = -3.0 * params.data[TF_COS3_K3];
-					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) - k2*sin(2*phi) + k3*sin(3*phi));
+					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi));
+					break;
+				case (TF_COS3C):
+					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
+					k1 = -params.data[TF_COS3C_K1];
+					k2 = 2.0 * params.data[TF_COS3C_K2];
+					k3 = -3.0 * params.data[TF_COS3C_K3];
+					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi));
+					break;
+				case (TF_COS4):
+					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) + 4 * k4*(sin(4*phi)))
+					k1 = -params.data[TF_COS4_K1];
+					k2 = 2.0 * params.data[TF_COS4_K2];
+					k3 = -3.0 * params.data[TF_COS4_K3];
+					k4 = 4.0 * params.data[TF_COS4_K4];
+					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi) + k4*sin(4.0*phi));
 					break;
 			}
 

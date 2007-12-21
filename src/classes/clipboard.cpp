@@ -292,7 +292,7 @@ void clipboard::paste_to_model(model *m, vec3<double> t)
 	for (clipatom *i = atoms.first(); i != NULL; i = i->get_next())
 	{
 		// Create a new atom in the target model
-		pastedi = m->add_copy(pastedi);
+		pastedi = m->add_copy(i);
 		// Translate the new atom
 		pastedi->r() += t;
 		m->select_atom(pastedi);
