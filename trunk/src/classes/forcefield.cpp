@@ -377,6 +377,18 @@ void forcefield::convert_parameters(energy_unit ff_eunit)
 				p->data[TF_COS3_K2] = prefs.convert_energy(p->data[TF_COS3_K2],ff_eunit);
 				p->data[TF_COS3_K3] = prefs.convert_energy(p->data[TF_COS3_K3],ff_eunit);
 				break;
+			case (TF_COS3C):
+				p->data[TF_COS3C_K0] = prefs.convert_energy(p->data[TF_COS3C_K0],ff_eunit);
+				p->data[TF_COS3C_K1] = prefs.convert_energy(p->data[TF_COS3C_K1],ff_eunit);
+				p->data[TF_COS3C_K2] = prefs.convert_energy(p->data[TF_COS3C_K2],ff_eunit);
+				p->data[TF_COS3C_K3] = prefs.convert_energy(p->data[TF_COS3C_K3],ff_eunit);
+				break;
+			case (TF_COS4):
+				p->data[TF_COS4_K1] = prefs.convert_energy(p->data[TF_COS4_K1],ff_eunit);
+				p->data[TF_COS4_K2] = prefs.convert_energy(p->data[TF_COS4_K2],ff_eunit);
+				p->data[TF_COS4_K3] = prefs.convert_energy(p->data[TF_COS4_K3],ff_eunit);
+				p->data[TF_COS4_K4] = prefs.convert_energy(p->data[TF_COS4_K4],ff_eunit);
+				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this torsion type.\n");
 				break;

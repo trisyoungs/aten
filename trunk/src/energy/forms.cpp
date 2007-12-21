@@ -61,8 +61,8 @@ angle_func AF_from_text(const char *s)
 	{ return (angle_func) enum_search("angle style",AF_NITEMS,AF_keywords,s); }
 
 // Torsion potential forms
-const char *TF_strings[TF_NITEMS] = { "Unspecified", "Cosine", "Triple Cosine" };
-const char *TF_keywords[TF_NITEMS] = { "_NULL_", "cosine", "cos3" };
+const char *TF_strings[TF_NITEMS] = { "Unspecified", "Cosine", "Triple Cosine", "Quadruple Cosine", "Constant + Triple Cosine" };
+const char *TF_keywords[TF_NITEMS] = { "_NULL_", "cosine", "cos3", "cos4", "cosc" };
 const char *text_from_TF(torsion_func i)
 	{ return TF_keywords[i]; }
 torsion_func TF_from_text(const char *s)

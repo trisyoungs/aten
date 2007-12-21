@@ -56,10 +56,12 @@ enum angle_cosine { AF_COSINE_K, AF_COSINE_S, AF_COSINE_EQ };
 enum angle_uffcosine { AF_UFFCOSINE_K, AF_UFFCOSINE_N, AF_UFFCOSINE_EQ };
 
 // Torsion potential forms
-enum torsion_func { TF_UNSPECIFIED, TF_COSINE, TF_COS3, TF_NITEMS };
+enum torsion_func { TF_UNSPECIFIED, TF_COSINE, TF_COS3, TF_COS4, TF_COS3C, TF_NITEMS };
 const char *text_from_TF(torsion_func);
 torsion_func TF_from_text(const char*);
 enum torsion_cosine { TF_COSINE_K, TF_COSINE_EQ, TF_COSINE_P };
 enum torsion_cos3 { TF_COS3_K1, TF_COS3_K2, TF_COS3_K3 };
+enum torsion_cos4 { TF_COS4_K1, TF_COS4_K2, TF_COS4_K3, TF_COS4_K4 };
+enum torsion_cosc { TF_COS3C_K0, TF_COS3C_K1, TF_COS3C_K2, TF_COS3C_K3 };
 
 #endif
