@@ -60,7 +60,7 @@ int command_functions::function_CA_LOADFF(command *&c, bundle &obj)
 	if (ff != NULL)
 	{
 		master.set_currentff(ff);
-		if (c->has_argument(1)) ff->set_name(c->argc(1));
+		if (c->has_arg(1)) ff->set_name(c->argc(1));
 		msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->get_name());
 		return CR_SUCCESS;
 	}
@@ -111,7 +111,7 @@ int command_functions::function_CA_TYPETEST(command *&c, bundle &obj)
 			// Prepare for typing
 			obj.m->describe_atoms();
 			// Get atom, element, and the atom's pattern
-			atom *i = obj.m->get_staticatoms()[c->argi(1)-1];
+			atom *i = obj.m->get_atomarray()[c->argi(1)-1];
 			int el = i->get_element();
 			pattern *p = obj.m->get_pattern(i);
 			int score = ffa->get_atomtype()->match_atom(i,p->get_ringlist(),obj.m,i);

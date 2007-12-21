@@ -55,6 +55,10 @@ template <class T> class list
 	T *list_head, *list_tail;
 	// Number of items in list
 	int nitems;
+	// Static array of items
+	T **items;
+	// Array regeneration flag
+	bool regenerate;
 
 	public:
 	// Returns the number of items in the list
@@ -85,6 +89,8 @@ template <class T> class list
 	void create_empty(int);
 	// Find list index of supplied item
 	int index_of(T*);
+	// Generate (if necessary) and return item array
+	T **array();
 
 	/*
 	// Item Moves
@@ -110,6 +116,8 @@ template <class T> list<T>::list()
 	list_head = NULL;
 	list_tail = NULL;
 	nitems = 0;
+	regenerate = 1;
+	items = NULL;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_LIST] ++;
 	#endif
@@ -125,6 +133,7 @@ template <class T> listitem<T>::listitem()
 template <class T> list<T>::~list()
 {
 	clear();
+	if (items != NULL) delete[] items;
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_LIST] ++;
 	#endif
@@ -139,6 +148,7 @@ template <class T> T* list<T>::add()
 	newitem->prev = list_tail;
 	list_tail = newitem;
 	nitems ++;
+	regenerate = 1;
 	return newitem;
 }
 
@@ -157,21 +167,20 @@ template <class T> T *list<T>::insert(T* newprev)
 	else list_tail = newitem;
 	newitem->next = newnext;
 	nitems ++;
+	regenerate = 1;
 	return newitem;
 }
 
 // Element access operator
 template <class T> T *list<T>::operator[](int index)
 {
-	if (index >= nitems)
+	if ((index < 0) || (index >= nitems))
 	{
 		printf("list::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nitems-1);
 		return NULL;
 	}
 	// Scan through for element number 'index' in the list and return it
-	T* result = list_head;
-	for (int i=0; i<index; i++) result = result->next;
-	return result;
+	return array()[index];
 }
 
 // Own an existing item
@@ -188,6 +197,7 @@ template <class T> void list<T>::own(T* olditem)
 	olditem->next = NULL;
 	list_tail = olditem;
 	nitems ++;
+	regenerate = 1;
 }
 
 // Remove the specified item from the list
@@ -198,6 +208,7 @@ template <class T> void list<T>::remove(T *xitem)
 	xitem->next == NULL ? list_tail = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
 	delete xitem;
 	nitems --;
+	regenerate = 1;
 }
 
 // Remove the specified item from the list, returning the next
@@ -209,6 +220,7 @@ template <class T> T* list<T>::remove_and_get_next(T *xitem)
 	xitem->next == NULL ? list_tail = (T*) xitem->prev : xitem->next->prev = (T*) xitem->prev;
 	delete xitem;
 	nitems --;
+	regenerate = 1;
 	return result;
 }
 
@@ -224,6 +236,7 @@ template <class T> void list<T>::cut(T *item)
 	else next->prev = prev;
 	item->next = NULL;
 	item->prev = NULL;
+	regenerate = 1;
 }
 
 // Fill array
@@ -250,6 +263,7 @@ template <class T> void list<T>::clear()
 		remove(xitem);
 		xitem = list_head;
 	}
+	regenerate = 1;
 }
 
 // Find index of supplied item
@@ -324,6 +338,7 @@ template <class T> void list<T>::swap(T* item1, T* item2)
 		//printf("Item 1 nextprev %li prevnext %li\n",item1->next->prev,item1->prev->next);
 		//printf("Item 2 nextprev %li prevnext %li\n",item2->next->prev,item2->prev->next);
 	}
+	regenerate = 1;
 }
 
 // Shift item towards head
@@ -333,6 +348,7 @@ template <class T> void list<T>::shift_up(T* item)
 	if (list_head == item) return;
 	T* other = item->prev;
 	swap(other,item);
+	regenerate = 1;
 }
 
 // Shift item towards tail
@@ -342,6 +358,7 @@ template <class T> void list<T>::shift_down(T* item)
 	if (list_tail == item) return;
 	T* other = item->next;
 	swap(other,item);
+	regenerate = 1;
 }
 
 // Move item to end
@@ -355,6 +372,7 @@ template <class T> void list<T>::move_to_end(T* item)
 	item->next = NULL;
 	if (list_tail != NULL) list_tail->next = item;
 	list_tail = item;
+	regenerate = 1;
 }
 
 // Move item to start
@@ -368,13 +386,35 @@ template <class T> void list<T>::move_to_start(T* item)
 	item->next = list_head;
 	if (list_head != NULL) list_head->prev = item;
 	list_head = item;
+	regenerate = 1;
 }
 
-// Move item to start
+// Create empty list
 template <class T> void list<T>::create_empty(int newsize)
 {
 	clear();
 	for (int n=0; n<newsize; n++) add();
+	regenerate = 1;
+}
+
+// Create (or just return) the item array
+template <class T> T **list<T>::array()
+{
+	if (regenerate == 0) return items;
+	// Delete old atom list (if there is one)
+	if (items != NULL) delete[] items;
+	// Create new list
+	items = new T*[nitems];
+	// Fill in pointers
+	int count = 0;
+	for (T *i = list_head; i != NULL; i = i->next)
+	{
+	//printf("N=%i\n",count);
+		items[count] = i;
+		count ++;
+	}
+	regenerate = 0;
+	return items;
 }
 
 #endif

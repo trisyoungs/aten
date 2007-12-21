@@ -136,10 +136,6 @@ class model
 	list<atom> atoms;
 	// Delete the specified atom
 	void remove_atom(atom*);
-	// Array of static atom pointers (for energy calculation etc.)
-	atom **staticatoms;
-	// Log point for static atom pointer list
-	int staticatoms_point;
 	
 	public:
 	// Create a new atom
@@ -150,6 +146,8 @@ class model
 	atom *add_copy(atom *after, atom *source);
 	// Return the start of the atom list
 	atom *get_atoms() { return atoms.first(); }
+	// Return the n'th atom in the atom list
+	atom *get_atom(int n);
 	// Return the number of atoms in the model
 	int get_natoms() { return atoms.size(); }
 	// Delete specified atom
@@ -175,7 +173,7 @@ class model
 	// Move selection to end of the list
 	void move_selection_to_end();
 	// Return (and autocreate if necessary) the static atoms array
-	atom **get_staticatoms();
+	atom **get_atomarray() { return atoms.array(); }
 	// Set visibility of specified atom
 	void set_hidden(atom *i, bool hidden);
 	// Prints out the coordinates of the atoms in the model
@@ -456,7 +454,7 @@ class model
 	void zero_forces_fixed();
 
 	/*
-	// Pattern / Molecule
+	// Patterns
 	*/
 	private:
 	// Pattern nodes for the model

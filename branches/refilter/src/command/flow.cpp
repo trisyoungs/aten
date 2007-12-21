@@ -22,6 +22,7 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 #include "base/debug.h"
+#include "classes/pattern.h"
 #include <fstream>
 
 // Else statement
@@ -58,54 +59,65 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 	switch (c->argt(0))
 	{
 		// Integer loop: 1 arg  - loop from 1 until end of file or termination
-		//		 3 args - loop from arg 2 to arg 3
+		//		 3 args - loop from arg 2 (int) to arg 3 (int)
 		case (VT_INT):
-			if (!c->has_argument(2)) c->arg(0)->set(1);
+			if (!c->has_arg(2)) c->arg(0)->set(1);
 			else c->arg(0)->set(c->argi(1));
 			break;
-		// Atom loop - start depends on second variable.
+		// Atom loop:	1 arg  - loop over all atoms in model
+		//		2 args - loop over all atoms in arg 2 (pattern)
+		//		3 args - loop over atoms in molecule arg 3 in pattern arg 2
 		case (VT_ATOM):
-			// If no second variable is given, use the source model
-			if (rangevar == NULL) countvar->set(m->get_atoms());
-			//else if (rangetype == VT_MODEL) countvar->set(rangevar->get_as_model()->get_atoms());
-			else if (rangetype == VT_PATTERN)
+			// If no second variable is given, loop over all atoms
+			if (c->has_arg(1))
 			{
-				p = (pattern*) rangevar->get_as_pointer(VT_PATTERN);
-				if (p == NULL)
-				{
-					printf("command::loop_initialise <<<< atom:pattern rangevar is NULL >>>>\n");
-					dbg_end(DM_CALLS,"command::loop_initialise");
-					return FALSE;
-				}
-				msg(DM_VERBOSE,"                  : range variable is '%s', type = 'pattern*' (%s)\n", rangevar->get_name(), p->get_name());
-				// Check for subrange variable (integer molecule)
-				if (args[2] == NULL) countvar->set(p->get_firstatom());
+				// Second argument determines pattern
+				pattern *p;
+				if (c->argt(1) == VT_PATTERN) p = c->argp(1);
+				else if (c->argt(1) == VT_INT) p = obj.m->get_pattern(c->argi(1));
 				else
 				{
-					// Get first atom and skip on nmolatoms * (args[2]-1)
-					i = p->get_firstatom();
-					for (n = 0; n < p->get_natoms() * (args[2]->get_as_int() - 1); n++) i = i->next;
-					countvar->set(i);
+					printf("Atom loop argument 2 must be of type 'pattern' or 'int'.\n");
+					return CR_FAIL;
 				}
+				// Must have a valid pattern pointer here
+				if (p == NULL)
+				{
+					printf("Atom loop was not given a valid pattern.\n");
+					return CR_FAIL;
+				}
+				// Check on third argument - if provided, must be an int
+				if (c->has_arg(2))
+				{
+					if (c->argt(2) == VT_INT)
+					{
+						int i = c->argi(2);
+						// Check molecule range
+						if ((i < 1) || (i > p->get_nmols()))
+						{
+							printf("Atom loop pattern molecule is out of range.\n");
+							return CR_FAIL;
+						}
+						int m = p->get_startatom();
+						m += (i-1) * p->get_natoms();
+						c->arg(0)->set(obj.m->get_atom(m));
+					}
+					else
+					{
+						printf("Atom loop argument 3 must be an 'int'\n.");
+						return CR_FAIL;
+					}
+				}
+				else c->arg(0)->set(p->get_firstatom());
+
 			}
-			else
-			{
-				msg(DM_NONE,"Range variable '%s' is not of suitable type (%s) for atom loop.\n", rangevar->get_name(), text_from_VT(rangevar->get_type()));
-				dbg_end(DM_CALLS,"command::loop_initialise");
-				return FALSE;
-			}
-			// Set atom variables from the atom pointer
-			vars.set_atom_variables(countvar->get_name(), (atom*) countvar->get_as_pointer(VT_ATOM));
+			else c->arg(0)->set(obj.m->get_atoms());
+			// Set secondary variables from atom loop variable
+			c->parent->variables.set_atom_variables(c->arg(0)->get_name(), c->arga(0));
 			break;
-		// Pattern loop over patterns in model
+		// Pattern loop	 1 arg  - loop over patterns in model
 		case (VT_PATTERN):
-			/* if (rangetype != VT_MODEL)
-			{
-				printf("filter::loop_initialise <<<< Range variable '%s' is not of suitable type for pattern loop >>>>\n",rangevar->get_name());
-				dbg_end(DM_CALLS,"filter::loop_initialise");
-				return FALSE;
-			}
-			*/
+
 			countvar->set(m->get_patterns());
 			// Set pattern variables from the pattern pointer
 			vars.set_pattern_variables(countvar->get_name(), (pattern*) countvar->get_as_pointer(VT_PATTERN));

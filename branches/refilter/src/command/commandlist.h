@@ -160,8 +160,12 @@ class command
 	vec3<float> get_vector3f(int);
 	// Return arguments as vec3<int>
 	vec3<int> get_vector3i(int);
+	// Return argument as atom pointer
+	atom *arga(int argno) { return (args[argno] == NULL ? NULL : (atom*) args[argno]->get_as_pointer(VT_ATOM)); }
+	// Return argument as pattern pointer
+	pattern *argp(int argno) { return (args[argno] == NULL ? NULL : (pattern*) args[argno]->get_as_pointer(VT_PATTERN)); }
 	// Returns whether argument 'n' was provided
-	bool has_argument(int argno) { return (args[argno] == NULL ? FALSE : TRUE); }
+	bool has_arg(int argno) { return (args[argno] == NULL ? FALSE : TRUE); }
 	// Return variable type of argument
 	variable_type argt(int argno) { return (args[argno] == NULL ? VT_NITEMS : args[argno]->get_type()); }
 	// Print data variables
