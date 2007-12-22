@@ -25,6 +25,28 @@
 #include "classes/forcefield.h"
 #include "file/filter.h"
 
+// Finalise current model
+int command_functions::function_CA_FINALISEMODEL(command *&c, bundle &obj)
+{
+	//if (partner != NULL) activemodel->set_filename(filename.get());
+	//activemodel->set_filter(partner);
+	printf("Model filter needs to be set....\n");
+	// Do various necessary calculations
+	if (prefs.get_coords_in_bohr()) obj.m->bohr_to_angstrom();
+	obj.m->renumber_atoms();
+	obj.m->reset_view();
+	obj.m->calculate_mass();
+	obj.m->calculate_density();
+	// Print out some useful info on the model that we've just read in
+	msg(DM_NONE,"Atoms  : %i\n",obj.m->get_natoms());
+	msg(DM_NONE,"Cell   : %s\n",text_from_CT(obj.m->get_celltype()));
+	if (obj.m->get_celltype() != 0) obj.m->get_cell()->print();
+	// Lastly, reset all the log points and start afresh
+	obj.m->reset_logs();
+	obj.m->update_save_point();
+	return CR_SUCCESS;
+}
+
 // Print loaded models ('listmodels')
 int command_functions::function_CA_LISTMODELS(command *&c, bundle &obj)
 {
@@ -43,8 +65,8 @@ int command_functions::function_CA_LOADMODEL(command *&c, bundle &obj)
 		if (f->execute(c->argc(0)))
 		{
 			model *m = master.get_currentmodel();
-			if (c->was_given(1)) m->set_name(c->argc(1));
-			obj.i = obj.m->get_atoms();
+			if (c->has_arg(1)) m->set_name(c->argc(1));
+			obj.i = m->get_atoms();
 			msg(DM_NONE,"script : Model '%s' loaded, name '%s'\n", c->argc(0), m->get_name());
 			return CR_SUCCESS;
 		}

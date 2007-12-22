@@ -27,11 +27,14 @@
 const char *CA_syntax[CA_NITEMS] = {
 
 	// Variables
+	"character <variables>",
 	"integer <variables>",
 	"double <variables>",
-	"character <variables>",
 	"atom <variables>",
+	"bond <variables>",
 	"pattern <variables>",
+	"model <variables>",
+	"patbound <variables>",
 
 	// Root node
 	"_ROOTNODE_",
@@ -47,11 +50,11 @@ const char *CA_syntax[CA_NITEMS] = {
 
 	// Bonding 
 	"augment",
-	"rebond",
-	"clearbonds",
 	"bondtol <tolerance>",
 	"bondpatterns",
 	"bondselection",
+	"clearbonds",
+	"rebond",
 
 	// Build commands
 	"addhydrogen",
@@ -67,6 +70,9 @@ const char *CA_syntax[CA_NITEMS] = {
 	"transmute <element>",
 
 	// Cell commands
+	"fold",
+	"fractoreal",
+	"pack",
 	"printcell",
 	"replicatecell <neg.x> <neg.y> <neg.z> <pos.x> <pos.y> <pos.z>",
 	"scalecell <x> <y> <z>",
@@ -128,6 +134,7 @@ const char *CA_syntax[CA_NITEMS] = {
 	"_GOTONONIF_",
 	"if,rxe",
 	"_TERMINATE_",
+	"quit",
 
 	// Force commands
 	"frameforces",
@@ -142,6 +149,9 @@ const char *CA_syntax[CA_NITEMS] = {
 	"selectff <name>",
 	"typemodel",
 	"typetest <ffid> <atomid>",
+
+	// Grid commands
+	"finalisegrid",
 
 	//"image 
 
@@ -221,6 +231,9 @@ const char *CA_syntax[CA_NITEMS] = {
 	"prevframe",
 
 	// Transformation commands
+	"centre <x> <y> <z>",
+	"centreselection <x> <y> <z>",
+	"translate <dx> <dy> <dz>",
 	"translateatom <dx> <dy> <dz>",
 	"translate <dx> <dy> <dz>",
 	"mirror <axis>",

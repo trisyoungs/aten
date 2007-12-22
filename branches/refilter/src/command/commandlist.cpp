@@ -23,6 +23,7 @@
 #include "file/format.h"
 #include "file/parse.h"
 #include "base/sysfunc.h"
+#include "base/master.h"
 #include "base/constants.h"
 
 // If Conditions
@@ -30,7 +31,7 @@ const char *IC_strings[6] = { "eq", "l", "le", "g", "ge", "neq" };
 const char *text_from_IC(if_condition i)
 	{ return IC_strings[i-1]; }
 
-// Constructor
+// Constructors
 command::command()
 {
 	next = NULL;
@@ -47,6 +48,12 @@ command::command()
 	#endif
 }
 
+commandlist::commandlist()
+{
+	infile = NULL;
+	outfile = NULL;
+}
+
 // Destructor
 command::~command()
 {
@@ -55,6 +62,13 @@ command::~command()
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_COMMANDNODE] ++;
 	#endif
+}
+
+// Set command and function
+void command::set_command(command_action ca)
+{
+	action = ca;
+	function = functions.action[ca];
 }
 
 // Clear command list and reinitialise
@@ -87,7 +101,7 @@ void command::print_args()
 
 
 // Return arguments as vec3<double>
-vec3<double> command::get_vector3d(int i)
+vec3<double> command::arg3d(int i)
 {
 	dbg_begin(DM_CALLS,"command::get_vector3d");
         static vec3<double> result;
@@ -98,7 +112,7 @@ vec3<double> command::get_vector3d(int i)
 }
 
 // Return arguments as vec3<float>
-vec3<float> command::get_vector3f(int i)
+vec3<float> command::arg3f(int i)
 {
 	dbg_begin(DM_CALLS,"command::get_vector3f");
         static vec3<float> result;
@@ -109,7 +123,7 @@ vec3<float> command::get_vector3f(int i)
 }
 
 // Return arguments as vec3<int>
-vec3<int> command::get_vector3i(int i)
+vec3<int> command::arg3i(int i)
 {
 	dbg_begin(DM_CALLS,"command::get_vector3i");
 	static vec3<int> result;
@@ -488,6 +502,8 @@ bool commandlist::add_command(command_action ca)
 			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
 			break;
 	}
+	// Store function pointer for command
+	if (result) 
 	// Check variable assignment result
 	if (!varresult)
 	{
@@ -545,4 +561,65 @@ bool commandlist::cache_command()
 	}
 	dbg_end(DM_CALLS,"commandlist::cache_command");
 	return result;
+}
+
+
+// Close files
+void commandlist::close_files()
+{
+	dbg_begin(DM_CALLS,"commandlist::close_files");
+	if (infile != NULL)
+	{
+		infile->close();
+		delete infile;
+	}
+	if (outfile != NULL)
+	{
+		outfile->close();
+		delete outfile;
+	}
+	infile = NULL;
+	outfile = NULL;
+	dbg_end(DM_CALLS,"commandlist::close_files");
+}
+
+// Execute command
+int command::execute()
+{
+	return (command.*function)(this, master.current);
+}
+
+// Execute commands in command list
+bool commandlist::execute(const char *sourcefile, const char *destfile)
+{
+	// Set input file
+	if (sourcefile[0] != '\0')
+	{
+		if (infile != NULL) printf("commandlist::execute <<<< Inputfile already set >>>>\n");
+		infile = new ifstream(sourcefile,ios::in);
+		if (!infile->good())
+		{
+			msg(DM_NONE,"Couldn't open source file '%s'.\n",sourcefile);
+			return FALSE;
+		}
+	}
+	// Set output file
+	if (destfile[0] != '\0')
+	{
+		if (outfile != NULL) printf("commandlist::execute <<<< Outputfile already set >>>>\n");
+		outfile = new ofstream(destfile,ios::out);
+		if (!outfile->good()) 
+		{
+			msg(DM_NONE,"Couldn't open destination file '%s'.\n",destfile);
+			return FALSE;
+		}
+	}
+	// Get first command in list
+	command *c = commands.first();
+	int result;
+	while (c != NULL)
+	{
+		// Run command and get return value
+		result = c->execute();
+	}
 }

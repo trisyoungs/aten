@@ -19,6 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "command/commandlist.h"
+#include "classes/bundle.h"
 #include "command/commands.h"
 #include "base/sysfunc.h"
 #include <string.h>
@@ -27,11 +29,14 @@
 const char *CA_data[CA_NITEMS] = {
 
 	// Variables
+	"character",
 	"integer",
 	"double",
-	"character",
 	"atom",
+	"bond",
 	"pattern",
+	"model",
+	"patbound",
 
 	// Root node
 	"_ROOTNODE_",
@@ -47,11 +52,11 @@ const char *CA_data[CA_NITEMS] = {
 
 	// Bonding 
 	"augment",
-	"rebond",
-	"clearbonds",
 	"bondtol,r",
 	"bondpatterns",
 	"bondselection",
+	"clearbonds",
+	"rebond",
 
 	// Build commands
 	"addhydrogen",
@@ -67,6 +72,9 @@ const char *CA_data[CA_NITEMS] = {
 	"transmute,r",
 
 	// Cell commands
+	"fold",
+	"fractoreal",
+	"pack",
 	"printcell",
 	"replicatecell,rrrrrr",
 	"scalecell,rrr",
@@ -127,8 +135,8 @@ const char *CA_data[CA_NITEMS] = {
 	"_GOTO_",
 	"_GOTONONIF_",
 	"if,rxe",
-	"repeat,r",
 	"_TERMINATE_",
+	"quit",
 
 	// Force commands
 	"frameforces",
@@ -143,6 +151,9 @@ const char *CA_data[CA_NITEMS] = {
 	"selectff,r",
 	"typemodel",
 	"typetest,r",
+
+	// Grid commands
+	"finalisegrid",
 
 	//"image 
 
@@ -170,6 +181,7 @@ const char *CA_data[CA_NITEMS] = {
 	"simplexminimise",
 
 	// Model commands
+	"finalisemodel",
 	"listmodels",
 	"loadmodel,ro",
 	"newmodel,r",
@@ -222,6 +234,9 @@ const char *CA_data[CA_NITEMS] = {
 	"prevframe",
 
 	// Transformation commands
+	"centre,rrr",
+	"centreselection,rrr",
+	"translate,rrr",
 	"translateatom,rrr",
 	"translate,rrr",
 	"mirror,r",
@@ -232,12 +247,18 @@ const char *CA_data[CA_NITEMS] = {
 	"inc,r",
 	"let,rxe",
 
-	"quit"
-
 	};
+
 command_action CA_from_text(const char* s)
 	{ return (command_action) enum_search_data("command", CA_NITEMS, CA_data, s); }
 const char *text_from_CA(command_action ca)
 	{ return get_before_comma(CA_data[ca]); }
 const char *vars_from_CA(command_action ca)
 	{ return get_after_comma(CA_data[ca]); }
+
+// Constructor
+command_functions::command_functions()
+{
+	// Store pointers to all command functions
+	action[CA_QUIT] = &command_functions::function_CA_QUIT;
+}

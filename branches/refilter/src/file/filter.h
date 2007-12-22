@@ -24,6 +24,7 @@
 
 #include "file/filtercommands.h"
 #include "command/commandlist.h"
+#include "base/prefs.h"
 #include <fstream>
 
 // Filter Types
@@ -106,15 +107,6 @@ class filter
 	filter_type get_type() { return type; }
 	// Return the long description of the filter (including glob)
 	const char *get_description() { return description.get(); }
-
-	/*
-	// Files
-	*/
-	private:
-	// Input (source) file
-	ifstream inputfile;
-	// Output (destination) file
-	ofstream outputfile;
 
 	/*
 	// Command actions

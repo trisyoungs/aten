@@ -105,7 +105,7 @@ void fourier_data::calculate(model *srcmodel, int startatom, int atomstodo)
 		return;
 	}
 	// Make sure model has a staticatoms space
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	// Generate reciprocal space coordinates for atoms at each cartesian k-vector.
 	// Only create positive k-vector positions for cos since is an even function. For sin calculate negative
 	// also (odd function), where rsin[k] runs from k=0,2*kmax+1, with k=kmax the central (zero) vector (=complex(1,0)).

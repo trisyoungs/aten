@@ -1,6 +1,6 @@
 /*
-	*** Filter field export
-	*** src/file/exportfield.cpp
+	*** Grid command functions
+	*** src/command/image.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,6 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "file/filter.h"
-#include "model/model.h"
-#include "base/master.h"
+#include "command/commandlist.h"
+#include "base/prefs.h"
+#include "classes/grid.h"
+
+// Finalise current surface
+int command_functions::function_CA_FINALISEGRID(command *&c, bundle &obj)
+{
+	if (prefs.get_coords_in_bohr()) obj.g->bohr_to_angstrom();
+	return CR_SUCCESS;
+}

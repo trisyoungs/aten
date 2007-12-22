@@ -23,17 +23,36 @@
 #include "model/model.h"
 #include "classes/atom.h"
 
+// Centre model at given coordinates
+int command_functions::function_CA_CENTRE(command *&c, bundle &obj)
+{
+	if (c->parent->get_infile() == NULL) obj.m->centre(c->arg3d(0));
+	else if (prefs.get_centre_on_load() != PS_NO) obj.m->centre(c->arg3d(0));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_CENTRESELECTION(command *&c, bundle &obj)
+{
+	return CR_FAIL;
+}
+
+int command_functions::function_CA_TRANSLATE(command *&c, bundle &obj)
+{
+	return CR_FAIL;
+}
+
+
 // Translate activeatom ('translateatom <dx dy dz>')
 int command_functions::function_CA_TRANSLATEATOM(command *&c, bundle &obj)
 {
-	obj.i->r() += c->get_vector3d(0);
+	obj.i->r() += c->arg3d(0);
 	return CR_SUCCESS;
 }
 
 // Translate selection ('translate <dx dy dz>')
 int command_functions::function_CA_TRANSLATESELECTION(command *&c, bundle &obj)
 {
-	obj.m->translate_selection_local(c->get_vector3d(0));
+	obj.m->translate_selection_local(c->arg3d(0));
 	return CR_SUCCESS;
 }
 

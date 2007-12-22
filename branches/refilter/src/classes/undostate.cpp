@@ -114,7 +114,7 @@ void change::set(int ue, mat3<double> *m1, mat3<double> *m2)
 void change::reverse(model *m)
 {
 	dbg_begin(DM_CALLS,"change::reverse");
-	atom **modelatoms = m->get_staticatoms();
+	atom **modelatoms = m->get_atomarray();
 	int id;
 	atom *i, *j, *k, *l;
 	bond *b;

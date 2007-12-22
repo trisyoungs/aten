@@ -20,47 +20,38 @@
 */
 
 #include "command/commandlist.h"
-#include "model/model.h"
-#include "classes/atom.h"
-
-
-
-int command_functions::function_CA_DECREASE(command *&c, bundle &obj)
-{
-
 
 // Decrease variable by 1
-case (BC_DECREASE):
-	fn->datavar[0]->decrease(1);
-	fn = fn->next;
-	break;
+int command_functions::function_CA_DECREASE(command *&c, bundle &obj)
+{
+	c->arg(0)->decrease(1);
+	return CR_SUCCESS;
 }
 
 // Evaluate expression and assign to variable
 int command_functions::function_CA_EVAL(command *&c, bundle &obj)
 {
-	fn->datavar[0]->set(evaluate(fn->argc(2), &variables));
-	fn = fn->next;
-	break;
+	c->arg(0)->set(evaluate(c->argc(2), &c->parent->variables));
+	return CR_SUCCESS;
 }
 
 // Set variable to value or variable
 int command_functions::function_CA_LET(command *&c, bundle &obj)
 {
 	// If the first var is a pointer, second must be a pointer!
-	if (c->datavar[0]->get_type() >= VT_ATOM)
+	if (c->argt(0) >= VT_ATOM)
 	{
-		if (c->datavar[0]->get_type() != c->datavar[2]->get_type())
-			msg(DM_NONE,"Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->datavar[0]->get_name(), c->datavar[2]->get_name());
-		else c->datavar[0]->copy_pointer(c->datavar[2]);
+		if (c->argt(0) != c->argt(2))
+			msg(DM_NONE,"Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->get_name(), c->arg(2)->get_name());
+		else c->arg(0)->copy_pointer(c->arg(2));
 	}
-	else fn->datavar[0]->set(fn->argc(2));
+	else c->arg(0)->set(c->argc(2));
 	return CR_SUCCESS;
 }
 
 // Increase variable
 int command_functions::function_CA_INCREASE(command *&c, bundle &obj)
 {
-	c->datavar[0]->increase(1);
+	c->arg(0)->increase(1);
 	return CR_SUCCESS;
 }

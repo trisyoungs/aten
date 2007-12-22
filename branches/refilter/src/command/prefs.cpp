@@ -42,7 +42,7 @@ int command_functions::function_CA_COLOUR(command *&c, bundle &obj)
 {
 	colour col = COL_from_text(c->argc(0));
 	if (col == COL_NITEMS) return CR_FAIL;
-	vec3<double> colvec = c->get_vector3d(1);
+	vec3<double> colvec = c->arg3d(1);
 	prefs.set_colour(col, colvec.x, colvec.y, colvec.z, 1.0);
 	return CR_SUCCESS;
 }

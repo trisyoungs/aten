@@ -51,7 +51,7 @@ int command_functions::function_CA_ELEC(command *&c, bundle &obj)
 		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
 		case (EM_EWALD):
 			prefs.set_ewald_alpha(c->argd(1));
-			prefs.set_ewald_kvec(c->get_vector3i(2));
+			prefs.set_ewald_kvec(c->arg3i(2));
 			break;
 		// Set ewald precision
 		case (EM_EWALDAUTO):

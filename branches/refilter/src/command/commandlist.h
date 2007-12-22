@@ -53,7 +53,9 @@ class command
 	// Command
 	*/
 	private:
-	// Basic command that this node performs
+	// Static class containing pointers to command functions
+	static command_functions functions;
+	// Command that this node performs
 	command_action action;
 	// Pointer to action function
 	commandfunc function;
@@ -62,7 +64,7 @@ class command
 	// Parent list
 	commandlist *parent;
 	// Set command
-	void set_command(command_action ca) { action = ca; }
+	void set_command(command_action ca);
 	// Get command
 	command_action get_command() { return action; }
 	// Execute command
@@ -87,16 +89,20 @@ class command
 	private:
 	// Whether the loop is currently executing
 	bool loopactive;
+	// NUmber of iterations performed by loop
+	int loopiterations;
 
 	public:
 	// Set status of loop
 	void set_loopactive(bool b) { loopactive = b; }
 	// Get status of loop
 	bool get_loopactive() { return loopactive; }
-	// Iterate loop
-	bool loop_iterate();
-	// Check loop for termination
-	bool loop_check();
+	// Set iteration count
+	void set_loopiterations(int n) { loopiterations = n; }
+	// Get iteration count
+	int get_loopiterations() { return loopiterations; }
+	// Increase interation count
+	void increase_iterations() { loopiterations ++; }
 
 	/*
 	// Command Branch
@@ -153,11 +159,11 @@ class command
 	// Return argument as bool
 	bool argb(int argno) { return (args[argno] == NULL ? -1 : args[argno]->get_as_bool()); }
 	// Return arguments as vec3<double>
-	vec3<double> get_vector3d(int);
+	vec3<double> arg3d(int);
 	// Return arguments as vec3<float>
-	vec3<float> get_vector3f(int);
+	vec3<float> arg3f(int);
 	// Return arguments as vec3<int>
-	vec3<int> get_vector3i(int);
+	vec3<int> arg3i(int);
 	// Return argument as atom pointer
 	atom *arga(int argno) { return (args[argno] == NULL ? NULL : (atom*) args[argno]->get_as_pointer(VT_ATOM)); }
 	// Return argument as pattern pointer
@@ -184,8 +190,6 @@ class commandlist
 	// Command List
 	*/
 	private:
-	// Static class containing pointers to command functions
-	static command_functions functions;
 	// List of commands
 	list<command> commands;
 	// List of pointers to stacked branches
@@ -247,7 +251,7 @@ class commandlist
 	ofstream *outfile;
 	// Parser read options for this commandlist
 	int readopts;
-	// Close input/output file(s)
+	// Close files
 	void close_files();
 
 	public:

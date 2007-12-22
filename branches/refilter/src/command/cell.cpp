@@ -23,6 +23,30 @@
 #include "base/debug.h"
 #include "model/model.h"
 
+// Fold atoms into unit cell
+int command_functions::function_CA_FOLD(command *&c, bundle &obj)
+{
+	if (c->parent->get_infile() == NULL) obj.m->fold_all_atoms();
+	else if (prefs.get_fold_on_load() != PS_NO) obj.m->fold_all_atoms();
+	return CR_SUCCESS;
+}
+
+
+// Convert fractional coordinates to real coordinates
+int command_functions::function_CA_FRACTOREAL(command *&c, bundle &obj)
+{
+	obj.m->frac_to_real();
+	return CR_SUCCESS;
+}
+
+// Do crystal packing in model
+int command_functions::function_CA_PACK(command *&c, bundle &obj)
+{
+	if (c->parent->get_infile() == NULL) obj.m->apply_spacegroup_symmops(NULL);
+	else if (prefs.get_pack_on_load() != PS_NO) obj.m->apply_spacegroup_symmops(NULL);
+	return CR_SUCCESS;
+}
+
 // Print cell information ('printcell')
 int command_functions::function_CA_PRINTCELL(command *&c, bundle &obj)
 {
@@ -34,24 +58,21 @@ int command_functions::function_CA_PRINTCELL(command *&c, bundle &obj)
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
 int command_functions::function_CA_REPLICATECELL(command *&c, bundle &obj)
 {
-	vec3<double> v1, v2;
-	v1 = c->get_vector3d(0);
-	v2 = c->get_vector3d(3);
-	obj.m->replicate_cell(v1, v2);
+	obj.m->replicate_cell(c->arg3d(0), c->arg3d(3));
 	return CR_SUCCESS;
 }
 
 // Scale cell and molecule COGs ('scalecell <x y z>')
 int command_functions::function_CA_SCALECELL(command *&c, bundle &obj)
 {
-	obj.m->scale_cell(c->get_vector3d(0));
+	obj.m->scale_cell(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 // Set/create unit cell ('setcell <a b c> <alpha beta gamma>')
 int command_functions::function_CA_SETCELL(command *&c, bundle &obj)
 {
-	obj.m->set_cell(c->get_vector3d(0), c->get_vector3d(3));
+	obj.m->set_cell(c->arg3d(0), c->arg3d(3));
 	obj.m->log_change(LOG_VISUAL);
 	obj.m->calculate_density();
 	return CR_SUCCESS;

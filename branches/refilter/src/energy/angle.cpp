@@ -102,7 +102,7 @@ void pattern::angle_forces(model *srcmodel)
 	static double du_dtheta, dtheta_dcostheta;
 	static ffparams params;
 	static patbound *pb;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)

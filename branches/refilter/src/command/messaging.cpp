@@ -20,57 +20,61 @@
 */
 
 #include "command/commandlist.h"
-#include "model/model.h"
-#include "classes/atom.h"
+#include "file/format.h"
 
 // Print formatted string
 int command_functions::function_CA_PRINT(command *&c, bundle &obj)
 {
+	static dnchar printstr, var;
+	static char srcstr[512];
+	static format varformat;
+	bool vardone;
+	char *ch;
 	// Go through supplied string, converting variables as we go
 	printstr.create_empty(512);
-	strcpy(srcstr, fn->argc(0));
-	for (c = srcstr; *c != '\0'; c++)
+	strcpy(srcstr, c->argc(0));
+	for (ch = srcstr; *ch != '\0'; ch++)
 	{
 		// If the character is not '$', just add it to printstr
-		if (*c != '$')
+		if (*ch != '$')
 		{
-			printstr += *c;
+			printstr += *ch;
 			continue;
 		}
 		// This is the start of a variable format
 		// Clear the variable string and skip past the '$'
 		var.create_empty(64);
 		var += '$';
-		c++;
+		ch++;
 		// Add characters to 'var' until we find the end of the format
 		// Demand that vars are formatted as ${name[@format]}, or terminated by a space
 		vardone = FALSE;
-		while (*c != ' ')
+		while (*ch != ' ')
 		{
-			switch (*c)
+			switch (*ch)
 			{
 				case ('{'):
-					c++;
+					ch++;
 					break;
 				case ('\0'):
-					c--;
+					ch--;
 				case ('}'):
 					vardone = TRUE;
 					break;
 				case (' '):
 					vardone = TRUE;
-					c--;
+					ch--;
 					break;
 				default:
-					var += *c;
-					c++;
+					var += *ch;
+					ch++;
 					break;
 			}
 			if (vardone) break;
 		}
 		// Now have variable (and format) in 'var'.
 		// Create a quick format and add this to the printstr.
-		varformat.create(var.get(), variables);
+		varformat.create(var.get(), c->parent->variables);
 		//printf("Variable part = [%s]\n",var.get());
 		//printf("Current PRINTSTR = [%s]\n",printstr.get());
 		printstr.cat(varformat.create_string());

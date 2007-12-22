@@ -554,7 +554,8 @@ class model
 	// Spin the atom selection
 	void manip_rotate_zaxis(double);
 	// Puts the system's centre of geometry at 0,0,0
-	void centre();
+	void centre(const vec3<double> &v) { centre(v.x, v.y, v.z); }
+	void centre(double x, double y, double z);
 	// Translate selection by the vector specified
 	void translate_selection_local(const vec3<double>&);
 	// Translate selection by the vector specified (in world coordinates)

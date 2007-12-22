@@ -20,7 +20,9 @@
 */
 
 #include "file/filter.h"
+#include "file/parse.h"
 #include "base/sysfunc.h"
+#include "base/master.h"
 #include "model/model.h"
 #include "classes/pattern.h"
 #include <fstream>
@@ -39,17 +41,12 @@ filter::filter()
 	prev = NULL;
 	type = FT_NITEMS;
 	has_extension = FALSE;
-	inputfile = NULL;
-	outputfile = NULL;
 	has_zmapping = FALSE;
 	zmapping = ZM_ALPHA;
 	name.set("unnamed");
 	glob.set("*");
 	id = -1;
 	partner = NULL;
-	activemodel = NULL;
-	activecell = NULL;
-	readopts = PO_DEFAULTS;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_FILTER] ++;
 	#endif
@@ -67,7 +64,8 @@ filter::~filter()
 bool filter::load(ifstream &filterfile)
 {
 	dbg_begin(DM_CALLS,"filter::load");
-	command_node<filter_command> *fn;
+	command *c;
+	command_action ca;
 	filter_command fc;
 	char longname[256];
 	zmap_type zm;
@@ -86,7 +84,7 @@ bool filter::load(ifstream &filterfile)
 			return FALSE;
 		}
 		else if (success == -1) break;
-		// Check branchstack - if empty then we're done (all filters have  a final 'END' command so the BC_ROOTNODE will get terminated)
+		// Check branchstack - if empty then we're done (all filters have  a final 'END' command so the CA_ROOTNODE will get terminated)
 		if (commands.get_branchstack_size() == 0)
 		{
 			// Create long filefilter string
@@ -95,74 +93,65 @@ bool filter::load(ifstream &filterfile)
 			dbg_end(DM_CALLS,"filter::load");
 			return TRUE;
 		}
-		// Check for basic commands (local to command_nodes) first.
-		basic_command bc = BC_from_text(parser.argc(0));
-		if (bc != BC_NITEMS)
+		// Check for filter specification commands
+		fc = FC_from_text(parser.argc(0));
+		// Some commands do not require nodes in the list, but set properties in the filter itself
+		switch (fc)
 		{
-			// Add the command to the list
-			if (commands.add_basic(bc)) continue;
-			else
-			{
-				msg(DM_NONE,"filter::load <<< Error adding basic command '%s' >>>>\n", parser.argc(0));
-				dbg_end(DM_CALLS,"filter::load");
-				return FALSE;
-			}
-		}
-		else
-		{
-			// Find the filter command and add this to the command list
-			fc = FC_from_text(parser.argc(0));
-			// Some commands do not require nodes in the list, but set properties in the filter itself
-			switch (fc)
-			{
-				// Long name of filter
-				case (FC_NAME):
-					name = parser.argc(1);
-					break;
-				// Nickname for filter
-				case (FC_NICKNAME):
-					nickname = parser.argc(1);
-					break;
-				// File extension(s)
-				case (FC_EXTENSION):
-					extension = parser.argc(1);
-					break;
-				// Exact filename list
-				case (FC_EXACT):
-					exactnames = parser.argc(1);
-					break;
-				// Set file filter glob for GUI
-				case (FC_GLOB):
-					glob = parser.argc(1);
-					break;
-				// Set filter ID
-				case (FC_ID):
-					id = parser.argi(1);
-					break;
-				// Set element zmapping to use for import
-				case (FC_ZMAP):
-					zm = ZM_from_text(parser.argc(1));
-					if (zm != ZM_NITEMS)
+			// Long name of filter
+			case (FC_NAME):
+				name = parser.argc(1);
+				break;
+			// Nickname for filter
+			case (FC_NICKNAME):
+				nickname = parser.argc(1);
+				break;
+			// File extension(s)
+			case (FC_EXTENSION):
+				extension = parser.argc(1);
+				break;
+			// Exact filename list
+			case (FC_EXACT):
+				exactnames = parser.argc(1);
+				break;
+			// Set file filter glob for GUI
+			case (FC_GLOB):
+				glob = parser.argc(1);
+				break;
+			// Set filter ID
+			case (FC_ID):
+				id = parser.argi(1);
+				break;
+			// Set element zmapping to use for import
+			case (FC_ZMAP):
+				zm = ZM_from_text(parser.argc(1));
+				if (zm != ZM_NITEMS)
+				{
+					zmapping = zm;
+					has_zmapping = TRUE;
+				}
+				break;
+			default:
+				// Check for commands first
+				ca = CA_from_text(parser.argc(0));
+				if (ca != CA_NITEMS)
+				{
+					// Add the command to the list
+					if (commands.add_command(ca)) continue;
+					else
 					{
-						zmapping = zm;
-						has_zmapping = TRUE;
-					}
-					break;
-				case (FC_NITEMS):
-					msg(DM_NONE,"Unrecognised command '%s' in filter.\n", parser.argc(0));
-					dbg_end(DM_CALLS,"filter::load");
-					return FALSE;
-					break;
-				default:
-					
-					// If add_other() returns NULL then we encountered an error
-					if (!commands.add_other(fc, text_from_FC(fc), vars_from_FC(fc)))
-					{
-						msg(DM_NONE,"Error adding filter command '%s'.\n", text_from_FC(fc));
+						msg(DM_NONE,"filter::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
 						dbg_end(DM_CALLS,"filter::load");
 						return FALSE;
 					}
-			}
+				}
+				else
+				{
+					msg(DM_NONE,"Unrecognised command '%s' in filter.\n", parser.argc(0));
+					dbg_end(DM_CALLS,"filter::load");
+					return FALSE;
+				}
+				break;
 		}
 	}
 	// Create long filefilter string
@@ -192,91 +181,82 @@ void filter::print()
 	dbg_end(DM_CALLS,"filter::print");
 }
 
-// Set targets (model)
-void filter::set_target(model *m)
+bool execute_with_model(model *m, const char *filename)
 {
-	dbg_begin(DM_CALLS,"filter::set_target[model]");
-	if (m == NULL)
+}
+
+bool execute_with_grid(grid *g, const char *filename)
+{
+}
+
+// Execute filter
+bool filter::execute(const char *filename)
+{
+	dbg_begin(DM_CALLS,"filter::execute");
+	// Grab pointer bundle from master
+	bundle &obj = master.current;
+	// Setup based on filter type...
+	switch (type)
 	{
-		activemodel = NULL;
-		activecell = NULL;
+		case (FT_MODEL_IMPORT):
+			break;
+		case (FT_MODEL_EXPORT):
+			msg(DM_NONE,"Save Model  : %s (%s)...", obj.m->get_filename(), name.get());
+			// Open file and set target
+			if (!commands.set_outfile(obj.m->get_filename()))
+			{
+				msg(DM_NONE,"Error opening output file '%s'.\n",obj.m->get_filename());
+				dbg_end(DM_CALLS,"filter::execute");
+				return FALSE;
+			}
+			// Set variables
+			commands.variables.set_model_variables(obj.m);
+			commands.variables.set_cell_variables(obj.m->get_cell());
+			break;
+		case (FT_FIELD_EXPORT):
+			msg(DM_NONE,"Save Field  : %s (%s)\n", filename, name.get());
+			// Need a valid pattern and energy expression to export
+			if (!obj.m->autocreate_patterns() || !obj.m->create_expression())
+			{
+				msg(DM_NONE,"filter::execute - Must have valid pattern and energy expression to export a field file\n.");
+				dbg_end(DM_CALLS,"filter::execute");
+				return FALSE;
+			}
+			// Set variables
+			commands.variables.set("title",obj.m->get_name());
+			commands.variables.set("npatterns",obj.m->get_npatterns());
+			commands.variables.set("energyunit",text_from_EU(prefs.get_internal_units()));
+			// Open file...
+			if (!commands.set_outfile(filename))
+			{
+				msg(DM_NONE,"Error opening field file '%s'.\n", filename);
+				dbg_end(DM_CALLS,"filter::execute");
+				return FALSE;
+			}
+			break;
 	}
-	else
+	// Execute commandlist
+	done = FALSE;
+	command *c = commands.commandlist.first();
+	int result;
+	while (c != NULL)
 	{
-		activemodel = m;
-		activecell = m->get_cell();
+		msg(DM_FILTERS,"(((( Filter command '%s' ))))\n", text_from_CA(c->get_command()));
+		// Run command and get return result
+		result = 
+		// Try commands
+		if (commands.do_basic(fn, activemodel, NULL)) continue;
+		else if (do_variables(fn)) continue;
+		else if (do_readwrite(fn)) continue;
+		else if (do_actions(fn)) continue;
+		else
+		{
+			printf("filter::execute <<<< Command '%s' has no defined action >>>>\n", (fn->get_basic_command() != BC_OTHER ? text_from_BC(fn->get_basic_command()) : text_from_FC(fn->get_command())));
+			fn = fn->next;
+		}
 	}
-	dbg_end(DM_CALLS,"filter::set_target[model]");
+	msg(DM_NONE,"Done.\n");
+	command.close_files();
+	dbg_end(DM_CALLS,"filter::execute");
 }
 
-// Set targets (grid)
-void filter::set_target(grid *g)
-{
-	dbg_begin(DM_CALLS,"filter::set_target[grid]");
-	if (g == NULL) activegrid = NULL;
-	else activegrid = g;
-	dbg_end(DM_CALLS,"filter::set_target[grid]");
-}
-
-// Reset targets
-void filter::reset_targets()
-{
-	activemodel = NULL;
-	activecell = NULL;
-	activegrid = NULL;
-}
-
-// Set input file
-bool filter::set_input(const char *sourcefile)
-{
-	dbg_begin(DM_CALLS,"filter::set_input[filename]");
-	if (inputfile != NULL) printf("filter::set_input[filename] <<<< Inputfile already set >>>>\n");
-	inputfile = new ifstream(sourcefile,ios::in);
-	filename = sourcefile;
-	dbg_end(DM_CALLS,"filter::set_input[filename]");
-	if (!inputfile->good()) return FALSE;
-	else return TRUE;
-}
-
-// Set input file (pointer)
-bool filter::set_input(ifstream *ifs)
-{
-	dbg_begin(DM_CALLS,"filter::set_input[ifstream]");
-	if (inputfile != NULL) printf("filter::set_input[pointer] <<<< Inputfile already set >>>>\n");
-	inputfile = ifs;
-	filename.clear();
-	dbg_end(DM_CALLS,"filter::set_input[ifstream]");
-	if (!inputfile->good()) return FALSE;
-	else return TRUE;
-}
-
-// Set output file
-bool filter::set_output(const char *destfile)
-{
-	dbg_begin(DM_CALLS,"filter::set_output");
-	outputfile = new ofstream(destfile,ios::out);
-	filename = destfile;
-	dbg_end(DM_CALLS,"filter::set_output");
-	if (!outputfile->good()) return FALSE;
-	else return TRUE;
-}
-
-// Close files
-void filter::close_files()
-{
-	dbg_begin(DM_CALLS,"filter::close_files");
-	if (inputfile != NULL)
-	{
-		inputfile->close();
-		delete inputfile;
-	}
-	if (outputfile != NULL)
-	{
-		outputfile->close();
-		delete outputfile;
-	}
-	inputfile = NULL;
-	outputfile = NULL;
-	filename.clear();
-	dbg_end(DM_CALLS,"filter::close_files");
-}

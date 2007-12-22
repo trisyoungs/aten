@@ -61,11 +61,11 @@ enum command_action {
 
 	// Bond commands
 	CA_AUGMENT,
-	CA_REBOND,
-	CA_CLEARBONDS,
 	CA_BONDTOLERANCE,
 	CA_BONDPATTERNS,
 	CA_BONDSELECTION,
+	CA_CLEARBONDS,
+	CA_REBOND,
 
 	// Build commands
 	CA_ADDHYDROGEN,
@@ -81,9 +81,12 @@ enum command_action {
 	CA_TRANSMUTE,
 
 	// Cell commands
+	CA_FOLD,
+	CA_FRACTOREAL,
+	CA_PACK,
 	CA_PRINTCELL,
 	CA_REPLICATECELL,
-	CA_CAALECELL,
+	CA_SCALECELL,
 	CA_SETCELL,
 
 	// Charge commands
@@ -142,6 +145,7 @@ enum command_action {
 	CA_GOTONONIF,
 	CA_IF,
 	CA_TERMINATE,
+	CA_QUIT,
 
 	// Force Commands
 	CA_FRAMEFORCES,
@@ -157,6 +161,9 @@ enum command_action {
 	CA_TYPEMODEL,
 	CA_TYPETEST,
 
+	// Grid Commands
+	CA_FINALISEGRID,
+
 	//image_
 
 	// Labeling commands
@@ -168,7 +175,6 @@ enum command_action {
 	CA_MCACCEPT,
 	CA_MCALLOW,
 	CA_MCMAXSTEP,
-
 	CA_MCNTRIALS,
 	CA_PRINTMC,
 
@@ -184,6 +190,7 @@ enum command_action {
 	CA_SIMPLEXMINIMISE,
 	
 	// Model Commands
+	CA_FINALISEMODEL,
 	CA_LISTMODELS,
 	CA_LOADMODEL,
 	CA_NEWMODEL,
@@ -235,7 +242,10 @@ enum command_action {
 	CA_NEXTFRAME,
 	CA_PREVFRAME,
 
-	// Translation Commands
+	// Transformation Commands
+	CA_CENTRE,
+	CA_CENTRESELECTION,
+	CA_TRANSLATE,
 	CA_TRANSLATEATOM,
 	CA_TRANSLATESELECTION,
 	CA_MIRRORSELECTION,
@@ -253,19 +263,21 @@ enum command_action {
 typedef int (command_functions::*commandfunc)(command *&c, bundle &obj);
 
 // Function return values
-enum command_return { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAIL, CR_FAILCONTINUE };
+enum command_return { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAIL, CR_FAILCONTINUE, CR_EXIT };
 
 // Encompassing class for command actions
 class command_functions
 {
-	// Command Functions
 	public:
-	int commandfunc[CA_NITEMS];
+	// Constructor
+	command_functions();
+	// Array of pointers to command functions
+	commandfunc action[CA_NITEMS];
 
+	/*
+	// Command Functions
+	*/
 	int function_CA_ROOTNODE(command *&c, bundle &obj);
-
-	int function_CA_PRINT(command *&c, bundle &obj);
-
 
 	// Analyse commands
 	int function_CA_FINALISE(command *&c, bundle &obj);
@@ -278,11 +290,11 @@ class command_functions
 
 	// Bond commands
 	int function_CA_AUGMENT(command *&c, bundle &obj);
-	int function_CA_REBOND(command *&c, bundle &obj);
-	int function_CA_CLEARBONDS(command *&c, bundle &obj);
 	int function_CA_BONDTOLERANCE(command *&c, bundle &obj);
 	int function_CA_BONDPATTERNS(command *&c, bundle &obj);
 	int function_CA_BONDSELECTION(command *&c, bundle &obj);
+	int function_CA_CLEARBONDS(command *&c, bundle &obj);
+	int function_CA_REBOND(command *&c, bundle &obj);
 
 	// Build commands
 	int function_CA_ADDHYDROGEN(command *&c, bundle &obj);
@@ -298,6 +310,9 @@ class command_functions
 	int function_CA_TRANSMUTE(command *&c, bundle &obj);
 
 	// Cell commands
+	int function_CA_FOLD(command *&c, bundle &obj);
+	int function_CA_FRACTOREAL(command *&c, bundle &obj);
+	int function_CA_PACK(command *&c, bundle &obj);
 	int function_CA_PRINTCELL(command *&c, bundle &obj);
 	int function_CA_REPLICATECELL(command *&c, bundle &obj);
 	int function_CA_SCALECELL(command *&c, bundle &obj);
@@ -369,6 +384,9 @@ class command_functions
 	int function_CA_SAVEFIELD(command *&c, bundle &obj);
 	int function_CA_SAVEFIELD2(command *&c, bundle &obj);
 
+	// Grid Commands
+	int function_CA_FINALISEGRID(command *&c, bundle &obj);
+
 	// Force Commands
 	int function_CA_FRAMEFORCES(command *&c, bundle &obj);
 	int function_CA_MODELFORCES(command *&c, bundle &obj);
@@ -388,6 +406,9 @@ class command_functions
 	int function_CA_MCNTRIALS(command *&c, bundle &obj);
 	int function_CA_PRINTMC(command *&c, bundle &obj);
 
+	// Messaging
+	int function_CA_PRINT(command *&c, bundle &obj);
+
 	// Minimisation Commands
 	int function_CA_CGMINIMISE(command *&c, bundle &obj);
 	int function_CA_CONVERGE(command *&c, bundle &obj);
@@ -397,6 +418,7 @@ class command_functions
 	int function_CA_SIMPLEXMINIMISE(command *&c, bundle &obj);
 	
 	// Model Commands
+	int function_CA_FINALISEMODEL(command *&c, bundle &obj);
 	int function_CA_LISTMODELS(command *&c, bundle &obj);
 	int function_CA_LOADMODEL(command *&c, bundle &obj);
 	int function_CA_NEWMODEL(command *&c, bundle &obj);
@@ -449,6 +471,9 @@ class command_functions
 	int function_CA_PREVFRAME(command *&c, bundle &obj);
 
 	// Transform Commands
+	int function_CA_CENTRE(command *&c, bundle &obj);
+	int function_CA_CENTRESELECTION(command *&c, bundle &obj);
+	int function_CA_TRANSLATE(command *&c, bundle &obj);
 	int function_CA_TRANSLATEATOM(command *&c, bundle &obj);
 	int function_CA_TRANSLATESELECTION(command *&c, bundle &obj);
 	int function_CA_MIRRORSELECTION(command *&c, bundle &obj);

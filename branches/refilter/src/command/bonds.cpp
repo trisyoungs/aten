@@ -32,7 +32,17 @@ int command_functions::function_CA_AUGMENT(command *&c, bundle &obj)
 // Calculate bonds in current model ('rebond')
 int command_functions::function_CA_REBOND(command *&c, bundle &obj)
 {
-	obj.m->calculate_bonding();
+	// If we're reading from a file (via a filter) check for prefs override
+	if (c->parent->get_infile() == NULL)
+	{
+		obj.m->clear_bonding();
+		obj.m->calculate_bonding();
+	}
+	else if (prefs.get_bond_on_load() != PS_NO)
+	{
+		obj.m->clear_bonding();
+		obj.m->calculate_bonding();
+	}
 	return CR_SUCCESS;
 }
 

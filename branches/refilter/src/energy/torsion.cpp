@@ -119,7 +119,7 @@ void pattern::torsion_forces(model *srcmodel)
 	static vec3<double> fi, fj, fk, fl;
 	static ffparams params;
 	patbound *pb;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 
 	aoff = startatom;

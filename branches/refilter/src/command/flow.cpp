@@ -49,41 +49,62 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 {
 	// Grab variable list from command's parent list
 	variable_list &vars = c->parent->variables;
+	bool status = TRUE;
 	if (c->get_loopactive())
 	{
 //// START
 		// Do loop iteration.
-		// Increase loop counter
+		// Increase count and iteration variables
 		c->arg(0)->increase(1);
-		// Set new variables from loop variable
+		c->increase_iterations();
+		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
 		{
+			case (VT_INT):
+				// If 1 argument was provided, check for end of file. If three, check for limit
+				if (!c->has_arg(2) && (c->parent->get_infile() != NULL))
+				{
+					// Check for end of file...
+					if (c->parent->get_infile()->peek() == -1)
+					{
+						msg(DM_VERBOSE,"Infinite 'for' reached end of file.\n");
+						status = FALSE;
+					}
+				}
+				else if (c->argi(0) > c->argi(2)) status = FALSE;
+				break;
 			case (VT_ATOM):
+				// If only one argument, check for NULL. If two, check for last atom in pattern.
+				// If three, check for last atom in molecule
+				if (c->has_arg(2))
+				{
+					if (c->get_loopiterations() > c->argp(1)->get_natoms()) status = FALSE;
+				}
+				else if (c->has_arg(1))
+				{
+					if (c->get_loopiterations() > c->argp(1)->get_totalatoms()) status = FALSE;
+				}
+				else if (c->arga(0) == NULL) status = FALSE;
 				vars.set_atom_variables(c->arg(0)->get_name(), c->arga(0));
 				break;
 			case (VT_PATTERN):
+				if (c->argp(0) == NULL) status = FALSE;
 				vars.set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
 				break;
 //			case (VT_PATBOUND):
 //				vars.set_patbound_variables(c->arg(0)->get_name(), c->argf(0));
 //				break;
 			default:
-				printf("command::loop_iterate <<<< Don't know how to set variables from var of type '%s' >>>>\n", text_from_VT(c->argt(0)));
-				break;
+				printf("Don't know how to set iterate loop with variable of type '%s'.\n", text_from_VT(c->argt(0)));
+				return CR_FAIL;
 		}
-		// Check for completed loop on exit
-		dbg_end(DM_CALLS,"command::loop_iterate");
-		LOOP CHECK GOES HERE...
-//// END
-		if (c->loop_iterate()) c = c->get_branch_commands();
+		if (status == TRUE) c = c->get_branch_commands();
 		else c = c->next;
 	}
 	else
 	{
 		// Initialise loop variable in arg(0), depending on its type
 		//msg(DM_VERBOSE,"Initialising loop : count variable is '%s', type = '%s'\n", countvar->get_name(), text_from_VT(counttype));
-
-		bool status = TRUE;
 		switch (c->argt(0))
 		{
 			// Integer loop: 1 arg  - loop from 1 until end of file or termination
@@ -92,7 +113,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				if (!c->has_arg(2))
 				{
 					c->arg(0)->set(1);
-					// Check for end of file...e
+					// Check for end of file...
 					if (c->parent->get_infile() != NULL)
 						if (c->parent->get_infile()->peek() == -1)
 						{
@@ -210,12 +231,14 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 		if (status)
 		{
 			c->set_loopactive(TRUE);
+			c->set_loopiterations(1);
 			msg(DM_VERBOSE,"Loop is initialised and running.\n");
 			c = c->get_branch_commands();
 		}
 		else
 		{
 			c->set_loopactive(FALSE);
+			c->set_loopiterations(0);
 			msg(DM_VERBOSE,"Loop terminated on initialisation.\n");
 			c = c->next;
 		}
@@ -258,77 +281,10 @@ int command_functions::function_CA_IF(command *&c, bundle &obj)
 
 int command_functions::function_CA_TERMINATE(command *&c, bundle &obj)
 {
+	return CR_EXIT;
 }
 
-
-
-
-
-
-
-// Check for loop termination
-bool command::loop_check()
+int command_functions::function_CA_QUIT(command *&c, bundle &obj)
 {
-	dbg_begin(DM_CALLS,"command::loop_check");
-	// Grab variables
-	variable *countvar, *rangevar;
-	atom *i;
-	pattern *p;
-	patbound *pb;
-	countvar = args[0];
-	if (countvar == NULL)
-	{
-		printf("command::loop_check <<<< Count var in loop has not been set >>>>\n");
-		dbg_end(DM_CALLS,"command::loop_check");
-		return FALSE;
-	}
-	rangevar = args[1];
-	switch (countvar->get_type())
-	{
-		// Integer loop - goes forever, unless a loop maximum is given in rangevar
-		case (VT_GENERIC):
-			if (rangevar != NULL)
-			{
-				if (countvar->get_as_int() > rangevar->get_as_int()) loop_running = FALSE;
-			}
-			break;
-		// Atom loops - end with pointer equal to NULL (model) or last atom in specified pattern/molecule
-		case (VT_ATOM):
-			// Check type of rangevar (if there is one)
-			i = (atom*) countvar->get_as_pointer(VT_ATOM);
-			//printf("atom variable = %li\n",i);
-			if (rangevar == NULL)
-			{
-				if (i == NULL) loop_running = FALSE;
-			}
-			else if (rangevar->get_type() == VT_PATTERN)
-			{
-				p = (pattern*) rangevar->get_as_pointer(VT_PATTERN);
-				// If no molecule variable is specified, check for last atom in pattern
-				if (args[2] == NULL)
-				{
-					if (loopcount > p->get_totalatoms()) loop_running = FALSE;
-				}
-				else
-				{
-					if (loopcount > p->get_natoms()) loop_running = FALSE;
-				}
-			}
-			break;
-		// Pattern loops - end with pointer equal to NULL
-		case (VT_PATTERN):
-			p = (pattern*) countvar->get_as_pointer(VT_PATTERN);
-			if (p == NULL) loop_running = FALSE;
-			break;
-		// Pattern ffbound loops - end with pointer equal to NULL
-		case (VT_PATBOUND):
-			pb = (patbound*) countvar->get_as_pointer(VT_PATBOUND);
-			if (pb == NULL) loop_running = FALSE;
-			break;
-		default:
-			printf("Don't know how to check loop of type '%s'\n",text_from_VT(countvar->get_type()));
-			break;
-	}
-	dbg_end(DM_CALLS,"command::loop_check");
-	return loop_running;
+	return CR_EXIT;
 }

@@ -30,13 +30,18 @@ class forcefield;
 class grid;
 class pattern;
 
+// Bundle Pointers
+enum bundle_pointer { BP_ATOM=1, BP_PATTERN=2, BP_MODEL=4, BP_FF=8, BP_GRID=16, BP_SITE=32 };
+
 // Pointer bundle
 // Convenience structure to hold/pass a bundle of current object pointers
-struct bundle
+class bundle
 {
+	public:
 	// Constructor
 	bundle();
 
+	public:
 	// Model pointer
 	model *m;
 	// Pattern pointer
@@ -49,6 +54,15 @@ struct bundle
 	grid *g;
 	// Site pointer
 	site *s;
+
+	/*
+	// Member Functions
+	*/
+	public:
+	// Check for null pointers
+	bool is_null(int);
+	// Check and notify of null pointers
+	bool notify_null(int);
 };
 
 #endif

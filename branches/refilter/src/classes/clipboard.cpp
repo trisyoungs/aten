@@ -254,7 +254,7 @@ void clipboard::paste_to_model(model *destmodel, pattern *p, int mol)
 	}
 	// Paste the atoms
 	clipatom *i = atoms.first();
-	atom **modelatoms = destmodel->get_staticatoms();
+	atom **modelatoms = destmodel->get_atomarray();
 	int cfgi = p->get_startatom() + mol*p->get_natoms();
 	while (i != NULL)
 	{

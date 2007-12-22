@@ -20,6 +20,8 @@
 */
 
 #include "classes/bundle.h"
+#include "base/constants.h"
+#include <stdio.h>
 
 // Constructor
 bundle::bundle()
@@ -30,4 +32,52 @@ bundle::bundle()
 	g = 0;
 	i = 0;
 	p = 0;
+}
+
+// Check for non-null pointers
+bool bundle::is_null(int ptrs)
+{
+	if ((ptrs%BP_ATOM) && (i == 0)) return TRUE;
+	if ((ptrs%BP_PATTERN) && (p == 0)) return TRUE;
+	if ((ptrs%BP_MODEL) && (m == 0)) return TRUE;
+	if ((ptrs%BP_GRID) && (g == 0)) return TRUE;
+	if ((ptrs%BP_SITE) && (s == 0)) return TRUE;
+	if ((ptrs%BP_FF) && (ff == 0)) return TRUE;
+	return FALSE;
+}
+
+// Notify of non-null pointers
+bool bundle::notify_null(int ptrs)
+{
+	if ((ptrs%BP_ATOM) && (i == 0))
+	{
+		printf("--> No active atom.\n");
+		return TRUE;
+	}
+	if ((ptrs%BP_PATTERN) && (p == 0))
+	{
+		printf("--> No active pattern.\n");
+		return TRUE;
+	}
+	if ((ptrs%BP_MODEL) && (m == 0))
+	{
+		printf("--> No active model.\n");
+		return TRUE;
+	}
+	if ((ptrs%BP_GRID) && (g == 0))
+	{
+		printf("--> No active grid.\n");
+		return TRUE;
+	}
+	if ((ptrs%BP_SITE) && (s == 0))
+	{
+		printf("--> No active site.\n");
+		return TRUE;
+	}
+	if ((ptrs%BP_FF) && (ff == 0))
+	{
+		printf("--> No active forcefield.\n");
+		return TRUE;
+	}
+	return FALSE;
 }

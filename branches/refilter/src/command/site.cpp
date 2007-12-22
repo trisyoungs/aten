@@ -34,7 +34,7 @@ int command_functions::function_CA_ADDSITE(command *&c, bundle &obj)
 	obj.s->set_name(c->argc(0));
 	obj.s->set_pattern(p);
 	// Parse the atom list which should have been given as: "1,2,3,4,5......"
-	if (c->was_given(2))
+	if (c->has_arg(2))
 	{
 		parser.get_args_delim(c->argc(2), PO_DEFAULTS);
 		for (int n=0; n<parser.get_nargs(); n++)

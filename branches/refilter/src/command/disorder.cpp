@@ -93,7 +93,7 @@ int command_functions::function_CA_SETCENTRE(command *&c, bundle &obj)
 		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	comp->area.set_centre(c->get_vector3d(1));
+	comp->area.set_centre(c->arg3d(1));
 	return CR_SUCCESS;
 }
 
@@ -106,7 +106,7 @@ int command_functions::function_CA_SETGEOMETRY(command *&c, bundle &obj)
 		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	comp->area.set_size(c->get_vector3d(1));
+	comp->area.set_size(c->arg3d(1));
 	if (!c->has_arg(4)) comp->area.set_length(c->argd(4));
 	return CR_SUCCESS;
 }
