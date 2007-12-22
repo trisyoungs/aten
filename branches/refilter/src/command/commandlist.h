@@ -93,8 +93,6 @@ class command
 	void set_loopactive(bool b) { loopactive = b; }
 	// Get status of loop
 	bool get_loopactive() { return loopactive; }
-	// Initialise loop
-	bool loop_initialise(model*);
 	// Iterate loop
 	bool loop_iterate();
 	// Check loop for termination
