@@ -181,16 +181,8 @@ void filter::print()
 	dbg_end(DM_CALLS,"filter::print");
 }
 
-bool execute_with_model(model *m, const char *filename)
-{
-}
-
-bool execute_with_grid(grid *g, const char *filename)
-{
-}
-
 // Execute filter
-bool filter::execute(const char *filename)
+bool filter::execute(const char *filename, bool trajheader, model *framemodel)
 {
 	dbg_begin(DM_CALLS,"filter::execute");
 	// Grab pointer bundle from master
@@ -242,10 +234,51 @@ bool filter::execute(const char *filename)
 			break;
 		case (FT_GRID_IMPORT):
 			msg(DM_NONE,"Load Grid  : %s (%s)\n",filename,name.get());
+			// Open file...
+			if (!commands.set_infile(filename))
+			{
+				msg(DM_NONE,"Error opening grid file '%s'.\n", filename);
+				dbg_end(DM_CALLS,"filter::execute");
+				return FALSE;
+			}
 			break;
+		case (FT_GRID_EXPORT):
+			msg(DM_NONE,"Save Grid  : %s (%s)\n",filename,name.get());
+			// Open file...
+			if (!commands.set_outfile(filename))
+			{
+				msg(DM_NONE,"Error opening grid file '%s'.\n", filename);
+				dbg_end(DM_CALLS,"filter::execute");
+				return FALSE;
+			}
+			break;
+		case (FT_TRAJECTORY_IMPORT):
+			// Set variables
+			commands.variables.set("header",(trajheader ? "true" : "false"));
+			commands.variables.set("frame",(trajheader ? "false" : "true"));
+			// Set model target (if reading a frame)
+			if (!trajheader)
+			{
+				model *parent = framemodel->get_trajparent();
+				if (parent == NULL)
+				{
+					msg(DM_NONE,"filter::read_trajectory <<<< Trajectory parent is not set in frame model >>>>\n");
+					dbg_end(DM_CALLS,"filter::read_trajectory(frame)");
+					return FALSE;	
+				}
+				commands.variables.set("natoms",parent->get_natoms());
+				commands.variables.set("cell.type",lower_case(text_from_CT(parent->get_celltype())));
+				framemodel->clear();
+			}
+			else
+			{
+				commands.variables.set("natoms",framemodel->get_natoms());
+				commands.variables.set("cell.type",lower_case(text_from_CT(framemodel->get_celltype())));
+			}
+
 	}
 	// Execute commandlist
-	bool result = commands.execute();
+	bool result = commands.execute(framemodel);
 	// Perform post-filter operations
 	switch (type)
 	{

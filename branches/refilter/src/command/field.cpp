@@ -48,6 +48,6 @@ int command_functions::function_CA_SAVEFIELD2(command *&c, bundle &obj)
 		msg(DM_NONE,"script : No field export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
 		return CR_FAIL;
 	}
-	f->execute_with_model(obj.m, c->argc(1));
+	f->execute(c->argc(1));
 	return CR_SUCCESS;
 }

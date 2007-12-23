@@ -22,6 +22,25 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 
+// Add bond between atoms ('addbond <id1> <id2> [bondtype]')
+int command_functions::function_CA_ADDBOND(command *&c, bundle &obj)
+{
+	// Third (optional) argument gives bond type
+	bond_type bt = BT_SINGLE;
+	if (c->has_arg(2))
+	{
+		// Attempt to convert the argument into a bond_type.
+		// Try direct conversion from number (bond order) first
+		// If that fails, try string conversion. Then, give up.
+		int n = c->argi(2);
+		if ((n < 1) || (n > 3))	bt = BT_from_text(c->argc(2));
+		else bt = (bond_type) n;
+	}
+	// Add the bond
+	obj.m->bond_atoms(c->argi(0), c->argi(1), bt);
+	return CR_SUCCESS;
+}
+
 // Augment bonds in current model ('augment')
 int command_functions::function_CA_AUGMENT(command *&c, bundle &obj)
 {

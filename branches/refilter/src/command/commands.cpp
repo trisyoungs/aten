@@ -41,7 +41,7 @@ const char *CA_data[CA_NITEMS] = {
 	// Root node
 	"_ROOTNODE_",
 
-	// Analysis
+	// Analysis commands
 	"finalise",
 	"frameanalyse",
 	"modelanalyse",
@@ -50,7 +50,8 @@ const char *CA_data[CA_NITEMS] = {
 	"rdf,rrrrrrr",
 	"savequantities",
 
-	// Bonding 
+	// Bonding commands
+	"addbond,rro",
 	"augment",
 	"bondtol,r",
 	"bondpatterns",
@@ -79,6 +80,8 @@ const char *CA_data[CA_NITEMS] = {
 	"replicatecell,rrrrrr",
 	"scalecell,rrr",
 	"setcell,rrrrrr",
+	"setcellaxes,rrrrrrrrr",
+	"setspacegroup,r",
 
 	// Charge commands
 	"chargeatom,rr",
@@ -153,7 +156,15 @@ const char *CA_data[CA_NITEMS] = {
 	"typetest,r",
 
 	// Grid commands
+	"addgridpoint,rrrr",
+	"addnextgridpoint,r",
 	"finalisegrid",
+	"newgrid,r",
+	"setgrid,rrrrrrrrr",
+	"setgridcubic,r",
+	"setgridorigin,rrr",
+	"setgridortho,rrr",
+	"setgridsize,rrr",
 
 	//"image 
 
@@ -183,13 +194,17 @@ const char *CA_data[CA_NITEMS] = {
 	"simplexminimise",
 
 	// Model commands
+	"createatoms",
 	"finalisemodel",
 	"listmodels",
 	"loadmodel,ro",
+	"modeltemplate",
 	"newmodel,r",
 	"printmodel",
 	"savemodel,rr",
 	"selectmodel,r",
+	"setatom,r",
+	"settitle,r",
 
 	// Pattern commands
 	"addpattern,rrr",

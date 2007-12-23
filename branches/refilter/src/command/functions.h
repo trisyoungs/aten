@@ -55,6 +55,7 @@ class command_functions
 	int function_CA_SAVEQUANTITIES(command *&c, bundle &obj);
 
 	// Bond commands
+	int function_CA_ADDBOND(command *&c, bundle &obj);
 	int function_CA_AUGMENT(command *&c, bundle &obj);
 	int function_CA_BONDTOLERANCE(command *&c, bundle &obj);
 	int function_CA_BONDPATTERNS(command *&c, bundle &obj);
@@ -83,6 +84,8 @@ class command_functions
 	int function_CA_REPLICATECELL(command *&c, bundle &obj);
 	int function_CA_SCALECELL(command *&c, bundle &obj);
 	int function_CA_SETCELL(command *&c, bundle &obj);
+	int function_CA_SETCELLAXES(command *&c, bundle &obj);
+	int function_CA_SETSPACEGROUP(command *&c, bundle &obj);
 
 	// Charge commands
 	int function_CA_CHARGEATOM(command *&c, bundle &obj);
@@ -157,7 +160,15 @@ class command_functions
 	int function_CA_TYPETEST(command *&c, bundle &obj);
 
 	// Grid Commands
+	int function_CA_ADDGRIDPOINT(command *&c, bundle &obj);
+	int function_CA_ADDNEXTGRIDPOINT(command *&c, bundle &obj);
 	int function_CA_FINALISEGRID(command *&c, bundle &obj);
+	int function_CA_NEWGRID(command *&c, bundle &obj);
+	int function_CA_SETGRID(command *&c, bundle &obj);
+	int function_CA_SETGRIDCUBIC(command *&c, bundle &obj);
+	int function_CA_SETGRIDORIGIN(command *&c, bundle &obj);
+	int function_CA_SETGRIDORTHO(command *&c, bundle &obj);
+	int function_CA_SETGRIDSIZE(command *&c, bundle &obj);
 
 	//image_
 
@@ -187,13 +198,17 @@ class command_functions
 	int function_CA_SIMPLEXMINIMISE(command *&c, bundle &obj);
 	
 	// Model Commands
+	int function_CA_CREATEATOMS(command *&c, bundle &obj);
 	int function_CA_FINALISEMODEL(command *&c, bundle &obj);
 	int function_CA_LISTMODELS(command *&c, bundle &obj);
 	int function_CA_LOADMODEL(command *&c, bundle &obj);
+	int function_CA_MODELTEMPLATE(command *&c, bundle &obj);
 	int function_CA_NEWMODEL(command *&c, bundle &obj);
 	int function_CA_PRINTMODEL(command *&c, bundle &obj);
 	int function_CA_SAVEMODEL(command *&c, bundle &obj);
 	int function_CA_SELECTMODEL(command *&c, bundle &obj);
+	int function_CA_SETATOM(command *&c, bundle &obj);
+	int function_CA_SETTITLE(command *&c, bundle &obj);
 
 	// Pattern Commands
 	int function_CA_ADDPATTERN(command *&c, bundle &obj);

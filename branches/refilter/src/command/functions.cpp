@@ -40,6 +40,7 @@ command_functions::command_functions()
 	action[CA_SAVEQUANTITIES] = &command_functions::function_CA_SAVEQUANTITIES;
 
 	// Bond commands
+	action[CA_ADDBOND] = &command_functions::function_CA_ADDBOND;
 	action[CA_AUGMENT] = &command_functions::function_CA_AUGMENT;
 	action[CA_BONDTOLERANCE] = &command_functions::function_CA_BONDTOLERANCE;
 	action[CA_BONDPATTERNS] = &command_functions::function_CA_BONDPATTERNS;
@@ -68,6 +69,8 @@ command_functions::command_functions()
 	action[CA_REPLICATECELL] = &command_functions::function_CA_REPLICATECELL;
 	action[CA_SCALECELL] = &command_functions::function_CA_SCALECELL;
 	action[CA_SETCELL] = &command_functions::function_CA_SETCELL;
+	action[CA_SETCELLAXES] = &command_functions::function_CA_SETCELLAXES;
+	action[CA_SETSPACEGROUP] = &command_functions::function_CA_SETSPACEGROUP;
 
 	// Charge commands
 	action[CA_CHARGEATOM] = &command_functions::function_CA_CHARGEATOM;
@@ -142,7 +145,15 @@ command_functions::command_functions()
 	action[CA_TYPETEST] = &command_functions::function_CA_TYPETEST;
 
 	// Grid Commands
+	action[CA_ADDGRIDPOINT] = &command_functions::function_CA_ADDGRIDPOINT;
+	action[CA_ADDNEXTGRIDPOINT] = &command_functions::function_CA_ADDNEXTGRIDPOINT;
 	action[CA_FINALISEGRID] = &command_functions::function_CA_FINALISEGRID;
+	action[CA_NEWGRID] = &command_functions::function_CA_NEWGRID;
+	action[CA_SETGRID] = &command_functions::function_CA_SETGRID;
+	action[CA_SETGRIDCUBIC] = &command_functions::function_CA_SETGRIDCUBIC;
+	action[CA_SETGRIDORIGIN] = &command_functions::function_CA_SETGRIDORIGIN;
+	action[CA_SETGRIDORTHO] = &command_functions::function_CA_SETGRIDORTHO;
+	action[CA_SETGRIDSIZE] = &command_functions::function_CA_SETGRIDSIZE;
 
 	//image_
 
@@ -170,13 +181,17 @@ command_functions::command_functions()
 	action[CA_SIMPLEXMINIMISE] = &command_functions::function_CA_SIMPLEXMINIMISE;
 	
 	// Model Commands
+	action[CA_CREATEATOMS] = &command_functions::function_CA_CREATEATOMS;
 	action[CA_FINALISEMODEL] = &command_functions::function_CA_FINALISEMODEL;
 	action[CA_LISTMODELS] = &command_functions::function_CA_LISTMODELS;
 	action[CA_LOADMODEL] = &command_functions::function_CA_LOADMODEL;
+	action[CA_MODELTEMPLATE] = &command_functions::function_CA_MODELTEMPLATE;
 	action[CA_NEWMODEL] = &command_functions::function_CA_NEWMODEL;
 	action[CA_PRINTMODEL] = &command_functions::function_CA_PRINTMODEL;
 	action[CA_SAVEMODEL] = &command_functions::function_CA_SAVEMODEL;
 	action[CA_SELECTMODEL] = &command_functions::function_CA_SELECTMODEL;
+	action[CA_SETATOM] = &command_functions::function_CA_SETATOM;
+	action[CA_SETTITLE] = &command_functions::function_CA_SETTITLE;
 
 	// Pattern Commands
 	action[CA_ADDPATTERN] = &command_functions::function_CA_ADDPATTERN;

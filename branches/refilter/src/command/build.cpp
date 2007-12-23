@@ -30,10 +30,15 @@ int command_functions::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Draw unbound atom ('addatom <el>')
+// Draw unbound atom ('addatom <el> [x y z]')
 int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
 {
-	obj.i = obj.m->add_atom(elements.find(c->argc(0), ZM_ALPHA),  c->parent->penpos);
+	int el = elements.find(c->argc(0));
+	if (c->has_arg(3)) obj.i = obj.m->add_atom(el, c->parent->penpos);
+	else obj.i = obj.m->add_atom(el, c->arg3d(1));
+	// Set other variables for this atom...
+	c->parent->variables.get_atom_variables(obj.i);
+	// Reset variables...
 	return CR_SUCCESS;
 }
 

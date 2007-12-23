@@ -31,7 +31,6 @@ int command_functions::function_CA_FOLD(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-
 // Convert fractional coordinates to real coordinates
 int command_functions::function_CA_FRACTOREAL(command *&c, bundle &obj)
 {
@@ -75,5 +74,25 @@ int command_functions::function_CA_SETCELL(command *&c, bundle &obj)
 	obj.m->set_cell(c->arg3d(0), c->arg3d(3));
 	obj.m->log_change(LOG_VISUAL);
 	obj.m->calculate_density();
+	return CR_SUCCESS;
+}
+
+// Set/create unit cell ('setcell <ax ay az> <bx by bz> <cx cy cz>')
+int command_functions::function_CA_SETCELLAXES(command *&c, bundle &obj)
+{
+	mat3<double> mat;
+	mat.rows[0] = c->arg3d(0);
+	mat.rows[1] = c->arg3d(3);
+	mat.rows[2] = c->arg3d(6);
+	obj.m->set_cell(mat);
+	obj.m->log_change(LOG_VISUAL);
+	obj.m->calculate_density();
+	return CR_SUCCESS;
+}
+
+// Set spacegroup
+int command_functions::function_CA_SETSPACEGROUP(command *&c, bundle &obj)
+{
+	obj.m->set_spacegroup(c->argi(0));
 	return CR_SUCCESS;
 }

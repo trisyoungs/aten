@@ -48,7 +48,8 @@ const char *CA_syntax[CA_NITEMS] = {
 	"rdf <name> <site1> <site2> <rmin> <binwidth> <nbins> <filename>",
 	"savequantities",
 
-	// Bonding 
+	// Bonding
+	"addbond <id1> <id2> [bondtype]",
 	"augment",
 	"bondtol <tolerance>",
 	"bondpatterns",
@@ -77,6 +78,8 @@ const char *CA_syntax[CA_NITEMS] = {
 	"replicatecell <neg.x> <neg.y> <neg.z> <pos.x> <pos.y> <pos.z>",
 	"scalecell <x> <y> <z>",
 	"setcell <a> <b> <c> <alpha> <beta> <gamma>",
+	"setcellaxes <ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>",
+	"setspacegroup <spgrp>",
 
 	// Charge commands
 	"chargeatom <id> <q>",
@@ -151,7 +154,15 @@ const char *CA_syntax[CA_NITEMS] = {
 	"typetest <ffid> <atomid>",
 
 	// Grid commands
+	"addgridpoint <ix> <iy> <iz> <value>",
+	"addnextgridpoint <value>",
 	"finalisegrid",
+	"newgrid <title>",
+	"setgrid <ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>",
+	"setgridcubic <l>",
+	"setgridorigin <x> <y> <z>",
+	"setgridortho <a> <b> <c>",
+	"setgridsize <nx> <ny> <nz>",
 
 	//"image 
 
@@ -181,12 +192,16 @@ const char *CA_syntax[CA_NITEMS] = {
 	"simplexminimise",
 
 	// Model commands
+	"createatoms",
 	"listmodels",
 	"loadmodel <filename> [name]",
+	"modeltemplate",
 	"newmodel <name>",
 	"printmodel",
 	"savemodel <format> <filename>",
 	"selectmodel <name>",
+	"setatom <variable>",
+	"settitle <title>",
 
 	// Pattern commands
 	"addpattern <name> <nmols> <natoms>",

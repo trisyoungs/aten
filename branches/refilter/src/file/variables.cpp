@@ -41,100 +41,10 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 	bool result = FALSE;
 	switch (fn->get_command())
 	{
-		// Create new model (and make it the filter target)
-		case (FC_NEWMODEL):
-			newmodel = master.add_model();
-			newmodel->set_name(strip_trailing(fn->datavar[0]->get_as_char()));
-			set_target(newmodel);
-			result = TRUE;
-			break;
-		// Create new grid (and make it the filter target)
-		case (FC_NEWGRID):
-			newgrid = master.add_grid();
-			newgrid->set_name(strip_trailing(fn->datavar[0]->get_as_char()));
-			set_target(newgrid);
-			result = TRUE;
-			break;
-		// Set data for atom 'n' in model
-		case (FC_SETATOM):
-			if (activemodel == NULL) break;
-			// Must store 'n-1'th atom, since loop runs from 1 - natoms inclusive
-			i = activemodel->get_staticatoms()[fn->datavar[0]->get_as_int() - 1];
-			// Set variable values
-			commands.variables.get_atom_variables(i);
-			result = TRUE;
-			break;
-		// Create new atom in target model
-		case (FC_ADDATOM):
-			if (activemodel == NULL) break;
-			// Set element
-			vec1.zero();
-			v = commands.variables.find("e");
-			if (v == NULL)
-			{
-				printf("'addatom' - No element 'e' variable set for new atom.\n");
-				i = activemodel->add_atom(0, vec1);
-			}
-			else
-			{
-				if (has_zmapping) i = activemodel->add_atom(elements.find(v->get_as_char(),zmapping), vec1);
-				else i = activemodel->add_atom(elements.find(v->get_as_char()), vec1);
-				v->reset();
-			}
-			// Set variable values
-			commands.variables.get_atom_variables(i);
-			result = TRUE;
-			break;
-		// Create 'n' new atoms at once in model
-		case (FC_CREATEATOMS):
-			if (activemodel == NULL) break;
-			vec1.zero();
-			for (atomid = 0; atomid < fn->datavar[0]->get_as_int(); atomid++) i = activemodel->add_atom(0, vec1);
-			result = TRUE;
-			break;
-		// Use parent model as atom template
-		case (FC_MODELTEMPLATE):
-			if (activemodel == NULL) break;
-			parent = activemodel->get_trajparent();
-			if (parent == NULL)
-			{
-				printf("filter::do_variables <<<< SEVERE - No trajectory parent set for 'modeltemplate' >>>>\n");
-				break;
-			}
-			// Create the atoms template
-			vec1.zero();
-			for (i = parent->get_atoms(); i != NULL; i = i->next)
-			{
-				j = activemodel->add_atom(i->get_element(), vec1);
-				j->copy_style(i);
-			}
-			result = TRUE;
-			break;
-		// Set unit cell data (from lengths/angles)
-		case (FC_SETCELL):
-			if (activemodel == NULL) break;
-			vec1.set(commands.variables.get_as_double("cell.a"), commands.variables.get_as_double("cell.b"), commands.variables.get_as_double("cell.c"));
-			vec2.set(commands.variables.get_as_double("cell.alpha"), commands.variables.get_as_double("cell.beta"), commands.variables.get_as_double("cell.gamma"));
-			activecell->set(vec1,vec2);
-			activemodel->log_change(LOG_VISUAL);
-			result = TRUE;
-			break;
-		// Set unit cell data (from lengths/angles)
-		case (FC_SETCELLA):
-			if (activemodel == NULL) break;
-			mat.rows[0].set(commands.variables.get_as_double("cell.a.x"), commands.variables.get_as_double("cell.b.x"), commands.variables.get_as_double("cell.c.x"));
-			mat.rows[1].set(commands.variables.get_as_double("cell.a.y"), commands.variables.get_as_double("cell.b.y"), commands.variables.get_as_double("cell.c.y"));
-			mat.rows[2].set(commands.variables.get_as_double("cell.a.z"), commands.variables.get_as_double("cell.b.z"), commands.variables.get_as_double("cell.c.z"));
-			activecell->set(mat);
-			activemodel->log_change(LOG_VISUAL);
-			result = TRUE;
-			break;
-		// Set spacegroup
-		case (FC_SETSPACEGROUP):
-			if (activemodel == NULL) break;
-			activemodel->set_spacegroup(fn->datavar[0]->get_as_int());
-			result = TRUE;
-			break;
+
+
+
+
 		// Config SETs
 		case (FC_SETRX):		// Set rx of single atom in model
 		case (FC_SETRY):		// Set ry of single atom in model
@@ -188,31 +98,7 @@ bool filter::do_variables(command_node<filter_command> *&fn)
 			}
 			result = TRUE;
 			break;
-		// Add bond between atoms
-		case (FC_ADDBOND):
-			if (activemodel == NULL) break;
-			ii = fn->datavar[0]->get_as_int();
-			jj = fn->datavar[1]->get_as_int();
-			if (fn->datavar[2] == NULL) bt = BT_SINGLE;
-			else
-			{
-				// Attempt to convert the datavar into a bond_type.
-				// Try direct conversion from number (bond order) first
-				// If that fails, try string conversion. Then, give up.
-				n = fn->datavar[2]->get_as_int();
-				if ((n < 1) || (n > 3))	bt = BT_from_text(fn->datavar[2]->get_as_char());
-				else bt = (bond_type) n;
-			}
-			// Add the bond
-			activemodel->bond_atoms(ii, jj, bt);
-			result = TRUE;
-			break;
-		// Set title of model
-		case (FC_SETTITLE):
-			if (activemodel == NULL) break;
-			activemodel->set_name(fn->datavar[0]->get_as_char());
-			result = TRUE;
-			break;
+
 		default:
 			break;
 	}

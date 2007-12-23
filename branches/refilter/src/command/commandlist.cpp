@@ -607,13 +607,18 @@ void commandlist::close_files()
 }
 
 // Execute command
-int command::execute(command *&c)
+int command::execute(command *&c, model *alttarget)
 {
-	return (functions.*function)(c, master.current);
+	static bundle obj;
+	// Grab master's pointer bundle
+	obj = master.current;
+	// Set destination model to that provided if not NULL
+	if (alttarget != NULL) obj.m = alttarget;
+	return (functions.*function)(c, obj);
 }
 
 // Execute commands in command list
-bool commandlist::execute()
+bool commandlist::execute(model *alttarget)
 {
 	// Get first command in list
 	command *c = commands.first();
@@ -621,6 +626,6 @@ bool commandlist::execute()
 	while (c != NULL)
 	{
 		// Run command and get return value
-		result = c->execute(c);
+		result = c->execute(c, alttarget);
 	}
 }

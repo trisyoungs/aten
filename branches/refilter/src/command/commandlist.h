@@ -70,7 +70,7 @@ class command
 	// Get command
 	command_action get_command() { return action; }
 	// Execute command
-	int execute(command *&c);
+	int execute(command *&c, model *alttarget);
 
 	/*
 	// Format
@@ -223,7 +223,7 @@ class commandlist
 	// Load commands from file
 	bool load(const char *filename);
 	// Execute command list
-	bool execute();
+	bool execute(model *alttarget);
 	// Check structure of command list
 	bool validate();
 

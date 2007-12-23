@@ -21,11 +21,86 @@
 
 #include "command/commandlist.h"
 #include "base/prefs.h"
+#include "base/master.h"
 #include "classes/grid.h"
+
+// Add grid point data at specified indices
+int command_functions::function_CA_ADDGRIDPOINT(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	vec3<int> veci = c->arg3i(0);
+	obj.g->set_data(veci.x-1, veci.y-1, veci.z-1, c->argd(3));
+	return CR_SUCCESS;
+}
+
+// Add next gridpoint in sequence
+int command_functions::function_CA_ADDNEXTGRIDPOINT(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	obj.g->set_next_data(c->argd(0));
+	return CR_SUCCESS;
+}
 
 // Finalise current surface
 int command_functions::function_CA_FINALISEGRID(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	if (prefs.get_coords_in_bohr()) obj.g->bohr_to_angstrom();
 	return CR_SUCCESS;
 }
+
+// Create new grid
+int command_functions::function_CA_NEWGRID(command *&c, bundle &obj)
+{
+	obj.g = master.add_grid();
+	obj.g->set_name(strip_trailing(c->argc(0)));
+	return CR_SUCCESS;
+}
+
+// Set grid axes (nine doubles)
+int command_functions::function_CA_SETGRID(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	mat3<double> mat;
+	mat.set(0, c->arg3d(0));
+	mat.set(1, c->arg3d(3));
+	mat.set(2, c->arg3d(6));
+	obj.g->set_axes(mat);
+	return CR_SUCCESS;
+}
+
+// Set cubic grid (one double)
+int command_functions::function_CA_SETGRIDCUBIC(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	obj.g->set_axes(c->argd(0));
+	return CR_SUCCESS;
+}
+
+// Set origin (lower-left-hand corner of grid)
+int command_functions::function_CA_SETGRIDORIGIN(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	obj.g->set_origin(c->arg3d(0));
+	return CR_SUCCESS;
+}
+
+// Set orthorhombic grid (three doubles)
+int command_functions::function_CA_SETGRIDORTHO(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	obj.g->set_axes(c->arg3d(0));
+	return CR_SUCCESS;
+}
+
+// Set extent of grid (number of points in each direction)
+int command_functions::function_CA_SETGRIDSIZE(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	obj.g->set_npoints(c->arg3i(0));
+	return CR_SUCCESS;
+}
+
+
+
+

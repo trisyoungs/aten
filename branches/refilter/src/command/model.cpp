@@ -25,6 +25,14 @@
 #include "classes/forcefield.h"
 #include "file/filter.h"
 
+// Create 'n' new atoms at once in model
+int command_functions::function_CA_CREATEATOMS(command *&c, bundle &obj)
+{
+	vec3<double> v;
+	for (int n = 0; n < c->argi(0); n++) obj.i = obj.m->add_atom(0, v);
+	return CR_SUCCESS;
+}
+
 // Finalise current model
 int command_functions::function_CA_FINALISEMODEL(command *&c, bundle &obj)
 {
@@ -79,12 +87,32 @@ int command_functions::function_CA_LOADMODEL(command *&c, bundle &obj)
 	else return CR_FAIL;
 }
 
+// Use parent model as atom template
+int command_functions::function_CA_MODELTEMPLATE(command *&c, bundle &obj)
+{
+	model *parent = obj.m->get_trajparent();
+	if (parent == NULL)
+	{
+		printf("<<<< SEVERE - No trajectory parent set for 'modeltemplate' >>>>\n");
+		return CR_FAIL;
+	}
+	// Create the atoms template
+	vec3<double> v;
+	atom *j;
+	for (obj.i = parent->get_atoms(); obj.i != NULL; obj.i = obj.i->next)
+	{
+		j = obj.m->add_atom(obj.i->get_element(), v);
+		j->copy_style(obj.i);
+	}
+	return CR_SUCCESS;
+}
+
 // Create new model ('newmodel <name>')
 int command_functions::function_CA_NEWMODEL(command *&c, bundle &obj)
 {
-	model *m = master.add_model();
-	m->set_name(c->argc(0));
-	msg(DM_NONE,"script : Create model '%s'\n", m->get_name());
+	obj.m = master.add_model();
+	obj.m->set_name(strip_trailing(c->argc(0)));
+	msg(DM_NONE,"script : Create model '%s'\n", obj.m->get_name());
 	return CR_SUCCESS;
 }
 
@@ -110,7 +138,7 @@ int command_functions::function_CA_SAVEMODEL(command *&c, bundle &obj)
 	}
 	obj.m->set_filter(f);
 	obj.m->set_filename(c->argc(1));
-	return (f->execute_with_model(obj.m, c->argc(1)) ? CR_SUCCESS : CR_FAIL);
+	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
 }
 
 // Select working model ('selectmodel <name>')
@@ -130,4 +158,21 @@ int command_functions::function_CA_SELECTMODEL(command *&c, bundle &obj)
 		msg(DM_NONE,"No model named '%s' is loaded.\n", c->argc(0));
 		return CR_FAIL;
 	}
+}
+
+// Set data for atom 'n' in model
+int command_functions::function_CA_SETATOM(command *&c, bundle &obj)
+{
+	// Must store 'n-1'th atom, since loop runs from 1 - natoms inclusive
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	// Set variable values
+	c->parent->variables.get_atom_variables(obj.i);
+	return CR_SUCCESS;
+}
+
+// Set title of model
+int command_functions::function_CA_SETTITLE(command *&c, bundle &obj)
+{
+	obj.m->set_name(c->argc(0));
+	return CR_SUCCESS;
 }
