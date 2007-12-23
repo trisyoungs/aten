@@ -135,8 +135,8 @@ const char *CA_data[CA_NITEMS] = {
 	"_GOTO_",
 	"_GOTONONIF_",
 	"if,rxe",
-	"_TERMINATE_",
 	"quit",
+	"_TERMINATE_",
 
 	// Force commands
 	"frameforces",
@@ -170,7 +170,9 @@ const char *CA_data[CA_NITEMS] = {
 	"printmc",
 
 	// Messaging
+	"error,s",
 	"print,s",
+	"warn,s",
 
 	// Minimisation commands
 	"cgminimise",
@@ -209,6 +211,20 @@ const char *CA_data[CA_NITEMS] = {
 	"shininess,r",
 	"show,rr",
 	"style,r",
+
+	// Read / Write Commands
+	"addreadoption,r",
+	"find,rro",
+	"readchars,rr",
+	"readdouble,r",
+	"readint,r",
+	"readline,f",
+	"readnext,r",
+	"readvar,rf",
+	"removereadoption,r",
+	"skipchars,r",
+	"skipline,o",
+	"writeline,f",
 
 	// Selection commands
 	"selectall",
@@ -255,10 +271,3 @@ const char *text_from_CA(command_action ca)
 	{ return get_before_comma(CA_data[ca]); }
 const char *vars_from_CA(command_action ca)
 	{ return get_after_comma(CA_data[ca]); }
-
-// Constructor
-command_functions::command_functions()
-{
-	// Store pointers to all command functions
-	action[CA_QUIT] = &command_functions::function_CA_QUIT;
-}

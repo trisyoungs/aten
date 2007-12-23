@@ -26,6 +26,9 @@
 #include "base/master.h"
 #include "base/constants.h"
 
+// Static variables
+command_functions command::functions;
+
 // If Conditions
 const char *IC_strings[6] = { "eq", "l", "le", "g", "ge", "neq" };
 const char *text_from_IC(if_condition i)
@@ -563,6 +566,26 @@ bool commandlist::cache_command()
 	return result;
 }
 
+// Set input file (pointer)
+bool commandlist::set_infile(const char *sourcefile)
+{
+	dbg_begin(DM_CALLS,"filter::set_infile");
+        if (infile != NULL) printf("commandlist::set_infile <<<< Inputfile already set >>>>\n");
+        infile = new ifstream(sourcefile,ios::in);
+        dbg_end(DM_CALLS,"filter::set_infile");
+        if (!infile->good()) return FALSE;
+        else return TRUE;
+}
+
+// Set output file
+bool commandlist::set_outfile(const char *destfile)
+{
+	dbg_begin(DM_CALLS,"commandlist::set_output");
+	outfile = new ofstream(destfile,ios::out);
+	dbg_end(DM_CALLS,"commandlist::set_output");
+	if (!outfile->good()) return FALSE;
+	else return TRUE;
+}
 
 // Close files
 void commandlist::close_files()
@@ -584,42 +607,20 @@ void commandlist::close_files()
 }
 
 // Execute command
-int command::execute()
+int command::execute(command *&c)
 {
-	return (command.*function)(this, master.current);
+	return (functions.*function)(c, master.current);
 }
 
 // Execute commands in command list
-bool commandlist::execute(const char *sourcefile, const char *destfile)
+bool commandlist::execute()
 {
-	// Set input file
-	if (sourcefile[0] != '\0')
-	{
-		if (infile != NULL) printf("commandlist::execute <<<< Inputfile already set >>>>\n");
-		infile = new ifstream(sourcefile,ios::in);
-		if (!infile->good())
-		{
-			msg(DM_NONE,"Couldn't open source file '%s'.\n",sourcefile);
-			return FALSE;
-		}
-	}
-	// Set output file
-	if (destfile[0] != '\0')
-	{
-		if (outfile != NULL) printf("commandlist::execute <<<< Outputfile already set >>>>\n");
-		outfile = new ofstream(destfile,ios::out);
-		if (!outfile->good()) 
-		{
-			msg(DM_NONE,"Couldn't open destination file '%s'.\n",destfile);
-			return FALSE;
-		}
-	}
 	// Get first command in list
 	command *c = commands.first();
 	int result;
 	while (c != NULL)
 	{
 		// Run command and get return value
-		result = c->execute();
+		result = c->execute(c);
 	}
 }

@@ -168,7 +168,9 @@ const char *CA_syntax[CA_NITEMS] = {
 	"printmc",
 
 	// Messaging
-	"print"
+	"error <message>",
+	"print <message>",
+	"warn <message>",
 
 	// Minimisation commands
 	"cgminimise",
@@ -206,6 +208,20 @@ const char *CA_syntax[CA_NITEMS] = {
 	"shininess <n>",
 	"show <object> yes|no",
 	"style <style>",
+
+	// Read / Write Commands
+	"addreadoption <option>",
+	"find <string> <resultvar> [linevar]",
+	"readchars <variable> <nchars>",
+	"readdouble <variable>",
+	"readint <variable>",
+	"readline <variable>",
+	"readnext,r",
+	"readvar,rf",
+	"removereadoption <option>",
+	"skipchars <nchars>",
+	"skipline [nlines]",
+	"writeline <string>",
 
 	// Selection commands
 	"selectall",

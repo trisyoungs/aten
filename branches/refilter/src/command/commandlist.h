@@ -28,8 +28,10 @@
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
+#include "command/functions.h"
 #include "classes/variables.h"
 #include "base/constants.h"
+#include "file/parse.h"
 
 // If Conditions
 enum if_condition { IF_EQUAL=1, IF_LESS=2, IF_LEQUAL=3, IF_GREATER=4, IF_GEQUAL=5, IF_NEQUAL=6, IF_NITEMS };
@@ -68,7 +70,7 @@ class command
 	// Get command
 	command_action get_command() { return action; }
 	// Execute command
-	int execute();
+	int execute(command *&c);
 
 	/*
 	// Format
@@ -221,7 +223,7 @@ class commandlist
 	// Load commands from file
 	bool load(const char *filename);
 	// Execute command list
-	bool execute(const char *infile, const char *outfile);
+	bool execute();
 	// Check structure of command list
 	bool validate();
 
@@ -255,10 +257,20 @@ class commandlist
 	void close_files();
 
 	public:
+	// Set input stream
+	bool set_infile(const char *infile);
 	// Get input stream
 	ifstream *get_infile() { return infile; }
+	// Set output stream
+	bool set_outfile(const char *outfile);
 	// Get output stream
 	ofstream *get_outfile() { return outfile; }
+	// Add read option
+	void add_readoption(parse_option po) { if (!(readopts&po)) readopts += po; }
+	// Remove read option
+	void remove_readoption(parse_option po) { if (readopts&po) readopts -= po; }
+	// Return read options
+	int get_readoptions() { return readopts; }
 };
 
 #endif

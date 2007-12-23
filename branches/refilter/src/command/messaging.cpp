@@ -22,6 +22,13 @@
 #include "command/commandlist.h"
 #include "file/format.h"
 
+// Write line to msg output and stop
+int command_functions::function_CA_ERROR(command *&c, bundle &obj)
+{
+	msg(DM_NONE,"Filter Error: %s\n",c->argc(0));
+	return CR_EXIT;
+}
+
 // Print formatted string
 int command_functions::function_CA_PRINT(command *&c, bundle &obj)
 {
@@ -81,5 +88,12 @@ int command_functions::function_CA_PRINT(command *&c, bundle &obj)
 	}
 	// Final string to print is now in printstr...
 	msg(DM_NONE,"%s\n",printstr.get());
+	return CR_SUCCESS;
+}
+
+// Write line to msg output
+int command_functions::function_CA_WARN(command *&c, bundle &obj)
+{
+	msg(DM_NONE,"Filter Warning: %s\n",c->argc(0));
 	return CR_SUCCESS;
 }
