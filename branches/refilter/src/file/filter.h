@@ -119,9 +119,7 @@ class filter
 
 	public:
 	// Execute filter
-	bool execute(const char *filename, bool trajheader = FALSE, model *altmodel = NULL);
-	//bool execute_with_model(model *m, const char *filename);
-	//bool execute_with_grid(grid *g, const char *filename);
+	bool execute(const char *filename, ifstream *sourcefile = NULL, bool trajheader = FALSE, model *altmodel = NULL);
 };
 
 #endif

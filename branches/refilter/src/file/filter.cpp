@@ -182,7 +182,7 @@ void filter::print()
 }
 
 // Execute filter
-bool filter::execute(const char *filename, bool trajheader, model *framemodel)
+bool filter::execute(const char *filename, ifstream *sourcefile, bool trajheader, model *framemodel)
 {
 	dbg_begin(DM_CALLS,"filter::execute");
 	// Grab pointer bundle from master
@@ -278,7 +278,7 @@ bool filter::execute(const char *filename, bool trajheader, model *framemodel)
 
 	}
 	// Execute commandlist
-	bool result = commands.execute(framemodel);
+	bool result = commands.execute(framemodel,sourcefile);
 	// Perform post-filter operations
 	switch (type)
 	{
