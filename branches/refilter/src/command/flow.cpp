@@ -25,6 +25,12 @@
 #include "classes/pattern.h"
 #include <fstream>
 
+// Root node (no action)
+int command_functions::function_CA_ROOTNODE(command *&c, bundle &obj)
+{
+	return CR_SUCCESS;
+}
+
 // Else statement
 int command_functions::function_CA_ELSE(command *&c, bundle &obj)
 {
@@ -131,6 +137,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 			//		2 args - loop over all atoms in arg 2 (pattern)
 			//		3 args - loop over atoms in molecule arg 3 in pattern arg 2
 			case (VT_ATOM):
+				if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 				// If no second variable is given, loop over all atoms
 				if (c->has_arg(1))
 				{
@@ -181,6 +188,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				break;
 			// Pattern loop	 1 arg  - loop over patterns in model
 			case (VT_PATTERN):
+				if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 				if (c->argt(0) == VT_PATTERN) c->arg(0)->set(obj.m->get_patterns());
 				else
 				{

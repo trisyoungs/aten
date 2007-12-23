@@ -100,10 +100,6 @@ const char *CA_syntax[CA_NITEMS] = {
 	"setshape <name> <shape>",
 	"vdwscale <scale>",
 
-	// Element Commands
-	"setelementcolour <element> <r> <g> <b>",
-	"setelementradius <element> <radius>",
-
 	// Energy commands
 	"frameenergy",
 	"modelenergy",
@@ -136,8 +132,8 @@ const char *CA_syntax[CA_NITEMS] = {
 	"_GOTO_",
 	"_GOTONONIF_",
 	"if,rxe",
-	"_TERMINATE_",
 	"quit",
+	"_TERMINATE_",
 
 	// Force commands
 	"frameforces",
@@ -193,6 +189,7 @@ const char *CA_syntax[CA_NITEMS] = {
 
 	// Model commands
 	"createatoms",
+	"finalisemodel",
 	"listmodels",
 	"loadmodel <filename> [name]",
 	"modeltemplate",
@@ -201,7 +198,16 @@ const char *CA_syntax[CA_NITEMS] = {
 	"savemodel <format> <filename>",
 	"selectmodel <name>",
 	"setatom <variable>",
+	"setfx <id> <value>",
+	"setfy <id> <value>",
+	"setfz <id> <value>",
+	"setrx <id> <value>",
+	"setry <id> <value>",
+	"setrz <id> <value>",
 	"settitle <title>",
+	"setvx <id> <value>",
+	"setvy <id> <value>",
+	"setvz <id> <value>",
 
 	// Pattern commands
 	"addpattern <name> <nmols> <natoms>",
@@ -215,6 +221,9 @@ const char *CA_syntax[CA_NITEMS] = {
 	"bonddetail <n>",
 	"colour <colour> <r> <g> <b>",
 	"densityunits atomsperang|gpercm",
+	"elementambient <element> <r> <g> <b>",
+	"elementdiffuse <element> <r> <g> <b>",
+	"elementradius <element> <radius>",
 	"energyunits j|kj|cal|kcal|ha",
 	"gl <option> on|off",
 	"key ctrl|shift|alt <action>",
@@ -273,10 +282,8 @@ const char *CA_syntax[CA_NITEMS] = {
 	"dec <variable>",
 	"eval,r=e",
 	"inc <variable>",
-	"let,rxe",
-
-	"quit"
+	"let,rxe"
 
 	};
-const char *syntax_from_SC(command_action ca)
+const char *syntax_from_CA(command_action ca)
 	{ return CA_syntax[ca]; }

@@ -329,12 +329,12 @@ bool gui_qt::save_before_close()
 				case (QMessageBox::Save):
 					// If model has a filter set, just save it
 					f = m->get_filter();
-					if (f != NULL) f->export_model(m);
+					if (f != NULL) f->execute(m->get_filename());
 					else if (mainwindow->run_savemodel_dialog())
 					{
 						m->set_filter(mainwindow->savemodelfilter);
 						m->set_filename(mainwindow->savemodelfilename.get());
-						mainwindow->savemodelfilter->export_model(m);
+						mainwindow->savemodelfilter->execute(m->get_filename());
 					}
 					else return FALSE;
 					break;

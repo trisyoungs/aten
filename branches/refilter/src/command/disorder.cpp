@@ -45,6 +45,7 @@ int command_functions::function_CA_ADDCOMPONENT(command *&c, bundle &obj)
 // Performs MC insertion ('disorder <ncycles>')
 int command_functions::function_CA_DISORDER(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (master.mc.components.size() == 0)
 	{
 		msg(DM_NONE,"Disordered builder requires a list of components.\n");

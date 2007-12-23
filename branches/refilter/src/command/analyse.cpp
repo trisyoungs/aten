@@ -28,6 +28,7 @@
 // Finalise calculated quantites ('finalise')
 int command_functions::function_CA_FINALISE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
 	return CR_SUCCESS;
 }
@@ -35,6 +36,7 @@ int command_functions::function_CA_FINALISE(command *&c, bundle &obj)
 // Accumulate data for current frame ('frameanalyse')
 int command_functions::function_CA_FRAMEANALYSE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Grab trajectory config for analysis
 	model *frame = obj.m->get_currentframe();
 	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
@@ -44,6 +46,7 @@ int command_functions::function_CA_FRAMEANALYSE(command *&c, bundle &obj)
 // Accumulate data for current model ('modelanalyse')
 int command_functions::function_CA_MODELANALYSE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
 	return CR_SUCCESS;
 }
@@ -51,6 +54,7 @@ int command_functions::function_CA_MODELANALYSE(command *&c, bundle &obj)
 // Request calculation of a 3Ddens ('analyse pdens <name> <site1> <site2> <grid> <nsteps> <filename>')
 int command_functions::function_CA_PDENS(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	pdens *newpdens = new pdens;
 	obj.m->pending_quantities.own(newpdens);
 	// Set pdens name and destination filename
@@ -66,11 +70,13 @@ int command_functions::function_CA_PDENS(command *&c, bundle &obj)
 // Print current job list ('printjobs')
 int command_functions::function_CA_PRINTJOBS(command *&c, bundle &obj)
 {
+	return CR_FAIL;
 }
 
 // Request calculation of an RDF ('rdf <name> <site1> <site2> <rmin> <binwidth> <nbins> <filename>')
 int command_functions::function_CA_RDF(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	rdf *newrdf = new rdf;
 	obj.m->pending_quantities.own(newrdf);
 	// Set RDF name and destination filename
@@ -86,6 +92,7 @@ int command_functions::function_CA_RDF(command *&c, bundle &obj)
 // Save calculated quantities to filenames provided ('savequantities')
 int command_functions::function_CA_SAVEQUANTITIES(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	for (calculable *calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->save();
 	return CR_SUCCESS;
 }

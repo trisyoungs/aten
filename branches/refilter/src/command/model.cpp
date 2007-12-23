@@ -28,6 +28,7 @@
 // Create 'n' new atoms at once in model
 int command_functions::function_CA_CREATEATOMS(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	vec3<double> v;
 	for (int n = 0; n < c->argi(0); n++) obj.i = obj.m->add_atom(0, v);
 	return CR_SUCCESS;
@@ -36,6 +37,7 @@ int command_functions::function_CA_CREATEATOMS(command *&c, bundle &obj)
 // Finalise current model
 int command_functions::function_CA_FINALISEMODEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	//if (partner != NULL) activemodel->set_filename(filename.get());
 	//activemodel->set_filter(partner);
 	printf("Model filter needs to be set....\n");
@@ -90,6 +92,7 @@ int command_functions::function_CA_LOADMODEL(command *&c, bundle &obj)
 // Use parent model as atom template
 int command_functions::function_CA_MODELTEMPLATE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	model *parent = obj.m->get_trajparent();
 	if (parent == NULL)
 	{
@@ -119,6 +122,7 @@ int command_functions::function_CA_NEWMODEL(command *&c, bundle &obj)
 // Print all information for model ('printmodel')
 int command_functions::function_CA_PRINTMODEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->print();
 	return CR_SUCCESS;
 }
@@ -126,6 +130,7 @@ int command_functions::function_CA_PRINTMODEL(command *&c, bundle &obj)
 // Save current model ('savemodel <format> <filename>')
 int command_functions::function_CA_SAVEMODEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
 	filter *f;
 	for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next)
@@ -155,7 +160,7 @@ int command_functions::function_CA_SELECTMODEL(command *&c, bundle &obj)
 	}
 	else
 	{
-		msg(DM_NONE,"No model named '%s' is loaded.\n", c->argc(0));
+		msg(DM_NONE,"No model named '%s' is available.\n", c->argc(0));
 		return CR_FAIL;
 	}
 }
@@ -163,6 +168,7 @@ int command_functions::function_CA_SELECTMODEL(command *&c, bundle &obj)
 // Set data for atom 'n' in model
 int command_functions::function_CA_SETATOM(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Must store 'n-1'th atom, since loop runs from 1 - natoms inclusive
 	obj.i = obj.m->get_atom(c->argi(0) - 1);
 	// Set variable values
@@ -170,9 +176,109 @@ int command_functions::function_CA_SETATOM(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+int command_functions::function_CA_SETFX(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->f().set(0,c->argd(1));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETFY(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->f().set(1,c->argd(1));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETFZ(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->f().set(2,c->argd(1));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETRX(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->r().set(0,c->argd(1));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETRY(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->r().set(1,c->argd(1));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETRZ(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->r().set(2,c->argd(1));
+	return CR_SUCCESS;
+}
+
 // Set title of model
 int command_functions::function_CA_SETTITLE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->set_name(c->argc(0));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETVX(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->v().set(0,c->argd(1));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETVY(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->v().set(1,c->argd(1));
+	return CR_SUCCESS;
+}
+
+int command_functions::function_CA_SETVZ(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	obj.i = obj.m->get_atom(c->argi(0) - 1);
+	if (obj.i == NULL) return CR_FAIL;
+	//printf("ATOMID = %i\n",atomid);
+	// Set the variable value
+	obj.i->v().set(2,c->argd(1));
 	return CR_SUCCESS;
 }

@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "base/elements.h"
+#include "classes/pattern.h"
 #include "gui-qt/ttreewidgetitem.h"
 #include "gui/gui.h"
 #include "gui-qt/mainwindow.h"

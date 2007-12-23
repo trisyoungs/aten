@@ -88,7 +88,7 @@ class variable
 	// Copy pointer contents of source variable
 	void copy_pointer(variable *v) { ptrvalue = v->ptrvalue; }
 	// Sets the content type of the variable
-	bool set_type(variable_type);
+	void set_type(variable_type vt) { type = vt; }
 	// Returns content type of the variable
 	variable_type get_type() { return type; }
 	// Get name of variable

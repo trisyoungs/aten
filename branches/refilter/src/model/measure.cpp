@@ -324,7 +324,7 @@ measurement *model::find_measurement(geom_type gt, atom* first, ...)
 double model::distance(int i, int j)
 {
 	// Make sure we have a staticatoms array
-	atom **temp = get_staticatoms();
+	atom **temp = get_atomarray();
 	return cell.distance(temp[i], temp[j]);
 }
 
@@ -332,7 +332,7 @@ double model::distance(int i, int j)
 double model::angle(int i, int j, int k)
 {
 	// Make sure we have a staticatoms array
-	atom **temp = get_staticatoms();
+	atom **temp = get_atomarray();
 	return cell.angle(temp[i], temp[j], temp[k]);
 }
 
@@ -340,8 +340,8 @@ double model::angle(int i, int j, int k)
 double model::torsion(int i, int j, int k, int l)
 {
 	// Make sure we have a staticatoms array
-	atom **temp = get_staticatoms();
-	return cell.torsion(staticatoms[i], staticatoms[j], staticatoms[k], staticatoms[l]);
+	atom **temp = get_atomarray();
+	return cell.torsion(temp[i], temp[j], temp[k], temp[l]);
 }
 
 // Update measurements

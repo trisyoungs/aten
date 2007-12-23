@@ -407,7 +407,8 @@ variable *variable_list::get(const char *s)
 		strcpy(newname,"_variable");
 		strcat(newname,itoa(vars.size()));
 		result->set_name(newname);
-		result->set_constant(s);
+		result->set_type(VT_CHAR);
+		result->set(s);
 	}
 	return result;
 }

@@ -106,10 +106,6 @@ class command_functions
 	int function_CA_SETSHAPE(command *&c, bundle &obj);
 	int function_CA_VDWSCALE(command *&c, bundle &obj);
 
-	// Element Commands
-	int function_CA_SETELEMENTCOLOUR(command *&c, bundle &obj);
-	int function_CA_SETELEMENTRADIUS(command *&c, bundle &obj);
-
 	// Energy Commands
 	int function_CA_FRAMEENERGY(command *&c, bundle &obj);
 	int function_CA_MODELENERGY(command *&c, bundle &obj);
@@ -208,7 +204,16 @@ class command_functions
 	int function_CA_SAVEMODEL(command *&c, bundle &obj);
 	int function_CA_SELECTMODEL(command *&c, bundle &obj);
 	int function_CA_SETATOM(command *&c, bundle &obj);
+	int function_CA_SETFX(command *&c, bundle &obj);
+	int function_CA_SETFY(command *&c, bundle &obj);
+	int function_CA_SETFZ(command *&c, bundle &obj);
+	int function_CA_SETRX(command *&c, bundle &obj);
+	int function_CA_SETRY(command *&c, bundle &obj);
+	int function_CA_SETRZ(command *&c, bundle &obj);
 	int function_CA_SETTITLE(command *&c, bundle &obj);
+	int function_CA_SETVX(command *&c, bundle &obj);
+	int function_CA_SETVY(command *&c, bundle &obj);
+	int function_CA_SETVZ(command *&c, bundle &obj);
 
 	// Pattern Commands
 	int function_CA_ADDPATTERN(command *&c, bundle &obj);
@@ -222,6 +227,9 @@ class command_functions
 	int function_CA_BONDDETAIL(command *&c, bundle &obj);
 	int function_CA_COLOUR(command *&c, bundle &obj);
 	int function_CA_DENSITYUNITS(command *&c, bundle &obj);
+	int function_CA_ELEMENTAMBIENT(command *&c, bundle &obj);
+	int function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj);
+	int function_CA_ELEMENTRADIUS(command *&c, bundle &obj);
 	int function_CA_ENERGYUNITS(command *&c, bundle &obj);
 	int function_CA_GL(command *&c, bundle &obj);
 	int function_CA_KEY(command *&c, bundle &obj);

@@ -28,6 +28,7 @@
 // Save field definition ('savefield <filename>')
 int command_functions::function_CA_SAVEFIELD(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	savedlpfield(c->argc(0),obj.m);
 	return CR_SUCCESS;
 }
@@ -35,6 +36,7 @@ int command_functions::function_CA_SAVEFIELD(command *&c, bundle &obj)
 // Save field definition ('savefield2 <format> <file>')
 int command_functions::function_CA_SAVEFIELD2(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
 	filter *f;
 	for (f = master.filters[FT_FIELD_EXPORT].first(); f != NULL; f = f->next)

@@ -26,6 +26,7 @@
 // Assign charge to a single atom in the model ('chargeatom <id> <q>')
 int command_functions::function_CA_CHARGEATOM(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom *i = obj.m->find_atom(c->argi(0));
 	if (i != NULL) i->set_charge(c->argi(1));
 	else return CR_FAIL;
@@ -35,6 +36,7 @@ int command_functions::function_CA_CHARGEATOM(command *&c, bundle &obj)
 // Assign charges from forcefield atom types ('chargeff')
 int command_functions::function_CA_CHARGEFF(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->assign_charges(QS_FF);
 	return CR_SUCCESS;
 }
@@ -42,6 +44,7 @@ int command_functions::function_CA_CHARGEFF(command *&c, bundle &obj)
 // Copy atomic charges from model to model's current trajectory frame
 int command_functions::function_CA_CHARGEFROMMODEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	model *frame = obj.m->get_currentframe();
 	if (frame == NULL) 
 	{
@@ -55,6 +58,7 @@ int command_functions::function_CA_CHARGEFROMMODEL(command *&c, bundle &obj)
 // Assign charge to a pattern atom, propagated over the model ('chargepatom <patname> <id> <q>')
 int command_functions::function_CA_CHARGEPATOM(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->charge_pattern_atom(obj.p,c->argi(0),c->argd(1));
 	return CR_SUCCESS;
 }
@@ -62,8 +66,10 @@ int command_functions::function_CA_CHARGEPATOM(command *&c, bundle &obj)
 // Assign charge to selected atoms in model ('chargeselection <q>')
 int command_functions::function_CA_CHARGESELECTION(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	for (atom *i = obj.m->get_first_selected(); i != NULL; i = i->get_next_selected())
 		i->set_charge(c->argd(0));
+	return CR_SUCCESS;
 }
 
 // Assign charges to a specified forcefield type ('chargetype <atomtype> <q>')
@@ -76,6 +82,7 @@ int command_functions::function_CA_CHARGETYPE(command *&c, bundle &obj)
 // Clears charge in current model ('clearcharges')
 int command_functions::function_CA_CLEARCHARGES(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->clear_charges();
 	return CR_SUCCESS;
 }

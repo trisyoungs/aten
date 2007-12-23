@@ -55,7 +55,7 @@ void sd_method::minimise(model* srcmodel, double econ, double fcon)
 	}
 	
 	// Calculate initial reference energy and RMS force
-	modelatoms = srcmodel->get_staticatoms();
+	modelatoms = srcmodel->get_atomarray();
 	ecurrent = srcmodel->total_energy(srcmodel);
 	srcmodel->calculate_forces(srcmodel);
 	rmscurrent = srcmodel->calculate_rms_force();

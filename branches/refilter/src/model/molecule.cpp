@@ -29,7 +29,7 @@ void model::position_molecule(pattern *p, int mol, const vec3<double> &v)
 	dbg_begin(DM_CALLS,"model::position_molecule");
 	static vec3<double> newpos, cog;
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	pnatoms = p->get_natoms();
 	offset = p->get_startatom() + pnatoms * mol;
 	msg(DM_VERBOSE,"model::position_molecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms.size());
@@ -58,7 +58,7 @@ void model::translate_molecule(pattern *p, int mol, const vec3<double> &v)
 	// Vector 'v' should be normalised before passing
 	dbg_begin(DM_CALLS,"model::translate_molecule");
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	pnatoms = p->get_natoms();
 	offset = p->get_startatom() + pnatoms * mol;
 	msg(DM_VERBOSE,"model::translate_molecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms.size());
@@ -76,7 +76,7 @@ void model::rotate_molecule(pattern *p, int mol, double rotx, double roty)
 	static mat3<double> rotmat;
 	static vec3<double> delta, newpos, cog;
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	rotx /= DEGRAD;
 	roty /= DEGRAD;
 	cosx = cos(rotx);
@@ -109,7 +109,7 @@ void model::hide_molecule(pattern *p, int mol, bool visible)
 {
 	dbg_begin(DM_CALLS,"model::hide_molecule");
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	pnatoms = p->get_natoms();
 	offset = p->get_startatom() + pnatoms * mol;
 	if (offset < atoms.size()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->set_hidden(visible);

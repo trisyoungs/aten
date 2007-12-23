@@ -29,6 +29,7 @@
 // Associate current ff to current model ('ffmodel')
 int command_functions::function_CA_FFMODEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
 	obj.m->set_ff(obj.ff);
 	return CR_SUCCESS;
 }
@@ -36,6 +37,7 @@ int command_functions::function_CA_FFMODEL(command *&c, bundle &obj)
 // Set current forcefield for named pattern ('ffpattern')
 int command_functions::function_CA_FFPATTERN(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
 	obj.p->set_ff(obj.ff);
 	return CR_SUCCESS;
 }
@@ -43,6 +45,7 @@ int command_functions::function_CA_FFPATTERN(command *&c, bundle &obj)
 // Set current forcefield for pattern id given ('ffpatternid <id>')
 int command_functions::function_CA_FFPATTERNID(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->get_npatterns()))
 	{
@@ -86,17 +89,14 @@ int command_functions::function_CA_SELECTFF(command *&c, bundle &obj)
 // Perform typing on current model
 int command_functions::function_CA_TYPEMODEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	return (obj.m->type_all() ? CR_SUCCESS : CR_FAIL);
 }
 
 // Test specified type ID of current forcefield
 int command_functions::function_CA_TYPETEST(command *&c, bundle &obj)
 {
-	if (obj.ff == NULL)
-	{
-		msg(DM_NONE,"No forcefield loaded.\n");
-		return CR_FAIL;
-	}
+	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
 	// Find the specified type...
 	ffatom *ffa = obj.ff->find_type(c->argi(0));
 	if (ffa == NULL)

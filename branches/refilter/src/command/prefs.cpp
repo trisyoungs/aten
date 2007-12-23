@@ -21,6 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/debug.h"
+#include "base/elements.h"
 #include "gui/gui.h"
 
 // Atom quadric detail
@@ -53,6 +54,37 @@ int command_functions::function_CA_DENSITYUNITS(command *&c, bundle &obj)
 	density_unit du = DU_from_text(c->argc(0));
 	if (du == DU_NITEMS) return CR_FAIL;
 	else prefs.set_density_units(du);
+	return CR_SUCCESS;
+}
+
+// Set element's ambient colour
+int command_functions::function_CA_ELEMENTAMBIENT(command *&c, bundle &obj)
+{
+	int el = elements.find(c->argc(0));
+	if (el == 0) return CR_FAIL;
+	elements.set_ambient(el,0,c->argi(1));
+	elements.set_ambient(el,1,c->argi(2));
+	elements.set_ambient(el,2,c->argi(3));
+	return CR_SUCCESS;
+}
+
+// Set element's diffuse colour
+int command_functions::function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj)
+{
+	int el = elements.find(c->argc(0));
+	if (el == 0) return CR_FAIL;
+	elements.set_diffuse(el,0,c->argi(1));
+	elements.set_diffuse(el,1,c->argi(2));
+	elements.set_diffuse(el,2,c->argi(3));
+	return CR_SUCCESS;
+}
+
+// Set element's radius
+int command_functions::function_CA_ELEMENTRADIUS(command *&c, bundle &obj)
+{
+	int el = elements.find(c->argc(0));
+	if (el == 0) return CR_FAIL;
+	elements.set_radius(el, c->argd(1));
 	return CR_SUCCESS;
 }
 

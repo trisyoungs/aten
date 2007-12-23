@@ -184,7 +184,7 @@ atom *model::find_atom(int id)
 		msg(DM_NONE,"Atom id %i is out of range for model '%s'\n",id,name.get());
 		return NULL;
 	}
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	return modelatoms[id];
 }
 
@@ -265,7 +265,7 @@ void model::normalise_forces(double norm)
 	dbg_begin(DM_CALLS,"model::normalise_forces");
 	double maxfrc;
 	static vec3<double> f;
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	int i;
 	// Find the largest force
 	maxfrc = 0.0;

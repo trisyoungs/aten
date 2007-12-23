@@ -102,10 +102,6 @@ const char *CA_data[CA_NITEMS] = {
 	"setshape,rr",
 	"vdwscale,r",
 
-	// Element Commands
-	"setelementcolour,rrrr",
-	"setelementradius,rr",
-
 	// Energy commands
 	"frameenergy",
 	"modelenergy",
@@ -204,7 +200,16 @@ const char *CA_data[CA_NITEMS] = {
 	"savemodel,rr",
 	"selectmodel,r",
 	"setatom,r",
+	"setfx,rr",
+	"setfy,rr",
+	"setfz,rr",
+	"setrx,rr",
+	"setry,rr",
+	"setrz,rr",
 	"settitle,r",
+	"setvx,rr",
+	"setvy,rr",
+	"setvz,rr",
 
 	// Pattern commands
 	"addpattern,rrr",
@@ -218,6 +223,9 @@ const char *CA_data[CA_NITEMS] = {
 	"bonddetail,r",
 	"colour,rrrr",
 	"densityunits,r",
+	"elementambient,rrrr",
+	"elementdiffuse,rrrr",
+	"elementradius,rr",
 	"energyunits,r",
 	"gl,rr",
 	"key,rr",
@@ -276,7 +284,7 @@ const char *CA_data[CA_NITEMS] = {
 	"dec,r",
 	"eval,r=e",
 	"inc,r",
-	"let,rxe",
+	"let,rxe"
 
 	};
 

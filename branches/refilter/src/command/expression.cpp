@@ -27,6 +27,7 @@
 // Create energy expression for current model ('createexpression'}
 int command_functions::function_CA_CREATEEXPRESSION(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (!obj.m->autocreate_patterns()) return CR_FAIL;
 	if (!obj.m->create_expression()) return CR_FAIL;
 	return CR_SUCCESS;

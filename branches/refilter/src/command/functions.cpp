@@ -91,10 +91,6 @@ command_functions::command_functions()
 	action[CA_SETSHAPE] = &command_functions::function_CA_SETSHAPE;
 	action[CA_VDWSCALE] = &command_functions::function_CA_VDWSCALE;
 
-	// Element Commands
-	action[CA_SETELEMENTCOLOUR] = &command_functions::function_CA_SETELEMENTCOLOUR;
-	action[CA_SETELEMENTRADIUS] = &command_functions::function_CA_SETELEMENTRADIUS;
-
 	// Energy Commands
 	action[CA_FRAMEENERGY] = &command_functions::function_CA_FRAMEENERGY;
 	action[CA_MODELENERGY] = &command_functions::function_CA_MODELENERGY;
@@ -191,7 +187,16 @@ command_functions::command_functions()
 	action[CA_SAVEMODEL] = &command_functions::function_CA_SAVEMODEL;
 	action[CA_SELECTMODEL] = &command_functions::function_CA_SELECTMODEL;
 	action[CA_SETATOM] = &command_functions::function_CA_SETATOM;
+	action[CA_SETFX] = &command_functions::function_CA_SETFX;
+	action[CA_SETFY] = &command_functions::function_CA_SETFY;
+	action[CA_SETFZ] = &command_functions::function_CA_SETFZ;
+	action[CA_SETRX] = &command_functions::function_CA_SETRX;
+	action[CA_SETRY] = &command_functions::function_CA_SETRY;
+	action[CA_SETRZ] = &command_functions::function_CA_SETRZ;
 	action[CA_SETTITLE] = &command_functions::function_CA_SETTITLE;
+	action[CA_SETVX] = &command_functions::function_CA_SETVX;
+	action[CA_SETVY] = &command_functions::function_CA_SETVY;
+	action[CA_SETVZ] = &command_functions::function_CA_SETVZ;
 
 	// Pattern Commands
 	action[CA_ADDPATTERN] = &command_functions::function_CA_ADDPATTERN;
@@ -205,6 +210,9 @@ command_functions::command_functions()
 	action[CA_BONDDETAIL] = &command_functions::function_CA_BONDDETAIL;
 	action[CA_COLOUR] = &command_functions::function_CA_COLOUR;
 	action[CA_DENSITYUNITS] = &command_functions::function_CA_DENSITYUNITS;
+	action[CA_ELEMENTAMBIENT] = &command_functions::function_CA_ELEMENTAMBIENT;
+	action[CA_ELEMENTDIFFUSE] = &command_functions::function_CA_ELEMENTDIFFUSE;
+	action[CA_ELEMENTRADIUS] = &command_functions::function_CA_ELEMENTRADIUS;
 	action[CA_ENERGYUNITS] = &command_functions::function_CA_ENERGYUNITS;
 	action[CA_GL] = &command_functions::function_CA_GL;
 	action[CA_KEY] = &command_functions::function_CA_KEY;

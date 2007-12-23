@@ -30,6 +30,7 @@
 // Select all ('selectall')
 int command_functions::function_CA_SELECTALL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->select_all();
 	return CR_SUCCESS;
 }
@@ -37,6 +38,7 @@ int command_functions::function_CA_SELECTALL(command *&c, bundle &obj)
 // Select by atom ('selectatom <n>')
 int command_functions::function_CA_SELECTATOM(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom *i = obj.m->find_atom(c->argi(0));
 	if (i != NULL) obj.m->select_atom(i);
 	else return CR_FAIL;
@@ -46,6 +48,7 @@ int command_functions::function_CA_SELECTATOM(command *&c, bundle &obj)
 // Select by element ('selectelement <el>')
 int command_functions::function_CA_SELECTELEMENT(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0), ZM_ALPHA);
 	for (atom *i = obj.m->get_atoms(); i != NULL; i = i->next) if (i->get_element() == el) obj.m->select_atom(i);
 	return CR_SUCCESS;
@@ -54,6 +57,7 @@ int command_functions::function_CA_SELECTELEMENT(command *&c, bundle &obj)
 // Select by forcefield type ('selecffttype <fftype>')
 int command_functions::function_CA_SELECTFFTYPE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	forcefield *ff = obj.m->get_ff();
 	if (ff == NULL)
 	{
@@ -75,6 +79,7 @@ int command_functions::function_CA_SELECTFFTYPE(command *&c, bundle &obj)
 // Invert selection
 int command_functions::function_CA_SELECTINVERT(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->selection_invert();
 	return CR_SUCCESS;
 }
@@ -82,6 +87,7 @@ int command_functions::function_CA_SELECTINVERT(command *&c, bundle &obj)
 // Select no atoms ('selectnone')
 int command_functions::function_CA_SELECTNONE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->select_none();
 	return CR_SUCCESS;
 }
@@ -89,6 +95,7 @@ int command_functions::function_CA_SELECTNONE(command *&c, bundle &obj)
 // Detect and select overlapping atoms
 int command_functions::function_CA_SELECTOVERLAPS(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->select_overlaps(c->argd(0));
 	return CR_SUCCESS;
 }
@@ -96,6 +103,7 @@ int command_functions::function_CA_SELECTOVERLAPS(command *&c, bundle &obj)
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
 int command_functions::function_CA_SELECTTYPE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atomtype testat;
 	testat.el = elements.find(c->argc(0));
 	testat.expand(c->argc(1),NULL,NULL);

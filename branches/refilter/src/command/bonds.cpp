@@ -25,6 +25,7 @@
 // Add bond between atoms ('addbond <id1> <id2> [bondtype]')
 int command_functions::function_CA_ADDBOND(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Third (optional) argument gives bond type
 	bond_type bt = BT_SINGLE;
 	if (c->has_arg(2))
@@ -44,6 +45,7 @@ int command_functions::function_CA_ADDBOND(command *&c, bundle &obj)
 // Augment bonds in current model ('augment')
 int command_functions::function_CA_AUGMENT(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->augment_bonding();
 	return CR_SUCCESS;
 }
@@ -51,6 +53,7 @@ int command_functions::function_CA_AUGMENT(command *&c, bundle &obj)
 // Calculate bonds in current model ('rebond')
 int command_functions::function_CA_REBOND(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// If we're reading from a file (via a filter) check for prefs override
 	if (c->parent->get_infile() == NULL)
 	{
@@ -68,6 +71,7 @@ int command_functions::function_CA_REBOND(command *&c, bundle &obj)
 // Clear bonds in current model ('clearbonds')
 int command_functions::function_CA_CLEARBONDS(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->clear_bonding();
 	return CR_SUCCESS;
 }
@@ -82,14 +86,15 @@ int command_functions::function_CA_BONDTOLERANCE(command *&c, bundle &obj)
 // Calculate bonds restricted to pattern molecules ('bondpatterns')
 int command_functions::function_CA_BONDPATTERNS(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->pattern_calculate_bonding();
 	return CR_SUCCESS;
-
 }
 
 // Calculate bonds restricted to current selection ('bondselection')
 int command_functions::function_CA_BONDSELECTION(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->selection_calculate_bonding();
 	return CR_SUCCESS;
 }

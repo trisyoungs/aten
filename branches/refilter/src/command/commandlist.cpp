@@ -57,7 +57,7 @@ commandlist::commandlist()
 	outfile = NULL;
 }
 
-// Destructor
+// Destructors
 command::~command()
 {
 	if (branch != NULL) delete branch;
@@ -65,6 +65,10 @@ command::~command()
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_COMMANDNODE] ++;
 	#endif
+}
+
+commandlist::~commandlist()
+{
 }
 
 // Set command and function
@@ -566,13 +570,65 @@ bool commandlist::cache_command()
 	return result;
 }
 
+// Load commands from file
+bool commandlist::load(const char *filename)
+{
+	dbg_begin(DM_CALLS,"commandlist::load");
+	ifstream cmdfile(filename,ios::in);
+	command *c;
+	command_action ca;
+	int success;
+	clear();
+	// Read in commands
+	while (!cmdfile.eof())
+	{
+		success = parser.get_args_delim(&cmdfile,PO_USEQUOTES+PO_SKIPBLANKS);
+		if (success == 1)
+		{
+			msg(DM_NONE,"commandlist::load - Error reading command file.\n");
+			dbg_end(DM_CALLS,"commandlist::load");
+			return FALSE;
+		}
+		else if (success == -1) break;
+		// See if we found a legitimate command
+		ca = CA_from_text(parser.argc(0));
+		if (ca != CA_NITEMS)
+		{
+			// Add the command to the list
+			if (add_command(ca)) continue;
+			else
+			{
+				msg(DM_NONE,"commandlist::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
+				dbg_end(DM_CALLS,"commandlist::load");
+				return FALSE;
+			}
+		}
+		else
+		{
+			msg(DM_NONE,"Unrecognised command '%s' in file.\n", parser.argc(0));
+			dbg_end(DM_CALLS,"commandlist::load");
+			return FALSE;
+		}
+	}
+	// Check the flowstack - it should be empty...
+	int itemsleft = branchstack.size();
+	if (itemsleft != 0)
+	{
+		printf("commandlist::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
+		dbg_end(DM_CALLS,"commandlist::load");
+		return FALSE;
+	}
+	dbg_end(DM_CALLS,"commandlist::load");
+	return TRUE;
+}
+
 // Set input file (pointer)
 bool commandlist::set_infile(const char *sourcefile)
 {
-	dbg_begin(DM_CALLS,"filter::set_infile");
+	dbg_begin(DM_CALLS,"commandlist::set_infile");
         if (infile != NULL) printf("commandlist::set_infile <<<< Inputfile already set >>>>\n");
         infile = new ifstream(sourcefile,ios::in);
-        dbg_end(DM_CALLS,"filter::set_infile");
+        dbg_end(DM_CALLS,"commandlist::set_infile");
         if (!infile->good()) return FALSE;
         else return TRUE;
 }
@@ -618,8 +674,14 @@ int command::execute(command *&c, model *alttarget)
 }
 
 // Execute commands in command list
-bool commandlist::execute(model *alttarget)
+bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 {
+	// Set alternative input file if one was supplied
+	if (sourcefile != NULL)
+	{
+		if (infile != NULL) printf("Warning - supplied ifstream overrides file in commandlist.\n");
+		infile = sourcefile;
+	}
 	// Get first command in list
 	command *c = commands.first();
 	int result;

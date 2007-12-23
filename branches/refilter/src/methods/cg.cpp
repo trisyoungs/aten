@@ -57,7 +57,7 @@ void cg_method::minimise(model* srcmodel, double econ, double fcon)
 	}
 	
 	// Calculate initial reference energy and RMS force
-	modelatoms = srcmodel->get_staticatoms();
+	modelatoms = srcmodel->get_atomarray();
 	g_old = new double[srcmodel->get_natoms()*3];
 	ecurrent = srcmodel->total_energy(srcmodel);
 	srcmodel->calculate_forces(srcmodel);

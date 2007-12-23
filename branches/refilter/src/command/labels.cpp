@@ -25,6 +25,7 @@
 // Clear labels in selection
 int command_functions::function_CA_CLEARLABELS(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->selection_clear_labels();
 	return CR_SUCCESS;
 }
@@ -32,6 +33,7 @@ int command_functions::function_CA_CLEARLABELS(command *&c, bundle &obj)
 // Add label to current selection
 int command_functions::function_CA_ADDLABEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom_label al = AL_from_text(c->argc(0));
 	if (al != AL_NITEMS) obj.m->selection_add_labels(al);
 	else return CR_FAIL;
@@ -41,6 +43,7 @@ int command_functions::function_CA_ADDLABEL(command *&c, bundle &obj)
 // Remove label from current selection
 int command_functions::function_CA_REMOVELABEL(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom_label al = AL_from_text(c->argc(0));
 	if (al != AL_NITEMS) obj.m->selection_remove_labels(al);
 	else return CR_FAIL;

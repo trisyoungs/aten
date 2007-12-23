@@ -329,7 +329,7 @@ bool mc_method::disorder(model* destmodel)
 	for (p = destmodel->get_pattern(noldpatterns); p != NULL; p = p->next) p->set_nmols(0);
 
 	// Hide unused atoms to begin with
-	atom **modelatoms = destmodel->get_staticatoms();
+	atom **modelatoms = destmodel->get_atomarray();
 	for (n = noldatoms; n < destmodel->get_natoms(); n++) modelatoms[n]->set_hidden(TRUE);
 
 	// Create a backup model

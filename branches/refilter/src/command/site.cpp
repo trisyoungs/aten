@@ -27,6 +27,7 @@
 // Add site definition to model ('addsite <name> <pattern> <"atomids...">')
 int command_functions::function_CA_ADDSITE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// First, check that the pattern name provided refers to a pattern of the current model
 	pattern *p = obj.m->find_pattern(c->argc(1));
 	if (p == NULL) return CR_FAIL;
@@ -51,6 +52,7 @@ int command_functions::function_CA_ADDSITE(command *&c, bundle &obj)
 // Print site definitions for model ('printsites')
 int command_functions::function_CA_PRINTSITES(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	site *s = obj.m->sites.first();
 	if (s == NULL) msg(DM_NONE,"No sites defined for model '%s'.\n",obj.m->get_name());
 	else
@@ -75,6 +77,7 @@ int command_functions::function_CA_SELECTSITE(command *&c, bundle &obj)
 // Set x and y-axis definitions for current site ('setaxes <"X-atomids..."> <"Y-atomids">')
 int command_functions::function_CA_SETAXES(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_SITE)) return CR_FAIL;
 	int n;
 	listitem<int> *li;
 	// Parse atom list for x-axis

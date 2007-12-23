@@ -223,7 +223,7 @@ class commandlist
 	// Load commands from file
 	bool load(const char *filename);
 	// Execute command list
-	bool execute(model *alttarget);
+	bool execute(model *alttarget = NULL, ifstream *altfile = NULL);
 	// Check structure of command list
 	bool validate();
 

@@ -27,6 +27,7 @@
 // Calculate forces at trajectory configuration ('frameforces')
 int command_functions::function_CA_FRAMEFORCES(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	model *frame = obj.m->get_currentframe();
 	if (obj.m->create_expression()) obj.m->calculate_forces(frame);
 	else return CR_FAIL;
@@ -36,6 +37,7 @@ int command_functions::function_CA_FRAMEFORCES(command *&c, bundle &obj)
 // Calculate atomic forces of model ('modelforces')
 int command_functions::function_CA_MODELFORCES(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (obj.m->create_expression()) obj.m->calculate_forces(obj.m);
 	else return CR_FAIL;
 	return CR_SUCCESS;
@@ -44,6 +46,7 @@ int command_functions::function_CA_MODELFORCES(command *&c, bundle &obj)
 // Print forces of model ('printforces')
 int command_functions::function_CA_PRINTFORCES(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->print_forces();
 	return CR_SUCCESS;
 }
