@@ -274,7 +274,7 @@ void prefs_data::load(const char *filename)
 		return;
 	}
 	dbg_end(DM_CALLS,"prefs::load");
-	prefscript.execute("","");
+	prefscript.execute();
 }
 
 double prefs_data::screenradius(atom *i)

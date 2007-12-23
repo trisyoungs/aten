@@ -195,13 +195,19 @@ bool filter::execute(const char *filename)
 	dbg_begin(DM_CALLS,"filter::execute");
 	// Grab pointer bundle from master
 	bundle &obj = master.current;
+	// Set element mapping type to that specified in file
+	zmap_type temp_zmap = prefs.get_zmapping();
+	if (has_zmapping) prefs.set_zmapping(zmapping);
 	// Setup based on filter type...
 	switch (type)
 	{
 		case (FT_MODEL_IMPORT):
+			msg(DM_NONE,"Load Model : %s (%s)\n",obj.m->get_filename(), name.get());
+			// Reset reserved variables
+			commands.variables.set("title","Unnamed");
 			break;
 		case (FT_MODEL_EXPORT):
-			msg(DM_NONE,"Save Model  : %s (%s)...", obj.m->get_filename(), name.get());
+			msg(DM_NONE,"Save Model : %s (%s)...", obj.m->get_filename(), name.get());
 			// Open file and set target
 			if (!commands.set_outfile(obj.m->get_filename()))
 			{
@@ -214,7 +220,7 @@ bool filter::execute(const char *filename)
 			commands.variables.set_cell_variables(obj.m->get_cell());
 			break;
 		case (FT_FIELD_EXPORT):
-			msg(DM_NONE,"Save Field  : %s (%s)\n", filename, name.get());
+			msg(DM_NONE,"Save Field : %s (%s)\n", filename, name.get());
 			// Need a valid pattern and energy expression to export
 			if (!obj.m->autocreate_patterns() || !obj.m->create_expression())
 			{
@@ -234,29 +240,21 @@ bool filter::execute(const char *filename)
 				return FALSE;
 			}
 			break;
+		case (FT_GRID_IMPORT):
+			msg(DM_NONE,"Load Grid  : %s (%s)\n",filename,name.get());
+			break;
 	}
 	// Execute commandlist
-	done = FALSE;
-	command *c = commands.commandlist.first();
-	int result;
-	while (c != NULL)
+	bool result = commands.execute();
+	// Perform post-filter operations
+	switch (type)
 	{
-		msg(DM_FILTERS,"(((( Filter command '%s' ))))\n", text_from_CA(c->get_command()));
-		// Run command and get return result
-		result = 
-		// Try commands
-		if (commands.do_basic(fn, activemodel, NULL)) continue;
-		else if (do_variables(fn)) continue;
-		else if (do_readwrite(fn)) continue;
-		else if (do_actions(fn)) continue;
-		else
-		{
-			printf("filter::execute <<<< Command '%s' has no defined action >>>>\n", (fn->get_basic_command() != BC_OTHER ? text_from_BC(fn->get_basic_command()) : text_from_FC(fn->get_command())));
-			fn = fn->next;
-		}
+		case (FT_MODEL_IMPORT):
+			// Reset element mapping style
+			prefs.set_zmapping(temp_zmap);
+			break;
 	}
 	msg(DM_NONE,"Done.\n");
-	command.close_files();
 	dbg_end(DM_CALLS,"filter::execute");
 }
 
