@@ -20,8 +20,8 @@
 */
 
 #include "command/commandlist.h"
-#include "file/format.h"
-#include "file/parse.h"
+#include "parse/format.h"
+#include "parse/parse.h"
 #include <fstream>
 
 // Add file read option

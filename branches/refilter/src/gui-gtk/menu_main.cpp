@@ -32,7 +32,7 @@
 #include "base/master.h"
 #include "base/prefs.h"
 #include "base/debug.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 
 // Variables
 GtkMenuItem *menu_colscheme[AC_NITEMS];

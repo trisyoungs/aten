@@ -1,6 +1,6 @@
 /*
 	*** File filter definition
-	*** src/file/filter.cpp
+	*** src/parse/filter.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "file/filter.h"
-#include "file/parse.h"
+#include "parse/filter.h"
+#include "parse/parse.h"
 #include "base/sysfunc.h"
 #include "base/master.h"
 #include "model/model.h"

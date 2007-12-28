@@ -22,8 +22,8 @@
 #include "command/commands.h"
 #include "base/master.h"
 #include "base/debug.h"
-#include "file/temp_dlpfield.h"
-#include "file/filter.h"
+#include "parse/temp_dlpfield.h"
+#include "parse/filter.h"
 
 // Save field definition ('savefield <filename>')
 int command_functions::function_CA_SAVEFIELD(command *&c, bundle &obj)

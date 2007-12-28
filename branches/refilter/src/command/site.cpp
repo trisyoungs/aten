@@ -22,7 +22,7 @@
 #include "command/commandlist.h"
 #include "base/debug.h"
 #include "classes/pattern.h"
-#include "file/parse.h"
+#include "parse/parse.h"
 
 // Add site definition to model ('addsite <name> <pattern> <"atomids...">')
 int command_functions::function_CA_ADDSITE(command *&c, bundle &obj)

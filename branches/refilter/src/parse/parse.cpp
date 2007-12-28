@@ -1,6 +1,6 @@
 /*
 	*** File parsing routines
-	*** src/file/parse.cpp
+	*** src/parse/parse.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,8 +21,8 @@
 
 #include "base/prefs.h"
 #include "base/elements.h"
-#include "file/parse.h"
-#include "file/format.h"
+#include "parse/parse.h"
+#include "parse/format.h"
 
 line_parser parser;
 

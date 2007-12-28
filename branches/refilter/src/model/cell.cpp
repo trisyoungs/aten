@@ -26,7 +26,7 @@
 #include "classes/spacegroup.h"
 #include "base/master.h"
 #include "base/constants.h"
-#include "file/parse.h"
+#include "parse/parse.h"
 #include <math.h>
 #include <iostream>
 

@@ -1,6 +1,6 @@
 /*
 	*** Temporary routine to export DL_POLY field file
-	*** src/file/temp_dlpfield.cpp
+	*** src/parse/temp_dlpfield.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -23,8 +23,8 @@
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 #include "base/elements.h"
-#include "file/parse.h"
-#include "file/format.h"
+#include "parse/parse.h"
+#include "parse/format.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"
 

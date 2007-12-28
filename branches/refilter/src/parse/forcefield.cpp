@@ -1,6 +1,6 @@
 /*
 	*** Forcefield import
-	*** src/file/forcefield.cpp
+	*** src/parse/forcefield.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -22,7 +22,7 @@
 #include <fstream>
 #include "classes/forcefield.h"
 #include "base/elements.h"
-#include "file/parse.h"
+#include "parse/parse.h"
 #include "base/sysfunc.h"
 
 // Forcefield keywords

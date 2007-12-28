@@ -1,6 +1,6 @@
 /*
 	*** Line / variable formatting
-	*** src/file/format.h
+	*** src/parse/format.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.

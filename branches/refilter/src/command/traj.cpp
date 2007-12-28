@@ -22,7 +22,7 @@
 #include "command/commands.h"
 #include "base/master.h"
 #include "base/debug.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 
 // Skip to first frame ('firstframe')
 int command_functions::function_CA_FIRSTFRAME(command *&c, bundle &obj)

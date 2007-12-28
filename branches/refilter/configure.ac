@@ -163,12 +163,12 @@ src/base/Makefile
 src/classes/Makefile
 src/command/Makefile
 src/energy/Makefile
-src/file/Makefile
 src/gui/Makefile
 src/gui-gtk/Makefile
 src/gui-qt/Makefile
 src/methods/Makefile
 src/model/Makefile
+src/parse/Makefile
 src/render/Makefile
 src/templates/Makefile
 )

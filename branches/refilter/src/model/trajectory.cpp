@@ -20,7 +20,7 @@
 */
 
 #include "base/master.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 #include "gui/gui.h"
 
 // Clear trajectory

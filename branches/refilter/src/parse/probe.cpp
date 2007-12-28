@@ -1,6 +1,6 @@
 /*
 	*** File type probes
-	*** src/file/probe.cpp
+	*** src/parse/probe.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -20,8 +20,8 @@
 */
 
 #include "base/master.h"
-#include "file/parse.h"
-#include "file/filter.h"
+#include "parse/parse.h"
+#include "parse/filter.h"
 #include <fstream>
 #include <iostream>
 

@@ -29,7 +29,7 @@
 #include "methods/sd.h"
 #include "methods/cg.h"
 #include "methods/mc.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 #include "command/commandlist.h"
 #include <getopt.h>
 

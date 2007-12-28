@@ -28,8 +28,8 @@
 #include "classes/forcefield.h"
 #include "classes/cell.h"
 #include "classes/pattern.h"
-#include "file/parse.h"
-#include "file/filter.h"
+#include "parse/parse.h"
+#include "parse/filter.h"
 
 // Constructor
 script::script()

@@ -20,7 +20,7 @@
 */
 
 #include "classes/forcefield.h"
-#include "file/parse.h"
+#include "parse/parse.h"
 #include "base/master.h"
 #include "base/elements.h"
 #include "base/prefs.h"

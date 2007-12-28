@@ -1,7 +1,0 @@
-noinst_LIBRARIES = libfile.a
-
-libfile_a_SOURCES = filter.cpp filtercommands.cpp forcefield.cpp format.cpp parse.cpp probe.cpp temp_dlpfield.cpp
-
-noinst_HEADERS = filtercommands.h filter.h format.h parse.h temp_dlpfield.h
-
-INCLUDES = -I../ @GUI_CFLAGS@

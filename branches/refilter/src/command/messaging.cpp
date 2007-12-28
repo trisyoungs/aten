@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "file/format.h"
+#include "parse/format.h"
 
 // Write line to msg output and stop
 int command_functions::function_CA_ERROR(command *&c, bundle &obj)

@@ -1,6 +1,6 @@
 /*
 	*** File filter definition
-	*** src/file/filter.h
+	*** src/parse/filter.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -22,7 +22,7 @@
 #ifndef H_FILTER_H
 #define H_FILTER_H
 
-#include "file/filtercommands.h"
+#include "parse/filtercommands.h"
 #include "command/commandlist.h"
 #include "base/prefs.h"
 #include <fstream>

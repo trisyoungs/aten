@@ -20,8 +20,8 @@
 */
 
 #include "command/commandlist.h"
-#include "file/format.h"
-#include "file/parse.h"
+#include "parse/format.h"
+#include "parse/parse.h"
 #include "base/sysfunc.h"
 #include "base/master.h"
 #include "base/elements.h"

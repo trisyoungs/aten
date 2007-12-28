@@ -1,6 +1,6 @@
 /*
 	*** Line / variable formatting
-	*** src/file/format.cpp
+	*** src/parse/format.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "file/format.h"
-#include "file/parse.h"
+#include "parse/format.h"
+#include "parse/parse.h"
 #include "base/sysfunc.h"
 
 // Constructors

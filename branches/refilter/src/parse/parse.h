@@ -1,6 +1,6 @@
 /*
 	*** File parsing routines
-	*** src/file/parse.h
+	*** src/parse/parse.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.

@@ -1,6 +1,6 @@
 /*
 	*** Compiled expression
-	*** src/file/expression.h
+	*** src/parse/expression.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,6 +19,4 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_EXPRESSION_H
-#define H_EXPRESSION_H
-
+#include "parse/expression.h"
