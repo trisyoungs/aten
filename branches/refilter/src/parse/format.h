@@ -40,23 +40,19 @@ class format_node
 	*/
 	private:
 	// Associated variable
-	variable *var;
+	variable *v;
 	// Field length (0 for unspecified)
 	int length;
 	// Field precision (0 for unspecified)
 	int precision;
 
 	public:
-	// Set format node variable
-	void set_variable(variable *v) { var = v; }
+	// Set format node data
+	bool set(const char *s, variable_list &vars);
 	// Get format node variable
-	variable *get_variable() { return var; }
-	// Set field length
-	void set_length(int i) { length = i; }
+	variable *get_variable() { return v; }
 	// Get field length
 	int get_length() { return length; }
-	// Set field precision
-	void set_precision(int i) { precision = i; }
 	// Get field precision
 	int get_precision() { return precision; }
 };
@@ -75,11 +71,16 @@ class format
 	private:
 	// Head of format node list
 	list<format_node> nodes;
+	// Create a format assuming delimited formatting nodes
+	void create_delimited(const char *s, variable_list &vars);
+	// Create a format not using delimited formatting nodes
+	void create_exact(const char *s, variable_list &vars);
+
 	public:
 	// Returns first node
 	format_node* get_nodes() { return nodes.first(); }
 	// Create format nodes from a supplied formatting string
-	void create(const char*, variable_list&);
+	void create(const char *s, variable_list &vars, bool delimited);
 	// Clear list of format nodes
 	void clear() { nodes.clear(); }
 	// Create a formatted string from the supplied data

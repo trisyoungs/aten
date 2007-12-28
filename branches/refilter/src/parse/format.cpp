@@ -26,8 +26,7 @@
 // Constructors
 format_node::format_node()
 {
-	//type = FN_UNKNOWN;
-	var = NULL;
+	v = NULL;
 	length = 0;
 	precision = 0;
 	next = NULL;
@@ -60,57 +59,155 @@ format_node::~format_node()
 	#endif
 }
 
-// Create from string
-void format::create(const char *fmt, variable_list &vlist)
+// Set format node
+bool format_node::set(const char *s, variable_list &vlist)
 {
-	// Create nodes from a supplied formatting string.
-	// If any formatters are unrecognised, assume that they are variables instead
+	dbg_begin(DM_PARSE,"format_node::create");
+	// Format of formatters is 'F@n.m': F = format quantity/variable, n.m = length,precision
+	int m, pos1, pos2;
+	static char specifier[32], len[32], pre[32];
+	for (m=0; m<32; m++)
+	{
+		specifier[m] = '\0';
+		len[m] = '\0';
+		pre[m] = '\0';
+	}
+	// Everything up to the '@' character is the quantity / variable
+	for (pos1 = 0; s[pos1] != '\0'; pos1++)
+	{
+		if (s[pos1] == '@') break;
+		specifier[pos1] = s[pos1];
+	}
+	if (s[pos1] == '@')
+	{
+		// Everything past the '@' character (and up to a '.') is the length...
+		pos1 ++;
+		for (pos2 = pos1; arg[pos2] != '\0'; pos2++)
+		{
+			if (s[pos2] == '.') break;
+			len[pos2-pos1] = s[pos2];
+		}
+		// Lastly, if a decimal point exists then the last part is the precision
+		if (s[pos2] == '.') for (pos1=pos2+1; s[pos1] != '\0'; pos1++) pre[pos1-(pos2+1)] = s[pos1];
+	}
+	msg(DM_PARSE,"format::create : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
+	// If we're given a variable, check that is has been declared
+	if (specifier[0] == '$')
+	{
+		dsfsdfdsf;
+	}
+	else if (specifier[0] == '*') v = vlist.get_dummy();
+	else v = vlist.add_constant(specifier);
+	// Store the data
+	fn->set_variable(vlist.get(specifier));
+	len = (length[0] == '\0' ? 0 : atoi(len));
+	precision = (pre[0] == '\0' ? 0 : atoi(pre));
+	dbg_end(DM_PARSE,"format_node::create");
+	return TRUE;
+}
+
+// Create from string
+void format::create(const char *s, variable_list &vlist, bool delimited)
+{
 	dbg_begin(DM_PARSE,"format::create");
-	int n, m, pos1, pos2;
-	static char arg[100], specifier[32], length[32], precision[32];
-	format_node *fn;
 	// Clear any existing node list
 	nodes.clear();
+	// Create the format with or without doing delimited parsing
+	if (delimited) create_delimited(s, vlist);
+	else create_exact(s, vlist);
+	dbg_end(DM_PARSE,"format::create");
+}
+
+// Create using delimited arguments
+bool format::create_delimited(const char *s, variable_list &vlist)
+{
+	dbg_begin(DM_PARSE,"format::create_delimited");
+	int n;
+	format_node *fn;
 	// First, parseline the formatting string
-	parser.get_args_delim(fmt,PO_DEFAULTS);
+	parser.get_args_delim(s,PO_DEFAULTS);
 	// Now, step through the args[] array and convert the substrings into format nodes
 	for (n=0; n<parser.get_nargs(); n++)
 	{
-		// Format of formatters is 'F@n.m': F = format quantity/variable, n.m = length,precision
-		strcpy(arg,parser.argc(n));
-		for (m=0; m<32; m++)
-		{
-			specifier[m] = '\0';
-			length[m] = '\0';
-			precision[m] = '\0';
-		}
-		// Everything up to the '@' character is the quantity / variable
-		for (pos1 = 0; arg[pos1] != '\0'; pos1++)
-		{
-			if (arg[pos1] == '@') break;
-			specifier[pos1] = arg[pos1];
-		}
-		if (arg[pos1] == '@')
-		{
-			// Everything past the '@' character (and up to a '.') is the length...
-			pos1 ++;
-			for (pos2 = pos1; arg[pos2] != '\0'; pos2++)
-			{
-				if (arg[pos2] == '.') break;
-				length[pos2-pos1] = arg[pos2];
-			}
-			// Lastly, if a decimal point exists then the last part is the precision
-			if (arg[pos2] == '.') for (pos1=pos2+1; arg[pos1] != '\0'; pos1++) precision[pos1-(pos2+1)] = arg[pos1];
-		}
-		msg(DM_PARSE,"format::create : Parsed specifier[%s] length[%s] precision[%s]\n",specifier,length,precision);
 		// Create our new format node and store the information in it
 		fn = nodes.add();
-		fn->set_variable(vlist.get(specifier));
-		fn->set_length((length[0] == '\0' ? 0 : atoi(length)));
-		fn->set_precision((precision[0] == '\0' ? 0 : atoi(precision)));
+		if (!fn->set(parser.argc(n)))
+		{
+			printf("Failed to add format node '%s'.\n", parser.argc(n));
+			dbg_end(DM_PARSE,"format::create");
+			return FALSE;
+		}
 	}
 	//if (nfailed != 0) msg(DM_NONE,"Warning : Format string contained %i unrecognised identifiers.\n",nfailed);
 	dbg_end(DM_PARSE,"format::create");
+	return TRUE;
+}
+
+// Create using character-by-character method
+bool format::create_exact(const char *s, variable_list &vlist)
+{
+	dbg_begin(DM_PARSE,"format::create_exact");
+	// Go through supplied string, converting variables as we go
+	static char srcstr[512], text[512], varstr[512];
+	int nchars = 0, vchars = 0;
+	bool done;
+	char *c;
+	strcpy(srcstr,s);
+	for (c = srcstr; *c != '\0'; c++)
+	{
+		// If the character is not '$', just add it to 'text' and continue
+		if (*c != '$')
+		{
+			text[nchars] = *c;
+			nchars ++;
+			continue;
+		}
+		// This is the start of a variable format. Add 'text' node if not empty...
+		if (nchars != 0)
+		{
+			text[nchars] = '\0';
+			fn = nodes.add();
+			fn->set(text);
+			nchars = 0;
+		}
+		// Clear the variable string and start adding characters
+		// Add characters to 'varstr' until we find the end of the format
+		vchars = 1;
+		varstr[vchars] = '$'
+		c ++;
+		done = FALSE;
+		while (*c != '\0')
+		{
+			switch (*ch)
+			{
+				case ('{'):
+					ch++;
+					break;
+				case ('\0'):
+					ch--;
+				case ('}'):
+					done = TRUE;
+					break;
+				case (','):
+				case ('('):
+				case (')'):
+				case (' '):
+					done = TRUE;
+					ch--;
+					break;
+				default:
+					var += *ch;
+					ch++;
+					break;
+			}
+			if (done) break;
+		}
+		// Now have variable (and format) in 'var'
+		varstr[vchars] = '\0';
+		fn = nodes.add();
+		fn->set(varstr);
+	}
+	dbg_end(DM_PARSE,"format::create_exact");
 }
 
 // Create string

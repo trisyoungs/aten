@@ -25,6 +25,6 @@
 // Filter commands
 const char* FC_data[FC_NITEMS] =  { "name", "nickname", "extension", "glob", "exact", "zmap", "id" };
 filter_command FC_from_text(const char* s)
-	{ return (filter_command) enum_search_data("filter command", FC_NITEMS, FC_data, s); }
+	{ return (filter_command) enum_search_data("", FC_NITEMS, FC_data, s); }
 const char *text_from_FC(filter_command fc)
 	{ return get_before_comma(FC_data[fc]); }

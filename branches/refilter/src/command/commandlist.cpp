@@ -153,14 +153,14 @@ list<command> *command::create_branch()
 }
 
 // Create branch
-void command::create_format(const char *s, variable_list &vars)
+void command::create_format(const char *s, variable_list &vars, bool delimited)
 {
 	dbg_begin(DM_CALLS,"command::create_format");
 	if (fmt != NULL) printf("command::create_branch <<<< Already has a format >>>>\n");
 	else
 	{
 		fmt = new format;
-		fmt->create(s, vars);
+		fmt->create(s, vars, delimited);
 	}
 	dbg_end(DM_CALLS,"command::create_format");
 }
@@ -288,7 +288,10 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 		{
 			// Formats
 			case ('f'):
-				create_format(arg, vars);
+				create_format(arg, vars, TRUE);
+				break;
+			case ('g'):
+				create_format(arg, vars, FALSE);
 				break;
 			// Discard
 			case ('x'):
@@ -309,7 +312,7 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 			// Variable
 			case ('v'):
 				// If first character is '$', find variable pointer.
-				// If '*' dummy argument will be detected and returned by 'get()'.
+				// If '*' set to the dummy variable.
 				// Otherwise, add constant variable.
 				if (arg[0] == '$')
 				{
@@ -323,6 +326,7 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 						return FALSE;
 					}
 				}
+				else if (arg[0] == '*') args[varcount] = parent->variables.get_dummy();
 				else args[varcount] = parent->variables.add_constant(arg);
 				break;
 		}

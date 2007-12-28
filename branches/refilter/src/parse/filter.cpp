@@ -134,7 +134,6 @@ bool filter::load(ifstream &filterfile)
 			// A normal command
 			default:
 				ca = CA_from_text(parser.argc(0));
-				printf("CA = %i %s\n",ca,parser.argc(0));
 				if (ca != CA_NITEMS)
 				{
 					// Add the command to the list

@@ -126,7 +126,7 @@ class variable_list
 	// List of variables
 	list<variable> vars;
 	// Static, dummy variable '*'
-	variable *dummy;
+	variable dummy;
 
 	public:
 	// Set existing (or create new) variable (VT_CHAR)
@@ -140,6 +140,8 @@ class variable_list
 	void set(const char *name, double value) { set("",name,value); }
 	// Retrieve a named variable from the list
 	variable *get(const char*);
+	// Return dummy variable
+	variable *get_dummy() { return &dummy; }
 	// Add an unnamed constant to the list
 	variable *add_constant(const char* s);
 	// Add a named variable to the list
