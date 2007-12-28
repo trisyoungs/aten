@@ -22,7 +22,7 @@
 #include "classes/spacegroup.h"
 #include "classes/cell.h"
 #include "parse/format.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 
 spacegroup_list spacegroups;
 

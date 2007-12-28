@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "parse/format.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 #include "base/sysfunc.h"
 #include "base/master.h"
 #include "base/elements.h"

@@ -23,7 +23,7 @@
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 #include "base/elements.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 #include "parse/format.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"

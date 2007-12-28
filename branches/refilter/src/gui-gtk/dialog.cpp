@@ -21,7 +21,7 @@
 
 #include "gui-gtk/gui-gtk.h"
 #include <gtk/gtk.h>
-#include "parse/parse.h"
+#include "parse/parser.h"
 #include "base/debug.h"
 
 // Dialog with message and at least one buttons

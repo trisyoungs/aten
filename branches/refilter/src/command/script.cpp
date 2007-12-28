@@ -28,7 +28,7 @@
 #include "classes/forcefield.h"
 #include "classes/cell.h"
 #include "classes/pattern.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 #include "parse/filter.h"
 
 // Constructor

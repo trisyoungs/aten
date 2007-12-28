@@ -26,7 +26,7 @@
 #include "classes/forcefield.h"
 #include "templates/reflist.h"
 #include "base/elements.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 
 int printlevel = 0;
 

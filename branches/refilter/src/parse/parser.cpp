@@ -21,7 +21,7 @@
 
 #include "base/prefs.h"
 #include "base/elements.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 #include "parse/format.h"
 
 line_parser parser;

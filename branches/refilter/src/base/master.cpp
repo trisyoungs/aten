@@ -23,7 +23,7 @@
 #include "classes/pattern.h"
 #include "base/master.h"
 #include "gui/gui.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 #include <fstream>
 
 master_data master;

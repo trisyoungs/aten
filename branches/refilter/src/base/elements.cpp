@@ -24,7 +24,7 @@
 #include "base/master.h"
 #include "base/debug.h"
 #include "base/sysfunc.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 #include "classes/forcefield.h"
 
 element_map elements;

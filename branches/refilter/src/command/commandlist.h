@@ -31,7 +31,7 @@
 #include "command/functions.h"
 #include "classes/variables.h"
 #include "base/constants.h"
-#include "parse/parse.h"
+#include "parse/parser.h"
 
 // If Conditions
 enum if_condition { IF_EQUAL=1, IF_LESS=2, IF_LEQUAL=3, IF_GREATER=4, IF_GEQUAL=5, IF_NEQUAL=6, IF_NITEMS };
