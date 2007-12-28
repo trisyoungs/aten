@@ -24,7 +24,9 @@
 #include "file/parse.h"
 #include "base/sysfunc.h"
 #include "base/master.h"
+#include "base/elements.h"
 #include "base/constants.h"
+#include "classes/pattern.h"
 
 // Static variables
 command_functions command::functions;
@@ -247,7 +249,9 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 	dbg_begin(DM_CALLS,"command::add_variables");
 	bool required = TRUE;
 	int n, argcount, varcount;
-	dnchar arg;
+	variable *b;
+	static char arg[512];
+	char *c;
 	variable_type vt;
 	printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
 	// Are there arguments in the parser that we shouldn't have been given.
@@ -278,41 +282,50 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 			}
 			else break;	// No more arguments, so may as well quit.
 		}
-		arg = parser.argc(argcount);
+		strcpy(arg,parser.argc(argcount));
 		// Check for specifiers that don't require variables to be created...
 		switch (v[n])
 		{
 			// Formats
 			case ('f'):
-				create_format(arg.get(), vars);
-				continue;
+				create_format(arg, vars);
+				break;
 			// Discard
 			case ('x'):
-				continue;
+				break;
 			// String as-is
 			case ('s'):
-				args[varcount] = vars.add();
-				args[varcount]->set(arg.get());
-				continue;
+				args[varcount] = vars.add_constant(arg);
+				break;
+			// Equals
 			case ('='):
-				if (strcmp(arg.get(),"=") != 0)
+				if (strcmp(arg,"=") != 0)
 				{
 					printf("Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
 					dbg_end(DM_CALLS,"command::add_variables");
 					return FALSE;
 				}
-				else continue;
+				break;
+			// Variable
+			case ('v'):
+				// If first character is '$', find variable pointer.
+				// If '*' dummy argument will be detected and returned by 'get()'.
+				// Otherwise, add constant variable.
+				if (arg[0] == '$')
+				{
+					c = arg;
+					c ++;
+					// See if it has been declared
+					args[varcount] = parent->variables.get(c);
+					if (args[varcount] == NULL)
+					{
+						printf("Variable '%s' has not been declared.\n", c);
+						return FALSE;
+					}
+				}
+				else args[varcount] = parent->variables.add_constant(arg);
+				break;
 		}
-		// Now for variable specifiers.
-		// First, check that the variable has been declared
-		args[varcount] = vars.find(arg.get());
-		if (args[varcount] == NULL)
-		{
-			printf("Variable '%s' has not been declared.\n", arg.get());
-			dbg_end(DM_CALLS,"command::add_variables");
-			return FALSE;
-		}
-		// We are not concerned about the variable's type here - this will just generate errors (or warnings) later on as commands are run
 	}
 	dbg_end(DM_CALLS,"command::add_variables");
 	return TRUE;
@@ -403,7 +416,7 @@ bool commandlist::add_command(command_action ca)
 			for (n=1; n<parser.get_nargs(); n++)
 			{
 				// Check for existing variable with same name
-				v = variables.find(parser.argc(n));
+				v = variables.get(parser.argc(n));
 				if (v != NULL)
 				{
 					printf("Variable '%s': redeclared as type [%s], was [%s].\n", parser.argc(n), text_from_VT((variable_type) (ca - CA_CHAR)),  text_from_VT(v->get_type()));
@@ -503,14 +516,16 @@ bool commandlist::add_command(command_action ca)
 			// Remove the topmost branch from the stack
 			pop_branch();
 			break;
+		// Unrecognised command
+		case (CA_NITEMS):
+			printf("ASLKDJDSHFKJ\n");
+			break;
 		// All other commands do not alter the flow of the commandlist...
 		default:
 			fn = add_topbranch_command(ca, NULL);
 			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
 			break;
 	}
-	// Store function pointer for command
-	if (result) 
 	// Check variable assignment result
 	if (!varresult)
 	{
@@ -691,3 +706,222 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 		result = c->execute(c, alttarget);
 	}
 }
+
+// Set variables for model
+void commandlist::set_model_variables(model *m)
+{
+	dbg_begin(DM_CALLS,"commandlist::set_model_variables");
+	if (m != NULL)
+	{
+		variables.set("","title",m->get_name());
+		variables.set("","natoms",m->get_natoms());
+	}
+	else variables.reset("title","natoms","");
+	dbg_end(DM_CALLS,"commandlist::set_model_variables");
+}
+
+// Set variables for cell
+void commandlist::set_cell_variables(unitcell *c)
+{
+	dbg_begin(DM_CALLS,"commandlist::set_cell_variables");
+	mat3<double> mat;
+	vec3<double> vec;
+	if (c != NULL)
+	{
+		variables.set("cell","type",lower_case(text_from_CT(c->get_type())));
+		mat = c->get_axes_transpose();
+
+		variables.set("cell","a.x",mat.rows[0].x);
+		variables.set("cell","b.x",mat.rows[0].y);
+		variables.set("cell","c.x",mat.rows[0].z);
+		variables.set("cell","a.y",mat.rows[1].x);
+		variables.set("cell","b.y",mat.rows[1].y);
+		variables.set("cell","c.y",mat.rows[1].z);
+		variables.set("cell","a.z",mat.rows[2].x);
+		variables.set("cell","b.z",mat.rows[2].y);
+		variables.set("cell","c.z",mat.rows[2].z);
+		vec = c->get_lengths();
+		variables.set("cell","a",vec.x);
+		variables.set("cell","b",vec.y);
+		variables.set("cell","c",vec.z);
+		vec = c->get_angles();
+		variables.set("cell","alpha",vec.x);
+		variables.set("cell","beta",vec.y);
+		variables.set("cell","gamma",vec.z);
+	}
+	else
+	{
+		variables.reset("cell.type","cell.a.x","cell.a.y","cell.a.z","cell.b.x","cell.b.y","cell.b.z","cell.c.x","cell.c.y","cell.c.z","");
+		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","");
+	}
+	dbg_end(DM_CALLS,"commandlist::set_cell_variables");
+}
+
+// Set variable values for atom
+void commandlist::set_atom_variables(const char *varname, atom *i)
+{
+	dbg_begin(DM_CALLS,"commandlist::set_atom_variables");
+	vec3<double> v;
+	if (i != NULL)
+	{
+		// Element and ff type
+		variables.set(varname,"symbol",elements.symbol(i));
+		variables.set(varname,"mass",elements.mass(i));
+		variables.set(varname,"name",elements.name(i));
+		variables.set(varname,"z",i->get_element());
+		variables.set(varname,"id",i->get_id()+1);
+		ffatom *ffa = i->get_type();
+		variables.set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->get_name()));
+		variables.set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->get_equiv()));
+		v = i->r();
+		variables.set(varname,"r.x",v.x);
+		variables.set(varname,"r.y",v.y);
+		variables.set(varname,"r.z",v.z);
+		v = i->f();
+		variables.set(varname,"f.x",v.x);
+		variables.set(varname,"f.y",v.y);
+		variables.set(varname,"f.z",v.z);
+		v = i->v();
+		variables.set(varname,"v.x",v.x);
+		variables.set(varname,"v.y",v.y);
+		variables.set(varname,"v.z",v.z);
+		variables.set(varname,"q",i->get_charge());
+	}
+	else
+	{
+		variables.reset("symbol","mass","name","z","fftype","ffequiv","");
+		variables.reset("r.x","r.y","r.z","f.x","f.y","f.z","v.x","v.y","v.z","q","");
+	}
+	dbg_end(DM_CALLS,"commandlist::set_atom_variables");
+}
+
+// Set variables for pattern
+void commandlist::set_pattern_variables(const char *varname, pattern *p)
+{
+	dbg_begin(DM_CALLS,"commandlist::set_pattern_variables");
+	if (p != NULL)
+	{
+		variables.set(varname,"name",p->get_name());
+		variables.set(varname,"nmols",p->get_nmols());
+		variables.set(varname,"nmolatoms",p->get_natoms());
+		variables.set(varname,"nbonds",p->bonds.size());
+		variables.set(varname,"nangles",p->angles.size());
+		variables.set(varname,"ntorsions",p->torsions.size());
+	}
+	else variables.reset("patname","nmols","nmolatoms","nffbonds","nffangles","nfftorsions","");
+	dbg_end(DM_CALLS,"commandlist::set_pattern_variables");
+}
+
+// Set variables for patbound
+void commandlist::set_patbound_variables(const char *varname, patbound *pb)
+{
+	dbg_begin(DM_CALLS,"commandlist::set_patbound_variables");
+	static ffparams ffp;
+	static ffbound *ffb;
+	static char parm[24];
+	int i;
+	if (pb != NULL)
+	{
+		// Grab ffbound pointer from pattern bound structure
+		ffb = pb->get_data();
+		// Set atom ids involved
+		strcpy(parm,"id_X");
+		for (i = 0; i < MAXFFBOUNDTYPES; i++)
+		{
+
+			parm[3] = 105 + i;
+			variables.set(varname,parm,pb->get_atomid(i)+1);
+		}
+		// Set type names involved
+		strcpy(parm,"type_X");
+		for (i = 0; i < MAXFFBOUNDTYPES; i++)
+		{
+			parm[5] = 105 + i;
+			variables.set(varname,parm,ffb->get_type(i));
+		}
+		// Grab ffparams data
+		ffp = ffb->get_params();
+		strcpy(parm,"param_X");
+		for (int i = 0; i < MAXFFPARAMDATA; i++)
+		{
+			parm[6] = 97 + i;
+			variables.set(varname,parm,ffp.data[i]);
+		}
+		switch (ffb->get_type())
+		{
+			case (FFC_BOND):
+				variables.set(varname,"funcform",text_from_BF(ffb->get_funcform().bondfunc));
+				break;
+			case (FFC_ANGLE):
+				variables.set(varname,"funcform",text_from_AF(ffb->get_funcform().anglefunc));
+				break;
+			case (FFC_TORSION):
+				variables.set(varname,"funcform",text_from_TF(ffb->get_funcform().torsionfunc));
+				break;
+			default:	
+				printf("commandlist::set_patbound_variables <<<< Funcform not defined >>>>\n");
+				break;
+		}
+		
+	}
+	else variables.reset("funcform","typei","typej","typek","typel","param_a","param_b","param_c","param_d","");
+	dbg_end(DM_CALLS,"commandlist::set_patbound_variables");
+}
+
+/* Get atom variables from list
+void commandlist::get_atom_variables(atom *i)
+{
+	dbg_begin(DM_CALLS,"commandlist::get_atom_variables");
+	variable *v;
+	static vec3<double> vec1;
+	// Element is not set here (needs too many other things to work)
+	// Set charge
+	v = find("q");
+	if (v != NULL)
+	{
+		i->set_charge(v->get_as_double());
+		v->reset();
+	}
+	// Set temporary atom ID
+	v = find("id");
+	if (v != NULL)
+	{
+		i->set_id(v->get_as_int());
+		v->reset();
+	}
+	// Set positions
+	v = find("r.x");
+	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	v = find("r.y");
+	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	v = find("r.z");
+	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	i->r() = vec1;
+	// Set forces
+	v = find("f.x");
+	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	v = find("f.y");
+	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	v = find("f.z");
+	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	i->f() = vec1;
+	// Set velocities
+	v = find("v.x");
+	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	v = find("v.y");
+	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	v = find("v.z");
+	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
+	if (v != NULL) v->reset();
+	i->v() = vec1;
+	dbg_end(DM_CALLS,"commandlist::get_atom_variables");
+}
+*/

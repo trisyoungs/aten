@@ -131,9 +131,10 @@ bool filter::load(ifstream &filterfile)
 					has_zmapping = TRUE;
 				}
 				break;
+			// A normal command
 			default:
-				// Check for commands first
 				ca = CA_from_text(parser.argc(0));
+				printf("CA = %i %s\n",ca,parser.argc(0));
 				if (ca != CA_NITEMS)
 				{
 					// Add the command to the list
@@ -208,8 +209,8 @@ bool filter::execute(const char *filename, ifstream *sourcefile, bool trajheader
 				return FALSE;
 			}
 			// Set variables
-			commands.variables.set_model_variables(obj.m);
-			commands.variables.set_cell_variables(obj.m->get_cell());
+			commands.set_model_variables(obj.m);
+			commands.set_cell_variables(obj.m->get_cell());
 			break;
 		case (FT_FIELD_EXPORT):
 			msg(DM_NONE,"Save Field : %s (%s)\n", filename, name.get());

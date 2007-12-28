@@ -23,80 +23,8 @@
 #include "base/sysfunc.h"
 
 // Filter commands
-const char* FC_data[FC_NITEMS] =  {
-	"name,G",
-	"nickname,G",
-	"extension,G",
-	"glob,G",
-	"exact,G",
-	"zmap,G",
-	"id,G",
-
-	"newmodel,G",
-	"newsurface,G",
-	"finalisemodel",
-	"finalisegrid",
-
-	"rebond",
-	"pack",
-	"centre",
-	"fold",
-	"fractoreal",
-
-	"readline,F",
-	"readvar,VF",
-	"readnext,V",
-	"writeline,F",
-	"writevar,VF",
-	"skipline,|g",
-
-	"readint,V",
-	"readdouble,G",
-	"readchars,Vg",
-	"skipchars",
-
-	"addreadoption,g",
-	"removereadoption,g",
-
-	"find,gV|V",
-
-	"addatom",
-	"addbond,GG|G",
-	"createatoms,G",
-	"modeltemplate",
-	"setatom,G",
-	"setcell",
-	"setcellaxes",
-	"setspacegroup,G",
-	"setrx,GG",
-	"setry,GG",
-	"setrz,GG",
-	"setfx,GG",
-	"setfy,GG",
-	"setfz,GG",
-	"setvx,GG",
-	"setvy,GG",
-	"setvz,GG",
-	"settitle,G",
-
-	"addpoint,GGGG",
-	"addnextpoint,G",
-	"setgrid,GGGGGGGGG",
-	"setgridcubic,G",
-	"setgridorigin,GGG",
-	"setgridortho,GGG",
-	"setgridsize,GGG",
-
-	"rewind",
-	"storepos",
-	"seekpos",
-
-	"warn,G",
-	"error,G"
-	};
+const char* FC_data[FC_NITEMS] =  { "name", "nickname", "extension", "glob", "exact", "zmap", "id" };
 filter_command FC_from_text(const char* s)
 	{ return (filter_command) enum_search_data("filter command", FC_NITEMS, FC_data, s); }
 const char *text_from_FC(filter_command fc)
 	{ return get_before_comma(FC_data[fc]); }
-const char *vars_from_FC(filter_command fc)
-	{ return get_after_comma(FC_data[fc]); }

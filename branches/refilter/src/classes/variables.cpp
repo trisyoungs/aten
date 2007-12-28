@@ -325,156 +325,78 @@ void variable::decrease(int n)
 	}
 }
 
-// Set existing (or create new) variable
-void variable_list::set(const char *s, const char* val)
+// Retrieve named variable
+variable* variable_list::get(const char *s)
 {
-	variable *v = find(s);
-	if (v == NULL) v = add();
-	v->set_name(s);
-	v->set(val);	
+	for (variable *v = vars.first(); v != NULL; v = v->next)
+		if (strcmp(s,v->get_name()) == 0) return v;
+	return NULL;
 }
 
-void variable_list::set(const char *s, int i)
-{
-	variable *v = find(s);
-	if (v == NULL) v = add();
-	v->set_name(s);
-	v->set(i);	
-}
-
-void variable_list::set(const char *s, double d)
-{
-	variable *v = find(s);
-	if (v == NULL) v = add();
-	v->set_name(s);
-	v->set(d);	
-}
-
-// Set existing or new variable with prefix/suffix namestyle (calls normal set methods)
-void variable_list::set(const char *prefix, const char *suffix, const char *s)
-{
-	static char name[128];
-	strcpy(name,prefix);
-	strcat(name,".");
-	strcat(name,suffix);
-	set(name,s);
-}
-
-void variable_list::set(const char *prefix, const char *suffix, int i)
-{
-	static char name[128];
-	strcpy(name,prefix);
-	strcat(name,".");
-	strcat(name,suffix);
-	set(name,i);
-}
-
-void variable_list::set(const char *prefix, const char *suffix, double d)
-{
-	static char name[128];
-	strcpy(name,prefix);
-	strcat(name,".");
-	strcat(name,suffix);
-	set(name,d);
-}
-
-// Retrieve (or add) variable
-variable *variable_list::get(const char *s)
+// Add named variable
+variable *variable_list::add_variable(const char *s, variable_type vt)
 {
 	// Search list for existing variable by this name and type...
-	variable *result;
-	static char newname[24];
-	// If string 's' is empty, return NULL
-	if (s[0] == '\0') return NULL;
-	// If the first character is '$' then it gets added or searched for as a variable.
-	// If not, sink it as a value. If '*' is the first character, 'get' as a variable.
-	if ((s[0] == '$') || (s[0] == '*'))
+	variable *result = get(s);
+	if (result == NULL)
 	{
-		// A variable - see if it exists in the list already
-		if (s[0] == '$') s++;
-		result = find(s);
-		if (result == NULL)
-		{
-			result = vars.add();
-			result->set_name(s);
-		}
-		// If the variable is '*' (the 'discard' formatter) set it to char type
-		if (s[0] == '*') result->set("");
+		result = vars.add();
+		result->set_name(s);
+		result->set_type(vt);
 	}
 	else
 	{
-		result = vars.add();
-		strcpy(newname,"_variable");
-		strcat(newname,itoa(vars.size()));
-		result->set_name(newname);
-		result->set_type(VT_CHAR);
-		result->set(s);
+		// Variable already exists, so check its type
+		if (vt != result->get_type()) printf("variable_list::add_variable <<<< '%s' already exists, and cannot be retyped to '%s' >>>>\n", s, text_from_VT(vt));
 	}
 	return result;
 }
 
-// Retrieve (don't add) as double
-double variable_list::get_as_double(const char *s)
-{
-	// Try to 'find' the variable, returning 0.0 if it's not in the list
-	variable *v = find(s);
-	return (v == NULL ? 0.0 : v->get_as_double());
-}
-
-// Retrieve (don't add) as integer
-int variable_list::get_as_int(const char *s)
-{
-	// Try to 'find' the variable, returning 0 if it's not in the list
-	variable *v = find(s);
-	return (v == NULL ? 0 : v->get_as_int());
-}
-
-// Retrieve (don't add) as string
-const char *variable_list::get_as_char(const char *s)
-{
-	// Try to 'find' the variable, returning "" if it's not in the list
-	variable *v = find(s);
-	return (v == NULL ? "" : v->get_as_char());
-}
-
-// Add 'unnamed' variable
-variable* variable_list::add()
+// Add constant
+variable *variable_list::add_constant(const char *s)
 {
 	static char newname[24];
+	// Sink name as static character value
 	variable *result = vars.add();
 	strcpy(newname,"_variable");
 	strcat(newname,itoa(vars.size()));
 	result->set_name(newname);
+	result->set_type(VT_CHAR);
+	result->set(s);
 	return result;
 }
 
-// Add number of varaibles to the list
-void variable_list::batch_add(const char *s, ...)
+// Set existing variable (or add new and set) (VT_CHAR)
+void variable_list::set(const char *prefix, const char *name, const char *value)
 {
-	dbg_begin(DM_CALLS,"variable_list::batch_add");
-	// List of variables must be ended by "".
-	static char name[64];
-	va_list namelist;
-	va_start(namelist,s);
-	// Reset 's' first
-	add(s);
-	do
-	{
-		strcpy(name,va_arg(namelist,char*));
-		if (name[0] != '\0') add(name);
-	} while (name[0] != '\0');
-	dbg_end(DM_CALLS,"variable_list::batch_add");
+	static char newname[128];
+	strcpy(newname,prefix);
+	strcat(newname,".");
+	strcat(newname,name);
+	variable *v = add_variable(newname, VT_CHAR);
+	v->set(value);
 }
 
-// Search for variable
-variable* variable_list::find(const char *s)
+// Set existing variable (or add new and set) (VT_INT)
+void variable_list::set(const char *prefix, const char *name, int value)
 {
-	dbg_begin(DM_CALLS,"variable_list::find");
-	variable *result;
-	for (result = vars.first(); result != NULL; result = result->next)
-		if (strcmp(s,result->get_name()) == 0) break;
-	dbg_end(DM_CALLS,"variable_list::find");
-	return result;
+	static char newname[128];
+	strcpy(newname,prefix);
+	strcat(newname,".");
+	strcat(newname,name);
+	variable *v = add_variable(newname, VT_INT);
+	v->set(value);
+}
+
+// Set existing variable (or add new and set) (VT_DOUBLE)
+void variable_list::set(const char *prefix, const char *name, double value)
+{
+	static char newname[128];
+	strcpy(newname,prefix);
+	strcat(newname,".");
+	strcat(newname,name);
+	variable *v = add_variable(newname, VT_DOUBLE);
+	v->set(value);
 }
 
 // Print list of variables in list
@@ -500,229 +422,18 @@ void variable_list::reset(const char *s, ...)
 	static char name[64];
 	va_list namelist;
 	va_start(namelist,s);
+	variable *v;
 	// Reset 's' first
 	get(s)->reset();
 	do
 	{
 		strcpy(name,va_arg(namelist,char*));
-		if (name[0] != '\0') get(name)->reset();
+		if (name[0] != '\0')
+		{
+			v = get(name);
+			if (v == NULL) printf("variable_list::reset <<<< '%s' not in list >>>>\n",name);
+			else v->reset();
+		}
 	} while (name[0] != '\0');
 	dbg_end(DM_CALLS,"variable_list::reset");
-}
-
-// Set variables for model
-void  variable_list::set_model_variables(model *m)
-{
-	dbg_begin(DM_CALLS,"variable_list::set_model_variables");
-	if (m != NULL)
-	{
-		set("title",m->get_name());
-		set("natoms",m->get_natoms());
-	}
-	else reset("title","natoms","");
-	dbg_end(DM_CALLS,"variable_list::set_model_variables");
-}
-
-// Set variables for cell
-void variable_list::set_cell_variables(unitcell *c)
-{
-	dbg_begin(DM_CALLS,"variable_list::set_cell_variables");
-	mat3<double> mat;
-	vec3<double> vec;
-	if (c != NULL)
-	{
-		set("cell.type",lower_case(text_from_CT(c->get_type())));
-		mat = c->get_axes_transpose();
-		set("cell.a.x",mat.rows[0].x);
-		set("cell.b.x",mat.rows[0].y);
-		set("cell.c.x",mat.rows[0].z);
-		set("cell.a.y",mat.rows[1].x);
-		set("cell.b.y",mat.rows[1].y);
-		set("cell.c.y",mat.rows[1].z);
-		set("cell.a.z",mat.rows[2].x);
-		set("cell.b.z",mat.rows[2].y);
-		set("cell.c.z",mat.rows[2].z);
-		vec = c->get_lengths();
-		set("cell.a",vec.x);
-		set("cell.b",vec.y);
-		set("cell.c",vec.z);
-		vec = c->get_angles();
-		set("cell.alpha",vec.x);
-		set("cell.beta",vec.y);
-		set("cell.gamma",vec.z);
-	}
-	else
-	{
-		reset("cell.type","cell.a.x","cell.a.y","cell.a.z","cell.b.x","cell.b.y","cell.b.z","cell.c.x","cell.c.y","cell.c.z","");
-		reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","");
-	}
-	dbg_end(DM_CALLS,"variable_list::set_cell_variables");
-}
-
-// Set variable values for atom
-void variable_list::set_atom_variables(const char *varname, atom *i)
-{
-	dbg_begin(DM_CALLS,"variable_list::set_atom_variables");
-	vec3<double> v;
-	if (i != NULL)
-	{
-		// Element and ff type
-		set(varname,"symbol",elements.symbol(i));
-		set(varname,"mass",elements.mass(i));
-		set(varname,"name",elements.name(i));
-		set(varname,"z",i->get_element());
-		set(varname,"id",i->get_id()+1);
-		ffatom *ffa = i->get_type();
-		set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->get_name()));
-		set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->get_equiv()));
-		v = i->r();
-		set(varname,"r.x",v.x);
-		set(varname,"r.y",v.y);
-		set(varname,"r.z",v.z);
-		v = i->f();
-		set(varname,"f.x",v.x);
-		set(varname,"f.y",v.y);
-		set(varname,"f.z",v.z);
-		v = i->v();
-		set(varname,"v.x",v.x);
-		set(varname,"v.y",v.y);
-		set(varname,"v.z",v.z);
-		set(varname,"q",i->get_charge());
-	}
-	else
-	{
-		reset("symbol","mass","name","z","fftype","ffequiv","");
-		reset("r.x","r.y","r.z","f.x","f.y","f.z","v.x","v.y","v.z","q","");
-	}
-	dbg_end(DM_CALLS,"variable_list::set_atom_variables");
-}
-
-// Set variables for pattern
-void variable_list::set_pattern_variables(const char *varname, pattern *p)
-{
-	dbg_begin(DM_CALLS,"variable_list::set_pattern_variables");
-	if (p != NULL)
-	{
-		set(varname,"name",p->get_name());
-		set(varname,"nmols",p->get_nmols());
-		set(varname,"nmolatoms",p->get_natoms());
-		set(varname,"nbonds",p->bonds.size());
-		set(varname,"nangles",p->angles.size());
-		set(varname,"ntorsions",p->torsions.size());
-	}
-	else reset("patname","nmols","nmolatoms","nffbonds","nffangles","nfftorsions","");
-	dbg_end(DM_CALLS,"variable_list::set_pattern_variables");
-}
-
-// Set variables for patbound
-void variable_list::set_patbound_variables(const char *varname, patbound *pb)
-{
-	dbg_begin(DM_CALLS,"variable_list::set_patbound_variables");
-	static ffparams ffp;
-	static ffbound *ffb;
-	static char parm[24];
-	int i;
-	if (pb != NULL)
-	{
-		// Grab ffbound pointer from pattern bound structure
-		ffb = pb->get_data();
-		// Set atom ids involved
-		strcpy(parm,"id_X");
-		for (i = 0; i < MAXFFBOUNDTYPES; i++)
-		{
-
-			parm[3] = 105 + i;
-			set(varname,parm,pb->get_atomid(i)+1);
-		}
-		// Set type names involved
-		strcpy(parm,"type_X");
-		for (i = 0; i < MAXFFBOUNDTYPES; i++)
-		{
-			parm[5] = 105 + i;
-			set(varname,parm,ffb->get_type(i));
-		}
-		// Grab ffparams data
-		ffp = ffb->get_params();
-		strcpy(parm,"param_X");
-		for (int i = 0; i < MAXFFPARAMDATA; i++)
-		{
-			parm[6] = 97 + i;
-			set(varname,parm,ffp.data[i]);
-		}
-		switch (ffb->get_type())
-		{
-			case (FFC_BOND):
-				set(varname,"funcform",text_from_BF(ffb->get_funcform().bondfunc));
-				break;
-			case (FFC_ANGLE):
-				set(varname,"funcform",text_from_AF(ffb->get_funcform().anglefunc));
-				break;
-			case (FFC_TORSION):
-				set(varname,"funcform",text_from_TF(ffb->get_funcform().torsionfunc));
-				break;
-			default:	
-				printf("variable_list::set_patbound_variables <<<< Funcform not defined >>>>\n");
-				break;
-		}
-		
-	}
-	else reset("funcform","typei","typej","typek","typel","param_a","param_b","param_c","param_d","");
-	dbg_end(DM_CALLS,"variable_list::set_patbound_variables");
-}
-
-// Get atom variables from list
-void variable_list::get_atom_variables(atom *i)
-{
-	dbg_begin(DM_CALLS,"variable_list::get_atom_variables");
-	variable *v;
-	static vec3<double> vec1;
-	// Element is not set here (needs too many other things to work)
-	// Set charge
-	v = find("q");
-	if (v != NULL)
-	{
-		i->set_charge(v->get_as_double());
-		v->reset();
-	}
-	// Set temporary atom ID
-	v = find("id");
-	if (v != NULL)
-	{
-		i->set_id(v->get_as_int());
-		v->reset();
-	}
-	// Set positions
-	v = find("r.x");
-	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("r.y");
-	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("r.z");
-	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	i->r() = vec1;
-	// Set forces
-	v = find("f.x");
-	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("f.y");
-	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("f.z");
-	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	i->f() = vec1;
-	// Set velocities
-	v = find("v.x");
-	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("v.y");
-	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("v.z");
-	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	i->v() = vec1;
-	dbg_end(DM_CALLS,"variable_list::get_atom_variables");
 }

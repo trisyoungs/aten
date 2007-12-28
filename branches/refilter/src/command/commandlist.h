@@ -234,6 +234,19 @@ class commandlist
 	// Associative variable list
 	variable_list variables;
 
+	public:
+	// Set model variables
+	void set_model_variables(model*);
+	// Set cell variables
+	void set_cell_variables(unitcell*);
+	// Set atom variables
+	void set_atom_variables(const char*, atom*);
+	void set_atom_variables(const char*, int);
+	// Set pattern variables
+	void set_pattern_variables(const char*, pattern*);
+	// Set pattern (ff) term variables
+	void set_patbound_variables(const char*, patbound*);
+
 	/*
 	// Local Variables
 	*/

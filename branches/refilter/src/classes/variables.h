@@ -125,55 +125,31 @@ class variable_list
 	private:
 	// List of variables
 	list<variable> vars;
+	// Static, dummy variable '*'
+	variable *dummy;
 
 	public:
-	// Set existing (or create new) variable
-	void set(const char*, const char*);
-	void set(const char*, int);
-	void set(const char*, double);
+	// Set existing (or create new) variable (VT_CHAR)
 	void set(const char*, const char*, const char*);
+	void set(const char *name, const char *value) { set("",name,value); }
+	// Set existing (or create new) variable (VT_INT)
 	void set(const char*, const char*, int);
+	void set(const char *name, int value) { set("",name,value); }
+	// Set existing (or create new) variable (VT_DOUBLE)
 	void set(const char*, const char*, double);
-	// Retrieve (don't add) a named variable as a string
-	const char *get_as_char(const char*);
-	// Retrieve (don't add) a named variable as a double
-	double get_as_double(const char*);
-	// Retrieve (don't add) a named variable as an integer
-	int get_as_int(const char*);
-	// Retrieve (or add) a named/typed variable to the list
+	void set(const char *name, double value) { set("",name,value); }
+	// Retrieve a named variable from the list
 	variable *get(const char*);
-	// Searches for a variable in the list
-	variable *find(const char*);
+	// Add an unnamed constant to the list
+	variable *add_constant(const char* s);
 	// Add a named variable to the list
-	void add(const char* s) { variable *v = get(s); }
-	// Add 'unnamed' variable to the list
-	variable *add();
-	// Add a number of variables to the list
-	void batch_add(const char*, ...);
+	variable *add_variable(const char *s, variable_type vt);
 	// Reset values of all variables
 	void reset_all();
 	// Reset values of variable selection
 	void reset(const char*, ...);
 	// Print list of variables and their values
 	void print();
-
-	/*
-	// Set Object Variables
-	*/
-	public:
-	// Set model variables
-	void set_model_variables(model*);
-	// Set cell variables
-	void set_cell_variables(unitcell*);
-	// Set atom variables
-	void set_atom_variables(const char*, atom*);
-	void set_atom_variables(const char*, int);
-	// Get atom variables
-	void get_atom_variables(atom *i);
-	// Set pattern variables
-	void set_pattern_variables(const char*, pattern*);
-	// Set pattern (ff) term variables
-	void set_patbound_variables(const char*, patbound*);
 };
 
 #endif

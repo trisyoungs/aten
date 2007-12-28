@@ -91,11 +91,11 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 					if (c->get_loopiterations() > c->argp(1)->get_totalatoms()) status = FALSE;
 				}
 				else if (c->arga(0) == NULL) status = FALSE;
-				vars.set_atom_variables(c->arg(0)->get_name(), c->arga(0));
+				c->parent->set_atom_variables(c->arg(0)->get_name(), c->arga(0));
 				break;
 			case (VT_PATTERN):
 				if (c->argp(0) == NULL) status = FALSE;
-				vars.set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
+				c->parent->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
 				break;
 //			case (VT_PATBOUND):
 //				vars.set_patbound_variables(c->arg(0)->get_name(), c->argf(0));
@@ -184,7 +184,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				else c->arg(0)->set(obj.m->get_atoms());
 				if (c->arga(0) == NULL) status = FALSE;
 				// Set secondary variables from atom loop variable
-				vars.set_atom_variables(c->arg(0)->get_name(), c->arga(0));
+				c->parent->set_atom_variables(c->arg(0)->get_name(), c->arga(0));
 				break;
 			// Pattern loop	 1 arg  - loop over patterns in model
 			case (VT_PATTERN):
@@ -197,7 +197,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				}
 				if (c->argp(0) == NULL) status = FALSE;
 				// Set pattern variables from the pattern pointer
-				vars.set_pattern_variables(c->arg(0)->get_name(),c->argp(0));
+				c->parent->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
 				break;
 			/* Loop over forcefield terms of pattern
 			case (VT_PATBOUND):

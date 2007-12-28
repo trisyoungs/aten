@@ -172,7 +172,8 @@ int command_functions::function_CA_SETATOM(command *&c, bundle &obj)
 	// Must store 'n-1'th atom, since loop runs from 1 - natoms inclusive
 	obj.i = obj.m->get_atom(c->argi(0) - 1);
 	// Set variable values
-	c->parent->variables.get_atom_variables(obj.i);
+	printf("SETATOM needs to be don e...\n");
+	//c->parent->get_atom_variables(obj.i);
 	return CR_SUCCESS;
 }
 
