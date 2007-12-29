@@ -153,16 +153,18 @@ list<command> *command::create_branch()
 }
 
 // Create branch
-void command::create_format(const char *s, variable_list &vars, bool delimited)
+bool command::create_format(const char *s, variable_list &vars, bool delimited)
 {
 	dbg_begin(DM_CALLS,"command::create_format");
+	bool result = FALSE;
 	if (fmt != NULL) printf("command::create_branch <<<< Already has a format >>>>\n");
 	else
 	{
 		fmt = new format;
-		fmt->create(s, vars, delimited);
+		result = fmt->create(s, vars, delimited);
 	}
 	dbg_end(DM_CALLS,"command::create_format");
+	return result;
 }
 
 // Set if condition test
@@ -283,21 +285,25 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 			else break;	// No more arguments, so may as well quit.
 		}
 		strcpy(arg,parser.argc(argcount));
-		// Check for specifiers that don't require variables to be created...
+		// Go through possible specifiers
 		switch (v[n])
 		{
 			// Formats
 			case ('f'):
-				create_format(arg, vars, TRUE);
+			case ('F'):
+				if (!create_format(arg, vars, TRUE)) return FALSE;
 				break;
 			case ('g'):
-				create_format(arg, vars, FALSE);
+			case ('G'):
+				if (!create_format(arg, vars, FALSE)) return FALSE;
 				break;
 			// Discard
 			case ('x'):
+			case ('X'):
 				break;
 			// String as-is
 			case ('s'):
+			case ('S'):
 				args[varcount] = vars.add_constant(arg);
 				break;
 			// Equals
@@ -311,6 +317,7 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 				break;
 			// Variable
 			case ('v'):
+			case ('V'):
 				// If first character is '$', find variable pointer.
 				// If '*' set to the dummy variable.
 				// Otherwise, add constant variable.
@@ -428,10 +435,11 @@ bool commandlist::add_command(command_action ca)
 				}
 				else
 				{
-					v = variables.get(parser.argc(n));
-					v->set_type((variable_type) (ca - CA_CHAR));
+					vt = (variable_type) (ca - CA_CHAR);
+					v = variables.add_variable(parser.argc(n), vt);
 				}
 			}
+			break;
 		// 'If' statement (if 'x condition y')
 		case (CA_IF):
 			fn = add_topbranch_command(CA_IF, NULL);

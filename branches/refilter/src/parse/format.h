@@ -72,18 +72,17 @@ class format
 	// Head of format node list
 	list<format_node> nodes;
 	// Create a format assuming delimited formatting nodes
-	void create_delimited(const char *s, variable_list &vars);
+	bool create_delimited(const char *s, variable_list &vars);
 	// Create a format not using delimited formatting nodes
-	void create_exact(const char *s, variable_list &vars);
+	bool create_exact(const char *s, variable_list &vars);
 
 	public:
 	// Returns first node
 	format_node* get_nodes() { return nodes.first(); }
 	// Create format nodes from a supplied formatting string
-	void create(const char *s, variable_list &vars, bool delimited);
-	// Clear list of format nodes
-	void clear() { nodes.clear(); }
-	// Create a formatted string from the supplied data
+	bool create(const char *s, variable_list &vars, bool delimited)
+		{ return (delimited ? create_delimited(s, vars) : create_exact(s, vars)); }
+	// Create a formatted string from the format data
 	const char *create_string();
 };
 

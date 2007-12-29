@@ -81,7 +81,7 @@ class command
 
 	public:
 	// Create format structure
-	void create_format(const char *s, variable_list &vlist, bool delimited);
+	bool create_format(const char *s, variable_list &vlist, bool delimited);
 	// Returns the formatter
 	format *get_format() { return fmt; }
 

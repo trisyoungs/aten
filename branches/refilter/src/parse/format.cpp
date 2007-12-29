@@ -66,6 +66,7 @@ bool format_node::set(const char *s, variable_list &vlist)
 	// Format of formatters is 'F@n.m': F = format quantity/variable, n.m = length,precision
 	int m, pos1, pos2;
 	static char specifier[32], len[32], pre[32];
+	char *c;
 	for (m=0; m<32; m++)
 	{
 		specifier[m] = '\0';
@@ -82,7 +83,7 @@ bool format_node::set(const char *s, variable_list &vlist)
 	{
 		// Everything past the '@' character (and up to a '.') is the length...
 		pos1 ++;
-		for (pos2 = pos1; arg[pos2] != '\0'; pos2++)
+		for (pos2 = pos1; s[pos2] != '\0'; pos2++)
 		{
 			if (s[pos2] == '.') break;
 			len[pos2-pos1] = s[pos2];
@@ -94,28 +95,22 @@ bool format_node::set(const char *s, variable_list &vlist)
 	// If we're given a variable, check that is has been declared
 	if (specifier[0] == '$')
 	{
-		dsfsdfdsf;
+		c = specifier;
+		c ++;
+		v = vlist.get(c);
+		if (v == NULL)
+		{
+			printf("Variable '%s' in format string has not been declared.\n", c);
+			return FALSE;
+		}
 	}
 	else if (specifier[0] == '*') v = vlist.get_dummy();
 	else v = vlist.add_constant(specifier);
 	// Store the data
-	fn->set_variable(vlist.get(specifier));
-	len = (length[0] == '\0' ? 0 : atoi(len));
+	length = (len[0] == '\0' ? 0 : atoi(len));
 	precision = (pre[0] == '\0' ? 0 : atoi(pre));
 	dbg_end(DM_PARSE,"format_node::create");
 	return TRUE;
-}
-
-// Create from string
-void format::create(const char *s, variable_list &vlist, bool delimited)
-{
-	dbg_begin(DM_PARSE,"format::create");
-	// Clear any existing node list
-	nodes.clear();
-	// Create the format with or without doing delimited parsing
-	if (delimited) create_delimited(s, vlist);
-	else create_exact(s, vlist);
-	dbg_end(DM_PARSE,"format::create");
 }
 
 // Create using delimited arguments
@@ -124,16 +119,19 @@ bool format::create_delimited(const char *s, variable_list &vlist)
 	dbg_begin(DM_PARSE,"format::create_delimited");
 	int n;
 	format_node *fn;
+	static line_parser lp;
+	// Clear any existing node list
+	nodes.clear();
 	// First, parseline the formatting string
-	parser.get_args_delim(s,PO_DEFAULTS);
+	lp.get_args_delim(s,PO_DEFAULTS);
 	// Now, step through the args[] array and convert the substrings into format nodes
-	for (n=0; n<parser.get_nargs(); n++)
+	for (n=0; n<lp.get_nargs(); n++)
 	{
 		// Create our new format node and store the information in it
 		fn = nodes.add();
-		if (!fn->set(parser.argc(n)))
+		if (!fn->set(lp.argc(n), vlist))
 		{
-			printf("Failed to add format node '%s'.\n", parser.argc(n));
+			printf("Failed to add format node '%s'.\n", lp.argc(n));
 			dbg_end(DM_PARSE,"format::create");
 			return FALSE;
 		}
@@ -152,6 +150,9 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	int nchars = 0, vchars = 0;
 	bool done;
 	char *c;
+	format_node *fn;
+	// Clear any existing node list
+	nodes.clear();
 	strcpy(srcstr,s);
 	for (c = srcstr; *c != '\0'; c++)
 	{
@@ -167,24 +168,24 @@ bool format::create_exact(const char *s, variable_list &vlist)
 		{
 			text[nchars] = '\0';
 			fn = nodes.add();
-			fn->set(text);
+			fn->set(text, vlist);
 			nchars = 0;
 		}
 		// Clear the variable string and start adding characters
 		// Add characters to 'varstr' until we find the end of the format
 		vchars = 1;
-		varstr[vchars] = '$'
+		varstr[0] = '$';
 		c ++;
 		done = FALSE;
 		while (*c != '\0')
 		{
-			switch (*ch)
+			switch (*c)
 			{
 				case ('{'):
-					ch++;
+					c++;
 					break;
 				case ('\0'):
-					ch--;
+					c--;
 				case ('}'):
 					done = TRUE;
 					break;
@@ -193,11 +194,12 @@ bool format::create_exact(const char *s, variable_list &vlist)
 				case (')'):
 				case (' '):
 					done = TRUE;
-					ch--;
+					c--;
 					break;
 				default:
-					var += *ch;
-					ch++;
+					varstr[vchars] += *c;
+					vchars ++;
+					c++;
 					break;
 			}
 			if (done) break;
@@ -205,9 +207,16 @@ bool format::create_exact(const char *s, variable_list &vlist)
 		// Now have variable (and format) in 'var'
 		varstr[vchars] = '\0';
 		fn = nodes.add();
-		fn->set(varstr);
+		fn->set(varstr, vlist);
+		if (!fn->set(varstr, vlist))
+		{
+			printf("Failed to add format node '%s'.\n", varstr);
+			dbg_end(DM_PARSE,"format::create_exact");
+			return FALSE;
+		}
 	}
 	dbg_end(DM_PARSE,"format::create_exact");
+	return TRUE;
 }
 
 // Create string

@@ -5,6 +5,9 @@ importmodel
 	nickname cds
 	extension "dat,fdat"
 	glob *.*dat
+	# Variables
+	character title
+	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,
 	# Record 1: Directory information (single line)
 	# Contained information (first col = 0):
 	# 0 (#), 1-8 (refcode), 9 (crys.sys), 10 (category), 11-16 (accession date), 17-22 (unused), 23-25 (ncards),

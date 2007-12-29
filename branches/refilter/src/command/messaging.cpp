@@ -32,8 +32,9 @@ int command_functions::function_CA_ERROR(command *&c, bundle &obj)
 // Print formatted string
 int command_functions::function_CA_PRINT(command *&c, bundle &obj)
 {
-	Call format->create_string() here
-	msg(DM_NONE,"%s\n",printstr.get());
+	format *fmt = c->get_format();
+	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
+	else msg(DM_NONE,"%s\n",c->get_format()->create_string());
 	return CR_SUCCESS;
 }
 
