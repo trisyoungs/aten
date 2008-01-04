@@ -28,7 +28,8 @@
 #include <fstream>
 
 // Filter types
-const char *FT_strings[FT_NITEMS] = { "importmodel", "exportmodel", "importtrajectory", "exporttrajectory", "importfield", "exportfield", "importgrid", "exportgrid" };
+const char *FT_strings[FT_NITEMS] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
+
 const char *text_from_FT(filter_type ft)
 	{ return FT_strings[ft]; }
 filter_type FT_from_text(const char *s)
@@ -168,6 +169,49 @@ bool filter::load(ifstream &filterfile)
 	dbg_end(DM_CALLS,"filter::load");
 	return TRUE;
 }
+
+// Set type (and initialise any necessary variables)
+void filter::set_type(filter_type ft)
+{
+	dbg_begin(DM_CALLS,"filter::set_type");
+	type = ft;
+	variable *v;
+	switch (type)
+	{
+		case (FT_MODEL_IMPORT):
+		case (FT_TRAJECTORY_IMPORT):
+		case (FT_FIELD_IMPORT):
+		case (FT_GRID_IMPORT):
+			break;
+		case (FT_MODEL_EXPORT):
+			v = commands.variables.create_variable("cell","type",VT_CHAR);
+			v = commands.variables.create_variable("cell","a",VT_CHAR);
+			v = commands.variables.create_variable("cell","b",VT_CHAR);
+			v = commands.variables.create_variable("cell","c",VT_CHAR);
+			v = commands.variables.create_variable("cell","alpha",VT_CHAR);
+			v = commands.variables.create_variable("cell","beta",VT_CHAR);
+			v = commands.variables.create_variable("cell","gamma",VT_CHAR);
+			v = commands.variables.create_variable("cell","a.x",VT_CHAR);
+			v = commands.variables.create_variable("cell","a.y",VT_CHAR);
+			v = commands.variables.create_variable("cell","a.z",VT_CHAR);
+			v = commands.variables.create_variable("cell","b.x",VT_CHAR);
+			v = commands.variables.create_variable("cell","b.y",VT_CHAR);
+			v = commands.variables.create_variable("cell","b.z",VT_CHAR);
+			v = commands.variables.create_variable("cell","c.x",VT_CHAR);
+			v = commands.variables.create_variable("cell","c.y",VT_CHAR);
+			v = commands.variables.create_variable("cell","c.z",VT_CHAR);
+			v = commands.variables.create_variable("natoms","",VT_INTEGER);
+			break;
+		case (FT_TRAJECTORY_EXPORT):
+			break;
+		case (FT_FIELD_EXPORT):
+			break;
+		case (FT_GRID_EXPORT):
+			break;
+	}
+	dbg_end(DM_CALLS,"filter::set_type");
+}
+
 
 // Print
 void filter::print()

@@ -1,6 +1,6 @@
 /*
 	*** Command function pointers
-	*** src/command/commands.cpp
+	*** src/command/functions.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -39,6 +39,27 @@ command_functions::command_functions()
 	action[CA_RDF] = &command_functions::function_CA_RDF;
 	action[CA_SAVEQUANTITIES] = &command_functions::function_CA_SAVEQUANTITIES;
 
+	// Atom Commands
+	action[CA_ADDATOM] = &command_functions::function_CA_ADDATOM;
+	action[CA_ADDCHAIN] = &command_functions::function_CA_ADDCHAIN;
+	action[CA_ENDCHAIN] = &command_functions::function_CA_ENDCHAIN;
+	action[CA_SELECTATOM] = &command_functions::function_CA_SELECTATOM;
+	action[CA_SETCOORDS] = &command_functions::function_CA_SETCOORDS;
+	action[CA_SETCHARGE] = &command_functions::function_CA_SETCHARGE;
+	action[CA_SETELEMENT] = &command_functions::function_CA_SETELEMENT;
+	action[CA_SETFORCES] = &command_functions::function_CA_SETFORCES;
+	action[CA_SETFX] = &command_functions::function_CA_SETFX;
+	action[CA_SETFY] = &command_functions::function_CA_SETFY;
+	action[CA_SETFZ] = &command_functions::function_CA_SETFZ;
+	action[CA_SETID] = &command_functions::function_CA_SETID;
+	action[CA_SETRX] = &command_functions::function_CA_SETRX;
+	action[CA_SETRY] = &command_functions::function_CA_SETRY;
+	action[CA_SETRZ] = &command_functions::function_CA_SETRZ;
+	action[CA_SETVELOCITIES] = &command_functions::function_CA_SETVELOCITIES;
+	action[CA_SETVX] = &command_functions::function_CA_SETVX;
+	action[CA_SETVY] = &command_functions::function_CA_SETVY;
+	action[CA_SETVZ] = &command_functions::function_CA_SETVZ;
+
 	// Bond commands
 	action[CA_ADDBOND] = &command_functions::function_CA_ADDBOND;
 	action[CA_AUGMENT] = &command_functions::function_CA_AUGMENT;
@@ -50,10 +71,7 @@ command_functions::command_functions()
 
 	// Build commands
 	action[CA_ADDHYDROGEN] = &command_functions::function_CA_ADDHYDROGEN;
-	action[CA_ADDATOM] = &command_functions::function_CA_ADDATOM;
-	action[CA_ADDCHAIN] = &command_functions::function_CA_ADDCHAIN;
 	action[CA_DELETE] = &command_functions::function_CA_DELETE;
-	action[CA_ENDCHAIN] = &command_functions::function_CA_ENDCHAIN;
 	action[CA_LOCATE] = &command_functions::function_CA_LOCATE;
 	action[CA_MOVE] = &command_functions::function_CA_MOVE;
 	action[CA_ROTX] = &command_functions::function_CA_ROTX;
@@ -186,17 +204,7 @@ command_functions::command_functions()
 	action[CA_PRINTMODEL] = &command_functions::function_CA_PRINTMODEL;
 	action[CA_SAVEMODEL] = &command_functions::function_CA_SAVEMODEL;
 	action[CA_SELECTMODEL] = &command_functions::function_CA_SELECTMODEL;
-	action[CA_SETATOM] = &command_functions::function_CA_SETATOM;
-	action[CA_SETFX] = &command_functions::function_CA_SETFX;
-	action[CA_SETFY] = &command_functions::function_CA_SETFY;
-	action[CA_SETFZ] = &command_functions::function_CA_SETFZ;
-	action[CA_SETRX] = &command_functions::function_CA_SETRX;
-	action[CA_SETRY] = &command_functions::function_CA_SETRY;
-	action[CA_SETRZ] = &command_functions::function_CA_SETRZ;
 	action[CA_SETTITLE] = &command_functions::function_CA_SETTITLE;
-	action[CA_SETVX] = &command_functions::function_CA_SETVX;
-	action[CA_SETVY] = &command_functions::function_CA_SETVY;
-	action[CA_SETVZ] = &command_functions::function_CA_SETVZ;
 
 	// Pattern Commands
 	action[CA_ADDPATTERN] = &command_functions::function_CA_ADDPATTERN;

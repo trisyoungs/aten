@@ -36,7 +36,7 @@ int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0));
-	if (c->has_arg(3)) obj.i = obj.m->add_atom(el, c->parent->penpos);
+	if (c->has_arg(3)) obj.i = obj.m->add_atom(el, c->get_parent()->penpos);
 	else obj.i = obj.m->add_atom(el, c->arg3d(1));
 	// Reset variables...
 	return CR_SUCCESS;
@@ -46,7 +46,7 @@ int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
 int command_functions::function_CA_ADDCHAIN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->parent->penpos);
+	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->get_parent()->penpos);
 	if (obj.i != NULL) obj.m->bond_atoms(obj.i,i,BT_SINGLE);
 	obj.i = i;
 	return CR_SUCCESS;
@@ -71,18 +71,18 @@ int command_functions::function_CA_ENDCHAIN(command *&c, bundle &obj)
 // Set pen coordinates ('locate <dx dy dz>')
 int command_functions::function_CA_LOCATE(command *&c, bundle &obj)
 {
-	c->parent->penpos.x = c->argd(0);
-	c->parent->penpos.y = c->argd(1);
-	c->parent->penpos.z = c->argd(2);
+	c->get_parent()->penpos.x = c->argd(0);
+	c->get_parent()->penpos.y = c->argd(1);
+	c->get_parent()->penpos.z = c->argd(2);
 	return CR_SUCCESS;
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
 int command_functions::function_CA_MOVE(command *&c, bundle &obj)
 {
-	c->parent->penpos += c->parent->penorient.rows[0] * c->argd(0);
-	c->parent->penpos += c->parent->penorient.rows[1] * c->argd(1);
-	c->parent->penpos += c->parent->penorient.rows[2] * c->argd(2);
+	c->get_parent()->penpos += c->get_parent()->penorient.rows[0] * c->argd(0);
+	c->get_parent()->penpos += c->get_parent()->penorient.rows[1] * c->argd(1);
+	c->get_parent()->penpos += c->get_parent()->penorient.rows[2] * c->argd(2);
 	return CR_SUCCESS;
 }
 
@@ -94,7 +94,7 @@ int command_functions::function_CA_ROTX(command *&c, bundle &obj)
 	rotmat.set(0,1.0,0.0,0.0);
 	rotmat.set(1,0.0,cos(theta),sin(theta));
 	rotmat.set(2,0.0,-sin(theta),cos(theta));
-	c->parent->penorient *= rotmat;
+	c->get_parent()->penorient *= rotmat;
 	return CR_SUCCESS;
 }
 
@@ -106,7 +106,7 @@ int command_functions::function_CA_ROTY(command *&c, bundle &obj)
 	rotmat.set(0,cos(theta),0.0,-sin(theta));
 	rotmat.set(1,0.0,1.0,0.0);
 	rotmat.set(2,sin(theta),0.0,cos(theta));
-	c->parent->penorient *= rotmat;
+	c->get_parent()->penorient *= rotmat;
 	return CR_SUCCESS;
 }
 
@@ -118,7 +118,7 @@ int command_functions::function_CA_ROTZ(command *&c, bundle &obj)
 	rotmat.set(0,cos(theta),sin(theta),0.0);
 	rotmat.set(1,-sin(theta),cos(theta),0.0);
 	rotmat.set(2,0.0,0.0,1.0);
-	c->parent->penorient *= rotmat;
+	c->get_parent()->penorient *= rotmat;
 	return CR_SUCCESS;
 }
 

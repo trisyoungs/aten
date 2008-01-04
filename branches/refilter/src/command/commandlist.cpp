@@ -43,6 +43,7 @@ command::command()
 	prev = NULL;
 	for (int i=0; i<MAXDATAVARS; i++) args[i] = NULL;
 	action = CA_ROOTNODE;
+	parent = NULL;
 	function = NULL;
 	ptr = NULL;
 	branch = NULL;
@@ -288,14 +289,20 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 		// Go through possible specifiers
 		switch (v[n])
 		{
-			// Formats
+			// Formats (delimited)
 			case ('f'):
 			case ('F'):
 				if (!create_format(arg, vars, TRUE)) return FALSE;
 				break;
+			// Formats (exact)
 			case ('g'):
 			case ('G'):
 				if (!create_format(arg, vars, FALSE)) return FALSE;
+				break;
+			// Expressions
+			case ('e'):
+			case ('E'):
+				args[varcount] = vars.add_constant(arg);
 				break;
 			// Discard
 			case ('x'):
@@ -323,13 +330,11 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 				// Otherwise, add constant variable.
 				if (arg[0] == '$')
 				{
-					c = arg;
-					c ++;
 					// See if it has been declared
-					args[varcount] = parent->variables.get(c);
+					args[varcount] = parent->variables.get(&arg[1]);
 					if (args[varcount] == NULL)
 					{
-						printf("Variable '%s' has not been declared.\n", c);
+						printf("Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 				}
@@ -349,6 +354,7 @@ void commandlist::push_branch(list<command> *branch, command_action ca, command 
 	command *cn = branchcmdstack.add();
 	cn->set_command(ca);
 	cn->set_pointer(basenode);
+	cn->set_parent(this);
 }
 
 // Pop topmost branch on stack
@@ -396,6 +402,7 @@ command* commandlist::add_topbranch_command(command_action ca, command *nodeptr)
 	command *cn = branchstack.last()->item->add();
 	cn->set_command(ca);
 	cn->set_pointer(nodeptr);
+	cn->set_parent(this);
 	return cn;
 }
 
@@ -494,6 +501,16 @@ bool commandlist::add_command(command_action ca)
 			fn = add_topbranch_command(ca, NULL);
 			push_branch(fn->create_branch(), ca, fn);
 			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
+			// Here, we must also add relevant variables to the list
+			if (varresult)
+			{
+				switch (fn->argt(0))
+				{
+					case (VT_ATOM):
+						varresult = create_atom_variables(fn->arg(0)->get_name());
+						break;
+				}
+			}
 			break;
 		// End the topmost branch in the stack
 		case (CA_END):
@@ -743,15 +760,15 @@ void commandlist::set_cell_variables(unitcell *c)
 		variables.set("cell","type",lower_case(text_from_CT(c->get_type())));
 		mat = c->get_axes_transpose();
 
-		variables.set("cell","a.x",mat.rows[0].x);
-		variables.set("cell","b.x",mat.rows[0].y);
-		variables.set("cell","c.x",mat.rows[0].z);
-		variables.set("cell","a.y",mat.rows[1].x);
-		variables.set("cell","b.y",mat.rows[1].y);
-		variables.set("cell","c.y",mat.rows[1].z);
-		variables.set("cell","a.z",mat.rows[2].x);
-		variables.set("cell","b.z",mat.rows[2].y);
-		variables.set("cell","c.z",mat.rows[2].z);
+		variables.set("cell","ax",mat.rows[0].x);
+		variables.set("cell","bx",mat.rows[0].y);
+		variables.set("cell","cx",mat.rows[0].z);
+		variables.set("cell","ay",mat.rows[1].x);
+		variables.set("cell","by",mat.rows[1].y);
+		variables.set("cell","cy",mat.rows[1].z);
+		variables.set("cell","az",mat.rows[2].x);
+		variables.set("cell","bz",mat.rows[2].y);
+		variables.set("cell","cz",mat.rows[2].z);
 		vec = c->get_lengths();
 		variables.set("cell","a",vec.x);
 		variables.set("cell","b",vec.y);
@@ -763,10 +780,51 @@ void commandlist::set_cell_variables(unitcell *c)
 	}
 	else
 	{
-		variables.reset("cell.type","cell.a.x","cell.a.y","cell.a.z","cell.b.x","cell.b.y","cell.b.z","cell.c.x","cell.c.y","cell.c.z","");
+		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
 		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","");
 	}
 	dbg_end(DM_CALLS,"commandlist::set_cell_variables");
+}
+
+// Create atom parameter variables
+bool commandlist::create_atom_variables(const char *base)
+{
+	variable *v;
+	v = variables.create_variable(base,"symbol",VT_CHAR);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"mass",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"name",VT_CHAR);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"z",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"id",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"fftype",VT_CHAR);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"ffequiv",VT_CHAR);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"q",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"rx",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"ry",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"rz",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"fx",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"fy",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"fz",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"vx",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"vy",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"vz",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	return TRUE;
 }
 
 // Set variable values for atom
@@ -786,17 +844,17 @@ void commandlist::set_atom_variables(const char *varname, atom *i)
 		variables.set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->get_name()));
 		variables.set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->get_equiv()));
 		v = i->r();
-		variables.set(varname,"r.x",v.x);
-		variables.set(varname,"r.y",v.y);
-		variables.set(varname,"r.z",v.z);
+		variables.set(varname,"rx",v.x);
+		variables.set(varname,"ry",v.y);
+		variables.set(varname,"rz",v.z);
 		v = i->f();
-		variables.set(varname,"f.x",v.x);
-		variables.set(varname,"f.y",v.y);
-		variables.set(varname,"f.z",v.z);
+		variables.set(varname,"fx",v.x);
+		variables.set(varname,"fy",v.y);
+		variables.set(varname,"fz",v.z);
 		v = i->v();
-		variables.set(varname,"v.x",v.x);
-		variables.set(varname,"v.y",v.y);
-		variables.set(varname,"v.z",v.z);
+		variables.set(varname,"vx",v.x);
+		variables.set(varname,"vy",v.y);
+		variables.set(varname,"vz",v.z);
 		variables.set(varname,"q",i->get_charge());
 	}
 	else

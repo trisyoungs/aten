@@ -50,6 +50,26 @@ const char *CA_data[CA_NITEMS] = {
 	"rdf,VVVVVVV",
 	"savequantities",
 
+	// Atom commands
+	"addatom,V",
+	"addchain,Vv",
+	"endchain",
+	"setcharge,Vv",
+	"setcoords,VVVv",
+	"setelement,Vv",
+	"setforces,VVVv",
+	"setfx,Vv",
+	"setfy,Vv",
+	"setfz,Vv",
+	"setid,Vv",
+	"setrx,Vv",
+	"setry,Vv",
+	"setrz,Vv",
+	"setvelocities,VVVv",
+	"setvx,Vv",
+	"setvy,Vv",
+	"setvz,Vv",
+
 	// Bonding commands
 	"addbond,VVv",
 	"augment",
@@ -61,10 +81,7 @@ const char *CA_data[CA_NITEMS] = {
 
 	// Build commands
 	"addhydrogen",
-	"addatom,V",
-	"addchain,Vv",
 	"delete",
-	"endchain",
 	"locate,VVV",
 	"move,VVV",
 	"rotx,V",
@@ -199,17 +216,7 @@ const char *CA_data[CA_NITEMS] = {
 	"printmodel",
 	"savemodel,VV",
 	"selectmodel,V",
-	"setatom,V",
-	"setfx,VV",
-	"setfy,VV",
-	"setfz,VV",
-	"setrx,VV",
-	"setry,VV",
-	"setrz,VV",
 	"settitle,V",
-	"setvx,VV",
-	"setvy,VV",
-	"setvz,VV",
 
 	// Pattern commands
 	"addpattern,VVV",
@@ -246,7 +253,7 @@ const char *CA_data[CA_NITEMS] = {
 	"readvar,VF",
 	"removereadoption,V",
 	"skipchars,V",
-	"skipline,V",
+	"skipline,v",
 	"writeline,F",
 
 	// Selection commands

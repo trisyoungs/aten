@@ -1,6 +1,6 @@
 /*
 	*** Command function pointers
-	*** src/command/commands.h
+	*** src/command/functions.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -54,6 +54,26 @@ class command_functions
 	int function_CA_RDF(command *&c, bundle &obj);
 	int function_CA_SAVEQUANTITIES(command *&c, bundle &obj);
 
+	// Atom Commands
+	int function_CA_ADDATOM(command *&c, bundle &obj);
+	int function_CA_ADDCHAIN(command *&c, bundle &obj);
+	int function_CA_ENDCHAIN(command *&c, bundle &obj);
+	int function_CA_SETCOORDS(command *&c, bundle &obj);
+	int function_CA_SETCHARGE(command *&c, bundle &obj);
+	int function_CA_SETELEMENT(command *&c, bundle &obj);
+	int function_CA_SETFORCES(command *&c, bundle &obj);
+	int function_CA_SETFX(command *&c, bundle &obj);
+	int function_CA_SETFY(command *&c, bundle &obj);
+	int function_CA_SETFZ(command *&c, bundle &obj);
+	int function_CA_SETID(command *&c, bundle &obj);
+	int function_CA_SETRX(command *&c, bundle &obj);
+	int function_CA_SETRY(command *&c, bundle &obj);
+	int function_CA_SETRZ(command *&c, bundle &obj);
+	int function_CA_SETVELOCITIES(command *&c, bundle &obj);
+	int function_CA_SETVX(command *&c, bundle &obj);
+	int function_CA_SETVY(command *&c, bundle &obj);
+	int function_CA_SETVZ(command *&c, bundle &obj);
+
 	// Bond commands
 	int function_CA_ADDBOND(command *&c, bundle &obj);
 	int function_CA_AUGMENT(command *&c, bundle &obj);
@@ -65,10 +85,7 @@ class command_functions
 
 	// Build commands
 	int function_CA_ADDHYDROGEN(command *&c, bundle &obj);
-	int function_CA_ADDATOM(command *&c, bundle &obj);
-	int function_CA_ADDCHAIN(command *&c, bundle &obj);
 	int function_CA_DELETE(command *&c, bundle &obj);
-	int function_CA_ENDCHAIN(command *&c, bundle &obj);
 	int function_CA_LOCATE(command *&c, bundle &obj);
 	int function_CA_MOVE(command *&c, bundle &obj);
 	int function_CA_ROTX(command *&c, bundle &obj);
@@ -203,17 +220,7 @@ class command_functions
 	int function_CA_PRINTMODEL(command *&c, bundle &obj);
 	int function_CA_SAVEMODEL(command *&c, bundle &obj);
 	int function_CA_SELECTMODEL(command *&c, bundle &obj);
-	int function_CA_SETATOM(command *&c, bundle &obj);
-	int function_CA_SETFX(command *&c, bundle &obj);
-	int function_CA_SETFY(command *&c, bundle &obj);
-	int function_CA_SETFZ(command *&c, bundle &obj);
-	int function_CA_SETRX(command *&c, bundle &obj);
-	int function_CA_SETRY(command *&c, bundle &obj);
-	int function_CA_SETRZ(command *&c, bundle &obj);
 	int function_CA_SETTITLE(command *&c, bundle &obj);
-	int function_CA_SETVX(command *&c, bundle &obj);
-	int function_CA_SETVY(command *&c, bundle &obj);
-	int function_CA_SETVZ(command *&c, bundle &obj);
 
 	// Pattern Commands
 	int function_CA_ADDPATTERN(command *&c, bundle &obj);

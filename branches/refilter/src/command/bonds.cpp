@@ -55,7 +55,7 @@ int command_functions::function_CA_REBOND(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// If we're reading from a file (via a filter) check for prefs override
-	if (c->parent->get_infile() == NULL)
+	if (c->get_parent()->get_infile() == NULL)
 	{
 		obj.m->clear_bonding();
 		obj.m->calculate_bonding();

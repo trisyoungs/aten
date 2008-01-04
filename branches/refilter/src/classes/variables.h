@@ -27,7 +27,7 @@
 #include "base/sysfunc.h"
 
 // Variable Types
-enum variable_type { VT_CHAR, VT_INT, VT_DOUBLE, VT_ATOM, VT_BOND, VT_PATTERN, VT_MODEL, VT_PATBOUND, VT_NITEMS };
+enum variable_type { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_BOND, VT_PATTERN, VT_MODEL, VT_PATBOUND, VT_NITEMS };
 const char *text_from_VT(variable_type);
 
 // Forward Declarations
@@ -139,13 +139,17 @@ class variable_list
 	void set(const char*, const char*, double);
 	void set(const char *name, double value) { set("",name,value); }
 	// Retrieve a named variable from the list
-	variable *get(const char*);
+	variable *get(const char *prefix, const char *suffix);
+	variable *get(const char *name) { return get(name,""); }
 	// Return dummy variable
 	variable *get_dummy() { return &dummy; }
 	// Add an unnamed constant to the list
 	variable *add_constant(const char* s);
 	// Add a named variable to the list
-	variable *add_variable(const char *s, variable_type vt);
+	variable *add_variable(const char *prefix, const char *suffix, variable_type vt);
+	variable *add_variable(const char *name, variable_type vt) { return add_variable(name,"",vt); }
+	// Create, but don't set, a named variable in the list
+	variable *create_variable(const char *prefix, const char *suffix, variable_type vt);
 	// Reset values of all variables
 	void reset_all();
 	// Reset values of variable selection

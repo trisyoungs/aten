@@ -9,25 +9,39 @@ importmodel
 	id 1
 	zmap ff
 
+	# Variable Declaration
+	character title,e
+	integer n,keytrj,imcon
+	double ax,ay,az,bx,by,bz,cx,cy,cz
+	double rx,ry,rz,vx,vy,vz,fx,fy,fz
+
+	# Title section
 	readline "$title@100"
 	newmodel $title
 	readline "$keytrj $imcon"
+
+	# Cell (if present)
 	if $imcon <> 0
-		readline "$cell.a.x $cell.a.y $cell.a.z"
-		readline "$cell.b.x $cell.b.y $cell.b.z"
-		readline "$cell.c.x $cell.c.y $cell.c.z"
-		setcellaxes
+		readline "$ax $ay $az"
+		readline "$bx $by $bz"
+		readline "$cx $cy $cz"
+		setcellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 	end
-	repeat $n
+
+	# Atoms
+	for $n
 		readline "$e"
-		readline "$r.x $r.y $r.z"
+		addatom $e
+		readline "$rx $ry $rz"
+		setcoords $rx $ry $rz
 		if $keytrj > 0
-			readline "$v.x $v.y $v.z"
+			readline "$vx $vy $vz"
+			setvelocities $vx $vy $vz
 		end
 		if $keytrj > 1
-			readline "$f.x $f.y $f.z"
+			readline "$fx $fy $fz"
+			setforces $fx $fy $fz
 		end
-		addatom
 	end
 	rebond
 	fold
@@ -40,6 +54,11 @@ exportmodel
 	nickname dlpoly
 	id 1
 
+	# Variable Declaration
+	integer keytrj,imcon
+	atom i
+
+	# Title section
 	writeline "title"
 	let $keytrj = 0
 	# Convert celltype string to DL_POLY-style integer
@@ -53,13 +72,17 @@ exportmodel
 		let $imcon = 3
 	end
 	writeline "$keytrj@10 $imcon@10"
+
+	# Cell (if present) 
 	if $imcon <> 0
 		writeline "$cell.a.x@20.12 $cell.a.y@20.12 $cell.a.z@20.12"
 		writeline "$cell.b.x@20.12 $cell.b.y@20.12 $cell.b.z@20.12"
 		writeline "$cell.c.x@20.12 $cell.c.y@20.12 $cell.c.z@20.12"
 	end
-	foratoms $i
+
+	# Atoms
+	for $i,1,$natoms
 		writeline "$i.fftype@8 $i.id@10 *@2 $i.mass"
-		writeline "$i.r.x@20.14 $i.r.y@20.14 $i.r.z@20.14"
+		writeline "$i.rx@20.14 $i.ry@20.14 $i.rz@20.14"
 	end
 end

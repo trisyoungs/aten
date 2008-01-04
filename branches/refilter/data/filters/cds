@@ -6,8 +6,11 @@ importmodel
 	extension "dat,fdat"
 	glob *.*dat
 	# Variables
-	character title
-	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,
+	character title,spgrp,discard
+	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
+	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj
+	double ea,xa,ya,za,eb,xb,yb,zb,ec,xc,yc,zc,rx,ry,rz
+	double a,b,c,al,be,ga,cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
 	# Record 1: Directory information (single line)
 	# Contained information (first col = 0):
 	# 0 (#), 1-8 (refcode), 9 (crys.sys), 10 (category), 11-16 (accession date), 17-22 (unused), 23-25 (ncards),
@@ -31,16 +34,16 @@ importmodel
 		eval $cell.alpha = "$al / 10.0^$pal"
 		eval $cell.beta = "$be / 10.0^$pbe"
 		eval $cell.gamma = "$ga / 10.0^$pga"
-		setcell
+		setcell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
 		setspacegroup $spgrpn
 	end
 	# Record 3: Text information (ignored)
 	# Total number of chars is the sum of nf, nr, nd, and ne read in earlier.
 	# Since the format rigidly defined 80 chars per line, skip by number of lines...
-	evali $nlines = "($nf + $nr + $nd + $ne) / 80 + 1"
+	eval $nlines = "($nf + $nr + $nd + $ne) / 80 + 1"
 	skipline $nlines
 	# Record 4: Equivalent positions of spacegroup (ignored)
-	evali $nlines = "($nsymm*20) / 80 + 1"
+	eval $nlines = "($nsymm*20) / 80 + 1"
 	skipline $nlines
 	# Record 5: Atomic radii (ignored)
 	if $natm > 1
@@ -48,47 +51,47 @@ importmodel
 	end
 	# Record 6: Atomic coordinates
 	# Coordinates are given 3 per line, so determine number of lines to read in.
-	repeat $n $natm
+	for $n,1,$natm
 		# Read in new line if mod(n,3) is zero
-		evali $mod = "($n-1) % 3"
+		eval $mod = "($n-1) % 3"
 		if $mod = 0
 			readline "$ea@5 $xa@7 $ya@7 $za@7 *@1 $eb@5 $xb@7 $yb@7 $zb@7 *@1 $ec@5 $xc@7 $yc@7 $zc@7"
 		end
 		# Messy, but should work. Use variable data based on the $mod value...
 		if $mod = 0
-			let $e = $ea
-			eval $r.x = "$xa / 100000"
-			eval $r.y = "$ya / 100000"
-			eval $r.z = "$za / 100000"
+			addatom $ea
+			eval $rx = "$xa / 100000"
+			eval $ry = "$ya / 100000"
+			eval $rz = "$za / 100000"
 		elseif $mod = 1
-			let $e = $eb
-			eval $r.x = "$xb / 100000"
-			eval $r.y = "$yb / 100000"
-			eval $r.z = "$zb / 100000"
+			addatom $eb
+			eval $rx = "$xb / 100000"
+			eval $ry = "$yb / 100000"
+			eval $rz = "$zb / 100000"
 		else
-			let $e = $ec
-			eval $r.x = "$xc / 100000"
-			eval $r.y = "$yc / 100000"
-			eval $r.z = "$zc / 100000"
+			addatom $ec
+			eval $rx = "$xc / 100000"
+			eval $ry = "$yc / 100000"
+			eval $rz = "$zc / 100000"
 		end
-		addatom
+		setcoords $rx $ry $rz
 	end
 	# Record 7: Connectivity
 	# Connectivities are given in the format 40I2 (if natm+nsatm < 100) or 26I3,2x (if natm+nsatm >= 100)
 	# First (natm+nsatm) integers are paired to the atoms 1-(natm+nsatm) in that order. Any other integers
 	# are pairs of atoms involved in additional bonds.
 	eval $natoms = "$natm + $nsatm"
-	repeat $n $natoms
+	for $n,1,$natoms
 		# Need to remove newline (and space before) when we've read a whole line's worth
 		if $natoms < 100
 			readchars $jj 2
-			evali $mod = "$n%40"
+			eval $mod = "$n%40"
 			if $mod = 0
 				readchars $discard 1
 			end
 		else
 			readchars $jj 3
-			evali $mod = "$n%26"
+			eval $mod = "$n%26"
 			if $mod = 0
 				readchars $discard 3
 			end
@@ -102,20 +105,20 @@ importmodel
 			addbond $ii $jj
 		end
 	end
-	evali $nextra = "($ncon - $natoms) / 2"
+	eval $nextra = "($ncon - $natoms) / 2"
 	#print "There are $nextra pairs of connectivity integers."
-	repeat $n $nextra
+	for $n,1,$nextra
 		if $natoms < 100
 			readchars $ii 2
 			readchars $jj 2
-			evali $mod = "$n%40"
+			eval $mod = "$n%40"
 			if $mod = 0
 				readchars $discard 1
 			end
 		else
 			readchars $ii 3
 			readchars $jj 3
-			evali $mod = "$n%26"
+			eval $mod = "$n%26"
 			if $mod = 0
 				readchars $discard 1
 			end

@@ -27,7 +27,7 @@
 int command_functions::function_CA_FOLD(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->parent->get_infile() == NULL) obj.m->fold_all_atoms();
+	if (c->get_parent()->get_infile() == NULL) obj.m->fold_all_atoms();
 	else if (prefs.get_fold_on_load() != PS_NO) obj.m->fold_all_atoms();
 	return CR_SUCCESS;
 }
@@ -44,7 +44,7 @@ int command_functions::function_CA_FRACTOREAL(command *&c, bundle &obj)
 int command_functions::function_CA_PACK(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->parent->get_infile() == NULL) obj.m->apply_spacegroup_symmops(NULL);
+	if (c->get_parent()->get_infile() == NULL) obj.m->apply_spacegroup_symmops(NULL);
 	else if (prefs.get_pack_on_load() != PS_NO) obj.m->apply_spacegroup_symmops(NULL);
 	return CR_SUCCESS;
 }

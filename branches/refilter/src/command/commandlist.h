@@ -61,10 +61,14 @@ class command
 	command_action action;
 	// Pointer to action function
 	commandfunc function;
-
-	public:
 	// Parent list
 	commandlist *parent;
+
+	public:
+	// Set parent commandlist
+	void set_parent(commandlist *cl) { parent = cl; }
+	// Get parent commandlist
+	commandlist *get_parent() { return parent; }
 	// Set command
 	void set_command(command_action ca);
 	// Get command
@@ -239,6 +243,8 @@ class commandlist
 	void set_model_variables(model*);
 	// Set cell variables
 	void set_cell_variables(unitcell*);
+	// Create atom variables
+	bool create_atom_variables(const char *s);
 	// Set atom variables
 	void set_atom_variables(const char*, atom*);
 	void set_atom_variables(const char*, int);

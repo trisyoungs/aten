@@ -75,7 +75,7 @@ void variable::print()
 		case (VT_CHAR):
 			printf("Variable '%s', type 'char', value '%s'.\n", name.get(), get_as_char());
 			break;
-		case (VT_INT):
+		case (VT_INTEGER):
 			printf("Variable '%s', type 'int', value '%i'.\n", name.get(), get_as_int());
 			break;
 		case (VT_DOUBLE):
@@ -101,7 +101,7 @@ void variable::set(const char *s)
 // Set (int)
 void variable::set(int i)
 {
-	if (type == VT_INT) intvalue = i;
+	if (type == VT_INTEGER) intvalue = i;
 	else printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'int' >>>>\n", name.get(), text_from_VT(type));
 }
 
@@ -167,7 +167,7 @@ const char *variable::get_as_char()
 	{
 		case (VT_CHAR):
 			return charvalue.get();
-		case (VT_INT):
+		case (VT_INTEGER):
 			return itoa(intvalue);
 		case (VT_DOUBLE):
 			return ftoa(doublevalue);
@@ -184,7 +184,7 @@ int variable::get_as_int()
 	{
 		case (VT_CHAR):
 			return atoi(charvalue.get());
-		case (VT_INT):
+		case (VT_INTEGER):
 			return intvalue;
 		case (VT_DOUBLE):
 			return int(doublevalue);
@@ -201,7 +201,7 @@ double variable::get_as_double()
 	{
 		case (VT_CHAR):
 			return atof(charvalue.get());
-		case (VT_INT):
+		case (VT_INTEGER):
 			return double(intvalue);
 		case (VT_DOUBLE):
 			return doublevalue;
@@ -218,7 +218,7 @@ bool variable::get_as_bool()
 	{
 		case (VT_CHAR):
 			return charvalue.as_bool();
-		case (VT_INT):
+		case (VT_INTEGER):
 			return (intvalue < 1 ? FALSE : TRUE);
 		default:
 			msg(DM_VERBOSE,"variable::get_as_bool <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
@@ -245,7 +245,7 @@ void variable::reset()
 		case (VT_CHAR):
 			charvalue.set("");
 			break;
-		case (VT_INT):
+		case (VT_INTEGER):
 			intvalue = 0;
 			break;
 		case (VT_DOUBLE):
@@ -266,7 +266,7 @@ void variable::increase(int n)
 {
 	switch (type)
 	{
-		case (VT_INT):
+		case (VT_INTEGER):
 			intvalue ++;
 			break;
 		case (VT_DOUBLE):
@@ -297,7 +297,7 @@ void variable::decrease(int n)
 {
 	switch (type)
 	{
-		case (VT_INT):
+		case (VT_INTEGER):
 			intvalue --;
 			break;
 		case (VT_DOUBLE):
@@ -326,28 +326,57 @@ void variable::decrease(int n)
 }
 
 // Retrieve named variable
-variable* variable_list::get(const char *s)
+variable* variable_list::get(const char *prefix, const char *suffix)
 {
+	static char name[128];
+	strcpy(name,prefix);
+	if (suffix[0] != '\0')
+	{
+		strcat(name,".");
+		strcat(name,suffix);
+	}
 	for (variable *v = vars.first(); v != NULL; v = v->next)
-		if (strcmp(s,v->get_name()) == 0) return v;
+		if (strcmp(name,v->get_name()) == 0) return v;
 	return NULL;
 }
 
 // Add named variable
-variable *variable_list::add_variable(const char *s, variable_type vt)
+variable *variable_list::add_variable(const char *prefix, const char *suffix, variable_type vt)
 {
-	// Search list for existing variable by this name and type...
-	variable *result = get(s);
-	if (result == NULL)
+	static char name[128];
+	strcpy(name,prefix);
+	if (suffix[0] != '\0')
 	{
-		result = vars.add();
-		result->set_name(s);
-		result->set_type(vt);
+		strcat(name,".");
+		strcat(name,suffix);
 	}
+	variable *result = vars.add();
+	result->set_name(name);
+	result->set_type(vt);
+	return result;
+}
+
+// Create, don't set, named variable
+variable *variable_list::create_variable(const char *prefix, const char *suffix, variable_type vt)
+{
+	// First, see if this variable already exists
+	variable *result = get(prefix, suffix);
+	if (result == NULL) result = add_variable(prefix, suffix, vt);
 	else
 	{
-		// Variable already exists, so check its type
-		if (vt != result->get_type()) printf("variable_list::add_variable <<<< '%s' already exists, and cannot be retyped to '%s' >>>>\n", s, text_from_VT(vt));
+		// Check type of existing variable
+		static char name[128];
+		strcpy(name,prefix);
+		if (suffix[0] != '\0')
+		{
+			strcat(name,".");
+			strcat(name,suffix);
+		}
+		if (result->get_type() != vt)
+		{
+			printf("Variable '%s' already exists and is of type '%s'.\n", name, text_from_VT(vt));
+			result = NULL;
+		}
 	}
 	return result;
 }
@@ -373,18 +402,20 @@ void variable_list::set(const char *prefix, const char *name, const char *value)
 	strcpy(newname,prefix);
 	strcat(newname,".");
 	strcat(newname,name);
-	variable *v = add_variable(newname, VT_CHAR);
+	variable *v = get(newname);
+	if (v == NULL) add_variable(newname, VT_CHAR);
 	v->set(value);
 }
 
-// Set existing variable (or add new and set) (VT_INT)
+// Set existing variable (or add new and set) (VT_INTEGER)
 void variable_list::set(const char *prefix, const char *name, int value)
 {
 	static char newname[128];
 	strcpy(newname,prefix);
 	strcat(newname,".");
 	strcat(newname,name);
-	variable *v = add_variable(newname, VT_INT);
+	variable *v = get(newname);
+	if (v == NULL) add_variable(newname, VT_INTEGER);
 	v->set(value);
 }
 
@@ -395,7 +426,8 @@ void variable_list::set(const char *prefix, const char *name, double value)
 	strcpy(newname,prefix);
 	strcat(newname,".");
 	strcat(newname,name);
-	variable *v = add_variable(newname, VT_DOUBLE);
+	variable *v = get(newname);
+	if (v == NULL) add_variable(newname, VT_DOUBLE);
 	v->set(value);
 }
 

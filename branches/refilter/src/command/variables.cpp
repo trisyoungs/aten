@@ -31,7 +31,7 @@ int command_functions::function_CA_DECREASE(command *&c, bundle &obj)
 // Evaluate expression and assign to variable
 int command_functions::function_CA_EVAL(command *&c, bundle &obj)
 {
-	c->arg(0)->set(evaluate(c->argc(2), &c->parent->variables));
+	c->arg(0)->set(evaluate(c->argc(2), &c->get_parent()->variables));
 	return CR_SUCCESS;
 }
 

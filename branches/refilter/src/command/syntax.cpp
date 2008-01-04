@@ -48,6 +48,26 @@ const char *CA_syntax[CA_NITEMS] = {
 	"rdf <name> <site1> <site2> <rmin> <binwidth> <nbins> <filename>",
 	"savequantities",
 
+	// Atoms
+	"addatom <element>",
+	"addchain <element> [bondtype]",
+	"endchain",
+	"setcharge <q> [id]",
+	"setcoords <x> <y> <z> [id]",
+	"setelement <element> [id]",
+	"setforces <fx> <fy> <fz> [id]",
+	"setfx <fx> [id]",
+	"setfy <fy> [id]",
+	"setfz <fz> [id]",
+	"setid <id> [id]",
+	"setrx <rx> [id]",
+	"setry <ry> [id]",
+	"setrz <rz> [id]",
+	"setvelocities <vx> <vy> <vz> [id]",
+	"setvx <vx> [id]",
+	"setvy <vy> [id]",
+	"setvz <vz> [id]",
+
 	// Bonding
 	"addbond <id1> <id2> [bondtype]",
 	"augment",
@@ -59,10 +79,7 @@ const char *CA_syntax[CA_NITEMS] = {
 
 	// Build commands
 	"addhydrogen",
-	"addatom <element>",
-	"addchain <element> [bondstyle]",
 	"delete",
-	"endchain",
 	"locate <x> <y> <z>",
 	"move <dx> <dy> <dz>",
 	"rotx <angle>",
@@ -197,17 +214,7 @@ const char *CA_syntax[CA_NITEMS] = {
 	"printmodel",
 	"savemodel <format> <filename>",
 	"selectmodel <name>",
-	"setatom <variable>",
-	"setfx <id> <value>",
-	"setfy <id> <value>",
-	"setfz <id> <value>",
-	"setrx <id> <value>",
-	"setry <id> <value>",
-	"setrz <id> <value>",
 	"settitle <title>",
-	"setvx <id> <value>",
-	"setvy <id> <value>",
-	"setvz <id> <value>",
 
 	// Pattern commands
 	"addpattern <name> <nmols> <natoms>",

@@ -54,7 +54,7 @@ int command_functions::function_CA_END(command *&c, bundle &obj)
 int command_functions::function_CA_FOR(command *&c, bundle &obj)
 {
 	// Grab variable list from command's parent list
-	variable_list &vars = c->parent->variables;
+	variable_list &vars = c->get_parent()->variables;
 	bool status = TRUE;
 	if (c->get_loopactive())
 	{
@@ -66,12 +66,12 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
 		{
-			case (VT_INT):
+			case (VT_INTEGER):
 				// If 1 argument was provided, check for end of file. If three, check for limit
-				if (!c->has_arg(2) && (c->parent->get_infile() != NULL))
+				if (!c->has_arg(2) && (c->get_parent()->get_infile() != NULL))
 				{
 					// Check for end of file...
-					if (c->parent->get_infile()->peek() == -1)
+					if (c->get_parent()->get_infile()->peek() == -1)
 					{
 						msg(DM_VERBOSE,"Infinite 'for' reached end of file.\n");
 						status = FALSE;
@@ -91,11 +91,11 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 					if (c->get_loopiterations() > c->argp(1)->get_totalatoms()) status = FALSE;
 				}
 				else if (c->arga(0) == NULL) status = FALSE;
-				c->parent->set_atom_variables(c->arg(0)->get_name(), c->arga(0));
+				c->get_parent()->set_atom_variables(c->arg(0)->get_name(), c->arga(0));
 				break;
 			case (VT_PATTERN):
 				if (c->argp(0) == NULL) status = FALSE;
-				c->parent->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
+				c->get_parent()->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
 				break;
 //			case (VT_PATBOUND):
 //				vars.set_patbound_variables(c->arg(0)->get_name(), c->argf(0));
@@ -115,13 +115,13 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 		{
 			// Integer loop: 1 arg  - loop from 1 until end of file or termination
 			//		 3 args - loop from arg 2 (int) to arg 3 (int)
-			case (VT_INT):
+			case (VT_INTEGER):
 				if (!c->has_arg(2))
 				{
 					c->arg(0)->set(1);
 					// Check for end of file...
-					if (c->parent->get_infile() != NULL)
-						if (c->parent->get_infile()->peek() == -1)
+					if (c->get_parent()->get_infile() != NULL)
+						if (c->get_parent()->get_infile()->peek() == -1)
 						{
 							msg(DM_VERBOSE,"Command 'repeat' reached end of file.\n");
 							status = FALSE;
@@ -144,7 +144,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 					// Second argument determines pattern
 					pattern *p;
 					if (c->argt(1) == VT_PATTERN) p = c->argp(1);
-					else if (c->argt(1) == VT_INT) p = obj.m->get_pattern(c->argi(1));
+					else if (c->argt(1) == VT_INTEGER) p = obj.m->get_pattern(c->argi(1));
 					else
 					{
 						printf("Atom loop argument 2 must be of type 'pattern' or 'int'.\n");
@@ -159,7 +159,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 					// Check on third argument - if provided, must be an int
 					if (c->has_arg(2))
 					{
-						if (c->argt(2) == VT_INT)
+						if (c->argt(2) == VT_INTEGER)
 						{
 							int i = c->argi(2);
 							// Check molecule range
@@ -184,7 +184,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				else c->arg(0)->set(obj.m->get_atoms());
 				if (c->arga(0) == NULL) status = FALSE;
 				// Set secondary variables from atom loop variable
-				c->parent->set_atom_variables(c->arg(0)->get_name(), c->arga(0));
+				c->get_parent()->set_atom_variables(c->arg(0)->get_name(), c->arga(0));
 				break;
 			// Pattern loop	 1 arg  - loop over patterns in model
 			case (VT_PATTERN):
@@ -197,7 +197,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				}
 				if (c->argp(0) == NULL) status = FALSE;
 				// Set pattern variables from the pattern pointer
-				c->parent->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
+				c->get_parent()->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
 				break;
 			/* Loop over forcefield terms of pattern
 			case (VT_PATBOUND):

@@ -29,14 +29,14 @@ int command_functions::function_CA_ADDREADOPTION(command *&c, bundle &obj)
 {
 	// Get parse option from variable
 	parse_option po = PO_from_text(c->argc(0));
-	if (po != PO_NITEMS) c->parent->add_readoption(po);
+	if (po != PO_NITEMS) c->get_parent()->add_readoption(po);
 	return CR_SUCCESS;
 }
 
 // Search for line containing specified string
 int command_functions::function_CA_FIND(command *&c, bundle &obj)
 {
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -65,7 +65,7 @@ int command_functions::function_CA_FIND(command *&c, bundle &obj)
 int command_functions::function_CA_READCHARS(command *&c, bundle &obj)
 {
 	static char readc[512];
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -80,7 +80,7 @@ int command_functions::function_CA_READCHARS(command *&c, bundle &obj)
 // Read double from unformatted file
 int command_functions::function_CA_READDOUBLE(command *&c, bundle &obj)
 {
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -96,7 +96,7 @@ int command_functions::function_CA_READDOUBLE(command *&c, bundle &obj)
 // Read integer from unformatted file
 int command_functions::function_CA_READINTEGER(command *&c, bundle &obj)
 {
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -112,20 +112,20 @@ int command_functions::function_CA_READINTEGER(command *&c, bundle &obj)
 // Read line and parse with format
 int command_functions::function_CA_READLINE(command *&c, bundle &obj)
 {
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
 		return CR_FAIL;
 	}
-	parser.get_args_formatted(inputfile,c->parent->get_readoptions(),c->get_format());
+	parser.get_args_formatted(inputfile,c->get_parent()->get_readoptions(),c->get_format());
 	return CR_SUCCESS;
 }
 
 // Get next whitespace-delimited argument from file
 int command_functions::function_CA_READNEXT(command *&c, bundle &obj)
 {
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -138,7 +138,7 @@ int command_functions::function_CA_READNEXT(command *&c, bundle &obj)
 // Parse given variable with format
 int command_functions::function_CA_READVAR(command *&c, bundle &obj)
 {
-	parser.get_args_formatted(c->argc(0),c->parent->get_readoptions(),c->get_format());
+	parser.get_args_formatted(c->argc(0),c->get_parent()->get_readoptions(),c->get_format());
 	return CR_SUCCESS;
 }
 
@@ -147,7 +147,7 @@ int command_functions::function_CA_REMOVEREADOPTION(command *&c, bundle &obj)
 {
 	// Get parse option from variable
 	parse_option po = PO_from_text(c->argc(0));
-	if (po != PO_NITEMS) c->parent->remove_readoption(po);
+	if (po != PO_NITEMS) c->get_parent()->remove_readoption(po);
 	return CR_SUCCESS;
 }
 
@@ -155,7 +155,7 @@ int command_functions::function_CA_REMOVEREADOPTION(command *&c, bundle &obj)
 int command_functions::function_CA_SKIPCHARS(command *&c, bundle &obj)
 {
 	static char readc[512];
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -168,7 +168,7 @@ int command_functions::function_CA_SKIPCHARS(command *&c, bundle &obj)
 // Skip line(s) of file
 int command_functions::function_CA_SKIPLINE(command *&c, bundle &obj)
 {
-	ifstream *inputfile = c->parent->get_infile();
+	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -182,7 +182,7 @@ int command_functions::function_CA_SKIPLINE(command *&c, bundle &obj)
 // Write line with format
 int command_functions::function_CA_WRITELINE(command *&c, bundle &obj)
 {
-	ofstream *outputfile = c->parent->get_outfile();
+	ofstream *outputfile = c->get_parent()->get_outfile();
 	if (outputfile == NULL)
 	{
 		msg(DM_NONE,"No output file active.\n");

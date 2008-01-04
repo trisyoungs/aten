@@ -102,7 +102,7 @@ class filter
 	// Return the file filter
 	const char *get_glob() { return glob.get(); }
 	// Set the type of filter
-	void set_type(filter_type ft) { type = ft; }
+	void set_type(filter_type ft);
 	// Return the type of filter
 	filter_type get_type() { return type; }
 	// Return the long description of the filter (including glob)
