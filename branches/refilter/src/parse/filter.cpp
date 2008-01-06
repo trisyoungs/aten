@@ -186,6 +186,9 @@ void filter::set_type(filter_type ft)
 	{
 		case (FT_MODEL_IMPORT):
 		case (FT_TRAJECTORY_IMPORT):
+			v = commands.variables.create_variable("header","",VT_CHAR);
+			v = commands.variables.create_variable("natoms","",VT_INTEGER);
+			break;
 		case (FT_FIELD_IMPORT):
 		case (FT_GRID_IMPORT):
 			break;
@@ -197,18 +200,20 @@ void filter::set_type(filter_type ft)
 			v = commands.variables.create_variable("cell","alpha",VT_CHAR);
 			v = commands.variables.create_variable("cell","beta",VT_CHAR);
 			v = commands.variables.create_variable("cell","gamma",VT_CHAR);
-			v = commands.variables.create_variable("cell","a.x",VT_CHAR);
-			v = commands.variables.create_variable("cell","a.y",VT_CHAR);
-			v = commands.variables.create_variable("cell","a.z",VT_CHAR);
-			v = commands.variables.create_variable("cell","b.x",VT_CHAR);
-			v = commands.variables.create_variable("cell","b.y",VT_CHAR);
-			v = commands.variables.create_variable("cell","b.z",VT_CHAR);
-			v = commands.variables.create_variable("cell","c.x",VT_CHAR);
-			v = commands.variables.create_variable("cell","c.y",VT_CHAR);
-			v = commands.variables.create_variable("cell","c.z",VT_CHAR);
+			v = commands.variables.create_variable("cell","ax",VT_CHAR);
+			v = commands.variables.create_variable("cell","ay",VT_CHAR);
+			v = commands.variables.create_variable("cell","az",VT_CHAR);
+			v = commands.variables.create_variable("cell","bx",VT_CHAR);
+			v = commands.variables.create_variable("cell","by",VT_CHAR);
+			v = commands.variables.create_variable("cell","bz",VT_CHAR);
+			v = commands.variables.create_variable("cell","cx",VT_CHAR);
+			v = commands.variables.create_variable("cell","cy",VT_CHAR);
+			v = commands.variables.create_variable("cell","cz",VT_CHAR);
 			v = commands.variables.create_variable("natoms","",VT_INTEGER);
 			break;
 		case (FT_TRAJECTORY_EXPORT):
+			v = commands.variables.create_variable("header","",VT_CHAR);
+			v = commands.variables.create_variable("natoms","",VT_INTEGER);
 			break;
 		case (FT_FIELD_EXPORT):
 			break;

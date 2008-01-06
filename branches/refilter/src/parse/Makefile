@@ -52,9 +52,9 @@ LIBRARIES = $(noinst_LIBRARIES)
 ARFLAGS = cru
 libparse_a_AR = $(AR) $(ARFLAGS)
 libparse_a_LIBADD =
-am_libparse_a_OBJECTS = filter.$(OBJEXT) filtercommands.$(OBJEXT) \
-	forcefield.$(OBJEXT) format.$(OBJEXT) parser.$(OBJEXT) \
-	probe.$(OBJEXT) temp_dlpfield.$(OBJEXT)
+am_libparse_a_OBJECTS = filter.$(OBJEXT) forcefield.$(OBJEXT) \
+	format.$(OBJEXT) parser.$(OBJEXT) probe.$(OBJEXT) \
+	temp_dlpfield.$(OBJEXT)
 libparse_a_OBJECTS = $(am_libparse_a_OBJECTS)
 DEFAULT_INCLUDES = -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/config/depcomp
@@ -207,8 +207,8 @@ target_cpu = i686
 target_os = linux-gnu
 target_vendor = suse
 noinst_LIBRARIES = libparse.a
-libparse_a_SOURCES = filter.cpp filtercommands.cpp forcefield.cpp format.cpp parser.cpp probe.cpp temp_dlpfield.cpp
-noinst_HEADERS = filtercommands.h filter.h format.h parser.h temp_dlpfield.h
+libparse_a_SOURCES = filter.cpp forcefield.cpp format.cpp parser.cpp probe.cpp temp_dlpfield.cpp
+noinst_HEADERS = filter.h format.h parser.h temp_dlpfield.h
 INCLUDES = -I../ -DQT_SHARED -I/usr/include/QtGui  
 all: all-am
 
@@ -258,7 +258,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/filter.Po
-include ./$(DEPDIR)/filtercommands.Po
 include ./$(DEPDIR)/forcefield.Po
 include ./$(DEPDIR)/format.Po
 include ./$(DEPDIR)/parser.Po

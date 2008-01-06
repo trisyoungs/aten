@@ -22,7 +22,6 @@
 #ifndef H_FILTER_H
 #define H_FILTER_H
 
-#include "parse/filtercommands.h"
 #include "command/commandlist.h"
 #include "base/prefs.h"
 #include <fstream>
