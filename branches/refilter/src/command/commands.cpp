@@ -252,6 +252,7 @@ const char *CA_data[CA_NITEMS] = {
 	"readnext,V",
 	"readvar,VF",
 	"removereadoption,V",
+	"rewind",
 	"skipchars,V",
 	"skipline,v",
 	"writeline,F",
@@ -296,7 +297,7 @@ const char *CA_data[CA_NITEMS] = {
 	};
 
 command_action CA_from_text(const char* s)
-	{ return (command_action) enum_search_data("command", CA_NITEMS, CA_data, s); }
+	{ return (command_action) enum_search_data("", CA_NITEMS, CA_data, s); }
 const char *text_from_CA(command_action ca)
 	{ return get_before_comma(CA_data[ca]); }
 const char *vars_from_CA(command_action ca)

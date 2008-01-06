@@ -437,7 +437,7 @@ bool commandlist::add_command(command_action ca)
 				v = variables.get(parser.argc(n));
 				if (v != NULL)
 				{
-					printf("Variable '%s': redeclared as type [%s], was [%s].\n", parser.argc(n), text_from_VT((variable_type) (ca - CA_CHAR)),  text_from_VT(v->get_type()));
+					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), text_from_VT((variable_type) (ca - CA_CHAR)),  text_from_VT(v->get_type()));
 					result = FALSE;
 				}
 				else
@@ -508,6 +508,9 @@ bool commandlist::add_command(command_action ca)
 				{
 					case (VT_ATOM):
 						varresult = create_atom_variables(fn->arg(0)->get_name());
+						break;
+					case (VT_PATTERN):
+						varresult = create_pattern_variables(fn->arg(0)->get_name());
 						break;
 				}
 			}
@@ -607,7 +610,7 @@ bool commandlist::cache_command()
 	}
 	else
 	{
-		msg(DM_NONE,"Unrecognised command '%s' in script.\n", parser.argc(0));
+		msg(DM_NONE,"Unrecognised command '%s'.\n", parser.argc(0));
 		result = FALSE;
 	}
 	dbg_end(DM_CALLS,"commandlist::cache_command");
@@ -857,12 +860,26 @@ void commandlist::set_atom_variables(const char *varname, atom *i)
 		variables.set(varname,"vz",v.z);
 		variables.set(varname,"q",i->get_charge());
 	}
-	else
-	{
-		variables.reset("symbol","mass","name","z","fftype","ffequiv","");
-		variables.reset("r.x","r.y","r.z","f.x","f.y","f.z","v.x","v.y","v.z","q","");
-	}
 	dbg_end(DM_CALLS,"commandlist::set_atom_variables");
+}
+
+// Create pattern parameter variables
+bool commandlist::create_pattern_variables(const char *base)
+{
+	variable *v;
+	v = variables.create_variable(base,"name",VT_CHAR);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"nmols",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"nmolatoms",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"nbonds",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"nangles",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"ntorsions",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	return TRUE;
 }
 
 // Set variables for pattern
@@ -878,7 +895,6 @@ void commandlist::set_pattern_variables(const char *varname, pattern *p)
 		variables.set(varname,"nangles",p->angles.size());
 		variables.set(varname,"ntorsions",p->torsions.size());
 	}
-	else variables.reset("patname","nmols","nmolatoms","nffbonds","nffangles","nfftorsions","");
 	dbg_end(DM_CALLS,"commandlist::set_pattern_variables");
 }
 
@@ -934,64 +950,5 @@ void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 		}
 		
 	}
-	else variables.reset("funcform","typei","typej","typek","typel","param_a","param_b","param_c","param_d","");
 	dbg_end(DM_CALLS,"commandlist::set_patbound_variables");
 }
-
-/* Get atom variables from list
-void commandlist::get_atom_variables(atom *i)
-{
-	dbg_begin(DM_CALLS,"commandlist::get_atom_variables");
-	variable *v;
-	static vec3<double> vec1;
-	// Element is not set here (needs too many other things to work)
-	// Set charge
-	v = find("q");
-	if (v != NULL)
-	{
-		i->set_charge(v->get_as_double());
-		v->reset();
-	}
-	// Set temporary atom ID
-	v = find("id");
-	if (v != NULL)
-	{
-		i->set_id(v->get_as_int());
-		v->reset();
-	}
-	// Set positions
-	v = find("r.x");
-	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("r.y");
-	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("r.z");
-	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	i->r() = vec1;
-	// Set forces
-	v = find("f.x");
-	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("f.y");
-	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("f.z");
-	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	i->f() = vec1;
-	// Set velocities
-	v = find("v.x");
-	vec1.set(0, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("v.y");
-	vec1.set(1, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	v = find("v.z");
-	vec1.set(2, (v == NULL ? 0.0 : v->get_as_double()));
-	if (v != NULL) v->reset();
-	i->v() = vec1;
-	dbg_end(DM_CALLS,"commandlist::get_atom_variables");
-}
-*/

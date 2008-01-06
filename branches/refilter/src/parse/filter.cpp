@@ -185,11 +185,14 @@ void filter::set_type(filter_type ft)
 	switch (type)
 	{
 		case (FT_MODEL_IMPORT):
+			break;
 		case (FT_TRAJECTORY_IMPORT):
 			v = commands.variables.create_variable("header","",VT_CHAR);
 			v = commands.variables.create_variable("natoms","",VT_INTEGER);
+			v = commands.variables.create_variable("cell","type",VT_CHAR);
 			break;
 		case (FT_FIELD_IMPORT):
+			break;
 		case (FT_GRID_IMPORT):
 			break;
 		case (FT_MODEL_EXPORT):
@@ -216,6 +219,9 @@ void filter::set_type(filter_type ft)
 			v = commands.variables.create_variable("natoms","",VT_INTEGER);
 			break;
 		case (FT_FIELD_EXPORT):
+			v = commands.variables.create_variable("title","",VT_CHAR);
+			v = commands.variables.create_variable("npatterns","",VT_INTEGER);
+			v = commands.variables.create_variable("energyunit","",VT_CHAR);
 			break;
 		case (FT_GRID_EXPORT):
 			break;

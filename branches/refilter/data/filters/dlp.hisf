@@ -1,11 +1,18 @@
 # DL_POLY Formatted Trajectory file filter.
-# Last modified: 10/10/07.
+# Last modified: 06/01/2007.
 importtrajectory
 	name "DL_POLY Formatted History"
 	extension "HISf"
 	glob *HISf
 	nickname dlpoly
 	exact "HISTORY"
+
+	# Variable declaration
+	character title,e
+	integer nstep,keytrj,imcon,trajnatoms,n,id
+	double tstep,ax,bx,cx,ay,by,cy,az,bz,cz,mass,q
+	double rx,ry,rz,fx,fy,fz,vx,vy,vz
+
 	# DL_POLY formatted history files may contain a header.
 	# When aten is trying to read the header, the variable 'header' will be 'true' (and 'frame' will be 'false')
 	if $header = true
@@ -19,26 +26,32 @@ importtrajectory
 		end
 	else
 		# Frame header - '"timestep"	nstep	natms	keytrj	imcon	tstep'
-		readline "* $nstep $natoms $keytrj $imcon $tstep"
+		readline "* $nstep $trajnatoms $keytrj $imcon $tstep"
+		# Check number of atoms in trajectory frame
+		if $natoms <> $trajnatoms
+			error "Number of atoms in file(${trajnatoms}) doesn't match number in parent model (${natoms})."
+		end
 		# Read cell if its present
 		if $imcon > 0
-			readline "$cell.a.x@12 $cell.b.x@12 $cell.c.x@12"
-			readline "$cell.a.y@12 $cell.b.y@12 $cell.c.y@12"
-			readline "$cell.a.z@12 $cell.b.z@12 $cell.c.z@12"
-			setcellaxes
+			readline "$ax@12 $bx@12 $cx@12"
+			readline "$ay@12 $by@12 $cy@12"
+			readline "$az@12 $bz@12 $cz@12"
+			setcellaxes $ax $bx $cx $ay $by $cy $az $bz $cz
 		end
 		# Now the atoms
 		modeltemplate
-		repeat $n $natoms
+		for $n,1,$natoms
 			readline "$e $id $mass $q"
-			readline "$r.x@12 $r.y@12 $r.z@12"
+			readline "$rx@12 $ry@12 $rz@12"
+			setcoords $rx $ry $rz
 			if $keytrj > 0
-				readline "$v.x@12 $v.y@12 $v.z@12"
+				readline "$vx@12 $vy@12 $vz@12"
+				setvelocities $vx $vy $vz
 			end
 			if $keytrj > 1
-				readline "$f.x@12 $f.y@12 $f.z@12"
+				readline "$fx@12 $fy@12 $fz@12"
+				setforces $fx $fy $fz
 			end
-			setatom $n
 		end
 		fold
 		rebond

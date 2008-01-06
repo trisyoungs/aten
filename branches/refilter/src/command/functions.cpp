@@ -240,6 +240,7 @@ command_functions::command_functions()
 	action[CA_READNEXT] = &command_functions::function_CA_READNEXT;
 	action[CA_READVAR] = &command_functions::function_CA_READVAR;
 	action[CA_REMOVEREADOPTION] = &command_functions::function_CA_REMOVEREADOPTION;
+	action[CA_REWIND] = &command_functions::function_CA_REWIND;
 	action[CA_SKIPCHARS] = &command_functions::function_CA_SKIPCHARS;
 	action[CA_SKIPLINE] = &command_functions::function_CA_SKIPLINE;
 	action[CA_WRITELINE] = &command_functions::function_CA_WRITELINE;

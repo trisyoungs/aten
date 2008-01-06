@@ -248,6 +248,8 @@ class commandlist
 	// Set atom variables
 	void set_atom_variables(const char*, atom*);
 	void set_atom_variables(const char*, int);
+	// Create atom variables
+	bool create_pattern_variables(const char *s);
 	// Set pattern variables
 	void set_pattern_variables(const char*, pattern*);
 	// Set pattern (ff) term variables

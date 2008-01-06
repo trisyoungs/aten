@@ -256,6 +256,7 @@ class command_functions
 	int function_CA_READNEXT(command *&c, bundle &obj);
 	int function_CA_READVAR(command *&c, bundle &obj);
 	int function_CA_REMOVEREADOPTION(command *&c, bundle &obj);
+	int function_CA_REWIND(command *&c, bundle &obj);
 	int function_CA_SKIPCHARS(command *&c, bundle &obj);
 	int function_CA_SKIPLINE(command *&c, bundle &obj);
 	int function_CA_WRITELINE(command *&c, bundle &obj);

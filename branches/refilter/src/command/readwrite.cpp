@@ -151,6 +151,19 @@ int command_functions::function_CA_REMOVEREADOPTION(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Go to start of current file
+int command_functions::function_CA_REWIND(command *&c, bundle &obj)
+{
+	ifstream *inputfile = c->get_parent()->get_infile();
+	if (inputfile == NULL)
+	{
+		msg(DM_NONE,"No input file active.\n");
+		return CR_FAIL;
+	}
+	inputfile->seekg(0, ios::beg);
+	return CR_SUCCESS;
+}
+
 // Discard N characters from unformatted file
 int command_functions::function_CA_SKIPCHARS(command *&c, bundle &obj)
 {
