@@ -32,6 +32,11 @@ enum filter_type { FT_MODEL_IMPORT, FT_TRAJECTORY_IMPORT, FT_FIELD_IMPORT, FT_GR
 const char *text_from_FT(filter_type);
 filter_type FT_from_text(const char*);
 
+// Filter commands
+enum filter_command { FC_NAME, FC_NICKNAME, FC_EXTENSION, FC_GLOB, FC_EXACT, FC_ZMAP, FC_ID, FC_NITEMS };
+filter_command FC_from_text(const char*);
+const char *text_from_FC(filter_command);
+
 // Forward Declarations
 class model;
 class grid;

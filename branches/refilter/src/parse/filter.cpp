@@ -29,11 +29,17 @@
 
 // Filter types
 const char *FT_strings[FT_NITEMS] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
-
 const char *text_from_FT(filter_type ft)
 	{ return FT_strings[ft]; }
 filter_type FT_from_text(const char *s)
 	{ return (filter_type) enum_search("filter section",FT_NITEMS,FT_strings,s); }
+
+// Filter commands
+const char* FC_data[FC_NITEMS] =  { "name", "nickname", "extension", "glob", "exact", "zmap", "id" };
+filter_command FC_from_text(const char* s)
+	{ return (filter_command) enum_search_data("", FC_NITEMS, FC_data, s); }
+const char *text_from_FC(filter_command fc)
+	{ return get_before_comma(FC_data[fc]); }
 
 // Constructor
 filter::filter()

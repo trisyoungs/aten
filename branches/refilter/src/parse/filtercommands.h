@@ -22,9 +22,6 @@
 #ifndef H_FILTERCMDS_H
 #define H_FILTERCMDS_H
 
-// Filter commands
-enum filter_command { FC_NAME, FC_NICKNAME, FC_EXTENSION, FC_GLOB, FC_EXACT, FC_ZMAP, FC_ID, FC_NITEMS };
-filter_command FC_from_text(const char*);
-const char *text_from_FC(filter_command);
+
 
 #endif
