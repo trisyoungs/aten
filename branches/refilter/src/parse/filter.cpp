@@ -244,7 +244,7 @@ void filter::print()
 }
 
 // Execute filter
-bool filter::execute(const char *filename, ifstream *sourcefile, bool trajheader, model *framemodel)
+bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, model *framemodel)
 {
 	dbg_begin(DM_CALLS,"filter::execute");
 	// Grab pointer bundle from master
@@ -256,9 +256,17 @@ bool filter::execute(const char *filename, ifstream *sourcefile, bool trajheader
 	switch (type)
 	{
 		case (FT_MODEL_IMPORT):
-			msg(DM_NONE,"Load Model : %s (%s)\n",obj.m->get_filename(), name.get());
+			msg(DM_NONE,"Load Model : %s (%s)\n", filename, name.get());
 			// Reset reserved variables
 			commands.variables.set("title","Unnamed");
+			// Open file and set target
+			if (!commands.set_infile(filename))
+			{
+				msg(DM_NONE,"Error opening input file '%s'.\n",filename);
+				dbg_end(DM_CALLS,"filter::execute");
+				return FALSE;
+			}
+	printf("lsdkjflskdjf\n");
 			break;
 		case (FT_MODEL_EXPORT):
 			msg(DM_NONE,"Save Model : %s (%s)...", obj.m->get_filename(), name.get());
@@ -340,7 +348,7 @@ bool filter::execute(const char *filename, ifstream *sourcefile, bool trajheader
 
 	}
 	// Execute commandlist
-	bool result = commands.execute(framemodel,sourcefile);
+	bool result = commands.execute(framemodel,trajfile);
 	// Perform post-filter operations
 	switch (type)
 	{

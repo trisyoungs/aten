@@ -131,13 +131,13 @@ class variable_list
 	public:
 	// Set existing (or create new) variable (VT_CHAR)
 	void set(const char*, const char*, const char*);
-	void set(const char *name, const char *value) { set("",name,value); }
+	void set(const char *name, const char *value) { set(name,"",value); }
 	// Set existing (or create new) variable (VT_INT)
 	void set(const char*, const char*, int);
-	void set(const char *name, int value) { set("",name,value); }
+	void set(const char *name, int value) { set(name,"",value); }
 	// Set existing (or create new) variable (VT_DOUBLE)
 	void set(const char*, const char*, double);
-	void set(const char *name, double value) { set("",name,value); }
+	void set(const char *name, double value) { set(name,"",value); }
 	// Retrieve a named variable from the list
 	variable *get(const char *prefix, const char *suffix);
 	variable *get(const char *name) { return get(name,""); }

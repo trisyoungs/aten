@@ -26,6 +26,26 @@
 #include "classes/forcefield.h"
 #include "parse/filter.h"
 
+// Draw unbound atom ('addatom <el> [x y z]')
+int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	int el = elements.find(c->argc(0));
+	if (c->has_arg(3)) obj.i = obj.m->add_atom(el, c->get_parent()->penpos);
+	else obj.i = obj.m->add_atom(el, c->arg3d(1));
+	return CR_SUCCESS;
+}
+
+// Draw atom with bond to 'activeatom' ('addchain <el>')
+int command_functions::function_CA_ADDCHAIN(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->get_parent()->penpos);
+	if (obj.i != NULL) obj.m->bond_atoms(obj.i,i,BT_SINGLE);
+	obj.i = i;
+	return CR_SUCCESS;
+}
+
 // Set current atom charge
 int command_functions::function_CA_SETCHARGE(command *&c, bundle &obj)
 {
@@ -40,8 +60,9 @@ int command_functions::function_CA_SETCHARGE(command *&c, bundle &obj)
 int command_functions::function_CA_SETCOORDS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
+	if (c->has_arg(3)) obj.i = obj.m->get_atom(c->argi(3) - 1);
 	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+printf("klsajdlkasjdl\n");
 	obj.i->r() = c->arg3d(0);
 	return CR_SUCCESS;
 }
@@ -60,7 +81,7 @@ int command_functions::function_CA_SETELEMENT(command *&c, bundle &obj)
 int command_functions::function_CA_SETFORCES(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
+	if (c->has_arg(3)) obj.i = obj.m->get_atom(c->argi(3) - 1);
 	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
 	obj.i->f() = c->arg3d(0);
 	return CR_SUCCESS;
@@ -140,7 +161,7 @@ int command_functions::function_CA_SETRZ(command *&c, bundle &obj)
 int command_functions::function_CA_SETVELOCITIES(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
+	if (c->has_arg(3)) obj.i = obj.m->get_atom(c->argi(3) - 1);
 	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
 	obj.i->v() = c->arg3d(0);
 	return CR_SUCCESS;

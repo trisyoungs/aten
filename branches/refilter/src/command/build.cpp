@@ -21,6 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/elements.h"
+#include "base/master.h"
 #include "model/model.h"
 
 // Add hydrogens to model ('addhydrogen')
@@ -31,25 +32,12 @@ int command_functions::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Draw unbound atom ('addatom <el> [x y z]')
-int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
+// Terminate chain ('endchain')
+int command_functions::function_CA_ENDCHAIN(command *&c, bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	int el = elements.find(c->argc(0));
-	if (c->has_arg(3)) obj.i = obj.m->add_atom(el, c->get_parent()->penpos);
-	else obj.i = obj.m->add_atom(el, c->arg3d(1));
-	// Reset variables...
-	return CR_SUCCESS;
-}
-
-// Draw atom with bond to 'activeatom' ('addchain <el>')
-int command_functions::function_CA_ADDCHAIN(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->get_parent()->penpos);
-	if (obj.i != NULL) obj.m->bond_atoms(obj.i,i,BT_SINGLE);
-	obj.i = i;
-	return CR_SUCCESS;
+	// TODO end chain with atom id (optional argument)
+	master.current.i = NULL;
+	return CR_FAIL;
 }
 
 // Delete current selection ('delete')
@@ -58,14 +46,6 @@ int command_functions::function_CA_DELETE(command *&c, bundle &obj)
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->selection_delete();
 	return CR_SUCCESS;
-}
-
-// Terminate chain ('endchain')
-int command_functions::function_CA_ENDCHAIN(command *&c, bundle &obj)
-{
-	// TODO end chain with atom id (optional argument)
-	obj.i = NULL;
-	return CR_FAIL;
 }
 
 // Set pen coordinates ('locate <dx dy dz>')

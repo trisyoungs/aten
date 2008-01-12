@@ -92,25 +92,31 @@ void variable::print()
 	}
 }
 
-// Set (char)
+// Set (from char)
 void variable::set(const char *s)
 {
 	if (type == VT_CHAR) charvalue.set(s);
-	else printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'char' >>>>\n", name.get(), text_from_VT(type));
+	else if (type == VT_INTEGER) intvalue = atoi(s);
+	else if (type == VT_DOUBLE) doublevalue = atof(s);
+	else printf("variable::set <<<< Can't set variable '%s' which is of type '%s' from a character string >>>>\n", name.get(), text_from_VT(type));
 }
 
 // Set (int)
 void variable::set(int i)
 {
-	if (type == VT_INTEGER) intvalue = i;
-	else printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'int' >>>>\n", name.get(), text_from_VT(type));
+	if (type == VT_CHAR) charvalue.set(itoa(i));
+	else if (type == VT_INTEGER) intvalue = i;
+	else if (type == VT_DOUBLE) doublevalue = i;
+	else printf("variable::set <<<< Can't set variable '%s' which is of type '%s' from an integer value >>>>\n", name.get(), text_from_VT(type));
 }
 
 // Set (double)
 void variable::set(double d)
 {
-	if (type == VT_DOUBLE) doublevalue = d;
-	else printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'double' >>>>\n", name.get(), text_from_VT(type));
+	if (type == VT_CHAR) charvalue.set(ftoa(d));
+	else if (type == VT_INTEGER) intvalue = int(d);
+	else if (type == VT_DOUBLE) doublevalue = d;
+	else printf("variable::set <<<< Can't set variable '%s' which is of type '%s' from a double value >>>>\n", name.get(), text_from_VT(type));
 }
 
 // Set (atom*)
@@ -402,8 +408,11 @@ void variable_list::set(const char *prefix, const char *name, const char *value)
 	strcat(newname,".");
 	strcat(newname,name);
 	variable *v = get(newname);
-	if (v == NULL) add_variable(newname, VT_CHAR);
+	printf("variable %li\n",v);
+	if (v == NULL) v = add_variable(newname, VT_CHAR);
+	printf("variable %li\n",v);
 	v->set(value);
+	printf("variable %li\n",v);
 }
 
 // Set existing variable (or add new and set) (VT_INTEGER)
@@ -414,7 +423,7 @@ void variable_list::set(const char *prefix, const char *name, int value)
 	strcat(newname,".");
 	strcat(newname,name);
 	variable *v = get(newname);
-	if (v == NULL) add_variable(newname, VT_INTEGER);
+	if (v == NULL) v = add_variable(newname, VT_INTEGER);
 	v->set(value);
 }
 
@@ -426,7 +435,7 @@ void variable_list::set(const char *prefix, const char *name, double value)
 	strcat(newname,".");
 	strcat(newname,name);
 	variable *v = get(newname);
-	if (v == NULL) add_variable(newname, VT_DOUBLE);
+	if (v == NULL) v = add_variable(newname, VT_DOUBLE);
 	v->set(value);
 }
 

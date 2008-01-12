@@ -109,37 +109,37 @@ void command::print_args()
 	dbg_end(DM_CALLS,"command::print_args");
 }
 
-
 // Return arguments as vec3<double>
 vec3<double> command::arg3d(int i)
 {
-	dbg_begin(DM_CALLS,"command::get_vector3d");
+	dbg_begin(DM_CALLS,"command::arg3d");
         static vec3<double> result;
         if (i > (MAXDATAVARS-3)) printf("command::get_vector3d - Starting point too close to MAXDATAVARS.\n");
+	printf("%i %li  %i %li  %i %li\n",i,args[i],i+1,args[i+1],i+2,args[i+2]);
         result.set(args[i]->get_as_double(),args[i+1]->get_as_double(),args[i+2]->get_as_double());
-	dbg_end(DM_CALLS,"command::get_vector3d");
+	dbg_end(DM_CALLS,"command::arg3d");
         return result;
 }
 
 // Return arguments as vec3<float>
 vec3<float> command::arg3f(int i)
 {
-	dbg_begin(DM_CALLS,"command::get_vector3f");
+	dbg_begin(DM_CALLS,"command::arg3f");
         static vec3<float> result;
         if (i > (MAXDATAVARS-3)) printf("command::get_vector3f - Starting point too close to MAXDATAVARS.\n");
         result.set(args[i]->get_as_float(),args[i+1]->get_as_float(),args[i+2]->get_as_float());
-	dbg_end(DM_CALLS,"command::get_vector3f");
+	dbg_end(DM_CALLS,"command::arg3f");
         return result;
 }
 
 // Return arguments as vec3<int>
 vec3<int> command::arg3i(int i)
 {
-	dbg_begin(DM_CALLS,"command::get_vector3i");
+	dbg_begin(DM_CALLS,"command::arg3i");
 	static vec3<int> result;
 	if (i > (MAXDATAVARS-3)) printf("command::get_vector3i - Starting point too close to MAXDATAVARS.\n");
         result.set(args[i]->get_as_int(),args[i+1]->get_as_int(),args[i+2]->get_as_int());
-	dbg_end(DM_CALLS,"command::get_vector3i");
+	dbg_end(DM_CALLS,"command::arg3i");
 	return result;
 }
 
@@ -735,14 +735,37 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 		if (infile != NULL) printf("Warning - supplied ifstream overrides file in commandlist.\n");
 		infile = sourcefile;
 	}
-	// Get first command in list
+	// Get first command in list and execute
 	command *c = commands.first();
-	int result;
 	while (c != NULL)
 	{
 		// Run command and get return value
-		result = c->execute(c, alttarget);
+		switch (c->execute(c, alttarget))
+		{
+			// Command succeeded - get following command
+			case (CR_SUCCESS):
+				c = c->next;
+				break;
+			// Command succeeded - new command already set
+			case (CR_SUCCESSNOMOVE):
+				break;
+			// Command failed - show message and quit
+			case (CR_FAIL):
+				printf("Command list failed at '%s'.\n", text_from_CA(c->get_command()));
+				c = NULL;
+				break;
+			// Command failed - show message and continue to next command
+			case (CR_FAILCONTINUE):
+				printf("Continuing past failed command '%s'...\n", text_from_CA(c->get_command()));
+				c = c->next;
+				break;
+			// Exit - we're done
+			case (CR_EXIT):
+				c = NULL;
+				break;
+		}
 	}
+	return TRUE;
 }
 
 // Set variables for model

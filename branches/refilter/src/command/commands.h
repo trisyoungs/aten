@@ -54,7 +54,7 @@ enum command_action {
 	// Root node
 	CA_ROOTNODE,
 
-	// Analyse commands
+	// Analysis commands
 	CA_FINALISE,
 	CA_FRAMEANALYSE,
 	CA_MODELANALYSE,
