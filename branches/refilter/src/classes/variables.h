@@ -27,7 +27,7 @@
 #include "base/sysfunc.h"
 
 // Variable Types
-enum variable_type { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_BOND, VT_PATTERN, VT_MODEL, VT_PATBOUND, VT_NITEMS };
+enum variable_type { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_NITEMS };
 const char *text_from_VT(variable_type);
 
 // Forward Declarations

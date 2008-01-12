@@ -213,6 +213,7 @@ void filter::set_type(filter_type ft)
 			v = commands.variables.create_variable("cell","cy",VT_CHAR);
 			v = commands.variables.create_variable("cell","cz",VT_CHAR);
 			v = commands.variables.create_variable("natoms","",VT_INTEGER);
+			v = commands.variables.create_variable("title","",VT_CHAR);
 			break;
 		case (FT_TRAJECTORY_EXPORT):
 			v = commands.variables.create_variable("header","",VT_CHAR);

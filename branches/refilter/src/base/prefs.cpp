@@ -245,7 +245,6 @@ void prefs_data::load(const char *filename)
 	dbg_begin(DM_CALLS,"prefs_data::load");
 	int success;
 	// Open the file
-
 	ifstream prefsfile(filename,ios::in);
 	if (!prefsfile.good())
 	{
@@ -255,7 +254,8 @@ void prefs_data::load(const char *filename)
 		return;
 	}
 	// Create script structure and initialise
-	commandlist prefscript;
+	commandlist prefcmds;
+	prefcmds.clear();
 	while (!prefsfile.eof())
 	{
 		success = parser.get_args_delim(&prefsfile,PO_USEQUOTES+PO_SKIPBLANKS);
@@ -266,16 +266,16 @@ void prefs_data::load(const char *filename)
 		}
 		else if (success == -1) break;
 		// Add script command
-		if (!prefscript.cache_command()) break;
+		if (!prefcmds.cache_command()) break;
 	}
 	// Check the flowstack - it should contain just the BC_ROOTNODE branch
-	if (prefscript.get_branchstack_size() != 0)
+	if (prefcmds.get_branchstack_size() != 0)
 	{
 		dbg_end(DM_CALLS,"prefs::load");
 		return;
 	}
+	prefcmds.execute();
 	dbg_end(DM_CALLS,"prefs::load");
-	prefscript.execute();
 }
 
 double prefs_data::screenradius(atom *i)

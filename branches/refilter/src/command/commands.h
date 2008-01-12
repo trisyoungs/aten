@@ -45,10 +45,11 @@ enum command_action {
 	CA_INT,
 	CA_DOUBLE,
 	CA_ATOM,
-	CA_BOND,
 	CA_PATTERN,
 	CA_MODEL,
-	CA_PATBOUND,
+	CA_BOND,
+	CA_ANGLE,
+	CA_TORSION,
 
 	// Root node
 	CA_ROOTNODE,

@@ -31,10 +31,11 @@ const char *CA_syntax[CA_NITEMS] = {
 	"integer <variables>",
 	"double <variables>",
 	"atom <variables>",
-	"bond <variables>",
 	"pattern <variables>",
 	"model <variables>",
-	"patbound <variables>",
+	"bond <variables>",
+	"angle <variables>",
+	"torsion <variables>",
 
 	// Root node
 	"_ROOTNODE_",

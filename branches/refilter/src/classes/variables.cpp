@@ -29,7 +29,7 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "bond*", "pattern*", "model*", "patbound*" };
+const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*" };
 const char *text_from_VT(variable_type vt)
 	{ return VT_keywords[vt]; }
 
@@ -82,10 +82,11 @@ void variable::print()
 			printf("Variable '%s', type 'double', value '%f'.\n", name.get(), get_as_double());
 			break;
 		case (VT_ATOM):
-		case (VT_BOND):
 		case (VT_MODEL):
 		case (VT_PATTERN):
-		case (VT_PATBOUND):
+		case (VT_BOND):
+		case (VT_ANGLE):
+		case (VT_TORSION):
 			printf("Variable '%s', type '%s', value '%li'.\n", name.get(), text_from_VT(type), ptrvalue);
 			break;
 	}
@@ -151,7 +152,7 @@ void variable::set(model *m)
 // Set (patbound)
 void variable::set(patbound *pb)
 {
-	if (type != VT_PATBOUND)
+	if (type < VT_BOND)
 	{
 		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'patbound*' >>>>\n",name.get(), text_from_VT(type));
 		return;
@@ -252,10 +253,11 @@ void variable::reset()
 			doublevalue = 0.0;
 			break;
 		case (VT_ATOM):
-		case (VT_BOND):
 		case (VT_PATTERN):
 		case (VT_MODEL):
-		case (VT_PATBOUND):
+		case (VT_BOND):
+		case (VT_ANGLE):
+		case (VT_TORSION):
 			ptrvalue = NULL;
 			break;
 	}
@@ -274,16 +276,15 @@ void variable::increase(int n)
 		case (VT_ATOM):
 			ptrvalue = ( (atom*) ptrvalue)->next;
 			break;
-		case (VT_BOND):
-			printf("Can't increase with bond->next\n");
-			break; //ptrvalue = ( (bond*) ptrvalue)->next; break;
 		case (VT_PATTERN):
 			ptrvalue = ( (pattern*) ptrvalue)->next;
 			break;
 		case (VT_MODEL):
 			ptrvalue = ( (model*) ptrvalue)->next;
 			break;
-		case (VT_PATBOUND):
+		case (VT_BOND):
+		case (VT_ANGLE):
+		case (VT_TORSION):
 			ptrvalue = ( (patbound*) ptrvalue)->next;
 			break;
 		default:
@@ -306,17 +307,15 @@ void variable::decrease(int n)
 		case (VT_ATOM):
 			ptrvalue = ( (atom*) ptrvalue)->prev;
 			break;
-		case (VT_BOND):
-			printf("Can't decrease with bond->prev\n");
-			//ptrvalue = ( (bond*) ptrvalue)->prev;
-			break;
 		case (VT_PATTERN):
 			ptrvalue = ( (pattern*) ptrvalue)->prev;
 			break;
 		case (VT_MODEL):
 			ptrvalue = ( (model*) ptrvalue)->prev;
 			break;
-		case (VT_PATBOUND):
+		case (VT_BOND):
+		case (VT_ANGLE):
+		case (VT_TORSION):
 			ptrvalue = ( (patbound*) ptrvalue)->prev;
 			break;
 		default:

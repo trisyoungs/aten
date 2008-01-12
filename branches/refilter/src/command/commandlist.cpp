@@ -427,22 +427,23 @@ bool commandlist::add_command(command_action ca)
 		case (CA_INT):
 		case (CA_DOUBLE):
 		case (CA_ATOM):
-		case (CA_BOND):
 		case (CA_PATTERN):
 		case (CA_MODEL):
-		case (CA_PATBOUND):
+		case (CA_BOND):
+		case (CA_ANGLE):
+		case (CA_TORSION):
 			for (n=1; n<parser.get_nargs(); n++)
 			{
 				// Check for existing variable with same name
 				v = variables.get(parser.argc(n));
 				if (v != NULL)
 				{
-					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), text_from_VT((variable_type) (ca - CA_CHAR)),  text_from_VT(v->get_type()));
+					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), text_from_VT((variable_type) ca),  text_from_VT(v->get_type()));
 					result = FALSE;
 				}
 				else
 				{
-					vt = (variable_type) (ca - CA_CHAR);
+					vt = (variable_type) ca;
 					v = variables.add_variable(parser.argc(n), vt);
 				}
 			}
@@ -511,6 +512,11 @@ bool commandlist::add_command(command_action ca)
 						break;
 					case (VT_PATTERN):
 						varresult = create_pattern_variables(fn->arg(0)->get_name());
+						break;
+					case (VT_BOND):
+					case (VT_ANGLE):
+					case (VT_TORSION):
+						varresult = create_patbound_variables(fn->arg(0)->get_name());
 						break;
 				}
 			}
@@ -898,6 +904,37 @@ void commandlist::set_pattern_variables(const char *varname, pattern *p)
 	dbg_end(DM_CALLS,"commandlist::set_pattern_variables");
 }
 
+// Create pattern bound term variables
+bool commandlist::create_patbound_variables(const char *base)
+{
+	variable *v;
+	static char parm[24];
+	int i;
+	v = variables.create_variable(base,"form",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	strcpy(parm,"id_X");
+	for (i = 0; i < MAXFFBOUNDTYPES; i++)
+	{
+		parm[3] = 105 + i;
+		v = variables.create_variable(base,parm,VT_INTEGER);
+		if (v == NULL) return FALSE;
+	}
+	strcpy(parm,"type_X");
+	for (i = 0; i < MAXFFBOUNDTYPES; i++)
+	{
+		parm[5] = 105 + i;
+		v = variables.create_variable(base,parm,VT_CHAR);
+		if (v == NULL) return FALSE;
+	}
+	strcpy(parm,"param_X");
+	for (i = 0; i < MAXFFBOUNDTYPES; i++)
+	{
+		parm[6] = 97 + i;
+		v = variables.create_variable(base,parm,VT_DOUBLE);
+		if (v == NULL) return FALSE;
+	}
+}
+
 // Set variables for patbound
 void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 {
@@ -914,7 +951,6 @@ void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 		strcpy(parm,"id_X");
 		for (i = 0; i < MAXFFBOUNDTYPES; i++)
 		{
-
 			parm[3] = 105 + i;
 			variables.set(varname,parm,pb->get_atomid(i)+1);
 		}
@@ -936,16 +972,16 @@ void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 		switch (ffb->get_type())
 		{
 			case (FFC_BOND):
-				variables.set(varname,"funcform",text_from_BF(ffb->get_funcform().bondfunc));
+				variables.set(varname,"form",text_from_BF(ffb->get_funcform().bondfunc));
 				break;
 			case (FFC_ANGLE):
-				variables.set(varname,"funcform",text_from_AF(ffb->get_funcform().anglefunc));
+				variables.set(varname,"form",text_from_AF(ffb->get_funcform().anglefunc));
 				break;
 			case (FFC_TORSION):
-				variables.set(varname,"funcform",text_from_TF(ffb->get_funcform().torsionfunc));
+				variables.set(varname,"form",text_from_TF(ffb->get_funcform().torsionfunc));
 				break;
 			default:	
-				printf("commandlist::set_patbound_variables <<<< Funcform not defined >>>>\n");
+				printf("commandlist::set_patbound_variables <<<< Functional form not defined >>>>\n");
 				break;
 		}
 		

@@ -33,10 +33,11 @@ const char *CA_data[CA_NITEMS] = {
 	"integer",
 	"double",
 	"atom",
-	"bond",
 	"pattern",
 	"model",
-	"patbound",
+	"bond",
+	"angle",
+	"torsion",
 
 	// Root node
 	"_ROOTNODE_",
@@ -179,7 +180,7 @@ const char *CA_data[CA_NITEMS] = {
 	"setgridortho,VVV",
 	"setgridsize,VVV",
 
-	//"image 
+	// Image commands
 
 	// Labeling commands
 	"clearlabels",

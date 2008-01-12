@@ -6,6 +6,11 @@ importmodel
 	extension msi
 	glob *.msi
 
+	# Variable declarations
+	integer n,cellvar,id,bondi,bondj
+	character block,newblock,type,line,ident,data,a,b,c,e
+	double rx,ry,rz,fx,fy,fz,cax,cay,caz,cbx,cby,cbz,ccx,ccy,ccz,q
+
 	# Request that parentheses are removed as we read lines
 	addreadoption stripbrackets
 
@@ -14,7 +19,7 @@ importmodel
 	# We will use a variable $block to store the current block we're in (N=none, M=model, A=atom, B=bond)
 	let $block = N
 	let $cellvar = 0
-	repeat $n
+	for $n
 		# Read in whole lines and work with them instead of always using readline
 		readline "$line@100"
 		# Parse the stored $line
@@ -40,7 +45,7 @@ importmodel
 			end
 			# If $newblock is not 0, check the old $block value and perform end tasks
 			if $block = A
-				addatom
+				addatom 0
 			elseif $block = B
 				addbond $bondi $bondj
 			end
@@ -52,19 +57,19 @@ importmodel
 				if $data = Label
 					newmodel $data
 				elseif $data = A3
-					let $cell.a.x = $a
-					let $cell.a.y = $b
-					let $cell.a.z = $c
+					let $cax = $a
+					let $cay = $b
+					let $caz = $c
 					inc $cellvar
 				elseif $data = B3
-					let $cell.b.x = $a
-					let $cell.b.y = $b
-					let $cell.b.z = $c
+					let $cbx = $a
+					let $cby = $b
+					let $cbz = $c
 					inc $cellvar
 				elseif $data = C3
-					let $cell.c.x = $a
-					let $cell.c.y = $b
-					let $cell.c.z = $c
+					let $ccx = $a
+					let $ccy = $b
+					let $ccz = $c
 					inc $cellvar
 				end
 			elseif $block = A
@@ -72,13 +77,13 @@ importmodel
 				if $data = Charge
 					let $q = $a
 				elseif $data = XYZ
-					let $r.x = $a
-					let $r.y = $b
-					let $r.z = $c
+					let $rx = $a
+					let $ry = $b
+					let $rz = $c
 				elseif $data = Force
-					let $f.x = $a
-					let $f.y = $b
-					let $f.z = $c
+					let $fx = $a
+					let $fy = $b
+					let $fz = $c
 				elseif $data = ACL
 					let $e = $b
 				end
@@ -94,9 +99,9 @@ importmodel
 	end
 	# Add on unit cell if one was specified
 	if $cellvar > 2
-		setcellaxes
+		setcellaxes $cax $cay $caz $cbx $cby $cbz $ccx $ccy $ccz
 		fold
 	end
-	centre
+	centre 0 0 0
 	finalisemodel
 end

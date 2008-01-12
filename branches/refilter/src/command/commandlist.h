@@ -252,7 +252,9 @@ class commandlist
 	bool create_pattern_variables(const char *s);
 	// Set pattern variables
 	void set_pattern_variables(const char*, pattern*);
-	// Set pattern (ff) term variables
+	// Create pattern bound term variables
+	bool create_patbound_variables(const char*);
+	// Set pattern bound term variables
 	void set_patbound_variables(const char*, patbound*);
 
 	/*

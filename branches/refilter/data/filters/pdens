@@ -5,7 +5,12 @@ importgrid
 	nickname pdens
 	extension pdens
 	glob *.pdens*
-	newsurface NewSurf
+
+	# Variable declarations
+	integer n,nx,ny,nz,npoints
+	double spacing,ox,oy,oz,data
+
+	newgrid NewGrid
 	# First line contains number of gridpoints in each direction x,y,z
 	readline "$nx $ny $nz"
 	setgridsize $nx $ny $nz
@@ -15,13 +20,12 @@ importgrid
 	# Third line contains grid origin (lower left-hand corner)
 	readline "$ox $oy $oz"
 	setgridorigin $ox $oy $oz
-	repeat $i $nx
-		repeat $j $ny
-			repeat $k $nz
-				readline "$data"
-				addnextpoint $data
-			end
-		end
+
+	# Read in grid data
+	eval $npoints = "$nx * $ny * $nz"
+	for $n,1,$npoints
+		readline "$data"
+		addnextgridpoint $data
 	end
 	finalisegrid
 end
