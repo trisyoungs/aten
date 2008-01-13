@@ -5,12 +5,14 @@ importmodel
 	nickname cds
 	extension "dat,fdat"
 	glob *.*dat
+
 	# Variables
 	character title,spgrp,discard
 	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
 	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj
 	double ea,xa,ya,za,eb,xb,yb,zb,ec,xc,yc,zc,rx,ry,rz
 	double a,b,c,al,be,ga,cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
+
 	# Record 1: Directory information (single line)
 	# Contained information (first col = 0):
 	# 0 (#), 1-8 (refcode), 9 (crys.sys), 10 (category), 11-16 (accession date), 17-22 (unused), 23-25 (ncards),
@@ -20,7 +22,7 @@ importmodel
 	# 67 (polymeric structure), 68-77 (irrelevant), 78-79 (year)
 	readline "*@1 $title@8 *@17 $nf@3 $nr@3 $nd@3 $ne@3 $nsymm@3 *@3 $natm@3 $nsatm@3 *@3 $ncon@3 $cell@1 $atfor@1"
 	newmodel $title
-	print "Number of symmetry-unique (related) atoms = $natm (${nsatm})"
+	print "Number of symmetry-unique (related) atoms = $natm ($nsatm)"
 	# Record 2: Unit cell definition (if %cell == 1)
 	# Contained information (first col = 0):
 	# 0-35 (A,B,C,a,b,c), 36-41 (precision digits), 42-53 (cesd), 54-59 (dens), 60-62 (spgrpn), 63-70 (spgrp),

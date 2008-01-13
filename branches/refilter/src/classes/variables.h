@@ -61,6 +61,8 @@ class variable
 	double doublevalue;
 	// Content type of variable
 	variable_type type;
+	// Whether the variable is a constant
+	bool constant;
 
 	public:
 	// Print contents of variable
@@ -89,6 +91,8 @@ class variable
 	void copy_pointer(variable *v) { ptrvalue = v->ptrvalue; }
 	// Sets the content type of the variable
 	void set_type(variable_type vt) { type = vt; }
+	// Set the variable to be a constant
+	void set_constant() { constant = 1; }
 	// Returns content type of the variable
 	variable_type get_type() { return type; }
 	// Get name of variable

@@ -42,7 +42,10 @@ int command_functions::function_CA_LET(command *&c, bundle &obj)
 	if (c->argt(0) >= VT_ATOM)
 	{
 		if (c->argt(0) != c->argt(2))
+		{
 			msg(DM_NONE,"Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->get_name(), c->arg(2)->get_name());
+			return CR_FAIL;
+		}
 		else c->arg(0)->copy_pointer(c->arg(2));
 	}
 	else c->arg(0)->set(c->argc(2));

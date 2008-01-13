@@ -35,6 +35,8 @@ importmodel
 				let $newblock = M
 			elseif $type = Atom
 				let $newblock = A
+				print "SETTING NEW ATOM"
+				addatom 0
 				# We must also set the atom id here (since bonds refer to item number, not Id)
 				let $id = $ident
 			elseif $type = Bond
@@ -45,6 +47,7 @@ importmodel
 			end
 			# If $newblock is not 0, check the old $block value and perform end tasks
 			if $block = A
+				print "Adding new atom..................................."
 				addatom 0
 			elseif $block = B
 				addbond $bondi $bondj
@@ -75,11 +78,13 @@ importmodel
 			elseif $block = A
 				# Atom block
 				if $data = Charge
-					let $q = $a
+					#let $q = $a
+					setcharge $a
 				elseif $data = XYZ
-					let $rx = $a
-					let $ry = $b
-					let $rz = $c
+					#let $rx = $a
+					#let $ry = $b
+					#let $rz = $c
+					setcoords $a $b $c
 				elseif $data = Force
 					let $fx = $a
 					let $fy = $b

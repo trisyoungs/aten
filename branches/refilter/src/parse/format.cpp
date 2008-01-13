@@ -62,7 +62,7 @@ format_node::~format_node()
 // Set format node
 bool format_node::set(const char *s, variable_list &vlist)
 {
-	dbg_begin(DM_PARSE,"format_node::create");
+	dbg_begin(DM_PARSE,"format_node::set");
 	// Format of formatters is 'F@n.m': F = format quantity/variable, n.m = length,precision
 	int m, pos1, pos2;
 	static char specifier[32], len[32], pre[32];
@@ -91,7 +91,7 @@ bool format_node::set(const char *s, variable_list &vlist)
 		// Lastly, if a decimal point exists then the last part is the precision
 		if (s[pos2] == '.') for (pos1=pos2+1; s[pos1] != '\0'; pos1++) pre[pos1-(pos2+1)] = s[pos1];
 	}
-	msg(DM_PARSE,"format::create : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
+	msg(DM_PARSE,"format::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
 	// If we're given a variable, check that is has been declared
 	if (specifier[0] == '$')
 	{
@@ -109,7 +109,7 @@ bool format_node::set(const char *s, variable_list &vlist)
 	// Store the data
 	length = (len[0] == '\0' ? 0 : atoi(len));
 	precision = (pre[0] == '\0' ? 0 : atoi(pre));
-	dbg_end(DM_PARSE,"format_node::create");
+	dbg_end(DM_PARSE,"format_node::set");
 	return TRUE;
 }
 
@@ -150,6 +150,7 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	int nchars = 0, vchars = 0;
 	bool done;
 	char *c;
+	printf("PISSD\n");
 	format_node *fn;
 	// Clear any existing node list
 	nodes.clear();

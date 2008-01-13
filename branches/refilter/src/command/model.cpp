@@ -77,16 +77,10 @@ int command_functions::function_CA_LOADMODEL(command *&c, bundle &obj)
 			model *m = master.get_currentmodel();
 			if (c->has_arg(1)) m->set_name(c->argc(1));
 			obj.i = m->get_atoms();
-			msg(DM_NONE,"script : Model '%s' loaded, name '%s'\n", c->argc(0), m->get_name());
 			return CR_SUCCESS;
 		}
-		else
-		{
-			msg(DM_NONE,"script : Model '%s' couldn't be loaded.'\n", c->argc(1));
-			return CR_FAIL;
-		}
-	}
-	else return CR_FAIL;
+		else return CR_FAIL;
+	} else return CR_FAIL;
 }
 
 // Use parent model as atom template

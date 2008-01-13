@@ -256,7 +256,7 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 	static char arg[512];
 	char *c;
 	variable_type vt;
-	printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
+	//printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
 	// Are there arguments in the parser that we shouldn't have been given.
 	if ((parser.get_nargs() - 1) > strlen(v))
 	{

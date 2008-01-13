@@ -31,8 +31,8 @@ int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0));
-	if (c->has_arg(3)) obj.i = obj.m->add_atom(el, c->get_parent()->penpos);
-	else obj.i = obj.m->add_atom(el, c->arg3d(1));
+	if (c->has_arg(3)) master.current.i = obj.m->add_atom(el, c->arg3d(1));
+	else master.current.i = obj.m->add_atom(el, c->get_parent()->penpos);
 	return CR_SUCCESS;
 }
 
@@ -42,7 +42,7 @@ int command_functions::function_CA_ADDCHAIN(command *&c, bundle &obj)
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->get_parent()->penpos);
 	if (obj.i != NULL) obj.m->bond_atoms(obj.i,i,BT_SINGLE);
-	obj.i = i;
+	master.current.i = i;
 	return CR_SUCCESS;
 }
 

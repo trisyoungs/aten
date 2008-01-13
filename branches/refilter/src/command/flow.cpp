@@ -58,7 +58,6 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 	bool status = TRUE;
 	if (c->get_loopactive())
 	{
-//// START
 		// Do loop iteration.
 		// Increase count and iteration variables
 		c->arg(0)->increase(1);
@@ -284,7 +283,7 @@ int command_functions::function_CA_IF(command *&c, bundle &obj)
 {
 	if (c->if_evaluate()) c = c->get_branch_commands();
 	else c = c->next;
-	return CR_SUCCESS;
+	return CR_SUCCESSNOMOVE;
 }
 
 int command_functions::function_CA_TERMINATE(command *&c, bundle &obj)

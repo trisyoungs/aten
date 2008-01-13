@@ -195,9 +195,9 @@ const char *CA_data[CA_NITEMS] = {
 	"printmc",
 
 	// Messaging
-	"error,S",
-	"print,S",
-	"warn,S",
+	"error,G",
+	"print,G",
+	"warn,G",
 
 	// Minimisation commands
 	"cgminimise",
@@ -293,7 +293,7 @@ const char *CA_data[CA_NITEMS] = {
 	"dec,V",
 	"eval,V=E",
 	"inc,V",
-	"let,V=E"
+	"let,V=V"
 
 	};
 

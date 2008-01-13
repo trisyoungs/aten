@@ -40,6 +40,7 @@ variable::variable()
 	next = NULL;
 	name.set("unnamed");
 	type = VT_NITEMS;
+	constant = FALSE;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_VARIABLE] ++;
 	#endif
@@ -396,6 +397,7 @@ variable *variable_list::add_constant(const char *s)
 	strcat(newname,itoa(vars.size()));
 	result->set_name(newname);
 	result->set_type(VT_CHAR);
+	result->set_constant();
 	result->set(s);
 	return result;
 }
@@ -408,11 +410,8 @@ void variable_list::set(const char *prefix, const char *name, const char *value)
 	strcat(newname,".");
 	strcat(newname,name);
 	variable *v = get(newname);
-	printf("variable %li\n",v);
 	if (v == NULL) v = add_variable(newname, VT_CHAR);
-	printf("variable %li\n",v);
 	v->set(value);
-	printf("variable %li\n",v);
 }
 
 // Set existing variable (or add new and set) (VT_INTEGER)
