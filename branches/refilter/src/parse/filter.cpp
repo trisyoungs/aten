@@ -266,7 +266,6 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 				dbg_end(DM_CALLS,"filter::execute");
 				return FALSE;
 			}
-	printf("lsdkjflskdjf\n");
 			break;
 		case (FT_MODEL_EXPORT):
 			msg(DM_NONE,"Save Model : %s (%s)...", obj.m->get_filename(), name.get());

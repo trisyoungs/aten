@@ -109,7 +109,7 @@ int command_functions::function_CA_NEWMODEL(command *&c, bundle &obj)
 {
 	obj.m = master.add_model();
 	obj.m->set_name(strip_trailing(c->argc(0)));
-	msg(DM_NONE,"script : Create model '%s'\n", obj.m->get_name());
+	msg(DM_NONE,"Created model '%s'\n", obj.m->get_name());
 	return CR_SUCCESS;
 }
 
@@ -132,7 +132,7 @@ int command_functions::function_CA_SAVEMODEL(command *&c, bundle &obj)
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
-		msg(DM_NONE,"script : No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
+		msg(DM_NONE,"No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	obj.m->set_filter(f);

@@ -51,7 +51,7 @@ class line_parser
 	*/
 	private:
 	// Temporary string variable
-	dnchar temparg;
+	char temparg[MAXARGLENGTH];
 	// Line to parse
 	dnchar line;
 	// Parsed arguments

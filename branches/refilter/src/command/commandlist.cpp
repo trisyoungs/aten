@@ -729,17 +729,21 @@ int command::execute(command *&c, model *alttarget)
 // Execute commands in command list
 bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 {
+	dbg_begin(DM_CALLS,"commandlist::execute");
 	// Set alternative input file if one was supplied
 	if (sourcefile != NULL)
 	{
 		if (infile != NULL) printf("Warning - supplied ifstream overrides file in commandlist.\n");
 		infile = sourcefile;
 	}
+	static bool result;
+	result = TRUE;
 	// Get first command in list and execute
 	command *c = commands.first();
 	while (c != NULL)
 	{
 		// Run command and get return value
+		msg(DM_PARSE,"Commandlist executing command '%s'...\n",text_from_CA(c->get_command()));
 		switch (c->execute(c, alttarget))
 		{
 			// Command succeeded - get following command
@@ -753,6 +757,7 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 			case (CR_FAIL):
 				printf("Command list failed at '%s'.\n", text_from_CA(c->get_command()));
 				c = NULL;
+				result = FALSE;
 				break;
 			// Command failed - show message and continue to next command
 			case (CR_FAILCONTINUE):
@@ -765,7 +770,8 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 				break;
 		}
 	}
-	return TRUE;
+	dbg_end(DM_CALLS,"commandlist::execute");
+	return result;
 }
 
 // Set variables for model

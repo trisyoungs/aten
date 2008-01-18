@@ -148,10 +148,12 @@ model *master_data::find_model(const char *s)
 // Add new surface
 grid *master_data::add_grid()
 {
-	grid *g = grids.add();
-	gui.add_grid(g);
-	gui.select_grid(g);
-	return g;
+	dbg_begin(DM_CALLS,"master::add_grid");
+	current.g = grids.add();
+	gui.add_grid(current.g);
+	gui.select_grid(current.g);
+	dbg_end(DM_CALLS,"master::add_grid");
+	return current.g;
 }
 
 // Remove surface

@@ -150,7 +150,6 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	int nchars = 0, vchars = 0;
 	bool done;
 	char *c;
-	printf("PISSD\n");
 	format_node *fn;
 	// Clear any existing node list
 	nodes.clear();
@@ -198,7 +197,7 @@ bool format::create_exact(const char *s, variable_list &vlist)
 					c--;
 					break;
 				default:
-					varstr[vchars] += *c;
+					varstr[vchars] = *c;
 					vchars ++;
 					c++;
 					break;

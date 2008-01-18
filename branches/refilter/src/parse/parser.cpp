@@ -49,7 +49,7 @@ bool line_parser::get_next_arg(int destarg)
 	dbg_begin(DM_PARSE,"parser::get_next_arg");
 	static int n, arglen;
 	static bool done, hadquotes;
-	static char c, quotechar, arg[MAXARGLENGTH];
+	static char c, quotechar;
 	done = FALSE;
 	hadquotes = FALSE;
 	quotechar = '\0';
@@ -73,7 +73,7 @@ bool line_parser::get_next_arg(int destarg)
 			case (','):	// Comma
 				if (quotechar != '\0')
 				{
-					arg[arglen] = c;
+					temparg[arglen] = c;
 					arglen ++;
 				}
 				else if (arglen != 0) done = TRUE;
@@ -92,7 +92,7 @@ bool line_parser::get_next_arg(int destarg)
 				}
 				else
 				{
-					arg[arglen] = c;
+					temparg[arglen] = c;
 					arglen ++;
 				}
 				break;
@@ -100,7 +100,7 @@ bool line_parser::get_next_arg(int destarg)
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optmask&PO_STRIPBRACKETS) break;
-				arg[arglen] = c;
+				temparg[arglen] = c;
 				arglen ++;
 				break;
 			// Comment markers
@@ -110,17 +110,16 @@ bool line_parser::get_next_arg(int destarg)
 				break;
 			// Normal character
 			default: 
-				arg[arglen] = c;
+				temparg[arglen] = c;
 				arglen ++;
 				break;
 		}
 		if (done) break;
 	}
-	arg[arglen] = '\0';
+	temparg[arglen] = '\0';
 	if (n == line.length()) end_of_line = TRUE;
 	// Store the result in the desired destination
-	if (destarg == -1) temparg = arg;
-	else arguments[destarg] = arg;
+	if (destarg != -1) arguments[destarg] = temparg;
 	// Strip off the characters up to position 'n', but not including position 'n' itself
 	line.erasestart(n+1);
 	//printf("Rest of line is now [%s]\n",line.get());
@@ -133,7 +132,6 @@ bool line_parser::get_next_n(int length)
 {
 	// Put the next 'length' characters from source into temparg.
 	dbg_begin(DM_PARSE,"parser::get_next_n");
-	temparg.create_empty(length+1);
 	int arglen = 0;
 	char c;
 	if (line.length() == 0)
@@ -151,17 +149,19 @@ bool line_parser::get_next_n(int length)
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optmask&PO_STRIPBRACKETS) break;
-				temparg += c;
+				temparg[arglen] = c;
 				arglen ++;
 				break;
 		//	case (32):      // Space - ignore to get left-justified data
 		//		break;
 			default:
-				temparg += c;
+				temparg[arglen] = c;
 				arglen ++;
 				break;
 		}
 	}
+	// Add terminating character to temparg
+	temparg[arglen] = '\0';
 	line.erasestart(length);
 	dbg_end(DM_PARSE,"parser::get_next_n");
 	return TRUE;
@@ -205,7 +205,7 @@ void line_parser::get_all_args_formatted(dnchar &source, format *fmt)
 			msg(DM_VERBOSE,"parser::get_all_args_formatted <<<< '%s' passed end of line >>>>\n",fn->get_variable()->get_name());
 			fn->get_variable()->reset();
 		}
-		else fn->get_variable()->set(temparg.get());
+		else fn->get_variable()->set(temparg);
 		fn = fn->next;
 	}
 	dbg_end(DM_PARSE,"parser::get_all_args_formatted");
@@ -284,7 +284,7 @@ const char *line_parser::get_next_delim(dnchar &s, int options)
 	line = s.get();
 	result = get_next_arg(-1);
 	s = line.get();
-	return (result ? temparg.get() : "");
+	return (result ? temparg : "");
 }
 
 // Parse string into lines
