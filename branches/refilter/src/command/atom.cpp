@@ -62,7 +62,6 @@ int command_functions::function_CA_SETCOORDS(command *&c, bundle &obj)
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (c->has_arg(3)) obj.i = obj.m->get_atom(c->argi(3) - 1);
 	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
-printf("klsajdlkasjdl\n");
 	obj.i->r() = c->arg3d(0);
 	return CR_SUCCESS;
 }

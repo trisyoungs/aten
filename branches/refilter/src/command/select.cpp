@@ -114,11 +114,10 @@ int command_functions::function_CA_SELECTTYPE(command *&c, bundle &obj)
 		// Prepare for typing
 		obj.m->describe_atoms();
 		// Loop over patterns and select atoms
-		pattern *p = obj.m->get_patterns();
-		while (p != NULL)
+		for (pattern *p = obj.m->get_patterns(); p != NULL; p = p->next)
 		{
 			atom *i = p->get_firstatom();
-			for (int n=0; n<p->get_natoms(); n++)
+			for (int n=0; n<p->get_totalatoms(); n++)
 			{
 				p->reset_tempi(0);
 				i->tempi = 1;
@@ -134,7 +133,6 @@ int command_functions::function_CA_SELECTTYPE(command *&c, bundle &obj)
 				}
 				i = i->next;
 			}
-			p = p->next;
 		}
 		// Write results
 		msg(DM_NONE,"Type description score = %i. Matched %i atoms.\n", matchscore, count);

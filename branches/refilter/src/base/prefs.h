@@ -524,6 +524,19 @@ class prefs_data
 	charge_source get_chargesource() { return qsource; }
 
 	/*
+	// Undo levels
+	*/
+	private:
+	// Maximum number of undo levels (-1 for unlimited)
+	int maxundo;
+
+	public:
+	// Set the maximum number of undo levels allowed
+	void set_maxundo(int n) { maxundo = n; }
+	// Return the maximum number of undo levels allowed
+	int get_maxundo() { return maxundo; }
+
+	/*
 	// GUI
 	*/
 	private:

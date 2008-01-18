@@ -28,7 +28,7 @@
 */
 
 // Bitvector of debug levels
-int debug_output = 57;
+int debug_output = 0;
 // Formatting indent for call debugging output
 int funclevel = 0;
 // Add a debug level to the debug output bitvector

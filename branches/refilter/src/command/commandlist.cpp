@@ -115,7 +115,6 @@ vec3<double> command::arg3d(int i)
 	dbg_begin(DM_CALLS,"command::arg3d");
         static vec3<double> result;
         if (i > (MAXDATAVARS-3)) printf("command::get_vector3d - Starting point too close to MAXDATAVARS.\n");
-	printf("%i %li  %i %li  %i %li\n",i,args[i],i+1,args[i+1],i+2,args[i+2]);
         result.set(args[i]->get_as_double(),args[i+1]->get_as_double(),args[i+2]->get_as_double());
 	dbg_end(DM_CALLS,"command::arg3d");
         return result;
@@ -556,7 +555,8 @@ bool commandlist::add_command(command_action ca)
 			break;
 		// Unrecognised command
 		case (CA_NITEMS):
-			printf("ASLKDJDSHFKJ\n");
+			printf("Unrecognised command in commandlist::add_command()\n");
+			result = FALSE;
 			break;
 		// All other commands do not alter the flow of the commandlist...
 		default:

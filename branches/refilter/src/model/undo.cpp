@@ -73,6 +73,8 @@ void model::end_undostate()
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentredostate = NULL;
 	recordingstate = NULL;
+	// Check the size of the undolevels list - if greater than prefs.maxundo, must remove the first item in the list
+	if (undolevels.size() == (prefs.get_maxundo()+1)) undolevels.remove(undolevels.first());
 	dbg_end(DM_CALLS,"model::end_undostate");
 }
 

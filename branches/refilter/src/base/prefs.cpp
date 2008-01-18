@@ -237,6 +237,9 @@ prefs_data::prefs_data()
 	// GUI
 	showgui = TRUE;
 	gui_msg_font = "Adobe Courier 10";
+
+	// Undo levels
+	maxundo = 2;
 }
 	
 void prefs_data::load(const char *filename)

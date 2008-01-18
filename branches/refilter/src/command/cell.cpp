@@ -92,7 +92,6 @@ int command_functions::function_CA_SETCELLAXES(command *&c, bundle &obj)
 	mat.rows[0] = c->arg3d(0);
 	mat.rows[1] = c->arg3d(3);
 	mat.rows[2] = c->arg3d(6);
-	mat.print();
 	obj.m->set_cell(mat);
 	obj.m->log_change(LOG_VISUAL);
 	obj.m->calculate_density();
