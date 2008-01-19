@@ -28,7 +28,7 @@
 #include "gui-gtk/canvas-gtk.h"
 #include "gui-gtk/treeview.h"
 #include "gui/gui.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 
 enum widget_combo { W_COM_BONDONLOAD, W_COM_PACKONLOAD, W_COM_ZMAPTYPE, W_COM_NITEMS };
 enum widget_scale { W_SCL_LABELSCALE, W_SCL_ATOMQUAL, W_SCL_BONDQUAL, W_SCL_SHINY, W_SCL_NITEMS };

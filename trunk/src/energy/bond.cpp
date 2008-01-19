@@ -34,7 +34,7 @@ void pattern::bond_energy(model *srcmodel, energystore *estore)
 	static double forcek, eq, r, energy;
 	static ffparams params;
 	patbound *pb;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	energy = 0.0;
 	aoff = startatom;
@@ -80,7 +80,7 @@ void pattern::bond_forces(model *srcmodel)
 	static double forcek, eq, rij, du_dr;
 	static ffparams params;
 	patbound *pb;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)

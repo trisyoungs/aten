@@ -3,10 +3,16 @@ importmodel
 	nickname mol2
 	extension "mol,mol2"
 	glob *.mol*
+
+	# Variable declaration
+	integer n,natoms,nbonds,id,ii,jj,spgrp,setting
+	character tripos,keywd,title,e,bondtype
+	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
+
 	# Read in lines, looking for the sections we're interested in.
 	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
 	# Read a line and parse it into '@<TRIPOS>' and keyword parts
-	repeat $loop
+	for $n
 		readline "$tripos@9 $keywd"
 		if $keywd = MOLECULE
 			# Molecule information
@@ -16,20 +22,21 @@ importmodel
 			# Skip the next three lines, which are type of molecule, charges used XXX, and user comment
 			skipline 4
 		elseif $keywd = ATOM
-			repeat $n $natoms
-				readline "$id $e $r.x $r.y $r.z"
-				addatom
+			for $n,1,$natoms
+				readline "$id $e $rx $ry $rz"
+				addatom $e
+				setcoords $rx $ry $rz
 			end
 		elseif $keywd = BOND
-			repeat $n $nbonds
+			for $n,1,$nbonds
 				readline "* $ii $jj $bondtype"
 				addbond $ii $jj $bondtype
 			end
 		elseif $keywd = CRYSIN
 			# Crystal cell information
 			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
-			readline "$cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma $sg.group $sg.setting"
-			setcell
+			readline "$ca $cb $cc $alpha $beta $gamma $spgrp $setting"
+			setcell $ca $cb $cc $alpha $beta $gamma
 		end
 	end
 	finalisemodel

@@ -7,15 +7,22 @@ importmodel
 	glob *.xyz
 	id 2
 
+	# Variable declaration
+	integer natoms,n
+	character e,title
+	double rx,ry,rz
+
+	# Read data
 	readline "$natoms"
 	readline "$title@100"
 	newmodel $title
-	repeat $n $natoms
-		readline "$e $r.x $r.y $r.z"
-		addatom
+	for $n,1,$natoms
+		readline "$e $rx $ry $rz"
+		addatom $e
+		setcoords $rx $ry $rz
 	end
 	rebond
-	centre
+	centre 0 0 0
 	finalisemodel
 end
 exportmodel
@@ -25,10 +32,16 @@ exportmodel
 	nickname xyz
 	id 2
 
+	# Variable declaration
+	integer n
+	character e
+	double rx,ry,rz
+	atom i
+
 	writeline "$natoms"
 	writeline "$title"
-	foratoms $i
-		writeline "$i.symbol@3 $i.r.x@12.6 $i.r.y@12.6 $i.r.z@12.6"
+	for $i
+		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6"
 	end
 end
 importtrajectory
@@ -37,17 +50,22 @@ importtrajectory
 	glob *xyz
 	nickname xyz
 
+	# Variable declaration
+	integer n
+	character e,title
+	double rx,ry,rz
+
 	# No header in XYZ trajectories, so only check for frames
 	if $header <> true
 		readline "$natoms"
 		readline "$title"
 		# Now the atoms
 		modeltemplate
-		repeat $n $natoms
-			readline "$e $r.x $r.y $r.z"
-			setatom $n
+		for $n,1,$natoms
+			readline "$e $rx $ry $rz"
+			setcoords $rx $ry $rz $n
 		end
 		rebond
-		centre
+		centre 0 0 0
 	end
 end

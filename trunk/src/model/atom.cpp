@@ -184,7 +184,7 @@ atom *model::find_atom(int id)
 		msg(DM_NONE,"Atom id %i is out of range for model '%s'\n",id,name.get());
 		return NULL;
 	}
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	return modelatoms[id];
 }
 
@@ -220,30 +220,19 @@ void model::renumber_atoms(atom *from)
 	dbg_end(DM_CALLS,"model::renumber_atoms");
 }
 
-// Create (or just return) the static atom list
-atom **model::get_staticatoms()
+// Return atom 'n' in the model
+atom *model::get_atom(int n)
 {
-	dbg_begin(DM_CALLS,"model::get_staticatoms");
-	if (staticatoms_point == logs[LOG_STRUCTURE])
+	dbg_begin(DM_CALLS,"model::get_atom");
+	// Check range first
+	if ((n < 0) || (n >= atoms.size()))
 	{
-		dbg_end(DM_CALLS,"model::get_staticatoms");
-		return staticatoms;
+		printf("model::get_atom <<<< '%i' is out of range for model >>>>\n",n);
+		dbg_end(DM_CALLS,"model::get_atom");
+		return NULL;
 	}
-	// Delete old atom list (if there is one)
-	if (staticatoms != NULL) delete[] staticatoms;
-	// Create new list
-	staticatoms = new atom*[atoms.size()];
-	// Fill in atom pointers
-	int count = 0;
-	for (atom *i = atoms.first(); i != NULL; i = i->next)
-	{
-	//printf("N=%i\n",count);
-		staticatoms[count] = i;
-		count ++;
-	}
-	staticatoms_point = logs[LOG_STRUCTURE];
-	dbg_end(DM_CALLS,"model::get_staticatoms");
-	return staticatoms;
+	dbg_end(DM_CALLS,"model::get_atom");
+	return atoms.array()[n];
 }
 
 // Reset forces on all atoms
@@ -276,7 +265,7 @@ void model::normalise_forces(double norm)
 	dbg_begin(DM_CALLS,"model::normalise_forces");
 	double maxfrc;
 	static vec3<double> f;
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	int i;
 	// Find the largest force
 	maxfrc = 0.0;

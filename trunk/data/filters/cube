@@ -6,33 +6,44 @@ importgrid
 	extension cube
 	glob *.cube
 	zmap numeric
+
+	# Variable declaration
+	character title,e
+	integer natoms,nx,ny,nz,i,j,k
+	double ox,oy,oz,xx,xy,xz,yx,yy,yz,zx,zy,zz,rx,ry,rz,data
+
 	# Lines 1-2: Comments (use first as title)
 	readline "$title@100"
-	newsurface $title
+	newgrid $title
 	skipline
+
 	# Line 3: Number of atoms and coordinate origin of surface
 	readline "$natoms $ox $oy $oz"
 	setgridorigin $ox $oy $oz
+
 	# Lines 4-6: Number of voxels and axis vector
 	readline "$nx $xx $xy $xz"
 	readline "$ny $yx $yy $yz"
 	readline "$nz $zx $zy $zz"
 	setgridsize $nx $ny $nz
 	setgrid $xx $xy $xz $yx $yy $yz $zx $zy $zz
-	# Molecule Definition
+
+	# Lines 7-(7+natoms) Molecule Definition
 	newmodel $title
-	repeat $n $natoms
-		readline "$e * $r.x $r.y $r.z"
-		addatom
+	for $i,1,$natoms
+		readline "$e * $rx $ry $rz"
+		addatom $e
+		setcoords $rx $ry $rz
 	end
 	finalisemodel
 	rebond
+
 	# Volumetric data (five points per line)
-	repeat $i $nx
-		repeat $j $ny
-			repeat $k $nz
+	for $i,1,$nx
+		for $j,1,$ny
+			for $k,1,$nz
 				readnext $data
-				addpoint $i $j $k $data
+				addgridpoint $i $j $k $data
 			end
 		end
 	end

@@ -84,7 +84,7 @@ void pattern::ewald_real_intrapattern_energy(model *srcmodel, energystore *estor
 	alpha = prefs.get_ewald_alpha();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
@@ -138,7 +138,7 @@ void pattern::ewald_real_interpattern_energy(model *srcmodel, pattern *xpnode, e
 	static double rij, energy_inter, energy, cutoff, alpha;
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	aoff1 = startatom;
@@ -191,7 +191,7 @@ void pattern::ewald_reciprocal_energy(model *srcmodel, pattern *firstp, int npat
 	static double factor, alpha, energy_inter;
 	double sumcos[npats], sumsin[npats];
 	alpha = prefs.get_ewald_alpha();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 
 	// Get reciprocal volume and cell vectors
 	factor = fourier.cell->get_rvolume() * prefs.elec_convert;
@@ -266,7 +266,7 @@ void pattern::ewald_correct_energy(model *srcmodel, energystore *estore)
 	static double molcorrect, energy, qprod, rij, chargesum, alpha;
 	alpha = prefs.get_ewald_alpha();
 	static vec3<double> mim_i;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 
 	// Correct the reciprocal Ewald energy for charges interacting with themselves
@@ -323,7 +323,7 @@ void pattern::ewald_real_intrapattern_forces(model *srcmodel)
 	patbound *pb;
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 
 	aoff = startatom;
@@ -391,7 +391,7 @@ void pattern::ewald_real_interpattern_forces(model *srcmodel, pattern *xpnode)
 	static double rij, factor, alpharij, qqrij3, cutoff, alpha;
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 
 	aoff1 = startatom;
@@ -453,7 +453,7 @@ void pattern::ewald_reciprocal_forces(model *srcmodel)
 	static double cutoff, mag, magsq, exp1, alphasq, factor, force, pos, sumcos, sumsin, xycos, xysin, alpha;
 	double xyzcos[srcmodel->get_natoms()], xyzsin[srcmodel->get_natoms()];
 	alpha = prefs.get_ewald_alpha();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 
 	// Grab the reciprocal unit cell
 	rcell = fourier.cell->get_recip();
@@ -515,7 +515,7 @@ void pattern::ewald_correct_forces(model *srcmodel)
 	patbound *pb;
 	cutoff = prefs.get_elec_cutoff();
 	alpha = prefs.get_ewald_alpha();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 
 	aoff = startatom;

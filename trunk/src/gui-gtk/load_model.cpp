@@ -23,7 +23,7 @@
 #include "gui-gtk/gui-gtk.h"
 #include "base/master.h"
 #include "base/prefs.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 
 // Variables
 GtkFileChooser *dialog_loadmodel;

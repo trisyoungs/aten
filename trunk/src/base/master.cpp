@@ -20,8 +20,11 @@
 */
 
 #include "model/model.h"
+#include "classes/pattern.h"
 #include "base/master.h"
 #include "gui/gui.h"
+#include "parse/parser.h"
+#include <fstream>
 
 master_data master;
 
@@ -30,8 +33,6 @@ master_data::master_data()
 {
 	// Models
 	modelid = 0;
-	currentmodel = NULL;
-	currentff = NULL;
 
 	// Modes
 	program_mode = PM_GUI;
@@ -72,13 +73,16 @@ void master_data::clear()
 void master_data::set_currentmodel(model *m)
 {
 	// Set the active model to that specified, and refresh windows that depend on model data
-	dbg_begin(DM_CALLS,"master::set_currentmodel");
-	// Set currentmodel and tell the mainview canvas to display it
-	currentmodel = m;
+	dbg_begin(DM_CALLS,"master::set_current.m");
+	// Set current.m and tell the mainview canvas to display it
+	current.m = m;
+	// Set other bundle objects based on model
+	current.p = m->get_patterns();
+	current.i = NULL;
 	gui.select_model(m);
-	currentmodel->calculate_viewmatrix();
-	currentmodel->project_all();
-	dbg_end(DM_CALLS,"master::set_currentmodel");
+	current.m->calculate_viewmatrix();
+	current.m->project_all();
+	dbg_end(DM_CALLS,"master::set_current.m");
 }
 
 /*
@@ -90,7 +94,7 @@ model *master_data::add_model()
 {
 	dbg_begin(DM_CALLS,"master::add_model");
 	model *m = models.add();
-	currentmodel = m;
+	current.m = m;
 	gui.add_model(m);
 	gui.select_model(m);
 	dbg_end(DM_CALLS,"master::add_model");
@@ -113,7 +117,7 @@ void master_data::remove_model(model *xmodel)
 	else
 		// If possible, set the active row to the next model. Otherwise, the previous.
 		xmodel->next != NULL ? m = xmodel->next : m = xmodel->prev;
-	currentmodel = m;
+	current.m = m;
 	gui.remove_model(xmodel);
 	gui.select_model(m);
 	// Finally, delete the old model
@@ -144,10 +148,12 @@ model *master_data::find_model(const char *s)
 // Add new surface
 grid *master_data::add_grid()
 {
-	grid *g = grids.add();
-	gui.add_grid(g);
-	gui.select_grid(g);
-	return g;
+	dbg_begin(DM_CALLS,"master::add_grid");
+	current.g = grids.add();
+	gui.add_grid(current.g);
+	gui.select_grid(current.g);
+	dbg_end(DM_CALLS,"master::add_grid");
+	return current.g;
 }
 
 // Remove surface
@@ -180,7 +186,7 @@ forcefield *master_data::load_ff(const char *filename)
 	else
 	{
 		gui.add_ff(newff);
-		currentff = newff;
+		current.ff = newff;
 	}
 	dbg_end(DM_CALLS,"master::load_ff");
 	return newff;
@@ -192,7 +198,7 @@ void master_data::remove_ff(forcefield *xff)
 	forcefield *newff;
 	// If possible, set the active row to the next model. Otherwise, the previous.
 	xff->next != NULL ? newff = xff->next : newff = xff->prev;
-	currentff = newff;
+	current.ff = newff;
 	gui.remove_ff(xff);
 	gui.select_ff(newff);
 	// Finally, delete the ff

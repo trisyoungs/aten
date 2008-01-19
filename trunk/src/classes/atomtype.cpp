@@ -26,19 +26,19 @@
 #include "classes/forcefield.h"
 #include "templates/reflist.h"
 #include "base/elements.h"
-#include "file/parse.h"
+#include "parse/parser.h"
 
 int printlevel = 0;
 
 // Atom typing commands
 const char *ATC_keywords[ATC_NITEMS] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh" };
 atomtype_command ATC_from_text(const char *s)
-	{ return (atomtype_command) enum_search("#",ATC_NITEMS,ATC_keywords,s); }
+	{ return (atomtype_command) enum_search("",ATC_NITEMS,ATC_keywords,s); }
 
 // Ring typing commands
 const char *RTC_keywords[RTC_NITEMS] = { "size", "n", "notself" };
 ringtype_command RTC_from_text(const char *s)
-	{ return (ringtype_command) enum_search("#",RTC_NITEMS,RTC_keywords,s); }
+	{ return (ringtype_command) enum_search("",RTC_NITEMS,RTC_keywords,s); }
 
 // Atom environment
 const char *AE_strings[AE_NITEMS] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };

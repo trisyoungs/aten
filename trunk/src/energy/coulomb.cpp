@@ -38,7 +38,7 @@ void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore)
 	static double rij, energy_inter, energy_intra, energy, cutoff;
 	cutoff = prefs.get_elec_cutoff();
 	patbound *pb;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
@@ -89,7 +89,7 @@ void pattern::coulomb_interpattern_energy(model *srcmodel, pattern *xpnode, ener
 	static vec3<double> mim_i;
 	static double rij, energy_inter, energy, cutoff;
 	cutoff = prefs.get_elec_cutoff();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	aoff1 = startatom;
@@ -134,7 +134,7 @@ void pattern::coulomb_intrapattern_forces(model *srcmodel)
 	static double rij, factor, cutoff;
 	cutoff = prefs.get_elec_cutoff();
 	patbound *pb;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
@@ -185,7 +185,7 @@ void pattern::coulomb_interpattern_forces(model *srcmodel, pattern *xpnode)
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish,a1,a2;
 	static vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	cutoff = prefs.get_elec_cutoff();
 	aoff1 = startatom;

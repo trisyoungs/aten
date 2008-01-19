@@ -27,7 +27,7 @@
 #include "base/sysfunc.h"
 
 // Variable Types
-enum variable_type { VT_UNDEFINED, VT_GENERICCONSTANT, VT_GENERIC, VT_ATOM, VT_BOND, VT_PATTERN, VT_MODEL, VT_PATBOUND, VT_NITEMS };
+enum variable_type { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_NITEMS };
 const char *text_from_VT(variable_type);
 
 // Forward Declarations
@@ -57,8 +57,13 @@ class variable
 	// Value of variable
 	void *ptrvalue;
 	dnchar charvalue;
+	int intvalue;
+	double doublevalue;
 	// Content type of variable
 	variable_type type;
+	// Whether the variable is a constant
+	bool constant;
+
 	public:
 	// Print contents of variable
 	void print();
@@ -70,8 +75,10 @@ class variable
 	void set_constant(const char*);
 	// Set value of variable (char)
 	void set(const char*);
-	void set(int i) { set(itoa(i)); }
-	void set(double d) { set(ftoa(d)); }
+	// Set value of variable (int)
+	void set(int i);
+	// Set value of variable (double)
+	void set(double d);
 	// Set value of variable (atom*)
 	void set(atom*);
 	// Set value of variable (pattern*)
@@ -80,11 +87,12 @@ class variable
 	void set(model*);
 	// Set value of variable (patbound*)
 	void set(patbound*);
-
 	// Copy pointer contents of source variable
 	void copy_pointer(variable *v) { ptrvalue = v->ptrvalue; }
 	// Sets the content type of the variable
-	bool set_type(variable_type);
+	void set_type(variable_type vt) { type = vt; }
+	// Set the variable to be a constant
+	void set_constant() { constant = 1; }
 	// Returns content type of the variable
 	variable_type get_type() { return type; }
 	// Get name of variable
@@ -96,7 +104,7 @@ class variable
 	// Get value of variable as double
 	double get_as_double();
 	// Get value of variable as float
-	float get_as_float();
+	float get_as_float() { float(get_as_double()); }
 	// Get value of variable as a boolean
 	bool get_as_bool();
 	// Get value of variable as gpointer (desired type is specified so a check can be made)
@@ -121,57 +129,37 @@ class variable_list
 	private:
 	// List of variables
 	list<variable> vars;
+	// Static, dummy variable '*'
+	variable dummy;
 
 	public:
-	// Set existing (or create new) variable
-	void set(const char*, const char*);
-	void set(const char*, int);
-	void set(const char*, double);
+	// Set existing (or create new) variable (VT_CHAR)
 	void set(const char*, const char*, const char*);
+	void set(const char *name, const char *value) { set(name,"",value); }
+	// Set existing (or create new) variable (VT_INT)
 	void set(const char*, const char*, int);
+	void set(const char *name, int value) { set(name,"",value); }
+	// Set existing (or create new) variable (VT_DOUBLE)
 	void set(const char*, const char*, double);
-	// Retrieve (don't add) a named variable as a string
-	const char *get_as_char(const char*);
-	// Retrieve (don't add) a named variable as a double
-	double get_as_double(const char*);
-	// Retrieve (don't add) a named variable as a float
-	float get_as_float(const char*);
-	// Retrieve (don't add) a named variable as an integer
-	int get_as_int(const char*);
-	// Retrieve (or add) a named/typed variable to the list
-	variable *get(const char*);
-	// Searches for a variable in the list
-	variable *find(const char*);
+	void set(const char *name, double value) { set(name,"",value); }
+	// Retrieve a named variable from the list
+	variable *get(const char *prefix, const char *suffix);
+	variable *get(const char *name) { return get(name,""); }
+	// Return dummy variable
+	variable *get_dummy() { return &dummy; }
+	// Add an unnamed constant to the list
+	variable *add_constant(const char* s);
 	// Add a named variable to the list
-	void add(const char* s) { variable *v = get(s); }
-	// Add 'unnamed' variable to the list
-	variable *add();
-	// Add a number of variables to the list
-	void batch_add(const char*, ...);
+	variable *add_variable(const char *prefix, const char *suffix, variable_type vt);
+	variable *add_variable(const char *name, variable_type vt) { return add_variable(name,"",vt); }
+	// Create, but don't set, a named variable in the list
+	variable *create_variable(const char *prefix, const char *suffix, variable_type vt);
 	// Reset values of all variables
 	void reset_all();
 	// Reset values of variable selection
 	void reset(const char*, ...);
 	// Print list of variables and their values
 	void print();
-
-	/*
-	// Set Object Variables
-	*/
-	public:
-	// Set model variables
-	void set_model_variables(model*);
-	// Set cell variables
-	void set_cell_variables(unitcell*);
-	// Set atom variables
-	void set_atom_variables(const char*, atom*);
-	void set_atom_variables(const char*, int);
-	// Get atom variables
-	void get_atom_variables(atom *i);
-	// Set pattern variables
-	void set_pattern_variables(const char*, pattern*);
-	// Set pattern (ff) term variables
-	void set_patbound_variables(const char*, patbound*);
 };
 
 #endif

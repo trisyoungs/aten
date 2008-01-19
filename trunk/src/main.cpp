@@ -21,7 +21,7 @@
 
 #include <time.h>
 #include <ctime>
-#include "file/parse.h"
+#include "parse/parser.h"
 #include "model/model.h"
 #include "classes/fourier.h"
 #include "base/elements.h"
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
 
 	// Do various things depending on the program mode that has been set
 	// Execute a script if one was supplied
-	if (master.scripts.first() != NULL) master.scripts.first()->run();
+	if (master.scripts.first() != NULL) master.scripts.first()->execute(NULL);
 
 	// Display the GUI?
 	if (prefs.show_gui())

@@ -1,52 +1,63 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 07/11/2007
+# Last modified: 06/01/2008
 exportfield
 	name "DL_POLY Forcefield Specification"
 	nickname dlpoly
 	extension FIELD
 	glob *FIELD*
 	exact "FIELD"
+
+	# Variable declaration
+	character
+	integer
+	double
+	pattern p
+	atom i
+	bond b
+	angle a
+	torsion t
+
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$title"
 	writeline "units *@2 $energyunit"
 	writeline "molecules *@2 $npatterns"
-	forpatterns $p
+	for $p
 		# Write pattern name and number of moleculse
 		writeline "$p.name"
-		writeline "nummols *@2 $p.nmols"
+		writeline "nummols  $p.nmols"
 		# Write atoms - just loop over those in the first molecule of the pattern
 		writeline "atoms *@2 $p.nmolatoms"
-		foratoms $i $p 1
-			writeline "$i.fftype@6 *@5 $i.mass@10.5 *@4 $i.q@9.6"
+		for $i $p 1
+			writeline "$i.fftype@6      $i.mass@10.5    $i.q@9.6"
 		end
 		# Bonds in pattern
-		writeline "bonds *@2 $p.nbonds"
-		forffbonds $b $p
+		writeline "bonds  $p.nbonds"
+		for $b $p
 			# Convert functional form to be recognised by DL_POLY
-			if $b.funcform = harmonic
-				writeline "harm@8 $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4"
+			if $b.form = harmonic
+				writeline "harm     $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4"
 			else
 				warn "Functional form of bond term not accounted for in export filter."
 			end
 		end
 		# Angles in pattern
 		writeline "angles *@2 $p.nangles"
-		forffangles $a $p
+		for $a $p
 			# Convert functional form to be recognised by DL_POLY
-			if $a.funcform = harmonic
-				writeline "harm@8 $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
+			if $a.form = harmonic
+				writeline "harm     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
 			else
 				warn "Functional form of angle term not accounted for in export filter."
 			end
 		end
 		# Torsions in pattern
 		writeline "dihedrals *@2 $p.ntorsions"
-		forfftorsions $t $p
+		for $t $p
 			# Convert functional form to be recognised by DL_POLY
-			if $t.funcform = cosine
-				writeline "cos@8 $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4"
-			elseif $t.funcform = cos3
-				writeline "cos3@8 $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4"
+			if $t.form = cosine
+				writeline "cos    $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4"
+			elseif $t.form = cos3
+				writeline "cos3   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4"
 			else
 				warn "Functional form of torsion term not accounted for in export filter."
 			end

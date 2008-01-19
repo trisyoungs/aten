@@ -56,7 +56,7 @@ vec3<double> site::calculate_centre(model *srcmodel, int mol)
 {
 	dbg_begin(DM_CALLS,"site::calculate_centre");
 	int offset, n;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	static vec3<double> firstid, mim;
 	listitem<int> *li;
@@ -98,7 +98,7 @@ mat3<double> site::calculate_axes(model *srcmodel, int mol)
 {
 	dbg_begin(DM_CALLS,"site::calculate_axes");
 	int offset, n;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	static vec3<double> mim, v1, v2;
 	listitem<int> *li;
