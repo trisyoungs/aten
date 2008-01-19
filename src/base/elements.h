@@ -91,6 +91,8 @@ class element_map
 	const char *name(int i) { return el[i].name; }
 	// Return symbol of atomic number 'i'
 	const char *symbol(int i) { return el[i].symbol; }
+	// Set radius of atomic number 'i'
+	void set_radius(int i, double r) { el[i].radius = r; }
 	// Return effective radius of atomic number 'i'
 	double radius(int i) { return el[i].radius; }
 	// Return valency of atomic number 'i'

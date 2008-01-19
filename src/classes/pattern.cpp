@@ -320,7 +320,7 @@ vec3<double> pattern::calculate_cog(model *srcmodel, int mol)
 	static vec3<double> cog, mim_i;
 	unitcell *cell = srcmodel->get_cell();
 	cog.zero();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	for (int a1=offset; a1<offset+natoms; a1++)
 	{
 		// Do minimum image w.r.t. first atom in molecule
@@ -345,7 +345,7 @@ vec3<double> pattern::calculate_com(model *srcmodel, int mol)
 	com.zero();
 	msg(DM_VERBOSE,"molecule_com : Offset = %i\n",offset);
 	unitcell *cell = srcmodel->get_cell();
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	for (int a1=offset; a1<offset+natoms; a1++)
 	{
 		// Do minimum image w.r.t. first atom in molecule

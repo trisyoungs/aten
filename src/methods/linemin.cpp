@@ -34,8 +34,8 @@ void linemin::gradient_move(model *srcmodel, model *destmodel, double delta)
 	// Generate a new set of coordinates in destmodel following the normalised gradient vector present in srcmodel, with the stepsize given
 	dbg_begin(DM_CALLS,"linemin::gradient_move");
 	int i;
-	atom **srcatoms = srcmodel->get_staticatoms();
-	atom **destatoms = destmodel->get_staticatoms();
+	atom **srcatoms = srcmodel->get_atomarray();
+	atom **destatoms = destmodel->get_atomarray();
 	for (i=0; i<srcmodel->get_natoms(); i++)
 	{
 		destatoms[i]->r().x = srcatoms[i]->r().x + srcatoms[i]->f().x * delta;
@@ -53,7 +53,7 @@ double linemin::line_minimise(model *srcmodel)
 	double enew, ecurrent, step, bound[3], energy[3], newmin, mid, a, b, b10, b12;
 	model destmodel;
 	bool failed, leftbound;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 
 	// Brent-style line minimiser with parabolic interpolation and Golden Search backup.
 	// We assume that the energy expression for the source model is correct.

@@ -46,7 +46,7 @@ double model::total_energy(model *srcmodel)
 	// Calculate VDW correction
 	if (prefs.calc_vdw() && (cell.get_type() != CT_NONE)) p->vdw_correct_energy(&cell,&energy);
 	// Prepare Ewald (if necessary)
-	elec_type emodel = prefs.get_electrostatics();
+	elec_method emodel = prefs.get_electrostatics();
 	if (prefs.calc_elec())
 	{
 		if (emodel == EM_EWALDAUTO) prefs.ewald_estimate_parameters(&srcmodel->cell);
@@ -129,7 +129,7 @@ void model::calculate_forces(model *srcmodel)
 	pattern *p, *p2;
 	p = patterns.first();
 	// Prepare Ewald (if necessary)
-	elec_type emodel = prefs.get_electrostatics();
+	elec_method emodel = prefs.get_electrostatics();
 	if (prefs.calc_elec())
 	{
 		if (emodel == EM_EWALDAUTO) prefs.ewald_estimate_parameters(&srcmodel->cell);

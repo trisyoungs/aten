@@ -185,7 +185,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			if (f == NULL) f = master.probe_file(qPrintable(filename), FT_MODEL_IMPORT);
 			if (f != NULL)
 			{
-				f->import_model(qPrintable(filename));
+				f->execute(qPrintable(filename));
 				add_recent(qPrintable(filename));
 			}
 		}
@@ -225,7 +225,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 		m = master.get_currentmodel();
 		m->set_filter(savemodelfilter);
 		m->set_filename(savemodelfilename.get());
-		savemodelfilter->export_model(m);
+		savemodelfilter->execute(savemodelfilename.get());
 		refresh_modeltabs();
 		gui.refresh();
 	}
@@ -248,11 +248,11 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 			m = master.get_currentmodel();
 			m->set_filter(savemodelfilter);
 			m->set_filename(savemodelfilename.get());
-			savemodelfilter->export_model(m);
+			savemodelfilter->execute(savemodelfilename.get());
 			refresh_modeltabs();
 		}
 	}
-	else f->export_model(m);
+	else f->execute(savemodelfilename.get());
 	gui.refresh();
 }
 
@@ -280,12 +280,12 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 			case (QMessageBox::Save):
 				// If model has a filter set, just save it
 				f = m->get_filter();
-				if (f != NULL) f->export_model(m);
+				if (f != NULL) f->execute(m->get_filename());
 				else if (run_savemodel_dialog())
 				{
 					m->set_filter(savemodelfilter);
 					m->set_filename(savemodelfilename.get());
-					savemodelfilter->export_model(m);
+					savemodelfilter->execute(savemodelfilename.get());
 				}
 				else return;
 				master.remove_model(m);
@@ -377,11 +377,11 @@ void AtenForm::on_actionFileLoadGridData_triggered(bool checked)
 		{
 			filename = filenames.at(i);
 			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-			if (f != NULL) f->import_grid(qPrintable(filename));
+			if (f != NULL) f->execute(qPrintable(filename));
 			else
 			{
 				f = master.probe_file(qPrintable(filename), FT_GRID_IMPORT);
-				if (f != NULL) f->import_grid(qPrintable(filename));
+				if (f != NULL) f->execute(qPrintable(filename));
 			}
 		}
 		refresh_gridspage();

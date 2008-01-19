@@ -21,7 +21,7 @@
 #include <gtk/gtk.h>
 #include "gui-gtk/funcs.h"
 #include "gui-gtk/gui-gtk.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 #include "base/master.h"
 #include "base/prefs.h"
 

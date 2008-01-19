@@ -254,7 +254,7 @@ void clipboard::paste_to_model(model *destmodel, pattern *p, int mol)
 	}
 	// Paste the atoms
 	clipatom *i = atoms.first();
-	atom **modelatoms = destmodel->get_staticatoms();
+	atom **modelatoms = destmodel->get_atomarray();
 	int cfgi = p->get_startatom() + mol*p->get_natoms();
 	while (i != NULL)
 	{
@@ -283,11 +283,9 @@ void clipboard::paste_bonds(model *m)
 // Paste to model translated
 void clipboard::paste_to_model(model *m, vec3<double> t)
 {
-	// Paste the contents of the clipboard into the model specified.
-	// An optional pattern is supplied, indicating atoms should be pasted into its local list. Otherwise, use the model.
-	// Deselect all atoms of the model, and select the pasted atoms.
 	dbg_begin(DM_CALLS,"clipboard::paste_to_model[translated]");
 	atom *pastedi, *ii, *jj;
+	// Deselect all atoms of the model, and select the pasted atoms.
 	m->select_none();
 	for (clipatom *i = atoms.first(); i != NULL; i = i->get_next())
 	{

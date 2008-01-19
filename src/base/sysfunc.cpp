@@ -22,7 +22,7 @@
 #include <iostream>
 #include <sstream>
 #include "base/constants.h"
-#include "file/parse.h"
+#include "parse/parser.h"
 #include "base/debug.h"
 #include "classes/variables.h"
 #include <math.h>
@@ -97,7 +97,7 @@ int enum_search(const char *name, int maxn, const char **itemlist, const char *q
 			break;
 		}
 	}
-	if ((result == maxn) && (name[0] != '#')) printf("Unrecognised %s '%s'\n",name,query);
+	if ((result == maxn) && (name[0] != '\0')) printf("Unrecognised %s '%s'\n",name,query);
 	return result;
 }
 
@@ -116,7 +116,7 @@ int enum_search_data(const char *name, int maxn, const char **itemlist, const ch
 			break;
 		}
 	}
-	if ((result == maxn) && (name[0] != '#')) printf("Unrecognised %s '%s'\n",name,query);
+	if ((result == maxn) && (name[0] != '\0')) printf("Unrecognised %s '%s'\n",name,query);
 	return result;
 }
 
@@ -198,6 +198,7 @@ const char *evaluate(const char *s, variable_list *vars)
 	char *c;
 	static double a, b, x;
 	static bool isop;
+	variable *v;
 	// Grab original string and work on scopy from now on
 	strcpy(scopy,s);
 	// Resolve brackets into results
@@ -274,10 +275,18 @@ const char *evaluate(const char *s, variable_list *vars)
 				//printf("left / right args %i %i\n",leftarg,rightarg);
 				// If either argument is a variable, grab its value
 				strcpy(arg,parser.argc(leftarg));
-				if (arg[0] == '$') a = vars->get_as_double(&arg[1]);
+				if (arg[0] == '$')
+				{
+					v = vars->get(&arg[1]);
+					a = (v == NULL ? 0.0 : v->get_as_double());
+				}
 				else a = atof(arg);
 				strcpy(arg,parser.argc(rightarg));
-				if (arg[0] == '$') b = vars->get_as_double(&arg[1]);
+				if (arg[0] == '$')
+				{
+					v = vars->get(&arg[1]);
+					b = (v == NULL ? 0.0 : v->get_as_double());
+				}
 				else b = atof(arg);
 				switch (*c)
 				{

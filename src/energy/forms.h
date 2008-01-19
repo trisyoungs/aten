@@ -30,9 +30,9 @@ const char *text_from_FFR(ff_rules);
 ff_rules FFR_from_text(const char*);
 
 // Electrostatic model
-enum elec_type { EM_OFF, EM_COULOMB, EM_EWALD, EM_EWALDAUTO, EM_NITEMS };
-const char *text_from_EM(elec_type);
-elec_type EM_from_text(const char*);
+enum elec_method { EM_OFF, EM_COULOMB, EM_EWALD, EM_EWALDAUTO, EM_NITEMS };
+const char *text_from_EM(elec_method);
+elec_method EM_from_text(const char*);
 
 // VDW potential forms
 enum vdw_func { VF_UNSPECIFIED, VF_LJ, VF_BUCK, VF_NITEMS };

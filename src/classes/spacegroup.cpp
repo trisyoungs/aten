@@ -21,8 +21,8 @@
 
 #include "classes/spacegroup.h"
 #include "classes/cell.h"
-#include "file/format.h"
-#include "file/parse.h"
+#include "parse/format.h"
+#include "parse/parser.h"
 
 spacegroup_list spacegroups;
 

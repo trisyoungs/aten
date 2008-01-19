@@ -27,7 +27,7 @@ enum short_opt { SO_A=97, SO_BOHR, SO_COMMAND, SO_DEBUG, SO_E,
 		SO_FF, SO_G, SO_HELP, SO_INTERACTIVE, SO_J,
 		SO_K, SO_L, SO_M, SO_N, SO_O,
 		SO_P, SO_Q, SO_R, SO_SCRIPT, SO_T,
-		SO_U, SO_VERBOSE, SO_W, SO_X, SO_Y, SO_ZMAP,
+		SO_UNDO, SO_VERBOSE, SO_W, SO_X, SO_Y, SO_ZMAP,
 		SO_LASTITEM };
 enum long_opt { LO_FOLD, LO_NOFOLD, LO_BOND, LO_NOBOND, LO_CENTRE, LO_NOCENTRE, LO_PACK, LO_NOPACK, LO_DEBUGTYPING, LO_DEBUGPARSE, LO_DEBUGMORE, LO_DEBUGALL, LO_DEBUGFILTERS, LO_SURFACE, LO_CACHE, LO_NITEMS };
 
@@ -42,10 +42,11 @@ void master_data::prepare_cli()
 	add_cli_option("command",required_argument,SO_COMMAND,TRUE);
 	add_cli_option("debug",no_argument,SO_DEBUG,TRUE);
 	add_cli_option("ff",required_argument,SO_FF,TRUE);
+	add_cli_option("help",no_argument,SO_HELP,TRUE);
 	add_cli_option("script",required_argument,SO_SCRIPT,TRUE);
+	add_cli_option("undo",required_argument,SO_UNDO,TRUE);
 	add_cli_option("verbose",no_argument,SO_VERBOSE,TRUE);
 	add_cli_option("zmap",required_argument,SO_ZMAP,TRUE);
-	add_cli_option("help",no_argument,SO_HELP,TRUE);
 	// Long options
 	add_cli_option("cache",required_argument,LO_CACHE,TRUE);
 	add_cli_option("fold",no_argument,LO_FOLD,FALSE);
@@ -70,7 +71,7 @@ void master_data::add_cli_option(const char *name, int has_arg, int enumid, bool
 	// Add a new option entry in the opts array
 	if (nopts == MAXCLIOPTS)
 	{
-		printf("Increase MAXOPTS in cli.h!\n");
+		printf("Increase MAXCLIOPTS in master.h!\n");
 		return;
 	}
 	longopts[nopts].name = name;
@@ -93,7 +94,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	// Parse program options using getopt_long.
 	int index = 1, ntried = 0;
 	bool done = FALSE;
-	script *s;
+	commandlist *cl;
 	filter *f;
 	zmap_type zm;
 	//printf("PROPER_PARSE = %i [%s]\n",argc,shortopts.c_str());
@@ -124,21 +125,21 @@ int master_data::parse_cli(int argc, char *argv[])
 					break;
 				// Read script commands from passed string
 				case (SO_COMMAND):
-					s = master.scripts.add();
-					if (s->cache_line(optarg)) master.set_program_mode(PM_SCRIPT);
+					cl = master.scripts.add();
+					if (cl->cache_line(optarg)) master.set_program_mode(PM_SCRIPT);
 					else
 					{
-						master.scripts.remove(s);
+						master.scripts.remove(cl);
 						return -1;
 					}
 					break;
 				// Cache a script file
 				case (SO_SCRIPT):
-					s = master.scripts.add();
-					if (s->load(optarg)) master.set_program_mode(PM_SCRIPT);
+					cl = master.scripts.add();
+					if (cl->load(optarg)) master.set_program_mode(PM_SCRIPT);
 					else
 					{
-						master.scripts.remove(s);
+						master.scripts.remove(cl);
 						return -1;
 					}
 					break;
@@ -227,7 +228,7 @@ int master_data::parse_cli(int argc, char *argv[])
 				// Load surface
 				case (LO_SURFACE):
 					f = master.probe_file(optarg, FT_GRID_IMPORT);
-					if (f != NULL) f->import_grid(optarg);
+					if (f != NULL) f->execute(optarg);
 					break;
 				default:
 					printf("Unrecognised command-line option '%s'.\n",argv[index]);
@@ -241,7 +242,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	{
 		ntried ++;
 		f = master.probe_file(argv[optind], FT_MODEL_IMPORT);
-		if (f != NULL) f->import_model(argv[optind]);
+		if (f != NULL) f->execute(argv[optind]);
 		optind++;
 	}
 	if (ntried == 0) return 0;

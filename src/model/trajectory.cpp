@@ -20,7 +20,7 @@
 */
 
 #include "base/master.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 #include "gui/gui.h"
 
 // Clear trajectory
@@ -66,7 +66,7 @@ bool model::initialise_trajectory(const char *fname, filter *f)
 	trajfilename = fname;
 	trajfilefilter = f;
 	// Read header
-	if (!trajfilefilter->read_trajectory(this, TRUE))
+	if (!trajfilefilter->execute("",trajfile,TRUE,this))
 	{
 		msg(DM_NONE,"Error reading header of trajectory file.\n");
 		trajfile->close();
@@ -82,7 +82,7 @@ bool model::initialise_trajectory(const char *fname, filter *f)
 	model testframe;
 	testframe.set_trajparent(this);
 	//printf("Initialised config\n");
-	if (!trajfilefilter->read_trajectory(&testframe, FALSE))
+	if (!trajfilefilter->execute("",trajfile,FALSE,&testframe))
 	{
 		msg(DM_NONE,"Error testing frame read from trajectory.\n");
 		trajfile->close();
@@ -113,7 +113,7 @@ bool model::initialise_trajectory(const char *fname, filter *f)
 		{
 			model *newframe = add_frame();
 			newframe->set_trajparent(this);
-			success = trajfilefilter->read_trajectory(newframe, FALSE);
+			success = trajfilefilter->execute("", trajfile, FALSE, newframe);
 			printf("Added and read frame...\n");
 			//if (!success) break
 			/*{
@@ -129,7 +129,7 @@ bool model::initialise_trajectory(const char *fname, filter *f)
 		// Read the first frame from the trajectory only
 		model *newframe = add_frame();
 		newframe->set_trajparent(this);
-		if (!trajfilefilter->read_trajectory(newframe, FALSE)) 
+		if (!trajfilefilter->execute("", trajfile, FALSE, newframe)) 
 		{
 			frames.remove(newframe);
 			msg(DM_NONE,"Error when reading frame data.\n");
@@ -189,7 +189,7 @@ void model::seek_first_frame()
 	{
 		// Seek to position of first frame in file
 		trajfile->seekg(trajposfirst);
-		bool success = trajfilefilter->read_trajectory(frames.first(), FALSE);
+		bool success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
 	}
 	frameposition = 1;
 	log_change(LOG_VISUAL);
@@ -217,7 +217,7 @@ void model::seek_next_frame()
 		return;
 	}
 	if (trajcached) currentframe = currentframe->next;
-	else success = trajfilefilter->read_trajectory(frames.first(), FALSE);
+	else success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
 	frameposition ++;
 	log_change(LOG_VISUAL);
 	msg(DM_NONE,"Seek to frame %i\n",frameposition);
@@ -248,7 +248,7 @@ void model::seek_previous_frame()
 		// Read in previous frame from file
 		streampos newpos = trajposfirst + streampos((frameposition-2)*framesize);
 		trajfile->seekg(newpos);
-		bool success = trajfilefilter->read_trajectory(frames.first(), FALSE);
+		bool success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
 	}
 	frameposition --;
 	log_change(LOG_VISUAL);
@@ -273,7 +273,7 @@ void model::seek_last_frame()
 	{
 		// Read in last frame from file
 		trajfile->seekg(trajposlast);
-		bool success = trajfilefilter->read_trajectory(frames.first(), FALSE);
+		bool success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
 	}
 	frameposition = totalframes;
 	log_change(LOG_VISUAL);

@@ -20,7 +20,7 @@
 */
 
 #include "classes/forcefield.h"
-#include "file/parse.h"
+#include "parse/parser.h"
 #include "base/master.h"
 #include "base/elements.h"
 #include "base/prefs.h"
@@ -237,6 +237,9 @@ prefs_data::prefs_data()
 	// GUI
 	showgui = TRUE;
 	gui_msg_font = "Adobe Courier 10";
+
+	// Undo levels
+	maxundo = 2;
 }
 	
 void prefs_data::load(const char *filename)
@@ -254,8 +257,8 @@ void prefs_data::load(const char *filename)
 		return;
 	}
 	// Create script structure and initialise
-	script prefscript;
-	prefscript.commands.clear();
+	commandlist prefcmds;
+	prefcmds.clear();
 	while (!prefsfile.eof())
 	{
 		success = parser.get_args_delim(&prefsfile,PO_USEQUOTES+PO_SKIPBLANKS);
@@ -266,18 +269,16 @@ void prefs_data::load(const char *filename)
 		}
 		else if (success == -1) break;
 		// Add script command
-		if (!prefscript.cache_command()) break;
+		if (!prefcmds.cache_command()) break;
 	}
 	// Check the flowstack - it should contain just the BC_ROOTNODE branch
-	if (prefscript.commands.get_topbranch_type() != BC_ROOTNODE)
+	if (prefcmds.get_branchstack_size() != 0)
 	{
-		int i = prefscript.commands.get_branchstack_size() - 1;
-		msg(DM_NONE,"Loops in prefs? : %i block%s not been terminated.>>>\n",i ,(i == 1 ? " has" : "s have"));
 		dbg_end(DM_CALLS,"prefs::load");
 		return;
 	}
+	prefcmds.execute();
 	dbg_end(DM_CALLS,"prefs::load");
-	prefscript.run();
 }
 
 double prefs_data::screenradius(atom *i)

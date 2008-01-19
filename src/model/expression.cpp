@@ -57,7 +57,7 @@ bool model::create_expression()
 	// 3) Check the electrostatic setup for the model
 	if (prefs.calc_elec())
 	{
-		elec_type emodel = prefs.get_electrostatics();
+		elec_method emodel = prefs.get_electrostatics();
 		switch (emodel)
 		{
 			case (EM_OFF):

@@ -23,8 +23,8 @@
 #include "gui-gtk/funcs.h"
 #include "gui-gtk/gui-gtk.h"
 #include "base/master.h"
-#include "file/filter.h"
-#include "file/temp_dlpfield.h"
+#include "parse/filter.h"
+#include "parse/temp_dlpfield.h"
 
 // Variables
 GtkFileChooser *dialog_savefield;

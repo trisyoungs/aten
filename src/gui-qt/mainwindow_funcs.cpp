@@ -393,12 +393,12 @@ void AtenForm::refresh_modeltabs()
 void AtenForm::execute_command()
 {
 	// Clear old script commands
-	master.cmd_script.commands.clear();
+	master.cmd_script.clear();
 	// Grab the current text of the line edit
 	parser.get_args_delim(qPrintable(command_edit->text()), PO_USEQUOTES);
 	// Check for no commands given
 	if (parser.get_nargs() == 0) return;
-	if (master.cmd_script.cache_command()) master.cmd_script.run();
+	if (master.cmd_script.cache_command()) master.cmd_script.execute(NULL);
 	gui.refresh();
 	command_edit->setText("");
 }
@@ -451,7 +451,7 @@ void AtenForm::load_recent()
 	}
 	// If we get to here then the model is not currently loaded...
 	f = master.probe_file(filename.get(), FT_MODEL_IMPORT);
-	if (f != NULL) f->import_model(filename.get());
+	if (f != NULL) f->execute(filename.get());
 
 }
 

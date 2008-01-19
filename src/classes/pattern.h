@@ -222,19 +222,19 @@ class pattern
 	// Expression
 	*/
 	private:
-	// Connectivity matrix of the atoms
+	// Connectivity matrix of atoms in one molecule of the pattern
 	int **conmat;
 	// Flag for incomplete energy node
 	bool incomplete;
 
 	public:
-	// List of atoms in the model
+	// List of atom(types) in one pattern molecule
 	list<patatom> atoms;
-	// List of bonds in the model
+	// List of bonds in one pattern molecule
 	list<patbound> bonds;
-	// List of angles in the model
+	// List of angles in one pattern molecule
 	list<patbound> angles;
-	// List of torsions in the model
+	// List of torsions in one pattern molecule
 	list<patbound> torsions;
 	// Empty the arrays of the energy expression
 	void delete_expression();

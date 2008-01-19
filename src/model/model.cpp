@@ -22,6 +22,7 @@
 #include "model/model.h"
 #include "base/master.h"
 #include "base/elements.h"
+#include "classes/pattern.h"
 
 // Constructors
 model::model()
@@ -38,8 +39,6 @@ model::model()
 	spgrpsetting = 1;
 	mass = 0.0;
 	density = 0.0;
-	staticatoms = NULL;
-	staticatoms_point = -1;
 	translatescale = 1.0;
 	ff = NULL;
 	save_point = 0;
@@ -79,7 +78,6 @@ model::~model()
 	atoms.clear();
 	patterns.clear();
 	measurements.clear();
-	if (staticatoms != NULL) delete[] staticatoms;
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_MODEL] ++;
 	#endif
@@ -105,7 +103,6 @@ void model::clear()
 	patterns_point = -1;
 	expression_point = -1;
 	projection_point = -1;
-	staticatoms_point = -1;
 }
 
 // Calculate mass
@@ -283,17 +280,18 @@ void model::print_coords()
 }
 
 // Centre system at 0,0,0
-void model::centre()
+void model::centre(double newx, double newy, double newz)
 {
 	dbg_begin(DM_CALLS,"model::centre");
 	vec3<double> cog;
 	atom *i;
 	for (i = atoms.first(); i != NULL; i = i->next) cog += i->r();
 	// Get the centre of geometry and adjust atomic coordinates...
-	cog /= -atoms.size();
+	cog /= atoms.size();
+	cog.add(newx, newy, newz);
 	for (i = atoms.first(); i != NULL; i = i->next)
 	{
-		i->r() += cog;
+		i->r() -= cog;
 		// BEGIN HACK TODO Remove!
 		if (i->get_element() > 118) i->v() += cog;
 		// END HACK
@@ -461,8 +459,8 @@ void model::copy_atom_data(model *srcmodel, int dat, int startatom, int ncopy)
 		else
 		{
 			// Get staticatoms arrays from both models
-			atom **ii = get_staticatoms();
-			atom **jj = srcmodel->get_staticatoms();
+			atom **ii = get_atomarray();
+			atom **jj = srcmodel->get_atomarray();
 			for (int n=startatom; n<finishatom; n++)
 			{
 				// Copy data items referenced in 'dat'
@@ -484,7 +482,7 @@ double model::calculate_rms_force()
 {
 	dbg_begin(DM_CALLS,"model::calculate_rms_force");
 	double rmsforce = 0.0;
-	atom **modelatoms = get_staticatoms();
+	atom **modelatoms = get_atomarray();
 	for (int i=0; i<atoms.size(); i++)
 	{
 		rmsforce += modelatoms[i]->f().x * modelatoms[i]->f().x;

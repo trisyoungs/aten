@@ -330,7 +330,7 @@ void model::create_pattern_molecules()
 		p->molecule.clear();
 		master.privclip.paste_to_model(&p->molecule);
 		p->molecule.set_name(p->get_name());
-		p->molecule.centre();
+		p->molecule.centre(0.0,0.0,0.0);
 		p->molecule.select_none();
 	}
 	select_none();

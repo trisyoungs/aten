@@ -21,7 +21,7 @@
 #include "gui-gtk/funcs.h"
 #include "gui-gtk/gui-gtk.h"
 #include "base/master.h"
-#include "file/filter.h"
+#include "parse/filter.h"
 
 // Variables
 GtkFileChooser* dialog_savemodel;

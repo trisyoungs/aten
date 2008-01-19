@@ -136,7 +136,7 @@ void pattern::torsion_forces(model *srcmodel)
 	static ffparams params;
 	static double k0, k1, k2, k3, k4;
 	patbound *pb;
-	atom **modelatoms = srcmodel->get_staticatoms();
+	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 
 	aoff = startatom;
