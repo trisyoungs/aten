@@ -184,7 +184,9 @@ command_functions::command_functions()
 	action[CA_PRINTMC] = &command_functions::function_CA_PRINTMC;
 
 	// Messaging
+	action[CA_ERROR] = &command_functions::function_CA_ERROR;
 	action[CA_PRINT] = &command_functions::function_CA_PRINT;
+	action[CA_WARN] = &command_functions::function_CA_WARN;
 
 	// Minimisation Commands
 	action[CA_CGMINIMISE] = &command_functions::function_CA_CGMINIMISE;

@@ -41,6 +41,8 @@ const char *VF_strings[VF_NITEMS] = { "Unspecified", "Lennard-Jones 12-6", "Buck
 const char *VF_keywords[VF_NITEMS] = { "_NULL_", "lj", "buck" };
 const char *text_from_VF(vdw_func i)
 	{ return VF_strings[i]; }
+const char *keyword_from_VF(vdw_func i)
+	{ return VF_keywords[i]; }
 vdw_func VF_from_text(const char *s)
 	{ return (vdw_func) enum_search("VDW style",VF_NITEMS,VF_keywords,s); }
 

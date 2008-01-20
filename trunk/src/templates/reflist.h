@@ -71,7 +71,7 @@ template <class T> class reflist
 	// Add reference to the list with extra data
 	void add(T*, int, int);
 	// Add reference to list, unless already there
-	void add_unique(T*, int, int);
+	void add_unique(T*, int data1=0, int data2=0);
 	// Delete the reference from the list
 	void remove(refitem<T>*);
 	// Delete the reference containing specified item from the list

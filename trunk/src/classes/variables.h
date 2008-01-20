@@ -27,7 +27,7 @@
 #include "base/sysfunc.h"
 
 // Variable Types
-enum variable_type { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_NITEMS };
+enum variable_type { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_ATOMTYPE, VT_NITEMS };
 const char *text_from_VT(variable_type);
 
 // Forward Declarations
@@ -107,8 +107,8 @@ class variable
 	float get_as_float() { float(get_as_double()); }
 	// Get value of variable as a boolean
 	bool get_as_bool();
-	// Get value of variable as gpointer (desired type is specified so a check can be made)
-	void *get_as_pointer(variable_type);
+	// Get value of variable as pointer
+	void *get_as_pointer() { return ptrvalue; }
 	// Integer increase
 	void increase(int);
 	// Integer decrease

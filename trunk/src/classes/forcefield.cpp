@@ -39,7 +39,7 @@ ffatom::ffatom()
 	name.set("Unnamed");
 	ffid = -1;
 	q = 0.0;
-	vdwstyle = VF_UNSPECIFIED;
+	form = VF_UNSPECIFIED;
 	generator = NULL;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_FF_ATOM] ++;

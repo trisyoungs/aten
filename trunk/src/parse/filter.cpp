@@ -223,6 +223,7 @@ void filter::set_type(filter_type ft)
 			v = commands.variables.create_variable("title","",VT_CHAR);
 			v = commands.variables.create_variable("npatterns","",VT_INTEGER);
 			v = commands.variables.create_variable("energyunit","",VT_CHAR);
+			v = commands.variables.create_variable("ntypes","",VT_INTEGER);
 			break;
 		case (FT_GRID_EXPORT):
 			break;
@@ -293,6 +294,7 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			commands.variables.set("title",obj.m->get_name());
 			commands.variables.set("npatterns",obj.m->get_npatterns());
 			commands.variables.set("energyunit",text_from_EU(prefs.get_internal_units()));
+			commands.variables.set("ntypes",obj.m->get_nuniquetypes());
 			// Open file...
 			if (!commands.set_outfile(filename))
 			{

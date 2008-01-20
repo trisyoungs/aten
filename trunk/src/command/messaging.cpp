@@ -41,6 +41,6 @@ int command_functions::function_CA_PRINT(command *&c, bundle &obj)
 // Write line to msg output
 int command_functions::function_CA_WARN(command *&c, bundle &obj)
 {
-	msg(DM_NONE,"Filter Warning: %s\n",c->argc(0));
+	msg(DM_NONE,"Filter Warning: %s\n",c->get_format()->create_string());
 	return CR_SUCCESS;
 }

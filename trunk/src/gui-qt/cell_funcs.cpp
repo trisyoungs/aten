@@ -105,7 +105,10 @@ void AtenForm::on_CellReplicateButton_clicked(bool checked)
 	pos.x = ui.CellReplicatePosXSpin->value();
 	pos.y = ui.CellReplicatePosYSpin->value();
 	pos.z = ui.CellReplicatePosZSpin->value();
-	master.get_currentmodel()->replicate_cell(neg, pos);
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Replicate Cell");
+	m->replicate_cell(neg, pos);
+	m->end_undostate();
 	gui.refresh();
 }
 
@@ -115,6 +118,9 @@ void AtenForm::on_CellScaleButton_clicked(bool checked)
 	scale.x = ui.CellScaleXSpin->value();
 	scale.y = ui.CellScaleYSpin->value();
 	scale.z = ui.CellScaleZSpin->value();
-	master.get_currentmodel()->scale_cell(scale);
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Scale Cell");
+	m->scale_cell(scale);
+	m->end_undostate();
 	gui.refresh();
 }

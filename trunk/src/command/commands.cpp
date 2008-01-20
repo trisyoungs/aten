@@ -38,6 +38,7 @@ const char *CA_data[CA_NITEMS] = {
 	"bond",
 	"angle",
 	"torsion",
+	"atomtype",
 
 	// Root node
 	"_ROOTNODE_",

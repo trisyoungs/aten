@@ -37,6 +37,7 @@ elec_method EM_from_text(const char*);
 // VDW potential forms
 enum vdw_func { VF_UNSPECIFIED, VF_LJ, VF_BUCK, VF_NITEMS };
 const char *text_from_VF(vdw_func);
+const char *keyword_from_VF(vdw_func);
 vdw_func VF_from_text(const char*);
 enum vdw_lj { VF_LJ_EPS, VF_LJ_SIGMA };
 enum vdw_buck { VF_BUCK_A, VF_BUCK_B, VF_BUCK_C };

@@ -8,25 +8,23 @@ exportfield
 	exact "FIELD"
 
 	# Variable declaration
-	character
-	integer
-	double
 	pattern p
 	atom i
+	atomtype at
 	bond b
 	angle a
 	torsion t
 
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$title"
-	writeline "units *@2 $energyunit"
-	writeline "molecules *@2 $npatterns"
+	writeline "units  $energyunit"
+	writeline "molecules  $npatterns"
 	for $p
 		# Write pattern name and number of moleculse
 		writeline "$p.name"
 		writeline "nummols  $p.nmols"
 		# Write atoms - just loop over those in the first molecule of the pattern
-		writeline "atoms *@2 $p.nmolatoms"
+		writeline "atoms  $p.nmolatoms"
 		for $i $p 1
 			writeline "$i.fftype@6      $i.mass@10.5    $i.q@9.6"
 		end
@@ -41,7 +39,7 @@ exportfield
 			end
 		end
 		# Angles in pattern
-		writeline "angles *@2 $p.nangles"
+		writeline "angles  $p.nangles"
 		for $a $p
 			# Convert functional form to be recognised by DL_POLY
 			if $a.form = harmonic
@@ -51,7 +49,7 @@ exportfield
 			end
 		end
 		# Torsions in pattern
-		writeline "dihedrals *@2 $p.ntorsions"
+		writeline "dihedrals  $p.ntorsions"
 		for $t $p
 			# Convert functional form to be recognised by DL_POLY
 			if $t.form = cosine
@@ -64,5 +62,8 @@ exportfield
 		end
 		# Terminating line
 		writeline "finish"
+	end
+	# VDW specification
+	for $at
 	end
 end

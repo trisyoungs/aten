@@ -158,7 +158,7 @@ bool savedlpfield(const char *filename, model *sourcemodel)
 		{
 			paramsi = ri->item->get_params();
 			paramsj = rj->item->get_params();
-			switch (ri->item->get_style())
+			switch (ri->item->get_funcform())
 			{
 				case (VF_LJ):
 					v1 = sqrt(paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS]);
