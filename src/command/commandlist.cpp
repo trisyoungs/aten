@@ -56,8 +56,11 @@ command::command()
 
 commandlist::commandlist()
 {
+	next = NULL;
+	prev = NULL;
 	infile = NULL;
 	outfile = NULL;
+	push_branch(&commands, CA_ROOTNODE, NULL);
 }
 
 // Destructors
@@ -103,7 +106,7 @@ void command::print_args()
 		{
 			printf("%12s [%10s]",args[i]->get_name(), text_from_VT(args[i]->get_type()));
 			if (args[i]->get_type() < VT_ATOM) printf("%20s\n",args[i]->get_as_char());
-			else printf("%li\n",args[i]->get_as_pointer(VT_ATOM));
+			else printf("%li\n",args[i]->get_as_pointer());
 		}
 	}
 	dbg_end(DM_CALLS,"command::print_args");
@@ -431,6 +434,7 @@ bool commandlist::add_command(command_action ca)
 		case (CA_BOND):
 		case (CA_ANGLE):
 		case (CA_TORSION):
+		case (CA_ATOMTYPE):
 			for (n=1; n<parser.get_nargs(); n++)
 			{
 				// Check for existing variable with same name
@@ -908,11 +912,15 @@ bool commandlist::create_pattern_variables(const char *base)
 	if (v == NULL) return FALSE;
 	v = variables.create_variable(base,"nmolatoms",VT_INTEGER);
 	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"natoms",VT_INTEGER);
+	if (v == NULL) return FALSE;
 	v = variables.create_variable(base,"nbonds",VT_INTEGER);
 	if (v == NULL) return FALSE;
 	v = variables.create_variable(base,"nangles",VT_INTEGER);
 	if (v == NULL) return FALSE;
 	v = variables.create_variable(base,"ntorsions",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"ntypes",VT_INTEGER);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -926,6 +934,7 @@ void commandlist::set_pattern_variables(const char *varname, pattern *p)
 		variables.set(varname,"name",p->get_name());
 		variables.set(varname,"nmols",p->get_nmols());
 		variables.set(varname,"nmolatoms",p->get_natoms());
+		variables.set(varname,"natoms",p->get_totalatoms());
 		variables.set(varname,"nbonds",p->bonds.size());
 		variables.set(varname,"nangles",p->angles.size());
 		variables.set(varname,"ntorsions",p->torsions.size());
@@ -962,6 +971,7 @@ bool commandlist::create_patbound_variables(const char *base)
 		v = variables.create_variable(base,parm,VT_DOUBLE);
 		if (v == NULL) return FALSE;
 	}
+	return TRUE;
 }
 
 // Set variables for patbound
@@ -1016,4 +1026,56 @@ void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 		
 	}
 	dbg_end(DM_CALLS,"commandlist::set_patbound_variables");
+}
+
+// Create atomtype parameter variables
+bool commandlist::create_atomtype_variables(const char *base)
+{
+	static char parm[24];
+	int i;
+	variable *v;
+	strcpy(parm,"param_X");
+	for (i = 0; i < MAXFFPARAMDATA; i++)
+	{
+		parm[6] = 97 + i;
+		v = variables.create_variable(base,parm,VT_INTEGER);
+		if (v == NULL) return FALSE;
+	}
+	v = variables.create_variable(base,"q",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"id",VT_INTEGER);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"name",VT_CHAR);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"equiv",VT_CHAR);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"form",VT_CHAR);
+	if (v == NULL) return FALSE;
+	return TRUE;
+}
+
+
+// Set variables for pattern
+void commandlist::set_atomtype_variables(const char *varname, ffatom *ffa)
+{
+	dbg_begin(DM_CALLS,"commandlist::set_atomtype_variables");
+	static char parm[24];
+	int i;
+	ffparams ffp;
+	if (ffa != NULL)
+	{
+		ffp = ffa->get_params();
+		strcpy(parm,"param_X");
+		for (i = 0; i < MAXFFPARAMDATA; i++)
+		{
+			parm[6] = 97 + i;
+			variables.set(varname,parm,ffp.data[i]);
+		}
+		variables.set(varname,"q",ffa->get_charge());
+		variables.set(varname,"id",ffa->get_ffid());
+		variables.set(varname,"name",ffa->get_name());
+		variables.set(varname,"equiv",ffa->get_equiv());
+		variables.set(varname,"form",keyword_from_VF(ffa->get_funcform()));
+	}
+	dbg_end(DM_CALLS,"commandlist::set_atomtype_variables");
 }

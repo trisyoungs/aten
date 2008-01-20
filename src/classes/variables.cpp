@@ -29,7 +29,7 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*" };
+const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype*" };
 const char *text_from_VT(variable_type vt)
 	{ return VT_keywords[vt]; }
 
@@ -89,6 +89,9 @@ void variable::print()
 		case (VT_ANGLE):
 		case (VT_TORSION):
 			printf("Variable '%s', type '%s', value '%li'.\n", name.get(), text_from_VT(type), ptrvalue);
+			break;
+		case (VT_ATOMTYPE):
+			printf("Variable '%s', type 'atomtype', value '%i'.\n", name.get(), get_as_int());
 			break;
 	}
 }
@@ -234,17 +237,6 @@ bool variable::get_as_bool()
 	return FALSE;
 }
 
-// Get as gpointer
-void *variable::get_as_pointer(variable_type vt)
-{
-	if (type != vt)
-	{
-		printf("variable::get_as_pointer <<<< Tried to get variable '%s' which is of type '%s' but thought it was of type '%s' >>>>\n", name.get(), text_from_VT(type), text_from_VT(vt));
-		return NULL;
-	}
-	else return ptrvalue;
-}
-
 // Reset
 void variable::reset()
 {
@@ -265,6 +257,7 @@ void variable::reset()
 		case (VT_BOND):
 		case (VT_ANGLE):
 		case (VT_TORSION):
+		case (VT_ATOMTYPE):
 			ptrvalue = NULL;
 			break;
 	}
@@ -280,6 +273,7 @@ void variable::increase(int n)
 			break;
 		case (VT_DOUBLE):
 			doublevalue += 1.0;
+			break;
 		case (VT_ATOM):
 			ptrvalue = ( (atom*) ptrvalue)->next;
 			break;
@@ -293,6 +287,9 @@ void variable::increase(int n)
 		case (VT_ANGLE):
 		case (VT_TORSION):
 			ptrvalue = ( (patbound*) ptrvalue)->next;
+			break;
+		case (VT_ATOMTYPE):
+			ptrvalue = ( (ffatom*) ptrvalue)->next;
 			break;
 		default:
 			printf("variable::increase <<<< Don't know how to increase variable '%s', type '%s' >>>>\n", name.get(), text_from_VT(type));
@@ -324,6 +321,9 @@ void variable::decrease(int n)
 		case (VT_ANGLE):
 		case (VT_TORSION):
 			ptrvalue = ( (patbound*) ptrvalue)->prev;
+			break;
+		case (VT_ATOMTYPE):
+			ptrvalue = ( (ffatom*) ptrvalue)->prev;
 			break;
 		default:
 			printf("variable::decrease <<<< Don't know how to decrease variable '%s', type '%s' >>>>\n", name.get(), text_from_VT(type));
@@ -396,7 +396,22 @@ variable *variable_list::add_constant(const char *s)
 	strcpy(newname,"_variable");
 	strcat(newname,itoa(vars.size()));
 	result->set_name(newname);
-	result->set_type(VT_CHAR);
+	// Try to determine type of the argument
+	int i, ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
+	for (i = 0; i < strlen(s); i++)
+	{
+		ch = s[i];
+		if ((ch > 47) && (ch < 58)) nn ++;
+		else if (ch == '.') ndp ++;
+		else if ((ch == '-') || (ch == '+')) npm ++;
+		else if ((ch == 'e') || (ch == 'E')) ne ++;
+		else nch ++;
+	}
+	// Based on the numbers we calculated, try to determine its type
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1)) result->set_type(VT_CHAR);
+	else if (ndp == 1) result->set_type(VT_DOUBLE);
+	else result->set_type(VT_INTEGER);
+	//printf("DETERMINED CONSTANT '%s' TO BE OF TYPE '%s'\n",s,text_from_VT(result->get_type()));
 	result->set_constant();
 	result->set(s);
 	return result;

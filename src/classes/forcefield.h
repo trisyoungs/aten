@@ -69,7 +69,7 @@ class ffatom
 	*/
 	private:
 	// Type of Van der Waals interactions in forcefield
-	vdw_func vdwstyle;
+	vdw_func form;
 	// Unique ffid of atom type in forcefield
 	int ffid;
 	// Name of atom type
@@ -80,7 +80,7 @@ class ffatom
 	dnchar description;
 	// Atomtype description
 	atomtype typedesc;
-	// Pointer to parameter data
+	// Parameter data
 	ffparams params;
 	// Generator data (if present in a rule-based forcefield)
 	double *generator;
@@ -92,11 +92,9 @@ class ffatom
 	*/
 	public:
 	// Set functional form of VDW
-	void set_style(vdw_func vf) { vdwstyle = vf; }
+	void set_funcform(vdw_func vf) { form = vf; }
 	// Returns the funcional VDW form
-	vdw_func get_style() { return vdwstyle; }
-	// Returns the functional form of the potential
-	vdw_func get_funcform() { return vdwstyle; }
+	vdw_func get_funcform() { return form; }
 	// Returns the ffid of the type
 	int get_ffid() { return ffid; }
 	// Returns the charge of the type

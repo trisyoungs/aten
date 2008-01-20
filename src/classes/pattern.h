@@ -303,10 +303,12 @@ class pattern
 	void augment();
 
 	/*
-	// Data Propagation
+	// Propagation
 	*/
 	public:
+	// Copy atomtypes for first molecule to all other molecules
 	void propagate_atomtypes();
+	// Copy bondtypes for first molecule to all other molecules
 	void propagate_bondtypes();
 
 	/*

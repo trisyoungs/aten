@@ -30,9 +30,7 @@ Forcefield To-Do list:
 	- OPLS (types)
 
 Filters To-Do list:
-	- Strongly-typed variables?
 	- EPSR Ato import / export?
-	- Full pdb import (from spec)
 	- 'within' function
 
 General Qt To-Do list:
@@ -53,4 +51,4 @@ Optimisation To-Do list:
 	- Hemispherical Ewald summmation
 	- Filters / variable_list - can enum and store common variable pointers (e.g. "e", "r.x") to save lookup time
 	- For large systems (10000+ atoms) autocreate_patterns() is a bottleneck, as is model::copy(model*)
-	- Disorder builder - avoid needless energy calculation
+	- Disorder builder - avoid needless pairwise energy calculation 

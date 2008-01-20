@@ -336,7 +336,7 @@ bool forcefield::read_vdw(ifstream &fffile)
 			ffa->params.data[0] = parser.argd(3);
 			ffa->params.data[1] = parser.argd(4);
 			ffa->params.data[2] = parser.argd(5);
-			ffa->set_style(vdwstyle);
+			ffa->set_funcform(vdwstyle);
 			msg(DM_VERBOSE,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->ffid, ffa->name.get(), ffa->params.data[0], ffa->params.data[1], ffa->params.data[2], ffa->q);
 			count ++;
 		}

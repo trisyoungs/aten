@@ -50,6 +50,7 @@ enum command_action {
 	CA_BOND,
 	CA_ANGLE,
 	CA_TORSION,
+	CA_ATOMTYPE,
 
 	// Root node
 	CA_ROOTNODE,

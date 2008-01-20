@@ -36,6 +36,7 @@ const char *CA_syntax[CA_NITEMS] = {
 	"bond <variables>",
 	"angle <variables>",
 	"torsion <variables>",
+	"atomtype <variables>",
 
 	// Root node
 	"_ROOTNODE_",

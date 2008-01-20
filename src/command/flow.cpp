@@ -56,11 +56,14 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 	// Grab variable list from command's parent list
 	variable_list &vars = c->get_parent()->variables;
 	bool status = TRUE;
+	printf("dkjfkdjfkdjf\n");
 	if (c->get_loopactive())
 	{
 		// Do loop iteration.
 		// Increase count and iteration variables
+	printf("dkjfkdjfkdjf\n");
 		c->arg(0)->increase(1);
+	printf("dkjfkdjfkdjf\n");
 		c->increase_iterations();
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
@@ -96,9 +99,19 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				if (c->argp(0) == NULL) status = FALSE;
 				c->get_parent()->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
 				break;
-//			case (VT_PATBOUND):
-//				vars.set_patbound_variables(c->arg(0)->get_name(), c->argf(0));
-//				break;
+			case (VT_BOND):
+			case (VT_ANGLE):
+			case (VT_TORSION):
+				if (c->argpb(0) == NULL) status = FALSE;
+				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), c->argpb(0));
+				break;
+			case (VT_ATOMTYPE):
+		printf("ASDKJKSJ\n");
+				if (c->argffa(0) == NULL) status = FALSE;
+				c->get_parent()->set_atomtype_variables(c->arg(0)->get_name(), c->argffa(0));
+		printf("ASDKJKSJ\n");
+
+				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", text_from_VT(c->argt(0)));
 				return CR_FAIL;
@@ -198,38 +211,39 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				// Set pattern variables from the pattern pointer
 				c->get_parent()->set_pattern_variables(c->arg(0)->get_name(), c->argp(0));
 				break;
-			/* Loop over forcefield terms of pattern
-			case (VT_PATBOUND):
-				// Second variable supplied must be a pattern variable from which we take the ff terms
-				if (rangetype == VT_PATTERN)
+			// Loop over forcefield bond terms of pattern
+			case (VT_BOND):
+				if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+				if (c->argt(1) != VT_PATTERN)
 				{
-					p = (pattern*) rangevar->get_as_pointer(VT_PATTERN);
-					switch (basiccommand)
-					{
-						case (CA_FORFFBONDS):
-							countvar->set(p->bonds.first());
-							break;
-						case (CA_FORFFANGLES):
-							countvar->set(p->angles.first());
-							break;
-						case (CA_FORFFTORSIONS):
-							countvar->set(p->torsions.first());
-							break;
-						default:
-							printf("command::loop_initialise <<<< ffbound interaction not in list >>>>\n");
-							break;
-					}
+					printf("Bond loop must be given a 'pattern'.\n");
+					return CR_FAIL;
 				}
-				else
-				{
-					msg(DM_NONE,"Range variable '%s' is not of suitable type (%s) for 'ffbound' loop.\n", rangevar->get_name(), text_from_VT(rangevar->get_type()));
-					dbg_end(DM_CALLS,"command::loop_initialise");
-					return FALSE;
-				}
-				// Set patbound variables from the patbound pointer
-				vars.set_patbound_variables(countvar->get_name(), (patbound*) countvar->get_as_pointer(VT_PATBOUND));
+				c->arg(0)->set(c->argp(1)->bonds.first());
+				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), (patbound*) c->arg(0)->get_as_pointer());
 				break;
-			*/
+			// Loop over forcefield angle terms of pattern
+			case (VT_ANGLE):
+				if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+				if (c->argt(1) != VT_PATTERN)
+				{
+					printf("Angle loop must be given a 'pattern'.\n");
+					return CR_FAIL;
+				}
+				c->arg(0)->set(c->argp(1)->angles.first());
+				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), (patbound*) c->arg(0)->get_as_pointer());
+				break;
+			// Loop over forcefield torsion terms of pattern
+			case (VT_TORSION):
+				if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+				if (c->argt(1) != VT_PATTERN)
+				{
+					printf("Torsion loop must be given a 'pattern'.\n");
+					return CR_FAIL;
+				}
+				c->arg(0)->set(c->argp(1)->torsions.first());
+				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), (patbound*) c->arg(0)->get_as_pointer());
+				break;
 			default:
 				printf("Kick Developer - Loops over '%s' are missing.\n",text_from_VT(c->argt(0)));
 				return CR_FAIL;

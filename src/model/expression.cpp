@@ -34,8 +34,9 @@ bool model::create_expression()
 		dbg_end(DM_CALLS,"model::create_expression");
 		return TRUE;
 	}
-	// Invalidate the ewaldauto flag
+	// Reset some variables
 	prefs.valid_ewaldauto = FALSE;
+	uniquetypes.clear();
 	msg(DM_NONE,"Creating expression for model %s...\n",name.get());
 	// 1) Assign internal atom type data (hybridisations). [type_all also performs create_pattern()]
 	if (!type_all())
@@ -44,7 +45,7 @@ bool model::create_expression()
 		dbg_end(DM_CALLS,"model::create_expression");
 		return FALSE;
 	}
-	// 2) Remove the old expression data and create the new 
+	// 2) Remove old expression data and create new
 	pattern *p = patterns.first();
 	while (p != NULL)
 	{
@@ -81,6 +82,18 @@ bool model::create_expression()
 				}
 				break;
 		}
+	}
+	// 4) Create list of unique atom types now in model
+	// First, create a list of unique type references
+	reflist<ffatom> uniqueref;
+	refitem<ffatom> *ri;
+	ffatom *ffa;
+	for (atom *i = atoms.first(); i != NULL; i = i->next) uniqueref.add_unique(i->get_type());
+	// Now, populate the uniquetypes list with copies of these atom types
+	for (ri = uniqueref.first(); ri != NULL; ri = ri->next)
+	{
+		ffa = uniquetypes.add();
+		*ffa = *ri->item;
 	}
 	expression_point = logs[LOG_STRUCTURE];
 	dbg_end(DM_CALLS,"model::create_expression");

@@ -406,6 +406,10 @@ class model
 	/*
 	// Typing
 	*/
+	private:
+	// List of unique atom types (copies) in model (useful for FF export)
+	list<ffatom> uniquetypes;
+
 	public:
 	// Set type of specified atom
 	void set_atom_type(atom *i, ffatom *ffa, bool fixed);
@@ -417,6 +421,10 @@ class model
 	void remove_typing();
 	// Set atomtypes of selected atoms
 	void selection_set_type(ffatom *ffa, bool fixed);
+	// Return number of unique atom types in model
+	int get_nuniquetypes() { return uniquetypes.size(); }
+	// Return the list of unique types in the model
+	ffatom *get_uniquetypes() { return uniquetypes.first(); }
 
 	/*
 	// Energy / Forces
@@ -733,10 +741,14 @@ class model
 	// Glyphs
 	*/
 	private:
+	// List of all glyphs within model
 	list<glyph> glyphs;
 
 	public:
+	// Create new glyph in this model
 	glyph *add_glyph();
+	// Return list of glyphs
+	glyph *get_glyphs() { return glyphs.first(); }
 
 	/*
 	// Undo / Redo

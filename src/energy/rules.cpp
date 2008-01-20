@@ -43,7 +43,7 @@ void forcefield::generate_vdw(atom *i)
 			ffi->params.data[VF_LJ_EPS] = epsilon;
 			ffi->params.data[VF_LJ_SIGMA] = sigma;
 			msg(DM_VERBOSE,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n",sigma,epsilon);
-			ffi->set_style(VF_LJ);
+			ffi->set_funcform(VF_LJ);
 			break;
 	}
 	dbg_end(DM_CALLS,"forcefield::generate_vdw");

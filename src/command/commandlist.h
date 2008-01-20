@@ -40,6 +40,7 @@ const char *text_from_IC(if_condition);
 // Forward declarations
 class commandlist;
 class format;
+class ffatom;
 
 // Command node
 class command
@@ -171,9 +172,13 @@ class command
 	// Return arguments as vec3<int>
 	vec3<int> arg3i(int);
 	// Return argument as atom pointer
-	atom *arga(int argno) { return (args[argno] == NULL ? NULL : (atom*) args[argno]->get_as_pointer(VT_ATOM)); }
+	atom *arga(int argno) { return (args[argno] == NULL ? NULL : (atom*) args[argno]->get_as_pointer()); }
 	// Return argument as pattern pointer
-	pattern *argp(int argno) { return (args[argno] == NULL ? NULL : (pattern*) args[argno]->get_as_pointer(VT_PATTERN)); }
+	pattern *argp(int argno) { return (args[argno] == NULL ? NULL : (pattern*) args[argno]->get_as_pointer()); }
+	// Return argument as patbound pointer
+	patbound *argpb(int argno) { return (args[argno] == NULL ? NULL : (patbound*) args[argno]->get_as_pointer()); }
+	// Return argument as ffatom pointer
+	ffatom *argffa(int argno) { return (args[argno] == NULL ? NULL : (ffatom*) args[argno]->get_as_pointer()); }
 	// Returns whether argument 'n' was provided
 	bool has_arg(int argno) { return (args[argno] == NULL ? FALSE : TRUE); }
 	// Return variable type of argument
@@ -256,6 +261,10 @@ class commandlist
 	bool create_patbound_variables(const char*);
 	// Set pattern bound term variables
 	void set_patbound_variables(const char*, patbound*);
+	// Create atomtype atomtype variables
+	bool create_atomtype_variables(const char*);
+	// Set atomtype variables
+	void set_atomtype_variables(const char*, ffatom*);
 
 	/*
 	// Local Variables
