@@ -33,10 +33,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>4</number>
+     <number>2</number>
     </property>
     <property name="spacing" >
-     <number>4</number>
+     <number>2</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -195,7 +195,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>7</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -1475,7 +1475,7 @@
                  <widget class="QGroupBox" name="RotateOriginGroup" >
                   <property name="sizePolicy" >
                    <sizepolicy>
-                    <hsizetype>5</hsizetype>
+                    <hsizetype>1</hsizetype>
                     <vsizetype>1</vsizetype>
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
@@ -1555,7 +1555,7 @@
                         </sizepolicy>
                        </property>
                        <property name="decimals" >
-                        <number>4</number>
+                        <number>5</number>
                        </property>
                        <property name="maximum" >
                         <double>10000.000000000000000</double>
@@ -1576,7 +1576,7 @@
                         </sizepolicy>
                        </property>
                        <property name="decimals" >
-                        <number>4</number>
+                        <number>5</number>
                        </property>
                        <property name="maximum" >
                         <double>10000.000000000000000</double>
@@ -1597,7 +1597,7 @@
                         </sizepolicy>
                        </property>
                        <property name="decimals" >
-                        <number>4</number>
+                        <number>5</number>
                        </property>
                        <property name="maximum" >
                         <double>10000.000000000000000</double>
@@ -1746,7 +1746,7 @@
                         </sizepolicy>
                        </property>
                        <property name="decimals" >
-                        <number>4</number>
+                        <number>5</number>
                        </property>
                        <property name="maximum" >
                         <double>10000.000000000000000</double>
@@ -1770,7 +1770,7 @@
                         </sizepolicy>
                        </property>
                        <property name="decimals" >
-                        <number>4</number>
+                        <number>5</number>
                        </property>
                        <property name="maximum" >
                         <double>10000.000000000000000</double>
@@ -1791,7 +1791,7 @@
                         </sizepolicy>
                        </property>
                        <property name="decimals" >
-                        <number>4</number>
+                        <number>5</number>
                        </property>
                        <property name="maximum" >
                         <double>10000.000000000000000</double>
@@ -2307,7 +2307,7 @@
                    </sizepolicy>
                   </property>
                   <property name="decimals" >
-                   <number>4</number>
+                   <number>5</number>
                   </property>
                   <property name="value" >
                    <double>1.000000000000000</double>
@@ -2540,6 +2540,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="1" >
@@ -2551,6 +2554,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                  </widget>
                 </item>
@@ -2578,6 +2584,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                  </widget>
                 </item>
@@ -3134,6 +3143,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>0.000000000000000</double>
                   </property>
@@ -3167,6 +3179,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -3188,6 +3203,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                   <property name="maximum" >
                    <double>0.000000000000000</double>
@@ -3222,6 +3240,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -3243,6 +3264,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                   <property name="maximum" >
                    <double>0.000000000000000</double>
@@ -3276,6 +3300,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                  </widget>
                 </item>
@@ -3368,6 +3395,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="0" >
@@ -3410,6 +3440,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="0" >
@@ -3436,6 +3469,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                  </widget>
                 </item>
@@ -4219,6 +4255,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="1" >
@@ -4230,6 +4269,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                  </widget>
                 </item>
@@ -4288,6 +4330,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="2" >
@@ -4299,6 +4344,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                  </widget>
                 </item>
@@ -4312,6 +4360,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                  </widget>
                 </item>
                 <item row="3" column="2" >
@@ -4323,6 +4374,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                  </widget>
                 </item>
@@ -4387,7 +4441,7 @@
                 </sizepolicy>
                </property>
                <property name="decimals" >
-                <number>3</number>
+                <number>5</number>
                </property>
                <property name="singleStep" >
                 <double>0.010000000000000</double>
@@ -5045,6 +5099,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>1000.000000000000000</double>
                   </property>
@@ -5063,6 +5120,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>1000.000000000000000</double>
                   </property>
@@ -5080,6 +5140,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                   <property name="maximum" >
                    <double>1000.000000000000000</double>
@@ -5131,6 +5194,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
                   </property>
@@ -5152,6 +5218,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
                   </property>
@@ -5172,6 +5241,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
@@ -5219,6 +5291,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
                   </property>
@@ -5240,6 +5315,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
                   </property>
@@ -5260,6 +5338,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
@@ -5307,6 +5388,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
                   </property>
@@ -5328,6 +5412,9 @@
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
+                  <property name="decimals" >
+                   <number>5</number>
+                  </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
                   </property>
@@ -5348,6 +5435,9 @@
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
+                  </property>
+                  <property name="decimals" >
+                   <number>5</number>
                   </property>
                   <property name="maximum" >
                    <double>10.000000000000000</double>
@@ -5705,7 +5795,7 @@
       <property name="sizePolicy" >
        <sizepolicy>
         <hsizetype>1</hsizetype>
-        <vsizetype>5</vsizetype>
+        <vsizetype>7</vsizetype>
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -5721,7 +5811,7 @@
         <number>0</number>
        </property>
        <property name="spacing" >
-        <number>4</number>
+        <number>2</number>
        </property>
        <item>
         <widget class="QPushButton" name="ShowAtomPageButton" >
@@ -5763,6 +5853,58 @@
         </widget>
        </item>
        <item>
+        <widget class="QPushButton" name="ShowCellPageButton" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Show cell tools</string>
+         </property>
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="icon" >
+          <iconset resource="icons.qrc" >:/stackicons/icons/stack_cell.svg</iconset>
+         </property>
+         <property name="checkable" >
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" >
+          <size>
+           <width>20</width>
+           <height>16</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
         <widget class="QPushButton" name="ShowEditPageButton" >
          <property name="sizePolicy" >
           <sizepolicy>
@@ -5792,6 +5934,42 @@
          </property>
          <property name="icon" >
           <iconset resource="icons.qrc" >:/stackicons/icons/stack_edit.svg</iconset>
+         </property>
+         <property name="checkable" >
+          <bool>true</bool>
+         </property>
+         <property name="checked" >
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="ShowPositionPageButton" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>5</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize" >
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="maximumSize" >
+          <size>
+           <width>30</width>
+           <height>30</height>
+          </size>
+         </property>
+         <property name="toolTip" >
+          <string>Show positioning tools</string>
+         </property>
+         <property name="text" >
+          <string>P</string>
          </property>
          <property name="checkable" >
           <bool>true</bool>
@@ -5841,51 +6019,23 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="ShowPositionPageButton" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
          </property>
-         <property name="minimumSize" >
+         <property name="sizeType" >
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" >
           <size>
-           <width>16</width>
+           <width>20</width>
            <height>16</height>
           </size>
          </property>
-         <property name="maximumSize" >
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="toolTip" >
-          <string>Show positioning tools</string>
-         </property>
-         <property name="text" >
-          <string>P</string>
-         </property>
-         <property name="checkable" >
-          <bool>true</bool>
-         </property>
-         <property name="checked" >
-          <bool>false</bool>
-         </property>
-        </widget>
+        </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="ShowCellPageButton" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>5</hsizetype>
-           <vsizetype>5</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+        <widget class="QPushButton" name="ShowForcefieldsPageButton" >
          <property name="minimumSize" >
           <size>
            <width>16</width>
@@ -5899,13 +6049,13 @@
           </size>
          </property>
          <property name="toolTip" >
-          <string>Show cell tools</string>
+          <string>Show forcefield stock</string>
          </property>
          <property name="text" >
           <string/>
          </property>
          <property name="icon" >
-          <iconset resource="icons.qrc" >:/stackicons/icons/stack_cell.svg</iconset>
+          <iconset resource="icons.qrc" >:/stackicons/icons/stack_ff.svg</iconset>
          </property>
          <property name="checkable" >
           <bool>true</bool>
@@ -5985,32 +6135,20 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="ShowForcefieldsPageButton" >
-         <property name="minimumSize" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" >
           <size>
-           <width>16</width>
+           <width>20</width>
            <height>16</height>
           </size>
          </property>
-         <property name="maximumSize" >
-          <size>
-           <width>30</width>
-           <height>30</height>
-          </size>
-         </property>
-         <property name="toolTip" >
-          <string>Show forcefield stock</string>
-         </property>
-         <property name="text" >
-          <string/>
-         </property>
-         <property name="icon" >
-          <iconset resource="icons.qrc" >:/stackicons/icons/stack_ff.svg</iconset>
-         </property>
-         <property name="checkable" >
-          <bool>true</bool>
-         </property>
-        </widget>
+        </spacer>
        </item>
        <item>
         <widget class="QPushButton" name="ShowGridsPageButton" >
@@ -6086,7 +6224,7 @@
      <x>0</x>
      <y>0</y>
      <width>745</width>
-     <height>25</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="ModelMenu" >
@@ -7196,24 +7334,24 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
-   <class>TTabBar</class>
-   <extends>QWidget</extends>
-   <header>ttabbar.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
-  </customwidget>
-  <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
    <header>tcolourframe.uih</header>
   </customwidget>
   <customwidget>
+   <class>TTabBar</class>
+   <extends>QWidget</extends>
+   <header>ttabbar.uih</header>
+  </customwidget>
+  <customwidget>
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>ttreewidget.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TCanvas</class>
+   <extends>QWidget</extends>
+   <header>tcanvas.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
