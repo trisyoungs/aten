@@ -56,15 +56,16 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 	// Grab variable list from command's parent list
 	variable_list &vars = c->get_parent()->variables;
 	bool status = TRUE;
-	printf("dkjfkdjfkdjf\n");
+	printf("dk1\n");
 	if (c->get_loopactive())
 	{
 		// Do loop iteration.
 		// Increase count and iteration variables
-	printf("dkjfkdjfkdjf\n");
+	printf("dk2 %li\n",c->arg(0));
 		c->arg(0)->increase(1);
-	printf("dkjfkdjfkdjf\n");
+	printf("dk3\n");
 		c->increase_iterations();
+	printf("dk4\n");
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
 		{
@@ -102,6 +103,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 			case (VT_BOND):
 			case (VT_ANGLE):
 			case (VT_TORSION):
+		printf("BAT\n");
 				if (c->argpb(0) == NULL) status = FALSE;
 				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), c->argpb(0));
 				break;
@@ -243,6 +245,22 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				}
 				c->arg(0)->set(c->argp(1)->torsions.first());
 				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), (patbound*) c->arg(0)->get_as_pointer());
+				break;
+			// Loop over unique ffatoms in model
+			case (VT_ATOMTYPE):
+				if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+				if (c->has_arg(1))
+				{
+					if (c->argt(1) != VT_ATOMTYPE)
+					{
+						printf("Second argument to atomtype loop must be also be an 'atomtype' variable.\n");
+						return CR_FAIL;
+					}
+					// Start atomtype loop at type given instead of first
+					c->arg(0)->set((ffatom*) c->arg(1)->get_as_pointer());
+				}
+				else c->arg(0)->set(obj.m->get_uniquetypes());
+				c->get_parent()->set_atomtype_variables(c->arg(0)->get_name(), (ffatom*) c->arg(0)->get_as_pointer());
 				break;
 			default:
 				printf("Kick Developer - Loops over '%s' are missing.\n",text_from_VT(c->argt(0)));

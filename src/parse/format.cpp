@@ -123,6 +123,7 @@ bool format::create_delimited(const char *s, variable_list &vlist)
 	// Clear any existing node list
 	nodes.clear();
 	// First, parseline the formatting string
+	printf("Creating delimited format from '%s'\n",s);
 	lp.get_args_delim(s,PO_DEFAULTS);
 	// Now, step through the args[] array and convert the substrings into format nodes
 	for (n=0; n<lp.get_nargs(); n++)
@@ -154,8 +155,10 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	// Clear any existing node list
 	nodes.clear();
 	strcpy(srcstr,s);
+	printf("Creating exact format from '%s'\n",srcstr);
 	for (c = srcstr; *c != '\0'; c++)
 	{
+		printf("%c\n",*c);
 		// If the character is not '$', just add it to 'text' and continue
 		if (*c != '$')
 		{
@@ -169,6 +172,7 @@ bool format::create_exact(const char *s, variable_list &vlist)
 			text[nchars] = '\0';
 			fn = nodes.add();
 			fn->set(text, vlist);
+		printf("TEXT '%s'\n",text);
 			nchars = 0;
 		}
 		// Clear the variable string and start adding characters
@@ -215,6 +219,26 @@ bool format::create_exact(const char *s, variable_list &vlist)
 			return FALSE;
 		}
 	}
+	// Need to check here to see if vchars or nchars != 0
+	if (nchars != 0)
+	{
+		text[nchars] = '\0';
+		printf("TEXT '%s'\n",text);
+		fn = nodes.add();
+		fn->set(text, vlist);
+	}
+	else if (vchars != 0)
+	{
+		varstr[vchars] = '\0';
+		fn = nodes.add();
+		fn->set(varstr, vlist);
+		if (!fn->set(varstr, vlist))
+		{
+			printf("Failed to add format node '%s'.\n", varstr);
+			dbg_end(DM_PARSE,"format::create_exact");
+			return FALSE;
+		}
+	}
 	dbg_end(DM_PARSE,"format::create_exact");
 	return TRUE;
 }
@@ -225,38 +249,35 @@ const char *format::create_string()
 	// Creates a formatted output string from the model supplied
 	dbg_begin(DM_PARSE,"format::create_string");
 	static char result[8096], bit[1024], fmt[16];
+	static variable *v;
 	result[0] = '\0';
 	// Step through each formatting node, adding on the specified data from the model/atom
-	format_node *fn = nodes.first();
-	while (fn != NULL)
+	for (format_node *fn = nodes.first(); fn != NULL; fn = fn->next)
 	{
-		// First, create format string for sprintf
-		//fmt.clear();
-		if (fn->get_length() == 0) strcpy(bit,fn->get_variable()->get_as_char());
-		else
+		v = fn->get_variable();
+		// For each format node in the list, check the type of the argument and create a relevant format node
+		switch (v->get_type())
 		{
-			// Need to create formatter
-			// If a precision has been specified, assume its an real.
-			if (fn->get_precision() != 0)
-			{
-				strcpy(fmt,"%");
-				strcat(fmt,itoa(fn->get_length()));
-				strcat(fmt,".");
-				strcat(fmt,itoa(fn->get_precision()));
-				strcat(fmt,"f");
-				sprintf(bit,fmt,fn->get_variable()->get_as_double());
-			}
-			else
-			{
-				strcpy(fmt,"%-");
-				strcat(fmt,itoa(fn->get_length()));
-				strcat(fmt,"s");
-				sprintf(bit,fmt,fn->get_variable()->get_as_char());
-			}
-			msg(DM_PARSE,"Format string is [%s] - char value is [%s]\n",fmt,fn->get_variable()->get_as_char());
+			case (VT_CHAR):
+				if (fn->get_length() == 0) strcpy(fmt,"%s");
+				else sprintf(fmt,"%%-%is",fn->get_length());
+				sprintf(bit,fmt,v->get_as_char());
+				break;
+			case (VT_INTEGER):
+				if (fn->get_length() == 0) strcpy(fmt,"%i");
+				else sprintf(fmt,"%%-%ii",fn->get_length());
+				sprintf(bit,fmt,v->get_as_int());
+				break;
+			case (VT_DOUBLE):
+				if (fn->get_length() == 0) strcpy(fmt,"%f");
+				else sprintf(fmt,"%%-%i.%if",fn->get_length(),fn->get_precision());
+				sprintf(bit,fmt,v->get_as_double());
+				break;
+			default:
+				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->get_type()));
 		}
+		msg(DM_NONE,"Format string is [%s] - value is [%s]\n", fmt, bit);
 		strcat(result,bit);
-		fn = fn->next;
 	}
 	dbg_end(DM_PARSE,"format::create_string");
 	return result;
