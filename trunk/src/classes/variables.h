@@ -37,6 +37,7 @@ class unitcell;
 class pattern;
 class model;
 class patbound;
+class ffatom;
 
 // Variable
 class variable
@@ -87,6 +88,8 @@ class variable
 	void set(model*);
 	// Set value of variable (patbound*)
 	void set(patbound*);
+	// Set value of variable (ffatom*)
+	void set(ffatom*);
 	// Copy pointer contents of source variable
 	void copy_pointer(variable *v) { ptrvalue = v->ptrvalue; }
 	// Sets the content type of the variable

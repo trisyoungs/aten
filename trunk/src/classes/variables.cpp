@@ -171,6 +171,18 @@ void variable::set(patbound *pb)
 	msg(DM_VERBOSE,"PatBound variable '%s' set to '%li'\n",name.get(),pb);
 }
 
+// Set (ffatom)
+void variable::set(ffatom *ffa)
+{
+	if (type < VT_ATOMTYPE)
+	{
+		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'ffatom*' >>>>\n",name.get(), text_from_VT(type));
+		return;
+	}
+	ptrvalue = ffa;
+	msg(DM_VERBOSE,"FFAtom variable '%s' set to '%li'\n",name.get(),ffa);
+}
+
 // Get as char
 const char *variable::get_as_char()
 {

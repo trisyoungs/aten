@@ -257,7 +257,7 @@ const char *CA_data[CA_NITEMS] = {
 	"rewind",
 	"skipchars,V",
 	"skipline,v",
-	"writeline,F",
+	"writeline,G",
 
 	// Selection commands
 	"selectall",
