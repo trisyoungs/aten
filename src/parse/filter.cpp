@@ -356,9 +356,26 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 		case (FT_MODEL_IMPORT):
 			// Reset element mapping style
 			prefs.set_zmapping(temp_zmap);
+			commands.close_files();
+			break;
+		case (FT_MODEL_EXPORT):
+			commands.close_files();
+			break;
+		case (FT_FIELD_EXPORT):
+			commands.close_files();
+			break;
+		case (FT_TRAJECTORY_IMPORT):
+			commands.close_files();
+			break;
+		case (FT_GRID_IMPORT):
+			commands.close_files();
+			break;
+		case (FT_GRID_EXPORT):
+			commands.close_files();
 			break;
 	}
 	msg(DM_NONE,"Done.\n");
 	dbg_end(DM_CALLS,"filter::execute");
+	return result;
 }
 

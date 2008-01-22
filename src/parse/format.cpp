@@ -123,7 +123,6 @@ bool format::create_delimited(const char *s, variable_list &vlist)
 	// Clear any existing node list
 	nodes.clear();
 	// First, parseline the formatting string
-	printf("Creating delimited format from '%s'\n",s);
 	lp.get_args_delim(s,PO_DEFAULTS);
 	// Now, step through the args[] array and convert the substrings into format nodes
 	for (n=0; n<lp.get_nargs(); n++)
@@ -147,23 +146,21 @@ bool format::create_exact(const char *s, variable_list &vlist)
 {
 	dbg_begin(DM_PARSE,"format::create_exact");
 	// Go through supplied string, converting variables as we go
-	static char srcstr[512], text[512], varstr[512];
-	int nchars = 0, vchars = 0;
+	static char text[512], varstr[512];
+	int nchars = 0, vchars = 0, n;
 	bool done;
-	char *c;
 	format_node *fn;
 	// Clear any existing node list
 	nodes.clear();
-	strcpy(srcstr,s);
-	printf("Creating exact format from '%s'\n",srcstr);
-	for (c = srcstr; *c != '\0'; c++)
+	n = 0;
+	while (s[n] != '\0')
 	{
-		printf("%c\n",*c);
 		// If the character is not '$', just add it to 'text' and continue
-		if (*c != '$')
+		if (s[n] != '$')
 		{
-			text[nchars] = *c;
+			text[nchars] = s[n];
 			nchars ++;
+			n++;
 			continue;
 		}
 		// This is the start of a variable format. Add 'text' node if not empty...
@@ -172,25 +169,24 @@ bool format::create_exact(const char *s, variable_list &vlist)
 			text[nchars] = '\0';
 			fn = nodes.add();
 			fn->set(text, vlist);
-		printf("TEXT '%s'\n",text);
 			nchars = 0;
 		}
 		// Clear the variable string and start adding characters
 		// Add characters to 'varstr' until we find the end of the format
 		vchars = 1;
 		varstr[0] = '$';
-		c ++;
+		n++;
 		done = FALSE;
-		while (*c != '\0')
+		while (s[n] != '\0')
 		{
-			switch (*c)
+			switch (s[n])
 			{
 				case ('{'):
-					c++;
+					n++;
 					break;
-				case ('\0'):
-					c--;
 				case ('}'):
+					n++;
+				case ('\0'):
 					done = TRUE;
 					break;
 				case (','):
@@ -198,12 +194,11 @@ bool format::create_exact(const char *s, variable_list &vlist)
 				case (')'):
 				case (' '):
 					done = TRUE;
-					c--;
 					break;
 				default:
-					varstr[vchars] = *c;
+					varstr[vchars] = s[n];
 					vchars ++;
-					c++;
+					n++;
 					break;
 			}
 			if (done) break;
@@ -223,7 +218,6 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	if (nchars != 0)
 	{
 		text[nchars] = '\0';
-		printf("TEXT '%s'\n",text);
 		fn = nodes.add();
 		fn->set(text, vlist);
 	}
@@ -276,7 +270,7 @@ const char *format::create_string()
 			default:
 				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->get_type()));
 		}
-		msg(DM_NONE,"Format string is [%s] - value is [%s]\n", fmt, bit);
+		msg(DM_PARSE,"Format string is [%s] - value is [%s]\n", fmt, bit);
 		strcat(result,bit);
 	}
 	dbg_end(DM_PARSE,"format::create_string");

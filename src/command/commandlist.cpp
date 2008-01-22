@@ -784,10 +784,10 @@ void commandlist::set_model_variables(model *m)
 	dbg_begin(DM_CALLS,"commandlist::set_model_variables");
 	if (m != NULL)
 	{
-		variables.set("","title",m->get_name());
-		variables.set("","natoms",m->get_natoms());
+		printf("asLDKFJSLKfJDKLSF '%s' '%i' \n",m->get_name(),m->get_natoms());
+		variables.set("title","",m->get_name());
+		variables.set("natoms","",m->get_natoms());
 	}
-	else variables.reset("title","natoms","");
 	dbg_end(DM_CALLS,"commandlist::set_model_variables");
 }
 

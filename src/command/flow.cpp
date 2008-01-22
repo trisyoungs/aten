@@ -22,6 +22,7 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 #include "base/debug.h"
+#include "base/master.h"
 #include "classes/pattern.h"
 #include <fstream>
 
@@ -56,16 +57,16 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 	// Grab variable list from command's parent list
 	variable_list &vars = c->get_parent()->variables;
 	bool status = TRUE;
-	printf("dk1\n");
+	printf("Begin CA_FOR\n");
 	if (c->get_loopactive())
 	{
 		// Do loop iteration.
 		// Increase count and iteration variables
-	printf("dk2 %li\n",c->arg(0));
+	printf("CA_FOR - loop is active.\n");
 		c->arg(0)->increase(1);
-	printf("dk3\n");
+	printf("CA_FOR - loop variable increased.\n");
 		c->increase_iterations();
-	printf("dk4\n");
+	printf("CA_FOR - iterations increased.\n");
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
 		{
@@ -103,16 +104,15 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 			case (VT_BOND):
 			case (VT_ANGLE):
 			case (VT_TORSION):
-		printf("BAT\n");
+		printf("CA_FOR - BAT\n");
 				if (c->argpb(0) == NULL) status = FALSE;
 				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), c->argpb(0));
 				break;
 			case (VT_ATOMTYPE):
-		printf("ASDKJKSJ\n");
+		printf("CA_FOR - Atomtype\n");
 				if (c->argffa(0) == NULL) status = FALSE;
 				c->get_parent()->set_atomtype_variables(c->arg(0)->get_name(), c->argffa(0));
-		printf("ASDKJKSJ\n");
-
+		printf("CA_FOR - Atomtype\n");
 				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", text_from_VT(c->argt(0)));
@@ -325,5 +325,7 @@ int command_functions::function_CA_TERMINATE(command *&c, bundle &obj)
 
 int command_functions::function_CA_QUIT(command *&c, bundle &obj)
 {
+	// Set program mode here, in case we are running in PM_COMMAND
+	master.set_program_mode(PM_NONE);
 	return CR_EXIT;
 }

@@ -35,7 +35,7 @@ master_data::master_data()
 	modelid = 0;
 
 	// Modes
-	program_mode = PM_GUI;
+	mode = PM_GUI;
 
 	// Misc 
 	sketchelement = 6;

@@ -126,7 +126,7 @@ int master_data::parse_cli(int argc, char *argv[])
 				// Read script commands from passed string
 				case (SO_COMMAND):
 					cl = master.scripts.add();
-					if (cl->cache_line(optarg)) master.set_program_mode(PM_SCRIPT);
+					if (cl->cache_line(optarg)) master.set_program_mode(PM_COMMAND);
 					else
 					{
 						master.scripts.remove(cl);
@@ -136,7 +136,7 @@ int master_data::parse_cli(int argc, char *argv[])
 				// Cache a script file
 				case (SO_SCRIPT):
 					cl = master.scripts.add();
-					if (cl->load(optarg)) master.set_program_mode(PM_SCRIPT);
+					if (cl->load(optarg)) master.set_program_mode(PM_COMMAND);
 					else
 					{
 						master.scripts.remove(cl);
