@@ -404,7 +404,6 @@ void line_parser::get_args_formatted(const char *source, int options, format *fm
 	// Blank lines are skipped if blankskip == TRUE.
 	// Returns : 0=ok, 1=error, -1=eof
 	line = source;
-	printf("GAF: Line = '%s'\n",line.get());
 	optmask = options;
 	get_all_args_formatted(line,fmt);
 	dbg_end(DM_PARSE,"parser::get_args[string]");

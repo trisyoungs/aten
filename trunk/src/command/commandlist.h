@@ -285,8 +285,6 @@ class commandlist
 	ofstream *outfile;
 	// Parser read options for this commandlist
 	int readopts;
-	// Close files
-	void close_files();
 
 	public:
 	// Set input stream
@@ -297,6 +295,8 @@ class commandlist
 	bool set_outfile(const char *outfile);
 	// Get output stream
 	ofstream *get_outfile() { return outfile; }
+	// Close files
+	void close_files();
 	// Add read option
 	void add_readoption(parse_option po) { if (!(readopts&po)) readopts += po; }
 	// Remove read option

@@ -59,7 +59,7 @@ exportmodel
 	atom i
 
 	# Title section
-	writeline "title"
+	writeline "$title"
 	let $keytrj = 0
 	# Convert celltype string to DL_POLY-style integer
 	if $cell.type = none

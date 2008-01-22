@@ -36,7 +36,7 @@
 #define MAXCLIOPTS 50
 
 // Program Modes
-enum prog_mode { PM_SCRIPT, PM_BATCH, PM_INTERACTIVE, PM_CONSOLE, PM_GUI };
+enum prog_mode { PM_COMMAND, PM_INTERACTIVE, PM_GUI, PM_NONE };
 
 // Master
 class master_data
@@ -178,11 +178,13 @@ class master_data
 	*/
 	private:
 	// Current mode of program operation
-	prog_mode program_mode;
+	prog_mode mode;
 
 	public:
 	// Sets the current program mode
-	void set_program_mode(prog_mode pm) { program_mode = pm; }
+	void set_program_mode(prog_mode pm) { mode = pm; }
+	// Return the current program mode
+	prog_mode get_program_mode() { return mode; }
 	// Cached script data
 	list<commandlist> scripts;
 	// Script to store temporary typed commands
