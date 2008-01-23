@@ -165,8 +165,8 @@ enum command_action {
 	CA_GOTO,
 	CA_GOTONONIF,
 	CA_IF,
-	CA_TERMINATE,
 	CA_QUIT,
+	CA_TERMINATE,
 
 	// Force Commands
 	CA_FRAMEFORCES,

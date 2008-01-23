@@ -521,6 +521,9 @@ bool commandlist::add_command(command_action ca)
 					case (VT_TORSION):
 						varresult = create_patbound_variables(fn->arg(0)->get_name());
 						break;
+					case (VT_ATOMTYPE):
+						varresult = create_atomtype_variables(fn->arg(0)->get_name());
+						break;
 				}
 			}
 			break;
@@ -784,7 +787,6 @@ void commandlist::set_model_variables(model *m)
 	dbg_begin(DM_CALLS,"commandlist::set_model_variables");
 	if (m != NULL)
 	{
-		printf("asLDKFJSLKfJDKLSF '%s' '%i' \n",m->get_name(),m->get_natoms());
 		variables.set("title","",m->get_name());
 		variables.set("natoms","",m->get_natoms());
 	}
@@ -948,7 +950,7 @@ bool commandlist::create_patbound_variables(const char *base)
 	variable *v;
 	static char parm[24];
 	int i;
-	v = variables.create_variable(base,"form",VT_INTEGER);
+	v = variables.create_variable(base,"form",VT_CHAR);
 	if (v == NULL) return FALSE;
 	strcpy(parm,"id_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
@@ -971,6 +973,10 @@ bool commandlist::create_patbound_variables(const char *base)
 		v = variables.create_variable(base,parm,VT_DOUBLE);
 		if (v == NULL) return FALSE;
 	}
+	v = variables.create_variable(base,"escale",VT_DOUBLE);
+	if (v == NULL) return FALSE;
+	v = variables.create_variable(base,"vscale",VT_DOUBLE);
+	if (v == NULL) return FALSE;
 	return TRUE;
 }
 
@@ -1008,6 +1014,7 @@ void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 			parm[6] = 97 + i;
 			variables.set(varname,parm,ffp.data[i]);
 		}
+		// Set functional form and any additional variables
 		switch (ffb->get_type())
 		{
 			case (FFC_BOND):
@@ -1018,6 +1025,8 @@ void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 				break;
 			case (FFC_TORSION):
 				variables.set(varname,"form",text_from_TF(ffb->get_funcform().torsionfunc));
+				variables.set(varname,"escale",ffp.data[TF_ESCALE]);
+				variables.set(varname,"vscale",ffp.data[TF_VSCALE]);
 				break;
 			default:	
 				printf("commandlist::set_patbound_variables <<<< Functional form not defined >>>>\n");
@@ -1038,7 +1047,7 @@ bool commandlist::create_atomtype_variables(const char *base)
 	for (i = 0; i < MAXFFPARAMDATA; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.create_variable(base,parm,VT_INTEGER);
+		v = variables.create_variable(base,parm,VT_DOUBLE);
 		if (v == NULL) return FALSE;
 	}
 	v = variables.create_variable(base,"q",VT_DOUBLE);

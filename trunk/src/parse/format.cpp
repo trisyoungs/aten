@@ -187,12 +187,15 @@ bool format::create_exact(const char *s, variable_list &vlist)
 				case ('}'):
 					n++;
 				case ('\0'):
+				case ('$'):
 					done = TRUE;
 					break;
 				case (','):
 				case ('('):
 				case (')'):
 				case (' '):
+				case (34):	// Double quotes
+				case (39):	// Single quote
 					done = TRUE;
 					break;
 				default:
@@ -213,6 +216,8 @@ bool format::create_exact(const char *s, variable_list &vlist)
 			dbg_end(DM_PARSE,"format::create_exact");
 			return FALSE;
 		}
+		// Reset vchars for the next cycle
+		vchars = 0;
 	}
 	// Need to check here to see if vchars or nchars != 0
 	if (nchars != 0)
@@ -254,17 +259,17 @@ const char *format::create_string()
 		{
 			case (VT_CHAR):
 				if (fn->get_length() == 0) strcpy(fmt,"%s");
-				else sprintf(fmt,"%%-%is",fn->get_length());
+				else sprintf(fmt,"%%%is",fn->get_length());
 				sprintf(bit,fmt,v->get_as_char());
 				break;
 			case (VT_INTEGER):
 				if (fn->get_length() == 0) strcpy(fmt,"%i");
-				else sprintf(fmt,"%%-%ii",fn->get_length());
+				else sprintf(fmt,"%%%ii",fn->get_length());
 				sprintf(bit,fmt,v->get_as_int());
 				break;
 			case (VT_DOUBLE):
 				if (fn->get_length() == 0) strcpy(fmt,"%f");
-				else sprintf(fmt,"%%-%i.%if",fn->get_length(),fn->get_precision());
+				else sprintf(fmt,"%%%i.%if",fn->get_length(),fn->get_precision());
 				sprintf(bit,fmt,v->get_as_double());
 				break;
 			default:

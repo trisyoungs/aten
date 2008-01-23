@@ -101,6 +101,19 @@ forcefield::~forcefield()
 	#endif
 }
 
+// Copy structure
+void ffatom::copy(ffatom *source)
+{
+	form = source->form;
+	ffid = source->ffid;
+	name = source->name;
+	equiv = source->equiv;
+	description = source->description;
+	params = source->params;
+	//*generator;
+	q = source->q;
+}
+
 // Search FF for type ID
 ffatom *forcefield::find_type(int query)
 {

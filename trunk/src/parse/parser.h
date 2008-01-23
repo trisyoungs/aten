@@ -29,7 +29,7 @@ using namespace std;
 #include "classes/dnchar.h"
 
 #define MAXARGS 50
-#define MAXARGLENGTH 128
+#define MAXARGLENGTH 256
 #define MAXLINELENGTH 1024
 
 // Parse Options

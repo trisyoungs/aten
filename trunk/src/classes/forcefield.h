@@ -62,6 +62,9 @@ class ffatom
 	~ffatom();
 	// List pointers
 	ffatom *prev, *next;
+	// Copy structure
+	void copy(ffatom *source);
+	// Friend specification
 	friend class forcefield;
 
 	/*

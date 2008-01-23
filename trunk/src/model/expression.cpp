@@ -93,7 +93,7 @@ bool model::create_expression()
 	for (ri = uniqueref.first(); ri != NULL; ri = ri->next)
 	{
 		ffa = uniquetypes.add();
-		*ffa = *ri->item;
+		ffa->copy(ri->item);
 	}
 	expression_point = logs[LOG_STRUCTURE];
 	dbg_end(DM_CALLS,"model::create_expression");
