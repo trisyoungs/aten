@@ -430,36 +430,45 @@ variable *variable_list::add_constant(const char *s)
 }
 
 // Set existing variable (or add new and set) (VT_CHAR)
-void variable_list::set(const char *prefix, const char *name, const char *value)
+void variable_list::set(const char *prefix, const char *suffix, const char *value)
 {
 	static char newname[128];
 	strcpy(newname,prefix);
-	strcat(newname,".");
-	strcat(newname,name);
+	if (suffix[0] != '\0')
+	{
+		strcat(newname,".");
+		strcat(newname,suffix);
+	}
 	variable *v = get(newname);
 	if (v == NULL) v = add_variable(newname, VT_CHAR);
 	v->set(value);
 }
 
 // Set existing variable (or add new and set) (VT_INTEGER)
-void variable_list::set(const char *prefix, const char *name, int value)
+void variable_list::set(const char *prefix, const char *suffix, int value)
 {
 	static char newname[128];
 	strcpy(newname,prefix);
-	strcat(newname,".");
-	strcat(newname,name);
+	if (suffix[0] != '\0')
+	{
+		strcat(newname,".");
+		strcat(newname,suffix);
+	}
 	variable *v = get(newname);
 	if (v == NULL) v = add_variable(newname, VT_INTEGER);
 	v->set(value);
 }
 
 // Set existing variable (or add new and set) (VT_DOUBLE)
-void variable_list::set(const char *prefix, const char *name, double value)
+void variable_list::set(const char *prefix, const char *suffix, double value)
 {
 	static char newname[128];
 	strcpy(newname,prefix);
-	strcat(newname,".");
-	strcat(newname,name);
+	if (suffix[0] != '\0')
+	{
+		strcat(newname,".");
+		strcat(newname,suffix);
+	}
 	variable *v = get(newname);
 	if (v == NULL) v = add_variable(newname, VT_DOUBLE);
 	v->set(value);

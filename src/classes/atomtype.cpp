@@ -103,6 +103,28 @@ ringtype::~ringtype()
 	#endif
 }
 
+// Print Atom Type data
+void atomtype::print()
+{
+	printlevel ++;
+	printf("(%3i) Element :",printlevel);
+	if (nallowedel == 0) printf(" Any");
+	else for (int n=0; n<nallowedel; n++) printf(" %s",elements.name(allowedel[n]));
+	printf("\n");
+	printf("(%3i)  Repeat : %i\n",printlevel,nrepeat);
+	if (boundlist.size() != 0)
+	{
+		printf("(%3i)   Atoms : \n",printlevel);
+		for (atomtype *xat = boundlist.first(); xat != NULL; xat = xat->next) xat->print();
+	}
+	if (ringlist.size() != 0)
+	{
+		printf("(%3i)   Rings : \n",printlevel);
+		for (ringtype *xring = ringlist.first(); xring != NULL; xring = xring->next) xring->print();
+	}
+	printlevel --;
+}
+
 /*
 // AtomType routines
 */
@@ -164,28 +186,6 @@ void atomtype::set_elements(const char *ellist, forcefield *ff)
 	}
 	msg(DM_TYPING,"\n");
 	dbg_end(DM_CALLS,"atomtype::set_elements");
-}
-
-// Print Atom Type data
-void atomtype::print()
-{
-	printlevel ++;
-	printf("(%3i) Element :",printlevel);
-	if (nallowedel == 0) printf(" Any");
-	else for (int n=0; n<nallowedel; n++) printf(" %s",elements.name(allowedel[n]));
-	printf("\n");
-	printf("(%3i)  Repeat : %i\n",printlevel,nrepeat);
-	if (boundlist.size() != 0)
-	{
-		printf("(%3i)   Atoms : \n",printlevel);
-		for (atomtype *xat = boundlist.first(); xat != NULL; xat = xat->next) xat->print();
-	}
-	if (ringlist.size() != 0)
-	{
-		printf("(%3i)   Rings : \n",printlevel);
-		for (ringtype *xring = ringlist.first(); xring != NULL; xring = xring->next) xring->print();
-	}
-	printlevel --;
 }
 
 /*

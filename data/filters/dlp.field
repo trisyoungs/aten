@@ -8,12 +8,13 @@ exportfield
 	exact "FIELD"
 
 	# Variable declaration
+	double epsilon, sigma
 	pattern p
 	atom i
-	atomtype at
 	bond b
 	angle a
 	torsion t
+	atomtype at1, at2
 
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$title"
@@ -26,7 +27,7 @@ exportfield
 		# Write atoms - just loop over those in the first molecule of the pattern
 		writeline "atoms  $p.nmolatoms"
 		for $i $p 1
-			writeline "$i.fftype@6      $i.mass@10.5    $i.q@9.6"
+			writeline "$i.fftype@-8   $i.mass@10.5  $i.q@9.6   1   0   1"
 		end
 		# Bonds in pattern
 		writeline "bonds  $p.nbonds"
@@ -35,7 +36,8 @@ exportfield
 			if $b.form = harmonic
 				writeline "harm     $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4"
 			else
-				warn "Functional form of bond term not accounted for in export filter."
+				warn "Functional form of bond term ($b.form) not accounted for in export filter."
+				writeline "xxxx     $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4 $b.param_c@10.4"
 			end
 		end
 		# Angles in pattern
@@ -45,7 +47,8 @@ exportfield
 			if $a.form = harmonic
 				writeline "harm     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
 			else
-				warn "Functional form of angle term not accounted for in export filter."
+				warn "Functional form of angle term ($a.form) not accounted for in export filter."
+				writeline "xxxx     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4 $a.param_c@10.4"
 			end
 		end
 		# Torsions in pattern
@@ -53,17 +56,35 @@ exportfield
 		for $t $p
 			# Convert functional form to be recognised by DL_POLY
 			if $t.form = cosine
-				writeline "cos    $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4"
+				writeline "cos    $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.param_d@10.4 $t.escale@10.4 $t.vscale@10.4"
 			elseif $t.form = cos3
-				writeline "cos3   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4"
+				writeline "cos3   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.param_d@10.4 $t.escale@10.4 $t.vscale@10.4"
 			else
-				warn "Functional form of torsion term not accounted for in export filter."
+				warn "Functional form of torsion term ($t.form) not accounted for in export filter."
+				writeline "xxxx   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.param_d@10.4 $t.escale@10.4 $t.vscale@10.4"
 			end
 		end
 		# Terminating line
 		writeline "finish"
 	end
-	# VDW specification
-	for $at
+	# VDW Specification
+	for $at1
+		for $at2 $at1
+			# Check functional forms of each atomtype
+			if $at1.form = $at2.form
+				warn "Functional forms of atomtypes '$at1.equiv' and '$at2.equiv' differ - raw data written to output..." 
+				writeline "$at1.equiv@-8  $at2.equiv@-8  $at1.param_a@12.6  $at1.param_b@12.6"
+			elseif $at1.form = lj
+				# LJ: use Lorentz-Berthelot combination rules
+				eval $sigma = "($at1.param_b + $at2.param_b) * 0.5"
+				eval $epsilon = "($at1.param_a * $at2.param_a) ^ 0.5"
+				writeline "$at1.equiv@-8  $at2.equiv@-8  $epsilon@12.6  $sigma@12.6"
+			elseif $at1.form = buck
+				error "Buckingham potential not included in FIELD file export yet."
+			else
+				warn "Functional form of VDW term ($at1.form) not accounted for in export filter."
+			end
+		end
 	end
+	writeline "close"
 end

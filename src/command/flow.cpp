@@ -57,16 +57,12 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 	// Grab variable list from command's parent list
 	variable_list &vars = c->get_parent()->variables;
 	bool status = TRUE;
-	printf("Begin CA_FOR\n");
 	if (c->get_loopactive())
 	{
 		// Do loop iteration.
 		// Increase count and iteration variables
-	printf("CA_FOR - loop is active.\n");
 		c->arg(0)->increase(1);
-	printf("CA_FOR - loop variable increased.\n");
 		c->increase_iterations();
-	printf("CA_FOR - iterations increased.\n");
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
 		{
@@ -104,22 +100,23 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 			case (VT_BOND):
 			case (VT_ANGLE):
 			case (VT_TORSION):
-		printf("CA_FOR - BAT\n");
 				if (c->argpb(0) == NULL) status = FALSE;
 				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), c->argpb(0));
 				break;
 			case (VT_ATOMTYPE):
-		printf("CA_FOR - Atomtype\n");
 				if (c->argffa(0) == NULL) status = FALSE;
 				c->get_parent()->set_atomtype_variables(c->arg(0)->get_name(), c->argffa(0));
-		printf("CA_FOR - Atomtype\n");
 				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", text_from_VT(c->argt(0)));
 				return CR_FAIL;
 		}
 		if (status == TRUE) c = c->get_branch_commands();
-		else c = c->next;
+		else
+		{
+			c->set_loopactive(FALSE);
+			c = c->next;
+		}
 	}
 	else
 	{
@@ -193,7 +190,6 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 						}
 					}
 					else c->arg(0)->set(p->get_firstatom());
-	
 				}
 				else c->arg(0)->set(obj.m->get_atoms());
 				if (c->arga(0) == NULL) status = FALSE;
@@ -223,6 +219,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				}
 				c->arg(0)->set(c->argp(1)->bonds.first());
 				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), (patbound*) c->arg(0)->get_as_pointer());
+				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			// Loop over forcefield angle terms of pattern
 			case (VT_ANGLE):
@@ -234,6 +231,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				}
 				c->arg(0)->set(c->argp(1)->angles.first());
 				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), (patbound*) c->arg(0)->get_as_pointer());
+				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			// Loop over forcefield torsion terms of pattern
 			case (VT_TORSION):
@@ -245,6 +243,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				}
 				c->arg(0)->set(c->argp(1)->torsions.first());
 				c->get_parent()->set_patbound_variables(c->arg(0)->get_name(), (patbound*) c->arg(0)->get_as_pointer());
+				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			// Loop over unique ffatoms in model
 			case (VT_ATOMTYPE):
@@ -261,6 +260,7 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 				}
 				else c->arg(0)->set(obj.m->get_uniquetypes());
 				c->get_parent()->set_atomtype_variables(c->arg(0)->get_name(), (ffatom*) c->arg(0)->get_as_pointer());
+				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			default:
 				printf("Kick Developer - Loops over '%s' are missing.\n",text_from_VT(c->argt(0)));

@@ -55,12 +55,11 @@ exportmodel
 	id 1
 
 	# Variable Declaration
-	integer keytrj,imcon
+	integer imcon
 	atom i
 
 	# Title section
 	writeline "$title"
-	let $keytrj = 0
 	# Convert celltype string to DL_POLY-style integer
 	if $cell.type = none
 		let $imcon = 0
@@ -71,18 +70,18 @@ exportmodel
 	elseif $cell.type = parallelepiped
 		let $imcon = 3
 	end
-	writeline "$keytrj@10 $imcon@10"
+	writeline "         0$imcon@10"
 
 	# Cell (if present) 
 	if $imcon <> 0
-		writeline "$cell.ax@20.12 $cell.ay@20.12 $cell.az@20.12"
-		writeline "$cell.bx@20.12 $cell.by@20.12 $cell.bz@20.12"
-		writeline "$cell.cx@20.12 $cell.cy@20.12 $cell.cz@20.12"
+		writeline "$cell.ax@20.12$cell.ay@20.12$cell.az@20.12"
+		writeline "$cell.bx@20.12$cell.by@20.12$cell.bz@20.12"
+		writeline "$cell.cx@20.12$cell.cy@20.12$cell.cz@20.12"
 	end
 
 	# Atoms
-	for $i,1,$natoms
-		writeline "$i.fftype@8 $i.id@10 *@2 $i.mass"
-		writeline "$i.rx@20.14 $i.ry@20.14 $i.rz@20.14"
+	for $i
+		writeline "$i.fftype@8$i.id@10$i.mass"
+		writeline "$i.rx@20.14$i.ry@20.14$i.rz@20.14"
 	end
 end
