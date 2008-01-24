@@ -81,7 +81,7 @@ exportmodel
 
 	# Atoms
 	for $i
-		writeline "$i.fftype@8$i.id@10$i.mass"
+		writeline "$i.fftype@-8$i.id@10   $i.mass"
 		writeline "$i.rx@20.14$i.ry@20.14$i.rz@20.14"
 	end
 end

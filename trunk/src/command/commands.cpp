@@ -284,10 +284,8 @@ const char *CA_data[CA_NITEMS] = {
 
 	// Transformation commands
 	"centre,VVV",
-	"centreselection,VVV",
 	"translate,VVV",
 	"translateatom,VVV",
-	"translate,VVV",
 	"mirror,V",
 
 	// Variables

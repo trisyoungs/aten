@@ -272,11 +272,9 @@ command_functions::command_functions()
 
 	// Transform Commands
 	action[CA_CENTRE] = &command_functions::function_CA_CENTRE;
-	action[CA_CENTRESELECTION] = &command_functions::function_CA_CENTRESELECTION;
 	action[CA_TRANSLATE] = &command_functions::function_CA_TRANSLATE;
 	action[CA_TRANSLATEATOM] = &command_functions::function_CA_TRANSLATEATOM;
-	action[CA_TRANSLATESELECTION] = &command_functions::function_CA_TRANSLATESELECTION;
-	action[CA_MIRRORSELECTION] = &command_functions::function_CA_MIRRORSELECTION;
+	action[CA_MIRROR] = &command_functions::function_CA_MIRROR;
 
 	// Variables
 	action[CA_LET] = &command_functions::function_CA_LET;

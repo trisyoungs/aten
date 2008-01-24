@@ -296,11 +296,9 @@ enum command_action {
 
 	// Transformation Commands
 	CA_CENTRE,
-	CA_CENTRESELECTION,
 	CA_TRANSLATE,
 	CA_TRANSLATEATOM,
-	CA_TRANSLATESELECTION,
-	CA_MIRRORSELECTION,
+	CA_MIRROR,
 
 	// Variables
 	CA_DECREASE,

@@ -1,5 +1,12 @@
+2008-01-20
+	* incorporated restructured command/script/filter methods.
+
+------------
+Version 0.93
+------------
+
 2007-11-30
-	* labels: improved handling with scripts and Qt
+	* labels: improved handling with scripts and Qt.
 
 2007-11-28
 	* trajectory improvements / fixes.

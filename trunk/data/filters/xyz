@@ -22,6 +22,7 @@ importmodel
 		setcoords $rx $ry $rz
 	end
 	rebond
+	selectall
 	centre 0 0 0
 	finalisemodel
 end

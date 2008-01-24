@@ -286,11 +286,9 @@ class command_functions
 
 	// Transform Commands
 	int function_CA_CENTRE(command *&c, bundle &obj);
-	int function_CA_CENTRESELECTION(command *&c, bundle &obj);
 	int function_CA_TRANSLATE(command *&c, bundle &obj);
 	int function_CA_TRANSLATEATOM(command *&c, bundle &obj);
-	int function_CA_TRANSLATESELECTION(command *&c, bundle &obj);
-	int function_CA_MIRRORSELECTION(command *&c, bundle &obj);
+	int function_CA_MIRROR(command *&c, bundle &obj);
 
 	// Variables
 	int function_CA_LET(command *&c, bundle &obj);

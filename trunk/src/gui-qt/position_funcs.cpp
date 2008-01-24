@@ -39,13 +39,13 @@ void AtenForm::on_DefineCentreButton_clicked(bool checked)
 
 void AtenForm::on_CentreSelectionButton_clicked(bool checked)
 {
-	vec3<double> centre, cog;
+	vec3<double> centre;
 	centre.x = ui.CentreXSpin->value();
 	centre.y = ui.CentreYSpin->value();
 	centre.z = ui.CentreZSpin->value();
 	model *m = master.get_currentmodel();
-	cog = m->selection_get_cog();
-	centre -= cog;
-	m->translate_selection_local(centre);
+	m->begin_undostate("Centre Selection");
+	m->centre(centre);
+	m->end_undostate();
 	gui.refresh();
 }

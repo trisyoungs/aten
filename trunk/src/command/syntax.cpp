@@ -282,10 +282,8 @@ const char *CA_syntax[CA_NITEMS] = {
 
 	// Transformation commands
 	"centre <x> <y> <z>",
-	"centreselection <x> <y> <z>",
 	"translate <dx> <dy> <dz>",
 	"translateatom <dx> <dy> <dz>",
-	"translate <dx> <dy> <dz>",
 	"mirror <axis>",
 
 	// Variable commands
