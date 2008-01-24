@@ -279,26 +279,6 @@ void model::print_coords()
 	dbg_end(DM_CALLS,"model::print_coords");
 }
 
-// Centre system at 0,0,0
-void model::centre(double newx, double newy, double newz)
-{
-	dbg_begin(DM_CALLS,"model::centre");
-	vec3<double> cog;
-	atom *i;
-	for (i = atoms.first(); i != NULL; i = i->next) cog += i->r();
-	// Get the centre of geometry and adjust atomic coordinates...
-	cog /= atoms.size();
-	cog.add(newx, newy, newz);
-	for (i = atoms.first(); i != NULL; i = i->next)
-	{
-		i->r() -= cog;
-		// BEGIN HACK TODO Remove!
-		if (i->get_element() > 118) i->v() += cog;
-		// END HACK
-	}
-	dbg_end(DM_CALLS,"model::centre");
-}
-
 // Calculate the density of the system (if periodic)
 void model::calculate_density()
 {

@@ -117,13 +117,12 @@ void model::move_selection_to_end()
 vec3<double> model::selection_get_cog()
 {
         vec3<double> result;
-        atom *i, *first;
-        first = get_first_selected();
+	atom *first = get_first_selected();
         if (first != NULL)
 	{
-		for (i = first; i != NULL; i = i->get_next_selected()) result += cell.mim(i,first);
+		for (atom *i = first; i != NULL; i = i->get_next_selected()) result += cell.mim(i,first);
+		result /= nselected;
 	}
-	result /= nselected;
         return result;
 }
 

@@ -23,7 +23,7 @@
 #include "model/model.h"
 #include "classes/atom.h"
 
-// Centre model at given coordinates
+// Centre selection at given coordinates
 int command_functions::function_CA_CENTRE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
@@ -32,16 +32,12 @@ int command_functions::function_CA_CENTRE(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-int command_functions::function_CA_CENTRESELECTION(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	return CR_FAIL;
-}
-
+// Translate current selection
 int command_functions::function_CA_TRANSLATE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	return CR_FAIL;
+	obj.m->translate_selection_local(c->arg3d(0));
+	return CR_SUCCESS;
 }
 
 
@@ -53,16 +49,8 @@ int command_functions::function_CA_TRANSLATEATOM(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Translate selection ('translate <dx dy dz>')
-int command_functions::function_CA_TRANSLATESELECTION(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->translate_selection_local(c->arg3d(0));
-	return CR_SUCCESS;
-}
-
 // Mirror selection along specified axis
-int command_functions::function_CA_MIRRORSELECTION(command *&c, bundle &obj)
+int command_functions::function_CA_MIRROR(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->mirror_selection_local(c->argi(0));
