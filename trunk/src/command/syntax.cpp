@@ -73,14 +73,14 @@ const char *CA_syntax[CA_NITEMS] = {
 	// Bonding
 	"addbond <id1> <id2> [bondtype]",
 	"augment",
-	"bondtol <tolerance>",
+	"bondtolerance <tolerance>",
 	"bondpatterns",
 	"bondselection",
 	"clearbonds",
 	"rebond",
 
 	// Build commands
-	"addhydrogen",
+	"addhydrogen [atom|id]",
 	"delete",
 	"locate <x> <y> <z>",
 	"move <dx> <dy> <dz>",

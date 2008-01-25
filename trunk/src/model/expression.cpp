@@ -267,8 +267,13 @@ bool pattern::fill_expression(model *xmodel)
 		}
 		ai = ai->next;
 	}
-	if (ibonds == 0) msg(DM_NONE,"... Expected %i bonds, found %i.\n",bonds.size(),count);
-	else msg(DM_NONE,"... Expected %i bonds, found %i (%i missing).\n",bonds.size(),count,ibonds);
+	if (bonds.size() != count)
+	{
+		msg(DM_NONE,"...INTERNAL ERROR: expected %i bonds, found %i\n",bonds.size(),count);
+		incomplete = TRUE;
+	}
+	else if (ibonds == 0) msg(DM_NONE,"... Found parameters for %i bonds.\n",bonds.size());
+	else msg(DM_NONE,"... Missing parameters for %i of %i bonds.\n",ibonds,bonds.size());
 	// Construct the angle list.
 	// Use the list of bound atoms in the bonding[][] array generated above
 	count = 0;
@@ -319,8 +324,13 @@ bool pattern::fill_expression(model *xmodel)
 			}
 		}
 	}
-	if (iangles == 0) msg(DM_NONE,"... Expected %i angles, found %i.\n",angles.size(),count);
-	else msg(DM_NONE,"... Expected %i angles, found %i (%i missing).\n",angles.size(),count,iangles);
+	if (angles.size() != count)
+	{
+		msg(DM_NONE,"...INTERNAL ERROR: expected %i angles, found %i\n",angles.size(),count);
+		incomplete = TRUE;
+	}
+	else if (iangles == 0) msg(DM_NONE,"... Found parameters for %i angles.\n",angles.size());
+	else msg(DM_NONE,"... Missing parameters for %i of %i angles.\n",iangles,angles.size());
 	// Construct the torsion list.
 	// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
 	count = 0;
@@ -384,8 +394,13 @@ bool pattern::fill_expression(model *xmodel)
 			}
 		}
 	}
-	if (itorsions == 0) msg(DM_NONE,"... Expected %i torsions, found %i.\n",torsions.size(),count);
-	else msg(DM_NONE,"... Expected %i torsions, found %i (%i missing).\n",torsions.size(),count,itorsions);
+	if (torsions.size() != count)
+	{
+		msg(DM_NONE,"...INTERNAL ERROR: expected %i torsions, found %i\n",torsions.size(),count);
+		incomplete = TRUE;
+	}
+	else if (itorsions == 0) msg(DM_NONE,"... Found parameters for %i torsions.\n",torsions.size());
+	else msg(DM_NONE,"... Missing parameters for %i of %i torsions.\n",itorsions,torsions.size());
 	// Print out a warning if the expression is incomplete.
 	if (incomplete) msg(DM_NONE,"!!! Expression is incomplete.\n");
 	dbg_end(DM_CALLS,"pattern::fill_expression");

@@ -28,7 +28,20 @@
 int command_functions::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->hydrogen_satisfy();
+	// Optional argument specifies an atom, either by id or pointer
+	if (c->has_arg(0))
+	{
+		atom *i;
+		if (c->argt(0) == VT_INTEGER) i = obj.m->get_atom(c->argi(0)-1);
+		else if (c->argt(0) == VT_ATOM) i = c->arga(0);
+		else
+		{
+			msg(DM_NONE,"Optional argument to 'addhydrogen' must be an integer or an atom*.\n");
+			return CR_FAIL;
+		}
+		obj.m->hydrogen_satisfy(i);
+	}
+	else obj.m->hydrogen_satisfy();
 	return CR_SUCCESS;
 }
 
@@ -37,7 +50,7 @@ int command_functions::function_CA_ENDCHAIN(command *&c, bundle &obj)
 {
 	// TODO end chain with atom id (optional argument)
 	master.current.i = NULL;
-	return CR_FAIL;
+	return CR_SUCCESS;
 }
 
 // Delete current selection ('delete')

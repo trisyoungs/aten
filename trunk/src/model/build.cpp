@@ -27,12 +27,14 @@
 */
 
 // Add hydrogens to model
-void model::hydrogen_satisfy()
+void model::hydrogen_satisfy(atom *target)
 {
-	// Cycles over atoms in model, and works out how many hydrogens (and in which geometry) should be added to each
+	// Cycles over atoms in model (or only the atom supplied), and works out how many hydrogens (and in which geometry) should be added to each
 	dbg_begin(DM_CALLS,"model::hydrogen_satisfy");
 	int numh, tbo, nsingle, ndouble;
-	for (atom *i = atoms.first(); i != NULL; i = i->next)
+	atom *i, *endatom;
+	i = (target == NULL ? atoms.first() : target);
+	for (i; i != target; i = i->next)
 	{
 		// Step 1 - Work out how many single-bonds (i.e. hydrogens) we need to add to satisfy the atom's valency
 		// Calculate total bond order of atom and work out single bond deficit

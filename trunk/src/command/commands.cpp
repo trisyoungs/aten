@@ -75,14 +75,14 @@ const char *CA_data[CA_NITEMS] = {
 	// Bonding commands
 	"addbond,VVv",
 	"augment",
-	"bondtol,V",
+	"bondtolerance,V",
 	"bondpatterns",
 	"bondselection",
 	"clearbonds",
 	"rebond",
 
 	// Build commands
-	"addhydrogen",
+	"addhydrogen,v",
 	"delete",
 	"locate,VVV",
 	"move,VVV",
