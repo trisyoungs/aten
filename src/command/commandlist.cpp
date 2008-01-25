@@ -60,6 +60,7 @@ commandlist::commandlist()
 	prev = NULL;
 	infile = NULL;
 	outfile = NULL;
+	readopts = 0;
 	push_branch(&commands, CA_ROOTNODE, NULL);
 }
 

@@ -357,24 +357,30 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Reset element mapping style
 			prefs.set_zmapping(temp_zmap);
 			commands.close_files();
+			msg(DM_NONE,"Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_MODEL_EXPORT):
 			commands.close_files();
+			msg(DM_NONE,"Model export %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_FIELD_EXPORT):
 			commands.close_files();
+			msg(DM_NONE,"Field export %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_TRAJECTORY_IMPORT):
-			commands.close_files();
+			//commands.close_files();
+			//if (trajheader) (result ? msg(DM_NONE,"Trajectory opened successfully.\n") : msg(DM_NONE,"Failed to open trajectory.\n"));
+			//else if (!result) msg(DM_NONE,"Failed to read frame from trajectory.\n");
 			break;
 		case (FT_GRID_IMPORT):
 			commands.close_files();
+			msg(DM_NONE,"Grid import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_GRID_EXPORT):
 			commands.close_files();
+			msg(DM_NONE,"Grid export %s.\n",(result ? "completed" : "failed"));
 			break;
 	}
-	msg(DM_NONE,"Done.\n");
 	dbg_end(DM_CALLS,"filter::execute");
 	return result;
 }
