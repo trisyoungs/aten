@@ -369,6 +369,7 @@ int line_parser::get_args_formatted(ifstream *xfile, int options, format *fmt)
 	// Blank lines are skipped if blankskip == TRUE.
 	// Returns : 0=ok, 1=error, -1=eof
 	optmask = options;
+	nargs = 0;
 	do
 	{
 		xfile->getline(linefromfile,MAXLINELENGTH-1);
