@@ -199,7 +199,7 @@ bool model::autocreate_patterns()
 		// atoms in those that we now skip (if != nselected then we must force a 1*N pattern)
 		nsel2 = 0;
 		atomid += nselected;
-		selection_get_empirical(emp);
+		//selection_get_empirical(emp);
 		for (n=0; n<nselected; n++)
 		{
 			if (i->is_selected()) nsel2 ++;
@@ -284,7 +284,7 @@ bool model::autocreate_patterns()
 			if (same) nmols ++;
 			else
 			{
-				// Not the same as the last stored pattern, so start a new one
+				// Not the same as the last stored pattern, so store old data and start a new one
 				msg(DM_NONE,"New pattern found: %s\n",emp.get());
 				p = add_pattern(nmols,patclip.get_natoms(),emp.get());
 				patclip.copy_selection(this);

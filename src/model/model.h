@@ -527,7 +527,7 @@ class model
 
 	public:
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
-	void hydrogen_satisfy();
+	void hydrogen_satisfy(atom *target = NULL);
 
 	/*
 	// Geometry (using staticatoms[])
