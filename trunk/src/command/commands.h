@@ -35,7 +35,7 @@ class pattern;
 class bundle;
 
 // Function return values
-enum command_return { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAIL, CR_FAILCONTINUE, CR_EXIT };
+enum command_return { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAIL, CR_FAILCONTINUE, CR_EXIT, CR_EXITWITHERROR };
 
 // Command actions
 enum command_action {
@@ -63,6 +63,7 @@ enum command_action {
 	CA_PRINTJOBS,
 	CA_RDF,
 	CA_SAVEQUANTITIES,
+	CA_TRAJANALYSE,
 
 	// Atom Commands
 	CA_ADDATOM,

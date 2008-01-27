@@ -420,7 +420,7 @@ variable *variable_list::add_constant(const char *s)
 		else nch ++;
 	}
 	// Based on the numbers we calculated, try to determine its type
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1)) result->set_type(VT_CHAR);
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) result->set_type(VT_CHAR);
 	else if (ndp == 1) result->set_type(VT_DOUBLE);
 	else result->set_type(VT_INTEGER);
 	//printf("DETERMINED CONSTANT '%s' TO BE OF TYPE '%s'\n",s,text_from_VT(result->get_type()));

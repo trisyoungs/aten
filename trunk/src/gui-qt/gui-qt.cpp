@@ -297,7 +297,6 @@ void gui_qt::print_message(const char *s)
 {
 	static char str[8096];
 	static int n, len;
-printf("Value of does_exist = %i\n",does_exist);
 	if (!does_exist) return;
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);

@@ -97,3 +97,46 @@ int command_functions::function_CA_SAVEQUANTITIES(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Calculate quantities over entire trajectory
+int command_functions::function_CA_TRAJANALYSE(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	int n, startframe, totalframes, frameskip, framestodo, framesdone;
+	bool calculate;
+	model *frame;
+	calculable *calc;
+	// Check that the model has a trajectory associated to it
+	totalframes = obj.m->get_totalframes();
+	if (totalframes == 0)
+	{
+		msg(DM_NONE,"No trajectory associated to model.\n");
+		return CR_FAIL;
+	}
+	// Get start frame, frame skip, and frames to do (if supplied)
+	startframe = c->argi(0);
+	frameskip = c->argi(1);
+	framestodo = (c->has_arg(2) ? c->argi(2) : -1);
+	// Rewind trajectory to first frame and begin
+	obj.m->seek_first_frame();
+	framesdone = 0;
+	for (n=1; n <= totalframes; n++)
+	{
+		// Work out whether to calculate quantities from this frame
+		calculate = TRUE;
+		if (n < startframe) calculate = FALSE;
+		else if ((n-startframe)%frameskip != 0) calculate = FALSE;
+		// Calculate quantities
+		if (calculate)
+		{
+			frame = obj.m->get_currentframe();
+			for (calc = obj.m->pending_quantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
+			framesdone ++;
+		}
+		// Check for required number of frames completed
+		if (framesdone == framestodo) break;
+		// Move to next frame
+		if (n != totalframes) obj.m->seek_next_frame();
+	}
+	msg(DM_NONE,"Finished calculating properties - used %i frames from trajectory.\n", framesdone);
+	return CR_SUCCESS;
+}

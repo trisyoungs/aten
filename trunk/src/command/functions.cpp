@@ -38,6 +38,7 @@ command_functions::command_functions()
 	action[CA_PRINTJOBS] = &command_functions::function_CA_PRINTJOBS;
 	action[CA_RDF] = &command_functions::function_CA_RDF;
 	action[CA_SAVEQUANTITIES] = &command_functions::function_CA_SAVEQUANTITIES;
+	action[CA_TRAJANALYSE] = &command_functions::function_CA_TRAJANALYSE;
 
 	// Atom Commands
 	action[CA_ADDATOM] = &command_functions::function_CA_ADDATOM;
