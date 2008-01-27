@@ -1,5 +1,5 @@
 /*
-	*** Radial distribution function calculation
+	*** Geometryy measurement calculation
 	*** src/methods/rdf.cpp
 	Copyright T. Youngs 2007
 
@@ -19,12 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "methods/rdf.h"
+#include "methods/geometry.h"
 #include "classes/site.h"
 #include "classes/pattern.h"
 
 // Constructor
-rdf::rdf()
+geometry::geometry()
 {
 	sites[0] = NULL;
 	sites[1] = NULL;
@@ -38,30 +38,27 @@ rdf::rdf()
 }
 
 // Destructor
-rdf::~rdf()
+geometry::~geometry()
 {
-	if (sites[0] != NULL) delete sites[0];
-	if (sites[1] != NULL) delete sites[1];
-	if (data != NULL) delete[] data;
 }
 
 // Set site
-void rdf::set_site(int i, site *s)
+void geometry::set_site(int i, site *s)
 {
 	if (i < 2) sites[i] = s;
-	else printf("OUTOFRANGE:rdf::set_site\n");
+	else printf("OUTOFRANGE:geometry::set_site\n");
 }
 
 // Get site
-site *rdf::get_site(int i)
+site *geometry::get_site(int i)
 {
 	if (i < 2) return sites[i];
-	else printf("OUTOFRANGE:rdf::set_site\n");
+	else printf("OUTOFRANGE:geometry::get_site\n");
 	return NULL;
 }
 
-// Set RDF range
-void rdf::set_range(double d, double w, int n)
+// Set histogram range
+void geometry::set_range(double d, double w, int n)
 {
 	lower = d;
 	binwidth = w;
@@ -71,14 +68,14 @@ void rdf::set_range(double d, double w, int n)
 }
 
 // Initialise structure
-bool rdf::initialise()
+bool geometry::initialise()
 {
-	dbg_begin(DM_CALLS,"rdf::initialise");
+	dbg_begin(DM_CALLS,"geometry::initialise");
 	// Check site definitions....
 	if ((sites[0] == NULL) || (sites[1] == NULL))
 	{
-		msg(DM_NONE,"rdf::initialise - At least one site has NULL value.\n");
-		dbg_end(DM_CALLS,"rdf::initialise");
+		msg(DM_NONE,"geometry::initialise - At least one site has NULL value.\n");
+		dbg_end(DM_CALLS,"geometry::initialise");
 		return FALSE;
 	}
 	// Create the data arrays
@@ -86,14 +83,14 @@ bool rdf::initialise()
 	for (int n=0; n<nbins; n++) data[n] = 0.0;
 	msg(DM_NONE,"There are %i bins in rdf '%s', beginning at r = %f.\n", nbins, name.get(), lower);
 	acc = 0;
-	dbg_end(DM_CALLS,"rdf::initialise");
+	dbg_end(DM_CALLS,"geometry::initialise");
 	return TRUE;
 }
 
 // Accumulate quantity data from supplied model
-void rdf::accumulate(model *sourcemodel)
+void geometry::accumulate(model *sourcemodel)
 {
-	dbg_begin(DM_CALLS,"rdf::accumulate");
+	dbg_begin(DM_CALLS,"geometry::accumulate");
 	int m1, m2, bin;
 	static vec3<double> centre1, centre2, mimd;
 	unitcell *cell = sourcemodel->get_cell();
@@ -117,13 +114,13 @@ void rdf::accumulate(model *sourcemodel)
 	}
 	// Increase accumulation counter
 	acc ++;
-	dbg_end(DM_CALLS,"rdf::accumulate");
+	dbg_end(DM_CALLS,"geometry::accumulate");
 }
 
 // Finalise
-void rdf::finalise(model *sourcemodel)
+void geometry::finalise(model *sourcemodel)
 {
-	dbg_begin(DM_CALLS,"rdf::finalise");
+	dbg_begin(DM_CALLS,"geometry::finalise");
 	int n;
 	double factor, r1, r2, numdensity;
 	// Normalise the rdf w.r.t. number of frames and number of central molecules
@@ -138,11 +135,11 @@ void rdf::finalise(model *sourcemodel)
 		data[n] /= factor;
 
 	}
-	dbg_end(DM_CALLS,"rdf::finalise");
+	dbg_end(DM_CALLS,"geometry::finalise");
 }
 
-// Save RDF data
-bool rdf::save()
+// Save measurement data
+bool geometry::save()
 {
 	int n;
 	for (n=0; n<nbins; n++) printf(" %f  %f\n",binwidth * (n + 0.5), data[n]);

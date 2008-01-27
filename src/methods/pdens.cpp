@@ -38,6 +38,9 @@ pdens::pdens()
 // Destructor
 pdens::~pdens()
 {
+	if (sites[0] != NULL) delete sites[0];
+	if (sites[1] != NULL) delete sites[1];
+	if (data != NULL) delete[] data;
 }
 
 // Set site

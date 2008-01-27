@@ -49,6 +49,7 @@ const char *CA_syntax[CA_NITEMS] = {
 	"printjobs",
 	"rdf <name> <site1> <site2> <rmin> <binwidth> <nbins> <filename>",
 	"savequantities",
+	"trajanalyse <startframe> <frameskip> [nframes]",
 
 	// Atoms
 	"addatom <element>",

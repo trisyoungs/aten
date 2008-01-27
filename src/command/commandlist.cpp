@@ -772,6 +772,11 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 				printf("Continuing past failed command '%s'...\n", text_from_CA(c->get_command()));
 				c = c->next;
 				break;
+			// Exit with error
+			case (CR_EXITWITHERROR):
+				c = NULL;
+				result = FALSE;
+				break;
 			// Exit - we're done
 			case (CR_EXIT):
 				c = NULL;

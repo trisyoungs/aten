@@ -18,6 +18,7 @@ importtrajectory
 	if $header = true
 		# Check first 8 characters of first line - if it reads 'timestep' then this trajectory doesn't have a header
 		readline "$title@8"
+		print "Title is $title."
 		if $title = timestep
 			rewind
 		end
@@ -26,7 +27,7 @@ importtrajectory
 		end
 	else
 		# Frame header - '"timestep"	nstep	natms	keytrj	imcon	tstep'
-		readline "* $nstep $trajnatoms $keytrj $imcon $tstep"
+		readline "$title $nstep $trajnatoms $keytrj $imcon $tstep"
 		# Check number of atoms in trajectory frame
 		if $natoms <> $trajnatoms
 			error "Number of atoms in file(${trajnatoms}) doesn't match number in parent model (${natoms})."

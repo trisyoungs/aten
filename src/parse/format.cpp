@@ -155,6 +155,7 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	n = 0;
 	while (s[n] != '\0')
 	{
+		//printf("Current s[n] = '%c'\n",s[n]);
 		// If the character is not '$', just add it to 'text' and continue
 		if (s[n] != '$')
 		{
@@ -167,6 +168,7 @@ bool format::create_exact(const char *s, variable_list &vlist)
 		if (nchars != 0)
 		{
 			text[nchars] = '\0';
+			//printf("Found variable - adding previous text '%s'...\n",text);
 			fn = nodes.add();
 			fn->set(text, vlist);
 			nchars = 0;
@@ -208,8 +210,8 @@ bool format::create_exact(const char *s, variable_list &vlist)
 		}
 		// Now have variable (and format) in 'var'
 		varstr[vchars] = '\0';
+		//printf("...the variable after which is '%s'.\n",varstr);
 		fn = nodes.add();
-		fn->set(varstr, vlist);
 		if (!fn->set(varstr, vlist))
 		{
 			printf("Failed to add format node '%s'.\n", varstr);
@@ -223,12 +225,14 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	if (nchars != 0)
 	{
 		text[nchars] = '\0';
+		//printf("Loop has ended - remaining text is '%s'.\n",text);
 		fn = nodes.add();
 		fn->set(text, vlist);
 	}
 	else if (vchars != 0)
 	{
 		varstr[vchars] = '\0';
+		//printf("Loop has ended - remaining variable is '%s'.\n",varstr);
 		fn = nodes.add();
 		fn->set(varstr, vlist);
 		if (!fn->set(varstr, vlist))
@@ -261,16 +265,19 @@ const char *format::create_string()
 				if (fn->get_length() == 0) strcpy(fmt,"%s");
 				else sprintf(fmt,"%%%is",fn->get_length());
 				sprintf(bit,fmt,v->get_as_char());
+	printf("Bit is a char [%s]\n",v->get_as_char());
 				break;
 			case (VT_INTEGER):
 				if (fn->get_length() == 0) strcpy(fmt,"%i");
 				else sprintf(fmt,"%%%ii",fn->get_length());
 				sprintf(bit,fmt,v->get_as_int());
+	printf("Bit is an int [%i]\n",v->get_as_int());
 				break;
 			case (VT_DOUBLE):
 				if (fn->get_length() == 0) strcpy(fmt,"%f");
 				else sprintf(fmt,"%%%i.%if",fn->get_length(),fn->get_precision());
 				sprintf(bit,fmt,v->get_as_double());
+	printf("Bit is a double [%f]\n",v->get_as_double());
 				break;
 			default:
 				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->get_type()));

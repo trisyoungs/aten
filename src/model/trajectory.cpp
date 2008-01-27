@@ -107,20 +107,21 @@ bool model::initialise_trajectory(const char *fname, filter *f)
 	msg(DM_NONE,"Estimated trajectory size is %li kb, cache limit = %i kb\n",totalframes * framesize/1024, prefs.get_cache_limit());
 	if ((totalframes * framesize)/1024 < prefs.get_cache_limit())
 	{
-		printf("Reading all frames..\n");
+		msg(DM_NONE,"Caching all frames from trajectory...\n");
 		// Read all frames from trajectory file
-		do
+		for (int n=0; n<totalframes; n++)
 		{
 			model *newframe = add_frame();
 			newframe->set_trajparent(this);
 			success = trajfilefilter->execute("", trajfile, FALSE, newframe);
-			printf("Added and read frame...\n");
-			//if (!success) break
-			/*{
+			if (success) msg(DM_NONE,"Read frame %i from file.\n",n+1);
+			else
+			{
 				frames.remove(newframe);
-				msg(DM_NONE,"Cached %i frames from trajectory.\n", ncachedframes);
-			} */
-		} while (success);
+				msg(DM_NONE,"Cached %i frames from trajectory before fail.\n", n-1);
+				break;
+			}
+		}
 		trajcached = TRUE;	
 	}
 	else

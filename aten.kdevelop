@@ -10,8 +10,8 @@
     <projectname>aten</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description></description>
-    <defaultencoding></defaultencoding>
+    <description/>
+    <defaultencoding/>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevautoproject>
@@ -19,11 +19,11 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram>/u/tristan/work/aten/src/aten</mainprogram>
-      <programargs>-f ~/work/aten/data/ff/water.ff water267-PROD1.CONFIG -c &quot;loadtrajectory water267-PROD1.HISu; quit&quot;</programargs>
-      <globaldebugarguments>-f ~/work/aten/data/ff/water.ff water267-PROD1.CONFIG -c &quot;loadtrajectory water267-PROD1.HISu; quit&quot;</globaldebugarguments>
-      <globalcwd>/u/tristan/work/liquids/water-spc</globalcwd>
-      <useglobalprogram>true</useglobalprogram>
+      <mainprogram/>
+      <programargs/>
+      <globaldebugarguments/>
+      <globalcwd/>
+      <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
       <autoinstall>false</autoinstall>
@@ -66,10 +66,10 @@
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <gdbpath></gdbpath>
-      <configGdbScript></configGdbScript>
-      <runShellScript></runShellScript>
-      <runGdbScript></runGdbScript>
+      <gdbpath/>
+      <configGdbScript/>
+      <runShellScript/>
+      <runGdbScript/>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
@@ -173,7 +173,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet></prefixGet>
+      <prefixGet/>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -205,9 +205,9 @@
   </cppsupportpart>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem></docsystem>
-      <docurl></docurl>
-      <usermanualurl></usermanualurl>
+      <docsystem/>
+      <docurl/>
+      <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
 </kdevelop>

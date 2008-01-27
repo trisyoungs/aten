@@ -53,6 +53,7 @@ class command_functions
 	int function_CA_PRINTJOBS(command *&c, bundle &obj);
 	int function_CA_RDF(command *&c, bundle &obj);
 	int function_CA_SAVEQUANTITIES(command *&c, bundle &obj);
+	int function_CA_TRAJANALYSE(command *&c, bundle &obj);
 
 	// Atom Commands
 	int function_CA_ADDATOM(command *&c, bundle &obj);

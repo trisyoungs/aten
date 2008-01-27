@@ -25,8 +25,10 @@
 // Write line to msg output and stop
 int command_functions::function_CA_ERROR(command *&c, bundle &obj)
 {
-	msg(DM_NONE,"Filter Error: %s\n",c->argc(0));
-	return CR_EXIT;
+	format *fmt = c->get_format();
+	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
+	else msg(DM_NONE,"%s\n",fmt->create_string());
+	return CR_EXITWITHERROR;
 }
 
 // Print formatted string
@@ -34,13 +36,15 @@ int command_functions::function_CA_PRINT(command *&c, bundle &obj)
 {
 	format *fmt = c->get_format();
 	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
-	else msg(DM_NONE,"%s\n",c->get_format()->create_string());
+	else msg(DM_NONE,"%s\n",fmt->create_string());
 	return CR_SUCCESS;
 }
 
 // Write line to msg output
 int command_functions::function_CA_WARN(command *&c, bundle &obj)
 {
-	msg(DM_NONE,"Filter Warning: %s\n",c->get_format()->create_string());
+	format *fmt = c->get_format();
+	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
+	else msg(DM_NONE,"Warning: %s\n",fmt->create_string());
 	return CR_SUCCESS;
 }

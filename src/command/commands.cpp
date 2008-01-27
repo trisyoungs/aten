@@ -51,6 +51,7 @@ const char *CA_data[CA_NITEMS] = {
 	"printjobs",
 	"rdf,VVVVVVV",
 	"savequantities",
+	"trajanalyse,VVv",
 
 	// Atom commands
 	"addatom,V",
