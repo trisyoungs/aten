@@ -170,9 +170,10 @@ void canvas_master::render_model_cell()
 	{
 		// All cell types are transformations of a unit cube.
 		// So, multiply modelview matrix by cell axes matrix and draw a unit cube
-		mat4<double> mat = displaymodel->get_cell()->get_axes_as_mat4();
+		//mat4<double> mat = displaymodel->get_cell()->get_transpose_as_mat4();
+		//mat.get_column_major(glmat);
 		double glmat[16];
-		mat.get_column_major(glmat);
+		displaymodel->get_cell()->get_transpose_as_mat4().get_column_major(glmat);
 		glPushMatrix();
 		  glMultMatrixd(glmat);
 		  if (prefs.should_render(VO_CELL)) glCallList(list[GLOB_WIREUNITCUBE]);

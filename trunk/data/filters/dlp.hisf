@@ -18,7 +18,6 @@ importtrajectory
 	if $header = true
 		# Check first 8 characters of first line - if it reads 'timestep' then this trajectory doesn't have a header
 		readline "$title@8"
-		print "Title is $title."
 		if $title = timestep
 			rewind
 		end
@@ -34,10 +33,10 @@ importtrajectory
 		end
 		# Read cell if its present
 		if $imcon > 0
-			readline "$ax@12 $bx@12 $cx@12"
-			readline "$ay@12 $by@12 $cy@12"
-			readline "$az@12 $bz@12 $cz@12"
-			setcellaxes $ax $bx $cx $ay $by $cy $az $bz $cz
+			readline "$ax@12 $ay@12 $az@12"
+			readline "$bx@12 $by@12 $bz@12"
+			readline "$cx@12 $cy@12 $cz@12"
+			setcellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 		end
 		# Now the atoms
 		modeltemplate

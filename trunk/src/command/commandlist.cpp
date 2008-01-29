@@ -808,16 +808,15 @@ void commandlist::set_cell_variables(unitcell *c)
 	if (c != NULL)
 	{
 		variables.set("cell","type",lower_case(text_from_CT(c->get_type())));
-		mat = c->get_axes_transpose();
-
+		mat = c->get_axes();
 		variables.set("cell","ax",mat.rows[0].x);
-		variables.set("cell","bx",mat.rows[0].y);
-		variables.set("cell","cx",mat.rows[0].z);
-		variables.set("cell","ay",mat.rows[1].x);
+		variables.set("cell","ay",mat.rows[0].y);
+		variables.set("cell","az",mat.rows[0].z);
+		variables.set("cell","bx",mat.rows[1].x);
 		variables.set("cell","by",mat.rows[1].y);
-		variables.set("cell","cy",mat.rows[1].z);
-		variables.set("cell","az",mat.rows[2].x);
-		variables.set("cell","bz",mat.rows[2].y);
+		variables.set("cell","bz",mat.rows[1].z);
+		variables.set("cell","cx",mat.rows[2].x);
+		variables.set("cell","cy",mat.rows[2].y);
 		variables.set("cell","cz",mat.rows[2].z);
 		vec = c->get_lengths();
 		variables.set("cell","a",vec.x);
