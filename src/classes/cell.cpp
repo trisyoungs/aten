@@ -40,8 +40,9 @@ const char **get_CT_strings()
 unitcell::unitcell()
 {
 	type = CT_NONE;
-	axes_t.zero();
-	inverse.zero();
+	axes.zero();
+	transpose.zero();
+	itranspose.zero();
 	recip.zero();
 	lengths.zero();
 	angles.zero();
@@ -98,26 +99,26 @@ void unitcell::set(const vec3<double> &newlengths, const vec3<double> &newangles
 	angles = newangles;
 	lengths = newlengths;
 	// Work in unit vectors. Assume that A lays along x-axis
-	axes_t.set(0,1.0,0.0,0.0);
+	axes.set(0,1.0,0.0,0.0);
 	// Assume that B lays in the xy plane. Since A={1,0,0}, cos(gamma) equals 'x' of the B vector.
 	temp = cos(angles.z/DEGRAD);
-	axes_t.set(1,temp,sqrt(1.0 - temp*temp),0.0);
+	axes.set(1,temp,sqrt(1.0 - temp*temp),0.0);
 	// The C vector can now be determined in parts.
 	// It's x-component is equal to cos(beta) since {1,0,0}{x,y,z} = {1}{x} = cos(beta)
-	axes_t.set(2,cos(angles.y/DEGRAD),0.0,0.0);
+	axes.set(2,cos(angles.y/DEGRAD),0.0,0.0);
 	// The y-component can be determined by completing the dot product between the B and C vectors
-	axes_t.rows[2].y = ( cos(angles.x/DEGRAD) - axes_t.rows[1].x*axes_t.rows[2].x ) / axes_t.rows[1].y;
+	axes.rows[2].y = ( cos(angles.x/DEGRAD) - axes.rows[1].x*axes.rows[2].x ) / axes.rows[1].y;
 	// The z-component is simply the remainder of the unit vector...
-	axes_t.rows[2].z = sqrt(1.0 - axes_t.rows[2].x*axes_t.rows[2].x - axes_t.rows[2].y*axes_t.rows[2].y);
+	axes.rows[2].z = sqrt(1.0 - axes.rows[2].x*axes.rows[2].x - axes.rows[2].y*axes.rows[2].y);
 	// Lastly, adjust these unit vectors to give the proper cell lengths
-	axes_t.rows[0] *= lengths.x;
-	axes_t.rows[1] *= lengths.y;
-	axes_t.rows[2] *= lengths.z;
-	axes_t = axes_t.transpose();
+	axes.rows[0] *= lengths.x;
+	axes.rows[1] *= lengths.y;
+	axes.rows[2] *= lengths.z;
+	transpose = axes.transpose();
 	// Determine type of cell
 	determine_type();
 	// Calculate the cell volume
-	volume = axes_t.determinant();
+	volume = axes.determinant();
 	calc_origin();
 	calc_inverse();
 	calc_reciprocal();
@@ -129,17 +130,17 @@ void unitcell::set(const mat3<double> &newaxes)
 {
 	dbg_begin(DM_CALLS,"unitcell::set[matrix]");
 	// Store the supplied matrix and get transpose for vector calculation
-	axes_t = newaxes;
-	mat3<double> normaxes = newaxes.transpose();
+	axes = newaxes;
+	transpose = axes.transpose();
 	// Calculate cell lengths
-	lengths.x = normaxes.rows[0].magnitude();
-	lengths.y = normaxes.rows[1].magnitude();
-	lengths.z = normaxes.rows[2].magnitude();
+	lengths.x = axes.rows[0].magnitude();
+	lengths.y = axes.rows[1].magnitude();
+	lengths.z = axes.rows[2].magnitude();
 	// Calculate cell angles
 	vec3<double> vecx,vecy,vecz;
-	vecx = normaxes.rows[0];
-	vecy = normaxes.rows[1];
-	vecz = normaxes.rows[2];
+	vecx = axes.rows[0];
+	vecy = axes.rows[1];
+	vecz = axes.rows[2];
 	vecx.normalise();
 	vecy.normalise();
 	vecz.normalise();
@@ -150,7 +151,7 @@ void unitcell::set(const mat3<double> &newaxes)
 	// Determine type of cell
 	determine_type();
 	// Calculate the cell volume   TODO Other cell types?
-	volume = axes_t.determinant();
+	volume = axes.determinant();
 	calc_origin();
 	calc_inverse();
 	calc_reciprocal();
@@ -169,18 +170,18 @@ void unitcell::calc_reciprocal()
 			break;
 		case (CT_CUBIC):
 		case (CT_ORTHORHOMBIC):
-			recip.rows[0].set(TWOPI / axes_t.rows[0].x, 0.0, 0.0);
-			recip.rows[1].set(0.0, TWOPI / axes_t.rows[1].y, 0.0);
-			recip.rows[2].set(0.0, 0.0, TWOPI / axes_t.rows[2].z);
-			rvolume = TWOPI / (axes_t.rows[0].x * axes_t.rows[1].y * axes_t.rows[2].z);
+			recip.rows[0].set(TWOPI / axes.rows[0].x, 0.0, 0.0);
+			recip.rows[1].set(0.0, TWOPI / axes.rows[1].y, 0.0);
+			recip.rows[2].set(0.0, 0.0, TWOPI / axes.rows[2].z);
+			rvolume = TWOPI / (axes.rows[0].x * axes.rows[1].y * axes.rows[2].z);
 			break;
 		case (CT_PARALLELEPIPED):
 			// Reciprocal cell vectors are perpendicular to normal cell axes_t.
 			// Calculate from cross products of normal cell triples
-			recip.rows[0] = axes_t.rows[1] * axes_t.rows[2];
-			recip.rows[1] = axes_t.rows[0] * axes_t.rows[2];
-			recip.rows[2] = axes_t.rows[0] * axes_t.rows[1];
-			rvolume = fabs( axes_t.rows[0].x*recip.rows[0].x + axes_t.rows[1].y*recip.rows[1].y + axes_t.rows[2].z*recip.rows[2].z);
+			recip.rows[0] = axes.rows[1] * axes.rows[2];
+			recip.rows[1] = axes.rows[0] * axes.rows[2];
+			recip.rows[2] = axes.rows[0] * axes.rows[1];
+			rvolume = fabs( axes.rows[0].x*recip.rows[0].x + axes.rows[1].y*recip.rows[1].y + axes.rows[2].z*recip.rows[2].z);
 			recip.rows[0] = recip.rows[0] * TWOPI / rvolume;
 			recip.rows[1] = recip.rows[1] * TWOPI / rvolume;
 			recip.rows[2] = recip.rows[2] * TWOPI / rvolume;
@@ -196,18 +197,18 @@ void unitcell::calc_origin()
 	if (type != CT_NONE)
 	{
 		origin.set(-0.5,-0.5,-0.5);
-		origin *= axes_t;
+		origin *= axes;
 	}
 	else origin.set(0.0,0.0,0.0);
 	dbg_end(DM_CALLS,"unitcell::calc_origin");
 }
 
-// Calculate inverse matrix of cell vectors
+// Calculate inverse transpose matrix
 void unitcell::calc_inverse()
 {
 	dbg_begin(DM_CALLS,"unitcell::calc_inverse");
-	inverse = axes_t;
-	inverse.invert();
+	itranspose = transpose;
+	itranspose.invert();
 	dbg_end(DM_CALLS,"unitcell::calc_inverse");
 }
 
@@ -230,7 +231,7 @@ vec3<double> unitcell::mim(const vec3<double> &r1, const vec3<double> &r2) const
 		// Remaining boundary conditions are all cubic or pseudo-cubic, so can be grouped together...
 		default:
 			R = r1 - r2;
-			R *= inverse;
+			R *= itranspose;
 			// TODO Test speed of 'int' version
 			if (R.x < -0.5) R.x += 1.0;
 			if (R.y < -0.5) R.y += 1.0;
@@ -241,7 +242,7 @@ vec3<double> unitcell::mim(const vec3<double> &r1, const vec3<double> &r2) const
 			// R.x -= int(R.x);
 			// R.y -= int(R.y);
 			// R.z -= int(R.z);
-			R *= axes_t;
+			R *= transpose;
 			R += r2;
 	}
 	return R;
@@ -293,7 +294,7 @@ void unitcell::fold(vec3<double> &r) const
 		default:
 			newr = r;
 			// Convert these coordinates into fractional cell coordinates...
-			newr *= inverse;
+			newr *= itranspose;
 			if (newr.x < 0.0) newr.x += 1.0;
 			else if (newr.x >= 1.0) newr.x -= 1.0;
 			if (newr.y < 0.0) newr.y += 1.0;
@@ -304,7 +305,7 @@ void unitcell::fold(vec3<double> &r) const
 			//newr.y -= floor(newr.y);
 			//newr.z -= floor(newr.z);
 			// Convert back into world coordinates
-			r = newr * axes_t;
+			r = newr * transpose;
 			break;
 	}
 	dbg_end(DM_MORECALLS,"unitcell::fold");
@@ -402,14 +403,14 @@ double unitcell::torsion(atom *i, atom *j, atom *k, atom *l) const
 vec3<double> unitcell::real_to_frac(const vec3<double> &v) const
 {
 	// Convert the real coordinates supplied into fractional cell coordinates
-	return (v * inverse);
+	return (v * itranspose);
 }
 
 // Return the real coordinates of the specified fractional cell coordinate
 vec3<double> unitcell::frac_to_real(const vec3<double> &v) const
 {
 	// Convert the real coordinates supplied into fractional cell coordinates
-	return (v * axes_t);
+	return (v * transpose);
 }
 
 /*
@@ -424,16 +425,15 @@ vec3<double> unitcell::random_pos() const
 	result.x = cs_random();
 	result.y = cs_random();
 	result.z = cs_random();
-	result *= axes_t;
+	result *= transpose;
 	return result;
 }
 
 // Print
 void unitcell::print() const
 {
-	msg(DM_NONE,"\t  [    A        B        C    ]\n");
-	msg(DM_NONE,"\tx <%8.4f %8.4f %8.4f > [alpha=%8.3f]\n", axes_t.rows[0].x, axes_t.rows[0].y, axes_t.rows[0].z, angles.x);
-	msg(DM_NONE,"\ty <%8.4f %8.4f %8.4f > [ beta=%8.3f]\n", axes_t.rows[1].x, axes_t.rows[1].y, axes_t.rows[1].z, angles.y);
-	msg(DM_NONE,"\tz <%8.4f %8.4f %8.4f > [gamma=%8.3f]\n", axes_t.rows[2].x, axes_t.rows[2].y, axes_t.rows[2].z, angles.z);
-	msg(DM_NONE,"\tl [%8.4f %8.4f %8.4f ]\n", lengths.x, lengths.y, lengths.z);
+	msg(DM_NONE,"\t        x        y        z          l\n");
+	msg(DM_NONE,"\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes.rows[0].x, axes.rows[0].y, axes.rows[0].z, lengths.x, angles.x);
+	msg(DM_NONE,"\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes.rows[1].x, axes.rows[1].y, axes.rows[1].z, lengths.y, angles.y);
+	msg(DM_NONE,"\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes.rows[2].x, axes.rows[2].y, axes.rows[2].z, lengths.z, angles.z);
 }

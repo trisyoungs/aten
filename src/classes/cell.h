@@ -44,12 +44,15 @@ class unitcell
 	private:
 	// Cell type
 	cell_type type;
-	// Vectors of the principal cell axes (stored in transpose form so all x components are in rows[0], etc.)
-	mat3<double> axes_t;
+
+	// Vectors of the principal cell axes (rows[0] = A, rows[1] = B, rows[2] = C)
+	mat3<double> axes;
+	// Transpose of the principal cell axes (rows[0] = A.x,B.x,C.z)
+	mat3<double> transpose;
 	// Reciprocal vectors of the principal cell axes
 	mat3<double> recip;
-	// 3x3 matrix inverse of cell vectors
-	mat3<double> inverse;
+	// Inverse of axes transpose
+	mat3<double> itranspose;
 	// Coordinates of origin in GL space (-half cell lengths)
 	vec3<double> origin;
 	// Principal axis lengths
@@ -88,15 +91,16 @@ class unitcell
 	// Set individual angle
 	void set_angle(int i, double d) { angles.set(i,d); }
 	// Set individual element of axes matrix
-	void set_axes(int i, int j, double d) { axes_t.set(i,j,d); }
+//	void set_axes(int i, int j, double d) { axes_t.set(i,j,d); }
+//	void NEWset_axes(int i, int j, double d) { axes.set(i,j,d); }
 	// Return the type of cell
 	cell_type get_type() const { return type; }
 	// Return the cell vector matrix
-	mat3<double> get_axes_transpose() { return axes_t; }
+	mat3<double> get_transpose() { return transpose; }
 	// Return the transpose of the cell vector matrix (giving individual axis vectors in rows[])
-	mat3<double> get_axes() { return axes_t.transpose(); }
+	mat3<double> get_axes() { return axes; }
 	// Return the cell vector matrix as a 4x4 matrix
-	mat4<double> get_axes_as_mat4() { return axes_t.get_as_mat4(); }
+	mat4<double> get_transpose_as_mat4() { return transpose.get_as_mat4(); }
 	// Return a matrix of the reciprocal cell vectors
 	mat3<double> get_recip() { return recip; }
 	// Return the axis lengths of the cell
@@ -106,13 +110,14 @@ class unitcell
 	// Return the origin the cell
 	vec3<double> get_origin() { return origin; }
 	// Return the cell vectors as a column-major matrix in a 1D array
-	void get_axes_column(double* m) { axes_t.get_column_major(m); }
+//	void get_axes_column(double* m) { axes_t.get_column_major(m); }
+	void get_transpose_column(double* m) { transpose.get_column_major(m); }
 	// Return the reciprocal vectors as a column-major matrix in a 1D array
 	void get_recip_column(double* m) { recip.get_column_major(m); }
-	// Return a matrix of the inverse cell vectors
-	mat3<double> get_inverse() { return inverse; }
+	// Return a inverse transpose matrix of cell axes
+	mat3<double> get_inversetranspose() { return itranspose; }
 	// Return the inverse of the cell vectors as a column-major matrix in a 1D array
-	void get_inverse_column(double *m) { inverse.get_column_major(m); }
+	void get_transposeinverse_column(double *m) { itranspose.get_column_major(m); }
 	// Return the volume of the cell
 	double get_volume() const { return volume; }
 	// Return the volume of the reciprocal cell
@@ -128,7 +133,7 @@ class unitcell
 	void calculate_density();
 	// Calculate cell reciprocal
 	void calc_reciprocal();
-	// Calculate cell inverse
+	// Calculate inverse of axes transpose
 	void calc_inverse();
 
 	private:

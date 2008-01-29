@@ -128,7 +128,7 @@ vec3<double> region::random_coords(unitcell *cell, component *c)
 				v.x = cs_random();
 				v.y = cs_random();
 				v.z = cs_random();
-				v *= cell->get_axes_transpose();
+				v *= cell->get_transpose();
 				break;
 			case (RS_CUBOID):
 				v = size;

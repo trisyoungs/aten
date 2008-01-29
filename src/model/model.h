@@ -199,7 +199,7 @@ class model
 	cell_type get_celltype() { return cell.get_type(); }
 	// Return volume of cell
 	double get_volume() { return cell.get_volume(); }
-	// Return cell axes (untransposed)
+	// Return cell axes
 	mat3<double> get_cellaxes() { return cell.get_axes(); }
 	// Return cell origin
 	vec3<double> get_cellorigin() { return cell.get_origin(); }

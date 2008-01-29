@@ -34,7 +34,7 @@
 void model::set_cell(vec3<double> lengths, vec3<double> angles)
 {
 	dbg_begin(DM_CALLS,"model::set_cell[vectors]");
-	mat3<double> oldaxes = cell.get_axes_transpose();
+	mat3<double> oldaxes = cell.get_axes();
 	// Set new axes 
 	cell.set(lengths, angles);
 	log_change(LOG_VISUAL);
@@ -42,7 +42,7 @@ void model::set_cell(vec3<double> lengths, vec3<double> angles)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_CELL, &oldaxes, &cell.get_axes_transpose());
+		newchange->set(UE_CELL, &oldaxes, &cell.get_axes());
 	}
 	dbg_end(DM_CALLS,"model::set_cell[vectors]");
 }
@@ -51,7 +51,7 @@ void model::set_cell(vec3<double> lengths, vec3<double> angles)
 void model::set_cell(mat3<double> axes)
 {
 	dbg_begin(DM_CALLS,"model::set_cell[axes]");
-	mat3<double> oldaxes = cell.get_axes_transpose();
+	mat3<double> oldaxes = cell.get_axes();
 	// Set new axes 
 	cell.set(axes);
 	log_change(LOG_VISUAL);
@@ -331,7 +331,7 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 	bool delatom;
 	atom *i, *j;
 	vec3<double> fracr;
-	mat3<double> cellinverse = cell.get_inverse();
+	mat3<double> cellinverse = cell.get_inversetranspose();
 
 	master.initialise_progress("Trimming excess atoms...", atoms.size());
 	i = atoms.first();
