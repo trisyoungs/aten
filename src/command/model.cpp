@@ -47,6 +47,8 @@ int command_functions::function_CA_FINALISEMODEL(command *&c, bundle &obj)
 	obj.m->reset_view();
 	obj.m->calculate_mass();
 	obj.m->calculate_density();
+	obj.m->select_none();
+	obj.m->reset_logs();
 	// Print out some useful info on the model that we've just read in
 	msg(DM_NONE,"Atoms  : %i\n",obj.m->get_natoms());
 	msg(DM_NONE,"Cell   : %s\n",text_from_CT(obj.m->get_celltype()));

@@ -1,3 +1,10 @@
+------------
+Version 0.94
+------------
+
+2008-02-01
+	* many bugs fixed w.r.t. new command structure.
+
 2008-01-20
 	* incorporated restructured command/script/filter methods.
 
