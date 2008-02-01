@@ -16,9 +16,8 @@ key	alt	none
 #
 # View preferences
 #
-# Model styles
+# Default model style
 style	 	sphere		# Default model drawing style
-movestyle	stick		# Style to use when rotating / translating etc.
 # Style settings
 radius	stick	0.15		# Used as the selection 'hotspot' radius
 radius	tube	0.095

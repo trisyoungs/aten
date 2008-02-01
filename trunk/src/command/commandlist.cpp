@@ -689,6 +689,7 @@ bool commandlist::set_infile(const char *sourcefile)
 	dbg_begin(DM_CALLS,"commandlist::set_infile");
         if (infile != NULL) printf("commandlist::set_infile <<<< Inputfile already set >>>>\n");
         infile = new ifstream(sourcefile,ios::in);
+	filename = sourcefile;
         dbg_end(DM_CALLS,"commandlist::set_infile");
         if (!infile->good()) return FALSE;
         else return TRUE;
@@ -699,6 +700,7 @@ bool commandlist::set_outfile(const char *destfile)
 {
 	dbg_begin(DM_CALLS,"commandlist::set_output");
 	outfile = new ofstream(destfile,ios::out);
+	filename = destfile;
 	dbg_end(DM_CALLS,"commandlist::set_output");
 	if (!outfile->good()) return FALSE;
 	else return TRUE;
