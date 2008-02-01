@@ -40,6 +40,7 @@ const char *text_from_IC(if_condition);
 // Forward declarations
 class commandlist;
 class format;
+class filter;
 class ffatom;
 
 // Command node
@@ -187,7 +188,7 @@ class command
 	void print_args();
 };
 
-// Command List Structore
+// Command List Structure
 class commandlist
 {
 	public:
@@ -237,6 +238,19 @@ class commandlist
 	bool validate();
 
 	/*
+	// Associated Filter
+	*/
+	private:
+	// Parent filter (if commandlist is in a filter)
+	filter *parentfilter;
+
+	public:
+	// Set parent filter
+	void set_filter(filter *f) { parentfilter = f; }
+	// Return parent filter
+	filter *get_filter() { return parentfilter; }
+	
+	/*
 	// Variables
 	*/
 	public:
@@ -283,6 +297,8 @@ class commandlist
 	ifstream *infile;
 	// Output file stream
 	ofstream *outfile;
+	// Filename
+	dnchar filename;
 	// Parser read options for this commandlist
 	int readopts;
 
@@ -295,6 +311,8 @@ class commandlist
 	bool set_outfile(const char *outfile);
 	// Get output stream
 	ofstream *get_outfile() { return outfile; }
+	// Return filename associated to infile/outfile
+	const char *get_filename() { return filename.get(); }
 	// Close files
 	void close_files();
 	// Add read option

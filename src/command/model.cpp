@@ -38,9 +38,13 @@ int command_functions::function_CA_CREATEATOMS(command *&c, bundle &obj)
 int command_functions::function_CA_FINALISEMODEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	//if (partner != NULL) activemodel->set_filename(filename.get());
-	//activemodel->set_filter(partner);
-	printf("Model filter needs to be set....\n");
+	// If this command is being run from a filter, set the output filter in the model.
+	filter *f = c->get_parent()->get_filter();
+	if (f != NULL)
+	{
+		if (f->get_partner() != NULL) obj.m->set_filename(c->get_parent()->get_filename());
+		obj.m->set_filter(f->get_partner());
+	}
 	// Do various necessary calculations
 	if (prefs.get_coords_in_bohr()) obj.m->bohr_to_angstrom();
 	obj.m->renumber_atoms();

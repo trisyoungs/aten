@@ -54,6 +54,7 @@ filter::filter()
 	glob.set("*");
 	id = -1;
 	partner = NULL;
+	commands.set_filter(this);
 	#ifdef MEMDEBUG
 		memdbg.create[MD_FILTER] ++;
 	#endif

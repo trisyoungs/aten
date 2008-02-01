@@ -13,7 +13,6 @@ Issues with the current version:
 	- Crash on model close in GUI?
 
 General To-Do list:
-	- Allow model load option overrides such as nocentre, rebond etc.
 	- Ewald sum (fourier calculation, reciprocal cell?) for non-orthogonal cells
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)
@@ -34,6 +33,7 @@ Filters To-Do list:
 	- 'within' function
 
 General Qt To-Do list:
+	- Allow model load option overrides such as nocentre, rebond etc.
 	- Forcefield stack page and manager/edit window
 		+ Need method to apply forcefield to all or selected pattern
 		+ Method of assigning individual types by hand (also in atom context menu?)
@@ -50,6 +50,5 @@ Manual To-Do list:
 
 Optimisation To-Do list:
 	- Hemispherical Ewald summmation
-	- Filters / variable_list - can enum and store common variable pointers (e.g. "e", "r.x") to save lookup time
 	- For large systems (10000+ atoms) autocreate_patterns() is a bottleneck, as is model::copy(model*)
 	- Disorder builder - avoid needless pairwise energy calculation 
