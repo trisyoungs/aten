@@ -40,13 +40,13 @@ mc_move MT_from_text(const char *s)
 mc_method::mc_method()
 {
 	// Set initial values
-	maxstep[MT_TRANSLATE] = 5.0;
+	maxstep[MT_TRANSLATE] = 1.0;
 	maxstep[MT_ROTATE] = 20.0;
 	maxstep[MT_ZMATRIX] = 0.0;
 	ntrials[MT_TRANSLATE] = 10;
 	ntrials[MT_ROTATE] = 10; 
 	ntrials[MT_ZMATRIX] = 0;
-	ntrials[MT_INSERT] = 10;
+	ntrials[MT_INSERT] = 20;
 	ntrials[MT_DELETE] = 0; 
 	allowed[MT_TRANSLATE] = TRUE;
 	allowed[MT_ROTATE] = TRUE;
