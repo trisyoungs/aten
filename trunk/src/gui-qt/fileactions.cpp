@@ -1,6 +1,6 @@
 /*
-	*** Qt mainwindow file action functions
-	*** src/gui-qt/action_funcs.cpp
+	*** Qt file actions
+	*** src/gui-qt/fileactions.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
