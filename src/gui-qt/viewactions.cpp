@@ -76,3 +76,12 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 	master.get_currentmodel()->render_from_frames();
 	gui.refresh();
 }
+
+void AtenForm::set_cartesian_view(double x, double y, double z)
+{
+	
+}
+
+void AtenForm::set_cell_view(double x, double y, double z)
+{
+}
