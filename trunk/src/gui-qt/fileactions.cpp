@@ -25,7 +25,7 @@
 #include "gui-qt/prefs.h"
 #include <QtGui/QFileDialog>
 //#include <QtGui/QPixmap>
-//#include <QtGui/QMessageBox>
+#include <QtGui/QMessageBox>
 
 /*
 // File Actions

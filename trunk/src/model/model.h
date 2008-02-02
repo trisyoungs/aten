@@ -325,7 +325,7 @@ class model
 
 	public:
 	// Pre-generated display list for atoms
-	GLuint displaylist;
+	//GLuint displaylist;
 	// Project the specified world coordinates into 2D screen coords
 	vec4<double> &world_to_screen(const vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
@@ -336,13 +336,14 @@ class model
 	void get_camera_matrix(double *m) { camera.get_column_major(m); }
 	// Return the current camera z-rotation
 	double get_camrot() { return camrot; }
+	// Set camera to look down specified axis
+	void set_camera(vec3<double>);
 	// Rotate the model about the x and y axes
 	void rotate(double, double);
 	// Spin the model about the z axis
 	void zrotate(double);
 	// Adjust the position of the camera
 	void adjust_camera(double, double, double, double);
-	// Adjust the position of the camera
 	void adjust_camera(const vec3<double> &v, double r) { adjust_camera(v.x,v.y,v.z,r); }
 	// Adjusts the orthographic size (zoom)
 	void adjust_ortho_size(double);

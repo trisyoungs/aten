@@ -157,12 +157,12 @@ class AtenForm : public QMainWindow
 	void on_actionViewOrthographic_triggered(bool checked);
 	void on_actionViewModel_triggered(bool checked);
 	void on_actionViewTrajectory_triggered(bool checked);
-	void on_actionViewSetCartesianX_triggered(bool checked);
-	void on_actionViewSetCartesianY_triggered(bool checked);
-	void on_actionViewSetCartesianZ_triggered(bool checked);
-	void on_actionViewSetCellX_triggered(bool checked);
-	void on_actionViewSetCellY_triggered(bool checked);
-	void on_actionViewSetCellZ_triggered(bool checked);
+	void on_actionViewSetCartesianX_triggered(bool checked) { set_cartesian_view(1,0,0); }
+	void on_actionViewSetCartesianY_triggered(bool checked) { set_cartesian_view(0,1,0); }
+	void on_actionViewSetCartesianZ_triggered(bool checked) { set_cartesian_view(0,0,1); }
+	void on_actionViewSetCellX_triggered(bool checked) { set_cell_view(1,0,0); }
+	void on_actionViewSetCellY_triggered(bool checked) { set_cell_view(0,1,0); }
+	void on_actionViewSetCellZ_triggered(bool checked) { set_cell_view(0,0,1); }
 
 	/*
 	// Model Actions
