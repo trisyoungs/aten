@@ -44,6 +44,16 @@
        <number>0</number>
       </property>
       <property name="spacing" >
+       <number>6</number>
+      </property>
+     </layout>
+    </item>
+    <item>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>0</number>
+      </property>
+      <property name="spacing" >
        <number>4</number>
       </property>
       <item>
@@ -195,7 +205,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -823,6 +833,54 @@
                   </property>
                   <property name="maxLength" >
                    <number>32767</number>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer>
+                  <property name="orientation" >
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" >
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" >
+                <property name="margin" >
+                 <number>0</number>
+                </property>
+                <property name="spacing" >
+                 <number>4</number>
+                </property>
+                <item>
+                 <widget class="QToolButton" name="AtomAddHydrogenButton" >
+                  <property name="minimumSize" >
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize" >
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="toolTip" >
+                   <string>Add hydrogens to atom</string>
+                  </property>
+                  <property name="text" >
+                   <string>...</string>
+                  </property>
+                  <property name="icon" >
+                   <iconset resource="icons.qrc" >:/build/icons/build_addh.svg</iconset>
                   </property>
                  </widget>
                 </item>
@@ -2202,7 +2260,7 @@
                        <string/>
                       </property>
                       <property name="icon" >
-                       <iconset resource="icons.qrc" >:/arrows/icons/arrow_in.svg</iconset>
+                       <iconset resource="icons.qrc" >:/arrows/icons/arrow_out.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -2260,7 +2318,7 @@
                        <string/>
                       </property>
                       <property name="icon" >
-                       <iconset resource="icons.qrc" >:/arrows/icons/arrow_out.svg</iconset>
+                       <iconset resource="icons.qrc" >:/arrows/icons/arrow_in.svg</iconset>
                       </property>
                      </widget>
                     </item>
@@ -6224,42 +6282,9 @@
      <x>0</x>
      <y>0</y>
      <width>745</width>
-     <height>24</height>
+     <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="ModelMenu" >
-    <property name="title" >
-     <string>&amp;Model</string>
-    </property>
-    <addaction name="actionFFManager" />
-    <addaction name="actionFFType" />
-    <addaction name="actionFFUntype" />
-    <addaction name="separator" />
-    <addaction name="actionFoldAtoms" />
-    <addaction name="actionFoldMolecules" />
-    <addaction name="separator" />
-    <addaction name="actionModelNext" />
-    <addaction name="actionModelPrevious" />
-   </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <widget class="QMenu" name="ToolbarMenu" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-     <addaction name="actionCommandToolBarVisibility" />
-     <addaction name="actionEditToolBarVisibility" />
-     <addaction name="actionFileToolBarVisibility" />
-     <addaction name="actionSelectToolBarVisibility" />
-     <addaction name="actionStyleToolBarVisibility" />
-     <addaction name="actionTrajectoryToolBarVisibility" />
-     <addaction name="actionMouseToolBarVisibility" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="ToolbarMenu" />
-   </widget>
    <widget class="QMenu" name="FileMenu" >
     <property name="title" >
      <string>&amp;File</string>
@@ -6301,40 +6326,19 @@
     <addaction name="actionEditSelectAll" />
     <addaction name="actionEditSelectNone" />
    </widget>
-   <widget class="QMenu" name="ViewMenu" >
+   <widget class="QMenu" name="ModelMenu" >
     <property name="title" >
-     <string>&amp;View</string>
+     <string>&amp;Model</string>
     </property>
-    <widget class="QMenu" name="SchemeMenu" >
-     <property name="title" >
-      <string>Colour Scheme</string>
-     </property>
-     <addaction name="actionSchemeElement" />
-     <addaction name="actionSchemeCharge" />
-     <addaction name="actionSchemeForces" />
-    </widget>
-    <widget class="QMenu" name="StyleMenu" >
-     <property name="title" >
-      <string>Style</string>
-     </property>
-     <addaction name="actionStyleStick" />
-     <addaction name="actionStyleTube" />
-     <addaction name="actionStyleSphere" />
-     <addaction name="actionStyleScaled" />
-     <addaction name="actionStyleIndividual" />
-    </widget>
-    <addaction name="actionViewReset" />
-    <addaction name="actionViewZoomIn" />
-    <addaction name="actionViewZoomOut" />
+    <addaction name="actionFFManager" />
+    <addaction name="actionFFType" />
+    <addaction name="actionFFUntype" />
     <addaction name="separator" />
-    <addaction name="actionViewPerspective" />
-    <addaction name="actionViewOrthographic" />
+    <addaction name="actionFoldAtoms" />
+    <addaction name="actionFoldMolecules" />
     <addaction name="separator" />
-    <addaction name="StyleMenu" />
-    <addaction name="SchemeMenu" />
-    <addaction name="separator" />
-    <addaction name="actionViewModel" />
-    <addaction name="actionViewTrajectory" />
+    <addaction name="actionModelNext" />
+    <addaction name="actionModelPrevious" />
    </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
@@ -6367,6 +6371,73 @@
     <addaction name="separator" />
     <addaction name="actionAtomSetVisible" />
     <addaction name="actionAtomSetInvisible" />
+   </widget>
+   <widget class="QMenu" name="ViewMenu" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="SchemeMenu" >
+     <property name="title" >
+      <string>Colour Scheme</string>
+     </property>
+     <addaction name="actionSchemeElement" />
+     <addaction name="actionSchemeCharge" />
+     <addaction name="actionSchemeForces" />
+    </widget>
+    <widget class="QMenu" name="StyleMenu" >
+     <property name="title" >
+      <string>Style</string>
+     </property>
+     <addaction name="actionStyleStick" />
+     <addaction name="actionStyleTube" />
+     <addaction name="actionStyleSphere" />
+     <addaction name="actionStyleScaled" />
+     <addaction name="actionStyleIndividual" />
+    </widget>
+    <widget class="QMenu" name="menuSet_View" >
+     <property name="title" >
+      <string>Set View</string>
+     </property>
+     <addaction name="actionViewSetCartesianX" />
+     <addaction name="actionViewSetCartesianY" />
+     <addaction name="actionViewSetCartesianZ" />
+     <addaction name="separator" />
+     <addaction name="actionViewSetCellX" />
+     <addaction name="actionViewSetCellY" />
+     <addaction name="actionViewSetCellZ" />
+    </widget>
+    <addaction name="actionViewReset" />
+    <addaction name="actionViewZoomIn" />
+    <addaction name="actionViewZoomOut" />
+    <addaction name="menuSet_View" />
+    <addaction name="separator" />
+    <addaction name="actionViewPerspective" />
+    <addaction name="actionViewOrthographic" />
+    <addaction name="separator" />
+    <addaction name="StyleMenu" />
+    <addaction name="SchemeMenu" />
+    <addaction name="separator" />
+    <addaction name="actionViewModel" />
+    <addaction name="actionViewTrajectory" />
+   </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="ToolbarMenu" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionCommandToolBarVisibility" />
+     <addaction name="actionEditToolBarVisibility" />
+     <addaction name="actionFileToolBarVisibility" />
+     <addaction name="actionSelectToolBarVisibility" />
+     <addaction name="actionStyleToolBarVisibility" />
+     <addaction name="actionTrajectoryToolBarVisibility" />
+     <addaction name="actionMouseToolBarVisibility" />
+    </widget>
+    <addaction name="actionPreferences" />
+    <addaction name="ToolbarMenu" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -7328,6 +7399,72 @@
   <action name="actionAtomLabelClearAll" >
    <property name="text" >
     <string>Clear all</string>
+   </property>
+  </action>
+  <action name="actionViewSetCartesianX" >
+   <property name="text" >
+    <string>Cartesian +X</string>
+   </property>
+   <property name="iconText" >
+    <string>Cartesian +X</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cartesian +X</string>
+   </property>
+  </action>
+  <action name="actionViewSetCartesianY" >
+   <property name="text" >
+    <string>Cartesian -+</string>
+   </property>
+   <property name="iconText" >
+    <string>Cartesian +Y</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cartesian +Y</string>
+   </property>
+  </action>
+  <action name="actionViewSetCartesianZ" >
+   <property name="text" >
+    <string>Cartesian +Z</string>
+   </property>
+   <property name="iconText" >
+    <string>Cartesian +Z</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cartesian +Z</string>
+   </property>
+  </action>
+  <action name="actionViewSetCellX" >
+   <property name="text" >
+    <string>Cell +X</string>
+   </property>
+   <property name="iconText" >
+    <string>Cell +X</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cell +X</string>
+   </property>
+  </action>
+  <action name="actionViewSetCellY" >
+   <property name="text" >
+    <string>Cell +Y</string>
+   </property>
+   <property name="iconText" >
+    <string>Cell +Y</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cell +Y</string>
+   </property>
+  </action>
+  <action name="actionViewSetCellZ" >
+   <property name="text" >
+    <string>Cell +Z</string>
+   </property>
+   <property name="iconText" >
+    <string>Cell +Z</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cell +Z</string>
    </property>
   </action>
  </widget>
