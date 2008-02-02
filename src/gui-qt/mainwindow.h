@@ -146,6 +146,9 @@ class AtenForm : public QMainWindow
 	/*
 	// View Actions
 	*/
+	public:
+	void set_cartesian_view(double x, double y, double z);
+	void set_cell_view(double x, double y, double z);
 	private slots:
 	void on_actionViewReset_triggered(bool checked);
 	void on_actionViewZoomIn_triggered(bool checked);
@@ -154,6 +157,12 @@ class AtenForm : public QMainWindow
 	void on_actionViewOrthographic_triggered(bool checked);
 	void on_actionViewModel_triggered(bool checked);
 	void on_actionViewTrajectory_triggered(bool checked);
+	void on_actionViewSetCartesianX_triggered(bool checked);
+	void on_actionViewSetCartesianY_triggered(bool checked);
+	void on_actionViewSetCartesianZ_triggered(bool checked);
+	void on_actionViewSetCellX_triggered(bool checked);
+	void on_actionViewSetCellY_triggered(bool checked);
+	void on_actionViewSetCellZ_triggered(bool checked);
 
 	/*
 	// Model Actions
