@@ -1,6 +1,6 @@
 /*
 	*** Qt model actions
-	*** src/gui-qt/action_funcs.cpp
+	*** src/gui-qt/modelactions.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.

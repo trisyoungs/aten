@@ -25,6 +25,7 @@
 #include "templates/matrix3.h"
 #include "templates/matrix4.h"
 #include "base/debug.h"
+#include "base/constants.h"
 #include "base/mathfunc.h"
 #include <stdio.h>
 #include <math.h>
@@ -59,23 +60,27 @@ template <class T> struct vec3
 	void set(T, T, T);
 	// Add plain values to all three components
 	void add(T, T, T);
+
 	// Operators + and +=
 	void operator=(const vec4<T>&);
 	void operator+=(T);
 	void operator+=(const vec3<T>&);
 	vec3<T> operator+(T) const;
 	vec3<T> operator+(const vec3<T>&) const;
+
 	// Operators - and -=
 	void operator-=(T);
 	void operator-=(const vec3<T>&);
 	vec3<T> operator-(T) const;
 	vec3<T> operator-() const;
 	vec3<T> operator-(const vec3<T>&) const;
+
 	// Operators / and /=
 	void operator/=(const T);
 	void operator/=(const vec3<T>&);
 	vec3<T> operator/(T) const;
 	vec3<T> operator/(const vec3<T>&) const;
+
 	// Operators * and *=
 	vec3<T> operator*(T) const;
 	void operator*=(T);
@@ -85,6 +90,7 @@ template <class T> struct vec3
 	void operator*=(const mat3<T>&);
 	vec3<T> operator*(const mat4<T>&) const;
 	void operator*=(const mat4<T> &A);
+
 	// Other functions
 	// Normalise the vector to unity
 	void normalise();
@@ -122,6 +128,10 @@ template <class T> struct vec3
 	void random_unit();
 	// Prints the contents of the vector
 	void print() const;
+	// Convert cartesian x,y,z coordinates into spherical (rho,phi/zenith,theta/azimuthal)
+	void to_spherical();
+	// Convert spherical who,phi,theta coordinates into cartesian x,y,z
+	void to_cartesian();
 };
 
 // Constructor
@@ -491,6 +501,27 @@ template <class T> void vec3<T>::random_unit()
 	y = cs_random()-0.5;
 	z = cs_random()-0.5;
 	normalise();
+}
+
+// Convert to spherical
+template <class T> void vec3<T>::to_spherical()
+{
+	T rho, s, phi, theta;
+	rho = magnitude();
+	s = sqrt(x*x + y*y);
+	phi = arccos(z / rho);
+	theta = (x < 0 ? PI - arcsin(y / s) : arcsin(y / s));
+}
+
+// Convert to cartesian
+template <class T> void vec3<T>::to_cartesian()
+{
+	// x = rho, y = phi, z = theta
+	T newx,newy,newz;
+	newx = x * sin(y) * cos(z);
+	newy = x * sin(y) * sin(z);
+	newz = x * cos(y);
+	set(newx,newy,newz);
 }
 
 #endif
