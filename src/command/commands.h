@@ -54,6 +54,7 @@ enum command_action {
 
 	// Root node
 	CA_ROOTNODE,
+	CA_HELP,
 
 	// Analysis commands
 	CA_FINALISE,
@@ -87,6 +88,7 @@ enum command_action {
 
 	// Bond commands
 	CA_ADDBOND,
+	CA_ADDBONDID,
 	CA_AUGMENT,
 	CA_BONDTOLERANCE,
 	CA_BONDPATTERNS,
@@ -116,7 +118,6 @@ enum command_action {
 	CA_SETSPACEGROUP,
 
 	// Charge commands
-	CA_CHARGEATOM,
 	CA_CHARGEFF,
 	CA_CHARGEFROMMODEL,
 	CA_CHARGEPATOM,
@@ -150,13 +151,12 @@ enum command_action {
 	CA_ECUT,
 	CA_ELEC,
 	CA_INTRA,
-	CA_PRINTEXPRESSION,
+	CA_PRINTSETUP,
 	CA_VCUT,
 	CA_VDW,
 
 	// Field Commands
 	CA_SAVEFIELD,
-	CA_SAVEFIELD2,
 
 	// Flow control
 	CA_ELSE,
@@ -307,6 +307,15 @@ enum command_action {
 	CA_INCREASE,
 	CA_LET,
 
+	// View
+	CA_RESETVIEW,
+	CA_ROTATEVIEW,
+	CA_TRANSLATEVIEW,
+	CA_VIEWALONG,
+	CA_VIEWALONGCELL,
+	CA_ZOOMVIEW,
+	CA_ZROTATEVIEW,
+
 	CA_NITEMS
 	};
 
@@ -314,5 +323,6 @@ command_action CA_from_text(const char*);
 const char *text_from_CA(command_action);
 const char *vars_from_CA(command_action);
 const char *syntax_from_CA(command_action);
+const char *description_from_CA(command_action);
 
 #endif

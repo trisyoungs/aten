@@ -44,6 +44,7 @@ class command_functions
 	// Command Functions
 	*/
 	int function_CA_ROOTNODE(command *&c, bundle &obj);
+	int function_CA_HELP(command *&c, bundle &obj);
 
 	// Analyse commands
 	int function_CA_FINALISE(command *&c, bundle &obj);
@@ -77,6 +78,7 @@ class command_functions
 
 	// Bond commands
 	int function_CA_ADDBOND(command *&c, bundle &obj);
+	int function_CA_ADDBONDID(command *&c, bundle &obj);
 	int function_CA_AUGMENT(command *&c, bundle &obj);
 	int function_CA_BONDTOLERANCE(command *&c, bundle &obj);
 	int function_CA_BONDPATTERNS(command *&c, bundle &obj);
@@ -106,7 +108,6 @@ class command_functions
 	int function_CA_SETSPACEGROUP(command *&c, bundle &obj);
 
 	// Charge commands
-	int function_CA_CHARGEATOM(command *&c, bundle &obj);
 	int function_CA_CHARGEFF(command *&c, bundle &obj);
 	int function_CA_CHARGEFROMMODEL(command *&c, bundle &obj);
 	int function_CA_CHARGEPATOM(command *&c, bundle &obj);
@@ -140,13 +141,12 @@ class command_functions
 	int function_CA_ECUT(command *&c, bundle &obj);
 	int function_CA_ELEC(command *&c, bundle &obj);
 	int function_CA_INTRA(command *&c, bundle &obj);
-	int function_CA_PRINTEXPRESSION(command *&c, bundle &obj);
+	int function_CA_PRINTSETUP(command *&c, bundle &obj);
 	int function_CA_VCUT(command *&c, bundle &obj);
 	int function_CA_VDW(command *&c, bundle &obj);
 
 	// Field Commands
 	int function_CA_SAVEFIELD(command *&c, bundle &obj);
-	int function_CA_SAVEFIELD2(command *&c, bundle &obj);
 
 	// Flow control
 	int function_CA_ELSE(command *&c, bundle &obj);
@@ -296,6 +296,13 @@ class command_functions
 	int function_CA_INCREASE(command *&c, bundle &obj);
 	int function_CA_DECREASE(command *&c, bundle &obj);
 	int function_CA_EVAL(command *&c, bundle &obj);
+
+	// View
+	int function_CA_RESETVIEW(command *&c, bundle &obj);
+	int function_CA_ROTATEVIEW(command *&c, bundle &obj);
+	int function_CA_TRANSLATEVIEW(command *&c, bundle &obj);
+	int function_CA_ZOOMVIEW(command *&c, bundle &obj);
+	int function_CA_ZROTATEVIEW(command *&c, bundle &obj);
 };
 
 #endif

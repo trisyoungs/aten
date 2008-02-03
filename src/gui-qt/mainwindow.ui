@@ -6342,24 +6342,6 @@
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
    </widget>
-   <widget class="QMenu" name="EditMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionEditUndo" />
-    <addaction name="actionEditRedo" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="actionEditSelectExpand" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
-   </widget>
    <widget class="QMenu" name="ToolsMenu" >
     <property name="title" >
      <string>Settings</string>
@@ -6392,6 +6374,24 @@
     <addaction name="separator" />
     <addaction name="actionModelNext" />
     <addaction name="actionModelPrevious" />
+   </widget>
+   <widget class="QMenu" name="EditMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionEditUndo" />
+    <addaction name="actionEditRedo" />
+    <addaction name="separator" />
+    <addaction name="actionEditCut" />
+    <addaction name="actionEditCopy" />
+    <addaction name="actionEditPaste" />
+    <addaction name="actionEditDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEditInvert" />
+    <addaction name="actionEditSelectExpand" />
+    <addaction name="separator" />
+    <addaction name="actionEditSelectAll" />
+    <addaction name="actionEditSelectNone" />
    </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
@@ -6451,13 +6451,19 @@
      <property name="title" >
       <string>Set View Along</string>
      </property>
-     <addaction name="actionViewSetCartesianX" />
-     <addaction name="actionViewSetCartesianY" />
-     <addaction name="actionViewSetCartesianZ" />
+     <addaction name="actionViewSetCartesianPosX" />
+     <addaction name="actionViewSetCartesianPosY" />
+     <addaction name="actionViewSetCartesianPosZ" />
+     <addaction name="actionViewSetCartesianNegX" />
+     <addaction name="actionViewSetCartesianNegY" />
+     <addaction name="actionViewSetCartesianNegZ" />
      <addaction name="separator" />
-     <addaction name="actionViewSetCellX" />
-     <addaction name="actionViewSetCellY" />
-     <addaction name="actionViewSetCellZ" />
+     <addaction name="actionViewSetCellPosX" />
+     <addaction name="actionViewSetCellPosY" />
+     <addaction name="actionViewSetCellPosZ" />
+     <addaction name="actionViewSetCellNegX" />
+     <addaction name="actionViewSetCellNegY" />
+     <addaction name="actionViewSetCellNegZ" />
     </widget>
     <addaction name="actionViewReset" />
     <addaction name="actionViewZoomIn" />
@@ -7437,7 +7443,7 @@
     <string>Clear all</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianX" >
+  <action name="actionViewSetCartesianPosX" >
    <property name="text" >
     <string>Cartesian +X</string>
    </property>
@@ -7448,9 +7454,9 @@
     <string>Cartesian +X</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianY" >
+  <action name="actionViewSetCartesianPosY" >
    <property name="text" >
-    <string>Cartesian -+</string>
+    <string>Cartesian +Y</string>
    </property>
    <property name="iconText" >
     <string>Cartesian +Y</string>
@@ -7459,7 +7465,7 @@
     <string>Cartesian +Y</string>
    </property>
   </action>
-  <action name="actionViewSetCartesianZ" >
+  <action name="actionViewSetCartesianPosZ" >
    <property name="text" >
     <string>Cartesian +Z</string>
    </property>
@@ -7470,7 +7476,7 @@
     <string>Cartesian +Z</string>
    </property>
   </action>
-  <action name="actionViewSetCellX" >
+  <action name="actionViewSetCellPosX" >
    <property name="text" >
     <string>Cell +X</string>
    </property>
@@ -7481,7 +7487,7 @@
     <string>Cell +X</string>
    </property>
   </action>
-  <action name="actionViewSetCellY" >
+  <action name="actionViewSetCellPosY" >
    <property name="text" >
     <string>Cell +Y</string>
    </property>
@@ -7492,7 +7498,7 @@
     <string>Cell +Y</string>
    </property>
   </action>
-  <action name="actionViewSetCellZ" >
+  <action name="actionViewSetCellPosZ" >
    <property name="text" >
     <string>Cell +Z</string>
    </property>
@@ -7512,6 +7518,72 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionViewSetCartesianNegX" >
+   <property name="text" >
+    <string>Cartesian -X</string>
+   </property>
+   <property name="iconText" >
+    <string>Cartesian -X</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cartesian -X</string>
+   </property>
+  </action>
+  <action name="actionViewSetCartesianNegY" >
+   <property name="text" >
+    <string>Cartesian -Y</string>
+   </property>
+   <property name="iconText" >
+    <string>Cartesian -Y</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cartesian -Y</string>
+   </property>
+  </action>
+  <action name="actionViewSetCartesianNegZ" >
+   <property name="text" >
+    <string>Cartesian -Z</string>
+   </property>
+   <property name="iconText" >
+    <string>Cartesian -Z</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cartesian -Z</string>
+   </property>
+  </action>
+  <action name="actionViewSetCellNegX" >
+   <property name="text" >
+    <string>Cell -X</string>
+   </property>
+   <property name="iconText" >
+    <string>Cell -X</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cell -X</string>
+   </property>
+  </action>
+  <action name="actionViewSetCellNegY" >
+   <property name="text" >
+    <string>Cell -Y</string>
+   </property>
+   <property name="iconText" >
+    <string>Cell -Y</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cell -Y</string>
+   </property>
+  </action>
+  <action name="actionViewSetCellNegZ" >
+   <property name="text" >
+    <string>Cell -Z</string>
+   </property>
+   <property name="iconText" >
+    <string>Cell -Z</string>
+   </property>
+   <property name="toolTip" >
+    <string>Cell -Z</string>
    </property>
   </action>
  </widget>

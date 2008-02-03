@@ -70,7 +70,7 @@ int command_functions::function_CA_INTRA(command *&c, bundle &obj)
 }
 
 // Print expression setup ('printexpression')
-int command_functions::function_CA_PRINTEXPRESSION(command *&c, bundle &obj)
+int command_functions::function_CA_PRINTSETUP(command *&c, bundle &obj)
 {
 	msg(DM_NONE,"Current Energy Setup:\n");
 	msg(DM_NONE,"Intramolecular Terms : %s\n",(prefs.calc_intra() ? "On" : "Off"));

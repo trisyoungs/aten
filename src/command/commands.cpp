@@ -42,6 +42,7 @@ const char *CA_data[CA_NITEMS] = {
 
 	// Root node
 	"_ROOTNODE_",
+	"help,V",
 
 	// Analysis commands
 	"finalise",
@@ -75,6 +76,7 @@ const char *CA_data[CA_NITEMS] = {
 
 	// Bonding commands
 	"addbond,VVv",
+	"addbondid,VVv",
 	"augment",
 	"bondtolerance,V",
 	"bondpatterns",
@@ -104,7 +106,6 @@ const char *CA_data[CA_NITEMS] = {
 	"setspacegroup,V",
 
 	// Charge commands
-	"chargeatom,VV",
 	"chargeff",
 	"chargefrommodel",
 	"chargepatom,VV",
@@ -138,13 +139,12 @@ const char *CA_data[CA_NITEMS] = {
 	"ecut,V",
 	"elec,Vvvvv",
 	"intra,V",
-	"printexpression",
+	"printsetup",
 	"vcut,V",
 	"vdw,V",
 
 	// Field commands
-	"savefield,V",
-	"savefield2,VV",
+	"savefield,VV",
 
 	// Flow control
 	"else",
@@ -293,7 +293,16 @@ const char *CA_data[CA_NITEMS] = {
 	"dec,V",
 	"eval,V=E",
 	"inc,V",
-	"let,V=V"
+	"let,V=V",
+
+	// View
+	"resetview",
+	"rotateview,VV",
+	"translateview,VVV",
+	"viewalong,VVV",
+	"viewalongcell,VVV",
+	"zoomview,V",
+	"zrotateview <dr>"
 
 	};
 

@@ -341,7 +341,7 @@ class model
 	// Rotate the model about the x and y axes
 	void rotate(double, double);
 	// Spin the model about the z axis
-	void zrotate(double);
+	void zrotate(double angle) { adjust_camera(0.0, 0.0, 0.0, (angle / DEGRAD ) * 2.0); }
 	// Adjust the position of the camera
 	void adjust_camera(double, double, double, double);
 	void adjust_camera(const vec3<double> &v, double r) { adjust_camera(v.x,v.y,v.z,r); }

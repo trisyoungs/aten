@@ -178,14 +178,10 @@ void model::clear_atoms()
 // Find atom
 atom *model::find_atom(int id)
 {
-	// Find an atom according to its internal id
-	if ((id >= atoms.size()) || (id < 0))
-	{
-		msg(DM_NONE,"Atom id %i is out of range for model '%s'\n",id,name.get());
-		return NULL;
-	}
-	atom **modelatoms = get_atomarray();
-	return modelatoms[id];
+	// Find an atom according to its internal id (useful when atom ids may have been set differently by import filters)
+	atom *i;
+	for (i = atoms.first(); i != NULL; i = i->next) if (id == i->get_id()) break;
+	return i;
 }
 
 // Find atom by tempi

@@ -20,6 +20,7 @@
 */
 
 #include "command/functions.h"
+#include "command/commandlist.h"
 
 // Constructor
 command_functions::command_functions()
@@ -29,6 +30,7 @@ command_functions::command_functions()
 	*/
 
 	action[CA_ROOTNODE] = &command_functions::function_CA_ROOTNODE;
+	action[CA_HELP] = &command_functions::function_CA_HELP;
 
 	// Analyse commands
 	action[CA_FINALISE] = &command_functions::function_CA_FINALISE;
@@ -63,6 +65,7 @@ command_functions::command_functions()
 
 	// Bond commands
 	action[CA_ADDBOND] = &command_functions::function_CA_ADDBOND;
+	action[CA_ADDBONDID] = &command_functions::function_CA_ADDBONDID;
 	action[CA_AUGMENT] = &command_functions::function_CA_AUGMENT;
 	action[CA_BONDTOLERANCE] = &command_functions::function_CA_BONDTOLERANCE;
 	action[CA_BONDPATTERNS] = &command_functions::function_CA_BONDPATTERNS;
@@ -92,7 +95,6 @@ command_functions::command_functions()
 	action[CA_SETSPACEGROUP] = &command_functions::function_CA_SETSPACEGROUP;
 
 	// Charge commands
-	action[CA_CHARGEATOM] = &command_functions::function_CA_CHARGEATOM;
 	action[CA_CHARGEFF] = &command_functions::function_CA_CHARGEFF;
 	action[CA_CHARGEFROMMODEL] = &command_functions::function_CA_CHARGEFROMMODEL;
 	action[CA_CHARGEPATOM] = &command_functions::function_CA_CHARGEPATOM;
@@ -126,13 +128,12 @@ command_functions::command_functions()
 	action[CA_ECUT] = &command_functions::function_CA_ECUT;
 	action[CA_ELEC] = &command_functions::function_CA_ELEC;
 	action[CA_INTRA] = &command_functions::function_CA_INTRA;
-	action[CA_PRINTEXPRESSION] = &command_functions::function_CA_PRINTEXPRESSION;
+	action[CA_PRINTSETUP] = &command_functions::function_CA_PRINTSETUP;
 	action[CA_VCUT] = &command_functions::function_CA_VCUT;
 	action[CA_VDW] = &command_functions::function_CA_VDW;
 
 	// Field Commands
 	action[CA_SAVEFIELD] = &command_functions::function_CA_SAVEFIELD;
-	action[CA_SAVEFIELD2] = &command_functions::function_CA_SAVEFIELD2;
 
 	// Flow control
 	action[CA_ELSE] = &command_functions::function_CA_ELSE;
@@ -283,4 +284,19 @@ command_functions::command_functions()
 	action[CA_DECREASE] = &command_functions::function_CA_DECREASE;
 	action[CA_EVAL] = &command_functions::function_CA_EVAL;
 
+	// View
+	action[CA_RESETVIEW] = &command_functions::function_CA_RESETVIEW;
+	action[CA_ROTATEVIEW] = &command_functions::function_CA_ROTATEVIEW;
+	action[CA_TRANSLATEVIEW] = &command_functions::function_CA_TRANSLATEVIEW;
+	action[CA_ZOOMVIEW] = &command_functions::function_CA_ZOOMVIEW;
+	action[CA_ZROTATEVIEW] = &command_functions::function_CA_ZROTATEVIEW;
+}
+
+// Help function
+int command_functions::function_CA_HELP(command *&c, bundle &obj)
+{
+	command_action ca = CA_from_text(c->argc(0));
+	if (ca == CA_NITEMS) msg(DM_NONE,"help: Unrecognised command '%s'.\n",c->argc(0));
+	else msg(DM_NONE,"help: %s\n      %s\n", syntax_from_CA(ca), description_from_CA(ca));
+	return CR_SUCCESS;
 }

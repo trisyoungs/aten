@@ -62,8 +62,8 @@ void model::bond_atoms(int ii, int jj, bond_type bt)
 	else
 	{
 		// First, locate the two atoms with the specified id's
-		atom *i = find_atom(ii);
-		atom *j = find_atom(jj);
+		atom *i = get_atom(ii);
+		atom *j = get_atom(jj);
 		if (i == NULL || j == NULL)
 		{
 			printf("Couldn't locate one or both atoms in bond with specified ids %i and %i\n",ii,jj);
