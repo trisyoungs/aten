@@ -22,7 +22,7 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 
-// Add bond between atoms ('addbond <id1> <id2> [bondtype]')
+// Add bond between atoms ('addbond <atom1> <atom2> [bondtype]')
 int command_functions::function_CA_ADDBOND(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
@@ -38,7 +38,30 @@ int command_functions::function_CA_ADDBOND(command *&c, bundle &obj)
 		else bt = (bond_type) n;
 	}
 	// Add the bond
-	obj.m->bond_atoms(c->argi(0), c->argi(1), bt);
+	obj.m->bond_atoms(c->argi(0)-1, c->argi(1)-1, bt);
+	return CR_SUCCESS;
+}
+
+// Add bond between atoms with specified ids ('addbond <id1> <id2> [bondtype]')
+int command_functions::function_CA_ADDBONDID(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	// Third (optional) argument gives bond type
+	bond_type bt = BT_SINGLE;
+	if (c->has_arg(2))
+	{
+		// Attempt to convert the argument into a bond_type.
+		// Try direct conversion from number (bond order) first
+		// If that fails, try string conversion. Then, give up.
+		int n = c->argi(2);
+		if ((n < 1) || (n > 3))	bt = BT_from_text(c->argc(2));
+		else bt = (bond_type) n;
+	}
+	// Find the atoms specified
+	atom *i = obj.m->find_atom(c->argi(0));
+	atom *j = obj.m->find_atom(c->argi(1));
+	// Add the bond
+	obj.m->bond_atoms(i, j, bt);
 	return CR_SUCCESS;
 }
 

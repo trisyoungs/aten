@@ -241,10 +241,10 @@ void model::select_element(atom *target)
 }
 
 // Select by element (from ID)
-void model::select_element(int target)
+void model::select_element(int id)
 {
 	// Select all atoms which are the same element as the atom with id 'target'
-	atom *i = find_atom(target);
+	atom *i = get_atom(id);
 	if (i != NULL) select_element(i);
 }
 

@@ -98,7 +98,6 @@ const char *VO_keywords[VO_NITEMS] = { "atoms", "cell", "cellaxes", "cellrepeat"
 view_object VO_from_text(const char *s)
 	{ return (view_object) enum_search("view object",VO_NITEMS,VO_keywords,s); }
 
-
 // Guide Geometries
 const char *GG_strings[GG_NITEMS] = { "Square", "Hexagonal" };
 const char **get_GG_strings()

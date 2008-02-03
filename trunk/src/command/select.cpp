@@ -39,7 +39,7 @@ int command_functions::function_CA_SELECTALL(command *&c, bundle &obj)
 int command_functions::function_CA_SELECTATOM(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom *i = obj.m->find_atom(c->argi(0));
+	atom *i = obj.m->get_atom(c->argi(0));
 	if (i != NULL) obj.m->select_atom(i);
 	else return CR_FAIL;
 	return CR_SUCCESS;

@@ -22,19 +22,10 @@
 #include "command/commands.h"
 #include "base/master.h"
 #include "base/debug.h"
-#include "parse/temp_dlpfield.h"
 #include "parse/filter.h"
 
-// Save field definition ('savefield <filename>')
+// Save field definition ('savefield <format> <file>')
 int command_functions::function_CA_SAVEFIELD(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	savedlpfield(c->argc(0),obj.m);
-	return CR_SUCCESS;
-}
-
-// Save field definition ('savefield2 <format> <file>')
-int command_functions::function_CA_SAVEFIELD2(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)

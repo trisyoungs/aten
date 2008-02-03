@@ -94,10 +94,18 @@ void AtenForm::set_cell_view(double x, double y, double z)
 	// Set model rotation matrix to be *along* the specified axis
 	vec3<double> v;
 	v.set(x,y,z);
-	v *= master.get_currentmodel()->get_cellaxes();
+	v *= master.get_currentmodel()->get_cell()->get_transpose();
 	v.to_spherical();
 	// set_rotation() expects the degrees of rotation about the x and y axes respectively,
 	// so give it phi and theta in the reverse order. 
 	master.get_currentmodel()->set_rotation(-v.z,v.y);
+	gui.refresh();
+}
+
+void AtenForm::on_actionViewUnhideAtoms_triggered(bool checked)
+{
+	// Set all atoms in the current model to be visible
+	model *m = master.get_currentmodel();
+	for (atom *i = m->get_atoms(); i != NULL; i = i->next) m->set_hidden(i, FALSE);
 	gui.refresh();
 }

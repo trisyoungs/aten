@@ -180,17 +180,6 @@ void model::rotate(double dx, double dy)
 	dbg_end(DM_CALLS,"model::rotate");
 }
 
-// Rotate Z-axis
-void model::zrotate(double dx)
-{
-	// Rotate about the perceived z-axis by changing the up vector of the camera.
-	dbg_begin(DM_CALLS,"model::zrotate");
-	static vec3<double> zero;
-	dx = (dx / DEGRAD ) * 2.0;
-	adjust_camera(zero,dx);
-	dbg_end(DM_CALLS,"model::zrotate");
-}
-
 // Calculate View Matrix
 void model::calculate_viewmatrix()
 {

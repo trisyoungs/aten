@@ -23,16 +23,6 @@
 #include "base/debug.h"
 #include "classes/pattern.h"
 
-// Assign charge to a single atom in the model ('chargeatom <id> <q>')
-int command_functions::function_CA_CHARGEATOM(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom *i = obj.m->find_atom(c->argi(0));
-	if (i != NULL) i->set_charge(c->argi(1));
-	else return CR_FAIL;
-	return CR_SUCCESS;
-}
-
 // Assign charges from forcefield atom types ('chargeff')
 int command_functions::function_CA_CHARGEFF(command *&c, bundle &obj)
 {
