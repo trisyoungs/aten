@@ -221,7 +221,6 @@ void model::centre(double newx, double newy, double newz)
 	dbg_begin(DM_CALLS,"model::centre");
 	vec3<double> cog = selection_get_cog();
 	cog.add(newx, newy, newz);
-	cog.print();
 	translate_selection_local(-cog);
 	dbg_end(DM_CALLS,"model::centre");
 }

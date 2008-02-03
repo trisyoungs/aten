@@ -437,15 +437,25 @@ void canvas_master::end_mode(mouse_button button)
 			}
 			subsel.clear();
 			break;
-		case (UA_ROTATEXY):
-		case (UA_ROTATEZ):
-		case (UA_MOVECAM):
-		case (UA_ZOOMCAM):
+		// Misc
+		case (UA_ATOMADDHYDROGEN):
+			if (atom_hover != NULL)
+			{
+				displaymodel->begin_undostate("Delete Bond"); displaymodel->hydrogen_satisfy(atom_hover);
+				displaymodel->end_undostate();
+			}
 			break;
+		// Model transformations
 		case (UA_MANIPROTXY):
 		case (UA_MANIPROTZ):
 		case (UA_MANIPTRANS):
 			displaymodel->finalize_transform();
+			break;
+		// View changes (no action)
+		case (UA_ROTATEXY):
+		case (UA_ROTATEZ):
+		case (UA_MOVECAM):
+		case (UA_ZOOMCAM):
 			break;
 		default:
 			printf("No button_up handler defined for user_action %i.\n", activemode);

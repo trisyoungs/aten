@@ -1,5 +1,5 @@
 /*
-	*** Model view functions
+	*** Model build functions
 	*** src/model/build.cpp
 	Copyright T. Youngs 2007
 
@@ -34,7 +34,8 @@ void model::hydrogen_satisfy(atom *target)
 	int numh, tbo, nsingle, ndouble;
 	atom *i, *endatom;
 	i = (target == NULL ? atoms.first() : target);
-	for (i; i != target; i = i->next)
+	endatom = (target == NULL ? NULL : target->next);
+	for (i; i != endatom; i = i->next)
 	{
 		// Step 1 - Work out how many single-bonds (i.e. hydrogens) we need to add to satisfy the atom's valency
 		// Calculate total bond order of atom and work out single bond deficit

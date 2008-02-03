@@ -258,6 +258,8 @@ class AtenForm : public QMainWindow
 	void on_ElementEdit_editingFinished();
 	void on_BondAugmentButton_clicked(bool on);
 	void on_AddHydrogenButton_clicked(bool on);
+	void on_AtomAddHydrogenButton_clicked(bool on) { if (on) set_useraction(on, UA_ATOMADDHYDROGEN); }
+	void on_ProbeAtomButton_clicked(bool on) { if (on) set_useraction(on, UA_PROBEATOM); }
 
 	// Analyse page functions
 	private slots:

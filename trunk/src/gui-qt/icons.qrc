@@ -31,8 +31,10 @@
     <qresource prefix="/build" >
         <file>icons/build_addh.svg</file>
         <file>icons/build_atom.svg</file>
+        <file>icons/build_atomaddh.svg</file>
         <file>icons/build_chain.svg</file>
         <file>icons/build_delete.svg</file>
+        <file>icons/build_probe.svg</file>
         <file>icons/build_ptable.svg</file>
         <file>icons/build_transmute.svg</file>
     </qresource>

@@ -309,7 +309,7 @@ class model
 	void select_overlaps(double tolerance);
 
 	/*
-	// Basic View
+	// View
 	*/
 	private:
 	// Camera rotation
@@ -336,8 +336,8 @@ class model
 	void get_camera_matrix(double *m) { camera.get_column_major(m); }
 	// Return the current camera z-rotation
 	double get_camrot() { return camrot; }
-	// Set camera to look down specified axis
-	void set_camera(vec3<double>);
+	// Set model rotation to exact values
+	void set_rotation(double rotx, double roty);
 	// Rotate the model about the x and y axes
 	void rotate(double, double);
 	// Spin the model about the z axis
@@ -640,7 +640,7 @@ class model
 	void seek_previous_frame();
 
 	/*
-	// View / Rendering
+	// Rendering
 	*/
 	private:
 	// Whether to render from self (TRUE) or trajectory frame (FALSE)
