@@ -151,6 +151,8 @@ void AtenForm::finalise_ui()
 	uaGroup->addButton(ui.BondDoubleButton);
 	uaGroup->addButton(ui.BondTripleButton);
 	uaGroup->addButton(ui.BondDeleteButton);
+	uaGroup->addButton(ui.AtomAddHydrogenButton);
+	uaGroup->addButton(ui.ProbeAtomButton);
 	// --- Add dummy button so we can have none of the others selected
 	dummybutton = new QPushButton(this);
 	dummybutton->setCheckable(TRUE);

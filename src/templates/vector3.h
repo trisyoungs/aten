@@ -509,8 +509,10 @@ template <class T> void vec3<T>::to_spherical()
 	T rho, s, phi, theta;
 	rho = magnitude();
 	s = sqrt(x*x + y*y);
-	phi = arccos(z / rho);
-	theta = (x < 0 ? PI - arcsin(y / s) : arcsin(y / s));
+	phi = acos(z / rho);
+	if (s < 1e-7) theta = 0.0;
+	else theta = (x < 0 ? PI - asin(y / s) : asin(y / s));
+	set(rho,phi,theta);
 }
 
 // Convert to cartesian

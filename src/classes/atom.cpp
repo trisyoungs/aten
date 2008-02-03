@@ -123,8 +123,7 @@ void atom::copy_style(atom *source)
 void atom::print()
 {
 	msg(DM_NONE,"Atom ID %i (%s):\n",id,elements.name(this));
-	msg(DM_NONE,"    Selected : %s,  Hidden : %s\n",(selected ? "Yes" : "No"),(hidden ? "Yes" : "No"));
-	msg(DM_NONE,"  Draw Style : %s\n",text_from_DS(style));
+	msg(DM_NONE," %s, %s, style is %s.\n", (selected ? "Selected" : "Not selected"), (hidden ? "hidden" : "not hidden"), text_from_DS(style));
 	msg(DM_NONE," Model Coord : %8.4f %8.4f %8.4f\n",rr.x,rr.y,rr.z);
 	msg(DM_NONE," World Coord : %8.4f %8.4f %8.4f\n",rr_world.x,rr_world.y,rr_world.z);
 	msg(DM_NONE,"Screen Coord : %8.4f %8.4f \n",rr_screen.x,rr_screen.y,rr_screen.z);

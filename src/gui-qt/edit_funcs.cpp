@@ -96,7 +96,7 @@ void AtenForm::on_ElementEdit_editingFinished()
 void AtenForm::on_AddHydrogenButton_clicked(bool on)
 {
 	model *m = master.get_currentmodel();
-	m->begin_undostate("Hydrogen Satisfy");
+	m->begin_undostate("Hydrogen Satisfy Model");
 	m->hydrogen_satisfy();
 	m->end_undostate();
 	gui.refresh();

@@ -25,6 +25,29 @@
 #include "base/prefs.h"
 #include "gui/gui.h"
 
+// Set exact rotation of model (angles passed in radians)
+void model::set_rotation(double rotx, double roty)
+{
+	// Rotate the whole system by the amounts specified.
+	dbg_begin(DM_CALLS,"model::set_rotation");
+	static double sinx, cosx, siny, cosy;
+	rotation.set_identity();
+	// Calculate cos/sin terms for needless speedup!
+	cosx = cos(rotx);
+	cosy = cos(roty);
+	sinx = sin(rotx);
+	siny = sin(roty);
+	rotation.rows[0].set(cosy,0.0,siny,0.0);
+	rotation.rows[1].set((-sinx)*(-siny),cosx,(-sinx)*cosy,0.0);
+	rotation.rows[2].set(cosx*(-siny),sinx,cosx*cosy,0.0);
+	//rot.rows[3].set(0.0,0.0,0.0,1.0);
+	// Recalculate view matrix
+	calculate_viewmatrix();
+	// Log camera change
+	log_change(LOG_CAMERA);
+	dbg_end(DM_CALLS,"model::set_rotation");
+}
+
 // Adjust Camera
 void model::adjust_camera(double dx, double dy, double dz, double angle)
 {

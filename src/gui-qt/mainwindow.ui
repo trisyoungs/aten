@@ -880,7 +880,13 @@
                    <string>...</string>
                   </property>
                   <property name="icon" >
-                   <iconset resource="icons.qrc" >:/build/icons/build_addh.svg</iconset>
+                   <iconset resource="icons.qrc" >:/build/icons/build_atomaddh.svg</iconset>
+                  </property>
+                  <property name="checkable" >
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoExclusive" >
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -1442,6 +1448,34 @@
                   </property>
                   <property name="icon" >
                    <iconset resource="icons.qrc" >:/build/icons/build_addh.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="ProbeAtomButton" >
+                  <property name="minimumSize" >
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="maximumSize" >
+                   <size>
+                    <width>30</width>
+                    <height>30</height>
+                   </size>
+                  </property>
+                  <property name="text" >
+                   <string>...</string>
+                  </property>
+                  <property name="icon" >
+                   <iconset resource="icons.qrc" >:/build/icons/build_probe.svg</iconset>
+                  </property>
+                  <property name="checkable" >
+                   <bool>true</bool>
+                  </property>
+                  <property name="autoExclusive" >
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -6326,6 +6360,25 @@
     <addaction name="actionEditSelectAll" />
     <addaction name="actionEditSelectNone" />
    </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <widget class="QMenu" name="ToolbarMenu" >
+     <property name="title" >
+      <string>Toolbars</string>
+     </property>
+     <addaction name="actionCommandToolBarVisibility" />
+     <addaction name="actionEditToolBarVisibility" />
+     <addaction name="actionFileToolBarVisibility" />
+     <addaction name="actionSelectToolBarVisibility" />
+     <addaction name="actionStyleToolBarVisibility" />
+     <addaction name="actionTrajectoryToolBarVisibility" />
+     <addaction name="actionMouseToolBarVisibility" />
+    </widget>
+    <addaction name="actionPreferences" />
+    <addaction name="ToolbarMenu" />
+   </widget>
    <widget class="QMenu" name="ModelMenu" >
     <property name="title" >
      <string>&amp;Model</string>
@@ -6394,9 +6447,9 @@
      <addaction name="actionStyleScaled" />
      <addaction name="actionStyleIndividual" />
     </widget>
-    <widget class="QMenu" name="menuSet_View" >
+    <widget class="QMenu" name="menuSetView" >
      <property name="title" >
-      <string>Set View</string>
+      <string>Set View Along</string>
      </property>
      <addaction name="actionViewSetCartesianX" />
      <addaction name="actionViewSetCartesianY" />
@@ -6409,7 +6462,9 @@
     <addaction name="actionViewReset" />
     <addaction name="actionViewZoomIn" />
     <addaction name="actionViewZoomOut" />
-    <addaction name="menuSet_View" />
+    <addaction name="menuSetView" />
+    <addaction name="separator" />
+    <addaction name="actionViewUnhideAtoms" />
     <addaction name="separator" />
     <addaction name="actionViewPerspective" />
     <addaction name="actionViewOrthographic" />
@@ -6419,25 +6474,6 @@
     <addaction name="separator" />
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
-   </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <widget class="QMenu" name="ToolbarMenu" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-     <addaction name="actionCommandToolBarVisibility" />
-     <addaction name="actionEditToolBarVisibility" />
-     <addaction name="actionFileToolBarVisibility" />
-     <addaction name="actionSelectToolBarVisibility" />
-     <addaction name="actionStyleToolBarVisibility" />
-     <addaction name="actionTrajectoryToolBarVisibility" />
-     <addaction name="actionMouseToolBarVisibility" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="ToolbarMenu" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -7467,14 +7503,20 @@
     <string>Cell +Z</string>
    </property>
   </action>
+  <action name="actionViewUnhideAtoms" >
+   <property name="text" >
+    <string>Unhide Atoms</string>
+   </property>
+   <property name="toolTip" >
+    <string>Unhide any hidden atoms</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+N</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
-  <customwidget>
-   <class>TColourFrame</class>
-   <extends>QFrame</extends>
-   <header>tcolourframe.uih</header>
-  </customwidget>
   <customwidget>
    <class>TTabBar</class>
    <extends>QWidget</extends>
@@ -7489,6 +7531,11 @@
    <class>TCanvas</class>
    <extends>QWidget</extends>
    <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TColourFrame</class>
+   <extends>QFrame</extends>
+   <header>tcolourframe.uih</header>
   </customwidget>
  </customwidgets>
  <resources>
