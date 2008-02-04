@@ -171,7 +171,9 @@ command_functions::command_functions()
 	action[CA_SETGRIDORTHO] = &command_functions::function_CA_SETGRIDORTHO;
 	action[CA_SETGRIDSIZE] = &command_functions::function_CA_SETGRIDSIZE;
 
-	//image_
+	// Image commands
+	action[CA_SAVEBITMAP] = &command_functions::function_CA_SAVEBITMAP;
+	action[CA_SAVEVECTOR] = &command_functions::function_CA_SAVEVECTOR;
 
 	// Labeling commands
 	action[CA_CLEARLABELS] = &command_functions::function_CA_CLEARLABELS;

@@ -21,4 +21,32 @@
 
 #include "command/commandlist.h"
 #include "base/debug.h"
+#include "gui/gui.h"
 
+// Save current view as bitmap image
+int command_functions::function_CA_SAVEBITMAP(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	return CR_FAIL;
+}
+
+// Save current view a vector graphic
+int command_functions::function_CA_SAVEVECTOR(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	vector_format vf = VIF_from_text(c->argc(0));
+	if (vf == VIF_NITEMS)
+	{
+		msg(DM_NONE,"Unrecognised vector format '%s'.\n",c->argc(0));
+		return CR_FAIL;
+	}
+	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
+	if (gui.exists())
+	{
+		gui.mainview.save_vector(obj.m, vif, c->argc(1));
+	}
+	else
+	{
+	}
+	return CR_FAIL;
+}
