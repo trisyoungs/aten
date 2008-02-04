@@ -31,9 +31,9 @@
 enum stack_page { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
 
 // Image Formats
-enum pixmap_format { PF_BMP, PF_JPG, PF_PNG, PF_PPM, PF_XBM, PF_X11, PF_NITEMS };
-const char *filter_from_PF(pixmap_format);
-const char *extension_from_PF(pixmap_format);
+enum pixmap_format { PIF_BMP, PIF_JPG, PIF_PNG, PIF_PPM, PIF_XBM, PIF_X11, PIF_NITEMS };
+const char *filter_from_PIF(pixmap_format);
+const char *extension_from_PIF(pixmap_format);
 
 #define MAXRECENTFILES 5
 
@@ -445,8 +445,8 @@ class AtenForm : public QMainWindow
 	QFrame *progressindicator;
 	// File dialogs for filter types
 	QFileDialog *dialog[FT_NITEMS];
-	// File dialog for save image
-	QFileDialog *saveimagedialog;
+	// File dialog for save bitmap and save vector image
+	QFileDialog *savebitmapdialog, *savevectordialog;
 	// Filter set from save model dialog
 	filter *savemodelfilter;
 	// Filename set from save model dialog

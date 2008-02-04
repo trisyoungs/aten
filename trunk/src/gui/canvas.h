@@ -25,6 +25,7 @@
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 #include "base/prefs.h"
+#include "render/gl2ps_extra.h"
 #ifdef IS_MAC
 	#include <GLUT/glut.h>
 #else
@@ -206,6 +207,8 @@ class canvas_master
 	public:
 	// Render a scene based on the specified model
 	void render_scene(model*);
+	// Save scene as vector image
+	void save_vector(model *source, vector_format vf, const char *filename);
 
 	/*
 	// Selection

@@ -177,17 +177,17 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	QPixmap pixmap = ui.ModelView->renderPixmap(0,0,FALSE);
 	// Get filename from user
 	int n;
-	if (saveimagedialog->exec() == 1)
+	if (savebitmapdialog->exec() == 1)
 	{
 		// Get selected filename
-		QStringList filenames = saveimagedialog->selectedFiles();
+		QStringList filenames = savebitmapdialog->selectedFiles();
 		QString filename = filenames.first();
 		// Get selected filter
-		QString filter = saveimagedialog->selectedFilter();
+		QString filter = savebitmapdialog->selectedFilter();
 		// Find the filter that was selected
-		for (n=0; n<PF_NITEMS; n++)
-			if (strcmp(filter_from_PF( (pixmap_format) n), qPrintable(filter)) == 0) break;
-		if (n != PF_NITEMS) pixmap.save(filename, extension_from_PF( (pixmap_format) n), -1);
+		for (n=0; n<PIF_NITEMS; n++)
+			if (strcmp(filter_from_PIF( (pixmap_format) n), qPrintable(filter)) == 0) break;
+		if (n != PIF_NITEMS) pixmap.save(filename, extension_from_PIF( (pixmap_format) n), -1);
 	}
 }
 

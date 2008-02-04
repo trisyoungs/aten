@@ -183,6 +183,8 @@ const char *CA_data[CA_NITEMS] = {
 	"setgridsize,VVV",
 
 	// Image commands
+	"savebitmap,VV",
+	"savevector,VV",
 
 	// Labeling commands
 	"clearlabels",
