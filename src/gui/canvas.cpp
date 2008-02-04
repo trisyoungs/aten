@@ -23,6 +23,7 @@
 #include "base/prefs.h"
 #include "gui/gui.h"
 #include "gui/canvas.h"
+#include "render/gl2ps.h"
 
 // Constructor
 canvas_master::canvas_master()
@@ -485,4 +486,23 @@ void canvas_master::set_valid(bool b)
 	valid = FALSE;
 	drawing = FALSE;
 	valid = b;
+}
+
+/*
+// Save vector image
+*/
+void canvas_master::save_vector(model *source, vector_format vf, const char *filename)
+{
+	// Open output file
+	FILE *vectorfile = fopen(filename, "w");
+	if (vectorfile == NULL)
+	{
+		msg(DM_NONE,"Couldn't open output file for vector export.\n");
+		return;
+	}
+	GLint result = gl2psBeginPage(source->get_name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_NONE, GL_RGBA, 0, 0, 0, 0, 0, 1024, vectorfile, filename);
+	printf("Result = %i\n",result);
+	render_scene(source);
+	result = gl2psEndPage();
+	printf("Result = %i\n",result);
 }

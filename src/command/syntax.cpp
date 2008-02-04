@@ -180,7 +180,9 @@ const char *CA_syntax[CA_NITEMS] = {
 	"setgridortho <a> <b> <c>,Set the axes system for the current grid to be orthorhombic",
 	"setgridsize <nx> <ny> <nz>,Set the number of points along each axis for the current grid",
 
-	// Image
+	// Image commands
+	"savebitmap <format> <filename>,Save the current model view as a bitmap image: formats available are bmp, jpg, png, ppm, xbm, and xpm",
+	"savevector <format> <filename>,Save the current model view as a vector image: formats available are ps, eps, tex, pdf, svg, and pgf",
 
 	// Labeling commands
 	"clearlabels,Remove all atom labels in the current model",

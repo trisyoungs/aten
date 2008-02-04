@@ -151,6 +151,13 @@ class gui_master
 	public:
 	// Initialise GUI file filters array
 	virtual void init_filters();
+
+	/*
+	// Basic Offscreen Canvas
+	*/
+	private:
+	// Offscreen canvas (for use by, e.g., g2ps routines)
+	canvas_master offscreencanvas;
 };
 
 // Define here a basic GUI class if no proper GUI has been specified

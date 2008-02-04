@@ -194,7 +194,9 @@ enum command_action {
 	CA_SETGRIDORTHO,
 	CA_SETGRIDSIZE,
 
-	//image_
+	// Image Commands
+	CA_SAVEBITMAP,
+	CA_SAVEVECTOR,
 
 	// Labeling commands
 	CA_CLEARLABELS,
