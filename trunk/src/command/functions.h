@@ -184,7 +184,9 @@ class command_functions
 	int function_CA_SETGRIDORTHO(command *&c, bundle &obj);
 	int function_CA_SETGRIDSIZE(command *&c, bundle &obj);
 
-	//image_
+	// Image Commands
+	int function_CA_SAVEBITMAP(command *&c, bundle &obj);
+	int function_CA_SAVEVECTOR(command *&c, bundle &obj);
 
 	// Labeling commands
 	int function_CA_CLEARLABELS(command *&c, bundle &obj);
