@@ -185,9 +185,9 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// Get selected filter
 		QString filter = savebitmapdialog->selectedFilter();
 		// Find the filter that was selected
-		for (n=0; n<PIF_NITEMS; n++)
-			if (strcmp(filter_from_PIF( (pixmap_format) n), qPrintable(filter)) == 0) break;
-		if (n != PIF_NITEMS) pixmap.save(filename, extension_from_PIF( (pixmap_format) n), -1);
+		for (n=0; n<BIF_NITEMS; n++)
+			if (strcmp(filter_from_BIF( (bitmap_format) n), qPrintable(filter)) == 0) break;
+		if (n != BIF_NITEMS) pixmap.save(filename, extension_from_BIF( (bitmap_format) n), -1);
 	}
 }
 

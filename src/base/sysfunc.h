@@ -39,9 +39,9 @@ const char *get_after_comma(const char*);
 const char *strip_trailing(const char*);
 
 // Enum search
-int enum_search(const char*, int, const char**, const char*);
-int enum_search_data(const char*, int, const char**, const char*);
-int sinlist(const char*, const char*);
+int enum_search(const char *name, int nitems, const char **list, const char *query);
+int enum_search_data(const char *name, int nitems, const char **list, const char *query);
+int sinlist(const char *query, const char *delimlist);
 
 // Expression evaluate
 const char *evaluate(const char*, variable_list*);

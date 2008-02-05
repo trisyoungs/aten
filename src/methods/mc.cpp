@@ -254,6 +254,7 @@ bool mc_method::disorder(model* destmodel)
 	component *c;
 	double enew, ecurrent, elastcycle, edelta, phi, theta, ecurrent_vdw, ecurrent_elec;
 	double penalty;
+	bool done;
 	unitcell *cell;
 	pattern *p;
 	region *r;
@@ -408,6 +409,7 @@ bool mc_method::disorder(model* destmodel)
 							msg(DM_VERBOSE,"insert : Pattern %s has %i molecules.\n",p->get_name(),pnmols);
 							if (pnmols == p->get_expectedmols()) continue;
 							// Paste a new molecule into the working configuration
+
 							msg(DM_VERBOSE,"insert : Pasting new molecule - pattern %s, mol %i\n",p->get_name(),pnmols);
 							//master.privclip.paste_to_model(destmodel,p,pnmols);
 							// Increase nmols for pattern and natoms for config
@@ -507,7 +509,9 @@ bool mc_method::disorder(model* destmodel)
 				n = p->get_id();
 				s[0] = '\n';
 				if (p == destmodel->get_patterns())
-					sprintf(s,"%-8s %-4i (%-4i)", p->get_name(), p->get_nmols(), p->get_expectedmols());
+				{
+					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-8s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elastcycle, ecurrent_vdw, ecurrent_elec, p->get_name(), p->get_nmols(), p->get_expectedmols());
+				}
 				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->get_name(), p->get_nmols(), p->get_expectedmols());
 				for (m=0; m<MT_NITEMS; m++)
 				{
@@ -519,6 +523,19 @@ bool mc_method::disorder(model* destmodel)
 			}
 		}
 		elastcycle = ecurrent;
+		// Check for early termination
+		done = TRUE;
+		for (c = components.first(); c != NULL; c = c->next)
+		{
+			// Get pointers to variables
+			p = c->get_pattern();
+			if (p->get_nmols() != p->get_expectedmols()) done = FALSE;
+		}
+		if (done)
+		{
+			msg(DM_NONE,"All component populations satisfied.\n");
+			break;
+		}
 	}
 	if (gui.exists()) gui.progress_terminate();
 	

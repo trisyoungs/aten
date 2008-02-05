@@ -155,7 +155,7 @@ class gui_master
 	/*
 	// Basic Offscreen Canvas
 	*/
-	private:
+	public:
 	// Offscreen canvas (for use by, e.g., g2ps routines)
 	canvas_master offscreencanvas;
 };
