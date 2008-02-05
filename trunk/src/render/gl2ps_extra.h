@@ -21,5 +21,6 @@
 
 // Supported Vector Formats (mirrors #defines in src/render/gl2ps.h)
 enum vector_format { VIF_PS, VIF_EPS, VIF_TEX, VIF_PDF, VIF_SVG, VIF_PGF, VIF_NITEMS };
+vector_format VIF_from_text(const char*);
 const char *filter_from_VIF(vector_format);
 const char *extension_from_VIF(vector_format);

@@ -265,19 +265,16 @@ const char *format::create_string()
 				if (fn->get_length() == 0) strcpy(fmt,"%s");
 				else sprintf(fmt,"%%%is",fn->get_length());
 				sprintf(bit,fmt,v->get_as_char());
-	printf("Bit is a char [%s]\n",v->get_as_char());
 				break;
 			case (VT_INTEGER):
 				if (fn->get_length() == 0) strcpy(fmt,"%i");
 				else sprintf(fmt,"%%%ii",fn->get_length());
 				sprintf(bit,fmt,v->get_as_int());
-	printf("Bit is an int [%i]\n",v->get_as_int());
 				break;
 			case (VT_DOUBLE):
 				if (fn->get_length() == 0) strcpy(fmt,"%f");
 				else sprintf(fmt,"%%%i.%if",fn->get_length(),fn->get_precision());
 				sprintf(bit,fmt,v->get_as_double());
-	printf("Bit is a double [%f]\n",v->get_as_double());
 				break;
 			default:
 				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->get_type()));
