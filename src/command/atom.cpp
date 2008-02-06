@@ -30,7 +30,27 @@
 int command_functions::function_CA_ADDATOM(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	int el = elements.find(c->argc(0));
+	// Determine element (based on type of variable provided)
+	int el;
+	switch (c->argt(0))
+	{
+		case (VT_INTEGER):
+			el = c->argi(0);
+			break;
+		case (VT_DOUBLE):
+			el = (int) floor(c->argd(0) + 0.15);
+			break;
+		case (VT_CHAR):
+			el = elements.find(c->argc(0));
+			break;
+		case (VT_ATOM):
+			c->arga(0) == NULL ? el = 0 : c->arga(0)->get_element();
+			break;
+		default:
+			msg(DM_NONE,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
+			el = 0;
+			break;
+	}
 	if (c->has_arg(3)) master.current.i = obj.m->add_atom(el, c->arg3d(1));
 	else master.current.i = obj.m->add_atom(el, c->get_parent()->penpos);
 	return CR_SUCCESS;

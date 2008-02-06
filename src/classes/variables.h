@@ -44,7 +44,7 @@ class variable
 {
 	public:
 	// Constructor / Destructor
-	variable();
+	variable(variable_type vt = VT_CHAR);
 	~variable();
 	// List pointers
 	variable *prev, *next;

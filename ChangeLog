@@ -2,6 +2,9 @@
 Version 0.94
 ------------
 
+2008-02-06
+	* added new gui commands and fixed trajectory loading
+
 2008-02-01
 	* many bugs fixed w.r.t. new command structure.
 

@@ -223,7 +223,7 @@ atom *model::get_atom(int n)
 	// Check range first
 	if ((n < 0) || (n >= atoms.size()))
 	{
-		printf("model::get_atom <<<< '%i' is out of range for model >>>>\n",n);
+		printf("model::get_atom <<<< Atom id '%i' is out of range for model >>>>\n",n);
 		dbg_end(DM_CALLS,"model::get_atom");
 		return NULL;
 	}

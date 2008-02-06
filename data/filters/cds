@@ -1,5 +1,5 @@
 # Cambridge Database Filter
-# Last modified: 06/01/2008
+# Last modified: 06/02/2008
 importmodel
 	name "Cambridge Database Structure"
 	nickname cds
@@ -7,11 +7,13 @@ importmodel
 	glob *.*dat
 
 	# Variables
-	character title,spgrp,discard
+	character title,spgrp,discard,ea,eb,ec
 	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
 	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj
-	double ea,xa,ya,za,eb,xb,yb,zb,ec,xc,yc,zc,rx,ry,rz
+	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz
 	double a,b,c,al,be,ga,cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
+
+	zmap auto
 
 	# Record 1: Directory information (single line)
 	# Contained information (first col = 0):
@@ -42,23 +44,27 @@ importmodel
 	# Record 3: Text information (ignored)
 	# Total number of chars is the sum of nf, nr, nd, and ne read in earlier.
 	# Since the format rigidly defined 80 chars per line, skip by number of lines...
-	eval $nlines = "($nf + $nr + $nd + $ne) / 80 + 1"
+	eval $nlines = "($nf + $nr + $nd + $ne + 79) / 80"
 	skipline $nlines
+	print "Skipping $nlines lines..."
 	# Record 4: Equivalent positions of spacegroup (ignored)
-	eval $nlines = "($nsymm*20) / 80 + 1"
+	eval $nlines = "($nsymm*20 + 79) / 80"
 	skipline $nlines
+	print "Skipping $nlines more lines..."
 	# Record 5: Atomic radii (ignored)
 	if $natm > 1
 		skipline
 	end
 	# Record 6: Atomic coordinates
 	# Coordinates are given 3 per line, so determine number of lines to read in.
-	for $n,1,$natm
+	eval $natoms = "$natm + $nsatm"
+	for $n,1,$natoms
 		# Read in new line if mod(n,3) is zero
 		eval $mod = "($n-1) % 3"
 		if $mod = 0
 			readline "$ea@5 $xa@7 $ya@7 $za@7 *@1 $eb@5 $xb@7 $yb@7 $zb@7 *@1 $ec@5 $xc@7 $yc@7 $zc@7"
 		end
+	print "pass $n : elements are $ea $eb $ec"
 		# Messy, but should work. Use variable data based on the $mod value...
 		if $mod = 0
 			addatom $ea
@@ -82,58 +88,54 @@ importmodel
 	# Connectivities are given in the format 40I2 (if natm+nsatm < 100) or 26I3,2x (if natm+nsatm >= 100)
 	# First (natm+nsatm) integers are paired to the atoms 1-(natm+nsatm) in that order. Any other integers
 	# are pairs of atoms involved in additional bonds.
-	eval $natoms = "$natm + $nsatm"
-	for $n,1,$natoms
+	eval $nextra = "($ncon - $natoms) / 2"
+	print "There are $nextra extra pairs of connectivity integers."
+	for $n,1,$ncon
 		# Need to remove newline (and space before) when we've read a whole line's worth
 		if $natoms < 100
-			readchars $jj 2
-			eval $mod = "$n%40"
-			if $mod = 0
-				readchars $discard 1
-			end
-		else
-			readchars $jj 3
-			eval $mod = "$n%26"
-			if $mod = 0
-				readchars $discard 3
-			end
-		end
-		# Check for dummy bond (if $jj = 0 don't create a bond)
-		if $jj > 0
-			# Must decrease integer numbers to be from 0-(N-1)
-			dec $jj
-			eval $ii = "$n-1"
-			#print "Bond atoms $ii $jj"
-			addbond $ii $jj
-		end
-	end
-	eval $nextra = "($ncon - $natoms) / 2"
-	#print "There are $nextra pairs of connectivity integers."
-	for $n,1,$nextra
-		if $natoms < 100
 			readchars $ii 2
-			readchars $jj 2
 			eval $mod = "$n%40"
 			if $mod = 0
 				readchars $discard 1
 			end
 		else
 			readchars $ii 3
-			readchars $jj 3
 			eval $mod = "$n%26"
 			if $mod = 0
-				readchars $discard 1
+				readchars $discard 3
 			end
 		end
-		# Decrease integers and create bond
-		dec $ii
-		dec $jj
-		addbond $ii $jj
+		# Do we need to read an extra integer? (n > natoms)
+	print "n = $n, natoms = $natoms"
+		if $n > $natoms
+			if $natoms < 100
+				readchars $jj 2
+				eval $mod = "$n%40"
+				if $mod = 0
+					readchars $discard 1
+				end
+			else
+				readchars $jj 3
+				eval $mod = "$n%26"
+				if $mod = 0
+					readchars $discard 3
+				end
+			end
+		else
+			# Set second atom to be id 'n'
+			let $jj = $n
+			print "Setting jj = $jj"
+		end
+		# Check for dummy bond (if $ii = 0 don't create a bond)
+		if $ii > 0
+			print "Bond atoms $ii $jj"
+			addbond $ii $jj
+		end
 	end
 	# Convert our stored coordinates (which are fractional) to real coordinates
 	fractoreal
 	# Finalise the packing in the model
-	pack
+	#pack
 	fold
 	# Perform post-load operations
 	finalisemodel

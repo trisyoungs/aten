@@ -29,7 +29,7 @@ Forcefield To-Do list:
 
 Filters To-Do list:
 	- EPSR Ato import / export?
-	- 'within' function
+	- 'within' function?
 
 General Qt To-Do list:
 	- Allow model load option overrides such as nocentre, rebond etc.

@@ -58,6 +58,7 @@ void model::bond_atoms(int ii, int jj, bond_type bt)
 {
         // Create a new bond for each atom and add them to the atom's own lists.
 	dbg_begin(DM_CALLS,"model::bond_atoms[int]");
+	//printf("Atom ids given to model::bond_atoms() are %i and %i (natoms=%i)\n",ii,jj,atoms.size());
 	if (ii == jj) msg(DM_NONE,"Cannot bond an atom to itself!\n");
 	else
 	{
