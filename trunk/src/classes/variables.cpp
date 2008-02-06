@@ -34,12 +34,12 @@ const char *text_from_VT(variable_type vt)
 	{ return VT_keywords[vt]; }
 
 // Constructors
-variable::variable()
+variable::variable(variable_type vt)
 {
 	prev = NULL;
 	next = NULL;
 	name.set("unnamed");
-	type = VT_NITEMS;
+	type = vt;
 	constant = FALSE;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_VARIABLE] ++;

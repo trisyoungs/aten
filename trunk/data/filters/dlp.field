@@ -1,5 +1,5 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 06/01/2008
+# Last modified: 05/02/2008
 exportfield
 	name "DL_POLY Forcefield Specification"
 	nickname dlpoly
