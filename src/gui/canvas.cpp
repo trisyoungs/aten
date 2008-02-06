@@ -500,9 +500,15 @@ void canvas_master::save_vector(model *source, vector_format vf, const char *fil
 		msg(DM_NONE,"Couldn't open output file for vector export.\n");
 		return;
 	}
-	GLint result = gl2psBeginPage(source->get_name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_NONE, GL_RGBA, 0, 0, 0, 0, 0, 1024, vectorfile, filename);
-	printf("Result = %i\n",result);
-	render_scene(source);
-	result = gl2psEndPage();
-	printf("Result = %i\n",result);
+	GLint result = GL2PS_OVERFLOW, bufsize = 0;
+	// Loop until the feedback buffer is large enough
+	while (result == GL2PS_OVERFLOW)
+	{
+		bufsize += 1024*1024;
+		result = gl2psBeginPage(source->get_name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_DRAW_BACKGROUND | GL2PS_OCCLUSION_CULL, GL_RGBA, 0, 0, 0, 0, 0, bufsize, vectorfile, filename);
+		printf("Result = %i\n",result);
+		render_scene(source);
+		result = gl2psEndPage();
+		printf("Result = %i\n",result);
+	}
 }
