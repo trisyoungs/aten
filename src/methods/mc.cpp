@@ -503,7 +503,7 @@ bool mc_method::disorder(model* destmodel)
 		if (prefs.update_energy(cycle))
 		{
 			// Print start of first line (current energy and difference)
-			msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, ecurrent_vdw, ecurrent_elec);
+			//msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, ecurrent_vdw, ecurrent_elec);
 			for (p = destmodel->get_patterns(); p != NULL; p = p->next)
 			{
 				n = p->get_id();
