@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>745</width>
-    <height>578</height>
+    <height>573</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -205,7 +205,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -3490,6 +3490,9 @@
                   <property name="decimals" >
                    <number>5</number>
                   </property>
+                  <property name="value" >
+                   <double>1.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                 <item row="0" column="0" >
@@ -3535,6 +3538,9 @@
                   <property name="decimals" >
                    <number>5</number>
                   </property>
+                  <property name="value" >
+                   <double>1.000000000000000</double>
+                  </property>
                  </widget>
                 </item>
                 <item row="2" column="0" >
@@ -3564,6 +3570,9 @@
                   </property>
                   <property name="decimals" >
                    <number>5</number>
+                  </property>
+                  <property name="value" >
+                   <double>1.000000000000000</double>
                   </property>
                  </widget>
                 </item>

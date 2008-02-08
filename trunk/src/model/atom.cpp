@@ -277,3 +277,16 @@ void model::normalise_forces(double norm)
 	for (i=0; i<atoms.size(); i++) modelatoms[i]->f() /= maxfrc;
 	dbg_end(DM_CALLS,"model::normalise_forces");
 }
+
+// Move specified atom (channel for undo/redo)
+void model::translate_atom(atom *target, vec3<double> delta)
+{
+	target->r();
+	log_change(LOG_COORDS);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		//change *newchange = recordingstate->changes.add();
+		//newchange->set(UE_ATOM,target);
+	}
+}

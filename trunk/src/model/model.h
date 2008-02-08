@@ -152,6 +152,8 @@ class model
 	int get_natoms() { return atoms.size(); }
 	// Delete specified atom
 	void delete_atom(atom *target);
+	// Translate specified atom
+	void translate_atom(atom *target, vec3<double> delta);
 	// Delete all atoms in the model
 	void clear_atoms();
 	// Perform alchemy on an atom 
