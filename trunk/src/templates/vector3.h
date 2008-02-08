@@ -41,7 +41,7 @@ template <class T> struct vec3
 {
 	public:
 	// Constructor / Destructor
-	vec3<T>();
+	vec3<T>(T xx = 0, T yy = 0, T zz = 0);
 	~vec3();
 	#ifdef MEMDEBUG
 	// Copy constructor
@@ -135,9 +135,11 @@ template <class T> struct vec3
 };
 
 // Constructor
-template <class T> vec3<T>::vec3()
+template <class T> vec3<T>::vec3(T xx, T yy, T zz)
 {
-	zero();
+	x = xx;
+	y = yy;
+	z = zz;
 	#ifdef MEMDEBUG
 		memdbg.create[MD_VEC3] ++;
 	#endif
