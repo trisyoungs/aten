@@ -37,7 +37,7 @@ void model::set_cell(vec3<double> lengths, vec3<double> angles)
 	mat3<double> oldaxes = cell.get_axes();
 	// Set new axes 
 	cell.set(lengths, angles);
-	log_change(LOG_VISUAL);
+	log_change(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
 	if (recordingstate != NULL)
 	{
@@ -54,7 +54,7 @@ void model::set_cell(mat3<double> axes)
 	mat3<double> oldaxes = cell.get_axes();
 	// Set new axes 
 	cell.set(axes);
-	log_change(LOG_VISUAL);
+	log_change(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
 	if (recordingstate != NULL)
 	{
@@ -204,10 +204,10 @@ void model::scale_cell(const vec3<double> &scale)
 		return;
 	}
 	calcenergy = create_expression();
-	// Copy original cell, expand and save for later
+	// Copy original cell axes, expand and save for later
 	newaxes = cell.get_axes();
 	newaxes.row_multiply(scale);
-	newcell.set(newaxes.transpose());
+	newcell.set(newaxes);
 	// We need a working configuration (for COG calculations)
 	fold_all_atoms();
 	if (calcenergy) olde = total_energy(this);
@@ -238,7 +238,7 @@ void model::scale_cell(const vec3<double> &scale)
 		msg(DM_NONE,"Energy change was %12.7e %s\n", newe-olde, text_from_EU(prefs.get_internal_units()));
 	}
 	// Set new cell and update model
-	cell.set(newaxes);
+	set_cell(newaxes);
 	log_change(LOG_COORDS);
 	dbg_end(DM_CALLS,"model::scale_cell");
 }
@@ -276,12 +276,10 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 	// Set new unit cell dimensions
 	tvec.set(pos.x+1.0-neg.x, pos.y+1.0-neg.y, pos.z+1.0-neg.z);
 	newaxes.row_multiply(tvec);
-	// Un-transpose and set new axes
-	newaxes = newaxes.transpose();
-	cell.set(newaxes);
+	set_cell(newaxes);
 
 	// Clear the original model
-	this->clear();
+	clear();
 
 	// Re-centre the clipboard copy so it is at the new cell origin
 	originalclip.translate(cell.get_origin());
