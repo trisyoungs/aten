@@ -475,4 +475,22 @@ pattern *model::get_pattern(atom *i)
 	return p;
 }
 
+// Print patterns
+void model::print_patterns()
+{
+	dbg_begin(DM_CALLS,"model::print_patterns");
+	pattern *p = patterns.first();
+	if (p == NULL) msg(DM_NONE,"No patterns defined for model '%s'.\n",name.get());
+	else
+	{
+		msg(DM_NONE,"Pattern info for model '%s':\n", name.get());
+		msg(DM_NONE,"  ID  NMols  Starti  Endi    Name            Forcefield\n");
+		while (p != NULL)
+		{
+			msg(DM_NONE,"  %2i  %5i  %6i  %6i  %-16s  %s\n", p->get_id(), p->get_nmols(), p->get_startatom(), p->get_endatom(), p->get_name(), p->get_ff() ? p->get_ff()->get_name() : "< Inherited >");
+			p = p->next;
+		}
+	}
+	dbg_end(DM_CALLS,"model::print_patterns");
+}
 
