@@ -21,6 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/debug.h"
+#include "base/master.h"
 #include "model/model.h"
 #include "classes/pattern.h"
 
@@ -53,15 +54,7 @@ int command_functions::function_CA_CREATEPATTERNS(command *&c, bundle &obj)
 int command_functions::function_CA_PRINTPATTERNS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	msg(DM_NONE,"Pattern info for model '%s':\n", obj.m->get_name());
-	obj.m->autocreate_patterns();
-	pattern *p = obj.m->get_patterns();
-	p != NULL ? printf("  ID  nmols  starti  finali  name\n") : printf("None.\n");
-	while (p != NULL)
-	{
-		msg(DM_NONE,"  %2i  %5i  %6i  %6i  %s\n", p->get_id(), p->get_nmols(), p->get_startatom(), p->get_endatom(), p->get_name());
-		p = p->next;
-	}
+	obj.m->print_patterns();
 	return CR_SUCCESS;
 }
 
@@ -70,7 +63,7 @@ int command_functions::function_CA_SELECTPATTERN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	pattern *p = obj.m->find_pattern(c->argc(0));
-	if (p != NULL) obj.p = p;
+	if (p != NULL) master.current.p = p;
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }

@@ -520,6 +520,8 @@ class model
 	void rotate_molecule(pattern*, int, double, double);
 	// Set the hidden flag on atoms of the specified molecule
 	void hide_molecule(pattern*, int, bool);
+	// Print patterns
+	void print_patterns();
 
 	/*
 	// Model Building
