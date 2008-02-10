@@ -29,7 +29,7 @@ enum change_log { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAME
 enum undo_event { UE_NONE, UE_ATOM, UE_BOND, UE_MEASUREMENT, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER, UE_CELL, UE_LABEL, UE_TRANSLATE };
 
 // State change directions
-enum undo_dir { UD_PLUS, UD_MINUS };
+enum undo_dir { UD_REVERSE, UD_FORWARDS };
 
 #include "model/model.h"
 #include "classes/dnchar.h"
@@ -60,8 +60,8 @@ class change
 	undo_dir direction;
 	// Atom data describing the change
 	atom *atomdata[2];
-	// Matrix data describing the change
-	mat3<double> *matrixdata[2];
+	// Vector data describing the change
+	vec3<double> *vecdata[4];
 	// Generally-applicable data
 	int data[5];
 
@@ -72,6 +72,8 @@ class change
 	void set(int ec, int i, int j = -1, int k = -1, int l = -1, int m = -1);
 	// Set change data (matrices)
 	void set(int ec, mat3<double> *m1, mat3<double> *m2 = NULL);
+	// Set change data (vector)
+	void set(int ec, vec3<double> *v1, vec3<double> *v2 = NULL, vec3<double> *v3 = NULL, vec3<double> *v4 = NULL);
 
 	/*
 	// Actions

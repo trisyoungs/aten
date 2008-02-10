@@ -63,18 +63,6 @@ class model
 	// Model
 	*/
 	private:
-	// Integer 'logs' of model changes
-	// LOG_STRUCTURE : create/destroy atoms/bonds, change elements
-	// LOG_COORDS    : atomic coordinates
-	// LOG_VISUAL    : visual changes that require re-rendering
-	// LOG_SELECTION : atom selection
-	// LOG_CAMERA    : view (mainly used to flag reprojection)
-	// LOG_TOTAL     : sum of all changes
-	int logs[LOG_NITEMS];
-	// Log point of the last save / point on load
-	int save_point;
-	// Log point of the last project_all() (LOG_COORDS+LOG_CAMERA)
-	int projection_point;
 	// Total mass of model
 	double mass;
 	// Density of model (if periodic)
@@ -87,16 +75,6 @@ class model
 	dnchar filename;
 
 	public:
-	// Increment specified log point of the model
-	void log_change(change_log);
-	// Return the log quantity specified
-	int get_log(change_log cl) { return logs[cl]; }
-	// Reset all logs to zero
-	void reset_logs() { for (int i=0; i<LOG_NITEMS; i++) logs[i] = 0; }
-	// Set the save point log for the model
-	void update_save_point() { save_point = logs[LOG_STRUCTURE] + logs[LOG_COORDS]; }
-	// Return if the model has been modified since last being saved
-	bool is_modified() { return (save_point == (logs[LOG_STRUCTURE] + logs[LOG_COORDS]) ? FALSE : TRUE); }
 	// Sets the filename of the model
 	void set_filename(const char *s) { filename = s; }
 	// Return the stored filename of the model
@@ -129,6 +107,37 @@ class model
 	void copy_atom_data(model*, int, int, int);
 
 	/*
+	// Logs
+	*/
+	private:
+	// Integer 'logs' of model changes
+	// LOG_STRUCTURE : create/destroy atoms/bonds, change elements
+	// LOG_COORDS    : atomic coordinates
+	// LOG_VISUAL    : visual changes that require re-rendering
+	// LOG_SELECTION : atom selection
+	// LOG_CAMERA    : view (mainly used to flag reprojection)
+	// LOG_TOTAL     : sum of all changes
+	int logs[LOG_NITEMS];
+	// Log point of the last save / point on load
+	int save_point;
+	// Log point of the last project_all() (LOG_COORDS+LOG_CAMERA)
+	int projection_point;
+
+	public:
+	// Increment specified log point of the model
+	void log_change(change_log);
+	// Return the log quantity specified
+	int get_log(change_log cl) { return logs[cl]; }
+	// Reset all logs to zero
+	void reset_logs() { for (int i=0; i<LOG_NITEMS; i++) logs[i] = 0; }
+	// Copy logs from undostate
+	void copy_logs(int *sourcelogs);
+	// Set the save point log for the model
+	void update_save_point() { save_point = logs[LOG_STRUCTURE] + logs[LOG_COORDS]; }
+	// Return if the model has been modified since last being saved
+	bool is_modified() { return (save_point == (logs[LOG_STRUCTURE] + logs[LOG_COORDS]) ? FALSE : TRUE); }
+
+	/*
 	// Atoms
 	*/
 	private:
@@ -154,9 +163,11 @@ class model
 	void delete_atom(atom *target);
 	// Translate specified atom
 	void translate_atom(atom *target, vec3<double> delta);
+	// Position specified atom
+	void position_atom(atom *target, vec3<double> newr);
 	// Delete all atoms in the model
 	void clear_atoms();
-	// Perform alchemy on an atom 
+	// Perform alchemy on an atom
 	void transmute_atom(atom *target, int element);
 	// Renumber atoms in the model
 	void renumber_atoms(atom *from = NULL);
