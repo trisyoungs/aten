@@ -281,12 +281,30 @@ void model::normalise_forces(double norm)
 // Move specified atom (channel for undo/redo)
 void model::translate_atom(atom *target, vec3<double> delta)
 {
-	target->r();
+	target->r() += delta;
 	log_change(LOG_COORDS);
 	// Add the change to the undo state (if there is one)
 	if (recordingstate != NULL)
 	{
-		//change *newchange = recordingstate->changes.add();
-		//newchange->set(UE_ATOM,target);
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_TRANSLATE,target->get_id());
+		newchange->set(UE_TRANSLATE,&delta);
 	}
 }
+
+// Position specified atom (channel for undo/redo)
+void model::position_atom(atom *target, vec3<double> newr)
+{
+	static vec3<double> delta;
+	delta = newr - target->r();
+	target->r() = newr;
+	log_change(LOG_COORDS);
+	// Add the change to the undo state (if there is one)
+	if (recordingstate != NULL)
+	{
+		change *newchange = recordingstate->changes.add();
+		newchange->set(UE_TRANSLATE,target->get_id());
+		newchange->set(UE_TRANSLATE,&delta);
+	}
+}
+

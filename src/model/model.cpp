@@ -92,6 +92,14 @@ void model::log_change(change_log cl)
 	if (cl != LOG_CAMERA) logs[LOG_TOTAL] ++;
 }
 
+// Copy logs
+void model::copy_logs(int *newlogs)
+{
+	logs[LOG_STRUCTURE] = newlogs[LOG_STRUCTURE];
+	logs[LOG_COORDS] = newlogs[LOG_COORDS];
+	logs[LOG_SELECTION] = newlogs[LOG_SELECTION];
+}
+
 // Clear
 void model::clear()
 {

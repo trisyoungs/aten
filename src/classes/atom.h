@@ -67,7 +67,7 @@ class atom
 	atom();	
 	~atom();
 	// List pointers
-	atom *prev,*next;
+	atom *prev, *next;
 	// Get next selected atom in list
 	atom *get_next_selected();
 	// Add bound neighbours to reflist specified

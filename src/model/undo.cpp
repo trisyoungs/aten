@@ -39,6 +39,7 @@ void model::begin_undostate(const char *text)
 	recordingstate->set_text(text);
 	recordingstate->set_startlog(LOG_STRUCTURE, logs[LOG_STRUCTURE]);
 	recordingstate->set_startlog(LOG_COORDS, logs[LOG_COORDS]);
+	recordingstate->set_startlog(LOG_SELECTION, logs[LOG_SELECTION]);
 	dbg_end(DM_CALLS,"model::begin_undostate");
 }
 
@@ -62,6 +63,7 @@ void model::end_undostate()
 	}
 	recordingstate->set_endlog(LOG_STRUCTURE, logs[LOG_STRUCTURE]);
 	recordingstate->set_endlog(LOG_COORDS, logs[LOG_COORDS]);
+	recordingstate->set_endlog(LOG_SELECTION, logs[LOG_SELECTION]);
 	// Delete all redo (i.e. future) states from the undo list
 	if (currentundostate == NULL) undolevels.clear();
 	else for (undostate *u = currentundostate->next; u != NULL; u = undolevels.remove_and_get_next(u)); 

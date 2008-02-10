@@ -34,7 +34,8 @@
 void model::set_cell(vec3<double> lengths, vec3<double> angles)
 {
 	dbg_begin(DM_CALLS,"model::set_cell[vectors]");
-	mat3<double> oldaxes = cell.get_axes();
+	vec3<double> oldlengths = cell.get_lengths();
+	vec3<double> oldangles = cell.get_angles();
 	// Set new axes 
 	cell.set(lengths, angles);
 	log_change(LOG_STRUCTURE);
@@ -42,7 +43,7 @@ void model::set_cell(vec3<double> lengths, vec3<double> angles)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_CELL, &oldaxes, &cell.get_axes());
+		newchange->set(UE_CELL, &oldlengths, &oldangles, &lengths, &angles);
 	}
 	dbg_end(DM_CALLS,"model::set_cell[vectors]");
 }
@@ -51,7 +52,8 @@ void model::set_cell(vec3<double> lengths, vec3<double> angles)
 void model::set_cell(mat3<double> axes)
 {
 	dbg_begin(DM_CALLS,"model::set_cell[axes]");
-	mat3<double> oldaxes = cell.get_axes();
+	vec3<double> oldlengths = cell.get_lengths();
+	vec3<double> oldangles = cell.get_angles();
 	// Set new axes 
 	cell.set(axes);
 	log_change(LOG_STRUCTURE);
@@ -59,7 +61,7 @@ void model::set_cell(mat3<double> axes)
 	if (recordingstate != NULL)
 	{
 		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_CELL, &oldaxes, &axes);
+		newchange->set(UE_CELL, &oldlengths, &oldangles, &cell.get_lengths(), &cell.get_angles());
 	}
 	dbg_end(DM_CALLS,"model::set_cell[axes]");
 }
@@ -226,7 +228,7 @@ void model::scale_cell(const vec3<double> &scale)
 			for (m=0; m<p->get_natoms(); m++)
 			{
 				newpos = cell.mim(i,oldcog) - oldcog + newcog;
-				i->r() = newpos;
+				position_atom(i,newpos);
 				i = i->next;
 			}
 		}
