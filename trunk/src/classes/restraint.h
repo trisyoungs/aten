@@ -60,13 +60,13 @@ class restraints
 
 	public:
 	// Add distance restraint
-	void add_ij(reflist<atom>&);
+	void add_ij(reflist<atom,int>&);
 	// Add angle restraint
 	//void add_ijk(reflist<atom>&);
 	// Add torsion restraint
 	//void add_ijkl(reflist<atom>&);
 	// Search for distance restraint in list
-	restraint_ij *does_ij_exist(reflist<atom>&);
+	restraint_ij *does_ij_exist(reflist<atom,int>&);
 	//restraint_ijk *does_ijk_exist(reflist<atom>&);// Search for angle restraint in list
 	//restraint_ijkl *does_ijkl_exist(reflist<atom>&);// Search for torsion restraint in list
 	// Clear all restraints

@@ -93,7 +93,7 @@ class atomtype
 	// Add data to the structure from the supplied string
 	void expand(const char *commands, forcefield *parentff, ffatom *parent);
 	// See if this type matches any atoms in the list provided
-	int match_in_list(reflist<atom>*, list<ring>*, model*, atom*);
+	int match_in_list(reflist<atom,int>*, list<ring>*, model*, atom*);
 	// See if this type matches the atom (+ ring data of pattern)
 	int match_atom(atom*, list<ring>*, model*, atom*);
 	// Print the information contained in the structure
@@ -127,7 +127,7 @@ class atomtype
 	// List of elements that the bound atom may be (can be empty for 'unspecified' [*])
 	int *allowedel;
 	// List of ffatom types that the bound atom may be
-	reflist<ffatom> allowedtypes;
+	reflist<ffatom,int> allowedtypes;
 	// Number of elements specified in bound_el[]
 	int nallowedel;
 	// Number of times this match is required

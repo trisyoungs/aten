@@ -115,7 +115,7 @@ void model::clear_bonding()
         // Clear the bond list.
 	for (atom* i = atoms.first(); i != NULL; i = i->next)
 	{
-		refitem<bond> *bref = i->get_bonds();
+		refitem<bond,int> *bref = i->get_bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
@@ -367,7 +367,7 @@ void pattern::augment()
 {
 	dbg_begin(DM_CALLS,"pattern::augment");
 	atom *i;
-	refitem<bond> *bref;
+	refitem<bond,int> *bref;
 	int n, nheavy;
 	msg(DM_NONE,"Augmenting bonds in pattern %s...\n",name.get());
 	/*
@@ -418,13 +418,9 @@ void pattern::augment()
 	// Stage 2 - Augment within cycles
 	for (ring *r = rings.first(); r != NULL; r = r->next)
 	{
-		refitem<atom> *ra = r->atoms.first();
-		while (ra != NULL)
-		{	// Get atoms bond order difference
-			i = ra->item;
-			if (i->tempi != 0) r->augment_atom(ra, parent);
-			ra = ra->next;
-		}
+		// Check atoms bond order difference
+		for (refitem<atom,int> *ra = r->atoms.first(); ra != NULL; ra = ra->next)
+			if (ra->item->tempi != 0) r->augment_atom(ra, parent);
 	}
 	// Stage 3 - Second pass, augmenting all atoms
 	i = firstatom;

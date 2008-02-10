@@ -67,7 +67,7 @@ void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
 	vec3<double> mim_a1, mim_a2, mim_a3, perp, perp2, newhpos, tempv;
 	double bondlength = 1.08, theta, tets;
 	int minel, onebelow, oneabove;
-	refitem<bond> *firstbond;
+	refitem<bond,int> *firstbond;
 	// Add new hydrogens based on the geometry type, and then work out from what bonds there are already...
 	switch (geometry)
 	{

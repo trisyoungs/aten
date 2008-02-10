@@ -135,7 +135,7 @@ void canvas_master::gl_subsel_3d()
 	// 3D atom highlights on atoms defined in subselection provided.
 	static vec3<double> ir;
 	double radius;
-	refitem<atom> *ri;
+	refitem<atom,int> *ri;
 	draw_style renderstyle, style_i;
 	atom *i, *lastatom = NULL;
 	renderstyle = prefs.render_style;

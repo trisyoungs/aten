@@ -39,7 +39,7 @@ void canvas_master::render_model_atoms()
 	static double radius, rij;
 	static vec3<double> ri, rj, rk, ijk;
 	static atom *i, *j;
-	static refitem<bond> *bref;
+	static refitem<bond,int> *bref;
 	static unitcell *cell;
 	// Reproject atoms if necessary
 	displaymodel->project_all();

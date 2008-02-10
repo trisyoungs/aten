@@ -59,7 +59,7 @@ restraint_ij::~restraint_ij()
 }
 
 // Add Distance
-void restraints::add_ij(reflist<atom> &rl)
+void restraints::add_ij(reflist<atom,int> &rl)
 {
 	dbg_begin(DM_CALLS,"restraints::add_ij");
 	if (rl.size() != 2)
@@ -70,7 +70,7 @@ void restraints::add_ij(reflist<atom> &rl)
 	}
 	restraint_ij *newdist = ijs.add();
 	// Initialise some variables
-	refitem<atom> *ri = rl.first();
+	refitem<atom,int> *ri = rl.first();
 	newdist->i = ri->item;
 	newdist->j = ri->next->item;
 	newdist->rij = ownermodel->distance(newdist->i, newdist->j);
@@ -78,12 +78,12 @@ void restraints::add_ij(reflist<atom> &rl)
 }
 
 // Find Distance
-restraint_ij *restraints::does_ij_exist(reflist<atom> &rl)
+restraint_ij *restraints::does_ij_exist(reflist<atom,int> &rl)
 {
 	// Go through the list of restraints and check if the current distance is already measured
 	dbg_begin(DM_CALLS,"restraints::does_lj_exist");
 	restraint_ij *xdist, *result;
-	refitem<atom> *ri = rl.first();
+	refitem<atom,int> *ri = rl.first();
 	result = NULL;
 	xdist = ijs.first();
 	while (xdist != NULL)

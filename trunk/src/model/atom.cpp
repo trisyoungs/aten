@@ -121,7 +121,7 @@ void model::delete_atom(atom *xatom)
 		// Remove measurements
 		remove_measurements(xatom);
 		// Delete All Bonds To Specific Atom
-		refitem<bond> *bref = xatom->get_bonds();
+		refitem<bond,int> *bref = xatom->get_bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved

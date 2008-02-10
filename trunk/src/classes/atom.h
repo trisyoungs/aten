@@ -71,7 +71,7 @@ class atom
 	// Get next selected atom in list
 	atom *get_next_selected();
 	// Add bound neighbours to reflist specified
-	void add_bound_to_reflist(reflist<atom>*);
+	void add_bound_to_reflist(reflist<atom,int>*);
 	// Reset all data items in structure
 	void reset();
 	// Copy atom data from supplied atom
@@ -163,17 +163,17 @@ class atom
 	*/
 	protected:
 	// Bond list for atom
-	reflist<bond> bonds;
+	reflist<bond,int> bonds;
 
 	public:
 	// Return the number of bonds to the atom
 	int get_nbonds() { return bonds.size(); }
 	// Return the current bond list
-	refitem<bond> *get_bonds() { return bonds.first(); }
+	refitem<bond,int> *get_bonds() { return bonds.first(); }
 	// Check the number of bonds against the supplied value
 	bool is_nbonds(int n) { return (bonds.size() == n ? TRUE : FALSE); }
 	// Accept the specified bond to the atom's local reference list
-	void accept_bond(bond *b) { bonds.add(b,0,0); }
+	void accept_bond(bond *b) { bonds.add(b); }
 	// Delete the specified bond from the atom's local reference list
 	void detach_bond(bond*);
 	// Return the total bond order of the atom

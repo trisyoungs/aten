@@ -217,7 +217,7 @@ class canvas_master
 	// Atom that the mouse pointer is currently hovering over
 	atom *atom_hover;
 	// Subselection (list of clicked atoms for interactive tools)
-	reflist<atom> subsel;
+	reflist<atom,int> subsel;
 	// Whether we are selecting atoms and placing them in the subsel list	
 	bool subselect_enabled;
 

@@ -111,7 +111,7 @@ void model::selection_expand()
 {
 	dbg_begin(DM_CALLS,"model::selection_expand");
 	atom *i;
-	refitem<bond> *bref;
+	refitem<bond,int> *bref;
 	// Store the current selection state in i->tempi
 	for (i = atoms.first(); i != NULL; i = i->next) i->tempi = i->is_selected();
 	// Now use the temporary state to find atoms where we select atomic neighbours
@@ -212,7 +212,7 @@ void model::select_tree(atom* i)
 	// recursively call the routine on that atom.
 	dbg_begin(DM_CALLS,"model::select_tree");
 	select_atom(i);
-	refitem<bond> *bref = i->get_bonds();
+	refitem<bond,int> *bref = i->get_bonds();
 	while (bref != NULL)
 	{
 		atom *j = bref->item->get_partner(i);

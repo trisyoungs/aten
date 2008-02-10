@@ -36,12 +36,12 @@ class ring
 
 	public:
 	// List of referenced atoms
-	reflist<atom> atoms;
+	reflist<atom,int> atoms;
 	// Requested size of ring when ring searching
 	int requested_size;
 	// Circular list browsing
-	refitem<atom> *get_next(refitem<atom> *ri) { return (ri->next == NULL ? atoms.first() : ri->next); }
-	refitem<atom> *get_prev(refitem<atom> *ri) { return (ri->prev == NULL ? atoms.last() : ri->prev); }
+	refitem<atom,int> *get_next(refitem<atom,int> *ri) { return (ri->next == NULL ? atoms.first() : ri->next); }
+	refitem<atom,int> *get_prev(refitem<atom,int> *ri) { return (ri->prev == NULL ? atoms.last() : ri->prev); }
 
 	/*
 	// Methods
@@ -58,12 +58,12 @@ class ring
 	// Sets the atom environments of the atoms in the ring to AE_AROMATIC
 	void set_aromatic();
 	// Augments the specified atom within the ring
-	void augment_atom(refitem<atom>*, model *parent);
+	void augment_atom(refitem<atom,int>*, model *parent);
 	// Comparison operator between two rings
 	//bool same_as(ring*);
 	// Print out the data contained in the structure
 	void print();
-	void add_atoms_to_reflist(reflist<atom>*, atom*);
+	void add_atoms_to_reflist(reflist<atom,int>*, atom*);
 };
 
 #endif

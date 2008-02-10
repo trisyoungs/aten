@@ -173,8 +173,8 @@ void model::translate_selection_world(const vec3<double> &v)
 	origin = cell.get_origin();
 	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected())
 	{
-		newr = i->worldr();
-		newr.add(v.x,v.y,v.z);
+		newr = i->worldr() + v;
+		//newr += v;
 		newr = (view_inverse * newr) - origin;
 		i->r() = newr;
 	}

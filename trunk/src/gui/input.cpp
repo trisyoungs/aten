@@ -41,7 +41,7 @@ void canvas_master::inform_mousedown(mouse_button button, double x, double y)
 		// Don't add the same atom more than once
 		if (subsel.search(atom_hover) == NULL)
 		{
-			subsel.add(atom_hover,0,0);
+			subsel.add(atom_hover);
 			msg(DM_VERBOSE,"Adding atom %i to canvas subselection.\n",atom_hover);
 		}
 		else msg(DM_VERBOSE,"Atom %i is already in canvas subselection.\n",atom_hover);
