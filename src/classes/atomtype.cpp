@@ -406,18 +406,18 @@ void atomtype::expand(const char *data, forcefield *ff, ffatom *parent)
 // Match Functions
 */
 
-int atomtype::match_in_list(reflist<atom> *alist, list<ring> *ringdata, model *parent, atom *topatom)
+int atomtype::match_in_list(reflist<atom,int> *alist, list<ring> *ringdata, model *parent, atom *topatom)
 {
 	dbg_begin(DM_CALLS,"atomtype::match_in_list");
 	// Search the atomlist supplied for a match to this atomtype.
 	// If we find one, remove the corresponding atom from the atomlist.
 	int score = 0, bondscore;
-	refitem<atom> *boundi;
+	refitem<atom,int> *boundi;
 	for (boundi = alist->first(); boundi != NULL; boundi = boundi->next)
 	{
 		// Extra check for bond type definition here
 		if (boundbond == BT_UNSPECIFIED) bondscore = 1;
-		else boundbond == boundi->data2 ? bondscore = 1 : bondscore = 0;
+		else (boundbond == boundi->data ? bondscore = 1 : bondscore = 0);
 		// Now do proper atom type check (if we passed the bond check)
 		if (bondscore != 0) score = match_atom(boundi->item, ringdata, parent, topatom);
 		if ((bondscore + score) > 1) break;
@@ -449,11 +449,11 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent, atom *top
 	ringtype *atr;
 	ring *r;
 	ffatom *ffa;
-	refitem<ring> *refring;
-	reflist<atom> atomchecklist;
-	reflist<ring> ringchecklist;
-	refitem<atom> *ri;
-	refitem<ffatom> *rd;
+	refitem<ring,int> *refring;
+	reflist<atom,int> atomchecklist;
+	reflist<ring,int> ringchecklist;
+	refitem<atom,int> *ri;
+	refitem<ffatom,int> *rd;
 	// Set the scoring to one (which will be the case if there are no specifications to match)
 	typescore = 1;
 	level ++;
@@ -629,8 +629,7 @@ int atomtype::match_atom(atom* i, list<ring> *ringdata, model *parent, atom *top
 		// Get list of rings out test atom is involved in
 		ringchecklist.clear();
 		// Search the list of atoms in this ring for 'i'
-		for (r = ringdata->first(); r != NULL; r = r->next)
-			if (r->atoms.search(i) != NULL) ringchecklist.add(r,0,0);
+		for (r = ringdata->first(); r != NULL; r = r->next) if (r->atoms.search(i) != NULL) ringchecklist.add(r);
 		// Loop over ring specifications in atom type
 		for (atr = ringlist.first(); atr != NULL; atr = atr->next)
 		{

@@ -167,7 +167,7 @@ bool model::autocreate_patterns()
 	clipboard patclip;
 	emp.create_empty(1024);
 	pattern *p;
-	refitem<bond> *rb;
+	refitem<bond,int> *rb;
 	atom *i, *isel, *clipi;
 	// Check current pattern first...
 	if (patterns_are_valid())
@@ -404,7 +404,7 @@ void model::selection_get_bond_fingerprint(dnchar &target)
 	dbg_begin(DM_CALLS,"model::selection_get_bond_fingerprint");
 	target.clear();
 	int count = 0, diff;
-	refitem<bond> *ri;
+	refitem<bond,int> *ri;
 	atom *i = atoms.first();
 	atom *j;
 	while (i != NULL)

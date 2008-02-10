@@ -205,7 +205,7 @@ class commandlist
 	// List of commands
 	list<command> commands;
 	// List of pointers to stacked branches
-	reflist< list<command> > branchstack;
+	reflist<list<command>,int> branchstack;
 	// Basic command types of stacked branches
 	list<command> branchcmdstack;
 	// Add specified branch to stack

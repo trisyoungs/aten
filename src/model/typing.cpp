@@ -141,19 +141,20 @@ void pattern::assign_hybrids()
 		i->set_env(AE_UNSPECIFIED);
 		// Work out the hybridisation based on the bond types connected to the atom.
 		// We can increase the hybridisation at any point, but never decrease it.
-		refitem<bond> *bref = i->get_bonds();
-		while (bref != NULL)
+		for (refitem<bond,int> *bref = i->get_bonds(); bref != NULL; bref = bref->next)
 		{
 			switch (bref->item->type)
 			{
 				case (BT_SINGLE):
-					if (i->get_env() < AE_SP3) i->set_env(AE_SP3); break;
+					if (i->get_env() < AE_SP3) i->set_env(AE_SP3);
+					break;
 				case (BT_DOUBLE):
-					if (i->get_env() < AE_SP2) i->set_env(AE_SP2); break;
+					if (i->get_env() < AE_SP2) i->set_env(AE_SP2);
+					break;
 				case (BT_TRIPLE):
-					if (i->get_env() < AE_SP) i->set_env(AE_SP); break;
+					if (i->get_env() < AE_SP) i->set_env(AE_SP);
+					break;
 			}
-			bref = bref->next;
 		}
 		i = i->next;
 	}

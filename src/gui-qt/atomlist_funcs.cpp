@@ -46,7 +46,7 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 	// Selection has changed, so go through the reflist of TTreeWidgetItems and check their selection status
 	model *m = master.get_currentmodel();
 	atom *i;
-	for (refitem<TTreeWidgetItem> *ri = ui.AtomTree->get_atomitems(); ri != NULL; ri = ri->next)
+	for (refitem<TTreeWidgetItem,int> *ri = ui.AtomTree->get_atomitems(); ri != NULL; ri = ri->next)
 	{
 		//printf("atomitem = %li\n",ri->item);
 		//printf("atomitem atom = %li\n", ri->item->get_atom());
@@ -70,7 +70,7 @@ void AtenForm::refresh_atompage()
 	REFRESHING = TRUE;
 	pattern *p;
 	TTreeWidgetItem *item;
-	refitem<TTreeWidgetItem> *ri;
+	refitem<TTreeWidgetItem,int> *ri;
 	atom *i;
 	int n;
 	model *m = master.get_currentmodel();

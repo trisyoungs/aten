@@ -403,7 +403,7 @@ void pattern::propagate_bondtypes()
 	dbg_begin(DM_CALLS,"pattern::propagate_bondtypes");
 	int n,m,o,offset;
 	atom *i, *j, *k;
-	refitem<bond> *bref;
+	refitem<bond,int> *bref;
 	bond *b1, *b2;
 	// Set the pointer 'j' to be the first atom of the second molecule
 	j = firstatom;
@@ -513,7 +513,7 @@ void pattern::ring_markatoms(atom *i)
 	{
 		// Check the listed neighbours to set the potential of this atom
 		int count = 0;
-		refitem<bond> *bref = i->get_bonds();
+		refitem<bond,int> *bref = i->get_bonds();
 		while (bref != NULL)
 		{
 			if (bref->item->get_partner(i)->tempi != 0) count++;
@@ -551,7 +551,7 @@ void pattern::find_rings()
 	dbg_begin(DM_CALLS,"pattern::find_rings");
 	int n, rsize, ringpotential;
 	atom *i;
-	refitem<bond> *bref;
+	refitem<bond,int> *bref;
 	ring *r, path;
 	// Set the initial states of the atoms. i->tempi maintains the maximum possible number of rings that each atom can form based on the number of bonds it has.
 	i = firstatom;
@@ -614,9 +614,9 @@ void pattern::ring_search(atom *i, ring *currentpath, int &ringpotential)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
 	dbg_begin(DM_CALLS,"pattern::ring_search");
-	refitem<bond> *bref;
+	refitem<bond,int> *bref;
 	ring *r;
-	refitem<atom> *lastra;
+	refitem<atom,int> *lastra;
 	bool done;
 	// First off, if this atom has no more available bonds for inclusion in rings, just return
 	if (i->tempi == 0)
@@ -653,7 +653,7 @@ void pattern::ring_search(atom *i, ring *currentpath, int &ringpotential)
 					r->copy(currentpath);
 					// Must now update atom 'tempi' values to reflect the inclusion of these atoms in
 					// another ring, and also the total ringpotential variable
-					refitem<atom> *ra = r->atoms.first();
+					refitem<atom,int> *ra = r->atoms.first();
 					while (ra != NULL)
 					{
 						ra->item->tempi -= 1;

@@ -178,7 +178,7 @@ void model::add_measurements_in_selection(geom_type gt)
 {
 	dbg_begin(DM_CALLS,"model::add_measurements_in_selection");
 	atom *i, *j, *k, *l;
-	refitem<bond> *b1, *b2, *b3;
+	refitem<bond,int> *b1, *b2, *b3;
 	switch (gt)
 	{
 		case (GT_DISTANCE):

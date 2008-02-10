@@ -37,7 +37,7 @@ class TTreeWidget : public QTreeWidget
 
 	private:
 	// List of TTreeViewWidgets that this TTreeWidget contains
-	reflist<TTreeWidgetItem> atomitems;
+	reflist<TTreeWidgetItem,int> atomitems;
 
 	public:
 	// Clear list of TTreeViewWidgets 
@@ -51,7 +51,7 @@ class TTreeWidget : public QTreeWidget
 		return atomitems.last()->item;
 	}
 	// Return the reflist of TTreeViewAtoms
-	refitem<TTreeWidgetItem> *get_atomitems() { return atomitems.first(); }
+	refitem<TTreeWidgetItem,int> *get_atomitems() { return atomitems.first(); }
 };
 
 #endif

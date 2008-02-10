@@ -61,8 +61,8 @@ bool ring::add_atom(atom *i)
 		return FALSE;
 	}
 	// Append a ringatomx to the list, pointing to atom i
-	// Store atom ID in the refitem's data1 variable
-	atoms.add(i,i->get_id(),0);
+	// Store atom ID in the refitem's data variable
+	atoms.add(i,i->get_id());
 	dbg_end(DM_CALLS,"ring::add_atom");
 	return TRUE;
 }
@@ -76,7 +76,7 @@ bool ring::is_aromatic()
 	// Use a set of exceptions for heteroatoms such as N and O...
 	int okatoms = 0;
 	bool exitearly = FALSE, result = FALSE;
-	refitem<atom> *ra = atoms.first();
+	refitem<atom,int> *ra = atoms.first();
 	while (ra != NULL)
 	{
 		switch (ra->item->get_element())
@@ -114,7 +114,7 @@ void ring::set_aromatic()
 {
 	// Set the environment flags of the constituent atoms of the ring to AE_AROMATIC.
 	dbg_begin(DM_CALLS,"ring::set_aromatic");
-	refitem<atom> *ra = atoms.first();
+	refitem<atom,int> *ra = atoms.first();
 	while (ra != NULL)
 	{
 		ra->item->set_env(AE_AROMATIC);
@@ -128,7 +128,7 @@ void ring::finish()
 {
 	// Perform some finishing tasks on the list
 	dbg_begin(DM_CALLS,"ring::finish");
-	refitem<atom> *ra, *temp, *lowid;
+	refitem<atom,int> *ra, *temp, *lowid;
 	// Make the list head point to the atom with the lowest id
 	if (atoms.size() == 0)
 	{	
@@ -141,7 +141,7 @@ void ring::finish()
 	lowid = ra;
 	while (ra != NULL)
 	{
-		if (ra->data1 < lowid->data1) lowid = ra;
+		if (ra->data < lowid->data) lowid = ra;
 		ra = ra->next;
 	}
 	// Make this atom (with lowest id) the head of the list
@@ -156,10 +156,10 @@ void ring::finish()
 	while (ra != NULL)
 	{
 		// Search the bond list of this atom for the next atom in the list
-		refitem<bond> *bref = ra->item->get_bonds();
+		refitem<bond,int> *bref = ra->item->get_bonds();
 		while (bref != NULL)
 		{
-			if (bref->item->get_partner(ra->item) == get_next(ra)->item) ra->data1 = bref->item->type;
+			if (bref->item->get_partner(ra->item) == get_next(ra)->item) ra->data = bref->item->type;
 			bref = bref->next;
 		}
 		ra = ra->next;
@@ -172,7 +172,7 @@ void ring::copy(ring *source)
 {
 	// Copy the data in source to the current ring.
 	atoms.clear();
-	refitem<atom> *ra = source->atoms.first();
+	refitem<atom,int> *ra = source->atoms.first();
 	while (ra != NULL)
 	{
 		bool succes = add_atom(ra->item);
@@ -186,10 +186,10 @@ void ring::print()
 	// Print out the data of the ring.
 	// Beware, since if it has been 'finished' it will be a circular list
 	msg(DM_VERBOSE,"Ring has %i atoms : ",atoms.size());
-	refitem<atom> *ra = atoms.first();
+	refitem<atom,int> *ra = atoms.first();
 	while (ra != NULL)
 	{
-		msg(DM_VERBOSE,"%s(%i),",elements.symbol(ra->item),ra->data1);
+		msg(DM_VERBOSE,"%s(%i),",elements.symbol(ra->item),ra->data);
 		//printf("%s(%i),",elements.el[ra->i->el].symbol.c_str(),ra->i->tempi);
 		ra = ra->next;
 	}
@@ -197,19 +197,14 @@ void ring::print()
 }
 
 // Add atoms to reflist
-void ring::add_atoms_to_reflist(reflist<atom> *rlist, atom *i)
+void ring::add_atoms_to_reflist(reflist<atom,int> *rlist, atom *i)
 {
 	// Add all atoms in the ring 'r' to the list, excluding the atom 'i'
-	refitem<atom> *ra = atoms.first();
-	while (ra != NULL)
-	{
-		if (ra->item != i) rlist->add(ra->item,0,0);
-		ra = ra->next;
-	}
+	for (refitem<atom,int> *ra = atoms.first(); ra != NULL; ra = ra->next) if (ra->item != i) rlist->add(ra->item);
 }
 
 // Augment ring atom
-void ring::augment_atom(refitem<atom> *refatom, model *parent)
+void ring::augment_atom(refitem<atom,int> *refatom, model *parent)
 {
 	dbg_begin(DM_CALLS,"ring::augment_atom");
 	// Assumes current bond order differences are in i->tempi

@@ -85,8 +85,8 @@ bool model::create_expression()
 	}
 	// 4) Create list of unique atom types now in model
 	// First, create a list of unique type references
-	reflist<ffatom> uniqueref;
-	refitem<ffatom> *ri;
+	reflist<ffatom,int> uniqueref;
+	refitem<ffatom,int> *ri;
 	ffatom *ffa;
 	for (atom *i = atoms.first(); i != NULL; i = i->next) uniqueref.add_unique(i->get_type());
 	// Now, populate the uniquetypes list with copies of these atom types
@@ -108,7 +108,7 @@ void pattern::init_expression(model *xmodel)
 	// NTorsions can be calculated from the bond list and atomic nbonds data.
 	dbg_begin(DM_CALLS,"pattern::init_expression");
 	atom *i, *j;
-	refitem<bond> *bref;
+	refitem<bond,int> *bref;
 	int n, atomid, nbonds, nangles, ntorsions;
 	nbonds = 0;
 	nangles = 0;
@@ -158,7 +158,7 @@ bool pattern::fill_expression(model *xmodel)
 	// to the original atomic elements, to ease the generation of the expression.
 	dbg_begin(DM_CALLS,"pattern::fill_expression");
 	atom *ai, *aj, *ak, *al;
-	refitem<bond> *bref;
+	refitem<bond,int> *bref;
 	ffbound *ffb;
 	ffparams params;
 	patatom *pa;

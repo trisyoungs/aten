@@ -176,7 +176,7 @@ int atom::total_bond_order()
 	dbg_begin(DM_CALLS,"atom::total_bond_order");
 	int result;
 	result = 0;
-	refitem<bond> *bref = get_bonds();
+	refitem<bond,int> *bref = get_bonds();
 	while (bref != NULL)
 	{
 		result += (2 * bref->item->type);
@@ -191,7 +191,7 @@ int atom::count_bonds(bond_type type)
 {
 	dbg_begin(DM_CALLS,"atom::count_bonds");
 	int count = 0;
-	refitem<bond> *bref = get_bonds();
+	refitem<bond,int> *bref = get_bonds();
 	while (bref != NULL)
 	{
 		if (bref->item->type == type) count ++;
@@ -206,7 +206,7 @@ bond *atom::find_bond(atom *j)
 {
 	dbg_begin(DM_MORECALLS,"atom::find_bond");
 	bond *result = NULL;
-	refitem<bond> *bref = get_bonds();
+	refitem<bond,int> *bref = get_bonds();
 	while (bref != NULL)
 	{
 		if (bref->item->get_partner(this) == j) result = bref->item;
@@ -247,7 +247,7 @@ atom_geom atom::get_geometry(model *parent)
 	static atom_geom result;
 	static double angle, largest;
 	static bond *b1, *b2;
-	static refitem<bond> *bref1, *bref2;
+	static refitem<bond,int> *bref1, *bref2;
 	result = AG_UNSPECIFIED;
 	// Separate the tests by number of bound atoms...
 	switch (get_nbonds())
@@ -311,15 +311,11 @@ atom_geom atom::get_geometry(model *parent)
 }
 
 // Add bound neighbours to reflist
-void atom::add_bound_to_reflist(reflist<atom> *rlist)
+void atom::add_bound_to_reflist(reflist<atom,int> *rlist)
 {
 	// Add all atoms bound to the supplied atom to the atomreflist.
-	refitem<bond> *bref = get_bonds();
-	while (bref != NULL)
-	{
-		rlist->add(bref->item->get_partner(this),0,bref->item->type);
-		bref = bref->next;
-	}
+	for (refitem<bond,int> *bref = get_bonds(); bref != NULL; bref = bref->next)
+		rlist->add(bref->item->get_partner(this),bref->item->type);
 }
 
 // Find plane of three atoms
@@ -327,8 +323,8 @@ vec3<double> atom::find_bond_plane(atom *j, bond *b, const vec3<double> &rij)
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	static vec3<double> rk, xp1, xp2;
-	refitem<bond> *brefi = bonds.first();
-	refitem<bond> *brefj = j->bonds.first();
+	refitem<bond,int> *brefi = bonds.first();
+	refitem<bond,int> *brefj = j->bonds.first();
 	if (bonds.size() != 1)	// Can define from another bond on 'this'
 		b == brefi->item ? rk = brefi->next->item->get_partner(this)->rr : rk = brefi->item->get_partner(this)->rr;
 	else if (j->bonds.size() != 1)// Can define from another bond on j
