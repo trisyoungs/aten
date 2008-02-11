@@ -31,22 +31,11 @@
 #include "methods/mc.h"
 #include "parse/filter.h"
 #include "command/commandlist.h"
+#include "base/cli.h"
 #include <getopt.h>
-
-#define MAXLONGOPTLENGTH 16
-#define MAXLONGOPTDESC 128
 
 // Program Modes
 enum prog_mode { PM_COMMAND, PM_INTERACTIVE, PM_GUI, PM_NONE };
-
-// Command line options
-enum cli_opt { CO_LISTENDER, CO_A, CO_BOHR, CO_COMMAND, CO_DEBUG, CO_E,
-	CO_FF, CO_G, CO_HELP, CO_INTERACTIVE, CO_J,
-	CO_K, CO_L, CO_M, CO_N, CO_O,
-	CO_P, CO_Q, CO_R, CO_SCRIPT, CO_T,
-	CO_UNDO, CO_VERBOSE, CO_W, CO_X, CO_Y, CO_ZMAP,
-	CO_FOLD, CO_NOFOLD, CO_BOND, CO_NOBOND, CO_CENTRE, CO_NOCENTRE, CO_PACK, CO_NOPACK,
-	CO_DEBUGTYPING, CO_DEBUGPARSE, CO_DEBUGMORE, CO_DEBUGALL, CO_DEBUGFILTERS, CO_GRID, CO_CACHE, CO_NITEMS };
 
 // Master
 class master_data
@@ -229,19 +218,13 @@ class master_data
 	*/
 	private:
 	// Array of long CLI options
-	option clioptions[CO_NITEMS];
-	// Command-line long options that correspond to clioptions[]
-	char CO_keyword[CO_NITEMS][MAXLONGOPTLENGTH];
-	// Description of command-line option corresponding to clioptions[]
-	char CO_desc[CO_NITEMS][MAXLONGOPTDESC];
-	// Argument requirement by options
-	char CO_argument[CO_NITEMS][16];
-	// Add long option to list
-	void add_cli_option(const char *option, int optid, const char *description, int argument = no_argument, const char *argname = "\0");
-	// Print usage information
-	void print_usage();
+	option *longopts;
 	// List of short options
 	dnchar shortopts;
+	// Print usage information
+	void print_usage();
+	// Number of CLI options defined
+	int nopts;
 
 	public:
 	// Prepare CLI options
