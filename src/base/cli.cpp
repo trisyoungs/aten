@@ -23,68 +23,64 @@
 #include "base/master.h"
 #include <getopt.h>
 
-enum short_opt { SO_A=97, SO_BOHR, SO_COMMAND, SO_DEBUG, SO_E,
-		SO_FF, SO_G, SO_HELP, SO_INTERACTIVE, SO_J,
-		SO_K, SO_L, SO_M, SO_N, SO_O,
-		SO_P, SO_Q, SO_R, SO_SCRIPT, SO_T,
-		SO_UNDO, SO_VERBOSE, SO_W, SO_X, SO_Y, SO_ZMAP,
-		SO_LASTITEM };
-enum long_opt { LO_FOLD, LO_NOFOLD, LO_BOND, LO_NOBOND, LO_CENTRE, LO_NOCENTRE, LO_PACK, LO_NOPACK, LO_DEBUGTYPING, LO_DEBUGPARSE, LO_DEBUGMORE, LO_DEBUGALL, LO_DEBUGFILTERS, LO_SURFACE, LO_CACHE, LO_NITEMS };
-
 // Prepare options list
 void master_data::prepare_cli()
 {
-	// Create the option structures for getopt_long to use
-	nopts = 0;
+	// Blank all related variables
+	for (int n=0; n<CO_NITEMS; n++)
+	{
+		CO_keyword[n][0] = '\0';
+		CO_desc[n][0] = '\0';
+		CO_argument[n][0] = '\0';
+	}
+	// Initialise short options string and build list of command-line options
 	shortopts.create_empty(256);
-	// Long/short options
-	add_cli_option("bohr",no_argument,SO_BOHR,TRUE);
-	add_cli_option("command",required_argument,SO_COMMAND,TRUE);
-	add_cli_option("debug",no_argument,SO_DEBUG,TRUE);
-	add_cli_option("ff",required_argument,SO_FF,TRUE);
-	add_cli_option("help",no_argument,SO_HELP,TRUE);
-	add_cli_option("script",required_argument,SO_SCRIPT,TRUE);
-	add_cli_option("undo",required_argument,SO_UNDO,TRUE);
-	add_cli_option("verbose",no_argument,SO_VERBOSE,TRUE);
-	add_cli_option("zmap",required_argument,SO_ZMAP,TRUE);
-	// Long options
-	add_cli_option("cache",required_argument,LO_CACHE,TRUE);
-	add_cli_option("fold",no_argument,LO_FOLD,FALSE);
-	add_cli_option("nofold",no_argument,LO_NOFOLD,FALSE);
-	add_cli_option("bond",no_argument,LO_BOND,FALSE);
-	add_cli_option("nobond",no_argument,LO_NOBOND,FALSE);
-	add_cli_option("centre",no_argument,LO_CENTRE,FALSE);
-	add_cli_option("nocentre",no_argument,LO_NOCENTRE,FALSE);
-	add_cli_option("nopack",no_argument,LO_NOPACK,FALSE);
-	add_cli_option("debugtyping",no_argument,LO_DEBUGTYPING,FALSE);
-	add_cli_option("debugmore",no_argument,LO_DEBUGMORE,FALSE);
-	add_cli_option("debugall",no_argument,LO_DEBUGALL,FALSE);
-	add_cli_option("debugparse",no_argument,LO_DEBUGPARSE,FALSE);
-	add_cli_option("debugfilters",no_argument,LO_DEBUGFILTERS,FALSE);
-	add_cli_option("surface",required_argument,LO_SURFACE,FALSE);
-	add_cli_option("0",0,0,0);
+	add_cli_option("bohr",CO_BOHR,"Converts model atomic positions from Bohr to Angstrom");
+	add_cli_option("command",CO_COMMAND,"Execute supplied commands before main program execution",required_argument,"<commands>");
+	add_cli_option("debug",CO_DEBUG,"Print major subroutine call information");
+	add_cli_option("ff",CO_FF,"Load the specified forcefield file",required_argument,"<file>");
+	add_cli_option("help",CO_HELP,"Print this information");
+	add_cli_option("script",CO_SCRIPT,"Load and execute the script file specified",required_argument,"<file>");
+	add_cli_option("maxundo",CO_UNDO,"Set the maximum number of undo levels per model (-1 = unlimited)",required_argument,"<nlevels>");
+	add_cli_option("verbose",CO_VERBOSE,"Enable verbose program output");
+	add_cli_option("zmap",CO_ZMAP,"Override filter element mapping style",required_argument,"<mapstyle>");
+	add_cli_option("cachelimit",CO_CACHE,"Set the trajectory cache limit to <limit> kb",required_argument,"<limit>");
+	add_cli_option("fold",CO_FOLD,"Force folding of atoms in periodic systems");
+	add_cli_option("nofold",CO_NOFOLD,"Prevent folding of atoms in periodic systems");
+	add_cli_option("bond",CO_BOND,"Force (re)calculation of bonding in the model");
+	add_cli_option("nobond",CO_NOBOND,"Prevent (re)calculation of bonding in the model");
+	add_cli_option("centre",CO_CENTRE,"Force centering of atomic coordinates at zero");
+	add_cli_option("nocentre",CO_NOCENTRE,"Prevent centering of atomic coordinates at zero");
+	add_cli_option("nopack",CO_NOPACK,"Prevent generation of symmetry-equivalent atoms from spacegroup information");
+	add_cli_option("debugtyping",CO_DEBUGTYPING,"Print out verbose information from atom typing routines");
+	add_cli_option("debugmore",CO_DEBUGMORE,"Print all subroutine call information");
+	add_cli_option("debugall",CO_DEBUGALL,"Print out all debug information");
+	add_cli_option("debugparse",CO_DEBUGPARSE,"Print out verbose information from file parsing routines");
+	add_cli_option("debugfilters",CO_DEBUGFILTERS,"Print out verbose information from file filter routines");
+	add_cli_option("grid",CO_GRID,"Load the specified grided data file",required_argument,"<file>");
+	add_cli_option("",CO_LISTENDER,"");
 }
 
 // Add CLI options
-void master_data::add_cli_option(const char *name, int has_arg, int enumid, bool has_shortopt)
+void master_data::add_cli_option(const char *name, int enumid, const char *argname, int argtype, const char *description)
 {
 	// Add a new option entry in the opts array
-	if (nopts == MAXCLIOPTS)
-	{
-		printf("Increase MAXCLIOPTS in master.h!\n");
-		return;
-	}
-	longopts[nopts].name = name;
-	longopts[nopts].has_arg = has_arg;
-	longopts[nopts].flag = NULL;
-	longopts[nopts].val = enumid;
+	static int nopts = 0;
+	clioptions[nopts].name = name;
+	clioptions[nopts].has_arg = argtype;
+	clioptions[nopts].flag = NULL;
+	clioptions[nopts].val = enumid;
+	// Store description data
+	//strcpy(CO_keyword[enumid],name);
+	//strcpy(CO_desc[enumid],description);
+	//strcpy(CO_argument[enumid],argname);
 	nopts ++;
-	// If this long option has a corresponding short option, add it to the shortopts list
-	if (has_shortopt)
+	// If this long option has a corresponding short option (anything <= CO_ZMAP), add it to the shortopts list
+	if ((enumid > CO_LISTENDER) && (enumid <= CO_ZMAP))
 	{
-		shortopts += char(enumid);
-		if (has_arg == required_argument) shortopts += ':';
-		else if (has_arg == optional_argument) shortopts.cat("::");
+		shortopts += char(enumid+96);
+		if (argtype == required_argument) shortopts += ':';
+		else if (argtype == optional_argument) shortopts.cat("::");
 	}
 }
 
@@ -97,12 +93,13 @@ int master_data::parse_cli(int argc, char *argv[])
 	commandlist *cl;
 	filter *f;
 	zmap_type zm;
-	//printf("PROPER_PARSE = %i [%s]\n",argc,shortopts.c_str());
+	printf("LKdjflkjfkdlsj\n");
+	printf("PROPER_PARSE = %i [%s]\n",argc,shortopts.get());
 	while (!done)
 	{
 		// Parse option from cli arguments
-		int result = getopt_long(argc,argv,shortopts.get(),longopts,&index);
-	//printf("CLI_PARSE result = %i\n",result);
+		int result = getopt_long(argc,argv,shortopts.get(),clioptions,&index);
+	printf("CLI_PARSE result = %i\n",result);
 		if (result == -1) done = TRUE;
 		else
 		{
@@ -112,19 +109,19 @@ int master_data::parse_cli(int argc, char *argv[])
 				// Short options with long equivalents
 				*/
 				// Turn on call debugging
-				case (SO_DEBUG):
+				case (CO_DEBUG):
 					add_debuglevel(DM_CALLS);
 					break;
 				// Turn on verbose messaging
-				case (SO_VERBOSE):
+				case (CO_VERBOSE):
 					add_debuglevel(DM_VERBOSE);
 					break;
 				// Load the specified forcefield
-				case (SO_FF):
+				case (CO_FF):
 					master.load_ff(optarg);
 					break;
 				// Read script commands from passed string
-				case (SO_COMMAND):
+				case (CO_COMMAND):
 					cl = master.scripts.add();
 					if (cl->cache_line(optarg)) master.set_program_mode(PM_COMMAND);
 					else
@@ -134,7 +131,7 @@ int master_data::parse_cli(int argc, char *argv[])
 					}
 					break;
 				// Cache a script file
-				case (SO_SCRIPT):
+				case (CO_SCRIPT):
 					cl = master.scripts.add();
 					if (cl->load(optarg)) master.set_program_mode(PM_COMMAND);
 					else
@@ -144,81 +141,81 @@ int master_data::parse_cli(int argc, char *argv[])
 					}
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
-				case (SO_ZMAP):
+				case (CO_ZMAP):
 					zm = ZM_from_text(optarg);
 					if (zm != ZM_NITEMS) prefs.set_zmapping(zm);
 					break;
 				// Display help
-				case (SO_HELP):
+				case (CO_HELP):
 					print_usage();
 					return -1;
 					break;
 				// Enter interactive mode
-				case (SO_INTERACTIVE):
+				case (CO_INTERACTIVE):
 					master.set_program_mode(PM_INTERACTIVE);
 					break;
 				// Convert coordinates from Bohr to Angstrom
-				case (SO_BOHR):
+				case (CO_BOHR):
 					prefs.set_coords_in_bohr(TRUE);
 					break;
 				/*
 				// Long options
 				*/
 				// Set trajectory cache limit
-				case (LO_CACHE):
+				case (CO_CACHE):
 					prefs.set_cache_limit(atoi(optarg));
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
-				case (LO_FOLD):
+				case (CO_FOLD):
 					prefs.set_fold_on_load(PS_YES);
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
-				case (LO_NOFOLD):
+				case (CO_NOFOLD):
 					prefs.set_fold_on_load(PS_NO);
 					break;
 				// Force bonding calculation of atoms on load
-				case (LO_BOND):
+				case (CO_BOND):
 					prefs.set_bond_on_load(PS_YES);
 					break;
 				// Prohibit bonding calculation of atoms on load
-				case (LO_NOBOND):
+				case (CO_NOBOND):
 					prefs.set_bond_on_load(PS_NO);
 					break;
 				// Force model centering on load (for non-periodic systems)
-				case (LO_CENTRE):
+				case (CO_CENTRE):
 					prefs.set_centre_on_load(PS_YES);
 					break;
 				// Prohibit model centering on load (for non-periodic systems)
-				case (LO_NOCENTRE):
+				case (CO_NOCENTRE):
 					prefs.set_centre_on_load(PS_NO);
 					break;
 				// Prohibit packing (application of symmetry operators) on load
-				case (LO_PACK):
+				case (CO_PACK):
 					prefs.set_pack_on_load(PS_YES);
 					break;
 				// Force packing (application of symmetry operators) on load
-				case (LO_NOPACK):
+				case (CO_NOPACK):
 					prefs.set_pack_on_load(PS_NO);
 					break;
 				// Turn on debug messages for atom typing
-				case (LO_DEBUGTYPING):
+				case (CO_DEBUGTYPING):
 					add_debuglevel(DM_TYPING);
 					break;
 				// Turn on debug messages for atom typing
-				case (LO_DEBUGPARSE):
+				case (CO_DEBUGPARSE):
 					add_debuglevel(DM_PARSE);
 					break;
 				// Turn on debug messages for atom typing
-				case (LO_DEBUGFILTERS):
+				case (CO_DEBUGFILTERS):
 					add_debuglevel(DM_FILTERS);
 					break;
 				// Turn on debug messages for more calls
-				case (LO_DEBUGMORE):
+				case (CO_DEBUGMORE):
 					add_debuglevel(DM_CALLS);
 					add_debuglevel(DM_MORECALLS);
 					break;
 				// Turn on debug messages for all calls
-				case (LO_DEBUGALL):
+				case (CO_DEBUGALL):
 					add_debuglevel(DM_CALLS);
 					add_debuglevel(DM_MORECALLS);
 					add_debuglevel(DM_VERBOSE);
@@ -226,7 +223,7 @@ int master_data::parse_cli(int argc, char *argv[])
 					add_debuglevel(DM_TYPING);
 					break;
 				// Load surface
-				case (LO_SURFACE):
+				case (CO_GRID):
 					f = master.probe_file(optarg, FT_GRID_IMPORT);
 					if (f != NULL) f->execute(optarg);
 					break;
@@ -257,25 +254,15 @@ int master_data::parse_cli(int argc, char *argv[])
 // Usage help
 void master_data::print_usage()
 {
-	printf("Usage: aten [options] [<model> [<model> [...]]\n");
+	printf("Usage: aten [options] [<model> ...]\n");
 	printf("\nProgram Options:\n");
-	printf("-h, --help\n   Displays this information\n");
-	printf("-s <file>\n   Loads and executes the script file specified\n");
-	printf("-i, --interactive\n   Enters interactive mode\n");
-	printf("-f, --ff <file>\n   Loads the specified forcefield file\n");
-	printf("\nModel Load Options:\n");
-	printf("-z, --zmap <alpha|numeric|ff|first>\n   Sets conversion method of atom names\n");
-	printf("--[no]fold\n   Force or prevent folding of atoms in periodic systems\n");
-	printf("--nopack\n   Prevent generation of symmetry-equivalent atoms from spacegroup information\n");
-	printf("--[no]bond\n   Force or prevent (re)calculation of bonding in the model\n");
-	printf("--nocentre\n   Don't centre non-periodic models.\n");
-	printf("-b, --bohr\n   Converts model atomic positions from Bohr to Angstrom\n");
-	printf("\nDebug Options:\n");
-	printf("-d, --debug\n   Print major subroutine call information\n");
-	printf("--debugmore\n   Print all subroutine call information\n");
-	printf("--debugtyping\n   Print out verbose information from atom typing routines\n");
-	printf("--debugparse\n   Print out verbose information from file parsing routines\n");
-	printf("--debugfilters\n   Print out verbose information from file filter routines\n");
-	printf("--debugall\n   Print out all debug information\n");
-	printf("--verbose\n   Enable verbose program output\n");
+	for (int n=CO_A; n<CO_NITEMS; n++)
+	{
+		// Check to see if the option is blank (which may be the case for options < C_ZMAP)
+		if (CO_keyword[n][0] == '\0') continue;
+		// Print information....
+		if (n <= CO_ZMAP) printf("  -%c %s, --%s %s\n", char(n+96), CO_argument[n], CO_keyword[n], CO_argument[n]);
+		else printf("  --%s %s\n", CO_keyword[n], CO_argument[n]);
+		printf("\t\t%s\n",CO_desc[n]);
+	}
 }

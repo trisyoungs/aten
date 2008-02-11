@@ -43,6 +43,7 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 {
 	if (REFRESHING) return;
 	dbg_begin(DM_CALLS,"AtenForm::on_AtomTree_selectionChanged");
+	printf("AtenForm:: atom selection has changed...\n");
 	// Selection has changed, so go through the reflist of TTreeWidgetItems and check their selection status
 	model *m = master.get_currentmodel();
 	atom *i;
@@ -54,6 +55,7 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 		ri->item->isSelected() ? m->select_atom(i) : m->deselect_atom(i);
 	}
 	gui.mainview.postredisplay();
+	gui.update_labels();
 	dbg_end(DM_CALLS,"AtenForm::on_AtomTree_selectionChanged");
 }
 
@@ -68,6 +70,7 @@ void AtenForm::refresh_atompage()
 	}
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
 	REFRESHING = TRUE;
+	printf("Refreshing atompage.....\n");
 	pattern *p;
 	TTreeWidgetItem *item;
 	refitem<TTreeWidgetItem,int> *ri;
@@ -83,6 +86,7 @@ void AtenForm::refresh_atompage()
 	list_lastmodel = m;
 	if (liststructure_point != (m->get_log(LOG_STRUCTURE) + m->get_log(LOG_COORDS)))
 	{
+		printf("List must be cleared and repopulated...\n");
 		// Clear the current list
 		ui.AtomTree->clear();
 		ui.AtomTree->clear_atomitems();
@@ -143,6 +147,7 @@ void AtenForm::refresh_atompage()
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		// Grab the list of TTreeWidgetItems
+		printf("Just updating selection....\n");
 		for (ri = ui.AtomTree->get_atomitems(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item->get_atom();

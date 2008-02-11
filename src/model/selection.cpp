@@ -80,10 +80,10 @@ void model::move_selection_to_start()
 	int n;
 	atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
-	i = atoms.first();
+	i = atoms.last();
 	for (n=0; n<atoms.size(); n++)
 	{
-		next = i->next;
+		next = i->prev;
 		if (i->is_selected()) atoms.move_to_start(i);
 		i = next;
 	}
