@@ -20,68 +20,63 @@
 */
 
 #include <iostream>
-#include "base/master.h"
-#include <getopt.h>
+#include "base/cli.h"
+
+// Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
+optiondata clioptions[] = {
+	{ CO_BOHR,	"bohr",		0,"",		"Converts model atomic positions from Bohr to Angstrom" },
+	{ CO_COMMAND,	"command",	1,"<commands>", "Execute supplied commands before main program execution" },
+	{ CO_DEBUG,	"debug",	0,"",		"Print major subroutine call information" },
+	{ CO_FF,	"ff",		1,"<file>",	"Load the specified forcefield file" },
+	{ CO_HELP,	"help",		0,"",		"Print this information" },
+	{ CO_SCRIPT,	"script",	1,"<file",	"Load and execute the script file specified" },
+	{ CO_UNDO,	"maxundo",	1,"<nlevels>",	"Set the maximum number of undo levels per model (-1 = unlimited)" },
+	{ CO_VERBOSE,	"verbose",	0,"",		"Enable verbose program output" },
+	{ CO_ZMAP,	"zmap",		1,"<mapstyle>",	"Override filter element mapping style" },
+	{ CO_CACHE,	"cachelimit",	1,"<limit>",	"Set the trajectory cache limit to <limit> kb"},
+	{ CO_FOLD,	"fold",		0,"",		"Force folding of atoms in periodic systems" },
+	{ CO_NOFOLD,	"nofold",	0,"",		"Prevent folding of atoms in periodic systems" },
+	{ CO_BOND,	"bond",		0,"",		"Force (re)calculation of bonding in the model" },
+	{ CO_NOBOND,	"nobond",	0,"",		"Prevent (re)calculation of bonding in the model" },
+	{ CO_CENTRE,	"centre",	0,"",		"Force centering of atomic coordinates at zero" },
+	{ CO_NOCENTRE,	"nocentre",	0,"",		"Prevent centering of atomic coordinates at zero" },
+	{ CO_NOPACK,	"nopack",	0,"",		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
+	{ CO_DEBUGTYPING,"debugtyping",	0,"",		"Print out verbose information from atom typing routines" },
+	{ CO_DEBUGMORE,	"debugmore",	0,"",		"Print all subroutine call information" },
+	{ CO_DEBUGALL,	"debugall",	0,"",		"Print out all debug information" },
+	{ CO_DEBUGPARSE,"debugparse",	0,"",		"Print out verbose information from file parsing routines" },
+	{ CO_DEBUGFILE,	"debugfile",	0,"",		"Print out verbose information from file filter routines" },
+	{ CO_GRID,	"grid",		1,"<file>",	"Load the specified gridded data file" }
+};
 
 // Prepare options list
 void master_data::prepare_cli()
 {
-	// Blank all related variables
-	for (int n=0; n<CO_NITEMS; n++)
-	{
-		CO_keyword[n][0] = '\0';
-		CO_desc[n][0] = '\0';
-		CO_argument[n][0] = '\0';
-	}
 	// Initialise short options string and build list of command-line options
 	shortopts.create_empty(256);
-	add_cli_option("bohr",CO_BOHR,"Converts model atomic positions from Bohr to Angstrom");
-	add_cli_option("command",CO_COMMAND,"Execute supplied commands before main program execution",required_argument,"<commands>");
-	add_cli_option("debug",CO_DEBUG,"Print major subroutine call information");
-	add_cli_option("ff",CO_FF,"Load the specified forcefield file",required_argument,"<file>");
-	add_cli_option("help",CO_HELP,"Print this information");
-	add_cli_option("script",CO_SCRIPT,"Load and execute the script file specified",required_argument,"<file>");
-	add_cli_option("maxundo",CO_UNDO,"Set the maximum number of undo levels per model (-1 = unlimited)",required_argument,"<nlevels>");
-	add_cli_option("verbose",CO_VERBOSE,"Enable verbose program output");
-	add_cli_option("zmap",CO_ZMAP,"Override filter element mapping style",required_argument,"<mapstyle>");
-	add_cli_option("cachelimit",CO_CACHE,"Set the trajectory cache limit to <limit> kb",required_argument,"<limit>");
-	add_cli_option("fold",CO_FOLD,"Force folding of atoms in periodic systems");
-	add_cli_option("nofold",CO_NOFOLD,"Prevent folding of atoms in periodic systems");
-	add_cli_option("bond",CO_BOND,"Force (re)calculation of bonding in the model");
-	add_cli_option("nobond",CO_NOBOND,"Prevent (re)calculation of bonding in the model");
-	add_cli_option("centre",CO_CENTRE,"Force centering of atomic coordinates at zero");
-	add_cli_option("nocentre",CO_NOCENTRE,"Prevent centering of atomic coordinates at zero");
-	add_cli_option("nopack",CO_NOPACK,"Prevent generation of symmetry-equivalent atoms from spacegroup information");
-	add_cli_option("debugtyping",CO_DEBUGTYPING,"Print out verbose information from atom typing routines");
-	add_cli_option("debugmore",CO_DEBUGMORE,"Print all subroutine call information");
-	add_cli_option("debugall",CO_DEBUGALL,"Print out all debug information");
-	add_cli_option("debugparse",CO_DEBUGPARSE,"Print out verbose information from file parsing routines");
-	add_cli_option("debugfilters",CO_DEBUGFILTERS,"Print out verbose information from file filter routines");
-	add_cli_option("grid",CO_GRID,"Load the specified grided data file",required_argument,"<file>");
-	add_cli_option("",CO_LISTENDER,"");
-}
-
-// Add CLI options
-void master_data::add_cli_option(const char *name, int enumid, const char *argname, int argtype, const char *description)
-{
-	// Add a new option entry in the opts array
-	static int nopts = 0;
-	clioptions[nopts].name = name;
-	clioptions[nopts].has_arg = argtype;
-	clioptions[nopts].flag = NULL;
-	clioptions[nopts].val = enumid;
-	// Store description data
-	//strcpy(CO_keyword[enumid],name);
-	//strcpy(CO_desc[enumid],description);
-	//strcpy(CO_argument[enumid],argname);
-	nopts ++;
-	// If this long option has a corresponding short option (anything <= CO_ZMAP), add it to the shortopts list
-	if ((enumid > CO_LISTENDER) && (enumid <= CO_ZMAP))
+	// Loop over elements defined in optiondata
+	nopts = sizeof(clioptions) / sizeof(clioptions[0]);
+	longopts = new option[nopts+1];
+	for (int n=0; n<nopts; n++)
 	{
-		shortopts += char(enumid+96);
-		if (argtype == required_argument) shortopts += ':';
-		else if (argtype == optional_argument) shortopts.cat("::");
+		// Add long option
+		longopts[n].name = clioptions[n].get_keyword();
+		longopts[n].has_arg = clioptions[n].get_argument();
+		longopts[n].flag = NULL;
+		longopts[n].val = clioptions[n].get_id();
+		// If this long option has a corresponding short option (anything <= CO_ZMAP), add it to the shortopts list
+		if (longopts[n].val <= CO_ZMAP)
+		{
+			shortopts += char(longopts[n].val+97);
+			if (longopts[n].has_arg == required_argument) shortopts += ':';
+			else if (longopts[n].has_arg == optional_argument) shortopts.cat("::");
+		}
 	}
+	// Add terminating long option
+	longopts[nopts].name = 0;
+	longopts[nopts].has_arg = 0;
+	longopts[nopts].flag = NULL;
+	longopts[nopts].val = 0;
 }
 
 // Parse all options
@@ -93,13 +88,12 @@ int master_data::parse_cli(int argc, char *argv[])
 	commandlist *cl;
 	filter *f;
 	zmap_type zm;
-	printf("LKdjflkjfkdlsj\n");
-	printf("PROPER_PARSE = %i [%s]\n",argc,shortopts.get());
+	//printf("PROPER_PARSE = %i [%s]\n",argc,shortopts.get());
 	while (!done)
 	{
 		// Parse option from cli arguments
-		int result = getopt_long(argc,argv,shortopts.get(),clioptions,&index);
-	printf("CLI_PARSE result = %i\n",result);
+		int result = getopt_long(argc,argv,shortopts.get(),longopts,&index);
+		//printf("CLI_PARSE result = %i\n",result);
 		if (result == -1) done = TRUE;
 		else
 		{
@@ -206,7 +200,7 @@ int master_data::parse_cli(int argc, char *argv[])
 					add_debuglevel(DM_PARSE);
 					break;
 				// Turn on debug messages for atom typing
-				case (CO_DEBUGFILTERS):
+				case (CO_DEBUGFILE):
 					add_debuglevel(DM_FILTERS);
 					break;
 				// Turn on debug messages for more calls
@@ -256,13 +250,20 @@ void master_data::print_usage()
 {
 	printf("Usage: aten [options] [<model> ...]\n");
 	printf("\nProgram Options:\n");
-	for (int n=CO_A; n<CO_NITEMS; n++)
+	int id;
+	for (int n=0; n<nopts; n++)
 	{
-		// Check to see if the option is blank (which may be the case for options < C_ZMAP)
-		if (CO_keyword[n][0] == '\0') continue;
-		// Print information....
-		if (n <= CO_ZMAP) printf("  -%c %s, --%s %s\n", char(n+96), CO_argument[n], CO_keyword[n], CO_argument[n]);
-		else printf("  --%s %s\n", CO_keyword[n], CO_argument[n]);
-		printf("\t\t%s\n",CO_desc[n]);
+		id = clioptions[n].get_id();
+		if (clioptions[n].get_argument() == 0)
+		{
+			if (id <= CO_ZMAP) printf("\t-%c, --%s\n", char(id+97), clioptions[n].get_keyword());
+			else printf("\t--%s\n", clioptions[n].get_keyword());
+		}
+		else
+		{
+			if (id <= CO_ZMAP) printf("\t-%c %s, --%s %s\n", char(id+97), clioptions[n].get_argtext(), clioptions[n].get_keyword(), clioptions[n].get_argtext());
+			else printf("\t--%s %s\n", clioptions[n].get_keyword(), clioptions[n].get_argtext());
+		}
+		printf("\t\t%s\n",clioptions[n].get_description());
 	}
 }
