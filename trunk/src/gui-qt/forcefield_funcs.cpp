@@ -92,6 +92,29 @@ void AtenForm::on_EditForcefieldButton_clicked(bool checked)
 	printf("Forcefield editor not yet implemented.\n");
 }
 
+// Update the list of model patterns
+void AtenForm::refresh_forcefieldpatterns()
+{
+	// Check to see if we need to update the list
+	static pattern *firstpattern = NULL;
+	model *m = master.get_currentmodel();
+	if (m->get_patterns() == NULL)
+	{
+		// No patterns defined for model. Clear list and disable.
+		ui.FFPatternCombo->clear();
+		ui.FFPatternCombo->setEnabled(FALSE);
+		ui.AssignFFToPatternButton->setEnabled(FALSE);
+	}
+	else if (m->get_patterns() != firstpattern)
+	{
+		// First pattern pointer differs from model's first pattern, so clear and reload list (unless NULL)
+		ui.FFPatternCombo->clear();
+		for (pattern *p = m->get_patterns(); p != NULL; p = p->next) ui.FFPatternCombo->addItem(p->get_name());
+		ui.FFPatternCombo->setEnabled(TRUE);
+		ui.AssignFFToPatternButton->setEnabled(TRUE);
+	}
+}
+
 // Assign current forcefield to model
 void AtenForm::on_AssignFFToCurrentButton_clicked(bool checked)
 {

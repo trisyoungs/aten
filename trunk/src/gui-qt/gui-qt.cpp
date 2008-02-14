@@ -274,6 +274,8 @@ void gui_qt::refresh()
 	mainwindow->refresh_cellpage();
 	// Update the disorder page
 	mainwindow->refresh_disorderpage();
+	// Update pattern list in forcefield window
+	mainwindow->refresh_forcefieldpatterns();
 	// Update trajectory playback controls
 	update_trajcontrols();
 	// Update Undo/Redo menuitems
