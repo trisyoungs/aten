@@ -20,7 +20,6 @@
 */
 
 #include "command/commands.h"
-#include "command/functions.h"
 #include "base/prefs.h"
 #include "base/debug.h"
 #include "model/model.h"

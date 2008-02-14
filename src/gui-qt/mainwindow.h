@@ -324,6 +324,7 @@ class AtenForm : public QMainWindow
 	public:
 	void refresh_forcefieldpage();
 	void refresh_forcefieldtypelist();
+	void refresh_forcefieldpatterns();
 	private slots:
 	void on_RemoveForcefieldButton_clicked(bool checked);
 	void on_EditForcefieldButton_clicked(bool checked);
