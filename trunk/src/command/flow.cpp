@@ -27,32 +27,32 @@
 #include <fstream>
 
 // Root node (no action)
-int command_functions::function_CA_ROOTNODE(command *&c, bundle &obj)
+int commanddata::function_CA_ROOTNODE(command *&c, bundle &obj)
 {
 	return CR_SUCCESS;
 }
 
 // Else statement
-int command_functions::function_CA_ELSE(command *&c, bundle &obj)
+int commanddata::function_CA_ELSE(command *&c, bundle &obj)
 {
 	c = c->get_branch_commands();
 	return CR_SUCCESSNOMOVE;
 }
 
 // Elseif statement
-int command_functions::function_CA_ELSEIF(command *&c, bundle &obj)
+int commanddata::function_CA_ELSEIF(command *&c, bundle &obj)
 {
 	if (c->if_evaluate()) c = c->get_branch_commands();
 	else c = c->next;
 	return CR_SUCCESSNOMOVE;
 }
 
-int command_functions::function_CA_END(command *&c, bundle &obj)
+int commanddata::function_CA_END(command *&c, bundle &obj)
 {
 }
 
 // Loop over atoms
-int command_functions::function_CA_FOR(command *&c, bundle &obj)
+int commanddata::function_CA_FOR(command *&c, bundle &obj)
 {
 	// Grab variable list from command's parent list
 	variable_list &vars = c->get_parent()->variables;
@@ -286,14 +286,14 @@ int command_functions::function_CA_FOR(command *&c, bundle &obj)
 }
 
 // Jump to specified node
-int command_functions::function_CA_GOTO(command *&c, bundle &obj)
+int commanddata::function_CA_GOTO(command *&c, bundle &obj)
 {
 	c = c->get_pointer();
 	return CR_SUCCESSNOMOVE;
 }
 
 // Jump to next node in current list that is *not* an ELSE(IF)
-int command_functions::function_CA_GOTONONIF(command *&c, bundle &obj)
+int commanddata::function_CA_GOTONONIF(command *&c, bundle &obj)
 {
 	//printf("Searching for next non-if node...\n");
 	c = c->get_pointer();
@@ -311,19 +311,19 @@ int command_functions::function_CA_GOTONONIF(command *&c, bundle &obj)
 }
 
 // If statement
-int command_functions::function_CA_IF(command *&c, bundle &obj)
+int commanddata::function_CA_IF(command *&c, bundle &obj)
 {
 	if (c->if_evaluate()) c = c->get_branch_commands();
 	else c = c->next;
 	return CR_SUCCESSNOMOVE;
 }
 
-int command_functions::function_CA_TERMINATE(command *&c, bundle &obj)
+int commanddata::function_CA_TERMINATE(command *&c, bundle &obj)
 {
 	return CR_EXIT;
 }
 
-int command_functions::function_CA_QUIT(command *&c, bundle &obj)
+int commanddata::function_CA_QUIT(command *&c, bundle &obj)
 {
 	// Set program mode here, in case we are running in PM_COMMAND
 	master.set_program_mode(PM_NONE);

@@ -24,14 +24,14 @@
 #include "gui/gui.h"
 
 // Save current view as bitmap image
-int command_functions::function_CA_SAVEBITMAP(command *&c, bundle &obj)
+int commanddata::function_CA_SAVEBITMAP(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	return CR_FAIL;
 }
 
 // Save current view a vector graphic
-int command_functions::function_CA_SAVEVECTOR(command *&c, bundle &obj)
+int commanddata::function_CA_SAVEVECTOR(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	vector_format vf = VIF_from_text(c->argc(0));

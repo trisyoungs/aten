@@ -26,7 +26,7 @@
 #include "classes/pattern.h"
 
 // Add manual pattern definition ('addpattern <name> <nmols> <natoms>')
-int command_functions::function_CA_ADDPATTERN(command *&c, bundle &obj)
+int commanddata::function_CA_ADDPATTERN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->add_pattern(c->argi(1), c->argi(2), c->argc(0));
@@ -35,7 +35,7 @@ int command_functions::function_CA_ADDPATTERN(command *&c, bundle &obj)
 }
 
 // Clear current pattern definition ('clearpatterns')
-int command_functions::function_CA_CLEARPATTERNS(command *&c, bundle &obj)
+int commanddata::function_CA_CLEARPATTERNS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->clear_patterns();
@@ -43,7 +43,7 @@ int command_functions::function_CA_CLEARPATTERNS(command *&c, bundle &obj)
 }
 
 // Autocreate pattern definition ('createpatterns')
-int command_functions::function_CA_CREATEPATTERNS(command *&c, bundle &obj)
+int commanddata::function_CA_CREATEPATTERNS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->autocreate_patterns();
@@ -51,7 +51,7 @@ int command_functions::function_CA_CREATEPATTERNS(command *&c, bundle &obj)
 }
 
 // Print pattern definition for current model ('printpatterns')
-int command_functions::function_CA_PRINTPATTERNS(command *&c, bundle &obj)
+int commanddata::function_CA_PRINTPATTERNS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->print_patterns();
@@ -59,7 +59,7 @@ int command_functions::function_CA_PRINTPATTERNS(command *&c, bundle &obj)
 }
 
 // Select working pattern from model ('selectpattern <name>')
-int command_functions::function_CA_SELECTPATTERN(command *&c, bundle &obj)
+int commanddata::function_CA_SELECTPATTERN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	pattern *p = obj.m->find_pattern(c->argc(0));

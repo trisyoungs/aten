@@ -24,7 +24,7 @@
 #include "classes/atom.h"
 
 // Centre selection at given coordinates
-int command_functions::function_CA_CENTRE(command *&c, bundle &obj)
+int commanddata::function_CA_CENTRE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (c->get_parent()->get_infile() == NULL) obj.m->centre(c->arg3d(0));
@@ -33,7 +33,7 @@ int command_functions::function_CA_CENTRE(command *&c, bundle &obj)
 }
 
 // Translate current selection
-int command_functions::function_CA_TRANSLATE(command *&c, bundle &obj)
+int commanddata::function_CA_TRANSLATE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->translate_selection_local(c->arg3d(0));
@@ -42,7 +42,7 @@ int command_functions::function_CA_TRANSLATE(command *&c, bundle &obj)
 
 
 // Translate activeatom ('translateatom <dx dy dz>')
-int command_functions::function_CA_TRANSLATEATOM(command *&c, bundle &obj)
+int commanddata::function_CA_TRANSLATEATOM(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
 	obj.i->r() += c->arg3d(0);
@@ -50,7 +50,7 @@ int command_functions::function_CA_TRANSLATEATOM(command *&c, bundle &obj)
 }
 
 // Mirror selection along specified axis
-int command_functions::function_CA_MIRROR(command *&c, bundle &obj)
+int commanddata::function_CA_MIRROR(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->mirror_selection_local(c->argi(0));

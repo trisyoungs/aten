@@ -25,7 +25,7 @@
 #include "model/model.h"
 
 // Add hydrogens to model ('addhydrogen')
-int command_functions::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
+int commanddata::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Optional argument specifies an atom, either by id or pointer
@@ -46,7 +46,7 @@ int command_functions::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
 }
 
 // Terminate chain ('endchain')
-int command_functions::function_CA_ENDCHAIN(command *&c, bundle &obj)
+int commanddata::function_CA_ENDCHAIN(command *&c, bundle &obj)
 {
 	// TODO end chain with atom id (optional argument)
 	master.current.i = NULL;
@@ -54,7 +54,7 @@ int command_functions::function_CA_ENDCHAIN(command *&c, bundle &obj)
 }
 
 // Delete current selection ('delete')
-int command_functions::function_CA_DELETE(command *&c, bundle &obj)
+int commanddata::function_CA_DELETE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->selection_delete();
@@ -62,7 +62,7 @@ int command_functions::function_CA_DELETE(command *&c, bundle &obj)
 }
 
 // Set pen coordinates ('locate <dx dy dz>')
-int command_functions::function_CA_LOCATE(command *&c, bundle &obj)
+int commanddata::function_CA_LOCATE(command *&c, bundle &obj)
 {
 	c->get_parent()->penpos.x = c->argd(0);
 	c->get_parent()->penpos.y = c->argd(1);
@@ -71,7 +71,7 @@ int command_functions::function_CA_LOCATE(command *&c, bundle &obj)
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
-int command_functions::function_CA_MOVE(command *&c, bundle &obj)
+int commanddata::function_CA_MOVE(command *&c, bundle &obj)
 {
 	c->get_parent()->penpos += c->get_parent()->penorient.rows[0] * c->argd(0);
 	c->get_parent()->penpos += c->get_parent()->penorient.rows[1] * c->argd(1);
@@ -80,7 +80,7 @@ int command_functions::function_CA_MOVE(command *&c, bundle &obj)
 }
 
 // Rotate pen orientation about x axis ('rotx <theta>')
-int command_functions::function_CA_ROTX(command *&c, bundle &obj)
+int commanddata::function_CA_ROTX(command *&c, bundle &obj)
 {
 	mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
@@ -92,7 +92,7 @@ int command_functions::function_CA_ROTX(command *&c, bundle &obj)
 }
 
 // Rotate pen orientation about y axis ('roty <theta>')
-int command_functions::function_CA_ROTY(command *&c, bundle &obj)
+int commanddata::function_CA_ROTY(command *&c, bundle &obj)
 {
 	mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
@@ -104,7 +104,7 @@ int command_functions::function_CA_ROTY(command *&c, bundle &obj)
 }
 
 // Rotate pen orientation about z axis ('rotz <theta>')
-int command_functions::function_CA_ROTZ(command *&c, bundle &obj)
+int commanddata::function_CA_ROTZ(command *&c, bundle &obj)
 {
 	mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
@@ -116,7 +116,7 @@ int command_functions::function_CA_ROTZ(command *&c, bundle &obj)
 }
 
 // Transmute the current selection ('transmute <el>')
-int command_functions::function_CA_TRANSMUTE(command *&c, bundle &obj)
+int commanddata::function_CA_TRANSMUTE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0));

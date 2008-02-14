@@ -24,7 +24,7 @@
 #include "model/model.h"
 
 // Fold atoms into unit cell
-int command_functions::function_CA_FOLD(command *&c, bundle &obj)
+int commanddata::function_CA_FOLD(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (c->get_parent()->get_infile() == NULL) obj.m->fold_all_atoms();
@@ -33,7 +33,7 @@ int command_functions::function_CA_FOLD(command *&c, bundle &obj)
 }
 
 // Convert fractional coordinates to real coordinates
-int command_functions::function_CA_FRACTOREAL(command *&c, bundle &obj)
+int commanddata::function_CA_FRACTOREAL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->frac_to_real();
@@ -41,7 +41,7 @@ int command_functions::function_CA_FRACTOREAL(command *&c, bundle &obj)
 }
 
 // Do crystal packing in model
-int command_functions::function_CA_PACK(command *&c, bundle &obj)
+int commanddata::function_CA_PACK(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (c->get_parent()->get_infile() == NULL) obj.m->apply_spacegroup_symmops(NULL);
@@ -50,7 +50,7 @@ int command_functions::function_CA_PACK(command *&c, bundle &obj)
 }
 
 // Print cell information ('printcell')
-int command_functions::function_CA_PRINTCELL(command *&c, bundle &obj)
+int commanddata::function_CA_PRINTCELL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	msg(DM_NONE,"Unit cell type for model '%s' is %s\n", obj.m->get_name(), text_from_CT(obj.m->get_celltype()));
@@ -59,7 +59,7 @@ int command_functions::function_CA_PRINTCELL(command *&c, bundle &obj)
 }
 
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
-int command_functions::function_CA_REPLICATECELL(command *&c, bundle &obj)
+int commanddata::function_CA_REPLICATECELL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->replicate_cell(c->arg3d(0), c->arg3d(3));
@@ -67,7 +67,7 @@ int command_functions::function_CA_REPLICATECELL(command *&c, bundle &obj)
 }
 
 // Scale cell and molecule COGs ('scalecell <x y z>')
-int command_functions::function_CA_SCALECELL(command *&c, bundle &obj)
+int commanddata::function_CA_SCALECELL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->scale_cell(c->arg3d(0));
@@ -75,7 +75,7 @@ int command_functions::function_CA_SCALECELL(command *&c, bundle &obj)
 }
 
 // Set/create unit cell ('setcell <a b c> <alpha beta gamma>')
-int command_functions::function_CA_SETCELL(command *&c, bundle &obj)
+int commanddata::function_CA_SETCELL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->set_cell(c->arg3d(0), c->arg3d(3));
@@ -85,7 +85,7 @@ int command_functions::function_CA_SETCELL(command *&c, bundle &obj)
 }
 
 // Set/create unit cell ('setcell <ax ay az> <bx by bz> <cx cy cz>')
-int command_functions::function_CA_SETCELLAXES(command *&c, bundle &obj)
+int commanddata::function_CA_SETCELLAXES(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	mat3<double> mat;
@@ -99,7 +99,7 @@ int command_functions::function_CA_SETCELLAXES(command *&c, bundle &obj)
 }
 
 // Set spacegroup
-int command_functions::function_CA_SETSPACEGROUP(command *&c, bundle &obj)
+int commanddata::function_CA_SETSPACEGROUP(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->set_spacegroup(c->argi(0));

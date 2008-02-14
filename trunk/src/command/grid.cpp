@@ -25,7 +25,7 @@
 #include "classes/grid.h"
 
 // Add grid point data at specified indices
-int command_functions::function_CA_ADDGRIDPOINT(command *&c, bundle &obj)
+int commanddata::function_CA_ADDGRIDPOINT(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	vec3<int> veci = c->arg3i(0);
@@ -34,7 +34,7 @@ int command_functions::function_CA_ADDGRIDPOINT(command *&c, bundle &obj)
 }
 
 // Add next gridpoint in sequence
-int command_functions::function_CA_ADDNEXTGRIDPOINT(command *&c, bundle &obj)
+int commanddata::function_CA_ADDNEXTGRIDPOINT(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	obj.g->set_next_data(c->argd(0));
@@ -42,7 +42,7 @@ int command_functions::function_CA_ADDNEXTGRIDPOINT(command *&c, bundle &obj)
 }
 
 // Finalise current surface
-int command_functions::function_CA_FINALISEGRID(command *&c, bundle &obj)
+int commanddata::function_CA_FINALISEGRID(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	if (prefs.get_coords_in_bohr()) obj.g->bohr_to_angstrom();
@@ -50,7 +50,7 @@ int command_functions::function_CA_FINALISEGRID(command *&c, bundle &obj)
 }
 
 // Create new grid
-int command_functions::function_CA_NEWGRID(command *&c, bundle &obj)
+int commanddata::function_CA_NEWGRID(command *&c, bundle &obj)
 {
 	obj.g = master.add_grid();
 	obj.g->set_name(strip_trailing(c->argc(0)));
@@ -58,7 +58,7 @@ int command_functions::function_CA_NEWGRID(command *&c, bundle &obj)
 }
 
 // Set grid axes (nine doubles)
-int command_functions::function_CA_SETGRID(command *&c, bundle &obj)
+int commanddata::function_CA_SETGRID(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	mat3<double> mat;
@@ -70,7 +70,7 @@ int command_functions::function_CA_SETGRID(command *&c, bundle &obj)
 }
 
 // Set cubic grid (one double)
-int command_functions::function_CA_SETGRIDCUBIC(command *&c, bundle &obj)
+int commanddata::function_CA_SETGRIDCUBIC(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	obj.g->set_axes(c->argd(0));
@@ -78,7 +78,7 @@ int command_functions::function_CA_SETGRIDCUBIC(command *&c, bundle &obj)
 }
 
 // Set origin (lower-left-hand corner of grid)
-int command_functions::function_CA_SETGRIDORIGIN(command *&c, bundle &obj)
+int commanddata::function_CA_SETGRIDORIGIN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	obj.g->set_origin(c->arg3d(0));
@@ -86,7 +86,7 @@ int command_functions::function_CA_SETGRIDORIGIN(command *&c, bundle &obj)
 }
 
 // Set orthorhombic grid (three doubles)
-int command_functions::function_CA_SETGRIDORTHO(command *&c, bundle &obj)
+int commanddata::function_CA_SETGRIDORTHO(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	obj.g->set_axes(c->arg3d(0));
@@ -94,7 +94,7 @@ int command_functions::function_CA_SETGRIDORTHO(command *&c, bundle &obj)
 }
 
 // Set extent of grid (number of points in each direction)
-int command_functions::function_CA_SETGRIDSIZE(command *&c, bundle &obj)
+int commanddata::function_CA_SETGRIDSIZE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_GRID)) return CR_FAIL;
 	obj.g->set_npoints(c->arg3i(0));

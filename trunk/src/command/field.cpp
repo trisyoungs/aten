@@ -25,7 +25,7 @@
 #include "parse/filter.h"
 
 // Save field definition ('savefield <format> <file>')
-int command_functions::function_CA_SAVEFIELD(command *&c, bundle &obj)
+int commanddata::function_CA_SAVEFIELD(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)

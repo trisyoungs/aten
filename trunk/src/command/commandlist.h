@@ -57,8 +57,6 @@ class command
 	// Command
 	*/
 	private:
-	// Static class containing pointers to command functions
-	static command_functions functions;
 	// Command that this node performs
 	command_action action;
 	// Pointer to action function

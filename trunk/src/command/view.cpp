@@ -25,7 +25,7 @@
 #include "model/model.h"
 
 // Reset view
-int command_functions::function_CA_RESETVIEW(command *&c, bundle &obj)
+int commanddata::function_CA_RESETVIEW(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->reset_view();
@@ -34,7 +34,7 @@ int command_functions::function_CA_RESETVIEW(command *&c, bundle &obj)
 }
 
 // Rotate view
-int command_functions::function_CA_ROTATEVIEW(command *&c, bundle &obj)
+int commanddata::function_CA_ROTATEVIEW(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->rotate(c->argd(0), c->argd(1));
@@ -43,7 +43,7 @@ int command_functions::function_CA_ROTATEVIEW(command *&c, bundle &obj)
 }
 
 // Translate view
-int command_functions::function_CA_TRANSLATEVIEW(command *&c, bundle &obj)
+int commanddata::function_CA_TRANSLATEVIEW(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->adjust_camera(c->arg3d(0),0.0);
@@ -52,7 +52,7 @@ int command_functions::function_CA_TRANSLATEVIEW(command *&c, bundle &obj)
 }
 
 // Zoom view
-int command_functions::function_CA_ZOOMVIEW(command *&c, bundle &obj)
+int commanddata::function_CA_ZOOMVIEW(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->adjust_camera(0.0,0.0,c->argd(2),0.0);
@@ -61,7 +61,7 @@ int command_functions::function_CA_ZOOMVIEW(command *&c, bundle &obj)
 }
 
 // ZRotate view
-int command_functions::function_CA_ZROTATEVIEW(command *&c, bundle &obj)
+int commanddata::function_CA_ZROTATEVIEW(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->zrotate(c->argd(0));

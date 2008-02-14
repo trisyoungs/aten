@@ -25,21 +25,21 @@
 #include "gui/gui.h"
 
 // Atom quadric detail
-int command_functions::function_CA_ATOMDETAIL(command *&c, bundle &obj)
+int commanddata::function_CA_ATOMDETAIL(command *&c, bundle &obj)
 {
 	prefs.set_atom_detail(c->argi(0));
 	return CR_SUCCESS;
 }
 
 // Bond quadric detail
-int command_functions::function_CA_BONDDETAIL(command *&c, bundle &obj)
+int commanddata::function_CA_BONDDETAIL(command *&c, bundle &obj)
 {
 	prefs.set_bond_detail(c->argi(0));
 	return CR_SUCCESS;
 }
 
 // Colours
-int command_functions::function_CA_COLOUR(command *&c, bundle &obj)
+int commanddata::function_CA_COLOUR(command *&c, bundle &obj)
 {
 	colour col = COL_from_text(c->argc(0));
 	if (col == COL_NITEMS) return CR_FAIL;
@@ -49,7 +49,7 @@ int command_functions::function_CA_COLOUR(command *&c, bundle &obj)
 }
 
 // Set density unit to use in output ('densityunits <unit>')
-int command_functions::function_CA_DENSITYUNITS(command *&c, bundle &obj)
+int commanddata::function_CA_DENSITYUNITS(command *&c, bundle &obj)
 {
 	density_unit du = DU_from_text(c->argc(0));
 	if (du == DU_NITEMS) return CR_FAIL;
@@ -58,7 +58,7 @@ int command_functions::function_CA_DENSITYUNITS(command *&c, bundle &obj)
 }
 
 // Set element's ambient colour
-int command_functions::function_CA_ELEMENTAMBIENT(command *&c, bundle &obj)
+int commanddata::function_CA_ELEMENTAMBIENT(command *&c, bundle &obj)
 {
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
@@ -69,7 +69,7 @@ int command_functions::function_CA_ELEMENTAMBIENT(command *&c, bundle &obj)
 }
 
 // Set element's diffuse colour
-int command_functions::function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj)
+int commanddata::function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj)
 {
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
@@ -80,7 +80,7 @@ int command_functions::function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj)
 }
 
 // Set element's radius
-int command_functions::function_CA_ELEMENTRADIUS(command *&c, bundle &obj)
+int commanddata::function_CA_ELEMENTRADIUS(command *&c, bundle &obj)
 {
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
@@ -89,7 +89,7 @@ int command_functions::function_CA_ELEMENTRADIUS(command *&c, bundle &obj)
 }
 
 // Set energy unit to use in output ('energyunits <unit>')
-int command_functions::function_CA_ENERGYUNITS(command *&c, bundle &obj)
+int commanddata::function_CA_ENERGYUNITS(command *&c, bundle &obj)
 {
 	energy_unit eu = EU_from_text(c->argc(0));
 	if (eu == EU_NITEMS) return CR_FAIL;
@@ -98,7 +98,7 @@ int command_functions::function_CA_ENERGYUNITS(command *&c, bundle &obj)
 }
 
 // GL Options
-int command_functions::function_CA_GL(command *&c, bundle &obj)
+int commanddata::function_CA_GL(command *&c, bundle &obj)
 {
 	gl_option go = GO_from_text(c->argc(0));
 	if (go == GO_NITEMS) return CR_FAIL;
@@ -109,7 +109,7 @@ int command_functions::function_CA_GL(command *&c, bundle &obj)
 }
 
 // Key bindings
-int command_functions::function_CA_KEY(command *&c, bundle &obj)
+int commanddata::function_CA_KEY(command *&c, bundle &obj)
 {
 	modifier_key mk = MK_from_text(c->argc(0));
 	key_action ka = KA_from_text(c->argc(1));
@@ -119,7 +119,7 @@ int command_functions::function_CA_KEY(command *&c, bundle &obj)
 }
 
 // Mouse bindings
-int command_functions::function_CA_MOUSE(command *&c, bundle &obj)
+int commanddata::function_CA_MOUSE(command *&c, bundle &obj)
 {
 	mouse_button mb = MB_from_text(c->argc(0));
 	mouse_action ma = MA_from_text(c->argc(1));
@@ -129,7 +129,7 @@ int command_functions::function_CA_MOUSE(command *&c, bundle &obj)
 }
 
 // Atom screen radii
-int command_functions::function_CA_RADIUS(command *&c, bundle &obj)
+int commanddata::function_CA_RADIUS(command *&c, bundle &obj)
 {
 	draw_style ds = DS_from_text(c->argc(0));
 	if (ds != DS_NITEMS) prefs.set_atom_size(ds, c->argd(1));
@@ -138,14 +138,14 @@ int command_functions::function_CA_RADIUS(command *&c, bundle &obj)
 }
 
 // Atom shininess
-int command_functions::function_CA_SHININESS(command *&c, bundle &obj)
+int commanddata::function_CA_SHININESS(command *&c, bundle &obj)
 {
 	prefs.set_shininess(c->argi(0));
 	return CR_SUCCESS;
 }
 
 // Render Objects
-int command_functions::function_CA_SHOW(command *&c, bundle &obj)
+int commanddata::function_CA_SHOW(command *&c, bundle &obj)
 {
 	view_object vo = VO_from_text(c->argc(0));
 	if (vo != VO_NITEMS) prefs.set_visible(vo, c->argb(1));
@@ -154,7 +154,7 @@ int command_functions::function_CA_SHOW(command *&c, bundle &obj)
 }
 
 // View Styles
-int command_functions::function_CA_STYLE(command *&c, bundle &obj)
+int commanddata::function_CA_STYLE(command *&c, bundle &obj)
 {
 	draw_style ds = DS_from_text(c->argc(0));
 	if (ds != DS_NITEMS) prefs.set_render_style(ds);

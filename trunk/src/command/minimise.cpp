@@ -29,13 +29,13 @@
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
 
-int command_functions::function_CA_CGMINIMISE(command *&c, bundle &obj)
+int commanddata::function_CA_CGMINIMISE(command *&c, bundle &obj)
 {
 	return CR_FAIL;
 }
 
 // Set convergence criteria
-int command_functions::function_CA_CONVERGE(command *&c, bundle &obj)
+int commanddata::function_CA_CONVERGE(command *&c, bundle &obj)
 {
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
@@ -43,14 +43,14 @@ int command_functions::function_CA_CONVERGE(command *&c, bundle &obj)
 }
 
 // Set line minimiser tolerance
-int command_functions::function_CA_LINETOL(command *&c, bundle &obj)
+int commanddata::function_CA_LINETOL(command *&c, bundle &obj)
 {
 	linetolerance = c->argd(0);
 	return CR_SUCCESS;
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
-int command_functions::function_CA_MCMINIMISE(command *&c, bundle &obj)
+int commanddata::function_CA_MCMINIMISE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	master.mc.set_ncycles(c->argi(0));
@@ -59,7 +59,7 @@ int command_functions::function_CA_MCMINIMISE(command *&c, bundle &obj)
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
-int command_functions::function_CA_SDMINIMISE(command *&c, bundle &obj)
+int commanddata::function_CA_SDMINIMISE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	master.sd.set_tolerance(linetolerance);
@@ -68,7 +68,7 @@ int command_functions::function_CA_SDMINIMISE(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-int command_functions::function_CA_SIMPLEXMINIMISE(command *&c, bundle &obj)
+int commanddata::function_CA_SIMPLEXMINIMISE(command *&c, bundle &obj)
 {
 	return CR_FAIL;
 }

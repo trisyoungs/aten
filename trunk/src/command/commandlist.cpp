@@ -20,6 +20,7 @@
 */
 
 #include "command/commandlist.h"
+#include "command/commands.h"
 #include "parse/format.h"
 #include "parse/parser.h"
 #include "base/sysfunc.h"
@@ -27,9 +28,6 @@
 #include "base/elements.h"
 #include "base/constants.h"
 #include "classes/pattern.h"
-
-// Static variables
-command_functions command::functions;
 
 // If Conditions
 const char *IC_strings[6] = { "eq", "l", "le", "g", "ge", "neq" };
@@ -82,7 +80,7 @@ commandlist::~commandlist()
 void command::set_command(command_action ca)
 {
 	action = ca;
-	function = functions.action[ca];
+	function = CA_data[ca].function;
 }
 
 // Clear command list and reinitialise
@@ -456,7 +454,7 @@ bool commandlist::add_command(command_action ca)
 		case (CA_IF):
 			fn = add_topbranch_command(CA_IF, NULL);
 			push_branch(fn->create_branch(), CA_IF, fn);
-			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
+			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
 			if (!fn->set_iftest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else If' statement (acts as CA_END to previous 'if' or 'elseif' branch.
@@ -478,7 +476,7 @@ bool commandlist::add_command(command_action ca)
 			//printf("New node is %li, command = %s\n",fn,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
 			push_branch(fn->create_branch(), CA_ELSEIF, fn);
-			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
+			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
 			if (!fn->set_iftest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else' statement (acts as CA_END to previous 'if' or 'elseif' branch.
@@ -505,7 +503,7 @@ bool commandlist::add_command(command_action ca)
 		case (CA_FOR):
 			fn = add_topbranch_command(ca, NULL);
 			push_branch(fn->create_branch(), ca, fn);
-			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
+			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
 			// Here, we must also add relevant variables to the list
 			if (varresult)
 			{
@@ -554,7 +552,7 @@ bool commandlist::add_command(command_action ca)
 					add_topbranch_command(CA_TERMINATE, NULL);
 					break;
 				default:
-					printf("commandlist::add_basic <<<< No END action defined for command '%s' >>>>\n",text_from_CA(branchca));
+					printf("commandlist::add_basic <<<< No END action defined for command '%s' >>>>\n", CA_data[branchca].get_keyword());
 					result = FALSE;
 					break;
 			}
@@ -569,13 +567,13 @@ bool commandlist::add_command(command_action ca)
 		// All other commands do not alter the flow of the commandlist...
 		default:
 			fn = add_topbranch_command(ca, NULL);
-			varresult = fn->add_variables(text_from_CA(ca), vars_from_CA(ca), variables);
+			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
 			break;
 	}
 	// Check variable assignment result
 	if (!varresult)
 	{
-		msg(DM_NONE,"Error: Command '%s' was not given the correct variables.\n", text_from_CA(ca));
+		msg(DM_NONE,"Error: Command '%s' was not given the correct variables.\n", CA_data[ca].get_keyword());
 		result = FALSE;
 	}
 	dbg_end(DM_CALLS,"commandlist::add_command");
@@ -618,7 +616,7 @@ bool commandlist::cache_command()
 		if (!add_command(ca))
 		{
 			msg(DM_NONE,"Error adding command '%s'.\n", parser.argc(0));
-			msg(DM_NONE,  "Command usage is '%s'.\n", syntax_from_CA(ca));
+			msg(DM_NONE,"Command usage is: %s %s\n", CA_data[ca].get_keyword(), CA_data[ca].get_argtext());
 			result = FALSE;
 		}
 	}
@@ -733,7 +731,7 @@ int command::execute(command *&c, model *alttarget)
 	obj = master.current;
 	// Set destination model to that provided if not NULL
 	if (alttarget != NULL) obj.m = alttarget;
-	return (functions.*function)(c, obj);
+	return CALL_COMMAND(CA_data[action],function)(c, obj);
 }
 
 // Execute commands in command list
@@ -753,7 +751,7 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 	while (c != NULL)
 	{
 		// Run command and get return value
-		msg(DM_PARSE,"Commandlist executing command '%s'...\n",text_from_CA(c->get_command()));
+		msg(DM_PARSE,"Commandlist executing command '%s'...\n",CA_data[c->get_command()].get_keyword());
 		switch (c->execute(c, alttarget))
 		{
 			// Command succeeded - get following command
@@ -765,13 +763,13 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 				break;
 			// Command failed - show message and quit
 			case (CR_FAIL):
-				printf("Command list failed at '%s'.\n", text_from_CA(c->get_command()));
+				printf("Command list failed at '%s'.\n", CA_data[c->get_command()].get_keyword());
 				c = NULL;
 				result = FALSE;
 				break;
 			// Command failed - show message and continue to next command
 			case (CR_FAILCONTINUE):
-				printf("Continuing past failed command '%s'...\n", text_from_CA(c->get_command()));
+				printf("Continuing past failed command '%s'...\n", CA_data[c->get_command()].get_keyword());
 				c = c->next;
 				break;
 			// Exit with error

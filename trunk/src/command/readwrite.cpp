@@ -25,7 +25,7 @@
 #include <fstream>
 
 // Add file read option
-int command_functions::function_CA_ADDREADOPTION(command *&c, bundle &obj)
+int commanddata::function_CA_ADDREADOPTION(command *&c, bundle &obj)
 {
 	// Get parse option from variable
 	parse_option po = PO_from_text(c->argc(0));
@@ -34,7 +34,7 @@ int command_functions::function_CA_ADDREADOPTION(command *&c, bundle &obj)
 }
 
 // Search for line containing specified string
-int command_functions::function_CA_FIND(command *&c, bundle &obj)
+int commanddata::function_CA_FIND(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -62,7 +62,7 @@ int command_functions::function_CA_FIND(command *&c, bundle &obj)
 }
 
 // Read N characters from unformatted file
-int command_functions::function_CA_READCHARS(command *&c, bundle &obj)
+int commanddata::function_CA_READCHARS(command *&c, bundle &obj)
 {
 	static char readc[512];
 	ifstream *inputfile = c->get_parent()->get_infile();
@@ -78,7 +78,7 @@ int command_functions::function_CA_READCHARS(command *&c, bundle &obj)
 }
 
 // Read double from unformatted file
-int command_functions::function_CA_READDOUBLE(command *&c, bundle &obj)
+int commanddata::function_CA_READDOUBLE(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -94,7 +94,7 @@ int command_functions::function_CA_READDOUBLE(command *&c, bundle &obj)
 }
 
 // Read integer from unformatted file
-int command_functions::function_CA_READINTEGER(command *&c, bundle &obj)
+int commanddata::function_CA_READINTEGER(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -110,7 +110,7 @@ int command_functions::function_CA_READINTEGER(command *&c, bundle &obj)
 }
 
 // Read line and parse with format
-int command_functions::function_CA_READLINE(command *&c, bundle &obj)
+int commanddata::function_CA_READLINE(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -123,7 +123,7 @@ int command_functions::function_CA_READLINE(command *&c, bundle &obj)
 }
 
 // Get next whitespace-delimited argument from file
-int command_functions::function_CA_READNEXT(command *&c, bundle &obj)
+int commanddata::function_CA_READNEXT(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -136,14 +136,14 @@ int command_functions::function_CA_READNEXT(command *&c, bundle &obj)
 }
 
 // Parse given variable with format
-int command_functions::function_CA_READVAR(command *&c, bundle &obj)
+int commanddata::function_CA_READVAR(command *&c, bundle &obj)
 {
 	parser.get_args_formatted(c->argc(0),c->get_parent()->get_readoptions(),c->get_format());
 	return CR_SUCCESS;
 }
 
 // Remove file read option
-int command_functions::function_CA_REMOVEREADOPTION(command *&c, bundle &obj)
+int commanddata::function_CA_REMOVEREADOPTION(command *&c, bundle &obj)
 {
 	// Get parse option from variable
 	parse_option po = PO_from_text(c->argc(0));
@@ -152,7 +152,7 @@ int command_functions::function_CA_REMOVEREADOPTION(command *&c, bundle &obj)
 }
 
 // Go to start of current file
-int command_functions::function_CA_REWIND(command *&c, bundle &obj)
+int commanddata::function_CA_REWIND(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -165,7 +165,7 @@ int command_functions::function_CA_REWIND(command *&c, bundle &obj)
 }
 
 // Discard N characters from unformatted file
-int command_functions::function_CA_SKIPCHARS(command *&c, bundle &obj)
+int commanddata::function_CA_SKIPCHARS(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -178,7 +178,7 @@ int command_functions::function_CA_SKIPCHARS(command *&c, bundle &obj)
 }
 
 // Skip line(s) of file
-int command_functions::function_CA_SKIPLINE(command *&c, bundle &obj)
+int commanddata::function_CA_SKIPLINE(command *&c, bundle &obj)
 {
 	ifstream *inputfile = c->get_parent()->get_infile();
 	if (inputfile == NULL)
@@ -192,7 +192,7 @@ int command_functions::function_CA_SKIPLINE(command *&c, bundle &obj)
 }
 
 // Write line with format
-int command_functions::function_CA_WRITELINE(command *&c, bundle &obj)
+int commanddata::function_CA_WRITELINE(command *&c, bundle &obj)
 {
 	ofstream *outputfile = c->get_parent()->get_outfile();
 	if (outputfile == NULL)
