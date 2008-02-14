@@ -25,7 +25,7 @@
 #include "model/model.h"
 
 // Create energy expression for current model ('createexpression'}
-int command_functions::function_CA_CREATEEXPRESSION(command *&c, bundle &obj)
+int commanddata::function_CA_CREATEEXPRESSION(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (!obj.m->autocreate_patterns()) return CR_FAIL;
@@ -34,14 +34,14 @@ int command_functions::function_CA_CREATEEXPRESSION(command *&c, bundle &obj)
 }
 
 // Set electrostatics cutoff ('ecut <cut>')
-int command_functions::function_CA_ECUT(command *&c, bundle &obj)
+int commanddata::function_CA_ECUT(command *&c, bundle &obj)
 {
 	prefs.set_elec_cutoff(c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
-int command_functions::function_CA_ELEC(command *&c, bundle &obj)
+int commanddata::function_CA_ELEC(command *&c, bundle &obj)
 {
 	elec_method em = EM_from_text(c->argc(0));
 	if (em == EM_NITEMS) return CR_FAIL;
@@ -63,14 +63,14 @@ int command_functions::function_CA_ELEC(command *&c, bundle &obj)
 }
 
 // Turn on/off calculation of intra ('intra on|off')
-int command_functions::function_CA_INTRA(command *&c, bundle &obj)
+int commanddata::function_CA_INTRA(command *&c, bundle &obj)
 {
 	prefs.set_calc_intra(c->argb(0));
 	return CR_SUCCESS;
 }
 
 // Print expression setup ('printexpression')
-int command_functions::function_CA_PRINTSETUP(command *&c, bundle &obj)
+int commanddata::function_CA_PRINTSETUP(command *&c, bundle &obj)
 {
 	msg(DM_NONE,"Current Energy Setup:\n");
 	msg(DM_NONE,"Intramolecular Terms : %s\n",(prefs.calc_intra() ? "On" : "Off"));
@@ -81,7 +81,7 @@ int command_functions::function_CA_PRINTSETUP(command *&c, bundle &obj)
 }
 
 // Set VDW cutoff ('vcut <cut>')
-int command_functions::function_CA_VCUT(command *&c, bundle &obj)
+int commanddata::function_CA_VCUT(command *&c, bundle &obj)
 {
 	prefs.set_vdw_cutoff(c->argd(0));
 	return CR_SUCCESS;
@@ -89,7 +89,7 @@ int command_functions::function_CA_VCUT(command *&c, bundle &obj)
 }
 
 // Turn on/off calculation of vdw ('vdw on|off')
-int command_functions::function_CA_VDW(command *&c, bundle &obj)
+int commanddata::function_CA_VDW(command *&c, bundle &obj)
 {
 	prefs.set_calc_vdw(c->argb(0));
 	return CR_SUCCESS;

@@ -23,7 +23,7 @@
 #include "parse/format.h"
 
 // Write line to msg output and stop
-int command_functions::function_CA_ERROR(command *&c, bundle &obj)
+int commanddata::function_CA_ERROR(command *&c, bundle &obj)
 {
 	format *fmt = c->get_format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
@@ -32,7 +32,7 @@ int command_functions::function_CA_ERROR(command *&c, bundle &obj)
 }
 
 // Print formatted string
-int command_functions::function_CA_PRINT(command *&c, bundle &obj)
+int commanddata::function_CA_PRINT(command *&c, bundle &obj)
 {
 	format *fmt = c->get_format();
 	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
@@ -41,7 +41,7 @@ int command_functions::function_CA_PRINT(command *&c, bundle &obj)
 }
 
 // Write line to msg output
-int command_functions::function_CA_WARN(command *&c, bundle &obj)
+int commanddata::function_CA_WARN(command *&c, bundle &obj)
 {
 	format *fmt = c->get_format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");

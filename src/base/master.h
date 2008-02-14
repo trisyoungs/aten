@@ -176,6 +176,8 @@ class master_data
 	// Program Modes
 	*/
 	private:
+	// Initialise command function pointers
+	void init_commands();
 	// Current mode of program operation
 	prog_mode mode;
 

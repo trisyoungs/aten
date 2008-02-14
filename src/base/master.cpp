@@ -37,6 +37,9 @@ master_data::master_data()
 	// Modes
 	mode = PM_GUI;
 
+	// Store pointers to member functions
+	init_commands();
+
 	// Misc 
 	sketchelement = 6;
 	homedir = "/tmp";

@@ -26,7 +26,7 @@
 #include "parse/filter.h"
 
 // Create 'n' new atoms at once in model
-int command_functions::function_CA_CREATEATOMS(command *&c, bundle &obj)
+int commanddata::function_CA_CREATEATOMS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	vec3<double> v;
@@ -35,7 +35,7 @@ int command_functions::function_CA_CREATEATOMS(command *&c, bundle &obj)
 }
 
 // Finalise current model
-int command_functions::function_CA_FINALISEMODEL(command *&c, bundle &obj)
+int commanddata::function_CA_FINALISEMODEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// If this command is being run from a filter, set the output filter in the model.
@@ -64,7 +64,7 @@ int command_functions::function_CA_FINALISEMODEL(command *&c, bundle &obj)
 }
 
 // Print loaded models ('listmodels')
-int command_functions::function_CA_LISTMODELS(command *&c, bundle &obj)
+int commanddata::function_CA_LISTMODELS(command *&c, bundle &obj)
 {
 	if (master.get_nmodels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
 	for (model *m = master.get_models(); m != NULL; m = m->next)
@@ -73,7 +73,7 @@ int command_functions::function_CA_LISTMODELS(command *&c, bundle &obj)
 }
 
 // Load model ('loadmodel <filename> [name]')
-int command_functions::function_CA_LOADMODEL(command *&c, bundle &obj)
+int commanddata::function_CA_LOADMODEL(command *&c, bundle &obj)
 {
 	filter *f = master.probe_file(c->argc(0), FT_MODEL_IMPORT);
 	if (f != NULL)
@@ -90,7 +90,7 @@ int command_functions::function_CA_LOADMODEL(command *&c, bundle &obj)
 }
 
 // Use parent model as atom template
-int command_functions::function_CA_MODELTEMPLATE(command *&c, bundle &obj)
+int commanddata::function_CA_MODELTEMPLATE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	model *parent = obj.m->get_trajparent();
@@ -111,7 +111,7 @@ int command_functions::function_CA_MODELTEMPLATE(command *&c, bundle &obj)
 }
 
 // Create new model ('newmodel <name>')
-int command_functions::function_CA_NEWMODEL(command *&c, bundle &obj)
+int commanddata::function_CA_NEWMODEL(command *&c, bundle &obj)
 {
 	obj.m = master.add_model();
 	obj.m->set_name(strip_trailing(c->argc(0)));
@@ -120,7 +120,7 @@ int command_functions::function_CA_NEWMODEL(command *&c, bundle &obj)
 }
 
 // Print all information for model ('printmodel')
-int command_functions::function_CA_PRINTMODEL(command *&c, bundle &obj)
+int commanddata::function_CA_PRINTMODEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->print();
@@ -128,7 +128,7 @@ int command_functions::function_CA_PRINTMODEL(command *&c, bundle &obj)
 }
 
 // Save current model ('savemodel <format> <filename>')
-int command_functions::function_CA_SAVEMODEL(command *&c, bundle &obj)
+int commanddata::function_CA_SAVEMODEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
@@ -147,7 +147,7 @@ int command_functions::function_CA_SAVEMODEL(command *&c, bundle &obj)
 }
 
 // Select working model ('selectmodel <name>')
-int command_functions::function_CA_SELECTMODEL(command *&c, bundle &obj)
+int commanddata::function_CA_SELECTMODEL(command *&c, bundle &obj)
 {
 	model *m = master.find_model(c->argc(0));
 	if (m != NULL) 
@@ -166,7 +166,7 @@ int command_functions::function_CA_SELECTMODEL(command *&c, bundle &obj)
 }
 
 // Set title of model
-int command_functions::function_CA_SETTITLE(command *&c, bundle &obj)
+int commanddata::function_CA_SETTITLE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->set_name(c->argc(0));

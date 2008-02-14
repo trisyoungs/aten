@@ -25,7 +25,7 @@
 #include "parse/filter.h"
 
 // Skip to first frame ('firstframe')
-int command_functions::function_CA_FIRSTFRAME(command *&c, bundle &obj)
+int commanddata::function_CA_FIRSTFRAME(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (obj.m->get_totalframes() == 0)
@@ -38,7 +38,7 @@ int command_functions::function_CA_FIRSTFRAME(command *&c, bundle &obj)
 }
 
 // Skip to last frame ('lastframe')
-int command_functions::function_CA_LASTFRAME(command *&c, bundle &obj)
+int commanddata::function_CA_LASTFRAME(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (obj.m->get_totalframes() == 0)
@@ -51,7 +51,7 @@ int command_functions::function_CA_LASTFRAME(command *&c, bundle &obj)
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
-int command_functions::function_CA_LOADTRAJECTORY(command *&c, bundle &obj)
+int commanddata::function_CA_LOADTRAJECTORY(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	filter *f = master.probe_file(c->argc(0), FT_TRAJECTORY_IMPORT);
@@ -60,7 +60,7 @@ int command_functions::function_CA_LOADTRAJECTORY(command *&c, bundle &obj)
 }
 
 // Go to next frame ('nextframe')
-int command_functions::function_CA_NEXTFRAME(command *&c, bundle &obj)
+int commanddata::function_CA_NEXTFRAME(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (obj.m->get_totalframes() == 0)
@@ -73,7 +73,7 @@ int command_functions::function_CA_NEXTFRAME(command *&c, bundle &obj)
 }
 
 // Go to previous frame ('prevframe')
-int command_functions::function_CA_PREVFRAME(command *&c, bundle &obj)
+int commanddata::function_CA_PREVFRAME(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (obj.m->get_totalframes() == 0)

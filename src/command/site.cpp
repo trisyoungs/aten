@@ -25,7 +25,7 @@
 #include "parse/parser.h"
 
 // Add site definition to model ('addsite <name> <pattern> <"atomids...">')
-int command_functions::function_CA_ADDSITE(command *&c, bundle &obj)
+int commanddata::function_CA_ADDSITE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// First, check that the pattern name provided refers to a pattern of the current model
@@ -50,7 +50,7 @@ int command_functions::function_CA_ADDSITE(command *&c, bundle &obj)
 }
 
 // Print site definitions for model ('printsites')
-int command_functions::function_CA_PRINTSITES(command *&c, bundle &obj)
+int commanddata::function_CA_PRINTSITES(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	site *s = obj.m->sites.first();
@@ -69,13 +69,13 @@ int command_functions::function_CA_PRINTSITES(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-int command_functions::function_CA_SELECTSITE(command *&c, bundle &obj)
+int commanddata::function_CA_SELECTSITE(command *&c, bundle &obj)
 {
 	return CR_FAIL;
 }
 
 // Set x and y-axis definitions for current site ('setaxes <"X-atomids..."> <"Y-atomids">')
-int command_functions::function_CA_SETAXES(command *&c, bundle &obj)
+int commanddata::function_CA_SETAXES(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_SITE)) return CR_FAIL;
 	int n;

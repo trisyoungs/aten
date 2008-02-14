@@ -23,7 +23,7 @@
 #include "model/model.h"
 
 // Clear labels in selection
-int command_functions::function_CA_CLEARLABELS(command *&c, bundle &obj)
+int commanddata::function_CA_CLEARLABELS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->selection_clear_labels();
@@ -31,7 +31,7 @@ int command_functions::function_CA_CLEARLABELS(command *&c, bundle &obj)
 }
 
 // Add label to current selection
-int command_functions::function_CA_ADDLABEL(command *&c, bundle &obj)
+int commanddata::function_CA_ADDLABEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom_label al = AL_from_text(c->argc(0));
@@ -41,7 +41,7 @@ int command_functions::function_CA_ADDLABEL(command *&c, bundle &obj)
 }
 
 // Remove label from current selection
-int command_functions::function_CA_REMOVELABEL(command *&c, bundle &obj)
+int commanddata::function_CA_REMOVELABEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom_label al = AL_from_text(c->argc(0));

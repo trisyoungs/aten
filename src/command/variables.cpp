@@ -22,21 +22,21 @@
 #include "command/commandlist.h"
 
 // Decrease variable by 1
-int command_functions::function_CA_DECREASE(command *&c, bundle &obj)
+int commanddata::function_CA_DECREASE(command *&c, bundle &obj)
 {
 	c->arg(0)->decrease(1);
 	return CR_SUCCESS;
 }
 
 // Evaluate expression and assign to variable
-int command_functions::function_CA_EVAL(command *&c, bundle &obj)
+int commanddata::function_CA_EVAL(command *&c, bundle &obj)
 {
 	c->arg(0)->set(evaluate(c->argc(2), &c->get_parent()->variables));
 	return CR_SUCCESS;
 }
 
 // Set variable to value or variable
-int command_functions::function_CA_LET(command *&c, bundle &obj)
+int commanddata::function_CA_LET(command *&c, bundle &obj)
 {
 	// If the first var is a pointer, second must be a pointer!
 	if (c->argt(0) >= VT_ATOM)
@@ -53,7 +53,7 @@ int command_functions::function_CA_LET(command *&c, bundle &obj)
 }
 
 // Increase variable
-int command_functions::function_CA_INCREASE(command *&c, bundle &obj)
+int commanddata::function_CA_INCREASE(command *&c, bundle &obj)
 {
 	c->arg(0)->increase(1);
 	return CR_SUCCESS;
