@@ -59,9 +59,9 @@ void AtenForm::finalise_ui()
 	QStringList filters;
 
 	// Set the title of the main window to reflect the version
-	strcpy(temp,"Aten (beta ");
-	strcat(temp,PACKAGE_VERSION);
-	strcat(temp,")");
+	sprintf(temp,"Aten (beta %s)",PACKAGE_VERSION);
+	//strcat(temp,PACKAGE_VERSION);
+	//strcat(temp,")");
 	setWindowTitle(temp);
 
 	// Initialise application name, organisation and author, and create settings structure
@@ -377,17 +377,13 @@ void AtenForm::switch_stack(int buttonid, bool checked)
 		if (buttonid == SP_ATOMS) refresh_atompage();
 		// Change to plain selection mode 
 	}
-	else
+	else ui.MainWindowStack->hide();
+	// Choose a plain selection mode again...
+	if ((ua == UA_NONE) || (ua > UA_PICKRADIAL))
 	{
-		ui.MainWindowStack->hide();
-
+		ui.actionSelectAtoms->setChecked(TRUE);
+		set_useraction(TRUE, UA_PICKSELECT);
 	}
-		// Choose a plain selection mode again...
-		if ((ua == UA_NONE) || (ua > UA_PICKRADIAL))
-		{
-			ui.actionSelectAtoms->setChecked(TRUE);
-			set_useraction(TRUE, UA_PICKSELECT);
-		}
 	//ui.actionSelectAtoms->setChecked(TRUE);
 	//set_useraction(TRUE, UA_PICKSELECT);
 	master.get_currentmodel()->log_change(LOG_CAMERA);
@@ -430,11 +426,13 @@ void AtenForm::save_settings()
 {
 	char temp[128];
 	// Save the recent file entries
+	printf("SAVING RECENT\n");
 	for (int i=0; i<MAXRECENTFILES; i++)
 	{
 		// Create name tag
 		strcpy(temp,"RecentFile");
 		strcat(temp,itoa(i));
+		if (actionRecentFile[i]->isVisible()) printf("action %i is visible\n",i);
 		if (actionRecentFile[i]->isVisible()) settings->setValue(temp,actionRecentFile[i]->data().toString());
 		else settings->remove(temp);
 	}
@@ -458,6 +456,7 @@ void AtenForm::load_recent()
 	// See if any loaded model filename matches this filename
 	for (m = master.get_models(); m != NULL; m = m->next)
 	{
+		printf("F = [%s] M = [%s]/n",filename.get(),m->get_filename());
 		if (filename == m->get_filename())
 		{
 			printf("Matched filename to model.\n");
@@ -468,7 +467,6 @@ void AtenForm::load_recent()
 	// If we get to here then the model is not currently loaded...
 	f = master.probe_file(filename.get(), FT_MODEL_IMPORT);
 	if (f != NULL) f->execute(filename.get());
-
 }
 
 // Add file to top of recent list

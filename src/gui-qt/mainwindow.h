@@ -35,7 +35,7 @@ enum bitmap_format { BIF_BMP, BIF_JPG, BIF_PNG, BIF_PPM, BIF_XBM, BIF_X11, BIF_N
 const char *filter_from_BIF(bitmap_format);
 const char *extension_from_BIF(bitmap_format);
 
-#define MAXRECENTFILES 5
+#define MAXRECENTFILES 10
 
 // Forward Declarations
 class QFileDialog;
