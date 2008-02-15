@@ -39,7 +39,7 @@
 #endif
 
 // Forward Declarations
-class canvas_master;
+//class canvas_master;
 class forcefield;
 class bond;
 class constraint;

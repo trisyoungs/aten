@@ -68,7 +68,7 @@ class canvas_master
 	/*
 	// Base rendering context
 	*/
-	protected:
+	private:
 	// Internal name of the canvas for error reporting
 	const char *name;
 	// Width, height, and aspect ratio of the canvas
@@ -81,6 +81,8 @@ class canvas_master
 	bool drawing;
 	// Model 'width' of a single pixel at the current draw depth...
 	double drawpixelwidth;
+	// Qt Target widget
+	TCanvas *context_widget;
 
 	public:
 	// Constructor / Destructor
@@ -102,16 +104,18 @@ class canvas_master
 	void calculate_drawpixelwidth();
 	// Return the corrent drawing pixel width
 	double get_drawpixelwidth();
+	// Set up widget for OpenGL drawing
+	bool set_widget(TCanvas*);
 	// Update Canvas
-	virtual void postredisplay();
+	void postredisplay();
 	// Called when context is initialised and ready
-	virtual void realize();
+	void realize();
 	// Called when context is resized
-	virtual void configure();
+	void configure();
 	// Called when context needs to be redrawn
-	virtual void expose();
+	void expose();
 	// Swap buffers
-	virtual void swap_buffers();
+	void swap_buffers();
 
 	/*
 	// Rendering display lists

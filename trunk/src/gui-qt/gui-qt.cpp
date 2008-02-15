@@ -43,6 +43,9 @@ gui_qt::gui_qt()
 	#ifdef MEMDEBUG
 		printf("Constructor : gui_qt\n");
 	#endif
+	does_exist = FALSE;
+	is_available = FALSE;
+	NORENDER = FALSE;
 	trajectory_playing = FALSE;
 	trajectory_timerid = -1;
 }
@@ -451,4 +454,49 @@ void gui_qt::stop_trajectory_playback()
 	mainwindow->ui.actionPlayPause->setChecked(FALSE);
 	trajectory_playing = FALSE;
 	refresh();
+}
+
+// Instantiate text-based progress dialog
+void gui_master::text_progress_create(const char *jobtitle, int stepstodo)
+{
+	// Reset the counters
+	textprogress_stepstodo = stepstodo;
+	textprogress_percent = 0;
+	// Print out the empty progress indicator
+	printf("--- %s\n", jobtitle);
+	printf("Progress [-]                              (  0%%)");
+}
+
+// Update the text progress dialog
+void gui_master::text_progress_update(int currentstep)
+{
+	static char *twister = "-\\|/";
+	static char *c = twister;
+	static int n, ndots;
+	static double dpercent;
+	static int percent;
+	// Work out percentage and print dots and spaces
+	dpercent = double(currentstep) / double(textprogress_stepstodo);
+	percent = int(dpercent * 100.0);
+	ndots = int(dpercent * 30.0);
+	dpercent *= 100.0;
+	if (percent != textprogress_percent)
+	{
+		// Print the header
+		printf("\rProgress [%c]",*c);
+		// Increase the twoster character
+		c ++;
+		if (*c == '\0') c = twister;
+		for (n=0; n<ndots; n++) printf(".");
+		for (n=ndots; n<30; n++) printf(" ");
+		// Lastly, print percentage
+		printf("(%-3i%%)",percent);
+		textprogress_percent = percent;
+	}
+}
+
+// Terminate the text progress dialog
+void gui_master::text_progress_terminate()
+{
+	printf("\n");
 }

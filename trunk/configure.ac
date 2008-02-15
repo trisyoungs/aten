@@ -164,8 +164,6 @@ src/classes/Makefile
 src/command/Makefile
 src/energy/Makefile
 src/gui/Makefile
-src/gui-gtk/Makefile
-src/gui-qt/Makefile
 src/methods/Makefile
 src/model/Makefile
 src/parse/Makefile

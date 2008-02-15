@@ -358,6 +358,7 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Reset element mapping style
 			prefs.set_zmapping(temp_zmap);
 			commands.close_files();
+			gui.maindinwod->add_recent(
 			msg(DM_NONE,"Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_MODEL_EXPORT):

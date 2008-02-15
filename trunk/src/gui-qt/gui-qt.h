@@ -1,5 +1,5 @@
 /*
-	*** Qt user interface stub
+	*** Qt user interface
 	*** src/gui-qt/gui-qt.h
 	Copyright T. Youngs 2007
 
@@ -52,21 +52,32 @@ class QApplication;
 class QProgressDialog;
 
 // QT4 GUI
-class gui_qt : public gui_master
+class gui_qt
 {
-	public:
-	// Constructor / Destructor
-	gui_qt();
-	~gui_qt();
+	/*
+	// Existence of GUI
+	*/
+	private:
+	// Is a GUI available?
+	bool is_available;
+	// Does the GUI exist (has it been created)
+	bool does_exist;
 
 	/*
 	// Basic Window Functions
 	*/
 	public:
+	// Constructor / Destructor
+	gui_qt();
+	~gui_qt();
+	// Returns if the GUI is available
+	bool available() { return is_available; }
+	// Returns if the GUI has been created
+	bool exists() { return does_exist; }
 	// Early doors functions
-	virtual void prepare();
+	void prepare();
 	// Initialises all aspects of the GUI and hands over control
-	virtual void run(int, char**);
+	void run(int, char**);
 	// Show specified window
 	void show(gui_window);
 	// Set values of widgets from current prefs data
@@ -75,15 +86,28 @@ class gui_qt : public gui_master
 	int user_question(const char*, const char*);
 
 	/*
-	// Specific Window Functions
+	// Main Canvas and Rendering
+	*/
+	protected:
+	// Render inhibition flag
+	bool NORENDER;
+
+	public:
+	// Blocks rendering calls (e.g., for config/model is being updated)
+	void pause_rendering() { NORENDER = TRUE; }
+	// Removes rendering block
+	void resume_rendering() { NORENDER = FALSE; }
+	// Return whether rendering is prohibited
+	bool no_rendering() { return NORENDER; }
+
+	/*
+	// General Window Functions
 	*/
 	public:
 	// Add a message to the main window's message output box
 	void print_message(const char*);
 	// Refresh main canvas
 	void refresh();
-	// Change the font used in the message box
-	void change_msg_font(const char*);
 	// Update trajectory control widgets
 	void update_trajcontrols();
 	// Update main window labels
@@ -92,6 +116,8 @@ class gui_qt : public gui_master
 	void process_events();
 	// Save before close
 	bool save_before_close();
+	// Update Undo/Redo menu items
+	void update_undoredo();
 
 	/*
 	// Object management
@@ -109,17 +135,27 @@ class gui_qt : public gui_master
 	void remove_ff(forcefield*);
 	// Select forcefield in list
 	void select_ff(forcefield*);
+	// Add surface (adds new surface to list)
+	void add_grid(grid*);
+	// Remove surface from list
+	void remove_grid(grid*);
+	// Select surface (show in main/sub windows)
+	void select_grid(grid*);
 
 	/*
-	//
-	// Non-virtual functions follow, for local use within gui-qt
-	//
+	// GUI file filters
+	*/
+	public:
+	// Initialise GUI file filters array
+	void init_filters();
+
+	/*
+	// Misc
 	*/
 	public:
 	// Convert Qt key code value to internal key
 	key_code convert_to_KC(int);
-	// Update Undo/Redo menu items
-	void update_undoredo();
+
 
 	/*
 	// Windows / Dialogs
@@ -168,11 +204,26 @@ class gui_qt : public gui_master
 	// Notify that the progress indicator should be canceled
 	void notify_progress_canceled() { progress_canceled; }
 	// Instantiate a progress dialog
-	virtual void progress_create(const char *jobtitle, int stepstodo);
+	void progress_create(const char *jobtitle, int stepstodo);
 	// Update the progress dialog
-	virtual bool progress_update(int currentstep);
+	bool progress_update(int currentstep);
 	// Terminate the progress dialog
-	virtual void progress_terminate();
+	void progress_terminate();
+	// Instantiate a text-based progress dialog
+	void text_progress_create(const char *jobtitle, int stepstodo);
+	// Update the text progress dialog
+	void text_progress_update(int currentstep);
+	// Terminate the progress dialog
+	void text_progress_terminate();
+	// Variables for the position and maximum of the text progress dialog
+	int textprogress_stepstodo, textprogress_percent;
+
+	/*
+	// Basic Offscreen Canvas
+	*/
+	public:
+	// Offscreen canvas (for use by, e.g., g2ps routines)
+	canvas_master offscreencanvas;
 };
 
 extern gui_qt gui;
