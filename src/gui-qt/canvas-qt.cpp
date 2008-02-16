@@ -19,14 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui-qt/canvas-qt.h"
+#include "gui/canvas-qt.h"
 #include "base/master.h"
 #include "base/prefs.h"
 #include "gui/gui.h"
-#include "gui-qt/tcanvas.uih"
+#include "gui/tcanvas.uih"
 
 // Constructor
-widgetcanvas::widgetcanvas()
+canvas::canvas()
 {
 	context_widget = NULL;
 	subselect_enabled = FALSE;
@@ -41,7 +41,7 @@ widgetcanvas::widgetcanvas()
 }
 
 // Destructors
-widgetcanvas::~widgetcanvas()
+canvas::~canvas()
 {
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_WIDGETCANVAS] ++;
@@ -49,7 +49,7 @@ widgetcanvas::~widgetcanvas()
 }
 
 // Begin GL
-bool widgetcanvas::begin_gl()
+bool canvas::begin_gl()
 {
 	if (!valid) return FALSE;
 	drawing = TRUE;
@@ -57,13 +57,13 @@ bool widgetcanvas::begin_gl()
 }
 
 // Finalize GL commands
-void widgetcanvas::end_gl()
+void canvas::end_gl()
 {
 	drawing = FALSE;
 }
 
 // Swap buffers
-void widgetcanvas::swap_buffers()
+void canvas::swap_buffers()
 {
 }
 
@@ -72,32 +72,32 @@ void widgetcanvas::swap_buffers()
 */
 
 // Set widget
-bool widgetcanvas::set_widget(TCanvas *w)
+bool canvas::set_widget(TCanvas *w)
 {
 	context_widget = w;
 	return TRUE;
 }
 
 // Widget realize
-void widgetcanvas::realize()
+void canvas::realize()
 {
 	// Sets the canvas to use a widget for output.
-	dbg_begin(DM_CALLS,"widgetcanvas::realize");
+	dbg_begin(DM_CALLS,"canvas::realize");
 	valid = TRUE;
 	init_gl();
-	dbg_end(DM_CALLS,"widgetcanvas::realize");
+	dbg_end(DM_CALLS,"canvas::realize");
 }
 
 // Invalidate
-void widgetcanvas::postredisplay()
+void canvas::postredisplay()
 {
-	dbg_begin(DM_CALLS,"widgetcanvas::postredisplay");
+	dbg_begin(DM_CALLS,"canvas::postredisplay");
 	if (gui.exists()) context_widget->paintGL();
-	dbg_end(DM_CALLS,"widgetcanvas::postredisplay");
+	dbg_end(DM_CALLS,"canvas::postredisplay");
 }
 
 // Widget Expose
-void widgetcanvas::expose()
+void canvas::expose()
 {
 	if ((!gui.exists()) || gui.no_rendering() ) return;
 	// Render from the current rendering source
@@ -109,7 +109,7 @@ void widgetcanvas::expose()
 }
 
 // Widget configure
-void widgetcanvas::configure()
+void canvas::configure()
 {
 	// Store the new width and height of the widget and re-do projection
 	w = (float)context_widget->width();
