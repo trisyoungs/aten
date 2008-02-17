@@ -113,7 +113,7 @@ class prefs_data
 	// Set GUI controls to reflect prefs choices
 	void set_controls();
 	// Allow rendering routines access to the structure
-	friend class canvas_master;
+	friend class canvas;
 	// Allow GL onject generation access to the structure
 	friend class gl_objects;
 

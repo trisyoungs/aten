@@ -1,6 +1,6 @@
 /*
 	*** Qt main window
-	*** src/gui-qt/mainwindow.h
+	*** src/gui/mainwindow.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -24,8 +24,8 @@
 
 #include "base/master.h"
 #include "gui/gui.h"
-#include "gui-qt/ui_mainwindow.h"
-#include "gui-qt/ui_prefs.h"
+#include "gui/ui_mainwindow.h"
+#include "gui/ui_prefs.h"
 
 // Stack Pages (must be in order of pages in the stack)
 enum stack_page { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };

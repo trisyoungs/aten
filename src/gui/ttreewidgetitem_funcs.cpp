@@ -1,6 +1,6 @@
 /*
 	*** Qt TTreeWidgetItem functions
-	*** src/gui-qt/ttreewidgetitem_funcs.cpp
+	*** src/gui/ttreewidgetitem_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,7 +21,7 @@
 
 #include "base/elements.h"
 #include "classes/forcefield.h"
-#include "gui-qt/ttreewidgetitem.h"
+#include "gui/ttreewidgetitem.h"
 
 TTreeWidgetItem::TTreeWidgetItem(QTreeWidgetItem *parent) : QTreeWidgetItem(parent)
 {

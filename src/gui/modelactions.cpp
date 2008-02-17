@@ -1,6 +1,6 @@
 /*
 	*** Qt model actions
-	*** src/gui-qt/modelactions.cpp
+	*** src/gui/modelactions.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,7 +21,7 @@
 
 #include "base/master.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 
 /*
 // Model Menu Actions

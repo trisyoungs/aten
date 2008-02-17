@@ -1,6 +1,6 @@
 /*
 	*** Qt custom treewidget
-	*** src/gui-qt/ttreewidget.uih
+	*** src/gui/ttreewidget.uih
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -23,7 +23,7 @@
 #define H_TTREEWIDGET_H
 
 #include "templates/reflist.h"
-#include "gui-qt/ttreewidgetitem.h"
+#include "gui/ttreewidgetitem.h"
 #include <QtGui/QTreeWidget>
 #include <QtCore/QObject>
 

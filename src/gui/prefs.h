@@ -1,6 +1,6 @@
 /*
 	*** Qt prefs window declaration
-	*** src/gui-qt/prefs.h
+	*** src/gui/prefs.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -23,7 +23,7 @@
 #define H_PREFSWINDOW_H
 
 #include "gui/gui.h"
-#include "gui-qt/ui_prefs.h"
+#include "gui/ui_prefs.h"
 
 // Stack Pages
 enum prefstack_page { PSP_NITEMS };

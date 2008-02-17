@@ -29,9 +29,9 @@
 #endif
 
 // Render model
-void canvas_master::render_scene(model *source)
+void canvas::render_scene(model *source)
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_scene");
+	dbg_begin(DM_CALLS,"canvas::render_scene");
 	static double rotmat[16], cammat[16];
 	static model *trajparent;
 	static double camrot;
@@ -39,7 +39,7 @@ void canvas_master::render_scene(model *source)
 	// Begin the GL commands
 	if (!begin_gl())
 	{
-		dbg_end(DM_CALLS,"canvas_master::render");
+		dbg_end(DM_CALLS,"canvas::render");
 		return;
 	}
 
@@ -62,7 +62,7 @@ void canvas_master::render_scene(model *source)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glRasterPos2i(1,(int)h-13);
 		textbitmap(1.0,h-10.0,"No model to display.");
-		dbg_end(DM_CALLS,"canvas_master::render");
+		dbg_end(DM_CALLS,"canvas::render");
 		return;
 	}
 
@@ -198,6 +198,6 @@ void canvas_master::render_scene(model *source)
 	glFlush();
 	swap_buffers();
 	end_gl();
-	dbg_end(DM_CALLS,"canvas_master::render");
+	dbg_end(DM_CALLS,"canvas::render");
 }
 

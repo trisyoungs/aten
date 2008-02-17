@@ -30,9 +30,9 @@
 #endif
 
 // Render atom labels
-void canvas_master::render_model_labels()
+void canvas::render_model_labels()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_model_labels");
+	dbg_begin(DM_CALLS,"canvas::render_model_labels");
 	// Annotate the model with 2D labels
 	static char text[64];
 	static atom *i;
@@ -86,13 +86,13 @@ void canvas_master::render_model_labels()
 		}
 		textbitmap(cellorigin + i->r(), text);
 	}
-	dbg_end(DM_CALLS,"canvas_master::render_model_labels");
+	dbg_end(DM_CALLS,"canvas::render_model_labels");
 }
 
 // Render measurements
-void canvas_master::render_model_measurements()
+void canvas::render_model_measurements()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_model_measurements");
+	dbg_begin(DM_CALLS,"canvas::render_model_measurements");
 	static vec3<double> ri, rj, rk, rl, labpos, cellorigin;
 	static char text[256];
 	static atom **atoms;
@@ -143,23 +143,23 @@ void canvas_master::render_model_measurements()
 		textbitmap(labpos, text);
 	  }
 	glPopMatrix();
-	dbg_end(DM_CALLS,"canvas_master::render_model_measurements");
+	dbg_end(DM_CALLS,"canvas::render_model_measurements");
 }
 
 // Render force arrows
-void canvas_master::render_model_forcearrows()
+void canvas::render_model_forcearrows()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_model_forcearrows");
+	dbg_begin(DM_CALLS,"canvas::render_model_forcearrows");
 	for (atom *i = displaymodel->get_atoms(); i != NULL; i = i->next)
 	{
 		// Scale forces to more reasonable values  TODO User scaling
 		gl_arrow(i->r(),i->f() / 30.0);
 	}
-	dbg_end(DM_CALLS,"canvas_master::render_model_forcearrows");
+	dbg_end(DM_CALLS,"canvas::render_model_forcearrows");
 }
 
 // Render model cell
-void canvas_master::render_model_cell()
+void canvas::render_model_cell()
 {
 	// Draw the unit cell of the model
 	glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.colours[COL_PEN]);

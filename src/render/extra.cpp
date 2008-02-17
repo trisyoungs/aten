@@ -31,9 +31,9 @@
 #endif
 
 // Render other 3D objects
-void canvas_master::render_extra_3d()
+void canvas::render_extra_3d()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_extra_3d");
+	dbg_begin(DM_CALLS,"canvas::render_extra_3d");
 	// Draw on 3D embellishments for active modes
 	static double radius;
 	static vec3<double> r, mouse;
@@ -102,13 +102,13 @@ void canvas_master::render_extra_3d()
 			glPopMatrix();
 			break;
 	}
-	dbg_end(DM_CALLS,"canvas_master::render_extra_3d");
+	dbg_end(DM_CALLS,"canvas::render_extra_3d");
 }
 
 // Render 2D objects
-void canvas_master::render_extra_2d()
+void canvas::render_extra_2d()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_extra_2d");
+	dbg_begin(DM_CALLS,"canvas::render_extra_2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
 	static int n, i;
 	static double dx, dy, halfw;
@@ -181,13 +181,13 @@ void canvas_master::render_extra_2d()
 		float midy = h / 2;
 		//glBegin(
 	}
-	dbg_end(DM_CALLS,"canvas_master::render_extra_2d");
+	dbg_end(DM_CALLS,"canvas::render_extra_2d");
 }
 
 // Render disordered insertion regions
-void canvas_master::render_regions()
+void canvas::render_regions()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_regions");
+	dbg_begin(DM_CALLS,"canvas::render_regions");
 	static vec3<double> centre, size;
 	static GLint colour[4];
 	int i = 0;
@@ -226,5 +226,5 @@ void canvas_master::render_regions()
 	// Turn off blending (if not antialiasing)
 	if (!prefs.get_gl_option(GO_LINEALIASING) && !prefs.get_gl_option(GO_POLYALIASING)) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
-	dbg_end(DM_CALLS,"canvas_master::render_regions");
+	dbg_end(DM_CALLS,"canvas::render_regions");
 }

@@ -1,6 +1,6 @@
 /*
 	*** Qt cell functions interface
-	*** src/gui-qt/cell_funcs.cpp
+	*** src/gui/cell_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,7 +21,7 @@
 
 #include "base/master.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 
 // Local variables
 bool cellpage_refreshing = FALSE;

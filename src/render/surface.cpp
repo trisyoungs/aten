@@ -429,9 +429,9 @@ void cube_it(grid *g, surface_style ss)
 }
 
 // Render surfaces
-void canvas_master::render_surfaces()
+void canvas::render_surfaces()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_surfaces");
+	dbg_begin(DM_CALLS,"canvas::render_surfaces");
 	// Loop over surfaces held by the master, rendering those that are visible.
 	// If the log of a particular surface is out of data, recreate its display list first
 	static GLuint list;
@@ -475,5 +475,5 @@ void canvas_master::render_surfaces()
 		  glCallList(list);
 		glPopMatrix();
 	}
-	dbg_end(DM_CALLS,"canvas_master::render_surfaces");
+	dbg_end(DM_CALLS,"canvas::render_surfaces");
 }

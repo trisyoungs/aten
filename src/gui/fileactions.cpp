@@ -1,6 +1,6 @@
 /*
 	*** Qt file actions
-	*** src/gui-qt/fileactions.cpp
+	*** src/gui/fileactions.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,8 +21,8 @@
 
 #include "base/master.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
-#include "gui-qt/prefs.h"
+#include "gui/mainwindow.h"
+#include "gui/prefs.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QMessageBox>
 

@@ -49,14 +49,6 @@ if test "x$with_gl_includedir" != "xauto"; then
 fi
 
 
-# Check for GUI to compile and set up link / compile flags
-GUI_DIRS=""
-GUI_OBJECTS=""
-AC_ARG_WITH([gui],[AC_HELP_STRING([--with-gui=gtk|qt|none],
-    [Sets GUI to compile with program (GTK+, Qt4, or none) [default=qt]])], ,
-    [with_gui=qt])
-
-
 # Allow Qt bin directory to be specified (to avoid version conflicts for moc, rcc, and uic)
 QTDIR=""
 AC_ARG_WITH([qtdir],[AC_HELP_STRING([--with-qtdir=<dir>],
@@ -80,56 +72,27 @@ AC_ARG_WITH([glut],[AC_HELP_STRING([--with-glut=framework|<none>],
 PKG_PROG_PKG_CONFIG
 
 
-# Set automake conditionals to false by default
-AM_CONDITIONAL(MAKEGTKGUI, false)
-AM_CONDITIONAL(MAKEQTGUI, false)
-AM_CONDITIONAL(MAKERENDER, false)
-
-if test "$with_gui" = "gtk"; then
-  AM_CONDITIONAL(MAKEGTKGUI, true)
-  AM_CONDITIONAL(MAKERENDER, true)
-  GUI_OBJECTS="gui-gtk/libguigtk.a gui/libguimaster.a render/librender.a"
-  AC_DEFINE([WITH_GTKGUI], [], [Compile with the GTK+ GUI interface])
-  AC_DEFINE([HAS_GUI], [], [Whether a GUI has been specified])
-  PKG_CHECK_MODULES(GTK24, gtk+-2.0 >= 2.4.0)
-  PKG_CHECK_MODULES(GTK28, gtk+-2.0 >= 2.8.0,[AC_DEFINE([HAVE_GTK_NEW],[],[Version of gtk+-2.0 >= 2.8])],[])
-  PKG_CHECK_MODULES(GDK, gdk-2.0 >= 2.0.0)
-  PKG_CHECK_MODULES(PANGO, pango >= 1.0.0)
-  PKG_CHECK_MODULES(GTKGLEXT, gtkglext-1.0 >= 1.0.0)
-  PKG_CHECK_MODULES(GTHREAD, gthread-2.0 >= 2.0.0)
-  GUI_LDLIBS="$GTKGLEXT_LIBS $GTHREAD_LIBS"
-  GUI_CFLAGS="$GTKGLEXT_CFLAGS"
+# Set up compilation for qt GUI
+AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
+AC_DEFINE([HAS_GUI], [], [Whether a GUI has been specified])
+if test "$with_qt" = "framework"; then
+  QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore"
+  QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
 fi
-
-if test "$with_gui" = "qt"; then
-  AM_CONDITIONAL(MAKEQTGUI, true)
-  AM_CONDITIONAL(MAKERENDER, true)
-  GUI_OBJECTS="gui-qt/libguiqt.a gui/libguimaster.a render/librender.a"
-  AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
-  AC_DEFINE([HAS_GUI], [], [Whether a GUI has been specified])
-  if test "$with_qt" = "framework"; then
-    QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore"
-    QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
-  fi
-  if test "$with_qt" = "fink"; then
-    QTGUI_LIBS="-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL"
-    QTGUI_CFLAGS="-I/sw/lib/qt4-x11/include -I/usr/X11R6/include"
-    QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
-    QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
-    PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
-    PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
-  fi
-  if test "x$with_qt" = "x"; then
-    PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
-    PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
-  fi
-  GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
-  GUI_CFLAGS="$QTGUI_CFLAGS"
+if test "$with_qt" = "fink"; then
+  QTGUI_LIBS="-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL"
+  QTGUI_CFLAGS="-I/sw/lib/qt4-x11/include -I/usr/X11R6/include"
+  QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
+  QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
+  PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
+  PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
-
-if test "$with_gui" = "none"; then
-  GUI_OBJECTS="gui/libguimaster.a"
+if test "x$with_qt" = "x"; then
+  PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
+  PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
+GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
+GUI_CFLAGS="$QTGUI_CFLAGS"
 
 # Setup GLUT reference
 if test "x$with_glut" = "xframework"; then
@@ -139,7 +102,6 @@ else
 fi
 
 
-AC_SUBST(GUI_OBJECTS)
 AC_SUBST(GUI_LDLIBS)
 AC_SUBST(GUI_CFLAGS)
 AC_SUBST(QTDIR)

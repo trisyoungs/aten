@@ -1,6 +1,6 @@
 /*
 	*** Qt canvas
-	*** src/gui-qt/canvas-qt.h
+	*** src/gui/canvas.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -58,6 +58,7 @@ class model;
 class geometry;
 class subselection;
 class unitcell;
+class TCanvas;
 
 /*
 // Canvas Master Class

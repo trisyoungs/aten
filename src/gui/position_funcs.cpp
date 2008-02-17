@@ -1,6 +1,6 @@
 /*
 	*** Qt position functions interface
-	*** src/gui-qt/position_funcs.cpp
+	*** src/gui/position_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -22,7 +22,7 @@
 #include "base/master.h"
 #include "base/elements.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 
 void AtenForm::flip_selection(int axis)
 {

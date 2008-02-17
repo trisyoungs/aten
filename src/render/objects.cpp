@@ -35,7 +35,7 @@
 // Primitives
 */
 
-void canvas_master::textbitmap(double x, double y, const char *s)
+void canvas::textbitmap(double x, double y, const char *s)
 {
 	glRasterPos2d(x,y);
 	for (int i = 0; s[i] != '\0'; i++)
@@ -43,7 +43,7 @@ void canvas_master::textbitmap(double x, double y, const char *s)
 }
 
 // Render text at 3D coordinates
-void canvas_master::textbitmap(const vec3<double> r, const char *s)
+void canvas::textbitmap(const vec3<double> r, const char *s)
 {
 	static int i;
 	glRasterPos3d(r.x, r.y, r.z);
@@ -51,14 +51,14 @@ void canvas_master::textbitmap(const vec3<double> r, const char *s)
 		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,s[i]);
 }
 
-void canvas_master::textstroke(const char *s)
+void canvas::textstroke(const char *s)
 {
 	for (int i = 0; s[i] != '\0'; i++)
 		glutStrokeCharacter(GLUT_STROKE_ROMAN,s[i]);
 }
 
 // Draw a diamond at the point specified, with 'radius' r.
-void canvas_master::gl_diamond(double x, double y, double r)
+void canvas::gl_diamond(double x, double y, double r)
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x,y+r);
@@ -69,7 +69,7 @@ void canvas_master::gl_diamond(double x, double y, double r)
 }
 
 // Draw a box centred at x,y with diameter r
-void canvas_master::gl_square(double x, double y, double r)
+void canvas::gl_square(double x, double y, double r)
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x+r,y+r);
@@ -80,7 +80,7 @@ void canvas_master::gl_square(double x, double y, double r)
 }
 
 // Draw a box from top-left x1,y1 to bottom-right x2,y2
-void canvas_master::gl_rectangle(double x1, double y1, double x2, double y2)
+void canvas::gl_rectangle(double x1, double y1, double x2, double y2)
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x1,y1);
@@ -91,7 +91,7 @@ void canvas_master::gl_rectangle(double x1, double y1, double x2, double y2)
 }
 
 // Draw a circle of (pixel) radius 'r' centred at x,y
-void canvas_master::gl_circle(double x, double y, double r)
+void canvas::gl_circle(double x, double y, double r)
 {
 	//r += master.lineardelta;
 	glPushMatrix();
@@ -102,7 +102,7 @@ void canvas_master::gl_circle(double x, double y, double r)
 }
 
 // Draw an arrow from origin along vector v
-void canvas_master::gl_arrow(const vec3<double> &origin, const vec3<double> &v)
+void canvas::gl_arrow(const vec3<double> &origin, const vec3<double> &v)
 {
 	static vec3<double> perp, v2, v3;
 	v2 = v;
@@ -130,7 +130,7 @@ void canvas_master::gl_arrow(const vec3<double> &origin, const vec3<double> &v)
 // Custom
 */
 
-void canvas_master::gl_subsel_3d()
+void canvas::gl_subsel_3d()
 {
 	// 3D atom highlights on atoms defined in subselection provided.
 	static vec3<double> ir;
@@ -173,7 +173,7 @@ void canvas_master::gl_subsel_3d()
 	}
 }
 
-void canvas_master::render_rotation_globe(double *rmat, double camrot)
+void canvas::render_rotation_globe(double *rmat, double camrot)
 {
 	// Draw the coordinate axes at the bottom right of the screen.
 	// First set up the small viewport and apply our stored projection matrix.
@@ -194,7 +194,7 @@ void canvas_master::render_rotation_globe(double *rmat, double camrot)
 	glViewport(0,0,(int)w,(int)h);
 }
 
-void canvas_master::gl_cylinder(const vec3<double> &rj, double rij, int style)
+void canvas::gl_cylinder(const vec3<double> &rj, double rij, int style)
 {
 	/* Styles are:
 		0 = solid
@@ -218,7 +218,7 @@ void canvas_master::gl_cylinder(const vec3<double> &rj, double rij, int style)
 }
 
 /*
-void canvas_master::gl_ellipsoid(vec3<double> *pos, vec3<double> *lookat, vec3<double> *scale)
+void canvas::gl_ellipsoid(vec3<double> *pos, vec3<double> *lookat, vec3<double> *scale)
 {
 	static double phi, mag;
 	static vec3<double> direction;
@@ -246,7 +246,7 @@ void canvas_master::gl_ellipsoid(vec3<double> *pos, vec3<double> *lookat, vec3<d
 }
 */
 
-void canvas_master::gl_ellipsoid(const vec3<double> &centre, const vec3<double> &v1, const vec3<double> &v2)
+void canvas::gl_ellipsoid(const vec3<double> &centre, const vec3<double> &v1, const vec3<double> &v2)
 {
 	static double phi, mag1, mag2, r[16], t[16];
 	static mat4<double> rotmat;
@@ -271,7 +271,7 @@ void canvas_master::gl_ellipsoid(const vec3<double> &centre, const vec3<double> 
 	glPopMatrix();
 }
 
-void canvas_master::gl_sphere(double radius)
+void canvas::gl_sphere(double radius)
 {
 	// Don't use this to render objects to the view - create a display list first!
 	int slices = prefs.get_atom_detail();

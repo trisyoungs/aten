@@ -29,9 +29,9 @@
 #endif
 
 // Render model glyphs
-void canvas_master::render_model_glyphs()
+void canvas::render_model_glyphs()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_model_glyphs");
+	dbg_begin(DM_CALLS,"canvas::render_model_glyphs");
 	// Render other elemental objects in the model
 	int el;
 	for (atom *i = displaymodel->get_atoms(); i != NULL; i = i->next)
@@ -46,5 +46,5 @@ void canvas_master::render_model_glyphs()
 				break;
 		}
 	}
-	dbg_end(DM_CALLS,"canvas_master::render_model_glyphs");
+	dbg_end(DM_CALLS,"canvas::render_model_glyphs");
 }

@@ -1,6 +1,6 @@
 /*
 	*** Qt canvas functions
-	*** src/gui-qt/tcanvas_funcs.cpp
+	*** src/gui/tcanvas_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -20,8 +20,8 @@
 */
 
 #include "base/master.h"
-#include "gui-qt/canvas-qt.h"
-#include "gui-qt/tcanvas.uih"
+#include "gui/canvas.h"
+#include "gui/tcanvas.uih"
 #include "gui/gui.h"
 #include <QtGui/QMouseEvent>
 
@@ -30,29 +30,29 @@ bool DONTDRAW = FALSE;
 
 TCanvas::TCanvas(QWidget *parent)
 {
-	canvas = NULL;
+	widgetcanvas = NULL;
 }
 
 void TCanvas::initializeGL()
 {
 	// Call the realize method of the associated widgetcanvas.
-	if (canvas != NULL) canvas->realize();
+	if (widgetcanvas != NULL) widgetcanvas->realize();
 	else printf("NO CANVAS SET INIT\n");
 }
 
 void TCanvas::paintGL()
 {
-	if (canvas != NULL) canvas->render_scene(master.get_currentmodel()->get_render_source());
+	if (widgetcanvas != NULL) widgetcanvas->render_scene(master.get_currentmodel()->get_render_source());
 	else printf("NO CANVAS SET PAINT\n");
 	swapBuffers();
 }
 
 void TCanvas::resizeGL(int width, int height)
 {
-	if (canvas != NULL)
+	if (widgetcanvas != NULL)
 	{
-		canvas->configure();
-		if (canvas->get_displaymodel() != NULL) canvas->get_displaymodel()->log_change(LOG_CAMERA);
+		widgetcanvas->configure();
+		if (widgetcanvas->get_displaymodel() != NULL) widgetcanvas->get_displaymodel()->log_change(LOG_CAMERA);
 	}
 	else printf("NO CANVAS SET RESIZE\n");
 }
@@ -88,11 +88,10 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	// If the left mouse button is double-clicked over an atom, show the atomlist window
 	if ((button == MB_LEFT) && (event->type() == QEvent::MouseButtonDblClick))
 	{
-		atom *tempi = canvas->get_atom_hover();
+		atom *tempi = widgetcanvas->get_atom_hover();
 		if (tempi != NULL)
 		{
-			gui.show(GW_ATOMLIST);
-			printf("gui-qt::dblclick show atom list not done.\n");
+			printf("gui::dblclick show atom list not done.\n");
 			//gui.atomwin_list_refresh();
 			dbg_end(DM_CALLS,"TCanvas::mousePressEvent");
 			return;

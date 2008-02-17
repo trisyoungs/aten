@@ -1,6 +1,6 @@
 /*
 	*** Qt user interface
-	*** src/gui-qt/gui-qt.h
+	*** src/gui/gui.h
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -23,8 +23,9 @@
 #define H_GUIQT_H
 
 #include "gui/gui.h"
-#include "gui-qt/canvas-qt.h"
+#include "gui/canvas.h"
 
+/*
 enum widget_combo { W_COM_BONDONLOAD, W_COM_PACKONLOAD, W_COM_ZMAPTYPE, W_COM_NITEMS };
 enum widget_scale { W_SCL_LABELSCALE, W_SCL_ATOMQUAL, W_SCL_BONDQUAL, W_SCL_SHINY, W_SCL_NITEMS };
 enum widget_spin { W_SPN_EWALDALPHA, W_SPN_EWALDKMAX, W_SPN_EWALDPRE, W_SPN_VDWCUT, W_SPN_ELECCUT,  W_SPN_TIMERSIZE, W_SPN_TIMERPERIOD, W_SPN_TUBESIZE, W_SPN_SELSCALE, W_SPN_NITEMS };
@@ -41,6 +42,7 @@ enum col_fflistt { FLT_COL_N, FLT_COL_I, FLT_COL_J, FLT_COL_K, FLT_COL_L, FLT_CO
 enum col_collist { COL_COL_NAME, COL_COL_ID, COL_NCOLS };
 enum col_atomlist {AL_COL_ID,AL_COL_ELEMENT,AL_COL_POSX,AL_COL_POSY,AL_COL_POSZ,AL_COL_FF,AL_COL_DS,AL_COL_HIDE,AL_COL_NBONDS,AL_COL_Q,AL_COL_ATOM,AL_NCOLS};
 enum col_patternlist { PL_COL_NAME, PL_COL_PATTERN, PL_NCOLS };
+*/
 
 // Forward declarations
 class AtenForm;
@@ -48,6 +50,7 @@ class AtenPrefs;
 class atom;
 class model;
 class forcefield;
+class grid;
 class QApplication;
 class QProgressDialog;
 
@@ -78,10 +81,6 @@ class gui_qt
 	void prepare();
 	// Initialises all aspects of the GUI and hands over control
 	void run(int, char**);
-	// Show specified window
-	void show(gui_window);
-	// Set values of widgets from current prefs data
-	void set_controls();
 	// Question user dialog
 	int user_question(const char*, const char*);
 
@@ -143,11 +142,13 @@ class gui_qt
 	void select_grid(grid*);
 
 	/*
-	// GUI file filters
+	// Files
 	*/
 	public:
 	// Initialise GUI file filters array
 	void init_filters();
+	// Add filename to recent files list
+	void add_recent(const char *filename);
 
 	/*
 	// Misc
@@ -155,7 +156,6 @@ class gui_qt
 	public:
 	// Convert Qt key code value to internal key
 	key_code convert_to_KC(int);
-
 
 	/*
 	// Windows / Dialogs
@@ -170,7 +170,7 @@ class gui_qt
 	// Call the atompopup menu
 	void call_atompopup(atom*, int, int);
 	// Main view
-	widgetcanvas mainview;
+	canvas mainview;
 
 	/*
 	// Trajectory State
@@ -223,7 +223,7 @@ class gui_qt
 	*/
 	public:
 	// Offscreen canvas (for use by, e.g., g2ps routines)
-	canvas_master offscreencanvas;
+	canvas offscreencanvas;
 };
 
 extern gui_qt gui;
