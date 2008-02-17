@@ -1,6 +1,6 @@
 /*
 	*** Qt canvas functions
-	*** src/gui-qt/canvas-qt.cpp
+	*** src/gui/canvas.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/canvas-qt.h"
+#include "gui/canvas.h"
 #include "base/master.h"
 #include "base/prefs.h"
 #include "gui/gui.h"

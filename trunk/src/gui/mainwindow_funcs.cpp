@@ -1,6 +1,6 @@
 /*
 	*** Qt main window functions
-	*** src/gui-qt/mainwindow_funcs.cpp
+	*** src/gui/mainwindow_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -23,7 +23,7 @@
 #include "base/elements.h"
 #include "methods/sd.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>

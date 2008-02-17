@@ -1,6 +1,6 @@
 /*
 	*** Qt edit functions interface
-	*** src/gui-qt/edit_funcs.cpp
+	*** src/gui/edit_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -22,7 +22,7 @@
 #include "base/master.h"
 #include "base/elements.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 
 void AtenForm::on_ElementUserButton_clicked(bool on)
 {

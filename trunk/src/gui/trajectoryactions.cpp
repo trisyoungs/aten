@@ -1,6 +1,6 @@
 /*
 	*** Qt trajectory actions
-	*** src/gui-qt/action_funcs.cpp
+	*** src/gui/action_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,7 +21,7 @@
 
 #include "base/master.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 
 
 /*

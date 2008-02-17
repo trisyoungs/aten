@@ -1,6 +1,6 @@
 /*
 	*** Qt context menu functions
-	*** src/gui-qt/contextmenu_funcs.cpp
+	*** src/gui/contextmenu_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -21,7 +21,7 @@
 
 #include "base/master.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 
 // Local variables
 atom *target = NULL;

@@ -303,8 +303,6 @@ bool master_data::open_filters(const char *path, bool isdatadir)
 	// Create gui filter list, partners, and print info (if not 'isdatadir')
 	if (!isdatadir)
 	{
-		// Create arrays for GUI file filters
-		gui.init_filters();
 		// Set filter partners
 		partner_filters();
 		// Print data on loaded filters

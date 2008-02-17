@@ -1,6 +1,6 @@
 /*
 	*** Qt forcefield functions interface
-	*** src/gui-qt/forcefield_funcs.cpp
+	*** src/gui/forcefield_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -23,7 +23,7 @@
 #include "base/elements.h"
 #include "classes/pattern.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QFileDialog>

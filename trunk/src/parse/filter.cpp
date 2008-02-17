@@ -25,6 +25,7 @@
 #include "base/master.h"
 #include "model/model.h"
 #include "classes/pattern.h"
+#include "gui/gui.h"
 #include <fstream>
 
 // Filter types
@@ -358,7 +359,7 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Reset element mapping style
 			prefs.set_zmapping(temp_zmap);
 			commands.close_files();
-			gui.maindinwod->add_recent(
+			gui.add_recent(filename);
 			msg(DM_NONE,"Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_MODEL_EXPORT):

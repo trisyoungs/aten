@@ -1,6 +1,6 @@
 /*
 	*** Qt minimiser functions interface
-	*** src/gui-qt/minimise_funcs.cpp
+	*** src/gui/minimise_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -24,7 +24,7 @@
 #include "methods/mc.h"
 #include "methods/sd.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 
 // Minimisation algorithms
 enum min_method { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };

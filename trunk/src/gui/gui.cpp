@@ -1,6 +1,6 @@
 /*
 	*** Qt user interface functions
-	*** src/gui-qt/gui-qt.cpp
+	*** src/gui/gui.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -20,10 +20,10 @@
 */
 
 #include "base/master.h"
-#include "gui-qt/canvas-qt.h"
-#include "gui-qt/gui-qt.h"
-#include "gui-qt/mainwindow.h"
-#include "gui-qt/prefs.h"
+#include "gui/canvas.h"
+#include "gui/gui.h"
+#include "gui/mainwindow.h"
+#include "gui/prefs.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtGui/QProgressBar>
@@ -114,17 +114,6 @@ void gui_qt::run(int argc, char **argv)
 	dbg_end(DM_CALLS,"gui_qt::run");
 }
 
-// Set GUI to reflect prefs
-void gui_qt::set_controls()
-{
-	// All done in finalise_ui() calls.
-}
-
-// Show window
-void gui_qt::show(gui_window gw)
-{
-}
-
 // Update trajectory controls
 void gui_qt::update_trajcontrols()
 {
@@ -157,11 +146,6 @@ void gui_qt::update_trajcontrols()
 			mainwindow->ui.actionPlayPause->setDisabled(FALSE);
 		}
 	}
-}
-
-// Change msgbox font
-void gui_qt::change_msg_font(const char *font)
-{
 }
 
 // Update labels
@@ -263,6 +247,24 @@ void gui_qt::remove_ff(forcefield *ff)
 void gui_qt::select_ff(forcefield *ff)
 {
 	if (!does_exist) return;
+}
+
+// Add grid to list
+void gui_qt::add_grid(grid *g)
+{
+	if (is_available) printf("gui_qt::add_grid - Not defined.\n");
+}
+
+// Remove grid from list
+void gui_qt::remove_grid(grid *g)
+{
+	if (is_available) printf("gui_qt::remove_grid - Not defined.\n");
+}
+
+// Select grid in list and show in main/sub windows
+void gui_qt::select_grid(grid *g)
+{
+	if (is_available) printf("gui_qt::select_grid - Not defined.\n");
 }
 
 // Redraw main window canvas
@@ -457,7 +459,7 @@ void gui_qt::stop_trajectory_playback()
 }
 
 // Instantiate text-based progress dialog
-void gui_master::text_progress_create(const char *jobtitle, int stepstodo)
+void gui_qt::text_progress_create(const char *jobtitle, int stepstodo)
 {
 	// Reset the counters
 	textprogress_stepstodo = stepstodo;
@@ -468,7 +470,7 @@ void gui_master::text_progress_create(const char *jobtitle, int stepstodo)
 }
 
 // Update the text progress dialog
-void gui_master::text_progress_update(int currentstep)
+void gui_qt::text_progress_update(int currentstep)
 {
 	static char *twister = "-\\|/";
 	static char *c = twister;
@@ -496,7 +498,13 @@ void gui_master::text_progress_update(int currentstep)
 }
 
 // Terminate the text progress dialog
-void gui_master::text_progress_terminate()
+void gui_qt::text_progress_terminate()
 {
 	printf("\n");
+}
+
+// Add filename to recent files list
+void gui_qt::add_recent(const char *filename)
+{
+	mainwindow->add_recent(filename);
 }

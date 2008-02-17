@@ -1,6 +1,6 @@
 /*
 	*** Qt prefs window functions
-	*** src/gui-qt/prefs_funcs.cpp
+	*** src/gui/prefs_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -22,7 +22,7 @@
 #include "base/master.h"
 #include "base/elements.h"
 #include "gui/gui.h"
-#include "gui-qt/prefs.h"
+#include "gui/prefs.h"
 #include <QtGui/QDialog>
 #include <QtGui/QListWidgetItem>
 

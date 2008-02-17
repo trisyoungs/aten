@@ -1,6 +1,6 @@
 /*
 	*** Qt analyse functions interface
-	*** src/gui-qt/analyse_funcs.cpp
+	*** src/gui/analyse_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -20,5 +20,5 @@
 */
 
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 

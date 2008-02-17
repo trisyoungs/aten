@@ -29,9 +29,9 @@
 #endif
 
 // Render model atoms and bonds
-void canvas_master::render_model_atoms()
+void canvas::render_model_atoms()
 {
-	dbg_begin(DM_CALLS,"canvas_master::render_model_atoms");
+	dbg_begin(DM_CALLS,"canvas::render_model_atoms");
 	static draw_style style_i, renderstyle;
 	static GLint ambient[4], diffuse[4];
 	static short int cindex;
@@ -257,5 +257,5 @@ void canvas_master::render_model_atoms()
 	if (!prefs.get_gl_option(GO_LINEALIASING) && !prefs.get_gl_option(GO_POLYALIASING)) glDisable(GL_BLEND);
 	// Reset line width to 1.0
 	glLineWidth(1.0);
-	dbg_end(DM_CALLS,"canvas_master::render_model_atoms");
+	dbg_end(DM_CALLS,"canvas::render_model_atoms");
 }

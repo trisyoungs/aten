@@ -26,7 +26,7 @@
 #include "render/gl2ps.h"
 
 // Constructor
-canvas_master::canvas_master()
+canvas::canvas()
 {
 	valid = FALSE;
 	render_point = -1;
@@ -39,7 +39,7 @@ canvas_master::canvas_master()
 }
 
 // Destructor
-canvas_master::~canvas_master()
+canvas::~canvas()
 {
 	#ifdef MEMDEBUG
 		memdbg.destroy[MD_BASICCANVAS] ++;
@@ -47,50 +47,50 @@ canvas_master::~canvas_master()
 }
 
 // Update Canvas
-void canvas_master::postredisplay()
+void canvas::postredisplay()
 {
-	printf("canvas_master::postredisplay - Not defined\n");
+	printf("canvas::postredisplay - Not defined\n");
 }
 
 // Called when context is initialised and ready
-void canvas_master::realize()
+void canvas::realize()
 {
-	printf("canvas_master::realize - Not defined\n");
+	printf("canvas::realize - Not defined\n");
 }
 
 // Called when context is resized
-void canvas_master::configure()
+void canvas::configure()
 {
-	printf("canvas_master::configure - Not defined\n");
+	printf("canvas::configure - Not defined\n");
 }
 
 // Called when context needs to be redrawn
-void canvas_master::expose()
+void canvas::expose()
 {
-	printf("canvas_master::expose - Not defined\n");
+	printf("canvas::expose - Not defined\n");
 }
 
 // Swap buffers
-void canvas_master::swap_buffers()
+void canvas::swap_buffers()
 {
-	printf("canvas_master::swap_buffers - Not defined\n");
+	printf("canvas::swap_buffers - Not defined\n");
 }
 
 // Begin GL
-bool canvas_master::begin_gl()
+bool canvas::begin_gl()
 {
-	printf("canvas_master::begin_gl - Not defined\n");
+	printf("canvas::begin_gl - Not defined\n");
 	return FALSE;
 }
 
 // End GL
-void canvas_master::end_gl()
+void canvas::end_gl()
 {
-	printf("canvas_master::end_gl - Not defined\n");
+	printf("canvas::end_gl - Not defined\n");
 }
 
 // Calculate drawing pixel width
-void canvas_master::calculate_drawpixelwidth()
+void canvas::calculate_drawpixelwidth()
 {
 	// Get the Angstrom width of a single pixel at the current draw depth in the current view
 	static vec3<double> r1, r2;
@@ -105,10 +105,10 @@ void canvas_master::calculate_drawpixelwidth()
 }
 
 // Set GL options
-void canvas_master::init_gl()
+void canvas::init_gl()
 {
 	if (!valid) return;
-	dbg_begin(DM_CALLS,"canvas_master::init_gl");
+	dbg_begin(DM_CALLS,"canvas::init_gl");
 	if (begin_gl())
 	{
 		// Create lists for globs
@@ -176,13 +176,13 @@ void canvas_master::init_gl()
 		end_gl();
 	}
 	else printf("Failed to set-up OpenGL on canvas.\n");
-	dbg_end(DM_CALLS,"canvas_master::init_gl");
+	dbg_end(DM_CALLS,"canvas::init_gl");
 }
 
 // Create display lists
-void canvas_master::create_lists()
+void canvas::create_lists()
 {
-	dbg_begin(DM_CALLS,"canvas_master::create_lists");
+	dbg_begin(DM_CALLS,"canvas::create_lists");
 	// Generate quadric objects for subsequent use
 	quadric1 = gluNewQuadric();			// Creates a quadric object for use.
 	quadric2 = gluNewQuadric();			// Creates a quadric object for use.
@@ -419,7 +419,7 @@ void canvas_master::create_lists()
 	  }
 	glEndList();
 
-	dbg_end(DM_CALLS,"canvas_master::create_lists");
+	dbg_end(DM_CALLS,"canvas::create_lists");
 }
 
 /*
@@ -427,11 +427,11 @@ void canvas_master::create_lists()
 */
 
 // Calculate Projection
-void canvas_master::do_projection()
+void canvas::do_projection()
 {
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
 	if (!gui.exists()) return;
-	dbg_begin(DM_CALLS,"canvas_master::do_projection");
+	dbg_begin(DM_CALLS,"canvas::do_projection");
 	double pmat[16], bottom, top;
 	// Check source
 	if (begin_gl())
@@ -469,8 +469,8 @@ void canvas_master::do_projection()
 		calculate_drawpixelwidth();
 		end_gl();
 	}
-	else printf("canvas_master::do_projection <<<< Failed to reset projection matrix >>>>\n");
-	dbg_end(DM_CALLS,"canvas_master::do_projection");
+	else printf("canvas::do_projection <<<< Failed to reset projection matrix >>>>\n");
+	dbg_end(DM_CALLS,"canvas::do_projection");
 }
 
 /*
@@ -478,7 +478,7 @@ void canvas_master::do_projection()
 */
 
 // Set valid
-void canvas_master::set_valid(bool b)
+void canvas::set_valid(bool b)
 {
 	// Wait until the canvas is not drawing
 	while (!valid) gui.process_events();
@@ -491,7 +491,7 @@ void canvas_master::set_valid(bool b)
 /*
 // Save vector image
 */
-void canvas_master::save_vector(model *source, vector_format vf, const char *filename)
+void canvas::save_vector(model *source, vector_format vf, const char *filename)
 {
 	// Open output file
 	FILE *vectorfile = fopen(filename, "w");

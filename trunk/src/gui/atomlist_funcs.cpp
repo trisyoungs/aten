@@ -1,6 +1,6 @@
 /*
 	*** Qt atomlist functions interface
-	*** src/gui-qt/atomlist_funcs.cpp
+	*** src/gui/atomlist_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -22,9 +22,9 @@
 #include "base/master.h"
 #include "base/elements.h"
 #include "classes/pattern.h"
-#include "gui-qt/ttreewidgetitem.h"
+#include "gui/ttreewidgetitem.h"
 #include "gui/gui.h"
-#include "gui-qt/mainwindow.h"
+#include "gui/mainwindow.h"
 #include <QtGui/QTreeWidget>
 #include <QtCore/QMimeData>
 #include <QtGui/QScrollBar>

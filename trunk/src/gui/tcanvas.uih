@@ -1,6 +1,6 @@
 /*
 	*** Qt canvas
-	*** src/gui-qt/tcanvas.uih
+	*** src/gui/tcanvas.uih
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -26,7 +26,7 @@
 #include <QtCore/QObject>
 
 // Forward Declarations
-class widgetcanvas;
+class canvas;
 
 class TCanvas : public QGLWidget
 {
@@ -37,7 +37,7 @@ class TCanvas : public QGLWidget
 	//~TCanvas();
 
 	private:
-	widgetcanvas *canvas;
+	canvas *widgetcanvas;
 
 	public slots:
 
@@ -45,7 +45,7 @@ class TCanvas : public QGLWidget
 
 	public:
 	// Set the widgetcanvas for the display
-	void set_canvas(widgetcanvas *wc) { canvas = wc; }
+	void set_canvas(canvas *wc) { widgetcanvas = wc; }
 	void initializeGL();
 	void paintGL();
 	void resizeGL(int, int);

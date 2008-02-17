@@ -1,6 +1,6 @@
 /*
 	*** Qt ColourFrame functions
-	*** src/gui-qt/tcolourframe_funcs.cpp
+	*** src/gui/tcolourframe_funcs.cpp
 	Copyright T. Youngs 2007
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui-qt/tcolourframe.uih"
+#include "gui/tcolourframe.uih"
 #include <QtGui/QPainter>
 
 TColourFrame::TColourFrame(QWidget *parent)
