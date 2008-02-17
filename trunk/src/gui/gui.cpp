@@ -43,6 +43,8 @@ gui_qt::gui_qt()
 	#ifdef MEMDEBUG
 		printf("Constructor : gui_qt\n");
 	#endif
+	mainwindow = NULL;
+	prefsdialog = NULL;
 	does_exist = FALSE;
 	is_available = FALSE;
 	NORENDER = FALSE;
@@ -501,10 +503,4 @@ void gui_qt::text_progress_update(int currentstep)
 void gui_qt::text_progress_terminate()
 {
 	printf("\n");
-}
-
-// Add filename to recent files list
-void gui_qt::add_recent(const char *filename)
-{
-	mainwindow->add_recent(filename);
 }

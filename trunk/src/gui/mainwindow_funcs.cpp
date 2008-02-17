@@ -60,8 +60,6 @@ void AtenForm::finalise_ui()
 
 	// Set the title of the main window to reflect the version
 	sprintf(temp,"Aten (beta %s)",PACKAGE_VERSION);
-	//strcat(temp,PACKAGE_VERSION);
-	//strcat(temp,")");
 	setWindowTitle(temp);
 
 	// Initialise application name, organisation and author, and create settings structure
@@ -426,13 +424,12 @@ void AtenForm::save_settings()
 {
 	char temp[128];
 	// Save the recent file entries
-	printf("SAVING RECENT\n");
 	for (int i=0; i<MAXRECENTFILES; i++)
 	{
 		// Create name tag
 		strcpy(temp,"RecentFile");
 		strcat(temp,itoa(i));
-		if (actionRecentFile[i]->isVisible()) printf("action %i is visible\n",i);
+		//if (actionRecentFile[i]->isVisible()) printf("action %i is visible\n",i);
 		if (actionRecentFile[i]->isVisible()) settings->setValue(temp,actionRecentFile[i]->data().toString());
 		else settings->remove(temp);
 	}
@@ -456,17 +453,34 @@ void AtenForm::load_recent()
 	// See if any loaded model filename matches this filename
 	for (m = master.get_models(); m != NULL; m = m->next)
 	{
-		printf("F = [%s] M = [%s]/n",filename.get(),m->get_filename());
+		msg(DM_VERBOSE,"Checking loaded models for '%s': %s\n",filename.get(),m->get_filename());
 		if (filename == m->get_filename())
 		{
-			printf("Matched filename to model.\n");
+			msg(DM_VERBOSE,"Matched filename to loaded model.\n");
 			master.set_currentmodel(m);
 			return;
 		}
 	}
 	// If we get to here then the model is not currently loaded...
 	f = master.probe_file(filename.get(), FT_MODEL_IMPORT);
-	if (f != NULL) f->execute(filename.get());
+	if (f != NULL)
+	{
+		f->execute(filename.get());
+		master.get_currentmodel()->log_change(LOG_VISUAL);
+		gui.refresh();
+	}
+	else
+	{
+		// Remove file from recent files list
+		int last, n;
+		for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
+		for (n=last+1; n<MAXRECENTFILES; n++)
+			if (actionRecentFile[last]->isVisible())
+			{
+				actionRecentFile[n-1]->setText(actionRecentFile[n]->text());
+				actionRecentFile[n-1]->setData(actionRecentFile[n]->data());
+			}
+	}
 }
 
 // Add file to top of recent list
@@ -491,7 +505,7 @@ void AtenForm::add_recent(const char *filename)
 		last = 0;
 	}
 	// Set the new data
-	sprintf(temp,"&%i %s",last,remove_path(filename));
+	sprintf(temp,"&%i %s (%s)",last,remove_path(filename),filename);
 	actionRecentFile[last]->setText(temp);
 	actionRecentFile[last]->setData(filename);
 	actionRecentFile[last]->setVisible(TRUE);

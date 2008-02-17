@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/canvas.h"
 #include "render/gl2ps.h"
+#include "gui/tcanvas.uih"
 
 // Constructor
 canvas::canvas()
@@ -36,57 +37,89 @@ canvas::canvas()
 	activemode = UA_NONE;
 	selectedmode = UA_PICKSELECT;
 	list[0] = 0;
+	context_widget = NULL;
+	subselect_enabled = FALSE;
+	for (int i=0; i<3; i++)
+	{
+		mb[i] = FALSE;
+		keymod[i] = FALSE;
+	}
 }
 
 // Destructor
 canvas::~canvas()
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_BASICCANVAS] ++;
-	#endif
-}
-
-// Update Canvas
-void canvas::postredisplay()
-{
-	printf("canvas::postredisplay - Not defined\n");
-}
-
-// Called when context is initialised and ready
-void canvas::realize()
-{
-	printf("canvas::realize - Not defined\n");
-}
-
-// Called when context is resized
-void canvas::configure()
-{
-	printf("canvas::configure - Not defined\n");
-}
-
-// Called when context needs to be redrawn
-void canvas::expose()
-{
-	printf("canvas::expose - Not defined\n");
-}
-
-// Swap buffers
-void canvas::swap_buffers()
-{
-	printf("canvas::swap_buffers - Not defined\n");
 }
 
 // Begin GL
 bool canvas::begin_gl()
 {
-	printf("canvas::begin_gl - Not defined\n");
-	return FALSE;
+	if (!valid) return FALSE;
+	drawing = TRUE;
+	return TRUE;
 }
 
-// End GL
+// Finalize GL commands
 void canvas::end_gl()
 {
-	printf("canvas::end_gl - Not defined\n");
+	drawing = FALSE;
+}
+
+// Swap buffers
+void canvas::swap_buffers()
+{
+}
+
+/*
+// Widget Canvas
+*/
+
+// Set widget
+bool canvas::set_widget(TCanvas *w)
+{
+	context_widget = w;
+	return TRUE;
+}
+
+// Widget realize
+void canvas::realize()
+{
+	// Sets the canvas to use a widget for output.
+	dbg_begin(DM_CALLS,"canvas::realize");
+	valid = TRUE;
+	init_gl();
+	dbg_end(DM_CALLS,"canvas::realize");
+}
+
+// Invalidate
+void canvas::postredisplay()
+{
+	dbg_begin(DM_CALLS,"canvas::postredisplay");
+	if (gui.exists()) context_widget->paintGL();
+	dbg_end(DM_CALLS,"canvas::postredisplay");
+}
+
+// Widget Expose
+void canvas::expose()
+{
+	if ((!gui.exists()) || gui.no_rendering() ) return;
+	// Render from the current rendering source
+	render_scene(master.get_currentmodel()->get_render_source());
+	#ifdef SPEEDTEST
+		speedtest_numrenders ++;
+		speedtest_totalrenders ++;
+	#endif
+}
+
+// Widget configure
+void canvas::configure()
+{
+	// Store the new width and height of the widget and re-do projection
+	w = (float)context_widget->width();
+	h = (float)context_widget->height();
+	do_projection();
+	// Flag that render source needs to be reprojected
+	if (displaymodel != NULL) displaymodel->log_change(LOG_VISUAL);
 }
 
 // Calculate drawing pixel width

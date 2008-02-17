@@ -125,7 +125,7 @@ bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
 	dbg_begin(DM_CALLS,"mc::minimise");
-	int n, cycle, nmoves, move, randmol, randpat, npats;
+	int n, cycle, nmoves, move, randmol, randpat, npats, prog;
 	double enew, ecurrent, ecurrent_vdw, ecurrent_elec, elastcycle, edelta, phi, theta;
 	vec3<double> v;
 
@@ -166,12 +166,21 @@ bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 	nmoves = 0;
 	npats = srcmodel->get_npatterns();
 	pattern *p = NULL;
+	prog = 0;
+
+	// Start progess indicator
+	if (gui.exists()) gui.progress_create("Performing MC minimisation...", ncycles * npats * MT_NITEMS);
+
 	// Loop over MC cycles
 	for (cycle=0; cycle<ncycles; cycle++)
 	{
 		// Loop over MC moves
 		for (move=0; move<MT_INSERT; move++)
 		{
+			// Update progress indicator
+			prog ++;
+			if (gui.exists() && (!gui.progress_update(prog))) break;
+
 			acceptratio[0][move] = 0;
 			// If this move type isn't allowed then continue onto the next
 			if (!allowed[move]) continue;
@@ -234,11 +243,11 @@ bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 		elastcycle = ecurrent;
 
 	} // Loop over MC cycles
+	if (gui.exists()) gui.progress_terminate();
 
 	// Finalise
-	//cfg->copy_to(srcmodel,CFG_R);
-	//srcmodel->draw_from_self();
 	srcmodel->log_change(LOG_COORDS);
+
 	dbg_end(DM_CALLS,"mc::minimise");
 	return TRUE;
 }

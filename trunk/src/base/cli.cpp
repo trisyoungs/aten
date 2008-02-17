@@ -93,6 +93,8 @@ int master_data::parse_cli(int argc, char *argv[])
 	{
 		// Parse option from cli arguments
 		int result = getopt_long(argc,argv,shortopts.get(),longopts,&index);
+		// Convert short option result (> CO_NITEMS) to long option equivalent
+		if (result > CO_NITEMS) result -= 97;
 		//printf("CLI_PARSE result = %i\n",result);
 		if (result == -1) done = TRUE;
 		else
