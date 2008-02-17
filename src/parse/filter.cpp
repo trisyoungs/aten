@@ -359,10 +359,10 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Reset element mapping style
 			prefs.set_zmapping(temp_zmap);
 			commands.close_files();
-			gui.add_recent(filename);
 			msg(DM_NONE,"Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_MODEL_EXPORT):
+			obj.m->update_save_point();
 			commands.close_files();
 			msg(DM_NONE,"Model export %s.\n",(result ? "completed" : "failed"));
 			break;

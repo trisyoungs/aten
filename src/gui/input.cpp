@@ -25,11 +25,11 @@
 #include "gui/canvas.h"
 
 // Static variables
-bool canvas_master::mb[MB_NITEMS];
-bool canvas_master::keymod[MK_NITEMS];
+bool canvas::mb[MB_NITEMS];
+bool canvas::keymod[MK_NITEMS];
 
 // Inform mouse down
-void canvas_master::inform_mousedown(mouse_button button, double x, double y)
+void canvas::inform_mousedown(mouse_button button, double x, double y)
 {
 	r_mousedown.set(x,y,0.0);
 	r_mouseup.set(x,y,0.0);
@@ -51,7 +51,7 @@ void canvas_master::inform_mousedown(mouse_button button, double x, double y)
 }
 
 // Inform mouse up
-void canvas_master::inform_mouseup(mouse_button button, double x, double y)
+void canvas::inform_mouseup(mouse_button button, double x, double y)
 {
 	// Only finalise the mode if the button is the same as the one that caused the mousedown event.
 	if (mb[button])
@@ -64,7 +64,7 @@ void canvas_master::inform_mouseup(mouse_button button, double x, double y)
 }
 
 // Inform mouse move
-void canvas_master::inform_mousemove(double x, double y)
+void canvas::inform_mousemove(double x, double y)
 {
 	// Perform action associated with mode (if any)
 	if (activemode != UA_NONE) mode_motion(x,y);
@@ -72,13 +72,13 @@ void canvas_master::inform_mousemove(double x, double y)
 }
 
 // Inform mouse wheel scroll
-void canvas_master::inform_scroll(bool dir)
+void canvas::inform_scroll(bool dir)
 {
 	mode_scroll(dir);
 }
 
 // Inform key down
-void canvas_master::inform_keydown(key_code key)
+void canvas::inform_keydown(key_code key)
 {
 	// Check datamodel...
 	if (displaymodel == NULL) return;
@@ -127,7 +127,7 @@ void canvas_master::inform_keydown(key_code key)
 }
 
 // Inform key up
-void canvas_master::inform_keyup(key_code key)
+void canvas::inform_keyup(key_code key)
 {
 	switch (key)
 	{
@@ -157,14 +157,14 @@ void canvas_master::inform_keyup(key_code key)
 */
 
 // Set selected mode
-void canvas_master::set_selectedmode(user_action ua)
+void canvas::set_selectedmode(user_action ua)
 {
-	dbg_begin(DM_CALLS,"canvas_master::set_selectedmode");
+	dbg_begin(DM_CALLS,"canvas::set_selectedmode");
 	selectedmode = ua;
 	if (displaymodel == NULL)
 	{
-		printf("Pointless canvas_master::set_selectedmode - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas_master::set_selectedmode");
+		printf("Pointless canvas::set_selectedmode - datamodel == NULL.\n");
+		dbg_end(DM_CALLS,"canvas::set_selectedmode");
 		return;
 	}
 	// Prepare canvas / model depending on the mode
@@ -185,11 +185,11 @@ void canvas_master::set_selectedmode(user_action ua)
 			break;
 	}
 	gui.mainview.postredisplay();
-	dbg_end(DM_CALLS,"canvas_master::set_selectedmode");
+	dbg_end(DM_CALLS,"canvas::set_selectedmode");
 }
 
 // Begin Mode
-void canvas_master::begin_mode(mouse_button button)
+void canvas::begin_mode(mouse_button button)
 {
 	dbg_begin(DM_CALLS,"widgetcanvas::begin_mode");
 	static bool manipulate, zrotate;
@@ -201,8 +201,8 @@ void canvas_master::begin_mode(mouse_button button)
 	// Set mouse flag and get state of modifier keys
 	if (displaymodel == NULL)
 	{
-		printf("Pointless canvas_master::begin_mode - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas_master::begin_mode");
+		printf("Pointless canvas::begin_mode - datamodel == NULL.\n");
+		dbg_end(DM_CALLS,"canvas::begin_mode");
 		return;
 	}
 	// Note the mouse button pressed
@@ -268,22 +268,22 @@ void canvas_master::begin_mode(mouse_button button)
 				break;
 		}
 	}
-	dbg_end(DM_CALLS,"canvas_master::begin_mode");
+	dbg_end(DM_CALLS,"canvas::begin_mode");
 }
 
 // End Mode
-void canvas_master::end_mode(mouse_button button)
+void canvas::end_mode(mouse_button button)
 {
 	// Finalize the current action on the model
-	dbg_begin(DM_CALLS,"canvas_master::end_mode");
+	dbg_begin(DM_CALLS,"canvas::end_mode");
 	bool manipulate;
 	double area, radius;
 	atom *atoms[4], *i;
 	bond *b;
 	if (displaymodel == NULL)
 	{
-		printf("Pointless canvas_master::end_mode - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas_master::end_mode");
+		printf("Pointless canvas::end_mode - datamodel == NULL.\n");
+		dbg_end(DM_CALLS,"canvas::end_mode");
 		return;
 	}
 	// Reset mouse button flag
@@ -463,19 +463,19 @@ void canvas_master::end_mode(mouse_button button)
 	}
 	activemode = UA_NONE;
 	postredisplay();
-	dbg_end(DM_CALLS,"canvas_master::end_mode");
+	dbg_end(DM_CALLS,"canvas::end_mode");
 }
 
-void canvas_master::mode_motion(double x, double y)
+void canvas::mode_motion(double x, double y)
 {
 	// Actively update variables when moving the mouse (possibly while performing a given action)
-	dbg_begin(DM_CALLS,"canvas_master::mode_motion");
+	dbg_begin(DM_CALLS,"canvas::mode_motion");
 	static vec3<double> delta;
 	static model *viewtarget;
 	if (displaymodel == NULL)
 	{
-		printf("Pointless canvas_master::mode_motion - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas_master::mode_motion");
+		printf("Pointless canvas::mode_motion - datamodel == NULL.\n");
+		dbg_end(DM_CALLS,"canvas::mode_motion");
 		return;
 	}
 	// For view operations when we have a trajectory, apply all movement to the parent model
@@ -518,19 +518,19 @@ void canvas_master::mode_motion(double x, double y)
 			break;
 	}
 	postredisplay();
-	dbg_end(DM_CALLS,"canvas_master::mode_motion");
+	dbg_end(DM_CALLS,"canvas::mode_motion");
 }
 
-void canvas_master::mode_scroll(bool scrollup)
+void canvas::mode_scroll(bool scrollup)
 {
 	// Handle mouse-wheel scroll events.
 	// Do the requested wheel action as defined in the control panel
-	dbg_begin(DM_CALLS,"canvas_master::mode_scroll");
+	dbg_begin(DM_CALLS,"canvas::mode_scroll");
 	static model *viewtarget;
 	if (displaymodel == NULL)
 	{
-		printf("Pointless canvas_master::mode_scroll - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas_master::mode_scroll");
+		printf("Pointless canvas::mode_scroll - datamodel == NULL.\n");
+		dbg_end(DM_CALLS,"canvas::mode_scroll");
 		return;
 	}
 	// For view operations when we have a trajectory, apply all movement to the parent model
@@ -556,5 +556,5 @@ void canvas_master::mode_scroll(bool scrollup)
 			break;
 	}
 	postredisplay();
-	dbg_end(DM_CALLS,"canvas_master::mode_scroll");
+	dbg_end(DM_CALLS,"canvas::mode_scroll");
 }

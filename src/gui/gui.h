@@ -147,8 +147,6 @@ class gui_qt
 	public:
 	// Initialise GUI file filters array
 	void init_filters();
-	// Add filename to recent files list
-	void add_recent(const char *filename);
 
 	/*
 	// Misc
