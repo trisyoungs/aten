@@ -28,6 +28,10 @@
 bool canvas::mb[MB_NITEMS];
 bool canvas::keymod[MK_NITEMS];
 
+// Local variables
+bool hasmoved;
+reflist< atom,vec3<double> > selectionr;
+
 // Inform mouse down
 void canvas::inform_mousedown(mouse_button button, double x, double y)
 {
@@ -210,6 +214,7 @@ void canvas::begin_mode(mouse_button button)
 	// Check for modifier keys
 	zrotate = FALSE;
 	manipulate = FALSE;
+	hasmoved = FALSE;
 	for (n=0; n<3; n++)
 	{
 		if (keymod[n])
@@ -255,8 +260,6 @@ void canvas::begin_mode(mouse_button button)
 				else if (manipulate) activemode = UA_MANIPROTXY;
 				else if (zrotate) activemode = UA_ROTATEZ;
 				else activemode = UA_ROTATEXY;
-				// Perform any necessary actions
-				if (manipulate) displaymodel->prepare_transform();
 				break;
 			case (MA_VIEWZOOM):
 				activemode = UA_ZOOMCAM;
@@ -264,8 +267,18 @@ void canvas::begin_mode(mouse_button button)
 			case (MA_VIEWTRANSLATE):
 				activemode = UA_MOVECAM;
 				manipulate ? activemode = UA_MANIPTRANS : activemode = UA_MOVECAM;
-				if (manipulate) displaymodel->prepare_transform();
 				break;
+		}
+		// If we're manipulating, prepare the transform
+		if (manipulate)
+		{
+			/* We don't begin an undostate here - this will be done in end_mode().
+			   Instead, store pointers to all selected atoms in a reflist, along
+			   with their current positions.
+			*/
+			selectionr.clear();
+			for (atom *i = displaymodel->get_first_selected(); i != NULL; i = i->get_next_selected()) selectionr.add(i, i->r());
+			displaymodel->prepare_transform();
 		}
 	}
 	dbg_end(DM_CALLS,"canvas::begin_mode");
@@ -449,7 +462,9 @@ void canvas::end_mode(mouse_button button)
 		case (UA_MANIPROTXY):
 		case (UA_MANIPROTZ):
 		case (UA_MANIPTRANS):
-			displaymodel->finalize_transform();
+			// Clear list of selectionr if nothing was moved
+			if (!hasmoved) selectionr.clear();
+			displaymodel->finalize_transform(selectionr);
 			break;
 		// View changes (no action)
 		case (UA_ROTATEXY):
@@ -500,14 +515,17 @@ void canvas::mode_motion(double x, double y)
 			break;
 		case (UA_MANIPROTXY):
 			displaymodel->rotate_selection_world(delta.x/2.0,delta.y/2.0);
+			hasmoved = TRUE;
 			break;
 		case (UA_MANIPROTZ):
 			displaymodel->manip_rotate_zaxis(delta.x/2.0);
+			hasmoved = TRUE;
 			break;
 		case (UA_MANIPTRANS):
 			delta.y = -delta.y;
 			delta /= displaymodel->get_translatescale() * 2.0;
 			displaymodel->translate_selection_world(delta);
+			hasmoved = TRUE;
 			break;
 		case (UA_ZOOMCAM):
 			if (prefs.using_perspective()) viewtarget->adjust_camera(0.0,0.0,delta.y,0.0);

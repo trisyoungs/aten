@@ -307,4 +307,3 @@ void model::position_atom(atom *target, vec3<double> newr)
 		newchange->set(UE_TRANSLATE,&delta);
 	}
 }
-
