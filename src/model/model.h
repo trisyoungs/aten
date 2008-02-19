@@ -572,7 +572,7 @@ class model
 	// Return the translation scale
 	double get_translatescale() { return translatescale; }
 	// Finalize atom transform
-	void finalize_transform();
+	void finalize_transform(reflist< atom,vec3<double> >);
 	// Rotate the atom selection
 	void rotate_selection_world(double, double);
 	// Spin the atom selection
@@ -786,6 +786,7 @@ class model
 	void begin_undostate(const char *text);
 	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
 	void end_undostate();
+	// Add positional undo
 	// Perform the undo action pointed to by 'currentundostate'
 	void undo();
 	// Perform the redo action pointed to by 'currentredostate'
