@@ -30,16 +30,16 @@
 template <class T, class D> class refitem
 {
 	public:
+	// Constructor / Destructor
+	refitem<T,D>();
+	~refitem();
+
 	// List pointers
 	refitem<T,D> *prev, *next;
 	// Pointer to item
 	T *item;
 	// Additional temporary info stored in structure
 	D data;
-	// Constructor
-	refitem<T,D>();
-	// Destructor
-	~refitem();
 };
 
 // Reference list
@@ -97,7 +97,7 @@ template <class T, class D> refitem<T,D>::refitem()
 	next = NULL;
 	prev = NULL;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_REFLISTITEM] ++;
+		memdbg.create[MD_REFLISTITEM] ++;
 	#endif
 }
 
@@ -107,7 +107,7 @@ template <class T, class D> reflist<T,D>::reflist()
 	items_tail = NULL;
 	nitems = 0;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_REFLIST] ++;
+		memdbg.create[MD_REFLIST] ++;
 	#endif
 }
 
@@ -116,14 +116,14 @@ template <class T, class D> reflist<T,D>::~reflist()
 {
 	clear();
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_REFLIST] ++;
+		memdbg.destroy[MD_REFLIST] ++;
 	#endif
 }
 
 template <class T, class D> refitem<T,D>::~refitem()
 {
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_REFLISTITEM] ++;
+		memdbg.destroy[MD_REFLISTITEM] ++;
 	#endif
 }
 

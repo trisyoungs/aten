@@ -60,6 +60,8 @@ void model::finalize_transform(reflist< atom,vec3<double> > originalr)
 	// Called after mouse-up.
 	// Atom positions may have moved outside the boundaries of the box, so need to re-fold.
 	fold_all_atoms();
+	log_change(LOG_COORDS);
+	project_all();
 	begin_undostate("Transform Selection");
 	// Go through list of atoms in 'originalr', work out delta, and store
 	if (recordingstate != NULL)
@@ -69,14 +71,12 @@ void model::finalize_transform(reflist< atom,vec3<double> > originalr)
 		for (refitem< atom,vec3<double> > *ri = originalr.first(); ri != NULL; ri = ri->next)
 		{
 			delta = ri->item->r() - ri->data;
-			recordingstate->changes.add();
+			newchange = recordingstate->changes.add();
 			newchange->set(UE_TRANSLATE,ri->item->get_id());
 			newchange->set(UE_TRANSLATE,&delta);
 		}
 	}
 	end_undostate();
-	log_change(LOG_COORDS);
-	project_all();
 }
 
 // Free Rotation of Selection

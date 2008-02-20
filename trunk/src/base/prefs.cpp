@@ -240,7 +240,17 @@ prefs_data::prefs_data()
 	// Undo levels
 	maxundo = -1;
 }
-	
+
+// Destructor
+prefs_data::~prefs_data()
+{
+	if (scale_colours != NULL)
+	{
+		for (int n=0; n<(3+scale_segments*2); n++) delete[] scale_colours[n];
+		delete[] scale_colours;
+	}
+}
+
 void prefs_data::load(const char *filename)
 {
 	// Read in a user preferences file

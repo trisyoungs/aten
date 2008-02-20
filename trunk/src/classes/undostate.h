@@ -117,6 +117,8 @@ class undostate
 	void set_endlog(change_log log, int value) { endlogs[log] = value; }
 	// Get structure log point at end of state
 	int get_endlog(change_log log) { return endlogs[log]; }
+	// Check difference between LOG_STRUCTURE and LOG_COORDS between start/end points
+	bool logs_differ();
 	// Set the text associated with the current undo state
 	void set_text(const char *s) { text = s; }
 	// Return the current text associated with the state

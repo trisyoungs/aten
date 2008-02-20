@@ -91,6 +91,8 @@ void model::undo()
 		currentundostate->reverse(this);
 		logs[LOG_STRUCTURE] = currentundostate->get_startlog(LOG_STRUCTURE);
 		logs[LOG_COORDS] = currentundostate->get_startlog(LOG_COORDS);
+		// Log a visual change if necessary
+		if (currentundostate->logs_differ()) log_change(LOG_VISUAL);
 		// Set new undo/redo pointers
 		currentredostate = currentundostate;
 		currentundostate = currentundostate->prev;
@@ -109,6 +111,8 @@ void model::redo()
 		currentredostate->perform(this);
 		logs[LOG_STRUCTURE] = currentredostate->get_endlog(LOG_STRUCTURE);
 		logs[LOG_COORDS] = currentredostate->get_endlog(LOG_COORDS);
+		// Log a visual change if necessary
+		if (currentredostate->logs_differ()) log_change(LOG_VISUAL);
 		// Set new undo/redo pointers
 		currentundostate = currentredostate;
 		currentredostate = currentredostate->next;

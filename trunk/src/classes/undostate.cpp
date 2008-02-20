@@ -316,3 +316,12 @@ void undostate::perform(model *m)
 	m->copy_logs(endlogs);
 	dbg_end(DM_CALLS,"undostate::perform");
 }
+
+// Check differences between LOG_STRUCTURE and LOG_COORDS for start/end points
+bool undostate::logs_differ()
+{
+	bool result = TRUE;
+	if (startlogs[LOG_STRUCTURE] != endlogs[LOG_STRUCTURE]) return FALSE;
+	if (startlogs[LOG_COORDS] != endlogs[LOG_COORDS]) return FALSE;
+	return result;
+}
