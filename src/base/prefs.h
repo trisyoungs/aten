@@ -106,8 +106,9 @@ class atom;
 class prefs_data
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	prefs_data();
+	~prefs_data();
 	// Load prefs from file
 	void load(const char*);
 	// Set GUI controls to reflect prefs choices

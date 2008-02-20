@@ -75,6 +75,7 @@ model::model()
 // Destructor
 model::~model()
 {
+	clear_bonding();
 	atoms.clear();
 	patterns.clear();
 	measurements.clear();
