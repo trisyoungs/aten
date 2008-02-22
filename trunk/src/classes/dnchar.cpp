@@ -34,7 +34,7 @@ dnchar::dnchar()
 	size = 0;
 	endpos = -1;
 	#ifdef MEMDEBUG
-		memdbg.create[MD_DCHAR] ++;
+		memdbg.create[MD_DNCHAR] ++;
 	#endif
 }
 
@@ -43,7 +43,7 @@ dnchar::~dnchar()
 {
 	if (data != NULL) delete[] data;
 	#ifdef MEMDEBUG
-		memdbg.destroy[MD_DCHAR] ++;
+		memdbg.destroy[MD_DNCHAR] ++;
 	#endif
 }
 

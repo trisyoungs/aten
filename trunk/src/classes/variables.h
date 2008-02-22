@@ -107,7 +107,7 @@ class variable
 	// Get value of variable as double
 	double get_as_double();
 	// Get value of variable as float
-	float get_as_float() { float(get_as_double()); }
+	float get_as_float() { return float(get_as_double()); }
 	// Get value of variable as a boolean
 	bool get_as_bool();
 	// Get value of variable as pointer

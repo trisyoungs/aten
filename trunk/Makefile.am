@@ -1,6 +1,6 @@
 SUBDIRS = src
 
-EXTRA_DIST = scripts/*.txt doc/manual.pdf src/gui-qt/icons/*.svg src/gui-gtk/icons/*/*.xpm data/spgrp.dat data/filters/*
+EXTRA_DIST = scripts/*.txt doc/manual.pdf src/gui/icons/*.svg data/spgrp.dat data/filters/*
 
 #filterdir = $(datadir)/aten/filters
 #filter_DATA = data/filters/*

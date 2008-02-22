@@ -121,7 +121,7 @@ void canvas::render_scene(model *source)
 
 	// Set the initial state of lighting in the model
 	prefs.render_style == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
-
+printf("Rendering\n");
 	// Draw the main model parts
 	// If render_point matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
 	glPushMatrix();
@@ -129,7 +129,7 @@ void canvas::render_scene(model *source)
 	  else
 	  {
 		msg(DM_VERBOSE,"Recreating display list for model '%s'...", displaymodel->get_name());
-		glDeleteLists(list[GLOB_MODEL],1);
+		//glDeleteLists(list[GLOB_MODEL],1);
 		glNewList(list[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
 		  render_model_cell();

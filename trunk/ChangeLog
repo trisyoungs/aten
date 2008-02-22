@@ -2,6 +2,9 @@
 Version 0.94
 ------------
 
+2008-02-21
+	* removed GTK gui and interface configure options
+
 2008-02-06
 	* added new gui commands and fixed trajectory loading
 

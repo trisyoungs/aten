@@ -93,7 +93,7 @@ patatom::~patatom()
 patbound::~patbound()
 {
 	#ifdef MEMDEBUG
-		memdbg.destroy[MD_PATTERN_BOND] ++;
+		memdbg.destroy[MD_PATTERN_BOUND] ++;
 	#endif
 }
 

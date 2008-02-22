@@ -87,9 +87,9 @@ extern memdbg_data memdbg;
 */
 
 #ifdef SPEEDTEST
-#include <time.h>
-extern int speedtest_numrenders, speedtest_totalrenders;
-extern clock_t speedtest_start, speedtest_finish;
+	#include <time.h>
+	extern int speedtest_numrenders, speedtest_totalrenders;
+	extern clock_t speedtest_start, speedtest_finish;
 #endif
 
 #endif

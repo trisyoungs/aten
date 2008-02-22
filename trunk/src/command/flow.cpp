@@ -49,6 +49,8 @@ int commanddata::function_CA_ELSEIF(command *&c, bundle &obj)
 
 int commanddata::function_CA_END(command *&c, bundle &obj)
 {
+	// This should never be called....
+	return CR_SUCCESS;
 }
 
 // Loop over atoms
