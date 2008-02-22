@@ -447,7 +447,7 @@ void canvas::render_surfaces()
 
 		if (g->should_rerender())
 		{
-			if (list != -1) glDeleteLists(list,1);
+			//if (list != 0) glDeleteLists(list,1);
 			glNewList(list,GL_COMPILE);
 			  switch (g->get_style())
 			  {

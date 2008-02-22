@@ -144,9 +144,13 @@ void canvas::init_gl()
 	dbg_begin(DM_CALLS,"canvas::init_gl");
 	if (begin_gl())
 	{
-		// Create lists for globs
-		if (list[0] == 0) list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
-		for (int n=1; n<GLOB_NITEMS; n++) list[n] = list[GLOB_STICKATOM]+n;
+		// Create lists for globs if this is the first call to init_gl()
+		if (list[0] == 0)
+		{
+			list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
+			for (int n=1; n<GLOB_NITEMS; n++) list[n] = list[GLOB_STICKATOM]+n;
+		}
+
 		// Fill display lists
 		create_lists();
 
@@ -215,6 +219,7 @@ void canvas::init_gl()
 // Create display lists
 void canvas::create_lists()
 {
+	if (!is_valid()) return;
 	dbg_begin(DM_CALLS,"canvas::create_lists");
 	// Generate quadric objects for subsequent use
 	quadric1 = gluNewQuadric();			// Creates a quadric object for use.

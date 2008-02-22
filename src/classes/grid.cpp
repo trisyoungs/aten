@@ -40,7 +40,7 @@ grid::grid()
 	cutoff = 0.0;
 	log = -1;
 	style = SS_GRID;
-	displaylist = -1;
+	displaylist = 0;
 	colour[0] = INT_MAX;
 	colour[1] = 0;
 	colour[2] = 0;

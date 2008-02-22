@@ -37,9 +37,27 @@ else
   AC_CHECK_HEADERS([GLUT/glut.h], ,[AC_MSG_ERROR([Could not find GLUT header. Is GLUT installed?])])
 fi
 
+#
+# Additional Configuration Options
+#
 
-# Checks for GL, GLU, and GLUT headers
-# Provide --with options to specify the include locations
+# MEMDEBUG
+AC_ARG_WITH([memdebug],[AC_HELP_STRING([--with-memdebug],
+    [Enable manual constructor / destructor counts.])], ,
+    [memdebug=])
+if test "x$with_memdebug" != "x"; then
+  AC_DEFINE([MEMDEBUG], [], [Enable manual constructor / destructor counts.])
+fi
+
+# SPEEDTEST
+AC_ARG_WITH([speedtest],[AC_HELP_STRING([--with-speedtest],
+    [Enable rendering speedtest (warning - makes compiled code otherwise unusable).])], ,
+    [speedtest=])
+if test "x$with_speedtest" != "x"; then
+  AC_DEFINE([SPEEDTEST], [], [Enable rendering speedtest (warning - makes compiled code otherwise unusable).])
+fi
+
+# GL-INCLUDEDIR
 GL_CFLAGS=""
 AC_ARG_WITH([gl-includedir],[AC_HELP_STRING([--with-gl-includedir=DIR],
     [Set location of OpenGL and GLUT headers to DIR [default=auto]])], ,
@@ -48,8 +66,7 @@ if test "x$with_gl_includedir" != "xauto"; then
   GL_CFLAGS="-I$with_gl_includedir"
 fi
 
-
-# Allow Qt bin directory to be specified (to avoid version conflicts for moc, rcc, and uic)
+# QTDIR
 QTDIR=""
 AC_ARG_WITH([qtdir],[AC_HELP_STRING([--with-qtdir=<dir>],
     [Specify location of Qt4 developer tools (moc, uic, and rcc) [default=""]])], ,
@@ -58,22 +75,23 @@ if test "x$with_qtdir" != "x"; then
   QTDIR="$with_qtdir/"
 fi
 
-
-# Add in Apple Qt configuration arguments
+# QT-FRAMEWORK  (Mac only)
 AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
     [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
     [with_qt=])
+
+# GLUT (Mac only)
 AC_ARG_WITH([glut],[AC_HELP_STRING([--with-glut=framework|<none>],
     [Determines which installation of GLUT to use on OS X (should not be set for Linux)[default=<none>]])], ,
     [with_glut=])
 
 
-# Pre-initialise pkg-config since we don't know where the first PKG_CHECK_MODULES will occur
+# Pre-initialise pkg-config 
 PKG_PROG_PKG_CONFIG
 
 
-# Set up compilation for qt GUI
-AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
+# Set up compilation for Qt GUI
+#AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
 AC_DEFINE([HAS_GUI], [], [Whether a GUI has been specified])
 if test "$with_qt" = "framework"; then
   QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore"
@@ -102,6 +120,7 @@ else
 fi
 
 
+# Perform Makefile substitutions
 AC_SUBST(GUI_LDLIBS)
 AC_SUBST(GUI_CFLAGS)
 AC_SUBST(QTDIR)
@@ -113,12 +132,14 @@ AC_C_CONST
 AC_C_INLINE
 AC_STRUCT_TM
 
+
 # Checks for library functions.
 AC_FUNC_SELECT_ARGTYPES
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([floor pow select sqrt strchr strrchr strstr])
 
-# Define AC_OUTPUT 
+
+# Define Makefiles in AC_OUTPUT 
 AC_OUTPUT(Makefile
 src/Makefile
 src/base/Makefile

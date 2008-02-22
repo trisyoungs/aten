@@ -147,8 +147,8 @@ void print_memdebuginfo()
 */
 
 #ifdef SPEEDTEST
-int speedtest_numrenders, speedtest_totalrenders;
-clock_t speedtest_start, speedtest_finish;
+	int speedtest_numrenders = 0, speedtest_totalrenders = 100;
+	clock_t speedtest_start, speedtest_finish;
 #endif
 
 /*
@@ -159,14 +159,11 @@ clock_t speedtest_start, speedtest_finish;
 void prepare_debug()
 {
 	#ifdef MEMDEBUG
-	for (int i=0; i<MD_NITEMS; i++) memdbg.create[i] = 0;
-	for (int i=0; i<MD_NITEMS; i++) memdbg.destroy[i] = 0;
+		for (int i=0; i<MD_NITEMS; i++) memdbg.create[i] = 0;
+		for (int i=0; i<MD_NITEMS; i++) memdbg.destroy[i] = 0;
 	#endif
 	#ifdef SPEEDTEST
-	// Turn on idle events with a period of every second (for printout)
-	master.use_timer = TRUE;
-	master.set_timer_period(1);
-	speedtest_start = clock();
+		speedtest_start = clock();
 	#endif
 }
 
@@ -174,12 +171,12 @@ void prepare_debug()
 void print_debuginfo()
 {
 	#ifdef MEMDEBUG
-	print_memdebuginfo();
+		print_memdebuginfo();
 	#endif
 	#ifdef SPEEDTEST
-	speedtest_finish = clock();
-	double nsec = double(speedtest_finish-speedtest_start) / CLOCKS_PER_SEC;
-	printf("SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n",speedtest_totalrenders,nsec,speedtest_totalrenders/nsec);
+		speedtest_finish = clock();
+		double nsec = double(speedtest_finish-speedtest_start) / CLOCKS_PER_SEC;
+		printf("SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n",speedtest_totalrenders,nsec,speedtest_totalrenders/nsec);
 	#endif
 }
 

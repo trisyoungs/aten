@@ -261,7 +261,7 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 	// Are there arguments in the parser that we shouldn't have been given.
 	if ((parser.get_nargs() - 1) > strlen(v))
 	{
-		printf("Too many arguments (%i) given to command '%s' (which expects %i at most).\n", (parser.get_nargs()-1), cmd, strlen(v));
+		printf("Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.get_nargs()-1), cmd, strlen(v));
 		dbg_end(DM_CALLS,"command::add_variables");
 		return FALSE;
 	}

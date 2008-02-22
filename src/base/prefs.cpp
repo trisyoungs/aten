@@ -281,8 +281,9 @@ void prefs_data::load(const char *filename)
 		if (!prefcmds.cache_command()) break;
 	}
 	// Check the flowstack - it should contain just the BC_ROOTNODE branch
-	if (prefcmds.get_branchstack_size() != 0)
+	if (prefcmds.get_branchstack_size() != 1)
 	{
+		printf("%i unterminated blocks in prefs file.\n",prefcmds.get_branchstack_size());
 		dbg_end(DM_CALLS,"prefs::load");
 		return;
 	}

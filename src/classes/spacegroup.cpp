@@ -112,7 +112,7 @@ void symmop::set(const char *xyzstr)
 					rotation.set(n,v.x,v.y,v.z);
 					break;
 				default:
-					printf("Unrecognised character '%c' found in symmop spec.\n",c);
+					printf("Unrecognised character '%c' found in symmop spec.\n",*c);
 					break;
 			}
 		}

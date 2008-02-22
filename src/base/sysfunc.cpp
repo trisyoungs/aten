@@ -325,8 +325,11 @@ const char *evaluate(const char *s, variable_list *vars)
 		}
 	}
 	// Look for non-blank argument and set it as result
-	for (n=0; n<parser.get_nargs(); n++)
-		if (!parser.is_blank(n)) return parser.argc(n);
+	for (n=0; n<parser.get_nargs(); n++) if (!parser.is_blank(n)) break;
+	if (n < parser.get_nargs()) return parser.argc(n);
+	// Failed to find a return value!
+	printf("evaluate - failed to find return argument.\n");
+	return ".0";
 }
 
 // Strip trailing whitespace from string
