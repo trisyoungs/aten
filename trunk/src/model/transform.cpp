@@ -55,7 +55,7 @@ void model::prepare_transform()
 }
 
 // Finalize Model Manipulation
-void model::finalize_transform(reflist< atom,vec3<double> > originalr)
+void model::finalize_transform(reflist< atom,vec3<double> > &originalr)
 {
 	// Called after mouse-up.
 	// Atom positions may have moved outside the boundaries of the box, so need to re-fold.

@@ -28,10 +28,6 @@
 bool canvas::mb[MB_NITEMS];
 bool canvas::keymod[MK_NITEMS];
 
-// Local variables
-bool hasmoved;
-reflist< atom,vec3<double> > selectionr;
-
 // Inform mouse down
 void canvas::inform_mousedown(mouse_button button, double x, double y)
 {

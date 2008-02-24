@@ -23,11 +23,14 @@
 #include "base/debug.h"
 #include "base/elements.h"
 #include "gui/gui.h"
+#include "model/model.h"
 
 // Atom quadric detail
 int commanddata::function_CA_ATOMDETAIL(command *&c, bundle &obj)
 {
 	prefs.set_atom_detail(c->argi(0));
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -35,6 +38,8 @@ int commanddata::function_CA_ATOMDETAIL(command *&c, bundle &obj)
 int commanddata::function_CA_BONDDETAIL(command *&c, bundle &obj)
 {
 	prefs.set_bond_detail(c->argi(0));
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -45,6 +50,8 @@ int commanddata::function_CA_COLOUR(command *&c, bundle &obj)
 	if (col == COL_NITEMS) return CR_FAIL;
 	vec3<double> colvec = c->arg3d(1);
 	prefs.set_colour(col, colvec.x, colvec.y, colvec.z, 1.0);
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -65,6 +72,8 @@ int commanddata::function_CA_ELEMENTAMBIENT(command *&c, bundle &obj)
 	elements.set_ambient(el,0,c->argi(1));
 	elements.set_ambient(el,1,c->argi(2));
 	elements.set_ambient(el,2,c->argi(3));
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -76,6 +85,8 @@ int commanddata::function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj)
 	elements.set_diffuse(el,0,c->argi(1));
 	elements.set_diffuse(el,1,c->argi(2));
 	elements.set_diffuse(el,2,c->argi(3));
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -85,6 +96,8 @@ int commanddata::function_CA_ELEMENTRADIUS(command *&c, bundle &obj)
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
 	elements.set_radius(el, c->argd(1));
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -104,7 +117,9 @@ int commanddata::function_CA_GL(command *&c, bundle &obj)
 	if (go == GO_NITEMS) return CR_FAIL;
 	if (c->argb(1)) prefs.add_gl_option(go);
 	else prefs.remove_gl_option(go);
-	gui.mainview.init_gl();
+	if (gui.exists()) gui.mainview.init_gl();
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -141,6 +156,8 @@ int commanddata::function_CA_RADIUS(command *&c, bundle &obj)
 int commanddata::function_CA_SHININESS(command *&c, bundle &obj)
 {
 	prefs.set_shininess(c->argi(0));
+	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
@@ -148,7 +165,12 @@ int commanddata::function_CA_SHININESS(command *&c, bundle &obj)
 int commanddata::function_CA_SHOW(command *&c, bundle &obj)
 {
 	view_object vo = VO_from_text(c->argc(0));
-	if (vo != VO_NITEMS) prefs.set_visible(vo, c->argb(1));
+	if (vo != VO_NITEMS)
+	{
+		prefs.set_visible(vo, c->argb(1));
+		if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+		if (gui.exists()) gui.refresh();
+	}
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -157,7 +179,12 @@ int commanddata::function_CA_SHOW(command *&c, bundle &obj)
 int commanddata::function_CA_STYLE(command *&c, bundle &obj)
 {
 	draw_style ds = DS_from_text(c->argc(0));
-	if (ds != DS_NITEMS) prefs.set_render_style(ds);
+	if (ds != DS_NITEMS)
+	{
+		prefs.set_render_style(ds);
+		if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+		if (gui.exists()) gui.refresh();
+	}
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }

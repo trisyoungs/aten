@@ -224,6 +224,8 @@ class canvas
 	reflist<atom,int> subsel;
 	// Whether we are selecting atoms and placing them in the subsel list	
 	bool subselect_enabled;
+	// Reflist of atoms selected, filled in some interaction modes
+	reflist< atom,vec3<double> > selectionr;
 
 	public:
 	// Returns the atom currently under the mouse
@@ -260,6 +262,8 @@ class canvas
 	void mode_scroll(bool);
 	// End an action on the model (called from mouse_buttonup)
 	void end_mode(mouse_button);
+	// Whether the mouse has moved between begin_mode() and end_mode() calls
+	bool hasmoved;
 
 	public:
 	// Set the active mode to the current user mode

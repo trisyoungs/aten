@@ -218,6 +218,9 @@ template <class T, class D> void reflist<T,D>::clear()
 		remove(xitem);
 		xitem = items_head;
 	}
+	items_head = NULL;
+	items_tail = NULL;
+	nitems = 0;
 }
 
 // Move head to tail

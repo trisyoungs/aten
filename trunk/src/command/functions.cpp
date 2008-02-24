@@ -289,6 +289,7 @@ void master_data::init_commands()
 	// View
 	CA_data[CA_RESETVIEW].function = &commanddata::function_CA_RESETVIEW;
 	CA_data[CA_ROTATEVIEW].function = &commanddata::function_CA_ROTATEVIEW;
+	CA_data[CA_SPEEDTEST].function = &commanddata::function_CA_SPEEDTEST;
 	CA_data[CA_TRANSLATEVIEW].function = &commanddata::function_CA_TRANSLATEVIEW;
 	CA_data[CA_ZOOMVIEW].function = &commanddata::function_CA_ZOOMVIEW;
 	CA_data[CA_ZROTATEVIEW].function = &commanddata::function_CA_ZROTATEVIEW;

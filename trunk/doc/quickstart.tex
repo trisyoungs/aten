@@ -6,12 +6,22 @@ Run from the command line without arguments, \progname{} starts up with the full
 
 Many command-line options exist to allow for immediate loading of models, scripts, forcefields etc., and to run the program in batch mode etc. See Section \ref{sec:cli} for a full list.\\
 
-The following section refers to the Qt interface.\\
-
 \section{Main Window}
 Most of the main window is taken up with a canvas which is used to display and edit models and take input from the user. Each of the mouse buttons has a different action on the canvas, each of which can be set to the users taste in the preferences (menu item Settings$\rightarrow$Preferences on Linux). In addition the Shift, Ctrl, and Alt keys modify or augment these default actions. See the following sections for brief descriptions of the different modes. At the foot of the window is a message box (where output and errors are thrown) and a status bar reflecting the content of the current model displayed, listing the number of atoms and the number of selected atoms (bold value in parentheses, but only if there are selected atoms), the mass of the model, and the cell type and density of the model (if it is periodic).\\
 
-A stack of icons on the right-hand side of the window provides quick access to different tool panels for building, analysing etc. See the relevant sections of the manual for descriptions of each of these panels.
+A stack of icons on the right-hand side of the window provides quick access to different tool panels for building, analysing etc. The icons are:\\
+
+\noindent
+\includegraphics[width=1cm]{images/stack_atomlist} Shows a list of atoms in the model \\
+\includegraphics[width=1cm]{images/stack_cell} Add, edit, or transform the model's unit cell \\
+\includegraphics[width=1cm]{images/stack_edit} Tools to edit atoms and bonds \\
+\includegraphics[width=1cm]{images/stack_transform} Transform selections of atoms \\
+\includegraphics[width=1cm]{images/stack_position} Position selections of atoms \\
+\includegraphics[width=1cm]{images/stack_ff} Load and edit forcefields, and assign to models and patterns \\
+\includegraphics[width=1cm]{images/stack_minimise} Minimise the energy of models \\
+\includegraphics[width=1cm]{images/stack_disorder} Create disordered systems \\
+
+See the relevant sections of the manual for descriptions of each of these panels.
 
 \section{Changing the View}
 At its most basic the canvas acts as a visualiser allowing models to be rotated, zoomed in and out, and drawn in various different styles. By default, the right mouse button is used to rotate the molecule in the plane of the screen (right-click and hold on an empty area of the canvas and move the mouse to rotate the model) and the mouse wheel zooms in and out. Note that right-clicking on an atom brings up the atom menu (see Section \ref{sec:atommenu}). The middle mouse button translates the model in the plane of the screen -- again, click-hold and drag. Rotation and translation operate on the position and orientation of the camera and no modifications to the actual coordinates of the model are made. The view can be reset at any time from the main menu (View$\rightarrow$Reset) or by pressing Ctrl-R. Both the main menu (View$\rightarrow$Style) and the View toolbar allow the drawing style of models to be changed between stick, tube, sphere, scaled sphere, and individual. The last option allows different view styles to be set for different atoms.\\

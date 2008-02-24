@@ -513,6 +513,8 @@ commanddata CA_data[CA_NITEMS] = {
 				"Reset the camera and rotation for the current model" },
 	{ "rotateview",		"VV",		"<x> <y>",
 				"Rotate the current model about the x and y axes by the specified amounts" },
+	{ "speedtest",		"v",		"[nrender]",
+				"Time 100 (or [nrender]) updates of the model display." },
 	{ "translateview",	"VVV",		"<dx> <dy> <dz>",
 				"Translate the camera for the current model" },
 	{ "viewalong",		"VVV",		"<x> <y> <z>",

@@ -572,7 +572,7 @@ class model
 	// Return the translation scale
 	double get_translatescale() { return translatescale; }
 	// Finalize atom transform
-	void finalize_transform(reflist< atom,vec3<double> >);
+	void finalize_transform(reflist< atom,vec3<double> >&);
 	// Rotate the atom selection
 	void rotate_selection_world(double, double);
 	// Spin the atom selection
