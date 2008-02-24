@@ -1,7 +1,7 @@
 /*
 	*** Steepest descent minimiser
 	*** src/methods/sd.cpp
-	Copyright T. Youngs 2007
+	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
 
