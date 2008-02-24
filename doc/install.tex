@@ -4,32 +4,32 @@
 \section{\emph{Disclaimer}}
 \label{sec:disclaimer}
 
-\progname{} has been compiled successfully on Linux machines running SuSE 9.3 (with the GTK gui), OpenSuSE 10.2, and RedHat Enterprise 4, an Intel iMac running OS X 10.4.10, and XXX. No doubt with (or without) tweaking it will run on other systems.\\
+\progname{} has been compiled successfully on Linux machines running SuSE 9.3, OpenSuSE 10.2, and RedHat Enterprise 4, an Intel iMac running OS X 10.4.10, and a couple of other rickety machines and laptops laying around. No doubt with (or without) tweaking it will run on other systems.\\
 
 \progname{} is in development, and as such might contain a bug or two. Should you come across a crash or an issue that needs to be fixed, \emph{please} report them so they can be fixed.\\
 
-In addition, I can't accept responsibility for any loss of data / work / sleep / expensive computers / cats / coordinates etc., use at your own risk etc., and so on...\\
+In addition, I can't accept responsibility for any loss of data / work / sleep / expensive computers / cats / coordinates etc., 'use at your own risk' and so on...\\
 
 \section{Ingredients for Linux}
 \label{sec:linuxinstall}
 \begin{itemize}
 	\item GNU Autotools 2.6
-	\item A C++ compiler (e.g. g++, icc)
+	\item A C++ compiler (e.g. GNU g++, Intel's icc)
 	\item OpenGL and glut (e.g. from freeglut)
 	\item pkg-config
-	\item GTK+2.0 (version 2.4 or above) or Qt4 (version 4.2 or above) if you want a GUI
-	\item GtkGLExt if you want the GTK+ GUI
+	\item Qt4 (version 4.2 or above)
 \end{itemize}
 
 \section{Ingredients for Mac OS X}
 \label{sec:macinstall}
 \begin{itemize}
 	\item GNU Autotools 2.6
-	\item A C++ compiler (e.g. g++, icc)
+	\item A C++ compiler (e.g. GNU g++, Intel's icc)
 	\item OpenGL and glut frameworks
-	\item pkg-config (if using Fink or MacPorts versions of GTK+ or Qt)
-	\item GTK+ (version 2.4 or above) or Qt (version 4.1 or above) if you want a GUI
+	\item Qt (version 4.1 or above)
+	\item pkg-config (if using Fink or MacPorts versions of Qt)
 \end{itemize}
+An installable .dmg for the Mac is available \href{from http://trolltech.com/developer/downloads/qt/mac} (near the bottom of the page).
 
 \subsection{Which Qt4?}
 
@@ -75,16 +75,6 @@ Possible {\sffamily configure} options are listed here. Most are present just to
 	\begin{description}
 		\item[e.g. {-}{-}with-gl-includedir=/usr/include]
 			Sets the location of the OpenGL headers (GL/GL.h etc.) to /usr/include.
-	\end{description}
-
-	\item[{-}{-}with-gui] Specifies GUI to compile with the program. Valid options are:
-	\begin{description}
-		\item[{-}{-}with-gui=none\its]
-			No GUI should be compiled (i.e. create a command-line only version)
-		\item[{-}{-}with-gui=gtk\its]
-			Compile the legacy GTK+ GUI.
-		\item[{-}{-}with-gui=qt\its]
-			Compile the Qt4 GUI (default).
 	\end{description}
 
 	\item[{-}{-}with-qt] Specifies which installation of Qt4 to use on Apple Macs. Valid options are:
@@ -140,12 +130,6 @@ Possible {\sffamily configure} options are listed here. Most are present just to
 	\item[Step 2:\its] Configure the build (Run {\sffamily./configure})
 	\begin{itemize}
 		\item Most all dependencies should be detected by the scripts provided, ensuring a pain-free build (or quick detection of problems).
-		\item Select a GUI. Running {\sffamily./configure} with no options detects the operating system and builds in the Qt GUI. This can be overriden with the {\sffamily {-}{-}with-gui} switch:
-		\begin{itemize}
-			\item {\sffamily./configure {-}{-}with-gui=qt} builds in the Qt GUI (default).
-			\item {\sffamily./configure {-}{-}with-gui=gtk} builds in the legacy GTK+ GUI.
-			\item {\sffamily./configure {-}{-}with-gui=none} builds a command-line only executable.
-		\end{itemize}
 	\end{itemize}
 	Common issues:\\
 	\emph{$configure$ complains \dqte{Could not find GLUT header. Is freeglut/Mesa installed?}}

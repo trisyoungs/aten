@@ -121,7 +121,6 @@ void canvas::render_scene(model *source)
 
 	// Set the initial state of lighting in the model
 	prefs.render_style == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
-printf("Rendering\n");
 	// Draw the main model parts
 	// If render_point matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
 	glPushMatrix();
@@ -200,4 +199,3 @@ printf("Rendering\n");
 	end_gl();
 	dbg_end(DM_CALLS,"canvas::render");
 }
-

@@ -207,7 +207,7 @@ As always, things are best illustrated with an example. Take the XYZ format as p
 \begin{enumerate}
   \item Number of atoms (1 line) -- Integer value specifying the number of atoms ($N$).
   \item Title (1 line) -- Long name or description of the system.
-  \item Atom data ($N$ lines) -- Atom data, one per line, usually containing an aotomic element and its coordinates, but occasionally the atomic charge as well.
+  \item Atom data ($N$ lines) -- Atom data, one per line, containing an atomic element and its coordinates, and occasionally the atomic charge as well.
 \end{enumerate}
 
 For example:
@@ -231,8 +231,10 @@ import
   readline "$natoms"
   readline "$title@100"
   repeat $n $natoms
-    readline "$e $r.x $r.y $r.z $q"
-    addatom
+    readline "$e $rx $ry $rz $q"
+    addatom $e
+    setcoords $rx $ry $rz
+    setcharge $q
   end
   rebond
 end
@@ -244,7 +246,7 @@ export
   writeline "$title"
   foratoms $i
     get $i
-    writeline "$i.e@3 *@4 $i.r.x@12 $i.r.y@12 $i.r.z@12"
+    writeline "$i.e@3 *@4 $i.rx@12 $i.ry@12 $i.rz@12"
   end
 end
 \end{verbatim}

@@ -15,7 +15,7 @@ Type descriptions in \progname{} use connectivity to other elements as a basis, 
 
 \subsection{Example 1 -- Water}
 \index{typing examples}
-\begin{wrapfigure}[]{l}[0em]{2.2cm} \includegraphics[width=2cm]{figures/water.eps} \end{wrapfigure}
+\begin{wrapfigure}[]{l}[0em]{2.2cm} \includegraphics[width=2cm]{images/water} \end{wrapfigure}
 Consider a water molecule. If you were describing it in terms of its structure to someone who understands the concept of atoms and bonds, but has no idea what the water molecule looks like, you might say:
 
 \begin{quote}
@@ -55,7 +55,7 @@ An atom description in \progname{} is a string of comma-separated commands that 
 \subsection{Example 2 -- 3-hydroxypropanoic acid}
 \index{typing examples}
 
-\begin{wrapfigure}[]{l}[0em]{4.1cm} \includegraphics[width=4cm]{figures/propanoic.eps} \end{wrapfigure}
+\begin{wrapfigure}[]{l}[0em]{4.1cm} \includegraphics[width=4cm]{images/propanoic} \end{wrapfigure}
 Assuming that the OH group in the carboxylic acid functionalisation will have different forcefield parameters to the primary alcohol at the other end of the molecule, here we must describe the first and second neighbours of the oxygen atoms to differentiate them. \\
 
 To begin, we can describe the carbon atoms as either two or three different types -- either methylene/carboxylic acid, or carboxylic acid/adjacent to a carboxylic acid/adjacent to alcohol. For both, we only need describe the first neighbours of the atoms. For the first:
@@ -96,7 +96,7 @@ Of course, we could just have specified \dqte{nbonds=1} for the doubly-bound oxy
 \subsection{Example 3 -- $N$,$N$,2,5-tetramethylpyridin-4-amine}
 \index{typing examples}
 
-\begin{wrapfigure}[]{l}[0em]{3.1cm} \includegraphics[width=3cm]{figures/aromatic.eps} \end{wrapfigure}
+\begin{wrapfigure}[]{l}[0em]{3.1cm} \includegraphics[width=3cm]{images/aromatic} \end{wrapfigure}
 Ah, now here we have a proper problem! An asymmetric substituted pyridine. Lets assume that we need to distinguish between every non-hydrogen atom  -- we'll skip describing the hydrogen atoms for now, but note that this is most easily achieved by specifying directly the atomtype that the H is bound to (see later on). Let's start with the pyridine nitrogen. We basically need to say that its in a 6-membered aromatic ring:
 
 \begin{verbatim}

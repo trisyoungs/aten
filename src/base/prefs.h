@@ -141,7 +141,7 @@ class prefs_data
 	// Return whether the specified object is visible (i.e. should be rendered)
 	bool should_render(view_object vo) { return render_objects[vo]; }
 	// Return the radius of an atom calculated from the element and draw style
-	double screenradius(atom*); 
+	double screenradius(atom*);
 	// Set the drawing style of models
 	void set_render_style(draw_style ds) { render_style = ds; }
 	// Return the current drawing style of models

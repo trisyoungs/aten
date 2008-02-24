@@ -23,6 +23,7 @@
 #include "base/debug.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include <time.h>
 
 // Reset view
 int commanddata::function_CA_RESETVIEW(command *&c, bundle &obj)
@@ -66,5 +67,28 @@ int commanddata::function_CA_ZROTATEVIEW(command *&c, bundle &obj)
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->zrotate(c->argd(0));
 	gui.refresh();
+	return CR_SUCCESS;
+}
+
+// Render speed test
+int commanddata::function_CA_SPEEDTEST(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (!gui.exists())
+	{
+		msg(DM_NONE,"Can't perform rendering speedtest without the GUI.\n");
+		return CR_FAIL;
+	}
+	clock_t tstart = clock();
+	// Loop over n renders (or 100 of no variable given)
+	int nrenders = (c->has_arg(0) ? c->argi(0) : 100);
+	for (int n=0; n < nrenders; n ++)
+	{
+		obj.m->rotate(5.0,0.0);
+		gui.refresh();
+	}
+	clock_t tfinish = clock();
+	double nsec = double(tfinish-tstart) / CLOCKS_PER_SEC;
+	msg(DM_NONE,"SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
 	return CR_SUCCESS;
 }

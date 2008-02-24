@@ -311,6 +311,7 @@ enum command_action {
 	// View
 	CA_RESETVIEW,
 	CA_ROTATEVIEW,
+	CA_SPEEDTEST,
 	CA_TRANSLATEVIEW,
 	CA_VIEWALONG,
 	CA_VIEWALONGCELL,
@@ -587,6 +588,7 @@ class commanddata
 	// View
 	int function_CA_RESETVIEW(command *&c, bundle &obj);
 	int function_CA_ROTATEVIEW(command *&c, bundle &obj);
+	int function_CA_SPEEDTEST(command *&c, bundle &obj);
 	int function_CA_TRANSLATEVIEW(command *&c, bundle &obj);
 	int function_CA_ZOOMVIEW(command *&c, bundle &obj);
 	int function_CA_ZROTATEVIEW(command *&c, bundle &obj);

@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif .dvi
 kileprversion=2
 kileversion=2.0
-lastDocument=filtershandbook.tex
+lastDocument=quickstart.tex
 masterDocument=manual.tex
 name=Aten Manual
 pkg_extIsRegExp=false
@@ -32,9 +32,9 @@ archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=12
-open=false
-order=-1
+line=93
+open=true
+order=4
 
 [item:expression.tex]
 archive=true
@@ -74,39 +74,39 @@ order=-1
 
 [item:filtershandbook.tex]
 archive=true
-column=10
+column=111
 encoding=UTF-8
 highlight=LaTeX
-line=245
+line=209
 open=true
 order=0
 
 [item:install.tex]
 archive=true
-column=67
+column=399
 encoding=UTF-8
 highlight=LaTeX
-line=92
-open=false
-order=-1
+line=115
+open=true
+order=5
 
 [item:manual.tex]
 archive=true
 column=0
 encoding=UTF-8
 highlight=LaTeX
-line=34
+line=0
 open=true
 order=1
 
 [item:quickstart.tex]
 archive=true
-column=6
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=41
-open=false
-order=-1
+line=13
+open=true
+order=6
 
 [item:scriptorshandbook.tex]
 archive=true

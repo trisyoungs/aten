@@ -39,7 +39,6 @@ General Qt To-Do list:
 	- Prefs window (partial) - colour editor (e.g. for COL_PEN, COL_BG etc.)
 	- Better editability in the atom list stack page
 	- Remember positions / visibility of toolbars (QSettings)
-	- Recent files
 
 Manual To-Do list:
 	- Section on forcefields

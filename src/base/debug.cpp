@@ -44,7 +44,8 @@ void msg(debug_mode dm, const char *fmt ...)
 	// Print to the text view in the main window if it has been initialised.
 	// Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
 	va_list arguments;
-	char msgs[8096];
+	static char msgs[8096];
+	msgs[0] = '\0';
 	// Parse the argument list (...) and internally write the output string into msgs[]
 	va_start(arguments,fmt);
 	vsprintf(msgs,fmt,arguments);
