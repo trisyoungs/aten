@@ -52,11 +52,9 @@ commanddata CA_data[CA_NITEMS] = {
 	{ "atomtype",		"",		"<variables>",
 				"Create atomtype* variables with the names provided" },
 	
-	// Root node and help command
+	// Root node
 	{ "_ROOTNODE_",		"",		"",
 				"" },
-	{ "help",		"V",		"<command>",
-				"Provide short help on the command supplied" },
 	
 	// Analysis commands
 	{ "finalise",		"",		"",
@@ -257,8 +255,6 @@ commanddata CA_data[CA_NITEMS] = {
 				"" },
 	{ "if",			"VSE",		"<variable> <condition> <variable|constant>",
 				"Perform a conditional test on the supplied variable against the second variable (or constant)" },
-	{ "quit",		"",		"",
-				"Exit the program" },
 	{ "_TERMINATE_",	"",		"",
 				"" },
 	
@@ -475,7 +471,15 @@ commanddata CA_data[CA_NITEMS] = {
 				"Select the defined site and make it current" },
 	{ "setaxes",		"VV",		"<atomlist> <atomlist>",
 				"Set the axis definitions for the current site" },
-	
+
+	// System commands
+	{ "gui",		"",		"",
+				"Start the GUI (if it is not already active)" },
+	{ "help",		"V",		"<command>",
+				"Provide short help on the command supplied" },
+	{ "quit",		"",		"",
+				"Exit the program" },
+
 	// Trajectory commands
 	{ "firstframe",		"",		"",
 				"Go to the first frame in the current trajectory" },

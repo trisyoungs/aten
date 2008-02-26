@@ -320,14 +320,8 @@ int commanddata::function_CA_IF(command *&c, bundle &obj)
 	return CR_SUCCESSNOMOVE;
 }
 
+// Internal TERMINATE command for flow control
 int commanddata::function_CA_TERMINATE(command *&c, bundle &obj)
 {
-	return CR_EXIT;
-}
-
-int commanddata::function_CA_QUIT(command *&c, bundle &obj)
-{
-	// Set program mode here, in case we are running in PM_COMMAND
-	master.set_program_mode(PM_NONE);
 	return CR_EXIT;
 }

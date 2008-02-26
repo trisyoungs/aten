@@ -21,6 +21,8 @@
 
 #include <time.h>
 #include <ctime>
+#include <string>
+#include <iostream>
 #include "parse/parser.h"
 #include "model/model.h"
 #include "classes/fourier.h"
@@ -96,19 +98,25 @@ int main(int argc, char *argv[])
 	// Enter interactive mode once any commands/scripts have been executed
 	if (master.get_program_mode() == PM_INTERACTIVE)
 	{
-		printf("Interactive mode is not yet available.\n");
-		master.set_program_mode(PM_NONE);
+		std::string cmd;
+		printf("Entering interactive mode...\n");
+		do
+		{
+			// Get string from user
+			printf(">>> ");
+			getline(cin,cmd);
+			master.i_script.clear();
+			master.i_script.cache_line(cmd.c_str());
+			master.i_script.execute();
+		} while (master.get_program_mode() == PM_INTERACTIVE);
+		//master.set_program_mode(PM_NONE);
 	}
 	// Enter full GUI 
 	if (master.get_program_mode() == PM_GUI)
 	{
-		if (prefs.show_gui())
-		{
-			// Add empty model if none were specified on the command line
-			model *m;
-			if (master.get_nmodels() == 0) m = master.add_model();
-			gui.run(argc,argv);
-		}
+		// Add empty model if none were specified on the command line
+		if (master.get_nmodels() == 0) model *m = master.add_model();
+		gui.run(argc,argv);
 	}
 
 	// Cleanup

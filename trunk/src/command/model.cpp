@@ -68,7 +68,7 @@ int commanddata::function_CA_LISTMODELS(command *&c, bundle &obj)
 {
 	if (master.get_nmodels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
 	for (model *m = master.get_models(); m != NULL; m = m->next)
-		msg(DM_NONE,"%15s %5i  %15s\n", m->get_name(),m->get_natoms(),(m->get_ff() != NULL ? m->get_ff()->get_name() : "None"));
+		msg(DM_NONE,"%-15s %5i  %-15s\n", m->get_name(),m->get_natoms(),(m->get_ff() != NULL ? m->get_ff()->get_name() : "None"));
 	return CR_SUCCESS;
 }
 

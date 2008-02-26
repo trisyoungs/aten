@@ -190,6 +190,8 @@ class master_data
 	list<commandlist> scripts;
 	// Script to store temporary typed commands
 	commandlist cmd_script;
+	// Interactive mode command list
+	commandlist i_script;
 
 	/*
 	// Building
