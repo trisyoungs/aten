@@ -53,7 +53,6 @@ enum command_action {
 
 	// Root node
 	CA_ROOTNODE,
-	CA_HELP,
 
 	// Analysis commands
 	CA_FINALISE,
@@ -165,7 +164,6 @@ enum command_action {
 	CA_GOTO,
 	CA_GOTONONIF,
 	CA_IF,
-	CA_QUIT,
 	CA_TERMINATE,
 
 	// Force Commands
@@ -288,7 +286,12 @@ enum command_action {
 	CA_PRINTSITES,
 	CA_SELECTSITE,
 	CA_SETAXES,
-	
+
+	// System commands
+	CA_GUI,
+	CA_HELP,
+	CA_QUIT,
+
 	// Trajectory Commands
 	CA_FIRSTFRAME,
 	CA_LASTFRAME,
@@ -359,7 +362,6 @@ class commanddata
 	friend class master_data;
 	// All command functions
 	int function_CA_ROOTNODE(command *&c, bundle &obj);
-	int function_CA_HELP(command *&c, bundle &obj);
 	// Analyse commands
 	int function_CA_FINALISE(command *&c, bundle &obj);
 	int function_CA_FRAMEANALYSE(command *&c, bundle &obj);
@@ -460,7 +462,6 @@ class commanddata
 	int function_CA_GOTO(command *&c, bundle &obj);
 	int function_CA_GOTONONIF(command *&c, bundle &obj);
 	int function_CA_IF(command *&c, bundle &obj);
-	int function_CA_QUIT(command *&c, bundle &obj);
 	int function_CA_TERMINATE(command *&c, bundle &obj);
 	// Force Commands
 	int function_CA_FRAMEFORCES(command *&c, bundle &obj);
@@ -569,6 +570,10 @@ class commanddata
 	int function_CA_PRINTSITES(command *&c, bundle &obj);
 	int function_CA_SELECTSITE(command *&c, bundle &obj);
 	int function_CA_SETAXES(command *&c, bundle &obj);
+	// System Commands
+	int function_CA_GUI(command *&c, bundle &obj);
+	int function_CA_HELP(command *&c, bundle &obj);
+	int function_CA_QUIT(command *&c, bundle &obj);
 	// Trajectory Commands
 	int function_CA_FIRSTFRAME(command *&c, bundle &obj);
 	int function_CA_LASTFRAME(command *&c, bundle &obj);

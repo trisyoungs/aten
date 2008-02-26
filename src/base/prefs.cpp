@@ -233,10 +233,6 @@ prefs_data::prefs_data()
 	elec_cut = 10.0;
 	vdw_radius_scale = 1.0;
 
-	// GUI
-	showgui = TRUE;
-	gui_msg_font = "Adobe Courier 10";
-
 	// Undo levels
 	maxundo = -1;
 }

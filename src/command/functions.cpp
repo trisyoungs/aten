@@ -30,7 +30,6 @@ void master_data::init_commands()
 	*/
 
 	CA_data[CA_ROOTNODE].function = &commanddata::function_CA_ROOTNODE;
-	CA_data[CA_HELP].function = &commanddata::function_CA_HELP;
 
 	// Analyse commands
 	CA_data[CA_FINALISE].function = &commanddata::function_CA_FINALISE;
@@ -143,7 +142,6 @@ void master_data::init_commands()
 	CA_data[CA_GOTO].function = &commanddata::function_CA_GOTO;
 	CA_data[CA_GOTONONIF].function = &commanddata::function_CA_GOTONONIF;
 	CA_data[CA_IF].function = &commanddata::function_CA_IF;
-	CA_data[CA_QUIT].function = &commanddata::function_CA_QUIT;
 	CA_data[CA_TERMINATE].function = &commanddata::function_CA_TERMINATE;
 
 	// Force Commands
@@ -171,11 +169,11 @@ void master_data::init_commands()
 	CA_data[CA_SETGRIDORTHO].function = &commanddata::function_CA_SETGRIDORTHO;
 	CA_data[CA_SETGRIDSIZE].function = &commanddata::function_CA_SETGRIDSIZE;
 
-	// Image commands
+	// Image Commands
 	CA_data[CA_SAVEBITMAP].function = &commanddata::function_CA_SAVEBITMAP;
 	CA_data[CA_SAVEVECTOR].function = &commanddata::function_CA_SAVEVECTOR;
 
-	// Labeling commands
+	// Labeling Commands
 	CA_data[CA_CLEARLABELS].function = &commanddata::function_CA_CLEARLABELS;
 	CA_data[CA_ADDLABEL].function = &commanddata::function_CA_ADDLABEL;
 	CA_data[CA_REMOVELABEL].function = &commanddata::function_CA_REMOVELABEL;
@@ -187,7 +185,7 @@ void master_data::init_commands()
 	CA_data[CA_MCNTRIALS].function = &commanddata::function_CA_MCNTRIALS;
 	CA_data[CA_PRINTMC].function = &commanddata::function_CA_PRINTMC;
 
-	// Messaging
+	// Messaging Commands
 	CA_data[CA_ERROR].function = &commanddata::function_CA_ERROR;
 	CA_data[CA_PRINT].function = &commanddata::function_CA_PRINT;
 	CA_data[CA_WARN].function = &commanddata::function_CA_WARN;
@@ -266,6 +264,11 @@ void master_data::init_commands()
 	CA_data[CA_PRINTSITES].function = &commanddata::function_CA_PRINTSITES;
 	CA_data[CA_SELECTSITE].function = &commanddata::function_CA_SELECTSITE;
 	CA_data[CA_SETAXES].function = &commanddata::function_CA_SETAXES;
+
+	// System Commands
+	CA_data[CA_GUI].function = &commanddata::function_CA_GUI;
+	CA_data[CA_HELP].function = &commanddata::function_CA_HELP;
+	CA_data[CA_QUIT].function = &commanddata::function_CA_QUIT;
 	
 	// Trajectory Commands
 	CA_data[CA_FIRSTFRAME].function = &commanddata::function_CA_FIRSTFRAME;
@@ -280,27 +283,17 @@ void master_data::init_commands()
 	CA_data[CA_TRANSLATEATOM].function = &commanddata::function_CA_TRANSLATEATOM;
 	CA_data[CA_MIRROR].function = &commanddata::function_CA_MIRROR;
 
-	// Variables
+	// Variable Commands
 	CA_data[CA_LET].function = &commanddata::function_CA_LET;
 	CA_data[CA_INCREASE].function = &commanddata::function_CA_INCREASE;
 	CA_data[CA_DECREASE].function = &commanddata::function_CA_DECREASE;
 	CA_data[CA_EVAL].function = &commanddata::function_CA_EVAL;
 
-	// View
+	// View Commands
 	CA_data[CA_RESETVIEW].function = &commanddata::function_CA_RESETVIEW;
 	CA_data[CA_ROTATEVIEW].function = &commanddata::function_CA_ROTATEVIEW;
 	CA_data[CA_SPEEDTEST].function = &commanddata::function_CA_SPEEDTEST;
 	CA_data[CA_TRANSLATEVIEW].function = &commanddata::function_CA_TRANSLATEVIEW;
 	CA_data[CA_ZOOMVIEW].function = &commanddata::function_CA_ZOOMVIEW;
 	CA_data[CA_ZROTATEVIEW].function = &commanddata::function_CA_ZROTATEVIEW;
-}
-
-// Help function
-int commanddata::function_CA_HELP(command *&c, bundle &obj)
-{
-	command_action ca = CA_from_text(c->argc(0));
-	if (ca == CA_NITEMS) msg(DM_NONE,"help: Unrecognised command '%s'.\n",c->argc(0));
-	else if (CA_data[ca].has_arguments()) msg(DM_NONE,"help:  %s  --  %s\n", CA_data[ca].get_keyword(), CA_data[ca].get_syntax());
-	else msg(DM_NONE,"help:  %s %s  --  %s\n", CA_data[ca].get_keyword(), CA_data[ca].get_argtext(), CA_data[ca].get_syntax());
-	return CR_SUCCESS;
 }

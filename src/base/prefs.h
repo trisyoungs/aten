@@ -536,26 +536,6 @@ class prefs_data
 	void set_maxundo(int n) { maxundo = n; }
 	// Return the maximum number of undo levels allowed
 	int get_maxundo() { return maxundo; }
-
-	/*
-	// GUI
-	*/
-	private:
-	// Font to use in textbuffer
-	const char *gui_msg_font;
-	// Whether to start the GUI
-	bool showgui;
-
-	public:
-	// Sets whether to show the GUI
-	void set_showgui(bool b) { showgui = b; }
-	// Return whether the GUI should be shown
-	bool show_gui() { return showgui; }
-	// Set font to use in textbuffer
-	void set_msg_font(const char *c) { gui_msg_font = c; }
-	// Get the font to use in the textbuffer
-	const char *get_msg_font() { return gui_msg_font; }
-
 };
 
 extern prefs_data prefs;

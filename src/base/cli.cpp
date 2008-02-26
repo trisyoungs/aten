@@ -29,6 +29,8 @@ optiondata clioptions[] = {
 	{ CO_DEBUG,	"debug",	0,"",		"Print major subroutine call information" },
 	{ CO_FF,	"ff",		1,"<file>",	"Load the specified forcefield file" },
 	{ CO_HELP,	"help",		0,"",		"Print this information" },
+	{ CO_INTERACTIVE,"interactive",	0,"",		"Enter interactive mode" },
+	{ CO_MAP,	"map",		1,"<name=element,...>",	"Map file atomtypes to elements" },
 	{ CO_SCRIPT,	"script",	1,"<file",	"Load and execute the script file specified" },
 	{ CO_UNDO,	"maxundo",	1,"<nlevels>",	"Set the maximum number of undo levels per model (-1 = unlimited)" },
 	{ CO_VERBOSE,	"verbose",	0,"",		"Enable verbose program output" },
@@ -104,17 +106,11 @@ int master_data::parse_cli(int argc, char *argv[])
 				/*
 				// Short options with long equivalents
 				*/
-				// Turn on call debugging
-				case (CO_DEBUG):
-					add_debuglevel(DM_CALLS);
+				case (CO_A):
 					break;
-				// Turn on verbose messaging
-				case (CO_VERBOSE):
-					add_debuglevel(DM_VERBOSE);
-					break;
-				// Load the specified forcefield
-				case (CO_FF):
-					master.load_ff(optarg);
+				// Convert coordinates from Bohr to Angstrom
+				case (CO_BOHR):
+					prefs.set_coords_in_bohr(TRUE);
 					break;
 				// Read script commands from passed string
 				case (CO_COMMAND):
@@ -126,20 +122,17 @@ int master_data::parse_cli(int argc, char *argv[])
 						return -1;
 					}
 					break;
-				// Cache a script file
-				case (CO_SCRIPT):
-					cl = master.scripts.add();
-					if (cl->load(optarg)) master.set_program_mode(PM_COMMAND);
-					else
-					{
-						master.scripts.remove(cl);
-						return -1;
-					}
+				// Turn on call debugging
+				case (CO_DEBUG):
+					add_debuglevel(DM_CALLS);
 					break;
-				// Set the type of element (Z) mapping to use in name conversion
-				case (CO_ZMAP):
-					zm = ZM_from_text(optarg);
-					if (zm != ZM_NITEMS) prefs.set_zmapping(zm);
+				case (CO_E):
+					break;
+				// Load the specified forcefield
+				case (CO_FF):
+					master.load_ff(optarg);
+					break;
+				case (CO_G):
 					break;
 				// Display help
 				case (CO_HELP):
@@ -150,9 +143,44 @@ int master_data::parse_cli(int argc, char *argv[])
 				case (CO_INTERACTIVE):
 					master.set_program_mode(PM_INTERACTIVE);
 					break;
-				// Convert coordinates from Bohr to Angstrom
-				case (CO_BOHR):
-					prefs.set_coords_in_bohr(TRUE);
+				case (CO_J):
+				case (CO_K):
+				case (CO_L):
+				case (CO_MAP):
+				case (CO_N):
+				case (CO_O):
+				case (CO_P):
+				case (CO_Q):
+				case (CO_R):
+					break;
+				// Cache a script file
+				case (CO_SCRIPT):
+					cl = master.scripts.add();
+					if (cl->load(optarg)) master.set_program_mode(PM_COMMAND);
+					else
+					{
+						master.scripts.remove(cl);
+						return -1;
+					}
+					break;
+				case (CO_T):
+					break;
+				// Set maximum number of undolevels per model
+				case (CO_UNDO):
+					prefs.set_maxundo(atoi(optarg));
+					break;
+				// Turn on verbose messaging
+				case (CO_VERBOSE):
+					add_debuglevel(DM_VERBOSE);
+					break;
+				case (CO_W):
+				case (CO_X):
+				case (CO_Y):
+					break;
+				// Set the type of element (Z) mapping to use in name conversion
+				case (CO_ZMAP):
+					zm = ZM_from_text(optarg);
+					if (zm != ZM_NITEMS) prefs.set_zmapping(zm);
 					break;
 				/*
 				// Long options
