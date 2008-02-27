@@ -10,8 +10,8 @@
     <projectname>aten</projectname>
     <projectdirectory>.</projectdirectory>
     <absoluteprojectpath>false</absoluteprojectpath>
-    <description/>
-    <defaultencoding/>
+    <description></description>
+    <defaultencoding></defaultencoding>
     <versioncontrol>kdevsubversion</versioncontrol>
   </general>
   <kdevautoproject>
@@ -19,10 +19,10 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram/>
-      <programargs/>
-      <globaldebugarguments/>
-      <globalcwd/>
+      <mainprogram>/home/tris/src/aten</mainprogram>
+      <programargs></programargs>
+      <globaldebugarguments></globaldebugarguments>
+      <globalcwd>/home/tris/src/aten</globalcwd>
       <useglobalprogram>false</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
@@ -59,20 +59,21 @@
       <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>1</numberofjobs>
       <dontact>false</dontact>
-      <makebin/>
+      <makebin></makebin>
       <prio>0</prio>
     </make>
   </kdevautoproject>
   <kdevdebugger>
     <general>
       <dbgshell>libtool</dbgshell>
-      <gdbpath/>
-      <configGdbScript/>
-      <runShellScript/>
-      <runGdbScript/>
+      <gdbpath></gdbpath>
+      <configGdbScript></configGdbScript>
+      <runShellScript></runShellScript>
+      <runGdbScript></runGdbScript>
       <breakonloadinglibs>true</breakonloadinglibs>
       <separatetty>false</separatetty>
       <floatingtoolbar>false</floatingtoolbar>
+      <raiseGDBOnStart>false</raiseGDBOnStart>
     </general>
     <display>
       <staticmembers>false</staticmembers>
@@ -173,7 +174,7 @@
       <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
-      <prefixGet/>
+      <prefixGet></prefixGet>
       <prefixSet>set</prefixSet>
       <prefixVariable>m_,_</prefixVariable>
       <parameterName>theValue</parameterName>
@@ -205,9 +206,9 @@
   </cppsupportpart>
   <kdevdocumentation>
     <projectdoc>
-      <docsystem/>
-      <docurl/>
-      <usermanualurl/>
+      <docsystem></docsystem>
+      <docurl></docurl>
+      <usermanualurl></usermanualurl>
     </projectdoc>
   </kdevdocumentation>
 </kdevelop>

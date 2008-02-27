@@ -124,15 +124,8 @@ void master_data::init_commands()
 
 	// Expression Commands
 	CA_data[CA_CREATEEXPRESSION].function = &commanddata::function_CA_CREATEEXPRESSION;
-	CA_data[CA_ECUT].function = &commanddata::function_CA_ECUT;
-	CA_data[CA_ELEC].function = &commanddata::function_CA_ELEC;
-	CA_data[CA_INTRA].function = &commanddata::function_CA_INTRA;
 	CA_data[CA_PRINTSETUP].function = &commanddata::function_CA_PRINTSETUP;
-	CA_data[CA_VCUT].function = &commanddata::function_CA_VCUT;
-	CA_data[CA_VDW].function = &commanddata::function_CA_VDW;
-
-	// Field Commands
-	CA_data[CA_SAVEFIELD].function = &commanddata::function_CA_SAVEFIELD;
+	CA_data[CA_SAVEEXPRESSION].function = &commanddata::function_CA_SAVEEXPRESSION;
 
 	// Flow control
 	CA_data[CA_ELSE].function = &commanddata::function_CA_ELSE;
@@ -222,17 +215,22 @@ void master_data::init_commands()
 	CA_data[CA_BONDDETAIL].function = &commanddata::function_CA_BONDDETAIL;
 	CA_data[CA_COLOUR].function = &commanddata::function_CA_COLOUR;
 	CA_data[CA_DENSITYUNITS].function = &commanddata::function_CA_DENSITYUNITS;
+	CA_data[CA_ECUT].function = &commanddata::function_CA_ECUT;
+	CA_data[CA_ELEC].function = &commanddata::function_CA_ELEC;
 	CA_data[CA_ELEMENTAMBIENT].function = &commanddata::function_CA_ELEMENTAMBIENT;
 	CA_data[CA_ELEMENTDIFFUSE].function = &commanddata::function_CA_ELEMENTDIFFUSE;
 	CA_data[CA_ELEMENTRADIUS].function = &commanddata::function_CA_ELEMENTRADIUS;
 	CA_data[CA_ENERGYUNITS].function = &commanddata::function_CA_ENERGYUNITS;
 	CA_data[CA_GL].function = &commanddata::function_CA_GL;
+	CA_data[CA_INTRA].function = &commanddata::function_CA_INTRA;
 	CA_data[CA_KEY].function = &commanddata::function_CA_KEY;
 	CA_data[CA_MOUSE].function = &commanddata::function_CA_MOUSE;
 	CA_data[CA_RADIUS].function = &commanddata::function_CA_RADIUS;
 	CA_data[CA_SHININESS].function = &commanddata::function_CA_SHININESS;
 	CA_data[CA_SHOW].function = &commanddata::function_CA_SHOW;
 	CA_data[CA_STYLE].function = &commanddata::function_CA_STYLE;
+	CA_data[CA_VCUT].function = &commanddata::function_CA_VCUT;
+	CA_data[CA_VDW].function = &commanddata::function_CA_VDW;
 
 	// Read / Write Commands
 	CA_data[CA_ADDREADOPTION].function = &commanddata::function_CA_ADDREADOPTION;

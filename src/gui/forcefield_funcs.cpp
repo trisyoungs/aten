@@ -79,6 +79,13 @@ void AtenForm::on_ForcefieldList_currentRowChanged(int row)
 	refresh_forcefieldtypelist();
 }
 
+// Load forcefield 
+void AtenForm::on_LoadForcefieldButton_clicked(bool checked)
+{
+	printf("Not done yet!\n");
+	refresh_forcefieldpage();
+}
+
 // Remove selected forcefield in list
 void AtenForm::on_RemoveForcefieldButton_clicked(bool checked)
 {

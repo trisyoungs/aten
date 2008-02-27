@@ -223,23 +223,11 @@ commanddata CA_data[CA_NITEMS] = {
 	// Expression commands
 	{ "createexpression",	"",		"",
 				"Create and fill a forcefield expression for the current model" },
-	{ "ecut",		"V",		"<cutoff>",
-				"Set the electrostatic cutoff distance" },
-	{ "elec",		"Vvvvv",	"<none|coulomb|ewald|ewaldauto> [ [precision] | [alpha] [kx] [ky] [kz] ]",
-				"Set the style of electrostatic energy calculation" },
-	{ "intra",		"V",		"on|off",
-				"Turn on/off energy and force calculation of intramolecular terms" },
 	{ "printsetup",		"",		"",
 				"Print the current energy/force calculation setup" },
-	{ "vcut",		"V",		"<cutoff>",
-				"Set the VDW cutoff distance" },
-	{ "vdw",		"V",		"on|off",
-				"Turn on/off VDW energy/force calculation" },
-	
-	// Field commands
-	{ "savefield",		"VV",		"<format> <filename>",
-				"Save a forcefield definition of the current model" },
-	
+	{ "saveexpression",	"VV",		"<format> <filename>",
+				"Save the expression for the current model" },
+
 	// Flow control
 	{ "else",		"",		"",
 				"Perform the subsequent block if all previous if/elseif tests failed" },
@@ -393,6 +381,10 @@ commanddata CA_data[CA_NITEMS] = {
 				"Set the specified colour" },
 	{ "densityunits",	"V",		"atomsperang|gpercm",
 				"Set the unit of density to use" },
+	{ "ecut",		"V",		"<cutoff>",
+				"Set the electrostatic cutoff distance" },
+	{ "elec",		"Vvvvv",	"<none|coulomb|ewald|ewaldauto> [ [precision] | [alpha] [kx] [ky] [kz] ]",
+				"Set the style of electrostatic energy calculation" },
 	{ "elementambient",	"VVVV",		"<element> <r> <g> <b>",
 				"Set ambient colour of element" },
 	{ "elementdiffuse",	"VVVV",		"<element> <r> <g> <b>",
@@ -403,6 +395,8 @@ commanddata CA_data[CA_NITEMS] = {
 				"Set the unit of energy to use" },
 	{ "gl",			"VV",		"<option> on|off",
 				"Turn on/off various OpenGL options: fog, linealias, polyalias, backcull" },
+	{ "intra",		"V",		"on|off",
+				"Turn on/off energy and force calculation of intramolecular terms" },
 	{ "key",		"VV",		"ctrl|shift|alt <action>",
 				"Set the action of modifier keys" },
 	{ "mouse",		"VV",		"left|middle|right|wheel <action>",
@@ -415,7 +409,11 @@ commanddata CA_data[CA_NITEMS] = {
 				"Set the visibility of view objects: atoms, cell, cellaxes, cellrepeat, forcearrows, globe, labels, measurements, regions" },
 	{ "style",		"V",		"style <style>",
 				"Draw models in the specified style" },
-	
+	{ "vcut",		"V",		"<cutoff>",
+				"Set the VDW cutoff distance" },
+	{ "vdw",		"V",		"on|off",
+				"Turn on/off VDW energy/force calculation" },
+
 	// Read / Write Commands
 	{ "addreadoption",	"V",		"<option>",
 				"Add a read option: usequotes, skipblanks, stripbrackets" },

@@ -140,8 +140,10 @@ class AtenForm : public QMainWindow
 	void on_actionFileClose_triggered(bool checked);
 	void on_actionFileSaveImage_triggered(bool checked);
 	void on_actionFileQuit_triggered(bool checked);
-	void on_actionFileLoadForcefield_triggered(bool checked);
-	void on_actionFileLoadGridData_triggered(bool checked);
+	void on_actionFileOpenForcefield_triggered(bool checked);
+	void on_actionFileSaveForcefield_triggered(bool checked);
+	void on_actionFileOpenGrid_triggered(bool checked);
+	void on_actionFileSaveExpression_triggered(bool checked);
 
 	/*
 	// View Actions
@@ -326,6 +328,7 @@ class AtenForm : public QMainWindow
 	void refresh_forcefieldtypelist();
 	void refresh_forcefieldpatterns();
 	private slots:
+	void on_LoadForcefieldButton_clicked(bool checked);
 	void on_RemoveForcefieldButton_clicked(bool checked);
 	void on_EditForcefieldButton_clicked(bool checked);
 	void on_AssignFFToCurrentButton_clicked(bool checked);
@@ -446,6 +449,8 @@ class AtenForm : public QMainWindow
 	QFrame *progressindicator;
 	// File dialogs for filter types
 	QFileDialog *dialog[FT_NITEMS];
+	// File dialogs for forcefields
+	QFileDialog *openffdialog, *saveffdialog;
 	// File dialog for save bitmap and save vector image
 	QFileDialog *savebitmapdialog, *savevectordialog;
 	// Filter set from save model dialog

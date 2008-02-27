@@ -146,15 +146,8 @@ enum command_action {
 
 	// Expression Commands
 	CA_CREATEEXPRESSION,
-	CA_ECUT,
-	CA_ELEC,
-	CA_INTRA,
 	CA_PRINTSETUP,
-	CA_VCUT,
-	CA_VDW,
-
-	// Field Commands
-	CA_SAVEFIELD,
+	CA_SAVEEXPRESSION,
 
 	// Flow control
 	CA_ELSE,
@@ -244,17 +237,22 @@ enum command_action {
 	CA_BONDDETAIL,
 	CA_COLOUR,
 	CA_DENSITYUNITS,
+	CA_ECUT,
+	CA_ELEC,
 	CA_ELEMENTAMBIENT,
 	CA_ELEMENTDIFFUSE,
 	CA_ELEMENTRADIUS,
 	CA_ENERGYUNITS,
 	CA_GL,
+	CA_INTRA,
 	CA_KEY,
 	CA_MOUSE,
 	CA_RADIUS,
 	CA_SHININESS,
 	CA_SHOW,
 	CA_STYLE,
+	CA_VCUT,
+	CA_VDW,
 
 	// Read / Write Commands
 	CA_ADDREADOPTION,
@@ -446,14 +444,8 @@ class commanddata
 	int function_CA_PRINTVDW(command *&c, bundle &obj);
 	// Expression Commands
 	int function_CA_CREATEEXPRESSION(command *&c, bundle &obj);
-	int function_CA_ECUT(command *&c, bundle &obj);
-	int function_CA_ELEC(command *&c, bundle &obj);
-	int function_CA_INTRA(command *&c, bundle &obj);
 	int function_CA_PRINTSETUP(command *&c, bundle &obj);
-	int function_CA_VCUT(command *&c, bundle &obj);
-	int function_CA_VDW(command *&c, bundle &obj);
-	// Field Commands
-	int function_CA_SAVEFIELD(command *&c, bundle &obj);
+	int function_CA_SAVEEXPRESSION(command *&c, bundle &obj);
 	// Flow control
 	int function_CA_ELSE(command *&c, bundle &obj);
 	int function_CA_ELSEIF(command *&c, bundle &obj);
@@ -531,10 +523,13 @@ class commanddata
 	int function_CA_BONDDETAIL(command *&c, bundle &obj);
 	int function_CA_COLOUR(command *&c, bundle &obj);
 	int function_CA_DENSITYUNITS(command *&c, bundle &obj);
+	int function_CA_ECUT(command *&c, bundle &obj);
+	int function_CA_ELEC(command *&c, bundle &obj);
 	int function_CA_ELEMENTAMBIENT(command *&c, bundle &obj);
 	int function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj);
 	int function_CA_ELEMENTRADIUS(command *&c, bundle &obj);
 	int function_CA_ENERGYUNITS(command *&c, bundle &obj);
+	int function_CA_INTRA(command *&c, bundle &obj);
 	int function_CA_GL(command *&c, bundle &obj);
 	int function_CA_KEY(command *&c, bundle &obj);
 	int function_CA_MOUSE(command *&c, bundle &obj);
@@ -542,6 +537,8 @@ class commanddata
 	int function_CA_SHININESS(command *&c, bundle &obj);
 	int function_CA_SHOW(command *&c, bundle &obj);
 	int function_CA_STYLE(command *&c, bundle &obj);
+	int function_CA_VCUT(command *&c, bundle &obj);
+	int function_CA_VDW(command *&c, bundle &obj);
 	// Read / Write Commands
 	int function_CA_ADDREADOPTION(command *&c, bundle &obj);
 	int function_CA_FIND(command *&c, bundle &obj);
