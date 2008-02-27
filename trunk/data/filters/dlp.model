@@ -56,6 +56,7 @@ exportmodel
 
 	# Variable Declaration
 	integer imcon
+	double rx, ry, rz
 	atom i
 
 	# Title section
@@ -81,7 +82,10 @@ exportmodel
 
 	# Atoms
 	for $i
+		eval $rx = "$i.rx - $cell.ox"
+		eval $ry = "$i.ry - $cell.oy"
+		eval $rz = "$i.rz - $cell.oz"
 		writeline "$i.fftype@-8$i.id@10   $i.mass"
-		writeline "$i.rx@20.14$i.ry@20.14$i.rz@20.14"
+		writeline "$rx@20.14$ry@20.14$rz@20.14"
 	end
 end
