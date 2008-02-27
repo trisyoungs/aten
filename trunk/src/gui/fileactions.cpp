@@ -219,20 +219,25 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 	}
 }
 
-void AtenForm::on_actionFileLoadForcefield_triggered(bool checked)
+void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
 {
 	QString filename;
-	if (dialog[FT_FIELD_IMPORT]->exec() == 1)
+	if (openffdialog->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = dialog[FT_FIELD_IMPORT]->selectedFilter();
-		filename = dialog[FT_FIELD_IMPORT]->selectedFiles().first();
+		QString filter = openffdialog->selectedFilter();
+		filename = openffdialog->selectedFiles().first();
 		master.load_ff(qPrintable(filename));
 		refresh_forcefieldpage();
 	}
 }
 
-void AtenForm::on_actionFileLoadGridData_triggered(bool checked)
+void AtenForm::on_actionFileSaveForcefield_triggered(bool checked)
+{
+	printf("Not yet done...\n");
+}
+
+void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
 	filter *f;
 	grid *g;
@@ -261,6 +266,24 @@ void AtenForm::on_actionFileLoadGridData_triggered(bool checked)
 		}
 		refresh_gridspage();
 		gui.refresh();
+	}
+}
+
+// Save expression
+void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
+{
+	filter *f;
+	if (dialog[FT_EXPRESSION_EXPORT]->exec() == 1)
+	{
+		// Get selected filename (only grab first
+		QString filename = dialog[FT_EXPRESSION_EXPORT]->selectedFiles().first();
+		// Get selected filter
+		QString filter = dialog[FT_EXPRESSION_EXPORT]->selectedFilter();
+		// Find the filter that was selected
+		for (f = master.filters[FT_EXPRESSION_EXPORT].first(); f != NULL; f = f->next)
+			if (strcmp(f->get_description(),qPrintable(filter)) == 0) break;
+		if (f == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
+		else f->execute(qPrintable(filename));
 	}
 }
 

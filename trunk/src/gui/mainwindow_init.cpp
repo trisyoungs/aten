@@ -216,6 +216,27 @@ void AtenForm::finalise_ui()
 	for (n=0; n < BIF_NITEMS; n++) filters << filter_from_BIF( (bitmap_format) n);
 	savebitmapdialog->setFilters(filters);
 
+	// Create open forcefield dialog
+	openffdialog = new QFileDialog(this);
+	openffdialog->setFileMode(QFileDialog::ExistingFile);
+	openffdialog->setDirectory(master.workdir.get());
+	openffdialog->setWindowTitle("Open Forcefield");
+	filters.clear();
+	filters << "All files (*)";
+	filters << "Forcefield Files (*.ff)";
+	openffdialog->setFilters(filters);
+
+	// Create save forcefield dialog
+	saveffdialog = new QFileDialog(this);
+	saveffdialog->setWindowTitle("Save Forcefield");
+	saveffdialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveffdialog->setDirectory(master.workdir.get());
+	saveffdialog->setFileMode(QFileDialog::AnyFile);
+	filters.clear();
+	filters << "All files (*)";
+	filters << "Forcefield Files (*.ff)";
+	openffdialog->setFilters(filters);
+
 	// Create save vector dialog
 	savevectordialog = new QFileDialog(this);
 	savevectordialog->setWindowTitle("Save Vector");
@@ -226,15 +247,16 @@ void AtenForm::finalise_ui()
 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
 	savevectordialog->setFilters(filters);
 
-	// Create open forcefield dialog
-	dialog[FT_FIELD_IMPORT] = new QFileDialog(this);
-	dialog[FT_FIELD_IMPORT]->setWindowTitle("Open Forcefield");
-	dialog[FT_FIELD_IMPORT]->setDirectory(master.workdir.get());
-	dialog[FT_FIELD_IMPORT]->setFileMode(QFileDialog::ExistingFile);
+	// Create save expression dialog
+	dialog[FT_EXPRESSION_EXPORT] = new QFileDialog(this);
+	dialog[FT_EXPRESSION_EXPORT]->setWindowTitle("Save Vector");
+	dialog[FT_EXPRESSION_EXPORT]->setAcceptMode(QFileDialog::AcceptSave);
+	dialog[FT_EXPRESSION_EXPORT]->setDirectory(master.workdir.get());
+	dialog[FT_EXPRESSION_EXPORT]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	filters << "All files (*)";
-	filters << "Forcefields (*.ff)";
-	dialog[FT_FIELD_IMPORT]->setFilters(filters);
+	for (f = master.filters[FT_EXPRESSION_EXPORT].first(); f != NULL; f = f->next) filters << f->get_description();
+	dialog[FT_EXPRESSION_EXPORT]->setFilters(filters);
 
 	// Create open grid dialog
 	dialog[FT_GRID_IMPORT] = new QFileDialog(this);

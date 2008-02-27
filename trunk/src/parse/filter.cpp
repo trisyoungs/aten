@@ -193,7 +193,7 @@ void filter::set_type(filter_type ft)
 			v = commands.variables.create_variable("natoms","",VT_INTEGER);
 			v = commands.variables.create_variable("cell","type",VT_CHAR);
 			break;
-		case (FT_FIELD_IMPORT):
+		case (FT_EXPRESSION_IMPORT):
 			break;
 		case (FT_GRID_IMPORT):
 			break;
@@ -221,7 +221,7 @@ void filter::set_type(filter_type ft)
 			v = commands.variables.create_variable("header","",VT_CHAR);
 			v = commands.variables.create_variable("natoms","",VT_INTEGER);
 			break;
-		case (FT_FIELD_EXPORT):
+		case (FT_EXPRESSION_EXPORT):
 			v = commands.variables.create_variable("title","",VT_CHAR);
 			v = commands.variables.create_variable("npatterns","",VT_INTEGER);
 			v = commands.variables.create_variable("energyunit","",VT_CHAR);
@@ -283,7 +283,7 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			commands.set_model_variables(obj.m);
 			commands.set_cell_variables(obj.m->get_cell());
 			break;
-		case (FT_FIELD_EXPORT):
+		case (FT_EXPRESSION_EXPORT):
 			msg(DM_NONE,"Save Field : %s (%s)\n", filename, name.get());
 			// Need a valid pattern and energy expression to export
 			if (!obj.m->autocreate_patterns() || !obj.m->create_expression())
@@ -366,7 +366,7 @@ bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			commands.close_files();
 			msg(DM_NONE,"Model export %s.\n",(result ? "completed" : "failed"));
 			break;
-		case (FT_FIELD_EXPORT):
+		case (FT_EXPRESSION_EXPORT):
 			commands.close_files();
 			msg(DM_NONE,"Field export %s.\n",(result ? "completed" : "failed"));
 			break;

@@ -1,5 +1,5 @@
 /*
-	*** Energy command functions
+	*** Expression command functions
 	*** src/command/energy.cpp
 	Copyright T. Youngs 2007,2008
 
@@ -20,9 +20,10 @@
 */
 
 #include "command/commandlist.h"
-#include "base/prefs.h"
+#include "base/master.h"
 #include "base/debug.h"
 #include "model/model.h"
+#include "parse/filter.h"
 
 // Create energy expression for current model ('createexpression'}
 int commanddata::function_CA_CREATEEXPRESSION(command *&c, bundle &obj)
@@ -30,42 +31,6 @@ int commanddata::function_CA_CREATEEXPRESSION(command *&c, bundle &obj)
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	if (!obj.m->autocreate_patterns()) return CR_FAIL;
 	if (!obj.m->create_expression()) return CR_FAIL;
-	return CR_SUCCESS;
-}
-
-// Set electrostatics cutoff ('ecut <cut>')
-int commanddata::function_CA_ECUT(command *&c, bundle &obj)
-{
-	prefs.set_elec_cutoff(c->argd(0));
-	return CR_SUCCESS;
-}
-
-// Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
-int commanddata::function_CA_ELEC(command *&c, bundle &obj)
-{
-	elec_method em = EM_from_text(c->argc(0));
-	if (em == EM_NITEMS) return CR_FAIL;
-	prefs.set_electrostatics(em);
-	prefs.set_calc_elec(em == EM_OFF ? FALSE : TRUE);
-	switch (em)
-	{
-		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
-		case (EM_EWALD):
-			prefs.set_ewald_alpha(c->argd(1));
-			prefs.set_ewald_kvec(c->arg3i(2));
-			break;
-		// Set ewald precision
-		case (EM_EWALDAUTO):
-			prefs.set_ewald_precision(c->argd(1));
-			break;
-	}
-	return CR_SUCCESS;
-}
-
-// Turn on/off calculation of intra ('intra on|off')
-int commanddata::function_CA_INTRA(command *&c, bundle &obj)
-{
-	prefs.set_calc_intra(c->argb(0));
 	return CR_SUCCESS;
 }
 
@@ -80,17 +45,23 @@ int commanddata::function_CA_PRINTSETUP(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Set VDW cutoff ('vcut <cut>')
-int commanddata::function_CA_VCUT(command *&c, bundle &obj)
+// Save expression ('saveexpression <format> <file>')
+int commanddata::function_CA_SAVEEXPRESSION(command *&c, bundle &obj)
 {
-	prefs.set_vdw_cutoff(c->argd(0));
-	return CR_SUCCESS;
-
-}
-
-// Turn on/off calculation of vdw ('vdw on|off')
-int commanddata::function_CA_VDW(command *&c, bundle &obj)
-{
-	prefs.set_calc_vdw(c->argb(0));
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	// Find filter with a nickname matching that given in argc(0)
+	filter *f;
+	for (f = master.filters[FT_EXPRESSION_EXPORT].first(); f != NULL; f = f->next)
+	{
+		//printf("Checking %s against %s\n",f->get_nickname(),cmd->argc(0));
+		if (strcmp(f->get_nickname(), c->argc(0)) == 0) break;
+	}
+	// Check that a suitable format was found
+	if (f == NULL)
+	{
+		msg(DM_NONE,"script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
+		return CR_FAIL;
+	}
+	f->execute(c->argc(1));
 	return CR_SUCCESS;
 }

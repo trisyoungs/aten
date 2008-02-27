@@ -300,9 +300,9 @@ bool master_data::open_filters(const char *path, bool isdatadir)
 		// Set filter partners
 		partner_filters();
 		// Print data on loaded filters
-		msg(DM_NONE,"Found (import/export): Models (%i/%i) ", filters[FT_MODEL_IMPORT].size(), filters[FT_MODEL_EXPORT].size());
+		msg(DM_NONE,"Found (import/export):  Models (%i/%i) ", filters[FT_MODEL_IMPORT].size(), filters[FT_MODEL_EXPORT].size());
 		msg(DM_NONE,"Trajectory (%i/%i) ", filters[FT_TRAJECTORY_IMPORT].size(), filters[FT_TRAJECTORY_EXPORT].size());
-		msg(DM_NONE,"Field (%i/%i) ", filters[FT_FIELD_IMPORT].size(), filters[FT_FIELD_EXPORT].size());
+		msg(DM_NONE,"Expression (%i/%i) ", filters[FT_EXPRESSION_IMPORT].size(), filters[FT_EXPRESSION_EXPORT].size());
 		msg(DM_NONE,"Grid (%i/%i)\n", filters[FT_GRID_IMPORT].size(), filters[FT_GRID_EXPORT].size());
 	}
 	dbg_end(DM_CALLS,"master::open_filters");

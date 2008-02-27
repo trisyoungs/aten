@@ -205,7 +205,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>4</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -230,7 +230,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -425,7 +425,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -445,7 +445,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -923,7 +923,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -1380,7 +1380,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -1530,7 +1530,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -1550,7 +1550,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -1578,7 +1578,7 @@
                   </property>
                   <layout class="QVBoxLayout" >
                    <property name="margin" >
-                    <number>0</number>
+                    <number>2</number>
                    </property>
                    <property name="spacing" >
                     <number>4</number>
@@ -1769,7 +1769,7 @@
                   </property>
                   <layout class="QVBoxLayout" >
                    <property name="margin" >
-                    <number>0</number>
+                    <number>2</number>
                    </property>
                    <property name="spacing" >
                     <number>4</number>
@@ -2069,7 +2069,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -2444,7 +2444,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -2464,7 +2464,7 @@
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -2609,7 +2609,7 @@
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -2779,7 +2779,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -2797,7 +2797,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -3212,7 +3212,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -3464,7 +3464,7 @@
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -3475,7 +3475,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>4</number>
+                 <number>2</number>
                 </property>
                 <item row="2" column="1" >
                  <widget class="QDoubleSpinBox" name="CellScaleZSpin" >
@@ -3624,7 +3624,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -3644,7 +3644,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -3783,7 +3783,7 @@
              </property>
              <layout class="QGridLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -3911,7 +3911,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -4111,7 +4111,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -4288,7 +4288,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -4344,7 +4344,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>4</number>
+                 <number>2</number>
                 </property>
                 <item row="1" column="1" >
                  <widget class="QDoubleSpinBox" name="ComponentCentreXSpin" >
@@ -4529,7 +4529,7 @@
               <number>0</number>
              </property>
              <property name="spacing" >
-              <number>4</number>
+              <number>2</number>
              </property>
              <item row="1" column="1" >
               <widget class="QDoubleSpinBox" name="VDWScaleSpin" >
@@ -4634,7 +4634,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -4664,6 +4664,25 @@
               </spacer>
              </item>
              <item>
+              <widget class="QPushButton" name="LoadForcefieldButton" >
+               <property name="maximumSize" >
+                <size>
+                 <width>30</width>
+                 <height>30</height>
+                </size>
+               </property>
+               <property name="toolTip" >
+                <string>Load forcefield from file</string>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QPushButton" name="RemoveForcefieldButton" >
                <property name="sizePolicy" >
                 <sizepolicy>
@@ -4686,12 +4705,15 @@
                 <string/>
                </property>
                <property name="icon" >
-                <iconset resource="icons.qrc" >:/basic/icons/basic_minus.svg</iconset>
+                <iconset resource="icons.qrc" >:/file/icons/file_close.svg</iconset>
                </property>
               </widget>
              </item>
              <item>
               <widget class="QPushButton" name="EditForcefieldButton" >
+               <property name="enabled" >
+                <bool>false</bool>
+               </property>
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>5</hsizetype>
@@ -4737,7 +4759,7 @@
              </property>
              <layout class="QGridLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -4784,7 +4806,7 @@
              </property>
              <layout class="QHBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -4813,7 +4835,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>0</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -4829,7 +4851,7 @@
                 <item>
                  <widget class="QLabel" name="label_343" >
                   <property name="text" >
-                   <string>TextLabel</string>
+                   <string>Element</string>
                   </property>
                  </widget>
                 </item>
@@ -4944,7 +4966,7 @@
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>4</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>4</number>
@@ -5162,7 +5184,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>0</number>
@@ -5571,7 +5593,7 @@
              </property>
              <layout class="QVBoxLayout" >
               <property name="margin" >
-               <number>4</number>
+               <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
@@ -5729,7 +5751,7 @@
           </property>
           <layout class="QHBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
             <number>0</number>
@@ -6328,29 +6350,6 @@
      <height>25</height>
     </rect>
    </property>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="RecentMenu" >
-     <property name="title" >
-      <string>Recent Files</string>
-     </property>
-    </widget>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="RecentMenu" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="separator" />
-    <addaction name="actionFileLoadForcefield" />
-    <addaction name="actionFileLoadGridData" />
-    <addaction name="separator" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
-   </widget>
    <widget class="QMenu" name="ToolsMenu" >
     <property name="title" >
      <string>Settings</string>
@@ -6383,24 +6382,6 @@
     <addaction name="separator" />
     <addaction name="actionModelNext" />
     <addaction name="actionModelPrevious" />
-   </widget>
-   <widget class="QMenu" name="EditMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionEditUndo" />
-    <addaction name="actionEditRedo" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="actionEditSelectExpand" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
    </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
@@ -6489,6 +6470,49 @@
     <addaction name="separator" />
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
+   </widget>
+   <widget class="QMenu" name="EditMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionEditUndo" />
+    <addaction name="actionEditRedo" />
+    <addaction name="separator" />
+    <addaction name="actionEditCut" />
+    <addaction name="actionEditCopy" />
+    <addaction name="actionEditPaste" />
+    <addaction name="actionEditDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEditInvert" />
+    <addaction name="actionEditSelectExpand" />
+    <addaction name="separator" />
+    <addaction name="actionEditSelectAll" />
+    <addaction name="actionEditSelectNone" />
+   </widget>
+   <widget class="QMenu" name="FileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="RecentMenu" >
+     <property name="title" >
+      <string>&amp;Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="actionFileNew" />
+    <addaction name="actionFileOpen" />
+    <addaction name="RecentMenu" />
+    <addaction name="separator" />
+    <addaction name="actionFileAddTrajectory" />
+    <addaction name="actionFileSave" />
+    <addaction name="actionFileSaveAs" />
+    <addaction name="actionSave_Expression" />
+    <addaction name="separator" />
+    <addaction name="actionFileOpenForcefield" />
+    <addaction name="actionFileOpenGrid" />
+    <addaction name="separator" />
+    <addaction name="actionFileSaveImage" />
+    <addaction name="separator" />
+    <addaction name="actionFileQuit" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -6677,7 +6701,7 @@
     <iconset resource="icons.qrc" >:/file/icons/file_save.svg</iconset>
    </property>
    <property name="text" >
-    <string>Save Model</string>
+    <string>&amp;Save Model</string>
    </property>
    <property name="toolTip" >
     <string>Save the current model</string>
@@ -6778,7 +6802,7 @@
     <iconset resource="icons.qrc" >:/file/icons/file_saveas.svg</iconset>
    </property>
    <property name="text" >
-    <string>Save Model As</string>
+    <string>Save Model &amp;As</string>
    </property>
    <property name="toolTip" >
     <string>Save the current model under a different filename</string>
@@ -7247,12 +7271,12 @@
   </action>
   <action name="actionFileQuit" >
    <property name="text" >
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
   </action>
   <action name="actionFileSaveImage" >
    <property name="text" >
-    <string>Save Image</string>
+    <string>Save &amp;Image</string>
    </property>
   </action>
   <action name="actionPreferences" >
@@ -7396,14 +7420,14 @@
     <string>Mouse</string>
    </property>
   </action>
-  <action name="actionFileLoadForcefield" >
+  <action name="actionFileOpenForcefield" >
    <property name="text" >
-    <string>Load &amp;Forcefield</string>
+    <string>Open &amp;Forcefield</string>
    </property>
   </action>
-  <action name="actionFileLoadGridData" >
+  <action name="actionFileOpenGrid" >
    <property name="text" >
-    <string>Load &amp;Grid Data</string>
+    <string>Open &amp;Grid Data</string>
    </property>
   </action>
   <action name="actionEditUndo" >
@@ -7593,6 +7617,11 @@
    </property>
    <property name="toolTip" >
     <string>Cell -Z</string>
+   </property>
+  </action>
+  <action name="actionSave_Expression" >
+   <property name="text" >
+    <string>Save &amp;Expression</string>
    </property>
   </action>
  </widget>

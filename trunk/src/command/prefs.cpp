@@ -64,6 +64,35 @@ int commanddata::function_CA_DENSITYUNITS(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set electrostatics cutoff ('ecut <cut>')
+int commanddata::function_CA_ECUT(command *&c, bundle &obj)
+{
+	prefs.set_elec_cutoff(c->argd(0));
+	return CR_SUCCESS;
+}
+
+// Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
+int commanddata::function_CA_ELEC(command *&c, bundle &obj)
+{
+	elec_method em = EM_from_text(c->argc(0));
+	if (em == EM_NITEMS) return CR_FAIL;
+	prefs.set_electrostatics(em);
+	prefs.set_calc_elec(em == EM_OFF ? FALSE : TRUE);
+	switch (em)
+	{
+		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
+		case (EM_EWALD):
+			prefs.set_ewald_alpha(c->argd(1));
+			prefs.set_ewald_kvec(c->arg3i(2));
+			break;
+		// Set ewald precision
+		case (EM_EWALDAUTO):
+			prefs.set_ewald_precision(c->argd(1));
+			break;
+	}
+	return CR_SUCCESS;
+}
+
 // Set element's ambient colour
 int commanddata::function_CA_ELEMENTAMBIENT(command *&c, bundle &obj)
 {
@@ -120,6 +149,13 @@ int commanddata::function_CA_GL(command *&c, bundle &obj)
 	if (gui.exists()) gui.mainview.init_gl();
 	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
+	return CR_SUCCESS;
+}
+
+// Turn on/off calculation of intra ('intra on|off')
+int commanddata::function_CA_INTRA(command *&c, bundle &obj)
+{
+	prefs.set_calc_intra(c->argb(0));
 	return CR_SUCCESS;
 }
 
@@ -186,5 +222,20 @@ int commanddata::function_CA_STYLE(command *&c, bundle &obj)
 		if (gui.exists()) gui.refresh();
 	}
 	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
+// Set VDW cutoff ('vcut <cut>')
+int commanddata::function_CA_VCUT(command *&c, bundle &obj)
+{
+	prefs.set_vdw_cutoff(c->argd(0));
+	return CR_SUCCESS;
+
+}
+
+// Turn on/off calculation of vdw ('vdw on|off')
+int commanddata::function_CA_VDW(command *&c, bundle &obj)
+{
+	prefs.set_calc_vdw(c->argb(0));
 	return CR_SUCCESS;
 }
