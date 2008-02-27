@@ -125,9 +125,7 @@ class gui_qt
 	// Add model (adds new model to list)
 	void add_model(model*);
 	// Remove model from list
-	void remove_model(model*);
-	// Select model (show in main/sub windows)
-	void select_model(model*);
+	void remove_model(int id);
 	// Add forcefield (adds ff to list)
 	void add_ff(forcefield*);
 	// Remove ff from list

@@ -211,24 +211,14 @@ void gui_qt::add_model(model *m)
 	// Create new tab in ModelTabs QTabBar
 	int tabid = mainwindow->ui.ModelTabs->addTab(m->get_name());
 	m->reset_view();
+	gui.refresh();
 }
 
 // Remove model from list
-void gui_qt::remove_model(model *m)
+void gui_qt::remove_model(int id)
 {
 	if (!does_exist) return;
-	mainwindow->ui.ModelTabs->removeTab(master.get_modelindex(m));
-}
-
-// Select model in ModelTabs
-void gui_qt::select_model(model *m)
-{
-	if (!does_exist) return;
-	// Determine index of selected model.
-	int id = master.get_currentmodelindex();
-	// Select corresponding tab
-	mainwindow->ui.ModelTabs->setCurrentIndex(id);
-	// Update main window
+	mainwindow->ui.ModelTabs->removeTab(id);
 	gui.refresh();
 }
 
@@ -273,6 +263,10 @@ void gui_qt::select_grid(grid *g)
 void gui_qt::refresh()
 {
 	if (!does_exist) return;
+	// Select tab corresponding to current mdoel
+	int id = master.get_currentmodelindex();
+	if (id <= mainwindow->ui.ModelTabs->count()) mainwindow->ui.ModelTabs->setCurrentIndex(id);
+	else printf("GUI_ERROR: Current model index (%i) is out of bounds of tab list.\n",id);
 	// Update labels on status bar
 	update_labels();
 	// Update contents of the atom list

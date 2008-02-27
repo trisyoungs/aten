@@ -74,20 +74,19 @@ void master_data::clear()
 // GUI Routines
 */
 
-// Update main window
+// Set the active model
 void master_data::set_currentmodel(model *m)
 {
-	// Set the active model to that specified, and refresh windows that depend on model data
-	dbg_begin(DM_CALLS,"master::set_current.m");
+	dbg_begin(DM_CALLS,"master::set_currentmodel");
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
 	// Set other bundle objects based on model
 	current.p = m->get_patterns();
 	current.i = NULL;
-	gui.select_model(m);
 	current.m->calculate_viewmatrix();
 	current.m->project_all();
-	dbg_end(DM_CALLS,"master::set_current.m");
+	gui.refresh();
+	dbg_end(DM_CALLS,"master::set_currentmodel");
 }
 
 /*
@@ -98,12 +97,10 @@ void master_data::set_currentmodel(model *m)
 model *master_data::add_model()
 {
 	dbg_begin(DM_CALLS,"master::add_model");
-	model *m = models.add();
-	current.m = m;
-	gui.add_model(m);
-	gui.select_model(m);
+	current.m = models.add();
+	gui.add_model(current.m);
 	dbg_end(DM_CALLS,"master::add_model");
-	return m;
+	return current.m;
 }
 
 // Remove model
@@ -123,10 +120,10 @@ void master_data::remove_model(model *xmodel)
 		// If possible, set the active row to the next model. Otherwise, the previous.
 		xmodel->next != NULL ? m = xmodel->next : m = xmodel->prev;
 	current.m = m;
-	gui.remove_model(xmodel);
-	gui.select_model(m);
-	// Finally, delete the old model
+	// Delete the old model (GUI first, then master)
+	int id = models.index_of(xmodel);
 	models.remove(xmodel);
+	gui.remove_model(id);
 	dbg_end(DM_CALLS,"master::remove_model");
 }
 
@@ -136,12 +133,7 @@ model *master_data::find_model(const char *s)
 	// Search model list for name 's' (script function)
 	dbg_begin(DM_CALLS,"master::find_model");
 	model *result = NULL;
-	model *m = models.first();
-	while (m != NULL)
-	{
-		if (strcmp(s,m->get_name()) == 0) result = m;
-		m = m->next;
-	}
+	for (result = models.first(); result != NULL; result = result->next) if (strcmp(s,result->get_name()) == 0) break;
 	dbg_end(DM_CALLS,"master::find_model");
 	return result ;
 }

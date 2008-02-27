@@ -826,11 +826,15 @@ void commandlist::set_cell_variables(unitcell *c)
 		variables.set("cell","alpha",vec.x);
 		variables.set("cell","beta",vec.y);
 		variables.set("cell","gamma",vec.z);
+		vec = c->get_origin();
+		variables.set("cell","ox",vec.x);
+		variables.set("cell","oy",vec.y);
+		variables.set("cell","oz",vec.z);
 	}
 	else
 	{
 		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
-		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","");
+		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.ox","cell.oy","cell.oz","");
 	}
 	dbg_end(DM_CALLS,"commandlist::set_cell_variables");
 }
