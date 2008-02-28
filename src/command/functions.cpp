@@ -43,6 +43,7 @@ void master_data::init_commands()
 
 	// Atom Commands
 	CA_data[CA_ADDATOM].function = &commanddata::function_CA_ADDATOM;
+	CA_data[CA_ADDATOMFRAC].function = &commanddata::function_CA_ADDATOMFRAC;
 	CA_data[CA_ADDCHAIN].function = &commanddata::function_CA_ADDCHAIN;
 	CA_data[CA_ENDCHAIN].function = &commanddata::function_CA_ENDCHAIN;
 	CA_data[CA_SELECTATOM].function = &commanddata::function_CA_SELECTATOM;
