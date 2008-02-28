@@ -63,10 +63,6 @@ int main(int argc, char *argv[])
 	// Initialise elements
 	elements.initialise();
 
-	// Load in spacegroup definitions
-	sprintf(filename,"%s%s",master.datadir.get(),"/spgrp.dat");
-	spacegroups.load(filename);
-
 	// Read default filters from data directory (pass directory)
 	sprintf(filename,"%s%s",master.datadir.get(),"/filters/");
 	if (!master.open_filters(filename,TRUE)) return 1;
