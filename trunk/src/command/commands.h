@@ -66,6 +66,7 @@ enum command_action {
 
 	// Atom Commands
 	CA_ADDATOM,
+	CA_ADDATOMFRAC,
 	CA_ADDCHAIN,
 	CA_ENDCHAIN,
 	CA_SETCHARGE,
@@ -371,6 +372,7 @@ class commanddata
 	int function_CA_TRAJANALYSE(command *&c, bundle &obj);
 	// Atom Commands
 	int function_CA_ADDATOM(command *&c, bundle &obj);
+	int function_CA_ADDATOMFRAC(command *&c, bundle &obj);
 	int function_CA_ADDCHAIN(command *&c, bundle &obj);
 	int function_CA_ENDCHAIN(command *&c, bundle &obj);
 	int function_CA_SETCOORDS(command *&c, bundle &obj);

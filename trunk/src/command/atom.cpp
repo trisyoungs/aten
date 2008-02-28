@@ -56,6 +56,39 @@ int commanddata::function_CA_ADDATOM(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Draw unbound atom ('addatom <el> [fracx fracy fracz]')
+int commanddata::function_CA_ADDATOMFRAC(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	// Determine element (based on type of variable provided)
+	int el;
+	switch (c->argt(0))
+	{
+		case (VT_INTEGER):
+			el = c->argi(0);
+			break;
+		case (VT_DOUBLE):
+			el = (int) floor(c->argd(0) + 0.15);
+			break;
+		case (VT_CHAR):
+			el = elements.find(c->argc(0));
+			break;
+		case (VT_ATOM):
+			c->arga(0) == NULL ? el = 0 : c->arga(0)->get_element();
+			break;
+		default:
+			msg(DM_NONE,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
+			el = 0;
+			break;
+	}
+	// Check for presence of unit cell
+	vec3<double> r = c->arg3d(1);
+	if (obj.m->get_celltype() == CT_NONE) msg(DM_NONE,"Warning: No unit cell present - atom added with supplied coordinates.\n");
+	else r = obj.m->get_cell()->frac_to_real(r);
+	master.current.i = obj.m->add_atom(el, r);
+	return CR_SUCCESS;
+}
+
 // Draw atom with bond to 'activeatom' ('addchain <el>')
 int commanddata::function_CA_ADDCHAIN(command *&c, bundle &obj)
 {

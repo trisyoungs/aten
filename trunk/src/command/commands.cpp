@@ -75,10 +75,12 @@ commanddata CA_data[CA_NITEMS] = {
 				"Analyse quantities for all frames in current trajectory" },
 	
 	// Atom commands
-	{ "addatom",		"V",		"",
-				"<element>,Create a new atom in the current model" },
-	{ "addchain",		"Vv",		"",
-				"<element> [bondtype],Create a new atom in the current model, bound to the last" },
+	{ "addatom",		"Vvvv",		"<element> [x y z]",
+				"Create a new atom in the current model" },
+	{ "addatomfrac",	"VVVV",		"<element> <fracx> <fracy> <fracz>",
+				"Create a new atom in the current model, converting fractional coordinates to real coordinates" },
+	{ "addchain",		"Vv",		"<element> [bondtype]",
+				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"",
 				"End the current bond chain, so 'addchain' will create an unbound atom" },
 	{ "setcharge",		"Vv",		"<q> [id]",

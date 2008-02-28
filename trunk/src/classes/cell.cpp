@@ -197,7 +197,7 @@ void unitcell::calc_origin()
 	if (type != CT_NONE)
 	{
 		origin.set(-0.5,-0.5,-0.5);
-		origin *= axes;
+		origin *= transpose;
 	}
 	else origin.set(0.0,0.0,0.0);
 	dbg_end(DM_CALLS,"unitcell::calc_origin");
@@ -409,7 +409,7 @@ vec3<double> unitcell::real_to_frac(const vec3<double> &v) const
 // Return the real coordinates of the specified fractional cell coordinate
 vec3<double> unitcell::frac_to_real(const vec3<double> &v) const
 {
-	// Convert the real coordinates supplied into fractional cell coordinates
+	// Convert the fractional cell coordinates supplied into real cell coordinates
 	return (v * transpose);
 }
 
