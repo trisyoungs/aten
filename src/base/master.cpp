@@ -430,3 +430,39 @@ void master_data::cancel_progress()
 {
 	gui.progress_terminate();
 }
+
+// Spacegroup name search
+int master_data::find_spacegroup_by_name(const char *name)
+{
+	dbg_begin(DM_CALLS,"master_data::find_spacegroup_by_name");
+	int result = 0;
+	for (int n=1; n<NSPACEGROUPS; n++)
+		if (strcmp(spacegroups[n].get_name(),name) == 0)
+		{
+			result = n;
+			break;
+		}
+	dbg_end(DM_CALLS,"master_data::find_spacegroup_by_name");
+	return result;
+}
+
+// Cell type from spacegrgoup
+cell_type master_data::get_spacegroup_celltype(int sg)
+{
+	dbg_begin(DM_CALLS,"master_data::get_spacegroup_celltype");
+	cell_type result = CT_NONE;
+	// None
+	if (sg == 0) result = CT_NONE;
+	// Triclinic and monoclinic
+	else if (sg < 16) result = CT_PARALLELEPIPED;
+	// Orthorhombic and tetragonal
+	else if (sg < 143) result = CT_ORTHORHOMBIC;
+	// Trigonal
+	else if (sg < 168) result = CT_PARALLELEPIPED;
+	// Hexagonal
+	else if (sg < 195) result = CT_NONE;
+	// Cubic
+	else result = CT_CUBIC;
+	dbg_begin(DM_CALLS,"master_data::get_spacegroup_celltype");
+	return result;
+}

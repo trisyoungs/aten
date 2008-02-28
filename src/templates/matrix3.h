@@ -41,7 +41,7 @@ template <class T> struct mat3
 {
 	public:
 	// Constructor / Destructor
-	mat3();
+	mat3(T xx = 1, T xy = 0, T xz = 0, T yx = 0, T yy = 1, T yz = 0, T zx = 0, T zy = 0, T zz = 1);
 	#ifdef MEMDEBUG
 		// Destructor
 		~mat3() { memdbg.destroy[MD_MAT3] ++; }
@@ -122,9 +122,11 @@ template <class T> struct mat3
 };
 
 // Constructors
-template <class T> mat3<T>::mat3()
+template <class T> mat3<T>::mat3(T xx, T xy, T xz, T yx, T yy, T yz, T zx, T zy, T zz)
 {
-	set_identity();
+	rows[0].set(xx, xy, xz);
+	rows[1].set(yx, yy, yz);
+	rows[2].set(zx, zy, zz);
 	#ifdef MEMDEBUG
 		memdbg.create[MD_MAT3] ++;
 	#endif

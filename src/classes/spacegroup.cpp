@@ -24,19 +24,7 @@
 #include "parse/format.h"
 #include "parse/parser.h"
 
-spacegroup_list spacegroups;
-
 // Constructors
-symmop::symmop()
-{
-	next = NULL;
-	prev = NULL;
-	identity = TRUE;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_SYMMOP] ++;
-	#endif
-}
-
 spacegroup::spacegroup()
 {
 	#ifdef MEMDEBUG
@@ -44,21 +32,7 @@ spacegroup::spacegroup()
 	#endif
 }
 
-spacegroup_list::spacegroup_list()
-{
-	#ifdef MEMDEBUG
-		printf("Constructor : spacegroup_list\n");
-	#endif
-}
-
 // Destructors
-symmop::~symmop()
-{
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_SYMMOP] ++;
-	#endif
-}
-
 spacegroup::~spacegroup()
 {
 	#ifdef MEMDEBUG
@@ -66,18 +40,7 @@ spacegroup::~spacegroup()
 	#endif
 }
 
-spacegroup_list::~spacegroup_list()
-{
-	#ifdef MEMDEBUG
-		printf(" Destructor : spacegroup_list\n");
-	#endif
-}
-
-/*
-// Generators
-*/
-
-// Set from custom string
+/* Set from custom string
 void symmop::set(const char *xyzstr)
 {
 	// Sets the rotation matrix and translation vector.
@@ -201,82 +164,6 @@ void symmop::set_from_xyz(const char *xyzstr)
 	if (identity) msg(DM_NONE,"Added an identity operator - will be ignored in symmetry transformation.\n");
 	dbg_end(DM_CALLS,"symmop::set_from_xyz");
 }
-
-/*
-// Spacegroups
 */
 
-// Load
-void spacegroup_list::load(const char *filename)
-{
-	dbg_begin(DM_CALLS,"spacegroup_list::load");
-	int success,n,i;
-	symmop *so;
-	ifstream spgrpfile(filename,ios::in);
-	if (!spgrpfile.good())
-	{
-		printf("Couldn't open spacegroup definitions. Have you set $ATENDATA?\n");
-		spgrpfile.close();
-		dbg_end(DM_CALLS,"spacegroup_list::load");
-		return;
-	}
-	// Attempt to read in the spacegroup definitions...
-	for (n=0; n<NSPACEGROUPS; n++)
-	{
-		success = parser.get_args_delim(&spgrpfile,PO_SKIPBLANKS+PO_USEQUOTES);
-		if (success != 0)
-		{
-			if (success == 1) printf("Error reading spacegroup %i.\n",n);
-			else if (success == -1) printf("Premature end of spacegroup definitions at number %i.\n",n);
-			spgrpfile.close();
-			dbg_end(DM_CALLS,"spacegroup_list::load");
-			return;
-		}
-		// Store the name of the spacegroup
-		strcpy(groups[n].name,parser.argc(1));
-		// Store symmetry operators
-		for (i=2; i<parser.get_nargs(); i++)
-		{
-			so = groups[n].symmops.add();
-			so->set(parser.argc(i));
-		}
-	}
-	spgrpfile.close();
-	dbg_end(DM_CALLS,"spacegroup_list::load");
-}
 
-// Name search
-int spacegroup_list::find_by_name(const char *name)
-{
-	dbg_begin(DM_CALLS,"spacegroup_list::find_by_name");
-	int result = 0;
-	for (int n=1; n<NSPACEGROUPS; n++)
-		if (groups[n].name == name)
-		{
-			result = n;
-			break;
-		}
-	dbg_end(DM_CALLS,"spacegroup_list::find_by_name");
-	return result;
-}
-
-// Cell type from spacegrgoup
-cell_type spacegroup_list::get_cell_type(int sg)
-{
-	dbg_begin(DM_CALLS,"spacegroup_list::get_cell_type");
-	cell_type result = CT_NONE;
-	// None
-	if (sg == 0) result = CT_NONE;
-	// Triclinic and monoclinic
-	else if (sg < 16) result = CT_PARALLELEPIPED;
-	// Orthorhombic and tetragonal
-	else if (sg < 143) result = CT_ORTHORHOMBIC;
-	// Trigonal
-	else if (sg < 168) result = CT_PARALLELEPIPED;
-	// Hexagonal
-	else if (sg < 195) result = CT_NONE;
-	// Cubic
-	else result = CT_CUBIC;
-	dbg_begin(DM_CALLS,"spacegroup_list::get_cell_type");
-	return result;
-}

@@ -39,7 +39,6 @@
 #endif
 
 // Forward Declarations
-//class canvas_master;
 class forcefield;
 class bond;
 class constraint;
@@ -200,8 +199,6 @@ class model
 	int spgrp;
 	// Setting for spacegroup (if any)
 	int spgrpsetting;
-	// List of symmetry generators for crystal structure (read in from file)
-	list<symmop> symmops;
 	// Cell definition (also contains reciprocal cell definition)
 	unitcell cell;
 
@@ -230,16 +227,10 @@ class model
 	void set_spacegroupsetting(int i) { spgrpsetting = i; }
 	// Return the spacegroup of the model
 	int get_spacegroup() { return spgrp; }
-	// Adds a symmetry operator to the list
-	symmop *add_symmop() { return symmops.add(); }
-	// Return the first symmop in the list
-	symmop *get_symmops() { return symmops.first(); }
-	// Apply the given symmetry operator to the atoms in the model
-	void apply_symmop(symmop*,atom*);
-	// Apply the list of symmetry operators in the model
-	void apply_model_symmops(atom*);
+	// Apply the given symmetry generator to the atom(s) in the model
+	void pack(int,atom*);
 	// Apply the symmetry operators listed in the model's spacegroup
-	void apply_spacegroup_symmops(atom*);
+	void pack(atom*);
 	// Fold all molecules into the cell
 	void fold_all_molecules();
 	// Replicate cell to create supercell

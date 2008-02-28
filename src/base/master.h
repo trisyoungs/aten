@@ -34,6 +34,10 @@
 #include "base/cli.h"
 #include <getopt.h>
 
+// Forward Declarations
+class generator;
+class spacegroup;
+
 // Program Modes
 enum prog_mode { PM_COMMAND, PM_INTERACTIVE, PM_GUI, PM_NONE };
 
@@ -151,6 +155,19 @@ class master_data
 	grid *add_grid();
 	// Remove surface
 	void remove_grid(grid *s);
+
+	/*
+	// Spacegroups
+	*/
+	public:
+	// Spacegroup generators
+	generator *generators;
+	// Spacegroup definitions
+	spacegroup *spacegroups;
+	// Searches for the named spacegroup
+	int find_spacegroup_by_name(const char *name);
+	// Returns cell type of specified spacegroup id
+	cell_type get_spacegroup_celltype(int sg);
 
 	/*
 	// Clipboards

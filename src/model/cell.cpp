@@ -24,6 +24,7 @@
 #include "templates/vector3.h"
 #include "templates/matrix3.h"
 #include "classes/spacegroup.h"
+#include "classes/generator.h"
 #include "base/master.h"
 #include "base/constants.h"
 #include "parse/parser.h"
@@ -124,18 +125,17 @@ void model::fold_all_molecules()
 	dbg_end(DM_CALLS,"model::fold_all_molecules");
 }
 
-// Apply symmetry operator
-void model::apply_symmop(symmop* so, atom *lastatom)
+// Apply individual symmetry generator
+void model::pack(int gen, atom *lastatom)
 {
-	dbg_begin(DM_CALLS,"model::apply_symmop");
-	if (so->is_identity())
+	dbg_begin(DM_CALLS,"model::pack[gen,atom]");
+	if (gen == 0)
 	{
 		// Ignore this operator since it is the identity
-		dbg_begin(DM_CALLS,"model::apply_symmop");
+		dbg_begin(DM_CALLS,"model::pack[gen,atom]");
 		return;
 	}
-	mat3<double> rotmat = so->get_rotation();
-	vec3<double> trans = so->get_translation(), newr;
+	vec3<double> newr;
 	atom *i, *newatom;
 	i = atoms.first();
 	while (i != NULL)
@@ -143,43 +143,29 @@ void model::apply_symmop(symmop* so, atom *lastatom)
 		// Add a new atom and get the position of the old atom
 		newatom = add_atom(i->get_element(), i->r());
 		// Apply the rotation and translation
-		newr *= rotmat;
-		newr -= trans;
+		newr *= master.generators[gen].rotation;
+		newr -= master.generators[gen].translation;
 		newatom->r() = newr;
 		if (i == lastatom) break;
 		i = i->next;
 	}
-	dbg_end(DM_CALLS,"model::apply_symmop");
+	dbg_end(DM_CALLS,"model::model::pack[gen,atom]");
 }
 
-// Apply model's symmetry operators
-void model::apply_model_symmops(atom *lastatom)
+// Apply model's spacegroup symmetry generators
+void model::pack(atom *lastatom)
 {
-	dbg_begin(DM_CALLS,"model::apply_model_symmops");
-	symmop *so;
+	dbg_begin(DM_CALLS,"model::pack");
+	//symmop *so;
 	if (lastatom == NULL) lastatom = atoms.last();
-	so = symmops.first();
-	while (so != NULL)
-	{
-		apply_symmop(so,lastatom);
-		so = so->next;
-	}
-	dbg_end(DM_CALLS,"model::apply_model_symmops");
-}
-
-// Apply model spacegroup symmetry operators
-void model::apply_spacegroup_symmops(atom *lastatom)
-{
-	dbg_begin(DM_CALLS,"model::apply_spacegroup_symmops");
-	symmop *so;
-	if (lastatom == NULL) lastatom = atoms.last();
-	so = spacegroups.get_symmops(spgrp);
-	while (so != NULL)
-	{
-		apply_symmop(so,lastatom);
-		so = so->next;
-	}
-	dbg_end(DM_CALLS,"model::apply_spacegroup_symmops");
+	printf("Fix MY PACKING!\n");
+	//so = spacegroups.get_symmops(spgrp);
+	//while (so != NULL)
+	//{
+	//	apply_symmop(so,lastatom);
+	//	so = so->next;
+	//}
+	dbg_end(DM_CALLS,"model::pack");
 }
 
 // Scale cell and contents (molecule COGs)
