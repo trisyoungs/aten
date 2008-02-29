@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[0.94])
+m4_define([ATEN_VERSION],[0.94a])
 AC_INIT(aten,ATEN_VERSION,t.youngs@qub.ac.uk)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -86,9 +86,10 @@ AC_ARG_WITH([glut],[AC_HELP_STRING([--with-glut=framework|<none>],
     [with_glut=])
 
 
-# Pre-initialise pkg-config 
-PKG_PROG_PKG_CONFIG
-
+# Pre-initialise pkg-config  (unless using Qt framework on the Mac
+if test "$with_qt" != "framework"; then
+  PKG_PROG_PKG_CONFIG
+fi
 
 # Set up compilation for Qt GUI
 #AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
@@ -113,7 +114,7 @@ GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
 GUI_CFLAGS="$QTGUI_CFLAGS"
 
 # Setup GLUT reference
-if test "x$with_glut" = "xframework"; then
+if test "$with_glut" = "framework"; then
   MAC_LIBS="$MAC_LIBS -framework GLUT"
 else
   GUI_LDLIBS="$GUI_LDLIBS -lglut"
