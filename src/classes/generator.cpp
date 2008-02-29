@@ -21,6 +21,14 @@
 
 #include "classes/generator.h"
 
+// Useful Numbers
+#define SG_OS 0.16666666
+#define SG_OQ 0.25
+#define SG_OH 0.5
+#define SG_TT 0.66666667
+#define SG_TQ 0.75
+#define SG_FS 0.83333333
+
 // Destructor
 generator::~generator()
 {

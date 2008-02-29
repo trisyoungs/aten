@@ -49,9 +49,15 @@ This will set most of the necessary environment variables, namely:\\
 
 You may also need to direct the build process to the correct Qt4 development binaries either by setting your \$PATH to \qte{/sw/lib/qt4-x11/bin:\$\{PATH\}} or by using the {\sffamily {-}{-}with-qtdir} option to {\sffamily configure}.\\
 
-The native Qt4 package is available as a disk image installer at no cost directly from http://trolltech.com. Specify that the build use the frameworks provided instead:\\
+The native Qt4 package is available as a disk image installer at no cost directly from http://trolltech.com. Specify that the build use the frameworks so provided instead:\\
 
 \indent {\sffamily configure {-}{-}with-qt=framework} ...\\
+
+If your GLUT installation is in the form of a framework, use:
+
+\indent {\sffamily configure {-}{-}with-glut=framework} ...\\
+
+This will link the final executable with '-framework GLUT' - otherwise, standard library linking is performed ('-lglut').
 
 \subsection{Autotools}
 You may find that the version of GNU Autotools you have is not recent enough. Check with {\sffamily autoconf {-}{-}version} - 2.59 is not sufficient! An up-to-date version can be installed via Fink. Known good versions are listed here, but don't assume that these are the only versions that will work:\\
