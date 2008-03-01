@@ -161,9 +161,9 @@ class master_data
 	*/
 	public:
 	// Spacegroup generators
-	generator *generators;
+	static generator generators[];
 	// Spacegroup definitions
-	spacegroup *spacegroups;
+	static spacegroup spacegroups[];
 	// Searches for the named spacegroup
 	int find_spacegroup_by_name(const char *name);
 	// Returns cell type of specified spacegroup id
