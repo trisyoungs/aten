@@ -190,29 +190,29 @@ void clipboard::cut_selection(model *m)
 }
 
 // Paste to model
-void clipboard::paste_to_model(model *m)
+void clipboard::paste_to_model(model *m, bool selectpasted)
 {
 	// Paste the contents of the clipboard into the model specified.
-	// An optional pattern is supplied, indicating atoms should be pasted into its local list. Otherwise, use the model.
 	// Deselect all atoms of the model, and select the pasted atoms.
 	dbg_begin(DM_CALLS,"clipboard::paste_to_model");
 	atom *pastedi, *ii, *jj;
-	m->select_none();
+	if (selectpasted) m->select_none();
 	clipatom *i = atoms.first();
 	while (i != NULL)
 	{
 		// Create a new atom in the target model
 		pastedi = m->add_copy(i);
 		//printf("Pasted atom has id %i\n",pastedi->get_id());
-		m->select_atom(pastedi);
+		if (selectpasted) m->select_atom(pastedi);
 		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
 		bonds_set_newptr(i,pastedi);
+		m->project_atom(pastedi);
 		i = i->get_next();
 	}	
 	// Add in bonds to pasted atoms
 	paste_bonds(m);
 	// Project the newly-pasted (and currently selected) atoms
-	m->project_selection();
+	//m->project_selection();
 	dbg_end(DM_CALLS,"clipboard::paste_to_model");
 }
 

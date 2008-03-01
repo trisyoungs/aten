@@ -16,10 +16,9 @@ General To-Do list:
 	- Ewald sum (fourier calculation, reciprocal cell) for non-orthogonal cells
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)
-	- Complete spacegroups list
 	- Add CG (needs testing) / simplex / other minimisers
 	- View Miller planes
-	- Export EPS
+	- Better EPS export
 
 Forcefield To-Do list:
 	- UFF - oxidation state, torsions

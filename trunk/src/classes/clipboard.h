@@ -136,7 +136,7 @@ class clipboard
 	// Cut atom selection from specified model
 	void cut_selection(model*);
 	// Paste clipboard contents into the model
-	void paste_to_model(model*);
+	void paste_to_model(model*, bool selectpasted = TRUE);
 	// Paste clipboard contents into specified pattern
 	void paste_to_pattern(model*, pattern*);
 	// Paste clipboard contents into specified config / pattern

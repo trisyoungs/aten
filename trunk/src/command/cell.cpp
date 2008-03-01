@@ -44,8 +44,8 @@ int commanddata::function_CA_FRACTOREAL(command *&c, bundle &obj)
 int commanddata::function_CA_PACK(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->get_parent()->get_infile() == NULL) obj.m->pack(NULL);
-	else if (prefs.get_pack_on_load() != PS_NO) obj.m->pack(NULL);
+	if (c->get_parent()->get_infile() == NULL) obj.m->pack();
+	else if (prefs.get_pack_on_load() != PS_NO) obj.m->pack();
 	return CR_SUCCESS;
 }
 
