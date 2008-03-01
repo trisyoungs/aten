@@ -1,6 +1,6 @@
 /*
 	*** Crystal spacegroups / generators
-	*** src/classes/spacegroup.cpp
+	*** src/base/spacegroup.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/spacegroup.h"
 #include "base/master.h"
 
 // Destructors
