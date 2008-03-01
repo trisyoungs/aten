@@ -23,14 +23,14 @@
 #define H_MODEL_H
 
 #include "templates/vector3.h"
+#include "base/prefs.h"
+#include "base/spacegroup.h"
 #include "classes/energystore.h"
 #include "classes/cell.h"
-#include "classes/spacegroup.h"
 #include "classes/measurement.h"
 #include "classes/glyph.h"
 #include "classes/site.h"
 #include "classes/undostate.h"
-#include "base/prefs.h"
 #include "methods/quantity.h"
 #ifdef IS_MAC
 	#include "OpenGL/gl.h"

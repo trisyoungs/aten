@@ -23,8 +23,8 @@
 #include "classes/pattern.h"
 #include "templates/vector3.h"
 #include "templates/matrix3.h"
-#include "classes/spacegroup.h"
-#include "classes/generator.h"
+#include "base/spacegroup.h"
+#include "base/generator.h"
 #include "base/master.h"
 #include "base/constants.h"
 #include "parse/parser.h"
@@ -149,7 +149,7 @@ void model::pack(int gen, atom *lastatom)
 		if (i == lastatom) break;
 		i = i->next;
 	}
-	dbg_end(DM_CALLS,"model::model::pack[gen,atom]");
+	dbg_end(DM_CALLS,"model::pack[gen,atom]");
 }
 
 // Apply model's spacegroup symmetry generators

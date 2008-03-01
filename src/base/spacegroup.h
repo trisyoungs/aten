@@ -1,6 +1,6 @@
 /*
-	*** Spacegroup generator
-	*** src/classes/generator.h
+	*** Crystal spacegroups
+	*** src/base/spacegroup.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,28 +19,29 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_GENERATOR_H
-#define H_GENERATOR_H
+#ifndef H_SPACEGROUP_H
+#define H_SPACEGROUP_H
 
 #include "templates/vector3.h"
+#include "templates/reflist.h"
+#include "classes/cell.h"
 
-// Symmetry generator
-class generator
+// Spacegroup
+class spacegroup
 {
 	public:
 	// Destructor
-	~generator();
+	~spacegroup();
 
-	/*
-	// Rotation Matrix and Translation Vector
-	*/
 	public:
-	// Short text 'description'
-	const char *description;
-	// Rotation matrix
-	mat3<double> rotation;
-	// Translation vector
-	vec3<double> translation;
+	// Name of the spacegroup (plaintext)
+	const char *name;
+	// Name of the spacegroup (formatted)
+	const char *displayname;
+	// Number of symmetry generators for this spacegroup
+	int ngenerators;
+	// List of symmetry generators for this spacegroup
+	int generators[192];
 };
 
 #endif

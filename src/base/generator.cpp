@@ -1,6 +1,6 @@
 /*
 	*** Spacegroup generators
-	*** src/classes/generator.cpp
+	*** src/base/generator.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/generator.h"
+#include "base/generator.h"
 #include "base/master.h"
 
 // Useful Numbers
@@ -27,35 +27,27 @@
 #define TWTH 0.66666667
 #define FVSX 0.83333333
 
-// Destructor
-generator::~generator()
-{
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_GENERATOR] ++;
-	#endif
-}
-
 // Define spacegroup generators in the master
 generator master_data::generators[] = {
 	{ "x,y,z",		mat3<double>( 1,0,0,0,1,0,0,0,1), 	vec3<double>(0   ,0   ,0   ) },
 	{ "-x,-y,-z",		mat3<double>(-1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0   ,0   ,0   ) },
 	{ "-x,y,-z",		mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0   ,0   ) },
-	{ "-x,y+12,-z",	mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "-x,y+12,-z",		mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
 	{ "x+12,y+12,z",	mat3<double>( 1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0   ) },
 	{ "-x+12,y+12,-z",	mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0   ) },
 	{ "x,-y,z",		mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0   ,0   ) },
-	{ "x,-y,z+12",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "x,-y,z+12",		mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
 	{ "x+12,-y+12,z",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0   ) },
 	{ "x+12,-y+12,z+12",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
-	{ "x,-y+12,z",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "x,-y+12,z",		mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
 	{ "-x+12,-y+12,-z",	mat3<double>(-1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0   ) },
-	{ "-x,y,-z+12",	mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "-x,y,-z+12",		mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
 	{ "-x,y+12,-z+12",	mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0.5 ) },
 	{ "x,-y+12,z+12",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0.5 ) },
 	{ "-x+12,y+12,-z+12",	mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
 	{ "-x,-y,z",		mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0   ,0   ) },
 	{ "x,-y,-z",		mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0   ,0   ,0   ) },
-	{ "-x,-y,z+12",	mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "-x,-y,z+12",		mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
 	{ "x+12,-y+12,-z",	mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0   ) },
 	{ "-x+12,-y,z+12",	mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0.5 ) },
 	{ "-x+12,-y+12,z+12",	mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
@@ -68,19 +60,19 @@ generator master_data::generators[] = {
 	{ "x+12,-y,-z+12",	mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0.5 ) },
 	{ "x+12,y+12,z+12",	mat3<double>( 1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
 	{ "x+12,-y+12,-z+12",	mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
-	{ "-x,-y+12,z",	mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
-	{ "-x+12,y,-z",	mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
-	{ "x,-y,-z+12",	mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "-x,-y+12,z",		mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "-x+12,y,-z",		mat3<double>(-1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "x,-y,-z+12",		mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
 	{ "-x,y,z",		mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0   ,0   ,0   ) },
-	{ "-x,y,z+12",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
-	{ "x+12,-y,z",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
-	{ "-x+12,y,z",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "-x,y,z+12",		mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "x+12,-y,z",		mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "-x+12,y,z",		mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
 	{ "-x+12,y,z+12",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0.5 ) },
 	{ "-x,y+12,z+12",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0.5 ) },
 	{ "x+12,-y,z+12",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0.5 ) },
 	{ "-x+12,y+12,z",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0   ) },
 	{ "-x+12,y+12,z+12",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
-	{ "-x,y+12,z",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "-x,y+12,z",		mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
 	{ "x+14,-y+14,z+14",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.25,0.25,0.25) },
 	{ "-x+14,y+14,z+14",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.25,0.25,0.25) },
 	{ "x+14,-y+34,z+34",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.25,0.75,0.75) },
@@ -91,15 +83,15 @@ generator master_data::generators[] = {
 	{ "-x+34,y+34,z+14",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.75,0.75,0.25) },
 	{ "x,y,-z",		mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0   ,0   ) },
 	{ "x+12,y+12,-z",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0   ) },
-	{ "x,-y+12,-z",	mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
-	{ "-x+12,-y,z",	mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
-	{ "x+12,-y,-z",	mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
-	{ "x+12,y,-z",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "x,-y+12,-z",		mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "-x+12,-y,z",		mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "x+12,-y,-z",		mat3<double>( 1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "x+12,y,-z",		mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
 	{ "x+12,y,-z+12",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0.5 ) },
-	{ "x,y,-z+12",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "x,y,-z+12",		mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
 	{ "x+12,y+12,-z+12",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
 	{ "x,y+12,-z+12",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0.5 ) },
-	{ "x,y+12,-z",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "x,y+12,-z",		mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
 	{ "-x,-y+12,-z+12",	mat3<double>(-1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0.5 ) },
 	{ "-x+12,-y,-z+12",	mat3<double>(-1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0.5 ) },
 	{ "-x+34,-y+34,z",	mat3<double>(-1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.75,0.75,0   ) },
@@ -126,15 +118,15 @@ generator master_data::generators[] = {
 	{ "x+34,y+34,-z",	mat3<double>( 1,0,0,0,1,0,0,0,-1), 	vec3<double>(0.75,0.75,0   ) },
 	{ "x+34,-y+12,z+14",	mat3<double>( 1,0,0,0,-1,0,0,0,1), 	vec3<double>(0.75,0.5 ,0.25) },
 	{ "-x+12,y+34,z+14",	mat3<double>(-1,0,0,0,1,0,0,0,1), 	vec3<double>(0.5 ,0.75,0.25) },
-	{ "-x+12,-y+12,-z+12",mat3<double>(-1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
+	{ "-x+12,-y+12,-z+12",	mat3<double>(-1,0,0,0,-1,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
 	{ "-y,x,z",		mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0   ) },
 	{ "y,-x,z",		mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0   ) },
-	{ "-y,x,z+14",	mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.25) },
-	{ "y,-x,z+34",	mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.75) },
-	{ "-y,x,z+12",	mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
-	{ "y,-x,z+12",	mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
-	{ "-y,x,z+34",	mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.75) },
-	{ "y,-x,z+14",	mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.25) },
+	{ "-y,x,z+14",		mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.25) },
+	{ "y,-x,z+34",		mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.75) },
+	{ "-y,x,z+12",		mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "y,-x,z+12",		mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "-y,x,z+34",		mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.75) },
+	{ "y,-x,z+14",		mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0   ,0.25) },
 	{ "-y+12,x+12,z+12",	mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
 	{ "y+12,-x+12,z+12",	mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
 	{ "-y,x+12,z+14",	mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0.5 ,0.25) },
@@ -145,12 +137,12 @@ generator master_data::generators[] = {
 	{ "-y,x,-z",		mat3<double>( 0,-1,0,1,0,0,0,0,-1), 	vec3<double>(0   ,0   ,0   ) },
 	{ "y+12,-x+12,-z+12",	mat3<double>( 0,1,0,-1,0,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
 	{ "-y+12,x+12,-z+12",	mat3<double>( 0,-1,0,1,0,0,0,0,-1), 	vec3<double>(0.5 ,0.5 ,0.5 ) },
-	{ "y,-x,-z+12",	mat3<double>( 0,1,0,-1,0,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
-	{ "-y,x,-z+12",	mat3<double>( 0,-1,0,1,0,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
-	{ "-y+12,x,z",	mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
-	{ "y,-x+12,z",	mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
-	{ "y+12,-x,-z",	mat3<double>( 0,1,0,-1,0,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
-	{ "-y,x+12,-z",	mat3<double>( 0,-1,0,1,0,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "y,-x,-z+12",		mat3<double>( 0,1,0,-1,0,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "-y,x,-z+12",		mat3<double>( 0,-1,0,1,0,0,0,0,-1), 	vec3<double>(0   ,0   ,0.5 ) },
+	{ "-y+12,x,z",		mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "y,-x+12,z",		mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0   ,0.5 ,0   ) },
+	{ "y+12,-x,-z",		mat3<double>( 0,1,0,-1,0,0,0,0,-1), 	vec3<double>(0.5 ,0   ,0   ) },
+	{ "-y,x+12,-z",		mat3<double>( 0,-1,0,1,0,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0   ) },
 	{ "-y,x+12,z+12",	mat3<double>( 0,-1,0,1,0,0,0,0,1), 	vec3<double>(0   ,0.5 ,0.5 ) },
 	{ "y+12,-x,z+12",	mat3<double>( 0,1,0,-1,0,0,0,0,1), 	vec3<double>(0.5 ,0   ,0.5 ) },
 	{ "y,-x+12,-z+12",	mat3<double>( 0,1,0,-1,0,0,0,0,-1), 	vec3<double>(0   ,0.5 ,0.5 ) },
