@@ -227,10 +227,10 @@ class model
 	void set_spacegroupsetting(int i) { spgrpsetting = i; }
 	// Return the spacegroup of the model
 	int get_spacegroup() { return spgrp; }
-	// Apply the given symmetry generator to the atom(s) in the model
-	void pack(int,atom*);
+	// Apply the given symmetry generator to the current atom selection in the model
+	void pack(int);
 	// Apply the symmetry operators listed in the model's spacegroup
-	void pack(atom*);
+	void pack();
 	// Fold all molecules into the cell
 	void fold_all_molecules();
 	// Replicate cell to create supercell

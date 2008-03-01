@@ -37,7 +37,11 @@ importmodel
 			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
 			readline "$ca $cb $cc $alpha $beta $gamma $spgrp $setting"
 			setcell $ca $cb $cc $alpha $beta $gamma
+			setspacegroup $spgrp
 		end
 	end
+	# Perform post-load operations
+	pack
+	fold
 	finalisemodel
 end

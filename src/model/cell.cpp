@@ -125,46 +125,50 @@ void model::fold_all_molecules()
 	dbg_end(DM_CALLS,"model::fold_all_molecules");
 }
 
-// Apply individual symmetry generator
-void model::pack(int gen, atom *lastatom)
+// Apply individual symmetry generator to current atom selection
+void model::pack(int gen)
 {
 	dbg_begin(DM_CALLS,"model::pack[gen,atom]");
+	static clipboard clip;
+	vec3<double> newr;
+	int oldnatoms;
 	if (gen == 0)
 	{
-		// Ignore this operator since it is the identity
+		// Ignore this operator since it is the identity operator
 		dbg_begin(DM_CALLS,"model::pack[gen,atom]");
 		return;
 	}
-	vec3<double> newr;
-	atom *i, *newatom;
-	i = atoms.first();
-	while (i != NULL)
+	msg(DM_VERBOSE,"...Applying generator '%s' (no. %i)\n", master.generators[gen].description, gen);
+	// Store current number of atoms in model
+	oldnatoms = atoms.size();
+	// Copy selection to clipboard
+	clip.copy_selection(this);
+	clip.paste_to_model(this, FALSE);
+	for (atom *i = atoms[oldnatoms]; i != NULL; i = i->next)
 	{
-		// Add a new atom and get the position of the old atom
-		newatom = add_atom(i->get_element(), i->r());
+		// Get the position of the newly-pasted atom
+		newr = i->r();
 		// Apply the rotation and translation
 		newr *= master.generators[gen].rotation;
 		newr -= master.generators[gen].translation;
-		newatom->r() = newr;
-		if (i == lastatom) break;
-		i = i->next;
+		cell.fold(newr);
+		i->r() = newr;
 	}
 	dbg_end(DM_CALLS,"model::pack[gen,atom]");
 }
 
 // Apply model's spacegroup symmetry generators
-void model::pack(atom *lastatom)
+void model::pack()
 {
 	dbg_begin(DM_CALLS,"model::pack");
-	//symmop *so;
-	if (lastatom == NULL) lastatom = atoms.last();
-	printf("Fix MY PACKING!\n");
-	//so = spacegroups.get_symmops(spgrp);
-	//while (so != NULL)
-	//{
-	//	apply_symmop(so,lastatom);
-	//	so = so->next;
-	//}
+	if (spgrp == 0) msg(DM_NONE,"No spacegroup defined in model - no packing will be performed.\n");
+	else
+	{
+		msg(DM_NONE,"Packing cell according to spacegroup '%s'...\n", master.spacegroups[spgrp].name);
+		select_all();
+		for (int n=0; n<master.spacegroups[spgrp].ngenerators; n++)
+			pack(master.spacegroups[spgrp].generators[n]);
+	}
 	dbg_end(DM_CALLS,"model::pack");
 }
 
