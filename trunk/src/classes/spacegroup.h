@@ -34,20 +34,19 @@ class generator;
 // Spacegroup
 class spacegroup
 {
-	private:
-	// Name of the spacegroup
-	char name[20];
-	// List of symmetry operations for the spacegroup
-	reflist<generator,int> generators;
+	public:
+	// Destructor
+	~spacegroup();
 
 	public:
-	// Constructor / Destructor
-	spacegroup();
-	~spacegroup();
-	// Returns the name of the spacegroup
-	const char *get_name() { return name; };
-	// Returns the first symmop in the list
-	refitem<generator,int> *get_generators() { return generators.first(); };
+	// Name of the spacegroup (plaintext)
+	const char *name;
+	// Name of the spacegroup (formatted)
+	const char *displayname;
+	// Number of symmetry generators for this spacegroup
+	int ngenerators;
+	// List of symmetry generators for this spacegroup
+	int generators[192];
 };
 
 #endif

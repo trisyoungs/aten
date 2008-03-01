@@ -24,16 +24,12 @@
 
 #include "templates/vector3.h"
 
-#define NSPACEGROUPS 231
-
 // Symmetry generator
 class generator
 {
 	public:
 	// Destructor
 	~generator();
-	// List pointers
-	generator *next, *prev;
 
 	/*
 	// Rotation Matrix and Translation Vector

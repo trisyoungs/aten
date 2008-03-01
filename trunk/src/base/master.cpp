@@ -437,7 +437,7 @@ int master_data::find_spacegroup_by_name(const char *name)
 	dbg_begin(DM_CALLS,"master_data::find_spacegroup_by_name");
 	int result = 0;
 	for (int n=1; n<NSPACEGROUPS; n++)
-		if (strcmp(spacegroups[n].get_name(),name) == 0)
+		if (strcmp(spacegroups[n].name,name) == 0)
 		{
 			result = n;
 			break;
