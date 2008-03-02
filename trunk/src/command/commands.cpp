@@ -243,7 +243,7 @@ commanddata CA_data[CA_NITEMS] = {
 				"" },
 	{ "_GOTONONIF_",	"",		"",
 				"" },
-	{ "if",			"VSE",		"<variable> <condition> <variable|constant>",
+	{ "if",			"VSV",		"<variable> <condition> <variable|constant>",
 				"Perform a conditional test on the supplied variable against the second variable (or constant)" },
 	{ "_TERMINATE_",	"",		"",
 				"" },
@@ -323,6 +323,8 @@ commanddata CA_data[CA_NITEMS] = {
 				"Raise an error message (causes exit of current command list)" },
 	{ "print",		"G",		"<message>",
 				"Print a message" },
+	{ "verbose",		"G",		"<message>",
+				"Print a message when verbose output is enabled" },
 	{ "warn",		"G",		"<message>",
 				"Raise a warning message (command list will continue)" },
 	

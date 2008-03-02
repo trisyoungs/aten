@@ -65,20 +65,15 @@ bool format_node::set(const char *s, variable_list &vlist)
 	dbg_begin(DM_PARSE,"format_node::set");
 	// Format of formatters is 'F@n.m': F = format quantity/variable, n.m = length,precision
 	int m, pos1, pos2;
-	static char specifier[32], len[32], pre[32];
+	static char specifier[512], len[32], pre[32];
 	char *c;
-	for (m=0; m<32; m++)
-	{
-		specifier[m] = '\0';
-		len[m] = '\0';
-		pre[m] = '\0';
-	}
 	// Everything up to the '@' character is the quantity / variable
 	for (pos1 = 0; s[pos1] != '\0'; pos1++)
 	{
 		if (s[pos1] == '@') break;
 		specifier[pos1] = s[pos1];
 	}
+	specifier[pos1] = '\0';
 	if (s[pos1] == '@')
 	{
 		// Everything past the '@' character (and up to a '.') is the length...
@@ -88,8 +83,13 @@ bool format_node::set(const char *s, variable_list &vlist)
 			if (s[pos2] == '.') break;
 			len[pos2-pos1] = s[pos2];
 		}
+		len[pos2-pos1] = '\0';
 		// Lastly, if a decimal point exists then the last part is the precision
-		if (s[pos2] == '.') for (pos1=pos2+1; s[pos1] != '\0'; pos1++) pre[pos1-(pos2+1)] = s[pos1];
+		if (s[pos2] == '.')
+		{
+			for (pos1=pos2+1; s[pos1] != '\0'; pos1++) pre[pos1-(pos2+1)] = s[pos1];
+			pre[pos1-(pos2+1)] = '\0';
+		}
 	}
 	msg(DM_PARSE,"format::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
 	// If we're given a variable, check that is has been declared
@@ -241,7 +241,7 @@ bool format::create_exact(const char *s, variable_list &vlist)
 			dbg_end(DM_PARSE,"format::create_exact");
 			return FALSE;
 		}
-	}
+	}	
 	dbg_end(DM_PARSE,"format::create_exact");
 	return TRUE;
 }
@@ -254,6 +254,8 @@ const char *format::create_string()
 	static char result[8096], bit[1024], fmt[16];
 	static variable *v;
 	result[0] = '\0';
+	bit[0] = '\0';
+	fmt[0] = '\0';
 	// Step through each formatting node, adding on the specified data from the model/atom
 	for (format_node *fn = nodes.first(); fn != NULL; fn = fn->next)
 	{

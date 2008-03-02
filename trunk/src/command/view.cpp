@@ -1,6 +1,6 @@
 /*
 	*** View command functions
-	*** src/command/prefs.cpp
+	*** src/command/view.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

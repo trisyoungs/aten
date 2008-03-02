@@ -204,6 +204,7 @@ enum command_action {
 	// Messaging
 	CA_ERROR,
 	CA_PRINT,
+	CA_VERBOSE,
 	CA_WARN,
 
 	// Minimisation Commands
@@ -495,6 +496,7 @@ class commanddata
 	// Messaging
 	int function_CA_ERROR(command *&c, bundle &obj);
 	int function_CA_PRINT(command *&c, bundle &obj);
+	int function_CA_VERBOSE(command *&c, bundle &obj);
 	int function_CA_WARN(command *&c, bundle &obj);
 	// Minimisation Commands
 	int function_CA_CGMINIMISE(command *&c, bundle &obj);

@@ -1,6 +1,6 @@
 /*
 	*** Forces command functions
-	*** src/command/energy.cpp
+	*** src/command/forces.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
