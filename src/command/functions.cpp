@@ -182,6 +182,7 @@ void master_data::init_commands()
 	// Messaging Commands
 	CA_data[CA_ERROR].function = &commanddata::function_CA_ERROR;
 	CA_data[CA_PRINT].function = &commanddata::function_CA_PRINT;
+	CA_data[CA_VERBOSE].function = &commanddata::function_CA_VERBOSE;
 	CA_data[CA_WARN].function = &commanddata::function_CA_WARN;
 
 	// Minimisation Commands

@@ -1,6 +1,6 @@
 /*
 	*** Read/write command functions
-	*** src/command/image.cpp
+	*** src/command/readwrite.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

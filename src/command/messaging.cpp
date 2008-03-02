@@ -1,6 +1,6 @@
 /*
 	*** Messaging command functions
-	*** src/command/transform.cpp
+	*** src/command/messaging.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -37,6 +37,15 @@ int commanddata::function_CA_PRINT(command *&c, bundle &obj)
 	format *fmt = c->get_format();
 	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
 	else msg(DM_NONE,"%s\n",fmt->create_string());
+	return CR_SUCCESS;
+}
+
+// Print formatted string (in verbose output only)
+int commanddata::function_CA_VERBOSE(command *&c, bundle &obj)
+{
+	format *fmt = c->get_format();
+	if (fmt == NULL) printf("Warning - No format defined in 'verbose' command.\n");
+	else msg(DM_VERBOSE,"%s\n",fmt->create_string());
 	return CR_SUCCESS;
 }
 
