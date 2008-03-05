@@ -141,7 +141,7 @@ class AtenForm : public QMainWindow
 	void on_actionFileSaveImage_triggered(bool checked);
 	void on_actionFileQuit_triggered(bool checked);
 	void on_actionFileOpenForcefield_triggered(bool checked);
-	void on_actionFileSaveForcefield_triggered(bool checked);
+	//void on_actionFileSaveForcefield_triggered(bool checked);
 	void on_actionFileOpenGrid_triggered(bool checked);
 	void on_actionFileSaveExpression_triggered(bool checked);
 
@@ -171,7 +171,6 @@ class AtenForm : public QMainWindow
 	void on_actionViewSetCellPosX_triggered(bool checked) { set_cell_view(-1,0,0); }
 	void on_actionViewSetCellPosY_triggered(bool checked) { set_cell_view(0,-1,0); }
 	void on_actionViewSetCellPosZ_triggered(bool checked) { set_cell_view(0,0,-1); }
-	void on_actionViewUnhideAtoms_triggered(bool checked);
 
 	/*
 	// Model Actions
@@ -183,6 +182,7 @@ class AtenForm : public QMainWindow
 	void on_actionFoldMolecules_triggered(bool checked);
 	void on_actionModelNext_triggered(bool checked);
 	void on_actionModelPrevious_triggered(bool checked);
+	void on_actionModelShowAll_triggered(bool checked);
 
 	/*
 	// Trajectory Actions
@@ -416,8 +416,7 @@ class AtenForm : public QMainWindow
 	void on_actionAtomLabelFFEquiv_triggered(bool checked) { set_atomlabel(AL_FFEQUIV); }
 	void on_actionAtomLabelClear_triggered(bool checked) { remove_atomlabels(FALSE); }
 	void on_actionAtomLabelClearAll_triggered(bool checked) { remove_atomlabels(TRUE); }
-	void on_actionAtomSetVisible_triggered(bool checked) { set_atomhidden(FALSE); }
-	void on_actionAtomSetInvisible_triggered(bool checked) { set_atomhidden(TRUE); }
+	void on_actionAtomHide_triggered(bool checked) { set_atomhidden(TRUE); }
 
 	/*
 	// Settings Functions

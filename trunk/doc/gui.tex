@@ -1,17 +1,88 @@
-\chapter{GUI}
+\chapter{Using as a GUI Application}
 \label{sec:gui}
 \index{gui}
 
-\section{Main Window}
+\section{The Main Window}
+\index{gui!main window}
 
-\section{\qte{File} Menu}
+Most of the main window is taken up with a canvas which is used to display and edit models and take input from the user. A set of tabs directly above the main view shows the title of each loaded model currently available. The model being displayed on the main canvas (the \qte{current} model) is the one for which all input and editing tools will act on. \\
 
-\section{\qte{Edit} Menu}
+Each of the mouse buttons has a different action on the canvas, each of which can be set to the users taste in the preferences (menu item Settings$\rightarrow$Preferences on Linux). In addition the Shift, Ctrl, and Alt keys modify or augment these default actions. See the following sections for brief descriptions of the different modes. At the foot of the window is a message box (where output and errors are thrown) and a status bar reflecting the content of the current model displayed, listing the number of atoms and the number of selected atoms (bold value in parentheses, but only if there are selected atoms), the mass of the model, and the cell type and density of the model (if it is periodic).\\
 
-\section{\qte{File} Menu}
+A stack of icons on the right-hand side of the window provides quick access to different tool panels for building, analysing etc. The icons are:\\
 
-\section{\qte{File} Menu}
+\noindent
+\includegraphics[width=1cm]{images/stack_atomlist} Shows a list of atoms in the model \\
+\includegraphics[width=1cm]{images/stack_cell} Add, edit, or transform the model's unit cell \\
+\includegraphics[width=1cm]{images/stack_edit} Tools to edit atoms and bonds \\
+\includegraphics[width=1cm]{images/stack_transform} Transform selections of atoms \\
+\includegraphics[width=1cm]{images/stack_position} Position selections of atoms \\
+\includegraphics[width=1cm]{images/stack_ff} Load and edit forcefields, and assign to models and patterns \\
+\includegraphics[width=1cm]{images/stack_minimise} Minimise the energy of models \\
+\includegraphics[width=1cm]{images/stack_disorder} Create disordered systems \\
 
-\section{\qte{File} Menu}
+See the relevant sections of the manual for descriptions of each of these panels.
 
-\section{\qte{File} Menu}
+\section{Changing the View}
+\index{gui!visualisation}
+
+At its most basic the canvas acts as a visualiser allowing models to be rotated, zoomed in and out, and drawn in various different styles. By default, the right mouse button is used to rotate the molecule in the plane of the screen (right-click and hold on an empty area of the canvas and move the mouse to rotate the model) and the mouse wheel zooms in and out. Note that right-clicking on an atom brings up the atom menu (see Section \ref{sec:atommenu}). The middle mouse button translates the model in the plane of the screen -- again, click-hold and drag. Rotation and translation operate on the position and orientation of the camera and no modifications to the actual coordinates of the model are made. The view can be reset at any time from the main menu (View$\rightarrow$Reset) or by pressing Ctrl-R. Both the main menu (View$\rightarrow$Style) and the View toolbar allow the drawing style of models to be changed between stick, tube, sphere, scaled sphere, and individual. The last option allows different view styles to be set for different atoms.\\
+
+The Ctrl key changes the normal behaviour of the rotation and translation operations and forces them to be performed on the coordinates of the current atom selection instead of the camera. The centre of rotation is the geometric centre of the selected atoms.
+
+\section{Selection}
+\index{gui!selections}
+
+Atom selection or picking is performed with the left mouse button by default -- single-click on any atom to highlight (select) it. Single-clicks perform \qte{exclusive} selections; that is, all other atom(s) are deselected before the clicked atom is (re)selected. Clicking in an empty region of the canvas deselects all atoms. Clicking on an empty space in the canvas, holding, and dragging draws a rectangular selection region -- releasing the mouse button then selects all atoms within this area. Again, this selection operation is exclusive. Inclusive selections (where already-selected atoms are not deselected) are performed by holding the Shift key whil performing the above operations. Furthermore, single-clicking on a selected atom while holding Shift will deselect the atom.\\
+
+
+To summarise mouse control, standard settings out of the box are:\\
+\index{gui!mouse control}
+
+\begin{table}[h!]
+  \caption{}
+  \begin{tabular}{cc|l}
+\hline
+	Button	& Modifier	& Action \\
+\hline
+	Left	& None		& Click on individual atoms to select exclusively \\
+		&		& Click-hold-drag to exclusively select all atoms within rectangular region \\
+		&		& Double-click to show atom list \\
+		& Shift		& Click on individual atoms to toggle selection state \\
+		&		& Click-hold-drag to inclusively select all atoms within rectangular region \\
+\hline
+	Right	& None		& Click-hold-drag to rotate camera around model \\
+		&		& Click on atom to show atom menu \\
+		& Ctrl		& Click-hold-drag to rotate selection in local (model) space \\
+\hline
+	Middle	& None		& Click-hold-drag to translate camera \\
+		& Ctrl		& Click-hold-drag to translate selection in local (model) space \\
+  \end{tabular}
+\end{table}
+
+\section{Main Menu}
+\index{gui!main menu}
+
+The following section lists the menu commands in Aten and the functions they perform, pointing to relevant sections in the remainder of the manual.
+
+\subsection{File Menu}
+
+\begin{table}[h!]
+	\caption{}
+	\begin{tabular}{cc|l}
+		Item		& Shortcut	& Action \\
+		\hline
+		New Model	& Ctrl-N & Create a new, empty model, appearing in a new tab above the main view \\
+		Load model	& Ctrl-L & Load an old model from disk, creating a new tab above the main view \\
+		Recent Files	&	 & Lists the five most recently opened / edited files for quick access \\
+		Add Trajectory	& 	 & Associate a trajectory on disk to the current model \\
+		Save Model	& 	 & Save changes to the current model to its existing file or, if the model is newly-created, prompt for a filename to save to \\
+		Save Model As	&	 & Prompt for a new filename to save the current model to \\
+
+	\end{tabular}
+\end{table}
+
+% See Section \sec{}
+
+\section{Toolbars}
+\index{gui!toolbars}

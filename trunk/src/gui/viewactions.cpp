@@ -102,10 +102,3 @@ void AtenForm::set_cell_view(double x, double y, double z)
 	gui.refresh();
 }
 
-void AtenForm::on_actionViewUnhideAtoms_triggered(bool checked)
-{
-	// Set all atoms in the current model to be visible
-	model *m = master.get_currentmodel();
-	for (atom *i = m->get_atoms(); i != NULL; i = i->next) m->set_hidden(i, FALSE);
-	gui.refresh();
-}

@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .jpg .jpeg .png .pdf .ps .fig .gif .dvi
 kileprversion=2
 kileversion=2.0
-lastDocument=manual.tex
+lastDocument=gui.tex
 masterDocument=manual.tex
 name=Aten Manual
 pkg_extIsRegExp=false
@@ -29,30 +29,30 @@ order=-1
 
 [item:cli.tex]
 archive=true
-column=0
+column=37
 encoding=UTF-8
 highlight=LaTeX
-line=93
+line=0
 open=true
 order=4
 
 [item:expression.tex]
 archive=true
-column=78
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=34
+line=0
 open=true
 order=7
 
 [item:features.tex]
 archive=true
-column=31
+column=9
 encoding=UTF-8
 highlight=LaTeX
-line=4
-open=false
-order=-1
+line=21
+open=true
+order=9
 
 [item:figures/pattern1.eps]
 archive=true
@@ -74,46 +74,55 @@ order=-1
 
 [item:filtershandbook.tex]
 archive=true
-column=111
+column=412
 encoding=UTF-8
 highlight=LaTeX
-line=209
+line=16
 open=true
 order=0
 
-[item:install.tex]
+[item:gui.tex]
 archive=true
-column=45
+column=20
 encoding=UTF-8
 highlight=LaTeX
-line=59
+line=84
+open=true
+order=8
+
+[item:install.tex]
+archive=true
+column=31
+encoding=UTF-8
+highlight=LaTeX
+line=25
 open=true
 order=5
 
 [item:manual.tex]
 archive=true
-column=0
+column=429
 encoding=UTF-8
 highlight=LaTeX
-line=28
+line=50
 open=true
 order=1
 
 [item:quickstart.tex]
 archive=true
-column=9
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=13
+line=18
 open=true
 order=6
 
 [item:scriptorshandbook.tex]
 archive=true
-column=21
+column=0
 encoding=UTF-8
 highlight=LaTeX
-line=502
+line=497
 open=true
 order=2
 

@@ -2,17 +2,19 @@
 \label{sec:filterhandbook}
 
 \index{filters|(}
-Filters are essentially just a series of text commands describing the format and structure of data in an arbitrary file. Plug-ins, if you like. While this might seem needlessly complex and a lot of extra work, for a little effort your (personal or enforced) favourite formats can be added to the program. The reward is a set of coordinates that can be thrown straight in to your code of choice. No support for writing out commands relevant to the running of calculations is provided, for three principal reasons:
+Filters are essentially just a series of text commands describing the format and structure of data in an arbitrary file. Plug-ins, if you like. While this might seem needlessly complex and a lot of extra work, for a little effort your (personal or enforced) favourite formats can be added to the program. The reward is a set of coordinates that can be thrown straight in to your code of choice. \\
+
+One small point -- no support for writing out commands relevant to the running of calculations is provided, for three principal reasons:
 
 \begin{enumerate}
 	\item Input to codes is complicated, and I don't want to spend my evenings putting down endless combo boxes and spin buttons to cater for every basis set / method / obscure sub-option available.
 	\item Putting commands in is best left for the user to do by hand, since there's no better way to learn the ins and outs of a code than to write commands, make mistakes, and be forced into the manual.
-	\item The focus of \progname{} is on generating coordinates, pure and simple.
+	\item The main focus of \progname{} is on generating coordinates, pure and simple.
 \end{enumerate}
 
 But enough ranting! A filter contains (in order to be useful) sets of commands which describe how a file should be imported or exported from the program, and encompasses model files, forcefields, and trajectory files. However, different filters for the same file type may be provided if necessary, each performing a slightly different set of import or export commands (if it is convenient not do to so within a single filter), and all will appear in the drop-down list of filters in file dialogs within the program. Note that in batch, command-line, or scripting mode, filters are either selected automatically based on the filename, extension, or contents, or picked by matching only the associated nickname. In the former case, the first filter that matches the extension is used.\\
 
-Filters are stored in one of two locations -- in a stock common to all users (as determined by the --prefix variable, or in the default location), and in \$HOME/.aten/filters. In both locations the filters read in by the program must be listed in the 'index' file -- if you create your own, you must add them to the index file for them to be loaded in on startup.\\
+Filters are stored in one of two locations -- in a stock common to all users (as determined by the --prefix variable or in the default location, but always pointed to by the \$ATENDATA environment variable), and in \$HOME/.aten/filters. In both locations the filters read in by the program must be listed in the 'index' file -- if you create your own, you must add them to the index file for them to be available.\\
 
 Read on and discover how to enable input / output of \qte{stuff} as you see fit. The following sections discuss the different aspects of filters and the types of file content that filters can be applied to, including examples. Although many of the commands are common to all of them, examples are good!
 

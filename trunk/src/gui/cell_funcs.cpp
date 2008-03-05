@@ -28,11 +28,16 @@ bool cellpage_refreshing = FALSE;
 
 void AtenForm::refresh_cellpage()
 {
+	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
+	unitcell *cell = master.get_currentmodel()->get_cell();
+	cell_type ct = cell->get_type();
+	static char s[64];
+	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->get_volume());
+	ui.CellVolumeLabel->setText(s);
 	if (cellpage_refreshing) return;
 	else cellpage_refreshing = TRUE;
 	// Update the widgets on the page to reflect the current model's unit cell
-	unitcell *cell = master.get_currentmodel()->get_cell();
-	cell_type ct = cell->get_type();
+
 	if (cell->get_type() == CT_NONE)
 	{
 		// No cell, so disable group boxes and quit
