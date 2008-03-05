@@ -232,10 +232,10 @@ void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
 	}
 }
 
-void AtenForm::on_actionFileSaveForcefield_triggered(bool checked)
-{
-	printf("Not yet done...\n");
-}
+// void AtenForm::on_actionFileSaveForcefield_triggered(bool checked)
+// {
+// 	printf("Not yet done...\n");
+// }
 
 void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {

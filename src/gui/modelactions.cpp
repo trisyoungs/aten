@@ -70,3 +70,12 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
 }
+
+void AtenForm::on_actionModelShowAll_triggered(bool checked)
+{
+	// Make all atoms in model visible
+	model *m = master.get_currentmodel();
+	for (atom *i = m->get_atoms(); i != NULL; i = i->next)
+		m->set_hidden(i, FALSE);
+	m->log_change(LOG_VISUAL);
+}

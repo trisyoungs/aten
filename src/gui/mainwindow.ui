@@ -205,7 +205,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>7</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -282,6 +282,12 @@
            </item>
            <item>
             <widget class="QProgressBar" name="AtomListProgress" >
+             <property name="maximumSize" >
+              <size>
+               <width>16777215</width>
+               <height>16</height>
+              </size>
+             </property>
              <property name="value" >
               <number>0</number>
              </property>
@@ -2620,7 +2626,7 @@
                  <number>0</number>
                 </property>
                 <property name="spacing" >
-                 <number>4</number>
+                 <number>2</number>
                 </property>
                 <item row="1" column="1" >
                  <widget class="QDoubleSpinBox" name="CentreYSpin" >
@@ -2782,7 +2788,7 @@
             <number>2</number>
            </property>
            <property name="spacing" >
-            <number>4</number>
+            <number>2</number>
            </property>
            <item>
             <widget class="QGroupBox" name="CellDefinitionGroup" >
@@ -3193,6 +3199,13 @@
                  </layout>
                 </item>
                </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="CellVolumeLabel" >
+                <property name="text" >
+                 <string> Volume : </string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -6350,6 +6363,24 @@
      <height>25</height>
     </rect>
    </property>
+   <widget class="QMenu" name="EditMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionEditUndo" />
+    <addaction name="actionEditRedo" />
+    <addaction name="separator" />
+    <addaction name="actionEditCut" />
+    <addaction name="actionEditCopy" />
+    <addaction name="actionEditPaste" />
+    <addaction name="actionEditDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEditInvert" />
+    <addaction name="actionEditSelectExpand" />
+    <addaction name="separator" />
+    <addaction name="actionEditSelectAll" />
+    <addaction name="actionEditSelectNone" />
+   </widget>
    <widget class="QMenu" name="ToolsMenu" >
     <property name="title" >
      <string>Settings</string>
@@ -6368,20 +6399,6 @@
     </widget>
     <addaction name="actionPreferences" />
     <addaction name="ToolbarMenu" />
-   </widget>
-   <widget class="QMenu" name="ModelMenu" >
-    <property name="title" >
-     <string>&amp;Model</string>
-    </property>
-    <addaction name="actionFFManager" />
-    <addaction name="actionFFType" />
-    <addaction name="actionFFUntype" />
-    <addaction name="separator" />
-    <addaction name="actionFoldAtoms" />
-    <addaction name="actionFoldMolecules" />
-    <addaction name="separator" />
-    <addaction name="actionModelNext" />
-    <addaction name="actionModelPrevious" />
    </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
@@ -6412,8 +6429,48 @@
     <addaction name="AtomStyleMenu" />
     <addaction name="AtomLabelsMenu" />
     <addaction name="separator" />
-    <addaction name="actionAtomSetVisible" />
-    <addaction name="actionAtomSetInvisible" />
+    <addaction name="actionAtomHide" />
+   </widget>
+   <widget class="QMenu" name="FileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="RecentMenu" >
+     <property name="title" >
+      <string>&amp;Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="actionFileNew" />
+    <addaction name="actionFileOpen" />
+    <addaction name="RecentMenu" />
+    <addaction name="separator" />
+    <addaction name="actionFileAddTrajectory" />
+    <addaction name="actionFileSave" />
+    <addaction name="actionFileSaveAs" />
+    <addaction name="actionFileSaveExpression" />
+    <addaction name="separator" />
+    <addaction name="actionFileOpenForcefield" />
+    <addaction name="actionFileOpenGrid" />
+    <addaction name="separator" />
+    <addaction name="actionFileSaveImage" />
+    <addaction name="separator" />
+    <addaction name="actionFileQuit" />
+   </widget>
+   <widget class="QMenu" name="ModelMenu" >
+    <property name="title" >
+     <string>&amp;Model</string>
+    </property>
+    <addaction name="actionFFManager" />
+    <addaction name="actionFFType" />
+    <addaction name="actionFFUntype" />
+    <addaction name="separator" />
+    <addaction name="actionFoldAtoms" />
+    <addaction name="actionFoldMolecules" />
+    <addaction name="separator" />
+    <addaction name="actionModelNext" />
+    <addaction name="actionModelPrevious" />
+    <addaction name="separator" />
+    <addaction name="actionModelShowAll" />
    </widget>
    <widget class="QMenu" name="ViewMenu" >
     <property name="title" >
@@ -6460,8 +6517,6 @@
     <addaction name="actionViewZoomOut" />
     <addaction name="menuSetView" />
     <addaction name="separator" />
-    <addaction name="actionViewUnhideAtoms" />
-    <addaction name="separator" />
     <addaction name="actionViewPerspective" />
     <addaction name="actionViewOrthographic" />
     <addaction name="separator" />
@@ -6470,49 +6525,6 @@
     <addaction name="separator" />
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
-   </widget>
-   <widget class="QMenu" name="EditMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionEditUndo" />
-    <addaction name="actionEditRedo" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="actionEditSelectExpand" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
-   </widget>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="RecentMenu" >
-     <property name="title" >
-      <string>&amp;Recent Files</string>
-     </property>
-    </widget>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="RecentMenu" />
-    <addaction name="separator" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="actionSave_Expression" />
-    <addaction name="separator" />
-    <addaction name="actionFileOpenForcefield" />
-    <addaction name="actionFileOpenGrid" />
-    <addaction name="separator" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -7149,10 +7161,16 @@
    <property name="text" >
     <string>Fold Atoms</string>
    </property>
+   <property name="shortcut" >
+    <string>Ctrl+F</string>
+   </property>
   </action>
   <action name="actionFoldMolecules" >
    <property name="text" >
     <string>Fold Molecules</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+F</string>
    </property>
   </action>
   <action name="actionModelNext" >
@@ -7284,14 +7302,18 @@
     <string>Preferences</string>
    </property>
   </action>
-  <action name="actionAtomSetVisible" >
+  <action name="actionAtomHide" >
    <property name="text" >
-    <string>Set Visible</string>
+    <string>Hide</string>
    </property>
-  </action>
-  <action name="actionAtomSetInvisible" >
-   <property name="text" >
-    <string>Set Invisible</string>
+   <property name="iconText" >
+    <string>Hide</string>
+   </property>
+   <property name="toolTip" >
+    <string>Hide selected atoms</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+H</string>
    </property>
   </action>
   <action name="actionSet_From_Element" >
@@ -7542,17 +7564,6 @@
     <string>Cell +Z</string>
    </property>
   </action>
-  <action name="actionViewUnhideAtoms" >
-   <property name="text" >
-    <string>Unhide Atoms</string>
-   </property>
-   <property name="toolTip" >
-    <string>Unhide any hidden atoms</string>
-   </property>
-   <property name="shortcut" >
-    <string>Ctrl+N</string>
-   </property>
-  </action>
   <action name="actionViewSetCartesianNegX" >
    <property name="text" >
     <string>Cartesian -X</string>
@@ -7619,24 +7630,22 @@
     <string>Cell -Z</string>
    </property>
   </action>
-  <action name="actionSave_Expression" >
+  <action name="actionFileSaveExpression" >
    <property name="text" >
     <string>Save &amp;Expression</string>
+   </property>
+  </action>
+  <action name="actionModelShowAll" >
+   <property name="text" >
+    <string>Show All Atoms</string>
+   </property>
+   <property name="shortcut" >
+    <string>Ctrl+Shift+H</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
-  <customwidget>
-   <class>TTabBar</class>
-   <extends>QWidget</extends>
-   <header>ttabbar.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>ttreewidget.uih</header>
-  </customwidget>
   <customwidget>
    <class>TCanvas</class>
    <extends>QWidget</extends>
@@ -7646,6 +7655,16 @@
    <class>TColourFrame</class>
    <extends>QFrame</extends>
    <header>tcolourframe.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TTabBar</class>
+   <extends>QWidget</extends>
+   <header>ttabbar.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TTreeWidget</class>
+   <extends>QTreeWidget</extends>
+   <header>ttreewidget.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

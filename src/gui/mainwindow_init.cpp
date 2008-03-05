@@ -182,7 +182,12 @@ void AtenForm::finalise_ui()
 	dialog[FT_MODEL_IMPORT]->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
 	for (f = master.filters[FT_MODEL_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
-	dialog[FT_MODEL_IMPORT]->setFilters(filters);
+	if (filters.empty())
+	{
+		ui.actionFileOpen->setEnabled(FALSE);
+		ui.RecentMenu->setEnabled(FALSE);
+	}
+	else dialog[FT_MODEL_IMPORT]->setFilters(filters);
 
 	// Create open trajectory dialog
 	dialog[FT_TRAJECTORY_IMPORT] = new QFileDialog(this);
@@ -204,7 +209,12 @@ void AtenForm::finalise_ui()
 	filters.clear();
 	for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next) filters << f->get_description();
 	// Check for empty filters list (causes crash)
-	if (!filters.empty()) dialog[FT_MODEL_EXPORT]->setFilters(filters);
+	if (filters.empty())
+	{
+		ui.actionFileSave->setEnabled(FALSE);
+		ui.actionFileSaveAs->setEnabled(FALSE);
+	}
+	else dialog[FT_MODEL_EXPORT]->setFilters(filters);
 
 	// Create save image dialog
 	savebitmapdialog = new QFileDialog(this);
@@ -254,9 +264,10 @@ void AtenForm::finalise_ui()
 	dialog[FT_EXPRESSION_EXPORT]->setDirectory(master.workdir.get());
 	dialog[FT_EXPRESSION_EXPORT]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	filters << "All files (*)";
 	for (f = master.filters[FT_EXPRESSION_EXPORT].first(); f != NULL; f = f->next) filters << f->get_description();
-	dialog[FT_EXPRESSION_EXPORT]->setFilters(filters);
+	// Check for empty filters list (causes crash)
+	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
+	else dialog[FT_EXPRESSION_EXPORT]->setFilters(filters);
 
 	// Create open grid dialog
 	dialog[FT_GRID_IMPORT] = new QFileDialog(this);
@@ -266,7 +277,8 @@ void AtenForm::finalise_ui()
 	filters.clear();
 	filters << "All files (*)";
 	for (f = master.filters[FT_GRID_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
-	dialog[FT_GRID_IMPORT]->setFilters(filters);
+	if (filters.empty()) ui.actionFileOpenGrid->setEnabled(FALSE);
+	else dialog[FT_GRID_IMPORT]->setFilters(filters);
 
 	dbg_end(DM_CALLS,"AtenForm::finalise_ui");
 }
