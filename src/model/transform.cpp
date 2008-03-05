@@ -155,7 +155,8 @@ void model::rotate_selection_vector(vec3<double> origin, vec3<double> vector, do
 	{
 		tempv = gr * i->r();
 		tempv += Igr * origin;
-		i->r() = tempv;
+		position_atom(i, tempv);
+		//i->r() = tempv;
 		i = i->get_next_selected();
 	}
 	log_change(LOG_STRUCTURE);
@@ -202,8 +203,8 @@ void model::translate_selection_local(const vec3<double> &tvec)
 {
 	// Translate the model's current selection by the vector supplied.
 	dbg_begin(DM_CALLS,"model::translate_selection_local");
-	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected()) i->r() += tvec;
-	log_change(LOG_VISUAL);
+	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected()) translate_atom(i,tvec);
+	//log_change(LOG_VISUAL);
 	project_selection();
 	dbg_end(DM_CALLS,"model::translate_selection_local");
 }

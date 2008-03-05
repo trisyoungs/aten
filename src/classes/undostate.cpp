@@ -320,8 +320,8 @@ void undostate::perform(model *m)
 // Check differences between LOG_STRUCTURE and LOG_COORDS for start/end points
 bool undostate::logs_differ()
 {
-	bool result = TRUE;
-	if (startlogs[LOG_STRUCTURE] != endlogs[LOG_STRUCTURE]) return FALSE;
-	if (startlogs[LOG_COORDS] != endlogs[LOG_COORDS]) return FALSE;
-	return result;
+	if (startlogs[LOG_STRUCTURE] != endlogs[LOG_STRUCTURE]) return TRUE;
+	if (startlogs[LOG_COORDS] != endlogs[LOG_COORDS]) return TRUE;
+	if (startlogs[LOG_SELECTION] != endlogs[LOG_SELECTION]) return TRUE;
+	return FALSE;
 }

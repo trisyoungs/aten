@@ -67,6 +67,10 @@ bool format_node::set(const char *s, variable_list &vlist)
 	int m, pos1, pos2;
 	static char specifier[512], len[32], pre[32];
 	char *c;
+	// 'Reset' strings
+	specifier[0] = '\0';
+	len[0] = '\0';
+	pre[0] = '\0';
 	// Everything up to the '@' character is the quantity / variable
 	for (pos1 = 0; s[pos1] != '\0'; pos1++)
 	{
@@ -281,7 +285,7 @@ const char *format::create_string()
 			default:
 				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->get_type()));
 		}
-		msg(DM_PARSE,"Format string is [%s] - value is [%s]\n", fmt, bit);
+		msg(DM_NONE,"Format string is [%s] - value is [%s]\n", fmt, bit);
 		strcat(result,bit);
 	}
 	dbg_end(DM_PARSE,"format::create_string");

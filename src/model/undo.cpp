@@ -40,6 +40,8 @@ void model::begin_undostate(const char *text)
 	recordingstate->set_startlog(LOG_STRUCTURE, logs[LOG_STRUCTURE]);
 	recordingstate->set_startlog(LOG_COORDS, logs[LOG_COORDS]);
 	recordingstate->set_startlog(LOG_SELECTION, logs[LOG_SELECTION]);
+	msg(DM_VERBOSE,"Undo list prepped for new state.\n");
+	msg(DM_VERBOSE,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", logs[LOG_STRUCTURE], logs[LOG_COORDS], logs[LOG_SELECTION]);
 	dbg_end(DM_CALLS,"model::begin_undostate");
 }
 
@@ -72,6 +74,7 @@ void model::end_undostate()
 	// Set the current undo level to the new state and nullify the pointer
 	currentundostate = recordingstate;
 	msg(DM_VERBOSE,"Undo list now has %i states (%i events caught in last state).\n",undolevels.size(),currentundostate->changes.size());
+	msg(DM_VERBOSE,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", logs[LOG_STRUCTURE], logs[LOG_COORDS], logs[LOG_SELECTION]);
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentredostate = NULL;
 	recordingstate = NULL;

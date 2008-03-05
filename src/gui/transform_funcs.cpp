@@ -62,8 +62,13 @@ void AtenForm::rotate_selection(double direction)
 	o.x = ui.RotateOriginXSpin->value();
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
-	master.get_currentmodel()->rotate_selection_vector(o, v, direction * ui.RotateAngleSpin->value());
-	master.get_currentmodel()->update_measurements();
+	char s[128];
+	model *m = master.get_currentmodel();
+	sprintf(s,"Rotate %i atom(s)\n",m->get_nselected());
+	m->begin_undostate(s);
+	m->rotate_selection_vector(o, v, direction * ui.RotateAngleSpin->value());
+	m->end_undostate();
+	m->update_measurements();
 	gui.refresh();
 }
 
@@ -76,30 +81,40 @@ void AtenForm::translate_selection(int axis, int dir)
 	double step = ui.TranslateShiftSpin->value();	
 	vec3<double> tvec;
 	tvec.set(axis, double(dir));
+	static char s[128];
+	// Grab model in preparation for undostate...
+	model *m = master.get_currentmodel();
 	if (ui.TranslateModelFrameRadio->isChecked())
 	{
 		// Translate selection in the cartesian axes of the model
 		tvec *= step;
-		master.get_currentmodel()->translate_selection_local(tvec);
+		sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n",m->get_nselected(), tvec.x, tvec.y, tvec.z);
+		m->begin_undostate(s);
+		m->translate_selection_local(tvec);
 	}
 	else if (ui.TranslateWorldFrameRadio->isChecked())
 	{
 		// Translate selection in the world (view) axes
 		tvec *= step;
-		master.get_currentmodel()->translate_selection_world(tvec);
+		sprintf(s,"Translate Screen (%i atom(s), %f %f %f)\n",m->get_nselected(), tvec.x, tvec.y, tvec.z);
+		m->begin_undostate(s);
+		m->translate_selection_world(tvec);
 	}
 	else if (ui.TranslateCellFrameRadio->isChecked())
 	{
 		// Translate selection in the cell axes of the model
-		if (master.get_currentmodel()->get_celltype() == CT_NONE)
+		if (m->get_celltype() == CT_NONE)
 		{
 			msg(DM_NONE,"No unit cell defined for model.\n");
 			return;
 		}
 		tvec = master.get_currentmodel()->get_cell()->get_axes().get(axis);
 		tvec *= double(dir) * step;
-		master.get_currentmodel()->translate_selection_local(tvec);
+		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->get_nselected(), tvec.x, tvec.y, tvec.z);
+		m->begin_undostate(s);
+		m->translate_selection_local(tvec);
 	}
-	master.get_currentmodel()->update_measurements();
+	m->end_undostate();
+	m->update_measurements();
 	gui.refresh();
 }
