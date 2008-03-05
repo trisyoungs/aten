@@ -44,7 +44,9 @@ void AtenForm::on_CentreSelectionButton_clicked(bool checked)
 	centre.y = ui.CentreYSpin->value();
 	centre.z = ui.CentreZSpin->value();
 	model *m = master.get_currentmodel();
-	m->begin_undostate("Centre Selection");
+	char s[128];
+	sprintf(s,"Centre %i atom(s) at %f %f %f\n",m->get_nselected(),centre.x,centre.y,centre.z);
+	m->begin_undostate(s);
 	m->centre(centre);
 	m->end_undostate();
 	gui.refresh();

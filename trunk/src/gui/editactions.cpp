@@ -46,8 +46,10 @@ void AtenForm::on_actionEditRedo_triggered(bool checked)
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
 	// Cut the selected atoms from the model, copying to the paste buffer
+	char s[128];
 	model *m = master.get_currentmodel();
-	m->begin_undostate("Cut Selection");
+	sprintf(s,"Cut %i atom%s\n",m->get_nselected(),(m->get_nselected() == 1 ? "" : "s"));
+	m->begin_undostate(s);
 	master.userclip.cut_selection(m);
 	m->end_undostate();
 	gui.refresh();
@@ -64,8 +66,10 @@ void AtenForm::on_actionEditCopy_triggered(bool checked)
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
 	// Paste the buffered atoms into the model
+	char s[128];
 	model *m = master.get_currentmodel();
-	m->begin_undostate("Paste");
+	sprintf(s,"Paste %i atom%s\n",master.userclip.get_natoms(),(master.userclip.get_natoms() == 1 ? "" : "s"));
+	m->begin_undostate(s);
 	master.userclip.paste_to_model(m);
 	m->end_undostate();
 	gui.refresh();
@@ -74,8 +78,10 @@ void AtenForm::on_actionEditPaste_triggered(bool checked)
 void AtenForm::on_actionEditDelete_triggered(bool checked)
 {
 	// Delete the selected atoms in the model
+	char s[128];
 	model *m = master.get_currentmodel();
-	m->begin_undostate("Delete Selection");
+	sprintf(s,"Delete %i atom%s\n",m->get_nselected(),(m->get_nselected() == 1 ? "" : "s"));
+	m->begin_undostate(s);
 	m->selection_delete();
 	m->end_undostate();
 	// Clear the main canvas' selection array to be on the safe side, since we might have deleted an atom in it!
