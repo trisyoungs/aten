@@ -174,6 +174,11 @@ enum command_action {
 	CA_TYPEMODEL,
 	CA_TYPETEST,
 
+	// Glyph commands
+	CA_ADDGLYPH,
+	CA_SETGLYPHATOM,
+	CA_SETGLYPHDATA,
+
 	// Grid Commands
 	CA_ADDGRIDPOINT,
 	CA_ADDNEXTGRIDPOINT,
@@ -470,6 +475,10 @@ class commanddata
 	int function_CA_SELECTFF(command *&c, bundle &obj);
 	int function_CA_TYPEMODEL(command *&c, bundle &obj);
 	int function_CA_TYPETEST(command *&c, bundle &obj);
+	// Glyph commands
+	int function_CA_ADDGLYPH(command *&c, bundle &obj);
+	int function_CA_SETGLYPHATOM(command *&c, bundle &obj);
+	int function_CA_SETGLYPHDATA(command *&c, bundle &obj);
 	// Grid Commands
 	int function_CA_ADDGRIDPOINT(command *&c, bundle &obj);
 	int function_CA_ADDNEXTGRIDPOINT(command *&c, bundle &obj);

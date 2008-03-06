@@ -21,12 +21,31 @@
 
 #include "classes/glyph.h"
 #include "base/debug.h"
+#include "base/sysfunc.h"
 
-// Constructor
+// Glyph styles
+const char *GS_keywords[GS_NITEMS] = { "arrow", "vector", "sphere", "cube", "triangle", "ellipsoid" };
+const char *text_from_GS(glyph_style gs)
+	{ return GS_keywords[gs]; }
+glyph_style GS_from_text(const char *s)
+	{ return (glyph_style) int(pow(2,enum_search("glyph style",GS_NITEMS,GS_keywords,s))); }
+
+// Constructors
+glyphdata::glyphdata()
+{
+	i = NULL;
+	atomsetlast = FALSE;
+	#ifdef MEMDEBUG
+		memdbg.create[MD_GLYPHDATA] ++;
+	#endif
+}
+
 glyph::glyph()
 {
+	prev = NULL;
+	next = NULL;
 	#ifdef MEMDEBUG
-	memdbg.create[MD_GLYPH] ++;
+		memdbg.create[MD_GLYPH] ++;
 	#endif
 }
 
@@ -34,6 +53,6 @@ glyph::glyph()
 glyph::~glyph()
 {
 	#ifdef MEMDEBUG
-	memdbg.destroy[MD_GLYPH] ++;
+		memdbg.destroy[MD_GLYPH] ++;
 	#endif
 }

@@ -271,7 +271,15 @@ commanddata CA_data[CA_NITEMS] = {
 				"Perform atom typing on the current model" },
 	{ "typetest",		"V",		"<ffid> <atomid>",
 				"Test atomtype score on atom provided" }, 
-	
+
+	// Glyph commands
+	{ "addglyph",		"V",		"<style>",
+				"Add a glyph with the specified style to the current model" },
+	{ "setglyphatom",	"Vv",		"<n> [atom|atomid]",
+				"Set current (or specified) atom as data <n> in current glyph" },
+	{ "setglyphdata",	"VVVV",		"<n> <x> <y> <z>",
+				"Set vector data <n> in current glyph" },
+
 	// Grid commands
 	{ "addgridpoint",	"VVVV",		"<ix> <iy> <iz> <value>",
 				"Set specific gridpoint value" },
