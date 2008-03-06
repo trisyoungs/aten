@@ -25,8 +25,8 @@
 #include "classes/energystore.h"
 #include "templates/vector3.h"
 
-// Calculate bond energy of pattern
-void pattern::bond_energy(model *srcmodel, energystore *estore)
+// Calculate bond energy of pattern (or molecule in pattern)
+void pattern::bond_energy(model *srcmodel, energystore *estore, int molecule)
 {
 	dbg_begin(DM_CALLS,"pattern::bond_energy");
 	int i,j,m1,aoff;
@@ -37,9 +37,9 @@ void pattern::bond_energy(model *srcmodel, energystore *estore)
 	atom **modelatoms = srcmodel->get_atomarray();
 	unitcell *cell = srcmodel->get_cell();
 	energy = 0.0;
-	aoff = startatom;
+	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
 	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startatom,nmols,natoms,nbonds);
-	for (m1=0; m1<nmols; m1++)
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule+1); m1++)
 	{
 		for (pb = bonds.first(); pb != NULL; pb = pb->next)
 		{

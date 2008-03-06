@@ -28,7 +28,7 @@
 #include "base/elements.h"
 
 // Calculate total energy of model (from supplied coordinates)
-double model::total_energy(model *srcmodel)
+double model::total_energy(model *srcmodel, pattern *molpattern, int molecule)
 {
 	dbg_begin(DM_CALLS,"model::total_energy");
 	// Check the expression validity
@@ -44,7 +44,7 @@ double model::total_energy(model *srcmodel)
 	pattern *p, *p2;
 	p = patterns.first();
 	// Calculate VDW correction
-	if (prefs.calc_vdw() && (cell.get_type() != CT_NONE)) p->vdw_correct_energy(&cell,&energy);
+	if (prefs.calc_vdw() && (cell.get_type() != CT_NONE) && (molecule == -1)) p->vdw_correct_energy(&cell, &energy);
 	// Prepare Ewald (if necessary)
 	elec_method emodel = prefs.get_electrostatics();
 	if (prefs.calc_elec())
@@ -58,20 +58,16 @@ double model::total_energy(model *srcmodel)
 		// Intramolecular Interactions
 		if (prefs.calc_intra())
 		{
-			p->bond_energy(srcmodel,&energy);
-			p->angle_energy(srcmodel,&energy);
-			p->torsion_energy(srcmodel,&energy);
+			p->bond_energy(srcmodel, &energy, (p == molpattern ? molecule : -1));
+			p->angle_energy(srcmodel, &energy, (p == molpattern ? molecule : -1));
+			p->torsion_energy(srcmodel, &energy, (p == molpattern ? molecule : -1));
 		}
 		// Van der Waals Interactions
 		if (prefs.calc_vdw())
 		{
-			p->vdw_intrapattern_energy(srcmodel,&energy);
-			pattern *p2 = p;
-			while (p2 != NULL)
-			{
-				p->vdw_interpattern_energy(srcmodel,p2,&energy);
-				p2 = p2->next;
-			}
+			p->vdw_intrapattern_energy(srcmodel,&energy, (p == molpattern ? molecule : -1));
+			for (pattern *p2 = p; p2 != NULL; p2 = p2->next)
+				p->vdw_interpattern_energy(srcmodel,p2,&energy, (p2 == molpattern ? molecule : -1));
 		}
 		// Electrostatic Interactions
 		if (prefs.calc_elec())

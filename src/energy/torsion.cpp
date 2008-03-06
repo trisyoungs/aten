@@ -26,7 +26,7 @@
 #include <math.h>
 
 // Torsion energy
-void pattern::torsion_energy(model *srcmodel, energystore *estore)
+void pattern::torsion_energy(model *srcmodel, energystore *estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
 	dbg_begin(DM_CALLS,"pattern::torsion_energy");
@@ -36,8 +36,8 @@ void pattern::torsion_energy(model *srcmodel, energystore *estore)
 	static ffparams params;
 	vec3<double> vecij, veckj;
 	energy = 0.0;
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule + 1); m1++)
 	{
 		for (pb = torsions.first(); pb != NULL; pb = pb->next)
 		{

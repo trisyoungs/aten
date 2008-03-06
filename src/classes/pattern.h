@@ -249,18 +249,18 @@ class pattern
 	// Energy / Force Calculation
 	*/
 	public:
-	void bond_energy(model*,energystore*);
-	void angle_energy(model*,energystore*);
-	void torsion_energy(model*,energystore*);
-	void vdw_intrapattern_energy(model*,energystore*);
-	void vdw_interpattern_energy(model*,pattern*,energystore*);
+	void bond_energy(model*,energystore*, int molecule = -1);
+	void angle_energy(model*,energystore*, int molecule = -1);
+	void torsion_energy(model*,energystore*, int molecule = -1);
+	void vdw_intrapattern_energy(model*,energystore*, int molecule = -1);
+	void vdw_interpattern_energy(model*,pattern*,energystore*, int molecule = -1);
 	void vdw_correct_energy(unitcell*,energystore*);
-	void coulomb_intrapattern_energy(model*,energystore*);
-	void coulomb_interpattern_energy(model*,pattern*,energystore*);
-	void ewald_real_intrapattern_energy(model*,energystore*);
-	void ewald_real_interpattern_energy(model*,pattern*,energystore*);
-	void ewald_reciprocal_energy(model*,pattern*,int,energystore*);
-	void ewald_correct_energy(model*,energystore*);
+	void coulomb_intrapattern_energy(model*,energystore*, int molecule = -1);
+	void coulomb_interpattern_energy(model*,pattern*,energystore*, int molecule = -1);
+	void ewald_real_intrapattern_energy(model*,energystore*, int molecule = -1);
+	void ewald_real_interpattern_energy(model*,pattern*,energystore*, int molecule = -1);
+	void ewald_reciprocal_energy(model*,pattern*,int,energystore*, int molecule = -1);
+	void ewald_correct_energy(model*,energystore*, int molecule = -1);
 	void bond_forces(model*);
 	void angle_forces(model*);
 	void torsion_forces(model*);

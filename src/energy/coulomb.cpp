@@ -30,7 +30,7 @@
 
 // Calculate the internal coulomb energy of the pattern.
 // Consider only the intrapattern interactions of individual molecules  within this pattern.
-void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore)
+void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore, int molecule)
 {
 	dbg_begin(DM_CALLS,"pattern::coulomb_intrapattern_energy");
 	static int n,i,j,aoff,m1;
@@ -42,8 +42,8 @@ void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore)
 	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule+1); m1++)
 	{
 		// Add on contributions for connectivities of 0 (unbound) or > 3
 		for (i=0; i<natoms; i++)
@@ -82,10 +82,10 @@ void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore)
 }
 
 // Calculate the coulomb contribution to the energy from interactions between different molecules of this pattern and the one supplied
-void pattern::coulomb_interpattern_energy(model *srcmodel, pattern *xpnode, energystore *estore)
+void pattern::coulomb_interpattern_energy(model *srcmodel, pattern *xpnode, energystore *estore, int molecule)
 {
 	dbg_begin(DM_CALLS,"pattern::coulomb_interpattern_energy");
-	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish,a1,a2;
+	static int n1, n2, i, j, aoff1, aoff2, m1, m2, finish1, start2, finish2, a1, a2;
 	static vec3<double> mim_i;
 	static double rij, energy_inter, energy, cutoff;
 	cutoff = prefs.get_elec_cutoff();
@@ -93,13 +93,26 @@ void pattern::coulomb_interpattern_energy(model *srcmodel, pattern *xpnode, ener
 	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	aoff1 = startatom;
-	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == xpnode ? finish = nmols - 1 : finish = nmols;
-	for (m1=0; m1<finish; m1++)
+	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
+	if ((this == xpnode) && (molecule == -1)) finish1 = nmols - 1;
+	else finish1 = nmols;
+	for (m1=0; m1<finish1; m1++)
 	{
-		this == xpnode ? start = m1 + 1 : start = 0;
-		aoff2 = xpnode->startatom + start*natoms;
-		for (m2=start; m2<xpnode->nmols; m2++)
+		if (molecule == -1)
+		{
+			start2 = (this == xpnode ? m1 + 1 : 0);
+			finish2 = xpnode->nmols;
+		}
+		else
+		{
+			start2 = molecule;
+			finish2 = molecule + 1;
+			// If the patterns are the same we must exclude molecule == m1
+			if ((this == xpnode) && (molecule == m1)) { aoff1 += natoms; continue; }
+		}
+		//this == xpnode ? start = m1 + 1 : start = 0;
+		aoff2 = xpnode->startatom + start2*xpnode->natoms;
+		for (m2=start2; m2<finish2; m2++)
 		{
 			for (a1=0; a1<natoms; a1++)
 			{
