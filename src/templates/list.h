@@ -91,6 +91,8 @@ template <class T> class list
 	int index_of(T*);
 	// Generate (if necessary) and return item array
 	T **array();
+	// Move item at position 'old' so it is at position 'newpos'
+	void move(int target, int delta);
 
 	/*
 	// Item Moves
@@ -415,6 +417,28 @@ template <class T> T **list<T>::array()
 	}
 	regenerate = 0;
 	return items;
+}
+
+// Move item at position 'target' the specified number of places up (+ve) or down (-ve)
+template <class T> void list<T>::move(int target, int delta)
+{
+	// Check positions
+	if ((target < 0) || (target >= nitems))
+	{
+		printf("list::move <<<< Old position (%i) is out of range of list (0 - %i) >>>>\n",target,nitems);
+		return;
+	}
+	int newpos = target + delta;
+	if ((newpos < 0) || (newpos >= nitems))
+	{
+		printf("list::move <<<< New position (%i) is out of range of list (0 - %i) >>>>\n",newpos,nitems);
+		return;
+	}
+	// Get pointer to item that we're moving and shift it
+	T *olditem = array()[target];
+	for (int n=0; n<abs(delta); n++) (delta < 0 ? shift_up(olditem) : shift_down(olditem));
+	// Flag for regeneration
+	regenerate = 1;
 }
 
 #endif

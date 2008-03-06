@@ -25,21 +25,33 @@
 void model::shift_selection_up()
 {
 	dbg_begin(DM_CALLS,"model::shift_selection_up");
-	int tempid, n;
-	atom *i, *j, *next;
-	// For each selected atom in the model, shift it one place back 'up' in the atom list
-	i = atoms.first();
-	for (n=0; n<atoms.size(); n++)
+	if (nselected == 0)
+	{
+		msg(DM_NONE,"No atoms selected.");
+		dbg_end(DM_CALLS,"model::shift_selection_up");
+	}
+	int tempid, oldid;
+	atom *i, *next;
+	// For each selected atom in the model, shift it one place 'up' the atom list
+	i = atoms.first()->next;
+	while (i != NULL)
 	{
 		next = i->next;
 		if (i->is_selected() && (i != atoms.first()))
 		{
+			oldid = i->get_id();
 			// Shift atom up
 			atoms.shift_up(i);
 			// Swap atomids with the new 'next' atom
 			tempid = i->next->get_id();
-			i->next->set_id(i->get_id());
+			i->next->set_id(oldid);
 			i->set_id(tempid);
+			// Add the change to the undo state (if there is one)
+			if (recordingstate != NULL)
+			{
+				change *newchange = recordingstate->changes.add();
+				newchange->set(UE_SHIFT,oldid,-1);
+			}
 		}
 		i = next;
 	}
@@ -51,21 +63,34 @@ void model::shift_selection_up()
 void model::shift_selection_down()
 {
 	dbg_begin(DM_CALLS,"model::shift_selection_down");
-	int tempid, n;
-	atom *i, *j, *next;
-	// For each selected atom in the model, shift it one place back 'up' in the atom list
-	i = atoms.last();
-	for (n=0; n<atoms.size(); n++)
+	if (nselected == 0)
+	{
+		msg(DM_NONE,"No atoms selected.");
+		dbg_end(DM_CALLS,"model::shift_selection_down");
+	}
+	int tempid, oldid;
+	atom *i, *next;
+	//for (n=0; n<atoms.size(); n++)
+	// For each selected atom in the model, shift it one place 'down' the atom list
+	i = atoms.last()->prev;
+	while (i != NULL)
 	{
 		next = i->prev;
-		if (i->is_selected() && (i != atoms.last()))
+		if (i->is_selected())
 		{
-			// Shift atom up
+			oldid = i->get_id();
+			// Shift atom down
 			atoms.shift_down(i);
 			// Swap atomids with the new 'next' atom
 			tempid = i->prev->get_id();
-			i->prev->set_id(i->get_id());
+			i->prev->set_id(oldid);
 			i->set_id(tempid);
+			// Add the change to the undo state (if there is one)
+			if (recordingstate != NULL)
+			{
+				change *newchange = recordingstate->changes.add();
+				newchange->set(UE_SHIFT,oldid,1);
+			}
 		}
 		i = next;
 	}

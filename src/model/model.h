@@ -57,6 +57,8 @@ class model
 	~model();
 	// List pointers
 	model *prev, *next;
+	// Friend declarations
+	friend class change;
 
 	/*
 	// Model

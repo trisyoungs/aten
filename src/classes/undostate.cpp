@@ -267,16 +267,29 @@ void change::reverse(model *m)
 			i = modelatoms[data[0]];
 			if (direction == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing atom translation - atom %i, adding %f %f %f\n", data[0], vecdata[0]->x, vecdata[0]->y, vecdata[0]->z);
+				msg(DM_VERBOSE,"Reversing atom translation - atom %i, subtracting %f %f %f\n", data[0], vecdata[0]->x, vecdata[0]->y, vecdata[0]->z);
 				i->r() -= *vecdata[0];
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Replaying atom translation - atom %i, subtracting %f %f %f\n", data[0], vecdata[0]->x, vecdata[0]->y, vecdata[0]->z);
+				msg(DM_VERBOSE,"Replaying atom translation - atom %i, adding %f %f %f\n", data[0], vecdata[0]->x, vecdata[0]->y, vecdata[0]->z);
 				i->r() += *vecdata[0];
 			}
 			break;
-
+		// Atom list position change - -data[1] (UD_REVERSE) or +data[1] places in list (UD_FORWARDS)
+		case (UE_SHIFT):
+			if (direction == UD_REVERSE)
+			{
+				msg(DM_VERBOSE,"Reversing atom shift - atom %i moves %i places\n", data[0]+data[1], -data[1]);
+				m->atoms.move(data[0]+data[1], -data[1]);
+			}
+			else
+			{
+				msg(DM_VERBOSE,"Performing atom shift - atom %i moves %i places\n", data[0], data[1]);
+				m->atoms.move(data[0], data[1]);
+			}
+			m->renumber_atoms();
+			break;
 		default:
 			printf("Don't know how to reverse change (type = %i)\n", type);
 			break;
