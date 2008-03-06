@@ -43,7 +43,7 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 {
 	if (REFRESHING) return;
 	dbg_begin(DM_CALLS,"AtenForm::on_AtomTree_selectionChanged");
-	printf("AtenForm:: atom selection has changed...\n");
+	//printf("AtenForm:: atom selection has changed...\n");
 	// Selection has changed, so go through the reflist of TTreeWidgetItems and check their selection status
 	model *m = master.get_currentmodel();
 	atom *i;
@@ -70,7 +70,7 @@ void AtenForm::refresh_atompage()
 	}
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
 	REFRESHING = TRUE;
-	printf("Refreshing atompage.....\n");
+	//printf("Refreshing atompage.....\n");
 	pattern *p;
 	TTreeWidgetItem *item;
 	refitem<TTreeWidgetItem,int> *ri;
@@ -86,7 +86,7 @@ void AtenForm::refresh_atompage()
 	list_lastmodel = m;
 	if (liststructure_point != (m->get_log(LOG_STRUCTURE) + m->get_log(LOG_COORDS)))
 	{
-		printf("List must be cleared and repopulated...\n");
+		//printf("List must be cleared and repopulated...\n");
 		// Clear the current list
 		ui.AtomTree->clear();
 		ui.AtomTree->clear_atomitems();
@@ -147,7 +147,7 @@ void AtenForm::refresh_atompage()
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		// Grab the list of TTreeWidgetItems
-		printf("Just updating selection....\n");
+		//printf("Just updating selection....\n");
 		for (ri = ui.AtomTree->get_atomitems(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item->get_atom();
@@ -171,22 +171,26 @@ void AtenForm::poke_scroll_bar()
 
 void AtenForm::on_ShiftUpButton_clicked(bool checked)
 {
-	master.get_currentmodel()->shift_selection_up();
-	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	model *m = master.get_currentmodel();
+	m->begin_undostate("Crap");
+	m->shift_selection_up();
+	m->end_undostate();
 	peek_scroll_bar();
 	refresh_atompage();
 	poke_scroll_bar();
-	gui.mainview.postredisplay();
+	gui.refresh();
 }
 
 void AtenForm::on_ShiftDownButton_clicked(bool checked)
 {
-	master.get_currentmodel()->shift_selection_down();
-	master.get_currentmodel()->log_change(LOG_STRUCTURE);
+	model *m = master.get_currentmodel();
+	m->begin_undostate("CrapDown");
+	m->shift_selection_down();
+	m->end_undostate();
 	peek_scroll_bar();
 	refresh_atompage();
 	poke_scroll_bar();
-	gui.mainview.postredisplay();
+	gui.refresh();
 }
 
 void AtenForm::on_MoveToStartButton_clicked(bool checked)

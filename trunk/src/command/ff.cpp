@@ -59,7 +59,7 @@ int commanddata::function_CA_FFPATTERNID(command *&c, bundle &obj)
 // Load forcefield ('loadff <filename> [nickname]')
 int commanddata::function_CA_LOADFF(command *&c, bundle &obj)
 {
-	forcefield *ff = master.load_ff(c->argc(1));
+	forcefield *ff = master.load_ff(c->argc(0));
 	if (ff != NULL)
 	{
 		master.set_currentff(ff);

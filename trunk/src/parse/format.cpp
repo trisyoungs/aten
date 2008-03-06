@@ -285,7 +285,7 @@ const char *format::create_string()
 			default:
 				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->get_type()));
 		}
-		msg(DM_NONE,"Format string is [%s] - value is [%s]\n", fmt, bit);
+		msg(DM_PARSE,"format:::create_string - added [%s], format [%s]\n", bit, fmt);
 		strcat(result,bit);
 	}
 	dbg_end(DM_PARSE,"format::create_string");

@@ -75,7 +75,9 @@ bool AtenForm::run_savemodel_dialog()
 	savemodelfilter = NULL;
 	savemodelfilename.clear();
 	filter *f;
-	if (dialog[FT_MODEL_EXPORT]->exec() == 1)
+	int result = dialog[FT_MODEL_EXPORT]->exec();
+	//printf("Save model dialog result = %i\n",result);
+	if (result == 1)
 	{
 		// Get selected filename (only grab first
 		//QString filename = savemodeldialog->selectedFiles().first();

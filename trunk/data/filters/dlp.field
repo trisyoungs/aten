@@ -1,5 +1,5 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 05/02/2008
+# Last modified: 06/03/2008
 exportfield
 	name "DL_POLY Forcefield Specification"
 	nickname dlpoly
@@ -15,10 +15,19 @@ exportfield
 	angle a
 	torsion t
 	atomtype at1, at2
+	integer nvdw, n
 
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$title"
-	writeline "units  $energyunit"
+	if $energyunit = kJ/mol
+		writeline "units  kj"
+	elseif $energyunit = kcal/mol
+		writeline "units  kcal"
+	elseif $energyunit = eV/mol
+		writeline "units  ev"
+	else
+		error "Current energy unit is not compatible with DL_POLY FIELD output"
+	end
 	writeline "molecules  $npatterns"
 	for $p
 		# Write pattern name and number of moleculse
@@ -68,10 +77,18 @@ exportfield
 		writeline "finish"
 	end
 	# VDW Specification
+	# Get total number of unique VDW terms to write
+	let $n = 1
+	let $nvdw = 0
+	for $at1
+		eval $nvdw = "$nvdw + $n"
+		inc $n
+	end 
+	writeline "nvdw  $nvdw"
 	for $at1
 		for $at2 $at1
 			# Check functional forms of each atomtype
-			if $at1.form = $at2.form
+			if $at1.form <> $at2.form
 				warn "Functional forms of atomtypes '$at1.equiv' and '$at2.equiv' differ - raw data written to output..." 
 				writeline "$at1.name@-8  $at2.name@-8   $at1.param_a@12.6  $at1.param_b@12.6"
 			elseif $at1.form = lj
