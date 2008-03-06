@@ -29,9 +29,10 @@ class site;
 class forcefield;
 class grid;
 class pattern;
+class glyph;
 
 // Bundle Pointers
-enum bundle_pointer { BP_ATOM=1, BP_PATTERN=2, BP_MODEL=4, BP_FF=8, BP_GRID=16, BP_SITE=32 };
+enum bundle_pointer { BP_ATOM=1, BP_PATTERN=2, BP_MODEL=4, BP_FF=8, BP_GRID=16, BP_SITE=32, BP_GLYPH=64 };
 
 // Pointer bundle
 // Convenience structure to hold/pass a bundle of current object pointers
@@ -54,6 +55,8 @@ class bundle
 	grid *g;
 	// Site pointer
 	site *s;
+	// Glyph
+	glyph *gl;
 
 	/*
 	// Member Functions

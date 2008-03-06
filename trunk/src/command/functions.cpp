@@ -152,6 +152,11 @@ void master_data::init_commands()
 	CA_data[CA_TYPEMODEL].function = &commanddata::function_CA_TYPEMODEL;
 	CA_data[CA_TYPETEST].function = &commanddata::function_CA_TYPETEST;
 
+	// Glyph commands
+	CA_data[CA_ADDGLYPH].function = &commanddata::function_CA_ADDGLYPH;
+	CA_data[CA_SETGLYPHATOM].function = &commanddata::function_CA_SETGLYPHATOM;
+	CA_data[CA_SETGLYPHDATA].function = &commanddata::function_CA_SETGLYPHDATA;
+
 	// Grid Commands
 	CA_data[CA_ADDGRIDPOINT].function = &commanddata::function_CA_ADDGRIDPOINT;
 	CA_data[CA_ADDNEXTGRIDPOINT].function = &commanddata::function_CA_ADDNEXTGRIDPOINT;

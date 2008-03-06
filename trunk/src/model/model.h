@@ -749,12 +749,12 @@ class model
 	// Glyphs
 	*/
 	private:
-	// List of all glyphs within model
+	// List of glyphs within model
 	list<glyph> glyphs;
 
 	public:
 	// Create new glyph in this model
-	glyph *add_glyph();
+	glyph *add_glyph() { return glyphs.add(); }
 	// Return list of glyphs
 	glyph *get_glyphs() { return glyphs.first(); }
 

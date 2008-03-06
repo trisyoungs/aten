@@ -22,59 +22,79 @@
 #ifndef H_GLYPH_H
 #define H_GLYPH_H
 
+#include "classes/atom.h"
 #include "templates/vector3.h"
 #include "templates/vector4.h"
 
-// Forward declarations
-class atom;
-
-// Glyph types
-enum glyph_type { GT_ARROW, GT_DIRECTION, GT_ELLIPSOID };
+// Glyph style
+enum glyph_style { GS_ARROW, GS_VECTOR, GS_SPHERE, GS_CUBE, GS_TRIANGLE, GS_ELLIPSOID, GS_NITEMS };
+const char *text_from_GS(glyph_style);
+glyph_style GS_from_text(const char*);
 
 /*
-	For GT_ARROW:
+	For GS_ARROW:
 		d1 = tail of arrow
 		d2 = head of arrow
-		d3 = unused
-	For GT_DIRECTION:
+	For GS_DIRECTION:
 		d1 = centre of arrow
 		d2 = direction of arrow
-		d3 = unused
-	For GT_ELLIPSOID:
+	For GS_ELLIPSOID:
 		d1 = centre of ellipsoid
 		d2 = point direction 1
 		d3 = point direction 2
 */
 
+#define MAXGLYPHDATA 4
+
 // Glyph data
-struct glyph_data
+class glyphdata
 {
-	// Fixed position / coordinate / direction etc
+	public:
+	// Constructor
+	glyphdata();
+
+	private:
+	// Position or direction vector
 	vec3<double> r;
-	// ID of atom from which to get 'r'
-	int id;
 	// Pointer to atom from which to get 'r'
 	atom *i;
-	// Whether to make the data a unit vector  TODO enum offering scaled, unit etc?
-	bool make_unit;
+	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
+	bool atomsetlast;
+
+	public:
+	// Set the vector data
+	void set_vector(double x, double y, double z) { r.set(x,y,z); atomsetlast = FALSE; }
+	// Set the atom pointer
+	void set_atom(atom *target) { i = target; atomsetlast = TRUE; }
+	// Return the atom pointer
+	atom *get_atom() { return i; }
+	// Return the vector data
+	vec3<double> get_vector();
+	// Return if the structure contains an atom pointer
+	bool has_atom() { return (i == NULL ? FALSE : TRUE); }
 };
 
 // Glyph
 class glyph
 {
-	private:
-	// Style of glyph
-	glyph_type type;
-	// Data for glyph
-	glyph_data r1,r2,r3;
 	public:
-	// Parse supplied string and set values in structure
-	void set_from_string(const char*);
-	// List pointers
-	glyph *prev, *next;
 	// Constructor / Destructor
 	glyph();
 	~glyph();
+	// List pointers
+	glyph *prev, *next;
+
+	private:
+	// Style of glyph
+	glyph_style type;
+
+	public:
+	// Data for glyph
+	glyphdata data[MAXGLYPHDATA];
+	// Set style of glyph
+	void set_type(glyph_style gt) { type = gt; }
+	// Return style of glyph
+	glyph_style get_type() { return type; }
 };
 
 #endif

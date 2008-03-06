@@ -32,6 +32,7 @@ bundle::bundle()
 	g = 0;
 	i = 0;
 	p = 0;
+	gl = 0;
 }
 
 // Check for non-null pointers
@@ -43,6 +44,7 @@ bool bundle::is_null(int ptrs)
 	if ((ptrs&BP_GRID) && (g == 0)) return TRUE;
 	if ((ptrs&BP_SITE) && (s == 0)) return TRUE;
 	if ((ptrs&BP_FF) && (ff == 0)) return TRUE;
+	if ((ptrs&BP_GLYPH) && (gl == 0)) return TRUE;
 	return FALSE;
 }
 
@@ -77,6 +79,11 @@ bool bundle::notify_null(int ptrs)
 	if ((ptrs&BP_FF) && (ff == 0))
 	{
 		printf("--> No active forcefield.\n");
+		return TRUE;
+	}
+	if ((ptrs&BP_GLYPH) && (gl == 0))
+	{
+		printf("--> No active glyph.\n");
 		return TRUE;
 	}
 	return FALSE;
