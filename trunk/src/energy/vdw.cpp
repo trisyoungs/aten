@@ -28,7 +28,7 @@
 #include <math.h>
 
 // Intrapattern VDW energy
-void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
+void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore, int lonemolecule)
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
@@ -48,7 +48,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 	aoff = startatom;
 	for (m1=0; m1<nmols; m1++)
 	{
-		// Calculate energies atom pairs that are unbound or separated by more than three bonds
+		// Calculate energies of atom pairs that are unbound or separated by more than three bonds
 		i = -1;
 		for (pai = atoms.first(); pai != atoms.last(); pai = pai->next)
 		{
@@ -115,12 +115,11 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore)
 }
 
 // Interpattern VDW energy
-void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energystore *estore)
+void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energystore *estore, int molecule)
 {
-	// Calculate the VDW contribution to the energy from interactions between molecules
-	// of this pnode and the one supplied
+	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
 	dbg_begin(DM_CALLS,"pattern::vdw_interpattern_energy");
-	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish;
+	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start2,finish2;
 	static vec3<double> mim_i;
 	static double sigma, sigmar6, epsilon, rij, energy_inter, cutoff, vrs;
 	patatom *pai, *paj;
@@ -132,13 +131,29 @@ void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energyst
 	energy_inter = 0.0;
 	aoff1 = startatom;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == xpnode ? finish = nmols - 1 : finish = nmols;
-	for (m1=0; m1<finish; m1++)
+	if ((this == xpnode) && (molecule == -1)) finish1 = nmols - 1;
+	else finish1 = nmols;
+	for (m1=0; m1<finish1; m1++)
 	{
-		this == xpnode ? start = m1 + 1 : start = 0;
-		aoff2 = xpnode->startatom + start*natoms;
-		for (m2=start; m2<xpnode->nmols; m2++)
+		if (molecule == -1)
 		{
+			start2 = (this == xpnode ? m1 + 1 : 0);
+			finish2 = xpnode->nmols;
+		}
+		else
+		{
+			start2 = molecule;
+			finish2 = molecule + 1;
+			// If the patterns are the same we must exclude molecule == m1
+			if ((this == xpnode) && (molecule == m1)) { aoff1 += natoms; continue; }
+		}
+
+		//if (m1 == 0) printf("IPE - finish1 = %i, start2 = %i, finish2 = %i\n",finish1,start2,finish2);
+		aoff2 = xpnode->startatom + start2*xpnode->natoms;
+
+		for (m2=start2; m2<finish2; m2++)
+		{
+			//printf("      m1/m2=%i/%i  aoff1/aoff2=%i/%i \n",m1,m2,aoff1,aoff2);
 			i = -1;
 			for (pai = atoms.first(); pai != NULL; pai = pai->next)
 			{
@@ -148,6 +163,7 @@ void pattern::vdw_interpattern_energy(model *srcmodel, pattern *xpnode, energyst
 				for (paj = xpnode->atoms.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
+
 					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
@@ -353,7 +369,7 @@ void pattern::vdw_interpattern_forces(model *srcmodel, pattern *xpnode)
 void pattern::vdw_correct_energy(unitcell *cell, energystore *estore)
 {
 	// Calculate the long-range correction to the VDW energy
-	dbg_begin(DM_CALLS,"pattern::vdw_correct_forces");
+	dbg_begin(DM_CALLS,"pattern::vdw_correct_energy");
 	static int i, j;
 	static pattern *p1, *p2;
 	static double energy, rho, cutoff, dudr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
@@ -404,6 +420,6 @@ void pattern::vdw_correct_energy(unitcell *cell, energystore *estore)
 		}
 	}
 	estore->add(ET_VDWTAIL,energy,-1);
-	dbg_end(DM_CALLS,"pattern::vdw_correct_forces");
+	dbg_end(DM_CALLS,"pattern::vdw_correct_energy");
 }
 

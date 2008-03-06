@@ -25,8 +25,8 @@
 #include "classes/energystore.h"
 #include "classes/forcefield.h"
 
-// Calculate angle energy of pattern
-void pattern::angle_energy(model *srcmodel, energystore *estore)
+// Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
+void pattern::angle_energy(model *srcmodel, energystore *estore, int molecule)
 {
 	dbg_begin(DM_CALLS,"pattern::angle_energy");
 	static int i,j,k,aoff,m1;
@@ -35,8 +35,8 @@ void pattern::angle_energy(model *srcmodel, energystore *estore)
 	static patbound *pb;
 	static vec3<double> vecij, veckj;
 	energy = 0.0;
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule+1); m1++)
 	{
 		for (pb = angles.first(); pb != NULL; pb = pb->next)
 		{

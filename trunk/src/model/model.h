@@ -42,10 +42,9 @@
 class forcefield;
 class bond;
 class constraint;
-class undostate;
 class pattern;
 class filter;
-class energystore;
+class undostate;
 class atomaddress;
 
 // Model
@@ -454,7 +453,7 @@ class model
 	// Generate parameters for total energy function
 	void fill_expression(int);
 	// Calculate (and return) the total energy of the specified model configuration
-	double total_energy(model*);
+	double total_energy(model *config, pattern *molpattern = NULL, int molecule = -1);
 	// Calculate forces in the specified model configuration
 	void calculate_forces(model*);
 	// Prints out atomic forces
