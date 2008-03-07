@@ -41,10 +41,13 @@ grid::grid()
 	log = -1;
 	style = SS_GRID;
 	displaylist = 0;
+	render_point = -1;
+	visible = TRUE;
 	colour[0] = INT_MAX;
 	colour[1] = 0;
 	colour[2] = 0;
 	colour[3] = INT_MAX / 2;
+	looporder.set(0,1,2);
 }
 
 // Destructor
@@ -89,6 +92,27 @@ void grid::clear()
 	delete[] data;
 	data = NULL;
 	dbg_end(DM_CALLS,"grid::clear");
+}
+
+// Set spacing for a cubic grid
+void grid::set_axes(double r)
+{
+	cell.set( vec3<double>(r,r,r), vec3<double>(90.0, 90.0, 90.0) );
+	log++;
+}
+
+// Set spacing for an orthorhombic grid
+void grid::set_axes(const vec3<double> v)
+{
+	cell.set( v, vec3<double>(90.0, 90.0, 90.0) );
+	log++;
+}
+
+// Set spacing for a parallelepiped grid
+void grid::set_axes(const mat3<double> m)
+{
+	cell.set(m);
+	log++;
 }
 
 // Set grid extent (and data[])
@@ -143,18 +167,19 @@ void grid::set_next_data(double d)
 		return;
 	}
 	// Set current point referenced by currentpoint
+	currentpoint.print();
 	data[currentpoint.x][currentpoint.y][currentpoint.z] = d;
 	// Increase currentpoint
-	currentpoint.x ++;
-	if (currentpoint.x == npoints.x)
+	currentpoint.set(looporder.x, currentpoint.get(looporder.x) + 1);
+	if (currentpoint.get(looporder.x) == npoints.get(looporder.x))
 	{
-		currentpoint.x = 0;
-		currentpoint.y ++;
-		if (currentpoint.y == npoints.y)
+		currentpoint.set(looporder.x, 0);
+		currentpoint.set(looporder.y, currentpoint.get(looporder.y) + 1);
+		if (currentpoint.get(looporder.y) == npoints.get(looporder.y))
 		{
-			currentpoint.y = 0;
-			currentpoint.z ++;
-			if (currentpoint.z == npoints.z) datafull = TRUE;
+			currentpoint.set(looporder.y, 0);
+			currentpoint.set(looporder.z, currentpoint.get(looporder.z) + 1);
+			if (currentpoint.get(looporder.z) == npoints.get(looporder.z)) datafull = TRUE;
 		}
 	}
 	// Set new minimum / maximum
@@ -182,8 +207,19 @@ void grid::set_colour(double r, double g, double b)
 void grid::bohr_to_angstrom()
 {
 	// Only the axes and origin need to be modified...
-	axes.rows[0] *= ANGBOHR;
-	axes.rows[1] *= ANGBOHR;
-	axes.rows[2] *= ANGBOHR;
+	mat3<double> newaxes = cell.get_axes();
+	newaxes *= ANGBOHR;
+	cell.set(newaxes);
 	origin *= ANGBOHR;
+}
+
+// Return displaylist (create first if necessary)
+GLuint grid::get_displaylist()
+{
+	if (displaylist == 0)
+	{
+		displaylist = glGenLists(1);
+		if (displaylist == 0) printf("Critical - couldn't generate display list for grid data.\n");
+	}
+	return displaylist;
 }

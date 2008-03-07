@@ -164,6 +164,7 @@ void master_data::init_commands()
 	CA_data[CA_NEWGRID].function = &commanddata::function_CA_NEWGRID;
 	CA_data[CA_SETGRID].function = &commanddata::function_CA_SETGRID;
 	CA_data[CA_SETGRIDCUBIC].function = &commanddata::function_CA_SETGRIDCUBIC;
+	CA_data[CA_SETGRIDLOOPORDER].function = &commanddata::function_CA_SETGRIDLOOPORDER;
 	CA_data[CA_SETGRIDORIGIN].function = &commanddata::function_CA_SETGRIDORIGIN;
 	CA_data[CA_SETGRIDORTHO].function = &commanddata::function_CA_SETGRIDORTHO;
 	CA_data[CA_SETGRIDSIZE].function = &commanddata::function_CA_SETGRIDSIZE;

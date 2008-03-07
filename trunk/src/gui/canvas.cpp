@@ -37,7 +37,7 @@ canvas::canvas()
 	activemode = UA_NONE;
 	selectedmode = UA_PICKSELECT;
 	list[0] = 0;
-	context_widget = NULL;
+	contextwidget = NULL;
 	subselect_enabled = FALSE;
 	for (int i=0; i<3; i++)
 	{
@@ -77,7 +77,7 @@ void canvas::swap_buffers()
 // Set widget
 bool canvas::set_widget(TCanvas *w)
 {
-	context_widget = w;
+	contextwidget = w;
 	return TRUE;
 }
 
@@ -95,7 +95,7 @@ void canvas::realize()
 void canvas::postredisplay()
 {
 	dbg_begin(DM_CALLS,"canvas::postredisplay");
-	if (gui.exists()) context_widget->paintGL();
+	if (gui.exists()) contextwidget->paintGL();
 	dbg_end(DM_CALLS,"canvas::postredisplay");
 }
 
@@ -115,8 +115,8 @@ void canvas::expose()
 void canvas::configure()
 {
 	// Store the new width and height of the widget and re-do projection
-	w = (float)context_widget->width();
-	h = (float)context_widget->height();
+	w = (float)contextwidget->width();
+	h = (float)contextwidget->height();
 	do_projection();
 	// Flag that render source needs to be reprojected
 	if (displaymodel != NULL) displaymodel->log_change(LOG_VISUAL);

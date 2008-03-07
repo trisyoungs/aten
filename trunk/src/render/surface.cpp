@@ -348,12 +348,17 @@ void render_surface_grid(grid *g)
 void cube_it(grid *g, surface_style ss)
 {
 	int i, j, k, n, cubetype, *faces;
-	vec3<double> r, normal;
+	vec3<double> r, normal, gradient[8];
 	vec3<int> npoints = g->get_npoints();
-	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2;
+	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2, twodx, twody, twodz;
 	// Grab the data pointer and surface cutoff
 	data = g->get_data();
 	cutoff = g->get_cutoff();
+	// Get distances between grid points
+	r = g->get_lengths();
+	twodx = r.x / npoints.x * 2.0;
+	twody = r.y / npoints.y * 2.0;
+	twodz = r.z / npoints.z * 2.0;
 	// Set glBegin based on the surface style
 	switch (ss)
 	{
@@ -374,13 +379,13 @@ void cube_it(grid *g, surface_style ss)
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.get_shininess());
 	glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->get_colour());
 	// Generate surface
-	for (i=1; i<npoints.x-1; i++)
+	for (i=1; i<npoints.x-2; i++)
 	{
 		xdata = data[i];
-		for (j=1; j<npoints.y-1; j++)
+		for (j=1; j<npoints.y-2; j++)
 		{
 			ydata = xdata[j];
-			for (k=1; k<npoints.z-1; k++)
+			for (k=1; k<npoints.z-2; k++)
 			{
 				// Grab values that form vertices of cube.
 				vertex[0] = data[i][j][k];
@@ -391,6 +396,31 @@ void cube_it(grid *g, surface_style ss)
 				vertex[5] = data[i+1][j][k+1];
 				vertex[6] = data[i+1][j+1][k+1];
 				vertex[7] = data[i][j+1][k+1];
+				// Calculate gradients at the cube vertices
+				gradient[0].x = (vertex[1] - data[i-1][j][k]) / twodx;
+				gradient[0].y = (vertex[3] - data[i][j-1][k]) / twody;
+				gradient[0].z = (vertex[4] - data[i][j][k-1]) / twodz;
+				gradient[1].x = (data[i+2][j][k] - vertex[0]) / twodx;
+				gradient[1].y = (vertex[2] - data[i+1][j-1][k]) / twody;
+				gradient[1].z = (vertex[5] - data[i+1][j][k-1]) / twodz;
+				gradient[2].x = (data[i+2][j+1][k] - vertex[3]) / twodx;
+				gradient[2].y = (data[i+1][j+2][k] - vertex[1]) / twody;
+				gradient[2].z = (vertex[6] - data[i+1][j+1][k-1]) / twodz;
+				gradient[3].x = (vertex[2] - data[i-1][j+1][k]) / twodx;
+				gradient[3].y = (data[i][j+2][k] - vertex[0]) / twody;
+				gradient[3].z = (vertex[7] - data[i][j+1][k-1]) / twodz;
+				gradient[4].x = (vertex[5] - data[i-1][j][k+1]) / twodx;
+				gradient[4].y = (vertex[7] - data[i][j-1][k+1]) / twody;
+				gradient[4].z = (data[i][j][k+2] - vertex[0]) / twodz;
+				gradient[5].x = (data[i+2][j][k+1] - vertex[4]) / twodx;
+				gradient[5].y = (vertex[6] - data[i+1][j-1][k+1]) / twody;
+				gradient[5].z = (data[i+1][j][k+2] - vertex[1]) / twodz;
+				gradient[6].x = (data[i+2][j+1][k+1] - vertex[7]) / twodx;
+				gradient[6].y = (data[i+1][j+2][k+1] - vertex[5]) / twody;
+				gradient[6].z = (data[i+1][j+1][k+2] - vertex[2]) / twodz;
+				gradient[7].x = (vertex[6] - data[i-1][j+1][k+1]) / twodx;
+				gradient[7].y = (data[i][j+2][k+1] - vertex[4]) / twody;
+				gradient[7].z = (data[i][j+1][k+2] - vertex[3]) / twodz;
 				// Determine cube type
 				cubetype = 0;
 				if (vertex[0] >= cutoff) cubetype += 1;
@@ -410,13 +440,13 @@ void cube_it(grid *g, surface_style ss)
 					a = vertex[edgevertices[faces[n]][0]];
 					b = vertex[edgevertices[faces[n]][1]];
 					ipol = (cutoff - a) / (b-a);
-					//printf("IPOL %f %f %f %f\n",a,b,cutoff,ipol);
-					//ipol = 1.0;
+
 					v1 = vertexpos[edgevertices[faces[n]][0]];
 					v2 = vertexpos[edgevertices[faces[n]][1]];
 					r.set(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2]);
 					r *= ipol;
-					normal = r;
+					normal = -(gradient[edgevertices[faces[n]][0]] + (gradient[edgevertices[faces[n]][1]] - gradient[edgevertices[faces[n]][0]]) * ipol);
+					normal.normalise();
 					r.add(i+v1[0], j+v1[1], k+v1[2]);
 					// Set triangle coordinates and add cube position
 					glNormal3d(normal.x, normal.y, normal.z);
@@ -442,6 +472,7 @@ void canvas::render_surfaces()
 	{
 		// Check visibility
 		if (!g->get_visible()) continue;
+
 		// Get GL display list and check render point
 		list = g->get_displaylist();
 

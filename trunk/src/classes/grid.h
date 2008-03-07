@@ -24,6 +24,7 @@
 
 #include "templates/vector3.h"
 #include "classes/dnchar.h"
+#include "classes/cell.h"
 #include "base/constants.h"
 #include "base/debug.h"
 #ifdef IS_MAC
@@ -64,8 +65,8 @@ class grid
 	// Gridded Data
 	*/
 	private:
-	// Axes that determine spacing between gridpoints
-	mat3<double> axes;
+	// Cell that determine spacing between gridpoints and their axis system
+	unitcell cell;
 	// Surface origin
 	vec3<double> origin;
 	// Number of points in each direction
@@ -82,16 +83,20 @@ class grid
 	double min, max;
 	// Update minimum and maximum values
 	void set_limits(double d);
+	// Order of loops when reading data point-by-point
+	vec3<int> looporder;
 
 	public:
 	// Set spacing for a cubic grid
-	void set_axes(double r) { axes.set_diagonal(r,r,r); log++; }
+	void set_axes(double r);
 	// Set spacing for an orthorhombic grid
-	void set_axes(const vec3<double> v) { axes.set_diagonal(v.x,v.y,v.z); log++; }
+	void set_axes(const vec3<double> v);
 	// Set spacing for a parallelepiped grid
-	void set_axes(const mat3<double> m) { axes = m; log++; }
+	void set_axes(const mat3<double> m);
 	// Return the grid axes
-	mat3<double> get_axes() { return axes; }
+	mat3<double> get_axes() { return cell.get_axes(); }
+	// Return lengths of cell axiss
+	vec3<double> get_lengths() { return cell.get_lengths(); }
 	// Set data origin
 	void set_origin(const vec3<double> v) { origin = v; log++; }
 	// Return the origin of the grid data
@@ -110,6 +115,8 @@ class grid
 	double get_cutoff() { return cutoff; }
 	// Return data array
 	double ***get_data() { return data; }
+	// Set loop ordering
+	void set_looporder(int n, int xyz) { looporder.set(n,xyz); }
 
 	/*
 	// Data Interface
@@ -143,7 +150,7 @@ class grid
 
 	public:
 	// Return the surface display list
-	GLuint get_displaylist() { return displaylist; }
+	GLuint get_displaylist();
 	// Return whether re-rendering is necessary
 	bool should_rerender() { return (render_point == log ? FALSE : TRUE); }
 	// Update the log point of the surface
