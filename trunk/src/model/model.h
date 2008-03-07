@@ -754,7 +754,7 @@ class model
 
 	public:
 	// Create new glyph in this model
-	glyph *add_glyph() { return glyphs.add(); }
+	glyph *add_glyph() { log_change(LOG_VISUAL); return glyphs.add(); }
 	// Return list of glyphs
 	glyph *get_glyphs() { return glyphs.first(); }
 

@@ -21,11 +21,6 @@
 
 #include "base/master.h"
 #include "gui/canvas.h"
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
 
 /*
 	Marching Cube vertex / <edge> numbering

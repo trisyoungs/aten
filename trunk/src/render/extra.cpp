@@ -24,11 +24,6 @@
 #include "base/elements.h"
 #include "methods/mc.h"
 #include "gui/canvas.h"
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
 
 // Render other 3D objects
 void canvas::render_extra_3d()

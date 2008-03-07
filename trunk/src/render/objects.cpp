@@ -26,11 +26,6 @@
 #include "classes/atom.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
 
 /*
 // Primitives
@@ -38,20 +33,13 @@
 
 void canvas::textbitmap(double x, double y, const char *s)
 {
-	glRasterPos2d(x,y);
-	for (int i = 0; s[i] != '\0'; i++)
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,s[i]);
-	//contextwidget->renderText((int)x, (int)y, s);
+	contextwidget->renderText((int)x, (int)y, s);
 }
 
 // Render text at 3D coordinates
 void canvas::textbitmap(const vec3<double> r, const char *s)
 {
-	static int i;
-	glRasterPos3d(r.x, r.y, r.z);
-	for (i=0; s[i] != '\0'; i++)
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_10,s[i]);
-	//contextwidget->renderText(r.x, r.y, r.z, s);
+	contextwidget->renderText(r.x, r.y, r.z, s);
 }
 
 // Draw a diamond at the point specified, with 'radius' r.

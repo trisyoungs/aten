@@ -28,12 +28,6 @@
 #include <QtCore/QTextStream>
 #include <QtGui/QProgressBar>
 
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
-
 // External Declarations
 gui_qt gui;
 
@@ -70,8 +64,7 @@ void gui_qt::run(int argc, char **argv)
 {
 	dbg_begin(DM_CALLS,"gui_qt::run");
 
-	// Initialise GLUT, Qt, and the icons resource
-	glutInit(&argc, argv);
+	// Initialise Qt, and the icons resource
         app = new QApplication(argc, argv);
 	Q_INIT_RESOURCE(icons);
 
