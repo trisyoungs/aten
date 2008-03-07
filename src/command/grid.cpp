@@ -77,6 +77,45 @@ int commanddata::function_CA_SETGRIDCUBIC(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set loop order to use in CA_ADDNEXTPOINT
+int commanddata::function_CA_SETGRIDLOOPORDER(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	if (strlen(c->argc(0)) != 3)
+	{
+		msg(DM_NONE,"A string of three characters must be passed to 'setgridlooporder'.\n");
+		return CR_FAIL;
+	}
+	char ch;
+	for (int n=0; n<3; n++)
+	{
+		ch = c->argc(0)[n];
+		switch (ch)
+		{
+			case ('X'):
+			case ('x'):
+			case ('1'):
+				obj.g->set_looporder(n,0);
+				break;
+			case ('Y'):
+			case ('y'):
+			case ('2'):
+				obj.g->set_looporder(n,1);
+				break;
+			case ('Z'):
+			case ('z'):
+			case ('3'):
+				obj.g->set_looporder(n,2);
+				break;
+			default:
+				msg(DM_NONE,"Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
+				obj.g->set_looporder(n,n);
+				break;
+		}
+	}
+	return CR_SUCCESS;
+}
+
 // Set origin (lower-left-hand corner of grid)
 int commanddata::function_CA_SETGRIDORIGIN(command *&c, bundle &obj)
 {

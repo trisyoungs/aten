@@ -2,15 +2,13 @@ Issues with the current version:
 	- Save image provokes GLXBadExtension error when incorrect/no 3D graphics driver installed.
 	- Spherical regions in disordered builder have poor randomness.
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
-	- Surfaces need correct vertex normals
-	- Bad crash (x-server killed) on exit after loading surface
 	- Colour schemes other than AC_ELEMENT need to be fixed
 	- Switching between perspective / orthographic views loses current rotation/zoom
 	- Drawing guide is not displayed if camera moves beyond z = 0.0 (general drawing problem)
 	- Automatic bond augmenting needs rewrite (currently disabled)
 	- Loading forcefield with command box does not update GUI list
 	- Numbering of new models is disparate since many routines create new (hidden) models
-	- Crash on model close in GUI?
+	- Crash on model close in GUI (FIXED?)
 
 General To-Do list:
 	- Ewald sum (fourier calculation, reciprocal cell) for non-orthogonal cells
@@ -48,4 +46,3 @@ Manual To-Do list:
 Optimisation To-Do list:
 	- Hemispherical Ewald summmation
 	- For large systems (10000+ atoms) autocreate_patterns() is a bottleneck, as is model::copy(model*)
-	- Disorder builder - avoid needless pairwise energy calculation 

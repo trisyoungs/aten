@@ -82,7 +82,7 @@ class canvas
 	// Model 'width' of a single pixel at the current draw depth...
 	double drawpixelwidth;
 	// Qt Target widget
-	TCanvas *context_widget;
+	TCanvas *contextwidget;
 
 	public:
 	// Constructor / Destructor
@@ -138,8 +138,6 @@ class canvas
 	void textbitmap(double, double, const char*);
 	// Render text string at atom's screen coordinates
 	void textbitmap(const vec3<double>, const char*);
-	// Render vector text at the current position
-	void textstroke(const char*);
 	// Draw a diamond
 	void gl_diamond(double, double, double);
 	// Draw a square

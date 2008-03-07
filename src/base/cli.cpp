@@ -28,6 +28,7 @@ optiondata clioptions[] = {
 	{ CO_COMMAND,	"command",	1,"<commands>", "Execute supplied commands before main program execution" },
 	{ CO_DEBUG,	"debug",	0,"",		"Print major subroutine call information" },
 	{ CO_FF,	"ff",		1,"<file>",	"Load the specified forcefield file" },
+	{ CO_GRID,	"grid",		1,"<file>",	"Load the specified gridded data file" },
 	{ CO_HELP,	"help",		0,"",		"Print this information" },
 	{ CO_INTERACTIVE,"interactive",	0,"",		"Enter interactive mode" },
 	{ CO_MAP,	"map",		1,"<name=element,...>",	"Map file atomtypes to elements" },
@@ -47,8 +48,7 @@ optiondata clioptions[] = {
 	{ CO_DEBUGMORE,	"debugmore",	0,"",		"Print all subroutine call information" },
 	{ CO_DEBUGALL,	"debugall",	0,"",		"Print out all debug information" },
 	{ CO_DEBUGPARSE,"debugparse",	0,"",		"Print out verbose information from file parsing routines" },
-	{ CO_DEBUGFILE,	"debugfile",	0,"",		"Print out verbose information from file filter routines" },
-	{ CO_GRID,	"grid",		1,"<file>",	"Load the specified gridded data file" }
+	{ CO_DEBUGFILE,	"debugfile",	0,"",		"Print out verbose information from file filter routines" }
 };
 
 // Prepare options list
@@ -132,7 +132,10 @@ int master_data::parse_cli(int argc, char *argv[])
 				case (CO_FF):
 					master.load_ff(optarg);
 					break;
-				case (CO_G):
+				// Load surface
+				case (CO_GRID):
+					f = master.probe_file(optarg, FT_GRID_IMPORT);
+					if (f != NULL) f->execute(optarg);
 					break;
 				// Display help
 				case (CO_HELP):
@@ -245,11 +248,6 @@ int master_data::parse_cli(int argc, char *argv[])
 					add_debuglevel(DM_VERBOSE);
 					add_debuglevel(DM_PARSE);
 					add_debuglevel(DM_TYPING);
-					break;
-				// Load surface
-				case (CO_GRID):
-					f = master.probe_file(optarg, FT_GRID_IMPORT);
-					if (f != NULL) f->execute(optarg);
 					break;
 				default:
 					printf("Unrecognised command-line option '%s'.\n",argv[index]);

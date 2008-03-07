@@ -186,6 +186,7 @@ enum command_action {
 	CA_NEWGRID,
 	CA_SETGRID,
 	CA_SETGRIDCUBIC,
+	CA_SETGRIDLOOPORDER,
 	CA_SETGRIDORIGIN,
 	CA_SETGRIDORTHO,
 	CA_SETGRIDSIZE,
@@ -486,6 +487,7 @@ class commanddata
 	int function_CA_NEWGRID(command *&c, bundle &obj);
 	int function_CA_SETGRID(command *&c, bundle &obj);
 	int function_CA_SETGRIDCUBIC(command *&c, bundle &obj);
+	int function_CA_SETGRIDLOOPORDER(command *&c, bundle &obj);
 	int function_CA_SETGRIDORIGIN(command *&c, bundle &obj);
 	int function_CA_SETGRIDORTHO(command *&c, bundle &obj);
 	int function_CA_SETGRIDSIZE(command *&c, bundle &obj);

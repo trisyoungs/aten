@@ -293,6 +293,8 @@ commanddata CA_data[CA_NITEMS] = {
 				"Set axes for current grid" },
 	{ "setgridcubic",	"V",		"<l>",
 				"Set the axes system for the current grid to be cubic" },
+	{ "setgridlooporder",	"V",		"<xyz|zyx|213...>",
+				"Set the loop ordering to use in 'addnextgridpoint'" },
 	{ "setgridorigin",	"VVV",		"<x> <y> <z>",
 				"Set the origin of the axes system for the current grid" },
 	{ "setgridortho",	"VVV",		"<a> <b> <c>",

@@ -10,7 +10,12 @@ importgrid
 	integer n,nx,ny,nz,npoints
 	double spacing,ox,oy,oz,data
 
+	# Create new grid
 	newgrid NewGrid
+
+	# Set loop order
+	setgridlooporder zyx
+
 	# First line contains number of gridpoints in each direction x,y,z
 	readline "$nx $ny $nz"
 	setgridsize $nx $ny $nz
