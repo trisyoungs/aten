@@ -22,11 +22,6 @@
 #include "base/elements.h"
 #include "base/master.h"
 #include "gui/canvas.h"
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
 
 // Render model
 void canvas::render_scene(model *source)
@@ -134,7 +129,7 @@ void canvas::render_scene(model *source)
 		  render_model_cell();
 		  // Draw the model's atoms, bonds, and selection
 		  if (prefs.should_render(VO_ATOMS)) render_model_atoms();
-		  // Render any other objects associated with the model
+		  // Render glyphs associated with the model
 		  render_model_glyphs();
 		  // Render force arrows
 		  if (prefs.should_render(VO_FORCEARROWS)) render_model_forcearrows();

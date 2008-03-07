@@ -315,7 +315,7 @@ void canvas::create_lists()
 	  gluCylinder(quadric2,prefs.render_tube_size*prefs.render_selection_scale,prefs.render_tube_size*prefs.render_selection_scale,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
 	glEndList();
 	/*
-	// Others
+	// Objects
 	*/
 	// View axes
 	glNewList(list[GLOB_GLOBE],GL_COMPILE);

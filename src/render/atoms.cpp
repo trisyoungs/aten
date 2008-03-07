@@ -22,11 +22,6 @@
 #include "model/model.h"
 #include "base/elements.h"
 #include "gui/canvas.h"
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
 
 // Render model atoms and bonds
 void canvas::render_model_atoms()

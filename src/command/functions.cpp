@@ -154,8 +154,14 @@ void master_data::init_commands()
 
 	// Glyph commands
 	CA_data[CA_ADDGLYPH].function = &commanddata::function_CA_ADDGLYPH;
-	CA_data[CA_SETGLYPHATOM].function = &commanddata::function_CA_SETGLYPHATOM;
+	CA_data[CA_SETGLYPHATOMF].function = &commanddata::function_CA_SETGLYPHATOMF;
+	CA_data[CA_SETGLYPHATOMR].function = &commanddata::function_CA_SETGLYPHATOMR;
+	CA_data[CA_SETGLYPHATOMV].function = &commanddata::function_CA_SETGLYPHATOMV;
+	CA_data[CA_SETGLYPHATOMSF].function = &commanddata::function_CA_SETGLYPHATOMSF;
+	CA_data[CA_SETGLYPHATOMSR].function = &commanddata::function_CA_SETGLYPHATOMSR;
+	CA_data[CA_SETGLYPHATOMSV].function = &commanddata::function_CA_SETGLYPHATOMSV;
 	CA_data[CA_SETGLYPHDATA].function = &commanddata::function_CA_SETGLYPHDATA;
+	CA_data[CA_SETGLYPHSOLID].function = &commanddata::function_CA_SETGLYPHSOLID;
 
 	// Grid Commands
 	CA_data[CA_ADDGRIDPOINT].function = &commanddata::function_CA_ADDGRIDPOINT;

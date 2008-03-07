@@ -23,11 +23,6 @@
 #include "classes/forcefield.h"
 #include "base/elements.h"
 #include "gui/canvas.h"
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
 
 // Render atom labels
 void canvas::render_model_labels()
