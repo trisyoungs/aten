@@ -203,8 +203,10 @@ class master_data
 	void set_program_mode(prog_mode pm) { mode = pm; }
 	// Return the current program mode
 	prog_mode get_program_mode() { return mode; }
-	// Cached script data
+	// Cached scripts
 	list<commandlist> scripts;
+	// Cached commands
+	list<commandlist> commands;
 	// Script to store temporary typed commands
 	commandlist cmd_script;
 	// Interactive mode command list

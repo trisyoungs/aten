@@ -79,9 +79,17 @@ int main(int argc, char *argv[])
 	if (master.parse_cli(argc,argv) == -1) return -1;
 
 	// Do various things depending on the program mode that has been set
-	// Execute scripts / command lists if they were provided
+	// Execute scripts / commands if they were provided
 	if (master.get_program_mode() == PM_COMMAND)
 	{
+		// Commands first
+		for (commandlist *cl = master.commands.first(); cl != NULL; cl = cl->next)
+		{
+			if (!cl->execute(NULL)) master.set_program_mode(PM_NONE);
+			// Need to check program mode after each script since it can be changed
+			if (master.get_program_mode() != PM_COMMAND) break;
+		}
+		// Now scripts
 		for (commandlist *cl = master.scripts.first(); cl != NULL; cl = cl->next)
 		{
 			if (!cl->execute(NULL)) master.set_program_mode(PM_NONE);

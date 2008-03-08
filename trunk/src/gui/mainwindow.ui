@@ -6431,31 +6431,6 @@
     <addaction name="separator" />
     <addaction name="actionAtomHide" />
    </widget>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="RecentMenu" >
-     <property name="title" >
-      <string>&amp;Recent Files</string>
-     </property>
-    </widget>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="RecentMenu" />
-    <addaction name="separator" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="actionFileSaveExpression" />
-    <addaction name="separator" />
-    <addaction name="actionFileOpenForcefield" />
-    <addaction name="actionFileOpenGrid" />
-    <addaction name="separator" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
-   </widget>
    <widget class="QMenu" name="ModelMenu" >
     <property name="title" >
      <string>&amp;Model</string>
@@ -6526,12 +6501,45 @@
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
    </widget>
+   <widget class="QMenu" name="FileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="RecentMenu" >
+     <property name="title" >
+      <string>&amp;Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="actionFileNew" />
+    <addaction name="actionFileOpen" />
+    <addaction name="RecentMenu" />
+    <addaction name="separator" />
+    <addaction name="actionFileAddTrajectory" />
+    <addaction name="actionFileSave" />
+    <addaction name="actionFileSaveAs" />
+    <addaction name="actionFileSaveExpression" />
+    <addaction name="separator" />
+    <addaction name="actionFileOpenForcefield" />
+    <addaction name="actionFileOpenGrid" />
+    <addaction name="separator" />
+    <addaction name="actionFileSaveImage" />
+    <addaction name="separator" />
+    <addaction name="actionFileQuit" />
+   </widget>
+   <widget class="QMenu" name="ScriptsMenu" >
+    <property name="title" >
+     <string>Scripts</string>
+    </property>
+    <addaction name="actionLoadScript" />
+    <addaction name="separator" />
+   </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
    <addaction name="ViewMenu" />
    <addaction name="AtomMenu" />
    <addaction name="ModelMenu" />
    <addaction name="ToolsMenu" />
+   <addaction name="ScriptsMenu" />
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar" />
   <widget class="QToolBar" name="FileToolBar" >
@@ -7641,6 +7649,11 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+Shift+H</string>
+   </property>
+  </action>
+  <action name="actionLoadScript" >
+   <property name="text" >
+    <string>Load Script</string>
    </property>
   </action>
  </widget>

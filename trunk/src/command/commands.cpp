@@ -467,7 +467,15 @@ commanddata CA_data[CA_NITEMS] = {
 				"Skip a number of lines in the input file" },
 	{ "writeline",		"G",		"<format>",
 				"Write a line to the output file" },
-	
+
+	// Script commands
+	{ "listscripts",	"",		"",
+				"List available scripts" },
+	{ "loadscript",		"Vv",		"<filename> [nickname]",
+				"Load script from file" },
+	{ "runscript",		"V",		"<name>",
+				"Execute the named script" },
+
 	// Selection commands
 	{ "selectall",		"",		"",
 				"Select all atoms in the current model" },

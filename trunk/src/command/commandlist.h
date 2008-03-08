@@ -199,6 +199,10 @@ class commandlist
 	// Command List
 	*/
 	private:
+	// Original filename (if script)
+	dnchar scriptfilename;
+	// Name associated with command list
+	dnchar name;
 	// List of commands
 	list<command> commands;
 	// List of pointers to stacked branches
@@ -213,6 +217,12 @@ class commandlist
 	command* add_topbranch_command(command_action, command*);
 
 	public:
+	// Set name of commandlist
+	void set_name(const char *s) { name = s; }
+	// Return name of commandlist
+	const char *get_name() { return name.get(); }
+	// Return filename of commandlist
+	const char *get_scriptfilename() { return scriptfilename.get(); }
 	// Return size of branch stack
 	int get_branchstack_size() { return branchstack.size(); }
 	// Return type of topmost branch on stack

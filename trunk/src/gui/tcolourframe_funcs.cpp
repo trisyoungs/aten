@@ -44,5 +44,9 @@ void TColourFrame::set_colour(int r, int g, int b)
 	col[1] = (int) ( ((double) g / INT_MAX) * 255);
 	col[2] = (int) ( ((double) b / INT_MAX) * 255);
 	brush.setColor(QColor(col[0], col[1], col[2]));
+	QPainter painter(this);
+	painter.setBackgroundMode(Qt::OpaqueMode);
+	painter.setBrush(brush);
+	painter.drawRect(0,0,width(),height());
 }
 

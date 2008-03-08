@@ -261,6 +261,11 @@ void master_data::init_commands()
 	CA_data[CA_SKIPLINE].function = &commanddata::function_CA_SKIPLINE;
 	CA_data[CA_WRITELINE].function = &commanddata::function_CA_WRITELINE;
 
+	// Script Commands
+	CA_data[CA_LISTSCRIPTS].function = &commanddata::function_CA_LISTSCRIPTS;
+	CA_data[CA_LOADSCRIPT].function = &commanddata::function_CA_LOADSCRIPT;
+	CA_data[CA_RUNSCRIPT].function = &commanddata::function_CA_RUNSCRIPT;
+
 	// Select Commands
 	CA_data[CA_SELECTALL].function = &commanddata::function_CA_SELECTALL;
 	CA_data[CA_SELECTATOM].function = &commanddata::function_CA_SELECTATOM;

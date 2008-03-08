@@ -114,11 +114,11 @@ int master_data::parse_cli(int argc, char *argv[])
 					break;
 				// Read script commands from passed string
 				case (CO_COMMAND):
-					cl = master.scripts.add();
+					cl = master.commands.add();
 					if (cl->cache_line(optarg)) master.set_program_mode(PM_COMMAND);
 					else
 					{
-						master.scripts.remove(cl);
+						master.commands.remove(cl);
 						return -1;
 					}
 					break;

@@ -204,7 +204,7 @@ void canvas::render_regions()
 			case (RS_CUBOID):
 				glTranslated(centre.x,centre.y,centre.z);
 				glScaled(size.x,size.y,size.z);
-				glutSolidCube(1.0);
+				glCallList(list[GLOB_UNITCUBE]);
 				break;
 			case (RS_SPHEROID):
 				glTranslated(centre.x,centre.y,centre.z);

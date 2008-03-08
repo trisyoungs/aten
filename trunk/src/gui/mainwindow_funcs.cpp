@@ -298,3 +298,61 @@ void AtenForm::update_undoredo()
 		ui.actionEditRedo->setEnabled(TRUE);
 	}
 }
+
+void AtenForm::refresh_scriptsmenu()
+{
+	static char s[512];
+	// Remove old actions from menu (i.e. current items in reflist)
+	for (refitem<QAction, commandlist*> *sa = scriptactions.first(); sa != NULL; sa = sa->next)
+	{
+		ui.ScriptsMenu->removeAction(sa->item);
+		// Free reflist QActions
+		delete sa->item;
+	}
+	// Clear reflist and repopulate, along with scriptsmenu
+	scriptactions.clear();
+	for (commandlist *cl = master.scripts.first(); cl != NULL; cl = cl->next)
+	{
+		// Create new QAction and add to reflist
+		QAction *qa = new QAction(this);
+		// Set action data
+		qa->setVisible(TRUE);
+		qa->setText(cl->get_name());
+		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(run_script()));
+		scriptactions.add(qa, cl);
+		ui.ScriptsMenu->addAction(qa);
+	}
+}
+
+void AtenForm::on_actionLoadScript_triggered(bool v)
+{
+	QString filename;
+	if (openscriptdialog->exec() == 1)
+	{
+		// Get selected filter in file dialog
+		filename = openscriptdialog->selectedFiles().first();
+		commandlist *ca = master.scripts.add();
+		if (ca->load(qPrintable(filename))) refresh_scriptsmenu();
+		else master.scripts.remove(ca);
+	}
+}
+
+void AtenForm::run_script()
+{
+	// Cast sending QAction and grab filename
+	QAction *action = qobject_cast<QAction*> (sender());
+	if (!action)
+	{
+		printf("AtenForm::run_script - Sender was not a QAction.\n");
+		return;
+	}
+	// Find the commandlist from the loadedscripts() reflist
+	refitem<QAction, commandlist*> *ri = scriptactions.search(action);
+	if (ri == NULL) printf("AtenForm::run_script - Could not find QAction in reflist.\n");
+	else
+	{
+		// Execute the script
+		msg(DM_NONE,"Executing script '%s':\n",ri->data->get_name());
+		ri->data->execute();
+	}
+}

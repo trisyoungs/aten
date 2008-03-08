@@ -280,6 +280,15 @@ void AtenForm::finalise_ui()
 	if (filters.empty()) ui.actionFileOpenGrid->setEnabled(FALSE);
 	else dialog[FT_GRID_IMPORT]->setFilters(filters);
 
+	// Create open script dialog
+	openscriptdialog = new QFileDialog(this);
+	openscriptdialog->setWindowTitle("Open Script");
+	openscriptdialog->setDirectory(master.workdir.get());
+	openscriptdialog->setFileMode(QFileDialog::ExistingFile);
+	filters.clear();
+	filters << "All files (*)";
+	openscriptdialog->setFilters(filters);
+
 	dbg_end(DM_CALLS,"AtenForm::finalise_ui");
 }
 
