@@ -256,9 +256,39 @@ void canvas::gl_ellipsoid(const vec3<double> &centre, const vec3<double> &v1, co
 	glPopMatrix();
 }
 
-void canvas::gl_sphere(double radius)
+void canvas::gl_sphere(double radius, bool filled)
 {
 	// Don't use this to render objects to the view - create a display list first!
+	int i, j;
+	int lats = prefs.get_atom_detail();
+	int longs = lats * 1.5;
+	double lat0, z0, zr0, lat1, z1, zr1, lng, x, y;
+	glPolygonMode(GL_FRONT, (filled ? GL_FILL : GL_LINE));
+	for(i = 0; i <= lats; i++)
+	{
+		lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
+		z0  = sin(lat0) * radius;
+		zr0 =  cos(lat0) * radius;
+
+		lat1 = M_PI * (-0.5 + (double) i / lats);
+		z1 = sin(lat1);
+		zr1 = cos(lat1);
+
+		glBegin(GL_QUAD_STRIP);
+		  for(j = 0; j <= longs; j++)
+		  {
+			lng = 2 * M_PI * (double) (j - 1) / longs;
+			x = cos(lng);
+			y = sin(lng);
+			glNormal3f(x * zr0, y * zr0, z0);
+			glVertex3f(x * zr0, y * zr0, z0);
+			glNormal3f(x * zr1, y * zr1, z1);
+			glVertex3f(x * zr1, y * zr1, z1);
+		}
+		glEnd();
+	}
+
+	/* Don't use this to render objects to the view - create a display list first!
 	int slices = prefs.get_atom_detail();
 	int stacks = slices * 2;
 	double x[2][slices],y[2][slices],z[2],r,rad;
@@ -311,6 +341,5 @@ void canvas::gl_sphere(double radius)
 		row2 = row1;
 		row1 = t;
 	  }
-	glEnd();
+	glEnd(); */
 }
-
