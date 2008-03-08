@@ -269,6 +269,26 @@ int element_map::alpha_to_z(const char *s)
 	return result;
 }
 
+// Convert string from first alpha part to element number
+int element_map::alphafirst_to_z(const char *s)
+{
+	// Ignore numbers. Convert up to non-alpha character.
+	static char cleaned[32];
+	int n, len = 0, result = -1;
+	for (n=0; s[n] != '\0'; n++)
+		if (s[n] > 64 && s[n] < 91) { cleaned[len] = s[n]; len++; }
+		else if (s[n] > 96 && s[n] < 123) { cleaned[len] = toupper(s[n]); len++; }
+		else break;
+	cleaned[len] = '\0';
+	for (n=0; n<NELEMENTS; n++)
+		if (strcmp(el[n].ucsymbol,cleaned) == 0) 
+		{
+			result = n;
+			break;
+		}
+	return result;
+}
+
 // Convert string from name to element number
 int element_map::name_to_z(const char *s)
 {
@@ -350,6 +370,10 @@ int element_map::find(const char *query)
 		// Convert based on alpha-part of atom name only
 		case (ZM_ALPHA):
 			result = alpha_to_z(query);
+			break;
+		// Convert based on first alpha-part of atom name only
+		case (ZM_FIRSTALPHA):
+			result = alphafirst_to_z(query);
 			break;
 		// Convert based on numeric part only
 		case (ZM_NUMERIC):

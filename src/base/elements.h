@@ -65,6 +65,8 @@ class element_map
 	int number_to_z(const char*);
 	// Convert string from alpha to element number
 	int alpha_to_z(const char*);
+	// Convert string from first alpha (up to non-AZ inc 09) to element number
+	int alphafirst_to_z(const char*);
 	// Convert string from name to element number
 	int name_to_z(const char*);
 	// Convert string from fftype to element number

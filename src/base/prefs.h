@@ -88,7 +88,7 @@ const char *text_from_EU(energy_unit);
 energy_unit EU_from_text(const char*);
 
 // Name->Z mapping methods
-enum zmap_type { ZM_ALPHA, ZM_NAME, ZM_NUMERIC, ZM_FORCEFIELD, ZM_AUTO, ZM_NITEMS };
+enum zmap_type { ZM_ALPHA, ZM_FIRSTALPHA, ZM_NAME, ZM_NUMERIC, ZM_FORCEFIELD, ZM_AUTO, ZM_NITEMS };
 zmap_type ZM_from_text(const char*);
 const char **get_ZM_keywords();
 

@@ -87,7 +87,7 @@ energy_unit EU_from_text(const char *s)
 	{ return (energy_unit) enum_search("energy units",EU_NITEMS,EU_keywords,s); }
 
 // ZMapping types
-const char *ZM_keywords[ZM_NITEMS] = { "Alpha", "Name", "Numeric", "FF", "Auto" };
+const char *ZM_keywords[ZM_NITEMS] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
 zmap_type ZM_from_text(const char *s)
 	{ return (zmap_type) enum_search("element mapping style",ZM_NITEMS,ZM_keywords,s); }
 const char **get_ZM_keywords()
