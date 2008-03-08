@@ -43,14 +43,14 @@ importtrajectory
 		for $n,1,$natoms
 			readline "$e $id $mass $q"
 			readline "$rx@12 $ry@12 $rz@12"
-			setcoords $rx $ry $rz
+			setcoords $rx $ry $rz $n
 			if $keytrj > 0
 				readline "$vx@12 $vy@12 $vz@12"
-				setvelocities $vx $vy $vz
+				setvelocities $vx $vy $vz $n
 			end
 			if $keytrj > 1
 				readline "$fx@12 $fy@12 $fz@12"
-				setforces $fx $fy $fz
+				setforces $fx $fy $fz $n
 			end
 		end
 		fold

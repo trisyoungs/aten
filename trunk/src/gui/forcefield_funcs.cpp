@@ -42,8 +42,18 @@ void AtenForm::refresh_forcefieldpage()
 		item->setText(ff->get_name());
 	}
 	// Select the current FF.
-	if (master.get_currentff() == NULL) ui.ForcefieldList->setCurrentRow(0);
-	else ui.ForcefieldList->setCurrentRow(master.get_currentff_id());
+	if (master.get_currentff() == NULL)
+	{
+		ui.ForcefieldList->setCurrentRow(0);
+		ui.RemoveForcefieldButton->setEnabled(FALSE);
+		ui.EditForcefieldButton->setEnabled(FALSE);
+	}
+	else
+	{
+		ui.ForcefieldList->setCurrentRow(master.get_currentff_id());
+		ui.RemoveForcefieldButton->setEnabled(TRUE);
+		ui.EditForcefieldButton->setEnabled(FALSE);
+	}
 }
 
 // Update list of forcefield types in typelist
@@ -82,8 +92,15 @@ void AtenForm::on_ForcefieldList_currentRowChanged(int row)
 // Load forcefield 
 void AtenForm::on_LoadForcefieldButton_clicked(bool checked)
 {
-	printf("Not done yet!\n");
-	refresh_forcefieldpage();
+	QString filename;
+	if (openffdialog->exec() == 1)
+	{
+		// Get selected filter in file dialog
+		QString filter = openffdialog->selectedFilter();
+		filename = openffdialog->selectedFiles().first();
+		master.load_ff(qPrintable(filename));
+		refresh_forcefieldpage();
+	}
 }
 
 // Remove selected forcefield in list
