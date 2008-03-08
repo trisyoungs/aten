@@ -181,23 +181,21 @@ atom *model::atom_on_screen(double x1, double y1)
 void model::select_box(double x1, double y1, double x2, double y2)
 {
 	// Box selection - choose all the atoms within the selection area
-	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
 	dbg_begin(DM_CALLS,"model::select_box");
 	#ifdef HAS_GUI
 		float t;
 		atom *i, *closest;
 		y1 = gui.mainview.get_height() - y1;
 		y2 = gui.mainview.get_height() - y2;
+		// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
 		if (x1 > x2) { t=x1; x1=x2; x2=t; }
 		if (y1 > y2) { t=y1; y1=y2; y2=t; }
-		i = atoms.first();
-		while (i != NULL)
+		for (atom *i = atoms.first(); i != NULL; i = i->next)
 		{
 			if (i->is_hidden()) { i = i->next; continue; }
 			vec3<double> sr = i->screenr();
 			if ((sr.x >= x1) && (sr.x <= x2))
 				if ((sr.y >= y1) && (sr.y <= y2)) select_atom(i);
-			i = i->next;
 		}
 	#endif
 	dbg_end(DM_CALLS,"model::select_box");

@@ -300,7 +300,7 @@ class model
 	void select_pattern(pattern*);
 	// Select all atoms within the rectangular boundary specified
 	void select_box(double, double, double, double);
-	// Select all atoms connected by an path from the specified atom
+	// Select all atoms connected by a path from the specified atom
 	void select_tree(atom*);
 	// Select all atoms of the same element as the specified atom
 	void select_element(atom*);

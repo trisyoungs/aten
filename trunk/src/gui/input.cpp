@@ -313,7 +313,7 @@ void canvas::end_mode(mouse_button button)
 			{
 				if (keymod[MK_SHIFT])
 				{
-					if (atom_hover != NULL) displaymodel->select_atom(atom_hover);
+					if (atom_hover != NULL) displaymodel->selection_toggle(atom_hover);
 				}
 				else if (atom_hover != NULL) displaymodel->select_atom(atom_hover);
 			}

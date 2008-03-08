@@ -157,7 +157,7 @@ class canvas
 	// Draw a line arrow
 	void gl_arrow(const vec3<double>&, const vec3<double>&);
 	// Manually draw a unit sphere
-	void gl_sphere(double radius);
+	void gl_sphere(double radius, bool filled);
 
 	protected:
 	// Last model rendered by canvas (needed for mouse hover etc.)
