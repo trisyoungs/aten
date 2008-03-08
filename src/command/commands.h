@@ -283,6 +283,11 @@ enum command_action {
 	CA_SKIPLINE,
 	CA_WRITELINE,
 
+	// Script Commands
+	CA_LISTSCRIPTS,
+	CA_LOADSCRIPT,
+	CA_RUNSCRIPT,
+
 	// Select Commands
 	CA_SELECTALL,
 	CA_SELECTATOM,
@@ -580,6 +585,10 @@ class commanddata
 	int function_CA_SKIPCHARS(command *&c, bundle &obj);
 	int function_CA_SKIPLINE(command *&c, bundle &obj);
 	int function_CA_WRITELINE(command *&c, bundle &obj);
+	// Script Commands
+	int function_CA_LISTSCRIPTS(command *&c, bundle &obj);
+	int function_CA_LOADSCRIPT(command *&c, bundle &obj);
+	int function_CA_RUNSCRIPT(command *&c, bundle &obj);
 	// Select Commands
 	int function_CA_SELECTALL(command *&c, bundle &obj);
 	int function_CA_SELECTATOM(command *&c, bundle &obj);

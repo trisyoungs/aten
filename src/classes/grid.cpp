@@ -39,7 +39,7 @@ grid::grid()
 	max = -10000.0;
 	cutoff = 0.0;
 	log = -1;
-	style = SS_GRID;
+	style = SS_SOLID;
 	displaylist = 0;
 	render_point = -1;
 	visible = TRUE;
@@ -130,6 +130,7 @@ void grid::set_limits(double d)
 {
 	if (d < min) min = d;
 	else if (d > max) max = d;
+	cutoff = (max - min) * 0.5 + min;
 }
 
 // Set specific point in data array
@@ -167,7 +168,6 @@ void grid::set_next_data(double d)
 		return;
 	}
 	// Set current point referenced by currentpoint
-	currentpoint.print();
 	data[currentpoint.x][currentpoint.y][currentpoint.z] = d;
 	// Increase currentpoint
 	currentpoint.set(looporder.x, currentpoint.get(looporder.x) + 1);

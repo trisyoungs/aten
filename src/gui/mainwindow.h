@@ -203,6 +203,18 @@ class AtenForm : public QMainWindow
 	void execute_command();
 
 	/*
+	// Script Actions
+	*/
+	private:
+	// Pointers to recent file actions
+	reflist<QAction, commandlist* > scriptactions;
+	private slots:
+	void run_script();
+	void on_actionLoadScript_triggered(bool v);
+	public:
+	void refresh_scriptsmenu();
+
+	/*
 	// Toolbar Actions
 	*/
 	private slots:
@@ -452,6 +464,8 @@ class AtenForm : public QMainWindow
 	QFileDialog *openffdialog, *saveffdialog;
 	// File dialog for save bitmap and save vector image
 	QFileDialog *savebitmapdialog, *savevectordialog;
+	// File dialog for script loading
+	QFileDialog *openscriptdialog;
 	// Filter set from save model dialog
 	filter *savemodelfilter;
 	// Filename set from save model dialog

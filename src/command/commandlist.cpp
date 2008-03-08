@@ -633,6 +633,7 @@ bool commandlist::cache_command()
 bool commandlist::load(const char *filename)
 {
 	dbg_begin(DM_CALLS,"commandlist::load");
+	scriptfilename = filename;
 	ifstream cmdfile(filename,ios::in);
 	command *c;
 	command_action ca;
@@ -671,7 +672,7 @@ bool commandlist::load(const char *filename)
 	}
 	// Check the flowstack - it should be empty...
 	int itemsleft = branchstack.size();
-	if (itemsleft != 0)
+	if (itemsleft != 1)
 	{
 		printf("commandlist::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
 		dbg_end(DM_CALLS,"commandlist::load");
