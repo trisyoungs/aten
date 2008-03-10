@@ -28,12 +28,14 @@ void canvas::render_model_glyphs()
 {
 	dbg_begin(DM_CALLS,"canvas::render_model_glyphs");
 	static vec3<double> vec[MAXGLYPHDATA], avg, normal;
+	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
+
 	// Render other elemental objects in the model
 	for (glyph *g = displaymodel->get_glyphs(); g != NULL; g = g->next)
 	{
 		// Set relevant polygon mode
 		glPolygonMode(GL_FRONT_AND_BACK, (g->is_solid() ? GL_FILL : GL_LINE));
-		 // glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, elements.ambient(i->get_element()));
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, col);
 		switch (g->get_type())
 		{
 			// Arrow - tail = data[0], head = data[1]

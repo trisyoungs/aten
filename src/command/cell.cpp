@@ -21,6 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/debug.h"
+#include "base/master.h"
 #include "model/model.h"
 
 // Fold atoms into unit cell
@@ -102,6 +103,15 @@ int commanddata::function_CA_SETCELLAXES(command *&c, bundle &obj)
 int commanddata::function_CA_SETSPACEGROUP(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->set_spacegroup(c->argi(0));
+	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
+	if (c->argt(0) == VT_INTEGER) obj.m->set_spacegroup(c->argi(0));
+	else
+	{
+		msg(DM_NONE,"Searching for spacegroup '%s'...",c->argc(0));
+		int sg = master.find_spacegroup_by_name(c->argc(0));
+		if (sg == 0) msg(DM_NONE," not found - no spacegroup set.\n");
+		else msg(DM_NONE," found, id = %i.\n",sg);
+		obj.m->set_spacegroup(sg);
+	}
 	return CR_SUCCESS;
 }

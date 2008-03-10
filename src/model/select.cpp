@@ -301,15 +301,13 @@ void model::select_overlaps(double tolerance)
 	dbg_begin(DM_CALLS,"model::select_overlaps");
 	atom *i, *j;
 	double deltar;
-	vec3<double> v;
 	select_none();
 	for (i = atoms.first(); i != atoms.last(); i = i->next)
 	{
 		if (i->is_selected()) continue;
 		for (j = i->next; j != NULL; j = j->next)
 		{
-			v = i->r() - j->r();
-			deltar = v.magnitude();
+			deltar = cell.distance(i, j);
 			if (deltar < tolerance)
 			{
 				msg(DM_NONE,"Atom %i (%s) is %f from atom %i (%s).\n", j->get_id()+1, elements.symbol(j), deltar, i->get_id()+1, elements.symbol(i));

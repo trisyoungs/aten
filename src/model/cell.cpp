@@ -150,7 +150,7 @@ void model::pack(int gen)
 		newr = i->r();
 		// Apply the rotation and translation
 		newr *= master.generators[gen].rotation;
-		newr -= master.generators[gen].translation;
+		newr +=  cell.get_axes() * master.generators[gen].translation;
 		cell.fold(newr);
 		i->r() = newr;
 	}
@@ -168,6 +168,9 @@ void model::pack()
 		select_all();
 		for (int n=0; n<master.spacegroups[spgrp].ngenerators; n++)
 			pack(master.spacegroups[spgrp].generators[n]);
+		// Select overlapping atoms and delete
+		select_overlaps(0.1);
+		selection_delete();
 	}
 	dbg_end(DM_CALLS,"model::pack");
 }
