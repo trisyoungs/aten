@@ -33,7 +33,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore, int 
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
 	dbg_begin(DM_CALLS,"pattern::vdw_intrapattern_energy");
-	static int n,aoff,m1,i,j;
+	static int n,aoff,m1,i,j, start1, finish1;
 	static vec3<double> mim_i;
 	static double sigma, sigmar6, epsilon, rij, energy_inter, energy_intra, cutoff, vrs;
 	static ffparams paramsi, paramsj;
@@ -45,8 +45,10 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore, int 
 	unitcell *cell = srcmodel->get_cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	start1 = (lonemolecule == -1 ? 0 : lonemolecule);
+	finish1 = (lonemolecule == -1 ? nmols : lonemolecule+1);
+	aoff = startatom + start1*natoms;
+	for (m1=start1; m1<finish1; m1++)
 	{
 		// Calculate energies of atom pairs that are unbound or separated by more than three bonds
 		i = -1;
@@ -102,7 +104,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore, int 
 					sigma = ( paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA] ) * 0.5 * vrs;
 					epsilon *= pb->get_data()->get_params().data[TF_VSCALE];
 					sigmar6 = pow((sigma / rij),6);
-					energy_intra += epsilon * (sigmar6*sigmar6 - sigmar6);
+					energy_intra -= epsilon * (sigmar6*sigmar6 - sigmar6);
 					break;
 			}
 		}
@@ -111,6 +113,7 @@ void pattern::vdw_intrapattern_energy(model *srcmodel, energystore *estore, int 
 	// Add totals into energystore
 	estore->add(ET_VDWINTRA,energy_intra,id);
 	estore->add(ET_VDWINTER,energy_inter,id,id);
+	//printf("TOTAL = %f %f\n",energy_intra,energy_inter);
 	dbg_end(DM_CALLS,"pattern::vdw_intrapattern_energy");
 }
 

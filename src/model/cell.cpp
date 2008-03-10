@@ -150,7 +150,7 @@ void model::pack(int gen)
 		newr = i->r();
 		// Apply the rotation and translation
 		newr *= master.generators[gen].rotation;
-		newr +=  cell.get_axes() * master.generators[gen].translation;
+		newr +=  cell.get_transpose() * master.generators[gen].translation;
 		cell.fold(newr);
 		i->r() = newr;
 	}

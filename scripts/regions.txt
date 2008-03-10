@@ -37,4 +37,4 @@ printcomponents
 vdwscale 1.0
 
 # Begin
-disorder 1
+disorder 100
