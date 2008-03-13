@@ -42,10 +42,10 @@ void master_data::init_commands()
 	CA_data[CA_TRAJANALYSE].function = &commanddata::function_CA_TRAJANALYSE;
 
 	// Atom Commands
-	CA_data[CA_ADDATOM].function = &commanddata::function_CA_ADDATOM;
-	CA_data[CA_ADDATOMFRAC].function = &commanddata::function_CA_ADDATOMFRAC;
-	CA_data[CA_ADDCHAIN].function = &commanddata::function_CA_ADDCHAIN;
+	CA_data[CA_CHAIN].function = &commanddata::function_CA_CHAIN;
 	CA_data[CA_ENDCHAIN].function = &commanddata::function_CA_ENDCHAIN;
+	CA_data[CA_NEWATOM].function = &commanddata::function_CA_NEWATOM;
+	CA_data[CA_NEWATOMFRAC].function = &commanddata::function_CA_NEWATOMFRAC;
 	CA_data[CA_SELECTATOM].function = &commanddata::function_CA_SELECTATOM;
 	CA_data[CA_SETCOORDS].function = &commanddata::function_CA_SETCOORDS;
 	CA_data[CA_SETCHARGE].function = &commanddata::function_CA_SETCHARGE;
@@ -64,12 +64,12 @@ void master_data::init_commands()
 	CA_data[CA_SETVZ].function = &commanddata::function_CA_SETVZ;
 
 	// Bond commands
-	CA_data[CA_ADDBOND].function = &commanddata::function_CA_ADDBOND;
-	CA_data[CA_ADDBONDID].function = &commanddata::function_CA_ADDBONDID;
 	CA_data[CA_AUGMENT].function = &commanddata::function_CA_AUGMENT;
 	CA_data[CA_BONDTOLERANCE].function = &commanddata::function_CA_BONDTOLERANCE;
-	CA_data[CA_BONDPATTERNS].function = &commanddata::function_CA_BONDPATTERNS;
-	CA_data[CA_BONDSELECTION].function = &commanddata::function_CA_BONDSELECTION;
+	CA_data[CA_NEWBOND].function = &commanddata::function_CA_NEWBOND;
+	CA_data[CA_NEWBONDID].function = &commanddata::function_CA_NEWBONDID;
+	CA_data[CA_REBONDPATTERNS].function = &commanddata::function_CA_REBONDPATTERNS;
+	CA_data[CA_REBONDSELECTION].function = &commanddata::function_CA_REBONDSELECTION;
 	CA_data[CA_CLEARBONDS].function = &commanddata::function_CA_CLEARBONDS;
 	CA_data[CA_REBOND].function = &commanddata::function_CA_REBOND;
 
@@ -147,13 +147,13 @@ void master_data::init_commands()
 	CA_data[CA_FFMODEL].function = &commanddata::function_CA_FFMODEL;
 	CA_data[CA_FFPATTERN].function = &commanddata::function_CA_FFPATTERN;
 	CA_data[CA_FFPATTERNID].function = &commanddata::function_CA_FFPATTERNID;
+	CA_data[CA_GETFF].function = &commanddata::function_CA_GETFF;
 	CA_data[CA_LOADFF].function = &commanddata::function_CA_LOADFF;
-	CA_data[CA_SELECTFF].function = &commanddata::function_CA_SELECTFF;
 	CA_data[CA_TYPEMODEL].function = &commanddata::function_CA_TYPEMODEL;
 	CA_data[CA_TYPETEST].function = &commanddata::function_CA_TYPETEST;
 
 	// Glyph commands
-	CA_data[CA_ADDGLYPH].function = &commanddata::function_CA_ADDGLYPH;
+	CA_data[CA_NEWGLYPH].function = &commanddata::function_CA_NEWGLYPH;
 	CA_data[CA_SETGLYPHATOMF].function = &commanddata::function_CA_SETGLYPHATOMF;
 	CA_data[CA_SETGLYPHATOMR].function = &commanddata::function_CA_SETGLYPHATOMR;
 	CA_data[CA_SETGLYPHATOMV].function = &commanddata::function_CA_SETGLYPHATOMV;
@@ -181,7 +181,7 @@ void master_data::init_commands()
 
 	// Labeling Commands
 	CA_data[CA_CLEARLABELS].function = &commanddata::function_CA_CLEARLABELS;
-	CA_data[CA_ADDLABEL].function = &commanddata::function_CA_ADDLABEL;
+	CA_data[CA_LABEL].function = &commanddata::function_CA_LABEL;
 	CA_data[CA_REMOVELABEL].function = &commanddata::function_CA_REMOVELABEL;
 
 	// MC Commands
@@ -208,21 +208,21 @@ void master_data::init_commands()
 	// Model Commands
 	CA_data[CA_CREATEATOMS].function = &commanddata::function_CA_CREATEATOMS;
 	CA_data[CA_FINALISEMODEL].function = &commanddata::function_CA_FINALISEMODEL;
+	CA_data[CA_GETMODEL].function = &commanddata::function_CA_GETMODEL;
 	CA_data[CA_LISTMODELS].function = &commanddata::function_CA_LISTMODELS;
 	CA_data[CA_LOADMODEL].function = &commanddata::function_CA_LOADMODEL;
 	CA_data[CA_MODELTEMPLATE].function = &commanddata::function_CA_MODELTEMPLATE;
 	CA_data[CA_NEWMODEL].function = &commanddata::function_CA_NEWMODEL;
-	CA_data[CA_PRINTMODEL].function = &commanddata::function_CA_PRINTMODEL;
+	CA_data[CA_INFO].function = &commanddata::function_CA_INFO;
 	CA_data[CA_SAVEMODEL].function = &commanddata::function_CA_SAVEMODEL;
-	CA_data[CA_SELECTMODEL].function = &commanddata::function_CA_SELECTMODEL;
 	CA_data[CA_SETTITLE].function = &commanddata::function_CA_SETTITLE;
 
 	// Pattern Commands
-	CA_data[CA_ADDPATTERN].function = &commanddata::function_CA_ADDPATTERN;
 	CA_data[CA_CLEARPATTERNS].function = &commanddata::function_CA_CLEARPATTERNS;
 	CA_data[CA_CREATEPATTERNS].function = &commanddata::function_CA_CREATEPATTERNS;
-	CA_data[CA_PRINTPATTERNS].function = &commanddata::function_CA_PRINTPATTERNS;
-	CA_data[CA_SELECTPATTERN].function = &commanddata::function_CA_SELECTPATTERN;
+	CA_data[CA_GETPATTERN].function = &commanddata::function_CA_GETPATTERN;
+	CA_data[CA_LISTPATTERNS].function = &commanddata::function_CA_LISTPATTERNS;
+	CA_data[CA_NEWPATTERN].function = &commanddata::function_CA_NEWPATTERN;
 
 	// Preferences Commands
 	CA_data[CA_ATOMDETAIL].function = &commanddata::function_CA_ATOMDETAIL;
@@ -277,9 +277,9 @@ void master_data::init_commands()
 	CA_data[CA_SELECTTYPE].function = &commanddata::function_CA_SELECTTYPE;
 	
 	// Site Commands
-	CA_data[CA_ADDSITE].function = &commanddata::function_CA_ADDSITE;
-	CA_data[CA_PRINTSITES].function = &commanddata::function_CA_PRINTSITES;
-	CA_data[CA_SELECTSITE].function = &commanddata::function_CA_SELECTSITE;
+	CA_data[CA_GETSITE].function = &commanddata::function_CA_GETSITE;
+	CA_data[CA_LISTSITES].function = &commanddata::function_CA_LISTSITES;
+	CA_data[CA_NEWSITE].function = &commanddata::function_CA_NEWSITE;
 	CA_data[CA_SETAXES].function = &commanddata::function_CA_SETAXES;
 
 	// System Commands

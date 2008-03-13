@@ -31,7 +31,7 @@ bool wasatomdata[MAXGLYPHDATA];
 
 
 // Add glyph to current model
-int commanddata::function_CA_ADDGLYPH(command *&c, bundle &obj)
+int commanddata::function_CA_NEWGLYPH(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Get glyph style

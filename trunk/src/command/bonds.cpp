@@ -22,8 +22,8 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 
-// Add bond between atoms ('addbond <atom1> <atom2> [bondtype]')
-int commanddata::function_CA_ADDBOND(command *&c, bundle &obj)
+// Add bond between atoms ('newbond <atom1> <atom2> [bondtype]')
+int commanddata::function_CA_NEWBOND(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Third (optional) argument gives bond type
@@ -42,8 +42,8 @@ int commanddata::function_CA_ADDBOND(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Add bond between atoms with specified ids ('addbond <id1> <id2> [bondtype]')
-int commanddata::function_CA_ADDBONDID(command *&c, bundle &obj)
+// Add bond between atoms with specified ids ('newbondid <id1> <id2> [bondtype]')
+int commanddata::function_CA_NEWBONDID(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Third (optional) argument gives bond type
@@ -106,16 +106,16 @@ int commanddata::function_CA_BONDTOLERANCE(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Calculate bonds restricted to pattern molecules ('bondpatterns')
-int commanddata::function_CA_BONDPATTERNS(command *&c, bundle &obj)
+// Calculate bonds restricted to pattern molecules ('rebondpatterns')
+int commanddata::function_CA_REBONDPATTERNS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->pattern_calculate_bonding();
 	return CR_SUCCESS;
 }
 
-// Calculate bonds restricted to current selection ('bondselection')
-int commanddata::function_CA_BONDSELECTION(command *&c, bundle &obj)
+// Calculate bonds restricted to current selection ('rebondselection')
+int commanddata::function_CA_REBONDSELECTION(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->selection_calculate_bonding();

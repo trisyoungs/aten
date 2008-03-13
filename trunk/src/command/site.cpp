@@ -21,11 +21,12 @@
 
 #include "command/commandlist.h"
 #include "base/debug.h"
+#include "base/master.h"
 #include "classes/pattern.h"
 #include "parse/parser.h"
 
-// Add site definition to model ('addsite <name> <pattern> <"atomids...">')
-int commanddata::function_CA_ADDSITE(command *&c, bundle &obj)
+// Add site definition to model ('newsite <name> <pattern> <"atomids...">')
+int commanddata::function_CA_NEWSITE(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// First, check that the pattern name provided refers to a pattern of the current model
@@ -49,8 +50,8 @@ int commanddata::function_CA_ADDSITE(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Print site definitions for model ('printsites')
-int commanddata::function_CA_PRINTSITES(command *&c, bundle &obj)
+// Print site definitions for model ('listsites')
+int commanddata::function_CA_LISTSITES(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	site *s = obj.m->sites.first();
@@ -69,8 +70,14 @@ int commanddata::function_CA_PRINTSITES(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-int commanddata::function_CA_SELECTSITE(command *&c, bundle &obj)
+// Select named site from currently defined model sites ('getsite <name>')
+int commanddata::function_CA_GETSITE(command *&c, bundle &obj)
 {
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	site *s;
+	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->get_name(),c->argc(0)) == 0) break;
+	if (s == NULL) msg(DM_NONE,"No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->get_name());
+	else master.current.s = s;
 	return CR_FAIL;
 }
 

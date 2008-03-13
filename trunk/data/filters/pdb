@@ -28,28 +28,28 @@ importmodel
 			if $e = ""
 				let $e = $name
 			end
-			addatom $e
+			newatom $e
 			setcoords $rx $ry $rz
 		elseif $keyword = ATOM
 			readvar $line "$id@5 $name@5 *@14 $rx@8 $ry@8 $rz@8 *@22 $e@2"
 			if $e = ""
 				let $e = $name
 			end
-			addatom $e
+			newatom $e
 			setcoords $rx $ry $rz
 		elseif $keyword = CONECT
 			readvar $line "*@6 $i@5 $bondi@5 $bondj@5 $bondk@5 $bondl@5"
 			if $bondi > 0
-				addbond $i $bondi
+				newbond $i $bondi
 			end
 			if $bondj > 0
-				addbond $i $bondj
+				newbond $i $bondj
 			end
 			if $bondk > 0
-				addbond $i $bondk
+				newbond $i $bondk
 			end
 			if $bondl > 0
-				addbond $i $bondl
+				newbond $i $bondl
 			end
 		end
 	end

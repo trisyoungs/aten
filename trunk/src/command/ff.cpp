@@ -26,11 +26,13 @@
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 
-// Associate current ff to current model ('ffmodel')
+// Associate current ff to current model ('ffmodel [name]')
 int commanddata::function_CA_FFMODEL(command *&c, bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
-	obj.m->set_ff(obj.ff);
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	// If an argument was supplied, select forcefield by name. Otherwise use current
+	if (c->has_arg(0)) obj.m->set_ff(master.find_ff(c->argc(0)));
+	else obj.m->set_ff(obj.ff);
 	return CR_SUCCESS;
 }
 
@@ -70,20 +72,13 @@ int commanddata::function_CA_LOADFF(command *&c, bundle &obj)
 	else return CR_FAIL;
 }
 
-// Select current forcefield ('selectff <name>')
-int commanddata::function_CA_SELECTFF(command *&c, bundle &obj)
+// Select current forcefield ('getff <name>')
+int commanddata::function_CA_GETFF(command *&c, bundle &obj)
 {
 	forcefield *ff = master.find_ff(c->argc(0));
-	if (ff != NULL)
-	{
-		master.set_currentff(ff);
-		return CR_SUCCESS;
-	}
-	else
-	{
-		msg(DM_NONE,"Forcefield '%s' is not loaded.\n", c->argc(0));
-		return CR_FAIL;
-	}
+	if (ff != NULL)	master.set_currentff(ff);
+	else return CR_FAIL;
+	return CR_SUCCESS;
 }
 
 // Perform typing on current model

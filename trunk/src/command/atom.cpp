@@ -26,8 +26,8 @@
 #include "classes/forcefield.h"
 #include "parse/filter.h"
 
-// Draw unbound atom ('addatom <el> [x y z]')
-int commanddata::function_CA_ADDATOM(command *&c, bundle &obj)
+// Draw unbound atom ('newatom <el> [x y z]')
+int commanddata::function_CA_NEWATOM(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
@@ -56,8 +56,8 @@ int commanddata::function_CA_ADDATOM(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Draw unbound atom ('addatom <el> [fracx fracy fracz]')
-int commanddata::function_CA_ADDATOMFRAC(command *&c, bundle &obj)
+// Draw unbound atom ('newatom <el> [fracx fracy fracz]')
+int commanddata::function_CA_NEWATOMFRAC(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
@@ -89,8 +89,8 @@ int commanddata::function_CA_ADDATOMFRAC(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Draw atom with bond to 'activeatom' ('addchain <el>')
-int commanddata::function_CA_ADDCHAIN(command *&c, bundle &obj)
+// Draw atom with bond to alst atom ('chain <el>')
+int commanddata::function_CA_CHAIN(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->get_parent()->penpos);

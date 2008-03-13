@@ -31,7 +31,7 @@ int commanddata::function_CA_CLEARLABELS(command *&c, bundle &obj)
 }
 
 // Add label to current selection
-int commanddata::function_CA_ADDLABEL(command *&c, bundle &obj)
+int commanddata::function_CA_LABEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	atom_label al = AL_from_text(c->argc(0));

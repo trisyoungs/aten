@@ -18,26 +18,26 @@ importmodel
 		readline "$keywd $line@100"
 		if $keywd = atom
 			readvar $line "$e $rx $ry $rz"
-			addatom $e
+			newatom $e
 			setcoords $rx $ry $rz
 		elseif $keywd = arrow
 			readvar $line "$i $j"
-			addglyph arrow
+			newglyph arrow
 			setglyphatomr 1 $i
 			setglyphatomr 2 $j
 		elseif $keywd = sphere
 			readvar $line "$i $rx $ry $rz"
-			addglyph sphere
+			newglyph sphere
 			setglyphatomr 1 $i
 			setglyphdata 2 $rx $ry $rz
 		elseif $keywd = cube
 			readvar $line "$i $rx $ry $rz"
-			addglyph cube
+			newglyph cube
 			setglyphatomr 1 $i
 			setglyphdata 2 $rx $ry $rz
 		elseif $keywd = tet
 			readvar $line "$i $j $k"
-			addglyph tetrahedron
+			newglyph tetrahedron
 			setglyphatomr 1 $i
 			setglyphatomr 2 $j
 			setglyphatomr 3 $k

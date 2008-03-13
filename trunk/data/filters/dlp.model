@@ -31,7 +31,7 @@ importmodel
 	# Atoms
 	for $n
 		readline "$e"
-		addatom $e
+		newatom $e
 		readline "$rx $ry $rz"
 		setcoords $rx $ry $rz
 		if $keytrj > 0

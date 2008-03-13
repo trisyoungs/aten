@@ -31,7 +31,7 @@
 // Select Atom
 void model::select_atom(atom *i)
 {
-	dbg_begin(DM_MORECALLS,"model::select_atom");
+	dbg_begin(DM_MORECALLS,"model::select_atom (%li)",i);
 	if (!i->is_selected())
 	{
 		i->set_selected(TRUE);
@@ -44,13 +44,13 @@ void model::select_atom(atom *i)
 			newchange->set(UE_SELECT,i->get_id());
 		}
 	}
-	dbg_end(DM_MORECALLS,"model::select_atom");
+	dbg_end(DM_MORECALLS,"model::select_atom (%li)",i);
 }
 
 // Deselect Atom
 void model::deselect_atom(atom *i)
 {
-	dbg_begin(DM_MORECALLS,"model::deselect_atom");
+	dbg_begin(DM_MORECALLS,"model::deselect_atom (%li)",i);
 	if (i->is_selected())
 	{
 		i->set_selected(FALSE);
@@ -63,15 +63,15 @@ void model::deselect_atom(atom *i)
 			newchange->set(-UE_SELECT,i->get_id());
 		}
 	}
-	dbg_end(DM_MORECALLS,"model::deselect_atom");
+	dbg_end(DM_MORECALLS,"model::deselect_atom (%li)",i);
 }
 
 // Toggle Selection State
 void model::selection_toggle(atom *i)
 {
-	dbg_begin(DM_MORECALLS,"model::selection_toggle");
+	dbg_begin(DM_MORECALLS,"model::selection_toggle (%li)",i);
 	i->is_selected() ? deselect_atom(i) : select_atom(i);
-	dbg_end(DM_MORECALLS,"model::selection_toggle");
+	dbg_end(DM_MORECALLS,"model::selection_toggle (%li)",i);
 }
 
 // Invert Current Selection
