@@ -36,7 +36,7 @@ importmodel
 			elseif $type = Atom
 				let $newblock = A
 				print "SETTING NEW ATOM"
-				addatom 0
+				newatom 0
 				# We must also set the atom id here (since bonds refer to item number, not Id)
 				let $id = $ident
 			elseif $type = Bond
@@ -48,9 +48,9 @@ importmodel
 			# If $newblock is not 0, check the old $block value and perform end tasks
 			if $block = A
 				print "Adding new atom..................................."
-				addatom 0
+				newatom 0
 			elseif $block = B
-				addbond $bondi $bondj
+				newbond $bondi $bondj
 			end
 			let $block = $newblock
 		else

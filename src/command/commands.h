@@ -65,10 +65,10 @@ enum command_action {
 	CA_TRAJANALYSE,
 
 	// Atom Commands
-	CA_ADDATOM,
-	CA_ADDATOMFRAC,
-	CA_ADDCHAIN,
+	CA_CHAIN,
 	CA_ENDCHAIN,
+	CA_NEWATOM,
+	CA_NEWATOMFRAC,
 	CA_SETCHARGE,
 	CA_SETCOORDS,
 	CA_SETELEMENT,
@@ -86,13 +86,13 @@ enum command_action {
 	CA_SETVZ,
 
 	// Bond commands
-	CA_ADDBOND,
-	CA_ADDBONDID,
 	CA_AUGMENT,
 	CA_BONDTOLERANCE,
-	CA_BONDPATTERNS,
-	CA_BONDSELECTION,
 	CA_CLEARBONDS,
+	CA_NEWBOND,
+	CA_NEWBONDID,
+	CA_REBONDPATTERNS,
+	CA_REBONDSELECTION,
 	CA_REBOND,
 
 	// Build commands
@@ -169,13 +169,13 @@ enum command_action {
 	CA_FFMODEL,
 	CA_FFPATTERN,
 	CA_FFPATTERNID,
+	CA_GETFF,
 	CA_LOADFF,
-	CA_SELECTFF,
 	CA_TYPEMODEL,
 	CA_TYPETEST,
 
 	// Glyph commands
-	CA_ADDGLYPH,
+	CA_NEWGLYPH,
 	CA_SETGLYPHATOMF,
 	CA_SETGLYPHATOMR,
 	CA_SETGLYPHATOMV,
@@ -203,7 +203,7 @@ enum command_action {
 
 	// Labeling commands
 	CA_CLEARLABELS,
-	CA_ADDLABEL,
+	CA_LABEL,
 	CA_REMOVELABEL,
 
 	// MC Commands
@@ -230,21 +230,21 @@ enum command_action {
 	// Model Commands
 	CA_CREATEATOMS,
 	CA_FINALISEMODEL,
+	CA_GETMODEL,
+	CA_INFO,
 	CA_LISTMODELS,
 	CA_LOADMODEL,
 	CA_MODELTEMPLATE,
 	CA_NEWMODEL,
-	CA_PRINTMODEL,
 	CA_SAVEMODEL,
-	CA_SELECTMODEL,
 	CA_SETTITLE,
 
 	// Pattern Commands
-	CA_ADDPATTERN,
 	CA_CLEARPATTERNS,
 	CA_CREATEPATTERNS,
-	CA_PRINTPATTERNS,
-	CA_SELECTPATTERN,
+	CA_GETPATTERN,
+	CA_LISTPATTERNS,
+	CA_NEWPATTERN,
 
 	// Preferences Commands
 	CA_ATOMDETAIL,
@@ -296,12 +296,13 @@ enum command_action {
 	CA_SELECTINVERT,
 	CA_SELECTNONE,
 	CA_SELECTOVERLAPS,
+	CA_SELECTPATTERN,
 	CA_SELECTTYPE,
 	
 	// Site Commands
-	CA_ADDSITE,
-	CA_PRINTSITES,
-	CA_SELECTSITE,
+	CA_GETSITE,
+	CA_LISTSITES,
+	CA_NEWSITE,
 	CA_SETAXES,
 
 	// System commands
@@ -389,10 +390,10 @@ class commanddata
 	int function_CA_SAVEQUANTITIES(command *&c, bundle &obj);
 	int function_CA_TRAJANALYSE(command *&c, bundle &obj);
 	// Atom Commands
-	int function_CA_ADDATOM(command *&c, bundle &obj);
-	int function_CA_ADDATOMFRAC(command *&c, bundle &obj);
-	int function_CA_ADDCHAIN(command *&c, bundle &obj);
+	int function_CA_CHAIN(command *&c, bundle &obj);
 	int function_CA_ENDCHAIN(command *&c, bundle &obj);
+	int function_CA_NEWATOM(command *&c, bundle &obj);
+	int function_CA_NEWATOMFRAC(command *&c, bundle &obj);
 	int function_CA_SETCOORDS(command *&c, bundle &obj);
 	int function_CA_SETCHARGE(command *&c, bundle &obj);
 	int function_CA_SETELEMENT(command *&c, bundle &obj);
@@ -409,13 +410,13 @@ class commanddata
 	int function_CA_SETVY(command *&c, bundle &obj);
 	int function_CA_SETVZ(command *&c, bundle &obj);
 	// Bond commands
-	int function_CA_ADDBOND(command *&c, bundle &obj);
-	int function_CA_ADDBONDID(command *&c, bundle &obj);
 	int function_CA_AUGMENT(command *&c, bundle &obj);
 	int function_CA_BONDTOLERANCE(command *&c, bundle &obj);
-	int function_CA_BONDPATTERNS(command *&c, bundle &obj);
-	int function_CA_BONDSELECTION(command *&c, bundle &obj);
 	int function_CA_CLEARBONDS(command *&c, bundle &obj);
+	int function_CA_NEWBOND(command *&c, bundle &obj);
+	int function_CA_NEWBONDID(command *&c, bundle &obj);
+	int function_CA_REBONDPATTERNS(command *&c, bundle &obj);
+	int function_CA_REBONDSELECTION(command *&c, bundle &obj);
 	int function_CA_REBOND(command *&c, bundle &obj);
 	// Build commands
 	int function_CA_ADDHYDROGEN(command *&c, bundle &obj);
@@ -483,12 +484,12 @@ class commanddata
 	int function_CA_FFMODEL(command *&c, bundle &obj);
 	int function_CA_FFPATTERN(command *&c, bundle &obj);
 	int function_CA_FFPATTERNID(command *&c, bundle &obj);
+	int function_CA_GETFF(command *&c, bundle &obj);
 	int function_CA_LOADFF(command *&c, bundle &obj);
-	int function_CA_SELECTFF(command *&c, bundle &obj);
 	int function_CA_TYPEMODEL(command *&c, bundle &obj);
 	int function_CA_TYPETEST(command *&c, bundle &obj);
 	// Glyph commands
-	int function_CA_ADDGLYPH(command *&c, bundle &obj);
+	int function_CA_NEWGLYPH(command *&c, bundle &obj);
 	int function_CA_SETGLYPHATOMF(command *&c, bundle &obj);
 	int function_CA_SETGLYPHATOMR(command *&c, bundle &obj);
 	int function_CA_SETGLYPHATOMV(command *&c, bundle &obj);
@@ -513,7 +514,7 @@ class commanddata
 	int function_CA_SAVEVECTOR(command *&c, bundle &obj);
 	// Labeling commands
 	int function_CA_CLEARLABELS(command *&c, bundle &obj);
-	int function_CA_ADDLABEL(command *&c, bundle &obj);
+	int function_CA_LABEL(command *&c, bundle &obj);
 	int function_CA_REMOVELABEL(command *&c, bundle &obj);
 	// MC Commands
 	int function_CA_MCACCEPT(command *&c, bundle &obj);
@@ -536,20 +537,20 @@ class commanddata
 	// Model Commands
 	int function_CA_CREATEATOMS(command *&c, bundle &obj);
 	int function_CA_FINALISEMODEL(command *&c, bundle &obj);
+	int function_CA_GETMODEL(command *&c, bundle &obj);
+	int function_CA_INFO(command *&c, bundle &obj);
 	int function_CA_LISTMODELS(command *&c, bundle &obj);
 	int function_CA_LOADMODEL(command *&c, bundle &obj);
 	int function_CA_MODELTEMPLATE(command *&c, bundle &obj);
 	int function_CA_NEWMODEL(command *&c, bundle &obj);
-	int function_CA_PRINTMODEL(command *&c, bundle &obj);
 	int function_CA_SAVEMODEL(command *&c, bundle &obj);
-	int function_CA_SELECTMODEL(command *&c, bundle &obj);
 	int function_CA_SETTITLE(command *&c, bundle &obj);
 	// Pattern Commands
-	int function_CA_ADDPATTERN(command *&c, bundle &obj);
 	int function_CA_CLEARPATTERNS(command *&c, bundle &obj);
 	int function_CA_CREATEPATTERNS(command *&c, bundle &obj);
-	int function_CA_PRINTPATTERNS(command *&c, bundle &obj);
-	int function_CA_SELECTPATTERN(command *&c, bundle &obj);
+	int function_CA_GETPATTERN(command *&c, bundle &obj);
+	int function_CA_LISTPATTERNS(command *&c, bundle &obj);
+	int function_CA_NEWPATTERN(command *&c, bundle &obj);
 	// Preferences Commands
 	int function_CA_ATOMDETAIL(command *&c, bundle &obj);
 	int function_CA_BONDDETAIL(command *&c, bundle &obj);
@@ -597,11 +598,12 @@ class commanddata
 	int function_CA_SELECTINVERT(command *&c, bundle &obj);
 	int function_CA_SELECTNONE(command *&c, bundle &obj);
 	int function_CA_SELECTOVERLAPS(command *&c, bundle &obj);
+	int function_CA_SELECTPATTERN(command *&c, bundle &obj);
 	int function_CA_SELECTTYPE(command *&c, bundle &obj);
 	// Site Commands
-	int function_CA_ADDSITE(command *&c, bundle &obj);
-	int function_CA_PRINTSITES(command *&c, bundle &obj);
-	int function_CA_SELECTSITE(command *&c, bundle &obj);
+	int function_CA_GETSITE(command *&c, bundle &obj);
+	int function_CA_LISTSITES(command *&c, bundle &obj);
+	int function_CA_NEWSITE(command *&c, bundle &obj);
 	int function_CA_SETAXES(command *&c, bundle &obj);
 	// System Commands
 	int function_CA_GUI(command *&c, bundle &obj);
@@ -636,8 +638,7 @@ class commanddata
 };
 
 command_action CA_from_text(const char*);
-
-// External definitions
+ // External definitions
 extern commanddata CA_data[CA_NITEMS];
 
 #endif

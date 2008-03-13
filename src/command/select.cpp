@@ -100,6 +100,26 @@ int commanddata::function_CA_SELECTOVERLAPS(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Select all atoms in current (or named) pattern ('selectpattern [name]')
+int commanddata::function_CA_SELECTPATTERN(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	pattern *p = NULL;
+	if (c->has_arg(0)) p = obj.m->find_pattern(c->argc(0));
+	else p = obj.p;
+	if (p == NULL) msg(DM_NONE,"No pattern in which to select atoms.\n");
+	else
+	{
+		atom *i = p->get_firstatom();
+		for (int n=0; n<p->get_totalatoms(); n++)
+		{
+			obj.m->select_atom(i);
+			i = i->next;
+		}
+	}
+	return CR_SUCCESS;
+}
+
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
 int commanddata::function_CA_SELECTTYPE(command *&c, bundle &obj)
 {

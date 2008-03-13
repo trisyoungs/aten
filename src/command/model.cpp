@@ -119,8 +119,8 @@ int commanddata::function_CA_NEWMODEL(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Print all information for model ('printmodel')
-int commanddata::function_CA_PRINTMODEL(command *&c, bundle &obj)
+// Print all information for model ('info')
+int commanddata::function_CA_INFO(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	obj.m->print();
@@ -146,8 +146,8 @@ int commanddata::function_CA_SAVEMODEL(command *&c, bundle &obj)
 	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
 }
 
-// Select working model ('selectmodel <name>')
-int commanddata::function_CA_SELECTMODEL(command *&c, bundle &obj)
+// Select working model ('getmodel <name>')
+int commanddata::function_CA_GETMODEL(command *&c, bundle &obj)
 {
 	model *m = master.find_model(c->argc(0));
 	if (m != NULL) 

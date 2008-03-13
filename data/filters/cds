@@ -67,17 +67,17 @@ importmodel
 		verbose "Atom pass $n : Elements are $ea, $eb, and $ec"
 		# Use variable data based on the $mod value...
 		if $mod = 0
-			addatom $ea
+			newatom $ea
 			eval $rx = "$xa / 100000"
 			eval $ry = "$ya / 100000"
 			eval $rz = "$za / 100000"
 		elseif $mod = 1
-			addatom $eb
+			newatom $eb
 			eval $rx = "$xb / 100000"
 			eval $ry = "$yb / 100000"
 			eval $rz = "$zb / 100000"
 		else
-			addatom $ec
+			newatom $ec
 			eval $rx = "$xc / 100000"
 			eval $ry = "$yc / 100000"
 			eval $rz = "$zc / 100000"
@@ -128,7 +128,7 @@ importmodel
 		# Check for dummy bond (if $ii = 0 don't create a bond)
 		if $ii > 0
 			verbose "Bonding atoms $ii $jj (model atom indices)"
-			addbond $ii $jj
+			newbond $ii $jj
 		end
 	end
 	# Convert our stored coordinates (which are fractional) to real coordinates

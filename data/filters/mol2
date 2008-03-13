@@ -24,13 +24,13 @@ importmodel
 		elseif $keywd = ATOM
 			for $n,1,$natoms
 				readline "$id $e $rx $ry $rz"
-				addatom $e
+				newatom $e
 				setcoords $rx $ry $rz
 			end
 		elseif $keywd = BOND
 			for $n,1,$nbonds
 				readline "* $ii $jj $bondtype"
-				addbond $ii $jj $bondtype
+				newbond $ii $jj $bondtype
 			end
 		elseif $keywd = CRYSIN
 			# Crystal cell information

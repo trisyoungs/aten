@@ -66,25 +66,39 @@ void msg(debug_mode dm, const char *fmt ...)
 }
 
 // Function enter
-void dbg_begin(debug_mode dm, const char *func)
+void dbg_begin(debug_mode dm, const char *fmt ...)
 {
 	// Debug Messaging - Enter Function
+	static char msgs[8096];
 	if (!debuglevel_active(dm)) return;
+	va_list arguments;
+	msgs[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into msgs[]
+	va_start(arguments,fmt);
+	vsprintf(msgs,fmt,arguments);
 	printf("%2i ",funclevel);
 	for (int n=0; n<funclevel; n++) printf("--");
-	printf("Begin : %s...\n",func);
+	printf("Begin : %s...\n",msgs);
 	funclevel ++;
+	va_end(arguments);
 }
 
 // Function leave
-void dbg_end(debug_mode dm, const char *func)
+void dbg_end(debug_mode dm, const char *fmt ...)
 {
 	// Debug Messaging - Leave Function
+	static char msgs[8096];
 	if (!debuglevel_active(dm)) return;
+	va_list arguments;
+	msgs[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into msgs[]
+	va_start(arguments,fmt);
+	vsprintf(msgs,fmt,arguments);
 	funclevel --;
 	printf("%2i ",funclevel);
 	for (int n=0; n<funclevel; n++) printf("--");
-	printf("End   : %s.\n",func);
+	printf("End   : %s.\n",msgs);
+	va_end(arguments);
 }
 
 /*

@@ -208,19 +208,11 @@ forcefield *master_data::find_ff(const char *s)
 {
 	// Search forcefield list for name 's' (script function)
 	dbg_begin(DM_CALLS,"master::find_ff");
-	forcefield *result = NULL;
-	forcefield *ff = ffs.first();
-	while (ff != NULL)
-	{
-		if (strcmp(s,ff->get_name()) == 0)
-		{
-			result = ff;
-			break;
-		}
-		ff = ff->next;
-	}
+	forcefield *ff;
+	for (ff = ffs.first(); ff != NULL; ff = ff->next) if (strcmp(s,ff->get_name()) == 0) break;
+	if (ff == NULL) msg(DM_NONE,"Forcefield '%s' is not loaded.\n",s);
 	dbg_end(DM_CALLS,"master::find_ff");
-	return result;
+	return ff;
 }
 
 // Dereference forcefield

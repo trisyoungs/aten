@@ -40,8 +40,8 @@ bool debuglevel_active(debug_mode);	// Returns whether the specified debug level
 
 // Messaging Functions
 void msg(debug_mode, const char* ...);
-void dbg_begin(debug_mode, const char*);
-void dbg_end(debug_mode, const char*);
+void dbg_begin(debug_mode, const char* ...);
+void dbg_end(debug_mode, const char* ...);
 
 /*
 // Dynamic Memory debugging ('MEMDEBUG')
