@@ -511,6 +511,8 @@ commanddata CA_data[CA_NITEMS] = {
 				"Start the GUI (if it is not already active)" },
 	{ "help",		"V",		"<command>",
 				"Provide short help on the command supplied" },
+	{ "seed",		"V",		"<seed>",
+				"Set the random seed" },
 	{ "quit",		"",		"",
 				"Exit the program" },
 
