@@ -24,6 +24,7 @@
 
 #include "classes/atom.h"
 #include "base/prefs.h"
+#include "gui/canvas.h"
 
 // Number of elements (120 until Ellipsoid is removed, 119 thereafter)
 #define NELEMENTS 120
@@ -53,6 +54,8 @@ struct element
 	GLint diffuse[4];
 	// Maximal bond order about the element 
 	int valency;
+	// Display lists for normal, selected, and highlighted atoms in different drawing styles
+	GLuint normal[DS_NITEMS-1], selected[DS_NITEMS-1], highlighted[DS_NITEMS-1];
 };
 
 // Element map
@@ -82,6 +85,9 @@ class element_map
 	int find(const char*, zmap_type);
 	// Initialise element data
 	void initialise();
+	// Friend declarations
+	friend void canvas::create_lists();
+	friend void canvas::init_gl();
 
 	/*
 	// Data by Z

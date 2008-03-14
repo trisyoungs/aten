@@ -27,16 +27,6 @@ AC_PROG_INSTALL
 AC_PROG_LIBTOOL
 
 
-# Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([string.h])
-#  --- doesn't work on the Mac since they're in a 'nonstandard' path
-if test "$target_vendor" != "apple"; then
-  AC_CHECK_HEADERS([GL/glut.h], ,[AC_MSG_ERROR([Could not find GLUT header. Is freeglut/Mesa installed?])])
-else
-  AC_CHECK_HEADERS([GLUT/glut.h], ,[AC_MSG_ERROR([Could not find GLUT header. Is GLUT installed?])])
-fi
-
 #
 # Additional Configuration Options
 #
@@ -57,14 +47,6 @@ if test "x$with_speedtest" != "x"; then
   AC_DEFINE([SPEEDTEST], [], [Enable rendering speedtest (warning - makes compiled code otherwise unusable).])
 fi
 
-# GL-INCLUDEDIR
-GL_CFLAGS=""
-AC_ARG_WITH([gl-includedir],[AC_HELP_STRING([--with-gl-includedir=DIR],
-    [Set location of OpenGL and GLUT headers to DIR [default=auto]])], ,
-    [with_gl_includedir=auto])
-if test "x$with_gl_includedir" != "xauto"; then
-  GL_CFLAGS="-I$with_gl_includedir"
-fi
 
 # QTDIR
 QTDIR=""
@@ -80,16 +62,12 @@ AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
     [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
     [with_qt=])
 
-# GLUT (Mac only)
-AC_ARG_WITH([glut],[AC_HELP_STRING([--with-glut=framework|<none>],
-    [Determines which installation of GLUT to use on OS X (should not be set for Linux)[default=<none>]])], ,
-    [with_glut=])
 
-
-# Pre-initialise pkg-config  (unless using Qt framework on the Mac
+# Pre-initialise pkg-config  (unless using Qt framework on the Mac)
 if test "$with_qt" != "framework"; then
   PKG_PROG_PKG_CONFIG
 fi
+
 
 # Set up compilation for Qt GUI
 #AC_DEFINE([WITH_QTGUI], [], [Compile with the Qt4 GUI interface])
@@ -112,13 +90,6 @@ if test "x$with_qt" = "x"; then
 fi
 GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
 GUI_CFLAGS="$QTGUI_CFLAGS"
-
-# Setup GLUT reference
-if test "$with_glut" = "framework"; then
-  MAC_LIBS="$MAC_LIBS -framework GLUT"
-else
-  GUI_LDLIBS="$GUI_LDLIBS -lglut"
-fi
 
 
 # Perform Makefile substitutions

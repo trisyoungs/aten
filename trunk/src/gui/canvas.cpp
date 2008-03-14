@@ -221,15 +221,6 @@ void canvas::create_lists()
 {
 	if (!is_valid()) return;
 	dbg_begin(DM_CALLS,"canvas::create_lists");
-	// Generate quadric objects for subsequent use
-	quadric1 = gluNewQuadric();			// Creates a quadric object for use.
-	quadric2 = gluNewQuadric();			// Creates a quadric object for use.
-	gluQuadricDrawStyle(quadric1, GLU_FILL);	// Set drawing style of the quadric to solid.
-	gluQuadricNormals(quadric1, GL_SMOOTH);		// Set up normals for shading.
-	gluQuadricTexture(quadric1, GL_FALSE);		// Turn off texturing.
-	gluQuadricDrawStyle(quadric2, GLU_FILL);	// Set drawing style of the quadric to solid.
-	gluQuadricNormals(quadric2, GL_SMOOTH);		// Set up normals for shading.
-	gluQuadricTexture(quadric2, GL_FALSE);		// Turn off texturing.
 
 	int n,m, atomdetail, extent, ticks;
 	double delta, tickdelta, tickheight, ticktop, tickbottom, spacing;
@@ -242,19 +233,17 @@ void canvas::create_lists()
 	/*
 	// Selected Atoms
 	*/
-	gluQuadricDrawStyle(quadric1, GLU_FILL);      // Set drawing style of the quadric to solid.
 	// Enlarged sphere (for selections with DS_TUBE)
 	glNewList(list[GLOB_SELTUBEATOM],GL_COMPILE);
-	  gluSphere(quadric1,prefs.render_tube_size*prefs.render_selection_scale,atomdetail,atomdetail*2);
+	  gl_sphere(prefs.render_tube_size*prefs.render_selection_scale, TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SPHERE)
 	glNewList(list[GLOB_SELSPHEREATOM],GL_COMPILE);
-	  //gl_sphere(prefs.render_atom_size[DS_SPHERE]*prefs.render_selection_scale);
-	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE]*prefs.render_selection_scale,atomdetail,atomdetail*2);
+	  gl_sphere(prefs.render_atom_size[DS_SPHERE]*prefs.render_selection_scale, TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SCALED)
 	glNewList(list[GLOB_SELUNITATOM],GL_COMPILE);
-	  gluSphere(quadric1,prefs.render_selection_scale,atomdetail,atomdetail*2);
+	  gl_sphere(prefs.render_selection_scale, TRUE);
 	glEndList();
 
 	/*
@@ -268,51 +257,44 @@ void canvas::create_lists()
 	    glVertex3f(0.0f,0.0f,-0.5f); glVertex3f(0.0f,0.0f,0.5f);
 	  glEnd();
 	glEndList();
-	gluQuadricDrawStyle(quadric1,GLU_FILL);      // Set drawing style of the quadric to solid.
 	// Atom Sphere (for DS_TUBE)
 	glNewList(list[GLOB_TUBEATOM],GL_COMPILE);
-	  gluSphere(quadric1,prefs.render_atom_size[DS_TUBE],atomdetail*2,atomdetail);
+	  gl_sphere(prefs.render_atom_size[DS_TUBE]*0.98, TRUE);
 	glEndList();
 	// Atom Sphere (for DS_SPHERE)
 	glNewList(list[GLOB_SPHEREATOM],GL_COMPILE);
-	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE],atomdetail*2,atomdetail);
-	  //gl_sphere(prefs.render_atom_size[DS_SPHERE]);
-	gluQuadricDrawStyle(quadric1,GLU_FILL);      // Set drawing style of the quadric to solid.
+	  gl_sphere(prefs.render_atom_size[DS_SPHERE], TRUE);
 	glEndList();
 	// Unit Atom Sphere (for DS_SCALED)
 	glNewList(list[GLOB_UNITATOM],GL_COMPILE);
-	  gluSphere(quadric1,1.0,atomdetail*2,atomdetail);
+	  gl_sphere(1.0, TRUE);
 	glEndList();
-	gluQuadricDrawStyle(quadric1,GLU_LINE);      // Set drawing style of the quadric to solid.
 	// Wire Atom Sphere (for DS_TUBE)
 	glNewList(list[GLOB_WIRETUBEATOM],GL_COMPILE);
-	  gluSphere(quadric1,prefs.render_tube_size*1.1,atomdetail*2,atomdetail);
+	  gl_sphere(prefs.render_tube_size*1.1, FALSE);
 	glEndList();
 	// Wire Atom Sphere (for DS_SPHERE)
 	glNewList(list[GLOB_WIRESPHEREATOM],GL_COMPILE);
-	  gluSphere(quadric1,prefs.render_atom_size[DS_SPHERE]*1.1,atomdetail*2,atomdetail);
+	  gl_sphere(prefs.render_atom_size[DS_SPHERE]*1.1, FALSE);
 	glEndList();
 	// Wire Unit Atom Sphere (for DS_SCALED)
 	glNewList(list[GLOB_WIREUNITATOM],GL_COMPILE);
-	  gluSphere(quadric1,1.1,atomdetail*2,atomdetail);
+	  gl_sphere(1.1, FALSE);
 	glEndList();
 	/*
 	// Cylinders (bonds)
 	*/
 	// Solid cylinder
-	gluQuadricDrawStyle(quadric1,GLU_FILL);
 	glNewList(list[GLOB_CYLINDER],GL_COMPILE);
-	  gluCylinder(quadric2,prefs.render_tube_size,prefs.render_tube_size,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
+	  gl_cylinder(prefs.render_tube_size, TRUE);
 	glEndList();
 	// Wireframe cylinder
-	gluQuadricDrawStyle(quadric1,GLU_LINE);
 	glNewList(list[GLOB_WIRECYLINDER],GL_COMPILE);
-	  gluCylinder(quadric2,prefs.render_tube_size,prefs.render_tube_size,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
+	  gl_cylinder(prefs.render_tube_size, FALSE);
 	glEndList();
 	// Selected wireframe cylinder
-	gluQuadricDrawStyle(quadric1,GLU_LINE);
 	glNewList(list[GLOB_SELWIRECYLINDER],GL_COMPILE);
-	  gluCylinder(quadric2,prefs.render_tube_size*prefs.render_selection_scale,prefs.render_tube_size*prefs.render_selection_scale,1.0f,prefs.render_bond_detail,prefs.render_bond_detail);
+	  gl_cylinder(prefs.render_tube_size*prefs.render_selection_scale, FALSE);
 	glEndList();
 	/*
 	// Objects
@@ -335,8 +317,7 @@ void canvas::create_lists()
 	    glVertex3f(0.05f,0.0f,0.65f); glVertex3f(-0.05f,0.0f,0.85f);
 	    glVertex3f(-0.05f,0.0f,0.85f); glVertex3f(0.05f,0.0f,0.85f);
 	  glEnd();
-	  gluQuadricDrawStyle(quadric1,GLU_LINE);
-	  gluSphere(quadric1,0.5,10,20);
+	  gl_sphere(0.5, FALSE);
 	glEndList();
 	// Drawing guide
 	delta = extent * spacing;
