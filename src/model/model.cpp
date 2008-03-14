@@ -51,9 +51,7 @@ model::model()
 	currentundostate = NULL;
 	currentredostate = NULL;
 	recordingstate = NULL;
-	char newname[16];
-	sprintf(newname,"Unnamed%03i",master.get_modelid());
-	name = newname;
+	name = "NewModel";
 	trajparent = NULL;
 	trajfilefilter = NULL;
 	trajfile = NULL;

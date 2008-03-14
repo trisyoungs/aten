@@ -308,6 +308,7 @@ enum command_action {
 	// System commands
 	CA_GUI,
 	CA_HELP,
+	CA_SEED,
 	CA_QUIT,
 
 	// Trajectory Commands
@@ -607,6 +608,7 @@ class commanddata
 	int function_CA_SETAXES(command *&c, bundle &obj);
 	// System Commands
 	int function_CA_GUI(command *&c, bundle &obj);
+	int function_CA_SEED(command *&c, bundle &obj);
 	int function_CA_HELP(command *&c, bundle &obj);
 	int function_CA_QUIT(command *&c, bundle &obj);
 	// Trajectory Commands

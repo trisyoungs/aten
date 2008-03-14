@@ -26,11 +26,7 @@
 #include "templates/reflist.h"
 #include "base/prefs.h"
 #include "render/gl2ps_extra.h"
-#ifdef IS_MAC
-	#include <GLUT/glut.h>
-#else
-	#include <GL/glut.h>
-#endif
+
 
 // Actions
 enum user_action { UA_NONE,
@@ -121,8 +117,6 @@ class canvas
 	// Rendering display lists
 	*/
 	private:
-	// Quadric objects
-	GLUquadricObj *quadric1, *quadric2;
 	// Display list ID's
 	GLuint list[GLOB_NITEMS];
 

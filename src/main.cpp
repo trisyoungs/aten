@@ -58,6 +58,13 @@ int main(int argc, char *argv[])
 	master.homedir = getenv("HOME");
 	master.workdir = getenv("PWD");
 	master.datadir = getenv("ATENDATA");
+	if (master.datadir.empty())
+	{
+		printf("$ATENDATA has not been set.\n");
+		printf("It should point to the (installed) location of the 'data' directory.\n");
+		printf("e.g. (in bash) 'export ATENDATA=/usr/local/share/aten/'.\n");
+		return 1;
+	}
 	printf("Home directory is %s, working directory is %s.\n",master.homedir.get(),master.workdir.get());
 
 	// Initialise elements

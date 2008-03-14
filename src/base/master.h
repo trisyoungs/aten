@@ -82,8 +82,6 @@ class master_data
 	int get_modelindex(model *m) { return models.index_of(m); }
 	// Return the number of models in the model list
 	int get_nmodels() { return models.size(); }
-	// Return the model ID counter
-	int get_modelid() { return ++modelid; }
 	// Add a new model to the workspace
 	model* add_model();
 	// Remove specified model from the list

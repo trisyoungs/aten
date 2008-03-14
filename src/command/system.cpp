@@ -50,6 +50,13 @@ int commanddata::function_CA_HELP(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set random seed
+int commanddata::function_CA_SEED(command *&c, bundle &obj)
+{
+	srand( (unsigned) c->argi(0) );
+	return CR_SUCCESS;
+}
+
 // Quit main program
 int commanddata::function_CA_QUIT(command *&c, bundle &obj)
 {

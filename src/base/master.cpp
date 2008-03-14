@@ -98,6 +98,9 @@ model *master_data::add_model()
 {
 	dbg_begin(DM_CALLS,"master::add_model");
 	current.m = models.add();
+	char newname[16];
+	sprintf(newname,"Unnamed%03i",++modelid);
+	current.m->set_name(newname);
 	gui.add_model(current.m);
 	dbg_end(DM_CALLS,"master::add_model");
 	return current.m;
@@ -264,8 +267,8 @@ bool master_data::open_filters(const char *path, bool isdatadir)
 	ifstream listfile(longname,ios::in);
 	if (!listfile.is_open())
 	{
-		if (isdatadir) msg(DM_NONE,"Index file not found. Have you set $ATENDATA?\n");
-		else msg(DM_NONE,"No user filter index found.\n");
+		if (isdatadir) msg(DM_NONE,"Default filter index file not found. Has $ATENDATA been set correctly?\n");
+		else msg(DM_NONE,"No user filter index found in '%s'.\n",longname);
 	}
 	else
 	{

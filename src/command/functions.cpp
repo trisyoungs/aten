@@ -285,6 +285,7 @@ void master_data::init_commands()
 	// System Commands
 	CA_data[CA_GUI].function = &commanddata::function_CA_GUI;
 	CA_data[CA_HELP].function = &commanddata::function_CA_HELP;
+	CA_data[CA_SEED].function = &commanddata::function_CA_SEED;
 	CA_data[CA_QUIT].function = &commanddata::function_CA_QUIT;
 	
 	// Trajectory Commands
