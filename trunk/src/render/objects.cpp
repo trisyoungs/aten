@@ -267,12 +267,12 @@ void canvas::gl_sphere(double radius, bool filled)
 	for(i = 0; i <= lats; i++)
 	{
 		lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
-		z0  = sin(lat0) * radius;
-		zr0 =  cos(lat0) * radius;
+		z0  = sin(lat0);
+		zr0 =  cos(lat0);
 
 		lat1 = M_PI * (-0.5 + (double) i / lats);
-		z1 = sin(lat1) * radius;
-		zr1 = cos(lat1) * radius;
+		z1 = sin(lat1);
+		zr1 = cos(lat1);
 
 		glBegin(GL_QUAD_STRIP);
 		  for(j = 0; j <= longs; j++)
@@ -280,11 +280,11 @@ void canvas::gl_sphere(double radius, bool filled)
 			lng = 2 * M_PI * (double) (j - 1) / longs;
 			x = cos(lng);
 			y = sin(lng);
-			glNormal3f(x * zr0, y * zr0, z0);
-			glVertex3f(x * zr0, y * zr0, z0);
-			glNormal3f(x * zr1, y * zr1, z1);
-			glVertex3f(x * zr1, y * zr1, z1);
-		}
+			glNormal3d(x * zr0, y * zr0, z0);
+			glVertex3d(x * zr0 * radius, y * zr0 * radius, z0 * radius);
+			glNormal3d(x * zr1, y * zr1, z1);
+			glVertex3d(x * zr1 * radius, y * zr1 * radius, z1 * radius);
+		  }
 		glEnd();
 	}
 }

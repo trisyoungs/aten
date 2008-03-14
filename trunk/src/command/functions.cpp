@@ -34,6 +34,7 @@ void master_data::init_commands()
 	// Analyse commands
 	CA_data[CA_FINALISE].function = &commanddata::function_CA_FINALISE;
 	CA_data[CA_FRAMEANALYSE].function = &commanddata::function_CA_FRAMEANALYSE;
+	CA_data[CA_GEOMETRY].function = &commanddata::function_CA_GEOMETRY;
 	CA_data[CA_MODELANALYSE].function = &commanddata::function_CA_MODELANALYSE;
 	CA_data[CA_PDENS].function = &commanddata::function_CA_PDENS;
 	CA_data[CA_PRINTJOBS].function = &commanddata::function_CA_PRINTJOBS;

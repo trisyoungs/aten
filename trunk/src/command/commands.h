@@ -57,6 +57,7 @@ enum command_action {
 	// Analysis commands
 	CA_FINALISE,
 	CA_FRAMEANALYSE,
+	CA_GEOMETRY,
 	CA_MODELANALYSE,
 	CA_PDENS,
 	CA_PRINTJOBS,
@@ -384,6 +385,7 @@ class commanddata
 	// Analyse commands
 	int function_CA_FINALISE(command *&c, bundle &obj);
 	int function_CA_FRAMEANALYSE(command *&c, bundle &obj);
+	int function_CA_GEOMETRY(command *&c, bundle &obj);	
 	int function_CA_MODELANALYSE(command *&c, bundle &obj);
 	int function_CA_PDENS(command *&c, bundle &obj);
 	int function_CA_PRINTJOBS(command *&c, bundle &obj);

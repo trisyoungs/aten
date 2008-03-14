@@ -1,6 +1,6 @@
 /*
 	*** Geometryy measurement calculation
-	*** src/methods/rdf.cpp
+	*** src/methods/geometry.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -28,6 +28,8 @@ geometry::geometry()
 {
 	sites[0] = NULL;
 	sites[1] = NULL;
+	sites[2] = NULL;
+	sites[3] = NULL;
 	lower = 0.0;
 	upper = 15.0;
 	binwidth = 0.1;
@@ -45,14 +47,14 @@ geometry::~geometry()
 // Set site
 void geometry::set_site(int i, site *s)
 {
-	if (i < 2) sites[i] = s;
+	if (i < 4) sites[i] = s;
 	else printf("OUTOFRANGE:geometry::set_site\n");
 }
 
 // Get site
 site *geometry::get_site(int i)
 {
-	if (i < 2) return sites[i];
+	if (i < 4) return sites[i];
 	else printf("OUTOFRANGE:geometry::get_site\n");
 	return NULL;
 }
@@ -81,7 +83,7 @@ bool geometry::initialise()
 	// Create the data arrays
 	data = new double[nbins];
 	for (int n=0; n<nbins; n++) data[n] = 0.0;
-	msg(DM_NONE,"There are %i bins in rdf '%s', beginning at r = %f.\n", nbins, name.get(), lower);
+	msg(DM_NONE,"There are %i bins in geometry '%s', beginning at r = %f.\n", nbins, name.get(), lower);
 	acc = 0;
 	dbg_end(DM_CALLS,"geometry::initialise");
 	return TRUE;
@@ -121,20 +123,6 @@ void geometry::accumulate(model *sourcemodel)
 void geometry::finalise(model *sourcemodel)
 {
 	dbg_begin(DM_CALLS,"geometry::finalise");
-	int n;
-	double factor, r1, r2, numdensity;
-	// Normalise the rdf w.r.t. number of frames and number of central molecules
-	for (n=0; n<nbins; n++) data[n] /= double(acc) * sites[0]->get_pattern()->get_nmols() ;
-	// Normalise according to number density of sites in RDF shells
-	numdensity = sites[1]->get_pattern()->get_nmols() / sourcemodel->get_volume();
-	for (n=0; n<nbins; n++)
-	{
-		r1 = lower + double(n) * binwidth;
-		r2 = r1 + binwidth;
-		factor = (4.0 / 3.0) * PI * (r2*r2*r2 - r1*r1*r1) * numdensity;
-		data[n] /= factor;
-
-	}
 	dbg_end(DM_CALLS,"geometry::finalise");
 }
 
