@@ -263,7 +263,7 @@ void canvas::gl_sphere(double radius, bool filled)
 	int lats = prefs.get_atom_detail();
 	int longs = lats * 1.5;
 	double lat0, z0, zr0, lat1, z1, zr1, lng, x, y;
-	glPolygonMode(GL_FRONT, (filled ? GL_FILL : GL_LINE));
+	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
 	for(i = 0; i <= lats; i++)
 	{
 		lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
@@ -271,8 +271,8 @@ void canvas::gl_sphere(double radius, bool filled)
 		zr0 =  cos(lat0) * radius;
 
 		lat1 = M_PI * (-0.5 + (double) i / lats);
-		z1 = sin(lat1);
-		zr1 = cos(lat1);
+		z1 = sin(lat1) * radius;
+		zr1 = cos(lat1) * radius;
 
 		glBegin(GL_QUAD_STRIP);
 		  for(j = 0; j <= longs; j++)
@@ -287,59 +287,23 @@ void canvas::gl_sphere(double radius, bool filled)
 		}
 		glEnd();
 	}
+}
 
-	/* Don't use this to render objects to the view - create a display list first!
-	int slices = prefs.get_atom_detail();
-	int stacks = slices * 2;
-	double x[2][slices],y[2][slices],z[2],r,rad;
-	double zstep = 2.0 * radius / stacks;
-	double delta = 0.01;
-	int n, m, row1 = 0, row2 = 1, t;
-	z[row1] = -radius;
-	// Initialise all elements of first array to 0.0
-	for (n=0; n<slices; n++)
+void canvas::gl_cylinder(double radius, bool filled)
+{
+	int n, m;
+	double d;
+	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
+	for (n=0; n<prefs.get_bond_detail(); n++)		// Slices
 	{
-		x[row1][n] = 0.0;
-		y[row1][n] = 0.0;
+		glBegin(GL_QUAD_STRIP);
+		  for (m=0; m<=prefs.get_bond_detail(); m++)	// Stacks
+		  {
+			  d = m * TWOPI / prefs.get_bond_detail();
+			  glNormal3d(cos(d), sin(d), 0.0);
+			  glVertex3d(cos(d) * radius, sin(d) * radius, n * (1.0 / prefs.get_bond_detail()));
+			  glVertex3d(cos(d) * radius, sin(d) * radius, (n + 1) * (1.0 / prefs.get_bond_detail()));
+		  }
+		glEnd();
 	}
-	glBegin(GL_QUADS);
-	  for (n=1; n<=stacks; n++)
-	  {
-		z[row2] = z[row1] + zstep;
-		rad = cos((z[row2]/radius) * (PI/2.0) + (PI/2));
-		//      z[row2] = rad * radius;
-		// Fill the x and y array 'row2' with the coordinates of the circle
-		//r = sqrt(1 - (z[row2]/radius) * (z[row2]/radius));
-		r = sqrt(1 - rad*rad);
-		//printf("sin=%9.4f %9.4f\n",rad,r);
-		for (m=0; m<slices; m++)
-		{
-			rad = m*(TWOPI/slices);
-			x[row2][m] = cos(rad) * r * radius;
-			y[row2][m] = sin(rad) * r * radius;
-		}
-		// Draw QUADS between points...
-		for (m=1; m<slices; m++)
-		{
-			glNormal3d(x[row2][m],y[row2][m],z[row2]);
-			glVertex3d(x[row2][m],y[row2][m],z[row2]);
-
-			glNormal3d(x[row2][m-1],y[row2][m-1],z[row2]);
-			glVertex3d(x[row2][m-1],y[row2][m-1],z[row2]);
-			glNormal3d(x[row1][m-1],y[row1][m-1],z[row1]);
-			glVertex3d(x[row1][m-1],y[row1][m-1],z[row1]);
-			glNormal3d(x[row1][m],y[row1][m],z[row1]);
-			glVertex3d(x[row1][m],y[row1][m],z[row1]);
-		}
-		// Final set of quads - between first and last points
-		glVertex3d(x[row1][slices-1],y[row1][slices-1],z[row1]);
-		glVertex3d(x[row1][0],y[row1][0],z[row1]);
-		glVertex3d(x[row2][0],y[row2][0],z[row2]);
-		glVertex3d(x[row2][slices-1],y[row2][slices-1],z[row2]);
-		// Swap rows
-		t = row2;
-		row2 = row1;
-		row1 = t;
-	  }
-	glEnd(); */
 }
