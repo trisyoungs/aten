@@ -23,6 +23,7 @@
 #include "base/debug.h"
 #include "methods/rdf.h"
 #include "methods/pdens.h"
+#include "methods/geometry.h"
 #include "model/model.h"
 
 // Finalise calculated quantites ('finalise')
@@ -43,6 +44,24 @@ int commanddata::function_CA_FRAMEANALYSE(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Calculate geometry ('geometry <name> <min> <binwidth> <nbins> <filename> <site1> <site2> [site3 [site4]]')
+int commanddata::function_CA_GEOMETRY(command *&c, bundle &obj)
+{
+	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	geometry *newgeom = new geometry;
+	obj.m->pending_quantities.own(newgeom);
+	// Set quantity name and destination filename
+	newgeom->set_name(c->argc(0));
+	newgeom->set_filename(c->argc(4));
+	// Associate sites to quantity
+	newgeom->set_site(0,obj.m->find_site(c->argc(5)));
+	newgeom->set_site(1,obj.m->find_site(c->argc(6)));
+	if (c->has_arg(7)) newgeom->set_site(1,obj.m->find_site(c->argc(7)));
+	if (c->has_arg(8)) newgeom->set_site(1,obj.m->find_site(c->argc(8)));
+	newgeom->set_range(c->argd(1), c->argd(2), c->argi(3));
+	return (newgeom->initialise() ? CR_SUCCESS : CR_FAIL);
+}
+
 // Accumulate data for current model ('modelanalyse')
 int commanddata::function_CA_MODELANALYSE(command *&c, bundle &obj)
 {
@@ -51,7 +70,7 @@ int commanddata::function_CA_MODELANALYSE(command *&c, bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Request calculation of a 3Ddens ('analyse pdens <name> <site1> <site2> <grid> <nsteps> <filename>')
+// Request calculation of a 3Ddens ('analyse pdens <name> <grid> <nsteps> <filename> <site1> <site2>')
 int commanddata::function_CA_PDENS(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
@@ -59,11 +78,11 @@ int commanddata::function_CA_PDENS(command *&c, bundle &obj)
 	obj.m->pending_quantities.own(newpdens);
 	// Set pdens name and destination filename
 	newpdens->set_name(c->argc(0));
-	newpdens->set_filename(c->argc(5));
+	newpdens->set_filename(c->argc(3));
 	// Associate sites to quantity
-	newpdens->set_site(0,obj.m->find_site(c->argc(1)));
-	newpdens->set_site(1,obj.m->find_site(c->argc(2)));
-	newpdens->set_range(c->argd(3), c->argi(4));
+	newpdens->set_site(0,obj.m->find_site(c->argc(4)));
+	newpdens->set_site(1,obj.m->find_site(c->argc(5)));
+	newpdens->set_range(c->argd(1), c->argi(2));
 	return (newpdens->initialise() ? CR_SUCCESS : CR_FAIL);
 }
 
@@ -73,7 +92,7 @@ int commanddata::function_CA_PRINTJOBS(command *&c, bundle &obj)
 	return CR_FAIL;
 }
 
-// Request calculation of an RDF ('rdf <name> <site1> <site2> <rmin> <binwidth> <nbins> <filename>')
+// Request calculation of an RDF ('rdf <name> <rmin> <binwidth> <nbins> <filename> <site1> <site2>')
 int commanddata::function_CA_RDF(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
@@ -81,11 +100,11 @@ int commanddata::function_CA_RDF(command *&c, bundle &obj)
 	obj.m->pending_quantities.own(newrdf);
 	// Set RDF name and destination filename
 	newrdf->set_name(c->argc(0));
-	newrdf->set_filename(c->argc(6));
+	newrdf->set_filename(c->argc(4));
 	// Associate sites to quantity
-	newrdf->set_site(0,obj.m->find_site(c->argc(1)));
-	newrdf->set_site(1,obj.m->find_site(c->argc(2)));
-	newrdf->set_range(c->argd(3), c->argd(4), c->argi(5));
+	newrdf->set_site(0,obj.m->find_site(c->argc(5)));
+	newrdf->set_site(1,obj.m->find_site(c->argc(6)));
+	newrdf->set_range(c->argd(1), c->argd(2), c->argi(3));
 	return (newrdf->initialise() ? CR_SUCCESS : CR_FAIL);
 }
 
