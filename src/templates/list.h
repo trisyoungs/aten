@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_LIST_H
-#define H_LIST_H
+#ifndef ATEN_LIST_H
+#define ATEN_LIST_H
 
 #include "base/debug.h"
 //#include "base/constants.h"

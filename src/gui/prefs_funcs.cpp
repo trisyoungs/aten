@@ -25,6 +25,7 @@
 #include "gui/prefs.h"
 #include <QtGui/QDialog>
 #include <QtGui/QListWidgetItem>
+#include <QtGui/QColorDialog>
 
 // Constructor
 AtenPrefs::AtenPrefs(QDialog *parent) : QDialog(parent)
@@ -54,6 +55,9 @@ void AtenPrefs::finalise_ui()
 void AtenPrefs::set_controls()
 {
 	dbg_begin(DM_CALLS,"AtenPrefs::set_controls");
+	// Select the first element in the elements list
+	ui.ElementList->setCurrentRow(0);
+
 	// Set controls in view page
 	ui.StickRadiusSpin->setValue(prefs.get_atom_size(DS_STICK));
 	ui.TubeRadiusSpin->setValue(prefs.get_atom_size(DS_TUBE));
@@ -67,26 +71,16 @@ void AtenPrefs::set_controls()
 	ui.CellVisibleCheck->setChecked(prefs.should_render(VO_CELL));
 	ui.AxesVisibleCheck->setChecked(prefs.should_render(VO_CELLAXES));
 	ui.AtomsVisibleCheck->setChecked(prefs.should_render(VO_ATOMS));
+	ui.ShininessSpin->setValue(prefs.get_shininess());
 
 	// Set controls in Lighting page
-	GLint *c;
-	c = prefs.get_spotlight(SL_AMBIENT);
-	ui.AmbientRedSpin->setValue( double(c[0]) / INT_MAX);
-	ui.AmbientGreenSpin->setValue( double(c[1]) / INT_MAX);
-	ui.AmbientBlueSpin->setValue( double(c[2]) / INT_MAX);
-	c = prefs.get_spotlight(SL_DIFFUSE);
-	ui.DiffuseRedSpin->setValue( double(c[0]) / INT_MAX);
-	ui.DiffuseGreenSpin->setValue( double(c[1]) / INT_MAX);
-	ui.DiffuseBlueSpin->setValue( double(c[2]) / INT_MAX);
-	c = prefs.get_spotlight(SL_SPECULAR);
-	ui.SpecularRedSpin->setValue( double(c[0]) / INT_MAX);
-	ui.SpecularGreenSpin->setValue( double(c[1]) / INT_MAX);
-	ui.SpecularBlueSpin->setValue( double(c[2]) / INT_MAX);
-	c = prefs.get_spotlight(SL_POSITION);
-	ui.LightPositionXSpin->setValue(c[0]);
-	ui.LightPositionYSpin->setValue(c[1]);
-	ui.LightPositionZSpin->setValue(c[2]);
-	ui.ShininessSpin->setValue(prefs.get_shininess());
+	ui.SpotlightAmbientColourFrame->set_colour(prefs.get_spotlight(SL_AMBIENT));
+	ui.SpotlightDiffuseColourFrame->set_colour(prefs.get_spotlight(SL_DIFFUSE));
+	ui.SpotlightSpecularColourFrame->set_colour(prefs.get_spotlight(SL_SPECULAR));
+	GLfloat *pos = prefs.get_spotlight(SL_POSITION);
+	ui.SpotlightPositionXSpin->setValue(pos[0]);
+	ui.SpotlightPositionYSpin->setValue(pos[1]);
+	ui.SpotlightPositionZSpin->setValue(pos[2]);
 
 	// Set controls in interaction page
 	ui.LeftMouseCombo->setCurrentIndex(prefs.get_mb_action(MB_LEFT));
@@ -103,38 +97,53 @@ void AtenPrefs::set_controls()
 // Element Page
 */
 
-void AtenPrefs::set_element_colour(int type, int component, int value)
-{
-	int el = ui.ElementList->currentRow();
-	if (type == 0) elements.set_ambient(el, component, int((double(value) / 255.0) * INT_MAX));
-	else elements.set_diffuse(el, component, int((double(value) / 255.0) * INT_MAX));
-	// Re-set atom colours in model(s)
-	for (model *m = master.get_models(); m != NULL; m = m->next)
-	{
-		//m->set_atom_colours(NULL);
-		m->log_change(LOG_VISUAL);
-	}
-	gui.mainview.postredisplay();
-}
-
 void AtenPrefs::on_ElementList_currentRowChanged(int row)
 {
 	// Update the info for the current element
 	ui.ElementNameLabel->setText(elements.name(row));
 	ui.ElementSymbolLabel->setText(elements.symbol(row));
 	ui.ElementMassLabel->setText(ftoa(elements.mass(row)));
-	GLint *colour;
-	colour = elements.ambient(row);
-	ui.ElementARedSpin->setValue( int((double(colour[0]) / INT_MAX) * 255) );
-	ui.ElementAGreenSpin->setValue( int((double(colour[1]) / INT_MAX) * 255) );
-	ui.ElementABlueSpin->setValue( int((double(colour[2]) / INT_MAX) * 255) );
-	ui.ElementAAlphaSpin->setValue( int((double(colour[3]) / INT_MAX) * 255) );
-	colour = elements.diffuse(row);
-	ui.ElementDRedSpin->setValue( int((double(colour[0]) / INT_MAX) * 255) );
-	ui.ElementDGreenSpin->setValue( int((double(colour[1]) / INT_MAX) * 255) );
-	ui.ElementDBlueSpin->setValue( int((double(colour[2]) / INT_MAX) * 255) );
-	ui.ElementDAlphaSpin->setValue( int((double(colour[3]) / INT_MAX) * 255) );
+	ui.ElementAmbientColourFrame->set_colour(elements.ambient(row));
+	ui.ElementDiffuseColourFrame->set_colour(elements.diffuse(row));
 	ui.ElementRadiusSpin->setValue(elements.radius(row));
+}
+
+void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
+{
+	// Get current row
+	int el = ui.ElementList->currentRow();
+	if (el == -1) return;
+	// Get element's current ambient colour and convert into a QColor
+	GLfloat *col = elements.ambient(el);
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour
+	elements.set_ambient(el, newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.ElementAmbientColourFrame->set_colour(newcol);
+	// Re-set atom colours in model(s)
+	master.get_currentmodel()->log_change(LOG_VISUAL);
+	gui.mainview.postredisplay();
+}
+
+void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
+{
+	// Get current row
+	int el = ui.ElementList->currentRow();
+	if (el == -1) return;
+	// Get element's current diffuse colour and convert into a QColor
+	GLfloat *col = elements.diffuse(el);
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour
+	elements.set_diffuse(el, newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.ElementDiffuseColourFrame->set_colour(newcol);
+	// Re-set atom colours in model(s)
+	master.get_currentmodel()->log_change(LOG_VISUAL);
+	gui.mainview.postredisplay();
 }
 
 /*
@@ -197,11 +206,59 @@ void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
 	gui.refresh();
 }
 
-void AtenPrefs::spotlight_changed(spotlight_component so, int i, double value)
+void AtenPrefs::spotlightpos_changed(int i, double value)
 {
-	prefs.set_spotlight(so, i, (GLint) (value * INT_MAX));
+	prefs.set_spotlight(SL_POSITION, i, (GLfloat) value);
 	gui.mainview.init_gl();
-	gui.refresh();	
+	gui.mainview.postredisplay();
+}
+
+void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)
+{
+	// Get spotlight's current ambient colour and convert into a QColor
+	GLfloat *col = prefs.get_spotlight(SL_AMBIENT);
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour
+	prefs.set_spotlight(SL_AMBIENT, newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.SpotlightAmbientColourFrame->set_colour(newcol);
+	// Update display
+	gui.mainview.init_gl();
+	gui.mainview.postredisplay();
+}
+
+void AtenPrefs::on_SpotlightDiffuseColourButton_clicked(bool checked)
+{
+	// Get spotlight's current ambient colour and convert into a QColor
+	GLfloat *col = prefs.get_spotlight(SL_DIFFUSE);
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour
+	prefs.set_spotlight(SL_DIFFUSE, newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.SpotlightAmbientColourFrame->set_colour(newcol);
+	// Update display
+	gui.mainview.init_gl();
+	gui.mainview.postredisplay();
+}
+
+void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
+{
+	// Get spotlight's current ambient colour and convert into a QColor
+	GLfloat *col = prefs.get_spotlight(SL_SPECULAR);
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour
+	prefs.set_spotlight(SL_SPECULAR, newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.SpotlightAmbientColourFrame->set_colour(newcol);
+	// Update display
+	gui.mainview.init_gl();
+	gui.mainview.postredisplay();
 }
 
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)

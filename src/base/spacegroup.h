@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_SPACEGROUP_H
-#define H_SPACEGROUP_H
+#ifndef ATEN_SPACEGROUP_H
+#define ATEN_SPACEGROUP_H
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"

@@ -37,6 +37,7 @@ void AtenForm::refresh_gridspage()
 	}
 	// Select the first item
 	if (master.get_ngrids() != 0) ui.GridList->setCurrentRow(0);
+	refresh_gridinfo();
 }
 
 void AtenForm::refresh_gridinfo()
@@ -69,9 +70,8 @@ void AtenForm::refresh_gridinfo()
 	ui.GridAxesCYSpin->setValue(axes.rows[2].y);
 	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
 	// Set colour and transparency
-	GLint *col = g->get_colour();
-	ui.SurfaceColourFrame->set_colour(col[0], col[1], col[2]);
-	ui.SurfaceTransparencySpin->setValue( (double) col[3] / INT_MAX );
+	ui.SurfaceColourFrame->set_colour(g->get_colour());
+	ui.SurfaceTransparencySpin->setValue( g->get_colour()[3]*127 );
 }
 
 void AtenForm::grid_origin_changed(int component, double value)
@@ -141,12 +141,9 @@ void AtenForm::on_SurfaceColourButton_clicked(bool checked)
 	if (row == -1) return;
 	grid *g = master.get_grid(row);
 	// Get current surface colour and convert into a QColor
-	GLint *glcol = g->get_colour();
+	GLfloat *col = g->get_colour();
 	QColor oldcol, newcol;
-	oldcol.setRedF( double(glcol[0]) / INT_MAX );
-	oldcol.setGreenF( double(glcol[1]) / INT_MAX );
-	oldcol.setBlueF( double(glcol[2]) / INT_MAX );
-	oldcol.setAlphaF( double(glcol[3]) / INT_MAX );
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour

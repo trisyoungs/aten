@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_FORMS_H
-#define H_FORMS_H
+#ifndef ATEN_FORMS_H
+#define ATEN_FORMS_H
 
 #include "base/sysfunc.h"
 

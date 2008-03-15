@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_DNCHAR_H
-#define H_DNCHAR_H
+#ifndef ATEN_DNCHAR_H
+#define ATEN_DNCHAR_H
 
 // Dynamic character array
 class dnchar

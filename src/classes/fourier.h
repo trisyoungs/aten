@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_FOURIER_H
-#define H_FOURIER_H
+#ifndef ATEN_FOURIER_H
+#define ATEN_FOURIER_H
 
 #include "templates/vector3.h"
 

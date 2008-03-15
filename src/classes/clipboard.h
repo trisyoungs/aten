@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_CLIPBOARD_H
-#define H_CLIPBOARD_H
+#ifndef ATEN_CLIPBOARD_H
+#define ATEN_CLIPBOARD_H
 
 #include "classes/atom.h"
 #include "templates/list.h"

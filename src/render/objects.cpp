@@ -261,7 +261,7 @@ void canvas::gl_sphere(double radius, bool filled)
 	// Don't use this to render objects to the view - create a display list first!
 	int i, j;
 	int lats = prefs.get_atom_detail();
-	int longs = lats * 1.5;
+	int longs = int(lats * 1.5);
 	double lat0, z0, zr0, lat1, z1, zr1, lng, x, y;
 	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
 	for(i = 0; i <= lats; i++)

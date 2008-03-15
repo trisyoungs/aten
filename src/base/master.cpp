@@ -36,7 +36,6 @@ master_data::master_data()
 
 	// Modes
 	mode = PM_GUI;
-	longopts = NULL;
 
 	// Store pointers to member functions
 	init_commands();
@@ -53,7 +52,6 @@ master_data::master_data()
 // Destructor
 master_data::~master_data()
 {
-	if (longopts != NULL) delete[] longopts;
 	#ifdef MEMDEBUG
 		printf(" Destructor : master_data\n");
 	#endif

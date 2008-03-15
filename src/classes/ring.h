@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_RING
-#define H_RING
+#ifndef ATEN_RING
+#define ATEN_RING
 
 #include "classes/atom.h"
 

@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_ATOMADDRESS_H
-#define H_ATOMADDRESS_H
+#ifndef ATEN_ATOMADDRESS_H
+#define ATEN_ATOMADDRESS_H
 
 // Forward declarations
 class pattern;

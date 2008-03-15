@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_PARSE_H
-#define H_PARSE_H
+#ifndef ATEN_PARSE_H
+#define ATEN_PARSE_H
 
 using namespace std;
 #include <fstream>

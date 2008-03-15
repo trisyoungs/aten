@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_MODEL_H
-#define H_MODEL_H
+#ifndef ATEN_MODEL_H
+#define ATEN_MODEL_H
 
 #include "templates/vector3.h"
 #include "base/prefs.h"

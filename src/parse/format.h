@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_FORMAT_H
-#define H_FORMAT_H
+#ifndef ATEN_FORMAT_H
+#define ATEN_FORMAT_H
 
 #include "templates/list.h"
 #include "classes/variables.h"

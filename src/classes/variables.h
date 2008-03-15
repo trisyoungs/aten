@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_VARIABLES_H
-#define H_VARIABLES_H
+#ifndef ATEN_VARIABLES_H
+#define ATEN_VARIABLES_H
 
 #include "templates/list.h"
 #include "classes/dnchar.h"

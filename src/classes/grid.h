@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_GRID_H
-#define H_GRID_H
+#ifndef ATEN_GRID_H
+#define ATEN_GRID_H
 
 #include "templates/vector3.h"
 #include "classes/dnchar.h"
@@ -146,7 +146,7 @@ class grid
 	// How to render this surface
 	surface_style style;
 	// Colour (including alpha component)
-	GLint colour[4];
+	GLfloat colour[4];
 
 	public:
 	// Return the surface display list
@@ -169,7 +169,7 @@ class grid
 	// Set transparency of the surface
 	void set_transparency(int a) { colour[3] = a; log++; }
 	// Return the colour of the surface
-	GLint *get_colour() { return colour; }
+	GLfloat *get_colour() { return colour; }
 
 	/*
 	// Transformations

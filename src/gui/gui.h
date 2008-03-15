@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_GUIQT_H
-#define H_GUIQT_H
+#ifndef ATEN_GUIQT_H
+#define ATEN_GUIQT_H
 
 #include "gui/gui.h"
 #include "gui/canvas.h"

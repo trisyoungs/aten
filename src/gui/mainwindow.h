@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_MAINWINDOW_H
-#define H_MAINWINDOW_H
+#ifndef ATEN_MAINWINDOW_H
+#define ATEN_MAINWINDOW_H
 
 #include "base/master.h"
 #include "gui/gui.h"

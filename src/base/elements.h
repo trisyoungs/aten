@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_ELEMAP_H
-#define H_ELEMAP_H
+#ifndef ATEN_ELEMAP_H
+#define ATEN_ELEMAP_H
 
 #include "classes/atom.h"
 #include "base/prefs.h"
@@ -49,13 +49,11 @@ struct element
 	// Rough elemental radius (for bond calculation etc.)
         double radius;
 	// Ambient colour
-        GLint ambient[4];
+        GLfloat ambient[4];
 	// Diffuse colour
-	GLint diffuse[4];
+	GLfloat diffuse[4];
 	// Maximal bond order about the element 
 	int valency;
-	// Display lists for normal, selected, and highlighted atoms in different drawing styles
-	GLuint normal[DS_NITEMS-1], selected[DS_NITEMS-1], highlighted[DS_NITEMS-1];
 };
 
 // Element map
@@ -86,7 +84,6 @@ class element_map
 	// Initialise element data
 	void initialise();
 	// Friend declarations
-	friend void canvas::create_lists();
 	friend void canvas::init_gl();
 
 	/*
@@ -106,17 +103,19 @@ class element_map
 	// Return valency of atomic number 'i'
 	int valency(int i) { return el[i].valency; }
 	// Return the ambient colour of the element
-	GLint *ambient(int i) { return el[i].ambient; }
-	// Copy the ambient colour of the element in the array provided
-	void ambient(int i, GLint *v);
+	GLfloat *ambient(int i) { return el[i].ambient; }
+	// Copy the ambient colour of the element into the array provided
+	void ambient(int i, GLfloat *v);
 	// Set ambient colour component of element
-	void set_ambient(int i, int rgb, int value) { el[i].ambient[rgb] = value; }
+	void set_ambient(int i, int rgb, GLfloat value) { el[i].ambient[rgb] = value; }
+	void set_ambient(int i, GLfloat r, GLfloat g, GLfloat b) { el[i].ambient[0] = r; el[i].ambient[1] = g; el[i].ambient[2] = b; }
 	// Return the diffuse colour of the element
-	GLint *diffuse(int i) { return el[i].diffuse; }
-	// Copy the diffuse colour of the element in the array provided
-	void diffuse(int i, GLint *v);
-	// Set ambient colour component of element
-	void set_diffuse(int i, int rgb, int value) { el[i].diffuse[rgb] = value; }
+	GLfloat *diffuse(int i) { return el[i].diffuse; }
+	// Copy the diffuse colour of the element into the array provided
+	void diffuse(int i, GLfloat *v);
+	// Set diffuse colour component of element
+	void set_diffuse(int i, int rgb, GLfloat value) { el[i].diffuse[rgb] = value; }
+	void set_diffuse(int i, GLfloat r, GLfloat g, GLfloat b) { el[i].diffuse[0] = r; el[i].diffuse[1] = g; el[i].diffuse[2] = b; }
 
 	/*
 	// Data by atom*
@@ -133,9 +132,9 @@ class element_map
 	// Return valency of atomic number 'i'
 	int valency(atom *i) { return valency(i->get_element()); }
 	// Return the ambient colour of the element
-	GLint *ambient(atom *i) { return ambient(i->get_element()); }
+	GLfloat *ambient(atom *i) { return ambient(i->get_element()); }
 	// Return the diffuse colour of the element
-	GLint *diffuse(atom *i) { return diffuse(i->get_element()); }
+	GLfloat *diffuse(atom *i) { return diffuse(i->get_element()); }
 };
 
 extern element_map elements;

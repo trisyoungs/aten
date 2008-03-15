@@ -36,17 +36,12 @@ void TColourFrame::paintEvent(QPaintEvent *event)
 	painter.drawRect(0,0,width(),height());
 }
 
-// Set brush colour (with integers)
-void TColourFrame::set_colour(int r, int g, int b)
+// Set brush colour (with array of GLfloats)
+void TColourFrame::set_colour(GLfloat *col)
 {
-	int col[3];
-	col[0] = (int) ( ((double) r / INT_MAX) * 255);
-	col[1] = (int) ( ((double) g / INT_MAX) * 255);
-	col[2] = (int) ( ((double) b / INT_MAX) * 255);
-	brush.setColor(QColor(col[0], col[1], col[2]));
-	QPainter painter(this);
-	painter.setBackgroundMode(Qt::OpaqueMode);
-	painter.setBrush(brush);
-	painter.drawRect(0,0,width(),height());
+	QColor rgb;
+	rgb.setRgbF(col[0],col[1],col[2],1.0f);
+	brush.setColor(rgb);
+	update();
 }
 

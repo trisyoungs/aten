@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_UNDOLEVEL_H
-#define H_UNDOLEVEL_H
+#ifndef ATEN_UNDOLEVEL_H
+#define ATEN_UNDOLEVEL_H
 
 // Change logs
 enum change_log { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };

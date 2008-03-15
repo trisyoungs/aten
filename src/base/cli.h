@@ -19,21 +19,19 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_CLI_H
-#define H_CLI_H
+#ifndef ATEN_CLI_H
+#define ATEN_CLI_H
 
 #include <iostream>
 #include "base/master.h"
 #include <getopt.h>
 
 // Command line options
-enum cli_option { CO_A, CO_BOHR, CO_COMMAND, CO_DEBUG, CO_E,
-	CO_FF, CO_GRID, CO_HELP, CO_INTERACTIVE, CO_J,
-	CO_K, CO_L, CO_MAP, CO_N, CO_O,
-	CO_P, CO_Q, CO_R, CO_SCRIPT, CO_T,
-	CO_UNDO, CO_VERBOSE, CO_W, CO_X, CO_Y, CO_ZMAP,
-	CO_FOLD, CO_NOFOLD, CO_BOND, CO_NOBOND, CO_CENTRE, CO_NOCENTRE, CO_PACK, CO_NOPACK,
-	CO_DEBUGTYPING, CO_DEBUGPARSE, CO_DEBUGMORE, CO_DEBUGALL, CO_DEBUGFILE, CO_CACHE, CO_NITEMS };
+enum cli_option {
+	CO_BOHR, CO_BOND, CO_CACHE, CO_CENTRE, CO_COMMAND, CO_FF, CO_FOLD, CO_GRID, CO_HELP, CO_INTERACTIVE,
+	CO_MAP, CO_NOBOND, CO_NOCENTRE, CO_NOFOLD, CO_NOPACK, CO_PACK, CO_SCRIPT, CO_UNDO, CO_ZMAP,
+	CO_DEBUG, CO_DEBUGALL, CO_DEBUGFILE, CO_DEBUGMORE, CO_DEBUGPARSE, CO_DEBUGTYPING, CO_VERBOSE,
+	CO_NITEMS };
 
 // Command option data
 class optiondata {
@@ -43,29 +41,16 @@ class optiondata {
 	public:
 	// Identifier
 	cli_option clioption;
+	// Short option character
+	char shortopt;
 	// Long option keyword
-	const char *keyword;
+	const char *longopt;
 	// Argument type
 	int argument;
 	// Argument text (for description)
 	const char *argtext;
 	// Description of option
 	const char *description;
-
-	/*
-	// Get
-	*/
-	public:
-	// Return identifier
-	cli_option get_id() { return clioption; }
-	// Return long option keyword
-	const char *get_keyword() { return keyword; }
-	// Return argument type
-	int get_argument() { return argument; }
-	// Return argument text
-	const char *get_argtext() { return argtext; }
-	// Return option description
-	const char *get_description() { return description; }
 };
 
 #endif

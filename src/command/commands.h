@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_COMMANDS_H
-#define H_COMMANDS_H
+#ifndef ATEN_COMMANDS_H
+#define ATEN_COMMANDS_H
 
 #include "classes/bundle.h"
 

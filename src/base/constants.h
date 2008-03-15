@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_CONSTANTS_H
-#define H_CONSTANTS_H
+#ifndef ATEN_CONSTANTS_H
+#define ATEN_CONSTANTS_H
 
 // Richtig oder falsch
 #define FALSE (0)

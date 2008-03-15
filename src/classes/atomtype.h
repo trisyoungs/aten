@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_ATOMTYPE_H
-#define H_ATOMTYPE_H
+#ifndef ATEN_ATOMTYPE_H
+#define ATEN_ATOMTYPE_H
 
 #include "classes/bond.h"
 #include "templates/list.h"

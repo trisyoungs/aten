@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_FFIELD_H
-#define H_FFIELD_H
+#ifndef ATEN_FFIELD_H
+#define ATEN_FFIELD_H
 
 #include "classes/atom.h"
 #include "classes/dnchar.h"

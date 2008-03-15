@@ -19,41 +19,25 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_PREFSWINDOW_H
-#define H_PREFSWINDOW_H
+#ifndef ATEN_PREFSWINDOW_H
+#define ATEN_PREFSWINDOW_H
 
 #include "gui/gui.h"
 #include "gui/ui_prefs.h"
 
-// Stack Pages
-enum prefstack_page { PSP_NITEMS };
-
+// Program preferences window
 class AtenPrefs : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	/*
-	// List / Stack Functions
-	*/
-	private slots:
-	void on_CategoryList_currentRowChanged(int row) { ui.CategoryStack->setCurrentIndex(row); }
-
-	/*
 	// Element Page
 	*/
-	private:
-	void set_element_colour(int type, int component, int value);
 	private slots:
 	void on_ElementList_currentRowChanged(int row);
-	void on_ElementARedSpin_valueChanged(int value) { set_element_colour(0, 0, value); }
-	void on_ElementAGreenSpin_valueChanged(int value) { set_element_colour(0, 1, value); }
-	void on_ElementABlueSpin_valueChanged(int value) { set_element_colour(0, 2, value); }
-	void on_ElementAAlphaSpin_valueChanged(int value) { set_element_colour(0, 3, value); }
-	void on_ElementDRedSpin_valueChanged(int value) { set_element_colour(1, 0, value); }
-	void on_ElementDGreenSpin_valueChanged(int value) { set_element_colour(1, 1, value); }
-	void on_ElementDBlueSpin_valueChanged(int value) { set_element_colour(1, 2, value); }
-	void on_ElementDAlphaSpin_valueChanged(int value) { set_element_colour(1, 3, value); }
+	void on_ElementAmbientColourButton_clicked(bool checked);
+	void on_ElementDiffuseColourButton_clicked(bool checked);
 
 	/*
 	// View Page
@@ -79,21 +63,15 @@ class AtenPrefs : public QDialog
 	// Lighting Page
 	*/
 	private:
-	void spotlight_changed(spotlight_component so, int i, double value);
+	void spotlightpos_changed(int i, double value);
 	private slots:
 	void on_SpotlightGroup_clicked(bool checked);
-	void on_AmbientRedSpin_valueChanged(double value) { spotlight_changed(SL_AMBIENT, 0, value); }
-	void on_AmbientGreenSpin_valueChanged(double value) { spotlight_changed(SL_AMBIENT, 1, value); }
-	void on_AmbientBlueSpin_valueChanged(double value) { spotlight_changed(SL_AMBIENT, 2, value); }
-	void on_DiffuseRedSpin_valueChanged(double value) { spotlight_changed(SL_DIFFUSE, 0, value); }
-	void on_DiffuseGreenSpin_valueChanged(double value) { spotlight_changed(SL_DIFFUSE, 1, value); }
-	void on_DiffuseBlueSpin_valueChanged(double value) { spotlight_changed(SL_DIFFUSE, 2, value); }
-	void on_SpecularRedSpin_valueChanged(double value) { spotlight_changed(SL_SPECULAR, 0, value); }
-	void on_SpecularGreenSpin_valueChanged(double value) { spotlight_changed(SL_SPECULAR, 1, value); }
-	void on_SpecularBlueSpin_valueChanged(double value) { spotlight_changed(SL_SPECULAR, 2, value); }
-	void on_LightPositionXSpin_valueChanged(double value) { spotlight_changed(SL_POSITION, 0, value); }
-	void on_LightPositionYSpin_valueChanged(double value) { spotlight_changed(SL_POSITION, 1, value); }
-	void on_LightPositionZSpin_valueChanged(double value) { spotlight_changed(SL_POSITION, 2, value); }
+	void on_SpotlightAmbientColourButton_clicked(bool checked);
+	void on_SpotlightDiffuseColourButton_clicked(bool checked);
+	void on_SpotlightSpecularColourButton_clicked(bool checked);
+	void on_SpotlightPositionXSpin_valueChanged(double value) { spotlightpos_changed(0, value); }
+	void on_SpotlightPositionYSpin_valueChanged(double value) { spotlightpos_changed(1, value); }
+	void on_SpotlightPositionZSpin_valueChanged(double value) { spotlightpos_changed(2, value); }
 	void on_ShininessSpin_valueChanged(int value);
 
 	/*

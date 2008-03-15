@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_CALCULABLE_H
-#define H_CALCULABLE_H
+#ifndef ATEN_CALCULABLE_H
+#define ATEN_CALCULABLE_H
 
 #include "classes/dnchar.h"
 

@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_GENERATOR_H
-#define H_GENERATOR_H
+#ifndef ATEN_GENERATOR_H
+#define ATEN_GENERATOR_H
 
 #include "templates/vector3.h"
 

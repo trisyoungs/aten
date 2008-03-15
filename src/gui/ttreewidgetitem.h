@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_TTREEWIDGETATOM_H
-#define H_TTREEWIDGETATOM_H
+#ifndef ATEN_TTREEWIDGETATOM_H
+#define ATEN_TTREEWIDGETATOM_H
 
 #include <QtGui/QTreeWidget>
 

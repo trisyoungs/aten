@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_PATTERN_H
-#define H_PATTERN_H
+#ifndef ATEN_PATTERN_H
+#define ATEN_PATTERN_H
 
 #include "model/model.h"
 #include "classes/atom.h"
