@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_PDENS_H
-#define H_PDENS_H
+#ifndef ATEN_PDENS_H
+#define ATEN_PDENS_H
 
 #include "methods/quantity.h"
 #include "templates/vector3.h"

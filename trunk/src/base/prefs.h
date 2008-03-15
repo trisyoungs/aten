@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_PREFS_H
-#define H_PREFS_H
+#ifndef ATEN_PREFS_H
+#define ATEN_PREFS_H
 
 #include "energy/forms.h"
 #include "templates/vector3.h"
@@ -180,13 +180,13 @@ class prefs_data
 	// Whether the spotlight is on
 	bool spotlight_on;
 	// Spotlight components
-	GLint spotlight_components[SL_NITEMS][4];
+	GLfloat spotlight_components[SL_NITEMS][4];
 	// Atom colouring style
 	atom_colours colour_scheme;
 	// Number of segments between lo/hi and mid colours in colour scale
 	int scale_segments;
 	// Graduated colour scale colours
-	GLint **scale_colours;
+	GLfloat **scale_colours;
 
 	public:
 	// Sets the specified atom size to the given value
@@ -218,9 +218,10 @@ class prefs_data
 	// Return status of spotlight
 	bool get_spotlight_on() { return spotlight_on; }
 	// Set spotlight ambient component
-	void set_spotlight(spotlight_component sc, int i, GLint value) { spotlight_components[sc][i] = value; }
+	void set_spotlight(spotlight_component sc, int i, GLfloat value) { spotlight_components[sc][i] = value; }
+	void set_spotlight(spotlight_component sc, GLfloat r, GLfloat g, GLfloat b) { spotlight_components[sc][0] = r; spotlight_components[sc][1] = g; spotlight_components[sc][2] = b; }
 	// Return spotlight ambient component
-	GLint *get_spotlight(spotlight_component sc) { return spotlight_components[sc]; }
+	GLfloat *get_spotlight(spotlight_component sc) { return spotlight_components[sc]; }
 	// Set atom colour scheme
 	void set_colour_scheme(atom_colours ac) { colour_scheme = ac; }
 	// Return atom colour scheme
@@ -232,7 +233,7 @@ class prefs_data
 	// Set colour scale colours
 	void set_scale_colours();
 	// Copy colour scale segment into supplied array
-	void get_scale_colour(int n, GLint *v);
+	void get_scale_colour(int n, GLfloat *v);
 
 	/*
 	// GL Options
@@ -241,7 +242,7 @@ class prefs_data
 	// Bitvector for GL options
 	int gloptions;
 	// Shininess of 3D objects
-	int gl_shininess;
+	GLint gl_shininess;
 	// Fog start and finish depths
 	GLint gl_fog_near, gl_fog_far;
 	// Near and far clipping planes for glPerspective() and glFrustum();
@@ -267,14 +268,14 @@ class prefs_data
 	// Sets the shininess of GL objects
 	void set_shininess(int n) { gl_shininess = n; }
 	// Return the current shininess of GL objects
-	int get_shininess() { return gl_shininess; }
+	GLint get_shininess() { return gl_shininess; }
 
 	/*
 	// Rendering - Colours
 	*/
 	private:
 	// RGB colour values
-	GLint colours[COL_NITEMS][4];
+	GLfloat colours[COL_NITEMS][4];
 	// Numerical low limit corresponding to COL_ACSCHEMELO
 	double colour_scheme_lo[AC_NITEMS];
 	// Numerical high limit corresponding to COL_ACSCHEMELO
@@ -282,11 +283,11 @@ class prefs_data
 
 	public:
 	// Set the specified colour to the integer RGB values supplied
-	void set_colour(colour c, GLint r, GLint g, GLint b, GLint a);
+	void set_colour(colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	// Set the specified colour to the RGB values supplied
 	void set_colour(colour c, double r, double g, double b, double a);
 	// Return the specified colour
-	GLint *get_colour(colour c) { return colours[c]; }
+	GLfloat *get_colour(colour c) { return colours[c]; }
 	// Return the low limit for the scheme specified
 	double get_colour_scheme_lo(int i) { return colour_scheme_lo[i]; }
 	// Sets the low limit for the scheme specified

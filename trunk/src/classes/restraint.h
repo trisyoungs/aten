@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_RESTRAINT_H
-#define H_RESTRAINT_H
+#ifndef ATEN_RESTRAINT_H
+#define ATEN_RESTRAINT_H
 
 #include "classes/atom.h"
 #include "templates/list.h"

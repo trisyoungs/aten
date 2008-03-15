@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_BOND_H
-#define H_BOND_H
+#ifndef ATEN_BOND_H
+#define ATEN_BOND_H
 
 // Bond types
 enum bond_type { BT_UNSPECIFIED, BT_SINGLE, BT_DOUBLE, BT_TRIPLE, BT_NITEMS };

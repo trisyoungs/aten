@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_TCANVAS_H
-#define H_TCANVAS_H
+#ifndef ATEN_TCANVAS_H
+#define ATEN_TCANVAS_H
 
 #include <QtOpenGL/QGLWidget>
 #include <QtCore/QObject>

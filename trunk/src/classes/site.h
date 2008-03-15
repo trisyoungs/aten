@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_SITE_H
-#define H_SITE_H
+#ifndef ATEN_SITE_H
+#define ATEN_SITE_H
 
 #include "templates/vector3.h"
 #include "templates/list.h"

@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_MEASUREMENT_H
-#define H_MEASUREMENT_H
+#ifndef ATEN_MEASUREMENT_H
+#define ATEN_MEASUREMENT_H
 
 // Geometry types
 enum geom_type { GT_NONE, GT_DISTANCE, GT_ANGLE, GT_TORSION, GT_NITEMS };

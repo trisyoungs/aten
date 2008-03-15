@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_CELL_H
-#define H_CELL_H
+#ifndef ATEN_CELL_H
+#define ATEN_CELL_H
 
 #include "templates/vector3.h"
 

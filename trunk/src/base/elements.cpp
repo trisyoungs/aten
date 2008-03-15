@@ -203,21 +203,21 @@ void element_map::initialise()
 		strcpy(el[n].ucsymbol,upper_case(parser.argc(3)));
 		el[n].radius = parser.argd(4);
 		el[n].valency = parser.argi(5);
-		// Colours are stored as floating-point values - convert these to span an integer of 0 - INT_MAX.
-		el[n].ambient[0] = (GLint) (parser.argd(6) * INT_MAX);
-		el[n].ambient[1] = (GLint) (parser.argd(7) * INT_MAX);
-		el[n].ambient[2] = (GLint) (parser.argd(8) * INT_MAX);
-		el[n].ambient[3] = INT_MAX;
-		el[n].diffuse[0] = (GLint) (parser.argd(9) * INT_MAX);
-		el[n].diffuse[1] = (GLint) (parser.argd(10) * INT_MAX);
-		el[n].diffuse[2] = (GLint) (parser.argd(11) * INT_MAX);
-		el[n].diffuse[3] = INT_MAX;
+		// Colours are stored as floating-point values
+		el[n].ambient[0] = parser.argf(6);
+		el[n].ambient[1] = parser.argf(7);
+		el[n].ambient[2] = parser.argf(8);
+		el[n].ambient[3] = 1.0f;
+		el[n].diffuse[0] = parser.argf(9);
+		el[n].diffuse[1] = parser.argf(10);
+		el[n].diffuse[2] = parser.argf(11);
+		el[n].diffuse[3] = 1.0f;
 	}
 	dbg_end(DM_CALLS,"element_map::initialise");
 }
 
 // Return ambient colour in supplied vector
-void element_map::ambient(int i, GLint *v)
+void element_map::ambient(int i, GLfloat *v)
 {
 	v[0] = el[i].ambient[0];
 	v[1] = el[i].ambient[1];
@@ -226,7 +226,7 @@ void element_map::ambient(int i, GLint *v)
 }
 
 // Return diffuse colour in supplied vector
-void element_map::diffuse(int i, GLint *v)
+void element_map::diffuse(int i, GLfloat *v)
 {
 	v[0] = el[i].diffuse[0];
 	v[1] = el[i].diffuse[1];

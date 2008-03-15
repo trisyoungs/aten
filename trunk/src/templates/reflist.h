@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_REFLIST_H
-#define H_REFLIST_H
+#ifndef ATEN_REFLIST_H
+#define ATEN_REFLIST_H
 
 #include "base/debug.h"
 #include <stddef.h>

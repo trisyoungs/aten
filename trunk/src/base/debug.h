@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_DEBUG_H
-#define H_DEBUG_H
+#ifndef ATEN_DEBUG_H
+#define ATEN_DEBUG_H
 
 #include "../config.h"
 

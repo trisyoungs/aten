@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_REGION_H
-#define H_REGION_H
+#ifndef ATEN_REGION_H
+#define ATEN_REGION_H
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"

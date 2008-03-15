@@ -123,22 +123,22 @@ prefs_data::prefs_data()
 	render_perspective = TRUE;
 	render_fov = 20.0;
 	spotlight_on = TRUE;
-	spotlight_components[SL_AMBIENT][0] = (GLint) (0.0 * INT_MAX);
-	spotlight_components[SL_AMBIENT][1] = (GLint) (0.0 * INT_MAX);
-	spotlight_components[SL_AMBIENT][2] = (GLint) (0.0 * INT_MAX);
-	spotlight_components[SL_AMBIENT][3] = (GLint) (1.0 * INT_MAX);
-	spotlight_components[SL_DIFFUSE][0] = (GLint) (0.8 * INT_MAX);
-	spotlight_components[SL_DIFFUSE][1] = (GLint) (0.8 * INT_MAX);
-	spotlight_components[SL_DIFFUSE][2] = (GLint) (0.8 * INT_MAX);
-	spotlight_components[SL_DIFFUSE][3] = (GLint) (1.0 * INT_MAX);
-	spotlight_components[SL_SPECULAR][0] = (GLint) (0.7 * INT_MAX);
-	spotlight_components[SL_SPECULAR][1] = (GLint) (0.7 * INT_MAX);
-	spotlight_components[SL_SPECULAR][2] = (GLint) (0.7 * INT_MAX);
-	spotlight_components[SL_SPECULAR][3] = (GLint) (1.0 * INT_MAX);
-	spotlight_components[SL_POSITION][0] = 1;
-	spotlight_components[SL_POSITION][1] = 1;
-	spotlight_components[SL_POSITION][2] = 1;
-	spotlight_components[SL_POSITION][3] = 0;
+	spotlight_components[SL_AMBIENT][0] = 0.0f;
+	spotlight_components[SL_AMBIENT][1] = 0.0f;
+	spotlight_components[SL_AMBIENT][2] = 0.0f;
+	spotlight_components[SL_AMBIENT][3] = 1.0f;
+	spotlight_components[SL_DIFFUSE][0] = 0.8f;
+	spotlight_components[SL_DIFFUSE][1] = 0.8f;
+	spotlight_components[SL_DIFFUSE][2] = 0.8f;
+	spotlight_components[SL_DIFFUSE][3] = 1.0f;
+	spotlight_components[SL_SPECULAR][0] = 0.7f;
+	spotlight_components[SL_SPECULAR][1] = 0.7f;
+	spotlight_components[SL_SPECULAR][2] = 0.7f;
+	spotlight_components[SL_SPECULAR][3] = 1.0f;
+	spotlight_components[SL_POSITION][0] = 1.0f;
+	spotlight_components[SL_POSITION][1] = 1.0f;
+	spotlight_components[SL_POSITION][2] = 1.0f;
+	spotlight_components[SL_POSITION][3] = 0.0f;
 
 	// GL Options
 	gloptions = 0;
@@ -181,12 +181,12 @@ prefs_data::prefs_data()
 	keymod_action[MK_ALT] = KA_NONE;
 
 	// Colours
-	set_colour(COL_SPECREFLECT, 1.0, 0.9, 0.75, 1.0);
-	set_colour(COL_PEN, 0.0, 0.0, 0.0, 1.0);
-	set_colour(COL_BG, 1.0, 1.0, 1.0, 1.0);
-	set_colour(COL_SCHEMELO, 1.0, 0.0, 0.0, 1.0);
-	set_colour(COL_SCHEMEMID, 0.7, 0.7, 0.7, 1.0);
-	set_colour(COL_SCHEMEHI, 0.0, 0.0, 1.0, 1.0);
+	set_colour(COL_SPECREFLECT, 1.0f, 0.9f, 0.75f, 1.0f);
+	set_colour(COL_PEN, 0.0f, 0.0f, 0.0f, 1.0f);
+	set_colour(COL_BG, 1.0f, 1.0f, 1.0f, 1.0f);
+	set_colour(COL_SCHEMELO, 1.0f, 0.0f, 0.0f, 1.0f);
+	set_colour(COL_SCHEMEMID, 0.7f, 0.7f, 0.7f, 1.0f);
+	set_colour(COL_SCHEMEHI, 0.0f, 0.0f, 1.0f, 1.0f);
 	colour_scheme_lo[AC_ELEMENT] = 0.0;
 	colour_scheme_lo[AC_CHARGE] = -1.0;
 	colour_scheme_lo[AC_VELOCITY] = 0.0;
@@ -300,7 +300,7 @@ double prefs_data::screenradius(atom *i)
 // Colours
 */
 
-void prefs_data::set_colour(colour c, GLint r, GLint g, GLint b, GLint a)
+void prefs_data::set_colour(colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
 	colours[c][0] = r;
 	colours[c][1] = g;
@@ -351,7 +351,7 @@ void prefs_data::set_scale_segments(int nsegments)
 }
 
 // Get colour scale segment
-void prefs_data::get_scale_colour(int n, GLint *v)
+void prefs_data::get_scale_colour(int n, GLfloat *v)
 {
 	// Check range of requested colour
 	if ((n < 0) || (n > (3+2*scale_segments))) 
@@ -386,8 +386,8 @@ void prefs_data::set_scale_colours()
 			delete[] scale_colours;
 		}
 		// Create new array
-		scale_colours = new GLint*[3+scale_segments*2];
-		for (n=0; n<(3+scale_segments*2); n++) scale_colours[n] = new GLint[4];
+		scale_colours = new GLfloat*[3+scale_segments*2];
+		for (n=0; n<(3+scale_segments*2); n++) scale_colours[n] = new GLfloat[4];
 		lastnsegments = scale_segments;
 	}
 	// Set values of lo, mid, and hi colours.

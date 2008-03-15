@@ -40,8 +40,8 @@ int main(int argc, char *argv[])
 	printf("This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	printf("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
-	// Prepare command line parser and act on debug options
-	master.prepare_cli();
+	// Prepare command line to act on debug options
+	master.debug_cli(argc, argv);
 
 	// Run any early commands that the GUI requires (e.g. g_type_init for GTK+)
 	gui.prepare();

@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_MASTER_H
-#define H_MASTER_H
+#ifndef ATEN_MASTER_H
+#define ATEN_MASTER_H
 
 #include "classes/clipboard.h"
 #include "classes/grid.h"
@@ -238,18 +238,12 @@ class master_data
 	// CLI
 	*/
 	private:
-	// Array of long CLI options
-	option *longopts;
-	// List of short options
-	dnchar shortopts;
 	// Print usage information
 	void print_usage();
-	// Number of CLI options defined
-	int nopts;
 
 	public:
-	// Prepare CLI options
-	void prepare_cli();
+	// Prepare CLI debug options
+	void debug_cli(int, char**);
 	// Parse command line options
 	int parse_cli(int, char**);
 

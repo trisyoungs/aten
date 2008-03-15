@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_FILTER_H
-#define H_FILTER_H
+#ifndef ATEN_FILTER_H
+#define ATEN_FILTER_H
 
 #include "command/commandlist.h"
 #include "base/prefs.h"

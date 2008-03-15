@@ -157,8 +157,8 @@ void canvas::render_model_forcearrows()
 void canvas::render_model_cell()
 {
 	// Draw the unit cell of the model
-	glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.colours[COL_PEN]);
-	glColor3iv(prefs.colours[COL_PEN]);
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.colours[COL_PEN]);
+	glColor3fv(prefs.colours[COL_PEN]);
 	glLineWidth(1.0f);
 	static vec3<double> origin;
 	if (displaymodel->get_celltype() != CT_NONE)

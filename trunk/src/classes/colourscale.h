@@ -22,8 +22,8 @@
 // Colourscale order
 enum colourscale_order { CO_TWOPOINT=2, CO_THREEPOINT=3 };
 
-#ifndef H_COLOURSCALE_H
-#define H_COLOURSCALE_H
+#ifndef ATEN_COLOURSCALE_H
+#define ATEN_COLOURSCALE_H
 
 // Colour Scale
 class colourscale
@@ -37,7 +37,7 @@ class colourscale
 	// Type of colourscale
 	colourscale_order type;
 	// Colours
-	GLint colours[3][4];
+	GLfloat colours[3][4];
 	// Minimum, maximum, and midpoint of data range
 	double min, max, mid;
 

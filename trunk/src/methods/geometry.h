@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_GEOMETRY_H
-#define H_GEOMETRY_H
+#ifndef ATEN_GEOMETRY_H
+#define ATEN_GEOMETRY_H
 
 #include "methods/quantity.h"
 

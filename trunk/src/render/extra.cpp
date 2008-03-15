@@ -184,7 +184,7 @@ void canvas::render_regions()
 {
 	dbg_begin(DM_CALLS,"canvas::render_regions");
 	static vec3<double> centre, size;
-	static GLint colour[4];
+	static GLfloat colour[4];
 	int i = 0;
 	// Enable alpha component and make sure lighting is on
 	glEnable(GL_BLEND);
@@ -192,8 +192,8 @@ void canvas::render_regions()
 	for (component *c = master.mc.components.first(); c != NULL; c = c->next)
 	{
 		elements.ambient(i, colour);
-		colour[3] = (GLint) (0.4 * INT_MAX);
-		glMaterialiv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE,colour);
+		colour[3] = 0.4f;
+		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();
 		  centre = c->area.get_centre();
 		  size = c->area.get_size();

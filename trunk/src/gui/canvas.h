@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_CANVASQT_H
-#define H_CANVASQT_H
+#ifndef ATEN_CANVASQT_H
+#define ATEN_CANVASQT_H
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"
@@ -110,8 +110,6 @@ class canvas
 	void configure();
 	// Called when context needs to be redrawn
 	void expose();
-	// Swap buffers
-	void swap_buffers();
 
 	/*
 	// Rendering display lists

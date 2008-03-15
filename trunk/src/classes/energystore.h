@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_ESTORE_H
-#define H_ESTORE_H
+#ifndef ATEN_ESTORE_H
+#define ATEN_ESTORE_H
 
 // Energy Types
 enum energy_type { ET_BOND, ET_ANGLE, ET_TORSION, ET_VDWINTRA, ET_VDWINTER, ET_VDWTAIL,

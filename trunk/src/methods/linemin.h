@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_LINEMIN_H
-#define H_LINEMIN_H
+#ifndef ATEN_LINEMIN_H
+#define ATEN_LINEMIN_H
 
 // Forward declarations
 class model;

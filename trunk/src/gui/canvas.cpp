@@ -65,11 +65,6 @@ void canvas::end_gl()
 	drawing = FALSE;
 }
 
-// Swap buffers
-void canvas::swap_buffers()
-{
-}
-
 /*
 // Widget Canvas
 */
@@ -155,7 +150,7 @@ void canvas::init_gl()
 		create_lists();
 
 		// Clear colour
-		GLint *clrcol = prefs.get_colour(COL_BG);
+		GLfloat *clrcol = prefs.get_colour(COL_BG);
 		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 		glClearDepth(1.0);
 		// Perspective hint
@@ -171,10 +166,10 @@ void canvas::init_gl()
 		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 		// Set up the light model
 		glEnable(GL_LIGHTING);
-		glLightiv(GL_LIGHT0,GL_AMBIENT,prefs.get_spotlight(SL_AMBIENT));
-		glLightiv(GL_LIGHT0,GL_DIFFUSE,prefs.get_spotlight(SL_DIFFUSE));
-		glLightiv(GL_LIGHT0,GL_SPECULAR,prefs.get_spotlight(SL_SPECULAR));
-		glLightiv(GL_LIGHT0,GL_POSITION,prefs.get_spotlight(SL_POSITION));
+		glLightfv(GL_LIGHT0,GL_AMBIENT,prefs.get_spotlight(SL_AMBIENT));
+		glLightfv(GL_LIGHT0,GL_DIFFUSE,prefs.get_spotlight(SL_DIFFUSE));
+		glLightfv(GL_LIGHT0,GL_SPECULAR,prefs.get_spotlight(SL_SPECULAR));
+		glLightfv(GL_LIGHT0,GL_POSITION,prefs.get_spotlight(SL_POSITION));
 		prefs.get_spotlight_on() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
@@ -196,7 +191,7 @@ void canvas::init_gl()
 		if (prefs.get_gl_option(GO_FOG))
 		{
 			glFogi(GL_FOG_MODE, GL_LINEAR);
-			GLfloat fogColor[4]= { prefs.colours[COL_BG][0], prefs.colours[COL_BG][1], prefs.colours[COL_BG][2], 1.0 };
+			GLfloat fogColor[4] = { prefs.colours[COL_BG][0], prefs.colours[COL_BG][1], prefs.colours[COL_BG][2], 1.0 };
 			glFogfv(GL_FOG_COLOR, fogColor);
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);

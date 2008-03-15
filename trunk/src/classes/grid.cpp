@@ -197,9 +197,9 @@ void grid::set_colour(int r, int g, int b)
 
 void grid::set_colour(double r, double g, double b)
 {
-	colour[0] = (GLint) (r * INT_MAX);
-	colour[1] = (GLint) (g * INT_MAX);
-	colour[2] = (GLint) (b * INT_MAX);
+	colour[0] = (GLfloat) r;
+	colour[1] = (GLfloat) g;
+	colour[2] = (GLfloat) b;
 	log ++;
 }
 

@@ -28,7 +28,7 @@ void canvas::render_model_atoms()
 {
 	dbg_begin(DM_CALLS,"canvas::render_model_atoms");
 	static draw_style style_i, renderstyle;
-	static GLint ambient[4], diffuse[4];
+	static GLfloat ambient[4], diffuse[4];
 	static short int cindex;
 	static atom_colours scheme;
 	static double radius, rij;
@@ -45,8 +45,8 @@ void canvas::render_model_atoms()
 	cell = displaymodel->get_cell();
 	
 	// Set polygon fill mode and specular reflection
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glMaterialiv(GL_FRONT, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
+	//glPolygonMode(GL_FRONT, GL_FILL);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.gl_shininess);
 
 	while (i != NULL)
@@ -71,8 +71,8 @@ void canvas::render_model_atoms()
 			prefs.get_scale_colour(cindex, ambient);
 			prefs.get_scale_colour(cindex, diffuse);
 		  }
-		  glMaterialiv(GL_FRONT, GL_AMBIENT, ambient);
-		  glMaterialiv(GL_FRONT, GL_DIFFUSE, diffuse);
+		  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+		  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 		  // Get position
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);
@@ -89,7 +89,7 @@ void canvas::render_model_atoms()
 		  */
 		  if (style_i == DS_STICK)
 		  {
-			glColor3iv(ambient);
+			glColor3fv(ambient);
 			i->is_selected() ? glLineWidth(3.0) : glLineWidth(1.0);
 			if (i->get_nbonds() == 0) glCallList(list[GLOB_STICKATOM]); 
 		  }
@@ -231,8 +231,8 @@ void canvas::render_model_atoms()
 		}
 		ambient[3] = ambient[3] / 2;
 		diffuse[3] = diffuse[3] / 2;
-		glMaterialiv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
-		glMaterialiv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 		glPushMatrix();
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);

@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_SYSFUNC_H
-#define H_SYSFUNC_H
+#ifndef ATEN_SYSFUNC_H
+#define ATEN_SYSFUNC_H
 
 // Forward declarations
 class variable_list;

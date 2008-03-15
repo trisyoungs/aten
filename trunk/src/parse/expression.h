@@ -19,6 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_EXPRESSION_H
-#define H_EXPRESSION_H
+#ifndef ATEN_EXPRESSION_H
+#define ATEN_EXPRESSION_H
 

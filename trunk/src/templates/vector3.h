@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_VECTOR3_H
-#define H_VECTOR3_H
+#ifndef ATEN_VECTOR3_H
+#define ATEN_VECTOR3_H
 
 #include "templates/matrix3.h"
 #include "templates/matrix4.h"

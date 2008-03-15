@@ -13,7 +13,7 @@ importmodel
 	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz
 	double a,b,c,al,be,ga,cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
 
-	zmap alphafirst
+	zmap firstalpha
 
 	# Record 1: Directory information (single line)
 	# Contained information (first col = 0):

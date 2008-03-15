@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_BUNDLE_H
-#define H_BUNDLE_H
+#ifndef ATEN_BUNDLE_H
+#define ATEN_BUNDLE_H
 
 // Forward declarations
 class atom;

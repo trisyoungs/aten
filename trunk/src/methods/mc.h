@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_MONTECARLO_H
-#define H_MONTECARLO_H
+#ifndef ATEN_MONTECARLO_H
+#define ATEN_MONTECARLO_H
 
 #include "templates/vector3.h"
 #include "templates/list.h"

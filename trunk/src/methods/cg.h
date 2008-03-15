@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_CG_H
-#define H_CG_H
+#ifndef ATEN_CG_H
+#define ATEN_CG_H
 
 #include "model/model.h"
 #include "methods/linemin.h"

@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_ATOM_H
-#define H_ATOM_H
+#ifndef ATEN_ATOM_H
+#define ATEN_ATOM_H
 
 #include "classes/atomtype.h"
 #include "templates/vector3.h"

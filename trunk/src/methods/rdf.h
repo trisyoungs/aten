@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_RDF_H
-#define H_RDF_H
+#ifndef ATEN_RDF_H
+#define ATEN_RDF_H
 
 #include "methods/quantity.h"
 

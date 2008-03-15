@@ -141,7 +141,7 @@ void canvas::render_scene(model *source)
 	  if (prefs.should_render(VO_SURFACES)) render_surfaces();
 	  // Render MC regions
 	  if ((displaymodel->get_celltype() != CT_NONE) && prefs.should_render(VO_REGIONS)) render_regions();
-	  glColor3iv(prefs.colours[COL_PEN]);
+	  glColor3fv(prefs.colours[COL_PEN]);
 	  render_extra_3d();
 	glPopMatrix();
 
@@ -180,7 +180,7 @@ void canvas::render_scene(model *source)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	glMaterialiv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colours[COL_PEN]);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colours[COL_PEN]);
 	glDisable(GL_LIGHTING);
 
 	if (prefs.should_render(VO_LABELS)) render_model_labels();
@@ -190,7 +190,6 @@ void canvas::render_scene(model *source)
 	glDisable(GL_COLOR_MATERIAL);
 
 	glFlush();
-	swap_buffers();
 	end_gl();
 	dbg_end(DM_CALLS,"canvas::render");
 }

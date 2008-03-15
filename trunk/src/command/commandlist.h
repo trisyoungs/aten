@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef H_COMMAND_H
-#define H_COMMAND_H
+#ifndef ATEN_COMMAND_H
+#define ATEN_COMMAND_H
 
 #define MAXDATAVARS 10
 

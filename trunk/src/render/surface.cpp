@@ -370,9 +370,9 @@ void cube_it(grid *g, surface_style ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialiv(GL_FRONT, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
+	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.get_shininess());
-	glMaterialiv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->get_colour());
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->get_colour());
 	// Generate surface
 	for (i=1; i<npoints.x-2; i++)
 	{
