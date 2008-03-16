@@ -153,7 +153,7 @@ void master_data::debug_cli(int argc, char *argv[])
 // Parse all options
 int master_data::parse_cli(int argc, char *argv[])
 {
-	int n, o, ntried;
+	int n, o, ntried = 0;
 	bool isshort, match;
 	char *arg;
 	commandlist *cl;
