@@ -45,7 +45,6 @@ void canvas::render_model_atoms()
 	cell = displaymodel->get_cell();
 	
 	// Set polygon fill mode and specular reflection
-	//glPolygonMode(GL_FRONT, GL_FILL);
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.gl_shininess);
 

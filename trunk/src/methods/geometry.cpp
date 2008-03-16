@@ -74,9 +74,10 @@ bool geometry::initialise()
 {
 	dbg_begin(DM_CALLS,"geometry::initialise");
 	// Check site definitions....
-	if ((sites[0] == NULL) || (sites[1] == NULL))
+	for (nsites = 0; nsites < 4; nsites++) if (sites[nsites] == NULL) break;
+	if (nsites == 0)
 	{
-		msg(DM_NONE,"geometry::initialise - At least one site has NULL value.\n");
+		msg(DM_NONE,"geometry::initialise - At least two sites must be defined.\n");
 		dbg_end(DM_CALLS,"geometry::initialise");
 		return FALSE;
 	}
@@ -93,27 +94,85 @@ bool geometry::initialise()
 void geometry::accumulate(model *sourcemodel)
 {
 	dbg_begin(DM_CALLS,"geometry::accumulate");
-	int m1, m2, bin;
-	static vec3<double> centre1, centre2, mimd;
+	int m1, m2, m3, m4, bin;
+	static vec3<double> centre1, centre2, centre3, centre4;
 	unitcell *cell = sourcemodel->get_cell();
-	double dist;
-	// Loop over molecules for site1
-	for (m1=0; m1 < sites[0]->get_pattern()->get_nmols(); m1++)
+	double geom;
+	if (nsites == 2)
 	{
-		// Get first centre
-		centre1 = sites[0]->calculate_centre(sourcemodel,m1);
-		// Loop over molecules for site2
-		for (m2 = 0; m2 < sites[1]->get_pattern()->get_nmols(); m2++)
+		// Loop over molecules for site1
+		for (m1=0; m1 < sites[0]->get_pattern()->get_nmols(); m1++)
 		{
-			centre2 = sites[1]->calculate_centre(sourcemodel,m2);
-			// Calculate minimum image distance and bin
-			mimd = cell->mimd(centre2,centre1);
-			// Add distance to data array
-			bin = int(mimd.magnitude() / binwidth);
-	//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
-			if (bin < nbins) data[bin] += 1.0;
+			// Get first centre
+			centre1 = sites[0]->calculate_centre(sourcemodel,m1);
+			// Loop over molecules for site2
+			for (m2 = 0; m2 < sites[1]->get_pattern()->get_nmols(); m2++)
+			{
+				centre2 = sites[1]->calculate_centre(sourcemodel,m2);
+				// Calculate minimum image distance and bin
+				geom = cell->distance(centre1,centre2);
+				// Add distance to data array
+				bin = int(geom / binwidth);
+				//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
+				if (bin < nbins) data[bin] += 1.0;
+			}
 		}
 	}
+	else if (nsites == 3)
+	{
+		// Loop over molecules for site1
+		for (m1=0; m1 < sites[0]->get_pattern()->get_nmols(); m1++)
+		{
+			// Get first centre
+			centre1 = sites[0]->calculate_centre(sourcemodel,m1);
+			// Loop over molecules for site2
+			for (m2 = 0; m2 < sites[1]->get_pattern()->get_nmols(); m2++)
+			{
+				centre2 = sites[1]->calculate_centre(sourcemodel,m2);
+				// Loop over molecules for site3
+				for (m3 = 0; m3 < sites[2]->get_pattern()->get_nmols(); m3++)
+				{
+					centre3 = sites[2]->calculate_centre(sourcemodel,m3);
+
+
+					// Calculate minimum image distance and bin
+					geom = cell->angle(centre1, centre2, centre3);
+					// Add distance to data array
+					bin = int(geom / binwidth);
+					//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
+					if (bin < nbins) data[bin] += 1.0;
+				}
+			}
+		}
+	}
+	else if (nsites == 4)
+	{
+		// Loop over molecules for site1
+		for (m1=0; m1 < sites[0]->get_pattern()->get_nmols(); m1++)
+		{
+			// Get first centre
+			centre1 = sites[0]->calculate_centre(sourcemodel,m1);
+			// Loop over molecules for site2
+			for (m2 = 0; m2 < sites[1]->get_pattern()->get_nmols(); m2++)
+			{
+				centre2 = sites[1]->calculate_centre(sourcemodel,m2);
+				// Loop over molecules for site3
+				for (m3 = 0; m3 < sites[2]->get_pattern()->get_nmols(); m3++)
+				{
+					centre3 = sites[2]->calculate_centre(sourcemodel,m3);
+
+
+					// Calculate minimum image distance and bin
+					geom = cell->angle(centre1, centre2, centre3);
+					// Add distance to data array
+					bin = int(geom / binwidth);
+					//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
+					if (bin < nbins) data[bin] += 1.0;
+				}
+			}
+		}
+	}
+
 	// Increase accumulation counter
 	acc ++;
 	dbg_end(DM_CALLS,"geometry::accumulate");

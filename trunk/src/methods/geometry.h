@@ -1,6 +1,6 @@
 /*
-	*** Measurement calculation
-	*** src/methods/measure.h
+	*** Molecule geometry calculation
+	*** src/methods/geometry.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -41,6 +41,8 @@ class geometry : public calculable
 	private:
 	// Centres involved in geometry measurement
 	site *sites[4];
+	// Number of continuous defined sites
+	int nsites;
 	
 	public:
 	// Set site involved in geometry measurement

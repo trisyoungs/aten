@@ -284,8 +284,6 @@ class prefs_data
 	public:
 	// Set the specified colour to the integer RGB values supplied
 	void set_colour(colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
-	// Set the specified colour to the RGB values supplied
-	void set_colour(colour c, double r, double g, double b, double a);
 	// Return the specified colour
 	GLfloat *get_colour(colour c) { return colours[c]; }
 	// Return the low limit for the scheme specified
