@@ -181,7 +181,8 @@ prefs_data::prefs_data()
 	keymod_action[MK_ALT] = KA_NONE;
 
 	// Colours
-	set_colour(COL_SPECREFLECT, 1.0f, 0.9f, 0.75f, 1.0f);
+	//set_colour(COL_SPECREFLECT, 0.9f, 0.9f, 0.9f, 1.0f);
+	set_colour(COL_PEN, 0.0f, 0.0f, 0.0f, 1.0f);
 	set_colour(COL_PEN, 0.0f, 0.0f, 0.0f, 1.0f);
 	set_colour(COL_BG, 1.0f, 1.0f, 1.0f, 1.0f);
 	set_colour(COL_SCHEMELO, 1.0f, 0.0f, 0.0f, 1.0f);
@@ -306,14 +307,6 @@ void prefs_data::set_colour(colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a
 	colours[c][1] = g;
 	colours[c][2] = b;
 	colours[c][3] = a;
-}
-
-void prefs_data::set_colour(colour c, double r, double g, double b, double a)
-{
-	colours[c][0] = (GLint) (r * INT_MAX);
-	colours[c][1] = (GLint) (g * INT_MAX);
-	colours[c][2] = (GLint) (b * INT_MAX);
-	colours[c][3] = (GLint) (a * INT_MAX);
 }
 
 /*

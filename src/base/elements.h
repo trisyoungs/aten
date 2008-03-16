@@ -32,28 +32,24 @@
 // Element
 struct element
 {
-	// Constructor / Destructor
-	element();
-	~element();
-
 	// Mass of element
         double mass;
 	// Element name
-	char name[20];
+	const char *name;
 	// Uppercase element name
-	char ucname[20];
+	const char *ucname;
 	// Element symbol
-	char symbol[10];
+	const char *symbol;
 	// Uppercase Element symbol
-	char ucsymbol[10];
+	const char *ucsymbol;
 	// Rough elemental radius (for bond calculation etc.)
         double radius;
+	// Maximal bond order about the element 
+	int valency;
 	// Ambient colour
         GLfloat ambient[4];
 	// Diffuse colour
 	GLfloat diffuse[4];
-	// Maximal bond order about the element 
-	int valency;
 };
 
 // Element map
@@ -61,7 +57,7 @@ class element_map
 {
 	private:
 	// Element data array
-	element el[NELEMENTS];
+	static element el[];
 	// Convert string from Z to element number
 	int number_to_z(const char*);
 	// Convert string from alpha to element number
@@ -81,10 +77,6 @@ class element_map
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm
 	int find(const char*, zmap_type);
-	// Initialise element data
-	void initialise();
-	// Friend declarations
-	friend void canvas::init_gl();
 
 	/*
 	// Data by Z

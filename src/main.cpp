@@ -67,9 +67,6 @@ int main(int argc, char *argv[])
 	}
 	printf("Home directory is %s, working directory is %s.\n",master.homedir.get(),master.workdir.get());
 
-	// Initialise elements
-	elements.initialise();
-
 	// Read default filters from data directory (pass directory)
 	sprintf(filename,"%s%s",master.datadir.get(),"/filters/");
 	if (!master.open_filters(filename,TRUE)) return 1;
