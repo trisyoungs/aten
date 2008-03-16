@@ -34,10 +34,12 @@ optiondata clioptions[] = {
 		"",		"Force centering of atomic coordinates at zero" },
 	{ CO_COMMAND,		'c',"command",		1,
 		"<commands>", "Execute supplied commands before main program execution" },
-	{ CO_FF,		'f',"ff",		1,
+	{ CO_FF,		'\0',"ff",		1,
 		"<file>",	"Load the specified forcefield file" },
 	{ CO_FOLD,		'\0',"fold",		0,
 		"",		"Force folding of atoms in periodic systems" },
+	{ CO_FORMAT,		'f',"format",		0,
+		"",		"Load models from command-line with specified <format>" },
 	{ CO_GRID,		'g',"grid",		1,
 		"<file>",	"Load the specified gridded data file" },
 	{ CO_HELP,		'h',"help",		0,
@@ -156,7 +158,7 @@ int master_data::parse_cli(int argc, char *argv[])
 	char *arg;
 	commandlist *cl;
 	zmap_type zm;
-	filter *f;
+	filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary run)
 	n = 1;
 	while (n < argc)
@@ -216,6 +218,11 @@ int master_data::parse_cli(int argc, char *argv[])
 					// Force folding (MIM'ing) of atoms in periodic systems on load
 					case (CO_FOLD):
 						prefs.set_fold_on_load(PS_YES);
+						break;
+					// Set forced model load format
+					case (CO_FORMAT):
+						modelfilter = master.find_filter(FT_MODEL_IMPORT, argv[++n]);
+						if (modelfilter == NULL) return -1;
 						break;
 					// Load surface
 					case (CO_GRID):
@@ -284,7 +291,8 @@ int master_data::parse_cli(int argc, char *argv[])
 		{
 			// Not a CLI switch, so try to load it as a model
 			ntried ++;
-			f = master.probe_file(argv[n], FT_MODEL_IMPORT);
+			if (modelfilter != NULL) f = modelfilter;
+			else f = master.probe_file(argv[n], FT_MODEL_IMPORT);
 			if (f != NULL) f->execute(argv[n]);
 		}
 		n++;

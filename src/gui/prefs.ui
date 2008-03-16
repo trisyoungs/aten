@@ -30,7 +30,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex" >
-      <number>1</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="ElementsTab" >
       <attribute name="title" >
@@ -1748,6 +1748,9 @@
      <widget class="QWidget" name="ColoursTab" >
       <attribute name="title" >
        <string>Colours</string>
+      </attribute>
+      <attribute name="icon" >
+       <iconset resource="icons.qrc" >:/basic/icons/basic_colour.svg</iconset>
       </attribute>
       <widget class="QGroupBox" name="groupBox_2" >
        <property name="geometry" >

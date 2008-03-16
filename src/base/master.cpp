@@ -249,6 +249,10 @@ void master_data::dereference_ff(forcefield *xff)
 	dbg_end(DM_CALLS,"master::dereference_ff");
 }
 
+/*
+// Filters
+*/
+
 // Load filters
 bool master_data::open_filters(const char *path, bool isdatadir)
 {
@@ -400,6 +404,18 @@ void master_data::partner_filters()
 	}
 	printf("\n");
 	dbg_end(DM_CALLS,"master::partner_filters");
+}
+
+// Find filter with specified type and nickname
+filter *master_data::find_filter(filter_type ft, const char *nickname)
+{
+	dbg_begin(DM_CALLS,"master::find_filter");
+	filter *result;
+	for (result = filters[ft].first(); result != NULL; result = result->next)
+		if (strcmp(result->get_nickname(), nickname) == 0) break;
+	if (result == NULL) msg(DM_NONE,"No %s filter with nickname '%s' defined.\n",text_from_FT(ft),nickname);
+	dbg_end(DM_CALLS,"master::find_filter");
+	return result;
 }
 
 /*
