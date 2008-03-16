@@ -181,7 +181,7 @@ void AtenForm::finalise_ui()
 	dialog[FT_MODEL_IMPORT]->setDirectory(master.workdir.get());
 	dialog[FT_MODEL_IMPORT]->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
-	for (f = master.filters[FT_MODEL_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.get_filters(FT_MODEL_IMPORT); f != NULL; f = f->next) filters << f->get_description();
 	if (filters.empty())
 	{
 		ui.actionFileOpen->setEnabled(FALSE);
@@ -196,7 +196,7 @@ void AtenForm::finalise_ui()
 	dialog[FT_TRAJECTORY_IMPORT]->setWindowTitle("Add Trajectory");
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.filters[FT_TRAJECTORY_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.get_filters(FT_TRAJECTORY_IMPORT); f != NULL; f = f->next) filters << f->get_description();
 	dialog[FT_TRAJECTORY_IMPORT]->setFilters(filters);
 
 	// Create save model dialog
@@ -207,7 +207,7 @@ void AtenForm::finalise_ui()
 	dialog[FT_MODEL_EXPORT]->setConfirmOverwrite(TRUE);
 	dialog[FT_MODEL_EXPORT]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.get_filters(FT_MODEL_EXPORT); f != NULL; f = f->next) filters << f->get_description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty())
 	{
@@ -264,7 +264,7 @@ void AtenForm::finalise_ui()
 	dialog[FT_EXPRESSION_EXPORT]->setDirectory(master.workdir.get());
 	dialog[FT_EXPRESSION_EXPORT]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.filters[FT_EXPRESSION_EXPORT].first(); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.get_filters(FT_EXPRESSION_EXPORT); f != NULL; f = f->next) filters << f->get_description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
 	else dialog[FT_EXPRESSION_EXPORT]->setFilters(filters);
@@ -276,7 +276,7 @@ void AtenForm::finalise_ui()
 	dialog[FT_GRID_IMPORT]->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.filters[FT_GRID_IMPORT].first(); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.get_filters(FT_GRID_IMPORT); f != NULL; f = f->next) filters << f->get_description();
 	if (filters.empty()) ui.actionFileOpenGrid->setEnabled(FALSE);
 	else dialog[FT_GRID_IMPORT]->setFilters(filters);
 

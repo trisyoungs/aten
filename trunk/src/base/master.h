@@ -99,14 +99,18 @@ class master_data
 	bool load_filter(const char*);
 	// Set export partners for import filters
 	void partner_filters();
-
-	public:
 	// List of file filters 
 	list<filter> filters[FT_NITEMS];
+
+	public:
 	// Load filters from specified location
 	bool open_filters(const char* dir, bool isdatadir);
 	// Probe file for its format
 	filter *probe_file(const char*, filter_type);
+	// Find filter of specified type with nickname provided
+	filter *find_filter(filter_type ft, const char *nickname);
+	// Return first filter in list (of a given type)
+	filter *get_filters(filter_type ft) { return filters[ft].first(); }
 
 	/*
 	// Forcefields

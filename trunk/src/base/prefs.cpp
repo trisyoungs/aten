@@ -118,7 +118,7 @@ prefs_data::prefs_data()
 	render_tube_size = 0.1;
 	render_selection_scale = 1.5;
 	render_globe_size = 75;
-	render_atom_detail = 20;
+	render_atom_detail = 10;
 	render_bond_detail = 6;
 	render_perspective = TRUE;
 	render_fov = 20.0;
@@ -181,8 +181,7 @@ prefs_data::prefs_data()
 	keymod_action[MK_ALT] = KA_NONE;
 
 	// Colours
-	//set_colour(COL_SPECREFLECT, 0.9f, 0.9f, 0.9f, 1.0f);
-	set_colour(COL_PEN, 0.0f, 0.0f, 0.0f, 1.0f);
+	set_colour(COL_SPECREFLECT, 0.9f, 0.9f, 0.9f, 1.0f);
 	set_colour(COL_PEN, 0.0f, 0.0f, 0.0f, 1.0f);
 	set_colour(COL_BG, 1.0f, 1.0f, 1.0f, 1.0f);
 	set_colour(COL_SCHEMELO, 1.0f, 0.0f, 0.0f, 1.0f);

@@ -21,6 +21,9 @@
   <property name="windowTitle" >
    <string>Aten (VERSION)</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >:/program/icons/aten.png</iconset>
+  </property>
   <property name="autoFillBackground" >
    <bool>true</bool>
   </property>
@@ -6360,7 +6363,7 @@
      <x>0</x>
      <y>0</y>
      <width>745</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="EditMenu" >
@@ -7660,24 +7663,24 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TColourFrame</class>
-   <extends>QFrame</extends>
-   <header>tcolourframe.uih</header>
-  </customwidget>
-  <customwidget>
    <class>TTabBar</class>
    <extends>QWidget</extends>
    <header>ttabbar.uih</header>
   </customwidget>
   <customwidget>
+   <class>TCanvas</class>
+   <extends>QWidget</extends>
+   <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>ttreewidget.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TColourFrame</class>
+   <extends>QFrame</extends>
+   <header>tcolourframe.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

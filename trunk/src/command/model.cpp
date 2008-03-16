@@ -132,9 +132,7 @@ int commanddata::function_CA_SAVEMODEL(command *&c, bundle &obj)
 {
 	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
-	filter *f;
-	for (f = master.filters[FT_MODEL_EXPORT].first(); f != NULL; f = f->next)
-		if (strcmp(f->get_nickname(),c->argc(0)) == 0) break;
+	filter *f = master.find_filter(FT_MODEL_EXPORT, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
