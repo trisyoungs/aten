@@ -24,7 +24,7 @@
 #include "classes/pattern.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include <QtGui/QListWidgetItem>
+#include "gui/tlistwidgetitem.h"
 #include <QtGui/QTableWidgetItem>
 #include <QtGui/QFileDialog>
 
@@ -35,11 +35,13 @@ int typelist_element = 1;
 void AtenForm::refresh_forcefieldpage()
 {
 	ui.ForcefieldList->clear();
-	QListWidgetItem *item;
+	TListWidgetItem *item;
 	for (forcefield *ff = master.get_ffs(); ff != NULL; ff = ff->next)
 	{
-		item = new QListWidgetItem(ui.ForcefieldList);
+		item = new TListWidgetItem(ui.ForcefieldList);
 		item->setText(ff->get_name());
+		item->setCheckState(ff == master.get_defaultff() ? Qt::Checked : Qt::Unchecked);
+		item->set_ff(ff);
 	}
 	// Select the current FF.
 	if (master.get_currentff() == NULL)
@@ -84,9 +86,30 @@ void AtenForm::refresh_forcefieldtypelist()
 // Set the current forcefield in master to reflect the list change
 void AtenForm::on_ForcefieldList_currentRowChanged(int row)
 {
-	master.set_currentff_by_id(row);
+	if (row != -1) master.set_currentff_by_id(row);
 	// Update type list
 	refresh_forcefieldtypelist();
+}
+
+// Item in forcefield list has changed?
+void AtenForm::on_ForcefieldList_itemClicked(QListWidgetItem *item)
+{
+	// Cast item to our own TListWidgetItem
+	TListWidgetItem *titem = (TListWidgetItem*) item;
+	// Get forcefield associated to item
+	forcefield *ff = titem->get_ff();
+	forcefield *defaultff = master.get_defaultff();
+	// Look at checked state
+	if ((titem->checkState() == Qt::Checked) && (ff != defaultff))
+	{
+		master.set_defaultff(ff);
+		refresh_forcefieldpage();
+	}
+	else if ((titem->checkState() == Qt::Unchecked) && (ff == defaultff))
+	{
+		master.set_defaultff(NULL);
+		refresh_forcefieldpage();
+	}
 }
 
 // Load forcefield 

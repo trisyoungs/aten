@@ -118,6 +118,8 @@ class master_data
 	private:
 	// List of loaded forcefields
 	list<forcefield> ffs;
+	// Default forcefield to use when no other has been applied
+	forcefield *defaultff;
 
 	public:
 	// Return the first ff in the list
@@ -138,6 +140,10 @@ class master_data
 	forcefield *load_ff(const char*);
 	// Find forcefield by name
 	forcefield *find_ff(const char*);
+	// Get the current default forcefield
+	forcefield *get_defaultff() { return defaultff; }
+	// Set the default forcefield
+	void set_defaultff(forcefield *ff);
 
 	/*
 	// Volumetric Grid Data

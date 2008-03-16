@@ -190,6 +190,7 @@ forcefield *master_data::load_ff(const char *filename)
 	return newff;
 }
 
+// Unload forcefield from the master's list
 void master_data::remove_ff(forcefield *xff)
 {
 	dbg_begin(DM_CALLS,"master::remove_ff");
@@ -197,6 +198,7 @@ void master_data::remove_ff(forcefield *xff)
 	// If possible, set the active row to the next model. Otherwise, the previous.
 	xff->next != NULL ? newff = xff->next : newff = xff->prev;
 	current.ff = newff;
+	dereference_ff(xff);
 	gui.remove_ff(xff);
 	gui.select_ff(newff);
 	// Finally, delete the ff
@@ -247,6 +249,14 @@ void master_data::dereference_ff(forcefield *xff)
 		m = m->next;
 	}
 	dbg_end(DM_CALLS,"master::dereference_ff");
+}
+
+// Set the default forcefield
+void master_data::set_defaultff(forcefield *ff)
+{
+	defaultff = ff;
+	if (defaultff == NULL) msg(DM_NONE,"Default forcefield has been unset.\n");
+	else msg(DM_NONE,"Default forcefield is now '%s'.\n", defaultff->get_name());
 }
 
 /*

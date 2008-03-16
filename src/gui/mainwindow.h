@@ -349,6 +349,7 @@ class AtenForm : public QMainWindow
 	void on_TypeModelButton_clicked(bool checked);
 	void on_UntypeModelButton_clicked(bool checked);
 	void on_ForcefieldList_currentRowChanged(int row);
+	void on_ForcefieldList_itemClicked(QListWidgetItem *item);
 	void on_ManualTypeSetButton_clicked(bool checked);
 	void on_ManualTypeClearButton_clicked(bool checked);
 	void on_ManualTypeTestButton_clicked(bool checked);

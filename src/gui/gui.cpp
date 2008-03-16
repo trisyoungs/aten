@@ -268,6 +268,8 @@ void gui_qt::refresh()
 	mainwindow->refresh_cellpage();
 	// Update the disorder page
 	mainwindow->refresh_disorderpage();
+	// Update forcefields in the forcefield window
+	mainwindow->refresh_forcefieldpage();
 	// Update pattern list in forcefield window
 	mainwindow->refresh_forcefieldpatterns();
 	// Update trajectory playback controls
