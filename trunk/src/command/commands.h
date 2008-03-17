@@ -167,6 +167,7 @@ enum command_action {
 	CA_PRINTFORCES,
 
 	// Forcefield Commands
+	CA_DEFAULTFF,
 	CA_FFMODEL,
 	CA_FFPATTERN,
 	CA_FFPATTERNID,
@@ -484,6 +485,7 @@ class commanddata
 	int function_CA_MODELFORCES(command *&c, bundle &obj);
 	int function_CA_PRINTFORCES(command *&c, bundle &obj);
 	// Forcefield Commands
+	int function_CA_DEFAULTFF(command *&c, bundle &obj);
 	int function_CA_FFMODEL(command *&c, bundle &obj);
 	int function_CA_FFPATTERN(command *&c, bundle &obj);
 	int function_CA_FFPATTERNID(command *&c, bundle &obj);

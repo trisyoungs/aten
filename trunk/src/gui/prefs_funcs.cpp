@@ -122,6 +122,7 @@ void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
 	// Store new colour
 	elements.set_ambient(el, newcol.redF(), newcol.greenF(), newcol.blueF());
 	ui.ElementAmbientColourFrame->set_colour(newcol);
+	ui.ElementAmbientColourFrame->update();
 	// Re-set atom colours in model(s)
 	master.get_currentmodel()->log_change(LOG_VISUAL);
 	gui.mainview.postredisplay();
@@ -141,6 +142,7 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 	// Store new colour
 	elements.set_diffuse(el, newcol.redF(), newcol.greenF(), newcol.blueF());
 	ui.ElementDiffuseColourFrame->set_colour(newcol);
+	ui.ElementDiffuseColourFrame->update();
 	// Re-set atom colours in model(s)
 	master.get_currentmodel()->log_change(LOG_VISUAL);
 	gui.mainview.postredisplay();
@@ -224,6 +226,7 @@ void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)
 	// Store new colour
 	prefs.set_spotlight(SL_AMBIENT, newcol.redF(), newcol.greenF(), newcol.blueF());
 	ui.SpotlightAmbientColourFrame->set_colour(newcol);
+	ui.SpotlightAmbientColourFrame->update();
 	// Update display
 	gui.mainview.init_gl();
 	gui.mainview.postredisplay();
@@ -239,7 +242,8 @@ void AtenPrefs::on_SpotlightDiffuseColourButton_clicked(bool checked)
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
 	prefs.set_spotlight(SL_DIFFUSE, newcol.redF(), newcol.greenF(), newcol.blueF());
-	ui.SpotlightAmbientColourFrame->set_colour(newcol);
+	ui.SpotlightDiffuseColourFrame->set_colour(newcol);
+	ui.SpotlightDiffuseColourFrame->update();
 	// Update display
 	gui.mainview.init_gl();
 	gui.mainview.postredisplay();
@@ -255,7 +259,8 @@ void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
 	prefs.set_spotlight(SL_SPECULAR, newcol.redF(), newcol.greenF(), newcol.blueF());
-	ui.SpotlightAmbientColourFrame->set_colour(newcol);
+	ui.SpotlightSpecularColourFrame->set_colour(newcol);
+	ui.SpotlightSpecularColourFrame->update();
 	// Update display
 	gui.mainview.init_gl();
 	gui.mainview.postredisplay();

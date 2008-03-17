@@ -20,6 +20,7 @@
 */
 
 #include "base/elements.h"
+#include "base/master.h"
 #include "model/model.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
@@ -100,7 +101,7 @@ bool model::type_all()
 	while (p != NULL)
 	{
 		msg(DM_NONE,"Typing pattern %s...",p->get_name());
-		if (!p->type_atoms(ff))
+		if (!p->type_atoms())
 		{
 			dbg_end(DM_CALLS,"model::type_all");
 			return FALSE;
@@ -162,7 +163,7 @@ void pattern::assign_hybrids()
 }
 
 // Type atoms in pattern
-bool pattern::type_atoms(forcefield *xff)
+bool pattern::type_atoms()
 {
 	// Assign atom types from the forcefield based on the typing rules supplied.
 	// Since there may be more than one match for a given atom (when relaxed rules are used, e.g.
@@ -176,11 +177,13 @@ bool pattern::type_atoms(forcefield *xff)
 	atom *i;
 	ffatom *ffa;
 	bool result = TRUE;
-	// Select the forcefield we're typing with
-	if (ff != NULL) xff = ff;
-	if (xff == NULL)
+	// Select the forcefield we're typing with. First, if this pattern doesn't have a specific ff, take the model's ff
+	if (ff == NULL) ff = parent->get_ff();
+	// If there is still no forcefield, set the defaultff
+	if (ff == NULL) ff = master.get_defaultff();
+	if (ff == NULL)
 	{	
-		msg(DM_NONE,"pattern::type_atoms : Can't type - no FF associated to pattern %s.\n",name.get());
+		msg(DM_NONE,"Can't type pattern '%s' - no FF associated to pattern or model, and no default set.\n",name.get());
 		dbg_end(DM_CALLS,"pattern::type_atoms");
 		return FALSE;
 	}
@@ -206,7 +209,7 @@ bool pattern::type_atoms(forcefield *xff)
 			result = FALSE;
 		}
 		// Loop over forcefield atom types
-		for (ffa = xff->get_atomtypes(); ffa != NULL; ffa = ffa->next)
+		for (ffa = ff->get_atomtypes(); ffa != NULL; ffa = ffa->next)
 		{
 			// Grab next atomtype and reset tempi variables
 			at = ffa->get_atomtype();

@@ -42,6 +42,5 @@ void TColourFrame::set_colour(GLfloat *col)
 	QColor rgb;
 	rgb.setRgbF(col[0],col[1],col[2],1.0f);
 	brush.setColor(rgb);
-	update();
 }
 

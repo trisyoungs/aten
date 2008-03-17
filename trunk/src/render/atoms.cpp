@@ -79,7 +79,7 @@ void canvas::render_model_atoms()
 		  if (renderstyle == DS_INDIVIDUAL)
 		  {
 			style_i = i->get_style();
-		  	style_i == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
+			style_i == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 		  }
 		  else style_i = renderstyle;
 		  /*
@@ -228,8 +228,8 @@ void canvas::render_model_atoms()
 			prefs.get_scale_colour(cindex, ambient);
 			prefs.get_scale_colour(cindex, diffuse);
 		}
-		ambient[3] = ambient[3] / 2;
-		diffuse[3] = diffuse[3] / 2;
+		ambient[3] = ambient[3] / 2.0f;
+		diffuse[3] = diffuse[3] / 2.0f;
 		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
 		glPushMatrix();

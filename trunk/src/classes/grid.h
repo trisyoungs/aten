@@ -167,7 +167,7 @@ class grid
 	void set_colour(int r, int g, int b);
 	void set_colour(double r, double g, double b);
 	// Set transparency of the surface
-	void set_transparency(int a) { colour[3] = a; log++; }
+	void set_transparency(GLfloat a) { colour[3] = a; log++; }
 	// Return the colour of the surface
 	GLfloat *get_colour() { return colour; }
 

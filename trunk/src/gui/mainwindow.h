@@ -356,7 +356,7 @@ class AtenForm : public QMainWindow
 	void on_ManualTypeEdit_editingFinished();
 
 
-	// Surface Page Functions
+	// Grid Page Functions
 	public:
 	void refresh_gridspage();
 	private:
@@ -364,6 +364,8 @@ class AtenForm : public QMainWindow
 	void grid_origin_changed(int component, double value);
 	void grid_axis_changed(int row, int component, double value);
 	private slots:
+	void on_LoadGridButton_clicked(bool checked) { on_actionFileOpenGrid_triggered(FALSE); }
+	void on_RemoveGridButton_clicked(bool checked);
 	void on_SaveGridButton_clicked(bool checked);
 	void on_GridList_currentRowChanged(int row);
 	void on_SurfaceStyleCombo_currentIndexChanged(int index);
