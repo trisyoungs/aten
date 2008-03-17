@@ -296,7 +296,7 @@ class pattern
 	// Set atom hybridisations
 	void assign_hybrids();
 	// Assign forcefield atom types
-	bool type_atoms(forcefield*);
+	bool type_atoms();
 	// Locate ring structures in the pattern
 	void find_rings();
 	// Augment atoms in pattern

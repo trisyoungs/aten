@@ -176,7 +176,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Save the current view as a bitmap image.
 	// Create a QPixmap of the current scene
-	QPixmap pixmap = ui.ModelView->renderPixmap(0,0,FALSE);
+	QPixmap pixmap = ui.ModelView->renderPixmap(0,0,TRUE);
 	// Get filename from user
 	int n;
 	if (savebitmapdialog->exec() == 1)

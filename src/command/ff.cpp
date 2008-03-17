@@ -21,10 +21,16 @@
 
 #include "command/commandlist.h"
 #include "base/master.h"
-#include "base/prefs.h"
-#include "base/debug.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
+
+// Set default forcefield ('defaultff <ff>')
+int commanddata::function_CA_DEFAULTFF(command *&c, bundle &obj)
+{
+	// If an argument was supplied, select forcefield by name. Otherwise use current
+	master.set_defaultff(master.find_ff(c->argc(0)));
+	return CR_SUCCESS;
+}
 
 // Associate current ff to current model ('ffmodel [name]')
 int commanddata::function_CA_FFMODEL(command *&c, bundle &obj)

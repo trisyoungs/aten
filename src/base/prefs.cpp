@@ -181,7 +181,7 @@ prefs_data::prefs_data()
 	keymod_action[MK_ALT] = KA_NONE;
 
 	// Colours
-	set_colour(COL_SPECREFLECT, 0.9f, 0.9f, 0.9f, 1.0f);
+	//set_colour(COL_SPECREFLECT, 0.9f, 0.9f, 0.9f, 1.0f);
 	set_colour(COL_PEN, 0.0f, 0.0f, 0.0f, 1.0f);
 	set_colour(COL_BG, 1.0f, 1.0f, 1.0f, 1.0f);
 	set_colour(COL_SCHEMELO, 1.0f, 0.0f, 0.0f, 1.0f);
@@ -367,7 +367,6 @@ void prefs_data::get_scale_colour(int n, GLfloat *v)
 void prefs_data::set_scale_colours()
 {
 	static int lastnsegments = -1, n;
-	static GLint newcol[4];
 	static double delta;
 	// Check current value of scale_segments against last value. If different, recreate array
 	if (lastnsegments != scale_segments)

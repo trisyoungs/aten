@@ -145,6 +145,7 @@ void master_data::init_commands()
 	CA_data[CA_PRINTFORCES].function = &commanddata::function_CA_PRINTFORCES;
 
 	// Forcefield Commands
+	CA_data[CA_DEFAULTFF].function = &commanddata::function_CA_DEFAULTFF;
 	CA_data[CA_FFMODEL].function = &commanddata::function_CA_FFMODEL;
 	CA_data[CA_FFPATTERN].function = &commanddata::function_CA_FFPATTERN;
 	CA_data[CA_FFPATTERNID].function = &commanddata::function_CA_FFPATTERNID;

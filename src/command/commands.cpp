@@ -259,6 +259,8 @@ commanddata CA_data[CA_NITEMS] = {
 				"Print calculated forces for the current model" },
 	
 	// Forcefield commands
+	{ "defaultff",		"V",		"<ff>",
+				"Make named forcefield the default for occasions where no other is specified." },
 	{ "ffmodel",		"v",		"[name]",
 				"Associate current (or named) forcefield to current model" },
 	{ "ffpattern",		"",		"",
@@ -405,7 +407,7 @@ commanddata CA_data[CA_NITEMS] = {
 				"Set the quadric detail of atoms" },
 	{ "bonddetail",		"V",		"<n>",
 				"Set the quadric detail of bonds" },
-	{ "colour",		"VVVV",		"<colour> <r> <g> <b>",
+	{ "colour",		"VVVv",		"<colour> <r> <g> <b> [alpha=1.0]",
 				"Set the specified colour" },
 	{ "densityunits",	"V",		"atomsperang|gpercm",
 				"Set the unit of density to use" },

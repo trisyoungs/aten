@@ -34,6 +34,7 @@ void AtenForm::refresh_gridspage()
 	{
 		item = new QListWidgetItem(ui.GridList);
 		item->setText(g->get_name());
+		item->setCheckState(g->get_visible() ? Qt::Checked : Qt::Unchecked);
 	}
 	// Select the first item
 	if (master.get_ngrids() != 0) ui.GridList->setCurrentRow(0);
@@ -104,6 +105,17 @@ void AtenForm::grid_axis_changed(int r, int component, double value)
 	gui.mainview.postredisplay();
 }
 
+void AtenForm::on_RemoveGridButton_clicked(bool checked)
+{
+	// Get the current row selected in the grid list
+	grid *g;
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	else g = master.get_grid(row);
+	master.remove_grid(g);
+	refresh_gridspage();
+}
+
 void AtenForm::on_SaveGridButton_clicked(bool checked)
 {
 }
@@ -149,6 +161,7 @@ void AtenForm::on_SurfaceColourButton_clicked(bool checked)
 	// Store new colour
 	g->set_colour(newcol.redF(), newcol.greenF(), newcol.blueF());
 	ui.SurfaceColourFrame->set_colour(newcol);
+	ui.SurfaceColourFrame->update();
 	gui.mainview.postredisplay();
 }
 
@@ -158,6 +171,6 @@ void AtenForm::on_SurfaceTransparencySpin_valueChanged(double value)
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
 	grid *g = master.get_grid(row);
-	g->set_transparency( int (value * INT_MAX));
+	g->set_transparency( (GLfloat) value );
 	gui.mainview.postredisplay();
 }
