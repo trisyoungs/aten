@@ -22,7 +22,7 @@
 #ifndef ATEN_PDENS_H
 #define ATEN_PDENS_H
 
-#include "methods/quantity.h"
+#include "methods/calculable.h"
 #include "templates/vector3.h"
 
 // Forward Declarations

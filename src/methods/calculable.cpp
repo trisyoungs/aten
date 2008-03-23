@@ -1,6 +1,6 @@
 /*
-	*** Basic quantity definition
-	*** src/methods/quantity.cpp
+	*** Basic calculable definition
+	*** src/methods/calculable.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "methods/quantity.h"
+#include "methods/calculable.h"
 #include <stdlib.h>
 
 // Constructor

@@ -22,7 +22,7 @@
 #ifndef ATEN_GEOMETRY_H
 #define ATEN_GEOMETRY_H
 
-#include "methods/quantity.h"
+#include "methods/calculable.h"
 
 // Forward Declarations
 class Site;
