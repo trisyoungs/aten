@@ -22,7 +22,6 @@
 #include "model/model.h"
 #include "classes/measurement.h"
 #include "classes/bond.h"
-//#include <stdarg.h>
 
 // Return first measurement in the list
 Measurement *Model::measurements()
@@ -103,7 +102,18 @@ void Model::removeMeasurement(Measurement *me)
 void Model::removeMeasurements(GeometryType gt)
 {
 	dbgBegin(DM_CALLS,"Model::removeMeasurements");
-	printf("Model::removeMeasurements by type is not done.\n");
+	Measurement *me = measurements_.first(), *meNext;
+	while (me != NULL)
+	{
+		if (me->type() != gt) me = me->next;
+		else
+		{
+			// Store pointer to measurement after this one...
+			meNext = me->next;
+			removeMeasurement(me);
+			me = meNext;
+		}
+	}
 	dbgEnd(DM_CALLS,"Model::removeMeasurements");
 }
 

@@ -41,6 +41,8 @@ void AtenForm::on_FlipZButton_clicked(bool checked)
 
 void AtenForm::flipSelection(int axis)
 {
+	master.currentModel()->mirrorSelectionLocal(axis);
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_DefineCentreButton_clicked(bool checked)
