@@ -1,6 +1,6 @@
 /*
-	*** Rendering glyph
-	*** src/classes/glyph.h
+	*** Rendering Glyph
+	*** src/classes/Glyph.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -27,78 +27,77 @@
 #include "templates/vector4.h"
 
 // Glyph style
-enum glyph_style { GS_ARROW, GS_VECTOR, GS_SPHERE, GS_CUBE, GS_TRIANGLE, GS_ELLIPSOID, GS_TETRAHEDRON, GS_NITEMS };
-const char *text_from_GS(glyph_style);
-glyph_style GS_from_text(const char*);
+enum GlyphStyle { GS_ARROW, GS_VECTOR, GS_SPHERE, GS_CUBE, GS_TRIANGLE, GS_ELLIPSOID, GS_TETRAHEDRON, GS_NITEMS };
+const char *text_from_GS(GlyphStyle);
+GlyphStyle GS_from_text(const char*);
 
 // Atom data pointer type
-enum atom_vector { AV_R, AV_F, AV_V };
+enum AtomVectorType { AV_R, AV_F, AV_V };
 
 #define MAXGLYPHDATA 4
 
 // Glyph data
-class glyphdata
+class GlyphData
 {
 	public:
 	// Constructor
-	glyphdata();
+	GlyphData();
 
 	private:
 	// Position or direction vector
-	vec3<double> vec;
+	Vec3<double> vector_;
 	// Pointer to atom from which to get 'r'
-	atom *i;
+	Atom *atom_;
 	// Type of vector data to take from atom (if defined)
-	atom_vector idata;
+	AtomVectorType atomData_;
 	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
-	bool atomsetlast;
+	bool atomSetLast_;
 	// Status of data item (whether it has been set or not)
-	bool set;
+	bool set_;
 
 	public:
 	// Set the vector data
-	void set_vector(double x, double y, double z);
+	void setVector(double x, double y, double z);
 	// Set the atom pointer
-	void set_atom(atom *target, atom_vector av);
+	void setAtom(Atom *target, AtomVectorType av);
 	// Return the atom pointer
-	atom *get_atom() { return i; }
+	Atom *atom();
 	// Return the type of atom vector pointed to
-	atom_vector get_atomdatatype() { return idata; }
+	AtomVectorType atomData();
 	// Return the vector data
-	vec3<double> get_vector();
+	Vec3<double> vector();
 	// Return if the structure contains an atom pointer
-	bool has_atom() { return (i == NULL ? FALSE : TRUE); }
+	bool hasAtom();
 	// Returns whether one of either atom* or vecdata have been set
-	bool is_set() { return set; }
+	bool isSet();
 };
 
 // Glyph
-class glyph
+class Glyph
 {
 	public:
-	// Constructor / Destructor
-	glyph();
-	~glyph();
+	// Constructor
+	Glyph();
 	// List pointers
-	glyph *prev, *next;
+	Glyph *prev, *next;
 
 	private:
-	// Style of glyph
-	glyph_style type;
-	// Whether glyph should be drawn with filled polygons (where possible)
-	bool solid;
+	// Style of Glyph
+	GlyphStyle type_;
+	// Whether Glyph should be drawn with filled polygons (where possible)
+	bool solid_;
 
 	public:
-	// Data for glyph
-	glyphdata data[MAXGLYPHDATA];
-	// Set style of glyph
-	void set_type(glyph_style gt);
-	// Return style of glyph
-	glyph_style get_type() { return type; }
-	// Set whether the glyph is solid or not
-	void set_solid(bool issolid) { solid = issolid; }
-	// Return whether the glyph should be drawn as a solid
-	bool is_solid() { return solid; }
+	// Data for Glyph
+	GlyphData data[MAXGLYPHDATA];
+	// Set style of Glyph
+	void setType(GlyphStyle gt);
+	// Return style of Glyph
+	GlyphStyle type();
+	// Set whether the Glyph is solid or not
+	void setSolid(bool issolid);
+	// Return whether the Glyph should be drawn as a solid
+	bool isSolid();
 };
 
 #endif

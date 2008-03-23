@@ -23,36 +23,44 @@
 #include "gui/canvas.h"
 #include "gui/tcanvas.uih"
 #include "gui/gui.h"
+#include "model/model.h"
 #include <QtGui/QMouseEvent>
 
 // Local variables
 bool DONTDRAW = FALSE;
 
+// Constructor
 TCanvas::TCanvas(QWidget *parent)
 {
-	widgetcanvas = NULL;
+	widgetCanvas_ = NULL;
+}
+
+// Set the widgetcanvas for the display
+void TCanvas::setCanvas(Canvas *wc)
+{
+	widgetCanvas_ = wc;
 }
 
 void TCanvas::initializeGL()
 {
-	// Call the realize method of the associated widgetcanvas.
-	if (widgetcanvas != NULL) widgetcanvas->realize();
+	// Call the realize method of the associated widgetCanvas_.
+	if (widgetCanvas_ != NULL) widgetCanvas_->realize();
 	else printf("NO CANVAS SET INIT\n");
 }
 
 void TCanvas::paintGL()
 {
-	if (widgetcanvas != NULL) widgetcanvas->render_scene(master.get_currentmodel()->get_render_source());
+	if (widgetCanvas_ != NULL) widgetCanvas_->renderScene(master.currentModel()->renderSource());
 	else printf("NO CANVAS SET PAINT\n");
 	swapBuffers();
 }
 
 void TCanvas::resizeGL(int width, int height)
 {
-	if (widgetcanvas != NULL)
+	if (widgetCanvas_ != NULL)
 	{
-		widgetcanvas->configure();
-		if (widgetcanvas->get_displaymodel() != NULL) widgetcanvas->get_displaymodel()->log_change(LOG_CAMERA);
+		widgetCanvas_->configure();
+		if (widgetCanvas_->displayModel() != NULL) widgetCanvas_->displayModel()->logChange(LOG_CAMERA);
 	}
 	else printf("NO CANVAS SET RESIZE\n");
 }
@@ -60,79 +68,79 @@ void TCanvas::resizeGL(int width, int height)
 void TCanvas::mousePressEvent(QMouseEvent *event)
 {
 	// Handle button presses (button down) from the mouse
-	dbg_begin(DM_CALLS,"TCanvas::mousePressEvent");
-	mouse_button button;
+	dbgBegin(DM_CALLS,"TCanvas::mousePressEvent");
+	MouseButton button;
 	if (event->button() == Qt::LeftButton) button = MB_LEFT;
 	else if (event->button() == Qt::MidButton) button = MB_MIDDLE;
 	else if (event->button() == Qt::RightButton) button = MB_RIGHT;
 	else
 	{
-		dbg_end(DM_CALLS,"TCanvas::mousePressEvent");
+		dbgEnd(DM_CALLS,"TCanvas::mousePressEvent");
 		return;
 	}
 	// Do the requested action as defined in the edit panel, but only if another action
-	// isn't currently in progress. Set the user_action based on the mouse button that sent
+	// isn't currently in progress. Set the UserAction based on the mouse button that sent
 	// the signal, current selection / draw modes and key modifier states.
 	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
 	if (button == MB_RIGHT)
 	{
-		atom *tempi = master.get_currentmodel()->atom_on_screen(event->x(), event->y());
+		Atom *tempi = master.currentModel()->atomOnScreen(event->x(), event->y());
 		if (tempi != NULL)
 		{
-			gui.call_atompopup(tempi, event->globalX(), event->globalY());
-			gui.mainview.postredisplay();
-			dbg_end(DM_CALLS,"TCanvas::mousePressEvent");
+			gui.callAtomPopup(tempi, event->globalX(), event->globalY());
+			gui.mainView.postRedisplay();
+			dbgEnd(DM_CALLS,"TCanvas::mousePressEvent");
 			return;
 		}
 	}
 	// If the left mouse button is double-clicked over an atom, show the atomlist window
 	if ((button == MB_LEFT) && (event->type() == QEvent::MouseButtonDblClick))
 	{
-		atom *tempi = widgetcanvas->get_atom_hover();
+		Atom *tempi = widgetCanvas_->atomHover();
 		if (tempi != NULL)
 		{
 			printf("gui::dblclick show atom list not done.\n");
 			//gui.atomwin_list_refresh();
-			dbg_end(DM_CALLS,"TCanvas::mousePressEvent");
+			dbgEnd(DM_CALLS,"TCanvas::mousePressEvent");
 			return;
 		}
 	}
 	// Inform the main canvas that a button action has occurred
-	gui.mainview.inform_mousedown(button,event->x(),event->y());
-	dbg_end(DM_CALLS,"TCanvas::mousePressEvent");
+	gui.mainView.informMouseDown(button,event->x(),event->y());
+	dbgEnd(DM_CALLS,"TCanvas::mousePressEvent");
 }
 
 void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 {
 	// Handle button releases (button up) from the mouse
-	dbg_begin(DM_CALLS,"TCanvas::mouseReleaseEvent");
-	mouse_button button;
+	dbgBegin(DM_CALLS,"TCanvas::mouseReleaseEvent");
+	MouseButton button;
 	if (event->button() == Qt::LeftButton) button = MB_LEFT;
 	else if (event->button() == Qt::MidButton) button = MB_MIDDLE;
 	else if (event->button() == Qt::RightButton) button = MB_RIGHT;
 	else
 	{
-		dbg_end(DM_CALLS,"TCanvas::mouseReleaseEvent");
+		dbgEnd(DM_CALLS,"TCanvas::mouseReleaseEvent");
 		return;
 	}
 	// Finalize the requested action
-	gui.mainview.inform_mouseup(button,event->x(),event->y());
+	gui.mainView.informMouseUp(button,event->x(),event->y());
 	gui.refresh();
-	dbg_end(DM_CALLS,"TCanvas::mouseReleaseEvent");
+	dbgEnd(DM_CALLS,"TCanvas::mouseReleaseEvent");
 }
 
 void TCanvas::mouseMoveEvent(QMouseEvent *event)
 {
 	// Mouse motion handler.
 	// Tell the main canvas that the mouse has moved
-	gui.mainview.inform_mousemove(event->x(),event->y());
+	gui.mainView.informMouseMove(event->x(),event->y());
 }
 
 void TCanvas::wheelEvent(QWheelEvent *event)
 {
 	// Handle mouse-wheel scroll events.
-	if (event->delta() > 0) gui.mainview.inform_scroll(TRUE);
-	else gui.mainview.inform_scroll(FALSE);
+	if (event->delta() > 0) gui.mainView.informScroll(TRUE);
+	else gui.mainView.informScroll(FALSE);
 }
 
 void TCanvas::timerEvent(QTimerEvent *event)
@@ -143,11 +151,11 @@ void TCanvas::timerEvent(QTimerEvent *event)
 	else
 	{
 		DONTDRAW = TRUE;
-		model *m = master.get_currentmodel();
-		m->seek_next_frame();
-		if (m->get_frameposition() == m->get_totalframes()) gui.stop_trajectory_playback();
-		gui.update_labels();
-		gui.mainview.postredisplay();
+		Model *m = master.currentModel();
+		m->seekNextFrame();
+		if (m->framePosition() == m->totalFrames()) gui.stopTrajectoryPlayback();
+		gui.updateLabels();
+		gui.mainView.postRedisplay();
 		DONTDRAW = FALSE;
 	}
 }

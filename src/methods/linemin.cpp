@@ -23,37 +23,37 @@
 #include "methods/linemin.h"
 
 // Constructor
-linemin::linemin()
+LineMinimiser::LineMinimiser()
 {
-	tolerance = 0.0001;
+	tolerance_ = 0.0001;
 }
 
 // Perform gradient move
-void linemin::gradient_move(model *srcmodel, model *destmodel, double delta)
+void LineMinimiser::gradientMove(Model *srcmodel, Model *destmodel, double delta)
 {
 	// Generate a new set of coordinates in destmodel following the normalised gradient vector present in srcmodel, with the stepsize given
-	dbg_begin(DM_CALLS,"linemin::gradient_move");
+	dbgBegin(DM_CALLS,"LineMinimiser::gradientMove");
 	int i;
-	atom **srcatoms = srcmodel->get_atomarray();
-	atom **destatoms = destmodel->get_atomarray();
-	for (i=0; i<srcmodel->get_natoms(); i++)
+	Atom **srcatoms = srcmodel->atomArray();
+	Atom **destatoms = destmodel->atomArray();
+	for (i=0; i<srcmodel->nAtoms(); i++)
 	{
 		destatoms[i]->r().x = srcatoms[i]->r().x + srcatoms[i]->f().x * delta;
 		destatoms[i]->r().y = srcatoms[i]->r().y + srcatoms[i]->f().y * delta;
 		destatoms[i]->r().z = srcatoms[i]->r().z + srcatoms[i]->f().z * delta;
 	}
-	dbg_end(DM_CALLS,"linemin::gradient_move");
+	dbgEnd(DM_CALLS,"LineMinimiser::gradientMove");
 }
 
 // Line minimise supplied model along gradient vector 
-double linemin::line_minimise(model *srcmodel)
+double LineMinimiser::lineMinimise(Model *srcmodel)
 {
-	dbg_begin(DM_CALLS,"linemin::line_minimise");
+	dbgBegin(DM_CALLS,"LineMinimiser::lineMinimise");
 	int m, i;
 	double enew, ecurrent, step, bound[3], energy[3], newmin, mid, a, b, b10, b12;
-	model destmodel;
+	Model destmodel;
 	bool failed, leftbound;
-	atom **modelatoms = srcmodel->get_atomarray();
+	Atom **modelatoms = srcmodel->atomArray();
 
 	// Brent-style line minimiser with parabolic interpolation and Golden Search backup.
 	// We assume that the energy expression for the source model is correct.
@@ -64,22 +64,22 @@ double linemin::line_minimise(model *srcmodel)
 
 	failed = FALSE;
 
-	srcmodel->zero_forces();
-	srcmodel->calculate_forces(srcmodel);
-	srcmodel->zero_forces_fixed();
-	srcmodel->normalise_forces(1.0);
+	srcmodel->zeroForces();
+	srcmodel->calculateForces(srcmodel);
+	srcmodel->zeroForcesFixed();
+	srcmodel->normaliseForces(1.0);
 
 	// Set initial bounding values
 	bound[0] = -0.2;
 	bound[1] = 0.0;
 	bound[2] = 0.2;
 	// Compute gradient at each bounding point
-	gradient_move(srcmodel, &destmodel, bound[0]);
-	energy[0] = srcmodel->total_energy(&destmodel);
-	gradient_move(srcmodel, &destmodel, bound[1]);
-	energy[1] = srcmodel->total_energy(&destmodel);
-	gradient_move(srcmodel, &destmodel, bound[2]);
-	energy[2] = srcmodel->total_energy(&destmodel);
+	gradientMove(srcmodel, &destmodel, bound[0]);
+	energy[0] = srcmodel->totalEnergy(&destmodel);
+	gradientMove(srcmodel, &destmodel, bound[1]);
+	energy[1] = srcmodel->totalEnergy(&destmodel);
+	gradientMove(srcmodel, &destmodel, bound[2]);
+	energy[2] = srcmodel->totalEnergy(&destmodel);
 	// Sort w.r.t. energy so that the minimum is in the central point.
 	if (energy[1] > energy[0])
 	{
@@ -116,8 +116,8 @@ double linemin::line_minimise(model *srcmodel)
 		newmin = bound[1] - 0.5 * (a / b);
 
 		// Compute energy of new point and check that it went down...
-		gradient_move(srcmodel, &destmodel, newmin);
-		enew = srcmodel->total_energy(&destmodel);
+		gradientMove(srcmodel, &destmodel, newmin);
+		enew = srcmodel->totalEnergy(&destmodel);
 
 		//printf("PARABOLIC point gives %f @ %f\n",enew,newmin);
 		if (enew < energy[1])
@@ -125,7 +125,7 @@ double linemin::line_minimise(model *srcmodel)
 			// New point found, so copy destmodel coordinates to model and set new energy
 			//printf("PARABOLIC point is new minimum...\n");
 			ecurrent = enew;
-			srcmodel->copy_atom_data(&destmodel, AD_R);
+			srcmodel->copyAtomData(&destmodel, AD_R);
 			// Overwrite the largest of bound[0] and bound[2]
 			if (energy[2] > energy[0])
 			{
@@ -143,12 +143,12 @@ double linemin::line_minimise(model *srcmodel)
 		else
 		{
 			// Is the parabolic point better than the relevant bound in that direction?
-			if ((energy[2] - enew) > tolerance)
+			if ((energy[2] - enew) > tolerance_)
 			{
 				bound[2] = newmin;
 				energy[2] = enew;
 			}
-			else if ((energy[0] - enew) > tolerance)
+			else if ((energy[0] - enew) > tolerance_)
 			{
 				bound[0] = newmin;
 				energy[0] = enew;
@@ -160,15 +160,15 @@ double linemin::line_minimise(model *srcmodel)
 				leftbound = fabs(bound[0]-bound[1]) > fabs(bound[1]-bound[2]);
 				if (leftbound) newmin = bound[1] + 0.3819660 * (bound[1] - bound[0]);
 				else newmin = bound[1] + 0.3819660 * (bound[2] - bound[1]);
-				gradient_move(srcmodel, &destmodel, newmin);
-				enew = srcmodel->total_energy(&destmodel);
+				gradientMove(srcmodel, &destmodel, newmin);
+				enew = srcmodel->totalEnergy(&destmodel);
 				//printf("GOLD point is %f @ %f (mid = %f)\n",enew,newmin,mid);
 				if (enew < energy[1])
 				{
 					//printf("---GOLD point is lower than current minimum...\n");
 					// New point found, so copy destmodel coordinates to model and set new energy
 					ecurrent = enew;
-					srcmodel->copy_atom_data(&destmodel, AD_R);
+					srcmodel->copyAtomData(&destmodel, AD_R);
 					// Overwrite the largest of bound[0] and bound[2]
 					if (leftbound)
 					{
@@ -199,9 +199,9 @@ double linemin::line_minimise(model *srcmodel)
 				}
 			}
 		}
-	} while (fabs(bound[0]-bound[2]) > (2.0 * tolerance));
+	} while (fabs(bound[0]-bound[2]) > (2.0 * tolerance_));
 	//printf("Final bounding values are %f %f %f\n",bound[0],bound[1],bound[2]);
-	dbg_end(DM_CALLS,"linemin::minimise");
+	dbgEnd(DM_CALLS,"LineMinimiser::minimise");
 	return energy[1];
 }
 

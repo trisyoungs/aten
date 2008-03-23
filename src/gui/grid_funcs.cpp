@@ -20,47 +20,113 @@
 */
 
 #include "base/master.h"
-#include "gui/gui.h"
+#include "classes/grid.h"
 #include "gui/mainwindow.h"
+#include "gui/gui.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QColorDialog>
 
-void AtenForm::refresh_gridspage()
+void AtenForm::on_LoadGridButton_clicked(bool checked)
+{
+	on_actionFileOpenGrid_triggered(FALSE);
+}
+
+void AtenForm::on_GridOriginXSpin_valueChanged(double d)
+{
+	gridOriginChanged(0, d);
+}
+
+void AtenForm::on_GridOriginYSpin_valueChanged(double d)
+{
+	gridOriginChanged(1, d);
+}
+
+void AtenForm::on_GridOriginZSpin_valueChanged(double d)
+{
+	gridOriginChanged(2, d);
+}
+
+void AtenForm::on_GridAxesAXSpin_valueChanged(double d)
+{
+	gridAxisChanged(0,0, d);
+}
+
+void AtenForm::on_GridAxesAYSpin_valueChanged(double d)
+{
+	gridAxisChanged(0,1, d);
+}
+
+void AtenForm::on_GridAxesAZSpin_valueChanged(double d)
+{
+	gridAxisChanged(0,2, d);
+}
+
+void AtenForm::on_GridAxesBXSpin_valueChanged(double d)
+{
+	gridAxisChanged(1,0, d);
+}
+
+void AtenForm::on_GridAxesBYSpin_valueChanged(double d)
+{
+	gridAxisChanged(1,1, d);
+}
+
+void AtenForm::on_GridAxesBZSpin_valueChanged(double d)
+{
+	gridAxisChanged(1,2, d);
+}
+
+void AtenForm::on_GridAxesCXSpin_valueChanged(double d)
+{
+	gridAxisChanged(2,0, d);
+}
+
+void AtenForm::on_GridAxesCYSpin_valueChanged(double d)
+{
+	gridAxisChanged(2,1, d);
+}
+
+void AtenForm::on_GridAxesCZSpin_valueChanged(double d)
+{
+	gridAxisChanged(2,2, d);
+}
+
+void AtenForm::refreshGridsPage()
 {
 	// Clear and refresh the grids list
 	ui.GridList->clear();
 	QListWidgetItem *item;
-	for (grid *g = master.get_grids(); g != NULL; g = g->next)
+	for (Grid *g = master.grids(); g != NULL; g = g->next)
 	{
 		item = new QListWidgetItem(ui.GridList);
-		item->setText(g->get_name());
-		item->setCheckState(g->get_visible() ? Qt::Checked : Qt::Unchecked);
+		item->setText(g->name());
+		item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
 	}
 	// Select the first item
-	if (master.get_ngrids() != 0) ui.GridList->setCurrentRow(0);
-	refresh_gridinfo();
+	if (master.nGrids() != 0) ui.GridList->setCurrentRow(0);
+	refreshGridInfo();
 }
 
-void AtenForm::refresh_gridinfo()
+void AtenForm::refreshGridInfo()
 {
 	// Get the current row selected in the grid list
-	grid *g;
+	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = master.get_grid(row);
+	else g = master.grid(row);
 	// Set minimum, maximum, and cutoff
-	ui.GridMinimumLabel->setText(ftoa(g->get_minimum()));
-	ui.SurfaceCutoffSpin->setMinimum(g->get_minimum());
-	ui.SurfaceCutoffSpin->setValue(g->get_cutoff());
-	ui.SurfaceCutoffSpin->setMaximum(g->get_maximum());
-	ui.GridMaximumLabel->setText(ftoa(g->get_maximum()));
+	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
+	ui.SurfaceCutoffSpin->setMinimum(g->minimum());
+	ui.SurfaceCutoffSpin->setValue(g->cutoff());
+	ui.SurfaceCutoffSpin->setMaximum(g->maximum());
+	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
 	// Set origin
-	vec3<double> origin = g->get_origin();
+	Vec3<double> origin = g->origin();
 	ui.GridOriginXSpin->setValue(origin.x);
 	ui.GridOriginYSpin->setValue(origin.y);
 	ui.GridOriginZSpin->setValue(origin.z);
 	// Set axes
-	mat3<double> axes = g->get_axes();
+	Mat3<double> axes = g->axes();
 	ui.GridAxesAXSpin->setValue(axes.rows[0].x);
 	ui.GridAxesAYSpin->setValue(axes.rows[0].y);
 	ui.GridAxesAZSpin->setValue(axes.rows[0].z);
@@ -71,49 +137,49 @@ void AtenForm::refresh_gridinfo()
 	ui.GridAxesCYSpin->setValue(axes.rows[2].y);
 	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
 	// Set colour and transparency
-	ui.SurfaceColourFrame->set_colour(g->get_colour());
-	ui.SurfaceTransparencySpin->setValue( g->get_colour()[3]*127 );
+	ui.SurfaceColourFrame->setColour(g->colour());
+	ui.SurfaceTransparencySpin->setValue( g->colour()[3]*127 );
 }
 
-void AtenForm::grid_origin_changed(int component, double value)
+void AtenForm::gridOriginChanged(int component, double value)
 {
 	// Get the current row selected in the grid list
-	grid *g;
+	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = master.get_grid(row);
+	else g = master.grid(row);
 	// Get and re-set origin
-	static vec3<double> o;
-	o = g->get_origin();
+	static Vec3<double> o;
+	o = g->origin();
 	o.set(component, value);
-	g->set_origin(o);
-	gui.mainview.postredisplay();
+	g->setOrigin(o);
+	gui.mainView.postRedisplay();
 }
 
-void AtenForm::grid_axis_changed(int r, int component, double value)
+void AtenForm::gridAxisChanged(int r, int component, double value)
 {
 	// Get the current row selected in the grid list
-	grid *g;
+	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = master.get_grid(row);
+	else g = master.grid(row);
 	// Get and re-set axes
-	static mat3<double> axes;
-	axes = g->get_axes();
+	static Mat3<double> axes;
+	axes = g->axes();
 	axes.rows[r].set(component, value);
-	g->set_axes(axes);
-	gui.mainview.postredisplay();
+	g->setAxes(axes);
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_RemoveGridButton_clicked(bool checked)
 {
 	// Get the current row selected in the grid list
-	grid *g;
+	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = master.get_grid(row);
-	master.remove_grid(g);
-	refresh_gridspage();
+	else g = master.grid(row);
+	master.removeGrid(g);
+	refreshGridsPage();
 }
 
 void AtenForm::on_SaveGridButton_clicked(bool checked)
@@ -123,7 +189,7 @@ void AtenForm::on_SaveGridButton_clicked(bool checked)
 void AtenForm::on_GridList_currentRowChanged(int row)
 {
 	// New item selected, so update the data shown in the page
-	if (row != -1) refresh_gridinfo();
+	if (row != -1) refreshGridInfo();
 }
 
 void AtenForm::on_SurfaceCutoffSpin_valueChanged(double d)
@@ -131,9 +197,9 @@ void AtenForm::on_SurfaceCutoffSpin_valueChanged(double d)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	grid *g = master.get_grid(row);
-	g->set_cutoff(d);
-	gui.mainview.postredisplay();
+	Grid *g = master.grid(row);
+	g->setCutoff(d);
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_SurfaceStyleCombo_currentIndexChanged(int index)
@@ -141,9 +207,9 @@ void AtenForm::on_SurfaceStyleCombo_currentIndexChanged(int index)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	grid *g = master.get_grid(row);
-	g->set_style(surface_style (index));
-	gui.mainview.postredisplay();
+	Grid *g = master.grid(row);
+	g->setStyle(SurfaceStyle (index));
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_SurfaceColourButton_clicked(bool checked)
@@ -151,18 +217,18 @@ void AtenForm::on_SurfaceColourButton_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	grid *g = master.get_grid(row);
+	Grid *g = master.grid(row);
 	// Get current surface colour and convert into a QColor
-	GLfloat *col = g->get_colour();
+	GLfloat *col = g->colour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
-	g->set_colour(newcol.redF(), newcol.greenF(), newcol.blueF());
-	ui.SurfaceColourFrame->set_colour(newcol);
+	g->setColour(newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.SurfaceColourFrame->setColour(newcol);
 	ui.SurfaceColourFrame->update();
-	gui.mainview.postredisplay();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_SurfaceTransparencySpin_valueChanged(double value)
@@ -170,7 +236,7 @@ void AtenForm::on_SurfaceTransparencySpin_valueChanged(double value)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	grid *g = master.get_grid(row);
-	g->set_transparency( (GLfloat) value );
-	gui.mainview.postredisplay();
+	Grid *g = master.grid(row);
+	g->setTransparency( (GLfloat) value );
+	gui.mainView.postRedisplay();
 }

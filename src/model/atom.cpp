@@ -25,247 +25,265 @@
 #include "base/elements.h"
 #include "base/master.h"
 
-// Add atom
-atom *model::add_atom(int newel, vec3<double> pos)
+// Return the start of the atom list
+Atom *Model::atoms()
 {
-	dbg_begin(DM_CALLS,"model::add_atom");
-	atom *newatom = atoms.add();
-	newatom->set_element(newel);
-	newatom->set_id(atoms.size() - 1);
+	return atoms_.first();
+}
+
+// Return the number of atoms in the model
+int Model::nAtoms()
+{
+	return atoms_.nItems();
+}
+
+// Add atom
+Atom *Model::addAtom(int newel, Vec3<double> pos)
+{
+	dbgBegin(DM_CALLS,"Model::addAtom");
+	Atom *newatom = atoms_.add();
+	newatom->setElement(newel);
+	newatom->setId(atoms_.nItems() - 1);
 	newatom->r() = pos;
-	mass += elements.mass(newel);
-	calculate_density();
-	log_change(LOG_STRUCTURE);
+	mass_ += elements.atomicMass(newel);
+	calculateDensity();
+	logChange(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
+		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_ATOM,newatom);
 	}
-	dbg_end(DM_CALLS,"model::add_atom");
+	dbgEnd(DM_CALLS,"Model::addAtom");
 	return newatom;
 }
 
 // Add atom copy
-atom *model::add_copy(atom *source)
+Atom *Model::addCopy(Atom *source)
 {
-	dbg_begin(DM_CALLS,"model::add_copy");
-	atom *newatom = atoms.add();
+	dbgBegin(DM_CALLS,"Model::addCopy");
+	Atom *newatom = atoms_.add();
 	newatom->copy(source);
-	newatom->set_id(atoms.size() - 1);
-	log_change(LOG_STRUCTURE);
-	mass += elements.mass(newatom->get_element());
-	calculate_density();
+	newatom->setId(atoms_.nItems() - 1);
+	logChange(LOG_STRUCTURE);
+	mass_ += elements.atomicMass(newatom->element());
+	calculateDensity();
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
+		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_ATOM,newatom);
 	}
-	dbg_end(DM_CALLS,"model::add_copy");
+	dbgEnd(DM_CALLS,"Model::addCopy");
 	return newatom;
 }
 
 // Add atom copy at specified position in list
-atom *model::add_copy(atom *afterthis, atom *source)
+Atom *Model::addCopy(Atom *afterthis, Atom *source)
 {
-	dbg_begin(DM_CALLS,"model::add_copy");
-	atom *newatom = atoms.insert(afterthis);
+	dbgBegin(DM_CALLS,"Model::addCopy");
+	Atom *newatom = atoms_.insert(afterthis);
 	//printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
-	renumber_atoms( (afterthis != NULL ? afterthis->prev : NULL) );
-	log_change(LOG_STRUCTURE);
-	mass += elements.mass(newatom->get_element());
-	calculate_density();
+	renumberAtoms( (afterthis != NULL ? afterthis->prev : NULL) );
+	logChange(LOG_STRUCTURE);
+	mass_ += elements.atomicMass(newatom->element());
+	calculateDensity();
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
+		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_ATOM,newatom);
 	}
-	dbg_end(DM_CALLS,"model::add_copy");
+	dbgEnd(DM_CALLS,"Model::addCopy");
 	return newatom;
 }
 
 // Remove atom
-void model::remove_atom(atom *xatom)
+void Model::removeAtom(Atom *xatom)
 {
-	dbg_begin(DM_CALLS,"model::remove_atom");
+	dbgBegin(DM_CALLS,"Model::removeAtom");
 	// Delete a specific atom (passed as xatom)
-	mass -= elements.mass(xatom->get_element());
-	if (mass < 0.0) mass = 0.0;
-	calculate_density();
+	mass_ -= elements.atomicMass(xatom->element());
+	if (mass_ < 0.0) mass_ = 0.0;
+	calculateDensity();
 	// Renumber the ids of all atoms in the list after this one
-	for (atom *i = xatom->next; i != NULL; i = i->next) i->decrease_id();
-	if (xatom->is_selected()) deselect_atom(xatom);
-	log_change(LOG_STRUCTURE);
+	for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
+	if (xatom->isSelected()) deselectAtom(xatom);
+	logChange(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
+		Change *newchange = recordingState_->addChange();
 		newchange->set(-UE_ATOM,xatom);
 	}
-	atoms.remove(xatom);
-	dbg_end(DM_CALLS,"model::remove_atom");
+	atoms_.remove(xatom);
+	dbgEnd(DM_CALLS,"Model::removeAtom");
 }
 
 // Delete Atom
-void model::delete_atom(atom *xatom)
+void Model::deleteAtom(Atom *xatom)
 {
-	dbg_begin(DM_CALLS,"model::delete_atom");
+	dbgBegin(DM_CALLS,"Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
 	// also check those lists for this atom and remove it.
 	if (xatom == NULL) msg(DM_NONE,"No atom to delete.\n");
 	else
 	{
 		// Remove measurements
-		remove_measurements(xatom);
+		removeMeasurements(xatom);
 		// Delete All Bonds To Specific Atom
-		refitem<bond,int> *bref = xatom->get_bonds();
+		Refitem<Bond,int> *bref = xatom->bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
-			bond *b = bref->item;
-			atom *j = b->get_partner(xatom);
-			unbond_atoms(xatom,j,b);
-			bref = xatom->get_bonds();
+			Bond *b = bref->item;
+			Atom *j = b->partner(xatom);
+			unbondAtoms(xatom,j,b);
+			bref = xatom->bonds();
 		}
 		// Finally, delete the atom
-		remove_atom(xatom);
+		removeAtom(xatom);
 	}
-	dbg_end(DM_CALLS,"model::delete_atom");
+	dbgEnd(DM_CALLS,"Model::deleteAtom");
 }
 
 // Transmute atom
-void model::transmute_atom(atom *i, int el)
+void Model::transmuteAtom(Atom *i, int el)
 {
-	dbg_begin(DM_CALLS,"model::transmute_atom");
+	dbgBegin(DM_CALLS,"Model::transmuteAtom");
 	if (i == NULL) msg(DM_NONE,"No atom to transmute.\n");
 	else
 	{
-		int oldel = i->get_element();
+		int oldel = i->element();
 		if (oldel != el)
 		{
-			mass -= elements.mass(i);
-			i->set_element(el);
-			mass += elements.mass(i);
-			calculate_density();
-			log_change(LOG_STRUCTURE);
+			mass_ -= elements.atomicMass(i);
+			i->setElement(el);
+			mass_ += elements.atomicMass(i);
+			calculateDensity();
+			logChange(LOG_STRUCTURE);
 			// Add the change to the undo state (if there is one)
-			if (recordingstate != NULL)
+			if (recordingState_ != NULL)
 			{
-				change *newchange = recordingstate->changes.add();
-				newchange->set(UE_TRANSMUTE,i->get_id(),oldel,el);
+				Change *newchange = recordingState_->addChange();
+				newchange->set(UE_TRANSMUTE,i->id(),oldel,el);
 			}
 		}
 	}
-	dbg_end(DM_CALLS,"model::transmute_atom");
+	dbgEnd(DM_CALLS,"Model::transmuteAtom");
+}
+
+// Return (and autocreate if necessary) the static atoms array
+Atom **Model::atomArray()
+{
+	return atoms_.array();
 }
 
 // Clear atoms
-void model::clear_atoms()
+void Model::clearAtoms()
 {
-	dbg_begin(DM_CALLS,"model::clear_atoms");
-	atom *i = atoms.first();
+	dbgBegin(DM_CALLS,"Model::clearAtoms");
+	Atom *i = atoms_.first();
 	while (i != NULL)
 	{
-		delete_atom(i);
-		i = atoms.first();
+		deleteAtom(i);
+		i = atoms_.first();
 	}
-	dbg_end(DM_CALLS,"model::clear_atoms");
+	dbgEnd(DM_CALLS,"Model::clearAtoms");
 }
 
 // Find atom
-atom *model::find_atom(int id)
+Atom *Model::findAtom(int id)
 {
 	// Find an atom according to its internal id (useful when atom ids may have been set differently by import filters)
-	atom *i;
-	for (i = atoms.first(); i != NULL; i = i->next) if (id == i->get_id()) break;
+	Atom *i;
+	for (i = atoms_.first(); i != NULL; i = i->next) if (id == i->id()) break;
 	return i;
 }
 
 // Find atom by tempi
-atom *model::find_atom_by_tempi(int tempi)
+Atom *Model::findAtomByTempi(int tempi)
 {
 	// Find an atom according to its tempi value
-	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->tempi == tempi) return i;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->tempi == tempi) return i;
 	return NULL;
 }
 
 // Renumber Atoms
-void model::renumber_atoms(atom *from)
+void Model::renumberAtoms(Atom *from)
 {
-	dbg_begin(DM_CALLS,"model::renumber_atoms");
+	dbgBegin(DM_CALLS,"Model::renumberAtoms");
 	static int count;
-	static atom *i;
+	static Atom *i;
 	if (from == NULL)
 	{
 		count = 0;
-		i = atoms.first();
+		i = atoms_.first();
 	}
 	else
 	{
-		count = from->get_id();
+		count = from->id();
 		i = from->next;
 	}
 	for (i = i; i != NULL; i = i->next)
 	{
-		i->set_id(count);
+		i->setId(count);
 		count ++;
 	}
-	dbg_end(DM_CALLS,"model::renumber_atoms");
+	dbgEnd(DM_CALLS,"Model::renumberAtoms");
 }
 
 // Return atom 'n' in the model
-atom *model::get_atom(int n)
+Atom *Model::atom(int n)
 {
-	dbg_begin(DM_CALLS,"model::get_atom");
+	dbgBegin(DM_CALLS,"Model::atom");
 	// Check range first
-	if ((n < 0) || (n >= atoms.size()))
+	if ((n < 0) || (n >= atoms_.nItems()))
 	{
-		printf("model::get_atom <<<< Atom id '%i' is out of range for model >>>>\n",n);
-		dbg_end(DM_CALLS,"model::get_atom");
+		printf("Model::atom <<<< Atom id '%i' is out of range for model >>>>\n",n);
+		dbgEnd(DM_CALLS,"Model::atom");
 		return NULL;
 	}
-	dbg_end(DM_CALLS,"model::get_atom");
-	return atoms.array()[n];
+	dbgEnd(DM_CALLS,"Model::atom");
+	return atoms_.array()[n];
 }
 
 // Reset forces on all atoms
-void model::zero_forces()
+void Model::zeroForces()
 {
-	dbg_begin(DM_CALLS,"model::zero_forces");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->f().zero();
-	dbg_end(DM_CALLS,"model::zero_forces");
+	dbgBegin(DM_CALLS,"Model::zeroForces");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->f().zero();
+	dbgEnd(DM_CALLS,"Model::zeroForces");
 }
 
 // Reset forces on all fixed atoms
-void model::zero_forces_fixed()
+void Model::zeroForcesFixed()
 {
-	dbg_begin(DM_CALLS,"model::zero_forces");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->fixed) i->f().zero();
-	dbg_end(DM_CALLS,"model::zero_forces");
+	dbgBegin(DM_CALLS,"Model::zeroForcesFixed");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->hasFixedPosition()) i->f().zero();
+	dbgEnd(DM_CALLS,"Model::zeroForcesFixed");
 }
 
 // Set visibility of specified atom
-void model::set_hidden(atom *i, bool hidden)
+void Model::setHidden(Atom *i, bool hidden)
 {
-	i->set_hidden(hidden);
-	log_change(LOG_VISUAL);
+	i->setHidden(hidden);
+	logChange(LOG_VISUAL);
 }
 
 // Normalise forces
-void model::normalise_forces(double norm)
+void Model::normaliseForces(double norm)
 {
 	// 'Normalise' the forces in linecfg such that the largest force is equal to the maximum cartesian step size
-	dbg_begin(DM_CALLS,"model::normalise_forces");
+	dbgBegin(DM_CALLS,"Model::normaliseForces");
 	double maxfrc;
-	static vec3<double> f;
-	atom **modelatoms = get_atomarray();
+	static Vec3<double> f;
+	Atom **modelatoms = atomArray();
 	int i;
 	// Find the largest force
 	maxfrc = 0.0;
-	for (i=0; i<atoms.size(); i++)
+	for (i=0; i<atoms_.nItems(); i++)
 	{
 		f = modelatoms[i]->f();
 		if (fabs(f.x) > maxfrc) maxfrc = fabs(f.x);
@@ -274,36 +292,36 @@ void model::normalise_forces(double norm)
 	}
 	// Normalise with respect to this force
 	maxfrc *= norm;
-	for (i=0; i<atoms.size(); i++) modelatoms[i]->f() /= maxfrc;
-	dbg_end(DM_CALLS,"model::normalise_forces");
+	for (i=0; i<atoms_.nItems(); i++) modelatoms[i]->f() /= maxfrc;
+	dbgEnd(DM_CALLS,"Model::normaliseForces");
 }
 
 // Move specified atom (channel for undo/redo)
-void model::translate_atom(atom *target, vec3<double> delta)
+void Model::translateAtom(Atom *target, Vec3<double> delta)
 {
 	target->r() += delta;
-	log_change(LOG_COORDS);
+	logChange(LOG_COORDS);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_TRANSLATE,target->get_id());
+		Change *newchange = recordingState_->addChange();
+		newchange->set(UE_TRANSLATE,target->id());
 		newchange->set(UE_TRANSLATE,&delta);
 	}
 }
 
 // Position specified atom (channel for undo/redo)
-void model::position_atom(atom *target, vec3<double> newr)
+void Model::positionAtom(Atom *target, Vec3<double> newr)
 {
-	static vec3<double> delta;
+	static Vec3<double> delta;
 	delta = newr - target->r();
 	target->r() = newr;
-	log_change(LOG_COORDS);
+	logChange(LOG_COORDS);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_TRANSLATE,target->get_id());
+		Change *newchange = recordingState_->addChange();
+		newchange->set(UE_TRANSLATE,target->id());
 		newchange->set(UE_TRANSLATE,&delta);
 	}
 }

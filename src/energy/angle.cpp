@@ -24,34 +24,36 @@
 #include "classes/pattern.h"
 #include "classes/energystore.h"
 #include "classes/forcefield.h"
+#include "classes/cell.h"
+#include "model/model.h"
 
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
-void pattern::angle_energy(model *srcmodel, energystore *estore, int molecule)
+void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
-	dbg_begin(DM_CALLS,"pattern::angle_energy");
+	dbgBegin(DM_CALLS,"Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
 	static double forcek, n, s, eq, r, theta, dp, energy, c0, c1, c2;
-	static ffparams params;
-	static patbound *pb;
-	static vec3<double> vecij, veckj;
+	static ForcefieldParams params;
+	static PatternBound *pb;
+	static Vec3<double> vecij, veckj;
 	energy = 0.0;
-	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule+1); m1++)
+	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
 	{
-		for (pb = angles.first(); pb != NULL; pb = pb->next)
+		for (pb = angles_.first(); pb != NULL; pb = pb->next)
 		{
 			// Grab atom indices and calculate angle (in radians)
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(1) + aoff;
-			k = pb->get_atomid(2) + aoff;
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(1) + aoff;
+			k = pb->atomId(2) + aoff;
 			theta = srcmodel->angle(i,j,k);
 			// Grab pointer to function data
-			params = pb->get_data()->get_params();
+			params = pb->data()->params();
 			// Calculate energy contribution
-			switch (pb->get_data()->get_funcform().anglefunc)
+			switch (pb->data()->functionalForm().angleFunc)
 			{
 				case (AF_UNSPECIFIED):
-					printf("pattern::angle_energy <<<< Angle function is UNSPECIFIED >>>>\n");
+					printf("Pattern::angleEnergy <<<< Angle function is UNSPECIFIED >>>>\n");
 					break;
 				case (AF_HARMONIC): 
 					// U(theta) = 0.5 * forcek * (theta - eq)**2
@@ -81,53 +83,53 @@ void pattern::angle_energy(model *srcmodel, energystore *estore, int molecule)
 					energy += forcek * (c0 + c1 * cos(theta) + c2 * cos(2.0 * theta));
 					break;
 				default:
-					printf("No equation coded for angle energy type %i.\n",pb->get_data()->get_funcform().anglefunc);
+					printf("No equation coded for angle energy type %i.\n",pb->data()->functionalForm().angleFunc);
 					break;
 			}
 		}
-		aoff += natoms;
+		aoff += nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(ET_ANGLE,energy,id);
-	dbg_end(DM_CALLS,"pattern::angle_energy");
+	estore->add(ET_ANGLE,energy,id_);
+	dbgEnd(DM_CALLS,"Pattern::angleEnergy");
 }
 
 // Calculate angle forces in pattern
-void pattern::angle_forces(model *srcmodel)
+void Pattern::angleForces(Model *srcmodel)
 {
-	dbg_begin(DM_CALLS,"pattern::angle_forces");
+	dbgBegin(DM_CALLS,"Pattern::angleForcess");
 	static int i,j,k,aoff,m1;
-	static vec3<double> vec_ij, vec_kj, fi, fk;
+	static Vec3<double> vec_ij, vec_kj, fi, fk;
 	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx;
 	static double du_dtheta, dtheta_dcostheta;
-	static ffparams params;
-	static patbound *pb;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	static ForcefieldParams params;
+	static PatternBound *pb;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
+	aoff = startAtom_;
+	for (m1=0; m1<nMols_; m1++)
 	{
-		for (pb = angles.first(); pb != NULL; pb = pb->next)
+		for (pb = angles_.first(); pb != NULL; pb = pb->next)
 		{
 			// Grab atomic indices and calculate angle (in radians)
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(1) + aoff;
-			k = pb->get_atomid(2) + aoff;
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(1) + aoff;
+			k = pb->atomId(2) + aoff;
 			// Minimum image w.r.t. atom j
 			vec_ij = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
 			vec_kj = cell->mimd(modelatoms[k]->r(),modelatoms[j]->r());
 			// Normalise vectors, calculate dot product and angle.
-			mag_ij = vec_ij.mag_and_normalise();
-			mag_kj = vec_kj.mag_and_normalise();
+			mag_ij = vec_ij.magAndNormalise();
+			mag_kj = vec_kj.magAndNormalise();
 			dp = vec_ij.dp(vec_kj);
 			theta = acos(dp);
 			dtheta_dcostheta = -1.0 / sin(theta);
-			params = pb->get_data()->get_params();
+			params = pb->data()->params();
 			// Generate forces
-			switch (pb->get_data()->get_funcform().anglefunc)
+			switch (pb->data()->functionalForm().angleFunc)
 			{
 				case (AF_UNSPECIFIED):
-					printf("pattern::angle_forces <<<< Angle function is UNSPECIFIED >>>>\n");
+					printf("Pattern::angleForcess <<<< Angle function is UNSPECIFIED >>>>\n");
 					du_dtheta = 0.0;
 					break;
 				//case (AF_COSINE):
@@ -157,7 +159,7 @@ void pattern::angle_forces(model *srcmodel)
 					du_dtheta = dtheta_dcostheta * forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
 					break;
 				default:
-					printf("No equation coded for angle forces type %i.\n",pb->get_data()->get_funcform().anglefunc);
+					printf("No equation coded for angle forces type %i.\n",pb->data()->functionalForm().angleFunc);
 					break;
 			}
 			// Calculate atomic forces
@@ -170,7 +172,7 @@ void pattern::angle_forces(model *srcmodel)
 			modelatoms[j]->f() += fi + fk;
 			modelatoms[k]->f() -= fk;
 		}
-		aoff += natoms;
+		aoff += nAtoms_;
 	}
-	dbg_end(DM_CALLS,"pattern::angle_forces");
+	dbgEnd(DM_CALLS,"Pattern::angleForcess");
 }

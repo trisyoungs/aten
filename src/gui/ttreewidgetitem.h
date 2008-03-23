@@ -31,8 +31,8 @@ enum twa_column { TW_A_ID=1, TW_A_ELEMENT, TW_A_RX, TW_A_RY, TW_A_RZ };
 enum twffa_column { TW_FFA_NAME=0, TW_FFA_DESCRIPTION };
 
 // Forward Declarations
-class atom;
-class ffatom;
+class Atom;
+class ForcefieldAtom;
 
 class TTreeWidgetItem : public QTreeWidgetItem
 {
@@ -44,28 +44,28 @@ class TTreeWidgetItem : public QTreeWidgetItem
 	// Pointers
 	*/
 	private:
-	atom *i;
-	ffatom *ffa;
+	Atom *atom_;
+	ForcefieldAtom *forcefieldAtom_;
 	
 
 	public:
 	// Set the atom pointer in the widget
-	void set_atom(atom *source) { i = source; }
+	void setAtom(Atom *source);
 	// Return the atom pointer in the widget
-	atom *get_atom() { return i; }
-	// Set the ffatom pointer in the widget
-	void set_ffatom(ffatom *source) { ffa = source; }
-	// Return the ffatom pointer in the widget
-	ffatom *get_ffatom() { return ffa; }
+	Atom *atom();
+	// Set the ForcefieldAtom pointer in the widget
+	void setForcefieldAtom(ForcefieldAtom *source);
+	// Return the ForcefieldAtom pointer in the widget
+	ForcefieldAtom *forcefieldAtom();
 
 	/*
 	// Set Data functions
 	*/
 	public:
 	// Set column data from atom pointer
-	void set_atom_columns();
-	// Set column data from ffatom pointer
-	void set_ffatom_columns();
+	void setAtomColumns();
+	// Set column data from ForcefieldAtom pointer
+	void setForcefieldAtomColumns();
 };
 
 #endif

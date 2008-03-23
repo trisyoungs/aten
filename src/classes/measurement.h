@@ -1,6 +1,6 @@
 /*
-	*** Geometry measurement
-	*** src/classes/measurement.h
+	*** Geometry Measurement
+	*** src/classes/Measurement.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -23,47 +23,46 @@
 #define ATEN_MEASUREMENT_H
 
 // Geometry types
-enum geom_type { GT_NONE, GT_DISTANCE, GT_ANGLE, GT_TORSION, GT_NITEMS };
-int natoms_from_GT(geom_type);
+enum GeometryType { GT_NONE, GT_DISTANCE, GT_ANGLE, GT_TORSION, GT_NITEMS };
+int natoms_from_GT(GeometryType);
 
 // Forward Declarations
-class atom;
-class unitcell;
+class Atom;
+class Cell;
 
 // Measurement
-class measurement
+class Measurement
 {
 	public:
-	// Constructor / Destructor
-	measurement();
-	~measurement();
+	// Constructor
+	Measurement();
 	// List pointers
-	measurement *next, *prev;
+	Measurement *next, *prev;
 
 	/*
 	// Measurement Data
 	*/
 	private:
-	// Type of measurement
-	geom_type type;
-	// Atoms involved measurement
-	atom* atoms[4];
-	// Value of measurement
-	double value;
+	// Type of Measurement
+	GeometryType type_;
+	// Atoms involved Measurement
+	Atom* atoms_[4];
+	// Value of Measurement
+	double value_;
 
 	public:
-	// Set type of measurement
-	void set_type(geom_type gt) { type = gt; }
-	// Return type of measurement
-	geom_type get_type() { return type; }
-	// Calculate measurement value
-	void calculate(unitcell *cell);
-	// Return value of the measurement
-	double get_value() { return value; }
+	// Set type of Measurement
+	void setType(GeometryType gt);
+	// Return type of Measurement
+	GeometryType type();
+	// Calculate Measurement value
+	void calculate(Cell *cell);
+	// Return value of the Measurement
+	double value();
 	// Set atom
-	void set_atom(int n, atom *i) { atoms[n] = i; }
+	void setAtom(int n, Atom *i);
 	// Return atoms array
-	atom **get_atoms() { return atoms; }
+	Atom **atoms();
 };
 
 #endif

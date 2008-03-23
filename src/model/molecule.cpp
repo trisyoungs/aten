@@ -24,23 +24,23 @@
 #include "base/elements.h"
 
 // Position molecule at specified coordinates
-void model::position_molecule(pattern *p, int mol, const vec3<double> &v)
+void Model::positionMolecule(Pattern *p, int mol, const Vec3<double> &v)
 {
-	dbg_begin(DM_CALLS,"model::position_molecule");
-	static vec3<double> newpos, cog;
+	dbgBegin(DM_CALLS,"Model::positionMolecule");
+	static Vec3<double> newpos, cog;
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_atomarray();
-	pnatoms = p->get_natoms();
-	offset = p->get_startatom() + pnatoms * mol;
-	msg(DM_VERBOSE,"model::position_molecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms.size());
-	if (offset < atoms.size())
+	Atom **modelatoms = atomArray();
+	pnatoms = p->nAtoms();
+	offset = p->startAtom() + pnatoms * mol;
+	msg(DM_VERBOSE,"Model::positionMolecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms_.nItems());
+	if (offset < atoms_.nItems())
 	{
-		cog = p->calculate_cog(this,mol);
+		cog = p->calculateCog(this,mol);
 		for (n=offset; n<offset+pnatoms; n++)
 		{
 			// Get local coordinates of atom - mim with and then subtract centre of geometry
 			//newpos = modelatoms[n];
-			newpos = cell.mim(modelatoms[n]->r(),cog);
+			newpos = cell_.mim(modelatoms[n]->r(),cog);
 			newpos -= cog;
 			// Re-position
 			newpos += v;
@@ -48,35 +48,35 @@ void model::position_molecule(pattern *p, int mol, const vec3<double> &v)
 			modelatoms[n]->r() = newpos;
 		}
 	}
-	else printf("model::position_molecule : Requested a molecule past end of config contents. (%s %i)\n",p->get_name(),mol); 
-	dbg_end(DM_CALLS,"model::position_molecule");
+	else printf("Model::positionMolecule : Requested a molecule past end of config contents. (%s %i)\n",p->name(),mol); 
+	dbgEnd(DM_CALLS,"Model::positionMolecule");
 }
 
 // Translate molecule along vector
-void model::translate_molecule(pattern *p, int mol, const vec3<double> &v)
+void Model::translateMolecule(Pattern *p, int mol, const Vec3<double> &v)
 {
 	// Vector 'v' should be normalised before passing
-	dbg_begin(DM_CALLS,"model::translate_molecule");
+	dbgBegin(DM_CALLS,"Model::translateMolecule");
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_atomarray();
-	pnatoms = p->get_natoms();
-	offset = p->get_startatom() + pnatoms * mol;
-	msg(DM_VERBOSE,"model::translate_molecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms.size());
-	if (offset < atoms.size()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->r() += v;
-	else printf("model::translate_molecule : Requested a molecule past end of model contents. (%s %i)\n", p->get_name(), mol); 
-	dbg_end(DM_CALLS,"model::translate_molecule");
+	Atom **modelatoms = atomArray();
+	pnatoms = p->nAtoms();
+	offset = p->startAtom() + pnatoms * mol;
+	msg(DM_VERBOSE,"Model::translateMolecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms_.nItems());
+	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->r() += v;
+	else printf("Model::translateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
+	dbgEnd(DM_CALLS,"Model::translateMolecule");
 }
 
-void model::rotate_molecule(pattern *p, int mol, double rotx, double roty)
+void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 {
 	// Rotate the coordinates of the atoms in pattern p, molecule mol, about their centre of geometry.
 	// rotx and roty are the rotations about the x and y axes respectively, in degrees
-	dbg_begin(DM_CALLS,"model::rotate_molecule");
+	dbgBegin(DM_CALLS,"Model::rotateMolecule");
 	static double cosx, cosy, sinx, siny;
-	static mat3<double> rotmat;
-	static vec3<double> delta, newpos, cog;
+	static Mat3<double> rotmat;
+	static Vec3<double> delta, newpos, cog;
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_atomarray();
+	Atom **modelatoms = atomArray();
 	rotx /= DEGRAD;
 	roty /= DEGRAD;
 	cosx = cos(rotx);
@@ -86,12 +86,12 @@ void model::rotate_molecule(pattern *p, int mol, double rotx, double roty)
 	rotmat.set(0,cosy,0.0,siny);
 	rotmat.set(1,(-sinx)*(-siny),cosx,(-sinx)*cosy);
 	rotmat.set(2,cosx*(-siny),sinx,cosx*cosy);
-	pnatoms = p->get_natoms();
-	offset = p->get_startatom() + pnatoms * mol;
+	pnatoms = p->nAtoms();
+	offset = p->startAtom() + pnatoms * mol;
 	// Calculate COG before we start
-	cog = p->calculate_cog(this,mol);
-	//printf("rotate_molecule : Moving %i atoms starting at %i (%i atoms currently in config)\n",pnatoms,offset,natoms);
-	if (offset < atoms.size())
+	cog = p->calculateCog(this,mol);
+	//printf("rotateMolecule : Moving %i atoms starting at %i (%i atoms currently in config)\n",pnatoms,offset,natoms);
+	if (offset < atoms_.nItems())
 		for (n=offset; n<offset+pnatoms; n++)
 		{
 			// Get local coordinates of atom, i.e. subtract centre of geometry
@@ -100,19 +100,19 @@ void model::rotate_molecule(pattern *p, int mol, double rotx, double roty)
 			// Store the new position
 			modelatoms[n]->r() = newpos;
 		}
-	else printf("model::rotate_molecule : Requested a molecule past end of model contents. (%s %i)\n", p->get_name(), mol); 
-	dbg_end(DM_CALLS,"model::rotate_molecule");
+	else printf("Model::rotateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
+	dbgEnd(DM_CALLS,"Model::rotateMolecule");
 }
 
 // Set the hidden flag on atoms of the specified molecule
-void model::hide_molecule(pattern *p, int mol, bool visible)
+void Model::hideMolecule(Pattern *p, int mol, bool visible)
 {
-	dbg_begin(DM_CALLS,"model::hide_molecule");
+	dbgBegin(DM_CALLS,"Model::hideMolecule");
 	static int pnatoms, offset, n;
-	atom **modelatoms = get_atomarray();
-	pnatoms = p->get_natoms();
-	offset = p->get_startatom() + pnatoms * mol;
-	if (offset < atoms.size()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->set_hidden(visible);
-	else printf("model::hide_molecule : Requested a molecule past end of model contents. (%s %i)\n", p->get_name(), mol); 
-	dbg_end(DM_CALLS,"model::hide_molecule");
+	Atom **modelatoms = atomArray();
+	pnatoms = p->nAtoms();
+	offset = p->startAtom() + pnatoms * mol;
+	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->setHidden(visible);
+	else printf("Model::hideMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
+	dbgEnd(DM_CALLS,"Model::hideMolecule");
 }

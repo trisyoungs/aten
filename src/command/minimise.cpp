@@ -19,23 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
-#include "command/commands.h"
-#include "base/debug.h"
+#include "command/commandlist.h"
+#include "methods/sd.h"
 #include "methods/mc.h"
-#include "classes/cell.h"
 
 // Local variables
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
-
-int commanddata::function_CA_CGMINIMISE(command *&c, bundle &obj)
+// Minimise with conjugate gradient
+int CommandData::function_CA_CGMINIMISE(Command *&c, Bundle &obj)
 {
 	return CR_FAIL;
 }
 
 // Set convergence criteria
-int commanddata::function_CA_CONVERGE(command *&c, bundle &obj)
+int CommandData::function_CA_CONVERGE(Command *&c, Bundle &obj)
 {
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
@@ -43,32 +41,32 @@ int commanddata::function_CA_CONVERGE(command *&c, bundle &obj)
 }
 
 // Set line minimiser tolerance
-int commanddata::function_CA_LINETOL(command *&c, bundle &obj)
+int CommandData::function_CA_LINETOL(Command *&c, Bundle &obj)
 {
 	linetolerance = c->argd(0);
 	return CR_SUCCESS;
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
-int commanddata::function_CA_MCMINIMISE(command *&c, bundle &obj)
+int CommandData::function_CA_MCMINIMISE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	master.mc.set_ncycles(c->argi(0));
-	master.mc.minimise(obj.m, econverge, fconverge);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	mc.setNCycles(c->argi(0));
+	mc.minimise(obj.m, econverge, fconverge);
 	return CR_SUCCESS;
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
-int commanddata::function_CA_SDMINIMISE(command *&c, bundle &obj)
+int CommandData::function_CA_SDMINIMISE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	master.sd.set_tolerance(linetolerance);
-	master.sd.set_ncycles(c->argi(0));
-	master.sd.minimise(obj.m, econverge, fconverge);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	sd.setTolerance(linetolerance);
+	sd.setNCycles(c->argi(0));
+	sd.minimise(obj.m, econverge, fconverge);
 	return CR_SUCCESS;
 }
 
-int commanddata::function_CA_SIMPLEXMINIMISE(command *&c, bundle &obj)
+int CommandData::function_CA_SIMPLEXMINIMISE(Command *&c, Bundle &obj)
 {
 	return CR_FAIL;
 }

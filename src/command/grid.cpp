@@ -25,62 +25,62 @@
 #include "classes/grid.h"
 
 // Add grid point data at specified indices
-int commanddata::function_CA_ADDGRIDPOINT(command *&c, bundle &obj)
+int CommandData::function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	vec3<int> veci = c->arg3i(0);
-	obj.g->set_data(veci.x-1, veci.y-1, veci.z-1, c->argd(3));
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	Vec3<int> veci = c->arg3i(0);
+	obj.g->setData(veci.x-1, veci.y-1, veci.z-1, c->argd(3));
 	return CR_SUCCESS;
 }
 
 // Add next gridpoint in sequence
-int commanddata::function_CA_ADDNEXTGRIDPOINT(command *&c, bundle &obj)
+int CommandData::function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	obj.g->set_next_data(c->argd(0));
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setNextData(c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Finalise current surface
-int commanddata::function_CA_FINALISEGRID(command *&c, bundle &obj)
+int CommandData::function_CA_FINALISEGRID(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	if (prefs.get_coords_in_bohr()) obj.g->bohr_to_angstrom();
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	if (prefs.coordsInBohr()) obj.g->bohrToAngstrom();
 	return CR_SUCCESS;
 }
 
 // Create new grid
-int commanddata::function_CA_NEWGRID(command *&c, bundle &obj)
+int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
 {
-	obj.g = master.add_grid();
-	obj.g->set_name(strip_trailing(c->argc(0)));
+	obj.g = master.addGrid();
+	obj.g->setName(stripTrailing(c->argc(0)));
 	return CR_SUCCESS;
 }
 
 // Set grid axes (nine doubles)
-int commanddata::function_CA_SETGRID(command *&c, bundle &obj)
+int CommandData::function_CA_SETGRID(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	mat3<double> mat;
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	Mat3<double> mat;
 	mat.set(0, c->arg3d(0));
 	mat.set(1, c->arg3d(3));
 	mat.set(2, c->arg3d(6));
-	obj.g->set_axes(mat);
+	obj.g->setAxes(mat);
 	return CR_SUCCESS;
 }
 
 // Set cubic grid (one double)
-int commanddata::function_CA_SETGRIDCUBIC(command *&c, bundle &obj)
+int CommandData::function_CA_SETGRIDCUBIC(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	obj.g->set_axes(c->argd(0));
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setAxes(c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set loop order to use in CA_ADDNEXTPOINT
-int commanddata::function_CA_SETGRIDLOOPORDER(command *&c, bundle &obj)
+int CommandData::function_CA_SETGRIDLOOPORDER(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	if (strlen(c->argc(0)) != 3)
 	{
 		msg(DM_NONE,"A string of three characters must be passed to 'setgridlooporder'.\n");
@@ -95,21 +95,21 @@ int commanddata::function_CA_SETGRIDLOOPORDER(command *&c, bundle &obj)
 			case ('X'):
 			case ('x'):
 			case ('1'):
-				obj.g->set_looporder(n,0);
+				obj.g->setLoopOrder(n,0);
 				break;
 			case ('Y'):
 			case ('y'):
 			case ('2'):
-				obj.g->set_looporder(n,1);
+				obj.g->setLoopOrder(n,1);
 				break;
 			case ('Z'):
 			case ('z'):
 			case ('3'):
-				obj.g->set_looporder(n,2);
+				obj.g->setLoopOrder(n,2);
 				break;
 			default:
 				msg(DM_NONE,"Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
-				obj.g->set_looporder(n,n);
+				obj.g->setLoopOrder(n,n);
 				break;
 		}
 	}
@@ -117,26 +117,26 @@ int commanddata::function_CA_SETGRIDLOOPORDER(command *&c, bundle &obj)
 }
 
 // Set origin (lower-left-hand corner of grid)
-int commanddata::function_CA_SETGRIDORIGIN(command *&c, bundle &obj)
+int CommandData::function_CA_SETGRIDORIGIN(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	obj.g->set_origin(c->arg3d(0));
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setOrigin(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 // Set orthorhombic grid (three doubles)
-int commanddata::function_CA_SETGRIDORTHO(command *&c, bundle &obj)
+int CommandData::function_CA_SETGRIDORTHO(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	obj.g->set_axes(c->arg3d(0));
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setAxes(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 // Set extent of grid (number of points in each direction)
-int commanddata::function_CA_SETGRIDSIZE(command *&c, bundle &obj)
+int CommandData::function_CA_SETGRIDSIZE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_GRID)) return CR_FAIL;
-	obj.g->set_npoints(c->arg3i(0));
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setNPoints(c->arg3i(0));
 	return CR_SUCCESS;
 }
 

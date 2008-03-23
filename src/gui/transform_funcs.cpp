@@ -20,9 +20,49 @@
 */
 
 #include "base/master.h"
-#include "base/elements.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/gui.h"
+#include "model/model.h"
+
+void AtenForm::on_RotateClockwiseButton_clicked(bool on)
+{
+	rotateSelection(1);
+}
+
+void AtenForm::on_RotateAnticlockwiseButton_clicked(bool on)
+{
+	rotateSelection(-1);
+}
+
+void AtenForm::on_TranslatePosXButton_clicked(bool on)
+{
+	translateSelection(0, 1);
+}
+
+void AtenForm::on_TranslatePosYButton_clicked(bool on)
+{
+	translateSelection(1, 1);
+}
+
+void AtenForm::on_TranslatePosZButton_clicked(bool on)
+{
+	translateSelection(2, 1);
+}
+
+void AtenForm::on_TranslateNegXButton_clicked(bool on)
+{
+	translateSelection(0, -1);
+}
+
+void AtenForm::on_TranslateNegYButton_clicked(bool on)
+{
+	translateSelection(1, -1);
+}
+
+void AtenForm::on_TranslateNegZButton_clicked(bool on)
+{
+	translateSelection(2, -1);
+}
 
 /*
 // Rotations
@@ -31,7 +71,7 @@
 void AtenForm::on_RotateDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	vec3<double> v = master.get_currentmodel()->selection_get_cog();
+	Vec3<double> v = master.currentModel()->selectionCog();
 	// Set widgets
 	ui.RotateOriginXSpin->setValue(v.x);
 	ui.RotateOriginYSpin->setValue(v.y);
@@ -41,8 +81,8 @@ void AtenForm::on_RotateDefineOriginButton_clicked(bool on)
 void AtenForm::on_RotateDefineAxisButton_clicked(bool on)
 {
 	// Get geometric centre of selection and current origin
-	vec3<double> v, o;
-	v = master.get_currentmodel()->selection_get_cog();
+	Vec3<double> v, o;
+	v = master.currentModel()->selectionCog();
 	o.x = ui.RotateOriginXSpin->value();
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
@@ -53,9 +93,9 @@ void AtenForm::on_RotateDefineAxisButton_clicked(bool on)
 	ui.RotateAxisZSpin->setValue(v.z);
 }
 
-void AtenForm::rotate_selection(double direction)
+void AtenForm::rotateSelection(double direction)
 {
-	vec3<double> v, o;
+	Vec3<double> v, o;
 	v.x = ui.RotateAxisXSpin->value();
 	v.y = ui.RotateAxisYSpin->value();
 	v.z = ui.RotateAxisZSpin->value();
@@ -63,12 +103,12 @@ void AtenForm::rotate_selection(double direction)
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
 	char s[128];
-	model *m = master.get_currentmodel();
-	sprintf(s,"Rotate %i atom(s)\n",m->get_nselected());
-	m->begin_undostate(s);
-	m->rotate_selection_vector(o, v, direction * ui.RotateAngleSpin->value());
-	m->end_undostate();
-	m->update_measurements();
+	Model *m = master.currentModel();
+	sprintf(s,"Rotate %i atom(s)\n",m->nSelected());
+	m->beginUndostate(s);
+	m->rotateSelectionVector(o, v, direction * ui.RotateAngleSpin->value());
+	m->endUndostate();
+	m->updateMeasurements();
 	gui.refresh();
 }
 
@@ -76,45 +116,45 @@ void AtenForm::rotate_selection(double direction)
 // Translate Functions
 */
 
-void AtenForm::translate_selection(int axis, int dir)
+void AtenForm::translateSelection(int axis, int dir)
 {
 	double step = ui.TranslateShiftSpin->value();	
-	vec3<double> tvec;
+	Vec3<double> tvec;
 	tvec.set(axis, double(dir));
 	static char s[128];
 	// Grab model in preparation for undostate...
-	model *m = master.get_currentmodel();
+	Model *m = master.currentModel();
 	if (ui.TranslateModelFrameRadio->isChecked())
 	{
 		// Translate selection in the cartesian axes of the model
 		tvec *= step;
-		sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n",m->get_nselected(), tvec.x, tvec.y, tvec.z);
-		m->begin_undostate(s);
-		m->translate_selection_local(tvec);
+		sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndostate(s);
+		m->translateSelectionLocal(tvec);
 	}
 	else if (ui.TranslateWorldFrameRadio->isChecked())
 	{
 		// Translate selection in the world (view) axes
 		tvec *= step;
-		sprintf(s,"Translate Screen (%i atom(s), %f %f %f)\n",m->get_nselected(), tvec.x, tvec.y, tvec.z);
-		m->begin_undostate(s);
-		m->translate_selection_world(tvec);
+		sprintf(s,"Translate Screen (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndostate(s);
+		m->translateSelectionWorld(tvec);
 	}
 	else if (ui.TranslateCellFrameRadio->isChecked())
 	{
 		// Translate selection in the cell axes of the model
-		if (m->get_celltype() == CT_NONE)
+		if (m->cell()->type() == CT_NONE)
 		{
 			msg(DM_NONE,"No unit cell defined for model.\n");
 			return;
 		}
-		tvec = master.get_currentmodel()->get_cell()->get_axes().get(axis);
+		tvec = master.currentModel()->cell()->axes().get(axis);
 		tvec *= double(dir) * step;
-		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->get_nselected(), tvec.x, tvec.y, tvec.z);
-		m->begin_undostate(s);
-		m->translate_selection_local(tvec);
+		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndostate(s);
+		m->translateSelectionLocal(tvec);
 	}
-	m->end_undostate();
-	m->update_measurements();
+	m->endUndostate();
+	m->updateMeasurements();
 	gui.refresh();
 }

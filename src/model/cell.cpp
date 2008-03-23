@@ -21,6 +21,7 @@
 
 #include "model/model.h"
 #include "classes/pattern.h"
+#include "classes/clipboard.h"
 #include "templates/vector3.h"
 #include "templates/matrix3.h"
 #include "base/spacegroup.h"
@@ -31,197 +32,221 @@
 #include <math.h>
 #include <iostream>
 
-// Set cell (vectors)
-void model::set_cell(vec3<double> lengths, vec3<double> angles)
+// Return pointer to unit cell structure
+Cell *Model::cell()
 {
-	dbg_begin(DM_CALLS,"model::set_cell[vectors]");
-	vec3<double> oldlengths = cell.get_lengths();
-	vec3<double> oldangles = cell.get_angles();
+	return &cell_;
+}
+
+// Sets the spacegroup of the model
+void Model::setSpacegroup(int i)
+{
+	spacegroup_ = i;
+}
+
+// Sets the spacegroup setting
+void Model::setSpacegroupSetting(int i)
+{
+	spacegroupSetting_ = i;
+}
+
+// Return the spacegroup of the model
+int Model::spacegroup()
+{
+	return spacegroup_;
+}
+
+// Set cell (vectors)
+void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
+{
+	dbgBegin(DM_CALLS,"Model::setCell[vectors]");
+	Vec3<double> oldlengths = cell_.lengths();
+	Vec3<double> oldangles = cell_.angles();
 	// Set new axes 
-	cell.set(lengths, angles);
-	log_change(LOG_STRUCTURE);
+	cell_.set(lengths, angles);
+	logChange(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
+		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_CELL, &oldlengths, &oldangles, &lengths, &angles);
 	}
-	dbg_end(DM_CALLS,"model::set_cell[vectors]");
+	dbgEnd(DM_CALLS,"Model::setCell[vectors]");
 }
 
 // Set cell (axes)
-void model::set_cell(mat3<double> axes)
+void Model::setCell(Mat3<double> axes)
 {
-	dbg_begin(DM_CALLS,"model::set_cell[axes]");
-	vec3<double> oldlengths = cell.get_lengths();
-	vec3<double> oldangles = cell.get_angles();
+	dbgBegin(DM_CALLS,"Model::setCell[axes]");
+	Vec3<double> oldlengths = cell_.lengths();
+	Vec3<double> oldangles = cell_.angles();
 	// Set new axes 
-	cell.set(axes);
-	log_change(LOG_STRUCTURE);
+	cell_.set(axes);
+	logChange(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_CELL, &oldlengths, &oldangles, &cell.get_lengths(), &cell.get_angles());
+		Change *newchange = recordingState_->addChange();
+		newchange->set(UE_CELL, &oldlengths, &oldangles, &cell_.lengths(), &cell_.angles());
 	}
-	dbg_end(DM_CALLS,"model::set_cell[axes]");
+	dbgEnd(DM_CALLS,"Model::setCell[axes]");
 }
 
 // Remove cell
-void model::remove_cell()
+void Model::removeCell()
 {
-	dbg_begin(DM_CALLS,"model::remove_cell");
-	cell.reset();
-	log_change(LOG_VISUAL);
-	log_change(LOG_STRUCTURE);
-	dbg_end(DM_CALLS,"model::remove_cell");
+	dbgBegin(DM_CALLS,"Model::removeCell");
+	cell_.reset();
+	logChange(LOG_VISUAL);
+	logChange(LOG_STRUCTURE);
+	dbgEnd(DM_CALLS,"Model::removeCell");
 }
 
 // Fold All Atoms
-void model::fold_all_atoms()
+void Model::foldAllAtoms()
 {
-	dbg_begin(DM_CALLS,"model::fold_all_atoms");
+	dbgBegin(DM_CALLS,"Model::foldAllAtoms");
 	// Standard fold - individual atoms
-	for (atom *i = atoms.first(); i != NULL; i = i->next) cell.fold(i);
-	log_change(LOG_COORDS);
-	dbg_end(DM_CALLS,"model::fold_all_atoms");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) cell_.fold(i);
+	logChange(LOG_COORDS);
+	dbgEnd(DM_CALLS,"Model::foldAllAtoms");
 }
 
 // Fold All Molecules
-void model::fold_all_molecules()
+void Model::foldAllMolecules()
 {
-	dbg_begin(DM_CALLS,"model::fold_all_molecules");
+	dbgBegin(DM_CALLS,"Model::foldAllMolecules");
 	int n,m;
-	atom *i, *first;
-	pattern *p;
+	Atom *i, *first;
+	Pattern *p;
 	// Molecular fold - fold first atom, other in molecule are MIM'd to this point
-	if (!autocreate_patterns())
+	if (!autocreatePatterns())
 	{
-		msg(DM_NONE,"model::fold_all_molecules : Molecular fold cannot be performed without a valid pattern definition.\n");
-		dbg_end(DM_CALLS,"model::fold_all_molecules");
+		msg(DM_NONE,"Model::foldAllMolecules : Molecular fold cannot be performed without a valid pattern definition.\n");
+		dbgEnd(DM_CALLS,"Model::foldAllMolecules");
 		return;
 	}
-	p = patterns.first();
-	i = atoms.first();
+	p = patterns_.first();
+	i = atoms_.first();
 	while (p != NULL)
 	{
-		for (m=0; m<p->get_nmols(); m++)
+		for (m=0; m<p->nMols(); m++)
 		{
-			for (n=0; n<p->get_natoms(); n++)
+			for (n=0; n<p->nAtoms(); n++)
 			{
 				// If its the first atom, fold and store pointer. If not, MIM w.r.t. stored atom
 				if (n == 0)
 				{
-					cell.fold(i);
+					cell_.fold(i);
 					first = i;
 				}
-				else i->r() = cell.mim(i,first);
+				else i->r() = cell_.mim(i,first);
 				i = i->next;
 			}
 		}
 		p = p->next;
 	}
-	log_change(LOG_COORDS);
-	dbg_end(DM_CALLS,"model::fold_all_molecules");
+	logChange(LOG_COORDS);
+	dbgEnd(DM_CALLS,"Model::foldAllMolecules");
 }
 
 // Apply individual symmetry generator to current atom selection
-void model::pack(int gen)
+void Model::pack(int gen)
 {
-	dbg_begin(DM_CALLS,"model::pack[gen,atom]");
-	static clipboard clip;
-	vec3<double> newr;
+	dbgBegin(DM_CALLS,"Model::pack[gen,atom]");
+	Clipboard clip;
+	Vec3<double> newr;
 	int oldnatoms;
 	if (gen == 0)
 	{
 		// Ignore this operator since it is the identity operator
-		dbg_begin(DM_CALLS,"model::pack[gen,atom]");
+		dbgBegin(DM_CALLS,"Model::pack[gen,atom]");
 		return;
 	}
 	msg(DM_VERBOSE,"...Applying generator '%s' (no. %i)\n", master.generators[gen].description, gen);
 	// Store current number of atoms in model
-	oldnatoms = atoms.size();
+	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
-	clip.copy_selection(this);
-	clip.paste_to_model(this, FALSE);
-	for (atom *i = atoms[oldnatoms]; i != NULL; i = i->next)
+	clip.copySelection(this);
+	clip.pasteToModel(this, FALSE);
+	for (Atom *i = atoms_[oldnatoms]; i != NULL; i = i->next)
 	{
 		// Get the position of the newly-pasted atom
 		newr = i->r();
 		// Apply the rotation and translation
 		newr *= master.generators[gen].rotation;
-		newr +=  cell.get_transpose() * master.generators[gen].translation;
-		cell.fold(newr);
+		newr +=  cell_.transpose() * master.generators[gen].translation;
+		cell_.fold(newr);
 		i->r() = newr;
 	}
-	dbg_end(DM_CALLS,"model::pack[gen,atom]");
+	dbgEnd(DM_CALLS,"Model::pack[gen,atom]");
 }
 
 // Apply model's spacegroup symmetry generators
-void model::pack()
+void Model::pack()
 {
-	dbg_begin(DM_CALLS,"model::pack");
-	if (spgrp == 0) msg(DM_NONE,"No spacegroup defined in model - no packing will be performed.\n");
+	dbgBegin(DM_CALLS,"Model::pack");
+	if (spacegroup_ == 0) msg(DM_NONE,"No spacegroup defined in model - no packing will be performed.\n");
 	else
 	{
-		msg(DM_NONE,"Packing cell according to spacegroup '%s'...\n", master.spacegroups[spgrp].name);
-		select_all();
-		for (int n=0; n<master.spacegroups[spgrp].ngenerators; n++)
-			pack(master.spacegroups[spgrp].generators[n]);
+		msg(DM_NONE,"Packing cell according to spacegroup '%s'...\n", master.spacegroups[spacegroup_].name);
+		selectAll();
+		for (int n=0; n<master.spacegroups[spacegroup_].nGenerators; n++)
+			pack(master.spacegroups[spacegroup_].generators[n]);
 		// Select overlapping atoms and delete
-		select_overlaps(0.1);
-		selection_delete();
+		selectOverlaps(0.1);
+		selectionDelete();
 	}
-	dbg_end(DM_CALLS,"model::pack");
+	dbgEnd(DM_CALLS,"Model::pack");
 }
 
 // Scale cell and contents (molecule COGs)
-void model::scale_cell(const vec3<double> &scale)
+void Model::scaleCell(const Vec3<double> &scale)
 {
-	dbg_begin(DM_CALLS,"model::scale_cell");
-	vec3<double> oldcog, newcog, newpos;
-	unitcell newcell;
-	mat3<double> newaxes;
+	dbgBegin(DM_CALLS,"Model::scaleCell");
+	Vec3<double> oldcog, newcog, newpos;
+	Cell newcell;
+	Mat3<double> newaxes;
 	bool calcenergy;
 	double olde, newe;
 	int n,m;
-	atom *i;
+	Atom *i;
 	// First, make sure we have a cell and a valid pattern
-	if (cell.get_type() == CT_NONE)
+	if (cell_.type() == CT_NONE)
 	{
 		msg(DM_NONE,"No cell to scale.\n");
-		dbg_end(DM_CALLS,"model::scale_cell");
+		dbgEnd(DM_CALLS,"Model::scaleCell");
 		return;
 	}
-	if (!autocreate_patterns())
+	if (!autocreatePatterns())
 	{
-		dbg_end(DM_CALLS,"model::scale_cell");
+		dbgEnd(DM_CALLS,"Model::scaleCell");
 		return;
 	}
-	calcenergy = create_expression();
+	calcenergy = createExpression();
 	// Copy original cell axes, expand and save for later
-	newaxes = cell.get_axes();
-	newaxes.row_multiply(scale);
+	newaxes = cell_.axes();
+	newaxes.rowMultiply(scale);
 	newcell.set(newaxes);
 	// We need a working configuration (for COG calculations)
-	fold_all_atoms();
-	if (calcenergy) olde = total_energy(this);
+	foldAllAtoms();
+	if (calcenergy) olde = totalEnergy(this);
 	// Cycle over patterns, get COG, convert to old fractional coordinates, then
 	// use new cell to get new local coordinates.
-	for (pattern *p = patterns.first(); p != NULL; p = p->next)
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
-		i = p->get_firstatom();
-		for (n=0; n<p->get_nmols(); n++)
+		i = p->firstAtom();
+		for (n=0; n<p->nMols(); n++)
 		{
 			// Get fractional coordinate COG of this molecule
-			oldcog = p->calculate_cog(this,n);
+			oldcog = p->calculateCog(this,n);
 			// Get new COG using new cell
-			newcog = newcell.frac_to_real(cell.real_to_frac(oldcog));
+			newcog = newcell.fracToReal(cell_.realToFrac(oldcog));
 			// Set new atom positions
-			for (m=0; m<p->get_natoms(); m++)
+			for (m=0; m<p->nAtoms(); m++)
 			{
-				newpos = cell.mim(i,oldcog) - oldcog + newcog;
-				position_atom(i,newpos);
+				newpos = cell_.mim(i,oldcog) - oldcog + newcog;
+				positionAtom(i,newpos);
 				i = i->next;
 			}
 		}
@@ -229,65 +254,65 @@ void model::scale_cell(const vec3<double> &scale)
 	// Calculate new energy before leaving...
 	if (calcenergy)
 	{
-		newe = total_energy(this);
-		msg(DM_NONE,"Energy change was %12.7e %s\n", newe-olde, text_from_EU(prefs.get_internal_units()));
+		newe = totalEnergy(this);
+		msg(DM_NONE,"Energy change was %12.7e %s\n", newe-olde, text_from_EU(prefs.energyUnit()));
 	}
 	// Set new cell and update model
-	set_cell(newaxes);
-	log_change(LOG_COORDS);
-	dbg_end(DM_CALLS,"model::scale_cell");
+	setCell(newaxes);
+	logChange(LOG_COORDS);
+	dbgEnd(DM_CALLS,"Model::scaleCell");
 }
 
 // Replicate Cell
-void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
+void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 {
-	dbg_begin(DM_CALLS,"model::cell_replicate");
+	dbgBegin(DM_CALLS,"Model::replicateCell");
 	int count;
 	bool stop;
-	vec3<double> tvec;
-	mat3<double> newaxes, oldaxes;
+	Vec3<double> tvec;
+	Mat3<double> newaxes, oldaxes;
 
 	// If this isn't a periodic model, exit
-	if (cell.get_type() == CT_NONE)
+	if (cell_.type() == CT_NONE)
 	{
 		msg(DM_NONE,"No cell to replicate.\n");
-		dbg_end(DM_CALLS,"model::cell_replicate");
+		dbgEnd(DM_CALLS,"Model::replicateCell");
 		return;
 	}
 
-	// Create a temporary clipboard and copy the original model to it
-	clipboard originalclip;
-	originalclip.copy_all(this);
+	// Create two clipboards - copy the original model to one of them
+	Clipboard originalClip, clip;
+	originalClip.copyAll(this);
 	// Centre this clipboard copy to put the atoms at 0,0,0
-	originalclip.translate(-cell.get_origin());
+	originalClip.translate(-cell_.centre());   // This does not put the atoms at 0.0.0! 
 
 	// Create the new unit cell in the original model
-	oldaxes = cell.get_axes();
+	oldaxes = cell_.axes();
 	// Copy model to clipboard ready for pasting
-	master.privclip.copy_all(this);
+	clip.copyAll(this);
 	// Take transpose of old and new axes for convenient multiplication
 	newaxes = oldaxes;
 
 	// Set new unit cell dimensions
 	tvec.set(pos.x+1.0-neg.x, pos.y+1.0-neg.y, pos.z+1.0-neg.z);
-	newaxes.row_multiply(tvec);
-	set_cell(newaxes);
+	newaxes.rowMultiply(tvec);
+	setCell(newaxes);
 
 	// Clear the original model
 	clear();
 
 	// Re-centre the clipboard copy so it is at the new cell origin
-	originalclip.translate(cell.get_origin());
+	originalClip.translate(-cell_.centre());	// See above
 
 	// Paste in whole copies of the original cell - don't worry about fractional cells yet
-	vec3<int> ineg, ipos;
+	Vec3<int> ineg, ipos;
 	int ii, jj, kk;
 	ineg.set(int(floor(neg.x)), int(floor(neg.y)), int(floor(neg.z)));
 	ipos.set(int(ceil(pos.x)), int(ceil(pos.y)), int(ceil(pos.z)));
 
 	// Set up progress indicator
 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
-	master.initialise_progress("Creating cell copies...", count);
+	master.initialiseProgress("Creating cell copies...", count);
 
 	// Create cell copies
 	count = 0;
@@ -302,10 +327,10 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 				tvec = oldaxes.rows[0] * ii;
 				tvec += oldaxes.rows[1] * jj;
 				tvec += oldaxes.rows[2] * kk;
-				tvec.print();
-				master.privclip.paste_to_model(this,tvec);
+				//tvec.print();
+				clip.pasteToModel(this,tvec);
 				msg(DM_VERBOSE,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
-				if (!master.update_progress(++count))
+				if (!master.updateProgress(++count))
 				{
 					stop = TRUE;
 					break;
@@ -315,19 +340,19 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 		}
 		if (stop) break;
 	}
-	master.cancel_progress();
+	master.cancelProgress();
 
 	// Deselect all atoms
-	select_none();
+	selectNone();
 
 	// Now trim off atoms that are outside the new cell
 	bool delatom;
-	atom *i, *j;
-	vec3<double> fracr;
-	mat3<double> cellinverse = cell.get_inversetranspose();
+	Atom *i, *j;
+	Vec3<double> fracr;
+	Mat3<double> cellinverse = cell_.inverseTranspose();
 
-	master.initialise_progress("Trimming excess atoms...", atoms.size());
-	i = atoms.first();
+	master.initialiseProgress("Trimming excess atoms_...", atoms_.nItems());
+	i = atoms_.first();
 	count = 0;
 	while (i != NULL)
 	{
@@ -340,22 +365,22 @@ void model::replicate_cell(const vec3<double> &neg, const vec3<double> &pos)
 		if (delatom)
 		{
 			j = i->next;
-			delete_atom(i);
+			deleteAtom(i);
 			i = j;
 		}
 		else i = i->next;
-		if (!master.update_progress(++count)) break;
+		if (!master.updateProgress(++count)) break;
 	}
-	master.cancel_progress();
+	master.cancelProgress();
 
-	log_change(LOG_STRUCTURE);
-	dbg_end(DM_CALLS,"model::cell_replicate");
+	logChange(LOG_STRUCTURE);
+	dbgEnd(DM_CALLS,"Model::replicateCell");
 }
 
 // Frac to Real
-void model::frac_to_real()
+void Model::fracToReal()
 {
-	dbg_begin(DM_CALLS,"model::frac_coords_to_real");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r() = cell.frac_to_real(i->r());
-	dbg_end(DM_CALLS,"model::frac_coords_to_real");
+	dbgBegin(DM_CALLS,"Model::fracToReal");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
+	dbgEnd(DM_CALLS,"Model::fracToReal");
 }

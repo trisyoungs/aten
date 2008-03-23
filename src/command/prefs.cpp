@@ -26,186 +26,186 @@
 #include "model/model.h"
 
 // Atom quadric detail
-int commanddata::function_CA_ATOMDETAIL(command *&c, bundle &obj)
+int CommandData::function_CA_ATOMDETAIL(Command *&c, Bundle &obj)
 {
-	prefs.set_atom_detail(c->argi(0));
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	prefs.setAtomDetail(c->argi(0));
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Bond quadric detail
-int commanddata::function_CA_BONDDETAIL(command *&c, bundle &obj)
+int CommandData::function_CA_BONDDETAIL(Command *&c, Bundle &obj)
 {
-	prefs.set_bond_detail(c->argi(0));
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	prefs.setBondDetail(c->argi(0));
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Colours
-int commanddata::function_CA_COLOUR(command *&c, bundle &obj)
+int CommandData::function_CA_COLOUR(Command *&c, Bundle &obj)
 {
-	colour col = COL_from_text(c->argc(0));
+	Colour col = COL_from_text(c->argc(0));
 	if (col == COL_NITEMS) return CR_FAIL;
-	vec3<GLfloat> colvec = c->arg3f(1);
-	GLfloat alpha = (c->has_arg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.set_colour(col, colvec.x, colvec.y, colvec.z, alpha);
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	Vec3<GLfloat> colvec = c->arg3f(1);
+	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
+	prefs.setColour(col, colvec.x, colvec.y, colvec.z, alpha);
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Set density unit to use in output ('densityunits <unit>')
-int commanddata::function_CA_DENSITYUNITS(command *&c, bundle &obj)
+int CommandData::function_CA_DENSITYUNITS(Command *&c, Bundle &obj)
 {
-	density_unit du = DU_from_text(c->argc(0));
+	DensityUnit du = DU_from_text(c->argc(0));
 	if (du == DU_NITEMS) return CR_FAIL;
-	else prefs.set_density_units(du);
+	else prefs.setDensityUnits(du);
 	return CR_SUCCESS;
 }
 
 // Set electrostatics cutoff ('ecut <cut>')
-int commanddata::function_CA_ECUT(command *&c, bundle &obj)
+int CommandData::function_CA_ECUT(Command *&c, Bundle &obj)
 {
-	prefs.set_elec_cutoff(c->argd(0));
+	prefs.setElecCutoff(c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
-int commanddata::function_CA_ELEC(command *&c, bundle &obj)
+int CommandData::function_CA_ELEC(Command *&c, Bundle &obj)
 {
-	elec_method em = EM_from_text(c->argc(0));
+	ElecMethod em = EM_from_text(c->argc(0));
 	if (em == EM_NITEMS) return CR_FAIL;
-	prefs.set_electrostatics(em);
-	prefs.set_calc_elec(em == EM_OFF ? FALSE : TRUE);
+	prefs.setElectrostaticsMethod(em);
+	prefs.setCalculateElec(em == EM_OFF ? FALSE : TRUE);
 	switch (em)
 	{
 		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
 		case (EM_EWALD):
-			prefs.set_ewald_alpha(c->argd(1));
-			prefs.set_ewald_kvec(c->arg3i(2));
+			prefs.setEwaldAlpha(c->argd(1));
+			prefs.setEwaldKvec(c->arg3i(2));
 			break;
 		// Set ewald precision
 		case (EM_EWALDAUTO):
-			prefs.set_ewald_precision(c->argd(1));
+			prefs.setEwaldPrecision(c->argd(1));
 			break;
 	}
 	return CR_SUCCESS;
 }
 
 // Set element's ambient colour
-int commanddata::function_CA_ELEMENTAMBIENT(command *&c, bundle &obj)
+int CommandData::function_CA_ELEMENTAMBIENT(Command *&c, Bundle &obj)
 {
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
-	elements.set_ambient(el,0,c->argi(1));
-	elements.set_ambient(el,1,c->argi(2));
-	elements.set_ambient(el,2,c->argi(3));
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	elements.setAmbientColour(el,0,c->argi(1));
+	elements.setAmbientColour(el,1,c->argi(2));
+	elements.setAmbientColour(el,2,c->argi(3));
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Set element's diffuse colour
-int commanddata::function_CA_ELEMENTDIFFUSE(command *&c, bundle &obj)
+int CommandData::function_CA_ELEMENTDIFFUSE(Command *&c, Bundle &obj)
 {
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
-	elements.set_diffuse(el,0,c->argi(1));
-	elements.set_diffuse(el,1,c->argi(2));
-	elements.set_diffuse(el,2,c->argi(3));
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	elements.setDiffuseColour(el,0,c->argi(1));
+	elements.setDiffuseColour(el,1,c->argi(2));
+	elements.setDiffuseColour(el,2,c->argi(3));
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Set element's radius
-int commanddata::function_CA_ELEMENTRADIUS(command *&c, bundle &obj)
+int CommandData::function_CA_ELEMENTRADIUS(Command *&c, Bundle &obj)
 {
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
-	elements.set_radius(el, c->argd(1));
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	elements.setAtomicRadius(el, c->argd(1));
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Set energy unit to use in output ('energyunits <unit>')
-int commanddata::function_CA_ENERGYUNITS(command *&c, bundle &obj)
+int CommandData::function_CA_ENERGYUNITS(Command *&c, Bundle &obj)
 {
-	energy_unit eu = EU_from_text(c->argc(0));
+	EnergyUnit eu = EU_from_text(c->argc(0));
 	if (eu == EU_NITEMS) return CR_FAIL;
-	else prefs.set_internal_units(eu);
+	else prefs.setEnergyUnit(eu);
 	return CR_SUCCESS;
 }
 
 // GL Options
-int commanddata::function_CA_GL(command *&c, bundle &obj)
+int CommandData::function_CA_GL(Command *&c, Bundle &obj)
 {
-	gl_option go = GO_from_text(c->argc(0));
+	GlOption go = GO_from_text(c->argc(0));
 	if (go == GO_NITEMS) return CR_FAIL;
-	if (c->argb(1)) prefs.add_gl_option(go);
-	else prefs.remove_gl_option(go);
-	if (gui.exists()) gui.mainview.init_gl();
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	if (c->argb(1)) prefs.addGlOption(go);
+	else prefs.removeGlOption(go);
+	if (gui.exists()) gui.mainView.initGl();
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Turn on/off calculation of intra ('intra on|off')
-int commanddata::function_CA_INTRA(command *&c, bundle &obj)
+int CommandData::function_CA_INTRA(Command *&c, Bundle &obj)
 {
-	prefs.set_calc_intra(c->argb(0));
+	prefs.setCalculateIntra(c->argb(0));
 	return CR_SUCCESS;
 }
 
 // Key bindings
-int commanddata::function_CA_KEY(command *&c, bundle &obj)
+int CommandData::function_CA_KEY(Command *&c, Bundle &obj)
 {
-	modifier_key mk = MK_from_text(c->argc(0));
-	key_action ka = KA_from_text(c->argc(1));
-	if ((mk != MK_NITEMS) && (ka != KA_NITEMS)) prefs.set_keymod_action(mk,ka);
+	ModifierKey mk = MK_from_text(c->argc(0));
+	KeyAction ka = KA_from_text(c->argc(1));
+	if ((mk != MK_NITEMS) && (ka != KA_NITEMS)) prefs.setKeyAction(mk,ka);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
 // Mouse bindings
-int commanddata::function_CA_MOUSE(command *&c, bundle &obj)
+int CommandData::function_CA_MOUSE(Command *&c, Bundle &obj)
 {
-	mouse_button mb = MB_from_text(c->argc(0));
-	mouse_action ma = MA_from_text(c->argc(1));
-	if ((ma != MA_NITEMS) && (mb != MB_NITEMS)) prefs.set_mb_action(mb,ma);
+	MouseButton mb = MB_from_text(c->argc(0));
+	MouseAction ma = MA_from_text(c->argc(1));
+	if ((ma != MA_NITEMS) && (mb != MB_NITEMS)) prefs.setMouseAction(mb,ma);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
 // Atom screen radii
-int commanddata::function_CA_RADIUS(command *&c, bundle &obj)
+int CommandData::function_CA_RADIUS(Command *&c, Bundle &obj)
 {
-	draw_style ds = DS_from_text(c->argc(0));
-	if (ds != DS_NITEMS) prefs.set_atom_size(ds, c->argd(1));
+	DrawStyle ds = DS_from_text(c->argc(0));
+	if (ds != DS_NITEMS) prefs.setAtomSize(ds, c->argd(1));
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
 // Atom shininess
-int commanddata::function_CA_SHININESS(command *&c, bundle &obj)
+int CommandData::function_CA_SHININESS(Command *&c, Bundle &obj)
 {
-	prefs.set_shininess(c->argi(0));
-	if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+	prefs.setShininess(c->argi(0));
+	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	if (gui.exists()) gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Render Objects
-int commanddata::function_CA_SHOW(command *&c, bundle &obj)
+int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 {
-	view_object vo = VO_from_text(c->argc(0));
+	ViewObject vo = VO_from_text(c->argc(0));
 	if (vo != VO_NITEMS)
 	{
-		prefs.set_visible(vo, c->argb(1));
-		if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+		prefs.setVisible(vo, c->argb(1));
+		if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 		if (gui.exists()) gui.refresh();
 	}
 	else return CR_FAIL;
@@ -213,13 +213,13 @@ int commanddata::function_CA_SHOW(command *&c, bundle &obj)
 }
 
 // View Styles
-int commanddata::function_CA_STYLE(command *&c, bundle &obj)
+int CommandData::function_CA_STYLE(Command *&c, Bundle &obj)
 {
-	draw_style ds = DS_from_text(c->argc(0));
+	DrawStyle ds = DS_from_text(c->argc(0));
 	if (ds != DS_NITEMS)
 	{
-		prefs.set_render_style(ds);
-		if (obj.m != NULL) obj.m->log_change(LOG_VISUAL);
+		prefs.setRenderStyle(ds);
+		if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 		if (gui.exists()) gui.refresh();
 	}
 	else return CR_FAIL;
@@ -227,16 +227,16 @@ int commanddata::function_CA_STYLE(command *&c, bundle &obj)
 }
 
 // Set VDW cutoff ('vcut <cut>')
-int commanddata::function_CA_VCUT(command *&c, bundle &obj)
+int CommandData::function_CA_VCUT(Command *&c, Bundle &obj)
 {
-	prefs.set_vdw_cutoff(c->argd(0));
+	prefs.setVdwCutoff(c->argd(0));
 	return CR_SUCCESS;
 
 }
 
 // Turn on/off calculation of vdw ('vdw on|off')
-int commanddata::function_CA_VDW(command *&c, bundle &obj)
+int CommandData::function_CA_VDW(Command *&c, Bundle &obj)
 {
-	prefs.set_calc_vdw(c->argb(0));
+	prefs.setCalculateVdw(c->argb(0));
 	return CR_SUCCESS;
 }

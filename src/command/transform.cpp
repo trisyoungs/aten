@@ -24,35 +24,35 @@
 #include "classes/atom.h"
 
 // Centre selection at given coordinates
-int commanddata::function_CA_CENTRE(command *&c, bundle &obj)
+int CommandData::function_CA_CENTRE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->get_parent()->get_infile() == NULL) obj.m->centre(c->arg3d(0));
-	else if (prefs.get_centre_on_load() != PS_NO) obj.m->centre(c->arg3d(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->parent()->inputFile() == NULL) obj.m->centre(c->arg3d(0));
+	else if (prefs.centreOnLoad() != PS_NO) obj.m->centre(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 // Translate current selection
-int commanddata::function_CA_TRANSLATE(command *&c, bundle &obj)
+int CommandData::function_CA_TRANSLATE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->translate_selection_local(c->arg3d(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->translateSelectionLocal(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 
 // Translate activeatom ('translateatom <dx dy dz>')
-int commanddata::function_CA_TRANSLATEATOM(command *&c, bundle &obj)
+int CommandData::function_CA_TRANSLATEATOM(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r() += c->arg3d(0);
 	return CR_SUCCESS;
 }
 
 // Mirror selection along specified axis
-int commanddata::function_CA_MIRROR(command *&c, bundle &obj)
+int CommandData::function_CA_MIRROR(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->mirror_selection_local(c->argi(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->mirrorSelectionLocal(c->argi(0));
 	return CR_SUCCESS;
 }

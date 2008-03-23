@@ -27,47 +27,47 @@
 */
 
 // Add hydrogens to model
-void model::hydrogen_satisfy(atom *target)
+void Model::hydrogenSatisfy(Atom *target)
 {
 	// Cycles over atoms in model (or only the atom supplied), and works out how many hydrogens (and in which geometry) should be added to each
-	dbg_begin(DM_CALLS,"model::hydrogen_satisfy");
+	dbgBegin(DM_CALLS,"Model::hydrogenSatisfy");
 	int numh, tbo, nsingle, ndouble;
-	atom *i, *endatom;
-	i = (target == NULL ? atoms.first() : target);
+	Atom *i, *endatom;
+	i = (target == NULL ? atoms_.first() : target);
 	endatom = (target == NULL ? NULL : target->next);
 	for (i; i != endatom; i = i->next)
 	{
 		// Step 1 - Work out how many single-bonds (i.e. hydrogens) we need to add to satisfy the atom's valency
 		// Calculate total bond order of atom and work out single bond deficit
-		tbo = i->total_bond_order();
+		tbo = i->totalBondOrder();
 		numh = (elements.valency(i)*2 - tbo) / 2;
 		// Step 2 - Work out geometry that we'll add hydrogens in, based on the atom's valency
-		nsingle = i->count_bonds(BT_SINGLE);
-		ndouble = i->count_bonds(BT_DOUBLE);
+		nsingle = i->countBonds(BT_SINGLE);
+		ndouble = i->countBonds(BT_DOUBLE);
 		if (numh != 0)
 		{
 			// Simplest cases - atom has no bonds or all single bonds - we add in a tetrahedral geometry
-			if (i->get_nbonds() == 0 || i->get_nbonds() == nsingle) add_hydrogens(i,numh,HG_TETRAHEDRAL);
+			if (i->nBonds() == 0 || i->nBonds() == nsingle) addHydrogens(i,numh,HG_TETRAHEDRAL);
 			// Otherwise, must work out the correct geometry to add hydrogens in...
-			else if (ndouble != 0) add_hydrogens(i,numh,HG_PLANAR);
-			else add_hydrogens(i,numh,HG_LINEAR);
+			else if (ndouble != 0) addHydrogens(i,numh,HG_PLANAR);
+			else addHydrogens(i,numh,HG_LINEAR);
 		}
 	}
-	project_all();
-	dbg_end(DM_CALLS,"model::hydrogen_satisfy");
+	projectAll();
+	dbgEnd(DM_CALLS,"Model::hydrogenSatisfy");
 }
 
 // Iteratively add hydrogens to specified atom (giving supplied geometry)
-void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
+void Model::addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry)
 {
 	// Iteratively add hydrogens to the molecule conforming to the desired geometry specified
-	dbg_begin(DM_CALLS,"atom::add_hydrogens");
-	atom *a1, *a2, *a3;
-	atom *newh;
-	vec3<double> mim_a1, mim_a2, mim_a3, perp, perp2, newhpos, tempv;
+	dbgBegin(DM_CALLS,"atom::addHydrogens");
+	Atom *a1, *a2, *a3;
+	Atom *newh;
+	Vec3<double> mim_a1, mim_a2, mim_a3, perp, perp2, newhpos, tempv;
 	double bondlength = 1.08, theta, tets;
 	int minel, onebelow, oneabove;
-	refitem<bond,int> *firstbond;
+	Refitem<Bond,int> *firstbond;
 	// Add new hydrogens based on the geometry type, and then work out from what bonds there are already...
 	switch (geometry)
 	{
@@ -78,8 +78,8 @@ void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
 	// Switches put new coordinates in 'newhpos' - an atom is created an placed here at the end
 	for (int n=0; n<nhydrogen; n++)
 	{
-		firstbond = target->get_bonds();
-		switch (target->get_nbonds())
+		firstbond = target->bonds();
+		switch (target->nBonds())
 		{
 			case (0):
 				// No bonds, so add at arbitrary position along y-axis
@@ -87,11 +87,11 @@ void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
 				break;
 			case (1):
 				// Only one bond, so add atom at arbitrary position with angle of required geometry
-				a1 = firstbond->item->get_partner(target);
-				mim_a1 = cell.mimd(target,a1);
+				a1 = firstbond->item->partner(target);
+				mim_a1 = cell_.mimd(target,a1);
 				mim_a1.normalise();
 				// Create perpendicular vector to X-i...
-				minel = mim_a1.absminelement();
+				minel = mim_a1.absMinElement();
 				onebelow = (minel+2)%3;
 				oneabove = (minel+1)%3;
 				perp.set(minel,0.0);
@@ -103,11 +103,11 @@ void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
 			case (2):
 				// Two bonds, so work out 'pointing' vector and adjust to desired angle (if !HG_PLANAR)
 				// Get mim coordinates of the two bound atoms
-				a1 = firstbond->item->get_partner(target);
-				a2 = firstbond->next->item->get_partner(target);
-				mim_a1 = cell.mimd(a1,target);
+				a1 = firstbond->item->partner(target);
+				a2 = firstbond->next->item->partner(target);
+				mim_a1 = cell_.mimd(a1,target);
 				mim_a1.normalise();
-				mim_a2 = cell.mimd(a2,target);
+				mim_a2 = cell_.mimd(a2,target);
 				mim_a2.normalise();
 				perp = mim_a1 * mim_a2;
 				// Pathological case where the two bonds are exactly opposite
@@ -129,14 +129,14 @@ void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
 				break;
 			case (3):
 				// Three bonds, so work out negative vector of the average of the three bonds
-				a1 = firstbond->item->get_partner(target);
-				a2 = firstbond->next->item->get_partner(target);
-				a3 = firstbond->next->next->item->get_partner(target);
-				mim_a1 = cell.mimd(a1,target);
+				a1 = firstbond->item->partner(target);
+				a2 = firstbond->next->item->partner(target);
+				a3 = firstbond->next->next->item->partner(target);
+				mim_a1 = cell_.mimd(a1,target);
 				mim_a1.normalise();
-				mim_a2 = cell.mimd(a2,target);
+				mim_a2 = cell_.mimd(a2,target);
 				mim_a2.normalise();
-				mim_a3 = cell.mimd(a3,target);
+				mim_a3 = cell_.mimd(a3,target);
 				mim_a3.normalise();
 				newhpos = mim_a1 + mim_a2 + mim_a3;
 				newhpos.normalise();
@@ -144,9 +144,9 @@ void model::add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry)
 				break;
 		}
 		// Now add the atom at the position specified in newhpos.
-		newh = add_atom(1, newhpos + target->r());
-		bond_atoms(newh,target,BT_SINGLE);
-		project_atom(newh);
+		newh = addAtom(1, newhpos + target->r());
+		bondAtoms(newh,target,BT_SINGLE);
+		projectAtom(newh);
 	}
-	dbg_end(DM_CALLS,"model::add_hydrogens");
+	dbgEnd(DM_CALLS,"Model::addHydrogens");
 }

@@ -25,27 +25,27 @@
 #include "classes/glyph.h"
 
 // Local variables
-atom *atomdata[MAXGLYPHDATA];
-vec3<double> vecdata[MAXGLYPHDATA];
+Atom *atomdata[MAXGLYPHDATA];
+Vec3<double> vecdata[MAXGLYPHDATA];
 bool wasatomdata[MAXGLYPHDATA];
 
 
 // Add glyph to current model
-int commanddata::function_CA_NEWGLYPH(command *&c, bundle &obj)
+int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Get glyph style
-	glyph_style gs = GS_from_text(c->argc(0));
-	master.current.gl = obj.m->add_glyph();
+	GlyphStyle gs = GS_from_text(c->argc(0));
+	master.current.gl = obj.m->addGlyph();
 	if (gs == GS_NITEMS) msg(DM_NONE,"Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
-	master.current.gl->set_type(gs);
+	master.current.gl->setType(gs);
 	return CR_SUCCESS;
 }
 
 // Associate atom with current glyph
-int commanddata::function_CA_SETGLYPHATOMF(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHATOMF(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= MAXGLYPHDATA))
@@ -54,22 +54,22 @@ int commanddata::function_CA_SETGLYPHATOMF(command *&c, bundle &obj)
 		return CR_FAIL;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
-	atom *target = obj.i;
-	if (c->has_arg(1))
+	Atom *target = obj.i;
+	if (c->hasArg(1))
 	{
 		if (c->argt(1) == VT_ATOM) target = c->arga(1);
-		else target = obj.m->get_atom(c->argi(1) - 1);
+		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->data[d].set_atom(target, AV_F);
+	obj.gl->data[d].setAtom(target, AV_F);
 	if (target == NULL) msg(DM_NONE,"Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
 
 // Associate atom with current glyph
-int commanddata::function_CA_SETGLYPHATOMR(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHATOMR(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= MAXGLYPHDATA))
@@ -78,22 +78,22 @@ int commanddata::function_CA_SETGLYPHATOMR(command *&c, bundle &obj)
 		return CR_FAIL;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
-	atom *target = obj.i;
-	if (c->has_arg(1))
+	Atom *target = obj.i;
+	if (c->hasArg(1))
 	{
 		if (c->argt(1) == VT_ATOM) target = c->arga(1);
-		else target = obj.m->get_atom(c->argi(1) - 1);
+		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->data[d].set_atom(target, AV_R);
+	obj.gl->data[d].setAtom(target, AV_R);
 	if (target == NULL) msg(DM_NONE,"Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
 
 // Associate atom with current glyph
-int commanddata::function_CA_SETGLYPHATOMV(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHATOMV(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= MAXGLYPHDATA))
@@ -102,87 +102,87 @@ int commanddata::function_CA_SETGLYPHATOMV(command *&c, bundle &obj)
 		return CR_FAIL;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
-	atom *target = obj.i;
-	if (c->has_arg(1))
+	Atom *target = obj.i;
+	if (c->hasArg(1))
 	{
 		if (c->argt(1) == VT_ATOM) target = c->arga(1);
-		else target = obj.m->get_atom(c->argi(1) - 1);
+		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->data[d].set_atom(target, AV_V);
+	obj.gl->data[d].setAtom(target, AV_V);
 	if (target == NULL) msg(DM_NONE,"Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
 
 // Associate atoms with current glyph
-int commanddata::function_CA_SETGLYPHATOMSF(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHATOMSF(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
-	atom *target;
+	Atom *target;
 	for (int d=0; d<MAXGLYPHDATA; d++)
 	{
 		target = NULL;
-		if (c->has_arg(d))
+		if (c->hasArg(d))
 		{
 			if (c->argt(d) == VT_ATOM) target = c->arga(d);
-			else target = obj.m->get_atom(c->argi(d) - 1);
+			else target = obj.m->atom(c->argi(d) - 1);
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
-		obj.gl->data[d].set_atom(target, AV_F);
+		obj.gl->data[d].setAtom(target, AV_F);
 		if (target == NULL) msg(DM_NONE,"Warning - NULL atom stored in glyph data %i.\n",d);
 	}
 	return CR_SUCCESS;
 }
 
 // Associate atoms with current glyph
-int commanddata::function_CA_SETGLYPHATOMSR(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHATOMSR(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
-	atom *target;
+	Atom *target;
 	for (int d=0; d<MAXGLYPHDATA; d++)
 	{
 		target = NULL;
-		if (c->has_arg(d))
+		if (c->hasArg(d))
 		{
 			if (c->argt(d) == VT_ATOM) target = c->arga(d);
-			else target = obj.m->get_atom(c->argi(d) - 1);
+			else target = obj.m->atom(c->argi(d) - 1);
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
-		obj.gl->data[d].set_atom(target, AV_R);
+		obj.gl->data[d].setAtom(target, AV_R);
 		if (target == NULL) msg(DM_NONE,"Warning - NULL atom stored in glyph data %i.\n",d);
 	}
 	return CR_SUCCESS;
 }
 // Associate atoms with current glyph
-int commanddata::function_CA_SETGLYPHATOMSV(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHATOMSV(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
-	atom *target;
+	Atom *target;
 	for (int d=0; d<MAXGLYPHDATA; d++)
 	{
 		target = NULL;
-		if (c->has_arg(d))
+		if (c->hasArg(d))
 		{
 			if (c->argt(d) == VT_ATOM) target = c->arga(d);
-			else target = obj.m->get_atom(c->argi(d) - 1);
+			else target = obj.m->atom(c->argi(d) - 1);
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
-		obj.gl->data[d].set_atom(target, AV_V);
+		obj.gl->data[d].setAtom(target, AV_V);
 		if (target == NULL) msg(DM_NONE,"Warning - NULL atom stored in glyph data %i.\n",d);
 	}
 	return CR_SUCCESS;
 }
 
 // Store vector data in current glyph
-int commanddata::function_CA_SETGLYPHDATA(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHDATA(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= MAXGLYPHDATA))
@@ -190,15 +190,15 @@ int commanddata::function_CA_SETGLYPHDATA(command *&c, bundle &obj)
 		msg(DM_NONE,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
 	}
-	obj.gl->data[d].set_vector(c->argd(1), c->argd(2), c->argd(3));
+	obj.gl->data[d].setVector(c->argd(1), c->argd(2), c->argd(3));
 	return CR_SUCCESS;
 }
 
 // Set 'solid' property of current glyph
-int commanddata::function_CA_SETGLYPHSOLID(command *&c, bundle &obj)
+int CommandData::function_CA_SETGLYPHSOLID(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
-	obj.gl->set_solid(c->argb(0));
+	obj.gl->setSolid(c->argb(0));
 	return CR_SUCCESS;
 }

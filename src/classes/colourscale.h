@@ -1,6 +1,6 @@
 /*
 	*** Colour scale
-	*** src/classes/colourscale.h
+	*** src/classes/ColourScale.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,30 +20,30 @@
 */
 
 // Colourscale order
-enum colourscale_order { CO_TWOPOINT=2, CO_THREEPOINT=3 };
+enum ColourScaleOrder { CO_TWOPOINT=2, CO_THREEPOINT=3 };
 
 #ifndef ATEN_COLOURSCALE_H
 #define ATEN_COLOURSCALE_H
 
 // Colour Scale
-class colourscale
+class ColourScale
 {
 	public:
 	// Constructor / Destructor
-	colouscale();
-	~colourscale();
+	ColourScale();
+	~ColourScale();
 
 	private:
-	// Type of colourscale
-	colourscale_order type;
+	// Type of ColourScale
+	ColourScaleOrder type_;
 	// Colours
-	GLfloat colours[3][4];
+	GLfloat colours_[3][4];
 	// Minimum, maximum, and midpoint of data range
-	double min, max, mid;
+	double minimum_, maximum_, midpoint_;
 
 	public:
-	// Set type of colourscale
-	void set_type(colourscale_order co) { type = co; }
+	// Set type of ColourScale
+	void setType(ColourScaleOrder co) { type_ = co; }
 
 };
 

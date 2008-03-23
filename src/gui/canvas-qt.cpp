@@ -82,18 +82,18 @@ bool canvas::set_widget(TCanvas *w)
 void canvas::realize()
 {
 	// Sets the canvas to use a widget for output.
-	dbg_begin(DM_CALLS,"canvas::realize");
+	dbgBegin(DM_CALLS,"canvas::realize");
 	valid = TRUE;
 	init_gl();
-	dbg_end(DM_CALLS,"canvas::realize");
+	dbgEnd(DM_CALLS,"canvas::realize");
 }
 
 // Invalidate
-void canvas::postredisplay()
+void canvas::postRedisplay()
 {
-	dbg_begin(DM_CALLS,"canvas::postredisplay");
+	dbgBegin(DM_CALLS,"canvas::postRedisplay");
 	if (gui.exists()) context_widget->paintGL();
-	dbg_end(DM_CALLS,"canvas::postredisplay");
+	dbgEnd(DM_CALLS,"canvas::postRedisplay");
 }
 
 // Widget Expose
@@ -101,7 +101,7 @@ void canvas::expose()
 {
 	if ((!gui.exists()) || gui.no_rendering() ) return;
 	// Render from the current rendering source
-	render_scene(master.get_currentmodel()->get_render_source());
+	render_scene(master.currentModel()->get_render_source());
 	#ifdef SPEEDTEST
 		speedtest_numrenders ++;
 		speedtest_totalrenders ++;
@@ -116,5 +116,5 @@ void canvas::configure()
 	h = (float)context_widget->height();
 	do_projection();
 	// Flag that render source needs to be reprojected
-	if (displaymodel != NULL) displaymodel->log_change(LOG_VISUAL);
+	if (displaymodel != NULL) displaymodel->logChange(LOG_VISUAL);
 }

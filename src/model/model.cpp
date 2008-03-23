@@ -23,103 +23,148 @@
 #include "base/master.h"
 #include "base/elements.h"
 #include "classes/pattern.h"
+#include "classes/clipboard.h"
+#include "classes/site.h"
+#include "classes/glyph.h"
+#include "methods/quantity.h"
 
 // Constructors
-model::model()
+Model::Model()
 {
+	// Private variables
+	nSelected_ = 0;
+	rCamera_.set(0.0,0.0,-10.0);
+	projectionPoint_ = -1;
+	cameraRotation_ = 0.0;
+	orthoSize_ = 20.0;
+	for (int n=0; n<LOG_NITEMS; n++) logs_[n] = 0;
+	spacegroup_ = 0;
+	spacegroupSetting_ = 1;
+	mass_ = 0.0;
+	density_ = 0.0;
+	translateScale_ = 1.0;
+	forcefield_ = NULL;
+	savePoint_ = 0;
+	patternsPoint_ = -1;
+	expressionPoint_ = -1;
+	filter_ = NULL;
+	currentUndostate_ = NULL;
+	currentRedoState_ = NULL;
+	recordingState_ = NULL;
+	name_ = "NewModel";
+	trajectoryParent_ = NULL;
+	trajectoryFilter_ = NULL;
+	trajectoryFile_ = NULL;
+	trajectoryFirstFrame_ = 0;
+	trajectoryLastFrame_ = 0;
+	frameSize_ = 0;
+	nCachedFrames_ = 0;
+	totalFrames_ = 0;
+	renderFromSelf_ = TRUE;
+	trajectoryCached_ = FALSE;
+	framePosition_ = 0;
+	trajectoryPlaying_ = FALSE;
+	currentFrame_ = NULL;
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	nselected = 0;
-	camr.set(0.0,0.0,-10.0);
-	projection_point = -1;
-	camrot = 0.0;
-	ortho_size = 20.0;
-	for (int n=0; n<LOG_NITEMS; n++) logs[n] = 0;
-	spgrp = 0;
-	spgrpsetting = 1;
-	mass = 0.0;
-	density = 0.0;
-	translatescale = 1.0;
-	ff = NULL;
-	save_point = 0;
-	patterns_point = -1;
-	expression_point = -1;
-	constraints = NULL; 
-	constraints_tail = NULL; 
-	nconstraints = 0;
-	filefilter = NULL;
-	currentundostate = NULL;
-	currentredostate = NULL;
-	recordingstate = NULL;
-	name = "NewModel";
-	trajparent = NULL;
-	trajfilefilter = NULL;
-	trajfile = NULL;
-	trajposfirst = 0;
-	trajposlast = 0;
-	framesize = 0;
-	ncachedframes = 0;
-	totalframes = 0;
-	renderfromself = TRUE;
-	trajcached = FALSE;
-	frameposition = 0;
-	trajplaying = FALSE;
-	currentframe = NULL;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_MODEL] ++;
-	#endif
 }
 
 // Destructor
-model::~model()
+Model::~Model()
 {
-	clear_bonding();
-	atoms.clear();
-	patterns.clear();
-	measurements.clear();
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_MODEL] ++;
-	#endif
+	clearBonding();
+	atoms_.clear();
+	patterns_.clear();
+	measurements_.clear();
+}
+
+// Sets the filename of the model
+void Model::setFilename(const char *s)
+{
+	filename_ = s;
+}
+
+// Return the stored filename of the model
+const char *Model::filename()
+{
+	return filename_.get();
+}
+
+// Sets the file filter of the model
+void Model::setFilter(Filter *f)
+{
+	filter_ = f;
+}
+
+// Return the stored file filter of the model
+Filter *Model::filter()
+{
+	return filter_;
+}
+
+// Sets the name of the model
+void Model::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Return the name of the model
+const char *Model::name()
+{
+	return name_.get();
+}
+
+// Return the mass of the molecule
+double Model::mass()
+{
+	return mass_;
+}
+
+// Return the density of the model
+double Model::density()
+{
+	return density_;
 }
 
 // Log change
-void model::log_change(change_log cl)
+void Model::logChange(ChangeLog cl)
 {
 	if (cl >= LOG_TOTAL) printf("Invalid log quantity passed.\n");
-	logs[cl] ++;
+	logs_[cl] ++;
 	// For all logs except LOG_CAMERA we also update the total log
-	if (cl != LOG_CAMERA) logs[LOG_TOTAL] ++;
+	if (cl != LOG_CAMERA) logs_[LOG_TOTAL] ++;
 }
 
 // Copy logs
-void model::copy_logs(int *newlogs)
+void Model::copyLogs(int *newlogs)
 {
-	logs[LOG_STRUCTURE] = newlogs[LOG_STRUCTURE];
-	logs[LOG_COORDS] = newlogs[LOG_COORDS];
-	logs[LOG_SELECTION] = newlogs[LOG_SELECTION];
+	logs_[LOG_STRUCTURE] = newlogs[LOG_STRUCTURE];
+	logs_[LOG_COORDS] = newlogs[LOG_COORDS];
+	logs_[LOG_SELECTION] = newlogs[LOG_SELECTION];
 }
 
 // Clear
-void model::clear()
+void Model::clear()
 {
-	clear_atoms();
-	patterns.clear();
-	frames.clear();
+	clearAtoms();
+	patterns_.clear();
+	frames_.clear();
 	// Reset logs and log points
-	for (int n=0; n<LOG_NITEMS; n++) logs[n] = 0;
-	patterns_point = -1;
-	expression_point = -1;
-	projection_point = -1;
+	for (int n=0; n<LOG_NITEMS; n++) logs_[n] = 0;
+	patternsPoint_ = -1;
+	expressionPoint_ = -1;
+	projectionPoint_ = -1;
 }
 
 // Calculate mass
-void model::calculate_mass()
+void Model::calculateMass()
 {
 	// Calculate the mass of the atoms in the model.
-	dbg_begin(DM_CALLS,"model::calculate_mass");
-	mass = 0.0;
-	for (atom *i = atoms.first(); i != NULL; i = i->next) mass += elements.mass(i);
-	dbg_end(DM_CALLS,"model::calculate_mass");
+	dbgBegin(DM_CALLS,"Model::calculateMass");
+	mass_ = 0.0;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) mass_ += elements.atomicMass(i);
+	dbgEnd(DM_CALLS,"Model::calculateMass");
 }
 
 /*
@@ -127,49 +172,49 @@ void model::calculate_mass()
 */
 
 // Assign charges from forcefield
-void model::assign_charges(charge_source qs)
+void Model::assignCharges(ChargeSource qs)
 {
 	// Assign atom-type charges from the currently associated forcefield to the model
 	// Perform forcefield typing if necessary
-	dbg_begin(DM_CALLS,"model::assign_charges");
-	pattern *p;
-	atom *i;
-	forcefield *xff, *patff;
+	dbgBegin(DM_CALLS,"Model::assignCharges");
+	Pattern *p;
+	Atom *i;
+	Forcefield *xff, *patff;
 	switch (qs)
 	{
 		case (QS_MODEL):
 			break;
 		case (QS_FF):
-			if (!patterns_are_valid())
+			if (!arePatternsValid())
 			{
-				msg(DM_NONE,"model::assign_charges - Cannot assign atomic charges without a valid pattern setup.\n");
+				msg(DM_NONE,"Model::assignCharges - Cannot assign atomic charges without a valid pattern setup.\n");
 				break;
 			}
-			type_all();
-			p = patterns.first();
+			typeAll();
+			p = patterns_.first();
 			while (p != NULL)
 			{
 				// Grab current model (global) forcefield
-				xff = ff;	
-				patff = p->get_ff();
+				xff = forcefield_;	
+				patff = p->forcefield();
 				// Grab pattern forcefield in preference to model's
 				if (patff != NULL) xff = patff;
 				if (xff == NULL)
-					msg(DM_NONE,"assign_charges : No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->get_name());
+					msg(DM_NONE,"assignCharges : No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
 				else
 				{
-					i = p->get_firstatom();
-					int ptotalatoms = p->get_totalatoms();
+					i = p->firstAtom();
+					int ptotalatoms = p->totalAtoms();
 					int count = 0;
 					while (count < ptotalatoms)
 					{
-						i->set_charge(i->get_type()->get_charge());
+						i->setCharge(i->type()->charge());
 						i = i->next;
 						count ++;
 					}
 					// Charge atoms in representative pattern molecule
-					for (i = p->molecule.get_atoms(); i != NULL; i = i->next)
-						i->set_charge(i->get_type()->get_charge());
+					for (i = p->molecule->atoms(); i != NULL; i = i->next)
+						i->setCharge(i->type()->charge());
 				}
 				p = p->next;
 			}
@@ -179,28 +224,28 @@ void model::assign_charges(charge_source qs)
 			printf("Gasteiger and QEq charges are not currently implemented.\n");
 			break;
 	}
-	dbg_end(DM_CALLS,"model::assign_charges");
+	dbgEnd(DM_CALLS,"Model::assignCharges");
 }
 
 // Set model's forcefield
-void model::set_ff(forcefield *newff)
+void Model::setForcefield(Forcefield *newff)
 {
 	// Change the associated forcefield of the model to 'newff'
-	if (ff != newff)
+	if (forcefield_ != newff)
 	{
-		invalidate_expression();
-		ff = newff;
-		msg(DM_NONE,"Forcefield '%s' now associated with model '%s'.\n",ff->get_name(),name.get());
+		invalidateExpression();
+		forcefield_ = newff;
+		msg(DM_NONE,"Forcefield '%s' now associated with model '%s'.\n",forcefield_->name(),name_.get());
 	}
 }
 
 // Remove typing from the model
-void model::remove_typing()
+void Model::removeTyping()
 {
 	// Remove all atom typing from the current model
-	dbg_begin(DM_CALLS,"model::remove_typing");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) set_atom_type(i, NULL, FALSE);
-	dbg_end(DM_CALLS,"model::remove_typing");
+	dbgBegin(DM_CALLS,"Model::removeTyping");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) setAtomtype(i, NULL, FALSE);
+	dbgEnd(DM_CALLS,"Model::removeTyping");
 }
 
 /*
@@ -208,275 +253,299 @@ void model::remove_typing()
 */
 
 // Add label to atom
-void model::add_label(atom *i, atom_label al)
+void Model::addLabel(Atom *i, AtomLabel al)
 {
-	int oldlabels = i->get_labels();
-	i->add_label(al);
+	int oldlabels = i->labels();
+	i->addLabel(al);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_LABEL,i->get_id(),oldlabels,i->get_labels());
+		Change *newchange = recordingState_->addChange();
+		newchange->set(UE_LABEL,i->id(),oldlabels,i->labels());
 	}
 }
 
 // Remove atom label
-void model::remove_label(atom *i, atom_label al)
+void Model::removeLabel(Atom *i, AtomLabel al)
 {
-	int oldlabels = i->get_labels();
-	i->remove_label(al);
+	int oldlabels = i->labels();
+	i->removeLabel(al);
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
-		newchange->set(-UE_LABEL,i->get_id(),oldlabels,i->get_labels());
+		Change *newchange = recordingState_->addChange();
+		newchange->set(-UE_LABEL,i->id(),oldlabels,i->labels());
 	}
 }
 
 // Clear labelling from atom
-void model::clear_labels(atom *i)
+void Model::clearLabels(Atom *i)
 {
-	int oldlabels = i->get_labels();
-	i->clear_labels();
+	int oldlabels = i->labels();
+	i->clearLabels();
 	// Add the change to the undo state (if there is one)
-	if (recordingstate != NULL)
+	if (recordingState_ != NULL)
 	{
-		change *newchange = recordingstate->changes.add();
-		newchange->set(UE_LABEL,i->get_id(),oldlabels,0);
+		Change *newchange = recordingState_->addChange();
+		newchange->set(UE_LABEL,i->id(),oldlabels,0);
 	}
 }
 
 // Clear atom labelling
-void model::clear_all_labels()
+void Model::clearAllLabels()
 {
-	for (atom *i = atoms.first(); i != NULL; i = i->next) clear_labels(i);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) clearLabels(i);
 }
 
 // Clear all labels in selection
-void model::selection_clear_labels()
+void Model::selectionClearLabels()
 {
-	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) clear_labels(i);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) clearLabels(i);
 }
 
 // Remove specific labels in selection
-void model::selection_remove_labels(atom_label al)
+void Model::selectionRemoveLabels(AtomLabel al)
 {
-	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) remove_label(i, al);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
 }
 
 // Add atom labels
-void model::selection_add_labels(atom_label al)
+void Model::selectionAddLabels(AtomLabel al)
 {
-	for (atom *i = atoms.first(); i != NULL; i = i->next) if (i->is_selected()) add_label(i, al);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
 }
 
 /*
 // OTHER STUFF
 */
 
-void model::print_coords()
+void Model::printCoords()
 {
-	dbg_begin(DM_CALLS,"model::print_coords");
-	for (atom *i = atoms.first(); i != NULL; i = i->next)
+	dbgBegin(DM_CALLS,"Model::printCoords");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->get_id(), elements.symbol(i), i->r().x, i->r().y, i->r().z, i->get_charge());
-	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->get_id(),elements.symbol(i),r.x,r.y,r.z,
+		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), elements.symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
+	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),elements.symbol(i),r.x,r.y,r.z,
 	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
 	}
-	dbg_end(DM_CALLS,"model::print_coords");
+	dbgEnd(DM_CALLS,"Model::printCoords");
 }
 
 // Calculate the density of the system (if periodic)
-void model::calculate_density()
+void Model::calculateDensity()
 {
-	dbg_begin(DM_CALLS,"model::calculate_density");
+	dbgBegin(DM_CALLS,"Model::calculateDensity");
 	double v = 0.0;
-	if (cell.get_type() != CT_NONE)
+	if (cell_.type() != CT_NONE)
 	{
 		// Calculate density in the units specified by prefs.density_internal
-		switch (prefs.get_density_units())
+		switch (prefs.densityUnit())
 		{
 			case (DU_GPERCM):
-				density = (mass / AVOGADRO) / (cell.get_volume() / 1.0E24);
+				density_ = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
 				break;
 			case (DU_ATOMSPERANG):
-				density = atoms.size() / cell.get_volume();
+				density_ = atoms_.nItems() / cell_.volume();
 				break;
 		}
 	}
-	else density = -1.0;
-	dbg_end(DM_CALLS,"model::calculate_density");
+	else density_ = -1.0;
+	dbgEnd(DM_CALLS,"Model::calculateDensity");
 }
 
 // Bohr to Angstrom
-void model::bohr_to_angstrom()
+void Model::bohrToAngstrom()
 {
 	// Convert coordinates and cell from Bohr to Angstrom
-	dbg_begin(DM_CALLS,"model::bohr_to_angstrom");
+	dbgBegin(DM_CALLS,"Model::bohrToAngstrom");
 	// Coordinates
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
-	cell_type ct = cell.get_type();
+	CellType ct = cell_.type();
 	if (ct != CT_NONE)
 	{
-		vec3<double> lengths = cell.get_lengths();
+		Vec3<double> lengths = cell_.lengths();
 		lengths *= ANGBOHR;
-		cell.set(lengths,cell.get_angles());
+		cell_.set(lengths,cell_.angles());
 	}
-	log_change(LOG_COORDS);
-	dbg_end(DM_CALLS,"model::bohr_to_angstrom");
+	logChange(LOG_COORDS);
+	dbgEnd(DM_CALLS,"Model::bohrToAngstrom");
 }
 
 // Reset atom tempi's
-void model::reset_tempi(int value)
+void Model::resetTempi(int value)
 {
-	dbg_begin(DM_CALLS,"model::reset_tempi");
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		i->tempi = value;
-		i = i->next;
-	}
-	dbg_end(DM_CALLS,"model::reset_tempi");
+	dbgBegin(DM_CALLS,"Model::resetTempi");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->tempi = value;
+	dbgEnd(DM_CALLS,"Model::resetTempi");
 }
 
 // Clear charges
-void model::clear_charges()
+void Model::clearCharges()
 {
-	dbg_begin(DM_CALLS,"model::clear_charges");
-	for (atom *i = atoms.first(); i != NULL; i = i->next) i->set_charge(0.0);
-	dbg_end(DM_CALLS,"model::clear_charges");
+	dbgBegin(DM_CALLS,"Model::clearCharges");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->setCharge(0.0);
+	dbgEnd(DM_CALLS,"Model::clearCharges");
 }
 
 // Print
-void model::print()
+void Model::print()
 {
-	dbg_begin(DM_CALLS,"model::print");
-	msg(DM_NONE,"   Name : %s\n",name.get());
-	msg(DM_NONE,"   File : %s\n",filename.get());
-	msg(DM_NONE,"   Mass : %f\n",mass);
-	if (cell.get_type() != CT_NONE) msg(DM_NONE,"   Cell : %s\nDensity : %f %s\n",text_from_CT(cell.get_type()),density,text_from_DU(prefs.get_density_units()));
-	msg(DM_NONE,"  Atoms : %i\n",atoms.size());
+	dbgBegin(DM_CALLS,"Model::print");
+	msg(DM_NONE,"   Name : %s\n",name_.get());
+	msg(DM_NONE,"   File : %s\n",filename_.get());
+	msg(DM_NONE,"   Mass : %f\n",mass_);
+	if (cell_.type() != CT_NONE) msg(DM_NONE,"   Cell : %s\nDensity : %f %s\n",text_from_CT(cell_.type()),density_,text_from_DU(prefs.densityUnit()));
+	msg(DM_NONE,"  Atoms : %i\n",atoms_.nItems());
 	msg(DM_NONE," Id     El   FFType         X             Y             Z              Q        S  \n");
 	// Print from pattern definition if possible, otherwise just use model atom list
-	atom *i;
+	Atom *i;
 	int n;
-	if (patterns.size() != 0)
-		for (pattern *p = patterns.first(); p != NULL; p = p->next)
+	if (patterns_.nItems() != 0)
+		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 		{
-			i = p->get_firstatom();
-			for (n=0; n<p->get_totalatoms(); n++)
+			i = p->firstAtom();
+			for (n=0; n<p->totalAtoms(); n++)
 			{
-				i->print_summary();
+				i->printSummary();
 				i = i->next;
 			}
 		}
-	else for (i = atoms.first(); i != NULL; i = i->next) i->print_summary();
-	dbg_end(DM_CALLS,"model::print");
+	else for (i = atoms_.first(); i != NULL; i = i->next) i->printSummary();
+	dbgEnd(DM_CALLS,"Model::print");
 }
 
 // Print Forces
-void model::print_forces()
+void Model::printForces()
 {
-	for (atom *i = atoms.first(); i != NULL; i = i->next)
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->get_id(), elements.symbol(i), i->f().x, i->f().y, i->f().z);
+		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), elements.symbol(i), i->f().x, i->f().y, i->f().z);
 	}
 }
 
 // Copy model
-void model::copy(model *srcmodel)
+void Model::copy(Model *srcmodel)
 {
 	// Clear any current contents of the model
 	clear();
-	// Copy all atoms with privclip
-	master.privclip.copy_all(srcmodel);
-	master.privclip.paste_to_model(this);
+	// Copy all atoms with a clipboard
+	Clipboard clip;
+	clip.copyAll(srcmodel);
+	clip.pasteToModel(this);
 	// Copy unit cell
-	cell = srcmodel->cell;
+	cell_ = srcmodel->cell_;
 }
 
 // Copy atom data from specified model
-void model::copy_atom_data(model *srcmodel, int dat)
+void Model::copyAtomData(Model *srcmodel, int dat)
 {
-	dbg_begin(DM_CALLS,"model::copy_atom_data");
+	dbgBegin(DM_CALLS,"Model::copyAtomData");
 	// Simple failsafe - check atom numbers in each are the same
-	if (atoms.size() != srcmodel->atoms.size())
+	if (atoms_.nItems() != srcmodel->atoms_.nItems())
 	{
-		printf("model::copy_atom_data <<<< Models have different numbers of atoms (%i/%i) >>>>\n", atoms.size(), srcmodel->atoms.size());
-		dbg_end(DM_CALLS,"model::copy_atom_data");
+		printf("Model::copyAtomData <<<< Models have different numbers of atoms (%i/%i) >>>>\n", atoms_.nItems(), srcmodel->atoms_.nItems());
+		dbgEnd(DM_CALLS,"Model::copyAtomData");
 		return;
 	}
-	atom *i, *j;
-	j = srcmodel->atoms.first();
-	for (i = atoms.first(); i != NULL; i = i->next)
+	Atom *i, *j;
+	j = srcmodel->atoms_.first();
+	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		// Copy data items referenced in 'dat'
 		if ((dat&AD_R) || (dat == AD_ALL)) i->r() = j->r();
 		if ((dat&AD_F) || (dat == AD_ALL)) i->f() = j->f();
 		if ((dat&AD_V) || (dat == AD_ALL)) i->v() = j->v();
-		if ((dat&AD_Z) || (dat == AD_ALL)) i->set_element(j->get_element());
-		if ((dat&AD_Q) || (dat == AD_ALL)) i->set_charge(j->get_charge());
-		if ((dat&AD_FIXFREE) || (dat == AD_ALL)) i->fixed = j->fixed;
+		if ((dat&AD_Z) || (dat == AD_ALL)) i->setElement(j->element());
+		if ((dat&AD_Q) || (dat == AD_ALL)) i->setCharge(j->charge());
+		if ((dat&AD_FIXFREE) || (dat == AD_ALL)) i->setPositionFixed(j->hasFixedPosition());
 		j = j->next;
 	}
 	//msg(DM_VERBOSE,"Copied data for %i atoms from model '%s' to model '%s'.\n", count);
-// get_name(), srcmodel->get_name());
-	dbg_end(DM_CALLS,"model::copy_atom_data");
+// name(), srcmodel->name());
+	dbgEnd(DM_CALLS,"Model::copyAtomData");
 }
 
 // Copy range of atom data from specified model
-void model::copy_atom_data(model *srcmodel, int dat, int startatom, int ncopy)
+void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 {
-	dbg_begin(DM_CALLS,"model::copy_atom_data[range]");
+	dbgBegin(DM_CALLS,"Model::copyAtomData[range]");
 	// Simple failsafe - check atom numbers in each are the same
-	int numatoms = atoms.size();
-	if (numatoms != srcmodel->atoms.size())
+	int numatoms = atoms_.nItems();
+	if (numatoms != srcmodel->atoms_.nItems())
 	{
-		printf("model::copy_atom_data[range] <<<< Models have different numbers of atoms (%i/%i) >>>>\n", numatoms, srcmodel->atoms.size());
-		dbg_end(DM_CALLS,"model::copy_atom_data[range]");
+		printf("Model::copyAtomData[range] <<<< Models have different numbers of atoms (%i/%i) >>>>\n", numatoms, srcmodel->atoms_.nItems());
+		dbgEnd(DM_CALLS,"Model::copyAtomData[range]");
 		return;
 	}
 	// Check limits of requested copy
 	int finishatom = startatom + ncopy;
 	if (ncopy > 0) 
 	{
-		if (startatom >= numatoms) printf("model::copy_atom_data[range] <<<< Start atom (%i) is past end of model contents >>>>\n",startatom);
-		else if (finishatom > numatoms) printf("model::copy_atom_data[range] <<<< End atom too high (%i c.f. N=%i) >>>>\n",finishatom,numatoms);
+		if (startatom >= numatoms) printf("Model::copyAtomData[range] <<<< Start atom (%i) is past end of model contents >>>>\n",startatom);
+		else if (finishatom > numatoms) printf("Model::copyAtomData[range] <<<< End atom too high (%i c.f. N=%i) >>>>\n",finishatom,numatoms);
 		else
 		{
 			// Get staticatoms arrays from both models
-			atom **ii = get_atomarray();
-			atom **jj = srcmodel->get_atomarray();
+			Atom **ii = atomArray();
+			Atom **jj = srcmodel->atomArray();
 			for (int n=startatom; n<finishatom; n++)
 			{
 				// Copy data items referenced in 'dat'
 				if ((dat&AD_R) || (dat == AD_ALL)) ii[n]->r() = jj[n]->r();
 				if ((dat&AD_F) || (dat == AD_ALL)) ii[n]->f() = jj[n]->f();
 				if ((dat&AD_V) || (dat == AD_ALL)) ii[n]->v() = jj[n]->v();
-				if ((dat&AD_Z) || (dat == AD_ALL)) ii[n]->set_element(jj[n]->get_element());
-				if ((dat&AD_Q) || (dat == AD_ALL)) ii[n]->set_charge(jj[n]->get_charge());
-				if ((dat&AD_FIXFREE) || (dat == AD_ALL)) ii[n]->fixed = jj[n]->fixed;
+				if ((dat&AD_Z) || (dat == AD_ALL)) ii[n]->setElement(jj[n]->element());
+				if ((dat&AD_Q) || (dat == AD_ALL)) ii[n]->setCharge(jj[n]->charge());
+				if ((dat&AD_FIXFREE) || (dat == AD_ALL)) ii[n]->setPositionFixed(jj[n]->hasFixedPosition());
 			}
-			msg(DM_VERBOSE,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name.get(), srcmodel->name.get());
+			msg(DM_VERBOSE,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
 		}
 	}
-	dbg_end(DM_CALLS,"model::copy_atom_data[range]");
+	dbgEnd(DM_CALLS,"Model::copyAtomData[range]");
 }
 
 // Calculate and return RMS of current atomic forces
-double model::calculate_rms_force()
+double Model::calculateRmsForce()
 {
-	dbg_begin(DM_CALLS,"model::calculate_rms_force");
+	dbgBegin(DM_CALLS,"Model::calculateRmsForce");
 	double rmsforce = 0.0;
-	atom **modelatoms = get_atomarray();
-	for (int i=0; i<atoms.size(); i++)
+	Atom **modelatoms = atomArray();
+	for (int i=0; i<atoms_.nItems(); i++)
 	{
 		rmsforce += modelatoms[i]->f().x * modelatoms[i]->f().x;
 		rmsforce += modelatoms[i]->f().y * modelatoms[i]->f().y;
 		rmsforce += modelatoms[i]->f().z * modelatoms[i]->f().z;
 	}
-	rmsforce /= atoms.size();
-	dbg_end(DM_CALLS,"model::calculate_rms_force");
+	rmsforce /= atoms_.nItems();
+	dbgEnd(DM_CALLS,"Model::calculateRmsForce");
 	return sqrt(rmsforce);
+}
+
+/*
+// Logs
+*/
+
+// Return the log quantity specified
+int Model::log(ChangeLog cl)
+{
+	return logs_[cl];
+}
+
+// Reset all logs to zero
+void Model::resetLogs()
+{
+	for (int i=0; i<LOG_NITEMS; i++) logs_[i] = 0;
+}
+
+// Set the save point log for the model
+void Model::updateSavePoint()
+{
+	savePoint_ = logs_[LOG_STRUCTURE] + logs_[LOG_COORDS];
+}
+
+// Return if the model has been modified since last being saved
+bool Model::isModified()
+{
+	return (savePoint_ == (logs_[LOG_STRUCTURE] + logs_[LOG_COORDS]) ? FALSE : TRUE);
 }

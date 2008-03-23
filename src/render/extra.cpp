@@ -26,52 +26,52 @@
 #include "gui/canvas.h"
 
 // Render other 3D objects
-void canvas::render_extra_3d()
+void Canvas::renderExtra3d()
 {
-	dbg_begin(DM_CALLS,"canvas::render_extra_3d");
+	dbgBegin(DM_CALLS,"Canvas::renderExtra3d");
 	// Draw on 3D embellishments for active modes
 	static double radius;
-	static vec3<double> r, mouse;
-	static vec3<double> tempv;
-	static atom *i;
+	static Vec3<double> r, mouse;
+	static Vec3<double> tempv;
+	static Atom *i;
 	// Draw on the selection highlights (for atoms in canvas.subsel)
-	gl_subsel_3d();
+	glSubsel3d();
 	// Other modes
-	switch (activemode)
+	switch (activeMode_)
 	{
 		// Draw on the bounding sphere of a radial selection
 		case (UA_PICKRADIAL):
-			i = atom_hover;
+			i = atomHover_;
 			if (i == NULL) break;
 			// Work out the radius of the sphere
-			tempv = r_mousedown - r_mouseup;
+			tempv = rMouseDown_ - rMouseUp_;
 			radius = tempv.x * tempv.y;
-			radius /= i->get_screen_radius();
+			radius /= i->screenRadius();
 			// Convert the pixel radius into model coordinate radius. We will have the selection 'hotspot'
 			// radius of the atom from its screen projection, which itself depends on the drawing style...
-			radius *= prefs.screenradius(i);
-			r = i->worldr();
+			radius *= prefs.screenRadius(i);
+			r = i->rWorld();
 			glPushMatrix();
 			  glTranslatef(r.x,r.y,r.z);
 			  glScalef(radius,radius,radius);
-			  glCallList(list[GLOB_SELSPHEREATOM]);
+			  glCallList(list_[GLOB_SELSPHEREATOM]);
 			glPopMatrix();
 			break;
 		// Draw on bond and new atom for chain drawing
 		case (UA_DRAWCHAIN):
-			if (atom_hover == NULL) break;
-			r = atom_hover->r();
+			if (atomHover_ == NULL) break;
+			r = atomHover_->r();
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
-			i = displaymodel->atom_on_screen(r_mouselast.x, r_mouselast.y);
-			if (i == NULL) mouse = displaymodel->guide_to_model(r_mouselast);
+			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
+			if (i == NULL) mouse = displayModel_->guideToModel(rMouseLast_);
 			else mouse = i->r();
 			mouse -= r;
 			glPushMatrix();
 			  glTranslated(r.x,r.y,r.z);
 			  // Determine how we'll draw the new bond / atom
-			  if (prefs.render_style == DS_STICK)
+			  if (prefs.renderStyle() == DS_STICK)
 			  {
-				// Simple - draw line from atom_hover to mouse position
+				// Simple - draw line from atomHover_ to mouse position
 				glBegin(GL_LINES);
 				  glVertex3d(0.0,0.0,0.0);
 				  glVertex3d(mouse.x,mouse.y,mouse.z);
@@ -79,45 +79,45 @@ void canvas::render_extra_3d()
 			  }
 			  else
 			  {
-				gl_cylinder(mouse,mouse.magnitude(),1);
+				glCylinder(mouse,mouse.magnitude(),1);
 				glTranslated(mouse.x, mouse.y, mouse.z);
-				switch (prefs.render_style)
+				switch (prefs.renderStyle())
 				{
 					case (DS_TUBE):
-						glCallList(list[GLOB_WIRETUBEATOM]);
+						glCallList(list_[GLOB_WIRETUBEATOM]);
 						break;
 					case (DS_SPHERE):
-						glCallList(list[GLOB_WIRESPHEREATOM]);
+						glCallList(list_[GLOB_WIRESPHEREATOM]);
 						break;
 					case (DS_SCALED):
-						glCallList(list[GLOB_WIRESPHEREATOM]);
+						glCallList(list_[GLOB_WIRESPHEREATOM]);
 						break;
 				}
 			  }
 			glPopMatrix();
 			break;
 	}
-	dbg_end(DM_CALLS,"canvas::render_extra_3d");
+	dbgEnd(DM_CALLS,"Canvas::renderExtra3d");
 }
 
 // Render 2D objects
-void canvas::render_extra_2d()
+void Canvas::renderExtra2d()
 {
-	dbg_begin(DM_CALLS,"canvas::render_extra_2d");
+	dbgBegin(DM_CALLS,"Canvas::renderExtra2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
 	static int n, i;
 	static double dx, dy, halfw;
 	// First set up a 2D drawing area...
 	glMatrixMode(GL_PROJECTION);		// Swap to projection matrix...
 	glLoadIdentity();			// ...clear it...
-	glOrtho(0.0,w,0.0,h,-1,1);	// ...and setup a 2D canvas.
+	glOrtho(0.0,width_,0.0,height_,-1,1);	// ...and setup a 2D canvas.
 	// Now draw
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	// We add various 2D features depending on the current interaction mode.
 	// Some we draw when the mode is active, some whtn it is just selected
 	// Those for active modes (when button is down)...
-	switch (activemode)
+	switch (activeMode_)
 	{
 		case (UA_NONE):
 			break;
@@ -127,7 +127,7 @@ void canvas::render_extra_2d()
 		case (UA_POSSELECT):
 			glEnable(GL_LINE_STIPPLE);
 			glLineStipple(1,0x5555);
-			gl_rectangle(r_mousedown.x,h-r_mousedown.y,r_mouselast.x,h-r_mouselast.y);
+			glRectangle(rMouseDown_.x, height_-rMouseDown_.y, rMouseLast_.x, height_-rMouseLast_.y);
 			glDisable(GL_LINE_STIPPLE);
 			break;
 		// Draw line from last atom in selection list (if any) to the current mouse pos
@@ -137,14 +137,14 @@ void canvas::render_extra_2d()
 			break;
 	}
 	// ...and those for selected modes (whether the button is down or not).
-	switch (selectedmode)
+	switch (selectedMode_)
 	{
 		// Draw on distance ruler for drawing modes
 		case (UA_DRAWATOM):
 		case (UA_DRAWCHAIN):
 			// Get angstrom length
-			dx = 1.0 / drawpixelwidth;
-			halfw = w / 2.0;
+			dx = 1.0 / drawPixelWidth_;
+			halfw = width_ / 2.0;
 			i = int( halfw / dx);
 			if (i < 2) break;
 			glBegin(GL_LINES);
@@ -158,68 +158,68 @@ void canvas::render_extra_2d()
 			  glVertex2d(halfw - i*dx, 11);
 			  glVertex2d(halfw + i*dx, 11);
 			glEnd();
-			for (n = -i; n < 0; n++) textbitmap(halfw + n*dx - 8, 1, itoa(n));
-			for (n = 0; n <= i; n++) textbitmap(halfw + n*dx - 3, 1, itoa(n));
+			for (n = -i; n < 0; n++) glText(halfw + n*dx - 8, 1, itoa(n));
+			for (n = 0; n <= i; n++) glText(halfw + n*dx - 3, 1, itoa(n));
 			break;
 	}
 	// If the mouse is hovering over an atom, draw a circle around it...
-	if (atom_hover != NULL)
+	if (atomHover_ != NULL)
 	{
-		vec3<double> hoverpos = ((atom*) atom_hover)->screenr();
-		gl_circle(hoverpos.x,hoverpos.y,((atom*) atom_hover)->get_screen_radius());
+		Vec3<double> hoverpos = atomHover_->rScreen();
+		glCircle(hoverpos.x,hoverpos.y,atomHover_->screenRadius());
 	}
 	// Add text
-	//textbitmap(1.0,h-12.0,displaymodel->get_name());
+	//text(1.0,h-12.0,displayModel_->name());
 	// Draw on colour scale if necessary
-	if (prefs.get_colour_scheme() != AC_ELEMENT)
+	if (prefs.colourScheme() != AC_ELEMENT)
 	{
-		float midy = h / 2;
+		float midy = height_ / 2;
 		//glBegin(
 	}
-	dbg_end(DM_CALLS,"canvas::render_extra_2d");
+	dbgEnd(DM_CALLS,"Canvas::renderExtra2d");
 }
 
 // Render disordered insertion regions
-void canvas::render_regions()
+void Canvas::renderRegions()
 {
-	dbg_begin(DM_CALLS,"canvas::render_regions");
-	static vec3<double> centre, size;
+	dbgBegin(DM_CALLS,"Canvas::renderRegions");
+	static Vec3<double> centre, size;
 	static GLfloat colour[4];
 	int i = 0;
 	// Enable alpha component and make sure lighting is on
 	glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);
-	for (component *c = master.mc.components.first(); c != NULL; c = c->next)
+	for (Component *c = mc.components.first(); c != NULL; c = c->next)
 	{
-		elements.ambient(i, colour);
+		elements.copyAmbientColour(i, colour);
 		colour[3] = 0.4f;
 		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();
-		  centre = c->area.get_centre();
-		  size = c->area.get_size();
-		  switch (c->area.get_shape())
+		  centre = c->area.centre();
+		  size = c->area.size();
+		  switch (c->area.shape())
 		  {
 			case (RS_CELL):
 				break;
 			case (RS_CUBOID):
 				glTranslated(centre.x,centre.y,centre.z);
 				glScaled(size.x,size.y,size.z);
-				glCallList(list[GLOB_UNITCUBE]);
+				glCallList(list_[GLOB_UNITCUBE]);
 				break;
 			case (RS_SPHEROID):
 				glTranslated(centre.x,centre.y,centre.z);
 				glScaled(size.x,size.y,size.z);
-				glCallList(list[GLOB_UNITATOM]);
+				glCallList(list_[GLOB_UNITATOM]);
 				break;
 			default:
-				printf("render_model_regions :: Region type not done.\n");
+				printf("render_model_regions :: ComponentRegion type not done.\n");
 				break;
 		  }
 		glPopMatrix();
 		i ++;
 	}
 	// Turn off blending (if not antialiasing)
-	if (!prefs.get_gl_option(GO_LINEALIASING) && !prefs.get_gl_option(GO_POLYALIASING)) glDisable(GL_BLEND);
+	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
-	dbg_end(DM_CALLS,"canvas::render_regions");
+	dbgEnd(DM_CALLS,"Canvas::renderRegions");
 }

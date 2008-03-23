@@ -22,32 +22,27 @@
 #ifndef ATEN_MATRIX4_H
 #define ATEN_MATRIX4_H
 
-using namespace std;
-#include "templates/vector3.h"
+//#include "templates/vector3.h"
 #include "templates/vector4.h"
-#include "base/debug.h"
+//#include "base/debug.h"
 #include <algorithm>
 #include <math.h>
 #include <stdio.h>
+using namespace std;
 
 // Forward declarations
-template <class T> class vec3;
-template <class T> class vec4;
-template <class T> class mat3;
-template <class T> class mat4;
+//template <class T> class Vec3;
+//template <class T> class Vec4;
+//template <class T> class Mat3;
+//template <class T> class Mat4;
 
 // 4x4 matrix
-template <class T> struct mat4
+template <class T> class Mat4
 {
 	public:
-	// Constructor / Destructor
-	mat4();
-	~mat4();
-	#ifdef MEMDEBUG
-	// Copy constructor
-	mat4(const mat4<T>&);
-	#endif
-	mat4(const mat3<T>&);
+	// Constructor
+	Mat4();
+	Mat4(const Mat3<T>&);
 
 	// 4x4 Matrix, consisting of four vec4's:
 	//	{ x.x x.y x.z x.w }  rows[0]
@@ -56,18 +51,18 @@ template <class T> struct mat4
 	//	{ w.x w.y w.z w.w }  rows[3]
 	public:
 	// Vectors of matrix
-	vec4<T> rows[4];
+	Vec4<T> rows[4];
 
 	/*
 	// Access
 	*/
 	public:
 	// Set the matrix from a 1D array of values
-	void set_from_column_major(T*);
+	void setFromColumnMajor(T*);
 	// Puts the matrix into the passed 1D-array of type <T>, row-major
-	void get_row_major(T*) const;
+	void copyRowMajor(T*) const;
 	// Puts the matrix into the passed 1D-array of type <T>, column-major
-	void get_column_major(T*) const;
+	void copyColumnMajor(T*) const;
 
 	/*
 	// Methods
@@ -78,21 +73,21 @@ template <class T> struct mat4
 	// Invert the matrix
 	void invert();
 	// Reset the matrix to the identity
-	void set_identity();
+	void setIdentity();
 	// Set the zero matrix
 	void zero();
 	// Prints the matrix to stdout
 	void print() const;
 	// TODO 
-	void matrix4_invert(int, double*);
+	void matrix4Invert(int, double*);
 
 	/*
 	// Operators
 	*/
-	mat4 operator*(const mat4&) const;
-	mat4& operator*=(const mat4&);
-	vec4<T> operator*(const vec4<T>&) const;
-	vec3<T> operator*(const vec3<T>&) const;
+	Mat4 operator*(const Mat4&) const;
+	Mat4& operator*=(const Mat4&);
+	Vec4<T> operator*(const Vec4<T>&) const;
+	Vec3<T> operator*(const Vec3<T>&) const;
 };
 
 /*
@@ -100,27 +95,13 @@ template <class T> struct mat4
 */
 
 // Constructor
-template <class T> mat4<T>::mat4()
+template <class T> Mat4<T>::Mat4()
 {
-	set_identity();
-	#ifdef MEMDEBUG
-	memdbg.create[MD_MAT4] ++;
-	#endif
+	setIdentity();
 }
 
-#ifdef MEMDEBUG
-template <class T> mat4<T>::mat4(const mat4<T> &m)
-{
-	rows[0] = m.rows[0];
-	rows[1] = m.rows[1];
-	rows[2] = m.rows[2];
-	rows[3] = m.rows[3];
-	memdbg.create[MD_MAT4COPY] ++;
-}
-#endif
-
-// Create from mat3<>
-template <class T> mat4<T>::mat4(const mat3<T> &m)
+// Create from Mat3<>
+template <class T> Mat4<T>::Mat4(const Mat3<T> &m)
 {
 	rows[0].set(m.rows[0], 0.0);
 	rows[1].set(m.rows[1], 0.0);
@@ -128,16 +109,8 @@ template <class T> mat4<T>::mat4(const mat3<T> &m)
 	rows[3].set(0.0, 0.0, 0.0, 1.0);
 }
 
-// Destructor
-template <class T> mat4<T>::~mat4()
-{
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_MAT4] ++;
-	#endif
-}
-
 // Set (T[])
-template <class T> void mat4<T>::set_from_column_major(T *m)
+template <class T> void Mat4<T>::setFromColumnMajor(T *m)
 {
 	rows[0].set(m[0],m[4],m[8],m[12]);
 	rows[1].set(m[1],m[5],m[9],m[13]);
@@ -146,7 +119,7 @@ template <class T> void mat4<T>::set_from_column_major(T *m)
 }
 
 // Get (array)
-template <class T> void mat4<T>::get_row_major(T *rowm) const
+template <class T> void Mat4<T>::copyRowMajor(T *rowm) const
 {
 	// Construct a 1d array of type T with row-major ordering...
 	rowm[0] = rows[0].x;	rowm[1] = rows[0].y;	rowm[2] = rows[0].z;	rowm[3] = rows[0].w;
@@ -157,7 +130,7 @@ template <class T> void mat4<T>::get_row_major(T *rowm) const
 
 
 // Get (array)
-template <class T> void mat4<T>::get_column_major(T *colm) const
+template <class T> void Mat4<T>::copyColumnMajor(T *colm) const
 {
 	// Construct a 1d array of type T with column-major ordering...
 	colm[0] = rows[0].x;	colm[4] = rows[0].y;	colm[8] = rows[0].z;	colm[12] = rows[0].w;
@@ -167,7 +140,7 @@ template <class T> void mat4<T>::get_column_major(T *colm) const
 }
 
 // Reset
-template <class T> void mat4<T>::set_identity()
+template <class T> void Mat4<T>::setIdentity()
 {
 	// Reset to the identity matrix
 	rows[0].set(1,0,0,0);
@@ -177,7 +150,7 @@ template <class T> void mat4<T>::set_identity()
 }
 
 // Set zero matrix
-template <class T> void mat4<T>::zero()
+template <class T> void Mat4<T>::zero()
 {
 	rows[0].zero();
 	rows[1].zero();
@@ -186,12 +159,12 @@ template <class T> void mat4<T>::zero()
 }
 
 // Matrix multiply (operator *)
-template <class T> mat4<T> mat4<T>::operator*(const mat4<T> &B) const
+template <class T> Mat4<T> Mat4<T>::operator*(const Mat4<T> &B) const
 {
 	// Multiply matrix A by matrix B. Put result in local matrix
 	// [ row(A|this).column(B) ]
 
-	mat4 AB;
+	Mat4 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x + rows[0].w*B.rows[3].x;
 	AB.rows[1].x = rows[1].x*B.rows[0].x + rows[1].y*B.rows[1].x + rows[1].z*B.rows[2].x + rows[1].w*B.rows[3].x;
 	AB.rows[2].x = rows[2].x*B.rows[0].x + rows[2].y*B.rows[1].x + rows[2].z*B.rows[2].x + rows[2].w*B.rows[3].x;
@@ -215,11 +188,11 @@ template <class T> mat4<T> mat4<T>::operator*(const mat4<T> &B) const
 }
 
 // Matrix multiply (operator *=)
-template <class T> mat4<T> &mat4<T>::operator*=(const mat4<T> &B)
+template <class T> Mat4<T> &Mat4<T>::operator*=(const Mat4<T> &B)
 {
 	// Multiply matrix A by matrix B. Put result in local matrix
 	// [ column(A|this).row(B) ]
-	mat4 AB;
+	Mat4 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x + rows[0].w*B.rows[3].x;
 	AB.rows[1].x = rows[1].x*B.rows[0].x + rows[1].y*B.rows[1].x + rows[1].z*B.rows[2].x + rows[1].w*B.rows[3].x;
 	AB.rows[2].x = rows[2].x*B.rows[0].x + rows[2].y*B.rows[1].x + rows[2].z*B.rows[2].x + rows[2].w*B.rows[3].x;
@@ -244,9 +217,9 @@ template <class T> mat4<T> &mat4<T>::operator*=(const mat4<T> &B)
 }
 
 // Operator * (vec4)
-template <class T> vec4<T> mat4<T>::operator*(const vec4<T> &v) const
+template <class T> Vec4<T> Mat4<T>::operator*(const Vec4<T> &v) const
 {
-	vec4<T> result;
+	Vec4<T> result;
 	result.x = v.x*rows[0].x + v.y*rows[0].y + v.z*rows[0].z + v.w*rows[0].w;
 	result.y = v.x*rows[1].x + v.y*rows[1].y + v.z*rows[1].z + v.w*rows[1].w;
 	result.z = v.x*rows[2].x + v.y*rows[2].y + v.z*rows[2].z + v.w*rows[2].w;
@@ -255,10 +228,10 @@ template <class T> vec4<T> mat4<T>::operator*(const vec4<T> &v) const
 }
 
 // Operator * (vec3)
-template <class T> vec3<T> mat4<T>::operator*(const vec3<T> &v) const
+template <class T> Vec3<T> Mat4<T>::operator*(const Vec3<T> &v) const
 {
 	// Assume vector 'w' element is 1.0
-	vec3<T> result;
+	Vec3<T> result;
 	result.x = v.x*rows[0].x + v.y*rows[0].y + v.z*rows[0].z + rows[0].w;
 	result.y = v.x*rows[1].x + v.y*rows[1].y + v.z*rows[1].z + rows[1].w;
 	result.z = v.x*rows[2].x + v.y*rows[2].y + v.z*rows[2].z + rows[2].w;
@@ -266,12 +239,12 @@ template <class T> vec3<T> mat4<T>::operator*(const vec3<T> &v) const
 }
 
 // Calculate matrix inverse
-template <class T> void mat4<T>::invert()
+template <class T> void Mat4<T>::invert()
 {
 	// Must create a T array and pass it to matrix_invert()
 	T m[16];
-	get_row_major(m);
-	matrix4_invert(4,m);
+	copyRowMajor(m);
+	matrix4Invert(4,m);
 	// TODO Don't do this!
 	rows[0].set(m[0],m[1],m[2],m[3]);
 	rows[1].set(m[4],m[5],m[6],m[7]);
@@ -279,7 +252,7 @@ template <class T> void mat4<T>::invert()
 	rows[3].set(m[12],m[13],m[14],m[15]);
 }
 
-template <class T> void mat4<T>::print() const
+template <class T> void Mat4<T>::print() const
 {
 	printf("Mat4_X %8.4f %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z,rows[0].w);
 	printf("Mat4_Y %8.4f %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z,rows[1].w);
@@ -287,7 +260,7 @@ template <class T> void mat4<T>::print() const
 	printf("Mat4_W %8.4f %8.4f %8.4f %8.4f\n",rows[3].x,rows[3].y,rows[3].z,rows[3].w);
 }
 
-template <class T> double mat4<T>::determinant() const
+template <class T> double Mat4<T>::determinant() const
 {
 	// Calculate the determinant of the 4x4 matrix.
 	// Could write a nice recursive algorithm here, but instead let's hard-code it...
@@ -299,14 +272,14 @@ template <class T> double mat4<T>::determinant() const
 }
 
 // Invert matrix
-template <class T> void mat4<T>::matrix4_invert(int matsize, double *A)
+template <class T> void Mat4<T>::matrix4Invert(int matsize, double *A)
 {
 	// Invert the supplied matrix using Gauss-Jordan elimination
 	int *pivotrows, *pivotcols, pivotrow, pivotcol;
 	int *pivoted;
 	int row, col, n, m;
 	double *B, large, element;
-	dbg_begin(DM_CALLS,"invert[GJ]");
+	dbgBegin(DM_CALLS,"invert[GJ]");
 	// Create and blank temporary arrays we need
 	pivotrows = new int[matsize];
 	pivotcols = new int[matsize];
@@ -368,7 +341,7 @@ template <class T> void mat4<T>::matrix4_invert(int matsize, double *A)
 	delete[] pivotrows;
 	delete[] pivotcols;
 	delete[] pivoted;
-	dbg_end(DM_CALLS,"invert[GJ]");
+	dbgEnd(DM_CALLS,"invert[GJ]");
 }
 
 #endif

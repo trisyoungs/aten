@@ -22,25 +22,33 @@
 #include "gui/tcolourframe.uih"
 #include <QtGui/QPainter>
 
+// Constructor
 TColourFrame::TColourFrame(QWidget *parent)
 {
 	setParent(parent);
-	brush.setStyle(Qt::SolidPattern);
+	brush_.setStyle(Qt::SolidPattern);
 }
 
+// Paintevent to colour entire widget with the current colour
 void TColourFrame::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
 	painter.setBackgroundMode(Qt::OpaqueMode);
-	painter.setBrush(brush);
+	painter.setBrush(brush_);
 	painter.drawRect(0,0,width(),height());
 }
 
+// Set colour to be displayed in frame (from QColor)
+void TColourFrame::setColour(QColor &c)
+{
+	brush_.setColor(c);
+}
+
 // Set brush colour (with array of GLfloats)
-void TColourFrame::set_colour(GLfloat *col)
+void TColourFrame::setColour(GLfloat *col)
 {
 	QColor rgb;
 	rgb.setRgbF(col[0],col[1],col[2],1.0f);
-	brush.setColor(rgb);
+	brush_.setColor(rgb);
 }
 

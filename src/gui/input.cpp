@@ -23,131 +23,132 @@
 #include "base/prefs.h"
 #include "gui/gui.h"
 #include "gui/canvas.h"
+#include "model/model.h"
 
 // Static variables
-bool canvas::mb[MB_NITEMS];
-bool canvas::keymod[MK_NITEMS];
+//bool Canvas::mouseAction_[MB_NITEMS];
+//bool Canvas::keyModifier_[MK_NITEMS];
 
 // Inform mouse down
-void canvas::inform_mousedown(mouse_button button, double x, double y)
+void Canvas::informMouseDown(MouseButton button, double x, double y)
 {
-	r_mousedown.set(x,y,0.0);
-	r_mouseup.set(x,y,0.0);
+	rMouseDown_.set(x,y,0.0);
+	rMouseUp_.set(x,y,0.0);
 	// Determine if there is an atom under the mouse
-	atom_hover = displaymodel->atom_on_screen(x,y);
+	atomHover_ = displayModel_->atomOnScreen(x,y);
 	// If a model is being rendered, perform atom selection (if enabled)
-	if (subselect_enabled && (atom_hover != NULL))
+	if (subselectEnabled_ && (atomHover_ != NULL))
 	{
 		// Don't add the same atom more than once
-		if (subsel.search(atom_hover) == NULL)
+		if (subselection_.search(atomHover_) == NULL)
 		{
-			subsel.add(atom_hover);
-			msg(DM_VERBOSE,"Adding atom %i to canvas subselection.\n",atom_hover);
+			subselection_.add(atomHover_);
+			msg(DM_VERBOSE,"Adding atom %i to canvas subselection.\n",atomHover_);
 		}
-		else msg(DM_VERBOSE,"Atom %i is already in canvas subselection.\n",atom_hover);
+		else msg(DM_VERBOSE,"Atom %i is already in canvas subselection.\n",atomHover_);
 	}
 	// Activate mode...
-	begin_mode(button);
+	beginMode(button);
 }
 
 // Inform mouse up
-void canvas::inform_mouseup(mouse_button button, double x, double y)
+void Canvas::informMouseUp(MouseButton button, double x, double y)
 {
 	// Only finalise the mode if the button is the same as the one that caused the mousedown event.
-	if (mb[button])
+	if (mouseButton_[button])
 	{
-		r_mouseup.set(x,y,0.0);
+		rMouseUp_.set(x,y,0.0);
 		// Deactivate mode...
-		end_mode(button);
+		endMode(button);
 	}
-	atom_hover = NULL;
+	atomHover_ = NULL;
 }
 
 // Inform mouse move
-void canvas::inform_mousemove(double x, double y)
+void Canvas::informMouseMove(double x, double y)
 {
 	// Perform action associated with mode (if any)
-	if (activemode != UA_NONE) mode_motion(x,y);
-	r_mouselast.set(x,y,0.0);
+	if (activeMode_ != UA_NONE) modeMotion(x,y);
+	rMouseLast_.set(x,y,0.0);
 }
 
 // Inform mouse wheel scroll
-void canvas::inform_scroll(bool dir)
+void Canvas::informScroll(bool dir)
 {
-	mode_scroll(dir);
+	modeScroll(dir);
 }
 
 // Inform key down
-void canvas::inform_keydown(key_code key)
+void Canvas::informKeyDown(key_code key)
 {
 	// Check datamodel...
-	if (displaymodel == NULL) return;
-	static model *viewtarget;
+	if (displayModel_ == NULL) return;
+	static Model *viewtarget;
 	// For view operations when we have a trajectory, apply all movement to the parent model
-	viewtarget = displaymodel->get_trajparent();
-	if (viewtarget == NULL) viewtarget = displaymodel;
+	viewtarget = displayModel_->trajectoryParent();
+	if (viewtarget == NULL) viewtarget = displayModel_;
 	switch (key)
 	{
 		case (KC_SHIFT_L):
-			keymod[MK_SHIFT] = TRUE;
+			keyModifier_[MK_SHIFT] = TRUE;
 			break;
 		case (KC_SHIFT_R):
-			keymod[MK_SHIFT] = TRUE;
+			keyModifier_[MK_SHIFT] = TRUE;
 			break;
 		case (KC_CONTROL_L):
-			keymod[MK_CTRL] = TRUE;
+			keyModifier_[MK_CTRL] = TRUE;
 			break;
 		case (KC_CONTROL_R):
-			keymod[MK_CTRL] = TRUE;
+			keyModifier_[MK_CTRL] = TRUE;
 			break;
 		case (KC_ALT_L):
-			keymod[MK_ALT] = TRUE;
+			keyModifier_[MK_ALT] = TRUE;
 			break;
 		case (KC_ALT_R):
-			keymod[MK_ALT] = TRUE;
+			keyModifier_[MK_ALT] = TRUE;
 			break;
 		//case (GDK_Escape): master.check_before_close(); break;
 		case (KC_LEFT):
 			viewtarget->rotate(-10.0,0.0);
-			postredisplay();
+			postRedisplay();
 			break;
 		case (KC_RIGHT):
 			viewtarget->rotate(10.0,0.0);
-			postredisplay();
+			postRedisplay();
 			break;
 		case (KC_UP):
 			viewtarget->rotate(0.0,-10.0);
-			postredisplay();
+			postRedisplay();
 			break;
 		case (KC_DOWN):
 			viewtarget->rotate(0.0,10.0);
-			postredisplay();
+			postRedisplay();
 			break;
 	}
 }
 
 // Inform key up
-void canvas::inform_keyup(key_code key)
+void Canvas::informKeyUp(key_code key)
 {
 	switch (key)
 	{
 		case (KC_SHIFT_L):
-			keymod[MK_SHIFT] = FALSE;
+			keyModifier_[MK_SHIFT] = FALSE;
 			break;
 		case (KC_SHIFT_R):
-			keymod[MK_SHIFT] = FALSE;
+			keyModifier_[MK_SHIFT] = FALSE;
 			break;
 		case (KC_CONTROL_L):
-			keymod[MK_CTRL] = FALSE;
+			keyModifier_[MK_CTRL] = FALSE;
 			break;
 		case (KC_CONTROL_R):
-			keymod[MK_CTRL] = FALSE;
+			keyModifier_[MK_CTRL] = FALSE;
 			break;
 		case (KC_ALT_L):
-			keymod[MK_ALT] = FALSE;
+			keyModifier_[MK_ALT] = FALSE;
 			break;
 		case (KC_ALT_R):
-			keymod[MK_ALT] = FALSE;
+			keyModifier_[MK_ALT] = FALSE;
 			break;
 	}
 }
@@ -157,14 +158,14 @@ void canvas::inform_keyup(key_code key)
 */
 
 // Set selected mode
-void canvas::set_selectedmode(user_action ua)
+void Canvas::setSelectedMode(UserAction ua)
 {
-	dbg_begin(DM_CALLS,"canvas::set_selectedmode");
-	selectedmode = ua;
-	if (displaymodel == NULL)
+	dbgBegin(DM_CALLS,"Canvas::setSelectedMode");
+	selectedMode_ = ua;
+	if (displayModel_ == NULL)
 	{
-		printf("Pointless canvas::set_selectedmode - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas::set_selectedmode");
+		printf("Pointless Canvas::setSelectedMode - datamodel == NULL.\n");
+		dbgEnd(DM_CALLS,"Canvas::setSelectedMode");
 		return;
 	}
 	// Prepare canvas / model depending on the mode
@@ -177,45 +178,45 @@ void canvas::set_selectedmode(user_action ua)
 		case (UA_BONDDOUBLE):
 		case (UA_BONDTRIPLE):
 		case (UA_DELBOND):
-			subselect_enabled = TRUE;
-			subsel.clear();
+			subselectEnabled_ = TRUE;
+			subselection_.clear();
 			break;
 		default:
-			subselect_enabled = FALSE;
+			subselectEnabled_ = FALSE;
 			break;
 	}
-	gui.mainview.postredisplay();
-	dbg_end(DM_CALLS,"canvas::set_selectedmode");
+	gui.mainView.postRedisplay();
+	dbgEnd(DM_CALLS,"Canvas::setSelectedMode");
 }
 
 // Begin Mode
-void canvas::begin_mode(mouse_button button)
+void Canvas::beginMode(MouseButton button)
 {
-	dbg_begin(DM_CALLS,"widgetcanvas::begin_mode");
+	dbgBegin(DM_CALLS,"widgetCanvas::beginMode");
 	static bool manipulate, zrotate;
 	static int n;
-	static atom *i;
+	static Atom *i;
 	// Do the requested action as defined in the control panel, but only if another action
-	// isn't currently in progress. Set the user_action based on the mouse button that sent
+	// isn't currently in progress. Set the UserAction based on the mouse button that sent
 	// the signal, current selection / draw modes and key modifier states.
 	// Set mouse flag and get state of modifier keys
-	if (displaymodel == NULL)
+	if (displayModel_ == NULL)
 	{
-		printf("Pointless canvas::begin_mode - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas::begin_mode");
+		printf("Pointless Canvas::beginMode - datamodel == NULL.\n");
+		dbgEnd(DM_CALLS,"Canvas::beginMode");
 		return;
 	}
 	// Note the mouse button pressed
-	mb[button] = TRUE;
+	mouseButton_[button] = TRUE;
 	// Check for modifier keys
 	zrotate = FALSE;
 	manipulate = FALSE;
-	hasmoved = FALSE;
+	hasMoved_ = FALSE;
 	for (n=0; n<3; n++)
 	{
-		if (keymod[n])
+		if (keyModifier_[n])
 		{
-			switch (prefs.get_keymod_action((modifier_key(n))))
+			switch (prefs.keyAction((ModifierKey(n))))
 			{
 				case (KA_MANIPULATE):
 					manipulate = TRUE;
@@ -227,240 +228,240 @@ void canvas::begin_mode(mouse_button button)
 		}
 	}
 	// Now prepare for the action
-	if (activemode == UA_NONE)
+	if (activeMode_ == UA_NONE)
 	{
-		switch (prefs.get_mb_action(button))
+		switch (prefs.mouseAction(button))
 		{
 			// Main interactor - selection, sketching, measuring
 			case (MA_INTERACT):
-				use_selectedmode();
+				useSelectedMode();
 				// Some modes require actions to be done when the button is first depressed
-				switch (activemode)
+				switch (activeMode_)
 				{
 					case (UA_DRAWCHAIN):
 						// If there is currently no atom under the mouse, draw one...
-						if (atom_hover == NULL)
+						if (atomHover_ == NULL)
 						{
-							displaymodel->begin_undostate("Draw Chain");
-							i = displaymodel->add_atom(master.get_sketchelement(), displaymodel->guide_to_model(r_mousedown));
-							displaymodel->end_undostate();
-							displaymodel->project_atom(i);
-							atom_hover = i;
+							displayModel_->beginUndostate("Draw Chain");
+							i = displayModel_->addAtom(master.sketchElement(), displayModel_->guideToModel(rMouseDown_));
+							displayModel_->endUndostate();
+							displayModel_->projectAtom(i);
+							atomHover_ = i;
 						}
 						break;
 				}
 				break;
 			case (MA_VIEWROTATE):
 				// Check for multiple key modifiers first.
-				if (manipulate && zrotate) activemode = UA_MANIPROTZ;
-				else if (manipulate) activemode = UA_MANIPROTXY;
-				else if (zrotate) activemode = UA_ROTATEZ;
-				else activemode = UA_ROTATEXY;
+				if (manipulate && zrotate) activeMode_ = UA_MANIPROTZ;
+				else if (manipulate) activeMode_ = UA_MANIPROTXY;
+				else if (zrotate) activeMode_ = UA_ROTATEZ;
+				else activeMode_ = UA_ROTATEXY;
 				break;
 			case (MA_VIEWZOOM):
-				activemode = UA_ZOOMCAM;
+				activeMode_ = UA_ZOOMCAM;
 				break;
 			case (MA_VIEWTRANSLATE):
-				activemode = UA_MOVECAM;
-				manipulate ? activemode = UA_MANIPTRANS : activemode = UA_MOVECAM;
+				activeMode_ = UA_MOVECAM;
+				manipulate ? activeMode_ = UA_MANIPTRANS : activeMode_ = UA_MOVECAM;
 				break;
 		}
 		// If we're manipulating, prepare the transform
 		if (manipulate)
 		{
 			/* We don't begin an undostate here - this will be done in end_mode().
-			   Instead, store pointers to all selected atoms in a reflist, along
+			   Instead, store pointers to all selected atoms in a Reflist, along
 			   with their current positions.
 			*/
-			selectionr.clear();
-			for (atom *i = displaymodel->get_first_selected(); i != NULL; i = i->get_next_selected()) selectionr.add(i, i->r());
-			displaymodel->prepare_transform();
+			rSelection_.clear();
+			for (Atom *i = displayModel_->firstSelected(); i != NULL; i = i->nextSelected()) rSelection_.add(i, i->r());
+			displayModel_->prepareTransform();
 		}
 	}
-	dbg_end(DM_CALLS,"canvas::begin_mode");
+	dbgEnd(DM_CALLS,"Canvas::begin_mode");
 }
 
 // End Mode
-void canvas::end_mode(mouse_button button)
+void Canvas::endMode(MouseButton button)
 {
 	// Finalize the current action on the model
-	dbg_begin(DM_CALLS,"canvas::end_mode");
+	dbgBegin(DM_CALLS,"Canvas::endMode");
 	bool manipulate;
 	double area, radius;
-	atom *atoms[4], *i;
-	bond *b;
-	if (displaymodel == NULL)
+	Atom *atoms[4], *i;
+	Bond *b;
+	if (displayModel_ == NULL)
 	{
-		printf("Pointless canvas::end_mode - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas::end_mode");
+		printf("Pointless Canvas::endMode - datamodel == NULL.\n");
+		dbgEnd(DM_CALLS,"Canvas::endMode");
 		return;
 	}
 	// Reset mouse button flag
-	mb[button] = FALSE;
+	mouseButton_[button] = FALSE;
 	// Finalize the action
-	switch (activemode)
+	switch (activeMode_)
 	{
 		// Group all the plain selection modes together (one for each toolbar in a diff. window)
 		case (UA_PICKSELECT):
 		case (UA_GEOMSELECT):
 		case (UA_POSSELECT):
-			area = fabs(r_mouseup.x - r_mousedown.x) * fabs(r_mouseup.y - r_mousedown.y);
-			displaymodel->begin_undostate("Change Selection");
+			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
+			displayModel_->beginUndostate("Change Selection");
 			// If SHIFT is not held down, deselect the current selection
-			if (!keymod[MK_SHIFT]) displaymodel->select_none();
+			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
 			// Do either point select or box select based on the size of the selected area
 			if (area < 100.0)
 			{
-				if (keymod[MK_SHIFT])
+				if (keyModifier_[MK_SHIFT])
 				{
-					if (atom_hover != NULL) displaymodel->selection_toggle(atom_hover);
+					if (atomHover_ != NULL) displayModel_->selectionToggle(atomHover_);
 				}
-				else if (atom_hover != NULL) displaymodel->select_atom(atom_hover);
+				else if (atomHover_ != NULL) displayModel_->selectAtom(atomHover_);
 			}
-			else displaymodel->select_box(r_mousedown.x, r_mousedown.y, r_mouseup.x, r_mouseup.y);
-			displaymodel->end_undostate();
+			else displayModel_->selectBox(rMouseDown_.x, rMouseDown_.y, rMouseUp_.x, rMouseUp_.y);
+			displayModel_->endUndostate();
 			break;
 		// Now do the rest
 		case (UA_PICKFRAG):
-			displaymodel->begin_undostate("Select Molecule");
-			if (!keymod[MK_SHIFT]) displaymodel->select_none();
-			if (atom_hover != NULL) displaymodel->select_tree(atom_hover);
-			displaymodel->end_undostate();
+			displayModel_->beginUndostate("Select Molecule");
+			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
+			if (atomHover_ != NULL) displayModel_->selectTree(atomHover_);
+			displayModel_->endUndostate();
 			break;
 		case (UA_PICKELEMENT):
-			displaymodel->begin_undostate("Select Element");
-			if (!keymod[MK_SHIFT]) displaymodel->select_none();
-			if (atom_hover != NULL) displaymodel->select_element(atom_hover);
-			displaymodel->end_undostate();
+			displayModel_->beginUndostate("Select Element");
+			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
+			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_);
+			displayModel_->endUndostate();
 			break;
 		case (UA_PICKRADIAL):
-			displaymodel->begin_undostate("Select Radial");
-			if (!keymod[MK_SHIFT]) displaymodel->select_none();
-			if (atom_hover != NULL)
+			displayModel_->beginUndostate("Select Radial");
+			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
+			if (atomHover_ != NULL)
 			{
-				radius = (r_mousedown-r_mouseup).magnitude();
-				radius /= ((atom*) atom_hover)->get_screen_radius() * prefs.screenradius((atom*) atom_hover);
-				displaymodel->select_radial(atom_hover,radius);
+				radius = (rMouseDown_-rMouseUp_).magnitude();
+				radius /= atomHover_->screenRadius() * prefs.screenRadius(atomHover_);
+				displayModel_->selectRadial(atomHover_,radius);
 			}
-			displaymodel->end_undostate();
+			displayModel_->endUndostate();
 			break;
 		// Measurements
 		case (UA_GEOMDIST):
 			// Must be two atoms in subselection to continue
-			if (subsel.size() != 2) break;
-			displaymodel->begin_undostate("Measure Distance");
-			subsel.fill_array(2,atoms);
-			displaymodel->measure_distance(atoms[0],atoms[1]);
-			displaymodel->end_undostate();
-			subsel.clear();
+			if (subselection_.nItems() != 2) break;
+			displayModel_->beginUndostate("Measure Distance");
+			subselection_.fillArray(2,atoms);
+			displayModel_->measureDistance(atoms[0],atoms[1]);
+			displayModel_->endUndostate();
+			subselection_.clear();
 			break;
 		case (UA_GEOMANGLE):
 			// Must be two atoms in subselection to continue
-			if (subsel.size() != 3) break;
-			displaymodel->begin_undostate("Measure Angle");
-			subsel.fill_array(3,atoms);
-			displaymodel->measure_angle(atoms[0],atoms[1],atoms[2]);
-			displaymodel->end_undostate();
-			subsel.clear();
+			if (subselection_.nItems() != 3) break;
+			displayModel_->beginUndostate("Measure Angle");
+			subselection_.fillArray(3,atoms);
+			displayModel_->measureAngle(atoms[0],atoms[1],atoms[2]);
+			displayModel_->endUndostate();
+			subselection_.clear();
 			break;
 		case (UA_GEOMTORSION):
 			// Must be two atoms in subselection to continue
-			if (subsel.size() != 4) break;
-			displaymodel->begin_undostate("Measure Torsion");
-			subsel.fill_array(4,atoms);
-			displaymodel->measure_torsion(atoms[0],atoms[1],atoms[2],atoms[3]);
-			displaymodel->end_undostate();
-			subsel.clear();
+			if (subselection_.nItems() != 4) break;
+			displayModel_->beginUndostate("Measure Torsion");
+			subselection_.fillArray(4,atoms);
+			displayModel_->measureTorsion(atoms[0],atoms[1],atoms[2],atoms[3]);
+			displayModel_->endUndostate();
+			subselection_.clear();
 			break;
 		// Draw single atom
 		case (UA_DRAWATOM):
 			// Make sure we don't draw on top of an existing atom
-			if (atom_hover == NULL)
+			if (atomHover_ == NULL)
 			{
-				displaymodel->begin_undostate("Draw Atom");
-				atom *i = displaymodel->add_atom(master.get_sketchelement(), displaymodel->guide_to_model(r_mousedown));
-				displaymodel->end_undostate();
-				displaymodel->project_atom(i);
+				displayModel_->beginUndostate("Draw Atom");
+				Atom *i = displayModel_->addAtom(master.sketchElement(), displayModel_->guideToModel(rMouseDown_));
+				displayModel_->endUndostate();
+				displayModel_->projectAtom(i);
 			}
 			break;
 		// Draw chains of atoms
 		case (UA_DRAWCHAIN):
 			// If there is no atom under the mouse we draw one
-			i = displaymodel->atom_on_screen(r_mouseup.x,r_mouseup.y);
-			if ((atom_hover == i) && (i != NULL)) break;
-			displaymodel->begin_undostate("Draw Chain");
+			i = displayModel_->atomOnScreen(rMouseUp_.x,rMouseUp_.y);
+			if ((atomHover_ == i) && (i != NULL)) break;
+			displayModel_->beginUndostate("Draw Chain");
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom
-				i = displaymodel->add_atom(master.get_sketchelement(), displaymodel->guide_to_model(r_mouseup));
-				displaymodel->project_atom(i);
+				i = displayModel_->addAtom(master.sketchElement(), displayModel_->guideToModel(rMouseUp_));
+				displayModel_->projectAtom(i);
 			}
-			// Now bond the atoms, unless atom_hover and i are the same (i.e. the button was clicked and not moved)
-			if (atom_hover != i) displaymodel->bond_atoms(i,atom_hover,BT_SINGLE);
-			displaymodel->end_undostate();
+			// Now bond the atoms, unless atomHover_ and i are the same (i.e. the button was clicked and not moved)
+			if (atomHover_ != i) displayModel_->bondAtoms(i,atomHover_,BT_SINGLE);
+			displayModel_->endUndostate();
 			break;
 		case (UA_TRANSATOM):
-			displaymodel->begin_undostate("Transmute");
-			displaymodel->transmute_atom(atom_hover, master.get_sketchelement());
-			displaymodel->end_undostate();
+			displayModel_->beginUndostate("Transmute");
+			displayModel_->transmuteAtom(atomHover_, master.sketchElement());
+			displayModel_->endUndostate();
 			break;
 		case (UA_DELATOM):
-			displaymodel->begin_undostate("Delete Atom");
-			displaymodel->delete_atom(atom_hover);
-			displaymodel->end_undostate();
+			displayModel_->beginUndostate("Delete Atom");
+			displayModel_->deleteAtom(atomHover_);
+			displayModel_->endUndostate();
 			break;
 		case (UA_PROBEATOM):
-			if (atom_hover != NULL) atom_hover->print();
+			if (atomHover_ != NULL) atomHover_->print();
 			break;
 		// Bonding
 		case (UA_BONDSINGLE):
 		case (UA_BONDDOUBLE):
 		case (UA_BONDTRIPLE):
 			// Must be two atoms in subselection to continue
-			if (subsel.size() != 2) break;
-			subsel.fill_array(2,atoms);
-			b = atoms[0]->find_bond(atoms[1]);
+			if (subselection_.nItems() != 2) break;
+			subselection_.fillArray(2,atoms);
+			b = atoms[0]->findBond(atoms[1]);
 			if (b == NULL)
 			{
-				displaymodel->begin_undostate("Bond Atoms");
-				displaymodel->bond_atoms(atoms[0],atoms[1],bond_type(activemode-UA_BONDSINGLE+1));
-				displaymodel->end_undostate();
+				displayModel_->beginUndostate("Bond Atoms");
+				displayModel_->bondAtoms(atoms[0],atoms[1],BondType(activeMode_-UA_BONDSINGLE+1));
+				displayModel_->endUndostate();
 			}
 			else
 			{
-				displaymodel->begin_undostate("Change Bond");
-				displaymodel->change_bond(b,bond_type(activemode-UA_BONDSINGLE+1));
-				displaymodel->end_undostate();
+				displayModel_->beginUndostate("Change Bond");
+				displayModel_->changeBond(b,BondType(activeMode_-UA_BONDSINGLE+1));
+				displayModel_->endUndostate();
 			}
-			subsel.clear();
+			subselection_.clear();
 			break;
 		case (UA_DELBOND):
 			// Must be two atoms in subselection to continue
-			if (subsel.size() != 2) break;
-			subsel.fill_array(2,atoms);
-			if (atoms[0]->find_bond(atoms[1]) != NULL)
+			if (subselection_.nItems() != 2) break;
+			subselection_.fillArray(2,atoms);
+			if (atoms[0]->findBond(atoms[1]) != NULL)
 			{
-				displaymodel->begin_undostate("Delete Bond");
-				displaymodel->unbond_atoms(atoms[0],atoms[1]);
-				displaymodel->end_undostate();
+				displayModel_->beginUndostate("Delete Bond");
+				displayModel_->unbondAtoms(atoms[0],atoms[1]);
+				displayModel_->endUndostate();
 			}
-			subsel.clear();
+			subselection_.clear();
 			break;
 		// Misc
 		case (UA_ATOMADDHYDROGEN):
-			if (atom_hover != NULL)
+			if (atomHover_ != NULL)
 			{
-				displaymodel->begin_undostate("Delete Bond"); displaymodel->hydrogen_satisfy(atom_hover);
-				displaymodel->end_undostate();
+				displayModel_->beginUndostate("Delete Bond"); displayModel_->hydrogenSatisfy(atomHover_);
+				displayModel_->endUndostate();
 			}
 			break;
 		// Model transformations
 		case (UA_MANIPROTXY):
 		case (UA_MANIPROTZ):
 		case (UA_MANIPTRANS):
-			// Clear list of selectionr if nothing was moved
-			if (!hasmoved) selectionr.clear();
-			displaymodel->finalize_transform(selectionr);
+			// Clear list of rSelection_ if nothing was moved
+			if (!hasMoved_) rSelection_.clear();
+			displayModel_->finalizeTransform(rSelection_);
 			break;
 		// View changes (no action)
 		case (UA_ROTATEXY):
@@ -469,34 +470,34 @@ void canvas::end_mode(mouse_button button)
 		case (UA_ZOOMCAM):
 			break;
 		default:
-			printf("No button_up handler defined for user_action %i.\n", activemode);
+			printf("No button_up handler defined for UserAction %i.\n", activeMode_);
 			break;
 	}
-	activemode = UA_NONE;
-	postredisplay();
-	dbg_end(DM_CALLS,"canvas::end_mode");
+	activeMode_ = UA_NONE;
+	postRedisplay();
+	dbgEnd(DM_CALLS,"Canvas::endMode");
 }
 
-void canvas::mode_motion(double x, double y)
+void Canvas::modeMotion(double x, double y)
 {
 	// Actively update variables when moving the mouse (possibly while performing a given action)
-	dbg_begin(DM_CALLS,"canvas::mode_motion");
-	static vec3<double> delta;
-	static model *viewtarget;
-	if (displaymodel == NULL)
+	dbgBegin(DM_CALLS,"Canvas::modeMotion");
+	static Vec3<double> delta;
+	static Model *viewtarget;
+	if (displayModel_ == NULL)
 	{
-		printf("Pointless canvas::mode_motion - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas::mode_motion");
+		printf("Pointless Canvas::modeMotion - datamodel == NULL.\n");
+		dbgEnd(DM_CALLS,"Canvas::modeMotion");
 		return;
 	}
 	// For view operations when we have a trajectory, apply all movement to the parent model
-	viewtarget = displaymodel->get_trajparent();
-	if (viewtarget == NULL) viewtarget = displaymodel;
+	viewtarget = displayModel_->trajectoryParent();
+	if (viewtarget == NULL) viewtarget = displayModel_;
 	// Calculate new delta.
 	delta.set(x,y,0.0);
-	delta = delta - r_mouselast;
-	// Use activemode to determine what needs to be performed
-	switch (activemode)
+	delta = delta - rMouseLast_;
+	// Use activeMode_ to determine what needs to be performed
+	switch (activeMode_)
 	{
 		case (UA_NONE):
 			break;
@@ -504,58 +505,58 @@ void canvas::mode_motion(double x, double y)
 			viewtarget->rotate(delta.x/2.0,delta.y/2.0);
 			break;
 		case (UA_ROTATEZ):
-			viewtarget->zrotate(delta.x/2.0);
+			viewtarget->zRotate(delta.x/2.0);
 			break;
 		case (UA_MOVECAM):
-			viewtarget->adjust_camera(delta/15.0,0.0);
+			viewtarget->adjustCamera(delta/15.0,0.0);
 			break;
 		case (UA_MANIPROTXY):
-			displaymodel->rotate_selection_world(delta.x/2.0,delta.y/2.0);
-			hasmoved = TRUE;
+			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
+			hasMoved_ = TRUE;
 			break;
 		case (UA_MANIPROTZ):
-			displaymodel->manip_rotate_zaxis(delta.x/2.0);
-			hasmoved = TRUE;
+			displayModel_->rotateSelectionZaxis(delta.x/2.0);
+			hasMoved_ = TRUE;
 			break;
 		case (UA_MANIPTRANS):
 			delta.y = -delta.y;
-			delta /= displaymodel->get_translatescale() * 2.0;
-			displaymodel->translate_selection_world(delta);
-			hasmoved = TRUE;
+			delta /= displayModel_->translateScale() * 2.0;
+			displayModel_->translateSelectionWorld(delta);
+			hasMoved_ = TRUE;
 			break;
 		case (UA_ZOOMCAM):
-			if (prefs.using_perspective()) viewtarget->adjust_camera(0.0,0.0,delta.y,0.0);
-			else viewtarget->adjust_ortho_size(delta.y);
-			calculate_drawpixelwidth();
+			if (prefs.hasPerspective()) viewtarget->adjustCamera(0.0,0.0,delta.y,0.0);
+			else viewtarget->adjustOrthoSize(delta.y);
+			calculateDrawPixelWidth();
 			break;
 		default:
 			break;
 	}
-	postredisplay();
-	dbg_end(DM_CALLS,"canvas::mode_motion");
+	postRedisplay();
+	dbgEnd(DM_CALLS,"Canvas::modeMotion");
 }
 
-void canvas::mode_scroll(bool scrollup)
+void Canvas::modeScroll(bool scrollup)
 {
 	// Handle mouse-wheel scroll events.
 	// Do the requested wheel action as defined in the control panel
-	dbg_begin(DM_CALLS,"canvas::mode_scroll");
-	static model *viewtarget;
-	if (displaymodel == NULL)
+	dbgBegin(DM_CALLS,"Canvas::modeScroll");
+	static Model *viewtarget;
+	if (displayModel_ == NULL)
 	{
-		printf("Pointless canvas::mode_scroll - datamodel == NULL.\n");
-		dbg_end(DM_CALLS,"canvas::mode_scroll");
+		printf("Pointless Canvas::modeScroll - datamodel == NULL.\n");
+		dbgEnd(DM_CALLS,"Canvas::modeScroll");
 		return;
 	}
 	// For view operations when we have a trajectory, apply all movement to the parent model
-	viewtarget = displaymodel->get_trajparent();
-	if (viewtarget == NULL) viewtarget = displaymodel;
-	switch (prefs.get_mb_action(MB_WHEEL))
+	viewtarget = displayModel_->trajectoryParent();
+	if (viewtarget == NULL) viewtarget = displayModel_;
+	switch (prefs.mouseAction(MB_WHEEL))
 	{
 		case (MA_NONE):
 			break;
 		case (MA_INTERACT):
-			use_selectedmode();
+			useSelectedMode();
 			break;
 		case (MA_VIEWROTATE):
 			scrollup ? viewtarget->rotate(1.0,0.0) : viewtarget->rotate(-1.0,0.0);
@@ -563,12 +564,12 @@ void canvas::mode_scroll(bool scrollup)
 		case (MA_VIEWTRANSLATE):
 			break;
 		case (MA_VIEWZOOM):
-			if (prefs.using_perspective())
-				scrollup ? viewtarget->adjust_camera(0.0,0.0,-5.0,0.0) : viewtarget->adjust_camera(0.0,0.0,5.0,0.0);
-			else scrollup ? viewtarget->adjust_ortho_size(1.0) : viewtarget->adjust_ortho_size(-1.0);
-			calculate_drawpixelwidth();
+			if (prefs.hasPerspective())
+				scrollup ? viewtarget->adjustCamera(0.0,0.0,-5.0,0.0) : viewtarget->adjustCamera(0.0,0.0,5.0,0.0);
+			else scrollup ? viewtarget->adjustOrthoSize(1.0) : viewtarget->adjustOrthoSize(-1.0);
+			calculateDrawPixelWidth();
 			break;
 	}
-	postredisplay();
-	dbg_end(DM_CALLS,"canvas::mode_scroll");
+	postRedisplay();
+	dbgEnd(DM_CALLS,"Canvas::modeScroll");
 }

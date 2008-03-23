@@ -26,64 +26,61 @@
 #include "classes/variables.h"
 
 // Format node
-class format_node
+class FormatNode
 {
 	public:
-	// Constructor / Destructor
-	format_node();
-	~format_node();
+	// Constructor
+	FormatNode();
 	// List pointers
-	format_node *next, *prev;
+	FormatNode *next, *prev;
 
 	/*
 	// Format Node
 	*/
 	private:
 	// Associated variable
-	variable *v;
+	Variable *variable_;
 	// Field length (0 for unspecified)
-	int length;
+	int length_;
 	// Field precision (0 for unspecified)
-	int precision;
+	int precision_;
 
 	public:
 	// Set format node data
-	bool set(const char *s, variable_list &vars);
+	bool set(const char *s, VariableList &vars);
 	// Get format node variable
-	variable *get_variable() { return v; }
+	Variable *variable();
 	// Get field length
-	int get_length() { return length; }
+	int length();
 	// Get field precision
-	int get_precision() { return precision; }
+	int precision();
 };
 
 // Format
-class format
+class Format
 {
 	public:
-	// Constructor / Destructor
-	format();
-	~format();
+	// Destructor
+	~Format();
 
 	/*
 	// Node List
 	*/
 	private:
 	// Head of format node list
-	list<format_node> nodes;
+	List<FormatNode> nodes_;
 	// Create a format assuming delimited formatting nodes
-	bool create_delimited(const char *s, variable_list &vars);
+	bool createDelimited(const char *s, VariableList &vars);
 	// Create a format not using delimited formatting nodes
-	bool create_exact(const char *s, variable_list &vars);
+	bool createExact(const char *s, VariableList &vars);
 
 	public:
 	// Returns first node
-	format_node* get_nodes() { return nodes.first(); }
+	FormatNode* nodes();
 	// Create format nodes from a supplied formatting string
-	bool create(const char *s, variable_list &vars, bool delimited)
-		{ return (delimited ? create_delimited(s, vars) : create_exact(s, vars)); }
+	bool create(const char *s, VariableList &vars, bool delimited);
 	// Create a formatted string from the format data
-	const char *create_string();
+	const char *createString();
 };
 
 #endif

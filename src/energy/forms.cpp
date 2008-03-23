@@ -24,48 +24,48 @@
 // Generation rules (for rule-based FFs)
 const char *FFR_strings[FFR_NITEMS] = { "No rules defined.", "UniversalFF (Rappe et al.)" };
 const char *FFR_keywords[FFR_NITEMS] = { "norules", "uff" };
-const char *text_from_FFR(ff_rules i)
+const char *text_from_FFR(ForcefieldRules i)
 	{ return FFR_strings[i]; }
-ff_rules FFR_from_text(const char *s)
-	{ return (ff_rules) enum_search("forcefield rules set",FFR_NITEMS,FFR_keywords,s); }
+ForcefieldRules FFR_from_text(const char *s)
+	{ return (ForcefieldRules) enumSearch("forcefield rules set",FFR_NITEMS,FFR_keywords,s); }
 
 // Electrostatic model
 const char *EM_keywords[EM_NITEMS] = { "off", "coulomb", "ewald", "ewaldauto" };
-const char *text_from_EM(elec_method i)
+const char *text_from_EM(ElecMethod i)
 	{ return EM_keywords[i]; }
-elec_method EM_from_text(const char *s)
-	{ return (elec_method) enum_search("electrostatics method",EM_NITEMS,EM_keywords,s); }
+ElecMethod EM_from_text(const char *s)
+	{ return (ElecMethod) enumSearch("electrostatics method",EM_NITEMS,EM_keywords,s); }
 
 // VDW potential forms
 const char *VF_strings[VF_NITEMS] = { "Unspecified", "Lennard-Jones 12-6", "Buckingham exp6" };
 const char *VF_keywords[VF_NITEMS] = { "_NULL_", "lj", "buck" };
-const char *text_from_VF(vdw_func i)
+const char *text_from_VF(VdwFunction i)
 	{ return VF_strings[i]; }
-const char *keyword_from_VF(vdw_func i)
+const char *keyword_from_VF(VdwFunction i)
 	{ return VF_keywords[i]; }
-vdw_func VF_from_text(const char *s)
-	{ return (vdw_func) enum_search("VDW style",VF_NITEMS,VF_keywords,s); }
+VdwFunction VF_from_text(const char *s)
+	{ return (VdwFunction) enumSearch("VDW style",VF_NITEMS,VF_keywords,s); }
 
 // Bond potential forms
 const char *BF_strings[BF_NITEMS] = { "Unspecified", "Harmonic", "Morse" };
 const char *BF_keywords[BF_NITEMS] = { "_NULL_", "harmonic", "morse" };
-const char *text_from_BF(bond_func i)
+const char *text_from_BF(BondFunction i)
 	{ return BF_keywords[i]; }
-bond_func BF_from_text(const char *s)
-	{ return (bond_func) enum_search("bond style",BF_NITEMS,BF_keywords,s); }
+BondFunction BF_from_text(const char *s)
+	{ return (BondFunction) enumSearch("bond style",BF_NITEMS,BF_keywords,s); }
 
 // Angle potential forms
 const char *AF_strings[AF_NITEMS] = { "Unspecified", "Harmonic", "Cosine", "UFF Cosine" };
 const char *AF_keywords[AF_NITEMS] = { "_NULL_", "harmonic", "cos", "uff" };
-const char *text_from_AF(angle_func i)
+const char *text_from_AF(AngleFunction i)
 	{ return AF_keywords[i]; }
-angle_func AF_from_text(const char *s)
-	{ return (angle_func) enum_search("angle style",AF_NITEMS,AF_keywords,s); }
+AngleFunction AF_from_text(const char *s)
+	{ return (AngleFunction) enumSearch("angle style",AF_NITEMS,AF_keywords,s); }
 
 // Torsion potential forms
 const char *TF_strings[TF_NITEMS] = { "Unspecified", "Cosine", "Triple Cosine", "Quadruple Cosine", "Constant + Triple Cosine" };
 const char *TF_keywords[TF_NITEMS] = { "_NULL_", "cosine", "cos3", "cos4", "cosc" };
-const char *text_from_TF(torsion_func i)
+const char *text_from_TF(TorsionFunction i)
 	{ return TF_keywords[i]; }
-torsion_func TF_from_text(const char *s)
-	{ return (torsion_func) enum_search("torsion style",TF_NITEMS,TF_keywords,s); }
+TorsionFunction TF_from_text(const char *s)
+	{ return (TorsionFunction) enumSearch("torsion style",TF_NITEMS,TF_keywords,s); }

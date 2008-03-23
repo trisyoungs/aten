@@ -19,15 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "parse/filter.h"
+#include "base/master.h"
 #include "gui/mainwindow.h"
 #include <QtGui/QFileDialog>
 #include <QtCore/QSettings>
 
 // Finalise GUI
-void AtenForm::finalise_ui()
+void AtenForm::finaliseUi()
 {
-	dbg_begin(DM_CALLS,"AtenForm::finalise_ui");
-	filter *f;
+	dbgBegin(DM_CALLS,"AtenForm::finaliseUi");
+	Filter *f;
 	int n;
 	char temp[256];
 	QStringList filters;
@@ -39,14 +41,14 @@ void AtenForm::finalise_ui()
 	// Initialise application name, organisation and author, and create settings structure
 	QCoreApplication::setOrganizationDomain("www.projectaten.org");
 	QCoreApplication::setApplicationName("Aten");
-	settings = new QSettings;
+	settings_ = new QSettings;
 
 	// Set up recent files list (create all actions first)
 	for (n=0; n<MAXRECENTFILES; n++)
 	{
 		actionRecentFile[n] = new QAction(this);
 		actionRecentFile[n]->setVisible(FALSE);
-		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(load_recent()));
+		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(loadRecent()));
 		ui.RecentMenu->addAction(actionRecentFile[n]);
 	}
 	// -- Now populate list
@@ -55,7 +57,7 @@ void AtenForm::finalise_ui()
 		// Construct settings value to search for
 		strcpy(temp,"RecentFile");
 		strcat(temp,itoa(n));
-		if (settings->contains(temp)) add_recent(qPrintable(settings->value(temp).toString()));
+		if (settings_->contains(temp)) addRecent(qPrintable(settings_->value(temp).toString()));
 	}
 
 	// Set editable items in the Atom List
@@ -87,9 +89,9 @@ void AtenForm::finalise_ui()
 	ui.MouseToolBar->setVisible(FALSE);
 
 	// Add text edit to CommandToolBar
-	command_edit = new QLineEdit(this);
-	ui.CommandToolBar->addWidget(command_edit);
-	QObject::connect(command_edit, SIGNAL(editingFinished()), this, SLOT(execute_command()));
+	commandEdit_ = new QLineEdit(this);
+	ui.CommandToolBar->addWidget(commandEdit_);
+	QObject::connect(commandEdit_, SIGNAL(editingFinished()), this, SLOT(executeCommand()));
 
 	// Create QActionGroup for perspective / orthographic views
 	QActionGroup *viewtypeGroup = new QActionGroup(this);
@@ -104,8 +106,8 @@ void AtenForm::finalise_ui()
 	// Hide the stack widget initially
 	ui.MainWindowStack->hide();
 
-	// Set correct draw_style on toolbar
-	switch (prefs.get_render_style())
+	// Set correct DrawStyle on toolbar
+	switch (prefs.renderStyle())
 	{
 		case (DS_STICK): ui.actionStyleStick->setChecked(true); break;
 		case (DS_TUBE): ui.actionStyleTube->setChecked(true); break;
@@ -130,11 +132,11 @@ void AtenForm::finalise_ui()
 	uaGroup->addButton(ui.AtomAddHydrogenButton);
 	uaGroup->addButton(ui.ProbeAtomButton);
 	// --- Add dummy button so we can have none of the others selected
-	dummybutton = new QPushButton(this);
-	dummybutton->setCheckable(TRUE);
-	dummybutton->setChecked(TRUE);
-	dummybutton->setVisible(FALSE);
-	uaGroup->addButton(dummybutton);
+	dummyButton = new QPushButton(this);
+	dummyButton->setCheckable(TRUE);
+	dummyButton->setChecked(TRUE);
+	dummyButton->setVisible(FALSE);
+	uaGroup->addButton(dummyButton);
 
 	// Create a subgroup for the element select buttons
 	QButtonGroup *elementGroup = new QButtonGroup(this);
@@ -144,44 +146,47 @@ void AtenForm::finalise_ui()
 	elementGroup->addButton(ui.ElementUserButton);
 
 	// Store widgetstack buttons
-	stackbuttons[SP_ATOMS] = ui.ShowAtomPageButton;
-	stackbuttons[SP_EDIT] = ui.ShowEditPageButton;
-	stackbuttons[SP_TRANSFORM] = ui.ShowTransformPageButton;
-	stackbuttons[SP_POSITION] = ui.ShowPositionPageButton;
-	stackbuttons[SP_CELL] = ui.ShowCellPageButton;
-	stackbuttons[SP_MINIMISER] = ui.ShowMinimiserPageButton;
-	stackbuttons[SP_DISORDER] = ui.ShowDisorderPageButton;
-	stackbuttons[SP_FORCEFIELD] = ui.ShowForcefieldsPageButton;
-	stackbuttons[SP_GRID] = ui.ShowGridsPageButton;
-	stackbuttons[SP_ANALYSE] = ui.ShowAnalysePageButton;
+	stackButtons_[SP_ATOMS] = ui.ShowAtomPageButton;
+	stackButtons_[SP_EDIT] = ui.ShowEditPageButton;
+	stackButtons_[SP_TRANSFORM] = ui.ShowTransformPageButton;
+	stackButtons_[SP_POSITION] = ui.ShowPositionPageButton;
+	stackButtons_[SP_CELL] = ui.ShowCellPageButton;
+	stackButtons_[SP_MINIMISER] = ui.ShowMinimiserPageButton;
+	stackButtons_[SP_DISORDER] = ui.ShowDisorderPageButton;
+	stackButtons_[SP_FORCEFIELD] = ui.ShowForcefieldsPageButton;
+	stackButtons_[SP_GRID] = ui.ShowGridsPageButton;
+	stackButtons_[SP_ANALYSE] = ui.ShowAnalysePageButton;
 
 	// Add permanent statusbar widgets
-	statuslabel = new QLabel(this,0);
-	ui.MainWindowStatusBar->addPermanentWidget(statuslabel,0);
-	statuslabel->setFrameShape(QFrame::NoFrame);
-	statuslabel->setFrameShadow(QFrame::Plain);
-	progressindicator = new QFrame(this);
-	progressindicator->setContentsMargins(0,0,0,0);
-	QHBoxLayout *layout = new QHBoxLayout(progressindicator);
+	statusLabel = new QLabel(this,0);
+	ui.MainWindowStatusBar->addPermanentWidget(statusLabel,0);
+	statusLabel->setFrameShape(QFrame::NoFrame);
+	statusLabel->setFrameShadow(QFrame::Plain);
+	progressIndicator = new QFrame(this);
+	progressIndicator->setContentsMargins(0,0,0,0);
+	QHBoxLayout *layout = new QHBoxLayout(progressIndicator);
 	layout->setMargin(0);
-	progressbar = new QProgressBar(this);
-	progresslabel = new QLabel(this,0);
-	progressbutton = new QPushButton(this);
-	progressbutton->setText("Cancel");
-	QObject::connect(progressbutton, SIGNAL(clicked()), this, SLOT(progress_cancel()));
-	layout->addWidget(progressbar,255);
-	layout->addWidget(progresslabel,0);
-	layout->addWidget(progressbutton,0);
-	ui.MainWindowStatusBar->insertPermanentWidget(0,progressindicator,128);
-	progressindicator->setVisible(FALSE);
+	progressBar = new QProgressBar(this);
+	progressLabel = new QLabel(this,0);
+	progressButton = new QPushButton(this);
+	progressButton->setText("Cancel");
+	QObject::connect(progressButton, SIGNAL(clicked()), this, SLOT(progressCancel()));
+	layout->addWidget(progressBar,255);
+	layout->addWidget(progressLabel,0);
+	layout->addWidget(progressButton,0);
+	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,128);
+	progressIndicator->setVisible(FALSE);
+
+	// Create dialog array
+	dialog = new QFileDialog*[FT_NITEMS];
 
 	// Create open model dialog
 	dialog[FT_MODEL_IMPORT] = new QFileDialog(this);
 	dialog[FT_MODEL_IMPORT]->setFileMode(QFileDialog::ExistingFiles);
-	dialog[FT_MODEL_IMPORT]->setDirectory(master.workdir.get());
+	dialog[FT_MODEL_IMPORT]->setDirectory(master.workDir.get());
 	dialog[FT_MODEL_IMPORT]->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
-	for (f = master.get_filters(FT_MODEL_IMPORT); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.filters(FT_MODEL_IMPORT); f != NULL; f = f->next) filters << f->description();
 	if (filters.empty())
 	{
 		ui.actionFileOpen->setEnabled(FALSE);
@@ -192,22 +197,22 @@ void AtenForm::finalise_ui()
 	// Create open trajectory dialog
 	dialog[FT_TRAJECTORY_IMPORT] = new QFileDialog(this);
 	dialog[FT_TRAJECTORY_IMPORT]->setFileMode(QFileDialog::ExistingFile);
-	dialog[FT_TRAJECTORY_IMPORT]->setDirectory(master.workdir.get());
+	dialog[FT_TRAJECTORY_IMPORT]->setDirectory(master.workDir.get());
 	dialog[FT_TRAJECTORY_IMPORT]->setWindowTitle("Add Trajectory");
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.get_filters(FT_TRAJECTORY_IMPORT); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.filters(FT_TRAJECTORY_IMPORT); f != NULL; f = f->next) filters << f->description();
 	dialog[FT_TRAJECTORY_IMPORT]->setFilters(filters);
 
 	// Create save model dialog
 	dialog[FT_MODEL_EXPORT] = new QFileDialog(this);
 	dialog[FT_MODEL_EXPORT]->setWindowTitle("Save Model");
 	dialog[FT_MODEL_EXPORT]->setAcceptMode(QFileDialog::AcceptSave);
-	dialog[FT_MODEL_EXPORT]->setDirectory(master.workdir.get());
+	dialog[FT_MODEL_EXPORT]->setDirectory(master.workDir.get());
 	dialog[FT_MODEL_EXPORT]->setConfirmOverwrite(TRUE);
 	dialog[FT_MODEL_EXPORT]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.get_filters(FT_MODEL_EXPORT); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.filters(FT_MODEL_EXPORT); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty())
 	{
@@ -217,54 +222,54 @@ void AtenForm::finalise_ui()
 	else dialog[FT_MODEL_EXPORT]->setFilters(filters);
 
 	// Create save image dialog
-	savebitmapdialog = new QFileDialog(this);
-	savebitmapdialog->setWindowTitle("Save Image");
-	savebitmapdialog->setAcceptMode(QFileDialog::AcceptSave);
-	savebitmapdialog->setDirectory(master.workdir.get());
-	savebitmapdialog->setFileMode(QFileDialog::AnyFile);
+	saveBitmapDialog = new QFileDialog(this);
+	saveBitmapDialog->setWindowTitle("Save Image");
+	saveBitmapDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveBitmapDialog->setDirectory(master.workDir.get());
+	saveBitmapDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (n=0; n < BIF_NITEMS; n++) filters << filter_from_BIF( (bitmap_format) n);
-	savebitmapdialog->setFilters(filters);
+	saveBitmapDialog->setFilters(filters);
 
 	// Create open forcefield dialog
-	openffdialog = new QFileDialog(this);
-	openffdialog->setFileMode(QFileDialog::ExistingFile);
-	openffdialog->setDirectory(master.workdir.get());
-	openffdialog->setWindowTitle("Open Forcefield");
+	openFfDialog = new QFileDialog(this);
+	openFfDialog->setFileMode(QFileDialog::ExistingFile);
+	openFfDialog->setDirectory(master.workDir.get());
+	openFfDialog->setWindowTitle("Open Forcefield");
 	filters.clear();
 	filters << "All files (*)";
 	filters << "Forcefield Files (*.ff)";
-	openffdialog->setFilters(filters);
+	openFfDialog->setFilters(filters);
 
 	// Create save forcefield dialog
-	saveffdialog = new QFileDialog(this);
-	saveffdialog->setWindowTitle("Save Forcefield");
-	saveffdialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveffdialog->setDirectory(master.workdir.get());
-	saveffdialog->setFileMode(QFileDialog::AnyFile);
+	saveFfDialog = new QFileDialog(this);
+	saveFfDialog->setWindowTitle("Save Forcefield");
+	saveFfDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveFfDialog->setDirectory(master.workDir.get());
+	saveFfDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	filters << "All files (*)";
 	filters << "Forcefield Files (*.ff)";
-	openffdialog->setFilters(filters);
+	openFfDialog->setFilters(filters);
 
 	// Create save vector dialog
-	savevectordialog = new QFileDialog(this);
-	savevectordialog->setWindowTitle("Save Vector");
-	savevectordialog->setAcceptMode(QFileDialog::AcceptSave);
-	savevectordialog->setDirectory(master.workdir.get());
-	savevectordialog->setFileMode(QFileDialog::AnyFile);
+	saveVectorDialog = new QFileDialog(this);
+	saveVectorDialog->setWindowTitle("Save Vector");
+	saveVectorDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveVectorDialog->setDirectory(master.workDir.get());
+	saveVectorDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
-	savevectordialog->setFilters(filters);
+	saveVectorDialog->setFilters(filters);
 
 	// Create save expression dialog
 	dialog[FT_EXPRESSION_EXPORT] = new QFileDialog(this);
 	dialog[FT_EXPRESSION_EXPORT]->setWindowTitle("Save Vector");
 	dialog[FT_EXPRESSION_EXPORT]->setAcceptMode(QFileDialog::AcceptSave);
-	dialog[FT_EXPRESSION_EXPORT]->setDirectory(master.workdir.get());
+	dialog[FT_EXPRESSION_EXPORT]->setDirectory(master.workDir.get());
 	dialog[FT_EXPRESSION_EXPORT]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.get_filters(FT_EXPRESSION_EXPORT); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.filters(FT_EXPRESSION_EXPORT); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
 	else dialog[FT_EXPRESSION_EXPORT]->setFilters(filters);
@@ -272,32 +277,32 @@ void AtenForm::finalise_ui()
 	// Create open grid dialog
 	dialog[FT_GRID_IMPORT] = new QFileDialog(this);
 	dialog[FT_GRID_IMPORT]->setWindowTitle("Open Grid");
-	dialog[FT_GRID_IMPORT]->setDirectory(master.workdir.get());
+	dialog[FT_GRID_IMPORT]->setDirectory(master.workDir.get());
 	dialog[FT_GRID_IMPORT]->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.get_filters(FT_GRID_IMPORT); f != NULL; f = f->next) filters << f->get_description();
+	for (f = master.filters(FT_GRID_IMPORT); f != NULL; f = f->next) filters << f->description();
 	if (filters.empty()) ui.actionFileOpenGrid->setEnabled(FALSE);
 	else dialog[FT_GRID_IMPORT]->setFilters(filters);
 
 	// Create open script dialog
-	openscriptdialog = new QFileDialog(this);
-	openscriptdialog->setWindowTitle("Open Script");
-	openscriptdialog->setDirectory(master.workdir.get());
-	openscriptdialog->setFileMode(QFileDialog::ExistingFile);
+	openScriptDialog = new QFileDialog(this);
+	openScriptDialog->setWindowTitle("Open Script");
+	openScriptDialog->setDirectory(master.workDir.get());
+	openScriptDialog->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
-	openscriptdialog->setFilters(filters);
+	openScriptDialog->setFilters(filters);
 
-	dbg_end(DM_CALLS,"AtenForm::finalise_ui");
+	dbgEnd(DM_CALLS,"AtenForm::finaliseUi");
 }
 
 // Set controls
-void AtenForm::set_controls()
+void AtenForm::setControls()
 {
-	dbg_begin(DM_CALLS,"AtenForm::set_controls");
-	// Set correct draw_style on toolbar
-	switch (prefs.get_render_style())
+	dbgBegin(DM_CALLS,"AtenForm::setControls");
+	// Set correct DrawStyle on toolbar
+	switch (prefs.renderStyle())
 	{
 		case (DS_STICK): ui.actionStyleStick->setChecked(TRUE); break;
 		case (DS_TUBE): ui.actionStyleTube->setChecked(TRUE); break;
@@ -306,9 +311,9 @@ void AtenForm::set_controls()
 		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(TRUE); break;
 	}
 	// Set some menu items
-	prefs.using_perspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
+	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
 	// Set controls on edit page
-	ui.BondToleranceSpin->setValue(prefs.get_bond_tolerance());
-	dbg_end(DM_CALLS,"AtenForm::set_controls");
+	ui.BondToleranceSpin->setValue(prefs.bondTolerance());
+	dbgEnd(DM_CALLS,"AtenForm::setControls");
 }
 

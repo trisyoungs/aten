@@ -23,37 +23,37 @@
 #include "parse/format.h"
 
 // Write line to msg output and stop
-int commanddata::function_CA_ERROR(command *&c, bundle &obj)
+int CommandData::function_CA_ERROR(Command *&c, Bundle &obj)
 {
-	format *fmt = c->get_format();
+	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
-	else msg(DM_NONE,"%s\n",fmt->create_string());
+	else msg(DM_NONE,"%s\n",fmt->createString());
 	return CR_EXITWITHERROR;
 }
 
 // Print formatted string
-int commanddata::function_CA_PRINT(command *&c, bundle &obj)
+int CommandData::function_CA_PRINT(Command *&c, Bundle &obj)
 {
-	format *fmt = c->get_format();
+	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
-	else msg(DM_NONE,"%s\n",fmt->create_string());
+	else msg(DM_NONE,"%s\n",fmt->createString());
 	return CR_SUCCESS;
 }
 
 // Print formatted string (in verbose output only)
-int commanddata::function_CA_VERBOSE(command *&c, bundle &obj)
+int CommandData::function_CA_VERBOSE(Command *&c, Bundle &obj)
 {
-	format *fmt = c->get_format();
+	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'verbose' command.\n");
-	else msg(DM_VERBOSE,"%s\n",fmt->create_string());
+	else msg(DM_VERBOSE,"%s\n",fmt->createString());
 	return CR_SUCCESS;
 }
 
 // Write line to msg output
-int commanddata::function_CA_WARN(command *&c, bundle &obj)
+int CommandData::function_CA_WARN(Command *&c, Bundle &obj)
 {
-	format *fmt = c->get_format();
+	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
-	else msg(DM_NONE,"Warning: %s\n",fmt->create_string());
+	else msg(DM_NONE,"Warning: %s\n",fmt->createString());
 	return CR_SUCCESS;
 }

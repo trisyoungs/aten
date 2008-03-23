@@ -1,6 +1,6 @@
 /*
-	** Monte Carlo region
-	*** src/classes/region.h
+	** Monte Carlo ComponentRegion
+	*** src/classes/ComponentRegion.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -25,65 +25,64 @@
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 
-// Region Shapes
-enum region_shape { RS_CELL, RS_CUBOID, RS_SPHEROID, RS_CYLINDER, RS_NITEMS };
-const char *text_from_RS(region_shape);
+// ComponentRegion Shapes
+enum ComponentRegionShape { RS_CELL, RS_CUBOID, RS_SPHEROID, RS_CYLINDER, RS_NITEMS };
+const char *text_from_RS(ComponentRegionShape);
 const char **get_RS_strings();
-region_shape RS_from_text(const char*);
+ComponentRegionShape RS_from_text(const char*);
 
 // Forward Declarations
-class unitcell;
-class component;
+class Cell;
+class Component;
 
-// Region
-class region
+// ComponentRegion
+class ComponentRegion
 {
 	public:
-	// Constructor / Destructor
-	region();
-	~region();
+	// Constructor
+	ComponentRegion();
 	// List pointers
-	region *prev, *next;
+	ComponentRegion *prev, *next;
 
 	private:
-	// Type of region the component is limited to
-	region_shape shape;
-	// Coordinates of the centre of any defined region
-	vec3<double> centre;
-	// Size of the region
-	vec3<double> size;
-	// Length of cylindrical region
-	double length;
-	// Whether to allow overlap with other regions, or to avoid them
-	bool allowoverlap;
+	// Type of ComponentRegion the component is limited to
+	ComponentRegionShape shape_;
+	// Coordinates of the centre of any defined ComponentRegion
+	Vec3<double> centre_;
+	// Size of the ComponentRegion
+	Vec3<double> size_;
+	// Length of cylindrical ComponentRegion
+	double length_;
+	// Whether to allow overlap with other ComponentRegions, or to avoid them
+	bool allowOverlap_;
 
 	public:
-	// Sets the shape of the region for the component
-	void set_shape(region_shape r) { shape = r; }
-	// Returns the region defined for the component
-	region_shape get_shape() { return shape; }
-	// Sets the centre of the defined region
-	void set_centre(vec3<double> v) { centre = v; }
-	// Returns the centre of the defined region
-	vec3<double> get_centre() { return centre; }
-	// Sets the size of the defined region
-	void set_size(vec3<double> v) { size = v; }
-	// Returns the size of the defined region
-	vec3<double> get_size() { return size; }
-	// Sets the length of the region (for some region types)
-	void set_length(double v) { length = v; }
-	// Returns the region length
-	double get_length() {return length; }
-	// Sets whether to allow overlap with other regions
-	void set_allowoverlap(bool b) { allowoverlap = b; }
-	// Returns whether to allow overlap over other regions when inserting
-	bool get_allowoverlap() { return allowoverlap; }
-	// Determines whether the supplied coordinates are within the region defined
-	bool check_coords(const vec3<double>&, unitcell*);
-	// Determines whether the supplied coordinates overlap any of the other regions supplied
-	bool check_overlap(const vec3<double>&, unitcell*, component*);
-	// Generate a random coordinate inside the region
-	vec3<double> random_coords(unitcell*, component*);
+	// Sets the shape of the ComponentRegion for the component
+	void setShape(ComponentRegionShape r);
+	// Returns the ComponentRegion defined for the component
+	ComponentRegionShape shape();
+	// Sets the centre of the defined ComponentRegion
+	void setCentre(Vec3<double> v);
+	// Returns the centre of the defined ComponentRegion
+	Vec3<double> centre();
+	// Sets the size of the defined ComponentRegion
+	void setSize(Vec3<double> v);
+	// Returns the size of the defined ComponentRegion
+	Vec3<double> size();
+	// Sets the length of the ComponentRegion (for some ComponentRegion types)
+	void setLength(double v);
+	// Returns the ComponentRegion length
+	double length();
+	// Sets whether to allow overlap with other ComponentRegions
+	void setAllowOverlap(bool b);
+	// Returns whether to allow overlap over other ComponentRegions when inserting
+	bool allowOverlap();
+	// Determines whether the supplied coordinates are within the ComponentRegion defined
+	bool checkCoords(const Vec3<double>&, Cell*);
+	// Determines whether the supplied coordinates overlap any of the other ComponentRegions supplied
+	bool checkOverlap(const Vec3<double>&, Cell*, Component*);
+	// Generate a random coordinate inside the ComponentRegion
+	Vec3<double> randomCoords(Cell*, Component*);
 };
 
 #endif

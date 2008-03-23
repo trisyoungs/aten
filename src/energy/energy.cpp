@@ -28,49 +28,49 @@
 #include "base/elements.h"
 
 // Calculate total energy of model (from supplied coordinates)
-double model::total_energy(model *srcmodel, pattern *molpattern, int molecule)
+double Model::totalEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 {
-	dbg_begin(DM_CALLS,"model::total_energy");
+	dbgBegin(DM_CALLS,"Model::totalEnergy");
 	// Check the expression validity
-	if (!expression_is_valid())
+	if (!isExpressionValid())
 	{
-		msg(DM_NONE,"model::total_energy - No valid energy expression defined for model.\n");
-		dbg_end(DM_CALLS,"model::total_energy");
+		msg(DM_NONE,"Model::totalEnergy - No valid energy expression defined for model.\n");
+		dbgEnd(DM_CALLS,"Model::totalEnergy");
 		return 0.0;
 	}
 	// Clear the energy store
 	energy.clear();
 	// Cycle through patterns, calculating the contributions from each
-	pattern *p, *p2;
-	p = patterns.first();
+	Pattern *p, *p2;
+	p = patterns_.first();
 	// Calculate VDW correction
-	if (prefs.calc_vdw() && (cell.get_type() != CT_NONE) && (molecule == -1)) p->vdw_correct_energy(&cell, &energy);
+	if (prefs.calculateVdw() && (cell_.type() != CT_NONE) && (molecule == -1)) p->vdwCorrectEnergy(&cell_, &energy);
 	// Prepare Ewald (if necessary)
-	elec_method emodel = prefs.get_electrostatics();
-	if (prefs.calc_elec())
+	ElecMethod emodel = prefs.electrostaticsMethod();
+	if (prefs.calculateElec())
 	{
-		if (emodel == EM_EWALDAUTO) prefs.ewald_estimate_parameters(&srcmodel->cell);
+		if (emodel == EM_EWALDAUTO) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.get_ewald_kvec());
+		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	while (p != NULL)
 	{
 		// Intramolecular Interactions
-		if (prefs.calc_intra())
+		if (prefs.calculateIntra())
 		{
-			p->bond_energy(srcmodel, &energy, (p == molpattern ? molecule : -1));
-			p->angle_energy(srcmodel, &energy, (p == molpattern ? molecule : -1));
-			p->torsion_energy(srcmodel, &energy, (p == molpattern ? molecule : -1));
+			p->bondEnergy(srcmodel, &energy, (p == molpattern ? molecule : -1));
+			p->angleEnergy(srcmodel, &energy, (p == molpattern ? molecule : -1));
+			p->torsionEnergy(srcmodel, &energy, (p == molpattern ? molecule : -1));
 		}
 		// Van der Waals Interactions
-		if (prefs.calc_vdw())
+		if (prefs.calculateVdw())
 		{
-			p->vdw_intrapattern_energy(srcmodel,&energy, (p == molpattern ? molecule : -1));
-			for (pattern *p2 = p; p2 != NULL; p2 = p2->next)
-				p->vdw_interpattern_energy(srcmodel,p2,&energy, (p2 == molpattern ? molecule : -1));
+			p->vdwIntraPatternEnergy(srcmodel,&energy, (p == molpattern ? molecule : -1));
+			for (Pattern *p2 = p; p2 != NULL; p2 = p2->next)
+				p->vdwInterPatternEnergy(srcmodel,p2,&energy, (p2 == molpattern ? molecule : -1));
 		}
 		// Electrostatic Interactions
-		if (prefs.calc_elec())
+		if (prefs.calculateElec())
 		{
 			switch (emodel)
 			{
@@ -78,82 +78,82 @@ double model::total_energy(model *srcmodel, pattern *molpattern, int molecule)
 					msg(DM_NONE,"Electrostatics requested but no method of calculation chosen!\n");
 					break;
 				case (EM_COULOMB):
-					p->coulomb_intrapattern_energy(srcmodel,&energy);
+					p->coulombIntraPatternEnergy(srcmodel,&energy);
 					p2 = p;
 					while (p2 != NULL)
 					{
-						p->coulomb_interpattern_energy(srcmodel,p2,&energy);
+						p->coulombInterPatternEnergy(srcmodel,p2,&energy);
 						p2 = p2->next;
 					}
 					break;
 				default: // Ewald
-					p->ewald_real_intrapattern_energy(srcmodel,&energy);
-					p->ewald_correct_energy(srcmodel,&energy);
+					p->ewaldRealIntraPatternEnergy(srcmodel,&energy);
+					p->ewaldCorrectEnergy(srcmodel,&energy);
 					p2 = p;
 					while (p2 != NULL)
 					{
-						p->ewald_real_interpattern_energy(srcmodel,p2,&energy);
+						p->ewaldRealInterPatternEnergy(srcmodel,p2,&energy);
 						p2 = p2->next;
 					}
 					// Calculate reciprocal space part (called once from first pattern only)
-					if (p == patterns.first())
-						p->ewald_reciprocal_energy(srcmodel,p,patterns.size(),&energy);
+					if (p == patterns_.first())
+						p->ewaldReciprocalEnergy(srcmodel,p,patterns_.nItems(),&energy);
 					break;
 			}
 		}
 		p = p->next;
 	}
 	energy.totalise();
-	dbg_end(DM_CALLS,"model::total_energy");
-	return energy.get_total();
+	dbgEnd(DM_CALLS,"Model::totalEnergy");
+	return energy.total();
 }
 
 // Calculate forces from specified config
-void model::calculate_forces(model *srcmodel)
+void Model::calculateForces(Model *srcmodel)
 {
 	// Calculate the forces for the atoms of 'srcmodel' from the expression defined in the *this model
-	dbg_begin(DM_CALLS,"model::calculate_forces");
+	dbgBegin(DM_CALLS,"Model::calculateForces");
 	// Check the expression validity
-	if (!expression_is_valid())
+	if (!isExpressionValid())
 	{
-		msg(DM_NONE,"calculate_forces : No valid energy expression defined for model.\n");
-		dbg_end(DM_CALLS,"model::calculate_forces");
+		msg(DM_NONE,"calculateForces : No valid energy expression defined for model.\n");
+		dbgEnd(DM_CALLS,"Model::calculateForces");
 		return;
 	}
-	srcmodel->zero_forces();
+	srcmodel->zeroForces();
 	// Cycle through patterns, calculate the intrapattern forces for each
-	pattern *p, *p2;
-	p = patterns.first();
+	Pattern *p, *p2;
+	p = patterns_.first();
 	// Prepare Ewald (if necessary)
-	elec_method emodel = prefs.get_electrostatics();
-	if (prefs.calc_elec())
+	ElecMethod emodel = prefs.electrostaticsMethod();
+	if (prefs.calculateElec())
 	{
-		if (emodel == EM_EWALDAUTO) prefs.ewald_estimate_parameters(&srcmodel->cell);
+		if (emodel == EM_EWALDAUTO) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		fourier.prepare(srcmodel,prefs.get_ewald_kvec());
+		fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	while (p != NULL)
 	{
 		// Bonded Interactions
-		if (prefs.calc_intra())
+		if (prefs.calculateIntra())
 		{
-			p->bond_forces(srcmodel);
-			p->angle_forces(srcmodel);
-			p->torsion_forces(srcmodel);
+			p->bondForces(srcmodel);
+			p->angleForces(srcmodel);
+			p->torsionForces(srcmodel);
 		}
 		// VDW
-		if (prefs.calc_vdw())
+		if (prefs.calculateVdw())
 		{
-			p->vdw_intrapattern_forces(srcmodel);
-			pattern *p2 = p;
+			p->vdwIntraPatternForces(srcmodel);
+			Pattern *p2 = p;
 			while (p2 != NULL)
 			{
-				p->vdw_interpattern_forces(srcmodel,p2);
+				p->vdwInterPatternForces(srcmodel,p2);
 				p2 = p2->next;
 			}
 		}
 		// Electrostatics
-		if (prefs.calc_elec())
+		if (prefs.calculateElec())
 		{
 			switch (emodel)
 			{
@@ -161,30 +161,30 @@ void model::calculate_forces(model *srcmodel)
 					msg(DM_NONE,"Electrostatics requested but no method of calculation chosen!\n");
 					break;
 				case (EM_COULOMB):
-					//p->coulomb_interpattern_forces(xxcfg);
+					//p->coulombInterPatternForces(xxcfg);
 					//p2 = p;
 					//while (p2 != NULL)
 				//	{
-				//		p->coulomb_intrapattern_energy(xcfg,p2);
+				//		p->coulomb_intrapatternEnergy(xcfg,p2);
 				//		p2 = p2->next;
 				//	}
 					break;
 				default: // Ewald
-					p->ewald_real_intrapattern_forces(srcmodel);
-					p->ewald_correct_forces(srcmodel);
+					p->ewaldRealIntraPatternForces(srcmodel);
+					p->ewaldCorrectForces(srcmodel);
 					p2 = p;
 					while (p2 != NULL)
 					{
-						p->ewald_real_interpattern_forces(srcmodel,p2);
+						p->ewaldRealInterPatternForces(srcmodel,p2);
 						p2 = p2->next;
 					}
 					// Calculate reciprocal space part (called once from first pattern only)
-					if (p == patterns.first()) p->ewald_reciprocal_forces(srcmodel);
+					if (p == patterns_.first()) p->ewaldReciprocalForces(srcmodel);
 					break;
 			}
 		}
 		p = p->next;
 	}
-	dbg_end(DM_CALLS,"model::calculate_forces");
+	dbgEnd(DM_CALLS,"Model::calculateForces");
 }
 

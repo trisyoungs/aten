@@ -22,3 +22,17 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 
+void AtenForm::on_MeasureDistanceButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_GEOMDIST);
+}
+
+void AtenForm::on_MeasureAngleButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_GEOMANGLE);
+}
+
+void AtenForm::on_MeasureTorsionButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_GEOMTORSION);
+}

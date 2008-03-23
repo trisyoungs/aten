@@ -24,297 +24,324 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
+#include "model/model.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtGui/QProgressBar>
 
 // External Declarations
-gui_qt gui;
+GuiQt gui;
 
 // Constructor
-gui_qt::gui_qt()
+GuiQt::GuiQt()
 {
-	#ifdef MEMDEBUG
-		printf("Constructor : gui_qt\n");
-	#endif
-	mainwindow = NULL;
-	prefsdialog = NULL;
-	does_exist = FALSE;
-	is_available = FALSE;
-	NORENDER = FALSE;
-	trajectory_playing = FALSE;
-	trajectory_timerid = -1;
-}
-
-// Destructor
-gui_qt::~gui_qt()
-{
-	#ifdef MEMDEBUG
-		printf("Destructor : gui_qt\n");
-	#endif
-}
-
-// Early initial functions
-void gui_qt::prepare()
-{
+	mainWindow = NULL;
+	prefsDialog = NULL;
+	doesExist_ = FALSE;
+	isAvailable_ = FALSE;
+	NORENDER_ = FALSE;
+	trajectoryPlaying_ = FALSE;
+	trajectoryTimerId_ = -1;
 }
 
 // Initialise and create GUI
-void gui_qt::run(int argc, char **argv)
+void GuiQt::run(int argc, char **argv)
 {
-	dbg_begin(DM_CALLS,"gui_qt::run");
+	dbgBegin(DM_CALLS,"GuiQt::run");
 
 	// Initialise Qt, and the icons resource
         app = new QApplication(argc, argv);
 	Q_INIT_RESOURCE(icons);
 
 	// Create the GUI windows
-        mainwindow = new AtenForm;
-	prefsdialog = new AtenPrefs;
+        mainWindow = new AtenForm;
+	prefsDialog = new AtenPrefs;
 
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
-	gui.mainview.set_widget(mainwindow->ui.ModelView);	
-	mainwindow->ui.ModelView->set_canvas(&gui.mainview);
+	gui.mainView.setWidget(mainWindow->ui.ModelView);	
+	mainWindow->ui.ModelView->setCanvas(&gui.mainView);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
-	mainwindow->finalise_ui();
-	prefsdialog->finalise_ui();
+	mainWindow->finaliseUi();
+	prefsDialog->finaliseUi();
 
 	// Set controls in the windows
-	mainwindow->set_controls();
-	prefsdialog->set_controls();
+	mainWindow->setControls();
+	prefsDialog->setControls();
 
 	// Show the widgets in the GUI and flag it as existing
-	mainwindow->show();
-	does_exist = TRUE;
+	mainWindow->show();
+	doesExist_ = TRUE;
 
 	// Prepare first model in list
-	master.set_currentmodel(master.get_models());
-	master.get_currentmodel()->calculate_viewmatrix();
-	master.get_currentmodel()->project_all();
+	master.setCurrentModel(master.models());
+	master.currentModel()->calculateViewMatrix();
+	master.currentModel()->projectAll();
 
 	// Add loaded models to tabbar (and reset its view while we're here)
 	int tabid;
-	for (model *m = master.get_models(); m != NULL; m = m->next)
+	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
-		tabid = mainwindow->ui.ModelTabs->addTab(m->get_name());
-		m->reset_view();
+		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
+		m->resetView();
 	}
 
 	// Refresh the surfaces and forcefield lists
-	mainwindow->refresh_gridspage();
-	mainwindow->refresh_forcefieldpage();
+	mainWindow->refreshGridsPage();
+	mainWindow->refreshForcefieldPage();
 
 	int n = app->exec();
-	dbg_end(DM_CALLS,"gui_qt::run");
+	dbgEnd(DM_CALLS,"GuiQt::run");
 }
 
 // Update trajectory controls
-void gui_qt::update_trajcontrols()
+void GuiQt::updateTrajControls()
 {
 	// First see if the model has a trajectory associated to it
-	if (master.get_currentmodel()->get_totalframes() == 0)
+	if (master.currentModel()->totalFrames() == 0)
 	{
-		mainwindow->ui.actionFrameFirst->setDisabled(TRUE);
-		mainwindow->ui.actionFramePrevious->setDisabled(TRUE);
-		mainwindow->ui.actionFrameNext->setDisabled(TRUE);
-		mainwindow->ui.actionFrameLast->setDisabled(TRUE);
-		mainwindow->ui.actionPlayPause->setDisabled(TRUE);
+		mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
+		mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
+		mainWindow->ui.actionFrameNext->setDisabled(TRUE);
+		mainWindow->ui.actionFrameLast->setDisabled(TRUE);
+		mainWindow->ui.actionPlayPause->setDisabled(TRUE);
 	}
 	else
 	{
 		// If the trajectory is playing, desensitise all but the play/pause button
-		if (trajectory_playing)
+		if (trajectoryPlaying_)
 		{
-			mainwindow->ui.actionFrameFirst->setDisabled(TRUE);
-			mainwindow->ui.actionFramePrevious->setDisabled(TRUE);
-			mainwindow->ui.actionFrameNext->setDisabled(TRUE);
-			mainwindow->ui.actionFrameLast->setDisabled(TRUE);
-			mainwindow->ui.actionPlayPause->setDisabled(FALSE);
+			mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
+			mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
+			mainWindow->ui.actionFrameNext->setDisabled(TRUE);
+			mainWindow->ui.actionFrameLast->setDisabled(TRUE);
+			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
 		}
 		else
 		{
-			mainwindow->ui.actionFrameFirst->setDisabled(FALSE);
-			mainwindow->ui.actionFramePrevious->setDisabled(FALSE);
-			mainwindow->ui.actionFrameNext->setDisabled(FALSE);
-			mainwindow->ui.actionFrameLast->setDisabled(FALSE);
-			mainwindow->ui.actionPlayPause->setDisabled(FALSE);
+			mainWindow->ui.actionFrameFirst->setDisabled(FALSE);
+			mainWindow->ui.actionFramePrevious->setDisabled(FALSE);
+			mainWindow->ui.actionFrameNext->setDisabled(FALSE);
+			mainWindow->ui.actionFrameLast->setDisabled(FALSE);
+			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
 		}
 	}
 }
 
 // Update labels
-void gui_qt::update_labels()
+void GuiQt::updateLabels()
 {
 	// Update the information labels in the button bar
-	if (!does_exist) return;
-	dbg_begin(DM_CALLS,"gui_qt::update_labels");
+	if (!doesExist_) return;
+	dbgBegin(DM_CALLS,"GuiQt::update_labels");
 	QString s;
-	model *m = master.get_currentmodel();
+	 Model *m = master.currentModel();
 	// Trajectory information label
-	if (m->get_totalframes() != 0)
+	if (m->totalFrames() != 0)
 	{
 		s = "(Frame ";
-		s += itoa(m->get_frameposition());
+		s += itoa(m->framePosition());
 		s += " of ";
-		s += itoa(m->get_totalframes());
+		s += itoa(m->totalFrames());
 		s += ") ";
 	}
 	// Model information
-	s += itoa(m->get_natoms());
+	s += itoa(m->nAtoms());
 	s += " Atoms ";
-	if (m->get_nselected() != 0)
+	if (m->nSelected() != 0)
 	{
 		s += "(<b>";
-		s += itoa(m->get_nselected());
+		s += itoa(m->nSelected());
 		s += " selected</b>) ";
 	}
-	s += ftoa(m->get_mass());
+	s += ftoa(m->mass());
 	s += " g mol<sup>-1</sup> ";
-	cell_type ct = m->get_celltype();
+	CellType ct = m->cell()->type();
 	if (ct != CT_NONE)
 	{
 		s += "(";
 		s += text_from_CT(ct);
 		s += ", ";
-		s += ftoa(m->get_density());
-		switch (prefs.get_density_units())
+		s += ftoa(m->density());
+		switch (prefs.densityUnit())
 		{
 			case (DU_GPERCM):	s += " g cm<sup>-3</sup>)"; break;
 			case (DU_ATOMSPERANG):	s += " atoms &#8491;<sup>-3</sup>)"; break;
 		}
 	}
-	mainwindow->statuslabel->setText(s);
-	dbg_end(DM_CALLS,"gui_qt::update_labels");
+	mainWindow->statusLabel->setText(s);
+	dbgEnd(DM_CALLS,"GuiQt::update_labels");
 }
 
 /*
 // General GUI Routines
 */
 
-void gui_qt::process_events()
+// Returns if the GUI is available
+bool GuiQt::available()
+{
+	return isAvailable_;
+}
+
+// Returns if the GUI has been created
+bool GuiQt::exists()
+{
+	return doesExist_;
+}
+
+// Blocks rendering calls (e.g., for config/model is being updated)
+void GuiQt::pauseRendering()
+{
+	NORENDER_ = TRUE;
+}
+
+// Removes rendering block
+void GuiQt::resumeRendering()
+{
+	NORENDER_ = FALSE;
+}
+
+// Return whether rendering is prohibited
+bool GuiQt::noRendering()
+{
+	return NORENDER_;
+}
+
+void GuiQt::processEvents()
 {
 	// During intensive computations, this should be called periodically so that the interface remains responsive, and the process can be interrupted, modelview can be manipulated etc.
 }
 
+/*
+// Models
+*/
+
 // Add model to GUI list, in this case a tab in the ModelTabs widget
-void gui_qt::add_model(model *m)
+void GuiQt::addModel(Model *m)
 {
-	if (!does_exist) return;
+	if (!doesExist_) return;
 	// Create new tab in ModelTabs QTabBar
-	int tabid = mainwindow->ui.ModelTabs->addTab(m->get_name());
-	m->reset_view();
+	int tabid = mainWindow->ui.ModelTabs->addTab(m->name());
+	m->resetView();
 	gui.refresh();
 }
 
 // Remove model from list
-void gui_qt::remove_model(int id)
+void GuiQt::removeModel(int id)
 {
-	if (!does_exist) return;
-	mainwindow->ui.ModelTabs->removeTab(id);
+	if (!doesExist_) return;
+	mainWindow->ui.ModelTabs->removeTab(id);
 	gui.refresh();
 }
 
+/*
+// Forcefields
+*/
+
 // Add ff to list
-void gui_qt::add_ff(forcefield *ff)
+void GuiQt::addForcefield(Forcefield *ff)
 {
-	if (!does_exist) return;
+	if (!doesExist_) return;
 }
 
 // Remove ff from list
-void gui_qt::remove_ff(forcefield *ff)
+void GuiQt::removeForcefield(Forcefield *ff)
 {
 	// Find iter that matches the old model in the model master
-	if (!does_exist) return;
+	if (!doesExist_) return;
 }
 
 // Select ff in list
-void gui_qt::select_ff(forcefield *ff)
+void GuiQt::selectForcefield(Forcefield *ff)
 {
-	if (!does_exist) return;
+	if (!doesExist_) return;
 }
 
+/*
+// Grids
+*/
+
 // Add grid to list
-void gui_qt::add_grid(grid *g)
+void GuiQt::addGrid(Grid *g)
 {
-	if (is_available) printf("gui_qt::add_grid - Not defined.\n");
+	if (isAvailable_) printf("GuiQt::addGrid - Not defined.\n");
 }
 
 // Remove grid from list
-void gui_qt::remove_grid(grid *g)
+void GuiQt::removeGrid(Grid *g)
 {
-	if (is_available) printf("gui_qt::remove_grid - Not defined.\n");
+	if (isAvailable_) printf("GuiQt::removeGrid - Not defined.\n");
 }
 
 // Select grid in list and show in main/sub windows
-void gui_qt::select_grid(grid *g)
+void GuiQt::selectGrid(Grid *g)
 {
-	if (is_available) printf("gui_qt::select_grid - Not defined.\n");
+	if (isAvailable_) printf("GuiQt::select_grid - Not defined.\n");
 }
 
 // Redraw main window canvas
-void gui_qt::refresh()
+void GuiQt::refresh()
 {
-	if (!does_exist) return;
+	if (!doesExist_) return;
 	// Select tab corresponding to current mdoel
-	int id = master.get_currentmodelindex();
-	if (id <= mainwindow->ui.ModelTabs->count()) mainwindow->ui.ModelTabs->setCurrentIndex(id);
+	int id = master.currentModelIndex();
+	if (id <= mainWindow->ui.ModelTabs->count()) mainWindow->ui.ModelTabs->setCurrentIndex(id);
 	else printf("GUI_ERROR: Current model index (%i) is out of bounds of tab list.\n",id);
 	// Update labels on status bar
-	update_labels();
+	updateLabels();
 	// Update contents of the atom list
-	mainwindow->refresh_atompage();
+	mainWindow->refreshAtomPage();
 	// Update the contents of the cell page
-	mainwindow->refresh_cellpage();
+	mainWindow->refreshCellPage();
 	// Update the disorder page
-	mainwindow->refresh_disorderpage();
+	mainWindow->refreshDisorderPage();
 	// Update forcefields in the forcefield window
-	mainwindow->refresh_forcefieldpage();
+	mainWindow->refreshForcefieldPage();
 	// Update pattern list in forcefield window
-	mainwindow->refresh_forcefieldpatterns();
+	mainWindow->refreshForcefieldPatterns();
 	// Update trajectory playback controls
-	update_trajcontrols();
+	updateTrajControls();
 	// Update Undo/Redo menuitems
-	mainwindow->update_undoredo();
+	mainWindow->updateUndoRedo();
 	// Request redraw of the main canvas
-	mainview.postredisplay();
+	mainView.postRedisplay();
 	// If the model save_point is recent, disable save button
-	mainwindow->ui.actionFileSave->setEnabled(master.get_currentmodel()->is_modified());
+	mainWindow->ui.actionFileSave->setEnabled(master.currentModel()->isModified());
 	// Enable the Atom menu if one or more atoms are selected
-	mainwindow->ui.AtomMenu->setEnabled( master.get_currentmodel()->get_nselected() == 0 ? FALSE : TRUE);
+	mainWindow->ui.AtomMenu->setEnabled( master.currentModel()->nSelected() == 0 ? FALSE : TRUE);
 	// Enable View->Trajectory menu item if a trajectory is associated
-	mainwindow->ui.actionViewTrajectory->setEnabled( master.get_currentmodel()->get_currentframe() == NULL ? FALSE : TRUE);
+	mainWindow->ui.actionViewTrajectory->setEnabled( master.currentModel()->currentFrame() == NULL ? FALSE : TRUE);
 }
 
-int gui_qt::user_question(const char *s, const char *t)
+int GuiQt::userQuestion(const char *s, const char *t)
 {
 	return -1;
 }
 
-void gui_qt::print_message(const char *s)
+void GuiQt::printMessage(const char *s)
 {
 	static char str[8096];
 	static int n, len;
-	if (!does_exist) return;
+	if (!doesExist_) return;
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
-	mainwindow->ui.TextDisplay->append(str);
+	mainWindow->ui.TextDisplay->append(str);
 }
 
-bool gui_qt::save_before_close()
+bool GuiQt::saveBeforeClose()
 {
 	// Check the status of all models, asking to save before close if necessary
 	char text[512];
 	int returnvalue;
-	filter *f;
-	for (model *m = master.get_models(); m != NULL; m = m->next)
+	Filter *f;
+	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
-		if (m->is_modified())
+		if (m->isModified())
 		{
 			// Create a model message dialog
-			sprintf(text, "Model '%s' has been modified.\n", m->get_name());
-			returnvalue = QMessageBox::warning(mainwindow, "Aten", text, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+			sprintf(text, "Model '%s' has been modified.\n", m->name());
+			returnvalue = QMessageBox::warning(mainWindow, "Aten", text, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
 			switch (returnvalue)
 			{
 				// Discard changes
@@ -326,13 +353,13 @@ bool gui_qt::save_before_close()
 				// Save model before quit
 				case (QMessageBox::Save):
 					// If model has a filter set, just save it
-					f = m->get_filter();
-					if (f != NULL) f->execute(m->get_filename());
-					else if (mainwindow->run_savemodel_dialog())
+					f = m->filter();
+					if (f != NULL) f->execute(m->filename());
+					else if (mainWindow->runSaveModelDialog())
 					{
-						m->set_filter(mainwindow->savemodelfilter);
-						m->set_filename(mainwindow->savemodelfilename.get());
-						mainwindow->savemodelfilter->execute(m->get_filename());
+						m->setFilter(mainWindow->saveModelFilter);
+						m->setFilename(mainWindow->saveModelFilename.get());
+						mainWindow->saveModelFilter->execute(m->filename());
 					}
 					else return FALSE;
 					break;
@@ -342,8 +369,12 @@ bool gui_qt::save_before_close()
 	return TRUE;
 }
 
+/*
+// Keycode Conversion
+*/
+
 // Convert Qt keysym to key_code
-key_code gui_qt::convert_to_KC(int sym)
+key_code GuiQt::convertToKeyCode(int sym)
 {
 	key_code result = KC_OTHER;
 	switch (sym)
@@ -373,95 +404,96 @@ key_code gui_qt::convert_to_KC(int sym)
 	return result;
 }
 
+/*
+// Progress Dialogs
+*/
+
 // Instantiate a progress dialog
-void gui_qt::progress_create(const char *jobtitle, int stepstodo)
+void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 {
 	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!does_exist)
+	if (!doesExist_)
 	{
-		gui.text_progress_create(jobtitle, stepstodo);
+		gui.textProgressCreate(jobtitle, stepstodo);
 		return;
 	}
 	// Check that a progress dialog isn't already running
-	if (mainwindow->progressindicator->isVisible())
+	if (mainWindow->progressIndicator->isVisible())
 	{
 		printf("Weird programmatical event - second progress dialog creation request!\n");
 		return;
 	}
-	mainwindow->progressbar->setMaximum(stepstodo);
-	mainwindow->progressbar->setValue(0);
-	mainwindow->progresslabel->setText(jobtitle);
-	mainwindow->progressindicator->setVisible(TRUE);
-	progress_canceled = FALSE;
+	mainWindow->progressBar->setMaximum(stepstodo);
+	mainWindow->progressBar->setValue(0);
+	mainWindow->progressLabel->setText(jobtitle);
+	mainWindow->progressIndicator->setVisible(TRUE);
+	progressCanceled_ = FALSE;
 	// Disable some key widgets on the main form
-	mainwindow->ui.MainWindowStack->setEnabled(FALSE);
-	mainwindow->ui.ModelViewFrame->setEnabled(FALSE);
-	mainwindow->ui.StackButtonsFrame->setEnabled(FALSE);
+	mainWindow->ui.MainWindowStack->setEnabled(FALSE);
+	mainWindow->ui.ModelViewFrame->setEnabled(FALSE);
+	mainWindow->ui.StackButtonsFrame->setEnabled(FALSE);
 }
 
 // Update the progress dialog
-bool gui_qt::progress_update(int currentstep)
+bool GuiQt::progressUpdate(int currentstep)
 {
 	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!does_exist)
+	if (!doesExist_)
 	{
-		gui.text_progress_update(currentstep);
+		gui.textProgressUpdate(currentstep);
 		return TRUE;
 	}
-	if (!mainwindow->progressindicator->isVisible())
+	if (!mainWindow->progressIndicator->isVisible())
 	{
 		printf("Weird programmatical event - tried to update a non-existent progress dialog!\n");
 		return TRUE;
 	}
-	mainwindow->progressbar->setValue(currentstep);
+	mainWindow->progressBar->setValue(currentstep);
 	app->processEvents();
 	// Check to see if the abort button was pressed
-	return (!progress_canceled);
+	return (!progressCanceled_);
 }
 
 // Terminate the progress dialog
-void gui_qt::progress_terminate()
+void GuiQt::progressTerminate()
 {
 	// If the GUI doesn't exist, call the text-based progress indicator
-	if (!does_exist)
+	if (!doesExist_)
 	{
-		gui.text_progress_terminate();
+		gui.textProgressTerminate();
 		return;
 	}
-	if (!mainwindow->progressindicator->isVisible())
+	if (!mainWindow->progressIndicator->isVisible())
 	{
 		printf("Weird programmatical event - tried to terminate a non-existent progress dialog!\n");
 		return;
 	}
 	// Hide the progress bar and re-enable widgets
-	mainwindow->progressindicator->setVisible(FALSE);
-	mainwindow->ui.MainWindowStack->setEnabled(TRUE);
-	mainwindow->ui.ModelViewFrame->setEnabled(TRUE);
-	mainwindow->ui.StackButtonsFrame->setEnabled(TRUE);
+	mainWindow->progressIndicator->setVisible(FALSE);
+	mainWindow->ui.MainWindowStack->setEnabled(TRUE);
+	mainWindow->ui.ModelViewFrame->setEnabled(TRUE);
+	mainWindow->ui.StackButtonsFrame->setEnabled(TRUE);
 }
 
-// Stop trajectory playback
-void gui_qt::stop_trajectory_playback()
+// Notify that the progress indicator should be canceled
+void GuiQt::notifyProgressCanceled()
 {
-	mainwindow->ui.ModelView->killTimer(trajectory_timerid);
-	mainwindow->ui.actionPlayPause->setChecked(FALSE);
-	trajectory_playing = FALSE;
-	refresh();
+	progressCanceled_ = TRUE;
 }
 
 // Instantiate text-based progress dialog
-void gui_qt::text_progress_create(const char *jobtitle, int stepstodo)
+void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
 {
 	// Reset the counters
-	textprogress_stepstodo = stepstodo;
-	textprogress_percent = 0;
+	textProgressStepsToDo_ = stepstodo;
+	textProgressPercent_ = 0;
 	// Print out the empty progress indicator
 	printf("--- %s\n", jobtitle);
 	printf("Progress [-]                              (  0%%)");
 }
 
 // Update the text progress dialog
-void gui_qt::text_progress_update(int currentstep)
+void GuiQt::textProgressUpdate(int currentstep)
 {
 	static char *twister = "-\\|/";
 	static char *c = twister;
@@ -469,11 +501,11 @@ void gui_qt::text_progress_update(int currentstep)
 	static double dpercent;
 	static int percent;
 	// Work out percentage and print dots and spaces
-	dpercent = double(currentstep) / double(textprogress_stepstodo);
+	dpercent = double(currentstep) / double(textProgressStepsToDo_);
 	percent = int(dpercent * 100.0);
 	ndots = int(dpercent * 30.0);
 	dpercent *= 100.0;
-	if (percent != textprogress_percent)
+	if (percent != textProgressPercent_)
 	{
 		// Print the header
 		printf("\rProgress [%c]",*c);
@@ -484,12 +516,49 @@ void gui_qt::text_progress_update(int currentstep)
 		for (n=ndots; n<30; n++) printf(" ");
 		// Lastly, print percentage
 		printf("(%-3i%%)",percent);
-		textprogress_percent = percent;
+		textProgressPercent_ = percent;
 	}
 }
 
 // Terminate the text progress dialog
-void gui_qt::text_progress_terminate()
+void GuiQt::textProgressTerminate()
 {
 	printf("\n");
+}
+
+/*
+// Trajectory
+*/
+
+// Return state of trajectory playback
+bool GuiQt::trajectoryPlaying()
+{
+	return trajectoryPlaying_;
+}
+
+// Set state of trajectory playback
+void GuiQt::setTrajectoryPlaying(bool b)
+{
+	trajectoryPlaying_ = b;
+}
+
+// Return trajectory timer id
+int GuiQt::trajectoryTimerId()
+{
+	return trajectoryTimerId_;
+}
+
+// Set state of trajectory playback
+void GuiQt::setTrajectoryTimerId(int i)
+{
+	trajectoryTimerId_ = i;
+}
+
+// Stop trajectory playback
+void GuiQt::stopTrajectoryPlayback()
+{
+	mainWindow->ui.ModelView->killTimer(trajectoryTimerId_);
+	mainWindow->ui.actionPlayPause->setChecked(FALSE);
+	trajectoryPlaying_ = FALSE;
+	refresh();
 }

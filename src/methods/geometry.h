@@ -25,30 +25,30 @@
 #include "methods/quantity.h"
 
 // Forward Declarations
-class site;
+class Site;
 
 // Geometry Class
-class geometry : public calculable
+class Geometry : public Calculable
 {
 	public:
 	// Constructor / Destructor
-	geometry();
-	~geometry();
+	Geometry();
+	~Geometry();
 
 	/*
 	// Sites
 	*/
 	private:
 	// Centres involved in geometry measurement
-	site *sites[4];
+	Site *sites_[4];
 	// Number of continuous defined sites
-	int nsites;
+	int nSites_;
 	
 	public:
 	// Set site involved in geometry measurement
-	void set_site(int, site*);
+	void setSite(int, Site*);
 	// Get site involved in geometry measurement
-	site *get_site(int);
+	Site *site(int);
 
 	/*
 	// Methods
@@ -57,9 +57,9 @@ class geometry : public calculable
 	// Initialise structure
 	bool initialise();
 	// Accumulate quantity data from supplied config
-	void accumulate(model*);
+	void accumulate(Model*);
 	// Finalise data
-	void finalise(model*);
+	void finalise(Model*);
 	// Save data
 	bool save();
 
@@ -68,30 +68,30 @@ class geometry : public calculable
 	*/
 	private:
 	// Number of bins in histogram
-	int nbins;
+	int nBins_;
 	// Minimum / maximum coordinates and range of data
-	double lower, upper, range;
+	double lower_, upper_, range_;
 	// Step size between bins
-	double binwidth;
+	double binWidth_;
 
 	public:
 	// Set histogram range
-	void set_range(double, double, int);
+	void setRange(double, double, int);
 	// Get lower limit
-	double get_lower() { return lower; }
+	double lower() { return lower_; }
 	// Get bin width
-	double get_binwidth() { return binwidth; }
+	double binWidth() { return binWidth_; }
 	// Get number of bins
-	int get_nbins() { return nbins; }
+	int nBins() { return nBins_; }
 
 	/*
 	// Data
 	*/
 	private:
 	// Histogram function
-	double *data;
+	double *data_;
 	// Count for number of added data (i.e. nframes)
-	int acc;
+	int nAdded_;
 };
 
 #endif

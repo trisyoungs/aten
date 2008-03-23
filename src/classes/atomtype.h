@@ -27,75 +27,75 @@
 #include "templates/reflist.h"
 
 // Atom typing commands
-enum atomtype_command { ATC_SP, ATC_SP2, ATC_SP3, ATC_AROMATIC, ATC_RING, ATC_NORING, ATC_NBONDS, ATC_BOND, ATC_REPEAT, ATC_OS, ATC_NHYDROGENS, ATC_NITEMS };
-atomtype_command ATC_from_text(const char*);
+enum AtomtypeCommand { ATC_SP, ATC_SP2, ATC_SP3, ATC_AROMATIC, ATC_RING, ATC_NORING, ATC_NBONDS, ATC_BOND, ATC_REPEAT, ATC_OS, ATC_NHYDROGENS, ATC_NITEMS };
+AtomtypeCommand ATC_from_text(const char*);
 
 // Ring typing commands
-enum ringtype_command { RTC_SIZE, RTC_REPEAT, RTC_NOTSELF, RTC_NITEMS };
-ringtype_command RTC_from_text(const char*);
+enum RingTypeCommand { RTC_SIZE, RTC_REPEAT, RTC_NOTSELF, RTC_NITEMS };
+RingTypeCommand RTC_from_text(const char*);
 
 // Atom environment
-enum atom_env { AE_UNSPECIFIED, AE_NOBONDS, AE_SP3, AE_SP2, AE_SP, AE_AROMATIC, AE_NITEMS };
-const char *text_from_AE(atom_env);
+enum AtomEnv { AE_UNSPECIFIED, AE_NOBONDS, AE_SP3, AE_SP2, AE_SP, AE_AROMATIC, AE_NITEMS };
+const char *text_from_AE(AtomEnv);
 
 // Geometries about atomic centres
-enum atom_geom { AG_UNSPECIFIED, AG_UNBOUND, AG_ONEBOND, AG_LINEAR, AG_TSHAPE, AG_TRIGPLANAR, AG_TETRAHEDRAL, AG_SQPLANAR, AG_TRIGBIPYRAMID, AG_OCTAHEDRAL, AG_NITEMS };
-atom_geom AG_from_text(const char*);
-const char *text_from_AG(atom_geom);
+enum AtomGeometry { AG_UNSPECIFIED, AG_UNBOUND, AG_ONEBOND, AG_LINEAR, AG_TSHAPE, AG_TRIGPLANAR, AG_TETRAHEDRAL, AG_SQPLANAR, AG_TRIGBIPYRAMID, AG_OCTAHEDRAL, AG_NITEMS };
+AtomGeometry AG_from_text(const char*);
+const char *text_from_AG(AtomGeometry);
 
 // Forward declarations
-class atomtype;
-class ffatom;
-class atom;
-class model;
-class ring;
-class forcefield;
+class Atomtype;
+class ForcefieldAtom;
+class Atom;
+class Model;
+class Ring;
+class Forcefield;
 
 // Ring type
-class ringtype
+class RingType
 {
 	// Substructure definition of a separate list of atoms in a ring
 	public:
 	// Constructor / Destructor
-	ringtype();
-	~ringtype();
+	RingType();
+	~RingType();
 	// List pointers
-	ringtype *prev, *next;
+	RingType *prev, *next;
 
 	private:
 	// Number of atoms in ring
-	int ringsize;
+	int nAtoms_;
 	// Optional specification of atoms in ring
-	list<atomtype> ringatoms;
+	List<Atomtype> ringAtoms_;
 	// Add data to the structure from the supplied string
-	void expand(const char *commands, forcefield *parentff, ffatom *parent);
+	void expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
 	// Number of times this match is required
-	int nrepeat;
+	int nRepeat_;
 	// Print the information contained in the structure
 	void print();
 	// Flag that the owner bound atom (if any) should not itself appear in the ring
-	bool selfabsent;
+	bool selfAbsent_;
 	// Friend classes
-	friend class atomtype;
+	friend class Atomtype;
 };
 
 // Atom type
-class atomtype
+class Atomtype
 {
 	public:
 	// Constructor / Destructor
-	atomtype();
-	~atomtype();
+	Atomtype();
+	~Atomtype();
 	// List pointers, used in bound atom list and list of atoms in rings
-	atomtype *prev, *next;
+	Atomtype *prev, *next;
 	// Element (only used in head of atomtype tree, specifies the absolute element that the type describes)
 	int el;
 	// Add data to the structure from the supplied string
-	void expand(const char *commands, forcefield *parentff, ffatom *parent);
+	void expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
 	// See if this type matches any atoms in the list provided
-	int match_in_list(reflist<atom,int>*, list<ring>*, model*, atom*);
+	int matchInList(Reflist<Atom,int>*, List<Ring>*, Model*, Atom*);
 	// See if this type matches the atom (+ ring data of pattern)
-	int match_atom(atom*, list<ring>*, model*, atom*);
+	int matchAtom(Atom*, List<Ring>*, Model*, Atom*);
 	// Print the information contained in the structure
 	void print();
 
@@ -104,40 +104,40 @@ class atomtype
 	*/
 	private:
 	// Environment of atom
-	atom_env env;
+	AtomEnv env_;
 	// Geometry of bonding about atom
-	atom_geom geom;
+	AtomGeometry geometry_;
 	// Required oxidation state (99 for don't mind)
-	int os;
+	int os_;
 	// List of atoms to which this atom must be bound
-	list<atomtype> boundlist;
+	List<Atomtype> boundList_;
 	// List of rings that this atom must be a member of
-	list<ringtype> ringlist;
+	List<RingType> ringList_;
 	// Number of bond connections the atom should have
-	int nbonds;
+	int nBonds_;
 	// Specifies atom must *not* be in a cycle of any type
-	bool acyclic;
+	bool acyclic_;
 	
 	/*
 	// Bound atoms descriptors
 	*/
 	private:
 	// Specifies number of attached hydrogens
-	int nhydrogen;
+	int nHydrogen_;
 	// List of elements that the bound atom may be (can be empty for 'unspecified' [*])
-	int *allowedel;
-	// List of ffatom types that the bound atom may be
-	reflist<ffatom,int> allowedtypes;
+	int *allowedElements_;
+	// List of ForcefieldAtom types that the bound atom may be
+	Reflist<ForcefieldAtom,int> allowedTypes_;
 	// Number of elements specified in bound_el[]
-	int nallowedel;
+	int nAllowedElements_;
 	// Number of times this match is required
-	int nrepeat;
+	int nRepeat_;
 	// Type of bond to bound (parent) atom
-	bond_type boundbond;
+	BondType boundBond_;
 
 	public:
 	// Expand the allowed_el array with the element string provided
-	void set_elements(const char*, forcefield*);
+	void setElements(const char*, Forcefield*);
 };
 
 #endif

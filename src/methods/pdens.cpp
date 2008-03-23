@@ -22,151 +22,164 @@
 #include "methods/pdens.h"
 #include "classes/site.h"
 #include "classes/pattern.h"
+#include "model/model.h"
 #include <fstream>
 
 // Constructor
-pdens::pdens()
+Pdens::Pdens()
 {
-	sites[0] = NULL;
-	sites[1] = NULL;
-	stepsize = 0.5;
-	nsteps = 30;
-	acc = 0;
-	data = NULL;
+	sites_[0] = NULL;
+	sites_[1] = NULL;
+	stepSize_ = 0.5;
+	nSteps_ = 30;
+	nAdded_ = 0;
+	data_ = NULL;
 }
 
 // Destructor
-pdens::~pdens()
+Pdens::~Pdens()
 {
-	if (sites[0] != NULL) delete sites[0];
-	if (sites[1] != NULL) delete sites[1];
-	if (data != NULL) delete[] data;
+	if (sites_[0] != NULL) delete sites_[0];
+	if (sites_[1] != NULL) delete sites_[1];
+	if (data_ != NULL) delete[] data_;
+}
+
+// Get stepsize
+double Pdens::stepSize()
+{
+	return stepSize_;
+}
+
+// Get number of bins
+int Pdens::nSteps()
+{
+	return nSteps_;
 }
 
 // Set site
-void pdens::set_site(int i, site *s)
+void Pdens::setSite(int i, Site *s)
 {
-	if (i < 2) sites[i] = s;
+	if (i < 2) sites_[i] = s;
 	else printf("OUTOFRANGE:pdenssetsite\n");
 }
 
 // Get site
-site *pdens::get_site(int i)
+Site *Pdens::site(int i)
 {
-	if (i < 2) return sites[i];
+	if (i < 2) return sites_[i];
 	else printf("OUTOFRANGE:pdensgetsite\n");
 	return NULL;
 }
 
 // Set distribution range
-void pdens::set_range(double ss, int n)
+void Pdens::setRange(double ss, int n)
 {
-	stepsize = ss;
-	nsteps = n;
-	totalsteps = n + n + 1;
+	stepSize_ = ss;
+	nSteps_ = n;
+	totalSteps_ = n + n + 1;
 }
 
 // Initialise structure
-bool pdens::initialise()
+bool Pdens::initialise()
 {
-	dbg_begin(DM_CALLS,"pdens::initialise");
+	dbgBegin(DM_CALLS,"Pdens::initialise");
 	// Check site definitions....
-	if ((sites[0] == NULL) || (sites[1] == NULL))
+	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
-		msg(DM_NONE,"pdens::initialise - At least one site has NULL value.\n");
-		dbg_end(DM_CALLS,"calculable::initialise");
+		msg(DM_NONE,"Pdens::initialise - At least one site has NULL value.\n");
+		dbgEnd(DM_CALLS,"calculable::initialise");
 		return FALSE;
 	}
-	// Create the data array
+	// Create the data_ array
 	int n, m, o;
-	data = new double**[totalsteps];
-	for (n=0; n<totalsteps; n++)
+	data_ = new double**[totalSteps_];
+	for (n=0; n<totalSteps_; n++)
 	{
-		data[n] = new double*[totalsteps];
-		for (m=0; m<totalsteps; m++)
+		data_[n] = new double*[totalSteps_];
+		for (m=0; m<totalSteps_; m++)
 		{
-			data[n][m] = new double[totalsteps];
-			for (o=0; o<totalsteps; o++) data[n][m][o] = 0.0;
+			data_[n][m] = new double[totalSteps_];
+			for (o=0; o<totalSteps_; o++) data_[n][m][o] = 0.0;
 		}
 	}
-	msg(DM_NONE,"There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.\n", totalsteps, stepsize, name.get());
-	acc = 0;
-	dbg_end(DM_CALLS,"pdens::initialise");
+	msg(DM_NONE,"There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.\n", totalSteps_, stepSize_, name_.get());
+	nAdded_ = 0;
+	dbgEnd(DM_CALLS,"Pdens::initialise");
 	return TRUE;
 }
 
-// Accumulate quantity data from supplied model
-void pdens::accumulate(model *sourcemodel)
+// Accumulate quantity data_ from supplied model
+void Pdens::accumulate(Model *sourcemodel)
 {
-	dbg_begin(DM_CALLS,"pdens::accumulate");
+	dbgBegin(DM_CALLS,"Pdens::accumulate");
 	int m1, m2, bin;
-	static vec3<double> centre1, centre2, mimd;
-	static vec3<int> gridpoint;
-	static mat3<double> axes;
-	unitcell *cell = sourcemodel->get_cell();
+	static Vec3<double> centre1, centre2, mimd;
+	static Vec3<int> gridPoint;
+	static Mat3<double> axes;
+	Cell *cell = sourcemodel->cell();
 	double n, m, o;
 	// Loop over molecules for site1
-	for (m1=0; m1 < sites[0]->get_pattern()->get_nmols(); m1++)
+	for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
 	{
 		// Get central position and local coordinate system
-		centre1 = sites[0]->calculate_centre(sourcemodel,m1);
-		axes = sites[0]->calculate_axes(sourcemodel,m1);
+		centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
+		axes = sites_[0]->calculateAxes(sourcemodel,m1);
 		// Loop over molecules for site2
-		for (m2 = 0; m2 < sites[1]->get_pattern()->get_nmols(); m2++)
+		for (m2 = 0; m2 < sites_[1]->pattern()->nMols(); m2++)
 		{
-			centre2 = sites[1]->calculate_centre(sourcemodel,m2);
+			centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
 			// Calculate minimum image vector...
 			mimd = cell->mimd(centre2,centre1);
 			// ...translate into local coordinate system...
 			mimd *= axes;
-			// ...and work out the gridpoint (convert to 0..totalsteps from -nsteps..0..+nsteps)
-			gridpoint.x = int(mimd.x / stepsize);
-			gridpoint.y = int(mimd.y / stepsize);
-			gridpoint.z = int(mimd.z / stepsize);
-			gridpoint += nsteps;
+			// ...and work out the gridpoint (convert to 0..totalSteps_ from -nsteps..0..+nsteps)
+			gridPoint.x = int(mimd.x / stepSize_);
+			gridPoint.y = int(mimd.y / stepSize_);
+			gridPoint.z = int(mimd.z / stepSize_);
+			gridPoint += nSteps_;
 	//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
-			add_point(gridpoint);
+			addPoint(gridPoint);
 		}
 	}
 	// Increase accumulation counter
-	acc ++;
-	dbg_end(DM_CALLS,"pdens::accumulate");
+	nAdded_ ++;
+	dbgEnd(DM_CALLS,"Pdens::accumulate");
 }
 
-// Add point to data array
-void pdens::add_point(vec3<int> &coords)
+// Add point to data_ array
+void Pdens::addPoint(Vec3<int> &coords)
 {
 	// Check coordinates of gridpoint given
-	if ((coords.x < 0) || (coords.x >= totalsteps)) return;
-	if ((coords.y < 0) || (coords.y >= totalsteps)) return;
-	if ((coords.z < 0) || (coords.z >= totalsteps)) return;
-	if (data == NULL) printf("pdens::add_point <<<< Data array not initialised! >>>>\n");
-	else data[coords.x][coords.y][coords.z] += 1.0;
+	if ((coords.x < 0) || (coords.x >= totalSteps_)) return;
+	if ((coords.y < 0) || (coords.y >= totalSteps_)) return;
+	if ((coords.z < 0) || (coords.z >= totalSteps_)) return;
+	if (data_ == NULL) printf("Pdens::add_point <<<< Data array not initialised! >>>>\n");
+	else data_[coords.x][coords.y][coords.z] += 1.0;
 }
 
 // Finalise
-void pdens::finalise(model *sourcemodel)
+void Pdens::finalise(Model *sourcemodel)
 {
-	dbg_begin(DM_CALLS,"pdens::finalise");
+	dbgBegin(DM_CALLS,"Pdens::finalise");
 	int n, m, o;
-	double factor, numdensity;
+	double factor, numberDensity;
 	// Normalise the pdens w.r.t. number of frames, number of central molecules, and number density of system
-	numdensity = sites[1]->get_pattern()->get_nmols() / sourcemodel->get_volume() * (stepsize * stepsize * stepsize);
-	factor = double(acc) * sites[0]->get_pattern()->get_nmols() * numdensity;
-	for (n=0; n<totalsteps; n++)
-		for (m=0; m<totalsteps; m++)
-			for (o=0; o<totalsteps; o++) data[n][m][o] /= factor;
-	dbg_end(DM_CALLS,"pdens::finalise");
+	numberDensity = sites_[1]->pattern()->nMols() / sourcemodel->cell()->volume() * (stepSize_ * stepSize_ * stepSize_);
+	factor = double(nAdded_) * sites_[0]->pattern()->nMols() * numberDensity;
+	for (n=0; n<totalSteps_; n++)
+		for (m=0; m<totalSteps_; m++)
+			for (o=0; o<totalSteps_; o++) data_[n][m][o] /= factor;
+	dbgEnd(DM_CALLS,"Pdens::finalise");
 }
 
-// Save RDF data
-bool pdens::save()
+// Save RDF data_
+bool Pdens::save()
 {
 	int n, m, o;
-	ofstream output(filename.get(), ios::out);
-	for (n=0; n<totalsteps; n++)
-		for (m=0; m<totalsteps; m++)
-			for (o=0; o<totalsteps; o++) output << data[n][m][o] << "\n";
+	ofstream output(filename_.get(), ios::out);
+	for (n=0; n<totalSteps_; n++)
+		for (m=0; m<totalSteps_; m++)
+			for (o=0; o<totalSteps_; o++) output << data_[n][m][o] << "\n";
 	output.close();
 	return TRUE;
 }

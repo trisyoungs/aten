@@ -23,32 +23,33 @@
 #define ATEN_CLI_H
 
 #include <iostream>
-#include "base/master.h"
 #include <getopt.h>
+//#include "base/master.h"   // TGAY
 
 // Command line options
-enum cli_option {
+enum CliOption {
 	CO_BOHR, CO_BOND, CO_CACHE, CO_CENTRE, CO_COMMAND, CO_FF, CO_FOLD, CO_FORMAT, CO_GRID, CO_HELP, CO_INTERACTIVE,
 	CO_MAP, CO_NOBOND, CO_NOCENTRE, CO_NOFOLD, CO_NOPACK, CO_PACK, CO_SCRIPT, CO_UNDO, CO_ZMAP,
 	CO_DEBUG, CO_DEBUGALL, CO_DEBUGFILE, CO_DEBUGMORE, CO_DEBUGPARSE, CO_DEBUGTYPING, CO_VERBOSE,
 	CO_NITEMS };
 
 // Command option data
-class optiondata {
+class OptionData
+{
 	/*
 	// Description of command line option
 	*/
 	public:
 	// Identifier
-	cli_option clioption;
+	CliOption option;
 	// Short option character
-	char shortopt;
+	char shortOpt;
 	// Long option keyword
-	const char *longopt;
+	const char *longOpt;
 	// Argument type
 	int argument;
 	// Argument text (for description)
-	const char *argtext;
+	const char *argText;
 	// Description of option
 	const char *description;
 };

@@ -19,45 +19,45 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/elements.h"
 #include "base/master.h"
 #include "gui/canvas.h"
+#include "model/model.h"
 
 // Render model
-void canvas::render_scene(model *source)
+void Canvas::renderScene(Model *source)
 {
-	dbg_begin(DM_CALLS,"canvas::render_scene");
+	dbgBegin(DM_CALLS,"Canvas::renderScene");
 	static double rotmat[16], cammat[16];
-	static model *trajparent;
+	static Model *trajparent;
 	static double camrot;
 
 	// Begin the GL commands
-	if (!begin_gl())
+	if (!beginGl())
 	{
-		dbg_end(DM_CALLS,"canvas::render");
+		dbgEnd(DM_CALLS,"Canvas::renderScene");
 		return;
 	}
 
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
-	if ((source != displaymodel) || (source == NULL)) render_point = -1;
+	if ((source != displayModel_) || (source == NULL)) renderPoint_ = -1;
 
 	// Store the source model pointer and grab the trajectoryparent pointer (if there is one)
-	displaymodel = source;
-	trajparent = source->get_trajparent();
+	displayModel_ = source;
+	trajparent = source->trajectoryParent();
 
-	if (displaymodel == NULL)
+	if (displayModel_ == NULL)
 	{
 		// Select projection matrix and load the identity matrix
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		// Set up a 2D canvas
-		glOrtho(0.0,w,0.0,h,-1,1);
+		glOrtho(0.0,width_,0.0,height_,-1,1);
 		// Draw on our default message
 		glMatrixMode(GL_MODELVIEW);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glRasterPos2i(1,(int)h-13);
-		textbitmap(1.0,h-10.0,"No model to display.");
-		dbg_end(DM_CALLS,"canvas::render");
+		glRasterPos2i(1,(int)height_-13);
+		glText(1.0,height_-10.0,"No model to display.");
+		dbgEnd(DM_CALLS,"Canvas::renderScene");
 		return;
 	}
 
@@ -67,35 +67,35 @@ void canvas::render_scene(model *source)
 	// Grab rotation & camera matrices, and camera rotation for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
 	if (trajparent == NULL)
 	{
-		displaymodel->get_rotation_matrix(rotmat);
-		displaymodel->get_camera_matrix(cammat);
-		camrot = displaymodel->get_camrot();
+		displayModel_->copyRotationMatrix(rotmat);
+		displayModel_->copyCameraMatrix(cammat);
+		camrot = displayModel_->cameraRotation();
 	}
 	else
 	{
-		trajparent->get_rotation_matrix(rotmat);
-		trajparent->get_camera_matrix(cammat);
-		camrot = trajparent->get_camrot();
+		trajparent->copyRotationMatrix(rotmat);
+		trajparent->copyCameraMatrix(cammat);
+		camrot = trajparent->cameraRotation();
 	}
 
 	// Draw on the rotation globe
-	if (prefs.should_render(VO_GLOBE)) render_rotation_globe(rotmat, camrot);
+	if (prefs.shouldRender(VO_GLOBE)) renderRotationGlobe(rotmat, camrot);
 
 	// Reset projection matrix and set perspective view
 	double top, bottom;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	if (prefs.render_perspective)
+	if (prefs.hasPerspective())
 	{
-		bottom = tan(prefs.render_fov / DEGRAD) * prefs.gl_clip_near;
+		bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
 		top = -bottom;
-		glFrustum(aspect*top,aspect*bottom,top,bottom,prefs.gl_clip_near,prefs.gl_clip_far);
+		glFrustum(aspect_*top, aspect_*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
 	}
 	else
 	{
-		bottom = displaymodel->get_ortho_size();
+		bottom = displayModel_->orthoSize();
 		top = -bottom;
-		glOrtho(aspect*top,aspect*bottom,top,bottom,-prefs.gl_clip_far,prefs.gl_clip_far);
+		glOrtho(aspect_*top, aspect_*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
 
 	// Reset GLs modelview matrix and apply camera matrix from model
@@ -104,70 +104,70 @@ void canvas::render_scene(model *source)
 	glMultMatrixd(cammat);
 
 	// Draw guide if visible
-	if (prefs.build_show_guide)
+	if (prefs.isGuideVisible())
 	{
-		glTranslated(0.0,0.0,-prefs.build_draw_depth);
-		glCallList(list[GLOB_GUIDE]);
-		glTranslated(0.0,0.0,prefs.build_draw_depth);
+		glTranslated(0.0,0.0,-prefs.drawDepth());
+		glCallList(list_[GLOB_GUIDE]);
+		glTranslated(0.0,0.0,prefs.drawDepth());
 	}
 
 	// Apply model's rotation matrix (which we grabbed earlier)
 	glMultMatrixd(rotmat);
 
 	// Set the initial state of lighting in the model
-	prefs.render_style == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
+	prefs.renderStyle() == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 	// Draw the main model parts
-	// If render_point matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
+	// If renderPoint_ matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
 	glPushMatrix();
-	  if (render_point == displaymodel->get_log(LOG_TOTAL)) glCallList(list[GLOB_MODEL]);
+	  if (renderPoint_ == displayModel_->log(LOG_TOTAL)) glCallList(list_[GLOB_MODEL]);
 	  else
 	  {
-		msg(DM_VERBOSE,"Recreating display list for model '%s'...", displaymodel->get_name());
-		//glDeleteLists(list[GLOB_MODEL],1);
-		glNewList(list[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
+		msg(DM_VERBOSE,"Recreating display list for model '%s'...", displayModel_->name());
+		//glDeleteLists(list_[GLOB_MODEL],1);
+		glNewList(list_[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
-		  render_model_cell();
+		  renderModelCell();
 		  // Draw the model's atoms, bonds, and selection
-		  if (prefs.should_render(VO_ATOMS)) render_model_atoms();
+		  if (prefs.shouldRender(VO_ATOMS)) renderModelAtoms();
 		  // Render glyphs associated with the model
-		  render_model_glyphs();
+		  renderModelGlyphs();
 		  // Render force arrows
-		  if (prefs.should_render(VO_FORCEARROWS)) render_model_forcearrows();
+		  if (prefs.shouldRender(VO_FORCEARROWS)) renderModelForceArrows();
 		glEndList();
-		render_point = displaymodel->get_log(LOG_TOTAL);
-		msg(DM_VERBOSE," Done. (New point = %i)\n",render_point);
+		renderPoint_ = displayModel_->log(LOG_TOTAL);
+		msg(DM_VERBOSE," Done. (New point = %i)\n",renderPoint_);
 	  }
 	  // Render surfaces
-	  if (prefs.should_render(VO_SURFACES)) render_surfaces();
+	  if (prefs.shouldRender(VO_SURFACES)) renderSurfaces();
 	  // Render MC regions
-	  if ((displaymodel->get_celltype() != CT_NONE) && prefs.should_render(VO_REGIONS)) render_regions();
-	  glColor3fv(prefs.colours[COL_PEN]);
-	  render_extra_3d();
+	  if ((displayModel_->cell()->type() != CT_NONE) && prefs.shouldRender(VO_REGIONS)) renderRegions();
+	  glColor3fv(prefs.colour(COL_PEN));
+	  renderExtra3d();
 	glPopMatrix();
 
 	// Draw replicated cells (using display list)
-	if (prefs.should_render(VO_CELLREPEAT))
+	if (prefs.shouldRender(VO_CELLREPEAT))
 	{
-		static mat3<double> cellmat;
-		static vec3<double> cx, cy, cz;
-		cellmat = displaymodel->get_cellaxes();
+		static Mat3<double> cellmat;
+		static Vec3<double> cx, cy, cz;
+		cellmat = displayModel_->cell()->axes();
 		cx = cellmat.rows[0];
 		cy = cellmat.rows[1];
 		cz = cellmat.rows[2];
-		for (int i=-prefs.get_repcellneg(0); i<=prefs.get_repcellpos(0); i++)
+		for (int i=-prefs.repeatCellsNeg(0); i<=prefs.repeatCellsPos(0); i++)
 		{
 			glPushMatrix();
 			glTranslated(i*cx.x,i*cx.y,i*cx.z);
-			for (int j=-prefs.get_repcellneg(1); j<=prefs.get_repcellpos(1); j++)
+			for (int j=-prefs.repeatCellsNeg(1); j<=prefs.repeatCellsPos(1); j++)
 			{
 				glPushMatrix();
 				glTranslated(j*cy.x,j*cy.y,j*cy.z);
-				for (int k=-prefs.get_repcellneg(2); k<=prefs.get_repcellpos(2); k++)
+				for (int k=-prefs.repeatCellsNeg(2); k<=prefs.repeatCellsPos(2); k++)
 				{
 					if ((i == 0) && (j == 0) && (k == 0)) continue;
 					glPushMatrix();
 					glTranslated(k*cz.x,k*cz.y,k*cz.z);
-					glCallList(list[GLOB_MODEL]);
+					glCallList(list_[GLOB_MODEL]);
 					glPopMatrix();
 				}
 				glPopMatrix();
@@ -180,16 +180,16 @@ void canvas::render_scene(model *source)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colours[COL_PEN]);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colour(COL_PEN));
 	glDisable(GL_LIGHTING);
 
-	if (prefs.should_render(VO_LABELS)) render_model_labels();
-	if (prefs.should_render(VO_MEASUREMENTS)) render_model_measurements();
+	if (prefs.shouldRender(VO_LABELS)) renderModelLabels();
+	if (prefs.shouldRender(VO_MEASUREMENTS)) renderModelMeasurements();
 
-	render_extra_2d();
+	renderExtra2d();
 	glDisable(GL_COLOR_MATERIAL);
 
 	glFlush();
-	end_gl();
-	dbg_end(DM_CALLS,"canvas::render");
+	endGl();
+	dbgEnd(DM_CALLS,"Canvas::renderScene");
 }

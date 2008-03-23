@@ -1,6 +1,6 @@
 /*
 	*** Dynamic character array
-	*** src/classes/dnchar.cpp
+	*** src/classes/Dnchar.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -28,250 +28,244 @@
 #include <stdlib.h>
 
 // Constructor
-dnchar::dnchar()
+Dnchar::Dnchar()
 {
-	data = NULL;
-	size = 0;
-	endpos = -1;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_DNCHAR] ++;
-	#endif
+	data_ = NULL;
+	size_ = 0;
+	endPosition_ = -1;
 }
 
 // Destructor
-dnchar::~dnchar()
+Dnchar::~Dnchar()
 {
-	if (data != NULL) delete[] data;
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_DNCHAR] ++;
-	#endif
+	if (data_ != NULL) delete[] data_;
 }
 
 // Print
-void dnchar::print() const
+void Dnchar::print() const
 {
-	printf("DnChar len = %2i, end = %2i : '%s'\n",size,endpos,data);
+	printf("DnChar len = %2i, end = %2i : '%s'\n",size_,endPosition_,data_);
 }
 
 // Clear
-void dnchar::clear()
+void Dnchar::clear()
 {
-	if (data == NULL) return;
-	//if (data != NULL) delete[] data;
-	//data = NULL;
-	//size = 1;
-	endpos = 0;
-	data[0] = '\0';
+	if (data_ == NULL) return;
+	//if (data_ != NULL) delete[] data_;
+	//data_ = NULL;
+	//size_ = 1;
+	endPosition_ = 0;
+	data_[0] = '\0';
 }
 
 // Set
-void dnchar::set(const char *s)
+void Dnchar::set(const char *s)
 {
 	// Check if array has already been initialised
-	if (data != NULL) delete[] data;
+	if (data_ != NULL) delete[] data_;
 	// Get length of string to copy
 	// Must check if passed string is empty
 	if (s == NULL)
 	{
-		size = 1;
-		endpos = 0;
-		data = new char[1];
-		data[0] = '\0';
+		size_ = 1;
+		endPosition_ = 0;
+		data_ = new char[1];
+		data_[0] = '\0';
 	}
 	else
 	{
-		size = strlen(s) + 1;
-		endpos = size-1;
-		data = new char[size];
-		strcpy(data,s);
+		size_ = strlen(s) + 1;
+		endPosition_ = size_-1;
+		data_ = new char[size_];
+		strcpy(data_,s);
 	}
 
 }
 
 // Get
-const char *dnchar::get() const
+const char *Dnchar::get() const
 {
-	return (data != NULL ? data : "");
+	return (data_ != NULL ? data_ : "");
 }
 
 // Get length
-int dnchar::length() const
+int Dnchar::length() const
 {
-	return (endpos < size ? endpos : size);
+	return (endPosition_ < size_ ? endPosition_ : size_);
 }
 
 // Create empty array
-void dnchar::create_empty(int newsize)
+void Dnchar::createEmpty(int newsize_)
 {
 	// Check if array has already been initialised
-	if (data != NULL) delete[] data;
+	if (data_ != NULL) delete[] data_;
 	// Create new, empty array
-	size = newsize;
-	data = new char[newsize];
-	endpos = 0;
-	data[0] = '\0';
+	size_ = newsize_;
+	data_ = new char[newsize_];
+	endPosition_ = 0;
+	data_[0] = '\0';
 }
 
 // Create empty array
-void dnchar::create_empty(dnchar &s)
+void Dnchar::createEmpty(Dnchar &s)
 {
-	create_empty(s.size);
+	createEmpty(s.size_);
 }
 
 // Empty?
-bool dnchar::empty() const
+bool Dnchar::empty() const
 {
-	return (endpos <= 0 ? TRUE : FALSE);
+	return (endPosition_ <= 0 ? TRUE : FALSE);
 }	
 
 // Erase range
-void dnchar::erase(int start, int end)
+void Dnchar::erase(int start, int end)
 {
-	// Retain original memory length of string, but move '\0' and decrease 'size'
+	// Retain original memory length of string, but move '\0' and decrease 'size_'
 	// Check range given
-	if (start >= endpos) return;
-	if (end >= endpos) end = endpos - 1;
-	int count = endpos - end;
+	if (start >= endPosition_) return;
+	if (end >= endPosition_) end = endPosition_ - 1;
+	int count = endPosition_ - end;
 	//printf("Range to erase is %i to %i.\n",start,end);
 	//printf("Characters after endpoint = %i\n",count);
 	// Copy the character in position 'n' to position 'start + (n-last-1)'
-	//printf("   DNCHAR - Before erase(%i,%i) = '%s', After = ",start,end,data);
-	for (int n=0; n<count; n++) data[start+n] = data[end+n+1];
-	size -= (1 + end - start);
-	endpos -= (1 + end - start);
-	//printf("'%s'\n",data);
+	//printf("   DNCHAR - Before erase(%i,%i) = '%s', After = ",start,end,data_);
+	for (int n=0; n<count; n++) data_[start+n] = data_[end+n+1];
+	size_ -= (1 + end - start);
+	endPosition_ -= (1 + end - start);
+	//printf("'%s'\n",data_);
 }
 
 // Erase from start
-void dnchar::erasestart(int n)
+void Dnchar::eraseStart(int n)
 {
-	//printf("erasestart - n = %i, endpos = %i\n",n,endpos);
-	if ((n - 1) > endpos)
+	//printf("erasestart - n = %i, endPosition_ = %i\n",n,endPosition_);
+	if ((n - 1) > endPosition_)
 	{
-		printf("new (old) n = (%i) %i\n",n,endpos);
-		n = endpos; 
+		printf("new (old) n = (%i) %i\n",n,endPosition_);
+		n = endPosition_; 
 	}
 	if (n > 0) erase(0,n-1);
 }
 
 // Erase from end
-void dnchar::eraseend(int n)
+void Dnchar::eraseEnd(int n)
 {
-	if ((n - 1) >= endpos) n = endpos;
-	if (n > 0) erase(endpos-n,endpos-1);
+	if ((n - 1) >= endPosition_) n = endPosition_;
+	if (n > 0) erase(endPosition_-n,endPosition_-1);
 }
 
 // Assignment operator (const char*)
-void dnchar::operator=(const char *s)
+void Dnchar::operator=(const char *s)
 {
 	set(s);
 }
 
-// Assignment operator (const dnchar&)
-void dnchar::operator=(const dnchar &source)
+// Assignment operator (const Dnchar&)
+void Dnchar::operator=(const Dnchar &source)
 {
-	set(source.data);
+	set(source.data_);
 }
 
 // Equality Operator (const char*)
-bool dnchar::operator==(const char *s) const
+bool Dnchar::operator==(const char *s) const
 {
-	if (data == NULL) return FALSE;
-	return (strcmp(data,s) == 0 ? TRUE : FALSE);
+	if (data_ == NULL) return FALSE;
+	return (strcmp(data_,s) == 0 ? TRUE : FALSE);
 }
 
 // Equality Operator
-bool dnchar::operator==(const dnchar &s) const
+bool Dnchar::operator==(const Dnchar &s) const
 {
-	if ((data == NULL) || (s.data == NULL)) return FALSE;
-	return (strcmp(data,s.data) == 0 ? TRUE : FALSE);
+	if ((data_ == NULL) || (s.data_ == NULL)) return FALSE;
+	return (strcmp(data_,s.data_) == 0 ? TRUE : FALSE);
 }
 
 // Inequality Operator
-bool dnchar::operator!=(const dnchar &s) const
+bool Dnchar::operator!=(const Dnchar &s) const
 {
-	if ((data == NULL) || (s.data == NULL)) return TRUE;
-	return (strcmp(data,s.data) == 0 ? FALSE : TRUE);
+	if ((data_ == NULL) || (s.data_ == NULL)) return TRUE;
+	return (strcmp(data_,s.data_) == 0 ? FALSE : TRUE);
 }
 
 // Subscript operator
-char dnchar::operator[](int n) const
+char Dnchar::operator[](int n) const
 {
-	if ((n < 0) || (n >= size))
+	if ((n < 0) || (n >= size_))
 	{
-		printf("dnchar::operator[] <<<< Array subscript %i out of range (0-%i) >>>>\n",n,size-1);
+		printf("Dnchar::operator[] <<<< Array subscript %i out of range (0-%i) >>>>\n",n,size_-1);
 		return 0;
 	}
-	return data[n];
+	return data_[n];
 }
 
 // Character addition
-void dnchar::operator+=(char c)
+void Dnchar::operator+=(char c)
 {
 	// If we're passed \0, ignore it (since we already have one)
-	// Check size of array
-	if ((endpos == (size - 1)) && (c != '\0'))
+	// Check size_ of array
+	if ((endPosition_ == (size_ - 1)) && (c != '\0'))
 	{
-		printf("dnchar::operator+= <<<< No space left to add character >>>>\n");
+		printf("Dnchar::operator+= <<<< No space left to add character >>>>\n");
 		return;
 	}
 	if (c != '\0')
 	{
-		data[endpos] = c;
-		endpos ++;
+		data_[endPosition_] = c;
+		endPosition_ ++;
 	}
-	data[endpos] = '\0';
+	data_[endPosition_] = '\0';
 }
 
 // String addition
-void dnchar::cat(const char *s)
+void Dnchar::cat(const char *s)
 {
 	for (int n = 0; s[n] != '\0'; n++) *this += s[n];
 }
 
 // Find character
-int dnchar::find(char search)
+int Dnchar::find(char search)
 {
 	int result = 0;
 	char *c;
-	for (c = data; *c != '\0'; c++)
+	for (c = data_; *c != '\0'; c++)
 	{
-	//printf("dnchar %c %c\n",*c,search);
+	//printf("Dnchar %c %c\n",*c,search);
 		if (*c == search) break;
 		result ++;
 	}
-	if (result >= endpos) result = -1;
+	if (result >= endPosition_) result = -1;
 	return result;
 }
 
 // Cut characters from start
-void dnchar::cutstart(int len, dnchar &target)
+void Dnchar::cutStart(int len, Dnchar &target)
 {
-	// Set new size of target string
-	target.create_empty(len+1);
-	for (int n=0; n<len; n++) target += data[n];
+	// Set new size_ of target string
+	target.createEmpty(len+1);
+	for (int n=0; n<len; n++) target += data_[n];
 	erase(0,len-1);
 }
 
 // Return as double
-double dnchar::as_double() const
+double Dnchar::asDouble() const
 {
-	return (data != NULL ? atof(data) : 0.0);
+	return (data_ != NULL ? atof(data_) : 0.0);
 }
 
 // Return as integer
-int dnchar::as_integer() const
+int Dnchar::asInteger() const
 {
-	return (data != NULL ? atoi(data) : 0);
+	return (data_ != NULL ? atoi(data_) : 0);
 }
 
 // Return as bool
-bool dnchar::as_bool() const
+bool Dnchar::asBool() const
 {
 	// Convert string to boolean
 	bool result = TRUE;
 	static char lcase[512];
-	strcpy(lcase,lower_case(data));
+	strcpy(lcase,lowerCase(data_));
 	if (strcmp(lcase,"off") == 0) result = FALSE;
 	else if (strcmp(lcase,"no") == 0) result = FALSE;
 	else if (strcmp(lcase,"false") == 0) result = FALSE;
@@ -279,10 +273,10 @@ bool dnchar::as_bool() const
 }
 
 // Is Number?
-bool dnchar::is_numeric() const
+bool Dnchar::isNumeric() const
 {
 	// Go through string - if we find a 'non-number' character, return false
-	for (char *c = data; *c != '\0'; c++)
+	for (char *c = data_; *c != '\0'; c++)
 		switch (*c)
 		{
 			case (' '): case ('0'): case ('1'): case ('2'): case ('3'): case ('4'): 

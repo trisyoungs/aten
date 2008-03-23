@@ -21,9 +21,11 @@
 
 #include <iostream>
 #include "base/cli.h"
+#include "base/prefs.h"
+#include "base/master.h"
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
-optiondata clioptions[] = {
+OptionData clioptions[] = {
 	{ CO_BOHR,		'b',"bohr",		0,
 		"",		"Converts model atomic positions from Bohr to Angstrom" },
 	{ CO_BOND,		'\0',"bond",		0,
@@ -81,10 +83,10 @@ optiondata clioptions[] = {
 };
 
 // Parse debug options
-void master_data::debug_cli(int argc, char *argv[])
+void MasterData::debugCli(int argc, char *argv[])
 {
 	int n, o;
-	bool isshort, match;
+	bool isShort, match;
 	char *arg;
 	// Cycle over program arguments and available CLI options
 	n = 0;
@@ -93,15 +95,15 @@ void master_data::debug_cli(int argc, char *argv[])
 		// If first character is not '-' then continue
 		if (argv[n][0] != '-') { n++; continue; }
 		// Is this a long or short option?
-		isshort = (argv[n][1] != '-');
-		arg = (isshort ? &argv[n][1] : &argv[n][2]);
+		isShort = (argv[n][1] != '-');
+		arg = (isShort ? &argv[n][1] : &argv[n][2]);
 		// Cycle over defined CLI options and search for this one
 		match = FALSE;
 		for (o=0; o<CO_NITEMS; o++)
 		{
 			// Check short option character or long option text
-			if (isshort) match = (*arg == clioptions[o].shortopt);
-			else match = (strcmp(arg,clioptions[o].longopt) == 0 ? TRUE : FALSE);
+			if (isShort) match = (*arg == clioptions[o].shortOpt);
+			else match = (strcmp(arg,clioptions[o].longOpt) == 0 ? TRUE : FALSE);
 			if (match) break;
 		}
 		// If we have a match then 'o' contains the option identifier
@@ -112,36 +114,36 @@ void master_data::debug_cli(int argc, char *argv[])
 			{
 				// Turn on call debugging
 				case (CO_DEBUG):
-					add_debuglevel(DM_CALLS);
+					addDebugLevel(DM_CALLS);
 					break;
 				// Turn on debug messages for atom typing
 				case (CO_DEBUGTYPING):
-					add_debuglevel(DM_TYPING);
+					addDebugLevel(DM_TYPING);
 					break;
 				// Turn on debug messages for atom typing
 				case (CO_DEBUGPARSE):
-					add_debuglevel(DM_PARSE);
+					addDebugLevel(DM_PARSE);
 					break;
 				// Turn on debug messages for atom typing
 				case (CO_DEBUGFILE):
-					add_debuglevel(DM_FILTERS);
+					addDebugLevel(DM_FILTERS);
 					break;
 				// Turn on debug messages for more calls
 				case (CO_DEBUGMORE):
-					add_debuglevel(DM_CALLS);
-					add_debuglevel(DM_MORECALLS);
+					addDebugLevel(DM_CALLS);
+					addDebugLevel(DM_MORECALLS);
 					break;
 				// Turn on debug messages for all calls
 				case (CO_DEBUGALL):
-					add_debuglevel(DM_CALLS);
-					add_debuglevel(DM_MORECALLS);
-					add_debuglevel(DM_VERBOSE);
-					add_debuglevel(DM_PARSE);
-					add_debuglevel(DM_TYPING);
+					addDebugLevel(DM_CALLS);
+					addDebugLevel(DM_MORECALLS);
+					addDebugLevel(DM_VERBOSE);
+					addDebugLevel(DM_PARSE);
+					addDebugLevel(DM_TYPING);
 					break;
 				// Turn on verbose messaging
 				case (CO_VERBOSE):
-					add_debuglevel(DM_VERBOSE);
+					addDebugLevel(DM_VERBOSE);
 					break;
 			}
 		}
@@ -151,14 +153,14 @@ void master_data::debug_cli(int argc, char *argv[])
 }
 
 // Parse all options
-int master_data::parse_cli(int argc, char *argv[])
+int MasterData::parseCli(int argc, char *argv[])
 {
 	int n, o, ntried = 0;
-	bool isshort, match;
+	bool isShort, match;
 	char *arg;
-	commandlist *cl;
-	zmap_type zm;
-	filter *f, *modelfilter = NULL;
+	CommandList *cl;
+	ZmapType zm;
+	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary run)
 	n = 1;
 	while (n < argc)
@@ -168,43 +170,42 @@ int master_data::parse_cli(int argc, char *argv[])
 		if (argv[n][0] == '-')
 		{
 			// Is this a long or short option?
-			isshort = (argv[n][1] != '-');
-			arg = (isshort ? &argv[n][1] : &argv[n][2]);
+			isShort = (argv[n][1] != '-');
+			arg = (isShort ? &argv[n][1] : &argv[n][2]);
 			// Cycle over defined CLI options and search for this one
 			for (o=0; o<CO_NITEMS; o++)
 			{
 				// Check short option character or long option text
-				if (isshort) match = (*arg == clioptions[o].shortopt);
-				else match = (strcmp(arg,clioptions[o].longopt) == 0 ? TRUE : FALSE);
+				if (isShort) match = (*arg == clioptions[o].shortOpt);
+				else match = (strcmp(arg,clioptions[o].longOpt) == 0 ? TRUE : FALSE);
 				if (match) break;
 			}
 			// If we have a match then 'o' contains the option identifier. Otherwise try to load the argument as a model.
-			if (match)
+			if (match && (o < CO_DEBUG))
 			{
 				// If it's a debug option then we've already dealt with it
-				if (o >= CO_DEBUG) break;
 				switch (o)
 				{
 					// Convert coordinates from Bohr to Angstrom
 					case (CO_BOHR):
-						prefs.set_coords_in_bohr(TRUE);
+						prefs.setCoordsInBohr(TRUE);
 						break;
 					// Force bonding calculation of atoms on load
 					case (CO_BOND):
-						prefs.set_bond_on_load(PS_YES);
+						prefs.setBondOnLoad(PS_YES);
 						break;
 					// Set trajectory cache limit
 					case (CO_CACHE):
-						prefs.set_cache_limit(atoi(argv[++n]));
+						prefs.setCacheLimit(atoi(argv[++n]));
 						break;
 					// Force model centering on load (for non-periodic systems)
 					case (CO_CENTRE):
-						prefs.set_centre_on_load(PS_YES);
+						prefs.setCentreOnLoad(PS_YES);
 						break;
 					// Read script commands from passed string
 					case (CO_COMMAND):
 						cl = master.commands.add();
-						if (cl->cache_line(argv[++n])) master.set_program_mode(PM_COMMAND);
+						if (cl->cacheLine(argv[++n])) master.setProgramMode(PM_COMMAND);
 						else
 						{
 							master.commands.remove(cl);
@@ -213,58 +214,58 @@ int master_data::parse_cli(int argc, char *argv[])
 						break;
 					// Load the specified forcefield
 					case (CO_FF):
-						master.load_ff(argv[++n]);
+						master.loadForcefield(argv[++n]);
 						break;
 					// Force folding (MIM'ing) of atoms in periodic systems on load
 					case (CO_FOLD):
-						prefs.set_fold_on_load(PS_YES);
+						prefs.setFoldOnLoad(PS_YES);
 						break;
 					// Set forced model load format
 					case (CO_FORMAT):
-						modelfilter = master.find_filter(FT_MODEL_IMPORT, argv[++n]);
+						modelfilter = master.findFilter(FT_MODEL_IMPORT, argv[++n]);
 						if (modelfilter == NULL) return -1;
 						break;
 					// Load surface
 					case (CO_GRID):
-						f = master.probe_file(argv[++n], FT_GRID_IMPORT);
+						f = master.probeFile(argv[++n], FT_GRID_IMPORT);
 						if (f != NULL) f->execute(argv[++n]);
 						break;
 					// Display help
 					case (CO_HELP):
-						print_usage();
+						printUsage();
 						return -1;
 						break;
 					// Enter interactive mode
 					case (CO_INTERACTIVE):
-						master.set_program_mode(PM_INTERACTIVE);
+						master.setProgramMode(PM_INTERACTIVE);
 						break;
 					// Set type mappings
 					case (CO_MAP):
 						break;
 					// Prohibit bonding calculation of atoms on load
 					case (CO_NOBOND):
-						prefs.set_bond_on_load(PS_NO);
+						prefs.setBondOnLoad(PS_NO);
 						break;
 					// Prohibit model centering on load (for non-periodic systems)
 					case (CO_NOCENTRE):
-						prefs.set_centre_on_load(PS_NO);
+						prefs.setCentreOnLoad(PS_NO);
 						break;
 					// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 					case (CO_NOFOLD):
-						prefs.set_fold_on_load(PS_NO);
+						prefs.setFoldOnLoad(PS_NO);
 						break;
 					// Force packing (application of symmetry operators) on load
 					case (CO_NOPACK):
-						prefs.set_pack_on_load(PS_NO);
+						prefs.setPackOnLoad(PS_NO);
 						break;
 					// Prohibit packing (application of symmetry operators) on load
 					case (CO_PACK):
-						prefs.set_pack_on_load(PS_YES);
+						prefs.setPackOnLoad(PS_YES);
 						break;
 					// Cache a script file
 					case (CO_SCRIPT):
 						cl = master.scripts.add();
-						if (cl->load(argv[++n])) master.set_program_mode(PM_COMMAND);
+						if (cl->load(argv[++n])) master.setProgramMode(PM_COMMAND);
 						else
 						{
 							master.scripts.remove(cl);
@@ -273,16 +274,16 @@ int master_data::parse_cli(int argc, char *argv[])
 						break;
 					// Set maximum number of undolevels per model
 					case (CO_UNDO):
-						prefs.set_maxundo(atoi(argv[++n]));
+						prefs.setMaxUndoLevels(atoi(argv[++n]));
 						break;
 					// Set the type of element (Z) mapping to use in name conversion
 					case (CO_ZMAP):
 						zm = ZM_from_text(argv[++n]);
-						if (zm != ZM_NITEMS) prefs.set_zmapping(zm);
+						if (zm != ZM_NITEMS) prefs.setZmapType(zm);
 						break;
 					default:
 						printf("Unrecognised command-line option '%s'.\n",argv[n]);
-						dbg_end(DM_CALLS,"cli::parse");
+						dbgEnd(DM_CALLS,"cli::parse");
 						return -1;
 				}
 			}
@@ -292,23 +293,23 @@ int master_data::parse_cli(int argc, char *argv[])
 			// Not a CLI switch, so try to load it as a model
 			ntried ++;
 			if (modelfilter != NULL) f = modelfilter;
-			else f = master.probe_file(argv[n], FT_MODEL_IMPORT);
+			else f = master.probeFile(argv[n], FT_MODEL_IMPORT);
 			if (f != NULL) f->execute(argv[n]);
 		}
 		n++;
 	}
 	// Check on the number of models that failed to load
 	if (ntried == 0) return 0;
-	else if (master.get_nmodels() == 0)
+	else if (master.nModels() == 0)
 	{
 		printf("Couldn't open any of the supplied files!\n");
 		return -1;
 	}
-	return master.get_nmodels();
+	return master.nModels();
 }
 
 // Usage help
-void master_data::print_usage()
+void MasterData::printUsage() const
 {
 	printf("Usage: aten [options] [<model> ...]\n");
 	printf("\nProgram Options:\n");
@@ -316,13 +317,13 @@ void master_data::print_usage()
 	{
 		if (clioptions[n].argument == 0)
 		{
-			if (clioptions[n].shortopt != '\0') printf("\t-%c, --%s\n", clioptions[n].shortopt, clioptions[n].longopt);
-			else printf("\t--%s\n", clioptions[n].longopt);
+			if (clioptions[n].shortOpt != '\0') printf("\t-%c, --%s\n", clioptions[n].shortOpt, clioptions[n].longOpt);
+			else printf("\t--%s\n", clioptions[n].longOpt);
 		}
 		else
 		{
-			if (clioptions[n].shortopt != '\0') printf("\t-%c %s, --%s %s\n", clioptions[n].shortopt, clioptions[n].argtext, clioptions[n].longopt, clioptions[n].argtext);
-			else printf("\t--%s %s\n", clioptions[n].longopt, clioptions[n].argtext);
+			if (clioptions[n].shortOpt != '\0') printf("\t-%c %s, --%s %s\n", clioptions[n].shortOpt, clioptions[n].argText, clioptions[n].longOpt, clioptions[n].argText);
+			else printf("\t--%s %s\n", clioptions[n].longOpt, clioptions[n].argText);
 		}
 		printf("\t\t%s\n",clioptions[n].description);
 	}

@@ -1,6 +1,6 @@
 /*
 	*** Energy store
-	*** src/classes/energystore.h
+	*** src/classes/EnergyStore.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -23,71 +23,72 @@
 #define ATEN_ESTORE_H
 
 // Energy Types
-enum energy_type { ET_BOND, ET_ANGLE, ET_TORSION, ET_VDWINTRA, ET_VDWINTER, ET_VDWTAIL,
+enum EnergyType { ET_BOND, ET_ANGLE, ET_TORSION, ET_VDWINTRA, ET_VDWINTER, ET_VDWTAIL,
 	ET_COULOMBINTRA, ET_COULOMBINTER, ET_EWALDREALINTRA, ET_EWALDREALINTER, 
 	ET_EWALDRECIPINTRA, ET_EWALDRECIPINTER, ET_EWALDSELF, ET_EWALDMOL, ET_NITEMS };
 
 // Forward Declarations
-class pattern;
-class model;
+class Pattern;
+class Model;
 
 // Energy store
-class energystore
+class EnergyStore
 {
 	private:
 	// Dimension of arrays in created structure.
-	int size;
-	// Whether the energystore has actually been used (i.e. calculated)
-	bool calculated;
-	// Deallocate arrays in energystore
+	int size_;
+	// Whether the EnergyStore has actually been used (i.e. calculated)
+	bool calculated_;
+	// Deallocate arrays in EnergyStore
 	void deallocate();
 	// Bond energies
-	double *bond;
+	double *bond_;
 	// Angle energies
-	double *angle;
+	double *angle_;
 	// Torsion energies
-	double *torsion;
+	double *torsion_;
 	// Intramolecular VDW energies
-	double *vdw_intra;
+	double *vdwIntra_;
 	// Intermolecular VDW energies
-	double **vdw_inter;
+	double **vdwInter_;
 	// Long-range tail correction to VDW
-	double vdw_tail;
+	double vdwTail_;
 	// Intramolecular coulomb energies
-	double *coulomb_intra;
+	double *coulombIntra_;
 	// Intermolecular coulomb energies
-	double **coulomb_inter;
+	double **coulombInter_;
 	// Intramolecular real-space Ewald energies
-	double *ewald_real_intra;
+	double *ewaldRealIntra_;
 	// Intermolecular real-space Ewald energies
-	double **ewald_real_inter;
+	double **ewaldRealInter_;
 	// Intramolecular reciprocal-space Ewald energies
-	double *ewald_recip_intra;
+	double *ewaldRecipIntra_;
 	// Intermolecular reciprocal-space Ewald energies
-	double **ewald_recip_inter;
+	double **ewaldRecipInter_;
 	// Ewald self-interaction correction to reciprocal energy
-	double *ewald_self_correct;
+	double *ewaldSelfCorrect_;
 	// Ewald molecular-interaction correction to reciprocal energy
-	double *ewald_mol_correct;
+	double *ewaldMolCorrect_;
 	// Intramolecular contributions
-	double tot_bond, tot_angle, tot_torsion;
+	double totBond_, totAngle_, totTorsion_;
 	// Short-range interactions total
-	double tot_vdw;
+	double totVdw_;
 	// Electrostatic interactions total
-	double tot_elec;
+	double totElec_;
 	// Ewald real/reciprocal totals
-	double tot_ereal, tot_erecip;
+	double totEwaldReal_, totEwaldRecip_;
 	// Ewald correction totals
-	double tot_eself, tot_emol;
+	double totEwaldSelf_, totEwaldMol_;
 	// Totals
-	double total, tot_inter, tot_intra;
+	double total_, totInter_, totIntra_;
+
 	public:
 	// Constructor / Destructor
-	energystore();
-	~energystore();
+	EnergyStore();
+	~EnergyStore();
 	// Clear the energy store (reset to zero)
 	void clear();
-	// Resize the energystore
+	// Resize the EnergyStore
 	void resize(int);
 	// Calculate the sub-total and total energies.
 	void totalise();
@@ -97,13 +98,13 @@ class energystore
 	*/
 	public:
 	// Add to energy
-	void add(energy_type, double, int, int=-1);
+	void add(EnergyType, double, int, int=-1);
 	// Returns the total energy in the store
-	double get_total() { return total; }
+	double total();
 	// Returns the VDW part of the model's energy
-	double get_vdw() { return tot_vdw; }
+	double vdw();
 	// Returns the electrostatic part of the model's energy
-	double get_elec() { return tot_elec; }
+	double elec();
 
 	/*
 	// Printing
@@ -112,18 +113,17 @@ class energystore
 	// Print out the full energy
 	void print();
 	// Print out the energy (1-line version)
-	void print_summary();
+	void printSummary();
 	// Prints out components of the Ewald sum energy
-	void print_ewald();
+	void printEwald();
 	// Prints out energy decomposition matrix for VDW
-	void print_vdwmatrix(model*);
+	void printVdwMatrix(Model*);
 	// Prints out energy decomposition matrix for electrostatics
-	void print_elecmatrix(model*);
+	void printElecMatrix(Model*);
 	// Prints out energy decomposition matrix for total interpattern interactions
-	void print_intermatrix(model*);
+	void printInterMatrix(Model*);
 	// Prints out energy decomposition matrix for intramolecular interactions
-	void print_intramatrix(model*);
-
+	void printIntraMatrix(Model*);
 };
 
 #endif

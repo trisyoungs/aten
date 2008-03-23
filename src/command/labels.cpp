@@ -23,29 +23,29 @@
 #include "model/model.h"
 
 // Clear labels in selection
-int commanddata::function_CA_CLEARLABELS(command *&c, bundle &obj)
+int CommandData::function_CA_CLEARLABELS(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->selection_clear_labels();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->selectionClearLabels();
 	return CR_SUCCESS;
 }
 
 // Add label to current selection
-int commanddata::function_CA_LABEL(command *&c, bundle &obj)
+int CommandData::function_CA_LABEL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom_label al = AL_from_text(c->argc(0));
-	if (al != AL_NITEMS) obj.m->selection_add_labels(al);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	AtomLabel al = AL_from_text(c->argc(0));
+	if (al != AL_NITEMS) obj.m->selectionAddLabels(al);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
 // Remove label from current selection
-int commanddata::function_CA_REMOVELABEL(command *&c, bundle &obj)
+int CommandData::function_CA_REMOVELABEL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom_label al = AL_from_text(c->argc(0));
-	if (al != AL_NITEMS) obj.m->selection_remove_labels(al);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	AtomLabel al = AL_from_text(c->argc(0));
+	if (al != AL_NITEMS) obj.m->selectionRemoveLabels(al);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }

@@ -25,11 +25,11 @@
 #include "base/sysfunc.h"
 #include <string.h>
 
-// Postfix increment operator for command_action enum
-command_action &operator++(command_action &ca, int) { return ca = (ca == CA_NITEMS ? CA_NITEMS : command_action(ca + 1)); }
+// Postfix increment operator for CommandAction enum
+CommandAction &operator++(CommandAction &ca, int) { return ca = (ca == CA_NITEMS ? CA_NITEMS : CommandAction(ca + 1)); }
 
 // Command action
-commanddata CA_data[CA_NITEMS] = {
+CommandData CA_data[CA_NITEMS] = {
 	// Variables
 	{ "character",		"",		"<variables>",
 				"Create character (string) variables with the names provided" },
@@ -571,9 +571,9 @@ commanddata CA_data[CA_NITEMS] = {
 				"Rotate the model in the plane of the screen" }
 };
 
-command_action CA_from_text(const char* s)
+CommandAction CA_from_text(const char* s)
 {
-	command_action result;
+	CommandAction result;
 	for (result = CA_CHAR; result < CA_NITEMS; result++) if (strcmp(CA_data[result].keyword,s) == 0) break;
 	return result;
 }

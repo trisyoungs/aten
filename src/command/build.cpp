@@ -25,28 +25,28 @@
 #include "model/model.h"
 
 // Add hydrogens to model ('addhydrogen')
-int commanddata::function_CA_ADDHYDROGEN(command *&c, bundle &obj)
+int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Optional argument specifies an atom, either by id or pointer
-	if (c->has_arg(0))
+	if (c->hasArg(0))
 	{
-		atom *i;
-		if (c->argt(0) == VT_INTEGER) i = obj.m->get_atom(c->argi(0)-1);
+		Atom *i;
+		if (c->argt(0) == VT_INTEGER) i = obj.m->atom(c->argi(0)-1);
 		else if (c->argt(0) == VT_ATOM) i = c->arga(0);
 		else
 		{
 			msg(DM_NONE,"Optional argument to 'addhydrogen' must be an integer or an atom*.\n");
 			return CR_FAIL;
 		}
-		obj.m->hydrogen_satisfy(i);
+		obj.m->hydrogenSatisfy(i);
 	}
-	else obj.m->hydrogen_satisfy();
+	else obj.m->hydrogenSatisfy();
 	return CR_SUCCESS;
 }
 
 // Terminate chain ('endchain')
-int commanddata::function_CA_ENDCHAIN(command *&c, bundle &obj)
+int CommandData::function_CA_ENDCHAIN(Command *&c, Bundle &obj)
 {
 	// TODO end chain with atom id (optional argument)
 	master.current.i = NULL;
@@ -54,72 +54,72 @@ int commanddata::function_CA_ENDCHAIN(command *&c, bundle &obj)
 }
 
 // Delete current selection ('delete')
-int commanddata::function_CA_DELETE(command *&c, bundle &obj)
+int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->selection_delete();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->selectionDelete();
 	return CR_SUCCESS;
 }
 
 // Set pen coordinates ('locate <dx dy dz>')
-int commanddata::function_CA_LOCATE(command *&c, bundle &obj)
+int CommandData::function_CA_LOCATE(Command *&c, Bundle &obj)
 {
-	c->get_parent()->penpos.x = c->argd(0);
-	c->get_parent()->penpos.y = c->argd(1);
-	c->get_parent()->penpos.z = c->argd(2);
+	c->parent()->penPosition.x = c->argd(0);
+	c->parent()->penPosition.y = c->argd(1);
+	c->parent()->penPosition.z = c->argd(2);
 	return CR_SUCCESS;
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
-int commanddata::function_CA_MOVE(command *&c, bundle &obj)
+int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
 {
-	c->get_parent()->penpos += c->get_parent()->penorient.rows[0] * c->argd(0);
-	c->get_parent()->penpos += c->get_parent()->penorient.rows[1] * c->argd(1);
-	c->get_parent()->penpos += c->get_parent()->penorient.rows[2] * c->argd(2);
+	c->parent()->penPosition += c->parent()->penOrientation.rows[0] * c->argd(0);
+	c->parent()->penPosition += c->parent()->penOrientation.rows[1] * c->argd(1);
+	c->parent()->penPosition += c->parent()->penOrientation.rows[2] * c->argd(2);
 	return CR_SUCCESS;
 }
 
 // Rotate pen orientation about x axis ('rotx <theta>')
-int commanddata::function_CA_ROTX(command *&c, bundle &obj)
+int CommandData::function_CA_ROTX(Command *&c, Bundle &obj)
 {
-	mat3<double> rotmat;
+	Mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
 	rotmat.set(0,1.0,0.0,0.0);
 	rotmat.set(1,0.0,cos(theta),sin(theta));
 	rotmat.set(2,0.0,-sin(theta),cos(theta));
-	c->get_parent()->penorient *= rotmat;
+	c->parent()->penOrientation *= rotmat;
 	return CR_SUCCESS;
 }
 
 // Rotate pen orientation about y axis ('roty <theta>')
-int commanddata::function_CA_ROTY(command *&c, bundle &obj)
+int CommandData::function_CA_ROTY(Command *&c, Bundle &obj)
 {
-	mat3<double> rotmat;
+	Mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
 	rotmat.set(0,cos(theta),0.0,-sin(theta));
 	rotmat.set(1,0.0,1.0,0.0);
 	rotmat.set(2,sin(theta),0.0,cos(theta));
-	c->get_parent()->penorient *= rotmat;
+	c->parent()->penOrientation *= rotmat;
 	return CR_SUCCESS;
 }
 
 // Rotate pen orientation about z axis ('rotz <theta>')
-int commanddata::function_CA_ROTZ(command *&c, bundle &obj)
+int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 {
-	mat3<double> rotmat;
+	Mat3<double> rotmat;
 	double theta = c->argd(0) / DEGRAD;
 	rotmat.set(0,cos(theta),sin(theta),0.0);
 	rotmat.set(1,-sin(theta),cos(theta),0.0);
 	rotmat.set(2,0.0,0.0,1.0);
-	c->get_parent()->penorient *= rotmat;
+	c->parent()->penOrientation *= rotmat;
 	return CR_SUCCESS;
 }
 
 // Transmute the current selection ('transmute <el>')
-int commanddata::function_CA_TRANSMUTE(command *&c, bundle &obj)
+int CommandData::function_CA_TRANSMUTE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0));
-	for (atom *i = obj.m->get_first_selected(); i != NULL; i = i->get_next_selected()) obj.m->transmute_atom(i,el);
+	for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected()) obj.m->transmuteAtom(i,el);
 	return CR_SUCCESS;
 }

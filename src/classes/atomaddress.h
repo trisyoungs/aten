@@ -23,42 +23,42 @@
 #define ATEN_ATOMADDRESS_H
 
 // Forward declarations
-class pattern;
+class Pattern;
 
 // Atom Address
-class atomaddress
+class Atomaddress
 {
 	private:
 	// Molecule in which the atom exists
-	int molecule;
+	int molecule_;
 	// Local (molecule) atom offset
-	int offset;
+	int offset_;
 	// Pattern node in which the atom lies (must be set by model before site is used)
-	pattern *sourcepattern;
+	Pattern *pattern_;
 
 	public:
 	// Constructor / Destructor
-	atomaddress();
-	~atomaddress();
+	Atomaddress();
+	~Atomaddress();
 	// List pointers
-	atomaddress *prev, *next;	
+	Atomaddress *prev, *next;	
 
 	/*
 	// Variable Access
 	*/
 	public:
 	// Set the local molecule offset of the atom
-	void set_offset(int i) { offset = i; }
+	void setOffset(int i);
 	// Returns the local molecule offset of the atom
-	int get_offset() { return offset; }
+	int getOffset();
 	// Set the molecule id of the atom
-	void set_molecule(int i) { molecule = i; }
+	void setMolecule(int i);
 	// Returns the molecule the atom is in
-	int get_molecule() { return molecule; }
+	int molecule();
 	// Set the pattern pointer for the atom
-	void set_pattern(pattern *p) { sourcepattern = p; }
+	void setPattern(Pattern *p);
 	// Returns the current pattern for the atom
-	pattern *get_pattern() { return sourcepattern; }
+	Pattern *pattern();
 };
 
 #endif

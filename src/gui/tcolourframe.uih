@@ -24,12 +24,7 @@
 
 #include <QtGui/QFrame>
 #include <QtCore/QObject>
-
-#ifdef IS_MAC
-	#include "OpenGL/gl.h"
-#else
-	#include "GL/gl.h"
-#endif
+#include <QtOpenGL/QtOpenGL>
 
 class TColourFrame : public QFrame
 {
@@ -42,11 +37,13 @@ class TColourFrame : public QFrame
 	void paintEvent(QPaintEvent *event);
 
 	private:
-	QBrush brush;
+	QBrush brush_;
 
 	public:
-	void set_colour(QColor &c) { brush.setColor(c); }
-	void set_colour(GLfloat *col);
+	// Set colour to be displayed in frame (from QColor)
+	void setColour(QColor &c);
+	// Set colour to be displayed in frame (from GLfloat*)
+	void setColour(GLfloat *col);
 };
 
 #endif

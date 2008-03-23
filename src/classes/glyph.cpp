@@ -25,96 +25,135 @@
 
 // Glyph styles
 const char *GS_keywords[GS_NITEMS] = { "arrow", "vector", "sphere", "cube", "triangle", "ellipsoid", "tetrahedron" };
-const char *text_from_GS(glyph_style gs)
+const char *text_from_GS(GlyphStyle gs)
 	{ return GS_keywords[gs]; }
-glyph_style GS_from_text(const char *s)
-	{ return (glyph_style) enum_search("glyph style",GS_NITEMS,GS_keywords,s); }
+GlyphStyle GS_from_text(const char *s)
+	{ return (GlyphStyle) enumSearch("glyph style",GS_NITEMS,GS_keywords,s); }
 
 // Constructors
-glyphdata::glyphdata()
+GlyphData::GlyphData()
 {
-	i = NULL;
-	idata = AV_R;
-	atomsetlast = FALSE;
-	set = FALSE;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_GLYPHDATA] ++;
-	#endif
+	// Private variables
+	atom_ = NULL;
+	atomData_ = AV_R;
+	atomSetLast_ = FALSE;
+	set_ = FALSE;
 }
 
-glyph::glyph()
+Glyph::Glyph()
 {
+	// Private variables
+	solid_ = TRUE;
+	// Public variables
 	prev = NULL;
 	next = NULL;
-	solid = TRUE;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_GLYPH] ++;
-	#endif
 }
 
-// Destructor
-glyph::~glyph()
+/*
+// GlypData
+*/
+
+// Return the atom pointer
+Atom *GlyphData::atom()
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_GLYPH] ++;
-	#endif
+	return atom_;
+}
+
+// Return the type of atom vector pointed to
+AtomVectorType GlyphData::atomData()
+{
+	return atomData_;
+}
+
+// Return if the structure contains an atom pointer
+bool GlyphData::hasAtom()
+{
+	return (atom_ == NULL ? FALSE : TRUE);
+}
+
+// Returns whether one of either atom* or vecdata have been set
+bool GlyphData::isSet()
+{
+	return set_;
 }
 
 // Set the vector data
-void glyphdata::set_vector(double x, double y, double z)
+void GlyphData::setVector(double x, double y, double z)
 {
-	vec.set(x,y,z);
-	atomsetlast = FALSE;
-	set = TRUE;
+	vector_.set(x,y,z);
+	atomSetLast_ = FALSE;
+	set_ = TRUE;
 }
 
 // Set the atom pointer
-void glyphdata::set_atom(atom *target, atom_vector av)
+void GlyphData::setAtom(Atom *target, AtomVectorType av)
 {
-	i = target;
-	idata = av;
-	atomsetlast = TRUE;
-	set = TRUE;
+	atom_ = target;
+	atomData_ = av;
+	atomSetLast_ = TRUE;
+	set_ = TRUE;
 }
 
 // Return the vector data
-vec3<double> glyphdata::get_vector()
+Vec3<double> GlyphData::vector()
 {
-	if (atomsetlast)
+	if (atomSetLast_)
 	{
-		if (i == NULL)
+		if (atom_ == NULL)
 		{
 			printf("Atom was apparently set last in glyph, but pointer is NULL.\n");
-			return vec;
+			return vector_;
 		}
-		switch (idata)
+		switch (atomData_)
 		{
-			case (AV_R): return i->r();
-			case (AV_F): return i->f();
-			case (AV_V): return i->v();
+			case (AV_R): return atom_->r();
+			case (AV_F): return atom_->f();
+			case (AV_V): return atom_->v();
 		}
 	}
-	else return vec;
+	else return vector_;
+}
+
+/*
+// Glyph
+*/
+
+// Return style of Glyph
+GlyphStyle Glyph::type()
+{
+	return type_;
+}
+
+// Set whether the Glyph is solid or not
+void Glyph::setSolid(bool issolid)
+{
+	solid_ = issolid;
+}
+
+// Return whether the Glyph should be drawn as a solid
+bool Glyph::isSolid()
+{
+	return solid_;
 }
 
 // Set style of glyph (and set data vectors to default values)
-void glyph::set_type(glyph_style gt)
+void Glyph::setType(GlyphStyle gt)
 {
 	// Add default values, provided they have not already been set...
 	switch (gt)
 	{
 		case (GS_ARROW):
 		case (GS_VECTOR):
-			if (!data[1].is_set()) data[1].set_vector(0.0,1.0,0.0);
+			if (!data[1].isSet()) data[1].setVector(0.0,1.0,0.0);
 			break;
 		case (GS_SPHERE):
 		case (GS_CUBE):
-			if (!data[1].is_set()) data[1].set_vector(1.0,1.0,1.0);
+			if (!data[1].isSet()) data[1].setVector(1.0,1.0,1.0);
 			break;
 		case (GS_TRIANGLE):
 			break;
 		case (GS_ELLIPSOID):
 			break;
 	}
-	type = gt;
+	type_ = gt;
 }

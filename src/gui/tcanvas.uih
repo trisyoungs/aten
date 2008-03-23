@@ -26,7 +26,7 @@
 #include <QtCore/QObject>
 
 // Forward Declarations
-class canvas;
+class Canvas;
 
 class TCanvas : public QGLWidget
 {
@@ -34,10 +34,9 @@ class TCanvas : public QGLWidget
 
 	public:
 	TCanvas(QWidget*);
-	//~TCanvas();
 
 	private:
-	canvas *widgetcanvas;
+	Canvas *widgetCanvas_;
 
 	public slots:
 
@@ -45,7 +44,7 @@ class TCanvas : public QGLWidget
 
 	public:
 	// Set the widgetcanvas for the display
-	void set_canvas(canvas *wc) { widgetcanvas = wc; }
+	void setCanvas(Canvas *wc);
 	void initializeGL();
 	void paintGL();
 	void resizeGL(int, int);

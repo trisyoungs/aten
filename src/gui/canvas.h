@@ -29,7 +29,7 @@
 
 
 // Actions
-enum user_action { UA_NONE,
+enum UserAction { UA_NONE,
 		UA_PICKSELECT, UA_PICKFRAG, UA_PICKELEMENT, UA_PICKRADIAL,
 		UA_GEOMSELECT, UA_GEOMDIST, UA_GEOMANGLE, UA_GEOMTORSION, 
 		UA_POSSELECT, UA_POSCENTRE, UA_POSTRANSLATE, UA_POSROTATE,
@@ -44,66 +44,67 @@ enum user_action { UA_NONE,
 enum key_code { KC_OTHER, KC_ESCAPE, KC_SHIFT_L, KC_SHIFT_R, KC_CONTROL_L, KC_CONTROL_R, KC_ALT_L, KC_ALT_R, KC_LEFT, KC_RIGHT, KC_UP, KC_DOWN, KC_NITEMS };
 
 // GL Objects
-enum glob_list { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_WIRECYLINDER, GLOB_SELWIRECYLINDER, GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_MODEL, GLOB_NITEMS };
+enum GlObject { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_WIRECYLINDER, GLOB_SELWIRECYLINDER, GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_MODEL, GLOB_NITEMS };
 
 // Forward declarations
-class atom;
-class bond;
-class model;
-class geometry;
-class subselection;
-class unitcell;
+class Atom;
+class Bond;
+class Model;
+class Geometry;
+class Subselection;
+class Cell;
 class TCanvas;
 
 /*
 // Canvas Master Class
 // Provides GL rendering functions for a context
 */
-class canvas
+class Canvas
 {
+	public:
+	// Constructor
+	Canvas();
+
 	/*
 	// Base rendering context
 	*/
 	private:
 	// Internal name of the canvas for error reporting
-	const char *name;
+	const char *name_;
 	// Width, height, and aspect ratio of the canvas
-	double w, h, aspect;
+	double width_, height_, aspect_;
 	// Point at which the stored atom display list was valid (sum of LOG_STRUCTURE and LOG_COORDS points)
-	int render_point;
+	int renderPoint_;
 	// Flag to indicate whether we may draw to the canvas
-	bool valid;
+	bool valid_;
 	// Flag indicating if we are currently drawing to this canvas
-	bool drawing;
+	bool drawing_;
 	// Model 'width' of a single pixel at the current draw depth...
-	double drawpixelwidth;
+	double drawPixelWidth_;
 	// Qt Target widget
-	TCanvas *contextwidget;
+	TCanvas *contextWidget_;
 
 	public:
-	// Constructor / Destructor
-	canvas();
-	~canvas();
 	// Set the internal name of the canvas
-	void set_name(const char *s) { name = s; }
+	void setName(const char *s);
 	// Return the current height of the drawing area
-	float get_height() { return h; }
+	float height();
 	// Return the current width of the drawing area
-	float get_width() { return w; }
+	float width();
 	// Return whether the canvas is currently drawing
-	bool is_drawing() { return drawing; }
+	bool isDrawing();
 	// Return if the canvas is valid
-	bool is_valid() { return valid; }
+	bool isValid();
 	// Set the validity of the canvas
-	void set_valid(bool);
+	void setValid(bool);
 	// Recalculate drawing pixel width
-	void calculate_drawpixelwidth();
+	void calculateDrawPixelWidth();
 	// Return the corrent drawing pixel width
-	double get_drawpixelwidth();
+	double drawPixelWidth();
 	// Set up widget for OpenGL drawing
-	bool set_widget(TCanvas*);
+	bool setWidget(TCanvas*);
 	// Update Canvas
-	void postredisplay();
+	void postRedisplay();
 	// Called when context is initialised and ready
 	void realize();
 	// Called when context is resized
@@ -116,166 +117,166 @@ class canvas
 	*/
 	private:
 	// Display list ID's
-	GLuint list[GLOB_NITEMS];
+	GLuint list_[GLOB_NITEMS];
 
 	public:
 	// Create globs for rendering
-	void create_lists();
+	void createLists();
 
 	/*
 	// General Rendering Objects / Calls
 	*/
 	private:
 	// Render text string at specific coordinates
-	void textbitmap(double, double, const char*);
+	void glText(double, double, const char*);
 	// Render text string at atom's screen coordinates
-	void textbitmap(const vec3<double>, const char*);
+	void glText(const Vec3<double>, const char*);
 	// Draw a diamond
-	void gl_diamond(double, double, double);
+	void glDiamond(double, double, double);
 	// Draw a square
-	void gl_square(double, double, double);
+	void glSquare(double, double, double);
 	// Draw a rectangle
-	void gl_rectangle(double, double, double, double);
+	void glRectangle(double, double, double, double);
 	// Draw 3d marks for the atoms in the subselection
-	void gl_subsel_3d();
+	void glSubsel3d();
 	// Draw a circle
-	void gl_circle(double, double, double);
+	void glCircle(double, double, double);
 	// Draw a cylinder along vector supplied
-	void gl_cylinder(const vec3<double> &vec, double length, int style);
+	void glCylinder(const Vec3<double> &vec, double length, int style);
 	// Draw ellipsoid
-	void gl_ellipsoid(const vec3<double>&, const vec3<double>&, const vec3<double>&);
+	void glEllipsoid(const Vec3<double>&, const Vec3<double>&, const Vec3<double>&);
 	// Draw the unit cell of the model
-	void gl_cell(unitcell*);
+	void glCell(Cell*);
 	// Draw a line arrow
-	void gl_arrow(const vec3<double>&, const vec3<double>&);
+	void glArrow(const Vec3<double>&, const Vec3<double>&);
 	// Manually draw a unit sphere
-	void gl_sphere(double radius, bool filled);
+	void glSphere(double radius, bool filled);
 	// Manually draw unit cylinder
-	void gl_cylinder(double radius, bool filled);
+	void glCylinder(double radius, bool filled);
 
 	protected:
 	// Last model rendered by canvas (needed for mouse hover etc.)
-	model *displaymodel;
+	Model *displayModel_;
 
 	public:
 	// Configure OpenGL
-	void init_gl();
+	void initGl();
 	// Begin construct for any OpenGL commands
-	virtual bool begin_gl();
+	virtual bool beginGl();
 	// Finish OpenGL commands
-	virtual void end_gl();
+	virtual void endGl();
 	// Reset the projection matrix based on the current canvas geometry
-	void do_projection();
+	void doProjection();
 	// Projection matrices for scene and rotation globe
-	mat4<double> PMAT, GlobePMAT;
+	Mat4<double> PMAT, GlobePMAT;
 	// Viewport matrix for canvas
 	GLint VMAT[4];
 	// Return the current display model
-	model *get_displaymodel() { return displaymodel; }
+	Model *displayModel();
 
 	/*
 	// Scene Rendering
 	*/
 	private:
 	// Render the rotation globe
-	void render_rotation_globe(double *rotmat, double camrot);
+	void renderRotationGlobe(double *rotmat, double camrot);
 	// Render the model specified
-	void render_model_atoms();
+	void renderModelAtoms();
 	// Render glyphs in the current model
-	void render_model_glyphs();
+	void renderModelGlyphs();
 	// Add labels to the model
-	void render_model_labels();
+	void renderModelLabels();
 	// Add geometry measurements to the model
-	void render_model_measurements();
+	void renderModelMeasurements();
 	// Add extra 3D objects
-	void render_extra_3d();
+	void renderExtra3d();
 	// Add extra 2D objects
-	void render_extra_2d();
+	void renderExtra2d();
 	// Draw regions specified for MC insertion
-	void render_regions();
+	void renderRegions();
 	// Draw model force arrows
-	void render_model_forcearrows();
+	void renderModelForceArrows();
 	// Render model cell
-	void render_model_cell();
+	void renderModelCell();
 	// Render surfaces
-	void render_surfaces();
+	void renderSurfaces();
 
 	public:
 	// Render a scene based on the specified model
-	void render_scene(model*);
+	void renderScene(Model*);
 	// Save scene as vector image
-	void save_vector(model *source, vector_format vf, const char *filename);
+	void saveVector(Model *source, vector_format vf, const char *filename);
 
 	/*
 	// Selection
 	*/
 	protected:
 	// Atom that the mouse pointer is currently hovering over
-	atom *atom_hover;
+	Atom *atomHover_;
 	// Subselection (list of clicked atoms for interactive tools)
-	reflist<atom,int> subsel;
+	Reflist<Atom,int> subselection_;
 	// Whether we are selecting atoms and placing them in the subsel list	
-	bool subselect_enabled;
+	bool subselectEnabled_;
 	// Reflist of atoms selected, filled in some interaction modes
-	reflist< atom,vec3<double> > selectionr;
+	Reflist< Atom,Vec3<double> > rSelection_;
 
 	public:
 	// Returns the atom currently under the mouse
-	atom *get_atom_hover() { return atom_hover; }
+	Atom *atomHover();
 	// Clears the subsel of atoms
-	void clear_subsel() { subsel.clear(); }
+	void clearSubselection();
 
 	/*
 	// Mouse
 	*/
 	protected:
 	// Canvas coordinates of mouse down / mouse up events
-	vec3<double> r_mouseup, r_mousedown;
+	Vec3<double> rMouseUp_, rMouseDown_;
 	// Canvas coordinates of mouse cursor
-	vec3<double> r_mouselast;
+	Vec3<double> rMouseLast_;
 
 	/*
 	// Interaction
 	*/
 	protected:
 	// Active interaction mode of the main canvas
-	user_action activemode;
+	UserAction activeMode_;
 	// Selected interaction mode (from GUI)
-	user_action selectedmode;
-	// Button flags (uses enum 'mouse_button')
-	static bool mb[MB_NITEMS];
-	// Key flags (uses enum 'modifier_key')
-	static bool keymod[MK_NITEMS];
-	// Begin an action on the model (called from mouse_buttondown)
-	void begin_mode(mouse_button);
+	UserAction selectedMode_;
+	// Button flags (uses enum 'MouseButton')
+	bool mouseButton_[MB_NITEMS];
+	// Key flags (uses enum 'ModifierKey')
+	bool keyModifier_[MK_NITEMS];
+	// Begin an action on the model (called from MouseButtondown)
+	void beginMode(MouseButton);
 	// Handle mouse motion while performing actions
-	void mode_motion(double, double);
+	void modeMotion(double, double);
 	// Handle mousewheel scroll events
-	void mode_scroll(bool);
-	// End an action on the model (called from mouse_buttonup)
-	void end_mode(mouse_button);
+	void modeScroll(bool);
+	// End an action on the model (called from MouseButtonup)
+	void endMode(MouseButton);
 	// Whether the mouse has moved between begin_mode() and end_mode() calls
-	bool hasmoved;
+	bool hasMoved_;
 
 	public:
 	// Set the active mode to the current user mode
-	void use_selectedmode() { activemode = selectedmode; }
+	void useSelectedMode();
 	// Sets the currently selected interact mode
-	void set_selectedmode(user_action);
+	void setSelectedMode(UserAction);
 	// Return the currently selected mode
-	user_action get_selectedmode() { return selectedmode; }
+	UserAction selectedMode();
 	// Inform the canvas of a mouse down event
-	void inform_mousedown(mouse_button, double, double);
+	void informMouseDown(MouseButton, double, double);
 	// Inform the canvas of a mouse up event
-	void inform_mouseup(mouse_button, double, double);
+	void informMouseUp(MouseButton, double, double);
 	// Inform the canvas of a mouse move event
-	void inform_mousemove(double, double);
+	void informMouseMove(double, double);
 	// Inform the canvas of a mouse wheel scroll event
-	void inform_scroll(bool);
+	void informScroll(bool);
 	// Inform the canvas of a keydown event
-	void inform_keydown(key_code);
+	void informKeyDown(key_code);
 	// Inform the canvas of a keydown event
-	void inform_keyup(key_code);
+	void informKeyUp(key_code);
 };
 
 #endif

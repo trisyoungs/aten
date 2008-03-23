@@ -19,17 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
+#include "command/commandlist.h"
 #include "base/master.h"
 #include "base/debug.h"
 #include "base/elements.h"
 #include "classes/forcefield.h"
 #include "parse/filter.h"
+#include "model/model.h"
 
 // Draw unbound atom ('newatom <el> [x y z]')
-int commanddata::function_CA_NEWATOM(command *&c, bundle &obj)
+int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
 	int el;
 	switch (c->argt(0))
@@ -44,22 +45,22 @@ int commanddata::function_CA_NEWATOM(command *&c, bundle &obj)
 			el = elements.find(c->argc(0));
 			break;
 		case (VT_ATOM):
-			c->arga(0) == NULL ? el = 0 : c->arga(0)->get_element();
+			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
 			msg(DM_NONE,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
 			el = 0;
 			break;
 	}
-	if (c->has_arg(3)) master.current.i = obj.m->add_atom(el, c->arg3d(1));
-	else master.current.i = obj.m->add_atom(el, c->get_parent()->penpos);
+	if (c->hasArg(3)) master.current.i = obj.m->addAtom(el, c->arg3d(1));
+	else master.current.i = obj.m->addAtom(el, c->parent()->penPosition);
 	return CR_SUCCESS;
 }
 
 // Draw unbound atom ('newatom <el> [fracx fracy fracz]')
-int commanddata::function_CA_NEWATOMFRAC(command *&c, bundle &obj)
+int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
 	int el;
 	switch (c->argt(0))
@@ -74,7 +75,7 @@ int commanddata::function_CA_NEWATOMFRAC(command *&c, bundle &obj)
 			el = elements.find(c->argc(0));
 			break;
 		case (VT_ATOM):
-			c->arga(0) == NULL ? el = 0 : c->arga(0)->get_element();
+			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
 			msg(DM_NONE,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
@@ -82,169 +83,169 @@ int commanddata::function_CA_NEWATOMFRAC(command *&c, bundle &obj)
 			break;
 	}
 	// Check for presence of unit cell
-	vec3<double> r = c->arg3d(1);
-	if (obj.m->get_celltype() == CT_NONE) msg(DM_NONE,"Warning: No unit cell present - atom added with supplied coordinates.\n");
-	else r = obj.m->get_cell()->frac_to_real(r);
-	master.current.i = obj.m->add_atom(el, r);
+	Vec3<double> r = c->arg3d(1);
+	if (obj.m->cell()->type() == CT_NONE) msg(DM_NONE,"Warning: No unit cell present - atom added with supplied coordinates.\n");
+	else r = obj.m->cell()->fracToReal(r);
+	master.current.i = obj.m->addAtom(el, r);
 	return CR_SUCCESS;
 }
 
 // Draw atom with bond to alst atom ('chain <el>')
-int commanddata::function_CA_CHAIN(command *&c, bundle &obj)
+int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom *i = obj.m->add_atom(elements.find(c->argc(0),ZM_ALPHA), c->get_parent()->penpos);
-	if (obj.i != NULL) obj.m->bond_atoms(obj.i,i,BT_SINGLE);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Atom *i = obj.m->addAtom(elements.find(c->argc(0),ZM_ALPHA), c->parent()->penPosition);
+	if (obj.i != NULL) obj.m->bondAtoms(obj.i,i,BT_SINGLE);
 	master.current.i = i;
 	return CR_SUCCESS;
 }
 
 // Set current atom charge
-int commanddata::function_CA_SETCHARGE(command *&c, bundle &obj)
+int CommandData::function_CA_SETCHARGE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
-	obj.i->set_charge(c->argd(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	obj.i->setCharge(c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom coordinates
-int commanddata::function_CA_SETCOORDS(command *&c, bundle &obj)
+int CommandData::function_CA_SETCOORDS(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(3)) obj.i = obj.m->get_atom(c->argi(3) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
-	obj.m->position_atom(obj.i, c->arg3d(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(3)) obj.i = obj.m->atom(c->argi(3) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	obj.m->positionAtom(obj.i, c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom element
-int commanddata::function_CA_SETELEMENT(command *&c, bundle &obj)
+int CommandData::function_CA_SETELEMENT(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
-	obj.i->set_element(elements.find(c->argc(0)));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	obj.i->setElement(elements.find(c->argc(0)));
 	return CR_SUCCESS;
 }
 
 // Set current atom forces
-int commanddata::function_CA_SETFORCES(command *&c, bundle &obj)
+int CommandData::function_CA_SETFORCES(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(3)) obj.i = obj.m->get_atom(c->argi(3) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(3)) obj.i = obj.m->atom(c->argi(3) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f() = c->arg3d(0);
 	return CR_SUCCESS;
 }
 
 // Set current atom x force
-int commanddata::function_CA_SETFX(command *&c, bundle &obj)
+int CommandData::function_CA_SETFX(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(0,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom y force
-int commanddata::function_CA_SETFY(command *&c, bundle &obj)
+int CommandData::function_CA_SETFY(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(1,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom z force
-int commanddata::function_CA_SETFZ(command *&c, bundle &obj)
+int CommandData::function_CA_SETFZ(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(2,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom ID
-int commanddata::function_CA_SETID(command *&c, bundle &obj)
+int CommandData::function_CA_SETID(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
-	obj.i->set_id(c->argi(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	obj.i->setId(c->argi(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom x coordinate
-int commanddata::function_CA_SETRX(command *&c, bundle &obj)
+int CommandData::function_CA_SETRX(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(0,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom y coordinate
-int commanddata::function_CA_SETRY(command *&c, bundle &obj)
+int CommandData::function_CA_SETRY(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(1,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom z coordinate
-int commanddata::function_CA_SETRZ(command *&c, bundle &obj)
+int CommandData::function_CA_SETRZ(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(2,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom velocities
-int commanddata::function_CA_SETVELOCITIES(command *&c, bundle &obj)
+int CommandData::function_CA_SETVELOCITIES(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(3)) obj.i = obj.m->get_atom(c->argi(3) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(3)) obj.i = obj.m->atom(c->argi(3) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v() = c->arg3d(0);
 	return CR_SUCCESS;
 }
 
 // Set current atom x velocity
-int commanddata::function_CA_SETVX(command *&c, bundle &obj)
+int CommandData::function_CA_SETVX(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(0,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom y velocity
-int commanddata::function_CA_SETVY(command *&c, bundle &obj)
+int CommandData::function_CA_SETVY(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(1,c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Set current atom z velocity
-int commanddata::function_CA_SETVZ(command *&c, bundle &obj)
+int CommandData::function_CA_SETVZ(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->has_arg(1)) obj.i = obj.m->get_atom(c->argi(1) - 1);
-	if (obj.notify_null(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(2,c->argd(0));
 	return CR_SUCCESS;
 }

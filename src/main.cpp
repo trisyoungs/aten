@@ -25,11 +25,8 @@
 #include <iostream>
 #include "parse/parser.h"
 #include "model/model.h"
-#include "classes/fourier.h"
-#include "base/elements.h"
-#include "base/prefs.h"
+#include "command/commandlist.h"
 #include "base/master.h"
-#include "base/debug.h"
 #include "gui/gui.h"
 
 int main(int argc, char *argv[])
@@ -41,70 +38,63 @@ int main(int argc, char *argv[])
 	printf("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
 	// Prepare command line to act on debug options
-	master.debug_cli(argc, argv);
-
-	// Run any early commands that the GUI requires (e.g. g_type_init for GTK+)
-	gui.prepare();
-	
-	// Prepare memdebug variables (if on)
-	prepare_debug();
-
-	char filename[256];
+	master.debugCli(argc, argv);
 
 	srand( (unsigned)time( NULL ) );
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
 	// Get environment variables
-	master.homedir = getenv("HOME");
-	master.workdir = getenv("PWD");
-	master.datadir = getenv("ATENDATA");
-	if (master.datadir.empty())
+	master.homeDir = getenv("HOME");
+	master.workDir = getenv("PWD");
+	master.dataDir = getenv("ATENDATA");
+	if (master.dataDir.empty())
 	{
 		printf("$ATENDATA has not been set.\n");
 		printf("It should point to the (installed) location of the 'data' directory.\n");
 		printf("e.g. (in bash) 'export ATENDATA=/usr/local/share/aten/'.\n");
 		return 1;
 	}
-	printf("Home directory is %s, working directory is %s.\n",master.homedir.get(),master.workdir.get());
+	printf("Home directory is %s, working directory is %s.\n", master.homeDir.get(), master.workDir.get());
 
+	char filename[256];
 	// Read default filters from data directory (pass directory)
-	sprintf(filename,"%s%s",master.datadir.get(),"/filters/");
-	if (!master.open_filters(filename,TRUE)) return 1;
+	sprintf(filename,"%s%s",master.dataDir.get(),"/filters/");
+	if (!master.openFilters(filename,TRUE)) return 1;
 
 	// Read user filters from home directory (pass directory)
-	sprintf(filename,"%s%s",master.homedir.get(),"/.aten/filters/");
-	master.open_filters(filename,FALSE);
+	sprintf(filename,"%s%s",master.homeDir.get(),"/.aten/filters/");
+	master.openFilters(filename,FALSE);
 
 	// Load in user preferences
-	sprintf(filename,"%s%s",master.homedir.get(),"/.aten/prefs.dat");
+	sprintf(filename,"%s%s",master.homeDir.get(),"/.aten/prefs.dat");
 	prefs.load(filename);
 
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
-	if (master.parse_cli(argc,argv) == -1) return -1;
+	if (master.parseCli(argc,argv) == -1) return -1;
 
 	// Do various things depending on the program mode that has been set
 	// Execute scripts / commands if they were provided
-	if (master.get_program_mode() == PM_COMMAND)
+	if (master.programMode() == PM_COMMAND)
 	{
 		// Commands first
-		for (commandlist *cl = master.commands.first(); cl != NULL; cl = cl->next)
+		for (CommandList *cl = master.commands.first(); cl != NULL; cl = cl->next)
 		{
-			if (!cl->execute(NULL)) master.set_program_mode(PM_NONE);
+			if (!cl->execute(NULL)) master.setProgramMode(PM_NONE);
 			// Need to check program mode after each script since it can be changed
-			if (master.get_program_mode() != PM_COMMAND) break;
+			if (master.programMode() != PM_COMMAND) break;
 		}
 		// Now scripts
-		for (commandlist *cl = master.scripts.first(); cl != NULL; cl = cl->next)
+		for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
 		{
-			if (!cl->execute(NULL)) master.set_program_mode(PM_NONE);
+			if (!cl->execute(NULL)) master.setProgramMode(PM_NONE);
 			// Need to check program mode after each script since it can be changed
-			if (master.get_program_mode() != PM_COMMAND) break;
+			if (master.programMode() != PM_COMMAND) break;
 		}
 		// All scripts done - set program mode to PM_GUI if it is still PM_COMMAND
-		if (master.get_program_mode() == PM_COMMAND) master.set_program_mode(PM_GUI);
+		if (master.programMode() == PM_COMMAND) master.setProgramMode(PM_GUI);
 	}
 	// Enter interactive mode once any commands/scripts have been executed
-	if (master.get_program_mode() == PM_INTERACTIVE)
+	if (master.programMode() == PM_INTERACTIVE)
 	{
 		std::string cmd;
 		printf("Entering interactive mode...\n");
@@ -113,26 +103,19 @@ int main(int argc, char *argv[])
 			// Get string from user
 			printf(">>> ");
 			getline(cin,cmd);
-			master.i_script.clear();
-			master.i_script.cache_line(cmd.c_str());
-			master.i_script.execute();
-		} while (master.get_program_mode() == PM_INTERACTIVE);
+			master.interactiveScript.clear();
+			master.interactiveScript.cacheLine(cmd.c_str());
+			master.interactiveScript.execute();
+		} while (master.programMode() == PM_INTERACTIVE);
 		//master.set_program_mode(PM_NONE);
 	}
 	// Enter full GUI 
-	if (master.get_program_mode() == PM_GUI)
+	if (master.programMode() == PM_GUI)
 	{
 		// Add empty model if none were specified on the command line
-		if (master.get_nmodels() == 0) model *m = master.add_model();
+		if (master.nModels() == 0) Model *m = master.addModel();
 		gui.run(argc,argv);
 	}
-
-	// Cleanup
-	master.clear();
-	fourier.clear();
-
-	// Print out final debug information (if on)
-	print_debuginfo();
 
 	// Done.
 	return 0;

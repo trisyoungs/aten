@@ -1,6 +1,6 @@
 /*
-	*** Pointer bundle
-	*** src/classes/bundle.h
+	*** Pointer Bundle
+	*** src/classes/Bundle.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -23,49 +23,49 @@
 #define ATEN_BUNDLE_H
 
 // Forward declarations
-class atom;
-class model;
-class site;
-class forcefield;
-class grid;
-class pattern;
-class glyph;
+class Atom;
+class Model;
+class Site;
+class Forcefield;
+class Grid;
+class Pattern;
+class Glyph;
 
 // Bundle Pointers
-enum bundle_pointer { BP_ATOM=1, BP_PATTERN=2, BP_MODEL=4, BP_FF=8, BP_GRID=16, BP_SITE=32, BP_GLYPH=64 };
+enum BundlePointer { BP_ATOM=1, BP_PATTERN=2, BP_MODEL=4, BP_FF=8, BP_GRID=16, BP_SITE=32, BP_GLYPH=64 };
 
-// Pointer bundle
-// Convenience structure to hold/pass a bundle of current object pointers
-class bundle
+// Pointer Bundle
+// Convenience structure to hold/pass a Bundle of current object pointers
+class Bundle
 {
 	public:
 	// Constructor
-	bundle();
+	Bundle();
 
 	public:
 	// Model pointer
-	model *m;
+	Model *m;
 	// Pattern pointer
-	pattern *p;
+	Pattern *p;
 	// Atom pointer
-	atom *i;
+	Atom *i;
 	//Forcefield pointer
-	forcefield *ff;
+	Forcefield *ff;
 	// Grid pointer
-	grid *g;
+	Grid *g;
 	// Site pointer
-	site *s;
+	Site *s;
 	// Glyph
-	glyph *gl;
+	Glyph *gl;
 
 	/*
 	// Member Functions
 	*/
 	public:
 	// Check for null pointers
-	bool is_null(int);
+	bool isNull(int);
 	// Check and notify of null pointers
-	bool notify_null(int);
+	bool notifyNull(int);
 };
 
 #endif

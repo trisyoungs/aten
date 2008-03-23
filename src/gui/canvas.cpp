@@ -23,46 +23,73 @@
 #include "base/prefs.h"
 #include "gui/gui.h"
 #include "gui/canvas.h"
-#include "render/gl2ps.h"
 #include "gui/tcanvas.uih"
+#include "render/gl2ps.h"
+#include "model/model.h"
 
 // Constructor
-canvas::canvas()
+Canvas::Canvas()
 {
-	valid = FALSE;
-	render_point = -1;
-	drawing = FALSE;
-	displaymodel = NULL;
-	drawpixelwidth = 1.0;
-	activemode = UA_NONE;
-	selectedmode = UA_PICKSELECT;
-	list[0] = 0;
-	contextwidget = NULL;
-	subselect_enabled = FALSE;
+	// Private variables
+	valid_ = FALSE;
+	renderPoint_ = -1;
+	drawing_ = FALSE;
+	displayModel_ = NULL;
+	drawPixelWidth_ = 1.0;
+	activeMode_ = UA_NONE;
+	selectedMode_ = UA_PICKSELECT;
+	list_[0] = 0;
+	contextWidget_ = NULL;
+	subselectEnabled_ = FALSE;
 	for (int i=0; i<3; i++)
 	{
-		mb[i] = FALSE;
-		keymod[i] = FALSE;
+		mouseButton_[i] = FALSE;
+		keyModifier_[i] = FALSE;
 	}
 }
 
-// Destructor
-canvas::~canvas()
+// Set the internal name of the canvas
+void Canvas::setName(const char *s)
 {
+	name_ = s;
+}
+
+// Return the current height of the drawing area
+float Canvas::height()
+{
+	return height_;
+}
+
+// Return the current width of the drawing area
+float Canvas::width()
+{
+	return width_;
+}
+
+// Return whether the canvas is currently drawing
+bool Canvas::isDrawing()
+{
+	return drawing_;
+}
+
+// Return if the canvas is valid
+bool Canvas::isValid()
+{
+	return valid_;
 }
 
 // Begin GL
-bool canvas::begin_gl()
+bool Canvas::beginGl()
 {
-	if (!valid) return FALSE;
-	drawing = TRUE;
+	if (!valid_) return FALSE;
+	drawing_ = TRUE;
 	return TRUE;
 }
 
 // Finalize GL commands
-void canvas::end_gl()
+void Canvas::endGl()
 {
-	drawing = FALSE;
+	drawing_ = FALSE;
 }
 
 /*
@@ -70,87 +97,93 @@ void canvas::end_gl()
 */
 
 // Set widget
-bool canvas::set_widget(TCanvas *w)
+bool Canvas::setWidget(TCanvas *w)
 {
-	contextwidget = w;
+	contextWidget_ = w;
 	return TRUE;
 }
 
 // Widget realize
-void canvas::realize()
+void Canvas::realize()
 {
 	// Sets the canvas to use a widget for output.
-	dbg_begin(DM_CALLS,"canvas::realize");
-	valid = TRUE;
-	init_gl();
-	dbg_end(DM_CALLS,"canvas::realize");
+	dbgBegin(DM_CALLS,"Canvas::realize");
+	valid_ = TRUE;
+	initGl();
+	dbgEnd(DM_CALLS,"Canvas::realize");
 }
 
 // Invalidate
-void canvas::postredisplay()
+void Canvas::postRedisplay()
 {
-	dbg_begin(DM_CALLS,"canvas::postredisplay");
-	if (gui.exists()) contextwidget->paintGL();
-	dbg_end(DM_CALLS,"canvas::postredisplay");
+	dbgBegin(DM_CALLS,"Canvas::postRedisplay");
+	if (gui.exists()) contextWidget_->paintGL();
+	dbgEnd(DM_CALLS,"Canvas::postRedisplay");
 }
 
 // Widget Expose
-void canvas::expose()
+void Canvas::expose()
 {
-	if ((!gui.exists()) || gui.no_rendering() ) return;
+	if ((!gui.exists()) || gui.noRendering() ) return;
 	// Render from the current rendering source
-	render_scene(master.get_currentmodel()->get_render_source());
-	#ifdef SPEEDTEST
-		speedtest_numrenders ++;
-		speedtest_totalrenders ++;
-	#endif
+	renderScene(master.currentModel()->renderSource());
 }
 
 // Widget configure
-void canvas::configure()
+void Canvas::configure()
 {
 	// Store the new width and height of the widget and re-do projection
-	w = (float)contextwidget->width();
-	h = (float)contextwidget->height();
-	do_projection();
+	width_ = (float)contextWidget_->width();
+	height_ = (float)contextWidget_->height();
+	doProjection();
 	// Flag that render source needs to be reprojected
-	if (displaymodel != NULL) displaymodel->log_change(LOG_VISUAL);
+	if (displayModel_ != NULL) displayModel_->logChange(LOG_VISUAL);
+}
+
+/*
+// Rendering
+*/
+
+// Return the current display model
+Model *Canvas::displayModel()
+{
+	return displayModel_;
 }
 
 // Calculate drawing pixel width
-void canvas::calculate_drawpixelwidth()
+void Canvas::calculateDrawPixelWidth()
 {
 	// Get the Angstrom width of a single pixel at the current draw depth in the current view
-	static vec3<double> r1, r2;
-	if (displaymodel != NULL)
+	static Vec3<double> r1, r2;
+	if (displayModel_ != NULL)
 	{
-		r1 = displaymodel->guide_to_model(w/2,h/2);
-		r2 = displaymodel->guide_to_model(w/2+1,h/2);
+		r1 = displayModel_->guideToModel(width_/2, height_/2);
+		r2 = displayModel_->guideToModel(width_/2+1, height_/2);
 		r2 -= r1;
-		drawpixelwidth = r2.x;
+		drawPixelWidth_ = r2.x;
 	}
-	else drawpixelwidth = 1.0;
+	else drawPixelWidth_ = 1.0;
 }
 
 // Set GL options
-void canvas::init_gl()
+void Canvas::initGl()
 {
-	if (!valid) return;
-	dbg_begin(DM_CALLS,"canvas::init_gl");
-	if (begin_gl())
+	if (!valid_) return;
+	dbgBegin(DM_CALLS,"Canvas::initGl");
+	if (beginGl())
 	{
 		// Create lists for globs if this is the first call to init_gl()
-		if (list[0] == 0)
+		if (list_[0] == 0)
 		{
-			list[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
-			for (int n=1; n<GLOB_NITEMS; n++) list[n] = list[GLOB_STICKATOM]+n;
+			list_[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
+			for (int n=1; n<GLOB_NITEMS; n++) list_[n] = list_[GLOB_STICKATOM]+n;
 		}
 
 		// Fill display lists
-		create_lists();
+		createLists();
 
 		// Clear colour
-		GLfloat *clrcol = prefs.get_colour(COL_BG);
+		GLfloat *clrcol = prefs.colour(COL_BG);
 		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 		glClearDepth(1.0);
 		// Perspective hint
@@ -166,86 +199,85 @@ void canvas::init_gl()
 		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 		// Set up the light model
 		glEnable(GL_LIGHTING);
-		glLightfv(GL_LIGHT0,GL_AMBIENT,prefs.get_spotlight(SL_AMBIENT));
-		glLightfv(GL_LIGHT0,GL_DIFFUSE,prefs.get_spotlight(SL_DIFFUSE));
-		glLightfv(GL_LIGHT0,GL_SPECULAR,prefs.get_spotlight(SL_SPECULAR));
-		glLightfv(GL_LIGHT0,GL_POSITION,prefs.get_spotlight(SL_POSITION));
-		prefs.get_spotlight_on() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
+		glLightfv(GL_LIGHT0,GL_AMBIENT,prefs.spotlightColour(SL_AMBIENT));
+		glLightfv(GL_LIGHT0,GL_DIFFUSE,prefs.spotlightColour(SL_DIFFUSE));
+		glLightfv(GL_LIGHT0,GL_SPECULAR,prefs.spotlightColour(SL_SPECULAR));
+		glLightfv(GL_LIGHT0,GL_POSITION,prefs.spotlightPosition());
+		prefs.spotlightActive() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
 		// Configure antialiasing
-		if (prefs.get_gl_option(GO_LINEALIASING))
+		if (prefs.hasGlOption(GO_LINEALIASING))
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_LINE_SMOOTH);
 		}
-		if (prefs.get_gl_option(GO_POLYALIASING))
+		if (prefs.hasGlOption(GO_POLYALIASING))
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_POLYGON_SMOOTH);
 		}
 		// Configure fog effects
-		if (prefs.get_gl_option(GO_FOG))
+		if (prefs.hasGlOption(GO_FOG))
 		{
 			glFogi(GL_FOG_MODE, GL_LINEAR);
-			GLfloat fogColor[4] = { prefs.colours[COL_BG][0], prefs.colours[COL_BG][1], prefs.colours[COL_BG][2], 1.0 };
-			glFogfv(GL_FOG_COLOR, fogColor);
+			glFogfv(GL_FOG_COLOR, prefs.colour(COL_BG));
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);
-			glFogf(GL_FOG_START,prefs.gl_fog_near);
-			glFogf(GL_FOG_END,prefs.gl_fog_far);
+			glFogf(GL_FOG_START,prefs.fogNear());
+			glFogf(GL_FOG_END,prefs.fogFar());
 			glEnable(GL_FOG);
 		}
 		else glDisable(GL_FOG);
 		// Configure face culling
 		glCullFace(GL_BACK);
-		prefs.get_gl_option(GO_BACKCULLING) ? glEnable( GL_CULL_FACE ) : glDisable(GL_CULL_FACE);
+		prefs.hasGlOption(GO_BACKCULLING) ? glEnable( GL_CULL_FACE ) : glDisable(GL_CULL_FACE);
 		// Test
 		// End Test
-		end_gl();
+		endGl();
 	}
 	else printf("Failed to set-up OpenGL on canvas.\n");
-	dbg_end(DM_CALLS,"canvas::init_gl");
+	dbgEnd(DM_CALLS,"Canvas::initGl");
 }
 
 // Create display lists
-void canvas::create_lists()
+void Canvas::createLists()
 {
-	if (!is_valid()) return;
-	dbg_begin(DM_CALLS,"canvas::create_lists");
+	if (!isValid()) return;
+	dbgBegin(DM_CALLS,"Canvas::createLists");
 
-	int n,m, atomdetail, extent, ticks;
+	int n,m, atomdetail, ticks, extent;
 	double delta, tickdelta, tickheight, ticktop, tickbottom, spacing;
 	// Grab some oft-used values
-	atomdetail = prefs.render_atom_detail;
-	spacing = prefs.build_guide_spacing;
-	extent = prefs.build_guide_extent;
-	ticks = prefs.build_guide_ticks;
+	atomdetail = prefs.atomDetail();
+	spacing = prefs.guideSpacing();
+	extent = prefs.guideExtent();
+	ticks = prefs.guideTicks();
 
 	/*
 	// Selected Atoms
 	*/
 	// Enlarged sphere (for selections with DS_TUBE)
-	glNewList(list[GLOB_SELTUBEATOM],GL_COMPILE);
-	  gl_sphere(prefs.render_tube_size*prefs.render_selection_scale, TRUE);
+	glNewList(list_[GLOB_SELTUBEATOM],GL_COMPILE);
+	  glSphere(prefs.tubeSize()*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SPHERE)
-	glNewList(list[GLOB_SELSPHEREATOM],GL_COMPILE);
-	  gl_sphere(prefs.render_atom_size[DS_SPHERE]*prefs.render_selection_scale, TRUE);
+	glNewList(list_[GLOB_SELSPHEREATOM],GL_COMPILE);
+	  glSphere(prefs.atomSize(DS_SPHERE)*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SCALED)
-	glNewList(list[GLOB_SELUNITATOM],GL_COMPILE);
-	  gl_sphere(prefs.render_selection_scale, TRUE);
+	glNewList(list_[GLOB_SELUNITATOM],GL_COMPILE);
+	  glSphere(prefs.selectionScale(), TRUE);
 	glEndList();
 
 	/*
 	// Atoms
 	*/
 	// Stick Atom (for DS_STICK)
-	glNewList(list[GLOB_STICKATOM],GL_COMPILE);
+	glNewList(list_[GLOB_STICKATOM],GL_COMPILE);
 	  glBegin(GL_LINES);
 	    glVertex3f(-0.5f,0.0f,0.0f); glVertex3f(0.5f,0.0f,0.0f);
 	    glVertex3f(0.0f,-0.5f,0.0f); glVertex3f(0.0f,0.5f,0.0f);
@@ -253,49 +285,49 @@ void canvas::create_lists()
 	  glEnd();
 	glEndList();
 	// Atom Sphere (for DS_TUBE)
-	glNewList(list[GLOB_TUBEATOM],GL_COMPILE);
-	  gl_sphere(prefs.render_atom_size[DS_TUBE]*0.98, TRUE);
+	glNewList(list_[GLOB_TUBEATOM],GL_COMPILE);
+	  glSphere(prefs.atomSize(DS_TUBE)*0.98, TRUE);
 	glEndList();
 	// Atom Sphere (for DS_SPHERE)
-	glNewList(list[GLOB_SPHEREATOM],GL_COMPILE);
-	  gl_sphere(prefs.render_atom_size[DS_SPHERE], TRUE);
+	glNewList(list_[GLOB_SPHEREATOM],GL_COMPILE);
+	  glSphere(prefs.atomSize(DS_SPHERE), TRUE);
 	glEndList();
 	// Unit Atom Sphere (for DS_SCALED)
-	glNewList(list[GLOB_UNITATOM],GL_COMPILE);
-	  gl_sphere(1.0, TRUE);
+	glNewList(list_[GLOB_UNITATOM],GL_COMPILE);
+	  glSphere(1.0, TRUE);
 	glEndList();
 	// Wire Atom Sphere (for DS_TUBE)
-	glNewList(list[GLOB_WIRETUBEATOM],GL_COMPILE);
-	  gl_sphere(prefs.render_tube_size*1.1, FALSE);
+	glNewList(list_[GLOB_WIRETUBEATOM],GL_COMPILE);
+	  glSphere(prefs.tubeSize()*1.1, FALSE);
 	glEndList();
 	// Wire Atom Sphere (for DS_SPHERE)
-	glNewList(list[GLOB_WIRESPHEREATOM],GL_COMPILE);
-	  gl_sphere(prefs.render_atom_size[DS_SPHERE]*1.1, FALSE);
+	glNewList(list_[GLOB_WIRESPHEREATOM],GL_COMPILE);
+	  glSphere(prefs.atomSize(DS_SPHERE)*1.1, FALSE);
 	glEndList();
 	// Wire Unit Atom Sphere (for DS_SCALED)
-	glNewList(list[GLOB_WIREUNITATOM],GL_COMPILE);
-	  gl_sphere(1.1, FALSE);
+	glNewList(list_[GLOB_WIREUNITATOM],GL_COMPILE);
+	  glSphere(1.1, FALSE);
 	glEndList();
 	/*
 	// Cylinders (bonds)
 	*/
 	// Solid cylinder
-	glNewList(list[GLOB_CYLINDER],GL_COMPILE);
-	  gl_cylinder(prefs.render_tube_size, TRUE);
+	glNewList(list_[GLOB_CYLINDER],GL_COMPILE);
+	  glCylinder(prefs.tubeSize(), TRUE);
 	glEndList();
 	// Wireframe cylinder
-	glNewList(list[GLOB_WIRECYLINDER],GL_COMPILE);
-	  gl_cylinder(prefs.render_tube_size, FALSE);
+	glNewList(list_[GLOB_WIRECYLINDER],GL_COMPILE);
+	  glCylinder(prefs.tubeSize(), FALSE);
 	glEndList();
 	// Selected wireframe cylinder
-	glNewList(list[GLOB_SELWIRECYLINDER],GL_COMPILE);
-	  gl_cylinder(prefs.render_tube_size*prefs.render_selection_scale, FALSE);
+	glNewList(list_[GLOB_SELWIRECYLINDER],GL_COMPILE);
+	  glCylinder(prefs.tubeSize()*prefs.selectionScale(), FALSE);
 	glEndList();
 	/*
 	// Objects
 	*/
 	// View axes
-	glNewList(list[GLOB_GLOBE],GL_COMPILE);
+	glNewList(list_[GLOB_GLOBE],GL_COMPILE);
 	  glBegin(GL_LINES);
 	    // X
 	    glVertex3f(0.6f,0.0f,0.0f); glVertex3f(0.0f,0.0f,0.0f);
@@ -312,13 +344,13 @@ void canvas::create_lists()
 	    glVertex3f(0.05f,0.0f,0.65f); glVertex3f(-0.05f,0.0f,0.85f);
 	    glVertex3f(-0.05f,0.0f,0.85f); glVertex3f(0.05f,0.0f,0.85f);
 	  glEnd();
-	  gl_sphere(0.5, FALSE);
+	  glSphere(0.5, FALSE);
 	glEndList();
 	// Drawing guide
 	delta = extent * spacing;
 	tickdelta = spacing / ticks;
 	tickheight = spacing * 0.05;
-	glNewList(list[GLOB_GUIDE],GL_COMPILE);
+	glNewList(list_[GLOB_GUIDE],GL_COMPILE);
 	  glBegin(GL_LINES);
 	    for (n=-extent; n<=extent; n++)
 	    {
@@ -344,7 +376,7 @@ void canvas::create_lists()
 	glEndList();
 	// Unit Circle
 	int nsegs = 36;
-	glNewList(list[GLOB_CIRCLE],GL_COMPILE);
+	glNewList(list_[GLOB_CIRCLE],GL_COMPILE);
 	  glBegin(GL_LINE_LOOP);
 	    for (int i=0; i < nsegs; i++)
 	    {
@@ -354,7 +386,7 @@ void canvas::create_lists()
 	  glEnd();
 	glEndList();
 	// Unit Wire Cube (centred at origin)
-	glNewList(list[GLOB_WIREUNITCUBE],GL_COMPILE);
+	glNewList(list_[GLOB_WIREUNITCUBE],GL_COMPILE);
 	  glBegin(GL_LINE_LOOP);
 	    glVertex3d(-0.5,-0.5,-0.5);
 	    glVertex3d(0.5,-0.5,-0.5);
@@ -377,7 +409,7 @@ void canvas::create_lists()
 	  glEnd();
 	glEndList();
 	// Unit Solid Cube (centred at origin)
-	glNewList(list[GLOB_UNITCUBE],GL_COMPILE);
+	glNewList(list_[GLOB_UNITCUBE],GL_COMPILE);
 	  glBegin(GL_QUADS);
 	    glVertex3d(-0.5,-0.5,-0.5);
 	    glVertex3d(0.5,-0.5,-0.5);
@@ -408,7 +440,8 @@ void canvas::create_lists()
 	  glEnd();
 	glEndList();
 	// Cell Axis Arrows
-	glNewList(list[GLOB_CELLAXES],GL_COMPILE);
+	glNewList(list_[GLOB_CELLAXES],GL_COMPILE);
+	  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	  double asize = 0.5, awidth = 0.2, posoffset = 0.5;
 	  for (int i=0; i<3; i++)
 	  {
@@ -418,7 +451,7 @@ void canvas::create_lists()
 		  glPushMatrix();
 		    glScaled(0.5,awidth,awidth);
 		    glTranslated(0.5,0.0,0.0);
-		    glCallList(list[GLOB_UNITCUBE]);
+		    glCallList(list_[GLOB_UNITCUBE]);
 		  glPopMatrix();
 		  glTranslated(posoffset,0.0,0.0);
 		  glBegin(GL_TRIANGLE_FAN);
@@ -433,7 +466,7 @@ void canvas::create_lists()
 	  }
 	glEndList();
 
-	dbg_end(DM_CALLS,"canvas::create_lists");
+	dbgEnd(DM_CALLS,"Canvas::createLists");
 }
 
 /*
@@ -441,50 +474,50 @@ void canvas::create_lists()
 */
 
 // Calculate Projection
-void canvas::do_projection()
+void Canvas::doProjection()
 {
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
 	if (!gui.exists()) return;
-	dbg_begin(DM_CALLS,"canvas::do_projection");
+	dbgBegin(DM_CALLS,"Canvas::doProjection");
 	double pmat[16], bottom, top;
 	// Check source
-	if (begin_gl())
+	if (beginGl())
 	{
 		// Set the viewport size to the whole area and grab the matrix
-		glViewport(0,0,(int)w,(int)h);
+		glViewport(0,0,(int)width_,(int)height_);
 		glGetIntegerv(GL_VIEWPORT,VMAT);
 		// Calculate and store a projection matrix
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		aspect = w / h;
-		if (prefs.render_perspective)
+		aspect_ = width_ / height_;
+		if (prefs.hasPerspective())
 		{
 			// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
-			bottom = tan(prefs.render_fov / DEGRAD) * prefs.gl_clip_near;
+			bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
 			top = -bottom;
-			glFrustum(aspect*top,aspect*bottom,top,bottom,prefs.gl_clip_near,prefs.gl_clip_far);
+			glFrustum(aspect_*top,aspect_*bottom,top,bottom,prefs.clipNear(),prefs.clipFar());
 		}
 		else
 		{
-			bottom = displaymodel->get_ortho_size();
+			bottom = displayModel_->orthoSize();
 			top = -bottom;
 			//glOrtho(aspect*top,aspect*bottom,top,bottom,-bottom*2.0,bottom*2.0);
-			glOrtho(aspect*top,aspect*bottom,top,bottom,-prefs.gl_clip_near,prefs.gl_clip_far);
+			glOrtho(aspect_*top,aspect_*bottom,top,bottom,-prefs.clipNear(),prefs.clipFar());
 		}
 		glGetDoublev(GL_PROJECTION_MATRIX,pmat);
-		PMAT.set_from_column_major(pmat);
+		PMAT.setFromColumnMajor(pmat);
 		// Rotation globe projection matrix (square)
 		glLoadIdentity();
 		glFrustum(-1.0, 1.0, -1.0, 1.0, 0.0, 10.0);
 		glGetDoublev(GL_PROJECTION_MATRIX,pmat); // Store the resulting projection and
-		GlobePMAT.set_from_column_major(pmat);
+		GlobePMAT.setFromColumnMajor(pmat);
 		glMatrixMode(GL_MODELVIEW);
 		// Calculate the new drawpixelwidth
-		calculate_drawpixelwidth();
-		end_gl();
+		calculateDrawPixelWidth();
+		endGl();
 	}
-	else printf("canvas::do_projection <<<< Failed to reset projection matrix >>>>\n");
-	dbg_end(DM_CALLS,"canvas::do_projection");
+	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
+	dbgEnd(DM_CALLS,"Canvas::doProjection");
 }
 
 /*
@@ -492,20 +525,20 @@ void canvas::do_projection()
 */
 
 // Set valid
-void canvas::set_valid(bool b)
+void Canvas::setValid(bool b)
 {
 	// Wait until the canvas is not drawing
-	while (!valid) gui.process_events();
+	while (!valid_) gui.processEvents();
 	// Now disallow drawing before we set the new status
-	valid = FALSE;
-	drawing = FALSE;
-	valid = b;
+	valid_ = FALSE;
+	drawing_ = FALSE;
+	valid_ = b;
 }
 
 /*
 // Save vector image
 */
-void canvas::save_vector(model *source, vector_format vf, const char *filename)
+void Canvas::saveVector(Model *source, vector_format vf, const char *filename)
 {
 	// Open output file
 	FILE *vectorfile = fopen(filename, "w");
@@ -519,10 +552,38 @@ void canvas::save_vector(model *source, vector_format vf, const char *filename)
 	while (result == GL2PS_OVERFLOW)
 	{
 		bufsize += 1024*1024;
-		result = gl2psBeginPage(source->get_name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_DRAW_BACKGROUND | GL2PS_OCCLUSION_CULL, GL_RGBA, 0, 0, 0, 0, 0, bufsize, vectorfile, filename);
+		result = gl2psBeginPage(source->name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_DRAW_BACKGROUND | GL2PS_OCCLUSION_CULL, GL_RGBA, 0, 0, 0, 0, 0, bufsize, vectorfile, filename);
 		printf("Result = %i\n",result);
-		render_scene(source);
+		renderScene(source);
 		result = gl2psEndPage();
 		printf("Result = %i\n",result);
 	}
+}
+
+/*
+// Modes
+*/
+
+// Returns the atom currently under the mouse
+Atom *Canvas::atomHover()
+{
+	return atomHover_;
+}
+
+// Clears the subsel of atoms
+void Canvas::clearSubselection()
+{
+	subselection_.clear();
+}
+
+// Set the active mode to the current user mode
+void Canvas::useSelectedMode()
+{
+	activeMode_ = selectedMode_;
+}
+
+// Return the currently selected mode
+UserAction Canvas::selectedMode()
+{
+	return selectedMode_;
 }

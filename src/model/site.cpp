@@ -23,12 +23,12 @@
 #include "classes/site.h"
 
 // Find site by name
-site *model::find_site(const char *s)
+Site *Model::findSite(const char *s)
 {
-	dbg_begin(DM_CALLS,"model::find_site");
-	site *result = NULL;
-	for (site *xsite = sites.first(); xsite != NULL; xsite = xsite->next)
-		if (strcmp(xsite->get_name(),s) == 0) result = xsite;
-	dbg_end(DM_CALLS,"model::find_site");
+	dbgBegin(DM_CALLS,"Model::findSite");
+	Site *result = NULL;
+	for (result = sites.first(); result != NULL; result = result->next)
+		if (strcmp(result->name(),s) == 0) break;
+	dbgEnd(DM_CALLS,"Model::findSite");
 	return result;
 }

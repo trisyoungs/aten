@@ -22,204 +22,331 @@
 #include "classes/grid.h"
 #include "base/debug.h"
 #include "base/constants.h"
-#ifdef IS_MAC
-	#include <OpenGL/gl.h>
-#else
-	#include <GL/gl.h>
-#endif
+#include <QtOpenGL/QtOpenGL>
 
 // Constructor
-grid::grid()
+Grid::Grid()
 {
+	// Private variables
+	data_ = NULL;
+	dataFull_ = FALSE;
+	minimum_ = 10000.0;
+	maximum_ = -10000.0;
+	cutoff_ = 0.0;
+	log_ = -1;
+	style_ = SS_SOLID;
+	displayList_ = 0;
+	renderPoint_ = -1;
+	visible_ = TRUE;
+	colour_[0] = 1.0f;
+	colour_[1] = 0.0f;
+	colour_[2] = 0.0f;
+	colour_[3] = 0.5f;
+	loopOrder_.set(0,1,2);
+	// Public variables
 	prev = NULL;
 	next = NULL;
-	data = NULL;
-	datafull = FALSE;
-	min = 10000.0;
-	max = -10000.0;
-	cutoff = 0.0;
-	log = -1;
-	style = SS_SOLID;
-	displaylist = 0;
-	render_point = -1;
-	visible = TRUE;
-	colour[0] = INT_MAX;
-	colour[1] = 0;
-	colour[2] = 0;
-	colour[3] = INT_MAX / 2;
-	looporder.set(0,1,2);
 }
 
 // Destructor
-grid::~grid()
+Grid::~Grid()
 {
 	clear();
+}
+
+// Set name of Grid data
+void Grid::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Return name of Grid data
+const char *Grid::name()
+{
+	return name_.get();
+}
+
+
+// Return the Grid axes
+Mat3<double> Grid::axes()
+{
+	return cell_.axes();
+}
+
+// Return lengths of cell axiss
+Vec3<double> Grid::lengths()
+{
+	return cell_.lengths();
+}
+
+// Set data origin
+void Grid::setOrigin(const Vec3<double> v)
+{
+	origin_ = v; log_++;
+}
+
+// Return the origin of the Grid data
+Vec3<double> Grid::origin()
+{
+	return origin_;
+}
+
+// Return number of points in data series
+Vec3<int> Grid::nPoints()
+{
+	return nPoints_;
+}
+
+// Return minimum value in data[]
+double Grid::minimum()
+{
+	return minimum_;
+}
+
+// Return maximum value in data[]
+double Grid::maximum()
+{
+	return maximum_;
+}
+
+// Set isovalue cutoff for surface
+void Grid::setCutoff(double d)
+{
+	cutoff_ = d; log_++;
+}
+
+// Return isovalue cutoff for surface
+double Grid::cutoff()
+{
+	return cutoff_;
+}
+
+// Return data array
+double ***Grid::data()
+{
+	return data_;
+}
+
+// Set loop ordering
+void Grid::setLoopOrder(int n, int xyz)
+{
+	loopOrder_.set(n,xyz);
+}
+
+// Return whether re-rendering is necessary
+bool Grid::shouldRerender()
+{
+	return (renderPoint_ == log_ ? FALSE : TRUE);
+}
+
+// Update the log point of the surface
+void Grid::updateRenderPoint()
+{
+	renderPoint_ = log_;
+}
+
+// Set whether the surface is visible
+void Grid::setVisible(bool v)
+{
+	visible_ = v;
+}
+
+// Return whether the surface is visible
+bool Grid::isVisible()
+{
+	return visible_;
+}
+
+// Set the rendering style of the surface
+void Grid::setStyle(SurfaceStyle ss)
+{
+	style_ = ss;
+	log_++;
+}
+
+// Return the rendering style of the surface
+SurfaceStyle Grid::style()
+{
+	return style_;
+}
+
+// Set transparency of the surface
+void Grid::setTransparency(GLfloat a)
+{
+	colour_[3] = a;
+	log_++;
+}
+
+// Return the colour of the surface
+GLfloat *Grid::colour()
+{
+	return colour_;
 }
 
 // Create data array (from npoints vector)
-void grid::create()
+void Grid::create()
 {
-	dbg_begin(DM_CALLS,"grid::create");
+	dbgBegin(DM_CALLS,"Grid::create");
 	clear();
 	int i, j;
-	if (data != NULL) clear();
-	data = new double**[npoints.x];
-	for (i = 0; i<npoints.x; i++)
+	if (data_ != NULL) clear();
+	data_ = new double**[nPoints_.x];
+	for (i = 0; i<nPoints_.x; i++)
 	{
-		data[i] = new double*[npoints.y];
-		for (j = 0; j<npoints.y; j++) data[i][j] = new double[npoints.z];
+		data_[i] = new double*[nPoints_.y];
+		for (j = 0; j<nPoints_.y; j++) data_[i][j] = new double[nPoints_.z];
 	}
-	dbg_end(DM_CALLS,"grid::create");
+	dbgEnd(DM_CALLS,"Grid::create");
 }
 
 // Clear data array
-void grid::clear()
+void Grid::clear()
 {
-	dbg_begin(DM_CALLS,"grid::clear");
-	datafull = FALSE;
-	min = 10000.0;
-	max = -10000.0;
-	cutoff = 0.0;
-	currentpoint.zero();
-	visible = TRUE;
-	if (data == NULL) return;
+	dbgBegin(DM_CALLS,"Grid::clear");
+	dataFull_ = FALSE;
+	minimum_ = 10000.0;
+	maximum_ = -10000.0;
+	cutoff_ = 0.0;
+	currentPoint_.zero();
+	visible_ = TRUE;
+	if (data_ == NULL) return;
 	int i, j;
-	for (i = 0; i<npoints.x; i++)
+	for (i = 0; i<nPoints_.x; i++)
 	{
-		for (j = 0; j<npoints.y; j++) delete[] data[i][j];
-		delete[] data[i];
+		for (j = 0; j<nPoints_.y; j++) delete[] data_[i][j];
+		delete[] data_[i];
 	}
-	delete[] data;
-	data = NULL;
-	dbg_end(DM_CALLS,"grid::clear");
+	delete[] data_;
+	data_ = NULL;
+	dbgEnd(DM_CALLS,"Grid::clear");
 }
 
 // Set spacing for a cubic grid
-void grid::set_axes(double r)
+void Grid::setAxes(double r)
 {
-	cell.set( vec3<double>(r,r,r), vec3<double>(90.0, 90.0, 90.0) );
-	log++;
+	cell_.set( Vec3<double>(r,r,r), Vec3<double>(90.0, 90.0, 90.0) );
+	log_++;
 }
 
 // Set spacing for an orthorhombic grid
-void grid::set_axes(const vec3<double> v)
+void Grid::setAxes(const Vec3<double> v)
 {
-	cell.set( v, vec3<double>(90.0, 90.0, 90.0) );
-	log++;
+	cell_.set( v, Vec3<double>(90.0, 90.0, 90.0) );
+	log_++;
 }
 
 // Set spacing for a parallelepiped grid
-void grid::set_axes(const mat3<double> m)
+void Grid::setAxes(const Mat3<double> m)
 {
-	cell.set(m);
-	log++;
+	cell_.set(m);
+	log_++;
 }
 
 // Set grid extent (and data[])
-void grid::set_npoints(vec3<int> v)
+void Grid::setNPoints(Vec3<int> v)
 {
-	dbg_begin(DM_CALLS,"grid::set_npoints");
-	npoints = v;
-	log ++;
+	dbgBegin(DM_CALLS,"Grid::setNPoints");
+	nPoints_ = v;
+	log_ ++;
 	create();
-	dbg_end(DM_CALLS,"grid::set_npoints");
+	dbgEnd(DM_CALLS,"Grid::setNPoints");
 }
 
 // Update minimum / maximum based on supplied value
-void grid::set_limits(double d)
+void Grid::setLimits(double d)
 {
-	if (d < min) min = d;
-	else if (d > max) max = d;
-	cutoff = (max - min) * 0.5 + min;
+	if (d < minimum_) minimum_ = d;
+	else if (d > maximum_) maximum_ = d;
+	cutoff_ = (maximum_ - minimum_) * 0.5 + minimum_;
 }
 
 // Set specific point in data array
-void grid::set_data(int x, int y, int z, double d)
+void Grid::setData(int x, int y, int z, double d)
 {
 	// Check limits against npoints vector
-	if ((x < 0) || (x >= npoints.x))
+	if ((x < 0) || (x >= nPoints_.x))
 	{
-		msg(DM_NONE,"grid::set_data(x,y,z) - X index is outside array bounds.\n");
+		msg(DM_NONE,"Grid::set_data(x,y,z) - X index is outside array bounds.\n");
 		return;
 	}
-	else if ((y < 0) || (y >= npoints.y))
+	else if ((y < 0) || (y >= nPoints_.y))
 	{
-		msg(DM_NONE,"grid::set_data(x,y,z) - Y index is outside array bounds.\n");
+		msg(DM_NONE,"Grid::set_data(x,y,z) - Y index is outside array bounds.\n");
 		return;
 	}
-	else if ((z < 0) || (z >= npoints.z))
+	else if ((z < 0) || (z >= nPoints_.z))
 	{
-		msg(DM_NONE,"grid::set_data(x,y,z) - Z index is outside array bounds.\n");
+		msg(DM_NONE,"Grid::set_data(x,y,z) - Z index is outside array bounds.\n");
 		return;
 	}
 	// Okay, so store data
-	data[x][y][z] = d;
+	data_[x][y][z] = d;
 	// Set new minimum / maximum
-	set_limits(d);
+	setLimits(d);
 }
 
 // Set 'next' point in data array
-void grid::set_next_data(double d)
+void Grid::setNextData(double d)
 {
 	// Check limit
-	if (datafull == TRUE)
+	if (dataFull_ == TRUE)
 	{
-		msg(DM_NONE,"grid::set_next_data - Array already full.\n");
+		msg(DM_NONE,"Grid::setNextData - Array already full.\n");
 		return;
 	}
 	// Set current point referenced by currentpoint
-	data[currentpoint.x][currentpoint.y][currentpoint.z] = d;
+	data_[currentPoint_.x][currentPoint_.y][currentPoint_.z] = d;
 	// Increase currentpoint
-	currentpoint.set(looporder.x, currentpoint.get(looporder.x) + 1);
-	if (currentpoint.get(looporder.x) == npoints.get(looporder.x))
+	currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
+	if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))
 	{
-		currentpoint.set(looporder.x, 0);
-		currentpoint.set(looporder.y, currentpoint.get(looporder.y) + 1);
-		if (currentpoint.get(looporder.y) == npoints.get(looporder.y))
+		currentPoint_.set(loopOrder_.x, 0);
+		currentPoint_.set(loopOrder_.y, currentPoint_.get(loopOrder_.y) + 1);
+		if (currentPoint_.get(loopOrder_.y) == nPoints_.get(loopOrder_.y))
 		{
-			currentpoint.set(looporder.y, 0);
-			currentpoint.set(looporder.z, currentpoint.get(looporder.z) + 1);
-			if (currentpoint.get(looporder.z) == npoints.get(looporder.z)) datafull = TRUE;
+			currentPoint_.set(loopOrder_.y, 0);
+			currentPoint_.set(loopOrder_.z, currentPoint_.get(loopOrder_.z) + 1);
+			if (currentPoint_.get(loopOrder_.z) == nPoints_.get(loopOrder_.z)) dataFull_ = TRUE;
 		}
 	}
 	// Set new minimum / maximum
-	set_limits(d);
+	setLimits(d);
 }
 
 // Set surface colour
-void grid::set_colour(int r, int g, int b)
+void Grid::setColour(int r, int g, int b)
 {
-	colour[0] = r;
-	colour[1] = g;
-	colour[2] = b;
-	log ++;
+	colour_[0] = r;
+	colour_[1] = g;
+	colour_[2] = b;
+	log_ ++;
 }
 
-void grid::set_colour(double r, double g, double b)
+void Grid::setColour(double r, double g, double b)
 {
-	colour[0] = (GLfloat) r;
-	colour[1] = (GLfloat) g;
-	colour[2] = (GLfloat) b;
-	log ++;
+	colour_[0] = (GLfloat) r;
+	colour_[1] = (GLfloat) g;
+	colour_[2] = (GLfloat) b;
+	log_ ++;
 }
 
 // Convert Bohr to Angstrom
-void grid::bohr_to_angstrom()
+void Grid::bohrToAngstrom()
 {
 	// Only the axes and origin need to be modified...
-	mat3<double> newaxes = cell.get_axes();
+	Mat3<double> newaxes = cell_.axes();
 	newaxes *= ANGBOHR;
-	cell.set(newaxes);
-	origin *= ANGBOHR;
+	cell_.set(newaxes);
+	origin_ *= ANGBOHR;
 }
 
 // Return displaylist (create first if necessary)
-GLuint grid::get_displaylist()
+GLuint Grid::displayList()
 {
-	if (displaylist == 0)
+	if (displayList_ == 0)
 	{
-		displaylist = glGenLists(1);
-		if (displaylist == 0) printf("Critical - couldn't generate display list for grid data.\n");
+		displayList_ = glGenLists(1);
+		if (displayList_ == 0) printf("Critical - couldn't generate display list for grid data.\n");
 	}
-	return displaylist;
+	return displayList_;
 }

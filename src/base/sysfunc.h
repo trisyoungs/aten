@@ -23,7 +23,7 @@
 #define ATEN_SYSFUNC_H
 
 // Forward declarations
-class variable_list;
+class VariableList;
 
 // Number/string conversion
 const char *itoa(int);
@@ -31,19 +31,19 @@ const char *ftoa(double);
 const char *ftoa(double, const char*);
 
 // String functions
-const char *remove_path(const char*);
-const char *upper_case(const char*);
-const char *lower_case(const char*);
-const char *get_before_comma(const char*);
-const char *get_after_comma(const char*);
-const char *strip_trailing(const char*);
+const char *removePath(const char*);
+const char *upperCase(const char*);
+const char *lowerCase(const char*);
+//const char *beforeComma(const char*);
+//const char *afterComma(const char*);
+const char *stripTrailing(const char*);
 
 // Enum search
-int enum_search(const char *name, int nitems, const char **list, const char *query);
-int enum_search_data(const char *name, int nitems, const char **list, const char *query);
-int sinlist(const char *query, const char *delimlist);
+int enumSearch(const char *name, int nitems, const char **list, const char *query);
+//int enumSearchData(const char *name, int nitems, const char **list, const char *query);
+int sInList(const char *query, const char *delimlist);
 
 // Expression evaluate
-const char *evaluate(const char*, variable_list*);
+const char *evaluate(const char*, VariableList*);
 
 #endif

@@ -20,25 +20,56 @@
 */
 
 #include "base/master.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/gui.h"
+#include "model/model.h"
 
 // Local variables
 bool cellpage_refreshing = FALSE;
 
-void AtenForm::refresh_cellpage()
+void AtenForm::on_CellLengthASpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellLengthBSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellLengthCSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellAngleASpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellAngleBSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellAngleCSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::refreshCellPage()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	unitcell *cell = master.get_currentmodel()->get_cell();
-	cell_type ct = cell->get_type();
+	Cell *cell = master.currentModel()->cell();
+	CellType ct = cell->type();
 	static char s[64];
-	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->get_volume());
+	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->volume());
 	ui.CellVolumeLabel->setText(s);
 	if (cellpage_refreshing) return;
 	else cellpage_refreshing = TRUE;
 	// Update the widgets on the page to reflect the current model's unit cell
 
-	if (cell->get_type() == CT_NONE)
+	if (cell->type() == CT_NONE)
 	{
 		// No cell, so disable group boxes and quit
 		ui.CellDefinitionGroup->setChecked(FALSE);
@@ -55,9 +86,9 @@ void AtenForm::refresh_cellpage()
 		ui.CellScaleGroup->setEnabled(TRUE);
 	}
 	// Set values in spin boxes
-	vec3<double> lengths, angles;
-	lengths = cell->get_lengths();
-	angles = cell->get_angles();
+	Vec3<double> lengths, angles;
+	lengths = cell->lengths();
+	angles = cell->angles();
 	ui.CellLengthASpin->setValue(lengths.x);
 	ui.CellLengthBSpin->setValue(lengths.y);
 	ui.CellLengthCSpin->setValue(lengths.z);
@@ -67,21 +98,21 @@ void AtenForm::refresh_cellpage()
 	cellpage_refreshing = FALSE;
 }
 
-void AtenForm::cell_changed()
+void AtenForm::cellChanged()
 {
 	if (cellpage_refreshing) return;
 	else cellpage_refreshing = TRUE;
 	// Construct length and angle vectors and set cell of model
-	static vec3<double> lengths, angles;
+	static Vec3<double> lengths, angles;
 	lengths.set(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value());
 	angles.set(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	// Make changes
-	model *m = master.get_currentmodel();
-	if (m->get_celltype() == CT_NONE) m->begin_undostate("Add Cell");
-	else m->begin_undostate("Change Cell");
-	m->set_cell(lengths, angles);
-	m->end_undostate();
-	m->calculate_density();
+	Model *m = master.currentModel();
+	if (m->cell()->type() == CT_NONE) m->beginUndostate("Add Cell");
+	else m->beginUndostate("Change Cell");
+	m->setCell(lengths, angles);
+	m->endUndostate();
+	m->calculateDensity();
 	gui.refresh();
 	cellpage_refreshing = FALSE;
 }
@@ -89,13 +120,13 @@ void AtenForm::cell_changed()
 void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 {
 	// If the group is checked we store the current spin values in the current model.
-	if (checked) cell_changed();
+	if (checked) cellChanged();
 	else
 	{
-		model *m = master.get_currentmodel();
-		m->begin_undostate("Remove Cell");
-		m->remove_cell();
-		m->end_undostate();
+		Model *m = master.currentModel();
+		m->beginUndostate("Remove Cell");
+		m->removeCell();
+		m->endUndostate();
 	}
 	gui.refresh();
 }
@@ -103,29 +134,29 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 void AtenForm::on_CellReplicateButton_clicked(bool checked)
 {
 	// Get values from spin boxes...
-	vec3<double> neg, pos;
+	Vec3<double> neg, pos;
 	neg.x = ui.CellReplicateNegXSpin->value();
 	neg.y = ui.CellReplicateNegYSpin->value();
 	neg.z = ui.CellReplicateNegZSpin->value();
 	pos.x = ui.CellReplicatePosXSpin->value();
 	pos.y = ui.CellReplicatePosYSpin->value();
 	pos.z = ui.CellReplicatePosZSpin->value();
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Replicate Cell");
-	m->replicate_cell(neg, pos);
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Replicate Cell");
+	m->replicateCell(neg, pos);
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_CellScaleButton_clicked(bool checked)
 {
-	vec3<double> scale;
+	Vec3<double> scale;
 	scale.x = ui.CellScaleXSpin->value();
 	scale.y = ui.CellScaleYSpin->value();
 	scale.z = ui.CellScaleZSpin->value();
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Scale Cell");
-	m->scale_cell(scale);
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Scale Cell");
+	m->scaleCell(scale);
+	m->endUndostate();
 	gui.refresh();
 }

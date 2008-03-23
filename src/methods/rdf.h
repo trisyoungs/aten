@@ -25,28 +25,28 @@
 #include "methods/quantity.h"
 
 // Forward Declarations
-class site;
+class Site;
 
 // Radial Distribution Function Class
-class rdf : public calculable
+class Rdf : public Calculable
 {
 	public:
 	// Constructor / Destructor
-	rdf();
-	~rdf();
+	Rdf();
+	~Rdf();
 
 	/*
 	// Sites
 	*/
 	private:
 	// Centres involved in RDF
-	site *sites[2];
+	Site *sites_[2];
 	
 	public:
 	// Set site involved in RDF
-	void set_site(int, site*);
+	void setSite(int, Site*);
 	// Get site involved in RDF
-	site *get_site(int);
+	Site *site(int);
 
 	/*
 	// Methods
@@ -55,9 +55,9 @@ class rdf : public calculable
 	// Initialise structure
 	bool initialise();
 	// Accumulate quantity data from supplied config
-	void accumulate(model*);
+	void accumulate(Model*);
 	// Finalise data
-	void finalise(model*);
+	void finalise(Model*);
 	// Save data
 	bool save();
 
@@ -66,30 +66,30 @@ class rdf : public calculable
 	*/
 	private:
 	// Number of bins in each dimension
-	int nbins;
+	int nBins_;
 	// Minimum / maximum coordinates and range of data
-	double lower, upper, range;
+	double lower_, upper_, range_;
 	// Step size between bins
-	double binwidth;
+	double binWidth_;
 
 	public:
 	// Set rdf range
-	void set_range(double, double, int);
+	void setRange(double, double, int);
 	// Get lower limit
-	double get_lower() { return lower; }
+	double lower();
 	// Get stepsize
-	double get_binwidth() { return binwidth; }
+	double binWidth();
 	// Get number of bins
-	int get_nbins() { return nbins; }
+	int nBins();
 
 	/*
 	// Data
 	*/
 	private:
 	// Distribution function
-	double *data;
+	double *data_;
 	// Count for number of added data (i.e. nframes)
-	int acc;
+	int nAdded_;
 };
 
 #endif

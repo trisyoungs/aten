@@ -22,27 +22,32 @@
 #ifndef ATEN_SD_H
 #define ATEN_SD_H
 
-#include "model/model.h"
 #include "methods/linemin.h"
 
+// Forward Declarations
+class Model;
+
 // Steepest Descent Minimiser
-class sd_method : public linemin
+class MethodSd : public LineMinimiser
 {
 	public:
 	// Constructor
-	sd_method();
+	MethodSd();
 
 	private:
 	// Maximum number of iterations to perform
-	int ncycles;
+	int nCycles_;
 
 	public:
 	// Set maximum number of cycles to perform
-	void set_ncycles(int i) { ncycles = i; }
+	void setNCycles(int i);
 	// Get maximum number of  for MC move
-	int get_ncycles() { return ncycles; }
+	int nCycles() const;
 	// Minimise the specified model
-	void minimise(model *source, double econ, double fcon);
+	void minimise(Model *source, double econ, double fcon);
 };
+
+// Static Singleton
+extern MethodSd sd;
 
 #endif

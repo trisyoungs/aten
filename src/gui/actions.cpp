@@ -20,9 +20,10 @@
 */
 
 #include "base/master.h"
-#include "gui/gui.h"
+//#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
+#include "model/model.h"
 
 /*
 // Draw style Actions
@@ -32,25 +33,25 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 {
 	// If the source action is not checked, ignore the signal
 	if (!action->isChecked()) return;
-	model *m, *trajframe;
-	draw_style ds = DS_STICK;
+	Model *m, *trajframe;
+	DrawStyle ds = DS_STICK;
 	if (action == ui.actionStyleStick) ds = DS_STICK;
 	else if (action == ui.actionStyleTube) ds = DS_TUBE;
 	else if (action == ui.actionStyleSphere) ds = DS_SPHERE;
 	else if (action == ui.actionStyleScaled) ds = DS_SCALED;
 	else if (action == ui.actionStyleIndividual) ds = DS_INDIVIDUAL;
-	prefs.set_render_style(ds);
+	prefs.setRenderStyle(ds);
 	// Inform the displayed model
-	m = master.get_currentmodel();
-	m->project_all();
-	m->log_change(LOG_VISUAL);
-	trajframe = m->get_currentframe();
+	m = master.currentModel();
+	m->projectAll();
+	m->logChange(LOG_VISUAL);
+	trajframe = m->currentFrame();
 	if (trajframe != NULL)
 	{
-		trajframe->project_all();
-		trajframe->log_change(LOG_VISUAL);
+		trajframe->projectAll();
+		trajframe->logChange(LOG_VISUAL);
 	}
-	gui.mainview.postredisplay();
+	gui.mainView.postRedisplay();
 }
 
 /*
@@ -59,5 +60,5 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 
 void AtenForm::on_actionPreferences_triggered(bool checked)
 {
-	gui.prefsdialog->show();
+	gui.prefsDialog->show();
 }

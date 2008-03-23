@@ -19,40 +19,41 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <math.h>
+#include "templates/vector3.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"
 #include "classes/energystore.h"
-#include "templates/vector3.h"
-#include <math.h>
+#include "model/model.h"
 
 // Torsion energy
-void pattern::torsion_energy(model *srcmodel, energystore *estore, int molecule)
+void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
-	dbg_begin(DM_CALLS,"pattern::torsion_energy");
+	dbgBegin(DM_CALLS,"Pattern::torsionEnergy");
 	int n,i,j,k,l,aoff,m1;
 	static double k0, k1, k2, k3, k4, eq, phi, energy, period;
-	patbound *pb;
-	static ffparams params;
-	vec3<double> vecij, veckj;
+	PatternBound *pb;
+	static ForcefieldParams params;
+	Vec3<double> vecij, veckj;
 	energy = 0.0;
-	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule + 1); m1++)
+	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule + 1); m1++)
 	{
-		for (pb = torsions.first(); pb != NULL; pb = pb->next)
+		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 		{
 			// Grab atom indices and calculate torsion angle (in radians)
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(1) + aoff;
-			k = pb->get_atomid(2) + aoff;
-			l = pb->get_atomid(3) + aoff;
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(1) + aoff;
+			k = pb->atomId(2) + aoff;
+			l = pb->atomId(3) + aoff;
 			phi = srcmodel->torsion(i,j,k,l);
-			params = pb->get_data()->get_params();
+			params = pb->data()->params();
 			// Calculate energy
-			switch (pb->get_data()->get_funcform().torsionfunc)
+			switch (pb->data()->functionalForm().torsionFunc)
 			{
 				case (TF_UNSPECIFIED):
-					printf("pattern::torsion_energy <<<< Torsion function is UNSPECIFIED >>>>\n");
+					printf("Pattern::torsionEnergy <<<< Torsion function is UNSPECIFIED >>>>\n");
 					break;
 				case (TF_COSINE): 
 					// U(phi) = forcek * (1 + cos(period*phi - eq))
@@ -85,20 +86,20 @@ void pattern::torsion_energy(model *srcmodel, energystore *estore, int molecule)
 					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
 					break;
 			}
-			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->get_atomid(0),pb->get_atomid(1),pb->get_atomid(2),pb->get_atomid(3), phi,energy);
+			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->atomId(0),pb->atomId(1),pb->atomId(2),pb->atomId(3), phi,energy);
 		}
-		aoff += natoms;
+		aoff += nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(ET_TORSION,energy,id);
+	estore->add(ET_TORSION,energy,id_);
 	//estore->torsion[id] += energy;
-	dbg_end(DM_CALLS,"pattern::torsion_energy");
+	dbgEnd(DM_CALLS,"Pattern::torsionEnergy");
 }
 
 // Returns a unit vector in the specified direction
-vec3<double> unit_vector(int n)
+Vec3<double> unit_vector(int n)
 {
-	vec3<double> result;
+	Vec3<double> result;
 	result.zero();
 	result.set(n,1.0);
 	return result;
@@ -111,10 +112,10 @@ int cp(int n)
 }
 
 // Construct 'cross-product' vector of the supplied vector using cyclic permutations
-mat3<double> make_cp_mat(vec3<double> *v)
+Mat3<double> make_cp_mat(Vec3<double> *v)
 {
-	mat3<double> result;
-	vec3<double> temp;
+	Mat3<double> result;
+	Vec3<double> temp;
 	for (int n=0; n<3; n++)
 	{
 		temp = unit_vector(cp(n+1)) * v->get(cp(n+2)) - unit_vector(cp(n+2)) * v->get(cp(n+1));
@@ -124,33 +125,33 @@ mat3<double> make_cp_mat(vec3<double> *v)
 }
 
 // Torsion forces
-void pattern::torsion_forces(model *srcmodel)
+void Pattern::torsionForces(Model *srcmodel)
 {
 	// Calculate force contributions from the torsions in this pattern with coordinates from *xcfg
-	dbg_begin(DM_CALLS,"pattern::torsion_forces");
+	dbgBegin(DM_CALLS,"Pattern::torsionForces");
 	int n,i,j,k,l,aoff,m1;
-	static vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
-	static mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
+	static Vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
+	static Mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
 	static double cosphi, phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
-	static vec3<double> fi, fj, fk, fl;
-	static ffparams params;
+	static Vec3<double> fi, fj, fk, fl;
+	static ForcefieldParams params;
 	static double k0, k1, k2, k3, k4;
-	patbound *pb;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
+	PatternBound *pb;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
 
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	aoff = startAtom_;
+	for (m1=0; m1<nMols_; m1++)
 	{
-		for (pb = torsions.first(); pb != NULL; pb = pb->next)
+		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 		{
 			// Calculate general components of the torsion forces
 			// Grab atomic indices
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(1) + aoff;
-			k = pb->get_atomid(2) + aoff;
-			l = pb->get_atomid(3) + aoff;
-			params = pb->get_data()->get_params();
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(1) + aoff;
+			k = pb->atomId(2) + aoff;
+			l = pb->atomId(3) + aoff;
+			params = pb->data()->params();
 			// Calculate vectors between atoms
 			rij = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 			rkj = cell->mimd(modelatoms[k]->r(), modelatoms[j]->r());
@@ -161,8 +162,8 @@ void pattern::torsion_forces(model *srcmodel)
 			// Calculate cross products and torsion angle formed (in radians)
 			xpj = rij * rkj;
 			xpk = rlk * rkj;
-			mag_xpj = xpj.mag_and_normalise();
-			mag_xpk = xpk.mag_and_normalise();
+			mag_xpj = xpj.magAndNormalise();
+			mag_xpk = xpk.magAndNormalise();
 			dp = xpj.dp(xpk);
 			phi = acos(dp);
 			// Derivative w.r.t. change in torsion angle
@@ -198,10 +199,10 @@ void pattern::torsion_forces(model *srcmodel)
 			dcos_dxpk = (xpj - xpk * dp) / mag_xpk;
 
 			// Generate derivative of energy function (placed in 'du_dphi')
-			switch (pb->get_data()->get_funcform().torsionfunc)
+			switch (pb->data()->functionalForm().torsionFunc)
 			{
 				case (TF_UNSPECIFIED):
-					printf("pattern::torsion_energy <<<< Torsion function is UNSPECIFIED >>>>\n");
+					printf("Pattern::torsionForces <<<< Torsion function is UNSPECIFIED >>>>\n");
 					du_dphi = 0.0;
 					break;
 				case (TF_COSINE): 
@@ -258,7 +259,7 @@ void pattern::torsion_forces(model *srcmodel)
 			modelatoms[l]->f() += fl;
 
 		}
-		aoff += natoms;
+		aoff += nAtoms_;
 	}
-	dbg_end(DM_CALLS,"pattern::torsion_forces");
+	dbgEnd(DM_CALLS,"Pattern::torsionForces");
 }

@@ -25,34 +25,35 @@
 #include "templates/vector3.h"
 
 // Forward declarations
-class unitcell;
-class model;
+class Cell;
+class Model;
 
 // Fourier
-struct fourier_data
+class FourierData
 {
+	public:
 	// Constructor / Destructor
-	fourier_data();
-	~fourier_data();
-	vec3<double> **rcos, **rsin;
-	int natoms, kmax;
-	vec3<int> kvec;
-	unitcell *cell;
+	FourierData();
+	~FourierData();
+	Vec3<double> **rCos, **rSin;
+	int nAtoms, kMax;
+	Vec3<int> kVec;
+	Cell *cell;
 	// Parameters used in Ewald sum.
-	double alpha, alphasq;
+	double alpha, alphaSq;
 	// Class Functions
 	// Delete the vector arrays in the class
 	void clear();
 	// Create the vector arrays in the class
-	void create(int, vec3<int>, int);
+	void create(int, Vec3<int>, int);
 	// Calculate all atomic kvectors from the supplied config
-	void calculate(model*);
+	void calculate(Model*);
 	// Calculate selected range of atomic vectors from supplied config
-	void calculate(model*, int, int);
+	void calculate(Model*, int, int);
 	// Prepares the class with the specifications provided (and 'calculates')
-	void prepare(model*, vec3<int>);
+	void prepare(Model*, Vec3<int>);
 };
 
-extern fourier_data fourier;
+extern FourierData fourier;
 
 #endif

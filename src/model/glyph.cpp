@@ -1,6 +1,6 @@
 /*
-	*** Spacegroup generator
-	*** src/base/generator.h
+	*** Model glyph functions
+	*** src/model/glyph.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,23 +19,19 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GENERATOR_H
-#define ATEN_GENERATOR_H
+#include "classes/glyph.h"
+#include "model/model.h"
 
-#include "templates/vector3.h"
+// Create new glyph in this model
+Glyph *Model::addGlyph()
+{
+	logChange(LOG_VISUAL);
+	return glyphs_.add();
+}
 
-// Symmetry generator
-class Generator {
-	/*
-	// Rotation Matrix and Translation Vector
-	*/
-	public:
-	// Short text 'description'
-	const char *description;
-	// Rotation matrix
-	Mat3<double> rotation;
-	// Translation vector
-	Vec3<double> translation;
-};
+// Return list of glyphs
+Glyph *Model::glyphs()
+{
+	return glyphs_.first();
+}
 
-#endif

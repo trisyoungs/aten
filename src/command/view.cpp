@@ -26,54 +26,54 @@
 #include <time.h>
 
 // Reset view
-int commanddata::function_CA_RESETVIEW(command *&c, bundle &obj)
+int CommandData::function_CA_RESETVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->reset_view();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->resetView();
 	gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Rotate view
-int commanddata::function_CA_ROTATEVIEW(command *&c, bundle &obj)
+int CommandData::function_CA_ROTATEVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->rotate(c->argd(0), c->argd(1));
 	gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Translate view
-int commanddata::function_CA_TRANSLATEVIEW(command *&c, bundle &obj)
+int CommandData::function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->adjust_camera(c->arg3d(0),0.0);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->adjustCamera(c->arg3d(0),0.0);
 	gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Zoom view
-int commanddata::function_CA_ZOOMVIEW(command *&c, bundle &obj)
+int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->adjust_camera(0.0,0.0,c->argd(2),0.0);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->adjustCamera(0.0,0.0,c->argd(2),0.0);
 	gui.refresh();
 	return CR_SUCCESS;
 }
 
 // ZRotate view
-int commanddata::function_CA_ZROTATEVIEW(command *&c, bundle &obj)
+int CommandData::function_CA_ZROTATEVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->zrotate(c->argd(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->zRotate(c->argd(0));
 	gui.refresh();
 	return CR_SUCCESS;
 }
 
 // Render speed test
-int commanddata::function_CA_SPEEDTEST(command *&c, bundle &obj)
+int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (!gui.exists())
 	{
 		msg(DM_NONE,"Can't perform rendering speedtest without the GUI.\n");
@@ -81,7 +81,7 @@ int commanddata::function_CA_SPEEDTEST(command *&c, bundle &obj)
 	}
 	clock_t tstart = clock();
 	// Loop over n renders (or 100 of no variable given)
-	int nrenders = (c->has_arg(0) ? c->argi(0) : 100);
+	int nrenders = (c->hasArg(0) ? c->argi(0) : 100);
 	for (int n=0; n < nrenders; n ++)
 	{
 		obj.m->rotate(5.0,0.0);

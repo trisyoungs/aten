@@ -29,58 +29,83 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype*" };
-const char *text_from_VT(variable_type vt)
+const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype_*" };
+const char *text_from_VT(VariableType vt)
 	{ return VT_keywords[vt]; }
 
-// Constructors
-variable::variable(variable_type vt)
+// Constructor
+Variable::Variable(VariableType vt)
 {
+	// Private variables
+	name_.set("unnamed");
+	type_ = vt;
+	constant_ = FALSE;
+	// Public variables
 	prev = NULL;
 	next = NULL;
-	name.set("unnamed");
-	type = vt;
-	constant = FALSE;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_VARIABLE] ++;
-	#endif
 }
 
-variable_list::variable_list()
+// Set name of variable
+void Variable::setName(const char* s)
 {
-	#ifdef MEMDEBUG
-		memdbg.create[MD_VARIABLELIST] ++;
-	#endif
+	name_.set(s);
 }
 
-// Destructors
-variable::~variable()
+// Copy pointer contents of source variable
+void Variable::copyPointer(Variable *v)
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_VARIABLE] ++;
-	#endif
+	ptrValue_ = v->ptrValue_;
 }
 
-variable_list::~variable_list()
+// Sets the content type of the variable
+void Variable::setType(VariableType vt)
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_VARIABLELIST] ++;
-	#endif
+	type_ = vt;
+}
+
+// Set the variable to be a constant
+void Variable::setConstant()
+{
+	constant_ = 1;
+}
+
+// Returns content type of the variable
+VariableType Variable::type()
+{
+	return type_;
+}
+
+// Get name of variable
+const char *Variable::name()
+{
+	return name_.get();
+}
+
+// Get value of variable as float
+float Variable::asFloat()
+{
+	return float(asDouble());
+}
+
+// Get value of variable as pointer
+void *Variable::asPointer()
+{
+	return ptrValue_;
 }
 
 // Print
-void variable::print()
+void Variable::print()
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_CHAR):
-			printf("Variable '%s', type 'char', value '%s'.\n", name.get(), get_as_char());
+			printf("Variable '%s', type_ 'char', value '%s'.\n", name_.get(), asCharacter());
 			break;
 		case (VT_INTEGER):
-			printf("Variable '%s', type 'int', value '%i'.\n", name.get(), get_as_int());
+			printf("Variable '%s', type_ 'int', value '%i'.\n", name_.get(), asInteger());
 			break;
 		case (VT_DOUBLE):
-			printf("Variable '%s', type 'double', value '%f'.\n", name.get(), get_as_double());
+			printf("Variable '%s', type_ 'double', value '%f'.\n", name_.get(), asDouble());
 			break;
 		case (VT_ATOM):
 		case (VT_MODEL):
@@ -88,180 +113,180 @@ void variable::print()
 		case (VT_BOND):
 		case (VT_ANGLE):
 		case (VT_TORSION):
-			printf("Variable '%s', type '%s', value '%li'.\n", name.get(), text_from_VT(type), ptrvalue);
+			printf("Variable '%s', type_ '%s', value '%li'.\n", name_.get(), text_from_VT(type_), ptrValue_);
 			break;
 		case (VT_ATOMTYPE):
-			printf("Variable '%s', type 'atomtype', value '%i'.\n", name.get(), get_as_int());
+			printf("Variable '%s', type_ 'atomtype_', value '%i'.\n", name_.get(), asInteger());
 			break;
 	}
 }
 
 // Set (from char)
-void variable::set(const char *s)
+void Variable::set(const char *s)
 {
-	if (type == VT_CHAR) charvalue.set(s);
-	else if (type == VT_INTEGER) intvalue = atoi(s);
-	else if (type == VT_DOUBLE) doublevalue = atof(s);
-	else printf("variable::set <<<< Can't set variable '%s' which is of type '%s' from a character string >>>>\n", name.get(), text_from_VT(type));
+	if (type_ == VT_CHAR) charValue_.set(s);
+	else if (type_ == VT_INTEGER) intValue_ = atoi(s);
+	else if (type_ == VT_DOUBLE) doubleValue_ = atof(s);
+	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a character string >>>>\n", name_.get(), text_from_VT(type_));
 }
 
 // Set (int)
-void variable::set(int i)
+void Variable::set(int i)
 {
-	if (type == VT_CHAR) charvalue.set(itoa(i));
-	else if (type == VT_INTEGER) intvalue = i;
-	else if (type == VT_DOUBLE) doublevalue = i;
-	else printf("variable::set <<<< Can't set variable '%s' which is of type '%s' from an integer value >>>>\n", name.get(), text_from_VT(type));
+	if (type_ == VT_CHAR) charValue_.set(itoa(i));
+	else if (type_ == VT_INTEGER) intValue_ = i;
+	else if (type_ == VT_DOUBLE) doubleValue_ = i;
+	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from an integer value >>>>\n", name_.get(), text_from_VT(type_));
 }
 
 // Set (double)
-void variable::set(double d)
+void Variable::set(double d)
 {
-	if (type == VT_CHAR) charvalue.set(ftoa(d));
-	else if (type == VT_INTEGER) intvalue = int(d);
-	else if (type == VT_DOUBLE) doublevalue = d;
-	else printf("variable::set <<<< Can't set variable '%s' which is of type '%s' from a double value >>>>\n", name.get(), text_from_VT(type));
+	if (type_ == VT_CHAR) charValue_.set(ftoa(d));
+	else if (type_ == VT_INTEGER) intValue_ = int(d);
+	else if (type_ == VT_DOUBLE) doubleValue_ = d;
+	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a double value >>>>\n", name_.get(), text_from_VT(type_));
 }
 
 // Set (atom*)
-void variable::set(atom *i)
+void Variable::set(Atom *i)
 {
-	if (type != VT_ATOM)
+	if (type_ != VT_ATOM)
 	{
-		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'atom*' >>>>\n",name.get(), text_from_VT(type));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'atom*' >>>>\n",name_.get(), text_from_VT(type_));
 		return;
 	}
-	ptrvalue = i;
-	msg(DM_VERBOSE,"Atom variable '%s' set to '%li' ('%s')\n",name.get(),i,(i == NULL ? "" : elements.symbol(i)));
+	ptrValue_ = i;
+	msg(DM_VERBOSE,"Atom variable '%s' set to '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
 }
 
 // Set (pattern)
-void variable::set(pattern *p)
+void Variable::set(Pattern *p)
 {
-	if (type != VT_PATTERN)
+	if (type_ != VT_PATTERN)
 	{
-		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'pattern*' >>>>\n",name.get(), text_from_VT(type));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'pattern*' >>>>\n",name_.get(), text_from_VT(type_));
 		return;
 	}
-	ptrvalue = p;
-	msg(DM_VERBOSE,"Pattern variable '%s' set to '%li' ('%s')\n",name.get(),p,(p == NULL ? "" : p->get_name()));
+	ptrValue_ = p;
+	msg(DM_VERBOSE,"Pattern variable '%s' set to '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
 }
 
 // Set (model)
-void variable::set(model *m)
+void Variable::set(Model *m)
 {
-	if (type != VT_MODEL)
+	if (type_ != VT_MODEL)
 	{
-		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'model*' >>>>\n",name.get(), text_from_VT(type));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'model*' >>>>\n",name_.get(), text_from_VT(type_));
 		return;
 	}
-	ptrvalue = m;
-	msg(DM_VERBOSE,"Model variable '%s' set to '%li' ('%s')\n",name.get(),m,(m == NULL ? "" : m->get_name()));
+	ptrValue_ = m;
+	msg(DM_VERBOSE,"Model variable '%s' set to '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
 }
 
-// Set (patbound)
-void variable::set(patbound *pb)
+// Set (PatternBound)
+void Variable::set(PatternBound *pb)
 {
-	if (type < VT_BOND)
+	if (type_ < VT_BOND)
 	{
-		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'patbound*' >>>>\n",name.get(), text_from_VT(type));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'PatternBound*' >>>>\n",name_.get(), text_from_VT(type_));
 		return;
 	}
-	ptrvalue = pb;
-	msg(DM_VERBOSE,"PatBound variable '%s' set to '%li'\n",name.get(),pb);
+	ptrValue_ = pb;
+	msg(DM_VERBOSE,"PatBound variable '%s' set to '%li'\n",name_.get(),pb);
 }
 
-// Set (ffatom)
-void variable::set(ffatom *ffa)
+// Set (ForcefieldAtom)
+void Variable::set(ForcefieldAtom *ffa)
 {
-	if (type < VT_ATOMTYPE)
+	if (type_ < VT_ATOMTYPE)
 	{
-		printf("variable::set <<<< Tried to set variable '%s' which is of type '%s' as if it were of type 'ffatom*' >>>>\n",name.get(), text_from_VT(type));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'ForcefieldAtom*' >>>>\n",name_.get(), text_from_VT(type_));
 		return;
 	}
-	ptrvalue = ffa;
-	msg(DM_VERBOSE,"FFAtom variable '%s' set to '%li'\n",name.get(),ffa);
+	ptrValue_ = ffa;
+	msg(DM_VERBOSE,"FFAtom variable '%s' set to '%li'\n",name_.get(),ffa);
 }
 
 // Get as char
-const char *variable::get_as_char()
+const char *Variable::asCharacter()
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_CHAR):
-			return charvalue.get();
+			return charValue_.get();
 		case (VT_INTEGER):
-			return itoa(intvalue);
+			return itoa(intValue_);
 		case (VT_DOUBLE):
-			return ftoa(doublevalue);
+			return ftoa(doubleValue_);
 		default:
-			msg(DM_VERBOSE,"variable::get_as_char <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
+			msg(DM_VERBOSE,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return "";
 }
 
 // Get as int
-int variable::get_as_int()
+int Variable::asInteger()
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_CHAR):
-			return atoi(charvalue.get());
+			return atoi(charValue_.get());
 		case (VT_INTEGER):
-			return intvalue;
+			return intValue_;
 		case (VT_DOUBLE):
-			return int(doublevalue);
+			return int(doubleValue_);
 		default:
-			msg(DM_VERBOSE,"variable::get_as_int <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
+			msg(DM_VERBOSE,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return 0;
 }
 
 // Get as double
-double variable::get_as_double()
+double Variable::asDouble()
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_CHAR):
-			return atof(charvalue.get());
+			return atof(charValue_.get());
 		case (VT_INTEGER):
-			return double(intvalue);
+			return double(intValue_);
 		case (VT_DOUBLE):
-			return doublevalue;
+			return doubleValue_;
 		default:
-			msg(DM_VERBOSE,"variable::get_as_double <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
+			msg(DM_VERBOSE,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return 0.0;
 }
 
 // Get as boolean
-bool variable::get_as_bool()
+bool Variable::asBool()
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_CHAR):
-			return charvalue.as_bool();
+			return charValue_.asBool();
 		case (VT_INTEGER):
-			return (intvalue < 1 ? FALSE : TRUE);
+			return (intValue_ < 1 ? FALSE : TRUE);
 		default:
-			msg(DM_VERBOSE,"variable::get_as_bool <<<< Tried to get variable '%s' which is of type '%s' >>>>\n", name.get(), text_from_VT(type));
+			msg(DM_VERBOSE,"Variable::get_as_bool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return FALSE;
 }
 
 // Reset
-void variable::reset()
+void Variable::reset()
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_CHAR):
-			charvalue.set("");
+			charValue_.set("");
 			break;
 		case (VT_INTEGER):
-			intvalue = 0;
+			intValue_ = 0;
 			break;
 		case (VT_DOUBLE):
-			doublevalue = 0.0;
+			doubleValue_ = 0.0;
 			break;
 		case (VT_ATOM):
 		case (VT_PATTERN):
@@ -270,81 +295,81 @@ void variable::reset()
 		case (VT_ANGLE):
 		case (VT_TORSION):
 		case (VT_ATOMTYPE):
-			ptrvalue = NULL;
+			ptrValue_ = NULL;
 			break;
 	}
 }
 
 // Integer increase
-void variable::increase(int n)
+void Variable::increase(int n)
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_INTEGER):
-			intvalue ++;
+			intValue_ ++;
 			break;
 		case (VT_DOUBLE):
-			doublevalue += 1.0;
+			doubleValue_ += 1.0;
 			break;
 		case (VT_ATOM):
-			ptrvalue = ( (atom*) ptrvalue)->next;
+			ptrValue_ = ( (Atom*) ptrValue_)->next;
 			break;
 		case (VT_PATTERN):
-			ptrvalue = ( (pattern*) ptrvalue)->next;
+			ptrValue_ = ( (Pattern*) ptrValue_)->next;
 			break;
 		case (VT_MODEL):
-			ptrvalue = ( (model*) ptrvalue)->next;
+			ptrValue_ = ( (Model*) ptrValue_)->next;
 			break;
 		case (VT_BOND):
 		case (VT_ANGLE):
 		case (VT_TORSION):
-			ptrvalue = ( (patbound*) ptrvalue)->next;
+			ptrValue_ = ( (PatternBound*) ptrValue_)->next;
 			break;
 		case (VT_ATOMTYPE):
-			ptrvalue = ( (ffatom*) ptrvalue)->next;
+			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->next;
 			break;
 		default:
-			printf("variable::increase <<<< Don't know how to increase variable '%s', type '%s' >>>>\n", name.get(), text_from_VT(type));
+			printf("Variable::increase <<<< Don't know how to increase variable '%s', type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 			break;
 	}
 }
 
 // Integer Decrease
-void variable::decrease(int n)
+void Variable::decrease(int n)
 {
-	switch (type)
+	switch (type_)
 	{
 		case (VT_INTEGER):
-			intvalue --;
+			intValue_ --;
 			break;
 		case (VT_DOUBLE):
-			doublevalue -= 1.0;
+			doubleValue_ -= 1.0;
 			break;
 		case (VT_ATOM):
-			ptrvalue = ( (atom*) ptrvalue)->prev;
+			ptrValue_ = ( (Atom*) ptrValue_)->prev;
 			break;
 		case (VT_PATTERN):
-			ptrvalue = ( (pattern*) ptrvalue)->prev;
+			ptrValue_ = ( (Pattern*) ptrValue_)->prev;
 			break;
 		case (VT_MODEL):
-			ptrvalue = ( (model*) ptrvalue)->prev;
+			ptrValue_ = ( (Model*) ptrValue_)->prev;
 			break;
 		case (VT_BOND):
 		case (VT_ANGLE):
 		case (VT_TORSION):
-			ptrvalue = ( (patbound*) ptrvalue)->prev;
+			ptrValue_ = ( (PatternBound*) ptrValue_)->prev;
 			break;
 		case (VT_ATOMTYPE):
-			ptrvalue = ( (ffatom*) ptrvalue)->prev;
+			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->prev;
 			break;
 		default:
-			printf("variable::decrease <<<< Don't know how to decrease variable '%s', type '%s' >>>>\n", name.get(), text_from_VT(type));
+			printf("Variable::decrease <<<< Don't know how to decrease variable '%s', type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 			break;
 	}
 }
 
 // Retrieve named variable
-variable* variable_list::get(const char *prefix, const char *suffix)
+Variable *VariableList::get(const char *prefix, const char *suffix)
 {
 	static char name[128];
 	strcpy(name,prefix);
@@ -353,13 +378,13 @@ variable* variable_list::get(const char *prefix, const char *suffix)
 		strcat(name,".");
 		strcat(name,suffix);
 	}
-	for (variable *v = vars.first(); v != NULL; v = v->next)
-		if (strcmp(name,v->get_name()) == 0) return v;
+	for (Variable *v = vars_.first(); v != NULL; v = v->next)
+		if (strcmp(name,v->name()) == 0) return v;
 	return NULL;
 }
 
 // Add named variable
-variable *variable_list::add_variable(const char *prefix, const char *suffix, variable_type vt)
+Variable *VariableList::addVariable(const char *prefix, const char *suffix, VariableType vt)
 {
 	static char name[128];
 	strcpy(name,prefix);
@@ -368,21 +393,21 @@ variable *variable_list::add_variable(const char *prefix, const char *suffix, va
 		strcat(name,".");
 		strcat(name,suffix);
 	}
-	variable *result = vars.add();
-	result->set_name(name);
-	result->set_type(vt);
+	Variable *result = vars_.add();
+	result->setName(name);
+	result->setType(vt);
 	return result;
 }
 
 // Create, don't set, named variable
-variable *variable_list::create_variable(const char *prefix, const char *suffix, variable_type vt)
+Variable *VariableList::createVariable(const char *prefix, const char *suffix, VariableType vt)
 {
 	// First, see if this variable already exists
-	variable *result = get(prefix, suffix);
-	if (result == NULL) result = add_variable(prefix, suffix, vt);
+	Variable *result = get(prefix, suffix);
+	if (result == NULL) result = addVariable(prefix, suffix, vt);
 	else
 	{
-		// Check type of existing variable
+		// Check type_ of existing variable
 		static char name[128];
 		strcpy(name,prefix);
 		if (suffix[0] != '\0')
@@ -390,9 +415,9 @@ variable *variable_list::create_variable(const char *prefix, const char *suffix,
 			strcat(name,".");
 			strcat(name,suffix);
 		}
-		if (result->get_type() != vt)
+		if (result->type() != vt)
 		{
-			printf("Variable '%s' already exists and is of type '%s'.\n", name, text_from_VT(vt));
+			printf("Variable '%s' already exists and is of type_ '%s'.\n", name, text_from_VT(vt));
 			result = NULL;
 		}
 	}
@@ -400,15 +425,15 @@ variable *variable_list::create_variable(const char *prefix, const char *suffix,
 }
 
 // Add constant
-variable *variable_list::add_constant(const char *s)
+Variable *VariableList::addConstant(const char *s)
 {
 	static char newname[24];
 	// Sink name as static character value
-	variable *result = vars.add();
+	Variable *result = vars_.add();
 	strcpy(newname,"_variable");
-	strcat(newname,itoa(vars.size()));
-	result->set_name(newname);
-	// Try to determine type of the argument
+	strcat(newname,itoa(vars_.nItems()));
+	result->setName(newname);
+	// Try to determine type_ of the argument
 	int i, ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
 	for (i = 0; i < strlen(s); i++)
 	{
@@ -419,18 +444,18 @@ variable *variable_list::add_constant(const char *s)
 		else if ((ch == 'e') || (ch == 'E')) ne ++;
 		else nch ++;
 	}
-	// Based on the numbers we calculated, try to determine its type
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) result->set_type(VT_CHAR);
-	else if (ndp == 1) result->set_type(VT_DOUBLE);
-	else result->set_type(VT_INTEGER);
-	//printf("DETERMINED CONSTANT '%s' TO BE OF TYPE '%s'\n",s,text_from_VT(result->get_type()));
-	result->set_constant();
+	// Based on the numbers we calculated, try to determine its type_
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) result->setType(VT_CHAR);
+	else if (ndp == 1) result->setType(VT_DOUBLE);
+	else result->setType(VT_INTEGER);
+	//printf("DETERMINED CONSTANT '%s' TO BE OF TYPE '%s'\n",s,text_from_VT(result->get_type_()));
+	result->setConstant();
 	result->set(s);
 	return result;
 }
 
 // Set existing variable (or add new and set) (VT_CHAR)
-void variable_list::set(const char *prefix, const char *suffix, const char *value)
+void VariableList::set(const char *prefix, const char *suffix, const char *value)
 {
 	static char newname[128];
 	strcpy(newname,prefix);
@@ -439,13 +464,13 @@ void variable_list::set(const char *prefix, const char *suffix, const char *valu
 		strcat(newname,".");
 		strcat(newname,suffix);
 	}
-	variable *v = get(newname);
-	if (v == NULL) v = add_variable(newname, VT_CHAR);
+	Variable *v = get(newname);
+	if (v == NULL) v = addVariable(newname, VT_CHAR);
 	v->set(value);
 }
 
 // Set existing variable (or add new and set) (VT_INTEGER)
-void variable_list::set(const char *prefix, const char *suffix, int value)
+void VariableList::set(const char *prefix, const char *suffix, int value)
 {
 	static char newname[128];
 	strcpy(newname,prefix);
@@ -454,13 +479,13 @@ void variable_list::set(const char *prefix, const char *suffix, int value)
 		strcat(newname,".");
 		strcat(newname,suffix);
 	}
-	variable *v = get(newname);
-	if (v == NULL) v = add_variable(newname, VT_INTEGER);
+	Variable *v = get(newname);
+	if (v == NULL) v = addVariable(newname, VT_INTEGER);
 	v->set(value);
 }
 
 // Set existing variable (or add new and set) (VT_DOUBLE)
-void variable_list::set(const char *prefix, const char *suffix, double value)
+void VariableList::set(const char *prefix, const char *suffix, double value)
 {
 	static char newname[128];
 	strcpy(newname,prefix);
@@ -469,35 +494,35 @@ void variable_list::set(const char *prefix, const char *suffix, double value)
 		strcat(newname,".");
 		strcat(newname,suffix);
 	}
-	variable *v = get(newname);
-	if (v == NULL) v = add_variable(newname, VT_DOUBLE);
+	Variable *v = get(newname);
+	if (v == NULL) v = addVariable(newname, VT_DOUBLE);
 	v->set(value);
 }
 
 // Print list of variables in list
-void variable_list::print()
+void VariableList::print()
 {
-	for (variable *v = vars.first(); v != NULL; v = v->next)
-		printf("VAR=[%s] (%li) VALUE=[%s]\n",v->get_name(),v,v->get_as_char());
+	for (Variable *v = vars_.first(); v != NULL; v = v->next)
+		printf("VAR=[%s] (%li) VALUE=[%s]\n",v->name(),v,v->asCharacter());
 }
 
 // Clear all variable values
-void variable_list::reset_all()
+void VariableList::resetAll()
 {
-	dbg_begin(DM_CALLS,"variable_list::reset_all");
-	for (variable *v = vars.first(); v != NULL; v = v->next) v->reset();
-	dbg_end(DM_CALLS,"variable_list::reset_all");
+	dbgBegin(DM_CALLS,"VariableList::resetAll");
+	for (Variable *v = vars_.first(); v != NULL; v = v->next) v->reset();
+	dbgEnd(DM_CALLS,"VariableList::resetAll");
 }
 
 // Clear list of variables
-void variable_list::reset(const char *s, ...)
+void VariableList::reset(const char *s, ...)
 {
-	dbg_begin(DM_CALLS,"variable_list::reset");
+	dbgBegin(DM_CALLS,"VariableList::reset");
 	// List of variables must be ended by "".
 	static char name[64];
 	va_list namelist;
 	va_start(namelist,s);
-	variable *v;
+	Variable *v;
 	// Reset 's' first
 	get(s)->reset();
 	do
@@ -506,9 +531,9 @@ void variable_list::reset(const char *s, ...)
 		if (name[0] != '\0')
 		{
 			v = get(name);
-			if (v == NULL) printf("variable_list::reset <<<< '%s' not in list >>>>\n",name);
+			if (v == NULL) printf("VariableList::reset <<<< '%s' not in list >>>>\n",name);
 			else v->reset();
 		}
 	} while (name[0] != '\0');
-	dbg_end(DM_CALLS,"variable_list::reset");
+	dbgEnd(DM_CALLS,"VariableList::reset");
 }

@@ -23,20 +23,20 @@
 #define ATEN_DNCHAR_H
 
 // Dynamic character array
-class dnchar
+class Dnchar
 {
 	private:
 	// Current size
-	int size;
+	int size_;
 	// Position of '\0' character
-	int endpos;
+	int endPosition_;
 	// Pointer to character array
-	char *data;
+	char *data_;
 
 	public:
 	// Constructor / Destructor
-	dnchar();
-	~dnchar();
+	Dnchar();
+	~Dnchar();
 	// Print string info
 	void print() const;
 	// Clear string but don't free
@@ -46,9 +46,9 @@ class dnchar
 	// Get value
 	const char *get() const;
 	// Resize data
-	void create_empty(int);
-	// Resize data (to be same length as source dnchar)
-	void create_empty(dnchar&);
+	void createEmpty(int);
+	// Resize data (to be same length as source Dnchar)
+	void createEmpty(Dnchar&);
 	// Returns the length of the current string
 	int length() const;
 	// Returns TRUE if current length is 1 or less.
@@ -56,37 +56,37 @@ class dnchar
 	// Erase range of characters from the string
 	void erase(int, int);
 	// Erase 'n' characters from start of string
-	void erasestart(int);
+	void eraseStart(int);
 	// Erase 'n' characters from end of string
-	void eraseend(int);
+	void eraseEnd(int);
 	// Find position of first occurrence of character 'c'
 	int find(char);
 	// Cut n characters from start of string and place in other
-	void cutstart(int, dnchar&);
+	void cutStart(int, Dnchar&);
 	// Concatenate supplied string on to end
 	void cat(const char*);
 	// Assignment operator
 	void operator=(const char*);
 	// Assignment operator
-	void operator=(const dnchar&);
+	void operator=(const Dnchar&);
 	// Equality operator (const char*)
 	bool operator==(const char*) const;
 	// Equality operator
-	bool operator==(const dnchar&) const;
+	bool operator==(const Dnchar&) const;
 	// Inequality operator
-	bool operator!=(const dnchar&) const;
+	bool operator!=(const Dnchar&) const;
 	// Array subscript operator
 	char operator[](int) const;
 	// Character addition operator
 	void operator+=(char);
 	// Returns contents as double
-	double as_double() const;
+	double asDouble() const;
 	// Returns contents as integer
-	int as_integer() const;
+	int asInteger() const;
 	// Returns contents as bool
-	bool as_bool() const;
+	bool asBool() const;
 	// Returns true if the string contains a number
-	bool is_numeric() const;
+	bool isNumeric() const;
 };
 
 #endif

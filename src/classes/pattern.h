@@ -22,7 +22,7 @@
 #ifndef ATEN_PATTERN_H
 #define ATEN_PATTERN_H
 
-#include "model/model.h"
+//#include "model/model.h"
 #include "classes/atom.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
@@ -31,274 +31,286 @@
 #include "classes/forcefield.h"
 
 // Forward declarations
-class energystore;
-class atomtype;
-class region;
+class EnergyStore;
+class Atomtype;
+class ComponentRegion;
+class Model;
 
 // Structures to hold/point to forcefield descriptions in patterns.
-class patatom
+class PatternAtom
 {
 	public:
-	// Constructor / Destructor
-	patatom();
-	~patatom();
+	// Constructor
+	PatternAtom();
 	// List pointers
-	patatom *prev, *next;
+	PatternAtom *prev, *next;
 
 	/*
 	// FF and atom data
 	*/
 	private:
 	// Original FF type of atom
-	ffatom *data;
+	ForcefieldAtom *data_;
 	// Pointer to atom in parent xmodel
-	atom *i;
+	Atom *atom_;
 
 	public:
 	// Set ff type of pattern atom
-	void set_data(ffatom *ffa) { data = ffa; }
+	void setData(ForcefieldAtom *ffa);
 	// Get ff type of pattern atom
-	ffatom *get_data() { return data; }
+	ForcefieldAtom *data();
 	// Set pointer to atom in patterns representative molecule
-	void set_atom(atom *a) { i = a; }
+	void setAtom(Atom *a);
 	// Get pointer to atom in patterns representative molecule
-	atom *get_atom() { return i; }
+	Atom *atom();
 };
 
-class patbound
+class PatternBound
 {
 	public:
-	// Constructor / Destructor
-	patbound();
-	~patbound();
+	// Constructor
+	PatternBound();
 	// List pointers
-	patbound *prev, *next;
+	PatternBound *prev, *next;
 
 	/*
 	// FF term data
 	*/
 	private:
 	// Atoms involved in bond (referring to local molecule atom ids)
-	int id[MAXFFBOUNDTYPES];
+	int id_[MAXFFBOUNDTYPES];
 	// Pointer to function data / form
-	ffbound *data;
+	ForcefieldBound *data_;
 
 	public:
 	// Set atom id
-	void set_atomid(int n, int i) { (n < MAXFFBOUNDTYPES ? id[n] = i : printf("OUTOFRANGE:patbound")); }
-	int get_atomid(int n) { return id[n]; }
+	void setAtomId(int n, int i);
+	// Return atom id
+	int atomId(int n);
 	// Set function data
-	void set_data(ffbound *ffb) { data = ffb; }
+	void setData(ForcefieldBound *ffb);
 	// Get function data
-	ffbound *get_data() { return data; }
+	ForcefieldBound *data();
 };
 
 // Pattern Node
-class pattern
+class Pattern
 {
 	public:
 	// Constructor / Destructor
-	pattern();
-	~pattern();
+	Pattern();
+	~Pattern();
 	// List pointers
-	pattern *prev, *next;
+	Pattern *prev, *next;
 
 	/*
 	// Definition
 	*/
 	private:
 	// Parent model
-	model *parent;
+	Model *parent_;
 	// Internal ID of the pattern (order in the pnode* list)
-	int id;
+	int id_;
 	// Internally numbered atom IDs which this node ends at
-	int endatom;
+	int endAtom_;
 	// Number of atoms in each 'molecule'
-	int natoms;
+	int nAtoms_;
 	// Internally numbered atom IDs which this node starts at
-	int startatom;
+	int startAtom_;
 	// Number of 'molecules' this pattern encompasses
-	int nmols;
+	int nMols_;
 	// Expected number of molecules (used by disordered builder)
-	int expectedmols;
+	int nExpectedMols_;
 	// Total number of atoms in the pattern
-	int totalatoms;
+	int totalAtoms_;
 	// Pointer to the first atom in the pattern
-	atom *firstatom;
+	Atom *firstAtom_;
 	// Pointer to last atom in pattern (used by some methods)
-	atom *lastatom;
+	Atom *lastAtom_;
 	// Atom limit test, element composition test
-	bool test_atomlimit, test_el;
+	bool testAtomLimit_, testElement_;
 	// Bonding test
-	bool test_bonding;
-	// Remove atom from local list
-	void delete_atom(atom*);
+	bool testBonding_;
 	// Used in various methods
-	bool fixed;
+	bool fixed_;
 	// Specific forcefield to use (otherwise use model->ffs)
-	forcefield *ff;
+	Forcefield *forcefield_;
 	// Short name of the pattern (initially set to "n*m")
-	dnchar name;
+	Dnchar name_;
+	// Remove atom from local list
+	void deleteAtom(Atom*);
 
 	public:
 	// Basic model containing a representative molecule of the pattern
-	model molecule;
+	Model *molecule;
 	// Sets up variables in pattern
 	void initialise(int, int, int, int);
 	// Takes the supplied atom and places a copy in the local list 
-	atom *append_copy(atom *source);
+	Atom *appendCopy(Atom *source);
 	// Delete a number of atoms from the end of the list
-	void delete_atoms_from_end(int);
+	void deleteAtomsFromEnd(int);
 	// Perform checks to determine the validity of the pattern
 	bool validate();
 	// Sets the ID of the pattern
-	void set_id(int i) { id = i; }
+	void setId(int i);
 	// Returns then numerical ID of the pattern
-	int get_id() { return id; }
+	int id();
 	// Returns head of the atom list for this pattern (located in main model list)
-	atom *get_firstatom() { return firstatom; }
+	Atom *firstAtom();
 	// Sets pointer to the first atom in this pattern (located in main model list)
-	void set_firstatom(atom* i) { firstatom = i; }
+	void setFirstAtom(Atom* i);
 	// Returns last of the atom list for this pattern (located in main model list)
-	atom *get_lastatom() { return lastatom; }
+	Atom *lastAtom();
 	// Sets pointer to the last atom in this pattern (located in main model list)
-	void set_lastatom(atom* i) { lastatom = i; }
+	void setLastAtom(Atom* i);
 	// Calculate the global atom number offset of the first atom of the molecule
-	int get_offset(int mol) { return startatom + mol*natoms; }
+	int offset(int mol);
 	// Returns the number of atoms in one molecule of the pattern
-	int get_natoms() { return natoms; }
+	int nAtoms();
 	// Sets the starting atom of the model
-	void set_startatom(int n) { startatom = n; }
+	void setStartAtom(int n);
 	// Returns the starting atom id of the pattern
-	int get_startatom() { return startatom; }
+	int startAtom();
 	// Sets the end atom of the model
-	void set_endatom(int n) { endatom = n; }
+	void setEndAtom(int n);
 	// Returns the ending atom id of the pattern
-	int get_endatom() { return endatom; }
+	int endAtom();
 	// (Re)Calculate totalatoms
-	void calc_totalatoms() { totalatoms = natoms * nmols; }
+	void calcTotalAtoms();
 	// Returns the total number of atoms in the pattern
-	int get_totalatoms() { return totalatoms; }
+	int totalAtoms();
 	// Resets the 'tempi' variables of all atoms in the pattern to the given integer
-	void reset_tempi(int);
+	void resetTempI(int);
 	// Sets the number of molecules in the pattern
-	void set_nmols(int n) { nmols = n; }
+	void setNMols(int n);
 	// Returns the number of molecules in the pattern
-	int get_nmols() { return nmols; }
+	int nMols();
 	// Sets the expected number of molecules in the pattern
-	void set_expectedmols(int n) { expectedmols = n; }
+	void setNExpectedMols(int n);
 	// Returns the expected number of molecules in the pattern
-	int get_expectedmols() { return expectedmols; }
+	int nExpectedMols();
 	// Sets the parent model
-	void set_parent(model *m) { parent = m; }
+	void setParent(Model *m);
 	// Returns the model for which the pattern was created
-	model *get_parent() { return parent; }
+	Model *parent();
 	// Sets the 'fixed' property of the pattern
-	void set_fixed(bool b) { fixed = b; }
+	void setFixed(bool b);
 	// Returns whether the pattern is fixed
-	bool is_fixed() { return fixed; }
+	bool isFixed();
 	// Sets the name of the pattern 
-	void set_name(const char *s) { name = s; }
+	void setName(const char *s);
 	// Returns the pattern name
-	const char *get_name() { return name.get(); }
+	const char *name();
 	// Sets the forcefield to use in the pattern
-	void set_ff(forcefield *newff) { ff = newff; }
+	void setForcefield(Forcefield *newff);
 	// Gets the forcefield associated with the pattern
-	forcefield *get_ff() { return ff; }
+	Forcefield *forcefield();
 	// Returns whether the atomlimit in the pattern is valid
-	bool is_atomlimit_ok() { return test_atomlimit; }
+	bool isAtomLimitOk();
 	// Returns whether the element composition in the pattern molecules is uniform
-	bool are_elements_ok() { return test_el; }
+	bool areElementsOk();
 	// Returns whether the bonding in the pattern molecules is uniform
-	bool is_bonding_ok() { return test_bonding; }
+	bool isBondingOk();
 	// Sets variables to reflect an empty pattern (no atoms are physically deleted)
 	void empty();
 	// Sets startatom, nmols, and natoms (and calculates totalatoms)
-	void set_contents(int,int,int);
+	void setContents(int,int,int);
 	// Postfix increment
-	pattern *operator++() { return (this->next); }
+	Pattern *operator++();
 
 	/*
 	// Expression
 	*/
 	private:
 	// Connectivity matrix of atoms in one molecule of the pattern
-	int **conmat;
+	int **conMat_;
 	// Flag for incomplete energy node
-	bool incomplete;
+	bool incomplete_;
+	// List of atom(types) in one pattern molecule
+	List<PatternAtom> atoms_;
+	// List of bonds in one pattern molecule
+	List<PatternBound> bonds_;
+	// List of angles in one pattern molecule
+	List<PatternBound> angles_;
+	// List of torsions in one pattern molecule
+	List<PatternBound> torsions_;
 
 	public:
-	// List of atom(types) in one pattern molecule
-	list<patatom> atoms;
-	// List of bonds in one pattern molecule
-	list<patbound> bonds;
-	// List of angles in one pattern molecule
-	list<patbound> angles;
-	// List of torsions in one pattern molecule
-	list<patbound> torsions;
 	// Empty the arrays of the energy expression
-	void delete_expression();
+	void deleteExpression();
 	// Create the shell of the energy expression
-	void init_expression(model*);
+	void initExpression(Model*);
 	// Fill the energy expression with parameters
-	bool fill_expression(model*);
+	bool fillExpression(Model*);
 	// Create the connectivity matrix
-	void create_conmat();
+	void createConMat();
+	// Return number of bonds in one molecule of the pattern
+	int nBonds();
+	// Return number of angles in one molecule of the pattern
+	int nAngles();
+	// Return number of torsions in one molecule of the pattern
+	int nTorsions();
+	// Return first bonds of the pattern
+	PatternBound *bonds();
+	// Return first angle of the pattern
+	PatternBound *angles();
+	// Return first torsion of the pattern
+	PatternBound *torsions();
 
 	/*
 	// Energy / Force Calculation
 	*/
 	public:
-	void bond_energy(model*,energystore*, int molecule = -1);
-	void angle_energy(model*,energystore*, int molecule = -1);
-	void torsion_energy(model*,energystore*, int molecule = -1);
-	void vdw_intrapattern_energy(model*,energystore*, int molecule = -1);
-	void vdw_interpattern_energy(model*,pattern*,energystore*, int molecule = -1);
-	void vdw_correct_energy(unitcell*,energystore*);
-	void coulomb_intrapattern_energy(model*,energystore*, int molecule = -1);
-	void coulomb_interpattern_energy(model*,pattern*,energystore*, int molecule = -1);
-	void ewald_real_intrapattern_energy(model*,energystore*, int molecule = -1);
-	void ewald_real_interpattern_energy(model*,pattern*,energystore*, int molecule = -1);
-	void ewald_reciprocal_energy(model*,pattern*,int,energystore*, int molecule = -1);
-	void ewald_correct_energy(model*,energystore*, int molecule = -1);
-	void bond_forces(model*);
-	void angle_forces(model*);
-	void torsion_forces(model*);
-	void vdw_intrapattern_forces(model*);
-	void vdw_interpattern_forces(model*,pattern*);
-	void coulomb_intrapattern_forces(model*);
-	void coulomb_interpattern_forces(model*,pattern*);
-	void ewald_real_intrapattern_forces(model*);
-	void ewald_real_interpattern_forces(model*,pattern*);
-	void ewald_reciprocal_forces(model*);
-	void ewald_correct_forces(model*);
+	void bondEnergy(Model*, EnergyStore*, int molecule = -1);
+	void angleEnergy(Model*, EnergyStore*, int molecule = -1);
+	void torsionEnergy(Model*, EnergyStore*, int molecule = -1);
+	void vdwIntraPatternEnergy(Model*, EnergyStore*, int molecule = -1);
+	void vdwInterPatternEnergy(Model*, Pattern*, EnergyStore*, int molecule = -1);
+	void vdwCorrectEnergy(Cell*, EnergyStore*);
+	void coulombIntraPatternEnergy(Model*, EnergyStore*, int molecule = -1);
+	void coulombInterPatternEnergy(Model*, Pattern*, EnergyStore*, int molecule = -1);
+	void ewaldRealIntraPatternEnergy(Model*, EnergyStore*, int molecule = -1);
+	void ewaldRealInterPatternEnergy(Model*, Pattern*, EnergyStore*, int molecule = -1);
+	void ewaldReciprocalEnergy(Model*, Pattern*, int, EnergyStore*, int molecule = -1);
+	void ewaldCorrectEnergy(Model*, EnergyStore*, int molecule = -1);
+	void bondForces(Model*);
+	void angleForces(Model*);
+	void torsionForces(Model*);
+	void vdwIntraPatternForces(Model*);
+	void vdwInterPatternForces(Model*, Pattern*);
+	void coulombIntraPatternForces(Model*);
+	void coulombInterPatternForces(Model*, Pattern*);
+	void ewaldRealIntraPatternForces(Model*);
+	void ewaldRealInterPatternForces(Model*, Pattern*);
+	void ewaldReciprocalForces(Model*);
+	void ewaldCorrectForces(Model*);
 
 	/*
 	// Typing
 	*/
 	private:
 	// List of rings in one molecule of the pattern
-	list<ring> rings;
+	List<Ring> rings_;
 	// Recursive prep - locates and marks atoms on their 'ring potential'
-	void ring_markatoms(atom*);
+	void markRingAtoms(Atom*);
 	// Recursive ring-search routine
-	void ring_search(atom*, ring*, int&);
+	void ringSearch(Atom*, Ring*, int&);
 
 	public:
 	// Returns a pointer to the ring list structure
-	list<ring>* get_ringlist() { return &rings; }
+	List<Ring>* ringList();
 	// Returns the first ring in the ring list
-	ring *get_rings() { return rings.first(); }
+	Ring *rings();
 	// Automatically augment bond types in the pattern
-	void augment_bonding();
+	void augmentBonding();
 	// Reset the atom environment flags
-	void clear_hybrids();
+	void clearHybrids();
 	// Set atom hybridisations
-	void assign_hybrids();
+	void assignHybrids();
 	// Assign forcefield atom types
-	bool type_atoms();
+	bool typeAtoms();
 	// Locate ring structures in the pattern
-	void find_rings();
+	void findRings();
 	// Augment atoms in pattern
 	void augment();
 
@@ -307,18 +319,18 @@ class pattern
 	*/
 	public:
 	// Copy atomtypes for first molecule to all other molecules
-	void propagate_atomtypes();
+	void propagateAtomtypes();
 	// Copy bondtypes for first molecule to all other molecules
-	void propagate_bondtypes();
+	void propagateBondTypes();
 
 	/*
 	// Properties
 	*/
 	public:
 	// Calculate centre of geometry of molecule in specified config
-	vec3<double> calculate_cog(model*, int);
+	Vec3<double> calculateCog(Model*, int);
 	// Calculate centre of mass of molecule in specified config
-	vec3<double> calculate_com(model*, int);
+	Vec3<double> calculateCom(Model*, int);
 };
 
 #endif

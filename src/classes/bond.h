@@ -23,36 +23,52 @@
 #define ATEN_BOND_H
 
 // Bond types
-enum bond_type { BT_UNSPECIFIED, BT_SINGLE, BT_DOUBLE, BT_TRIPLE, BT_NITEMS };
-bond_type BT_from_text(const char *);
+enum BondType { BT_UNSPECIFIED, BT_SINGLE, BT_DOUBLE, BT_TRIPLE, BT_NITEMS };
+BondType BT_from_text(const char *);
 
 // Forward declarations
-class atom;
+class Atom;
 
 // Basic Bond Definition
-class bond
+class Bond
 {
 	public:
-	// Constructor / Destructor
-	bond();
-	~bond();
+	// Constructor
+	Bond();
+
+	private:
 	// Pointers to both atoms involved in the bond
-	atom *bondi, *bondj;
+	Atom *atomI_, *atomJ_;
 	// Bond order
-	bond_type type;
+	BondType order_;
+
+	public:
+	// Set atoms for bond
+	void setAtoms(Atom *i, Atom *j);
+	// Set atom I for bond
+	void setAtomI(Atom *i);
+	// Return first atom in bond
+	Atom *atomI();
+	// Set atom I for bond
+	void setAtomJ(Atom *j);
+	// Return second atom in bond
+	Atom *atomJ();
+	// Set bond order
+	void setOrder(BondType bt);
+	// Return order of bond
+	BondType order();
 	// Returns the partner of the specified atom in the bond structure
-	atom *get_partner(atom *i) { return (i == bondi ? bondj : bondi); }
+	Atom *partner(Atom *i);
 };
 
 // Linkable Bond
-class linkbond : public bond
+class Linkbond : public Bond
 {
 	public:
-	// Constructor / Destructor
-	linkbond();
-	~linkbond();
+	// Constructor
+	Linkbond();
 	// List pointer
-	linkbond *next, *prev;
+	Linkbond *next, *prev;
 };
 
 #endif

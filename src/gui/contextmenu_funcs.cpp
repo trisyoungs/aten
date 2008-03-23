@@ -22,65 +22,126 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "model/model.h"
 
 // Local variables
-atom *target = NULL;
+Atom *target = NULL;
 
 // Show the modelview context menu
-void gui_qt::call_atompopup(atom *undermouse, int x, int y)
+void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 {
-	model *m = master.get_currentmodel();
+	Model *m = master.currentModel();
 	target = undermouse;
-	if ((m->get_nselected() != 0) && (undermouse->is_selected())) target = NULL;
+	if ((m->nSelected() != 0) && (undermouse->isSelected())) target = NULL;
 	QPoint pos(x,y);
 	// If there are no atoms selected we must enable the menu first...
-	if (m->get_nselected() == 0) mainwindow->ui.AtomMenu->setEnabled(TRUE);
-	mainwindow->ui.AtomMenu->exec(pos);
-	if (m->get_nselected() == 0) mainwindow->ui.AtomMenu->setEnabled(FALSE);
+	if (m->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(TRUE);
+	mainWindow->ui.AtomMenu->exec(pos);
+	if (m->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(FALSE);
 }
 
 // Set atom style
-void AtenForm::set_atomstyle(draw_style ds)
+void AtenForm::setAtomStyle(DrawStyle ds)
 {
-	if (target == NULL) master.get_currentmodel()->selection_set_style(ds);
-	else target->set_style(ds);
+	if (target == NULL) master.currentModel()->selectionSetStyle(ds);
+	else target->setStyle(ds);
 	target = NULL;
 }
 
-// Set atom labels
-void AtenForm::set_atomlabel(atom_label al)
+void AtenForm::on_actionAtomStyleStick_triggered(bool checked)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Add Labels");
-	if (target == NULL) m->selection_add_labels(al);
-	else target->add_label(al);
+	setAtomStyle(DS_STICK);
+}
+
+void AtenForm::on_actionAtomStyleTube_triggered(bool checked)
+{
+	setAtomStyle(DS_TUBE);
+}
+
+void AtenForm::on_actionAtomStyleSphere_triggered(bool checked)
+{
+	setAtomStyle(DS_SPHERE);
+}
+
+void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
+{
+	setAtomStyle(DS_SCALED);
+}
+
+// Set atom labels
+void AtenForm::setAtomLabel(AtomLabel al)
+{
+	Model *m = master.currentModel();
+	m->beginUndostate("Add Labels");
+	if (target == NULL) m->selectionAddLabels(al);
+	else target->addLabel(al);
 	target = NULL;
-	m->end_undostate();
+	m->endUndostate();
 }
 
 // Clear atom labels
-void AtenForm::remove_atomlabels(bool all)
+void AtenForm::removeAtomLabels(bool all)
 {
-	model *m = master.get_currentmodel();
+	Model *m = master.currentModel();
 	if (all)
 	{
-		m->begin_undostate("Clear All Labels");
-		master.get_currentmodel()->clear_all_labels();
+		m->beginUndostate("Clear All Labels");
+		master.currentModel()->clearAllLabels();
 	}
 	else
 	{
-		m->begin_undostate("Clear All Labels");
-		master.get_currentmodel()->selection_clear_labels();
+		m->beginUndostate("Clear All Labels");
+		master.currentModel()->selectionClearLabels();
 	}
-	m->end_undostate();
+	m->endUndostate();
 	gui.refresh();
 }
 
-// Set atom labels
-void AtenForm::set_atomhidden(bool hidden)
+void AtenForm::on_actionAtomLabelID_triggered(bool checked)
 {
-	model *m = master.get_currentmodel();
-	if (target == NULL) m->selection_set_hidden(hidden);
-	else m->set_hidden(target, hidden);
+	setAtomLabel(AL_ID);
+}
+
+void AtenForm::on_actionAtomLabelCharge_triggered(bool checked)
+{
+	setAtomLabel(AL_CHARGE);
+}
+
+void AtenForm::on_actionAtomLabelFFType_triggered(bool checked)
+{
+	setAtomLabel(AL_FFTYPE);
+}
+
+void AtenForm::on_actionAtomLabelElement_triggered(bool checked)
+{
+	setAtomLabel(AL_ELEMENT);
+}
+
+void AtenForm::on_actionAtomLabelFFEquiv_triggered(bool checked)
+{
+	setAtomLabel(AL_FFEQUIV);
+}
+
+void AtenForm::on_actionAtomLabelClear_triggered(bool checked)
+{
+	removeAtomLabels(FALSE);
+}
+
+void AtenForm::on_actionAtomLabelClearAll_triggered(bool checked)
+{
+	removeAtomLabels(TRUE);
+}
+
+// Set atom hidden
+void AtenForm::setAtomHidden(bool hidden)
+{
+	Model *m = master.currentModel();
+	if (target == NULL) m->selectionSetHidden(hidden);
+	else m->setHidden(target, hidden);
 	target = NULL;
+}
+
+void AtenForm::on_actionAtomHide_triggered(bool checked)
+{
+	setAtomHidden(TRUE);
 }

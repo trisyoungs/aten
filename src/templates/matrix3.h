@@ -22,32 +22,22 @@
 #ifndef ATEN_MATRIX3_H
 #define ATEN_MATRIX3_H
 
-using namespace std;
 #include "templates/vector3.h"
-#include "templates/vector4.h"
 #include "base/debug.h"
 #include <algorithm>
 #include <math.h>
 #include <stdio.h>
+using namespace std;
 
 // Forward declarations
-template <class T> class vec3;
-template <class T> class vec4;
-template <class T> class mat3;
-template <class T> class mat4;
+template <class T> class Vec3;
 
 // 3x3 matrix
-template <class T> struct mat3
+template <class T> class Mat3
 {
 	public:
 	// Constructor / Destructor
-	mat3(T xx = 1, T xy = 0, T xz = 0, T yx = 0, T yy = 1, T yz = 0, T zx = 0, T zy = 0, T zz = 1);
-	#ifdef MEMDEBUG
-		// Destructor
-		~mat3() { memdbg.destroy[MD_MAT3] ++; }
-		// Copy constructor
-		mat3<T>(const mat3<T>&);
-	#endif
+	Mat3(T xx = 1, T xy = 0, T xz = 0, T yx = 0, T yy = 1, T yz = 0, T zx = 0, T zy = 0, T zz = 1);
 
 	// 3x3 Matrix, consisting of three vec3's:
 	//	{ x.x x.y x.z } rows[0]
@@ -55,95 +45,125 @@ template <class T> struct mat3
 	//	{ z.x z.y z.z } rows[2]
 	public:
 	// Vectors of matrix
-	vec3<T> rows[3];
+	Vec3<T> rows[3];
 
 	/*
 	// Set
 	*/
 	public:
 	// Initialise elements of one row
-	void set(int row, T a, T b, T c) { rows[row].set(a,b,c); }
+	void set(int row, T a, T b, T c);
 	// Initialise elements of one row
-	void set(int row, const vec3<T> &v) { rows[row].set(v.x,v.y,v.z); }
+	void set(int row, const Vec3<T> &v);
 	// Set individual element of matrix (by row/column)
-	void set(int row, int col, T d) { rows[row].set(col,d); }
+	void set(int row, int col, T d);
 	// Set individual element of matrix (straight id)
-	void set(int i, T d) { rows[i/3].set(i%3,d); }
+	void set(int i, T d);
 	// Set diagonal elements of matrix (off-diagonals to zero)
-	void set_diagonal(T rx, T ry, T rz) { zero(); rows[0].x = rx; rows[1].y = ry; rows[2].z = rz; }
+	void setDiagonal(T rx, T ry, T rz);
 
 	/*
 	// Get
 	*/
 	public:
 	// Return the row specified
-	vec3<T> get(int i) { return rows[i]; }
+	Vec3<T> get(int i);
 	// Puts the matrix into the passed 1D-array of type <T>, row-major
-	void get_row_major(T*);
+	void copyRowMajor(T*);
 	// Puts the matrix into the passed 1D-array of type <T>, column-major
-	void get_column_major(T*);
-	// Returns the matrix as a 4x4 matrix, padded out with zeroes and m[15]=1
-	mat4<T> get_as_mat4();
+	void copyColumnMajor(T*);
 	// Returns the specified element of the matrix
-	T get_element(int i) { return rows[i/3].get(i%3); }
+	T getElement(int i);
 
 	/*
 	// Methods
 	*/
 	// Swap rows
-	void swap_rows(int, int);
+	void swapRows(int, int);
 	// Return transpose of matrix
-	mat3<T> transpose() const;
+	Mat3<T> transpose() const;
 	// Calculate the determinant of the matrix.
 	double determinant();
 	// Invert the matrix
 	void invert();
 	// Reset the matrix to the identity
-	void set_identity();
+	void setIdentity();
 	// Set the zero matrix
 	void zero();
 	// Prints the matrix to stdout
 	void print() const;
 	// Invert the matrix (Gauss-Jordan)
-	void matrix3_invert(int, double*);
+	void matrix3Invert(int, double*);
 	// Create matrix of orthogonal vectors from reference
-	void create_orthogonal(const vec3<T>&);
+	void createOrthogonal(const Vec3<T>&);
 	// Multiply matrix rows by vector elements
-	void row_multiply(const vec3<T>&);
+	void rowMultiply(const Vec3<T>&);
 
 	/*
 	// Operators
 	*/
-	mat3 operator*(const mat3&) const;
-	vec3<T> operator*(const vec3<T>&) const;
-	mat3& operator*=(const mat3&);
-	mat3& operator-=(const T);
-	mat3 operator-(const mat3&) const;
+	Mat3 operator*(const Mat3&) const;
+	Vec3<T> operator*(const Vec3<T>&) const;
+	Mat3& operator*=(const Mat3&);
+	Mat3& operator-=(const T);
+	Mat3 operator-(const Mat3&) const;
 };
 
 // Constructors
-template <class T> mat3<T>::mat3(T xx, T xy, T xz, T yx, T yy, T yz, T zx, T zy, T zz)
+template <class T> Mat3<T>::Mat3(T xx, T xy, T xz, T yx, T yy, T yz, T zx, T zy, T zz)
 {
 	rows[0].set(xx, xy, xz);
 	rows[1].set(yx, yy, yz);
 	rows[2].set(zx, zy, zz);
-	#ifdef MEMDEBUG
-		memdbg.create[MD_MAT3] ++;
-	#endif
 }
 
-#ifdef MEMDEBUG
-template <class T> mat3<T>::mat3(const mat3<T> &m)
+// Initialise elements of one row
+template <class T> void Mat3<T>::set(int row, T a, T b, T c)
 {
-	rows[0] = m.rows[0];
-	rows[1] = m.rows[1];
-	rows[2] = m.rows[2];
-        memdbg.create[MD_MAT3COPY] ++;
+	rows[row].set(a,b,c);
 }
-#endif
+
+// Initialise elements of one row
+template <class T> void Mat3<T>::set(int row, const Vec3<T> &v)
+{
+	rows[row].set(v.x,v.y,v.z);
+}
+
+// Set individual element of matrix (by row/column)
+template <class T> void Mat3<T>::set(int row, int col, T d)
+{
+	rows[row].set(col,d);
+}
+
+// Set individual element of matrix (straight id)
+template <class T> void Mat3<T>::set(int i, T d)
+{
+	rows[i/3].set(i%3,d);
+}
+
+// Set diagonal elements of matrix (off-diagonals to zero)
+template <class T> void Mat3<T>::setDiagonal(T rx, T ry, T rz)
+{
+	zero();
+	rows[0].x = rx;
+	rows[1].y = ry;
+	rows[2].z = rz;
+}
+
+// Return the row specified
+template <class T> Vec3<T> Mat3<T>::get(int i)
+{
+	return rows[i];
+}
+
+// Returns the specified element of the matrix
+template <class T> T Mat3<T>::getElement(int i)
+{
+	return rows[i/3].get(i%3);
+}
 
 // Get (array)
-template <class T> void mat3<T>::get_row_major(T *rowm)
+template <class T> void Mat3<T>::copyRowMajor(T *rowm)
 {
 	// Construct a 1d array of type T with row-major ordering...
 	rowm[0] = rows[0].x;	rowm[1] = rows[0].y;	rowm[2] = rows[0].z;
@@ -151,9 +171,8 @@ template <class T> void mat3<T>::get_row_major(T *rowm)
 	rowm[6] = rows[2].x;	rowm[7] = rows[2].y;	rowm[8] = rows[2].z;
 }
 
-
 // Get (array)
-template <class T> void mat3<T>::get_column_major(T *colm)
+template <class T> void Mat3<T>::copyColumnMajor(T *colm)
 {
 	// Construct a 1d array of type T with column-major ordering...
 	colm[0] = rows[0].x;	colm[3] = rows[0].y;	colm[6] = rows[0].z;
@@ -161,27 +180,16 @@ template <class T> void mat3<T>::get_column_major(T *colm)
 	colm[2] = rows[2].x;	colm[5] = rows[2].y;	colm[8] = rows[2].z;
 }
 
-// Get (as mat4)
-template <class T> mat4<T> mat3<T>::get_as_mat4()
-{
-	mat4<T> m;
-	m.rows[0].set(rows[0],0);
-	m.rows[1].set(rows[1],0);
-	m.rows[2].set(rows[2],0);
-	m.rows[3].set(0,0,0,1);
-	return m;
-}
-
 // Swap rows
-template <class T> void mat3<T>::swap_rows(int row1, int row2)
+template <class T> void Mat3<T>::swapRows(int row1, int row2)
 {
-	vec3<T> temp = rows[row2];
+	Vec3<T> temp = rows[row2];
 	rows[row2] = rows[row1];
 	rows[row1] = temp;
 }
 
 // Set identity matrix
-template <class T> void mat3<T>::set_identity()
+template <class T> void Mat3<T>::setIdentity()
 {
 	// Reset to the identity matrix
 	rows[0].set(1,0,0);
@@ -190,16 +198,15 @@ template <class T> void mat3<T>::set_identity()
 }
 
 // Set zero matrix
-template <class T> void mat3<T>::zero()
+template <class T> void Mat3<T>::zero()
 {
 	rows[0].zero();
 	rows[1].zero();
 	rows[2].zero();
 }
 // Operator * and *=
-template <class T> vec3<T> mat3<T>::operator*(const vec3<T> &v) const
-{
-	vec3<T> result;
+template <class T> Vec3<T> Mat3<T>::operator*(const Vec3<T> &v) const {
+	Vec3<T> result;
 	result.x = rows[0].dp(v);
 	result.y = rows[1].dp(v);
 	result.z = rows[2].dp(v);
@@ -208,11 +215,10 @@ template <class T> vec3<T> mat3<T>::operator*(const vec3<T> &v) const
 
 
 // Operator * and *=
-template <class T> mat3<T> mat3<T>::operator*(const mat3<T> &B) const
-{
+template <class T> Mat3<T> Mat3<T>::operator*(const Mat3<T> &B) const {
 	// Multiply matrix A by matrix B. Put result in local matrix
 	// [ row(A|this).column(B) ]
-	mat3 AB;
+	Mat3 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x;
 	AB.rows[1].x = rows[1].x*B.rows[0].x + rows[1].y*B.rows[1].x + rows[1].z*B.rows[2].x;
 	AB.rows[2].x = rows[2].x*B.rows[0].x + rows[2].y*B.rows[1].x + rows[2].z*B.rows[2].x;
@@ -227,11 +233,11 @@ template <class T> mat3<T> mat3<T>::operator*(const mat3<T> &B) const
  	return AB;
 }
 
-template <class T> mat3<T> &mat3<T>::operator*=(const mat3<T> &B)
+template <class T> Mat3<T> &Mat3<T>::operator*=(const Mat3<T> &B)
 {
 	// Multiply matrix A by matrix B. Put result in local matrix
 	// [ column(A|this).row(B) ]
-	mat3 AB;
+	Mat3 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x;
 	AB.rows[1].x = rows[1].x*B.rows[0].x + rows[1].y*B.rows[1].x + rows[1].z*B.rows[2].x;
 	AB.rows[2].x = rows[2].x*B.rows[0].x + rows[2].y*B.rows[1].x + rows[2].z*B.rows[2].x;
@@ -247,7 +253,7 @@ template <class T> mat3<T> &mat3<T>::operator*=(const mat3<T> &B)
 	return *this;
 }
 
-template <class T> mat3<T> &mat3<T>::operator-=(const T a)
+template <class T> Mat3<T> &Mat3<T>::operator-=(const T a)
 {
 	// Subtract value from each element
 	this->rows[0] -= a;
@@ -256,10 +262,9 @@ template <class T> mat3<T> &mat3<T>::operator-=(const T a)
 	return *this;
 }
 
-template <class T> mat3<T> mat3<T>::operator-(const mat3<T> &m) const
-{
+template <class T> Mat3<T> Mat3<T>::operator-(const Mat3<T> &m) const {
 	// Subtract value from each element
-	mat3<T> result;
+	Mat3<T> result;
 	result.rows[0] = rows[0] - m.rows[0];
 	result.rows[1] = rows[1] - m.rows[1];
 	result.rows[2] = rows[2] - m.rows[2];
@@ -267,9 +272,8 @@ template <class T> mat3<T> mat3<T>::operator-(const mat3<T> &m) const
 }
 
 // Transpose
-template <class T> mat3<T> mat3<T>::transpose() const
-{
-	mat3<T> result;
+template <class T> Mat3<T> Mat3<T>::transpose() const {
+	Mat3<T> result;
 	result.rows[0].x = rows[0].x;
 	result.rows[0].y = rows[1].x;
 	result.rows[0].z = rows[2].x;
@@ -285,7 +289,7 @@ template <class T> mat3<T> mat3<T>::transpose() const
 }
 
 // Calculate determinant
-template <class T> double mat3<T>::determinant()
+template <class T> double Mat3<T>::determinant()
 {
 	// Hard-coded calculation of determinant of 3x3 matrix
 	double det = 0.0;
@@ -296,12 +300,12 @@ template <class T> double mat3<T>::determinant()
 }
 
 // Calculate matrix inverse
-template <class T> void mat3<T>::invert()
+template <class T> void Mat3<T>::invert()
 {
 	// Must create a T array and pass it to matrix_invert()
 	T m[9];
-	get_row_major(m);
-	matrix3_invert(3,m);
+	copyRowMajor(m);
+	matrix3Invert(3,m);
 	// TODO Don't do this!
 	rows[0].set(m[0],m[1],m[2]);
 	rows[1].set(m[3],m[4],m[5]);
@@ -309,7 +313,7 @@ template <class T> void mat3<T>::invert()
 }
 
 // Row Multiply
-template <class T> void mat3<T>::row_multiply(const vec3<T> &v)
+template <class T> void Mat3<T>::rowMultiply(const Vec3<T> &v)
 {
 	// Multiply matrix rows by vector elements
 	rows[0] *= v.x;
@@ -318,15 +322,14 @@ template <class T> void mat3<T>::row_multiply(const vec3<T> &v)
 }
 
 // Print
-template <class T> void mat3<T>::print() const
-{
+template <class T> void Mat3<T>::print() const {
 	printf("Mat3_X %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z);
 	printf("Mat3_Y %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z);
 	printf("Mat3_Z %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z);
 }
 
 // Create matrix of orthogonal vectors
-template <class T> void mat3<T>::create_orthogonal(const vec3<T> &vec)
+template <class T> void Mat3<T>::createOrthogonal(const Vec3<T> &vec)
 {
 	// Set x-vector to be the passed vector.
 	rows[0] = vec;
@@ -335,14 +338,14 @@ template <class T> void mat3<T>::create_orthogonal(const vec3<T> &vec)
 }
 
 // Invert matrix
-template <class T> void mat3<T>::matrix3_invert(int matsize, double *A)
+template <class T> void Mat3<T>::matrix3Invert(int matsize, double *A)
 {
 	// Invert the supplied matrix using Gauss-Jordan elimination
 	int *pivotrows, *pivotcols, pivotrow, pivotcol;
 	int *pivoted;
 	int row, col, n, m;
 	double *B, large, element;
-	dbg_begin(DM_CALLS,"invert[GJ]");
+	dbgBegin(DM_CALLS,"invert[GJ]");
 	// Create and blank temporary arrays we need
 	pivotrows = new int[matsize];
 	pivotcols = new int[matsize];
@@ -407,7 +410,7 @@ template <class T> void mat3<T>::matrix3_invert(int matsize, double *A)
 	delete[] pivotrows;
 	delete[] pivotcols;
 	delete[] pivoted;
-	dbg_end(DM_CALLS,"invert[GJ]");
+	dbgEnd(DM_CALLS,"invert[GJ]");
 }
 
 #endif

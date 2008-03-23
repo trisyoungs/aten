@@ -20,14 +20,19 @@
 */
 
 #include "base/master.h"
-#include "base/elements.h"
 #include "methods/mc.h"
 #include "methods/sd.h"
+#include "methods/cg.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 
 // Minimisation algorithms
-enum min_method { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
+enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
+
+void AtenForm::on_MinimiserMethodCombo_currentIndexChanged(int index)
+{
+	ui.MethodOptionsStack->setCurrentIndex(index);
+}
 
 void AtenForm::on_MinimiseButton_clicked(bool checked)
 {
@@ -41,21 +46,21 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (MM_STEEPEST):
-			master.sd.set_ncycles(maxcycles);
-			master.sd.set_tolerance(pow(10,ui.SDLineToleranceSpin->value()));
-			master.sd.minimise(master.get_currentmodel(),econverge,fconverge);
+			sd.setNCycles(maxcycles);
+			sd.setTolerance(pow(10,ui.SDLineToleranceSpin->value()));
+			sd.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_CONJUGATE):
-			master.cg.set_ncycles(maxcycles);
-			master.cg.set_tolerance(pow(10,ui.CGLineToleranceSpin->value()));
-			master.cg.minimise(master.get_currentmodel(),econverge,fconverge);
+			cg.setNCycles(maxcycles);
+			cg.setTolerance(pow(10,ui.CGLineToleranceSpin->value()));
+			cg.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_MONTECARLO):
-			master.mc.minimise(master.get_currentmodel(),econverge,fconverge);
+			mc.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_SIMPLEX):
 			msg(DM_NONE,"Simplex minimiser not yet written!\n");
 			break;
 	}
-	gui.mainview.postredisplay();
+	gui.mainView.postRedisplay();
 }

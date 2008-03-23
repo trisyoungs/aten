@@ -25,50 +25,49 @@
 #include "classes/dnchar.h"
 
 // Forward Declarations
-class model;
+class Model;
 
 // Calculable Class
-class calculable
+class Calculable
 {
 	/*
 	// Calculable Quantity
 	*/
 	public:
-	// Constructor / Destructor
-	calculable();
-	~calculable();
+	// Constructor
+	Calculable();
 	// List pointers
-	calculable *prev, *next;
+	Calculable *prev, *next;
 
 	/*
 	// Identity
 	*/
 	protected:
 	// Identifiable name of the quantity
-	dnchar name;
+	Dnchar name_;
 	// Filename (of loaded file or target to be saved)
-	dnchar filename;
+	Dnchar filename_;
 
 	public:
 	// Set identifiable name of the quantity
-	void set_name(const char *s) { name = s; }
+	void setName(const char *s);
 	// Return name of the quantity
-	const char *get_name() { return name.get(); }
+	const char *name();
 	// Set filename of the quantity
-	void set_filename(const char *s) { filename = s; }
+	void setFilename(const char *s);
 	// Return filename of the quantity
-	const char *get_filename() { return filename.get(); }
+	const char *filename();
 
 	/*
 	// Methods
 	*/
 	public:
 	// Accumulate quantity data from supplied config
-	virtual void accumulate(model*)=0;
+	virtual void accumulate(Model*)=0;
 	// Initialise - check sites, create arrays etc.
 	virtual bool initialise()=0;
 	// Finalise data
-	virtual void finalise(model*)=0;
+	virtual void finalise(Model*)=0;
 	// Save data
 	virtual bool save()=0;
 };

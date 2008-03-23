@@ -21,9 +21,10 @@
 
 #include "base/master.h"
 #include "base/elements.h"
-#include "methods/sd.h"
+//#include "methods/sd.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "model/model.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
@@ -35,7 +36,7 @@
 const char *BIF_filters[BIF_NITEMS] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
 const char *BIF_extensions[BIF_NITEMS] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
 bitmap_format BIF_from_text(const char *s)
-	{ return (bitmap_format) enum_search("bitmap format",BIF_NITEMS,BIF_extensions,s); }
+	{ return (bitmap_format) enumSearch("bitmap format",BIF_NITEMS,BIF_extensions,s); }
 const char *filter_from_BIF(bitmap_format bif)
 	{ return BIF_filters[bif]; }
 const char *extension_from_BIF(bitmap_format bif)
@@ -45,16 +46,16 @@ const char *extension_from_BIF(bitmap_format bif)
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
 	int i;
-	for (i=0; i<SP_NITEMS; i++) stackbuttons[i] = NULL;
+	for (i=0; i<SP_NITEMS; i++) stackButtons_[i] = NULL;
 	ui.setupUi(this);
 }
 
 // Catch window close event
 void AtenForm::closeEvent(QCloseEvent *event)
 {
-	if (gui.save_before_close())
+	if (gui.saveBeforeClose())
 	{
-		save_settings();
+		saveSettings();
 		event->accept();
 	}
 	else event->ignore();
@@ -65,7 +66,7 @@ void AtenForm::closeEvent(QCloseEvent *event)
 */
 
 // Change user interaction mode
-void AtenForm::set_useraction(bool on, user_action ua)
+void AtenForm::setUserAction(bool on, UserAction ua)
 {
 	// We pass all changes to the user interaction mode through here.
 	// This way we can 'link' the selectToolBar and all the other buttons....
@@ -73,7 +74,7 @@ void AtenForm::set_useraction(bool on, user_action ua)
 	if ((ua >= UA_PICKSELECT) && (ua <= UA_PICKRADIAL))
 	{
 		// One of the select actions in selectGroup
-		dummybutton->setChecked(TRUE);
+		dummyButton->setChecked(TRUE);
 	}
 	else
 	{
@@ -81,20 +82,20 @@ void AtenForm::set_useraction(bool on, user_action ua)
 		QAction *action = selectGroup->checkedAction();
 		if (action != NULL) action->setChecked(FALSE);
 	}
-	gui.mainview.set_selectedmode(ua);
+	gui.mainView.setSelectedMode(ua);
 }
 
 void AtenForm::keyPressEvent(QKeyEvent *event)
 {
-	key_code kc = gui.convert_to_KC(event->key());
-	if (kc != KC_OTHER) gui.mainview.inform_keydown(kc);
+	key_code kc = gui.convertToKeyCode(event->key());
+	if (kc != KC_OTHER) gui.mainView.informKeyDown(kc);
 	else event->ignore();
 }
 
 void AtenForm::keyReleaseEvent(QKeyEvent *event)
 {
-	key_code kc = gui.convert_to_KC(event->key());
-	if (kc != KC_OTHER) gui.mainview.inform_keyup(kc);
+	key_code kc = gui.convertToKeyCode(event->key());
+	if (kc != KC_OTHER) gui.mainView.informKeyUp(kc);
 	else event->ignore();
 }
 
@@ -104,77 +105,47 @@ void AtenForm::keyReleaseEvent(QKeyEvent *event)
 
 void AtenForm::on_ModelTabs_currentChanged(int n)
 {
-	dbg_begin(DM_CALLS,"AtenForm::on_ModelTabs_currentChanged");
+	dbgBegin(DM_CALLS,"AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
-	master.set_currentmodel(master.get_model(n));
+	master.setCurrentModel(master.model(n));
 	gui.refresh();
-	dbg_end(DM_CALLS,"AtenForm::on_ModelTabs_currentChanged");
+	dbgEnd(DM_CALLS,"AtenForm::on_ModelTabs_currentChanged");
 }
 
-/*
-// Widget Stack Functions
-*/
-
-void AtenForm::switch_stack(int buttonid, bool checked)
+void AtenForm::refreshModelTabs()
 {
-	// If the state of the button is *not* checked then we hide the stack since no buttons are checked. Otherwise, uncheck all other buttons and show the corresponding widget in the stack for this button.
-	int n;
-	user_action ua = gui.mainview.get_selectedmode();
-	if (checked)
-	{
-		for (n=0; n<SP_NITEMS; n++) if (n != buttonid) stackbuttons[n]->setChecked(FALSE);
-		ui.MainWindowStack->setCurrentIndex(buttonid);
-		ui.MainWindowStack->show();
-		// If the new visible page is the atom list, do a quick refresh of it
-		if (buttonid == SP_ATOMS) refresh_atompage();
-		// Change to plain selection mode 
-	}
-	else ui.MainWindowStack->hide();
-	// Choose a plain selection mode again...
-	if ((ua == UA_NONE) || (ua > UA_PICKRADIAL))
-	{
-		ui.actionSelectAtoms->setChecked(TRUE);
-		set_useraction(TRUE, UA_PICKSELECT);
-	}
-	//ui.actionSelectAtoms->setChecked(TRUE);
-	//set_useraction(TRUE, UA_PICKSELECT);
-	master.get_currentmodel()->log_change(LOG_CAMERA);
-}
-
-void AtenForm::refresh_modeltabs()
-{
-	dbg_begin(DM_CALLS,"AtenForm::refresh_modeltabs");
+	dbgBegin(DM_CALLS,"AtenForm::refreshModelTabs");
 	// Set names on tabs
 	int count = 0;
-	for (model *m = master.get_models(); m != NULL; m = m->next)
+	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
-		ui.ModelTabs->setTabText(count, m->get_name());
+		ui.ModelTabs->setTabText(count, m->name());
 		count ++;
 	}
-	dbg_end(DM_CALLS,"AtenForm::refresh_modeltabs");
+	dbgEnd(DM_CALLS,"AtenForm::refreshModelTabs");
 }
 
-void AtenForm::execute_command()
+void AtenForm::executeCommand()
 {
 	// Clear old script commands
-	master.cmd_script.clear();
+	master.tempScript.clear();
 	// Grab the current text of the line edit
-	parser.get_args_delim(qPrintable(command_edit->text()), PO_USEQUOTES);
+	parser.getArgsDelim(qPrintable(commandEdit_->text()), PO_USEQUOTES);
 	// Check for no commands given
-	if (parser.get_nargs() == 0) return;
-	if (master.cmd_script.cache_command()) master.cmd_script.execute(NULL);
+	if (parser.nArgs() == 0) return;
+	if (master.tempScript.cacheCommand()) master.tempScript.execute(NULL);
 	gui.refresh();
-	command_edit->setText("");
+	commandEdit_->setText("");
 }
 
 // Cancel progress indicator
-void AtenForm::progress_cancel()
+void AtenForm::progressCancel()
 {
-	gui.notify_progress_canceled();
+	gui.notifyProgressCanceled();
 }
 
 // Save program settings
-void AtenForm::save_settings()
+void AtenForm::saveSettings()
 {
 	char temp[128];
 	// Save the recent file entries
@@ -184,43 +155,43 @@ void AtenForm::save_settings()
 		strcpy(temp,"RecentFile");
 		strcat(temp,itoa(i));
 		//if (actionRecentFile[i]->isVisible()) printf("action %i is visible\n",i);
-		if (actionRecentFile[i]->isVisible()) settings->setValue(temp,actionRecentFile[i]->data().toString());
-		else settings->remove(temp);
+		if (actionRecentFile[i]->isVisible()) settings_->setValue(temp,actionRecentFile[i]->data().toString());
+		else settings_->remove(temp);
 	}
 }
 
 // Load recent file
-void AtenForm::load_recent()
+void AtenForm::loadRecent()
 {
-	dnchar filename;
-	model *m;
-	filter *f;
+	Dnchar filename;
+	Model *m;
+	Filter *f;
 	// Cast sending QAction and grab filename
 	QAction *action = qobject_cast<QAction*> (sender());
 	if (!action)
 	{
-		printf("AtenForm::load_recent - Sender was not a QAction.\n");
+		printf("AtenForm::loadRecent - Sender was not a QAction.\n");
 		return;
 	}
 	// Grab the filename from the action
 	filename = qPrintable(action->data().toString());
 	// See if any loaded model filename matches this filename
-	for (m = master.get_models(); m != NULL; m = m->next)
+	for (m = master.models(); m != NULL; m = m->next)
 	{
-		msg(DM_VERBOSE,"Checking loaded models for '%s': %s\n",filename.get(),m->get_filename());
-		if (filename == m->get_filename())
+		msg(DM_VERBOSE,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
+		if (filename == m->filename())
 		{
 			msg(DM_VERBOSE,"Matched filename to loaded model.\n");
-			master.set_currentmodel(m);
+			master.setCurrentModel(m);
 			return;
 		}
 	}
 	// If we get to here then the model is not currently loaded...
-	f = master.probe_file(filename.get(), FT_MODEL_IMPORT);
+	f = master.probeFile(filename.get(), FT_MODEL_IMPORT);
 	if (f != NULL)
 	{
 		f->execute(filename.get());
-		master.get_currentmodel()->log_change(LOG_VISUAL);
+		master.currentModel()->logChange(LOG_VISUAL);
 		gui.refresh();
 	}
 	else
@@ -238,7 +209,7 @@ void AtenForm::load_recent()
 }
 
 // Add file to top of recent list
-void AtenForm::add_recent(const char *filename)
+void AtenForm::addRecent(const char *filename)
 {
 	// Find unused (i.e. still hidden) recent file action
 	int last, n;
@@ -252,26 +223,26 @@ void AtenForm::add_recent(const char *filename)
 		for (n=MAXRECENTFILES-2; n>=0; n--)
 		{
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-			sprintf(temp,"&%i %s", n, remove_path(qPrintable(actionRecentFile[n]->data().toString())));
+			sprintf(temp,"&%i %s", n, removePath(qPrintable(actionRecentFile[n]->data().toString())));
 			actionRecentFile[n+1]->setText(temp);
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
 		}
 		last = 0;
 	}
 	// Set the new data
-	sprintf(temp,"&%i %s (%s)",last,remove_path(filename),filename);
+	sprintf(temp,"&%i %s (%s)",last,removePath(filename),filename);
 	actionRecentFile[last]->setText(temp);
 	actionRecentFile[last]->setData(filename);
 	actionRecentFile[last]->setVisible(TRUE);
 }
 
 // Update undo/redo actions in Edit menu
-void AtenForm::update_undoredo()
+void AtenForm::updateUndoRedo()
 {
 	static char text[128];
-	model *m = master.get_currentmodel();
+	Model *m = master.currentModel();
 	// Check the model's state pointers
-	if (m->get_currentundostate() == NULL)
+	if (m->currentUndostate() == NULL)
 	{
 		ui.actionEditUndo->setText("Undo");
 		ui.actionEditUndo->setEnabled(FALSE);
@@ -279,12 +250,12 @@ void AtenForm::update_undoredo()
 	else
 	{
 		strcpy(text,"Undo (");
-		strcat(text,m->get_currentundostate()->get_text());
+		strcat(text,m->currentUndostate()->description());
 		strcat(text,")");
 		ui.actionEditUndo->setText(text);
 		ui.actionEditUndo->setEnabled(TRUE);
 	}
-	if (m->get_currentredostate() == NULL)
+	if (m->currentRedoState() == NULL)
 	{
 		ui.actionEditRedo->setText("Redo");
 		ui.actionEditRedo->setEnabled(FALSE);
@@ -292,34 +263,34 @@ void AtenForm::update_undoredo()
 	else
 	{
 		strcpy(text,"Redo (");
-		strcat(text,m->get_currentredostate()->get_text());
+		strcat(text,m->currentRedoState()->description());
 		strcat(text,")");
 		ui.actionEditRedo->setText(text);
 		ui.actionEditRedo->setEnabled(TRUE);
 	}
 }
 
-void AtenForm::refresh_scriptsmenu()
+void AtenForm::refreshScriptsMenu()
 {
 	static char s[512];
-	// Remove old actions from menu (i.e. current items in reflist)
-	for (refitem<QAction, commandlist*> *sa = scriptactions.first(); sa != NULL; sa = sa->next)
+	// Remove old actions from menu (i.e. current items in Reflist)
+	for (Refitem<QAction, CommandList*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
 	{
 		ui.ScriptsMenu->removeAction(sa->item);
-		// Free reflist QActions
+		// Free Reflist QActions
 		delete sa->item;
 	}
-	// Clear reflist and repopulate, along with scriptsmenu
-	scriptactions.clear();
-	for (commandlist *cl = master.scripts.first(); cl != NULL; cl = cl->next)
+	// Clear Reflist and repopulate, along with scriptsmenu
+	scriptActions_.clear();
+	for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
 	{
-		// Create new QAction and add to reflist
+		// Create new QAction and add to Reflist
 		QAction *qa = new QAction(this);
 		// Set action data
 		qa->setVisible(TRUE);
-		qa->setText(cl->get_name());
+		qa->setText(cl->name());
 		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(run_script()));
-		scriptactions.add(qa, cl);
+		scriptActions_.add(qa, cl);
 		ui.ScriptsMenu->addAction(qa);
 	}
 }
@@ -327,17 +298,17 @@ void AtenForm::refresh_scriptsmenu()
 void AtenForm::on_actionLoadScript_triggered(bool v)
 {
 	QString filename;
-	if (openscriptdialog->exec() == 1)
+	if (openScriptDialog->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		filename = openscriptdialog->selectedFiles().first();
-		commandlist *ca = master.scripts.add();
-		if (ca->load(qPrintable(filename))) refresh_scriptsmenu();
+		filename = openScriptDialog->selectedFiles().first();
+		CommandList *ca = master.scripts.add();
+		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
 		else master.scripts.remove(ca);
 	}
 }
 
-void AtenForm::run_script()
+void AtenForm::runScript()
 {
 	// Cast sending QAction and grab filename
 	QAction *action = qobject_cast<QAction*> (sender());
@@ -346,13 +317,172 @@ void AtenForm::run_script()
 		printf("AtenForm::run_script - Sender was not a QAction.\n");
 		return;
 	}
-	// Find the commandlist from the loadedscripts() reflist
-	refitem<QAction, commandlist*> *ri = scriptactions.search(action);
-	if (ri == NULL) printf("AtenForm::run_script - Could not find QAction in reflist.\n");
+	// Find the CommandList from the loadedscripts() Reflist
+	Refitem<QAction, CommandList*> *ri = scriptActions_.search(action);
+	if (ri == NULL) printf("AtenForm::run_script - Could not find QAction in Reflist.\n");
 	else
 	{
 		// Execute the script
-		msg(DM_NONE,"Executing script '%s':\n",ri->data->get_name());
+		msg(DM_NONE,"Executing script '%s':\n",ri->data->name());
 		ri->data->execute();
 	}
+}
+
+/*
+// Mouse Toolbar
+*/
+void AtenForm::on_actionMouseInteract_triggered(bool checked)
+{
+	prefs.setMouseAction(MB_LEFT, MA_INTERACT);
+}
+
+void AtenForm::on_actionMouseRotate_triggered(bool checked)
+{
+	prefs.setMouseAction(MB_LEFT, MA_VIEWROTATE);
+}
+
+void AtenForm::on_actionMouseTranslate_triggered(bool checked)
+{
+	prefs.setMouseAction(MB_LEFT, MA_VIEWTRANSLATE);
+}
+
+/*
+// Select Toolbar
+*/
+void AtenForm::on_actionSelectAtoms_triggered(bool on)
+{
+	setUserAction(on, UA_PICKSELECT);
+}
+
+void AtenForm::on_actionSelectMolecules_triggered(bool on)
+{
+	setUserAction(on, UA_PICKFRAG);
+}
+
+void AtenForm::on_actionSelectElement_triggered(bool on)
+{
+	setUserAction(on, UA_PICKELEMENT);
+}
+
+/*
+// Toolbar Menu
+*/
+void AtenForm::on_actionFileToolBarVisibility_triggered(bool v)
+{
+	ui.FileToolBar->setVisible(v);
+}
+
+void AtenForm::on_actionEditToolBarVisibility_triggered(bool v)
+{
+	ui.EditToolBar->setVisible(v);
+}
+
+void AtenForm::on_actionStyleToolBarVisibility_triggered(bool v)
+{
+	ui.StyleToolBar->setVisible(v);
+}
+
+void AtenForm::on_actionTrajectoryToolBarVisibility_triggered(bool v)
+{
+	ui.TrajectoryToolBar->setVisible(v);
+}
+
+void AtenForm::on_actionCommandToolBarVisibility_triggered(bool v)
+{
+	ui.CommandToolBar->setVisible(v);
+}
+
+void AtenForm::on_actionMouseToolBarVisibility_triggered(bool v)
+{
+	ui.MouseToolBar->setVisible(v);
+}
+
+void AtenForm::on_actionSelectToolBarVisibility_triggered(bool v)
+{
+	ui.SelectToolBar->setVisible(v);
+}
+
+/*
+// Widget Stack Functions
+*/
+
+
+/*
+// Widget Stack Functions
+*/
+
+void AtenForm::switchStack(int buttonid, bool checked)
+{
+	// If the state of the button is *not* checked then we hide the stack since no buttons are checked. Otherwise, uncheck all other buttons and show the corresponding widget in the stack for this button.
+	int n;
+	UserAction ua = gui.mainView.selectedMode();
+	if (checked)
+	{
+		for (n=0; n<SP_NITEMS; n++) if (n != buttonid) stackButtons_[n]->setChecked(FALSE);
+		ui.MainWindowStack->setCurrentIndex(buttonid);
+		ui.MainWindowStack->show();
+		// If the new visible page is the atom list, do a quick refresh of it
+		if (buttonid == SP_ATOMS) refreshAtomPage();
+		// Change to plain selection mode 
+	}
+	else ui.MainWindowStack->hide();
+	// Choose a plain selection mode again...
+	if ((ua == UA_NONE) || (ua > UA_PICKRADIAL))
+	{
+		ui.actionSelectAtoms->setChecked(TRUE);
+		setUserAction(TRUE, UA_PICKSELECT);
+	}
+	//ui.actionSelectAtoms->setChecked(TRUE);
+	//set_useraction(TRUE, UA_PICKSELECT);
+	master.currentModel()->logChange(LOG_CAMERA);
+}
+
+void AtenForm::on_ShowAtomPageButton_clicked(bool checked)
+{
+	switchStack(SP_ATOMS, checked);
+}
+
+void AtenForm::on_ShowEditPageButton_clicked(bool checked)
+{
+	switchStack(SP_EDIT, checked);
+}
+
+void AtenForm::on_ShowTransformPageButton_clicked(bool checked)
+{
+	switchStack(SP_TRANSFORM, checked);
+}
+
+void AtenForm::on_ShowPositionPageButton_clicked(bool checked)
+{
+	switchStack(SP_POSITION, checked);
+}
+
+void AtenForm::on_ShowCellPageButton_clicked(bool checked)
+{
+	switchStack(SP_CELL, checked);
+}
+
+void AtenForm::on_ShowMinimiserPageButton_clicked(bool checked)
+{
+	switchStack(SP_MINIMISER, checked);
+}
+
+void AtenForm::on_ShowDisorderPageButton_clicked(bool checked)
+{
+	switchStack(SP_DISORDER, checked);
+}
+
+void AtenForm::on_ShowForcefieldsPageButton_clicked(bool checked)
+{
+	switchStack(SP_FORCEFIELD, checked);
+}
+
+void AtenForm::on_ShowGridsPageButton_clicked(bool checked)
+{
+	switchStack(SP_GRID, checked);
+}
+
+void AtenForm::on_ShowAnalysePageButton_clicked(bool checked)
+{
+	switchStack(SP_ANALYSE, checked);
 }

@@ -28,92 +28,92 @@
 #include "classes/pattern.h"
 
 // Select all ('selectall')
-int commanddata::function_CA_SELECTALL(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->select_all();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->selectAll();
 	return CR_SUCCESS;
 }
 
 // Select by atom ('selectatom <n>')
-int commanddata::function_CA_SELECTATOM(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTATOM(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atom *i = obj.m->get_atom(c->argi(0));
-	if (i != NULL) obj.m->select_atom(i);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Atom *i = obj.m->atom(c->argi(0));
+	if (i != NULL) obj.m->selectAtom(i);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
 // Select by element ('selectelement <el>')
-int commanddata::function_CA_SELECTELEMENT(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTELEMENT(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0), ZM_ALPHA);
-	for (atom *i = obj.m->get_atoms(); i != NULL; i = i->next) if (i->get_element() == el) obj.m->select_atom(i);
+	for (Atom *i = obj.m->atoms(); i != NULL; i = i->next) if (i->element() == el) obj.m->selectAtom(i);
 	return CR_SUCCESS;
 }
 
 // Select by forcefield type ('selecffttype <fftype>')
-int commanddata::function_CA_SELECTFFTYPE(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	forcefield *ff = obj.m->get_ff();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Forcefield *ff = obj.m->forcefield();
 	if (ff == NULL)
 	{
 		msg(DM_NONE,"No forcefield associated to model.\n");
 		return CR_FAIL;
 	}
-	ffatom *ffa;
-	for (atom *i = obj.m->get_atoms(); i != NULL; i = i->next)
+	ForcefieldAtom *ffa;
+	for (Atom *i = obj.m->atoms(); i != NULL; i = i->next)
 	{
-		ffa = i->get_type();
+		ffa = i->type();
 		if (ffa != NULL)
 		{
-			if (ff->match_type(ffa->get_name(),c->argc(0)) != 0) obj.m->select_atom(i);
+			if (ff->matchType(ffa->name(),c->argc(0)) != 0) obj.m->selectAtom(i);
 		}
 	}
 	return CR_SUCCESS;
 }
 
 // Invert selection
-int commanddata::function_CA_SELECTINVERT(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTINVERT(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->selection_invert();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->selectionInvert();
 	return CR_SUCCESS;
 }
 
 // Select no atoms ('selectnone')
-int commanddata::function_CA_SELECTNONE(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->select_none();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->selectNone();
 	return CR_SUCCESS;
 }
 
 // Detect and select overlapping atoms
-int commanddata::function_CA_SELECTOVERLAPS(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->select_overlaps(c->argd(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->selectOverlaps(c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Select all atoms in current (or named) pattern ('selectpattern [name]')
-int commanddata::function_CA_SELECTPATTERN(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	pattern *p = NULL;
-	if (c->has_arg(0)) p = obj.m->find_pattern(c->argc(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Pattern *p = NULL;
+	if (c->hasArg(0)) p = obj.m->findPattern(c->argc(0));
 	else p = obj.p;
 	if (p == NULL) msg(DM_NONE,"No pattern in which to select atoms.\n");
 	else
 	{
-		atom *i = p->get_firstatom();
-		for (int n=0; n<p->get_totalatoms(); n++)
+		Atom *i = p->firstAtom();
+		for (int n=0; n<p->totalAtoms(); n++)
 		{
-			obj.m->select_atom(i);
+			obj.m->selectAtom(i);
 			i = i->next;
 		}
 	}
@@ -121,32 +121,32 @@ int commanddata::function_CA_SELECTPATTERN(command *&c, bundle &obj)
 }
 
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
-int commanddata::function_CA_SELECTTYPE(command *&c, bundle &obj)
+int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	atomtype testat;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Atomtype testat;
 	testat.el = elements.find(c->argc(0));
 	testat.expand(c->argc(1),NULL,NULL);
 	// Apply it to the atoms in the model, selecting atoms that match
 	int count = 0, matchscore, atomscore;
-	if (obj.m->autocreate_patterns())
+	if (obj.m->autocreatePatterns())
 	{
 		// Prepare for typing
-		obj.m->describe_atoms();
+		obj.m->describeAtoms();
 		// Loop over patterns and select atoms
-		for (pattern *p = obj.m->get_patterns(); p != NULL; p = p->next)
+		for (Pattern *p = obj.m->patterns(); p != NULL; p = p->next)
 		{
-			atom *i = p->get_firstatom();
-			for (int n=0; n<p->get_totalatoms(); n++)
+			Atom *i = p->firstAtom();
+			for (int n=0; n<p->totalAtoms(); n++)
 			{
-				p->reset_tempi(0);
+				p->resetTempI(0);
 				i->tempi = 1;
-				if (i->get_element() == testat.el)
+				if (i->element() == testat.el)
 				{
-					atomscore = testat.match_atom(i,p->get_ringlist(),obj.m,i);
+					atomscore = testat.matchAtom(i,p->ringList(),obj.m,i);
 					if (atomscore != 0)
 					{
-						obj.m->select_atom(i);
+						obj.m->selectAtom(i);
 						count ++;
 						matchscore = atomscore;
 					}
@@ -157,7 +157,7 @@ int commanddata::function_CA_SELECTTYPE(command *&c, bundle &obj)
 		// Write results
 		msg(DM_NONE,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
 		// Update model and delete temporary atomtype
-		obj.m->log_change(LOG_SELECTION);
+		obj.m->logChange(LOG_SELECTION);
 		return CR_SUCCESS;
 	}
 	else msg(DM_NONE,"Can't test atomtype description without a valid pattern definition!\n");

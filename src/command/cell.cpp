@@ -25,93 +25,93 @@
 #include "model/model.h"
 
 // Fold atoms into unit cell
-int commanddata::function_CA_FOLD(command *&c, bundle &obj)
+int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->get_parent()->get_infile() == NULL) obj.m->fold_all_atoms();
-	else if (prefs.get_fold_on_load() != PS_NO) obj.m->fold_all_atoms();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->parent()->inputFile() == NULL) obj.m->foldAllAtoms();
+	else if (prefs.foldOnLoad() != PS_NO) obj.m->foldAllAtoms();
 	return CR_SUCCESS;
 }
 
 // Convert fractional coordinates to real coordinates
-int commanddata::function_CA_FRACTOREAL(command *&c, bundle &obj)
+int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->frac_to_real();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->fracToReal();
 	return CR_SUCCESS;
 }
 
 // Do crystal packing in model
-int commanddata::function_CA_PACK(command *&c, bundle &obj)
+int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (c->get_parent()->get_infile() == NULL) obj.m->pack();
-	else if (prefs.get_pack_on_load() != PS_NO) obj.m->pack();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (c->parent()->inputFile() == NULL) obj.m->pack();
+	else if (prefs.packOnLoad() != PS_NO) obj.m->pack();
 	return CR_SUCCESS;
 }
 
 // Print cell information ('printcell')
-int commanddata::function_CA_PRINTCELL(command *&c, bundle &obj)
+int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	msg(DM_NONE,"Unit cell type for model '%s' is %s\n", obj.m->get_name(), text_from_CT(obj.m->get_celltype()));
-	if (obj.m->get_celltype() != 0) obj.m->get_cell()->print();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	msg(DM_NONE,"Unit cell type for model '%s' is %s\n", obj.m->name(), text_from_CT(obj.m->cell()->type()));
+	if (obj.m->cell()->type() != CT_NONE) obj.m->cell()->print();
 	return CR_SUCCESS;
 }
 
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
-int commanddata::function_CA_REPLICATECELL(command *&c, bundle &obj)
+int CommandData::function_CA_REPLICATECELL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->replicate_cell(c->arg3d(0), c->arg3d(3));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->replicateCell(c->arg3d(0), c->arg3d(3));
 	return CR_SUCCESS;
 }
 
 // Scale cell and molecule COGs ('scalecell <x y z>')
-int commanddata::function_CA_SCALECELL(command *&c, bundle &obj)
+int CommandData::function_CA_SCALECELL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->scale_cell(c->arg3d(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->scaleCell(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 // Set/create unit cell ('setcell <a b c> <alpha beta gamma>')
-int commanddata::function_CA_SETCELL(command *&c, bundle &obj)
+int CommandData::function_CA_SETCELL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->set_cell(c->arg3d(0), c->arg3d(3));
-	obj.m->log_change(LOG_VISUAL);
-	obj.m->calculate_density();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->setCell(c->arg3d(0), c->arg3d(3));
+	obj.m->logChange(LOG_VISUAL);
+	obj.m->calculateDensity();
 	return CR_SUCCESS;
 }
 
 // Set/create unit cell ('setcell <ax ay az> <bx by bz> <cx cy cz>')
-int commanddata::function_CA_SETCELLAXES(command *&c, bundle &obj)
+int CommandData::function_CA_SETCELLAXES(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	mat3<double> mat;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Mat3<double> mat;
 	mat.rows[0] = c->arg3d(0);
 	mat.rows[1] = c->arg3d(3);
 	mat.rows[2] = c->arg3d(6);
-	obj.m->set_cell(mat);
-	obj.m->log_change(LOG_VISUAL);
-	obj.m->calculate_density();
+	obj.m->setCell(mat);
+	obj.m->logChange(LOG_VISUAL);
+	obj.m->calculateDensity();
 	return CR_SUCCESS;
 }
 
 // Set spacegroup
-int commanddata::function_CA_SETSPACEGROUP(command *&c, bundle &obj)
+int CommandData::function_CA_SETSPACEGROUP(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	if (c->argt(0) == VT_INTEGER) obj.m->set_spacegroup(c->argi(0));
+	if (c->argt(0) == VT_INTEGER) obj.m->setSpacegroup(c->argi(0));
 	else
 	{
 		msg(DM_NONE,"Searching for spacegroup '%s'...",c->argc(0));
-		int sg = master.find_spacegroup_by_name(c->argc(0));
+		int sg = master.findSpacegroupByName(c->argc(0));
 		if (sg == 0) msg(DM_NONE," not found - no spacegroup set.\n");
 		else msg(DM_NONE," found, id = %i.\n",sg);
-		obj.m->set_spacegroup(sg);
+		obj.m->setSpacegroup(sg);
 	}
 	return CR_SUCCESS;
 }
