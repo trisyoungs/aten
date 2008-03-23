@@ -1,6 +1,6 @@
 /*
-	*** Basic quantity definition
-	*** src/methods/quantity.h
+	*** Basic calculable definition
+	*** src/methods/calculable.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
