@@ -20,6 +20,7 @@
 */
 
 #include "base/master.h"
+#include "classes/grid.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include <QtGui/QFileDialog>
@@ -172,12 +173,17 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Save the current view as a bitmap image.
-	// Create a QPixmap of the current scene
-	QPixmap pixmap = ui.ModelView->renderPixmap(0,0,TRUE);
 	// Get filename from user
 	int n;
 	if (saveBitmapDialog->exec() == 1)
 	{
+		// Flag any surfaces to be rerendered for use in this context
+		for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
+		// Create a QPixmap of the current scene
+		QPixmap pixmap = ui.ModelView->renderPixmap(0,0,FALSE);
+		// Flag any surfaces to be rerendered so they are redisplayed in the original context
+		for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
+
 		// Get selected filename
 		QStringList filenames = saveBitmapDialog->selectedFiles();
 		QString filename = filenames.first();

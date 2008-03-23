@@ -227,8 +227,9 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Load surface
 					case (CO_GRID):
-						f = master.probeFile(argv[++n], FT_GRID_IMPORT);
-						if (f != NULL) f->execute(argv[++n]);
+						n++;
+						f = master.probeFile(argv[n], FT_GRID_IMPORT);
+						if (f != NULL) f->execute(argv[n]);
 						break;
 					// Display help
 					case (CO_HELP):
