@@ -373,8 +373,9 @@ class AtenForm : public QMainWindow
 	void on_RemoveGridButton_clicked(bool checked);
 	void on_SaveGridButton_clicked(bool checked);
 	void on_GridList_currentRowChanged(int row);
-	void on_SurfaceStyleCombo_currentIndexChanged(int index);
-	void on_SurfaceCutoffSpin_valueChanged(double d);
+	void on_GridStyleCombo_currentIndexChanged(int index);
+	void on_GridList_itemClicked(QListWidgetItem *item);
+	void on_GridCutoffSpin_valueChanged(double d);
 	void on_GridOriginXSpin_valueChanged(double d);
 	void on_GridOriginYSpin_valueChanged(double d);
 	void on_GridOriginZSpin_valueChanged(double d);
@@ -387,8 +388,8 @@ class AtenForm : public QMainWindow
 	void on_GridAxesCXSpin_valueChanged(double d);
 	void on_GridAxesCYSpin_valueChanged(double d);
 	void on_GridAxesCZSpin_valueChanged(double d);
-	void on_SurfaceColourButton_clicked(bool checked);
-	void on_SurfaceTransparencySpin_valueChanged(double d);
+	void on_GridColourButton_clicked(bool checked);
+	void on_GridTransparencySpin_valueChanged(double d);
 
 	// Disorder Page Functions
 	public:

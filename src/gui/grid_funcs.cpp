@@ -23,6 +23,7 @@
 #include "classes/grid.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
+#include "gui/tlistwidgetitem.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QColorDialog>
 
@@ -95,12 +96,13 @@ void AtenForm::refreshGridsPage()
 {
 	// Clear and refresh the grids list
 	ui.GridList->clear();
-	QListWidgetItem *item;
+	TListWidgetItem *item;
 	for (Grid *g = master.grids(); g != NULL; g = g->next)
 	{
-		item = new QListWidgetItem(ui.GridList);
+		item = new TListWidgetItem(ui.GridList);
 		item->setText(g->name());
 		item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
+		item->setGrid(g);
 	}
 	// Select the first item
 	if (master.nGrids() != 0) ui.GridList->setCurrentRow(0);
@@ -116,9 +118,9 @@ void AtenForm::refreshGridInfo()
 	else g = master.grid(row);
 	// Set minimum, maximum, and cutoff
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
-	ui.SurfaceCutoffSpin->setMinimum(g->minimum());
-	ui.SurfaceCutoffSpin->setValue(g->cutoff());
-	ui.SurfaceCutoffSpin->setMaximum(g->maximum());
+	ui.GridCutoffSpin->setMinimum(g->minimum());
+	ui.GridCutoffSpin->setValue(g->cutoff());
+	ui.GridCutoffSpin->setMaximum(g->maximum());
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
 	// Set origin
 	Vec3<double> origin = g->origin();
@@ -136,9 +138,23 @@ void AtenForm::refreshGridInfo()
 	ui.GridAxesCXSpin->setValue(axes.rows[2].x);
 	ui.GridAxesCYSpin->setValue(axes.rows[2].y);
 	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
-	// Set colour and transparency
-	ui.SurfaceColourFrame->setColour(g->colour());
-	ui.SurfaceTransparencySpin->setValue( g->colour()[3]*127 );
+	// Set surface style, colour and transparency
+	ui.GridStyleCombo->setCurrentIndex(g->style());
+	ui.GridColourFrame->setColour(g->colour());
+	ui.GridColourFrame->update();
+	ui.GridTransparencySpin->setValue( g->transparency() );
+}
+
+// Item in forcefield list has changed?
+void AtenForm::on_GridList_itemClicked(QListWidgetItem *item)
+{
+	// Cast item to our own TListWidgetItem
+	TListWidgetItem *titem = (TListWidgetItem*) item;
+	// Get forcefield associated to item
+	Grid *g = titem->grid();
+	// Look at checked state
+	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::gridOriginChanged(int component, double value)
@@ -192,7 +208,7 @@ void AtenForm::on_GridList_currentRowChanged(int row)
 	if (row != -1) refreshGridInfo();
 }
 
-void AtenForm::on_SurfaceCutoffSpin_valueChanged(double d)
+void AtenForm::on_GridCutoffSpin_valueChanged(double d)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -202,7 +218,7 @@ void AtenForm::on_SurfaceCutoffSpin_valueChanged(double d)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_SurfaceStyleCombo_currentIndexChanged(int index)
+void AtenForm::on_GridStyleCombo_currentIndexChanged(int index)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -212,7 +228,7 @@ void AtenForm::on_SurfaceStyleCombo_currentIndexChanged(int index)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_SurfaceColourButton_clicked(bool checked)
+void AtenForm::on_GridColourButton_clicked(bool checked)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -226,12 +242,12 @@ void AtenForm::on_SurfaceColourButton_clicked(bool checked)
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
 	g->setColour(newcol.redF(), newcol.greenF(), newcol.blueF());
-	ui.SurfaceColourFrame->setColour(newcol);
-	ui.SurfaceColourFrame->update();
+	ui.GridColourFrame->setColour(newcol);
+	ui.GridColourFrame->update();
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_SurfaceTransparencySpin_valueChanged(double value)
+void AtenForm::on_GridTransparencySpin_valueChanged(double value)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();

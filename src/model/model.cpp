@@ -26,7 +26,7 @@
 #include "classes/clipboard.h"
 #include "classes/site.h"
 #include "classes/glyph.h"
-#include "methods/quantity.h"
+#include "methods/calculable.h"
 
 // Constructors
 Model::Model()

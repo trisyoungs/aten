@@ -145,6 +145,12 @@ void Grid::updateRenderPoint()
 	renderPoint_ = log_;
 }
 
+// Request re-rendering of the surface
+void Grid::requestRerender()
+{
+	log_ ++;
+}
+
 // Set whether the surface is visible
 void Grid::setVisible(bool v)
 {
@@ -177,7 +183,13 @@ void Grid::setTransparency(GLfloat a)
 	log_++;
 }
 
-// Return the colour of the surface
+// Return transparency of the grid's surface
+GLfloat Grid::transparency()
+{
+	return colour_[3];
+}
+
+// Return the colour of the grid's surface
 GLfloat *Grid::colour()
 {
 	return colour_;

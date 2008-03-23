@@ -151,6 +151,8 @@ class Grid
 	bool shouldRerender();
 	// Update the log point of the surface
 	void updateRenderPoint();
+	// Request re-rendering of the surface
+	void requestRerender();
 	// Set whether the surface is visible
 	void setVisible(bool v);
 	// Return whether the surface is visible
@@ -164,6 +166,8 @@ class Grid
 	void setColour(double r, double g, double b);
 	// Set transparency of the surface
 	void setTransparency(GLfloat a);
+	// Return the transparency of the surface
+	GLfloat transparency();
 	// Return the colour of the surface
 	GLfloat *colour();
 

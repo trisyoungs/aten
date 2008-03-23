@@ -5115,7 +5115,7 @@
               <number>4</number>
              </property>
              <item row="1" column="1" >
-              <widget class="QDoubleSpinBox" name="SurfaceCutoffSpin" >
+              <widget class="QDoubleSpinBox" name="GridCutoffSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -5615,7 +5615,7 @@
                <number>4</number>
               </property>
               <item>
-               <widget class="QComboBox" name="SurfaceStyleCombo" >
+               <widget class="QComboBox" name="GridStyleCombo" >
                 <property name="sizePolicy" >
                  <sizepolicy>
                   <hsizetype>7</hsizetype>
@@ -5655,7 +5655,7 @@
                  <number>4</number>
                 </property>
                 <item>
-                 <widget class="TColourFrame" name="SurfaceColourFrame" >
+                 <widget class="TColourFrame" name="GridColourFrame" >
                   <property name="frameShape" >
                    <enum>QFrame::StyledPanel</enum>
                   </property>
@@ -5665,7 +5665,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="SurfaceColourButton" >
+                 <widget class="QPushButton" name="GridColourButton" >
                   <property name="sizePolicy" >
                    <sizepolicy>
                     <hsizetype>5</hsizetype>
@@ -5712,7 +5712,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QDoubleSpinBox" name="SurfaceTransparencySpin" >
+                 <widget class="QDoubleSpinBox" name="GridTransparencySpin" >
                   <property name="decimals" >
                    <number>3</number>
                   </property>
@@ -7669,11 +7669,6 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
-  </customwidget>
-  <customwidget>
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>ttreewidget.uih</header>
@@ -7682,6 +7677,11 @@
    <class>TTabBar</class>
    <extends>QWidget</extends>
    <header>ttabbar.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TCanvas</class>
+   <extends>QWidget</extends>
+   <header>tcanvas.uih</header>
   </customwidget>
   <customwidget>
    <class>TColourFrame</class>
