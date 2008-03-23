@@ -24,51 +24,51 @@
 #include "gui/canvas.h"
 
 // Render model atoms and bonds
-void canvas::render_model_atoms()
+void Canvas::renderModelAtoms()
 {
-	dbg_begin(DM_CALLS,"canvas::render_model_atoms");
-	static draw_style style_i, renderstyle;
+	dbgBegin(DM_CALLS,"Canvas::renderModelAtoms");
+	static DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
 	static short int cindex;
-	static atom_colours scheme;
+	static AtomColours scheme;
 	static double radius, rij;
-	static vec3<double> ri, rj, rk, ijk;
-	static atom *i, *j;
-	static refitem<bond,int> *bref;
-	static unitcell *cell;
+	static Vec3<double> ri, rj, rk, ijk;
+	static Atom *i, *j;
+	static Refitem<Bond,int> *bref;
+	static Cell *cell;
 	// Reproject atoms if necessary
-	displaymodel->project_all();
+	displayModel_->projectAll();
 
-	renderstyle = prefs.render_style;
-	scheme = prefs.get_colour_scheme();
-	i = displaymodel->get_atoms();
-	cell = displaymodel->get_cell();
+	renderstyle = prefs.renderStyle();
+	scheme = prefs.colourScheme();
+	i = displayModel_->atoms();
+	cell = displayModel_->cell();
 	
 	// Set polygon fill mode and specular reflection
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
-	glMateriali(GL_FRONT, GL_SHININESS, prefs.gl_shininess);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(COL_SPECREFLECT));
+	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 
 	while (i != NULL)
 	{
 		// If the atom is hidden then move on to the next
-		if (i->is_hidden()) { i = i->next; continue; }
+		if (i->isHidden()) { i = i->next; continue; }
 		// Check if its a drawing object and not an element
-		if (i->get_element() > 118) { i = i->next; continue; }
+		if (i->element() > 118) { i = i->next; continue; }
 		// Push the current matrix, translate to the atoms coordinates and set the drawing colour
 		glPushMatrix();
 		  // Define atom colours
 		  if (scheme == AC_ELEMENT)
 		  {
-			cindex = i->get_element();
-			elements.ambient(cindex, ambient);
-			elements.diffuse(cindex, diffuse);
+			cindex = i->element();
+			elements.copyAmbientColour(cindex, ambient);
+			elements.copyDiffuseColour(cindex, diffuse);
 		  }
 		  else
 		  {
 			printf("Colour scale selection for atoms is not yet done.\n");
 			cindex = 0;
-			prefs.get_scale_colour(cindex, ambient);
-			prefs.get_scale_colour(cindex, diffuse);
+			prefs.copyScaleColour(cindex, ambient);
+			prefs.copyScaleColour(cindex, diffuse);
 		  }
 		  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 		  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
@@ -78,7 +78,7 @@ void canvas::render_model_atoms()
 		  // Grab atom style and toggle lighting state if DS_INDIVIDUAL is the main drawing style
 		  if (renderstyle == DS_INDIVIDUAL)
 		  {
-			style_i = i->get_style();
+			style_i = i->style();
 			style_i == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 		  }
 		  else style_i = renderstyle;
@@ -89,31 +89,30 @@ void canvas::render_model_atoms()
 		  if (style_i == DS_STICK)
 		  {
 			glColor3fv(ambient);
-			i->is_selected() ? glLineWidth(3.0) : glLineWidth(1.0);
-			if (i->get_nbonds() == 0) glCallList(list[GLOB_STICKATOM]); 
+			i->isSelected() ? glLineWidth(3.0) : glLineWidth(1.0);
+			if (i->nBonds() == 0) glCallList(list_[GLOB_STICKATOM]); 
 		  }
 		  else
 		  {
 			if (style_i == DS_SCALED)
 			{
 				// Get the sphere radius and push the matrix again
-				radius = prefs.screenradius(i);
+				radius = prefs.screenRadius(i);
 				glPushMatrix();
 				  glScaled(radius,radius,radius);
-				  glCallList(list[GLOB_UNITATOM]); 
+				  glCallList(list_[GLOB_UNITATOM]); 
 				glPopMatrix();
 			}
-			else style_i == DS_SPHERE ? glCallList(list[GLOB_SPHEREATOM]) : glCallList(list[GLOB_TUBEATOM]);
+			else style_i == DS_SPHERE ? glCallList(list_[GLOB_SPHEREATOM]) : glCallList(list_[GLOB_TUBEATOM]);
 		  }
 		  /*
 		  // Draw the bonds.
 		  // Render half bonds at each atom.
 		  */
-		  bref = i->get_bonds();
-		  while (bref != NULL)
+		  for (bref = i->bonds(); bref != NULL; bref = bref->next)
 		  {
-			j = bref->item->get_partner(i);
-			if (j->is_hidden()) { bref = bref->next; continue; }
+			j = bref->item->partner(i);
+			if (j->isHidden()) continue;
 			// We are centred on atom i, so get the vector to atom j. Its more useful to have the half-length of the bond, so scale by 0.5 too.
 			rj = cell->mimd(j, ri);
 			rij = rj.magnitude() * 0.5;
@@ -123,30 +122,30 @@ void canvas::render_model_atoms()
 			{
 				// Draw cylinder bonds.
 				// Change sign of z-coordinate
-				switch (bref->item->type)
+				switch (bref->item->order())
 				{
 					case (BT_SINGLE):	// Single bond
-						gl_cylinder(rj,rij,i->is_selected()*2);
+						glCylinder(rj,rij,i->isSelected()*2);
 						break;
 					case (BT_DOUBLE):	// Double bond
-						ijk = i->find_bond_plane(j,bref->item,rj);
+						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						gl_cylinder(rj,rij,i->is_selected()*2);
+						glCylinder(rj,rij,i->isSelected()*2);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						gl_cylinder(rj,rij,i->is_selected()*2);
+						glCylinder(rj,rij,i->isSelected()*2);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 					case (BT_TRIPLE):	// Triple bond
-						ijk = i->find_bond_plane(j,bref->item,rj);
+						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
-						gl_cylinder(rj,rij,i->is_selected()*2);
+						glCylinder(rj,rij,i->isSelected()*2);
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						gl_cylinder(rj,rij,i->is_selected()*2);
+						glCylinder(rj,rij,i->isSelected()*2);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						gl_cylinder(rj,rij,i->is_selected()*2);
+						glCylinder(rj,rij,i->isSelected()*2);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 				}
@@ -155,7 +154,7 @@ void canvas::render_model_atoms()
 			{
 				// Draw stick bond(s)
 				glBegin(GL_LINES);
-				  switch (bref->item->type)
+				  switch (bref->item->order())
 				  {
 					case (BT_SINGLE):	// Single bond
 						glVertex3d(0.0,0.0,0.0);
@@ -163,7 +162,7 @@ void canvas::render_model_atoms()
 						break;
 					case (BT_DOUBLE):	// Double bond
 						// Must define a plane in which the bond will lay
-						ijk = i->find_bond_plane(j,bref->item,rj);
+						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslated(ijk.x,ijk.y,ijk.z);
@@ -195,7 +194,6 @@ void canvas::render_model_atoms()
 				  }
 				glEnd();
 			}
-			bref = bref->next;
 		  }
 		glPopMatrix();
 		i = i->next;
@@ -204,29 +202,29 @@ void canvas::render_model_atoms()
 	//glEnd();
 	// Second pass to render selected sphere atoms (transparency)
 	// Enable alpha component (if we weren't aliasing anyway)
-	if (!prefs.get_gl_option(GO_LINEALIASING) && !prefs.get_gl_option(GO_POLYALIASING)) glEnable(GL_BLEND);
+	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);		// Make sure lighting is on
-	for (i = displaymodel->get_atoms(); i != NULL; i = i->next)
+	for (i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
 		// Grab atom style and toggle lighting state if DS_INDIVIDUAL is the main drawing style
-		renderstyle == DS_INDIVIDUAL ? style_i = i->get_style() : style_i = renderstyle;
+		renderstyle == DS_INDIVIDUAL ? style_i = i->style() : style_i = renderstyle;
 		// Skip stick, hidden or unselected atoms...
 		if (style_i == DS_STICK) continue;
-		if (!i->is_selected()) continue;
-		if (i->is_hidden()) continue;
+		if (!i->isSelected()) continue;
+		if (i->isHidden()) continue;
 		// Define atom colours
 		if (scheme == AC_ELEMENT)
 		{
-			cindex = i->get_element();
-			elements.ambient(cindex, ambient);
-			elements.diffuse(cindex, diffuse);
+			cindex = i->element();
+			elements.copyAmbientColour(cindex, ambient);
+			elements.copyDiffuseColour(cindex, diffuse);
 		}
 		else
 		{
 			printf("Colour scale selection for atoms is not yet done.\n");
 			cindex = 0;
-			prefs.get_scale_colour(cindex, ambient);
-			prefs.get_scale_colour(cindex, diffuse);
+			prefs.copyScaleColour(cindex, ambient);
+			prefs.copyScaleColour(cindex, diffuse);
 		}
 		ambient[3] = ambient[3] / 2.0f;
 		diffuse[3] = diffuse[3] / 2.0f;
@@ -238,18 +236,18 @@ void canvas::render_model_atoms()
 		  // Draw on the transparent highlight
 		  if (style_i == DS_SCALED)
 		  {
-			radius = prefs.screenradius(i);
+			radius = prefs.screenRadius(i);
 			glPushMatrix();
 			  glScalef(radius,radius,radius);
-			  glCallList(list[GLOB_SELUNITATOM]);
+			  glCallList(list_[GLOB_SELUNITATOM]);
 			glPopMatrix();
 		  }
-		  else style_i == DS_SPHERE ? glCallList(list[GLOB_SELSPHEREATOM]) : glCallList(list[GLOB_SELTUBEATOM]);
+		  else style_i == DS_SPHERE ? glCallList(list_[GLOB_SELSPHEREATOM]) : glCallList(list_[GLOB_SELTUBEATOM]);
 		glPopMatrix();
 	}
 	// Turn off blending (if not antialiasing)
-	if (!prefs.get_gl_option(GO_LINEALIASING) && !prefs.get_gl_option(GO_POLYALIASING)) glDisable(GL_BLEND);
+	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glDisable(GL_BLEND);
 	// Reset line width to 1.0
 	glLineWidth(1.0);
-	dbg_end(DM_CALLS,"canvas::render_model_atoms");
+	dbgEnd(DM_CALLS,"Canvas::renderModelAtoms");
 }

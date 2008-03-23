@@ -20,16 +20,35 @@
 */
 
 #include "methods/quantity.h"
-#include "base/master.h"
+#include <stdlib.h>
 
 // Constructor
-calculable::calculable()
+Calculable::Calculable()
 {
 	prev = NULL;
 	next = NULL;
 }
 
-// Destructor
-calculable::~calculable()
+// Set identifiable name of the quantity
+void Calculable::setName(const char *s)
 {
+	name_ = s;
+}
+
+// Return name of the quantity
+const char *Calculable::name()
+{
+	return name_.get();
+}
+
+// Set filename of the quantity
+void Calculable::setFilename(const char *s)
+{
+	filename_ = s;
+}
+
+// Return filename of the quantity
+const char *Calculable::filename()
+{
+	return filename_.get();
 }

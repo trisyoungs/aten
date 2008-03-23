@@ -22,17 +22,19 @@
 #include "command/commands.h"
 #include "base/master.h"
 #include "base/debug.h"
+#include "model/model.h"
+#include "methods/mc.h"
 
 // Adds component to list ('addcomponent <name> <model> <nmols>')
-int commanddata::function_CA_ADDCOMPONENT(command *&c, bundle &obj)
+int CommandData::function_CA_ADDCOMPONENT(Command *&c, Bundle &obj)
 {
-	model *compm = master.find_model(c->argc(1));
+	Model *compm = master.findModel(c->argc(1));
 	if (compm != NULL)
 	{
-		component *newcomp = master.mc.components.add();
-		newcomp->set_model(compm);
-		newcomp->set_nrequested(c->argi(2));
-		newcomp->set_name(c->argc(0));
+		Component *newcomp = mc.components.add();
+		newcomp->setModel(compm);
+		newcomp->setNRequested(c->argi(2));
+		newcomp->setName(c->argc(0));
 	}
 	else
 	{
@@ -43,105 +45,105 @@ int commanddata::function_CA_ADDCOMPONENT(command *&c, bundle &obj)
 }
 
 // Performs MC insertion ('disorder <ncycles>')
-int commanddata::function_CA_DISORDER(command *&c, bundle &obj)
+int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (master.mc.components.size() == 0)
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (mc.components.nItems() == 0)
 	{
 		msg(DM_NONE,"Disordered builder requires a list of components.\n");
 		return CR_FAIL;
 	}
-	msg(DM_NONE,"Performing disordered build for model '%s'\n", obj.m->get_name());
-	master.mc.set_ncycles(c->argi(0));
-	master.mc.disorder(obj.m);
+	msg(DM_NONE,"Performing disordered build for model '%s'\n", obj.m->name());
+	mc.setNCycles(c->argi(0));
+	mc.disorder(obj.m);
 	return CR_SUCCESS;
 }
 
 // Print current component list ('printcomponents')
-int commanddata::function_CA_PRINTCOMPONENTS(command *&c, bundle &obj)
+int CommandData::function_CA_PRINTCOMPONENTS(Command *&c, Bundle &obj)
 {
 	msg(DM_NONE,"Current component list:\n");
-	vec3<double> v1, v2;
-	component *comp = master.mc.components.first();
-	comp != NULL ? printf("Name         Nmols  I D T R Z  Model         Region       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
+	Vec3<double> v1, v2;
+	Component *comp = mc.components.first();
+	comp != NULL ? printf("Name         Nmols  I D T R Z  Model         ComponentRegion       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
 		: printf("None.\n");
 	while (comp != NULL)
 	{
-		v1 = comp->area.get_centre();
-		v2 = comp->area.get_size();
+		v1 = comp->area.centre();
+		v2 = comp->area.size();
 		printf("%-10s  %5i  %s %s %s %s %s  %-12s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
-			comp->get_name(),comp->get_nrequested(),
-			(comp->get_allowed(MT_INSERT) ? "+" : " "),
-			(comp->get_allowed(MT_DELETE) ? "+" : " "),
-			(comp->get_allowed(MT_TRANSLATE) ? "+" : " "),
-			(comp->get_allowed(MT_ROTATE) ? "+" : " "),
-			(comp->get_allowed(MT_ZMATRIX) ? "+" : " "),
-			comp->get_model()->get_name(),
-			text_from_RS(comp->area.get_shape()),
+			comp->name(),comp->nRequested(),
+			(comp->isMoveAllowed(MT_INSERT) ? "+" : " "),
+			(comp->isMoveAllowed(MT_DELETE) ? "+" : " "),
+			(comp->isMoveAllowed(MT_TRANSLATE) ? "+" : " "),
+			(comp->isMoveAllowed(MT_ROTATE) ? "+" : " "),
+			(comp->isMoveAllowed(MT_ZMATRIX) ? "+" : " "),
+			comp->model()->name(),
+			text_from_RS(comp->area.shape()),
 			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
-			(comp->area.get_allowoverlap() ? "Yes" : "No"));
+			(comp->area.allowOverlap() ? "Yes" : "No"));
 		comp = comp->next;
 	}
 	return CR_SUCCESS;
 }
 
 // Set region centre to position ('setcentre <name> <x y z>')
-int commanddata::function_CA_SETCENTRE(command *&c, bundle &obj)
+int CommandData::function_CA_SETCENTRE(Command *&c, Bundle &obj)
 {
-	component *comp = master.mc.get_component_by_name(c->argc(0));
+	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
 		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	comp->area.set_centre(c->arg3d(1));
+	comp->area.setCentre(c->arg3d(1));
 	return CR_SUCCESS;
 }
 
 // Set geometry of region ('setgeometry <name> <x y z> [l]')
-int commanddata::function_CA_SETGEOMETRY(command *&c, bundle &obj)
+int CommandData::function_CA_SETGEOMETRY(Command *&c, Bundle &obj)
 {
-	component *comp = master.mc.get_component_by_name(c->argc(0));
+	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
 		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	comp->area.set_size(c->arg3d(1));
-	if (!c->has_arg(4)) comp->area.set_length(c->argd(4));
+	comp->area.setSize(c->arg3d(1));
+	if (!c->hasArg(4)) comp->area.setLength(c->argd(4));
 	return CR_SUCCESS;
 }
 
 // Set overlap flag ('setoverlap <name> true|false')
-int commanddata::function_CA_SETOVERLAP(command *&c, bundle &obj)
+int CommandData::function_CA_SETOVERLAP(Command *&c, Bundle &obj)
 {
-	component *comp = master.mc.get_component_by_name(c->argc(0));
+	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
 		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	comp->area.set_allowoverlap(c->argb(1));
+	comp->area.setAllowOverlap(c->argb(1));
 	return CR_SUCCESS;
 }
 
 // Set shape for region ('setshape <name> <shape>')
-int commanddata::function_CA_SETSHAPE(command *&c, bundle &obj)
+int CommandData::function_CA_SETSHAPE(Command *&c, Bundle &obj)
 {
-	component *comp = master.mc.get_component_by_name(c->argc(0));
+	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
 		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	region_shape rs = RS_from_text(c->argc(1));
-	if (rs != RS_NITEMS) comp->area.set_shape(rs);
+	ComponentRegionShape rs = RS_from_text(c->argc(1));
+	if (rs != RS_NITEMS) comp->area.setShape(rs);
 	return CR_SUCCESS;
 }
 
 // Set vdw radius scaling for method ('vdwscale <scale>')
-int commanddata::function_CA_VDWSCALE(command *&c, bundle &obj)
+int CommandData::function_CA_VDWSCALE(Command *&c, Bundle &obj)
 {
-	master.mc.set_vdw_radius_scale(c->argd(0));
+	mc.setVdwScale(c->argd(0));
 	return CR_SUCCESS;
 }

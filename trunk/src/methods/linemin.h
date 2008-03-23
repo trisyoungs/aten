@@ -23,28 +23,28 @@
 #define ATEN_LINEMIN_H
 
 // Forward declarations
-class model;
+class Model;
 
 // Line Minimiser
-class linemin
+class LineMinimiser
 {
 	public:
 	// Constructor
-	linemin();
+	LineMinimiser();
 
 	private:
 	// Tolerance for root finding
-	double tolerance;
+	double tolerance_;
 
 	public:
 	// Set the tolerance
-	void set_tolerance(double t) { tolerance = t; }
+	void setTolerance(double t) { tolerance_ = t; }
 	// Return current tolerance
-	double get_tolerance() { return tolerance; }
+	double tolerance() { return tolerance_; }
 	// Generate a new config following the supplied gradient vector
-	void gradient_move(model *source, model *dest, double delta);
+	void gradientMove(Model *source, Model *dest, double delta);
 	// Minimise the specified model (srcmodel should already contain desired forces (i.e. gradient vector)) along which to minimise)
-	double line_minimise(model *source);
+	double lineMinimise(Model *source);
 };
 
 #endif

@@ -27,249 +27,251 @@
 #include "templates/vector4.h"
 #include "templates/reflist.h"
 #include "base/constants.h"
-#ifdef IS_MAC
-	#include <OpenGL/gl.h>
-#else
-	#include <GL/gl.h>
-#endif	
+#include <QtOpenGL/QtOpenGL>
 
 // Atom drawing styles
-enum draw_style { DS_STICK, DS_TUBE, DS_SPHERE, DS_SCALED, DS_INDIVIDUAL, DS_NITEMS };
-inline draw_style operator++(draw_style &style,int)
+enum DrawStyle { DS_STICK, DS_TUBE, DS_SPHERE, DS_SCALED, DS_INDIVIDUAL, DS_NITEMS };
+inline DrawStyle operator++(DrawStyle &style,int)
 {
 	if (style == DS_INDIVIDUAL) return style = DS_STICK;
-	else return style = (draw_style)(style + 1);
+	else return style = (DrawStyle)(style + 1);
 }
-draw_style DS_from_text(const char*);
-const char *text_from_DS(draw_style);
+DrawStyle DS_from_text(const char*);
+const char *text_from_DS(DrawStyle);
 const char **get_DS_strings();
 
 // Atom labels
-enum atom_label { AL_ID=1, AL_ELEMENT=2, AL_FFTYPE=4, AL_FFEQUIV=8, AL_CHARGE=16, AL_NITEMS=5 };
-atom_label AL_from_text(const char*);
+enum AtomLabel { AL_ID=1, AL_ELEMENT=2, AL_FFTYPE=4, AL_FFEQUIV=8, AL_CHARGE=16, AL_NITEMS=5 };
+AtomLabel AL_from_text(const char*);
 
 // Hydrogen-add geometries
-enum hadd_geom { HG_LINEAR, HG_PLANAR, HG_TETRAHEDRAL };
+enum HAddGeom { HG_LINEAR, HG_PLANAR, HG_TETRAHEDRAL };
 
 // Data items in atom structure
-enum atom_data { AD_ALL=0, AD_R=1, AD_F=2, AD_V=4, AD_Q=8, AD_FIXFREE=16, AD_Z = 32 };
+enum AtomData { AD_ALL=0, AD_R=1, AD_F=2, AD_V=4, AD_Q=8, AD_FIXFREE=16, AD_Z = 32 };
 
 // Forward declarations
-class model;
-class bond;
-class ffatom;
+class Model;
+class Bond;
+class ForcefieldAtom;
 
 // Base Atom Data
-class atom
+class Atom
 {
 	public:
 	// Constructor / Destructor
-	atom();	
-	~atom();
+	Atom();	
+	~Atom();
 	// List pointers
-	atom *prev, *next;
+	Atom *prev, *next;
 	// Get next selected atom in list
-	atom *get_next_selected();
+	Atom *nextSelected();
 	// Add bound neighbours to reflist specified
-	void add_bound_to_reflist(reflist<atom,int>*);
+	void addBoundToReflist(Reflist<Atom,int>*);
 	// Reset all data items in structure
 	void reset();
 	// Copy atom data from supplied atom
-	void copy(atom*);
+	void copy(Atom*);
 	// Copy style data (no q, r, f, or v) from supplied atom
-	void copy_style(atom*);
+	void copyStyle(Atom*);
 	// Print out all info about the atom
 	void print();
 	// One-line atom summary
-	void print_summary();
+	void printSummary();
 
 	/*
 	// Coordinates
 	*/
 	protected:
-	vec3<double> rr;
+	Vec3<double> r_;
 	public:
-	vec3<double> &r() { return rr; }
+	Vec3<double> &r();
 
 	/*
 	// Forces
 	*/
 	protected:
-	vec3<double> ff;
+	Vec3<double> f_;
 	public:
-	vec3<double> &f() { return ff; }
+	Vec3<double> &f();
 
 	/*
 	// Velocities
 	*/
 	protected:
-	vec3<double> vv;
+	Vec3<double> v_;
 	public:
-	vec3<double> &v() { return vv; }
+	Vec3<double> &v();
 
 	/*
 	// Character
 	*/
 	protected:
 	// Atomic charge
-	double q;
+	double charge_;
 	// Element number
-	short int el;
+	short int el_;
 	// Oxidation state (used by typing routines)
-	short int os;
+	short int os_;
 	// Forcefield atom type
-	ffatom *type;
+	ForcefieldAtom *type_;
 	// Whether the assigned forcefield type is fixed
-	bool typefixed;
+	bool fixedType_;
 	// Chemical environment of atom
-	atom_env env;
+	AtomEnv env_;
+	// Whether the atom will be moved in minimisations etc.
+	bool fixedPosition_;
 
 	public:
 	// Sets the atom charge
-	void set_charge(double d) { q = d; }
+	void setCharge(double d);
 	// Return the atom charge
-	double get_charge() { return q; }
+	double charge();
 	// Set the element type of the atom
-	void set_element(short int newel) { el = newel; }
+	void setElement(short int newel);
 	// Return the element of the atom
-	short int get_element() { return el; }
+	short int element();
 	// Check element against the supplied value
-	bool is_element(short int n) { return (n == el ? TRUE : FALSE); }
+	bool isElement(short int n);
 	// Check oxidation state against supplied value
-	bool is_os(short int n) { return (n == os ? TRUE : FALSE); }
+	bool isOs(short int n);
 	// Return the oxidation state of the atom
-	short int get_os() { return os; }
+	short int os();
 	// Set the forcefield type of the atom
-	void set_type(ffatom *ffa) { type = ffa; }
+	void setType(ForcefieldAtom *ffa);
 	// Return the forcefield type of the atom
-	ffatom *get_type() { return type; }
+	ForcefieldAtom *type();
 	// Set the fixed status of the assigned atom type
-	void set_fixed_type(bool b) { typefixed = b; }
+	void setTypeFixed(bool b);
 	// Return the fixed status of the assigned atom type
-	bool has_fixed_type() { return typefixed; }
+	bool hasFixedType();
 	// Check the ff type of the atom against the supplied value
-	bool type_is(ffatom *type) { return (type == type ? TRUE : FALSE); }
+	bool typeIs(ForcefieldAtom *type);
 	// Set the environment of the atom
-	void set_env(atom_env ae) { env = ae; }
+	void setEnv(AtomEnv ae);
 	// Return the environment of the atom
-	atom_env get_env() { return env; }
+	AtomEnv env();
 	// Check the environment of the atom against the supplied value
-	bool is_env(atom_env ae) { return (env == ae ? TRUE : FALSE); }
-	// Whether the atom will be moved in minimisations etc.
-	bool fixed;
+	bool isEnv(AtomEnv ae);
+	// Set whether the atom's position is fixed
+	void setPositionFixed(bool b);
+	// Return whether the atom's position is fixed
+	bool hasFixedPosition();
 
 	/*
 	// Bonds / Bonding
 	*/
 	protected:
 	// Bond list for atom
-	reflist<bond,int> bonds;
+	Reflist<Bond,int> bonds_;
 
 	public:
 	// Return the number of bonds to the atom
-	int get_nbonds() { return bonds.size(); }
+	int nBonds();
 	// Return the current bond list
-	refitem<bond,int> *get_bonds() { return bonds.first(); }
+	Refitem<Bond,int> *bonds();
 	// Check the number of bonds against the supplied value
-	bool is_nbonds(int n) { return (bonds.size() == n ? TRUE : FALSE); }
+	bool isNBonds(int n);
 	// Accept the specified bond to the atom's local reference list
-	void accept_bond(bond *b) { bonds.add(b); }
+	void acceptBond(Bond *b);
 	// Delete the specified bond from the atom's local reference list
-	void detach_bond(bond*);
+	void detachBond(Bond*);
 	// Return the total bond order of the atom
-	int total_bond_order();
+	int totalBondOrder();
 	// Return the number of bonds of specified type to the atom
-	int count_bonds(bond_type);
+	int countBonds(BondType);
 	// Calculate the bond order between this atom and the specified atom
-	double get_bond_order(atom*);
+	double bondOrder(Atom*);
 	// Calculates the geometry of the atom's bound environment
-	atom_geom get_geometry(model*);
+	AtomGeometry geometry(Model*);
 	// Returns bond pointer between this and atom 'j' (if it exists)
-	bond *find_bond(atom*);
+	Bond *findBond(Atom*);
 	// Determine bond plane
-	vec3<double> find_bond_plane(atom*, bond*, const vec3<double>&);
+	Vec3<double> findBondPlane(Atom*, Bond*, const Vec3<double>&);
 
 	/*
 	// Selection
 	*/
 	private:
 	// Selection flag
-	bool selected;	
+	bool selected_;
 	// Hidden flag
-	bool hidden;
+	bool hidden_;
 
 	public:
 	// Sets the selected flag of the atom
-	void set_selected(bool b) { selected = b; }
+	void setSelected(bool b);
 	// Returns the current selection state of the atom
-	bool is_selected() { return selected; }
+	bool isSelected();
 	// Sets the hidden flag of the atom
-	void set_hidden(bool b) { hidden = b; }
+	void setHidden(bool b);
 	// Return whether the atom is hidden
-	bool is_hidden() { return hidden; }
+	bool isHidden();
 
 	/*
-	// Misc
+	// Identity
 	*/
 	private:
 	// ID number of atom
-	short int id;
+	short int id_;
 
 	public:
 	// Temporary integer variable
 	short int tempi;
 	// Sets the atom id
-	void set_id(short int number) { id = number; }
+	void setId(short int newid);
 	// Decreases the id of the atom by 1
-	void decrease_id() { id --; }
+	void decreaseId();
 	// Return the id of the atom
-	short int get_id() { return id; }
+	short int id();
 
 	/*
 	// Rendering Coordinates
 	*/
 	private:
 	// 2D coordinates (screen) and 2D depth
-	vec3<double> rr_screen;
+	Vec3<double> rScreen_;
 	// Screen radius for selection
-	double screenrad;
+	double screenRadius_;
 	// World (GL) coordinates, transformed by camera and rotation matrices
-	vec3<double> rr_world;
+	Vec3<double> rWorld_;
 
 	public:
 	// World (GL Transformed) coordinates
-	vec3<double> &worldr() { return rr_world; }
+	Vec3<double> &rWorld();
 	// Screen (two-dimensional) coordinates
-	vec3<double> &screenr() { return rr_screen; }
-	void set_screen_radius(double a) { screenrad = a; }
-	double get_screen_radius() { return screenrad; }
+	Vec3<double> &rScreen();
+	// Set the screen radius of the atom
+	void setScreenRadius(double radius);
+	// Return the screen radius of the atom
+	double screenRadius();
 
 	/*
 	// Rendering
 	*/
 	protected:
 	// How to draw this atom (and its associated bonds)
-	draw_style style;
+	DrawStyle style_;
 	// Bitvector for atom labelling
-	short int labels;
+	short int labels_;
 
 	public:
 	// Sets the drawing style of the atom
-	void set_style(draw_style ds) { style = ds; }
+	void setStyle(DrawStyle style);
 	// Returns the drawing style of the atom
-	draw_style get_style() { return style; }
+	DrawStyle style();
 	// Returns TRUE id the atom has at least one label specified
-	bool has_labels() { return (labels == 0 ? FALSE : TRUE); }
+	bool hasLabels();
 	// Set label bitvector to specified value
-	void set_labels(int l) { labels = l; }
+	void setLabels(int l);
 	// Returns the label bitmask of the atom
-	int get_labels() { return labels; }
+	int labels();
 	// Set the bit for the specified label (if it is not set already)
-	void add_label(atom_label al) { if (!(labels&al)) labels += al; }
+	void addLabel(AtomLabel label);
 	// Unsets the bit for the specified label (if it is not unset already)
-	void remove_label(atom_label al) { if (labels&al) labels -= al; }
+	void removeLabel(AtomLabel label);
 	// Clear all labels from the atom
-	void clear_labels() { labels = 0; }
+	void clearLabels();
 };
 
 #endif

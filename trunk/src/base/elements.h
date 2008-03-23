@@ -22,113 +22,117 @@
 #ifndef ATEN_ELEMAP_H
 #define ATEN_ELEMAP_H
 
-#include "classes/atom.h"
 #include "base/prefs.h"
-#include "gui/canvas.h"
+#include <QtOpenGL/QtOpenGL>
 
-// Number of elements (120 until Ellipsoid is removed, 119 thereafter)
-#define NELEMENTS 120
+// Forward Declarations
+class Atom;
 
 // Element
-struct element
+class Element
 {
+	public:
 	// Mass of element
-        double mass;
+	double atomicMass;
 	// Element name
 	const char *name;
 	// Uppercase element name
-	const char *ucname;
+	const char *ucName;
 	// Element symbol
 	const char *symbol;
 	// Uppercase Element symbol
-	const char *ucsymbol;
+	const char *ucSymbol;
 	// Rough elemental radius (for bond calculation etc.)
-        double radius;
+	double atomicRadius;
 	// Maximal bond order about the element 
 	int valency;
 	// Ambient colour
-        GLfloat ambient[4];
+	GLfloat ambientColour[4];
 	// Diffuse colour
-	GLfloat diffuse[4];
+	GLfloat diffuseColour[4];
 };
 
 // Element map
-class element_map
+class ElementMap
 {
 	private:
 	// Element data array
-	static element el[];
+	static Element el_[];
 	// Convert string from Z to element number
-	int number_to_z(const char*);
+	int numberToZ(const char*);
 	// Convert string from alpha to element number
-	int alpha_to_z(const char*);
+	int alphaToZ(const char*);
 	// Convert string from first alpha (up to non-AZ inc 09) to element number
-	int alphafirst_to_z(const char*);
+	int firstAlphaToZ(const char*);
 	// Convert string from name to element number
-	int name_to_z(const char*);
+	int nameToZ(const char*);
 	// Convert string from fftype to element number
-	int ff_to_z(const char*);
+	int ffToZ(const char*);
+	// Number of defined elements
+	int nElements_;
 
 	public:
 	// Constructor / Destructor
-	element_map();
-	~element_map();
+	ElementMap();
+	~ElementMap();
 	// Return atomic number of element in string
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm
-	int find(const char*, zmap_type);
+	int find(const char*, ZmapType);
+	// Return number of defined elements
+	int nElements();
 
 	/*
 	// Data by Z
 	*/
 	public:
 	// Return atomic mass of atomic number 'i'
-	double mass(int i) { return el[i].mass; }
+	double atomicMass(int i);
 	// Return name of atomic number 'i'
-	const char *name(int i) { return el[i].name; }
+	const char *name(int i);
 	// Return symbol of atomic number 'i'
-	const char *symbol(int i) { return el[i].symbol; }
+	const char *symbol(int i);
 	// Set radius of atomic number 'i'
-	void set_radius(int i, double r) { el[i].radius = r; }
+	void setAtomicRadius(int i, double r);
 	// Return effective radius of atomic number 'i'
-	double radius(int i) { return el[i].radius; }
+	double atomicRadius(int i);
 	// Return valency of atomic number 'i'
-	int valency(int i) { return el[i].valency; }
+	int valency(int i);
 	// Return the ambient colour of the element
-	GLfloat *ambient(int i) { return el[i].ambient; }
+	GLfloat *ambientColour(int i);
 	// Copy the ambient colour of the element into the array provided
-	void ambient(int i, GLfloat *v);
+	void copyAmbientColour(int i, GLfloat *v);
 	// Set ambient colour component of element
-	void set_ambient(int i, int rgb, GLfloat value) { el[i].ambient[rgb] = value; }
-	void set_ambient(int i, GLfloat r, GLfloat g, GLfloat b) { el[i].ambient[0] = r; el[i].ambient[1] = g; el[i].ambient[2] = b; }
+	void setAmbientColour(int i, int rgb, GLfloat value);
+	void setAmbientColour(int i, GLfloat r, GLfloat g, GLfloat b);
 	// Return the diffuse colour of the element
-	GLfloat *diffuse(int i) { return el[i].diffuse; }
+	GLfloat *diffuseColour(int i);
 	// Copy the diffuse colour of the element into the array provided
-	void diffuse(int i, GLfloat *v);
+	void copyDiffuseColour(int i, GLfloat *v);
 	// Set diffuse colour component of element
-	void set_diffuse(int i, int rgb, GLfloat value) { el[i].diffuse[rgb] = value; }
-	void set_diffuse(int i, GLfloat r, GLfloat g, GLfloat b) { el[i].diffuse[0] = r; el[i].diffuse[1] = g; el[i].diffuse[2] = b; }
+	void setDiffuseColour(int i, int rgb, GLfloat value);
+	void setDiffuseColour(int i, GLfloat r, GLfloat g, GLfloat b);
 
 	/*
 	// Data by atom*
 	*/
 	public:
 	// Return atomic mass of atomic number 'i'
-	double mass(atom *i) { return mass(i->get_element()); }
+	double atomicMass(Atom *i);
 	// Return name of atomic number 'i'
-	const char *name(atom *i) { return name(i->get_element()); }
+	const char *name(Atom *i);
 	// Return symbol of atomic number 'i'
-	const char *symbol(atom *i) { return symbol(i->get_element()); }
+	const char *symbol(Atom *i);
 	// Return effective radius of atomic number 'i'
-	double radius(atom *i) { return radius(i->get_element()); }
+	double atomicRadius(Atom *i);
 	// Return valency of atomic number 'i'
-	int valency(atom *i) { return valency(i->get_element()); }
+	int valency(Atom *i);
 	// Return the ambient colour of the element
-	GLfloat *ambient(atom *i) { return ambient(i->get_element()); }
+	GLfloat *ambientColour(Atom *i);
 	// Return the diffuse colour of the element
-	GLfloat *diffuse(atom *i) { return diffuse(i->get_element()); }
+	GLfloat *diffuseColour(Atom *i);
 };
 
-extern element_map elements;
+extern ElementMap elements;
 
 #endif

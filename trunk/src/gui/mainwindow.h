@@ -22,13 +22,14 @@
 #ifndef ATEN_MAINWINDOW_H
 #define ATEN_MAINWINDOW_H
 
-#include "base/master.h"
-#include "gui/gui.h"
+//#include "gui/gui.h"
+#include "classes/dnchar.h"
+#include "gui/canvas.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 
 // Stack Pages (must be in order of pages in the stack)
-enum stack_page { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
+enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
 
 // Bitmap Formats
 enum bitmap_format { BIF_BMP, BIF_JPG, BIF_PNG, BIF_PPM, BIF_XBM, BIF_X11, BIF_NITEMS };
@@ -48,6 +49,8 @@ class QFrame;
 class QSettings;
 class QActionGroup;
 class QButtonGroup;
+class CommandList;
+class Filter;
 
 class AtenForm : public QMainWindow
 {
@@ -63,9 +66,9 @@ class AtenForm : public QMainWindow
 	// Main form declaration
 	Ui::MainWindow ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finalise_ui();
+	void finaliseUi();
 	// Set controls to reflect program variables
-	void set_controls();
+	void setControls();
 
 	protected:
 	void closeEvent(QCloseEvent *event);
@@ -85,7 +88,7 @@ class AtenForm : public QMainWindow
 	void on_ModelTabs_currentChanged(int value);
 	public:
 	// Refresh names in ModelTabs
-	void refresh_modeltabs();
+	void refreshModelTabs();
 
 	/*
 	// Editing Actions
@@ -112,25 +115,25 @@ class AtenForm : public QMainWindow
 	// Mouse Toolbar
 	*/
 	private slots:
-	void on_actionMouseInteract_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_INTERACT); }
-	void on_actionMouseRotate_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_VIEWROTATE); }
-	void on_actionMouseTranslate_triggered(bool checked) { prefs.set_mb_action(MB_LEFT, MA_VIEWTRANSLATE); }
+	void on_actionMouseInteract_triggered(bool checked);
+	void on_actionMouseRotate_triggered(bool checked);
+	void on_actionMouseTranslate_triggered(bool checked);
 
 	/*
 	// Select Toolbar
 	*/
 	private:
-	void set_useraction(bool checked, user_action ua);
+	void setUserAction(bool checked, UserAction ua);
 	private slots:
-	void on_actionSelectAtoms_triggered(bool on) { set_useraction(on, UA_PICKSELECT); }
-	void on_actionSelectMolecules_triggered(bool on) { set_useraction(on, UA_PICKFRAG); }
-	void on_actionSelectElement_triggered(bool on) { set_useraction(on, UA_PICKELEMENT); }
+	void on_actionSelectAtoms_triggered(bool on);
+	void on_actionSelectMolecules_triggered(bool on);
+	void on_actionSelectElement_triggered(bool on);
 
 	/*
 	// File Actions
 	*/
 	public:
-	bool run_savemodel_dialog();
+	bool runSaveModelDialog();
 	private slots:
 	void on_actionFileNew_triggered(bool checked);
 	void on_actionFileOpen_triggered(bool checked);
@@ -149,8 +152,8 @@ class AtenForm : public QMainWindow
 	// View Actions
 	*/
 	public:
-	void set_cartesian_view(double x, double y, double z);
-	void set_cell_view(double x, double y, double z);
+	void setCartesianView(double x, double y, double z);
+	void setCellView(double x, double y, double z);
 	private slots:
 	void on_actionViewReset_triggered(bool checked);
 	void on_actionViewZoomIn_triggered(bool checked);
@@ -159,18 +162,18 @@ class AtenForm : public QMainWindow
 	void on_actionViewOrthographic_triggered(bool checked);
 	void on_actionViewModel_triggered(bool checked);
 	void on_actionViewTrajectory_triggered(bool checked);
-	void on_actionViewSetCartesianPosX_triggered(bool checked) { set_cartesian_view(1,0,0); }
-	void on_actionViewSetCartesianPosY_triggered(bool checked) { set_cartesian_view(0,1,0); }
-	void on_actionViewSetCartesianPosZ_triggered(bool checked) { set_cartesian_view(0,0,1); }
-	void on_actionViewSetCartesianNegX_triggered(bool checked) { set_cartesian_view(-1,0,0); }
-	void on_actionViewSetCartesianNegY_triggered(bool checked) { set_cartesian_view(0,-1,0); }
-	void on_actionViewSetCartesianNegZ_triggered(bool checked) { set_cartesian_view(0,0,-1); }
-	void on_actionViewSetCellNegX_triggered(bool checked) { set_cell_view(1,0,0); }
-	void on_actionViewSetCellNegY_triggered(bool checked) { set_cell_view(0,1,0); }
-	void on_actionViewSetCellNegZ_triggered(bool checked) { set_cell_view(0,0,1); }
-	void on_actionViewSetCellPosX_triggered(bool checked) { set_cell_view(-1,0,0); }
-	void on_actionViewSetCellPosY_triggered(bool checked) { set_cell_view(0,-1,0); }
-	void on_actionViewSetCellPosZ_triggered(bool checked) { set_cell_view(0,0,-1); }
+	void on_actionViewSetCartesianPosX_triggered(bool checked);
+	void on_actionViewSetCartesianPosY_triggered(bool checked);
+	void on_actionViewSetCartesianPosZ_triggered(bool checked);
+	void on_actionViewSetCartesianNegX_triggered(bool checked);
+	void on_actionViewSetCartesianNegY_triggered(bool checked);
+	void on_actionViewSetCartesianNegZ_triggered(bool checked);
+	void on_actionViewSetCellNegX_triggered(bool checked);
+	void on_actionViewSetCellNegY_triggered(bool checked);
+	void on_actionViewSetCellNegZ_triggered(bool checked);
+	void on_actionViewSetCellPosX_triggered(bool checked);
+	void on_actionViewSetCellPosY_triggered(bool checked);
+	void on_actionViewSetCellPosZ_triggered(bool checked);
 
 	/*
 	// Model Actions
@@ -198,58 +201,58 @@ class AtenForm : public QMainWindow
 	// Command Actions
 	*/
 	private:
-	QLineEdit *command_edit;
+	QLineEdit *commandEdit_;
 	private slots:
-	void execute_command();
+	void executeCommand();
 
 	/*
 	// Script Actions
 	*/
 	private:
 	// Pointers to recent file actions
-	reflist<QAction, commandlist* > scriptactions;
+	Reflist<QAction, CommandList* > scriptActions_;
 	private slots:
-	void run_script();
+	void runScript();
 	void on_actionLoadScript_triggered(bool v);
 	public:
-	void refresh_scriptsmenu();
+	void refreshScriptsMenu();
 
 	/*
 	// Toolbar Actions
 	*/
 	private slots:
-	void on_actionFileToolBarVisibility_triggered(bool v) { ui.FileToolBar->setVisible(v); }
-	void on_actionEditToolBarVisibility_triggered(bool v) { ui.EditToolBar->setVisible(v); }
-	void on_actionStyleToolBarVisibility_triggered(bool v) { ui.StyleToolBar->setVisible(v); }
-	void on_actionTrajectoryToolBarVisibility_triggered(bool v) { ui.TrajectoryToolBar->setVisible(v); }
-	void on_actionCommandToolBarVisibility_triggered(bool v) { ui.CommandToolBar->setVisible(v); }
-	void on_actionMouseToolBarVisibility_triggered(bool v) { ui.MouseToolBar->setVisible(v); }
-	void on_actionSelectToolBarVisibility_triggered(bool v) { ui.SelectToolBar->setVisible(v); }
+	void on_actionFileToolBarVisibility_triggered(bool v);
+	void on_actionEditToolBarVisibility_triggered(bool v);
+	void on_actionStyleToolBarVisibility_triggered(bool v);
+	void on_actionTrajectoryToolBarVisibility_triggered(bool v);
+	void on_actionCommandToolBarVisibility_triggered(bool v);
+	void on_actionMouseToolBarVisibility_triggered(bool v);
+	void on_actionSelectToolBarVisibility_triggered(bool v);
 
 	/*
 	// Widget Stack Functions
 	*/
 	private:
-	void switch_stack(int buttonid, bool checked);
-	QPushButton *stackbuttons[SP_NITEMS];
+	void switchStack(int buttonid, bool checked);
+	QPushButton *stackButtons_[SP_NITEMS];
 	private slots:
-	void on_ShowAtomPageButton_clicked(bool checked) { switch_stack(SP_ATOMS, checked); }
-	void on_ShowEditPageButton_clicked(bool checked) { switch_stack(SP_EDIT, checked); }
-	void on_ShowTransformPageButton_clicked(bool checked) { switch_stack(SP_TRANSFORM, checked); }
-	void on_ShowPositionPageButton_clicked(bool checked) { switch_stack(SP_POSITION, checked); }
-	void on_ShowCellPageButton_clicked(bool checked) { switch_stack(SP_CELL, checked); }
-	void on_ShowMinimiserPageButton_clicked(bool checked) { switch_stack(SP_MINIMISER, checked); }
-	void on_ShowDisorderPageButton_clicked(bool checked) { switch_stack(SP_DISORDER, checked); }
-	void on_ShowForcefieldsPageButton_clicked(bool checked) { switch_stack(SP_FORCEFIELD, checked); }
-	void on_ShowGridsPageButton_clicked(bool checked) { switch_stack(SP_GRID, checked); }
-	void on_ShowAnalysePageButton_clicked(bool checked) { switch_stack(SP_ANALYSE, checked); }
+	void on_ShowAtomPageButton_clicked(bool checked);
+	void on_ShowEditPageButton_clicked(bool checked);
+	void on_ShowTransformPageButton_clicked(bool checked);
+	void on_ShowPositionPageButton_clicked(bool checked);
+	void on_ShowCellPageButton_clicked(bool checked);
+	void on_ShowMinimiserPageButton_clicked(bool checked);
+	void on_ShowDisorderPageButton_clicked(bool checked);
+	void on_ShowForcefieldsPageButton_clicked(bool checked);
+	void on_ShowGridsPageButton_clicked(bool checked);
+	void on_ShowAnalysePageButton_clicked(bool checked);
 
 	// Atom Page Functions
 	public:
-	void refresh_atompage();
+	void refreshAtomPage();
 	private:
-	void peek_scroll_bar();
-	void poke_scroll_bar();
+	void peekScrollBar();
+	void pokeScrollBar();
 	private slots:
 	void on_AtomTree_itemSelectionChanged();
 	void on_ShiftUpButton_clicked(bool checked);
@@ -258,87 +261,89 @@ class AtenForm : public QMainWindow
 	void on_MoveToEndButton_clicked(bool checked);
 
 	// Edit Page Functions
+	private:
+	void setSketchElement(int el);
 	private slots:
-	void on_DrawAtomButton_clicked(bool on) { if (on) set_useraction(on, UA_DRAWATOM); }
-	void on_DrawChainButton_clicked(bool on) { if (on) set_useraction(on, UA_DRAWCHAIN); }
-	void on_DrawDeleteButton_clicked(bool on) { if (on) set_useraction(on, UA_DELATOM); }
-	void on_DrawTransmuteButton_clicked(bool on) { if (on) set_useraction(on, UA_TRANSATOM); }
-	void on_BondToleranceSpin_valueChanged(double d) { prefs.set_bond_tolerance(d); }
-	void on_BondSingleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDSINGLE); }
-	void on_BondDoubleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDDOUBLE); }
-	void on_BondTripleButton_clicked(bool on) { if (on) set_useraction(on, UA_BONDTRIPLE); }
-	void on_BondDeleteButton_clicked(bool on) { if (on) set_useraction(on, UA_DELBOND); }
+	void on_DrawAtomButton_clicked(bool on);
+	void on_DrawChainButton_clicked(bool on);
+	void on_DrawDeleteButton_clicked(bool on);
+	void on_DrawTransmuteButton_clicked(bool on);
+	void on_BondToleranceSpin_valueChanged(double d);
+	void on_BondSingleButton_clicked(bool on);
+	void on_BondDoubleButton_clicked(bool on);
+	void on_BondTripleButton_clicked(bool on);
+	void on_BondDeleteButton_clicked(bool on);
 	void on_BondCalcButton_clicked(bool on);
 	void on_BondClearButton_clicked(bool on);
 	void on_BondCalcSelButton_clicked(bool on);
 	void on_BondClearSelButton_clicked(bool on);
-	void on_ElementHButton_clicked(bool on) { if (on) master.set_sketchelement(1); }
-	void on_ElementCButton_clicked(bool on) { if (on) master.set_sketchelement(6); }
-	void on_ElementNButton_clicked(bool on) { if (on) master.set_sketchelement(7); }
+	void on_ElementHButton_clicked(bool on);
+	void on_ElementCButton_clicked(bool on);
+	void on_ElementNButton_clicked(bool on);
 	void on_ElementUserButton_clicked(bool on);
 	void on_ElementEdit_editingFinished();
 	void on_BondAugmentButton_clicked(bool on);
 	void on_AddHydrogenButton_clicked(bool on);
-	void on_AtomAddHydrogenButton_clicked(bool on) { if (on) set_useraction(on, UA_ATOMADDHYDROGEN); }
-	void on_ProbeAtomButton_clicked(bool on) { if (on) set_useraction(on, UA_PROBEATOM); }
+	void on_AtomAddHydrogenButton_clicked(bool on);
+	void on_ProbeAtomButton_clicked(bool on);
 
 	// Analyse page functions
 	private slots:
-	void on_MeasureDistanceButton_clicked(bool on) { if (on) set_useraction(on, UA_GEOMDIST); }
-	void on_MeasureAngleButton_clicked(bool on) { if (on) set_useraction(on, UA_GEOMANGLE); }
-	void on_MeasureTorsionButton_clicked(bool on) { if (on) set_useraction(on, UA_GEOMTORSION); }
+	void on_MeasureDistanceButton_clicked(bool on);
+	void on_MeasureAngleButton_clicked(bool on);
+	void on_MeasureTorsionButton_clicked(bool on);
 
 	// Transformation Page Functions
 	private:
-	void rotate_selection(double direction);
-	void translate_selection(int axis, int dir);
+	void rotateSelection(double direction);
+	void translateSelection(int axis, int dir);
 	private slots:
 	void on_RotateDefineOriginButton_clicked(bool on);
 	void on_RotateDefineAxisButton_clicked(bool on);
-	void on_RotateClockwiseButton_clicked(bool on) { rotate_selection(1); }
-	void on_RotateAnticlockwiseButton_clicked(bool on) { rotate_selection(-1); }
-	void on_TranslatePosXButton_clicked(bool on) { translate_selection(0, 1); }
-	void on_TranslatePosYButton_clicked(bool on) { translate_selection(1, 1); }
-	void on_TranslatePosZButton_clicked(bool on) { translate_selection(2, 1); }
-	void on_TranslateNegXButton_clicked(bool on) { translate_selection(0, -1); }
-	void on_TranslateNegYButton_clicked(bool on) { translate_selection(1, -1); }
-	void on_TranslateNegZButton_clicked(bool on) { translate_selection(2, -1); }
+	void on_RotateClockwiseButton_clicked(bool on);
+	void on_RotateAnticlockwiseButton_clicked(bool on);
+	void on_TranslatePosXButton_clicked(bool on);
+	void on_TranslatePosYButton_clicked(bool on);
+	void on_TranslatePosZButton_clicked(bool on);
+	void on_TranslateNegXButton_clicked(bool on);
+	void on_TranslateNegYButton_clicked(bool on);
+	void on_TranslateNegZButton_clicked(bool on);
 
 	// Position Page Functions
 	private:
-	void flip_selection(int axis);
+	void flipSelection(int axis);
 	private slots:
-	void on_FlipXButton_clicked(bool checked) { flip_selection(0); }
-	void on_FlipYButton_clicked(bool checked) { flip_selection(1); }
-	void on_FlipZButton_clicked(bool checked) { flip_selection(2); }
+	void on_FlipXButton_clicked(bool checked);
+	void on_FlipYButton_clicked(bool checked);
+	void on_FlipZButton_clicked(bool checked);
 	void on_DefineCentreButton_clicked(bool checked);
 	void on_CentreSelectionButton_clicked(bool checked);
 
 	// Cell Page Functions
 	public:
-	void refresh_cellpage();
-	void cell_changed();
+	void refreshCellPage();
+	void cellChanged();
 	private slots:
 	void on_CellDefinitionGroup_clicked(bool checked);
-	void on_CellLengthASpin_valueChanged(double d) { cell_changed(); }
-	void on_CellLengthBSpin_valueChanged(double d) { cell_changed(); }
-	void on_CellLengthCSpin_valueChanged(double d) { cell_changed(); }
-	void on_CellAngleASpin_valueChanged(double d) { cell_changed(); }
-	void on_CellAngleBSpin_valueChanged(double d) { cell_changed(); }
-	void on_CellAngleCSpin_valueChanged(double d) { cell_changed(); }
+	void on_CellLengthASpin_valueChanged(double d);
+	void on_CellLengthBSpin_valueChanged(double d);
+	void on_CellLengthCSpin_valueChanged(double d);
+	void on_CellAngleASpin_valueChanged(double d);
+	void on_CellAngleBSpin_valueChanged(double d);
+	void on_CellAngleCSpin_valueChanged(double d);
 	void on_CellReplicateButton_clicked(bool checked);
 	void on_CellScaleButton_clicked(bool checked);
 
 	// Minimiser Page Functions
 	private slots:
-	void on_MinimiserMethodCombo_currentIndexChanged(int index) { ui.MethodOptionsStack->setCurrentIndex(index); }
+	void on_MinimiserMethodCombo_currentIndexChanged(int index);
 	void on_MinimiseButton_clicked(bool checked);
 
 	// Forcefield Page Functions
 	public:
-	void refresh_forcefieldpage();
-	void refresh_forcefieldtypelist();
-	void refresh_forcefieldpatterns();
+	void refreshForcefieldPage();
+	void refreshForcefieldTypeList();
+	void refreshForcefieldPatterns();
 	private slots:
 	void on_LoadForcefieldButton_clicked(bool checked);
 	void on_RemoveForcefieldButton_clicked(bool checked);
@@ -358,40 +363,40 @@ class AtenForm : public QMainWindow
 
 	// Grid Page Functions
 	public:
-	void refresh_gridspage();
+	void refreshGridsPage();
 	private:
-	void refresh_gridinfo();
-	void grid_origin_changed(int component, double value);
-	void grid_axis_changed(int row, int component, double value);
+	void refreshGridInfo();
+	void gridOriginChanged(int component, double value);
+	void gridAxisChanged(int row, int component, double value);
 	private slots:
-	void on_LoadGridButton_clicked(bool checked) { on_actionFileOpenGrid_triggered(FALSE); }
+	void on_LoadGridButton_clicked(bool checked);
 	void on_RemoveGridButton_clicked(bool checked);
 	void on_SaveGridButton_clicked(bool checked);
 	void on_GridList_currentRowChanged(int row);
 	void on_SurfaceStyleCombo_currentIndexChanged(int index);
 	void on_SurfaceCutoffSpin_valueChanged(double d);
-	void on_GridOriginXSpin_valueChanged(double d) { grid_origin_changed(0, d); }
-	void on_GridOriginYSpin_valueChanged(double d) { grid_origin_changed(1, d); }
-	void on_GridOriginZSpin_valueChanged(double d) { grid_origin_changed(2, d); }
-	void on_GridAxesAXSpin_valueChanged(double d) { grid_axis_changed(0,0, d); }
-	void on_GridAxesAYSpin_valueChanged(double d) { grid_axis_changed(0,1, d); }
-	void on_GridAxesAZSpin_valueChanged(double d) { grid_axis_changed(0,2, d); }
-	void on_GridAxesBXSpin_valueChanged(double d) { grid_axis_changed(1,0, d); }
-	void on_GridAxesBYSpin_valueChanged(double d) { grid_axis_changed(1,1, d); }
-	void on_GridAxesBZSpin_valueChanged(double d) { grid_axis_changed(1,2, d); }
-	void on_GridAxesCXSpin_valueChanged(double d) { grid_axis_changed(2,0, d); }
-	void on_GridAxesCYSpin_valueChanged(double d) { grid_axis_changed(2,1, d); }
-	void on_GridAxesCZSpin_valueChanged(double d) { grid_axis_changed(2,2, d); }
+	void on_GridOriginXSpin_valueChanged(double d);
+	void on_GridOriginYSpin_valueChanged(double d);
+	void on_GridOriginZSpin_valueChanged(double d);
+	void on_GridAxesAXSpin_valueChanged(double d);
+	void on_GridAxesAYSpin_valueChanged(double d);
+	void on_GridAxesAZSpin_valueChanged(double d);
+	void on_GridAxesBXSpin_valueChanged(double d);
+	void on_GridAxesBYSpin_valueChanged(double d);
+	void on_GridAxesBZSpin_valueChanged(double d);
+	void on_GridAxesCXSpin_valueChanged(double d);
+	void on_GridAxesCYSpin_valueChanged(double d);
+	void on_GridAxesCZSpin_valueChanged(double d);
 	void on_SurfaceColourButton_clicked(bool checked);
 	void on_SurfaceTransparencySpin_valueChanged(double d);
 
 	// Disorder Page Functions
 	public:
-	void refresh_disorderpage();
+	void refreshDisorderPage();
 	private:
-	void refresh_components();
-	void refresh_component_data();
-	void set_component_coords(int centsize, int element, double value);
+	void refreshComponents();
+	void refreshComponentData();
+	void setComponentCoords(int centsize, int element, double value);
 	private slots:
 	void on_ComponentList_itemSelectionChanged();
 	void on_AddComponentButton_clicked(bool checked);
@@ -403,35 +408,35 @@ class AtenForm : public QMainWindow
 	void on_ShowRegionsCheck_clicked(bool checked);
 	void on_DisorderStartButton_clicked(bool checked);
 	void on_VDWScaleSpin_valueChanged(double d);
-	void on_ComponentCentreXSpin_valueChanged(double d) { set_component_coords(0,0,d); }
-	void on_ComponentCentreYSpin_valueChanged(double d) { set_component_coords(0,1,d); }
-	void on_ComponentCentreZSpin_valueChanged(double d) { set_component_coords(0,2,d); }
-	void on_ComponentSizeXSpin_valueChanged(double d) { set_component_coords(1,0,d); }
-	void on_ComponentSizeYSpin_valueChanged(double d) { set_component_coords(2,1,d); }
-	void on_ComponentSizeZSpin_valueChanged(double d) { set_component_coords(3,2,d); }
+	void on_ComponentCentreXSpin_valueChanged(double d);
+	void on_ComponentCentreYSpin_valueChanged(double d);
+	void on_ComponentCentreZSpin_valueChanged(double d);
+	void on_ComponentSizeXSpin_valueChanged(double d);
+	void on_ComponentSizeYSpin_valueChanged(double d);
+	void on_ComponentSizeZSpin_valueChanged(double d);
 
 	/*
 	// Atom Popup Functions
 	*/
 	private:
-	void set_atomstyle(draw_style ds);
-	void set_atomlabel(atom_label al);
-	void remove_atomlabels(bool all);
-	void set_atomhidden(bool hidden);
+	void setAtomStyle(DrawStyle ds);
+	void setAtomLabel(AtomLabel al);
+	void removeAtomLabels(bool all);
+	void setAtomHidden(bool hidden);
 
 	private slots:
-	void on_actionAtomStyleStick_triggered(bool checked) { set_atomstyle(DS_STICK); }
-	void on_actionAtomStyleTube_triggered(bool checked) { set_atomstyle(DS_TUBE); }
-	void on_actionAtomStyleSphere_triggered(bool checked) { set_atomstyle(DS_SPHERE); }
-	void on_actionAtomStyleScaled_triggered(bool checked) { set_atomstyle(DS_SCALED); }
-	void on_actionAtomLabelID_triggered(bool checked) { set_atomlabel(AL_ID); }
-	void on_actionAtomLabelCharge_triggered(bool checked) { set_atomlabel(AL_CHARGE); }
-	void on_actionAtomLabelFFType_triggered(bool checked) { set_atomlabel(AL_FFTYPE); }
-	void on_actionAtomLabelElement_triggered(bool checked) { set_atomlabel(AL_ELEMENT); }
-	void on_actionAtomLabelFFEquiv_triggered(bool checked) { set_atomlabel(AL_FFEQUIV); }
-	void on_actionAtomLabelClear_triggered(bool checked) { remove_atomlabels(FALSE); }
-	void on_actionAtomLabelClearAll_triggered(bool checked) { remove_atomlabels(TRUE); }
-	void on_actionAtomHide_triggered(bool checked) { set_atomhidden(TRUE); }
+	void on_actionAtomStyleStick_triggered(bool checked);
+	void on_actionAtomStyleTube_triggered(bool checked);
+	void on_actionAtomStyleSphere_triggered(bool checked);
+	void on_actionAtomStyleScaled_triggered(bool checked);
+	void on_actionAtomLabelID_triggered(bool checked);
+	void on_actionAtomLabelCharge_triggered(bool checked);
+	void on_actionAtomLabelFFType_triggered(bool checked);
+	void on_actionAtomLabelElement_triggered(bool checked);
+	void on_actionAtomLabelFFEquiv_triggered(bool checked);
+	void on_actionAtomLabelClear_triggered(bool checked);
+	void on_actionAtomLabelClearAll_triggered(bool checked);
+	void on_actionAtomHide_triggered(bool checked);
 
 	/*
 	// Settings Functions
@@ -444,57 +449,57 @@ class AtenForm : public QMainWindow
 	*/
 	private slots:
 	// Cancel progress dialog
-	void progress_cancel();
+	void progressCancel();
 
 	public:
 	// Update undo/redo labels
-	void update_undoredo();
+	void updateUndoRedo();
 
 	/*
 	// Local Widgets
 	*/
 	public:
 	// Main text label for status bar in main window
-	QLabel *statuslabel;
+	QLabel *statusLabel;
 	// Statusbar progress indicator widgets
-	QProgressBar *progressbar;
-	QLabel *progresslabel;
-	QPushButton *progressbutton;
-	QFrame *progressindicator;
+	QProgressBar *progressBar;
+	QLabel *progressLabel;
+	QPushButton *progressButton;
+	QFrame *progressIndicator;
 	// File dialogs for filter types
-	QFileDialog *dialog[FT_NITEMS];
+	QFileDialog **dialog;
 	// File dialogs for forcefields
-	QFileDialog *openffdialog, *saveffdialog;
+	QFileDialog *openFfDialog, *saveFfDialog;
 	// File dialog for save bitmap and save vector image
-	QFileDialog *savebitmapdialog, *savevectordialog;
+	QFileDialog *saveBitmapDialog, *saveVectorDialog;
 	// File dialog for script loading
-	QFileDialog *openscriptdialog;
+	QFileDialog *openScriptDialog;
 	// Filter set from save model dialog
-	filter *savemodelfilter;
+	Filter *saveModelFilter;
 	// Filename set from save model dialog
-	dnchar savemodelfilename;
+	Dnchar saveModelFilename;
 	// QButtonGroup for stackpage buttons
 	QButtonGroup *uaGroup;
 	// QActionGroup for SelectToolBar actions
 	QActionGroup *selectGroup;
 	// Dummy button for uaGroup (so we can have none selected)
-	QPushButton *dummybutton;
+	QPushButton *dummyButton;
 
 	/*
 	// Settings
 	*/
 	private:
 	// Settings structure
-	QSettings *settings;
+	QSettings *settings_;
 	// Save settings
-	void save_settings();
+	void saveSettings();
 
 	/*
 	// Recent files
 	*/
 	private slots:
 	// Load recent file
-	void load_recent();
+	void loadRecent();
 
 	private:
 	// Pointers to recent file actions
@@ -502,7 +507,7 @@ class AtenForm : public QMainWindow
 
 	public:
 	// Add file to top of recent list
-	void add_recent(const char*);
+	void addRecent(const char*);
 };
 
 #endif

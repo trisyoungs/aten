@@ -20,36 +20,38 @@
 */
 
 #include <math.h>
+#include "templates/vector3.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"
 #include "classes/energystore.h"
-#include "templates/vector3.h"
+#include "classes/cell.h"
+#include "model/model.h"
 
 // Calculate bond energy of pattern (or molecule in pattern)
-void pattern::bond_energy(model *srcmodel, energystore *estore, int molecule)
+void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
-	dbg_begin(DM_CALLS,"pattern::bond_energy");
+	dbgBegin(DM_CALLS,"Pattern::bondEnergy");
 	int i,j,m1,aoff;
-	static vec3<double> mim_i;
+	static Vec3<double> mim_i;
 	static double forcek, eq, r, energy;
-	static ffparams params;
-	patbound *pb;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
+	static ForcefieldParams params;
+	PatternBound *pb;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
 	energy = 0.0;
-	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
-	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startatom,nmols,natoms,nbonds);
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule+1); m1++)
+	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
+	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startAtom_,nMols_,nAtoms_,nbonds);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
 	{
-		for (pb = bonds.first(); pb != NULL; pb = pb->next)
+		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(1) + aoff;
-			params = pb->get_data()->get_params();
-			switch (pb->get_data()->get_funcform().bondfunc)
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(1) + aoff;
+			params = pb->data()->params();
+			switch (pb->data()->functionalForm().bondFunc)
 			{
 				case (BF_UNSPECIFIED):
-					printf("pattern::bond_energy <<<< Bond function is UNSPECIFIED >>>>\n");
+					printf("Pattern::bondEnergy <<<< Bond function is UNSPECIFIED >>>>\n");
 					break;
 				case (BF_HARMONIC): 
 					// U = 0.5 * forcek * (r - eq)**2
@@ -60,44 +62,44 @@ void pattern::bond_energy(model *srcmodel, energystore *estore, int molecule)
 					energy += 0.5 * forcek * r * r;
 					break;
 				default:
-					printf("No equation coded for bond energy type %i.\n",pb->get_data()->get_funcform().bondfunc);
+					printf("No equation coded for bond energy type %i.\n",pb->data()->functionalForm().bondFunc);
 					break;
 			}
 		}
-		aoff = aoff + natoms;
+		aoff = aoff + nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(ET_BOND,energy,id);
-	dbg_end(DM_CALLS,"pattern::bond_energy");
+	estore->add(ET_BOND,energy,id_);
+	dbgEnd(DM_CALLS,"Pattern::bondEnergy");
 }
 
 // Calculate bond forces in pattern
-void pattern::bond_forces(model *srcmodel)
+void Pattern::bondForces(Model *srcmodel)
 {
-	dbg_begin(DM_CALLS,"pattern::bond_forces");
+	dbgBegin(DM_CALLS,"Pattern::bondForcess");
 	int n,i,j,m1,aoff;
-	static vec3<double> mim_i, fi;
+	static Vec3<double> mim_i, fi;
 	static double forcek, eq, rij, du_dr;
-	static ffparams params;
-	patbound *pb;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	static ForcefieldParams params;
+	PatternBound *pb;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
+	aoff = startAtom_;
+	for (m1=0; m1<nMols_; m1++)
 	{
-		for (pb = bonds.first(); pb != NULL; pb = pb->next)
+		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{
 			// Calculate bond vector
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(1) + aoff;
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(1) + aoff;
 			mim_i = cell->mimd(modelatoms[j]->r(), modelatoms[i]->r());
 			rij = mim_i.magnitude();
 			// Select energy function
-			params = pb->get_data()->get_params();
-			switch (pb->get_data()->get_funcform().bondfunc)
+			params = pb->data()->params();
+			switch (pb->data()->functionalForm().bondFunc)
 			{
 				case (BF_UNSPECIFIED):
-					printf("pattern::bond_forces <<<< Bond function is UNSPECIFIED >>>>\n");
+					printf("Pattern::bondForcess <<<< Bond function is UNSPECIFIED >>>>\n");
 					du_dr = 0.0;
 					break;
 				case (BF_HARMONIC): 
@@ -107,7 +109,7 @@ void pattern::bond_forces(model *srcmodel)
 					du_dr = forcek * (rij - eq) / rij;
 					break;
 				default:
-					printf("No equation coded for bond forces type %i.\n",pb->get_data()->get_funcform().bondfunc);
+					printf("No equation coded for bond forces type %i.\n",pb->data()->functionalForm().bondFunc);
 					break;
 			}
 			// Calculate forces
@@ -115,7 +117,7 @@ void pattern::bond_forces(model *srcmodel)
 			modelatoms[i]->f() += fi;
 			modelatoms[j]->f() -= fi;
 		}
-		aoff += natoms;
+		aoff += nAtoms_;
 	}
-	dbg_end(DM_CALLS,"pattern::bond_forces");
+	dbgEnd(DM_CALLS,"Pattern::bondForcess");
 }

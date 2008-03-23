@@ -22,10 +22,8 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include "gui/prefs.h"
-#include <QtGui/QFileDialog>
-#include <QtGui/QPixmap>
-#include <QtGui/QMessageBox>
+#include "model/model.h"
+#include "classes/clipboard.h"
 
 /*
 // Editing Actions
@@ -33,13 +31,13 @@
 
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
-	master.get_currentmodel()->undo();
+	master.currentModel()->undo();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
-	master.get_currentmodel()->redo();
+	master.currentModel()->redo();
 	gui.refresh();
 }
 
@@ -47,31 +45,31 @@ void AtenForm::on_actionEditCut_triggered(bool checked)
 {
 	// Cut the selected atoms from the model, copying to the paste buffer
 	char s[128];
-	model *m = master.get_currentmodel();
-	sprintf(s,"Cut %i atom%s\n",m->get_nselected(),(m->get_nselected() == 1 ? "" : "s"));
-	m->begin_undostate(s);
-	master.userclip.cut_selection(m);
-	m->end_undostate();
+	Model *m = master.currentModel();
+	sprintf(s,"Cut %i atom%s\n",m->nSelected(),(m->nSelected() == 1 ? "" : "s"));
+	m->beginUndostate(s);
+	master.userClipboard->cutSelection(m);
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditCopy_triggered(bool checked)
 {
 	// Copy the selected atoms in the model into the paste buffer
-	master.userclip.copy_selection(master.get_currentmodel());
-	msg(DM_NONE,"%i atoms copied to clipboard.\n",master.userclip.get_natoms());
-	msg(DM_VERBOSE, "Copied selection (%i atoms) from model %s\n",master.userclip.get_natoms(), master.get_currentmodel()->get_name());
+	master.userClipboard->copySelection(master.currentModel());
+	msg(DM_NONE,"%i atoms copied to clipboard.\n",master.userClipboard->nAtoms());
+	msg(DM_VERBOSE, "Copied selection (%i atoms) from model %s\n",master.userClipboard->nAtoms(), master.currentModel()->name());
 }
 
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
 	// Paste the buffered atoms into the model
 	char s[128];
-	model *m = master.get_currentmodel();
-	sprintf(s,"Paste %i atom%s\n",master.userclip.get_natoms(),(master.userclip.get_natoms() == 1 ? "" : "s"));
-	m->begin_undostate(s);
-	master.userclip.paste_to_model(m);
-	m->end_undostate();
+	Model *m = master.currentModel();
+	sprintf(s,"Paste %i atom%s\n",master.userClipboard->nAtoms(),(master.userClipboard->nAtoms() == 1 ? "" : "s"));
+	m->beginUndostate(s);
+	master.userClipboard->pasteToModel(m);
+	m->endUndostate();
 	gui.refresh();
 }
 
@@ -79,52 +77,52 @@ void AtenForm::on_actionEditDelete_triggered(bool checked)
 {
 	// Delete the selected atoms in the model
 	char s[128];
-	model *m = master.get_currentmodel();
-	sprintf(s,"Delete %i atom%s\n",m->get_nselected(),(m->get_nselected() == 1 ? "" : "s"));
-	m->begin_undostate(s);
-	m->selection_delete();
-	m->end_undostate();
-	// Clear the main canvas' selection array to be on the safe side, since we might have deleted an atom in it!
-	gui.mainview.clear_subsel();
+	// Clear the main canvas' selection array to be on the safe side, since we might have deleted an atom in it
+	gui.mainView.clearSubselection();
+	Model *m = master.currentModel();
+	sprintf(s,"Delete %i atom%s\n",m->nSelected(),(m->nSelected() == 1 ? "" : "s"));
+	m->beginUndostate(s);
+	m->selectionDelete();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditSelectAll_triggered(bool checked)
 {
 	// Select all atoms in the current model
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Select All");
-	m->select_all();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Select All");
+	m->selectAll();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditSelectNone_triggered(bool checked)
 {
 	// Select all atoms in the current model
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Select None");
-	m->select_none();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Select None");
+	m->selectNone();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditInvert_triggered(bool checked)
 {
 	// Invert selection in the current model
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Invert Selection");
-	m->selection_invert();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Invert Selection");
+	m->selectionInvert();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_actionEditSelectExpand_triggered(bool on)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Expand Selection");
-	m->selection_expand();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Expand Selection");
+	m->selectionExpand();
+	m->endUndostate();
 	gui.refresh();
 }
 

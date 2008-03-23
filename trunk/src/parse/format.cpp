@@ -24,45 +24,51 @@
 #include "base/sysfunc.h"
 
 // Constructors
-format_node::format_node()
+FormatNode::FormatNode()
 {
-	v = NULL;
-	length = 0;
-	precision = 0;
+	// Private variables
+	variable_ = NULL;
+	length_ = 0;
+	precision_ = 0;
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_FORMAT_NODE] ++;
-	#endif
-}
-
-format::format()
-{
-	#ifdef MEMDEBUG
-		memdbg.create[MD_FORMAT] ++;
-	#endif
 }
 
 // Destructors
-format::~format()
+Format::~Format()
 {
-	nodes.clear();
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_FORMAT] ++;
-	#endif
+	nodes_.clear();
 }
 
-format_node::~format_node()
+// Get format node variable
+Variable *FormatNode::variable()
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_FORMAT_NODE] ++;
-	#endif
+	return variable_;
+}
+
+// Get field length
+int FormatNode::length()
+{
+	return length_;
+}
+
+// Get field precision
+int FormatNode::precision()
+{
+	return precision_;
+}
+
+// Returns first node
+FormatNode* Format::nodes()
+{
+	return nodes_.first();
 }
 
 // Set format node
-bool format_node::set(const char *s, variable_list &vlist)
+bool FormatNode::set(const char *s, VariableList &vlist)
 {
-	dbg_begin(DM_PARSE,"format_node::set");
+	dbgBegin(DM_PARSE,"FormatNode::set");
 	// Format of formatters is 'F@n.m': F = format quantity/variable, n.m = length,precision
 	int m, pos1, pos2;
 	static char specifier[512], len[32], pre[32];
@@ -95,67 +101,67 @@ bool format_node::set(const char *s, variable_list &vlist)
 			pre[pos1-(pos2+1)] = '\0';
 		}
 	}
-	msg(DM_PARSE,"format::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
+	msg(DM_PARSE,"FormatNode::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
 	// If we're given a variable, check that is has been declared
 	if (specifier[0] == '$')
 	{
 		c = specifier;
 		c ++;
-		v = vlist.get(c);
-		if (v == NULL)
+		variable_ = vlist.get(c);
+		if (variable_ == NULL)
 		{
 			printf("Variable '%s' in format string has not been declared.\n", c);
 			return FALSE;
 		}
 	}
-	else if (specifier[0] == '*') v = vlist.get_dummy();
-	else v = vlist.add_constant(specifier);
+	else if (specifier[0] == '*') variable_ = vlist.dummy();
+	else variable_ = vlist.addConstant(specifier);
 	// Store the data
-	length = (len[0] == '\0' ? 0 : atoi(len));
-	precision = (pre[0] == '\0' ? 0 : atoi(pre));
-	dbg_end(DM_PARSE,"format_node::set");
+	length_ = (len[0] == '\0' ? 0 : atoi(len));
+	precision_ = (pre[0] == '\0' ? 0 : atoi(pre));
+	dbgEnd(DM_PARSE,"FormatNode::set");
 	return TRUE;
 }
 
 // Create using delimited arguments
-bool format::create_delimited(const char *s, variable_list &vlist)
+bool Format::createDelimited(const char *s, VariableList &vlist)
 {
-	dbg_begin(DM_PARSE,"format::create_delimited");
+	dbgBegin(DM_PARSE,"Format::createDelimited");
 	int n;
-	format_node *fn;
-	static line_parser lp;
+	FormatNode *fn;
+	static Parser lp;
 	// Clear any existing node list
-	nodes.clear();
+	nodes_.clear();
 	// First, parseline the formatting string
-	lp.get_args_delim(s,PO_DEFAULTS);
+	lp.getArgsDelim(s,PO_DEFAULTS);
 	// Now, step through the args[] array and convert the substrings into format nodes
-	for (n=0; n<lp.get_nargs(); n++)
+	for (n=0; n<lp.nArgs(); n++)
 	{
 		// Create our new format node and store the information in it
-		fn = nodes.add();
+		fn = nodes_.add();
 		if (!fn->set(lp.argc(n), vlist))
 		{
 			printf("Failed to add format node '%s'.\n", lp.argc(n));
-			dbg_end(DM_PARSE,"format::create");
+			dbgEnd(DM_PARSE,"Format::createDelimited");
 			return FALSE;
 		}
 	}
 	//if (nfailed != 0) msg(DM_NONE,"Warning : Format string contained %i unrecognised identifiers.\n",nfailed);
-	dbg_end(DM_PARSE,"format::create");
+	dbgEnd(DM_PARSE,"Format::createDelimited");
 	return TRUE;
 }
 
 // Create using character-by-character method
-bool format::create_exact(const char *s, variable_list &vlist)
+bool Format::createExact(const char *s, VariableList &vlist)
 {
-	dbg_begin(DM_PARSE,"format::create_exact");
+	dbgBegin(DM_PARSE,"Format::createExact");
 	// Go through supplied string, converting variables as we go
 	static char text[512], varstr[512];
 	int nchars = 0, vchars = 0, n;
 	bool done;
-	format_node *fn;
+	FormatNode *fn;
 	// Clear any existing node list
-	nodes.clear();
+	nodes_.clear();
 	n = 0;
 	while (s[n] != '\0')
 	{
@@ -173,7 +179,7 @@ bool format::create_exact(const char *s, variable_list &vlist)
 		{
 			text[nchars] = '\0';
 			//printf("Found variable - adding previous text '%s'...\n",text);
-			fn = nodes.add();
+			fn = nodes_.add();
 			fn->set(text, vlist);
 			nchars = 0;
 		}
@@ -215,11 +221,11 @@ bool format::create_exact(const char *s, variable_list &vlist)
 		// Now have variable (and format) in 'var'
 		varstr[vchars] = '\0';
 		//printf("...the variable after which is '%s'.\n",varstr);
-		fn = nodes.add();
+		fn = nodes_.add();
 		if (!fn->set(varstr, vlist))
 		{
 			printf("Failed to add format node '%s'.\n", varstr);
-			dbg_end(DM_PARSE,"format::create_exact");
+			dbgEnd(DM_PARSE,"Format::createExact");
 			return FALSE;
 		}
 		// Reset vchars for the next cycle
@@ -230,64 +236,70 @@ bool format::create_exact(const char *s, variable_list &vlist)
 	{
 		text[nchars] = '\0';
 		//printf("Loop has ended - remaining text is '%s'.\n",text);
-		fn = nodes.add();
+		fn = nodes_.add();
 		fn->set(text, vlist);
 	}
 	else if (vchars != 0)
 	{
 		varstr[vchars] = '\0';
 		//printf("Loop has ended - remaining variable is '%s'.\n",varstr);
-		fn = nodes.add();
+		fn = nodes_.add();
 		fn->set(varstr, vlist);
 		if (!fn->set(varstr, vlist))
 		{
 			printf("Failed to add format node '%s'.\n", varstr);
-			dbg_end(DM_PARSE,"format::create_exact");
+			dbgEnd(DM_PARSE,"Format::createExact");
 			return FALSE;
 		}
 	}	
-	dbg_end(DM_PARSE,"format::create_exact");
+	dbgEnd(DM_PARSE,"Format::createExact");
 	return TRUE;
 }
 
+// Create format nodes from a supplied formatting string
+bool Format::create(const char *s, VariableList &vars, bool delimited)
+{
+	return (delimited ? createDelimited(s, vars) : createExact(s, vars));
+}
+
 // Create string
-const char *format::create_string()
+const char *Format::createString()
 {
 	// Creates a formatted output string from the model supplied
-	dbg_begin(DM_PARSE,"format::create_string");
+	dbgBegin(DM_PARSE,"Format::createString");
 	static char result[8096], bit[1024], fmt[16];
-	static variable *v;
+	static Variable *v;
 	result[0] = '\0';
 	bit[0] = '\0';
 	fmt[0] = '\0';
 	// Step through each formatting node, adding on the specified data from the model/atom
-	for (format_node *fn = nodes.first(); fn != NULL; fn = fn->next)
+	for (FormatNode *fn = nodes_.first(); fn != NULL; fn = fn->next)
 	{
-		v = fn->get_variable();
+		v = fn->variable();
 		// For each format node in the list, check the type of the argument and create a relevant format node
-		switch (v->get_type())
+		switch (v->type())
 		{
 			case (VT_CHAR):
-				if (fn->get_length() == 0) strcpy(fmt,"%s");
-				else sprintf(fmt,"%%%is",fn->get_length());
-				sprintf(bit,fmt,v->get_as_char());
+				if (fn->length() == 0) strcpy(fmt,"%s");
+				else sprintf(fmt,"%%%is",fn->length());
+				sprintf(bit,fmt,v->asCharacter());
 				break;
 			case (VT_INTEGER):
-				if (fn->get_length() == 0) strcpy(fmt,"%i");
-				else sprintf(fmt,"%%%ii",fn->get_length());
-				sprintf(bit,fmt,v->get_as_int());
+				if (fn->length() == 0) strcpy(fmt,"%i");
+				else sprintf(fmt,"%%%ii",fn->length());
+				sprintf(bit,fmt,v->asInteger());
 				break;
 			case (VT_DOUBLE):
-				if (fn->get_length() == 0) strcpy(fmt,"%f");
-				else sprintf(fmt,"%%%i.%if",fn->get_length(),fn->get_precision());
-				sprintf(bit,fmt,v->get_as_double());
+				if (fn->length() == 0) strcpy(fmt,"%f");
+				else sprintf(fmt,"%%%i.%if",fn->length(),fn->precision());
+				sprintf(bit,fmt,v->asDouble());
 				break;
 			default:
-				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->get_type()));
+				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->type()));
 		}
-		msg(DM_PARSE,"format:::create_string - added [%s], format [%s]\n", bit, fmt);
+		msg(DM_PARSE,"Format:::createString - added [%s], format [%s]\n", bit, fmt);
 		strcat(result,bit);
 	}
-	dbg_end(DM_PARSE,"format::create_string");
+	dbgEnd(DM_PARSE,"Format::createString");
 	return result;
 }

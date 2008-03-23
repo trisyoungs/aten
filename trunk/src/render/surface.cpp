@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "gui/canvas.h"
+#include "classes/grid.h"
 
 /*
 	Marching Cube vertex / <edge> numbering
@@ -314,14 +315,14 @@ int facetriples[256][15] = {
 };
 
 // Render grid points (no surface)
-void render_surface_grid(grid *g)
+void renderSurfaceGrid(Grid *g)
 {
 	int i, j, k;
-	vec3<int> npoints = g->get_npoints();
+	Vec3<int> npoints = g->nPoints();
 	double ***data, **xdata, *ydata, cutoff;
 	// Grab the data pointer and cutoff
-	data = g->get_data();
-	cutoff = g->get_cutoff();
+	data = g->data();
+	cutoff = g->cutoff();
 	glBegin(GL_POINTS);
 	  for (i=0; i<npoints.x; i++)
 	  {
@@ -340,17 +341,17 @@ void render_surface_grid(grid *g)
 }
 
 // Render isosurface with Marching Cubes
-void cube_it(grid *g, surface_style ss)
+void cubeIt(Grid *g, SurfaceStyle ss)
 {
 	int i, j, k, n, cubetype, *faces;
-	vec3<double> r, normal, gradient[8];
-	vec3<int> npoints = g->get_npoints();
+	Vec3<double> r, normal, gradient[8];
+	Vec3<int> npoints = g->nPoints();
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2, twodx, twody, twodz;
 	// Grab the data pointer and surface cutoff
-	data = g->get_data();
-	cutoff = g->get_cutoff();
+	data = g->data();
+	cutoff = g->cutoff();
 	// Get distances between grid points
-	r = g->get_lengths();
+	r = g->lengths();
 	twodx = r.x / npoints.x * 2.0;
 	twody = r.y / npoints.y * 2.0;
 	twodz = r.z / npoints.z * 2.0;
@@ -370,9 +371,9 @@ void cube_it(grid *g, surface_style ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.get_colour(COL_SPECREFLECT));
-	glMateriali(GL_FRONT, GL_SHININESS, prefs.get_shininess());
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->get_colour());
+	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.colour(COL_SPECREFLECT));
+	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
 	// Generate surface
 	for (i=1; i<npoints.x-2; i++)
 	{
@@ -454,52 +455,52 @@ void cube_it(grid *g, surface_style ss)
 }
 
 // Render surfaces
-void canvas::render_surfaces()
+void Canvas::renderSurfaces()
 {
-	dbg_begin(DM_CALLS,"canvas::render_surfaces");
+	dbgBegin(DM_CALLS,"Canvas::renderSurfaces");
 	// Loop over surfaces held by the master, rendering those that are visible.
 	// If the log of a particular surface is out of data, recreate its display list first
 	static GLuint list;
-	static vec3<double> origin;
+	static Vec3<double> origin;
 	static double axes[16];
-	static mat4<double> mat;
-	for (grid *g = master.get_grids(); g != NULL; g = g->next)
+	static Mat4<double> mat;
+	for (Grid *g = master.grids(); g != NULL; g = g->next)
 	{
 		// Check visibility
-		if (!g->get_visible()) continue;
+		if (!g->isVisible()) continue;
 
 		// Get GL display list and check render point
-		list = g->get_displaylist();
+		list = g->displayList();
 
-		if (g->should_rerender())
+		if (g->shouldRerender())
 		{
 			//if (list != 0) glDeleteLists(list,1);
 			glNewList(list,GL_COMPILE);
-			  switch (g->get_style())
+			  switch (g->style())
 			  {
 				case (SS_GRID):
-					render_surface_grid(g);
+					renderSurfaceGrid(g);
 					break;
 				default:
-					cube_it(g, g->get_style());
+					cubeIt(g, g->style());
 					break;
 			  }
 			glEndList();
-			g->update_renderpoint();
+			g->updateRenderPoint();
 		}
 		// Draw surface - push current GL matrix
 		glPushMatrix();
 		  // Centre on cell origin (lower left-hand corner)
-		  origin = g->get_origin();
+		  origin = g->origin();
 		  glTranslated(origin.x, origin.y, origin.z);
 		  // Apply matrix transform to get proper grid axes / shear
-		  mat = g->get_axes();
-		  mat.get_column_major(axes);
+		  mat = g->axes();
+		  mat.copyColumnMajor(axes);
 		  glMatrixMode(GL_MODELVIEW);
 		  glMultMatrixd(axes);
 		  // Call the display list
 		  glCallList(list);
 		glPopMatrix();
 	}
-	dbg_end(DM_CALLS,"canvas::render_surfaces");
+	dbgEnd(DM_CALLS,"Canvas::renderSurfaces");
 }

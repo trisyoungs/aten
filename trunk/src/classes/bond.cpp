@@ -26,16 +26,16 @@
 
 // Bond types
 const char *BT_keywords[BT_NITEMS] = { "none", "single", "double", "triple" };
-bond_type BT_from_text(const char *s)
-	{ return (bond_type) enum_search("bond type",BT_NITEMS,BT_keywords,s); }
-bond_type operator++(bond_type &btype,int)
+BondType BT_from_text(const char *s)
+	{ return (BondType) enumSearch("bond type",BT_NITEMS,BT_keywords,s); }
+BondType operator++(BondType &btype,int)
 {
 	if (btype == BT_SINGLE) btype = BT_DOUBLE;
 	else if (btype == BT_DOUBLE) btype = BT_TRIPLE;
 	else if (btype == BT_TRIPLE) btype = BT_SINGLE;
 	return btype;
 }
-bond_type operator--(bond_type &btype,int)
+BondType operator--(BondType &btype,int)
 {
 	if (btype == BT_TRIPLE) btype = BT_DOUBLE;
 	else if (btype == BT_DOUBLE) btype = BT_SINGLE;
@@ -44,36 +44,66 @@ bond_type operator--(bond_type &btype,int)
 }
 
 // Constructors
-bond::bond()
+Bond::Bond()
 {
-	type = BT_UNSPECIFIED;
-	bondi = NULL;
-	bondj = NULL;
-	#ifdef MEMDEBUG
-	memdbg.create[MD_BOND] ++;
-	#endif
+	// Private variables
+	order_ = BT_UNSPECIFIED;
+	atomI_ = NULL;
+	atomJ_ = NULL;
 }
 
-linkbond::linkbond()
+Linkbond::Linkbond()
 {
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	#ifdef MEMDEBUG
-	memdbg.create[MD_LINKBOND] ++;
-	#endif
 }
 
-// Destructors
-bond::~bond()
+// Set atoms for bond
+void Bond::setAtoms(Atom *i, Atom *j)
 {
-	#ifdef MEMDEBUG
-	memdbg.destroy[MD_BOND] ++;
-	#endif
+	atomI_ = i;
+	atomJ_ = j;
 }
 
-linkbond::~linkbond()
+// Set atom I for bond
+void Bond::setAtomI(Atom *i)
 {
-	#ifdef MEMDEBUG
-	memdbg.destroy[MD_LINKBOND] ++;
-	#endif
+	atomI_ = i;
+}
+
+// Set atom I for bond
+void Bond::setAtomJ(Atom *j)
+{
+	atomJ_ = j;
+}
+
+// Set bond order
+void Bond::setOrder(BondType bt)
+{
+	order_ = bt;
+}
+
+// Return order of bond
+BondType Bond::order()
+{
+	return order_;
+}
+
+// Return first atom in bond
+Atom *Bond::atomI()
+{
+	return atomI_;
+}
+
+// Return second atom in bond
+Atom *Bond::atomJ()
+{
+	return atomJ_;
+}
+
+// Returns the partner of the specified atom in the bond structure
+Atom *Bond::partner(Atom *i)
+{
+	return (i == atomI_ ? atomJ_ : atomI_);
 }

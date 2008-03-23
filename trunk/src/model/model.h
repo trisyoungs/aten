@@ -24,87 +24,84 @@
 
 #include "templates/vector3.h"
 #include "base/prefs.h"
-#include "base/spacegroup.h"
 #include "classes/energystore.h"
 #include "classes/cell.h"
 #include "classes/measurement.h"
-#include "classes/glyph.h"
-#include "classes/site.h"
 #include "classes/undostate.h"
-#include "methods/quantity.h"
-#ifdef IS_MAC
-	#include "OpenGL/gl.h"
-#else
-	#include "GL/gl.h"
-#endif
+//#include <QtOpenGL/QtOpenGL>
 
 // Forward Declarations
-class forcefield;
-class bond;
-class constraint;
-class pattern;
-class filter;
-class undostate;
-class atomaddress;
+class Forcefield;
+class Bond;
+class Constraint;
+class Pattern;
+class Filter;
+class Glyph;
+class Spacegroup;
+class Site;
+class Undostate;
+class Atomaddress;
+class Calculable;
+class Measurement;
 
 // Model
-class model
+class Model
 {
 	public:
 	// Constructor / Destructor
-	model();
-	~model();
+	Model();
+	~Model();
 	// List pointers
-	model *prev, *next;
+	Model *prev, *next;
 	// Friend declarations
-	friend class change;
+	friend class Change;
 
 	/*
 	// Model
 	*/
 	private:
 	// Total mass of model
-	double mass;
+	double mass_;
 	// Density of model (if periodic)
-	double density;
+	double density_;
 	// Name of model
-	dnchar name;
+	Dnchar name_;
 	// Format of model when loaded / last saved
-	filter *filefilter;
+	Filter *filter_;
 	// Filename of model when loaded / last saved
-	dnchar filename;
+	Dnchar filename_;
 
 	public:
 	// Sets the filename of the model
-	void set_filename(const char *s) { filename = s; }
+	void setFilename(const char *s);
 	// Return the stored filename of the model
-	const char *get_filename() { return filename.get(); }
+	const char *filename();
 	// Sets the file filter of the model
-	void set_filter(filter *f) { filefilter = f; }
+	void setFilter(Filter *f);
 	// Return the stored file filter of the model
-	filter *get_filter() { return filefilter; }
+	Filter *filter();
 	// Sets the name of the model
-	void set_name(const char *s) { name = s; }
+	void setName(const char *s);
 	// Return the name of the model
-	const char *get_name() { return name.get(); }
+	const char *name();
 	// Return the mass of the molecule
-	double get_mass() { return mass; }
+	double mass();
 	// Return the density of the model
-	double get_density() { return density; }
+	double density();
 	// Clear all data in model
 	void clear();
 	// Calculate the total mass of the model
-	void calculate_mass();
+	void calculateMass();
 	// Calculate the density of the model
-	void calculate_density();
+	void calculateDensity();
 	// Print information about the model (inc atoms)
 	void print();
 	// Copy all information from another model
-	void copy(model*);
+	void copy(Model*);
 	// Copy all atom data from specified model
-	void copy_atom_data(model*, int);
+	void copyAtomData(Model*, int);
 	// Copy range of atom data from specified model
-	void copy_atom_data(model*, int, int, int);
+	void copyAtomData(Model*, int, int, int);
 
 	/*
 	// Logs
@@ -117,668 +114,649 @@ class model
 	// LOG_SELECTION : atom selection
 	// LOG_CAMERA    : view (mainly used to flag reprojection)
 	// LOG_TOTAL     : sum of all changes
-	int logs[LOG_NITEMS];
+	int logs_[LOG_NITEMS];
 	// Log point of the last save / point on load
-	int save_point;
+	int savePoint_;
 	// Log point of the last project_all() (LOG_COORDS+LOG_CAMERA)
-	int projection_point;
+	int projectionPoint_;
 
 	public:
 	// Increment specified log point of the model
-	void log_change(change_log);
+	void logChange(ChangeLog);
 	// Return the log quantity specified
-	int get_log(change_log cl) { return logs[cl]; }
+	int log(ChangeLog cl);
 	// Reset all logs to zero
-	void reset_logs() { for (int i=0; i<LOG_NITEMS; i++) logs[i] = 0; }
+	void resetLogs();
 	// Copy logs from undostate
-	void copy_logs(int *sourcelogs);
+	void copyLogs(int *sourcelogs);
 	// Set the save point log for the model
-	void update_save_point() { save_point = logs[LOG_STRUCTURE] + logs[LOG_COORDS]; }
+	void updateSavePoint();
 	// Return if the model has been modified since last being saved
-	bool is_modified() { return (save_point == (logs[LOG_STRUCTURE] + logs[LOG_COORDS]) ? FALSE : TRUE); }
+	bool isModified();
 
 	/*
 	// Atoms
 	*/
 	private:
 	// Atoms in model
-	list<atom> atoms;
-	// Delete the specified atom
-	void remove_atom(atom*);
+	List<Atom> atoms_;
+	// Delete the specified atom (internal function)
+	void removeAtom(Atom*_);
 	
 	public:
 	// Create a new atom
-	atom *add_atom(int el, vec3<double> r);
+	Atom *addAtom(int el, Vec3<double> r);
 	// Create copy of supplied atom
-	atom *add_copy(atom *source);
+	Atom *addCopy(Atom *source);
 	// Create copy of supplied atom at the specified position
-	atom *add_copy(atom *after, atom *source);
+	Atom *addCopy(Atom *after, Atom *source);
 	// Return the start of the atom list
-	atom *get_atoms() { return atoms.first(); }
+	Atom *atoms();
 	// Return the n'th atom in the atom list
-	atom *get_atom(int n);
+	Atom *atom(int n);
 	// Return the number of atoms in the model
-	int get_natoms() { return atoms.size(); }
+	int nAtoms();
 	// Delete specified atom
-	void delete_atom(atom *target);
+	void deleteAtom(Atom *target);
 	// Translate specified atom
-	void translate_atom(atom *target, vec3<double> delta);
+	void translateAtom(Atom *target, Vec3<double> delta);
 	// Position specified atom
-	void position_atom(atom *target, vec3<double> newr);
+	void positionAtom(Atom *target, Vec3<double> newr);
 	// Delete all atoms in the model
-	void clear_atoms();
+	void clearAtoms();
 	// Perform alchemy on an atom
-	void transmute_atom(atom *target, int element);
+	void transmuteAtom(Atom *target, int element);
 	// Renumber atoms in the model
-	void renumber_atoms(atom *from = NULL);
+	void renumberAtoms(Atom *from = NULL);
 	// Reset tempi values of all atoms
-	void reset_tempi(int);
+	void resetTempi(int);
 	// Return pointer to the atom with the specified id
-	atom *find_atom(int);
+	Atom *findAtom(int);
 	// Return the (first) atom with matching tempi
-	atom *find_atom_by_tempi(int);
+	Atom *findAtomByTempi(int);
 	// Move selected atoms one place 'up' in the list
-	void shift_selection_up();
+	void shiftSelectionUp();
 	// Move selected atoms one place 'down' in the list
-	void shift_selection_down();
+	void shiftSelectionDown();
 	// Move selected atoms to start of the list
-	void move_selection_to_start();
+	void moveSelectionToStart();
 	// Move selection to end of the list
-	void move_selection_to_end();
+	void moveSelectionToEnd();
 	// Return (and autocreate if necessary) the static atoms array
-	atom **get_atomarray() { return atoms.array(); }
+	Atom **atomArray();
 	// Set visibility of specified atom
-	void set_hidden(atom *i, bool hidden);
+	void setHidden(Atom *i, bool hidden);
 	// Prints out the coordinates of the atoms in the model
-	void print_coords();
+	void printCoords();
 
 	/*
 	// Unit Cell
 	*/
 	private:
 	// Spacegroup of the model (if any)
-	int spgrp;
+	int spacegroup_;
 	// Setting for spacegroup (if any)
-	int spgrpsetting;
+	int spacegroupSetting_;
 	// Cell definition (also contains reciprocal cell definition)
-	unitcell cell;
+	Cell cell_;
 
 	public:
 	// Return pointer to unit cell structure
-	unitcell *get_cell() { return &cell; }
-	// Return type of unit cell
-	cell_type get_celltype() { return cell.get_type(); }
-	// Return volume of cell
-	double get_volume() { return cell.get_volume(); }
-	// Return cell axes
-	mat3<double> get_cellaxes() { return cell.get_axes(); }
-	// Return cell origin
-	vec3<double> get_cellorigin() { return cell.get_origin(); }
+	Cell *cell();
 	// Set cell (vectors)
-	void set_cell(vec3<double> lengths, vec3<double> angles);
+	void setCell(Vec3<double> lengths, Vec3<double> angles);
 	// Set cell (axes)
-	void set_cell(mat3<double> axes);
+	void setCell(Mat3<double> axes);
 	// Remove cell definition
-	void remove_cell();
+	void removeCell();
 	// Fold all atoms into the cell
-	void fold_all_atoms();
+	void foldAllAtoms();
 	// Sets the spacegroup of the model
-	void set_spacegroup(int i) { spgrp = i; }
+	void setSpacegroup(int i);
 	// Sets the spacegroup setting
-	void set_spacegroupsetting(int i) { spgrpsetting = i; }
+	void setSpacegroupSetting(int i);
 	// Return the spacegroup of the model
-	int get_spacegroup() { return spgrp; }
+	int spacegroup();
 	// Apply the given symmetry generator to the current atom selection in the model
 	void pack(int);
 	// Apply the symmetry operators listed in the model's spacegroup
 	void pack();
 	// Fold all molecules into the cell
-	void fold_all_molecules();
+	void foldAllMolecules();
 	// Replicate cell to create supercell
-	void replicate_cell(const vec3<double>&, const vec3<double>&);
+	void replicateCell(const Vec3<double>&, const Vec3<double>&);
 	// Scale cell and contents
-	void scale_cell(const vec3<double>&);
+	void scaleCell(const Vec3<double>&);
 
 	/*
 	// Bonding
 	*/
 	public:
 	// Augment specified bond
-	void augment_bond(bond *b, int change);
+	void augmentBond(Bond *b, int change);
 	// Augment bond between supplied atoms
-	void augment_bond(atom *i, atom *j, int change);
+	void augmentBond(Atom *i, Atom *j, int change);
 	// Add bond of specified type between atoms
-	void bond_atoms(atom *i, atom *j, bond_type bt);
+	void bondAtoms(Atom *i, Atom *j, BondType bt);
 	// Add bond of specified type between atoms (by id)
-	void bond_atoms(int ii, int jj, bond_type bt);
+	void bondAtoms(int ii, int jj, BondType bt);
 	// Delete bond between specified atoms
-	void unbond_atoms(atom *i, atom *j, bond *b = NULL);
+	void unbondAtoms(Atom *i, Atom *j, Bond *b = NULL);
 	// Change type of specified bond
-	void change_bond(bond *b, bond_type bt);
+	void changeBond(Bond *b, BondType bt);
 	// Clear all bonding in model
-	void clear_bonding();
+	void clearBonding();
 	// Calculate bonding in the model
-	void calculate_bonding();
+	void calculateBonding();
 	// Augment bonding in the model
-	void augment_bonding();
+	void augmentBonding();
 	// Calculate bonding in current atom selection
-	void selection_calculate_bonding();
+	void selectionCalculateBonding();
 	// Bond all atom pairs in current atom selection
-	void selection_bond_all();
+	void selectionBondAll();
 	// Clear bonding in current atom selection
-	void selection_clear_bonding();
+	void selectionClearBonding();
 
 	/*
 	// Selection
 	*/
 	private:
 	// Number of selected atoms
-	int nselected;
+	int nSelected_;
 
 	public:
 	// Select the specified atom
-	void select_atom(atom*);
+	void selectAtom(Atom*);
 	// Deselect the specified atom
-	void deselect_atom(atom*);
+	void deselectAtom(Atom*);
 	// Toggle the selection state of the atom
-	void selection_toggle(atom*);
+	void selectionToggle(Atom*);
 	// Select all atoms
-	void select_all();
+	void selectAll();
 	// Select no atoms
-	void select_none();
+	void selectNone();
 	// Return the number of selected atoms
-	int get_nselected() { return nselected; }
+	int nSelected();
 	// Invert current atom selection
-	void selection_invert();
+	void selectionInvert();
 	// Delete current atom selection
-	void selection_delete();
+	void selectionDelete();
 	// Expand current atom selection by one bond
-	void selection_expand();
+	void selectionExpand();
 	// Return the atom at the clicked screen coordinates (if any)
-	atom *atom_on_screen(double, double);
+	Atom *atomOnScreen(double, double);
 	// TODO Make private
-	void select_pattern(pattern*);
+	void selectPattern(Pattern*);
 	// Select all atoms within the rectangular boundary specified
-	void select_box(double, double, double, double);
+	void selectBox(double, double, double, double);
 	// Select all atoms connected by a path from the specified atom
-	void select_tree(atom*);
+	void selectTree(Atom*);
 	// Select all atoms of the same element as the specified atom
-	void select_element(atom*);
+	void selectElement(Atom*);
 	// Select all atoms of the same element as the atom with the specified id
-	void select_element(int);
+	void selectElement(int);
 	// Select all atoms within cutoff of specified atom
-	void select_radial(atom*, double);
+	void selectRadial(Atom*, double);
 	// Return the first selected atom in the model (if any)
-	atom *get_first_selected();
+	Atom *firstSelected();
 	// Detect and select overlapping atoms
-	void select_overlaps(double tolerance);
+	void selectOverlaps(double tolerance);
 
 	/*
 	// View
 	*/
 	private:
 	// Camera rotation
-	double camrot;
+	double cameraRotation_;
 	// Camera, model, and view (cam*rot*cell) matrices associated with the model
-	mat4<double> camera, rotation, view;
+	Mat4<double> cameraMatrix_, rotationMatrix_, viewMatrix_;
 	// Inverse of the view matrix
-	mat4<double> view_inverse;
+	Mat4<double> viewMatrixInverse_;
 	// Camera position
-	vec3<double> camr;
+	Vec3<double> rCamera_;
 	// Size of view for orthographic projection
-	double ortho_size;
+	double orthoSize_;
 
 	public:
 	// Pre-generated display list for atoms
 	//GLuint displaylist;
 	// Project the specified world coordinates into 2D screen coords
-	vec4<double> &world_to_screen(const vec3<double>&);
+	Vec4<double> &worldToScreen(const Vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
-	void calculate_viewmatrix();
+	void calculateViewMatrix();
 	// Return the GL-compatible array from the ModelMAT structure
-	void get_rotation_matrix(double *m) { rotation.get_column_major(m); }
+	void copyRotationMatrix(double *m);
 	// Return the GL-compatible array from the ModelMAT structure
-	void get_camera_matrix(double *m) { camera.get_column_major(m); }
+	void copyCameraMatrix(double *m);
 	// Return the current camera z-rotation
-	double get_camrot() { return camrot; }
+	double cameraRotation();
 	// Set model rotation to exact values
-	void set_rotation(double rotx, double roty);
+	void setRotation(double rotx, double roty);
 	// Rotate the model about the x and y axes
 	void rotate(double, double);
 	// Spin the model about the z axis
-	void zrotate(double angle) { adjust_camera(0.0, 0.0, 0.0, (angle / DEGRAD ) * 2.0); }
+	void zRotate(double angle);
 	// Adjust the position of the camera
-	void adjust_camera(double, double, double, double);
-	void adjust_camera(const vec3<double> &v, double r) { adjust_camera(v.x,v.y,v.z,r); }
+	void adjustCamera(double, double, double, double);
+	void adjustCamera(const Vec3<double> &v, double r);
 	// Adjusts the orthographic size (zoom)
-	void adjust_ortho_size(double);
+	void adjustOrthoSize(double);
 	// Return the size of the orthographic projection
-	double get_ortho_size() { return ortho_size; }
+	double orthoSize();
 	// Reset the camera to show the entire model
-	void reset_camera(const vec3<double>&);
+	void resetCamera(const Vec3<double>&);
 	// Reset modelview matrix and camera position
-	void reset_view();
+	void resetView();
 	// Project the model coordinates of the atom into local and 2D coordinates
-	void project_atom(atom*);
+	void projectAtom(Atom*);
 	// Project the model coordinates of all atoms
-	void project_all();
+	void projectAll();
 	// Project the model coordinates of selected atoms
-	void project_selection();
+	void projectSelection();
 
 	/*
 	// Labelling
 	*/
 	private:
 	// Add label to atom
-	void add_label(atom *i, atom_label al);
+	void addLabel(Atom *i, AtomLabel al);
 	// Remove atom label
-	void remove_label(atom *i, atom_label al);
+	void removeLabel(Atom *i, AtomLabel al);
 	// Clear labelling from atom
-	void clear_labels(atom *i);
+	void clearLabels(Atom *i);
 
 	public:
 	// Clear all atom labelling
-	void clear_all_labels();
+	void clearAllLabels();
 	// Clear all atom labelling from the current selection
-	void selection_clear_labels();
+	void selectionClearLabels();
 	// Clear specified atom labelling from the current selection
-	void selection_remove_labels(atom_label);
+	void selectionRemoveLabels(AtomLabel);
 	// Set the specified label for all atoms currently selected
-	void selection_add_labels(atom_label);
+	void selectionAddLabels(AtomLabel);
 	// Set the visibility property for all selected atoms
-	void selection_set_hidden(bool);
+	void selectionSetHidden(bool);
 	// Sets the 'fixed' variable of all selected atoms to TRUE
-	void selection_set_fixed();
+	void selectionSetFixed();
 	// Sets the 'fixed' variable of all selected atoms to FALSE
-	void selection_set_free();
+	void selectionSetFree();
 
 	/*
 	// Forcefield
 	*/
 	private:
 	// Forcefield associated with this model
-	forcefield *ff;
+	Forcefield *forcefield_;
 
 	public:
 	// Set the model to use the specified forcefield
-	void set_ff(forcefield*);
+	void setForcefield(Forcefield*);
 	// Return the forcefield used by the model
-	forcefield *get_ff() { return ff; }
+	Forcefield *forcefield();
 	// Assign charges according to prefs QS
-	void assign_charges(charge_source);
+	void assignCharges(ChargeSource);
 	// Reset all model charges to zero
-	void clear_charges();
+	void clearCharges();
 
 	/*
 	// Typing
 	*/
 	private:
 	// List of unique atom types (copies) in model (useful for FF export)
-	list<ffatom> uniquetypes;
+	List<ForcefieldAtom> uniqueTypes_;
 
 	public:
 	// Set type of specified atom
-	void set_atom_type(atom *i, ffatom *ffa, bool fixed);
+	void setAtomtype(Atom *i, ForcefieldAtom *ffa, bool fixed);
 	// Determine hybridicities of atoms
-	void describe_atoms();
+	void describeAtoms();
 	// Assign forcefield types to all atoms
-	bool type_all();
+	bool typeAll();
 	// Remove forcefield types from all atoms
-	void remove_typing();
+	void removeTyping();
 	// Set atomtypes of selected atoms
-	void selection_set_type(ffatom *ffa, bool fixed);
+	void selectionSetType(ForcefieldAtom *ffa, bool fixed);
 	// Return number of unique atom types in model
-	int get_nuniquetypes() { return uniquetypes.size(); }
+	int nUniqueTypes();
 	// Return the list of unique types in the model
-	ffatom *get_uniquetypes() { return uniquetypes.first(); }
+	ForcefieldAtom *uniqueTypes();
 
 	/*
-	// Energy / Forces
+	// Expression
 	*/
 	private:
 	// Atom changeid at which the expression was/is valid
-	int expression_point;
+	int expressionPoint_;
 
 	public:
 	// Storage for energy
-	energystore energy;
+	EnergyStore energy;
 	// Create total energy function shell for the model
-	bool create_expression();
+	bool createExpression();
 	// Return whether the expression is valid
-	bool expression_is_valid() { return (expression_point == logs[LOG_STRUCTURE] ? TRUE : FALSE); }
+	bool isExpressionValid();
 	// Manually invalidates the expression
-	void invalidate_expression() { expression_point --; }
-	// Manually sets the valid_expression flag
-	void force_valid_expression() { expression_point = logs[LOG_STRUCTURE]; }
+	void invalidateExpression();
 	// Generate parameters for total energy function
-	void fill_expression(int);
+	void fillExpression(int);
 	// Calculate (and return) the total energy of the specified model configuration
-	double total_energy(model *config, pattern *molpattern = NULL, int molecule = -1);
+	double totalEnergy(Model *config, Pattern *molpattern = NULL, int molecule = -1);
 	// Calculate forces in the specified model configuration
-	void calculate_forces(model*);
+	void calculateForces(Model*);
 	// Prints out atomic forces
-	void print_forces();
+	void printForces();
 	// Calculate RMS of current forces
-	double calculate_rms_force();
+	double calculateRmsForce();
 	// Normalise forces (make largest component equal to specified value)
-	void normalise_forces(double norm);
+	void normaliseForces(double norm);
 	// Zero forces on all atoms
-	void zero_forces();
+	void zeroForces();
 	// Zero forces on all atoms that have their 'fixed' property set to true
-	void zero_forces_fixed();
+	void zeroForcesFixed();
 
 	/*
 	// Patterns
 	*/
 	private:
 	// Pattern nodes for the model
-	list<pattern> patterns;
+	List<Pattern> patterns_;
 	// Flag to indicate a valid pattern for the model
-	int patterns_point;
+	int patternsPoint_;
 
 	public:
 	// Create a new pattern node (nmols,natoms,name)
-	pattern *add_pattern(int, int, const char*);
+	Pattern *addPattern(int, int, const char*);
 	// Cut the pattern from the list
-	void cut_pattern(pattern*);
+	void cutPattern(Pattern*);
 	// Own the specified pattern (bool = whether to set ownermodel)
-	void own_pattern(pattern*, bool);
+	void ownPattern(Pattern*, bool);
 	// Number of nodes in pattern
-	int get_npatterns() { return patterns.size(); }
+	int nPatterns();
 	// Return the first pattern node of the model
-	pattern *get_patterns() { return patterns.first(); }
+	Pattern *patterns();
 	// Return the pattern with the ID specified
-	pattern *get_pattern(int id);
+	Pattern *pattern(int id);
 	// Return the pattern that the specified atom is in
-	pattern *get_pattern(atom *i);
+	Pattern *pattern(Atom *i);
 	// Return the last pattern node of the model
-	pattern *get_last_pattern() { return patterns.last(); }
+	Pattern *lastPattern();
 	// Find pattern by name
-	pattern *find_pattern(const char*);
+	Pattern *findPattern(const char*);
 	// Autocreate patterns for the model
-	bool autocreate_patterns();
+	bool autocreatePatterns();
 	// Create representative molecules for patterns
-	void create_pattern_molecules();
+	void createPatternMolecules();
 	// Clear the current pattern definition
-	void clear_patterns();
+	void clearPatterns();
 	// Return whether the patterns are valid
-	bool patterns_are_valid() { return (patterns_point == logs[LOG_STRUCTURE] ? TRUE : FALSE); }
+	bool arePatternsValid();
 	// Sets the 'fixed' property of all current patterns
-	void set_patterns_fixed(int);
+	void setPatternsFixed(int);
 	// Calculates the atom locality of the supplied atom
-	atomaddress locate_atom(atom*);
+	Atomaddress locateAtom(Atom*);
 	// Creates a string of the element symbols in the selection
-	void selection_get_atom_fingerprint(dnchar&);
+	void selectionAtomFingerprint(Dnchar&);
 	// Creates a characteristic string of the bonds in the selection
-	void selection_get_bond_fingerprint(dnchar&);
+	void selectionBondFingerprint(Dnchar&);
 	// Charge the pattern atom across the model
-	void charge_pattern_atom(pattern*, int, double);
+	void chargePatternAtom(Pattern*, int, double);
 	// Calculate bonding restricted to patterns
-	void pattern_calculate_bonding();
+	void patternCalculateBonding();
 	// Position specified molecule within pattern
-	void position_molecule(pattern*, int, const vec3<double>&);
+	void positionMolecule(Pattern*, int, const Vec3<double>&);
 	// Translate specified molecule within pattern
-	void translate_molecule(pattern*, int, const vec3<double>&);
+	void translateMolecule(Pattern*, int, const Vec3<double>&);
 	// Rotate specified molecule within pattern
-	void rotate_molecule(pattern*, int, double, double);
+	void rotateMolecule(Pattern*, int, double, double);
 	// Set the hidden flag on atoms of the specified molecule
-	void hide_molecule(pattern*, int, bool);
+	void hideMolecule(Pattern*, int, bool);
 	// Print patterns
-	void print_patterns();
+	void printPatterns();
 
 	/*
 	// Model Building
 	*/
 	private:
 	// Iteratively add hydrogens to the specified atom in the desired general geometry
-	void add_hydrogens(atom *target, int nhydrogen, hadd_geom geometry);
+	void addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry);
 
 	public:
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
-	void hydrogen_satisfy(atom *target = NULL);
+	void hydrogenSatisfy(Atom *target = NULL);
 
 	/*
 	// Geometry (using staticatoms[])
 	*/
 	public:
 	// Calculate distance
-	double distance(int, int);
-	double distance(atom *i, atom *j) { return cell.distance(i,j); }
+	double distance(int i, int j);
+	double distance(Atom *i, Atom *j);
 	// Calculate angle
-	double angle(int, int, int);
-	double angle(atom *i, atom *j, atom *k) { return cell.angle(i,j,k); }
+	double angle(int i, int j, int k);
+	double angle(Atom *i, Atom *j, Atom *k);
 	// Calculate torsion
-	double torsion(int, int, int, int);
-	double torsion(atom *i, atom *j, atom *k, atom *l) { return cell.torsion(i,j,k,l); }
+	double torsion(int i, int j, int k, int l);
+	double torsion(Atom *i, Atom *j, Atom *k, Atom *l);
 
 	/*
 	// Transformations
 	*/
 	private:
 	// Length scale to use for world translations through GUI
-	double translatescale;
+	double translateScale_;
 
 	public:
 	// Prepare for atom manipulation
-	void prepare_transform();
+	void prepareTransform();
 	// Return the translation scale
-	double get_translatescale() { return translatescale; }
+	double translateScale();
 	// Finalize atom transform
-	void finalize_transform(reflist< atom,vec3<double> >&);
+	void finalizeTransform(Reflist< Atom,Vec3<double> >&);
 	// Rotate the atom selection
-	void rotate_selection_world(double, double);
+	void rotateSelectionWorld(double, double);
 	// Spin the atom selection
-	void manip_rotate_zaxis(double);
+	void rotateSelectionZaxis(double);
 	// Puts the selections centre of geometry at 0,0,0
-	void centre(const vec3<double> &v) { centre(v.x, v.y, v.z); }
+	void centre(const Vec3<double> &v);
 	void centre(double x, double y, double z);
 	// Translate selection by the vector specified
-	void translate_selection_local(const vec3<double>&);
+	void translateSelectionLocal(const Vec3<double>&);
 	// Translate selection by the vector specified (in world coordinates)
-	void translate_selection_world(const vec3<double>&);
+	void translateSelectionWorld(const Vec3<double>&);
 	// Rotate selection about specified vector
-	void rotate_selection_vector(vec3<double>, vec3<double>, double);
+	void rotateSelectionVector(Vec3<double>, Vec3<double>, double);
 	// Mirror selection about specified axis
-	void mirror_selection_local(int axis);
+	void mirrorSelectionLocal(int axis);
 
 	/*
 	// Trajectory Frames
 	*/
 	private:
 	// Parent model of trajectory
-	model *trajparent;
+	Model *trajectoryParent_;
 	// Name associated with trajectory file
-	dnchar trajname;
+	Dnchar trajectoryName_;
 	// Filename of file
-	dnchar trajfilename;
+	Dnchar trajectoryFilename_;
 	// Format of trajectory file
-	filter *trajfilefilter;
+	Filter *trajectoryFilter_;
 	// File structure
-	ifstream *trajfile;
+	ifstream *trajectoryFile_;
 	// File offsets for first and last frames
-	streampos trajposfirst, trajposlast;
+	streampos trajectoryFirstFrame_, trajectoryLastFrame_;
 	// Size of one frame
-	long int framesize;
+	long int frameSize_;
 	// Frame list
-	list<model> frames;
+	List<Model> frames_;
 	// Add frame to trajectory
-	model *add_frame();
+	Model *addFrame();
 	// Remove frame from trajectory
-	void remove_frame(model*);
+	void removeFrame(Model*);
 	// Number of frames cached
-	int ncachedframes;
+	int nCachedFrames_;
 	// Total number of frames available in file or cache
-	int totalframes;
+	int totalFrames_;
 	// Whether this is a cached trajectory (TRUE) or just one frame (FALSE)
-	bool trajcached;
+	bool trajectoryCached_;
 	// Position marker
-	int frameposition;
+	int framePosition_;
 	// Whether the trajectory is currently being 'played'
-	bool trajplaying;
+	bool trajectoryPlaying_;
 	// Pointer to config to be drawn
-	model *currentframe;
+	Model *currentFrame_;
 
 	public:
 	// Set parent model of trajectory
-	void set_trajparent(model *m) { trajparent = m; }
+	void setTrajectoryParent(Model *m);
 	// Return parent model of trajectory
-	model *get_trajparent() { return trajparent; }
+	Model *trajectoryParent();
 	// Initialise trajectory from file specified
-	bool initialise_trajectory(const char*, filter*);
+	bool initialiseTrajectory(const char*, Filter*);
 	// Reinitialise (clear) the associated trajectory
-	void clear_trajectory();
+	void clearTrajectory();
 	// Set the format of the trajectory
-	void set_trajfilter(filter *f) { trajfilefilter = f; }
+	void setTrajectoryFilter(Filter *f);
 	// Return the trajectory file pointer
-	ifstream *get_trajfile() { return trajfile; }
+	ifstream *trajectoryFile();
 	// Return the current frame pointer
-	model *get_currentframe() { return currentframe; }
+	Model *currentFrame();
 	// Return the total number of frames in the trajectory (file or cached)
-	int get_totalframes() { return totalframes; }
+	int totalFrames();
 	// Return the current integer frame position
-	int get_frameposition() { return frameposition; }
+	int framePosition();
 	// Seek to first frame
-	void seek_first_frame();
+	void seekFirstFrame();
 	// Seek to last frame
-	void seek_last_frame();
+	void seekLastFrame();
 	// Seek to next frame
-	void seek_next_frame();
+	void seekNextFrame();
 	// Seek to previous frame
-	void seek_previous_frame();
+	void seekPreviousFrame();
 
 	/*
 	// Rendering
 	*/
 	private:
 	// Whether to render from self (TRUE) or trajectory frame (FALSE)
-	bool renderfromself;
+	bool renderFromSelf_;
 
 	public:
 	// Render from self
-	void render_from_self() { renderfromself = TRUE; }
+	void setRenderFromSelf();
 	// Render from trajectory
-	void render_from_frames() { renderfromself = FALSE; }
+	void setRenderFromFrames();
 	// Set the drawing style of the current atom selection
-	void selection_set_style(draw_style);
+	void selectionSetStyle(DrawStyle);
 	// Return the current rendering source for the model
-	model *get_render_source() { return (renderfromself ? this : currentframe); }
+	Model *renderSource();
 
 	/*
 	// Coordinate Transformations
 	*/
 	public:
 	// Convert screen coordinates into modelspace coordinates
-	vec3<double> guide_to_model(const vec3<double> &v) { return guide_to_model(v.x, v.y); }
-	vec3<double> guide_to_model(double x, double y);
+	Vec3<double> guideToModel(const Vec3<double> &v);
+	Vec3<double> guideToModel(double x, double y);
 	// Convert from Bohr to Angstrom
-	void bohr_to_angstrom();
+	void bohrToAngstrom();
 	// Convert from Angstrom to Bohr
-	void angstrom_to_bohr();
+	void angstromToBohr();
 	// COnvert fractional coordinates to real coordinates
-	void frac_to_real();
+	void fracToReal();
 
 	/*
 	// Measurements
 	*/
 	private:
 	// List of measurements
-	list<measurement> measurements;
+	List<Measurement> measurements_;
 
 	public:
 	// Return first measurement in the list
-	measurement *get_measurements() { return measurements.first(); }
+	Measurement *measurements();
 	// Clear all measurements
-	void clear_measurements() { measurements.clear(); }
+	void clearMeasurements();
 	// Find specific measurement
-	measurement *find_measurement(geom_type, atom*, ...);
+	Measurement *findMeasurement(GeometryType, Atom*, ...);
 	// Clear specific type of measurements
-	void remove_measurements(geom_type);
+	void removeMeasurements(GeometryType);
 	// Delete specific measurement
-	void remove_measurement(measurement *me);
+	void removeMeasurement(Measurement *me);
 	// Delete all measurements involving supplied atom
-	void remove_measurements(atom*);
+	void removeMeasurements(Atom*);
 	// Add measurement (list of atoms)
-	void add_measurement(geom_type, atom*, ...);
+	void addMeasurement(GeometryType, Atom*, ...);
 	// Add measurements of specific type in current selection
-	void add_measurements_in_selection(geom_type);
+	void addMeasurementsInSelection(GeometryType);
 	// Measure distances between atoms
-	void measure_distance(atom*, atom*);
+	void measureDistance(Atom*, Atom*);
 	// Measure angles between atoms
-	void measure_angle(atom*, atom*, atom*);
+	void measureAngle(Atom*, Atom*, Atom*);
 	// Measure torsions between atoms
-	void measure_torsion(atom*, atom*, atom*, atom*);
+	void measureTorsion(Atom*, Atom*, Atom*, Atom*);
 	// Update stored measurements
-	void update_measurements();
+	void updateMeasurements();
 
 	/*
 	// Sites
 	*/
 	public:
 	// List of site definitions
-	list<site> sites;
+	List<Site> sites;
 	// Find site by name
-	site *find_site(const char*);
+	Site *findSite(const char*);
 
 	/*
 	// Calculated quantities
 	*/
 	public:
 	// List of calculate quantities
-	list<calculable> quantities;
+	List<Calculable> quantities;
 	// List of pending or calculating quantities
-	list<calculable> pending_quantities;
-
-	/*
-	// Misc (to be put somewhere)
-	*/
-	public:
-	constraint *constraints;
-	constraint *constraints_tail;
-	int nconstraints;
+	List<Calculable> pendingQuantities;
 
 	/*
 	// Selection Actions
 	*/
 	public:
 	// Return the empirical formula of the selected atoms
-	void selection_get_empirical(dnchar&);
+	void selectionEmpirical(Dnchar&);
 	// Get selection's centre of geometry
-	vec3<double> selection_get_cog();
+	Vec3<double> selectionCog();
 
 	/*
 	// Glyphs
 	*/
 	private:
 	// List of glyphs within model
-	list<glyph> glyphs;
+	List<Glyph> glyphs_;
 
 	public:
 	// Create new glyph in this model
-	glyph *add_glyph() { log_change(LOG_VISUAL); return glyphs.add(); }
+	Glyph *addGlyph();
 	// Return list of glyphs
-	glyph *get_glyphs() { return glyphs.first(); }
+	Glyph *glyphs();
 
 	/*
 	// Undo / Redo
 	*/
 	private:
-	// Pointer to current 'states' of the model in the list
-	undostate *currentundostate, *currentredostate;
-	// List of undo levels for the model
-	list<undostate> undolevels;
+	// Pointer to current and previous states of the model in the list
+	Undostate *currentUndostate_, *currentRedoState_;
+	// List of undo states for the model
+	List<Undostate> undoStates_;
 	// Current state that we're adding changes to
-	undostate *recordingstate;
+	Undostate *recordingState_;
 
 	public:
 	// Return the current undo level pointer
-	undostate *get_currentundostate() { return currentundostate; }
+	Undostate *currentUndostate();
 	// Return the current redo level pointer
-	undostate *get_currentredostate() { return currentredostate; }
+	Undostate *currentRedoState();
 	// Signal to begin recording new changes
-	void begin_undostate(const char *text);
+	void beginUndostate(const char *text);
 	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
-	void end_undostate();
-	// Add positional undo
+	void endUndostate();
 	// Perform the undo action pointed to by 'currentundostate'
 	void undo();
 	// Perform the redo action pointed to by 'currentredostate'

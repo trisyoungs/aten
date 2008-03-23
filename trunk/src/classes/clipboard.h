@@ -26,130 +26,101 @@
 #include "templates/list.h"
 
 // Forward declarations
-class pattern;
-class model;
-class clipatom;
-
-// Clipboard Bond
-class clipbond : public linkbond
-{
-	private:
-	// Pointers to atoms in clipatom list which make up the bond
-	clipatom *clipi, *clipj;
-	public:
-	// Constructor
-	clipbond();
-	// Destructor
-	~clipbond();
-	// Sets the pointer clipi
-	void set_clipi(clipatom *i) { clipi = i; }
-	// Returns the pointer clipi
-	clipatom *get_clipi() { return clipi; }
-	// Sets the pointer clipj
-	void set_clipj(clipatom *j) { clipj = j; }
-	// Returns the pointer clipj
-	clipatom *get_clipj() { return clipj; }
-	// Return next clipbond in list
-	clipbond *get_next() { return (next == NULL ? NULL : (clipbond*) next); }
-};
+class Pattern;
+class Model;
+class Clipatom;
 
 // Clipboard Atom
-class clipatom : public atom
+class Clipatom : public Atom
 {
 	public:
-	// Constructor / Destructor
-	clipatom();
-	~clipatom();
-	// Get the next clipatom in the list
-	clipatom* get_next() { return (next == NULL ? NULL : (clipatom*) next); }
+	// Constructor
+	Clipatom();
+	// Get the next Clipatom in the list
+	Clipatom* getNext();
 
 	/*
-	// New / Old Pointers
+	// Old Pointers
 	*/
 	private:
 	// Atom pointer (newly pastedp atom)
-	atom *oldptr;
+	Atom *oldPointer_;
 
 	public:
 	// Set old atom pointer
-	void set_oldptr(atom *i) { oldptr = i; }
+	void setOldPointer(Atom *i);
 	// Returns the atom pointer of the cloned atom
-	atom *get_oldptr() { return oldptr; }
+	Atom *oldPointer();
 };
 
 // Clipboard
-class clipboard
+class Clipboard
 {
-	public:
-	// Constructor / Destructor
-	clipboard();
-	~clipboard();
-
 	/*
 	// Atoms
 	*/
 	private:
-	// Delete an atom from the clipboards atom list
-	void delete_atom(clipatom*);
+	// Delete an atom from the Clipboards atom list
+	void deleteAtom(Clipatom*);
 	// List of copied atoms
-	list<clipatom> atoms;
+	List<Clipatom> atoms_;
 
 	public:
-	// Clear the contents of the clipboard
+	// Clear the contents of the Clipboard
 	void clear();
 	// After copying, fix the internal IDs to describe bonding
-	void fix_bond_ids();
-	// Copy specified atom to clipboard
-	void copy_atom(atom*);
-	// Return number of atoms in clipboard
-	int get_natoms() { return atoms.size(); }
+	void fixBondIds();
+	// Copy specified atom to Clipboard
+	void copyAtom(Atom*);
+	// Return number of atoms in Clipboard
+	int nAtoms();
 	// Return list of copied atoms
-	clipatom *get_atoms() { return atoms.first(); }
+	Clipatom *atoms();
 
 	/*
 	// Bonds
 	*/
 	private:
 	// List of bonds copied
-	list<clipbond> bonds;
+	List<Linkbond> bonds_;
 	// Copy bonds for atoms in the atomlist
-	void copy_bonds_for_atoms();
-	// For bonds bound to clipatom* (clipi|j) set bondi|j to atom*
-	void bonds_set_newptr(clipatom*, atom*);
+	void copyBonds();
+	// For bonds bound to Clipatom* (atomi|j) set bondi|j to atom*
+	void setNewBondPointers(Clipatom*, Atom*);
 
 	public:
 	// Check for presence of bond in list
-	bool has_bond(int ii, int jj); 
+	bool hasBond(int ii, int jj); 
 
 	/*
 	// Model
 	*/
 	private:
 	// Paste bonds for newly pasted atoms
-	void paste_bonds(model*);
+	void pasteBonds(Model*);
 
 	public:
-	// Copy all atoms in the specified model to the clipboard
-	void copy_selection(model*);
-	// Copy all atoms in the specified model to the clipboard
-	void copy_all(model*);
+	// Copy all atoms in the specified model to the Clipboard
+	void copySelection(Model*);
+	// Copy all atoms in the specified model to the Clipboard
+	void copyAll(Model*);
 	// Cut atom selection from specified model
-	void cut_selection(model*);
-	// Paste clipboard contents into the model
-	void paste_to_model(model*, bool selectpasted = TRUE);
-	// Paste clipboard contents into specified pattern
-	void paste_to_pattern(model*, pattern*);
-	// Paste clipboard contents into specified config / pattern
-	void paste_to_model(model*, pattern*, int);
-	// Paste clipboard contents to model at a translated position
-	void paste_to_model(model*, vec3<double>);
+	void cutSelection(Model*);
+	// Paste Clipboard contents into the model
+	void pasteToModel(Model*, bool selectpasted = TRUE);
+	// Paste Clipboard contents into specified pattern
+	void pasteToPattern(Model*, Pattern*);
+	// Paste Clipboard contents into specified config / pattern
+	void pasteToModel(Model*, Pattern*, int);
+	// Paste Clipboard contents to model at a translated position
+	void pasteToModel(Model*, Vec3<double>);
 
 	/*
 	// Clipboard Transformations
 	*/
 	public:
 	// Translate clipped atoms by supplied vector
-	void translate(const vec3<double>&);
+	void translate(const Vec3<double>&);
 };
 
 #endif

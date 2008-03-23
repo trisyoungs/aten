@@ -22,118 +22,135 @@
 #include "classes/site.h"
 #include "classes/pattern.h"
 #include "base/sysfunc.h"
+#include "model/model.h"
 
 // Site types
 const char *ST_strings[ST_NITEMS] = { "Molecule COM", "Molecule COG", "Atom(s) COM", "Atom(s) COG" };
 const char *ST_keywords[ST_NITEMS] = { "molcom", "molcog", "atomcom", "atomcog" };
-const char *text_from_ST(site_type i)
+const char *text_from_ST(SiteType i)
 	{ return ST_strings[i]; }
-site_type ST_from_text(const char *s)
-	{ return (site_type) enum_search("site type",ST_NITEMS,ST_keywords,s); }
+SiteType ST_from_text(const char *s)
+	{ return (SiteType) enumSearch("site type",ST_NITEMS,ST_keywords,s); }
 
 // Constructor
-site::site()
+Site::Site()
 {
-	centretype = ST_MOLCOM;
-	centre.zero();
+	// Private variables
+	centre_ = ST_MOLCOM;
+	pattern_ = NULL;
+	centre_.zero();
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_SITE] ++;
-	#endif
 }
 
-// Destructor
-site::~site()
+// Set the pattern pointer for the atom
+void Site::setPattern(Pattern *p)
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_SITE] ++;
-	#endif
+	pattern_ = p;
+}
+
+// Returns the current pattern for the atom
+Pattern *Site::pattern()
+{
+	return pattern_;
+}
+
+// Set name of site
+void Site::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Get name of site
+const char *Site::name()
+{
+	return name_.get();
 }
 
 // Calculate site centre
-vec3<double> site::calculate_centre(model *srcmodel, int mol)
+Vec3<double> Site::calculateCentre(Model *srcmodel, int mol)
 {
-	dbg_begin(DM_CALLS,"site::calculate_centre");
+	dbgBegin(DM_CALLS,"Site::calculateCentre");
 	int offset, n;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
-	static vec3<double> firstid, mim;
-	listitem<int> *li;
-	offset = sourcepattern->get_startatom();
-	offset += sourcepattern->get_natoms() * mol;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
+	static Vec3<double> firstid, mim;
+	Listitem<int> *li;
+	offset = pattern_->startAtom();
+	offset += pattern_->nAtoms() * mol;
 	// If no atoms are in the list, use all atoms in the molecule
-	if (atoms.size() != 0)
+	if (atoms.nItems() != 0)
 	{
 		li = atoms.first();
-		centre = modelatoms[offset + li->data]->r();
-		firstid = centre;
+		centre_ = modelatoms[offset + li->data]->r();
+		firstid = centre_;
 		for (li = li->next; li != NULL; li = li->next)
 		{
 			mim = cell->mim(modelatoms[offset + li->data]->r(), firstid);
-			centre += mim;
+			centre_ += mim;
 		}
 		// Take average
-		centre /= atoms.size();
+		centre_ /= atoms.nItems();
 	}
 	else
 	{
 		// Use all atoms for centre. Grab first as the MIM point
-		centre = modelatoms[offset]->r();
-		firstid = centre;
-		for (n=1; n<sourcepattern->get_natoms(); n++)
+		centre_ = modelatoms[offset]->r();
+		firstid = centre_;
+		for (n=1; n<pattern_->nAtoms(); n++)
 		{
 			mim = cell->mim(modelatoms[offset + n]->r(), firstid);
-			centre += mim;
+			centre_ += mim;
 		}
 		// Take average
-		centre /= sourcepattern->get_natoms();
+		centre_ /= pattern_->nAtoms();
 	}
-	dbg_end(DM_CALLS,"site::calculate_centre");
-	return centre;
+	dbgEnd(DM_CALLS,"Site::calculateCentre");
+	return centre_;
 }
 
 // Calculate site local axis system
-mat3<double> site::calculate_axes(model *srcmodel, int mol)
+Mat3<double> Site::calculateAxes(Model *srcmodel, int mol)
 {
-	dbg_begin(DM_CALLS,"site::calculate_axes");
+	dbgBegin(DM_CALLS,"Site::calculateAxes");
 	int offset, n;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
-	static vec3<double> mim, v1, v2;
-	listitem<int> *li;
-	offset = sourcepattern->get_startatom();
-	offset += sourcepattern->get_natoms() * mol;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
+	static Vec3<double> mim, v1, v2;
+	Listitem<int> *li;
+	offset = pattern_->startAtom();
+	offset += pattern_->nAtoms() * mol;
 	// Calculate 'position' of x-axis (defining vector COG->xpos)
 	// Get mim coordinates relative to (already-calculated) site centre
 	v1.zero();
-	for (li = xaxisatoms.first(); li != NULL; li = li->next)
+	for (li = xAxisAtoms.first(); li != NULL; li = li->next)
 	{
-		mim = cell->mim(modelatoms[offset + li->data]->r(), centre);
+		mim = cell->mim(modelatoms[offset + li->data]->r(), centre_);
 		v1 += mim;
 	}
 	// Take average and subtract site centre to get vector
-	v1 /= xaxisatoms.size();
-	v1 -= centre;
+	v1 /= xAxisAtoms.nItems();
+	v1 -= centre_;
 	// Calculate 'position' of y-axis (defining vector COG->xpos)
 	// Get mim coordinates relative to (already-calculated) site centre
 	v2.zero();
-	for (li = yaxisatoms.first(); li != NULL; li = li->next)
+	for (li = yAxisAtoms.first(); li != NULL; li = li->next)
 	{
-		mim = cell->mim(modelatoms[offset + li->data]->r(), centre);
+		mim = cell->mim(modelatoms[offset + li->data]->r(), centre_);
 		v2 += mim;
 	}
 	// Take average and subtract site centre to get vector
-	v2 /= yaxisatoms.size();
-	v2 -= centre;
+	v2 /= yAxisAtoms.nItems();
+	v2 -= centre_;
 	// Orthogonalise, normalise, and generate corresponding z-axis
 	v2.orthogonalise(v1);
 	v1.normalise();
 	v2.normalise();
-	axes.set(0,v1);
-	axes.set(1,v2);
-	axes.set(2,v1 * v2);
+	axes_.set(0,v1);
+	axes_.set(1,v2);
+	axes_.set(2,v1 * v2);
 	//axes.print();
-	dbg_begin(DM_CALLS,"site::calculate_axes");
-	return axes;
+	dbgBegin(DM_CALLS,"Site::calculateAxes");
+	return axes_;
 }

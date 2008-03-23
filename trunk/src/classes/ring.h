@@ -25,45 +25,62 @@
 #include "classes/atom.h"
 
 // Ring
-class ring
+class Ring
 {
 	public:
 	// Constructor / Destructor
-	ring();
-	~ring();
+	Ring();
+	~Ring();
 	// List pointers
-	ring *prev, *next;
-
-	public:
-	// List of referenced atoms
-	reflist<atom,int> atoms;
-	// Requested size of ring when ring searching
-	int requested_size;
+	Ring *prev, *next;
 	// Circular list browsing
-	refitem<atom,int> *get_next(refitem<atom,int> *ri) { return (ri->next == NULL ? atoms.first() : ri->next); }
-	refitem<atom,int> *get_prev(refitem<atom,int> *ri) { return (ri->prev == NULL ? atoms.last() : ri->prev); }
+	Refitem<Atom,int> *getNext(Refitem<Atom,int> *ri);
+	Refitem<Atom,int> *getPrev(Refitem<Atom,int> *ri);
+
+	private:
+	// List of referenced atoms
+	Reflist<Atom,int> atoms_;
+	// Requested size of ring when ring searching
+	int requestedSize_;
 
 	/*
 	// Methods
 	*/
 	public:
+	// Return atom reflist first item
+	Refitem<Atom,int> *firstAtom();
+	// Return atom reflist last item
+	Refitem<Atom,int> *lastAtom();
+	// Return size of atom reflist
+	int nAtoms();
+	// Search ring list for specified atom
+	bool containsAtom(Atom *i);
+	// Set requested size
+	void setRequestedSize(int size);
+	// Return requested size
+	int requestedSize();
 	// Append the atom 'i' to the end of the list. Returns FALSE is this exceeds MAXRINGSIZE
-	bool add_atom(atom*);
+	bool addAtom(Atom*);
+	// Remove the specified refitem from the find
+	void removeAtom(Refitem<Atom,int>*);
 	// Duplicate the data (and list) in the specified ring
-	void copy(ring*);
+	void copy(Ring*);
 	// 'Finalize' the list ready for use
 	void finish();
 	// Returns TRUE if the ring is aromatic, FALSE if otherwise
-	bool is_aromatic();
+	bool isAromatic();
 	// Sets the atom environments of the atoms in the ring to AE_AROMATIC
-	void set_aromatic();
+	void setAromatic();
 	// Augments the specified atom within the ring
-	void augment_atom(refitem<atom,int>*, model *parent);
+	void augmentAtom(Refitem<Atom,int>*, Model *parent);
 	// Comparison operator between two rings
 	//bool same_as(ring*);
 	// Print out the data contained in the structure
 	void print();
-	void add_atoms_to_reflist(reflist<atom,int>*, atom*);
+	// Add atoms in ring to supplied reflist
+	void addAtomsToReflist(Reflist<Atom,int>*, Atom*);
+	// Clear atoms in reflist
+	void clear();
 };
 
 #endif

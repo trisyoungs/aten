@@ -27,11 +27,11 @@
 #include "classes/cell.h"
 
 // Spacegroup
-class spacegroup
+class Spacegroup
 {
 	public:
 	// Destructor
-	~spacegroup();
+	~Spacegroup();
 
 	public:
 	// Name of the spacegroup (plaintext)
@@ -39,7 +39,7 @@ class spacegroup
 	// Name of the spacegroup (formatted)
 	const char *displayname;
 	// Number of symmetry generators for this spacegroup
-	int ngenerators;
+	int nGenerators;
 	// List of symmetry generators for this spacegroup
 	int generators[192];
 };

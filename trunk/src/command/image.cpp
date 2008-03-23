@@ -24,16 +24,16 @@
 #include "gui/gui.h"
 
 // Save current view as bitmap image
-int commanddata::function_CA_SAVEBITMAP(command *&c, bundle &obj)
+int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	return CR_FAIL;
 }
 
 // Save current view a vector graphic
-int commanddata::function_CA_SAVEVECTOR(command *&c, bundle &obj)
+int CommandData::function_CA_SAVEVECTOR(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	vector_format vf = VIF_from_text(c->argc(0));
 	if (vf == VIF_NITEMS)
 	{
@@ -41,10 +41,10 @@ int commanddata::function_CA_SAVEVECTOR(command *&c, bundle &obj)
 		return CR_FAIL;
 	}
 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
-	if (gui.exists()) gui.mainview.save_vector(obj.m, vf, c->argc(1));
+	if (gui.exists()) gui.mainView.saveVector(obj.m, vf, c->argc(1));
 	else
 	{
-		gui.offscreencanvas.save_vector(obj.m, vf, c->argc(1));
+		gui.offscreenCanvas.saveVector(obj.m, vf, c->argc(1));
 	}
 	return CR_SUCCESS;
 }

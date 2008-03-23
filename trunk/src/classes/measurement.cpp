@@ -24,47 +24,68 @@
 #include "classes/cell.h"
 
 // Geometry types
-int GT_natoms[GT_NITEMS] = { 0,2,3,4 };
-int natoms_from_GT(geom_type gt)
-	{ return GT_natoms[gt]; }
+int GT_natoms_[GT_NITEMS] = { 0,2,3,4 };
+int natoms_from_GT(GeometryType gt)
+	{ return GT_natoms_[gt]; }
 
 // Constructor
-measurement::measurement()
+Measurement::Measurement()
 {
-	type = GT_NONE;
-	for (int n=0; n<4; n++) atoms[n] = NULL;
-	value = 0.0;
+	// Private variables
+	type_ = GT_NONE;
+	for (int n=0; n<4; n++) atoms_[n] = NULL;
+	value_ = 0.0;
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_MEASUREMENT] ++;
-	#endif
 }
 
-// Destructor
-measurement::~measurement()
+// Set type of Measurement
+void Measurement::setType(GeometryType gt)
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_MEASUREMENT] ++;
-	#endif
+	type_ = gt;
+}
+
+// Return type of Measurement
+GeometryType Measurement::type()
+{
+	return type_;
+}
+
+// Return value of the Measurement
+double Measurement::value()
+{
+	return value_;
+}
+
+// Set atom
+void Measurement::setAtom(int n, Atom *i)
+{
+	atoms_[n] = i;
+}
+
+// Return atoms array
+Atom **Measurement::atoms()
+{
+	return atoms_;
 }
 
 // Calculate
-void measurement::calculate(unitcell *cell)
+void Measurement::calculate(Cell *cell)
 {
-	switch (type)
+	switch (type_)
 	{
 		case (GT_DISTANCE):
-			value = cell->distance(atoms[0],atoms[1]);
+			value_ = cell->distance(atoms_[0],atoms_[1]);
 			break;
 		case (GT_ANGLE):
-			value = cell->angle(atoms[0],atoms[1],atoms[2]) * DEGRAD;
+			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]) * DEGRAD;
 			break;
 		case (GT_TORSION):
-			value = cell->torsion(atoms[0],atoms[1],atoms[2],atoms[3]) * DEGRAD;
+			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]) * DEGRAD;
 			break;
 		default:
-			printf("measurement::calculate <<<< Unrecognised geometry type >>>>\n");
+			printf("Measurement::calculate <<<< Unrecognised geometry type >>>>\n");
 			break;
 	}
 }

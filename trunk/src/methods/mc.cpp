@@ -20,91 +20,219 @@
 */
 
 #include "classes/pattern.h"
+#include "classes/clipboard.h"
 #include "model/model.h"
 #include "methods/mc.h"
 #include "base/master.h"
-#include "base/sysfunc.h"
-#include "base/mathfunc.h"
-#include "base/prefs.h"
 #include "gui/gui.h"
+
+// Static Singleton
+MethodMc mc;
 
 // Monte Carlo move types
 const char *MT_strings[MT_NITEMS] = { "Translation", "Rotation", "Z-Matrix", "Insertion", "Deletion" };
 const char *MT_keywords[MT_NITEMS] = { "translate", "rotate", "zmatrix", "insert", "delete" };
-const char *text_from_MT(mc_move i)
+const char *text_from_MT(MonteCarloMove i)
 	{ return MT_strings[i]; };
-mc_move MT_from_text(const char *s)
-	{ return (mc_move) enum_search("Monte Carlo move",MT_NITEMS,MT_keywords,s); }
+MonteCarloMove MT_from_text(const char *s)
+	{ return (MonteCarloMove) enumSearch("Monte Carlo move",MT_NITEMS,MT_keywords,s); }
 
 // Constructors
-mc_method::mc_method()
+MethodMc::MethodMc()
 {
-	// Set initial values
-	maxstep[MT_TRANSLATE] = 1.0;
-	maxstep[MT_ROTATE] = 20.0;
-	maxstep[MT_ZMATRIX] = 0.0;
-	ntrials[MT_TRANSLATE] = 10;
-	ntrials[MT_ROTATE] = 10; 
-	ntrials[MT_ZMATRIX] = 0;
-	ntrials[MT_INSERT] = 20;
-	ntrials[MT_DELETE] = 0; 
-	allowed[MT_TRANSLATE] = TRUE;
-	allowed[MT_ROTATE] = TRUE;
-	allowed[MT_ZMATRIX] = FALSE;
-	allowed[MT_INSERT] = TRUE;
-	allowed[MT_DELETE] = TRUE; 
-	eaccept[MT_TRANSLATE] = 0.0;
-	eaccept[MT_ROTATE] = 0.0;
-	eaccept[MT_ZMATRIX] = 0.0;
-	eaccept[MT_INSERT] = 100.0;
-	eaccept[MT_DELETE] = 0.0;
-	acceptratio = NULL;
-	acceptratio_size = 0;
-	vdw_radius_scale = 1.0;
-	ncycles = 100;
+	// Private variables
+	maxStep_[MT_TRANSLATE] = 1.0;
+	maxStep_[MT_ROTATE] = 20.0;
+	maxStep_[MT_ZMATRIX] = 0.0;
+	nTrials_[MT_TRANSLATE] = 10;
+	nTrials_[MT_ROTATE] = 10; 
+	nTrials_[MT_ZMATRIX] = 0;
+	nTrials_[MT_INSERT] = 20;
+	nTrials_[MT_DELETE] = 0; 
+	moveAllowed_[MT_TRANSLATE] = TRUE;
+	moveAllowed_[MT_ROTATE] = TRUE;
+	moveAllowed_[MT_ZMATRIX] = FALSE;
+	moveAllowed_[MT_INSERT] = TRUE;
+	moveAllowed_[MT_DELETE] = TRUE; 
+	acceptanceEnergy_[MT_TRANSLATE] = 0.0;
+	acceptanceEnergy_[MT_ROTATE] = 0.0;
+	acceptanceEnergy_[MT_ZMATRIX] = 0.0;
+	acceptanceEnergy_[MT_INSERT] = 100.0;
+	acceptanceEnergy_[MT_DELETE] = 0.0;
+	acceptanceRatio_ = NULL;
+	acceptanceRatioSize_ = 0;
+	vdwScale_ = 1.0;
+	nCycles_ = 100;
 }
 
-component::component()
+Component::Component()
 {
-	// Set initial values for component
-	compmodel = NULL;
-	comppattern = NULL;
-	nrequested = 10;
-	nfilled = 0;
+	// Private variables
+	model_ = NULL;
+	pattern_ = NULL;
+	nRequested_ = 10;
+	nFilled_ = 0;
+	moveAllowed_[MT_INSERT] = TRUE;
+	moveAllowed_[MT_DELETE] = FALSE;
+	moveAllowed_[MT_TRANSLATE] = TRUE;
+	moveAllowed_[MT_ROTATE] = TRUE;
+	moveAllowed_[MT_ZMATRIX] = FALSE;
+	// Public variables
 	prev = NULL;
 	next = NULL;
-	allowed_moves[MT_INSERT] = TRUE;
-	allowed_moves[MT_DELETE] = FALSE;
-	allowed_moves[MT_TRANSLATE] = TRUE;
-	allowed_moves[MT_ROTATE] = TRUE;
-	allowed_moves[MT_ZMATRIX] = FALSE;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_COMPONENT] ++;
-	#endif
 }
 
-// Destructor
-component::~component()
+// Set the Component's model
+void Component::setModel(Model *m)
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_COMPONENT] ++;
-	#endif
+	model_ = m;
+}
+
+// Return the Component's model
+Model *Component::model()
+{
+	return model_;
+}
+
+// Set the Component's pattern
+void Component::setPattern(Pattern *p)
+{
+	pattern_ = p;
+}
+
+// Return the Component's pattern
+Pattern *Component::pattern()
+{
+	return pattern_;
+}
+
+// Set the requested number of molecules
+void Component::setNRequested(int i)
+{
+	nRequested_ = i;
+}
+
+// Return the requested number of molecules
+int Component::nRequested()
+{
+	return nRequested_;
+}
+
+// Set the number of molecules filled
+void Component::setNFilled(int i)
+{
+	nFilled_ = i;
+}
+
+// Return the number of molecules filled
+int Component::nFilled()
+{
+	return nFilled_;
+}
+
+// Set a specific move type for the Component
+void Component::setMoveAllowed(MonteCarloMove m, bool b)
+{
+	moveAllowed_[m] = b;
+}
+
+// Set whether the Component may be translated
+bool Component::isMoveAllowed(MonteCarloMove m)
+{
+	return moveAllowed_[m];
+}
+
+// Set name of Component
+void Component::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Get name of Component
+const char *Component::name()
+{
+	return name_.get();
+}
+
+// Set maximum stepsize for MC move
+void MethodMc::setMaxStep(MonteCarloMove m, double d)
+{
+	maxStep_[m] = d;
+}
+
+// Get maximum stepsize for MC move
+double MethodMc::maxStep(MonteCarloMove m)
+{
+	return maxStep_[m];
+}
+
+// Set nTrials_ for MC move
+void MethodMc::setNTrials(MonteCarloMove m, int i)
+{
+	nTrials_[m] = i;
+}
+
+// Get nTrials_ for MC move
+int MethodMc::nTrials(MonteCarloMove m)
+{
+	return nTrials_[m];
+}
+
+// Set moveAllowed_ flag for MC move
+void MethodMc::setMoveAllowed(MonteCarloMove m, bool b)
+{
+	moveAllowed_[m] = b;
+}
+
+// Get moveAllowed_ flag for MC move
+bool MethodMc::isMoveAllowed(MonteCarloMove m)
+{
+	return moveAllowed_[m];
+}
+
+// Set acceptanceEnergy_ limit for MC move
+void MethodMc::setAcceptanceEnergy(MonteCarloMove m, double d)
+{
+	acceptanceEnergy_[m] = d;
+}
+
+// Get acceptanceEnergy_ limit for MC move
+double MethodMc::acceptanceEnergy(MonteCarloMove m)
+{
+	return acceptanceEnergy_[m];
+}
+
+// Set number of MC cycles to perform
+void MethodMc::setNCycles(int i)
+{
+	nCycles_ = i;
+}
+
+// Get nTrials_ for MC move
+int MethodMc::nCycles()
+{
+	return nCycles_;
+}
+
+// Sets the vDW radius scale
+void MethodMc::setVdwScale(double d)
+{
+	vdwScale_ = d;
 }
 
 // Create ratio acceptance array
-void mc_method::create_ratioarray(int newsize)
-{
+void MethodMc::createRatioArray(int newsize) {
 	int n, m;
-	if (acceptratio != NULL)
+	if (acceptanceRatio_ != NULL)
 	{
-		for (n=0; n<acceptratio_size; n++) delete[] acceptratio[n];
-		delete[] acceptratio;
+		for (n=0; n<acceptanceRatioSize_; n++) delete[] acceptanceRatio_[n];
+		delete[] acceptanceRatio_;
 	}
-	acceptratio = new double*[newsize];
-	for (n=0; n<newsize; n++) acceptratio[n] = new double[MT_NITEMS];
-	acceptratio_size = newsize;
+	acceptanceRatio_ = new double*[newsize];
+	for (n=0; n<newsize; n++) acceptanceRatio_[n] = new double[MT_NITEMS];
+	acceptanceRatioSize_ = newsize;
 	// Zero the elements
-	for (n=0; n<newsize; n++) for (m=0; m<MT_NITEMS; m++) acceptratio[n][m] = 0.0;
+	for (n=0; n<newsize; n++) for (m=0; m<MT_NITEMS; m++) acceptanceRatio_[n][m] = 0.0;
 }
 
 /*
@@ -112,91 +240,91 @@ void mc_method::create_ratioarray(int newsize)
 */
 
 // Find by ID
-component *mc_method::get_component_by_name(const char *search)
+Component *MethodMc::componentByName(const char *search)
 {
-	for (component *c = components.first(); c != NULL; c = c->next)
-		if (strcmp(c->get_model()->get_name(),search) == 0) return c;
+	for (Component *c = components.first(); c != NULL; c = c->next)
+		if (strcmp(c->model()->name(),search) == 0) return c;
 	return NULL;
 }
 
 // MC Geometry Minimise
-bool mc_method::minimise(model* srcmodel, double econ, double fcon)
+bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
-	dbg_begin(DM_CALLS,"mc::minimise");
+	dbgBegin(DM_CALLS,"mc::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats, prog;
 	char s[256], t[32];
-	double enew, ecurrent, ecurrent_vdw, ecurrent_elec, elast, phi, theta;
-	double edelta_total, edelta_vdw, edelta_elec, eref_total, eref_vdw, eref_elec;
-	vec3<double> v;
+	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
+	double deltaTotalEnergy, deltaVdwEnergy, deltaElecEnergy, referenceTotalEnergy, referenceVdwEnergy, referenceElecEnergy;
+	Vec3<double> v;
 
 	/*
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
 	msg(DM_NONE,"Creating expression for target model...\n");
-        if (!srcmodel->create_expression())
+        if (!srcmodel->createExpression())
 	{
-		dbg_end(DM_CALLS,"mc::minimise");
+		dbgEnd(DM_CALLS,"mc::minimise");
 		return FALSE;
 	}
-	srcmodel->assign_charges(prefs.get_chargesource());
+	srcmodel->assignCharges(prefs.chargeSource());
 
 	// Create coordinate backup model for minimisation
-	model bakmodel;
+	Model bakmodel;
 	bakmodel.copy(srcmodel);
 
 	// Create ratio array (not per-pattern, just per move type)
-	create_ratioarray(1);
+	createRatioArray(1);
 
 	msg(DM_NONE,"Beginning Monte Carlo minimise...\n\n");
 	msg(DM_NONE," Step     Energy        Delta          VDW          Elec              T%%  R%%  Z%%  I%%  D%%\n");
 
 	// Calculate initial reference energy
-	ecurrent = srcmodel->total_energy(srcmodel);
-	ecurrent_vdw = srcmodel->energy.get_vdw();
-	ecurrent_elec = srcmodel->energy.get_elec();
+	ecurrent = srcmodel->totalEnergy(srcmodel);
+	currentVdwEnergy = srcmodel->energy.vdw();
+	currentElecEnergy = srcmodel->energy.elec();
 	elast = ecurrent;
-	msg(DM_NONE,"       %13.6e               %13.6e %13.6e\n", ecurrent,  ecurrent_vdw, ecurrent_elec);
+	msg(DM_NONE,"       %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
 
-	// Cycle through move types; try and perform ntrials for each; move on.
+	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
 	nmoves = 0;
-	npats = srcmodel->get_npatterns();
-	pattern *p = NULL;
+	npats = srcmodel->nPatterns();
+	Pattern *p = NULL;
 	prog = 0;
 
 	// Start progess indicator
-	if (gui.exists()) gui.progress_create("Performing MC minimisation...", ncycles * npats * MT_NITEMS);
+	if (gui.exists()) gui.progressCreate("Performing MC minimisation...", nCycles_ * npats * MT_NITEMS);
 
 	// Loop over MC cycles
-	for (cycle=0; cycle<ncycles; cycle++)
+	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Loop over MC moves
 		for (move=0; move<MT_INSERT; move++)
 		{
 			// Update progress indicator
 			prog ++;
-			if (gui.exists() && (!gui.progress_update(prog))) break;
+			if (gui.exists() && (!gui.progressUpdate(prog))) break;
 
-			acceptratio[0][move] = 0;
-			// If this move type isn't allowed then continue onto the next
-			if (!allowed[move]) continue;
-			for (n=0; n<ntrials[move]; n++)
+			acceptanceRatio_[0][move] = 0;
+			// If this move type isn't moveAllowed_ then continue onto the next
+			if (!moveAllowed_[move]) continue;
+			for (n=0; n<nTrials_[move]; n++)
 			{
 				// Select random pattern and molecule
-				npats != 1 ? randpat = cs_randomi(npats) : randpat = 0;
-				p = srcmodel->get_pattern(randpat);
-				mol = cs_randomi(p->get_nmols());
+				npats != 1 ? randpat = csRandomi(npats) : randpat = 0;
+				p = srcmodel->pattern(randpat);
+				mol = csRandomi(p->nMols());
 	
 				// Copy the coordinates of the current molecule
-				if (p->get_nmols() != 0) bakmodel.copy_atom_data(srcmodel, AD_R, p->get_offset(mol),p->get_natoms());
+				if (p->nMols() != 0) bakmodel.copyAtomData(srcmodel, AD_R, p->offset(mol),p->nAtoms());
 
 				// Calculate reference energy (before move)
-				eref_total = srcmodel->total_energy(srcmodel, p, mol);
-				eref_vdw = srcmodel->energy.get_vdw();
-				eref_elec = srcmodel->energy.get_elec();
+				referenceTotalEnergy = srcmodel->totalEnergy(srcmodel, p, mol);
+				referenceVdwEnergy = srcmodel->energy.vdw();
+				referenceElecEnergy = srcmodel->energy.elec();
 
 				// Otherwise, generate the new configuration (in model's cfg space)
 				switch (move)
@@ -204,61 +332,61 @@ bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 					// Translate COG of molecule
 					case (MT_TRANSLATE):
 						// Create a random translation vector
-						v.random_unit();
-						v *= maxstep[MT_TRANSLATE]*cs_random();
+						v.randomUnit();
+						v *= maxStep_[MT_TRANSLATE]*csRandom();
 						// Translate the coordinates of the molecule in cfg
-						srcmodel->translate_molecule(p,mol,v);
+						srcmodel->translateMolecule(p,mol,v);
 						break;
 					// Rotate molecule about COG
 					case (MT_ROTATE):
 						// To do the random rotation, do two separate random rotations about the x and y axes.
-						phi = cs_random() * maxstep[MT_ROTATE];
-						theta = cs_random() * maxstep[MT_ROTATE];
-						srcmodel->rotate_molecule(p,mol,phi,theta);
+						phi = csRandom() * maxStep_[MT_ROTATE];
+						theta = csRandom() * maxStep_[MT_ROTATE];
+						srcmodel->rotateMolecule(p,mol,phi,theta);
 						break;
 					// Other moves....
 				}
 
 				// Get the energy of this new configuration.
-				enew = srcmodel->total_energy(srcmodel, p, mol);
+				enew = srcmodel->totalEnergy(srcmodel, p, mol);
 
 				// If the energy has gone up, undo the move.
-				edelta_total = enew - eref_total;
-				edelta_vdw = srcmodel->energy.get_vdw() - eref_vdw;
-				edelta_elec = srcmodel->energy.get_elec() - eref_elec;
+				deltaTotalEnergy = enew - referenceTotalEnergy;
+				deltaVdwEnergy = srcmodel->energy.vdw() - referenceVdwEnergy;
+				deltaElecEnergy = srcmodel->energy.elec() - referenceElecEnergy;
 
 				// If the energy has gone up, undo the move.
-				if (edelta_total > eaccept[move])
+				if (deltaTotalEnergy > acceptanceEnergy_[move])
 				{
 					// Put the molecules back to where it was before
-					srcmodel->copy_atom_data(&bakmodel, AD_R, p->get_offset(mol), p->get_natoms());
+					srcmodel->copyAtomData(&bakmodel, AD_R, p->offset(mol), p->nAtoms());
 				}
 				else
 				{
 					// Update energy and move counters
 					//ecurrent = enew;
-					//ecurrent_vdw = srcmodel->energy.get_vdw();
-					//ecurrent_elec = srcmodel->energy.get_elec();
-					ecurrent += edelta_total;
-					ecurrent_vdw += edelta_vdw;
-					ecurrent_elec += edelta_elec;
-					acceptratio[0][move] ++;
+					//currentVdwEnergy = srcmodel->energy.get_vdw();
+					//currentElecEnergy = srcmodel->energy.get_elec();
+					ecurrent += deltaTotalEnergy;
+					currentVdwEnergy += deltaVdwEnergy;
+					currentElecEnergy += deltaElecEnergy;
+					acceptanceRatio_[0][move] ++;
 				}
 			}
-			if (ntrials[move] != 0) acceptratio[0][move] /= ntrials[move];
+			if (nTrials_[move] != 0) acceptanceRatio_[0][move] /= nTrials_[move];
 		} // Loop over MC moves
 
-		gui.process_events();
+		gui.processEvents();
 	
-		msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elast, ecurrent_vdw, ecurrent_elec);
-		for (n=0; n<MT_NITEMS; n++) msg(DM_NONE," %3i",int(acceptratio[0][n]*100.0));
+		msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+		for (n=0; n<MT_NITEMS; n++) msg(DM_NONE," %3i",int(acceptanceRatio_[0][n]*100.0));
 		msg(DM_NONE,"\n");
-		if (prefs.update_energy(cycle))
+		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elast, ecurrent_vdw, ecurrent_elec);
+			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
 			for (n=0; n<MT_NITEMS; n++)
 			{
-				sprintf(t," %3i",int(acceptratio[0][n]*100.0));
+				sprintf(t," %3i",int(acceptanceRatio_[0][n]*100.0));
 				strcat(s,t);
 			}
 			strcat(s,"\n");
@@ -267,58 +395,59 @@ bool mc_method::minimise(model* srcmodel, double econ, double fcon)
 		elast = ecurrent;
 
 	} // Loop over MC cycles
-	if (gui.exists()) gui.progress_terminate();
+	if (gui.exists()) gui.progressTerminate();
 
 	// Print final energy
-	enew = srcmodel->total_energy(srcmodel);
+	enew = srcmodel->totalEnergy(srcmodel);
 	srcmodel->energy.print();
 
 	// Finalise
-	srcmodel->log_change(LOG_COORDS);
+	srcmodel->logChange(LOG_COORDS);
 
-	dbg_end(DM_CALLS,"mc::minimise");
+	dbgEnd(DM_CALLS,"mc::minimise");
 	return TRUE;
 }
 
 // MC Insertion
-bool mc_method::disorder(model* destmodel)
+bool MethodMc::disorder(Model *destmodel)
 {
 	// Monte Carlo Insertion
-	dbg_begin(DM_CALLS,"mc::insert");
-	int n, m, cycle, move, mol, noldatoms, noldpatterns;
-	int pnmols, prog;
+	dbgBegin(DM_CALLS,"mc::disorder");
+	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
+	int patternNMols, prog;
 	char s[256], t[32];
-	component *c;
-	double enew, ecurrent, elast, phi, theta, ecurrent_vdw, ecurrent_elec;
-	double edelta_total, edelta_vdw, edelta_elec, eref_total, eref_vdw, eref_elec;
+	Component *c;
+	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
+	double deltaTotalEnergy, deltaVdwEnergy, deltaElecEnergy, referenceTotalEnergy, referenceVdwEnergy, referenceElecEnergy;
 	double penalty;
 	bool done;
-	unitcell *cell;
-	pattern *p;
-	region *r;
-	vec3<double> v, cog;
+	Cell *cell;
+	Pattern *p;
+	ComponentRegion *r;
+	Vec3<double> v, cog;
+	Clipboard clip;
 
 	/*
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
 	msg(DM_NONE,"Creating expression for target model...\n");
-        if (!destmodel->create_expression())
+        if (!destmodel->createExpression())
 	{
-		dbg_end(DM_CALLS,"mc::disorder");
+		dbgEnd(DM_CALLS,"mc::disorder");
 		return FALSE;
 	}
-	noldpatterns = destmodel->get_npatterns();
-	noldatoms = destmodel->get_natoms();
-	cell = destmodel->get_cell();
+	nOldPatterns = destmodel->nPatterns();
+	nOldAtoms = destmodel->nAtoms();
+	cell = destmodel->cell();
 	// Fix all patterns in the destmodel
-	destmodel->set_patterns_fixed(destmodel->get_npatterns());
+	destmodel->setPatternsFixed(destmodel->nPatterns());
 
 	// Check that there were actually components specified
-	if (components.size() == 0)
+	if (components.nItems() == 0)
 	{
 		msg(DM_NONE,"No components have been specified for inclusion into the model.\n");
-		dbg_end(DM_CALLS,"mc::disorder");
+		dbgEnd(DM_CALLS,"mc::disorder");
 		return FALSE;
 	}
 
@@ -327,84 +456,84 @@ bool mc_method::disorder(model* destmodel)
 	for (c = components.first(); c != NULL; c = c->next)
 	{
 		// Grab the model pointer for this component and set the number filled to zero
-		model *m = c->get_model();
-		c->set_nfilled(0);
+		Model *m = c->model();
+		c->setNFilled(0);
 		// Check that we can create a suitable expression for the component model
-		if (!m->create_expression())
+		if (!m->createExpression())
 		{
-			msg(DM_NONE,"Failed to create expression for component model '%s'.\n", m->get_name());
-			dbg_end(DM_CALLS,"mc::disorder");
+			msg(DM_NONE,"Failed to create expression for component model '%s'.\n", m->name());
+			dbgEnd(DM_CALLS,"mc::disorder");
 			return FALSE;
 		}
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
 		// Copy the model and paste it 'nrequested' times into destmodel
-		master.privclip.copy_all(m);
-		for (mol=0; mol<c->get_nrequested(); mol++) master.privclip.paste_to_model(destmodel);
+		clip.copyAll(m);
+		for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
 		// Create a new pattern node in the destination model to cover these molecules and set it as the componentn's pattern
-		p = destmodel->add_pattern(c->get_nrequested(), m->get_natoms(), m->get_name());
-		p->set_expectedmols(c->get_nrequested());
-		c->set_pattern(p);
+		p = destmodel->addPattern(c->nRequested(), m->nAtoms(), m->name());
+		p->setNExpectedMols(c->nRequested());
+		c->setPattern(p);
 		// Set the forcefield of the new pattern fo that of the source model
-		p->set_ff(m->get_ff());
+		p->setForcefield(m->forcefield());
         }
 
 	// Create master expression for the new (filled) model
-	if (!destmodel->create_expression())
+	if (!destmodel->createExpression())
 	{
 		msg(DM_NONE,"Couldn't create master expression for destination model.\n");
 		return FALSE;
 	}
 	// Set starting populations of patterns, add atom space to target model, and print out pattern list info.
-	msg(DM_NONE,"Pattern info for insertion to model '%s':\n",destmodel->get_name());
+	msg(DM_NONE,"Pattern info for insertion to model '%s':\n",destmodel->name());
 	msg(DM_NONE,"  ID  nmols  atoms  starti  finali  name\n");
-	for (p = destmodel->get_patterns(); p != NULL; p = p->next)
+	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
 		// Set nmols, starti, endi, startatom and endatom in the pattern
-		msg(DM_NONE,"  %2i  %5i  %5i  %6i  %6i  %s\n",p->get_id(),p->get_nmols(),p->get_natoms(),
-			p->get_startatom(),p->get_startatom() + p->get_totalatoms(),p->get_name());
+		msg(DM_NONE,"  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMols(),p->nAtoms(),
+			p->startAtom(),p->startAtom() + p->totalAtoms(),p->name());
 	}
 
 	// Reset number of molecules in component patterns to zero (except those for the original patterns of the model)
-	for (p = destmodel->get_pattern(noldpatterns); p != NULL; p = p->next) p->set_nmols(0);
+	for (p = destmodel->pattern(nOldPatterns); p != NULL; p = p->next) p->setNMols(0);
 
 	// Hide unused atoms to begin with
-	atom **modelatoms = destmodel->get_atomarray();
-	for (n = noldatoms; n < destmodel->get_natoms(); n++) modelatoms[n]->set_hidden(TRUE);
+	Atom **modelAtoms = destmodel->atomArray();
+	for (n = nOldAtoms; n < destmodel->nAtoms(); n++) modelAtoms[n]->setHidden(TRUE);
 
 	// Create a backup model
-	msg(DM_NONE,"Preparing workspace for maximum of %i atoms...\n", destmodel->get_natoms());
-	model bakmodel;
+	msg(DM_NONE,"Preparing workspace for maximum of %i atoms...\n", destmodel->nAtoms());
+	Model bakmodel;
 	bakmodel.copy(destmodel);
 
 	// Make sure intramolecular energy calculation is off (bound terms only)
-	bool intrastatus = prefs.calc_intra();
-	prefs.set_calc_intra(FALSE);
+	bool intrastatus = prefs.calculateIntra();
+	prefs.setCalculateIntra(FALSE);
 
 	// Create array for move acceptance ratios
-	create_ratioarray(destmodel->get_npatterns());
+	createRatioArray(destmodel->nPatterns());
 
 	// Set VDW scale ratio
-	prefs.set_vdw_radius_scale(vdw_radius_scale);
+	prefs.setVdwScale(vdwScale_);
 
 	/*
 	// Calculation
 	*/
-	// Cycle through move types; try and perform ntrials for each; move on.
+	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
 	msg(DM_NONE,"Beginning Monte Carlo insertion...\n\n");
 	msg(DM_NONE," Step     Energy        Delta          VDW          Elec         Model    N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
 	// Calculate initial reference energies
-	ecurrent = destmodel->total_energy(destmodel);
-	ecurrent_vdw = destmodel->energy.get_vdw();
-	ecurrent_elec = destmodel->energy.get_elec();
+	ecurrent = destmodel->totalEnergy(destmodel);
+	currentVdwEnergy = destmodel->energy.vdw();
+	currentElecEnergy = destmodel->energy.elec();
 
 	elast = ecurrent;
-	msg(DM_NONE," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.get_vdw(), destmodel->energy.get_elec());
+	msg(DM_NONE," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
 
 	// Loop over MC cycles
-	if (gui.exists()) gui.progress_create("Building disordered system", ncycles * components.size() * MT_NITEMS);
+	if (gui.exists()) gui.progressCreate("Building disordered system", nCycles_ * components.nItems() * MT_NITEMS);
 	prog = 0;
-	for (cycle=0; cycle<ncycles; cycle++)
+	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		msg(DM_VERBOSE,"Begin cycle %i...\n",cycle);
 
@@ -412,110 +541,110 @@ bool mc_method::disorder(model* destmodel)
 		for (c = components.first(); c != NULL; c = c->next)
 		{
 			// Get pointers to variables
-			p = c->get_pattern();
+			p = c->pattern();
 			r = &c->area;
-			msg(DM_VERBOSE,"Working on pattern '%s'\n",p->get_name());
+			msg(DM_VERBOSE,"Working on pattern '%s'\n",p->name());
 			// If the pattern is fixed, move on
-			if (p->is_fixed())
+			if (p->isFixed())
 			{
 				prog += MT_NITEMS;
-				msg(DM_VERBOSE,"Pattern '%s' is fixed.\n",p->get_name());
+				msg(DM_VERBOSE,"Pattern '%s' is fixed.\n",p->name());
 				continue;
 			}
-			msg(DM_VERBOSE,"Pattern region is '%s'.\n",text_from_RS(r->get_shape()));
+			msg(DM_VERBOSE,"Pattern region is '%s'.\n",text_from_RS(r->shape()));
 
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MT_DELETE; move>-1; move--)
 			{
 				prog ++;
-				if (gui.exists() && (!gui.progress_update(prog))) break;
+				if (gui.exists() && (!gui.progressUpdate(prog))) break;
 
-				acceptratio[p->get_id()][move] = 0;
-				// If this move type isn't allowed then continue onto the next
-				if (!allowed[move]) continue;
-				//if (!comp->get_allowed((type) move)) continue;
-				for (n=0; n<ntrials[move]; n++)
+				acceptanceRatio_[p->id()][move] = 0;
+				// If this move type isn't moveAllowed_ then continue onto the next
+				if (!moveAllowed_[move]) continue;
+				//if (!comp->get_moveAllowed_((type) move)) continue;
+				for (n=0; n<nTrials_[move]; n++)
 				{
 					// Reset penalty value
 					penalty = 0.0;
 					// Grab number of molecules currently in this pattern
-					pnmols = p->get_nmols();
+					patternNMols = p->nMols();
 					// Perform the move
 					switch (move)
 					{
 						// New molecule
 						case (MT_INSERT):
 							// Check if we've already filled as many as requested
-							msg(DM_VERBOSE,"insert : Pattern %s has %i molecules.\n",p->get_name(),pnmols);
-							if (pnmols == p->get_expectedmols()) continue;
+							msg(DM_VERBOSE,"insert : Pattern %s has %i molecules.\n",p->name(),patternNMols);
+							if (patternNMols == p->nExpectedMols()) continue;
 							// Paste a new molecule into the working configuration
-							msg(DM_VERBOSE,"insert : Pasting new molecule - pattern %s, mol %i\n",p->get_name(),pnmols);
-							//master.privclip.paste_to_model(destmodel,p,pnmols);
+							msg(DM_VERBOSE,"insert : Pasting new molecule - pattern %s, mol %i\n",p->name(),patternNMols);
+							//clip.paste_to_model(destmodel,p,patternNMols);
 							// Increase nmols for pattern and natoms for config
-							mol = pnmols;		// Points to new molecule, since m-1
-							p->set_nmols(mol+1);
+							mol = patternNMols;		// Points to new molecule, since m-1
+							p->setNMols(mol+1);
 							// Set the hidden flag on the new molecule to FALSE
-							destmodel->hide_molecule(p,mol,FALSE);
+							destmodel->hideMolecule(p,mol,FALSE);
 							// Randomise position of new molecule
-							v = r->random_coords(cell,components.first());
-							destmodel->position_molecule(p,mol,v); 
+							v = r->randomCoords(cell,components.first());
+							destmodel->positionMolecule(p,mol,v); 
 							// Only rotate the new molecule if the component allows it
-							// TODO if (!comp->get_allowed(MT_ROTATE)) break;
-							if (allowed[MT_ROTATE])
+							// TODO if (!comp->get_moveAllowed_(MT_ROTATE)) break;
+							if (moveAllowed_[MT_ROTATE])
 							{
-								phi = cs_random() * 360.0;
-								theta = cs_random() * 360.0;
-								destmodel->rotate_molecule(p,mol,phi,theta);
+								phi = csRandom() * 360.0;
+								theta = csRandom() * 360.0;
+								destmodel->rotateMolecule(p,mol,phi,theta);
 							}
-							eref_total = 0.0;
-							eref_vdw = 0.0;
-							eref_elec = 0.0;
+							referenceTotalEnergy = 0.0;
+							referenceVdwEnergy = 0.0;
+							referenceElecEnergy = 0.0;
 							break;
 						// Translate COG of molecule
 						case (MT_TRANSLATE):
-							if (pnmols == 0) continue;
+							if (patternNMols == 0) continue;
 							// Select random molecule, store, and move
-							mol = cs_randomi(pnmols-1);
-							eref_total = destmodel->total_energy(destmodel, p, mol);
-							eref_vdw = destmodel->energy.get_vdw();
-							eref_elec = destmodel->energy.get_elec();
-							bakmodel.copy_atom_data(destmodel, AD_R, p->get_offset(mol), p->get_natoms());
+							mol = csRandomi(patternNMols-1);
+							referenceTotalEnergy = destmodel->totalEnergy(destmodel, p, mol);
+							referenceVdwEnergy = destmodel->energy.vdw();
+							referenceElecEnergy = destmodel->energy.elec();
+							bakmodel.copyAtomData(destmodel, AD_R, p->offset(mol), p->nAtoms());
 							// Create a random translation vector
-							v.random_unit();
-							v *= maxstep[MT_TRANSLATE]*cs_random();
+							v.randomUnit();
+							v *= maxStep_[MT_TRANSLATE]*csRandom();
 							// Translate the coordinates of the molecule in cfg
-							destmodel->translate_molecule(p,mol,v);
+							destmodel->translateMolecule(p,mol,v);
 							// Check new COG is inside region
-							cog = p->calculate_cog(destmodel,mol);
-							if ((!r->check_coords(cog,cell)) || r->check_overlap(cog,cell,components.first())) penalty += 1e6;
+							cog = p->calculateCog(destmodel,mol);
+							if ((!r->checkCoords(cog,cell)) || r->checkOverlap(cog,cell,components.first())) penalty += 1e6;
 							break;
 						// Rotate molecule about COG
 						case (MT_ROTATE):
-							if (pnmols == 0) continue;
+							if (patternNMols == 0) continue;
 							// Select random molecule, store, and rotate
-							mol = cs_randomi(pnmols-1);
-							eref_total = destmodel->total_energy(destmodel, p, mol);
-							eref_vdw = destmodel->energy.get_vdw();
-							eref_elec = destmodel->energy.get_elec();
-							bakmodel.copy_atom_data(destmodel, AD_R, p->get_offset(mol), p->get_natoms());
+							mol = csRandomi(patternNMols-1);
+							referenceTotalEnergy = destmodel->totalEnergy(destmodel, p, mol);
+							referenceVdwEnergy = destmodel->energy.vdw();
+							referenceElecEnergy = destmodel->energy.elec();
+							bakmodel.copyAtomData(destmodel, AD_R, p->offset(mol), p->nAtoms());
 							// Do two separate random rotations about the x and y axes.
-							phi = cs_random() * maxstep[MT_ROTATE];
-							theta = cs_random() * maxstep[MT_ROTATE];
-							destmodel->rotate_molecule(p,mol,phi,theta);
+							phi = csRandom() * maxStep_[MT_ROTATE];
+							theta = csRandom() * maxStep_[MT_ROTATE];
+							destmodel->rotateMolecule(p,mol,phi,theta);
 							break;
 						// Other moves....
 					}
 
 					// Get the energy of this new configuration.
-					enew = destmodel->total_energy(destmodel, p, mol);
+					enew = destmodel->totalEnergy(destmodel, p, mol);
 					// Add on any penalty value
 					enew += penalty;
 					// If the energy has gone up, undo the move.
-					edelta_total = enew - eref_total;
-					edelta_vdw = destmodel->energy.get_vdw() - eref_vdw;
-					edelta_elec = destmodel->energy.get_elec() - eref_elec;
+					deltaTotalEnergy = enew - referenceTotalEnergy;
+					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
+					deltaElecEnergy = destmodel->energy.elec() - referenceElecEnergy;
 				//	printf("enew = %f, eref = %f, edelta = %f\n",enew, eref, edelta);
-					if (edelta_total > eaccept[move])
+					if (deltaTotalEnergy > acceptanceEnergy_[move])
 					{
 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
 						// Revert to the previous state.
@@ -523,12 +652,12 @@ bool mc_method::disorder(model* destmodel)
 						{
 							case (MT_INSERT):
 								// Set the hidden flag on the new molecule to TRUE
-								destmodel->hide_molecule(p,mol,TRUE);
-								p->set_nmols(mol);
+								destmodel->hideMolecule(p,mol,TRUE);
+								p->setNMols(mol);
 								break;
 							case (MT_DELETE):
 							default:
-								destmodel->copy_atom_data(&bakmodel, AD_R, p->get_offset(mol), p->get_natoms());
+								destmodel->copyAtomData(&bakmodel, AD_R, p->offset(mol), p->nAtoms());
 								break;
 						}
 					}
@@ -537,38 +666,38 @@ bool mc_method::disorder(model* destmodel)
 						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
 						// Fold the molecule's atoms and recalculate its centre of geometry 
 						//cfg->fold_molecule(p,mol);
-						//destmodel->set_atom_colours(NULL);
+						//destmodel->set_AtomColours(NULL);
 						// Update energy and move counters
 						//ecurrent = enew;
-						//ecurrent_vdw = destmodel->energy.get_vdw();
-						//ecurrent_elec = destmodel->energy.get_elec();
-						ecurrent += edelta_total;
-						ecurrent_vdw += edelta_vdw;
-						ecurrent_elec += edelta_elec;
-						acceptratio[p->get_id()][move] ++;
+						//currentVdwEnergy = destmodel->energy.get_vdw();
+						//currentElecEnergy = destmodel->energy.get_elec();
+						ecurrent += deltaTotalEnergy;
+						currentVdwEnergy += deltaVdwEnergy;
+						currentElecEnergy += deltaElecEnergy;
+						acceptanceRatio_[p->id()][move] ++;
 					}
-					gui.process_events();
+					gui.processEvents();
 				}
 				// Get acceptance ratio percentages
-				if (ntrials[move] != 0) acceptratio[p->get_id()][move] /= ntrials[move];
+				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
 			}
 		}
-		if (prefs.update_energy(cycle))
+		if (prefs.shouldUpdateEnergy(cycle))
 		{
 			// Print start of first line (current energy and difference)
-			//msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, ecurrent_vdw, ecurrent_elec);
-			for (p = destmodel->get_patterns(); p != NULL; p = p->next)
+			//msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
+			for (p = destmodel->patterns(); p != NULL; p = p->next)
 			{
-				n = p->get_id();
+				n = p->id();
 				s[0] = '\n';
-				if (p == destmodel->get_patterns())
+				if (p == destmodel->patterns())
 				{
-					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-8s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, ecurrent_vdw, ecurrent_elec, p->get_name(), p->get_nmols(), p->get_expectedmols());
+					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-8s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMols(), p->nExpectedMols());
 				}
-				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->get_name(), p->get_nmols(), p->get_expectedmols());
+				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->name(), p->nMols(), p->nExpectedMols());
 				for (m=0; m<MT_NITEMS; m++)
 				{
-					sprintf(t," %3i", int(acceptratio[n][m]*100.0));
+					sprintf(t," %3i", int(acceptanceRatio_[n][m]*100.0));
 					strcat(s,t);
 				}
 				strcat(s,"\n");
@@ -581,8 +710,8 @@ bool mc_method::disorder(model* destmodel)
 		for (c = components.first(); c != NULL; c = c->next)
 		{
 			// Get pointers to variables
-			p = c->get_pattern();
-			if (p->get_nmols() != p->get_expectedmols()) done = FALSE;
+			p = c->pattern();
+			if (p->nMols() != p->nExpectedMols()) done = FALSE;
 		}
 		if (done)
 		{
@@ -590,47 +719,47 @@ bool mc_method::disorder(model* destmodel)
 			break;
 		}
 	}
-	if (gui.exists()) gui.progress_terminate();
+	if (gui.exists()) gui.progressTerminate();
 	
 	// Print out final energy and data
-	enew = destmodel->total_energy(destmodel);
+	enew = destmodel->totalEnergy(destmodel);
 	destmodel->energy.print();
 	// Print out pattern list info here
-	msg(DM_NONE,"Final populations for model '%s':\n",destmodel->get_name());
+	msg(DM_NONE,"Final populations for model '%s':\n",destmodel->name());
 	msg(DM_NONE,"  ID  name                 nmols \n");
-	p = destmodel->get_patterns();
+	p = destmodel->patterns();
 	while (p != NULL)
 	{
-		msg(DM_NONE,"  %2i  %-20s  %6i\n",p->get_id(),p->get_name(),p->get_nmols());
+		msg(DM_NONE,"  %2i  %-20s  %6i\n",p->id(),p->name(),p->nMols());
 		p = p->next;
 	}
 
 	// Reset VDW scale ratio and intramolecular status
-	prefs.set_vdw_radius_scale(1.0);
-	prefs.set_calc_intra(intrastatus);
+	prefs.setVdwScale(1.0);
+	prefs.setCalculateIntra(intrastatus);
 
 	// Remove all hidden atoms in the model (unused molecule space)
-	atom *i, *j;
-	i = destmodel->get_atoms();
+	Atom *i, *j;
+	i = destmodel->atoms();
 	while (i != NULL)
 	{
-		if (i->is_hidden())
+		if (i->isHidden())
 		{
 			j = i;
 			i = i->next;
-			destmodel->delete_atom(j);
+			destmodel->deleteAtom(j);
 		}
 		else i = i->next;
 	}
 	//bakmodel.copy(destmodel);
 	//destmodel->recreate_from_patterns(&bakmodel);
-	destmodel->render_from_self();
-	destmodel->fold_all_atoms();
-	destmodel->calculate_mass();
-	destmodel->calculate_density();
-	destmodel->log_change(LOG_COORDS);
+	//destmodel->renderFromSelf();
+	destmodel->foldAllAtoms();
+	destmodel->calculateMass();
+	destmodel->calculateDensity();
+	destmodel->logChange(LOG_COORDS);
 	gui.refresh();
-	dbg_end(DM_CALLS,"mc::insert");
+	dbgEnd(DM_CALLS,"mc::insert");
 	return TRUE;
 }
 

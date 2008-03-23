@@ -58,11 +58,13 @@
 #  define GL2PSDLL_API
 #endif
 
-#if defined(__APPLE__) || defined(HAVE_OPENGL_GL_H)
+// Modified 23 March 2008 T. Youngs to include OpenGL via Qt
+#include <QtOpenGL/QtOpenGL>
+/*#if defined(__APPLE__) || defined(HAVE_OPENGL_GL_H)
 #  include <OpenGL/gl.h>
 #else
 #  include <GL/gl.h>
-#endif
+#endif */
 
 /* Support for compressed PostScript/PDF/SVG and for embedded PNG
    images in SVG */

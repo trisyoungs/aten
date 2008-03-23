@@ -23,110 +23,113 @@
 #define ATEN_UNDOLEVEL_H
 
 // Change logs
-enum change_log { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };
+enum ChangeLog { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };
 
 // State change events
-enum undo_event { UE_NONE, UE_ATOM, UE_BOND, UE_MEASUREMENT, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER, UE_CELL, UE_LABEL, UE_TRANSLATE, UE_SHIFT };
+enum UndoEvent { UE_NONE, UE_ATOM, UE_BOND, UE_MEASUREMENT, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER, UE_CELL, UE_LABEL, UE_TRANSLATE, UE_SHIFT };
 
 // State change directions
-enum undo_dir { UD_REVERSE, UD_FORWARDS };
+enum UndoDirection { UD_REVERSE, UD_FORWARDS };
 
-#include "model/model.h"
 #include "classes/dnchar.h"
 #include "templates/list.h"
+#include "templates/vector3.h"
 #include "templates/matrix3.h"
 
 // Forward declarations
-class model;
-class atom;
+class Model;
+class Atom;
 
 // Single change
-class change
+class Change
 {
 	public:
 	// Constructor / destructor
-	change();
-	~change();
+	Change();
+	~Change();
 	// List pointers
-	change *prev, *next;
+	Change *prev, *next;
 
 	/*
 	// Data
 	*/
 	private:
 	// Type of change
-	undo_event type;
+	UndoEvent type_;
 	// Direction of change
-	undo_dir direction;
+	UndoDirection direction_;
 	// Atom data describing the change
-	atom *atomdata[2];
+	Atom *atomData_[2];
 	// Vector data describing the change
-	vec3<double> *vecdata[4];
+	Vec3<double> *vecData_[4];
 	// Generally-applicable data
-	int data[5];
+	int data_[5];
 
 	public:
 	// Set change data (atoms)
-	void set(int ec, atom *i, atom *j = NULL);
+	void set(int ec, Atom *i, Atom *j = NULL);
 	// Set change data (integers)
 	void set(int ec, int i, int j = -1, int k = -1, int l = -1, int m = -1);
 	// Set change data (matrices)
-	void set(int ec, mat3<double> *m1, mat3<double> *m2 = NULL);
+	void set(int ec, Mat3<double> *m1, Mat3<double> *m2 = NULL);
 	// Set change data (vector)
-	void set(int ec, vec3<double> *v1, vec3<double> *v2 = NULL, vec3<double> *v3 = NULL, vec3<double> *v4 = NULL);
+	void set(int ec, Vec3<double> *v1, Vec3<double> *v2 = NULL, Vec3<double> *v3 = NULL, Vec3<double> *v4 = NULL);
 
 	/*
 	// Actions
 	*/
 	public:
 	// Reverse (undo) stored change
-	void reverse(model *m);
+	void reverse(Model *m);
 	// Perform (redo) stored change
-	void perform(model *m);
+	void perform(Model *m);
 };
 
 // Undo state
-class undostate
+class Undostate
 {
 	public:
-	// Constructor / destructor
-	undostate();
-	~undostate();
+	// Constructor
+	Undostate();
 	// List pointers
-	undostate *prev, *next;
+	Undostate *prev, *next;
 
 	/*
 	// Changelist
 	*/
 	private:
+	// List of atomic changes for this level
+	List<Change> changes_;
 	// Short text describing the change
-	dnchar text;
+	Dnchar description_;
 	// Logs at start of state
-	int startlogs[LOG_NITEMS];
+	int startLogs_[LOG_NITEMS];
 	// Logs at end of state
-	int endlogs[LOG_NITEMS];
+	int endLogs_[LOG_NITEMS];
 
 	public:
-	// List of atomic changes for this level
-	list<change> changes;
+	// Add change to undostate
+	Change *addChange();
+	// Return number of changes in list
+	int nChanges();
 	// Set log point at start of state
-	void set_startlog(change_log log, int value) { startlogs[log] = value; }
+	void setStartLog(ChangeLog log, int value);
 	// Get structure log point at start of state
-	int get_startlog(change_log log) { return startlogs[log]; }
+	int startLog(ChangeLog log);
 	// Set log point at end of state
-	void set_endlog(change_log log, int value) { endlogs[log] = value; }
+	void setEndLog(ChangeLog log, int value);
 	// Get structure log point at end of state
-	int get_endlog(change_log log) { return endlogs[log]; }
+	int endLog(ChangeLog log);
 	// Check difference between LOG_STRUCTURE and LOG_COORDS between start/end points
-	bool logs_differ();
+	bool doLogsDiffer();
 	// Set the text associated with the current undo state
-	void set_text(const char *s) { text = s; }
+	void setDescription(const char *s);
 	// Return the current text associated with the state
-	const char *get_text() { return text.get(); }
+	const char *description();
 	// Reverse (undo) the changes specified in the state
-	void reverse(model *m);
+	void reverse(Model *m);
 	// Perform (redo) the changes specified in the state
-	void perform(model *m);
+	void perform(Model *m);
 };
 
 #endif

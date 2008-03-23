@@ -23,36 +23,36 @@
 #include "base/master.h"
 
 // List available scripts
-int commanddata::function_CA_LISTSCRIPTS(command *&c, bundle &obj)
+int CommandData::function_CA_LISTSCRIPTS(Command *&c, Bundle &obj)
 {
-	if (master.scripts.size() == 0) msg(DM_NONE,"No scripts loaded.\n");
+	if (master.scripts.nItems() == 0) msg(DM_NONE,"No scripts loaded.\n");
 	else msg(DM_NONE,"Currently loaded scripts:\n");
-	for (commandlist *cl = master.scripts.first(); cl != NULL; cl = cl->next)
-		msg(DM_NONE,"  %s (%s)\n", cl->get_scriptfilename(), cl->get_name());
+	for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
+		msg(DM_NONE,"  %s (%s)\n", cl->scriptFilename(), cl->name());
 	return CR_SUCCESS;
 }
 
 // Load script from disk
-int commanddata::function_CA_LOADSCRIPT(command *&c, bundle &obj)
+int CommandData::function_CA_LOADSCRIPT(Command *&c, Bundle &obj)
 {
-	commandlist *cl = master.scripts.add();
+	CommandList *cl = master.scripts.add();
 	if (!cl->load(c->argc(0)))
 	{
 		master.scripts.remove(cl);
 		return CR_FAIL;
 	}
-	if (c->has_arg(1)) cl->set_name(c->argc(1));
-	else cl->set_name(c->argc(0));
+	if (c->hasArg(1)) cl->setName(c->argc(1));
+	else cl->setName(c->argc(0));
 	return CR_SUCCESS;
 }
 
 // Run specified script
-int commanddata::function_CA_RUNSCRIPT(command *&c, bundle &obj)
+int CommandData::function_CA_RUNSCRIPT(Command *&c, Bundle &obj)
 {
 	// Find the script...
-	commandlist *cl;
+	CommandList *cl;
 	for (cl = master.scripts.first(); cl != NULL; cl = cl->next)
-		if (strcmp(c->argc(0), cl->get_name()) == 0) break;
+		if (strcmp(c->argc(0), cl->name()) == 0) break;
 	if (cl != NULL)
 	{
 		msg(DM_NONE,"Executing script '%s':\n",c->argc(0));

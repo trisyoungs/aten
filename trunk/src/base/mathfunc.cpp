@@ -43,7 +43,7 @@ double cserf(double x)
 }
 
 // Random Number Generator (0 - 1)
-double cs_random()
+double csRandom()
 {
 	// Simple random number generator from C++ stdlib.
 	// Returns numbers from 0.0 to 1.0, exclusive of 1.0.
@@ -52,8 +52,8 @@ double cs_random()
 }
 
 // Random number generator (0 - range-1)
-int cs_randomi(int range)
+int csRandomi(int range)
 {
 	// Returns a random number from 0->(range-1) inclusive.
-	return int(range * cs_random());
+	return int(range * csRandom());
 }

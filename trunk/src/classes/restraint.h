@@ -26,12 +26,13 @@
 #include "templates/list.h"
 
 // Distance restraint
-struct restraint_ij
+class restraint_ij
 {
+	public:
 	// Atoms in distance measurement
-	atom *i,*j;
+	Atom *i,*j;
 	// Distance
-	double rij; 				
+	double rij;
 	// List pointers
 	restraint_ij *next, *prev;
 	// Constructor
@@ -50,29 +51,29 @@ class restraints
 
 	private:
 	// Parent model
-	model *ownermodel;
+	Model *ownermodel;
 	// List of distance restraints
-	list<restraint_ij> ijs;
+	List<restraint_ij> ijs;
 	// List of angle restraints
-	//list<restraint_ijk> ijks;
+	//List<restraint_ijk> ijks;
 	// List of torsion restraints
-	//list<restraint_ijkl> ijkls;
+	//List<restraint_ijkl> ijkls;
 
 	public:
 	// Add distance restraint
-	void add_ij(reflist<atom,int>&);
+	void add_ij(Reflist<Atom,int>&);
 	// Add angle restraint
-	//void add_ijk(reflist<atom>&);
+	//void add_ijk(Reflist<atom>&);
 	// Add torsion restraint
-	//void add_ijkl(reflist<atom>&);
+	//void add_ijkl(Reflist<atom>&);
 	// Search for distance restraint in list
-	restraint_ij *does_ij_exist(reflist<atom,int>&);
-	//restraint_ijk *does_ijk_exist(reflist<atom>&);// Search for angle restraint in list
-	//restraint_ijkl *does_ijkl_exist(reflist<atom>&);// Search for torsion restraint in list
+	restraint_ij *does_ij_exist(Reflist<Atom,int>&);
+	//restraint_ijk *does_ijk_exist(Reflist<atom>&);// Search for angle restraint in list
+	//restraint_ijkl *does_ijkl_exist(Reflist<atom>&);// Search for torsion restraint in list
 	// Clear all restraints
 	void clear_all();
 	// Delete all restraints involving specific atom
-	void prune_atom(atom*);
+	void prune_atom(Atom*);
 };
 
 #endif

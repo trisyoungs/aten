@@ -21,177 +21,168 @@
 
 #include "model/model.h"
 
-// Move atoms 'up'
-void model::shift_selection_up()
+// Return the number of selected atoms
+int Model::nSelected()
 {
-	dbg_begin(DM_CALLS,"model::shift_selection_up");
-	if (nselected == 0)
+	return nSelected_;
+}
+
+// Move atoms 'up'
+void Model::shiftSelectionUp()
+{
+	dbgBegin(DM_CALLS,"Model::shiftSelectionUp");
+	if (nSelected_ == 0)
 	{
 		msg(DM_NONE,"No atoms selected.");
-		dbg_end(DM_CALLS,"model::shift_selection_up");
+		dbgEnd(DM_CALLS,"Model::shiftSelectionUp");
 	}
 	int tempid, oldid;
-	atom *i, *next;
+	Atom *i, *next;
 	// For each selected atom in the model, shift it one place 'up' the atom list
-	i = atoms.first()->next;
+	i = atoms_.first()->next;
 	while (i != NULL)
 	{
 		next = i->next;
-		if (i->is_selected() && (i != atoms.first()))
+		if (i->isSelected() && (i != atoms_.first()))
 		{
-			oldid = i->get_id();
+			oldid = i->id();
 			// Shift atom up
-			atoms.shift_up(i);
+			atoms_.shiftUp(i);
 			// Swap atomids with the new 'next' atom
-			tempid = i->next->get_id();
-			i->next->set_id(oldid);
-			i->set_id(tempid);
+			tempid = i->next->id();
+			i->next->setId(oldid);
+			i->setId(tempid);
 			// Add the change to the undo state (if there is one)
-			if (recordingstate != NULL)
+			if (recordingState_ != NULL)
 			{
-				change *newchange = recordingstate->changes.add();
+				Change *newchange = recordingState_->addChange();
 				newchange->set(UE_SHIFT,oldid,-1);
 			}
 		}
 		i = next;
 	}
-	log_change(LOG_STRUCTURE);
-	dbg_end(DM_CALLS,"model::shift_selection_up");
+	logChange(LOG_STRUCTURE);
+	dbgEnd(DM_CALLS,"Model::shiftSelectionUp");
 }
 
 // Move atoms 'down'
-void model::shift_selection_down()
+void Model::shiftSelectionDown()
 {
-	dbg_begin(DM_CALLS,"model::shift_selection_down");
-	if (nselected == 0)
+	dbgBegin(DM_CALLS,"Model::shiftSelectionDown");
+	if (nSelected_ == 0)
 	{
 		msg(DM_NONE,"No atoms selected.");
-		dbg_end(DM_CALLS,"model::shift_selection_down");
+		dbgEnd(DM_CALLS,"Model::shiftSelectionDown");
 	}
 	int tempid, oldid;
-	atom *i, *next;
-	//for (n=0; n<atoms.size(); n++)
+	Atom *i, *next;
+	//for (n=0; n<atoms.nItems(); n++)
 	// For each selected atom in the model, shift it one place 'down' the atom list
-	i = atoms.last()->prev;
+	i = atoms_.last()->prev;
 	while (i != NULL)
 	{
 		next = i->prev;
-		if (i->is_selected())
+		if (i->isSelected())
 		{
-			oldid = i->get_id();
+			oldid = i->id();
 			// Shift atom down
-			atoms.shift_down(i);
+			atoms_.shiftDown(i);
 			// Swap atomids with the new 'next' atom
-			tempid = i->prev->get_id();
-			i->prev->set_id(oldid);
-			i->set_id(tempid);
+			tempid = i->prev->id();
+			i->prev->setId(oldid);
+			i->setId(tempid);
 			// Add the change to the undo state (if there is one)
-			if (recordingstate != NULL)
+			if (recordingState_ != NULL)
 			{
-				change *newchange = recordingstate->changes.add();
+				Change *newchange = recordingState_->addChange();
 				newchange->set(UE_SHIFT,oldid,1);
 			}
 		}
 		i = next;
 	}
-	log_change(LOG_STRUCTURE);
-	dbg_end(DM_CALLS,"model::shift_selection_down");
+	logChange(LOG_STRUCTURE);
+	dbgEnd(DM_CALLS,"Model::shiftSelectionDown");
 }
 
 // Move atoms to start
-void model::move_selection_to_start()
+void Model::moveSelectionToStart()
 {
-	dbg_begin(DM_CALLS,"model::move_selection_to_start");
+	dbgBegin(DM_CALLS,"Model::moveSelectionToStart");
 	int n;
-	atom *next, *i;
+	Atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
-	i = atoms.last();
-	for (n=0; n<atoms.size(); n++)
+	i = atoms_.last();
+	for (n=0; n<atoms_.nItems(); n++)
 	{
 		next = i->prev;
-		if (i->is_selected()) atoms.move_to_start(i);
+		if (i->isSelected()) atoms_.moveToStart(i);
 		i = next;
 	}
 	// Renumber atoms
-	renumber_atoms();
-	log_change(LOG_STRUCTURE);
-	dbg_end(DM_CALLS,"model::move_selection_to_start");
+	renumberAtoms();
+	logChange(LOG_STRUCTURE);
+	dbgEnd(DM_CALLS,"Model::moveSelectionToStart");
 }
 
 // Move atoms to end
-void model::move_selection_to_end()
+void Model::moveSelectionToEnd()
 {
-	dbg_begin(DM_CALLS,"model::move_selection_to_end");
+	dbgBegin(DM_CALLS,"Model::moveSelectionToEnd");
 	int n;
-	atom *next, *i;
+	Atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
-	i = atoms.first();
-	for (n=0; n<atoms.size(); n++)
+	i = atoms_.first();
+	for (n=0; n<atoms_.nItems(); n++)
 	{
 		next = i->next;
-		if (i->is_selected()) atoms.move_to_end(i);
+		if (i->isSelected()) atoms_.moveToEnd(i);
 		i = next;
 	}
 	// Renumber atoms
-	renumber_atoms();
-	log_change(LOG_STRUCTURE);
-	dbg_end(DM_CALLS,"model::move_selection_to_end");
+	renumberAtoms();
+	logChange(LOG_STRUCTURE);
+	dbgEnd(DM_CALLS,"Model::moveSelectionToEnd");
 }
 
 // Get selection cog
-vec3<double> model::selection_get_cog()
+Vec3<double> Model::selectionCog()
 {
-        vec3<double> result;
-	atom *first = get_first_selected();
+        Vec3<double> result;
+	Atom *first = firstSelected();
         if (first != NULL)
 	{
-		for (atom *i = first; i != NULL; i = i->get_next_selected()) result += cell.mim(i,first);
-		result /= nselected;
+		for (Atom *i = first; i != NULL; i = i->nextSelected()) result += cell_.mim(i,first);
+		result /= nSelected_;
 	}
         return result;
 }
 
 // Set selection visibility
-void model::selection_set_hidden(bool hidden)
+void Model::selectionSetHidden(bool hidden)
 {
-	for (atom *i = get_first_selected(); i != NULL; i = i->get_next_selected()) set_hidden(i, hidden);
-	log_change(LOG_VISUAL);
+	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setHidden(i, hidden);
+	logChange(LOG_VISUAL);
 }
 
 // Fix selected atom positions
-void model::selection_set_fixed()
+void Model::selectionSetFixed()
 {
 	// Sets 'fixed' values to TRUE
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->is_selected()) i->fixed = TRUE;
-		i = i->next;
-	}
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setPositionFixed(TRUE);
 }
 
 // Free selected atom positions
-void model::selection_set_free()
+void Model::selectionSetFree()
 {
 	// Sets 'fixed' values to TRUE
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->is_selected()) i->fixed = FALSE;
-		i = i->next;
-	}
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setPositionFixed(FALSE);
 }
 
 // Set selection style
-void model::selection_set_style(draw_style ds)
+void Model::selectionSetStyle(DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
-	atom *i = atoms.first();
-	while (i != NULL)
-	{
-		if (i->is_selected()) i->set_style(ds);
-		i = i->next;
-	}
-	log_change(LOG_VISUAL);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setStyle(ds);
+	logChange(LOG_VISUAL);
 }
 

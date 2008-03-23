@@ -1,6 +1,6 @@
 /*
 	*** Command list
-	*** src/command/commandlist.h
+	*** src/command/CommandList.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -33,214 +33,213 @@
 #include "parse/parser.h"
 
 // If Conditions
-enum if_condition { IF_EQUAL=1, IF_LESS=2, IF_LEQUAL=3, IF_GREATER=4, IF_GEQUAL=5, IF_NEQUAL=6, IF_NITEMS };
-const char *text_from_IC(if_condition);
+enum IfTest { IF_EQUAL=1, IF_LESS=2, IF_LEQUAL=3, IF_GREATER=4, IF_GEQUAL=5, IF_NEQUAL=6, IF_NITEMS };
+const char *text_from_IC(IfTest);
 
 // Forward declarations
-class commandlist;
-class format;
-class filter;
-class ffatom;
+class CommandList;
+class Format;
+class Filter;
+class ForcefieldAtom;
 
 // Command node
-class command
+class Command
 {
 	public:
 	// Constructor / Destructor
-	command();
-	~command();
+	Command();
+	~Command();
 	// List pointers
-	command *prev, *next;
+	Command *prev, *next;
 
 	/*
 	// Command
 	*/
 	private:
 	// Command that this node performs
-	command_action action;
+	CommandAction action_;
 	// Pointer to action function
-	commandfunc function;
+	CommandFunction function_;
 	// Parent list
-	commandlist *parent;
+	CommandList *parent_;
 
 	public:
-	// Set parent commandlist
-	void set_parent(commandlist *cl) { parent = cl; }
-	// Get parent commandlist
-	commandlist *get_parent() { return parent; }
+	// Set parent CommandList
+	void setParent(CommandList *cl);
+	// Get parent CommandList
+	CommandList *parent();
 	// Set command
-	void set_command(command_action ca);
+	void setCommand(CommandAction ca);
 	// Get command
-	command_action get_command() { return action; }
+	CommandAction command();
 	// Execute command
-	int execute(command *&c, model *alttarget);
+	int execute(Command *&c, Model *alttarget);
 
 	/*
 	// Format
 	*/
 	private:
 	// Associated format (if any)
-	format *fmt;
+	Format *format_;
 
 	public:
 	// Create format structure
-	bool create_format(const char *s, variable_list &vlist, bool delimited);
+	bool createFormat(const char *s, VariableList &vlist, bool delimited);
 	// Returns the formatter
-	format *get_format() { return fmt; }
+	Format *format();
 
 	/*
 	// Loop Data
 	*/
 	private:
 	// Whether the loop is currently executing
-	bool loopactive;
+	bool loopActive_;
 	// NUmber of iterations performed by loop
-	int loopiterations;
+	int loopIterations_;
 
 	public:
 	// Set status of loop
-	void set_loopactive(bool b) { loopactive = b; }
+	void setLoopActive(bool b);
 	// Get status of loop
-	bool get_loopactive() { return loopactive; }
+	bool isLoopActive();
 	// Set iteration count
-	void set_loopiterations(int n) { loopiterations = n; }
+	void setLoopIterations(int n);
 	// Get iteration count
-	int get_loopiterations() { return loopiterations; }
+	int loopIterations();
 	// Increase interation count
-	void increase_iterations() { loopiterations ++; }
+	void increaseIterations();
 
 	/*
 	// Command Branch
 	*/
 	private:
 	// Lists for branched commands (if any)
-	list<command> *branch;
+	List<Command> *branch_;
 	// Pointer for use by flow control nodes
-	command *ptr;
+	Command *ptr_;
 
 	public:
 	// Create branch for the node
-	list<command> *create_branch();
+	List<Command> *createBranch();
 	// Returns branch list structure
-	list<command> *get_branch() { return branch; }
+	List<Command> *branch();
 	// Returns first item in branch 
-	command *get_branch_commands() { return (branch != NULL ? branch->first() : NULL); }
-	// Set format_node pointer variable
-	void set_pointer(command *f) { ptr = f; }
-	// Return format_node pointer variable
-	command *get_pointer() { return ptr; }
+	Command *branchCommands();
+	// Set FormatNode pointer variable
+	void setPointer(Command *f);
+	// Return FormatNode pointer variable
+	Command *pointer();
 
 	/*
 	// If Test Data
 	*/
 	private:
 	// If condition structure
-	if_condition iftest;
+	IfTest ifTest_;
 
 	public:
 	// Set if test type
-	bool set_iftest(const char*);
+	bool setIfTest(const char*);
 	// Evaluate the if expression
-	bool if_evaluate();
+	bool ifEvaluate();
 
 	/*
 	// Data Variables
 	*/
 	private:
 	// Data variables
-	variable *args[MAXDATAVARS];
+	Variable *args_[MAXDATAVARS];
 
 	public:
 	// Set variables from parser arguments
-	bool add_variables(const char*, const char*, variable_list&);
+	bool addVariables(const char*, const char*, VariableList&);
 	// Return variable argument
-	variable *arg(int argno) { return args[argno]; }
+	Variable *arg(int argno);
 	// Return argument as character
-	const char *argc(int argno) { return (args[argno] == NULL ?  "NULL" : args[argno]->get_as_char()); }
+	const char *argc(int argno);
 	// Return argument as integer
-	int argi(int argno) { return (args[argno] == NULL ?  0 : args[argno]->get_as_int()); }
+	int argi(int argno);
 	// Return argument as double
-	double argd(int argno) { return (args[argno] == NULL ? 0.0 : args[argno]->get_as_double()); }
+	double argd(int argno);
 	// Return argument as bool
-	bool argb(int argno) { return (args[argno] == NULL ? -1 : args[argno]->get_as_bool()); }
-	// Return arguments as vec3<double>
-	vec3<double> arg3d(int);
-	// Return arguments as vec3<float>
-	vec3<float> arg3f(int);
-	// Return arguments as vec3<int>
-	vec3<int> arg3i(int);
+	bool argb(int argno);
+	// Return arguments as Vec3<double>
+	Vec3<double> arg3d(int);
+	// Return arguments as Vec3<float>
+	Vec3<float> arg3f(int);
+	// Return arguments as Vec3<int>
+	Vec3<int> arg3i(int);
 	// Return argument as atom pointer
-	atom *arga(int argno) { return (args[argno] == NULL ? NULL : (atom*) args[argno]->get_as_pointer()); }
+	Atom *arga(int argno);
 	// Return argument as pattern pointer
-	pattern *argp(int argno) { return (args[argno] == NULL ? NULL : (pattern*) args[argno]->get_as_pointer()); }
-	// Return argument as patbound pointer
-	patbound *argpb(int argno) { return (args[argno] == NULL ? NULL : (patbound*) args[argno]->get_as_pointer()); }
-	// Return argument as ffatom pointer
-	ffatom *argffa(int argno) { return (args[argno] == NULL ? NULL : (ffatom*) args[argno]->get_as_pointer()); }
+	Pattern *argp(int argno);
+	// Return argument as PatternBound pointer
+	PatternBound *argpb(int argno);
+	// Return argument as ForcefieldAtom pointer
+	ForcefieldAtom *argffa(int argno);
 	// Returns whether argument 'n' was provided
-	bool has_arg(int argno) { return (args[argno] == NULL ? FALSE : TRUE); }
+	bool hasArg(int argno);
 	// Return variable type of argument
-	variable_type argt(int argno) { return (args[argno] == NULL ? VT_NITEMS : args[argno]->get_type()); }
+	VariableType argt(int argno);
 	// Print data variables
 	void print_args();
 };
 
 // Command List Structure
-class commandlist
+class CommandList
 {
 	public:
-	// Constructor / Destructor
-	commandlist();
-	~commandlist();
+	// Constructor
+	CommandList();
 	// List pointers
-	commandlist *prev, *next;
+	CommandList *prev, *next;
 
 	/*
 	// Command List
 	*/
 	private:
 	// Original filename (if script)
-	dnchar scriptfilename;
+	Dnchar scriptFilename_;
 	// Name associated with command list
-	dnchar name;
+	Dnchar name_;
 	// List of commands
-	list<command> commands;
+	List<Command> commands_;
 	// List of pointers to stacked branches
-	reflist<list<command>,int> branchstack;
+	Reflist<List<Command>,int> branchStack_;
 	// Basic command types of stacked branches
-	list<command> branchcmdstack;
+	List<Command> branchCommandStack_;
 	// Add specified branch to stack
-	void push_branch(list<command>*, command_action, command*);
+	void pushBranch(List<Command>*, CommandAction, Command*);
 	// Pop topmost branch from stack
-	void pop_branch();
+	void popBranch();
 	// Add command to topmost branch
-	command* add_topbranch_command(command_action, command*);
+	Command* addTopBranchCommand(CommandAction, Command*);
 
 	public:
-	// Set name of commandlist
-	void set_name(const char *s) { name = s; }
-	// Return name of commandlist
-	const char *get_name() { return name.get(); }
-	// Return filename of commandlist
-	const char *get_scriptfilename() { return scriptfilename.get(); }
+	// Set name of CommandList
+	void setName(const char *s);
+	// Return name of CommandList
+	const char *name();
+	// Return filename of CommandList
+	const char *scriptFilename();
 	// Return size of branch stack
-	int get_branchstack_size() { return branchstack.size(); }
+	int nBranches();
 	// Return type of topmost branch on stack
-	command_action get_topbranch_type();
+	CommandAction topBranchType();
 	// Return basenode pointer of topmost branch on stack
-	command* get_topbranch_basenode();
+	Command* topBranchBaseNode();
 	// Add action to lst node
-	bool add_command(command_action);
+	bool addCommand(CommandAction);
 	// Clear and reinitialise command list
 	void clear();
 	// Read semicolon-separated commands from string
-	bool cache_line(const char *s);
+	bool cacheLine(const char *s);
 	// Cache command arguments in main parser
-	bool cache_command();
+	bool cacheCommand();
 	// Load commands from file
 	bool load(const char *filename);
 	// Execute command list
-	bool execute(model *alttarget = NULL, ifstream *altfile = NULL);
+	bool execute(Model *alttarget = NULL, ifstream *altfile = NULL);
 	// Check structure of command list
 	bool validate();
 
@@ -248,86 +247,86 @@ class commandlist
 	// Associated Filter
 	*/
 	private:
-	// Parent filter (if commandlist is in a filter)
-	filter *parentfilter;
+	// Parent filter (if CommandList is in a filter)
+	Filter *parentFilter_;
 
 	public:
 	// Set parent filter
-	void set_filter(filter *f) { parentfilter = f; }
+	void setFilter(Filter *f);
 	// Return parent filter
-	filter *get_filter() { return parentfilter; }
+	Filter *filter();
 	
 	/*
 	// Variables
 	*/
 	public:
 	// Associative variable list
-	variable_list variables;
+	VariableList variables;
 
 	public:
-	// Set model variables
-	void set_model_variables(model*);
-	// Set cell variables
-	void set_cell_variables(unitcell*);
+	// Create model variables
+	void setModelVariables(Model *m);
+	// Create cell variables
+	void setCellVariables(Cell *cell);
 	// Create atom variables
-	bool create_atom_variables(const char *s);
+	bool createAtomVariables(const char *s);
 	// Set atom variables
-	void set_atom_variables(const char*, atom*);
-	void set_atom_variables(const char*, int);
+	void setAtomVariables(const char*, Atom*);
+	void setAtomVariables(const char*, int);
 	// Create atom variables
-	bool create_pattern_variables(const char *s);
+	bool createPatternVariables(const char *s);
 	// Set pattern variables
-	void set_pattern_variables(const char*, pattern*);
+	void setPatternVariables(const char*, Pattern*);
 	// Create pattern bound term variables
-	bool create_patbound_variables(const char*);
+	bool createPatternBoundVariables(const char*);
 	// Set pattern bound term variables
-	void set_patbound_variables(const char*, patbound*);
+	void setPatternBoundVariables(const char*, PatternBound*);
 	// Create atomtype atomtype variables
-	bool create_atomtype_variables(const char*);
+	bool createAtomtypeVariables(const char*);
 	// Set atomtype variables
-	void set_atomtype_variables(const char*, ffatom*);
+	void setAtomtypeVariables(const char*, ForcefieldAtom*);
 
 	/*
 	// Local Variables
 	*/
 	public:
 	// Pen orientation matrix
-	mat3<double> penorient;
+	Mat3<double> penOrientation;
 	// Pen position
-	vec3<double> penpos;
+	Vec3<double> penPosition;
 
 	/*
 	// Files
 	*/
 	private:
 	// Input file stream
-	ifstream *infile;
+	ifstream *inputFile_;
 	// Output file stream
-	ofstream *outfile;
+	ofstream *outputFile_;
 	// Filename
-	dnchar filename;
-	// Parser read options for this commandlist
-	int readopts;
+	Dnchar filename_;
+	// Parser read options for this CommandList
+	int readOptions_;
 
 	public:
 	// Set input stream
-	bool set_infile(const char *infile);
+	bool setInputFile(const char *inFile_);
 	// Get input stream
-	ifstream *get_infile() { return infile; }
+	ifstream *inputFile();
 	// Set output stream
-	bool set_outfile(const char *outfile);
+	bool setOutputFile(const char *outFile_);
 	// Get output stream
-	ofstream *get_outfile() { return outfile; }
+	ofstream *outputFile();
 	// Return filename associated to infile/outfile
-	const char *get_filename() { return filename.get(); }
+	const char *filename();
 	// Close files
-	void close_files();
+	void closeFiles();
 	// Add read option
-	void add_readoption(parse_option po) { if (!(readopts&po)) readopts += po; }
+	void addReadOption(ParseOption po);
 	// Remove read option
-	void remove_readoption(parse_option po) { if (readopts&po) readopts -= po; }
+	void removeReadOption(ParseOption po);
 	// Return read options
-	int get_readoptions() { return readopts; }
+	int readOptions();
 };
 
 #endif

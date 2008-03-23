@@ -26,28 +26,28 @@
 #include "templates/vector3.h"
 
 // Forward Declarations
-class site;
+class Site;
 
 // Radial Distribution Function Class
-class pdens : public calculable
+class Pdens : public Calculable
 {
 	public:
 	// Constructor / Destructor
-	pdens();
-	~pdens();
+	Pdens();
+	~Pdens();
 
 	/*
 	// Sites
 	*/
 	private:
 	// Centres involved in distribution
-	site *sites[2];
+	Site *sites_[2];
 	
 	public:
 	// Set site involved in distribution
-	void set_site(int, site*);
+	void setSite(int, Site*);
 	// Get site involved in distribution
-	site *get_site(int);
+	Site *site(int);
 
 	/*
 	// Methods
@@ -56,9 +56,9 @@ class pdens : public calculable
 	// Initialise structure
 	bool initialise();
 	// Accumulate quantity data from supplied config
-	void accumulate(model*);
+	void accumulate(Model*);
 	// Finalise data
-	void finalise(model*);
+	void finalise(Model*);
 	// Save data
 	bool save();
 
@@ -67,30 +67,30 @@ class pdens : public calculable
 	*/
 	private:
 	// Number of gridpoints in each +ve OR -ve direction
-	int nsteps;
+	int nSteps_;
 	// Total number of gridpoints along each cartesian axis
-	int totalsteps;
+	int totalSteps_;
 	// Step size between gridpoints
-	double stepsize;
+	double stepSize_;
 
 	public:
 	// Set distribution data
-	void set_range(double, int);
+	void setRange(double, int);
 	// Get stepsize
-	double get_stepsize() { return stepsize; }
+	double stepSize();
 	// Get number of bins
-	int get_nsteps() { return nsteps; }
+	int nSteps();
 
 	/*
 	// Data
 	*/
 	private:
 	// Distribution
-	double ***data;
+	double ***data_;
 	// Add point to data array
-	void add_point(vec3<int>&);
+	void addPoint(Vec3<int>&);
 	// Count for number of added data (i.e. nframes)
-	int acc;
+	int nAdded_;
 };
 
 #endif

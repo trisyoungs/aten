@@ -21,66 +21,66 @@
 
 #include "command/commands.h"
 #include "base/master.h"
-#include "base/debug.h"
 #include "parse/filter.h"
+#include "model/model.h"
 
 // Skip to first frame ('firstframe')
-int commanddata::function_CA_FIRSTFRAME(command *&c, bundle &obj)
+int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (obj.m->get_totalframes() == 0)
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
-	obj.m->seek_first_frame();
+	obj.m->seekFirstFrame();
 	return CR_SUCCESS;
 }
 
 // Skip to last frame ('lastframe')
-int commanddata::function_CA_LASTFRAME(command *&c, bundle &obj)
+int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (obj.m->get_totalframes() == 0)
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
-	obj.m->seek_last_frame();
+	obj.m->seekLastFrame();
 	return CR_SUCCESS;
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
-int commanddata::function_CA_LOADTRAJECTORY(command *&c, bundle &obj)
+int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	filter *f = master.probe_file(c->argc(0), FT_TRAJECTORY_IMPORT);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Filter *f = master.probeFile(c->argc(0), FT_TRAJECTORY_IMPORT);
 	if (f == NULL) return CR_FAIL;
-	return (obj.m->initialise_trajectory(c->argc(0),f) ? CR_SUCCESS : CR_FAIL);
+	return (obj.m->initialiseTrajectory(c->argc(0),f) ? CR_SUCCESS : CR_FAIL);
 }
 
 // Go to next frame ('nextframe')
-int commanddata::function_CA_NEXTFRAME(command *&c, bundle &obj)
+int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (obj.m->get_totalframes() == 0)
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
-	obj.m->seek_next_frame();
+	obj.m->seekNextFrame();
 	return CR_SUCCESS;
 }
 
 // Go to previous frame ('prevframe')
-int commanddata::function_CA_PREVFRAME(command *&c, bundle &obj)
+int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	if (obj.m->get_totalframes() == 0)
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->get_name());
+		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
-	obj.m->seek_previous_frame();
+	obj.m->seekPreviousFrame();
 	return CR_SUCCESS;
 }

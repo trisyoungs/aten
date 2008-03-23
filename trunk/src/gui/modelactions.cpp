@@ -22,6 +22,7 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "model/model.h"
 
 /*
 // Model Menu Actions
@@ -29,25 +30,25 @@
 
 void AtenForm::on_actionFFType_triggered(bool checked)
 {
-	master.get_currentmodel()->type_all();
+	master.currentModel()->typeAll();
 	gui.refresh();
 }
 
 void AtenForm::on_actionFFUntype_triggered(bool checked)
 {
-	master.get_currentmodel()->remove_typing();
+	master.currentModel()->removeTyping();
 	gui.refresh();
 }
 
 void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 {
-	master.get_currentmodel()->fold_all_atoms();
+	master.currentModel()->foldAllAtoms();
 	gui.refresh();
 }
 
 void AtenForm::on_actionFoldMolecules_triggered(bool checked)
 {
-	master.get_currentmodel()->fold_all_molecules();
+	master.currentModel()->foldAllMolecules();
 	gui.refresh();
 }
 
@@ -56,7 +57,7 @@ void AtenForm::on_actionModelNext_triggered(bool checked)
 	// Get current ID of modeltabs, increase it, and check we're still within range
 	int newid = ui.ModelTabs->currentIndex();
 	newid ++;
-	if (newid > (master.get_nmodels() - 1)) newid = 0;
+	if (newid > (master.nModels() - 1)) newid = 0;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
 }
@@ -66,7 +67,7 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 	// Get current ID of modeltabs, decrease it, and check we're still within range
 	int newid = ui.ModelTabs->currentIndex();
 	newid --;
-	if (newid < 0) newid = master.get_nmodels() - 1;
+	if (newid < 0) newid = master.nModels() - 1;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
 }
@@ -74,8 +75,8 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
 	// Make all atoms in model visible
-	model *m = master.get_currentmodel();
-	for (atom *i = m->get_atoms(); i != NULL; i = i->next)
-		m->set_hidden(i, FALSE);
-	m->log_change(LOG_VISUAL);
+	Model *m = master.currentModel();
+	for (Atom *i = m->atoms(); i != NULL; i = i->next)
+		m->setHidden(i, FALSE);
+	m->logChange(LOG_VISUAL);
 }

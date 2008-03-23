@@ -25,44 +25,44 @@
 #include "gui/gui.h"
 
 // Start GUI
-int commanddata::function_CA_GUI(command *&c, bundle &obj)
+int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 {
 	// If we're in interactive mode, just set program mode and let main.cpp handle it.
-	if (master.get_program_mode() == PM_INTERACTIVE) master.set_program_mode(PM_GUI);
+	if (master.programMode() == PM_INTERACTIVE) master.setProgramMode(PM_GUI);
 	else if (!gui.exists())
 	{
 		// Set program mode and start gui
-		master.set_program_mode(PM_GUI);
+		master.setProgramMode(PM_GUI);
 		// Add empty model if none were specified on the command line
-		if (master.get_nmodels() == 0) model *m = master.add_model();
+		if (master.nModels() == 0) Model *m = master.addModel();
 		gui.run(0, NULL);
 	}
 	return CR_SUCCESS;
 }
 
 // Help function
-int commanddata::function_CA_HELP(command *&c, bundle &obj)
+int CommandData::function_CA_HELP(Command *&c, Bundle &obj)
 {
-	command_action ca = CA_from_text(c->argc(0));
+	CommandAction ca = CA_from_text(c->argc(0));
 	if (ca == CA_NITEMS) msg(DM_NONE,"help: Unrecognised command '%s'.\n",c->argc(0));
-	else if (CA_data[ca].has_arguments()) msg(DM_NONE,"help:  %s  --  %s\n", CA_data[ca].get_keyword(), CA_data[ca].get_syntax());
-	else msg(DM_NONE,"help:  %s %s  --  %s\n", CA_data[ca].get_keyword(), CA_data[ca].get_argtext(), CA_data[ca].get_syntax());
+	else if (CA_data[ca].hasArguments()) msg(DM_NONE,"help:  %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].syntax);
+	else msg(DM_NONE,"help:  %s %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].argText, CA_data[ca].syntax);
 	return CR_SUCCESS;
 }
 
 // Set random seed
-int commanddata::function_CA_SEED(command *&c, bundle &obj)
+int CommandData::function_CA_SEED(Command *&c, Bundle &obj)
 {
 	srand( (unsigned) c->argi(0) );
 	return CR_SUCCESS;
 }
 
 // Quit main program
-int commanddata::function_CA_QUIT(command *&c, bundle &obj)
+int CommandData::function_CA_QUIT(Command *&c, Bundle &obj)
 {
 	// Set program mode here, in case we are running in PM_COMMAND
-	master.set_program_mode(PM_NONE);
+	master.setProgramMode(PM_NONE);
 	// If the GUI is active, close it...
-	if (gui.exists()) gui.save_before_close();
+	if (gui.exists()) gui.saveBeforeClose();
 	return CR_EXIT;
 }

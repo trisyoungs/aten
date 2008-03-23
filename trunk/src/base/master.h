@@ -22,32 +22,34 @@
 #ifndef ATEN_MASTER_H
 #define ATEN_MASTER_H
 
-#include "classes/clipboard.h"
-#include "classes/grid.h"
-#include "classes/forcefield.h"
+//#include "classes/clipboard.h"
+//#include "classes/grid.h"
+//#include "classes/forcefield.h"
 #include "classes/bundle.h"
-#include "methods/sd.h"
-#include "methods/cg.h"
-#include "methods/mc.h"
+#include "classes/cell.h"
 #include "parse/filter.h"
 #include "command/commandlist.h"
 #include "base/cli.h"
 #include <getopt.h>
 
 // Forward Declarations
-class generator;
-class spacegroup;
+class Generator;
+class Spacegroup;
+class Model;
+class Forcefield;
+class Grid;
+class Clipboard;
 
 // Program Modes
-enum prog_mode { PM_COMMAND, PM_INTERACTIVE, PM_GUI, PM_NONE };
+enum ProgramMode { PM_COMMAND, PM_INTERACTIVE, PM_GUI, PM_NONE };
 
 // Master
-class master_data
+class MasterData
 {
 	public:
 	// Constructor / Destructor
-	master_data();
-	~master_data();
+	MasterData();
+	~MasterData();
 	// Remove all dynamic data
 	void clear();
 
@@ -55,221 +57,207 @@ class master_data
 	// Current Objects
 	*/
 	public:
-	// Current object bundle
-	bundle current;
+	// Current object Bundle
+	Bundle current;
 
 	/*
 	// Models
 	*/
 	private:
 	// Internal count for naming new models.
-	int modelid;
+	int modelId_;
 	// List of models
-	list<model> models;
+	List<Model> models_;
 
 	public:
 	// Sets the current active model for editing
-	void set_currentmodel(model*);
+	void setCurrentModel(Model*);
 	// Return current active model for editing
-	model *get_currentmodel() { return current.m; }
+	Model *currentModel() const;
 	// Return first item in the model list
-	model *get_models() { return models.first(); }
+	Model *models() const;
 	// Return nth item in the model list
-	model *get_model(int n) { return models[n]; }
+	Model *model(int n);
 	// Return the current model's index in the model list
-	int get_currentmodelindex() { return models.index_of(current.m); }
+	int currentModelIndex() const;
 	// Return index of specified model
-	int get_modelindex(model *m) { return models.index_of(m); }
+	int modelIndex(Model *m) const;
 	// Return the number of models in the model list
-	int get_nmodels() { return models.size(); }
+	int nModels() const;
 	// Add a new model to the workspace
-	model* add_model();
+	Model* addModel();
 	// Remove specified model from the list
-	void remove_model(model*);
-	// Remove FF references from the model list
-	void dereference_ff(forcefield*);
+	void removeModel(Model*);
 	// Find model by name
-	model *find_model(const char*);
+	Model *findModel(const char *name) const;
 
 	/*
 	// Import / Export
 	*/
 	private:
 	// Load filter(s) from specified file
-	bool load_filter(const char*);
+	bool loadFilter(const char *filename);
 	// Set export partners for import filters
-	void partner_filters();
+	void partnerFilters();
 	// List of file filters 
-	list<filter> filters[FT_NITEMS];
+	List<Filter> filters_[FT_NITEMS];
 
 	public:
 	// Load filters from specified location
-	bool open_filters(const char* dir, bool isdatadir);
+	bool openFilters(const char* dir, bool isdatadir);
 	// Probe file for its format
-	filter *probe_file(const char*, filter_type);
+	Filter *probeFile(const char *filename, FilterType);
 	// Find filter of specified type with nickname provided
-	filter *find_filter(filter_type ft, const char *nickname);
+	Filter *findFilter(FilterType ft, const char *nickname) const;
 	// Return first filter in list (of a given type)
-	filter *get_filters(filter_type ft) { return filters[ft].first(); }
+	Filter *filters(FilterType ft) const;
 
 	/*
 	// Forcefields
 	*/
 	private:
 	// List of loaded forcefields
-	list<forcefield> ffs;
+	List<Forcefield> forcefields_;
 	// Default forcefield to use when no other has been applied
-	forcefield *defaultff;
+	Forcefield *defaultForcefield_;
 
 	public:
 	// Return the first ff in the list
-	forcefield *get_ffs() { return ffs.first(); }
+	Forcefield *forcefields() const;
 	// Return the number of loaded forcefields
-	int get_nffs() { return ffs.size(); }
+	int nForcefields() const;
 	// Set active forcefield
-	void set_currentff(forcefield *ff) { current.ff = ff; }
+	void setCurrentForcefield(Forcefield *ff);
 	// Set active forcefield by ID
-	void set_currentff_by_id(int id) { current.ff = ffs[id]; }
+	void setCurrentForcefield(int id);
 	// Return the active forcefield
-	forcefield *get_currentff() { return current.ff; }
+	Forcefield *currentForcefield() const;
 	// Return ID of current forcefield
-	int get_currentff_id() { return ffs.index_of(current.ff); }
+	int currentForcefieldId() const;
 	// Remove specified forcefield
-	void remove_ff(forcefield*);
+	void removeForcefield(Forcefield*);
+	// Remove FF references from the model list
+	void dereferenceForcefield(Forcefield*);
 	// Load the specified forcefield
-	forcefield *load_ff(const char*);
+	Forcefield *loadForcefield(const char*);
 	// Find forcefield by name
-	forcefield *find_ff(const char*);
-	// Get the current default forcefield
-	forcefield *get_defaultff() { return defaultff; }
+	Forcefield *findForcefield(const char*) const;
 	// Set the default forcefield
-	void set_defaultff(forcefield *ff);
+	void setDefaultForcefield(Forcefield *ff);
+	// Get the current default forcefield
+	Forcefield *defaultForcefield() const;
 
 	/*
 	// Volumetric Grid Data
 	*/
 	private:
 	// Currently loaded grids
-	list<grid> grids;
+	List<Grid> grids_;
 
 	public:
 	// Return list of surfaces
-	grid *get_grids() { return grids.first(); }
+	Grid *grids() const;
 	// Return number of surfaces loaded
-	int get_ngrids() { return grids.size(); }
+	int nGrids() const;
 	// Return specified surface
-	grid *get_grid(int id) { return grids[id]; }
+	Grid *grid(int id);
 	// Add new surface
-	grid *add_grid();
+	Grid *addGrid();
 	// Remove surface
-	void remove_grid(grid *s);
+	void removeGrid(Grid *s);
 
 	/*
 	// Spacegroups
 	*/
 	public:
 	// Spacegroup generators
-	static generator generators[];
+	static Generator generators[];
 	// Spacegroup definitions
-	static spacegroup spacegroups[];
+	static Spacegroup spacegroups[];
 	// Searches for the named spacegroup
-	int find_spacegroup_by_name(const char *name);
+	int findSpacegroupByName(const char *name) const;
 	// Returns cell type of specified spacegroup id
-	cell_type get_spacegroup_celltype(int sg);
+	CellType spacegroupCellType(int sg) const;
 
 	/*
-	// Clipboards
+	// Clipboard
 	*/
 	public:
 	// User clipboard
-	clipboard userclip;
-	// Program clipboard
-	clipboard privclip;
+	Clipboard *userClipboard;
 
 	/*
 	// Locations
 	*/
 	public:
 	// Location of user's home directory
-	dnchar homedir;
+	Dnchar homeDir;
 	// Current working directory
-	dnchar workdir;
+	Dnchar workDir;
 	// Data directory
-	dnchar datadir;
+	Dnchar dataDir;
 
 	/*
 	// Program Modes
 	*/
 	private:
 	// Initialise command function pointers
-	void init_commands();
+	void initCommands();
 	// Current mode of program operation
-	prog_mode mode;
+	ProgramMode programMode_;
 
 	public:
 	// Sets the current program mode
-	void set_program_mode(prog_mode pm) { mode = pm; }
+	void setProgramMode(ProgramMode pm) { programMode_ = pm; }
 	// Return the current program mode
-	prog_mode get_program_mode() { return mode; }
+	ProgramMode programMode() { return programMode_; }
 	// Cached scripts
-	list<commandlist> scripts;
+	List<CommandList> scripts;
 	// Cached commands
-	list<commandlist> commands;
+	List<CommandList> commands;
 	// Script to store temporary typed commands
-	commandlist cmd_script;
+	CommandList tempScript;
 	// Interactive mode command list
-	commandlist i_script;
+	CommandList interactiveScript;
 
 	/*
 	// Building
 	*/
 	private:
 	// Selected drawing element
-	int sketchelement;
+	int sketchElement_;
 
 	public:
 	// Set current drawing element
-	void set_sketchelement(int el) { sketchelement = el; }
+	void setSketchElement(int el) { sketchElement_ = el; }
 	// Return current drawing element
-	int get_sketchelement() { return sketchelement; }
+	int sketchElement() { return sketchElement_; }
 
 	/*
 	// Progress Indicators
 	*/
 	public:
 	// Initialise a progress indicator
-	void initialise_progress(const char *jobtitle, int totalsteps);
+	void initialiseProgress(const char *jobtitle, int totalsteps);
 	// Update the number of steps (returns if the dialog was canceled)
-	bool update_progress(int currentstep);
+	bool updateProgress(int currentstep);
 	// Terminate the current progress
-	void cancel_progress();
+	void cancelProgress();
 
 	/*
 	// CLI
 	*/
 	private:
 	// Print usage information
-	void print_usage();
+	void printUsage() const;
 
 	public:
 	// Prepare CLI debug options
-	void debug_cli(int, char**);
+	void debugCli(int, char**);
 	// Parse command line options
-	int parse_cli(int, char**);
-
-	/*
-	// Methods / Algorithms
-	*/
-	public:
-	// Steepest descent minimiser
-	sd_method sd;
-	// Conjugate gradient minimiser
-	cg_method cg;
-	// Monte Carlo methods
-	mc_method mc;
-
+	int parseCli(int, char**);
 };
 
-extern master_data master;
+extern MasterData master;
 
 #endif

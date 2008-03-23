@@ -11,7 +11,7 @@
 	(at your option) any later version.
 
 	Aten is distributed in the hope that it will be useful,
-	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	but WITHOUT ANY WARRANTY; without even the implied wareadVdwanty of
 	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 	GNU General Public License for more details.
 
@@ -27,42 +27,42 @@
 
 // Forcefield keywords
 const char *FF_dictionary[FFK_NITEMS] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };
-ff_dict FFK_from_text(const char *s)
-	{ return (ff_dict) enum_search("forcefield keyword",FFK_NITEMS,FF_dictionary,s); }
+ForcefieldKeyword FFK_from_text(const char *s)
+	{ return (ForcefieldKeyword) enumSearch("forcefield keyword",FFK_NITEMS,FF_dictionary,s); }
 
 // Local variables
 double escale14 = 0.5;
 double vscale14 = 0.5;
 
 // Load the specified forcefield
-bool forcefield::load(const char *filename)
+bool Forcefield::load(const char *filename)
 {
-	dbg_begin(DM_CALLS,"forcefield::load");
+	dbgBegin(DM_CALLS,"Forcefield::load");
 	bool done, okay;
 	int success, n, m, count;
-	energy_unit ffunit = EU_J, newunit;
+	EnergyUnit ffunit = EU_J, newunit;
 	ifstream fffile(filename,ios::in);
 	if (!fffile.good())
 	{
 		fffile.close();
 		msg(DM_NONE,"Failed to open forcefield file.\n");
-		dbg_end(DM_CALLS,"forcefield::load");
+		dbgEnd(DM_CALLS,"Forcefield::load");
 		return FALSE;
 	}
 	// Grab the path of the forcefield
-	path.set(filename);
+	path_.set(filename);
 	// Now follows blocks of keywords
 	done = FALSE;
 	msg(DM_NONE,"Opening forcefield : %s...\n",filename);
 	do
 	{
 		okay = FALSE;
-		success = parser.get_args_delim(&fffile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_USEQUOTES+PO_SKIPBLANKS);
 		if (success == 1)
 		{
-			msg(DM_NONE,"Error reading FF directive.\n");
+			msg(DM_NONE,"EreadVdwor reading FF directive.\n");
 			fffile.close();
-			dbg_end(DM_CALLS,"forcefield::load");
+			dbgEnd(DM_CALLS,"Forcefield::load");
 			return FALSE;
 		}
 		if (success == -1) break;
@@ -70,8 +70,8 @@ bool forcefield::load(const char *filename)
 		switch (FFK_from_text(parser.argc(0)))
 		{
 			case (FFK_NAME):
-				ffname.set(parser.argc(1));
-				msg(DM_NONE,"\t: '%s'\n",ffname.get());
+				name_.set(parser.argc(1));
+				msg(DM_NONE,"\t: '%s'\n",name_.get());
 				okay = TRUE;
 				break;
 			case (FFK_UNITS):
@@ -84,45 +84,45 @@ bool forcefield::load(const char *filename)
 				}
 				break;
 			case (FFK_RULES):
-				rules = FFR_from_text(parser.argc(1));
-				msg(DM_NONE,"\t: Rule-set to use is '%s'\n",text_from_FFR(rules));
+				rules_ = FFR_from_text(parser.argc(1));
+				msg(DM_NONE,"\t: Rule-set to use is '%s'\n", text_from_FFR(rules_));
 				okay = TRUE;
 				break;
 			case (FFK_TYPES):
-				okay = read_types(fffile);
+				okay = readTypes(fffile);
 				break;
 			case (FFK_GENERATOR):
-				okay = read_generator(fffile);
+				okay = readGenerator(fffile);
 				break;
 			case (FFK_EQUIVALENTS):
-				okay = read_equivalents(fffile);
+				okay = readEquivalents(fffile);
 				break;
 			case (FFK_CONVERT):
 				// Check that generator data has been initialised
-				if (ngendata == 0) msg(DM_NONE, "\t: ERROR - Energetic parameters to convert must be specified *after* 'generator' keyword.\n");
-				else for (n=1; n<parser.get_nargs(); n++) convertgen[parser.argi(n)-1] = TRUE;
-				okay = !(ngendata == 0);
+				if (nGenerators_ == 0) msg(DM_NONE, "\t: ERROR - Energetic parameters to convert must be specified *after* 'generator' keyword.\n");
+				else for (n=1; n<parser.nArgs(); n++) energyGenerators_[parser.argi(n)-1] = TRUE;
+				okay = !(nGenerators_ == 0);
 				break;
 			case (FFK_VDW):
-				okay = read_vdw(fffile);
+				okay = readVdw(fffile);
 				break;
 			case (FFK_BONDS):
-				okay = read_bonds(fffile);
+				okay = readBonds(fffile);
 				break;
 			case (FFK_ANGLES):
-				okay = read_angles(fffile);
+				okay = readAngles(fffile);
 				break;
 			case (FFK_TORSIONS):
-				okay = read_torsions(fffile);
+				okay = readTorsions(fffile);
 				break;
 			case (FFK_VSCALE):
 				vscale14 = parser.argd(1);	// 1-4 VDW scaling
-				msg(DM_NONE,"\t: VDW 1-4 scale factor = %6.3f\n",vscale14);
+				msg(DM_NONE,"\t: VDW 1-4 scale factor = %6.3f\n", vscale14);
 				okay = TRUE;
 				break;
 			case (FFK_ESCALE):
 				escale14 = parser.argd(1);	// 1-4 electrostatic scaling
-				msg(DM_NONE,"\t: Electrostatic 1-4 scale factor = %6.3f\n",vscale14);
+				msg(DM_NONE,"\t: Electrostatic 1-4 scale factor = %6.3f\n", vscale14);
 				okay = TRUE;
 				break;
 			default:
@@ -132,96 +132,96 @@ bool forcefield::load(const char *filename)
 		// Check on 'okay'
 		if (!okay)
 		{
-			//msg(DM_NONE,"Error reading forcefield file. Aborted.\n");
-			dbg_end(DM_CALLS,"forcefield::load");
+			//msg(DM_NONE,"EreadVdwor reading forcefield file. Aborted.\n");
+			dbgEnd(DM_CALLS,"Forcefield::load");
 			fffile.close();
 			return FALSE;
 		}
 	} while ( !fffile.eof() );
 	fffile.close();
 	// Last thing - convert energetic units in the forcefield to the internal units of the program
-	convert_parameters(ffunit);
-	dbg_end(DM_CALLS,"forcefield::load");
+	convertParameters(ffunit);
+	dbgEnd(DM_CALLS,"Forcefield::load");
 	return TRUE;
 }
 
 // Read in forcefield atom types.
-bool forcefield::read_types(ifstream &fffile)
+bool Forcefield::readTypes(ifstream &fffile)
 {
-	dbg_begin(DM_CALLS,"forcefield::read_types");
+	dbgBegin(DM_CALLS,"Forcefield::readTypes");
 	int success, newffid;
 	bool done;
-	ffatom *ffa, *idsearch;
+	ForcefieldAtom *ffa, *idsearch;
 	done = FALSE;
 	// Create _NDEF_ type common to all FFs)
-	ffa = atomtypes.add();
-	ffa->name = "_NDEF_";
-	ffa->ffid = -1;
+	ffa = types_.add();
+	ffa->name_ = "_NDEF_";
+	ffa->typeId_ = -1;
 	done = FALSE;
 	// Format of lines is 'ffid typename element description'
 	do
 	{
-		success = parser.get_args_delim(&fffile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_USEQUOTES+PO_SKIPBLANKS);
 		if (success != 0)
 		{
-			if (success == 1) msg(DM_NONE,"File error while reading atom type description %i.\n", atomtypes.size());
-			if (success == -1) msg(DM_NONE,"End of file while reading atom type description %i.\n", atomtypes.size());
-			dbg_end(DM_CALLS,"forcefield::read_types");
+			if (success == 1) msg(DM_NONE,"File ereadVdwor while reading atom type description %i.\n", types_.nItems());
+			if (success == -1) msg(DM_NONE,"End of file while reading atom type description %i.\n", types_.nItems());
+			dbgEnd(DM_CALLS,"Forcefield::readTypes");
 			return FALSE;
 		}
 		else if (strcmp(parser.argc(0),"end") == 0) break;
 		// Search for this ID to make sure it hasn't already been used
 		newffid = parser.argi(0);
-		idsearch = find_type(newffid);
+		idsearch = findType(newffid);
 		if (idsearch != NULL)
 		{
-			msg(DM_NONE,"Duplicate forcefield type ID '%i' - already used by type '%s'.\n",newffid,idsearch->name.get());
-			dbg_end(DM_CALLS,"forcefield::read_types");
+			msg(DM_NONE,"Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name_.get());
+			dbgEnd(DM_CALLS,"Forcefield::readTypes");
 			return FALSE;
 		}
-		ffa = atomtypes.add();
-		ffa->ffid = newffid;
-		ffa->name = parser.argc(1);
-		ffa->equiv = parser.argc(1);
-		ffa->typedesc.el = elements.find(parser.argc(2),ZM_ALPHA);
-		ffa->description = parser.argc(4);
-		ffa->typedesc.expand(parser.argc(3),this,ffa);
+		ffa = types_.add();
+		ffa->typeId_ = newffid;
+		ffa->name_ = parser.argc(1);
+		ffa->equivalent_ = parser.argc(1);
+		ffa->atomType_.el = elements.find(parser.argc(2),ZM_ALPHA);
+		ffa->description_ = parser.argc(4);
+		ffa->atomType_.expand(parser.argc(3),this,ffa);
 	} while (!done);
-	if (atomtypes.size() == 1)
+	if (types_.nItems() == 1)
 	{
 		msg(DM_NONE,"No atom types specified!\n");
-		dbg_end(DM_CALLS,"forcefield::read_types");
+		dbgEnd(DM_CALLS,"Forcefield::readTypes");
 		return FALSE;
 	}
-	msg(DM_NONE,"\t: Read in %i type descriptions\n",atomtypes.size());
-	dbg_end(DM_CALLS,"forcefield::read_types");
+	msg(DM_NONE,"\t: Read in %i type descriptions\n",types_.nItems());
+	dbgEnd(DM_CALLS,"Forcefield::readTypes");
 	return TRUE;
 }
 
-bool forcefield::read_generator(ifstream &fffile)
+bool Forcefield::readGenerator(ifstream &fffile)
 {
 	// Read in generator data for atom types in rule-based forcefields
 	// We expect there to be the same number of sets of data as there are types...
 	// Argument to 'generator' keyword is number of data per atom
-	dbg_begin(DM_CALLS,"forcefield::read_generator");
+	dbgBegin(DM_CALLS,"Forcefield::readGenerator");
 	int count, success, n;
-	ffatom *ffa;
+	ForcefieldAtom *ffa;
 	bool done = FALSE;
-	// If we are setting ngendata for the first time, allocate convertgen as well
-	if (ngendata == 0)
+	// If we are setting nGenerators_ for the first time, allocate convertgen as well
+	if (nGenerators_ == 0)
 	{
-		convertgen = new bool[ngendata];
-		ngendata = parser.argi(1);
+		energyGenerators_ = new bool[nGenerators_];
+		nGenerators_ = parser.argi(1);
 	}
 	count = 0;
 	do
 	{
-		success = parser.get_args_delim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
 		if (success != 0)
 		{
-			if (success == 1) msg(DM_NONE,"File error while reading generator data for atom %i.\n",count+1);
+			if (success == 1) msg(DM_NONE,"File ereadVdwor while reading generator data for atom %i.\n",count+1);
 			if (success == -1) msg(DM_NONE,"End of file while reading generator data for atom %i.\n",count+1);
-			dbg_end(DM_CALLS,"forcefield::read_generator");
+			dbgEnd(DM_CALLS,"Forcefield::readGenerator");
 			return FALSE;
 		}
 		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
@@ -230,78 +230,78 @@ bool forcefield::read_generator(ifstream &fffile)
 			// Convert type name to internal index and read in generator data...
 			// Format of lines is : ffid  typename data1  data2 ...
 			// Typename is unused, but is present in the file to aid readability
-			ffa = find_type(parser.argi(0));
+			ffa = findType(parser.argi(0));
 			if (ffa == NULL)
 			{
 				msg(DM_NONE,"Unrecognised forcefield atom id in generator list: '%s'\n",parser.argc(0));
-				dbg_end(DM_CALLS,"forcefield::read_generator");
+				dbgEnd(DM_CALLS,"Forcefield::readGenerator");
 				return FALSE;
 			}
-			ffa->generator = new double[ngendata];
-			for (n=0; n<ngendata; n++) ffa->generator[n] = parser.argd(n+2);
+			ffa->generator_ = new double[nGenerators_];
+			for (n=0; n<nGenerators_; n++) ffa->generator_[n] = parser.argd(n+2);
 			count ++;
 		}
 	} while (!done);
-	if (count != atomtypes.size()-1)
+	if (count != types_.nItems()-1)
 	{
-		msg(DM_NONE,"Not all (%i) atom types had generator data defined.\n",atomtypes.size()-count-1);
-		dbg_end(DM_CALLS,"forcefield::read_generator");
+		msg(DM_NONE,"Not all (%i) atom types had generator data defined.\n", types_.nItems()-count-1);
+		dbgEnd(DM_CALLS,"Forcefield::readGenerator");
 		return FALSE;
 	}
-	msg(DM_NONE,"\t: Read in %i generator data for %i atomtypes.\n",ngendata,count);
-	dbg_end(DM_CALLS,"forcefield::read_generator");
+	msg(DM_NONE,"\t: Read in %i generator data for %i atomtypes.\n", nGenerators_, count);
+	dbgEnd(DM_CALLS,"Forcefield::readGenerator");
 	return TRUE;
 }
 
-bool forcefield::read_equivalents(ifstream &fffile)
+bool Forcefield::readEquivalents(ifstream &fffile)
 {
 	// Read in equivalent atom type names.
 	// By default, the 'equiv' name is set to the same as the atomtype name. Here, we search/replace specified
 	// definitions and set the equiv names to the first name in the list. The equivname doesn't have to exist in the
 	// atomtypes itself since the equivalent names are only used in intramolecular parameter searching.
-	dbg_begin(DM_CALLS,"forcefield::read_equivalents");
+	dbgBegin(DM_CALLS,"Forcefield::readEquivalents");
 	int count, success, argpos;
-	ffatom *ffa;
+	ForcefieldAtom *ffa;
 	bool done = FALSE;
 	count = 0;
 	do
 	{
-		success = parser.get_args_delim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
 		if (success != 0)
 		{
-			if (success == 1) msg(DM_NONE,"File error while reading equivalents data for atom %i.\n",count+1);
+			if (success == 1) msg(DM_NONE,"File ereadVdwor while reading equivalents data for atom %i.\n",count+1);
 			if (success == -1) msg(DM_NONE,"End of file while reading equivalents data for atom %i.\n",count+1);
-			dbg_end(DM_CALLS,"forcefield::read_equivalents");
+			dbgEnd(DM_CALLS,"Forcefield::readEquivalents");
 			return FALSE;
 		}
 		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
-			// Format of lines is : equivffname  fftype1  fftype2  ... fftypeN
+			// Format of lines is : equivname_  fftype1  fftype2  ... fftypeN
 			// Search atom types for typenames given in the list
-			for (argpos=1; argpos<parser.get_nargs(); argpos++)
+			for (argpos=1; argpos<parser.nArgs(); argpos++)
 			{
-				for (ffa = atomtypes.first(); ffa != NULL; ffa = ffa->next)
-					if (match_type(ffa->name.get(),parser.argc(argpos)) < 10) ffa->equiv = parser.argc(0);
+				for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)
+					if (matchType(ffa->name_.get(),parser.argc(argpos)) < 10) ffa->equivalent_ = parser.argc(0);
 			}
 			count ++;
 		}
 	} while (!done);
 	msg(DM_NONE,"\t: Processed %i atomtype equivalents.\n",count);
-	dbg_end(DM_CALLS,"forcefield::read_equivalents");
+	dbgEnd(DM_CALLS,"Forcefield::readEquivalents");
 	return TRUE;
 }
 
-bool forcefield::read_vdw(ifstream &fffile)
+bool Forcefield::readVdw(ifstream &fffile)
 {
 	// Format of lines is: 'fftype  charge  data1  data2  ... dataN'
 	// Need not specify the data in the same order as for the type data above,
 	// so search for the fftype read in...
-	dbg_begin(DM_CALLS,"forcefield::read_vdw");
+	dbgBegin(DM_CALLS,"Forcefield::readVdw");
 	int success, count;
-	ffatom *ffa;
+	ForcefieldAtom *ffa;
 	// Get functional form of vdw
-	vdw_func vdwstyle = VF_from_text(parser.argc(1));
+	VdwFunction vdwstyle = VF_from_text(parser.argc(1));
 	if (vdwstyle == VF_NITEMS)
 	{
 		vdwstyle = VF_UNSPECIFIED;
@@ -314,47 +314,47 @@ bool forcefield::read_vdw(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'ffid  fftype   charge  data1  data2  ...  dataN'
-		success = parser.get_args_delim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
 		if (success != 0)
 		{
-			if (success == 1) msg(DM_NONE,"File error reading VDW data for atom %i.\n",count+1);
+			if (success == 1) msg(DM_NONE,"File ereadVdwor reading VDW data for atom %i.\n",count+1);
 			if (success == -1) msg(DM_NONE,"End of file while reading VDW data for atom %i.\n",count+1);
-			dbg_end(DM_CALLS,"forcefield::read_vdw");
+			dbgEnd(DM_CALLS,"Forcefield::readVdw");
 			return FALSE;
 		}
 		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
 		else
 		{
-			ffa = find_type(parser.argi(0));
+			ffa = findType(parser.argi(0));
 			if (ffa == NULL)
 			{
 				msg(DM_NONE,"Unrecognised forcefield atom id in VDW list: '%s'\n",parser.argc(0));
-				dbg_end(DM_CALLS,"forcefield::read_vdw");
+				dbgEnd(DM_CALLS,"Forcefield::readVdw");
 				return FALSE;
 			}
-			ffa->q = parser.argd(2);
-			ffa->params.data[0] = parser.argd(3);
-			ffa->params.data[1] = parser.argd(4);
-			ffa->params.data[2] = parser.argd(5);
-			ffa->set_funcform(vdwstyle);
-			msg(DM_VERBOSE,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->ffid, ffa->name.get(), ffa->params.data[0], ffa->params.data[1], ffa->params.data[2], ffa->q);
+			ffa->charge_ = parser.argd(2);
+			ffa->params_.data[0] = parser.argd(3);
+			ffa->params_.data[1] = parser.argd(4);
+			ffa->params_.data[2] = parser.argd(5);
+			ffa->setVdwForm(vdwstyle);
+			msg(DM_VERBOSE,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId_, ffa->name_.get(), ffa->params_.data[0], ffa->params_.data[1], ffa->params_.data[2], ffa->charge_);
 			count ++;
 		}
 	} while (!done);
 	msg(DM_NONE,"\t: Read in %i atomic VDW parameters\n",count);
-	dbg_end(DM_CALLS,"forcefield::read_vdw");
+	dbgEnd(DM_CALLS,"Forcefield::readVdw");
 	return TRUE;
 }
 
-bool forcefield::read_bonds(ifstream &fffile)
+bool Forcefield::readBonds(ifstream &fffile)
 {
 	// Read in bond specifications
-	dbg_begin(DM_CALLS,"forcefield::read_bonds");
-	ffbound *newffbond;
+	dbgBegin(DM_CALLS,"Forcefield::readBonds");
+	ForcefieldBound *newffbond;
 	bool done = FALSE;
 	int count, success, n;
 	// Get functional form of bond potential
-	bond_func bondstyle = BF_from_text(parser.argc(1));
+	BondFunction bondstyle = BF_from_text(parser.argc(1));
 	if (bondstyle == BF_NITEMS)
 	{
 		bondstyle = BF_UNSPECIFIED;
@@ -366,12 +366,12 @@ bool forcefield::read_bonds(ifstream &fffile)
 	{
 		// Format of lines is: 'fftype1  fftype2   data1  data2  ...  dataN'
 		// N.B. If data1 == 'same' then reuse the last data read in.
-		success = parser.get_args_delim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
 		if (success != 0)
 		{
-			if (success == 1) msg(DM_NONE,"File error reading bond data %i.\n",count+1);
-			if (success == -1) msg(DM_NONE,"End of file error reading bond data %i.\n",count+1);
-			dbg_end(DM_CALLS,"forcefield::read_bonds");
+			if (success == 1) msg(DM_NONE,"File ereadVdwor reading bond data %i.\n",count+1);
+			if (success == -1) msg(DM_NONE,"End of file ereadVdwor reading bond data %i.\n",count+1);
+			dbgEnd(DM_CALLS,"Forcefield::readBonds");
 			return FALSE;
 		}
 		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
@@ -381,34 +381,34 @@ bool forcefield::read_bonds(ifstream &fffile)
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<2; n++)
 			{
-				if ((strchr(parser.argc(n),'*') == NULL) && (find_type(parser.argc(n)) == NULL))
-					msg(DM_NONE,"\t... Warning - bond atom '%s' does not exist in the forcefield!\n",parser.argc(n));
+				if ((strchr(parser.argc(n),'*') == NULL) && (findType(parser.argc(n)) == NULL))
+					msg(DM_NONE,"\t... Warning - bond atom '%s' does not exist in the forcefield!\n", parser.argc(n));
 			}
 			// Create new ff_bond structure
-			newffbond = bonds.add();
-			newffbond->set_type(FFC_BOND);
-			newffbond->types[0] = parser.argc(0);
-			newffbond->types[1] = parser.argc(1);
-			newffbond->set_bond_style(bondstyle);
-			newffbond->params.data[0] = parser.argd(2);
-			newffbond->params.data[1] = parser.argd(3);
-			msg(DM_VERBOSE,"BOND %i : %s  %s  %8.4f %8.4f\n",n,newffbond->types[0].get(), newffbond->types[1].get() , newffbond->params.data[0], newffbond->params.data[1]); 
+			newffbond = bonds_.add();
+			newffbond->setType(FFC_BOND);
+			newffbond->atomTypes_[0] = parser.argc(0);
+			newffbond->atomTypes_[1] = parser.argc(1);
+			newffbond->setBondStyle(bondstyle);
+			newffbond->params_.data[0] = parser.argd(2);
+			newffbond->params_.data[1] = parser.argd(3);
+			msg(DM_VERBOSE,"BOND %i : %s  %s  %8.4f %8.4f\n", n, newffbond->atomTypes_[0].get(), newffbond->atomTypes_[1].get() , newffbond->params_.data[0], newffbond->params_.data[1]); 
 			count ++;
 		}
 	} while (!done);
 	msg(DM_NONE,"\t: Read in %i bond definitions (%s)\n",count,text_from_BF(bondstyle));
-	dbg_end(DM_CALLS,"forcefield::read_bonds");
+	dbgEnd(DM_CALLS,"Forcefield::readBonds");
 	return TRUE;
 }
 
-bool forcefield::read_angles(ifstream &fffile)
+bool Forcefield::readAngles(ifstream &fffile)
 {
 	// Read in angle specifications
-	dbg_begin(DM_CALLS,"forcefield::read_angles");
-	ffbound *newffangle;
+	dbgBegin(DM_CALLS,"Forcefield::readAngles");
+	ForcefieldBound *newffangle;
 	int count, success, n;
 	// Grab functional form of angle potential
-	angle_func anglestyle = AF_from_text(parser.argc(1));
+	AngleFunction anglestyle = AF_from_text(parser.argc(1));
 	if (anglestyle == AF_NITEMS)
 	{
 		anglestyle = AF_UNSPECIFIED;
@@ -421,12 +421,12 @@ bool forcefield::read_angles(ifstream &fffile)
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  data1  data2  ...  dataN'
 		// N.B. If data1 == 'same' then reuse the last data read in.
-		success = parser.get_args_delim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
 		if (success != 0)
 		{
-			if (success == 1) msg(DM_NONE,"File error reading angle data %i.\n",count+1);
-			if (success == -1) msg(DM_NONE,"End of file error reading angle data %i.\n",count+1);
-			dbg_end(DM_CALLS,"forcefield::read_angles");
+			if (success == 1) msg(DM_NONE,"File ereadVdwor reading angle data %i.\n",count+1);
+			if (success == -1) msg(DM_NONE,"End of file ereadVdwor reading angle data %i.\n",count+1);
+			dbgEnd(DM_CALLS,"Forcefield::readAngles");
 			return FALSE;
 		}
 		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
@@ -436,35 +436,35 @@ bool forcefield::read_angles(ifstream &fffile)
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<3; n++)
 			{
-				if ((strchr(parser.argc(n),'*') == NULL) && (find_type(parser.argc(n)) == NULL))
+				if ((strchr(parser.argc(n),'*') == NULL) && (findType(parser.argc(n)) == NULL))
 					msg(DM_NONE,"\t... Warning - angle atom '%s' does not exist in the forcefield!\n",parser.argc(n));
 			}
 			// Create new ff_angle structure
-			newffangle = angles.add();
-			newffangle->set_type(FFC_ANGLE);
-			newffangle->types[0] = parser.argc(0);
-			newffangle->types[1] = parser.argc(1);
-			newffangle->types[2] = parser.argc(2);
-			newffangle->set_angle_style(anglestyle);
-			newffangle->params.data[0] = parser.argd(3);
-			newffangle->params.data[1] = parser.argd(4);
-			msg(DM_VERBOSE,"ANGLE %i : %s  %s  %s  %8.4f %8.4f\n",n,newffangle->types[0].get(), newffangle->types[1].get(), newffangle->types[2].get(), newffangle->params.data[0], newffangle->params.data[1]); 
+			newffangle = angles_.add();
+			newffangle->setType(FFC_ANGLE);
+			newffangle->atomTypes_[0] = parser.argc(0);
+			newffangle->atomTypes_[1] = parser.argc(1);
+			newffangle->atomTypes_[2] = parser.argc(2);
+			newffangle->setAngleStyle(anglestyle);
+			newffangle->params_.data[0] = parser.argd(3);
+			newffangle->params_.data[1] = parser.argd(4);
+			msg(DM_VERBOSE,"ANGLE %i : %s  %s  %s  %8.4f %8.4f\n", n, newffangle->atomTypes_[0].get(), newffangle->atomTypes_[1].get(), newffangle->atomTypes_[2].get(), newffangle->params_.data[0], newffangle->params_.data[1]); 
 			count ++;
 		}
 	} while (!done);
 	msg(DM_NONE,"\t: Read in %i angle definitions (%s)\n",count,text_from_AF(anglestyle));
-	dbg_end(DM_CALLS,"forcefield::read_angles");
+	dbgEnd(DM_CALLS,"Forcefield::readAngles");
 	return TRUE;
 }
 
-bool forcefield::read_torsions(ifstream &fffile)
+bool Forcefield::readTorsions(ifstream &fffile)
 {
 	// Read in torsion data
-	dbg_begin(DM_CALLS,"forcefield::read_torsions");
-	ffbound *newfftorsion;
+	dbgBegin(DM_CALLS,"Forcefield::readTorsions");
+	ForcefieldBound *newfftorsion;
 	int count, success, n;
 	// Get functional form of torsion potential
-	torsion_func torsionstyle = TF_from_text(parser.argc(1));
+	TorsionFunction torsionstyle = TF_from_text(parser.argc(1));
 	if (torsionstyle == TF_NITEMS)
 	{
 		torsionstyle = TF_UNSPECIFIED;
@@ -477,12 +477,12 @@ bool forcefield::read_torsions(ifstream &fffile)
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  fftype4  data1  data2  ...  dataN'
 		// N.B. If data1 == 'same' then reuse the last data read in.
-		success = parser.get_args_delim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
 		if (success != 0)
 		{
-			if (success == 1) msg(DM_NONE,"File error reading torsion data %i.\n",count+1);
-			if (success == -1) msg(DM_NONE,"End of file error reading torsion data %i.\n",count+1);
-			dbg_end(DM_CALLS,"forcefield::read_torsions");
+			if (success == 1) msg(DM_NONE,"File ereadVdwor reading torsion data %i.\n",count+1);
+			if (success == -1) msg(DM_NONE,"End of file ereadVdwor reading torsion data %i.\n",count+1);
+			dbgEnd(DM_CALLS,"Forcefield::readTorsions");
 			return FALSE;
 		}
 		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
@@ -492,28 +492,28 @@ bool forcefield::read_torsions(ifstream &fffile)
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<4; n++)
 			{
-				if ((strchr(parser.argc(n),'*') == NULL) && (find_type(parser.argc(n)) == NULL))
+				if ((strchr(parser.argc(n),'*') == NULL) && (findType(parser.argc(n)) == NULL))
 					msg(DM_NONE,"\t... Warning - torsion atom '%s' does not exist in the forcefield!\n",parser.argc(n));
 			}
 			// Create new ff_angle structure
-			newfftorsion = torsions.add();
-			newfftorsion->set_type(FFC_TORSION);
-			newfftorsion->types[0] = parser.argc(0);
-			newfftorsion->types[1] = parser.argc(1);
-			newfftorsion->types[2] = parser.argc(2);
-			newfftorsion->types[3] = parser.argc(3);
-			newfftorsion->set_torsion_style(torsionstyle);
-			newfftorsion->params.data[0] = parser.argd(4);
-			newfftorsion->params.data[1] = parser.argd(5);
-			newfftorsion->params.data[2] = parser.argd(6);
-			newfftorsion->params.data[3] = parser.argd(7);
-			newfftorsion->params.data[TF_ESCALE] = escale14;
-			newfftorsion->params.data[TF_VSCALE] = vscale14;
-			msg(DM_VERBOSE,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f\n",n, newfftorsion->types[0].get(), newfftorsion->types[1].get(), newfftorsion->types[2].get(), newfftorsion->types[3].get(), newfftorsion->params.data[0], newfftorsion->params.data[1], newfftorsion->params.data[2], newfftorsion->params.data[3]); 
+			newfftorsion = torsions_.add();
+			newfftorsion->setType(FFC_TORSION);
+			newfftorsion->atomTypes_[0] = parser.argc(0);
+			newfftorsion->atomTypes_[1] = parser.argc(1);
+			newfftorsion->atomTypes_[2] = parser.argc(2);
+			newfftorsion->atomTypes_[3] = parser.argc(3);
+			newfftorsion->setTorsionStyle(torsionstyle);
+			newfftorsion->params_.data[0] = parser.argd(4);
+			newfftorsion->params_.data[1] = parser.argd(5);
+			newfftorsion->params_.data[2] = parser.argd(6);
+			newfftorsion->params_.data[3] = parser.argd(7);
+			newfftorsion->params_.data[TF_ESCALE] = escale14;
+			newfftorsion->params_.data[TF_VSCALE] = vscale14;
+			msg(DM_VERBOSE,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->atomTypes_[0].get(), newfftorsion->atomTypes_[1].get(), newfftorsion->atomTypes_[2].get(), newfftorsion->atomTypes_[3].get(), newfftorsion->params_.data[0], newfftorsion->params_.data[1], newfftorsion->params_.data[2], newfftorsion->params_.data[3]); 
 			count ++;
 		}
 	} while (!done);
 	msg(DM_NONE,"\t: Read in %i torsion definitions (%s)\n",count,text_from_TF(torsionstyle));
-	dbg_end(DM_CALLS,"forcefield::read_torsions");
+	dbgEnd(DM_CALLS,"Forcefield::readTorsions");
 	return TRUE;
 }

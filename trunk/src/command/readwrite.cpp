@@ -25,18 +25,18 @@
 #include <fstream>
 
 // Add file read option
-int commanddata::function_CA_ADDREADOPTION(command *&c, bundle &obj)
+int CommandData::function_CA_ADDREADOPTION(Command *&c, Bundle &obj)
 {
 	// Get parse option from variable
-	parse_option po = PO_from_text(c->argc(0));
-	if (po != PO_NITEMS) c->get_parent()->add_readoption(po);
+	ParseOption po = PO_from_text(c->argc(0));
+	if (po != PO_NITEMS) c->parent()->addReadOption(po);
 	return CR_SUCCESS;
 }
 
 // Search for line containing specified string
-int commanddata::function_CA_FIND(command *&c, bundle &obj)
+int CommandData::function_CA_FIND(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -53,7 +53,7 @@ int commanddata::function_CA_FIND(command *&c, bundle &obj)
 		{
 			iresult = 1;
 			// Store the line if a third variable was given
-			if (c->has_arg(2)) c->arg(2)->set(linefromfile);
+			if (c->hasArg(2)) c->arg(2)->set(linefromfile);
 		}
 		else if (inputfile->eof() || inputfile->fail()) iresult = 0;
 	} while (iresult == -1);
@@ -62,10 +62,10 @@ int commanddata::function_CA_FIND(command *&c, bundle &obj)
 }
 
 // Read N characters from unformatted file
-int commanddata::function_CA_READCHARS(command *&c, bundle &obj)
+int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
 {
 	static char readc[512];
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -78,9 +78,9 @@ int commanddata::function_CA_READCHARS(command *&c, bundle &obj)
 }
 
 // Read double from unformatted file
-int commanddata::function_CA_READDOUBLE(command *&c, bundle &obj)
+int CommandData::function_CA_READDOUBLE(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -94,9 +94,9 @@ int commanddata::function_CA_READDOUBLE(command *&c, bundle &obj)
 }
 
 // Read integer from unformatted file
-int commanddata::function_CA_READINTEGER(command *&c, bundle &obj)
+int CommandData::function_CA_READINTEGER(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -110,51 +110,51 @@ int commanddata::function_CA_READINTEGER(command *&c, bundle &obj)
 }
 
 // Read line and parse with format
-int commanddata::function_CA_READLINE(command *&c, bundle &obj)
+int CommandData::function_CA_READLINE(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
 		return CR_FAIL;
 	}
-	parser.get_args_formatted(inputfile,c->get_parent()->get_readoptions(),c->get_format());
+	parser.getArgsFormatted(inputfile,c->parent()->readOptions(),c->format());
 	return CR_SUCCESS;
 }
 
 // Get next whitespace-delimited argument from file
-int commanddata::function_CA_READNEXT(command *&c, bundle &obj)
+int CommandData::function_CA_READNEXT(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
 		return CR_FAIL;
 	}
-	c->arg(0)->set(parser.get_arg_delim(inputfile));
+	c->arg(0)->set(parser.getArgDelim(inputfile));
 	return CR_SUCCESS;
 }
 
 // Parse given variable with format
-int commanddata::function_CA_READVAR(command *&c, bundle &obj)
+int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
 {
-	parser.get_args_formatted(c->argc(0),c->get_parent()->get_readoptions(),c->get_format());
+	parser.getArgsFormatted(c->argc(0),c->parent()->readOptions(),c->format());
 	return CR_SUCCESS;
 }
 
 // Remove file read option
-int commanddata::function_CA_REMOVEREADOPTION(command *&c, bundle &obj)
+int CommandData::function_CA_REMOVEREADOPTION(Command *&c, Bundle &obj)
 {
 	// Get parse option from variable
-	parse_option po = PO_from_text(c->argc(0));
-	if (po != PO_NITEMS) c->get_parent()->remove_readoption(po);
+	ParseOption po = PO_from_text(c->argc(0));
+	if (po != PO_NITEMS) c->parent()->removeReadOption(po);
 	return CR_SUCCESS;
 }
 
 // Go to start of current file
-int commanddata::function_CA_REWIND(command *&c, bundle &obj)
+int CommandData::function_CA_REWIND(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -165,9 +165,9 @@ int commanddata::function_CA_REWIND(command *&c, bundle &obj)
 }
 
 // Discard N characters from unformatted file
-int commanddata::function_CA_SKIPCHARS(command *&c, bundle &obj)
+int CommandData::function_CA_SKIPCHARS(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
@@ -178,29 +178,29 @@ int commanddata::function_CA_SKIPCHARS(command *&c, bundle &obj)
 }
 
 // Skip line(s) of file
-int commanddata::function_CA_SKIPLINE(command *&c, bundle &obj)
+int CommandData::function_CA_SKIPLINE(Command *&c, Bundle &obj)
 {
-	ifstream *inputfile = c->get_parent()->get_infile();
+	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
 		msg(DM_NONE,"No input file active.\n");
 		return CR_FAIL;
 	}
-	if (c->has_arg(0)) parser.skip_lines(inputfile,c->argi(0));
-	else parser.skip_lines(inputfile,1);
+	if (c->hasArg(0)) parser.skipLines(inputfile,c->argi(0));
+	else parser.skipLines(inputfile,1);
 	return CR_SUCCESS;
 }
 
 // Write line with format
-int commanddata::function_CA_WRITELINE(command *&c, bundle &obj)
+int CommandData::function_CA_WRITELINE(Command *&c, Bundle &obj)
 {
-	ofstream *outputfile = c->get_parent()->get_outfile();
+	ofstream *outputfile = c->parent()->outputFile();
 	if (outputfile == NULL)
 	{
 		msg(DM_NONE,"No output file active.\n");
 		return CR_FAIL;
 	}
-	*outputfile << c->get_format()->create_string();
+	*outputfile << c->format()->createString();
 	*outputfile << "\n";
 	return CR_SUCCESS;
 }

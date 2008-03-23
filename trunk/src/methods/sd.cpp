@@ -22,92 +22,104 @@
 #include "base/elements.h"
 #include "methods/sd.h"
 #include "model/model.h"
-#include "classes/pattern.h"
 #include "classes/energystore.h"
-#include "base/master.h"
-#include "base/prefs.h"
 #include "gui/gui.h"
 
+// Static Singleton
+MethodSd sd;
+
 // Constructor
-sd_method::sd_method()
+MethodSd::MethodSd()
 {
-	ncycles = 100;
+	nCycles_ = 100;
+}
+
+// Set maximum number of cycles to perform
+void MethodSd::setNCycles(int i)
+{
+	nCycles_ = i;
+}
+
+// Get maximum number of  for MC move
+int MethodSd::nCycles() const
+{
+	return nCycles_;
 }
 
 // Minimise Energy w.r.t. coordinates by Steepest Descent
-void sd_method::minimise(model* srcmodel, double econ, double fcon)
+void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
-	dbg_begin(DM_CALLS,"sd_method::minimise");
+	dbgBegin(DM_CALLS,"MethodSd::minimise");
 	int cycle, m, i;
-	double enew, ecurrent, edelta, rmscurrent, rmsnew, fdelta;
-	atom **modelatoms;
-	bool linedone, converged;
+	double newEnergy, currentEnergy, deltaEnergy, currentRms, newRms, fdelta;
+	Atom **modelAtoms;
+	bool lineDone, converged;
 
 	/*
 	// Prepare the calculation
 	*/
 	// First, create expression for the current model and assign charges
-	if (!srcmodel->create_expression())
+	if (!srcmodel->createExpression())
 	{
-	        dbg_end(DM_CALLS,"sd_method::minimise");
+	        dbgEnd(DM_CALLS,"MethodSd::minimise");
 	        return;
 	}
 	
 	// Calculate initial reference energy and RMS force
-	modelatoms = srcmodel->get_atomarray();
-	ecurrent = srcmodel->total_energy(srcmodel);
-	srcmodel->calculate_forces(srcmodel);
-	rmscurrent = srcmodel->calculate_rms_force();
+	modelAtoms = srcmodel->atomArray();
+	currentEnergy = srcmodel->totalEnergy(srcmodel);
+	srcmodel->calculateForces(srcmodel);
+	currentRms = srcmodel->calculateRmsForce();
 	srcmodel->energy.print();
 
 	converged = FALSE;
-	linedone = FALSE;
+	lineDone = FALSE;
 
 	msg(DM_NONE,"Step         Energy          DeltaE          RMS Force\n");
-	msg(DM_NONE,"Init  %15.5e          ---      %15.5e\n",ecurrent,rmscurrent);
-	gui.progress_create("Minimising (SD)", ncycles);
+	msg(DM_NONE,"Init  %15.5e          ---      %15.5e\n",currentEnergy,currentRms);
+	gui.progressCreate("Minimising (SD)", nCycles_);
 
-	for (cycle=0; cycle<ncycles; cycle++)
+	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Calculate current forces which will be our gradient vector
-		srcmodel->zero_forces();
-		srcmodel->calculate_forces(srcmodel);
-		srcmodel->zero_forces_fixed();
+		srcmodel->zeroForces();
+		srcmodel->calculateForces(srcmodel);
+		srcmodel->zeroForcesFixed();
 		// We need to (do we?) define some sort of length scale so we take sensible steps along the gradient vector.
 		//srcmodel->normalise_forces(1.0);
-		for (i=0; i<srcmodel->get_natoms(); i++) modelatoms[i]->f() /= elements.mass(modelatoms[i]);
+		for (i=0; i<srcmodel->nAtoms(); i++) modelAtoms[i]->f() /= elements.atomicMass(modelAtoms[i]);
 
 		// Perform linesearch along the gradient vector
-		if (!gui.progress_update(cycle)) linedone = TRUE;
+		if (!gui.progressUpdate(cycle)) lineDone = TRUE;
 		else
 		{
-			enew = line_minimise(srcmodel);
-			edelta = enew - ecurrent;
-			rmsnew = srcmodel->calculate_rms_force();
-			fdelta = rmsnew - rmscurrent;
+			newEnergy = lineMinimise(srcmodel);
+			deltaEnergy = newEnergy - currentEnergy;
+			newRms = srcmodel->calculateRmsForce();
+			fdelta = newRms - currentRms;
 			// Check convergence criteria
-			if ((fabs(edelta) < econ) && (fabs(fdelta) < fcon)) converged = TRUE;
-			ecurrent = enew;
-			rmscurrent = rmsnew;
+			if ((fabs(deltaEnergy) < econ) && (fabs(fdelta) < fcon)) converged = TRUE;
+			currentEnergy = newEnergy;
+			currentRms = newRms;
 		}
 
 		// Print out the step data
-		if (prefs.update_energy(cycle+1)) msg(DM_NONE,"%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,ecurrent,edelta,rmscurrent);
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg(DM_NONE,"%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,currentEnergy,deltaEnergy,currentRms);
 
-		if (linedone || converged) break;
+		if (lineDone || converged) break;
 	}
-	gui.progress_terminate();
+	gui.progressTerminate();
 
 	if (converged) msg(DM_NONE,"Steepest descent converged in %i steps.\n",cycle+1);
-	else msg(DM_NONE,"Steepest descent did not converge within %i steps.\n",ncycles);
+	else msg(DM_NONE,"Steepest descent did not converge within %i steps.\n",nCycles_);
 	msg(DM_NONE,"Final energy:\n");
-	ecurrent = srcmodel->total_energy(srcmodel);
+	currentEnergy = srcmodel->totalEnergy(srcmodel);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
-	srcmodel->calculate_forces(srcmodel);
-	srcmodel->update_measurements();
-	srcmodel->log_change(LOG_COORDS);
-	dbg_end(DM_CALLS,"sd_method::minimise");
+	srcmodel->calculateForces(srcmodel);
+	srcmodel->updateMeasurements();
+	srcmodel->logChange(LOG_COORDS);
+	dbgEnd(DM_CALLS,"MethodSd::minimise");
 }
 

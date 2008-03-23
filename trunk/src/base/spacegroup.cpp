@@ -20,17 +20,15 @@
 */
 
 #include "base/master.h"
+#include "base/spacegroup.h"
 
 // Destructors
-spacegroup::~spacegroup()
+Spacegroup::~Spacegroup()
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_SPACEGROUP] ++;
-	#endif
 }
 
 // Define spacegroups and their symmetry generators
-spacegroup master_data::spacegroups[] = {
+Spacegroup MasterData::spacegroups[] = {
 	{ "None",	"None",			  0},	//   0 (no spacegroup)
 	{ "P1",		"<i>P</i>1",		  1,	//   1
 		{    0 } },
@@ -500,12 +498,12 @@ void symmop::set(const char *xyzstr)
 	// Sets the rotation matrix and translation vector.
 	// String format is, for example, "-y,x,z,0.0,0.0,0.5", corresponding to a matrix whose rows are (0,-1,0), (1,0,0), and (0,0,1) respectively,
 	// and a translation vector of (0,0,0.5)
-	dbg_begin(DM_CALLS,"symmop::set");
+	dbgBegin(DM_CALLS,"symmop::set");
 	static int n,m,i;
-	static dnchar temps, s;
+	static Dnchar temps, s;
 	static char dat[32];
 	s = xyzstr;
-	vec3<double> v;
+	Vec3<double> v;
 	char *c;
 	// First three args are x, y, and z vectors in the rotation matrix
 	for (n=0; n<3; n++)
@@ -543,7 +541,7 @@ void symmop::set(const char *xyzstr)
 		translation.set(n-3,atof(temps.get()));
 	}
 	identity = FALSE;
-	dbg_end(DM_CALLS,"symmop::set");
+	dbgEnd(DM_CALLS,"symmop::set");
 }
 
 // Set from xyz string
@@ -551,11 +549,11 @@ void symmop::set_from_xyz(const char *xyzstr)
 {
 	// Sets the rotation matrix and translation vector.
 	// String format is, for example, "-y,x,z+1/2", corresponding to a matrix whose rows are (0,-1,0), (1,0,0), and (0,0,1) respectively,
-	// and a translation vector of (0,0,0.5). Detect if an identity transformation (x,y,z,0,0,0) is passed and flag 'identity' variable.	dbg_begin(DM_CALLS,"symmop::set_from_xyz");
+	// and a translation vector of (0,0,0.5). Detect if an identity transformation (x,y,z,0,0,0) is passed and flag 'identity' variable.	dbgBegin(DM_CALLS,"symmop::set_from_xyz");
 	int n,m,i,pos;
-	dnchar temps, s, dat, temp2;
+	Dnchar temps, s, dat, temp2;
 	s = xyzstr;
-	vec3<double> v;
+	Vec3<double> v;
 	char c;
 	// Slightly different approach. First  find the x/y/z and any + or - coming before it. Remove these from the string,
 	// and whatever remains should be the translation component.
@@ -616,7 +614,7 @@ void symmop::set_from_xyz(const char *xyzstr)
 	}
 	// Print out a message if we detected this was the identity operator
 	if (identity) msg(DM_NONE,"Added an identity operator - will be ignored in symmetry transformation.\n");
-	dbg_end(DM_CALLS,"symmop::set_from_xyz");
+	dbgEnd(DM_CALLS,"symmop::set_from_xyz");
 }
 */
 

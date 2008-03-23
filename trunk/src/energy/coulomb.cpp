@@ -30,141 +30,141 @@
 
 // Calculate the internal coulomb energy of the pattern.
 // Consider only the intrapattern interactions of individual molecules  within this pattern.
-void pattern::coulomb_intrapattern_energy(model *srcmodel, energystore *estore, int molecule)
+void Pattern::coulombIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
-	dbg_begin(DM_CALLS,"pattern::coulomb_intrapattern_energy");
+	dbgBegin(DM_CALLS,"Pattern::coulombIntraPatternEnergy");
 	static int n,i,j,aoff,m1;
-	static vec3<double> mim_i;
+	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy_intra, energy, cutoff;
-	cutoff = prefs.get_elec_cutoff();
-	patbound *pb;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
+	cutoff = prefs.elecCutoff();
+	PatternBound *pb;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
-	aoff = (molecule == -1 ? startatom : startatom + molecule*natoms);
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nmols : molecule+1); m1++)
+	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
 	{
 		// Add on contributions for connectivities of 0 (unbound) or > 3
-		for (i=0; i<natoms; i++)
+		for (i=0; i<nAtoms_; i++)
 		{
-			for (j=i+1; j<natoms; j++)
+			for (j=i+1; j<nAtoms_; j++)
 			{
-				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
+				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
 				{
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(),modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					energy  = (modelatoms[i+aoff]->get_charge() * modelatoms[j+aoff]->get_charge()) / (rij * rij);
-					conmat[i][j] == 0 ? energy_inter += energy : energy_intra += energy;
+					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) / (rij * rij);
+					conMat_[i][j] == 0 ? energy_inter += energy : energy_intra += energy;
 				}
 			}
 		}
 		// Add on contributions from torsions (which are scaled)
-		for (pb = torsions.first(); pb != NULL; pb = pb->next)
+		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 		{
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(3) + aoff;
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(3) + aoff;
 			mim_i = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
-			energy  = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij * rij);
-			energy *= pb->get_data()->get_params().data[TF_ESCALE];
+			energy  = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij * rij);
+			energy *= pb->data()->params().data[TF_ESCALE];
 			energy_intra += energy;
 		}
-		aoff += natoms;
+		aoff += nAtoms_;
 	}
-	energy_intra = energy_intra * prefs.elec_convert;
-	energy_inter = energy_inter * prefs.elec_convert;
-	estore->add(ET_COULOMBINTRA,energy_intra,id);
-	estore->add(ET_COULOMBINTER,energy_inter,id,id);
-	dbg_end(DM_CALLS,"pattern::coulomb_intrapattern_energy");
+	energy_intra = energy_intra * prefs.elecConvert();
+	energy_inter = energy_inter * prefs.elecConvert();
+	estore->add(ET_COULOMBINTRA,energy_intra,id_);
+	estore->add(ET_COULOMBINTER,energy_inter,id_,id_);
+	dbgEnd(DM_CALLS,"Pattern::coulombIntraPatternEnergy");
 }
 
 // Calculate the coulomb contribution to the energy from interactions between different molecules of this pattern and the one supplied
-void pattern::coulomb_interpattern_energy(model *srcmodel, pattern *xpnode, energystore *estore, int molecule)
+void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, EnergyStore *estore, int molecule)
 {
-	dbg_begin(DM_CALLS,"pattern::coulomb_interpattern_energy");
+	dbgBegin(DM_CALLS,"Pattern::coulombInterPatternEnergy");
 	static int n1, n2, i, j, aoff1, aoff2, m1, m2, finish1, start2, finish2, a1, a2;
-	static vec3<double> mim_i;
+	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy, cutoff;
-	cutoff = prefs.get_elec_cutoff();
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
+	cutoff = prefs.elecCutoff();
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
 	energy_inter = 0.0;
-	aoff1 = startatom;
+	aoff1 = startAtom_;
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-	if ((this == xpnode) && (molecule == -1)) finish1 = nmols - 1;
-	else finish1 = nmols;
+	if ((this == xpnode) && (molecule == -1)) finish1 = nMols_ - 1;
+	else finish1 = nMols_;
 	for (m1=0; m1<finish1; m1++)
 	{
 		if (molecule == -1)
 		{
 			start2 = (this == xpnode ? m1 + 1 : 0);
-			finish2 = xpnode->nmols;
+			finish2 = xpnode->nMols_;
 		}
 		else
 		{
 			start2 = molecule;
 			finish2 = molecule + 1;
 			// If the patterns are the same we must exclude molecule == m1
-			if ((this == xpnode) && (molecule == m1)) { aoff1 += natoms; continue; }
+			if ((this == xpnode) && (molecule == m1)) { aoff1 += nAtoms_; continue; }
 		}
 		//this == xpnode ? start = m1 + 1 : start = 0;
-		aoff2 = xpnode->startatom + start2*xpnode->natoms;
+		aoff2 = xpnode->startAtom_ + start2*xpnode->nAtoms_;
 		for (m2=start2; m2<finish2; m2++)
 		{
-			for (a1=0; a1<natoms; a1++)
+			for (a1=0; a1<nAtoms_; a1++)
 			{
 				i = a1 + aoff1;
-				for (a2=0; a2<xpnode->natoms; a2++)
+				for (a2=0; a2<xpnode->nAtoms_; a2++)
 		  		{
 					j = a2 + aoff2;
 					mim_i = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 	//printf("Coulomb ij %i %i %8.4f %8.4f %8.4f \n",i,j,xcfg->q[i],xcfg->q[j],rij);
-					energy  = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij * rij);
+					energy  = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij * rij);
 					energy_inter += energy;
 				}
 			}
-			aoff2 += xpnode->natoms;
+			aoff2 += xpnode->nAtoms_;
 		}
-		aoff1 += natoms;
+		aoff1 += nAtoms_;
 	}
-	energy_inter = energy_inter * prefs.elec_convert;
-	estore->add(ET_COULOMBINTER,energy_inter,id,xpnode->id);
-	dbg_end(DM_CALLS,"pattern::coulomb_interpattern_energy");
+	energy_inter = energy_inter * prefs.elecConvert();
+	estore->add(ET_COULOMBINTER,energy_inter,id_,xpnode->id_);
+	dbgEnd(DM_CALLS,"Pattern::coulombInterPatternEnergy");
 }
 
 // Calculate the internal coulomb forces in the pattern.
 // Consider only the intrapattern interactions of individual molecules  within this pattern.
-void pattern::coulomb_intrapattern_forces(model *srcmodel)
+void Pattern::coulombIntraPatternForces(Model *srcmodel)
 {
-	dbg_begin(DM_CALLS,"pattern::coulomb_intrapattern_forces");
+	dbgBegin(DM_CALLS,"Pattern::coulombIntraPatternForces");
 	static int n, i, j, aoff, m1;
-	static vec3<double> mim_i, f_i, tempf;
+	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
-	cutoff = prefs.get_elec_cutoff();
-	patbound *pb;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
-	aoff = startatom;
-	for (m1=0; m1<nmols; m1++)
+	cutoff = prefs.elecCutoff();
+	PatternBound *pb;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
+	aoff = startAtom_;
+	for (m1=0; m1<nMols_; m1++)
 	{
 		// Add on contributions for connectivities of 0 (unbound) or > 3
-		for (i=0; i<natoms; i++)
+		for (i=0; i<nAtoms_; i++)
 		{
 			// Copy forces for atom i
 			f_i = modelatoms[i+aoff]->f();
-			for (j=i+1; j<natoms; j++)
+			for (j=i+1; j<nAtoms_; j++)
 			{
-				if ((conmat[i][j] > 3) || (conmat[i][j] == 0))
+				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
 				{
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					factor = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij*rij*rij);
+					factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij*rij);
 					tempf = mim_i * factor;
 					f_i += tempf;
 					modelatoms[j+aoff]->f() -= tempf;
@@ -174,48 +174,48 @@ void pattern::coulomb_intrapattern_forces(model *srcmodel)
 			modelatoms[i+aoff]->f() = f_i;
 		}
 		// Add on contributions from torsions (which are scaled)
-		for (pb = torsions.first(); pb != NULL; pb = pb->next)
+		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 		{
-			i = pb->get_atomid(0) + aoff;
-			j = pb->get_atomid(3) + aoff;
+			i = pb->atomId(0) + aoff;
+			j = pb->atomId(3) + aoff;
 			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 			rij = mim_i.magnitude();
 			if (rij > cutoff) continue;
-			factor = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij*rij*rij);
-			factor *= pb->get_data()->get_params().data[TF_ESCALE];
+			factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij*rij);
+			factor *= pb->data()->params().data[TF_ESCALE];
 			modelatoms[i+aoff]->f() += tempf;
 			modelatoms[j+aoff]->f() -= tempf;
 		}
-		aoff += natoms;
+		aoff += nAtoms_;
 	}
-	dbg_end(DM_CALLS,"pattern::coulomb_intrapattern_forces");
+	dbgEnd(DM_CALLS,"Pattern::coulombIntraPatternForces");
 }
 
 // Calculate the coulomb forces from interactions between different molecules of this pattern and the one supplied
-void pattern::coulomb_interpattern_forces(model *srcmodel, pattern *xpnode)
+void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *xpnode)
 {
-	dbg_begin(DM_CALLS,"pattern::coulomb_interpattern_forces");
+	dbgBegin(DM_CALLS,"Pattern::coulombInterPatternForces");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish,a1,a2;
-	static vec3<double> mim_i, f_i, tempf;
+	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
-	atom **modelatoms = srcmodel->get_atomarray();
-	unitcell *cell = srcmodel->get_cell();
-	cutoff = prefs.get_elec_cutoff();
-	aoff1 = startatom;
+	Atom **modelatoms = srcmodel->atomArray();
+	Cell *cell = srcmodel->cell();
+	cutoff = prefs.elecCutoff();
+	aoff1 = startAtom_;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == xpnode ? finish = nmols - 1 : finish = nmols;
+        this == xpnode ? finish = nMols_ - 1 : finish = nMols_;
 	for (m1=0; m1<finish; m1++)
 	{
 		this == xpnode ? start = m1 + 1 : start = 0;
-	       	aoff2 = xpnode->startatom + start*natoms;
-		for (m2=start; m2<xpnode->nmols; m2++)
+	       	aoff2 = xpnode->startAtom_ + start*nAtoms_;
+		for (m2=start; m2<xpnode->nMols_; m2++)
 		{
-			for (a1=0; a1<natoms; a1++)
+			for (a1=0; a1<nAtoms_; a1++)
 			{
 				i = a1 + aoff1;
 				// Copy forces to temporary vector
 				f_i = modelatoms[i]->f();
-				for (a2=0; a2<xpnode->natoms; a2++)
+				for (a2=0; a2<xpnode->nAtoms_; a2++)
 		  		{
 					j = a2 + aoff2;
 					mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
@@ -223,7 +223,7 @@ void pattern::coulomb_interpattern_forces(model *srcmodel, pattern *xpnode)
 					if (rij < cutoff)
 					{
 	//printf("Coulomb ij %i %i %8.4f %8.4f %8.4f \n",i,j,xcfg->q[i],xcfg->q[j],rij);
-						factor = (modelatoms[i]->get_charge() * modelatoms[j]->get_charge()) / (rij*rij*rij);
+						factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij*rij);
 						tempf = mim_i * factor;
 						f_i += tempf;
 						modelatoms[j]->f() -= tempf;
@@ -232,10 +232,10 @@ void pattern::coulomb_interpattern_forces(model *srcmodel, pattern *xpnode)
 			}
 			// Replace forces in main array
 			modelatoms[i]->f() = f_i;
-			aoff2 += xpnode->natoms;
+			aoff2 += xpnode->nAtoms_;
 		}
-		aoff1 += natoms;
+		aoff1 += nAtoms_;
 	}
-	dbg_end(DM_CALLS,"pattern::coulomb_interpattern_forces");
+	dbgEnd(DM_CALLS,"Pattern::coulombInterPatternForces");
 }
 

@@ -21,57 +21,133 @@
 
 #include "base/master.h"
 #include "base/elements.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/gui.h"
+#include "model/model.h"
+
+void AtenForm::setSketchElement(int el)
+{
+	master.setSketchElement(el);
+}
+
+void AtenForm::on_DrawAtomButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_DRAWATOM);
+}
+
+void AtenForm::on_DrawChainButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_DRAWCHAIN);
+}
+
+void AtenForm::on_DrawDeleteButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_DELATOM);
+}
+
+void AtenForm::on_DrawTransmuteButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_TRANSATOM);
+}
+
+void AtenForm::on_BondToleranceSpin_valueChanged(double d)
+{
+	prefs.setBondTolerance(d);
+}
+
+void AtenForm::on_BondSingleButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_BONDSINGLE);
+}
+
+void AtenForm::on_BondDoubleButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_BONDDOUBLE);
+}
+
+void AtenForm::on_BondTripleButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_BONDTRIPLE);
+}
+
+void AtenForm::on_BondDeleteButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_DELBOND);
+}
+
+void AtenForm::on_ElementHButton_clicked(bool on)
+{
+	if (on) master.setSketchElement(1);
+}
+
+void AtenForm::on_ElementCButton_clicked(bool on)
+{
+	if (on) master.setSketchElement(6);
+}
+
+void AtenForm::on_ElementNButton_clicked(bool on)
+{
+	if (on) master.setSketchElement(7);
+}
+
+void AtenForm::on_AtomAddHydrogenButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_ATOMADDHYDROGEN);
+}
+
+void AtenForm::on_ProbeAtomButton_clicked(bool on)
+{
+	if (on) setUserAction(on, UA_PROBEATOM);
+}
 
 void AtenForm::on_ElementUserButton_clicked(bool on)
 {
-	master.set_sketchelement(elements.find(qPrintable(ui.ElementUserButton->text())));
+	master.setSketchElement(elements.find(qPrintable(ui.ElementUserButton->text())));
 }
 
 void AtenForm::on_BondCalcButton_clicked(bool on)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Calculate Bonding");
-	m->clear_bonding();
-	m->calculate_bonding();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Calculate Bonding");
+	m->clearBonding();
+	m->calculateBonding();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondClearButton_clicked(bool on)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Clear Bonding");
-	m->clear_bonding();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Clear Bonding");
+	m->clearBonding();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondCalcSelButton_clicked(bool on)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Calculate Bonding (Selection)");
-	m->selection_calculate_bonding();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Calculate Bonding (Selection)");
+	m->selectionCalculateBonding();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondClearSelButton_clicked(bool on)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Clear Bonding (Selection)");
-	m->selection_clear_bonding();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Clear Bonding (Selection)");
+	m->selectionClearBonding();
+	m->endUndostate();
 	gui.refresh();
 }
 
 void AtenForm::on_BondAugmentButton_clicked(bool on)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Augment Bonding");
-	m->augment_bonding();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Augment Bonding");
+	m->augmentBonding();
+	m->endUndostate();
 	gui.refresh();
 }
 
@@ -88,16 +164,16 @@ void AtenForm::on_ElementEdit_editingFinished()
 	{
 		// Set the text of the user element button and select it
 		ui.ElementUserButton->setText(elements.symbol(el));
-		master.set_sketchelement(el);
+		master.setSketchElement(el);
 		ui.ElementUserButton->setChecked(TRUE);
 	}
 }
 
 void AtenForm::on_AddHydrogenButton_clicked(bool on)
 {
-	model *m = master.get_currentmodel();
-	m->begin_undostate("Hydrogen Satisfy Model");
-	m->hydrogen_satisfy();
-	m->end_undostate();
+	Model *m = master.currentModel();
+	m->beginUndostate("Hydrogen Satisfy Model");
+	m->hydrogenSatisfy();
+	m->endUndostate();
 	gui.refresh();
 }

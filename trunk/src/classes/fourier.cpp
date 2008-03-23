@@ -22,154 +22,150 @@
 #include "classes/fourier.h"
 #include "model/model.h"
 
-fourier_data fourier;
+// Singleton Declaration
+FourierData fourier;
 
 // Constructor
-fourier_data::fourier_data()
+FourierData::FourierData()
 {
-	rcos = NULL;
-	rsin = NULL;
-	natoms = 0;
-	kmax = 0;
+	rCos = NULL;
+	rSin = NULL;
+	nAtoms = 0;
+	kMax = 0;
 	cell = NULL;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_FOURIER] ++;
-	#endif
 }
 
 // Destructor
-fourier_data::~fourier_data()
+FourierData::~FourierData()
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_FOURIER] ++;
-	#endif
+	clear();
 }
 
 // Clear fourier structure
-void fourier_data::clear()
+void FourierData::clear()
 {
-	dbg_begin(DM_CALLS,"fourier::clear");
-	if (rcos != NULL)
+	dbgBegin(DM_CALLS,"FourierData:::clear");
+	if (rCos != NULL)
 	{
-		for (int n=0; n<kmax+1; n++) delete[] rcos[n];
-		delete[] rcos;
-		rcos = NULL;
+		for (int n=0; n<kMax+1; n++) delete[] rCos[n];
+		delete[] rCos;
+		rCos = NULL;
 	}
-	if (rsin != NULL)
+	if (rSin != NULL)
 	{
-		for (int n=0; n<2*kmax+1; n++) delete[] rsin[n];
-		delete[] rsin;
-		rsin = NULL;
+		for (int n=0; n<2*kMax+1; n++) delete[] rSin[n];
+		delete[] rSin;
+		rSin = NULL;
 	}
 	// Set other vars to 'null' values
-	kmax = 0;
-	natoms = 0;
-	dbg_end(DM_CALLS,"fourier::clear");
+	kMax = 0;
+	nAtoms = 0;
+	dbgEnd(DM_CALLS,"FourierData:::clear");
 }
 
 // Create fourier arrays
-void fourier_data::create(int newnatoms, vec3<int> newkvec, int newkmax)
+void FourierData::create(int newnAtoms, Vec3<int> newkvec, int newkmax)
 {
-	// Create the rcos and rsin arrays to the specified dimensions.
-	dbg_begin(DM_CALLS,"fourier::create");
-	if (rcos != NULL) clear();
-	if (newkmax < 1) printf("fourier::create <<<< Bad 'newkmax' passed (< 1) >>>>\n");
-	kmax = newkmax;
-	kvec = newkvec;
-	natoms = newnatoms;
-	rcos = new vec3<double>*[kmax+1];
-	for (int n=0; n<kmax+1; n++) rcos[n] = new vec3<double>[natoms];
-	rsin = new vec3<double>*[2*kmax+1];
-	for (int n=0; n<2*kmax+1; n++) rsin[n] = new vec3<double>[natoms];
-	msg(DM_VERBOSE,"Created Fourier space for %i atoms, kmax = %i \n",natoms, kmax);
-	dbg_end(DM_CALLS,"fourier::create");
+	// Create the rCos and rSin arrays to the specified dimensions.
+	dbgBegin(DM_CALLS,"FourierData:::create");
+	if (rCos != NULL) clear();
+	if (newkmax < 1) printf("FourierData:::create <<<< Bad 'newkmax' passed (< 1) >>>>\n");
+	kMax = newkmax;
+	kVec = newkvec;
+	nAtoms = newnAtoms;
+	rCos = new Vec3<double>*[kMax+1];
+	for (int n=0; n<kMax+1; n++) rCos[n] = new Vec3<double>[nAtoms];
+	rSin = new Vec3<double>*[2*kMax+1];
+	for (int n=0; n<2*kMax+1; n++) rSin[n] = new Vec3<double>[nAtoms];
+	msg(DM_VERBOSE,"Created Fourier space for %i atoms, kmax = %i \n",nAtoms, kMax);
+	dbgEnd(DM_CALLS,"FourierData:::create");
 }
 
-void fourier_data::calculate(model *srcmodel)
+void FourierData::calculate(Model *srcmodel)
 {
 	// Calculate the atomic vectors for all atoms in the configuration
-	calculate(srcmodel,0,natoms);
+	calculate(srcmodel,0,nAtoms);
 }
 
-void fourier_data::calculate(model *srcmodel, int startatom, int atomstodo)
+void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 {
 	// (Re-)Calculate the range of reciprocal space vectors of the coordinates in the supplied config.
-	dbg_begin(DM_CALLS,"fourier::calculate");
-	vec3<double> pos;
-	mat3<double> tempmat;
+	dbgBegin(DM_CALLS,"FourierData:::calculate");
+	Vec3<double> pos;
+	Mat3<double> tempmat;
 	int firstsin, n, k, sinpos, i;
-	if (srcmodel->get_natoms() != natoms)
+	if (srcmodel->nAtoms() != nAtoms)
 	{
 		printf("Indescribable fourier error! Wrong number of atoms in supplied config.\n");
-		dbg_end(DM_CALLS,"fourier::calculate");
+		dbgEnd(DM_CALLS,"FourierData:::calculate");
 		return;
 	}
 	// Make sure model has a staticatoms space
-	atom **modelatoms = srcmodel->get_atomarray();
+	Atom **modelatoms = srcmodel->atomArray();
 	// Generate reciprocal space coordinates for atoms at each cartesian k-vector.
 	// Only create positive k-vector positions for cos since is an even function. For sin calculate negative
-	// also (odd function), where rsin[k] runs from k=0,2*kmax+1, with k=kmax the central (zero) vector (=complex(1,0)).
-	// Thus, rsin[kmax+i] gives the i'th positive kvector and rsun[kmax-i] gives the i'th negative kvector.
+	// also (odd function), where rSin[k] runs from k=0,2*kmax+1, with k=kmax the central (zero) vector (=complex(1,0)).
+	// Thus, rSin[kmax+i] gives the i'th positive kvector and rsun[kmax-i] gives the i'th negative kvector.
 	for (i=startatom; i<startatom+atomstodo; i++)
 	{
 		// Set central (zero) vector elements to be cmplx(1.0,0.0)
-		rcos[0][i].x = 1.0; rsin[kmax][i].x = 0.0;
-		rcos[0][i].y = 1.0; rsin[kmax][i].y = 0.0;
-		rcos[0][i].z = 1.0; rsin[kmax][i].z = 0.0;
+		rCos[0][i].x = 1.0; rSin[kMax][i].x = 0.0;
+		rCos[0][i].y = 1.0; rSin[kMax][i].y = 0.0;
+		rCos[0][i].z = 1.0; rSin[kMax][i].z = 0.0;
 		// Calculate first vector in the positive k-direction
-		tempmat = cell->get_recip();
+		tempmat = cell->reciprocal();
 		pos.x = tempmat.rows[0].dp(modelatoms[i]->r());
 		pos.y = tempmat.rows[1].dp(modelatoms[i]->r());
 		pos.z = tempmat.rows[2].dp(modelatoms[i]->r());
-		rcos[1][i].x = cos(pos.x);
-		rcos[1][i].y = cos(pos.y);
-		rcos[1][i].z = cos(pos.z);
-		rsin[kmax+1][i].x = sin(pos.x);
-		rsin[kmax+1][i].y = sin(pos.y);
-		rsin[kmax+1][i].z = sin(pos.z);
+		rCos[1][i].x = cos(pos.x);
+		rCos[1][i].y = cos(pos.y);
+		rCos[1][i].z = cos(pos.z);
+		rSin[kMax+1][i].x = sin(pos.x);
+		rSin[kMax+1][i].y = sin(pos.y);
+		rSin[kMax+1][i].z = sin(pos.z);
 		// Calculate vector in the negative k-direction for sin terms
-		rsin[kmax-1][i].x = -rsin[kmax+1][i].x;
-		rsin[kmax-1][i].y = -rsin[kmax+1][i].y;
-		rsin[kmax-1][i].z = -rsin[kmax+1][i].z;
+		rSin[kMax-1][i].x = -rSin[kMax+1][i].x;
+		rSin[kMax-1][i].y = -rSin[kMax+1][i].y;
+		rSin[kMax-1][i].z = -rSin[kMax+1][i].z;
 		// Calculate the extended reciprocal space position vectors (power expansion of first vectors).
 		// TODO Timewaste: Assume, for now, that we have a cubic box so we do all three vector arrays at once, and up to kmax. 
-		// Build up the kvector positions by multiplying by rcos[+-1]/rsin[+-1] each time
-		firstsin = kmax+1;
-		for (n=1; n<kmax; n++)
+		// Build up the kvector positions by multiplying by rCos[+-1]/rSin[+-1] each time
+		firstsin = kMax+1;
+		for (n=1; n<kMax; n++)
 		{
 			// Complex multiplication: (a + bi)(c + di) = (ac - bd) + (ad + bc)i
 			// Positive k-direction (cos and sin)
 			k = n+1;
-			sinpos = kmax + n;
-			rcos[k][i].x = rcos[1][i].x * rcos[n][i].x - rsin[firstsin][i].x * rsin[sinpos][i].x;
-			rcos[k][i].y = rcos[1][i].y * rcos[n][i].y - rsin[firstsin][i].y * rsin[sinpos][i].y;
-			rcos[k][i].z = rcos[1][i].z * rcos[n][i].z - rsin[firstsin][i].z * rsin[sinpos][i].z;
-			rsin[kmax+k][i].x = rcos[1][i].x * rsin[sinpos][i].x + rsin[firstsin][i].x * rcos[n][i].x;
-			rsin[kmax+k][i].y = rcos[1][i].y * rsin[sinpos][i].y + rsin[firstsin][i].y * rcos[n][i].y;
-			rsin[kmax+k][i].z = rcos[1][i].z * rsin[sinpos][i].z + rsin[firstsin][i].z * rcos[n][i].z;
+			sinpos = kMax + n;
+			rCos[k][i].x = rCos[1][i].x * rCos[n][i].x - rSin[firstsin][i].x * rSin[sinpos][i].x;
+			rCos[k][i].y = rCos[1][i].y * rCos[n][i].y - rSin[firstsin][i].y * rSin[sinpos][i].y;
+			rCos[k][i].z = rCos[1][i].z * rCos[n][i].z - rSin[firstsin][i].z * rSin[sinpos][i].z;
+			rSin[kMax+k][i].x = rCos[1][i].x * rSin[sinpos][i].x + rSin[firstsin][i].x * rCos[n][i].x;
+			rSin[kMax+k][i].y = rCos[1][i].y * rSin[sinpos][i].y + rSin[firstsin][i].y * rCos[n][i].y;
+			rSin[kMax+k][i].z = rCos[1][i].z * rSin[sinpos][i].z + rSin[firstsin][i].z * rCos[n][i].z;
 			// Negative k-direction (sin)
-			rsin[kmax-k][i].x = -rsin[kmax+k][i].x;
-			rsin[kmax-k][i].y = -rsin[kmax+k][i].y;
-			rsin[kmax-k][i].z = -rsin[kmax+k][i].z;
+			rSin[kMax-k][i].x = -rSin[kMax+k][i].x;
+			rSin[kMax-k][i].y = -rSin[kMax+k][i].y;
+			rSin[kMax-k][i].z = -rSin[kMax+k][i].z;
 		}
 	}
-	dbg_end(DM_CALLS,"fourier::calculate");
+	dbgEnd(DM_CALLS,"FourierData:::calculate");
 }
 
-void fourier_data::prepare(model *srcmodel, vec3<int> newkvec)
+void FourierData::prepare(Model *srcmodel, Vec3<int> newkvec)
 {
 	// Set up arrays in the fourier class to handle all atoms / maximum kvectors specified.
-	dbg_begin(DM_CALLS,"fourier::prepare");
+	dbgBegin(DM_CALLS,"FourierData:::prepare");
 	int newkmax = newkvec.max();
-	// Don't delete the arrays, however, if the new natoms and kmax match...
-	if ((natoms != srcmodel->get_natoms()) || (kmax != newkmax))
+	// Don't delete the arrays, however, if the new nAtoms and kmax match...
+	if ((nAtoms != srcmodel->nAtoms()) || (kMax != newkmax))
 	{
 		msg(DM_VERBOSE,"Clearing and recreating fourier arrays...\n");
 		clear();
-		create(srcmodel->get_natoms(), newkvec, newkmax);
+		create(srcmodel->nAtoms(), newkvec, newkmax);
 	}
-	cell = srcmodel->get_cell();
+	cell = srcmodel->cell();
 	// Now we have suitable arrays, we can calculate and store the reciprocal coordinate vectors
 	calculate(srcmodel);
-	dbg_end(DM_CALLS,"fourier::prepare");
+	dbgEnd(DM_CALLS,"FourierData:::prepare");
 }

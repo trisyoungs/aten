@@ -254,7 +254,7 @@ typedef struct {
   /* PDF-specific */
   int streamlength;
   GL2PSlist *pdfprimlist, *pdfgrouplist;
-  int *xreflist;
+  int *xReflist;
   int objects_stack; /* available objects */
   int extgs_stack; /* graphics state object number */
   int font_stack; /* font object number */
@@ -2911,7 +2911,7 @@ static void gl2psParseStipplePattern(GLushort pattern, GLint factor,
   int off[8] = {0, 0, 0, 0, 0, 0, 0, 0};
   char tmp[16];
 
-  /* extract the 16 bits from the OpenGL stipple pattern */
+  /* extract the 16 bits from the OpenGL stipple Pattern */
   for(n = 15; n >= 0; n--){
     tmp[n] = (char)(pattern & 0x01);
     pattern >>= 1;
@@ -4009,28 +4009,28 @@ static void gl2psPrintPDFHeader(void)
   gl2ps->pdfprimlist = gl2psListCreate(500, 500, sizeof(GL2PSprimitive*));
   gl2psPDFstacksInit();
 
-  gl2ps->xreflist = (int*)gl2psMalloc(sizeof(int) * gl2ps->objects_stack); 
+  gl2ps->xReflist = (int*)gl2psMalloc(sizeof(int) * gl2ps->objects_stack); 
 
 #if defined(GL2PS_HAVE_ZLIB)
   if(gl2ps->options & GL2PS_COMPRESS){
     gl2psSetupCompress();
   }
 #endif    
-  gl2ps->xreflist[0] = 0;
+  gl2ps->xReflist[0] = 0;
   offs += fprintf(gl2ps->stream, "%%PDF-1.4\n");
-  gl2ps->xreflist[1] = offs;
+  gl2ps->xReflist[1] = offs;
   
   offs += gl2psPrintPDFInfo();
-  gl2ps->xreflist[2] = offs;
+  gl2ps->xReflist[2] = offs;
   
   offs += gl2psPrintPDFCatalog();
-  gl2ps->xreflist[3] = offs;
+  gl2ps->xReflist[3] = offs;
   
   offs += gl2psPrintPDFPages();
-  gl2ps->xreflist[4] = offs;
+  gl2ps->xReflist[4] = offs;
   
   offs += gl2psOpenPDFDataStream();
-  gl2ps->xreflist[5] = offs; /* finished in gl2psPrintPDFFooter */
+  gl2ps->xReflist[5] = offs; /* finished in gl2psPrintPDFFooter */
   gl2ps->streamlength = gl2psOpenPDFDataStreamWritePreface();
 }
 
@@ -4633,33 +4633,33 @@ static int gl2psPDFgroupListWriteObjects(int entryoffs)
         gl2psFillTriangleFromPrimitive(&triangles[j], p, GL_TRUE);
       }
       if(triangles[0].prop & T_VAR_COLOR){
-        gl2ps->xreflist[gro->shobjno] = offs;
+        gl2ps->xReflist[gro->shobjno] = offs;
         offs += gl2psPrintPDFShader(gro->shobjno, triangles, size, 0);
       }
       if(triangles[0].prop & T_ALPHA_LESS_1){
-        gl2ps->xreflist[gro->gsobjno] = offs;
+        gl2ps->xReflist[gro->gsobjno] = offs;
         offs += gl2psPrintPDFShaderSimpleExtGS(gro->gsobjno, triangles[0].vertex[0].rgba[3]);
       }
       if(triangles[0].prop & T_VAR_ALPHA){
-        gl2ps->xreflist[gro->gsobjno] = offs;
+        gl2ps->xReflist[gro->gsobjno] = offs;
         offs += gl2psPrintPDFShaderExtGS(gro->gsobjno, gro->trgroupobjno);
-        gl2ps->xreflist[gro->trgroupobjno] = offs;
+        gl2ps->xReflist[gro->trgroupobjno] = offs;
         offs += gl2psPrintPDFShaderMask(gro->trgroupobjno, gro->maskshno);
-        gl2ps->xreflist[gro->maskshobjno] = offs;
+        gl2ps->xReflist[gro->maskshobjno] = offs;
         offs += gl2psPrintPDFShader(gro->maskshobjno, triangles, size, 8);
       }
       gl2psFree(triangles);
       break;
     case GL2PS_PIXMAP:
-      gl2ps->xreflist[gro->imobjno] = offs;
+      gl2ps->xReflist[gro->imobjno] = offs;
       offs += gl2psPrintPDFPixmap(gro->imobjno, gro->imobjno+1, p->data.image, 0);
       if(p->data.image->format == GL_RGBA){
-        gl2ps->xreflist[gro->imobjno+1] = offs;
+        gl2ps->xReflist[gro->imobjno+1] = offs;
         offs += gl2psPrintPDFPixmap(gro->imobjno+1, -1, p->data.image, 8);
       }
       break;
     case GL2PS_TEXT:
-      gl2ps->xreflist[gro->fontobjno] = offs;
+      gl2ps->xReflist[gro->fontobjno] = offs;
       offs += gl2psPrintPDFText(gro->fontobjno,p->data.text,gro->fontno);
       break;
     case GL2PS_SPECIAL :
@@ -4686,25 +4686,25 @@ static void gl2psPrintPDFFooter(void)
   gl2psPDFgroupListInit();
   gl2psPDFgroupListWriteMainStream();
  
-  offs = gl2ps->xreflist[5] + gl2ps->streamlength; 
+  offs = gl2ps->xReflist[5] + gl2ps->streamlength; 
   offs += gl2psClosePDFDataStream();
-  gl2ps->xreflist[5] = offs;
+  gl2ps->xReflist[5] = offs;
   
   offs += gl2psPrintPDFDataStreamLength(gl2ps->streamlength);
-  gl2ps->xreflist[6] = offs;
+  gl2ps->xReflist[6] = offs;
   gl2ps->streamlength = 0;
   
   offs += gl2psPrintPDFOpenPage();
   offs += gl2psPDFgroupListWriteVariableResources();
-  gl2ps->xreflist = (int*)gl2psRealloc(gl2ps->xreflist,
+  gl2ps->xReflist = (int*)gl2psRealloc(gl2ps->xReflist,
                                        sizeof(int) * (gl2ps->objects_stack + 1));
-  gl2ps->xreflist[7] = offs;
+  gl2ps->xReflist[7] = offs;
   
   offs += gl2psPrintPDFGSObject();
-  gl2ps->xreflist[8] = offs;
+  gl2ps->xReflist[8] = offs;
   
-  gl2ps->xreflist[gl2ps->objects_stack] = 
-    gl2psPDFgroupListWriteObjects(gl2ps->xreflist[8]);
+  gl2ps->xReflist[gl2ps->objects_stack] = 
+    gl2psPDFgroupListWriteObjects(gl2ps->xReflist[8]);
 
   /* Start cross reference table. The file has to been opened in
      binary mode to preserve the 20 digit string length! */
@@ -4714,7 +4714,7 @@ static void gl2psPrintPDFFooter(void)
           "%010d 65535 f \n", gl2ps->objects_stack, 0);
   
   for(i = 1; i < gl2ps->objects_stack; ++i)
-    fprintf(gl2ps->stream, "%010d 00000 n \n", gl2ps->xreflist[i]);
+    fprintf(gl2ps->stream, "%010d 00000 n \n", gl2ps->xReflist[i]);
   
   fprintf(gl2ps->stream,
           "trailer\n"
@@ -4725,10 +4725,10 @@ static void gl2psPrintPDFFooter(void)
           ">>\n"
           "startxref\n%d\n"
           "%%%%EOF\n",
-          gl2ps->objects_stack, gl2ps->xreflist[gl2ps->objects_stack]);
+          gl2ps->objects_stack, gl2ps->xReflist[gl2ps->objects_stack]);
   
   /* Free auxiliary lists and arrays */    
-  gl2psFree(gl2ps->xreflist);
+  gl2psFree(gl2ps->xReflist);
   gl2psListDelete(gl2ps->pdfprimlist);
   gl2psPDFgroupListDelete();
   
@@ -5626,7 +5626,7 @@ GL2PSDLL_API GLint gl2psBeginPage(const char *title, const char *producer,
   gl2ps->zerosurfacearea = GL_FALSE;  
   gl2ps->pdfprimlist = NULL;
   gl2ps->pdfgrouplist = NULL;
-  gl2ps->xreflist = NULL;
+  gl2ps->xReflist = NULL;
   
   /* get default blending mode from current OpenGL state (enabled by
      default for SVG) */

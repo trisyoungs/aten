@@ -23,47 +23,49 @@
 #include "base/debug.h"
 #include "base/master.h"
 #include "classes/pattern.h"
+#include "classes/site.h"
 #include "parse/parser.h"
+#include "model/model.h"
 
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
-int commanddata::function_CA_NEWSITE(command *&c, bundle &obj)
+int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// First, check that the pattern name provided refers to a pattern of the current model
-	pattern *p = obj.m->find_pattern(c->argc(1));
+	Pattern *p = obj.m->findPattern(c->argc(1));
 	if (p == NULL) return CR_FAIL;
 	obj.s = obj.m->sites.add();
-	obj.s->set_name(c->argc(0));
-	obj.s->set_pattern(p);
+	obj.s->setName(c->argc(0));
+	obj.s->setPattern(p);
 	// Parse the atom list which should have been given as: "1,2,3,4,5......"
-	if (c->has_arg(2))
+	if (c->hasArg(2))
 	{
-		parser.get_args_delim(c->argc(2), PO_DEFAULTS);
-		for (int n=0; n<parser.get_nargs(); n++)
+		parser.getArgsDelim(c->argc(2), PO_DEFAULTS);
+		for (int n=0; n<parser.nArgs(); n++)
 		{
-			listitem<int> *li = obj.s->atoms.add();
+			Listitem<int> *li = obj.s->atoms.add();
 			// Store n-1 since internally we work in 0-n range
 			li->data = parser.argi(n) - 1;
 		}
 	}
-	msg(DM_NONE,"New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->get_name(), p->get_name(), obj.s->atoms.size(), (obj.s->atoms.size() == 0 ? " (will use centre of geometry)\n" : "\n"));
+	msg(DM_NONE,"New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
 	return CR_SUCCESS;
 }
 
 // Print site definitions for model ('listsites')
-int commanddata::function_CA_LISTSITES(command *&c, bundle &obj)
+int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	site *s = obj.m->sites.first();
-	if (s == NULL) msg(DM_NONE,"No sites defined for model '%s'.\n",obj.m->get_name());
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Site *s = obj.m->sites.first();
+	if (s == NULL) msg(DM_NONE,"No sites defined for model '%s'.\n",obj.m->name());
 	else
 	{
-		msg(DM_NONE,"Site list for model '%s':\n",obj.m->get_name());
+		msg(DM_NONE,"Site list for model '%s':\n",obj.m->name());
 		for (s = s; s != NULL; s = s->next)
 		{
-			msg(DM_NONE," %15s %15s  ",s->get_name(), s->get_pattern()->get_name());
-			if (s->atoms.size() == 0) msg(DM_NONE,"All atoms assumed (none defined)");
-			else for (listitem<int> *li = s->atoms.first(); li != NULL; li = li->next)msg(DM_NONE," %i",li->data);
+			msg(DM_NONE," %15s %15s  ",s->name(), s->pattern()->name());
+			if (s->atoms.nItems() == 0) msg(DM_NONE,"All atoms assumed (none defined)");
+			else for (Listitem<int> *li = s->atoms.first(); li != NULL; li = li->next)msg(DM_NONE," %i",li->data);
 			msg(DM_NONE,"\n");
 		}
 	}
@@ -71,35 +73,35 @@ int commanddata::function_CA_LISTSITES(command *&c, bundle &obj)
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
-int commanddata::function_CA_GETSITE(command *&c, bundle &obj)
+int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	site *s;
-	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->get_name(),c->argc(0)) == 0) break;
-	if (s == NULL) msg(DM_NONE,"No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->get_name());
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Site *s;
+	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
+	if (s == NULL) msg(DM_NONE,"No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
 	else master.current.s = s;
 	return CR_FAIL;
 }
 
 // Set x and y-axis definitions for current site ('setaxes <"X-atomids..."> <"Y-atomids">')
-int commanddata::function_CA_SETAXES(command *&c, bundle &obj)
+int CommandData::function_CA_SETAXES(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_SITE)) return CR_FAIL;
+	if (obj.notifyNull(BP_SITE)) return CR_FAIL;
 	int n;
-	listitem<int> *li;
+	Listitem<int> *li;
 	// Parse atom list for x-axis
-	parser.get_args_delim(c->argc(0), PO_DEFAULTS);
-	for (n=0; n<parser.get_nargs(); n++)
+	parser.getArgsDelim(c->argc(0), PO_DEFAULTS);
+	for (n=0; n<parser.nArgs(); n++)
 	{
-		li = obj.s->xaxisatoms.add();
+		li = obj.s->xAxisAtoms.add();
 		// Store n-1 since internally we work in 0-n range
 		li->data = parser.argi(n) - 1;
 	}
 	// Parse atom list for y-axis
-	parser.get_args_delim(c->argc(1), PO_DEFAULTS);
-	for (n=0; n<parser.get_nargs(); n++)
+	parser.getArgsDelim(c->argc(1), PO_DEFAULTS);
+	for (n=0; n<parser.nArgs(); n++)
 	{
-		li = obj.s->yaxisatoms.add();
+		li = obj.s->yAxisAtoms.add();
 		// Store n-1 since internally we work in 0-n range
 		li->data = parser.argi(n) - 1;
 	}

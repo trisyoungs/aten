@@ -25,153 +25,147 @@
 #include "templates/vector3.h"
 
 // Cell types
-enum cell_type { CT_NONE, CT_CUBIC, CT_ORTHORHOMBIC, CT_PARALLELEPIPED, CT_NITEMS };
-const char *text_from_CT(cell_type);
-cell_type CT_from_text(const char *);
+enum CellType { CT_NONE, CT_CUBIC, CT_ORTHORHOMBIC, CT_PARALLELEPIPED, CT_NITEMS };
+const char *text_from_CT(CellType);
+CellType CT_from_text(const char *);
 const char **get_CT_strings();
 
 // Forward declarations
-class atom;
+class Atom;
 
 // Unit cell
-class unitcell
+class Cell
 {
 	public:
-	// Constructor / Destructor
-	unitcell();
-	~unitcell();
+	// Constructor
+	Cell();
 
 	private:
 	// Cell type
-	cell_type type;
-
+	CellType type_;
 	// Vectors of the principal cell axes (rows[0] = A, rows[1] = B, rows[2] = C)
-	mat3<double> axes;
+	Mat3<double> axes_;
 	// Transpose of the principal cell axes (rows[0] = A.x,B.x,C.z)
-	mat3<double> transpose;
+	Mat3<double> transpose_;
 	// Reciprocal vectors of the principal cell axes
-	mat3<double> recip;
+	Mat3<double> reciprocal_;
 	// Inverse of axes transpose
-	mat3<double> itranspose;
-	// Coordinates of origin in GL space (-half cell lengths)
-	vec3<double> origin;
+	Mat3<double> itranspose_;
+	// Coordinates at centre of cell
+	Vec3<double> centre_;
 	// Principal axis lengths
-	vec3<double> lengths;
+	Vec3<double> lengths_;
 	// Angles between principal axes
-	vec3<double> angles;
+	Vec3<double> angles_;
 	// Cell / reciprocal cell volume
-	double volume, rvolume;
+	double volume_, reciprocalVolume_;
 	// Density of cell
-	double density;
+	double density_;
 
 	public:
 	// Print cell data
 	void print() const;
 	// Generate random position inside cell
-	vec3<double> random_pos() const;
+	Vec3<double> randomPos() const;
 	
 	/*
 	// Set / Get
 	*/
 	private:
 	// Determine the cell type from its lengths / angles
-	void determine_type();
+	void determineType();
 
 	public:
 	// Remove the cell definition (i.e. set 'type' to CT_NONE)
-	void reset() { type = CT_NONE; origin.zero(); }
+	void reset();
 	// Set lengths and angles and calculates matrix
-	void set(const vec3<double> &lengths, const vec3<double> &angles);
+	void set(const Vec3<double> &lengths, const Vec3<double> &angles);
 	// Set matrix and calculates lengths and angles
-	void set(const mat3<double> &axes);
+	void set(const Mat3<double> &axes);
 	// Set lengths and calculates matrix
-	void set_lengths(const vec3<double> &lengths) { set(lengths,angles); }
+	void setLengths(const Vec3<double> &lengths);
 	// Set individual length
-	void set_length(int i, double d) { lengths.set(i,d); }
+	void setLength(int i, double d);
 	// Set individual angle
-	void set_angle(int i, double d) { angles.set(i,d); }
-	// Set individual element of axes matrix
-//	void set_axes(int i, int j, double d) { axes_t.set(i,j,d); }
-//	void NEWset_axes(int i, int j, double d) { axes.set(i,j,d); }
+	void setAngle(int i, double d);
 	// Return the type of cell
-	cell_type get_type() const { return type; }
+	CellType type() const;
 	// Return the cell vector matrix
-	mat3<double> get_transpose() { return transpose; }
+	Mat3<double> transpose();
 	// Return the transpose of the cell vector matrix (giving individual axis vectors in rows[])
-	mat3<double> get_axes() { return axes; }
-	// Return the cell vector matrix as a 4x4 matrix
-	mat4<double> get_transpose_as_mat4() { return transpose.get_as_mat4(); }
+	Mat3<double> axes();
+	// Copy cell axes vector matrix as a 4x4 matrix
+	void axesForGl(double *glmat);
 	// Return a matrix of the reciprocal cell vectors
-	mat3<double> get_recip() { return recip; }
+	Mat3<double> reciprocal();
 	// Return the axis lengths of the cell
-	vec3<double> get_lengths() { return lengths; }
+	Vec3<double> lengths();
 	// Return the angles the cell
-	vec3<double> get_angles() { return angles; }
-	// Return the origin the cell
-	vec3<double> get_origin() { return origin; }
+	Vec3<double> angles();
+	// Return the centre the cell
+	Vec3<double> centre();
 	// Return the cell vectors as a column-major matrix in a 1D array
-//	void get_axes_column(double* m) { axes_t.get_column_major(m); }
-	void get_transpose_column(double* m) { transpose.get_column_major(m); }
+	void transposeColumn(double* m);
 	// Return the reciprocal vectors as a column-major matrix in a 1D array
-	void get_recip_column(double* m) { recip.get_column_major(m); }
+	void reciprocalColumn(double* m);
 	// Return a inverse transpose matrix of cell axes
-	mat3<double> get_inversetranspose() { return itranspose; }
+	Mat3<double> inverseTranspose();
 	// Return the inverse of the cell vectors as a column-major matrix in a 1D array
-	void get_transposeinverse_column(double *m) { itranspose.get_column_major(m); }
+	void inverseTransposeColumn(double *m);
 	// Return the volume of the cell
-	double get_volume() const { return volume; }
+	double volume() const;
 	// Return the volume of the reciprocal cell
-	double get_rvolume() const { return rvolume; }
+	double reciprocalVolume() const;
 	// Return the density of the cell
-	double get_density() const { return density; }
+	double density() const;
 
 	/*
 	// Methods
 	*/
 	public:
 	// Calculate density of cell
-	void calculate_density();
+	void calculateDensity();
 	// Calculate cell reciprocal
-	void calc_reciprocal();
+	void calculateReciprocal();
 	// Calculate inverse of axes transpose
-	void calc_inverse();
+	void calculateInverse();
 
 	private:
-	// Calculate coordinate origin of cell
-	void calc_origin();
+	// Calculate coordinates at centre of cell
+	void calculateCentre();
 
 	/*
 	// Atom Positioning
 	*/
 	public:
 	// Calculate and return the fractional coordinates of the specified real position
-	vec3<double> real_to_frac(const vec3<double>&) const;
+	Vec3<double> realToFrac(const Vec3<double>&) const;
 	// Calculate and return the real coordinates of the specified fractional cell coordinates
-	vec3<double> frac_to_real(const vec3<double>&) const;
+	Vec3<double> fracToReal(const Vec3<double>&) const;
 
 	/*
 	// Minimum image calculation
 	*/
 	public:
-	vec3<double> mim(const vec3<double>&, const vec3<double>&) const;
-	vec3<double> mimd(const vec3<double>&, const vec3<double>&) const;
-	vec3<double> mim(atom*, const vec3<double>&) const;
-	vec3<double> mimd(atom*, const vec3<double>&) const;
-	vec3<double> mim(atom*, atom*) const;
-	vec3<double> mimd(atom*, atom*) const;
-	void fold(vec3<double>&) const;
-	void fold(atom*) const;
+	Vec3<double> mim(const Vec3<double>&, const Vec3<double>&) const;
+	Vec3<double> mimd(const Vec3<double>&, const Vec3<double>&) const;
+	Vec3<double> mim(Atom*, const Vec3<double>&) const;
+	Vec3<double> mimd(Atom*, const Vec3<double>&) const;
+	Vec3<double> mim(Atom*, Atom*) const;
+	Vec3<double> mimd(Atom*, Atom*) const;
+	void fold(Vec3<double>&) const;
+	void fold(Atom*) const;
 
 	/*
 	// Geometry calculation (takes fractional coords, and returns Angstroms / degrees)
 	*/
 	public:
-	double distance(const vec3<double>&, const vec3<double>&) const;
-	double distance(atom*, atom*) const;
-	double angle(const vec3<double>&, const vec3<double>&, const vec3<double>&) const;
-	double angle(atom*, atom*, atom*) const;
-	double torsion(const vec3<double>&, const vec3<double>&, const vec3<double>&, const vec3<double>&) const;
-	double torsion(atom*, atom*, atom*, atom*) const;
+	double distance(const Vec3<double>&, const Vec3<double>&) const;
+	double distance(Atom*, Atom*) const;
+	double angle(const Vec3<double>&, const Vec3<double>&, const Vec3<double>&) const;
+	double angle(Atom*, Atom*, Atom*) const;
+	double torsion(const Vec3<double>&, const Vec3<double>&, const Vec3<double>&, const Vec3<double>&) const;
+	double torsion(Atom*, Atom*, Atom*, Atom*) const;
 };
 
 #endif

@@ -30,76 +30,133 @@
 
 // Filter types
 const char *FT_strings[FT_NITEMS] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
-const char *text_from_FT(filter_type ft)
+const char *text_from_FT(FilterType ft)
 	{ return FT_strings[ft]; }
-filter_type FT_from_text(const char *s)
-	{ return (filter_type) enum_search("filter section",FT_NITEMS,FT_strings,s); }
+FilterType FT_from_text(const char *s)
+	{ return (FilterType) enumSearch("filter section",FT_NITEMS,FT_strings,s); }
 
 // Filter commands
 const char* FC_data[FC_NITEMS] =  { "name", "nickname", "extension", "glob", "exact", "zmap", "id" };
-filter_command FC_from_text(const char* s)
-	{ return (filter_command) enum_search_data("", FC_NITEMS, FC_data, s); }
-const char *text_from_FC(filter_command fc)
-	{ return get_before_comma(FC_data[fc]); }
+FilterCommmand FC_from_text(const char* s)
+	{ return (FilterCommmand) enumSearch("", FC_NITEMS, FC_data, s); }
+const char *text_from_FC(FilterCommmand fc)
+	{ return FC_data[fc]; }
 
 // Constructor
-filter::filter()
+Filter::Filter()
 {
+	// Private variables
+	type_ = FT_NITEMS;
+	hasExtension_ = FALSE;
+	hasZmapping_ = FALSE;
+	zmapping_ = ZM_ALPHA;
+	name_.set("unnamed");
+	glob_.set("*");
+	id_ = -1;
+	partner_ = NULL;
+	commands_.setFilter(this);
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	type = FT_NITEMS;
-	has_extension = FALSE;
-	has_zmapping = FALSE;
-	zmapping = ZM_ALPHA;
-	name.set("unnamed");
-	glob.set("*");
-	id = -1;
-	partner = NULL;
-	commands.set_filter(this);
-	#ifdef MEMDEBUG
-		memdbg.create[MD_FILTER] ++;
-	#endif
 }
 
-// Destructor
-filter::~filter()
+// Return the ID of the filter
+int Filter::id()
 {
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_FILTER] ++;
-	#endif
+	return id_;
+}
+
+// Return the descriptive name of the filter
+const char *Filter::name()
+{
+	return name_.get();
+}
+
+// Return the short nickname of the filter
+const char *Filter::nickname()
+{
+	return nickname_.get();
+}
+
+// Return the file extension
+const char *Filter::extension()
+{
+	return extension_.get();
+}
+
+// Return the aliases list
+const char *Filter::exactNames()
+{
+	return exactNames_.get();
+}
+
+// Return whether filter has an extension
+bool Filter::hasExtension()
+{
+	return hasExtension_;
+}
+
+// Set the partner filter
+void Filter::setPartner(Filter *f)
+{
+	partner_ = f;
+}
+
+// Return the partner filter
+Filter *Filter::partner()
+{
+	return partner_;
+}
+
+// Return the file filter
+const char *Filter::glob()
+{
+	return glob_.get();
+}
+
+// Return the type of filter
+FilterType Filter::type()
+{
+	return type_;
+}
+
+// Return the long description of the filter (including glob)
+const char *Filter::description()
+{
+	return description_.get();
 }
 
 // Load filter (from file)
-bool filter::load(ifstream &filterfile)
+bool Filter::load(ifstream &filterFile)
 {
-	dbg_begin(DM_CALLS,"filter::load");
-	command *c;
-	command_action ca;
-	filter_command fc;
+	dbgBegin(DM_CALLS,"Filter::load");
+	Command *c;
+	CommandAction ca;
+	FilterCommmand fc;
 	char longname[256];
-	zmap_type zm;
+	ZmapType zm;
 	int success, itemsleft;
 	bool done, error;
 	// First, we must add a command to the flowstack so we know when to return (or raise an error)
-	commands.clear();
+	commands_.clear();
 	// Read in commands
-	while (!filterfile.eof())
+	while (!filterFile.eof())
 	{
-		success = parser.get_args_delim(&filterfile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&filterFile,PO_USEQUOTES+PO_SKIPBLANKS);
 		if (success == 1)
 		{
-			msg(DM_NONE,"filter::load - Error reading filter file.\n");
-			dbg_end(DM_CALLS,"filter::load");
+			msg(DM_NONE,"Filter::load - Error reading filter file.\n");
+			dbgEnd(DM_CALLS,"Filter::load");
 			return FALSE;
 		}
 		else if (success == -1) break;
 		// Check branchstack - if empty then we're done (all filters have  a final 'END' command so the CA_ROOTNODE will get terminated)
-		if (commands.get_branchstack_size() == 0)
+		if (commands_.nBranches() == 0)
 		{
 			// Create long filefilter string
-			sprintf(longname,"%s (%s)",name.get(),glob.get());
-			description = longname;
-			dbg_end(DM_CALLS,"filter::load");
+			sprintf(longname,"%s (%s)",name_.get(),glob_.get());
+			description_ = longname;
+			dbgEnd(DM_CALLS,"Filter::load");
 			return TRUE;
 		}
 		// Check for filter specification commands
@@ -109,35 +166,35 @@ bool filter::load(ifstream &filterfile)
 		{
 			// Long name of filter
 			case (FC_NAME):
-				name = parser.argc(1);
+				name_ = parser.argc(1);
 				break;
 			// Nickname for filter
 			case (FC_NICKNAME):
-				nickname = parser.argc(1);
+				nickname_ = parser.argc(1);
 				break;
 			// File extension(s)
 			case (FC_EXTENSION):
-				extension = parser.argc(1);
+				extension_ = parser.argc(1);
 				break;
 			// Exact filename list
 			case (FC_EXACT):
-				exactnames = parser.argc(1);
+				exactNames_ = parser.argc(1);
 				break;
 			// Set file filter glob for GUI
 			case (FC_GLOB):
-				glob = parser.argc(1);
+				glob_ = parser.argc(1);
 				break;
 			// Set filter ID
 			case (FC_ID):
-				id = parser.argi(1);
+				id_ = parser.argi(1);
 				break;
 			// Set element zmapping to use for import
 			case (FC_ZMAP):
 				zm = ZM_from_text(parser.argc(1));
 				if (zm != ZM_NITEMS)
 				{
-					zmapping = zm;
-					has_zmapping = TRUE;
+					zmapping_ = zm;
+					hasZmapping_ = TRUE;
 				}
 				break;
 			// A normal command
@@ -146,245 +203,245 @@ bool filter::load(ifstream &filterfile)
 				if (ca != CA_NITEMS)
 				{
 					// Add the command to the list
-					if (commands.add_command(ca)) continue;
+					if (commands_.addCommand(ca)) continue;
 					else
 					{
-						msg(DM_NONE,"filter::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
-						dbg_end(DM_CALLS,"filter::load");
+						msg(DM_NONE,"Filter::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
+						dbgEnd(DM_CALLS,"Filter::load");
 						return FALSE;
 					}
 				}
 				else
 				{
 					msg(DM_NONE,"Unrecognised command '%s' in filter.\n", parser.argc(0));
-					dbg_end(DM_CALLS,"filter::load");
+					dbgEnd(DM_CALLS,"Filter::load");
 					return FALSE;
 				}
 				break;
 		}
 	}
 	// Create long filefilter string
-	sprintf(longname,"%s (%s)",name.get(),glob.get());
-	description = longname;
+	sprintf(longname,"%s (%s)",name_.get(),glob_.get());
+	description_ = longname;
 	// Check the flowstack - it should be empty...
-	itemsleft = commands.get_branchstack_size();
+	itemsleft = commands_.nBranches();
 	if (itemsleft != 0)
 	{
-		printf("filter::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
-		dbg_end(DM_CALLS,"filter::load");
+		printf("Filter::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
+		dbgEnd(DM_CALLS,"Filter::load");
 		return FALSE;
 	}
-	dbg_end(DM_CALLS,"filter::load");
+	dbgEnd(DM_CALLS,"Filter::load");
 	return TRUE;
 }
 
 // Set type (and initialise any necessary variables)
-void filter::set_type(filter_type ft)
+void Filter::setType(FilterType ft)
 {
-	dbg_begin(DM_CALLS,"filter::set_type");
-	type = ft;
-	variable *v;
-	switch (type)
+	dbgBegin(DM_CALLS,"Filter::setType");
+	type_ = ft;
+	Variable *v;
+	switch (type_)
 	{
 		case (FT_MODEL_IMPORT):
 			break;
 		case (FT_TRAJECTORY_IMPORT):
-			v = commands.variables.create_variable("header","",VT_CHAR);
-			v = commands.variables.create_variable("natoms","",VT_INTEGER);
-			v = commands.variables.create_variable("cell","type",VT_CHAR);
+			v = commands_.variables.createVariable("header","",VT_CHAR);
+			v = commands_.variables.createVariable("natoms","",VT_INTEGER);
+			v = commands_.variables.createVariable("cell","type",VT_CHAR);
 			break;
 		case (FT_EXPRESSION_IMPORT):
 			break;
 		case (FT_GRID_IMPORT):
 			break;
 		case (FT_MODEL_EXPORT):
-			v = commands.variables.create_variable("cell","type",VT_CHAR);
-			v = commands.variables.create_variable("cell","a",VT_CHAR);
-			v = commands.variables.create_variable("cell","b",VT_CHAR);
-			v = commands.variables.create_variable("cell","c",VT_CHAR);
-			v = commands.variables.create_variable("cell","alpha",VT_CHAR);
-			v = commands.variables.create_variable("cell","beta",VT_CHAR);
-			v = commands.variables.create_variable("cell","gamma",VT_CHAR);
-			v = commands.variables.create_variable("cell","ax",VT_CHAR);
-			v = commands.variables.create_variable("cell","ay",VT_CHAR);
-			v = commands.variables.create_variable("cell","az",VT_CHAR);
-			v = commands.variables.create_variable("cell","bx",VT_CHAR);
-			v = commands.variables.create_variable("cell","by",VT_CHAR);
-			v = commands.variables.create_variable("cell","bz",VT_CHAR);
-			v = commands.variables.create_variable("cell","cx",VT_CHAR);
-			v = commands.variables.create_variable("cell","cy",VT_CHAR);
-			v = commands.variables.create_variable("cell","cz",VT_CHAR);
-			v = commands.variables.create_variable("natoms","",VT_INTEGER);
-			v = commands.variables.create_variable("title","",VT_CHAR);
+			v = commands_.variables.createVariable("cell","type",VT_CHAR);
+			v = commands_.variables.createVariable("cell","a",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","b",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","c",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","alpha",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","beta",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","gamma",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","ax",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","ay",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","az",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","bx",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","by",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","bz",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","cx",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","cy",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","cz",VT_DOUBLE);
+			v = commands_.variables.createVariable("natoms","",VT_INTEGER);
+			v = commands_.variables.createVariable("title","",VT_CHAR);
 			break;
 		case (FT_TRAJECTORY_EXPORT):
-			v = commands.variables.create_variable("header","",VT_CHAR);
-			v = commands.variables.create_variable("natoms","",VT_INTEGER);
+			v = commands_.variables.createVariable("header","",VT_CHAR);
+			v = commands_.variables.createVariable("natoms","",VT_INTEGER);
 			break;
 		case (FT_EXPRESSION_EXPORT):
-			v = commands.variables.create_variable("title","",VT_CHAR);
-			v = commands.variables.create_variable("npatterns","",VT_INTEGER);
-			v = commands.variables.create_variable("energyunit","",VT_CHAR);
-			v = commands.variables.create_variable("ntypes","",VT_INTEGER);
+			v = commands_.variables.createVariable("title","",VT_CHAR);
+			v = commands_.variables.createVariable("npatterns","",VT_INTEGER);
+			v = commands_.variables.createVariable("energyunit","",VT_CHAR);
+			v = commands_.variables.createVariable("ntypes","",VT_INTEGER);
 			break;
 		case (FT_GRID_EXPORT):
 			break;
 	}
-	dbg_end(DM_CALLS,"filter::set_type");
+	dbgEnd(DM_CALLS,"Filter::setType");
 }
 
 
 // Print
-void filter::print()
+void Filter::print()
 {
-	dbg_begin(DM_CALLS,"filter::print");
-	printf("Filter Name : '%s'\n",name.get());
-	printf(" Shell glob : '%s'\n",glob.get());
-	printf(" Extensions : '%s'\n",extension.get());
-	printf("Exact Names : '%s'\n",exactnames.get());
-	printf("       Type : %s\n",text_from_FT(type));
-	dbg_end(DM_CALLS,"filter::print");
+	dbgBegin(DM_CALLS,"Filter::print");
+	printf("Filter Name : '%s'\n",name_.get());
+	printf(" Shell glob : '%s'\n",glob_.get());
+	printf(" Extensions : '%s'\n",extension_.get());
+	printf("Exact Names : '%s'\n",exactNames_.get());
+	printf("       Type : %s\n",text_from_FT(type_));
+	dbgEnd(DM_CALLS,"Filter::print");
 }
 
 // Execute filter
-bool filter::execute(const char *filename, ifstream *trajfile, bool trajheader, model *framemodel)
+bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, Model *framemodel)
 {
-	dbg_begin(DM_CALLS,"filter::execute");
-	// Grab pointer bundle from master
-	bundle &obj = master.current;
+	dbgBegin(DM_CALLS,"Filter::execute");
+	// Grab pointer Bundle from master
+	Bundle &obj = master.current;
 	// Set element mapping type to that specified in file
-	zmap_type temp_zmap = prefs.get_zmapping();
-	if (has_zmapping) prefs.set_zmapping(zmapping);
+	ZmapType temp_zmap = prefs.zmapType();
+	if (hasZmapping_) prefs.setZmapType(zmapping_);
 	// Setup based on filter type...
-	switch (type)
+	switch (type_)
 	{
 		case (FT_MODEL_IMPORT):
-			msg(DM_NONE,"Load Model : %s (%s)\n", filename, name.get());
+			msg(DM_NONE,"Load Model : %s (%s)\n", filename, name_.get());
 			// Reset reserved variables
-			commands.variables.set("title","Unnamed");
+			commands_.variables.set("title","Unnamed");
 			// Open file and set target
-			if (!commands.set_infile(filename))
+			if (!commands_.setInputFile(filename))
 			{
 				msg(DM_NONE,"Error opening input file '%s'.\n",filename);
-				dbg_end(DM_CALLS,"filter::execute");
+				dbgEnd(DM_CALLS,"Filter::execute");
 				return FALSE;
 			}
 			break;
 		case (FT_MODEL_EXPORT):
-			msg(DM_NONE,"Save Model : %s (%s)...", obj.m->get_filename(), name.get());
+			msg(DM_NONE,"Save Model : %s (%s)...", obj.m->filename(), name_.get());
 			// Open file and set target
-			if (!commands.set_outfile(obj.m->get_filename()))
+			if (!commands_.setOutputFile(obj.m->filename()))
 			{
-				msg(DM_NONE,"Error opening output file '%s'.\n",obj.m->get_filename());
-				dbg_end(DM_CALLS,"filter::execute");
+				msg(DM_NONE,"Error opening output file '%s'.\n",obj.m->filename());
+				dbgEnd(DM_CALLS,"Filter::execute");
 				return FALSE;
 			}
 			// Set variables
-			commands.set_model_variables(obj.m);
-			commands.set_cell_variables(obj.m->get_cell());
+			commands_.setModelVariables(obj.m);
+			commands_.setCellVariables(obj.m->cell());
 			break;
 		case (FT_EXPRESSION_EXPORT):
-			msg(DM_NONE,"Save Field : %s (%s)\n", filename, name.get());
+			msg(DM_NONE,"Save Field : %s (%s)\n", filename, name_.get());
 			// Need a valid pattern and energy expression to export
-			if (!obj.m->autocreate_patterns() || !obj.m->create_expression())
+			if (!obj.m->autocreatePatterns() || !obj.m->createExpression())
 			{
-				msg(DM_NONE,"filter::execute - Must have valid pattern and energy expression to export a field file\n.");
-				dbg_end(DM_CALLS,"filter::execute");
+				msg(DM_NONE,"Filter::execute - Must have valid pattern and energy expression to export a field file\n.");
+				dbgEnd(DM_CALLS,"Filter::execute");
 				return FALSE;
 			}
 			// Set variables
-			commands.variables.set("title",obj.m->get_name());
-			commands.variables.set("npatterns",obj.m->get_npatterns());
-			commands.variables.set("energyunit",text_from_EU(prefs.get_internal_units()));
-			commands.variables.set("ntypes",obj.m->get_nuniquetypes());
+			commands_.variables.set("title",obj.m->name());
+			commands_.variables.set("npatterns",obj.m->nPatterns());
+			commands_.variables.set("energyunit",text_from_EU(prefs.energyUnit()));
+			commands_.variables.set("ntypes",obj.m->nUniqueTypes());
 			// Open file...
-			if (!commands.set_outfile(filename))
+			if (!commands_.setOutputFile(filename))
 			{
 				msg(DM_NONE,"Error opening field file '%s'.\n", filename);
-				dbg_end(DM_CALLS,"filter::execute");
+				dbgEnd(DM_CALLS,"Filter::execute");
 				return FALSE;
 			}
 			break;
 		case (FT_GRID_IMPORT):
-			msg(DM_NONE,"Load Grid  : %s (%s)\n",filename,name.get());
+			msg(DM_NONE,"Load Grid  : %s (%s)\n", filename, name_.get());
 			// Open file...
-			if (!commands.set_infile(filename))
+			if (!commands_.setInputFile(filename))
 			{
 				msg(DM_NONE,"Error opening grid file '%s'.\n", filename);
-				dbg_end(DM_CALLS,"filter::execute");
+				dbgEnd(DM_CALLS,"Filter::execute");
 				return FALSE;
 			}
 			break;
 		case (FT_GRID_EXPORT):
-			msg(DM_NONE,"Save Grid  : %s (%s)\n",filename,name.get());
+			msg(DM_NONE,"Save Grid  : %s (%s)\n",filename,name_.get());
 			// Open file...
-			if (!commands.set_outfile(filename))
+			if (!commands_.setOutputFile(filename))
 			{
 				msg(DM_NONE,"Error opening grid file '%s'.\n", filename);
-				dbg_end(DM_CALLS,"filter::execute");
+				dbgEnd(DM_CALLS,"Filter::execute");
 				return FALSE;
 			}
 			break;
 		case (FT_TRAJECTORY_IMPORT):
 			// Set variables
-			commands.variables.set("header",(trajheader ? "true" : "false"));
-			commands.variables.set("frame",(trajheader ? "false" : "true"));
+			commands_.variables.set("header",(trajheader ? "true" : "false"));
+			commands_.variables.set("frame",(trajheader ? "false" : "true"));
 			// Set model target (if reading a frame)
 			if (!trajheader)
 			{
-				model *parent = framemodel->get_trajparent();
+				Model *parent = framemodel->trajectoryParent();
 				if (parent == NULL)
 				{
-					msg(DM_NONE,"filter::read_trajectory <<<< Trajectory parent is not set in frame model >>>>\n");
-					dbg_end(DM_CALLS,"filter::read_trajectory(frame)");
+					msg(DM_NONE,"Filter::read_trajectory <<<< Trajectory parent is not set in frame model >>>>\n");
+					dbgEnd(DM_CALLS,"Filter::read_trajectory(frame)");
 					return FALSE;	
 				}
-				commands.variables.set("natoms",parent->get_natoms());
-				commands.variables.set("cell.type",lower_case(text_from_CT(parent->get_celltype())));
+				commands_.variables.set("natoms",parent->nAtoms());
+				commands_.variables.set("cell.type",lowerCase(text_from_CT(parent->cell()->type())));
 				framemodel->clear();
 			}
 			else
 			{
-				commands.variables.set("natoms",framemodel->get_natoms());
-				commands.variables.set("cell.type",lower_case(text_from_CT(framemodel->get_celltype())));
+				commands_.variables.set("natoms",framemodel->nAtoms());
+				commands_.variables.set("cell.type",lowerCase(text_from_CT(framemodel->cell()->type())));
 			}
 
 	}
-	// Execute commandlist
-	bool result = commands.execute(framemodel,trajfile);
+	// Execute CommandList
+	bool result = commands_.execute(framemodel,trajfile);
 	// Perform post-filter operations
-	switch (type)
+	switch (type_)
 	{
 		case (FT_MODEL_IMPORT):
 			// Reset element mapping style
-			prefs.set_zmapping(temp_zmap);
-			commands.close_files();
+			prefs.setZmapType(temp_zmap);
+			commands_.closeFiles();
 			msg(DM_NONE,"Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_MODEL_EXPORT):
-			obj.m->update_save_point();
-			commands.close_files();
+			obj.m->updateSavePoint();
+			commands_.closeFiles();
 			msg(DM_NONE,"Model export %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_EXPRESSION_EXPORT):
-			commands.close_files();
+			commands_.closeFiles();
 			msg(DM_NONE,"Field export %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_TRAJECTORY_IMPORT):
-			//commands.close_files();
+			//commands_.close_files();
 			//if (trajheader) (result ? msg(DM_NONE,"Trajectory opened successfully.\n") : msg(DM_NONE,"Failed to open trajectory.\n"));
 			//else if (!result) msg(DM_NONE,"Failed to read frame from trajectory.\n");
 			break;
 		case (FT_GRID_IMPORT):
-			commands.close_files();
+			commands_.closeFiles();
 			msg(DM_NONE,"Grid import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_GRID_EXPORT):
-			commands.close_files();
+			commands_.closeFiles();
 			msg(DM_NONE,"Grid export %s.\n",(result ? "completed" : "failed"));
 			break;
 	}
-	dbg_end(DM_CALLS,"filter::execute");
+	dbgEnd(DM_CALLS,"Filter::execute");
 	return result;
 }
 

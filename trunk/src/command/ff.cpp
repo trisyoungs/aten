@@ -23,101 +23,102 @@
 #include "base/master.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
+#include "model/model.h"
 
 // Set default forcefield ('defaultff <ff>')
-int commanddata::function_CA_DEFAULTFF(command *&c, bundle &obj)
+int CommandData::function_CA_DEFAULTFF(Command *&c, Bundle &obj)
 {
 	// If an argument was supplied, select forcefield by name. Otherwise use current
-	master.set_defaultff(master.find_ff(c->argc(0)));
+	master.setDefaultForcefield(master.findForcefield(c->argc(0)));
 	return CR_SUCCESS;
 }
 
 // Associate current ff to current model ('ffmodel [name]')
-int commanddata::function_CA_FFMODEL(command *&c, bundle &obj)
+int CommandData::function_CA_FFMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// If an argument was supplied, select forcefield by name. Otherwise use current
-	if (c->has_arg(0)) obj.m->set_ff(master.find_ff(c->argc(0)));
-	else obj.m->set_ff(obj.ff);
+	if (c->hasArg(0)) obj.m->setForcefield(master.findForcefield(c->argc(0)));
+	else obj.m->setForcefield(obj.ff);
 	return CR_SUCCESS;
 }
 
 // Set current forcefield for named pattern ('ffpattern')
-int commanddata::function_CA_FFPATTERN(command *&c, bundle &obj)
+int CommandData::function_CA_FFPATTERN(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
-	obj.p->set_ff(obj.ff);
+	if (obj.notifyNull(BP_MODEL+BP_FF)) return CR_FAIL;
+	obj.p->setForcefield(obj.ff);
 	return CR_SUCCESS;
 }
 
 // Set current forcefield for pattern id given ('ffpatternid <id>')
-int commanddata::function_CA_FFPATTERNID(command *&c, bundle &obj)
+int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_FF)) return CR_FAIL;
 	int nodeid = c->argi(0) - 1;
-	if ((nodeid < 0) || (nodeid > obj.m->get_npatterns()))
+	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
 	{
-		msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i atterns).\n", nodeid, obj.m->get_npatterns());
+		msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i atterns).\n", nodeid, obj.m->nPatterns());
 		return CR_FAIL;
 	}
-	else obj.m->get_pattern(nodeid)->set_ff(obj.ff);
+	else obj.m->pattern(nodeid)->setForcefield(obj.ff);
 	return CR_SUCCESS;
 }
 
 // Load forcefield ('loadff <filename> [nickname]')
-int commanddata::function_CA_LOADFF(command *&c, bundle &obj)
+int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 {
-	forcefield *ff = master.load_ff(c->argc(0));
+	Forcefield *ff = master.loadForcefield(c->argc(0));
 	if (ff != NULL)
 	{
-		master.set_currentff(ff);
-		if (c->has_arg(1)) ff->set_name(c->argc(1));
-		msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->get_name());
+		master.setCurrentForcefield(ff);
+		if (c->hasArg(1)) ff->setName(c->argc(1));
+		msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 		return CR_SUCCESS;
 	}
 	else return CR_FAIL;
 }
 
 // Select current forcefield ('getff <name>')
-int commanddata::function_CA_GETFF(command *&c, bundle &obj)
+int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 {
-	forcefield *ff = master.find_ff(c->argc(0));
-	if (ff != NULL)	master.set_currentff(ff);
+	Forcefield *ff = master.findForcefield(c->argc(0));
+	if (ff != NULL)	master.setCurrentForcefield(ff);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
 // Perform typing on current model
-int commanddata::function_CA_TYPEMODEL(command *&c, bundle &obj)
+int CommandData::function_CA_TYPEMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	return (obj.m->type_all() ? CR_SUCCESS : CR_FAIL);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	return (obj.m->typeAll() ? CR_SUCCESS : CR_FAIL);
 }
 
 // Test specified type ID of current forcefield
-int commanddata::function_CA_TYPETEST(command *&c, bundle &obj)
+int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL+BP_FF)) return CR_FAIL;
 	// Find the specified type...
-	ffatom *ffa = obj.ff->find_type(c->argi(0));
+	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->get_name());
+		msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
 		return CR_FAIL;
 	}
 	else
 	{
-		if (obj.m->autocreate_patterns())
+		if (obj.m->autocreatePatterns())
 		{
 			// Prepare for typing
-			obj.m->describe_atoms();
+			obj.m->describeAtoms();
 			// Get atom, element, and the atom's pattern
-			atom *i = obj.m->get_atomarray()[c->argi(1)-1];
-			int el = i->get_element();
-			pattern *p = obj.m->get_pattern(i);
-			int score = ffa->get_atomtype()->match_atom(i,p->get_ringlist(),obj.m,i);
-			if (score != 0) msg(DM_NONE,"Atom %i matched type %i (%s) with score %i.\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name(), score);
-			else msg(DM_NONE,"Atom %i did not match type %i (%s).\n", i->get_id()+1, ffa->get_ffid(), ffa->get_name());
+			Atom *i = obj.m->atomArray()[c->argi(1)-1];
+			int el = i->element();
+			Pattern *p = obj.m->pattern(i);
+			int score = ffa->atomType()->matchAtom(i,p->ringList(),obj.m,i);
+			if (score != 0) msg(DM_NONE,"Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
+			else msg(DM_NONE,"Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
 		}
 		else return CR_FAIL;
 	}

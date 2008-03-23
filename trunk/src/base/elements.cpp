@@ -27,14 +27,14 @@
 #include "parse/parser.h"
 #include "classes/forcefield.h"
 
-element_map elements;
+ElementMap elements;
 
 /*
 // Default Element Data
 */
 
 // Format: ID   Mass    Name            Symbol  Radius  Vlncy	AmbientRGBA		DiffuseRGBA
-element element_map::el[] = {
+Element ElementMap::el_[] = {
 	{ 0.000,	"Dummy","DUMMY",	"XX","XX",	0.500,	0,	0.5f,0.5f,0.5f,1.0f,	0.375f,0.375f,0.375f,1.0f },
 	{ 1.008,	"Hydrogen","HYDROGEN",	"H","H",	0.320,	1,	0.87f,0.87f,0.87f,1.0f,	0.78f,0.78f,0.78f,1.0f },
 	{ 4.003,	"Helium","HELIUM",	"He","HE",	0.310,	1,	1.0f,0.784f,0.784f,1.0f,	0.75f,0.588f,0.588f,1.0f },
@@ -158,41 +158,160 @@ element element_map::el[] = {
 };
 
 // Constructor
-element_map::element_map()
+ElementMap::ElementMap()
 {
-	#ifdef MEMDEBUG
-		printf("Constructor : element_map\n");
-	#endif
+	// Determine number of defined elements
+	nElements_ = sizeof(el_) / sizeof(el_[0]);
 }
 
 // Destructor
-element_map::~element_map()
+ElementMap::~ElementMap()
 {
-	#ifdef MEMDEBUG
-		printf(" Destructor : element_map\n");
-	#endif
+}
+
+// Return atomic mass of atomic number 'i'
+double ElementMap::atomicMass(Atom *i)
+{
+	return atomicMass(i->element());
+}
+
+// Return name of atomic number 'i'
+const char *ElementMap::name(Atom *i)
+{
+	return name(i->element());
+}
+
+// Return symbol of atomic number 'i'
+const char *ElementMap::symbol(Atom *i)
+{
+	return symbol(i->element());
+}
+
+// Return effective radius of atomic number 'i'
+double ElementMap::atomicRadius(Atom *i)
+{
+	return atomicRadius(i->element());
+}
+
+// Return valency of atomic number 'i'
+int ElementMap::valency(Atom *i)
+{
+	return valency(i->element());
+}
+
+// Return the ambient colour of the element
+GLfloat *ElementMap::ambientColour(Atom *i)
+{
+	return ambientColour(i->element());
+}
+
+// Return the diffuse colour of the element
+GLfloat *ElementMap::diffuseColour(Atom *i)
+{
+	return diffuseColour(i->element());
+}
+
+// Return number of defined elements
+int ElementMap::nElements()
+{
+	return nElements_;
+}
+
+// Return atomic mass of atomic number 'i'
+double ElementMap::atomicMass(int i)
+{
+	return el_[i].atomicMass;
+}
+
+// Return name of atomic number 'i'
+const char *ElementMap::name(int i)
+{
+	return el_[i].name;
+}
+
+// Return symbol of atomic number 'i'
+const char *ElementMap::symbol(int i)
+{
+	return el_[i].symbol;
+}
+
+// Set radius of atomic number 'i'
+void ElementMap::setAtomicRadius(int i, double r)
+{
+	el_[i].atomicRadius = r;
+}
+
+// Return effective radius of atomic number 'i'
+double ElementMap::atomicRadius(int i)
+{
+	return el_[i].atomicRadius;
+}
+
+// Return valency of atomic number 'i'
+int ElementMap::valency(int i)
+{
+	return el_[i].valency;
+}
+
+// Return the ambient colour of the element
+GLfloat *ElementMap::ambientColour(int i)
+{
+	return el_[i].ambientColour;
+}
+
+// Set ambient colour component of element
+void ElementMap::setAmbientColour(int i, int rgb, GLfloat value)
+{
+	el_[i].ambientColour[rgb] = value;
+}
+
+// Set ambient colour component
+void ElementMap::setAmbientColour(int i, GLfloat r, GLfloat g, GLfloat b)
+{
+	el_[i].ambientColour[0] = r;
+	el_[i].ambientColour[1] = g;
+	el_[i].ambientColour[2] = b;
+}
+
+// Return the diffuse colour of the element
+GLfloat *ElementMap::diffuseColour(int i)
+{
+	return el_[i].diffuseColour;
+}
+
+// Set diffuse colour component of element
+void ElementMap::setDiffuseColour(int i, int rgb, GLfloat value)
+{
+	el_[i].diffuseColour[rgb] = value;
+}
+
+void ElementMap::setDiffuseColour(int i, GLfloat r, GLfloat g, GLfloat b)
+{
+	el_[i].diffuseColour[0] = r;
+	el_[i].diffuseColour[1] = g;
+	el_[i].diffuseColour[2] = b;
 }
 
 // Return ambient colour in supplied vector
-void element_map::ambient(int i, GLfloat *v)
+void ElementMap::copyAmbientColour(int i, GLfloat *v)
 {
-	v[0] = el[i].ambient[0];
-	v[1] = el[i].ambient[1];
-	v[2] = el[i].ambient[2];
-	v[3] = el[i].ambient[3];
+	v[0] = el_[i].ambientColour[0];
+	v[1] = el_[i].ambientColour[1];
+	v[2] = el_[i].ambientColour[2];
+	v[3] = el_[i].ambientColour[3];
 }
 
 // Return diffuse colour in supplied vector
-void element_map::diffuse(int i, GLfloat *v)
+void ElementMap::copyDiffuseColour(int i, GLfloat *v)
 {
-	v[0] = el[i].diffuse[0];
-	v[1] = el[i].diffuse[1];
-	v[2] = el[i].diffuse[2];
-	v[3] = el[i].diffuse[3];
+	v[0] = el_[i].diffuseColour[0];
+	v[1] = el_[i].diffuseColour[1];
+	v[2] = el_[i].diffuseColour[2];
+	v[3] = el_[i].diffuseColour[3];
 }
 
 // Convert string from Z to element number
-int element_map::number_to_z(const char *s)
+int ElementMap::numberToZ(const char *s)
 {
 	// Check that the string is entirely numerical
 	bool isnumber = TRUE;
@@ -207,18 +326,20 @@ int element_map::number_to_z(const char *s)
 }
 
 // Convert string from alpha to element number
-int element_map::alpha_to_z(const char *s)
+int ElementMap::alphaToZ(const char *s)
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	static char cleaned[32];
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
-		if (s[n] > 64 && s[n] < 91) { cleaned[len] = s[n]; len++; }
-		else if (s[n] > 96 && s[n] < 123) { cleaned[len] = toupper(s[n]); len++; }
+		if (s[n] > 64 && s[n] < 91)
+{ cleaned[len] = s[n]; len++; }
+		else if (s[n] > 96 && s[n] < 123)
+{ cleaned[len] = toupper(s[n]); len++; }
 		else if (s[n] == '_') break;
 	cleaned[len] = '\0';
-	for (n=0; n<NELEMENTS; n++)
-		if (strcmp(el[n].ucsymbol,cleaned) == 0) 
+	for (n=0; n<nElements_; n++)
+		if (strcmp(el_[n].ucSymbol,cleaned) == 0) 
 		{
 			result = n;
 			break;
@@ -227,18 +348,20 @@ int element_map::alpha_to_z(const char *s)
 }
 
 // Convert string from first alpha part to element number
-int element_map::alphafirst_to_z(const char *s)
+int ElementMap::firstAlphaToZ(const char *s)
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	static char cleaned[32];
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
-		if (s[n] > 64 && s[n] < 91) { cleaned[len] = s[n]; len++; }
-		else if (s[n] > 96 && s[n] < 123) { cleaned[len] = toupper(s[n]); len++; }
+		if (s[n] > 64 && s[n] < 91)
+{ cleaned[len] = s[n]; len++; }
+		else if (s[n] > 96 && s[n] < 123)
+{ cleaned[len] = toupper(s[n]); len++; }
 		else break;
 	cleaned[len] = '\0';
-	for (n=0; n<NELEMENTS; n++)
-		if (strcmp(el[n].ucsymbol,cleaned) == 0) 
+	for (n=0; n<nElements_; n++)
+		if (strcmp(el_[n].ucSymbol,cleaned) == 0) 
 		{
 			result = n;
 			break;
@@ -247,18 +370,20 @@ int element_map::alphafirst_to_z(const char *s)
 }
 
 // Convert string from name to element number
-int element_map::name_to_z(const char *s)
+int ElementMap::nameToZ(const char *s)
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	static char cleaned[32];
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
-		if (s[n] > 64 && s[n] < 91) { cleaned[len] = s[n]; len++; }
-		else if (s[n] > 96 && s[n] < 123) { cleaned[len] = toupper(s[n]); len++; }
+		if (s[n] > 64 && s[n] < 91)
+{ cleaned[len] = s[n]; len++; }
+		else if (s[n] > 96 && s[n] < 123)
+{ cleaned[len] = toupper(s[n]); len++; }
 		else if (s[n] == '_') break;
 	cleaned[len] = '\0';
-	for (n=0; n<NELEMENTS; n++)
-		if (strcmp(el[n].ucname,cleaned) == 0) 
+	for (n=0; n<nElements_; n++)
+		if (strcmp(el_[n].ucName,cleaned) == 0) 
 		{
 			result = n;
 			break;
@@ -267,17 +392,17 @@ int element_map::name_to_z(const char *s)
 }
 
 // Convert string from fftype to element number
-int element_map::ff_to_z(const char *s)
+int ElementMap::ffToZ(const char *s)
 {
-	ffatom *ffa;
+	ForcefieldAtom *ffa;
 	int result = -1;
-	for (forcefield *ff = master.get_ffs(); ff != NULL; ff = ff->next)
+	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)
 	{
-		ffa = ff->find_type(s);
+		ffa = ff->findType(s);
 		if (ffa != NULL)
 		{
 			// Found a match, so find out what element it is...
-			result = ffa->get_atomtype()->el;
+			result = ffa->atomType()->el;
 			break;
 		}
 		if (result != -1) break;
@@ -286,69 +411,69 @@ int element_map::ff_to_z(const char *s)
 }
 
 // Search for element named 'query' in the list of known elements
-int element_map::find(const char *query)
+int ElementMap::find(const char *query)
 {
 	// Get the element number from the element name provided.
-	dbg_begin(DM_CALLS,"element_map::find");
+	dbgBegin(DM_CALLS,"ElementMap::find");
 	int result = -1;
 	if (query[0] == '\0')
 	{
-		printf("Warning: find_el was given a zero-length string.\n");
-		dbg_end(DM_CALLS,"element_map::find");
+		printf("Warning: Element search requested on blank string.\n");
+		dbgEnd(DM_CALLS,"ElementMap::find");
 		return 0;
 	}
 	// Convert the query string according to the specified rule
-	switch (prefs.get_zmapping())
+	switch (prefs.zmapType())
 	{
 		// Automatic determination
 		case (ZM_AUTO):
 			// First, try pure numeric conversion
-			result = number_to_z(query);
+			result = numberToZ(query);
 			if (result != -1) break;
 			// Then, try alpha conversion
-			result = alpha_to_z(query);
+			result = alphaToZ(query);
 			if (result != -1) break;
 			// Then, try name conversion
-			result = name_to_z(query);
+			result = nameToZ(query);
 			if (result != -1) break;
 			// Finally, try FF conversion
-			result = ff_to_z(query);
+			result = ffToZ(query);
 			break;
 		// Name search
 		case (ZM_NAME):
-			result = name_to_z(query);
+			result = nameToZ(query);
 			break;
 		// Search loaded forcefields for atom names
 		case (ZM_FORCEFIELD):
-			result = ff_to_z(query);
+			result = ffToZ(query);
 			// Attempt an alpha conversion if the FF conversion failed
-			if (result == -1) result = alpha_to_z(query);
+			if (result == -1) result = alphaToZ(query);
 			break;
 		// Convert based on alpha-part of atom name only
 		case (ZM_ALPHA):
-			result = alpha_to_z(query);
+			result = alphaToZ(query);
 			break;
 		// Convert based on first alpha-part of atom name only
 		case (ZM_FIRSTALPHA):
-			result = alphafirst_to_z(query);
+			result = firstAlphaToZ(query);
 			break;
 		// Convert based on numeric part only
 		case (ZM_NUMERIC):
-			result = number_to_z(query);
+			result = numberToZ(query);
 			break;
 	}
-	dbg_end(DM_CALLS,"element_map::find");
+	dbgEnd(DM_CALLS,"ElementMap::find");
 	return ((result == -1) ? 0 : result);
 }
 
 // Search for element named 'query' in the list of known elements, using the specified algorithm
-int element_map::find(const char *query, zmap_type zmt)
+int ElementMap::find(const char *query, ZmapType zmt)
 {
 	// Store the old zmapping type, and temporarily set a new one
-	zmap_type last = prefs.get_zmapping();
-	prefs.set_zmapping(zmt);
+	ZmapType last = prefs.zmapType();
+	prefs.setZmapType(zmt);
 	int result = find(query);
-	prefs.set_zmapping(last);
+	prefs.setZmapType(last);
 	return result;
 }
 

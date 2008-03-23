@@ -1,6 +1,6 @@
 /*
 	*** Associative variable list
-	*** src/classes/variables.h
+	*** src/classes/Variables.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -26,44 +26,43 @@
 #include "classes/dnchar.h"
 #include "base/sysfunc.h"
 
-// Variable Types
-enum variable_type { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_ATOMTYPE, VT_NITEMS };
-const char *text_from_VT(variable_type);
+// variable Types
+enum VariableType { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_ATOMTYPE, VT_NITEMS };
+const char *text_from_VT(VariableType);
 
 // Forward Declarations
-class atom;
-class bond;
-class unitcell;
-class pattern;
-class model;
-class patbound;
-class ffatom;
+class Atom;
+class Bond;
+class Cell;
+class Pattern;
+class Model;
+class PatternBound;
+class ForcefieldAtom;
 
-// Variable
-class variable
+// variable
+class Variable
 {
 	public:
-	// Constructor / Destructor
-	variable(variable_type vt = VT_CHAR);
-	~variable();
+	// Constructor
+	Variable(VariableType vt = VT_CHAR);
 	// List pointers
-	variable *prev, *next;
+	Variable *prev, *next;
 
 	/*
-	// Variable Contents
+	// variable Contents
 	*/
 	private:
 	// Name of the variable
-	dnchar name;
+	Dnchar name_;
 	// Value of variable
-	void *ptrvalue;
-	dnchar charvalue;
-	int intvalue;
-	double doublevalue;
+	void *ptrValue_;
+	Dnchar charValue_;
+	int intValue_;
+	double doubleValue_;
 	// Content type of variable
-	variable_type type;
+	VariableType type_;
 	// Whether the variable is a constant
-	bool constant;
+	bool constant_;
 
 	public:
 	// Print contents of variable
@@ -71,9 +70,9 @@ class variable
 	// Clears value of variable
 	void reset();
 	// Set name of variable
-	void set_name(const char* s) { name.set(s); }
+	void setName(const char* s);
 	// Set to constant value
-	void set_constant(const char*);
+	void setAsConstant(const char*);
 	// Set value of variable (char)
 	void set(const char*);
 	// Set value of variable (int)
@@ -81,59 +80,54 @@ class variable
 	// Set value of variable (double)
 	void set(double d);
 	// Set value of variable (atom*)
-	void set(atom*);
+	void set(Atom*);
 	// Set value of variable (pattern*)
-	void set(pattern*);
+	void set(Pattern*);
 	// Set value of variable (model*)
-	void set(model*);
-	// Set value of variable (patbound*)
-	void set(patbound*);
-	// Set value of variable (ffatom*)
-	void set(ffatom*);
+	void set(Model*);
+	// Set value of variable (PatternBound*)
+	void set(PatternBound*);
+	// Set value of variable (ForcefieldAtom*)
+	void set(ForcefieldAtom*);
 	// Copy pointer contents of source variable
-	void copy_pointer(variable *v) { ptrvalue = v->ptrvalue; }
+	void copyPointer(Variable *v);
 	// Sets the content type of the variable
-	void set_type(variable_type vt) { type = vt; }
+	void setType(VariableType vt);
 	// Set the variable to be a constant
-	void set_constant() { constant = 1; }
+	void setConstant();
 	// Returns content type of the variable
-	variable_type get_type() { return type; }
+	VariableType type();
 	// Get name of variable
-	const char *get_name() { return name.get(); }
+	const char *name();
 	// Get value of variable as character string
-	const char *get_as_char();
+	const char *asCharacter();
 	// Get value of variable as integer
-	int get_as_int();
+	int asInteger();
 	// Get value of variable as double
-	double get_as_double();
+	double asDouble();
 	// Get value of variable as float
-	float get_as_float() { return float(get_as_double()); }
+	float asFloat();
 	// Get value of variable as a boolean
-	bool get_as_bool();
+	bool asBool();
 	// Get value of variable as pointer
-	void *get_as_pointer() { return ptrvalue; }
+	void *asPointer();
 	// Integer increase
 	void increase(int);
 	// Integer decrease
 	void decrease(int);
 };
 
-// Variable list
-class variable_list
+// variable list
+class VariableList
 {
-	public:
-	// Constructor / Destructor
-	variable_list();
-	~variable_list();
-
 	/*
-	// Variable List
+	// variable List
 	*/
 	private:
 	// List of variables
-	list<variable> vars;
+	List<Variable> vars_;
 	// Static, dummy variable '*'
-	variable dummy;
+	Variable dummy_;
 
 	public:
 	// Set existing (or create new) variable (VT_CHAR)
@@ -146,19 +140,19 @@ class variable_list
 	void set(const char*, const char*, double);
 	void set(const char *name, double value) { set(name,"",value); }
 	// Retrieve a named variable from the list
-	variable *get(const char *prefix, const char *suffix);
-	variable *get(const char *name) { return get(name,""); }
+	Variable *get(const char *prefix, const char *suffix);
+	Variable *get(const char *name) { return get(name,""); }
 	// Return dummy variable
-	variable *get_dummy() { return &dummy; }
+	Variable *dummy() { return &dummy_; }
 	// Add an unnamed constant to the list
-	variable *add_constant(const char* s);
+	Variable *addConstant(const char* s);
 	// Add a named variable to the list
-	variable *add_variable(const char *prefix, const char *suffix, variable_type vt);
-	variable *add_variable(const char *name, variable_type vt) { return add_variable(name,"",vt); }
+	Variable *addVariable(const char *prefix, const char *suffix, VariableType vt);
+	Variable *addVariable(const char *name, VariableType vt) { return addVariable(name,"",vt); }
 	// Create, but don't set, a named variable in the list
-	variable *create_variable(const char *prefix, const char *suffix, variable_type vt);
+	Variable *createVariable(const char *prefix, const char *suffix, VariableType vt);
 	// Reset values of all variables
-	void reset_all();
+	void resetAll();
 	// Reset values of variable selection
 	void reset(const char*, ...);
 	// Print list of variables and their values

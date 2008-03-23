@@ -21,9 +21,34 @@
 
 #include "gui/tlistwidgetitem.h"
 
+// Constructor
 TListWidgetItem::TListWidgetItem(QListWidget *parent) : QListWidgetItem(parent)
 {
-	ff = NULL;
-	g = NULL;
+	// Private variables
+	forcefield_ = NULL;
+	grid_ = NULL;
 }
 
+// Set the ff pointer in the widget
+void TListWidgetItem::setForcefield(Forcefield *source)
+{
+	forcefield_ = source;
+}
+
+// Return the ff pointer in the widget
+Forcefield *TListWidgetItem::forcefield()
+{
+	return forcefield_;
+}
+
+// Set the grid pointer in the widget
+void TListWidgetItem::setGrid(Grid *source)
+{
+	grid_ = source;
+}
+
+// Return the grid pointer in the widget
+Grid *TListWidgetItem::grid()
+{
+	return grid_;
+}

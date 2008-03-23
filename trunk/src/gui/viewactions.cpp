@@ -20,9 +20,9 @@
 */
 
 #include "base/master.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
+#include "model/model.h"
 
 /*
 // View Menu Actions
@@ -30,75 +30,135 @@
 
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
-	master.get_currentmodel()->adjust_camera(0.0,0.0,5.0,0.0);
+	master.currentModel()->adjustCamera(0.0,0.0,5.0,0.0);
 	gui.refresh();
 }
 
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
-	master.get_currentmodel()->adjust_camera(0.0,0.0,-5.0,0.0);
+	master.currentModel()->adjustCamera(0.0,0.0,-5.0,0.0);
 	gui.refresh();
 }
 
 void AtenForm::on_actionViewReset_triggered(bool checked)
 {
-	master.get_currentmodel()->reset_view();
+	master.currentModel()->resetView();
 	gui.refresh();
 }
 
 void AtenForm::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
-	prefs.set_perspective(TRUE);
-	gui.mainview.do_projection();
-	master.get_currentmodel()->reset_view();
+	prefs.setPerspective(TRUE);
+	gui.mainView.doProjection();
+	master.currentModel()->resetView();
 	gui.refresh();
 }
 
 void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
-	prefs.set_perspective(FALSE);
-	gui.mainview.do_projection();
-	master.get_currentmodel()->reset_view();
+	prefs.setPerspective(FALSE);
+	gui.mainView.doProjection();
+	master.currentModel()->resetView();
 	gui.refresh();
 }
 
 void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	// Switch render focus from the model's trajectory to the model.
-	master.get_currentmodel()->render_from_self();
+	master.currentModel()->setRenderFromSelf();
 	gui.refresh();
 }
 
 void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory.
-	master.get_currentmodel()->render_from_frames();
+	master.currentModel()->setRenderFromFrames();
 	gui.refresh();
 }
 
-void AtenForm::set_cartesian_view(double x, double y, double z)
+void AtenForm::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified axis
-	vec3<double> v;
+	Vec3<double> v;
 	v.set(x,y,z);
-	v.to_spherical();
+	v.toSpherical();
 	// set_rotation() expects the degrees of rotation about the x and y axes respectively,
 	// so give it phi and theta in the reverse order. 
-	master.get_currentmodel()->set_rotation(-v.z,v.y);
+	master.currentModel()->setRotation(-v.z,v.y);
 	gui.refresh();
 }
 
-void AtenForm::set_cell_view(double x, double y, double z)
+void AtenForm::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified axis
-	vec3<double> v;
+	Vec3<double> v;
 	v.set(x,y,z);
-	v *= master.get_currentmodel()->get_cell()->get_transpose();
-	v.to_spherical();
+	v *= master.currentModel()->cell()->transpose();
+	v.toSpherical();
 	// set_rotation() expects the degrees of rotation about the x and y axes respectively,
 	// so give it phi and theta in the reverse order. 
-	master.get_currentmodel()->set_rotation(-v.z,v.y);
+	master.currentModel()->setRotation(-v.z,v.y);
 	gui.refresh();
+}
+
+void AtenForm::on_actionViewSetCartesianPosX_triggered(bool checked)
+{
+	 setCartesianView(1,0,0);
+}
+
+void AtenForm::on_actionViewSetCartesianPosY_triggered(bool checked)
+{
+	 setCartesianView(0,1,0);
+}
+
+void AtenForm::on_actionViewSetCartesianPosZ_triggered(bool checked)
+{
+	 setCartesianView(0,0,1);
+}
+
+void AtenForm::on_actionViewSetCartesianNegX_triggered(bool checked)
+{
+	 setCartesianView(-1,0,0);
+}
+
+void AtenForm::on_actionViewSetCartesianNegY_triggered(bool checked)
+{
+	 setCartesianView(0,-1,0);
+}
+
+void AtenForm::on_actionViewSetCartesianNegZ_triggered(bool checked)
+{
+	 setCartesianView(0,0,-1);
+}
+
+void AtenForm::on_actionViewSetCellNegX_triggered(bool checked)
+{
+	 setCellView(1,0,0);
+}
+
+void AtenForm::on_actionViewSetCellNegY_triggered(bool checked)
+{
+	 setCellView(0,1,0);
+}
+
+void AtenForm::on_actionViewSetCellNegZ_triggered(bool checked)
+{
+	 setCellView(0,0,1);
+}
+
+void AtenForm::on_actionViewSetCellPosX_triggered(bool checked)
+{
+	 setCellView(-1,0,0);
+}
+
+void AtenForm::on_actionViewSetCellPosY_triggered(bool checked)
+{
+	 setCellView(0,-1,0);
+}
+
+void AtenForm::on_actionViewSetCellPosZ_triggered(bool checked)
+{
+	 setCellView(0,0,-1);
 }
 

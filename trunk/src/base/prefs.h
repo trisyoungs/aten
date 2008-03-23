@@ -24,519 +24,542 @@
 
 #include "energy/forms.h"
 #include "templates/vector3.h"
-#include "base/constants.h"
 #include "classes/atom.h"
-
-#ifdef IS_MAC
-	#include "OpenGL/gl.h"
-#else
-	#include "GL/gl.h"
-#endif
+#include <QtOpenGL/QtOpenGL>
 
 // Atom colouring scheme
-enum atom_colours { AC_ELEMENT, AC_CHARGE, AC_VELOCITY, AC_FORCE, AC_NITEMS };
+enum AtomColours { AC_ELEMENT, AC_CHARGE, AC_VELOCITY, AC_FORCE, AC_NITEMS };
 
 // Preferences switches
-enum file_prefswitch { PS_ASFILTER=-1, PS_NO, PS_YES };
+enum PrefSwitch { PS_ASFILTER=-1, PS_NO, PS_YES };
 
 // View Objects
-enum view_object { VO_ATOMS, VO_CELL, VO_CELLAXES, VO_CELLREPEAT, VO_FORCEARROWS, VO_GLOBE, VO_LABELS, VO_MEASUREMENTS, VO_REGIONS, VO_SURFACES, VO_NITEMS };
-view_object VO_from_text(const char*);
+enum ViewObject { VO_ATOMS, VO_CELL, VO_CELLAXES, VO_CELLREPEAT, VO_FORCEARROWS, VO_GLOBE, VO_LABELS, VO_MEASUREMENTS, VO_REGIONS, VO_SURFACES, VO_NITEMS };
+ViewObject VO_from_text(const char*);
 
 // GL Options
-enum gl_option { GO_FOG=1, GO_LINEALIASING=2, GO_POLYALIASING=4, GO_BACKCULLING=8, GO_DUMMY=16, GO_NITEMS=5 };
-gl_option GO_from_text(const char*);
+enum GlOption { GO_FOG=1, GO_LINEALIASING=2, GO_POLYALIASING=4, GO_BACKCULLING=8, GO_DUMMY=16, GO_NITEMS=5 };
+GlOption GO_from_text(const char*);
 
 // Mouse buttons
-enum mouse_button { MB_LEFT, MB_MIDDLE, MB_RIGHT, MB_WHEEL, MB_NITEMS };
-mouse_button MB_from_text(const char*);
-const char *text_from_MB(mouse_button);
+enum MouseButton { MB_LEFT, MB_MIDDLE, MB_RIGHT, MB_WHEEL, MB_NITEMS };
+MouseButton MB_from_text(const char*);
+const char *text_from_MB(MouseButton);
 
 // Mouse Actions
-enum mouse_action { MA_NONE, MA_VIEWROTATE, MA_VIEWTRANSLATE, MA_INTERACT, MA_VIEWZOOM, MA_VIEWZROTATE, MA_NITEMS };
-mouse_action MA_from_text(const char*);
-const char *text_from_MA(mouse_action);
+enum MouseAction { MA_NONE, MA_VIEWROTATE, MA_VIEWTRANSLATE, MA_INTERACT, MA_VIEWZOOM, MA_VIEWZROTATE, MA_NITEMS };
+MouseAction MA_from_text(const char*);
+const char *text_from_MA(MouseAction);
 const char **get_MA_strings();
 
 // Modifier keys
-enum modifier_key { MK_SHIFT, MK_CTRL, MK_ALT, MK_NITEMS };
+enum ModifierKey { MK_SHIFT, MK_CTRL, MK_ALT, MK_NITEMS };
 const char **get_MK_strings();
-modifier_key MK_from_text(const char*);
+ModifierKey MK_from_text(const char*);
 
 // Modifier actions
-enum key_action { KA_NONE, KA_MANIPULATE, KA_ZROTATE, KA_NITEMS };
+enum KeyAction { KA_NONE, KA_MANIPULATE, KA_ZROTATE, KA_NITEMS };
 const char **get_KA_strings();
-key_action KA_from_text(const char*);
+KeyAction KA_from_text(const char*);
 
 // Colours
-enum colour { COL_PEN, COL_BG, COL_SCHEMELO, COL_SCHEMEMID, COL_SCHEMEHI, COL_SPECREFLECT, COL_NITEMS };
-const char *text_from_COL(colour);
-colour COL_from_text(const char*);
+enum Colour { COL_PEN, COL_BG, COL_SCHEMELO, COL_SCHEMEMID, COL_SCHEMEHI, COL_SPECREFLECT, COL_NITEMS };
+const char *text_from_COL(Colour);
+Colour COL_from_text(const char*);
 
 // Density calculation units
-enum density_unit { DU_GPERCM, DU_ATOMSPERANG, DU_NITEMS };
-const char *text_from_DU(density_unit);
-density_unit DU_from_text(const char*);
+enum DensityUnit { DU_GPERCM, DU_ATOMSPERANG, DU_NITEMS };
+const char *text_from_DU(DensityUnit);
+DensityUnit DU_from_text(const char*);
 
 // Drawing guide geometry
-enum guide_geometry { GG_SQUARE, GG_HEXAGONAL, GG_NITEMS };
+enum GuideGeometry { GG_SQUARE, GG_HEXAGONAL, GG_NITEMS };
 const char **get_GG_strings();
 
 // Energy Units
-enum energy_unit { EU_J, EU_KJ, EU_CAL, EU_KCAL, EU_EV, EU_HARTREE, EU_NITEMS };
-const char *text_from_EU(energy_unit);
-energy_unit EU_from_text(const char*);
+enum EnergyUnit { EU_J, EU_KJ, EU_CAL, EU_KCAL, EU_EV, EU_HARTREE, EU_NITEMS };
+const char *text_from_EU(EnergyUnit);
+EnergyUnit EU_from_text(const char*);
 
 // Name->Z mapping methods
-enum zmap_type { ZM_ALPHA, ZM_FIRSTALPHA, ZM_NAME, ZM_NUMERIC, ZM_FORCEFIELD, ZM_AUTO, ZM_NITEMS };
-zmap_type ZM_from_text(const char*);
+enum ZmapType { ZM_ALPHA, ZM_FIRSTALPHA, ZM_NAME, ZM_NUMERIC, ZM_FORCEFIELD, ZM_AUTO, ZM_NITEMS };
+ZmapType ZM_from_text(const char*);
 const char **get_ZM_keywords();
 
 // Charge source
-enum charge_source { QS_MODEL, QS_FF, QS_GASTEIGER, QS_QEQ, QS_NITEMS };
+enum ChargeSource { QS_MODEL, QS_FF, QS_GASTEIGER, QS_QEQ, QS_NITEMS };
 
 // Spotlight Components
-enum spotlight_component { SL_AMBIENT, SL_DIFFUSE, SL_SPECULAR, SL_POSITION, SL_NITEMS };
+enum SpotlightComponent { SL_AMBIENT, SL_DIFFUSE, SL_SPECULAR, SL_NITEMS };
 
 // Forward declarations
-class unitcell;
-class atom;
+class Cell;
 
 // Prefs
-class prefs_data
+class PrefsData
 {
 	public:
 	// Constructor / Destructor
-	prefs_data();
-	~prefs_data();
+	PrefsData();
+	~PrefsData();
 	// Load prefs from file
 	void load(const char*);
 	// Set GUI controls to reflect prefs choices
-	void set_controls();
-	// Allow rendering routines access to the structure
-	friend class canvas;
-	// Allow GL onject generation access to the structure
-	friend class gl_objects;
+	void setControls();
 
 	/*
 	// Rendering - View Objects
 	*/
 	private:
 	// List of visibilities of renderable objects
-	bool render_objects[VO_NITEMS];
+	bool renderObjects_[VO_NITEMS];
 	// Repeat units in positive xyz directions
-	vec3<int> render_repcellpos;
+	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
-	vec3<int> render_repcellneg;
+	Vec3<int> repeatCellsNeg_;
 	// Scaling factor for 3D labels
-	double render_label_scale;
+	double labelScale_;
 	// Size in pixels of the viewport to draw the rotation globe in.
-	int render_globe_size;
+	int globeSize_;
 	// Rendering style of models
-	draw_style render_style;
+	DrawStyle renderStyle_;
 
 	public:
 	// Set the visibility of an object
-	void set_visible(view_object vo, bool b) { render_objects[vo] = b; }
+	void setVisible(ViewObject vo, bool b);
 	// Return whether the specified object is visible (i.e. should be rendered)
-	bool should_render(view_object vo) { return render_objects[vo]; }
+	bool shouldRender(ViewObject vo);
 	// Return the radius of an atom calculated from the element and draw style
-	double screenradius(atom*);
+	double screenRadius(Atom*);
 	// Set the drawing style of models
-	void set_render_style(draw_style ds) { render_style = ds; }
+	void setRenderStyle(DrawStyle ds);
 	// Return the current drawing style of models
-	draw_style get_render_style() { return render_style; }
+	DrawStyle renderStyle();
 	// Set the scale of labels in the model
-	void set_label_scale(double v) { render_label_scale = v; }
+	void setLabelScale(double v);
 	// Return the current label scale
-	double get_label_scale() { return render_label_scale; }
+	double labelScale();
+	// Return the current rotation globe size in pixels
+	int globeSize();
 	// Set positive repeat cell value
-	void set_repcellpos(int i, int r) { render_repcellpos.set(i,r); }
+	void setRepeatCellsPos(int i, int r);
 	// Get positive repeat cell value
-	int get_repcellpos(int i) { return render_repcellpos.get(i); }
+	int repeatCellsPos(int i);
 	// Set negative repeat cell value
-	void set_repcellneg(int i, int r) { render_repcellneg.set(i,r); }
+	void setRepeatCellsNeg(int i, int r);
 	// Get negative repeat cell value
-	int get_repcellneg(int i) { return render_repcellneg.get(i); }
+	int repeatCellsNeg(int i);
 
 	/*
 	// Rendering - Style
 	*/
 	private:
 	// Atom sizes / radii
-	GLdouble render_atom_size[DS_NITEMS];
+	GLdouble atomSize_[DS_NITEMS];
 	// Tube size for DS_SPHERE / DS_TUBE / DS_SCALED
-	GLdouble render_tube_size;
+	GLdouble tubeSize_;
 	// Size scaling for atom selection transparency
-	GLdouble render_selection_scale;
+	GLdouble selectionScale_;
 	// Detail of atom quadric (slices/stacks)
-	int render_atom_detail;
+	int atomDetail_;
 	// Detail of bond quadric (slices/stacks)
-	int render_bond_detail;
+	int bondDetail_;
 	// Whether to use a perspective (TRUE) or orthographic (FALSE) projection
-	bool render_perspective;
+	bool perspective_;
 	// Viewing angle for perspective projection
-	GLdouble render_fov;
+	GLdouble perspectiveFov_;
 	// Whether the spotlight is on
-	bool spotlight_on;
+	bool spotlightActive_;
 	// Spotlight components
-	GLfloat spotlight_components[SL_NITEMS][4];
+	GLfloat spotlightColour_[SL_NITEMS][4];
+	// Spotlight position
+	GLfloat spotlightPosition_[3];
 	// Atom colouring style
-	atom_colours colour_scheme;
+	AtomColours colourScheme_;
 	// Number of segments between lo/hi and mid colours in colour scale
-	int scale_segments;
+	int nScaleSegments_;
 	// Graduated colour scale colours
-	GLfloat **scale_colours;
+	GLfloat **scaleColours_;
 
 	public:
 	// Sets the specified atom size to the given value
-	void set_atom_size(draw_style ds, double f) { render_atom_size[(int)ds] = f; }
+	void setAtomSize(DrawStyle ds, double f);
 	// Return the specified atom size
-	GLdouble get_atom_size(draw_style ds) { return render_atom_size[(int)ds]; }
+	GLdouble atomSize(DrawStyle ds);
 	// Sets the tube size in DS_TUBE
-	void set_tube_size(double f) { render_tube_size = f; }
+	void setTubeSize(double f);
 	// Return the tube size used in DS_TUBE
-	GLdouble get_tube_size() { return render_tube_size; }
+	GLdouble tubeSize();
 	// Sets the detail for atom quadrics
-	void set_atom_detail(int n) { render_atom_detail = n; }
+	void setAtomDetail(int n);
 	// Return the current detail of atom quadrics
-	int get_atom_detail() { return render_atom_detail; }
+	int atomDetail();
 	// Sets the detail for bond quadrics
-	void set_bond_detail(int n) { render_bond_detail = n; }
+	void setBondDetail(int n);
 	// Return the current detail of bond quadrics
-	int get_bond_detail() { return render_bond_detail; }
+	int bondDetail();
 	// Sets the scale of selected atoms
-	void set_selection_scale(double f) { render_selection_scale = f; }
+	void setSelectionScale(double f);
 	// Return the scale of selected atoms
-	GLdouble get_selection_scale() { return render_selection_scale; }
+	GLdouble selectionScale();
 	// Return whether perspective viewing is enabled
-	bool using_perspective() { return render_perspective; }
+	bool hasPerspective();
 	// Sets perspective viewing on/off
-	void set_perspective(bool b) { render_perspective = b; }
+	void setPerspective(bool b);
+	// Set the perspective field of view angle
+	void setPerspectiveFov(double fov);
+	// Return the perspective field of view angle
+	double perspectiveFov();
 	// Set status of spotlight
-	void set_spotlight_on(bool status) { spotlight_on = status; }
+	void setSpotlightActive(bool status);
 	// Return status of spotlight
-	bool get_spotlight_on() { return spotlight_on; }
-	// Set spotlight ambient component
-	void set_spotlight(spotlight_component sc, int i, GLfloat value) { spotlight_components[sc][i] = value; }
-	void set_spotlight(spotlight_component sc, GLfloat r, GLfloat g, GLfloat b) { spotlight_components[sc][0] = r; spotlight_components[sc][1] = g; spotlight_components[sc][2] = b; }
-	// Return spotlight ambient component
-	GLfloat *get_spotlight(spotlight_component sc) { return spotlight_components[sc]; }
+	bool spotlightActive();
+	// Set spotlight colour component
+	void setSpotlightColour(SpotlightComponent sc, int i, GLfloat value);
+	void setSpotlightColour(SpotlightComponent sc, GLfloat r, GLfloat g, GLfloat b);
+	// Return spotlight colour component
+	GLfloat *spotlightColour(SpotlightComponent sc);
+	// Set spotlight position
+	void setSpotlightPosition(GLfloat r, GLfloat g, GLfloat b);
+	void setSpotlightPosition(int component, GLfloat f);
+	// Return spotlight position
+	GLfloat *spotlightPosition();
 	// Set atom colour scheme
-	void set_colour_scheme(atom_colours ac) { colour_scheme = ac; }
+	void setColourScheme(AtomColours ac);
 	// Return atom colour scheme
-	atom_colours get_colour_scheme() { return colour_scheme; }
+	AtomColours colourScheme();
 	// Set number of segments in colour scale
-	void set_scale_segments(int nsegments);
+	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale
-	int get_scale_segments() { return scale_segments; }
+	int nScaleSegments();
 	// Set colour scale colours
-	void set_scale_colours();
+	void setScaleColours();
 	// Copy colour scale segment into supplied array
-	void get_scale_colour(int n, GLfloat *v);
+	void copyScaleColour(int n, GLfloat *v);
 
 	/*
 	// GL Options
 	*/
 	private:
 	// Bitvector for GL options
-	int gloptions;
+	int glOptions_;
 	// Shininess of 3D objects
-	GLint gl_shininess;
+	GLint shininess_;
 	// Fog start and finish depths
-	GLint gl_fog_near, gl_fog_far;
+	GLint fogNear_, fogFar_;
 	// Near and far clipping planes for glPerspective() and glFrustum();
-	GLdouble gl_clip_near, gl_clip_far;
+	GLdouble clipNear_, clipFar_;
 
 	public:
 	// Set the bit for the specified option (if it is not set already)
-	void add_gl_option(gl_option go) { if (!(gloptions&go)) gloptions += go; }
+	void addGlOption(GlOption go);
 	// Unsets the bit for the specified option (if it is not unset already)
-	void remove_gl_option(gl_option go) { if (gloptions&go) gloptions -= go; }
+	void removeGlOption(GlOption go);
 	// Return whether a given option is set
-	bool get_gl_option(gl_option go) { return (gloptions&go ? TRUE : FALSE); }
+	bool hasGlOption(GlOption go);
 	// Sets the start depth of depth cueing
-	void set_fog_near(int i) { gl_fog_near = i; }
+	void setFogNnear(int i);
 	// Return depth cue start depth
-	GLint get_fog_near() { return gl_fog_near; }
+	GLint fogNear();
 	// Sets the end depth of depth cueing
-	void set_fog_far(int i) { gl_fog_far = i; }
+	void setFogFar(int i);
 	// Return depth cue end depth
-	GLint get_fog_far() { return gl_fog_far; }
+	GLint fogFar();
 	// Return the Z depth of the near clipping plane
-	GLdouble get_clip_near() { return gl_clip_near; }
+	GLdouble clipNear();
+	// Return the Z depth of the far clipping plane
+	GLdouble clipFar();
 	// Sets the shininess of GL objects
-	void set_shininess(int n) { gl_shininess = n; }
+	void setShininess(int n);
 	// Return the current shininess of GL objects
-	GLint get_shininess() { return gl_shininess; }
+	GLint shininess();
 
 	/*
 	// Rendering - Colours
 	*/
 	private:
 	// RGB colour values
-	GLfloat colours[COL_NITEMS][4];
+	GLfloat colours_[COL_NITEMS][4];
 	// Numerical low limit corresponding to COL_ACSCHEMELO
-	double colour_scheme_lo[AC_NITEMS];
+	double colourSchemeLo_[AC_NITEMS];
 	// Numerical high limit corresponding to COL_ACSCHEMELO
-	double colour_scheme_hi[AC_NITEMS];
+	double colourSchemeHi_[AC_NITEMS];
 
 	public:
 	// Set the specified colour to the integer RGB values supplied
-	void set_colour(colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	void setColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	// Return the specified colour
-	GLfloat *get_colour(colour c) { return colours[c]; }
+	GLfloat *colour(Colour c);
 	// Return the low limit for the scheme specified
-	double get_colour_scheme_lo(int i) { return colour_scheme_lo[i]; }
+	double colourSchemeLo(int i);
 	// Sets the low limit for the scheme specified
-	void set_colour_scheme_lo(int i, double d) { colour_scheme_lo[i] = d; }
+	void setColourSchemeLo(int i, double d);
 	// Return the high limit for the scheme specified
-	double get_colour_scheme_hi(int i) { return colour_scheme_hi[i]; }
+	double colourSchemeHi(int i);
 	// Sets the high limit for the scheme specified
-	void set_colour_scheme_hi(int i, double d) { colour_scheme_hi[i] = d; }
+	void setColourSchemeHi(int i, double d);
 
 	/*
-	// File Preferences (file_)
+	// File Preferences
 	*/
 	private:
 	// Recalculate bonding when model has loaded
-	file_prefswitch file_bond_on_load;
+	PrefSwitch bondOnLoad_;
 	// Centre non-periodic models on load
-	file_prefswitch file_centre_on_load;
+	PrefSwitch centreOnLoad_;
 	// Fold atomic positions after model load
-	file_prefswitch file_fold_on_load;
+	PrefSwitch foldOnLoad_;
 	// Whether to apply symmetry operators to get crystal packing on load
-	file_prefswitch file_pack_on_load;
+	PrefSwitch packOnLoad_;
 	// Whether to load in all coordinate sets from a file
-	bool file_load_all_coords;
+	bool loadAllCoords_;
 	// Convert coordinates from Bohr to Angstrom on load
-	bool file_coords_in_bohr;
+	bool coordsInBohr_;
 	// Size limit (kbytes) for caching trajectory frames
-	int file_cache_limit;
+	int cacheLimit_;
 	// Type of name->Z mapping to use
-	zmap_type file_zmap_type;
+	ZmapType zmapType_;
 
 	public:
 	// Sets whether to calculate bonding on model load
-	void set_bond_on_load(file_prefswitch s) { file_bond_on_load = s; }
+	void setBondOnLoad(PrefSwitch s);
 	// Whether bonding should be recalculated on model load
-	file_prefswitch get_bond_on_load() { return file_bond_on_load; }
+	PrefSwitch bondOnLoad();
 	// Sets whether to centre molecule on load
-	void set_centre_on_load(file_prefswitch b) { file_centre_on_load = b; }
+	void setCentreOnLoad(PrefSwitch s);
 	// Whether molecule should be centred on model load
-	file_prefswitch get_centre_on_load() { return file_centre_on_load; }
+	PrefSwitch centreOnLoad();
 	// Sets whether to fold atomic positions after model load
-	void set_fold_on_load(file_prefswitch b) { file_fold_on_load = b; }
+	void setFoldOnLoad(PrefSwitch s);
 	// Whether atoms should be folded after model load
-	file_prefswitch get_fold_on_load() { return file_fold_on_load; }
+	PrefSwitch foldOnLoad();
 	// Sets whether to apply symmetry operators (pack) on load
-	void set_pack_on_load(file_prefswitch s) { file_pack_on_load = s; }
+	void setPackOnLoad(PrefSwitch s);
 	// Whether atoms should be packed (with symmetry operations) after model load
-	file_prefswitch get_pack_on_load() { return file_pack_on_load; }
+	PrefSwitch packOnLoad();
 	// Sets whether to load all coordinate sets on model load
-	void set_load_all_coords(bool b) { file_load_all_coords = b; }
+	void setLoadAllCoords(bool b);
 	// Whether all geometries in a non-trajectory file should be loaded
-	bool load_all_coords() { return file_load_all_coords; }
+	bool loadAllCoords();
 	// Set the cache limit (in kb) for trajectory files
-	void set_cache_limit(int i) { file_cache_limit = i; }
+	void setCacheLimit(int i);
 	// Return the cache limit for trajectory files
-	int get_cache_limit() { return file_cache_limit; }
+	int cacheLimit();
 	// Sets the style of element conversion to use
-	void set_zmapping(zmap_type i) { file_zmap_type = i; }
+	void setZmapType(ZmapType i);
 	// Return the style of element conversion in use
-	zmap_type get_zmapping() { return file_zmap_type; }
+	ZmapType zmapType();
 	// Sets whether to convert coords from Bohr to Angstrom on load
-	void set_coords_in_bohr(bool b) { file_coords_in_bohr = b; }
+	void setCoordsInBohr(bool b);
 	// Whether coordinates should be converted from Bohr to Angstrom
-	bool get_coords_in_bohr() { return file_coords_in_bohr; }
+	bool coordsInBohr();
 
 	/*
-	// Builder Preferences (build_)
+	// Edit Preferences
 	*/
 	private:
 	// Bonding tolerance for automatic calculation
-	double build_bond_tolerance;
+	double bondTolerance_;
 	// Depth for drawing guide
-	double build_draw_depth;
+	double drawDepth_;
 	// Spacing of grid on drawing guide
-	double build_guide_spacing;
+	double guideSpacing_;
 	// Extent (+- guide_spacing in xy plane) of drawing guide 
-	int build_guide_extent;
+	int guideExtent_;
 	// Number of ticks between gridpoints of guide
-	int build_guide_ticks;
+	int guideTicks_;
 	// Whether to show the drawing guide
-	bool build_show_guide;
+	bool showGuide_;
 	// Geometry of the grid in the drawing guide
-	guide_geometry build_guide_shape;
+	GuideGeometry guideShape_;
 	// User-definable mouse button actions
-	mouse_action mb_action[MB_NITEMS];
+	MouseAction mouseAction_[MB_NITEMS];
 	// User-definable key modifier actions
-	key_action keymod_action[MK_NITEMS];
-	// Whether automatic patterns use bonds as a fingerprint
-	bool patterns_use_bonds;
+	KeyAction keyAction_[MK_NITEMS];
 
 	public:
-	// Return the bonding tolerance for automatic calculation
-	double get_bond_tolerance() { return build_bond_tolerance; }
 	// Sets the bonding tolerance
-	void set_bond_tolerance(double v) { build_bond_tolerance = v; }
+	void setBondTolerance(double v);
+	// Return the bonding tolerance for automatic calculation
+	double bondTolerance();
 	// Sets the position of the drawing guide
-	void set_draw_depth(double v) { build_draw_depth = v; }
+	void setDrawDepth(double v);
 	// Return the current position of the drawing guide
-	double get_draw_depth() { return build_draw_depth; }
+	double drawDepth();
+	// Spacing of grid on drawing guide
+	void setGuideSpacing(double spacing);
+	// Spacing of grid on drawing guide
+	double guideSpacing();
+	// Extent (+- guide_spacing in xy plane) of drawing guide 
+	void setGuideExtent(int extent);
+	// Return extent (+- guide_spacing in xy plane) of drawing guide 
+	int guideExtent();
+	// Number of ticks between gridpoints of guide
+	void setGuideTicks(int nticks);
+	// Number of ticks between gridpoints of guide
+	int guideTicks();
 	// Sets the visibility of the drawing guide
-	void set_guide_visible(bool b) { build_show_guide = b; }
+	void setGuideVisible(bool b);
 	// Return whether the draw guide is visible
-	bool is_guide_visible() { return build_show_guide; }
+	bool isGuideVisible();
 	// Sets the shape of the drawing guide
-	void set_guide_shape(guide_geometry g) { build_guide_shape = g; }
+	void setGuideShape(GuideGeometry g);
+	// Return guide shape
+	GuideGeometry guideShape();
 	// Sets the action for the specified mouse button
-	void set_mb_action(mouse_button mb, mouse_action ma) { mb_action[mb] = ma; }
+	void setMouseAction(MouseButton mb, MouseAction ma);
 	// Return the action associated with the specified mouse button
-	mouse_action get_mb_action(mouse_button mb) { return mb_action[mb]; }
+	MouseAction mouseAction(MouseButton mb);
 	// Sets the modifier key for the specified action
-	void set_keymod_action(modifier_key mk, key_action ka) { keymod_action[mk] = ka; }
+	void setKeyAction(ModifierKey mk, KeyAction ka);
 	// Return the action associated with the specified keymod button
-	key_action get_keymod_action(modifier_key mk) { return keymod_action[mk]; }
+	KeyAction keyAction(ModifierKey mk);
 
 	/*
-	// Method Preferences (method_)
+	// Method Preferences
 	*/
 	private:
 	// Main modelview update and energy output frequencies
-	int method_mupdate, method_eupdate;
+	int modelUpdate_, energyUpdate_;
 	// Maximum ring size in ring search algorithm
-	int method_maxringsize;
+	int maxRingSize_;
 
 	public:
 	// Set the model update frequency
-	void set_mupdate(int n) { method_mupdate = n; }
+	void setModelUpdate(int n);
 	// Return the model update frequency
-	int get_mupdate() { return method_mupdate; }
+	int modelUpdate();
 	// Set the energy update frequency
-	void set_eupdate(int n) { method_eupdate = n; }
+	void setEnergyUpdate(int n);
 	// Return the energy update frequency
-	int get_eupdate() { return method_eupdate; }
+	int energyUpdate();
 	// Return whether to update the energy, given the cycle number
-	bool update_energy(int n) { return (n%method_eupdate == 0 ? TRUE : FALSE); }
+	bool shouldUpdateEnergy(int n);
 	// Return the maximum ring size allowed
-	int get_maxringsize() { return method_maxringsize; }
+	int maxRingSize();
 
 	/*
 	// Units and Conversion
 	*/
 	private:
-	density_unit density_internal;
+	DensityUnit densityUnit_;
 	// Internal energy units to use for forcefield storage, energy calculation etc.
-	energy_unit energy_internal;
+	EnergyUnit energyUnit_;
 	// Conversion factors for energy units
-	double energy_factors[EU_NITEMS];
+	double energyConversions_[EU_NITEMS];
+	// Factor to convert from atomic units to internal units
+	double elecConvert_;
 
 	public:
-	// Factor to convert from atomic units to internal units
-	double elec_convert;
 	// Sets the current internal energy unit
-	void set_internal_units(energy_unit eu);
+	void setEnergyUnit(EnergyUnit eu);
 	// Return the working energy units
-	energy_unit get_internal_units() { return energy_internal; }
+	EnergyUnit energyUnit();
 	// Set the density unit to use
-	void set_density_units(density_unit du) { density_internal = du; }
+	void setDensityUnits(DensityUnit du);
 	// Return the current density units to use
-	density_unit get_density_units() { return density_internal; }
+	DensityUnit densityUnit();
 	// Convert the units of the given quantity
-	double convert_energy(double,energy_unit);
+	double convertEnergy(double energy, EnergyUnit);
+	// Return the electrostastic energy conversion factor
+	double elecConvert();
 
 	/*
 	// Expression (general parameters)
 	*/
 	private:
 	// Method of electrostatic calculation
-	elec_method method_electrostatics;
+	ElecMethod electrostaticsMethod_;
 	// Whether to calculate VDW interactions
-	bool method_calc_vdw;
+	bool calculateVdw_;
 	// Whether to calculate electrostatic interactions
-	bool method_calc_elec;
+	bool calculateElec_;
 	// Whether to calculate intramolecular interactions
-	bool method_calc_intra;
+	bool calculateIntra_;
 	// Ewald sum extent
-	vec3<int> ewald_kvec;
+	Vec3<int> ewaldKvec_;
 	// Ewald sum gaussian width and (for auto option) precision
-	double ewald_alpha;
+	double ewaldAlpha_;
 	// Ewald sum precision for automatic parameter estimation
-	double ewald_precision;
+	double ewaldPrecision_;
 	// Cutoff distances for VDW and electrostatics
-	double vdw_cut, elec_cut;
+	double vdwCutoff_, elecCutoff_;
 	// Scale factor for VDW radii (used in disorder build)
-	double vdw_radius_scale;
+	double vdwScale_;
 	// Where to get charges from for the model
-	charge_source qsource;
+	ChargeSource chargeSource_;
+	// Whether the automatic Ewald setup is valid
+	bool validEwaldAuto_;
 
 	public:
 	// Sets the electrostatic model to use in energy/force calculation
-	void set_electrostatics(elec_method em) { method_electrostatics = em; }
+	void setElectrostaticsMethod(ElecMethod em);
 	// Return the type of electrostatic treatment to use
-	elec_method get_electrostatics() { return method_electrostatics; }
+	ElecMethod electrostaticsMethod();
 	// Sets whether to calculate intramolecular interactions
-	void set_calc_intra(bool b) { method_calc_intra = b; }
+	void setCalculateIntra(bool b);
 	// Return whether to calculate intramolocular interactions
-	bool calc_intra() { return method_calc_intra; }
+	bool calculateIntra();
 	// Sets whether to calculate VDW interactions
-	void set_calc_vdw(bool b) { method_calc_vdw = b; }
+	void setCalculateVdw(bool b);
 	// Return whether to calculate VDW interactions
-	bool calc_vdw() { return method_calc_vdw; }
+	bool calculateVdw();
 	// Sets whether to calculate electrostatic interactions
-	void set_calc_elec(bool b) { method_calc_elec = b; }
+	void setCalculateElec(bool b);
 	// Return whether to calculate electrostatic interactions
-	bool calc_elec() { return method_calc_elec; }
+	bool calculateElec();
 	// Sets the Ewald k-vector extents
-	void set_ewald_kvec(int a, int b, int c) { ewald_kvec.set(a,b,c); }
-	void set_ewald_kvec(vec3<int> v) { ewald_kvec = v; }
+	void setEwaldKvec(int a, int b, int c);
+	void setEwaldKvec(Vec3<int> v);
 	// Return the Ewald k-vector extents
-	vec3<int> get_ewald_kvec() { return ewald_kvec; }
+	Vec3<int> ewaldKvec();
 	// Sets the Ewald precision
-	void set_ewald_precision(double d) { ewald_precision = d; }
+	void setEwaldPrecision(double d);
 	// Return the Ewald precision
-	double get_ewald_precision() { return ewald_precision; }
+	double ewaldPrecision();
 	// Set the Gaussian width to use in the Ewald sum
-	void set_ewald_alpha(double d) { ewald_alpha = d; }
+	void setEwaldAlpha(double d);
 	// Return the Ewald alpha value
-	double get_ewald_alpha() { return ewald_alpha; }
+	double ewaldAlpha();
 	// Set the short-range and electrostatic cutoffs
-	void set_cutoffs(double ,double);
-	void ewald_estimate_parameters(unitcell*);
-	// Flag to indicate validity of automatic Ewald params (invalidated on cell change)
-	bool valid_ewaldauto;
+	void setCutoffs(double vcut, double ecut);
+	// Estimate Ewald sum parameters for the current unit cell
+	void estimateEwaldParameters(Cell*);
+	// Return the validity of automatic Ewald params (invalidated on cell change)
+	bool hasValidEwaldAuto();
+	// Flag the Ewald auto params as invalid
+	void invalidateEwaldAuto();
 	// Sets the VDW cutoff radius to use
-	void set_vdw_cutoff(double d) { vdw_cut = d; }
+	void setVdwCutoff(double d);
 	// Return the VDW cutoff radius
-	double get_vdw_cutoff() { return vdw_cut; }
+	double vdwCutoff();
 	// Sets the electrostatic cutoff radius to use
-	void set_elec_cutoff(double d) { elec_cut = d; }
+	void setElecCutoff(double d);
 	// Return the electrostatic cutoff radius
-	double get_elec_cutoff() { return elec_cut; }
+	double elecCutoff();
 	// Sets the vdw radius scaling factor
-	void set_vdw_radius_scale(double d) { vdw_radius_scale = d; }
+	void setVdwScale(double d);
 	// Return the VDW radius scaling factor
-	double get_vdw_radius_scale() { return vdw_radius_scale; }
+	double vdwScale();
 	// Set the charge source for the model
-	void set_chargesource(charge_source cs) { qsource = cs; }
+	void setChargeSource(ChargeSource cs);
 	// Get the charge source for the model
-	charge_source get_chargesource() { return qsource; }
+	ChargeSource chargeSource();
 
 	/*
 	// Undo levels
 	*/
 	private:
 	// Maximum number of undo levels (-1 for unlimited)
-	int maxundo;
+	int maxUndoLevels_;
 
 	public:
 	// Set the maximum number of undo levels allowed
-	void set_maxundo(int n) { maxundo = n; }
+	void setMaxUndoLevels(int n);
 	// Return the maximum number of undo levels allowed
-	int get_maxundo() { return maxundo; }
+	int maxUndoLevels();
 };
 
-extern prefs_data prefs;
+extern PrefsData prefs;
 
 #endif

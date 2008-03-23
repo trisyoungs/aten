@@ -22,157 +22,298 @@
 #include "command/commandlist.h"
 #include "command/commands.h"
 #include "parse/format.h"
-#include "parse/parser.h"
-#include "base/sysfunc.h"
 #include "base/master.h"
+#include "classes/forcefield.h"
 #include "base/elements.h"
-#include "base/constants.h"
 #include "classes/pattern.h"
+#include "model/model.h"
 
 // If Conditions
 const char *IC_strings[6] = { "eq", "l", "le", "g", "ge", "neq" };
-const char *text_from_IC(if_condition i)
+const char *text_from_IC(IfTest i)
 	{ return IC_strings[i-1]; }
 
 // Constructors
-command::command()
+Command::Command()
 {
+	// Private variables
+	for (int i=0; i<MAXDATAVARS; i++) args_[i] = NULL;
+	action_ = CA_ROOTNODE;
+	parent_ = NULL;
+	function_ = NULL;
+	ptr_ = NULL;
+	branch_ = NULL;
+	format_ = NULL;
+	loopActive_ = FALSE;
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	for (int i=0; i<MAXDATAVARS; i++) args[i] = NULL;
-	action = CA_ROOTNODE;
-	parent = NULL;
-	function = NULL;
-	ptr = NULL;
-	branch = NULL;
-	fmt = NULL;
-	loopactive = FALSE;
-	#ifdef MEMDEBUG
-		memdbg.create[MD_COMMANDNODE] ++;
-	#endif
 }
 
-commandlist::commandlist()
+CommandList::CommandList()
 {
+	// Private variables
+	inputFile_ = NULL;
+	outputFile_ = NULL;
+	readOptions_ = 0;
+	pushBranch(&commands_, CA_ROOTNODE, NULL);
+	// Public variables
 	next = NULL;
 	prev = NULL;
-	infile = NULL;
-	outfile = NULL;
-	readopts = 0;
-	push_branch(&commands, CA_ROOTNODE, NULL);
 }
 
 // Destructors
-command::~command()
+Command::~Command()
 {
-	if (branch != NULL) delete branch;
-	if (fmt != NULL) delete fmt;
-	#ifdef MEMDEBUG
-		memdbg.destroy[MD_COMMANDNODE] ++;
-	#endif
+	if (branch_ != NULL) delete branch_;
+	if (format_ != NULL) delete format_;
 }
 
-commandlist::~commandlist()
+/*
+// Command
+*/
+
+// Set parent CommandList
+void Command::setParent(CommandList *cl)
 {
+	parent_ = cl;
+}
+
+// Get parent CommandList
+CommandList *Command::parent()
+{
+	return parent_;
+}
+
+// Get command
+CommandAction Command::command()
+{
+	return action_;
+}
+
+// Returns the formatter
+Format *Command::format()
+{
+	return format_;
+}
+
+// Set status of loop
+void Command::setLoopActive(bool b)
+{
+	loopActive_ = b;
+}
+
+// Get status of loop
+bool Command::isLoopActive()
+{
+	return loopActive_;
+}
+
+// Set iteration count
+void Command::setLoopIterations(int n)
+{
+	loopIterations_ = n;
+}
+
+// Get iteration count
+int Command::loopIterations()
+{
+	return loopIterations_;
+}
+
+// Increase interation count
+void Command::increaseIterations()
+{
+	loopIterations_ ++;
+}
+
+// Returns branch list structure
+List<Command> *Command::branch()
+{
+	return branch_;
+}
+
+// Returns first item in branch 
+Command *Command::branchCommands()
+{
+	return (branch_ != NULL ? branch_->first() : NULL);
+}
+
+// Set FormatNode pointer variable
+void Command::setPointer(Command *f)
+{
+	ptr_ = f;
+}
+
+// Return FormatNode pointer variable
+Command *Command::pointer()
+{
+	return ptr_;
+}
+
+// Return variable argument
+Variable *Command::arg(int argno)
+{
+	return args_[argno];
+}
+
+// Return argument as character
+const char *Command::argc(int argno)
+{
+	return (args_[argno] == NULL ?  "NULL" : args_[argno]->asCharacter());
+}
+
+// Return argument as integer
+int Command::argi(int argno)
+{
+	return (args_[argno] == NULL ?  0 : args_[argno]->asInteger());
+}
+
+// Return argument as double
+double Command::argd(int argno)
+{
+	return (args_[argno] == NULL ? 0.0 : args_[argno]->asDouble());
+}
+
+// Return argument as bool
+bool Command::argb(int argno)
+{
+	return (args_[argno] == NULL ? -1 : args_[argno]->asBool());
+}
+
+// Return argument as atom pointer
+Atom *Command::arga(int argno)
+{
+	return (args_[argno] == NULL ? NULL : (Atom*) args_[argno]->asPointer());
+}
+
+// Return argument as pattern pointer
+Pattern *Command::argp(int argno)
+{
+	return (args_[argno] == NULL ? NULL : (Pattern*) args_[argno]->asPointer());
+}
+
+// Return argument as PatternBound pointer
+PatternBound *Command::argpb(int argno)
+{
+	return (args_[argno] == NULL ? NULL : (PatternBound*) args_[argno]->asPointer());
+}
+
+// Return argument as ForcefieldAtom pointer
+ForcefieldAtom *Command::argffa(int argno)
+{
+	return (args_[argno] == NULL ? NULL : (ForcefieldAtom*) args_[argno]->asPointer());
+}
+
+// Returns whether argument 'n' was provided
+bool Command::hasArg(int argno)
+{
+	return (args_[argno] == NULL ? FALSE : TRUE);
+}
+
+// Return variable type of argument
+VariableType Command::argt(int argno)
+{
+	return (args_[argno] == NULL ? VT_NITEMS : args_[argno]->type());
 }
 
 // Set command and function
-void command::set_command(command_action ca)
+void Command::setCommand(CommandAction ca)
 {
-	action = ca;
-	function = CA_data[ca].function;
+	action_ = ca;
+	function_ = CA_data[ca].function;
 }
 
 // Clear command list and reinitialise
-void commandlist::clear()
+void CommandList::clear()
 {
-	commands.clear();
-	branchstack.clear();
-	branchcmdstack.clear();
-	push_branch(&commands, CA_ROOTNODE, NULL);
+	commands_.clear();
+	branchStack_.clear();
+	branchCommandStack_.clear();
+	pushBranch(&commands_, CA_ROOTNODE, NULL);
 }
 
 // Print data variables
-void command::print_args()
+void Command::print_args()
 {
-	dbg_begin(DM_CALLS,"command::print_args");
+	dbgBegin(DM_CALLS,"Command::print_args");
 	int i;
 	for (int i=0; i<MAXDATAVARS; i++)
 	{
-		printf("%2i %20li",i,args[i]);
-		if (args[i] == NULL) printf ("None.\n");
+		printf("%2i %20li",i,args_[i]);
+		if (args_[i] == NULL) printf ("None.\n");
 		else
 		{
-			printf("%12s [%10s]",args[i]->get_name(), text_from_VT(args[i]->get_type()));
-			if (args[i]->get_type() < VT_ATOM) printf("%20s\n",args[i]->get_as_char());
-			else printf("%li\n",args[i]->get_as_pointer());
+			printf("%12s [%10s]",args_[i]->name(), text_from_VT(args_[i]->type()));
+			if (args_[i]->type() < VT_ATOM) printf("%20s\n",args_[i]->asCharacter());
+			else printf("%li\n",args_[i]->asPointer());
 		}
 	}
-	dbg_end(DM_CALLS,"command::print_args");
+	dbgEnd(DM_CALLS,"Command::print_args");
 }
 
-// Return arguments as vec3<double>
-vec3<double> command::arg3d(int i)
+// Return arguments as Vec3<double>
+Vec3<double> Command::arg3d(int i)
 {
-	dbg_begin(DM_CALLS,"command::arg3d");
-        static vec3<double> result;
-        if (i > (MAXDATAVARS-3)) printf("command::get_vector3d - Starting point too close to MAXDATAVARS.\n");
-        result.set(args[i]->get_as_double(),args[i+1]->get_as_double(),args[i+2]->get_as_double());
-	dbg_end(DM_CALLS,"command::arg3d");
+	dbgBegin(DM_CALLS,"Command::arg3d");
+        static Vec3<double> result;
+        if (i > (MAXDATAVARS-3)) printf("Command::get_vector3d - Starting point too close to MAXDATAVARS.\n");
+        result.set(args_[i]->asDouble(),args_[i+1]->asDouble(),args_[i+2]->asDouble());
+	dbgEnd(DM_CALLS,"Command::arg3d");
         return result;
 }
 
-// Return arguments as vec3<float>
-vec3<float> command::arg3f(int i)
+// Return arguments as Vec3<float>
+Vec3<float> Command::arg3f(int i)
 {
-	dbg_begin(DM_CALLS,"command::arg3f");
-        static vec3<float> result;
-        if (i > (MAXDATAVARS-3)) printf("command::get_vector3f - Starting point too close to MAXDATAVARS.\n");
-        result.set(args[i]->get_as_float(),args[i+1]->get_as_float(),args[i+2]->get_as_float());
-	dbg_end(DM_CALLS,"command::arg3f");
+	dbgBegin(DM_CALLS,"Command::arg3f");
+        static Vec3<float> result;
+        if (i > (MAXDATAVARS-3)) printf("Command::get_vector3f - Starting point too close to MAXDATAVARS.\n");
+        result.set(args_[i]->asFloat(),args_[i+1]->asFloat(),args_[i+2]->asFloat());
+	dbgEnd(DM_CALLS,"Command::arg3f");
         return result;
 }
 
-// Return arguments as vec3<int>
-vec3<int> command::arg3i(int i)
+// Return arguments as Vec3<int>
+Vec3<int> Command::arg3i(int i)
 {
-	dbg_begin(DM_CALLS,"command::arg3i");
-	static vec3<int> result;
-	if (i > (MAXDATAVARS-3)) printf("command::get_vector3i - Starting point too close to MAXDATAVARS.\n");
-        result.set(args[i]->get_as_int(),args[i+1]->get_as_int(),args[i+2]->get_as_int());
-	dbg_end(DM_CALLS,"command::arg3i");
+	dbgBegin(DM_CALLS,"Command::arg3i");
+	static Vec3<int> result;
+	if (i > (MAXDATAVARS-3)) printf("Command::get_vector3i - Starting point too close to MAXDATAVARS.\n");
+        result.set(args_[i]->asInteger(),args_[i+1]->asInteger(),args_[i+2]->asInteger());
+	dbgEnd(DM_CALLS,"Command::arg3i");
 	return result;
 }
 
 // Create branch
-list<command> *command::create_branch()
+List<Command> *Command::createBranch()
 {
-	dbg_begin(DM_CALLS,"command::create_branch");
-	if (branch != NULL) printf("command::create_branch <<<< Already has a branch >>>>\n");
-	branch = new list< command >;
-	dbg_end(DM_CALLS,"command::create_branch");
-	return branch;
+	dbgBegin(DM_CALLS,"Command::createBranch");
+	if (branch_ != NULL) printf("Command::createBranch <<<< Already has a branch >>>>\n");
+	branch_ = new List< Command >;
+	dbgEnd(DM_CALLS,"Command::createBranch");
+	return branch_;
 }
 
 // Create branch
-bool command::create_format(const char *s, variable_list &vars, bool delimited)
+bool Command::createFormat(const char *s, VariableList &vars, bool delimited)
 {
-	dbg_begin(DM_CALLS,"command::create_format");
+	dbgBegin(DM_CALLS,"Command::create_format");
 	bool result = FALSE;
-	if (fmt != NULL) printf("command::create_branch <<<< Already has a format >>>>\n");
+	if (format_ != NULL) printf("Command::createBranch <<<< Already has a format >>>>\n");
 	else
 	{
-		fmt = new format;
-		result = fmt->create(s, vars, delimited);
+		format_ = new Format;
+		result = format_->create(s, vars, delimited);
 	}
-	dbg_end(DM_CALLS,"command::create_format");
+	dbgEnd(DM_CALLS,"Command::create_format");
 	return result;
 }
 
 // Set if condition test
-bool command::set_iftest(const char *s)
+bool Command::setIfTest(const char *s)
 {
-	dbg_begin(DM_CALLS,"command::set_iftest");
+	dbgBegin(DM_CALLS,"Command::setIfTest");
 	bool result = TRUE;
 	int n, m;
 	m = 0;
@@ -194,34 +335,34 @@ bool command::set_iftest(const char *s)
 				break;
 		}
 	if (result >= IF_NITEMS) result = FALSE;
-	else iftest = (if_condition) m;
-	dbg_end(DM_CALLS,"command::set_iftest");
+	else ifTest_ = (IfTest) m;
+	dbgEnd(DM_CALLS,"Command::setIfTest");
 	return result;
 }
 
 // Evaluate condition
-bool command::if_evaluate()
+bool Command::ifEvaluate()
 {
-	dbg_begin(DM_CALLS,"command::if_evaluate");
+	dbgBegin(DM_CALLS,"Command::ifEvaluate");
 	// Do all as comparisons as floats, except for equalities
 	bool result;
-	static dnchar value1, value2;
+	static Dnchar value1, value2;
 	static double d1, d2;
 	//print_argss();
-	if ((iftest == IF_EQUAL) || (iftest == IF_NEQUAL))
+	if ((ifTest_ == IF_EQUAL) || (ifTest_ == IF_NEQUAL))
 	{
 		// Grab current variable values into the value1/value2 character arrays (if var != NULL)
-		value1 = args[0]->get_as_char();
-		value2 = args[2]->get_as_char();
+		value1 = args_[0]->asCharacter();
+		value2 = args_[2]->asCharacter();
 	}
 	else
 	{
-		d1 = args[0]->get_as_double();
-		d2 = args[2]->get_as_double();
+		d1 = args_[0]->asDouble();
+		d2 = args_[2]->asDouble();
 	}
-	msg(DM_VERBOSE,"IF TEST = var1(%s)=[%s] (%s) var2(%s)=[%s]\n", args[0]->get_name(), args[0]->get_as_char(), text_from_IC(iftest), args[2]->get_name(), args[2]->get_as_char());
+	msg(DM_VERBOSE,"IF TEST = var1(%s)=[%s] (%s) var2(%s)=[%s]\n", args_[0]->name(), args_[0]->asCharacter(), text_from_IC(ifTest_), args_[2]->name(), args_[2]->asCharacter());
 	// Do comparison
-	switch (iftest)
+	switch (ifTest_)
 	{
 		case (IF_EQUAL):
 			result = (value1 == value2 ? TRUE : FALSE);
@@ -243,26 +384,26 @@ bool command::if_evaluate()
 			break;
 	}
 	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
-	dbg_end(DM_CALLS,"command::if_evaluate");
+	dbgEnd(DM_CALLS,"Command::ifEvaluate");
 	return result;
 }
 
 // Add variables to command
-bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
+bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 {
-	dbg_begin(DM_CALLS,"command::add_variables");
+	dbgBegin(DM_CALLS,"Command::addVariables");
 	bool required = TRUE;
 	int n, argcount, varcount;
-	variable *b;
+	Variable *b;
 	static char arg[512];
 	char *c;
-	variable_type vt;
+	VariableType vt;
 	//printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
 	// Are there arguments in the parser that we shouldn't have been given.
-	if ((parser.get_nargs() - 1) > strlen(v))
+	if ((parser.nArgs() - 1) > strlen(v))
 	{
-		printf("Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.get_nargs()-1), cmd, strlen(v));
-		dbg_end(DM_CALLS,"command::add_variables");
+		printf("Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.nArgs()-1), cmd, strlen(v));
+		dbgEnd(DM_CALLS,"Command::addVariables");
 		return FALSE;
 	}
 	argcount = 0;
@@ -275,13 +416,13 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 		varcount ++;
 		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
 		// Is this a required argument?
-		//if ((parser.is_blank(argcount)) || (argcount >= parser.get_nargs()))
-		if (argcount >= parser.get_nargs())
+		//if ((parser.is_blank(argcount)) || (argcount >= parser.nArgs()))
+		if (argcount >= parser.nArgs())
 		{
 			if (required)
 			{
 				printf("Command '%s' requires argument %i\n", cmd, argcount);
-				dbg_end(DM_CALLS,"command::add_variables");
+				dbgEnd(DM_CALLS,"Command::addVariables");
 				return FALSE;
 			}
 			else break;	// No more arguments, so may as well quit.
@@ -293,17 +434,17 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 			// Formats (delimited)
 			case ('f'):
 			case ('F'):
-				if (!create_format(arg, vars, TRUE)) return FALSE;
+				if (!createFormat(arg, vars, TRUE)) return FALSE;
 				break;
 			// Formats (exact)
 			case ('g'):
 			case ('G'):
-				if (!create_format(arg, vars, FALSE)) return FALSE;
+				if (!createFormat(arg, vars, FALSE)) return FALSE;
 				break;
 			// Expressions
 			case ('e'):
 			case ('E'):
-				args[varcount] = vars.add_constant(arg);
+				args_[varcount] = vars.addConstant(arg);
 				break;
 			// Discard
 			case ('x'):
@@ -312,14 +453,14 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 			// String as-is
 			case ('s'):
 			case ('S'):
-				args[varcount] = vars.add_constant(arg);
+				args_[varcount] = vars.addConstant(arg);
 				break;
 			// Equals
 			case ('='):
 				if (strcmp(arg,"=") != 0)
 				{
 					printf("Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
-					dbg_end(DM_CALLS,"command::add_variables");
+					dbgEnd(DM_CALLS,"Command::addVariables");
 					return FALSE;
 				}
 				break;
@@ -332,91 +473,131 @@ bool command::add_variables(const char *cmd, const char *v, variable_list &vars)
 				if (arg[0] == '$')
 				{
 					// See if it has been declared
-					args[varcount] = parent->variables.get(&arg[1]);
-					if (args[varcount] == NULL)
+					args_[varcount] = parent_->variables.get(&arg[1]);
+					if (args_[varcount] == NULL)
 					{
 						printf("Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 				}
-				else if (arg[0] == '*') args[varcount] = parent->variables.get_dummy();
-				else args[varcount] = parent->variables.add_constant(arg);
+				else if (arg[0] == '*') args_[varcount] = parent_->variables.dummy();
+				else args_[varcount] = parent_->variables.addConstant(arg);
 				break;
 		}
 	}
-	dbg_end(DM_CALLS,"command::add_variables");
+	dbgEnd(DM_CALLS,"Command::addVariables");
 	return TRUE;
 }
 
-// Push branch on to stack
-void commandlist::push_branch(list<command> *branch, command_action ca, command *basenode)
+/*
+// CommandList
+*/
+
+// Set name of CommandList
+void CommandList::setName(const char *s)
 {
-	branchstack.add(branch);
-	command *cn = branchcmdstack.add();
-	cn->set_command(ca);
-	cn->set_pointer(basenode);
-	cn->set_parent(this);
+	name_ = s;
+}
+
+// Return name of CommandList
+const char *CommandList::name()
+{
+	return name_.get();
+}
+
+// Return filename of CommandList
+const char *CommandList::scriptFilename()
+{
+	return scriptFilename_.get();
+}
+
+// Return size of branch stack
+int CommandList::nBranches()
+{
+	return branchStack_.nItems();
+}
+
+// Set parent filter
+void CommandList::setFilter(Filter *f)
+{
+	parentFilter_ = f;
+}
+
+// Return parent filter
+Filter *CommandList::filter()
+{
+	return parentFilter_;
+}
+
+// Push branch on to stack
+void CommandList::pushBranch(List<Command> *branch, CommandAction ca, Command *basenode)
+{
+	branchStack_.add(branch);
+	Command *cn = branchCommandStack_.add();
+	cn->setCommand(ca);
+	cn->setPointer(basenode);
+	cn->setParent(this);
 }
 
 // Pop topmost branch on stack
-void commandlist::pop_branch()
+void CommandList::popBranch()
 {
-	if (branchstack.size() == 0)
+	if (branchStack_.nItems() == 0)
 	{
-		printf("commandlist::pop_branch <<<< No branches in branch list! >>>>\n");
+		printf("CommandList::popBranch <<<< No branches in branch list! >>>>\n");
 		return;
 	}
-	branchstack.remove(branchstack.last());
-	branchcmdstack.remove(branchcmdstack.last());
+	branchStack_.remove(branchStack_.last());
+	branchCommandStack_.remove(branchCommandStack_.last());
 }
 
 // Return basic command type of topmost branch
-command_action commandlist::get_topbranch_type()
+CommandAction CommandList::topBranchType()
 {
-	if (branchcmdstack.size() == 0)
+	if (branchCommandStack_.nItems() == 0)
 	{
-		printf("commandlist::get_topbranch_type <<<< No branches in branch list! >>>>\n");
+		printf("CommandList::topBranchType <<<< No branches in branch list! >>>>\n");
 		return CA_NITEMS;
 	}
-	else return branchcmdstack.last()->get_command();
+	else return branchCommandStack_.last()->command();
 }
 
 // Return base node of topmost branch
-command* commandlist::get_topbranch_basenode()
+Command* CommandList::topBranchBaseNode()
 {
-	if (branchcmdstack.size() == 0)
+	if (branchCommandStack_.nItems() == 0)
 	{
-		printf("commandlist::get_topbranch_basenode <<<< No branches in branch list! >>>>\n");
+		printf("CommandList::topBranchBaseNode <<<< No branches in branch list! >>>>\n");
 		return NULL;
 	}
-	else return branchcmdstack.last()->get_pointer();
+	else return branchCommandStack_.last()->pointer();
 }
 
 // Add command to topmost branch
-command* commandlist::add_topbranch_command(command_action ca, command *nodeptr)
+Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
 {
-	if (branchstack.size() == 0)
+	if (branchStack_.nItems() == 0)
 	{
-		printf("commandlist::add_topbranch_command <<<< No branches in branch list! >>>>\n");
+		printf("CommandList::addTopBranchCommand <<<< No branches in branch list! >>>>\n");
 		return NULL;
 	}
-	command *cn = branchstack.last()->item->add();
-	cn->set_command(ca);
-	cn->set_pointer(nodeptr);
-	cn->set_parent(this);
+	Command *cn = branchStack_.last()->item->add();
+	cn->setCommand(ca);
+	cn->setPointer(nodeptr);
+	cn->setParent(this);
 	return cn;
 }
 
 // Add basic command
-bool commandlist::add_command(command_action ca)
+bool CommandList::addCommand(CommandAction ca)
 {
-	dbg_begin(DM_CALLS,"commandlist::add_command");
+	dbgBegin(DM_CALLS,"CommandList::addCommand");
 	// Pointers to command nodes
-	command *fn, *fn2, *fn3;
-	command_action branchca;
-	variable_type vt;
+	Command *fn, *fn2, *fn3;
+	CommandAction branchca;
+	VariableType vt;
 	int n;
-	variable *v;
+	Variable *v;
 	bool result = TRUE, varresult = TRUE;
 	switch (ca)
 	{
@@ -434,33 +615,33 @@ bool commandlist::add_command(command_action ca)
 		case (CA_ANGLE):
 		case (CA_TORSION):
 		case (CA_ATOMTYPE):
-			for (n=1; n<parser.get_nargs(); n++)
+			for (n=1; n<parser.nArgs(); n++)
 			{
 				// Check for existing variable with same name
 				v = variables.get(parser.argc(n));
 				if (v != NULL)
 				{
-					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), text_from_VT((variable_type) ca),  text_from_VT(v->get_type()));
+					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), text_from_VT((VariableType) ca),  text_from_VT(v->type()));
 					result = FALSE;
 				}
 				else
 				{
-					vt = (variable_type) ca;
-					v = variables.add_variable(parser.argc(n), vt);
+					vt = (VariableType) ca;
+					v = variables.addVariable(parser.argc(n), vt);
 				}
 			}
 			break;
 		// 'If' statement (if 'x condition y')
 		case (CA_IF):
-			fn = add_topbranch_command(CA_IF, NULL);
-			push_branch(fn->create_branch(), CA_IF, fn);
-			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
-			if (!fn->set_iftest(parser.argc(2))) result = FALSE;
+			fn = addTopBranchCommand(CA_IF, NULL);
+			pushBranch(fn->createBranch(), CA_IF, fn);
+			varresult = fn->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
+			if (!fn->setIfTest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else If' statement (acts as CA_END to previous 'if' or 'elseif' branch.
 		case (CA_ELSEIF):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
-			branchca = get_topbranch_type();
+			branchca = topBranchType();
 			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
 			{
 				msg(DM_NONE,"Error: 'elseif' used without previous if/elseif.\n");
@@ -468,21 +649,21 @@ bool commandlist::add_command(command_action ca)
 				break;
 			}
 			// Add GOTONONIF command to topmost branch to end the if sequence
-			fn = add_topbranch_command(CA_GOTONONIF, get_topbranch_basenode());
+			fn = addTopBranchCommand(CA_GOTONONIF, topBranchBaseNode());
 			// Pop topmost (previous IF/ELSEIF) branch
-			pop_branch();
+			popBranch();
 			// Add new command node to new topmost branch and get variables
-			fn = add_topbranch_command(CA_ELSEIF, NULL);
+			fn = addTopBranchCommand(CA_ELSEIF, NULL);
 			//printf("New node is %li, command = %s\n",fn,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
-			push_branch(fn->create_branch(), CA_ELSEIF, fn);
-			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
-			if (!fn->set_iftest(parser.argc(2))) result = FALSE;
+			pushBranch(fn->createBranch(), CA_ELSEIF, fn);
+			varresult = fn->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
+			if (!fn->setIfTest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else' statement (acts as CA_END to previous 'if' or 'elseif' branch.
 		case (CA_ELSE):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
-			branchca = get_topbranch_type();
+			branchca = topBranchType();
 			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
 			{
 				msg(DM_NONE,"Error: 'else' used without previous if/elseif.\n");
@@ -490,133 +671,133 @@ bool commandlist::add_command(command_action ca)
 				break;
 			}
 			// Add GOTONONIF command to current topbranch to terminate that branch
-			fn = add_topbranch_command(CA_GOTONONIF, get_topbranch_basenode());
+			fn = addTopBranchCommand(CA_GOTONONIF, topBranchBaseNode());
 			// Pop previous branch from stack and add new command to new topmost branch
-			pop_branch();
+			popBranch();
 			// Add new node to new top branch
-			fn = add_topbranch_command(CA_ELSE, NULL);
+			fn = addTopBranchCommand(CA_ELSE, NULL);
 			//printf("New node is %li, command = %s\n",fn,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
-			push_branch(fn->create_branch(), CA_ELSE, fn);
+			pushBranch(fn->createBranch(), CA_ELSE, fn);
 			break;
 		// Loop for n iterations (or until file ends) or over items
 		case (CA_FOR):
-			fn = add_topbranch_command(ca, NULL);
-			push_branch(fn->create_branch(), ca, fn);
-			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
+			fn = addTopBranchCommand(ca, NULL);
+			pushBranch(fn->createBranch(), ca, fn);
+			varresult = fn->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
 			// Here, we must also add relevant variables to the list
 			if (varresult)
 			{
 				switch (fn->argt(0))
 				{
 					case (VT_ATOM):
-						varresult = create_atom_variables(fn->arg(0)->get_name());
+						varresult = createAtomVariables(fn->arg(0)->name());
 						break;
 					case (VT_PATTERN):
-						varresult = create_pattern_variables(fn->arg(0)->get_name());
+						varresult = createPatternVariables(fn->arg(0)->name());
 						break;
 					case (VT_BOND):
 					case (VT_ANGLE):
 					case (VT_TORSION):
-						varresult = create_patbound_variables(fn->arg(0)->get_name());
+						varresult = createPatternBoundVariables(fn->arg(0)->name());
 						break;
 					case (VT_ATOMTYPE):
-						varresult = create_atomtype_variables(fn->arg(0)->get_name());
+						varresult = createAtomtypeVariables(fn->arg(0)->name());
 						break;
 				}
 			}
 			break;
 		// End the topmost branch in the stack
 		case (CA_END):
-			if (branchstack.size() == 0)
+			if (branchStack_.nItems() == 0)
 			{
-				msg(DM_NONE,"commandlist::add_command - 'end' does not end a block.\n");
+				msg(DM_NONE,"CommandList::addCommand - 'end' does not end a block.\n");
 				result = FALSE;
 				break;
 			}
 			// Check command stack to choose list ending pointer
-			branchca = get_topbranch_type();
+			branchca = topBranchType();
 			switch (branchca)
 			{
 				// For repeats, jump back to node at start of loop (the branch owner)
 				case (CA_FOR):
-					add_topbranch_command(CA_GOTO, get_topbranch_basenode());
+					addTopBranchCommand(CA_GOTO, topBranchBaseNode());
 					break;
 				// For IFs, jump to node containing IF/ELSEIF/ELSE branch (the branch owner)
 				case (CA_IF):
 				case (CA_ELSEIF):
 				case (CA_ELSE):
-					add_topbranch_command(CA_GOTONONIF, get_topbranch_basenode());
+					addTopBranchCommand(CA_GOTONONIF, topBranchBaseNode());
 					break;
 				case (CA_ROOTNODE):
-					add_topbranch_command(CA_TERMINATE, NULL);
+					addTopBranchCommand(CA_TERMINATE, NULL);
 					break;
 				default:
-					printf("commandlist::add_basic <<<< No END action defined for command '%s' >>>>\n", CA_data[branchca].get_keyword());
+					printf("CommandList::add_basic <<<< No END action defined for command '%s' >>>>\n", CA_data[branchca].keyword);
 					result = FALSE;
 					break;
 			}
 			// Remove the topmost branch from the stack
-			pop_branch();
+			popBranch();
 			break;
 		// Unrecognised command
 		case (CA_NITEMS):
-			printf("Unrecognised command in commandlist::add_command()\n");
+			printf("Unrecognised command in CommandList::addCommand()\n");
 			result = FALSE;
 			break;
-		// All other commands do not alter the flow of the commandlist...
+		// All other commands do not alter the flow of the CommandList...
 		default:
-			fn = add_topbranch_command(ca, NULL);
-			varresult = fn->add_variables(CA_data[ca].get_keyword(), CA_data[ca].get_arguments(), variables);
+			fn = addTopBranchCommand(ca, NULL);
+			varresult = fn->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
 			break;
 	}
 	// Check variable assignment result
 	if (!varresult)
 	{
-		msg(DM_NONE,"Error: Command '%s' was not given the correct variables.\n", CA_data[ca].get_keyword());
+		msg(DM_NONE,"Error: Command '%s' was not given the correct variables.\n", CA_data[ca].keyword);
 		result = FALSE;
 	}
-	dbg_end(DM_CALLS,"commandlist::add_command");
+	dbgEnd(DM_CALLS,"CommandList::addCommand");
 	return result;
 }
 
 // Cache script commands from line containing semicolon-separated commands
-bool commandlist::cache_line(const char *s)
+bool CommandList::cacheLine(const char *s)
 {
-	dbg_begin(DM_CALLS,"commandlist::cache_line");
+	dbgBegin(DM_CALLS,"CommandList::cacheLine");
 	// Use a local parser to split up the semi-colon'd line into individual commands
-	static line_parser lines;
-	lines.get_lines_delim(s);
-	for (int n=0; n<lines.get_nargs(); n++)
+	static Parser lines;
+	lines.getLinesDelim(s);
+	for (int n=0; n<lines.nArgs(); n++)
 	{
 		// Parse the argument in our local line_parser and call cache_command())
-		parser.get_args_delim(lines.argc(n), PO_USEQUOTES+PO_SKIPBLANKS);
-		if (!cache_command())
+		parser.getArgsDelim(lines.argc(n), PO_USEQUOTES+PO_SKIPBLANKS);
+		if (!cacheCommand())
 		{
-			dbg_end(DM_CALLS,"commandlist::cache_line");
+			dbgEnd(DM_CALLS,"CommandList::cacheLine");
 			return FALSE;
 		}
 	}
-	dbg_end(DM_CALLS,"commandlist::cache_line");
+	dbgEnd(DM_CALLS,"CommandList::cacheLine");
 	return TRUE;
 }
 
 // Cache command arguments in line_parser
-bool commandlist::cache_command()
+bool CommandList::cacheCommand()
 {
-	dbg_begin(DM_CALLS,"commandlist::cache_command");
-	command_action ca;
+	dbgBegin(DM_CALLS,"CommandList::cacheCommand");
+	CommandAction ca;
 	int success;
 	bool result = TRUE;
 	// Assume that the main parser object contains the data we require.
 	ca = CA_from_text(parser.argc(0));
 	if (ca != CA_NITEMS)
 	{
-		// If add_command() returns FALSE then we encountered an error
-		if (!add_command(ca))
+		// If addCommand() returns FALSE then we encountered an error
+		if (!addCommand(ca))
 		{
 			msg(DM_NONE,"Error adding command '%s'.\n", parser.argc(0));
-			msg(DM_NONE,"Command usage is: %s %s\n", CA_data[ca].get_keyword(), CA_data[ca].get_argtext());
+			msg(DM_NONE,"Command usage is: %s %s\n", CA_data[ca].keyword, CA_data[ca].argText);
 			result = FALSE;
 		}
 	}
@@ -625,28 +806,62 @@ bool commandlist::cache_command()
 		msg(DM_NONE,"Unrecognised command '%s'.\n", parser.argc(0));
 		result = FALSE;
 	}
-	dbg_end(DM_CALLS,"commandlist::cache_command");
+	dbgEnd(DM_CALLS,"CommandList::cacheCommand");
 	return result;
 }
 
+/*
+// Files
+*/
+
+// Get input stream
+ifstream *CommandList::inputFile() {
+	return inputFile_;
+}
+
+// Get output stream
+ofstream *CommandList::outputFile() {
+	return outputFile_;
+}
+
+// Return filename associated to infile/outfile
+const char *CommandList::filename() {
+	return filename_.get();
+}
+
+// Add read option
+void CommandList::addReadOption(ParseOption po) {
+	if (!(readOptions_&po)) readOptions_ += po;
+}
+
+// Remove read option
+void CommandList::removeReadOption(ParseOption po) {
+	if (readOptions_&po) readOptions_ -= po;
+}
+
+// Return read options
+int CommandList::readOptions() {
+	return readOptions_;
+}
+
 // Load commands from file
-bool commandlist::load(const char *filename)
+bool CommandList::load(const char *filename)
 {
-	dbg_begin(DM_CALLS,"commandlist::load");
-	scriptfilename = filename;
+	dbgBegin(DM_CALLS,"CommandList::load");
+	scriptFilename_ = filename;
 	ifstream cmdfile(filename,ios::in);
-	command *c;
-	command_action ca;
+	Command *c;
+	CommandAction ca;
 	int success;
 	clear();
 	// Read in commands
 	while (!cmdfile.eof())
 	{
-		success = parser.get_args_delim(&cmdfile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&cmdfile,PO_USEQUOTES+PO_SKIPBLANKS);
 		if (success == 1)
 		{
-			msg(DM_NONE,"commandlist::load - Error reading command file.\n");
-			dbg_end(DM_CALLS,"commandlist::load");
+			msg(DM_NONE,"CommandList::load - Error reading command file.\n");
+			dbgEnd(DM_CALLS,"CommandList::load");
 			return FALSE;
 		}
 		else if (success == -1) break;
@@ -655,104 +870,103 @@ bool commandlist::load(const char *filename)
 		if (ca != CA_NITEMS)
 		{
 			// Add the command to the list
-			if (add_command(ca)) continue;
+			if (addCommand(ca)) continue;
 			else
 			{
-				msg(DM_NONE,"commandlist::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
-				dbg_end(DM_CALLS,"commandlist::load");
+				msg(DM_NONE,"CommandList::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
+				dbgEnd(DM_CALLS,"CommandList::load");
 				return FALSE;
 			}
 		}
 		else
 		{
 			msg(DM_NONE,"Unrecognised command '%s' in file.\n", parser.argc(0));
-			dbg_end(DM_CALLS,"commandlist::load");
+			dbgEnd(DM_CALLS,"CommandList::load");
 			return FALSE;
 		}
 	}
 	// Check the flowstack - it should be empty...
-	int itemsleft = branchstack.size();
+	int itemsleft = branchStack_.nItems();
 	if (itemsleft != 1)
 	{
-		printf("commandlist::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
-		dbg_end(DM_CALLS,"commandlist::load");
+		printf("CommandList::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
+		dbgEnd(DM_CALLS,"CommandList::load");
 		return FALSE;
 	}
-	dbg_end(DM_CALLS,"commandlist::load");
+	dbgEnd(DM_CALLS,"CommandList::load");
 	return TRUE;
 }
 
 // Set input file (pointer)
-bool commandlist::set_infile(const char *sourcefile)
+bool CommandList::setInputFile(const char *sourcefile)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_infile");
-        if (infile != NULL) printf("commandlist::set_infile <<<< Inputfile already set >>>>\n");
-        infile = new ifstream(sourcefile,ios::in);
-	filename = sourcefile;
-        dbg_end(DM_CALLS,"commandlist::set_infile");
-        if (!infile->good()) return FALSE;
-        else return TRUE;
+	dbgBegin(DM_CALLS,"CommandList::setInFile");
+	if (inputFile_ != NULL) printf("CommandList::setInFile <<<< Inputfile already set >>>>\n");
+        inputFile_ = new ifstream(sourcefile,ios::in);
+	filename_ = sourcefile;
+	dbgEnd(DM_CALLS,"CommandList::setInFile");
+	return (!inputFile_->good() ? FALSE : TRUE);
 }
 
 // Set output file
-bool commandlist::set_outfile(const char *destfile)
+bool CommandList::setOutputFile(const char *destfile)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_output");
-	outfile = new ofstream(destfile,ios::out);
-	filename = destfile;
-	dbg_end(DM_CALLS,"commandlist::set_output");
-	if (!outfile->good()) return FALSE;
+	dbgBegin(DM_CALLS,"CommandList::setOutputFile");
+	outputFile_ = new ofstream(destfile,ios::out);
+	filename_ = destfile;
+	dbgEnd(DM_CALLS,"CommandList::setOutputFile");
+	if (!outputFile_->good()) return FALSE;
 	else return TRUE;
 }
 
 // Close files
-void commandlist::close_files()
+void CommandList::closeFiles()
 {
-	dbg_begin(DM_CALLS,"commandlist::close_files");
-	if (infile != NULL)
+	dbgBegin(DM_CALLS,"CommandList::closeFiles");
+	if (inputFile_ != NULL)
 	{
-		infile->close();
-		delete infile;
+		inputFile_->close();
+		delete inputFile_;
 	}
-	if (outfile != NULL)
+	if (outputFile_ != NULL)
 	{
-		outfile->close();
-		delete outfile;
+		outputFile_->close();
+		delete outputFile_;
 	}
-	infile = NULL;
-	outfile = NULL;
-	dbg_end(DM_CALLS,"commandlist::close_files");
+	inputFile_ = NULL;
+	outputFile_ = NULL;
+	dbgEnd(DM_CALLS,"CommandList::closeFiles");
 }
 
 // Execute command
-int command::execute(command *&c, model *alttarget)
+int Command::execute(Command *&c, Model *alttarget)
 {
-	static bundle obj;
-	// Grab master's pointer bundle
+	static Bundle obj;
+	// Grab master's pointer Bundle
 	obj = master.current;
 	// Set destination model to that provided if not NULL
 	if (alttarget != NULL) obj.m = alttarget;
-	return CALL_COMMAND(CA_data[action],function)(c, obj);
+	return CALL_COMMAND(CA_data[action_],function_)(c, obj);
 }
 
 // Execute commands in command list
-bool commandlist::execute(model *alttarget, ifstream *sourcefile)
+bool CommandList::execute(Model *alttarget, ifstream *sourcefile)
 {
-	dbg_begin(DM_CALLS,"commandlist::execute");
+	dbgBegin(DM_CALLS,"CommandList::execute");
 	// Set alternative input file if one was supplied
 	if (sourcefile != NULL)
 	{
-		if (infile != NULL) printf("Warning - supplied ifstream overrides file in commandlist.\n");
-		infile = sourcefile;
+		if (inputFile_ != NULL) printf("Warning - supplied ifstream overrides file in CommandList.\n");
+		inputFile_ = sourcefile;
 	}
 	static bool result;
 	result = TRUE;
 	// Get first command in list and execute
-	command *c = commands.first();
+	Command *c = commands_.first();
 	while (c != NULL)
 	{
 		// Run command and get return value
-		msg(DM_PARSE,"Commandlist executing command '%s'...\n",CA_data[c->get_command()].get_keyword());
+		msg(DM_PARSE,"Commandlist executing command '%s'...\n",CA_data[c->command()].keyword);
 		switch (c->execute(c, alttarget))
 		{
 			// Command succeeded - get following command
@@ -764,13 +978,13 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 				break;
 			// Command failed - show message and quit
 			case (CR_FAIL):
-				printf("Command list failed at '%s'.\n", CA_data[c->get_command()].get_keyword());
+				printf("Command list failed at '%s'.\n", CA_data[c->command()].keyword);
 				c = NULL;
 				result = FALSE;
 				break;
 			// Command failed - show message and continue to next command
 			case (CR_FAILCONTINUE):
-				printf("Continuing past failed command '%s'...\n", CA_data[c->get_command()].get_keyword());
+				printf("Continuing past failed command '%s'...\n", CA_data[c->command()].keyword);
 				c = c->next;
 				break;
 			// Exit with error
@@ -784,32 +998,32 @@ bool commandlist::execute(model *alttarget, ifstream *sourcefile)
 				break;
 		}
 	}
-	dbg_end(DM_CALLS,"commandlist::execute");
+	dbgEnd(DM_CALLS,"CommandList::execute");
 	return result;
 }
 
 // Set variables for model
-void commandlist::set_model_variables(model *m)
+void CommandList::setModelVariables(Model *m)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_model_variables");
+	dbgBegin(DM_CALLS,"CommandList::setModelVariables");
 	if (m != NULL)
 	{
-		variables.set("title","",m->get_name());
-		variables.set("natoms","",m->get_natoms());
+		variables.set("title","",m->name());
+		variables.set("natoms","",m->nAtoms());
 	}
-	dbg_end(DM_CALLS,"commandlist::set_model_variables");
+	dbgEnd(DM_CALLS,"CommandList::setModelVariables");
 }
 
 // Set variables for cell
-void commandlist::set_cell_variables(unitcell *c)
+void CommandList::setCellVariables(Cell *c)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_cell_variables");
-	mat3<double> mat;
-	vec3<double> vec;
+	dbgBegin(DM_CALLS,"CommandList::setCellVariables");
+	Mat3<double> mat;
+	Vec3<double> vec;
 	if (c != NULL)
 	{
-		variables.set("cell","type",lower_case(text_from_CT(c->get_type())));
-		mat = c->get_axes();
+		variables.set("cell","type",lowerCase(text_from_CT(c->type())));
+		mat = c->axes();
 		variables.set("cell","ax",mat.rows[0].x);
 		variables.set("cell","ay",mat.rows[0].y);
 		variables.set("cell","az",mat.rows[0].z);
@@ -819,84 +1033,84 @@ void commandlist::set_cell_variables(unitcell *c)
 		variables.set("cell","cx",mat.rows[2].x);
 		variables.set("cell","cy",mat.rows[2].y);
 		variables.set("cell","cz",mat.rows[2].z);
-		vec = c->get_lengths();
+		vec = c->lengths();
 		variables.set("cell","a",vec.x);
 		variables.set("cell","b",vec.y);
 		variables.set("cell","c",vec.z);
-		vec = c->get_angles();
+		vec = c->angles();
 		variables.set("cell","alpha",vec.x);
 		variables.set("cell","beta",vec.y);
 		variables.set("cell","gamma",vec.z);
-		vec = c->get_origin();
-		variables.set("cell","ox",vec.x);
-		variables.set("cell","oy",vec.y);
-		variables.set("cell","oz",vec.z);
+		vec = c->centre();
+		variables.set("cell","centrex",vec.x);
+		variables.set("cell","centrey",vec.y);
+		variables.set("cell","centrez",vec.z);
 	}
 	else
 	{
 		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
 		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.ox","cell.oy","cell.oz","");
 	}
-	dbg_end(DM_CALLS,"commandlist::set_cell_variables");
+	dbgEnd(DM_CALLS,"CommandList::setCellVariables");
 }
 
 // Create atom parameter variables
-bool commandlist::create_atom_variables(const char *base)
+bool CommandList::createAtomVariables(const char *base)
 {
-	variable *v;
-	v = variables.create_variable(base,"symbol",VT_CHAR);
+	Variable *v;
+	v = variables.createVariable(base,"symbol",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"mass",VT_DOUBLE);
+	v = variables.createVariable(base,"mass",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"name",VT_CHAR);
+	v = variables.createVariable(base,"name",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"z",VT_INTEGER);
+	v = variables.createVariable(base,"z",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"id",VT_INTEGER);
+	v = variables.createVariable(base,"id",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"fftype",VT_CHAR);
+	v = variables.createVariable(base,"fftype",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"ffequiv",VT_CHAR);
+	v = variables.createVariable(base,"ffequiv",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"q",VT_DOUBLE);
+	v = variables.createVariable(base,"q",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"rx",VT_DOUBLE);
+	v = variables.createVariable(base,"rx",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"ry",VT_DOUBLE);
+	v = variables.createVariable(base,"ry",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"rz",VT_DOUBLE);
+	v = variables.createVariable(base,"rz",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"fx",VT_DOUBLE);
+	v = variables.createVariable(base,"fx",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"fy",VT_DOUBLE);
+	v = variables.createVariable(base,"fy",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"fz",VT_DOUBLE);
+	v = variables.createVariable(base,"fz",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"vx",VT_DOUBLE);
+	v = variables.createVariable(base,"vx",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"vy",VT_DOUBLE);
+	v = variables.createVariable(base,"vy",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"vz",VT_DOUBLE);
+	v = variables.createVariable(base,"vz",VT_DOUBLE);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
 
 // Set variable values for atom
-void commandlist::set_atom_variables(const char *varname, atom *i)
+void CommandList::setAtomVariables(const char *varname, Atom *i)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_atom_variables");
-	vec3<double> v;
+	dbgBegin(DM_CALLS,"CommandList::setAtomVariables");
+	Vec3<double> v;
 	if (i != NULL)
 	{
 		// Element and ff type
 		variables.set(varname,"symbol",elements.symbol(i));
-		variables.set(varname,"mass",elements.mass(i));
+		variables.set(varname,"mass",elements.atomicMass(i));
 		variables.set(varname,"name",elements.name(i));
-		variables.set(varname,"z",i->get_element());
-		variables.set(varname,"id",i->get_id()+1);
-		ffatom *ffa = i->get_type();
-		variables.set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->get_name()));
-		variables.set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->get_equiv()));
+		variables.set(varname,"z",i->element());
+		variables.set(varname,"id",i->id()+1);
+		ForcefieldAtom *ffa = i->type();
+		variables.set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->name()));
+		variables.set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->equivalent()));
 		v = i->r();
 		variables.set(varname,"rx",v.x);
 		variables.set(varname,"ry",v.y);
@@ -909,115 +1123,115 @@ void commandlist::set_atom_variables(const char *varname, atom *i)
 		variables.set(varname,"vx",v.x);
 		variables.set(varname,"vy",v.y);
 		variables.set(varname,"vz",v.z);
-		variables.set(varname,"q",i->get_charge());
+		variables.set(varname,"q",i->charge());
 	}
-	dbg_end(DM_CALLS,"commandlist::set_atom_variables");
+	dbgEnd(DM_CALLS,"CommandList::setAtomVariables");
 }
 
 // Create pattern parameter variables
-bool commandlist::create_pattern_variables(const char *base)
+bool CommandList::createPatternVariables(const char *base)
 {
-	variable *v;
-	v = variables.create_variable(base,"name",VT_CHAR);
+	Variable *v;
+	v = variables.createVariable(base,"name",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"nmols",VT_INTEGER);
+	v = variables.createVariable(base,"nmols",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"nmolatoms",VT_INTEGER);
+	v = variables.createVariable(base,"nmolatoms",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"natoms",VT_INTEGER);
+	v = variables.createVariable(base,"natoms",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"nbonds",VT_INTEGER);
+	v = variables.createVariable(base,"nbonds",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"nangles",VT_INTEGER);
+	v = variables.createVariable(base,"nangles",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"ntorsions",VT_INTEGER);
+	v = variables.createVariable(base,"ntorsions",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"ntypes",VT_INTEGER);
+	v = variables.createVariable(base,"ntypes",VT_INTEGER);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
 
 // Set variables for pattern
-void commandlist::set_pattern_variables(const char *varname, pattern *p)
+void CommandList::setPatternVariables(const char *varname, Pattern *p)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_pattern_variables");
+	dbgBegin(DM_CALLS,"CommandList::setPatternVariables");
 	if (p != NULL)
 	{
-		variables.set(varname,"name",p->get_name());
-		variables.set(varname,"nmols",p->get_nmols());
-		variables.set(varname,"nmolatoms",p->get_natoms());
-		variables.set(varname,"natoms",p->get_totalatoms());
-		variables.set(varname,"nbonds",p->bonds.size());
-		variables.set(varname,"nangles",p->angles.size());
-		variables.set(varname,"ntorsions",p->torsions.size());
+		variables.set(varname,"name",p->name());
+		variables.set(varname,"nmols",p->nMols());
+		variables.set(varname,"nmolatoms",p->nAtoms());
+		variables.set(varname,"natoms",p->totalAtoms());
+		variables.set(varname,"nbonds",p->nBonds());
+		variables.set(varname,"nangles",p->nAngles());
+		variables.set(varname,"ntorsions",p->nTorsions());
 	}
-	dbg_end(DM_CALLS,"commandlist::set_pattern_variables");
+	dbgEnd(DM_CALLS,"CommandList::setPatternVariables");
 }
 
 // Create pattern bound term variables
-bool commandlist::create_patbound_variables(const char *base)
+bool CommandList::createPatternBoundVariables(const char *base)
 {
-	variable *v;
+	Variable *v;
 	static char parm[24];
 	int i;
-	v = variables.create_variable(base,"form",VT_CHAR);
+	v = variables.createVariable(base,"form",VT_CHAR);
 	if (v == NULL) return FALSE;
 	strcpy(parm,"id_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[3] = 105 + i;
-		v = variables.create_variable(base,parm,VT_INTEGER);
+		v = variables.createVariable(base,parm,VT_INTEGER);
 		if (v == NULL) return FALSE;
 	}
 	strcpy(parm,"type_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[5] = 105 + i;
-		v = variables.create_variable(base,parm,VT_CHAR);
+		v = variables.createVariable(base,parm,VT_CHAR);
 		if (v == NULL) return FALSE;
 	}
 	strcpy(parm,"param_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.create_variable(base,parm,VT_DOUBLE);
+		v = variables.createVariable(base,parm,VT_DOUBLE);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.create_variable(base,"escale",VT_DOUBLE);
+	v = variables.createVariable(base,"escale",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"vscale",VT_DOUBLE);
+	v = variables.createVariable(base,"vscale",VT_DOUBLE);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
 
-// Set variables for patbound
-void commandlist::set_patbound_variables(const char *varname, patbound *pb)
+// Set variables for PatternBound
+void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_patbound_variables");
-	static ffparams ffp;
-	static ffbound *ffb;
+	dbgBegin(DM_CALLS,"CommandList::setPatternBoundVariables");
+	static ForcefieldParams ffp;
+	static ForcefieldBound *ffb;
 	static char parm[24];
 	int i;
 	if (pb != NULL)
 	{
-		// Grab ffbound pointer from pattern bound structure
-		ffb = pb->get_data();
+		// Grab ForcefieldBound pointer from pattern bound structure
+		ffb = pb->data();
 		// Set atom ids involved
 		strcpy(parm,"id_X");
 		for (i = 0; i < MAXFFBOUNDTYPES; i++)
 		{
 			parm[3] = 105 + i;
-			variables.set(varname,parm,pb->get_atomid(i)+1);
+			variables.set(varname,parm,pb->atomId(i)+1);
 		}
 		// Set type names involved
 		strcpy(parm,"type_X");
 		for (i = 0; i < MAXFFBOUNDTYPES; i++)
 		{
 			parm[5] = 105 + i;
-			variables.set(varname,parm,ffb->get_type(i));
+			variables.set(varname,parm,ffb->atomType(i));
 		}
-		// Grab ffparams data
-		ffp = ffb->get_params();
+		// Grab ForcefieldParams data
+		ffp = ffb->params();
 		strcpy(parm,"param_X");
 		for (int i = 0; i < MAXFFPARAMDATA; i++)
 		{
@@ -1025,76 +1239,76 @@ void commandlist::set_patbound_variables(const char *varname, patbound *pb)
 			variables.set(varname,parm,ffp.data[i]);
 		}
 		// Set functional form and any additional variables
-		switch (ffb->get_type())
+		switch (ffb->type())
 		{
 			case (FFC_BOND):
-				variables.set(varname,"form",text_from_BF(ffb->get_funcform().bondfunc));
+				variables.set(varname,"form",text_from_BF(ffb->functionalForm().bondFunc));
 				break;
 			case (FFC_ANGLE):
-				variables.set(varname,"form",text_from_AF(ffb->get_funcform().anglefunc));
+				variables.set(varname,"form",text_from_AF(ffb->functionalForm().angleFunc));
 				break;
 			case (FFC_TORSION):
-				variables.set(varname,"form",text_from_TF(ffb->get_funcform().torsionfunc));
+				variables.set(varname,"form",text_from_TF(ffb->functionalForm().torsionFunc));
 				variables.set(varname,"escale",ffp.data[TF_ESCALE]);
 				variables.set(varname,"vscale",ffp.data[TF_VSCALE]);
 				break;
 			default:	
-				printf("commandlist::set_patbound_variables <<<< Functional form not defined >>>>\n");
+				printf("CommandList::setPatternBoundVariables <<<< Functional form not defined >>>>\n");
 				break;
 		}
 		
 	}
-	dbg_end(DM_CALLS,"commandlist::set_patbound_variables");
+	dbgEnd(DM_CALLS,"CommandList::setPatternBoundVariables");
 }
 
 // Create atomtype parameter variables
-bool commandlist::create_atomtype_variables(const char *base)
+bool CommandList::createAtomtypeVariables(const char *base)
 {
 	static char parm[24];
 	int i;
-	variable *v;
+	Variable *v;
 	strcpy(parm,"param_X");
 	for (i = 0; i < MAXFFPARAMDATA; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.create_variable(base,parm,VT_DOUBLE);
+		v = variables.createVariable(base,parm,VT_DOUBLE);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.create_variable(base,"q",VT_DOUBLE);
+	v = variables.createVariable(base,"q",VT_DOUBLE);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"id",VT_INTEGER);
+	v = variables.createVariable(base,"id",VT_INTEGER);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"name",VT_CHAR);
+	v = variables.createVariable(base,"name",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"equiv",VT_CHAR);
+	v = variables.createVariable(base,"equiv",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.create_variable(base,"form",VT_CHAR);
+	v = variables.createVariable(base,"form",VT_CHAR);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
 
 
 // Set variables for pattern
-void commandlist::set_atomtype_variables(const char *varname, ffatom *ffa)
+void CommandList::setAtomtypeVariables(const char *varname, ForcefieldAtom *ffa)
 {
-	dbg_begin(DM_CALLS,"commandlist::set_atomtype_variables");
+	dbgBegin(DM_CALLS,"CommandList::setAtomtypeVariables");
 	static char parm[24];
 	int i;
-	ffparams ffp;
+	ForcefieldParams ffp;
 	if (ffa != NULL)
 	{
-		ffp = ffa->get_params();
+		ffp = ffa->params();
 		strcpy(parm,"param_X");
 		for (i = 0; i < MAXFFPARAMDATA; i++)
 		{
 			parm[6] = 97 + i;
 			variables.set(varname,parm,ffp.data[i]);
 		}
-		variables.set(varname,"q",ffa->get_charge());
-		variables.set(varname,"id",ffa->get_ffid());
-		variables.set(varname,"name",ffa->get_name());
-		variables.set(varname,"equiv",ffa->get_equiv());
-		variables.set(varname,"form",keyword_from_VF(ffa->get_funcform()));
+		variables.set(varname,"q",ffa->charge());
+		variables.set(varname,"id",ffa->typeId());
+		variables.set(varname,"name",ffa->name());
+		variables.set(varname,"equiv",ffa->equivalent());
+		variables.set(varname,"form",keyword_from_VF(ffa->vdwForm()));
 	}
-	dbg_end(DM_CALLS,"commandlist::set_atomtype_variables");
+	dbgEnd(DM_CALLS,"CommandList::setAtomtypeVariables");
 }

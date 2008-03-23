@@ -22,7 +22,7 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-
+#include "model/model.h"
 
 /*
 // Trajectory Actions
@@ -30,25 +30,25 @@
 
 void AtenForm::on_actionFrameNext_triggered(bool checked)
 {
-	master.get_currentmodel()->seek_next_frame();
+	master.currentModel()->seekNextFrame();
 	gui.refresh();
 }
 
 void AtenForm::on_actionFramePrevious_triggered(bool checked)
 {
-	master.get_currentmodel()->seek_previous_frame();
+	master.currentModel()->seekPreviousFrame();
 	gui.refresh();
 }
 
 void AtenForm::on_actionFrameFirst_triggered(bool checked)
 {
-	master.get_currentmodel()->seek_first_frame();
+	master.currentModel()->seekFirstFrame();
 	gui.refresh();
 }
 
 void AtenForm::on_actionFrameLast_triggered(bool checked)
 {
-	master.get_currentmodel()->seek_last_frame();
+	master.currentModel()->seekLastFrame();
 	gui.refresh();
 }
 
@@ -57,14 +57,13 @@ void AtenForm::on_actionPlayPause_triggered(bool checked)
 	// If button is depressed, begin playback
 	if (checked)
 	{
-		gui.set_trajectory_timerid(ui.ModelView->startTimer(100));
-		gui.set_trajectory_playing(TRUE);
+		gui.setTrajectoryTimerId(ui.ModelView->startTimer(100));
+		gui.setTrajectoryPlaying(TRUE);
 	}
 	else
 	{
-		ui.ModelView->killTimer(gui.get_trajectory_timerid());
-		gui.set_trajectory_playing(FALSE);
+		ui.ModelView->killTimer(gui.trajectoryTimerId());
+		gui.setTrajectoryPlaying(FALSE);
 	}
-	gui.update_trajcontrols();
+	gui.updateTrajControls();
 }
-

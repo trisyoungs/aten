@@ -26,43 +26,39 @@
 #include "classes/pattern.h"
 
 // Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
-int commanddata::function_CA_NEWPATTERN(command *&c, bundle &obj)
+int CommandData::function_CA_NEWPATTERN(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->add_pattern(c->argi(1), c->argi(2), c->argc(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->addPattern(c->argi(1), c->argi(2), c->argc(0));
 	// TODO Add 'check_pattern(pattern*) method to model*
 	return CR_SUCCESS;
 }
 
 // Clear current pattern definition ('clearpatterns')
-int commanddata::function_CA_CLEARPATTERNS(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->clear_patterns();
+int CommandData::function_CA_CLEARPATTERNS(Command *&c, Bundle &obj) {
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->clearPatterns();
 	return CR_SUCCESS;
 }
 
 // Autocreate pattern definition ('createpatterns')
-int commanddata::function_CA_CREATEPATTERNS(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->autocreate_patterns();
+int CommandData::function_CA_CREATEPATTERNS(Command *&c, Bundle &obj) {
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->autocreatePatterns();
 	return CR_SUCCESS;
 }
 
 // Print pattern definition for current model ('listpatterns')
-int commanddata::function_CA_LISTPATTERNS(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->print_patterns();
+int CommandData::function_CA_LISTPATTERNS(Command *&c, Bundle &obj) {
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->printPatterns();
 	return CR_SUCCESS;
 }
 
 // Select working pattern from model ('getpattern <name>')
-int commanddata::function_CA_GETPATTERN(command *&c, bundle &obj)
-{
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	pattern *p = obj.m->find_pattern(c->argc(0));
+int CommandData::function_CA_GETPATTERN(Command *&c, Bundle &obj) {
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Pattern *p = obj.m->findPattern(c->argc(0));
 	if (p != NULL) master.current.p = p;
 	else return CR_FAIL;
 	return CR_SUCCESS;

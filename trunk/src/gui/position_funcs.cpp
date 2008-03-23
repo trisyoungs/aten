@@ -20,18 +20,33 @@
 */
 
 #include "base/master.h"
-#include "base/elements.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/gui.h"
+#include "model/model.h"
 
-void AtenForm::flip_selection(int axis)
+void AtenForm::on_FlipXButton_clicked(bool checked)
+{
+	flipSelection(0);
+}
+
+void AtenForm::on_FlipYButton_clicked(bool checked)
+{
+	flipSelection(1);
+}
+
+void AtenForm::on_FlipZButton_clicked(bool checked)
+{
+	flipSelection(2);
+}
+
+void AtenForm::flipSelection(int axis)
 {
 }
 
 void AtenForm::on_DefineCentreButton_clicked(bool checked)
 {
 	// Get centre of current selection
-	vec3<double> centre = master.get_currentmodel()->selection_get_cog();
+	Vec3<double> centre = master.currentModel()->selectionCog();
 	ui.CentreXSpin->setValue(centre.x);
 	ui.CentreYSpin->setValue(centre.y);
 	ui.CentreZSpin->setValue(centre.z);
@@ -39,15 +54,15 @@ void AtenForm::on_DefineCentreButton_clicked(bool checked)
 
 void AtenForm::on_CentreSelectionButton_clicked(bool checked)
 {
-	vec3<double> centre;
+	Vec3<double> centre;
 	centre.x = ui.CentreXSpin->value();
 	centre.y = ui.CentreYSpin->value();
 	centre.z = ui.CentreZSpin->value();
-	model *m = master.get_currentmodel();
+	Model *m = master.currentModel();
 	char s[128];
-	sprintf(s,"Centre %i atom(s) at %f %f %f\n",m->get_nselected(),centre.x,centre.y,centre.z);
-	m->begin_undostate(s);
+	sprintf(s,"Centre %i atom(s) at %f %f %f\n",m->nSelected(),centre.x,centre.y,centre.z);
+	m->beginUndostate(s);
 	m->centre(centre);
-	m->end_undostate();
+	m->endUndostate();
 	gui.refresh();
 }

@@ -24,65 +24,66 @@
 #include "base/debug.h"
 #include "classes/forcefield.h"
 #include "parse/filter.h"
+#include "model/model.h"
 
 // Create 'n' new atoms at once in model
-int commanddata::function_CA_CREATEATOMS(command *&c, bundle &obj)
+int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	vec3<double> v;
-	for (int n = 0; n < c->argi(0); n++) obj.i = obj.m->add_atom(0, v);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Vec3<double> v;
+	for (int n = 0; n < c->argi(0); n++) obj.i = obj.m->addAtom(0, v);
 	return CR_SUCCESS;
 }
 
 // Finalise current model
-int commanddata::function_CA_FINALISEMODEL(command *&c, bundle &obj)
+int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// If this command is being run from a filter, set the output filter in the model.
-	filter *f = c->get_parent()->get_filter();
+	Filter *f = c->parent()->filter();
 	if (f != NULL)
 	{
-		if (f->get_partner() != NULL) obj.m->set_filename(c->get_parent()->get_filename());
-		obj.m->set_filter(f->get_partner());
+		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
+		obj.m->setFilter(f->partner());
 	}
 	// Do various necessary calculations
-	if (prefs.get_coords_in_bohr()) obj.m->bohr_to_angstrom();
-	obj.m->renumber_atoms();
-	obj.m->reset_view();
-	obj.m->calculate_mass();
-	obj.m->calculate_density();
-	obj.m->select_none();
-	obj.m->reset_logs();
+	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
+	obj.m->renumberAtoms();
+	obj.m->resetView();
+	obj.m->calculateMass();
+	obj.m->calculateDensity();
+	obj.m->selectNone();
+	obj.m->resetLogs();
 	// Print out some useful info on the model that we've just read in
-	msg(DM_NONE,"Atoms  : %i\n",obj.m->get_natoms());
-	msg(DM_NONE,"Cell   : %s\n",text_from_CT(obj.m->get_celltype()));
-	if (obj.m->get_celltype() != 0) obj.m->get_cell()->print();
+	msg(DM_NONE,"Atoms  : %i\n",obj.m->nAtoms());
+	msg(DM_NONE,"Cell   : %s\n",text_from_CT(obj.m->cell()->type()));
+	if (obj.m->cell()->type() != CT_NONE) obj.m->cell()->print();
 	// Lastly, reset all the log points and start afresh
-	obj.m->reset_logs();
-	obj.m->update_save_point();
+	obj.m->resetLogs();
+	obj.m->updateSavePoint();
 	return CR_SUCCESS;
 }
 
 // Print loaded models ('listmodels')
-int commanddata::function_CA_LISTMODELS(command *&c, bundle &obj)
+int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 {
-	if (master.get_nmodels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
-	for (model *m = master.get_models(); m != NULL; m = m->next)
-		msg(DM_NONE,"%-15s %5i  %-15s\n", m->get_name(),m->get_natoms(),(m->get_ff() != NULL ? m->get_ff()->get_name() : "None"));
+	if (master.nModels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
+	for (Model *m = master.models(); m != NULL; m = m->next)
+		msg(DM_NONE,"%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
 	return CR_SUCCESS;
 }
 
 // Load model ('loadmodel <filename> [name]')
-int commanddata::function_CA_LOADMODEL(command *&c, bundle &obj)
+int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 {
-	filter *f = master.probe_file(c->argc(0), FT_MODEL_IMPORT);
+	Filter *f = master.probeFile(c->argc(0), FT_MODEL_IMPORT);
 	if (f != NULL)
 	{
 		if (f->execute(c->argc(0)))
 		{
-			model *m = master.get_currentmodel();
-			if (c->has_arg(1)) m->set_name(c->argc(1));
-			obj.i = m->get_atoms();
+			Model *m = master.currentModel();
+			if (c->hasArg(1)) m->setName(c->argc(1));
+			obj.i = m->atoms();
 			return CR_SUCCESS;
 		}
 		else return CR_FAIL;
@@ -90,70 +91,70 @@ int commanddata::function_CA_LOADMODEL(command *&c, bundle &obj)
 }
 
 // Use parent model as atom template
-int commanddata::function_CA_MODELTEMPLATE(command *&c, bundle &obj)
+int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	model *parent = obj.m->get_trajparent();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Model *parent = obj.m->trajectoryParent();
 	if (parent == NULL)
 	{
 		printf("<<<< SEVERE - No trajectory parent set for 'modeltemplate' >>>>\n");
 		return CR_FAIL;
 	}
 	// Create the atoms template
-	vec3<double> v;
-	atom *j;
-	for (obj.i = parent->get_atoms(); obj.i != NULL; obj.i = obj.i->next)
+	Vec3<double> v;
+	Atom *j;
+	for (obj.i = parent->atoms(); obj.i != NULL; obj.i = obj.i->next)
 	{
-		j = obj.m->add_atom(obj.i->get_element(), v);
-		j->copy_style(obj.i);
+		j = obj.m->addAtom(obj.i->element(), v);
+		j->copyStyle(obj.i);
 	}
 	return CR_SUCCESS;
 }
 
 // Create new model ('newmodel <name>')
-int commanddata::function_CA_NEWMODEL(command *&c, bundle &obj)
+int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 {
-	obj.m = master.add_model();
-	obj.m->set_name(strip_trailing(c->argc(0)));
-	msg(DM_NONE,"Created model '%s'\n", obj.m->get_name());
+	obj.m = master.addModel();
+	obj.m->setName(stripTrailing(c->argc(0)));
+	msg(DM_NONE,"Created model '%s'\n", obj.m->name());
 	return CR_SUCCESS;
 }
 
 // Print all information for model ('info')
-int commanddata::function_CA_INFO(command *&c, bundle &obj)
+int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->print();
 	return CR_SUCCESS;
 }
 
 // Save current model ('savemodel <format> <filename>')
-int commanddata::function_CA_SAVEMODEL(command *&c, bundle &obj)
+int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
-	filter *f = master.find_filter(FT_MODEL_EXPORT, c->argc(0));
+	Filter *f = master.findFilter(FT_MODEL_EXPORT, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
 		msg(DM_NONE,"No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	obj.m->set_filter(f);
-	obj.m->set_filename(c->argc(1));
+	obj.m->setFilter(f);
+	obj.m->setFilename(c->argc(1));
 	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
 }
 
 // Select working model ('getmodel <name>')
-int commanddata::function_CA_GETMODEL(command *&c, bundle &obj)
+int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 {
-	model *m = master.find_model(c->argc(0));
+	Model *m = master.findModel(c->argc(0));
 	if (m != NULL) 
 	{
-		master.set_currentmodel(m);
+		master.setCurrentModel(m);
 		//gui.select_model(m);
 		obj.p = NULL;
-		obj.i = m->get_atoms();
+		obj.i = m->atoms();
 		return CR_SUCCESS;
 	}
 	else
@@ -164,9 +165,9 @@ int commanddata::function_CA_GETMODEL(command *&c, bundle &obj)
 }
 
 // Set title of model
-int commanddata::function_CA_SETTITLE(command *&c, bundle &obj)
+int CommandData::function_CA_SETTITLE(Command *&c, Bundle &obj)
 {
-	if (obj.notify_null(BP_MODEL)) return CR_FAIL;
-	obj.m->set_name(c->argc(0));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->setName(c->argc(0));
 	return CR_SUCCESS;
 }

@@ -22,149 +22,150 @@
 #ifndef ATEN_MONTECARLO_H
 #define ATEN_MONTECARLO_H
 
-#include "templates/vector3.h"
 #include "templates/list.h"
 #include "classes/region.h"
 #include "classes/dnchar.h"
 
 // Monte Carlo move types
-enum mc_move { MT_TRANSLATE, MT_ROTATE, MT_ZMATRIX, MT_INSERT, MT_DELETE, MT_NITEMS };
-const char *text_from_MT(mc_move);
-mc_move MT_from_text(const char*);
+enum MonteCarloMove { MT_TRANSLATE, MT_ROTATE, MT_ZMATRIX, MT_INSERT, MT_DELETE, MT_NITEMS };
+const char *text_from_MT(MonteCarloMove);
+MonteCarloMove MT_from_text(const char*);
 
 // Forward declarations
-class model;
-class unitcell;
-class pattern;
+class Model;
+class Cell;
+class Pattern;
 
 // Disorder Component
-class component
+class Component
 {
 	public:
-	// Constructor / Destructor
-	component();
-	~component();
+	// Constructor
+	Component();
 	// List pointers
-	component *prev, *next;
+	Component *prev, *next;
 
 	/*
 	// Component (for disordered builder)
 	*/
 	private:
-	// Pointer to the component model
-	model *compmodel;
-	// Pointer to the components related pattern
-	pattern *comppattern;
+	// Pointer to the Component model
+	Model *model_;
+	// Pointer to the Components related pattern
+	Pattern *pattern_;
 	// Number of requested and actual (filled) molecules of this type
-	int nrequested, nfilled;
-	// Lists which MC move types are allowed for this component
-	bool allowed_moves[MT_NITEMS];
-	// Name of the component
-	dnchar name;
+	int nRequested_, nFilled_;
+	// Lists which MC move types are allowed for this Component
+	bool moveAllowed_[MT_NITEMS];
+	// Name of the Component
+	Dnchar name_;
 
 	public:
-	// Type of region the component is limited to
-	region area;
-	// Set the component's model
-	void set_model(model *m) { compmodel = m; }
-	// Return the component's model
-	model *get_model() { return compmodel; }
-	// Set the component's pattern
-	void set_pattern(pattern *p) { comppattern = p; }
-	// Return the component's pattern
-	pattern *get_pattern() { return comppattern; }
+	// Type of region the Component is limited to
+	ComponentRegion area;
+	// Set the Component's model
+	void setModel(Model *m);
+	// Return the Component's model
+	Model *model();
+	// Set the Component's pattern
+	void setPattern(Pattern *p);
+	// Return the Component's pattern
+	Pattern *pattern();
 	// Set the requested number of molecules
-	void set_nrequested(int i) { nrequested = i; }
+	void setNRequested(int i);
 	// Return the requested number of molecules
-	int get_nrequested() { return nrequested; }
+	int nRequested();
 	// Set the number of molecules filled
-	void set_nfilled(int i) { nfilled = i; }
+	void setNFilled(int i);
 	// Return the number of molecules filled
-	int get_nfilled() { return nrequested; }
-	// Set a specific move type for the component
-	void set_allowed(mc_move m, bool b) { allowed_moves[m] = b; }
-	// Set whether the component may be translated
-	bool get_allowed(mc_move m) { return allowed_moves[m]; }
-	// Set name of component
-	void set_name(const char *s) { name = s; }
-	// Get name of component
-	const char *get_name() { return name.get(); }
+	int nFilled();
+	// Set a specific move type for the Component
+	void setMoveAllowed(MonteCarloMove m, bool b);
+	// Set whether the Component may be translated
+	bool isMoveAllowed(MonteCarloMove m);
+	// Set name of Component
+	void setName(const char *s);
+	// Get name of Component
+	const char *name();
 };
 
 // Monte Carlo
-class mc_method
+class MethodMc
 {
 	/*
 	// Main Routines
 	*/
 	public:
 	// Constructor
-	mc_method();
+	MethodMc();
 	// Minimise the specified model
-	bool minimise(model*, double, double);
+	bool minimise(Model*, double, double);
 	// Run disordered builder
-	bool disorder(model*);
+	bool disorder(Model*);
 
 	/*
 	// Subroutines
 	*/
 	public:
 	// Create acceptance ratio array
-	void create_ratioarray(int);
+	void createRatioArray(int);
 
 	/*
 	// MC Move Probabilities, step sizes, trial numbers
 	*/
 	private:
 	// Maximum size of allowed move (units depend on move type)
-	double maxstep[MT_NITEMS];
+	double maxStep_[MT_NITEMS];
 	// Number of times to attempt move types
-	int ntrials[MT_NITEMS];
+	int nTrials_[MT_NITEMS];
 	// Turn on/off move types
-	bool allowed[MT_NITEMS];
+	bool moveAllowed_[MT_NITEMS];
 	// Acceptance ratio counts per pattern
-	double **acceptratio;
+	double **acceptanceRatio_;
 	// Size of acceptratio array
-	int acceptratio_size;
+	int acceptanceRatioSize_;
 	// Number of cycles to perform in MC method
-	int ncycles;
+	int nCycles_;
 	// Energy differences below which to accept moves
-	double eaccept[MT_NITEMS];
+	double acceptanceEnergy_[MT_NITEMS];
 	// Scaling factor for VDW radius in disorder method
-	double vdw_radius_scale;
+	double vdwScale_;
 
 	public:
 	// Set maximum stepsize for MC move
-	void set_maxstep(mc_move m, double d) { maxstep[m] = d; }
+	void setMaxStep(MonteCarloMove m, double d);
 	// Get maximum stepsize for MC move
-	double get_maxstep(mc_move m) { return maxstep[m]; }
+	double maxStep(MonteCarloMove m);
 	// Set ntrials for MC move
-	void set_ntrials(mc_move m, int i) { ntrials[m] = i; }
+	void setNTrials(MonteCarloMove m, int i);
 	// Get ntrials for MC move
-	int get_ntrials(mc_move m) { return ntrials[m]; }
+	int nTrials(MonteCarloMove m);
 	// Set allowed flag for MC move
-	void set_allowed(mc_move m, bool b) { allowed[m] = b; }
+	void setMoveAllowed(MonteCarloMove m, bool b);
 	// Get allowed flag for MC move
-	bool get_allowed(mc_move m) { return allowed[m]; }
+	bool isMoveAllowed(MonteCarloMove m);
 	// Set eaccept limit for MC move
-	void set_eaccept(mc_move m, double d) { eaccept[m] = d; }
+	void setAcceptanceEnergy(MonteCarloMove m, double d);
 	// Get eaccept limit for MC move
-	double get_eaccept(mc_move m) { return eaccept[m]; }
+	double acceptanceEnergy(MonteCarloMove m);
 	// Set number of MC cycles to perform
-	void set_ncycles(int i) { ncycles = i; }
+	void setNCycles(int i);
 	// Get ntrials for MC move
-	int get_ncycles() { return ncycles; }
+	int nCycles();
 	// Sets the vDW radius scale
-	void set_vdw_radius_scale(double d) { vdw_radius_scale = d; }
+	void setVdwScale(double d);
 
 	/*
 	// Component list (for disorder builder)
 	*/
 	public:
-	// List of component models to use in MC insertion
-	list<component> components;
-	// Return the component with name specified
-	component *get_component_by_name(const char*);
+	// List of Component models to use in MC insertion
+	List<Component> components;
+	// Return the Component with name specified
+	Component *componentByName(const char*);
 };
+
+// Static Singleton
+extern MethodMc mc;
 
 #endif

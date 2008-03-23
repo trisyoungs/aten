@@ -23,33 +23,60 @@
 #include "classes/forcefield.h"
 #include "gui/ttreewidgetitem.h"
 
+// Constructor
 TTreeWidgetItem::TTreeWidgetItem(QTreeWidgetItem *parent) : QTreeWidgetItem(parent)
 {
-	i = NULL;
-	ffa = NULL;
+	// Private variables
+	atom_ = NULL;
+	forcefieldAtom_ = NULL;
 }
 
-void TTreeWidgetItem::set_atom_columns()
+// Set the atom pointer in the widget
+void TTreeWidgetItem::setAtom(Atom *source)
 {
-	static vec3<double> r;
-	if (i == NULL) printf("TTreeWidgetItem::set_atom_columns <<<< Atom has not yet been set >>>>\n");
+	atom_ = source;
+}
+
+// Return the atom pointer in the widget
+Atom *TTreeWidgetItem::atom()
+{
+	return atom_;
+}
+
+// Set the ForcefieldAtom pointer in the widget
+void TTreeWidgetItem::setForcefieldAtom(ForcefieldAtom *source)
+{
+	forcefieldAtom_ = source;
+}
+
+// Return the ForcefieldAtom pointer in the widget
+ForcefieldAtom *TTreeWidgetItem::forcefieldAtom()
+{
+	return forcefieldAtom_;
+}
+
+// Set column data in item
+void TTreeWidgetItem::setAtomColumns()
+{
+	static Vec3<double> r;
+	if (atom_ == NULL) printf("TTreeWidgetItem::set_atom_columns <<<< Atom has not yet been set >>>>\n");
 	else
 	{
-		setText(TW_A_ID, itoa(i->get_id()+1));
-		setText(TW_A_ELEMENT, elements.symbol(i));
-		r = i->r();
+		setText(TW_A_ID, itoa(atom_->id()+1));
+		setText(TW_A_ELEMENT, elements.symbol(atom_));
+		r = atom_->r();
 		setText(TW_A_RX, ftoa(r.x));
 		setText(TW_A_RY, ftoa(r.y));
 		setText(TW_A_RZ, ftoa(r.z));
 	}
 }
 
-void TTreeWidgetItem::set_ffatom_columns()
+void TTreeWidgetItem::setForcefieldAtomColumns()
 {
-	if (ffa == NULL) printf("TTreeWidgetItem::set_ffatom_columns <<<< FFAtom has not yet been set >>>>\n");
+	if (forcefieldAtom_ == NULL) printf("TTreeWidgetItem::setForcefieldAtomColumns <<<< FFAtom has not yet been set >>>>\n");
 	else
 	{
-		setText(TW_FFA_NAME, ffa->get_name());
-		setText(TW_FFA_DESCRIPTION, ffa->get_description());
+		setText(TW_FFA_NAME, forcefieldAtom_->name());
+		setText(TW_FFA_DESCRIPTION, forcefieldAtom_->description());
 	}
 }

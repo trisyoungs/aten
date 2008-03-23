@@ -25,41 +25,41 @@
 #include "base/sysfunc.h"
 
 // Generation rules (for rule-based FFs)
-enum ff_rules { FFR_NORULES, FFR_UFF, FFR_NITEMS };
-const char *text_from_FFR(ff_rules);
-ff_rules FFR_from_text(const char*);
+enum ForcefieldRules { FFR_NORULES, FFR_UFF, FFR_NITEMS };
+const char *text_from_FFR(ForcefieldRules);
+ForcefieldRules FFR_from_text(const char*);
 
 // Electrostatic model
-enum elec_method { EM_OFF, EM_COULOMB, EM_EWALD, EM_EWALDAUTO, EM_NITEMS };
-const char *text_from_EM(elec_method);
-elec_method EM_from_text(const char*);
+enum ElecMethod { EM_OFF, EM_COULOMB, EM_EWALD, EM_EWALDAUTO, EM_NITEMS };
+const char *text_from_EM(ElecMethod);
+ElecMethod EM_from_text(const char*);
 
 // VDW potential forms
-enum vdw_func { VF_UNSPECIFIED, VF_LJ, VF_BUCK, VF_NITEMS };
-const char *text_from_VF(vdw_func);
-const char *keyword_from_VF(vdw_func);
-vdw_func VF_from_text(const char*);
+enum VdwFunction { VF_UNSPECIFIED, VF_LJ, VF_BUCK, VF_NITEMS };
+const char *text_from_VF(VdwFunction);
+const char *keyword_from_VF(VdwFunction);
+VdwFunction VF_from_text(const char*);
 enum vdw_lj { VF_LJ_EPS, VF_LJ_SIGMA };
 enum vdw_buck { VF_BUCK_A, VF_BUCK_B, VF_BUCK_C };
 
 // Bond potential forms
-enum bond_func { BF_UNSPECIFIED, BF_HARMONIC, BF_MORSE, BF_NITEMS };
-const char *text_from_BF(bond_func);
-bond_func BF_from_text(const char*);
+enum BondFunction { BF_UNSPECIFIED, BF_HARMONIC, BF_MORSE, BF_NITEMS };
+const char *text_from_BF(BondFunction);
+BondFunction BF_from_text(const char*);
 enum bond_harmonic { BF_HARMONIC_K, BF_HARMONIC_EQ };
 
 // Angle potential forms
-enum angle_func { AF_UNSPECIFIED, AF_HARMONIC, AF_COSINE, AF_UFFCOSINE1, AF_UFFCOSINE2, AF_NITEMS };
-const char *text_from_AF(angle_func);
-angle_func AF_from_text(const char*);
+enum AngleFunction { AF_UNSPECIFIED, AF_HARMONIC, AF_COSINE, AF_UFFCOSINE1, AF_UFFCOSINE2, AF_NITEMS };
+const char *text_from_AF(AngleFunction);
+AngleFunction AF_from_text(const char*);
 enum angle_harmonic { AF_HARMONIC_K, AF_HARMONIC_EQ };
 enum angle_cosine { AF_COSINE_K, AF_COSINE_S, AF_COSINE_EQ };
 enum angle_uffcosine { AF_UFFCOSINE_K, AF_UFFCOSINE_N, AF_UFFCOSINE_EQ };
 
 // Torsion potential forms
-enum torsion_func { TF_UNSPECIFIED, TF_COSINE, TF_COS3, TF_COS4, TF_COS3C, TF_NITEMS };
-const char *text_from_TF(torsion_func);
-torsion_func TF_from_text(const char*);
+enum TorsionFunction { TF_UNSPECIFIED, TF_COSINE, TF_COS3, TF_COS4, TF_COS3C, TF_NITEMS };
+const char *text_from_TF(TorsionFunction);
+TorsionFunction TF_from_text(const char*);
 enum torsion_cosine { TF_COSINE_K, TF_COSINE_EQ, TF_COSINE_P };
 enum torsion_cos3 { TF_COS3_K1, TF_COS3_K2, TF_COS3_K3 };
 enum torsion_cos4 { TF_COS4_K1, TF_COS4_K2, TF_COS4_K3, TF_COS4_K4 };

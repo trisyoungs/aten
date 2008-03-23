@@ -1,6 +1,6 @@
 /*
 	*** Grid data structure
-	*** src/classes/grid.h
+	*** src/classes/Grid.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -27,155 +27,151 @@
 #include "classes/cell.h"
 #include "base/constants.h"
 #include "base/debug.h"
-#ifdef IS_MAC
-	#include <OpenGL/gl.h>
-#else
-	#include <GL/gl.h>
-#endif
+#include <QtOpenGL/QtOpenGL>
 
 // Surface rendering styles
-enum surface_style { SS_GRID, SS_POINTS, SS_TRIANGLES, SS_SOLID };
+enum SurfaceStyle { SS_GRID, SS_POINTS, SS_TRIANGLES, SS_SOLID };
 
 // 3D Grid Class
-class grid
+class Grid
 {
 	public:
 	// Constructor / Destructor
-	grid();
-	~grid();
+	Grid();
+	~Grid();
 	// List pointers
-	grid *prev, *next;
+	Grid *prev, *next;
 
 	/*
 	// Identity
 	*/
 	private:
-	// Name of the grid data
-	dnchar name;
-	// Log for changes to grid, display style etc.
-	int log;
+	// Name of the Grid data
+	Dnchar name_;
 
 	public:
-	// Set name of grid data
-	void set_name(const char *s) { name = s; }
-	// Return name of grid data
-	const char *get_name() { return name.get(); }
+	// Set name of Grid data
+	void setName(const char *s);
+	// Return name of Grid data
+	const char *name();
 
 	/*
 	// Gridded Data
 	*/
 	private:
-	// Cell that determine spacing between gridpoints and their axis system
-	unitcell cell;
+	// Cell that determine spacing between Gridpoints and their axis system
+	Cell cell_;
 	// Surface origin
-	vec3<double> origin;
+	Vec3<double> origin_;
 	// Number of points in each direction
-	vec3<int> npoints;
+	Vec3<int> nPoints_;
 	// Voxel values
-	double ***data;
+	double ***data_;
 	// Clear voxel data
 	void clear();
 	// Create voxel data
 	void create();
 	// Cutoff for isosurface generation
-	double cutoff;
+	double cutoff_;
 	// Minimum and maximum values stored in data[]
-	double min, max;
+	double minimum_, maximum_;
 	// Update minimum and maximum values
-	void set_limits(double d);
+	void setLimits(double d);
 	// Order of loops when reading data point-by-point
-	vec3<int> looporder;
+	Vec3<int> loopOrder_;
 
 	public:
-	// Set spacing for a cubic grid
-	void set_axes(double r);
-	// Set spacing for an orthorhombic grid
-	void set_axes(const vec3<double> v);
-	// Set spacing for a parallelepiped grid
-	void set_axes(const mat3<double> m);
-	// Return the grid axes
-	mat3<double> get_axes() { return cell.get_axes(); }
+	// Set spacing for a cubic Grid
+	void setAxes(double r);
+	// Set spacing for an orthorhombic Grid
+	void setAxes(const Vec3<double> lengths);
+	// Set spacing for a parallelepiped Grid
+	void setAxes(const Mat3<double> axes);
+	// Return the Grid axes
+	Mat3<double> axes();
 	// Return lengths of cell axiss
-	vec3<double> get_lengths() { return cell.get_lengths(); }
+	Vec3<double> lengths();
 	// Set data origin
-	void set_origin(const vec3<double> v) { origin = v; log++; }
-	// Return the origin of the grid data
-	vec3<double> get_origin() { return origin; }
+	void setOrigin(const Vec3<double> v);
+	// Return the origin of the Grid data
+	Vec3<double> origin();
 	// Set number of points in data series (creates data[])
-	void set_npoints(vec3<int>);
+	void setNPoints(Vec3<int>);
 	// Return number of points in data series
-	vec3<int> get_npoints() { return npoints; }
+	Vec3<int> nPoints();
 	// Return minimum value in data[]
-	double get_minimum() { return min; }
+	double minimum();
 	// Return maximum value in data[]
-	double get_maximum() { return max; }
+	double maximum();
 	// Set isovalue cutoff for surface
-	void set_cutoff(double d) { cutoff = d; log++; }
+	void setCutoff(double d);
 	// Return isovalue cutoff for surface
-	double get_cutoff() { return cutoff; }
+	double cutoff();
 	// Return data array
-	double ***get_data() { return data; }
+	double ***data();
 	// Set loop ordering
-	void set_looporder(int n, int xyz) { looporder.set(n,xyz); }
+	void setLoopOrder(int n, int xyz);
 
 	/*
 	// Data Interface
 	*/
 	private:
 	// Count variable used by set_next_point()
-	vec3<int> currentpoint;
+	Vec3<int> currentPoint_;
 	// Whether enough points have been added
-	bool datafull;
+	bool dataFull_;
 
 	public:
 	// Set specific point in data array
-	void set_data(int x, int y, int z, double d);
+	void setData(int x, int y, int z, double d);
 	// Set 'next' point in data array
-	void set_next_data(double d);
+	void setNextData(double d);
 	
 	/*
 	// Visuals
 	*/
 	private:
+	// Log for changes to Grid, display style etc.
+	int log_;
 	// GL display list of rendered surface
-	GLuint displaylist;
+	GLuint displayList_;
 	// Log point corresponding to the last render
-	int render_point;
+	int renderPoint_;
 	// Whether the surface is currently visible
-	bool visible;
+	bool visible_;
 	// How to render this surface
-	surface_style style;
+	SurfaceStyle style_;
 	// Colour (including alpha component)
-	GLfloat colour[4];
+	GLfloat colour_[4];
 
 	public:
 	// Return the surface display list
-	GLuint get_displaylist();
+	GLuint displayList();
 	// Return whether re-rendering is necessary
-	bool should_rerender() { return (render_point == log ? FALSE : TRUE); }
+	bool shouldRerender();
 	// Update the log point of the surface
-	void update_renderpoint() { render_point = log; }
+	void updateRenderPoint();
 	// Set whether the surface is visible
-	void set_visible(bool v) { visible = v; }
+	void setVisible(bool v);
 	// Return whether the surface is visible
-	bool get_visible() { return visible; }
+	bool isVisible();
 	// Set the rendering style of the surface
-	void set_style(surface_style ss) { style = ss; log++; }
+	void setStyle(SurfaceStyle ss);
 	// Return the rendering style of the surface
-	surface_style get_style() { return style; }
+	SurfaceStyle style();
 	// Set the colour of the surface
-	void set_colour(int r, int g, int b);
-	void set_colour(double r, double g, double b);
+	void setColour(int r, int g, int b);
+	void setColour(double r, double g, double b);
 	// Set transparency of the surface
-	void set_transparency(GLfloat a) { colour[3] = a; log++; }
+	void setTransparency(GLfloat a);
 	// Return the colour of the surface
-	GLfloat *get_colour() { return colour; }
+	GLfloat *colour();
 
 	/*
 	// Transformations
 	*/
 	public:
-	void bohr_to_angstrom();
+	void bohrToAngstrom();
 };
 
 #endif

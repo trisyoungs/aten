@@ -19,265 +19,309 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+//#include "base/master.h"
 #include "parse/filter.h"
-#include "gui/gui.h"
+//#include "gui/gui.h"
+#include "model/model.h"
+#include <fstream>
+
+// Set parent model of trajectory
+void Model::setTrajectoryParent(Model *m)
+{
+	trajectoryParent_ = m;
+}
+
+// Return parent model of trajectory
+Model *Model::trajectoryParent()
+{
+	return trajectoryParent_;
+}
+
+// Set the format of the trajectory
+void Model::setTrajectoryFilter(Filter *f)
+{
+	trajectoryFilter_ = f;
+}
+
+// Return the trajectory file pointer
+ifstream *Model::trajectoryFile()
+{
+	return trajectoryFile_;
+}
+
+// Return the current frame pointer
+Model *Model::currentFrame()
+{
+	return currentFrame_;
+}
+
+// Return the total number of frames in the trajectory (file or cached)
+int Model::totalFrames()
+{
+	return totalFrames_;
+}
+
+// Return the current integer frame position
+int Model::framePosition()
+{
+	return framePosition_;
+}
 
 // Clear trajectory
-void model::clear_trajectory()
+void Model::clearTrajectory()
 {
 	// Clear frames - can simply delete the master config pointed to by 'frames_head'
-	dbg_begin(DM_CALLS,"model::clear_trajectory");
-	frames.clear();
-	if (trajfile != NULL)
+	dbgBegin(DM_CALLS,"Model::clearTrajectory");
+	frames_.clear();
+	if (trajectoryFile_ != NULL)
 	{
-		trajfile->close();
-		delete trajfile;
+		trajectoryFile_->close();
+		delete trajectoryFile_;
 	}
-	trajfilename = "Unnamed";
-	ncachedframes = 0;
-	totalframes = 0;
-	frameposition = 0;
-	trajcached = FALSE;
-	dbg_end(DM_CALLS,"model::clear_trajectory");
+	trajectoryFilename_ = "Unnamed";
+	nCachedFrames_ = 0;
+	totalFrames_ = 0;
+	framePosition_ = 0;
+	trajectoryCached_ = FALSE;
+	dbgEnd(DM_CALLS,"Model::clearTrajectory");
 }
 
 // Initialise trajectory
-bool model::initialise_trajectory(const char *fname, filter *f)
+bool Model::initialiseTrajectory(const char *fname, Filter *f)
 {
 	// Associate the supplied trajectory file with the model
-	dbg_begin(DM_CALLS,"model::initialise_trajectory");
+	dbgBegin(DM_CALLS,"Model::initialiseTrajectory");
 	bool success;
 	// Delete old frames and unset old file
-	if (trajfile != NULL) trajfile->close();
-	clear_trajectory();
+	if (trajectoryFile_ != NULL) trajectoryFile_->close();
+	clearTrajectory();
 	// Check that we can open the specified file
-	trajfile = new ifstream(fname,ios::in);
-	if (!trajfile->good())
+	trajectoryFile_ = new ifstream(fname,ios::in);
+	if (!trajectoryFile_->good())
 	{
-		msg(DM_NONE,"trajectory::initialise - File '%s' couldn't be opened.\n",fname);
-		trajfile->close();
-		trajfile = NULL;
-		trajfilefilter = NULL;
-		dbg_end(DM_CALLS,"model::initialise_trajectory");
+		msg(DM_NONE,"Trajectory file '%s' couldn't be opened.\n",fname);
+		trajectoryFile_->close();
+		trajectoryFile_ = NULL;
+		trajectoryFilter_ = NULL;
+		dbgEnd(DM_CALLS,"Model::initialiseTrajectory");
 		return FALSE;
 	}
 	// Associate the file with the trajectory
-	trajfilename = fname;
-	trajfilefilter = f;
+	trajectoryFilename_ = fname;
+	trajectoryFilter_ = f;
 	// Read header
-	if (!trajfilefilter->execute("",trajfile,TRUE,this))
+	if (!trajectoryFilter_->execute("",trajectoryFile_,TRUE,this))
 	{
 		msg(DM_NONE,"Error reading header of trajectory file.\n");
-		trajfile->close();
-		trajfile = NULL;
-		trajfilefilter = NULL;
-		dbg_end(DM_CALLS,"model::initialise_trajectory");
+		trajectoryFile_->close();
+		trajectoryFile_ = NULL;
+		trajectoryFilter_ = NULL;
+		dbgEnd(DM_CALLS,"Model::initialiseTrajectory");
 		return FALSE;
 	}
 	// Store this file position, since it should represent the start of the frame data
-	trajposfirst = trajfile->tellg();
+	trajectoryFirstFrame_ = trajectoryFile_->tellg();
 	// Determine frame size and number of frames in file
 	//printf("Testing frame read...\n");
-	model testframe;
-	testframe.set_trajparent(this);
+	Model testframe;
+	testframe.setTrajectoryParent(this);
 	//printf("Initialised config\n");
-	if (!trajfilefilter->execute("",trajfile,FALSE,&testframe))
+	if (!trajectoryFilter_->execute("",trajectoryFile_,FALSE,&testframe))
 	{
 		msg(DM_NONE,"Error testing frame read from trajectory.\n");
-		trajfile->close();
-		trajfile = NULL;
-		trajfilefilter = NULL;
-		dbg_end(DM_CALLS,"model::initialise_trajectory");
+		trajectoryFile_->close();
+		trajectoryFile_ = NULL;
+		trajectoryFilter_ = NULL;
+		dbgEnd(DM_CALLS,"Model::initialiseTrajectory");
 		return FALSE;
 	}
-	streampos endofframe = trajfile->tellg();
-	framesize = endofframe - trajposfirst;
-	msg(DM_NONE,"Single frame is %i kb.\n",framesize/1024);
-	trajfile->seekg(0,ios::end);
-	streampos endoffile = trajfile->tellg();
-	totalframes = (endoffile - trajposfirst) / framesize;
-	trajposlast = trajposfirst + streampos((totalframes - 1) * framesize);
-	msg(DM_VERBOSE,"File position of first = %lu, framesize = %i, nframes =%i\n",int(trajposfirst),framesize,totalframes);
-	trajfile->seekg(trajposfirst);
+	streampos endofframe = trajectoryFile_->tellg();
+	frameSize_ = endofframe - trajectoryFirstFrame_;
+	msg(DM_NONE,"Single frame is %i kb.\n",frameSize_/1024);
+	trajectoryFile_->seekg(0,ios::end);
+	streampos endoffile = trajectoryFile_->tellg();
+	totalFrames_ = (endoffile - trajectoryFirstFrame_) / frameSize_;
+	trajectoryLastFrame_ = trajectoryFirstFrame_ + streampos((totalFrames_ - 1) * frameSize_);
+	msg(DM_VERBOSE,"File position of first = %lu, frameSize_ = %i, nframes =%i\n", int(trajectoryFirstFrame_),frameSize_,totalFrames_);
+	trajectoryFile_->seekg(trajectoryFirstFrame_);
 	// Pre-Cache frame(s)
 	msg(DM_NONE,"Successfully associated trajectory.\n"); 
-	msg(DM_NONE,"Number of frames in file : %i\n",totalframes);
+	msg(DM_NONE,"Number of frames in file : %i\n",totalFrames_);
 	// If we are caching the trajectory, read in all frames here. Otherwise, just the first
-	msg(DM_NONE,"Estimated trajectory size is %li kb, cache limit = %i kb\n",totalframes * framesize/1024, prefs.get_cache_limit());
-	if ((totalframes * framesize)/1024 < prefs.get_cache_limit())
+	msg(DM_NONE,"Estimated trajectory size is %li kb, cache limit = %i kb\n", totalFrames_ * frameSize_/1024, prefs.cacheLimit());
+	if ((totalFrames_ * frameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg(DM_NONE,"Caching all frames from trajectory...\n");
 		// Read all frames from trajectory file
-		for (int n=0; n<totalframes; n++)
+		for (int n=0; n<totalFrames_; n++)
 		{
-			model *newframe = add_frame();
-			newframe->set_trajparent(this);
-			success = trajfilefilter->execute("", trajfile, FALSE, newframe);
+			Model *newframe = addFrame();
+			newframe->setTrajectoryParent(this);
+			success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, newframe);
 			if (success) msg(DM_NONE,"Read frame %i from file.\n",n+1);
 			else
 			{
-				frames.remove(newframe);
+				frames_.remove(newframe);
 				msg(DM_NONE,"Cached %i frames from trajectory before fail.\n", n-1);
 				break;
 			}
 		}
-		trajcached = TRUE;	
+		trajectoryCached_ = TRUE;	
 	}
 	else
 	{
 		//printf("Reading one frame..\n");
 		// Read the first frame from the trajectory only
-		model *newframe = add_frame();
-		newframe->set_trajparent(this);
-		if (!trajfilefilter->execute("", trajfile, FALSE, newframe)) 
+		Model *newframe = addFrame();
+		newframe->setTrajectoryParent(this);
+		if (!trajectoryFilter_->execute("", trajectoryFile_, FALSE, newframe)) 
 		{
-			frames.remove(newframe);
+			frames_.remove(newframe);
 			msg(DM_NONE,"Error when reading frame data.\n");
-			dbg_end(DM_CALLS,"model::initialise_trajectory");
+			dbgEnd(DM_CALLS,"Model::initialiseTrajectory");
 			return FALSE;
 		}
 	}
-	render_from_frames();
-	dbg_end(DM_CALLS,"model::initialise_trajectory");
+	setRenderFromFrames();
+	dbgEnd(DM_CALLS,"Model::initialiseTrajectory");
 	return TRUE;
 }
 
 // Add frame to trajectory
-model *model::add_frame()
+Model *Model::addFrame()
 {
-	dbg_begin(DM_CALLS,"model::add_frame");	
-	model *newframe = frames.add();
-	ncachedframes ++;
-	// Set currentframe here (always points to the last added frame)
-	currentframe = newframe;
-	frameposition = ncachedframes;
-	dbg_end(DM_CALLS,"model::add_frame");	
+	dbgBegin(DM_CALLS,"Model::addFrame");	
+	Model *newframe = frames_.add();
+	nCachedFrames_ ++;
+	// Set currentFrame_ here (always points to the last added frame)
+	currentFrame_ = newframe;
+	framePosition_ = nCachedFrames_;
+	dbgEnd(DM_CALLS,"Model::addFrame");	
 	return newframe;
 }
 
 // Delete cached frame from trajectory
-void model::remove_frame(model *xframe)
+void Model::removeFrame(Model *xframe)
 {
 	// Delete the specified frame from the trajectory structure
-	dbg_begin(DM_CALLS,"model::remove_frame");
-	if (xframe == currentframe) currentframe = (xframe->next == NULL ? xframe->prev : xframe->next);
-	frames.remove(xframe);
-	ncachedframes --;
-	dbg_end(DM_CALLS,"trajectory::delete_frame");
+	dbgBegin(DM_CALLS,"Model::removeFrame");
+	if (xframe == currentFrame_) currentFrame_ = (xframe->next == NULL ? xframe->prev : xframe->next);
+	frames_.remove(xframe);
+	nCachedFrames_ --;
+	dbgEnd(DM_CALLS,"trajectory::deleteFrame");
 }
 
 // Seek to first frame
-void model::seek_first_frame()
+void Model::seekFirstFrame()
 {
 	// Seek to the first frame in the trajectory
-	dbg_begin(DM_CALLS,"model::seek_first_frame");
+	dbgBegin(DM_CALLS,"Model::seekFirstFrame");
 	// Check that a trajectory exists!
-	if (totalframes == 0)
+	if (totalFrames_ == 0)
 	{
 		msg(DM_NONE,"No trajectory is available.\n");
-		dbg_end(DM_CALLS,"model::seek_first_frame");
+		dbgEnd(DM_CALLS,"Model::seekFirstFrame");
 		return;
 	}
-	if (frameposition == 1)
+	if (framePosition_ == 1)
 	{
 		msg(DM_NONE,"Already at start of trajectory.\n");
-		dbg_end(DM_CALLS,"model::seek_first_frame");
+		dbgEnd(DM_CALLS,"Model::seekFirstFrame");
 		return;
 	}
-	currentframe = frames.first();
-	if (!trajcached)
+	currentFrame_ = frames_.first();
+	if (!trajectoryCached_)
 	{
 		// Seek to position of first frame in file
-		trajfile->seekg(trajposfirst);
-		bool success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
+		trajectoryFile_->seekg(trajectoryFirstFrame_);
+		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
 	}
-	frameposition = 1;
-	log_change(LOG_VISUAL);
-	msg(DM_NONE,"Seek to frame %i\n",frameposition);
-	dbg_end(DM_CALLS,"model::seek_first_frame");
+	framePosition_ = 1;
+	logChange(LOG_VISUAL);
+	msg(DM_NONE,"Seek to frame %i\n",framePosition_);
+	dbgEnd(DM_CALLS,"Model::seekFirstFrame");
 }
 
 // Seek to next frame
-void model::seek_next_frame()
+void Model::seekNextFrame()
 {
 	// Seek to the next frame in the trajectory
-	dbg_begin(DM_CALLS,"model::seek_next_frame");
+	dbgBegin(DM_CALLS,"Model::seekNextFrame");
 	// Check that a trajectory exists!
-	if (totalframes == 0)
+	if (totalFrames_ == 0)
 	{
 		msg(DM_NONE,"No trajectory is available.\n");
-		dbg_end(DM_CALLS,"model::seek_next_frame");
+		dbgEnd(DM_CALLS,"Model::seekNextFrame");
 		return;
 	}
 	bool success;
-	if (frameposition == totalframes)
+	if (framePosition_ == totalFrames_)
 	{
-		msg(DM_NONE,"Already at end of trajectory (frame %i).\n",frameposition);
-		dbg_end(DM_CALLS,"model::seek_next_frame");
+		msg(DM_NONE,"Already at end of trajectory (frame %i).\n",framePosition_);
+		dbgEnd(DM_CALLS,"Model::seekNextFrame");
 		return;
 	}
-	if (trajcached) currentframe = currentframe->next;
-	else success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
-	frameposition ++;
-	log_change(LOG_VISUAL);
-	msg(DM_NONE,"Seek to frame %i\n",frameposition);
-	dbg_end(DM_CALLS,"model::seek_next_frame");
+	if (trajectoryCached_) currentFrame_ = currentFrame_->next;
+	else success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
+	framePosition_ ++;
+	logChange(LOG_VISUAL);
+	msg(DM_NONE,"Seek to frame %i\n",framePosition_);
+	dbgEnd(DM_CALLS,"Model::seekNextFrame");
 }
 
 // Seek to previous frame
-void model::seek_previous_frame()
+void Model::seekPreviousFrame()
 {
 	// Seek to the previous frame in the trajectory
-	dbg_begin(DM_CALLS,"model::seek_previous_frame");
+	dbgBegin(DM_CALLS,"Model::seekPreviousFrame");
 	// Check that a trajectory exists!
-	if (totalframes == 0)
+	if (totalFrames_ == 0)
 	{
 		msg(DM_NONE,"No trajectory is available.\n");
-		dbg_end(DM_CALLS,"model::seek_previous_frame");
+		dbgEnd(DM_CALLS,"Model::seekPreviousFrame");
 		return;
 	}
-	if (frameposition == 1)
+	if (framePosition_ == 1)
 	{
 		msg(DM_NONE,"Already at start of trajectory.\n");
-		dbg_end(DM_CALLS,"model::seek_previous_frame");
+		dbgEnd(DM_CALLS,"Model::seekPreviousFrame");
 		return;
 	}
-	if (trajcached) currentframe = currentframe->prev;
+	if (trajectoryCached_) currentFrame_ = currentFrame_->prev;
 	else
 	{
 		// Read in previous frame from file
-		streampos newpos = trajposfirst + streampos((frameposition-2)*framesize);
-		trajfile->seekg(newpos);
-		bool success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
+		streampos newpos = trajectoryFirstFrame_ + streampos((framePosition_-2)*frameSize_);
+		trajectoryFile_->seekg(newpos);
+		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
 	}
-	frameposition --;
-	log_change(LOG_VISUAL);
-	msg(DM_NONE,"Seek to frame %i\n",frameposition);
-	dbg_end(DM_CALLS,"model::seek_previous_frame");
+	framePosition_ --;
+	logChange(LOG_VISUAL);
+	msg(DM_NONE,"Seek to frame %i\n",framePosition_);
+	dbgEnd(DM_CALLS,"Model::seekPreviousFrame");
 }
 
 // Seek to last frame
-void model::seek_last_frame()
+void Model::seekLastFrame()
 {
 	// Seek to the last frame in the trajectory
-	dbg_begin(DM_CALLS,"model::seek_last_frame");
+	dbgBegin(DM_CALLS,"Model::seekLastFrame");
 	// Check that a trajectory exists!
-	if (totalframes == 0)
+	if (totalFrames_ == 0)
 	{
 		msg(DM_NONE,"No trajectory is available.\n");
-		dbg_end(DM_CALLS,"model::seek_last_frame");
+		dbgEnd(DM_CALLS,"Model::seekLastFrame");
 		return;
 	}
-	if (trajcached) currentframe = frames.last();
+	if (trajectoryCached_) currentFrame_ = frames_.last();
 	else
 	{
 		// Read in last frame from file
-		trajfile->seekg(trajposlast);
-		bool success = trajfilefilter->execute("", trajfile, FALSE, frames.first());
+		trajectoryFile_->seekg(trajectoryLastFrame_);
+		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
 	}
-	frameposition = totalframes;
-	log_change(LOG_VISUAL);
-	msg(DM_NONE,"Seek to frame %i\n",frameposition);
-	dbg_end(DM_CALLS,"model::seek_last_frame");
+	framePosition_ = totalFrames_;
+	logChange(LOG_VISUAL);
+	msg(DM_NONE,"Seek to frame %i\n",framePosition_);
+	dbgEnd(DM_CALLS,"Model::seekLastFrame");
 }

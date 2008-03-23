@@ -22,29 +22,16 @@
 #ifndef ATEN_VECTOR4_H
 #define ATEN_VECTOR4_H
 
-#include "templates/matrix3.h"
-#include "templates/matrix4.h"
-#include "base/debug.h"
+#include "templates/vector3.h"
 #include <stdio.h>
 #include <math.h>
 
-// Forward declarations
-template <class T> struct vec3;
-template <class T> struct vec4;
-template <class T> struct mat3;
-template <class T> struct mat4;
-
 // 4D vector
-template <class T> struct vec4
+template <class T> class Vec4
 {
 	public:
-	// Constructor / Destructor
-	vec4<T>();
-	~vec4();
-	#ifdef MEMDEBUG
-	// Copy constructor
-	vec4<T>(const vec4<T>&);
-	#endif
+	// Constructor
+	Vec4<T>();
 
 	/*
 	// 4-Vector
@@ -59,53 +46,36 @@ template <class T> struct vec4
 	// Adjust all four components simultaneously
 	void add(T, T, T, T);
 	// Set all four components simultaneously
-	void set(vec3<T>, T);
+	void set(Vec3<T>, T);
 	// Operators + and +=
-	vec4<T>& operator+=(vec4<T>);
-	vec4<T>& operator+=(vec3<T>);
-	vec4<T> operator+(vec4<T>);
-	vec4<T> operator+(vec3<T>);
+	Vec4<T>& operator+=(Vec4<T>);
+	Vec4<T>& operator+=(Vec3<T>);
+	Vec4<T> operator+(Vec4<T>);
+	Vec4<T> operator+(Vec3<T>);
 	// Operators - and -=
-	vec4<T>& operator-=(vec4<T>);
-	vec4<T>& operator-=(vec3<T>);
-	vec4<T> operator-(vec4<T>);
-	vec4<T> operator-(vec3<T>);
+	Vec4<T>& operator-=(Vec4<T>);
+	Vec4<T>& operator-=(Vec3<T>);
+	Vec4<T> operator-(Vec4<T>);
+	Vec4<T> operator-(Vec3<T>);
 };
 
-// Constructor
-template <class T> vec4<T>::vec4()
+// Constructur
+template <class T> Vec4<T>::Vec4()
 {
 	zero();
-	#ifdef MEMDEBUG
-	memdbg.create[MD_VEC4] ++;
-	#endif
 }
-
-// Destructor
-template <class T> vec4<T>::~vec4()
-{
-	#ifdef MEMDEBUG
-	memdbg.destroy[MD_VEC4] ++;
-	#endif
-}
-
-#ifdef MEMDEBUG
-// Copy constructor
-template <class T> vec4<T>::vec4(const vec4<T> &v)
-{
-	x = v.x; y = v.y; z = v.z; w = v.w;
-	memdbg.create[MD_VEC4COPY] ++;
-}
-#endif
 
 // Zero
-template <class T> void vec4<T>::zero()
+template <class T> void Vec4<T>::zero()
 {
-	x = 0; y = 0; z = 0; w = 0;
+	x = 0;
+	y = 0;
+	z = 0;
+	w = 0;
 }
 
 // Set
-template <class T> void vec4<T>::set(T a, T b, T c, T d)
+template <class T> void Vec4<T>::set(T a, T b, T c, T d)
 {
 	x = a;
 	y = b;
@@ -114,7 +84,7 @@ template <class T> void vec4<T>::set(T a, T b, T c, T d)
 }
 
 // Add
-template <class T> void vec4<T>::add(T a, T b, T c, T d)
+template <class T> void Vec4<T>::add(T a, T b, T c, T d)
 {
 	x += a;
 	y += b;
@@ -123,68 +93,93 @@ template <class T> void vec4<T>::add(T a, T b, T c, T d)
 }
 
 // Set (vec3, T)
-template <class T> void vec4<T>::set(vec3<T> v, T a)
+template <class T> void Vec4<T>::set(Vec3<T> v, T a)
 {
-	x = v.x; y = v.y; z = v.z; w = a;
+	x = v.x;
+	y = v.y;
+	z = v.z;
+	w = a;
 }
 
-// Operator += (vec4)
-template <class T> vec4<T>& vec4<T>::operator+=(vec4<T> v)
+// Operator += (Vec4)
+template <class T> Vec4<T>& Vec4<T>::operator+=(Vec4<T> v)
 {
-	x += v.x; y += v.y; z += v.z; w += v.w;
+	x += v.x;
+	y += v.y;
+	z += v.z;
+	w += v.w;
 	return *this;
 }
 
 // Operator += (vec3)
-template <class T> vec4<T>& vec4<T>::operator+=(vec3<T> v)
+template <class T> Vec4<T>& Vec4<T>::operator+=(Vec3<T> v)
 {
-	x += v.x; y += v.y; z += v.z;
+	x += v.x;
+	y += v.y;
+	z += v.z;
 	return *this;
 }
 
-// Operator + (vec4)
-template <class T> vec4<T> vec4<T>::operator+(vec4<T> v)
+// Operator + (Vec4)
+template <class T> Vec4<T> Vec4<T>::operator+(Vec4<T> v)
 {
-	vec4<T> result;
-	result.x = x+v.x; result.y = y+v.y; result.z = z+v.z; result.w = w+v.w;
+	Vec4<T> result;
+	result.x = x+v.x;
+	result.y = y+v.y;
+	result.z = z+v.z;
+	result.w = w+v.w;
 	return result;
 }
 
 // Operator + (vec3)
-template <class T> vec4<T> vec4<T>::operator+(vec3<T> v)
+template <class T> Vec4<T> Vec4<T>::operator+(Vec3<T> v)
 {
-	vec4<T> result;
-	result.x = x+v.x; result.y = y+v.y; result.z = z+v.z; result.w = w+v.w;
+	Vec4<T> result;
+	result.x = x+v.x;
+	result.y = y+v.y;
+	result.z = z+v.z;
+	result.w = w+v.w;
 	return result;
 }
 
-// Operator -= (vec4)
-template <class T> vec4<T>& vec4<T>::operator-=(vec4<T> v)
+// Operator -= (Vec4)
+template <class T> Vec4<T>& Vec4<T>::operator-=(Vec4<T> v)
 {
-	x -= v.x; y -= v.y; z -= v.z; w -= v.w;
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
+	w -= v.w;
 	return *this;
 }
 
 // Operator -= (vec3)
-template <class T> vec4<T>& vec4<T>::operator-=(vec3<T> v)
+template <class T> Vec4<T>& Vec4<T>::operator-=(Vec3<T> v)
 {
-	x -= v.x; y -= v.y; z -= v.z;
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
 	return *this;
 }
 
-// Operator - (vec4)
-template <class T> vec4<T> vec4<T>::operator-(vec4<T> v)
+// Operator - (Vec4)
+template <class T> Vec4<T> Vec4<T>::operator-(Vec4<T> v)
 {
-	vec4<T> result;
-	result.x = x-v.x; result.y = y-v.y; result.z = z-v.z; result.w = w-v.w;
+	Vec4<T> result;
+	result.x = x-v.x;
+	result.y = y-v.y;
+	result.z = z-v.z;
+	result.w = w-v.w;
 	return result;
 }
 
 // Operator - (vec3)
-template <class T> vec4<T> vec4<T>::operator-(vec3<T> v)
+template <class T> Vec4<T> Vec4<T>::operator-(Vec3<T> v)
 {
-	vec4<T> result;
-	result.x = x-v.x; result.y = y-v.y; result.z = z-v.z; result.w = w-v.w;
+	Vec4<T> result;
+	result.x = x-v.x;
+	result.y = y-v.y;
+	result.z = z-v.z;
+	result.w = w-v.w;
 	return result;
 }
 

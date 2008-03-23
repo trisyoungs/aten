@@ -24,5 +24,5 @@ double cserfc(double);
 double cserf(double);
 
 // Misc
-double cs_random();
-int cs_randomi(int);
+double csRandom();
+int csRandomi(int);

@@ -1,6 +1,6 @@
 /*
-	*** Pointer bundle
-	*** src/classes/bundle.cpp
+	*** Pointer Bundle
+	*** src/classes/Bundle.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -24,7 +24,7 @@
 #include <stdio.h>
 
 // Constructor
-bundle::bundle()
+Bundle::Bundle()
 {
 	m = 0;
 	s = 0;
@@ -36,7 +36,7 @@ bundle::bundle()
 }
 
 // Check for non-null pointers
-bool bundle::is_null(int ptrs)
+bool Bundle::isNull(int ptrs)
 {
 	if ((ptrs&BP_ATOM) && (i == 0)) return TRUE;
 	if ((ptrs&BP_PATTERN) && (p == 0)) return TRUE;
@@ -49,7 +49,7 @@ bool bundle::is_null(int ptrs)
 }
 
 // Notify of non-null pointers
-bool bundle::notify_null(int ptrs)
+bool Bundle::notifyNull(int ptrs)
 {
 	if ((ptrs&BP_ATOM) && (i == 0))
 	{

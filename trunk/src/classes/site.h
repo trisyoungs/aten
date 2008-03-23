@@ -27,77 +27,76 @@
 #include "classes/dnchar.h"
 
 // Site types
-enum site_type { ST_ATOMCOM, ST_ATOMCOG, ST_MOLCOM, ST_MOLCOG, ST_NITEMS };
-const char *text_from_ST(site_type);
-site_type ST_from_text(const char *);
+enum SiteType { ST_ATOMCOM, ST_ATOMCOG, ST_MOLCOM, ST_MOLCOG, ST_NITEMS };
+const char *text_from_ST(SiteType);
+SiteType ST_from_text(const char *);
 
 // Forward declarations
-class atomaddress;
-class pattern;
-class model;
+class Atomaddress;
+class Pattern;
+class Model;
 
 // Site
-class site
+class Site
 {
 	public:
-	// Constructor / Destructor
-	site();
-	~site();
+	// Constructor
+	Site();
 	// List pointers
-	site *prev, *next;
+	Site *prev, *next;
 
 	/*
 	// Site pattern, molecule and atoms
 	*/
 	private:
 	// Pattern the site is related to
-	pattern *sourcepattern;
+	Pattern *pattern_;
 	// Molecule mask definition
 	// TODO Select a subset of molecules based on some kind of criteria
 	// Name of site
-	dnchar name;
+	Dnchar name_;
 
 	public:
 	// Set the pattern pointer for the atom
-	void set_pattern(pattern *p) { sourcepattern = p; }
+	void setPattern(Pattern *p);
 	// Returns the current pattern for the atom
-	pattern *get_pattern() { return sourcepattern; }
+	Pattern *pattern();
 	// Set name of site
-	void set_name(const char *s) { name = s; }
+	void setName(const char *s);
 	// Get name of site
-	const char *get_name() { return name.get(); }
+	const char *name();
 
 	/*
 	// Site Centre
 	*/
 	private:
 	// Type of centre site
-	site_type centretype;
+	SiteType type_;
 	// Coordinates of site
-	vec3<double> centre;
+	Vec3<double> centre_;
 
 	public:
 	// Set type of site centre
-	void set_centre_type(site_type st) { centretype = st; }
+	void setType(SiteType st) { type_ = st; }
 	// List of relative atom ids that define the site
-	list< listitem<int> > atoms;
+	List< Listitem<int> > atoms;
 	// Calculate centre from config and molecule ID supplied
-	vec3<double> calculate_centre(model*, int);
+	Vec3<double> calculateCentre(Model*, int);
 
 	/*
 	// Site Axes
 	*/
 	private:
 	// Matrix defining local coordinate system
-	mat3<double> axes;
+	Mat3<double> axes_;
 
 	public:
 	// List of atoms whose average defines the x axis (from site centre)
-	list< listitem<int> > xaxisatoms;
+	List< Listitem<int> > xAxisAtoms;
 	// List of atoms whose average defines the y axis (from site centre)
-	list< listitem<int> > yaxisatoms;
+	List< Listitem<int> > yAxisAtoms;
 	// Calculate local coordinate system from config and molecule ID supplied
-	mat3<double> calculate_axes(model*, int);
+	Mat3<double> calculateAxes(Model*, int);
 };
 
 #endif

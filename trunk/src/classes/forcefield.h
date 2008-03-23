@@ -1,6 +1,6 @@
 /*
-	*** Molecular mechanics forcefield
-	*** src/classes/forcefield.h
+	*** Molecular mechanics Forcefield
+	*** src/classes/Forcefield.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -28,271 +28,272 @@
 #include "base/prefs.h"
 
 // Forcefield Components
-enum ff_component { FFC_BOND, FFC_ANGLE, FFC_TORSION, FFC_NITEMS };
+enum BoundType { FFC_BOND, FFC_ANGLE, FFC_TORSION, FFC_NITEMS };
 
-// Maximum data per ffparams node. Also define last two elements to be torsion 1-4 scaling factors
+// Maximum data per ForcefieldParams node. Also define last two elements to be torsion 1-4 scaling factors
 #define MAXFFPARAMDATA 6
 #define MAXFFBOUNDTYPES 4
 #define TF_ESCALE (MAXFFPARAMDATA-2)
 #define TF_VSCALE (MAXFFPARAMDATA-1)
 
 // Forcefield Dictionary
-enum ff_dict { FFK_UNKNOWN, FFK_NAME, FFK_UNITS, FFK_RULES, FFK_TYPES, FFK_GENERATOR, FFK_CONVERT, FFK_EQUIVALENTS, FFK_VDW, FFK_BONDS, FFK_ANGLES, FFK_TORSIONS, FFK_VSCALE, FFK_ESCALE, FFK_NITEMS };
+enum ForcefieldKeyword { FFK_UNKNOWN, FFK_NAME, FFK_UNITS, FFK_RULES, FFK_TYPES, FFK_GENERATOR, FFK_CONVERT, FFK_EQUIVALENTS, FFK_VDW, FFK_BONDS, FFK_ANGLES, FFK_TORSIONS, FFK_VSCALE, FFK_ESCALE, FFK_NITEMS };
 
 // Forward declarations
-class atomtype;
+class Atomtype;
 
 // Forcefield parameters
-class ffparams
+class ForcefieldParams
 {
 	public:
 	// Storage for parameters used in functions
 	double data[MAXFFPARAMDATA];
-	// Constructor / Destructor
-	ffparams();
-	~ffparams();
+	// Constructor
+	ForcefieldParams();
 };
 
 // Forcefield atom type
-class ffatom
+class ForcefieldAtom
 {
 	public:
 	// Constructor / Destructor
-	ffatom();
-	~ffatom();
+	ForcefieldAtom();
+	~ForcefieldAtom();
 	// List pointers
-	ffatom *prev, *next;
+	ForcefieldAtom *prev, *next;
 	// Copy structure
-	void copy(ffatom *source);
+	void copy(ForcefieldAtom *source);
 	// Friend specification
-	friend class forcefield;
+	friend class Forcefield;
 
 	/*
 	// Properties
 	*/
 	private:
-	// Type of Van der Waals interactions in forcefield
-	vdw_func form;
-	// Unique ffid of atom type in forcefield
-	int ffid;
+	// Type of Van der Waals interactions in Forcefield
+	VdwFunction vdwForm_;
+	// Unique ffid of atom type in Forcefield
+	int typeId_;
 	// Name of atom type
-	dnchar name;
+	Dnchar name_;
 	// Equivalent name of atom type for intramolecular searching
-	dnchar equiv;
+	Dnchar equivalent_;
 	// Description of atom type
-	dnchar description;
+	Dnchar description_;
 	// Atomtype description
-	atomtype typedesc;
+	Atomtype atomType_;
 	// Parameter data
-	ffparams params;
-	// Generator data (if present in a rule-based forcefield)
-	double *generator;
+	ForcefieldParams params_;
+	// Generator data (if present in a rule-based Forcefield)
+	double *generator_;
 	// Atomic charge
-	double q;
+	double charge_;
 
 	/*
 	// Set / Get
 	*/
 	public:
 	// Set functional form of VDW
-	void set_funcform(vdw_func vf) { form = vf; }
+	void setVdwForm(VdwFunction vf);
 	// Returns the funcional VDW form
-	vdw_func get_funcform() { return form; }
+	VdwFunction vdwForm();
 	// Returns the ffid of the type
-	int get_ffid() { return ffid; }
+	int typeId();
 	// Returns the charge of the type
-	double get_charge() { return q; }
+	double charge();
 	// Returns the name of the type
-	const char *get_name() { return name.get(); }
+	const char *name();
 	// Returns the equivalent name of the type
-	const char *get_equiv() { return equiv.get(); }
+	const char *equivalent();
 	// Returns the description of the type
-	const char *get_description() { return description.get(); }
+	const char *description();
 	// Returns the atomtype description
-	atomtype *get_atomtype() { return &typedesc; }
-	// Returns ffparams structure
-	ffparams &get_params() { return params; }
+	Atomtype *atomType();
+	// Returns ForcefieldParams structure
+	ForcefieldParams &params();
 };
 
 // Forcefield bound interaction type
-class ffbound
+class ForcefieldBound
 {
+	public:
+	// List pointers
+	ForcefieldBound *prev, *next;
+	// Constructor
+	ForcefieldBound();
+	// Friend Declarations
+	friend class Forcefield;
+
 	private:
 	// Type of bound interaction
-	ff_component type;
+	BoundType type_;
 	// Form of bound interaction type
-	union bound_forms
+	union BoundForms
 	{
-		bond_func bondfunc;
-		angle_func anglefunc;
-		torsion_func torsionfunc;
-	} funcform;
+		BondFunction bondFunc;
+		AngleFunction angleFunc;
+		TorsionFunction torsionFunc;
+	} functionalForm_;
 	// Forcefield types involved in this term
-	dnchar types[MAXFFBOUNDTYPES];
+	Dnchar atomTypes_[MAXFFBOUNDTYPES];
 	// Pointer to parameter data
-	ffparams params;
+	ForcefieldParams params_;
 
 	public:
 	// Set the type of bound interaction
-	void set_type(ff_component fc) { type = fc; }
+	void setType(BoundType fc);
 	// Return the type of bound interaction
-	ff_component get_type() { return type; }
+	BoundType type();
 	// Return the functional form
-	bound_forms get_funcform() { return funcform; }
+	BoundForms functionalForm();
 	// Set the bond functional form
-	void set_bond_style(bond_func bf) { funcform.bondfunc = bf; }
+	void setBondStyle(BondFunction bf);
 	// Set the angle functional form
-	void set_angle_style(angle_func af) { funcform.anglefunc = af; }
+	void setAngleStyle(AngleFunction af);
 	// Set the torsion functional form
-	void set_torsion_style(torsion_func tf) { funcform.torsionfunc = tf; }
+	void setTorsionStyle(TorsionFunction tf);
 	// Return the data[] array in *params
-	ffparams &get_params() { return params; };
-	// List pointers
-	ffbound *prev, *next;
-	// Constructor / Destructor
-	ffbound();
-	~ffbound();
+	ForcefieldParams &params();
 	// Return the atom type 'n'
-	const char *get_type(int n) { return (n < MAXFFBOUNDTYPES ? types[n].get() : "OUTOFRANGE"); }
-	friend class forcefield;
+	const char *atomType(int n);
 };
 
 // Forcefield
-class forcefield
+class Forcefield
 {
 	public:
 	// Constructor / Destructor
-	forcefield();
-	~forcefield();
+	Forcefield();
+	~Forcefield();
 	// List pointers
-	forcefield *prev, *next;
+	Forcefield *prev, *next;
 
 	/*
 	// Specification
 	*/
 	private:
-	// Title of forcefield
-	dnchar ffname;
-	// Location of forcefield
-	dnchar path;
+	// Title of Forcefield
+	Dnchar name_;
+	// Location of Forcefield
+	Dnchar path_;
 	// Number of generator data per atom (if rule-based)
-	int ngendata;
-	// Generator data values to do energy conversion on
-	bool *convertgen;
+	int nGenerators_;
+	// Generator values that have units of energy (and thus should be converted)
+	bool *energyGenerators_;
 	// Which rules the ff uses (if any)
-	ff_rules rules;
+	ForcefieldRules rules_;
 
 	public:
-	// Sets the name of the forcefield
-	void set_name(const char *s) { ffname.set(s); }
-	// Returns the name of the forcefield
-	const char *get_name() { return ffname.get(); }
-	// Returns the number of atom types specified in the forcefield
-	int get_natomtypes() { return atomtypes.size(); }
-	// Returns the typing rules of the forcefield
-	ff_rules get_rules() { return rules; }
+	// Sets the name of the Forcefield
+	void setName(const char *s);
+	// Returns the name of the Forcefield
+	const char *name();
+	// Returns the typing rules of the Forcefield
+	ForcefieldRules rules();
 
 	/*
 	// Types
 	*/
 	private:
-	// Atom type name and dispersion data array (dim 'natomtypes')
-	list<ffatom> atomtypes;
+	// Atom type name and dispersion data array
+	List<ForcefieldAtom> types_;
 
 	public:
-	// Get the atomtype specified by the ffid number passed
-	ffatom *find_type(int);
+	// Returns the number of atom types specified in the Forcefield
+	int nAtomtypes();
 	// Returns the head of tha atomtype list
-	ffatom *get_atomtypes() { return atomtypes.first(); }
+	ForcefieldAtom *types();
+	// Get the atomtype specified by the ffid number passed
+	ForcefieldAtom *findType(int);
 	// Get the array entry of the atomtype specified by the atomname passed
-	ffatom *find_type(const char*);
-	// Returns the type description of the ffatom with the ffid provided
-	atomtype *get_atomtype_of_ffid(int);
+	ForcefieldAtom *findType(const char*);
+	// Returns the type description of the ForcefieldAtom with the ffid provided
+	Atomtype *typeOfId(int id);
 
 	/*
 	// VDW
 	*/
 	public:
-	// Generate the VDW parameters (rule-based forcefield)
-	void generate_vdw(atom*);
+	// Generate the VDW parameters (rule-based Forcefield)
+	void generateVdw(Atom*);
 
 	/*
 	// Bonding Interactions
 	*/
 	private:
 	// List pointers for bond data
-	list<ffbound> bonds;
+	List<ForcefieldBound> bonds_;
 
 	public:
-	// Generate bond parameters (rule-based forcefield)
-	ffbound *generate_bond(atom*, atom*);
+	// Generate bond parameters (rule-based Forcefield)
+	ForcefieldBound *generateBond(Atom*, Atom*);
 	// Returns the bond list
-	ffbound *get_bonds() { return bonds.first(); }
+	ForcefieldBound *bonds();
 	// Retrieve bond data corresponding to specified atomtype id's
-	ffbound *find_bond(ffatom*, ffatom*);
+	ForcefieldBound *findBond(ForcefieldAtom*, ForcefieldAtom*);
 
 	/*
 	// Angle Interactions
 	*/
 	private:
 	// List pointers for angle data
-	list<ffbound> angles;
+	List<ForcefieldBound> angles_;
 
 	public:
-	// Generate angle parameters (rule-based forcefield)
-	ffbound *generate_angle(atom*, atom*, atom*);
+	// Generate angle parameters (rule-based Forcefield)
+	ForcefieldBound *generateAngle(Atom*, Atom*, Atom*);
 	// Returns the angle list
-	ffbound *get_angles() { return angles.first(); }
+	ForcefieldBound *angles();
 	// Retrieve angle data corresponding to specified atomtype id's
-	ffbound *find_angle(ffatom*, ffatom*, ffatom*);
+	ForcefieldBound *findAngle(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 
 	/*
 	// Torsion Interactions
 	*/
 	private:
 	// List pointers for torsion data
-	list<ffbound> torsions;
+	List<ForcefieldBound> torsions_;
 
 	public:
-	// Generate angle parameters (rule-based forcefield)
-	ffbound *generate_torsion(atom*, atom*, atom*, atom*);
+	// Generate angle parameters (rule-based Forcefield)
+	ForcefieldBound *generateTorsion(Atom*, Atom*, Atom*, Atom*);
 	// Returns the angle list
-	ffbound *get_torsions() { return torsions.first(); }
+	ForcefieldBound *torsions();
 	// Retreve torsion data corresponding to specified atomtype id's
-	ffbound *find_torsion(ffatom*, ffatom*, ffatom*, ffatom*);
+	ForcefieldBound *findTorsion(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 
 	/*
 	// Parameter Matching
 	*/
 	public:
 	// Character-match the atomtype names supplied
-	int match_type(const char*, const char*);
+	int matchType(const char*, const char*);
 	// Character-match the atomtype names supplied
-	int match_type(const dnchar &a, const dnchar &b) { return match_type(a.get(),b.get()); }
+	int matchType(const Dnchar &a, const Dnchar &b);
 	// Match names of atomtypes supplied to strings supplied
-	int match_types(ffatom*, ffatom*, const dnchar&, const dnchar&);
+	int matchTypes(ForcefieldAtom*, ForcefieldAtom*, const Dnchar&, const Dnchar&);
 
 	/*
 	// File
 	*/
 	private:
 	// Reads in the atom type definitions
-	bool read_types(ifstream&);
+	bool readTypes(ifstream&);
 	// Reads in generator data for atoms (rule-based ff)
-	bool read_generator(ifstream&);
+	bool readGenerator(ifstream&);
 	// Reads in and applies equivalent atomtype names
-	bool read_equivalents(ifstream&);
+	bool readEquivalents(ifstream&);
 	// Reads in VDW parameters for atom types
-	bool read_vdw(ifstream&);
+	bool readVdw(ifstream&);
 	// Reads in bond data
-	bool read_bonds(ifstream&);
+	bool readBonds(ifstream&);
 	// Reads in angle data
-	bool read_angles(ifstream&);
+	bool readAngles(ifstream&);
 	// Reads in torsion data
-	bool read_torsions(ifstream&);
+	bool readTorsions(ifstream&);
 
 	public:
-	// Load forcefield from the filename supplied
+	// Load Forcefield from the filename supplied
 	bool load(const char*);
 
 	/*
@@ -300,9 +301,9 @@ class forcefield
 	*/
 	public:
 	// Convert the parameters in the FF to the internal working energy unit
-	void convert_parameters(energy_unit);
+	void convertParameters(EnergyUnit);
 	// Get the bond order of the bond ij (here for convenience)
-	double get_bond_order(atom*, atom*);
+	double bondOrder(Atom*, Atom*);
 };
 
 #endif

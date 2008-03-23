@@ -28,181 +28,178 @@
 // Forward declarations
 class AtenForm;
 class AtenPrefs;
-class atom;
-class model;
-class forcefield;
-class grid;
+class Atom;
+class Model;
+class Forcefield;
+class Grid;
 class QApplication;
 class QProgressDialog;
 
 // QT4 GUI
-class gui_qt
+class GuiQt
 {
 	/*
 	// Existence of GUI
 	*/
 	private:
 	// Is a GUI available?
-	bool is_available;
+	bool isAvailable_;
 	// Does the GUI exist (has it been created)
-	bool does_exist;
+	bool doesExist_;
 
 	/*
 	// Basic Window Functions
 	*/
 	public:
-	// Constructor / Destructor
-	gui_qt();
-	~gui_qt();
+	// Constructor
+	GuiQt();
 	// Returns if the GUI is available
-	bool available() { return is_available; }
+	bool available();
 	// Returns if the GUI has been created
-	bool exists() { return does_exist; }
-	// Early doors functions
-	void prepare();
+	bool exists();
 	// Initialises all aspects of the GUI and hands over control
 	void run(int, char**);
 	// Question user dialog
-	int user_question(const char*, const char*);
+	int userQuestion(const char*, const char*);
 
 	/*
 	// Main Canvas and Rendering
 	*/
 	protected:
 	// Render inhibition flag
-	bool NORENDER;
+	bool NORENDER_;
 
 	public:
 	// Blocks rendering calls (e.g., for config/model is being updated)
-	void pause_rendering() { NORENDER = TRUE; }
+	void pauseRendering();
 	// Removes rendering block
-	void resume_rendering() { NORENDER = FALSE; }
+	void resumeRendering();
 	// Return whether rendering is prohibited
-	bool no_rendering() { return NORENDER; }
+	bool noRendering();
 
 	/*
 	// General Window Functions
 	*/
 	public:
 	// Add a message to the main window's message output box
-	void print_message(const char*);
+	void printMessage(const char*);
 	// Refresh main canvas
 	void refresh();
 	// Update trajectory control widgets
-	void update_trajcontrols();
+	void updateTrajControls();
 	// Update main window labels
-	void update_labels();
+	void updateLabels();
 	// Process events from GUI
-	void process_events();
+	void processEvents();
 	// Save before close
-	bool save_before_close();
+	bool saveBeforeClose();
 	// Update Undo/Redo menu items
-	void update_undoredo();
+	void updateUndoRedo();
 
 	/*
 	// Object management
 	*/
 	public:
 	// Add model (adds new model to list)
-	void add_model(model*);
+	void addModel(Model*);
 	// Remove model from list
-	void remove_model(int id);
+	void removeModel(int id);
 	// Add forcefield (adds ff to list)
-	void add_ff(forcefield*);
+	void addForcefield(Forcefield*);
 	// Remove ff from list
-	void remove_ff(forcefield*);
+	void removeForcefield(Forcefield*);
 	// Select forcefield in list
-	void select_ff(forcefield*);
+	void selectForcefield(Forcefield*);
 	// Add surface (adds new surface to list)
-	void add_grid(grid*);
+	void addGrid(Grid*);
 	// Remove surface from list
-	void remove_grid(grid*);
+	void removeGrid(Grid*);
 	// Select surface (show in main/sub windows)
-	void select_grid(grid*);
+	void selectGrid(Grid*);
 
 	/*
 	// Files
 	*/
 	public:
 	// Initialise GUI file filters array
-	void init_filters();
+	void initFilters();
 
 	/*
 	// Misc
 	*/
 	public:
 	// Convert Qt key code value to internal key
-	key_code convert_to_KC(int);
+	key_code convertToKeyCode(int);
 
 	/*
 	// Windows / Dialogs
 	*/
 	public:
 	// Main Qt widget for the interface
-	AtenForm *mainwindow;
+	AtenForm *mainWindow;
 	// Main application structure
 	QApplication *app;
 	// Preferences Dialog
-	AtenPrefs *prefsdialog;
+	AtenPrefs *prefsDialog;
 	// Call the atompopup menu
-	void call_atompopup(atom*, int, int);
+	void callAtomPopup(Atom*, int, int);
 	// Main view
-	canvas mainview;
+	Canvas mainView;
 
 	/*
 	// Trajectory State
 	*/
 	private:
 	// Whether the trajectory is currently playing
-	bool trajectory_playing;
+	bool trajectoryPlaying_;
 	// ID of rtrajectory timer
-	int trajectory_timerid;
+	int trajectoryTimerId_;
 
 	public:
 	// Return state of trajectory playback
-	bool get_trajectory_playing() { return trajectory_playing; }
+	bool trajectoryPlaying();
 	// Set state of trajectory playback
-	void set_trajectory_playing(bool b) { trajectory_playing = b; }
+	void setTrajectoryPlaying(bool b);
 	// Return trajectory timer id
-	int get_trajectory_timerid() { return trajectory_timerid; }
+	int trajectoryTimerId();
 	// Set state of trajectory playback
-	void set_trajectory_timerid(int i) { trajectory_timerid = i; }
+	void setTrajectoryTimerId(int i);
 	// Stop trajectory playback
-	void stop_trajectory_playback();
+	void stopTrajectoryPlayback();
 
 	/*
 	// Progress Dialog
 	*/
 	private:
 	// Indicator that the 'Cancel' button was pressed
-	bool progress_canceled;
+	bool progressCanceled_;
+	// Variables for the position and maximum of the text progress dialog
+	int textProgressStepsToDo_, textProgressPercent_;
 
 	public:
 	// Notify that the progress indicator should be canceled
-	void notify_progress_canceled() { progress_canceled; }
+	void notifyProgressCanceled();
 	// Instantiate a progress dialog
-	void progress_create(const char *jobtitle, int stepstodo);
+	void progressCreate(const char *jobtitle, int stepstodo);
 	// Update the progress dialog
-	bool progress_update(int currentstep);
+	bool progressUpdate(int currentstep);
 	// Terminate the progress dialog
-	void progress_terminate();
+	void progressTerminate();
 	// Instantiate a text-based progress dialog
-	void text_progress_create(const char *jobtitle, int stepstodo);
+	void textProgressCreate(const char *jobtitle, int stepstodo);
 	// Update the text progress dialog
-	void text_progress_update(int currentstep);
+	void textProgressUpdate(int currentstep);
 	// Terminate the progress dialog
-	void text_progress_terminate();
-	// Variables for the position and maximum of the text progress dialog
-	int textprogress_stepstodo, textprogress_percent;
+	void textProgressTerminate();
 
 	/*
 	// Basic Offscreen Canvas
 	*/
 	public:
 	// Offscreen canvas (for use by, e.g., g2ps routines)
-	canvas offscreencanvas;
+	Canvas offscreenCanvas;
 };
 
-extern gui_qt gui;
+extern GuiQt gui;
 
 #endif

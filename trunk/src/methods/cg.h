@@ -22,27 +22,32 @@
 #ifndef ATEN_CG_H
 #define ATEN_CG_H
 
-#include "model/model.h"
 #include "methods/linemin.h"
 
+// Forward Declarations
+class Model;
+
 // Conjugate gradient minimiser
-class cg_method : public linemin
+class MethodCg : public LineMinimiser
 {
 	public:
 	// Constructor
-	cg_method();
+	MethodCg();
 
 	private:
 	// Maximum number of iterations to perform
-	int ncycles;
+	int nCycles_;;
 
 	public:
 	// Set maximum number of cycles to perform
-	void set_ncycles(int i) { ncycles = i; }
+	void setNCycles(int i) { nCycles_ = i; }
 	// Get maximum number of cycles
-	int get_ncycles() { return ncycles; }
+	int nCycles() { return nCycles_; }
 	// Minimise the specified model
-	void minimise(model *source, double econ, double fcon);
+	void minimise(Model *source, double econ, double fcon);
 };
+
+// Static Singleton
+extern MethodCg cg;
 
 #endif

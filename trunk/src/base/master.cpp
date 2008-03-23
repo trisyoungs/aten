@@ -21,51 +21,51 @@
 
 #include "model/model.h"
 #include "classes/pattern.h"
+#include "classes/grid.h"
+#include "classes/clipboard.h"
+#include "base/spacegroup.h"
 #include "base/master.h"
 #include "gui/gui.h"
 #include "parse/parser.h"
 #include <fstream>
 
-master_data master;
+MasterData master;
 
 // Constructor
-master_data::master_data()
+MasterData::MasterData()
 {
 	// Models
-	modelid = 0;
+	modelId_ = 0;
 
 	// Modes
-	mode = PM_GUI;
+	programMode_ = PM_GUI;
 
 	// Store pointers to member functions
-	init_commands();
+	initCommands();
 
 	// Misc 
-	sketchelement = 6;
-	homedir = "/tmp";
+	sketchElement_ = 6;
+	homeDir = "/tmp";
 
-	#ifdef MEMDEBUG
-		printf("Constructor : master_data\n");
-	#endif
+	// Clipboard
+	userClipboard = new Clipboard;
 }
 
 // Destructor
-master_data::~master_data()
+MasterData::~MasterData()
 {
-	#ifdef MEMDEBUG
-		printf(" Destructor : master_data\n");
-	#endif
+	clear();
+	delete userClipboard;
 }
 
 // Clear
-void master_data::clear()
+void MasterData::clear()
 {
-	models.clear();
-	ffs.clear();
-	userclip.clear();
-	privclip.clear();
+	models_.clear();
+	forcefields_.clear();
+	userClipboard->clear();
 	scripts.clear();
-	for (int i=0; i<FT_NITEMS; i++) filters[i].clear();
+	for (int i=0; i<FT_NITEMS; i++) filters_[i].clear();
 }
 
 /*
@@ -73,96 +73,145 @@ void master_data::clear()
 */
 
 // Set the active model
-void master_data::set_currentmodel(model *m)
+void MasterData::setCurrentModel(Model *m)
 {
-	dbg_begin(DM_CALLS,"master::set_currentmodel");
+	dbgBegin(DM_CALLS,"master::setCurrentModel");
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
-	// Set other bundle objects based on model
-	current.p = m->get_patterns();
+	// Set other Bundle objects based on model
+	current.p = m->patterns();
 	current.i = NULL;
-	current.m->calculate_viewmatrix();
-	current.m->project_all();
+	current.m->calculateViewMatrix();
+	current.m->projectAll();
 	gui.refresh();
-	dbg_end(DM_CALLS,"master::set_currentmodel");
+	dbgEnd(DM_CALLS,"master::setCurrentModel");
 }
 
 /*
 // Model Management routines
 */
 
-// Add model
-model *master_data::add_model()
+// Return current active model for editing
+Model *MasterData::currentModel() const
 {
-	dbg_begin(DM_CALLS,"master::add_model");
-	current.m = models.add();
+	return current.m;
+}
+
+// Return first item in the model list
+Model *MasterData::models() const
+{
+	return models_.first();
+}
+
+// Return nth item in the model list
+Model *MasterData::model(int n)
+{
+	return models_[n];
+}
+
+// Return the current model's index in the model list
+int MasterData::currentModelIndex() const
+{
+	return models_.indexOf(current.m);
+}
+
+// Return index of specified model
+int MasterData::modelIndex(Model *m) const
+{
+	return models_.indexOf(m);
+}
+
+// Return the number of models in the model list
+int MasterData::nModels() const
+{
+	return models_.nItems();
+}
+
+// Add model
+Model *MasterData::addModel()
+{
+	dbgBegin(DM_CALLS,"master::addModel");
+	current.m = models_.add();
 	char newname[16];
-	sprintf(newname,"Unnamed%03i",++modelid);
-	current.m->set_name(newname);
-	gui.add_model(current.m);
-	dbg_end(DM_CALLS,"master::add_model");
+	sprintf(newname,"Unnamed%03i",++modelId_);
+	current.m->setName(newname);
+	gui.addModel(current.m);
+	dbgEnd(DM_CALLS,"master::addModel");
 	return current.m;
 }
 
 // Remove model
-void master_data::remove_model(model *xmodel)
+void MasterData::removeModel(Model *xmodel)
 {
 	// Remove this model from the model_list in the main window
-	dbg_begin(DM_CALLS,"master::remove_model");
-	model *m;
+	dbgBegin(DM_CALLS,"master::removeModel");
+	Model *m;
 	// Unset the datamodel for the canvas
-	// Delete the current model, but don't allow there to be zero models...
-	if (models.size() == 1)
-	{
-		// Add a new model to the workspace
-		m = master.add_model();
-	}
-	else
-		// If possible, set the active row to the next model. Otherwise, the previous.
-		xmodel->next != NULL ? m = xmodel->next : m = xmodel->prev;
+	// Delete the current model, but don't allow there to be zero models_...
+	// (if possible, set the active row to the next model, otherwise  the previous)
+	if (models_.nItems() == 1) m = master.addModel();
+	else xmodel->next != NULL ? m = xmodel->next : m = xmodel->prev;
 	current.m = m;
 	// Delete the old model (GUI first, then master)
-	int id = models.index_of(xmodel);
-	models.remove(xmodel);
-	gui.remove_model(id);
-	dbg_end(DM_CALLS,"master::remove_model");
+	int id = models_.indexOf(xmodel);
+	models_.remove(xmodel);
+	gui.removeModel(id);
+	dbgEnd(DM_CALLS,"master::removeModel");
 }
 
 // Find model by name
-model *master_data::find_model(const char *s)
+Model *MasterData::findModel(const char *s) const
 {
 	// Search model list for name 's' (script function)
-	dbg_begin(DM_CALLS,"master::find_model");
-	model *result = NULL;
-	for (result = models.first(); result != NULL; result = result->next) if (strcmp(s,result->get_name()) == 0) break;
-	dbg_end(DM_CALLS,"master::find_model");
+	dbgBegin(DM_CALLS,"master::findModel");
+	Model *result = NULL;
+	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;
+	dbgEnd(DM_CALLS,"master::findModel");
 	return result ;
 }
 
 /*
-// Surface Management Routines
+// Grid Management Routines
 */
 
-// Add new surface
-grid *master_data::add_grid()
+// Return list of surfaces
+Grid *MasterData::grids() const
 {
-	dbg_begin(DM_CALLS,"master::add_grid");
-	current.g = grids.add();
-	gui.add_grid(current.g);
-	gui.select_grid(current.g);
-	dbg_end(DM_CALLS,"master::add_grid");
+	return grids_.first();
+}
+
+// Return number of surfaces loaded
+int MasterData::nGrids() const
+{
+	return grids_.nItems();
+}
+
+// Return specified surface
+Grid *MasterData::grid(int id)
+{
+	return grids_[id];
+}
+
+// Add new surface
+Grid *MasterData::addGrid()
+{
+	dbgBegin(DM_CALLS,"master::addGrid");
+	current.g = grids_.add();
+	gui.addGrid(current.g);
+	gui.selectGrid(current.g);
+	dbgEnd(DM_CALLS,"master::addGrid");
 	return current.g;
 }
 
 // Remove surface
-void master_data::remove_grid(grid *xgrid)
+void MasterData::removeGrid(Grid *xgrid)
 {
-	grid *g;
+	Grid *g;
 	xgrid->next != NULL ? g = xgrid->next : g = xgrid->prev;
-	gui.remove_grid(xgrid);
-	gui.select_grid(g);
+	gui.removeGrid(xgrid);
+	gui.selectGrid(g);
 	// Finally, delete the old surface
-	grids.remove(xgrid);
+	grids_.remove(xgrid);
 }
 
 /*
@@ -170,93 +219,131 @@ void master_data::remove_grid(grid *xgrid)
 */
 
 // Load forcefield
-forcefield *master_data::load_ff(const char *filename)
+Forcefield *MasterData::loadForcefield(const char *filename)
 {
-	dbg_begin(DM_CALLS,"master::load_ff");
-	forcefield *newff = ffs.add();
+	dbgBegin(DM_CALLS,"master::loadForcefield");
+	Forcefield *newff = forcefields_.add();
 	if (!newff->load(filename))
 	{
 		msg(DM_NONE,"Couldn't load forcefield file '%s'.\n",filename);
-		ffs.remove(newff);
-		dbg_end(DM_CALLS,"master::load_ff");
+		forcefields_.remove(newff);
+		dbgEnd(DM_CALLS,"master::loadForcefield");
 		return NULL;
 	}
 	else
 	{
-		gui.add_ff(newff);
+		gui.addForcefield(newff);
 		current.ff = newff;
 	}
-	dbg_end(DM_CALLS,"master::load_ff");
+	dbgEnd(DM_CALLS,"master::loadForcefield");
 	return newff;
 }
 
 // Unload forcefield from the master's list
-void master_data::remove_ff(forcefield *xff)
+void MasterData::removeForcefield(Forcefield *xff)
 {
-	dbg_begin(DM_CALLS,"master::remove_ff");
-	forcefield *newff;
+	dbgBegin(DM_CALLS,"master::removeForcefield");
+	Forcefield *newff;
 	// If possible, set the active row to the next model. Otherwise, the previous.
 	xff->next != NULL ? newff = xff->next : newff = xff->prev;
 	current.ff = newff;
-	dereference_ff(xff);
-	gui.remove_ff(xff);
-	gui.select_ff(newff);
+	dereferenceForcefield(xff);
+	gui.removeForcefield(xff);
+	gui.selectForcefield(newff);
 	// Finally, delete the ff
-	ffs.remove(xff);
-	dbg_end(DM_CALLS,"master::remove_ff");
+	forcefields_.remove(xff);
+	dbgEnd(DM_CALLS,"master::removeForcefield");
 }
 
 // Find forcefield by name
-forcefield *master_data::find_ff(const char *s)
+Forcefield *MasterData::findForcefield(const char *s) const
 {
 	// Search forcefield list for name 's' (script function)
-	dbg_begin(DM_CALLS,"master::find_ff");
-	forcefield *ff;
-	for (ff = ffs.first(); ff != NULL; ff = ff->next) if (strcmp(s,ff->get_name()) == 0) break;
+	dbgBegin(DM_CALLS,"master::findForcefield");
+	Forcefield *ff;
+	for (ff = forcefields_.first(); ff != NULL; ff = ff->next) if (strcmp(s,ff->name()) == 0) break;
 	if (ff == NULL) msg(DM_NONE,"Forcefield '%s' is not loaded.\n",s);
-	dbg_end(DM_CALLS,"master::find_ff");
+	dbgEnd(DM_CALLS,"master::findForcefield");
 	return ff;
 }
 
 // Dereference forcefield
-void master_data::dereference_ff(forcefield *xff)
+void MasterData::dereferenceForcefield(Forcefield *xff)
 {
 	// Remove references to the forcefield in the models
-	dbg_begin(DM_CALLS,"master::dereference_ff");
-	model *m = models.first();
-	while (m != NULL)
+	dbgBegin(DM_CALLS,"master::dereferenceForcefield");
+	for (Model *m = models_.first(); m != NULL; m = m->next)
 	{
-		if (m->get_ff() == xff)
+		if (m->forcefield() == xff)
 		{
-			m->remove_typing();
-			m->set_ff(NULL);
+			m->removeTyping();
+			m->setForcefield(NULL);
 		}
-		pattern *p = m->get_patterns();
-		while (p != NULL)
+		for (Pattern *p = m->patterns(); p != NULL; p = p->next)
 		{
-			if (p->get_ff() == xff)
+			if (p->forcefield() == xff)
 			{
-				atom *i = p->get_firstatom();
-				for (int n=0; n<p->get_totalatoms(); n++)
+				Atom *i = p->firstAtom();
+				for (int n=0; n<p->totalAtoms(); n++)
 				{
-					i->set_type(NULL);
+					i->setType(NULL);
 					i = i->next;
 				}
-				p->set_ff(NULL);
+				p->setForcefield(NULL);
 			}
-			p = p->next;
 		}
-		m = m->next;
 	}
-	dbg_end(DM_CALLS,"master::dereference_ff");
+	dbgEnd(DM_CALLS,"master::dereferenceForcefield");
 }
 
 // Set the default forcefield
-void master_data::set_defaultff(forcefield *ff)
+void MasterData::setDefaultForcefield(Forcefield *ff)
 {
-	defaultff = ff;
-	if (defaultff == NULL) msg(DM_NONE,"Default forcefield has been unset.\n");
-	else msg(DM_NONE,"Default forcefield is now '%s'.\n", defaultff->get_name());
+	defaultForcefield_ = ff;
+	if (defaultForcefield_ == NULL) msg(DM_NONE,"Default forcefield has been unset.\n");
+	else msg(DM_NONE,"Default forcefield is now '%s'.\n", defaultForcefield_->name());
+}
+
+// Return the first ff in the list
+Forcefield *MasterData::forcefields() const
+{
+	return forcefields_.first();
+}
+
+// Return the number of loaded forcefields
+int MasterData::nForcefields() const
+{
+	return forcefields_.nItems();
+}
+
+// Set active forcefield
+void MasterData::setCurrentForcefield(Forcefield *ff)
+{
+	current.ff = ff;
+}
+
+// Set active forcefield by ID
+void MasterData::setCurrentForcefield(int id)
+{
+	current.ff = forcefields_[id];
+}
+
+// Return the active forcefield
+Forcefield *MasterData::currentForcefield() const
+{
+	return current.ff;
+}
+
+// Return ID of current forcefield
+int MasterData::currentForcefieldId() const
+{
+	return forcefields_.indexOf(current.ff);
+}
+
+// Get the current default forcefield
+Forcefield *MasterData::defaultForcefield() const
+{
+	return defaultForcefield_;
 }
 
 /*
@@ -264,11 +351,11 @@ void master_data::set_defaultff(forcefield *ff)
 */
 
 // Load filters
-bool master_data::open_filters(const char *path, bool isdatadir)
+bool MasterData::openFilters(const char *path, bool isdatadir)
 {
-	dbg_begin(DM_CALLS,"master::open_filters");
+	dbgBegin(DM_CALLS,"master::openFilters");
 	// Load in model filters
-	filter *f;
+	Filter *f;
 	int n;
 	char longname[512];
 	// Open the filter list file (in 'path/index') and read in the list of filters to load in...
@@ -289,12 +376,12 @@ bool master_data::open_filters(const char *path, bool isdatadir)
 		while (!listfile.eof())
 		{
 			strcpy(longname,path);
-			if (parser.get_args_delim(&listfile,PO_DEFAULTS+PO_SKIPBLANKS) != 0) break;
+			if (parser.getArgsDelim(&listfile,PO_DEFAULTS+PO_SKIPBLANKS) != 0) break;
 			strcat(longname,parser.argc(0));
 			printf("%s  ",parser.argc(0));
-			if (!load_filter(longname))
+			if (!loadFilter(longname))
 			{
-				dbg_end(DM_CALLS,"master::open_filters");
+				dbgEnd(DM_CALLS,"master::openFilters");
 				return FALSE;
 			}
 		}
@@ -305,31 +392,31 @@ bool master_data::open_filters(const char *path, bool isdatadir)
 	if (!isdatadir)
 	{
 		// Set filter partners
-		partner_filters();
+		partnerFilters();
 		// Print data on loaded filters
-		msg(DM_NONE,"Found (import/export):  Models (%i/%i) ", filters[FT_MODEL_IMPORT].size(), filters[FT_MODEL_EXPORT].size());
-		msg(DM_NONE,"Trajectory (%i/%i) ", filters[FT_TRAJECTORY_IMPORT].size(), filters[FT_TRAJECTORY_EXPORT].size());
-		msg(DM_NONE,"Expression (%i/%i) ", filters[FT_EXPRESSION_IMPORT].size(), filters[FT_EXPRESSION_EXPORT].size());
-		msg(DM_NONE,"Grid (%i/%i)\n", filters[FT_GRID_IMPORT].size(), filters[FT_GRID_EXPORT].size());
+		msg(DM_NONE,"Found (import/export):  Models (%i/%i) ", filters_[FT_MODEL_IMPORT].nItems(), filters_[FT_MODEL_EXPORT].nItems());
+		msg(DM_NONE,"Trajectory (%i/%i) ", filters_[FT_TRAJECTORY_IMPORT].nItems(), filters_[FT_TRAJECTORY_EXPORT].nItems());
+		msg(DM_NONE,"Expression (%i/%i) ", filters_[FT_EXPRESSION_IMPORT].nItems(), filters_[FT_EXPRESSION_EXPORT].nItems());
+		msg(DM_NONE,"Grid (%i/%i)\n", filters_[FT_GRID_IMPORT].nItems(), filters_[FT_GRID_EXPORT].nItems());
 	}
-	dbg_end(DM_CALLS,"master::open_filters");
+	dbgEnd(DM_CALLS,"master::openFilters");
 	return TRUE;
 }
 
 // Read commands from filter file
-bool master_data::load_filter(const char *filename)
+bool MasterData::loadFilter(const char *filename)
 {
-	dbg_begin(DM_CALLS,"master::load_filter");
-	filter_type ft;
-	filter *newfilter;
+	dbgBegin(DM_CALLS,"master::loadFilter");
+	FilterType ft;
+	Filter *newfilter;
 	bool foundmain, error;
-	variable_list *vars;
+	VariableList *vars;
 	int success;
-	zmap_type zm;
+	ZmapType zm;
 	ifstream filterfile(filename,ios::in);
 
 	// Pre-read first line to check
-	success = parser.get_args_delim(&filterfile,PO_USEQUOTES+PO_SKIPBLANKS);
+	success = parser.getArgsDelim(&filterfile,PO_USEQUOTES+PO_SKIPBLANKS);
 	error = FALSE;
 	while (!filterfile.eof())
 	{
@@ -344,45 +431,45 @@ bool master_data::load_filter(const char *filename)
 			break;
 		}
 		// Add main filter section
-		newfilter = filters[ft].add();
-		newfilter->set_type(ft);
+		newfilter = filters_[ft].add();
+		newfilter->setType(ft);
 		// Call the filter to load its commands.
 		// If the load is not successful, remove the filter we just created
 		if (!newfilter->load(filterfile))
 		{
-			filters[ft].remove(newfilter);
-			printf("Error reading '%s' section from file '%s'\n",text_from_FT(newfilter->get_type()),filename);
+			filters_[ft].remove(newfilter);
+			printf("Error reading '%s' section from file '%s'\n",text_from_FT(newfilter->type()),filename);
 			error = TRUE;
 			break;
 		}
 	}
 	filterfile.close();
 	//variables.print();
-	dbg_end(DM_CALLS,"master::load_filter");
+	dbgEnd(DM_CALLS,"master::loadFilter");
 	return (!error);
 }
 
 // Set filter partners
-void master_data::partner_filters()
+void MasterData::partnerFilters()
 {
-	dbg_begin(DM_CALLS,"master::partner_filters");
+	dbgBegin(DM_CALLS,"master::partnerFilters");
 	// Loop through import filters and search / set export partners
-	filter *imp, *exp;
+	Filter *imp, *exp;
 	int importid;
 	printf("Model Formats:");
-	for (imp = filters[FT_MODEL_IMPORT].first(); imp != NULL; imp = imp->next)
+	for (imp = filters_[FT_MODEL_IMPORT].first(); imp != NULL; imp = imp->next)
 	{
-		printf(" %s[r", imp->get_nickname());
-		importid = imp->get_id();
+		printf(" %s[r", imp->nickname());
+		importid = imp->id();
 		exp = NULL;
 		if (importid != -1)
 		{
 			// Search for export filter with same ID as the importfilter
-			for (exp = filters[FT_MODEL_EXPORT].first(); exp != NULL; exp = exp->next)
+			for (exp = filters_[FT_MODEL_EXPORT].first(); exp != NULL; exp = exp->next)
 			{
-				if (importid == exp->get_id())
+				if (importid == exp->id())
 				{
-					imp->set_partner(exp);
+					imp->setPartner(exp);
 					printf("w]");
 					break;
 				}
@@ -392,19 +479,19 @@ void master_data::partner_filters()
 	}
 	printf("\n");
 	printf("Grid Formats:");
-	for (imp = filters[FT_GRID_IMPORT].first(); imp != NULL; imp = imp->next)
+	for (imp = filters_[FT_GRID_IMPORT].first(); imp != NULL; imp = imp->next)
 	{
-		printf(" %s[r", imp->get_nickname());
-		importid = imp->get_id();
+		printf(" %s[r", imp->nickname());
+		importid = imp->id();
 		exp = NULL;
 		if (importid != -1)
 		{
 			// Search for export filter with same ID as the importfilter
-			for (exp = filters[FT_GRID_EXPORT].first(); exp != NULL; exp = exp->next)
+			for (exp = filters_[FT_GRID_EXPORT].first(); exp != NULL; exp = exp->next)
 			{
-				if (importid == exp->get_id())
+				if (importid == exp->id())
 				{
-					imp->set_partner(exp);
+					imp->setPartner(exp);
 					printf("w]");
 					break;
 				}
@@ -413,19 +500,25 @@ void master_data::partner_filters()
 		if (exp == NULL) printf("o]");
 	}
 	printf("\n");
-	dbg_end(DM_CALLS,"master::partner_filters");
+	dbgEnd(DM_CALLS,"master::partnerFilters");
 }
 
 // Find filter with specified type and nickname
-filter *master_data::find_filter(filter_type ft, const char *nickname)
+Filter *MasterData::findFilter(FilterType ft, const char *nickname) const
 {
-	dbg_begin(DM_CALLS,"master::find_filter");
-	filter *result;
-	for (result = filters[ft].first(); result != NULL; result = result->next)
-		if (strcmp(result->get_nickname(), nickname) == 0) break;
+	dbgBegin(DM_CALLS,"master::findFilter");
+	Filter *result;
+	for (result = filters_[ft].first(); result != NULL; result = result->next)
+		if (strcmp(result->nickname(), nickname) == 0) break;
 	if (result == NULL) msg(DM_NONE,"No %s filter with nickname '%s' defined.\n",text_from_FT(ft),nickname);
-	dbg_end(DM_CALLS,"master::find_filter");
+	dbgEnd(DM_CALLS,"master::findFilter");
 	return result;
+}
+
+// Return first filter in list (of a given type)
+Filter *MasterData::filters(FilterType ft) const
+{
+	return filters_[ft].first();
 }
 
 /*
@@ -433,27 +526,27 @@ filter *master_data::find_filter(filter_type ft, const char *nickname)
 */
 
 // Initialise a progress indicator
-void master_data::initialise_progress(const char *jobtitle, int totalsteps)
+void MasterData::initialiseProgress(const char *jobtitle, int totalsteps)
 {
-	gui.progress_create(jobtitle, totalsteps);
+	gui.progressCreate(jobtitle, totalsteps);
 }
 
 // Update the number of steps (returns if the dialog was canceled)
-bool master_data::update_progress(int currentstep)
+bool MasterData::updateProgress(int currentstep)
 {
-	return gui.progress_update(currentstep);
+	return gui.progressUpdate(currentstep);
 }
 
 // Terminate the current progress
-void master_data::cancel_progress()
+void MasterData::cancelProgress()
 {
-	gui.progress_terminate();
+	gui.progressTerminate();
 }
 
 // Spacegroup name search
-int master_data::find_spacegroup_by_name(const char *name)
+int MasterData::findSpacegroupByName(const char *name) const
 {
-	dbg_begin(DM_CALLS,"master_data::find_spacegroup_by_name");
+	dbgBegin(DM_CALLS,"MasterData::findSpacegroupByName");
 	int result = 0;
 	for (int n=1; n<231; n++)
 		if (strcmp(spacegroups[n].name,name) == 0)
@@ -461,15 +554,15 @@ int master_data::find_spacegroup_by_name(const char *name)
 			result = n;
 			break;
 		}
-	dbg_end(DM_CALLS,"master_data::find_spacegroup_by_name");
+	dbgEnd(DM_CALLS,"MasterData::findSpacegroupByName");
 	return result;
 }
 
 // Cell type from spacegrgoup
-cell_type master_data::get_spacegroup_celltype(int sg)
+CellType MasterData::spacegroupCellType(int sg) const
 {
-	dbg_begin(DM_CALLS,"master_data::get_spacegroup_celltype");
-	cell_type result = CT_NONE;
+	dbgBegin(DM_CALLS,"MasterData::spacegroupCellType");
+	CellType result = CT_NONE;
 	// None
 	if (sg == 0) result = CT_NONE;
 	// Triclinic and monoclinic
@@ -482,6 +575,6 @@ cell_type master_data::get_spacegroup_celltype(int sg)
 	else if (sg < 195) result = CT_NONE;
 	// Cubic
 	else result = CT_CUBIC;
-	dbg_begin(DM_CALLS,"master_data::get_spacegroup_celltype");
+	dbgBegin(DM_CALLS,"MasterData::spacegroupCellType");
 	return result;
 }

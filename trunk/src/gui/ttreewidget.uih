@@ -37,21 +37,21 @@ class TTreeWidget : public QTreeWidget
 
 	private:
 	// List of TTreeViewWidgets that this TTreeWidget contains
-	reflist<TTreeWidgetItem,int> atomitems;
+	Reflist<TTreeWidgetItem,int> atomItems_;
 
 	public:
 	// Clear list of TTreeViewWidgets 
-	void clear_atomitems() { atomitems.clear(); }
+	void clearAtomItems() { atomItems_.clear(); }
 
 	public:
 	// Add a TTreeViewAtoms to the list (which we will remember in a reflist<>
 	TTreeWidgetItem *addTreeItem(QTreeWidgetItem *parent)
 	{
-		atomitems.add(new TTreeWidgetItem(parent));
-		return atomitems.last()->item;
+		atomItems_.add(new TTreeWidgetItem(parent));
+		return atomItems_.last()->item;
 	}
 	// Return the reflist of TTreeViewAtoms
-	refitem<TTreeWidgetItem,int> *get_atomitems() { return atomitems.first(); }
+	Refitem<TTreeWidgetItem,int> *atomItems() { return atomItems_.first(); }
 };
 
 #endif

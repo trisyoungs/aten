@@ -1,6 +1,6 @@
 /*
 	*** Atom location
-	*** src/classes/atomaddress.cpp
+	*** src/classes/Atomaddress.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -23,17 +23,51 @@
 #include "base/debug.h"
 
 // Constructor
-atomaddress::atomaddress()
+Atomaddress::Atomaddress()
 {
-	#ifdef MEMDEBUG
-	memdbg.create[MD_ATOMADDRESS] ++;
-	#endif
 }
 
 // Destructor
-atomaddress::~atomaddress()
+Atomaddress::~Atomaddress()
 {
-	#ifdef MEMDEBUG
-	memdbg.destroy[MD_ATOMADDRESS] ++;
-	#endif
+}
+
+/*
+// Variable Access
+*/
+
+// Set the local molecule offset of the atom
+void Atomaddress::setOffset(int i)
+{
+	offset_ = i;
+}
+
+// Returns the local molecule offset of the atom
+int Atomaddress::getOffset()
+{
+	return offset_;
+}
+
+// Set the molecule id of the atom
+void Atomaddress::setMolecule(int i)
+{
+	molecule_ = i;
+}
+
+// Returns the molecule the atom is in
+int Atomaddress::molecule()
+{
+	return molecule_;
+}
+
+// Set the pattern pointer for the atom
+void Atomaddress::setPattern(Pattern *p)
+{
+	pattern_ = p;
+}
+
+// Returns the current pattern for the atom
+Pattern *Atomaddress::pattern()
+{
+	return pattern_;
 }

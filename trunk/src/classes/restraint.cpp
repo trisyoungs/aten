@@ -27,9 +27,6 @@
 // Constructors
 restraints::restraints()
 {
-	#ifdef MEMDEBUG
-	memdbg.create[MD_RESTRAINTS] ++;
-	#endif
 }
 
 restraint_ij::restraint_ij()
@@ -37,9 +34,6 @@ restraint_ij::restraint_ij()
 	rij = 0.0;
 	next = NULL;
 	prev = NULL;
-	#ifdef MEMDEBUG
-	memdbg.create[MD_RESTRAINT_IJ] ++;
-	#endif
 }
 
 // Destructors
@@ -59,31 +53,31 @@ restraint_ij::~restraint_ij()
 }
 
 // Add Distance
-void restraints::add_ij(reflist<atom,int> &rl)
+void restraints::add_ij(Reflist<Atom,int> &rl)
 {
-	dbg_begin(DM_CALLS,"restraints::add_ij");
-	if (rl.size() != 2)
+	dbgBegin(DM_CALLS,"restraints::add_ij");
+	if (rl.nItems() != 2)
 	{
 		printf("Not enough atoms in supplied list to add distance restraint.\n");
-		dbg_end(DM_CALLS,"restraints::add_ij");
+		dbgEnd(DM_CALLS,"restraints::add_ij");
 		return;
 	}
 	restraint_ij *newdist = ijs.add();
 	// Initialise some variables
-	refitem<atom,int> *ri = rl.first();
+	Refitem<Atom,int> *ri = rl.first();
 	newdist->i = ri->item;
 	newdist->j = ri->next->item;
 	newdist->rij = ownermodel->distance(newdist->i, newdist->j);
-	dbg_end(DM_CALLS,"restraints::add_ij");
+	dbgEnd(DM_CALLS,"restraints::add_ij");
 }
 
 // Find Distance
-restraint_ij *restraints::does_ij_exist(reflist<atom,int> &rl)
+restraint_ij *restraints::does_ij_exist(Reflist<Atom,int> &rl)
 {
 	// Go through the list of restraints and check if the current distance is already measured
-	dbg_begin(DM_CALLS,"restraints::does_lj_exist");
+	dbgBegin(DM_CALLS,"restraints::does_lj_exist");
 	restraint_ij *xdist, *result;
-	refitem<atom,int> *ri = rl.first();
+	Refitem<Atom,int> *ri = rl.first();
 	result = NULL;
 	xdist = ijs.first();
 	while (xdist != NULL)
@@ -93,23 +87,23 @@ restraint_ij *restraints::does_ij_exist(reflist<atom,int> &rl)
 	        if (result != NULL) break;
 	        xdist = xdist->next;
 	}
-	dbg_end(DM_CALLS,"restraints::does_lj_exist");
+	dbgEnd(DM_CALLS,"restraints::does_lj_exist");
 	return result;
 }
 
 // Clear all restraints
 void restraints::clear_all()
 {
-	dbg_begin(DM_CALLS,"restraints::clear_all");
+	dbgBegin(DM_CALLS,"restraints::clear_all");
 	ijs.clear();
-	dbg_end(DM_CALLS,"restraints::clear_all");
+	dbgEnd(DM_CALLS,"restraints::clear_all");
 }
 
 // Prune restraints for deleted atoms
-void restraints::prune_atom(atom *xatom)
+void restraints::prune_atom(Atom *xatom)
 {
 	// Search the lists of restraints for the supplied atom, and remove any that use it
-	dbg_begin(DM_CALLS,"restraints::prune_atom");
+	dbgBegin(DM_CALLS,"restraints::prune_atom");
 	restraint_ij *ij = ijs.first();
 	restraint_ij *tempij;
 	while (ij != NULL)
@@ -148,5 +142,5 @@ void restraints::prune_atom(atom *xatom)
 		else ijkl = ijkl->next;
 	}
 	*/
-	dbg_end(DM_CALLS,"restraints::prune_atom");
+	dbgEnd(DM_CALLS,"restraints::prune_atom");
 }
