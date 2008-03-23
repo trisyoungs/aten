@@ -60,8 +60,11 @@
     </qresource>
     <qresource prefix="/geometry" >
         <file>icons/measure_angle.svg</file>
+        <file>icons/measure_anglesel.svg</file>
         <file>icons/measure_distance.svg</file>
+        <file>icons/measure_distancesel.svg</file>
         <file>icons/measure_torsion.svg</file>
+        <file>icons/measure_torsionsel.svg</file>
     </qresource>
     <qresource prefix="/mouse" >
         <file>icons/mouse_interact.svg</file>

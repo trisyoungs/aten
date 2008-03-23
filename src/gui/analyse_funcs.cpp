@@ -19,8 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "model/model.h"
 
 void AtenForm::on_MeasureDistanceButton_clicked(bool on)
 {
@@ -36,3 +38,30 @@ void AtenForm::on_MeasureTorsionButton_clicked(bool on)
 {
 	if (on) setUserAction(on, UA_GEOMTORSION);
 }
+
+void AtenForm::on_RemoveMeasurementsButton_clicked(bool on)
+{
+	master.currentModel()->removeMeasurements(GT_DISTANCE);
+	master.currentModel()->removeMeasurements(GT_ANGLE);
+	master.currentModel()->removeMeasurements(GT_TORSION);
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_MeasureDistanceSelectionButton_clicked(bool on)
+{
+	master.currentModel()->addMeasurementsInSelection(GT_DISTANCE);
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_MeasureAngleSelectionButton_clicked(bool on)
+{
+	master.currentModel()->addMeasurementsInSelection(GT_ANGLE);
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_MeasureTorsionSelectionButton_clicked(bool on)
+{
+	master.currentModel()->addMeasurementsInSelection(GT_TORSION);
+	gui.mainView.postRedisplay();
+}
+

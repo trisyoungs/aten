@@ -22,7 +22,6 @@
 #ifndef ATEN_MAINWINDOW_H
 #define ATEN_MAINWINDOW_H
 
-//#include "gui/gui.h"
 #include "classes/dnchar.h"
 #include "gui/canvas.h"
 #include "gui/ui_mainwindow.h"
@@ -292,6 +291,10 @@ class AtenForm : public QMainWindow
 	void on_MeasureDistanceButton_clicked(bool on);
 	void on_MeasureAngleButton_clicked(bool on);
 	void on_MeasureTorsionButton_clicked(bool on);
+	void on_RemoveMeasurementsButton_clicked(bool on);
+	void on_MeasureDistanceSelectionButton_clicked(bool on);
+	void on_MeasureAngleSelectionButton_clicked(bool on);
+	void on_MeasureTorsionSelectionButton_clicked(bool on);
 
 	// Transformation Page Functions
 	private:
