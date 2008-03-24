@@ -25,7 +25,7 @@
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 #include "classes/bond.h"
-
+#include "classes/ring.h"
 
 // Return number of unique atom types in model
 int Model::nUniqueTypes()

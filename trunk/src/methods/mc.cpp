@@ -252,7 +252,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
-	dbgBegin(DM_CALLS,"mc::minimise");
+	dbgBegin(DM_CALLS,"MethodMc::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats, prog;
 	char s[256], t[32];
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
@@ -266,7 +266,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	msg(DM_NONE,"Creating expression for target model...\n");
         if (!srcmodel->createExpression())
 	{
-		dbgEnd(DM_CALLS,"mc::minimise");
+		dbgEnd(DM_CALLS,"MethodMc::minimise");
 		return FALSE;
 	}
 	srcmodel->assignCharges(prefs.chargeSource());
@@ -396,7 +396,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	// Finalise
 	srcmodel->logChange(LOG_COORDS);
 
-	dbgEnd(DM_CALLS,"mc::minimise");
+	dbgEnd(DM_CALLS,"MethodMc::minimise");
 	return TRUE;
 }
 
@@ -404,7 +404,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 bool MethodMc::disorder(Model *destmodel)
 {
 	// Monte Carlo Insertion
-	dbgBegin(DM_CALLS,"mc::disorder");
+	dbgBegin(DM_CALLS,"MethodMc::disorder");
 	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
 	int patternNMols, prog;
 	char s[256], t[32];
@@ -426,7 +426,7 @@ bool MethodMc::disorder(Model *destmodel)
 	msg(DM_NONE,"Creating expression for target model...\n");
         if (!destmodel->createExpression())
 	{
-		dbgEnd(DM_CALLS,"mc::disorder");
+		dbgEnd(DM_CALLS,"MethodMc::disorder");
 		return FALSE;
 	}
 	nOldPatterns = destmodel->nPatterns();
@@ -439,7 +439,7 @@ bool MethodMc::disorder(Model *destmodel)
 	if (components.nItems() == 0)
 	{
 		msg(DM_NONE,"No components have been specified for inclusion into the model.\n");
-		dbgEnd(DM_CALLS,"mc::disorder");
+		dbgEnd(DM_CALLS,"MethodMc::disorder");
 		return FALSE;
 	}
 
@@ -454,7 +454,7 @@ bool MethodMc::disorder(Model *destmodel)
 		if (!m->createExpression())
 		{
 			msg(DM_NONE,"Failed to create expression for component model '%s'.\n", m->name());
-			dbgEnd(DM_CALLS,"mc::disorder");
+			dbgEnd(DM_CALLS,"MethodMc::disorder");
 			return FALSE;
 		}
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
@@ -751,7 +751,7 @@ bool MethodMc::disorder(Model *destmodel)
 	destmodel->calculateDensity();
 	destmodel->logChange(LOG_COORDS);
 	gui.refresh();
-	dbgEnd(DM_CALLS,"mc::insert");
+	dbgEnd(DM_CALLS,"MethodMc::insert");
 	return TRUE;
 }
 

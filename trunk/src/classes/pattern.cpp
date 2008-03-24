@@ -20,6 +20,7 @@
 */
 
 #include "classes/pattern.h"
+#include "classes/ring.h"
 #include "templates/vector3.h"
 #include "model/model.h"
 #include "base/elements.h"
@@ -45,6 +46,7 @@ Pattern::Pattern()
 	testAtomLimit_ = FALSE;
 	testElement_ = FALSE;
 	testBonding_ = FALSE;
+	noIntramolecular_ = FALSE;
 	// Public variables
 	molecule = new Model;
 	prev = NULL;
@@ -1032,7 +1034,7 @@ void Pattern::augment()
 	dbgEnd(DM_CALLS,"Pattern::augment");
 }
 
-void Pattern::initExpression(Model *xmodel)
+void Pattern::initExpression(bool vdwOnly)
 {
 	// Create arrays for storage of FF data for atoms, bonds, angles etc.
 	// NBonds can be calculated through a loop over all atoms
@@ -1045,35 +1047,37 @@ void Pattern::initExpression(Model *xmodel)
 	nBonds = 0;
 	nAngles = 0;
 	nTorsions = 0;
-	i = xmodel->atoms();
-	while (i != NULL)
+	// We always create the atom array.
+	atoms_.createEmpty(nAtoms_);
+	if (vdwOnly)
 	{
-		atomId = i->id();
-		if ((atomId >= startAtom_) && (atomId <= endAtom_))
+		noIntramolecular_ = TRUE;
+		msg(DM_NONE,"Expression for pattern '%s' contains Atomtype terms only.\n", name_.get());
+	}
+	else
+	{
+		for (i = parent_->atoms(); i != NULL; i = i->next)
 		{
-			// Bond counter
-			nBonds += i->nBonds();
-			// Angle counter
-			for (n=i->nBonds()-1; n>0; n--) nAngles += n;
-			// Torsion counter
-			// Slightly more complicated - need a second loop of bound atoms
-			bref = i->bonds();
-			while (bref != NULL)
+			atomId = i->id();
+			if ((atomId >= startAtom_) && (atomId <= endAtom_))
 			{
-				nTorsions += (i->nBonds() - 1) * (bref->item->partner(i)->nBonds() - 1);
-				bref = bref->next;
+				// Bond counter
+				nBonds += i->nBonds();
+				// Angle counter
+				for (n=i->nBonds()-1; n>0; n--) nAngles += n;
+				// Torsion counter slightly more complicated - need a second loop of bound atoms
+				for (bref = i->bonds(); bref != NULL; bref = bref->next)
+					nTorsions += (i->nBonds() - 1) * (bref->item->partner(i)->nBonds() - 1);
 			}
 		}
-		i = i->next;
+		// Some totals are double counted, so...
+		nBonds /= 2;
+		nTorsions /= 2;
+		msg(DM_NONE,"Expression for pattern '%s' contains %i bonds, %i angles, and %i torsions.\n", name_.get(), nBonds, nAngles, nTorsions);
+		bonds_.createEmpty(nBonds);
+		angles_.createEmpty(nAngles);
+		torsions_.createEmpty(nTorsions);
 	}
-	// Some totals are double counted, so...
-	nBonds /= 2;
-	nTorsions /= 2;
-	msg(DM_NONE,"Expression for pattern '%s' contains %i bonds, %i angles, and %i torsions.\n", name_.get(), nBonds, nAngles, nTorsions);
-	atoms_.createEmpty(nAtoms_);
-	bonds_.createEmpty(nBonds);
-	angles_.createEmpty(nAngles);
-	torsions_.createEmpty(nTorsions);
 	if (conMat_ != NULL) msg(DM_NONE,"Pattern::initExpression : Error - connectivity matrix already allocated.\n");
 	else
 	{
@@ -1083,7 +1087,7 @@ void Pattern::initExpression(Model *xmodel)
 	dbgEnd(DM_CALLS,"Pattern::initExpression");
 }
 
-bool Pattern::fillExpression(Model *xmodel)
+bool Pattern::fillExpression()
 {
 	// Fill the energy expression for the pattern.
 	// The structure that we create will include a static array of pointers
@@ -1105,7 +1109,7 @@ bool Pattern::fillExpression(Model *xmodel)
 	int bonding[nAtoms_][7];
 	int count, ii, jj, kk, ll;
 	// If there is no specified pattern forcefield, use the parent model's instead
-	forcefield_ == NULL ? xff = xmodel->forcefield() : xff = forcefield_;
+	forcefield_ == NULL ? xff = parent_->forcefield() : xff = forcefield_;
 	msg(DM_NONE,"Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
 	msg(DM_NONE,"... Using forcefield '%s'...\n",xff->name());
 	// Construct the atom list.
@@ -1119,7 +1123,7 @@ bool Pattern::fillExpression(Model *xmodel)
 		pa->setData(ai->type());
 		if (ai->type() == 0)
 		{
-			msg(DM_NONE,"... No FF definition for atom %i (%s).\n",count+1,elements.symbol(ai));
+			msg(DM_NONE,"... No FF definition for atom %i (%s).\n", count+1, elements.symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
@@ -1129,210 +1133,214 @@ bool Pattern::fillExpression(Model *xmodel)
 		//pa->data = pa->type->get_params()->data();
 		ai = ai->next;
 	}
-	// Construct the bond list.
-	// Use the atomic bond lists and convert them, filling in the forcefield data as we go.
-	// Add only bonds where id(i) > id(j) to prevent double counting of bonds
-	// Also, create the lists of bound atoms here for use by the angle and torsion functions.
-	// Again, only add bonds involving atoms in the first molecule of the pattern.
-	for (count=0; count<nAtoms_; count++) bonding[count][0] = 0;
-	ai = firstAtom_;
-	count = 0;
-	for (ii=0; ii<nAtoms_; ii++)
+	// Generate intramolecular terms (if not disabled)
+	if (!noIntramolecular_)
 	{
-		// Go through the list of bonds to this atom
-		bref = ai->bonds();
-		while (bref != NULL)
+		// Construct the bond list.
+		// Use the atomic bond lists and convert them, filling in the forcefield data as we go.
+		// Add only bonds where id(i) > id(j) to prevent double counting of bonds
+		// Also, create the lists of bound atoms here for use by the angle and torsion functions.
+		// Again, only add bonds involving atoms in the first molecule of the pattern.
+		for (count=0; count<nAtoms_; count++) bonding[count][0] = 0;
+		ai = firstAtom_;
+		count = 0;
+		for (ii=0; ii<nAtoms_; ii++)
 		{
-			// Get relative IDs and check if i > j
-			aj = bref->item->partner(ai);
-			ti = ai->type();
-			tj = aj->type();
-			jj = aj->id() - startAtom_;
-			// Quick check to ensure the bond is within the same molecule...
-			if (jj > endAtom_)
+			// Go through the list of bonds to this atom
+			bref = ai->bonds();
+			while (bref != NULL)
 			{
-				msg(DM_NONE,"!!! Found bond between molecules. Check pattern.\n");
-				dbgEnd(DM_CALLS,"Pattern::fillExpression");
-				return FALSE;
-			}
-			if (jj > ii)
-			{
-				bonds_[count]->setAtomId(0,ii);
-				bonds_[count]->setAtomId(1,jj);
-				// Search for the bond data. If its a rule-based FF and we don't find any matching data,
-				// generate it. If its a normal forcefield, flag the incomplete marker.
-				ffb = xff->findBond(ti,tj);
-				// If we found a match, point to it
-				if (ffb != NULL) bonds_[count]->setData(ffb);
-				else
-				{
-					// If not a rule-based FF, nullify pointer
-					if (xff->rules() == FFR_NORULES) bonds_[count]->setData(NULL);
-					else
-					{
-						// Generate the new parameters required
-						ffb = xff->generateBond(ai,aj);
-						bonds_[count]->setData(ffb);
-					}
-				}
-				// Check ffb - if it's still NULL we couldn't find a definition
-				if (ffb == NULL)
-				{
-					msg(DM_NONE,"!!! No FF definition for bond %s-%s.\n", ti->equivalent(), tj->equivalent());
-					incomplete_ = TRUE;
-					ibonds ++;
-				}
-				else
-				{
-					params = bonds_[count]->data()->params();
-					msg(DM_VERBOSE,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
-				}
-				// Update the bonding array counters
-				bonding[ii][0] ++;
-				bonding[jj][0] ++;
-				// Add the bond partner to each of the atom's own lists
-				bonding[ii][bonding[ii][0]] = jj;
-				bonding[jj][bonding[jj][0]] = ii;
-				count ++;
-			}
-			bref = bref->next;
-		}
-		ai = ai->next;
-	}
-	if (bonds_.nItems() != count)
-	{
-		msg(DM_NONE,"...INTERNAL ERROR: expected %i bonds, found %i\n", bonds_.nItems(), count);
-		incomplete_ = TRUE;
-	}
-	else if (ibonds == 0) msg(DM_NONE,"... Found parameters for %i bonds.\n", bonds_.nItems());
-	else msg(DM_NONE,"... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
-	// Construct the angle list.
-	// Use the list of bound atoms in the bonding[][] array generated above
-	count = 0;
-	// Loop over central atoms 'jj'
-	for (jj=0; jj<nAtoms_; jj++)
-	{
-		for (ii=1; ii<=bonding[jj][0]; ii++)
-		{
-			for (kk=ii+1; kk<=bonding[jj][0]; kk++)
-			{
-				ai = atoms_[bonding[jj][ii]]->atom();
-				aj = atoms_[jj]->atom();
-				ak = atoms_[bonding[jj][kk]]->atom();
+				// Get relative IDs and check if i > j
+				aj = bref->item->partner(ai);
 				ti = ai->type();
 				tj = aj->type();
-				tk = ak->type();
-				angles_[count]->setAtomId(0,bonding[jj][ii]);
-				angles_[count]->setAtomId(1,jj);
-				angles_[count]->setAtomId(2,bonding[jj][kk]);
-				// Search for the bond data. If its a rule-based FF and we don't find any matching data,
-				// generate it. If its a normal forcefield, flag the incomplete marker.
-				ffb = xff->findAngle(ti,tj,tk);
-				if (ffb != NULL) angles_[count]->setData(ffb);
-				else
+				jj = aj->id() - startAtom_;
+				// Quick check to ensure the bond is within the same molecule...
+				if (jj > endAtom_)
 				{
-					// If not a rule-based FF, nullify pointer
-					if (xff->rules() == FFR_NORULES) angles_[count]->setData(NULL);
+					msg(DM_NONE,"!!! Found bond between molecules. Check pattern.\n");
+					dbgEnd(DM_CALLS,"Pattern::fillExpression");
+					return FALSE;
+				}
+				if (jj > ii)
+				{
+					bonds_[count]->setAtomId(0,ii);
+					bonds_[count]->setAtomId(1,jj);
+					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
+					// generate it. If its a normal forcefield, flag the incomplete marker.
+					ffb = xff->findBond(ti,tj);
+					// If we found a match, point to it
+					if (ffb != NULL) bonds_[count]->setData(ffb);
 					else
 					{
-						// Generate the new parameters required
-						ffb = xff->generateAngle(ai,aj,ak);
-						angles_[count]->setData(ffb);
+						// If not a rule-based FF, nullify pointer
+						if (xff->rules() == FFR_NORULES) bonds_[count]->setData(NULL);
+						else
+						{
+							// Generate the new parameters required
+							ffb = xff->generateBond(ai,aj);
+							bonds_[count]->setData(ffb);
+						}
 					}
+					// Check ffb - if it's still NULL we couldn't find a definition
+					if (ffb == NULL)
+					{
+						msg(DM_NONE,"!!! No FF definition for bond %s-%s.\n", ti->equivalent(), tj->equivalent());
+						incomplete_ = TRUE;
+						ibonds ++;
+					}
+					else
+					{
+						params = bonds_[count]->data()->params();
+						msg(DM_VERBOSE,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+					}
+					// Update the bonding array counters
+					bonding[ii][0] ++;
+					bonding[jj][0] ++;
+					// Add the bond partner to each of the atom's own lists
+					bonding[ii][bonding[ii][0]] = jj;
+					bonding[jj][bonding[jj][0]] = ii;
+					count ++;
 				}
-				// Check ffa and raise warning if NULL
-				if (ffb == NULL)
-				{
-					msg(DM_NONE,"!!! No FF definition for angle %s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent());
-					incomplete_ = TRUE;
-					iangles ++;
-				}
-				else
-				{
-					params = angles_[count]->data()->params();
-					msg(DM_VERBOSE,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
-				}
-				count ++;
+				bref = bref->next;
 			}
+			ai = ai->next;
 		}
-	}
-	if (angles_.nItems() != count)
-	{
-		msg(DM_NONE,"...INTERNAL ERROR: expected %i angles, found %i\n", angles_.nItems(), count);
-		incomplete_ = TRUE;
-	}
-	else if (iangles == 0) msg(DM_NONE,"... Found parameters for %i angles_.\n", angles_.nItems());
-	else msg(DM_NONE,"... Missing parameters for %i of %i angles_.\n", iangles, angles_.nItems());
-	// Construct the torsion list.
-	// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
-	count = 0;
-	// Loop over the bonds in the molecule as the basis, then we can never count the same torsion twice.
-	for (pb = bonds_.first(); pb != NULL; pb = pb->next)
-	{
-		jj = pb->atomId(0);
-		kk = pb->atomId(1);
-		// Loop over list of atoms bound to jj
-		for (ii=1; ii<=bonding[jj][0]; ii++)
+		if (bonds_.nItems() != count)
 		{
-			// Skip atom kk
-			if (bonding[jj][ii] == kk) continue;
-			// Loop over list of atoms bound to kk
-			for (ll=1; ll<=bonding[kk][0]; ll++)
+			msg(DM_NONE,"...INTERNAL ERROR: expected %i bonds, found %i\n", bonds_.nItems(), count);
+			incomplete_ = TRUE;
+		}
+		else if (ibonds == 0) msg(DM_NONE,"... Found parameters for %i bonds.\n", bonds_.nItems());
+		else msg(DM_NONE,"... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
+		// Construct the angle list.
+		// Use the list of bound atoms in the bonding[][] array generated above
+		count = 0;
+		// Loop over central atoms 'jj'
+		for (jj=0; jj<nAtoms_; jj++)
+		{
+			for (ii=1; ii<=bonding[jj][0]; ii++)
 			{
-				// Skip atom jj
-				if (bonding[kk][ll] == jj) continue;
-
-				ai = atoms_[bonding[jj][ii]]->atom();
-				aj = atoms_[jj]->atom();
-				ak = atoms_[kk]->atom();
-				al = atoms_[bonding[kk][ll]]->atom();
-				ti = ai->type();
-				tj = aj->type();
-				tk = ak->type();
-				tl = al->type();
-				torsions_[count]->setAtomId(0,bonding[jj][ii]);
-				torsions_[count]->setAtomId(1,jj);
-				torsions_[count]->setAtomId(2,kk);
-				torsions_[count]->setAtomId(3,bonding[kk][ll]);
-
-				// Search for the bond data. If its a rule-based FF and we don't find any matching data,
-				// generate it. If its a normal forcefield, flag the incomplete marker.
-				ffb = xff->findTorsion(ti,tj,tk,tl);
-				if (ffb != NULL) torsions_[count]->setData(ffb);
-				else
+				for (kk=ii+1; kk<=bonding[jj][0]; kk++)
 				{
-					// If not a rule-based FF, nullify pointer
-					if (xff->rules() == FFR_NORULES) torsions_[count]->setData(NULL);
+					ai = atoms_[bonding[jj][ii]]->atom();
+					aj = atoms_[jj]->atom();
+					ak = atoms_[bonding[jj][kk]]->atom();
+					ti = ai->type();
+					tj = aj->type();
+					tk = ak->type();
+					angles_[count]->setAtomId(0,bonding[jj][ii]);
+					angles_[count]->setAtomId(1,jj);
+					angles_[count]->setAtomId(2,bonding[jj][kk]);
+					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
+					// generate it. If its a normal forcefield, flag the incomplete marker.
+					ffb = xff->findAngle(ti,tj,tk);
+					if (ffb != NULL) angles_[count]->setData(ffb);
 					else
 					{
-						// Generate the new parameters required
-						ffb = xff->generateTorsion(ai,aj,ak,al);
-						torsions_[count]->setData(ffb);
+						// If not a rule-based FF, nullify pointer
+						if (xff->rules() == FFR_NORULES) angles_[count]->setData(NULL);
+						else
+						{
+							// Generate the new parameters required
+							ffb = xff->generateAngle(ai,aj,ak);
+							angles_[count]->setData(ffb);
+						}
 					}
+					// Check ffa and raise warning if NULL
+					if (ffb == NULL)
+					{
+						msg(DM_NONE,"!!! No FF definition for angle %s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent());
+						incomplete_ = TRUE;
+						iangles ++;
+					}
+					else
+					{
+						params = angles_[count]->data()->params();
+						msg(DM_VERBOSE,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+					}
+					count ++;
 				}
-				// Check fft and raise warning if NULL
-				if (ffb == NULL)
-				{
-					msg(DM_NONE,"!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
-					incomplete_ = TRUE;
-					itorsions ++;
-				}
-				else
-				{
-					params = torsions_[count]->data()->params();
-					msg(DM_VERBOSE,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
-				}
-				count ++;
 			}
 		}
+		if (angles_.nItems() != count)
+		{
+			msg(DM_NONE,"...INTERNAL ERROR: expected %i angles, found %i\n", angles_.nItems(), count);
+			incomplete_ = TRUE;
+		}
+		else if (iangles == 0) msg(DM_NONE,"... Found parameters for %i angles_.\n", angles_.nItems());
+		else msg(DM_NONE,"... Missing parameters for %i of %i angles_.\n", iangles, angles_.nItems());
+		// Construct the torsion list.
+		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
+		count = 0;
+		// Loop over the bonds in the molecule as the basis, then we can never count the same torsion twice.
+		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
+		{
+			jj = pb->atomId(0);
+			kk = pb->atomId(1);
+			// Loop over list of atoms bound to jj
+			for (ii=1; ii<=bonding[jj][0]; ii++)
+			{
+				// Skip atom kk
+				if (bonding[jj][ii] == kk) continue;
+				// Loop over list of atoms bound to kk
+				for (ll=1; ll<=bonding[kk][0]; ll++)
+				{
+					// Skip atom jj
+					if (bonding[kk][ll] == jj) continue;
+	
+					ai = atoms_[bonding[jj][ii]]->atom();
+					aj = atoms_[jj]->atom();
+					ak = atoms_[kk]->atom();
+					al = atoms_[bonding[kk][ll]]->atom();
+					ti = ai->type();
+					tj = aj->type();
+					tk = ak->type();
+					tl = al->type();
+					torsions_[count]->setAtomId(0,bonding[jj][ii]);
+					torsions_[count]->setAtomId(1,jj);
+					torsions_[count]->setAtomId(2,kk);
+					torsions_[count]->setAtomId(3,bonding[kk][ll]);
+	
+					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
+					// generate it. If its a normal forcefield, flag the incomplete marker.
+					ffb = xff->findTorsion(ti,tj,tk,tl);
+					if (ffb != NULL) torsions_[count]->setData(ffb);
+					else
+					{
+						// If not a rule-based FF, nullify pointer
+						if (xff->rules() == FFR_NORULES) torsions_[count]->setData(NULL);
+						else
+						{
+							// Generate the new parameters required
+							ffb = xff->generateTorsion(ai,aj,ak,al);
+							torsions_[count]->setData(ffb);
+						}
+					}
+					// Check fft and raise warning if NULL
+					if (ffb == NULL)
+					{
+						msg(DM_NONE,"!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
+						incomplete_ = TRUE;
+						itorsions ++;
+					}
+					else
+					{
+						params = torsions_[count]->data()->params();
+						msg(DM_VERBOSE,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+					}
+					count ++;
+				}
+			}
+		}
+		if (torsions_.nItems() != count)
+		{
+			msg(DM_NONE,"...INTERNAL ERROR: expected %i torsions, found %i\n", torsions_.nItems(), count);
+			incomplete_ = TRUE;
+		}
+		else if (itorsions == 0) msg(DM_NONE,"... Found parameters for %i torsions_.\n", torsions_.nItems());
+		else msg(DM_NONE,"... Missing parameters for %i of %i torsions_.\n", itorsions, torsions_.nItems());
 	}
-	if (torsions_.nItems() != count)
-	{
-		msg(DM_NONE,"...INTERNAL ERROR: expected %i torsions, found %i\n", torsions_.nItems(), count);
-		incomplete_ = TRUE;
-	}
-	else if (itorsions == 0) msg(DM_NONE,"... Found parameters for %i torsions_.\n", torsions_.nItems());
-	else msg(DM_NONE,"... Missing parameters for %i of %i torsions_.\n", itorsions, torsions_.nItems());
 	// Print out a warning if the expression is incomplete.
 	if (incomplete_) msg(DM_NONE,"!!! Expression is incomplete.\n");
 	dbgEnd(DM_CALLS,"Pattern::fillExpression");

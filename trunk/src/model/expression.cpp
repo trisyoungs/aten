@@ -42,7 +42,7 @@ void Model::invalidateExpression()
 	expressionPoint_ --;
 }
 
-bool Model::createExpression()
+bool Model::createExpression(bool vdwOnly)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	dbgBegin(DM_CALLS,"Model::createExpression");
@@ -55,7 +55,8 @@ bool Model::createExpression()
 	// Reset some variables
 	prefs.invalidateEwaldAuto();
 	uniqueTypes_.clear();
-	msg(DM_NONE,"Creating expression for model %s...\n",name_.get());
+	if (vdwOnly) msg(DM_NONE,"Creating VDW-only expression for model %s...\n",name_.get());
+	else msg(DM_NONE,"Creating expression for model %s...\n",name_.get());
 	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]
 	if (!typeAll())
 	{
@@ -68,8 +69,8 @@ bool Model::createExpression()
 	while (p != NULL)
 	{
 		p->deleteExpression();
-		p->initExpression(this);
-		if (!p->fillExpression(this)) return FALSE;
+		p->initExpression(vdwOnly);
+		if (!p->fillExpression()) return FALSE;
 		p->createConMat();
 		p = p->next;
 	}

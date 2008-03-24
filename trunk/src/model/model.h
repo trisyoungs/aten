@@ -432,7 +432,7 @@ class Model
 	// Storage for energy
 	EnergyStore energy;
 	// Create total energy function shell for the model
-	bool createExpression();
+	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid
 	bool isExpressionValid();
 	// Manually invalidates the expression
