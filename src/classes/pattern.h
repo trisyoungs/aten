@@ -22,19 +22,20 @@
 #ifndef ATEN_PATTERN_H
 #define ATEN_PATTERN_H
 
-//#include "model/model.h"
-#include "classes/atom.h"
+//#include "classes/atom.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
-#include "classes/ring.h"
-#include "energy/forms.h"
+//#include "classes/ring.h"
+//#include "energy/forms.h"
 #include "classes/forcefield.h"
 
 // Forward declarations
 class EnergyStore;
+class Atom;
 class Atomtype;
 class ComponentRegion;
 class Model;
+class Ring;
 
 // Structures to hold/point to forcefield descriptions in patterns.
 class PatternAtom
@@ -226,6 +227,8 @@ class Pattern
 	int **conMat_;
 	// Flag for incomplete energy node
 	bool incomplete_;
+	// Flag for no intramolecular terms in expression
+	bool noIntramolecular_;
 	// List of atom(types) in one pattern molecule
 	List<PatternAtom> atoms_;
 	// List of bonds in one pattern molecule
@@ -239,9 +242,9 @@ class Pattern
 	// Empty the arrays of the energy expression
 	void deleteExpression();
 	// Create the shell of the energy expression
-	void initExpression(Model*);
+	void initExpression(bool vdwOnly = FALSE);
 	// Fill the energy expression with parameters
-	bool fillExpression(Model*);
+	bool fillExpression();
 	// Create the connectivity matrix
 	void createConMat();
 	// Return number of bonds in one molecule of the pattern

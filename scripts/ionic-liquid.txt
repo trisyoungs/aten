@@ -31,10 +31,10 @@ newatom Cl
 ffmodel
 
 # Create the forcefield expression
-createexpression
+#createexpression
 
 # Assign charges from the forcefield
-chargeff
+#chargeff
 
 # Print the data
 info
