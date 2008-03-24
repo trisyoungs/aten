@@ -40,17 +40,47 @@ class Clipatom : public Atom
 	Clipatom* getNext();
 
 	/*
-	// Old Pointers
+	// Atom Pointer
 	*/
 	private:
-	// Atom pointer (newly pastedp atom)
-	Atom *oldPointer_;
+	// Atom pointer to original atom (before any paste operation is called on the clipboard) or newly-pasted Atom thereafter
+	Atom *atomPointer_;
 
 	public:
 	// Set old atom pointer
-	void setOldPointer(Atom *i);
+	void setAtomPointer(Atom *i);
 	// Returns the atom pointer of the cloned atom
-	Atom *oldPointer();
+	Atom *atomPointer();
+};
+
+// Clipboard Bond
+class Clipbond
+{
+	public:
+	// Constructor
+	Clipbond();
+	// List pointer
+	Clipbond *next, *prev;
+
+	private:
+	// Pointers to both atoms involved in the bond
+	Clipatom *atomI_, *atomJ_;
+	// Bond order
+	BondType order_;
+
+	public:
+	// Set clipatoms for bond
+	void setAtoms(Clipatom *i, Clipatom *j);
+	// Return first clipatom in bond
+	Clipatom *atomI();
+	// Return second clipatom in bond
+	Clipatom *atomJ();
+	// Set bond order
+	void setOrder(BondType bt);
+	// Return order of bond
+	BondType order();
+	// Returns the partner of the specified atom in the bond structure
+	//Clipatom *partner(Clipatom *i);
 };
 
 // Clipboard
@@ -82,11 +112,11 @@ class Clipboard
 	*/
 	private:
 	// List of bonds copied
-	List<Linkbond> bonds_;
+	List<Clipbond> bonds_;
 	// Copy bonds for atoms in the atomlist
 	void copyBonds();
 	// For bonds bound to Clipatom* (atomi|j) set bondi|j to atom*
-	void setNewBondPointers(Clipatom*, Atom*);
+	//void setNewBondPointers(Clipatom*, Atom*);
 
 	public:
 	// Check for presence of bond in list

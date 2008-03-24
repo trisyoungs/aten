@@ -4,20 +4,22 @@
 
 # Draw molecule, then load and associate forcefield
 newmodel water
-addatom H
+newatom H
 move 1.0 0.0 0.0
-addchain O
+chain O
 roty 70.5
 move 1.0 0.0 0.0 
-addchain H
-printmodel
+chain H
 
-loadff wff data/ff/water.ff
+loadff data/ff/water.ff wff
 ffmodel
 
 createexpression
 modelenergy
 printenergy
+chargeff
+
+info
 
 # Create the empty cell for our water to go in to.
 # For cubic cells, nwater should be approximately :     10 A  = 33
@@ -26,18 +28,18 @@ newmodel box
 setcell 10.0 10.0 10.0 90.0 90.0 90.0
 ffmodel
 #elec ewaldauto 5.0e-6
-printexpression
+elec coulomb
 
 # Request the addition of water molecules. If we wish to cram in more (to get a higher density) decrease vdwscale.
 addcomponent bulk water 33
-printcomponents
+listcomponents
 vdwscale 1.0
 
 disorder 10
 
-# mcminimise 100 1.0e-4 1.0e-4
+mcminimise 100
 
-savefield2 dlpoly test.FIELD
+#savefield2 dlpoly test.FIELD
 #savemodel dlpoly test.CONFIG
 
-# quit
+#quit

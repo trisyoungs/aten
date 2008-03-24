@@ -36,10 +36,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>9</number>
+     <number>2</number>
     </property>
     <property name="spacing" >
-     <number>6</number>
+     <number>2</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -47,7 +47,7 @@
        <number>0</number>
       </property>
       <property name="spacing" >
-       <number>6</number>
+       <number>2</number>
       </property>
      </layout>
     </item>
@@ -57,7 +57,7 @@
        <number>0</number>
       </property>
       <property name="spacing" >
-       <number>4</number>
+       <number>2</number>
       </property>
       <item>
        <widget class="TTabBar" native="1" name="ModelTabs" >
@@ -5756,10 +5756,10 @@
       <widget class="QWidget" name="AnalysePage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>9</number>
+         <number>0</number>
         </property>
         <property name="spacing" >
-         <number>6</number>
+         <number>4</number>
         </property>
         <item>
          <widget class="QGroupBox" name="MeasureGroup" >

@@ -95,7 +95,9 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 		for (n=offset; n<offset+pnatoms; n++)
 		{
 			// Get local coordinates of atom, i.e. subtract centre of geometry
-			newpos = rotmat * (modelatoms[n]->r() - cog);
+			//newpos = cell_.mim(modelatoms[n]->r(), cog) - cog;
+			//newpos = rotmat * (modelatoms[n]->r() - cog);
+			newpos = rotmat * (cell_.mim(modelatoms[n]->r(), cog) - cog);
 			newpos += cog;
 			// Store the new position
 			modelatoms[n]->r() = newpos;

@@ -28,7 +28,7 @@
 Clipatom::Clipatom()
 {
 	// Private variables
-	oldPointer_ = NULL;
+	atomPointer_ = NULL;
 }
 
 /*
@@ -42,15 +42,60 @@ Clipatom* Clipatom::getNext()
 }
 
 // Set old atom pointer
-void Clipatom::setOldPointer(Atom *i)
+void Clipatom::setAtomPointer(Atom *i)
 {
-	oldPointer_ = i;
+	atomPointer_ = i;
 }
 
 // Returns the atom pointer of the cloned atom
-Atom *Clipatom::oldPointer()
+Atom *Clipatom::atomPointer()
 {
-	return oldPointer_;
+	return atomPointer_;
+}
+
+/*
+// Clipbond functions
+*/
+
+Clipbond::Clipbond()
+{
+	// Private variables
+	atomI_ = NULL;
+	atomJ_ = NULL;
+	// Public variables
+	next = NULL;
+	prev = NULL;
+}
+
+// Set atoms for bond
+void Clipbond::setAtoms(Clipatom *i, Clipatom *j)
+{
+	atomI_ = i;
+	atomJ_ = j;
+}
+
+// Set bond order
+void Clipbond::setOrder(BondType bt)
+{
+	order_ = bt;
+}
+
+// Return order of bond
+BondType Clipbond::order()
+{
+	return order_;
+}
+
+// Return first atom in bond
+Clipatom *Clipbond::atomI()
+{
+	return atomI_;
+}
+
+// Return second atom in bond
+Clipatom *Clipbond::atomJ()
+{
+	return atomJ_;
 }
 
 /*
@@ -76,7 +121,7 @@ void Clipboard::copyAtom(Atom *i)
         // Initialise the new clipatom
 	Clipatom *newatom = atoms_.add();
 	newatom->copy(i);
-	newatom->setOldPointer(i);
+	newatom->setAtomPointer(i);
 	newatom->setId(atoms_.nItems()-1);
 	dbgEnd(DM_CALLS,"Clipboard::copyAtom");
 }
@@ -91,37 +136,39 @@ void Clipboard::clear()
 	dbgEnd(DM_CALLS,"Clipboard::clear");
 }
 
-// Replace pointers in bond list
+/* Replace pointers in bond list
 void Clipboard::setNewBondPointers(Clipatom *clipptr, Atom *newptr)
 {
-	dbgBegin(DM_CALLS,"Clipboard::bondsSetNewPointer");
+	dbgBegin(DM_CALLS,"Clipboard::setNewBondPointers");
 	// Go through bond list searching for clipatom in clipi or clipj. Set associated bondi/bondj to newptr.
 	for (Linkbond *b = bonds_.first(); b != NULL; b = b->next)
 	{
 		if (b->atomI() == clipptr) b->setAtomI(newptr);
 		else if (b->atomJ() == clipptr) b->setAtomJ(newptr);
 	}
-	dbgEnd(DM_CALLS,"Clipboard::bondsSetNewPointer");
-}
+	printf("Linkbonds List after setNewBondPointers:\n");
+	for (Linkbond *b = bonds_.first(); b != NULL; b = b->next)
+		printf("   Bond %li  = original atom IDs %i and %i\n",b,b->atomI()->id(),b->atomJ()->id());
+	dbgEnd(DM_CALLS,"Clipboard::setNewBondPointers");
+} */
 
 // Copy bonds for atoms
 void Clipboard::copyBonds()
 {
 	dbgBegin(DM_CALLS,"Clipboard::copyBonds");
 	// Go through pairs of oldptrs in the atoms list and check for bonds, adding to our list as we go.
-	// The bonds we generate will consist of bonds between *new* pointers.
+	// The bonds we generate will point to pairs of Clipatoms.
 	Bond *oldbond;
 	for (Clipatom *ii = atoms_.first(); ii != NULL; ii = ii->getNext())
 	{
 		for (Clipatom *jj = ii->getNext(); jj != NULL; jj = jj->getNext())
 		{
 			
-			oldbond = ii->oldPointer()->findBond(jj->oldPointer());
+			oldbond = ii->atomPointer()->findBond(jj->atomPointer());
 			if (oldbond != NULL)
 			{
-				Linkbond *b = bonds_.add();
-				b->setAtomI(ii);
-				b->setAtomJ(jj);
+				Clipbond *b = bonds_.add();
+				b->setAtoms(ii, jj);
 				b->setOrder(oldbond->order());
 			}
 		}
@@ -154,7 +201,7 @@ void Clipboard::copyAll(Model *m)
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
 	for (Atom *i = m->atoms(); i != NULL; i = i->next) copyAtom(i);
-	msg(DM_VERBOSE, "Copied %i atoms from model %s\n",atoms_.nItems(), m->name());
+	msg(DM_VERBOSE, "Copied %i atoms from model %s\n", atoms_.nItems(), m->name());
 	// Copy bonds
 	copyBonds();
 	dbgEnd(DM_CALLS,"Clipboard::copyAll");
@@ -180,22 +227,18 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 	dbgBegin(DM_CALLS,"Clipboard::pasteToModel");
 	Atom *pastedi, *ii, *jj;
 	if (selectpasted) m->selectNone();
-	Clipatom *i = atoms_.first();
-	while (i != NULL)
+	for (Clipatom *i = atoms_.first(); i != NULL; i = i->getNext())
 	{
 		// Create a new atom in the target model
 		pastedi = m->addCopy(i);
-		//printf("Pasted atom has id %i\n",pastedi->get_id());
+		//printf("Pasted atom has id %i\n",pastedi->id());
 		if (selectpasted) m->selectAtom(pastedi);
-		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
-		setNewBondPointers(i,pastedi);
+		// Store reference to the newly-pasted atom
+		i->setAtomPointer(pastedi);
 		m->projectAtom(pastedi);
-		i = i->getNext();
 	}	
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
-	// Project the newly-pasted (and currently selected) atoms
-	//m->projectSelection();
 	dbgEnd(DM_CALLS,"Clipboard::pasteToModel");
 }
 
@@ -213,8 +256,8 @@ void Clipboard::pasteToPattern(Model *m, Pattern *p)
 		// Create a new atom in the target model
 		pastedi = p->appendCopy(pastedi);
 		m->selectAtom(pastedi);
-		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
-		setNewBondPointers(i,pastedi);
+		// Store reference to the newly-pasted atom
+		i->setAtomPointer(pastedi);
 	}	
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
@@ -251,16 +294,6 @@ void Clipboard::pasteToModel(Model *destmodel, Pattern *p, int mol)
 	dbgEnd(DM_CALLS,"Clipboard::pasteToModel");
 }
 
-// Paste bonds
-void Clipboard::pasteBonds(Model *m)
-{
-	dbgBegin(DM_CALLS,"Clipboard::pasteBonds");
-	// By this point, bondi and bondj pointers in the bondlist will refer to clipatom* pointers
-	for (Linkbond *b = bonds_.first(); b != NULL; b = b->next)
-		m->bondAtoms(b->atomI(),b->atomJ(),b->order());
-	dbgEnd(DM_CALLS,"Clipboard::pasteBonds");
-}
-
 // Paste to model translated
 void Clipboard::pasteToModel(Model *m, Vec3<double> t)
 {
@@ -275,14 +308,24 @@ void Clipboard::pasteToModel(Model *m, Vec3<double> t)
 		// Translate the new atom
 		pastedi->r() += t;
 		m->selectAtom(pastedi);
-		// Now we have the new pointer for this pasted atom, replace references to the old clipatom with the newly pasted 'real' atom
-		setNewBondPointers(i,pastedi);
+		// Store reference to the newly-pasted atom
+		i->setAtomPointer(pastedi);
 	}	
 	// Add in bonds to pasted atoms
 	pasteBonds(m);
 	// Project the newly-pasted (and currently selected) atoms
 	m->projectSelection();
 	dbgEnd(DM_CALLS,"Clipboard::pasteToModel[translated]");
+}
+
+// Paste bonds
+void Clipboard::pasteBonds(Model *m)
+{
+	dbgBegin(DM_CALLS,"Clipboard::pasteBonds");
+	// By this point, bondi and bondj pointers in the bondlist will refer to clipatom* pointers
+	for (Clipbond *b = bonds_.first(); b != NULL; b = b->next)
+		m->bondAtoms(b->atomI()->atomPointer(), b->atomJ()->atomPointer(), b->order());
+	dbgEnd(DM_CALLS,"Clipboard::pasteBonds");
 }
 
 // Translate Clipped Atoms
@@ -296,7 +339,7 @@ bool Clipboard::hasBond(int ii, int jj)
 {
 	// Given the two atom ids (which should correspond to those of the clipboard's atoms list) see if we copied a bond between them
 	static int idi, idj;
-	for (Linkbond *b = bonds_.first(); b != NULL; b = b->next)
+	for (Clipbond *b = bonds_.first(); b != NULL; b = b->next)
 	{
 		idi = b->atomI()->id();
 		idj = b->atomJ()->id();

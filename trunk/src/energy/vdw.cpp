@@ -118,11 +118,11 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 }
 
 // Interpattern VDW energy
-void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *xpnode, EnergyStore *estore, int molecule)
+void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, EnergyStore *estore, int molId)
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
 	dbgBegin(DM_CALLS,"Pattern::vdwInterPatternEnergy");
-	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start2,finish2;
+	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> mim_i;
 	static double sigma, sigmar6, epsilon, rij, energy_inter, cutoff, vrs;
 	PatternAtom *pai, *paj;
@@ -132,38 +132,60 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *xpnode, EnergyStor
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	energy_inter = 0.0;
-	aoff1 = startAtom_;
+	// Outer loop over molecules in *this* pattern
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-	if ((this == xpnode) && (molecule == -1)) finish1 = nMols_ - 1;
-	else finish1 = nMols_;
-	for (m1=0; m1<finish1; m1++)
+	if (molId == -1)
 	{
-		if (molecule == -1)
+		start1 = 0;
+		finish1 = (this == otherPattern ? nMols_ - 1 : nMols_);
+	}
+	else
+	{
+		start1 = molId;
+		finish1 = molId + 1;
+	}
+	aoff1 = startAtom_ + start1 * nAtoms_;
+	//printf("VDWINTER1 %i %i %i\n",start1,finish1,aoff1);
+	for (m1=start1; m1<finish1; m1++)
+	{
+		// Inner loop - over *all* molecules in 'otherPattern'
+		if (this == otherPattern)
 		{
-			start2 = (this == xpnode ? m1 + 1 : 0);
-			finish2 = xpnode->nMols_;
+			// Same pattern - if a specific molecule was given then we loop over all molecules.
+			// If not, loop over m1+1 to nMols_.
+			if (molId == -1)
+			{
+				start2 = m1 + 1;
+				finish2 = nMols_;
+			}
+			else
+			{
+				start2 = 0;
+				finish2 = nMols_;
+			}
 		}
 		else
 		{
-			start2 = molecule;
-			finish2 = molecule + 1;
-			// If the patterns are the same we must exclude molecule == m1
-			if ((this == xpnode) && (molecule == m1)) { aoff1 += nAtoms_; continue; }
+			// Simple - go over all molecules in the dissimilar pattern
+			start2 = 0;
+			finish2 = otherPattern->nMols_;
 		}
 
 		//if (m1 == 0) printf("IPE - finish1 = %i, start2 = %i, finish2 = %i\n",finish1,start2,finish2);
-		aoff2 = xpnode->startAtom_ + start2*xpnode->nAtoms_;
-
+		aoff2 = otherPattern->startAtom_ + start2*otherPattern->nAtoms_;
+		//printf("  VDWINTER2 %i %i %i\n",start2,finish2,aoff2);
 		for (m2=start2; m2<finish2; m2++)
 		{
+			if ((this == otherPattern) && (molId == m2)) { aoff2 += nAtoms_; continue; }
 			//printf("      m1/m2=%i/%i  aoff1/aoff2=%i/%i \n",m1,m2,aoff1,aoff2);
 			i = -1;
+			//printf("VDWINTER %li %li [%i-%i:%i]x[%i-%i:%i]\n",this,otherPattern,start1,finish1,m1,start2,finish2,m2);
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
 			{
 				i++;
 				paramsi = pai->data()->params();
 				j = -1;
-				for (paj = xpnode->atoms_.first(); paj != NULL; paj = paj->next)
+				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
 
@@ -186,11 +208,11 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *xpnode, EnergyStor
 					}
 				}
 			}
-			aoff2 += xpnode->nAtoms_;
+			aoff2 += otherPattern->nAtoms_;
 		}
 		aoff1 += nAtoms_;
 	}
-	estore->add(ET_VDWINTER,energy_inter,id_,xpnode->id_);
+	estore->add(ET_VDWINTER,energy_inter,id_,otherPattern->id_);
 	dbgEnd(DM_CALLS,"Pattern::vdwInterPatternEnergy");
 }
 

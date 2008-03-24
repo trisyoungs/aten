@@ -4,11 +4,11 @@
 
 # Load Canongia Lopes ionic liquids forcefield (giving it a nickname of 'ilff')
 # This will become the current forcefield (used by the 'ff' commands later on)
-loadff ilff data/ff/cldp-il.ff
+loadff data/ff/cldp-il.ff ilff
 
 # Prepare first component to add in - [dmim] cation
 # Load model from file and call it 'dmim'
-loadmodel dmim test/siesta-dmim.xyz
+loadmodel test/siesta-dmim.xyz dmim
 
 # Associate the current forcefield (the only one) to the model
 ffmodel
@@ -20,12 +20,12 @@ createexpression
 chargeff
 
 # Print out the model data 
-printmodel
+info
 
 # Prepare second component - chloride anion
 # Create a new model (naming it 'chloride') and draw a chloride atom
 newmodel chloride
-addatom Cl
+newatom Cl
 
 # Associate forcefield to the model
 ffmodel
@@ -37,7 +37,7 @@ createexpression
 chargeff
 
 # Print the data
-printmodel
+info
 
 # New we're ready to use these two components to create a new system.
 # First, create another empty model (called 'box') and create a cubic
@@ -48,9 +48,6 @@ setcell 30.0 30.0 30.0 90.0 90.0 90.0
 # Associate the forcefield with the box (there are no atoms in it, but it still needs a valid forcefield)
 ffmodel
 
-# Turn on the Ewald sum
-elec ewaldauto 5.0E-6
-printexpression
 
 # Request that we want 100 molecules maximum of each (how many you end up with will vary)
 addcomponent cation dmim 100
@@ -58,15 +55,16 @@ addcomponent anion chloride 100
 
 # Tweak the Monte Carlo parameters for the disordered insertion
 mcntrials insert 50
-mcaccept insert 500.0
+mcaccept insert 100.0
 printmc
 
 # Request the Ewald sum for electrostatics (or none for just VDW intermolecular energies)
-elec ewald 0.256 10 10 10
-#elec off
+#elec ewald 0.256 10 10 10
+elec off
+printsetup
 
 # Print out the current component list for the disordered builder
-printcomponents
+listcomponents
 
 # To squeeze more molecule in, we can adjust the VDW radii of all atoms with this scale factor
 vdwscale 0.75

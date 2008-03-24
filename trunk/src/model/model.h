@@ -440,7 +440,9 @@ class Model
 	// Generate parameters for total energy function
 	void fillExpression(int);
 	// Calculate (and return) the total energy of the specified model configuration
-	double totalEnergy(Model *config, Pattern *molpattern = NULL, int molecule = -1);
+	double totalEnergy(Model *config);
+	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder
+	double moleculeEnergy(Model *config, Pattern *molpattern, int molecule);
 	// Calculate forces in the specified model configuration
 	void calculateForces(Model*);
 	// Prints out atomic forces
