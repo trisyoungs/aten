@@ -227,11 +227,11 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
 {
 	QString filename;
-	if (openFfDialog->exec() == 1)
+	if (openForcefieldDialog->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = openFfDialog->selectedFilter();
-		filename = openFfDialog->selectedFiles().first();
+		QString filter = openForcefieldDialog->selectedFilter();
+		filename = openForcefieldDialog->selectedFiles().first();
 		master.loadForcefield(qPrintable(filename));
 		refreshForcefieldPage();
 	}

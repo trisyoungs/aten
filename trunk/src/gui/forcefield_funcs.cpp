@@ -23,6 +23,7 @@
 #include "base/elements.h"
 #include "classes/pattern.h"
 #include "gui/mainwindow.h"
+#include "gui/ffeditor.h"
 #include "gui/tlistwidgetitem.h"
 #include "gui/gui.h"
 #include "model/model.h"
@@ -54,7 +55,7 @@ void AtenForm::refreshForcefieldPage()
 	{
 		ui.ForcefieldList->setCurrentRow(master.currentForcefieldId());
 		ui.RemoveForcefieldButton->setEnabled(TRUE);
-		ui.EditForcefieldButton->setEnabled(FALSE);
+		ui.EditForcefieldButton->setEnabled(TRUE);
 	}
 }
 
@@ -66,9 +67,11 @@ void AtenForm::refreshForcefieldTypeList()
 	int count = 0;
 	Forcefield *ff = master.currentForcefield();
 	if (ff == NULL) return;
+	// Reset header labels
+	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
 	for (ForcefieldAtom *ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 	{
-		if (ffa->atomType()->el != typelist_element) continue;
+		if (ffa->atomType()->characterElement() != typelist_element) continue;
 		ui.FFTypeTable->setRowCount(count+1);
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFTypeTable->setItem(count, 0, item);
@@ -78,9 +81,10 @@ void AtenForm::refreshForcefieldTypeList()
 		ui.FFTypeTable->setItem(count, 2, item);
 		count ++;
 	}
-	// Select the topmost item
-	//if (master.currentForcefield() == NULL) ui.ForcefieldList->setCurrentRow(0);
-	//else ui.ForcefieldList->setCurrentRow(master.currentForcefield_id());
+	// Resize the columns
+	ui.FFTypeTable->resizeColumnToContents(0);
+	ui.FFTypeTable->resizeColumnToContents(1);
+	ui.FFTypeTable->resizeColumnToContents(2);
 }
 
 // Set the current forcefield in master to reflect the list change
@@ -116,11 +120,11 @@ void AtenForm::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 void AtenForm::on_LoadForcefieldButton_clicked(bool checked)
 {
 	QString filename;
-	if (openFfDialog->exec() == 1)
+	if (openForcefieldDialog->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = openFfDialog->selectedFilter();
-		filename = openFfDialog->selectedFiles().first();
+		QString filter = openForcefieldDialog->selectedFilter();
+		filename = openForcefieldDialog->selectedFiles().first();
 		master.loadForcefield(qPrintable(filename));
 		refreshForcefieldPage();
 	}
@@ -136,7 +140,8 @@ void AtenForm::on_RemoveForcefieldButton_clicked(bool checked)
 // Call forcefield editor
 void AtenForm::on_EditForcefieldButton_clicked(bool checked)
 {
-	printf("Forcefield editor not yet implemented.\n");
+	gui.editDialog->populate(master.currentForcefield());
+	gui.editDialog->show();
 }
 
 // Update the list of model patterns
@@ -243,7 +248,7 @@ void AtenForm::on_ManualTypeTestButton_clicked(bool checked)
 			{
 				// Get the pattern in which the atom exists
 				Pattern *p = m->pattern(i);
-				if (i->element() == at->el)
+				if (i->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(i, p->ringList(), m, i);
 					msg(DM_NONE,"Atom %i (%s) matched type with score %i.\n", i->id()+1, elements.symbol(i), matchscore);

@@ -225,7 +225,7 @@ bool Pattern::typeAtoms()
 			// Grab next atomtype and reset tempi variables
 			at = ffa->atomType();
 			// First, check element is the same, otherwise skip
-			if (i->element() != at->el) continue;
+			if (i->element() != at->characterElement()) continue;
 			// See how well this ff description matches the environment of our atom 'i'
 			msg(DM_TYPING,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
 			newmatch = at->matchAtom(i,&rings_,parent_,i);

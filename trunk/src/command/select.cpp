@@ -125,7 +125,7 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Atomtype testat;
-	testat.el = elements.find(c->argc(0));
+	testat.setCharacterElement(elements.find(c->argc(0)));
 	testat.expand(c->argc(1),NULL,NULL);
 	// Apply it to the atoms in the model, selecting atoms that match
 	int count = 0, matchscore, atomscore;
@@ -141,7 +141,7 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 			{
 				p->resetTempI(0);
 				i->tempi = 1;
-				if (i->element() == testat.el)
+				if (i->element() == testat.characterElement())
 				{
 					atomscore = testat.matchAtom(i,p->ringList(),obj.m,i);
 					if (atomscore != 0)

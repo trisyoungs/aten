@@ -155,8 +155,9 @@ bool Forcefield::readTypes(ifstream &fffile)
 	done = FALSE;
 	// Create _NDEF_ type common to all FFs)
 	ffa = types_.add();
-	ffa->name_ = "_NDEF_";
-	ffa->typeId_ = -1;
+	ffa->setParent(this);
+	ffa->setName("_NDEF_");
+	ffa->setTypeId(-1);
 	done = FALSE;
 	// Format of lines is 'ffid typename element description'
 	do
@@ -175,17 +176,18 @@ bool Forcefield::readTypes(ifstream &fffile)
 		idsearch = findType(newffid);
 		if (idsearch != NULL)
 		{
-			msg(DM_NONE,"Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name_.get());
+			msg(DM_NONE,"Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
 			dbgEnd(DM_CALLS,"Forcefield::readTypes");
 			return FALSE;
 		}
 		ffa = types_.add();
-		ffa->typeId_ = newffid;
-		ffa->name_ = parser.argc(1);
-		ffa->equivalent_ = parser.argc(1);
-		ffa->atomType_.el = elements.find(parser.argc(2),ZM_ALPHA);
-		ffa->description_ = parser.argc(4);
-		ffa->atomType_.expand(parser.argc(3),this,ffa);
+		ffa->setParent(this);
+		ffa->setTypeId(newffid);
+		ffa->setName(parser.argc(1));
+		ffa->setEquivalent(parser.argc(1));
+		ffa->atomType()->setCharacterElement(elements.find(parser.argc(2),ZM_ALPHA));
+		ffa->setDescription(parser.argc(4));
+		ffa->atomType()->expand(parser.argc(3),this,ffa);
 	} while (!done);
 	if (types_.nItems() == 1)
 	{
@@ -237,8 +239,8 @@ bool Forcefield::readGenerator(ifstream &fffile)
 				dbgEnd(DM_CALLS,"Forcefield::readGenerator");
 				return FALSE;
 			}
-			ffa->generator_ = new double[nGenerators_];
-			for (n=0; n<nGenerators_; n++) ffa->generator_[n] = parser.argd(n+2);
+			ffa->initialiseGenerator();
+			for (n=0; n<nGenerators_; n++) ffa->setGenerator(n,parser.argd(n+2));
 			count ++;
 		}
 	} while (!done);
@@ -255,10 +257,11 @@ bool Forcefield::readGenerator(ifstream &fffile)
 
 bool Forcefield::readEquivalents(ifstream &fffile)
 {
-	// Read in equivalent atom type names.
-	// By default, the 'equiv' name is set to the same as the atomtype name. Here, we search/replace specified
-	// definitions and set the equiv names to the first name in the list. The equivname doesn't have to exist in the
-	// atomtypes itself since the equivalent names are only used in intramolecular parameter searching.
+	/* Read in equivalent atom type names.
+	By default, the 'equiv' name is set to the same as the atomtype name.
+	Here, we search/replace specified definitions and set the equiv names to the first name in the list.
+	The equivname doesn't have to exist in the atomtypes itself since the equivalent names are only used in intramolecular parameter searching.
+	*/
 	dbgBegin(DM_CALLS,"Forcefield::readEquivalents");
 	int count, success, argpos;
 	ForcefieldAtom *ffa;
@@ -282,7 +285,7 @@ bool Forcefield::readEquivalents(ifstream &fffile)
 			for (argpos=1; argpos<parser.nArgs(); argpos++)
 			{
 				for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)
-					if (matchType(ffa->name_.get(),parser.argc(argpos)) < 10) ffa->equivalent_ = parser.argc(0);
+					if (matchType(ffa->name(),parser.argc(argpos)) < 10) ffa->setEquivalent(parser.argc(0));
 			}
 			count ++;
 		}
@@ -332,12 +335,12 @@ bool Forcefield::readVdw(ifstream &fffile)
 				dbgEnd(DM_CALLS,"Forcefield::readVdw");
 				return FALSE;
 			}
-			ffa->charge_ = parser.argd(2);
-			ffa->params_.data[0] = parser.argd(3);
-			ffa->params_.data[1] = parser.argd(4);
-			ffa->params_.data[2] = parser.argd(5);
+			ffa->setCharge(parser.argd(2));
+			ffa->params().data[0] = parser.argd(3);
+			ffa->params().data[1] = parser.argd(4);
+			ffa->params().data[2] = parser.argd(5);
 			ffa->setVdwForm(vdwstyle);
-			msg(DM_VERBOSE,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId_, ffa->name_.get(), ffa->params_.data[0], ffa->params_.data[1], ffa->params_.data[2], ffa->charge_);
+			msg(DM_VERBOSE,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->charge());
 			count ++;
 		}
 	} while (!done);
@@ -387,12 +390,12 @@ bool Forcefield::readBonds(ifstream &fffile)
 			// Create new ff_bond structure
 			newffbond = bonds_.add();
 			newffbond->setType(FFC_BOND);
-			newffbond->atomTypes_[0] = parser.argc(0);
-			newffbond->atomTypes_[1] = parser.argc(1);
+			newffbond->setTypeName(0,parser.argc(0));
+			newffbond->setTypeName(1,parser.argc(1));
 			newffbond->setBondStyle(bondstyle);
-			newffbond->params_.data[0] = parser.argd(2);
-			newffbond->params_.data[1] = parser.argd(3);
-			msg(DM_VERBOSE,"BOND %i : %s  %s  %8.4f %8.4f\n", n, newffbond->atomTypes_[0].get(), newffbond->atomTypes_[1].get() , newffbond->params_.data[0], newffbond->params_.data[1]); 
+			newffbond->params().data[0] = parser.argd(2);
+			newffbond->params().data[1] = parser.argd(3);
+			msg(DM_VERBOSE,"BOND %i : %s  %s  %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->params().data[0], newffbond->params().data[1]); 
 			count ++;
 		}
 	} while (!done);
@@ -442,13 +445,13 @@ bool Forcefield::readAngles(ifstream &fffile)
 			// Create new ff_angle structure
 			newffangle = angles_.add();
 			newffangle->setType(FFC_ANGLE);
-			newffangle->atomTypes_[0] = parser.argc(0);
-			newffangle->atomTypes_[1] = parser.argc(1);
-			newffangle->atomTypes_[2] = parser.argc(2);
+			newffangle->setTypeName(0, parser.argc(0));
+			newffangle->setTypeName(1, parser.argc(1));
+			newffangle->setTypeName(2, parser.argc(2));
 			newffangle->setAngleStyle(anglestyle);
-			newffangle->params_.data[0] = parser.argd(3);
-			newffangle->params_.data[1] = parser.argd(4);
-			msg(DM_VERBOSE,"ANGLE %i : %s  %s  %s  %8.4f %8.4f\n", n, newffangle->atomTypes_[0].get(), newffangle->atomTypes_[1].get(), newffangle->atomTypes_[2].get(), newffangle->params_.data[0], newffangle->params_.data[1]); 
+			newffangle->params().data[0] = parser.argd(3);
+			newffangle->params().data[1] = parser.argd(4);
+			msg(DM_VERBOSE,"ANGLE %i : %s  %s  %s  %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->params().data[0], newffangle->params().data[1]); 
 			count ++;
 		}
 	} while (!done);
@@ -498,18 +501,18 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			// Create new ff_angle structure
 			newfftorsion = torsions_.add();
 			newfftorsion->setType(FFC_TORSION);
-			newfftorsion->atomTypes_[0] = parser.argc(0);
-			newfftorsion->atomTypes_[1] = parser.argc(1);
-			newfftorsion->atomTypes_[2] = parser.argc(2);
-			newfftorsion->atomTypes_[3] = parser.argc(3);
+			newfftorsion->setTypeName(0,parser.argc(0));
+			newfftorsion->setTypeName(1,parser.argc(1));
+			newfftorsion->setTypeName(2,parser.argc(2));
+			newfftorsion->setTypeName(3,parser.argc(3));
 			newfftorsion->setTorsionStyle(torsionstyle);
-			newfftorsion->params_.data[0] = parser.argd(4);
-			newfftorsion->params_.data[1] = parser.argd(5);
-			newfftorsion->params_.data[2] = parser.argd(6);
-			newfftorsion->params_.data[3] = parser.argd(7);
-			newfftorsion->params_.data[TF_ESCALE] = escale14;
-			newfftorsion->params_.data[TF_VSCALE] = vscale14;
-			msg(DM_VERBOSE,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->atomTypes_[0].get(), newfftorsion->atomTypes_[1].get(), newfftorsion->atomTypes_[2].get(), newfftorsion->atomTypes_[3].get(), newfftorsion->params_.data[0], newfftorsion->params_.data[1], newfftorsion->params_.data[2], newfftorsion->params_.data[3]); 
+			newfftorsion->params().data[0] = parser.argd(4);
+			newfftorsion->params().data[1] = parser.argd(5);
+			newfftorsion->params().data[2] = parser.argd(6);
+			newfftorsion->params().data[3] = parser.argd(7);
+			newfftorsion->params().data[TF_ESCALE] = escale14;
+			newfftorsion->params().data[TF_VSCALE] = vscale14;
+			msg(DM_VERBOSE,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->params().data[0], newfftorsion->params().data[1], newfftorsion->params().data[2], newfftorsion->params().data[3]); 
 			count ++;
 		}
 	} while (!done);

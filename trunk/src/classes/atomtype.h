@@ -56,9 +56,8 @@ class RingType
 {
 	// Substructure definition of a separate list of atoms in a ring
 	public:
-	// Constructor / Destructor
+	// Constructor
 	RingType();
-	~RingType();
 	// List pointers
 	RingType *prev, *next;
 
@@ -88,8 +87,19 @@ class Atomtype
 	~Atomtype();
 	// List pointers, used in bound atom list and list of atoms in rings
 	Atomtype *prev, *next;
-	// Element (only used in head of atomtype tree, specifies the absolute element that the type describes)
-	int el;
+
+	/*
+	// Character
+	*/
+	private:
+	// Character element (i.e. the element that the matching atom must be)
+	int characterElement_;
+
+	public:
+	// Set character element
+	void setCharacterElement(int el);
+	// Return character element
+	int characterElement();
 	// Add data to the structure from the supplied string
 	void expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
 	// See if this type matches any atoms in the list provided
@@ -134,9 +144,9 @@ class Atomtype
 	int nRepeat_;
 	// Type of bond to bound (parent) atom
 	BondType boundBond_;
-
+	
 	public:
-	// Expand the allowed_el array with the element string provided
+	// Expand the allowedElements_ array with the element string provided
 	void setElements(const char*, Forcefield*);
 };
 

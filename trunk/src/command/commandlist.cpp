@@ -1228,7 +1228,7 @@ void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb
 		for (i = 0; i < MAXFFBOUNDTYPES; i++)
 		{
 			parm[5] = 105 + i;
-			variables.set(varname,parm,ffb->atomType(i));
+			variables.set(varname,parm,ffb->typeName(i));
 		}
 		// Grab ForcefieldParams data
 		ffp = ffb->params();
