@@ -23,11 +23,12 @@
 #include "base/cli.h"
 #include "base/prefs.h"
 #include "base/master.h"
+#include "base/elements.h"
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 OptionData clioptions[] = {
 	{ CO_BOHR,		'b',"bohr",		0,
-		"",		"Converts model atomic positions from Bohr to Angstrom" },
+		"",		"Converts model/grid atomic positions from Bohr to Angstrom" },
 	{ CO_BOND,		'\0',"bond",		0,
 		"",		"Force (re)calculation of bonding in the model" },
 	{ CO_CACHE,		'\0',"cachelimit",	1,
@@ -155,36 +156,37 @@ void MasterData::debugCli(int argc, char *argv[])
 // Parse all options
 int MasterData::parseCli(int argc, char *argv[])
 {
-	int n, o, ntried = 0;
+	int argn, opt, ntried = 0, n, el;
 	bool isShort, match;
 	char *arg;
 	CommandList *cl;
 	ZmapType zm;
+	Refitem<const char,int> *ri;
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary run)
-	n = 1;
-	while (n < argc)
+	argn = 1;
+	while (argn < argc)
 	{
 		match = FALSE;
 		// Check for a CLI argument (presence of '-')
-		if (argv[n][0] == '-')
+		if (argv[argn][0] == '-')
 		{
 			// Is this a long or short option?
-			isShort = (argv[n][1] != '-');
-			arg = (isShort ? &argv[n][1] : &argv[n][2]);
+			isShort = (argv[argn][1] != '-');
+			arg = (isShort ? &argv[argn][1] : &argv[argn][2]);
 			// Cycle over defined CLI options and search for this one
-			for (o=0; o<CO_NITEMS; o++)
+			for (opt=0; opt<CO_NITEMS; opt++)
 			{
 				// Check short option character or long option text
-				if (isShort) match = (*arg == clioptions[o].shortOpt);
-				else match = (strcmp(arg,clioptions[o].longOpt) == 0 ? TRUE : FALSE);
+				if (isShort) match = (*arg == clioptions[opt].shortOpt);
+				else match = (strcmp(arg,clioptions[opt].longOpt) == 0 ? TRUE : FALSE);
 				if (match) break;
 			}
 			// If we have a match then 'o' contains the option identifier. Otherwise try to load the argument as a model.
-			if (match && (o < CO_DEBUG))
+			if (match && (opt < CO_DEBUG))
 			{
 				// If it's a debug option then we've already dealt with it
-				switch (o)
+				switch (opt)
 				{
 					// Convert coordinates from Bohr to Angstrom
 					case (CO_BOHR):
@@ -196,7 +198,7 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Set trajectory cache limit
 					case (CO_CACHE):
-						prefs.setCacheLimit(atoi(argv[++n]));
+						prefs.setCacheLimit(atoi(argv[++argn]));
 						break;
 					// Force model centering on load (for non-periodic systems)
 					case (CO_CENTRE):
@@ -205,7 +207,7 @@ int MasterData::parseCli(int argc, char *argv[])
 					// Read script commands from passed string
 					case (CO_COMMAND):
 						cl = master.commands.add();
-						if (cl->cacheLine(argv[++n])) master.setProgramMode(PM_COMMAND);
+						if (cl->cacheLine(argv[++argn])) master.setProgramMode(PM_COMMAND);
 						else
 						{
 							master.commands.remove(cl);
@@ -214,7 +216,7 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Load the specified forcefield
 					case (CO_FF):
-						master.loadForcefield(argv[++n]);
+						master.loadForcefield(argv[++argn]);
 						break;
 					// Force folding (MIM'ing) of atoms in periodic systems on load
 					case (CO_FOLD):
@@ -222,14 +224,14 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Set forced model load format
 					case (CO_FORMAT):
-						modelfilter = master.findFilter(FT_MODEL_IMPORT, argv[++n]);
+						modelfilter = master.findFilter(FT_MODEL_IMPORT, argv[++argn]);
 						if (modelfilter == NULL) return -1;
 						break;
 					// Load surface
 					case (CO_GRID):
-						n++;
-						f = master.probeFile(argv[n], FT_GRID_IMPORT);
-						if (f != NULL) f->execute(argv[n]);
+						argn++;
+						f = master.probeFile(argv[argn], FT_GRID_IMPORT);
+						if (f != NULL) f->execute(argv[argn]);
 						break;
 					// Display help
 					case (CO_HELP):
@@ -242,6 +244,16 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Set type mappings
 					case (CO_MAP):
+						// Get the argument and parse it internally
+						parser.getArgsDelim(argv[++argn], PO_DEFAULTS);
+						for (n=0; n<parser.nArgs(); n++)
+						{
+							el = elements.find(afterChar(parser.argc(n), '='));
+							if (el == 0) msg(DM_NONE,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+							else typeMap.add(beforeChar(parser.argc(n),'='), el);
+						}
+						for (ri = typeMap.first(); ri != NULL; ri = ri->next)
+							printf("MAP %s -> %i\n", ri->item, ri->data);
 						break;
 					// Prohibit bonding calculation of atoms on load
 					case (CO_NOBOND):
@@ -266,7 +278,7 @@ int MasterData::parseCli(int argc, char *argv[])
 					// Cache a script file
 					case (CO_SCRIPT):
 						cl = master.scripts.add();
-						if (cl->load(argv[++n])) master.setProgramMode(PM_COMMAND);
+						if (cl->load(argv[++argn])) master.setProgramMode(PM_COMMAND);
 						else
 						{
 							master.scripts.remove(cl);
@@ -275,15 +287,15 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Set maximum number of undolevels per model
 					case (CO_UNDO):
-						prefs.setMaxUndoLevels(atoi(argv[++n]));
+						prefs.setMaxUndoLevels(atoi(argv[++argn]));
 						break;
 					// Set the type of element (Z) mapping to use in name conversion
 					case (CO_ZMAP):
-						zm = ZM_from_text(argv[++n]);
+						zm = ZM_from_text(argv[++argn]);
 						if (zm != ZM_NITEMS) prefs.setZmapType(zm);
 						break;
 					default:
-						printf("Unrecognised command-line option '%s'.\n",argv[n]);
+						printf("Unrecognised command-line option '%s'.\n",argv[argn]);
 						dbgEnd(DM_CALLS,"cli::parse");
 						return -1;
 				}
@@ -294,10 +306,10 @@ int MasterData::parseCli(int argc, char *argv[])
 			// Not a CLI switch, so try to load it as a model
 			ntried ++;
 			if (modelfilter != NULL) f = modelfilter;
-			else f = master.probeFile(argv[n], FT_MODEL_IMPORT);
-			if (f != NULL) f->execute(argv[n]);
+			else f = master.probeFile(argv[argn], FT_MODEL_IMPORT);
+			if (f != NULL) f->execute(argv[argn]);
 		}
-		n++;
+		argn++;
 	}
 	// Check on the number of models that failed to load
 	if (ntried == 0) return 0;

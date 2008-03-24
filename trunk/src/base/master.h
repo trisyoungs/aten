@@ -253,6 +253,8 @@ class MasterData
 	void debugCli(int, char**);
 	// Parse command line options
 	int parseCli(int, char**);
+	// Element map name conversions to apply on load
+	Reflist<const char,int> typeMap;
 };
 
 extern MasterData master;

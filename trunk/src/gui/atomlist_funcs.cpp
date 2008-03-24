@@ -154,6 +154,7 @@ void AtenForm::refreshAtomPage()
 		}
 		listSelectionPoint = m->log(LOG_SELECTION);
 	}
+	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
 	REFRESHING = FALSE;
 	dbgEnd(DM_CALLS,"AtenForm::refreshAtomPage");
 }

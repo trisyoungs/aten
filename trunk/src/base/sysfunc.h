@@ -34,8 +34,8 @@ const char *ftoa(double, const char*);
 const char *removePath(const char*);
 const char *upperCase(const char*);
 const char *lowerCase(const char*);
-//const char *beforeComma(const char*);
-//const char *afterComma(const char*);
+const char *beforeChar(const char*, char);
+const char *afterChar(const char*, char);
 const char *stripTrailing(const char*);
 
 // Enum search

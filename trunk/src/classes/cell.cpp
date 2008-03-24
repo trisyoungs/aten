@@ -323,7 +323,6 @@ void Cell::calculateCentre()
 		centre_ *= transpose_;
 	}
 	else centre_.set(0.0,0.0,0.0);
-	centre_.print();
 	dbgEnd(DM_CALLS,"Cell::calculateCentre");
 }
 

@@ -145,12 +145,14 @@ void MasterData::initCommands()
 	CA_data[CA_PRINTFORCES].function = &CommandData::function_CA_PRINTFORCES;
 
 	// Forcefield Commands
+	CA_data[CA_CLEARMAP].function = &CommandData::function_CA_CLEARMAP;
 	CA_data[CA_DEFAULTFF].function = &CommandData::function_CA_DEFAULTFF;
 	CA_data[CA_FFMODEL].function = &CommandData::function_CA_FFMODEL;
 	CA_data[CA_FFPATTERN].function = &CommandData::function_CA_FFPATTERN;
 	CA_data[CA_FFPATTERNID].function = &CommandData::function_CA_FFPATTERNID;
 	CA_data[CA_GETFF].function = &CommandData::function_CA_GETFF;
 	CA_data[CA_LOADFF].function = &CommandData::function_CA_LOADFF;
+	CA_data[CA_MAP].function = &CommandData::function_CA_MAP;
 	CA_data[CA_TYPEMODEL].function = &CommandData::function_CA_TYPEMODEL;
 	CA_data[CA_TYPETEST].function = &CommandData::function_CA_TYPETEST;
 
