@@ -45,15 +45,15 @@ const char *lowerCase(const char *s)
 	return result;
 }
 
-// Get characters before comma
-const char *beforeComma(const char *s)
+// Get characters before designated character
+const char *beforeChar(const char *s, char delim)
 {
 	static char result[128];
 	static int i, count;
 	count = 0;
 	for (i = 0; s[i] != '\0'; i++)
 	{
-		if (s[i] == ',') break;
+		if (s[i] == delim) break;
 		result[count] = s[i];
 		count ++;
 	}
@@ -61,8 +61,8 @@ const char *beforeComma(const char *s)
 	return result;
 }
 
-// Get characters after comma
-const char *afterComma(const char *s)
+// Get characters after designated character
+const char *afterChar(const char *s, char delim)
 {
 	static char result[128];
 	static int i, count;
@@ -71,7 +71,7 @@ const char *afterComma(const char *s)
 	count = 0;
 	for (i = 0; s[i] != '\0'; i++)
 	{
-		if (s[i] == ',') foundcomma = TRUE;
+		if (s[i] == delim) foundcomma = TRUE;
 		else if (foundcomma)
 		{
 			result[count] = s[i];
@@ -91,25 +91,6 @@ int enumSearch(const char *name, int maxn, const char **itemlist, const char *qu
 	for (i=0; i<maxn; i++)
 	{
 		strcpy(lowers,lowerCase(itemlist[i]));
-		if (strcmp(lowerq,lowers) == 0)
-		{
-			result = i;
-			break;
-		}
-	}
-	if ((result == maxn) && (name[0] != '\0')) printf("Unrecognised %s '%s'\n",name,query);
-	return result;
-}
-
-// Search enum list for text
-int enumSearch_data(const char *name, int maxn, const char **itemlist, const char *query)
-{
-	static char lowerq[50], lowers[50];
-	int result = maxn, i;
-	strcpy(lowerq,lowerCase(query));
-	for (i=0; i<maxn; i++)
-	{
-		strcpy(lowers,lowerCase(beforeComma(itemlist[i])));
 		if (strcmp(lowerq,lowers) == 0)
 		{
 			result = i;

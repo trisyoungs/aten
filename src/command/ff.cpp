@@ -21,9 +21,17 @@
 
 #include "command/commandlist.h"
 #include "base/master.h"
+#include "base/elements.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 #include "model/model.h"
+
+// Clear manual type mapping list ('clearmap')
+int CommandData::function_CA_CLEARMAP(Command *&c, Bundle &obj)
+{
+	master.typeMap.clear();
+	return CR_SUCCESS;
+}
 
 // Set default forcefield ('defaultff <ff>')
 int CommandData::function_CA_DEFAULTFF(Command *&c, Bundle &obj)
@@ -85,6 +93,21 @@ int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 	Forcefield *ff = master.findForcefield(c->argc(0));
 	if (ff != NULL)	master.setCurrentForcefield(ff);
 	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
+// Add manual type mappings ('map <name=element,...>')
+int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
+{
+	// Get the argument and parse it internally
+	parser.getArgsDelim(c->argc(0), PO_DEFAULTS);
+	int n, el;
+	for (n=0; n<parser.nArgs(); n++)
+	{
+		el = elements.find(afterChar(parser.argc(n), '='));
+		if (el == 0) msg(DM_NONE,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+		else master.typeMap.add(beforeChar(parser.argc(n),'='), el);
+	}
 	return CR_SUCCESS;
 }
 

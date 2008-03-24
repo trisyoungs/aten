@@ -167,12 +167,14 @@ enum CommandAction {
 	CA_PRINTFORCES,
 
 	// Forcefield Commands
+	CA_CLEARMAP,
 	CA_DEFAULTFF,
 	CA_FFMODEL,
 	CA_FFPATTERN,
 	CA_FFPATTERNID,
 	CA_GETFF,
 	CA_LOADFF,
+	CA_MAP,
 	CA_TYPEMODEL,
 	CA_TYPETEST,
 
@@ -472,12 +474,14 @@ class CommandData
 	int function_CA_MODELFORCES(Command *&c, Bundle &obj);
 	int function_CA_PRINTFORCES(Command *&c, Bundle &obj);
 	// Forcefield Commands
+	int function_CA_CLEARMAP(Command *&c, Bundle &obj);
 	int function_CA_DEFAULTFF(Command *&c, Bundle &obj);
 	int function_CA_FFMODEL(Command *&c, Bundle &obj);
 	int function_CA_FFPATTERN(Command *&c, Bundle &obj);
 	int function_CA_FFPATTERNID(Command *&c, Bundle &obj);
 	int function_CA_GETFF(Command *&c, Bundle &obj);
 	int function_CA_LOADFF(Command *&c, Bundle &obj);
+	int function_CA_MAP(Command *&c, Bundle &obj);
 	int function_CA_TYPEMODEL(Command *&c, Bundle &obj);
 	int function_CA_TYPETEST(Command *&c, Bundle &obj);
 	// Glyph commands

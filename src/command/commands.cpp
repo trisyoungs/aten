@@ -259,6 +259,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Print calculated forces for the current model" },
 	
 	// Forcefield commands
+	{ "clearmap",		"",		"",
+				"Clear manual type mapping list." },
 	{ "defaultff",		"V",		"<ff>",
 				"Make named forcefield the default for occasions where no other is specified." },
 	{ "ffmodel",		"v",		"[name]",
@@ -271,6 +273,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Select named (loaded) forcefield and make it current" },
 	{ "loadff",		"Vv",		"<filename> [name]",
 				"Load forcefield" },
+	{ "map",		"V",		"<name=element,...>",
+				"Add typename mappings" },
 	{ "typemodel",		"",		"",
 				"Perform atom typing on the current model" },
 	{ "typetest",		"V",		"<ffid> <atomid>",
