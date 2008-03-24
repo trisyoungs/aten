@@ -66,8 +66,8 @@ Atomtype::Atomtype()
 	nRepeat_ = 1;
 	acyclic_ = FALSE;
 	nHydrogen_ = -1;
+	characterElement_ = 0;
 	// Public variables
-	el = 0;
 	prev = NULL;
 	next = NULL;
 }
@@ -90,8 +90,16 @@ Atomtype::~Atomtype()
 	if (allowedElements_ != NULL) delete[] allowedElements_;
 }
 
-RingType::~RingType()
+// Set character element
+void Atomtype::setCharacterElement(int el)
 {
+	characterElement_ = el;
+}
+
+// Return character element
+int Atomtype::characterElement()
+{
+	return characterElement_;
 }
 
 // Print Atom Type data
@@ -125,7 +133,7 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 {
 	// Add elements from the comma-separated ellist string as possible matches for this Atomtype
 	dbgBegin(DM_CALLS,"Atomtype::setElements");
-	int n, count;
+	int n, count, el;
 	ForcefieldAtom *ffa;
 	Dnchar temp;
 	// Find number of elements given in list...
@@ -160,6 +168,7 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 		}
 		else
 		{
+			// WATCH Since Atomtype::el became Atomtype::characterElement_, this does not get set. Should it have been set before? WATCH
 			el = elements.find(parser.argc(n),ZM_ALPHA);
 			if (el == 0)
 			{
@@ -470,7 +479,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			ffa = rd->item;
 			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",ffa->get_ffid(),ffa->name());
 			// Check element of type first....
-			if (i->element() != ffa->atomType()->el) continue;
+			if (i->element() != ffa->atomType()->characterElement()) continue;
 			// Does this atom match the type descriptions asked for?
 			n = rd->item->atomType()->matchAtom(i,ringdata,parent,topatom);
 			if (n > 0)
@@ -486,7 +495,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		}
 		else
 		{
-			msg(DM_TYPING,"[failed - is %i, but type needs %i]\n",i->element(),el);
+			msg(DM_TYPING,"[failed - is %i, but type needs %i]\n", i->element(), characterElement_);
 			level --;
 			dbgEnd(DM_CALLS,"Atomtype::match_atom");
 			return 0;

@@ -473,7 +473,7 @@ class AtenForm : public QMainWindow
 	// File dialogs for filter types
 	QFileDialog **dialog;
 	// File dialogs for forcefields
-	QFileDialog *openFfDialog, *saveFfDialog;
+	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
 	// File dialog for save bitmap and save vector image
 	QFileDialog *saveBitmapDialog, *saveVectorDialog;
 	// File dialog for script loading

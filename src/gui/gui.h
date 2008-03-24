@@ -28,6 +28,7 @@
 // Forward declarations
 class AtenForm;
 class AtenPrefs;
+class AtenEdit;
 class Atom;
 class Model;
 class Forcefield;
@@ -141,6 +142,8 @@ class GuiQt
 	QApplication *app;
 	// Preferences Dialog
 	AtenPrefs *prefsDialog;
+	// Forcefield Editor
+	AtenEdit *editDialog;
 	// Call the atompopup menu
 	void callAtomPopup(Atom*, int, int);
 	// Main view

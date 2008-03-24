@@ -23,7 +23,7 @@
 #include "base/prefs.h"
 #include "base/debug.h"
 
-// Constructors 
+// Constructors
 ForcefieldParams::ForcefieldParams()
 {
 	for (int i=0; i<MAXFFPARAMDATA; i++) data[i] = 0.0;
@@ -37,6 +37,7 @@ ForcefieldAtom::ForcefieldAtom()
 	charge_ = 0.0;
 	vdwForm_ = VF_UNSPECIFIED;
 	generator_ = NULL;
+	parent_ = NULL;
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -78,6 +79,18 @@ Forcefield::~Forcefield()
 // ForcefieldAtom
 */
 
+// Set parent forcefield
+void ForcefieldAtom::setParent(Forcefield *ff)
+{
+	parent_ = ff;
+}
+
+// Return parent forcefield
+Forcefield *ForcefieldAtom::parent()
+{
+	return parent_;
+}
+
 // Set functional form of VDW
 void ForcefieldAtom::setVdwForm(VdwFunction vf)
 {
@@ -90,10 +103,22 @@ VdwFunction ForcefieldAtom::vdwForm()
 	return vdwForm_;
 }
 
-// Returns the ffid of the type
+// Set the type id
+void ForcefieldAtom::setTypeId(int i)
+{
+	typeId_ = i;
+}
+
+// Returns the type id
 int ForcefieldAtom::typeId()
 {
 	return typeId_;
+}
+
+// Set the charge of the type
+void ForcefieldAtom::setCharge(double q)
+{
+	charge_ = q;
 }
 
 // Returns the charge of the type
@@ -102,10 +127,22 @@ double ForcefieldAtom::charge()
 	return charge_;
 }
 
+// Set the name of the type
+void ForcefieldAtom::setName(const char *s)
+{
+	name_ = s;
+}
+
 // Returns the name of the type
 const char *ForcefieldAtom::name()
 {
 	return name_.get();
+}
+
+// Set the equivalent name of the type
+void ForcefieldAtom::setEquivalent(const char *s)
+{
+	equivalent_ = s;
 }
 
 // Returns the equivalent name of the type
@@ -114,11 +151,18 @@ const char *ForcefieldAtom::equivalent()
 	return equivalent_.get();
 }
 
+// Set the description of the type
+void ForcefieldAtom::setDescription(const char *s)
+{
+	description_ = s;
+}
+
 // Returns the description of the type
 const char *ForcefieldAtom::description()
 {
 	return description_.get();
 }
+
 
 // Returns the atomtype description
 Atomtype *ForcefieldAtom::atomType()
@@ -130,6 +174,42 @@ Atomtype *ForcefieldAtom::atomType()
 ForcefieldParams &ForcefieldAtom::params()
 {
 	return params_;
+}
+
+// Initialise generator array
+void ForcefieldAtom::initialiseGenerator()
+{
+	if (parent_ == NULL) printf("Can't initialise generator data - parent Forcefield has not been set.\n");
+	else
+	{
+		if (generator_ == NULL) generator_ = new double[parent_->nGenerators()];
+		else printf("Warning - replacing existing generator data array.\n");
+	}
+}
+
+// Set generator data
+void ForcefieldAtom::setGenerator(int i, double d)
+{
+	int limit = (parent_ == NULL ? 0 : parent_->nGenerators());
+	// Check the limit of the position provided
+	if ((i < 0) || (i > limit)) printf("setGenerator() - index %i is out of range (max = %i).\n", limit);
+	else generator_[i] = d;
+}
+
+// Return generator data structure
+double *ForcefieldAtom::generator()
+{
+	return generator_;
+}
+
+// Return single generator value
+double ForcefieldAtom::generator(int i)
+{
+	int limit = (parent_ == NULL ? 0 : parent_->nGenerators());
+	// Check the limit of the position provided
+	if ((i < 0) || (i > limit)) printf("generator() - index %i is out of range (max = %i).\n", limit);
+	else return generator_[i];
+	return 0.0;
 }
 
 // Copy structure
@@ -192,9 +272,17 @@ ForcefieldParams &ForcefieldBound::params()
 }
 
 // Return the atom type 'n'
-const char *ForcefieldBound::atomType(int n)
+const char *ForcefieldBound::typeName(int n)
 {
-	return (n < MAXFFBOUNDTYPES ? atomTypes_[n].get() : "OUTOFRANGE");
+	return (n < MAXFFBOUNDTYPES ? typeNames_[n].get() : "OUTOFRANGE");
+}
+
+// Set the atom type 'n'
+void ForcefieldBound::setTypeName(int n, const char *s)
+{
+	// Check range
+	if ((n < 0) || (n > MAXFFBOUNDTYPES)) printf("setAtomType - index %i is out of range.\n",n);
+	else typeNames_[n] = s;
 }
 
 /*
@@ -219,8 +307,14 @@ ForcefieldRules Forcefield::rules()
 	return rules_;
 }
 
+// Return the number of generators for each type
+int Forcefield::nGenerators()
+{
+	return nGenerators_;
+}
+
 // Returns the number of atom types specified in the Forcefield
-int Forcefield::nAtomtypes()
+int Forcefield::nTypes()
 {
 	return types_.nItems();
 }
@@ -231,16 +325,34 @@ ForcefieldAtom *Forcefield::types()
 	return types_.first();
 }
 
+// Return number of terms defined in bonds list
+int Forcefield::nBonds()
+{
+	return bonds_.nItems();
+}
+
 // Returns the bond list
 ForcefieldBound *Forcefield::bonds()
 {
 	return bonds_.first();
 }
 
+// Return number of terms defined in angles list
+int Forcefield::nAngles()
+{
+	return angles_.nItems();
+}
+
 // Returns the angle list
 ForcefieldBound *Forcefield::angles()
 {
 	return angles_.first();
+}
+
+// Return number of terms defined in torsions list
+int Forcefield::nTorsions()
+{
+	return torsions_.nItems();
 }
 
 // Returns the angle list
@@ -262,7 +374,7 @@ ForcefieldAtom *Forcefield::findType(int query)
 	dbgBegin(DM_CALLS,"Forcefield::find_type[int]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
-		if (query == result->typeId_) break;
+		if (query == result->typeId()) break;
 	dbgEnd(DM_CALLS,"Forcefield::find_type[int]");
 	return result;
 }
@@ -276,7 +388,7 @@ ForcefieldAtom *Forcefield::findType(const char *query)
 	dbgBegin(DM_CALLS,"Forcefield::find_type[char]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
-		if ((result->name_ == query) || (result->equivalent_ == query)) break;
+		if ((strcmp(result->name(),query) == 0) || (strcmp(result->equivalent(),query) == 0)) break;
 	dbgEnd(DM_CALLS,"Forcefield::find_type[char]");
 	return result;
 }
@@ -287,10 +399,10 @@ Atomtype *Forcefield::typeOfId(int i)
 	dbgBegin(DM_CALLS,"Forcefield::get_atomtype_of_typeId_");
 	ForcefieldAtom *result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next)
-		if (result->typeId_ == i) break;
+		if (result->typeId() == i) break;
 	if (result == NULL) printf("Forcefield::get_atomtype_of_typeId_ <<<< FFID %i not found in forcefield >>>>\n",i);
 	dbgEnd(DM_CALLS,"Forcefield::get_atomtype_of_typeId_");
-	return &result->atomType_;
+	return result->atomType();
 }
 
 // Match two forcefield type strings
@@ -322,7 +434,7 @@ int Forcefield::matchType(const char *test, const char *target)
 }
 
 // Match atom types to names
-int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const Dnchar &ti, const Dnchar &tj)
+int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char *typei, const char *typej)
 {
 	// Type Match routines - string match the name of types_ 'i' and 'j' to the string'd types_
 	// specified in the bond / angle / torsion data supplied. Only check 'one way round' - the routine
@@ -331,14 +443,14 @@ int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const Dncha
 	dbgBegin(DM_CALLS,"Forcefield::matchTypes");
 	int matchi, matchj;
 	// Best case - exact, direct match:
-	if ((ffi->equivalent_ == ti) && (ffj->equivalent_ == tj))
+	if ((strcmp(ffi->equivalent(),typei) == 0) && (strcmp(ffj->equivalent(),typej) == 0))
 	{
 		dbgEnd(DM_CALLS,"Forcefield::matchTypes");
 		return 0;
 	}
 	// No such luck, so match each atom separately
-	matchi = matchType(ffi->equivalent_,ti);
-	matchj = matchType(ffj->equivalent_,tj);
+	matchi = matchType(ffi->equivalent(),typei);
+	matchj = matchType(ffj->equivalent(),typej);
 	dbgEnd(DM_CALLS,"Forcefield::matchTypes");
 	return (matchi + matchj);
 }
@@ -361,8 +473,8 @@ ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
 	while (b != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the bond specification
-		matchij = matchTypes(ffi,ffj,b->atomTypes_[0],b->atomTypes_[1]);
-		matchji = matchTypes(ffj,ffi,b->atomTypes_[0],b->atomTypes_[1]);
+		matchij = matchTypes(ffi,ffj,b->typeName(0),b->typeName(1));
+		matchji = matchTypes(ffj,ffi,b->typeName(0),b->typeName(1));
 		if (matchji < matchij) matchij = matchji;	// Take the better (smaller) of the two results
 		if (matchij < 10)
 		{
@@ -393,13 +505,15 @@ ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj,
 	{
 		// See how close the match is between the atom forcefield types and the angle specification
 		// Check the central atom of the angle first
-		matchj = matchType(ffj->equivalent_,a->atomTypes_[1]);
+		matchj = matchType(ffj->equivalent(),a->typeName(1));
 		if (matchj != 10)
 		{
-			matchik = matchTypes(ffi,ffk,a->atomTypes_[0],a->atomTypes_[2]);
-			matchki = matchTypes(ffk,ffi,a->atomTypes_[0],a->atomTypes_[2]);
-			if (matchki < matchik) matchik = matchki;	// Take the better of the two results
-			matchik += matchj;		// Add on the score from the central atom
+			matchik = matchTypes(ffi,ffk,a->typeName(0),a->typeName(2));
+			matchki = matchTypes(ffk,ffi,a->typeName(0),a->typeName(2));
+			// Take the better of the two results
+			if (matchki < matchik) matchik = matchki;
+			// Add on the score from the central atom
+			matchik += matchj;
 			if (matchik < 10)
 			{
 				if (matchik < bestmatch)
@@ -429,10 +543,10 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 	while (t != NULL)
 	{
 		// See how close the match is between the atom forcefield types and the torsion specification
-		matchil = matchTypes(ffi,ffl,t->atomTypes_[0],t->atomTypes_[3]);
-		matchli = matchTypes(ffl,ffi,t->atomTypes_[0],t->atomTypes_[3]);
-		matchjk = matchTypes(ffj,ffk,t->atomTypes_[1],t->atomTypes_[2]);
-		matchkj = matchTypes(ffk,ffj,t->atomTypes_[1],t->atomTypes_[2]);
+		matchil = matchTypes(ffi,ffl,t->typeName(0),t->typeName(3));
+		matchli = matchTypes(ffl,ffi,t->typeName(0),t->typeName(3));
+		matchjk = matchTypes(ffj,ffk,t->typeName(1),t->typeName(2));
+		matchkj = matchTypes(ffk,ffj,t->typeName(1),t->typeName(2));
 		matchijkl = matchil + matchjk;
 		matchlkji = matchli + matchkj;
 		if (matchlkji < matchijkl) matchijkl = matchlkji;
@@ -464,30 +578,30 @@ void Forcefield::convertParameters(EnergyUnit ff_eunit)
 	// Note: First loop (for VDW) is from 1,n+1 instead of 0,n since we skip the dummy atom type which is n=0, present for all ffs.
 	for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)
 	{
-		p = &ffa->params_;
+		p = &ffa->params();
 		switch (ffa->vdwForm())
 		{
 			case (VF_UNSPECIFIED):
 				break;
 			case (VF_LJ):
-				p->data[VF_LJ_EPS] = prefs.convertEnergy(p->data[VF_LJ_EPS],ff_eunit);
+				p->data[VF_LJ_EPS] = prefs.convertEnergy(p->data[VF_LJ_EPS], ff_eunit);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this VDW type.\n");
 				break;
 		}
 		// Only convert those parameters for which the 'energyGenerators_[]' flag is TRUE
-		if (ffa->generator_ != NULL)
+		if (ffa->generator() != NULL)
 		{
 			for (n=0; n<nGenerators_; n++)
-				if (energyGenerators_[n]) ffa->generator_[n] = prefs.convertEnergy(ffa->generator_[n],ff_eunit);
+				if (energyGenerators_[n]) ffa->setGenerator(n, prefs.convertEnergy(ffa->generator(n),ff_eunit));
 		}
 	}
 	// Bonds 
 	for (b = bonds_.first(); b != NULL; b = b->next)
 	{
-		p = &b->params_;
-		switch (b->functionalForm_.bondFunc)
+		p = &b->params();
+		switch (b->functionalForm().bondFunc)
 		{
 			case (BF_UNSPECIFIED):
 				break;
@@ -502,8 +616,8 @@ void Forcefield::convertParameters(EnergyUnit ff_eunit)
 	// Angles
 	for (b = angles_.first(); b != NULL; b = b->next)
 	{
-		p = &b->params_;
-		switch (b->functionalForm_.angleFunc)
+		p = &b->params();
+		switch (b->functionalForm().angleFunc)
 		{
 			case (AF_UNSPECIFIED):
 				break;
@@ -518,8 +632,8 @@ void Forcefield::convertParameters(EnergyUnit ff_eunit)
 	// Torsions
 	for (b = torsions_.first(); b != NULL; b = b->next)
 	{
-		p = &b->params_;
-		switch (b->functionalForm_.torsionFunc)
+		p = &b->params();
+		switch (b->functionalForm().torsionFunc)
 		{
 			case (TF_UNSPECIFIED):
 				break;

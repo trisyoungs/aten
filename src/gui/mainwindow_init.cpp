@@ -232,25 +232,25 @@ void AtenForm::finaliseUi()
 	saveBitmapDialog->setFilters(filters);
 
 	// Create open forcefield dialog
-	openFfDialog = new QFileDialog(this);
-	openFfDialog->setFileMode(QFileDialog::ExistingFile);
-	openFfDialog->setDirectory(master.workDir.get());
-	openFfDialog->setWindowTitle("Open Forcefield");
+	openForcefieldDialog = new QFileDialog(this);
+	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
+	openForcefieldDialog->setDirectory(master.workDir.get());
+	openForcefieldDialog->setWindowTitle("Open Forcefield");
 	filters.clear();
 	filters << "All files (*)";
 	filters << "Forcefield Files (*.ff)";
-	openFfDialog->setFilters(filters);
+	openForcefieldDialog->setFilters(filters);
 
 	// Create save forcefield dialog
-	saveFfDialog = new QFileDialog(this);
-	saveFfDialog->setWindowTitle("Save Forcefield");
-	saveFfDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveFfDialog->setDirectory(master.workDir.get());
-	saveFfDialog->setFileMode(QFileDialog::AnyFile);
+	saveForcefieldDialog = new QFileDialog(this);
+	saveForcefieldDialog->setWindowTitle("Save Forcefield");
+	saveForcefieldDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveForcefieldDialog->setDirectory(master.workDir.get());
+	saveForcefieldDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	filters << "All files (*)";
 	filters << "Forcefield Files (*.ff)";
-	openFfDialog->setFilters(filters);
+	saveForcefieldDialog->setFilters(filters);
 
 	// Create save vector dialog
 	saveVectorDialog = new QFileDialog(this);

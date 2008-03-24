@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
+#include "gui/ffeditor.h"
 #include "model/model.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
@@ -56,6 +57,7 @@ void GuiQt::run(int argc, char **argv)
 	// Create the GUI windows
         mainWindow = new AtenForm;
 	prefsDialog = new AtenPrefs;
+	editDialog = new AtenEdit;
 
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
 	gui.mainView.setWidget(mainWindow->ui.ModelView);	
@@ -64,10 +66,12 @@ void GuiQt::run(int argc, char **argv)
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
 	prefsDialog->finaliseUi();
+	editDialog->finaliseUi();
 
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
+	editDialog->setControls();
 
 	// Show the widgets in the GUI and flag it as existing
 	mainWindow->show();

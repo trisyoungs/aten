@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>745</width>
-    <height>573</height>
+    <height>542</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -208,7 +208,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>9</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -4728,7 +4728,7 @@
              <item>
               <widget class="QPushButton" name="EditForcefieldButton" >
                <property name="enabled" >
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="sizePolicy" >
                 <sizepolicy>
@@ -4882,6 +4882,9 @@
               </item>
               <item>
                <widget class="QTableWidget" name="FFTypeTable" >
+                <property name="editTriggers" >
+                 <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::NoEditTriggers</set>
+                </property>
                 <property name="alternatingRowColors" >
                  <bool>true</bool>
                 </property>
@@ -6556,7 +6559,7 @@
      <x>0</x>
      <y>0</y>
      <width>745</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="EditMenu" >
@@ -7856,11 +7859,6 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
-  </customwidget>
-  <customwidget>
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>ttreewidget.uih</header>
@@ -7874,6 +7872,11 @@
    <class>TTabBar</class>
    <extends>QWidget</extends>
    <header>ttabbar.uih</header>
+  </customwidget>
+  <customwidget>
+   <class>TCanvas</class>
+   <extends>QWidget</extends>
+   <header>tcanvas.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

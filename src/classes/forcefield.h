@@ -63,8 +63,6 @@ class ForcefieldAtom
 	ForcefieldAtom *prev, *next;
 	// Copy structure
 	void copy(ForcefieldAtom *source);
-	// Friend specification
-	friend class Forcefield;
 
 	/*
 	// Properties
@@ -80,6 +78,8 @@ class ForcefieldAtom
 	Dnchar equivalent_;
 	// Description of atom type
 	Dnchar description_;
+	// Original atomtype string used to create the atomtype
+	Dnchar atomTypeString_;
 	// Atomtype description
 	Atomtype atomType_;
 	// Parameter data
@@ -88,29 +88,53 @@ class ForcefieldAtom
 	double *generator_;
 	// Atomic charge
 	double charge_;
+	// Parent forcefield
+	Forcefield *parent_;
 
 	/*
 	// Set / Get
 	*/
 	public:
+	// Set parent forcefield
+	void setParent(Forcefield *ff);
+	// Return parent forcefield
+	Forcefield *parent();
 	// Set functional form of VDW
 	void setVdwForm(VdwFunction vf);
 	// Returns the funcional VDW form
 	VdwFunction vdwForm();
-	// Returns the ffid of the type
+	// Set the type id
+	void setTypeId(int i);
+	// Returns the type id
 	int typeId();
+	// Set the charge of the type
+	void setCharge(double q);
 	// Returns the charge of the type
 	double charge();
+	// Set the name of the type
+	void setName(const char *s);
 	// Returns the name of the type
 	const char *name();
+	// Set the equivalent name of the type
+	void setEquivalent(const char *s);
 	// Returns the equivalent name of the type
 	const char *equivalent();
+	// Set the description of the type
+	void setDescription(const char *s);
 	// Returns the description of the type
 	const char *description();
 	// Returns the atomtype description
 	Atomtype *atomType();
 	// Returns ForcefieldParams structure
 	ForcefieldParams &params();
+	// Set generator data
+	void setGenerator(int i, double d);
+	// Initialise generator array
+	void initialiseGenerator();
+	// Return generator data array
+	double *generator();
+	// Return single generator value
+	double generator(int i);
 };
 
 // Forcefield bound interaction type
@@ -121,8 +145,6 @@ class ForcefieldBound
 	ForcefieldBound *prev, *next;
 	// Constructor
 	ForcefieldBound();
-	// Friend Declarations
-	friend class Forcefield;
 
 	private:
 	// Type of bound interaction
@@ -135,7 +157,7 @@ class ForcefieldBound
 		TorsionFunction torsionFunc;
 	} functionalForm_;
 	// Forcefield types involved in this term
-	Dnchar atomTypes_[MAXFFBOUNDTYPES];
+	Dnchar typeNames_[MAXFFBOUNDTYPES];
 	// Pointer to parameter data
 	ForcefieldParams params_;
 
@@ -155,7 +177,9 @@ class ForcefieldBound
 	// Return the data[] array in *params
 	ForcefieldParams &params();
 	// Return the atom type 'n'
-	const char *atomType(int n);
+	const char *typeName(int n);
+	// Set the atom type 'n'
+	void setTypeName(int n, const char *s);
 };
 
 // Forcefield
@@ -190,6 +214,8 @@ class Forcefield
 	const char *name();
 	// Returns the typing rules of the Forcefield
 	ForcefieldRules rules();
+	// Return the number of generators for each type
+	int nGenerators();
 
 	/*
 	// Types
@@ -200,7 +226,7 @@ class Forcefield
 
 	public:
 	// Returns the number of atom types specified in the Forcefield
-	int nAtomtypes();
+	int nTypes();
 	// Returns the head of tha atomtype list
 	ForcefieldAtom *types();
 	// Get the atomtype specified by the ffid number passed
@@ -227,6 +253,8 @@ class Forcefield
 	public:
 	// Generate bond parameters (rule-based Forcefield)
 	ForcefieldBound *generateBond(Atom*, Atom*);
+	// Return number of terms defined in bonds list
+	int nBonds();
 	// Returns the bond list
 	ForcefieldBound *bonds();
 	// Retrieve bond data corresponding to specified atomtype id's
@@ -242,6 +270,8 @@ class Forcefield
 	public:
 	// Generate angle parameters (rule-based Forcefield)
 	ForcefieldBound *generateAngle(Atom*, Atom*, Atom*);
+	// Return number of terms defined in angles list
+	int nAngles();
 	// Returns the angle list
 	ForcefieldBound *angles();
 	// Retrieve angle data corresponding to specified atomtype id's
@@ -257,6 +287,8 @@ class Forcefield
 	public:
 	// Generate angle parameters (rule-based Forcefield)
 	ForcefieldBound *generateTorsion(Atom*, Atom*, Atom*, Atom*);
+	// Return number of terms defined in torsions list
+	int nTorsions();
 	// Returns the angle list
 	ForcefieldBound *torsions();
 	// Retreve torsion data corresponding to specified atomtype id's
@@ -271,7 +303,7 @@ class Forcefield
 	// Character-match the atomtype names supplied
 	int matchType(const Dnchar &a, const Dnchar &b);
 	// Match names of atomtypes supplied to strings supplied
-	int matchTypes(ForcefieldAtom*, ForcefieldAtom*, const Dnchar&, const Dnchar&);
+	int matchTypes(ForcefieldAtom*, ForcefieldAtom*, const char*, const char*);
 
 	/*
 	// File

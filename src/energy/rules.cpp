@@ -38,11 +38,11 @@ void Forcefield::generateVdw(Atom *i)
 			break;
 		case (FFR_UFF):
 			// UFF VDW types are just the third [2] and fourth [3] data (for simple LJ)
-			epsilon = ffi->generator_[3];
-			sigma = ffi->generator_[2];
-			ffi->params_.data[VF_LJ_EPS] = epsilon;
-			ffi->params_.data[VF_LJ_SIGMA] = sigma;
-			msg(DM_VERBOSE,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n",sigma,epsilon);
+			epsilon = ffi->generator(3);
+			sigma = ffi->generator(2);
+			ffi->params().data[VF_LJ_EPS] = epsilon;
+			ffi->params().data[VF_LJ_SIGMA] = sigma;
+			msg(DM_VERBOSE,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n", sigma, epsilon);
 			ffi->setVdwForm(VF_LJ);
 			break;
 	}
@@ -68,22 +68,22 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			// rij : Equilibrium distance : = ri + rj + rBO - rEN
 			// rBO : Bond-order correction = -0.1332 * (ri + rj) * ln(n)
 			// rEN : Electronegativity correction : ri*rj * (sqrt(Xi)-sqrt(Xj))**2 / (Xi*ri + Xj*rj)
-			double ri = ffi->generator_[0];
-			double rj = ffj->generator_[0];
+			double ri = ffi->generator(0);
+			double rj = ffj->generator(0);
 			double sumr = ri + rj;
-			double chii = ffi->generator_[6];
-			double chij = ffj->generator_[6];
+			double chii = ffi->generator(6);
+			double chij = ffj->generator(6);
 			double rBO = -0.1332 * sumr * log(i->bondOrder(j));
 			double chi = (sqrt(chii) - sqrt(chij));
 			double rEN = ri * rj * chi * chi / (chii*ri + chij*rj);
-			double Zi = ffi->generator_[5];
-			double Zj = ffj->generator_[5];
+			double Zi = ffi->generator(5);
+			double Zj = ffj->generator(5);
 			// Create new bond definition in the forcefield space and set its parameters
 			newbond = bonds_.add();
 			newbond->setBondStyle(BF_HARMONIC);
-			newbond->params_.data[BF_HARMONIC_EQ] = sumr + rBO - rEN;
-			newbond->params_.data[BF_HARMONIC_K] = 664.12 * ( (Zi * Zj) / (sumr + sumr + sumr) );
-			msg(DM_VERBOSE,"UFF Bond  : eq, k = %8.4f %8.4f\n",newbond->params_.data[BF_HARMONIC_EQ],newbond->params_.data[BF_HARMONIC_K]);
+			newbond->params().data[BF_HARMONIC_EQ] = sumr + rBO - rEN;
+			newbond->params().data[BF_HARMONIC_K] = 664.12 * ( (Zi * Zj) / (sumr + sumr + sumr) );
+			msg(DM_VERBOSE,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BF_HARMONIC_EQ], newbond->params().data[BF_HARMONIC_K]);
 			break;
 	}
 	dbgEnd(DM_CALLS,"Forcefield::generateBond");
@@ -113,14 +113,14 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			double ri, rj, rk, rij, rjk, rBO, rEN, chii, chij, chik, chi, rik2, rik5, Zi, Zk, beta, forcek;
 			int n;
 			newangle = angles_.add();
-			ri = ffi->generator_[0];
-			rj = ffj->generator_[0];
-			rk = ffk->generator_[0];
-			chii = ffi->generator_[6];
-			chij = ffj->generator_[6];
-			chik = ffk->generator_[6];
-			Zi = ffi->generator_[5];
-			Zk = ffk->generator_[5];
+			ri = ffi->generator(0);
+			rj = ffj->generator(0);
+			rk = ffk->generator(0);
+			chii = ffi->generator(6);
+			chij = ffj->generator(6);
+			chik = ffk->generator(6);
+			Zi = ffi->generator(5);
+			Zk = ffk->generator(5);
 			// Determine rij and riK
 			rBO = -0.1332 * (ri + rj) * log(i->bondOrder(j));
 			chi = sqrt(chii) - sqrt(chij);
@@ -133,7 +133,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			rjk = rj + rk + rBO - rEN;
 			//printf("          : JK rBO, chi, rEN, rjk = %8.4f %8.4f %8.4f %8.4f\n",rBO,chi,rEN,rjk);
 			// Determine rik2 and rik5
-			double eq = ffj->generator_[1] / DEGRAD;
+			double eq = ffj->generator(1) / DEGRAD;
 			rik2 = rij * rij + rjk * rjk - 2.0 * ( rij * rjk * cos(eq));
 			rik5 = rik2 * rik2 * sqrt(rik2);
 			// Determine k
@@ -142,19 +142,18 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			forcek = forcek * (3.0 * rij * rjk * (1.0 - cos(eq)*cos(eq)) - rik2 * cos(eq));
 			//printf("          : eq, rik2, rik5, beta, forcek = %8.4f %8.4f %8.4f %8.4f %8.4f\n",eq,rik2,rik5,beta,forcek);
 			// Store vars in forcefield node
-			newangle->params_.data[AF_UFFCOSINE_K] = forcek;
-			newangle->params_.data[AF_UFFCOSINE_EQ] = ffj->generator_[1];
+			newangle->params().data[AF_UFFCOSINE_K] = forcek;
+			newangle->params().data[AF_UFFCOSINE_EQ] = ffj->generator(1);
 			// Determine 'n' based on the geometry of the central atom 'j'
-			if (ffj->generator_[1] > 170.0) n = 1;
-			else if (ffj->generator_[1] > 115.0) n = 3;
-			else if (ffj->generator_[1] > 95.0) n = 2;
+			if (ffj->generator(1) > 170.0) n = 1;
+			else if (ffj->generator(1) > 115.0) n = 3;
+			else if (ffj->generator(1) > 95.0) n = 2;
 			else n = 4;
-			newangle->params_.data[AF_UFFCOSINE_N] = n;
+			newangle->params().data[AF_UFFCOSINE_N] = n;
 			// Set function style
 			if (n == 2) newangle->setAngleStyle(AF_UFFCOSINE2);
 			else newangle->setAngleStyle(AF_UFFCOSINE1);
-			msg(DM_VERBOSE,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n",ffi->name_.get(),
-				ffj->name_.get(),ffk->name_.get(),forcek,eq,n);
+			msg(DM_VERBOSE,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, n);
 
 			break;
 	}

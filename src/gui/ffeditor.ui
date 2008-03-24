@@ -1,0 +1,519 @@
+<ui version="4.0" >
+ <class>FFEditorDialog</class>
+ <widget class="QDialog" name="FFEditorDialog" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>499</width>
+    <height>422</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Forcefield Editor</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>2</number>
+   </property>
+   <property name="spacing" >
+    <number>4</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="ForcefieldInfoGroup" >
+     <property name="title" >
+      <string>Forcefield</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>2</number>
+      </property>
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="FFEditorForcefieldLabel2" >
+        <property name="text" >
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="FFEditorForcefieldLabel1" >
+        <property name="text" >
+         <string>TextLabel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="1" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="FFEditorTabs" >
+     <property name="currentIndex" >
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="FFETypesTab" >
+      <attribute name="title" >
+       <string>Types</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="FFEditorTypesTable" >
+         <column>
+          <property name="text" >
+           <string>TypeID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>El</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Equiv</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Description</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item row="1" column="3" >
+          <widget class="QPushButton" name="FFEditorTestTypeButton" >
+           <property name="text" >
+            <string>Test</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" >
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>184</width>
+             <height>29</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="1" >
+          <widget class="QLineEdit" name="FFEditorElementEdit" >
+           <property name="maximumSize" >
+            <size>
+             <width>128</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_2" >
+           <property name="text" >
+            <string>Atomtype</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label" >
+           <property name="text" >
+            <string>Element</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" colspan="2" >
+          <widget class="QLineEdit" name="FFEditorTypeEdit" >
+           <property name="maximumSize" >
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="3" >
+          <widget class="QPushButton" name="pushButton" >
+           <property name="text" >
+            <string>Create...</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="4" >
+          <widget class="QLabel" name="FFEditorTypeScoreLabel" >
+           <property name="text" >
+            <string>Score : XXX</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4" >
+          <widget class="QLabel" name="FFEditorNumMatchedLabel" >
+           <property name="text" >
+            <string>Matched : XXX</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="FFEditorTypeGenerateGroup" >
+         <property name="title" >
+          <string>Generate From Model</string>
+         </property>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>9</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="FFEditorGenerateTypeButton" >
+              <property name="text" >
+               <string>For Selection</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <layout class="QHBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>6</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label_3" >
+                <property name="text" >
+                 <string>Max Depth</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="FFEditorDepthSpin" >
+                <property name="value" >
+                 <number>2</number>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="FFEditorRingsGroup" >
+            <property name="title" >
+             <string>Rings</string>
+            </property>
+            <property name="checkable" >
+             <bool>true</bool>
+            </property>
+            <property name="checked" >
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="FFEAtoms" >
+      <attribute name="title" >
+       <string>Atoms</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="FFEditorAtomsTable" >
+         <column>
+          <property name="text" >
+           <string>TypeID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Charge</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>VDW Form</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="FFEditorAtomInfoGroup" >
+         <property name="title" >
+          <string>Function Information</string>
+         </property>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>2</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item row="0" column="0" >
+             <widget class="QLabel" name="FFEditorAtomFormLabel1" >
+              <property name="text" >
+               <string>None</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QLabel" name="FFEditorAtomFormLabel2" >
+              <property name="text" >
+               <string>None</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="1" column="1" >
+             <spacer>
+              <property name="orientation" >
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" >
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="FFEBondsTab" >
+      <attribute name="title" >
+       <string>Bonds</string>
+      </attribute>
+      <widget class="QTableWidget" name="FFEditorBondsTable" >
+       <property name="geometry" >
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>451</width>
+         <height>221</height>
+        </rect>
+       </property>
+       <column>
+        <property name="text" >
+         <string>Type I</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Type J</string>
+        </property>
+       </column>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="FFEAnglesTab" >
+      <attribute name="title" >
+       <string>Angles</string>
+      </attribute>
+      <widget class="QTableWidget" name="FFEditorAnglesTable" >
+       <property name="geometry" >
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>301</width>
+         <height>121</height>
+        </rect>
+       </property>
+       <column>
+        <property name="text" >
+         <string>Type I</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Type J</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Type K</string>
+        </property>
+       </column>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="FFETorsionsTab" >
+      <attribute name="title" >
+       <string>Torsions</string>
+      </attribute>
+      <widget class="QTableWidget" name="FFEditorTorsionsTable" >
+       <property name="geometry" >
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>301</width>
+         <height>121</height>
+        </rect>
+       </property>
+       <column>
+        <property name="text" >
+         <string>Type I</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Type J</string>
+        </property>
+       </column>
+       <column>
+        <property name="text" >
+         <string>Type K</string>
+        </property>
+       </column>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>FFEditorDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>FFEditorDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

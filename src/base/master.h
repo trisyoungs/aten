@@ -22,9 +22,6 @@
 #ifndef ATEN_MASTER_H
 #define ATEN_MASTER_H
 
-//#include "classes/clipboard.h"
-//#include "classes/grid.h"
-//#include "classes/forcefield.h"
 #include "classes/bundle.h"
 #include "classes/cell.h"
 #include "parse/filter.h"
