@@ -59,7 +59,7 @@ bool Model::createExpression()
 	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]
 	if (!typeAll())
 	{
-		msg(DM_NONE,"Couldn't type atoms_.\n");
+		msg(DM_NONE,"Couldn't type atoms.\n");
 		dbgEnd(DM_CALLS,"Model::createExpression");
 		return FALSE;
 	}
@@ -104,12 +104,15 @@ bool Model::createExpression()
 	// 4) Create list of unique atom types now in model
 	// First, create a list of unique type references
 	Reflist<ForcefieldAtom,int> uniqueRef;
-	Refitem<ForcefieldAtom,int> *ri;
+	Refitem<ForcefieldAtom,int> *ri, *rj;
 	ForcefieldAtom *ffa;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) uniqueRef.addUnique(i->type());
 	// Now, populate the uniquetypes list with copies of these atom types
 	for (ri = uniqueRef.first(); ri != NULL; ri = ri->next)
 	{
+		// We only add types to the list that have a unique type name
+		for (rj = uniqueRef.first(); rj != ri; rj = rj->next) if (strcmp(ri->item->name(),rj->item->name()) == 0) break;
+		if (rj != ri) continue;
 		ffa = uniqueTypes_.add();
 		ffa->copy(ri->item);
 	}
