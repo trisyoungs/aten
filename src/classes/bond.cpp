@@ -52,13 +52,6 @@ Bond::Bond()
 	atomJ_ = NULL;
 }
 
-Linkbond::Linkbond()
-{
-	// Public variables
-	next = NULL;
-	prev = NULL;
-}
-
 // Set atoms for bond
 void Bond::setAtoms(Atom *i, Atom *j)
 {

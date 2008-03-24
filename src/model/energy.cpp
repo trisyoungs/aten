@@ -1,6 +1,6 @@
 /*
-	*** Base energy functions
-	*** src/energy/energy.cpp
+	*** Model energy and force calculation
+	*** src/model/energy.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -28,7 +28,7 @@
 #include "base/elements.h"
 
 // Calculate total energy of model (from supplied coordinates)
-double Model::totalEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
+double Model::totalEnergy(Model *srcmodel)
 {
 	dbgBegin(DM_CALLS,"Model::totalEnergy");
 	// Check the expression validity
@@ -44,7 +44,7 @@ double Model::totalEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 	Pattern *p, *p2;
 	p = patterns_.first();
 	// Calculate VDW correction
-	if (prefs.calculateVdw() && (cell_.type() != CT_NONE) && (molecule == -1)) p->vdwCorrectEnergy(&cell_, &energy);
+	if (prefs.calculateVdw() && (cell_.type() != CT_NONE)) p->vdwCorrectEnergy(&cell_, &energy);
 	// Prepare Ewald (if necessary)
 	ElecMethod emodel = prefs.electrostaticsMethod();
 	if (prefs.calculateElec())
@@ -58,16 +58,16 @@ double Model::totalEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 		// Intramolecular Interactions
 		if (prefs.calculateIntra())
 		{
-			p->bondEnergy(srcmodel, &energy, (p == molpattern ? molecule : -1));
-			p->angleEnergy(srcmodel, &energy, (p == molpattern ? molecule : -1));
-			p->torsionEnergy(srcmodel, &energy, (p == molpattern ? molecule : -1));
+			p->bondEnergy(srcmodel, &energy);
+			p->angleEnergy(srcmodel, &energy);
+			p->torsionEnergy(srcmodel, &energy);
 		}
 		// Van der Waals Interactions
 		if (prefs.calculateVdw())
 		{
-			p->vdwIntraPatternEnergy(srcmodel,&energy, (p == molpattern ? molecule : -1));
-			for (Pattern *p2 = p; p2 != NULL; p2 = p2->next)
-				p->vdwInterPatternEnergy(srcmodel,p2,&energy, (p2 == molpattern ? molecule : -1));
+			p->vdwIntraPatternEnergy(srcmodel, &energy);
+			for (p2 = p; p2 != NULL; p2 = p2->next)
+				p->vdwInterPatternEnergy(srcmodel, p2, &energy);
 		}
 		// Electrostatic Interactions
 		if (prefs.calculateElec())
@@ -108,6 +108,55 @@ double Model::totalEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 	return energy.total();
 }
 
+// Calculate total interaction energy of specified molecule with remainder of model
+double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
+{
+	dbgBegin(DM_CALLS,"Model::moleculeEnergy");
+	// Check the expression validity
+	if (!isExpressionValid())
+	{
+		msg(DM_NONE,"Model::moleculeEnergy - No valid energy expression defined for model.\n");
+		dbgEnd(DM_CALLS,"Model::moleculeEnergy");
+		return 0.0;
+	}
+	// Clear the energy store
+	energy.clear();
+	Pattern *p, *p2;
+	// Prepare Ewald (if necessary)
+	ElecMethod emodel = prefs.electrostaticsMethod();
+	if (prefs.calculateElec())
+	{
+		if (emodel == EM_EWALDAUTO) prefs.estimateEwaldParameters(&srcmodel->cell_);
+		// Create the fourier space for use in the Ewald sum
+		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
+	}
+	// Calculate VDW interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
+	for (p = patterns_.first(); p != NULL; p = p->next)
+		molpattern->vdwInterPatternEnergy(srcmodel, p, &energy, molecule);
+	// Electrostatic Interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
+	if (prefs.calculateElec())
+	{
+		switch (emodel)
+		{
+			case (EM_OFF):
+				msg(DM_NONE,"Electrostatics requested but no method of calculation chosen!\n");
+				break;
+			case (EM_COULOMB):
+				for (p = patterns_.first(); p != NULL; p = p->next) molpattern->coulombInterPatternEnergy(srcmodel,p,&energy);
+				break;
+			default: // Ewald
+				for (p = patterns_.first(); p != NULL; p = p->next) p->ewaldRealInterPatternEnergy(srcmodel,p,&energy);
+				// Calculate reciprocal space part (called once from first pattern only)
+				if (p == patterns_.first())
+					p->ewaldReciprocalEnergy(srcmodel,p,patterns_.nItems(),&energy);
+				break;
+		}
+	}
+	energy.totalise();
+	dbgEnd(DM_CALLS,"Model::moleculeEnergy");
+	return energy.total();
+}
+
 // Calculate forces from specified config
 void Model::calculateForces(Model *srcmodel)
 {
@@ -130,7 +179,7 @@ void Model::calculateForces(Model *srcmodel)
 	{
 		if (emodel == EM_EWALDAUTO) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		fourier.prepare(srcmodel,prefs.ewaldKvec());
+		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	while (p != NULL)
 	{

@@ -61,14 +61,4 @@ class Bond
 	Atom *partner(Atom *i);
 };
 
-// Linkable Bond
-class Linkbond : public Bond
-{
-	public:
-	// Constructor
-	Linkbond();
-	// List pointer
-	Linkbond *next, *prev;
-};
-
 #endif

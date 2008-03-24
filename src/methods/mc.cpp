@@ -256,7 +256,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	int n, cycle, nmoves, move, mol, randpat, npats, prog;
 	char s[256], t[32];
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
-	double deltaTotalEnergy, deltaVdwEnergy, deltaElecEnergy, referenceTotalEnergy, referenceVdwEnergy, referenceElecEnergy;
+	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	Vec3<double> v;
 
 	/*
@@ -322,7 +322,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 				if (p->nMols() != 0) bakmodel.copyAtomData(srcmodel, AD_R, p->offset(mol),p->nAtoms());
 
 				// Calculate reference energy (before move)
-				referenceTotalEnergy = srcmodel->totalEnergy(srcmodel, p, mol);
+				referenceMoleculeEnergy = srcmodel->moleculeEnergy(srcmodel, p, mol);
 				referenceVdwEnergy = srcmodel->energy.vdw();
 				referenceElecEnergy = srcmodel->energy.elec();
 
@@ -348,15 +348,15 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 				}
 
 				// Get the energy of this new configuration.
-				enew = srcmodel->totalEnergy(srcmodel, p, mol);
+				enew = srcmodel->moleculeEnergy(srcmodel, p, mol);
 
 				// If the energy has gone up, undo the move.
-				deltaTotalEnergy = enew - referenceTotalEnergy;
+				deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
 				deltaVdwEnergy = srcmodel->energy.vdw() - referenceVdwEnergy;
 				deltaElecEnergy = srcmodel->energy.elec() - referenceElecEnergy;
 
 				// If the energy has gone up, undo the move.
-				if (deltaTotalEnergy > acceptanceEnergy_[move])
+				if (deltaMoleculeEnergy > acceptanceEnergy_[move])
 				{
 					// Put the molecules back to where it was before
 					srcmodel->copyAtomData(&bakmodel, AD_R, p->offset(mol), p->nAtoms());
@@ -367,7 +367,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 					//ecurrent = enew;
 					//currentVdwEnergy = srcmodel->energy.get_vdw();
 					//currentElecEnergy = srcmodel->energy.get_elec();
-					ecurrent += deltaTotalEnergy;
+					ecurrent += deltaMoleculeEnergy;
 					currentVdwEnergy += deltaVdwEnergy;
 					currentElecEnergy += deltaElecEnergy;
 					acceptanceRatio_[0][move] ++;
@@ -377,20 +377,12 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 		} // Loop over MC moves
 
 		gui.processEvents();
-	
-		msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-		for (n=0; n<MT_NITEMS; n++) msg(DM_NONE," %3i",int(acceptanceRatio_[0][n]*100.0));
-		msg(DM_NONE,"\n");
+
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			for (n=0; n<MT_NITEMS; n++)
-			{
-				sprintf(t," %3i",int(acceptanceRatio_[0][n]*100.0));
-				strcat(s,t);
-			}
-			strcat(s,"\n");
-			msg(DM_NONE,s);
+			msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			for (n=0; n<MT_NITEMS; n++) msg(DM_NONE," %3i",int(acceptanceRatio_[0][n]*100.0));
+			msg(DM_NONE,"\n");
 		}
 		elast = ecurrent;
 
@@ -418,7 +410,7 @@ bool MethodMc::disorder(Model *destmodel)
 	char s[256], t[32];
 	Component *c;
 	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
-	double deltaTotalEnergy, deltaVdwEnergy, deltaElecEnergy, referenceTotalEnergy, referenceVdwEnergy, referenceElecEnergy;
+	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	double penalty;
 	bool done;
 	Cell *cell;
@@ -469,7 +461,7 @@ bool MethodMc::disorder(Model *destmodel)
 		// Copy the model and paste it 'nrequested' times into destmodel
 		clip.copyAll(m);
 		for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
-		// Create a new pattern node in the destination model to cover these molecules and set it as the componentn's pattern
+		// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
 		p = destmodel->addPattern(c->nRequested(), m->nAtoms(), m->name());
 		p->setNExpectedMols(c->nRequested());
 		c->setPattern(p);
@@ -596,7 +588,7 @@ bool MethodMc::disorder(Model *destmodel)
 								theta = csRandom() * 360.0;
 								destmodel->rotateMolecule(p,mol,phi,theta);
 							}
-							referenceTotalEnergy = 0.0;
+							referenceMoleculeEnergy = 0.0;
 							referenceVdwEnergy = 0.0;
 							referenceElecEnergy = 0.0;
 							break;
@@ -605,7 +597,7 @@ bool MethodMc::disorder(Model *destmodel)
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and move
 							mol = csRandomi(patternNMols-1);
-							referenceTotalEnergy = destmodel->totalEnergy(destmodel, p, mol);
+							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.elec();
 							bakmodel.copyAtomData(destmodel, AD_R, p->offset(mol), p->nAtoms());
@@ -623,7 +615,7 @@ bool MethodMc::disorder(Model *destmodel)
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and rotate
 							mol = csRandomi(patternNMols-1);
-							referenceTotalEnergy = destmodel->totalEnergy(destmodel, p, mol);
+							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.elec();
 							bakmodel.copyAtomData(destmodel, AD_R, p->offset(mol), p->nAtoms());
@@ -636,15 +628,15 @@ bool MethodMc::disorder(Model *destmodel)
 					}
 
 					// Get the energy of this new configuration.
-					enew = destmodel->totalEnergy(destmodel, p, mol);
+					enew = destmodel->moleculeEnergy(destmodel, p, mol);
 					// Add on any penalty value
 					enew += penalty;
 					// If the energy has gone up, undo the move.
-					deltaTotalEnergy = enew - referenceTotalEnergy;
+					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
 					deltaElecEnergy = destmodel->energy.elec() - referenceElecEnergy;
 				//	printf("enew = %f, eref = %f, edelta = %f\n",enew, eref, edelta);
-					if (deltaTotalEnergy > acceptanceEnergy_[move])
+					if (deltaMoleculeEnergy > acceptanceEnergy_[move])
 					{
 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
 						// Revert to the previous state.
@@ -671,7 +663,7 @@ bool MethodMc::disorder(Model *destmodel)
 						//ecurrent = enew;
 						//currentVdwEnergy = destmodel->energy.get_vdw();
 						//currentElecEnergy = destmodel->energy.get_elec();
-						ecurrent += deltaTotalEnergy;
+						ecurrent += deltaMoleculeEnergy;
 						currentVdwEnergy += deltaVdwEnergy;
 						currentElecEnergy += deltaElecEnergy;
 						acceptanceRatio_[p->id()][move] ++;

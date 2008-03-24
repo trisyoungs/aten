@@ -59,9 +59,8 @@ class ForcefieldAtom;
 class Atom
 {
 	public:
-	// Constructor / Destructor
-	Atom();	
-	~Atom();
+	// Constructor
+	Atom();
 	// List pointers
 	Atom *prev, *next;
 	// Get next selected atom in list

@@ -62,11 +62,6 @@ Atom::Atom()
 	tempi = 0;
 }
 
-// Destructor
-Atom::~Atom()
-{
-}
-
 /*
 // Coordinates
 */
@@ -257,6 +252,7 @@ void Atom::print()
 	msg(DM_NONE,"      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
 	msg(DM_NONE,"      Charge : %8.4f\n",charge_);
 	msg(DM_NONE,"      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
+	msg(DM_NONE,"       Bonds : %i\n",bonds_.nItems());
 	msg(DM_NONE," Environment : %s\n",text_from_AE(env_));
 	msg(DM_NONE,"        O.S. : %i\n",os_);
 }

@@ -398,7 +398,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
 	}
-	msg(DM_NONE,"New pattern node : start=%i, mols=%i, atoms/mol=%i, totalAtoms_=%i, name=%s\n", startAtom_, nMols_, nAtoms_, totalAtoms_, name_.get());
+	msg(DM_NONE,"New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_, nMols_, nAtoms_, totalAtoms_, name_.get());
 	dbgEnd(DM_CALLS,"Pattern::initialise");
 }
 
