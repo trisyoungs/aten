@@ -315,6 +315,10 @@ void Canvas::createLists()
 	glNewList(list_[GLOB_CYLINDER],GL_COMPILE);
 	  glCylinder(prefs.tubeSize(), TRUE);
 	glEndList();
+	// Solid selected cylinder
+	glNewList(list_[GLOB_SELCYLINDER],GL_COMPILE);
+	  glCylinder(prefs.tubeSize()*prefs.selectionScale(), TRUE);
+	glEndList();
 	// Wireframe cylinder
 	glNewList(list_[GLOB_WIRECYLINDER],GL_COMPILE);
 	  glCylinder(prefs.tubeSize(), FALSE);

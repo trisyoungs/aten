@@ -584,7 +584,7 @@ Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 	// Calculate the centre of geometry for this molecule
 	dbgBegin(DM_CALLS,"Pattern::calculate_cog");
 	int offset = startAtom_ + mol*nAtoms_;
-	msg(DM_VERBOSE,"Pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nMols_=%i)\n", name_.get(), mol, offset, nMols_);
+	msg(DM_VERBOSE,"Pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMols_);
 	static Vec3<double> cog, mim_i;
 	Cell *cell = srcmodel->cell();
 	cog.zero();
@@ -605,7 +605,7 @@ Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 {
 	// Calculate the centre of geometry for this molecule
 	dbgBegin(DM_CALLS,"Pattern::calculateCom");
-	msg(DM_VERBOSE,"Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nmols=%i)\n", mol, name_.get(), nMols_);
+	msg(DM_VERBOSE,"Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)\n", mol, name_.get(), nMols_);
 	Vec3<double> com;
 	double massnorm = 0.0;
 	static Vec3<double> mim_i;
@@ -1069,7 +1069,7 @@ void Pattern::initExpression(Model *xmodel)
 	// Some totals are double counted, so...
 	nBonds /= 2;
 	nTorsions /= 2;
-	msg(DM_NONE,"Expression for pattern contains %i bonds, %i angles, and %i torsions_.\n", nBonds, nAngles, nTorsions);
+	msg(DM_NONE,"Expression for pattern '%s' contains %i bonds, %i angles, and %i torsions.\n", name_.get(), nBonds, nAngles, nTorsions);
 	atoms_.createEmpty(nAtoms_);
 	bonds_.createEmpty(nBonds);
 	angles_.createEmpty(nAngles);
@@ -1106,7 +1106,7 @@ bool Pattern::fillExpression(Model *xmodel)
 	int count, ii, jj, kk, ll;
 	// If there is no specified pattern forcefield, use the parent model's instead
 	forcefield_ == NULL ? xff = xmodel->forcefield() : xff = forcefield_;
-	msg(DM_NONE,"Fleshing out expression for %i atoms in model %s...\n", totalAtoms_, xmodel->name());
+	msg(DM_NONE,"Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
 	msg(DM_NONE,"... Using forcefield '%s'...\n",xff->name());
 	// Construct the atom list.
 	// If any atom has not been assigned a type, we *still* include it in the list

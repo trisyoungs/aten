@@ -82,6 +82,8 @@ void Canvas::renderModelAtoms()
 			style_i == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 		  }
 		  else style_i = renderstyle;
+		  // Get atom radius
+		  radius = prefs.atomSize(style_i);
 		  /*
 		  // Draw the atom.
 		  // If the atom's style is DS_STICK, then we only draw if it is unbound.
@@ -97,7 +99,7 @@ void Canvas::renderModelAtoms()
 			if (style_i == DS_SCALED)
 			{
 				// Get the sphere radius and push the matrix again
-				radius = prefs.screenRadius(i);
+				//radius = prefs.screenRadius(i);
 				glPushMatrix();
 				  glScaled(radius,radius,radius);
 				  glCallList(list_[GLOB_UNITATOM]); 
@@ -121,31 +123,30 @@ void Canvas::renderModelAtoms()
 			if (style_i != DS_STICK)
 			{
 				// Draw cylinder bonds.
-				// Change sign of z-coordinate
 				switch (bref->item->order())
 				{
 					case (BT_SINGLE):	// Single bond
-						glCylinder(rj,rij,i->isSelected()*2);
+						glCylinder(rj,rij,0);
 						break;
 					case (BT_DOUBLE):	// Double bond
 						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						glCylinder(rj,rij,i->isSelected()*2);
+						glCylinder(rj,rij,0);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						glCylinder(rj,rij,i->isSelected()*2);
+						glCylinder(rj,rij,0);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 					case (BT_TRIPLE):	// Triple bond
 						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
-						glCylinder(rj,rij,i->isSelected()*2);
+						glCylinder(rj,rij,0);
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						glCylinder(rj,rij,i->isSelected()*2);
+						glCylinder(rj,rij,0);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						glCylinder(rj,rij,i->isSelected()*2);
+						glCylinder(rj,rij,0);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 				}
@@ -233,7 +234,7 @@ void Canvas::renderModelAtoms()
 		glPushMatrix();
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);
-		  // Draw on the transparent highlight
+		  // Draw on the transparent atom and its bonds
 		  if (style_i == DS_SCALED)
 		  {
 			radius = prefs.screenRadius(i);
@@ -243,6 +244,43 @@ void Canvas::renderModelAtoms()
 			glPopMatrix();
 		  }
 		  else style_i == DS_SPHERE ? glCallList(list_[GLOB_SELSPHEREATOM]) : glCallList(list_[GLOB_SELTUBEATOM]);
+		  for (bref = i->bonds(); bref != NULL; bref = bref->next)
+		  {
+			j = bref->item->partner(i);
+			if (j->isHidden()) continue;
+			// We are centred on atom i, so get the vector to atom j. Its more useful to have the half-length of the bond, so scale by 0.5 too.
+			rj = cell->mimd(j, ri);
+			rij = rj.magnitude() * 0.5;
+			rj *= 0.5;
+			// Draw cylinder bonds.
+			switch (bref->item->order())
+			{
+				case (BT_SINGLE):	// Single bond
+					glCylinder(rj,rij,1);
+					break;
+				case (BT_DOUBLE):	// Double bond
+					ijk = i->findBondPlane(j,bref->item,rj);
+					ijk *= 0.1;
+					// Can now draw the bond. Displace each part of the bond +rk or -rk.
+					glTranslated(ijk.x,ijk.y,ijk.z);
+					glCylinder(rj,rij,1);
+					glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
+					glCylinder(rj,rij,1);
+					glTranslated(ijk.x,ijk.y,ijk.z);
+					break;
+				case (BT_TRIPLE):	// Triple bond
+					ijk = i->findBondPlane(j,bref->item,rj);
+					ijk *= 0.1;
+					// Can now draw the bond. Displace each part of the bond +rk or -rk.
+					glCylinder(rj,rij,1);
+					glTranslated(ijk.x,ijk.y,ijk.z);
+					glCylinder(rj,rij,1);
+					glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
+					glCylinder(rj,rij,1);
+					glTranslated(ijk.x,ijk.y,ijk.z);
+					break;
+			}
+		  }
 		glPopMatrix();
 	}
 	// Turn off blending (if not antialiasing)
