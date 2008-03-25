@@ -22,10 +22,6 @@
 #ifndef ATEN_BOND_H
 #define ATEN_BOND_H
 
-// Bond types
-enum BondType { BT_UNSPECIFIED, BT_SINGLE, BT_DOUBLE, BT_TRIPLE, BT_NITEMS };
-BondType BT_from_text(const char *);
-
 // Forward declarations
 class Atom;
 
@@ -35,6 +31,14 @@ class Bond
 	public:
 	// Constructor
 	Bond();
+	// Bond types
+	enum BondType { Unspecified, Single, Double, Triple, nItems };
+	// Bond type from text
+	static BondType bondType(const char *s);
+	// BondType Keywords
+	static const char *bondTypeKeyword(BondType);
+	// Increase BondType (instead of defining postfix increment)
+	static BondType increaseBondType(BondType);
 
 	private:
 	// Pointers to both atoms involved in the bond

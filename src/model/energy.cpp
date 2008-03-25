@@ -131,8 +131,10 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	// Calculate VDW interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
+	//printf("Begin VDW Inter...\n");
 	for (p = patterns_.first(); p != NULL; p = p->next)
 		molpattern->vdwInterPatternEnergy(srcmodel, p, &energy, molecule);
+	//printf("Done.\n");
 	// Electrostatic Interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
 	if (prefs.calculateElec())
 	{

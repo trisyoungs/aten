@@ -328,7 +328,7 @@ int Atom::totalBondOrder()
 }
 
 // Count bonds of specific type
-int Atom::countBonds(BondType type)
+int Atom::countBonds(Bond::BondType type)
 {
 	dbgBegin(DM_CALLS,"Atom::countBonds");
 	int count = 0;

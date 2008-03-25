@@ -133,7 +133,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 	Cell *cell = srcmodel->cell();
 	energy_inter = 0.0;
 	// Outer loop over molecules in *this* pattern
-	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
+	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
 	if (molId == -1)
 	{
 		start1 = 0;
@@ -145,7 +145,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 		finish1 = molId + 1;
 	}
 	aoff1 = startAtom_ + start1 * nAtoms_;
-	//printf("VDWINTER1 %i %i %i\n",start1,finish1,aoff1);
+	//printf("VDWINTER Pattern is '%li', molId = %i: start1/finish1 = %i/%i, otherPattern = %li\n",this,molId,start1,finish1,otherPattern);
 	for (m1=start1; m1<finish1; m1++)
 	{
 		// Inner loop - over *all* molecules in 'otherPattern'
@@ -179,7 +179,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 			if ((this == otherPattern) && (molId == m2)) { aoff2 += nAtoms_; continue; }
 			//printf("      m1/m2=%i/%i  aoff1/aoff2=%i/%i \n",m1,m2,aoff1,aoff2);
 			i = -1;
-			//printf("VDWINTER %li %li [%i-%i:%i]x[%i-%i:%i]\n",this,otherPattern,start1,finish1,m1,start2,finish2,m2);
+			printf("VDWINTER %li %li [%i-%i:%i]x[%i-%i:%i]\n",this,otherPattern,start1,finish1,m1,start2,finish2,m2);
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
 			{
 				i++;

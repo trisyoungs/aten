@@ -84,6 +84,7 @@ void Canvas::renderModelAtoms()
 		  else style_i = renderstyle;
 		  // Get atom radius
 		  radius = prefs.atomSize(style_i);
+		  if (style_i == DS_SCALED) radius *= elements.atomicRadius(i);
 		  /*
 		  // Draw the atom.
 		  // If the atom's style is DS_STICK, then we only draw if it is unbound.
@@ -125,10 +126,10 @@ void Canvas::renderModelAtoms()
 				// Draw cylinder bonds.
 				switch (bref->item->order())
 				{
-					case (BT_SINGLE):	// Single bond
+					case (Bond::Single):	// Single bond
 						glCylinder(rj,rij,0);
 						break;
-					case (BT_DOUBLE):	// Double bond
+					case (Bond::Double):	// Double bond
 						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
@@ -138,7 +139,7 @@ void Canvas::renderModelAtoms()
 						glCylinder(rj,rij,0);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
-					case (BT_TRIPLE):	// Triple bond
+					case (Bond::Triple):	// Triple bond
 						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
@@ -157,11 +158,11 @@ void Canvas::renderModelAtoms()
 				glBegin(GL_LINES);
 				  switch (bref->item->order())
 				  {
-					case (BT_SINGLE):	// Single bond
+					case (Bond::Single):	// Single bond
 						glVertex3d(0.0,0.0,0.0);
 						glVertex3d(rj.x,rj.y,rj.z);
 						break;
-					case (BT_DOUBLE):	// Double bond
+					case (Bond::Double):	// Double bond
 						// Must define a plane in which the bond will lay
 						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
@@ -174,7 +175,7 @@ void Canvas::renderModelAtoms()
 						glVertex3d(rj.x,rj.y,rj.z);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
-					case (BT_TRIPLE):	// Triple bond
+					case (Bond::Triple):	// Triple bond
 						// Draw the components arbitrarily oriented
 						rk = rj;
 						rk.x = rk.y;
@@ -255,10 +256,10 @@ void Canvas::renderModelAtoms()
 			// Draw cylinder bonds.
 			switch (bref->item->order())
 			{
-				case (BT_SINGLE):	// Single bond
+				case (Bond::Single):	// Single bond
 					glCylinder(rj,rij,1);
 					break;
-				case (BT_DOUBLE):	// Double bond
+				case (Bond::Double):	// Double bond
 					ijk = i->findBondPlane(j,bref->item,rj);
 					ijk *= 0.1;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.
@@ -268,7 +269,7 @@ void Canvas::renderModelAtoms()
 					glCylinder(rj,rij,1);
 					glTranslated(ijk.x,ijk.y,ijk.z);
 					break;
-				case (BT_TRIPLE):	// Triple bond
+				case (Bond::Triple):	// Triple bond
 					ijk = i->findBondPlane(j,bref->item,rj);
 					ijk *= 0.1;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.

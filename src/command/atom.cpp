@@ -100,7 +100,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Atom *i = obj.m->addAtom(elements.find(c->argc(0),ZM_ALPHA), c->parent()->penPosition);
-	if (obj.i != NULL) obj.m->bondAtoms(obj.i,i,BT_SINGLE);
+	if (obj.i != NULL) obj.m->bondAtoms(obj.i,i,Bond::Single);
 	master.current.i = i;
 	return CR_SUCCESS;
 }

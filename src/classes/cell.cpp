@@ -345,13 +345,40 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 	// Returns the minimum image coordinates of r1 with respect to r2.
 	// Since we work in fractional cell coordinates, can do simple integer subtraction for cubic and pseudo-cubic boundary conditions
 	static Vec3<double> R;
+	static double half;
 	switch (type_)
 	{
 		// No cell - just return r1
 		case (CT_NONE):
 			R = r1;
 			break;
-		// Remaining boundary conditions are all cubic or pseudo-cubic, so can be grouped together...
+		// Cubic
+		case (CT_CUBIC):
+			R = r1 - r2;
+			half = lengths_.x * 0.5;
+			if (R.x < -half) R.x += lengths_.x;
+			else if (R.x > half) R.x -= lengths_.x;
+			if (R.y < -half) R.y += lengths_.x;
+			else if (R.y > half) R.y -= lengths_.x;
+			if (R.z < -half) R.z += lengths_.x;
+			else if (R.z > half) R.z -= lengths_.x;
+			R += r2;
+			break;
+		// Orthorhombic
+		case (CT_ORTHORHOMBIC):
+			R = r1 - r2;
+			half = lengths_.x * 0.5;
+			if (R.x < -half) R.x += lengths_.x;
+			else if (R.x > half) R.x -= lengths_.x;
+			half = lengths_.y * 0.5;
+			if (R.y < -half) R.y += lengths_.y;
+			else if (R.y > half) R.y -= lengths_.y;
+			half = lengths_.z * 0.5;
+			if (R.z < -half) R.z += lengths_.z;
+			else if (R.z > half) R.z -= lengths_.z;
+			R += r2;
+			break;
+		// Parallelepiped 
 		default:
 			R = r1 - r2;
 			R *= itranspose_;
@@ -413,7 +440,17 @@ void Cell::fold(Vec3<double> &r) const
 		// No cell, so no image to fold into
 		case (CT_NONE):
 			break;
-		// Remaining cell types are cubic or pseudo-cubic, so subtract integer part of position
+		// Cubic / Orthorhombic
+		case (CT_CUBIC):
+		case (CT_ORTHORHOMBIC):
+			if (r.x < 0.0) r.x += lengths_.x;
+			else if (r.x > lengths_.x) r.x -= lengths_.x;
+			if (r.y < 0.0) r.y += lengths_.y;
+			else if (r.y > lengths_.y) r.y -= lengths_.y;
+			if (r.z < 0.0) r.z += lengths_.z;
+			else if (r.z > lengths_.z) r.z -= lengths_.z;
+			break;
+		// Parallelepiped
 		default:
 			newr = r;
 			// Convert these coordinates into fractional cell coordinates...

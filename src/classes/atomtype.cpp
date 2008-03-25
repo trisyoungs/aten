@@ -62,7 +62,7 @@ Atomtype::Atomtype()
 	nAllowedElements_ = 0;
 	nBonds_ = -1;
 	allowedElements_ = NULL;
-	boundBond_ = BT_UNSPECIFIED;
+	boundBond_ = Bond::Unspecified;
 	nRepeat_ = 1;
 	acyclic_ = FALSE;
 	nHydrogen_ = -1;
@@ -326,7 +326,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			keywd.eraseStart(1);
 			Atomtype *newat = boundList_.add();
 			newat->setElements(keywd.get(),ff);
-			if (c == '=') boundBond_ = BT_DOUBLE;
+			if (c == '=') boundBond_ = Bond::Double;
 			newat->expand(optlist.get(),ff,parent);
 			found = TRUE;
 		}
@@ -366,7 +366,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 					break;
 				// Request exact bond type (bond=BondType)
 				case (ATC_BOND):
-					boundBond_ = BT_from_text(optlist.get());
+					boundBond_ = Bond::bondType(optlist.get());
 					break;
 				// Number of times to match (n=int)
 				case (ATC_REPEAT):
@@ -416,7 +416,7 @@ int Atomtype::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model 
 	for (boundi = alist->first(); boundi != NULL; boundi = boundi->next)
 	{
 		// Extra check for bond type definition here
-		if (boundBond_ == BT_UNSPECIFIED) bondscore = 1;
+		if (boundBond_ == Bond::Unspecified) bondscore = 1;
 		else (boundBond_ == boundi->data ? bondscore = 1 : bondscore = 0);
 		// Now do proper atom type check (if we passed the bond check)
 		if (bondscore != 0) score = matchAtom(boundi->item, ringdata, parent, topatom);

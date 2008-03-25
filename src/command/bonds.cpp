@@ -27,15 +27,15 @@ int CommandData::function_CA_NEWBOND(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Third (optional) argument gives bond type
-	BondType bt = BT_SINGLE;
+	Bond::BondType bt = Bond::Single;
 	if (c->hasArg(2))
 	{
 		// Attempt to convert the argument into a BondType.
 		// Try direct conversion from number (bond order) first
 		// If that fails, try string conversion. Then, give up.
 		int n = c->argi(2);
-		if ((n < 1) || (n > 3))	bt = BT_from_text(c->argc(2));
-		else bt = (BondType) n;
+		if ((n < 1) || (n > 3))	bt = Bond::bondType(c->argc(2));
+		else bt = (Bond::BondType) n;
 	}
 	// Add the bond
 	obj.m->bondAtoms(c->argi(0)-1, c->argi(1)-1, bt);
@@ -47,15 +47,15 @@ int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Third (optional) argument gives bond type
-	BondType bt = BT_SINGLE;
+	Bond::BondType bt = Bond::Single;
 	if (c->hasArg(2))
 	{
 		// Attempt to convert the argument into a BondType.
 		// Try direct conversion from number (bond order) first
 		// If that fails, try string conversion. Then, give up.
 		int n = c->argi(2);
-		if ((n < 1) || (n > 3))	bt = BT_from_text(c->argc(2));
-		else bt = (BondType) n;
+		if ((n < 1) || (n > 3))	bt = Bond::bondType(c->argc(2));
+		else bt = (Bond::BondType) n;
 	}
 	// Find the atoms specified
 	Atom *i = obj.m->findAtom(c->argi(0));

@@ -157,13 +157,13 @@ void Pattern::assignHybrids()
 		{
 			switch (bref->item->order())
 			{
-				case (BT_SINGLE):
+				case (Bond::Single):
 					if (i->env() < AE_SP3) i->setEnv(AE_SP3);
 					break;
-				case (BT_DOUBLE):
+				case (Bond::Double):
 					if (i->env() < AE_SP2) i->setEnv(AE_SP2);
 					break;
-				case (BT_TRIPLE):
+				case (Bond::Triple):
 					if (i->env() < AE_SP) i->setEnv(AE_SP);
 					break;
 			}

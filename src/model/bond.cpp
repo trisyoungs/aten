@@ -28,33 +28,52 @@
 #include "base/elements.h"
 
 // Add Bond (pointers)
-void Model::bondAtoms(Atom *i, Atom *j, BondType bt)
+void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 {
-        // Create a new bond ach atom and add them to the atom's own lists.
+        // Create a new bond each atom and add them to the atom's own lists.
 	dbgBegin(DM_CALLS,"Model::bondAtoms");
 	if (i == j) msg(DM_NONE,"Cannot bond an atom to itself!\n");
 	else
 	{
-		//printf("Bonding atoms %i and %i\n",i->id(),j->id());
-		Bond *newbond = new Bond;
-		newbond->setOrder(bt);
-		newbond->setAtomI(i);
-		i->acceptBond(newbond);
-		newbond->setAtomJ(j);
-		j->acceptBond(newbond);
-		logChange(LOG_STRUCTURE);
-		// Add the change to the undo state (if there is one)
-		if (recordingState_ != NULL)
+		// Search for old bond between atoms
+		Bond *b = i->findBond(j);
+		// If we found one, just set the new bond order
+		if (b != NULL)
 		{
-			Change *newchange = recordingState_->addChange();
-			newchange->set(UE_BOND,i->id(),j->id(),bt);
+			// Check order of existing bond
+			if (b->order() != bt)
+			{
+				b->setOrder(bt);
+				logChange(LOG_STRUCTURE);
+				// Add the change to the undo state (if there is one)
+				if (recordingState_ != NULL)
+				{
+					Change *newchange = recordingState_->addChange();
+					newchange->set(UE_BOND,i->id(),j->id(),bt);
+				}
+			}
+		}
+		else
+		{
+			b = new Bond;
+			b->setOrder(bt);
+			b->setAtoms(i,j);
+			i->acceptBond(b);
+			j->acceptBond(b);
+			logChange(LOG_STRUCTURE);
+			// Add the change to the undo state (if there is one)
+			if (recordingState_ != NULL)
+			{
+				Change *newchange = recordingState_->addChange();
+				newchange->set(UE_BOND,i->id(),j->id(),bt);
+			}
 		}
 	}
 	dbgEnd(DM_CALLS,"Model::bondAtoms");
 }
 
 // Add Bond (id's)
-void Model::bondAtoms(int ii, int jj, BondType bt)
+void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 {
         // Create a new bond for each atom and add them to the atom's own lists.
 	dbgBegin(DM_CALLS,"Model::bondAtoms[int]");
@@ -95,7 +114,7 @@ void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 		}
 	}
 	// Store type for use later
-	BondType bt = b->order();
+	Bond::BondType bt = b->order();
 	b->atomI()->detachBond(b);
 	b->atomJ()->detachBond(b);
 	logChange(LOG_STRUCTURE);
@@ -153,7 +172,7 @@ void Model::calculateBonding()
 			if (el == 0) continue;
 			dist = cell_.distance(i,j);
 			radsum = radius_i + elements.atomicRadius(el);
-			if (dist < radsum*tolerance) bondAtoms(i,j,BT_SINGLE);
+			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 		}
 	}
 	msg(DM_NONE," Done.\n");
@@ -201,7 +220,7 @@ void Model::patternCalculateBonding()
 					dist = cell_.distance(i,j);
 				//printf("i %i j %i dist %8.3f\n",i->id(),j->id(),dist);
 					radsum = radius_i + elements.atomicRadius(el);
-					if (dist < radsum*tolerance) bondAtoms(i,j,BT_SINGLE);
+					if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 					j = j->next;
 				}
 				i = i->next;
@@ -233,7 +252,7 @@ void Model::selectionCalculateBonding()
 					dist = cell_.distance(i,j);
 		                        radsum = (elements.atomicRadius(i) + elements.atomicRadius(j));
 					if (dist < radsum*tolerance)
-							if (i->findBond(j) == NULL) bondAtoms(i,j,BT_SINGLE);
+							if (i->findBond(j) == NULL) bondAtoms(i,j,Bond::Single);
 				}
 			}
 		}
@@ -254,7 +273,7 @@ void Model::selectionBondAll()
 			for (j = i->next; j != NULL; j = j->next)
 			{
 				if (j->isSelected())
-					if (i->findBond(j) == NULL) bondAtoms(i,j,BT_SINGLE);
+					if (i->findBond(j) == NULL) bondAtoms(i,j,Bond::Single);
 			}
 		}
 	}
@@ -282,9 +301,9 @@ void Model::selectionClearBonding()
 }
 
 // Alter type of bond
-void Model::changeBond(Bond *b, BondType bt)
+void Model::changeBond(Bond *b, Bond::BondType bt)
 {
-	BondType oldorder = b->order();
+	Bond::BondType oldorder = b->order();
 	b->setOrder(bt);
 	logChange(LOG_STRUCTURE);
 	// Add the change to the undo state (if there is one)
@@ -336,7 +355,7 @@ void Model::augmentBond(Bond *b, int change)
 		//change == +1 ? oldorder ++ : oldorder --;
 	}
 	// Set the new bond order
-	changeBond(b,(BondType) oldorder);
+	changeBond(b,(Bond::BondType) oldorder);
 	dbgEnd(DM_CALLS,"Model::augmentBond");
 }
 

@@ -24,30 +24,28 @@
 #include "classes/ring.h"
 #include <math.h>
 
-// Bond types
-const char *BT_keywords[BT_NITEMS] = { "none", "single", "double", "triple" };
-BondType BT_from_text(const char *s)
-	{ return (BondType) enumSearch("bond type",BT_NITEMS,BT_keywords,s); }
-BondType operator++(BondType &btype,int)
+// BondType enum
+const char *BondTypeKeywords[Bond::nItems] = { "none", "single", "double", "triple" };
+Bond::BondType Bond::bondType(const char *s)
 {
-	if (btype == BT_SINGLE) btype = BT_DOUBLE;
-	else if (btype == BT_DOUBLE) btype = BT_TRIPLE;
-	else if (btype == BT_TRIPLE) btype = BT_SINGLE;
-	return btype;
+	return (Bond::BondType) enumSearch("bond type",Bond::nItems,BondTypeKeywords,s);
 }
-BondType operator--(BondType &btype,int)
+const char *Bond::bondTypeKeyword(Bond::BondType bt)
 {
-	if (btype == BT_TRIPLE) btype = BT_DOUBLE;
-	else if (btype == BT_DOUBLE) btype = BT_SINGLE;
-	else if (btype == BT_SINGLE) btype = BT_TRIPLE;
-	return btype;
+	return BondTypeKeywords[bt];
+}
+Bond::BondType Bond::increaseBondType(BondType btype)
+{
+	if (btype == Bond::Single) return Bond::Double;
+	else if (btype == Bond::Double) return Bond::Triple;
+	return Bond::Single;
 }
 
 // Constructors
 Bond::Bond()
 {
 	// Private variables
-	order_ = BT_UNSPECIFIED;
+	order_ = Bond::Unspecified;
 	atomI_ = NULL;
 	atomJ_ = NULL;
 }
@@ -72,13 +70,13 @@ void Bond::setAtomJ(Atom *j)
 }
 
 // Set bond order
-void Bond::setOrder(BondType bt)
+void Bond::setOrder(Bond::BondType bt)
 {
 	order_ = bt;
 }
 
 // Return order of bond
-BondType Bond::order()
+Bond::BondType Bond::order()
 {
 	return order_;
 }

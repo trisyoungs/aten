@@ -165,7 +165,7 @@ void Change::reverse(Model *m)
 			{
 				// Add bond between stored atom ids
 				msg(DM_VERBOSE,"Replaying bond deletion - atom ids = %i %i\n", data_[0], data_[1]);
-				m->bondAtoms(i,j,(BondType) data_[2]);
+				m->bondAtoms(i,j,(Bond::BondType) data_[2]);
 			}
 			break;
 		// Atom selection (UD_REVERSE) and deselection (UD_FORWARDS)
@@ -190,12 +190,12 @@ void Change::reverse(Model *m)
 			if (direction_ == UD_REVERSE)
 			{
 				msg(DM_VERBOSE,"Reversing bond order change - atoms %i-%i, old = %i, new = %i\n", i->id(), j->id(), data_[3], data_[2]);
-				m->changeBond(b,(BondType) data_[2]);
+				m->changeBond(b,(Bond::BondType) data_[2]);
 			}
 			else
 			{
 				msg(DM_VERBOSE,"Replaying bond order change - atoms %i-%i, old = %i, new = %i\n", i->id(), j->id(), data_[2], data_[3]);
-				m->changeBond(b,(BondType) data_[3]);
+				m->changeBond(b,(Bond::BondType) data_[3]);
 			}
 			break;
 		// Geometry measurement creation (UD_REVERSE) and deletion (UD_FORWARDS)
