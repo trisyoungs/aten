@@ -1,5 +1,5 @@
 /*
-	*** Basic atom
+	*** Atom
 	*** src/classes/atom.h
 	Copyright T. Youngs 2007,2008
 
@@ -29,27 +29,6 @@
 #include "base/constants.h"
 #include <QtOpenGL/QtOpenGL>
 
-// Atom drawing styles
-enum DrawStyle { DS_STICK, DS_TUBE, DS_SPHERE, DS_SCALED, DS_INDIVIDUAL, DS_NITEMS };
-inline DrawStyle operator++(DrawStyle &style,int)
-{
-	if (style == DS_INDIVIDUAL) return style = DS_STICK;
-	else return style = (DrawStyle)(style + 1);
-}
-DrawStyle DS_from_text(const char*);
-const char *text_from_DS(DrawStyle);
-const char **get_DS_strings();
-
-// Atom labels
-enum AtomLabel { AL_ID=1, AL_ELEMENT=2, AL_FFTYPE=4, AL_FFEQUIV=8, AL_CHARGE=16, AL_NITEMS=5 };
-AtomLabel AL_from_text(const char*);
-
-// Hydrogen-add geometries
-enum HAddGeom { HG_LINEAR, HG_PLANAR, HG_TETRAHEDRAL };
-
-// Data items in atom structure
-enum AtomData { AD_ALL=0, AD_R=1, AD_F=2, AD_V=4, AD_Q=8, AD_FIXFREE=16, AD_Z = 32 };
-
 // Forward declarations
 class Model;
 class Bond;
@@ -65,6 +44,22 @@ class Atom
 	Atom *prev, *next;
 	// Get next selected atom in list
 	Atom *nextSelected();
+	// Drawing style enum
+	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
+	static DrawStyle drawStyle(const char*);
+	static const char *drawStyleKeyword(DrawStyle);	
+	// Atom label enum
+	enum AtomLabel { IdLabel=1, ElementLabel=2, TypeLabel=4, EquivLabel=8, ChargeLabel=16, nLabelItems=5 };
+	static AtomLabel atomLabel(const char*);
+	// Hydrogen-add geometries enum
+	enum HAddGeom { LinearHydrogen, PlanarHydrogen, TetrahedralHydrogen };
+	// Atom structure data
+	enum AtomData { AllData=0, PositionData=1, ForceData=2, VelocityData=4, ChargeData=8, FixedData=16, ElementData=32 };
+
+	/*
+	// Misc Functions
+	*/
+	public:
 	// Add bound neighbours to reflist specified
 	void addBoundToReflist(Reflist<Atom,int>*);
 	// Reset all data items in structure
@@ -250,15 +245,15 @@ class Atom
 	*/
 	protected:
 	// How to draw this atom (and its associated bonds)
-	DrawStyle style_;
+	Atom::DrawStyle style_;
 	// Bitvector for atom labelling
 	short int labels_;
 
 	public:
 	// Sets the drawing style of the atom
-	void setStyle(DrawStyle style);
+	void setStyle(Atom::DrawStyle style);
 	// Returns the drawing style of the atom
-	DrawStyle style();
+	Atom::DrawStyle style();
 	// Returns TRUE id the atom has at least one label specified
 	bool hasLabels();
 	// Set label bitvector to specified value
@@ -266,9 +261,9 @@ class Atom
 	// Returns the label bitmask of the atom
 	int labels();
 	// Set the bit for the specified label (if it is not set already)
-	void addLabel(AtomLabel label);
+	void addLabel(Atom::AtomLabel label);
 	// Unsets the bit for the specified label (if it is not unset already)
-	void removeLabel(AtomLabel label);
+	void removeLabel(Atom::AtomLabel label);
 	// Clear all labels from the atom
 	void clearLabels();
 };

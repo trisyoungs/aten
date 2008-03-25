@@ -183,8 +183,8 @@ int CommandData::function_CA_MOUSE(Command *&c, Bundle &obj)
 // Atom screen radii
 int CommandData::function_CA_RADIUS(Command *&c, Bundle &obj)
 {
-	DrawStyle ds = DS_from_text(c->argc(0));
-	if (ds != DS_NITEMS) prefs.setAtomSize(ds, c->argd(1));
+	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
+	if (ds != Atom::nDrawStyles) prefs.setAtomSize(ds, c->argd(1));
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -215,8 +215,8 @@ int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 // View Styles
 int CommandData::function_CA_STYLE(Command *&c, Bundle &obj)
 {
-	DrawStyle ds = DS_from_text(c->argc(0));
-	if (ds != DS_NITEMS)
+	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
+	if (ds != Atom::nDrawStyles)
 	{
 		prefs.setRenderStyle(ds);
 		if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);

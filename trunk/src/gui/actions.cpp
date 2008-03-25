@@ -34,12 +34,12 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 	// If the source action is not checked, ignore the signal
 	if (!action->isChecked()) return;
 	Model *m, *trajframe;
-	DrawStyle ds = DS_STICK;
-	if (action == ui.actionStyleStick) ds = DS_STICK;
-	else if (action == ui.actionStyleTube) ds = DS_TUBE;
-	else if (action == ui.actionStyleSphere) ds = DS_SPHERE;
-	else if (action == ui.actionStyleScaled) ds = DS_SCALED;
-	else if (action == ui.actionStyleIndividual) ds = DS_INDIVIDUAL;
+	Atom::DrawStyle ds = Atom::StickStyle;
+	if (action == ui.actionStyleStick) ds = Atom::StickStyle;
+	else if (action == ui.actionStyleTube) ds = Atom::TubeStyle;
+	else if (action == ui.actionStyleSphere) ds = Atom::SphereStyle;
+	else if (action == ui.actionStyleScaled) ds = Atom::ScaledStyle;
+	else if (action == ui.actionStyleIndividual) ds = Atom::IndividualStyle;
 	prefs.setRenderStyle(ds);
 	// Inform the displayed model
 	m = master.currentModel();

@@ -115,7 +115,7 @@ void Canvas::renderScene(Model *source)
 	glMultMatrixd(rotmat);
 
 	// Set the initial state of lighting in the model
-	prefs.renderStyle() == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
+	prefs.renderStyle() == Atom::StickStyle ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 	// Draw the main model parts
 	// If renderPoint_ matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
 	glPushMatrix();

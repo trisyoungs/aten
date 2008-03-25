@@ -44,7 +44,7 @@ class AtenPrefs : public QDialog
 	*/
 	private:
 	void updateAfterViewPrefs();
-	void setRadiusChanged(DrawStyle ds, double value);
+	void setRadiusChanged(Atom::DrawStyle ds, double value);
 	void setVisibleObject(ViewObject vo, int state);
 	private slots:
 	void on_StickRadiusSpin_valueChanged(double value);

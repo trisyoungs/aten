@@ -24,24 +24,19 @@
 
 #include <iostream>
 #include <getopt.h>
-//#include "base/master.h"   // TGAY
-
-// Command line options
-enum CliOption {
-	CO_BOHR, CO_BOND, CO_CACHE, CO_CENTRE, CO_COMMAND, CO_FF, CO_FOLD, CO_FORMAT, CO_GRID, CO_HELP, CO_INTERACTIVE,
-	CO_MAP, CO_NOBOND, CO_NOCENTRE, CO_NOFOLD, CO_NOPACK, CO_PACK, CO_SCRIPT, CO_UNDO, CO_ZMAP,
-	CO_DEBUG, CO_DEBUGALL, CO_DEBUGFILE, CO_DEBUGMORE, CO_DEBUGPARSE, CO_DEBUGTYPING, CO_VERBOSE,
-	CO_NITEMS };
 
 // Command option data
-class OptionData
+class Cli
 {
+	public:
+	// Command line switches
+	enum CliSwitch { BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, InteractiveSwitch, MapSwitch, NoBondSwitch, NoCentreSwitch, NoFoldSwitch, NoPackSwitch, PackSwitch, ScriptSwitch, UndoLevelSwitch, ZmapSwitch, DebugSwitch, DebugAllSwitch, DebugFileSwitch, DebugMoreSwitch, DebugParseSwitch, DebugTypingSwitch, VerboseSwitch, nSwitchItems };
 	/*
 	// Description of command line option
 	*/
 	public:
 	// Identifier
-	CliOption option;
+	CliSwitch option;
 	// Short option character
 	char shortOpt;
 	// Long option keyword

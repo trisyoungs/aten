@@ -25,10 +25,10 @@
 #include <math.h>
 
 // BondType enum
-const char *BondTypeKeywords[Bond::nItems] = { "none", "single", "double", "triple" };
+const char *BondTypeKeywords[Bond::nBondTypes] = { "none", "single", "double", "triple" };
 Bond::BondType Bond::bondType(const char *s)
 {
-	return (Bond::BondType) enumSearch("bond type",Bond::nItems,BondTypeKeywords,s);
+	return (Bond::BondType) enumSearch("bond type",Bond::nBondTypes,BondTypeKeywords,s);
 }
 const char *Bond::bondTypeKeyword(Bond::BondType bt)
 {

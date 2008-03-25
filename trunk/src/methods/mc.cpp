@@ -319,7 +319,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 				mol = csRandomi(p->nMols());
 	
 				// Copy the coordinates of the current molecule
-				if (p->nMols() != 0) bakmodel.copyAtomData(srcmodel, AD_R, p->offset(mol),p->nAtoms());
+				if (p->nMols() != 0) bakmodel.copyAtomData(srcmodel, Atom::PositionData, p->offset(mol),p->nAtoms());
 
 				// Calculate reference energy (before move)
 				referenceMoleculeEnergy = srcmodel->moleculeEnergy(srcmodel, p, mol);
@@ -359,7 +359,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 				if (deltaMoleculeEnergy > acceptanceEnergy_[move])
 				{
 					// Put the molecules back to where it was before
-					srcmodel->copyAtomData(&bakmodel, AD_R, p->offset(mol), p->nAtoms());
+					srcmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 				}
 				else
 				{
@@ -600,7 +600,7 @@ bool MethodMc::disorder(Model *destmodel)
 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.elec();
-							bakmodel.copyAtomData(destmodel, AD_R, p->offset(mol), p->nAtoms());
+							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Create a random translation vector
 							v.randomUnit();
 							v *= maxStep_[MT_TRANSLATE]*csRandom();
@@ -618,7 +618,7 @@ bool MethodMc::disorder(Model *destmodel)
 							referenceMoleculeEnergy = destmodel->moleculeEnergy(destmodel, p, mol);
 							referenceVdwEnergy = destmodel->energy.vdw();
 							referenceElecEnergy = destmodel->energy.elec();
-							bakmodel.copyAtomData(destmodel, AD_R, p->offset(mol), p->nAtoms());
+							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Do two separate random rotations about the x and y axes.
 							phi = csRandom() * maxStep_[MT_ROTATE];
 							theta = csRandom() * maxStep_[MT_ROTATE];
@@ -649,7 +649,7 @@ bool MethodMc::disorder(Model *destmodel)
 								break;
 							case (MT_DELETE):
 							default:
-								destmodel->copyAtomData(&bakmodel, AD_R, p->offset(mol), p->nAtoms());
+								destmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 								break;
 						}
 					}

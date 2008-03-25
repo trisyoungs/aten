@@ -111,10 +111,10 @@ PrefsData::PrefsData()
 	nScaleSegments_ = 2;
 	scaleColours_ = NULL;
 	setScaleColours();
-	atomSize_[DS_STICK] = 0.1;      // Only used as a selection radius
-	atomSize_[DS_TUBE] = 0.095;
-	atomSize_[DS_SPHERE] = 0.35;
-	atomSize_[DS_SCALED] = 1.0;     // Used as a general scaling factor for all atoms
+	atomSize_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
+	atomSize_[Atom::TubeStyle] = 0.095;
+	atomSize_[Atom::SphereStyle] = 0.35;
+	atomSize_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
 	tubeSize_ = 0.1;
 	selectionScale_ = 1.5;
 	globeSize_ = 75;
@@ -159,7 +159,7 @@ PrefsData::PrefsData()
 	renderObjects_[VO_REGIONS] = TRUE;
 	renderObjects_[VO_FORCEARROWS] = FALSE;
 	renderObjects_[VO_SURFACES] = TRUE;
-	renderStyle_ = DS_STICK;
+	renderStyle_ = Atom::StickStyle;
 
 	// Build
 	showGuide_ = FALSE;
@@ -304,13 +304,13 @@ bool PrefsData::shouldRender(ViewObject vo)
 }
 
 // Set the drawing style of models
-void PrefsData::setRenderStyle(DrawStyle ds)
+void PrefsData::setRenderStyle(Atom::DrawStyle ds)
 {
 	renderStyle_ = ds;
 }
 
 // Return the current drawing style of models
-DrawStyle PrefsData::renderStyle()
+Atom::DrawStyle PrefsData::renderStyle()
 {
 	return renderStyle_;
 }
@@ -360,10 +360,10 @@ int PrefsData::repeatCellsNeg(int i)
 double PrefsData::screenRadius(Atom *i)
 {
 	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
-	DrawStyle dstyle;
+	Atom::DrawStyle dstyle;
 	double radius;
-	renderStyle_ == DS_INDIVIDUAL ? dstyle = i->style() : dstyle = renderStyle_;
-	return (dstyle == DS_SCALED) ? (elements.atomicRadius(i) * atomSize_[DS_SCALED]) : atomSize_[dstyle];
+	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
+	return (dstyle == Atom::ScaledStyle) ? (elements.atomicRadius(i) * atomSize_[Atom::ScaledStyle]) : atomSize_[dstyle];
 }
 
 /*
@@ -371,13 +371,13 @@ double PrefsData::screenRadius(Atom *i)
 */
 
 // Sets the specified atom size to the given value
-void PrefsData::setAtomSize(DrawStyle ds, double f)
+void PrefsData::setAtomSize(Atom::DrawStyle ds, double f)
 {
 	atomSize_[(int)ds] = f;
 }
 
 // Return the specified atom size
-GLdouble PrefsData::atomSize(DrawStyle ds)
+GLdouble PrefsData::atomSize(Atom::DrawStyle ds)
 {
 	return atomSize_[(int)ds];
 }

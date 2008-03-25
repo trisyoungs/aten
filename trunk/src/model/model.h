@@ -359,9 +359,9 @@ class Model
 	*/
 	private:
 	// Add label to atom
-	void addLabel(Atom *i, AtomLabel al);
+	void addLabel(Atom *i, Atom::AtomLabel al);
 	// Remove atom label
-	void removeLabel(Atom *i, AtomLabel al);
+	void removeLabel(Atom *i, Atom::AtomLabel al);
 	// Clear labelling from atom
 	void clearLabels(Atom *i);
 
@@ -371,9 +371,9 @@ class Model
 	// Clear all atom labelling from the current selection
 	void selectionClearLabels();
 	// Clear specified atom labelling from the current selection
-	void selectionRemoveLabels(AtomLabel);
+	void selectionRemoveLabels(Atom::AtomLabel);
 	// Set the specified label for all atoms currently selected
-	void selectionAddLabels(AtomLabel);
+	void selectionAddLabels(Atom::AtomLabel);
 	// Set the visibility property for all selected atoms
 	void selectionSetHidden(bool);
 	// Sets the 'fixed' variable of all selected atoms to TRUE
@@ -520,7 +520,7 @@ class Model
 	*/
 	private:
 	// Iteratively add hydrogens to the specified atom in the desired general geometry
-	void addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry);
+	void addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry);
 
 	public:
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
@@ -648,7 +648,7 @@ class Model
 	// Render from trajectory
 	void setRenderFromFrames();
 	// Set the drawing style of the current atom selection
-	void selectionSetStyle(DrawStyle);
+	void selectionSetStyle(Atom::DrawStyle);
 	// Return the current rendering source for the model
 	Model *renderSource();
 

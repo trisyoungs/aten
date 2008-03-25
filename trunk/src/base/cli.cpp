@@ -26,60 +26,60 @@
 #include "base/elements.h"
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
-OptionData clioptions[] = {
-	{ CO_BOHR,		'b',"bohr",		0,
+Cli cliSwitches[] = {
+	{ Cli::BohrSwitch,		'b',"bohr",		0,
 		"",		"Converts model/grid atomic positions from Bohr to Angstrom" },
-	{ CO_BOND,		'\0',"bond",		0,
+	{ Cli::BondSwitch,		'\0',"bond",		0,
 		"",		"Force (re)calculation of bonding in the model" },
-	{ CO_CACHE,		'\0',"cachelimit",	1,
+	{ Cli::CacheSwitch,		'\0',"cachelimit",	1,
 		"<limit>",	"Set the trajectory cache limit to <limit> kb"},
-	{ CO_CENTRE,		'\0',"centre",		0,
+	{ Cli::CentreSwitch,		'\0',"centre",		0,
 		"",		"Force centering of atomic coordinates at zero" },
-	{ CO_COMMAND,		'c',"command",		1,
+	{ Cli::CommandSwitch,		'c',"command",		1,
 		"<commands>", "Execute supplied commands before main program execution" },
-	{ CO_FF,		'\0',"ff",		1,
+	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
 		"<file>",	"Load the specified forcefield file" },
-	{ CO_FOLD,		'\0',"fold",		0,
+	{ Cli::FoldSwitch,		'\0',"fold",		0,
 		"",		"Force folding of atoms in periodic systems" },
-	{ CO_FORMAT,		'f',"format",		0,
+	{ Cli::FormatSwitch,		'f',"format",		0,
 		"",		"Load models from command-line with specified <format>" },
-	{ CO_GRID,		'g',"grid",		1,
+	{ Cli::GridSwitch,		'g',"grid",		1,
 		"<file>",	"Load the specified gridded data file" },
-	{ CO_HELP,		'h',"help",		0,
+	{ Cli::HelpSwitch,		'h',"help",		0,
 		"",		"Print this information" },
-	{ CO_INTERACTIVE,	'i',"interactive",	0,
+	{ Cli::InteractiveSwitch,	'i',"interactive",	0,
 		"",		"Enter interactive mode" },
-	{ CO_MAP,		'm',"map",		1,
+	{ Cli::MapSwitch,		'm',"map",		1,
 		"<name=element,...>",	"Map file atomtypes to elements" },
-	{ CO_NOBOND,		'\0',"nobond",		0,
+	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
 		"",		"Prevent (re)calculation of bonding in the model" },
-	{ CO_NOCENTRE,		'\0',"nocentre",	0,
+	{ Cli::NoCentreSwitch,		'\0',"nocentre",	0,
 		"",		"Prevent centering of atomic coordinates at zero" },
-	{ CO_NOFOLD,		'\0',"nofold",		0,
+	{ Cli::NoFoldSwitch,		'\0',"nofold",		0,
 		"",		"Prevent folding of atoms in periodic systems" },
-	{ CO_NOPACK,		'\0',"nopack",		0,
+	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
 		"",		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
-	{ CO_PACK,		'\0',"pack",		0,
+	{ Cli::PackSwitch,		'\0',"pack",		0,
 		"",		"Force generation of symmetry-equivalent atoms from spacegroup information" },
-	{ CO_SCRIPT,		's',"script",		1,
+	{ Cli::ScriptSwitch,		's',"script",		1,
 		"<file",	"Load and execute the script file specified" },
-	{ CO_UNDO,		'u',"maxundo",		1,
+	{ Cli::UndoLevelSwitch,		'u',"maxundo",		1,
 		"<nlevels>",	"Set the maximum number of undo levels per model (-1 = unlimited)" },
-	{ CO_ZMAP,		'z',"zmap",		1,
+	{ Cli::ZmapSwitch,		'z',"zmap",		1,
 		"<mapstyle>",	"Override filter element mapping style" },
-	{ CO_DEBUG,		'd',"debug",		0,
+	{ Cli::DebugSwitch,		'd',"debug",		0,
 		"",		"Print major subroutine call information" },
-	{ CO_DEBUGALL,		'\0',"debugall",	0,
+	{ Cli::DebugAllSwitch,		'\0',"debugall",	0,
 		"",		"Print out all debug information" },
-	{ CO_DEBUGFILE,		'\0',"debugfile",	0,
+	{ Cli::DebugFileSwitch,		'\0',"debugfile",	0,
 		"",		"Print out verbose information from file filter routines" },
-	{ CO_DEBUGMORE,		'\0',"debugmore",	0,
+	{ Cli::DebugMoreSwitch,		'\0',"debugmore",	0,
 		"",		"Print all subroutine call information" },
-	{ CO_DEBUGPARSE,	'\0',"debugparse",	0,
+	{ Cli::DebugParseSwitch,	'\0',"debugparse",	0,
 		"",		"Print out verbose information from file parsing routines" },
-	{ CO_DEBUGTYPING,	'\0',"debugtyping",	0,
+	{ Cli::DebugTypingSwitch,	'\0',"debugtyping",	0,
 		"",		"Print out verbose information from atom typing routines" },
-	{ CO_VERBOSE,		'v',"verbose",		0,
+	{ Cli::VerboseSwitch,		'v',"verbose",		0,
 		"",		"Enable verbose program output" }
 };
 
@@ -100,42 +100,42 @@ void MasterData::debugCli(int argc, char *argv[])
 		arg = (isShort ? &argv[n][1] : &argv[n][2]);
 		// Cycle over defined CLI options and search for this one
 		match = FALSE;
-		for (o=0; o<CO_NITEMS; o++)
+		for (o=0; o<Cli::nSwitchItems; o++)
 		{
 			// Check short option character or long option text
-			if (isShort) match = (*arg == clioptions[o].shortOpt);
-			else match = (strcmp(arg,clioptions[o].longOpt) == 0 ? TRUE : FALSE);
+			if (isShort) match = (*arg == cliSwitches[o].shortOpt);
+			else match = (strcmp(arg,cliSwitches[o].longOpt) == 0 ? TRUE : FALSE);
 			if (match) break;
 		}
 		// If we have a match then 'o' contains the option identifier
 		// Only look for debug options here...
-		if (match && (o >= CO_DEBUG))
+		if (match && (o >= Cli::DebugSwitch))
 		{
 			switch (o)
 			{
 				// Turn on call debugging
-				case (CO_DEBUG):
+				case (Cli::DebugSwitch):
 					addDebugLevel(DM_CALLS);
 					break;
 				// Turn on debug messages for atom typing
-				case (CO_DEBUGTYPING):
+				case (Cli::DebugTypingSwitch):
 					addDebugLevel(DM_TYPING);
 					break;
 				// Turn on debug messages for atom typing
-				case (CO_DEBUGPARSE):
+				case (Cli::DebugParseSwitch):
 					addDebugLevel(DM_PARSE);
 					break;
 				// Turn on debug messages for atom typing
-				case (CO_DEBUGFILE):
+				case (Cli::DebugFileSwitch):
 					addDebugLevel(DM_FILTERS);
 					break;
 				// Turn on debug messages for more calls
-				case (CO_DEBUGMORE):
+				case (Cli::DebugMoreSwitch):
 					addDebugLevel(DM_CALLS);
 					addDebugLevel(DM_MORECALLS);
 					break;
 				// Turn on debug messages for all calls
-				case (CO_DEBUGALL):
+				case (Cli::DebugAllSwitch):
 					addDebugLevel(DM_CALLS);
 					addDebugLevel(DM_MORECALLS);
 					addDebugLevel(DM_VERBOSE);
@@ -143,7 +143,7 @@ void MasterData::debugCli(int argc, char *argv[])
 					addDebugLevel(DM_TYPING);
 					break;
 				// Turn on verbose messaging
-				case (CO_VERBOSE):
+				case (Cli::VerboseSwitch):
 					addDebugLevel(DM_VERBOSE);
 					break;
 			}
@@ -175,37 +175,37 @@ int MasterData::parseCli(int argc, char *argv[])
 			isShort = (argv[argn][1] != '-');
 			arg = (isShort ? &argv[argn][1] : &argv[argn][2]);
 			// Cycle over defined CLI options and search for this one
-			for (opt=0; opt<CO_NITEMS; opt++)
+			for (opt=0; opt<Cli::nSwitchItems; opt++)
 			{
 				// Check short option character or long option text
-				if (isShort) match = (*arg == clioptions[opt].shortOpt);
-				else match = (strcmp(arg,clioptions[opt].longOpt) == 0 ? TRUE : FALSE);
+				if (isShort) match = (*arg == cliSwitches[opt].shortOpt);
+				else match = (strcmp(arg,cliSwitches[opt].longOpt) == 0 ? TRUE : FALSE);
 				if (match) break;
 			}
 			// If we have a match then 'o' contains the option identifier. Otherwise try to load the argument as a model.
-			if (match && (opt < CO_DEBUG))
+			if (match && (opt < Cli::DebugSwitch))
 			{
 				// If it's a debug option then we've already dealt with it
 				switch (opt)
 				{
 					// Convert coordinates from Bohr to Angstrom
-					case (CO_BOHR):
+					case (Cli::BohrSwitch):
 						prefs.setCoordsInBohr(TRUE);
 						break;
 					// Force bonding calculation of atoms on load
-					case (CO_BOND):
+					case (Cli::BondSwitch):
 						prefs.setBondOnLoad(PS_YES);
 						break;
 					// Set trajectory cache limit
-					case (CO_CACHE):
+					case (Cli::CacheSwitch):
 						prefs.setCacheLimit(atoi(argv[++argn]));
 						break;
 					// Force model centering on load (for non-periodic systems)
-					case (CO_CENTRE):
+					case (Cli::CentreSwitch):
 						prefs.setCentreOnLoad(PS_YES);
 						break;
 					// Read script commands from passed string
-					case (CO_COMMAND):
+					case (Cli::CommandSwitch):
 						cl = master.commands.add();
 						if (cl->cacheLine(argv[++argn])) master.setProgramMode(PM_COMMAND);
 						else
@@ -215,35 +215,35 @@ int MasterData::parseCli(int argc, char *argv[])
 						}
 						break;
 					// Load the specified forcefield
-					case (CO_FF):
+					case (Cli::ForcefieldSwitch):
 						master.loadForcefield(argv[++argn]);
 						break;
 					// Force folding (MIM'ing) of atoms in periodic systems on load
-					case (CO_FOLD):
+					case (Cli::FoldSwitch):
 						prefs.setFoldOnLoad(PS_YES);
 						break;
 					// Set forced model load format
-					case (CO_FORMAT):
+					case (Cli::FormatSwitch):
 						modelfilter = master.findFilter(FT_MODEL_IMPORT, argv[++argn]);
 						if (modelfilter == NULL) return -1;
 						break;
 					// Load surface
-					case (CO_GRID):
+					case (Cli::GridSwitch):
 						argn++;
 						f = master.probeFile(argv[argn], FT_GRID_IMPORT);
 						if (f != NULL) f->execute(argv[argn]);
 						break;
 					// Display help
-					case (CO_HELP):
+					case (Cli::HelpSwitch):
 						printUsage();
 						return -1;
 						break;
 					// Enter interactive mode
-					case (CO_INTERACTIVE):
+					case (Cli::InteractiveSwitch):
 						master.setProgramMode(PM_INTERACTIVE);
 						break;
 					// Set type mappings
-					case (CO_MAP):
+					case (Cli::MapSwitch):
 						// Get the argument and parse it internally
 						parser.getArgsDelim(argv[++argn], PO_DEFAULTS);
 						for (n=0; n<parser.nArgs(); n++)
@@ -256,27 +256,27 @@ int MasterData::parseCli(int argc, char *argv[])
 							printf("MAP %s -> %i\n", ri->item, ri->data);
 						break;
 					// Prohibit bonding calculation of atoms on load
-					case (CO_NOBOND):
+					case (Cli::NoBondSwitch):
 						prefs.setBondOnLoad(PS_NO);
 						break;
 					// Prohibit model centering on load (for non-periodic systems)
-					case (CO_NOCENTRE):
+					case (Cli::NoCentreSwitch):
 						prefs.setCentreOnLoad(PS_NO);
 						break;
 					// Prohibit folding (MIM'ing) of atoms in periodic systems on load
-					case (CO_NOFOLD):
+					case (Cli::NoFoldSwitch):
 						prefs.setFoldOnLoad(PS_NO);
 						break;
 					// Force packing (application of symmetry operators) on load
-					case (CO_NOPACK):
+					case (Cli::NoPackSwitch):
 						prefs.setPackOnLoad(PS_NO);
 						break;
 					// Prohibit packing (application of symmetry operators) on load
-					case (CO_PACK):
+					case (Cli::PackSwitch):
 						prefs.setPackOnLoad(PS_YES);
 						break;
 					// Cache a script file
-					case (CO_SCRIPT):
+					case (Cli::ScriptSwitch):
 						cl = master.scripts.add();
 						if (cl->load(argv[++argn])) master.setProgramMode(PM_COMMAND);
 						else
@@ -286,17 +286,16 @@ int MasterData::parseCli(int argc, char *argv[])
 						}
 						break;
 					// Set maximum number of undolevels per model
-					case (CO_UNDO):
+					case (Cli::UndoLevelSwitch):
 						prefs.setMaxUndoLevels(atoi(argv[++argn]));
 						break;
 					// Set the type of element (Z) mapping to use in name conversion
-					case (CO_ZMAP):
+					case (Cli::ZmapSwitch):
 						zm = ZM_from_text(argv[++argn]);
 						if (zm != ZM_NITEMS) prefs.setZmapType(zm);
 						break;
 					default:
 						printf("Unrecognised command-line option '%s'.\n",argv[argn]);
-						dbgEnd(DM_CALLS,"cli::parse");
 						return -1;
 				}
 			}
@@ -326,18 +325,18 @@ void MasterData::printUsage() const
 {
 	printf("Usage: aten [options] [<model> ...]\n");
 	printf("\nProgram Options:\n");
-	for (int n=0; n<CO_NITEMS; n++)
+	for (int n=0; n<Cli::nSwitchItems; n++)
 	{
-		if (clioptions[n].argument == 0)
+		if (cliSwitches[n].argument == 0)
 		{
-			if (clioptions[n].shortOpt != '\0') printf("\t-%c, --%s\n", clioptions[n].shortOpt, clioptions[n].longOpt);
-			else printf("\t--%s\n", clioptions[n].longOpt);
+			if (cliSwitches[n].shortOpt != '\0') printf("\t-%c, --%s\n", cliSwitches[n].shortOpt, cliSwitches[n].longOpt);
+			else printf("\t--%s\n", cliSwitches[n].longOpt);
 		}
 		else
 		{
-			if (clioptions[n].shortOpt != '\0') printf("\t-%c %s, --%s %s\n", clioptions[n].shortOpt, clioptions[n].argText, clioptions[n].longOpt, clioptions[n].argText);
-			else printf("\t--%s %s\n", clioptions[n].longOpt, clioptions[n].argText);
+			if (cliSwitches[n].shortOpt != '\0') printf("\t-%c %s, --%s %s\n", cliSwitches[n].shortOpt, cliSwitches[n].argText, cliSwitches[n].longOpt, cliSwitches[n].argText);
+			else printf("\t--%s %s\n", cliSwitches[n].longOpt, cliSwitches[n].argText);
 		}
-		printf("\t\t%s\n",clioptions[n].description);
+		printf("\t\t%s\n",cliSwitches[n].description);
 	}
 }

@@ -41,7 +41,7 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 }
 
 // Set atom style
-void AtenForm::setAtomStyle(DrawStyle ds)
+void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
 	if (target == NULL) master.currentModel()->selectionSetStyle(ds);
 	else target->setStyle(ds);
@@ -50,26 +50,26 @@ void AtenForm::setAtomStyle(DrawStyle ds)
 
 void AtenForm::on_actionAtomStyleStick_triggered(bool checked)
 {
-	setAtomStyle(DS_STICK);
+	setAtomStyle(Atom::StickStyle);
 }
 
 void AtenForm::on_actionAtomStyleTube_triggered(bool checked)
 {
-	setAtomStyle(DS_TUBE);
+	setAtomStyle(Atom::TubeStyle);
 }
 
 void AtenForm::on_actionAtomStyleSphere_triggered(bool checked)
 {
-	setAtomStyle(DS_SPHERE);
+	setAtomStyle(Atom::SphereStyle);
 }
 
 void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 {
-	setAtomStyle(DS_SCALED);
+	setAtomStyle(Atom::ScaledStyle);
 }
 
 // Set atom labels
-void AtenForm::setAtomLabel(AtomLabel al)
+void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
 	Model *m = master.currentModel();
 	m->beginUndostate("Add Labels");
@@ -99,27 +99,27 @@ void AtenForm::removeAtomLabels(bool all)
 
 void AtenForm::on_actionAtomLabelID_triggered(bool checked)
 {
-	setAtomLabel(AL_ID);
+	setAtomLabel(Atom::IdLabel);
 }
 
 void AtenForm::on_actionAtomLabelCharge_triggered(bool checked)
 {
-	setAtomLabel(AL_CHARGE);
+	setAtomLabel(Atom::ChargeLabel);
 }
 
 void AtenForm::on_actionAtomLabelFFType_triggered(bool checked)
 {
-	setAtomLabel(AL_FFTYPE);
+	setAtomLabel(Atom::TypeLabel);
 }
 
 void AtenForm::on_actionAtomLabelElement_triggered(bool checked)
 {
-	setAtomLabel(AL_ELEMENT);
+	setAtomLabel(Atom::ElementLabel);
 }
 
 void AtenForm::on_actionAtomLabelFFEquiv_triggered(bool checked)
 {
-	setAtomLabel(AL_FFEQUIV);
+	setAtomLabel(Atom::EquivLabel);
 }
 
 void AtenForm::on_actionAtomLabelClear_triggered(bool checked)

@@ -27,7 +27,7 @@
 void Canvas::renderModelAtoms()
 {
 	dbgBegin(DM_CALLS,"Canvas::renderModelAtoms");
-	static DrawStyle style_i, renderstyle;
+	static Atom::DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
 	static short int cindex;
 	static AtomColours scheme;
@@ -75,21 +75,21 @@ void Canvas::renderModelAtoms()
 		  // Get position
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);
-		  // Grab atom style and toggle lighting state if DS_INDIVIDUAL is the main drawing style
-		  if (renderstyle == DS_INDIVIDUAL)
+		  // Grab atom style and toggle lighting state if Atom::IndividualStyle is the main drawing style
+		  if (renderstyle == Atom::IndividualStyle)
 		  {
 			style_i = i->style();
-			style_i == DS_STICK ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
+			style_i == Atom::StickStyle ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 		  }
 		  else style_i = renderstyle;
 		  // Get atom radius
 		  radius = prefs.atomSize(style_i);
-		  if (style_i == DS_SCALED) radius *= elements.atomicRadius(i);
+		  if (style_i == Atom::ScaledStyle) radius *= elements.atomicRadius(i);
 		  /*
 		  // Draw the atom.
-		  // If the atom's style is DS_STICK, then we only draw if it is unbound.
+		  // If the atom's style is Atom::StickStyle, then we only draw if it is unbound.
 		  */
-		  if (style_i == DS_STICK)
+		  if (style_i == Atom::StickStyle)
 		  {
 			glColor3fv(ambient);
 			i->isSelected() ? glLineWidth(3.0) : glLineWidth(1.0);
@@ -97,7 +97,7 @@ void Canvas::renderModelAtoms()
 		  }
 		  else
 		  {
-			if (style_i == DS_SCALED)
+			if (style_i == Atom::ScaledStyle)
 			{
 				// Get the sphere radius and push the matrix again
 				//radius = prefs.screenRadius(i);
@@ -106,7 +106,7 @@ void Canvas::renderModelAtoms()
 				  glCallList(list_[GLOB_UNITATOM]); 
 				glPopMatrix();
 			}
-			else style_i == DS_SPHERE ? glCallList(list_[GLOB_SPHEREATOM]) : glCallList(list_[GLOB_TUBEATOM]);
+			else style_i == Atom::SphereStyle ? glCallList(list_[GLOB_SPHEREATOM]) : glCallList(list_[GLOB_TUBEATOM]);
 		  }
 		  /*
 		  // Draw the bonds.
@@ -121,7 +121,7 @@ void Canvas::renderModelAtoms()
 			rij = rj.magnitude() * 0.5;
 			rj *= 0.5;
 			// Now determine what sort of bond we're going to draw
-			if (style_i != DS_STICK)
+			if (style_i != Atom::StickStyle)
 			{
 				// Draw cylinder bonds.
 				switch (bref->item->order())
@@ -208,10 +208,10 @@ void Canvas::renderModelAtoms()
 	glEnable(GL_LIGHTING);		// Make sure lighting is on
 	for (i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
-		// Grab atom style and toggle lighting state if DS_INDIVIDUAL is the main drawing style
-		renderstyle == DS_INDIVIDUAL ? style_i = i->style() : style_i = renderstyle;
+		// Grab atom style and toggle lighting state if Atom::IndividualStyle is the main drawing style
+		renderstyle == Atom::IndividualStyle ? style_i = i->style() : style_i = renderstyle;
 		// Skip stick, hidden or unselected atoms...
-		if (style_i == DS_STICK) continue;
+		if (style_i == Atom::StickStyle) continue;
 		if (!i->isSelected()) continue;
 		if (i->isHidden()) continue;
 		// Define atom colours
@@ -236,7 +236,7 @@ void Canvas::renderModelAtoms()
 		  ri = i->r();
 		  glTranslated(ri.x,ri.y,ri.z);
 		  // Draw on the transparent atom and its bonds
-		  if (style_i == DS_SCALED)
+		  if (style_i == Atom::ScaledStyle)
 		  {
 			radius = prefs.screenRadius(i);
 			glPushMatrix();
@@ -244,7 +244,7 @@ void Canvas::renderModelAtoms()
 			  glCallList(list_[GLOB_SELUNITATOM]);
 			glPopMatrix();
 		  }
-		  else style_i == DS_SPHERE ? glCallList(list_[GLOB_SELSPHEREATOM]) : glCallList(list_[GLOB_SELTUBEATOM]);
+		  else style_i == Atom::SphereStyle ? glCallList(list_[GLOB_SELSPHEREATOM]) : glCallList(list_[GLOB_SELTUBEATOM]);
 		  for (bref = i->bonds(); bref != NULL; bref = bref->next)
 		  {
 			j = bref->item->partner(i);

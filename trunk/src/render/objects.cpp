@@ -121,7 +121,7 @@ void Canvas::glSubsel3d()
 	static Vec3<double> ir;
 	double radius;
 	Refitem<Atom,int> *ri;
-	DrawStyle renderstyle, style_i;
+	Atom::DrawStyle renderstyle, style_i;
 	Atom *i, *lastatom = NULL;
 	renderstyle = prefs.renderStyle();
 	ri = subselection_.first();
@@ -132,19 +132,19 @@ void Canvas::glSubsel3d()
 		// Draw a wireframe sphere at the atoms position
 		glPushMatrix();
 		  glTranslated(ir.x,ir.y,ir.z);
-		  renderstyle == DS_INDIVIDUAL ? style_i = i->style() : style_i = renderstyle;
+		  renderstyle == Atom::IndividualStyle ? style_i = i->style() : style_i = renderstyle;
 		  switch (style_i)
 		  {
-			case (DS_STICK):
+			case (Atom::StickStyle):
 				glCallList(list_[GLOB_WIRETUBEATOM]);
 				break;
-			case (DS_TUBE):
+			case (Atom::TubeStyle):
 				glCallList(list_[GLOB_WIRETUBEATOM]);
 				break;
-			case (DS_SPHERE):
+			case (Atom::SphereStyle):
 				glCallList(list_[GLOB_WIRESPHEREATOM]);
 				break;
-			case (DS_SCALED): 
+			case (Atom::ScaledStyle): 
 				radius = prefs.screenRadius(i);
 				glPushMatrix();
 				  glScaled(radius,radius,radius);
