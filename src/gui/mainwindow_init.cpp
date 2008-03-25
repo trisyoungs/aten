@@ -106,14 +106,14 @@ void AtenForm::finaliseUi()
 	// Hide the stack widget initially
 	ui.MainWindowStack->hide();
 
-	// Set correct DrawStyle on toolbar
+	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
-		case (DS_STICK): ui.actionStyleStick->setChecked(true); break;
-		case (DS_TUBE): ui.actionStyleTube->setChecked(true); break;
-		case (DS_SPHERE): ui.actionStyleSphere->setChecked(true); break;
-		case (DS_SCALED): ui.actionStyleScaled->setChecked(true); break;
-		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(true); break;
+		case (Atom::StickStyle): ui.actionStyleStick->setChecked(true); break;
+		case (Atom::TubeStyle): ui.actionStyleTube->setChecked(true); break;
+		case (Atom::SphereStyle): ui.actionStyleSphere->setChecked(true); break;
+		case (Atom::ScaledStyle): ui.actionStyleScaled->setChecked(true); break;
+		case (Atom::IndividualStyle): ui.actionStyleIndividual->setChecked(true); break;
 	}
 
 	// Create master group for stackpage buttons that change user action modes
@@ -301,14 +301,14 @@ void AtenForm::finaliseUi()
 void AtenForm::setControls()
 {
 	dbgBegin(DM_CALLS,"AtenForm::setControls");
-	// Set correct DrawStyle on toolbar
+	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
-		case (DS_STICK): ui.actionStyleStick->setChecked(TRUE); break;
-		case (DS_TUBE): ui.actionStyleTube->setChecked(TRUE); break;
-		case (DS_SPHERE): ui.actionStyleSphere->setChecked(TRUE); break;
-		case (DS_SCALED): ui.actionStyleScaled->setChecked(TRUE); break;
-		case (DS_INDIVIDUAL): ui.actionStyleIndividual->setChecked(TRUE); break;
+		case (Atom::StickStyle): ui.actionStyleStick->setChecked(TRUE); break;
+		case (Atom::TubeStyle): ui.actionStyleTube->setChecked(TRUE); break;
+		case (Atom::SphereStyle): ui.actionStyleSphere->setChecked(TRUE); break;
+		case (Atom::ScaledStyle): ui.actionStyleScaled->setChecked(TRUE); break;
+		case (Atom::IndividualStyle): ui.actionStyleIndividual->setChecked(TRUE); break;
 	}
 	// Set some menu items
 	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);

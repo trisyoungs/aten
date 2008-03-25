@@ -47,10 +47,10 @@ void Model::hydrogenSatisfy(Atom *target)
 		if (numh != 0)
 		{
 			// Simplest cases - atom has no bonds or all single bonds - we add in a tetrahedral geometry
-			if (i->nBonds() == 0 || i->nBonds() == nsingle) addHydrogens(i,numh,HG_TETRAHEDRAL);
+			if (i->nBonds() == 0 || i->nBonds() == nsingle) addHydrogens(i,numh,Atom::TetrahedralHydrogen);
 			// Otherwise, must work out the correct geometry to add hydrogens in...
-			else if (ndouble != 0) addHydrogens(i,numh,HG_PLANAR);
-			else addHydrogens(i,numh,HG_LINEAR);
+			else if (ndouble != 0) addHydrogens(i,numh,Atom::PlanarHydrogen);
+			else addHydrogens(i,numh,Atom::LinearHydrogen);
 		}
 	}
 	projectAll();
@@ -58,7 +58,7 @@ void Model::hydrogenSatisfy(Atom *target)
 }
 
 // Iteratively add hydrogens to specified atom (giving supplied geometry)
-void Model::addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry)
+void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 {
 	// Iteratively add hydrogens to the molecule conforming to the desired geometry specified
 	dbgBegin(DM_CALLS,"atom::addHydrogens");
@@ -71,9 +71,9 @@ void Model::addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry)
 	// Add new hydrogens based on the geometry type, and then work out from what bonds there are already...
 	switch (geometry)
 	{
-		case (HG_LINEAR): theta = 180.0 / DEGRAD; break;
-		case (HG_PLANAR): theta = 120.0 / DEGRAD; break;
-		case (HG_TETRAHEDRAL): theta = 109.5 / DEGRAD; break;
+		case (Atom::LinearHydrogen): theta = 180.0 / DEGRAD; break;
+		case (Atom::PlanarHydrogen): theta = 120.0 / DEGRAD; break;
+		case (Atom::TetrahedralHydrogen): theta = 109.5 / DEGRAD; break;
 	}
 	// Switches put new coordinates in 'newhpos' - an atom is created an placed here at the end
 	for (int n=0; n<nhydrogen; n++)
@@ -101,7 +101,7 @@ void Model::addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry)
 				newhpos = mim_a1 * -bondlength * cos(theta) + perp * bondlength * sin(theta);
 				break;
 			case (2):
-				// Two bonds, so work out 'pointing' vector and adjust to desired angle (if !HG_PLANAR)
+				// Two bonds, so work out 'pointing' vector and adjust to desired angle (if !Atom::PlanarHydrogen)
 				// Get mim coordinates of the two bound atoms
 				a1 = firstbond->item->partner(target);
 				a2 = firstbond->next->item->partner(target);
@@ -114,7 +114,7 @@ void Model::addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry)
 				if (perp.magnitude() < 0.0001)
 				{
 					perp.set(1,0,0);
-					geometry = HG_PLANAR;
+					geometry = Atom::PlanarHydrogen;
 					tempv.set(1,0,0);
 				}
 				else
@@ -123,7 +123,7 @@ void Model::addHydrogens(Atom *target, int nhydrogen, HAddGeom geometry)
 					tempv = mim_a1 + mim_a2;
 					tempv.normalise();
 				}
-				if (geometry != HG_PLANAR)
+				if (geometry != Atom::PlanarHydrogen)
 					newhpos = tempv * -bondlength * cos(theta*0.5) + perp * -bondlength * sin(theta*0.5);
 				else newhpos = tempv * -bondlength;
 				break;

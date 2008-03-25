@@ -179,7 +179,7 @@ void Model::selectionSetFree()
 }
 
 // Set selection style
-void Model::selectionSetStyle(DrawStyle ds)
+void Model::selectionSetStyle(Atom::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setStyle(ds);

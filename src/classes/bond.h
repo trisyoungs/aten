@@ -32,7 +32,7 @@ class Bond
 	// Constructor
 	Bond();
 	// Bond types
-	enum BondType { Unspecified, Single, Double, Triple, nItems };
+	enum BondType { Unspecified, Single, Double, Triple, nBondTypes };
 	// Bond type from text
 	static BondType bondType(const char *s);
 	// BondType Keywords

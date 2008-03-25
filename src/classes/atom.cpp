@@ -27,18 +27,22 @@
 #include "base/debug.h"
 
 // Atom drawing styles
-const char *DS_strings[DS_NITEMS] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
-DrawStyle DS_from_text(const char *s)
-	{ return (DrawStyle) enumSearch("rendering style",DS_NITEMS,DS_strings,s); }
-const char **get_DS_strings()
-	{ return DS_strings; }
-const char *text_from_DS(DrawStyle i)
-	{ return DS_strings[i]; }
+const char *DrawStyleKeywords[Atom::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
+Atom::DrawStyle Atom::drawStyle(const char *s)
+{
+	return (Atom::DrawStyle) enumSearch("draw style", Atom::nDrawStyles, DrawStyleKeywords, s);
+}
+const char *Atom::drawStyleKeyword(Atom::DrawStyle i)
+{
+	return DrawStyleKeywords[i];
+}
 
 // Atom labels
-const char *AL_keywords[AL_NITEMS] = { "id", "element", "type", "ffequiv", "charge" };
-AtomLabel AL_from_text(const char *s)
-	{ return (AtomLabel) int(pow(2,enumSearch("atom label type",AL_NITEMS,AL_keywords,s))); }
+const char *AtomLabelKeywords[Atom::nLabelItems] = { "id", "element", "type", "ffequiv", "charge" };
+Atom::AtomLabel Atom::atomLabel(const char *s)
+{
+	return (Atom::AtomLabel) int(pow(2,enumSearch("atom label", Atom::nLabelItems, AtomLabelKeywords, s)));
+}
 
 // Constructor
 Atom::Atom()
@@ -54,7 +58,7 @@ Atom::Atom()
 	selected_ = FALSE;
 	hidden_ = FALSE;
 	screenRadius_ = 0.0;
-	style_ = DS_STICK;
+	style_ = StickStyle;
 	labels_ = 0;
 	// Public variables
 	next = NULL;
@@ -244,7 +248,7 @@ void Atom::copyStyle(Atom *source)
 void Atom::print()
 {
 	msg(DM_NONE,"Atom ID %i (%s):\n", id_, elements.name(this));
-	msg(DM_NONE," %s, %s, style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), text_from_DS(style_));
+	msg(DM_NONE," %s, %s, style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyleKeyword(style_));
 	msg(DM_NONE," Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
 	msg(DM_NONE," World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
 	msg(DM_NONE,"Screen Coord : %8.4f %8.4f \n",rScreen_.x,rScreen_.y,rScreen_.z);
@@ -560,13 +564,13 @@ double Atom::screenRadius()
 */
 
 // Sets the drawing style of the atom
-void Atom::setStyle(DrawStyle style)
+void Atom::setStyle(Atom::DrawStyle style)
 {
 	style_ = style;
 }
 
 // Returns the drawing style of the atom
-DrawStyle Atom::style()
+Atom::DrawStyle Atom::style()
 {
 	return style_;
 }
@@ -590,11 +594,11 @@ int Atom::labels()
 }
 
 // Set the bit for the specified label (if it is not set already)
-void Atom::addLabel(AtomLabel label) { if (!(labels_&label)) labels_ += label;
+void Atom::addLabel(Atom::AtomLabel label) { if (!(labels_&label)) labels_ += label;
 }
 
 // Unsets the bit for the specified label (if it is not unset already)
-void Atom::removeLabel(AtomLabel label) { if (labels_&label) labels_ -= label;
+void Atom::removeLabel(Atom::AtomLabel label) { if (labels_&label) labels_ -= label;
 }
 
 // Clear all labels from the atom

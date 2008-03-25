@@ -122,7 +122,7 @@ class PrefsData
 	// Size in pixels of the viewport to draw the rotation globe in.
 	int globeSize_;
 	// Rendering style of models
-	DrawStyle renderStyle_;
+	Atom::DrawStyle renderStyle_;
 
 	public:
 	// Set the visibility of an object
@@ -132,9 +132,9 @@ class PrefsData
 	// Return the radius of an atom calculated from the element and draw style
 	double screenRadius(Atom*);
 	// Set the drawing style of models
-	void setRenderStyle(DrawStyle ds);
+	void setRenderStyle(Atom::DrawStyle ds);
 	// Return the current drawing style of models
-	DrawStyle renderStyle();
+	Atom::DrawStyle renderStyle();
 	// Set the scale of labels in the model
 	void setLabelScale(double v);
 	// Return the current label scale
@@ -155,7 +155,7 @@ class PrefsData
 	*/
 	private:
 	// Atom sizes / radii
-	GLdouble atomSize_[DS_NITEMS];
+	GLdouble atomSize_[Atom::nDrawStyles];
 	// Tube size for DS_SPHERE / DS_TUBE / DS_SCALED
 	GLdouble tubeSize_;
 	// Size scaling for atom selection transparency
@@ -183,9 +183,9 @@ class PrefsData
 
 	public:
 	// Sets the specified atom size to the given value
-	void setAtomSize(DrawStyle ds, double f);
+	void setAtomSize(Atom::DrawStyle ds, double f);
 	// Return the specified atom size
-	GLdouble atomSize(DrawStyle ds);
+	GLdouble atomSize(Atom::DrawStyle ds);
 	// Sets the tube size in DS_TUBE
 	void setTubeSize(double f);
 	// Return the tube size used in DS_TUBE

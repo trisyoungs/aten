@@ -423,8 +423,8 @@ class AtenForm : public QMainWindow
 	// Atom Popup Functions
 	*/
 	private:
-	void setAtomStyle(DrawStyle ds);
-	void setAtomLabel(AtomLabel al);
+	void setAtomStyle(Atom::DrawStyle ds);
+	void setAtomLabel(Atom::AtomLabel al);
 	void removeAtomLabels(bool all);
 	void setAtomHidden(bool hidden);
 

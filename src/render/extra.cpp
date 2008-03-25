@@ -69,7 +69,7 @@ void Canvas::renderExtra3d()
 			glPushMatrix();
 			  glTranslated(r.x,r.y,r.z);
 			  // Determine how we'll draw the new bond / atom
-			  if (prefs.renderStyle() == DS_STICK)
+			  if (prefs.renderStyle() == Atom::StickStyle)
 			  {
 				// Simple - draw line from atomHover_ to mouse position
 				glBegin(GL_LINES);
@@ -83,13 +83,13 @@ void Canvas::renderExtra3d()
 				glTranslated(mouse.x, mouse.y, mouse.z);
 				switch (prefs.renderStyle())
 				{
-					case (DS_TUBE):
+					case (Atom::TubeStyle):
 						glCallList(list_[GLOB_WIRETUBEATOM]);
 						break;
-					case (DS_SPHERE):
+					case (Atom::SphereStyle):
 						glCallList(list_[GLOB_WIRESPHEREATOM]);
 						break;
-					case (DS_SCALED):
+					case (Atom::ScaledStyle):
 						glCallList(list_[GLOB_WIRESPHEREATOM]);
 						break;
 				}

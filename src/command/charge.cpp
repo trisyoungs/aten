@@ -42,7 +42,7 @@ int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 		msg(DM_NONE,"Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
 		return CR_FAIL;
 	}
-	else frame->copyAtomData(obj.m, AD_Q);
+	else frame->copyAtomData(obj.m, Atom::ChargeData);
 	return CR_SUCCESS;
 }
 

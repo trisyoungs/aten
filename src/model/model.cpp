@@ -253,7 +253,7 @@ void Model::removeTyping()
 */
 
 // Add label to atom
-void Model::addLabel(Atom *i, AtomLabel al)
+void Model::addLabel(Atom *i, Atom::AtomLabel al)
 {
 	int oldlabels = i->labels();
 	i->addLabel(al);
@@ -266,7 +266,7 @@ void Model::addLabel(Atom *i, AtomLabel al)
 }
 
 // Remove atom label
-void Model::removeLabel(Atom *i, AtomLabel al)
+void Model::removeLabel(Atom *i, Atom::AtomLabel al)
 {
 	int oldlabels = i->labels();
 	i->removeLabel(al);
@@ -304,13 +304,13 @@ void Model::selectionClearLabels()
 }
 
 // Remove specific labels in selection
-void Model::selectionRemoveLabels(AtomLabel al)
+void Model::selectionRemoveLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
 }
 
 // Add atom labels
-void Model::selectionAddLabels(AtomLabel al)
+void Model::selectionAddLabels(Atom::AtomLabel al)
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
 }
@@ -453,12 +453,12 @@ void Model::copyAtomData(Model *srcmodel, int dat)
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		// Copy data items referenced in 'dat'
-		if ((dat&AD_R) || (dat == AD_ALL)) i->r() = j->r();
-		if ((dat&AD_F) || (dat == AD_ALL)) i->f() = j->f();
-		if ((dat&AD_V) || (dat == AD_ALL)) i->v() = j->v();
-		if ((dat&AD_Z) || (dat == AD_ALL)) i->setElement(j->element());
-		if ((dat&AD_Q) || (dat == AD_ALL)) i->setCharge(j->charge());
-		if ((dat&AD_FIXFREE) || (dat == AD_ALL)) i->setPositionFixed(j->hasFixedPosition());
+		if ((dat&Atom::PositionData) || (dat == Atom::AllData)) i->r() = j->r();
+		if ((dat&Atom::ForceData) || (dat == Atom::AllData)) i->f() = j->f();
+		if ((dat&Atom::VelocityData) || (dat == Atom::AllData)) i->v() = j->v();
+		if ((dat&Atom::ElementData) || (dat == Atom::AllData)) i->setElement(j->element());
+		if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) i->setCharge(j->charge());
+		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->hasFixedPosition());
 		j = j->next;
 	}
 	//msg(DM_VERBOSE,"Copied data for %i atoms from model '%s' to model '%s'.\n", count);
@@ -492,12 +492,12 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 			for (int n=startatom; n<finishatom; n++)
 			{
 				// Copy data items referenced in 'dat'
-				if ((dat&AD_R) || (dat == AD_ALL)) ii[n]->r() = jj[n]->r();
-				if ((dat&AD_F) || (dat == AD_ALL)) ii[n]->f() = jj[n]->f();
-				if ((dat&AD_V) || (dat == AD_ALL)) ii[n]->v() = jj[n]->v();
-				if ((dat&AD_Z) || (dat == AD_ALL)) ii[n]->setElement(jj[n]->element());
-				if ((dat&AD_Q) || (dat == AD_ALL)) ii[n]->setCharge(jj[n]->charge());
-				if ((dat&AD_FIXFREE) || (dat == AD_ALL)) ii[n]->setPositionFixed(jj[n]->hasFixedPosition());
+				if ((dat&Atom::PositionData) || (dat == Atom::AllData)) ii[n]->r() = jj[n]->r();
+				if ((dat&Atom::ForceData) || (dat == Atom::AllData)) ii[n]->f() = jj[n]->f();
+				if ((dat&Atom::VelocityData) || (dat == Atom::AllData)) ii[n]->v() = jj[n]->v();
+				if ((dat&Atom::ElementData) || (dat == Atom::AllData)) ii[n]->setElement(jj[n]->element());
+				if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) ii[n]->setCharge(jj[n]->charge());
+				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->hasFixedPosition());
 			}
 			msg(DM_VERBOSE,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
 		}
