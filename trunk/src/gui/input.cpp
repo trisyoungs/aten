@@ -290,6 +290,7 @@ void Canvas::endMode(MouseButton button)
 	double area, radius;
 	Atom *atoms[4], *i;
 	Bond *b;
+	Bond::BondType bt;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::endMode - datamodel == NULL.\n");
@@ -397,7 +398,14 @@ void Canvas::endMode(MouseButton button)
 				displayModel_->projectAtom(i);
 			}
 			// Now bond the atoms, unless atomHover_ and i are the same (i.e. the button was clicked and not moved)
-			if (atomHover_ != i) displayModel_->bondAtoms(i,atomHover_,BT_SINGLE);
+			if (atomHover_ != i)
+			{
+				// Search for existing bond between atoms
+				b = i->findBond(atomHover_);
+				if (b == NULL) bt = Bond::Single;
+				else bt = Bond::increaseBondType(b->order());
+				displayModel_->bondAtoms(i,atomHover_,bt);
+			}
 			displayModel_->endUndostate();
 			break;
 		case (UA_TRANSATOM):
@@ -424,13 +432,13 @@ void Canvas::endMode(MouseButton button)
 			if (b == NULL)
 			{
 				displayModel_->beginUndostate("Bond Atoms");
-				displayModel_->bondAtoms(atoms[0],atoms[1],BondType(activeMode_-UA_BONDSINGLE+1));
+				displayModel_->bondAtoms(atoms[0],atoms[1],Bond::BondType(activeMode_-UA_BONDSINGLE+1));
 				displayModel_->endUndostate();
 			}
 			else
 			{
 				displayModel_->beginUndostate("Change Bond");
-				displayModel_->changeBond(b,BondType(activeMode_-UA_BONDSINGLE+1));
+				displayModel_->changeBond(b,Bond::BondType(activeMode_-UA_BONDSINGLE+1));
 				displayModel_->endUndostate();
 			}
 			subselection_.clear();

@@ -66,7 +66,7 @@ class Clipbond
 	// Pointers to both atoms involved in the bond
 	Clipatom *atomI_, *atomJ_;
 	// Bond order
-	BondType order_;
+	Bond::BondType order_;
 
 	public:
 	// Set clipatoms for bond
@@ -76,9 +76,9 @@ class Clipbond
 	// Return second clipatom in bond
 	Clipatom *atomJ();
 	// Set bond order
-	void setOrder(BondType bt);
+	void setOrder(Bond::BondType bt);
 	// Return order of bond
-	BondType order();
+	Bond::BondType order();
 	// Returns the partner of the specified atom in the bond structure
 	//Clipatom *partner(Clipatom *i);
 };

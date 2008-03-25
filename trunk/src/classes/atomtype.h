@@ -143,7 +143,7 @@ class Atomtype
 	// Number of times this match is required
 	int nRepeat_;
 	// Type of bond to bound (parent) atom
-	BondType boundBond_;
+	Bond::BondType boundBond_;
 	
 	public:
 	// Expand the allowedElements_ array with the element string provided

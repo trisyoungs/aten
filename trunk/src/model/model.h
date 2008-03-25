@@ -237,13 +237,13 @@ class Model
 	// Augment bond between supplied atoms
 	void augmentBond(Atom *i, Atom *j, int change);
 	// Add bond of specified type between atoms
-	void bondAtoms(Atom *i, Atom *j, BondType bt);
+	void bondAtoms(Atom *i, Atom *j, Bond::BondType bt);
 	// Add bond of specified type between atoms (by id)
-	void bondAtoms(int ii, int jj, BondType bt);
+	void bondAtoms(int ii, int jj, Bond::BondType bt);
 	// Delete bond between specified atoms
 	void unbondAtoms(Atom *i, Atom *j, Bond *b = NULL);
 	// Change type of specified bond
-	void changeBond(Bond *b, BondType bt);
+	void changeBond(Bond *b, Bond::BondType bt);
 	// Clear all bonding in model
 	void clearBonding();
 	// Calculate bonding in the model

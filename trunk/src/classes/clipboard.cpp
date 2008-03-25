@@ -75,13 +75,13 @@ void Clipbond::setAtoms(Clipatom *i, Clipatom *j)
 }
 
 // Set bond order
-void Clipbond::setOrder(BondType bt)
+void Clipbond::setOrder(Bond::BondType bt)
 {
 	order_ = bt;
 }
 
 // Return order of bond
-BondType Clipbond::order()
+Bond::BondType Clipbond::order()
 {
 	return order_;
 }

@@ -178,7 +178,7 @@ class Atom
 	// Return the total bond order of the atom
 	int totalBondOrder();
 	// Return the number of bonds of specified type to the atom
-	int countBonds(BondType);
+	int countBonds(Bond::BondType);
 	// Calculate the bond order between this atom and the specified atom
 	double bondOrder(Atom*);
 	// Calculates the geometry of the atom's bound environment
