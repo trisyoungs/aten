@@ -28,7 +28,7 @@
 // Select Atom
 void Model::selectAtom(Atom *i)
 {
-	dbgBegin(DM_MORECALLS,"Model::selectAtom (%li)",i);
+	dbgBegin(Debug::MoreCalls,"Model::selectAtom (%li)",i);
 	if (!i->isSelected())
 	{
 		i->setSelected(TRUE);
@@ -41,13 +41,13 @@ void Model::selectAtom(Atom *i)
 			newchange->set(UE_SELECT,i->id());
 		}
 	}
-	dbgEnd(DM_MORECALLS,"Model::selectAtom (%li)",i);
+	dbgEnd(Debug::MoreCalls,"Model::selectAtom (%li)",i);
 }
 
 // Deselect Atom
 void Model::deselectAtom(Atom *i)
 {
-	dbgBegin(DM_MORECALLS,"Model::deselectAtom (%li)",i);
+	dbgBegin(Debug::MoreCalls,"Model::deselectAtom (%li)",i);
 	if (i->isSelected())
 	{
 		i->setSelected(FALSE);
@@ -60,30 +60,30 @@ void Model::deselectAtom(Atom *i)
 			newchange->set(-UE_SELECT,i->id());
 		}
 	}
-	dbgEnd(DM_MORECALLS,"Model::deselectAtom (%li)",i);
+	dbgEnd(Debug::MoreCalls,"Model::deselectAtom (%li)",i);
 }
 
 // Toggle Selection State
 void Model::selectionToggle(Atom *i)
 {
-	dbgBegin(DM_MORECALLS,"Model::selectionToggle (%li)",i);
+	dbgBegin(Debug::MoreCalls,"Model::selectionToggle (%li)",i);
 	i->isSelected() ? deselectAtom(i) : selectAtom(i);
-	dbgEnd(DM_MORECALLS,"Model::selectionToggle (%li)",i);
+	dbgEnd(Debug::MoreCalls,"Model::selectionToggle (%li)",i);
 }
 
 // Invert Current Selection
 void Model::selectionInvert()
 {
-	dbgBegin(DM_CALLS,"Model::selectionInvert");
+	dbgBegin(Debug::Calls,"Model::selectionInvert");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 		i->isSelected() ? deselectAtom(i) : selectAtom(i);
-	dbgEnd(DM_CALLS,"Model::selectionInvert");
+	dbgEnd(Debug::Calls,"Model::selectionInvert");
 }
 
 // Delete Selected Atoms
 void Model::selectionDelete()
 {
-	dbgBegin(DM_CALLS,"Model::selectionDelete");
+	dbgBegin(Debug::Calls,"Model::selectionDelete");
 	Atom *i, *tempi;
 	int count = 0;
 	master.initialiseProgress("Deleting atoms_...", atoms_.nItems());
@@ -100,13 +100,13 @@ void Model::selectionDelete()
 		if (!master.updateProgress(++count)) break;
 	}
 	master.cancelProgress();
-	dbgEnd(DM_CALLS,"Model::selectionDelete");
+	dbgEnd(Debug::Calls,"Model::selectionDelete");
 }
 
 // Expand Current Selection
 void Model::selectionExpand()
 {
-	dbgBegin(DM_CALLS,"Model::selectionExpand");
+	dbgBegin(Debug::Calls,"Model::selectionExpand");
 	Atom *i;
 	Refitem<Bond,int> *bref;
 	// Store the current selection state in i->tempi
@@ -114,24 +114,24 @@ void Model::selectionExpand()
 	// Now use the temporary state to find atoms where we select atomic neighbours
 	for (i = atoms_.first(); i != NULL; i = i->next)
 		if (i->tempi) for (bref = i->bonds(); bref != NULL; bref = bref->next) selectAtom(bref->item->partner(i));
-	dbgEnd(DM_CALLS,"Model::selectionExpand");
+	dbgEnd(Debug::Calls,"Model::selectionExpand");
 }
 
 // Select All Atoms
 void Model::selectAll()
 {
-	dbgBegin(DM_CALLS,"Model::selectAll");
+	dbgBegin(Debug::Calls,"Model::selectAll");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected()) selectAtom(i);
-	dbgEnd(DM_CALLS,"Model::selectAll");
+	dbgEnd(Debug::Calls,"Model::selectAll");
 }
 
 // Deselect All Atoms
 void Model::selectNone()
 {
-	dbgBegin(DM_CALLS,"Model::selectNone");
+	dbgBegin(Debug::Calls,"Model::selectNone");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) deselectAtom(i);
 	nSelected_ = 0;
-	dbgEnd(DM_CALLS,"Model::selectNone");
+	dbgEnd(Debug::Calls,"Model::selectNone");
 }
 
 // Atom at Screen Coordinates
@@ -139,7 +139,7 @@ Atom *Model::atomOnScreen(double x1, double y1)
 {
 	// See if an atom exists under the coordinates x1,y1
 	// Ignore 'hidden' atoms_.
-	dbgBegin(DM_CALLS,"Model::atomOnScreen");
+	dbgBegin(Debug::Calls,"Model::atomOnScreen");
 	// Make sure we have a valid projection
 	projectAll();
 	Atom *closest = NULL;
@@ -170,7 +170,7 @@ Atom *Model::atomOnScreen(double x1, double y1)
 			i = i->next;
 		}
 	#endif
-	dbgEnd(DM_CALLS,"Model::atomOnScreen");
+	dbgEnd(Debug::Calls,"Model::atomOnScreen");
 	return closest;
 }
 
@@ -178,7 +178,7 @@ Atom *Model::atomOnScreen(double x1, double y1)
 void Model::selectBox(double x1, double y1, double x2, double y2)
 {
 	// Box selection - choose all the atoms within the selection area
-	dbgBegin(DM_CALLS,"Model::selectBox");
+	dbgBegin(Debug::Calls,"Model::selectBox");
 	#ifdef HAS_GUI
 		float t;
 		Atom *i, *closest;
@@ -195,7 +195,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2)
 				if ((sr.y >= y1) && (sr.y <= y2)) selectAtom(i);
 		}
 	#endif
-	dbgEnd(DM_CALLS,"Model::selectBox");
+	dbgEnd(Debug::Calls,"Model::selectBox");
 }
 
 // Tree Select
@@ -205,7 +205,7 @@ void Model::selectTree(Atom *i)
 	// From here, select all atoms that are bound - if they are already
 	// selected then ignore them. If they are not already selected, then
 	// recursively call the routine on that atom.
-	dbgBegin(DM_CALLS,"Model::selectTree");
+	dbgBegin(Debug::Calls,"Model::selectTree");
 	selectAtom(i);
 	Refitem<Bond,int> *bref = i->bonds();
 	while (bref != NULL)
@@ -218,21 +218,21 @@ void Model::selectTree(Atom *i)
 		}
 		bref = bref->next;
 	}
-	dbgEnd(DM_CALLS,"Model::selectTree");
+	dbgEnd(Debug::Calls,"Model::selectTree");
 }
 
 // Select by Element
 void Model::selectElement(Atom *target)
 {
 	// Select all atoms which are the same element as the atom i
-	dbgBegin(DM_CALLS,"Model::selectElement");
+	dbgBegin(Debug::Calls,"Model::selectElement");
 	Atom *i = atoms_.first();
 	while (i != NULL)
 	{
 		if (i->element() == target->element()) selectAtom(i);
 		i = i->next;
 	}
-	dbgEnd(DM_CALLS,"Model::selectElement");
+	dbgEnd(Debug::Calls,"Model::selectElement");
 }
 
 // Select by element (from ID)
@@ -247,7 +247,7 @@ void Model::selectElement(int id)
 void Model::selectRadial(Atom *target, double radius)
 {
 	// Select all atoms which are within the distance 'radius' from atom 'target'
-	dbgBegin(DM_CALLS,"Model::selectRadial");
+	dbgBegin(Debug::Calls,"Model::selectRadial");
 	Atom *i = atoms_.first();
 	printf("Selection radius is %8.4f Angstroms\n",radius);
 	while (i != NULL)
@@ -256,27 +256,27 @@ void Model::selectRadial(Atom *target, double radius)
 		else if (distance(target,i) < radius) selectAtom(i);
 		i = i->next;
 	}
-	dbgEnd(DM_CALLS,"Model::selectRadial");
+	dbgEnd(Debug::Calls,"Model::selectRadial");
 }
 
 // Select Pattern
 void Model::selectPattern(Pattern *p)
 {
 	// Select all atoms covered by the specified pattern.
-	dbgBegin(DM_CALLS,"Model::selectPattern");
+	dbgBegin(Debug::Calls,"Model::selectPattern");
 	Atom *i = p->firstAtom();
 	for (int n=0; n<p->totalAtoms(); n++)
 	{
 		selectAtom(i);
 		i = i->next;
 	}
-	dbgEnd(DM_CALLS,"Model::selectPattern");
+	dbgEnd(Debug::Calls,"Model::selectPattern");
 }
 
 // Get first selected
 Atom *Model::firstSelected()
 {
-	dbgBegin(DM_CALLS,"Model::firstSelected");
+	dbgBegin(Debug::Calls,"Model::firstSelected");
 	Atom *result = NULL;
 	Atom *i = atoms_.first();
 	while (i != NULL)
@@ -288,14 +288,14 @@ Atom *Model::firstSelected()
 		}
 		i = i->next;
 	}
-	dbgEnd(DM_CALLS,"Model::firstSelected");
+	dbgEnd(Debug::Calls,"Model::firstSelected");
 	return result;
 }
 
 // Select overlapping atoms
 void Model::selectOverlaps(double tolerance)
 {
-	dbgBegin(DM_CALLS,"Model::selectOverlaps");
+	dbgBegin(Debug::Calls,"Model::selectOverlaps");
 	Atom *i, *j;
 	double deltar;
 	selectNone();
@@ -307,10 +307,10 @@ void Model::selectOverlaps(double tolerance)
 			deltar = cell_.distance(i, j);
 			if (deltar < tolerance)
 			{
-				msg(DM_NONE,"Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements.symbol(j), deltar, i->id()+1, elements.symbol(i));
+				msg(Debug::None,"Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements.symbol(j), deltar, i->id()+1, elements.symbol(i));
 				selectAtom(j);
 			}
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::selectOverlaps");
+	dbgEnd(Debug::Calls,"Model::selectOverlaps");
 }

@@ -107,18 +107,18 @@ bool Canvas::setWidget(TCanvas *w)
 void Canvas::realize()
 {
 	// Sets the canvas to use a widget for output.
-	dbgBegin(DM_CALLS,"Canvas::realize");
+	dbgBegin(Debug::Calls,"Canvas::realize");
 	valid_ = TRUE;
 	initGl();
-	dbgEnd(DM_CALLS,"Canvas::realize");
+	dbgEnd(Debug::Calls,"Canvas::realize");
 }
 
 // Invalidate
 void Canvas::postRedisplay()
 {
-	dbgBegin(DM_CALLS,"Canvas::postRedisplay");
+	dbgBegin(Debug::Calls,"Canvas::postRedisplay");
 	if (gui.exists()) contextWidget_->paintGL();
-	dbgEnd(DM_CALLS,"Canvas::postRedisplay");
+	dbgEnd(Debug::Calls,"Canvas::postRedisplay");
 }
 
 // Widget Expose
@@ -169,7 +169,7 @@ void Canvas::calculateDrawPixelWidth()
 void Canvas::initGl()
 {
 	if (!valid_) return;
-	dbgBegin(DM_CALLS,"Canvas::initGl");
+	dbgBegin(Debug::Calls,"Canvas::initGl");
 	if (beginGl())
 	{
 		// Create lists for globs if this is the first call to init_gl()
@@ -240,14 +240,14 @@ void Canvas::initGl()
 		endGl();
 	}
 	else printf("Failed to set-up OpenGL on canvas.\n");
-	dbgEnd(DM_CALLS,"Canvas::initGl");
+	dbgEnd(Debug::Calls,"Canvas::initGl");
 }
 
 // Create display lists
 void Canvas::createLists()
 {
 	if (!isValid()) return;
-	dbgBegin(DM_CALLS,"Canvas::createLists");
+	dbgBegin(Debug::Calls,"Canvas::createLists");
 
 	int n,m, atomdetail, ticks, extent;
 	double delta, tickdelta, tickheight, ticktop, tickbottom, spacing;
@@ -470,7 +470,7 @@ void Canvas::createLists()
 	  }
 	glEndList();
 
-	dbgEnd(DM_CALLS,"Canvas::createLists");
+	dbgEnd(Debug::Calls,"Canvas::createLists");
 }
 
 /*
@@ -482,7 +482,7 @@ void Canvas::doProjection()
 {
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
 	if (!gui.exists()) return;
-	dbgBegin(DM_CALLS,"Canvas::doProjection");
+	dbgBegin(Debug::Calls,"Canvas::doProjection");
 	double pmat[16], bottom, top;
 	// Check source
 	if (beginGl())
@@ -521,7 +521,7 @@ void Canvas::doProjection()
 		endGl();
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
-	dbgEnd(DM_CALLS,"Canvas::doProjection");
+	dbgEnd(Debug::Calls,"Canvas::doProjection");
 }
 
 /*
@@ -548,7 +548,7 @@ void Canvas::saveVector(Model *source, vector_format vf, const char *filename)
 	FILE *vectorfile = fopen(filename, "w");
 	if (vectorfile == NULL)
 	{
-		msg(DM_NONE,"Couldn't open output file for vector export.\n");
+		msg(Debug::None,"Couldn't open output file for vector export.\n");
 		return;
 	}
 	GLint result = GL2PS_OVERFLOW, bufsize = 0;

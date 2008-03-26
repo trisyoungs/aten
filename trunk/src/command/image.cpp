@@ -37,7 +37,7 @@ int CommandData::function_CA_SAVEVECTOR(Command *&c, Bundle &obj)
 	vector_format vf = VIF_from_text(c->argc(0));
 	if (vf == VIF_NITEMS)
 	{
-		msg(DM_NONE,"Unrecognised vector format '%s'.\n",c->argc(0));
+		msg(Debug::None,"Unrecognised vector format '%s'.\n",c->argc(0));
 		return CR_FAIL;
 	}
 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas

@@ -30,7 +30,7 @@
 void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
-	dbgBegin(DM_CALLS,"Pattern::torsionEnergy");
+	dbgBegin(Debug::Calls,"Pattern::torsionEnergy");
 	int n,i,j,k,l,aoff,m1;
 	static double k0, k1, k2, k3, k4, eq, phi, energy, period;
 	PatternBound *pb;
@@ -93,7 +93,7 @@ void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 	// Increment energy for pattern
 	estore->add(ET_TORSION,energy,id_);
 	//estore->torsion[id] += energy;
-	dbgEnd(DM_CALLS,"Pattern::torsionEnergy");
+	dbgEnd(Debug::Calls,"Pattern::torsionEnergy");
 }
 
 // Returns a unit vector in the specified direction
@@ -128,7 +128,7 @@ Mat3<double> make_cp_mat(Vec3<double> *v)
 void Pattern::torsionForces(Model *srcmodel)
 {
 	// Calculate force contributions from the torsions in this pattern with coordinates from *xcfg
-	dbgBegin(DM_CALLS,"Pattern::torsionForces");
+	dbgBegin(Debug::Calls,"Pattern::torsionForces");
 	int n,i,j,k,l,aoff,m1;
 	static Vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
 	static Mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
@@ -261,5 +261,5 @@ void Pattern::torsionForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(DM_CALLS,"Pattern::torsionForces");
+	dbgEnd(Debug::Calls,"Pattern::torsionForces");
 }

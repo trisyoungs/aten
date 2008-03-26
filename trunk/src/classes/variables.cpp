@@ -157,7 +157,7 @@ void Variable::set(Atom *i)
 		return;
 	}
 	ptrValue_ = i;
-	msg(DM_VERBOSE,"Atom variable '%s' set to '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
+	msg(Debug::Verbose,"Atom variable '%s' set to '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
 }
 
 // Set (pattern)
@@ -169,7 +169,7 @@ void Variable::set(Pattern *p)
 		return;
 	}
 	ptrValue_ = p;
-	msg(DM_VERBOSE,"Pattern variable '%s' set to '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
+	msg(Debug::Verbose,"Pattern variable '%s' set to '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
 }
 
 // Set (model)
@@ -181,7 +181,7 @@ void Variable::set(Model *m)
 		return;
 	}
 	ptrValue_ = m;
-	msg(DM_VERBOSE,"Model variable '%s' set to '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
+	msg(Debug::Verbose,"Model variable '%s' set to '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
 }
 
 // Set (PatternBound)
@@ -193,7 +193,7 @@ void Variable::set(PatternBound *pb)
 		return;
 	}
 	ptrValue_ = pb;
-	msg(DM_VERBOSE,"PatBound variable '%s' set to '%li'\n",name_.get(),pb);
+	msg(Debug::Verbose,"PatBound variable '%s' set to '%li'\n",name_.get(),pb);
 }
 
 // Set (ForcefieldAtom)
@@ -205,7 +205,7 @@ void Variable::set(ForcefieldAtom *ffa)
 		return;
 	}
 	ptrValue_ = ffa;
-	msg(DM_VERBOSE,"FFAtom variable '%s' set to '%li'\n",name_.get(),ffa);
+	msg(Debug::Verbose,"FFAtom variable '%s' set to '%li'\n",name_.get(),ffa);
 }
 
 // Get as char
@@ -220,7 +220,7 @@ const char *Variable::asCharacter()
 		case (VT_DOUBLE):
 			return ftoa(doubleValue_);
 		default:
-			msg(DM_VERBOSE,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return "";
 }
@@ -237,7 +237,7 @@ int Variable::asInteger()
 		case (VT_DOUBLE):
 			return int(doubleValue_);
 		default:
-			msg(DM_VERBOSE,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return 0;
 }
@@ -254,7 +254,7 @@ double Variable::asDouble()
 		case (VT_DOUBLE):
 			return doubleValue_;
 		default:
-			msg(DM_VERBOSE,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return 0.0;
 }
@@ -269,7 +269,7 @@ bool Variable::asBool()
 		case (VT_INTEGER):
 			return (intValue_ < 1 ? FALSE : TRUE);
 		default:
-			msg(DM_VERBOSE,"Variable::get_as_bool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::get_as_bool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
 	}
 	return FALSE;
 }
@@ -509,15 +509,15 @@ void VariableList::print()
 // Clear all variable values
 void VariableList::resetAll()
 {
-	dbgBegin(DM_CALLS,"VariableList::resetAll");
+	dbgBegin(Debug::Calls,"VariableList::resetAll");
 	for (Variable *v = vars_.first(); v != NULL; v = v->next) v->reset();
-	dbgEnd(DM_CALLS,"VariableList::resetAll");
+	dbgEnd(Debug::Calls,"VariableList::resetAll");
 }
 
 // Clear list of variables
 void VariableList::reset(const char *s, ...)
 {
-	dbgBegin(DM_CALLS,"VariableList::reset");
+	dbgBegin(Debug::Calls,"VariableList::reset");
 	// List of variables must be ended by "".
 	static char name[64];
 	va_list namelist;
@@ -535,5 +535,5 @@ void VariableList::reset(const char *s, ...)
 			else v->reset();
 		}
 	} while (name[0] != '\0');
-	dbgEnd(DM_CALLS,"VariableList::reset");
+	dbgEnd(Debug::Calls,"VariableList::reset");
 }

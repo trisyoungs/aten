@@ -198,7 +198,7 @@ GLfloat *Grid::colour()
 // Create data array (from npoints vector)
 void Grid::create()
 {
-	dbgBegin(DM_CALLS,"Grid::create");
+	dbgBegin(Debug::Calls,"Grid::create");
 	clear();
 	int i, j;
 	if (data_ != NULL) clear();
@@ -208,13 +208,13 @@ void Grid::create()
 		data_[i] = new double*[nPoints_.y];
 		for (j = 0; j<nPoints_.y; j++) data_[i][j] = new double[nPoints_.z];
 	}
-	dbgEnd(DM_CALLS,"Grid::create");
+	dbgEnd(Debug::Calls,"Grid::create");
 }
 
 // Clear data array
 void Grid::clear()
 {
-	dbgBegin(DM_CALLS,"Grid::clear");
+	dbgBegin(Debug::Calls,"Grid::clear");
 	dataFull_ = FALSE;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
@@ -230,7 +230,7 @@ void Grid::clear()
 	}
 	delete[] data_;
 	data_ = NULL;
-	dbgEnd(DM_CALLS,"Grid::clear");
+	dbgEnd(Debug::Calls,"Grid::clear");
 }
 
 // Set spacing for a cubic grid
@@ -257,11 +257,11 @@ void Grid::setAxes(const Mat3<double> m)
 // Set grid extent (and data[])
 void Grid::setNPoints(Vec3<int> v)
 {
-	dbgBegin(DM_CALLS,"Grid::setNPoints");
+	dbgBegin(Debug::Calls,"Grid::setNPoints");
 	nPoints_ = v;
 	log_ ++;
 	create();
-	dbgEnd(DM_CALLS,"Grid::setNPoints");
+	dbgEnd(Debug::Calls,"Grid::setNPoints");
 }
 
 // Update minimum / maximum based on supplied value
@@ -278,17 +278,17 @@ void Grid::setData(int x, int y, int z, double d)
 	// Check limits against npoints vector
 	if ((x < 0) || (x >= nPoints_.x))
 	{
-		msg(DM_NONE,"Grid::set_data(x,y,z) - X index is outside array bounds.\n");
+		msg(Debug::None,"Grid::set_data(x,y,z) - X index is outside array bounds.\n");
 		return;
 	}
 	else if ((y < 0) || (y >= nPoints_.y))
 	{
-		msg(DM_NONE,"Grid::set_data(x,y,z) - Y index is outside array bounds.\n");
+		msg(Debug::None,"Grid::set_data(x,y,z) - Y index is outside array bounds.\n");
 		return;
 	}
 	else if ((z < 0) || (z >= nPoints_.z))
 	{
-		msg(DM_NONE,"Grid::set_data(x,y,z) - Z index is outside array bounds.\n");
+		msg(Debug::None,"Grid::set_data(x,y,z) - Z index is outside array bounds.\n");
 		return;
 	}
 	// Okay, so store data
@@ -303,7 +303,7 @@ void Grid::setNextData(double d)
 	// Check limit
 	if (dataFull_ == TRUE)
 	{
-		msg(DM_NONE,"Grid::setNextData - Array already full.\n");
+		msg(Debug::None,"Grid::setNextData - Array already full.\n");
 		return;
 	}
 	// Set current point referenced by currentpoint

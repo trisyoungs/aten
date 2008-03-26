@@ -113,7 +113,7 @@ bool ComponentRegion::allowOverlap()
 bool ComponentRegion::checkOverlap(const Vec3<double> &v, Cell *cell, Component *firstc)
 {
 	// Check whether the supplied coordinates overlap with other regions in the list bar this one
-	dbgBegin(DM_CALLS,"ComponentRegion::checkOverlap");
+	dbgBegin(Debug::Calls,"ComponentRegion::checkOverlap");
 	static Vec3<double> tempv;
 	bool result = FALSE;
 	ComponentRegion *r;
@@ -125,7 +125,7 @@ bool ComponentRegion::checkOverlap(const Vec3<double> &v, Cell *cell, Component 
 		//printf("Overlap with region '%s' is %s.\n",text_from_RS(r->get_shape()),(result ? "TRUE" : "FALSE"));
 		if (result) break;
 	}
-	dbgEnd(DM_CALLS,"ComponentRegion::checkOverlap");
+	dbgEnd(Debug::Calls,"ComponentRegion::checkOverlap");
 	return result;
 }
 
@@ -133,7 +133,7 @@ bool ComponentRegion::checkOverlap(const Vec3<double> &v, Cell *cell, Component 
 bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
 {
 	// Check whether the supplied coordinates overlap with other regions in the list bar this one
-	dbgBegin(DM_CALLS,"ComponentRegion::checkCoords");
+	dbgBegin(Debug::Calls,"ComponentRegion::checkCoords");
 	static Vec3<double> tempv;
 	bool result = TRUE;
 	switch (shape_)
@@ -156,14 +156,14 @@ bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
 			printf("ComponentRegion::checkCoords - Not done yet for this type.\n");
 			break;
 	}
-	dbgEnd(DM_CALLS,"ComponentRegion::checkCoords");
+	dbgEnd(Debug::Calls,"ComponentRegion::checkCoords");
 	return result;
 }
 
 // Random coordinate in region
 Vec3<double> ComponentRegion::randomCoords(Cell *cell, Component *c)
 {
-	dbgBegin(DM_CALLS,"ComponentRegion::randomCoords");
+	dbgBegin(Debug::Calls,"ComponentRegion::randomCoords");
 	static Vec3<double> v, tempv;
 	static int nattempts;
 	bool done = FALSE;
@@ -212,6 +212,6 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Component *c)
 			done = TRUE;
 		}
 	} while (!done);
-	dbgEnd(DM_CALLS,"ComponentRegion::randomCoords");
+	dbgEnd(Debug::Calls,"ComponentRegion::randomCoords");
 	return v;
 }

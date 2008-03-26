@@ -135,7 +135,7 @@ const char *removePath(const char *s)
 // Search for string in delimited string list
 int sinlist(const char *search, const char *list)
 {
-	dbgBegin(DM_PARSE,"sinlist");
+	dbgBegin(Debug::Parse,"sinlist");
 	static int cpos, count, result;
 	static Dnchar arg, arglist;
 	arglist.set(list);
@@ -158,14 +158,14 @@ int sinlist(const char *search, const char *list)
 		}
 		if (arg == search)
 		{
-			msg(DM_PARSE,"sinlist [%s->%s==%s]\n",list,arg.get(),search);
+			msg(Debug::Parse,"sinlist [%s->%s==%s]\n",list,arg.get(),search);
 			result = count;
 			break;
 		}
-		else msg(DM_PARSE,"sinlist [%s->%s<>%s]\n",list,arg.get(),search);
+		else msg(Debug::Parse,"sinlist [%s->%s<>%s]\n",list,arg.get(),search);
 		count ++;
 	}
-	dbgEnd(DM_PARSE,"sinlist");
+	dbgEnd(Debug::Parse,"sinlist");
 	return result;
 }
 
@@ -260,7 +260,7 @@ const char *evaluate(const char *s, VariableList *vars)
 				{
 					v = vars->get(&arg[1]);
 					a = (v == NULL ? 0.0 : v->asDouble());
-					if (v == NULL) msg(DM_NONE,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
+					if (v == NULL) msg(Debug::None,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
 				}
 				else a = atof(arg);
 				strcpy(arg,parser.argc(rightarg));
@@ -268,7 +268,7 @@ const char *evaluate(const char *s, VariableList *vars)
 				{
 					v = vars->get(&arg[1]);
 					b = (v == NULL ? 0.0 : v->asDouble());
-					if (v == NULL) msg(DM_NONE,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
+					if (v == NULL) msg(Debug::None,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
 				}
 				else b = atof(arg);
 				switch (*c)

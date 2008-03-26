@@ -219,7 +219,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 			ui.TrajectoryToolBar->setVisible(TRUE);
 			ui.actionViewTrajectory->setChecked(TRUE);
 		}
-		else msg(DM_NONE, "Couldn't determine trajectory file format.\n");
+		else msg(Debug::None, "Couldn't determine trajectory file format.\n");
 		gui.refresh();
 	}
 }

@@ -55,11 +55,11 @@ restraint_ij::~restraint_ij()
 // Add Distance
 void restraints::add_ij(Reflist<Atom,int> &rl)
 {
-	dbgBegin(DM_CALLS,"restraints::add_ij");
+	dbgBegin(Debug::Calls,"restraints::add_ij");
 	if (rl.nItems() != 2)
 	{
 		printf("Not enough atoms in supplied list to add distance restraint.\n");
-		dbgEnd(DM_CALLS,"restraints::add_ij");
+		dbgEnd(Debug::Calls,"restraints::add_ij");
 		return;
 	}
 	restraint_ij *newdist = ijs.add();
@@ -68,14 +68,14 @@ void restraints::add_ij(Reflist<Atom,int> &rl)
 	newdist->i = ri->item;
 	newdist->j = ri->next->item;
 	newdist->rij = ownermodel->distance(newdist->i, newdist->j);
-	dbgEnd(DM_CALLS,"restraints::add_ij");
+	dbgEnd(Debug::Calls,"restraints::add_ij");
 }
 
 // Find Distance
 restraint_ij *restraints::does_ij_exist(Reflist<Atom,int> &rl)
 {
 	// Go through the list of restraints and check if the current distance is already measured
-	dbgBegin(DM_CALLS,"restraints::does_lj_exist");
+	dbgBegin(Debug::Calls,"restraints::does_lj_exist");
 	restraint_ij *xdist, *result;
 	Refitem<Atom,int> *ri = rl.first();
 	result = NULL;
@@ -87,23 +87,23 @@ restraint_ij *restraints::does_ij_exist(Reflist<Atom,int> &rl)
 	        if (result != NULL) break;
 	        xdist = xdist->next;
 	}
-	dbgEnd(DM_CALLS,"restraints::does_lj_exist");
+	dbgEnd(Debug::Calls,"restraints::does_lj_exist");
 	return result;
 }
 
 // Clear all restraints
 void restraints::clear_all()
 {
-	dbgBegin(DM_CALLS,"restraints::clear_all");
+	dbgBegin(Debug::Calls,"restraints::clear_all");
 	ijs.clear();
-	dbgEnd(DM_CALLS,"restraints::clear_all");
+	dbgEnd(Debug::Calls,"restraints::clear_all");
 }
 
 // Prune restraints for deleted atoms
 void restraints::prune_atom(Atom *xatom)
 {
 	// Search the lists of restraints for the supplied atom, and remove any that use it
-	dbgBegin(DM_CALLS,"restraints::prune_atom");
+	dbgBegin(Debug::Calls,"restraints::prune_atom");
 	restraint_ij *ij = ijs.first();
 	restraint_ij *tempij;
 	while (ij != NULL)
@@ -142,5 +142,5 @@ void restraints::prune_atom(Atom *xatom)
 		else ijkl = ijkl->next;
 	}
 	*/
-	dbgEnd(DM_CALLS,"restraints::prune_atom");
+	dbgEnd(Debug::Calls,"restraints::prune_atom");
 }

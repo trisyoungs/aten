@@ -38,7 +38,7 @@ int CommandData::function_CA_ADDCOMPONENT(Command *&c, Bundle &obj)
 	}
 	else
 	{
-		msg(DM_NONE,"Couldn't find model '%s' specified in 'addcomponent'\n", c->argc(1));
+		msg(Debug::None,"Couldn't find model '%s' specified in 'addcomponent'\n", c->argc(1));
 		return CR_FAIL;
 	}
 	return CR_SUCCESS;
@@ -50,10 +50,10 @@ int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (mc.components.nItems() == 0)
 	{
-		msg(DM_NONE,"Disordered builder requires a list of components.\n");
+		msg(Debug::None,"Disordered builder requires a list of components.\n");
 		return CR_FAIL;
 	}
-	msg(DM_NONE,"Performing disordered build for model '%s'\n", obj.m->name());
+	msg(Debug::None,"Performing disordered build for model '%s'\n", obj.m->name());
 	mc.setNCycles(c->argi(0));
 	mc.disorder(obj.m);
 	return CR_SUCCESS;
@@ -62,7 +62,7 @@ int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 // Print current component list ('printcomponents')
 int CommandData::function_CA_PRINTCOMPONENTS(Command *&c, Bundle &obj)
 {
-	msg(DM_NONE,"Current component list:\n");
+	msg(Debug::None,"Current component list:\n");
 	Vec3<double> v1, v2;
 	Component *comp = mc.components.first();
 	comp != NULL ? printf("Name         Nmols  I D T R Z  Model         ComponentRegion       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
@@ -93,7 +93,7 @@ int CommandData::function_CA_SETCENTRE(Command *&c, Bundle &obj)
 	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
-		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	comp->area.setCentre(c->arg3d(1));
@@ -106,7 +106,7 @@ int CommandData::function_CA_SETGEOMETRY(Command *&c, Bundle &obj)
 	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
-		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	comp->area.setSize(c->arg3d(1));
@@ -120,7 +120,7 @@ int CommandData::function_CA_SETOVERLAP(Command *&c, Bundle &obj)
 	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
-		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	comp->area.setAllowOverlap(c->argb(1));
@@ -133,7 +133,7 @@ int CommandData::function_CA_SETSHAPE(Command *&c, Bundle &obj)
 	Component *comp = mc.componentByName(c->argc(0));
 	if (comp == NULL)
 	{
-		msg(DM_NONE,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
+		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	ComponentRegionShape rs = RS_from_text(c->argc(1));

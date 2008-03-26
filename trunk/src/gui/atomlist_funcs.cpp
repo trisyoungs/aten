@@ -41,7 +41,7 @@ int listPosition;
 void AtenForm::on_AtomTree_itemSelectionChanged()
 {
 	if (REFRESHING) return;
-	dbgBegin(DM_CALLS,"AtenForm::on_AtomTree_selectionChanged");
+	dbgBegin(Debug::Calls,"AtenForm::on_AtomTree_selectionChanged");
 	//printf("AtenForm:: atom selection has changed...\n");
 	// Selection has changed, so go through the Reflist of TTreeWidgetItems and check their selection status
 	Model *m = master.currentModel();
@@ -55,16 +55,16 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 	}
 	gui.mainView.postRedisplay();
 	gui.updateLabels();
-	dbgEnd(DM_CALLS,"AtenForm::on_AtomTree_selectionChanged");
+	dbgEnd(Debug::Calls,"AtenForm::on_AtomTree_selectionChanged");
 }
 
 void AtenForm::refreshAtomPage()
 {
-	dbgBegin(DM_CALLS,"AtenForm::refreshAtomPage");
+	dbgBegin(Debug::Calls,"AtenForm::refreshAtomPage");
 	// If the atom list page is not visible, don't do anything
 	if (!ui.ShowAtomPageButton->isChecked())
 	{
-		dbgEnd(DM_CALLS,"AtenForm::refreshAtomPage");
+		dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
 		return;
 	}
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
@@ -92,7 +92,7 @@ void AtenForm::refreshAtomPage()
 		// If there are no atoms in the current model, exit now.
 		if (m->nAtoms() == 0)
 		{
-			dbgEnd(DM_CALLS,"AtenForm::refreshAtomPage");
+			dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
 			REFRESHING = FALSE;
 			return;
 		}
@@ -156,7 +156,7 @@ void AtenForm::refreshAtomPage()
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
 	REFRESHING = FALSE;
-	dbgEnd(DM_CALLS,"AtenForm::refreshAtomPage");
+	dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
 }
 
 void AtenForm::peekScrollBar()

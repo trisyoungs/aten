@@ -30,7 +30,7 @@ int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekFirstFrame();
@@ -43,7 +43,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekLastFrame();
@@ -65,7 +65,7 @@ int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekNextFrame();
@@ -78,7 +78,7 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekPreviousFrame();

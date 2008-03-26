@@ -30,7 +30,7 @@
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
 void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
-	dbgBegin(DM_CALLS,"Pattern::angleEnergy");
+	dbgBegin(Debug::Calls,"Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
 	static double forcek, n, s, eq, r, theta, dp, energy, c0, c1, c2;
 	static ForcefieldParams params;
@@ -91,13 +91,13 @@ void Pattern::angleEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 	}
 	// Increment energy for pattern
 	estore->add(ET_ANGLE,energy,id_);
-	dbgEnd(DM_CALLS,"Pattern::angleEnergy");
+	dbgEnd(Debug::Calls,"Pattern::angleEnergy");
 }
 
 // Calculate angle forces in pattern
 void Pattern::angleForces(Model *srcmodel)
 {
-	dbgBegin(DM_CALLS,"Pattern::angleForcess");
+	dbgBegin(Debug::Calls,"Pattern::angleForcess");
 	static int i,j,k,aoff,m1;
 	static Vec3<double> vec_ij, vec_kj, fi, fk;
 	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx;
@@ -174,5 +174,5 @@ void Pattern::angleForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(DM_CALLS,"Pattern::angleForcess");
+	dbgEnd(Debug::Calls,"Pattern::angleForcess");
 }

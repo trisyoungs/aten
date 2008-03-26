@@ -82,18 +82,18 @@ bool canvas::set_widget(TCanvas *w)
 void canvas::realize()
 {
 	// Sets the canvas to use a widget for output.
-	dbgBegin(DM_CALLS,"canvas::realize");
+	dbgBegin(Debug::Calls,"canvas::realize");
 	valid = TRUE;
 	init_gl();
-	dbgEnd(DM_CALLS,"canvas::realize");
+	dbgEnd(Debug::Calls,"canvas::realize");
 }
 
 // Invalidate
 void canvas::postRedisplay()
 {
-	dbgBegin(DM_CALLS,"canvas::postRedisplay");
+	dbgBegin(Debug::Calls,"canvas::postRedisplay");
 	if (gui.exists()) context_widget->paintGL();
-	dbgEnd(DM_CALLS,"canvas::postRedisplay");
+	dbgEnd(Debug::Calls,"canvas::postRedisplay");
 }
 
 // Widget Expose

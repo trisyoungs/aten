@@ -25,10 +25,10 @@
 // List available scripts
 int CommandData::function_CA_LISTSCRIPTS(Command *&c, Bundle &obj)
 {
-	if (master.scripts.nItems() == 0) msg(DM_NONE,"No scripts loaded.\n");
-	else msg(DM_NONE,"Currently loaded scripts:\n");
+	if (master.scripts.nItems() == 0) msg(Debug::None,"No scripts loaded.\n");
+	else msg(Debug::None,"Currently loaded scripts:\n");
 	for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
-		msg(DM_NONE,"  %s (%s)\n", cl->scriptFilename(), cl->name());
+		msg(Debug::None,"  %s (%s)\n", cl->scriptFilename(), cl->name());
 	return CR_SUCCESS;
 }
 
@@ -55,9 +55,9 @@ int CommandData::function_CA_RUNSCRIPT(Command *&c, Bundle &obj)
 		if (strcmp(c->argc(0), cl->name()) == 0) break;
 	if (cl != NULL)
 	{
-		msg(DM_NONE,"Executing script '%s':\n",c->argc(0));
+		msg(Debug::None,"Executing script '%s':\n",c->argc(0));
 		cl->execute();
 	}
-	else msg(DM_NONE,"Couldn't find script '%s'.\n",c->argc(0));
+	else msg(Debug::None,"Couldn't find script '%s'.\n",c->argc(0));
 	return CR_SUCCESS;
 }

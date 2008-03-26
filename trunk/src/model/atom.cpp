@@ -40,7 +40,7 @@ int Model::nAtoms()
 // Add atom
 Atom *Model::addAtom(int newel, Vec3<double> pos)
 {
-	dbgBegin(DM_CALLS,"Model::addAtom");
+	dbgBegin(Debug::Calls,"Model::addAtom");
 	Atom *newatom = atoms_.add();
 	newatom->setElement(newel);
 	newatom->setId(atoms_.nItems() - 1);
@@ -54,14 +54,14 @@ Atom *Model::addAtom(int newel, Vec3<double> pos)
 		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_ATOM,newatom);
 	}
-	dbgEnd(DM_CALLS,"Model::addAtom");
+	dbgEnd(Debug::Calls,"Model::addAtom");
 	return newatom;
 }
 
 // Add atom copy
 Atom *Model::addCopy(Atom *source)
 {
-	dbgBegin(DM_CALLS,"Model::addCopy");
+	dbgBegin(Debug::Calls,"Model::addCopy");
 	Atom *newatom = atoms_.add();
 	newatom->copy(source);
 	newatom->setId(atoms_.nItems() - 1);
@@ -74,14 +74,14 @@ Atom *Model::addCopy(Atom *source)
 		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_ATOM,newatom);
 	}
-	dbgEnd(DM_CALLS,"Model::addCopy");
+	dbgEnd(Debug::Calls,"Model::addCopy");
 	return newatom;
 }
 
 // Add atom copy at specified position in list
 Atom *Model::addCopy(Atom *afterthis, Atom *source)
 {
-	dbgBegin(DM_CALLS,"Model::addCopy");
+	dbgBegin(Debug::Calls,"Model::addCopy");
 	Atom *newatom = atoms_.insert(afterthis);
 	//printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
@@ -95,14 +95,14 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_ATOM,newatom);
 	}
-	dbgEnd(DM_CALLS,"Model::addCopy");
+	dbgEnd(Debug::Calls,"Model::addCopy");
 	return newatom;
 }
 
 // Remove atom
 void Model::removeAtom(Atom *xatom)
 {
-	dbgBegin(DM_CALLS,"Model::removeAtom");
+	dbgBegin(Debug::Calls,"Model::removeAtom");
 	// Delete a specific atom (passed as xatom)
 	mass_ -= elements.atomicMass(xatom->element());
 	if (mass_ < 0.0) mass_ = 0.0;
@@ -118,16 +118,16 @@ void Model::removeAtom(Atom *xatom)
 		newchange->set(-UE_ATOM,xatom);
 	}
 	atoms_.remove(xatom);
-	dbgEnd(DM_CALLS,"Model::removeAtom");
+	dbgEnd(Debug::Calls,"Model::removeAtom");
 }
 
 // Delete Atom
 void Model::deleteAtom(Atom *xatom)
 {
-	dbgBegin(DM_CALLS,"Model::deleteAtom");
+	dbgBegin(Debug::Calls,"Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
 	// also check those lists for this atom and remove it.
-	if (xatom == NULL) msg(DM_NONE,"No atom to delete.\n");
+	if (xatom == NULL) msg(Debug::None,"No atom to delete.\n");
 	else
 	{
 		// Remove measurements
@@ -145,14 +145,14 @@ void Model::deleteAtom(Atom *xatom)
 		// Finally, delete the atom
 		removeAtom(xatom);
 	}
-	dbgEnd(DM_CALLS,"Model::deleteAtom");
+	dbgEnd(Debug::Calls,"Model::deleteAtom");
 }
 
 // Transmute atom
 void Model::transmuteAtom(Atom *i, int el)
 {
-	dbgBegin(DM_CALLS,"Model::transmuteAtom");
-	if (i == NULL) msg(DM_NONE,"No atom to transmute.\n");
+	dbgBegin(Debug::Calls,"Model::transmuteAtom");
+	if (i == NULL) msg(Debug::None,"No atom to transmute.\n");
 	else
 	{
 		int oldel = i->element();
@@ -171,7 +171,7 @@ void Model::transmuteAtom(Atom *i, int el)
 			}
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::transmuteAtom");
+	dbgEnd(Debug::Calls,"Model::transmuteAtom");
 }
 
 // Return (and autocreate if necessary) the static atoms array
@@ -183,14 +183,14 @@ Atom **Model::atomArray()
 // Clear atoms
 void Model::clearAtoms()
 {
-	dbgBegin(DM_CALLS,"Model::clearAtoms");
+	dbgBegin(Debug::Calls,"Model::clearAtoms");
 	Atom *i = atoms_.first();
 	while (i != NULL)
 	{
 		deleteAtom(i);
 		i = atoms_.first();
 	}
-	dbgEnd(DM_CALLS,"Model::clearAtoms");
+	dbgEnd(Debug::Calls,"Model::clearAtoms");
 }
 
 // Find atom
@@ -213,7 +213,7 @@ Atom *Model::findAtomByTempi(int tempi)
 // Renumber Atoms
 void Model::renumberAtoms(Atom *from)
 {
-	dbgBegin(DM_CALLS,"Model::renumberAtoms");
+	dbgBegin(Debug::Calls,"Model::renumberAtoms");
 	static int count;
 	static Atom *i;
 	if (from == NULL)
@@ -231,38 +231,38 @@ void Model::renumberAtoms(Atom *from)
 		i->setId(count);
 		count ++;
 	}
-	dbgEnd(DM_CALLS,"Model::renumberAtoms");
+	dbgEnd(Debug::Calls,"Model::renumberAtoms");
 }
 
 // Return atom 'n' in the model
 Atom *Model::atom(int n)
 {
-	dbgBegin(DM_CALLS,"Model::atom");
+	dbgBegin(Debug::Calls,"Model::atom");
 	// Check range first
 	if ((n < 0) || (n >= atoms_.nItems()))
 	{
 		printf("Model::atom <<<< Atom id '%i' is out of range for model >>>>\n",n);
-		dbgEnd(DM_CALLS,"Model::atom");
+		dbgEnd(Debug::Calls,"Model::atom");
 		return NULL;
 	}
-	dbgEnd(DM_CALLS,"Model::atom");
+	dbgEnd(Debug::Calls,"Model::atom");
 	return atoms_.array()[n];
 }
 
 // Reset forces on all atoms
 void Model::zeroForces()
 {
-	dbgBegin(DM_CALLS,"Model::zeroForces");
+	dbgBegin(Debug::Calls,"Model::zeroForces");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->f().zero();
-	dbgEnd(DM_CALLS,"Model::zeroForces");
+	dbgEnd(Debug::Calls,"Model::zeroForces");
 }
 
 // Reset forces on all fixed atoms
 void Model::zeroForcesFixed()
 {
-	dbgBegin(DM_CALLS,"Model::zeroForcesFixed");
+	dbgBegin(Debug::Calls,"Model::zeroForcesFixed");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->hasFixedPosition()) i->f().zero();
-	dbgEnd(DM_CALLS,"Model::zeroForcesFixed");
+	dbgEnd(Debug::Calls,"Model::zeroForcesFixed");
 }
 
 // Set visibility of specified atom
@@ -276,7 +276,7 @@ void Model::setHidden(Atom *i, bool hidden)
 void Model::normaliseForces(double norm)
 {
 	// 'Normalise' the forces in linecfg such that the largest force is equal to the maximum cartesian step size
-	dbgBegin(DM_CALLS,"Model::normaliseForces");
+	dbgBegin(Debug::Calls,"Model::normaliseForces");
 	double maxfrc;
 	static Vec3<double> f;
 	Atom **modelatoms = atomArray();
@@ -293,7 +293,7 @@ void Model::normaliseForces(double norm)
 	// Normalise with respect to this force
 	maxfrc *= norm;
 	for (i=0; i<atoms_.nItems(); i++) modelatoms[i]->f() /= maxfrc;
-	dbgEnd(DM_CALLS,"Model::normaliseForces");
+	dbgEnd(Debug::Calls,"Model::normaliseForces");
 }
 
 // Move specified atom (channel for undo/redo)

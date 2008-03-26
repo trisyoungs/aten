@@ -78,28 +78,28 @@ void Geometry::setRange(double d, double w, int n)
 // Initialise structure
 bool Geometry::initialise()
 {
-	dbgBegin(DM_CALLS,"Geometry::initialise");
+	dbgBegin(Debug::Calls,"Geometry::initialise");
 	// Check site definitions....
 	for (nSites_ = 0; nSites_ < 4; nSites_++) if (sites_[nSites_] == NULL) break;
 	if (nSites_ == 0)
 	{
-		msg(DM_NONE,"Geometry::initialise - At least two sites_ must be defined.\n");
-		dbgEnd(DM_CALLS,"Geometry::initialise");
+		msg(Debug::None,"Geometry::initialise - At least two sites_ must be defined.\n");
+		dbgEnd(Debug::Calls,"Geometry::initialise");
 		return FALSE;
 	}
 	// Create the data arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	msg(DM_NONE,"There are %i bins in geometry '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
+	msg(Debug::None,"There are %i bins in geometry '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
 	nAdded_ = 0;
-	dbgEnd(DM_CALLS,"Geometry::initialise");
+	dbgEnd(Debug::Calls,"Geometry::initialise");
 	return TRUE;
 }
 
 // Accumulate quantity data from supplied model
 void Geometry::accumulate(Model *sourcemodel)
 {
-	dbgBegin(DM_CALLS,"Geometry::accumulate");
+	dbgBegin(Debug::Calls,"Geometry::accumulate");
 	int m1, m2, m3, m4, bin;
 	static Vec3<double> centre1, centre2, centre3, centre4;
 	Cell *cell = sourcemodel->cell();
@@ -181,14 +181,14 @@ void Geometry::accumulate(Model *sourcemodel)
 
 	// Increase accumulation counter
 	nAdded_ ++;
-	dbgEnd(DM_CALLS,"Geometry::accumulate");
+	dbgEnd(Debug::Calls,"Geometry::accumulate");
 }
 
 // Finalise
 void Geometry::finalise(Model *sourcemodel)
 {
-	dbgBegin(DM_CALLS,"Geometry::finalise");
-	dbgEnd(DM_CALLS,"Geometry::finalise");
+	dbgBegin(Debug::Calls,"Geometry::finalise");
+	dbgEnd(Debug::Calls,"Geometry::finalise");
 }
 
 // Save measurement data

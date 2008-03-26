@@ -28,13 +28,13 @@
 void Forcefield::generateVdw(Atom *i)
 {
 	// Simplest of all generation routines - creates the params() data for VDW interactions.
-	dbgBegin(DM_CALLS,"Forcefield::generateVdw");
+	dbgBegin(Debug::Calls,"Forcefield::generateVdw");
 	double sigma, epsilon;
 	ForcefieldAtom *ffi = i->type();
 	switch (rules_)
 	{
 		case (FFR_NORULES):
-			msg(DM_NONE,"Forcefield::generateVdw <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+			msg(Debug::None,"Forcefield::generateVdw <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
 		case (FFR_UFF):
 			// UFF VDW types are just the third [2] and fourth [3] data (for simple LJ)
@@ -42,11 +42,11 @@ void Forcefield::generateVdw(Atom *i)
 			sigma = ffi->generator(2);
 			ffi->params().data[VF_LJ_EPS] = epsilon;
 			ffi->params().data[VF_LJ_SIGMA] = sigma;
-			msg(DM_VERBOSE,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n", sigma, epsilon);
+			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n", sigma, epsilon);
 			ffi->setVdwForm(VF_LJ);
 			break;
 	}
-	dbgEnd(DM_CALLS,"Forcefield::generateVdw");
+	dbgEnd(Debug::Calls,"Forcefield::generateVdw");
 }
 
 // Generate bond params
@@ -54,14 +54,14 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 {
 	// Creates bond forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
-	dbgBegin(DM_CALLS,"Forcefield::generateBond");
+	dbgBegin(Debug::Calls,"Forcefield::generateBond");
 	ForcefieldAtom *ffi = i->type();
 	ForcefieldAtom *ffj = j->type();
 	ForcefieldBound *newbond = NULL;
 	switch (rules_)
 	{
 		case (FFR_NORULES):
-			msg(DM_NONE,"Forcefield::generateBond <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+			msg(Debug::None,"Forcefield::generateBond <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
 		case (FFR_UFF):
 			// UFF Harmonic Bond Generator
@@ -83,10 +83,10 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			newbond->setBondStyle(BF_HARMONIC);
 			newbond->params().data[BF_HARMONIC_EQ] = sumr + rBO - rEN;
 			newbond->params().data[BF_HARMONIC_K] = 664.12 * ( (Zi * Zj) / (sumr + sumr + sumr) );
-			msg(DM_VERBOSE,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BF_HARMONIC_EQ], newbond->params().data[BF_HARMONIC_K]);
+			msg(Debug::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BF_HARMONIC_EQ], newbond->params().data[BF_HARMONIC_K]);
 			break;
 	}
-	dbgEnd(DM_CALLS,"Forcefield::generateBond");
+	dbgEnd(Debug::Calls,"Forcefield::generateBond");
 	return newbond;
 }
 
@@ -95,7 +95,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 {
 	// Creates angle forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
-	dbgBegin(DM_CALLS,"Forcefield::generateAngle");
+	dbgBegin(Debug::Calls,"Forcefield::generateAngle");
 	ForcefieldAtom *ffi = i->type();
 	ForcefieldAtom *ffj = j->type();
 	ForcefieldAtom *ffk = k->type();
@@ -103,7 +103,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 	switch (rules_)
 	{
 		case (FFR_NORULES):
-			msg(DM_NONE,"Forcefield::generateAngle <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+			msg(Debug::None,"Forcefield::generateAngle <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
 		case (FFR_UFF):
 			// UFF Cosine Angle Generator
@@ -153,11 +153,11 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			// Set function style
 			if (n == 2) newangle->setAngleStyle(AF_UFFCOSINE2);
 			else newangle->setAngleStyle(AF_UFFCOSINE1);
-			msg(DM_VERBOSE,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, n);
+			msg(Debug::Verbose,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, n);
 
 			break;
 	}
-	dbgEnd(DM_CALLS,"Forcefield::generateAngle");
+	dbgEnd(Debug::Calls,"Forcefield::generateAngle");
 	return newangle;
 }
 
@@ -166,12 +166,12 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 {
 	// Creates torsion forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
-	dbgBegin(DM_CALLS,"Forcefield::generateTorsion");
+	dbgBegin(Debug::Calls,"Forcefield::generateTorsion");
 	ForcefieldBound *newtorsion = NULL;
 	switch (rules_)
 	{
 		case (FFR_NORULES):
-			msg(DM_NONE,"Forcefield::generateTorsion <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+			msg(Debug::None,"Forcefield::generateTorsion <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
 		case (FFR_UFF):
 			// UFF Torsions  TODO
@@ -179,6 +179,6 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			newtorsion = torsions_.add();
 			break;
 	}
-	dbgEnd(DM_CALLS,"Forcefield::generateTorsion");
+	dbgEnd(Debug::Calls,"Forcefield::generateTorsion");
 	return newtorsion;
 }

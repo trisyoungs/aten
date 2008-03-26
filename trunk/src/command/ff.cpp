@@ -66,7 +66,7 @@ int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
 	{
-		msg(DM_NONE,"Pattern ID %i is out of range for model (which has %i atterns).\n", nodeid, obj.m->nPatterns());
+		msg(Debug::None,"Pattern ID %i is out of range for model (which has %i atterns).\n", nodeid, obj.m->nPatterns());
 		return CR_FAIL;
 	}
 	else obj.m->pattern(nodeid)->setForcefield(obj.ff);
@@ -81,7 +81,7 @@ int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 	{
 		master.setCurrentForcefield(ff);
 		if (c->hasArg(1)) ff->setName(c->argc(1));
-		msg(DM_NONE,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
+		msg(Debug::None,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 		return CR_SUCCESS;
 	}
 	else return CR_FAIL;
@@ -105,7 +105,7 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		el = elements.find(afterChar(parser.argc(n), '='));
-		if (el == 0) msg(DM_NONE,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+		if (el == 0) msg(Debug::None,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 		else master.typeMap.add(beforeChar(parser.argc(n),'='), el);
 	}
 	return CR_SUCCESS;
@@ -126,7 +126,7 @@ int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		msg(DM_NONE,"Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
+		msg(Debug::None,"Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
 		return CR_FAIL;
 	}
 	else
@@ -140,8 +140,8 @@ int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 			int el = i->element();
 			Pattern *p = obj.m->pattern(i);
 			int score = ffa->atomType()->matchAtom(i,p->ringList(),obj.m,i);
-			if (score != 0) msg(DM_NONE,"Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
-			else msg(DM_NONE,"Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
+			if (score != 0) msg(Debug::None,"Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
+			else msg(Debug::None,"Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
 		}
 		else return CR_FAIL;
 	}

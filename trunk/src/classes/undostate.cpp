@@ -60,7 +60,7 @@ Change::~Change()
 // Set change (by passed variable types)
 void Change::set(int ue, Atom *i, Atom *j)
 {
-	dbgBegin(DM_CALLS,"Change::set[Atom]");
+	dbgBegin(Debug::Calls,"Change::set[Atom]");
 	direction_ = (ue > 0 ? UD_REVERSE : UD_FORWARDS);
 	type_ = (UndoEvent) abs(ue);
 	// Copy atom data from source atoms, unless they are NULL
@@ -76,13 +76,13 @@ void Change::set(int ue, Atom *i, Atom *j)
 		atomData_[1]->copy(j);
 		atomData_[1]->setId(j->id());
 	}
-	dbgEnd(DM_CALLS,"Change::set[atom]");
+	dbgEnd(Debug::Calls,"Change::set[atom]");
 }
 
 // Set change (general)
 void Change::set(int ue, int i, int j, int k, int l, int m)
 {
-	dbgBegin(DM_CALLS,"Change::set[int]");
+	dbgBegin(Debug::Calls,"Change::set[int]");
 	direction_ = (ue > 0 ? UD_REVERSE : UD_FORWARDS);
 	type_ = (UndoEvent) abs(ue);
 	data_[0] = i;
@@ -90,13 +90,13 @@ void Change::set(int ue, int i, int j, int k, int l, int m)
 	data_[2] = k;
 	data_[3] = l;
 	data_[4] = m;
-	dbgEnd(DM_CALLS,"Change::set[int]");
+	dbgEnd(Debug::Calls,"Change::set[int]");
 }
 
 // Set change (by passed variable types)
 void Change::set(int ue, Vec3<double> *v1, Vec3<double> *v2, Vec3<double> *v3, Vec3<double> *v4)
 {
-	dbgBegin(DM_CALLS,"Change::set[vector]");
+	dbgBegin(Debug::Calls,"Change::set[vector]");
 	direction_ = (ue > 0 ? UD_REVERSE : UD_FORWARDS);
 	type_ = (UndoEvent) abs(ue);
 	// Copy data from source vectors, unless they are NULL
@@ -120,13 +120,13 @@ void Change::set(int ue, Vec3<double> *v1, Vec3<double> *v2, Vec3<double> *v3, V
 		vecData_[3] = new Vec3<double>;
 		*vecData_[3] = *v4;
 	}
-	dbgEnd(DM_CALLS,"Change::set[vector]");
+	dbgEnd(Debug::Calls,"Change::set[vector]");
 }
 
 // Reverse (undo) stored change
 void Change::reverse(Model *m)
 {
-	dbgBegin(DM_CALLS,"Change::reverse");
+	dbgBegin(Debug::Calls,"Change::reverse");
 	Atom **modelatoms = m->atomArray();
 	int id;
 	Atom *i, *j, *k, *l;
@@ -139,14 +139,14 @@ void Change::reverse(Model *m)
 			{
 				// We delete the atom at the position referenced by the ID in the atom
 				id = atomData_[0]->id();
-				msg(DM_VERBOSE,"Reversing atom creation - atom id = %i\n",id);
+				msg(Debug::Verbose,"Reversing atom creation - atom id = %i\n",id);
 				m->deleteAtom(modelatoms[id]);
 			}
 			else
 			{
 				// Insert a new atom at the position before the stored atom id
 				id = atomData_[0]->id();
-				msg(DM_VERBOSE,"Replaying atom deletion - atom id = %i\n",id);
+				msg(Debug::Verbose,"Replaying atom deletion - atom id = %i\n",id);
 				if (id == 0) m->addCopy(NULL, atomData_[0]);
 				else m->addCopy(modelatoms[id-1], atomData_[0]);
 			}
@@ -158,13 +158,13 @@ void Change::reverse(Model *m)
 			if (direction_ == UD_REVERSE)
 			{
 				// Delete bond between stored atom ids
-				msg(DM_VERBOSE,"Reversing bond creation - atom ids = %i %i\n", data_[0], data_[1]);
+				msg(Debug::Verbose,"Reversing bond creation - atom ids = %i %i\n", data_[0], data_[1]);
 				m->unbondAtoms(i,j);
 			}
 			else
 			{
 				// Add bond between stored atom ids
-				msg(DM_VERBOSE,"Replaying bond deletion - atom ids = %i %i\n", data_[0], data_[1]);
+				msg(Debug::Verbose,"Replaying bond deletion - atom ids = %i %i\n", data_[0], data_[1]);
 				m->bondAtoms(i,j,(Bond::BondType) data_[2]);
 			}
 			break;
@@ -173,12 +173,12 @@ void Change::reverse(Model *m)
 			i = modelatoms[data_[0]];
 			if (direction_ == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing atom selection - atom id = %i\n", data_[0]);
+				msg(Debug::Verbose,"Reversing atom selection - atom id = %i\n", data_[0]);
 				m->deselectAtom(i);
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Replaying atom deselection - atom id = %i\n", data_[0]);
+				msg(Debug::Verbose,"Replaying atom deselection - atom id = %i\n", data_[0]);
 				m->selectAtom(i);
 			}
 			break;
@@ -189,12 +189,12 @@ void Change::reverse(Model *m)
 			b = i->findBond(j);
 			if (direction_ == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing bond order change - atoms %i-%i, old = %i, new = %i\n", i->id(), j->id(), data_[3], data_[2]);
+				msg(Debug::Verbose,"Reversing bond order change - atoms %i-%i, old = %i, new = %i\n", i->id(), j->id(), data_[3], data_[2]);
 				m->changeBond(b,(Bond::BondType) data_[2]);
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Replaying bond order change - atoms %i-%i, old = %i, new = %i\n", i->id(), j->id(), data_[2], data_[3]);
+				msg(Debug::Verbose,"Replaying bond order change - atoms %i-%i, old = %i, new = %i\n", i->id(), j->id(), data_[2], data_[3]);
 				m->changeBond(b,(Bond::BondType) data_[3]);
 			}
 			break;
@@ -207,14 +207,14 @@ void Change::reverse(Model *m)
 			if (direction_ == UD_REVERSE)
 			{
 				GeometryType gt = (GeometryType) data_[0];
-				msg(DM_VERBOSE,"Reversing measurement - type = %i\n", gt);
+				msg(Debug::Verbose,"Reversing measurement - type = %i\n", gt);
 				Measurement *me = m->findMeasurement(gt, i, j, k, l);
 				if (me != NULL) m->removeMeasurement(me);
 			}
 			else
 			{
 				GeometryType gt = (GeometryType) data_[0];
-				msg(DM_VERBOSE,"Replaying measurement - type = %i\n", gt);
+				msg(Debug::Verbose,"Replaying measurement - type = %i\n", gt);
 				m->addMeasurement(gt, i, j, k, l);
 			}
 			break;
@@ -223,12 +223,12 @@ void Change::reverse(Model *m)
 			i = modelatoms[data_[0]];
 			if (direction_ == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing atom transmute - atom %i, old = %i, new = %i\n", i->id(), data_[2], data_[1]);
+				msg(Debug::Verbose,"Reversing atom transmute - atom %i, old = %i, new = %i\n", i->id(), data_[2], data_[1]);
 				m->transmuteAtom(i,data_[1]);
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Replaying atom transmute - atom %i, old = %i, new = %i\n", i->id(), data_[1], data_[2]);
+				msg(Debug::Verbose,"Replaying atom transmute - atom %i, old = %i, new = %i\n", i->id(), data_[1], data_[2]);
 				m->transmuteAtom(i,data_[2]);
 			}
 			break;
@@ -236,13 +236,13 @@ void Change::reverse(Model *m)
 		case (UE_CELL):
 			if (direction_ == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing cell change\n");
+				msg(Debug::Verbose,"Reversing cell change\n");
 				if (vecData_[0] == NULL) m->removeCell();
 				else m->setCell(*vecData_[0], *vecData_[1]);
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Replaying cell change\n");
+				msg(Debug::Verbose,"Replaying cell change\n");
 				if (vecData_[2] == NULL) m->removeCell();
 				else m->setCell(*vecData_[2], *vecData_[3]);
 			}
@@ -252,12 +252,12 @@ void Change::reverse(Model *m)
 			i = modelatoms[data_[0]];
 			if (direction_ == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing atom label change - atom %i, from %i to %i\n",data_[0],data_[2],data_[1]);
+				msg(Debug::Verbose,"Reversing atom label change - atom %i, from %i to %i\n",data_[0],data_[2],data_[1]);
 				i->setLabels(data_[1]);
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Replaying atom label change - atom %i, from %i to %i\n",data_[0],data_[1],data_[2]);
+				msg(Debug::Verbose,"Replaying atom label change - atom %i, from %i to %i\n",data_[0],data_[1],data_[2]);
 				i->setLabels(data_[2]);
 			}
 			break;
@@ -266,12 +266,12 @@ void Change::reverse(Model *m)
 			i = modelatoms[data_[0]];
 			if (direction_ == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing atom translation - atom %i, subtracting %f %f %f\n", data_[0], vecData_[0]->x, vecData_[0]->y, vecData_[0]->z);
+				msg(Debug::Verbose,"Reversing atom translation - atom %i, subtracting %f %f %f\n", data_[0], vecData_[0]->x, vecData_[0]->y, vecData_[0]->z);
 				i->r() -= *vecData_[0];
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Replaying atom translation - atom %i, adding %f %f %f\n", data_[0], vecData_[0]->x, vecData_[0]->y, vecData_[0]->z);
+				msg(Debug::Verbose,"Replaying atom translation - atom %i, adding %f %f %f\n", data_[0], vecData_[0]->x, vecData_[0]->y, vecData_[0]->z);
 				i->r() += *vecData_[0];
 			}
 			break;
@@ -279,12 +279,12 @@ void Change::reverse(Model *m)
 		case (UE_SHIFT):
 			if (direction_ == UD_REVERSE)
 			{
-				msg(DM_VERBOSE,"Reversing atom shift - atom %i moves %i places\n", data_[0]+data_[1], -data_[1]);
+				msg(Debug::Verbose,"Reversing atom shift - atom %i moves %i places\n", data_[0]+data_[1], -data_[1]);
 				m->atoms_.move(data_[0]+data_[1], -data_[1]);
 			}
 			else
 			{
-				msg(DM_VERBOSE,"Performing atom shift - atom %i moves %i places\n", data_[0], data_[1]);
+				msg(Debug::Verbose,"Performing atom shift - atom %i moves %i places\n", data_[0], data_[1]);
 				m->atoms_.move(data_[0], data_[1]);
 			}
 			m->renumberAtoms();
@@ -293,19 +293,19 @@ void Change::reverse(Model *m)
 			printf("Don't know how to reverse change (type = %i)\n", type_);
 			break;
 	}
-	dbgEnd(DM_CALLS,"Change::reverse");
+	dbgEnd(Debug::Calls,"Change::reverse");
 }
 
 // Perform (redo) stored change
 void Change::perform(Model *m)
 {
-	dbgBegin(DM_CALLS,"Change::perform");
+	dbgBegin(Debug::Calls,"Change::perform");
 	// Re-use the commands in Change::revert, performing the change in the opposite direction
 	direction_ = (direction_ == UD_REVERSE ? UD_FORWARDS : UD_REVERSE);
 	// Now just call reverse instead, and then set the old direction back at the end
 	reverse(m);
 	direction_ = (direction_ == UD_REVERSE ? UD_FORWARDS : UD_REVERSE);
-	dbgEnd(DM_CALLS,"Change::perform");
+	dbgEnd(Debug::Calls,"Change::perform");
 }
 
 /*
@@ -363,22 +363,22 @@ int Undostate::nChanges()
 // Revert (undo) changes detailed in state
 void Undostate::reverse(Model *m)
 {
-	dbgBegin(DM_CALLS,"Undostate::reverse");
+	dbgBegin(Debug::Calls,"Undostate::reverse");
 	// Undo the changes stored in the change list
 	for (Change* c = changes_.last(); c != NULL; c = c->prev) c->reverse(m);
 	// Set model logs to the old values
 	m->copyLogs(startLogs_);
-	dbgEnd(DM_CALLS,"Undostate::reverse");
+	dbgEnd(Debug::Calls,"Undostate::reverse");
 }
 
 // Perform (redo) changes detailed in state
 void Undostate::perform(Model *m)
 {
-	dbgBegin(DM_CALLS,"Undostate::perform");
+	dbgBegin(Debug::Calls,"Undostate::perform");
 	for (Change* c = changes_.first(); c != NULL; c = c->next) c->perform(m);
 	// Set model logs to the new values
 	m->copyLogs(endLogs_);
-	dbgEnd(DM_CALLS,"Undostate::perform");
+	dbgEnd(Debug::Calls,"Undostate::perform");
 }
 
 // Check differences between LOG_STRUCTURE and LOG_COORDS for start/end points

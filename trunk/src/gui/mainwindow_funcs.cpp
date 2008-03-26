@@ -105,16 +105,16 @@ void AtenForm::keyReleaseEvent(QKeyEvent *event)
 
 void AtenForm::on_ModelTabs_currentChanged(int n)
 {
-	dbgBegin(DM_CALLS,"AtenForm::on_ModelTabs_currentChanged");
+	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
 	master.setCurrentModel(master.model(n));
 	gui.refresh();
-	dbgEnd(DM_CALLS,"AtenForm::on_ModelTabs_currentChanged");
+	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 }
 
 void AtenForm::refreshModelTabs()
 {
-	dbgBegin(DM_CALLS,"AtenForm::refreshModelTabs");
+	dbgBegin(Debug::Calls,"AtenForm::refreshModelTabs");
 	// Set names on tabs
 	int count = 0;
 	for (Model *m = master.models(); m != NULL; m = m->next)
@@ -122,7 +122,7 @@ void AtenForm::refreshModelTabs()
 		ui.ModelTabs->setTabText(count, m->name());
 		count ++;
 	}
-	dbgEnd(DM_CALLS,"AtenForm::refreshModelTabs");
+	dbgEnd(Debug::Calls,"AtenForm::refreshModelTabs");
 }
 
 void AtenForm::executeCommand()
@@ -178,10 +178,10 @@ void AtenForm::loadRecent()
 	// See if any loaded model filename matches this filename
 	for (m = master.models(); m != NULL; m = m->next)
 	{
-		msg(DM_VERBOSE,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
+		msg(Debug::Verbose,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
 		if (filename == m->filename())
 		{
-			msg(DM_VERBOSE,"Matched filename to loaded model.\n");
+			msg(Debug::Verbose,"Matched filename to loaded model.\n");
 			master.setCurrentModel(m);
 			return;
 		}
@@ -323,7 +323,7 @@ void AtenForm::runScript()
 	else
 	{
 		// Execute the script
-		msg(DM_NONE,"Executing script '%s':\n",ri->data->name());
+		msg(Debug::None,"Executing script '%s':\n",ri->data->name());
 		ri->data->execute();
 	}
 }

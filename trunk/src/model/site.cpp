@@ -25,10 +25,10 @@
 // Find site by name
 Site *Model::findSite(const char *s)
 {
-	dbgBegin(DM_CALLS,"Model::findSite");
+	dbgBegin(Debug::Calls,"Model::findSite");
 	Site *result = NULL;
 	for (result = sites.first(); result != NULL; result = result->next)
 		if (strcmp(result->name(),s) == 0) break;
-	dbgEnd(DM_CALLS,"Model::findSite");
+	dbgEnd(Debug::Calls,"Model::findSite");
 	return result;
 }

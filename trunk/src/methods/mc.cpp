@@ -252,7 +252,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
-	dbgBegin(DM_CALLS,"MethodMc::minimise");
+	dbgBegin(Debug::Calls,"MethodMc::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats, prog;
 	char s[256], t[32];
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
@@ -263,10 +263,10 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
-	msg(DM_NONE,"Creating expression for target model...\n");
+	msg(Debug::None,"Creating expression for target model...\n");
         if (!srcmodel->createExpression())
 	{
-		dbgEnd(DM_CALLS,"MethodMc::minimise");
+		dbgEnd(Debug::Calls,"MethodMc::minimise");
 		return FALSE;
 	}
 	srcmodel->assignCharges(prefs.chargeSource());
@@ -278,15 +278,15 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	// Create ratio array (not per-pattern, just per move type)
 	createRatioArray(1);
 
-	msg(DM_NONE,"Beginning Monte Carlo minimise...\n\n");
-	msg(DM_NONE," Step     Energy        Delta          VDW          Elec              T%%  R%%  Z%%  I%%  D%%\n");
+	msg(Debug::None,"Beginning Monte Carlo minimise...\n\n");
+	msg(Debug::None," Step     Energy        Delta          VDW          Elec              T%%  R%%  Z%%  I%%  D%%\n");
 
 	// Calculate initial reference energy
 	ecurrent = srcmodel->totalEnergy(srcmodel);
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.elec();
 	elast = ecurrent;
-	msg(DM_NONE,"       %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
+	msg(Debug::None,"       %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
 
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
@@ -380,9 +380,9 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			for (n=0; n<MT_NITEMS; n++) msg(DM_NONE," %3i",int(acceptanceRatio_[0][n]*100.0));
-			msg(DM_NONE,"\n");
+			msg(Debug::None," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			for (n=0; n<MT_NITEMS; n++) msg(Debug::None," %3i",int(acceptanceRatio_[0][n]*100.0));
+			msg(Debug::None,"\n");
 		}
 		elast = ecurrent;
 
@@ -396,7 +396,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	// Finalise
 	srcmodel->logChange(LOG_COORDS);
 
-	dbgEnd(DM_CALLS,"MethodMc::minimise");
+	dbgEnd(Debug::Calls,"MethodMc::minimise");
 	return TRUE;
 }
 
@@ -404,7 +404,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 bool MethodMc::disorder(Model *destmodel)
 {
 	// Monte Carlo Insertion
-	dbgBegin(DM_CALLS,"MethodMc::disorder");
+	dbgBegin(Debug::Calls,"MethodMc::disorder");
 	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
 	int patternNMols, prog;
 	char s[256], t[32];
@@ -423,10 +423,10 @@ bool MethodMc::disorder(Model *destmodel)
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
-	msg(DM_NONE,"Creating expression for target model...\n");
+	msg(Debug::None,"Creating expression for target model...\n");
         if (!destmodel->createExpression())
 	{
-		dbgEnd(DM_CALLS,"MethodMc::disorder");
+		dbgEnd(Debug::Calls,"MethodMc::disorder");
 		return FALSE;
 	}
 	nOldPatterns = destmodel->nPatterns();
@@ -438,13 +438,13 @@ bool MethodMc::disorder(Model *destmodel)
 	// Check that there were actually components specified
 	if (components.nItems() == 0)
 	{
-		msg(DM_NONE,"No components have been specified for inclusion into the model.\n");
-		dbgEnd(DM_CALLS,"MethodMc::disorder");
+		msg(Debug::None,"No components have been specified for inclusion into the model.\n");
+		dbgEnd(Debug::Calls,"MethodMc::disorder");
 		return FALSE;
 	}
 
 	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
-	msg(DM_NONE,"Preparing destination model...\n");
+	msg(Debug::None,"Preparing destination model...\n");
 	for (c = components.first(); c != NULL; c = c->next)
 	{
 		// Grab the model pointer for this component and set the number filled to zero
@@ -453,8 +453,8 @@ bool MethodMc::disorder(Model *destmodel)
 		// Check that we can create a suitable expression for the component model
 		if (!m->createExpression())
 		{
-			msg(DM_NONE,"Failed to create expression for component model '%s'.\n", m->name());
-			dbgEnd(DM_CALLS,"MethodMc::disorder");
+			msg(Debug::None,"Failed to create expression for component model '%s'.\n", m->name());
+			dbgEnd(Debug::Calls,"MethodMc::disorder");
 			return FALSE;
 		}
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
@@ -472,16 +472,16 @@ bool MethodMc::disorder(Model *destmodel)
 	// Create master expression for the new (filled) model
 	if (!destmodel->createExpression())
 	{
-		msg(DM_NONE,"Couldn't create master expression for destination model.\n");
+		msg(Debug::None,"Couldn't create master expression for destination model.\n");
 		return FALSE;
 	}
 	// Set starting populations of patterns, add atom space to target model, and print out pattern list info.
-	msg(DM_NONE,"Pattern info for insertion to model '%s':\n",destmodel->name());
-	msg(DM_NONE,"  ID  nmols  atoms  starti  finali  name\n");
+	msg(Debug::None,"Pattern info for insertion to model '%s':\n",destmodel->name());
+	msg(Debug::None,"  ID  nmols  atoms  starti  finali  name\n");
 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
 		// Set nmols, starti, endi, startatom and endatom in the pattern
-		msg(DM_NONE,"  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMols(),p->nAtoms(),
+		msg(Debug::None,"  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMols(),p->nAtoms(),
 			p->startAtom(),p->startAtom() + p->totalAtoms(),p->name());
 	}
 
@@ -493,7 +493,7 @@ bool MethodMc::disorder(Model *destmodel)
 	for (n = nOldAtoms; n < destmodel->nAtoms(); n++) modelAtoms[n]->setHidden(TRUE);
 
 	// Create a backup model
-	msg(DM_NONE,"Preparing workspace for maximum of %i atoms...\n", destmodel->nAtoms());
+	msg(Debug::None,"Preparing workspace for maximum of %i atoms...\n", destmodel->nAtoms());
 	Model bakmodel;
 	bakmodel.copy(destmodel);
 
@@ -512,22 +512,22 @@ bool MethodMc::disorder(Model *destmodel)
 	*/
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
-	msg(DM_NONE,"Beginning Monte Carlo insertion...\n\n");
-	msg(DM_NONE," Step     Energy        Delta          VDW          Elec         Model    N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
+	msg(Debug::None,"Beginning Monte Carlo insertion...\n\n");
+	msg(Debug::None," Step     Energy        Delta          VDW          Elec         Model    N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
 	// Calculate initial reference energies
 	ecurrent = destmodel->totalEnergy(destmodel);
 	currentVdwEnergy = destmodel->energy.vdw();
 	currentElecEnergy = destmodel->energy.elec();
 
 	elast = ecurrent;
-	msg(DM_NONE," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
+	msg(Debug::None," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
 
 	// Loop over MC cycles
 	if (gui.exists()) gui.progressCreate("Building disordered system", nCycles_ * components.nItems() * MT_NITEMS);
 	prog = 0;
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
-		msg(DM_VERBOSE,"Begin cycle %i...\n",cycle);
+		msg(Debug::Verbose,"Begin cycle %i...\n",cycle);
 
 		// Loop over patterns and regions together
 		for (c = components.first(); c != NULL; c = c->next)
@@ -535,15 +535,15 @@ bool MethodMc::disorder(Model *destmodel)
 			// Get pointers to variables
 			p = c->pattern();
 			r = &c->area;
-			msg(DM_VERBOSE,"Working on pattern '%s'\n",p->name());
+			msg(Debug::Verbose,"Working on pattern '%s'\n",p->name());
 			// If the pattern is fixed, move on
 			if (p->isFixed())
 			{
 				prog += MT_NITEMS;
-				msg(DM_VERBOSE,"Pattern '%s' is fixed.\n",p->name());
+				msg(Debug::Verbose,"Pattern '%s' is fixed.\n",p->name());
 				continue;
 			}
-			msg(DM_VERBOSE,"Pattern region is '%s'.\n",text_from_RS(r->shape()));
+			msg(Debug::Verbose,"Pattern region is '%s'.\n",text_from_RS(r->shape()));
 
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MT_DELETE; move>-1; move--)
@@ -567,10 +567,10 @@ bool MethodMc::disorder(Model *destmodel)
 						// New molecule
 						case (MT_INSERT):
 							// Check if we've already filled as many as requested
-							msg(DM_VERBOSE,"insert : Pattern %s has %i molecules.\n",p->name(),patternNMols);
+							msg(Debug::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
 							if (patternNMols == p->nExpectedMols()) continue;
 							// Paste a new molecule into the working configuration
-							msg(DM_VERBOSE,"insert : Pasting new molecule - pattern %s, mol %i\n",p->name(),patternNMols);
+							msg(Debug::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
 							//clip.paste_to_model(destmodel,p,patternNMols);
 							// Increase nmols for pattern and natoms for config
 							mol = patternNMols;		// Points to new molecule, since m-1
@@ -635,7 +635,7 @@ bool MethodMc::disorder(Model *destmodel)
 					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
 					deltaElecEnergy = destmodel->energy.elec() - referenceElecEnergy;
-				//	printf("enew = %f, eref = %f, edelta = %f\n",enew, eref, edelta);
+					msg(Debug::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
 					if (deltaMoleculeEnergy > acceptanceEnergy_[move])
 					{
 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
@@ -677,7 +677,7 @@ bool MethodMc::disorder(Model *destmodel)
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
 			// Print start of first line (current energy and difference)
-			//msg(DM_NONE," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
+			//msg(Debug::None," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
 			for (p = destmodel->patterns(); p != NULL; p = p->next)
 			{
 				n = p->id();
@@ -693,7 +693,7 @@ bool MethodMc::disorder(Model *destmodel)
 					strcat(s,t);
 				}
 				strcat(s,"\n");
-				msg(DM_NONE,s);
+				msg(Debug::None,s);
 			}
 		}
 		elast = ecurrent;
@@ -707,7 +707,7 @@ bool MethodMc::disorder(Model *destmodel)
 		}
 		if (done)
 		{
-			msg(DM_NONE,"All component populations satisfied.\n");
+			msg(Debug::None,"All component populations satisfied.\n");
 			break;
 		}
 	}
@@ -717,12 +717,12 @@ bool MethodMc::disorder(Model *destmodel)
 	enew = destmodel->totalEnergy(destmodel);
 	destmodel->energy.print();
 	// Print out pattern list info here
-	msg(DM_NONE,"Final populations for model '%s':\n",destmodel->name());
-	msg(DM_NONE,"  ID  name                 nmols \n");
+	msg(Debug::None,"Final populations for model '%s':\n",destmodel->name());
+	msg(Debug::None,"  ID  name                 nmols \n");
 	p = destmodel->patterns();
 	while (p != NULL)
 	{
-		msg(DM_NONE,"  %2i  %-20s  %6i\n",p->id(),p->name(),p->nMols());
+		msg(Debug::None,"  %2i  %-20s  %6i\n",p->id(),p->name(),p->nMols());
 		p = p->next;
 	}
 
@@ -743,6 +743,14 @@ bool MethodMc::disorder(Model *destmodel)
 		}
 		else i = i->next;
 	}
+	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
+	for (p = destmodel->patterns(); p != NULL; p = p->next)
+	{
+		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
+		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMols()*p->prev->nAtoms() );
+		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
+		//printf("PATTERN %li NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
+	}
 	//bakmodel.copy(destmodel);
 	//destmodel->recreate_from_patterns(&bakmodel);
 	//destmodel->renderFromSelf();
@@ -751,7 +759,7 @@ bool MethodMc::disorder(Model *destmodel)
 	destmodel->calculateDensity();
 	destmodel->logChange(LOG_COORDS);
 	gui.refresh();
-	dbgEnd(DM_CALLS,"MethodMc::insert");
+	dbgEnd(Debug::Calls,"MethodMc::insert");
 	return TRUE;
 }
 

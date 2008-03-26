@@ -26,7 +26,7 @@
 // Render model atoms and bonds
 void Canvas::renderModelAtoms()
 {
-	dbgBegin(DM_CALLS,"Canvas::renderModelAtoms");
+	dbgBegin(Debug::Calls,"Canvas::renderModelAtoms");
 	static Atom::DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
 	static short int cindex;
@@ -288,5 +288,5 @@ void Canvas::renderModelAtoms()
 	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glDisable(GL_BLEND);
 	// Reset line width to 1.0
 	glLineWidth(1.0);
-	dbgEnd(DM_CALLS,"Canvas::renderModelAtoms");
+	dbgEnd(Debug::Calls,"Canvas::renderModelAtoms");
 }

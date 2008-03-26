@@ -30,7 +30,7 @@
 // Calculate bond energy of pattern (or molecule in pattern)
 void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 {
-	dbgBegin(DM_CALLS,"Pattern::bondEnergy");
+	dbgBegin(Debug::Calls,"Pattern::bondEnergy");
 	int i,j,m1,aoff;
 	static Vec3<double> mim_i;
 	static double forcek, eq, r, energy;
@@ -70,13 +70,13 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 	}
 	// Increment energy for pattern
 	estore->add(ET_BOND,energy,id_);
-	dbgEnd(DM_CALLS,"Pattern::bondEnergy");
+	dbgEnd(Debug::Calls,"Pattern::bondEnergy");
 }
 
 // Calculate bond forces in pattern
 void Pattern::bondForces(Model *srcmodel)
 {
-	dbgBegin(DM_CALLS,"Pattern::bondForcess");
+	dbgBegin(Debug::Calls,"Pattern::bondForcess");
 	int n,i,j,m1,aoff;
 	static Vec3<double> mim_i, fi;
 	static double forcek, eq, rij, du_dr;
@@ -119,5 +119,5 @@ void Pattern::bondForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(DM_CALLS,"Pattern::bondForcess");
+	dbgEnd(Debug::Calls,"Pattern::bondForcess");
 }

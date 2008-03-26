@@ -33,15 +33,15 @@ AtenEdit::AtenEdit(QDialog *parent) : QDialog(parent)
 // Finalise GUI
 void AtenEdit::finaliseUi()
 {
-	dbgBegin(DM_CALLS,"AtenEdit::finaliseUi");
-	dbgEnd(DM_CALLS,"AtenEdit::finaliseUi");
+	dbgBegin(Debug::Calls,"AtenEdit::finaliseUi");
+	dbgEnd(Debug::Calls,"AtenEdit::finaliseUi");
 }
 
 // Set controls
 void AtenEdit::setControls()
 {
-	dbgBegin(DM_CALLS,"AtenEdit::setControls");
-	dbgBegin(DM_CALLS,"AtenEdit::setControls");
+	dbgBegin(Debug::Calls,"AtenEdit::setControls");
+	dbgBegin(Debug::Calls,"AtenEdit::setControls");
 }
 
 // Populate widget with specified forcefield

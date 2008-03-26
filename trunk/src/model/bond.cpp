@@ -31,8 +31,8 @@
 void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 {
         // Create a new bond each atom and add them to the atom's own lists.
-	dbgBegin(DM_CALLS,"Model::bondAtoms");
-	if (i == j) msg(DM_NONE,"Cannot bond an atom to itself!\n");
+	dbgBegin(Debug::Calls,"Model::bondAtoms");
+	if (i == j) msg(Debug::None,"Cannot bond an atom to itself!\n");
 	else
 	{
 		// Search for old bond between atoms
@@ -69,16 +69,16 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 			}
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::bondAtoms");
+	dbgEnd(Debug::Calls,"Model::bondAtoms");
 }
 
 // Add Bond (id's)
 void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 {
         // Create a new bond for each atom and add them to the atom's own lists.
-	dbgBegin(DM_CALLS,"Model::bondAtoms[int]");
+	dbgBegin(Debug::Calls,"Model::bondAtoms[int]");
 	//printf("Atom ids given to Model::bondAtoms() are %i and %i (natoms=%i)\n",ii,jj,atoms_.nItems());
-	if (ii == jj) msg(DM_NONE,"Cannot bond an atom to itself!\n");
+	if (ii == jj) msg(Debug::None,"Cannot bond an atom to itself!\n");
 	else
 	{
 		// First, locate the two atoms with the specified id's
@@ -87,19 +87,19 @@ void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 		if (i == NULL || j == NULL)
 		{
 			printf("Couldn't locate one or both atoms in bond with specified ids %i and %i\n",ii,jj);
-			dbgEnd(DM_CALLS,"Model::bondAtoms[int]");
+			dbgEnd(Debug::Calls,"Model::bondAtoms[int]");
 			return;
 		}
 		bondAtoms(i,j,bt);
 	}
-	dbgEnd(DM_CALLS,"Model::bondAtoms[int]");
+	dbgEnd(Debug::Calls,"Model::bondAtoms[int]");
 }
 
 // Delete Bond
 void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 {
         // Delete info from bond lists for atoms i and j.
-	dbgBegin(DM_CALLS,"Model::unbondAtoms");
+	dbgBegin(Debug::Calls,"Model::unbondAtoms");
 	// Find bond between atoms (unless already supplied)
 	Bond *b;
 	if (bij != NULL) b = bij;
@@ -109,7 +109,7 @@ void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 		if (b == NULL)
 		{
 			printf("Couldn't locate bond to unbond!\n");
-			dbgEnd(DM_CALLS,"Model::unbondAtoms");
+			dbgEnd(Debug::Calls,"Model::unbondAtoms");
 			return;
 		}
 	}
@@ -124,13 +124,13 @@ void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 		Change *newchange = recordingState_->addChange();
 		newchange->set(-UE_BOND,i->id(),j->id(),bt);
 	}
-	dbgEnd(DM_CALLS,"Model::unbondAtoms");
+	dbgEnd(Debug::Calls,"Model::unbondAtoms");
 }
 
 // Delete All Bonding
 void Model::clearBonding()
 {
-	dbgBegin(DM_CALLS,"Model::clearBonding");
+	dbgBegin(Debug::Calls,"Model::clearBonding");
         // Clear the bond list.
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
@@ -145,21 +145,21 @@ void Model::clearBonding()
 		}
 	}
 	logChange(LOG_STRUCTURE);
-	dbgEnd(DM_CALLS,"Model::clearBonding");
+	dbgEnd(Debug::Calls,"Model::clearBonding");
 }
 
 // Calculate Bonding
 void Model::calculateBonding()
 {
         // Given the atoms alone, calculate bonding between them using common VDW radii.
-	dbgBegin(DM_CALLS,"Model::calculateBonding");
+	dbgBegin(Debug::Calls,"Model::calculateBonding");
 	Atom *i, *j;
 	int el;
 	double dist;
 	double tolerance = prefs.bondTolerance();
 	double radius_i, radsum;
 	clearBonding();
-	msg(DM_NONE,"Calculating bonds in model (tolerance = %5.2f)...",tolerance);
+	msg(Debug::None,"Calculating bonds in model (tolerance = %5.2f)...",tolerance);
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		// Check for excluded elements
@@ -175,21 +175,21 @@ void Model::calculateBonding()
 			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 		}
 	}
-	msg(DM_NONE," Done.\n");
-	dbgEnd(DM_CALLS,"Model::calculateBonding");
+	msg(Debug::None," Done.\n");
+	dbgEnd(Debug::Calls,"Model::calculateBonding");
 }
 
 // Calculate Bonding within Patterns
 void Model::patternCalculateBonding()
 {
-	dbgBegin(DM_CALLS,"Model::patternCalculateBonding");
+	dbgBegin(Debug::Calls,"Model::patternCalculateBonding");
 	Atom *i,*j;
 	int ii, jj, el, m;
 	double dist;
 	double tolerance = prefs.bondTolerance();
 	double radius_i, radsum;
 	clearBonding();
-	msg(DM_NONE,"Calculating bonds within patterns (tolerance = %5.2f)...",tolerance);
+	msg(Debug::None,"Calculating bonds within patterns (tolerance = %5.2f)...",tolerance);
 	// For all the pattern nodes currently defined, bond within molecules
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
@@ -229,14 +229,14 @@ void Model::patternCalculateBonding()
 			i = i->next;
 		}
 	}
-	msg(DM_NONE," Done.\n");
-	dbgEnd(DM_CALLS,"Model::patternCalculateBonding");
+	msg(Debug::None," Done.\n");
+	dbgEnd(Debug::Calls,"Model::patternCalculateBonding");
 }
 
 // Calculate Bonding in current selection
 void Model::selectionCalculateBonding()
 {
-	dbgBegin(DM_CALLS,"Model::selectionCalculateBonding");
+	dbgBegin(Debug::Calls,"Model::selectionCalculateBonding");
 	double tolerance = prefs.bondTolerance();
 	double radsum, dist;
 	Atom *i, *j;
@@ -257,14 +257,14 @@ void Model::selectionCalculateBonding()
 			}
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::selectionCalculateBonding");
+	dbgEnd(Debug::Calls,"Model::selectionCalculateBonding");
 }
 
 // Bond all atoms in current selection
 void Model::selectionBondAll()
 {
 	// Add bonds between all atoms in current selection
-	dbgBegin(DM_CALLS,"Model::selectionBondAll");
+	dbgBegin(Debug::Calls,"Model::selectionBondAll");
 	Atom *i, *j;
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
@@ -277,14 +277,14 @@ void Model::selectionBondAll()
 			}
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::selectionBondAll");
+	dbgEnd(Debug::Calls,"Model::selectionBondAll");
 }
 
 // Clear Bonding in current selection
 void Model::selectionClearBonding()
 {
 	// Clear all bonds between currently selected atoms
-	dbgBegin(DM_CALLS,"Model::selectionClearBonding");
+	dbgBegin(Debug::Calls,"Model::selectionClearBonding");
 	Atom *i, *j;
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
@@ -297,7 +297,7 @@ void Model::selectionClearBonding()
 			}
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::selectionClearBonding");
+	dbgEnd(Debug::Calls,"Model::selectionClearBonding");
 }
 
 // Alter type of bond
@@ -327,7 +327,7 @@ void Model::augmentBond(Bond *b, int change)
 {
 	// Increase the type of the bond between this atom and 'j' by as much as both atoms will allow.
 	// Assumes current bond order differences are held in i->tempi.
-	dbgBegin(DM_CALLS,"Model::augmentBond");
+	dbgBegin(Debug::Calls,"Model::augmentBond");
 	int maxchg, n;
 	Atom *i = b->atomI();
 	Atom *j = b->atomJ();
@@ -337,12 +337,12 @@ void Model::augmentBond(Bond *b, int change)
 	// Sanity check
 	if ((change == +1) && (maxchg >= 0))
 	{
-		dbgEnd(DM_CALLS,"Model::augmentBond");
+		dbgEnd(Debug::Calls,"Model::augmentBond");
 		return;
 	}
 	if ((change == -1) && (maxchg <= 0))
 	{
-		dbgEnd(DM_CALLS,"Model::augmentBond");
+		dbgEnd(Debug::Calls,"Model::augmentBond");
 		return;
 	}
 	// Store current bond order
@@ -356,13 +356,13 @@ void Model::augmentBond(Bond *b, int change)
 	}
 	// Set the new bond order
 	changeBond(b,(Bond::BondType) oldorder);
-	dbgEnd(DM_CALLS,"Model::augmentBond");
+	dbgEnd(Debug::Calls,"Model::augmentBond");
 }
 
 // Augment bonding for all model patterns
 void Model::augmentBonding()
 {
-	dbgBegin(DM_CALLS,"Model::augmentBonding");
+	dbgBegin(Debug::Calls,"Model::augmentBonding");
 	/*
 	Assign bond types to the pattern, i.e. automatically determine double, triple, resonant bonds etc.
 	We do this by assuming that the structure is chemically 'correct' - i.e. each element is bound to a likely
@@ -372,10 +372,10 @@ void Model::augmentBonding()
 	*/
 	if (!autocreatePatterns())
 	{
-		msg(DM_NONE,"Can't augment bonding without a valid pattern.\n");
-		dbgBegin(DM_CALLS,"Model::augmentBonding");
+		msg(Debug::None,"Can't augment bonding without a valid pattern.\n");
+		dbgBegin(Debug::Calls,"Model::augmentBonding");
 		return;
 	}
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->augment();
-	dbgEnd(DM_CALLS,"Model::augmentBonding");
+	dbgEnd(Debug::Calls,"Model::augmentBonding");
 }

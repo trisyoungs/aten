@@ -39,7 +39,7 @@ int CommandData::function_CA_FIND(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	static char linefromfile[MAXLINELENGTH];
@@ -68,12 +68,12 @@ int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	inputfile->read((char*) &readc, c->argi(1));
 	c->arg(0)->set(readc);
-	msg(DM_FILTERS,"Unformatted char read got '%s'\n",readc);
+	msg(Debug::Filters,"Unformatted char read got '%s'\n",readc);
 	return CR_SUCCESS;
 }
 
@@ -83,13 +83,13 @@ int CommandData::function_CA_READDOUBLE(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	double readd;
 	inputfile->read((char*) &readd,8);
 	c->arg(0)->set(readd);
-	msg(DM_FILTERS,"Unformatted double read got '%f'\n",readd);
+	msg(Debug::Filters,"Unformatted double read got '%f'\n",readd);
 	return CR_SUCCESS;
 }
 
@@ -99,13 +99,13 @@ int CommandData::function_CA_READINTEGER(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	int readi;
 	inputfile->read((char*) &readi,4);
 	c->arg(0)->set(readi);
-	msg(DM_FILTERS,"Unformatted int read got '%i'\n",readi);
+	msg(Debug::Filters,"Unformatted int read got '%i'\n",readi);
 	return CR_SUCCESS;
 }
 
@@ -115,7 +115,7 @@ int CommandData::function_CA_READLINE(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	parser.getArgsFormatted(inputfile,c->parent()->readOptions(),c->format());
@@ -128,7 +128,7 @@ int CommandData::function_CA_READNEXT(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	c->arg(0)->set(parser.getArgDelim(inputfile));
@@ -157,7 +157,7 @@ int CommandData::function_CA_REWIND(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	inputfile->seekg(0, ios::beg);
@@ -170,7 +170,7 @@ int CommandData::function_CA_SKIPCHARS(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	inputfile->ignore(c->argi(0));
@@ -183,7 +183,7 @@ int CommandData::function_CA_SKIPLINE(Command *&c, Bundle &obj)
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
 	{
-		msg(DM_NONE,"No input file active.\n");
+		msg(Debug::None,"No input file active.\n");
 		return CR_FAIL;
 	}
 	if (c->hasArg(0)) parser.skipLines(inputfile,c->argi(0));
@@ -197,7 +197,7 @@ int CommandData::function_CA_WRITELINE(Command *&c, Bundle &obj)
 	ofstream *outputfile = c->parent()->outputFile();
 	if (outputfile == NULL)
 	{
-		msg(DM_NONE,"No output file active.\n");
+		msg(Debug::None,"No output file active.\n");
 		return CR_FAIL;
 	}
 	*outputfile << c->format()->createString();
