@@ -28,7 +28,7 @@
 // Render other 3D objects
 void Canvas::renderExtra3d()
 {
-	dbgBegin(DM_CALLS,"Canvas::renderExtra3d");
+	dbgBegin(Debug::Calls,"Canvas::renderExtra3d");
 	// Draw on 3D embellishments for active modes
 	static double radius;
 	static Vec3<double> r, mouse;
@@ -97,13 +97,13 @@ void Canvas::renderExtra3d()
 			glPopMatrix();
 			break;
 	}
-	dbgEnd(DM_CALLS,"Canvas::renderExtra3d");
+	dbgEnd(Debug::Calls,"Canvas::renderExtra3d");
 }
 
 // Render 2D objects
 void Canvas::renderExtra2d()
 {
-	dbgBegin(DM_CALLS,"Canvas::renderExtra2d");
+	dbgBegin(Debug::Calls,"Canvas::renderExtra2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
 	static int n, i;
 	static double dx, dy, halfw;
@@ -176,13 +176,13 @@ void Canvas::renderExtra2d()
 		float midy = height_ / 2;
 		//glBegin(
 	}
-	dbgEnd(DM_CALLS,"Canvas::renderExtra2d");
+	dbgEnd(Debug::Calls,"Canvas::renderExtra2d");
 }
 
 // Render disordered insertion regions
 void Canvas::renderRegions()
 {
-	dbgBegin(DM_CALLS,"Canvas::renderRegions");
+	dbgBegin(Debug::Calls,"Canvas::renderRegions");
 	static Vec3<double> centre, size;
 	static GLfloat colour[4];
 	int i = 0;
@@ -221,5 +221,5 @@ void Canvas::renderRegions()
 	// Turn off blending (if not antialiasing)
 	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
-	dbgEnd(DM_CALLS,"Canvas::renderRegions");
+	dbgEnd(Debug::Calls,"Canvas::renderRegions");
 }

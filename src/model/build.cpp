@@ -30,7 +30,7 @@
 void Model::hydrogenSatisfy(Atom *target)
 {
 	// Cycles over atoms in model (or only the atom supplied), and works out how many hydrogens (and in which geometry) should be added to each
-	dbgBegin(DM_CALLS,"Model::hydrogenSatisfy");
+	dbgBegin(Debug::Calls,"Model::hydrogenSatisfy");
 	int numh, tbo, nsingle, ndouble;
 	Atom *i, *endatom;
 	i = (target == NULL ? atoms_.first() : target);
@@ -54,14 +54,14 @@ void Model::hydrogenSatisfy(Atom *target)
 		}
 	}
 	projectAll();
-	dbgEnd(DM_CALLS,"Model::hydrogenSatisfy");
+	dbgEnd(Debug::Calls,"Model::hydrogenSatisfy");
 }
 
 // Iteratively add hydrogens to specified atom (giving supplied geometry)
 void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 {
 	// Iteratively add hydrogens to the molecule conforming to the desired geometry specified
-	dbgBegin(DM_CALLS,"atom::addHydrogens");
+	dbgBegin(Debug::Calls,"atom::addHydrogens");
 	Atom *a1, *a2, *a3;
 	Atom *newh;
 	Vec3<double> mim_a1, mim_a2, mim_a3, perp, perp2, newhpos, tempv;
@@ -148,5 +148,5 @@ void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 		bondAtoms(newh,target,Bond::Single);
 		projectAtom(newh);
 	}
-	dbgEnd(DM_CALLS,"Model::addHydrogens");
+	dbgEnd(Debug::Calls,"Model::addHydrogens");
 }

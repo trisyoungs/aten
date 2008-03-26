@@ -161,10 +161,10 @@ void Model::clear()
 void Model::calculateMass()
 {
 	// Calculate the mass of the atoms in the model.
-	dbgBegin(DM_CALLS,"Model::calculateMass");
+	dbgBegin(Debug::Calls,"Model::calculateMass");
 	mass_ = 0.0;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) mass_ += elements.atomicMass(i);
-	dbgEnd(DM_CALLS,"Model::calculateMass");
+	dbgEnd(Debug::Calls,"Model::calculateMass");
 }
 
 /*
@@ -176,7 +176,7 @@ void Model::assignCharges(ChargeSource qs)
 {
 	// Assign atom-type charges from the currently associated forcefield to the model
 	// Perform forcefield typing if necessary
-	dbgBegin(DM_CALLS,"Model::assignCharges");
+	dbgBegin(Debug::Calls,"Model::assignCharges");
 	Pattern *p;
 	Atom *i;
 	Forcefield *xff, *patff;
@@ -187,7 +187,7 @@ void Model::assignCharges(ChargeSource qs)
 		case (QS_FF):
 			if (!arePatternsValid())
 			{
-				msg(DM_NONE,"Model::assignCharges - Cannot assign atomic charges without a valid pattern setup.\n");
+				msg(Debug::None,"Model::assignCharges - Cannot assign atomic charges without a valid pattern setup.\n");
 				break;
 			}
 			typeAll();
@@ -200,7 +200,7 @@ void Model::assignCharges(ChargeSource qs)
 				// Grab pattern forcefield in preference to model's
 				if (patff != NULL) xff = patff;
 				if (xff == NULL)
-					msg(DM_NONE,"assignCharges : No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
+					msg(Debug::None,"assignCharges : No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
 				else
 				{
 					i = p->firstAtom();
@@ -224,7 +224,7 @@ void Model::assignCharges(ChargeSource qs)
 			printf("Gasteiger and QEq charges are not currently implemented.\n");
 			break;
 	}
-	dbgEnd(DM_CALLS,"Model::assignCharges");
+	dbgEnd(Debug::Calls,"Model::assignCharges");
 }
 
 // Set model's forcefield
@@ -235,7 +235,7 @@ void Model::setForcefield(Forcefield *newff)
 	{
 		invalidateExpression();
 		forcefield_ = newff;
-		msg(DM_NONE,"Forcefield '%s' now associated with model '%s'.\n",forcefield_->name(),name_.get());
+		msg(Debug::None,"Forcefield '%s' now associated with model '%s'.\n",forcefield_->name(),name_.get());
 	}
 }
 
@@ -243,9 +243,9 @@ void Model::setForcefield(Forcefield *newff)
 void Model::removeTyping()
 {
 	// Remove all atom typing from the current model
-	dbgBegin(DM_CALLS,"Model::removeTyping");
+	dbgBegin(Debug::Calls,"Model::removeTyping");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) setAtomtype(i, NULL, FALSE);
-	dbgEnd(DM_CALLS,"Model::removeTyping");
+	dbgEnd(Debug::Calls,"Model::removeTyping");
 }
 
 /*
@@ -321,20 +321,20 @@ void Model::selectionAddLabels(Atom::AtomLabel al)
 
 void Model::printCoords()
 {
-	dbgBegin(DM_CALLS,"Model::printCoords");
+	dbgBegin(Debug::Calls,"Model::printCoords");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
 		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), elements.symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
 	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),elements.symbol(i),r.x,r.y,r.z,
 	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
 	}
-	dbgEnd(DM_CALLS,"Model::printCoords");
+	dbgEnd(Debug::Calls,"Model::printCoords");
 }
 
 // Calculate the density of the system (if periodic)
 void Model::calculateDensity()
 {
-	dbgBegin(DM_CALLS,"Model::calculateDensity");
+	dbgBegin(Debug::Calls,"Model::calculateDensity");
 	double v = 0.0;
 	if (cell_.type() != CT_NONE)
 	{
@@ -350,14 +350,14 @@ void Model::calculateDensity()
 		}
 	}
 	else density_ = -1.0;
-	dbgEnd(DM_CALLS,"Model::calculateDensity");
+	dbgEnd(Debug::Calls,"Model::calculateDensity");
 }
 
 // Bohr to Angstrom
 void Model::bohrToAngstrom()
 {
 	// Convert coordinates and cell from Bohr to Angstrom
-	dbgBegin(DM_CALLS,"Model::bohrToAngstrom");
+	dbgBegin(Debug::Calls,"Model::bohrToAngstrom");
 	// Coordinates
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
@@ -369,35 +369,35 @@ void Model::bohrToAngstrom()
 		cell_.set(lengths,cell_.angles());
 	}
 	logChange(LOG_COORDS);
-	dbgEnd(DM_CALLS,"Model::bohrToAngstrom");
+	dbgEnd(Debug::Calls,"Model::bohrToAngstrom");
 }
 
 // Reset atom tempi's
 void Model::resetTempi(int value)
 {
-	dbgBegin(DM_CALLS,"Model::resetTempi");
+	dbgBegin(Debug::Calls,"Model::resetTempi");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->tempi = value;
-	dbgEnd(DM_CALLS,"Model::resetTempi");
+	dbgEnd(Debug::Calls,"Model::resetTempi");
 }
 
 // Clear charges
 void Model::clearCharges()
 {
-	dbgBegin(DM_CALLS,"Model::clearCharges");
+	dbgBegin(Debug::Calls,"Model::clearCharges");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->setCharge(0.0);
-	dbgEnd(DM_CALLS,"Model::clearCharges");
+	dbgEnd(Debug::Calls,"Model::clearCharges");
 }
 
 // Print
 void Model::print()
 {
-	dbgBegin(DM_CALLS,"Model::print");
-	msg(DM_NONE,"   Name : %s\n",name_.get());
-	msg(DM_NONE,"   File : %s\n",filename_.get());
-	msg(DM_NONE,"   Mass : %f\n",mass_);
-	if (cell_.type() != CT_NONE) msg(DM_NONE,"   Cell : %s\nDensity : %f %s\n",text_from_CT(cell_.type()),density_,text_from_DU(prefs.densityUnit()));
-	msg(DM_NONE,"  Atoms : %i\n",atoms_.nItems());
-	msg(DM_NONE," Id     El   FFType         X             Y             Z              Q        S  \n");
+	dbgBegin(Debug::Calls,"Model::print");
+	msg(Debug::None,"   Name : %s\n",name_.get());
+	msg(Debug::None,"   File : %s\n",filename_.get());
+	msg(Debug::None,"   Mass : %f\n",mass_);
+	if (cell_.type() != CT_NONE) msg(Debug::None,"   Cell : %s\nDensity : %f %s\n",text_from_CT(cell_.type()),density_,text_from_DU(prefs.densityUnit()));
+	msg(Debug::None,"  Atoms : %i\n",atoms_.nItems());
+	msg(Debug::None," Id     El   FFType         X             Y             Z              Q        S  \n");
 	// Print from pattern definition if possible, otherwise just use model atom list
 	Atom *i;
 	int n;
@@ -412,7 +412,7 @@ void Model::print()
 			}
 		}
 	else for (i = atoms_.first(); i != NULL; i = i->next) i->printSummary();
-	dbgEnd(DM_CALLS,"Model::print");
+	dbgEnd(Debug::Calls,"Model::print");
 }
 
 // Print Forces
@@ -440,12 +440,12 @@ void Model::copy(Model *srcmodel)
 // Copy atom data from specified model
 void Model::copyAtomData(Model *srcmodel, int dat)
 {
-	dbgBegin(DM_CALLS,"Model::copyAtomData");
+	dbgBegin(Debug::Calls,"Model::copyAtomData");
 	// Simple failsafe - check atom numbers in each are the same
 	if (atoms_.nItems() != srcmodel->atoms_.nItems())
 	{
 		printf("Model::copyAtomData <<<< Models have different numbers of atoms (%i/%i) >>>>\n", atoms_.nItems(), srcmodel->atoms_.nItems());
-		dbgEnd(DM_CALLS,"Model::copyAtomData");
+		dbgEnd(Debug::Calls,"Model::copyAtomData");
 		return;
 	}
 	Atom *i, *j;
@@ -461,21 +461,21 @@ void Model::copyAtomData(Model *srcmodel, int dat)
 		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->hasFixedPosition());
 		j = j->next;
 	}
-	//msg(DM_VERBOSE,"Copied data for %i atoms from model '%s' to model '%s'.\n", count);
+	//msg(Debug::Verbose,"Copied data for %i atoms from model '%s' to model '%s'.\n", count);
 // name(), srcmodel->name());
-	dbgEnd(DM_CALLS,"Model::copyAtomData");
+	dbgEnd(Debug::Calls,"Model::copyAtomData");
 }
 
 // Copy range of atom data from specified model
 void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 {
-	dbgBegin(DM_CALLS,"Model::copyAtomData[range]");
+	dbgBegin(Debug::Calls,"Model::copyAtomData[range]");
 	// Simple failsafe - check atom numbers in each are the same
 	int numatoms = atoms_.nItems();
 	if (numatoms != srcmodel->atoms_.nItems())
 	{
 		printf("Model::copyAtomData[range] <<<< Models have different numbers of atoms (%i/%i) >>>>\n", numatoms, srcmodel->atoms_.nItems());
-		dbgEnd(DM_CALLS,"Model::copyAtomData[range]");
+		dbgEnd(Debug::Calls,"Model::copyAtomData[range]");
 		return;
 	}
 	// Check limits of requested copy
@@ -499,16 +499,16 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 				if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) ii[n]->setCharge(jj[n]->charge());
 				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->hasFixedPosition());
 			}
-			msg(DM_VERBOSE,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
+			msg(Debug::Verbose,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::copyAtomData[range]");
+	dbgEnd(Debug::Calls,"Model::copyAtomData[range]");
 }
 
 // Calculate and return RMS of current atomic forces
 double Model::calculateRmsForce()
 {
-	dbgBegin(DM_CALLS,"Model::calculateRmsForce");
+	dbgBegin(Debug::Calls,"Model::calculateRmsForce");
 	double rmsforce = 0.0;
 	Atom **modelatoms = atomArray();
 	for (int i=0; i<atoms_.nItems(); i++)
@@ -518,7 +518,7 @@ double Model::calculateRmsForce()
 		rmsforce += modelatoms[i]->f().z * modelatoms[i]->f().z;
 	}
 	rmsforce /= atoms_.nItems();
-	dbgEnd(DM_CALLS,"Model::calculateRmsForce");
+	dbgEnd(Debug::Calls,"Model::calculateRmsForce");
 	return sqrt(rmsforce);
 }
 

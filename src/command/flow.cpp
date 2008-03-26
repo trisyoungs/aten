@@ -75,7 +75,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					// Check for end of file...
 					if (c->parent()->inputFile()->peek() == -1)
 					{
-						msg(DM_VERBOSE,"Infinite 'for' reached end of file.\n");
+						msg(Debug::Verbose,"Infinite 'for' reached end of file.\n");
 						status = FALSE;
 					}
 				}
@@ -123,7 +123,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 	else
 	{
 		// Initialise loop variable in arg(0), depending on its type
-		//msg(DM_VERBOSE,"Initialising loop : count variable is '%s', type = '%s'\n", countvar->name(), text_from_VT(counttype));
+		//msg(Debug::Verbose,"Initialising loop : count variable is '%s', type = '%s'\n", countvar->name(), text_from_VT(counttype));
 		switch (c->argt(0))
 		{
 			// Integer loop: 1 arg  - loop from 1 until end of file or termination
@@ -136,7 +136,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					if (c->parent()->inputFile() != NULL)
 						if (c->parent()->inputFile()->peek() == -1)
 						{
-							msg(DM_VERBOSE,"Command 'repeat' reached end of file.\n");
+							msg(Debug::Verbose,"Command 'repeat' reached end of file.\n");
 							status = FALSE;
 						}
 				}
@@ -273,14 +273,14 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 		{
 			c->setLoopActive(TRUE);
 			c->setLoopIterations(1);
-			msg(DM_VERBOSE,"Loop is initialised and running.\n");
+			msg(Debug::Verbose,"Loop is initialised and running.\n");
 			c = c->branchCommands();
 		}
 		else
 		{
 			c->setLoopActive(FALSE);
 			c->setLoopIterations(0);
-			msg(DM_VERBOSE,"Loop terminated on initialisation.\n");
+			msg(Debug::Verbose,"Loop terminated on initialisation.\n");
 			c = c->next;
 		}
 	}

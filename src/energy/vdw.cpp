@@ -32,7 +32,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
-	dbgBegin(DM_CALLS,"Pattern::vdwIntraPatternEnergy");
+	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
 	static int n,aoff,m1,i,j, start1, finish1;
 	static Vec3<double> mim_i;
 	static double sigma, sigmar6, epsilon, rij, energy_inter, energy_intra, cutoff, vrs;
@@ -114,14 +114,14 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 	estore->add(ET_VDWINTRA,energy_intra,id_);
 	estore->add(ET_VDWINTER,energy_inter,id_,id_);
 	//printf("TOTAL = %f %f\n",energy_intra,energy_inter);
-	dbgEnd(DM_CALLS,"Pattern::vdwIntraPatternEnergy");
+	dbgEnd(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
 }
 
 // Interpattern VDW energy
 void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, EnergyStore *estore, int molId)
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
-	dbgBegin(DM_CALLS,"Pattern::vdwInterPatternEnergy");
+	dbgBegin(Debug::Calls,"Pattern::vdwInterPatternEnergy");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> mim_i;
 	static double sigma, sigmar6, epsilon, rij, energy_inter, cutoff, vrs;
@@ -145,7 +145,6 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 		finish1 = molId + 1;
 	}
 	aoff1 = startAtom_ + start1 * nAtoms_;
-	//printf("VDWINTER Pattern is '%li', molId = %i: start1/finish1 = %i/%i, otherPattern = %li\n",this,molId,start1,finish1,otherPattern);
 	for (m1=start1; m1<finish1; m1++)
 	{
 		// Inner loop - over *all* molecules in 'otherPattern'
@@ -179,7 +178,6 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 			if ((this == otherPattern) && (molId == m2)) { aoff2 += nAtoms_; continue; }
 			//printf("      m1/m2=%i/%i  aoff1/aoff2=%i/%i \n",m1,m2,aoff1,aoff2);
 			i = -1;
-			printf("VDWINTER %li %li [%i-%i:%i]x[%i-%i:%i]\n",this,otherPattern,start1,finish1,m1,start2,finish2,m2);
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
 			{
 				i++;
@@ -213,7 +211,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 		aoff1 += nAtoms_;
 	}
 	estore->add(ET_VDWINTER,energy_inter,id_,otherPattern->id_);
-	dbgEnd(DM_CALLS,"Pattern::vdwInterPatternEnergy");
+	dbgEnd(Debug::Calls,"Pattern::vdwInterPatternEnergy");
 }
 
 // Intrapattern VDW forces
@@ -224,7 +222,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 	// 'aoff' stores the atom number offset (molecule offset) but is *only* used for lookups in the coordinate
 	// arrays since assuming the pattern definition is correct then the sigmas/epsilons in molecule 0 represent
 	// those of all molecules.
-	dbgBegin(DM_CALLS,"Pattern::vdwIntraPatternForces");
+	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternForces");
 	static int n,i,j,aoff,m1;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double sigma, sigmar6, epsilon, rij, factor, cutoff, vrs;
@@ -310,7 +308,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(DM_CALLS,"Pattern::vdwIntraPatternForces");
+	dbgEnd(Debug::Calls,"Pattern::vdwIntraPatternForces");
 }
 
 // Interpattern VDW forces
@@ -318,7 +316,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 {
 	// Calculate the VDW forces from interactions between different molecules
 	// of this pnode and the one supplied
-	dbgBegin(DM_CALLS,"Pattern::vdwInterPatternForces");
+	dbgBegin(Debug::Calls,"Pattern::vdwInterPatternForces");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double sigma, sigmar6, epsilon, rij, factor, cutoff, vrs;
@@ -378,7 +376,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 		}
 		aoff1 += nAtoms_;
 	}
-	dbgEnd(DM_CALLS,"Pattern::vdwInterPatternForces");
+	dbgEnd(Debug::Calls,"Pattern::vdwInterPatternForces");
 }
 
 //
@@ -394,7 +392,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 void Pattern::vdwCorrectEnergy(Cell *cell, EnergyStore *estore)
 {
 	// Calculate the long-range correction to the VDW energy
-	dbgBegin(DM_CALLS,"Pattern::vdwCorrectEnergy");
+	dbgBegin(Debug::Calls,"Pattern::vdwCorrectEnergy");
 	static int i, j;
 	static Pattern *p1, *p2;
 	static double energy, rho, cutoff, dudr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
@@ -436,7 +434,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, EnergyStore *estore)
 							dudr *= (sigma * sigma * sigma);
 							break;
 						default:
-							msg(DM_NONE,"VDW tail correction not implemented for LJ form %s.\n", text_from_VF(atoms_[j]->data()->vdwForm()));
+							msg(Debug::None,"VDW tail correction not implemented for LJ form %s.\n", text_from_VF(atoms_[j]->data()->vdwForm()));
 							break;
 					}
 					energy += 2.0 * PI * rho * dudr;
@@ -445,6 +443,6 @@ void Pattern::vdwCorrectEnergy(Cell *cell, EnergyStore *estore)
 		}
 	}
 	estore->add(ET_VDWTAIL,energy,-1);
-	dbgEnd(DM_CALLS,"Pattern::vdwCorrectEnergy");
+	dbgEnd(Debug::Calls,"Pattern::vdwCorrectEnergy");
 }
 

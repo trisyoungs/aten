@@ -145,7 +145,7 @@ void AtenForm::translateSelection(int axis, int dir)
 		// Translate selection in the cell axes of the model
 		if (m->cell()->type() == CT_NONE)
 		{
-			msg(DM_NONE,"No unit cell defined for model.\n");
+			msg(Debug::None,"No unit cell defined for model.\n");
 			return;
 		}
 		tvec = master.currentModel()->cell()->axes().get(axis);

@@ -129,7 +129,7 @@ const char *Filter::description()
 // Load filter (from file)
 bool Filter::load(ifstream &filterFile)
 {
-	dbgBegin(DM_CALLS,"Filter::load");
+	dbgBegin(Debug::Calls,"Filter::load");
 	Command *c;
 	CommandAction ca;
 	FilterCommmand fc;
@@ -145,8 +145,8 @@ bool Filter::load(ifstream &filterFile)
 		success = parser.getArgsDelim(&filterFile,PO_USEQUOTES+PO_SKIPBLANKS);
 		if (success == 1)
 		{
-			msg(DM_NONE,"Filter::load - Error reading filter file.\n");
-			dbgEnd(DM_CALLS,"Filter::load");
+			msg(Debug::None,"Filter::load - Error reading filter file.\n");
+			dbgEnd(Debug::Calls,"Filter::load");
 			return FALSE;
 		}
 		else if (success == -1) break;
@@ -156,7 +156,7 @@ bool Filter::load(ifstream &filterFile)
 			// Create long filefilter string
 			sprintf(longname,"%s (%s)",name_.get(),glob_.get());
 			description_ = longname;
-			dbgEnd(DM_CALLS,"Filter::load");
+			dbgEnd(Debug::Calls,"Filter::load");
 			return TRUE;
 		}
 		// Check for filter specification commands
@@ -206,15 +206,15 @@ bool Filter::load(ifstream &filterFile)
 					if (commands_.addCommand(ca)) continue;
 					else
 					{
-						msg(DM_NONE,"Filter::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
-						dbgEnd(DM_CALLS,"Filter::load");
+						msg(Debug::None,"Filter::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
+						dbgEnd(Debug::Calls,"Filter::load");
 						return FALSE;
 					}
 				}
 				else
 				{
-					msg(DM_NONE,"Unrecognised command '%s' in filter.\n", parser.argc(0));
-					dbgEnd(DM_CALLS,"Filter::load");
+					msg(Debug::None,"Unrecognised command '%s' in filter.\n", parser.argc(0));
+					dbgEnd(Debug::Calls,"Filter::load");
 					return FALSE;
 				}
 				break;
@@ -228,17 +228,17 @@ bool Filter::load(ifstream &filterFile)
 	if (itemsleft != 0)
 	{
 		printf("Filter::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
-		dbgEnd(DM_CALLS,"Filter::load");
+		dbgEnd(Debug::Calls,"Filter::load");
 		return FALSE;
 	}
-	dbgEnd(DM_CALLS,"Filter::load");
+	dbgEnd(Debug::Calls,"Filter::load");
 	return TRUE;
 }
 
 // Set type (and initialise any necessary variables)
 void Filter::setType(FilterType ft)
 {
-	dbgBegin(DM_CALLS,"Filter::setType");
+	dbgBegin(Debug::Calls,"Filter::setType");
 	type_ = ft;
 	Variable *v;
 	switch (type_)
@@ -287,26 +287,26 @@ void Filter::setType(FilterType ft)
 		case (FT_GRID_EXPORT):
 			break;
 	}
-	dbgEnd(DM_CALLS,"Filter::setType");
+	dbgEnd(Debug::Calls,"Filter::setType");
 }
 
 
 // Print
 void Filter::print()
 {
-	dbgBegin(DM_CALLS,"Filter::print");
+	dbgBegin(Debug::Calls,"Filter::print");
 	printf("Filter Name : '%s'\n",name_.get());
 	printf(" Shell glob : '%s'\n",glob_.get());
 	printf(" Extensions : '%s'\n",extension_.get());
 	printf("Exact Names : '%s'\n",exactNames_.get());
 	printf("       Type : %s\n",text_from_FT(type_));
-	dbgEnd(DM_CALLS,"Filter::print");
+	dbgEnd(Debug::Calls,"Filter::print");
 }
 
 // Execute filter
 bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, Model *framemodel)
 {
-	dbgBegin(DM_CALLS,"Filter::execute");
+	dbgBegin(Debug::Calls,"Filter::execute");
 	// Grab pointer Bundle from master
 	Bundle &obj = master.current;
 	// Set element mapping type to that specified in file
@@ -316,24 +316,24 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 	switch (type_)
 	{
 		case (FT_MODEL_IMPORT):
-			msg(DM_NONE,"Load Model : %s (%s)\n", filename, name_.get());
+			msg(Debug::None,"Load Model : %s (%s)\n", filename, name_.get());
 			// Reset reserved variables
 			commands_.variables.set("title","Unnamed");
 			// Open file and set target
 			if (!commands_.setInputFile(filename))
 			{
-				msg(DM_NONE,"Error opening input file '%s'.\n",filename);
-				dbgEnd(DM_CALLS,"Filter::execute");
+				msg(Debug::None,"Error opening input file '%s'.\n",filename);
+				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
 			break;
 		case (FT_MODEL_EXPORT):
-			msg(DM_NONE,"Save Model : %s (%s)...", obj.m->filename(), name_.get());
+			msg(Debug::None,"Save Model : %s (%s)...", obj.m->filename(), name_.get());
 			// Open file and set target
 			if (!commands_.setOutputFile(obj.m->filename()))
 			{
-				msg(DM_NONE,"Error opening output file '%s'.\n",obj.m->filename());
-				dbgEnd(DM_CALLS,"Filter::execute");
+				msg(Debug::None,"Error opening output file '%s'.\n",obj.m->filename());
+				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
 			// Set variables
@@ -341,12 +341,12 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			commands_.setCellVariables(obj.m->cell());
 			break;
 		case (FT_EXPRESSION_EXPORT):
-			msg(DM_NONE,"Save Field : %s (%s)\n", filename, name_.get());
+			msg(Debug::None,"Save Field : %s (%s)\n", filename, name_.get());
 			// Need a valid pattern and energy expression to export
 			if (!obj.m->autocreatePatterns() || !obj.m->createExpression())
 			{
-				msg(DM_NONE,"Filter::execute - Must have valid pattern and energy expression to export a field file\n.");
-				dbgEnd(DM_CALLS,"Filter::execute");
+				msg(Debug::None,"Filter::execute - Must have valid pattern and energy expression to export a field file\n.");
+				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
 			// Set variables
@@ -357,28 +357,28 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Open file...
 			if (!commands_.setOutputFile(filename))
 			{
-				msg(DM_NONE,"Error opening field file '%s'.\n", filename);
-				dbgEnd(DM_CALLS,"Filter::execute");
+				msg(Debug::None,"Error opening field file '%s'.\n", filename);
+				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
 			break;
 		case (FT_GRID_IMPORT):
-			msg(DM_NONE,"Load Grid  : %s (%s)\n", filename, name_.get());
+			msg(Debug::None,"Load Grid  : %s (%s)\n", filename, name_.get());
 			// Open file...
 			if (!commands_.setInputFile(filename))
 			{
-				msg(DM_NONE,"Error opening grid file '%s'.\n", filename);
-				dbgEnd(DM_CALLS,"Filter::execute");
+				msg(Debug::None,"Error opening grid file '%s'.\n", filename);
+				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
 			break;
 		case (FT_GRID_EXPORT):
-			msg(DM_NONE,"Save Grid  : %s (%s)\n",filename,name_.get());
+			msg(Debug::None,"Save Grid  : %s (%s)\n",filename,name_.get());
 			// Open file...
 			if (!commands_.setOutputFile(filename))
 			{
-				msg(DM_NONE,"Error opening grid file '%s'.\n", filename);
-				dbgEnd(DM_CALLS,"Filter::execute");
+				msg(Debug::None,"Error opening grid file '%s'.\n", filename);
+				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
 			break;
@@ -392,8 +392,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 				Model *parent = framemodel->trajectoryParent();
 				if (parent == NULL)
 				{
-					msg(DM_NONE,"Filter::read_trajectory <<<< Trajectory parent is not set in frame model >>>>\n");
-					dbgEnd(DM_CALLS,"Filter::read_trajectory(frame)");
+					msg(Debug::None,"Filter::read_trajectory <<<< Trajectory parent is not set in frame model >>>>\n");
+					dbgEnd(Debug::Calls,"Filter::read_trajectory(frame)");
 					return FALSE;	
 				}
 				commands_.variables.set("natoms",parent->nAtoms());
@@ -416,32 +416,32 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Reset element mapping style
 			prefs.setZmapType(temp_zmap);
 			commands_.closeFiles();
-			msg(DM_NONE,"Model import %s.\n",(result ? "completed" : "failed"));
+			msg(Debug::None,"Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_MODEL_EXPORT):
 			obj.m->updateSavePoint();
 			commands_.closeFiles();
-			msg(DM_NONE,"Model export %s.\n",(result ? "completed" : "failed"));
+			msg(Debug::None,"Model export %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_EXPRESSION_EXPORT):
 			commands_.closeFiles();
-			msg(DM_NONE,"Field export %s.\n",(result ? "completed" : "failed"));
+			msg(Debug::None,"Field export %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_TRAJECTORY_IMPORT):
 			//commands_.close_files();
-			//if (trajheader) (result ? msg(DM_NONE,"Trajectory opened successfully.\n") : msg(DM_NONE,"Failed to open trajectory.\n"));
-			//else if (!result) msg(DM_NONE,"Failed to read frame from trajectory.\n");
+			//if (trajheader) (result ? msg(Debug::None,"Trajectory opened successfully.\n") : msg(Debug::None,"Failed to open trajectory.\n"));
+			//else if (!result) msg(Debug::None,"Failed to read frame from trajectory.\n");
 			break;
 		case (FT_GRID_IMPORT):
 			commands_.closeFiles();
-			msg(DM_NONE,"Grid import %s.\n",(result ? "completed" : "failed"));
+			msg(Debug::None,"Grid import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (FT_GRID_EXPORT):
 			commands_.closeFiles();
-			msg(DM_NONE,"Grid export %s.\n",(result ? "completed" : "failed"));
+			msg(Debug::None,"Grid export %s.\n",(result ? "completed" : "failed"));
 			break;
 	}
-	dbgEnd(DM_CALLS,"Filter::execute");
+	dbgEnd(Debug::Calls,"Filter::execute");
 	return result;
 }
 

@@ -48,7 +48,7 @@ int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 			li->data = parser.argi(n) - 1;
 		}
 	}
-	msg(DM_NONE,"New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
+	msg(Debug::None,"New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
 	return CR_SUCCESS;
 }
 
@@ -57,16 +57,16 @@ int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Site *s = obj.m->sites.first();
-	if (s == NULL) msg(DM_NONE,"No sites defined for model '%s'.\n",obj.m->name());
+	if (s == NULL) msg(Debug::None,"No sites defined for model '%s'.\n",obj.m->name());
 	else
 	{
-		msg(DM_NONE,"Site list for model '%s':\n",obj.m->name());
+		msg(Debug::None,"Site list for model '%s':\n",obj.m->name());
 		for (s = s; s != NULL; s = s->next)
 		{
-			msg(DM_NONE," %15s %15s  ",s->name(), s->pattern()->name());
-			if (s->atoms.nItems() == 0) msg(DM_NONE,"All atoms assumed (none defined)");
-			else for (Listitem<int> *li = s->atoms.first(); li != NULL; li = li->next)msg(DM_NONE," %i",li->data);
-			msg(DM_NONE,"\n");
+			msg(Debug::None," %15s %15s  ",s->name(), s->pattern()->name());
+			if (s->atoms.nItems() == 0) msg(Debug::None,"All atoms assumed (none defined)");
+			else for (Listitem<int> *li = s->atoms.first(); li != NULL; li = li->next)msg(Debug::None," %i",li->data);
+			msg(Debug::None,"\n");
 		}
 	}
 	return CR_SUCCESS;
@@ -78,7 +78,7 @@ int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Site *s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
-	if (s == NULL) msg(DM_NONE,"No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
+	if (s == NULL) msg(Debug::None,"No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
 	else master.current.s = s;
 	return CR_FAIL;
 }

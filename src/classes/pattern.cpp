@@ -371,11 +371,11 @@ Ring *Pattern::rings()
 void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 {
 	// Initialise atom pointers / values in pattern.
-	dbgBegin(DM_CALLS,"Pattern::initialise");
+	dbgBegin(Debug::Calls,"Pattern::initialise");
 	if (parent_ == NULL)
 	{
 		printf("Owner model has not been set in pattern!\n");
-		dbgEnd(DM_CALLS,"Pattern::initialise");
+		dbgEnd(Debug::Calls,"Pattern::initialise");
 		return;
 	}
 	// Store parameters
@@ -389,7 +389,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 	if (startAtom_ > parent_->nAtoms())
 	{
 		// Can't get first atom (probably the pattern extends past nAtoms_)
-		msg(DM_NONE,"Initial atom in pattern is past end of model's atom list (%i).\n",endAtom_);
+		msg(Debug::None,"Initial atom in pattern is past end of model's atom list (%i).\n",endAtom_);
 		firstAtom_ = NULL;
 	}
 	else
@@ -400,21 +400,21 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
 	}
-	msg(DM_NONE,"New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_, nMols_, nAtoms_, totalAtoms_, name_.get());
-	dbgEnd(DM_CALLS,"Pattern::initialise");
+	msg(Debug::None,"New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_, nMols_, nAtoms_, totalAtoms_, name_.get());
+	dbgEnd(Debug::Calls,"Pattern::initialise");
 }
 
 // Empty the selected pattern
 void Pattern::empty()
 {
 	// Set all variables to reflect an empty pattern
-	dbgBegin(DM_CALLS,"Pattern::empty_pattern");
+	dbgBegin(Debug::Calls,"Pattern::empty_pattern");
 	// Zero everything except nAtoms_
 	firstAtom_ = NULL;
 	lastAtom_ = NULL;
 	nMols_ = 0;
 	totalAtoms_ = 0;
-	dbgEnd(DM_CALLS,"Pattern::empty_pattern");
+	dbgEnd(Debug::Calls,"Pattern::empty_pattern");
 }
 
 // Set contents of pattern
@@ -435,7 +435,7 @@ void Pattern::setContents(int newstartAtom_, int newnMols_, int newnAtoms_)
 void Pattern::deleteExpression()
 {
 	// Clear the energy expression for the pattern node
-	dbgBegin(DM_CALLS,"Pattern::deleteExpression");
+	dbgBegin(Debug::Calls,"Pattern::deleteExpression");
 	atoms_.clear();
 	bonds_.clear();
 	angles_.clear();
@@ -446,14 +446,14 @@ void Pattern::deleteExpression()
 		delete[] conMat_;
 	}
 	conMat_ = NULL;
-	dbgEnd(DM_CALLS,"Pattern::deleteExpression");
+	dbgEnd(Debug::Calls,"Pattern::deleteExpression");
 }
 
 // Create connectivity matrix for molecules in pattern
 void Pattern::createConMat()
 {
 	// Create (calculate) the connectivity matrix for this node
-	dbgBegin(DM_CALLS,"Pattern::createConMat");
+	dbgBegin(Debug::Calls,"Pattern::createConMat");
 	int n,m,a1,a2,b1,b2;
 	PatternBound *pb;
 	for (n=0; n<nAtoms_; n++)
@@ -509,14 +509,14 @@ void Pattern::createConMat()
 		for (m=0; m<nAtoms_; m++) printf ("%2i",conMat_[n][m]);
 		printf("\n"); 
 	} */
-	dbgEnd(DM_CALLS,"Pattern::createConMat");
+	dbgEnd(Debug::Calls,"Pattern::createConMat");
 }
 
 // Validate pattern
 bool Pattern::validate()
 {
 	// Test the pattern for validity and internal consistency
-	dbgBegin(DM_CALLS,"Pattern::validate");
+	dbgBegin(Debug::Calls,"Pattern::validate");
 	bool result, ok;
 	result = TRUE;
 	int mnAtoms_ = parent_->nAtoms();
@@ -528,10 +528,10 @@ bool Pattern::validate()
 	// 1) Check number of atoms does not exceed number in model
 	if (startAtom_+totalAtoms_ > mnAtoms_)
 	{
-		msg(DM_NONE,"Pattern's last atom is beyond the number of atoms in the model.\n");
-		msg(DM_NONE,"No pattern defined for model.\n");
+		msg(Debug::None,"Pattern's last atom is beyond the number of atoms in the model.\n");
+		msg(Debug::None,"No pattern defined for model.\n");
 		// Can't do much else if this is the case, so break early.
-		dbgEnd(DM_CALLS,"Pattern::validate");
+		dbgEnd(Debug::Calls,"Pattern::validate");
 		return FALSE;
 	}
 	else testAtomLimit_ = TRUE;
@@ -567,7 +567,7 @@ bool Pattern::validate()
 			}
 			if (!ok)
 			{
-				msg(DM_NONE,"Pattern::validate : Failed element composition test at molecule %i.\n",m+1);
+				msg(Debug::None,"Pattern::validate : Failed element composition test at molecule %i.\n",m+1);
 				result = FALSE;
 				break;
 			}
@@ -575,8 +575,8 @@ bool Pattern::validate()
 	}
 	// 3) Bonding within molecules in pattern
 	//TODO
-	if (!result) msg(DM_NONE,"No pattern defined for model.\n");
-	dbgEnd(DM_CALLS,"Pattern::validate");
+	if (!result) msg(Debug::None,"No pattern defined for model.\n");
+	dbgEnd(Debug::Calls,"Pattern::validate");
 	return result;
 }
 
@@ -584,9 +584,9 @@ bool Pattern::validate()
 Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 {
 	// Calculate the centre of geometry for this molecule
-	dbgBegin(DM_CALLS,"Pattern::calculate_cog");
+	dbgBegin(Debug::Calls,"Pattern::calculate_cog");
 	int offset = startAtom_ + mol*nAtoms_;
-	msg(DM_VERBOSE,"Pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMols_);
+	msg(Debug::Verbose,"Pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMols_);
 	static Vec3<double> cog, mim_i;
 	Cell *cell = srcmodel->cell();
 	cog.zero();
@@ -598,7 +598,7 @@ Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 		cog += mim_i;
 	}
 	cog /= nAtoms_;
-	dbgEnd(DM_CALLS,"Pattern::calculate_cog");
+	dbgEnd(Debug::Calls,"Pattern::calculate_cog");
 	return cog;
 }
 
@@ -606,14 +606,14 @@ Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 {
 	// Calculate the centre of geometry for this molecule
-	dbgBegin(DM_CALLS,"Pattern::calculateCom");
-	msg(DM_VERBOSE,"Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)\n", mol, name_.get(), nMols_);
+	dbgBegin(Debug::Calls,"Pattern::calculateCom");
+	msg(Debug::Verbose,"Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)\n", mol, name_.get(), nMols_);
 	Vec3<double> com;
 	double massnorm = 0.0;
 	static Vec3<double> mim_i;
 	int offset = startAtom_ + mol*nAtoms_;
 	com.zero();
-	msg(DM_VERBOSE,"molecule_com : Offset = %i\n",offset);
+	msg(Debug::Verbose,"molecule_com : Offset = %i\n",offset);
 	Cell *cell = srcmodel->cell();
 	Atom **modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
@@ -624,7 +624,7 @@ Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 		massnorm += elements.atomicMass(modelatoms[a1]->element());
 	}
 	com /= massnorm;
-	dbgEnd(DM_CALLS,"Pattern::calculateCom");
+	dbgEnd(Debug::Calls,"Pattern::calculateCom");
 	return com;
 }
 
@@ -635,7 +635,7 @@ Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 void Pattern::propagateAtomtypes()
 {
 	// Copy type information contained in the first molecule in the pattern to all other molecules in the pattern, and the pattern's representative molecule
-	dbgBegin(DM_CALLS,"Pattern::propagateAtomtypes");
+	dbgBegin(Debug::Calls,"Pattern::propagateAtomtypes");
 	Atom *i, *j;
 	int n, m;
 	// Set 'j' to be the starting atom of the second molecule
@@ -662,7 +662,7 @@ void Pattern::propagateAtomtypes()
 			j = j->next;
 		}
 	}
-	dbgEnd(DM_CALLS,"Pattern::propagateAtomtypes");
+	dbgEnd(Debug::Calls,"Pattern::propagateAtomtypes");
 }
 
 void Pattern::propagateBondTypes()
@@ -670,7 +670,7 @@ void Pattern::propagateBondTypes()
 	// Copy the bond type data in the first molecule of the pattern to all other molecules in the pattern.
 	// With a loop over all other molecules, loop over the atoms of the first molecule. For each bond on this atom,
 	// find the relative atom id and search for the corresponding atom in the n'th molecule.
-	dbgBegin(DM_CALLS,"Pattern::propagateBondTypes");
+	dbgBegin(Debug::Calls,"Pattern::propagateBondTypes");
 	int n,m,o,offset;
 	Atom *i, *j, *k;
 	Refitem<Bond,int> *bref;
@@ -698,7 +698,7 @@ void Pattern::propagateBondTypes()
 				else for (o=0; o<abs(offset); o++) k = k->prev;
 				// 'k' now points to the bond partner of 'j'
 				b2 = j->findBond(k);
-				if (b2 == NULL) msg(DM_NONE,"Bizarre fatal error. Couldn't find bond in Pattern::propagateBondTypes\n");
+				if (b2 == NULL) msg(Debug::None,"Bizarre fatal error. Couldn't find bond in Pattern::propagateBondTypes\n");
 				else b2->setOrder(b1->order());
 				bref = bref->next;
 			}
@@ -706,7 +706,7 @@ void Pattern::propagateBondTypes()
 			j = j->next;
 		}
 	}
-	dbgEnd(DM_CALLS,"Pattern::propagateBondTypes");
+	dbgEnd(Debug::Calls,"Pattern::propagateBondTypes");
 }
 
 /*
@@ -717,14 +717,14 @@ void Pattern::propagateBondTypes()
 Atom *Pattern::appendCopy(Atom *source)
 {
 	// Append the supplied atom to the pattern's 'local' atom list
-	dbgBegin(DM_CALLS,"Pattern::appendCopy");
+	dbgBegin(Debug::Calls,"Pattern::appendCopy");
 	Atom *newatom = new Atom;
 	firstAtom_ == NULL ? firstAtom_ = newatom : lastAtom_->next = newatom;
 	newatom->prev = lastAtom_;
 	lastAtom_ = newatom;
 	newatom->copy(source);
 	totalAtoms_ ++;
-	dbgEnd(DM_CALLS,"Pattern::appendCopy");
+	dbgEnd(Debug::Calls,"Pattern::appendCopy");
 	return newatom;
 }
 
@@ -732,21 +732,21 @@ Atom *Pattern::appendCopy(Atom *source)
 void Pattern::deleteAtom(Atom *xatom)
 {
 	// Delete the supplied atom from the pattern's 'local' atom list
-	dbgBegin(DM_CALLS,"Pattern::deleteAtom");
+	dbgBegin(Debug::Calls,"Pattern::deleteAtom");
 	xatom->prev == NULL ? firstAtom_ = xatom->next : xatom->prev->next = xatom->next;
 	xatom->next == NULL ? lastAtom_ = xatom->prev : xatom->next->prev = xatom->prev;
 	delete xatom;
 	totalAtoms_ --;
-	dbgEnd(DM_CALLS,"Pattern::deleteAtom");
+	dbgEnd(Debug::Calls,"Pattern::deleteAtom");
 }
 
 // Delete atoms from end
 void Pattern::deleteAtomsFromEnd(int count)
 {
 	// Deletes a number 'n' of atoms from the end of the list (i.e. recently created ones)
-	dbgBegin(DM_CALLS,"Pattern::deleteAtomsFromEnd");
+	dbgBegin(Debug::Calls,"Pattern::deleteAtomsFromEnd");
 	for (int n=0; n<count; n++) deleteAtom(lastAtom_);
-	dbgEnd(DM_CALLS,"Pattern::deleteAtomsFromEnd");
+	dbgEnd(Debug::Calls,"Pattern::deleteAtomsFromEnd");
 }
 
 // Clear 'tempi' values of all atoms in pattern
@@ -773,10 +773,10 @@ void Pattern::markRingAtoms(Atom *i)
 	// since we've reached an already 'excluded' atom. Otherwise, check the bound neighbours
 	// and reassess the potential of the atom. If its marked as zero potential, re-call the
 	// routine on any neighbours that aren't already zero-marked.
-	dbgBegin(DM_CALLS,"Pattern::markRingAtoms");
+	dbgBegin(Debug::Calls,"Pattern::markRingAtoms");
 	if (i->tempi == 0)
 	{
-		dbgEnd(DM_CALLS,"Pattern::markRingAtoms");
+		dbgEnd(Debug::Calls,"Pattern::markRingAtoms");
 		return;
 	}
 	else
@@ -809,7 +809,7 @@ void Pattern::markRingAtoms(Atom *i)
 			default : i->tempi = 6; break;
 		}
 	}
-	dbgEnd(DM_CALLS,"Pattern::markRingAtoms");
+	dbgEnd(Debug::Calls,"Pattern::markRingAtoms");
 }
 
 // Find rings
@@ -818,7 +818,7 @@ void Pattern::findRings()
 	// Locate rings in the molecule of the current pattern.
 	// Maintain a local array corresponding to whether specific atoms are 'done' or not - i.e., whether
 	// they have been check as as much as they need to be checked.
-	dbgBegin(DM_CALLS,"Pattern::findRings");
+	dbgBegin(Debug::Calls,"Pattern::findRings");
 	int n, rsize, ringpotential;
 	Atom *i;
 	Refitem<Bond,int> *bref;
@@ -856,7 +856,7 @@ void Pattern::findRings()
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		msg(DM_VERBOSE,"Atom %i : potential = %i\n",n,i->tempi);
+		msg(Debug::Verbose,"Atom %i : potential = %i\n",n,i->tempi);
 		ringpotential += i->tempi;
 		i = i->next;
 	}
@@ -876,14 +876,14 @@ void Pattern::findRings()
 		}
 		i = i->next;
 	}
-	dbgEnd(DM_CALLS,"Pattern::findRings");
+	dbgEnd(Debug::Calls,"Pattern::findRings");
 }
 
 // Ring search
 void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
-	dbgBegin(DM_CALLS,"Pattern::ringSearch");
+	dbgBegin(Debug::Calls,"Pattern::ringSearch");
 	Refitem<Bond,int> *bref;
 	Ring *r;
 	Refitem<Atom,int> *lastra;
@@ -892,14 +892,14 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 	if (i->tempi == 0)
 	{
 		//printf(" --- No vacant 'bonds' on atom - skipping...\n");
-		dbgEnd(DM_CALLS,"Pattern::ringSearch");
+		dbgEnd(Debug::Calls,"Pattern::ringSearch");
 		return;
 	}
 	// Otherwise, add it to the current path
 	lastra = currentpath->lastAtom();
 	if (currentpath->addAtom(i))
 	{
-		msg(DM_VERBOSE," --- Atom i added to path :  ");
+		msg(Debug::Verbose," --- Atom i added to path :  ");
 		currentpath->print();
 		// Adding the atom did not exceed the requested ring size, and is not a duplicate
 		// Go through the list of atoms bound to 'i' and then:
@@ -918,7 +918,7 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 				// The correct number of atoms is in the current path. Does it form a cycle?
 				if (i->findBond(currentpath->firstAtom()->item) != NULL)
 				{
-					msg(DM_VERBOSE," --- Storing current ring.\n");
+					msg(Debug::Verbose," --- Storing current ring.\n");
 					r = rings_.add();
 					r->copy(currentpath);
 					// Must now update atom 'tempi' values to reflect the inclusion of these atoms in
@@ -944,23 +944,23 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 			if (done) break;
 		}
 		// Return the list to its original state
-		msg(DM_VERBOSE," --- Removing atom %s[%li] from current path...\n",elements.symbol(i),i);
+		msg(Debug::Verbose," --- Removing atom %s[%li] from current path...\n",elements.symbol(i),i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
 	else
 	{
 		//printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
 	}
-	dbgEnd(DM_CALLS,"Pattern::ringSearch");
+	dbgEnd(Debug::Calls,"Pattern::ringSearch");
 }
 
 void Pattern::augment()
 {
-	dbgBegin(DM_CALLS,"Pattern::augment");
+	dbgBegin(Debug::Calls,"Pattern::augment");
 	Atom *i;
 	Refitem<Bond,int> *bref;
 	int n, nHeavy;
-	msg(DM_NONE,"Augmenting bonds in pattern %s...\n",name_.get());
+	msg(Debug::None,"Augmenting bonds in pattern %s...\n",name_.get());
 	/*
 	We do not reset the present bonding assignments, only check if they're correct. If we find an atom whose
 	bond order is too high, we only decrease it if we can find a bound atom in a similar situation.
@@ -1031,7 +1031,7 @@ void Pattern::augment()
 		i = i->next;
 	}
 	propagateBondTypes();
-	dbgEnd(DM_CALLS,"Pattern::augment");
+	dbgEnd(Debug::Calls,"Pattern::augment");
 }
 
 void Pattern::initExpression(bool vdwOnly)
@@ -1040,7 +1040,7 @@ void Pattern::initExpression(bool vdwOnly)
 	// NBonds can be calculated through a loop over all atoms
 	// NAngles can be calculated from atomic nBonds data.
 	// NTorsions can be calculated from the bond list and atomic nBonds data.
-	dbgBegin(DM_CALLS,"Pattern::initExpression");
+	dbgBegin(Debug::Calls,"Pattern::initExpression");
 	Atom *i, *j;
 	Refitem<Bond,int> *bref;
 	int n, atomId, nBonds, nAngles, nTorsions;
@@ -1052,7 +1052,7 @@ void Pattern::initExpression(bool vdwOnly)
 	if (vdwOnly)
 	{
 		noIntramolecular_ = TRUE;
-		msg(DM_NONE,"Expression for pattern '%s' contains Atomtype terms only.\n", name_.get());
+		msg(Debug::None,"Expression for pattern '%s' contains Atomtype terms only.\n", name_.get());
 	}
 	else
 	{
@@ -1073,18 +1073,18 @@ void Pattern::initExpression(bool vdwOnly)
 		// Some totals are double counted, so...
 		nBonds /= 2;
 		nTorsions /= 2;
-		msg(DM_NONE,"Expression for pattern '%s' contains %i bonds, %i angles, and %i torsions.\n", name_.get(), nBonds, nAngles, nTorsions);
+		msg(Debug::None,"Expression for pattern '%s' contains %i bonds, %i angles, and %i torsions.\n", name_.get(), nBonds, nAngles, nTorsions);
 		bonds_.createEmpty(nBonds);
 		angles_.createEmpty(nAngles);
 		torsions_.createEmpty(nTorsions);
 	}
-	if (conMat_ != NULL) msg(DM_NONE,"Pattern::initExpression : Error - connectivity matrix already allocated.\n");
+	if (conMat_ != NULL) msg(Debug::None,"Pattern::initExpression : Error - connectivity matrix already allocated.\n");
 	else
 	{
 		conMat_ = new int*[nAtoms_];
 		for (n=0; n<nAtoms_; n++) conMat_[n] = new int[nAtoms_];
 	}
-	dbgEnd(DM_CALLS,"Pattern::initExpression");
+	dbgEnd(Debug::Calls,"Pattern::initExpression");
 }
 
 bool Pattern::fillExpression()
@@ -1092,7 +1092,7 @@ bool Pattern::fillExpression()
 	// Fill the energy expression for the pattern.
 	// The structure that we create will include a static array of pointers
 	// to the original atomic elements, to ease the generation of the expression.
-	dbgBegin(DM_CALLS,"Pattern::fillExpression");
+	dbgBegin(Debug::Calls,"Pattern::fillExpression");
 	Atom *ai, *aj, *ak, *al;
 	Refitem<Bond,int> *bref;
 	ForcefieldBound *ffb;
@@ -1110,8 +1110,8 @@ bool Pattern::fillExpression()
 	int count, ii, jj, kk, ll;
 	// If there is no specified pattern forcefield, use the parent model's instead
 	forcefield_ == NULL ? xff = parent_->forcefield() : xff = forcefield_;
-	msg(DM_NONE,"Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
-	msg(DM_NONE,"... Using forcefield '%s'...\n",xff->name());
+	msg(Debug::None,"Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
+	msg(Debug::None,"... Using forcefield '%s'...\n",xff->name());
 	// Construct the atom list.
 	// If any atom has not been assigned a type, we *still* include it in the list
 	ai = firstAtom_;
@@ -1123,7 +1123,7 @@ bool Pattern::fillExpression()
 		pa->setData(ai->type());
 		if (ai->type() == 0)
 		{
-			msg(DM_NONE,"... No FF definition for atom %i (%s).\n", count+1, elements.symbol(ai));
+			msg(Debug::None,"... No FF definition for atom %i (%s).\n", count+1, elements.symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}
@@ -1158,8 +1158,8 @@ bool Pattern::fillExpression()
 				// Quick check to ensure the bond is within the same molecule...
 				if (jj > endAtom_)
 				{
-					msg(DM_NONE,"!!! Found bond between molecules. Check pattern.\n");
-					dbgEnd(DM_CALLS,"Pattern::fillExpression");
+					msg(Debug::None,"!!! Found bond between molecules. Check pattern.\n");
+					dbgEnd(Debug::Calls,"Pattern::fillExpression");
 					return FALSE;
 				}
 				if (jj > ii)
@@ -1185,14 +1185,14 @@ bool Pattern::fillExpression()
 					// Check ffb - if it's still NULL we couldn't find a definition
 					if (ffb == NULL)
 					{
-						msg(DM_NONE,"!!! No FF definition for bond %s-%s.\n", ti->equivalent(), tj->equivalent());
+						msg(Debug::None,"!!! No FF definition for bond %s-%s.\n", ti->equivalent(), tj->equivalent());
 						incomplete_ = TRUE;
 						ibonds ++;
 					}
 					else
 					{
 						params = bonds_[count]->data()->params();
-						msg(DM_VERBOSE,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+						msg(Debug::Verbose,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
 					}
 					// Update the bonding array counters
 					bonding[ii][0] ++;
@@ -1208,11 +1208,11 @@ bool Pattern::fillExpression()
 		}
 		if (bonds_.nItems() != count)
 		{
-			msg(DM_NONE,"...INTERNAL ERROR: expected %i bonds, found %i\n", bonds_.nItems(), count);
+			msg(Debug::None,"...INTERNAL ERROR: expected %i bonds, found %i\n", bonds_.nItems(), count);
 			incomplete_ = TRUE;
 		}
-		else if (ibonds == 0) msg(DM_NONE,"... Found parameters for %i bonds.\n", bonds_.nItems());
-		else msg(DM_NONE,"... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
+		else if (ibonds == 0) msg(Debug::None,"... Found parameters for %i bonds.\n", bonds_.nItems());
+		else msg(Debug::None,"... Missing parameters for %i of %i bonds.\n", ibonds, bonds_.nItems());
 		// Construct the angle list.
 		// Use the list of bound atoms in the bonding[][] array generated above
 		count = 0;
@@ -1250,14 +1250,14 @@ bool Pattern::fillExpression()
 					// Check ffa and raise warning if NULL
 					if (ffb == NULL)
 					{
-						msg(DM_NONE,"!!! No FF definition for angle %s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent());
+						msg(Debug::None,"!!! No FF definition for angle %s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent());
 						incomplete_ = TRUE;
 						iangles ++;
 					}
 					else
 					{
 						params = angles_[count]->data()->params();
-						msg(DM_VERBOSE,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+						msg(Debug::Verbose,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
 					}
 					count ++;
 				}
@@ -1265,11 +1265,11 @@ bool Pattern::fillExpression()
 		}
 		if (angles_.nItems() != count)
 		{
-			msg(DM_NONE,"...INTERNAL ERROR: expected %i angles, found %i\n", angles_.nItems(), count);
+			msg(Debug::None,"...INTERNAL ERROR: expected %i angles, found %i\n", angles_.nItems(), count);
 			incomplete_ = TRUE;
 		}
-		else if (iangles == 0) msg(DM_NONE,"... Found parameters for %i angles_.\n", angles_.nItems());
-		else msg(DM_NONE,"... Missing parameters for %i of %i angles_.\n", iangles, angles_.nItems());
+		else if (iangles == 0) msg(Debug::None,"... Found parameters for %i angles_.\n", angles_.nItems());
+		else msg(Debug::None,"... Missing parameters for %i of %i angles_.\n", iangles, angles_.nItems());
 		// Construct the torsion list.
 		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
 		count = 0;
@@ -1320,14 +1320,14 @@ bool Pattern::fillExpression()
 					// Check fft and raise warning if NULL
 					if (ffb == NULL)
 					{
-						msg(DM_NONE,"!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
+						msg(Debug::None,"!!! No FF definition for torsion %s-%s-%s-%s.\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
 						incomplete_ = TRUE;
 						itorsions ++;
 					}
 					else
 					{
 						params = torsions_[count]->data()->params();
-						msg(DM_VERBOSE,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+						msg(Debug::Verbose,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
 					}
 					count ++;
 				}
@@ -1335,14 +1335,14 @@ bool Pattern::fillExpression()
 		}
 		if (torsions_.nItems() != count)
 		{
-			msg(DM_NONE,"...INTERNAL ERROR: expected %i torsions, found %i\n", torsions_.nItems(), count);
+			msg(Debug::None,"...INTERNAL ERROR: expected %i torsions, found %i\n", torsions_.nItems(), count);
 			incomplete_ = TRUE;
 		}
-		else if (itorsions == 0) msg(DM_NONE,"... Found parameters for %i torsions_.\n", torsions_.nItems());
-		else msg(DM_NONE,"... Missing parameters for %i of %i torsions_.\n", itorsions, torsions_.nItems());
+		else if (itorsions == 0) msg(Debug::None,"... Found parameters for %i torsions_.\n", torsions_.nItems());
+		else msg(Debug::None,"... Missing parameters for %i of %i torsions_.\n", itorsions, torsions_.nItems());
 	}
 	// Print out a warning if the expression is incomplete.
-	if (incomplete_) msg(DM_NONE,"!!! Expression is incomplete.\n");
-	dbgEnd(DM_CALLS,"Pattern::fillExpression");
+	if (incomplete_) msg(Debug::None,"!!! Expression is incomplete.\n");
+	dbgEnd(Debug::Calls,"Pattern::fillExpression");
 	return (incomplete_ ? FALSE : TRUE);
 }

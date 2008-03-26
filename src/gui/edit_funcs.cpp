@@ -157,7 +157,7 @@ void AtenForm::on_ElementEdit_editingFinished()
 	int el = elements.find(qPrintable(ui.ElementEdit->text()));
 	if (el == -1)
 	{
-		msg(DM_NONE,"Unknown element '%s'\n",qPrintable(ui.ElementEdit->text()));
+		msg(Debug::None,"Unknown element '%s'\n",qPrintable(ui.ElementEdit->text()));
 		ui.ElementEdit->setText(ui.ElementUserButton->text());
 	}
 	else

@@ -371,11 +371,11 @@ int Forcefield::matchType(const Dnchar &a, const Dnchar &b)
 ForcefieldAtom *Forcefield::findType(int query)
 {
 	// Search for the typeId_ specified and return the internal integer id (i.e. position in atomtype list)
-	dbgBegin(DM_CALLS,"Forcefield::find_type[int]");
+	dbgBegin(Debug::Calls,"Forcefield::find_type[int]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if (query == result->typeId()) break;
-	dbgEnd(DM_CALLS,"Forcefield::find_type[int]");
+	dbgEnd(Debug::Calls,"Forcefield::find_type[int]");
 	return result;
 }
 
@@ -385,23 +385,23 @@ ForcefieldAtom *Forcefield::findType(const char *query)
 	// Search for the atomname specified and return the internal integer id (i.e. position in atomtype list)
 	// We return the first occurrence we find (since there may be more than one - only typeId_ need be unique)
 	// Search both names and equivalents (since aliases may be defined that are not themselves defined as types_)
-	dbgBegin(DM_CALLS,"Forcefield::find_type[char]");
+	dbgBegin(Debug::Calls,"Forcefield::find_type[char]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((strcmp(result->name(),query) == 0) || (strcmp(result->equivalent(),query) == 0)) break;
-	dbgEnd(DM_CALLS,"Forcefield::find_type[char]");
+	dbgEnd(Debug::Calls,"Forcefield::find_type[char]");
 	return result;
 }
 
 // Return description of typeId_
 Atomtype *Forcefield::typeOfId(int i)
 {
-	dbgBegin(DM_CALLS,"Forcefield::get_atomtype_of_typeId_");
+	dbgBegin(Debug::Calls,"Forcefield::get_atomtype_of_typeId_");
 	ForcefieldAtom *result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if (result->typeId() == i) break;
 	if (result == NULL) printf("Forcefield::get_atomtype_of_typeId_ <<<< FFID %i not found in forcefield >>>>\n",i);
-	dbgEnd(DM_CALLS,"Forcefield::get_atomtype_of_typeId_");
+	dbgEnd(Debug::Calls,"Forcefield::get_atomtype_of_typeId_");
 	return result->atomType();
 }
 
@@ -440,18 +440,18 @@ int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char 
 	// specified in the bond / angle / torsion data supplied. Only check 'one way round' - the routine
 	// must be called again with i and j swapped over to test the inverse case.
 	// Matches against 'equiv' atomnames.
-	dbgBegin(DM_CALLS,"Forcefield::matchTypes");
+	dbgBegin(Debug::Calls,"Forcefield::matchTypes");
 	int matchi, matchj;
 	// Best case - exact, direct match:
 	if ((strcmp(ffi->equivalent(),typei) == 0) && (strcmp(ffj->equivalent(),typej) == 0))
 	{
-		dbgEnd(DM_CALLS,"Forcefield::matchTypes");
+		dbgEnd(Debug::Calls,"Forcefield::matchTypes");
 		return 0;
 	}
 	// No such luck, so match each atom separately
 	matchi = matchType(ffi->equivalent(),typei);
 	matchj = matchType(ffj->equivalent(),typej);
-	dbgEnd(DM_CALLS,"Forcefield::matchTypes");
+	dbgEnd(Debug::Calls,"Forcefield::matchTypes");
 	return (matchi + matchj);
 }
 
@@ -465,7 +465,7 @@ ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
 {
 	// Search the forcefield for the bond definition for the interaction of the atom types i-j
 	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
-	dbgBegin(DM_CALLS,"Forcefield::findBond");
+	dbgBegin(Debug::Calls,"Forcefield::findBond");
 	ForcefieldBound *result = NULL;
 	int matchij, matchji, bestmatch;
 	bestmatch = 10;
@@ -487,7 +487,7 @@ ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
 		if (bestmatch == 0) break;
 		b = b ->next;
 	}
-	dbgEnd(DM_CALLS,"Forcefield::findBond");
+	dbgEnd(Debug::Calls,"Forcefield::findBond");
 	return result;
 }
 
@@ -496,7 +496,7 @@ ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj,
 {
 	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
-	dbgBegin(DM_CALLS,"Forcefield::findAngle");
+	dbgBegin(Debug::Calls,"Forcefield::findAngle");
 	ForcefieldBound *result = NULL;
 	int matchj, matchik, matchki, bestmatch;
 	bestmatch = 10;
@@ -526,7 +526,7 @@ ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj,
 		if (bestmatch == 0) break;		// Early exit for an exact match
 		a = a ->next;
 	}
-	dbgEnd(DM_CALLS,"Forcefield::findAngle");
+	dbgEnd(Debug::Calls,"Forcefield::findAngle");
 	return result;
 }
 
@@ -535,7 +535,7 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 {
 	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
 	// Return NULL is no match found.
-	dbgBegin(DM_CALLS,"Forcefield::findTorsion");
+	dbgBegin(Debug::Calls,"Forcefield::findTorsion");
 	ForcefieldBound *result = NULL;
 	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
 	bestmatch = 10;
@@ -561,7 +561,7 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 		if (bestmatch == 0) break;
 		t = t->next;
 	}
-	dbgEnd(DM_CALLS,"Forcefield::findTorsion");
+	dbgEnd(Debug::Calls,"Forcefield::findTorsion");
 	return result;
 }
 
@@ -569,7 +569,7 @@ void Forcefield::convertParameters(EnergyUnit ff_eunit)
 {
 	// Convert units of all the energetic parameters within the forcefield from the unit supplied into program internal units (specified in prefs)
 	// Check for 'NULL' pointers for ff_param variables (for e.g. rule-based forcefields)
-	dbgBegin(DM_CALLS,"Forcefield::convertParameters");
+	dbgBegin(Debug::Calls,"Forcefield::convertParameters");
 	ForcefieldParams *p;
 	ForcefieldBound *b;
 	ForcefieldAtom *ffa;
@@ -662,5 +662,5 @@ void Forcefield::convertParameters(EnergyUnit ff_eunit)
 				break;
 		}
 	}
-	dbgEnd(DM_CALLS,"Forcefield::convertParameters");
+	dbgEnd(Debug::Calls,"Forcefield::convertParameters");
 }

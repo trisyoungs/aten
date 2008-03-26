@@ -39,42 +39,42 @@ void Model::clearMeasurements()
 void Model::measureDistance(Atom *i, Atom *j)
 {
 	// Measure distances between atoms
-	dbgBegin(DM_CALLS,"Model::measureDistance");
+	dbgBegin(Debug::Calls,"Model::measureDistance");
 	Measurement *newdist = findMeasurement(GT_DISTANCE,i,j);
 	// If this distance isn't currently in the list, add it. Otherwise, delete it
 	if (newdist == NULL) addMeasurement(GT_DISTANCE,i,j);
 	else removeMeasurement(newdist);
-	dbgEnd(DM_CALLS,"Model::measureDistance");
+	dbgEnd(Debug::Calls,"Model::measureDistance");
 }
 
 // Add angle measurement
 void Model::measureAngle(Atom *i, Atom *j, Atom *k)
 {
 	// Measure angles between atoms
-	dbgBegin(DM_CALLS,"Model::measureAngle");
+	dbgBegin(Debug::Calls,"Model::measureAngle");
 	Measurement *newangle = findMeasurement(GT_ANGLE,i,j,k);
 	// Check that this angle isn't already in the list. If it is, delete it
 	if (newangle == NULL) addMeasurement(GT_ANGLE,i,j,k);
 	else removeMeasurement(newangle);
-	dbgEnd(DM_CALLS,"Model::measureAngle");
+	dbgEnd(Debug::Calls,"Model::measureAngle");
 }
 
 // Add torsion measurement
 void Model::measureTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 {
 	// Measure torsions between atoms
-	dbgBegin(DM_CALLS,"Model::measureTorsion");
+	dbgBegin(Debug::Calls,"Model::measureTorsion");
 	Measurement *newtorsion = findMeasurement(GT_TORSION,i,j,k,l);
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
 	if (newtorsion == NULL) addMeasurement(GT_TORSION,i,j,k,l);
 	else removeMeasurement(newtorsion);
-	dbgEnd(DM_CALLS,"Model::measureTorsion");
+	dbgEnd(Debug::Calls,"Model::measureTorsion");
 }
 
 // Remove specific measurement
 void Model::removeMeasurement(Measurement *me)
 {
-	dbgBegin(DM_CALLS,"Model::removeMeasurement");
+	dbgBegin(Debug::Calls,"Model::removeMeasurement");
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -95,13 +95,13 @@ void Model::removeMeasurement(Measurement *me)
 		}
 	}
 	measurements_.remove(me);
-	dbgEnd(DM_CALLS,"Model::removeMeasurement");
+	dbgEnd(Debug::Calls,"Model::removeMeasurement");
 }
 
 // Clear measurements of specific type
 void Model::removeMeasurements(GeometryType gt)
 {
-	dbgBegin(DM_CALLS,"Model::removeMeasurements");
+	dbgBegin(Debug::Calls,"Model::removeMeasurements");
 	Measurement *me = measurements_.first(), *meNext;
 	while (me != NULL)
 	{
@@ -114,14 +114,14 @@ void Model::removeMeasurements(GeometryType gt)
 			me = meNext;
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::removeMeasurements");
+	dbgEnd(Debug::Calls,"Model::removeMeasurements");
 }
 
 // Delete measurements involving specific atom
 void Model::removeMeasurements(Atom *xatom)
 {
 	// Search the lists of measurements for the supplied atom, and remove any that use it
-	dbgBegin(DM_CALLS,"Model::removeMeasurements[atom]");
+	dbgBegin(Debug::Calls,"Model::removeMeasurements[atom]");
 	int n;
 	bool remove;
 	Measurement *nextm, *m;
@@ -140,13 +140,13 @@ void Model::removeMeasurements(Atom *xatom)
 		}
 		else m = m->next;
 	}
-	dbgEnd(DM_CALLS,"Model::removeMeasurements[atom]");
+	dbgEnd(Debug::Calls,"Model::removeMeasurements[atom]");
 }
 
 // Add Measurement
 void Model::addMeasurement(GeometryType gt, Atom *first, ...)
 {
-	dbgBegin(DM_CALLS,"Model::addMeasurement");
+	dbgBegin(Debug::Calls,"Model::addMeasurement");
 	Atom *i, **atoms;
 	Measurement *newm = measurements_.add();
 	newm->setType(gt);
@@ -192,13 +192,13 @@ void Model::addMeasurement(GeometryType gt, Atom *first, ...)
 			}
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::addMeasurement");
+	dbgEnd(Debug::Calls,"Model::addMeasurement");
 }
 
 // Add measurements in selection
 void Model::addMeasurementsInSelection(GeometryType gt)
 {
-	dbgBegin(DM_CALLS,"Model::addMeasurementsInSelection");
+	dbgBegin(Debug::Calls,"Model::addMeasurementsInSelection");
 	Atom *i, *j, *k, *l;
 	Refitem<Bond,int> *b1, *b2, *b3;
 	switch (gt)
@@ -284,13 +284,13 @@ void Model::addMeasurementsInSelection(GeometryType gt)
 			}
 			break;
 	}
-	dbgEnd(DM_CALLS,"Model::addMeasurementsInSelection");
+	dbgEnd(Debug::Calls,"Model::addMeasurementsInSelection");
 }
 
 // Find Measurement
 Measurement *Model::findMeasurement(GeometryType gt,  Atom *first, ...)
 {
-	dbgBegin(DM_CALLS,"Model::findMeasurement");
+	dbgBegin(Debug::Calls,"Model::findMeasurement");
 	Measurement *result, *m;
 	int n, matched1, matched2;
 	bool proceed;
@@ -338,7 +338,7 @@ Measurement *Model::findMeasurement(GeometryType gt,  Atom *first, ...)
 			if (result != NULL) break;
 		}
 	}
-	dbgEnd(DM_CALLS,"Model::findMeasurement");
+	dbgEnd(Debug::Calls,"Model::findMeasurement");
 	return result;
 }
 
@@ -387,7 +387,7 @@ double Model::torsion(int i, int j, int k, int l)
 // Update measurements
 void Model::updateMeasurements()
 {
-	dbgBegin(DM_CALLS,"Model::updateMeasurements");
+	dbgBegin(Debug::Calls,"Model::updateMeasurements");
 	for (Measurement *m = measurements_.first(); m != NULL; m = m->next) m->calculate(&cell_);
-	dbgEnd(DM_CALLS,"Model::updateMeasurements");
+	dbgEnd(Debug::Calls,"Model::updateMeasurements");
 }

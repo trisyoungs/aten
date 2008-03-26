@@ -498,7 +498,7 @@ void symmop::set(const char *xyzstr)
 	// Sets the rotation matrix and translation vector.
 	// String format is, for example, "-y,x,z,0.0,0.0,0.5", corresponding to a matrix whose rows are (0,-1,0), (1,0,0), and (0,0,1) respectively,
 	// and a translation vector of (0,0,0.5)
-	dbgBegin(DM_CALLS,"symmop::set");
+	dbgBegin(Debug::Calls,"symmop::set");
 	static int n,m,i;
 	static Dnchar temps, s;
 	static char dat[32];
@@ -541,7 +541,7 @@ void symmop::set(const char *xyzstr)
 		translation.set(n-3,atof(temps.get()));
 	}
 	identity = FALSE;
-	dbgEnd(DM_CALLS,"symmop::set");
+	dbgEnd(Debug::Calls,"symmop::set");
 }
 
 // Set from xyz string
@@ -549,7 +549,7 @@ void symmop::set_from_xyz(const char *xyzstr)
 {
 	// Sets the rotation matrix and translation vector.
 	// String format is, for example, "-y,x,z+1/2", corresponding to a matrix whose rows are (0,-1,0), (1,0,0), and (0,0,1) respectively,
-	// and a translation vector of (0,0,0.5). Detect if an identity transformation (x,y,z,0,0,0) is passed and flag 'identity' variable.	dbgBegin(DM_CALLS,"symmop::set_from_xyz");
+	// and a translation vector of (0,0,0.5). Detect if an identity transformation (x,y,z,0,0,0) is passed and flag 'identity' variable.	dbgBegin(Debug::Calls,"symmop::set_from_xyz");
 	int n,m,i,pos;
 	Dnchar temps, s, dat, temp2;
 	s = xyzstr;
@@ -613,8 +613,8 @@ void symmop::set_from_xyz(const char *xyzstr)
 		}
 	}
 	// Print out a message if we detected this was the identity operator
-	if (identity) msg(DM_NONE,"Added an identity operator - will be ignored in symmetry transformation.\n");
-	dbgEnd(DM_CALLS,"symmop::set_from_xyz");
+	if (identity) msg(Debug::None,"Added an identity operator - will be ignored in symmetry transformation.\n");
+	dbgEnd(Debug::Calls,"symmop::set_from_xyz");
 }
 */
 

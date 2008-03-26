@@ -128,7 +128,7 @@ int CommandData::function_CA_TRAJANALYSE(Command *&c, Bundle &obj)
 	totalframes = obj.m->totalFrames();
 	if (totalframes == 0)
 	{
-		msg(DM_NONE,"No trajectory associated to model.\n");
+		msg(Debug::None,"No trajectory associated to model.\n");
 		return CR_FAIL;
 	}
 	// Get start frame, frame skip, and frames to do (if supplied)
@@ -156,6 +156,6 @@ int CommandData::function_CA_TRAJANALYSE(Command *&c, Bundle &obj)
 		// Move to next frame
 		if (n != totalframes) obj.m->seekNextFrame();
 	}
-	msg(DM_NONE,"Finished calculating properties - used %i frames from trajectory.\n", framesdone);
+	msg(Debug::None,"Finished calculating properties - used %i frames from trajectory.\n", framesdone);
 	return CR_SUCCESS;
 }

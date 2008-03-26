@@ -26,7 +26,7 @@
 // Render model glyphs
 void Canvas::renderModelGlyphs()
 {
-	dbgBegin(DM_CALLS,"Canvas::renderModelGlyphs");
+	dbgBegin(Debug::Calls,"Canvas::renderModelGlyphs");
 	static Vec3<double> vec[MAXGLYPHDATA], avg, normal;
 	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
 
@@ -114,5 +114,5 @@ void Canvas::renderModelGlyphs()
 			//	gl_ellipsoid(i->r(),i->v(),i->f());
 			//	break;
 	}
-	dbgEnd(DM_CALLS,"Canvas::renderModelGlyphs");
+	dbgEnd(Debug::Calls,"Canvas::renderModelGlyphs");
 }

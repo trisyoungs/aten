@@ -207,7 +207,7 @@ void AtenForm::on_ManualTypeSetButton_clicked(bool checked)
 	if ((m == NULL) || (ff == NULL)) return;
 	if (m->forcefield() != ff)
 	{
-		msg(DM_NONE,"The type you are trying to assign is in a different forcefield to that assigned to the model.\n");
+		msg(Debug::None,"The type you are trying to assign is in a different forcefield to that assigned to the model.\n");
 		return;
 	}
 	// Get the selected row in the FFTypeList
@@ -240,7 +240,7 @@ void AtenForm::on_ManualTypeTestButton_clicked(bool checked)
 		Atomtype *at = ffa->atomType();
 		if (m->autocreatePatterns())
 		{
-			msg(DM_NONE,"Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());
+			msg(Debug::None,"Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());
 			// Prepare for typing
 			m->describeAtoms();
 			int matchscore;
@@ -251,9 +251,9 @@ void AtenForm::on_ManualTypeTestButton_clicked(bool checked)
 				if (i->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(i, p->ringList(), m, i);
-					msg(DM_NONE,"Atom %i (%s) matched type with score %i.\n", i->id()+1, elements.symbol(i), matchscore);
+					msg(Debug::None,"Atom %i (%s) matched type with score %i.\n", i->id()+1, elements.symbol(i), matchscore);
 				}
-				else msg(DM_NONE,"Atom %i (%s) is the wrong element for this type.\n", i->id()+1, elements.symbol(i));
+				else msg(Debug::None,"Atom %i (%s) is the wrong element for this type.\n", i->id()+1, elements.symbol(i));
 			}
 		}
 	}
@@ -266,7 +266,7 @@ void AtenForm::on_ManualTypeEdit_editingFinished()
 	int el = elements.find(qPrintable(ui.ManualTypeEdit->text()));
 	if (el == -1)
 	{
-		msg(DM_NONE,"Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
+		msg(Debug::None,"Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
 		ui.ManualTypeEdit->setText("H");
 		typelist_element = 1;
 	}

@@ -48,7 +48,7 @@ GuiQt::GuiQt()
 // Initialise and create GUI
 void GuiQt::run(int argc, char **argv)
 {
-	dbgBegin(DM_CALLS,"GuiQt::run");
+	dbgBegin(Debug::Calls,"GuiQt::run");
 
 	// Initialise Qt, and the icons resource
         app = new QApplication(argc, argv);
@@ -95,7 +95,7 @@ void GuiQt::run(int argc, char **argv)
 	mainWindow->refreshForcefieldPage();
 
 	int n = app->exec();
-	dbgEnd(DM_CALLS,"GuiQt::run");
+	dbgEnd(Debug::Calls,"GuiQt::run");
 }
 
 // Update trajectory controls
@@ -137,7 +137,7 @@ void GuiQt::updateLabels()
 {
 	// Update the information labels in the button bar
 	if (!doesExist_) return;
-	dbgBegin(DM_CALLS,"GuiQt::update_labels");
+	dbgBegin(Debug::Calls,"GuiQt::update_labels");
 	QString s;
 	 Model *m = master.currentModel();
 	// Trajectory information label
@@ -174,7 +174,7 @@ void GuiQt::updateLabels()
 		}
 	}
 	mainWindow->statusLabel->setText(s);
-	dbgEnd(DM_CALLS,"GuiQt::update_labels");
+	dbgEnd(Debug::Calls,"GuiQt::update_labels");
 }
 
 /*

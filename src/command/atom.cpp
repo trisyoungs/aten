@@ -53,7 +53,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg(DM_NONE,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
+			msg(Debug::None,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
 			el = 0;
 			break;
 	}
@@ -83,13 +83,13 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg(DM_NONE,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
+			msg(Debug::None,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
 			el = 0;
 			break;
 	}
 	// Check for presence of unit cell
 	Vec3<double> r = c->arg3d(1);
-	if (obj.m->cell()->type() == CT_NONE) msg(DM_NONE,"Warning: No unit cell present - atom added with supplied coordinates.\n");
+	if (obj.m->cell()->type() == CT_NONE) msg(Debug::None,"Warning: No unit cell present - atom added with supplied coordinates.\n");
 	else r = obj.m->cell()->fracToReal(r);
 	master.current.i = obj.m->addAtom(el, r);
 	return CR_SUCCESS;

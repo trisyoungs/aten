@@ -54,7 +54,7 @@ int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	msg(DM_NONE,"Unit cell type for model '%s' is %s\n", obj.m->name(), text_from_CT(obj.m->cell()->type()));
+	msg(Debug::None,"Unit cell type for model '%s' is %s\n", obj.m->name(), text_from_CT(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != CT_NONE) obj.m->cell()->print();
 	return CR_SUCCESS;
 }
@@ -107,10 +107,10 @@ int CommandData::function_CA_SETSPACEGROUP(Command *&c, Bundle &obj)
 	if (c->argt(0) == VT_INTEGER) obj.m->setSpacegroup(c->argi(0));
 	else
 	{
-		msg(DM_NONE,"Searching for spacegroup '%s'...",c->argc(0));
+		msg(Debug::None,"Searching for spacegroup '%s'...",c->argc(0));
 		int sg = master.findSpacegroupByName(c->argc(0));
-		if (sg == 0) msg(DM_NONE," not found - no spacegroup set.\n");
-		else msg(DM_NONE," found, id = %i.\n",sg);
+		if (sg == 0) msg(Debug::None," not found - no spacegroup set.\n");
+		else msg(Debug::None," found, id = %i.\n",sg);
 		obj.m->setSpacegroup(sg);
 	}
 	return CR_SUCCESS;

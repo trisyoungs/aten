@@ -141,7 +141,7 @@ void AtenForm::on_AddComponentButton_clicked(bool checked)
 	Model *m = master.currentModel();
 	if (m->cell()->type() != CT_NONE)
 	{
-		msg(DM_NONE,"Model is periodic - can't add to component list.\n");
+		msg(Debug::None,"Model is periodic - can't add to component list.\n");
 		return;
 	}
 	// Add it to mc.s component list and refresh the list

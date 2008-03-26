@@ -76,7 +76,7 @@ int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (!gui.exists())
 	{
-		msg(DM_NONE,"Can't perform rendering speedtest without the GUI.\n");
+		msg(Debug::None,"Can't perform rendering speedtest without the GUI.\n");
 		return CR_FAIL;
 	}
 	clock_t tstart = clock();
@@ -89,6 +89,6 @@ int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 	}
 	clock_t tfinish = clock();
 	double nsec = double(tfinish-tstart) / CLOCKS_PER_SEC;
-	msg(DM_NONE,"SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
+	msg(Debug::None,"SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
 	return CR_SUCCESS;
 }

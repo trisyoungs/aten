@@ -26,7 +26,7 @@
 // Render model
 void Canvas::renderScene(Model *source)
 {
-	dbgBegin(DM_CALLS,"Canvas::renderScene");
+	dbgBegin(Debug::Calls,"Canvas::renderScene");
 	static double rotmat[16], cammat[16];
 	static Model *trajparent;
 	static double camrot;
@@ -34,7 +34,7 @@ void Canvas::renderScene(Model *source)
 	// Begin the GL commands
 	if (!beginGl())
 	{
-		dbgEnd(DM_CALLS,"Canvas::renderScene");
+		dbgEnd(Debug::Calls,"Canvas::renderScene");
 		return;
 	}
 
@@ -57,7 +57,7 @@ void Canvas::renderScene(Model *source)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glRasterPos2i(1,(int)height_-13);
 		glText(1.0,height_-10.0,"No model to display.");
-		dbgEnd(DM_CALLS,"Canvas::renderScene");
+		dbgEnd(Debug::Calls,"Canvas::renderScene");
 		return;
 	}
 
@@ -122,7 +122,7 @@ void Canvas::renderScene(Model *source)
 	  if (renderPoint_ == displayModel_->log(LOG_TOTAL)) glCallList(list_[GLOB_MODEL]);
 	  else
 	  {
-		msg(DM_VERBOSE,"Recreating display list for model '%s'...", displayModel_->name());
+		msg(Debug::Verbose,"Recreating display list for model '%s'...", displayModel_->name());
 		//glDeleteLists(list_[GLOB_MODEL],1);
 		glNewList(list_[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
@@ -135,7 +135,7 @@ void Canvas::renderScene(Model *source)
 		  if (prefs.shouldRender(VO_FORCEARROWS)) renderModelForceArrows();
 		glEndList();
 		renderPoint_ = displayModel_->log(LOG_TOTAL);
-		msg(DM_VERBOSE," Done. (New point = %i)\n",renderPoint_);
+		msg(Debug::Verbose," Done. (New point = %i)\n",renderPoint_);
 	  }
 	  // Render surfaces
 	  if (prefs.shouldRender(VO_SURFACES)) renderSurfaces();
@@ -191,5 +191,5 @@ void Canvas::renderScene(Model *source)
 
 	glFlush();
 	endGl();
-	dbgEnd(DM_CALLS,"Canvas::renderScene");
+	dbgEnd(Debug::Calls,"Canvas::renderScene");
 }

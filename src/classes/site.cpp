@@ -71,7 +71,7 @@ const char *Site::name()
 // Calculate site centre
 Vec3<double> Site::calculateCentre(Model *srcmodel, int mol)
 {
-	dbgBegin(DM_CALLS,"Site::calculateCentre");
+	dbgBegin(Debug::Calls,"Site::calculateCentre");
 	int offset, n;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
@@ -106,14 +106,14 @@ Vec3<double> Site::calculateCentre(Model *srcmodel, int mol)
 		// Take average
 		centre_ /= pattern_->nAtoms();
 	}
-	dbgEnd(DM_CALLS,"Site::calculateCentre");
+	dbgEnd(Debug::Calls,"Site::calculateCentre");
 	return centre_;
 }
 
 // Calculate site local axis system
 Mat3<double> Site::calculateAxes(Model *srcmodel, int mol)
 {
-	dbgBegin(DM_CALLS,"Site::calculateAxes");
+	dbgBegin(Debug::Calls,"Site::calculateAxes");
 	int offset, n;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
@@ -151,6 +151,6 @@ Mat3<double> Site::calculateAxes(Model *srcmodel, int mol)
 	axes_.set(1,v2);
 	axes_.set(2,v1 * v2);
 	//axes.print();
-	dbgBegin(DM_CALLS,"Site::calculateAxes");
+	dbgBegin(Debug::Calls,"Site::calculateAxes");
 	return axes_;
 }

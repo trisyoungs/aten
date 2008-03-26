@@ -63,13 +63,13 @@ int CommandData::function_CA_MCNTRIALS(Command *&c, Bundle &obj)
 // Prints the current MC params ('printmc')
 int CommandData::function_CA_PRINTMC(Command *&c, Bundle &obj)
 {
-	msg(DM_NONE,"Current Monte Carlo Parameters are:\n");
-	msg(DM_NONE,"Move        Allowed  NTrials  MaxStep   EAccept :\n");
+	msg(Debug::None,"Current Monte Carlo Parameters are:\n");
+	msg(Debug::None,"Move        Allowed  NTrials  MaxStep   EAccept :\n");
 	MonteCarloMove mt;
 	for (int n=0; n<MT_NITEMS; n++)
 	{
 		mt = (MonteCarloMove) n;
-		msg(DM_NONE,"%11s   %3s   %4i   %8.3f   %8.2e\n", text_from_MT(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
+		msg(Debug::None,"%11s   %3s   %4i   %8.3f   %8.2e\n", text_from_MT(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
 	}
 	return CR_SUCCESS;
 }

@@ -414,12 +414,12 @@ int ElementMap::ffToZ(const char *s)
 int ElementMap::find(const char *query)
 {
 	// Get the element number from the element name provided.
-	dbgBegin(DM_CALLS,"ElementMap::find");
+	dbgBegin(Debug::Calls,"ElementMap::find");
 	int result = -1;
 	if (query[0] == '\0')
 	{
 		printf("Warning: Element search requested on blank string.\n");
-		dbgEnd(DM_CALLS,"ElementMap::find");
+		dbgEnd(Debug::Calls,"ElementMap::find");
 		return 0;
 	}
 	// Convert the query string according to the specified rule
@@ -462,7 +462,7 @@ int ElementMap::find(const char *query)
 			result = numberToZ(query);
 			break;
 	}
-	dbgEnd(DM_CALLS,"ElementMap::find");
+	dbgEnd(Debug::Calls,"ElementMap::find");
 	return ((result == -1) ? 0 : result);
 }
 

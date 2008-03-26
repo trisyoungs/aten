@@ -59,7 +59,7 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 			mc.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_SIMPLEX):
-			msg(DM_NONE,"Simplex minimiser not yet written!\n");
+			msg(Debug::None,"Simplex minimiser not yet written!\n");
 			break;
 	}
 	gui.mainView.postRedisplay();

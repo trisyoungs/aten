@@ -115,36 +115,36 @@ void MasterData::debugCli(int argc, char *argv[])
 			{
 				// Turn on call debugging
 				case (Cli::DebugSwitch):
-					addDebugLevel(DM_CALLS);
+					Debug::addDebug(Debug::Calls);
 					break;
 				// Turn on debug messages for atom typing
 				case (Cli::DebugTypingSwitch):
-					addDebugLevel(DM_TYPING);
+					Debug::addDebug(Debug::Typing);
 					break;
 				// Turn on debug messages for atom typing
 				case (Cli::DebugParseSwitch):
-					addDebugLevel(DM_PARSE);
+					Debug::addDebug(Debug::Parse);
 					break;
 				// Turn on debug messages for atom typing
 				case (Cli::DebugFileSwitch):
-					addDebugLevel(DM_FILTERS);
+					Debug::addDebug(Debug::Filters);
 					break;
 				// Turn on debug messages for more calls
 				case (Cli::DebugMoreSwitch):
-					addDebugLevel(DM_CALLS);
-					addDebugLevel(DM_MORECALLS);
+					Debug::addDebug(Debug::Calls);
+					Debug::addDebug(Debug::MoreCalls);
 					break;
 				// Turn on debug messages for all calls
 				case (Cli::DebugAllSwitch):
-					addDebugLevel(DM_CALLS);
-					addDebugLevel(DM_MORECALLS);
-					addDebugLevel(DM_VERBOSE);
-					addDebugLevel(DM_PARSE);
-					addDebugLevel(DM_TYPING);
+					Debug::addDebug(Debug::Calls);
+					Debug::addDebug(Debug::MoreCalls);
+					Debug::addDebug(Debug::Verbose);
+					Debug::addDebug(Debug::Parse);
+					Debug::addDebug(Debug::Typing);
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
-					addDebugLevel(DM_VERBOSE);
+					Debug::addDebug(Debug::Verbose);
 					break;
 			}
 		}
@@ -249,7 +249,7 @@ int MasterData::parseCli(int argc, char *argv[])
 						for (n=0; n<parser.nArgs(); n++)
 						{
 							el = elements.find(afterChar(parser.argc(n), '='));
-							if (el == 0) msg(DM_NONE,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+							if (el == 0) msg(Debug::None,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 							else typeMap.add(beforeChar(parser.argc(n),'='), el);
 						}
 						for (ri = typeMap.first(); ri != NULL; ri = ri->next)

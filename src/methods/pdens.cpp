@@ -82,12 +82,12 @@ void Pdens::setRange(double ss, int n)
 // Initialise structure
 bool Pdens::initialise()
 {
-	dbgBegin(DM_CALLS,"Pdens::initialise");
+	dbgBegin(Debug::Calls,"Pdens::initialise");
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
-		msg(DM_NONE,"Pdens::initialise - At least one site has NULL value.\n");
-		dbgEnd(DM_CALLS,"calculable::initialise");
+		msg(Debug::None,"Pdens::initialise - At least one site has NULL value.\n");
+		dbgEnd(Debug::Calls,"calculable::initialise");
 		return FALSE;
 	}
 	// Create the data_ array
@@ -102,16 +102,16 @@ bool Pdens::initialise()
 			for (o=0; o<totalSteps_; o++) data_[n][m][o] = 0.0;
 		}
 	}
-	msg(DM_NONE,"There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.\n", totalSteps_, stepSize_, name_.get());
+	msg(Debug::None,"There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.\n", totalSteps_, stepSize_, name_.get());
 	nAdded_ = 0;
-	dbgEnd(DM_CALLS,"Pdens::initialise");
+	dbgEnd(Debug::Calls,"Pdens::initialise");
 	return TRUE;
 }
 
 // Accumulate quantity data_ from supplied model
 void Pdens::accumulate(Model *sourcemodel)
 {
-	dbgBegin(DM_CALLS,"Pdens::accumulate");
+	dbgBegin(Debug::Calls,"Pdens::accumulate");
 	int m1, m2, bin;
 	static Vec3<double> centre1, centre2, mimd;
 	static Vec3<int> gridPoint;
@@ -143,7 +143,7 @@ void Pdens::accumulate(Model *sourcemodel)
 	}
 	// Increase accumulation counter
 	nAdded_ ++;
-	dbgEnd(DM_CALLS,"Pdens::accumulate");
+	dbgEnd(Debug::Calls,"Pdens::accumulate");
 }
 
 // Add point to data_ array
@@ -160,7 +160,7 @@ void Pdens::addPoint(Vec3<int> &coords)
 // Finalise
 void Pdens::finalise(Model *sourcemodel)
 {
-	dbgBegin(DM_CALLS,"Pdens::finalise");
+	dbgBegin(Debug::Calls,"Pdens::finalise");
 	int n, m, o;
 	double factor, numberDensity;
 	// Normalise the pdens w.r.t. number of frames, number of central molecules, and number density of system
@@ -169,7 +169,7 @@ void Pdens::finalise(Model *sourcemodel)
 	for (n=0; n<totalSteps_; n++)
 		for (m=0; m<totalSteps_; m++)
 			for (o=0; o<totalSteps_; o++) data_[n][m][o] /= factor;
-	dbgEnd(DM_CALLS,"Pdens::finalise");
+	dbgEnd(Debug::Calls,"Pdens::finalise");
 }
 
 // Save RDF data_

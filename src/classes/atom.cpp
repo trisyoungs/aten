@@ -247,27 +247,27 @@ void Atom::copyStyle(Atom *source)
 // Print
 void Atom::print()
 {
-	msg(DM_NONE,"Atom ID %i (%s):\n", id_, elements.name(this));
-	msg(DM_NONE," %s, %s, style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyleKeyword(style_));
-	msg(DM_NONE," Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
-	msg(DM_NONE," World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
-	msg(DM_NONE,"Screen Coord : %8.4f %8.4f \n",rScreen_.x,rScreen_.y,rScreen_.z);
-	msg(DM_NONE,"  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
-	msg(DM_NONE,"      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
-	msg(DM_NONE,"      Charge : %8.4f\n",charge_);
-	msg(DM_NONE,"      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
-	msg(DM_NONE,"       Bonds : %i\n",bonds_.nItems());
-	msg(DM_NONE," Environment : %s\n",text_from_AE(env_));
-	msg(DM_NONE,"        O.S. : %i\n",os_);
+	msg(Debug::None,"Atom ID %i (%s):\n", id_, elements.name(this));
+	msg(Debug::None," %s, %s, style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyleKeyword(style_));
+	msg(Debug::None," Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
+	msg(Debug::None," World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
+	msg(Debug::None,"Screen Coord : %8.4f %8.4f \n",rScreen_.x,rScreen_.y,rScreen_.z);
+	msg(Debug::None,"  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
+	msg(Debug::None,"      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
+	msg(Debug::None,"      Charge : %8.4f\n",charge_);
+	msg(Debug::None,"      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
+	msg(Debug::None,"       Bonds : %i\n",bonds_.nItems());
+	msg(Debug::None," Environment : %s\n",text_from_AE(env_));
+	msg(Debug::None,"        O.S. : %i\n",os_);
 }
 
 // Print summary
 void Atom::printSummary()
 {
 	// Print format : " Id     El   FFType         X             Y             Z              Q        S"
-	msg(DM_NONE," %-5i  %-3s  %-8s", id_, elements.symbol(this),(type_ != NULL ? type_->name() : "None"));
-	msg(DM_NONE," %13.6e %13.6e %13.6e  %13.6e  ",r_.x, r_.y, r_.z, charge_);
-	msg(DM_NONE,"%c  \n",(selected_ ? 'x' : ' '));
+	msg(Debug::None," %-5i  %-3s  %-8s", id_, elements.symbol(this),(type_ != NULL ? type_->name() : "None"));
+	msg(Debug::None," %13.6e %13.6e %13.6e  %13.6e  ",r_.x, r_.y, r_.z, charge_);
+	msg(Debug::None,"%c  \n",(selected_ ? 'x' : ' '));
 }
 
 /*
@@ -302,7 +302,7 @@ void Atom::acceptBond(Bond *b)
 void Atom::detachBond(Bond *xbond)
 {
 	// Remove the reference to the bond from the Reflist on the atom.
-	dbgBegin(DM_MORECALLS,"Atom::detachBond");
+	dbgBegin(Debug::MoreCalls,"Atom::detachBond");
 	// Mark pointer as NULL. If both are NULL, delete the bond.
 	bonds_.remove(xbond);
 	if (xbond->atomI() == this)
@@ -315,7 +315,7 @@ void Atom::detachBond(Bond *xbond)
 		xbond->setAtomJ(NULL);
 		if (xbond->atomI() == NULL) delete xbond;
 	}
-	dbgEnd(DM_MORECALLS,"Atom::detachBond");
+	dbgEnd(Debug::MoreCalls,"Atom::detachBond");
 }
 
 // Total bond order
@@ -323,29 +323,29 @@ int Atom::totalBondOrder()
 {
 	// Calculate the total bond order of the atom
 	// Returned result is 2*actual bond order (to account for resonant bonds [BO = 1.5])
-	dbgBegin(DM_CALLS,"Atom::totalBondOrder");
+	dbgBegin(Debug::Calls,"Atom::totalBondOrder");
 	int result = 0;
 	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
 		result += (2 * bref->item->order());
-	dbgEnd(DM_CALLS,"Atom::totalBondOrder");
+	dbgEnd(Debug::Calls,"Atom::totalBondOrder");
 	return result;
 }
 
 // Count bonds of specific type
 int Atom::countBonds(Bond::BondType type)
 {
-	dbgBegin(DM_CALLS,"Atom::countBonds");
+	dbgBegin(Debug::Calls,"Atom::countBonds");
 	int count = 0;
 	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
 		if (bref->item->order() == type) count ++;
-	dbgEnd(DM_CALLS,"Atom::countBonds");
+	dbgEnd(Debug::Calls,"Atom::countBonds");
 	return count;
 }
 
 // Find bond to atom 'j'
 Bond *Atom::findBond(Atom *j)
 {
-	dbgBegin(DM_MORECALLS,"Atom::findBond");
+	dbgBegin(Debug::MoreCalls,"Atom::findBond");
 	Bond *result = NULL;
 	Refitem<Bond,int> *bref = bonds();
 	while (bref != NULL)
@@ -353,7 +353,7 @@ Bond *Atom::findBond(Atom *j)
 		if (bref->item->partner(this) == j) result = bref->item;
 		bref = bref->next;
 	}
-	dbgEnd(DM_MORECALLS,"Atom::findBond");
+	dbgEnd(Debug::MoreCalls,"Atom::findBond");
 	return result;
 }
 
@@ -362,7 +362,7 @@ double Atom::bondOrder(Atom *j)
 {
 	// Returns the (fractional) bond order of the bond between this atom and j.
 	// Aromatic bonds are given a bond order of 1.5.
-	dbgBegin(DM_CALLS,"Atom::bondOrder");
+	dbgBegin(Debug::Calls,"Atom::bondOrder");
 	double order;
 	// First, find the bond
 	Bond *b = findBond(j);
@@ -370,21 +370,21 @@ double Atom::bondOrder(Atom *j)
 	if (b == NULL)
 	{
 		printf("bondOrder : Failed to find bond between atoms!\n");
-		dbgEnd(DM_CALLS,"Atom::bondOrder");
+		dbgEnd(Debug::Calls,"Atom::bondOrder");
 		return 0.0;
 	}
 	// Get the enum'd type of the bond and 'convert' it to the bond order
 	order = b->order();
 	// Special case where both atoms are AE_AROMATIC - bond order is then 1.5.
 	if ((env_ == AE_AROMATIC) && (j->env_ == AE_AROMATIC)) order = 1.5;
-	dbgEnd(DM_CALLS,"Atom::bondOrder");
+	dbgEnd(Debug::Calls,"Atom::bondOrder");
 	return order;
 }
 
 // Determine bonding geometry
 AtomGeometry Atom::geometry(Model *parent)
 {
-	dbgBegin(DM_CALLS,"Atom::geometry");
+	dbgBegin(Debug::Calls,"Atom::geometry");
 	static AtomGeometry result;
 	static double angle, largest;
 	static Bond *b1, *b2;
@@ -447,7 +447,7 @@ AtomGeometry Atom::geometry(Model *parent)
 			result = ((angle/6.0) > 115.0 ? AG_SQPLANAR : AG_TETRAHEDRAL);
 			break;
 	}
-	dbgEnd(DM_CALLS,"Atom::geometry");
+	dbgEnd(Debug::Calls,"Atom::geometry");
 	return result;
 }
 

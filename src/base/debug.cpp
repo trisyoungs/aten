@@ -27,18 +27,27 @@
 */
 
 // Bitvector of debug levels
-int debug_output = 0;
+int Debug::debugOutput = 0;
 // Formatting indent for call debugging output
 int funclevel = 0;
 // Add a debug level to the debug output bitvector
-void addDebugLevel(DebugMode dm) { if (!(debug_output&dm)) debug_output += dm; }
+void Debug::addDebug(Debug::DebugMode dm)
+{
+	if (!(Debug::debugOutput&dm)) Debug::debugOutput += dm;
+}
 // Remove a debug level from the debug output bitvector
-void removeDebugLevel(DebugMode dm) { if (debug_output&dm) debug_output -= dm; }
+void Debug::removeDebug(Debug::DebugMode dm)
+{
+	if (Debug::debugOutput&dm) Debug::debugOutput -= dm;
+}
 // Returns whether the specified debug level is set
-bool isDebugLevelActive(DebugMode dm) { return ((debug_output&dm) ? TRUE : FALSE); }
+bool Debug::isDebugActive(Debug::DebugMode dm)
+{
+	return ((Debug::debugOutput&dm) ? TRUE : FALSE);
+}
 
 // Standard message
-void msg(DebugMode dm, const char *fmt ...)
+void msg(Debug::DebugMode dm, const char *fmt ...)
 {
 	// Print to the text view in the main window if it has been initialised.
 	// Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
@@ -48,23 +57,23 @@ void msg(DebugMode dm, const char *fmt ...)
 	// Parse the argument list (...) and internally write the output string into msgs[]
 	va_start(arguments,fmt);
 	vsprintf(msgs,fmt,arguments);
-	// We always print messages with mode DM_NONE to stdout *or* the GUI (if it has been initialised)
+	// We always print messages with mode Debug::None to stdout *or* the GUI (if it has been initialised)
 	// For other message levels, only print if it's debug level is active
-	if (dm == DM_NONE)
+	if (dm == Debug::None)
 	{
 		if (gui.exists()) gui.printMessage(msgs);
 		else printf("%s",msgs);
 	}
-	else if (isDebugLevelActive(dm)) printf("%s",msgs);
+	else if (Debug::isDebugActive(dm)) printf("%s",msgs);
 	va_end(arguments);
 }
 
 // Function enter
-void dbgBegin(DebugMode dm, const char *fmt ...)
+void dbgBegin(Debug::DebugMode dm, const char *fmt ...)
 {
 	// Debug Messaging - Enter Function
 	static char msgs[8096];
-	if (!isDebugLevelActive(dm)) return;
+	if (!Debug::isDebugActive(dm)) return;
 	va_list arguments;
 	msgs[0] = '\0';
 	// Parse the argument list (...) and internally write the output string into msgs[]
@@ -78,11 +87,11 @@ void dbgBegin(DebugMode dm, const char *fmt ...)
 }
 
 // Function leave
-void dbgEnd(DebugMode dm, const char *fmt ...)
+void dbgEnd(Debug::DebugMode dm, const char *fmt ...)
 {
 	// Debug Messaging - Leave Function
 	static char msgs[8096];
-	if (!isDebugLevelActive(dm)) return;
+	if (!Debug::isDebugActive(dm)) return;
 	va_list arguments;
 	msgs[0] = '\0';
 	// Parse the argument list (...) and internally write the output string into msgs[]

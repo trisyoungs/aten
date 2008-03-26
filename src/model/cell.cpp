@@ -59,7 +59,7 @@ int Model::spacegroup()
 // Set cell (vectors)
 void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
-	dbgBegin(DM_CALLS,"Model::setCell[vectors]");
+	dbgBegin(Debug::Calls,"Model::setCell[vectors]");
 	Vec3<double> oldlengths = cell_.lengths();
 	Vec3<double> oldangles = cell_.angles();
 	// Set new axes 
@@ -71,13 +71,13 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_CELL, &oldlengths, &oldangles, &lengths, &angles);
 	}
-	dbgEnd(DM_CALLS,"Model::setCell[vectors]");
+	dbgEnd(Debug::Calls,"Model::setCell[vectors]");
 }
 
 // Set cell (axes)
 void Model::setCell(Mat3<double> axes)
 {
-	dbgBegin(DM_CALLS,"Model::setCell[axes]");
+	dbgBegin(Debug::Calls,"Model::setCell[axes]");
 	Vec3<double> oldlengths = cell_.lengths();
 	Vec3<double> oldangles = cell_.angles();
 	// Set new axes 
@@ -89,41 +89,41 @@ void Model::setCell(Mat3<double> axes)
 		Change *newchange = recordingState_->addChange();
 		newchange->set(UE_CELL, &oldlengths, &oldangles, &cell_.lengths(), &cell_.angles());
 	}
-	dbgEnd(DM_CALLS,"Model::setCell[axes]");
+	dbgEnd(Debug::Calls,"Model::setCell[axes]");
 }
 
 // Remove cell
 void Model::removeCell()
 {
-	dbgBegin(DM_CALLS,"Model::removeCell");
+	dbgBegin(Debug::Calls,"Model::removeCell");
 	cell_.reset();
 	logChange(LOG_VISUAL);
 	logChange(LOG_STRUCTURE);
-	dbgEnd(DM_CALLS,"Model::removeCell");
+	dbgEnd(Debug::Calls,"Model::removeCell");
 }
 
 // Fold All Atoms
 void Model::foldAllAtoms()
 {
-	dbgBegin(DM_CALLS,"Model::foldAllAtoms");
+	dbgBegin(Debug::Calls,"Model::foldAllAtoms");
 	// Standard fold - individual atoms
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) cell_.fold(i);
 	logChange(LOG_COORDS);
-	dbgEnd(DM_CALLS,"Model::foldAllAtoms");
+	dbgEnd(Debug::Calls,"Model::foldAllAtoms");
 }
 
 // Fold All Molecules
 void Model::foldAllMolecules()
 {
-	dbgBegin(DM_CALLS,"Model::foldAllMolecules");
+	dbgBegin(Debug::Calls,"Model::foldAllMolecules");
 	int n,m;
 	Atom *i, *first;
 	Pattern *p;
 	// Molecular fold - fold first atom, other in molecule are MIM'd to this point
 	if (!autocreatePatterns())
 	{
-		msg(DM_NONE,"Model::foldAllMolecules : Molecular fold cannot be performed without a valid pattern definition.\n");
-		dbgEnd(DM_CALLS,"Model::foldAllMolecules");
+		msg(Debug::None,"Model::foldAllMolecules : Molecular fold cannot be performed without a valid pattern definition.\n");
+		dbgEnd(Debug::Calls,"Model::foldAllMolecules");
 		return;
 	}
 	p = patterns_.first();
@@ -147,23 +147,23 @@ void Model::foldAllMolecules()
 		p = p->next;
 	}
 	logChange(LOG_COORDS);
-	dbgEnd(DM_CALLS,"Model::foldAllMolecules");
+	dbgEnd(Debug::Calls,"Model::foldAllMolecules");
 }
 
 // Apply individual symmetry generator to current atom selection
 void Model::pack(int gen)
 {
-	dbgBegin(DM_CALLS,"Model::pack[gen,atom]");
+	dbgBegin(Debug::Calls,"Model::pack[gen,atom]");
 	Clipboard clip;
 	Vec3<double> newr;
 	int oldnatoms;
 	if (gen == 0)
 	{
 		// Ignore this operator since it is the identity operator
-		dbgBegin(DM_CALLS,"Model::pack[gen,atom]");
+		dbgBegin(Debug::Calls,"Model::pack[gen,atom]");
 		return;
 	}
-	msg(DM_VERBOSE,"...Applying generator '%s' (no. %i)\n", master.generators[gen].description, gen);
+	msg(Debug::Verbose,"...Applying generator '%s' (no. %i)\n", master.generators[gen].description, gen);
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -179,17 +179,17 @@ void Model::pack(int gen)
 		cell_.fold(newr);
 		i->r() = newr;
 	}
-	dbgEnd(DM_CALLS,"Model::pack[gen,atom]");
+	dbgEnd(Debug::Calls,"Model::pack[gen,atom]");
 }
 
 // Apply model's spacegroup symmetry generators
 void Model::pack()
 {
-	dbgBegin(DM_CALLS,"Model::pack");
-	if (spacegroup_ == 0) msg(DM_NONE,"No spacegroup defined in model - no packing will be performed.\n");
+	dbgBegin(Debug::Calls,"Model::pack");
+	if (spacegroup_ == 0) msg(Debug::None,"No spacegroup defined in model - no packing will be performed.\n");
 	else
 	{
-		msg(DM_NONE,"Packing cell according to spacegroup '%s'...\n", master.spacegroups[spacegroup_].name);
+		msg(Debug::None,"Packing cell according to spacegroup '%s'...\n", master.spacegroups[spacegroup_].name);
 		selectAll();
 		for (int n=0; n<master.spacegroups[spacegroup_].nGenerators; n++)
 			pack(master.spacegroups[spacegroup_].generators[n]);
@@ -197,13 +197,13 @@ void Model::pack()
 		selectOverlaps(0.1);
 		selectionDelete();
 	}
-	dbgEnd(DM_CALLS,"Model::pack");
+	dbgEnd(Debug::Calls,"Model::pack");
 }
 
 // Scale cell and contents (molecule COGs)
 void Model::scaleCell(const Vec3<double> &scale)
 {
-	dbgBegin(DM_CALLS,"Model::scaleCell");
+	dbgBegin(Debug::Calls,"Model::scaleCell");
 	Vec3<double> oldcog, newcog, newpos;
 	Cell newcell;
 	Mat3<double> newaxes;
@@ -214,13 +214,13 @@ void Model::scaleCell(const Vec3<double> &scale)
 	// First, make sure we have a cell and a valid pattern
 	if (cell_.type() == CT_NONE)
 	{
-		msg(DM_NONE,"No cell to scale.\n");
-		dbgEnd(DM_CALLS,"Model::scaleCell");
+		msg(Debug::None,"No cell to scale.\n");
+		dbgEnd(Debug::Calls,"Model::scaleCell");
 		return;
 	}
 	if (!autocreatePatterns())
 	{
-		dbgEnd(DM_CALLS,"Model::scaleCell");
+		dbgEnd(Debug::Calls,"Model::scaleCell");
 		return;
 	}
 	calcenergy = createExpression();
@@ -255,18 +255,18 @@ void Model::scaleCell(const Vec3<double> &scale)
 	if (calcenergy)
 	{
 		newe = totalEnergy(this);
-		msg(DM_NONE,"Energy change was %12.7e %s\n", newe-olde, text_from_EU(prefs.energyUnit()));
+		msg(Debug::None,"Energy change was %12.7e %s\n", newe-olde, text_from_EU(prefs.energyUnit()));
 	}
 	// Set new cell and update model
 	setCell(newaxes);
 	logChange(LOG_COORDS);
-	dbgEnd(DM_CALLS,"Model::scaleCell");
+	dbgEnd(Debug::Calls,"Model::scaleCell");
 }
 
 // Replicate Cell
 void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 {
-	dbgBegin(DM_CALLS,"Model::replicateCell");
+	dbgBegin(Debug::Calls,"Model::replicateCell");
 	int count;
 	bool stop;
 	Vec3<double> tvec;
@@ -275,8 +275,8 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	// If this isn't a periodic model, exit
 	if (cell_.type() == CT_NONE)
 	{
-		msg(DM_NONE,"No cell to replicate.\n");
-		dbgEnd(DM_CALLS,"Model::replicateCell");
+		msg(Debug::None,"No cell to replicate.\n");
+		dbgEnd(Debug::Calls,"Model::replicateCell");
 		return;
 	}
 
@@ -329,7 +329,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				tvec += oldaxes.rows[2] * kk;
 				//tvec.print();
 				clip.pasteToModel(this,tvec);
-				msg(DM_VERBOSE,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
+				msg(Debug::Verbose,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
 				if (!master.updateProgress(++count))
 				{
 					stop = TRUE;
@@ -374,13 +374,13 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	master.cancelProgress();
 
 	logChange(LOG_STRUCTURE);
-	dbgEnd(DM_CALLS,"Model::replicateCell");
+	dbgEnd(Debug::Calls,"Model::replicateCell");
 }
 
 // Frac to Real
 void Model::fracToReal()
 {
-	dbgBegin(DM_CALLS,"Model::fracToReal");
+	dbgBegin(Debug::Calls,"Model::fracToReal");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
-	dbgEnd(DM_CALLS,"Model::fracToReal");
+	dbgEnd(Debug::Calls,"Model::fracToReal");
 }

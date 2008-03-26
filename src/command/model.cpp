@@ -55,8 +55,8 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	obj.m->selectNone();
 	obj.m->resetLogs();
 	// Print out some useful info on the model that we've just read in
-	msg(DM_NONE,"Atoms  : %i\n",obj.m->nAtoms());
-	msg(DM_NONE,"Cell   : %s\n",text_from_CT(obj.m->cell()->type()));
+	msg(Debug::None,"Atoms  : %i\n",obj.m->nAtoms());
+	msg(Debug::None,"Cell   : %s\n",text_from_CT(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != CT_NONE) obj.m->cell()->print();
 	// Lastly, reset all the log points and start afresh
 	obj.m->resetLogs();
@@ -67,9 +67,9 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 // Print loaded models ('listmodels')
 int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 {
-	if (master.nModels() != 0) msg(DM_NONE,"Name            NAtoms  Forcefield\n");
+	if (master.nModels() != 0) msg(Debug::None,"Name            NAtoms  Forcefield\n");
 	for (Model *m = master.models(); m != NULL; m = m->next)
-		msg(DM_NONE,"%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
+		msg(Debug::None,"%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
 	return CR_SUCCESS;
 }
 
@@ -116,7 +116,7 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 {
 	obj.m = master.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
-	msg(DM_NONE,"Created model '%s'\n", obj.m->name());
+	msg(Debug::None,"Created model '%s'\n", obj.m->name());
 	return CR_SUCCESS;
 }
 
@@ -137,7 +137,7 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
-		msg(DM_NONE,"No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
+		msg(Debug::None,"No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	obj.m->setFilter(f);
@@ -159,7 +159,7 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 	}
 	else
 	{
-		msg(DM_NONE,"No model named '%s' is available.\n", c->argc(0));
+		msg(Debug::None,"No model named '%s' is available.\n", c->argc(0));
 		return CR_FAIL;
 	}
 }

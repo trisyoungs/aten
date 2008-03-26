@@ -28,7 +28,7 @@
 // Finalise GUI
 void AtenForm::finaliseUi()
 {
-	dbgBegin(DM_CALLS,"AtenForm::finaliseUi");
+	dbgBegin(Debug::Calls,"AtenForm::finaliseUi");
 	Filter *f;
 	int n;
 	char temp[256];
@@ -294,13 +294,13 @@ void AtenForm::finaliseUi()
 	filters << "All files (*)";
 	openScriptDialog->setFilters(filters);
 
-	dbgEnd(DM_CALLS,"AtenForm::finaliseUi");
+	dbgEnd(Debug::Calls,"AtenForm::finaliseUi");
 }
 
 // Set controls
 void AtenForm::setControls()
 {
-	dbgBegin(DM_CALLS,"AtenForm::setControls");
+	dbgBegin(Debug::Calls,"AtenForm::setControls");
 	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
@@ -314,6 +314,6 @@ void AtenForm::setControls()
 	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
 	// Set controls on edit page
 	ui.BondToleranceSpin->setValue(prefs.bondTolerance());
-	dbgEnd(DM_CALLS,"AtenForm::setControls");
+	dbgEnd(Debug::Calls,"AtenForm::setControls");
 }
 

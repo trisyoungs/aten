@@ -30,12 +30,12 @@
 // Calculate total energy of model (from supplied coordinates)
 double Model::totalEnergy(Model *srcmodel)
 {
-	dbgBegin(DM_CALLS,"Model::totalEnergy");
+	dbgBegin(Debug::Calls,"Model::totalEnergy");
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		msg(DM_NONE,"Model::totalEnergy - No valid energy expression defined for model.\n");
-		dbgEnd(DM_CALLS,"Model::totalEnergy");
+		msg(Debug::None,"Model::totalEnergy - No valid energy expression defined for model.\n");
+		dbgEnd(Debug::Calls,"Model::totalEnergy");
 		return 0.0;
 	}
 	// Clear the energy store
@@ -75,7 +75,7 @@ double Model::totalEnergy(Model *srcmodel)
 			switch (emodel)
 			{
 				case (EM_OFF):
-					msg(DM_NONE,"Electrostatics requested but no method of calculation chosen!\n");
+					msg(Debug::None,"Electrostatics requested but no method of calculation chosen!\n");
 					break;
 				case (EM_COULOMB):
 					p->coulombIntraPatternEnergy(srcmodel,&energy);
@@ -104,24 +104,24 @@ double Model::totalEnergy(Model *srcmodel)
 		p = p->next;
 	}
 	energy.totalise();
-	dbgEnd(DM_CALLS,"Model::totalEnergy");
+	dbgEnd(Debug::Calls,"Model::totalEnergy");
 	return energy.total();
 }
 
 // Calculate total interaction energy of specified molecule with remainder of model
 double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 {
-	dbgBegin(DM_CALLS,"Model::moleculeEnergy");
+	dbgBegin(Debug::Calls,"Model::moleculeEnergy");
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		msg(DM_NONE,"Model::moleculeEnergy - No valid energy expression defined for model.\n");
-		dbgEnd(DM_CALLS,"Model::moleculeEnergy");
+		msg(Debug::None,"Model::moleculeEnergy - No valid energy expression defined for model.\n");
+		dbgEnd(Debug::Calls,"Model::moleculeEnergy");
 		return 0.0;
 	}
 	// Clear the energy store
 	energy.clear();
-	Pattern *p, *p2;
+	Pattern *p;
 	// Prepare Ewald (if necessary)
 	ElecMethod emodel = prefs.electrostaticsMethod();
 	if (prefs.calculateElec())
@@ -131,17 +131,15 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	// Calculate VDW interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
-	//printf("Begin VDW Inter...\n");
 	for (p = patterns_.first(); p != NULL; p = p->next)
 		molpattern->vdwInterPatternEnergy(srcmodel, p, &energy, molecule);
-	//printf("Done.\n");
 	// Electrostatic Interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
 	if (prefs.calculateElec())
 	{
 		switch (emodel)
 		{
 			case (EM_OFF):
-				msg(DM_NONE,"Electrostatics requested but no method of calculation chosen!\n");
+				msg(Debug::None,"Electrostatics requested but no method of calculation chosen!\n");
 				break;
 			case (EM_COULOMB):
 				for (p = patterns_.first(); p != NULL; p = p->next) molpattern->coulombInterPatternEnergy(srcmodel,p,&energy);
@@ -155,7 +153,7 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 		}
 	}
 	energy.totalise();
-	dbgEnd(DM_CALLS,"Model::moleculeEnergy");
+	dbgEnd(Debug::Calls,"Model::moleculeEnergy");
 	return energy.total();
 }
 
@@ -163,12 +161,12 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 void Model::calculateForces(Model *srcmodel)
 {
 	// Calculate the forces for the atoms of 'srcmodel' from the expression defined in the *this model
-	dbgBegin(DM_CALLS,"Model::calculateForces");
+	dbgBegin(Debug::Calls,"Model::calculateForces");
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		msg(DM_NONE,"calculateForces : No valid energy expression defined for model.\n");
-		dbgEnd(DM_CALLS,"Model::calculateForces");
+		msg(Debug::None,"calculateForces : No valid energy expression defined for model.\n");
+		dbgEnd(Debug::Calls,"Model::calculateForces");
 		return;
 	}
 	srcmodel->zeroForces();
@@ -209,7 +207,7 @@ void Model::calculateForces(Model *srcmodel)
 			switch (emodel)
 			{
 				case (EM_OFF):
-					msg(DM_NONE,"Electrostatics requested but no method of calculation chosen!\n");
+					msg(Debug::None,"Electrostatics requested but no method of calculation chosen!\n");
 					break;
 				case (EM_COULOMB):
 					//p->coulombInterPatternForces(xxcfg);
@@ -236,6 +234,6 @@ void Model::calculateForces(Model *srcmodel)
 		}
 		p = p->next;
 	}
-	dbgEnd(DM_CALLS,"Model::calculateForces");
+	dbgEnd(Debug::Calls,"Model::calculateForces");
 }
 

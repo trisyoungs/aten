@@ -30,11 +30,11 @@ int Model::nSelected()
 // Move atoms 'up'
 void Model::shiftSelectionUp()
 {
-	dbgBegin(DM_CALLS,"Model::shiftSelectionUp");
+	dbgBegin(Debug::Calls,"Model::shiftSelectionUp");
 	if (nSelected_ == 0)
 	{
-		msg(DM_NONE,"No atoms selected.");
-		dbgEnd(DM_CALLS,"Model::shiftSelectionUp");
+		msg(Debug::None,"No atoms selected.");
+		dbgEnd(Debug::Calls,"Model::shiftSelectionUp");
 	}
 	int tempid, oldid;
 	Atom *i, *next;
@@ -62,17 +62,17 @@ void Model::shiftSelectionUp()
 		i = next;
 	}
 	logChange(LOG_STRUCTURE);
-	dbgEnd(DM_CALLS,"Model::shiftSelectionUp");
+	dbgEnd(Debug::Calls,"Model::shiftSelectionUp");
 }
 
 // Move atoms 'down'
 void Model::shiftSelectionDown()
 {
-	dbgBegin(DM_CALLS,"Model::shiftSelectionDown");
+	dbgBegin(Debug::Calls,"Model::shiftSelectionDown");
 	if (nSelected_ == 0)
 	{
-		msg(DM_NONE,"No atoms selected.");
-		dbgEnd(DM_CALLS,"Model::shiftSelectionDown");
+		msg(Debug::None,"No atoms selected.");
+		dbgEnd(Debug::Calls,"Model::shiftSelectionDown");
 	}
 	int tempid, oldid;
 	Atom *i, *next;
@@ -101,13 +101,13 @@ void Model::shiftSelectionDown()
 		i = next;
 	}
 	logChange(LOG_STRUCTURE);
-	dbgEnd(DM_CALLS,"Model::shiftSelectionDown");
+	dbgEnd(Debug::Calls,"Model::shiftSelectionDown");
 }
 
 // Move atoms to start
 void Model::moveSelectionToStart()
 {
-	dbgBegin(DM_CALLS,"Model::moveSelectionToStart");
+	dbgBegin(Debug::Calls,"Model::moveSelectionToStart");
 	int n;
 	Atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
@@ -121,13 +121,13 @@ void Model::moveSelectionToStart()
 	// Renumber atoms
 	renumberAtoms();
 	logChange(LOG_STRUCTURE);
-	dbgEnd(DM_CALLS,"Model::moveSelectionToStart");
+	dbgEnd(Debug::Calls,"Model::moveSelectionToStart");
 }
 
 // Move atoms to end
 void Model::moveSelectionToEnd()
 {
-	dbgBegin(DM_CALLS,"Model::moveSelectionToEnd");
+	dbgBegin(Debug::Calls,"Model::moveSelectionToEnd");
 	int n;
 	Atom *next, *i;
 	// For each selected atom in the model, shift it to the end of the list
@@ -141,7 +141,7 @@ void Model::moveSelectionToEnd()
 	// Renumber atoms
 	renumberAtoms();
 	logChange(LOG_STRUCTURE);
-	dbgEnd(DM_CALLS,"Model::moveSelectionToEnd");
+	dbgEnd(Debug::Calls,"Model::moveSelectionToEnd");
 }
 
 // Get selection cog

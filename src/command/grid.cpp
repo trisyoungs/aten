@@ -83,7 +83,7 @@ int CommandData::function_CA_SETGRIDLOOPORDER(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	if (strlen(c->argc(0)) != 3)
 	{
-		msg(DM_NONE,"A string of three characters must be passed to 'setgridlooporder'.\n");
+		msg(Debug::None,"A string of three characters must be passed to 'setgridlooporder'.\n");
 		return CR_FAIL;
 	}
 	char ch;
@@ -108,7 +108,7 @@ int CommandData::function_CA_SETGRIDLOOPORDER(Command *&c, Bundle &obj)
 				obj.g->setLoopOrder(n,2);
 				break;
 			default:
-				msg(DM_NONE,"Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
+				msg(Debug::None,"Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
 				obj.g->setLoopOrder(n,n);
 				break;
 		}

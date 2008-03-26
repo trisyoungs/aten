@@ -61,7 +61,7 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 	Forcefield *ff = obj.m->forcefield();
 	if (ff == NULL)
 	{
-		msg(DM_NONE,"No forcefield associated to model.\n");
+		msg(Debug::None,"No forcefield associated to model.\n");
 		return CR_FAIL;
 	}
 	ForcefieldAtom *ffa;
@@ -107,7 +107,7 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 	Pattern *p = NULL;
 	if (c->hasArg(0)) p = obj.m->findPattern(c->argc(0));
 	else p = obj.p;
-	if (p == NULL) msg(DM_NONE,"No pattern in which to select atoms.\n");
+	if (p == NULL) msg(Debug::None,"No pattern in which to select atoms.\n");
 	else
 	{
 		Atom *i = p->firstAtom();
@@ -155,11 +155,11 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 			}
 		}
 		// Write results
-		msg(DM_NONE,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
+		msg(Debug::None,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
 		// Update model and delete temporary atomtype
 		obj.m->logChange(LOG_SELECTION);
 		return CR_SUCCESS;
 	}
-	else msg(DM_NONE,"Can't test atomtype description without a valid pattern definition!\n");
+	else msg(Debug::None,"Can't test atomtype description without a valid pattern definition!\n");
 	return CR_FAIL;
 }

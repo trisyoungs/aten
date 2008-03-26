@@ -44,9 +44,9 @@ int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 int CommandData::function_CA_HELP(Command *&c, Bundle &obj)
 {
 	CommandAction ca = CA_from_text(c->argc(0));
-	if (ca == CA_NITEMS) msg(DM_NONE,"help: Unrecognised command '%s'.\n",c->argc(0));
-	else if (CA_data[ca].hasArguments()) msg(DM_NONE,"help:  %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].syntax);
-	else msg(DM_NONE,"help:  %s %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].argText, CA_data[ca].syntax);
+	if (ca == CA_NITEMS) msg(Debug::None,"help: Unrecognised command '%s'.\n",c->argc(0));
+	else if (CA_data[ca].hasArguments()) msg(Debug::None,"help:  %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].syntax);
+	else msg(Debug::None,"help:  %s %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].argText, CA_data[ca].syntax);
 	return CR_SUCCESS;
 }
 

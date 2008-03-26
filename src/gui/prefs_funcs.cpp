@@ -38,7 +38,7 @@ AtenPrefs::AtenPrefs(QDialog *parent) : QDialog(parent)
 // Finalise GUI
 void AtenPrefs::finaliseUi()
 {
-	dbgBegin(DM_CALLS,"AtenPrefs::finaliseUi");
+	dbgBegin(Debug::Calls,"AtenPrefs::finaliseUi");
 	int i;
 	// Add elements to element list and select first item
 	QListWidgetItem *item;
@@ -49,13 +49,13 @@ void AtenPrefs::finaliseUi()
 		item->setText(elements.name(i));
 	}
 	ui.ElementList->setCurrentRow(0);
-	dbgEnd(DM_CALLS,"AtenPrefs::finaliseUi");
+	dbgEnd(Debug::Calls,"AtenPrefs::finaliseUi");
 }
 
 // Set controls
 void AtenPrefs::setControls()
 {
-	dbgBegin(DM_CALLS,"AtenPrefs::setControls");
+	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
 	// Select the first element in the elements list
 	ui.ElementList->setCurrentRow(0);
 
@@ -91,7 +91,7 @@ void AtenPrefs::setControls()
 	ui.ShiftButtonCombo->setCurrentIndex(prefs.keyAction(MK_SHIFT));
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(MK_CTRL));
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(MK_ALT));
-	dbgBegin(DM_CALLS,"AtenPrefs::setControls");
+	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
 }
 
 /*

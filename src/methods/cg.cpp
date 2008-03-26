@@ -38,7 +38,7 @@ MethodCg::MethodCg()
 void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
-	dbgBegin(DM_CALLS,"MethodCg::minimise");
+	dbgBegin(Debug::Calls,"MethodCg::minimise");
 	int cycle, m, i;
 	double enew, ecurrent, edelta, rmscurrent, rmsnew, fdelta, g_old_sq, gamma, g_current_sq;
 	double *g_old;
@@ -52,7 +52,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	// First, create expression for the current model and assign charges
 	if (!srcmodel->createExpression())
 	{
-	        dbgEnd(DM_CALLS,"MethodCg::minimise");
+	        dbgEnd(Debug::Calls,"MethodCg::minimise");
 	        return;
 	}
 	
@@ -67,8 +67,8 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	converged = FALSE;
 	linedone = FALSE;
 
-	msg(DM_NONE,"Step         Energy          DeltaE          RMS Force\n");
-	msg(DM_NONE,"Init  %15.5e          ---      %15.5e\n",ecurrent,rmscurrent);
+	msg(Debug::None,"Step         Energy          DeltaE          RMS Force\n");
+	msg(Debug::None,"Init  %15.5e          ---      %15.5e\n",ecurrent,rmscurrent);
 	gui.progressCreate("Minimising (CG)", nCycles_);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -92,7 +92,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg(DM_NONE,"%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,ecurrent,edelta,rmscurrent);
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg(Debug::None,"%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,ecurrent,edelta,rmscurrent);
 
 		if (linedone || converged) break;
 
@@ -140,15 +140,15 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 	}
 	gui.progressTerminate();
 
-	if (converged) msg(DM_NONE,"Conjugate gradient converged in %i steps.\n",cycle+1);
-	else msg(DM_NONE,"Conjugate gradient did not converge within %i steps.\n",nCycles_);
-	msg(DM_NONE,"Final energy:\n");
+	if (converged) msg(Debug::None,"Conjugate gradient converged in %i steps.\n",cycle+1);
+	else msg(Debug::None,"Conjugate gradient did not converge within %i steps.\n",nCycles_);
+	msg(Debug::None,"Final energy:\n");
 	ecurrent = srcmodel->totalEnergy(srcmodel);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();
 	srcmodel->logChange(LOG_COORDS);
-	dbgEnd(DM_CALLS,"MethodCg::minimise");
+	dbgEnd(Debug::Calls,"MethodCg::minimise");
 }
 

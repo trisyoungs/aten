@@ -29,17 +29,22 @@
 */
 
 // Debug messaging modes
-enum DebugMode { DM_NONE=0, DM_CALLS=1, DM_MORECALLS=2, DM_TYPING=4, DM_PARSE=8, DM_VERBOSE=16, DM_FILTERS=32 };
-// Add a debug level to the debug output bitvector
-void addDebugLevel(DebugMode);
-// Remove a debug level from the debug output bitvector
-void removeDebugLevel(DebugMode);
-// Returns whether the specified debug level is set
-bool isDebugLevelActive(DebugMode);
+namespace Debug
+{
+	enum DebugMode { None=0, Calls=1, MoreCalls=2, Typing=4, Parse=8, Verbose=16, Filters=32 };
+	// Add a debug level to the debug output bitvector
+	void addDebug(Debug::DebugMode);
+	// Remove a debug level from the debug output bitvector
+	void removeDebug(Debug::DebugMode);	
+	// Returns whether the specified debug level is set
+	bool isDebugActive(Debug::DebugMode);
+	// Bitvector of debug levels
+	extern int debugOutput;
+}
 
 // Messaging Functions
-void msg(DebugMode, const char* ...);
-void dbgBegin(DebugMode, const char* ...);
-void dbgEnd(DebugMode, const char* ...);
+void msg(Debug::DebugMode, const char* ...);
+void dbgBegin(Debug::DebugMode, const char* ...);
+void dbgEnd(Debug::DebugMode, const char* ...);
 
 #endif

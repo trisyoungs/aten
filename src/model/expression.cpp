@@ -45,23 +45,23 @@ void Model::invalidateExpression()
 bool Model::createExpression(bool vdwOnly)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
-	dbgBegin(DM_CALLS,"Model::createExpression");
+	dbgBegin(Debug::Calls,"Model::createExpression");
 	// 0) If the expression is already valid, return
 	if (isExpressionValid())
 	{
-		dbgEnd(DM_CALLS,"Model::createExpression");
+		dbgEnd(Debug::Calls,"Model::createExpression");
 		return TRUE;
 	}
 	// Reset some variables
 	prefs.invalidateEwaldAuto();
 	uniqueTypes_.clear();
-	if (vdwOnly) msg(DM_NONE,"Creating VDW-only expression for model %s...\n",name_.get());
-	else msg(DM_NONE,"Creating expression for model %s...\n",name_.get());
+	if (vdwOnly) msg(Debug::None,"Creating VDW-only expression for model %s...\n",name_.get());
+	else msg(Debug::None,"Creating expression for model %s...\n",name_.get());
 	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]
 	if (!typeAll())
 	{
-		msg(DM_NONE,"Couldn't type atoms.\n");
-		dbgEnd(DM_CALLS,"Model::createExpression");
+		msg(Debug::None,"Couldn't type atoms.\n");
+		dbgEnd(Debug::Calls,"Model::createExpression");
 		return FALSE;
 	}
 	// 2) Remove old expression data and create new
@@ -81,22 +81,22 @@ bool Model::createExpression(bool vdwOnly)
 		switch (emodel)
 		{
 			case (EM_OFF):
-				msg(DM_NONE,"Electrostatics are off.\n");
+				msg(Debug::None,"Electrostatics are off.\n");
 				break;
 			case (EM_COULOMB):
-				if (cell_.type() != CT_NONE) msg(DM_NONE,"!!! Coulomb sum requested for periodic model.\n");
+				if (cell_.type() != CT_NONE) msg(Debug::None,"!!! Coulomb sum requested for periodic model.\n");
 				break;
 			default: // Ewald - issue warnings, but don't return FALSE
 				if (cell_.type() == CT_NONE)
 				{
-					msg(DM_NONE,"!!! Ewald sum cannot be used for a non-periodic model.\n");
-					//dbgEnd(DM_CALLS,"Model::createExpression");
+					msg(Debug::None,"!!! Ewald sum cannot be used for a non-periodic model.\n");
+					//dbgEnd(Debug::Calls,"Model::createExpression");
 					//return FALSE;
 				}
 				else if (cell_.type() != CT_CUBIC)
 				{
-					msg(DM_NONE,"!!! Ewald sum only implemented for cubic cells.\n");
-					//dbgEnd(DM_CALLS,"Model::createExpression");
+					msg(Debug::None,"!!! Ewald sum only implemented for cubic cells.\n");
+					//dbgEnd(Debug::Calls,"Model::createExpression");
 					//return FALSE;
 				}
 				break;
@@ -118,6 +118,6 @@ bool Model::createExpression(bool vdwOnly)
 		ffa->copy(ri->item);
 	}
 	expressionPoint_ = logs_[LOG_STRUCTURE];
-	dbgEnd(DM_CALLS,"Model::createExpression");
+	dbgEnd(Debug::Calls,"Model::createExpression");
 	return TRUE;
 }
