@@ -333,17 +333,17 @@ void AtenForm::runScript()
 */
 void AtenForm::on_actionMouseInteract_triggered(bool checked)
 {
-	prefs.setMouseAction(MB_LEFT, MA_INTERACT);
+	prefs.setMouseAction(Prefs::LeftButton, Prefs::InteractAction);
 }
 
 void AtenForm::on_actionMouseRotate_triggered(bool checked)
 {
-	prefs.setMouseAction(MB_LEFT, MA_VIEWROTATE);
+	prefs.setMouseAction(Prefs::LeftButton, Prefs::RotateAction);
 }
 
 void AtenForm::on_actionMouseTranslate_triggered(bool checked)
 {
-	prefs.setMouseAction(MB_LEFT, MA_VIEWTRANSLATE);
+	prefs.setMouseAction(Prefs::LeftButton, Prefs::TranslateAction);
 }
 
 /*

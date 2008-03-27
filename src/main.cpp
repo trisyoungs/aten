@@ -74,27 +74,27 @@ int main(int argc, char *argv[])
 
 	// Do various things depending on the program mode that has been set
 	// Execute scripts / commands if they were provided
-	if (master.programMode() == PM_COMMAND)
+	if (master.programMode() == Master::CommandMode)
 	{
 		// Commands first
 		for (CommandList *cl = master.commands.first(); cl != NULL; cl = cl->next)
 		{
-			if (!cl->execute(NULL)) master.setProgramMode(PM_NONE);
+			if (!cl->execute(NULL)) master.setProgramMode(Master::NoMode);
 			// Need to check program mode after each script since it can be changed
-			if (master.programMode() != PM_COMMAND) break;
+			if (master.programMode() != Master::CommandMode) break;
 		}
 		// Now scripts
 		for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
 		{
-			if (!cl->execute(NULL)) master.setProgramMode(PM_NONE);
+			if (!cl->execute(NULL)) master.setProgramMode(Master::NoMode);
 			// Need to check program mode after each script since it can be changed
-			if (master.programMode() != PM_COMMAND) break;
+			if (master.programMode() != Master::CommandMode) break;
 		}
 		// All scripts done - set program mode to PM_GUI if it is still PM_COMMAND
-		if (master.programMode() == PM_COMMAND) master.setProgramMode(PM_GUI);
+		if (master.programMode() == Master::CommandMode) master.setProgramMode(Master::GuiMode);
 	}
 	// Enter interactive mode once any commands/scripts have been executed
-	if (master.programMode() == PM_INTERACTIVE)
+	if (master.programMode() == Master::InteractiveMode)
 	{
 		std::string cmd;
 		printf("Entering interactive mode...\n");
@@ -106,11 +106,11 @@ int main(int argc, char *argv[])
 			master.interactiveScript.clear();
 			master.interactiveScript.cacheLine(cmd.c_str());
 			master.interactiveScript.execute();
-		} while (master.programMode() == PM_INTERACTIVE);
+		} while (master.programMode() == Master::InteractiveMode);
 		//master.set_program_mode(PM_NONE);
 	}
 	// Enter full GUI 
-	if (master.programMode() == PM_GUI)
+	if (master.programMode() == Master::GuiMode)
 	{
 		// Add empty model if none were specified on the command line
 		if (master.nModels() == 0) Model *m = master.addModel();

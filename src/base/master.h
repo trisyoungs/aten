@@ -37,16 +37,15 @@ class Forcefield;
 class Grid;
 class Clipboard;
 
-// Program Modes
-enum ProgramMode { PM_COMMAND, PM_INTERACTIVE, PM_GUI, PM_NONE };
-
 // Master
-class MasterData
+class Master
 {
 	public:
 	// Constructor / Destructor
-	MasterData();
-	~MasterData();
+	Master();
+	~Master();
+	// Program mode enum
+	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, NoMode };
 	// Remove all dynamic data
 	void clear();
 
@@ -257,6 +256,6 @@ class MasterData
 	Reflist<const char,int> typeMap;
 };
 
-extern MasterData master;
+extern Master master;
 
 #endif

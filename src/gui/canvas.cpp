@@ -183,7 +183,7 @@ void Canvas::initGl()
 		createLists();
 
 		// Clear colour
-		GLfloat *clrcol = prefs.colour(COL_BG);
+		GLfloat *clrcol = prefs.colour(Prefs::BackgroundColour);
 		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 		glClearDepth(1.0);
 		// Perspective hint
@@ -199,32 +199,32 @@ void Canvas::initGl()
 		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 		// Set up the light model
 		glEnable(GL_LIGHTING);
-		glLightfv(GL_LIGHT0,GL_AMBIENT,prefs.spotlightColour(SL_AMBIENT));
-		glLightfv(GL_LIGHT0,GL_DIFFUSE,prefs.spotlightColour(SL_DIFFUSE));
-		glLightfv(GL_LIGHT0,GL_SPECULAR,prefs.spotlightColour(SL_SPECULAR));
+		glLightfv(GL_LIGHT0,GL_AMBIENT,prefs.spotlightColour(Prefs::AmbientComponent));
+		glLightfv(GL_LIGHT0,GL_DIFFUSE,prefs.spotlightColour(Prefs::DiffuseComponent));
+		glLightfv(GL_LIGHT0,GL_SPECULAR,prefs.spotlightColour(Prefs::SpecularComponent));
 		glLightfv(GL_LIGHT0,GL_POSITION,prefs.spotlightPosition());
 		prefs.spotlightActive() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
 		glDisable(GL_POLYGON_SMOOTH);
 		// Configure antialiasing
-		if (prefs.hasGlOption(GO_LINEALIASING))
+		if (prefs.hasGlOption(Prefs::LineAliasOption))
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_LINE_SMOOTH);
 		}
-		if (prefs.hasGlOption(GO_POLYALIASING))
+		if (prefs.hasGlOption(Prefs::PolyAliasOption))
 		{
 			glEnable(GL_BLEND);
 			glHint(GL_POLYGON_SMOOTH_HINT,GL_NICEST);
 			glEnable(GL_POLYGON_SMOOTH);
 		}
 		// Configure fog effects
-		if (prefs.hasGlOption(GO_FOG))
+		if (prefs.hasGlOption(Prefs::FogOption))
 		{
 			glFogi(GL_FOG_MODE, GL_LINEAR);
-			glFogfv(GL_FOG_COLOR, prefs.colour(COL_BG));
+			glFogfv(GL_FOG_COLOR, prefs.colour(Prefs::BackgroundColour));
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);
 			glFogf(GL_FOG_START,prefs.fogNear());
@@ -234,7 +234,7 @@ void Canvas::initGl()
 		else glDisable(GL_FOG);
 		// Configure face culling
 		glCullFace(GL_BACK);
-		prefs.hasGlOption(GO_BACKCULLING) ? glEnable( GL_CULL_FACE ) : glDisable(GL_CULL_FACE);
+		prefs.hasGlOption(Prefs::BackCullOption) ? glEnable( GL_CULL_FACE ) : glDisable(GL_CULL_FACE);
 		// Test
 		// End Test
 		endGl();

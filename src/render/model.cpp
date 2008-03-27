@@ -157,8 +157,8 @@ void Canvas::renderModelForceArrows()
 void Canvas::renderModelCell()
 {
 	// Draw the unit cell of the model
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.colour(COL_PEN));
-	glColor3fv(prefs.colour(COL_PEN));
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.colour(Prefs::PenColour));
+	glColor3fv(prefs.colour(Prefs::PenColour));
 	glLineWidth(1.0f);
 	static Vec3<double> cellCentre, lengths;
 	static Mat4<double> matrix;
@@ -173,10 +173,10 @@ void Canvas::renderModelCell()
 		displayModel_->cell()->axesForGl(glmat);
 		glPushMatrix();
 		  glMultMatrixd(glmat);
-		  if (prefs.shouldRender(VO_CELL)) glCallList(list_[GLOB_WIREUNITCUBE]);
+		  if (prefs.shouldRender(Prefs::ViewCell)) glCallList(list_[GLOB_WIREUNITCUBE]);
 		  lengths = displayModel_->cell()->lengths();
 		  // Render cell axis arrows
-		  if (prefs.shouldRender(VO_CELLAXES))
+		  if (prefs.shouldRender(Prefs::ViewCellAXES))
 		  {
 			glTranslated(-0.5,-0.5,-0.5);
 			glScaled(1.0/lengths.x,1.0/lengths.y,1.0/lengths.z);

@@ -172,59 +172,46 @@ void Model::calculateMass()
 */
 
 // Assign charges from forcefield
-void Model::assignCharges(ChargeSource qs)
+void Model::assignForcefieldCharges()
 {
 	// Assign atom-type charges from the currently associated forcefield to the model
 	// Perform forcefield typing if necessary
-	dbgBegin(Debug::Calls,"Model::assignCharges");
-	Pattern *p;
+	dbgBegin(Debug::Calls,"Model::assignForcefieldCharges");
 	Atom *i;
 	Forcefield *xff, *patff;
-	switch (qs)
+	if (!arePatternsValid())
 	{
-		case (QS_MODEL):
-			break;
-		case (QS_FF):
-			if (!arePatternsValid())
-			{
-				msg(Debug::None,"Model::assignCharges - Cannot assign atomic charges without a valid pattern setup.\n");
-				break;
-			}
-			typeAll();
-			p = patterns_.first();
-			while (p != NULL)
-			{
-				// Grab current model (global) forcefield
-				xff = forcefield_;	
-				patff = p->forcefield();
-				// Grab pattern forcefield in preference to model's
-				if (patff != NULL) xff = patff;
-				if (xff == NULL)
-					msg(Debug::None,"assignCharges : No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
-				else
-				{
-					i = p->firstAtom();
-					int ptotalatoms = p->totalAtoms();
-					int count = 0;
-					while (count < ptotalatoms)
-					{
-						i->setCharge(i->type()->charge());
-						i = i->next;
-						count ++;
-					}
-					// Charge atoms in representative pattern molecule
-					for (i = p->molecule->atoms(); i != NULL; i = i->next)
-						i->setCharge(i->type()->charge());
-				}
-				p = p->next;
-			}
-			break;
-		case (QS_GASTEIGER):
-		case (QS_QEQ):
-			printf("Gasteiger and QEq charges are not currently implemented.\n");
-			break;
+		msg(Debug::None,"Model::assignCharges - Cannot assign atomic charges without a valid pattern setup.\n");
+		dbgEnd(Debug::Calls,"Model::assignForcefieldCharges");
+		return;
 	}
-	dbgEnd(Debug::Calls,"Model::assignCharges");
+	typeAll();
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	{
+		// Grab current model (global) forcefield
+		xff = forcefield_;	
+		patff = p->forcefield();
+		// Grab pattern forcefield in preference to model's
+		if (patff != NULL) xff = patff;
+		if (xff == NULL)
+			msg(Debug::None,"assignCharges : No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
+		else
+		{
+			i = p->firstAtom();
+			int ptotalatoms = p->totalAtoms();
+			int count = 0;
+			while (count < ptotalatoms)
+			{
+				i->setCharge(i->type()->charge());
+				i = i->next;
+				count ++;
+			}
+			// Charge atoms in representative pattern molecule
+			for (i = p->molecule->atoms(); i != NULL; i = i->next)
+				i->setCharge(i->type()->charge());
+		}
+	}
+	dbgEnd(Debug::Calls,"Model::assignForcefieldCharges");
 }
 
 // Set model's forcefield
@@ -341,10 +328,10 @@ void Model::calculateDensity()
 		// Calculate density in the units specified by prefs.density_internal
 		switch (prefs.densityUnit())
 		{
-			case (DU_GPERCM):
+			case (Prefs::GramsPerCm):
 				density_ = (mass_ / AVOGADRO) / (cell_.volume() / 1.0E24);
 				break;
-			case (DU_ATOMSPERANG):
+			case (Prefs::AtomsPerAngstrom):
 				density_ = atoms_.nItems() / cell_.volume();
 				break;
 		}
@@ -395,7 +382,7 @@ void Model::print()
 	msg(Debug::None,"   Name : %s\n",name_.get());
 	msg(Debug::None,"   File : %s\n",filename_.get());
 	msg(Debug::None,"   Mass : %f\n",mass_);
-	if (cell_.type() != CT_NONE) msg(Debug::None,"   Cell : %s\nDensity : %f %s\n",text_from_CT(cell_.type()),density_,text_from_DU(prefs.densityUnit()));
+	if (cell_.type() != CT_NONE) msg(Debug::None,"   Cell : %s\nDensity : %f %s\n",text_from_CT(cell_.type()),density_,Prefs::densityUnitKeyword(prefs.densityUnit()));
 	msg(Debug::None,"  Atoms : %i\n",atoms_.nItems());
 	msg(Debug::None," Id     El   FFType         X             Y             Z              Q        S  \n");
 	// Print from pattern definition if possible, otherwise just use model atom list

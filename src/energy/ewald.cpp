@@ -34,13 +34,13 @@
 #include "base/mathfunc.h"
 #include "model/model.h"
 
-void PrefsData::estimateEwaldParameters(Cell *cell)
+void Prefs::estimateEwaldParameters(Cell *cell)
 {
 	// Estimate alpha and kmax parameters based on a given precision value
-	dbgBegin(Debug::Calls,"PrefsData::estimateEwaldParameterss");
+	dbgBegin(Debug::Calls,"Prefs::estimateEwaldParameterss");
 	if (prefs.hasValidEwaldAuto())
 	{
-		dbgEnd(Debug::Calls,"PrefsData::estimateEwaldParameters");
+		dbgEnd(Debug::Calls,"Prefs::estimateEwaldParameters");
 		return;
 	}
         // Estimate ewaldAlpha_
@@ -63,7 +63,7 @@ void PrefsData::estimateEwaldParameters(Cell *cell)
 	}
 	msg(Debug::None,"Pattern::ewald_estimate_parameters : For precision = %6.4e, alpha = %8.6f and kmax = %i %i %i.\n", ewaldPrecision_, ewaldAlpha_, ewaldKvec_.x, ewaldKvec_.y, ewaldKvec_.z);
 	validEwaldAuto_ = TRUE;
-	dbgEnd(Debug::Calls,"PrefsData::estimateEwaldParameters");
+	dbgEnd(Debug::Calls,"Prefs::estimateEwaldParameters");
 }
 
 // Ewald Energy Real-space contributions

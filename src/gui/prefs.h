@@ -45,7 +45,7 @@ class AtenPrefs : public QDialog
 	private:
 	void updateAfterViewPrefs();
 	void setRadiusChanged(Atom::DrawStyle ds, double value);
-	void setVisibleObject(ViewObject vo, int state);
+	void setVisibleObject(Prefs::ViewObject vo, int state);
 	private slots:
 	void on_StickRadiusSpin_valueChanged(double value);
 	void on_TubeRadiusSpin_valueChanged(double value);
@@ -65,7 +65,7 @@ class AtenPrefs : public QDialog
 	*/
 	private:
 	void spotlightPosChanged(int i, double value);
-	void spotlightColourChanged(SpotlightComponent);
+	void spotlightColourChanged(Prefs::ColourComponent);
 	private slots:
 	void on_SpotlightGroup_clicked(bool checked);
 	void on_SpotlightAmbientColourButton_clicked(bool checked);

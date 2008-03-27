@@ -171,7 +171,7 @@ void Canvas::renderExtra2d()
 	// Add text
 	//text(1.0,h-12.0,displayModel_->name());
 	// Draw on colour scale if necessary
-	if (prefs.colourScheme() != AC_ELEMENT)
+	if (prefs.colourScheme() != Prefs::ElementScheme)
 	{
 		float midy = height_ / 2;
 		//glBegin(
@@ -219,7 +219,7 @@ void Canvas::renderRegions()
 		i ++;
 	}
 	// Turn off blending (if not antialiasing)
-	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glDisable(GL_BLEND);
+	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
 	dbgEnd(Debug::Calls,"Canvas::renderRegions");
 }

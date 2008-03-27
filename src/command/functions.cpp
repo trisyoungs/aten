@@ -23,7 +23,7 @@
 #include "base/master.h"
 
 // Initialise Command Pointers
-void MasterData::initCommands()
+void Master::initCommands()
 {
 	/*
 	// Store pointers to all command functions

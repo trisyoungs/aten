@@ -29,7 +29,7 @@ int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (c->parent()->inputFile() == NULL) obj.m->foldAllAtoms();
-	else if (prefs.foldOnLoad() != PS_NO) obj.m->foldAllAtoms();
+	else if (prefs.foldOnLoad() != Prefs::SwitchOff) obj.m->foldAllAtoms();
 	return CR_SUCCESS;
 }
 
@@ -46,7 +46,7 @@ int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (c->parent()->inputFile() == NULL) obj.m->pack();
-	else if (prefs.packOnLoad() != PS_NO) obj.m->pack();
+	else if (prefs.packOnLoad() != Prefs::SwitchOff) obj.m->pack();
 	return CR_SUCCESS;
 }
 

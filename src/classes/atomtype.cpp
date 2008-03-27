@@ -169,7 +169,7 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 		else
 		{
 			// WATCH Since Atomtype::el became Atomtype::characterElement_, this does not get set. Should it have been set before? WATCH
-			el = elements.find(parser.argc(n),ZM_ALPHA);
+			el = elements.find(parser.argc(n),Prefs::AlphaZmap);
 			if (el == 0)
 			{
 				nAllowedElements_ --;

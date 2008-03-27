@@ -83,7 +83,7 @@ class Filter
 	// Whether separate zmapping has been defined
 	bool hasZmapping_;
 	// Type of element mapping to use
-	ZmapType zmapping_;
+	Prefs::ZmapType zmapping_;
 
 	public:
 	// Return the ID of the filter

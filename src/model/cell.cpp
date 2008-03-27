@@ -255,7 +255,7 @@ void Model::scaleCell(const Vec3<double> &scale)
 	if (calcenergy)
 	{
 		newe = totalEnergy(this);
-		msg(Debug::None,"Energy change was %12.7e %s\n", newe-olde, text_from_EU(prefs.energyUnit()));
+		msg(Debug::None,"Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnitKeyword(prefs.energyUnit()));
 	}
 	// Set new cell and update model
 	setCell(newaxes);

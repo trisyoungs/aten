@@ -79,7 +79,7 @@ void Canvas::renderScene(Model *source)
 	}
 
 	// Draw on the rotation globe
-	if (prefs.shouldRender(VO_GLOBE)) renderRotationGlobe(rotmat, camrot);
+	if (prefs.shouldRender(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
 
 	// Reset projection matrix and set perspective view
 	double top, bottom;
@@ -128,25 +128,25 @@ void Canvas::renderScene(Model *source)
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
 		  renderModelCell();
 		  // Draw the model's atoms, bonds, and selection
-		  if (prefs.shouldRender(VO_ATOMS)) renderModelAtoms();
+		  if (prefs.shouldRender(Prefs::ViewAtoms)) renderModelAtoms();
 		  // Render glyphs associated with the model
 		  renderModelGlyphs();
 		  // Render force arrows
-		  if (prefs.shouldRender(VO_FORCEARROWS)) renderModelForceArrows();
+		  if (prefs.shouldRender(Prefs::ViewForceArrows)) renderModelForceArrows();
 		glEndList();
 		renderPoint_ = displayModel_->log(LOG_TOTAL);
 		msg(Debug::Verbose," Done. (New point = %i)\n",renderPoint_);
 	  }
 	  // Render surfaces
-	  if (prefs.shouldRender(VO_SURFACES)) renderSurfaces();
+	  if (prefs.shouldRender(Prefs::ViewSurfaces)) renderSurfaces();
 	  // Render MC regions
-	  if ((displayModel_->cell()->type() != CT_NONE) && prefs.shouldRender(VO_REGIONS)) renderRegions();
-	  glColor3fv(prefs.colour(COL_PEN));
+	  if ((displayModel_->cell()->type() != CT_NONE) && prefs.shouldRender(Prefs::ViewRegions)) renderRegions();
+	  glColor3fv(prefs.colour(Prefs::PenColour));
 	  renderExtra3d();
 	glPopMatrix();
 
 	// Draw replicated cells (using display list)
-	if (prefs.shouldRender(VO_CELLREPEAT))
+	if (prefs.shouldRender(Prefs::ViewCellREPEAT))
 	{
 		static Mat3<double> cellmat;
 		static Vec3<double> cx, cy, cz;
@@ -180,11 +180,11 @@ void Canvas::renderScene(Model *source)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colour(COL_PEN));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colour(Prefs::PenColour));
 	glDisable(GL_LIGHTING);
 
-	if (prefs.shouldRender(VO_LABELS)) renderModelLabels();
-	if (prefs.shouldRender(VO_MEASUREMENTS)) renderModelMeasurements();
+	if (prefs.shouldRender(Prefs::ViewLabels)) renderModelLabels();
+	if (prefs.shouldRender(Prefs::ViewMeasurements)) renderModelMeasurements();
 
 	renderExtra2d();
 	glDisable(GL_COLOR_MATERIAL);

@@ -84,7 +84,7 @@ Cli cliSwitches[] = {
 };
 
 // Parse debug options
-void MasterData::debugCli(int argc, char *argv[])
+void Master::debugCli(int argc, char *argv[])
 {
 	int n, o;
 	bool isShort, match;
@@ -154,13 +154,13 @@ void MasterData::debugCli(int argc, char *argv[])
 }
 
 // Parse all options
-int MasterData::parseCli(int argc, char *argv[])
+int Master::parseCli(int argc, char *argv[])
 {
 	int argn, opt, ntried = 0, n, el;
 	bool isShort, match;
 	char *arg;
 	CommandList *cl;
-	ZmapType zm;
+	Prefs::ZmapType zm;
 	Refitem<const char,int> *ri;
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary run)
@@ -194,7 +194,7 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Force bonding calculation of atoms on load
 					case (Cli::BondSwitch):
-						prefs.setBondOnLoad(PS_YES);
+						prefs.setBondOnLoad(Prefs::SwitchOn);
 						break;
 					// Set trajectory cache limit
 					case (Cli::CacheSwitch):
@@ -202,12 +202,12 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Force model centering on load (for non-periodic systems)
 					case (Cli::CentreSwitch):
-						prefs.setCentreOnLoad(PS_YES);
+						prefs.setCentreOnLoad(Prefs::SwitchOn);
 						break;
 					// Read script commands from passed string
 					case (Cli::CommandSwitch):
 						cl = master.commands.add();
-						if (cl->cacheLine(argv[++argn])) master.setProgramMode(PM_COMMAND);
+						if (cl->cacheLine(argv[++argn])) master.setProgramMode(Master::CommandMode);
 						else
 						{
 							master.commands.remove(cl);
@@ -220,7 +220,7 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Force folding (MIM'ing) of atoms in periodic systems on load
 					case (Cli::FoldSwitch):
-						prefs.setFoldOnLoad(PS_YES);
+						prefs.setFoldOnLoad(Prefs::SwitchOn);
 						break;
 					// Set forced model load format
 					case (Cli::FormatSwitch):
@@ -240,7 +240,7 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Enter interactive mode
 					case (Cli::InteractiveSwitch):
-						master.setProgramMode(PM_INTERACTIVE);
+						master.setProgramMode(Master::InteractiveMode);
 						break;
 					// Set type mappings
 					case (Cli::MapSwitch):
@@ -257,28 +257,28 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Prohibit bonding calculation of atoms on load
 					case (Cli::NoBondSwitch):
-						prefs.setBondOnLoad(PS_NO);
+						prefs.setBondOnLoad(Prefs::SwitchOff);
 						break;
 					// Prohibit model centering on load (for non-periodic systems)
 					case (Cli::NoCentreSwitch):
-						prefs.setCentreOnLoad(PS_NO);
+						prefs.setCentreOnLoad(Prefs::SwitchOff);
 						break;
 					// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 					case (Cli::NoFoldSwitch):
-						prefs.setFoldOnLoad(PS_NO);
+						prefs.setFoldOnLoad(Prefs::SwitchOff);
 						break;
 					// Force packing (application of symmetry operators) on load
 					case (Cli::NoPackSwitch):
-						prefs.setPackOnLoad(PS_NO);
+						prefs.setPackOnLoad(Prefs::SwitchOff);
 						break;
 					// Prohibit packing (application of symmetry operators) on load
 					case (Cli::PackSwitch):
-						prefs.setPackOnLoad(PS_YES);
+						prefs.setPackOnLoad(Prefs::SwitchOn);
 						break;
 					// Cache a script file
 					case (Cli::ScriptSwitch):
 						cl = master.scripts.add();
-						if (cl->load(argv[++argn])) master.setProgramMode(PM_COMMAND);
+						if (cl->load(argv[++argn])) master.setProgramMode(Master::CommandMode);
 						else
 						{
 							master.scripts.remove(cl);
@@ -291,8 +291,8 @@ int MasterData::parseCli(int argc, char *argv[])
 						break;
 					// Set the type of element (Z) mapping to use in name conversion
 					case (Cli::ZmapSwitch):
-						zm = ZM_from_text(argv[++argn]);
-						if (zm != ZM_NITEMS) prefs.setZmapType(zm);
+						zm = Prefs::zmapType(argv[++argn]);
+						if (zm != Prefs::nZmapTypes) prefs.setZmapType(zm);
 						break;
 					default:
 						printf("Unrecognised command-line option '%s'.\n",argv[argn]);
@@ -321,7 +321,7 @@ int MasterData::parseCli(int argc, char *argv[])
 }
 
 // Usage help
-void MasterData::printUsage() const
+void Master::printUsage() const
 {
 	printf("Usage: aten [options] [<model> ...]\n");
 	printf("\nProgram Options:\n");

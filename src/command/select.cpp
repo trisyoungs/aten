@@ -49,7 +49,7 @@ int CommandData::function_CA_SELECTATOM(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTELEMENT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	int el = elements.find(c->argc(0), ZM_ALPHA);
+	int el = elements.find(c->argc(0), Prefs::AlphaZmap);
 	for (Atom *i = obj.m->atoms(); i != NULL; i = i->next) if (i->element() == el) obj.m->selectAtom(i);
 	return CR_SUCCESS;
 }

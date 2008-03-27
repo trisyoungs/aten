@@ -426,7 +426,7 @@ int ElementMap::find(const char *query)
 	switch (prefs.zmapType())
 	{
 		// Automatic determination
-		case (ZM_AUTO):
+		case (Prefs::AutoZmap):
 			// First, try pure numeric conversion
 			result = numberToZ(query);
 			if (result != -1) break;
@@ -440,25 +440,25 @@ int ElementMap::find(const char *query)
 			result = ffToZ(query);
 			break;
 		// Name search
-		case (ZM_NAME):
+		case (Prefs::NameZmap):
 			result = nameToZ(query);
 			break;
 		// Search loaded forcefields for atom names
-		case (ZM_FORCEFIELD):
+		case (Prefs::ForcefieldZmap):
 			result = ffToZ(query);
 			// Attempt an alpha conversion if the FF conversion failed
 			if (result == -1) result = alphaToZ(query);
 			break;
 		// Convert based on alpha-part of atom name only
-		case (ZM_ALPHA):
+		case (Prefs::AlphaZmap):
 			result = alphaToZ(query);
 			break;
 		// Convert based on first alpha-part of atom name only
-		case (ZM_FIRSTALPHA):
+		case (Prefs::FirstAlphaZmap):
 			result = firstAlphaToZ(query);
 			break;
 		// Convert based on numeric part only
-		case (ZM_NUMERIC):
+		case (Prefs::NumericZmap):
 			result = numberToZ(query);
 			break;
 	}
@@ -467,10 +467,10 @@ int ElementMap::find(const char *query)
 }
 
 // Search for element named 'query' in the list of known elements, using the specified algorithm
-int ElementMap::find(const char *query, ZmapType zmt)
+int ElementMap::find(const char *query, Prefs::ZmapType zmt)
 {
 	// Store the old zmapping type, and temporarily set a new one
-	ZmapType last = prefs.zmapType();
+	Prefs::ZmapType last = prefs.zmapType();
 	prefs.setZmapType(zmt);
 	int result = find(query);
 	prefs.setZmapType(last);

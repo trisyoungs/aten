@@ -99,7 +99,7 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Atom *i = obj.m->addAtom(elements.find(c->argc(0),ZM_ALPHA), c->parent()->penPosition);
+	Atom *i = obj.m->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), c->parent()->penPosition);
 	if (obj.i != NULL) obj.m->bondAtoms(obj.i,i,Bond::Single);
 	master.current.i = i;
 	return CR_SUCCESS;

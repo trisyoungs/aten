@@ -393,8 +393,8 @@ class Model
 	void setForcefield(Forcefield*);
 	// Return the forcefield used by the model
 	Forcefield *forcefield();
-	// Assign charges according to prefs QS
-	void assignCharges(ChargeSource);
+	// Assign forcefield charges to model atoms
+	void assignForcefieldCharges();
 	// Reset all model charges to zero
 	void clearCharges();
 

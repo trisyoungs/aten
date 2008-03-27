@@ -83,7 +83,7 @@ int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 		obj.m->clearBonding();
 		obj.m->calculateBonding();
 	}
-	else if (prefs.bondOnLoad() != PS_NO)
+	else if (prefs.bondOnLoad() != Prefs::SwitchOff)
 	{
 		obj.m->clearBonding();
 		obj.m->calculateBonding();

@@ -90,7 +90,7 @@
 
 /* Primitive types */
 
-#define GL2PS_NO_TYPE          -1
+#define GL2PS_OFF_TYPE          -1
 #define GL2PS_TEXT             1
 #define GL2PS_POINT            2
 #define GL2PS_LINE             3
@@ -868,7 +868,7 @@ static GLint gl2psAddText(GLint type, const char *str, const char *fontname,
 
   if(!gl2ps || !str || !fontname) return GL2PS_UNINITIALIZED;
 
-  if(gl2ps->options & GL2PS_NO_TEXT) return GL2PS_SUCCESS;
+  if(gl2ps->options & GL2PS_OFF_TEXT) return GL2PS_SUCCESS;
 
   glGetBooleanv(GL_CURRENT_RASTER_POSITION_VALID, &valid);
   if(GL_FALSE == valid) return GL2PS_SUCCESS; /* the primitive is culled */
@@ -950,7 +950,7 @@ static void gl2psAdaptVertexForBlending(GL2PSvertex *v)
   if(!v || !gl2ps)
     return;
 
-  if(gl2ps->options & GL2PS_NO_BLENDING || !gl2ps->blending){
+  if(gl2ps->options & GL2PS_OFF_BLENDING || !gl2ps->blending){
     v->rgba[3] = 1.0F;
     return;
   }
@@ -1220,7 +1220,7 @@ static void gl2psCreateSplitPrimitive(GL2PSprimitive *parent, GL2PSplane plane,
     case 2 : child->type = GL2PS_LINE; break; 
     case 3 : child->type = GL2PS_TRIANGLE; break; 
     case 4 : child->type = GL2PS_QUADRANGLE; break;    
-    default: child->type = GL2PS_NO_TYPE; break;
+    default: child->type = GL2PS_OFF_TYPE; break;
     }
   }
 
@@ -1886,7 +1886,7 @@ static GL2PSprimitive *gl2psCreateSplitPrimitive2D(GL2PSprimitive *parent,
     case 2 : child->type = GL2PS_LINE; break;
     case 3 : child->type = GL2PS_TRIANGLE; break;
     case 4 : child->type = GL2PS_QUADRANGLE; break;
-    default: child->type = GL2PS_NO_TYPE; break; /* FIXME */
+    default: child->type = GL2PS_OFF_TYPE; break; /* FIXME */
     }
   }
   child->boundary = 0; /* FIXME: not done! */
@@ -2709,7 +2709,7 @@ static void gl2psPrintPostScriptHeader(void)
               "/rThreshold %g def %% red component subdivision threshold\n"
               "/gThreshold %g def %% green component subdivision threshold\n"
               "/bThreshold %g def %% blue component subdivision threshold\n",
-              (gl2ps->options & GL2PS_NO_PS3_SHADING) ? "false" : "true",
+              (gl2ps->options & GL2PS_OFF_PS3_SHADING) ? "false" : "true",
               gl2ps->threshold[0], gl2ps->threshold[1], gl2ps->threshold[2]);
 
   gl2psPrintf("/BD { bind def } bind def\n"
@@ -3451,7 +3451,7 @@ static void gl2psPDFgroupListInit(void)
   int i;
   GL2PSprimitive *p = NULL;
   GL2PSpdfgroup gro;
-  int lasttype = GL2PS_NO_TYPE;
+  int lasttype = GL2PS_OFF_TYPE;
   GL2PSrgba lastrgba = {-1.0F, -1.0F, -1.0F, -1.0F};
   GLushort lastpattern = 0;
   GLint lastfactor = 0;
@@ -5482,11 +5482,11 @@ static GLint gl2psPrintPrimitives(void)
 
   if(!gl2psListNbr(gl2ps->primitives)){
     /* empty feedback buffer and/or nothing else to print */
-    return GL2PS_NO_FEEDBACK;
+    return GL2PS_OFF_FEEDBACK;
   }
 
   switch(gl2ps->sort){
-  case GL2PS_NO_SORT :
+  case GL2PS_OFF_SORT :
     gl2psListAction(gl2ps->primitives, gl2psbackends[gl2ps->format]->printPrimitive);
     gl2psListAction(gl2ps->primitives, gl2psFreePrimitive);
     /* reset the primitive list, waiting for the next viewport */
@@ -5559,7 +5559,7 @@ GL2PSDLL_API GLint gl2psBeginPage(const char *title, const char *producer,
   }
 
   switch(sort){
-  case GL2PS_NO_SORT :
+  case GL2PS_OFF_SORT :
   case GL2PS_SIMPLE_SORT :
   case GL2PS_BSP_SORT :
     gl2ps->sort = sort;
@@ -5775,7 +5775,7 @@ GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
 
   if((width <= 0) || (height <= 0)) return GL2PS_ERROR;
 
-  if(gl2ps->options & GL2PS_NO_PIXMAP) return GL2PS_SUCCESS;
+  if(gl2ps->options & GL2PS_OFF_PIXMAP) return GL2PS_SUCCESS;
 
   if((format != GL_RGB && format != GL_RGBA) || type != GL_FLOAT){
     gl2psMsg(GL2PS_ERROR, "gl2psDrawPixels only implemented for "
@@ -5810,7 +5810,7 @@ GL2PSDLL_API GLint gl2psDrawPixels(GLsizei width, GLsizei height,
 
   switch(format){
   case GL_RGBA:
-    if(gl2ps->options & GL2PS_NO_BLENDING || !gl2ps->blending){
+    if(gl2ps->options & GL2PS_OFF_BLENDING || !gl2ps->blending){
       /* special case: blending turned off */
       prim->data.image->format = GL_RGB;
       size = height * width * 3;
