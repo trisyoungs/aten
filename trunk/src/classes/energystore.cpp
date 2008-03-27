@@ -298,7 +298,7 @@ void EnergyStore::print()
 		dbgEnd(Debug::Calls,"EnergyStore::print");
 		return;
 	}
-	msg(Debug::None,"Energy (%s):\n",text_from_EU(prefs.energyUnit()));
+	msg(Debug::None,"Energy (%s):\n",Prefs::energyUnitKeyword(prefs.energyUnit()));
 	msg(Debug::None,"   Bond : %13.6f\n",totBond_);
 	msg(Debug::None,"  Angle : %13.6f\n",totAngle_);
 	msg(Debug::None,"Torsion : %13.6f\n",totTorsion_);
@@ -318,7 +318,7 @@ void EnergyStore::printSummary()
 		dbgEnd(Debug::Calls,"EnergyStore::printSummary");
 		return;
 	}
-	msg(Debug::None,"Etot = %13.6e %s, b a t = %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, text_from_EU(prefs.energyUnit()), totBond_, totAngle_, totTorsion_, totVdw_, totElec_);
+	msg(Debug::None,"Etot = %13.6e %s, b a t = %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, Prefs::energyUnitKeyword(prefs.energyUnit()), totBond_, totAngle_, totTorsion_, totVdw_, totElec_);
 	dbgEnd(Debug::Calls,"EnergyStore::printSummary");
 }
 
@@ -332,7 +332,7 @@ void EnergyStore::printEwald()
 		dbgEnd(Debug::Calls,"EnergyStore::printEwald");
 		return;
 	}
-	msg(Debug::None,"Ewald Energy (%s):\n",text_from_EU(prefs.energyUnit()));
+	msg(Debug::None,"Ewald Energy (%s):\n",Prefs::energyUnitKeyword(prefs.energyUnit()));
 	msg(Debug::None," Real : %13.6f\n",totEwaldReal_);
 	msg(Debug::None,"Recip : %13.6f\n",totEwaldRecip_);
 	msg(Debug::None," Self : %13.6f\n",totEwaldSelf_);

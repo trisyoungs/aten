@@ -269,7 +269,6 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 		dbgEnd(Debug::Calls,"MethodMc::minimise");
 		return FALSE;
 	}
-	srcmodel->assignCharges(prefs.chargeSource());
 
 	// Create coordinate backup model for minimisation
 	Model bakmodel;
@@ -658,7 +657,7 @@ bool MethodMc::disorder(Model *destmodel)
 						//printf("ACCEPTING MOVE : edelta = %20.14f\n",edelta);
 						// Fold the molecule's atoms and recalculate its centre of geometry 
 						//cfg->fold_molecule(p,mol);
-						//destmodel->set_AtomColours(NULL);
+						//destmodel->set_Prefs::ColourScheme(NULL);
 						// Update energy and move counters
 						//ecurrent = enew;
 						//currentVdwEnergy = destmodel->energy.get_vdw();

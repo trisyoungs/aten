@@ -69,10 +69,10 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 {
 	// Handle button presses (button down) from the mouse
 	dbgBegin(Debug::Calls,"TCanvas::mousePressEvent");
-	MouseButton button;
-	if (event->button() == Qt::LeftButton) button = MB_LEFT;
-	else if (event->button() == Qt::MidButton) button = MB_MIDDLE;
-	else if (event->button() == Qt::RightButton) button = MB_RIGHT;
+	Prefs::MouseButton button;
+	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
+	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
+	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
 		dbgEnd(Debug::Calls,"TCanvas::mousePressEvent");
@@ -82,7 +82,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	// isn't currently in progress. Set the UserAction based on the mouse button that sent
 	// the signal, current selection / draw modes and key modifier states.
 	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
-	if (button == MB_RIGHT)
+	if (button == Prefs::RightButton)
 	{
 		Atom *tempi = master.currentModel()->atomOnScreen(event->x(), event->y());
 		if (tempi != NULL)
@@ -94,7 +94,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		}
 	}
 	// If the left mouse button is double-clicked over an atom, show the atomlist window
-	if ((button == MB_LEFT) && (event->type() == QEvent::MouseButtonDblClick))
+	if ((button == Prefs::LeftButton) && (event->type() == QEvent::MouseButtonDblClick))
 	{
 		Atom *tempi = widgetCanvas_->atomHover();
 		if (tempi != NULL)
@@ -114,10 +114,10 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 {
 	// Handle button releases (button up) from the mouse
 	dbgBegin(Debug::Calls,"TCanvas::mouseReleaseEvent");
-	MouseButton button;
-	if (event->button() == Qt::LeftButton) button = MB_LEFT;
-	else if (event->button() == Qt::MidButton) button = MB_MIDDLE;
-	else if (event->button() == Qt::RightButton) button = MB_RIGHT;
+	Prefs::MouseButton button;
+	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
+	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
+	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
 		dbgEnd(Debug::Calls,"TCanvas::mouseReleaseEvent");

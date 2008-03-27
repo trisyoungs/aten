@@ -28,11 +28,11 @@
 int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 {
 	// If we're in interactive mode, just set program mode and let main.cpp handle it.
-	if (master.programMode() == PM_INTERACTIVE) master.setProgramMode(PM_GUI);
+	if (master.programMode() == Master::InteractiveMode) master.setProgramMode(Master::GuiMode);
 	else if (!gui.exists())
 	{
 		// Set program mode and start gui
-		master.setProgramMode(PM_GUI);
+		master.setProgramMode(Master::GuiMode);
 		// Add empty model if none were specified on the command line
 		if (master.nModels() == 0) Model *m = master.addModel();
 		gui.run(0, NULL);
@@ -61,7 +61,7 @@ int CommandData::function_CA_SEED(Command *&c, Bundle &obj)
 int CommandData::function_CA_QUIT(Command *&c, Bundle &obj)
 {
 	// Set program mode here, in case we are running in PM_COMMAND
-	master.setProgramMode(PM_NONE);
+	master.setProgramMode(Master::NoMode);
 	// If the GUI is active, close it...
 	if (gui.exists()) gui.saveBeforeClose();
 	return CR_EXIT;

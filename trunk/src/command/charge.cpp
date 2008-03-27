@@ -28,7 +28,7 @@
 int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->assignCharges(QS_FF);
+	obj.m->assignForcefieldCharges();
 	return CR_SUCCESS;
 }
 

@@ -30,7 +30,7 @@ void Canvas::renderModelAtoms()
 	static Atom::DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
 	static short int cindex;
-	static AtomColours scheme;
+	static Prefs::ColourScheme scheme;
 	static double radius, rij;
 	static Vec3<double> ri, rj, rk, ijk;
 	static Atom *i, *j;
@@ -45,7 +45,7 @@ void Canvas::renderModelAtoms()
 	cell = displayModel_->cell();
 	
 	// Set polygon fill mode and specular reflection
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(COL_SPECREFLECT));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 
 	while (i != NULL)
@@ -57,7 +57,7 @@ void Canvas::renderModelAtoms()
 		// Push the current matrix, translate to the atoms coordinates and set the drawing colour
 		glPushMatrix();
 		  // Define atom colours
-		  if (scheme == AC_ELEMENT)
+		  if (scheme == Prefs::ElementScheme)
 		  {
 			cindex = i->element();
 			elements.copyAmbientColour(cindex, ambient);
@@ -204,7 +204,7 @@ void Canvas::renderModelAtoms()
 	//glEnd();
 	// Second pass to render selected sphere atoms (transparency)
 	// Enable alpha component (if we weren't aliasing anyway)
-	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glEnable(GL_BLEND);
+	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);		// Make sure lighting is on
 	for (i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
@@ -215,7 +215,7 @@ void Canvas::renderModelAtoms()
 		if (!i->isSelected()) continue;
 		if (i->isHidden()) continue;
 		// Define atom colours
-		if (scheme == AC_ELEMENT)
+		if (scheme == Prefs::ElementScheme)
 		{
 			cindex = i->element();
 			elements.copyAmbientColour(cindex, ambient);
@@ -285,7 +285,7 @@ void Canvas::renderModelAtoms()
 		glPopMatrix();
 	}
 	// Turn off blending (if not antialiasing)
-	if (!prefs.hasGlOption(GO_LINEALIASING) && !prefs.hasGlOption(GO_POLYALIASING)) glDisable(GL_BLEND);
+	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glDisable(GL_BLEND);
 	// Reset line width to 1.0
 	glLineWidth(1.0);
 	dbgEnd(Debug::Calls,"Canvas::renderModelAtoms");

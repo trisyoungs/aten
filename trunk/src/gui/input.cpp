@@ -25,12 +25,8 @@
 #include "gui/canvas.h"
 #include "model/model.h"
 
-// Static variables
-//bool Canvas::mouseAction_[MB_NITEMS];
-//bool Canvas::keyModifier_[MK_NITEMS];
-
 // Inform mouse down
-void Canvas::informMouseDown(MouseButton button, double x, double y)
+void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y)
 {
 	rMouseDown_.set(x,y,0.0);
 	rMouseUp_.set(x,y,0.0);
@@ -52,7 +48,7 @@ void Canvas::informMouseDown(MouseButton button, double x, double y)
 }
 
 // Inform mouse up
-void Canvas::informMouseUp(MouseButton button, double x, double y)
+void Canvas::informMouseUp(Prefs::MouseButton button, double x, double y)
 {
 	// Only finalise the mode if the button is the same as the one that caused the mousedown event.
 	if (mouseButton_[button])
@@ -90,22 +86,22 @@ void Canvas::informKeyDown(key_code key)
 	switch (key)
 	{
 		case (KC_SHIFT_L):
-			keyModifier_[MK_SHIFT] = TRUE;
+			keyModifier_[Prefs::ShiftKey] = TRUE;
 			break;
 		case (KC_SHIFT_R):
-			keyModifier_[MK_SHIFT] = TRUE;
+			keyModifier_[Prefs::ShiftKey] = TRUE;
 			break;
 		case (KC_CONTROL_L):
-			keyModifier_[MK_CTRL] = TRUE;
+			keyModifier_[Prefs::CtrlKey] = TRUE;
 			break;
 		case (KC_CONTROL_R):
-			keyModifier_[MK_CTRL] = TRUE;
+			keyModifier_[Prefs::CtrlKey] = TRUE;
 			break;
 		case (KC_ALT_L):
-			keyModifier_[MK_ALT] = TRUE;
+			keyModifier_[Prefs::AltKey] = TRUE;
 			break;
 		case (KC_ALT_R):
-			keyModifier_[MK_ALT] = TRUE;
+			keyModifier_[Prefs::AltKey] = TRUE;
 			break;
 		//case (GDK_Escape): master.check_before_close(); break;
 		case (KC_LEFT):
@@ -133,22 +129,22 @@ void Canvas::informKeyUp(key_code key)
 	switch (key)
 	{
 		case (KC_SHIFT_L):
-			keyModifier_[MK_SHIFT] = FALSE;
+			keyModifier_[Prefs::ShiftKey] = FALSE;
 			break;
 		case (KC_SHIFT_R):
-			keyModifier_[MK_SHIFT] = FALSE;
+			keyModifier_[Prefs::ShiftKey] = FALSE;
 			break;
 		case (KC_CONTROL_L):
-			keyModifier_[MK_CTRL] = FALSE;
+			keyModifier_[Prefs::CtrlKey] = FALSE;
 			break;
 		case (KC_CONTROL_R):
-			keyModifier_[MK_CTRL] = FALSE;
+			keyModifier_[Prefs::CtrlKey] = FALSE;
 			break;
 		case (KC_ALT_L):
-			keyModifier_[MK_ALT] = FALSE;
+			keyModifier_[Prefs::AltKey] = FALSE;
 			break;
 		case (KC_ALT_R):
-			keyModifier_[MK_ALT] = FALSE;
+			keyModifier_[Prefs::AltKey] = FALSE;
 			break;
 	}
 }
@@ -190,7 +186,7 @@ void Canvas::setSelectedMode(UserAction ua)
 }
 
 // Begin Mode
-void Canvas::beginMode(MouseButton button)
+void Canvas::beginMode(Prefs::MouseButton button)
 {
 	dbgBegin(Debug::Calls,"widgetCanvas::beginMode");
 	static bool manipulate, zrotate;
@@ -216,12 +212,12 @@ void Canvas::beginMode(MouseButton button)
 	{
 		if (keyModifier_[n])
 		{
-			switch (prefs.keyAction((ModifierKey(n))))
+			switch (prefs.keyAction(Prefs::ModifierKey(n)))
 			{
-				case (KA_MANIPULATE):
+				case (Prefs::ManipulateKeyAction):
 					manipulate = TRUE;
 					break;
-				case (KA_ZROTATE):
+				case (Prefs::ZrotateKeyAction):
 					zrotate = TRUE;
 					break;
 			}
@@ -233,7 +229,7 @@ void Canvas::beginMode(MouseButton button)
 		switch (prefs.mouseAction(button))
 		{
 			// Main interactor - selection, sketching, measuring
-			case (MA_INTERACT):
+			case (Prefs::InteractAction):
 				useSelectedMode();
 				// Some modes require actions to be done when the button is first depressed
 				switch (activeMode_)
@@ -251,17 +247,17 @@ void Canvas::beginMode(MouseButton button)
 						break;
 				}
 				break;
-			case (MA_VIEWROTATE):
+			case (Prefs::RotateAction):
 				// Check for multiple key modifiers first.
 				if (manipulate && zrotate) activeMode_ = UA_MANIPROTZ;
 				else if (manipulate) activeMode_ = UA_MANIPROTXY;
 				else if (zrotate) activeMode_ = UA_ROTATEZ;
 				else activeMode_ = UA_ROTATEXY;
 				break;
-			case (MA_VIEWZOOM):
+			case (Prefs::ZoomAction):
 				activeMode_ = UA_ZOOMCAM;
 				break;
-			case (MA_VIEWTRANSLATE):
+			case (Prefs::TranslateAction):
 				activeMode_ = UA_MOVECAM;
 				manipulate ? activeMode_ = UA_MANIPTRANS : activeMode_ = UA_MOVECAM;
 				break;
@@ -282,7 +278,7 @@ void Canvas::beginMode(MouseButton button)
 }
 
 // End Mode
-void Canvas::endMode(MouseButton button)
+void Canvas::endMode(Prefs::MouseButton button)
 {
 	// Finalize the current action on the model
 	dbgBegin(Debug::Calls,"Canvas::endMode");
@@ -309,11 +305,11 @@ void Canvas::endMode(MouseButton button)
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
 			displayModel_->beginUndostate("Change Selection");
 			// If SHIFT is not held down, deselect the current selection
-			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
+			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			// Do either point select or box select based on the size of the selected area
 			if (area < 100.0)
 			{
-				if (keyModifier_[MK_SHIFT])
+				if (keyModifier_[Prefs::ShiftKey])
 				{
 					if (atomHover_ != NULL) displayModel_->selectionToggle(atomHover_);
 				}
@@ -325,19 +321,19 @@ void Canvas::endMode(MouseButton button)
 		// Now do the rest
 		case (UA_PICKFRAG):
 			displayModel_->beginUndostate("Select Molecule");
-			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
+			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL) displayModel_->selectTree(atomHover_);
 			displayModel_->endUndostate();
 			break;
 		case (UA_PICKELEMENT):
 			displayModel_->beginUndostate("Select Element");
-			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
+			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_);
 			displayModel_->endUndostate();
 			break;
 		case (UA_PICKRADIAL):
 			displayModel_->beginUndostate("Select Radial");
-			if (!keyModifier_[MK_SHIFT]) displayModel_->selectNone();
+			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL)
 			{
 				radius = (rMouseDown_-rMouseUp_).magnitude();
@@ -559,19 +555,19 @@ void Canvas::modeScroll(bool scrollup)
 	// For view operations when we have a trajectory, apply all movement to the parent model
 	viewtarget = displayModel_->trajectoryParent();
 	if (viewtarget == NULL) viewtarget = displayModel_;
-	switch (prefs.mouseAction(MB_WHEEL))
+	switch (prefs.mouseAction(Prefs::WheelButton))
 	{
-		case (MA_NONE):
+		case (Prefs::NoAction):
 			break;
-		case (MA_INTERACT):
+		case (Prefs::InteractAction):
 			useSelectedMode();
 			break;
-		case (MA_VIEWROTATE):
+		case (Prefs::RotateAction):
 			scrollup ? viewtarget->rotate(1.0,0.0) : viewtarget->rotate(-1.0,0.0);
 			break;
-		case (MA_VIEWTRANSLATE):
+		case (Prefs::TranslateAction):
 			break;
-		case (MA_VIEWZOOM):
+		case (Prefs::ZoomAction):
 			if (prefs.hasPerspective())
 				scrollup ? viewtarget->adjustCamera(0.0,0.0,-5.0,0.0) : viewtarget->adjustCamera(0.0,0.0,5.0,0.0);
 			else scrollup ? viewtarget->adjustOrthoSize(1.0) : viewtarget->adjustOrthoSize(-1.0);

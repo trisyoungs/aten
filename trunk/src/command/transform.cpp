@@ -28,7 +28,7 @@ int CommandData::function_CA_CENTRE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (c->parent()->inputFile() == NULL) obj.m->centre(c->arg3d(0));
-	else if (prefs.centreOnLoad() != PS_NO) obj.m->centre(c->arg3d(0));
+	else if (prefs.centreOnLoad() != Prefs::SwitchOff) obj.m->centre(c->arg3d(0));
 	return CR_SUCCESS;
 }
 

@@ -244,17 +244,17 @@ class Canvas
 	// Selected interaction mode (from GUI)
 	UserAction selectedMode_;
 	// Button flags (uses enum 'MouseButton')
-	bool mouseButton_[MB_NITEMS];
+	bool mouseButton_[Prefs::nMouseButtons];
 	// Key flags (uses enum 'ModifierKey')
-	bool keyModifier_[MK_NITEMS];
+	bool keyModifier_[Prefs::nModifierKeys];
 	// Begin an action on the model (called from MouseButtondown)
-	void beginMode(MouseButton);
+	void beginMode(Prefs::MouseButton);
 	// Handle mouse motion while performing actions
 	void modeMotion(double, double);
 	// Handle mousewheel scroll events
 	void modeScroll(bool);
 	// End an action on the model (called from MouseButtonup)
-	void endMode(MouseButton);
+	void endMode(Prefs::MouseButton);
 	// Whether the mouse has moved between begin_mode() and end_mode() calls
 	bool hasMoved_;
 
@@ -266,9 +266,9 @@ class Canvas
 	// Return the currently selected mode
 	UserAction selectedMode();
 	// Inform the canvas of a mouse down event
-	void informMouseDown(MouseButton, double, double);
+	void informMouseDown(Prefs::MouseButton, double, double);
 	// Inform the canvas of a mouse up event
-	void informMouseUp(MouseButton, double, double);
+	void informMouseUp(Prefs::MouseButton, double, double);
 	// Inform the canvas of a mouse move event
 	void informMouseMove(double, double);
 	// Inform the canvas of a mouse wheel scroll event

@@ -26,17 +26,17 @@
 #include <iostream>
 
 // Probe model
-Filter *MasterData::probeFile(const char *filename, FilterType probetype)
+Filter *Master::probeFile(const char *filename, FilterType probetype)
 {
 	// From the supplied filename and file type, determine (as best we can) the format of the file
-	dbgBegin(Debug::Calls,"master::probeFile");
+	dbgBegin(Debug::Calls,"Master::probeFile");
 	// Before we do the proper checking, make sure that the file exists and is readable
 	ifstream probefile;
 	probefile.open(filename,ios::in);
 	if (!probefile.is_open())
 	{
 		msg(Debug::None,"File '%s' does not exist.\n",filename);
-		dbgEnd(Debug::Calls,"master::probeFile");
+		dbgEnd(Debug::Calls,"Master::probeFile");
 		return NULL;
 	}
 	probefile.close();
@@ -81,7 +81,7 @@ Filter *MasterData::probeFile(const char *filename, FilterType probetype)
 	//if (parser.find_phrase(&modelfile,"GAMESS VERSION",10)) result = MF_GAMESSUS;
 	//modelfile.close();
 	if (result == NULL) msg(Debug::None,"Couldn't determine format of file '%s'.\n",filename);
-	else msg(Debug::Verbose,"master::probeFile - Selected filter '%s'\n",result->name());
-	dbgEnd(Debug::Calls,"master::probeFile");
+	else msg(Debug::Verbose,"Master::probeFile - Selected filter '%s'\n",result->name());
+	dbgEnd(Debug::Calls,"Master::probeFile");
 	return result;
 }

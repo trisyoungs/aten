@@ -46,8 +46,8 @@ int CommandData::function_CA_BONDDETAIL(Command *&c, Bundle &obj)
 // Colours
 int CommandData::function_CA_COLOUR(Command *&c, Bundle &obj)
 {
-	Colour col = COL_from_text(c->argc(0));
-	if (col == COL_NITEMS) return CR_FAIL;
+	Prefs::Colour col = Prefs::colour(c->argc(0));
+	if (col == Prefs::nColours) return CR_FAIL;
 	Vec3<GLfloat> colvec = c->arg3f(1);
 	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
 	prefs.setColour(col, colvec.x, colvec.y, colvec.z, alpha);
@@ -59,8 +59,8 @@ int CommandData::function_CA_COLOUR(Command *&c, Bundle &obj)
 // Set density unit to use in output ('densityunits <unit>')
 int CommandData::function_CA_DENSITYUNITS(Command *&c, Bundle &obj)
 {
-	DensityUnit du = DU_from_text(c->argc(0));
-	if (du == DU_NITEMS) return CR_FAIL;
+	Prefs::DensityUnit du = Prefs::densityUnit(c->argc(0));
+	if (du == Prefs::nDensityUnits) return CR_FAIL;
 	else prefs.setDensityUnits(du);
 	return CR_SUCCESS;
 }
@@ -134,8 +134,8 @@ int CommandData::function_CA_ELEMENTRADIUS(Command *&c, Bundle &obj)
 // Set energy unit to use in output ('energyunits <unit>')
 int CommandData::function_CA_ENERGYUNITS(Command *&c, Bundle &obj)
 {
-	EnergyUnit eu = EU_from_text(c->argc(0));
-	if (eu == EU_NITEMS) return CR_FAIL;
+	Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0));
+	if (eu == Prefs::nEnergyUnits) return CR_FAIL;
 	else prefs.setEnergyUnit(eu);
 	return CR_SUCCESS;
 }
@@ -143,8 +143,8 @@ int CommandData::function_CA_ENERGYUNITS(Command *&c, Bundle &obj)
 // GL Options
 int CommandData::function_CA_GL(Command *&c, Bundle &obj)
 {
-	GlOption go = GO_from_text(c->argc(0));
-	if (go == GO_NITEMS) return CR_FAIL;
+	Prefs::GlOption go = Prefs::glOption(c->argc(0));
+	if (go == Prefs::nGlOptions) return CR_FAIL;
 	if (c->argb(1)) prefs.addGlOption(go);
 	else prefs.removeGlOption(go);
 	if (gui.exists()) gui.mainView.initGl();
@@ -163,9 +163,9 @@ int CommandData::function_CA_INTRA(Command *&c, Bundle &obj)
 // Key bindings
 int CommandData::function_CA_KEY(Command *&c, Bundle &obj)
 {
-	ModifierKey mk = MK_from_text(c->argc(0));
-	KeyAction ka = KA_from_text(c->argc(1));
-	if ((mk != MK_NITEMS) && (ka != KA_NITEMS)) prefs.setKeyAction(mk,ka);
+	Prefs::ModifierKey mk = Prefs::modifierKey(c->argc(0));
+	Prefs::KeyAction ka = Prefs::keyAction(c->argc(1));
+	if ((mk != Prefs::nModifierKeys) && (ka != Prefs::nKeyActions)) prefs.setKeyAction(mk,ka);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -173,9 +173,9 @@ int CommandData::function_CA_KEY(Command *&c, Bundle &obj)
 // Mouse bindings
 int CommandData::function_CA_MOUSE(Command *&c, Bundle &obj)
 {
-	MouseButton mb = MB_from_text(c->argc(0));
-	MouseAction ma = MA_from_text(c->argc(1));
-	if ((ma != MA_NITEMS) && (mb != MB_NITEMS)) prefs.setMouseAction(mb,ma);
+	Prefs::MouseButton mb = Prefs::mouseButton(c->argc(0));
+	Prefs::MouseAction ma = Prefs::mouseAction(c->argc(1));
+	if ((ma != Prefs::nMouseActions) && (mb != Prefs::nMouseButtons)) prefs.setMouseAction(mb,ma);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -201,8 +201,8 @@ int CommandData::function_CA_SHININESS(Command *&c, Bundle &obj)
 // Render Objects
 int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 {
-	ViewObject vo = VO_from_text(c->argc(0));
-	if (vo != VO_NITEMS)
+	Prefs::ViewObject vo = Prefs::viewObject(c->argc(0));
+	if (vo != Prefs::nViewObjects)
 	{
 		prefs.setVisible(vo, c->argb(1));
 		if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);

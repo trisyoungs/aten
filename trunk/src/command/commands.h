@@ -369,7 +369,7 @@ class CommandData
 	*/
 	private:
 	// Provide full access to the master
-	friend class MasterData;
+	friend class Master;
 	// All command functions
 	int function_CA_ROOTNODE(Command *&c, Bundle &obj);
 	// Analyse commands

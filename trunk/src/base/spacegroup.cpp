@@ -28,7 +28,7 @@ Spacegroup::~Spacegroup()
 }
 
 // Define spacegroups and their symmetry generators
-Spacegroup MasterData::spacegroups[] = {
+Spacegroup Master::spacegroups[] = {
 	{ "None",	"None",			  0},	//   0 (no spacegroup)
 	{ "P1",		"<i>P</i>1",		  1,	//   1
 		{    0 } },

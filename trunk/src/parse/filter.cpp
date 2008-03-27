@@ -49,7 +49,7 @@ Filter::Filter()
 	type_ = FT_NITEMS;
 	hasExtension_ = FALSE;
 	hasZmapping_ = FALSE;
-	zmapping_ = ZM_ALPHA;
+	zmapping_ = Prefs::AlphaZmap;
 	name_.set("unnamed");
 	glob_.set("*");
 	id_ = -1;
@@ -134,7 +134,7 @@ bool Filter::load(ifstream &filterFile)
 	CommandAction ca;
 	FilterCommmand fc;
 	char longname[256];
-	ZmapType zm;
+	Prefs::ZmapType zm;
 	int success, itemsleft;
 	bool done, error;
 	// First, we must add a command to the flowstack so we know when to return (or raise an error)
@@ -190,8 +190,8 @@ bool Filter::load(ifstream &filterFile)
 				break;
 			// Set element zmapping to use for import
 			case (FC_ZMAP):
-				zm = ZM_from_text(parser.argc(1));
-				if (zm != ZM_NITEMS)
+				zm = Prefs::zmapType(parser.argc(1));
+				if (zm != Prefs::nZmapTypes)
 				{
 					zmapping_ = zm;
 					hasZmapping_ = TRUE;
@@ -310,7 +310,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 	// Grab pointer Bundle from master
 	Bundle &obj = master.current;
 	// Set element mapping type to that specified in file
-	ZmapType temp_zmap = prefs.zmapType();
+	Prefs::ZmapType temp_zmap = prefs.zmapType();
 	if (hasZmapping_) prefs.setZmapType(zmapping_);
 	// Setup based on filter type...
 	switch (type_)
@@ -352,7 +352,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Set variables
 			commands_.variables.set("title",obj.m->name());
 			commands_.variables.set("npatterns",obj.m->nPatterns());
-			commands_.variables.set("energyunit",text_from_EU(prefs.energyUnit()));
+			commands_.variables.set("energyunit",Prefs::energyUnitKeyword(prefs.energyUnit()));
 			commands_.variables.set("ntypes",obj.m->nUniqueTypes());
 			// Open file...
 			if (!commands_.setOutputFile(filename))

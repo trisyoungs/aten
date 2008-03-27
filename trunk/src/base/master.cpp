@@ -29,16 +29,16 @@
 #include "parse/parser.h"
 #include <fstream>
 
-MasterData master;
+Master master;
 
 // Constructor
-MasterData::MasterData()
+Master::Master()
 {
 	// Models
 	modelId_ = 0;
 
 	// Modes
-	programMode_ = PM_GUI;
+	programMode_ = Master::GuiMode;
 
 	// Store pointers to member functions
 	initCommands();
@@ -52,14 +52,14 @@ MasterData::MasterData()
 }
 
 // Destructor
-MasterData::~MasterData()
+Master::~Master()
 {
 	clear();
 	delete userClipboard;
 }
 
 // Clear
-void MasterData::clear()
+void Master::clear()
 {
 	models_.clear();
 	forcefields_.clear();
@@ -73,7 +73,7 @@ void MasterData::clear()
 */
 
 // Set the active model
-void MasterData::setCurrentModel(Model *m)
+void Master::setCurrentModel(Model *m)
 {
 	dbgBegin(Debug::Calls,"master::setCurrentModel");
 	// Set current.m and tell the mainview canvas to display it
@@ -92,43 +92,43 @@ void MasterData::setCurrentModel(Model *m)
 */
 
 // Return current active model for editing
-Model *MasterData::currentModel() const
+Model *Master::currentModel() const
 {
 	return current.m;
 }
 
 // Return first item in the model list
-Model *MasterData::models() const
+Model *Master::models() const
 {
 	return models_.first();
 }
 
 // Return nth item in the model list
-Model *MasterData::model(int n)
+Model *Master::model(int n)
 {
 	return models_[n];
 }
 
 // Return the current model's index in the model list
-int MasterData::currentModelIndex() const
+int Master::currentModelIndex() const
 {
 	return models_.indexOf(current.m);
 }
 
 // Return index of specified model
-int MasterData::modelIndex(Model *m) const
+int Master::modelIndex(Model *m) const
 {
 	return models_.indexOf(m);
 }
 
 // Return the number of models in the model list
-int MasterData::nModels() const
+int Master::nModels() const
 {
 	return models_.nItems();
 }
 
 // Add model
-Model *MasterData::addModel()
+Model *Master::addModel()
 {
 	dbgBegin(Debug::Calls,"master::addModel");
 	current.m = models_.add();
@@ -141,7 +141,7 @@ Model *MasterData::addModel()
 }
 
 // Remove model
-void MasterData::removeModel(Model *xmodel)
+void Master::removeModel(Model *xmodel)
 {
 	// Remove this model from the model_list in the main window
 	dbgBegin(Debug::Calls,"master::removeModel");
@@ -160,7 +160,7 @@ void MasterData::removeModel(Model *xmodel)
 }
 
 // Find model by name
-Model *MasterData::findModel(const char *s) const
+Model *Master::findModel(const char *s) const
 {
 	// Search model list for name 's' (script function)
 	dbgBegin(Debug::Calls,"master::findModel");
@@ -175,25 +175,25 @@ Model *MasterData::findModel(const char *s) const
 */
 
 // Return list of surfaces
-Grid *MasterData::grids() const
+Grid *Master::grids() const
 {
 	return grids_.first();
 }
 
 // Return number of surfaces loaded
-int MasterData::nGrids() const
+int Master::nGrids() const
 {
 	return grids_.nItems();
 }
 
 // Return specified surface
-Grid *MasterData::grid(int id)
+Grid *Master::grid(int id)
 {
 	return grids_[id];
 }
 
 // Add new surface
-Grid *MasterData::addGrid()
+Grid *Master::addGrid()
 {
 	dbgBegin(Debug::Calls,"master::addGrid");
 	current.g = grids_.add();
@@ -204,7 +204,7 @@ Grid *MasterData::addGrid()
 }
 
 // Remove surface
-void MasterData::removeGrid(Grid *xgrid)
+void Master::removeGrid(Grid *xgrid)
 {
 	Grid *g;
 	xgrid->next != NULL ? g = xgrid->next : g = xgrid->prev;
@@ -219,7 +219,7 @@ void MasterData::removeGrid(Grid *xgrid)
 */
 
 // Load forcefield
-Forcefield *MasterData::loadForcefield(const char *filename)
+Forcefield *Master::loadForcefield(const char *filename)
 {
 	dbgBegin(Debug::Calls,"master::loadForcefield");
 	Forcefield *newff = forcefields_.add();
@@ -240,7 +240,7 @@ Forcefield *MasterData::loadForcefield(const char *filename)
 }
 
 // Unload forcefield from the master's list
-void MasterData::removeForcefield(Forcefield *xff)
+void Master::removeForcefield(Forcefield *xff)
 {
 	dbgBegin(Debug::Calls,"master::removeForcefield");
 	Forcefield *newff;
@@ -256,7 +256,7 @@ void MasterData::removeForcefield(Forcefield *xff)
 }
 
 // Find forcefield by name
-Forcefield *MasterData::findForcefield(const char *s) const
+Forcefield *Master::findForcefield(const char *s) const
 {
 	// Search forcefield list for name 's' (script function)
 	dbgBegin(Debug::Calls,"master::findForcefield");
@@ -268,7 +268,7 @@ Forcefield *MasterData::findForcefield(const char *s) const
 }
 
 // Dereference forcefield
-void MasterData::dereferenceForcefield(Forcefield *xff)
+void Master::dereferenceForcefield(Forcefield *xff)
 {
 	// Remove references to the forcefield in the models
 	dbgBegin(Debug::Calls,"master::dereferenceForcefield");
@@ -297,7 +297,7 @@ void MasterData::dereferenceForcefield(Forcefield *xff)
 }
 
 // Set the default forcefield
-void MasterData::setDefaultForcefield(Forcefield *ff)
+void Master::setDefaultForcefield(Forcefield *ff)
 {
 	defaultForcefield_ = ff;
 	if (defaultForcefield_ == NULL) msg(Debug::None,"Default forcefield has been unset.\n");
@@ -305,43 +305,43 @@ void MasterData::setDefaultForcefield(Forcefield *ff)
 }
 
 // Return the first ff in the list
-Forcefield *MasterData::forcefields() const
+Forcefield *Master::forcefields() const
 {
 	return forcefields_.first();
 }
 
 // Return the number of loaded forcefields
-int MasterData::nForcefields() const
+int Master::nForcefields() const
 {
 	return forcefields_.nItems();
 }
 
 // Set active forcefield
-void MasterData::setCurrentForcefield(Forcefield *ff)
+void Master::setCurrentForcefield(Forcefield *ff)
 {
 	current.ff = ff;
 }
 
 // Set active forcefield by ID
-void MasterData::setCurrentForcefield(int id)
+void Master::setCurrentForcefield(int id)
 {
 	current.ff = forcefields_[id];
 }
 
 // Return the active forcefield
-Forcefield *MasterData::currentForcefield() const
+Forcefield *Master::currentForcefield() const
 {
 	return current.ff;
 }
 
 // Return ID of current forcefield
-int MasterData::currentForcefieldId() const
+int Master::currentForcefieldId() const
 {
 	return forcefields_.indexOf(current.ff);
 }
 
 // Get the current default forcefield
-Forcefield *MasterData::defaultForcefield() const
+Forcefield *Master::defaultForcefield() const
 {
 	return defaultForcefield_;
 }
@@ -351,7 +351,7 @@ Forcefield *MasterData::defaultForcefield() const
 */
 
 // Load filters
-bool MasterData::openFilters(const char *path, bool isdatadir)
+bool Master::openFilters(const char *path, bool isdatadir)
 {
 	dbgBegin(Debug::Calls,"master::openFilters");
 	// Load in model filters
@@ -404,7 +404,7 @@ bool MasterData::openFilters(const char *path, bool isdatadir)
 }
 
 // Read commands from filter file
-bool MasterData::loadFilter(const char *filename)
+bool Master::loadFilter(const char *filename)
 {
 	dbgBegin(Debug::Calls,"master::loadFilter");
 	FilterType ft;
@@ -412,7 +412,7 @@ bool MasterData::loadFilter(const char *filename)
 	bool foundmain, error;
 	VariableList *vars;
 	int success;
-	ZmapType zm;
+	Prefs::ZmapType zm;
 	ifstream filterfile(filename,ios::in);
 
 	// Pre-read first line to check
@@ -450,7 +450,7 @@ bool MasterData::loadFilter(const char *filename)
 }
 
 // Set filter partners
-void MasterData::partnerFilters()
+void Master::partnerFilters()
 {
 	dbgBegin(Debug::Calls,"master::partnerFilters");
 	// Loop through import filters and search / set export partners
@@ -504,7 +504,7 @@ void MasterData::partnerFilters()
 }
 
 // Find filter with specified type and nickname
-Filter *MasterData::findFilter(FilterType ft, const char *nickname) const
+Filter *Master::findFilter(FilterType ft, const char *nickname) const
 {
 	dbgBegin(Debug::Calls,"master::findFilter");
 	Filter *result;
@@ -516,7 +516,7 @@ Filter *MasterData::findFilter(FilterType ft, const char *nickname) const
 }
 
 // Return first filter in list (of a given type)
-Filter *MasterData::filters(FilterType ft) const
+Filter *Master::filters(FilterType ft) const
 {
 	return filters_[ft].first();
 }
@@ -526,27 +526,27 @@ Filter *MasterData::filters(FilterType ft) const
 */
 
 // Initialise a progress indicator
-void MasterData::initialiseProgress(const char *jobtitle, int totalsteps)
+void Master::initialiseProgress(const char *jobtitle, int totalsteps)
 {
 	gui.progressCreate(jobtitle, totalsteps);
 }
 
 // Update the number of steps (returns if the dialog was canceled)
-bool MasterData::updateProgress(int currentstep)
+bool Master::updateProgress(int currentstep)
 {
 	return gui.progressUpdate(currentstep);
 }
 
 // Terminate the current progress
-void MasterData::cancelProgress()
+void Master::cancelProgress()
 {
 	gui.progressTerminate();
 }
 
 // Spacegroup name search
-int MasterData::findSpacegroupByName(const char *name) const
+int Master::findSpacegroupByName(const char *name) const
 {
-	dbgBegin(Debug::Calls,"MasterData::findSpacegroupByName");
+	dbgBegin(Debug::Calls,"Master::findSpacegroupByName");
 	int result = 0;
 	for (int n=1; n<231; n++)
 		if (strcmp(spacegroups[n].name,name) == 0)
@@ -554,14 +554,14 @@ int MasterData::findSpacegroupByName(const char *name) const
 			result = n;
 			break;
 		}
-	dbgEnd(Debug::Calls,"MasterData::findSpacegroupByName");
+	dbgEnd(Debug::Calls,"Master::findSpacegroupByName");
 	return result;
 }
 
 // Cell type from spacegrgoup
-CellType MasterData::spacegroupCellType(int sg) const
+CellType Master::spacegroupCellType(int sg) const
 {
-	dbgBegin(Debug::Calls,"MasterData::spacegroupCellType");
+	dbgBegin(Debug::Calls,"Master::spacegroupCellType");
 	CellType result = CT_NONE;
 	// None
 	if (sg == 0) result = CT_NONE;
@@ -575,6 +575,6 @@ CellType MasterData::spacegroupCellType(int sg) const
 	else if (sg < 195) result = CT_NONE;
 	// Cubic
 	else result = CT_CUBIC;
-	dbgBegin(Debug::Calls,"MasterData::spacegroupCellType");
+	dbgBegin(Debug::Calls,"Master::spacegroupCellType");
 	return result;
 }

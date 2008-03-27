@@ -565,7 +565,7 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 	return result;
 }
 
-void Forcefield::convertParameters(EnergyUnit ff_eunit)
+void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 {
 	// Convert units of all the energetic parameters within the forcefield from the unit supplied into program internal units (specified in prefs)
 	// Check for 'NULL' pointers for ff_param variables (for e.g. rule-based forcefields)

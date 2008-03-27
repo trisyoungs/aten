@@ -28,7 +28,7 @@
 #define FVSX 0.83333333
 
 // Define spacegroup generators in the master
-Generator MasterData::generators[] = {
+Generator Master::generators[] = {
 	{ "x,y,z",		Mat3<double>( 1,0,0,0,1,0,0,0,1), 	Vec3<double>(0   ,0   ,0   ) },
 	{ "-x,-y,-z",		Mat3<double>(-1,0,0,0,-1,0,0,0,-1), 	Vec3<double>(0   ,0   ,0   ) },
 	{ "-x,y,-z",		Mat3<double>(-1,0,0,0,1,0,0,0,-1), 	Vec3<double>(0   ,0   ,0   ) },

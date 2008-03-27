@@ -27,81 +27,64 @@
 #include "classes/atom.h"
 #include <QtOpenGL/QtOpenGL>
 
-// Atom colouring scheme
-enum AtomColours { AC_ELEMENT, AC_CHARGE, AC_VELOCITY, AC_FORCE, AC_NITEMS };
-
-// Preferences switches
-enum PrefSwitch { PS_ASFILTER=-1, PS_NO, PS_YES };
-
-// View Objects
-enum ViewObject { VO_ATOMS, VO_CELL, VO_CELLAXES, VO_CELLREPEAT, VO_FORCEARROWS, VO_GLOBE, VO_LABELS, VO_MEASUREMENTS, VO_REGIONS, VO_SURFACES, VO_NITEMS };
-ViewObject VO_from_text(const char*);
-
-// GL Options
-enum GlOption { GO_FOG=1, GO_LINEALIASING=2, GO_POLYALIASING=4, GO_BACKCULLING=8, GO_DUMMY=16, GO_NITEMS=5 };
-GlOption GO_from_text(const char*);
-
-// Mouse buttons
-enum MouseButton { MB_LEFT, MB_MIDDLE, MB_RIGHT, MB_WHEEL, MB_NITEMS };
-MouseButton MB_from_text(const char*);
-const char *text_from_MB(MouseButton);
-
-// Mouse Actions
-enum MouseAction { MA_NONE, MA_VIEWROTATE, MA_VIEWTRANSLATE, MA_INTERACT, MA_VIEWZOOM, MA_VIEWZROTATE, MA_NITEMS };
-MouseAction MA_from_text(const char*);
-const char *text_from_MA(MouseAction);
-const char **get_MA_strings();
-
-// Modifier keys
-enum ModifierKey { MK_SHIFT, MK_CTRL, MK_ALT, MK_NITEMS };
-const char **get_MK_strings();
-ModifierKey MK_from_text(const char*);
-
-// Modifier actions
-enum KeyAction { KA_NONE, KA_MANIPULATE, KA_ZROTATE, KA_NITEMS };
-const char **get_KA_strings();
-KeyAction KA_from_text(const char*);
-
-// Colours
-enum Colour { COL_PEN, COL_BG, COL_SCHEMELO, COL_SCHEMEMID, COL_SCHEMEHI, COL_SPECREFLECT, COL_NITEMS };
-const char *text_from_COL(Colour);
-Colour COL_from_text(const char*);
-
-// Density calculation units
-enum DensityUnit { DU_GPERCM, DU_ATOMSPERANG, DU_NITEMS };
-const char *text_from_DU(DensityUnit);
-DensityUnit DU_from_text(const char*);
-
-// Drawing guide geometry
-enum GuideGeometry { GG_SQUARE, GG_HEXAGONAL, GG_NITEMS };
-const char **get_GG_strings();
-
-// Energy Units
-enum EnergyUnit { EU_J, EU_KJ, EU_CAL, EU_KCAL, EU_EV, EU_HARTREE, EU_NITEMS };
-const char *text_from_EU(EnergyUnit);
-EnergyUnit EU_from_text(const char*);
-
-// Name->Z mapping methods
-enum ZmapType { ZM_ALPHA, ZM_FIRSTALPHA, ZM_NAME, ZM_NUMERIC, ZM_FORCEFIELD, ZM_AUTO, ZM_NITEMS };
-ZmapType ZM_from_text(const char*);
-const char **get_ZM_keywords();
-
-// Charge source
-enum ChargeSource { QS_MODEL, QS_FF, QS_GASTEIGER, QS_QEQ, QS_NITEMS };
-
-// Spotlight Components
-enum SpotlightComponent { SL_AMBIENT, SL_DIFFUSE, SL_SPECULAR, SL_NITEMS };
-
 // Forward declarations
 class Cell;
 
 // Prefs
-class PrefsData
+class Prefs
 {
+	/*
+	// Enumerations
+	*/
+	public:
+	// Mouse buttons
+	enum MouseButton { LeftButton, MiddleButton, RightButton, WheelButton, nMouseButtons };
+	static MouseButton mouseButton(const char*);
+	static const char *mouseButtonKeyword(MouseButton);
+	// Mouse Actions
+	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZrotateAction, nMouseActions };
+	static MouseAction mouseAction(const char*);
+	static const char *mouseActionKeyword(MouseAction);
+	// Modifier keys
+	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
+	static ModifierKey modifierKey(const char*);
+	// Modifier actions
+	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
+	static KeyAction keyAction(const char*);
+	// Colours
+	enum Colour { PenColour, BackgroundColour, SchemeLoColour, SchemeMidColour, SchemeHiColour, SpecularColour, nColours };
+	static const char *colourKeyword(Colour);
+	static Colour colour(const char*);
+	// Energy Units
+	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree,  nEnergyUnits };
+	static const char *energyUnitKeyword(EnergyUnit);
+	static EnergyUnit energyUnit(const char*);
+	// Density calculation units
+	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
+	static const char *densityUnitKeyword(DensityUnit);
+	static DensityUnit densityUnit(const char*);
+	// View Objects
+	enum ViewObject { ViewAtoms, ViewCell, ViewCellAXES, ViewCellREPEAT, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
+	static ViewObject viewObject(const char*);
+	// GL Options
+	enum GlOption { FogOption=1, LineAliasOption=2, PolyAliasOption=4, BackCullOption=8, DummyOption=16, nGlOptions=5 };
+	static GlOption glOption(const char*);
+	// Atom colouring scheme
+	enum ColourScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColourSchemes };
+	// Preferences switches
+	enum PrefSwitch { SwitchAsFilter=-1, SwitchOff, SwitchOn };
+	// Drawing guide geometry
+	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
+	// Name->Z mapping methods
+	enum ZmapType { AlphaZmap, FirstAlphaZmap, NameZmap, NumericZmap, ForcefieldZmap, AutoZmap, nZmapTypes };
+	static ZmapType zmapType(const char*);
+	// Spotlight Components
+	enum ColourComponent { AmbientComponent, DiffuseComponent, SpecularComponent, nColourComponents };
+
 	public:
 	// Constructor / Destructor
-	PrefsData();
-	~PrefsData();
+	Prefs();
+	~Prefs();
 	// Load prefs from file
 	void load(const char*);
 	// Set GUI controls to reflect prefs choices
@@ -112,7 +95,7 @@ class PrefsData
 	*/
 	private:
 	// List of visibilities of renderable objects
-	bool renderObjects_[VO_NITEMS];
+	bool renderObjects_[Prefs::nViewObjects];
 	// Repeat units in positive xyz directions
 	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
@@ -171,11 +154,11 @@ class PrefsData
 	// Whether the spotlight is on
 	bool spotlightActive_;
 	// Spotlight components
-	GLfloat spotlightColour_[SL_NITEMS][4];
+	GLfloat spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
 	GLfloat spotlightPosition_[3];
 	// Atom colouring style
-	AtomColours colourScheme_;
+	Prefs::ColourScheme colourScheme_;
 	// Number of segments between lo/hi and mid colours in colour scale
 	int nScaleSegments_;
 	// Graduated colour scale colours
@@ -215,19 +198,19 @@ class PrefsData
 	// Return status of spotlight
 	bool spotlightActive();
 	// Set spotlight colour component
-	void setSpotlightColour(SpotlightComponent sc, int i, GLfloat value);
-	void setSpotlightColour(SpotlightComponent sc, GLfloat r, GLfloat g, GLfloat b);
+	void setSpotlightColour(ColourComponent sc, int i, GLfloat value);
+	void setSpotlightColour(ColourComponent sc, GLfloat r, GLfloat g, GLfloat b);
 	// Return spotlight colour component
-	GLfloat *spotlightColour(SpotlightComponent sc);
+	GLfloat *spotlightColour(ColourComponent sc);
 	// Set spotlight position
 	void setSpotlightPosition(GLfloat r, GLfloat g, GLfloat b);
 	void setSpotlightPosition(int component, GLfloat f);
 	// Return spotlight position
 	GLfloat *spotlightPosition();
 	// Set atom colour scheme
-	void setColourScheme(AtomColours ac);
+	void setColourScheme(Prefs::ColourScheme ac);
 	// Return atom colour scheme
-	AtomColours colourScheme();
+	Prefs::ColourScheme colourScheme();
 	// Set number of segments in colour scale
 	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale
@@ -279,11 +262,11 @@ class PrefsData
 	*/
 	private:
 	// RGB colour values
-	GLfloat colours_[COL_NITEMS][4];
+	GLfloat colours_[Prefs::nColours][4];
 	// Numerical low limit corresponding to COL_ACSCHEMELO
-	double colourSchemeLo_[AC_NITEMS];
+	double colourSchemeLo_[Prefs::nColourSchemes];
 	// Numerical high limit corresponding to COL_ACSCHEMELO
-	double colourSchemeHi_[AC_NITEMS];
+	double colourSchemeHi_[Prefs::nColourSchemes];
 
 	public:
 	// Set the specified colour to the integer RGB values supplied
@@ -318,7 +301,7 @@ class PrefsData
 	// Size limit (kbytes) for caching trajectory frames
 	int cacheLimit_;
 	// Type of name->Z mapping to use
-	ZmapType zmapType_;
+	Prefs::ZmapType zmapType_;
 
 	public:
 	// Sets whether to calculate bonding on model load
@@ -346,9 +329,9 @@ class PrefsData
 	// Return the cache limit for trajectory files
 	int cacheLimit();
 	// Sets the style of element conversion to use
-	void setZmapType(ZmapType i);
+	void setZmapType(Prefs::ZmapType i);
 	// Return the style of element conversion in use
-	ZmapType zmapType();
+	Prefs::ZmapType zmapType();
 	// Sets whether to convert coords from Bohr to Angstrom on load
 	void setCoordsInBohr(bool b);
 	// Whether coordinates should be converted from Bohr to Angstrom
@@ -371,11 +354,11 @@ class PrefsData
 	// Whether to show the drawing guide
 	bool showGuide_;
 	// Geometry of the grid in the drawing guide
-	GuideGeometry guideShape_;
+	Prefs::GuideGeometry guideShape_;
 	// User-definable mouse button actions
-	MouseAction mouseAction_[MB_NITEMS];
+	MouseAction mouseAction_[Prefs::nMouseButtons];
 	// User-definable key modifier actions
-	KeyAction keyAction_[MK_NITEMS];
+	KeyAction keyAction_[Prefs::nModifierKeys];
 
 	public:
 	// Sets the bonding tolerance
@@ -403,9 +386,9 @@ class PrefsData
 	// Return whether the draw guide is visible
 	bool isGuideVisible();
 	// Sets the shape of the drawing guide
-	void setGuideShape(GuideGeometry g);
+	void setGuideShape(Prefs::GuideGeometry g);
 	// Return guide shape
-	GuideGeometry guideShape();
+	Prefs::GuideGeometry guideShape();
 	// Sets the action for the specified mouse button
 	void setMouseAction(MouseButton mb, MouseAction ma);
 	// Return the action associated with the specified mouse button
@@ -446,7 +429,7 @@ class PrefsData
 	// Internal energy units to use for forcefield storage, energy calculation etc.
 	EnergyUnit energyUnit_;
 	// Conversion factors for energy units
-	double energyConversions_[EU_NITEMS];
+	double energyConversions_[Prefs::nEnergyUnits];
 	// Factor to convert from atomic units to internal units
 	double elecConvert_;
 
@@ -486,8 +469,6 @@ class PrefsData
 	double vdwCutoff_, elecCutoff_;
 	// Scale factor for VDW radii (used in disorder build)
 	double vdwScale_;
-	// Where to get charges from for the model
-	ChargeSource chargeSource_;
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
 
@@ -541,10 +522,6 @@ class PrefsData
 	void setVdwScale(double d);
 	// Return the VDW radius scaling factor
 	double vdwScale();
-	// Set the charge source for the model
-	void setChargeSource(ChargeSource cs);
-	// Get the charge source for the model
-	ChargeSource chargeSource();
 
 	/*
 	// Undo levels
@@ -560,6 +537,6 @@ class PrefsData
 	int maxUndoLevels();
 };
 
-extern PrefsData prefs;
+extern Prefs prefs;
 
 #endif

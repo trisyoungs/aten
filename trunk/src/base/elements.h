@@ -78,7 +78,7 @@ class ElementMap
 	// Return atomic number of element in string
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm
-	int find(const char*, ZmapType);
+	int find(const char*, Prefs::ZmapType);
 	// Return number of defined elements
 	int nElements();
 

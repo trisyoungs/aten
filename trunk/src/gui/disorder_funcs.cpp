@@ -196,7 +196,7 @@ void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 
 void AtenForm::on_ShowRegionsCheck_clicked(bool checked)
 {
-	prefs.setVisible(VO_REGIONS, checked);
+	prefs.setVisible(Prefs::ViewRegions, checked);
 	gui.mainView.postRedisplay();
 }
 

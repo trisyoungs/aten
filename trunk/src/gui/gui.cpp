@@ -169,8 +169,8 @@ void GuiQt::updateLabels()
 		s += ftoa(m->density());
 		switch (prefs.densityUnit())
 		{
-			case (DU_GPERCM):	s += " g cm<sup>-3</sup>)"; break;
-			case (DU_ATOMSPERANG):	s += " atoms &#8491;<sup>-3</sup>)"; break;
+			case (Prefs::GramsPerCm):	s += " g cm<sup>-3</sup>)"; break;
+			case (Prefs::AtomsPerAngstrom):	s += " atoms &#8491;<sup>-3</sup>)"; break;
 		}
 	}
 	mainWindow->statusLabel->setText(s);

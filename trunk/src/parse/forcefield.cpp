@@ -40,7 +40,7 @@ bool Forcefield::load(const char *filename)
 	dbgBegin(Debug::Calls,"Forcefield::load");
 	bool done, okay;
 	int success, n, m, count;
-	EnergyUnit ffunit = EU_J, newunit;
+	Prefs::EnergyUnit ffunit = Prefs::Joules, newunit;
 	ifstream fffile(filename,ios::in);
 	if (!fffile.good())
 	{
@@ -75,11 +75,11 @@ bool Forcefield::load(const char *filename)
 				okay = TRUE;
 				break;
 			case (FFK_UNITS):
-				newunit = EU_from_text(parser.argc(1));
-				if (newunit != EU_NITEMS)
+				newunit = Prefs::energyUnit(parser.argc(1));
+				if (newunit != Prefs::nEnergyUnits)
 				{
 					ffunit = newunit;
-					msg(Debug::None,"\t: Energy units are %s\n",text_from_EU(ffunit));
+					msg(Debug::None,"\t: Energy units are %s\n", Prefs::energyUnitKeyword(ffunit));
 					okay = TRUE;
 				}
 				break;
@@ -185,7 +185,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 		ffa->setTypeId(newffid);
 		ffa->setName(parser.argc(1));
 		ffa->setEquivalent(parser.argc(1));
-		ffa->atomType()->setCharacterElement(elements.find(parser.argc(2),ZM_ALPHA));
+		ffa->atomType()->setCharacterElement(elements.find(parser.argc(2),Prefs::AlphaZmap));
 		ffa->setDescription(parser.argc(4));
 		ffa->atomType()->expand(parser.argc(3),this,ffa);
 	} while (!done);

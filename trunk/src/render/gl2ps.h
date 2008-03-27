@@ -100,7 +100,7 @@
 
 /* Sorting algorithms */
 
-#define GL2PS_NO_SORT     1
+#define GL2PS_OFF_SORT     1
 #define GL2PS_SIMPLE_SORT 2
 #define GL2PS_BSP_SORT    3
 
@@ -110,7 +110,7 @@
 #define GL2PS_INFO          1
 #define GL2PS_WARNING       2
 #define GL2PS_ERROR         3
-#define GL2PS_NO_FEEDBACK   4
+#define GL2PS_OFF_FEEDBACK   4
 #define GL2PS_OVERFLOW      5
 #define GL2PS_UNINITIALIZED 6
 
@@ -122,13 +122,13 @@
 #define GL2PS_SILENT               (1<<2)
 #define GL2PS_BEST_ROOT            (1<<3)
 #define GL2PS_OCCLUSION_CULL       (1<<4)
-#define GL2PS_NO_TEXT              (1<<5)
+#define GL2PS_OFF_TEXT              (1<<5)
 #define GL2PS_LANDSCAPE            (1<<6)
-#define GL2PS_NO_PS3_SHADING       (1<<7)
-#define GL2PS_NO_PIXMAP            (1<<8)
+#define GL2PS_OFF_PS3_SHADING       (1<<7)
+#define GL2PS_OFF_PIXMAP            (1<<8)
 #define GL2PS_USE_CURRENT_VIEWPORT (1<<9)
 #define GL2PS_COMPRESS             (1<<10)
-#define GL2PS_NO_BLENDING          (1<<11)
+#define GL2PS_OFF_BLENDING          (1<<11)
 #define GL2PS_TIGHT_BOUNDING_BOX   (1<<12)
 
 /* Arguments for gl2psEnable/gl2psDisable */

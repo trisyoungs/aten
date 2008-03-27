@@ -68,29 +68,29 @@ void AtenPrefs::setControls()
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
 	ui.AtomQualitySpin->setValue(prefs.atomDetail());
 	ui.BondQualitySpin->setValue(prefs.bondDetail());
-	ui.GlobeVisibleCheck->setChecked(prefs.shouldRender(VO_GLOBE));
-	ui.CellVisibleCheck->setChecked(prefs.shouldRender(VO_CELL));
-	ui.AxesVisibleCheck->setChecked(prefs.shouldRender(VO_CELLAXES));
-	ui.AtomsVisibleCheck->setChecked(prefs.shouldRender(VO_ATOMS));
+	ui.GlobeVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewGlobe));
+	ui.CellVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewCell));
+	ui.AxesVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewCellAXES));
+	ui.AtomsVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewAtoms));
 	ui.ShininessSpin->setValue(prefs.shininess());
 
 	// Set controls in Lighting page
-	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(SL_AMBIENT));
-	ui.SpotlightDiffuseColourFrame->setColour(prefs.spotlightColour(SL_DIFFUSE));
-	ui.SpotlightSpecularColourFrame->setColour(prefs.spotlightColour(SL_SPECULAR));
+	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(Prefs::AmbientComponent));
+	ui.SpotlightDiffuseColourFrame->setColour(prefs.spotlightColour(Prefs::DiffuseComponent));
+	ui.SpotlightSpecularColourFrame->setColour(prefs.spotlightColour(Prefs::SpecularComponent));
 	GLfloat *pos = prefs.spotlightPosition();
 	ui.SpotlightPositionXSpin->setValue(pos[0]);
 	ui.SpotlightPositionYSpin->setValue(pos[1]);
 	ui.SpotlightPositionZSpin->setValue(pos[2]);
 
 	// Set controls in interaction page
-	ui.LeftMouseCombo->setCurrentIndex(prefs.mouseAction(MB_LEFT));
-	ui.MiddleMouseCombo->setCurrentIndex(prefs.mouseAction(MB_MIDDLE));
-	ui.RightMouseCombo->setCurrentIndex(prefs.mouseAction(MB_RIGHT));
-	ui.WheelMouseCombo->setCurrentIndex(prefs.mouseAction(MB_WHEEL));
-	ui.ShiftButtonCombo->setCurrentIndex(prefs.keyAction(MK_SHIFT));
-	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(MK_CTRL));
-	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(MK_ALT));
+	ui.LeftMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::LeftButton));
+	ui.MiddleMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::MiddleButton));
+	ui.RightMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::RightButton));
+	ui.WheelMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::WheelButton));
+	ui.ShiftButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::ShiftKey));
+	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::CtrlKey));
+	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
 	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
 }
 
@@ -211,7 +211,7 @@ void AtenPrefs::on_BondQualitySpin_valueChanged(int value)
 	updateAfterViewPrefs();
 }
 
-void AtenPrefs::setVisibleObject(ViewObject vo, int state)
+void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state)
 {
 	prefs.setVisible(vo, (state == Qt::Checked ? TRUE : FALSE));
 	master.currentModel()->logChange(LOG_VISUAL);
@@ -220,22 +220,22 @@ void AtenPrefs::setVisibleObject(ViewObject vo, int state)
 
 void AtenPrefs::on_AtomsVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(VO_ATOMS, state);
+	setVisibleObject(Prefs::ViewAtoms, state);
 }
 
 void AtenPrefs::on_CellVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(VO_CELL, state);
+	setVisibleObject(Prefs::ViewCell, state);
 }
 
 void AtenPrefs::on_AxesVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(VO_CELLAXES, state);
+	setVisibleObject(Prefs::ViewCellAXES, state);
 }
 
 void AtenPrefs::on_GlobeVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(VO_GLOBE, state);
+	setVisibleObject(Prefs::ViewGlobe, state);
 }
 
 /*
@@ -271,7 +271,7 @@ void AtenPrefs::on_SpotlightPositionZSpin_valueChanged(double value)
 	spotlightPosChanged(2, value);
 }
 
-void AtenPrefs::spotlightColourChanged(SpotlightComponent sc)
+void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 {
 	// Get current component colour and convert it to a QColor
 	GLfloat *col = prefs.spotlightColour(sc);
@@ -282,9 +282,9 @@ void AtenPrefs::spotlightColourChanged(SpotlightComponent sc)
 	// Store new colour
 	prefs.setSpotlightColour(sc, newcol.redF(), newcol.greenF(), newcol.blueF());
 	TColourFrame *colframe;
-	if (sc == SL_AMBIENT) colframe = ui.SpotlightAmbientColourFrame;
-	else if (sc == SL_DIFFUSE) colframe = ui.SpotlightDiffuseColourFrame;
-	else if (sc == SL_SPECULAR) colframe = ui.SpotlightSpecularColourFrame;	
+	if (sc == Prefs::AmbientComponent) colframe = ui.SpotlightAmbientColourFrame;
+	else if (sc == Prefs::DiffuseComponent) colframe = ui.SpotlightDiffuseColourFrame;
+	else if (sc == Prefs::SpecularComponent) colframe = ui.SpotlightSpecularColourFrame;	
 	colframe->setColour(newcol);
 	colframe->update();
 	// Update display
@@ -294,17 +294,17 @@ void AtenPrefs::spotlightColourChanged(SpotlightComponent sc)
 
 void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)
 {
-	spotlightColourChanged(SL_AMBIENT);
+	spotlightColourChanged(Prefs::AmbientComponent);
 }
 
 void AtenPrefs::on_SpotlightDiffuseColourButton_clicked(bool checked)
 {
-	spotlightColourChanged(SL_DIFFUSE);
+	spotlightColourChanged(Prefs::DiffuseComponent);
 }
 
 void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 {
-	spotlightColourChanged(SL_SPECULAR);
+	spotlightColourChanged(Prefs::SpecularComponent);
 }
 
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
@@ -320,35 +320,35 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 
 void AtenPrefs::on_LeftMouseCombo_currentIndexChanged(int ma)
 {
-	prefs.setMouseAction(MB_LEFT, (MouseAction) ma);
+	prefs.setMouseAction(Prefs::LeftButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_MiddleMouseCombo_currentIndexChanged(int ma)
 {
-	prefs.setMouseAction(MB_MIDDLE, (MouseAction) ma);
+	prefs.setMouseAction(Prefs::MiddleButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_RightMouseCombo_currentIndexChanged(int ma)
 {
-	prefs.setMouseAction(MB_RIGHT, (MouseAction) ma);
+	prefs.setMouseAction(Prefs::RightButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_WheelMouseCombo_currentIndexChanged(int ma)
 {
-	prefs.setMouseAction(MB_WHEEL, (MouseAction) ma);
+	prefs.setMouseAction(Prefs::WheelButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_ShiftButtonCombo_currentIndexChanged(int ka)
 {
-	prefs.setKeyAction(MK_SHIFT, (KeyAction) ka);
+	prefs.setKeyAction(Prefs::ShiftKey, (Prefs::KeyAction) ka);
 }
 
 void AtenPrefs::on_CtrlButtonCombo_currentIndexChanged(int ka)
 {
-	prefs.setKeyAction(MK_CTRL, (KeyAction) ka);
+	prefs.setKeyAction(Prefs::CtrlKey, (Prefs::KeyAction) ka);
 }
 
 void AtenPrefs::on_AltButtonCombo_currentIndexChanged(int ka)
 {
-	prefs.setKeyAction(MK_ALT, (KeyAction) ka);
+	prefs.setKeyAction(Prefs::AltKey, (Prefs::KeyAction) ka);
 }
