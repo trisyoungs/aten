@@ -5,7 +5,7 @@
 Summary: Aten - Atomic configuration builder and editor
 Name: %{shortname}
 Version: 0.95
-Release: 2
+Release: 3
 License: GPL
 %define fullname %{name}-%{version}
 
