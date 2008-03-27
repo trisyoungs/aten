@@ -31,25 +31,25 @@
 void AtenForm::on_actionFrameNext_triggered(bool checked)
 {
 	master.currentModel()->seekNextFrame();
-	gui.refresh();
+	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFramePrevious_triggered(bool checked)
 {
 	master.currentModel()->seekPreviousFrame();
-	gui.refresh();
+	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameFirst_triggered(bool checked)
 {
 	master.currentModel()->seekFirstFrame();
-	gui.refresh();
+	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameLast_triggered(bool checked)
 {
 	master.currentModel()->seekLastFrame();
-	gui.refresh();
+	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionPlayPause_triggered(bool checked)

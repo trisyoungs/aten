@@ -158,7 +158,7 @@ void AtenPrefs::updateAfterViewPrefs()
 	gui.mainView.createLists();
 	master.currentModel()->projectAll();
 	master.currentModel()->logChange(LOG_VISUAL);
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value)
@@ -215,7 +215,7 @@ void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state)
 {
 	prefs.setVisible(vo, (state == Qt::Checked ? TRUE : FALSE));
 	master.currentModel()->logChange(LOG_VISUAL);
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenPrefs::on_AtomsVisibleCheck_stateChanged(int state)
@@ -246,7 +246,7 @@ void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
 {
 	prefs.setSpotlightActive(checked);
 	gui.mainView.initGl();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenPrefs::spotlightPosChanged(int i, double value)
@@ -311,7 +311,7 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
 	master.currentModel()->logChange(LOG_VISUAL);
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 /*

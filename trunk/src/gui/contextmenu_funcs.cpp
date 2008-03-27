@@ -94,7 +94,7 @@ void AtenForm::removeAtomLabels(bool all)
 		master.currentModel()->selectionClearLabels();
 	}
 	m->endUndostate();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionAtomLabelID_triggered(bool checked)

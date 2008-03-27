@@ -750,14 +750,11 @@ bool MethodMc::disorder(Model *destmodel)
 		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
 		//printf("PATTERN %li NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
 	}
-	//bakmodel.copy(destmodel);
-	//destmodel->recreate_from_patterns(&bakmodel);
-	//destmodel->renderFromSelf();
 	destmodel->foldAllAtoms();
 	destmodel->calculateMass();
 	destmodel->calculateDensity();
 	destmodel->logChange(LOG_COORDS);
-	gui.refresh();
+	gui.modelChanged();
 	dbgEnd(Debug::Calls,"MethodMc::insert");
 	return TRUE;
 }

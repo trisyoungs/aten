@@ -66,7 +66,7 @@ int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
 	{
-		msg(Debug::None,"Pattern ID %i is out of range for model (which has %i atterns).\n", nodeid, obj.m->nPatterns());
+		msg(Debug::None,"Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, obj.m->nPatterns());
 		return CR_FAIL;
 	}
 	else obj.m->pattern(nodeid)->setForcefield(obj.ff);

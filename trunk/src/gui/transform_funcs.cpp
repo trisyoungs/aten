@@ -109,7 +109,7 @@ void AtenForm::rotateSelection(double direction)
 	m->rotateSelectionVector(o, v, direction * ui.RotateAngleSpin->value());
 	m->endUndostate();
 	m->updateMeasurements();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 /*
@@ -156,5 +156,5 @@ void AtenForm::translateSelection(int axis, int dir)
 	}
 	m->endUndostate();
 	m->updateMeasurements();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }

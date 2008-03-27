@@ -317,6 +317,9 @@ void Canvas::endMode(Prefs::MouseButton button)
 			}
 			else displayModel_->selectBox(rMouseDown_.x, rMouseDown_.y, rMouseUp_.x, rMouseUp_.y);
 			displayModel_->endUndostate();
+			// Set activeMode_ early to prevent presistence of selection box
+			activeMode_ = UA_NONE;
+			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// Now do the rest
 		case (UA_PICKFRAG):
@@ -324,12 +327,14 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL) displayModel_->selectTree(atomHover_);
 			displayModel_->endUndostate();
+			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		case (UA_PICKELEMENT):
 			displayModel_->beginUndostate("Select Element");
 			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_);
 			displayModel_->endUndostate();
+			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		case (UA_PICKRADIAL):
 			displayModel_->beginUndostate("Select Radial");
@@ -341,6 +346,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->selectRadial(atomHover_,radius);
 			}
 			displayModel_->endUndostate();
+			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// Measurements
 		case (UA_GEOMDIST):
@@ -351,6 +357,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->measureDistance(atoms[0],atoms[1]);
 			displayModel_->endUndostate();
 			subselection_.clear();
+			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		case (UA_GEOMANGLE):
 			// Must be two atoms in subselection to continue
@@ -360,6 +367,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->measureAngle(atoms[0],atoms[1],atoms[2]);
 			displayModel_->endUndostate();
 			subselection_.clear();
+			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		case (UA_GEOMTORSION):
 			// Must be two atoms in subselection to continue
@@ -369,6 +377,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			displayModel_->measureTorsion(atoms[0],atoms[1],atoms[2],atoms[3]);
 			displayModel_->endUndostate();
 			subselection_.clear();
+			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		// Draw single atom
 		case (UA_DRAWATOM):
@@ -380,6 +389,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndostate();
 				displayModel_->projectAtom(i);
 			}
+			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
 		// Draw chains of atoms
 		case (UA_DRAWCHAIN):
@@ -403,16 +413,19 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->bondAtoms(i,atomHover_,bt);
 			}
 			displayModel_->endUndostate();
+			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
 		case (UA_TRANSATOM):
 			displayModel_->beginUndostate("Transmute");
 			displayModel_->transmuteAtom(atomHover_, master.sketchElement());
 			displayModel_->endUndostate();
+			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
 		case (UA_DELATOM):
 			displayModel_->beginUndostate("Delete Atom");
 			displayModel_->deleteAtom(atomHover_);
 			displayModel_->endUndostate();
+			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
 		case (UA_PROBEATOM):
 			if (atomHover_ != NULL) atomHover_->print();
@@ -438,6 +451,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndostate();
 			}
 			subselection_.clear();
+			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		case (UA_DELBOND):
 			// Must be two atoms in subselection to continue
@@ -450,13 +464,16 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->endUndostate();
 			}
 			subselection_.clear();
+			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		// Misc
 		case (UA_ATOMADDHYDROGEN):
 			if (atomHover_ != NULL)
 			{
-				displayModel_->beginUndostate("Delete Bond"); displayModel_->hydrogenSatisfy(atomHover_);
+				displayModel_->beginUndostate("Add Hydrogen to Atom");
+				displayModel_->hydrogenSatisfy(atomHover_);
 				displayModel_->endUndostate();
+				gui.modelChanged(TRUE,FALSE,TRUE);
 			}
 			break;
 		// Model transformations
@@ -466,6 +483,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			// Clear list of rSelection_ if nothing was moved
 			if (!hasMoved_) rSelection_.clear();
 			displayModel_->finalizeTransform(rSelection_);
+			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// View changes (no action)
 		case (UA_ROTATEXY):
@@ -478,7 +496,6 @@ void Canvas::endMode(Prefs::MouseButton button)
 			break;
 	}
 	activeMode_ = UA_NONE;
-	postRedisplay();
 	dbgEnd(Debug::Calls,"Canvas::endMode");
 }
 

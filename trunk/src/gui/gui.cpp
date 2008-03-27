@@ -132,51 +132,6 @@ void GuiQt::updateTrajControls()
 	}
 }
 
-// Update labels
-void GuiQt::updateLabels()
-{
-	// Update the information labels in the button bar
-	if (!doesExist_) return;
-	dbgBegin(Debug::Calls,"GuiQt::update_labels");
-	QString s;
-	 Model *m = master.currentModel();
-	// Trajectory information label
-	if (m->totalFrames() != 0)
-	{
-		s = "(Frame ";
-		s += itoa(m->framePosition());
-		s += " of ";
-		s += itoa(m->totalFrames());
-		s += ") ";
-	}
-	// Model information
-	s += itoa(m->nAtoms());
-	s += " Atoms ";
-	if (m->nSelected() != 0)
-	{
-		s += "(<b>";
-		s += itoa(m->nSelected());
-		s += " selected</b>) ";
-	}
-	s += ftoa(m->mass());
-	s += " g mol<sup>-1</sup> ";
-	CellType ct = m->cell()->type();
-	if (ct != CT_NONE)
-	{
-		s += "(";
-		s += text_from_CT(ct);
-		s += ", ";
-		s += ftoa(m->density());
-		switch (prefs.densityUnit())
-		{
-			case (Prefs::GramsPerCm):	s += " g cm<sup>-3</sup>)"; break;
-			case (Prefs::AtomsPerAngstrom):	s += " atoms &#8491;<sup>-3</sup>)"; break;
-		}
-	}
-	mainWindow->statusLabel->setText(s);
-	dbgEnd(Debug::Calls,"GuiQt::update_labels");
-}
-
 /*
 // General GUI Routines
 */
@@ -227,7 +182,7 @@ void GuiQt::addModel(Model *m)
 	// Create new tab in ModelTabs QTabBar
 	int tabid = mainWindow->ui.ModelTabs->addTab(m->name());
 	m->resetView();
-	gui.refresh();
+	gui.modelChanged();
 }
 
 // Remove model from list
@@ -235,55 +190,10 @@ void GuiQt::removeModel(int id)
 {
 	if (!doesExist_) return;
 	mainWindow->ui.ModelTabs->removeTab(id);
-	gui.refresh();
+	gui.modelChanged();
 }
 
-/*
-// Forcefields
-*/
-
-// Add ff to list
-void GuiQt::addForcefield(Forcefield *ff)
-{
-	if (!doesExist_) return;
-}
-
-// Remove ff from list
-void GuiQt::removeForcefield(Forcefield *ff)
-{
-	// Find iter that matches the old model in the model master
-	if (!doesExist_) return;
-}
-
-// Select ff in list
-void GuiQt::selectForcefield(Forcefield *ff)
-{
-	if (!doesExist_) return;
-}
-
-/*
-// Grids
-*/
-
-// Add grid to list
-void GuiQt::addGrid(Grid *g)
-{
-	if (isAvailable_) printf("GuiQt::addGrid - Not defined.\n");
-}
-
-// Remove grid from list
-void GuiQt::removeGrid(Grid *g)
-{
-	if (isAvailable_) printf("GuiQt::removeGrid - Not defined.\n");
-}
-
-// Select grid in list and show in main/sub windows
-void GuiQt::selectGrid(Grid *g)
-{
-	if (isAvailable_) printf("GuiQt::select_grid - Not defined.\n");
-}
-
-// Redraw main window canvas
+/* Redraw main window canvas
 void GuiQt::refresh()
 {
 	if (!doesExist_) return;
@@ -291,30 +201,74 @@ void GuiQt::refresh()
 	int id = master.currentModelIndex();
 	if (id <= mainWindow->ui.ModelTabs->count()) mainWindow->ui.ModelTabs->setCurrentIndex(id);
 	else printf("GUI_ERROR: Current model index (%i) is out of bounds of tab list.\n",id);
-	// Update labels on status bar
-	updateLabels();
-	// Update contents of the atom list
-	mainWindow->refreshAtomPage();
-	// Update the contents of the cell page
-	mainWindow->refreshCellPage();
 	// Update the disorder page
 	mainWindow->refreshDisorderPage();
-	// Update forcefields in the forcefield window
-	mainWindow->refreshForcefieldPage();
 	// Update pattern list in forcefield window
 	mainWindow->refreshForcefieldPatterns();
-	// Update trajectory playback controls
-	updateTrajControls();
-	// Update Undo/Redo menuitems
+	// Enable View->Trajectory menu item if a trajectory is associated
+	mainWindow->ui.actionViewTrajectory->setEnabled( master.currentModel()->currentFrame() == NULL ? FALSE : TRUE);
+} */
+
+// Update GUI after model change (or different model selected)
+void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefield)
+{
+	if (!doesExist_) return;
+	// Update status bar
+	QString s;
+	Model *m = master.currentModel();
+	// Trajectory information label
+	if (m->totalFrames() != 0)
+	{
+		s = "(Frame ";
+		s += itoa(m->framePosition());
+		s += " of ";
+		s += itoa(m->totalFrames());
+		s += ") ";
+	}
+	// Model information
+	s += itoa(m->nAtoms());
+	s += " Atoms ";
+	if (m->nSelected() != 0)
+	{
+		s += "(<b>";
+		s += itoa(m->nSelected());
+		s += " selected</b>) ";
+	}
+	s += ftoa(m->mass());
+	s += " g mol<sup>-1</sup> ";
+	CellType ct = m->cell()->type();
+	if (ct != CT_NONE)
+	{
+		s += "(";
+		s += text_from_CT(ct);
+		s += ", ";
+		s += ftoa(m->density());
+		switch (prefs.densityUnit())
+		{
+			case (Prefs::GramsPerCm):	s += " g cm<sup>-3</sup>)"; break;
+			case (Prefs::AtomsPerAngstrom):	s += " atoms &#8491;<sup>-3</sup>)"; break;
+		}
+	}
+	mainWindow->statusLabel->setText(s);
+	// Update save button status
+	mainWindow->ui.actionFileSave->setEnabled( m->isModified() );
+	// Update contents of the atom list
+	if (updateAtoms) mainWindow->refreshAtomPage();
+	// Update the contents of the cell page
+	if (updateCell) mainWindow->refreshCellPage();
+	// Update forcefields in the forcefield window
+	if (updateForcefield) mainWindow->refreshForcefieldPage();
+	// Enable the Atom menu if one or more atoms are selected
+	mainWindow->ui.AtomMenu->setEnabled( master.currentModel()->nSelected() == 0 ? FALSE : TRUE);
+	// Update Undo Redo lists
 	mainWindow->updateUndoRedo();
 	// Request redraw of the main canvas
 	mainView.postRedisplay();
-	// If the model save_point is recent, disable save button
-	mainWindow->ui.actionFileSave->setEnabled(master.currentModel()->isModified());
-	// Enable the Atom menu if one or more atoms are selected
-	mainWindow->ui.AtomMenu->setEnabled( master.currentModel()->nSelected() == 0 ? FALSE : TRUE);
-	// Enable View->Trajectory menu item if a trajectory is associated
-	mainWindow->ui.actionViewTrajectory->setEnabled( master.currentModel()->currentFrame() == NULL ? FALSE : TRUE);
+}
+
+// Update model lists
+void GuiQt::updateModelLists()
+{
 }
 
 int GuiQt::userQuestion(const char *s, const char *t)
@@ -564,5 +518,5 @@ void GuiQt::stopTrajectoryPlayback()
 	mainWindow->ui.ModelView->killTimer(trajectoryTimerId_);
 	mainWindow->ui.actionPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
-	refresh();
+	modelChanged();
 }

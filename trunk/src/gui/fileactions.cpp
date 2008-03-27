@@ -64,7 +64,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		}
 		refreshModelTabs();
 		master.currentModel()->logChange(LOG_VISUAL);
-		gui.refresh();
+		gui.modelChanged();
 	}
 }
 
@@ -101,8 +101,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
 		saveModelFilter->execute(saveModelFilename.get());
-		refreshModelTabs();
-		gui.refresh();
+		//refreshModelTabs();
 	}
 }
 
@@ -124,11 +123,11 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
 			saveModelFilter->execute(saveModelFilename.get());
-			refreshModelTabs();
+			//refreshModelTabs();
 		}
 	}
 	else f->execute(saveModelFilename.get());
-	gui.refresh();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionFileClose_triggered(bool checked)
@@ -220,7 +219,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 			ui.actionViewTrajectory->setChecked(TRUE);
 		}
 		else msg(Debug::None, "Couldn't determine trajectory file format.\n");
-		gui.refresh();
+		gui.modelChanged();
 	}
 }
 
@@ -270,7 +269,7 @@ void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 			}
 		}
 		refreshGridsPage();
-		gui.refresh();
+		gui.mainView.postRedisplay();
 	}
 }
 

@@ -108,7 +108,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
 	master.setCurrentModel(master.model(n));
-	gui.refresh();
+	gui.modelChanged();
 	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 }
 
@@ -134,7 +134,6 @@ void AtenForm::executeCommand()
 	// Check for no commands given
 	if (parser.nArgs() == 0) return;
 	if (master.tempScript.cacheCommand()) master.tempScript.execute(NULL);
-	gui.refresh();
 	commandEdit_->setText("");
 }
 
@@ -192,7 +191,7 @@ void AtenForm::loadRecent()
 	{
 		f->execute(filename.get());
 		master.currentModel()->logChange(LOG_VISUAL);
-		gui.refresh();
+		gui.mainView.postRedisplay();
 	}
 	else
 	{
@@ -421,9 +420,6 @@ void AtenForm::switchStack(int buttonid, bool checked)
 		for (n=0; n<SP_NITEMS; n++) if (n != buttonid) stackButtons_[n]->setChecked(FALSE);
 		ui.MainWindowStack->setCurrentIndex(buttonid);
 		ui.MainWindowStack->show();
-		// If the new visible page is the atom list, do a quick refresh of it
-		if (buttonid == SP_ATOMS) refreshAtomPage();
-		// Change to plain selection mode 
 	}
 	else ui.MainWindowStack->hide();
 	// Choose a plain selection mode again...
@@ -440,6 +436,7 @@ void AtenForm::switchStack(int buttonid, bool checked)
 void AtenForm::on_ShowAtomPageButton_clicked(bool checked)
 {
 	switchStack(SP_ATOMS, checked);
+	if (checked) refreshAtomPage();
 }
 
 void AtenForm::on_ShowEditPageButton_clicked(bool checked)
@@ -460,6 +457,7 @@ void AtenForm::on_ShowPositionPageButton_clicked(bool checked)
 void AtenForm::on_ShowCellPageButton_clicked(bool checked)
 {
 	switchStack(SP_CELL, checked);
+	if (checked) refreshCellPage();
 }
 
 void AtenForm::on_ShowMinimiserPageButton_clicked(bool checked)
@@ -475,6 +473,7 @@ void AtenForm::on_ShowDisorderPageButton_clicked(bool checked)
 void AtenForm::on_ShowForcefieldsPageButton_clicked(bool checked)
 {
 	switchStack(SP_FORCEFIELD, checked);
+	if (checked) refreshForcefieldPage();
 }
 
 void AtenForm::on_ShowGridsPageButton_clicked(bool checked)

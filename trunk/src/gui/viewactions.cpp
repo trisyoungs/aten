@@ -31,19 +31,19 @@
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
 	master.currentModel()->adjustCamera(0.0,0.0,5.0,0.0);
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
 	master.currentModel()->adjustCamera(0.0,0.0,-5.0,0.0);
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewReset_triggered(bool checked)
 {
 	master.currentModel()->resetView();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewPerspective_triggered(bool checked)
@@ -52,7 +52,7 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 	prefs.setPerspective(TRUE);
 	gui.mainView.doProjection();
 	master.currentModel()->resetView();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewOrthographic_triggered(bool checked)
@@ -60,21 +60,21 @@ void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 	prefs.setPerspective(FALSE);
 	gui.mainView.doProjection();
 	master.currentModel()->resetView();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	// Switch render focus from the model's trajectory to the model.
 	master.currentModel()->setRenderFromSelf();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory.
 	master.currentModel()->setRenderFromFrames();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::setCartesianView(double x, double y, double z)
@@ -86,7 +86,7 @@ void AtenForm::setCartesianView(double x, double y, double z)
 	// set_rotation() expects the degrees of rotation about the x and y axes respectively,
 	// so give it phi and theta in the reverse order. 
 	master.currentModel()->setRotation(-v.z,v.y);
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::setCellView(double x, double y, double z)
@@ -99,7 +99,7 @@ void AtenForm::setCellView(double x, double y, double z)
 	// set_rotation() expects the degrees of rotation about the x and y axes respectively,
 	// so give it phi and theta in the reverse order. 
 	master.currentModel()->setRotation(-v.z,v.y);
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewSetCartesianPosX_triggered(bool checked)

@@ -35,6 +35,12 @@ int typelist_element = 1;
 // Update the list of loaded forcefields
 void AtenForm::refreshForcefieldPage()
 {
+	// If the cell page is not visible, don't do anything
+	if (!ui.ShowCellPageButton->isChecked())
+	{
+		dbgEnd(Debug::Calls,"AtenForm::refreshCellPage");
+		return;
+	}
 	ui.ForcefieldList->clear();
 	TListWidgetItem *item;
 	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)

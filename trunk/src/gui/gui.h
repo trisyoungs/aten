@@ -84,39 +84,34 @@ class GuiQt
 	public:
 	// Add a message to the main window's message output box
 	void printMessage(const char*);
-	// Refresh main canvas
-	void refresh();
-	// Update trajectory control widgets
-	void updateTrajControls();
-	// Update main window labels
-	void updateLabels();
 	// Process events from GUI
 	void processEvents();
 	// Save before close
 	bool saveBeforeClose();
-	// Update Undo/Redo menu items
-	void updateUndoRedo();
 
 	/*
-	// Object management
+	// Gui Refresh Functions
+	*/
+	public:
+	// Update model tabs and lists
+	void updateModelLists();
+	// Update forcefield list
+	void updateForcefieldList();
+	// Update grid list
+	void updateGridList();
+	// Update trajectory control widgets
+	void updateTrajControls();
+	// Refreshes all widgets to do with the model
+	void modelChanged(bool updateAtoms = TRUE, bool updateCell = TRUE, bool updateForcefield = TRUE);
+
+	/*
+	// Model management
 	*/
 	public:
 	// Add model (adds new model to list)
 	void addModel(Model*);
 	// Remove model from list
 	void removeModel(int id);
-	// Add forcefield (adds ff to list)
-	void addForcefield(Forcefield*);
-	// Remove ff from list
-	void removeForcefield(Forcefield*);
-	// Select forcefield in list
-	void selectForcefield(Forcefield*);
-	// Add surface (adds new surface to list)
-	void addGrid(Grid*);
-	// Remove surface from list
-	void removeGrid(Grid*);
-	// Select surface (show in main/sub windows)
-	void selectGrid(Grid*);
 
 	/*
 	// Files

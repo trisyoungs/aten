@@ -31,25 +31,25 @@
 void AtenForm::on_actionFFType_triggered(bool checked)
 {
 	master.currentModel()->typeAll();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionFFUntype_triggered(bool checked)
 {
 	master.currentModel()->removeTyping();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 {
 	master.currentModel()->foldAllAtoms();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionFoldMolecules_triggered(bool checked)
 {
 	master.currentModel()->foldAllMolecules();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionModelNext_triggered(bool checked)
@@ -76,7 +76,6 @@ void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
 	// Make all atoms in model visible
 	Model *m = master.currentModel();
-	for (Atom *i = m->atoms(); i != NULL; i = i->next)
-		m->setHidden(i, FALSE);
+	for (Atom *i = m->atoms(); i != NULL; i = i->next) m->setHidden(i, FALSE);
 	m->logChange(LOG_VISUAL);
 }
