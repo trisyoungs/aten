@@ -3,13 +3,19 @@
 # Change the version of the source code to the supplied value
 
 # Check that a new version name was supplied
-if [ "$#" -ne "2" ]
+if [ "$#" -eq "1" ]
 then
-  echo "No version number supplied (use 'checkversion VERSION RELEASE')"
+  echo "Improper version number supplied (use 'changeversion VERSION RELEASE', or no args to check existing files)"
+  exit 1
+fi
+
+if [ "$#" -eq "0" ]
+then
   echo "Checking current version numbers only..."
 else
   echo "Changing version numbers in files..."
 fi
+
 
 # src/main.cpp
 echo -n "        main.cpp (Program Version) : "
@@ -19,6 +25,7 @@ then
   sed -e "s/\(.*\)Aten version [0-9\.\-]\+\(.*\)/\1Aten version $1-$2\2/g" src/main.cpp.orig > src/main.cpp
 fi
 grep 'Aten version' src/main.cpp | sed -e 's/.*Aten version \([0-9\.\-]\+\).*/\1/g'
+
 
 # src/gui/mainwindow_init.cpp
 echo -n "mainwindow_init.cpp (Window Title) : "
@@ -30,7 +37,17 @@ fi
 grep 'setWindowTitle("Aten' src/gui/mainwindow_init.cpp | sed -e 's/.*("Aten (\([0-9\.\-]\+\))");/\1/g'
 
 
-# configure.ac
+# ./CMakeLists.txt
+echo -n "./CMakeLists.txt (Package Version) : "
+if [ "$#" -eq "2" ]
+then
+  cp ./CMakeLists.txt CMakeLists.txt.orig
+  sed -e "s/set(VERSION \([0-9\.\-]\+\))/set(VERSION $1-$2)/g" ./CMakeLists.txt.orig > CMakeLists.txt
+fi
+grep 'set(VERSION' ./CMakeLists.txt | sed -e 's/set(VERSION \([0-9\.\-]\+\))/\1/g'
+
+
+# ./configure.ac
 echo -n "  ./configure.ac (Package Version) : "
 if [ "$#" -eq "2" ]
 then
@@ -40,7 +57,7 @@ fi
 grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9\.\-]\+\)\])/\1/g'
 
 
-# Makefile.am
+# ./Makefile.am
 echo -n "    ./Makefile.am (.spec filename) : "
 if [ "$#" -eq "2" ]
 then

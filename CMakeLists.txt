@@ -1,6 +1,6 @@
 project(aten)
 
-set(VERSION 0.95)
+set(VERSION 0.95-3)
 set(PACKAGE_VERSION ${VERSION})
 
 cmake_minimum_required(VERSION 2.4.8)
