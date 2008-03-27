@@ -6,7 +6,7 @@ Summary: Aten - Atomic configuration builder and editor
 Name: %{shortname}
 Version: 0.95
 Release: 1
-Copyright: GPL
+License: GPL
 %define fullname %{name}-%{version}
 
 # Software group
@@ -31,6 +31,8 @@ BuildRoot : %{_tmppath}/%{fullname}
 # Boolean that specifies if you want to automatically determine some
 # dependencies.
 AutoReqProv: yes
+
+BuildRequires: bzip2
 
 # In-depth description.
 %description
