@@ -22,8 +22,6 @@
 #ifndef ATEN_DEBUG_H
 #define ATEN_DEBUG_H
 
-#include "../config.h"
-
 /*
 // Messaging
 */
