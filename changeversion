@@ -1,0 +1,59 @@
+#!/bin/bash
+
+# Change the version of the source code to the supplied value
+
+# Check that a new version name was supplied
+if [ "$#" -ne "2" ]
+then
+  echo "No version number supplied (use 'checkversion VERSION RELEASE')"
+  echo "Checking current version numbers only..."
+else
+  echo "Changing version numbers in files..."
+fi
+
+# src/gui/mainwindow_init.cpp
+echo -n "mainwindow_init.cpp (Window Title) : "
+if [ "$#" -eq "2" ]
+then
+  cp src/gui/mainwindow_init.cpp src/gui/mainwindow_init.cpp.orig
+  sed -e "s/(\"Aten (\([0-9\.\-]\+\))\")/(\"Aten ($1-$2)\")/g" src/gui/mainwindow_init.cpp.orig > src/gui/mainwindow_init.cpp
+fi
+grep 'setWindowTitle("Aten' src/gui/mainwindow_init.cpp | sed -e 's/.*("Aten (\([0-9\.\-]\+\))");/\1/g'
+
+
+# configure.ac
+echo -n "  ./configure.ac (Package Version) : "
+if [ "$#" -eq "2" ]
+then
+  cp ./configure.ac ./configure.ac.orig
+  sed -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9\.\-]\+\)\])/m4_define([ATEN_VERSION],[$1-$2])/g" ./configure.ac.orig > ./configure.ac
+fi
+grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9\.\-]\+\)\])/\1/g'
+
+
+# Makefile.am
+echo -n "    ./Makefile.am (.spec filename) : "
+if [ "$#" -eq "2" ]
+then
+  cp ./Makefile.am ./Makefile.am.orig
+  sed -e "s/\(.*aten-\)\([0-9\.\-]\+\).spec/\1$1-$2.spec/g" ./Makefile.am.orig > ./Makefile.am
+fi
+grep 'EXTRA_DIST' ./Makefile.am | sed -e 's/.*aten-\([0-9\.\-]\+\).spec/\1/g'
+# Change specfile name and contents
+OLDSPEC=`ls -1 aten*spec`
+if [ "$#" -eq "2" ]
+then
+  echo "Writing new specfile..."
+  sed -e "s/Version: [0-9\.\-]\+/Version: $1/g" -e "s/Release: [0-9]\+/Release: $2/g" aten*spec > aten-$1-$2.spec
+  grep "Version:" aten-$1-$2.spec
+  grep "Release:" aten-$1-$2.spec
+  svn rm $OLDSPEC
+  svn add aten-$1-$2.spec
+else
+  echo "Old specfile:"
+  grep "Version:" $OLDSPEC
+  grep "Release:" $OLDSPEC
+fi
+
+exit 0
+
