@@ -216,4 +216,33 @@
       <usermanualurl/>
     </projectdoc>
   </kdevdocumentation>
+  <dist>
+    <custom>false</custom>
+    <bzip>false</bzip>
+    <archname></archname>
+    <appname>%{shortname}</appname>
+    <version>0.95</version>
+    <release></release>
+    <vendor>T. Youngs</vendor>
+    <licence>GPL</licence>
+    <summary>Aten - Atomic configuration builder and editor</summary>
+    <group>Applications/Editors</group>
+    <packager>T. Youngs</packager>
+    <description>Aten does some stuff.
+It really does.
+
+</description>
+    <changelog>* Mon Mar 24 2008 Tristan Youngs &lt;tris@projectaten.com> 
+- initial version.
+</changelog>
+    <devpackage>false</devpackage>
+    <docspackage>false</docspackage>
+    <appicon>false</appicon>
+    <arch>2</arch>
+    <genHTML>false</genHTML>
+    <useRPM>false</useRPM>
+    <ftpkde>false</ftpkde>
+    <appskde>false</appskde>
+    <url></url>
+  </dist>
 </kdevelop>
