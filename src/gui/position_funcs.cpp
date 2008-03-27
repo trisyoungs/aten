@@ -66,5 +66,5 @@ void AtenForm::on_CentreSelectionButton_clicked(bool checked)
 	m->beginUndostate(s);
 	m->centre(centre);
 	m->endUndostate();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }

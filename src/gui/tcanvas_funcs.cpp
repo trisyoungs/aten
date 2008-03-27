@@ -125,7 +125,6 @@ void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 	}
 	// Finalize the requested action
 	gui.mainView.informMouseUp(button,event->x(),event->y());
-	gui.refresh();
 	dbgEnd(Debug::Calls,"TCanvas::mouseReleaseEvent");
 }
 
@@ -154,8 +153,7 @@ void TCanvas::timerEvent(QTimerEvent *event)
 		Model *m = master.currentModel();
 		m->seekNextFrame();
 		if (m->framePosition() == m->totalFrames()) gui.stopTrajectoryPlayback();
-		gui.updateLabels();
-		gui.mainView.postRedisplay();
+		gui.modelChanged(FALSE,FALSE,FALSE);
 		DONTDRAW = FALSE;
 	}
 }

@@ -30,7 +30,7 @@ BuildRoot : %{_tmppath}/%{fullname}
 
 # Boolean that specifies if you want to automatically determine some
 # dependencies.
-AutoReqProv: no
+AutoReqProv: yes
 
 # In-depth description.
 %description

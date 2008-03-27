@@ -32,13 +32,15 @@
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
 	master.currentModel()->undo();
-	gui.refresh();
+	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
 	master.currentModel()->redo();
-	gui.refresh();
+	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
 
 void AtenForm::on_actionEditCut_triggered(bool checked)
@@ -50,7 +52,7 @@ void AtenForm::on_actionEditCut_triggered(bool checked)
 	m->beginUndostate(s);
 	master.userClipboard->cutSelection(m);
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditCopy_triggered(bool checked)
@@ -70,7 +72,8 @@ void AtenForm::on_actionEditPaste_triggered(bool checked)
 	m->beginUndostate(s);
 	master.userClipboard->pasteToModel(m);
 	m->endUndostate();
-	gui.refresh();
+	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditDelete_triggered(bool checked)
@@ -84,7 +87,7 @@ void AtenForm::on_actionEditDelete_triggered(bool checked)
 	m->beginUndostate(s);
 	m->selectionDelete();
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditSelectAll_triggered(bool checked)
@@ -94,7 +97,7 @@ void AtenForm::on_actionEditSelectAll_triggered(bool checked)
 	m->beginUndostate("Select All");
 	m->selectAll();
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectNone_triggered(bool checked)
@@ -104,7 +107,7 @@ void AtenForm::on_actionEditSelectNone_triggered(bool checked)
 	m->beginUndostate("Select None");
 	m->selectNone();
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditInvert_triggered(bool checked)
@@ -114,7 +117,7 @@ void AtenForm::on_actionEditInvert_triggered(bool checked)
 	m->beginUndostate("Invert Selection");
 	m->selectionInvert();
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectExpand_triggered(bool on)
@@ -123,6 +126,6 @@ void AtenForm::on_actionEditSelectExpand_triggered(bool on)
 	m->beginUndostate("Expand Selection");
 	m->selectionExpand();
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

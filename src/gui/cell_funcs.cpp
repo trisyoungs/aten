@@ -59,6 +59,12 @@ void AtenForm::on_CellAngleCSpin_valueChanged(double d)
 
 void AtenForm::refreshCellPage()
 {
+	// If the cell page is not visible, don't do anything
+	if (!ui.ShowCellPageButton->isChecked())
+	{
+		dbgEnd(Debug::Calls,"AtenForm::refreshCellPage");
+		return;
+	}
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Cell *cell = master.currentModel()->cell();
 	CellType ct = cell->type();
@@ -68,7 +74,6 @@ void AtenForm::refreshCellPage()
 	if (cellpage_refreshing) return;
 	else cellpage_refreshing = TRUE;
 	// Update the widgets on the page to reflect the current model's unit cell
-
 	if (cell->type() == CT_NONE)
 	{
 		// No cell, so disable group boxes and quit
@@ -113,7 +118,7 @@ void AtenForm::cellChanged()
 	m->setCell(lengths, angles);
 	m->endUndostate();
 	m->calculateDensity();
-	gui.refresh();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 	cellpage_refreshing = FALSE;
 }
 
@@ -128,7 +133,7 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 		m->removeCell();
 		m->endUndostate();
 	}
-	gui.refresh();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_CellReplicateButton_clicked(bool checked)
@@ -145,7 +150,7 @@ void AtenForm::on_CellReplicateButton_clicked(bool checked)
 	m->beginUndostate("Replicate Cell");
 	m->replicateCell(neg, pos);
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged();
 }
 
 void AtenForm::on_CellScaleButton_clicked(bool checked)
@@ -158,5 +163,5 @@ void AtenForm::on_CellScaleButton_clicked(bool checked)
 	m->beginUndostate("Scale Cell");
 	m->scaleCell(scale);
 	m->endUndostate();
-	gui.refresh();
+	gui.modelChanged(FALSE,TRUE,FALSE);
 }

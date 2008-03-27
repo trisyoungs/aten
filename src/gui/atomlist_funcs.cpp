@@ -53,8 +53,7 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 		i = ri->item->atom();
 		ri->item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
-	gui.mainView.postRedisplay();
-	gui.updateLabels();
+	gui.modelChanged();
 	dbgEnd(Debug::Calls,"AtenForm::on_AtomTree_selectionChanged");
 }
 
@@ -178,7 +177,7 @@ void AtenForm::on_ShiftUpButton_clicked(bool checked)
 	peekScrollBar();
 	refreshAtomPage();
 	pokeScrollBar();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_ShiftDownButton_clicked(bool checked)
@@ -190,7 +189,7 @@ void AtenForm::on_ShiftDownButton_clicked(bool checked)
 	peekScrollBar();
 	refreshAtomPage();
 	pokeScrollBar();
-	gui.refresh();
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_MoveToStartButton_clicked(bool checked)
