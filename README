@@ -31,6 +31,8 @@ Full instructions can be found in the manual. Briefly:
 	Use --with-qt=framework to use native Qt installation from TrollTech on Macs,
 		otherwise use --with-qt=fink to use the Fink-installed version. Leave
 		blank to take your chances!
+  **or, if you use CMake**
+  Run 'cmake .'
 
 3) Run 'make'.
 
@@ -41,9 +43,9 @@ Full instructions can be found in the manual. Briefly:
 5) Set the environment variable ATENDATA to point to the installed data files.
 	For my default configuration (SuSE Linux 10.2) it's /usr/local/share/aten.
 	For example, using 'bash': export ATENDATA='/usr/local/share/aten'.
-	It's a good idea to put this in your .login, .bashrc or whatever is relevant.
+	It's a good idea to put this in your .login, .bashrc, or whatever is relevant.
 
 
 Tris Youngs
-t.youngs@qub.ac.uk
-October 2007
+tris@projectaten.org
+March 2008
