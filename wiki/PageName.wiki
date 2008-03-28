@@ -1,13 +1,56 @@
 #summary About Aten
 
 = Introduction =
+Aten provides a clean graphical user interface allowing the intuitive editing and creation of input coordinates for computational chemistry / physics codes. It allows periodic (i.e. condensed) and non-periodic (i.e. gas-phase) models and systems to be created either from scratch or from existing coordinate files. Molecular mechanics forcefields of standard functional forms may be loaded and used to minimise existing systems or create (through Monte Carlo techniques) new multi-component configurations. Periodic systems may be stretched, scaled, and repeated, and symmetry operators applied. Molecular dynamics trajectories may be loaded, viewed, frames edited, and properties calculated.
 
-Add your content here.
+Extensible support for the input and output of data is provided through 'filters' - dynamically-parsed plain-text files that describe in a simple way the format of data to be read / written, including binary files. In this way, support for almost any current computational code may be added in to Aten, encompassing model files and trajectories amongst other aspects.
+
+Aten also provides a clear and comprehensible scripting language which may be used to control all functions of the code.
+
+*Please Note*: This is beta software. It's stable but functionality might be sketchy in some areas. Your feedback is appreciated!
 
 
-= Details =
+==Long Feature List==
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+===View===
+  * Stick, tube, sphere, scaled spheres or an arbitrary mix
+  * Orthographic and perspective projections
+  * Colour atoms by element, charge, or force
+  * Hide selections of atoms
+  * Visualise sequences of coordinates as trajectory movies
+  * Save bitmap images of current view
+  * Visualisation of grid data as surfaces
+  * Add glyphs (e.g. cubes, ellipsoids, tetrahedrons) linked to atoms in models
+
+===Edit===
+  * Edit periodic and non-periodic systems
+  * Rotate, translate, and position atoms or selections of atoms
+  * Calculate or remove bonding within model, selection, or molecule type
+  * Replicate, scale, and pack (with standard crystallographic symmetry operators) periodic models in three dimensions
+  * Draw and bond atoms
+
+===Create===
+  * Randomly add molecules to create disorded systems
+  * Create multi-component mixtures and interfaces
+  * Add molecules into new cells or old cells around the existing content
+  * Define regions and restrict specific components to these regions
+
+===Import / Export===
+  * Define filters to allow import and export of almost any data format available
+  * Simple keyword-based input / output / format commands, including loops and logical tests
+  * Applies to models, trajectories, and surface import/export, and forcefield expression export
+
+===Calculate===
+  * Energies and forces of systems from supplied forcefield descriptions
+  * Calculate intermolecular energies between sets of molecules
+  * Minimise system energy w.r.t. coordinates with standard or user-defined forcefields
+  * Radial distribution functions between user-defined sites on specific molecule types
+  * Three-dimensional probability distributions between user-defined sites on specific molecule types
+
+===Forcefields===
+  * Bond, angle, torsion, van der Waals and electrostatic terms available
+  * Direct coulomb sum and Ewald method treatment for electrostatic energies / forces
+  * Chemically-intuitive and human-readable atom typing language for the description of atom types
+
+
+Copyright 2007,2008 Tristan Youngs.
