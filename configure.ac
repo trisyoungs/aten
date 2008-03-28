@@ -31,23 +31,6 @@ AC_PROG_LIBTOOL
 # Additional Configuration Options
 #
 
-# MEMDEBUG
-AC_ARG_WITH([memdebug],[AC_HELP_STRING([--with-memdebug],
-    [Enable manual constructor / destructor counts.])], ,
-    [memdebug=])
-if test "x$with_memdebug" != "x"; then
-  AC_DEFINE([MEMDEBUG], [], [Enable manual constructor / destructor counts.])
-fi
-
-# SPEEDTEST
-AC_ARG_WITH([speedtest],[AC_HELP_STRING([--with-speedtest],
-    [Enable rendering speedtest (warning - makes compiled code otherwise unusable).])], ,
-    [speedtest=])
-if test "x$with_speedtest" != "x"; then
-  AC_DEFINE([SPEEDTEST], [], [Enable rendering speedtest (warning - makes compiled code otherwise unusable).])
-fi
-
-
 # QTDIR
 QTDIR=""
 AC_ARG_WITH([qtdir],[AC_HELP_STRING([--with-qtdir=<dir>],

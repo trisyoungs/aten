@@ -28,4 +28,8 @@ spacegroup.cpp
 
 include_directories(
 ../
+${QT_INCLUDE_DIR}
+${CMAKE_SOURCE_DIR} 
+${CMAKE_BINARY_DIR}
+${CMAKE_BINARY_DIR}/src
 )
