@@ -13,39 +13,29 @@
 
 ==0. Retrieve the source for Aten==
 
-
 ==1. Install Qt4==
 
 Aten needs Trolltech's Qt4 libraries, which can be downloaded from [http://trolltech.com]. Most Linux distributions will have it installed already, but may not have the development libraries (libqt4-devel) installed as standard.
 
-For the Mac, an installable disk image is available from [http://trolltech.com/developer/downloads/qt/mac], near the bottom of the page. Alternatively, Qt4 is available on Fink. 
-
-To build against the qt4-x11 package available via Fink run:
-
-configure -with-qt=fink ...
-
-This will set most of the necessary environment variables, namely:
-
-    * QTGUI_CFLAGS='-I/sw/lib/qt4-x11/include -I/usr/X11R6/include'
-    * QTGUI_LIBS='-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL'
-    * QTOPENGL_CFLAGS='-I/sw/lib/qt4-x11/include'
-    * QTOPENGL_LIBS='-I/sw/lib/qt4-x11/lib'
-
-You may also need to direct the build process to the correct Qt4 development binaries either by setting your $PATH to `/sw/lib/qt4-x11/bin:${PATH}' or by using the -with-qtdir option to configure.
-
-The native Qt4 package is available as a disk image installer at no cost directly from http://trolltech.com. Specify that the build use the frameworks so provided instead:
-
-configure -with-qt=framework ...
+For the Mac, an installable disk image is available from [http://trolltech.com/developer/downloads/qt/mac], near the bottom of the page. Alternatively, Qt4 is available on Fink (qt4-x11}.
 
 
-==1. Configure the build (Autotools)==
+==2. Configure the build (Autotools)==
 
 If you downloaded the source _via_ SVN, first run {{{./autogen.sh}}}.
   * (MAC) It is possible at this point that {{{./autogen.sh}}} will complain that it can't find {{{libtoolize}}}. Fix?
 
 Run {{{./configure}}} to set up the build. The default installation location can be overridden by specifying {{{./configure --prefix=<path>}}}.
+
   * (MAC) It is necessary to tell {{{./configure}}} which Qt4 installation to use. If you got the disk image from http://trolltech.com then do {{{./configure -with-qt=framework}}}, if running the Fink package of Qt4 do {{{./configure -with-qt=fink}}}. You may also need to direct the build process to the correct Qt4 development binaries either by setting your $PATH to `/sw/lib/qt4-x11/bin:${PATH}' or by invoking {{{./configure}}} with the {{{-with-qtdir=<path>}}} option.
+
+  * (MAC) Running {{{./autogen.sh}}}, {{{autoconf}}} fails with 'configure.ac:16: error: possibly undefined macro: AC_DEFINE'. This is related to the version of {{{pkg-config}}} you have installed (e.g. version 0.15.1 gives this error, but version 0.21 does not) with Fink / MacPorts. Upgrade to the latest version. Incidentally, the line-number reported (16) is not the actual location of the error - {{{autoconf}}} reports this wrongly (the actual error occurs later on with the `PKG_CHECK_MODULES(GTK28, ..., [AC_DEFINE...' command).
+
+  * (MAC) Running {{{./autogen.sh}}}, {{{aclocal}}} complains '/sw/share/aclocal/pkg.m4:5: warning: underquoted definition of PKG_CHECK_MODULES'. If {{{pkgconfig}}} is not installed this is likely to give rise to the said spurious error. Install {{{pkgconfig}}} from Fink/MacPorts to proceed.
+
+  * (MAC) {{{autogen.sh}}} appears successful, but {{{aclocal}}} complains about 'underquoted definition of AM_PATH_*'. These warnings should not have affected the generation of a working ./configure script. So you may as well move on to the next step.
 
 
 ==1. Configure the build (CMake)==
 
+Run {{{cmake .}}} from the top level directory, or {{{cmake /path/to/aten}}} from your chosen build directory.
