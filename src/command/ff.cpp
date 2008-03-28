@@ -102,11 +102,16 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 	// Get the argument and parse it internally
 	parser.getArgsDelim(c->argc(0), PO_DEFAULTS);
 	int n, el;
+	Namemap<int> *nm;
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		el = elements.find(afterChar(parser.argc(n), '='));
 		if (el == 0) msg(Debug::None,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
-		else master.typeMap.add(beforeChar(parser.argc(n),'='), el);
+		else
+		{
+			nm = master.typeMap.add();
+			nm->set(beforeChar(parser.argc(n),'='), el);
+		}
 	}
 	return CR_SUCCESS;
 }

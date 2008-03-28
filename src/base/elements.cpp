@@ -350,14 +350,20 @@ int ElementMap::alphaToZ(const char *s)
 // Convert string from first alpha part to element number
 int ElementMap::firstAlphaToZ(const char *s)
 {
-	// Ignore numbers. Convert up to non-alpha character.
+	// Convert up to non-alpha character.
 	static char cleaned[32];
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
 		if (s[n] > 64 && s[n] < 91)
-{ cleaned[len] = s[n]; len++; }
+		{
+			cleaned[len] = s[n];
+			len++;
+		}
 		else if (s[n] > 96 && s[n] < 123)
-{ cleaned[len] = toupper(s[n]); len++; }
+		{
+			cleaned[len] = toupper(s[n]);
+			len++;
+		}
 		else break;
 	cleaned[len] = '\0';
 	for (n=0; n<nElements_; n++)
