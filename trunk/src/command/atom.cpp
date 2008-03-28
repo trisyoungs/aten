@@ -32,7 +32,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
-	Refitem<const char,int> *ri;
+	Namemap<int> *nm;
 	int el;
 	switch (c->argt(0))
 	{
@@ -43,11 +43,11 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
 		case (VT_CHAR):
-			// Attempt conversion of the string first from the users type list
-			for (ri = master.typeMap.first(); ri != NULL; ri = ri->next)
-				if (strcmp(ri->item,c->argc(0)) == 0) break;
-			if (ri == NULL) el = elements.find(c->argc(0));
-			else el = ri->data;
+			// Attempt conversion of the stnmng first from the users type list
+			for (nm = master.typeMap.first(); nm != NULL; nm = nm->next)
+				if (strcmp(nm->name(),c->argc(0)) == 0) break;
+			if (nm == NULL) el = elements.find(c->argc(0));
+			else el = nm->data();
 			break;
 		case (VT_ATOM):
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();

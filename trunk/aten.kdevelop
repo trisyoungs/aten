@@ -57,7 +57,7 @@
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
       <abortonerror>true</abortonerror>
-      <runmultiplejobs>true</runmultiplejobs>
+      <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>4</numberofjobs>
       <dontact>false</dontact>
       <makebin></makebin>
@@ -219,10 +219,10 @@
   <dist>
     <custom>false</custom>
     <bzip>false</bzip>
-    <archname></archname>
+    <archname/>
     <appname>%{shortname}</appname>
     <version>0.95</version>
-    <release></release>
+    <release/>
     <vendor>T. Youngs</vendor>
     <licence>GPL</licence>
     <summary>Aten - Atomic configuration builder and editor</summary>
@@ -243,6 +243,6 @@ It really does.
     <useRPM>false</useRPM>
     <ftpkde>false</ftpkde>
     <appskde>false</appskde>
-    <url></url>
+    <url/>
   </dist>
 </kdevelop>

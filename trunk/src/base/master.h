@@ -28,6 +28,7 @@
 #include "command/commandlist.h"
 #include "base/cli.h"
 #include <getopt.h>
+#include "templates/namemap.h"
 
 // Forward Declarations
 class Generator;
@@ -253,7 +254,7 @@ class Master
 	// Parse command line options
 	int parseCli(int, char**);
 	// Element map name conversions to apply on load
-	Reflist<const char,int> typeMap;
+	List< Namemap<int> > typeMap;
 };
 
 extern Master master;

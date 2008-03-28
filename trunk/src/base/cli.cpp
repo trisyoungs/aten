@@ -161,7 +161,7 @@ int Master::parseCli(int argc, char *argv[])
 	char *arg;
 	CommandList *cl;
 	Prefs::ZmapType zm;
-	Refitem<const char,int> *ri;
+	Namemap<int> *nm;
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary run)
 	argn = 1;
@@ -250,10 +250,12 @@ int Master::parseCli(int argc, char *argv[])
 						{
 							el = elements.find(afterChar(parser.argc(n), '='));
 							if (el == 0) msg(Debug::None,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
-							else typeMap.add(beforeChar(parser.argc(n),'='), el);
+							else
+							{
+								nm = typeMap.add();
+								nm->set(beforeChar(parser.argc(n),'='), el);
+							}
 						}
-						for (ri = typeMap.first(); ri != NULL; ri = ri->next)
-							printf("MAP %s -> %i\n", ri->item, ri->data);
 						break;
 					// Prohibit bonding calculation of atoms on load
 					case (Cli::NoBondSwitch):
