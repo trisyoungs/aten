@@ -1,7 +1,7 @@
 #summary Building Aten
 #labels Featured,Phase-Deploy
 
-= Four (Five) Step Guide to Building Aten =
+= Three Step Guide to Building Aten =
 
 ==Requirements==
   * GNU Autotools >=2.6 or CMake >=2.4.8
@@ -36,12 +36,16 @@ Run {{{./configure}}} to set up the build. The default installation location can
   * (MAC) {{{autogen.sh}}} appears successful, but {{{aclocal}}} complains about 'underquoted definition of AM PATH...'. These warnings should not have affected the generation of a working ./configure script. So you may as well move on to the next step.
 
 
-==1. Configure the build (CMake)==
+==2. Configure the build (CMake)==
 
 Run {{{cmake .}}} from the top level directory, or {{{cmake /path/to/aten}}} from your chosen build directory.
 
-==2. Compile==
+==3. Compile==
 
 Once configured successfully, run {{{make}}} to compile the source and build the program. Then, go make some tea or brew some coffee.
 
   * (All) When the Qt GUI is building, I get a version error for {{{moc}}} along the lines of 'uic: File generated with too recent version of Qt Designer (4.0 vs. 3.*.*)'. If you have both Qt4 and Qt3 installed the $PATH is sometimes set so that the Qt3 binaries are found first. Reconfigure the build with {{{./configure -with-qdtir=<path>}}} where <path> is the location of the Qt4 binaries ({{{moc}}}, {{{uic}}}, and {{{rcc}}}).
+
+==4. Install==
+
+If all was successful, refer to the InstallingAten page!
