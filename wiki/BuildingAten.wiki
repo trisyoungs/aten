@@ -1,0 +1,26 @@
+#summary Building Aten
+#labels Featured,Phase-Deploy
+
+= Four (Five) Step Guide to Building Aten =
+
+==Requirements==
+  * GNU Autotools >=2.6 or CMake >=2.4.8
+  * Qt4 >=4.2 (plus development packages)
+  * A C++ compiler (e.g. GNU g++, Intel's icc)
+  * OpenGL
+  * pkg-config (for Linux users, and fink/Darwin installations of Qt4 on Macs)
+
+
+==0. Retrieve the source==
+
+==1. 
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
