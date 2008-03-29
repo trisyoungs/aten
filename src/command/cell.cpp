@@ -33,6 +33,14 @@ int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Fold molecules
+int CommandData::function_CA_FOLDMOLECULES(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->foldAllMolecules();
+	return CR_SUCCESS;
+}
+
 // Convert fractional coordinates to real coordinates
 int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 {
@@ -60,23 +68,23 @@ int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 }
 
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
-int CommandData::function_CA_REPLICATECELL(Command *&c, Bundle &obj)
+int CommandData::function_CA_REPLICATE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->replicateCell(c->arg3d(0), c->arg3d(3));
 	return CR_SUCCESS;
 }
 
-// Scale cell and molecule COGs ('scalecell <x y z>')
-int CommandData::function_CA_SCALECELL(Command *&c, Bundle &obj)
+// Scale cell and molecule COGs ('scale <x y z>')
+int CommandData::function_CA_SCALE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->scaleCell(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
-// Set/create unit cell ('setcell <a b c> <alpha beta gamma>')
-int CommandData::function_CA_SETCELL(Command *&c, Bundle &obj)
+// Set/create unit cell ('cell <a b c> <alpha beta gamma>')
+int CommandData::function_CA_CELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->setCell(c->arg3d(0), c->arg3d(3));
@@ -85,8 +93,8 @@ int CommandData::function_CA_SETCELL(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Set/create unit cell ('setcell <ax ay az> <bx by bz> <cx cy cz>')
-int CommandData::function_CA_SETCELLAXES(Command *&c, Bundle &obj)
+// Set/create unit cell ('cellaxes <ax ay az> <bx by bz> <cx cy cz>')
+int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Mat3<double> mat;
@@ -100,7 +108,7 @@ int CommandData::function_CA_SETCELLAXES(Command *&c, Bundle &obj)
 }
 
 // Set spacegroup
-int CommandData::function_CA_SETSPACEGROUP(Command *&c, Bundle &obj)
+int CommandData::function_CA_SPACEGROUP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name

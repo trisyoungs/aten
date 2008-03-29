@@ -25,7 +25,7 @@ importmodel
 		readline "$ax $ay $az"
 		readline "$bx $by $bz"
 		readline "$cx $cy $cz"
-		setcellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+		cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 	end
 
 	# Atoms

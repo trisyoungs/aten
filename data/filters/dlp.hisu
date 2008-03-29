@@ -70,7 +70,7 @@ importtrajectory
 			readdouble $cy
 			readdouble $cz
 			readint $recsize
-			setcellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 		end
 		# Create atoms in model all at once, since we need to reference them all at different points
 		modeltemplate

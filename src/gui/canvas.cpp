@@ -481,7 +481,7 @@ void Canvas::createLists()
 void Canvas::doProjection()
 {
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
-	if (!gui.exists()) return;
+	if (!gui.exists() || !gui.mainView.isValid()) return;
 	dbgBegin(Debug::Calls,"Canvas::doProjection");
 	double pmat[16], bottom, top;
 	// Check source

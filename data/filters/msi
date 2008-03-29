@@ -104,7 +104,7 @@ importmodel
 	end
 	# Add on unit cell if one was specified
 	if $cellvar > 2
-		setcellaxes $cax $cay $caz $cbx $cby $cbz $ccx $ccy $ccz
+		cellaxes $cax $cay $caz $cbx $cby $cbz $ccx $ccy $ccz
 		fold
 	end
 	centre 0 0 0

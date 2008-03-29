@@ -21,7 +21,6 @@
 
 #include "base/master.h"
 #include "base/elements.h"
-//#include "methods/sd.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"

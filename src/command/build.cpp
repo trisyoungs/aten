@@ -23,6 +23,7 @@
 #include "base/elements.h"
 #include "base/master.h"
 #include "model/model.h"
+#include "classes/clipboard.h"
 
 // Add hydrogens to model ('addhydrogen')
 int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
@@ -42,6 +43,22 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 		obj.m->hydrogenSatisfy(i);
 	}
 	else obj.m->hydrogenSatisfy();
+	return CR_SUCCESS;
+}
+
+// Copy current selection ('copy')
+int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	master.userClipboard->copySelection(obj.m);
+	return CR_SUCCESS;
+}
+
+// Cut current selection ('cut')
+int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	master.userClipboard->cutSelection(obj.m);
 	return CR_SUCCESS;
 }
 
@@ -76,6 +93,15 @@ int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
 	c->parent()->penPosition += c->parent()->penOrientation.rows[0] * c->argd(0);
 	c->parent()->penPosition += c->parent()->penOrientation.rows[1] * c->argd(1);
 	c->parent()->penPosition += c->parent()->penOrientation.rows[2] * c->argd(2);
+	return CR_SUCCESS;
+}
+
+// Paste copied selection ('paste')
+int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Model *m = master.currentModel();
+	master.userClipboard->pasteToModel(m);
 	return CR_SUCCESS;
 }
 

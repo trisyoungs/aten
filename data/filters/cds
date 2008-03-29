@@ -38,8 +38,8 @@ importmodel
 		eval $cell.alpha = "$al / 10.0^$pal"
 		eval $cell.beta = "$be / 10.0^$pbe"
 		eval $cell.gamma = "$ga / 10.0^$pga"
-		setcell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
-		setspacegroup $spgrpn
+		cell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
+		spacegroup $spgrpn
 	end
 	# Record 3: Text information (ignored)
 	# Total number of chars is the sum of nf, nr, nd, and ne read in earlier.

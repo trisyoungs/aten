@@ -36,7 +36,7 @@ importtrajectory
 			readline "$ax@12 $ay@12 $az@12"
 			readline "$bx@12 $by@12 $bz@12"
 			readline "$cx@12 $cy@12 $cz@12"
-			setcellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 		end
 		# Now the atoms
 		modeltemplate
