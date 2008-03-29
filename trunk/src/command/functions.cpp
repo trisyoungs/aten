@@ -77,8 +77,11 @@ void Master::initCommands()
 	// Build commands
 	CA_data[CA_ADDHYDROGEN].function = &CommandData::function_CA_ADDHYDROGEN;
 	CA_data[CA_DELETE].function = &CommandData::function_CA_DELETE;
+	CA_data[CA_COPY].function = &CommandData::function_CA_COPY;
+	CA_data[CA_CUT].function = &CommandData::function_CA_CUT;
 	CA_data[CA_LOCATE].function = &CommandData::function_CA_LOCATE;
 	CA_data[CA_MOVE].function = &CommandData::function_CA_MOVE;
+	CA_data[CA_PASTE].function = &CommandData::function_CA_PASTE;
 	CA_data[CA_ROTX].function = &CommandData::function_CA_ROTX;
 	CA_data[CA_ROTY].function = &CommandData::function_CA_ROTY;
 	CA_data[CA_ROTZ].function = &CommandData::function_CA_ROTZ;
@@ -86,14 +89,15 @@ void Master::initCommands()
 
 	// Cell commands
 	CA_data[CA_FOLD].function = &CommandData::function_CA_FOLD;
+	CA_data[CA_FOLDMOLECULES].function = &CommandData::function_CA_FOLDMOLECULES;
 	CA_data[CA_FRACTOREAL].function = &CommandData::function_CA_FRACTOREAL;
 	CA_data[CA_PACK].function = &CommandData::function_CA_PACK;
 	CA_data[CA_PRINTCELL].function = &CommandData::function_CA_PRINTCELL;
-	CA_data[CA_REPLICATECELL].function = &CommandData::function_CA_REPLICATECELL;
-	CA_data[CA_SCALECELL].function = &CommandData::function_CA_SCALECELL;
-	CA_data[CA_SETCELL].function = &CommandData::function_CA_SETCELL;
-	CA_data[CA_SETCELLAXES].function = &CommandData::function_CA_SETCELLAXES;
-	CA_data[CA_SETSPACEGROUP].function = &CommandData::function_CA_SETSPACEGROUP;
+	CA_data[CA_REPLICATE].function = &CommandData::function_CA_REPLICATE;
+	CA_data[CA_SCALE].function = &CommandData::function_CA_SCALE;
+	CA_data[CA_CELL].function = &CommandData::function_CA_CELL;
+	CA_data[CA_CELLAXES].function = &CommandData::function_CA_CELLAXES;
+	CA_data[CA_SPACEGROUP].function = &CommandData::function_CA_SPACEGROUP;
 
 	// Charge commands
 	CA_data[CA_CHARGEFF].function = &CommandData::function_CA_CHARGEFF;

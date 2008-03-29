@@ -98,9 +98,12 @@ enum CommandAction {
 
 	// Build commands
 	CA_ADDHYDROGEN,
+	CA_COPY,
+	CA_CUT,
 	CA_DELETE,
 	CA_LOCATE,
 	CA_MOVE,
+	CA_PASTE,
 	CA_ROTX,
 	CA_ROTY,
 	CA_ROTZ,
@@ -108,14 +111,15 @@ enum CommandAction {
 
 	// Cell commands
 	CA_FOLD,
+	CA_FOLDMOLECULES,
 	CA_FRACTOREAL,
 	CA_PACK,
 	CA_PRINTCELL,
-	CA_REPLICATECELL,
-	CA_SCALECELL,
-	CA_SETCELL,
-	CA_SETCELLAXES,
-	CA_SETSPACEGROUP,
+	CA_REPLICATE,
+	CA_SCALE,
+	CA_CELL,
+	CA_CELLAXES,
+	CA_SPACEGROUP,
 
 	// Charge commands
 	CA_CHARGEFF,
@@ -413,23 +417,27 @@ class CommandData
 	int function_CA_REBOND(Command *&c, Bundle &obj);
 	// Build commands
 	int function_CA_ADDHYDROGEN(Command *&c, Bundle &obj);
+	int function_CA_COPY(Command *&c, Bundle &obj);
+	int function_CA_CUT(Command *&c, Bundle &obj);
 	int function_CA_DELETE(Command *&c, Bundle &obj);
 	int function_CA_LOCATE(Command *&c, Bundle &obj);
 	int function_CA_MOVE(Command *&c, Bundle &obj);
+	int function_CA_PASTE(Command *&c, Bundle &obj);
 	int function_CA_ROTX(Command *&c, Bundle &obj);
 	int function_CA_ROTY(Command *&c, Bundle &obj);
 	int function_CA_ROTZ(Command *&c, Bundle &obj);
 	int function_CA_TRANSMUTE(Command *&c, Bundle &obj);
 	// Cell commands
 	int function_CA_FOLD(Command *&c, Bundle &obj);
+	int function_CA_FOLDMOLECULES(Command *&c, Bundle &obj);
 	int function_CA_FRACTOREAL(Command *&c, Bundle &obj);
 	int function_CA_PACK(Command *&c, Bundle &obj);
 	int function_CA_PRINTCELL(Command *&c, Bundle &obj);
-	int function_CA_REPLICATECELL(Command *&c, Bundle &obj);
-	int function_CA_SCALECELL(Command *&c, Bundle &obj);
-	int function_CA_SETCELL(Command *&c, Bundle &obj);
-	int function_CA_SETCELLAXES(Command *&c, Bundle &obj);
-	int function_CA_SETSPACEGROUP(Command *&c, Bundle &obj);
+	int function_CA_REPLICATE(Command *&c, Bundle &obj);
+	int function_CA_SCALE(Command *&c, Bundle &obj);
+	int function_CA_CELL(Command *&c, Bundle &obj);
+	int function_CA_CELLAXES(Command *&c, Bundle &obj);
+	int function_CA_SPACEGROUP(Command *&c, Bundle &obj);
 	// Charge commands
 	int function_CA_CHARGEFF(Command *&c, Bundle &obj);
 	int function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj);

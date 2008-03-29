@@ -88,6 +88,7 @@ void GuiQt::run(int argc, char **argv)
 	{
 		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
 		m->resetView();
+		m->calculateViewMatrix();
 	}
 
 	// Refresh the surfaces and forcefield lists

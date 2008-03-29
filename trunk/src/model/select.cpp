@@ -143,33 +143,31 @@ Atom *Model::atomOnScreen(double x1, double y1)
 	// Make sure we have a valid projection
 	projectAll();
 	Atom *closest = NULL;
-	#ifdef HAS_GUI
-		static Vec3<double> wr, sr;
-		static double closestz, dist, nclip;
-		closestz = 10000.0;
-		nclip = prefs.clipNear();
-		Atom *i = atoms_.first();
-		y1 = gui.mainView.height() - y1;
-		while (i != NULL)
+	static Vec3<double> wr, sr;
+	static double closestz, dist, nclip;
+	closestz = 10000.0;
+	nclip = prefs.clipNear();
+	Atom *i = atoms_.first();
+	y1 = gui.mainView.height() - y1;
+	while (i != NULL)
+	{
+		if (i->isHidden()) { i = i->next; continue; }
+		wr = -i->rWorld();
+		sr = i->rScreen();
+		if (wr.z > nclip)
 		{
-			if (i->isHidden()) { i = i->next; continue; }
-			wr = -i->rWorld();
-			sr = i->rScreen();
-			if (wr.z > nclip)
+			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
+			if (dist < i->screenRadius())	// Mouse is inside bounding sphere
 			{
-				dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
-				if (dist < i->screenRadius())	// Mouse is inside bounding sphere
+				if ((closest == NULL) || (wr.z < closestz))
 				{
-					if ((closest == NULL) || (wr.z < closestz))
-					{
-						closest = i;
-						closestz = wr.z;
-					}
+					closest = i;
+					closestz = wr.z;
 				}
 			}
-			i = i->next;
 		}
-	#endif
+		i = i->next;
+	}
 	dbgEnd(Debug::Calls,"Model::atomOnScreen");
 	return closest;
 }
@@ -179,22 +177,20 @@ void Model::selectBox(double x1, double y1, double x2, double y2)
 {
 	// Box selection - choose all the atoms within the selection area
 	dbgBegin(Debug::Calls,"Model::selectBox");
-	#ifdef HAS_GUI
-		float t;
-		Atom *i, *closest;
-		y1 = gui.mainView.height() - y1;
-		y2 = gui.mainView.height() - y2;
-		// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
-		if (x1 > x2) { t=x1; x1=x2; x2=t; }
-		if (y1 > y2) { t=y1; y1=y2; y2=t; }
-		for (Atom *i = atoms_.first(); i != NULL; i = i->next)
-		{
-			if (i->isHidden()) { i = i->next; continue; }
-			Vec3<double> sr = i->rScreen();
-			if ((sr.x >= x1) && (sr.x <= x2))
-				if ((sr.y >= y1) && (sr.y <= y2)) selectAtom(i);
-		}
-	#endif
+	float t;
+	Atom *i, *closest;
+	y1 = gui.mainView.height() - y1;
+	y2 = gui.mainView.height() - y2;
+	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
+	if (x1 > x2) { t=x1; x1=x2; x2=t; }
+	if (y1 > y2) { t=y1; y1=y2; y2=t; }
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	{
+		if (i->isHidden()) { i = i->next; continue; }
+		Vec3<double> sr = i->rScreen();
+		if ((sr.x >= x1) && (sr.x <= x2))
+			if ((sr.y >= y1) && (sr.y <= y2)) selectAtom(i);
+	}
 	dbgEnd(Debug::Calls,"Model::selectBox");
 }
 
