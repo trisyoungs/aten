@@ -285,7 +285,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add typename mappings" },
 	{ "typemodel",		"",		"",
 				"Perform atom typing on the current model" },
-	{ "typetest",		"V",		"<ffid> <atomid>",
+	{ "typetest",		"VV",		"<ffid> <atomid>",
 				"Test atomtype score on atom provided" }, 
 
 	// Glyph commands
