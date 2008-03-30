@@ -43,8 +43,7 @@ It really does.
 %setup -q
 
 %build
-./autogen.sh
-./configure
+./configure --prefix="%{_tmppath}/%{fullname}/usr/local"
 make
 
 %install
@@ -60,5 +59,7 @@ make install
 /usr/local/share/aten/
 
 %changelog
+* Sun Mar 30 2008 Tristan Youngs <tris@projectaten.com> 
+- installation target points to local dir.
 * Mon Mar 24 2008 Tristan Youngs <tris@projectaten.com> 
 - initial version.
