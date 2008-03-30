@@ -58,7 +58,7 @@ int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
 }
 
 // Set grid axes (nine doubles)
-int CommandData::function_CA_SETGRID(Command *&c, Bundle &obj)
+int CommandData::function_CA_GRIDAXES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	Mat3<double> mat;
@@ -70,7 +70,7 @@ int CommandData::function_CA_SETGRID(Command *&c, Bundle &obj)
 }
 
 // Set cubic grid (one double)
-int CommandData::function_CA_SETGRIDCUBIC(Command *&c, Bundle &obj)
+int CommandData::function_CA_GRIDCUBIC(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	obj.g->setAxes(c->argd(0));
@@ -78,7 +78,7 @@ int CommandData::function_CA_SETGRIDCUBIC(Command *&c, Bundle &obj)
 }
 
 // Set loop order to use in CA_ADDNEXTPOINT
-int CommandData::function_CA_SETGRIDLOOPORDER(Command *&c, Bundle &obj)
+int CommandData::function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	if (strlen(c->argc(0)) != 3)
@@ -117,7 +117,7 @@ int CommandData::function_CA_SETGRIDLOOPORDER(Command *&c, Bundle &obj)
 }
 
 // Set origin (lower-left-hand corner of grid)
-int CommandData::function_CA_SETGRIDORIGIN(Command *&c, Bundle &obj)
+int CommandData::function_CA_GRIDORIGIN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	obj.g->setOrigin(c->arg3d(0));
@@ -125,7 +125,7 @@ int CommandData::function_CA_SETGRIDORIGIN(Command *&c, Bundle &obj)
 }
 
 // Set orthorhombic grid (three doubles)
-int CommandData::function_CA_SETGRIDORTHO(Command *&c, Bundle &obj)
+int CommandData::function_CA_GRIDORTHO(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	obj.g->setAxes(c->arg3d(0));
@@ -133,7 +133,7 @@ int CommandData::function_CA_SETGRIDORTHO(Command *&c, Bundle &obj)
 }
 
 // Set extent of grid (number of points in each direction)
-int CommandData::function_CA_SETGRIDSIZE(Command *&c, Bundle &obj)
+int CommandData::function_CA_GRIDSIZE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	obj.g->setNPoints(c->arg3i(0));

@@ -40,7 +40,7 @@ int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 	// Parse the atom list which should have been given as: "1,2,3,4,5......"
 	if (c->hasArg(2))
 	{
-		parser.getArgsDelim(c->argc(2), PO_DEFAULTS);
+		parser.getArgsDelim(c->argc(2), Parser::Defaults);
 		for (int n=0; n<parser.nArgs(); n++)
 		{
 			Listitem<int> *li = obj.s->atoms.add();
@@ -83,14 +83,14 @@ int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 	return CR_FAIL;
 }
 
-// Set x and y-axis definitions for current site ('setaxes <"X-atomids..."> <"Y-atomids">')
-int CommandData::function_CA_SETAXES(Command *&c, Bundle &obj)
+// Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
+int CommandData::function_CA_SITEAXES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_SITE)) return CR_FAIL;
 	int n;
 	Listitem<int> *li;
 	// Parse atom list for x-axis
-	parser.getArgsDelim(c->argc(0), PO_DEFAULTS);
+	parser.getArgsDelim(c->argc(0), Parser::Defaults);
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->xAxisAtoms.add();
@@ -98,7 +98,7 @@ int CommandData::function_CA_SETAXES(Command *&c, Bundle &obj)
 		li->data = parser.argi(n) - 1;
 	}
 	// Parse atom list for y-axis
-	parser.getArgsDelim(c->argc(1), PO_DEFAULTS);
+	parser.getArgsDelim(c->argc(1), Parser::Defaults);
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		li = obj.s->yAxisAtoms.add();

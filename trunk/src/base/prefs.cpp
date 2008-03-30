@@ -287,7 +287,7 @@ void Prefs::load(const char *filename)
 	prefcmds.clear();
 	while (!prefsfile.eof())
 	{
-		success = parser.getArgsDelim(&prefsfile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&prefsfile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
 			msg(Debug::None,"prefs::load - Error reading file.\n");

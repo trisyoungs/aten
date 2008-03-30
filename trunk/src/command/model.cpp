@@ -148,7 +148,8 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 // Select working model ('getmodel <name>')
 int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 {
-	Model *m = master.findModel(c->argc(0));
+	// If the argument is an integer, get by id. Otherwise, get by name
+	Model *m = (c->argt(0) == VT_INTEGER ? master.model(c->argi(0)) : master.findModel(c->argc(0)));
 	if (m != NULL) 
 	{
 		master.setCurrentModel(m);
@@ -159,13 +160,13 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 	}
 	else
 	{
-		msg(Debug::None,"No model named '%s' is available.\n", c->argc(0));
+		msg(Debug::None,"No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0),c->argi(0));
 		return CR_FAIL;
 	}
 }
 
 // Set title of model
-int CommandData::function_CA_SETTITLE(Command *&c, Bundle &obj)
+int CommandData::function_CA_TITLE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->setName(c->argc(0));

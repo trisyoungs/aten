@@ -121,6 +121,8 @@ class Master
 	public:
 	// Return the first ff in the list
 	Forcefield *forcefields() const;
+	// Return the nth forcefield in the list
+	Forcefield *forcefield(int n);
 	// Return the number of loaded forcefields
 	int nForcefields() const;
 	// Set active forcefield

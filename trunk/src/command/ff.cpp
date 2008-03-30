@@ -90,7 +90,7 @@ int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 // Select current forcefield ('getff <name>')
 int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 {
-	Forcefield *ff = master.findForcefield(c->argc(0));
+	Forcefield *ff = (c->argt(0) == VT_INTEGER ? master.forcefield(c->argi(0)) : master.findForcefield(c->argc(0)));
 	if (ff != NULL)	master.setCurrentForcefield(ff);
 	else return CR_FAIL;
 	return CR_SUCCESS;
@@ -100,7 +100,7 @@ int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 {
 	// Get the argument and parse it internally
-	parser.getArgsDelim(c->argc(0), PO_DEFAULTS);
+	parser.getArgsDelim(c->argc(0), Parser::Defaults);
 	int n, el;
 	Namemap<int> *nm;
 	for (n=0; n<parser.nArgs(); n++)

@@ -24,7 +24,7 @@ importtrajectory
 		readint $recsize
 		# Next, number of atoms in the system (as a double)
 		readint $recsize
-		readdouble $dnatoms
+		readfloat $dnatoms
 		let $natoms = $dnatoms
 		readint $recsize
 		# Atom names
@@ -38,37 +38,37 @@ importtrajectory
 		skipchars $recsize
 		#repeat $n $natoms
 		#for $n,1,$natoms
-		#	readdouble $mass
+		#	readfloat $mass
 		#end
 		readint $recsize
 		# Atom charges
 		readint $recsize
 		skipchars $recsize
 		#for $n,1,$natoms
-		#	readdouble $q
+		#	readfloat $q
 		#end
 		readint $recsize
 	else
 		# First data for frame is : nstep, $natoms, keytrj, imcon, tstep, all as doubles 
 		readint $recsize
-		readdouble $dnstep
-		readdouble $dnatoms
-		readdouble $dkeytrj
-		readdouble $dimcon
-		readdouble $tstep
+		readfloat $dnstep
+		readfloat $dnatoms
+		readfloat $dkeytrj
+		readfloat $dimcon
+		readfloat $tstep
 		readint $recsize
 		# Unit cell
 		if $cell.type <> none
 			readint $recsize
-			readdouble $ax
-			readdouble $ay
-			readdouble $az
-			readdouble $bx
-			readdouble $by
-			readdouble $bz
-			readdouble $cx
-			readdouble $cy
-			readdouble $cz
+			readfloat $ax
+			readfloat $ay
+			readfloat $az
+			readfloat $bx
+			readfloat $by
+			readfloat $bz
+			readfloat $cx
+			readfloat $cy
+			readfloat $cz
 			readint $recsize
 			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 		end
@@ -77,63 +77,63 @@ importtrajectory
 		# X-Coordinates
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $rx
+			readfloat $rx
 			setrx $rx $n
 		end
 		readint $recsize
 		# Y-Coordinates
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $ry
+			readfloat $ry
 			setry $ry $n
 		end
 		readint $recsize
 		# Z-Coordinates
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $rz
+			readfloat $rz
 			setrz $rz $n
 		end
 		readint $recsize
 		# X-Velocities
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $vx
+			readfloat $vx
 			setvx $vx $n
 		end
 		readint $recsize
 		# Y-Velocities
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $vy
+			readfloat $vy
 			setvy $vy $n
 		end
 		readint $recsize
 		# Z-Velocities
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $vz
+			readfloat $vz
 			setvz $vz $n
 		end
 		readint $recsize
 		# X-Forces
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $fx
+			readfloat $fx
 			setfx $fx $n
 		end
 		readint $recsize
 		# Y-Forces
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $fy
+			readfloat $fy
 			setfy $fy $n
 		end
 		readint $recsize
 		# Z-Forces
 		readint $recsize
 		for $n,1,$natoms
-			readdouble $fz
+			readfloat $fz
 			setfz $fz $n
 		end
 		readint $recsize

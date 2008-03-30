@@ -133,7 +133,7 @@ bool Format::createDelimited(const char *s, VariableList &vlist)
 	// Clear any existing node list
 	nodes_.clear();
 	// First, parseline the formatting string
-	lp.getArgsDelim(s,PO_DEFAULTS);
+	lp.getArgsDelim(s,Parser::Defaults);
 	// Now, step through the args[] array and convert the substrings into format nodes
 	for (n=0; n<lp.nArgs(); n++)
 	{
@@ -289,7 +289,7 @@ const char *Format::createString()
 				else sprintf(fmt,"%%%ii",fn->length());
 				sprintf(bit,fmt,v->asInteger());
 				break;
-			case (VT_DOUBLE):
+			case (VT_FLOAT):
 				if (fn->length() == 0) strcpy(fmt,"%f");
 				else sprintf(fmt,"%%%i.%if",fn->length(),fn->precision());
 				sprintf(bit,fmt,v->asDouble());

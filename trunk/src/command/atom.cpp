@@ -39,7 +39,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 		case (VT_INTEGER):
 			el = c->argi(0);
 			break;
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
 		case (VT_CHAR):
@@ -73,7 +73,7 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 		case (VT_INTEGER):
 			el = c->argi(0);
 			break;
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
 		case (VT_CHAR):

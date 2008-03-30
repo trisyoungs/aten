@@ -28,8 +28,8 @@
 int CommandData::function_CA_ADDREADOPTION(Command *&c, Bundle &obj)
 {
 	// Get parse option from variable
-	ParseOption po = PO_from_text(c->argc(0));
-	if (po != PO_NITEMS) c->parent()->addReadOption(po);
+	Parser::ParseOption po = Parser::parseOption(c->argc(0));
+	if (po != Parser::nParseOptions) c->parent()->addReadOption(po);
 	return CR_SUCCESS;
 }
 
@@ -78,7 +78,7 @@ int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
 }
 
 // Read double from unformatted file
-int CommandData::function_CA_READDOUBLE(Command *&c, Bundle &obj)
+int CommandData::function_CA_READFLOAT(Command *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -87,7 +87,7 @@ int CommandData::function_CA_READDOUBLE(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	double readd;
-	inputfile->read((char*) &readd,8);
+	inputfile->read((char*) &readd, 8);
 	c->arg(0)->set(readd);
 	msg(Debug::Filters,"Unformatted double read got '%f'\n",readd);
 	return CR_SUCCESS;
@@ -103,7 +103,7 @@ int CommandData::function_CA_READINTEGER(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	int readi;
-	inputfile->read((char*) &readi,4);
+	inputfile->read((char*) &readi, 4);
 	c->arg(0)->set(readi);
 	msg(Debug::Filters,"Unformatted int read got '%i'\n",readi);
 	return CR_SUCCESS;
@@ -146,8 +146,8 @@ int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
 int CommandData::function_CA_REMOVEREADOPTION(Command *&c, Bundle &obj)
 {
 	// Get parse option from variable
-	ParseOption po = PO_from_text(c->argc(0));
-	if (po != PO_NITEMS) c->parent()->removeReadOption(po);
+	Parser::ParseOption po = Parser::parseOption(c->argc(0));
+	if (po != Parser::nParseOptions) c->parent()->removeReadOption(po);
 	return CR_SUCCESS;
 }
 

@@ -322,9 +322,9 @@ class CommandList
 	// Close files
 	void closeFiles();
 	// Add read option
-	void addReadOption(ParseOption po);
+	void addReadOption(Parser::ParseOption po);
 	// Remove read option
-	void removeReadOption(ParseOption po);
+	void removeReadOption(Parser::ParseOption po);
 	// Return read options
 	int readOptions();
 };

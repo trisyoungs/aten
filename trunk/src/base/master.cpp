@@ -298,6 +298,12 @@ Forcefield *Master::forcefields() const
 	return forcefields_.first();
 }
 
+// Return the nth ff in the list
+Forcefield *Master::forcefield(int n)
+{
+	return forcefields_[n];
+}
+
 // Return the number of loaded forcefields
 int Master::nForcefields() const
 {
@@ -364,7 +370,7 @@ bool Master::openFilters(const char *path, bool isdatadir)
 		while (!listfile.eof())
 		{
 			strcpy(longname,path);
-			if (parser.getArgsDelim(&listfile,PO_DEFAULTS+PO_SKIPBLANKS) != 0) break;
+			if (parser.getArgsDelim(&listfile,Parser::SkipBlanks) != 0) break;
 			strcat(longname,parser.argc(0));
 			printf("%s  ",parser.argc(0));
 			if (!loadFilter(longname))
@@ -404,7 +410,7 @@ bool Master::loadFilter(const char *filename)
 	ifstream filterfile(filename,ios::in);
 
 	// Pre-read first line to check
-	success = parser.getArgsDelim(&filterfile,PO_USEQUOTES+PO_SKIPBLANKS);
+	success = parser.getArgsDelim(&filterfile,Parser::UseQuotes+Parser::SkipBlanks);
 	error = FALSE;
 	while (!filterfile.eof())
 	{

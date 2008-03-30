@@ -104,7 +104,7 @@ void Variable::print()
 		case (VT_INTEGER):
 			printf("Variable '%s', type_ 'int', value '%i'.\n", name_.get(), asInteger());
 			break;
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			printf("Variable '%s', type_ 'double', value '%f'.\n", name_.get(), asDouble());
 			break;
 		case (VT_ATOM):
@@ -126,7 +126,7 @@ void Variable::set(const char *s)
 {
 	if (type_ == VT_CHAR) charValue_.set(s);
 	else if (type_ == VT_INTEGER) intValue_ = atoi(s);
-	else if (type_ == VT_DOUBLE) doubleValue_ = atof(s);
+	else if (type_ == VT_FLOAT) doubleValue_ = atof(s);
 	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a character string >>>>\n", name_.get(), text_from_VT(type_));
 }
 
@@ -135,7 +135,7 @@ void Variable::set(int i)
 {
 	if (type_ == VT_CHAR) charValue_.set(itoa(i));
 	else if (type_ == VT_INTEGER) intValue_ = i;
-	else if (type_ == VT_DOUBLE) doubleValue_ = i;
+	else if (type_ == VT_FLOAT) doubleValue_ = i;
 	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from an integer value >>>>\n", name_.get(), text_from_VT(type_));
 }
 
@@ -144,7 +144,7 @@ void Variable::set(double d)
 {
 	if (type_ == VT_CHAR) charValue_.set(ftoa(d));
 	else if (type_ == VT_INTEGER) intValue_ = int(d);
-	else if (type_ == VT_DOUBLE) doubleValue_ = d;
+	else if (type_ == VT_FLOAT) doubleValue_ = d;
 	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a double value >>>>\n", name_.get(), text_from_VT(type_));
 }
 
@@ -217,7 +217,7 @@ const char *Variable::asCharacter()
 			return charValue_.get();
 		case (VT_INTEGER):
 			return itoa(intValue_);
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			return ftoa(doubleValue_);
 		default:
 			msg(Debug::Verbose,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
@@ -234,7 +234,7 @@ int Variable::asInteger()
 			return atoi(charValue_.get());
 		case (VT_INTEGER):
 			return intValue_;
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			return int(doubleValue_);
 		default:
 			msg(Debug::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
@@ -251,7 +251,7 @@ double Variable::asDouble()
 			return atof(charValue_.get());
 		case (VT_INTEGER):
 			return double(intValue_);
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			return doubleValue_;
 		default:
 			msg(Debug::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
@@ -285,7 +285,7 @@ void Variable::reset()
 		case (VT_INTEGER):
 			intValue_ = 0;
 			break;
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			doubleValue_ = 0.0;
 			break;
 		case (VT_ATOM):
@@ -308,7 +308,7 @@ void Variable::increase(int n)
 		case (VT_INTEGER):
 			intValue_ ++;
 			break;
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			doubleValue_ += 1.0;
 			break;
 		case (VT_ATOM):
@@ -342,7 +342,7 @@ void Variable::decrease(int n)
 		case (VT_INTEGER):
 			intValue_ --;
 			break;
-		case (VT_DOUBLE):
+		case (VT_FLOAT):
 			doubleValue_ -= 1.0;
 			break;
 		case (VT_ATOM):
@@ -446,7 +446,7 @@ Variable *VariableList::addConstant(const char *s)
 	}
 	// Based on the numbers we calculated, try to determine its type_
 	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) result->setType(VT_CHAR);
-	else if (ndp == 1) result->setType(VT_DOUBLE);
+	else if (ndp == 1) result->setType(VT_FLOAT);
 	else result->setType(VT_INTEGER);
 	//printf("DETERMINED CONSTANT '%s' TO BE OF TYPE '%s'\n",s,text_from_VT(result->get_type_()));
 	result->setConstant();
@@ -484,7 +484,7 @@ void VariableList::set(const char *prefix, const char *suffix, int value)
 	v->set(value);
 }
 
-// Set existing variable (or add new and set) (VT_DOUBLE)
+// Set existing variable (or add new and set) (VT_FLOAT)
 void VariableList::set(const char *prefix, const char *suffix, double value)
 {
 	static char newname[128];
@@ -495,7 +495,7 @@ void VariableList::set(const char *prefix, const char *suffix, double value)
 		strcat(newname,suffix);
 	}
 	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, VT_DOUBLE);
+	if (v == NULL) v = addVariable(newname, VT_FLOAT);
 	v->set(value);
 }
 
