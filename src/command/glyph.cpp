@@ -43,7 +43,7 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 }
 
 // Associate atom with current glyph
-int CommandData::function_CA_SETGLYPHATOMF(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
@@ -67,7 +67,7 @@ int CommandData::function_CA_SETGLYPHATOMF(Command *&c, Bundle &obj)
 }
 
 // Associate atom with current glyph
-int CommandData::function_CA_SETGLYPHATOMR(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
@@ -91,7 +91,7 @@ int CommandData::function_CA_SETGLYPHATOMR(Command *&c, Bundle &obj)
 }
 
 // Associate atom with current glyph
-int CommandData::function_CA_SETGLYPHATOMV(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
@@ -115,7 +115,7 @@ int CommandData::function_CA_SETGLYPHATOMV(Command *&c, Bundle &obj)
 }
 
 // Associate atoms with current glyph
-int CommandData::function_CA_SETGLYPHATOMSF(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -137,7 +137,7 @@ int CommandData::function_CA_SETGLYPHATOMSF(Command *&c, Bundle &obj)
 }
 
 // Associate atoms with current glyph
-int CommandData::function_CA_SETGLYPHATOMSR(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -158,7 +158,7 @@ int CommandData::function_CA_SETGLYPHATOMSR(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 // Associate atoms with current glyph
-int CommandData::function_CA_SETGLYPHATOMSV(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -180,7 +180,7 @@ int CommandData::function_CA_SETGLYPHATOMSV(Command *&c, Bundle &obj)
 }
 
 // Store vector data in current glyph
-int CommandData::function_CA_SETGLYPHDATA(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHDATA(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
@@ -195,7 +195,7 @@ int CommandData::function_CA_SETGLYPHDATA(Command *&c, Bundle &obj)
 }
 
 // Set 'solid' property of current glyph
-int CommandData::function_CA_SETGLYPHSOLID(Command *&c, Bundle &obj)
+int CommandData::function_CA_GLYPHSOLID(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item

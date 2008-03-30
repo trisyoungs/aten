@@ -54,7 +54,7 @@ Filter *Master::probeFile(const char *filename, FilterType probetype)
 		if (dotpos != NULL)
 		{
 			// Parse file extension list into separate extensions
-			parser.getArgsDelim(f->extension(),PO_DEFAULTS);
+			parser.getArgsDelim(f->extension(),Parser::Defaults);
 			for (n=0; n<parser.nArgs(); n++)
 				if (strcmp(dotpos,parser.argc(n)) == 0)
 				{
@@ -65,7 +65,7 @@ Filter *Master::probeFile(const char *filename, FilterType probetype)
 		if (result != NULL) break;
 		// Try to match exact filename
 		// Parse file extension list into separate extensions
-		parser.getArgsDelim(f->exactNames(),PO_DEFAULTS);
+		parser.getArgsDelim(f->exactNames(),Parser::Defaults);
 		for (n=0; n<parser.nArgs(); n++)
 		{
 			//printf("Comparing '%s' with '%s'\n",nameonly.get(),parser.argc(n));

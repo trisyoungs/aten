@@ -32,6 +32,7 @@ enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIM
 
 // Bitmap Formats
 enum bitmap_format { BIF_BMP, BIF_JPG, BIF_PNG, BIF_PPM, BIF_XBM, BIF_X11, BIF_NITEMS };
+bitmap_format BIF_from_text(const char *);
 const char *filter_from_BIF(bitmap_format);
 const char *extension_from_BIF(bitmap_format);
 

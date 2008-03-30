@@ -142,7 +142,7 @@ bool Filter::load(ifstream &filterFile)
 	// Read in commands
 	while (!filterFile.eof())
 	{
-		success = parser.getArgsDelim(&filterFile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&filterFile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
 			msg(Debug::None,"Filter::load - Error reading filter file.\n");
@@ -256,21 +256,21 @@ void Filter::setType(FilterType ft)
 			break;
 		case (FT_MODEL_EXPORT):
 			v = commands_.variables.createVariable("cell","type",VT_CHAR);
-			v = commands_.variables.createVariable("cell","a",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","b",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","c",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","alpha",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","beta",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","gamma",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","ax",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","ay",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","az",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","bx",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","by",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","bz",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","cx",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","cy",VT_DOUBLE);
-			v = commands_.variables.createVariable("cell","cz",VT_DOUBLE);
+			v = commands_.variables.createVariable("cell","a",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","b",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","c",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","alpha",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","beta",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","gamma",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","ax",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","ay",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","az",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","bx",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","by",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","bz",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","cx",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","cy",VT_FLOAT);
+			v = commands_.variables.createVariable("cell","cz",VT_FLOAT);
 			v = commands_.variables.createVariable("natoms","",VT_INTEGER);
 			v = commands_.variables.createVariable("title","",VT_CHAR);
 			break;

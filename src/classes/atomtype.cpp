@@ -137,7 +137,7 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 	ForcefieldAtom *ffa;
 	Dnchar temp;
 	// Find number of elements given in list...
-	parser.getArgsDelim(ellist,PO_DEFAULTS);
+	parser.getArgsDelim(ellist,Parser::Defaults);
 	// Use 'nargs' to allocate element list
 	nAllowedElements_ = parser.nArgs();
 	allowedElements_ = new int[nAllowedElements_];

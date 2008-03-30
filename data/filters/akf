@@ -23,24 +23,24 @@ importmodel
 		elseif $keywd = arrow
 			readvar $line "$i $j"
 			newglyph arrow
-			setglyphatomr 1 $i
-			setglyphatomr 2 $j
+			glyphatomr 1 $i
+			glyphatomr 2 $j
 		elseif $keywd = sphere
 			readvar $line "$i $rx $ry $rz"
 			newglyph sphere
-			setglyphatomr 1 $i
-			setglyphdata 2 $rx $ry $rz
+			glyphatomr 1 $i
+			glyphdata 2 $rx $ry $rz
 		elseif $keywd = cube
 			readvar $line "$i $rx $ry $rz"
 			newglyph cube
-			setglyphatomr 1 $i
-			setglyphdata 2 $rx $ry $rz
+			glyphatomr 1 $i
+			glyphdata 2 $rx $ry $rz
 		elseif $keywd = tet
 			readvar $line "$i $j $k"
 			newglyph tetrahedron
-			setglyphatomr 1 $i
-			setglyphatomr 2 $j
-			setglyphatomr 3 $k
+			glyphatomr 1 $i
+			glyphatomr 2 $j
+			glyphatomr 3 $k
 		end if
 	end
 	rebond

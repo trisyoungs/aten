@@ -21,13 +21,31 @@
 
 #include "command/commandlist.h"
 #include "base/debug.h"
+#include "base/master.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
+#include "classes/grid.h"
 
 // Save current view as bitmap image
 int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	return CR_FAIL;
+	// Flag any surfaces to be rerendered for use in this context
+	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
+	// Create a QPixmap of the current scene
+	QPixmap pixmap = gui.mainWindow->ui.ModelView->renderPixmap(0,0,FALSE);
+	// Flag any surfaces to be rerendered so they are redisplayed in the original context
+	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
+
+	// Convert format to bitmap_format
+	bitmap_format bf = BIF_from_text(c->argc(0));
+	if (bf != BIF_NITEMS) pixmap.save(c->argc(1), extension_from_BIF(bf), -1);
+	else
+	{
+		msg(Debug::None,"Unrecognised bitmap format.\n");
+		return CR_FAIL;
+	}
+	return CR_SUCCESS;
 }
 
 // Save current view a vector graphic

@@ -27,9 +27,10 @@
 Parser parser;
 
 // Parse options
-const char *PO_strings[PO_NITEMS] = { "__DEFAULT__", "usequotes", "skipblanks", "stripbrackets", "__DUMMY__" };
-ParseOption PO_from_text(const char *s)
-	{ return (ParseOption) int(pow(2,enumSearch("parse option",PO_NITEMS,PO_strings,s))); }
+const char *ParseOptionKeywords[Parser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "__DUMMY__" };
+Parser::ParseOption Parser::parseOption(const char *s)
+{
+	return (Parser::ParseOption) int(pow(2,enumSearch("parse option", Parser::nParseOptions, ParseOptionKeywords, s))); }
 
 // Constructor
 Parser::Parser()
@@ -37,7 +38,7 @@ Parser::Parser()
 	// Private variables
 	endOfLine_ = FALSE;
 	nArgs_ = 0;
-	optionMask_ = PO_DEFAULTS;
+	optionMask_ = Parser::Defaults;
 }
 
 /*
@@ -80,10 +81,10 @@ bool Parser::getNextArg(int destarg)
 				else if (arglen != 0) done = TRUE;
 				break;
 			// Quote marks
-			// If PO_USEQUOTES, keep delimiters and other quote marks inside the quoted text.
+			// If Parser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
-				if (!(optionMask_&PO_USEQUOTES)) break;
+				if (!(optionMask_&Parser::UseQuotes)) break;
 				if (quotechar == '\0') quotechar = c;
 				else if (quotechar == c)
 				{
@@ -100,7 +101,7 @@ bool Parser::getNextArg(int destarg)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask_&PO_STRIPBRACKETS) break;
+				if (optionMask_&Parser::StripBrackets) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -149,7 +150,7 @@ bool Parser::getNextN(int length)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask_&PO_STRIPBRACKETS) break;
+				if (optionMask_&Parser::StripBrackets) break;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -248,7 +249,7 @@ int Parser::getArgsDelim(ifstream *xfile, int options)
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
 		getAllArgsDelim(line_);
-		if ((optionMask_&PO_SKIPBLANKS) && (nArgs_ == 0)) done = FALSE;
+		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
 	dbgEnd(Debug::Parse,"Parser::getArgsDelim[file]");
 	return 0;
@@ -391,7 +392,7 @@ int Parser::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
 		getAllArgsFormatted(line_,fmt);
-		if ((optionMask_&PO_SKIPBLANKS) && (nArgs_ == 0)) done = FALSE;
+		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
 	dbgEnd(Debug::Parse,"Parser::getArgsFormatted[file]");
 	return 0;

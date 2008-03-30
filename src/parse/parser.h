@@ -32,10 +32,6 @@ using namespace std;
 #define MAXARGLENGTH 256
 #define MAXLINELENGTH 1024
 
-// Parse Options
-enum ParseOption { PO_DEFAULTS=1, PO_USEQUOTES=2, PO_SKIPBLANKS=4, PO_STRIPBRACKETS=8, PO_DUMMY=16, PO_NITEMS=5};
-ParseOption PO_from_text(const char*);
-
 // Forward declarations
 class Format;
 
@@ -45,6 +41,9 @@ class Parser
 	public:
 	// Constructor
 	Parser();
+	// Parse Options
+	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, Dummy=16, nParseOptions=5};
+	static ParseOption parseOption(const char*);
 
 	/*
 	// Set Source Line

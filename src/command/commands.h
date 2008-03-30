@@ -42,7 +42,7 @@ enum CommandAction {
 	// Variable declaration
 	CA_CHAR,
 	CA_INT,
-	CA_DOUBLE,
+	CA_FLOAT,
 	CA_ATOM,
 	CA_PATTERN,
 	CA_MODEL,
@@ -183,27 +183,27 @@ enum CommandAction {
 	CA_TYPETEST,
 
 	// Glyph commands
+	CA_GLYPHATOMF,
+	CA_GLYPHATOMR,
+	CA_GLYPHATOMV,
+	CA_GLYPHATOMSF,
+	CA_GLYPHATOMSR,
+	CA_GLYPHATOMSV,
+	CA_GLYPHDATA,
+	CA_GLYPHSOLID,
 	CA_NEWGLYPH,
-	CA_SETGLYPHATOMF,
-	CA_SETGLYPHATOMR,
-	CA_SETGLYPHATOMV,
-	CA_SETGLYPHATOMSF,
-	CA_SETGLYPHATOMSR,
-	CA_SETGLYPHATOMSV,
-	CA_SETGLYPHDATA,
-	CA_SETGLYPHSOLID,
 
 	// Grid Commands
 	CA_ADDGRIDPOINT,
 	CA_ADDNEXTGRIDPOINT,
 	CA_FINALISEGRID,
 	CA_NEWGRID,
-	CA_SETGRID,
-	CA_SETGRIDCUBIC,
-	CA_SETGRIDLOOPORDER,
-	CA_SETGRIDORIGIN,
-	CA_SETGRIDORTHO,
-	CA_SETGRIDSIZE,
+	CA_GRIDAXES,
+	CA_GRIDCUBIC,
+	CA_GRIDLOOPORDER,
+	CA_GRIDORIGIN,
+	CA_GRIDORTHO,
+	CA_GRIDSIZE,
 
 	// Image Commands
 	CA_SAVEBITMAP,
@@ -245,7 +245,7 @@ enum CommandAction {
 	CA_MODELTEMPLATE,
 	CA_NEWMODEL,
 	CA_SAVEMODEL,
-	CA_SETTITLE,
+	CA_TITLE,
 
 	// Pattern Commands
 	CA_CLEARPATTERNS,
@@ -280,7 +280,7 @@ enum CommandAction {
 	CA_ADDREADOPTION,
 	CA_FIND,
 	CA_READCHARS,
-	CA_READDOUBLE,
+	CA_READFLOAT,
 	CA_READINTEGER,
 	CA_READLINE,
 	CA_READNEXT,
@@ -297,11 +297,11 @@ enum CommandAction {
 	CA_RUNSCRIPT,
 
 	// Select Commands
+	CA_INVERT,
 	CA_SELECTALL,
 	CA_SELECTATOM,
 	CA_SELECTELEMENT,
 	CA_SELECTFFTYPE,
-	CA_SELECTINVERT,
 	CA_SELECTNONE,
 	CA_SELECTOVERLAPS,
 	CA_SELECTPATTERN,
@@ -311,7 +311,7 @@ enum CommandAction {
 	CA_GETSITE,
 	CA_LISTSITES,
 	CA_NEWSITE,
-	CA_SETAXES,
+	CA_SITEAXES,
 
 	// System commands
 	CA_GUI,
@@ -493,26 +493,26 @@ class CommandData
 	int function_CA_TYPEMODEL(Command *&c, Bundle &obj);
 	int function_CA_TYPETEST(Command *&c, Bundle &obj);
 	// Glyph commands
+	int function_CA_GLYPHATOMF(Command *&c, Bundle &obj);
+	int function_CA_GLYPHATOMR(Command *&c, Bundle &obj);
+	int function_CA_GLYPHATOMV(Command *&c, Bundle &obj);
+	int function_CA_GLYPHATOMSF(Command *&c, Bundle &obj);
+	int function_CA_GLYPHATOMSR(Command *&c, Bundle &obj);
+	int function_CA_GLYPHATOMSV(Command *&c, Bundle &obj);
+	int function_CA_GLYPHDATA(Command *&c, Bundle &obj);
+	int function_CA_GLYPHSOLID(Command *&c, Bundle &obj);
 	int function_CA_NEWGLYPH(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHATOMF(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHATOMR(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHATOMV(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHATOMSF(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHATOMSR(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHATOMSV(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHDATA(Command *&c, Bundle &obj);
-	int function_CA_SETGLYPHSOLID(Command *&c, Bundle &obj);
 	// Grid Commands
 	int function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj);
 	int function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj);
 	int function_CA_FINALISEGRID(Command *&c, Bundle &obj);
+	int function_CA_GRIDAXES(Command *&c, Bundle &obj);
+	int function_CA_GRIDCUBIC(Command *&c, Bundle &obj);
+	int function_CA_GRIDORTHO(Command *&c, Bundle &obj);
+	int function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj);
+	int function_CA_GRIDORIGIN(Command *&c, Bundle &obj);
+	int function_CA_GRIDSIZE(Command *&c, Bundle &obj);
 	int function_CA_NEWGRID(Command *&c, Bundle &obj);
-	int function_CA_SETGRID(Command *&c, Bundle &obj);
-	int function_CA_SETGRIDCUBIC(Command *&c, Bundle &obj);
-	int function_CA_SETGRIDLOOPORDER(Command *&c, Bundle &obj);
-	int function_CA_SETGRIDORIGIN(Command *&c, Bundle &obj);
-	int function_CA_SETGRIDORTHO(Command *&c, Bundle &obj);
-	int function_CA_SETGRIDSIZE(Command *&c, Bundle &obj);
 	// Image Commands
 	int function_CA_SAVEBITMAP(Command *&c, Bundle &obj);
 	int function_CA_SAVEVECTOR(Command *&c, Bundle &obj);
@@ -548,7 +548,7 @@ class CommandData
 	int function_CA_MODELTEMPLATE(Command *&c, Bundle &obj);
 	int function_CA_NEWMODEL(Command *&c, Bundle &obj);
 	int function_CA_SAVEMODEL(Command *&c, Bundle &obj);
-	int function_CA_SETTITLE(Command *&c, Bundle &obj);
+	int function_CA_TITLE(Command *&c, Bundle &obj);
 	// Pattern Commands
 	int function_CA_CLEARPATTERNS(Command *&c, Bundle &obj);
 	int function_CA_CREATEPATTERNS(Command *&c, Bundle &obj);
@@ -580,7 +580,7 @@ class CommandData
 	int function_CA_ADDREADOPTION(Command *&c, Bundle &obj);
 	int function_CA_FIND(Command *&c, Bundle &obj);
 	int function_CA_READCHARS(Command *&c, Bundle &obj);
-	int function_CA_READDOUBLE(Command *&c, Bundle &obj);
+	int function_CA_READFLOAT(Command *&c, Bundle &obj);
 	int function_CA_READINTEGER(Command *&c, Bundle &obj);
 	int function_CA_READLINE(Command *&c, Bundle &obj);
 	int function_CA_READNEXT(Command *&c, Bundle &obj);
@@ -595,11 +595,11 @@ class CommandData
 	int function_CA_LOADSCRIPT(Command *&c, Bundle &obj);
 	int function_CA_RUNSCRIPT(Command *&c, Bundle &obj);
 	// Select Commands
+	int function_CA_INVERT(Command *&c, Bundle &obj);
 	int function_CA_SELECTALL(Command *&c, Bundle &obj);
 	int function_CA_SELECTATOM(Command *&c, Bundle &obj);
 	int function_CA_SELECTELEMENT(Command *&c, Bundle &obj);
 	int function_CA_SELECTFFTYPE(Command *&c, Bundle &obj);
-	int function_CA_SELECTINVERT(Command *&c, Bundle &obj);
 	int function_CA_SELECTNONE(Command *&c, Bundle &obj);
 	int function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj);
 	int function_CA_SELECTPATTERN(Command *&c, Bundle &obj);
@@ -608,7 +608,7 @@ class CommandData
 	int function_CA_GETSITE(Command *&c, Bundle &obj);
 	int function_CA_LISTSITES(Command *&c, Bundle &obj);
 	int function_CA_NEWSITE(Command *&c, Bundle &obj);
-	int function_CA_SETAXES(Command *&c, Bundle &obj);
+	int function_CA_SITEAXES(Command *&c, Bundle &obj);
 	// System Commands
 	int function_CA_GUI(Command *&c, Bundle &obj);
 	int function_CA_SEED(Command *&c, Bundle &obj);

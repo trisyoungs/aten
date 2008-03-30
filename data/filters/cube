@@ -19,14 +19,14 @@ importgrid
 
 	# Line 3: Number of atoms and coordinate origin of surface
 	readline "$natoms $ox $oy $oz"
-	setgridorigin $ox $oy $oz
+	gridorigin $ox $oy $oz
 
 	# Lines 4-6: Number of voxels and axis vector
 	readline "$nx $xx $xy $xz"
 	readline "$ny $yx $yy $yz"
 	readline "$nz $zx $zy $zz"
-	setgridsize $nx $ny $nz
-	setgrid $xx $xy $xz $yx $yy $yz $zx $zy $zz
+	gridsize $nx $ny $nz
+	gridaxes $xx $xy $xz $yx $yy $yz $zx $zy $zz
 
 	# Lines 7-(7+natoms) Molecule Definition
 	newmodel $title

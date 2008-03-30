@@ -162,26 +162,26 @@ void Master::initCommands()
 
 	// Glyph commands
 	CA_data[CA_NEWGLYPH].function = &CommandData::function_CA_NEWGLYPH;
-	CA_data[CA_SETGLYPHATOMF].function = &CommandData::function_CA_SETGLYPHATOMF;
-	CA_data[CA_SETGLYPHATOMR].function = &CommandData::function_CA_SETGLYPHATOMR;
-	CA_data[CA_SETGLYPHATOMV].function = &CommandData::function_CA_SETGLYPHATOMV;
-	CA_data[CA_SETGLYPHATOMSF].function = &CommandData::function_CA_SETGLYPHATOMSF;
-	CA_data[CA_SETGLYPHATOMSR].function = &CommandData::function_CA_SETGLYPHATOMSR;
-	CA_data[CA_SETGLYPHATOMSV].function = &CommandData::function_CA_SETGLYPHATOMSV;
-	CA_data[CA_SETGLYPHDATA].function = &CommandData::function_CA_SETGLYPHDATA;
-	CA_data[CA_SETGLYPHSOLID].function = &CommandData::function_CA_SETGLYPHSOLID;
+	CA_data[CA_GLYPHATOMF].function = &CommandData::function_CA_GLYPHATOMF;
+	CA_data[CA_GLYPHATOMR].function = &CommandData::function_CA_GLYPHATOMR;
+	CA_data[CA_GLYPHATOMV].function = &CommandData::function_CA_GLYPHATOMV;
+	CA_data[CA_GLYPHATOMSF].function = &CommandData::function_CA_GLYPHATOMSF;
+	CA_data[CA_GLYPHATOMSR].function = &CommandData::function_CA_GLYPHATOMSR;
+	CA_data[CA_GLYPHATOMSV].function = &CommandData::function_CA_GLYPHATOMSV;
+	CA_data[CA_GLYPHDATA].function = &CommandData::function_CA_GLYPHDATA;
+	CA_data[CA_GLYPHSOLID].function = &CommandData::function_CA_GLYPHSOLID;
 
 	// Grid Commands
 	CA_data[CA_ADDGRIDPOINT].function = &CommandData::function_CA_ADDGRIDPOINT;
 	CA_data[CA_ADDNEXTGRIDPOINT].function = &CommandData::function_CA_ADDNEXTGRIDPOINT;
 	CA_data[CA_FINALISEGRID].function = &CommandData::function_CA_FINALISEGRID;
 	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
-	CA_data[CA_SETGRID].function = &CommandData::function_CA_SETGRID;
-	CA_data[CA_SETGRIDCUBIC].function = &CommandData::function_CA_SETGRIDCUBIC;
-	CA_data[CA_SETGRIDLOOPORDER].function = &CommandData::function_CA_SETGRIDLOOPORDER;
-	CA_data[CA_SETGRIDORIGIN].function = &CommandData::function_CA_SETGRIDORIGIN;
-	CA_data[CA_SETGRIDORTHO].function = &CommandData::function_CA_SETGRIDORTHO;
-	CA_data[CA_SETGRIDSIZE].function = &CommandData::function_CA_SETGRIDSIZE;
+	CA_data[CA_GRIDAXES].function = &CommandData::function_CA_GRIDAXES;
+	CA_data[CA_GRIDCUBIC].function = &CommandData::function_CA_GRIDCUBIC;
+	CA_data[CA_GRIDLOOPORDER].function = &CommandData::function_CA_GRIDLOOPORDER;
+	CA_data[CA_GRIDORIGIN].function = &CommandData::function_CA_GRIDORIGIN;
+	CA_data[CA_GRIDORTHO].function = &CommandData::function_CA_GRIDORTHO;
+	CA_data[CA_GRIDSIZE].function = &CommandData::function_CA_GRIDSIZE;
 
 	// Image Commands
 	CA_data[CA_SAVEBITMAP].function = &CommandData::function_CA_SAVEBITMAP;
@@ -223,7 +223,7 @@ void Master::initCommands()
 	CA_data[CA_NEWMODEL].function = &CommandData::function_CA_NEWMODEL;
 	CA_data[CA_INFO].function = &CommandData::function_CA_INFO;
 	CA_data[CA_SAVEMODEL].function = &CommandData::function_CA_SAVEMODEL;
-	CA_data[CA_SETTITLE].function = &CommandData::function_CA_SETTITLE;
+	CA_data[CA_TITLE].function = &CommandData::function_CA_TITLE;
 
 	// Pattern Commands
 	CA_data[CA_CLEARPATTERNS].function = &CommandData::function_CA_CLEARPATTERNS;
@@ -258,7 +258,7 @@ void Master::initCommands()
 	CA_data[CA_ADDREADOPTION].function = &CommandData::function_CA_ADDREADOPTION;
 	CA_data[CA_FIND].function = &CommandData::function_CA_FIND;
 	CA_data[CA_READCHARS].function = &CommandData::function_CA_READCHARS;
-	CA_data[CA_READDOUBLE].function = &CommandData::function_CA_READDOUBLE;
+	CA_data[CA_READFLOAT].function = &CommandData::function_CA_READFLOAT;
 	CA_data[CA_READINTEGER].function = &CommandData::function_CA_READINTEGER;
 	CA_data[CA_READLINE].function = &CommandData::function_CA_READLINE;
 	CA_data[CA_READNEXT].function = &CommandData::function_CA_READNEXT;
@@ -275,11 +275,11 @@ void Master::initCommands()
 	CA_data[CA_RUNSCRIPT].function = &CommandData::function_CA_RUNSCRIPT;
 
 	// Select Commands
+	CA_data[CA_INVERT].function = &CommandData::function_CA_INVERT;
 	CA_data[CA_SELECTALL].function = &CommandData::function_CA_SELECTALL;
 	CA_data[CA_SELECTATOM].function = &CommandData::function_CA_SELECTATOM;
 	CA_data[CA_SELECTELEMENT].function = &CommandData::function_CA_SELECTELEMENT;
 	CA_data[CA_SELECTFFTYPE].function = &CommandData::function_CA_SELECTFFTYPE;
-	CA_data[CA_SELECTINVERT].function = &CommandData::function_CA_SELECTINVERT;
 	CA_data[CA_SELECTNONE].function = &CommandData::function_CA_SELECTNONE;
 	CA_data[CA_SELECTOVERLAPS].function = &CommandData::function_CA_SELECTOVERLAPS;
 	CA_data[CA_SELECTTYPE].function = &CommandData::function_CA_SELECTTYPE;
@@ -288,7 +288,7 @@ void Master::initCommands()
 	CA_data[CA_GETSITE].function = &CommandData::function_CA_GETSITE;
 	CA_data[CA_LISTSITES].function = &CommandData::function_CA_LISTSITES;
 	CA_data[CA_NEWSITE].function = &CommandData::function_CA_NEWSITE;
-	CA_data[CA_SETAXES].function = &CommandData::function_CA_SETAXES;
+	CA_data[CA_SITEAXES].function = &CommandData::function_CA_SITEAXES;
 
 	// System Commands
 	CA_data[CA_GUI].function = &CommandData::function_CA_GUI;

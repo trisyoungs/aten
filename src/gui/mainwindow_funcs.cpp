@@ -129,7 +129,7 @@ void AtenForm::executeCommand()
 	// Clear old script commands
 	master.tempScript.clear();
 	// Grab the current text of the line edit
-	parser.getArgsDelim(qPrintable(commandEdit_->text()), PO_USEQUOTES);
+	parser.getArgsDelim(qPrintable(commandEdit_->text()), Parser::UseQuotes);
 	// Check for no commands given
 	if (parser.nArgs() == 0) return;
 	if (master.tempScript.cacheCommand()) master.tempScript.execute(NULL);

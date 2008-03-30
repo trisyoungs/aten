@@ -245,7 +245,7 @@ int Master::parseCli(int argc, char *argv[])
 					// Set type mappings
 					case (Cli::MapSwitch):
 						// Get the argument and parse it internally
-						parser.getArgsDelim(argv[++argn], PO_DEFAULTS);
+						parser.getArgsDelim(argv[++argn], Parser::Defaults);
 						for (n=0; n<parser.nArgs(); n++)
 						{
 							el = elements.find(afterChar(parser.argc(n), '='));

@@ -607,7 +607,7 @@ bool CommandList::addCommand(CommandAction ca)
 		*/
 		case (CA_CHAR):
 		case (CA_INT):
-		case (CA_DOUBLE):
+		case (CA_FLOAT):
 		case (CA_ATOM):
 		case (CA_PATTERN):
 		case (CA_MODEL):
@@ -771,7 +771,7 @@ bool CommandList::cacheLine(const char *s)
 	for (int n=0; n<lines.nArgs(); n++)
 	{
 		// Parse the argument in our local line_parser and call cache_command())
-		parser.getArgsDelim(lines.argc(n), PO_USEQUOTES+PO_SKIPBLANKS);
+		parser.getArgsDelim(lines.argc(n), Parser::UseQuotes+Parser::SkipBlanks);
 		if (!cacheCommand())
 		{
 			dbgEnd(Debug::Calls,"CommandList::cacheLine");
@@ -830,12 +830,12 @@ const char *CommandList::filename() {
 }
 
 // Add read option
-void CommandList::addReadOption(ParseOption po) {
+void CommandList::addReadOption(Parser::ParseOption po) {
 	if (!(readOptions_&po)) readOptions_ += po;
 }
 
 // Remove read option
-void CommandList::removeReadOption(ParseOption po) {
+void CommandList::removeReadOption(Parser::ParseOption po) {
 	if (readOptions_&po) readOptions_ -= po;
 }
 
@@ -857,7 +857,7 @@ bool CommandList::load(const char *filename)
 	// Read in commands
 	while (!cmdfile.eof())
 	{
-		success = parser.getArgsDelim(&cmdfile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&cmdfile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
 			msg(Debug::None,"CommandList::load - Error reading command file.\n");
@@ -1060,7 +1060,7 @@ bool CommandList::createAtomVariables(const char *base)
 	Variable *v;
 	v = variables.createVariable(base,"symbol",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"mass",VT_DOUBLE);
+	v = variables.createVariable(base,"mass",VT_FLOAT);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"name",VT_CHAR);
 	if (v == NULL) return FALSE;
@@ -1072,25 +1072,25 @@ bool CommandList::createAtomVariables(const char *base)
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"ffequiv",VT_CHAR);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"q",VT_DOUBLE);
+	v = variables.createVariable(base,"q",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rx",VT_DOUBLE);
+	v = variables.createVariable(base,"rx",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ry",VT_DOUBLE);
+	v = variables.createVariable(base,"ry",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rz",VT_DOUBLE);
+	v = variables.createVariable(base,"rz",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fx",VT_DOUBLE);
+	v = variables.createVariable(base,"fx",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fy",VT_DOUBLE);
+	v = variables.createVariable(base,"fy",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fz",VT_DOUBLE);
+	v = variables.createVariable(base,"fz",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vx",VT_DOUBLE);
+	v = variables.createVariable(base,"vx",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vy",VT_DOUBLE);
+	v = variables.createVariable(base,"vy",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vz",VT_DOUBLE);
+	v = variables.createVariable(base,"vz",VT_FLOAT);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -1194,12 +1194,12 @@ bool CommandList::createPatternBoundVariables(const char *base)
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,VT_DOUBLE);
+		v = variables.createVariable(base,parm,VT_FLOAT);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.createVariable(base,"escale",VT_DOUBLE);
+	v = variables.createVariable(base,"escale",VT_FLOAT);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vscale",VT_DOUBLE);
+	v = variables.createVariable(base,"vscale",VT_FLOAT);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -1271,10 +1271,10 @@ bool CommandList::createAtomtypeVariables(const char *base)
 	for (i = 0; i < MAXFFPARAMDATA; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,VT_DOUBLE);
+		v = variables.createVariable(base,parm,VT_FLOAT);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.createVariable(base,"q",VT_DOUBLE);
+	v = variables.createVariable(base,"q",VT_FLOAT);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"id",VT_INTEGER);
 	if (v == NULL) return FALSE;

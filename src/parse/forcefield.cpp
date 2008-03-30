@@ -57,7 +57,7 @@ bool Forcefield::load(const char *filename)
 	do
 	{
 		okay = FALSE;
-		success = parser.getArgsDelim(&fffile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
 			msg(Debug::None,"EreadVdwor reading FF directive.\n");
@@ -162,7 +162,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 	// Format of lines is 'ffid typename element description'
 	do
 	{
-		success = parser.getArgsDelim(&fffile,PO_USEQUOTES+PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg(Debug::None,"File ereadVdwor while reading atom type description %i.\n", types_.nItems());
@@ -218,7 +218,7 @@ bool Forcefield::readGenerator(ifstream &fffile)
 	count = 0;
 	do
 	{
-		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg(Debug::None,"File ereadVdwor while reading generator data for atom %i.\n",count+1);
@@ -269,7 +269,7 @@ bool Forcefield::readEquivalents(ifstream &fffile)
 	count = 0;
 	do
 	{
-		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg(Debug::None,"File ereadVdwor while reading equivalents data for atom %i.\n",count+1);
@@ -317,7 +317,7 @@ bool Forcefield::readVdw(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'ffid  fftype   charge  data1  data2  ...  dataN'
-		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg(Debug::None,"File ereadVdwor reading VDW data for atom %i.\n",count+1);
@@ -369,7 +369,7 @@ bool Forcefield::readBonds(ifstream &fffile)
 	{
 		// Format of lines is: 'fftype1  fftype2   data1  data2  ...  dataN'
 		// N.B. If data1 == 'same' then reuse the last data read in.
-		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg(Debug::None,"File ereadVdwor reading bond data %i.\n",count+1);
@@ -424,7 +424,7 @@ bool Forcefield::readAngles(ifstream &fffile)
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  data1  data2  ...  dataN'
 		// N.B. If data1 == 'same' then reuse the last data read in.
-		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg(Debug::None,"File ereadVdwor reading angle data %i.\n",count+1);
@@ -480,7 +480,7 @@ bool Forcefield::readTorsions(ifstream &fffile)
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  fftype4  data1  data2  ...  dataN'
 		// N.B. If data1 == 'same' then reuse the last data read in.
-		success = parser.getArgsDelim(&fffile,PO_SKIPBLANKS);
+		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) msg(Debug::None,"File ereadVdwor reading torsion data %i.\n",count+1);

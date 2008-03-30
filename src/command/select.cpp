@@ -77,7 +77,7 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 }
 
 // Invert selection
-int CommandData::function_CA_SELECTINVERT(Command *&c, Bundle &obj)
+int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->selectionInvert();

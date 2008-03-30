@@ -27,7 +27,7 @@
 #include "base/sysfunc.h"
 
 // variable Types
-enum VariableType { VT_CHAR, VT_INTEGER, VT_DOUBLE, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_ATOMTYPE, VT_NITEMS };
+enum VariableType { VT_CHAR, VT_INTEGER, VT_FLOAT, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_ATOMTYPE, VT_NITEMS };
 const char *text_from_VT(VariableType);
 
 // Forward Declarations
@@ -136,7 +136,7 @@ class VariableList
 	// Set existing (or create new) variable (VT_INT)
 	void set(const char*, const char*, int);
 	void set(const char *name, int value) { set(name,"",value); }
-	// Set existing (or create new) variable (VT_DOUBLE)
+	// Set existing (or create new) variable (VT_FLOAT)
 	void set(const char*, const char*, double);
 	void set(const char *name, double value) { set(name,"",value); }
 	// Retrieve a named variable from the list

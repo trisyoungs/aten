@@ -18,7 +18,7 @@ importmodel
 		if $keyword = HEADER
 			readvar $line "$title@100"
 			let $found = 1
-			settitle $title
+			title $title
 		elseif $keyword = CRYST1
 			readvar $line "$ca@9 $cb@9 $cc@9 $alpha@7 $beta@7 $gamma@7"
 			cell $ca $cb $cc $alpha $beta $gamma"
