@@ -110,6 +110,7 @@ void GuiQt::updateTrajControls()
 		mainWindow->ui.actionFrameNext->setDisabled(TRUE);
 		mainWindow->ui.actionFrameLast->setDisabled(TRUE);
 		mainWindow->ui.actionPlayPause->setDisabled(TRUE);
+		mainWindow->ui.actionViewTrajectory->setDisabled(TRUE);
 	}
 	else
 	{
@@ -130,6 +131,7 @@ void GuiQt::updateTrajControls()
 			mainWindow->ui.actionFrameLast->setDisabled(FALSE);
 			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
 		}
+		mainWindow->ui.actionViewTrajectory->setDisabled(FALSE);
 	}
 }
 
@@ -519,5 +521,6 @@ void GuiQt::stopTrajectoryPlayback()
 	mainWindow->ui.ModelView->killTimer(trajectoryTimerId_);
 	mainWindow->ui.actionPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
+	gui.updateTrajControls();
 	modelChanged();
 }
