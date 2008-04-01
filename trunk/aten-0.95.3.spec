@@ -28,7 +28,7 @@ Packager: Tristan Youngs
 # dependencies.
 AutoReq: yes
 
-BuildRequires: gcc-c++ libqt4 libqt4-devel Mesa-devel
+BuildRequires: gcc-c++ libqt4 libqt4-devel Mesa-devel readline-devel
 
 # In-depth description.
 %description
