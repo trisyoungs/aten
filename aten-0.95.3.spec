@@ -54,7 +54,7 @@ make install
 /usr/local/share/aten/
 
 %changelog
-* Tue Mar 01 2008 Tristan Youngs <tris@projectaten.com> 
+* Tue Apr 01 2008 Tristan Youngs <tris@projectaten.com> 
 - added dependencies list and long description.
 * Sun Mar 30 2008 Tristan Youngs <tris@projectaten.com> 
 - installation target points to local dir.
