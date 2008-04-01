@@ -5,7 +5,7 @@
 # Check that a new version name was supplied
 if [ "$#" -eq "1" ]
 then
-  echo "Improper version number supplied (use 'changeversion MAJOR MINOR RELEASE', or no args to check existing files)"
+  echo "Improper version number supplied (use 'changeversion MAJOR MINOR', or no args to check existing files)"
   exit 1
 fi
 
@@ -19,72 +19,68 @@ fi
 
 # src/main.cpp
 echo -n "        main.cpp (Program Version) : "
-if [ "$#" -eq "3" ]
+if [ "$#" -eq "2" ]
 then
   cp src/main.cpp src/main.cpp.orig
-  sed -e "s/\(.*\)Aten version [0-9\.\-]\+\(.*\)/\1Aten version $1.$2-$3\2/g" src/main.cpp.orig > src/main.cpp
+  sed -e "s/\(.*\)Aten version [0-9\.]\+\(.*\)/\1Aten version $1.$2\2/g" src/main.cpp.orig > src/main.cpp
 fi
-grep 'Aten version' src/main.cpp | sed -e 's/.*Aten version \([0-9\.\-]\+\).*/\1/g'
+grep 'Aten version' src/main.cpp | sed -e 's/.*Aten version \([0-9\.]\+\).*/\1/g'
 
 
 # src/gui/mainwindow_init.cpp
 echo -n "mainwindow_init.cpp (Window Title) : "
-if [ "$#" -eq "3" ]
+if [ "$#" -eq "2" ]
 then
   cp src/gui/mainwindow_init.cpp src/gui/mainwindow_init.cpp.orig
-  sed -e "s/(\"Aten (\([0-9\.\-]\+\))\")/(\"Aten ($1.$2-$3)\")/g" src/gui/mainwindow_init.cpp.orig > src/gui/mainwindow_init.cpp
+  sed -e "s/(\"Aten (\([0-9\.]\+\))\")/(\"Aten ($1.$2)\")/g" src/gui/mainwindow_init.cpp.orig > src/gui/mainwindow_init.cpp
 fi
-grep 'setWindowTitle("Aten' src/gui/mainwindow_init.cpp | sed -e 's/.*("Aten (\([0-9\.\-]\+\))");/\1/g'
+grep 'setWindowTitle("Aten' src/gui/mainwindow_init.cpp | sed -e 's/.*("Aten (\([0-9\.]\+\))");/\1/g'
 
 
 # ./CMakeLists.txt
-if [ "$#" -eq "3" ]
+if [ "$#" -eq "2" ]
 then
   cp ./CMakeLists.txt CMakeLists.txt.orig
-  sed -e "s/set(VERSION_MAJOR \"\([0-9\.\-]\+\)\")/set(VERSION_MAJOR \"$1\")/g" -e "s/set(VERSION_MINOR \"\([0-9\.\-]\+\)\")/set(VERSION_MINOR \"$2\")/g" -e "s/set(VERSION_PATCH \"\([0-9\.\-]\+\)\")/set(VERSION_PATCH \"$3\")/g" ./CMakeLists.txt.orig > CMakeLists.txt
+  sed -e "s/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/set(VERSION_MAJOR \"$1\")/g" -e "s/set(VERSION_MINOR \"\([0-9\.]\+\)\")/set(VERSION_MINOR \"$2\")/g" ./CMakeLists.txt.orig > CMakeLists.txt
 fi
 echo -n "  ./CMakeLists.txt (Major Version) : "
-grep 'set(VERSION_MAJOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MAJOR \"\([0-9\.\-]\+\)\")/\1/g'
+grep 'set(VERSION_MAJOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/\1/g'
 echo -n "                   (Minor Version) : "
-grep 'set(VERSION_MINOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MINOR \"\([0-9\.\-]\+\)\")/\1/g'
+grep 'set(VERSION_MINOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MINOR \"\([0-9\.]\+\)\")/\1/g'
 echo -n "                   (Patch Version) : "
-grep 'set(VERSION_PATCH' ./CMakeLists.txt | sed -e 's/set(VERSION_PATCH \"\([0-9\.\-]\+\)\")/\1/g'
+grep 'set(VERSION_PATCH' ./CMakeLists.txt | sed -e 's/set(VERSION_PATCH \"\([0-9\.]\+\)\")/\1/g'
 
 
 # ./configure.ac
 echo -n "  ./configure.ac (Package Version) : "
-if [ "$#" -eq "3" ]
+if [ "$#" -eq "2" ]
 then
   cp ./configure.ac ./configure.ac.orig
-  sed -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9\.\-]\+\)\])/m4_define([ATEN_VERSION],[$1.$2-$3])/g" ./configure.ac.orig > ./configure.ac
+  sed -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9\.]\+\)\])/m4_define([ATEN_VERSION],[$1.$2])/g" ./configure.ac.orig > ./configure.ac
 fi
-grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9\.\-]\+\)\])/\1/g'
+grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9\.]\+\)\])/\1/g'
 
 
 # ./Makefile.am
 echo -n "    ./Makefile.am (.spec filename) : "
-if [ "$#" -eq "3" ]
+if [ "$#" -eq "2" ]
 then
   cp ./Makefile.am ./Makefile.am.orig
-  sed -e "s/\(.*aten-\)\([0-9\.\-]\+\).spec/\1$1.$2-$3.spec/g" ./Makefile.am.orig > ./Makefile.am
+  sed -e "s/\(.*aten-\)\([0-9\.]\+\).spec/\1$1.$2.spec/g" ./Makefile.am.orig > ./Makefile.am
 fi
-grep 'EXTRA_DIST' ./Makefile.am | sed -e 's/.*aten-\([0-9\.\-]\+\).spec/\1/g'
+grep 'EXTRA_DIST' ./Makefile.am | sed -e 's/.*aten-\([0-9\.]\+\).spec/\1/g'
 # Change specfile name and contents
 OLDSPEC=`ls -1 aten*spec`
-if [ "$#" -eq "3" ]
+if [ "$#" -eq "2" ]
 then
   echo "Writing new specfile..."
-  sed -e "s/Version: [0-9\.\-]\+/Version: $1.$2/g" -e "s/Release: [0-9]\+/Release: $3/g" aten*spec > aten-$1.$2-$3.spec
-  grep "Version:" aten-$1.$2-$3.spec
-  grep "Release:" aten-$1.$2-$3.spec
-  set echo
+  sed -e "s/Version: [0-9\.]\+/Version: $1.$2/g" aten*spec > aten-$1.$2.spec
+  grep "Version:" aten-$1.$2.spec
   svn rm $OLDSPEC
-  svn add aten-$1.$2-$3.spec
-  unset echo
+  svn add aten-$1.$2.spec
 else
   echo "Old specfile:"
   grep "Version:" $OLDSPEC
-  grep "Release:" $OLDSPEC
 fi
 
 exit 0

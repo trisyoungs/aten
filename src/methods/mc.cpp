@@ -27,201 +27,116 @@
 #include "gui/gui.h"
 
 // Static Singleton
-MethodMc mc;
+MonteCarlo mc;
 
 // Monte Carlo move types
-const char *MT_strings[MT_NITEMS] = { "Translation", "Rotation", "Z-Matrix", "Insertion", "Deletion" };
-const char *MT_keywords[MT_NITEMS] = { "translate", "rotate", "zmatrix", "insert", "delete" };
-const char *text_from_MT(MonteCarloMove i)
-	{ return MT_strings[i]; };
-MonteCarloMove MT_from_text(const char *s)
-	{ return (MonteCarloMove) enumSearch("Monte Carlo move",MT_NITEMS,MT_keywords,s); }
+const char *MoveTypeKeywords[MonteCarlo::nMoveTypes] = { "Translate", "Rotate", "ZMatrix", "Insert", "Delete" };
+const char *MonteCarlo::moveTypeKeyword(MonteCarlo::MoveType mt)
+{
+	return MoveTypeKeywords[mt];
+}
 
-// Constructors
-MethodMc::MethodMc()
+MonteCarlo::MoveType MonteCarlo::moveType(const char *s)
+{
+	return (MonteCarlo::MoveType) enumSearch("Monte Carlo move", MonteCarlo::nMoveTypes, MoveTypeKeywords, s);
+}
+
+// Constructor
+MonteCarlo::MonteCarlo()
 {
 	// Private variables
-	maxStep_[MT_TRANSLATE] = 1.0;
-	maxStep_[MT_ROTATE] = 20.0;
-	maxStep_[MT_ZMATRIX] = 0.0;
-	nTrials_[MT_TRANSLATE] = 10;
-	nTrials_[MT_ROTATE] = 10; 
-	nTrials_[MT_ZMATRIX] = 0;
-	nTrials_[MT_INSERT] = 20;
-	nTrials_[MT_DELETE] = 0; 
-	moveAllowed_[MT_TRANSLATE] = TRUE;
-	moveAllowed_[MT_ROTATE] = TRUE;
-	moveAllowed_[MT_ZMATRIX] = FALSE;
-	moveAllowed_[MT_INSERT] = TRUE;
-	moveAllowed_[MT_DELETE] = TRUE; 
-	acceptanceEnergy_[MT_TRANSLATE] = 0.0;
-	acceptanceEnergy_[MT_ROTATE] = 0.0;
-	acceptanceEnergy_[MT_ZMATRIX] = 0.0;
-	acceptanceEnergy_[MT_INSERT] = 100.0;
-	acceptanceEnergy_[MT_DELETE] = 0.0;
+	maxStep_[MonteCarlo::Translate] = 1.0;
+	maxStep_[MonteCarlo::Rotate] = 20.0;
+	maxStep_[MonteCarlo::ZMatrix] = 0.0;
+	nTrials_[MonteCarlo::Translate] = 10;
+	nTrials_[MonteCarlo::Rotate] = 10; 
+	nTrials_[MonteCarlo::ZMatrix] = 0;
+	nTrials_[MonteCarlo::Insert] = 20;
+	nTrials_[MonteCarlo::Delete] = 0; 
+	moveAllowed_[MonteCarlo::Translate] = TRUE;
+	moveAllowed_[MonteCarlo::Rotate] = TRUE;
+	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
+	moveAllowed_[MonteCarlo::Insert] = TRUE;
+	moveAllowed_[MonteCarlo::Delete] = TRUE; 
+	acceptanceEnergy_[MonteCarlo::Translate] = 0.0;
+	acceptanceEnergy_[MonteCarlo::Rotate] = 0.0;
+	acceptanceEnergy_[MonteCarlo::ZMatrix] = 0.0;
+	acceptanceEnergy_[MonteCarlo::Insert] = 100.0;
+	acceptanceEnergy_[MonteCarlo::Delete] = 0.0;
 	acceptanceRatio_ = NULL;
 	acceptanceRatioSize_ = 0;
 	vdwScale_ = 1.0;
 	nCycles_ = 100;
 }
 
-Component::Component()
-{
-	// Private variables
-	model_ = NULL;
-	pattern_ = NULL;
-	nRequested_ = 10;
-	nFilled_ = 0;
-	moveAllowed_[MT_INSERT] = TRUE;
-	moveAllowed_[MT_DELETE] = FALSE;
-	moveAllowed_[MT_TRANSLATE] = TRUE;
-	moveAllowed_[MT_ROTATE] = TRUE;
-	moveAllowed_[MT_ZMATRIX] = FALSE;
-	// Public variables
-	prev = NULL;
-	next = NULL;
-}
-
-// Set the Component's model
-void Component::setModel(Model *m)
-{
-	model_ = m;
-}
-
-// Return the Component's model
-Model *Component::model()
-{
-	return model_;
-}
-
-// Set the Component's pattern
-void Component::setPattern(Pattern *p)
-{
-	pattern_ = p;
-}
-
-// Return the Component's pattern
-Pattern *Component::pattern()
-{
-	return pattern_;
-}
-
-// Set the requested number of molecules
-void Component::setNRequested(int i)
-{
-	nRequested_ = i;
-}
-
-// Return the requested number of molecules
-int Component::nRequested()
-{
-	return nRequested_;
-}
-
-// Set the number of molecules filled
-void Component::setNFilled(int i)
-{
-	nFilled_ = i;
-}
-
-// Return the number of molecules filled
-int Component::nFilled()
-{
-	return nFilled_;
-}
-
-// Set a specific move type for the Component
-void Component::setMoveAllowed(MonteCarloMove m, bool b)
-{
-	moveAllowed_[m] = b;
-}
-
-// Set whether the Component may be translated
-bool Component::isMoveAllowed(MonteCarloMove m)
-{
-	return moveAllowed_[m];
-}
-
-// Set name of Component
-void Component::setName(const char *s)
-{
-	name_ = s;
-}
-
-// Get name of Component
-const char *Component::name()
-{
-	return name_.get();
-}
-
 // Set maximum stepsize for MC move
-void MethodMc::setMaxStep(MonteCarloMove m, double d)
+void MonteCarlo::setMaxStep(MonteCarlo::MoveType m, double d)
 {
 	maxStep_[m] = d;
 }
 
 // Get maximum stepsize for MC move
-double MethodMc::maxStep(MonteCarloMove m)
+double MonteCarlo::maxStep(MonteCarlo::MoveType m)
 {
 	return maxStep_[m];
 }
 
 // Set nTrials_ for MC move
-void MethodMc::setNTrials(MonteCarloMove m, int i)
+void MonteCarlo::setNTrials(MonteCarlo::MoveType m, int i)
 {
 	nTrials_[m] = i;
 }
 
 // Get nTrials_ for MC move
-int MethodMc::nTrials(MonteCarloMove m)
+int MonteCarlo::nTrials(MonteCarlo::MoveType m)
 {
 	return nTrials_[m];
 }
 
 // Set moveAllowed_ flag for MC move
-void MethodMc::setMoveAllowed(MonteCarloMove m, bool b)
+void MonteCarlo::setMoveAllowed(MonteCarlo::MoveType m, bool b)
 {
 	moveAllowed_[m] = b;
 }
 
 // Get moveAllowed_ flag for MC move
-bool MethodMc::isMoveAllowed(MonteCarloMove m)
+bool MonteCarlo::isMoveAllowed(MonteCarlo::MoveType m)
 {
 	return moveAllowed_[m];
 }
 
 // Set acceptanceEnergy_ limit for MC move
-void MethodMc::setAcceptanceEnergy(MonteCarloMove m, double d)
+void MonteCarlo::setAcceptanceEnergy(MonteCarlo::MoveType m, double d)
 {
 	acceptanceEnergy_[m] = d;
 }
 
 // Get acceptanceEnergy_ limit for MC move
-double MethodMc::acceptanceEnergy(MonteCarloMove m)
+double MonteCarlo::acceptanceEnergy(MonteCarlo::MoveType m)
 {
 	return acceptanceEnergy_[m];
 }
 
 // Set number of MC cycles to perform
-void MethodMc::setNCycles(int i)
+void MonteCarlo::setNCycles(int i)
 {
 	nCycles_ = i;
 }
 
 // Get nTrials_ for MC move
-int MethodMc::nCycles()
+int MonteCarlo::nCycles()
 {
 	return nCycles_;
 }
 
 // Sets the vDW radius scale
-void MethodMc::setVdwScale(double d)
+void MonteCarlo::setVdwScale(double d)
 {
 	vdwScale_ = d;
 }
 
 // Create ratio acceptance array
-void MethodMc::createRatioArray(int newsize) {
+void MonteCarlo::createRatioArray(int newsize) {
 	int n, m;
 	if (acceptanceRatio_ != NULL)
 	{
@@ -229,30 +144,18 @@ void MethodMc::createRatioArray(int newsize) {
 		delete[] acceptanceRatio_;
 	}
 	acceptanceRatio_ = new double*[newsize];
-	for (n=0; n<newsize; n++) acceptanceRatio_[n] = new double[MT_NITEMS];
+	for (n=0; n<newsize; n++) acceptanceRatio_[n] = new double[MonteCarlo::nMoveTypes];
 	acceptanceRatioSize_ = newsize;
 	// Zero the elements
-	for (n=0; n<newsize; n++) for (m=0; m<MT_NITEMS; m++) acceptanceRatio_[n][m] = 0.0;
-}
-
-/*
-// Component management routines
-*/
-
-// Find by ID
-Component *MethodMc::componentByName(const char *search)
-{
-	for (Component *c = components.first(); c != NULL; c = c->next)
-		if (strcmp(c->model()->name(),search) == 0) return c;
-	return NULL;
+	for (n=0; n<newsize; n++) for (m=0; m<MonteCarlo::nMoveTypes; m++) acceptanceRatio_[n][m] = 0.0;
 }
 
 // MC Geometry Minimise
-bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
+bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
-	dbgBegin(Debug::Calls,"MethodMc::minimise");
+	dbgBegin(Debug::Calls,"MonteCarlo::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats, prog;
 	char s[256], t[32];
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
@@ -266,7 +169,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	msg(Debug::None,"Creating expression for target model...\n");
         if (!srcmodel->createExpression())
 	{
-		dbgEnd(Debug::Calls,"MethodMc::minimise");
+		dbgEnd(Debug::Calls,"MonteCarlo::minimise");
 		return FALSE;
 	}
 
@@ -295,13 +198,13 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	prog = 0;
 
 	// Start progess indicator
-	if (gui.exists()) gui.progressCreate("Performing MC minimisation...", nCycles_ * npats * MT_NITEMS);
+	if (gui.exists()) gui.progressCreate("Performing MC minimisation...", nCycles_ * npats * MonteCarlo::nMoveTypes);
 
 	// Loop over MC cycles
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Loop over MC moves
-		for (move=0; move<MT_INSERT; move++)
+		for (move=0; move<MonteCarlo::Insert; move++)
 		{
 			// Update progress indicator
 			prog ++;
@@ -329,18 +232,18 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 				switch (move)
 				{
 					// Translate COG of molecule
-					case (MT_TRANSLATE):
+					case (MonteCarlo::Translate):
 						// Create a random translation vector
 						v.randomUnit();
-						v *= maxStep_[MT_TRANSLATE]*csRandom();
+						v *= maxStep_[MonteCarlo::Translate]*csRandom();
 						// Translate the coordinates of the molecule in cfg
 						srcmodel->translateMolecule(p,mol,v);
 						break;
 					// Rotate molecule about COG
-					case (MT_ROTATE):
+					case (MonteCarlo::Rotate):
 						// To do the random rotation, do two separate random rotations about the x and y axes.
-						phi = csRandom() * maxStep_[MT_ROTATE];
-						theta = csRandom() * maxStep_[MT_ROTATE];
+						phi = csRandom() * maxStep_[MonteCarlo::Rotate];
+						theta = csRandom() * maxStep_[MonteCarlo::Rotate];
 						srcmodel->rotateMolecule(p,mol,phi,theta);
 						break;
 					// Other moves....
@@ -380,7 +283,7 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
 			msg(Debug::None," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			for (n=0; n<MT_NITEMS; n++) msg(Debug::None," %3i",int(acceptanceRatio_[0][n]*100.0));
+			for (n=0; n<MonteCarlo::nMoveTypes; n++) msg(Debug::None," %3i",int(acceptanceRatio_[0][n]*100.0));
 			msg(Debug::None,"\n");
 		}
 		elast = ecurrent;
@@ -395,19 +298,20 @@ bool MethodMc::minimise(Model* srcmodel, double econ, double fcon)
 	// Finalise
 	srcmodel->logChange(LOG_COORDS);
 
-	dbgEnd(Debug::Calls,"MethodMc::minimise");
+	dbgEnd(Debug::Calls,"MonteCarlo::minimise");
 	return TRUE;
 }
 
 // MC Insertion
-bool MethodMc::disorder(Model *destmodel)
+bool MonteCarlo::disorder(Model *destmodel)
 {
 	// Monte Carlo Insertion
-	dbgBegin(Debug::Calls,"MethodMc::disorder");
+	dbgBegin(Debug::Calls,"MonteCarlo::disorder");
 	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
 	int patternNMols, prog;
 	char s[256], t[32];
-	Component *c;
+	Refitem<Model,int> *ri;
+	Model *c;
 	double enew, ecurrent, elast, phi, theta, currentVdwEnergy, currentElecEnergy;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	double penalty;
@@ -417,6 +321,7 @@ bool MethodMc::disorder(Model *destmodel)
 	ComponentRegion *r;
 	Vec3<double> v, cog;
 	Clipboard clip;
+	Reflist<Model,int> components;
 
 	/*
 	// Prepare the calculation
@@ -425,7 +330,7 @@ bool MethodMc::disorder(Model *destmodel)
 	msg(Debug::None,"Creating expression for target model...\n");
         if (!destmodel->createExpression())
 	{
-		dbgEnd(Debug::Calls,"MethodMc::disorder");
+		dbgEnd(Debug::Calls,"MonteCarlo::disorder");
 		return FALSE;
 	}
 	nOldPatterns = destmodel->nPatterns();
@@ -434,39 +339,40 @@ bool MethodMc::disorder(Model *destmodel)
 	// Fix all patterns in the destmodel
 	destmodel->setPatternsFixed(destmodel->nPatterns());
 
-	// Check that there were actually components specified
-	if (components.nItems() == 0)
-	{
-		msg(Debug::None,"No components have been specified for inclusion into the model.\n");
-		dbgEnd(Debug::Calls,"MethodMc::disorder");
-		return FALSE;
-	}
-
 	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
 	msg(Debug::None,"Preparing destination model...\n");
-	for (c = components.first(); c != NULL; c = c->next)
+	for (c = master.models(); c != NULL; c = c->next)
 	{
-		// Grab the model pointer for this component and set the number filled to zero
-		Model *m = c->model();
-		c->setNFilled(0);
+		// Check that this model is a required component
+		if (c->nRequested() == 0) continue;
+		// Add this model to the component reflist
+		components.add(c);
 		// Check that we can create a suitable expression for the component model
-		if (!m->createExpression())
+		if (!c->createExpression())
 		{
-			msg(Debug::None,"Failed to create expression for component model '%s'.\n", m->name());
-			dbgEnd(Debug::Calls,"MethodMc::disorder");
+			msg(Debug::None,"Failed to create expression for component model '%s'.\n", c->name());
+			dbgEnd(Debug::Calls,"MonteCarlo::disorder");
 			return FALSE;
 		}
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
 		// Copy the model and paste it 'nrequested' times into destmodel
-		clip.copyAll(m);
+		clip.copyAll(c);
 		for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
 		// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
-		p = destmodel->addPattern(c->nRequested(), m->nAtoms(), m->name());
+		p = destmodel->addPattern(c->nRequested(), c->nAtoms(), c->name());
 		p->setNExpectedMols(c->nRequested());
-		c->setPattern(p);
+		c->setComponentPattern(p);
 		// Set the forcefield of the new pattern fo that of the source model
-		p->setForcefield(m->forcefield());
+		p->setForcefield(c->forcefield());
         }
+
+	// Check that there were actually components specified
+	if (components.nItems() == 0)
+	{
+		msg(Debug::None,"No components have been specified for inclusion into the model.\n");
+		dbgEnd(Debug::Calls,"MonteCarlo::disorder");
+		return FALSE;
+	}
 
 	// Create master expression for the new (filled) model
 	if (!destmodel->createExpression())
@@ -474,8 +380,9 @@ bool MethodMc::disorder(Model *destmodel)
 		msg(Debug::None,"Couldn't create master expression for destination model.\n");
 		return FALSE;
 	}
+
 	// Set starting populations of patterns, add atom space to target model, and print out pattern list info.
-	msg(Debug::None,"Pattern info for insertion to model '%s':\n",destmodel->name());
+	msg(Debug::None,"Pattern info for insertion to model '%s':\n", destmodel->name());
 	msg(Debug::None,"  ID  nmols  atoms  starti  finali  name\n");
 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
@@ -522,38 +429,45 @@ bool MethodMc::disorder(Model *destmodel)
 	msg(Debug::None," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
 
 	// Loop over MC cycles
-	if (gui.exists()) gui.progressCreate("Building disordered system", nCycles_ * components.nItems() * MT_NITEMS);
+	if (gui.exists()) gui.progressCreate("Building disordered system", nCycles_ * components.nItems() * MonteCarlo::nMoveTypes);
 	prog = 0;
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		msg(Debug::Verbose,"Begin cycle %i...\n",cycle);
+		done = TRUE;
 
-		// Loop over patterns and regions together
-		for (c = components.first(); c != NULL; c = c->next)
+		// Loop over component models searching for ones that are to be added to the target model
+		for (ri = components.first(); ri != NULL; ri = ri->next)
 		{
+			// Get model pointer
+			c = ri->item;
+
+			// Skip if nRequested == 0, cell.type() != CT_NONE, and c == destmodel (to be sure).
+			if ((c->nRequested() == 0) || (c->cell()->type() != CT_NONE) || (c == destmodel)) continue;
+
 			// Get pointers to variables
-			p = c->pattern();
+			p = c->componentPattern();
 			r = &c->area;
 			msg(Debug::Verbose,"Working on pattern '%s'\n",p->name());
 			// If the pattern is fixed, move on
 			if (p->isFixed())
 			{
-				prog += MT_NITEMS;
+				prog += MonteCarlo::nMoveTypes;
 				msg(Debug::Verbose,"Pattern '%s' is fixed.\n",p->name());
 				continue;
 			}
 			msg(Debug::Verbose,"Pattern region is '%s'.\n",text_from_RS(r->shape()));
 
 			// Loop over MC moves in reverse order so we do creation / destruction first
-			for (move=MT_DELETE; move>-1; move--)
+			for (move=MonteCarlo::Delete; move>-1; move--)
 			{
 				prog ++;
 				if (gui.exists() && (!gui.progressUpdate(prog))) break;
 
 				acceptanceRatio_[p->id()][move] = 0;
-				// If this move type isn't moveAllowed_ then continue onto the next
+				// If this move type isn't allowed then continue onto the next
 				if (!moveAllowed_[move]) continue;
-				//if (!comp->get_moveAllowed_((type) move)) continue;
+				if (!c->isMoveAllowed((MonteCarlo::MoveType) move)) continue;
 				for (n=0; n<nTrials_[move]; n++)
 				{
 					// Reset penalty value
@@ -564,7 +478,7 @@ bool MethodMc::disorder(Model *destmodel)
 					switch (move)
 					{
 						// New molecule
-						case (MT_INSERT):
+						case (MonteCarlo::Insert):
 							// Check if we've already filled as many as requested
 							msg(Debug::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
 							if (patternNMols == p->nExpectedMols()) continue;
@@ -577,11 +491,11 @@ bool MethodMc::disorder(Model *destmodel)
 							// Set the hidden flag on the new molecule to FALSE
 							destmodel->hideMolecule(p,mol,FALSE);
 							// Randomise position of new molecule
-							v = r->randomCoords(cell,components.first());
+							v = r->randomCoords(cell,components);
 							destmodel->positionMolecule(p,mol,v); 
 							// Only rotate the new molecule if the component allows it
-							// TODO if (!comp->get_moveAllowed_(MT_ROTATE)) break;
-							if (moveAllowed_[MT_ROTATE])
+							// TODO if (!comp->get_moveAllowed_(MonteCarlo::Rotate)) break;
+							if (moveAllowed_[MonteCarlo::Rotate])
 							{
 								phi = csRandom() * 360.0;
 								theta = csRandom() * 360.0;
@@ -592,7 +506,7 @@ bool MethodMc::disorder(Model *destmodel)
 							referenceElecEnergy = 0.0;
 							break;
 						// Translate COG of molecule
-						case (MT_TRANSLATE):
+						case (MonteCarlo::Translate):
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and move
 							mol = csRandomi(patternNMols-1);
@@ -602,15 +516,15 @@ bool MethodMc::disorder(Model *destmodel)
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Create a random translation vector
 							v.randomUnit();
-							v *= maxStep_[MT_TRANSLATE]*csRandom();
+							v *= maxStep_[MonteCarlo::Translate]*csRandom();
 							// Translate the coordinates of the molecule in cfg
 							destmodel->translateMolecule(p,mol,v);
 							// Check new COG is inside region
 							cog = p->calculateCog(destmodel,mol);
-							if ((!r->checkCoords(cog,cell)) || r->checkOverlap(cog,cell,components.first())) penalty += 1e6;
+							if ((!r->checkCoords(cog,cell)) || r->checkOverlap(cog,cell,components)) penalty += 1e6;
 							break;
 						// Rotate molecule about COG
-						case (MT_ROTATE):
+						case (MonteCarlo::Rotate):
 							if (patternNMols == 0) continue;
 							// Select random molecule, store, and rotate
 							mol = csRandomi(patternNMols-1);
@@ -619,8 +533,8 @@ bool MethodMc::disorder(Model *destmodel)
 							referenceElecEnergy = destmodel->energy.elec();
 							bakmodel.copyAtomData(destmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 							// Do two separate random rotations about the x and y axes.
-							phi = csRandom() * maxStep_[MT_ROTATE];
-							theta = csRandom() * maxStep_[MT_ROTATE];
+							phi = csRandom() * maxStep_[MonteCarlo::Rotate];
+							theta = csRandom() * maxStep_[MonteCarlo::Rotate];
 							destmodel->rotateMolecule(p,mol,phi,theta);
 							break;
 						// Other moves....
@@ -641,12 +555,12 @@ bool MethodMc::disorder(Model *destmodel)
 						// Revert to the previous state.
 						switch (move)
 						{
-							case (MT_INSERT):
+							case (MonteCarlo::Insert):
 								// Set the hidden flag on the new molecule to TRUE
 								destmodel->hideMolecule(p,mol,TRUE);
 								p->setNMols(mol);
 								break;
-							case (MT_DELETE):
+							case (MonteCarlo::Delete):
 							default:
 								destmodel->copyAtomData(&bakmodel, Atom::PositionData, p->offset(mol), p->nAtoms());
 								break;
@@ -672,6 +586,8 @@ bool MethodMc::disorder(Model *destmodel)
 				// Get acceptance ratio percentages
 				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
 			}
+			// Check to see if this component has the required number of molecules
+			if (c->nRequested() != p->nMols()) done = FALSE;
 		}
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
@@ -686,7 +602,7 @@ bool MethodMc::disorder(Model *destmodel)
 					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-8s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMols(), p->nExpectedMols());
 				}
 				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->name(), p->nMols(), p->nExpectedMols());
-				for (m=0; m<MT_NITEMS; m++)
+				for (m=0; m<MonteCarlo::nMoveTypes; m++)
 				{
 					sprintf(t," %3i", int(acceptanceRatio_[n][m]*100.0));
 					strcat(s,t);
@@ -697,13 +613,6 @@ bool MethodMc::disorder(Model *destmodel)
 		}
 		elast = ecurrent;
 		// Check for early termination
-		done = TRUE;
-		for (c = components.first(); c != NULL; c = c->next)
-		{
-			// Get pointers to variables
-			p = c->pattern();
-			if (p->nMols() != p->nExpectedMols()) done = FALSE;
-		}
 		if (done)
 		{
 			msg(Debug::None,"All component populations satisfied.\n");
@@ -755,7 +664,7 @@ bool MethodMc::disorder(Model *destmodel)
 	destmodel->calculateDensity();
 	destmodel->logChange(LOG_COORDS);
 	gui.modelChanged();
-	dbgEnd(Debug::Calls,"MethodMc::insert");
+	dbgEnd(Debug::Calls,"MonteCarlo::insert");
 	return TRUE;
 }
 

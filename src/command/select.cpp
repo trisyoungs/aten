@@ -35,11 +35,11 @@ int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Select by atom ('selectatom <n>')
-int CommandData::function_CA_SELECTATOM(Command *&c, Bundle &obj)
+// Select atom ('select <n>')
+int CommandData::function_CA_SELECT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Atom *i = obj.m->atom(c->argi(0));
+	Atom *i = obj.m->atom(c->argi(0)-1);
 	if (i != NULL) obj.m->selectAtom(i);
 	else return CR_FAIL;
 	return CR_SUCCESS;

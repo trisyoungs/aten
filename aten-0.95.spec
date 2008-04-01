@@ -5,7 +5,7 @@
 Summary: Aten - Atomic configuration builder and editor
 Name: %{shortname}
 Version: 0.95
-Release: 3
+Release: 1
 License: GPL
 %define fullname %{name}-%{version}
 
@@ -19,31 +19,26 @@ Source: %{fullname}.tar.gz
 URL: http://www.projectaten.org
 
 # Owner of the product.
-Vendor: T. Youngs
+Vendor: Tristan Youngs
 
 # Packager of the product.
-Packager: T. Youngs
-
-# Allows you to specify a directory as the root for building and installing the
-# new package (from http://www.rpm.org/RPM-HOWTO/build.html).
-BuildRoot : %{_tmppath}/%{fullname}
+Packager: Tristan Youngs
 
 # Boolean that specifies if you want to automatically determine some
 # dependencies.
-AutoReqProv: yes
+AutoReq: yes
 
-BuildRequires: bzip2
+BuildRequires: gcc-c++ libqt4 libqt4-devel Mesa-devel
 
 # In-depth description.
 %description
-Aten does some stuff.
-It really does.
+Aten provides a clean graphical user interface allowing the intuitive editing and creation of input coordinates for computational chemistry / physics codes. It allows periodic (i.e. condensed) and non-periodic (i.e. gas-phase) models and systems to be created either from scratch or from existing coordinate files. Molecular mechanics forcefields of standard functional forms may be loaded and used to minimise existing systems or create (through Monte Carlo techniques) new multi-component configurations. Periodic systems may be stretched, scaled, and repeated, and symmetry operators applied. Molecular dynamics trajectories may be loaded, viewed, frames edited, and properties calculated.
 
 %prep
 %setup -q
 
 %build
-./configure --prefix="%{_tmppath}/%{fullname}/usr/local"
+./configure
 make
 
 %install
@@ -59,6 +54,8 @@ make install
 /usr/local/share/aten/
 
 %changelog
+* Tue Mar 01 2008 Tristan Youngs <tris@projectaten.com> 
+- added dependencies list and long description.
 * Sun Mar 30 2008 Tristan Youngs <tris@projectaten.com> 
 - installation target points to local dir.
 * Mon Mar 24 2008 Tristan Youngs <tris@projectaten.com> 

@@ -399,7 +399,6 @@ class AtenForm : public QMainWindow
 	public:
 	void refreshDisorderPage();
 	private:
-	void refreshComponents();
 	void refreshComponentData();
 	void setComponentCoords(int centsize, int element, double value);
 	private slots:

@@ -21,14 +21,13 @@
 
 #include "command/commandlist.h"
 #include "methods/mc.h"
-//#include "base/master.h"
 #include "base/debug.h"
 
 // Sets acceptance energy for moves ('mc accept <move> <energy>')
 int CommandData::function_CA_MCACCEPT(Command *&c, Bundle &obj)
 {
-	MonteCarloMove mt = MT_from_text(c->argc(0));
-	if (mt == MT_NITEMS) return CR_FAIL;
+	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
+	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
 	mc.setAcceptanceEnergy(mt, c->argd(1));
 	return CR_SUCCESS;
 }
@@ -36,8 +35,8 @@ int CommandData::function_CA_MCACCEPT(Command *&c, Bundle &obj)
 // Sets allowances for moves ('mc allow <move> <on|off>')
 int CommandData::function_CA_MCALLOW(Command *&c, Bundle &obj)
 {
-	MonteCarloMove mt = MT_from_text(c->argc(0));
-	if (mt == MT_NITEMS) return CR_FAIL;
+	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
+	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
 	mc.setMoveAllowed(mt, c->argb(1));
 	return CR_SUCCESS;
 }
@@ -45,8 +44,8 @@ int CommandData::function_CA_MCALLOW(Command *&c, Bundle &obj)
 // Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
 int CommandData::function_CA_MCMAXSTEP(Command *&c, Bundle &obj)
 {
-	MonteCarloMove mt = MT_from_text(c->argc(0));
-	if (mt == MT_NITEMS) return CR_FAIL;
+	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
+	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
 	mc.setMaxStep(mt, c->argd(1));
 	return CR_SUCCESS;
 }
@@ -54,8 +53,8 @@ int CommandData::function_CA_MCMAXSTEP(Command *&c, Bundle &obj)
 // Sets ntrials for moves ('mc ntrials <move> <ntrials>')
 int CommandData::function_CA_MCNTRIALS(Command *&c, Bundle &obj)
 {
-	MonteCarloMove mt = MT_from_text(c->argc(0));
-	if (mt == MT_NITEMS) return CR_FAIL;
+	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
+	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
 	mc.setNTrials(mt, c->argi(1));
 	return CR_SUCCESS;
 }
@@ -65,11 +64,11 @@ int CommandData::function_CA_PRINTMC(Command *&c, Bundle &obj)
 {
 	msg(Debug::None,"Current Monte Carlo Parameters are:\n");
 	msg(Debug::None,"Move        Allowed  NTrials  MaxStep   EAccept :\n");
-	MonteCarloMove mt;
-	for (int n=0; n<MT_NITEMS; n++)
+	MonteCarlo::MoveType mt;
+	for (int n=0; n<MonteCarlo::nMoveTypes; n++)
 	{
-		mt = (MonteCarloMove) n;
-		msg(Debug::None,"%11s   %3s   %4i   %8.3f   %8.2e\n", text_from_MT(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
+		mt = (MonteCarlo::MoveType) n;
+		msg(Debug::None,"%11s   %3s   %4i   %8.3f   %8.2e\n", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
 	}
 	return CR_SUCCESS;
 }

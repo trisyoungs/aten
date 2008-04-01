@@ -57,9 +57,8 @@ void AtenForm::on_ComponentSizeZSpin_valueChanged(double d)
 
 void AtenForm::refreshDisorderPage()
 {
-	Model *m = master.currentModel();
 	// (De)sensitize controls
-	if (m->cell()->type() == CT_NONE)
+	if (master.currentModel()->cell()->type() == CT_NONE)
 	{
 		ui.DisorderStartButton->setDisabled(TRUE);
 		ui.AddComponentButton->setDisabled(FALSE);
@@ -69,20 +68,18 @@ void AtenForm::refreshDisorderPage()
 		ui.DisorderStartButton->setDisabled(FALSE);
 		ui.AddComponentButton->setDisabled(TRUE);
 	}
-}
-
-void AtenForm::refreshComponents()
-{
+	// Update model (component) list
+	QListWidgetItem *item;
 	ui.ComponentList->setCurrentRow(-1);
 	ui.ComponentList->clear();
-	QListWidgetItem *item;
-	for (Component *c = mc.components.first(); c != NULL; c = c->next)
+	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
+		if (m->cell()->type() != CT_NONE) continue;
 		item = new QListWidgetItem(ui.ComponentList);
-		item->setText(c->model()->name());
+		item->setText(m->name());
 	}
 	// Select the last component in the list
-	ui.ComponentList->setCurrentRow(mc.components.nItems()-1);
+	ui.ComponentList->setCurrentRow(master.nModels()-1);
 }
 
 void AtenForm::refreshComponentData()
@@ -90,21 +87,21 @@ void AtenForm::refreshComponentData()
 	// Get current component
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	Component *c = mc.components[comp];
+	Model *m = master.model(comp);
 	// Set controls
-	ui.PopulationSpin->setValue(c->nRequested());
-	ui.ComponentRegionCombo->setCurrentIndex(c->area.shape());
+	ui.PopulationSpin->setValue(m->nRequested());
+	ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
 	Vec3<double> v;
-	v = c->area.size();
+	v = m->area.size();
 	ui.ComponentSizeXSpin->setValue(v.x);
 	ui.ComponentSizeYSpin->setValue(v.y);
 	ui.ComponentSizeZSpin->setValue(v.z);
-	v = c->area.centre();
+	v = m->area.centre();
 	ui.ComponentCentreXSpin->setValue(v.x);
 	ui.ComponentCentreYSpin->setValue(v.y);
 	ui.ComponentCentreZSpin->setValue(v.z);
-	ui.ComponentTranslateCheck->setChecked(c->isMoveAllowed(MT_TRANSLATE));
-	ui.ComponentRotateCheck->setChecked(c->isMoveAllowed(MT_ROTATE));
+	ui.ComponentTranslateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Translate));
+	ui.ComponentRotateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Rotate));
 }
 
 void AtenForm::setComponentCoords(int centsize, int element, double value)
@@ -113,18 +110,18 @@ void AtenForm::setComponentCoords(int centsize, int element, double value)
 	static Vec3<double> v;
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	Component *c = mc.components[comp];
+	Model *m = master.model(comp);
 	if (centsize == 0)
 	{
-		v = c->area.centre();
+		v = m->area.centre();
 		v.set(element, value);
-		c->area.setCentre(v);
+		m->area.setCentre(v);
 	}
 	else
 	{
-		v = c->area.size();
+		v = m->area.size();
 		v.set(element, value);
-		c->area.setSize(v);
+		m->area.setSize(v);
 	}
 	gui.mainView.postRedisplay();
 }
@@ -137,60 +134,42 @@ void AtenForm::on_ComponentList_itemSelectionChanged()
 // Add the current model to the component list
 void AtenForm::on_AddComponentButton_clicked(bool checked)
 {
-	// If the current model is periodic, refuse to add it
-	Model *m = master.currentModel();
-	if (m->cell()->type() != CT_NONE)
-	{
-		msg(Debug::None,"Model is periodic - can't add to component list.\n");
-		return;
-	}
-	// Add it to mc.s component list and refresh the list
-	Component *comp = mc.components.add();
-	comp->setModel(m);
-	refreshComponents();
 }
 
 void AtenForm::on_DeleteComponentButton_clicked(bool checked)
 {
-	int comp = ui.ComponentList->currentRow();
-	if (comp == -1) return;
-	Component *c = mc.components[comp];
-	mc.components.remove(c);
-	// Refresh the components list and GUI (for regions)
-	refreshComponents();
-	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_PopulationSpin_valueChanged(int value)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	Component *c = mc.components[comp];
-	c->setNRequested(value);
+	Model *m = master.model(comp);
+	m->setNRequested(value);
 }
 
 void AtenForm::on_ComponentTranslateCheck_clicked(bool checked)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	Component *c = mc.components[comp];
-	c->setMoveAllowed(MT_TRANSLATE, checked);
+	Model *m = master.model(comp);
+	m->setMoveAllowed(MonteCarlo::Translate, checked);
 }
 
 void AtenForm::on_ComponentRotateCheck_clicked(bool checked)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	Component *c = mc.components[comp];
-	c->setMoveAllowed(MT_ROTATE, checked);
+	Model *m = master.model(comp);
+	m->setMoveAllowed(MonteCarlo::Translate, checked);
 }
 
 void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
-	Component *c = mc.components[comp];
-	c->area.setShape( (ComponentRegionShape) index);
+	Model *m = master.model(comp);
+	m->area.setShape( (ComponentRegionShape) index);
 	gui.mainView.postRedisplay();
 }
 

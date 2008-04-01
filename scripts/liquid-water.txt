@@ -10,6 +10,7 @@ chain O
 roty 70.5
 move 1.0 0.0 0.0 
 chain H
+nmols 33
 
 loadff data/ff/water.ff wff
 ffmodel
@@ -25,13 +26,12 @@ info
 # For cubic cells, nwater should be approximately :     10 A  = 33
 #							20 A = 267
 newmodel box
-setcell 10.0 10.0 10.0 90.0 90.0 90.0
+cell 10.0 10.0 10.0 90.0 90.0 90.0
 ffmodel
 #elec ewaldauto 5.0e-6
 elec coulomb
 
 # Request the addition of water molecules. If we wish to cram in more (to get a higher density) decrease vdwscale.
-addcomponent bulk water 33
 listcomponents
 vdwscale 1.0
 

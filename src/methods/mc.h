@@ -26,78 +26,26 @@
 #include "classes/region.h"
 #include "classes/dnchar.h"
 
-// Monte Carlo move types
-enum MonteCarloMove { MT_TRANSLATE, MT_ROTATE, MT_ZMATRIX, MT_INSERT, MT_DELETE, MT_NITEMS };
-const char *text_from_MT(MonteCarloMove);
-MonteCarloMove MT_from_text(const char*);
-
 // Forward declarations
 class Model;
 class Cell;
 class Pattern;
 
-// Disorder Component
-class Component
-{
-	public:
-	// Constructor
-	Component();
-	// List pointers
-	Component *prev, *next;
-
-	/*
-	// Component (for disordered builder)
-	*/
-	private:
-	// Pointer to the Component model
-	Model *model_;
-	// Pointer to the Components related pattern
-	Pattern *pattern_;
-	// Number of requested and actual (filled) molecules of this type
-	int nRequested_, nFilled_;
-	// Lists which MC move types are allowed for this Component
-	bool moveAllowed_[MT_NITEMS];
-	// Name of the Component
-	Dnchar name_;
-
-	public:
-	// Type of region the Component is limited to
-	ComponentRegion area;
-	// Set the Component's model
-	void setModel(Model *m);
-	// Return the Component's model
-	Model *model();
-	// Set the Component's pattern
-	void setPattern(Pattern *p);
-	// Return the Component's pattern
-	Pattern *pattern();
-	// Set the requested number of molecules
-	void setNRequested(int i);
-	// Return the requested number of molecules
-	int nRequested();
-	// Set the number of molecules filled
-	void setNFilled(int i);
-	// Return the number of molecules filled
-	int nFilled();
-	// Set a specific move type for the Component
-	void setMoveAllowed(MonteCarloMove m, bool b);
-	// Set whether the Component may be translated
-	bool isMoveAllowed(MonteCarloMove m);
-	// Set name of Component
-	void setName(const char *s);
-	// Get name of Component
-	const char *name();
-};
-
 // Monte Carlo
-class MethodMc
+class MonteCarlo
 {
+	public:
+	// Monte Carlo move types
+	enum MoveType { Translate, Rotate, ZMatrix, Insert, Delete, nMoveTypes };
+	static const char *moveTypeKeyword(MoveType);
+	static MoveType moveType(const char*);
+
 	/*
 	// Main Routines
 	*/
 	public:
 	// Constructor
-	MethodMc();
+	MonteCarlo();
 	// Minimise the specified model
 	bool minimise(Model*, double, double);
 	// Run disordered builder
@@ -115,11 +63,11 @@ class MethodMc
 	*/
 	private:
 	// Maximum size of allowed move (units depend on move type)
-	double maxStep_[MT_NITEMS];
+	double maxStep_[nMoveTypes];
 	// Number of times to attempt move types
-	int nTrials_[MT_NITEMS];
+	int nTrials_[nMoveTypes];
 	// Turn on/off move types
-	bool moveAllowed_[MT_NITEMS];
+	bool moveAllowed_[nMoveTypes];
 	// Acceptance ratio counts per pattern
 	double **acceptanceRatio_;
 	// Size of acceptratio array
@@ -127,27 +75,27 @@ class MethodMc
 	// Number of cycles to perform in MC method
 	int nCycles_;
 	// Energy differences below which to accept moves
-	double acceptanceEnergy_[MT_NITEMS];
+	double acceptanceEnergy_[nMoveTypes];
 	// Scaling factor for VDW radius in disorder method
 	double vdwScale_;
 
 	public:
 	// Set maximum stepsize for MC move
-	void setMaxStep(MonteCarloMove m, double d);
+	void setMaxStep(MoveType m, double d);
 	// Get maximum stepsize for MC move
-	double maxStep(MonteCarloMove m);
+	double maxStep(MoveType m);
 	// Set ntrials for MC move
-	void setNTrials(MonteCarloMove m, int i);
+	void setNTrials(MoveType m, int i);
 	// Get ntrials for MC move
-	int nTrials(MonteCarloMove m);
+	int nTrials(MoveType m);
 	// Set allowed flag for MC move
-	void setMoveAllowed(MonteCarloMove m, bool b);
+	void setMoveAllowed(MoveType m, bool b);
 	// Get allowed flag for MC move
-	bool isMoveAllowed(MonteCarloMove m);
+	bool isMoveAllowed(MoveType m);
 	// Set eaccept limit for MC move
-	void setAcceptanceEnergy(MonteCarloMove m, double d);
+	void setAcceptanceEnergy(MoveType m, double d);
 	// Get eaccept limit for MC move
-	double acceptanceEnergy(MonteCarloMove m);
+	double acceptanceEnergy(MoveType m);
 	// Set number of MC cycles to perform
 	void setNCycles(int i);
 	// Get ntrials for MC move
@@ -160,12 +108,12 @@ class MethodMc
 	*/
 	public:
 	// List of Component models to use in MC insertion
-	List<Component> components;
+	//List<Component> components;
 	// Return the Component with name specified
-	Component *componentByName(const char*);
+	//Component *componentByName(const char*);
 };
 
 // Static Singleton
-extern MethodMc mc;
+extern MonteCarlo mc;
 
 #endif
