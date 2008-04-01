@@ -65,6 +65,13 @@ Model::Model()
 	framePosition_ = 0;
 	trajectoryPlaying_ = FALSE;
 	currentFrame_ = NULL;
+	componentPattern_ = NULL;
+	nRequested_ = 0;
+	moveAllowed_[MonteCarlo::Insert] = TRUE;
+	moveAllowed_[MonteCarlo::Delete] = FALSE;
+	moveAllowed_[MonteCarlo::Translate] = TRUE;
+	moveAllowed_[MonteCarlo::Rotate] = TRUE;
+	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
 	// Public variables
 	next = NULL;
 	prev = NULL;

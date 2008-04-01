@@ -28,6 +28,7 @@
 #include "classes/cell.h"
 #include "classes/measurement.h"
 #include "classes/undostate.h"
+#include "methods/mc.h"
 //#include <QtOpenGL/QtOpenGL>
 
 // Forward Declarations
@@ -763,6 +764,33 @@ class Model
 	void undo();
 	// Perform the redo action pointed to by 'currentredostate'
 	void redo();
+
+	/*
+	// Component Definition (for disordered builder only)
+	*/
+	private:
+	// Pointer to the Components related pattern
+	Pattern *componentPattern_;
+	// Number of requested copies
+	int nRequested_;
+	// Lists which MC move types are allowed for this Component
+	bool moveAllowed_[MonteCarlo::nMoveTypes];
+
+	public:
+	// Definition of region the Component is restricted to
+	ComponentRegion area;
+	// Set the Component's pattern
+	void setComponentPattern(Pattern *p);
+	// Return the Component's pattern
+	Pattern *componentPattern();
+	// Set the requested number of molecules
+	void setNRequested(int i);
+	// Return the requested number of molecules
+	int nRequested();
+	// Set a specific move type for the Component
+	void setMoveAllowed(MonteCarlo::MoveType m, bool b);
+	// Set whether the Component may be translated
+	bool isMoveAllowed(MonteCarlo::MoveType m);
 };
 
 #endif

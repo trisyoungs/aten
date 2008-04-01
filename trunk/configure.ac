@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[0.95])
+m4_define([ATEN_VERSION],[0.95.3])
 AC_INIT(aten,ATEN_VERSION,t.youngs@qub.ac.uk)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -40,16 +40,26 @@ if test "x$with_qtdir" != "x"; then
   QTDIR="$with_qtdir/"
 fi
 
+# Readline include dir
+RLINCDIR=""
+AC_ARG_WITH([readline-includes],[AC_HELP_STRING([--with-readline-includes=<dir>],
+    [Specify location of readline includes [default="/usr/include/readline"]])], ,
+    [with_readline_includes="/usr/include/readline"])
+RLINCDIR="$with_readline_includes"
+
 # QT-FRAMEWORK  (Mac only)
 AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
     [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
     [with_qt=])
 
-
 # Pre-initialise pkg-config  (unless using Qt framework on the Mac)
 if test "$with_qt" != "framework"; then
   PKG_PROG_PKG_CONFIG
 fi
+
+
+# Check for other dependencies
+AC_CHECK_HEADER([$RLINCDIR/readline.h],,[AC_MSG_ERROR([Cannot find headers for readline.])])
 
 
 # Set up compilation for Qt GUI
@@ -71,8 +81,8 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, QtGui >= 4.1.0)
   PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
-GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS"
-GUI_CFLAGS="$QTGUI_CFLAGS"
+GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline"
+GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
 
 
 # Perform Makefile substitutions

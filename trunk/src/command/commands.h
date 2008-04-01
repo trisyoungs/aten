@@ -130,13 +130,13 @@ enum CommandAction {
 	CA_CLEARCHARGES,
 
 	// Disordered build commands
-	CA_ADDCOMPONENT,
 	CA_DISORDER,
-	CA_PRINTCOMPONENTS,
-	CA_SETCENTRE,
-	CA_SETGEOMETRY,
-	CA_SETOVERLAP,
-	CA_SETSHAPE,
+	CA_LISTCOMPONENTS,
+	CA_NMOLS,
+	CA_REGIONCENTRE,
+	CA_REGIONGEOMETRY,
+	CA_REGIONOVERLAPS,
+	CA_REGIONSHAPE,
 	CA_VDWSCALE,
 
 	// Energy Commands
@@ -298,8 +298,8 @@ enum CommandAction {
 
 	// Select Commands
 	CA_INVERT,
+	CA_SELECT,
 	CA_SELECTALL,
-	CA_SELECTATOM,
 	CA_SELECTELEMENT,
 	CA_SELECTFFTYPE,
 	CA_SELECTNONE,
@@ -446,13 +446,13 @@ class CommandData
 	int function_CA_CHARGETYPE(Command *&c, Bundle &obj);
 	int function_CA_CLEARCHARGES(Command *&c, Bundle &obj);
 	// Disordered build commands
-	int function_CA_ADDCOMPONENT(Command *&c, Bundle &obj);
 	int function_CA_DISORDER(Command *&c, Bundle &obj);
-	int function_CA_PRINTCOMPONENTS(Command *&c, Bundle &obj);
-	int function_CA_SETCENTRE(Command *&c, Bundle &obj);
-	int function_CA_SETGEOMETRY(Command *&c, Bundle &obj);
-	int function_CA_SETOVERLAP(Command *&c, Bundle &obj);
-	int function_CA_SETSHAPE(Command *&c, Bundle &obj);
+	int function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj);
+	int function_CA_NMOLS(Command *&c, Bundle &obj);
+	int function_CA_REGIONCENTRE(Command *&c, Bundle &obj);
+	int function_CA_REGIONGEOMETRY(Command *&c, Bundle &obj);
+	int function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj);
+	int function_CA_REGIONSHAPE(Command *&c, Bundle &obj);
 	int function_CA_VDWSCALE(Command *&c, Bundle &obj);
 	// Energy Commands
 	int function_CA_FRAMEENERGY(Command *&c, Bundle &obj);
@@ -596,8 +596,8 @@ class CommandData
 	int function_CA_RUNSCRIPT(Command *&c, Bundle &obj);
 	// Select Commands
 	int function_CA_INVERT(Command *&c, Bundle &obj);
+	int function_CA_SELECT(Command *&c, Bundle &obj);
 	int function_CA_SELECTALL(Command *&c, Bundle &obj);
-	int function_CA_SELECTATOM(Command *&c, Bundle &obj);
 	int function_CA_SELECTELEMENT(Command *&c, Bundle &obj);
 	int function_CA_SELECTFFTYPE(Command *&c, Bundle &obj);
 	int function_CA_SELECTNONE(Command *&c, Bundle &obj);

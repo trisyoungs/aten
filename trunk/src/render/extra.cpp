@@ -189,15 +189,15 @@ void Canvas::renderRegions()
 	// Enable alpha component and make sure lighting is on
 	glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);
-	for (Component *c = mc.components.first(); c != NULL; c = c->next)
+	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
 		elements.copyAmbientColour(i, colour);
 		colour[3] = 0.4f;
 		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();
-		  centre = c->area.centre();
-		  size = c->area.size();
-		  switch (c->area.shape())
+		  centre = m->area.centre();
+		  size = m->area.size();
+		  switch (m->area.shape())
 		  {
 			case (RS_CELL):
 				break;

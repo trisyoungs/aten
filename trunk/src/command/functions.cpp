@@ -47,7 +47,6 @@ void Master::initCommands()
 	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
 	CA_data[CA_NEWATOM].function = &CommandData::function_CA_NEWATOM;
 	CA_data[CA_NEWATOMFRAC].function = &CommandData::function_CA_NEWATOMFRAC;
-	CA_data[CA_SELECTATOM].function = &CommandData::function_CA_SELECTATOM;
 	CA_data[CA_SETCOORDS].function = &CommandData::function_CA_SETCOORDS;
 	CA_data[CA_SETCHARGE].function = &CommandData::function_CA_SETCHARGE;
 	CA_data[CA_SETELEMENT].function = &CommandData::function_CA_SETELEMENT;
@@ -108,13 +107,13 @@ void Master::initCommands()
 	CA_data[CA_CLEARCHARGES].function = &CommandData::function_CA_CLEARCHARGES;
 
 	// Disordered build commands
-	CA_data[CA_ADDCOMPONENT].function = &CommandData::function_CA_ADDCOMPONENT;
 	CA_data[CA_DISORDER].function = &CommandData::function_CA_DISORDER;
-	CA_data[CA_PRINTCOMPONENTS].function = &CommandData::function_CA_PRINTCOMPONENTS;
-	CA_data[CA_SETCENTRE].function = &CommandData::function_CA_SETCENTRE;
-	CA_data[CA_SETGEOMETRY].function = &CommandData::function_CA_SETGEOMETRY;
-	CA_data[CA_SETOVERLAP].function = &CommandData::function_CA_SETOVERLAP;
-	CA_data[CA_SETSHAPE].function = &CommandData::function_CA_SETSHAPE;
+	CA_data[CA_LISTCOMPONENTS].function = &CommandData::function_CA_LISTCOMPONENTS;
+	CA_data[CA_NMOLS].function = &CommandData::function_CA_NMOLS;
+	CA_data[CA_REGIONCENTRE].function = &CommandData::function_CA_REGIONCENTRE;
+	CA_data[CA_REGIONGEOMETRY].function = &CommandData::function_CA_REGIONGEOMETRY;
+	CA_data[CA_REGIONOVERLAPS].function = &CommandData::function_CA_REGIONOVERLAPS;
+	CA_data[CA_REGIONSHAPE].function = &CommandData::function_CA_REGIONSHAPE;
 	CA_data[CA_VDWSCALE].function = &CommandData::function_CA_VDWSCALE;
 
 	// Energy Commands
@@ -276,8 +275,8 @@ void Master::initCommands()
 
 	// Select Commands
 	CA_data[CA_INVERT].function = &CommandData::function_CA_INVERT;
+	CA_data[CA_SELECT].function = &CommandData::function_CA_SELECT;
 	CA_data[CA_SELECTALL].function = &CommandData::function_CA_SELECTALL;
-	CA_data[CA_SELECTATOM].function = &CommandData::function_CA_SELECTATOM;
 	CA_data[CA_SELECTELEMENT].function = &CommandData::function_CA_SELECTELEMENT;
 	CA_data[CA_SELECTFFTYPE].function = &CommandData::function_CA_SELECTFFTYPE;
 	CA_data[CA_SELECTNONE].function = &CommandData::function_CA_SELECTNONE;

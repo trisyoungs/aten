@@ -34,6 +34,7 @@ ComponentRegionShape RS_from_text(const char*);
 // Forward Declarations
 class Cell;
 class Component;
+class Model;
 
 // ComponentRegion
 class ComponentRegion
@@ -80,9 +81,9 @@ class ComponentRegion
 	// Determines whether the supplied coordinates are within the ComponentRegion defined
 	bool checkCoords(const Vec3<double>&, Cell*);
 	// Determines whether the supplied coordinates overlap any of the other ComponentRegions supplied
-	bool checkOverlap(const Vec3<double>&, Cell*, Component*);
+	bool checkOverlap(const Vec3<double>&, Cell*, Reflist<Model,int> &components);
 	// Generate a random coordinate inside the ComponentRegion
-	Vec3<double> randomCoords(Cell*, Component*);
+	Vec3<double> randomCoords(Cell*, Reflist<Model,int> &components);
 };
 
 #endif

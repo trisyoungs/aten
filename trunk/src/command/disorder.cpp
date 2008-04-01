@@ -25,119 +25,80 @@
 #include "model/model.h"
 #include "methods/mc.h"
 
-// Adds component to list ('addcomponent <name> <model> <nmols>')
-int CommandData::function_CA_ADDCOMPONENT(Command *&c, Bundle &obj)
-{
-	Model *compm = master.findModel(c->argc(1));
-	if (compm != NULL)
-	{
-		Component *newcomp = mc.components.add();
-		newcomp->setModel(compm);
-		newcomp->setNRequested(c->argi(2));
-		newcomp->setName(c->argc(0));
-	}
-	else
-	{
-		msg(Debug::None,"Couldn't find model '%s' specified in 'addcomponent'\n", c->argc(1));
-		return CR_FAIL;
-	}
-	return CR_SUCCESS;
-}
-
 // Performs MC insertion ('disorder <ncycles>')
 int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (mc.components.nItems() == 0)
-	{
-		msg(Debug::None,"Disordered builder requires a list of components.\n");
-		return CR_FAIL;
-	}
 	msg(Debug::None,"Performing disordered build for model '%s'\n", obj.m->name());
 	mc.setNCycles(c->argi(0));
 	mc.disorder(obj.m);
 	return CR_SUCCESS;
 }
 
-// Print current component list ('printcomponents')
-int CommandData::function_CA_PRINTCOMPONENTS(Command *&c, Bundle &obj)
+// Print current component list ('listcomponents')
+int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 {
-	msg(Debug::None,"Current component list:\n");
+	msg(Debug::None,"Current component specification:\n");
 	Vec3<double> v1, v2;
-	Component *comp = mc.components.first();
-	comp != NULL ? printf("Name         Nmols  I D T R Z  Model         ComponentRegion       cent.x  cent.y  cent.z  size.x  size.y  size.z  Overlap\n")
-		: printf("None.\n");
-	while (comp != NULL)
+	msg(Debug::None,"                                                      Centre                   Size\n");
+	msg(Debug::None,"Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
+	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
-		v1 = comp->area.centre();
-		v2 = comp->area.size();
-		printf("%-10s  %5i  %s %s %s %s %s  %-12s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
-			comp->name(),comp->nRequested(),
-			(comp->isMoveAllowed(MT_INSERT) ? "+" : " "),
-			(comp->isMoveAllowed(MT_DELETE) ? "+" : " "),
-			(comp->isMoveAllowed(MT_TRANSLATE) ? "+" : " "),
-			(comp->isMoveAllowed(MT_ROTATE) ? "+" : " "),
-			(comp->isMoveAllowed(MT_ZMATRIX) ? "+" : " "),
-			comp->model()->name(),
-			text_from_RS(comp->area.shape()),
+		v1 = m->area.centre();
+		v2 = m->area.size();
+		printf("%-10s  %5i  %s %s %s %s %s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
+			m->name(),m->nRequested(),
+			(m->isMoveAllowed(MonteCarlo::Insert) ? "+" : " "),
+			(m->isMoveAllowed(MonteCarlo::Delete) ? "+" : " "),
+			(m->isMoveAllowed(MonteCarlo::Translate) ? "+" : " "),
+			(m->isMoveAllowed(MonteCarlo::Rotate) ? "+" : " "),
+			(m->isMoveAllowed(MonteCarlo::ZMatrix) ? "+" : " "),
+			text_from_RS(m->area.shape()),
 			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
-			(comp->area.allowOverlap() ? "Yes" : "No"));
-		comp = comp->next;
+			(m->area.allowOverlap() ? "Yes" : "No"));
 	}
 	return CR_SUCCESS;
 }
 
-// Set region centre to position ('setcentre <name> <x y z>')
-int CommandData::function_CA_SETCENTRE(Command *&c, Bundle &obj)
+// Set region centre to position ('regioncentre <x y z>')
+int CommandData::function_CA_REGIONCENTRE(Command *&c, Bundle &obj)
 {
-	Component *comp = mc.componentByName(c->argc(0));
-	if (comp == NULL)
-	{
-		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
-		return CR_FAIL;
-	}
-	comp->area.setCentre(c->arg3d(1));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->area.setCentre(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
-// Set geometry of region ('setgeometry <name> <x y z> [l]')
-int CommandData::function_CA_SETGEOMETRY(Command *&c, Bundle &obj)
+// Set geometry of region ('regiongeometry <x y z> [l]')
+int CommandData::function_CA_REGIONGEOMETRY(Command *&c, Bundle &obj)
 {
-	Component *comp = mc.componentByName(c->argc(0));
-	if (comp == NULL)
-	{
-		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
-		return CR_FAIL;
-	}
-	comp->area.setSize(c->arg3d(1));
-	if (!c->hasArg(4)) comp->area.setLength(c->argd(4));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->area.setSize(c->arg3d(0));
+	if (!c->hasArg(3)) obj.m->area.setLength(c->argd(3));
 	return CR_SUCCESS;
 }
 
-// Set overlap flag ('setoverlap <name> true|false')
-int CommandData::function_CA_SETOVERLAP(Command *&c, Bundle &obj)
+// Set overlap flag for the current model ('regionoverlaps true|false')
+int CommandData::function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj)
 {
-	Component *comp = mc.componentByName(c->argc(0));
-	if (comp == NULL)
-	{
-		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
-		return CR_FAIL;
-	}
-	comp->area.setAllowOverlap(c->argb(1));
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->area.setAllowOverlap(c->argb(0));
 	return CR_SUCCESS;
 }
 
-// Set shape for region ('setshape <name> <shape>')
-int CommandData::function_CA_SETSHAPE(Command *&c, Bundle &obj)
+// Set shape for region ('regionshape <shape>')
+int CommandData::function_CA_REGIONSHAPE(Command *&c, Bundle &obj)
 {
-	Component *comp = mc.componentByName(c->argc(0));
-	if (comp == NULL)
-	{
-		msg(Debug::None,"ERROR: '%s' is not a valid component name.\n", c->argc(0));
-		return CR_FAIL;
-	}
-	ComponentRegionShape rs = RS_from_text(c->argc(1));
-	if (rs != RS_NITEMS) comp->area.setShape(rs);
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	ComponentRegionShape rs = RS_from_text(c->argc(0));
+	if (rs != RS_NITEMS) obj.m->area.setShape(rs);
+	return CR_SUCCESS;
+}
+
+// Set number of requested molecules ('nmols <n>')
+int CommandData::function_CA_NMOLS(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->setNRequested(c->argi(0));
 	return CR_SUCCESS;
 }
 

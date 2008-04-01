@@ -21,8 +21,9 @@
 
 #include <time.h>
 #include <ctime>
-#include <string>
+//#include <string>
 #include <iostream>
+#include <readline/readline.h>
 #include "parse/parser.h"
 #include "model/model.h"
 #include "command/commandlist.h"
@@ -32,7 +33,7 @@
 int main(int argc, char *argv[])
 {
 	// Print GPL license information
-	printf("Aten version 0.95-3, Copyright (C) 2007,2008  T. Youngs\n");
+	printf("Aten version 0.95.3, Copyright (C) 2007,2008  T. Youngs\n");
 	printf("Aten comes with ABSOLUTELY NO WARRANTY.\n");
 	printf("This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	printf("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
@@ -96,16 +97,21 @@ int main(int argc, char *argv[])
 	// Enter interactive mode once any commands/scripts have been executed
 	if (master.programMode() == Master::InteractiveMode)
 	{
-		std::string cmd;
+		//std::string cmd;
+		char *line;
 		printf("Entering interactive mode...\n");
 		do
 		{
 			// Get string from user
-			printf(">>> ");
-			getline(cin,cmd);
+			//printf(">>> ");
+			//getline(cin,cmd);
+			line = readline("Aten 0.95 > ");
 			master.interactiveScript.clear();
-			master.interactiveScript.cacheLine(cmd.c_str());
+			master.interactiveScript.cacheLine(line);
 			master.interactiveScript.execute();
+			// Add the command to the history and delete it 
+			//add_history(line);
+			delete line;
 		} while (master.programMode() == Master::InteractiveMode);
 		//master.set_program_mode(PM_NONE);
 	}

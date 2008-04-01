@@ -25,6 +25,7 @@
 #include "base/sysfunc.h"
 #include "base/constants.h"
 #include "methods/mc.h"
+#include "model/model.h"
 
 // MC ComponentRegions
 const char *RS_strings[RS_NITEMS] = { "Cell", "Cuboid", "Spheroid", "Cylinder" };
@@ -110,16 +111,17 @@ bool ComponentRegion::allowOverlap()
 }
 
 // Overlap check
-bool ComponentRegion::checkOverlap(const Vec3<double> &v, Cell *cell, Component *firstc)
+bool ComponentRegion::checkOverlap(const Vec3<double> &v, Cell *cell, Reflist<Model,int> &components)
 {
 	// Check whether the supplied coordinates overlap with other regions in the list bar this one
 	dbgBegin(Debug::Calls,"ComponentRegion::checkOverlap");
 	static Vec3<double> tempv;
 	bool result = FALSE;
 	ComponentRegion *r;
-	for (Component *c = firstc; c != NULL; c = c->next)
+	Refitem<Model,int> *ri;
+	for (ri = components.first(); ri != NULL; ri = ri->next)
 	{
-		r = &c->area;
+		r = &ri->item->area;
 		if (r == this) continue;
 		if (r->checkCoords(v,cell)) result = TRUE;
 		//printf("Overlap with region '%s' is %s.\n",text_from_RS(r->get_shape()),(result ? "TRUE" : "FALSE"));
@@ -161,7 +163,7 @@ bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
 }
 
 // Random coordinate in region
-Vec3<double> ComponentRegion::randomCoords(Cell *cell, Component *c)
+Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &components)
 {
 	dbgBegin(Debug::Calls,"ComponentRegion::randomCoords");
 	static Vec3<double> v, tempv;
@@ -203,7 +205,7 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Component *c)
 		// Now, check that this random coordinate doesn't overlap with others (if this is required)
 		if (!allowOverlap_)
 		{
-			if (!checkOverlap(v,cell,c)) done = TRUE;
+			if (!checkOverlap(v,cell,components)) done = TRUE;
 		}
 		else done = TRUE;
 		if ((!done) && (nattempts == 100))
