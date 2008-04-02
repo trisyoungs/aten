@@ -8,6 +8,10 @@ Version: 0.95.3
 Release: 1
 License: GPL
 %define fullname %{name}-%{version}
+# norootforbuild
+
+# Define buildroot
+BuildRoot: /var/tmp/%{fullname}
 
 # Software group
 Group: Applications/Editors
