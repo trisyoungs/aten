@@ -403,8 +403,6 @@ class AtenForm : public QMainWindow
 	void setComponentCoords(int centsize, int element, double value);
 	private slots:
 	void on_ComponentList_itemSelectionChanged();
-	void on_AddComponentButton_clicked(bool checked);
-	void on_DeleteComponentButton_clicked(bool checked);
 	void on_PopulationSpin_valueChanged(int value);
 	void on_ComponentTranslateCheck_clicked(bool checked);
 	void on_ComponentRotateCheck_clicked(bool checked);
