@@ -49,10 +49,15 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 %setup -q
 
 # For the build, RedHat distros seem to need the path to the Qt4 binaries set explicitly. SuSE is fine.
+# Blank line between final %else/%endif is significant!
 %build
 ./configure --prefix=$RPM_BUILD_ROOT/usr \
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
+%ifarch x86_64
+--with-qtdir=/usr/lib64/qt4/bin
+%else
 --with-qtdir=/usr/lib/qt4/bin
+%endif
 %else
 
 %endif

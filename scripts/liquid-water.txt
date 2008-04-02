@@ -10,7 +10,7 @@ chain O
 roty 70.5
 move 1.0 0.0 0.0 
 chain H
-nmols 33
+nmols 267
 
 loadff data/ff/water.ff wff
 ffmodel
@@ -26,7 +26,7 @@ info
 # For cubic cells, nwater should be approximately :     10 A  = 33
 #							20 A = 267
 newmodel box
-cell 10.0 10.0 10.0 90.0 90.0 90.0
+cell 20.0 20.0 20.0 90.0 90.0 90.0
 ffmodel
 #elec ewaldauto 5.0e-6
 elec coulomb
