@@ -123,15 +123,6 @@ void AtenForm::on_ComponentList_itemSelectionChanged()
 	refreshComponentData();
 }
 
-// Add the current model to the component list
-void AtenForm::on_AddComponentButton_clicked(bool checked)
-{
-}
-
-void AtenForm::on_DeleteComponentButton_clicked(bool checked)
-{
-}
-
 void AtenForm::on_PopulationSpin_valueChanged(int value)
 {
 	int comp = ui.ComponentList->currentRow();
