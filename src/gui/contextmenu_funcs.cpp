@@ -30,20 +30,20 @@ Atom *target = NULL;
 // Show the modelview context menu
 void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 {
-	Model *m = master.currentModel();
+	Model *viewTarget = master.currentModel()->renderSource();
 	target = undermouse;
-	if ((m->nSelected() != 0) && (undermouse->isSelected())) target = NULL;
+	if ((viewTarget->nSelected() != 0) && (undermouse->isSelected())) target = NULL;
 	QPoint pos(x,y);
 	// If there are no atoms selected we must enable the menu first...
-	if (m->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(TRUE);
+	if (viewTarget->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(TRUE);
 	mainWindow->ui.AtomMenu->exec(pos);
-	if (m->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(FALSE);
+	if (viewTarget->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(FALSE);
 }
 
 // Set atom style
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
-	if (target == NULL) master.currentModel()->selectionSetStyle(ds);
+	if (target == NULL) master.currentModel()->renderSource()->selectionSetStyle(ds);
 	else target->setStyle(ds);
 	target = NULL;
 }
@@ -71,7 +71,7 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 // Set atom labels
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Add Labels");
 	if (target == NULL) m->selectionAddLabels(al);
 	else target->addLabel(al);
@@ -82,7 +82,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 // Clear atom labels
 void AtenForm::removeAtomLabels(bool all)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	if (all)
 	{
 		m->beginUndostate("Clear All Labels");
@@ -135,7 +135,7 @@ void AtenForm::on_actionAtomLabelClearAll_triggered(bool checked)
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	if (target == NULL) m->selectionSetHidden(hidden);
 	else m->setHidden(target, hidden);
 	target = NULL;

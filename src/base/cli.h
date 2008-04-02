@@ -22,9 +22,6 @@
 #ifndef ATEN_CLI_H
 #define ATEN_CLI_H
 
-#include <iostream>
-#include <getopt.h>
-
 // Command option data
 class Cli
 {

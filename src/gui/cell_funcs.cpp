@@ -133,6 +133,8 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 		m->removeCell();
 		m->endUndostate();
 	}
+	// Must also update the disordered builder stack page here, since a cell has been added/removed
+	refreshDisorderPage();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 

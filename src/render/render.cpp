@@ -44,7 +44,6 @@ void Canvas::renderScene(Model *source)
 	// Store the source model pointer and grab the trajectoryparent pointer (if there is one)
 	displayModel_ = source;
 	trajparent = source->trajectoryParent();
-
 	if (displayModel_ == NULL)
 	{
 		// Select projection matrix and load the identity matrix

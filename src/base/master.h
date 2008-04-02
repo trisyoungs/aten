@@ -27,7 +27,6 @@
 #include "parse/filter.h"
 #include "command/commandlist.h"
 #include "base/cli.h"
-#include <getopt.h>
 #include "templates/namemap.h"
 
 // Forward Declarations
@@ -76,7 +75,7 @@ class Master
 	// Return nth item in the model list
 	Model *model(int n);
 	// Return the current model's index in the model list
-	int currentModelIndex() const;
+	int currentModelId() const;
 	// Return index of specified model
 	int modelIndex(Model *m) const;
 	// Return the number of models in the model list

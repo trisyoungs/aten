@@ -58,16 +58,7 @@ void AtenForm::on_ComponentSizeZSpin_valueChanged(double d)
 void AtenForm::refreshDisorderPage()
 {
 	// (De)sensitize controls
-	if (master.currentModel()->cell()->type() == CT_NONE)
-	{
-		ui.DisorderStartButton->setDisabled(TRUE);
-		ui.AddComponentButton->setDisabled(FALSE);
-	}
-	else
-	{
-		ui.DisorderStartButton->setDisabled(FALSE);
-		ui.AddComponentButton->setDisabled(TRUE);
-	}
+	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == CT_NONE);
 	// Update model (component) list
 	QListWidgetItem *item;
 	ui.ComponentList->setCurrentRow(-1);
@@ -80,6 +71,7 @@ void AtenForm::refreshDisorderPage()
 	}
 	// Select the last component in the list
 	ui.ComponentList->setCurrentRow(master.nModels()-1);
+	refreshComponentData();
 }
 
 void AtenForm::refreshComponentData()

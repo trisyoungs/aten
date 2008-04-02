@@ -91,48 +91,14 @@ void GuiQt::run(int argc, char **argv)
 		m->calculateViewMatrix();
 	}
 
-	// Refresh the surfaces and forcefield lists
+	// Refresh the necessary stack pages
 	mainWindow->refreshGridsPage();
 	mainWindow->refreshForcefieldPage();
+	mainWindow->refreshDisorderPage();
+	updateTrajControls();
 
 	int n = app->exec();
 	dbgEnd(Debug::Calls,"GuiQt::run");
-}
-
-// Update trajectory controls
-void GuiQt::updateTrajControls()
-{
-	// First see if the model has a trajectory associated to it
-	if (master.currentModel()->totalFrames() == 0)
-	{
-		mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
-		mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
-		mainWindow->ui.actionFrameNext->setDisabled(TRUE);
-		mainWindow->ui.actionFrameLast->setDisabled(TRUE);
-		mainWindow->ui.actionPlayPause->setDisabled(TRUE);
-		mainWindow->ui.actionViewTrajectory->setDisabled(TRUE);
-	}
-	else
-	{
-		// If the trajectory is playing, desensitise all but the play/pause button
-		if (trajectoryPlaying_)
-		{
-			mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
-			mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
-			mainWindow->ui.actionFrameNext->setDisabled(TRUE);
-			mainWindow->ui.actionFrameLast->setDisabled(TRUE);
-			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
-		}
-		else
-		{
-			mainWindow->ui.actionFrameFirst->setDisabled(FALSE);
-			mainWindow->ui.actionFramePrevious->setDisabled(FALSE);
-			mainWindow->ui.actionFrameNext->setDisabled(FALSE);
-			mainWindow->ui.actionFrameLast->setDisabled(FALSE);
-			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
-		}
-		mainWindow->ui.actionViewTrajectory->setDisabled(FALSE);
-	}
 }
 
 /*
@@ -184,6 +150,7 @@ void GuiQt::addModel(Model *m)
 	if (!doesExist_) return;
 	// Create new tab in ModelTabs QTabBar
 	int tabid = mainWindow->ui.ModelTabs->addTab(m->name());
+	mainWindow->ui.ModelTabs->setCurrentIndex(tabid);
 	m->resetView();
 	gui.modelChanged();
 }
@@ -219,25 +186,26 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update status bar
 	QString s;
 	Model *m = master.currentModel();
+	Model *trajParent = (m->trajectoryParent() == NULL ? m : m->trajectoryParent());
 	// Trajectory information label
 	if (m->totalFrames() != 0)
 	{
 		s = "(Frame ";
-		s += itoa(m->framePosition());
+		s += (m->renderSource() == m ? "Main" : itoa(m->framePosition()));
 		s += " of ";
 		s += itoa(m->totalFrames());
 		s += ") ";
 	}
 	// Model information
-	s += itoa(m->nAtoms());
+	s += itoa(trajParent->nAtoms());
 	s += " Atoms ";
-	if (m->nSelected() != 0)
+	if (trajParent->nSelected() != 0)
 	{
 		s += "(<b>";
-		s += itoa(m->nSelected());
+		s += itoa(trajParent->nSelected());
 		s += " selected</b>) ";
 	}
-	s += ftoa(m->mass());
+	s += ftoa(trajParent->mass());
 	s += " g mol<sup>-1</sup> ";
 	CellType ct = m->cell()->type();
 	if (ct != CT_NONE)
@@ -245,11 +213,15 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 		s += "(";
 		s += text_from_CT(ct);
 		s += ", ";
-		s += ftoa(m->density());
+		s += ftoa(trajParent->density());
 		switch (prefs.densityUnit())
 		{
-			case (Prefs::GramsPerCm):	s += " g cm<sup>-3</sup>)"; break;
-			case (Prefs::AtomsPerAngstrom):	s += " atoms &#8491;<sup>-3</sup>)"; break;
+			case (Prefs::GramsPerCm):
+				s += " g cm<sup>-3</sup>)";
+				break;
+			case (Prefs::AtomsPerAngstrom):
+				s += " atoms &#8491;<sup>-3</sup>)";
+				break;
 		}
 	}
 	mainWindow->statusLabel->setText(s);
@@ -267,6 +239,48 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	mainWindow->updateUndoRedo();
 	// Request redraw of the main canvas
 	mainView.postRedisplay();
+}
+
+// Update trajectory controls
+void GuiQt::updateTrajControls()
+{
+	// First see if the model has a trajectory associated to it
+	Model *m = master.currentModel();
+	if (m->totalFrames() == 0)
+	{
+		mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
+		mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
+		mainWindow->ui.actionFrameNext->setDisabled(TRUE);
+		mainWindow->ui.actionFrameLast->setDisabled(TRUE);
+		mainWindow->ui.actionPlayPause->setDisabled(TRUE);
+		mainWindow->ui.actionViewTrajectory->setDisabled(TRUE);
+	}
+	else
+	{
+		// Make sure the trajectory toolbar is visible
+		mainWindow->ui.TrajectoryToolBar->setVisible(TRUE);
+		// If the trajectory is playing, desensitise all but the play/pause button
+		if (trajectoryPlaying_)
+		{
+			mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
+			mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
+			mainWindow->ui.actionFrameNext->setDisabled(TRUE);
+			mainWindow->ui.actionFrameLast->setDisabled(TRUE);
+			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
+		}
+		else
+		{
+			mainWindow->ui.actionFrameFirst->setDisabled(FALSE);
+			mainWindow->ui.actionFramePrevious->setDisabled(FALSE);
+			mainWindow->ui.actionFrameNext->setDisabled(FALSE);
+			mainWindow->ui.actionFrameLast->setDisabled(FALSE);
+			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
+		}
+		mainWindow->ui.actionViewTrajectory->setDisabled(FALSE);
+		// Select the correct view action
+		if (m->renderSource() == m) mainWindow->ui.actionViewModel->setChecked(TRUE);
+		else mainWindow->ui.actionViewTrajectory->setChecked(TRUE);
+	}
 }
 
 // Update model lists
