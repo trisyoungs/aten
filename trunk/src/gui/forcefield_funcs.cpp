@@ -36,9 +36,9 @@ int typelist_element = 1;
 void AtenForm::refreshForcefieldPage()
 {
 	// If the cell page is not visible, don't do anything
-	if (!ui.ShowCellPageButton->isChecked())
+	if (!ui.ShowForcefieldsPageButton->isChecked())
 	{
-		dbgEnd(Debug::Calls,"AtenForm::refreshCellPage");
+		dbgEnd(Debug::Calls,"AtenForm::refreshForcefieldPage");
 		return;
 	}
 	ui.ForcefieldList->clear();

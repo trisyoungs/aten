@@ -81,8 +81,8 @@ void Canvas::informKeyDown(key_code key)
 	if (displayModel_ == NULL) return;
 	static Model *viewtarget;
 	// For view operations when we have a trajectory, apply all movement to the parent model
-	viewtarget = displayModel_->trajectoryParent();
-	if (viewtarget == NULL) viewtarget = displayModel_;
+	//viewtarget = (displayModel_->trajectoryParent() == NULL ? displayModel_ : displayModel_->trajectoryParent());
+	viewtarget = displayModel_;
 	switch (key)
 	{
 		case (KC_SHIFT_L):
@@ -304,6 +304,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (UA_POSSELECT):
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
 			displayModel_->beginUndostate("Change Selection");
+			displayModel_->projectAll();
 			// If SHIFT is not held down, deselect the current selection
 			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			// Do either point select or box select based on the size of the selected area
@@ -504,7 +505,7 @@ void Canvas::modeMotion(double x, double y)
 	// Actively update variables when moving the mouse (possibly while performing a given action)
 	dbgBegin(Debug::Calls,"Canvas::modeMotion");
 	static Vec3<double> delta;
-	static Model *viewtarget;
+	//static Model *viewtarget;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::modeMotion - datamodel == NULL.\n");
@@ -512,8 +513,8 @@ void Canvas::modeMotion(double x, double y)
 		return;
 	}
 	// For view operations when we have a trajectory, apply all movement to the parent model
-	viewtarget = displayModel_->trajectoryParent();
-	if (viewtarget == NULL) viewtarget = displayModel_;
+	//viewtarget = displayModel_->trajectoryParent();
+	//if (viewtarget == NULL) viewtarget = displayModel_;
 	// Calculate new delta.
 	delta.set(x,y,0.0);
 	delta = delta - rMouseLast_;
@@ -523,13 +524,13 @@ void Canvas::modeMotion(double x, double y)
 		case (UA_NONE):
 			break;
 		case (UA_ROTATEXY):
-			viewtarget->rotate(delta.x/2.0,delta.y/2.0);
+			displayModel_->rotate(delta.x/2.0,delta.y/2.0);
 			break;
 		case (UA_ROTATEZ):
-			viewtarget->zRotate(delta.x/2.0);
+			displayModel_->zRotate(delta.x/2.0);
 			break;
 		case (UA_MOVECAM):
-			viewtarget->adjustCamera(delta/15.0,0.0);
+			displayModel_->adjustCamera(delta/15.0,0.0);
 			break;
 		case (UA_MANIPROTXY):
 			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
@@ -546,8 +547,8 @@ void Canvas::modeMotion(double x, double y)
 			hasMoved_ = TRUE;
 			break;
 		case (UA_ZOOMCAM):
-			if (prefs.hasPerspective()) viewtarget->adjustCamera(0.0,0.0,delta.y,0.0);
-			else viewtarget->adjustOrthoSize(delta.y);
+			if (prefs.hasPerspective()) displayModel_->adjustCamera(0.0,0.0,delta.y,0.0);
+			else displayModel_->adjustOrthoSize(delta.y);
 			calculateDrawPixelWidth();
 			break;
 		default:
@@ -562,16 +563,12 @@ void Canvas::modeScroll(bool scrollup)
 	// Handle mouse-wheel scroll events.
 	// Do the requested wheel action as defined in the control panel
 	dbgBegin(Debug::Calls,"Canvas::modeScroll");
-	static Model *viewtarget;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::modeScroll - datamodel == NULL.\n");
 		dbgEnd(Debug::Calls,"Canvas::modeScroll");
 		return;
 	}
-	// For view operations when we have a trajectory, apply all movement to the parent model
-	viewtarget = displayModel_->trajectoryParent();
-	if (viewtarget == NULL) viewtarget = displayModel_;
 	switch (prefs.mouseAction(Prefs::WheelButton))
 	{
 		case (Prefs::NoAction):
@@ -580,14 +577,14 @@ void Canvas::modeScroll(bool scrollup)
 			useSelectedMode();
 			break;
 		case (Prefs::RotateAction):
-			scrollup ? viewtarget->rotate(1.0,0.0) : viewtarget->rotate(-1.0,0.0);
+			scrollup ? displayModel_->rotate(1.0,0.0) : displayModel_->rotate(-1.0,0.0);
 			break;
 		case (Prefs::TranslateAction):
 			break;
 		case (Prefs::ZoomAction):
 			if (prefs.hasPerspective())
-				scrollup ? viewtarget->adjustCamera(0.0,0.0,-5.0,0.0) : viewtarget->adjustCamera(0.0,0.0,5.0,0.0);
-			else scrollup ? viewtarget->adjustOrthoSize(1.0) : viewtarget->adjustOrthoSize(-1.0);
+				scrollup ? displayModel_->adjustCamera(0.0,0.0,-5.0,0.0) : displayModel_->adjustCamera(0.0,0.0,5.0,0.0);
+			else scrollup ? displayModel_->adjustOrthoSize(1.0) : displayModel_->adjustOrthoSize(-1.0);
 			calculateDrawPixelWidth();
 			break;
 	}

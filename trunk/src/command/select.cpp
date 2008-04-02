@@ -100,7 +100,7 @@ int CommandData::function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Select all atoms in current (or named) pattern ('selectpattern [name]')
+// Select all atoms in current (or named/id'd) pattern ('selectpattern [name|id]')
 int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;

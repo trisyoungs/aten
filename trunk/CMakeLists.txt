@@ -66,7 +66,7 @@ install( DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/filters"
      REGEX ".svn" EXCLUDE
 )
 install(CODE
-"message(\"Do not forget to set ATENDATA to ${CMAKE_INSTALL_PREFIX}/share/aten
+"message(\"Don't forget to set ATENDATA to ${CMAKE_INSTALL_PREFIX}/share/aten
 in your profile\")"
 )
 

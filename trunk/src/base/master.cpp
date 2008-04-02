@@ -26,6 +26,7 @@
 #include "base/spacegroup.h"
 #include "base/master.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
 #include "parse/parser.h"
 #include <fstream>
 
@@ -83,7 +84,6 @@ void Master::setCurrentModel(Model *m)
 	current.i = NULL;
 	current.m->calculateViewMatrix();
 	current.m->projectAll();
-	gui.updateModelLists();
 	dbgEnd(Debug::Calls,"Master::setCurrentModel");
 }
 
@@ -110,7 +110,7 @@ Model *Master::model(int n)
 }
 
 // Return the current model's index in the model list
-int Master::currentModelIndex() const
+int Master::currentModelId() const
 {
 	return models_.indexOf(current.m);
 }
@@ -135,7 +135,11 @@ Model *Master::addModel()
 	char newname[16];
 	sprintf(newname,"Unnamed%03i",++modelId_);
 	current.m->setName(newname);
-	gui.addModel(current.m);
+	if (gui.exists())
+	{
+		gui.addModel(current.m);
+		gui.mainWindow->refreshDisorderPage();
+	}
 	dbgEnd(Debug::Calls,"Master::addModel");
 	return current.m;
 }
@@ -155,7 +159,11 @@ void Master::removeModel(Model *xmodel)
 	// Delete the old model (GUI first, then master)
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);
-	gui.removeModel(id);
+	if (gui.exists())
+	{
+		gui.removeModel(id);
+		gui.mainWindow->refreshDisorderPage();
+	}
 	dbgEnd(Debug::Calls,"Master::removeModel");
 }
 

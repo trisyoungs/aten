@@ -41,19 +41,18 @@ void Canvas::renderModelAtoms()
 
 	renderstyle = prefs.renderStyle();
 	scheme = prefs.colourScheme();
-	i = displayModel_->atoms();
 	cell = displayModel_->cell();
 	
 	// Set polygon fill mode and specular reflection
 	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 
-	while (i != NULL)
+	for (i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
 		// If the atom is hidden then move on to the next
-		if (i->isHidden()) { i = i->next; continue; }
+		if (i->isHidden()) continue;
 		// Check if its a drawing object and not an element
-		if (i->element() > 118) { i = i->next; continue; }
+		if (i->element() > 118) continue;
 		// Push the current matrix, translate to the atoms coordinates and set the drawing colour
 		glPushMatrix();
 		  // Define atom colours
@@ -198,7 +197,6 @@ void Canvas::renderModelAtoms()
 			}
 		  }
 		glPopMatrix();
-		i = i->next;
 	}
 	// End the GL_LINES command
 	//glEnd();

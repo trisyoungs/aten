@@ -25,6 +25,7 @@
 #include "methods/mc.h"
 #include "base/master.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
 
 // Static Singleton
 MonteCarlo mc;
@@ -651,7 +652,16 @@ bool MonteCarlo::disorder(Model *destmodel)
 		}
 		else i = i->next;
 	}
+
+	// Remove number of molecules inserted from original number requested
+	for (ri = components.first(); ri != NULL; ri = ri->next)
+	{
+		// Get model pointer
+		c = ri->item;
+		c->setNRequested( c->nRequested() - c->componentPattern()->nMols() );
+	}
 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
+
 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
 		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
@@ -663,6 +673,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	destmodel->calculateMass();
 	destmodel->calculateDensity();
 	destmodel->logChange(LOG_COORDS);
+	gui.mainWindow->refreshDisorderPage();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"MonteCarlo::insert");
 	return TRUE;

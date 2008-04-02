@@ -67,14 +67,14 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	// Switch render focus from the model's trajectory to the model.
 	master.currentModel()->setRenderFromSelf();
-	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
 
 void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory.
 	master.currentModel()->setRenderFromFrames();
-	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
 
 void AtenForm::setCartesianView(double x, double y, double z)

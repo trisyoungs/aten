@@ -147,11 +147,10 @@ Atom *Model::atomOnScreen(double x1, double y1)
 	static double closestz, dist, nclip;
 	closestz = 10000.0;
 	nclip = prefs.clipNear();
-	Atom *i = atoms_.first();
 	y1 = gui.mainView.height() - y1;
-	while (i != NULL)
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		if (i->isHidden()) { i = i->next; continue; }
+		if (i->isHidden()) continue;
 		wr = -i->rWorld();
 		sr = i->rScreen();
 		if (wr.z > nclip)
@@ -166,7 +165,6 @@ Atom *Model::atomOnScreen(double x1, double y1)
 				}
 			}
 		}
-		i = i->next;
 	}
 	dbgEnd(Debug::Calls,"Model::atomOnScreen");
 	return closest;
@@ -186,7 +184,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2)
 	if (y1 > y2) { t=y1; y1=y2; y2=t; }
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		if (i->isHidden()) { i = i->next; continue; }
+		if (i->isHidden()) continue;
 		Vec3<double> sr = i->rScreen();
 		if ((sr.x >= x1) && (sr.x <= x2))
 			if ((sr.y >= y1) && (sr.y <= y2)) selectAtom(i);
