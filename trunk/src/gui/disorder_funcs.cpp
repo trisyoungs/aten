@@ -57,6 +57,7 @@ void AtenForm::on_ComponentSizeZSpin_valueChanged(double d)
 
 void AtenForm::refreshDisorderPage()
 {
+	if (!gui.exists()) return;
 	// (De)sensitize controls
 	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == CT_NONE);
 	// Update model (component) list
