@@ -340,22 +340,36 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Fix all patterns in the destmodel
 	destmodel->setPatternsFixed(destmodel->nPatterns());
 
-	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
-	msg(Debug::None,"Preparing destination model...\n");
+	// Before we add in the molecule copies, check that we can create expressions for each component (and build reflist)
+	msg(Debug::None,"Checking component models...\n");
 	for (c = master.models(); c != NULL; c = c->next)
 	{
 		// Check that this model is a required component
 		if (c->nRequested() == 0) continue;
 		// Add this model to the component reflist
 		components.add(c);
-		// Check that we can create a suitable expression for the component model
+		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
 		if (!c->createExpression())
 		{
 			msg(Debug::None,"Failed to create expression for component model '%s'.\n", c->name());
 			dbgEnd(Debug::Calls,"MonteCarlo::disorder");
 			return FALSE;
 		}
-		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
+	}
+
+	// Check that there were actually components specified
+	if (components.nItems() == 0)
+	{
+		msg(Debug::None,"No components have been specified for insertion into the model.\n");
+		dbgEnd(Debug::Calls,"MonteCarlo::disorder");
+		return FALSE;
+	}
+
+	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
+	msg(Debug::None,"Preparing destination model...\n");
+	for (ri = components.first(); ri != NULL; ri = ri->next)
+	{
+		c = ri->item;
 		// Copy the model and paste it 'nrequested' times into destmodel
 		clip.copyAll(c);
 		for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
@@ -366,14 +380,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 		// Set the forcefield of the new pattern fo that of the source model
 		p->setForcefield(c->forcefield());
         }
-
-	// Check that there were actually components specified
-	if (components.nItems() == 0)
-	{
-		msg(Debug::None,"No components have been specified for inclusion into the model.\n");
-		dbgEnd(Debug::Calls,"MonteCarlo::disorder");
-		return FALSE;
-	}
 
 	// Create master expression for the new (filled) model
 	if (!destmodel->createExpression())
@@ -661,7 +667,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 		c->setNRequested( c->nRequested() - c->componentPattern()->nMols() );
 	}
 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
-
 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
 		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
@@ -672,7 +677,11 @@ bool MonteCarlo::disorder(Model *destmodel)
 	destmodel->foldAllAtoms();
 	destmodel->calculateMass();
 	destmodel->calculateDensity();
-	destmodel->logChange(LOG_COORDS);
+	if (destmodel->arePatternsValid()) printf("PAtterns are valid...\n");
+	else printf("Patterns are NOT valid.\n");
+	if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
+	else printf("Expression is NOT valid.\n");
+	//destmodel->logChange(LOG_COORDS);
 	gui.mainWindow->refreshDisorderPage();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"MonteCarlo::insert");

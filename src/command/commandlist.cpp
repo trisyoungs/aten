@@ -956,7 +956,7 @@ bool CommandList::execute(Model *alttarget, ifstream *sourcefile)
 	// Set alternative input file if one was supplied
 	if (sourcefile != NULL)
 	{
-		if (inputFile_ != NULL) printf("Warning - supplied ifstream overrides file in CommandList.\n");
+		if ((inputFile_ != NULL) && (inputFile_ != sourcefile)) printf("Warning - supplied ifstream overrides file in CommandList.\n");
 		inputFile_ = sourcefile;
 	}
 	static bool result;

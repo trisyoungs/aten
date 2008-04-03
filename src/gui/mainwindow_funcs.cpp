@@ -107,6 +107,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
 	master.setCurrentModel(master.model(n));
+	refreshDisorderPage();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 }

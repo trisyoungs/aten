@@ -208,6 +208,10 @@ void Cell::determineType()
 		if (fabs(lengths_.x - lengths_.z) < 1.0e-5) count ++;
 		if (count == 2) type_ = CT_CUBIC;
 		else type_ = CT_ORTHORHOMBIC;
+		// While we're here, symmetrise the matrix for cubic and orthorhombic cells
+		axes_.rows[0].y = axes_.rows[0].z = 0.0;
+		axes_.rows[1].x = axes_.rows[1].z = 0.0;
+		axes_.rows[2].x = axes_.rows[2].y = 0.0;
 	}
 	else type_ = CT_PARALLELEPIPED;
 	dbgEnd(Debug::Calls,"Cell::determineType");
