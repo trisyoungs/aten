@@ -89,7 +89,7 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 	}
 	// Check for presence of unit cell
 	Vec3<double> r = c->arg3d(1);
-	if (obj.m->cell()->type() == CT_NONE) msg(Debug::None,"Warning: No unit cell present - atom added with supplied coordinates.\n");
+	if (obj.m->cell()->type() == Cell::NoCell) msg(Debug::None,"Warning: No unit cell present - atom added with supplied coordinates.\n");
 	else r = obj.m->cell()->fracToReal(r);
 	master.current.i = obj.m->addAtom(el, r);
 	return CR_SUCCESS;

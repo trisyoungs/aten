@@ -31,33 +31,43 @@
 int printlevel = 0;
 
 // Atom typing commands
-const char *ATC_keywords[ATC_NITEMS] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh" };
-AtomtypeCommand ATC_from_text(const char *s)
-	{ return (AtomtypeCommand) enumSearch("",ATC_NITEMS,ATC_keywords,s); }
+const char *AtomtypeCommandKeywords[Atomtype::nAtomtypeCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh" };
+Atomtype::AtomtypeCommand ATC_from_text(const char *s)
+{
+	return (Atomtype::AtomtypeCommand) enumSearch("",Atomtype::nAtomtypeCommands,AtomtypeCommandKeywords,s);
+}
 
 // Ring typing commands
-const char *RTC_keywords[RTC_NITEMS] = { "size", "n", "notself" };
-RingTypeCommand RTC_from_text(const char *s)
-	{ return (RingTypeCommand) enumSearch("",RTC_NITEMS,RTC_keywords,s); }
+const char *RingtypeCommandKeywords[Ringtype::nRingtypeCommands] = { "size", "n", "notself" };
+Ringtype::RingtypeCommand RTC_from_text(const char *s)
+{
+	return (Ringtype::RingtypeCommand) enumSearch("",Ringtype::nRingtypeCommands,RingtypeCommandKeywords,s);
+}
 
 // Atom environment
-const char *AE_strings[AE_NITEMS] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
-const char *text_from_AE(AtomEnv i)
-	{ return AE_strings[i]; }
+const char *AtomEnvironmentText[Atomtype::nEnvironments] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
+const char *Atomtype::atomEnvironment(Atomtype::AtomEnvironment ae)
+{
+	return AtomEnvironmentText[ae];
+}
 
 // Geometries about atomic centres
-const char *AG_keywords[AG_NITEMS] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
-AtomGeometry AG_from_text(const char *s)
-	{ return (AtomGeometry) enumSearch("atom geometry",AG_NITEMS,AG_keywords,s); }
-const char *text_from_AG(AtomGeometry i)
-	{ return AG_keywords[i]; }
+const char *AtomGeometryKeywords[Atomtype::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+Atomtype::AtomGeometry AG_from_text(const char *s)
+{
+	return (Atomtype::AtomGeometry) enumSearch("atom geometry",Atomtype::nAtomGeometries,AtomGeometryKeywords,s);
+}
+const char *Atomtype::atomGeometry(Atomtype::AtomGeometry i)
+{
+	return AtomGeometryKeywords[i];
+}
 
 // Constructors
 Atomtype::Atomtype()
 {
 	// Private variables
-	env_ = AE_UNSPECIFIED;
-	geometry_ = AG_UNSPECIFIED;
+	environment_ = NoEnvironment;
+	geometry_ = NoGeometry;
 	os_ = 99;
 	nAllowedElements_ = 0;
 	nBonds_ = -1;
@@ -72,7 +82,7 @@ Atomtype::Atomtype()
 	next = NULL;
 }
 
-RingType::RingType()
+Ringtype::Ringtype()
 {
 	// Private Variables
 	nAtoms_ = -1;
@@ -119,7 +129,7 @@ void Atomtype::print()
 	if (ringList_.nItems() != 0)
 	{
 		printf("(%3i)   Rings : \n", printlevel);
-		for (RingType *xring = ringList_.first(); xring != NULL; xring = xring->next) xring->print();
+		for (Ringtype *xring = ringList_.first(); xring != NULL; xring = xring->next) xring->print();
 	}
 	printlevel --;
 }
@@ -193,7 +203,7 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 */
 
 // Print
-void RingType::print()
+void Ringtype::print()
 {
 	printlevel ++;
 	printf("(%3i)   Size : %i\n", printlevel, nAtoms_);
@@ -209,16 +219,16 @@ void RingType::print()
 // Expand Functions
 */
 
-void RingType::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
+void Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 {
 	// Separate function (to prevent brain melting) to recursively create a ring definition.
 	// At least allows the restriction (and addition) of commands to the ring command.
-	dbgBegin(Debug::Calls,"RingType::expand");
+	dbgBegin(Debug::Calls,"Ringtype::expand");
 	Dnchar keywd, optlist, def;
 	static char c;
 	static int level = 0;
 	static bool found;
-	static RingTypeCommand rtc;
+	static RingtypeCommand rtc;
 	static Atomtype *newat;
 	level ++;
 	msg(Debug::Typing,"expand[ring] : Received string [%s]\n",data);
@@ -254,27 +264,27 @@ void RingType::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			switch (rtc)
 			{
 				// Size specifier
-				case (RTC_SIZE):
+				case (Ringtype::SizeCommand):
 					nAtoms_ = atoi(optlist.get());
 					break;
 				// Repeat specifier
-				case (RTC_REPEAT):
+				case (Ringtype::RepeatCommand):
 					nRepeat_ = atoi(optlist.get());
 					break;
 				// Presence of self specifier
-				case (RTC_NOTSELF):
+				case (Ringtype::NotSelfCommand):
 					selfAbsent_ = TRUE;
 					break;
 				// Unrecognised
 				default:
 					if (parent != NULL) msg(Debug::None,"Unrecognised command '%s' found while expanding ring at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
-					else msg(Debug::None,"RingType::expand - Unrecognised command (%s).\n", keywd.get());
+					else msg(Debug::None,"Ringtype::expand - Unrecognised command (%s).\n", keywd.get());
 					break;
 			}
 		}
 	} while (!def.empty());
 	level --;
-	dbgEnd(Debug::Calls,"RingType::expand");
+	dbgEnd(Debug::Calls,"Ringtype::expand");
 }
 
 // Master creation routine, returning the head node of an Atomtype structure.
@@ -292,7 +302,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	// Parent pointer is used for error reporting
 	dbgBegin(Debug::Calls,"Atomtype::expand");
 	Dnchar keywd, optlist, def;
-	static RingType *newring;
+	static Ringtype *newring;
 	static bool found;
 	static char c;
 	static int n, level = 0;
@@ -339,45 +349,45 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			switch (atc)
 			{
 				// Hybridisation / environment settings (no options)
-				case (ATC_SP):
-					env_ = AE_SP;
+				case (Atomtype::SpCommand):
+					environment_ = Atomtype::SpEnvironment;
 					break;
-				case (ATC_SP2):
-					env_ = AE_SP2;
+				case (Atomtype::Sp2Command):
+					environment_ = Atomtype::Sp2Environment;
 					break;
-				case (ATC_SP3):
-					env_ = AE_SP3;
+				case (Atomtype::Sp3Command):
+					environment_ = Atomtype::Sp3Environment;
 					break;
-				case (ATC_AROMATIC):
-					env_ = AE_AROMATIC;
+				case (Atomtype::AromaticCommand):
+					environment_ = Atomtype::AromaticEnvironment;
 					break;
 				// Ring specification (possible options)
-				case (ATC_RING):
+				case (Atomtype::RingCommand):
 					newring = ringList_.add();
 					newring->expand(optlist.get(),ff,parent);
 					break;
 				// Disallow rings
-				case (ATC_NORING):
+				case (Atomtype::NoRingCommand):
 					acyclic_ = TRUE;
 					break;
 				// Request exact bond number
-				case (ATC_NBONDS):
+				case (Atomtype::NBondsCommand):
 					nBonds_ = atoi(optlist.get());
 					break;
 				// Request exact bond type (bond=BondType)
-				case (ATC_BOND):
+				case (Atomtype::BondCommand):
 					boundBond_ = Bond::bondType(optlist.get());
 					break;
 				// Number of times to match (n=int)
-				case (ATC_REPEAT):
+				case (Atomtype::RepeatCommand):
 					nRepeat_ = atoi(optlist.get());
 					break;
 				// Oxidation state of element (os=int)
-				case (ATC_OS):
+				case (Atomtype::OxidationStateCommand):
 					os_ = atoi(optlist.get());
 					break;
 				// Request no attached hydrogens
-				case (ATC_NHYDROGENS):
+				case (Atomtype::NHydrogensCommand):
 					nHydrogen_ = atoi(optlist.get());
 					break;
 				default:
@@ -389,7 +399,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		if (!found)
 		{
 			ag = AG_from_text(keywd.get());
-			if (ag != AG_NITEMS) geometry_ = ag;
+			if (ag != Atomtype::nAtomGeometries) geometry_ = ag;
 			else
 			{
 				if (parent != NULL) msg(Debug::None,"Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
@@ -446,7 +456,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	int typescore, atomscore, ringscore, n;
 	bool found;
 	Atomtype *bat;
-	RingType *atr;
+	Ringtype *atr;
 	Ring *r;
 	ForcefieldAtom *ffa;
 	Refitem<Ring,int> *refring;
@@ -457,7 +467,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	// Set the scoring to one (which will be the case if there are no specifications to match)
 	typescore = 1;
 	level ++;
-	msg(Debug::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements.symbol(i), i->nBonds(), text_from_AE(i->env()));
+	msg(Debug::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements.symbol(i), i->nBonds(), atomEnvironment(i->environment()));
 	// Element check
 	msg(Debug::Typing,"(%li %2i) ... Element  ",this,level);
 	if (nAllowedElements_ == 0) msg(Debug::Typing,"[defaulted]\n");
@@ -503,17 +513,17 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	}
 	// Atom environment check
 	msg(Debug::Typing,"(%li %2i) ... Environment  ",this,level);
-	if (env_ == AE_UNSPECIFIED) msg(Debug::Typing," [defaulted]\n");
+	if (environment_ == Atomtype::NoEnvironment) msg(Debug::Typing," [defaulted]\n");
 	else
 	{
-		if (i->isEnv(env_))
+		if (i->isEnvironment(environment_))
 		{
 			typescore++;
-			msg(Debug::Typing,"[passed - matched '%s']\n",text_from_AE(i->env()));
+			msg(Debug::Typing,"[passed - matched '%s']\n", atomEnvironment(i->environment()));
 		}
 		else
 		{
-			msg(Debug::Typing,"[failed - is '%s', but type needs %s]\n", text_from_AE(i->env()), text_from_AE(env_));
+			msg(Debug::Typing,"[failed - is '%s', but type needs %s]\n", atomEnvironment(i->environment()), atomEnvironment(environment_));
 			level --;
 			dbgEnd(Debug::Calls,"Atomtype::match_atom");
 			return 0;
@@ -557,17 +567,17 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	}
 	// Local atom geometry check
 	msg(Debug::Typing,"(%li %2i) ... Geometry  ",this,level);
-	if (geometry_ == AG_UNSPECIFIED) msg(Debug::Typing,"[defaulted]\n");
+	if (geometry_ == Atomtype::NoGeometry) msg(Debug::Typing,"[defaulted]\n");
 	else
 	{
 		if (i->geometry(parent) == geometry_)
 		{
 			typescore++;
-			msg(Debug::Typing,"[passed - matched '%s']\n",text_from_AG(geometry_));
+			msg(Debug::Typing,"[passed - matched '%s']\n",atomGeometry(geometry_));
 		}
 		else
 		{
-			msg(Debug::Typing,"[failed - is '%s', but type needs '%s']\n",text_from_AG(i->geometry(parent)), text_from_AG(geometry_));
+			msg(Debug::Typing,"[failed - is '%s', but type needs '%s']\n", atomGeometry(i->geometry(parent)), atomGeometry(geometry_));
 			level --;
 			dbgEnd(Debug::Calls,"Atomtype::match_atom");
 			return 0;
@@ -669,7 +679,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 					msg(Debug::Typing,"(%li %2i) ... ... Atoms:\n", this, level);
 					atomchecklist.clear();
 					refring->item->addAtomsToReflist(&atomchecklist,NULL);
-					// Now go through list of specified Atomtypes in this RingType
+					// Now go through list of specified Atomtypes in this Ringtype
 					for (bat = atr->ringAtoms_.first(); bat != NULL; bat = bat->next)
 					{
 						for (n=0; n<bat->nRepeat_; n++)

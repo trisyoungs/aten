@@ -26,23 +26,6 @@
 #include "templates/list.h"
 #include "templates/reflist.h"
 
-// Atom typing commands
-enum AtomtypeCommand { ATC_SP, ATC_SP2, ATC_SP3, ATC_AROMATIC, ATC_RING, ATC_NORING, ATC_NBONDS, ATC_BOND, ATC_REPEAT, ATC_OS, ATC_NHYDROGENS, ATC_NITEMS };
-AtomtypeCommand ATC_from_text(const char*);
-
-// Ring typing commands
-enum RingTypeCommand { RTC_SIZE, RTC_REPEAT, RTC_NOTSELF, RTC_NITEMS };
-RingTypeCommand RTC_from_text(const char*);
-
-// Atom environment
-enum AtomEnv { AE_UNSPECIFIED, AE_NOBONDS, AE_SP3, AE_SP2, AE_SP, AE_AROMATIC, AE_NITEMS };
-const char *text_from_AE(AtomEnv);
-
-// Geometries about atomic centres
-enum AtomGeometry { AG_UNSPECIFIED, AG_UNBOUND, AG_ONEBOND, AG_LINEAR, AG_TSHAPE, AG_TRIGPLANAR, AG_TETRAHEDRAL, AG_SQPLANAR, AG_TRIGBIPYRAMID, AG_OCTAHEDRAL, AG_NITEMS };
-AtomGeometry AG_from_text(const char*);
-const char *text_from_AG(AtomGeometry);
-
 // Forward declarations
 class Atomtype;
 class ForcefieldAtom;
@@ -52,14 +35,17 @@ class Ring;
 class Forcefield;
 
 // Ring type
-class RingType
+class Ringtype
 {
 	// Substructure definition of a separate list of atoms in a ring
 	public:
 	// Constructor
-	RingType();
+	Ringtype();
 	// List pointers
-	RingType *prev, *next;
+	Ringtype *prev, *next;
+	// Ring typing commands
+	enum RingtypeCommand { SizeCommand, RepeatCommand, NotSelfCommand, nRingtypeCommands };
+	RingtypeCommand ringtypeCommand(const char*);
 
 	private:
 	// Number of atoms in ring
@@ -87,6 +73,17 @@ class Atomtype
 	~Atomtype();
 	// List pointers, used in bound atom list and list of atoms in rings
 	Atomtype *prev, *next;
+	// Atom typing commands
+	enum AtomtypeCommand { SpCommand, Sp2Command, Sp3Command, AromaticCommand, RingCommand, NoRingCommand, NBondsCommand, BondCommand, RepeatCommand, OxidationStateCommand, NHydrogensCommand, nAtomtypeCommands };
+	static AtomtypeCommand atomtypeCommand(const char*);
+	// Atom environment
+	enum AtomEnvironment { NoEnvironment, UnboundEnvironment, Sp3Environment, Sp2Environment, SpEnvironment, AromaticEnvironment, nEnvironments };
+	static const char *atomEnvironment(AtomEnvironment);
+	// Geometries about atomic centres
+	enum AtomGeometry { NoGeometry, UnboundGeometry, OneBondGeometry, LinearGeometry, TShapeGeometry, TrigPlanarGeometry, TetrahedralGeometry, SquarePlanarGeometry, TrigBipyramidGeometry, OctahedralGeometry, nAtomGeometries };
+	static AtomGeometry atomGeometry(const char*);
+	static const char *atomGeometry(AtomGeometry);
+
 
 	/*
 	// Character
@@ -114,7 +111,7 @@ class Atomtype
 	*/
 	private:
 	// Environment of atom
-	AtomEnv env_;
+	AtomEnvironment environment_;
 	// Geometry of bonding about atom
 	AtomGeometry geometry_;
 	// Required oxidation state (99 for don't mind)
@@ -122,7 +119,7 @@ class Atomtype
 	// List of atoms to which this atom must be bound
 	List<Atomtype> boundList_;
 	// List of rings that this atom must be a member of
-	List<RingType> ringList_;
+	List<Ringtype> ringList_;
 	// Number of bond connections the atom should have
 	int nBonds_;
 	// Specifies atom must *not* be in a cycle of any type

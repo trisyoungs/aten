@@ -56,8 +56,8 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	obj.m->resetLogs();
 	// Print out some useful info on the model that we've just read in
 	msg(Debug::None,"Atoms  : %i\n",obj.m->nAtoms());
-	msg(Debug::None,"Cell   : %s\n",text_from_CT(obj.m->cell()->type()));
-	if (obj.m->cell()->type() != CT_NONE) obj.m->cell()->print();
+	msg(Debug::None,"Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
+	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
 	// Lastly, reset all the log points and start afresh
 	obj.m->resetLogs();
 	obj.m->updateSavePoint();

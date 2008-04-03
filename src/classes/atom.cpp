@@ -32,7 +32,7 @@ Atom::DrawStyle Atom::drawStyle(const char *s)
 {
 	return (Atom::DrawStyle) enumSearch("draw style", Atom::nDrawStyles, DrawStyleKeywords, s);
 }
-const char *Atom::drawStyleKeyword(Atom::DrawStyle i)
+const char *Atom::drawStyle(Atom::DrawStyle i)
 {
 	return DrawStyleKeywords[i];
 }
@@ -51,7 +51,7 @@ Atom::Atom()
 	charge_ = 0.0;
 	el_ = 0;
 	os_ = 0;
-	env_ = AE_UNSPECIFIED;
+	environment_ = Atomtype::NoEnvironment;
 	type_ = NULL;
 	fixedType_ = FALSE;
 	fixedPosition_ = FALSE;
@@ -179,38 +179,29 @@ bool Atom::typeIs(ForcefieldAtom *type)
 }
 
 // Set the environment of the atom
-void Atom::setEnv(AtomEnv ae)
+void Atom::setEnvironment(Atomtype::AtomEnvironment ae)
 {
-	env_ = ae;
+	environment_ = ae;
 }
 
 // Return the environment of the atom
-AtomEnv Atom::env()
+Atomtype::AtomEnvironment Atom::environment()
 {
-	return env_;
+	return environment_;
 }
 
 // Check the environment of the atom against the supplied value
-bool Atom::isEnv(AtomEnv ae)
+bool Atom::isEnvironment(Atomtype::AtomEnvironment ae)
 {
-	return (env_ == ae ? TRUE : FALSE);
+	return (environment_ == ae ? TRUE : FALSE);
 }
 
 // Get next selected
 Atom *Atom::nextSelected()
 {
-	Atom *result = NULL;
-	Atom *i = next;
-	while (i != NULL)
-	{
-		if (i->selected_)
-		{
-			result = i;
-			break;
-		}
-		i = i->next;
-	}
-	return result;
+	Atom *i;
+	for (i = this->next; i != NULL; i = i->next) if (i->selected_) break;
+	return i;
 }
 
 // Reset data in structure
@@ -232,7 +223,7 @@ void Atom::copy(Atom *source)
 	charge_ = source->charge_;
 	el_ = source->el_;
 	style_ = source->style_;
-	env_ = source->env_;
+	environment_ = source->environment_;
 	type_ = source->type_;
 	fixedType_ = source->fixedType_;
 }
@@ -248,7 +239,7 @@ void Atom::copyStyle(Atom *source)
 void Atom::print()
 {
 	msg(Debug::None,"Atom ID %i (%s):\n", id_, elements.name(this));
-	msg(Debug::None," %s, %s, style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyleKeyword(style_));
+	msg(Debug::None," %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
 	msg(Debug::None," Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
 	msg(Debug::None," World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
 	msg(Debug::None,"Screen Coord : %8.4f %8.4f \n",rScreen_.x,rScreen_.y,rScreen_.z);
@@ -257,7 +248,7 @@ void Atom::print()
 	msg(Debug::None,"      Charge : %8.4f\n",charge_);
 	msg(Debug::None,"      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
 	msg(Debug::None,"       Bonds : %i\n",bonds_.nItems());
-	msg(Debug::None," Environment : %s\n",text_from_AE(env_));
+	msg(Debug::None," Environment : %s\n",Atomtype::atomEnvironment(environment_));
 	msg(Debug::None,"        O.S. : %i\n",os_);
 }
 
@@ -375,43 +366,43 @@ double Atom::bondOrder(Atom *j)
 	}
 	// Get the enum'd type of the bond and 'convert' it to the bond order
 	order = b->order();
-	// Special case where both atoms are AE_AROMATIC - bond order is then 1.5.
-	if ((env_ == AE_AROMATIC) && (j->env_ == AE_AROMATIC)) order = 1.5;
+	// Special case where both atoms are AtomEnvironment::AromaticEnvironment - bond order is then 1.5.
+	if ((environment_ == Atomtype::AromaticEnvironment) && (j->environment_ == Atomtype::AromaticEnvironment)) order = 1.5;
 	dbgEnd(Debug::Calls,"Atom::bondOrder");
 	return order;
 }
 
 // Determine bonding geometry
-AtomGeometry Atom::geometry(Model *parent)
+Atomtype::AtomGeometry Atom::geometry(Model *parent)
 {
 	dbgBegin(Debug::Calls,"Atom::geometry");
-	static AtomGeometry result;
+	static Atomtype::AtomGeometry result;
 	static double angle, largest;
 	static Bond *b1, *b2;
 	static Refitem<Bond,int> *bref1, *bref2;
-	result = AG_UNSPECIFIED;
+	result = Atomtype::NoGeometry;
 	// Separate the tests by number of bound atoms...
 	switch (nBonds())
 	{
 		// Simple cases first
 		case (0):
-			result = AG_UNBOUND;
+			result = Atomtype::UnboundGeometry;
 			break;
 		case (1):
-			result = AG_ONEBOND;
+			result = Atomtype::OneBondGeometry;
 			break;
 		case (5):
-			result = AG_TRIGBIPYRAMID;
+			result = Atomtype::TrigBipyramidGeometry;
 			break;
 		case (6):
-			result = AG_OCTAHEDRAL;
+			result = Atomtype::OctahedralGeometry;
 			break;
 		// For the remaining types, take averages of bond angles about the atom
 		case (2):
 			b1 = bonds()->item;
 			b2 = bonds()->next->item;
 			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
-			result = (angle > 170.0 ? AG_LINEAR : AG_TETRAHEDRAL);
+			result = (angle > 170.0 ? Atomtype::LinearGeometry : Atomtype::TetrahedralGeometry);
 			break;
 		case (3):
 			bref1 = bonds();
@@ -426,7 +417,7 @@ AtomGeometry Atom::geometry(Model *parent)
 			b1 = bref1->next->item;
 			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			if (angle > largest) largest = angle;
-			result = (largest > 170.0 ? AG_TSHAPE : (largest > 115.0 ? AG_TRIGPLANAR : AG_TETRAHEDRAL));
+			result = (largest > 170.0 ? Atomtype::TShapeGeometry : (largest > 115.0 ? Atomtype::TrigPlanarGeometry : Atomtype::TetrahedralGeometry));
 			break;
 		case (4):
 			// Two possibilities - tetrahedral or square planar. Tetrahedral will have an
@@ -444,7 +435,7 @@ AtomGeometry Atom::geometry(Model *parent)
 				}
 				bref1 = bref1->next;
 			}
-			result = ((angle/6.0) > 115.0 ? AG_SQPLANAR : AG_TETRAHEDRAL);
+			result = ((angle/6.0) > 115.0 ? Atomtype::SquarePlanarGeometry : Atomtype::TetrahedralGeometry);
 			break;
 	}
 	dbgEnd(Debug::Calls,"Atom::geometry");

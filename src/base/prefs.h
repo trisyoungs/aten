@@ -40,11 +40,11 @@ class Prefs
 	// Mouse buttons
 	enum MouseButton { LeftButton, MiddleButton, RightButton, WheelButton, nMouseButtons };
 	static MouseButton mouseButton(const char*);
-	static const char *mouseButtonKeyword(MouseButton);
+	static const char *mouseButton(MouseButton);
 	// Mouse Actions
 	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZrotateAction, nMouseActions };
 	static MouseAction mouseAction(const char*);
-	static const char *mouseActionKeyword(MouseAction);
+	static const char *mouseAction(MouseAction);
 	// Modifier keys
 	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
 	static ModifierKey modifierKey(const char*);
@@ -52,16 +52,16 @@ class Prefs
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char*);
 	// Colours
-	enum Colour { PenColour, BackgroundColour, SchemeLoColour, SchemeMidColour, SchemeHiColour, SpecularColour, nColours };
-	static const char *colourKeyword(Colour);
+	enum Colour { ForegroundColour, BackgroundColour, SchemeLoColour, SchemeMidColour, SchemeHiColour, SpecularColour, nColours };
+	static const char *colour(Colour);
 	static Colour colour(const char*);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree,  nEnergyUnits };
-	static const char *energyUnitKeyword(EnergyUnit);
+	static const char *energyUnit(EnergyUnit);
 	static EnergyUnit energyUnit(const char*);
 	// Density calculation units
 	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
-	static const char *densityUnitKeyword(DensityUnit);
+	static const char *densityUnit(DensityUnit);
 	static DensityUnit densityUnit(const char*);
 	// View Objects
 	enum ViewObject { ViewAtoms, ViewCell, ViewCellAXES, ViewCellREPEAT, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
@@ -262,7 +262,7 @@ class Prefs
 	*/
 	private:
 	// RGB colour values
-	GLfloat colours_[Prefs::nColours][4];
+	GLfloat penColours_[Prefs::nColours][4];
 	// Numerical low limit corresponding to COL_ACSCHEMELO
 	double colourSchemeLo_[Prefs::nColourSchemes];
 	// Numerical high limit corresponding to COL_ACSCHEMELO
@@ -270,9 +270,9 @@ class Prefs
 
 	public:
 	// Set the specified colour to the integer RGB values supplied
-	void setColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	void setPenColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	// Return the specified colour
-	GLfloat *colour(Colour c);
+	GLfloat *penColour(Colour c);
 	// Return the low limit for the scheme specified
 	double colourSchemeLo(int i);
 	// Sets the low limit for the scheme specified

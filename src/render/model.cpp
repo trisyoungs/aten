@@ -157,13 +157,13 @@ void Canvas::renderModelForceArrows()
 void Canvas::renderModelCell()
 {
 	// Draw the unit cell of the model
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.colour(Prefs::PenColour));
-	glColor3fv(prefs.colour(Prefs::PenColour));
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, prefs.penColour(Prefs::ForegroundColour));
+	glColor3fv(prefs.penColour(Prefs::ForegroundColour));
 	glLineWidth(1.0f);
 	static Vec3<double> cellCentre, lengths;
 	static Mat4<double> matrix;
 	Cell *cell = displayModel_->cell();
-	if (cell->type() != CT_NONE)
+	if (cell->type() != Cell::NoCell)
 	{
 		// All cell types are transformations of a unit cube.
 		// So, multiply modelview matrix by cell axes matrix and draw a unit cube

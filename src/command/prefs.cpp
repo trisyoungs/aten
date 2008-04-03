@@ -50,7 +50,7 @@ int CommandData::function_CA_COLOUR(Command *&c, Bundle &obj)
 	if (col == Prefs::nColours) return CR_FAIL;
 	Vec3<GLfloat> colvec = c->arg3f(1);
 	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.setColour(col, colvec.x, colvec.y, colvec.z, alpha);
+	prefs.setPenColour(col, colvec.x, colvec.y, colvec.z, alpha);
 	if (obj.m != NULL) obj.m->logChange(LOG_VISUAL);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;

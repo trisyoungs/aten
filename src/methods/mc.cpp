@@ -449,8 +449,8 @@ bool MonteCarlo::disorder(Model *destmodel)
 			// Get model pointer
 			c = ri->item;
 
-			// Skip if nRequested == 0, cell.type() != CT_NONE, and c == destmodel (to be sure).
-			if ((c->nRequested() == 0) || (c->cell()->type() != CT_NONE) || (c == destmodel)) continue;
+			// Skip if nRequested == 0, cell.type() != Cell::NoCell, and c == destmodel (to be sure).
+			if ((c->nRequested() == 0) || (c->cell()->type() != Cell::NoCell) || (c == destmodel)) continue;
 
 			// Get pointers to variables
 			p = c->componentPattern();

@@ -28,19 +28,21 @@
 using namespace std;
 
 // Cell types
-const char *CT_strings[CT_NITEMS] = { "None", "Cubic", "Orthorhombic", "Parallelepiped" };
-const char *text_from_CT(CellType i)
-	{ return CT_strings[i]; }
-CellType CT_from_text(const char *s)
-	{ return (CellType) enumSearch("cell type",CT_NITEMS,CT_strings,s); }
-const char **get_CT_strings()
-	{ return CT_strings; }
+const char *CellTypeKeywords[Cell::nCellTypes] = { "None", "Cubic", "Orthorhombic", "Parallelepiped" };
+const char *Cell::cellType(Cell::CellType i)
+{
+	return CellTypeKeywords[i];
+}
+Cell::CellType Cell::cellType(const char *s)
+{
+	return (CellType) enumSearch("cell type",Cell::nCellTypes,CellTypeKeywords,s);
+}
 
 // Constructor
 Cell::Cell()
 {
 	// Private variables
-	type_ = CT_NONE;
+	type_ = Cell::NoCell;
 	axes_.zero();
 	transpose_.zero();
 	itranspose_.zero();
@@ -56,10 +58,10 @@ Cell::Cell()
 // Set
 */
 
-// Remove the cell definition (i.e. set 'type' to CT_NONE)
+// Remove the cell definition (i.e. set 'type' to Cell::NoCell)
 void Cell::reset()
 {
-	type_ = CT_NONE;
+	type_ = Cell::NoCell;
 	centre_.zero();
 }
 
@@ -82,7 +84,7 @@ void Cell::setAngle(int i, double d)
 }
 
 // Return the type of cell
-CellType Cell::type() const
+Cell::CellType Cell::type() const
 {
 	return type_;
 }
@@ -206,14 +208,14 @@ void Cell::determineType()
 		count = 0;
 		if (fabs(lengths_.x - lengths_.y) < 1.0e-5) count ++;
 		if (fabs(lengths_.x - lengths_.z) < 1.0e-5) count ++;
-		if (count == 2) type_ = CT_CUBIC;
-		else type_ = CT_ORTHORHOMBIC;
+		if (count == 2) type_ = Cell::CubicCell;
+		else type_ = Cell::OrthorhombicCell;
 		// While we're here, symmetrise the matrix for cubic and orthorhombic cells
 		axes_.rows[0].y = axes_.rows[0].z = 0.0;
 		axes_.rows[1].x = axes_.rows[1].z = 0.0;
 		axes_.rows[2].x = axes_.rows[2].y = 0.0;
 	}
-	else type_ = CT_PARALLELEPIPED;
+	else type_ = Cell::ParallelepipedCell;
 	dbgEnd(Debug::Calls,"Cell::determineType");
 }
 
@@ -292,17 +294,17 @@ void Cell::calculateReciprocal()
 	dbgBegin(Debug::Calls,"Cell::calculateReciprocal");
 	switch (type_)
 	{
-		case (CT_NONE):
+		case (Cell::NoCell):
 			msg(Debug::None,"Cell : Can't calculate reciprocal cell - no cell defined.\n");
 			break;
-		case (CT_CUBIC):
-		case (CT_ORTHORHOMBIC):
+		case (Cell::CubicCell):
+		case (Cell::OrthorhombicCell):
 			reciprocal_.rows[0].set(TWOPI / axes_.rows[0].x, 0.0, 0.0);
 			reciprocal_.rows[1].set(0.0, TWOPI / axes_.rows[1].y, 0.0);
 			reciprocal_.rows[2].set(0.0, 0.0, TWOPI / axes_.rows[2].z);
 			reciprocalVolume_ = TWOPI / (axes_.rows[0].x * axes_.rows[1].y * axes_.rows[2].z);
 			break;
-		case (CT_PARALLELEPIPED):
+		case (Cell::ParallelepipedCell):
 			// Reciprocal cell vectors are perpendicular to normal cell axes_t.
 			// Calculate from cross products of normal cell triples
 			reciprocal_.rows[0] = axes_.rows[1] * axes_.rows[2];
@@ -321,7 +323,7 @@ void Cell::calculateReciprocal()
 void Cell::calculateCentre()
 {
 	dbgBegin(Debug::Calls,"Cell::calculateCentre");
-	if (type_ != CT_NONE)
+	if (type_ != Cell::NoCell)
 	{
 		centre_.set(0.5,0.5,0.5);
 		centre_ *= transpose_;
@@ -353,11 +355,11 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 	switch (type_)
 	{
 		// No cell - just return r1
-		case (CT_NONE):
+		case (Cell::NoCell):
 			R = r1;
 			break;
 		// Cubic
-		case (CT_CUBIC):
+		case (Cell::CubicCell):
 			R = r1 - r2;
 			half = lengths_.x * 0.5;
 			if (R.x < -half) R.x += lengths_.x;
@@ -369,7 +371,7 @@ Vec3<double> Cell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
 			R += r2;
 			break;
 		// Orthorhombic
-		case (CT_ORTHORHOMBIC):
+		case (Cell::OrthorhombicCell):
 			R = r1 - r2;
 			half = lengths_.x * 0.5;
 			if (R.x < -half) R.x += lengths_.x;
@@ -442,11 +444,11 @@ void Cell::fold(Vec3<double> &r) const
 	switch (type_)
 	{
 		// No cell, so no image to fold into
-		case (CT_NONE):
+		case (Cell::NoCell):
 			break;
 		// Cubic / Orthorhombic
-		case (CT_CUBIC):
-		case (CT_ORTHORHOMBIC):
+		case (Cell::CubicCell):
+		case (Cell::OrthorhombicCell):
 			if (r.x < 0.0) r.x += lengths_.x;
 			else if (r.x > lengths_.x) r.x -= lengths_.x;
 			if (r.y < 0.0) r.y += lengths_.y;

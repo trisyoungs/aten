@@ -62,8 +62,8 @@ int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	msg(Debug::None,"Unit cell type for model '%s' is %s\n", obj.m->name(), text_from_CT(obj.m->cell()->type()));
-	if (obj.m->cell()->type() != CT_NONE) obj.m->cell()->print();
+	msg(Debug::None,"Unit cell type for model '%s' is %s\n", obj.m->name(), Cell::cellType(obj.m->cell()->type()));
+	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
 	return CR_SUCCESS;
 }
 

@@ -26,9 +26,11 @@
 #include "base/sysfunc.h"
 
 // Forcefield keywords
-const char *FF_dictionary[FFK_NITEMS] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };
-ForcefieldKeyword FFK_from_text(const char *s)
-	{ return (ForcefieldKeyword) enumSearch("forcefield keyword",FFK_NITEMS,FF_dictionary,s); }
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };
+Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
+{
+	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
+}
 
 // Local variables
 double escale14 = 0.5;
@@ -67,60 +69,60 @@ bool Forcefield::load(const char *filename)
 		}
 		if (success == -1) break;
 		// Call subroutines to read in data based on keywords
-		switch (FFK_from_text(parser.argc(0)))
+		switch (forcefieldCommand(parser.argc(0)))
 		{
-			case (FFK_NAME):
+			case (Forcefield::NameCommand):
 				name_.set(parser.argc(1));
 				msg(Debug::None,"\t: '%s'\n",name_.get());
 				okay = TRUE;
 				break;
-			case (FFK_UNITS):
+			case (Forcefield::UnitsCommand):
 				newunit = Prefs::energyUnit(parser.argc(1));
 				if (newunit != Prefs::nEnergyUnits)
 				{
 					ffunit = newunit;
-					msg(Debug::None,"\t: Energy units are %s\n", Prefs::energyUnitKeyword(ffunit));
+					msg(Debug::None,"\t: Energy units are %s\n", Prefs::energyUnit(ffunit));
 					okay = TRUE;
 				}
 				break;
-			case (FFK_RULES):
+			case (Forcefield::RulesCommand):
 				rules_ = FFR_from_text(parser.argc(1));
 				msg(Debug::None,"\t: Rule-set to use is '%s'\n", text_from_FFR(rules_));
 				okay = TRUE;
 				break;
-			case (FFK_TYPES):
+			case (Forcefield::TypesCommand):
 				okay = readTypes(fffile);
 				break;
-			case (FFK_GENERATOR):
+			case (Forcefield::GeneratorCommand):
 				okay = readGenerator(fffile);
 				break;
-			case (FFK_EQUIVALENTS):
+			case (Forcefield::EquivalentsCommand):
 				okay = readEquivalents(fffile);
 				break;
-			case (FFK_CONVERT):
+			case (Forcefield::ConvertCommand):
 				// Check that generator data has been initialised
 				if (nGenerators_ == 0) msg(Debug::None, "\t: ERROR - Energetic parameters to convert must be specified *after* 'generator' keyword.\n");
 				else for (n=1; n<parser.nArgs(); n++) energyGenerators_[parser.argi(n)-1] = TRUE;
 				okay = !(nGenerators_ == 0);
 				break;
-			case (FFK_VDW):
+			case (Forcefield::VdwCommand):
 				okay = readVdw(fffile);
 				break;
-			case (FFK_BONDS):
+			case (Forcefield::BondsCommand):
 				okay = readBonds(fffile);
 				break;
-			case (FFK_ANGLES):
+			case (Forcefield::AnglesCommand):
 				okay = readAngles(fffile);
 				break;
-			case (FFK_TORSIONS):
+			case (Forcefield::TorsionsCommand):
 				okay = readTorsions(fffile);
 				break;
-			case (FFK_VSCALE):
+			case (Forcefield::VScaleCommand):
 				vscale14 = parser.argd(1);	// 1-4 VDW scaling
 				msg(Debug::None,"\t: VDW 1-4 scale factor = %6.3f\n", vscale14);
 				okay = TRUE;
 				break;
-			case (FFK_ESCALE):
+			case (Forcefield::EScaleCommand):
 				escale14 = parser.argd(1);	// 1-4 electrostatic scaling
 				msg(Debug::None,"\t: Electrostatic 1-4 scale factor = %6.3f\n", vscale14);
 				okay = TRUE;
@@ -389,7 +391,7 @@ bool Forcefield::readBonds(ifstream &fffile)
 			}
 			// Create new ff_bond structure
 			newffbond = bonds_.add();
-			newffbond->setType(FFC_BOND);
+			newffbond->setType(ForcefieldBound::BondInteraction);
 			newffbond->setTypeName(0,parser.argc(0));
 			newffbond->setTypeName(1,parser.argc(1));
 			newffbond->setBondStyle(bondstyle);
@@ -444,7 +446,7 @@ bool Forcefield::readAngles(ifstream &fffile)
 			}
 			// Create new ff_angle structure
 			newffangle = angles_.add();
-			newffangle->setType(FFC_ANGLE);
+			newffangle->setType(ForcefieldBound::AngleInteraction);
 			newffangle->setTypeName(0, parser.argc(0));
 			newffangle->setTypeName(1, parser.argc(1));
 			newffangle->setTypeName(2, parser.argc(2));
@@ -500,7 +502,7 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			}
 			// Create new ff_angle structure
 			newfftorsion = torsions_.add();
-			newfftorsion->setType(FFC_TORSION);
+			newfftorsion->setType(ForcefieldBound::TorsionInteraction);
 			newfftorsion->setTypeName(0,parser.argc(0));
 			newfftorsion->setTypeName(1,parser.argc(1));
 			newfftorsion->setTypeName(2,parser.argc(2));

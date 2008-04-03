@@ -175,7 +175,7 @@ class Master
 	// Searches for the named spacegroup
 	int findSpacegroupByName(const char *name) const;
 	// Returns cell type of specified spacegroup id
-	CellType spacegroupCellType(int sg) const;
+	Cell::CellType spacegroupCellType(int sg) const;
 
 	/*
 	// Clipboard

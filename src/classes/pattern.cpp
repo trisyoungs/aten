@@ -644,7 +644,7 @@ void Pattern::propagateAtomtypes()
 	i = molecule->atoms();
 	for (n=0; n<nAtoms_; n++)
 	{
-		i->setEnv(j->env());
+		i->setEnvironment(j->environment());
 		i->setType(j->type());
 		i = i->next;
 		j = j->next;
@@ -656,7 +656,7 @@ void Pattern::propagateAtomtypes()
 		i = firstAtom_;
 		for (m=0; m<nAtoms_; m++)
 		{
-			j->setEnv(i->env());
+			j->setEnvironment(i->environment());
 			j->setType(i->type());
 			i = i->next;
 			j = j->next;

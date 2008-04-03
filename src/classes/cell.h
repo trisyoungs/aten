@@ -24,11 +24,7 @@
 
 #include "templates/vector3.h"
 
-// Cell types
-enum CellType { CT_NONE, CT_CUBIC, CT_ORTHORHOMBIC, CT_PARALLELEPIPED, CT_NITEMS };
-const char *text_from_CT(CellType);
-CellType CT_from_text(const char *);
-const char **get_CT_strings();
+
 
 // Forward declarations
 class Atom;
@@ -39,6 +35,10 @@ class Cell
 	public:
 	// Constructor
 	Cell();
+	// Cell types
+	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
+	static const char *cellType(CellType);
+	static CellType cellType(const char *);
 
 	private:
 	// Cell type

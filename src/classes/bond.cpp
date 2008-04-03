@@ -30,7 +30,7 @@ Bond::BondType Bond::bondType(const char *s)
 {
 	return (Bond::BondType) enumSearch("bond type",Bond::nBondTypes,BondTypeKeywords,s);
 }
-const char *Bond::bondTypeKeyword(Bond::BondType bt)
+const char *Bond::bondType(Bond::BondType bt)
 {
 	return BondTypeKeywords[bt];
 }
