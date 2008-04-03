@@ -78,8 +78,10 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 void Model::setCell(Mat3<double> axes)
 {
 	dbgBegin(Debug::Calls,"Model::setCell[axes]");
-	Vec3<double> oldlengths = cell_.lengths();
-	Vec3<double> oldangles = cell_.angles();
+	static Vec3<double> oldlengths;
+	static Vec3<double> oldangles;
+	oldangles = cell_.angles();
+	oldlengths = cell_.lengths();
 	// Set new axes 
 	cell_.set(axes);
 	logChange(LOG_STRUCTURE);
@@ -212,7 +214,7 @@ void Model::scaleCell(const Vec3<double> &scale)
 	int n,m;
 	Atom *i;
 	// First, make sure we have a cell and a valid pattern
-	if (cell_.type() == CT_NONE)
+	if (cell_.type() == Cell::NoCell)
 	{
 		msg(Debug::None,"No cell to scale.\n");
 		dbgEnd(Debug::Calls,"Model::scaleCell");
@@ -255,7 +257,7 @@ void Model::scaleCell(const Vec3<double> &scale)
 	if (calcenergy)
 	{
 		newe = totalEnergy(this);
-		msg(Debug::None,"Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnitKeyword(prefs.energyUnit()));
+		msg(Debug::None,"Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnit(prefs.energyUnit()));
 	}
 	// Set new cell and update model
 	setCell(newaxes);
@@ -273,7 +275,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	Mat3<double> newaxes, oldaxes;
 
 	// If this isn't a periodic model, exit
-	if (cell_.type() == CT_NONE)
+	if (cell_.type() == Cell::NoCell)
 	{
 		msg(Debug::None,"No cell to replicate.\n");
 		dbgEnd(Debug::Calls,"Model::replicateCell");

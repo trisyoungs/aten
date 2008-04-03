@@ -561,22 +561,22 @@ int Master::findSpacegroupByName(const char *name) const
 }
 
 // Cell type from spacegrgoup
-CellType Master::spacegroupCellType(int sg) const
+Cell::CellType Master::spacegroupCellType(int sg) const
 {
 	dbgBegin(Debug::Calls,"Master::spacegroupCellType");
-	CellType result = CT_NONE;
+	Cell::CellType result = Cell::NoCell;
 	// None
-	if (sg == 0) result = CT_NONE;
+	if (sg == 0) result = Cell::NoCell;
 	// Triclinic and monoclinic
-	else if (sg < 16) result = CT_PARALLELEPIPED;
+	else if (sg < 16) result = Cell::ParallelepipedCell;
 	// Orthorhombic and tetragonal
-	else if (sg < 143) result = CT_ORTHORHOMBIC;
+	else if (sg < 143) result = Cell::OrthorhombicCell;
 	// Trigonal
-	else if (sg < 168) result = CT_PARALLELEPIPED;
+	else if (sg < 168) result = Cell::ParallelepipedCell;
 	// Hexagonal
-	else if (sg < 195) result = CT_NONE;
+	else if (sg < 195) result = Cell::NoCell;
 	// Cubic
-	else result = CT_CUBIC;
+	else result = Cell::CubicCell;
 	dbgBegin(Debug::Calls,"Master::spacegroupCellType");
 	return result;
 }

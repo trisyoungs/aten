@@ -53,7 +53,7 @@ void Prefs::estimateEwaldParameters(Cell *cell)
 	int k;
 	switch (cell->type())
 	{
-		case (CT_CUBIC):
+		case (Cell::CubicCell):
 			k = (int) round(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI);
 			ewaldKvec_.set(k,k,k);
 			break;

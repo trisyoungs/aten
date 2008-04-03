@@ -36,7 +36,7 @@ class Bond
 	// Bond type from text
 	static BondType bondType(const char *s);
 	// BondType Keywords
-	static const char *bondTypeKeyword(BondType);
+	static const char *bondType(BondType);
 	// Increase BondType (instead of defining postfix increment)
 	static BondType increaseBondType(BondType);
 

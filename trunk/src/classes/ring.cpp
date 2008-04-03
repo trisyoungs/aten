@@ -129,12 +129,12 @@ bool Ring::isAromatic()
 		switch (ra->item->element())
 		{
 			case (6):	// Carbon
-				// Accept nothing less than an AE_SP2. If its not AE_SP" we can break early.
-				if (ra->item->isEnv(AE_SP2)) okatoms++;
+				// Accept nothing less than an AtomEnvironment::SpEnvironment2. If its not AtomEnvironment::SpEnvironment" we can break early.
+				if (ra->item->isEnvironment(Atomtype::Sp2Environment)) okatoms++;
 				else exitearly = TRUE;
 				break;
 			case (7):	// Nitrogen
-				// Add nitrogens anyway, but if they're not flagged as AE_SP2 we must change it's
+				// Add nitrogens anyway, but if they're not flagged as AtomEnvironment::SpEnvironment2 we must change it's
 				// state afterwards, provided the ring checks out to be aromatic. (set_aromatic())
 				okatoms++;
 				break;
@@ -159,10 +159,10 @@ bool Ring::isAromatic()
 // Set aromatic
 void Ring::setAromatic()
 {
-	// Set the environment flags of the constituent atoms_.of the ring to AE_AROMATIC.
+	// Set the environment flags of the constituent atoms_.of the ring to AtomEnvironment::AromaticEnvironment.
 	dbgBegin(Debug::Calls,"Ring::setAromatic");
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
-		ra->item->setEnv(AE_AROMATIC);
+		ra->item->setEnvironment(Atomtype::AromaticEnvironment);
 	dbgEnd(Debug::Calls,"Ring::setAromatic");
 }
 

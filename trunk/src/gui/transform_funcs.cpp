@@ -143,7 +143,7 @@ void AtenForm::translateSelection(int axis, int dir)
 	else if (ui.TranslateCellFrameRadio->isChecked())
 	{
 		// Translate selection in the cell axes of the model
-		if (m->cell()->type() == CT_NONE)
+		if (m->cell()->type() == Cell::NoCell)
 		{
 			msg(Debug::None,"No unit cell defined for model.\n");
 			return;

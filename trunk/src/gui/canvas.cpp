@@ -183,7 +183,7 @@ void Canvas::initGl()
 		createLists();
 
 		// Clear colour
-		GLfloat *clrcol = prefs.colour(Prefs::BackgroundColour);
+		GLfloat *clrcol = prefs.penColour(Prefs::BackgroundColour);
 		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 		glClearDepth(1.0);
 		// Perspective hint
@@ -224,7 +224,7 @@ void Canvas::initGl()
 		if (prefs.hasGlOption(Prefs::FogOption))
 		{
 			glFogi(GL_FOG_MODE, GL_LINEAR);
-			glFogfv(GL_FOG_COLOR, prefs.colour(Prefs::BackgroundColour));
+			glFogfv(GL_FOG_COLOR, prefs.penColour(Prefs::BackgroundColour));
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);
 			glFogf(GL_FOG_START,prefs.fogNear());

@@ -46,7 +46,7 @@ ForcefieldAtom::ForcefieldAtom()
 ForcefieldBound::ForcefieldBound()
 {
 	// Private variables
-	type_ = FFC_NITEMS;
+	type_ = NoInteraction;
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -236,7 +236,7 @@ void ForcefieldBound::setType(BoundType fc)
 }
 
 // Return the type of bound interaction
-BoundType ForcefieldBound::type()
+ForcefieldBound::BoundType ForcefieldBound::type()
 {
 	return type_;
 }

@@ -1022,7 +1022,7 @@ void CommandList::setCellVariables(Cell *c)
 	Vec3<double> vec;
 	if (c != NULL)
 	{
-		variables.set("cell","type",lowerCase(text_from_CT(c->type())));
+		variables.set("cell","type",lowerCase(Cell::cellType(c->type())));
 		mat = c->axes();
 		variables.set("cell","ax",mat.rows[0].x);
 		variables.set("cell","ay",mat.rows[0].y);
@@ -1241,13 +1241,13 @@ void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb
 		// Set functional form and any additional variables
 		switch (ffb->type())
 		{
-			case (FFC_BOND):
+			case (ForcefieldBound::BondInteraction):
 				variables.set(varname,"form",text_from_BF(ffb->functionalForm().bondFunc));
 				break;
-			case (FFC_ANGLE):
+			case (ForcefieldBound::AngleInteraction):
 				variables.set(varname,"form",text_from_AF(ffb->functionalForm().angleFunc));
 				break;
-			case (FFC_TORSION):
+			case (ForcefieldBound::TorsionInteraction):
 				variables.set(varname,"form",text_from_TF(ffb->functionalForm().torsionFunc));
 				variables.set(varname,"escale",ffp.data[TF_ESCALE]);
 				variables.set(varname,"vscale",ffp.data[TF_VSCALE]);

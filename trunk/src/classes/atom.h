@@ -47,7 +47,7 @@ class Atom
 	// Drawing style enum
 	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
 	static DrawStyle drawStyle(const char*);
-	static const char *drawStyleKeyword(DrawStyle);	
+	static const char *drawStyle(DrawStyle);	
 	// Atom label enum
 	enum AtomLabel { IdLabel=1, ElementLabel=2, TypeLabel=4, EquivLabel=8, ChargeLabel=16, nLabelItems=5 };
 	static AtomLabel atomLabel(const char*);
@@ -112,7 +112,7 @@ class Atom
 	// Whether the assigned forcefield type is fixed
 	bool fixedType_;
 	// Chemical environment of atom
-	AtomEnv env_;
+	Atomtype::AtomEnvironment environment_;
 	// Whether the atom will be moved in minimisations etc.
 	bool fixedPosition_;
 
@@ -142,11 +142,11 @@ class Atom
 	// Check the ff type of the atom against the supplied value
 	bool typeIs(ForcefieldAtom *type);
 	// Set the environment of the atom
-	void setEnv(AtomEnv ae);
+	void setEnvironment(Atomtype::AtomEnvironment ae);
 	// Return the environment of the atom
-	AtomEnv env();
+	Atomtype::AtomEnvironment environment();
 	// Check the environment of the atom against the supplied value
-	bool isEnv(AtomEnv ae);
+	bool isEnvironment(Atomtype::AtomEnvironment ae);
 	// Set whether the atom's position is fixed
 	void setPositionFixed(bool b);
 	// Return whether the atom's position is fixed
@@ -177,7 +177,7 @@ class Atom
 	// Calculate the bond order between this atom and the specified atom
 	double bondOrder(Atom*);
 	// Calculates the geometry of the atom's bound environment
-	AtomGeometry geometry(Model*);
+	Atomtype::AtomGeometry geometry(Model*);
 	// Returns bond pointer between this and atom 'j' (if it exists)
 	Bond *findBond(Atom*);
 	// Determine bond plane

@@ -27,17 +27,11 @@
 #include "energy/forms.h"
 #include "base/prefs.h"
 
-// Forcefield Components
-enum BoundType { FFC_BOND, FFC_ANGLE, FFC_TORSION, FFC_NITEMS };
-
 // Maximum data per ForcefieldParams node. Also define last two elements to be torsion 1-4 scaling factors
 #define MAXFFPARAMDATA 6
 #define MAXFFBOUNDTYPES 4
 #define TF_ESCALE (MAXFFPARAMDATA-2)
 #define TF_VSCALE (MAXFFPARAMDATA-1)
-
-// Forcefield Dictionary
-enum ForcefieldKeyword { FFK_UNKNOWN, FFK_NAME, FFK_UNITS, FFK_RULES, FFK_TYPES, FFK_GENERATOR, FFK_CONVERT, FFK_EQUIVALENTS, FFK_VDW, FFK_BONDS, FFK_ANGLES, FFK_TORSIONS, FFK_VSCALE, FFK_ESCALE, FFK_NITEMS };
 
 // Forward declarations
 class Atomtype;
@@ -145,6 +139,8 @@ class ForcefieldBound
 	ForcefieldBound *prev, *next;
 	// Constructor
 	ForcefieldBound();
+	// Forcefield Bound Interaction Type
+	enum BoundType { NoInteraction, BondInteraction, AngleInteraction, TorsionInteraction };
 
 	private:
 	// Type of bound interaction
@@ -191,6 +187,9 @@ class Forcefield
 	~Forcefield();
 	// List pointers
 	Forcefield *prev, *next;
+	// Forcefield Commands
+	enum ForcefieldCommand { UnknownCommand, NameCommand, UnitsCommand, RulesCommand, TypesCommand, GeneratorCommand, ConvertCommand, EquivalentsCommand, VdwCommand, BondsCommand, AnglesCommand, TorsionsCommand, VScaleCommand, EScaleCommand, nForcefieldCommands };
+	static ForcefieldCommand forcefieldCommand(const char *s);
 
 	/*
 	// Specification

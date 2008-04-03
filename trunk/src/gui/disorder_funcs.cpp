@@ -59,14 +59,14 @@ void AtenForm::refreshDisorderPage()
 {
 	if (!gui.exists()) return;
 	// (De)sensitize controls
-	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == CT_NONE);
+	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == Cell::NoCell);
 	// Update model (component) list
 	QListWidgetItem *item;
 	ui.ComponentList->setCurrentRow(-1);
 	ui.ComponentList->clear();
 	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
-		if (m->cell()->type() != CT_NONE) continue;
+		if (m->cell()->type() != Cell::NoCell) continue;
 		item = new QListWidgetItem(ui.ComponentList);
 		item->setText(m->name());
 	}

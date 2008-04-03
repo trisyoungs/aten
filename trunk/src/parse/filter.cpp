@@ -352,7 +352,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Set variables
 			commands_.variables.set("title",obj.m->name());
 			commands_.variables.set("npatterns",obj.m->nPatterns());
-			commands_.variables.set("energyunit",Prefs::energyUnitKeyword(prefs.energyUnit()));
+			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));
 			commands_.variables.set("ntypes",obj.m->nUniqueTypes());
 			// Open file...
 			if (!commands_.setOutputFile(filename))
@@ -397,13 +397,13 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 					return FALSE;	
 				}
 				commands_.variables.set("natoms",parent->nAtoms());
-				commands_.variables.set("cell.type",lowerCase(text_from_CT(parent->cell()->type())));
+				commands_.variables.set("cell.type",lowerCase(Cell::cellType(parent->cell()->type())));
 				framemodel->clear();
 			}
 			else
 			{
 				commands_.variables.set("natoms",framemodel->nAtoms());
-				commands_.variables.set("cell.type",lowerCase(text_from_CT(framemodel->cell()->type())));
+				commands_.variables.set("cell.type",lowerCase(Cell::cellType(framemodel->cell()->type())));
 			}
 
 	}

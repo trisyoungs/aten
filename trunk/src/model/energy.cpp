@@ -44,7 +44,7 @@ double Model::totalEnergy(Model *srcmodel)
 	Pattern *p, *p2;
 	p = patterns_.first();
 	// Calculate VDW correction
-	if (prefs.calculateVdw() && (cell_.type() != CT_NONE)) p->vdwCorrectEnergy(&cell_, &energy);
+	if (prefs.calculateVdw() && (cell_.type() != Cell::NoCell)) p->vdwCorrectEnergy(&cell_, &energy);
 	// Prepare Ewald (if necessary)
 	ElecMethod emodel = prefs.electrostaticsMethod();
 	if (prefs.calculateElec())

@@ -41,7 +41,7 @@ Prefs::MouseButton Prefs::mouseButton(const char *s)
 {
 	return (Prefs::MouseButton) enumSearch("mouse button", Prefs::nMouseButtons, MouseButtonKeywords, s);
 }
-const char *Prefs::mouseButtonKeyword(Prefs::MouseButton i)
+const char *Prefs::mouseButton(Prefs::MouseButton i)
 {
 	return MouseButtonKeywords[i];
 }
@@ -52,7 +52,7 @@ Prefs::MouseAction Prefs::mouseAction(const char *s)
 {
 	return (Prefs::MouseAction) enumSearch("mouse action", Prefs::nMouseActions,  MouseActionKeywords, s);
 }
-const char *Prefs::mouseActionKeyword(Prefs::MouseAction i)
+const char *Prefs::mouseAction(Prefs::MouseAction i)
 {
 	return MouseActionKeywords[i];
 }
@@ -72,8 +72,7 @@ Prefs::KeyAction Prefs::keyAction(const char *s)
 }
 
 // Colours
-//const char *ColourKeywords[Prefs::nColours] = { "General pen colour", "Background", "Atom Colour Scheme - Lo", "Atom Colour Scheme = Mid", "Atom Colour Scheme = Hi", "Specular reflection" };
-const char *ColourKeywords[Prefs::nColours] = { "pen", "bg", "schemelo", "schememid", "schemehi", "specular" };
+const char *ColourKeywords[Prefs::nColours] = { "fg", "bg", "schemelo", "schememid", "schemehi", "specular" };
 //const char *Prefs::colourKeyword(Colour i)
 //	{ return COL_strings[i]; }
 Prefs::Colour Prefs::colour(const char *s)
@@ -84,7 +83,7 @@ Prefs::Colour Prefs::colour(const char *s)
 // Density calculation units
 //const char *DensityUnit[DU_NITEMS] = { "g / cm**3", "atoms / A**3" };
 const char *DensityUnitKeywords[Prefs::nDensityUnits] = { "gpercm", "atomsperang" };
-const char *Prefs::densityUnitKeyword(Prefs::DensityUnit i)
+const char *Prefs::densityUnit(Prefs::DensityUnit i)
 {
 	return DensityUnitKeywords[i];
 }
@@ -96,7 +95,7 @@ Prefs::DensityUnit Prefs::densityUnit(const char *s)
 // Energy Units
 const char *EnergyUnitFormatted[Prefs::nEnergyUnits] = { "J/mol", "kJ/mol", "cal/mol", "kcal/mol", "eV/mol", "Ha/mol" };
 const char *EnergyUnitKeywords[Prefs::nEnergyUnits] = { "j", "kj", "cal", "kcal", "ev", "ha" };
-const char *Prefs::energyUnitKeyword(Prefs::EnergyUnit i)
+const char *Prefs::energyUnit(Prefs::EnergyUnit i)
 {
 	return EnergyUnitKeywords[i];
 }
@@ -201,12 +200,12 @@ Prefs::Prefs()
 	keyAction_[Prefs::AltKey] = Prefs::NoKeyAction;
 
 	// Colours
-	setColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
-	setColour(Prefs::PenColour, 0.0f, 0.0f, 0.0f, 1.0f);
-	setColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
-	setColour(Prefs::SchemeLoColour, 1.0f, 0.0f, 0.0f, 1.0f);
-	setColour(Prefs::SchemeMidColour, 0.7f, 0.7f, 0.7f, 1.0f);
-	setColour(Prefs::SchemeHiColour, 0.0f, 0.0f, 1.0f, 1.0f);
+	setPenColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
+	setPenColour(Prefs::ForegroundColour, 0.0f, 0.0f, 0.0f, 1.0f);
+	setPenColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
+	setPenColour(Prefs::SchemeLoColour, 1.0f, 0.0f, 0.0f, 1.0f);
+	setPenColour(Prefs::SchemeMidColour, 0.7f, 0.7f, 0.7f, 1.0f);
+	setPenColour(Prefs::SchemeHiColour, 0.0f, 0.0f, 1.0f, 1.0f);
 	colourSchemeLo_[Prefs::ElementScheme] = 0.0;
 	colourSchemeLo_[Prefs::ChargeScheme] = -1.0;
 	colourSchemeLo_[Prefs::VelocityScheme] = 0.0;
@@ -592,26 +591,26 @@ void Prefs::setScaleColours()
 		lastnsegments = nScaleSegments_;
 	}
 	// Set values of lo, mid, and hi colours.
-	scaleColours_[0][0] = colours_[Prefs::SchemeLoColour][0];
-	scaleColours_[0][1] = colours_[Prefs::SchemeLoColour][1];
-	scaleColours_[0][2] = colours_[Prefs::SchemeLoColour][2];
-	scaleColours_[0][3] = colours_[Prefs::SchemeLoColour][3];
-	scaleColours_[nScaleSegments_+1][0] = colours_[Prefs::SchemeMidColour][0];
-	scaleColours_[nScaleSegments_+1][1] = colours_[Prefs::SchemeMidColour][1];
-	scaleColours_[nScaleSegments_+1][2] = colours_[Prefs::SchemeMidColour][2];
-	scaleColours_[nScaleSegments_+1][3] = colours_[Prefs::SchemeMidColour][3];
-	scaleColours_[nScaleSegments_*2+2][0] = colours_[Prefs::SchemeHiColour][0];
-	scaleColours_[nScaleSegments_*2+2][1] = colours_[Prefs::SchemeHiColour][1];
-	scaleColours_[nScaleSegments_*2+2][2] = colours_[Prefs::SchemeHiColour][2];
-	scaleColours_[nScaleSegments_*2+2][3] = colours_[Prefs::SchemeHiColour][3];
+	scaleColours_[0][0] = penColours_[Prefs::SchemeLoColour][0];
+	scaleColours_[0][1] = penColours_[Prefs::SchemeLoColour][1];
+	scaleColours_[0][2] = penColours_[Prefs::SchemeLoColour][2];
+	scaleColours_[0][3] = penColours_[Prefs::SchemeLoColour][3];
+	scaleColours_[nScaleSegments_+1][0] = penColours_[Prefs::SchemeMidColour][0];
+	scaleColours_[nScaleSegments_+1][1] = penColours_[Prefs::SchemeMidColour][1];
+	scaleColours_[nScaleSegments_+1][2] = penColours_[Prefs::SchemeMidColour][2];
+	scaleColours_[nScaleSegments_+1][3] = penColours_[Prefs::SchemeMidColour][3];
+	scaleColours_[nScaleSegments_*2+2][0] = penColours_[Prefs::SchemeHiColour][0];
+	scaleColours_[nScaleSegments_*2+2][1] = penColours_[Prefs::SchemeHiColour][1];
+	scaleColours_[nScaleSegments_*2+2][2] = penColours_[Prefs::SchemeHiColour][2];
+	scaleColours_[nScaleSegments_*2+2][3] = penColours_[Prefs::SchemeHiColour][3];
 	// Interpolate between the lo and mid points.
 	delta = 1.0 / (nScaleSegments_ + 1);	
 	for (n=0; n<nScaleSegments_; n++)
 	{
-		scaleColours_[n+1][0] = (GLint) (scaleColours_[0][0] + (colours_[Prefs::SchemeMidColour][0]-scaleColours_[0][0]) * n * delta);
-		scaleColours_[n+1][1] = (GLint) (scaleColours_[0][1] + (colours_[Prefs::SchemeMidColour][1]-scaleColours_[0][1]) * n * delta);
-		scaleColours_[n+1][2] = (GLint) (scaleColours_[0][2] + (colours_[Prefs::SchemeMidColour][2]-scaleColours_[0][2]) * n * delta);
-		scaleColours_[n+1][3] = (GLint) (scaleColours_[0][3] + (colours_[Prefs::SchemeMidColour][3]-scaleColours_[0][3]) * n * delta);
+		scaleColours_[n+1][0] = (GLint) (scaleColours_[0][0] + (penColours_[Prefs::SchemeMidColour][0]-scaleColours_[0][0]) * n * delta);
+		scaleColours_[n+1][1] = (GLint) (scaleColours_[0][1] + (penColours_[Prefs::SchemeMidColour][1]-scaleColours_[0][1]) * n * delta);
+		scaleColours_[n+1][2] = (GLint) (scaleColours_[0][2] + (penColours_[Prefs::SchemeMidColour][2]-scaleColours_[0][2]) * n * delta);
+		scaleColours_[n+1][3] = (GLint) (scaleColours_[0][3] + (penColours_[Prefs::SchemeMidColour][3]-scaleColours_[0][3]) * n * delta);
 	}
 }
 
@@ -690,8 +689,9 @@ GLint Prefs::shininess()
 */
 
 // Return the specified colour
-GLfloat *Prefs::colour(Colour c)
-{ return colours_[c];
+GLfloat *Prefs::penColour(Colour c)
+{
+	return penColours_[c];
 }
 
 // Return the low limit for the scheme specified
@@ -718,12 +718,12 @@ void Prefs::setColourSchemeHi(int i, double d)
 	colourSchemeHi_[i] = d;
 }
 
-void Prefs::setColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+void Prefs::setPenColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
-	colours_[c][0] = r;
-	colours_[c][1] = g;
-	colours_[c][2] = b;
-	colours_[c][3] = a;
+	penColours_[c][0] = r;
+	penColours_[c][1] = g;
+	penColours_[c][2] = b;
+	penColours_[c][3] = a;
 }
 
 /*

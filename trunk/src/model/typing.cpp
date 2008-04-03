@@ -45,7 +45,7 @@ Atom typing is performed in several steps.
 0)	Current bonding pattern in the model / pattern is augmented
 1) +-	Ring structures are located and stored
 2) |	Atom hybridisations are assigned based only on bond types on individual atoms
-3) |	Aromatic atoms are flagged as AE_AROMATIC, based on analysis of ring structures
+3) |	Aromatic atoms are flagged as Atomtype::AromaticEnvironment, based on analysis of ring structures
 4) +-	Typing rules from the forcefield are then applied to each atom in turn
 
 */
@@ -56,7 +56,7 @@ void printstuff(Pattern *p)
 	for (int n=0; n<p->nAtoms(); n++)
 	{
 		msg(Debug::Verbose,"Atom %i, %s[%i], nbonds=%i, valency=%i, type=%s\n",n,elements.symbol(i),
-			i->id(),i->nBonds(),elements.valency(i),text_from_AE(i->env()));
+			i->id(),i->nBonds(),elements.valency(i),Atomtype::atomEnvironment(i->environment()));
 		i = i->next;
 	}
 }
@@ -130,12 +130,12 @@ bool Model::typeAll()
 // Clear hybridisation data
 void Pattern::clearHybrids()
 {
-	// Set all environment flags of the atoms in pattern to AE_UNSPECIFIED
+	// Set all environment flags of the atoms in pattern to Atomtype::NoEnvironment
 	dbgBegin(Debug::Calls,"Pattern::clearHybrids");
 	Atom *i = firstAtom_;
 	for (int n=0; n<nAtoms_; n++)
 	{
-		i->setEnv(AE_UNSPECIFIED);
+		i->setEnvironment(Atomtype::NoEnvironment);
 		i = i->next;
 	}
 	dbgEnd(Debug::Calls,"Pattern::clearHybrids");
@@ -150,7 +150,7 @@ void Pattern::assignHybrids()
 	for (int n=0; n<nAtoms_; n++)
 	{
 		// Set to AE_UNBOUND to begin with
-		i->setEnv(AE_UNSPECIFIED);
+		i->setEnvironment(Atomtype::NoEnvironment);
 		// Work out the hybridisation based on the bond types connected to the atom.
 		// We can increase the hybridisation at any point, but never decrease it.
 		for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
@@ -158,13 +158,13 @@ void Pattern::assignHybrids()
 			switch (bref->item->order())
 			{
 				case (Bond::Single):
-					if (i->env() < AE_SP3) i->setEnv(AE_SP3);
+					if (i->environment() < Atomtype::Sp3Environment) i->setEnvironment(Atomtype::Sp3Environment);
 					break;
 				case (Bond::Double):
-					if (i->env() < AE_SP2) i->setEnv(AE_SP2);
+					if (i->environment() < Atomtype::Sp3Environment) i->setEnvironment(Atomtype::Sp2Environment);
 					break;
 				case (Bond::Triple):
-					if (i->env() < AE_SP) i->setEnv(AE_SP);
+					if (i->environment() < Atomtype::SpEnvironment) i->setEnvironment(Atomtype::SpEnvironment);
 					break;
 			}
 		}

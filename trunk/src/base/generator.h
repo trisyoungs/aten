@@ -25,7 +25,8 @@
 #include "templates/vector3.h"
 
 // Symmetry generator
-class Generator {
+class Generator
+{
 	/*
 	// Rotation Matrix and Translation Vector
 	*/

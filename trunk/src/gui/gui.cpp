@@ -207,11 +207,11 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	}
 	s += ftoa(trajParent->mass());
 	s += " g mol<sup>-1</sup> ";
-	CellType ct = m->cell()->type();
-	if (ct != CT_NONE)
+	Cell::CellType ct = m->cell()->type();
+	if (ct != Cell::NoCell)
 	{
 		s += "(";
-		s += text_from_CT(ct);
+		s += Cell::cellType(ct);
 		s += ", ";
 		s += ftoa(trajParent->density());
 		switch (prefs.densityUnit())

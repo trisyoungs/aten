@@ -139,8 +139,8 @@ void Canvas::renderScene(Model *source)
 	  // Render surfaces
 	  if (prefs.shouldRender(Prefs::ViewSurfaces)) renderSurfaces();
 	  // Render MC regions
-	  if ((displayModel_->cell()->type() != CT_NONE) && prefs.shouldRender(Prefs::ViewRegions)) renderRegions();
-	  glColor3fv(prefs.colour(Prefs::PenColour));
+	  if ((displayModel_->cell()->type() != Cell::NoCell) && prefs.shouldRender(Prefs::ViewRegions)) renderRegions();
+	  glColor3fv(prefs.penColour(Prefs::ForegroundColour));
 	  renderExtra3d();
 	glPopMatrix();
 
@@ -179,7 +179,7 @@ void Canvas::renderScene(Model *source)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colour(Prefs::PenColour));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.penColour(Prefs::ForegroundColour));
 	glDisable(GL_LIGHTING);
 
 	if (prefs.shouldRender(Prefs::ViewLabels)) renderModelLabels();

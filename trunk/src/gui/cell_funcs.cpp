@@ -67,14 +67,14 @@ void AtenForm::refreshCellPage()
 	}
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Cell *cell = master.currentModel()->cell();
-	CellType ct = cell->type();
+	Cell::CellType ct = cell->type();
 	static char s[64];
 	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->volume());
 	ui.CellVolumeLabel->setText(s);
 	if (cellpage_refreshing) return;
 	else cellpage_refreshing = TRUE;
 	// Update the widgets on the page to reflect the current model's unit cell
-	if (cell->type() == CT_NONE)
+	if (cell->type() == Cell::NoCell)
 	{
 		// No cell, so disable group boxes and quit
 		ui.CellDefinitionGroup->setChecked(FALSE);
@@ -113,7 +113,7 @@ void AtenForm::cellChanged()
 	angles.set(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	// Make changes
 	Model *m = master.currentModel();
-	if (m->cell()->type() == CT_NONE) m->beginUndostate("Add Cell");
+	if (m->cell()->type() == Cell::NoCell) m->beginUndostate("Add Cell");
 	else m->beginUndostate("Change Cell");
 	m->setCell(lengths, angles);
 	m->endUndostate();

@@ -330,7 +330,7 @@ void Model::calculateDensity()
 {
 	dbgBegin(Debug::Calls,"Model::calculateDensity");
 	double v = 0.0;
-	if (cell_.type() != CT_NONE)
+	if (cell_.type() != Cell::NoCell)
 	{
 		// Calculate density in the units specified by prefs.density_internal
 		switch (prefs.densityUnit())
@@ -355,8 +355,8 @@ void Model::bohrToAngstrom()
 	// Coordinates
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
 	// Cell
-	CellType ct = cell_.type();
-	if (ct != CT_NONE)
+	Cell::CellType ct = cell_.type();
+	if (ct != Cell::NoCell)
 	{
 		Vec3<double> lengths = cell_.lengths();
 		lengths *= ANGBOHR;
@@ -386,11 +386,11 @@ void Model::clearCharges()
 void Model::print()
 {
 	dbgBegin(Debug::Calls,"Model::print");
-	msg(Debug::None,"   Name : %s\n",name_.get());
-	msg(Debug::None,"   File : %s\n",filename_.get());
-	msg(Debug::None,"   Mass : %f\n",mass_);
-	if (cell_.type() != CT_NONE) msg(Debug::None,"   Cell : %s\nDensity : %f %s\n",text_from_CT(cell_.type()),density_,Prefs::densityUnitKeyword(prefs.densityUnit()));
-	msg(Debug::None,"  Atoms : %i\n",atoms_.nItems());
+	msg(Debug::None,"   Name : %s\n", name_.get());
+	msg(Debug::None,"   File : %s\n", filename_.get());
+	msg(Debug::None,"   Mass : %f\n", mass_);
+	if (cell_.type() != Cell::NoCell) msg(Debug::None,"   Cell : %s\nDensity : %f %s\n", Cell::cellType(cell_.type()), density_, Prefs::densityUnit(prefs.densityUnit()));
+	msg(Debug::None,"  Atoms : %i\n", atoms_.nItems());
 	msg(Debug::None," Id     El   FFType         X             Y             Z              Q        S  \n");
 	// Print from pattern definition if possible, otherwise just use model atom list
 	Atom *i;

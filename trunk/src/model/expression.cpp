@@ -84,16 +84,16 @@ bool Model::createExpression(bool vdwOnly)
 				msg(Debug::None,"Electrostatics are off.\n");
 				break;
 			case (EM_COULOMB):
-				if (cell_.type() != CT_NONE) msg(Debug::None,"!!! Coulomb sum requested for periodic model.\n");
+				if (cell_.type() != Cell::NoCell) msg(Debug::None,"!!! Coulomb sum requested for periodic model.\n");
 				break;
 			default: // Ewald - issue warnings, but don't return FALSE
-				if (cell_.type() == CT_NONE)
+				if (cell_.type() == Cell::NoCell)
 				{
 					msg(Debug::None,"!!! Ewald sum cannot be used for a non-periodic model.\n");
 					//dbgEnd(Debug::Calls,"Model::createExpression");
 					//return FALSE;
 				}
-				else if (cell_.type() != CT_CUBIC)
+				else if (cell_.type() != Cell::CubicCell)
 				{
 					msg(Debug::None,"!!! Ewald sum only implemented for cubic cells.\n");
 					//dbgEnd(Debug::Calls,"Model::createExpression");

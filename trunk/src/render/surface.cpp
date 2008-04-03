@@ -371,7 +371,7 @@ void cubeIt(Grid *g, SurfaceStyle ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
+	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
 	// Generate surface

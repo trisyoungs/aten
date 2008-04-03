@@ -69,7 +69,7 @@ class Ring
 	void finish();
 	// Returns TRUE if the ring is aromatic, FALSE if otherwise
 	bool isAromatic();
-	// Sets the atom environments of the atoms in the ring to AE_AROMATIC
+	// Sets the atom environments of the atoms in the ring to AtomEnvironment::AromaticEnvironment
 	void setAromatic();
 	// Augments the specified atom within the ring
 	void augmentAtom(Refitem<Atom,int>*, Model *parent);
