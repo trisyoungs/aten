@@ -97,6 +97,8 @@ class Model
 	void calculateDensity();
 	// Print information about the model (inc atoms)
 	void print();
+	// Print log information for the current model
+	void printLogs();
 	// Copy all information from another model
 	void copy(Model*);
 	// Copy all atom data from specified model

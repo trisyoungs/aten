@@ -156,8 +156,8 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 void AtenPrefs::updateAfterViewPrefs()
 {
 	gui.mainView.createLists();
-	master.currentModel()->projectAll();
-	master.currentModel()->logChange(LOG_VISUAL);
+	master.currentModel()->renderSource()->projectAll();
+	master.currentModel()->renderSource()->logChange(LOG_VISUAL);
 	gui.mainView.postRedisplay();
 }
 

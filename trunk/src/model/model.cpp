@@ -409,6 +409,16 @@ void Model::print()
 	dbgEnd(Debug::Calls,"Model::print");
 }
 
+// Print log information
+void Model::printLogs()
+{
+	msg(Debug::None,"Logs for model '%s':\n",name_.get());
+	msg(Debug::None,"Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Total [%i]\n", logs_[LOG_STRUCTURE], logs_[LOG_COORDS], logs_[LOG_VISUAL], logs_[LOG_SELECTION], logs_[LOG_CAMERA], logs_[LOG_TOTAL]);
+	msg(Debug::None,"Expression point : %i\n", expressionPoint_);
+	msg(Debug::None,"  Patterns point : %i\n", patternsPoint_);
+	msg(Debug::None,"Projection point : %i\n", projectionPoint_);
+}
+
 // Print Forces
 void Model::printForces()
 {

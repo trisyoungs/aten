@@ -33,7 +33,7 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 {
 	// If the source action is not checked, ignore the signal
 	if (!action->isChecked()) return;
-	Model *m, *trajframe;
+	Model *m;
 	Atom::DrawStyle ds = Atom::StickStyle;
 	if (action == ui.actionStyleStick) ds = Atom::StickStyle;
 	else if (action == ui.actionStyleTube) ds = Atom::TubeStyle;
@@ -42,15 +42,9 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 	else if (action == ui.actionStyleIndividual) ds = Atom::IndividualStyle;
 	prefs.setRenderStyle(ds);
 	// Inform the displayed model
-	m = master.currentModel();
+	m = master.currentModel()->renderSource();
 	m->projectAll();
 	m->logChange(LOG_VISUAL);
-	trajframe = m->currentFrame();
-	if (trajframe != NULL)
-	{
-		trajframe->projectAll();
-		trajframe->logChange(LOG_VISUAL);
-	}
 	gui.mainView.postRedisplay();
 }
 

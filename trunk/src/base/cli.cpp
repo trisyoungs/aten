@@ -157,7 +157,7 @@ void Master::debugCli(int argc, char *argv[])
 int Master::parseCli(int argc, char *argv[])
 {
 	int argn, opt, ntried = 0, n, el;
-	bool isShort, match;
+	bool isShort, match, nextArgIsSwitch, hasNextArg;
 	char *arg;
 	CommandList *cl;
 	Prefs::ZmapType zm;
@@ -174,6 +174,13 @@ int Master::parseCli(int argc, char *argv[])
 			// Is this a long or short option?
 			isShort = (argv[argn][1] != '-');
 			arg = (isShort ? &argv[argn][1] : &argv[argn][2]);
+			// Check what the next CLI argument is
+			if (argn == (argc-1)) hasNextArg = FALSE;
+			else
+			{
+				hasNextArg = TRUE;
+				nextArgIsSwitch = (argv[argn+1][0] == '-');
+			}
 			// Cycle over defined CLI options and search for this one
 			for (opt=0; opt<Cli::nSwitchItems; opt++)
 			{
@@ -182,10 +189,35 @@ int Master::parseCli(int argc, char *argv[])
 				else match = (strcmp(arg,cliSwitches[opt].longOpt) == 0 ? TRUE : FALSE);
 				if (match) break;
 			}
-			// If we have a match then 'o' contains the option identifier. Otherwise try to load the argument as a model.
-			if (match && (opt < Cli::DebugSwitch))
+			// Check to see if we matched any of the known CLI switches
+			if (!match)
 			{
-				// If it's a debug option then we've already dealt with it
+				printf("Unrecognised command-line option '%s'.\n",argv[argn]);
+				return -1;
+			}
+			// Ignore debug switches which have already been accounted for
+			if (opt < Cli::DebugSwitch)
+			{
+				// If this option needs an argument, check that we have one
+				switch (cliSwitches[opt].argument)
+				{
+					// No argument required
+					case (0):
+						break;
+					// Required argument
+					case (1):
+						if ((!hasNextArg) || nextArgIsSwitch)
+						{
+							if (isShort) msg(Debug::None," '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
+							else msg(Debug::None," '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
+							return -1;
+						}
+						break;
+					// Optional argument (never used?)
+					case (2):
+						break;
+				}
+				// Ready to perform switch action!
 				switch (opt)
 				{
 					// Convert coordinates from Bohr to Angstrom
@@ -296,9 +328,6 @@ int Master::parseCli(int argc, char *argv[])
 						zm = Prefs::zmapType(argv[++argn]);
 						if (zm != Prefs::nZmapTypes) prefs.setZmapType(zm);
 						break;
-					default:
-						printf("Unrecognised command-line option '%s'.\n",argv[argn]);
-						return -1;
 				}
 			}
 		}

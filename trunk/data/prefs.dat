@@ -51,7 +51,7 @@ densityunits	gpercm		# Density unit - gpercm|atomsperang
 #
 # Colours
 #
-colour	pen		0.0	0.0	0.0	# General 'pen' colour
+colour	fg		0.0	0.0	0.0	# General foreground colour
 colour	bg		1.0	1.0	1.0	# Workspace background
 colour	schemelo	0.0	0.0	1.0	# Colour scale - lowest
 colour	schememid	0.7	0.7	0.7	# Colour scale - mid-point
