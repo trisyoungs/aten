@@ -79,8 +79,8 @@ void GuiQt::run(int argc, char **argv)
 
 	// Prepare first model in list
 	master.setCurrentModel(master.models());
-	master.currentModel()->calculateViewMatrix();
-	master.currentModel()->projectAll();
+	master.currentModel()->renderSource()->calculateViewMatrix();
+	master.currentModel()->renderSource()->projectAll();
 
 	// Add loaded models to tabbar (and reset its view while we're here)
 	int tabid;
@@ -186,7 +186,6 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update status bar
 	QString s;
 	Model *m = master.currentModel();
-	Model *trajParent = (m->trajectoryParent() == NULL ? m : m->trajectoryParent());
 	// Trajectory information label
 	if (m->totalFrames() != 0)
 	{
@@ -196,16 +195,17 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 		s += itoa(m->totalFrames());
 		s += ") ";
 	}
+	m = m->renderSource();
 	// Model information
-	s += itoa(trajParent->nAtoms());
+	s += itoa(m->nAtoms());
 	s += " Atoms ";
-	if (trajParent->nSelected() != 0)
+	if (m->nSelected() != 0)
 	{
 		s += "(<b>";
-		s += itoa(trajParent->nSelected());
+		s += itoa(m->nSelected());
 		s += " selected</b>) ";
 	}
-	s += ftoa(trajParent->mass());
+	s += ftoa(m->mass());
 	s += " g mol<sup>-1</sup> ";
 	Cell::CellType ct = m->cell()->type();
 	if (ct != Cell::NoCell)
@@ -213,7 +213,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 		s += "(";
 		s += Cell::cellType(ct);
 		s += ", ";
-		s += ftoa(trajParent->density());
+		s += ftoa(m->density());
 		switch (prefs.densityUnit())
 		{
 			case (Prefs::GramsPerCm):

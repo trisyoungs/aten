@@ -107,7 +107,7 @@ void AtenForm::on_ElementUserButton_clicked(bool on)
 
 void AtenForm::on_BondCalcButton_clicked(bool on)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding");
 	m->clearBonding();
 	m->calculateBonding();
@@ -117,7 +117,7 @@ void AtenForm::on_BondCalcButton_clicked(bool on)
 
 void AtenForm::on_BondClearButton_clicked(bool on)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding");
 	m->clearBonding();
 	m->endUndostate();
@@ -126,7 +126,7 @@ void AtenForm::on_BondClearButton_clicked(bool on)
 
 void AtenForm::on_BondCalcSelButton_clicked(bool on)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding (Selection)");
 	m->selectionCalculateBonding();
 	m->endUndostate();
@@ -135,7 +135,7 @@ void AtenForm::on_BondCalcSelButton_clicked(bool on)
 
 void AtenForm::on_BondClearSelButton_clicked(bool on)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding (Selection)");
 	m->selectionClearBonding();
 	m->endUndostate();
@@ -144,7 +144,7 @@ void AtenForm::on_BondClearSelButton_clicked(bool on)
 
 void AtenForm::on_BondAugmentButton_clicked(bool on)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Augment Bonding");
 	m->augmentBonding();
 	m->endUndostate();
@@ -171,7 +171,7 @@ void AtenForm::on_ElementEdit_editingFinished()
 
 void AtenForm::on_AddHydrogenButton_clicked(bool on)
 {
-	Model *m = master.currentModel();
+	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Hydrogen Satisfy Model");
 	m->hydrogenSatisfy();
 	m->endUndostate();

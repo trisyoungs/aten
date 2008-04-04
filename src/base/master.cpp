@@ -82,8 +82,8 @@ void Master::setCurrentModel(Model *m)
 	// Set other Bundle objects based on model
 	current.p = m->patterns();
 	current.i = NULL;
-	current.m->calculateViewMatrix();
-	current.m->projectAll();
+	current.m->renderSource()->calculateViewMatrix();
+	current.m->renderSource()->projectAll();
 	dbgEnd(Debug::Calls,"Master::setCurrentModel");
 }
 

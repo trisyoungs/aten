@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	{
 		printf("$ATENDATA has not been set.\n");
 		printf("It should point to the (installed) location of the 'data' directory.\n");
-		printf("e.g. (in bash) 'export ATENDATA=/usr/local/share/aten/'.\n");
+		printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/'.\n");
 		return 1;
 	}
 	printf("Home directory is %s, working directory is %s.\n", master.homeDir.get(), master.workDir.get());

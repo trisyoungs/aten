@@ -64,6 +64,34 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Select working model ('getmodel <name>')
+int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
+{
+	// If the argument is an integer, get by id. Otherwise, get by name
+	Model *m = (c->argt(0) == VT_INTEGER ? master.model(c->argi(0)) : master.findModel(c->argc(0)));
+	if (m != NULL) 
+	{
+		master.setCurrentModel(m);
+		//gui.select_model(m);
+		obj.p = NULL;
+		obj.i = m->atoms();
+		return CR_SUCCESS;
+	}
+	else
+	{
+		msg(Debug::None,"No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0),c->argi(0));
+		return CR_FAIL;
+	}
+}
+
+// Print all information for model ('info')
+int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->print();
+	return CR_SUCCESS;
+}
+
 // Print loaded models ('listmodels')
 int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 {
@@ -90,6 +118,14 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 	} else return CR_FAIL;
 }
 
+// Print log information for model ('loginfo')
+int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->printLogs();
+	return CR_SUCCESS;
+}
+
 // Use parent model as atom template
 int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 {
@@ -111,6 +147,15 @@ int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set name of current model ('name <name>')
+int CommandData::function_CA_NAME(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->setName(c->argc(0));
+	msg(Debug::None,"Created model '%s'\n", obj.m->name());
+	return CR_SUCCESS;
+}
+
 // Create new model ('newmodel <name>')
 int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 {
@@ -120,11 +165,29 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Print all information for model ('info')
-int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
+// Skip to next loaded model ('nextmodel')
+int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->print();
+	if (obj.m->next == NULL) msg(Debug::None,"Already at last loaded model.\n");
+	else
+	{
+		master.setCurrentModel(obj.m->next);
+		msg(Debug::None,"Current model is now '%s'.\n",obj.m->name());
+	}
+	return CR_SUCCESS;
+}
+
+// Skip to previous loaded model ('prevmodel')
+int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.m->prev == NULL) msg(Debug::None,"Already at first loaded model.\n");
+	else
+	{
+		master.setCurrentModel(obj.m->prev);
+		msg(Debug::None,"Current model is now '%s'.\n",obj.m->name());
+	}
 	return CR_SUCCESS;
 }
 
@@ -143,26 +206,6 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 	obj.m->setFilter(f);
 	obj.m->setFilename(c->argc(1));
 	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
-}
-
-// Select working model ('getmodel <name>')
-int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
-{
-	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = (c->argt(0) == VT_INTEGER ? master.model(c->argi(0)) : master.findModel(c->argc(0)));
-	if (m != NULL) 
-	{
-		master.setCurrentModel(m);
-		//gui.select_model(m);
-		obj.p = NULL;
-		obj.i = m->atoms();
-		return CR_SUCCESS;
-	}
-	else
-	{
-		msg(Debug::None,"No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0),c->argi(0));
-		return CR_FAIL;
-	}
 }
 
 // Set title of model

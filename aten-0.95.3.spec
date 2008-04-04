@@ -33,12 +33,18 @@ Packager: Tristan Youngs
 AutoReq: yes
 
 # Basic package dependencies are listed here. For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
-BuildRequires: gcc-c++ Mesa-devel readline-devel
+BuildRequires: gcc-c++
 
 %if 0%{?suse_version}
-BuildRequires: libqt4 libqt4-devel
-%else
-BuildRequires: qt4 qt4-devel
+BuildRequires: libqt4 libqt4-devel Mesa-devel readline-devel
+%endif
+# For Ubuntu, lowercase 'm' for Mesa.
+%if 0%{?ubuntu_version}
+BuildRequires: libqt4-gui libqt4-core libqt4-dev libreadline5-dev libgl1-mesa-dev
+%endif
+# For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
+%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
+BuildRequires: Mesa-devel qt4 qt4-devel readline-devel
 %endif
 
 # In-depth description.
@@ -49,7 +55,6 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 %setup -q
 
 # For the build, RedHat distros seem to need the path to the Qt4 binaries set explicitly. SuSE is fine.
-# Blank line between final %else/%endif is significant!
 %build
 ./configure --prefix=$RPM_BUILD_ROOT/usr \
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}

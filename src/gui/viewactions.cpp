@@ -67,6 +67,9 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	// Switch render focus from the model's trajectory to the model.
 	master.currentModel()->setRenderFromSelf();
+	Model *m = master.currentModel()->renderSource();
+	m->calculateViewMatrix();
+	m->logChange(LOG_CAMERA);
 	gui.modelChanged();
 }
 
@@ -74,6 +77,9 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory.
 	master.currentModel()->setRenderFromFrames();
+	Model *m = master.currentModel()->renderSource();
+	m->calculateViewMatrix();
+	m->logChange(LOG_CAMERA);
 	gui.modelChanged();
 }
 
