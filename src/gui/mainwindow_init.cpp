@@ -233,7 +233,7 @@ void AtenForm::finaliseUi()
 	// Create open forcefield dialog
 	openForcefieldDialog = new QFileDialog(this);
 	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
-	openForcefieldDialog->setDirectory(master.workDir.get());
+	openForcefieldDialog->setDirectory(master.dataDir.get());
 	openForcefieldDialog->setWindowTitle("Open Forcefield");
 	filters.clear();
 	filters << "All files (*)";
