@@ -35,7 +35,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
 	static int n,aoff,m1,i,j, start1, finish1;
 	static Vec3<double> mim_i;
-	static double sigma, sigmar6, epsilon, rij, energy_inter, energy_intra, cutoff, vrs;
+	static double sigma, sigmar6, sigmar2, epsilon, rij, energy_inter, energy_intra, cutoff, vrs;
 	static ForcefieldParams paramsi, paramsj;
 	PatternAtom *pai, *paj;
 	PatternBound *pb;
@@ -75,7 +75,9 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 						case (VF_LJ): // U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
 							epsilon = 4.0 * sqrt( paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS] );
 							sigma = ( paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA] ) * 0.5 * vrs;
-							sigmar6 = pow((sigma / rij),6);
+							sigmar2 = (sigma / rij);
+							sigmar2 *= sigmar2;
+							sigmar6 = sigmar2 * sigmar2 * sigmar2;
 							conMat_[i][j] == 0 ? energy_inter += epsilon * (sigmar6*sigmar6 - sigmar6)
 								: energy_intra += epsilon * (sigmar6*sigmar6 - sigmar6);
 							break;
@@ -103,7 +105,9 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 					epsilon = 4.0 * sqrt( paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS] );
 					sigma = ( paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA] ) * 0.5 * vrs;
 					epsilon *= pb->data()->params().data[TF_VSCALE];
-					sigmar6 = pow((sigma / rij),6);
+					sigmar2 = (sigma / rij);
+					sigmar2 *= sigmar2;
+					sigmar6 = sigmar2 * sigmar2 * sigmar2;
 					energy_intra -= epsilon * (sigmar6*sigmar6 - sigmar6);
 					break;
 			}
@@ -124,7 +128,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 	dbgBegin(Debug::Calls,"Pattern::vdwInterPatternEnergy");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> mim_i;
-	static double sigma, sigmar6, epsilon, rij, energy_inter, cutoff, vrs;
+	static double sigma, sigmar2, sigmar6, epsilon, rij, energy_inter, cutoff, vrs;
 	PatternAtom *pai, *paj;
 	static ForcefieldParams paramsi, paramsj;
 	cutoff = prefs.vdwCutoff();
@@ -200,7 +204,9 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 						case (VF_LJ): 
 							epsilon = 4.0*sqrt(paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS]);
 							sigma = 0.5 * (paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA]) * vrs;
-							sigmar6 = pow((sigma / rij),6);
+							sigmar2 = (sigma / rij);
+							sigmar2 *= sigmar2;
+							sigmar6 = sigmar2 * sigmar2 * sigmar2;
 							energy_inter += epsilon * (sigmar6*sigmar6 - sigmar6);
 							break;
 					}
@@ -225,7 +231,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternForces");
 	static int n,i,j,aoff,m1;
 	static Vec3<double> mim_i, f_i, tempf;
-	static double sigma, sigmar6, epsilon, rij, factor, cutoff, vrs;
+	static double sigma, sigmar2, sigmar6, epsilon, rij, factor, cutoff, vrs;
 	static ForcefieldParams paramsi, paramsj;
 	PatternAtom *pai, *paj;
 	PatternBound *pb;
@@ -263,7 +269,9 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 						case (VF_LJ): 
 							epsilon = 48.0 * sqrt( paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS] );
 							sigma = ( paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA] ) * 0.5 * vrs;
-							sigmar6 = pow((sigma / rij),6);
+							sigmar2 = (sigma / rij);
+							sigmar2 *= sigmar2;
+							sigmar6 = sigmar2 * sigmar2 * sigmar2;
 							factor = epsilon * sigmar6 * (sigmar6 - 0.5);
 							factor = factor / (rij*rij);
 							break;
@@ -297,7 +305,9 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 					epsilon = 48.0 * sqrt( paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS] );
 					epsilon *= pb->data()->params().data[TF_VSCALE];
 					sigma = ( paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA] ) * 0.5 * vrs;
-					sigmar6 = pow((sigma / rij),6);
+					sigmar2 = (sigma / rij);
+					sigmar2 *= sigmar2;
+					sigmar6 = sigmar2 * sigmar2 * sigmar2;
 					factor = epsilon * sigmar6 * (sigmar6 - 0.5);
 					factor = factor / (rij*rij);
 					break;
@@ -319,7 +329,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 	dbgBegin(Debug::Calls,"Pattern::vdwInterPatternForces");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish;
 	static Vec3<double> mim_i, f_i, tempf;
-	static double sigma, sigmar6, epsilon, rij, factor, cutoff, vrs;
+	static double sigma, sigmar2, sigmar6, epsilon, rij, factor, cutoff, vrs;
 	PatternAtom *pai, *paj;
 	static ForcefieldParams paramsi, paramsj;
 	cutoff = prefs.vdwCutoff();
@@ -359,7 +369,9 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 						case (VF_LJ): 
 							epsilon = 48.0*sqrt(paramsi.data[VF_LJ_EPS] * paramsj.data[VF_LJ_EPS]);
 							sigma = 0.5 * (paramsi.data[VF_LJ_SIGMA] + paramsj.data[VF_LJ_SIGMA]) * vrs;
-							sigmar6 = pow((sigma / rij),6);
+							sigmar2 = (sigma / rij);
+							sigmar2 *= sigmar2;
+							sigmar6 = sigmar2 * sigmar2 * sigmar2;
 							factor = epsilon * sigmar6 * (sigmar6 - 0.5);
 							factor = factor / (rij*rij);
 							break;

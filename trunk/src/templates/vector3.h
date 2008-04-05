@@ -22,6 +22,9 @@
 #ifndef ATEN_VECTOR3_H
 #define ATEN_VECTOR3_H
 
+// Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
+#define NOMINMAX
+
 #include "templates/matrix3.h"
 #include "templates/matrix4.h"
 #include "base/debug.h"
@@ -29,12 +32,6 @@
 #include "base/mathfunc.h"
 #include <stdio.h>
 #include <math.h>
-
-// Forward declarations
-//template <class T> class Vec3; // TGAY
-//template <class T> class vec4;   // TGAY
-//template <class T> class mat3;   // TGAY
-//template <class T> class mat4;   // TGAY
 
 // 3D vector
 template <class T> class Vec3

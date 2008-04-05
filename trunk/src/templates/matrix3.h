@@ -22,6 +22,9 @@
 #ifndef ATEN_MATRIX3_H
 #define ATEN_MATRIX3_H
 
+// Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
+#define NOMINMAX
+
 #include "templates/vector3.h"
 #include "base/debug.h"
 #include <algorithm>

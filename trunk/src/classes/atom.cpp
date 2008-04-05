@@ -41,7 +41,7 @@ const char *Atom::drawStyle(Atom::DrawStyle i)
 const char *AtomLabelKeywords[Atom::nLabelItems] = { "id", "element", "type", "ffequiv", "charge" };
 Atom::AtomLabel Atom::atomLabel(const char *s)
 {
-	return (Atom::AtomLabel) int(pow(2,enumSearch("atom label", Atom::nLabelItems, AtomLabelKeywords, s)));
+	return (Atom::AtomLabel) power(2,enumSearch("atom label", Atom::nLabelItems, AtomLabelKeywords, s));
 }
 
 // Constructor

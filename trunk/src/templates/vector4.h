@@ -22,6 +22,9 @@
 #ifndef ATEN_VECTOR4_H
 #define ATEN_VECTOR4_H
 
+// Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
+#define NOMINMAX
+
 #include "templates/vector3.h"
 #include <stdio.h>
 #include <math.h>

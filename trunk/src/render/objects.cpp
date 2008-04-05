@@ -278,7 +278,7 @@ void Canvas::glSphere(double radius, bool filled)
 		glBegin(GL_QUAD_STRIP);
 		  for(j = 0; j <= longs; j++)
 		  {
-			lng = 2 * M_PI * (double) (j - 1) / longs;
+			lng = 2 * PI * (double) (j - 1) / longs;
 			x = cos(lng);
 			y = sin(lng);
 			glNormal3d(x * zr0, y * zr0, z0);

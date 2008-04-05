@@ -57,3 +57,12 @@ int csRandomi(int range)
 	// Returns a random number from 0->(range-1) inclusive.
 	return int(range * csRandom());
 }
+
+// Integer power function
+int power(int i, int p)
+{
+	static int result, n;
+	result = i;
+	for (n=0; n<p; n++) result *= i;
+	return result;
+}

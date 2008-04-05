@@ -22,19 +22,14 @@
 #ifndef ATEN_MATRIX4_H
 #define ATEN_MATRIX4_H
 
-//#include "templates/vector3.h"
+// Prevent complaints for incorrect arguments to 'macro max()' and 'macro min()
+#define NOMINMAX
+
 #include "templates/vector4.h"
-//#include "base/debug.h"
 #include <algorithm>
 #include <math.h>
 #include <stdio.h>
 using namespace std;
-
-// Forward declarations
-//template <class T> class Vec3;
-//template <class T> class Vec4;
-//template <class T> class Mat3;
-//template <class T> class Mat4;
 
 // 4x4 matrix
 template <class T> class Mat4

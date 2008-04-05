@@ -22,11 +22,11 @@
 #ifndef ATEN_PARSE_H
 #define ATEN_PARSE_H
 
-using namespace std;
-#include <fstream>
-#include <iostream>
 #include "base/constants.h"
 #include "classes/dnchar.h"
+#include <fstream>
+#include <iostream>
+using namespace std;
 
 #define MAXARGS 50
 #define MAXARGLENGTH 256
