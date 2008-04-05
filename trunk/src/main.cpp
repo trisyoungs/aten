@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	srand( (unsigned)time( NULL ) );
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
-	// Get environment variables
+	// Get environment variables, most importantly the location of the data dirs
 	master.homeDir = getenv("HOME");
 	master.workDir = getenv("PWD");
 	master.dataDir = getenv("ATENDATA");
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	{
 		printf("$ATENDATA has not been set.\n");
 		printf("It should point to the (installed) location of the 'data' directory.\n");
-		printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/'.\n");
+		printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
 		return 1;
 	}
 	printf("Home directory is %s, working directory is %s.\n", master.homeDir.get(), master.workDir.get());

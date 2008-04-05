@@ -145,7 +145,7 @@ void Canvas::renderScene(Model *source)
 	glPopMatrix();
 
 	// Draw replicated cells (using display list)
-	if (prefs.shouldRender(Prefs::ViewCellREPEAT))
+	if (prefs.shouldRender(Prefs::ViewCellRepeat))
 	{
 		static Mat3<double> cellmat;
 		static Vec3<double> cx, cy, cz;

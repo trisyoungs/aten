@@ -174,8 +174,8 @@ Prefs::Prefs()
 	renderObjects_[Prefs::ViewMeasurements] = TRUE;
 	renderObjects_[Prefs::ViewGlobe] = TRUE;
 	renderObjects_[Prefs::ViewCell] = TRUE;
-	renderObjects_[Prefs::ViewCellAXES] = TRUE;
-	renderObjects_[Prefs::ViewCellREPEAT] = FALSE;
+	renderObjects_[Prefs::ViewCellAxes] = TRUE;
+	renderObjects_[Prefs::ViewCellRepeat] = FALSE;
 	renderObjects_[Prefs::ViewRegions] = TRUE;
 	renderObjects_[Prefs::ViewForceArrows] = FALSE;
 	renderObjects_[Prefs::ViewSurfaces] = TRUE;
@@ -837,49 +837,49 @@ Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk)
 */
 
 // Sets whether to calculate bonding on model load
-void Prefs::setBondOnLoad(PrefSwitch s)
+void Prefs::setBondOnLoad(FilterSwitch s)
 {
 	bondOnLoad_ = s;
 }
 
 // Whether bonding should be recalculated on model load
-Prefs::PrefSwitch Prefs::bondOnLoad()
+Prefs::FilterSwitch Prefs::bondOnLoad()
 {
 	return bondOnLoad_;
 }
 
 // Sets whether to centre molecule on load
-void Prefs::setCentreOnLoad(Prefs::PrefSwitch s)
+void Prefs::setCentreOnLoad(Prefs::FilterSwitch s)
 {
 	centreOnLoad_ = s;
 }
 
 // Whether molecule should be centred on model load
-Prefs::PrefSwitch Prefs::centreOnLoad()
+Prefs::FilterSwitch Prefs::centreOnLoad()
 {
 	return centreOnLoad_;
 }
 
 // Sets whether to fold atomic positions after model load
-void Prefs::setFoldOnLoad(Prefs::PrefSwitch s)
+void Prefs::setFoldOnLoad(Prefs::FilterSwitch s)
 {
 	foldOnLoad_ = s;
 }
 
 // Whether atoms should be folded after model load
-Prefs::PrefSwitch Prefs::foldOnLoad()
+Prefs::FilterSwitch Prefs::foldOnLoad()
 {
 	return foldOnLoad_;
 }
 
 // Sets whether to apply symmetry operators (pack) on load
-void Prefs::setPackOnLoad(Prefs::PrefSwitch s)
+void Prefs::setPackOnLoad(Prefs::FilterSwitch s)
 {
 	packOnLoad_ = s;
 }
 
 // Whether atoms should be packed (with symmetry operations) after model load
-Prefs::PrefSwitch Prefs::packOnLoad()
+Prefs::FilterSwitch Prefs::packOnLoad()
 {
 	return packOnLoad_;
 }

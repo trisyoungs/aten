@@ -66,3 +66,4 @@ int power(int i, int p)
 	for (n=0; n<p; n++) result *= i;
 	return result;
 }
+
