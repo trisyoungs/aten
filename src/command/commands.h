@@ -191,6 +191,7 @@ enum CommandAction {
 	CA_GLYPHATOMSV,
 	CA_GLYPHDATA,
 	CA_GLYPHSOLID,
+	CA_GLYPHTEXT,
 	CA_NEWGLYPH,
 
 	// Grid Commands
@@ -505,6 +506,7 @@ class CommandData
 	int function_CA_GLYPHATOMSV(Command *&c, Bundle &obj);
 	int function_CA_GLYPHDATA(Command *&c, Bundle &obj);
 	int function_CA_GLYPHSOLID(Command *&c, Bundle &obj);
+	int function_CA_GLYPHTEXT(Command *&c, Bundle &obj);
 	int function_CA_NEWGLYPH(Command *&c, Bundle &obj);
 	// Grid Commands
 	int function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj);

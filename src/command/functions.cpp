@@ -160,7 +160,6 @@ void Master::initCommands()
 	CA_data[CA_TYPETEST].function = &CommandData::function_CA_TYPETEST;
 
 	// Glyph commands
-	CA_data[CA_NEWGLYPH].function = &CommandData::function_CA_NEWGLYPH;
 	CA_data[CA_GLYPHATOMF].function = &CommandData::function_CA_GLYPHATOMF;
 	CA_data[CA_GLYPHATOMR].function = &CommandData::function_CA_GLYPHATOMR;
 	CA_data[CA_GLYPHATOMV].function = &CommandData::function_CA_GLYPHATOMV;
@@ -169,6 +168,8 @@ void Master::initCommands()
 	CA_data[CA_GLYPHATOMSV].function = &CommandData::function_CA_GLYPHATOMSV;
 	CA_data[CA_GLYPHDATA].function = &CommandData::function_CA_GLYPHDATA;
 	CA_data[CA_GLYPHSOLID].function = &CommandData::function_CA_GLYPHSOLID;
+	CA_data[CA_GLYPHTEXT].function = &CommandData::function_CA_GLYPHTEXT;
+	CA_data[CA_NEWGLYPH].function = &CommandData::function_CA_NEWGLYPH;
 
 	// Grid Commands
 	CA_data[CA_ADDGRIDPOINT].function = &CommandData::function_CA_ADDGRIDPOINT;
