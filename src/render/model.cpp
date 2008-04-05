@@ -176,7 +176,7 @@ void Canvas::renderModelCell()
 		  if (prefs.shouldRender(Prefs::ViewCell)) glCallList(list_[GLOB_WIREUNITCUBE]);
 		  lengths = displayModel_->cell()->lengths();
 		  // Render cell axis arrows
-		  if (prefs.shouldRender(Prefs::ViewCellAXES))
+		  if (prefs.shouldRender(Prefs::ViewCellAxes))
 		  {
 			glTranslated(-0.5,-0.5,-0.5);
 			glScaled(1.0/lengths.x,1.0/lengths.y,1.0/lengths.z);

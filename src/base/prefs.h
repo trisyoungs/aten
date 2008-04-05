@@ -64,7 +64,7 @@ class Prefs
 	static const char *densityUnit(DensityUnit);
 	static DensityUnit densityUnit(const char*);
 	// View Objects
-	enum ViewObject { ViewAtoms, ViewCell, ViewCellAXES, ViewCellREPEAT, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
+	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
 	static ViewObject viewObject(const char*);
 	// GL Options
 	enum GlOption { FogOption=1, LineAliasOption=2, PolyAliasOption=4, BackCullOption=8, DummyOption=16, nGlOptions=5 };
@@ -72,7 +72,7 @@ class Prefs
 	// Atom colouring scheme
 	enum ColourScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColourSchemes };
 	// Preferences switches
-	enum PrefSwitch { SwitchAsFilter=-1, SwitchOff, SwitchOn };
+	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
 	// Name->Z mapping methods
@@ -287,13 +287,13 @@ class Prefs
 	*/
 	private:
 	// Recalculate bonding when model has loaded
-	PrefSwitch bondOnLoad_;
+	FilterSwitch bondOnLoad_;
 	// Centre non-periodic models on load
-	PrefSwitch centreOnLoad_;
+	FilterSwitch centreOnLoad_;
 	// Fold atomic positions after model load
-	PrefSwitch foldOnLoad_;
+	FilterSwitch foldOnLoad_;
 	// Whether to apply symmetry operators to get crystal packing on load
-	PrefSwitch packOnLoad_;
+	FilterSwitch packOnLoad_;
 	// Whether to load in all coordinate sets from a file
 	bool loadAllCoords_;
 	// Convert coordinates from Bohr to Angstrom on load
@@ -305,21 +305,21 @@ class Prefs
 
 	public:
 	// Sets whether to calculate bonding on model load
-	void setBondOnLoad(PrefSwitch s);
+	void setBondOnLoad(FilterSwitch s);
 	// Whether bonding should be recalculated on model load
-	PrefSwitch bondOnLoad();
+	FilterSwitch bondOnLoad();
 	// Sets whether to centre molecule on load
-	void setCentreOnLoad(PrefSwitch s);
+	void setCentreOnLoad(FilterSwitch s);
 	// Whether molecule should be centred on model load
-	PrefSwitch centreOnLoad();
+	FilterSwitch centreOnLoad();
 	// Sets whether to fold atomic positions after model load
-	void setFoldOnLoad(PrefSwitch s);
+	void setFoldOnLoad(FilterSwitch s);
 	// Whether atoms should be folded after model load
-	PrefSwitch foldOnLoad();
+	FilterSwitch foldOnLoad();
 	// Sets whether to apply symmetry operators (pack) on load
-	void setPackOnLoad(PrefSwitch s);
+	void setPackOnLoad(FilterSwitch s);
 	// Whether atoms should be packed (with symmetry operations) after model load
-	PrefSwitch packOnLoad();
+	FilterSwitch packOnLoad();
 	// Sets whether to load all coordinate sets on model load
 	void setLoadAllCoords(bool b);
 	// Whether all geometries in a non-trajectory file should be loaded

@@ -70,7 +70,7 @@ void AtenPrefs::setControls()
 	ui.BondQualitySpin->setValue(prefs.bondDetail());
 	ui.GlobeVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewGlobe));
 	ui.CellVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewCell));
-	ui.AxesVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewCellAXES));
+	ui.AxesVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewCellAxes));
 	ui.AtomsVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewAtoms));
 	ui.ShininessSpin->setValue(prefs.shininess());
 
@@ -230,7 +230,7 @@ void AtenPrefs::on_CellVisibleCheck_stateChanged(int state)
 
 void AtenPrefs::on_AxesVisibleCheck_stateChanged(int state)
 {
-	setVisibleObject(Prefs::ViewCellAXES, state);
+	setVisibleObject(Prefs::ViewCellAxes, state);
 }
 
 void AtenPrefs::on_GlobeVisibleCheck_stateChanged(int state)
