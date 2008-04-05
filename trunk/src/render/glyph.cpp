@@ -39,14 +39,14 @@ void Canvas::renderModelGlyphs()
 		switch (g->type())
 		{
 			// Arrow - tail = data[0], head = data[1]
-			case (GS_ARROW):
+			case (Glyph::ArrowGlyph):
 				vec[0] = g->data[0].vector();
 				glArrow(vec[0], g->data[1].vector() - vec[0] );
 				break;
-			case (GS_VECTOR):
+			case (Glyph::VectorGlyph):
 				break;
 			// Sphere - centre = data[0], scale = data[1]
-			case (GS_SPHERE):
+			case (Glyph::SphereGlyph):
 				vec[0] = g->data[0].vector();
 				vec[1] = g->data[1].vector();
 				glPushMatrix();
@@ -56,7 +56,7 @@ void Canvas::renderModelGlyphs()
 				glPopMatrix();
 				break;
 			// Cube - centre = data[0], scale = data[1]
-			case (GS_CUBE):
+			case (Glyph::CubeGlyph):
 				vec[0] = g->data[0].vector();
 				vec[1] = g->data[1].vector();
 				glPushMatrix();
@@ -66,7 +66,7 @@ void Canvas::renderModelGlyphs()
 				glPopMatrix();
 				break;
 			// Ellipsoid - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
-			case (GS_TRIANGLE):
+			case (Glyph::TriangleGlyph):
 				vec[0] = g->data[0].vector();
 				vec[1] = g->data[1].vector();
 				vec[2] = g->data[2].vector();
@@ -77,11 +77,11 @@ void Canvas::renderModelGlyphs()
 				glPopMatrix();
 				break;
 			// Ellipsoid - centre = data[0], edge vector = data[1], face vector = data[2]
-			case (GS_ELLIPSOID):
+			case (Glyph::EllipsoidGlyph):
 				glEllipsoid(g->data[0].vector(), g->data[1].vector(), g->data[2].vector());
 				break;
 			// Tetrahedron - four vertices in data[0] to data[3]
-			case (GS_TETRAHEDRON):
+			case (Glyph::TetrahedronGlyph):
 				vec[0] = g->data[0].vector();
 				vec[1] = g->data[1].vector();
 				vec[2] = g->data[2].vector();
@@ -107,6 +107,10 @@ void Canvas::renderModelGlyphs()
 				  glNormal3d(normal.x, normal.y, normal.z);
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				glEnd();
+				break;
+			// Text - left-hand origin = data[0]
+			case (Glyph::TextGlyph):
+				glText(g->data[0].vector(), g->text());
 				break;
 		}
 

@@ -23,16 +23,9 @@
 #define ATEN_GLYPH_H
 
 #include "classes/atom.h"
+#include "classes/dnchar.h"
 #include "templates/vector3.h"
 #include "templates/vector4.h"
-
-// Glyph style
-enum GlyphStyle { GS_ARROW, GS_VECTOR, GS_SPHERE, GS_CUBE, GS_TRIANGLE, GS_ELLIPSOID, GS_TETRAHEDRON, GS_NITEMS };
-const char *text_from_GS(GlyphStyle);
-GlyphStyle GS_from_text(const char*);
-
-// Atom data pointer type
-enum AtomVectorType { AV_R, AV_F, AV_V };
 
 #define MAXGLYPHDATA 4
 
@@ -42,6 +35,9 @@ class GlyphData
 	public:
 	// Constructor
 	GlyphData();
+	
+	// Atom data pointer type
+	enum GlyphDataType { PositionData, ForceData, VelocityData };
 
 	private:
 	// Position or direction vector
@@ -49,7 +45,7 @@ class GlyphData
 	// Pointer to atom from which to get 'r'
 	Atom *atom_;
 	// Type of vector data to take from atom (if defined)
-	AtomVectorType atomData_;
+	GlyphDataType atomData_;
 	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
 	bool atomSetLast_;
 	// Status of data item (whether it has been set or not)
@@ -59,11 +55,11 @@ class GlyphData
 	// Set the vector data
 	void setVector(double x, double y, double z);
 	// Set the atom pointer
-	void setAtom(Atom *target, AtomVectorType av);
+	void setAtom(Atom *target, GlyphDataType av);
 	// Return the atom pointer
 	Atom *atom();
 	// Return the type of atom vector pointed to
-	AtomVectorType atomData();
+	GlyphDataType atomData();
 	// Return the vector data
 	Vec3<double> vector();
 	// Return if the structure contains an atom pointer
@@ -80,24 +76,34 @@ class Glyph
 	Glyph();
 	// List pointers
 	Glyph *prev, *next;
+	// Glyph style
+	enum GlyphType { ArrowGlyph, VectorGlyph, SphereGlyph, CubeGlyph, TriangleGlyph, EllipsoidGlyph, TetrahedronGlyph, TextGlyph, nGlyphTypes };
+	static const char *glyphType(GlyphType);
+	static GlyphType glyphType(const char*);
 
 	private:
 	// Style of Glyph
-	GlyphStyle type_;
+	GlyphType type_;
 	// Whether Glyph should be drawn with filled polygons (where possible)
 	bool solid_;
+	// Text data
+	Dnchar text_;
 
 	public:
 	// Data for Glyph
 	GlyphData data[MAXGLYPHDATA];
 	// Set style of Glyph
-	void setType(GlyphStyle gt);
+	void setType(GlyphType gt);
 	// Return style of Glyph
-	GlyphStyle type();
+	GlyphType type();
 	// Set whether the Glyph is solid or not
 	void setSolid(bool issolid);
 	// Return whether the Glyph should be drawn as a solid
 	bool isSolid();
+	// Set text data
+	void setText(const char *s);
+	// Return text data
+	const char *text();
 };
 
 #endif

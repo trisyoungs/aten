@@ -27,7 +27,7 @@
 #include "model/model.h"
 
 // Torsion energy
-void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
+void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
 	dbgBegin(Debug::Calls,"Pattern::torsionEnergy");
@@ -91,7 +91,7 @@ void Pattern::torsionEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 		aoff += nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(ET_TORSION,energy,id_);
+	estore->add(Energy::TorsionEnergy,energy,id_);
 	//estore->torsion[id] += energy;
 	dbgEnd(Debug::Calls,"Pattern::torsionEnergy");
 }

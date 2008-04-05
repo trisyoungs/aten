@@ -24,8 +24,6 @@
 
 #include "templates/vector3.h"
 
-
-
 // Forward declarations
 class Atom;
 
