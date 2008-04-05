@@ -198,7 +198,14 @@ int CommandData::function_CA_GLYPHDATA(Command *&c, Bundle &obj)
 int CommandData::function_CA_GLYPHSOLID(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
-	// Check range of supplied data item
 	obj.gl->setSolid(c->argb(0));
+	return CR_SUCCESS;
+}
+
+// Set text property of current glyph
+int CommandData::function_CA_GLYPHTEXT(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	obj.gl->setText(c->argc(0));
 	return CR_SUCCESS;
 }

@@ -305,6 +305,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set vector data <n> in current glyph" },
 	{ "glyphsolid",		"V",		"<true|false>",
 				"Set the glyph to be drawn in solid (true) or wireframe (false) modes (glyph-permitting)" },
+	{ "glyphtext",		"V",		"<text>",
+				"Set text data in current glyph" },
 	{ "newglyph",		"V",		"<style>",
 				"Add a glyph with the specified style to the current model" },
 
