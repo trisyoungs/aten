@@ -284,7 +284,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 	dbgBegin(Debug::Calls,"Canvas::endMode");
 	bool manipulate;
 	double area, radius;
-	Atom *atoms[4], *i;
+	Atom **atoms, *i;
 	Bond *b;
 	Bond::BondType bt;
 	if (displayModel_ == NULL)
@@ -293,6 +293,8 @@ void Canvas::endMode(Prefs::MouseButton button)
 		dbgEnd(Debug::Calls,"Canvas::endMode");
 		return;
 	}
+	// Create atoms pointer array
+	atoms = new Atom*[4];
 	// Reset mouse button flag
 	mouseButton_[button] = FALSE;
 	// Finalize the action

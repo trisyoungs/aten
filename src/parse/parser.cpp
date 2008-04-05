@@ -30,7 +30,8 @@ Parser parser;
 const char *ParseOptionKeywords[Parser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "__DUMMY__" };
 Parser::ParseOption Parser::parseOption(const char *s)
 {
-	return (Parser::ParseOption) int(pow(2,enumSearch("parse option", Parser::nParseOptions, ParseOptionKeywords, s))); }
+	return (Parser::ParseOption) pow(2,enumSearch("parse option", Parser::nParseOptions, ParseOptionKeywords, s));
+}
 
 // Constructor
 Parser::Parser()

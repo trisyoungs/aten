@@ -156,7 +156,8 @@ void FourierData::prepare(Model *srcmodel, Vec3<int> newkvec)
 {
 	// Set up arrays in the fourier class to handle all atoms / maximum kvectors specified.
 	dbgBegin(Debug::Calls,"FourierData:::prepare");
-	int newkmax = newkvec.max();
+	int newkmax;
+	newkmax = newkvec.max();
 	// Don't delete the arrays, however, if the new nAtoms and kmax match...
 	if ((nAtoms != srcmodel->nAtoms()) || (kMax != newkmax))
 	{

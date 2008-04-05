@@ -54,7 +54,7 @@ void Prefs::estimateEwaldParameters(Cell *cell)
 	switch (cell->type())
 	{
 		case (Cell::CubicCell):
-			k = (int) round(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI);
+			k = (int) floor(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
 			ewaldKvec_.set(k,k,k);
 			break;
 		default:
@@ -203,9 +203,12 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	static Mat3<double> rcell;
 	static double cutoff, mag, magsq, exp1, alphasq, pos, xycos, xysin, xyzcos, xyzsin;
 	static double factor, alpha, energy_inter;
-	double sumcos[npats], sumsin[npats];
+	double *sumcos, *sumsin;
+
 	alpha = prefs.ewaldAlpha();
 	Atom **modelatoms = srcmodel->atomArray();
+	sumcos = new double[npats];
+	sumsin = new double[npats];
 
 	if (molecule != -1) printf("Ewald reciprocal energy is not yet complete for indvidual molecule|system calculations.\n");
 
@@ -261,6 +264,8 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 				//estore->ewaldRecip_inter[i][n] += exp1*(sumcos[i]*sumcos[n] + sumsin[i]*sumsin[n]);
 			}
 	}
+	delete sumcos;
+	delete sumsin;
 	dbgEnd(Debug::Calls,"Pattern::ewaldReciprocalEnergy");
 }
 
@@ -469,10 +474,12 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 	static Vec3<double> kvec;
 	static Mat3<double> rcell;
 	static double cutoff, mag, magsq, exp1, alphasq, factor, force, pos, sumcos, sumsin, xycos, xysin, alpha;
-	double xyzcos[srcmodel->nAtoms()], xyzsin[srcmodel->nAtoms()];
+	double *xyzcos, *xyzsin;
+
 	alpha = prefs.ewaldAlpha();
 	Atom **modelatoms = srcmodel->atomArray();
-
+	xyzcos = new double[srcmodel->nAtoms()];
+	xyzsin = new double[srcmodel->nAtoms()];
 	// Grab the reciprocal unit cell
 	rcell = fourier.cell->reciprocal();
 

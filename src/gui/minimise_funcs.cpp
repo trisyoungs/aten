@@ -39,8 +39,8 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 	double econverge, fconverge, linetol;
 	int maxcycles;
 	// Get the convergence values from the window controls
-	econverge = pow(10,ui.EnergyConvergeSpin->value());
-	fconverge = pow(10,ui.ForceConvergeSpin->value());
+	econverge = pow(10.0,ui.EnergyConvergeSpin->value());
+	fconverge = pow(10.0,ui.ForceConvergeSpin->value());
 	maxcycles = ui.MinimiseCyclesSpin->value();
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())

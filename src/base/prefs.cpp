@@ -32,7 +32,7 @@ Prefs prefs;
 const char *GlOptionKeywords[Prefs::nGlOptions] = { "fog", "linealias", "polyalias", "backcull", "__DUMMY__" };
 Prefs::GlOption Prefs::glOption(const char *s)
 {
-	return (Prefs::GlOption) int(pow(2,enumSearch("GL option",Prefs::nGlOptions,GlOptionKeywords,s)));
+	return (Prefs::GlOption) power(2,enumSearch("GL option",Prefs::nGlOptions,GlOptionKeywords,s));
 }
 
 // Mouse buttons

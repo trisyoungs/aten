@@ -26,3 +26,6 @@ double cserf(double);
 // Misc
 double csRandom();
 int csRandomi(int);
+
+// Integer power function
+int power(int i, int p);

@@ -367,10 +367,9 @@ void Model::createPatternMolecules()
 void Model::selectionEmpirical(Dnchar &target)
 {
 	dbgBegin(Debug::Calls,"Model::selectionEmpirical");
-	int elcount[elements.nElements()];
-	//string result;
+	int n, *elcount;
 	target.clear();
-	int n;
+	elcount = new int[elements.nElements()];
 	// Reset element counters
 	for (n=0; n<elements.nElements(); n++) elcount[n] = 0;
 	Atom *i = atoms_.first();
@@ -386,6 +385,7 @@ void Model::selectionEmpirical(Dnchar &target)
 			target.cat(elements.symbol(n));
 			if (elcount[n] > 1) target.cat(itoa(elcount[n]));
 		}
+	delete elcount;
 	dbgEnd(Debug::Calls,"Model::selectionEmpirical");
 }
 
