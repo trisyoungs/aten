@@ -4,7 +4,7 @@ project(aten)
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "0")
-set(VERSION_MINOR "95.3")
+set(VERSION_MINOR "96")
 set(VERSION_PATCH "1")
 
 
