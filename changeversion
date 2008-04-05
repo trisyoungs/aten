@@ -61,14 +61,6 @@ fi
 grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9\.]\+\)\])/\1/g'
 
 
-# ./Makefile.am
-echo -n "    ./Makefile.am (.spec filename) : "
-if [ "$#" -eq "2" ]
-then
-  cp ./Makefile.am ./Makefile.am.orig
-  sed -e "s/\(.*aten-\)\([0-9\.]\+\).spec/\1$1.$2.spec/g" ./Makefile.am.orig > ./Makefile.am
-fi
-grep 'EXTRA_DIST' ./Makefile.am | sed -e 's/.*aten-\([0-9\.]\+\).spec/\1/g'
 # Change specfile name and contents
 if [ "$#" -eq "2" ]
 then
