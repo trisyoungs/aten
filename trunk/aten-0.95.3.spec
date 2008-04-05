@@ -73,7 +73,7 @@ make
 make install
 
 %clean
-#rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root)
@@ -82,11 +82,11 @@ make install
 /usr/share/aten/
 
 %changelog
-* Wed Apr 02 2008 Tristan Youngs <tris@projectaten.com> 
+* Wed Apr 02 2008 Tristan Youngs <tris@projectaten.org> 
 - added checks to build on different distros with the SuSE build service.
-* Tue Apr 01 2008 Tristan Youngs <tris@projectaten.com> 
+* Tue Apr 01 2008 Tristan Youngs <tris@projectaten.org>
 - added dependencies list and long description.
-* Sun Mar 30 2008 Tristan Youngs <tris@projectaten.com> 
+* Sun Mar 30 2008 Tristan Youngs <tris@projectaten.org>
 - installation target points to local dir.
 * Mon Mar 24 2008 Tristan Youngs <tris@projectaten.com> 
 - initial version.
