@@ -28,7 +28,7 @@
 #include "model/model.h"
 
 // Calculate bond energy of pattern (or molecule in pattern)
-void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
+void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	dbgBegin(Debug::Calls,"Pattern::bondEnergy");
 	int i,j,m1,aoff;
@@ -69,7 +69,7 @@ void Pattern::bondEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
 		aoff = aoff + nAtoms_;
 	}
 	// Increment energy for pattern
-	estore->add(ET_BOND,energy,id_);
+	estore->add(Energy::BondEnergy,energy,id_);
 	dbgEnd(Debug::Calls,"Pattern::bondEnergy");
 }
 

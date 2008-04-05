@@ -24,18 +24,22 @@
 #include "base/sysfunc.h"
 
 // Glyph styles
-const char *GS_keywords[GS_NITEMS] = { "arrow", "vector", "sphere", "cube", "triangle", "ellipsoid", "tetrahedron" };
-const char *text_from_GS(GlyphStyle gs)
-	{ return GS_keywords[gs]; }
-GlyphStyle GS_from_text(const char *s)
-	{ return (GlyphStyle) enumSearch("glyph style",GS_NITEMS,GS_keywords,s); }
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "sphere", "cube", "triangle", "ellipsoid", "tetrahedron", "text" };
+const char *Glyph::glyphType(Glyph::GlyphType gs)
+{
+	return GlyphTypeKeywords[gs];
+}
+Glyph::GlyphType Glyph::glyphType(const char *s)
+{
+	return (Glyph::GlyphType) enumSearch("glyph style", Glyph::nGlyphTypes, GlyphTypeKeywords, s);
+}
 
 // Constructors
 GlyphData::GlyphData()
 {
 	// Private variables
 	atom_ = NULL;
-	atomData_ = AV_R;
+	atomData_ = GlyphData::PositionData;
 	atomSetLast_ = FALSE;
 	set_ = FALSE;
 }
@@ -60,7 +64,7 @@ Atom *GlyphData::atom()
 }
 
 // Return the type of atom vector pointed to
-AtomVectorType GlyphData::atomData()
+GlyphData::GlyphDataType GlyphData::atomData()
 {
 	return atomData_;
 }
@@ -86,10 +90,10 @@ void GlyphData::setVector(double x, double y, double z)
 }
 
 // Set the atom pointer
-void GlyphData::setAtom(Atom *target, AtomVectorType av)
+void GlyphData::setAtom(Atom *target, GlyphDataType type)
 {
 	atom_ = target;
-	atomData_ = av;
+	atomData_ = type;
 	atomSetLast_ = TRUE;
 	set_ = TRUE;
 }
@@ -106,12 +110,24 @@ Vec3<double> GlyphData::vector()
 		}
 		switch (atomData_)
 		{
-			case (AV_R): return atom_->r();
-			case (AV_F): return atom_->f();
-			case (AV_V): return atom_->v();
+			case (GlyphData::PositionData): return atom_->r();
+			case (GlyphData::ForceData): return atom_->f();
+			case (GlyphData::VelocityData): return atom_->v();
 		}
 	}
 	else return vector_;
+}
+
+// Set text data
+void Glyph::setText(const char *s)
+{
+	text_ = s;
+}
+
+// Return text data
+const char *Glyph::text()
+{
+	return text_.get();
 }
 
 /*
@@ -119,7 +135,7 @@ Vec3<double> GlyphData::vector()
 */
 
 // Return style of Glyph
-GlyphStyle Glyph::type()
+Glyph::GlyphType Glyph::type()
 {
 	return type_;
 }
@@ -137,22 +153,24 @@ bool Glyph::isSolid()
 }
 
 // Set style of glyph (and set data vectors to default values)
-void Glyph::setType(GlyphStyle gt)
+void Glyph::setType(GlyphType gt)
 {
 	// Add default values, provided they have not already been set...
 	switch (gt)
 	{
-		case (GS_ARROW):
-		case (GS_VECTOR):
+		case (Glyph::ArrowGlyph):
+		case (Glyph::VectorGlyph):
 			if (!data[1].isSet()) data[1].setVector(0.0,1.0,0.0);
 			break;
-		case (GS_SPHERE):
-		case (GS_CUBE):
+		case (Glyph::SphereGlyph):
+		case (Glyph::CubeGlyph):
 			if (!data[1].isSet()) data[1].setVector(1.0,1.0,1.0);
 			break;
-		case (GS_TRIANGLE):
+		case (Glyph::TriangleGlyph):
 			break;
-		case (GS_ELLIPSOID):
+		case (Glyph::EllipsoidGlyph):
+			break;
+		case (Glyph::TextGlyph):
 			break;
 	}
 	type_ = gt;

@@ -28,7 +28,7 @@
 #include <math.h>
 
 // Intrapattern VDW energy
-void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lonemolecule)
+void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemolecule)
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
@@ -114,15 +114,15 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int lo
 		}
 		aoff += nAtoms_;
 	}
-	// Add totals into EnergyStore
-	estore->add(ET_VDWINTRA,energy_intra,id_);
-	estore->add(ET_VDWINTER,energy_inter,id_,id_);
+	// Add totals into Energy
+	estore->add(Energy::VdwIntraEnergy,energy_intra,id_);
+	estore->add(Energy::VdwInterEnergy,energy_inter,id_,id_);
 	//printf("TOTAL = %f %f\n",energy_intra,energy_inter);
 	dbgEnd(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
 }
 
 // Interpattern VDW energy
-void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, EnergyStore *estore, int molId)
+void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Energy *estore, int molId)
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
 	dbgBegin(Debug::Calls,"Pattern::vdwInterPatternEnergy");
@@ -216,7 +216,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 		}
 		aoff1 += nAtoms_;
 	}
-	estore->add(ET_VDWINTER,energy_inter,id_,otherPattern->id_);
+	estore->add(Energy::VdwInterEnergy,energy_inter,id_,otherPattern->id_);
 	dbgEnd(Debug::Calls,"Pattern::vdwInterPatternEnergy");
 }
 
@@ -401,7 +401,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 //
 // Assume p(r) is equal to the (bulk) number density at r > rcut.
 //
-void Pattern::vdwCorrectEnergy(Cell *cell, EnergyStore *estore)
+void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 {
 	// Calculate the long-range correction to the VDW energy
 	dbgBegin(Debug::Calls,"Pattern::vdwCorrectEnergy");
@@ -454,7 +454,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, EnergyStore *estore)
 			}
 		}
 	}
-	estore->add(ET_VDWTAIL,energy,-1);
+	estore->add(Energy::VdwTailEnergy,energy,-1);
 	dbgEnd(Debug::Calls,"Pattern::vdwCorrectEnergy");
 }
 

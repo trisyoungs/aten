@@ -1,6 +1,6 @@
 /*
 	*** Energy store
-	*** src/classes/EnergyStore.h
+	*** src/classes/Energy.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -22,24 +22,23 @@
 #ifndef ATEN_ESTORE_H
 #define ATEN_ESTORE_H
 
-// Energy Types
-enum EnergyType { ET_BOND, ET_ANGLE, ET_TORSION, ET_VDWINTRA, ET_VDWINTER, ET_VDWTAIL,
-	ET_COULOMBINTRA, ET_COULOMBINTER, ET_EWALDREALINTRA, ET_EWALDREALINTER, 
-	ET_EWALDRECIPINTRA, ET_EWALDRECIPINTER, ET_EWALDSELF, ET_EWALDMOL, ET_NITEMS };
-
 // Forward Declarations
 class Pattern;
 class Model;
 
 // Energy store
-class EnergyStore
+class Energy
 {
+	public:
+	// Energy Types
+	enum EnergyType { BondEnergy, AngleEnergy, TorsionEnergy, VdwIntraEnergy, VdwInterEnergy, VdwTailEnergy, CoulombIntraEnergy, CoulombInterEnergy, EwaldRealIntraEnergy, EwaldRealInterEnergy, EwaldRecipIntraEnergy, EwaldRecipInterEnergy, EwaldSelfEnergy, EwaldMolecularEnergy, nEnergyTypes };
+
 	private:
 	// Dimension of arrays in created structure.
 	int size_;
-	// Whether the EnergyStore has actually been used (i.e. calculated)
+	// Whether the Energy has actually been used (i.e. calculated)
 	bool calculated_;
-	// Deallocate arrays in EnergyStore
+	// Deallocate arrays in Energy
 	void deallocate();
 	// Bond energies
 	double *bond_;
@@ -84,11 +83,11 @@ class EnergyStore
 
 	public:
 	// Constructor / Destructor
-	EnergyStore();
-	~EnergyStore();
+	Energy();
+	~Energy();
 	// Clear the energy store (reset to zero)
 	void clear();
-	// Resize the EnergyStore
+	// Resize the Energy
 	void resize(int);
 	// Calculate the sub-total and total energies.
 	void totalise();

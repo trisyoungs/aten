@@ -30,7 +30,7 @@
 #include "classes/forcefield.h"
 
 // Forward declarations
-class EnergyStore;
+class Energy;
 class Atom;
 class Atomtype;
 class ComponentRegion;
@@ -264,18 +264,18 @@ class Pattern
 	// Energy / Force Calculation
 	*/
 	public:
-	void bondEnergy(Model*, EnergyStore*, int molecule = -1);
-	void angleEnergy(Model*, EnergyStore*, int molecule = -1);
-	void torsionEnergy(Model*, EnergyStore*, int molecule = -1);
-	void vdwIntraPatternEnergy(Model*, EnergyStore*, int molecule = -1);
-	void vdwInterPatternEnergy(Model*, Pattern*, EnergyStore*, int molecule = -1);
-	void vdwCorrectEnergy(Cell*, EnergyStore*);
-	void coulombIntraPatternEnergy(Model*, EnergyStore*, int molecule = -1);
-	void coulombInterPatternEnergy(Model*, Pattern*, EnergyStore*, int molecule = -1);
-	void ewaldRealIntraPatternEnergy(Model*, EnergyStore*, int molecule = -1);
-	void ewaldRealInterPatternEnergy(Model*, Pattern*, EnergyStore*, int molecule = -1);
-	void ewaldReciprocalEnergy(Model*, Pattern*, int, EnergyStore*, int molecule = -1);
-	void ewaldCorrectEnergy(Model*, EnergyStore*, int molecule = -1);
+	void bondEnergy(Model*, Energy*, int molecule = -1);
+	void angleEnergy(Model*, Energy*, int molecule = -1);
+	void torsionEnergy(Model*, Energy*, int molecule = -1);
+	void vdwIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	void vdwInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	void vdwCorrectEnergy(Cell*, Energy*);
+	void coulombIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	void coulombInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	void ewaldRealIntraPatternEnergy(Model*, Energy*, int molecule = -1);
+	void ewaldRealInterPatternEnergy(Model*, Pattern*, Energy*, int molecule = -1);
+	void ewaldReciprocalEnergy(Model*, Pattern*, int, Energy*, int molecule = -1);
+	void ewaldCorrectEnergy(Model*, Energy*, int molecule = -1);
 	void bondForces(Model*);
 	void angleForces(Model*);
 	void torsionForces(Model*);

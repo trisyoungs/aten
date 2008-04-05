@@ -35,9 +35,9 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Get glyph style
-	GlyphStyle gs = GS_from_text(c->argc(0));
+	Glyph::GlyphType gs = Glyph::glyphType(c->argc(0));
 	master.current.gl = obj.m->addGlyph();
-	if (gs == GS_NITEMS) msg(Debug::None,"Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
+	if (gs == Glyph::nGlyphTypes) msg(Debug::None,"Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
 	master.current.gl->setType(gs);
 	return CR_SUCCESS;
 }
@@ -61,7 +61,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->data[d].setAtom(target, AV_F);
+	obj.gl->data[d].setAtom(target, GlyphData::ForceData);
 	if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
@@ -85,7 +85,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->data[d].setAtom(target, AV_R);
+	obj.gl->data[d].setAtom(target, GlyphData::PositionData);
 	if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
@@ -109,7 +109,7 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
-	obj.gl->data[d].setAtom(target, AV_V);
+	obj.gl->data[d].setAtom(target, GlyphData::VelocityData);
 	if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
@@ -130,7 +130,7 @@ int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
-		obj.gl->data[d].setAtom(target, AV_F);
+		obj.gl->data[d].setAtom(target, GlyphData::ForceData);
 		if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
 	}
 	return CR_SUCCESS;
@@ -152,7 +152,7 @@ int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
-		obj.gl->data[d].setAtom(target, AV_R);
+		obj.gl->data[d].setAtom(target, GlyphData::PositionData);
 		if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
 	}
 	return CR_SUCCESS;
@@ -173,7 +173,7 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
-		obj.gl->data[d].setAtom(target, AV_V);
+		obj.gl->data[d].setAtom(target, GlyphData::VelocityData);
 		if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
 	}
 	return CR_SUCCESS;

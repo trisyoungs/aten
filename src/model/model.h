@@ -433,7 +433,7 @@ class Model
 
 	public:
 	// Storage for energy
-	EnergyStore energy;
+	Energy energy;
 	// Create total energy function shell for the model
 	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid

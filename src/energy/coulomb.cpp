@@ -30,7 +30,7 @@
 
 // Calculate the internal coulomb energy of the pattern.
 // Consider only the intrapattern interactions of individual molecules  within this pattern.
-void Pattern::coulombIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, int molecule)
+void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	dbgBegin(Debug::Calls,"Pattern::coulombIntraPatternEnergy");
 	static int n,i,j,aoff,m1;
@@ -76,13 +76,13 @@ void Pattern::coulombIntraPatternEnergy(Model *srcmodel, EnergyStore *estore, in
 	}
 	energy_intra = energy_intra * prefs.elecConvert();
 	energy_inter = energy_inter * prefs.elecConvert();
-	estore->add(ET_COULOMBINTRA,energy_intra,id_);
-	estore->add(ET_COULOMBINTER,energy_inter,id_,id_);
+	estore->add(Energy::CoulombIntraEnergy,energy_intra,id_);
+	estore->add(Energy::CoulombInterEnergy,energy_inter,id_,id_);
 	dbgEnd(Debug::Calls,"Pattern::coulombIntraPatternEnergy");
 }
 
 // Calculate the coulomb contribution to the energy from interactions between different molecules of this pattern and the one supplied
-void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, EnergyStore *estore, int molecule)
+void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy *estore, int molecule)
 {
 	dbgBegin(Debug::Calls,"Pattern::coulombInterPatternEnergy");
 	static int n1, n2, i, j, aoff1, aoff2, m1, m2, finish1, start2, finish2, a1, a2;
@@ -133,7 +133,7 @@ void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy
 		aoff1 += nAtoms_;
 	}
 	energy_inter = energy_inter * prefs.elecConvert();
-	estore->add(ET_COULOMBINTER,energy_inter,id_,xpnode->id_);
+	estore->add(Energy::CoulombInterEnergy,energy_inter,id_,xpnode->id_);
 	dbgEnd(Debug::Calls,"Pattern::coulombInterPatternEnergy");
 }
 
