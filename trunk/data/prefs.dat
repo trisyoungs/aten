@@ -1,3 +1,4 @@
+# Template Preferences File for Aten
 #
 # Control
 #
@@ -38,9 +39,9 @@ show	measurements 	yes	# Measurements
 show	labels		yes	# Atom labels
 
 #
-# Pre-load Forcefields
+# Load Forcefields on Startup
 #
-#loadff "/home/tris/src/csmodel/ff/uff.ff"
+#loadff "/home/tris/src/csmodel/ff/uff.ff" uff
 
 #
 # Methods

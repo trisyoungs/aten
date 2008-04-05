@@ -65,8 +65,16 @@ install( DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/filters"
      DESTINATION share/aten
      REGEX ".svn" EXCLUDE
 )
+
+install( DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/ff" 
+     FILE_PERMISSIONS WORLD_READ
+     DIRECTORY_PERMISSIONS WORLD_EXECUTE
+     DESTINATION share/aten
+     REGEX ".svn" EXCLUDE
+)
+
 install(CODE
-"message(\"Don't forget to set ATENDATA to ${CMAKE_INSTALL_PREFIX}/share/aten
+"message(\"Don't forget to set $ATENDATA to ${CMAKE_INSTALL_PREFIX}/share/aten
 in your profile\")"
 )
 
