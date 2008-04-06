@@ -223,7 +223,7 @@ bool Pattern::typeAtoms()
 		for (ffa = forcefield_->types(); ffa != NULL; ffa = ffa->next)
 		{
 			// Grab next atomtype and reset tempi variables
-			at = ffa->atomType();
+			at = ffa->atomtype();
 			// First, check element is the same, otherwise skip
 			if (i->element() != at->characterElement()) continue;
 			// See how well this ff description matches the environment of our atom 'i'

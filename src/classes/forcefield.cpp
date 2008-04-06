@@ -165,9 +165,9 @@ const char *ForcefieldAtom::description()
 
 
 // Returns the atomtype description
-Atomtype *ForcefieldAtom::atomType()
+Atomtype *ForcefieldAtom::atomtype()
 {
-	return &atomType_;
+	return &atomtype_;
 }
 
 // Returns ForcefieldParams structure
@@ -402,7 +402,7 @@ Atomtype *Forcefield::typeOfId(int i)
 		if (result->typeId() == i) break;
 	if (result == NULL) printf("Forcefield::get_atomtype_of_typeId_ <<<< FFID %i not found in forcefield >>>>\n",i);
 	dbgEnd(Debug::Calls,"Forcefield::get_atomtype_of_typeId_");
-	return result->atomType();
+	return result->atomtype();
 }
 
 // Match two forcefield type strings

@@ -65,7 +65,7 @@ void AtenEdit::populate(Forcefield *ff)
 	{
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFEditorTypesTable->setItem(count, 0, item);
-		item = new QTableWidgetItem(elements.symbol(ffa->atomType()->characterElement()));
+		item = new QTableWidgetItem(elements.symbol(ffa->atomtype()->characterElement()));
 		ui.FFEditorTypesTable->setItem(count, 1, item);
 		item = new QTableWidgetItem(ffa->name());
 		ui.FFEditorTypesTable->setItem(count, 2, item);
@@ -89,15 +89,21 @@ void AtenEdit::populate(Forcefield *ff)
 	{
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFEditorAtomsTable->setItem(count, 0, item);
-		item = new QTableWidgetItem(ffa->name());
+		item = new QTableWidgetItem(elements.symbol(ffa->atomtype()->characterElement()));
 		ui.FFEditorAtomsTable->setItem(count, 1, item);
-		item = new QTableWidgetItem(ffa->description());
+		item = new QTableWidgetItem(ffa->name());
 		ui.FFEditorAtomsTable->setItem(count, 2, item);
+		item = new QTableWidgetItem(ffa->equivalent());
+		ui.FFEditorAtomsTable->setItem(count, 3, item);
+		item = new QTableWidgetItem(ffa->description());
+		ui.FFEditorAtomsTable->setItem(count, 4, item);
 		count ++;
 	}
 	ui.FFEditorAtomsTable->resizeColumnToContents(0);
 	ui.FFEditorAtomsTable->resizeColumnToContents(1);
 	ui.FFEditorAtomsTable->resizeColumnToContents(2);
+	ui.FFEditorAtomsTable->resizeColumnToContents(3);
+	ui.FFEditorAtomsTable->resizeColumnToContents(4);
 
 	// Bonds List
 	count = 0;

@@ -21,9 +21,7 @@
 
 #include "base/master.h"
 #include "base/elements.h"
-//#include "gui/gui.h"
 #include "gui/prefs.h"
-//#include <QtGui/QDialog>
 #include <QtGui/QListWidgetItem>
 #include <QtGui/QColorDialog>
 #include "model/model.h"

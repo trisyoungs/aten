@@ -286,6 +286,7 @@ class AtenForm : public QMainWindow
 	void on_AddHydrogenButton_clicked(bool on);
 	void on_AtomAddHydrogenButton_clicked(bool on);
 	void on_ProbeAtomButton_clicked(bool on);
+	void on_AddAtomButton_clicked(bool on);
 
 	// Analyse page functions
 	private slots:
@@ -402,10 +403,10 @@ class AtenForm : public QMainWindow
 	void refreshComponentData();
 	void setComponentCoords(int centsize, int element, double value);
 	private slots:
-	void on_ComponentList_itemSelectionChanged();
-	void on_PopulationSpin_valueChanged(int value);
-	void on_ComponentTranslateCheck_clicked(bool checked);
-	void on_ComponentRotateCheck_clicked(bool checked);
+	void on_ComponentTable_itemSelectionChanged();
+	//void on_PopulationSpin_valueChanged(int value);
+	//void on_ComponentTranslateCheck_clicked(bool checked);
+	//void on_ComponentRotateCheck_clicked(bool checked);
 	void on_ComponentRegionCombo_currentIndexChanged(int index);
 	void on_ShowRegionsCheck_clicked(bool checked);
 	void on_DisorderStartButton_clicked(bool checked);

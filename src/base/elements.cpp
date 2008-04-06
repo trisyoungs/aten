@@ -408,7 +408,7 @@ int ElementMap::ffToZ(const char *s)
 		if (ffa != NULL)
 		{
 			// Found a match, so find out what element it is...
-			result = ffa->atomType()->characterElement();
+			result = ffa->atomtype()->characterElement();
 			break;
 		}
 		if (result != -1) break;

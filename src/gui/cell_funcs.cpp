@@ -105,8 +105,9 @@ void AtenForm::refreshCellPage()
 
 void AtenForm::cellChanged()
 {
+	//static char s[64];
 	if (cellpage_refreshing) return;
-	else cellpage_refreshing = TRUE;
+	//else cellpage_refreshing = TRUE;
 	// Construct length and angle vectors and set cell of model
 	static Vec3<double> lengths, angles;
 	lengths.set(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value());
@@ -118,8 +119,11 @@ void AtenForm::cellChanged()
 	m->setCell(lengths, angles);
 	m->endUndostate();
 	m->calculateDensity();
+	//sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",m->cell()->volume());
+	//ui.CellVolumeLabel->setText(s);
 	gui.modelChanged(FALSE,FALSE,FALSE);
-	cellpage_refreshing = FALSE;
+	//cellpage_refreshing = FALSE;
+	refreshCellPage();
 }
 
 void AtenForm::on_CellDefinitionGroup_clicked(bool checked)

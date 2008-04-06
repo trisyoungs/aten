@@ -23,6 +23,7 @@
 #include "classes/grid.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/loadmodel.h"
 #include <QtGui/QFileDialog>
 #include "model/model.h"
 
@@ -38,29 +39,15 @@ void AtenForm::on_actionFileNew_triggered(bool checked)
 void AtenForm::on_actionFileOpen_triggered(bool checked)
 {
 	Filter *f;
-	Model *m;
-	QString filename;
-	QStringList filenames;
-	if (dialog[FT_MODEL_IMPORT]->exec() == 1)
+	if (gui.loadModelDialog->exec() == 1)
 	{
-		// Get selected filter in file dialog
-		QString filter = dialog[FT_MODEL_IMPORT]->selectedFilter();
-		// Find the corresponding Aten filter that was selected
-		for (f = master.filters(FT_MODEL_IMPORT); f != NULL; f = f->next)
-			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
-		// Get selected filename list
-		filenames = dialog[FT_MODEL_IMPORT]->selectedFiles();
-		// Loop over selected files
-		for (int i = 0; i < filenames.count(); ++i)
+		f = gui.loadModelDialog->selectedFilter();
+		// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+		if (f == NULL) f = master.probeFile(gui.loadModelDialog->selectedFilename(), FT_MODEL_IMPORT);
+		if (f != NULL)
 		{
-			filename = filenames.at(i);
-			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-			if (f == NULL) f = master.probeFile(qPrintable(filename), FT_MODEL_IMPORT);
-			if (f != NULL)
-			{
-				f->execute(qPrintable(filename));
-				addRecent(qPrintable(filename));
-			}
+			f->execute(gui.loadModelDialog->selectedFilename());
+			addRecent(gui.loadModelDialog->selectedFilename());
 		}
 		refreshModelTabs();
 		master.currentModel()->logChange(LOG_VISUAL);

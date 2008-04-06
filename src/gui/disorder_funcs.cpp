@@ -23,6 +23,7 @@
 #include "base/master.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
+#include "gui/ttablewidgetitem.h"
 #include "model/model.h"
 
 void AtenForm::on_ComponentCentreXSpin_valueChanged(double d)
@@ -61,29 +62,52 @@ void AtenForm::refreshDisorderPage()
 	// (De)sensitize controls
 	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == Cell::NoCell);
 	// Update model (component) list
-	QListWidgetItem *item;
-	ui.ComponentList->setCurrentRow(-1);
-	ui.ComponentList->clear();
+	TTableWidgetItem *item;
+	//ui.ComponentTable->setCurrentRow(-1);
+	ui.ComponentTable->clear();
+	int count = 0;
 	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != Cell::NoCell) continue;
-		item = new QListWidgetItem(ui.ComponentList);
+		count ++;
+		// Number requested
+		item = new TTableWidgetItem();
+		item->setText(itoa(m->nRequested()));
+		item->setModel(m);
+		ui.ComponentTable->setItem(count, 0, item);
+		// Rotation allowed
+		item = new TTableWidgetItem();
+		item->setCheckState(m->isMoveAllowed(MonteCarlo::Rotate) ? Qt::Checked : Qt::Unchecked);
+		item->setModel(m);
+		ui.ComponentTable->setItem(count, 1, item);
+		// Translate allowed
+		item = new TTableWidgetItem();
+		item->setCheckState(m->isMoveAllowed(MonteCarlo::Translate) ? Qt::Checked : Qt::Unchecked);
+		item->setModel(m);
+		ui.ComponentTable->setItem(count, 2, item);
+		// Model name
+		item = new TTableWidgetItem();
 		item->setText(m->name());
+		item->setModel(m);
+		ui.ComponentTable->setItem(count, 3, item);
+
+		//item = new QListWidgetItem(ui.ComponentList);
+		//item->setText(m->name());
 	}
 	// Select the last component in the list
-	ui.ComponentList->setCurrentRow(master.nModels()-1);
+	//ui.ComponentList->setCurrentRow(master.nModels()-1);
 	refreshComponentData();
 }
 
 void AtenForm::refreshComponentData()
 {
 	// Get current component
-	int comp = ui.ComponentList->currentRow();
+	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = master.model(comp);
 	// Set controls
-	ui.PopulationSpin->setValue(m->nRequested());
-	ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
+	//ui.PopulationSpin->setValue(m->nRequested());
+	//ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
 	Vec3<double> v;
 	v = m->area.size();
 	ui.ComponentSizeXSpin->setValue(v.x);
@@ -93,15 +117,15 @@ void AtenForm::refreshComponentData()
 	ui.ComponentCentreXSpin->setValue(v.x);
 	ui.ComponentCentreYSpin->setValue(v.y);
 	ui.ComponentCentreZSpin->setValue(v.z);
-	ui.ComponentTranslateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Translate));
-	ui.ComponentRotateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Rotate));
+	//ui.ComponentTranslateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Translate));
+	//ui.ComponentRotateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Rotate));
 }
 
 void AtenForm::setComponentCoords(int centsize, int element, double value)
 {
 	// Get current component
 	static Vec3<double> v;
-	int comp = ui.ComponentList->currentRow();
+	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = master.model(comp);
 	if (centsize == 0)
@@ -119,12 +143,12 @@ void AtenForm::setComponentCoords(int centsize, int element, double value)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_ComponentList_itemSelectionChanged()
+void AtenForm::on_ComponentTable_itemSelectionChanged()
 {
 	refreshComponentData();
 }
 
-void AtenForm::on_PopulationSpin_valueChanged(int value)
+/* void AtenForm::on_PopulationSpin_valueChanged(int value)
 {
 	int comp = ui.ComponentList->currentRow();
 	if (comp == -1) return;
@@ -146,11 +170,11 @@ void AtenForm::on_ComponentRotateCheck_clicked(bool checked)
 	if (comp == -1) return;
 	Model *m = master.model(comp);
 	m->setMoveAllowed(MonteCarlo::Translate, checked);
-}
+} */
 
 void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
-	int comp = ui.ComponentList->currentRow();
+	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = master.model(comp);
 	m->area.setShape( (ComponentRegionShape) index);
