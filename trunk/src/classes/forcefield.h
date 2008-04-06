@@ -75,7 +75,7 @@ class ForcefieldAtom
 	// Original atomtype string used to create the atomtype
 	Dnchar atomTypeString_;
 	// Atomtype description
-	Atomtype atomType_;
+	Atomtype atomtype_;
 	// Parameter data
 	ForcefieldParams params_;
 	// Generator data (if present in a rule-based Forcefield)
@@ -118,7 +118,7 @@ class ForcefieldAtom
 	// Returns the description of the type
 	const char *description();
 	// Returns the atomtype description
-	Atomtype *atomType();
+	Atomtype *atomtype();
 	// Returns ForcefieldParams structure
 	ForcefieldParams &params();
 	// Set generator data

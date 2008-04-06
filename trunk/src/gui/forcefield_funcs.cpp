@@ -77,7 +77,7 @@ void AtenForm::refreshForcefieldTypeList()
 	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
 	for (ForcefieldAtom *ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 	{
-		if (ffa->atomType()->characterElement() != typelist_element) continue;
+		if (ffa->atomtype()->characterElement() != typelist_element) continue;
 		ui.FFTypeTable->setRowCount(count+1);
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFTypeTable->setItem(count, 0, item);
@@ -243,7 +243,7 @@ void AtenForm::on_ManualTypeTestButton_clicked(bool checked)
 	if (ffa != NULL)
 	{
 		Model *m = master.currentModel();
-		Atomtype *at = ffa->atomType();
+		Atomtype *at = ffa->atomtype();
 		if (m->autocreatePatterns())
 		{
 			msg(Debug::None,"Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());

@@ -135,6 +135,7 @@ void AtenForm::executeCommand()
 	if (parser.nArgs() == 0) return;
 	if (master.tempScript.cacheCommand()) master.tempScript.execute(NULL);
 	commandEdit_->setText("");
+	gui.mainView.postRedisplay();
 }
 
 // Cancel progress indicator

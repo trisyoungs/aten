@@ -18,6 +18,7 @@ ttreewidgetitem.h
 tlistwidgetitem.h 
 mainwindow_funcs.cpp 
 mainwindow_init.cpp 
+loadmodel_funcs.cpp
 input.cpp 
 analyse_funcs.cpp 
 atomlist_funcs.cpp 
@@ -48,6 +49,7 @@ ffeditor_funcs.cpp
 
 SET(pro_MOC_HDRS
  ffeditor.h
+ loadmodel.h
  mainwindow.h 
  prefs.h 
  ttabbar.uih 
@@ -59,6 +61,7 @@ QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
 
 SET(pro_UIS
   ffeditor.ui
+  loadmodel.ui
   mainwindow.ui
   prefs.ui
 )

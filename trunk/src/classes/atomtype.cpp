@@ -489,9 +489,9 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			ffa = rd->item;
 			//printf("CHECKING FOR EXACT TYPE (ffid=%i, name=%s)\n",ffa->get_ffid(),ffa->name());
 			// Check element of type first....
-			if (i->element() != ffa->atomType()->characterElement()) continue;
+			if (i->element() != ffa->atomtype()->characterElement()) continue;
 			// Does this atom match the type descriptions asked for?
-			n = rd->item->atomType()->matchAtom(i,ringdata,parent,topatom);
+			n = rd->item->atomtype()->matchAtom(i,ringdata,parent,topatom);
 			if (n > 0)
 			{
 				found = TRUE;

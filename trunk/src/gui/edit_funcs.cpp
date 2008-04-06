@@ -177,3 +177,23 @@ void AtenForm::on_AddHydrogenButton_clicked(bool on)
 	m->endUndostate();
 	gui.modelChanged();
 }
+
+void AtenForm::on_AddAtomButton_clicked(bool on)
+{
+	static char s[256];
+	int el;
+	Vec3<double> newpos;
+	newpos.set(ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+	Model *m = master.currentModel()->renderSource();
+	if (ui.AddAtomFractionalCheck->isChecked())
+	{
+		sprintf(s,"Add Atom (%s at {%f, %f, %f}, frac)", elements.symbol(master.sketchElement()), newpos.x, newpos.y, newpos.z);
+		if (m->cell()->type() == Cell::NoCell) msg(Debug::None,"Warning: No unit cell present - atom added with supplied coordinates.\n");
+		else newpos = m->cell()->fracToReal(newpos);
+	}
+	else sprintf(s,"Add Atom (%s at {%f, %f, %f})", elements.symbol(master.sketchElement()), newpos.x, newpos.y, newpos.z);
+	m->beginUndostate(s);
+	m->addAtom(master.sketchElement(), newpos);
+	m->endUndostate();
+	gui.modelChanged();
+}

@@ -187,9 +187,9 @@ bool Forcefield::readTypes(ifstream &fffile)
 		ffa->setTypeId(newffid);
 		ffa->setName(parser.argc(1));
 		ffa->setEquivalent(parser.argc(1));
-		ffa->atomType()->setCharacterElement(elements.find(parser.argc(2),Prefs::AlphaZmap));
+		ffa->atomtype()->setCharacterElement(elements.find(parser.argc(2),Prefs::AlphaZmap));
 		ffa->setDescription(parser.argc(4));
-		ffa->atomType()->expand(parser.argc(3),this,ffa);
+		ffa->atomtype()->expand(parser.argc(3),this,ffa);
 	} while (!done);
 	if (types_.nItems() == 1)
 	{

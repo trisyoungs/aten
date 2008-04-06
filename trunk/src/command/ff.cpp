@@ -144,7 +144,7 @@ int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 			Atom *i = obj.m->atomArray()[c->argi(1)-1];
 			int el = i->element();
 			Pattern *p = obj.m->pattern(i);
-			int score = ffa->atomType()->matchAtom(i,p->ringList(),obj.m,i);
+			int score = ffa->atomtype()->matchAtom(i,p->ringList(),obj.m,i);
 			if (score != 0) msg(Debug::None,"Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
 			else msg(Debug::None,"Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
 		}
