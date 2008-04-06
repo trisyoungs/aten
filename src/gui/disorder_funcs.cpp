@@ -26,6 +26,10 @@
 #include "gui/ttablewidgetitem.h"
 #include "model/model.h"
 
+// Local variables
+Reflist<Model, int> componentList;
+bool listRefreshing = FALSE;
+
 void AtenForm::on_ComponentCentreXSpin_valueChanged(double d)
 {
 	setComponentCoords(0,0,d);
@@ -59,19 +63,24 @@ void AtenForm::on_ComponentSizeZSpin_valueChanged(double d)
 void AtenForm::refreshDisorderPage()
 {
 	if (!gui.exists()) return;
+	listRefreshing = TRUE;
 	// (De)sensitize controls
 	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == Cell::NoCell);
 	// Update model (component) list
-	TTableWidgetItem *item;
+	TTableWidgetItem *item, *firstitem;
 	//ui.ComponentTable->setCurrentRow(-1);
 	ui.ComponentTable->clear();
+	componentList.clear();
+	ui.ComponentTable->setHorizontalHeaderLabels(QStringList() << "N" << "R" << "T" << "Model");
 	int count = 0;
 	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != Cell::NoCell) continue;
-		count ++;
+		// Add model to reflist
+		componentList.add(m,0);
 		// Number requested
 		item = new TTableWidgetItem();
+		if (count == 0) firstitem = item;
 		item->setText(itoa(m->nRequested()));
 		item->setModel(m);
 		ui.ComponentTable->setItem(count, 0, item);
@@ -90,12 +99,16 @@ void AtenForm::refreshDisorderPage()
 		item->setText(m->name());
 		item->setModel(m);
 		ui.ComponentTable->setItem(count, 3, item);
-
-		//item = new QListWidgetItem(ui.ComponentList);
-		//item->setText(m->name());
+		count ++;
 	}
+	ui.ComponentTable->setRowCount(count);
+	ui.ComponentTable->resizeColumnToContents(0);
+	ui.ComponentTable->resizeColumnToContents(1);
+	ui.ComponentTable->resizeColumnToContents(2);
+	ui.ComponentTable->resizeColumnToContents(3);
 	// Select the last component in the list
-	//ui.ComponentList->setCurrentRow(master.nModels()-1);
+	ui.ComponentTable->setCurrentItem(firstitem);
+	listRefreshing = FALSE;
 	refreshComponentData();
 }
 
@@ -104,7 +117,7 @@ void AtenForm::refreshComponentData()
 	// Get current component
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
-	Model *m = master.model(comp);
+	Model *m = componentList[comp]->item;
 	// Set controls
 	//ui.PopulationSpin->setValue(m->nRequested());
 	//ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
@@ -127,7 +140,7 @@ void AtenForm::setComponentCoords(int centsize, int element, double value)
 	static Vec3<double> v;
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
-	Model *m = master.model(comp);
+	Model *m = componentList[comp]->item;
 	if (centsize == 0)
 	{
 		v = m->area.centre();
@@ -146,6 +159,30 @@ void AtenForm::setComponentCoords(int centsize, int element, double value)
 void AtenForm::on_ComponentTable_itemSelectionChanged()
 {
 	refreshComponentData();
+}
+
+void AtenForm::on_ComponentTable_itemChanged(QTableWidgetItem *item)
+{
+	if (!gui.exists() || listRefreshing) return;
+	printf("This item was in column %i\n",ui.ComponentTable->column(item));
+	int column = ui.ComponentTable->column(item);
+	Model *m;
+	m = ((TTableWidgetItem*) item)->model();
+	switch (column)
+	{
+		// NRequested
+		case (0):
+			m->setNRequested(atoi(qPrintable(item->text())));
+			break;
+		// Allow rotate
+		case (1):
+			m->setMoveAllowed(MonteCarlo::Rotate, (item->checkState() == Qt::Checked ? TRUE : FALSE));
+			break;
+		// Allow translate
+		case (2):
+			m->setMoveAllowed(MonteCarlo::Translate, (item->checkState() == Qt::Checked ? TRUE : FALSE));
+			break;
+	}
 }
 
 /* void AtenForm::on_PopulationSpin_valueChanged(int value)

@@ -198,7 +198,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>1</number>
+       <number>6</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -4286,12 +4286,35 @@
            </property>
            <item>
             <widget class="QTableWidget" name="ComponentTable" >
+             <property name="editTriggers" >
+              <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::NoEditTriggers</set>
+             </property>
              <property name="selectionMode" >
               <enum>QAbstractItemView::SingleSelection</enum>
              </property>
              <property name="selectionBehavior" >
               <enum>QAbstractItemView::SelectRows</enum>
              </property>
+             <column>
+              <property name="text" >
+               <string>New Column</string>
+              </property>
+             </column>
+             <column>
+              <property name="text" >
+               <string>New Column</string>
+              </property>
+             </column>
+             <column>
+              <property name="text" >
+               <string>New Column</string>
+              </property>
+             </column>
+             <column>
+              <property name="text" >
+               <string>New Column</string>
+              </property>
+             </column>
             </widget>
            </item>
            <item>

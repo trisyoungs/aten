@@ -318,7 +318,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 		case (FT_MODEL_IMPORT):
 			msg(Debug::None,"Load Model : %s (%s)\n", filename, name_.get());
 			// Reset reserved variables
-			commands_.variables.set("title","Unnamed");
+			commands_.variables.set("title",filename);
 			// Open file and set target
 			if (!commands_.setInputFile(filename))
 			{
