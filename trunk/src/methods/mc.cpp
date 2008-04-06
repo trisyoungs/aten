@@ -501,8 +501,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							v = r->randomCoords(cell,components);
 							destmodel->positionMolecule(p,mol,v); 
 							// Only rotate the new molecule if the component allows it
-							// TODO if (!comp->get_moveAllowed_(MonteCarlo::Rotate)) break;
-							if (moveAllowed_[MonteCarlo::Rotate])
+							if (c->isMoveAllowed(MonteCarlo::Rotate))
 							{
 								phi = csRandom() * 360.0;
 								theta = csRandom() * 360.0;
@@ -677,10 +676,10 @@ bool MonteCarlo::disorder(Model *destmodel)
 	destmodel->foldAllAtoms();
 	destmodel->calculateMass();
 	destmodel->calculateDensity();
-	if (destmodel->arePatternsValid()) printf("PAtterns are valid...\n");
-	else printf("Patterns are NOT valid.\n");
-	if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
-	else printf("Expression is NOT valid.\n");
+	//if (destmodel->arePatternsValid()) printf("Patterns are valid...\n");
+	//else printf("Patterns are NOT valid.\n");
+	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
+	//else printf("Expression is NOT valid.\n");
 	//destmodel->logChange(LOG_COORDS);
 	gui.mainWindow->refreshDisorderPage();
 	gui.modelChanged();
