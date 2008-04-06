@@ -31,6 +31,7 @@ const char *ftoa(double);
 const char *ftoa(double, const char*);
 
 // String functions
+const char *getPath(const char*);
 const char *removePath(const char*);
 const char *upperCase(const char*);
 const char *lowerCase(const char*);

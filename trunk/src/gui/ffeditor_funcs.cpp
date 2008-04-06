@@ -21,7 +21,6 @@
 
 #include "gui/ffeditor.h"
 #include "base/elements.h"
-//#include <QtGui/QDialog>
 #include "classes/forcefield.h"
 
 // Constructor
@@ -59,7 +58,7 @@ void AtenEdit::populate(Forcefield *ff)
 
 	// Types List
 	count = 0;
-	ui.FFEditorTypesTable->setRowCount(ff->nTypes()+1);
+	ui.FFEditorTypesTable->setRowCount(ff->nTypes());
 	ui.FFEditorTypesTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "El" << "Name" << "Equiv" << "Description");
 	for (ForcefieldAtom *ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 	{

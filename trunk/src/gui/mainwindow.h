@@ -404,6 +404,7 @@ class AtenForm : public QMainWindow
 	void setComponentCoords(int centsize, int element, double value);
 	private slots:
 	void on_ComponentTable_itemSelectionChanged();
+	void on_ComponentTable_itemChanged(QTableWidgetItem *item);
 	//void on_PopulationSpin_valueChanged(int value);
 	//void on_ComponentTranslateCheck_clicked(bool checked);
 	//void on_ComponentRotateCheck_clicked(bool checked);
