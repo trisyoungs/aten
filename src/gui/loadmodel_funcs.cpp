@@ -28,6 +28,16 @@ AtenLoadModel::AtenLoadModel(QDialog *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 	currentDirectory_ = master.workDir.get();
+	selectedFilter_ = NULL;
+}
+
+// Set controls
+void AtenLoadModel::setControls()
+{
+	ui.LoadModelRebondCombo->setCurrentIndex( prefs.bondOnLoad() );
+	ui.LoadModelCentreCombo->setCurrentIndex( prefs.centreOnLoad() );
+	ui.LoadModelFoldCombo->setCurrentIndex( prefs.foldOnLoad() );
+	ui.LoadModelPackCombo->setCurrentIndex( prefs.packOnLoad() );
 }
 
 // Finalise GUI
@@ -58,6 +68,7 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	// Find the corresponding Aten filter that was selected
 	for (f = master.filters(FT_MODEL_IMPORT); f != NULL; f = f->next)
 		if (strcmp(f->description(),qPrintable(selFilter)) == 0) break;
+	printf("SLECAEKJHSSDKJ %li\n",selectedFilter_);
 	selectedFilter_ = f;
 }
 
@@ -71,4 +82,24 @@ Filter *AtenLoadModel::selectedFilter()
 const char *AtenLoadModel::selectedFilename()
 {
 	return selectedFilename_.get();
+}
+
+void AtenLoadModel::on_LoadModelRebondCombo_activated(int index)
+{
+	prefs.setBondOnLoad( (Prefs::FilterSwitch) index );
+}
+
+void AtenLoadModel::on_LoadModelFoldCombo_activated(int index)
+{
+	prefs.setFoldOnLoad( (Prefs::FilterSwitch) index );
+}
+
+void AtenLoadModel::on_LoadModelPackCombo_activated(int index)
+{
+	prefs.setPackOnLoad( (Prefs::FilterSwitch) index );
+}
+
+void AtenLoadModel::on_LoadModelCentreCombo_activated(int index)
+{
+	prefs.setCentreOnLoad( (Prefs::FilterSwitch) index );
 }

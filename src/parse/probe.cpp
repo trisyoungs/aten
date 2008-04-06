@@ -39,6 +39,12 @@ Filter *Master::probeFile(const char *filename, FilterType probetype)
 		dbgEnd(Debug::Calls,"Master::probeFile");
 		return NULL;
 	}
+	if (filename[0] == '\0')
+	{
+		msg(Debug::None,"Filename is empty.\n");
+		dbgEnd(Debug::Calls,"Master::probeFile");
+		return NULL;
+	}
 	probefile.close();
 	int n;
 	char *dotpos;

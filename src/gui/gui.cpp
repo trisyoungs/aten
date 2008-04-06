@@ -79,8 +79,8 @@ void GuiQt::run(int argc, char **argv)
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
-	editDialog->finaliseUi();
-	loadModelDialog->finaliseUi();
+	editDialog->setControls();
+	loadModelDialog->setControls();
 
 	// Show the widgets in the GUI and flag it as existing
 	mainWindow->show();
