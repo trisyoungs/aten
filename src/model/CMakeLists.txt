@@ -4,6 +4,7 @@ atom.cpp
 bond.cpp 
 build.cpp 
 cell.cpp 
+component.cpp
 energy.cpp 
 expression.cpp 
 glyph.cpp

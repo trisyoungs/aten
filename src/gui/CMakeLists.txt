@@ -41,6 +41,7 @@ fileactions.cpp
 prefs_funcs.cpp 
 gui.cpp 
 tlistwidgetitem_funcs.cpp 
+ttablewidgetitem_funcs.cpp 
 tcanvas_funcs.cpp 
 tcolourframe_funcs.cpp 
 ttreewidgetitem_funcs.cpp 
