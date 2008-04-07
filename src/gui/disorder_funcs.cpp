@@ -67,7 +67,7 @@ void AtenForm::refreshDisorderPage()
 	// (De)sensitize controls
 	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == Cell::NoCell);
 	// Update model (component) list
-	TTableWidgetItem *item, *firstitem;
+	TTableWidgetItem *item, *firstitem = NULL;
 	//ui.ComponentTable->setCurrentRow(-1);
 	ui.ComponentTable->clear();
 	componentList.clear();

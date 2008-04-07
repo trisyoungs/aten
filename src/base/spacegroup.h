@@ -30,10 +30,6 @@
 class Spacegroup
 {
 	public:
-	// Destructor
-	~Spacegroup();
-
-	public:
 	// Name of the spacegroup (plaintext)
 	const char *name;
 	// Name of the spacegroup (formatted)

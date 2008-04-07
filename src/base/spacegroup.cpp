@@ -22,11 +22,6 @@
 #include "base/master.h"
 #include "base/spacegroup.h"
 
-// Destructors
-Spacegroup::~Spacegroup()
-{
-}
-
 // Define spacegroups and their symmetry generators
 Spacegroup Master::spacegroups[] = {
 	{ "None",	"None",			  0},	//   0 (no spacegroup)
