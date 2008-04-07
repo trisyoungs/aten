@@ -148,7 +148,7 @@ class Model
 	
 	public:
 	// Create a new atom
-	Atom *addAtom(int el, Vec3<double> r);
+	Atom *addAtom(short int el, Vec3<double> r);
 	// Create copy of supplied atom
 	Atom *addCopy(Atom *source);
 	// Create copy of supplied atom at the specified position
@@ -168,7 +168,7 @@ class Model
 	// Delete all atoms in the model
 	void clearAtoms();
 	// Perform alchemy on an atom
-	void transmuteAtom(Atom *target, int element);
+	void transmuteAtom(Atom *target, short int element);
 	// Renumber atoms in the model
 	void renumberAtoms(Atom *from = NULL);
 	// Reset tempi values of all atoms

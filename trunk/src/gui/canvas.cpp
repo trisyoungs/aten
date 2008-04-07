@@ -55,13 +55,13 @@ void Canvas::setName(const char *s)
 }
 
 // Return the current height of the drawing area
-float Canvas::height()
+double Canvas::height()
 {
 	return height_;
 }
 
 // Return the current width of the drawing area
-float Canvas::width()
+double Canvas::width()
 {
 	return width_;
 }
@@ -227,8 +227,8 @@ void Canvas::initGl()
 			glFogfv(GL_FOG_COLOR, prefs.penColour(Prefs::BackgroundColour));
 			glFogf(GL_FOG_DENSITY, 0.35f);
 			glHint(GL_FOG_HINT, GL_NICEST);
-			glFogf(GL_FOG_START,prefs.fogNear());
-			glFogf(GL_FOG_END,prefs.fogFar());
+			glFogi(GL_FOG_START,prefs.fogNear());
+			glFogi(GL_FOG_END,prefs.fogFar());
 			glEnable(GL_FOG);
 		}
 		else glDisable(GL_FOG);
@@ -249,10 +249,9 @@ void Canvas::createLists()
 	if (!isValid()) return;
 	dbgBegin(Debug::Calls,"Canvas::createLists");
 
-	int n,m, atomdetail, ticks, extent;
+	int n,m, ticks, extent;
 	double delta, tickdelta, tickheight, ticktop, tickbottom, spacing;
 	// Grab some oft-used values
-	atomdetail = prefs.atomDetail();
 	spacing = prefs.guideSpacing();
 	extent = prefs.guideExtent();
 	ticks = prefs.guideTicks();
@@ -279,9 +278,9 @@ void Canvas::createLists()
 	// Stick Atom (for DS_STICK)
 	glNewList(list_[GLOB_STICKATOM],GL_COMPILE);
 	  glBegin(GL_LINES);
-	    glVertex3f(-0.5f,0.0f,0.0f); glVertex3f(0.5f,0.0f,0.0f);
-	    glVertex3f(0.0f,-0.5f,0.0f); glVertex3f(0.0f,0.5f,0.0f);
-	    glVertex3f(0.0f,0.0f,-0.5f); glVertex3f(0.0f,0.0f,0.5f);
+	    glVertex3d(-0.5,0.0,0.0); glVertex3d(0.5,0.0,0.0);
+	    glVertex3d(0.0,-0.5,0.0); glVertex3d(0.0,0.5,0.0);
+	    glVertex3d(0.0,0.0,-0.5); glVertex3d(0.0,0.0,0.5);
 	  glEnd();
 	glEndList();
 	// Atom Sphere (for DS_TUBE)
@@ -343,10 +342,10 @@ void Canvas::createLists()
 	    glVertex3f(0.0f,0.75f,0.0f); glVertex3f(0.05f,0.85f,0.0f);
 	    glVertex3f(0.0f,0.75f,0.0f); glVertex3f(-0.05f,0.85f,0.0f);
 	    // Z
-	    glVertex3f(0.0f,0.0f,0.6f); glVertex3f(0.0f,0.0f,0.0f);
-	    glVertex3f(-0.05f,0.0f,0.65f); glVertex3f(0.05f,0.0f,0.65f);
-	    glVertex3f(0.05f,0.0f,0.65f); glVertex3f(-0.05f,0.0f,0.85f);
-	    glVertex3f(-0.05f,0.0f,0.85f); glVertex3f(0.05f,0.0f,0.85f);
+	    glVertex3d(0.0f,0.0f,0.6f); glVertex3d(0.0f,0.0f,0.0f);
+	    glVertex3d(-0.05f,0.0f,0.65f); glVertex3d(0.05f,0.0f,0.65f);
+	    glVertex3d(0.05f,0.0f,0.65f); glVertex3d(-0.05f,0.0f,0.85f);
+	    glVertex3d(-0.05f,0.0f,0.85f); glVertex3d(0.05f,0.0f,0.85f);
 	  glEnd();
 	  glSphere(0.5, FALSE);
 	glEndList();
@@ -359,9 +358,11 @@ void Canvas::createLists()
 	    for (n=-extent; n<=extent; n++)
 	    {
 		// Horizontal gridlines
-	  	glVertex3f(-delta,spacing*n,0.0f); glVertex3f(delta,spacing*n,0.0f);
+	  	glVertex3d(-delta,spacing*n,0.0f);
+		glVertex3d(delta,spacing*n,0.0f);
 		// Vertical gridlines
-	  	glVertex3f(spacing*n,-delta,0.0f); glVertex3f(spacing*n,delta,0.0f);
+	  	glVertex3d(spacing*n,-delta,0.0f);
+		glVertex3d(spacing*n,delta,0.0f);
 		// Tick marks
 		n == -extent ? tickbottom = spacing*n : tickbottom = spacing*n-tickheight;
 		n == extent ? ticktop = spacing*n : ticktop = spacing*n+tickheight;
@@ -369,23 +370,24 @@ void Canvas::createLists()
 			if (m % ticks != 0)
 			{
 				// Ticks on horizontal gridlines
-				glVertex3f(-delta+m*tickdelta,ticktop,0.0f);
-				glVertex3f(-delta+m*tickdelta,tickbottom,0.0f);
+				glVertex3d(-delta+m*tickdelta,ticktop,0.0f);
+				glVertex3d(-delta+m*tickdelta,tickbottom,0.0f);
 				// Ticks on vertical gridlines
-				glVertex3f(ticktop,-delta+m*tickdelta,0.0f);
-				glVertex3f(tickbottom,-delta+m*tickdelta,0.0f);
+				glVertex3d(ticktop,-delta+m*tickdelta,0.0f);
+				glVertex3d(tickbottom,-delta+m*tickdelta,0.0f);
 			}
 	    }
 	  glEnd();
 	glEndList();
 	// Unit Circle
 	int nsegs = 36;
+	double degInRad;
 	glNewList(list_[GLOB_CIRCLE],GL_COMPILE);
 	  glBegin(GL_LINE_LOOP);
 	    for (int i=0; i < nsegs; i++)
 	    {
-		float degInRad = i*(360.0/nsegs)/DEGRAD;
-		glVertex2f(cos(degInRad),sin(degInRad));
+		degInRad = i*(360.0/nsegs)/DEGRAD;
+		glVertex2d(cos(degInRad), sin(degInRad));
 	    }
 	  glEnd();
 	glEndList();

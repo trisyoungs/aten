@@ -38,7 +38,7 @@ int Model::nAtoms()
 }
 
 // Add atom
-Atom *Model::addAtom(int newel, Vec3<double> pos)
+Atom *Model::addAtom(short int newel, Vec3<double> pos)
 {
 	dbgBegin(Debug::Calls,"Model::addAtom");
 	Atom *newatom = atoms_.add();
@@ -149,13 +149,13 @@ void Model::deleteAtom(Atom *xatom)
 }
 
 // Transmute atom
-void Model::transmuteAtom(Atom *i, int el)
+void Model::transmuteAtom(Atom *i, short int el)
 {
 	dbgBegin(Debug::Calls,"Model::transmuteAtom");
 	if (i == NULL) msg(Debug::None,"No atom to transmute.\n");
 	else
 	{
-		int oldel = i->element();
+		short int oldel = i->element();
 		if (oldel != el)
 		{
 			mass_ -= elements.atomicMass(i);

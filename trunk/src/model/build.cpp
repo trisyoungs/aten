@@ -35,7 +35,7 @@ void Model::hydrogenSatisfy(Atom *target)
 	Atom *i, *endatom;
 	i = (target == NULL ? atoms_.first() : target);
 	endatom = (target == NULL ? NULL : target->next);
-	for (i; i != endatom; i = i->next)
+	for (i = i; i != endatom; i = i->next)
 	{
 		// Step 1 - Work out how many single-bonds (i.e. hydrogens) we need to add to satisfy the atom's valency
 		// Calculate total bond order of atom and work out single bond deficit
@@ -65,7 +65,7 @@ void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 	Atom *a1, *a2, *a3;
 	Atom *newh;
 	Vec3<double> mim_a1, mim_a2, mim_a3, perp, perp2, newhpos, tempv;
-	double bondlength = 1.08, theta, tets;
+	double bondlength = 1.08, theta;
 	int minel, onebelow, oneabove;
 	Refitem<Bond,int> *firstbond;
 	// Add new hydrogens based on the geometry type, and then work out from what bonds there are already...

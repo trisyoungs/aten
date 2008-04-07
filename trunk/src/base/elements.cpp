@@ -333,9 +333,15 @@ int ElementMap::alphaToZ(const char *s)
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
 		if (s[n] > 64 && s[n] < 91)
-{ cleaned[len] = s[n]; len++; }
+		{
+			cleaned[len] = s[n];
+			len++;
+		}
 		else if (s[n] > 96 && s[n] < 123)
-{ cleaned[len] = toupper(s[n]); len++; }
+		{
+			cleaned[len] = toupper(s[n]);
+			len++;
+		}
 		else if (s[n] == '_') break;
 	cleaned[len] = '\0';
 	for (n=0; n<nElements_; n++)
@@ -383,9 +389,15 @@ int ElementMap::nameToZ(const char *s)
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
 		if (s[n] > 64 && s[n] < 91)
-{ cleaned[len] = s[n]; len++; }
+		{
+			cleaned[len] = s[n];
+			len++;
+		}
 		else if (s[n] > 96 && s[n] < 123)
-{ cleaned[len] = toupper(s[n]); len++; }
+		{
+			cleaned[len] = toupper(s[n]);
+			len++;
+		}
 		else if (s[n] == '_') break;
 	cleaned[len] = '\0';
 	for (n=0; n<nElements_; n++)

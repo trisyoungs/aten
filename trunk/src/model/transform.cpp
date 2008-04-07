@@ -47,7 +47,6 @@ void Model::prepareTransform()
 	// the centre of geometry. Then, mim every other selected atom so that the
 	// atomic positions are all minimum image to the reference (so transforms
 	// work properly in periodic systems). We re-fold the positions on mouse-up.
-	int nadded;
 	// Return if no cog could be defined (i.e. no atoms selected)
 	dbgBegin(Debug::Calls,"Model::prepareTransform");
 	if (nSelected_ < 1)
@@ -99,7 +98,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	// We then apply this to the stored *world* coordinates of 
 	// the selected atoms, which we then unproject to get the new model coordinates.
 	dbgBegin(Debug::Calls,"Model::rotateSelectionWorld");
-	static double rotx, roty, theta, cosx, cosy, sinx, siny;
+	static double rotx, roty, cosx, cosy, sinx, siny;
 	static Vec3<double> newr;
 	static Mat3<double> rotmat;
 	rotx = dy / 10.0;
@@ -131,7 +130,6 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	dbgBegin(Debug::Calls,"Model::rotateSelectionVector");
 	static Mat3<double> r, u, ut, gr, Igr;
 	Vec3<double> tempv;
-	int n,m,o;
 	Atom *i = firstSelected();
 	if (i == NULL)
 	{
@@ -179,7 +177,7 @@ void Model::rotateSelectionZaxis(double dz)
 {
 	// Rotate about the perceived z-axis by changing the up vector of the camera.
 	dbgBegin(Debug::Calls,"Model::rotateSelectionZaxis");
-	//GLdouble newx, newy;
+	//GLdouble newx, newy;   TODO
 	//dx = (dx / DEGRAD ) * 2.0f;
 	//master.activemodel->adjust_camera(0.0,0.0,0.0,dx);
 	//master.activemodel->mmatTransform_all();

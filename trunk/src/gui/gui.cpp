@@ -305,7 +305,7 @@ int GuiQt::userQuestion(const char *s, const char *t)
 void GuiQt::printMessage(const char *s)
 {
 	static char str[8096];
-	static int n, len;
+	static int n;
 	if (!doesExist_) return;
 	// Remove the '\n' from the end of s (if it has one)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
