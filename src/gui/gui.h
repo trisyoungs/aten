@@ -30,6 +30,7 @@ class AtenForm;
 class AtenPrefs;
 class AtenEdit;
 class AtenLoadModel;
+class AtenSelectPattern;
 class Atom;
 class Model;
 class Forcefield;
@@ -142,6 +143,8 @@ class GuiQt
 	AtenEdit *editDialog;
 	// Load model dialog
 	AtenLoadModel *loadModelDialog;
+	// Select pattern dialog
+	AtenSelectPattern *selectPatternDialog;
 	// Call the atompopup menu
 	void callAtomPopup(Atom*, int, int);
 	// Main view

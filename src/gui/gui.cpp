@@ -25,6 +25,7 @@
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
+#include "gui/selectpattern.h"
 #include "gui/ffeditor.h"
 #include "model/model.h"
 #include <QtGui/QMessageBox>
@@ -39,6 +40,8 @@ GuiQt::GuiQt()
 {
 	mainWindow = NULL;
 	prefsDialog = NULL;
+	loadModelDialog = NULL;
+	selectPatternDialog = NULL;
 	doesExist_ = FALSE;
 	isAvailable_ = FALSE;
 	NORENDER_ = FALSE;
@@ -60,11 +63,13 @@ void GuiQt::run(int argc, char **argv)
 	prefsDialog = new AtenPrefs;
 	editDialog = new AtenEdit;
 	loadModelDialog = new AtenLoadModel;
+	selectPatternDialog = new AtenSelectPattern;
 
 	// Set the modality of child windows
 	prefsDialog->setModal(TRUE);
 	editDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
+	selectPatternDialog->setModal(TRUE);
 
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
 	gui.mainView.setWidget(mainWindow->ui.ModelView);	
@@ -75,12 +80,14 @@ void GuiQt::run(int argc, char **argv)
 	prefsDialog->finaliseUi();
 	editDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
+	selectPatternDialog->finaliseUi();
 
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
 	editDialog->setControls();
 	loadModelDialog->setControls();
+	selectPatternDialog->setControls();
 
 	// Show the widgets in the GUI and flag it as existing
 	mainWindow->show();

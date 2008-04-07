@@ -198,7 +198,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>6</number>
+       <number>7</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -4650,7 +4650,7 @@
       <widget class="QWidget" name="FFPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
-         <number>0</number>
+         <number>2</number>
         </property>
         <property name="spacing" >
          <number>4</number>
@@ -4791,38 +4791,45 @@
               </sizepolicy>
              </property>
              <property name="title" >
-              <string>Associate</string>
+              <string>Associate To</string>
              </property>
-             <layout class="QGridLayout" >
+             <layout class="QHBoxLayout" >
               <property name="margin" >
                <number>2</number>
               </property>
               <property name="spacing" >
                <number>4</number>
               </property>
-              <item row="1" column="1" colspan="2" >
-               <widget class="QComboBox" name="FFPatternCombo" />
-              </item>
-              <item row="1" column="0" >
-               <widget class="QPushButton" name="AssignFFToPatternButton" >
-                <property name="text" >
-                 <string>To Pattern</string>
+              <item>
+               <layout class="QHBoxLayout" >
+                <property name="margin" >
+                 <number>0</number>
                 </property>
-               </widget>
-              </item>
-              <item row="0" column="0" colspan="2" >
-               <widget class="QPushButton" name="AssignFFToCurrentButton" >
-                <property name="text" >
-                 <string>To Model</string>
+                <property name="spacing" >
+                 <number>6</number>
                 </property>
-               </widget>
-              </item>
-              <item row="0" column="2" >
-               <widget class="QPushButton" name="AssignFFToAllButton" >
-                <property name="text" >
-                 <string>To All</string>
-                </property>
-               </widget>
+                <item>
+                 <widget class="QPushButton" name="AssignFFToCurrentButton" >
+                  <property name="text" >
+                   <string>Model</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="AssignFFToAllButton" >
+                  <property name="text" >
+                   <string>All</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="AssignFFToPatternButton" >
+                  <property name="text" >
+                   <string>Pattern</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
               </item>
              </layout>
             </widget>
@@ -6579,7 +6586,7 @@
      <x>0</x>
      <y>0</y>
      <width>745</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="EditMenu" >
@@ -6650,11 +6657,44 @@
     <addaction name="separator" />
     <addaction name="actionAtomHide" />
    </widget>
+   <widget class="QMenu" name="FileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="RecentMenu" >
+     <property name="title" >
+      <string>&amp;Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="actionFileNew" />
+    <addaction name="actionFileOpen" />
+    <addaction name="RecentMenu" />
+    <addaction name="separator" />
+    <addaction name="actionFileAddTrajectory" />
+    <addaction name="actionFileSave" />
+    <addaction name="actionFileSaveAs" />
+    <addaction name="actionFileSaveExpression" />
+    <addaction name="separator" />
+    <addaction name="actionFileOpenForcefield" />
+    <addaction name="actionFileOpenGrid" />
+    <addaction name="separator" />
+    <addaction name="actionFileSaveImage" />
+    <addaction name="separator" />
+    <addaction name="actionFileQuit" />
+   </widget>
+   <widget class="QMenu" name="ScriptsMenu" >
+    <property name="title" >
+     <string>Scripts</string>
+    </property>
+    <addaction name="actionLoadScript" />
+    <addaction name="separator" />
+   </widget>
    <widget class="QMenu" name="ModelMenu" >
     <property name="title" >
      <string>&amp;Model</string>
     </property>
-    <addaction name="actionFFManager" />
+    <addaction name="actionModelRename" />
+    <addaction name="separator" />
     <addaction name="actionFFType" />
     <addaction name="actionFFUntype" />
     <addaction name="separator" />
@@ -6719,38 +6759,6 @@
     <addaction name="separator" />
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
-   </widget>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="RecentMenu" >
-     <property name="title" >
-      <string>&amp;Recent Files</string>
-     </property>
-    </widget>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="RecentMenu" />
-    <addaction name="separator" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="actionFileSaveExpression" />
-    <addaction name="separator" />
-    <addaction name="actionFileOpenForcefield" />
-    <addaction name="actionFileOpenGrid" />
-    <addaction name="separator" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
-   </widget>
-   <widget class="QMenu" name="ScriptsMenu" >
-    <property name="title" >
-     <string>Scripts</string>
-    </property>
-    <addaction name="actionLoadScript" />
-    <addaction name="separator" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -7369,11 +7377,6 @@
     <string>Forces</string>
    </property>
   </action>
-  <action name="actionFFManager" >
-   <property name="text" >
-    <string>Choose Forcefield</string>
-   </property>
-  </action>
   <action name="actionFFType" >
    <property name="text" >
     <string>Perform Typing</string>
@@ -7873,6 +7876,11 @@
   <action name="actionLoadScript" >
    <property name="text" >
     <string>Load Script</string>
+   </property>
+  </action>
+  <action name="actionModelRename" >
+   <property name="text" >
+    <string>Rename</string>
    </property>
   </action>
  </widget>

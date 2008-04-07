@@ -19,6 +19,7 @@ tlistwidgetitem.h
 mainwindow_funcs.cpp 
 mainwindow_init.cpp 
 loadmodel_funcs.cpp
+selectpattern_funcs.cpp
 input.cpp 
 analyse_funcs.cpp 
 atomlist_funcs.cpp 
@@ -50,6 +51,7 @@ ffeditor_funcs.cpp
 SET(pro_MOC_HDRS
  ffeditor.h
  loadmodel.h
+ selectpattern.h
  mainwindow.h 
  prefs.h 
  ttabbar.uih 

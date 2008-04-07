@@ -24,6 +24,7 @@
 #include "classes/pattern.h"
 #include "gui/mainwindow.h"
 #include "gui/ffeditor.h"
+#include "gui/selectpattern.h"
 #include "gui/tlistwidgetitem.h"
 #include "gui/gui.h"
 #include "model/model.h"
@@ -150,29 +151,6 @@ void AtenForm::on_EditForcefieldButton_clicked(bool checked)
 	gui.editDialog->show();
 }
 
-// Update the list of model patterns
-void AtenForm::refreshForcefieldPatterns()
-{
-	// Check to see if we need to update the list
-	static Pattern *firstpattern = NULL;
-	Model *m = master.currentModel();
-	if (m->patterns() == NULL)
-	{
-		// No patterns defined for model. Clear list and disable.
-		ui.FFPatternCombo->clear();
-		ui.FFPatternCombo->setEnabled(FALSE);
-		ui.AssignFFToPatternButton->setEnabled(FALSE);
-	}
-	else if (m->patterns() != firstpattern)
-	{
-		// First pattern pointer differs from model's first pattern, so clear and reload list (unless NULL)
-		ui.FFPatternCombo->clear();
-		for (Pattern *p = m->patterns(); p != NULL; p = p->next) ui.FFPatternCombo->addItem(p->name());
-		ui.FFPatternCombo->setEnabled(TRUE);
-		ui.AssignFFToPatternButton->setEnabled(TRUE);
-	}
-}
-
 // Assign current forcefield to model
 void AtenForm::on_AssignFFToCurrentButton_clicked(bool checked)
 {
@@ -188,7 +166,8 @@ void AtenForm::on_AssignFFToAllButton_clicked(bool checked)
 // Assign current forcefield to pattern
 void AtenForm::on_AssignFFToPatternButton_clicked(bool checked)
 {
-	printf("TODO\n");
+	Pattern *p = gui.selectPatternDialog->selectPattern(master.currentModel());
+	if (p != NULL) p->setForcefield(master.currentForcefield());
 }
 
 // Perform automatic atom typing
