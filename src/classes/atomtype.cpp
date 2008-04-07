@@ -32,14 +32,14 @@ int printlevel = 0;
 
 // Atom typing commands
 const char *AtomtypeCommandKeywords[Atomtype::nAtomtypeCommands] = { "sp", "sp2", "sp3", "aromatic", "ring", "noring", "nbonds", "bond", "n", "os", "nh" };
-Atomtype::AtomtypeCommand ATC_from_text(const char *s)
+Atomtype::AtomtypeCommand Atomtype::atomtypeCommand(const char *s)
 {
 	return (Atomtype::AtomtypeCommand) enumSearch("",Atomtype::nAtomtypeCommands,AtomtypeCommandKeywords,s);
 }
 
 // Ring typing commands
 const char *RingtypeCommandKeywords[Ringtype::nRingtypeCommands] = { "size", "n", "notself" };
-Ringtype::RingtypeCommand RTC_from_text(const char *s)
+Ringtype::RingtypeCommand Ringtype::ringtypeCommand(const char *s)
 {
 	return (Ringtype::RingtypeCommand) enumSearch("",Ringtype::nRingtypeCommands,RingtypeCommandKeywords,s);
 }
@@ -53,7 +53,7 @@ const char *Atomtype::atomEnvironment(Atomtype::AtomEnvironment ae)
 
 // Geometries about atomic centres
 const char *AtomGeometryKeywords[Atomtype::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
-Atomtype::AtomGeometry AG_from_text(const char *s)
+Atomtype::AtomGeometry Atomtype::atomGeometry(const char *s)
 {
 	return (Atomtype::AtomGeometry) enumSearch("atom geometry",Atomtype::nAtomGeometries,AtomGeometryKeywords,s);
 }
@@ -258,7 +258,7 @@ void Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		// Check for keywords (if it wasn't a bound specifier)
 		if (!found)
 		{
-			rtc = RTC_from_text(keywd.get());
+			rtc = Ringtype::ringtypeCommand(keywd.get());
 			// Set 'found' to TRUE - we will set it to FALSE again if we don't recognise the command
 			found = TRUE;
 			switch (rtc)
@@ -343,7 +343,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		// Check for keywords (if it wasn't a bound specifier)
 		if (!found)
 		{
-			atc = ATC_from_text(keywd.get());
+			atc = Atomtype::atomtypeCommand(keywd.get());
 			// Set 'found' to TRUE - we will set it to FALSE again if we don't recognise the command
 			found = TRUE;
 			switch (atc)
@@ -398,7 +398,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		// Check for geometry specifications (if it wasn't a bound specifier or type command)
 		if (!found)
 		{
-			ag = AG_from_text(keywd.get());
+			ag = Atomtype::atomGeometry(keywd.get());
 			if (ag != Atomtype::nAtomGeometries) geometry_ = ag;
 			else
 			{

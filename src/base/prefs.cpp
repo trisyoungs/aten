@@ -108,8 +108,6 @@ Prefs::EnergyUnit Prefs::energyUnit(const char *s)
 const char *ZM_keywords[Prefs::nZmapTypes] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
 Prefs::ZmapType Prefs::zmapType(const char *s)
 	{ return (Prefs::ZmapType) enumSearch("element mapping style",Prefs::nZmapTypes,ZM_keywords,s); }
-const char **get_ZM_keywords()
-	{ return ZM_keywords; }
 
 // View Objects
 const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions" };
@@ -120,8 +118,6 @@ Prefs::ViewObject Prefs::viewObject(const char *s)
 
 // Guide Geometries
 const char *GG_strings[Prefs::nGuideGeometries] = { "Square", "Hexagonal" };
-const char **get_GG_strings()
-	{ return GG_strings; }
 
 // Constructor
 Prefs::Prefs()
@@ -381,7 +377,6 @@ double Prefs::screenRadius(Atom *i)
 {
 	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
 	Atom::DrawStyle dstyle;
-	double radius;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
 	return (dstyle == Atom::ScaledStyle) ? (elements.atomicRadius(i) * atomSize_[Atom::ScaledStyle]) : atomSize_[dstyle];
 }
@@ -576,7 +571,7 @@ void Prefs::copyScaleColour(int n, GLfloat *v)
 void Prefs::setScaleColours()
 {
 	static int lastnsegments = -1, n;
-	static double delta;
+	static GLfloat delta;
 	// Check current value of nScaleSegments_ against last value. If different, recreate array
 	if (lastnsegments != nScaleSegments_)
 	{
@@ -604,13 +599,13 @@ void Prefs::setScaleColours()
 	scaleColours_[nScaleSegments_*2+2][2] = penColours_[Prefs::SchemeHiColour][2];
 	scaleColours_[nScaleSegments_*2+2][3] = penColours_[Prefs::SchemeHiColour][3];
 	// Interpolate between the lo and mid points.
-	delta = 1.0 / (nScaleSegments_ + 1);	
+	delta = 1.0f / (nScaleSegments_ + 1);	
 	for (n=0; n<nScaleSegments_; n++)
 	{
-		scaleColours_[n+1][0] = (GLint) (scaleColours_[0][0] + (penColours_[Prefs::SchemeMidColour][0]-scaleColours_[0][0]) * n * delta);
-		scaleColours_[n+1][1] = (GLint) (scaleColours_[0][1] + (penColours_[Prefs::SchemeMidColour][1]-scaleColours_[0][1]) * n * delta);
-		scaleColours_[n+1][2] = (GLint) (scaleColours_[0][2] + (penColours_[Prefs::SchemeMidColour][2]-scaleColours_[0][2]) * n * delta);
-		scaleColours_[n+1][3] = (GLint) (scaleColours_[0][3] + (penColours_[Prefs::SchemeMidColour][3]-scaleColours_[0][3]) * n * delta);
+		scaleColours_[n+1][0] = scaleColours_[0][0] + (penColours_[Prefs::SchemeMidColour][0]-scaleColours_[0][0]) * n * delta;
+		scaleColours_[n+1][1] = scaleColours_[0][1] + (penColours_[Prefs::SchemeMidColour][1]-scaleColours_[0][1]) * n * delta;
+		scaleColours_[n+1][2] = scaleColours_[0][2] + (penColours_[Prefs::SchemeMidColour][2]-scaleColours_[0][2]) * n * delta;
+		scaleColours_[n+1][3] = scaleColours_[0][3] + (penColours_[Prefs::SchemeMidColour][3]-scaleColours_[0][3]) * n * delta;
 	}
 }
 

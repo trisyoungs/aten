@@ -21,7 +21,6 @@
 
 #include <time.h>
 #include <ctime>
-//#include <string>
 #include <iostream>
 #include <readline/readline.h>
 #include "parse/parser.h"
@@ -44,23 +43,38 @@ int main(int argc, char *argv[])
 	srand( (unsigned)time( NULL ) );
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
-	// Get environment variables, most importantly the location of the data dirs
+	// Get environment variables
 	master.homeDir = getenv("HOME");
 	master.workDir = getenv("PWD");
-	master.dataDir = getenv("ATENDATA");
-	if (master.dataDir.empty())
-	{
-		printf("$ATENDATA has not been set.\n");
-		printf("It should point to the (installed) location of the 'data' directory.\n");
-		printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
-		return 1;
-	}
 	printf("Home directory is %s, working directory is %s.\n", master.homeDir.get(), master.workDir.get());
 
-	char filename[256];
 	// Read default filters from data directory (pass directory)
-	sprintf(filename,"%s%s",master.dataDir.get(),"/filters/");
-	if (!master.openFilters(filename,TRUE)) return 1;
+	// Attempt to find our data dir...
+	char filename[256];
+	bool found = FALSE;
+	master.dataDir = getenv("ATENDATA");
+	if (!master.dataDir.empty())
+	{
+		printf("$ATENDATA points to '%s'.\n",master.dataDir.get());
+		sprintf(filename,"%s%s",master.dataDir.get(),"/filters/");
+		if (!master.openFilters(filename,TRUE)) return 1;
+		else found = TRUE;
+	}
+	else printf("$ATENDATA has not been set.\n");
+	if (!found)
+	{
+		// Try a list of default locations...
+		sprintf(filename,"%s%s",master.dataDir.get(),"/filters/");
+		if (master.openFilters("/usr/local/aten/filters/",TRUE)) found = TRUE;
+		else if (master.openFilters("/usr/local/share/aten/filters/",TRUE)) found = TRUE;
+		else
+		{
+			printf("No filter index found in any of these locations.\n");
+			printf("Set $ATENDATA to point to the (installed) location of the 'data' directory.\n");
+			printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
+		}
+		if (!found) return 1;
+	}
 
 	// Read user filters from home directory (pass directory)
 	sprintf(filename,"%s%s",master.homeDir.get(),"/.aten/filters/");

@@ -175,14 +175,24 @@ void Model::selectBox(double x1, double y1, double x2, double y2)
 {
 	// Box selection - choose all the atoms within the selection area
 	dbgBegin(Debug::Calls,"Model::selectBox");
-	float t;
-	Atom *i, *closest;
+	double t;
+	Atom *i;
 	y1 = gui.mainView.height() - y1;
 	y2 = gui.mainView.height() - y2;
 	// Handle 'reverse ranges' - make sure x1 < x2 and y1 < y2
-	if (x1 > x2) { t=x1; x1=x2; x2=t; }
-	if (y1 > y2) { t=y1; y1=y2; y2=t; }
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+	if (x1 > x2)
+	{
+		t=x1;
+		x1=x2;
+		x2=t;
+	}
+	if (y1 > y2)
+	{
+		t=y1;
+		y1=y2;
+		y2=t;
+	}
+	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
 		Vec3<double> sr = i->rScreen();

@@ -210,8 +210,7 @@ Grid *Master::addGrid()
 // Remove surface
 void Master::removeGrid(Grid *xgrid)
 {
-	Grid *g;
-	xgrid->next != NULL ? g = xgrid->next : g = xgrid->prev;
+	xgrid->next != NULL ? current.g = xgrid->next : current.g = xgrid->prev;
 	// Finally, delete the old surface
 	grids_.remove(xgrid);
 }
@@ -357,19 +356,19 @@ bool Master::openFilters(const char *path, bool isdatadir)
 {
 	dbgBegin(Debug::Calls,"Master::openFilters");
 	// Load in model filters
-	Filter *f;
-	int n;
 	char longname[512];
 	// Open the filter list file (in 'path/index') and read in the list of filters to load in...
-	if (isdatadir) msg(Debug::None,"Loading default filters ('%s')...\n",path);
-	else msg(Debug::None,"Loading user filters ('%s')...\n",path);
 	strcpy(longname,path);
 	strcat(longname,"index");
+	if (isdatadir) msg(Debug::None,"Looking for filter index '%s'...\n", longname);
+	else msg(Debug::None,"Loading user filters '%s'...\n", longname);
 	ifstream listfile(longname,ios::in);
 	if (!listfile.is_open())
 	{
-		if (isdatadir) msg(Debug::None,"Default filter index file not found. Has $ATENDATA been set correctly?\n");
-		else msg(Debug::None,"No user filter index found in '%s'.\n",longname);
+		if (isdatadir) msg(Debug::None,"Filter index file not found.\n");
+		else msg(Debug::None,"No user filter index found.\n");
+		dbgEnd(Debug::Calls,"Master::openFilters");
+		return FALSE;
 	}
 	else
 	{
@@ -383,7 +382,7 @@ bool Master::openFilters(const char *path, bool isdatadir)
 			printf("%s  ",parser.argc(0));
 			if (!loadFilter(longname))
 			{
-				dbgEnd(Debug::Calls,"Master::openFilters");
+				
 				return FALSE;
 			}
 		}
@@ -411,10 +410,8 @@ bool Master::loadFilter(const char *filename)
 	dbgBegin(Debug::Calls,"Master::loadFilter");
 	FilterType ft;
 	Filter *newfilter;
-	bool foundmain, error;
-	VariableList *vars;
+	bool error;
 	int success;
-	Prefs::ZmapType zm;
 	ifstream filterfile(filename,ios::in);
 
 	// Pre-read first line to check
@@ -422,7 +419,6 @@ bool Master::loadFilter(const char *filename)
 	error = FALSE;
 	while (!filterfile.eof())
 	{
-		foundmain = TRUE;
 		// Get filter type from first argument
 		ft = FT_from_text(parser.argc(0));
 		// Unrecognised filter section?

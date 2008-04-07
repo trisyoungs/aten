@@ -79,22 +79,12 @@ double Model::totalEnergy(Model *srcmodel)
 					break;
 				case (EM_COULOMB):
 					p->coulombIntraPatternEnergy(srcmodel,&energy);
-					p2 = p;
-					while (p2 != NULL)
-					{
-						p->coulombInterPatternEnergy(srcmodel,p2,&energy);
-						p2 = p2->next;
-					}
+					for (p2 = p; p2 != NULL; p2 = p2->next) p->coulombInterPatternEnergy(srcmodel,p2,&energy);
 					break;
 				default: // Ewald
 					p->ewaldRealIntraPatternEnergy(srcmodel,&energy);
 					p->ewaldCorrectEnergy(srcmodel,&energy);
-					p2 = p;
-					while (p2 != NULL)
-					{
-						p->ewaldRealInterPatternEnergy(srcmodel,p2,&energy);
-						p2 = p2->next;
-					}
+					for (p2 = p; p2 != NULL; p2 = p2->next) p->ewaldRealInterPatternEnergy(srcmodel,p2,&energy);
 					// Calculate reciprocal space part (called once from first pattern only)
 					if (p == patterns_.first())
 						p->ewaldReciprocalEnergy(srcmodel,p,patterns_.nItems(),&energy);
@@ -194,12 +184,7 @@ void Model::calculateForces(Model *srcmodel)
 		if (prefs.calculateVdw())
 		{
 			p->vdwIntraPatternForces(srcmodel);
-			Pattern *p2 = p;
-			while (p2 != NULL)
-			{
-				p->vdwInterPatternForces(srcmodel,p2);
-				p2 = p2->next;
-			}
+			for (p2 = p; p2 != NULL; p2 = p2->next)	p->vdwInterPatternForces(srcmodel,p2);
 		}
 		// Electrostatics
 		if (prefs.calculateElec())
@@ -221,12 +206,7 @@ void Model::calculateForces(Model *srcmodel)
 				default: // Ewald
 					p->ewaldRealIntraPatternForces(srcmodel);
 					p->ewaldCorrectForces(srcmodel);
-					p2 = p;
-					while (p2 != NULL)
-					{
-						p->ewaldRealInterPatternForces(srcmodel,p2);
-						p2 = p2->next;
-					}
+					for (p2 = p; p2 != NULL; p2 = p2->next) p->ewaldRealInterPatternForces(srcmodel,p2);
 					// Calculate reciprocal space part (called once from first pattern only)
 					if (p == patterns_.first()) p->ewaldReciprocalForces(srcmodel);
 					break;

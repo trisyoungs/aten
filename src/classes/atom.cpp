@@ -505,7 +505,7 @@ bool Atom::isHidden()
 */
 
 // Sets the atom id
-void Atom::setId(short int newid)
+void Atom::setId(int newid)
 {
 	id_ = newid;
 }
@@ -517,7 +517,7 @@ void Atom::decreaseId()
 }
 
 // Return the id of the atom
-short int Atom::id()
+int Atom::id()
 {
 	return id_;
 }
@@ -573,23 +573,23 @@ bool Atom::hasLabels()
 }
 
 // Set label bitvector to specified value
-void Atom::setLabels(int l)
+void Atom::setLabels(short int l)
 {
 	labels_ = l;
 }
 
 // Returns the label bitmask of the atom
-int Atom::labels()
+short int Atom::labels()
 {
 	return labels_;
 }
 
 // Set the bit for the specified label (if it is not set already)
-void Atom::addLabel(Atom::AtomLabel label) { if (!(labels_&label)) labels_ += label;
+void Atom::addLabel(Atom::AtomLabel label) { if (!(labels_&label)) labels_ += (short int) label;
 }
 
 // Unsets the bit for the specified label (if it is not unset already)
-void Atom::removeLabel(Atom::AtomLabel label) { if (labels_&label) labels_ -= label;
+void Atom::removeLabel(Atom::AtomLabel label) { if (labels_&label) labels_ -= (short int) label;
 }
 
 // Clear all labels from the atom

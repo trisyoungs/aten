@@ -129,7 +129,7 @@ void Model::setPatternsFixed(int upto)
 Atomaddress Model::locateAtom(Atom *i)
 {
 	dbgBegin(Debug::Calls,"Model::locateAtom");
-	int n, patternno, molno, atomno, id;
+	int patternno, molno, atomno, id;
 	Pattern *p;
 	Atomaddress result;
 	if (!autocreatePatterns())

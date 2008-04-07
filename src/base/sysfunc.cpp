@@ -31,7 +31,7 @@ const char *upperCase(const char *s)
 {
 	static char result[256];
 	static int i;
-	for (i=0; s[i] != '\0'; i++) result[i] = toupper(s[i]);
+	for (i = 0; s[i] != '\0'; i++) result[i] = toupper(s[i]);
 	result[i] = '\0';
 	return result;
 }
@@ -40,7 +40,7 @@ const char *lowerCase(const char *s)
 {
 	static char result[256];
 	static int i;
-	for (i=0; s[i] != '\0'; i++) result[i] = tolower(s[i]);
+	for (i = 0; s[i] != '\0'; i++) result[i] = tolower(s[i]);
 	result[i] = '\0';
 	return result;
 }
@@ -130,43 +130,6 @@ const char *removePath(const char *s)
 	const char *lastslash = strrchr(s,'/');
 	lastslash == 0 ? lastslash = s : lastslash ++;
 	return lastslash;
-}
-
-// Search for string in delimited string list
-int sinlist(const char *search, const char *list)
-{
-	dbgBegin(Debug::Parse,"sinlist");
-	static int cpos, count, result;
-	static Dnchar arg, arglist;
-	arglist.set(list);
-	count = 0;
-	result = -1;
-	// Find position of next comma and cut that part of the string
-	while (!arglist.empty())
-	{
-		//printf("Size of arglist = %li\n",arglist.length());
-		cpos = arglist.find(',');
-		if (cpos != -1)
-		{
-			arglist.cutStart(cpos+1,arg);
-			arg.eraseEnd(1);
-		}
-		else
-		{
-			arg.set(arglist.get());
-			arglist.clear();
-		}
-		if (arg == search)
-		{
-			msg(Debug::Parse,"sinlist [%s->%s==%s]\n",list,arg.get(),search);
-			result = count;
-			break;
-		}
-		else msg(Debug::Parse,"sinlist [%s->%s<>%s]\n",list,arg.get(),search);
-		count ++;
-	}
-	dbgEnd(Debug::Parse,"sinlist");
-	return result;
 }
 
 // Evaluate numerical expression and return simplified result

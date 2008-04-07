@@ -115,7 +115,7 @@ class Atomtype
 	// Geometry of bonding about atom
 	AtomGeometry geometry_;
 	// Required oxidation state (99 for don't mind)
-	int os_;
+	short int os_;
 	// List of atoms to which this atom must be bound
 	List<Atomtype> boundList_;
 	// List of rings that this atom must be a member of

@@ -207,17 +207,17 @@ class Atom
 	*/
 	private:
 	// ID number of atom
-	short int id_;
+	int id_;
 
 	public:
 	// Temporary integer variable
-	short int tempi;
+	int tempi;
 	// Sets the atom id
-	void setId(short int newid);
+	void setId(int newid);
 	// Decreases the id of the atom by 1
 	void decreaseId();
 	// Return the id of the atom
-	short int id();
+	int id();
 
 	/*
 	// Rendering Coordinates
@@ -257,9 +257,9 @@ class Atom
 	// Returns TRUE id the atom has at least one label specified
 	bool hasLabels();
 	// Set label bitvector to specified value
-	void setLabels(int l);
+	void setLabels(short int l);
 	// Returns the label bitmask of the atom
-	int labels();
+	short int labels();
 	// Set the bit for the specified label (if it is not set already)
 	void addLabel(Atom::AtomLabel label);
 	// Unsets the bit for the specified label (if it is not unset already)
