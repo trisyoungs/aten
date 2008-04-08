@@ -25,6 +25,7 @@
 #include "energy/forms.h"
 #include "templates/vector3.h"
 #include "classes/atom.h"
+#include "classes/colourscale.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
@@ -82,9 +83,8 @@ class Prefs
 	enum ColourComponent { AmbientComponent, DiffuseComponent, SpecularComponent, nColourComponents };
 
 	public:
-	// Constructor / Destructor
+	// Constructor
 	Prefs();
-	~Prefs();
 	// Load prefs from file
 	void load(const char*);
 	// Set GUI controls to reflect prefs choices
@@ -159,10 +159,6 @@ class Prefs
 	GLfloat spotlightPosition_[3];
 	// Atom colouring style
 	Prefs::ColourScheme colourScheme_;
-	// Number of segments between lo/hi and mid colours in colour scale
-	int nScaleSegments_;
-	// Graduated colour scale colours
-	GLfloat **scaleColours_;
 
 	public:
 	// Sets the specified atom size to the given value
@@ -215,10 +211,6 @@ class Prefs
 	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale
 	int nScaleSegments();
-	// Set colour scale colours
-	void setScaleColours();
-	// Copy colour scale segment into supplied array
-	void copyScaleColour(int n, GLfloat *v);
 
 	/*
 	// GL Options
@@ -258,29 +250,26 @@ class Prefs
 	GLint shininess();
 
 	/*
-	// Rendering - Colours
+	// Colours
 	*/
 	private:
 	// RGB colour values
 	GLfloat penColours_[Prefs::nColours][4];
-	// Numerical low limit corresponding to COL_ACSCHEMELO
-	double colourSchemeLo_[Prefs::nColourSchemes];
-	// Numerical high limit corresponding to COL_ACSCHEMELO
-	double colourSchemeHi_[Prefs::nColourSchemes];
 
 	public:
 	// Set the specified colour to the integer RGB values supplied
 	void setPenColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	// Return the specified colour
 	GLfloat *penColour(Colour c);
-	// Return the low limit for the scheme specified
-	double colourSchemeLo(int i);
-	// Sets the low limit for the scheme specified
-	void setColourSchemeLo(int i, double d);
-	// Return the high limit for the scheme specified
-	double colourSchemeHi(int i);
-	// Sets the high limit for the scheme specified
-	void setColourSchemeHi(int i, double d);
+	// Colour scale for atom charge colouring
+	ColourScale chargeColourScale;
+	// Colour scale for atom force colouring
+	ColourScale forceColourScale;
+	// Colour scale for atom velocity colouring
+	ColourScale velocityColourScale;
+	// User-definable colour scales
+	ColourScale colourScales[10];
+
 
 	/*
 	// File Preferences

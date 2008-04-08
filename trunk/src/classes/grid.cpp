@@ -28,7 +28,9 @@
 Grid::Grid()
 {
 	// Private variables
-	data_ = NULL;
+	data3d_ = NULL;
+	data2d_ = NULL;
+	type_ = Grid::NoData;
 	dataFull_ = FALSE;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
@@ -66,6 +68,17 @@ const char *Grid::name()
 	return name_.get();
 }
 
+// Set type of Grid data
+void Grid::setType(GridType gt)
+{
+	type_ = gt;
+}
+
+// Return type of Grid data
+Grid::GridType Grid::type()
+{
+	return type_;
+}
 
 // Return the Grid axes
 Mat3<double> Grid::axes()
@@ -121,10 +134,16 @@ double Grid::cutoff()
 	return cutoff_;
 }
 
-// Return data array
-double ***Grid::data()
+// Return 3D data array
+double ***Grid::data3d()
 {
-	return data_;
+	return data3d_;
+}
+
+// Return 2D data array
+double **Grid::data2d()
+{
+	return data2d_;
 }
 
 // Set loop ordering
@@ -199,14 +218,22 @@ GLfloat *Grid::colour()
 void Grid::create()
 {
 	dbgBegin(Debug::Calls,"Grid::create");
-	clear();
 	int i, j;
-	if (data_ != NULL) clear();
-	data_ = new double**[nPoints_.x];
-	for (i = 0; i<nPoints_.x; i++)
+	if (type_ == Grid::VolumetricData)
 	{
-		data_[i] = new double*[nPoints_.y];
-		for (j = 0; j<nPoints_.y; j++) data_[i][j] = new double[nPoints_.z];
+		if (data3d_ != NULL) clear();
+		data3d_ = new double**[nPoints_.x];
+		for (i = 0; i<nPoints_.x; i++)
+		{
+			data3d_[i] = new double*[nPoints_.y];
+			for (j = 0; j<nPoints_.y; j++) data3d_[i][j] = new double[nPoints_.z];
+		}
+	}
+	else if (type_ == Grid::SurfaceData)
+	{
+		if (data2d_ != NULL) clear();
+		data2d_ = new double*[nPoints_.x];
+		for (i = 0; i<nPoints_.x; i++) data2d_[i] = new double[nPoints_.y];
 	}
 	dbgEnd(Debug::Calls,"Grid::create");
 }
@@ -221,15 +248,27 @@ void Grid::clear()
 	cutoff_ = 0.0;
 	currentPoint_.zero();
 	visible_ = TRUE;
-	if (data_ == NULL) return;
 	int i, j;
-	for (i = 0; i<nPoints_.x; i++)
+	if (data3d_ != NULL)
 	{
-		for (j = 0; j<nPoints_.y; j++) delete[] data_[i][j];
-		delete[] data_[i];
+		for (i = 0; i<nPoints_.x; i++)
+		{
+			for (j = 0; j<nPoints_.y; j++) delete[] data3d_[i][j];
+			delete[] data3d_[i];
+		}
+		delete[] data3d_;
+		data3d_ = NULL;
 	}
-	delete[] data_;
-	data_ = NULL;
+	if (data2d_ != NULL)
+	{
+		for (i = 0; i<nPoints_.x; i++)
+		{
+			delete[] data2d_[i];
+		}
+		delete[] data2d_;
+		data2d_ = NULL;
+	}
+
 	dbgEnd(Debug::Calls,"Grid::clear");
 }
 
@@ -259,6 +298,9 @@ void Grid::setNPoints(Vec3<int> v)
 {
 	dbgBegin(Debug::Calls,"Grid::setNPoints");
 	nPoints_ = v;
+	// If nPoints_.z is zero, its a 2D array
+	if (nPoints_.z == 0) type_ = Grid::SurfaceData;
+	else type_ = Grid::VolumetricData;
 	log_ ++;
 	create();
 	dbgEnd(Debug::Calls,"Grid::setNPoints");
@@ -278,21 +320,22 @@ void Grid::setData(int x, int y, int z, double d)
 	// Check limits against npoints vector
 	if ((x < 0) || (x >= nPoints_.x))
 	{
-		msg(Debug::None,"Grid::set_data(x,y,z) - X index is outside array bounds.\n");
+		msg(Debug::None,"X index %i is outside array bounds (0--%i) for grid data.\n", x, nPoints_.x-1);
 		return;
 	}
 	else if ((y < 0) || (y >= nPoints_.y))
 	{
-		msg(Debug::None,"Grid::set_data(x,y,z) - Y index is outside array bounds.\n");
+		msg(Debug::None,"Y index %i is outside array bounds (0--%i) for grid data.\n", y, nPoints_.y-1);
 		return;
 	}
-	else if ((z < 0) || (z >= nPoints_.z))
+	else if ((type_ == Grid::SurfaceData) && ((z < 0) || (z >= nPoints_.z)))
 	{
-		msg(Debug::None,"Grid::set_data(x,y,z) - Z index is outside array bounds.\n");
+		msg(Debug::None,"Z index %i is outside array bounds (0--%i) for grid data.\n", z, nPoints_.z-1);
 		return;
 	}
 	// Okay, so store data
-	data_[x][y][z] = d;
+	if (type_ == Grid::VolumetricData) data3d_[x][y][z] = d;
+	else data2d_[x][y] = d;
 	// Set new minimum / maximum
 	setLimits(d);
 }
@@ -306,19 +349,31 @@ void Grid::setNextData(double d)
 		msg(Debug::None,"Grid::setNextData - Array already full.\n");
 		return;
 	}
-	// Set current point referenced by currentpoint
-	data_[currentPoint_.x][currentPoint_.y][currentPoint_.z] = d;
-	// Increase currentpoint
-	currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
-	if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))
+	// Set current point referenced by currentpoint and increase it
+	if (type_ == Grid::VolumetricData)
 	{
-		currentPoint_.set(loopOrder_.x, 0);
-		currentPoint_.set(loopOrder_.y, currentPoint_.get(loopOrder_.y) + 1);
-		if (currentPoint_.get(loopOrder_.y) == nPoints_.get(loopOrder_.y))
+		data3d_[currentPoint_.x][currentPoint_.y][currentPoint_.z] = d;
+		currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
+		if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))
 		{
-			currentPoint_.set(loopOrder_.y, 0);
-			currentPoint_.set(loopOrder_.z, currentPoint_.get(loopOrder_.z) + 1);
-			if (currentPoint_.get(loopOrder_.z) == nPoints_.get(loopOrder_.z)) dataFull_ = TRUE;
+			currentPoint_.set(loopOrder_.x, 0);
+			currentPoint_.set(loopOrder_.y, currentPoint_.get(loopOrder_.y) + 1);
+			if (currentPoint_.get(loopOrder_.y) == nPoints_.get(loopOrder_.y))
+			{
+				currentPoint_.set(loopOrder_.y, 0);
+				currentPoint_.set(loopOrder_.z, currentPoint_.get(loopOrder_.z) + 1);
+				if (currentPoint_.get(loopOrder_.z) == nPoints_.get(loopOrder_.z)) dataFull_ = TRUE;
+			}
+		}
+	}
+	else
+	{
+		data2d_[currentPoint_.x][currentPoint_.y] = d;
+		if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))
+		{
+			currentPoint_.set(loopOrder_.x, 0);
+			currentPoint_.set(loopOrder_.y, currentPoint_.get(loopOrder_.y) + 1);
+			if (currentPoint_.get(loopOrder_.y) == nPoints_.get(loopOrder_.y)) dataFull_ = TRUE;
 		}
 	}
 	// Set new minimum / maximum
