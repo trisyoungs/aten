@@ -520,7 +520,7 @@ bool Pattern::validate()
 	bool result, ok;
 	result = TRUE;
 	int mnAtoms_ = parent_->nAtoms();
-	int elcomp1[elements.nElements()+1], elcomp2[elements.nElements()+1], a, m;
+	int *elcomp1, *elcomp2, a, m;
 	// Set all test flags to FALSE
 	testAtomLimit_ = FALSE;
 	testElement_ = FALSE;
@@ -536,6 +536,8 @@ bool Pattern::validate()
 	}
 	else testAtomLimit_ = TRUE;
 	// 2) Elemental composition of individual molecules within pattern
+	elcomp1 = new int[elements.nElements()+1];
+	elcomp2 = new int[elements.nElements()+1];
 	for (m=0; m<elements.nElements()+1; m++) elcomp1[m] = 0;
 	if (nMols_ == 1) testElement_ = TRUE;
 	else
@@ -573,6 +575,8 @@ bool Pattern::validate()
 			}
 		}
 	}
+	delete elcomp1;
+	delete elcomp2;
 	// 3) Bonding within molecules in pattern
 	//TODO
 	if (!result) msg(Debug::None,"No pattern defined for model.\n");
@@ -1106,8 +1110,14 @@ bool Pattern::fillExpression()
 	// Temp vars for type storage
 	ForcefieldAtom *ti, *tj, *tk, *tl;
 	// Lists of unique bound atoms (used by angle and torsion generation routines)
-	int bonding[nAtoms_][7];
+	//int bonding[nAtoms_][7];
+	//int **bonding;
 	int count, ii, jj, kk, ll;
+	// Create **bonding array
+	//bonding = new int*[nAtoms_];
+	//for (ii=0; ii< nAtoms_; ii++) bonding[ii] = new int[7];
+	List< Listitem<int> > *bonding;
+	bonding = new List< Listitem<int> >[nAtoms_];
 	// If there is no specified pattern forcefield, use the parent model's instead
 	forcefield_ == NULL ? xff = parent_->forcefield() : xff = forcefield_;
 	msg(Debug::None,"Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
@@ -1141,7 +1151,7 @@ bool Pattern::fillExpression()
 		// Add only bonds where id(i) > id(j) to prevent double counting of bonds
 		// Also, create the lists of bound atoms here for use by the angle and torsion functions.
 		// Again, only add bonds involving atoms in the first molecule of the pattern.
-		for (count=0; count<nAtoms_; count++) bonding[count][0] = 0;
+		//for (count=0; count<nAtoms_; count++) bonding[count][0] = 0;
 		ai = firstAtom_;
 		count = 0;
 		for (ii=0; ii<nAtoms_; ii++)
@@ -1195,11 +1205,13 @@ bool Pattern::fillExpression()
 						msg(Debug::Verbose,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
 					}
 					// Update the bonding array counters
-					bonding[ii][0] ++;
-					bonding[jj][0] ++;
+					bonding[ii].add()->data = jj;
+					bonding[jj].add()->data = ii;
+					//bonding[ii][0] ++;
+					//bonding[jj][0] ++;
 					// Add the bond partner to each of the atom's own lists
-					bonding[ii][bonding[ii][0]] = jj;
-					bonding[jj][bonding[jj][0]] = ii;
+					//bonding[ii][bonding[ii][0]] = jj;
+					//bonding[jj][bonding[jj][0]] = ii;
 					count ++;
 				}
 				bref = bref->next;
@@ -1219,19 +1231,19 @@ bool Pattern::fillExpression()
 		// Loop over central atoms 'jj'
 		for (jj=0; jj<nAtoms_; jj++)
 		{
-			for (ii=1; ii<=bonding[jj][0]; ii++)
+			for (ii=0; ii<bonding[jj].nItems(); ii++)
 			{
-				for (kk=ii+1; kk<=bonding[jj][0]; kk++)
+				for (kk=ii+1; kk<bonding[jj].nItems(); kk++)
 				{
-					ai = atoms_[bonding[jj][ii]]->atom();
+					ai = atoms_[bonding[jj][ii]->data]->atom();
 					aj = atoms_[jj]->atom();
-					ak = atoms_[bonding[jj][kk]]->atom();
+					ak = atoms_[bonding[jj][kk]->data]->atom();
 					ti = ai->type();
 					tj = aj->type();
 					tk = ak->type();
-					angles_[count]->setAtomId(0,bonding[jj][ii]);
+					angles_[count]->setAtomId(0,bonding[jj][ii]->data);
 					angles_[count]->setAtomId(1,jj);
-					angles_[count]->setAtomId(2,bonding[jj][kk]);
+					angles_[count]->setAtomId(2,bonding[jj][kk]->data);
 					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
 					ffb = xff->findAngle(ti,tj,tk);
@@ -1279,28 +1291,28 @@ bool Pattern::fillExpression()
 			jj = pb->atomId(0);
 			kk = pb->atomId(1);
 			// Loop over list of atoms bound to jj
-			for (ii=1; ii<=bonding[jj][0]; ii++)
+			for (ii=0; ii<bonding[jj].nItems(); ii++)
 			{
 				// Skip atom kk
-				if (bonding[jj][ii] == kk) continue;
+				if (bonding[jj][ii]->data == kk) continue;
 				// Loop over list of atoms bound to kk
-				for (ll=1; ll<=bonding[kk][0]; ll++)
+				for (ll=0; ll<bonding[kk].nItems(); ll++)
 				{
 					// Skip atom jj
-					if (bonding[kk][ll] == jj) continue;
+					if (bonding[kk][ll]->data == jj) continue;
 	
-					ai = atoms_[bonding[jj][ii]]->atom();
+					ai = atoms_[bonding[jj][ii]->data]->atom();
 					aj = atoms_[jj]->atom();
 					ak = atoms_[kk]->atom();
-					al = atoms_[bonding[kk][ll]]->atom();
+					al = atoms_[bonding[kk][ll]->data]->atom();
 					ti = ai->type();
 					tj = aj->type();
 					tk = ak->type();
 					tl = al->type();
-					torsions_[count]->setAtomId(0,bonding[jj][ii]);
+					torsions_[count]->setAtomId(0,bonding[jj][ii]->data);
 					torsions_[count]->setAtomId(1,jj);
 					torsions_[count]->setAtomId(2,kk);
-					torsions_[count]->setAtomId(3,bonding[kk][ll]);
+					torsions_[count]->setAtomId(3,bonding[kk][ll]->data);
 	
 					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.

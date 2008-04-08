@@ -47,12 +47,12 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 	{
 		case (MM_STEEPEST):
 			sd.setNCycles(maxcycles);
-			sd.setTolerance(pow(10,ui.SDLineToleranceSpin->value()));
+			sd.setTolerance(pow(10.0,ui.SDLineToleranceSpin->value()));
 			sd.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_CONJUGATE):
 			cg.setNCycles(maxcycles);
-			cg.setTolerance(pow(10,ui.CGLineToleranceSpin->value()));
+			cg.setTolerance(pow(10.0,ui.CGLineToleranceSpin->value()));
 			cg.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_MONTECARLO):
