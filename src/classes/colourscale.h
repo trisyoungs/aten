@@ -19,31 +19,47 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Colourscale order
-enum ColourScaleOrder { CO_TWOPOINT=2, CO_THREEPOINT=3 };
-
 #ifndef ATEN_COLOURSCALE_H
 #define ATEN_COLOURSCALE_H
+
+#include <QtOpenGL/QtOpenGL>
 
 // Colour Scale
 class ColourScale
 {
 	public:
-	// Constructor / Destructor
+	// Constructor
 	ColourScale();
-	~ColourScale();
+	// Colourscale order
+	enum ScaleOrder { TwoPoint, ThreePoint };
+	// Colourscale colours
+	enum ScaleColour { LeftColour, MidColour, RightColour, nScaleColours };
 
 	private:
 	// Type of ColourScale
-	ColourScaleOrder type_;
+	ScaleOrder type_;
 	// Colours
-	GLfloat colours_[3][4];
-	// Minimum, maximum, and midpoint of data range
-	double minimum_, maximum_, midpoint_;
+	GLfloat colours_[nScaleColours][4];
+	// Colour deltas
+	GLfloat deltaLeftRight_[4], deltaLeftMid_[4], deltaMidRight_[4];
+	// Left, right, and middle of data range
+	double left_, right_, midpoint_;
+	// Range of data
+	double range_;
 
 	public:
 	// Set type of ColourScale
-	void setType(ColourScaleOrder co) { type_ = co; }
-
+	void setType(ScaleOrder co);
+	// Set colour
+	void setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Copy colour
+	void copyColour(ScaleColour col, GLfloat *target);
+	// Set the absolute range of the colour scale
+	void setRange(double left, double right);
+	// Adjust colour scale range to cover supplied value
+	void adjustRange(double d);
+	// Return colour associated with value provided
+	void colour(double v, GLfloat *c);
 };
 
+#endif

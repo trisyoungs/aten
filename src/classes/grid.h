@@ -29,7 +29,7 @@
 #include "base/debug.h"
 #include <QtOpenGL/QtOpenGL>
 
-// 3D Grid Class
+// Grid Data Class
 class Grid
 {
 	public:
@@ -38,6 +38,8 @@ class Grid
 	~Grid();
 	// List pointers
 	Grid *prev, *next;
+	// Grid type
+	enum GridType { NoData, VolumetricData, SurfaceData, nGridTypes };
 	// Surface rendering styles
 	enum SurfaceStyle { GridSurface, PointSurface, TriangleSurface, SolidSurface };
 
@@ -47,12 +49,18 @@ class Grid
 	private:
 	// Name of the Grid data
 	Dnchar name_;
+	// Type of data contained in the class
+	GridType type_;
 
 	public:
 	// Set name of Grid data
 	void setName(const char *s);
 	// Return name of Grid data
 	const char *name();
+	// Set type of Grid data
+	void setType(GridType);
+	// Return type of Grid data
+	GridType type();
 
 	/*
 	// Gridded Data
@@ -65,7 +73,9 @@ class Grid
 	// Number of points in each direction
 	Vec3<int> nPoints_;
 	// Voxel values
-	double ***data_;
+	double ***data3d_;
+	// Surface values
+	double **data2d_;
 	// Clear voxel data
 	void clear();
 	// Create voxel data
@@ -106,8 +116,10 @@ class Grid
 	void setCutoff(double d);
 	// Return isovalue cutoff for surface
 	double cutoff();
-	// Return data array
-	double ***data();
+	// Return 3D data array
+	double ***data3d();
+	// Return 2D data array
+	double **data2d();
 	// Set loop ordering
 	void setLoopOrder(int n, int xyz);
 

@@ -319,28 +319,44 @@ void renderSurfaceGrid(Grid *g)
 {
 	int i, j, k;
 	Vec3<int> npoints = g->nPoints();
-	double ***data, **xdata, *ydata, cutoff;
-	// Grab the data pointer and cutoff
-	data = g->data();
+	double ***data3d, **data2d, **xdata, *ydata, cutoff;
+	// Grab the data pointers and cutoff
+	data3d = g->data3d();
+	data2d = g->data2d();
 	cutoff = g->cutoff();
 	glBegin(GL_POINTS);
-	  for (i=0; i<npoints.x; i++)
+	  if (g->type() == Grid::VolumetricData)
 	  {
-		xdata = data[i];
-		for (j=0; j<npoints.y; j++)
+		for (i=0; i<npoints.x; i++)
 		{
-			ydata = xdata[j];
-			for (k=0; k<npoints.z; k++)
+			xdata = data3d[i];
+			for (j=0; j<npoints.y; j++)
+			{
+				ydata = xdata[j];
+				for (k=0; k<npoints.z; k++)
+				{
+					if (ydata[k] < cutoff) continue;
+					glVertex3i(i, j, k);
+				}
+			}
+		}
+	  }
+	  else
+	  {
+		for (i=0; i<npoints.x; i++)
+		{
+			ydata = data2d[i];
+			for (j=0; j<npoints.y; j++)
 			{
 				if (ydata[k] < cutoff) continue;
-				glVertex3i(i, j, k);
+				glVertex3i(i, j, 0);
 			}
 		}
 	  }
 	glEnd();
 }
 
-// Render isosurface with Marching Cubes
+// Render volumetric isosurface with Marching Cubes
 void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 {
 	int i, j, k, n, cubetype, *faces;
@@ -348,7 +364,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	Vec3<int> npoints = g->nPoints();
 	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2, twodx, twody, twodz;
 	// Grab the data pointer and surface cutoff
-	data = g->data();
+	data = g->data3d();
 	cutoff = g->cutoff();
 	// Get distances between grid points
 	r = g->lengths();
@@ -374,7 +390,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
-	// Generate surface
+	// Generate isosurface
 	for (i=1; i<npoints.x-2; i++)
 	{
 		xdata = data[i];
@@ -454,6 +470,48 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	glEnd();
 }
 
+// Render normal ssurface 
+void squareIt(Grid *g, Grid::SurfaceStyle ss)
+{
+	int i, j, k, n, cubetype, *faces;
+	Vec3<double> r, normal, gradient[8];
+	Vec3<int> npoints = g->nPoints();
+	double **data;
+	// Grab the data pointer and surface cutoff
+	data = g->data2d();
+	// Set glBegin based on the surface style
+	switch (ss)
+	{
+		case (Grid::PointSurface):
+			glBegin(GL_POINTS);
+			break;
+		case (Grid::TriangleSurface):
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glBegin(GL_QUADS);
+			break;
+		case (Grid::SolidSurface):
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glBegin(GL_QUADS);
+			break;
+	}
+	// Set colour / transparency for surface
+	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
+	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
+	// Render surface
+	for (i = 0; i<npoints.x-1; i++)
+	{
+		for (j = 0; j<npoints.y-1; j++)
+		{
+			glVertex3d(i, j, data[i][j]);
+			glVertex3d(i+1, j, data[i+1][j]);
+			glVertex3d(i, j+1, data[i][j+1]);
+			glVertex3d(i+1, j+1, data[i+1][j+1]);
+		}
+	}
+	glEnd();
+}
+
 // Render surfaces
 void Canvas::renderSurfaces()
 {
@@ -482,7 +540,8 @@ void Canvas::renderSurfaces()
 					renderSurfaceGrid(g);
 					break;
 				default:
-					cubeIt(g, g->style());
+					if (g->type() == Grid::VolumetricData) cubeIt(g, g->style());
+					else squareIt(g, g->style());
 					break;
 			  }
 			glEndList();

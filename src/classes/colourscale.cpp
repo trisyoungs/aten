@@ -20,3 +20,98 @@
 */
 
 #include "classes/colourscale.h"
+
+// Constructor
+ColourScale::ColourScale()
+{
+	left_ = 0.0;
+	midpoint_ = 0.5;
+	right_ = 1.0;
+	range_ = 1.0;
+	type_ = ColourScale::TwoPoint;
+	setColour(ColourScale::LeftColour, 1.0, 1.0, 1.0, 1.0);
+	setColour(ColourScale::MidColour, 0.5, 0.5, 1.0, 1.0);
+	setColour(ColourScale::RightColour, 0.0, 0.0, 1.0, 1.0);
+}
+
+// Set type of ColourScale
+void ColourScale::setType(ColourScale::ScaleOrder so)
+{
+	type_ = so;
+}
+
+// Set colour
+void ColourScale::setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	int n;
+	colours_[col][0] = r;
+	colours_[col][1] = g;
+	colours_[col][2] = b;
+	colours_[col][3] = a;
+	// Recalculate colour deltas
+	for (n=0; n<4; n++)
+	{
+		deltaLeftRight_[n] = colours_[ColourScale::RightColour][n] - colours_[ColourScale::LeftColour][n];
+		deltaLeftMid_[n] = colours_[ColourScale::MidColour][n] - colours_[ColourScale::LeftColour][n];
+		deltaMidRight_[n] = colours_[ColourScale::RightColour][n] - colours_[ColourScale::MidColour][n];
+	}
+}
+
+// Copy colour
+void ColourScale::copyColour(ScaleColour col, GLfloat *target)
+{
+	target[0] = colours_[col][0];
+	target[1] = colours_[col][1];
+	target[2] = colours_[col][2];
+	target[3] = colours_[col][3];
+}
+
+// Set the absolute range of the colour scale
+void ColourScale::setRange(double left, double right)
+{
+	left_ = left;
+	right_ = right;
+	midpoint_ = (right - left) * 0.5;
+	range_ = right_ - left_;
+}
+
+// Adjust colour scale range to cover supplied value
+void ColourScale::adjustRange(double d)
+{
+	if (d < left_) left_ = d;
+	else if (d > right_) right_ = d;
+	midpoint_ = (right_ - left_) * 0.5;
+	range_ = right_ - left_;
+}
+
+// Return colour associated with value provided
+void ColourScale::colour(double v, GLfloat *target)
+{
+	double delta;
+	// Work out relative position of value 'v' on colour scale
+	delta = (v - left_) / range_;
+	// Clamp delta to the range [0,1]
+	if (delta < 0) delta = 0;
+	else if (delta > 1.0) delta = 1.0;
+	if (type_ == ColourScale::TwoPoint)
+	{
+		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftRight_[0];
+		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftRight_[1];
+		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftRight_[2];
+		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftRight_[3];
+	}
+	else if (delta < 0.5)
+	{
+		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftMid_[0];
+		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftMid_[1];
+		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftMid_[2];
+		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftMid_[3];
+	}
+	else
+	{
+		target[0] = colours_[ColourScale::MidColour][0] + deltaMidRight_[0];
+		target[1] = colours_[ColourScale::MidColour][1] + deltaMidRight_[1];
+		target[2] = colours_[ColourScale::MidColour][2] + deltaMidRight_[2];
+		target[3] = colours_[ColourScale::MidColour][3] + deltaMidRight_[3];
+	}
+}

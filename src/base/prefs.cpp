@@ -124,9 +124,6 @@ Prefs::Prefs()
 {
 	// Rendering - Style
 	colourScheme_ = Prefs::ElementScheme;
-	nScaleSegments_ = 2;
-	scaleColours_ = NULL;
-	setScaleColours();
 	atomSize_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
 	atomSize_[Atom::TubeStyle] = 0.095;
 	atomSize_[Atom::SphereStyle] = 0.35;
@@ -202,14 +199,16 @@ Prefs::Prefs()
 	setPenColour(Prefs::SchemeLoColour, 1.0f, 0.0f, 0.0f, 1.0f);
 	setPenColour(Prefs::SchemeMidColour, 0.7f, 0.7f, 0.7f, 1.0f);
 	setPenColour(Prefs::SchemeHiColour, 0.0f, 0.0f, 1.0f, 1.0f);
-	colourSchemeLo_[Prefs::ElementScheme] = 0.0;
-	colourSchemeLo_[Prefs::ChargeScheme] = -1.0;
-	colourSchemeLo_[Prefs::VelocityScheme] = 0.0;
-	colourSchemeLo_[Prefs::ForceScheme] = 0.0;
-	colourSchemeHi_[Prefs::ElementScheme] = 0.0;
-	colourSchemeHi_[Prefs::ChargeScheme] = 1.0;
-	colourSchemeHi_[Prefs::VelocityScheme] = 200.0;
-	colourSchemeHi_[Prefs::ForceScheme] = 10000.0;
+	// Colour scale for atom charge colouring
+	chargeColourScale.setRange(-1.0,1.0);
+	chargeColourScale.setType(ColourScale::ThreePoint);
+	chargeColourScale.setColour(ColourScale::LeftColour, 1.0, 0.0, 0.0);
+	chargeColourScale.setColour(ColourScale::MidColour, 1.0, 1.0, 1.0);
+	chargeColourScale.setColour(ColourScale::RightColour, 0.0, 0.0, 1.0);
+	// Colour scale for atom force colouring
+	ColourScale forceColourScale;
+	// Colour scale for atom velocity colouring
+	ColourScale velocityColourScale;
 
 	// Methods
 	modelUpdate_ = 5;
@@ -251,16 +250,6 @@ Prefs::Prefs()
 
 	// Undo levels
 	maxUndoLevels_ = -1;
-}
-
-// Destructor
-Prefs::~Prefs()
-{
-	if (scaleColours_ != NULL)
-	{
-		for (int n=0; n<(3+nScaleSegments_*2); n++) delete[] scaleColours_[n];
-		delete[] scaleColours_;
-	}
 }
 
 // Load user preferences file
@@ -533,82 +522,6 @@ Prefs::ColourScheme Prefs::colourScheme()
 	return colourScheme_;
 }
 
-// Get number of segments in colour scale
-int Prefs::nScaleSegments()
-{
-	return nScaleSegments_; 
-}
-
-// Set number of segments in colour scale
-void Prefs::setScaleSegments(int nsegments)
-{
-	nScaleSegments_ = nsegments;
-	setScaleColours();
-}
-
-// Copy colour scale segment into supplied array
-void Prefs::copyScaleColour(int n, GLfloat *v)
-{
-	// Check range of requested colour
-	if ((n < 0) || (n > (3+2*nScaleSegments_))) 
-	{
-		printf("prefs::get_scale_colour - Requested colour is out of range.\n");
-		v[0] = scaleColours_[0][0];
-		v[1] = scaleColours_[0][1];
-		v[2] = scaleColours_[0][2];
-		v[3] = scaleColours_[0][3];
-	}
-	else
-	{
-		v[0] = scaleColours_[n][0];
-		v[1] = scaleColours_[n][1];
-		v[2] = scaleColours_[n][2];
-		v[3] = scaleColours_[n][3];
-	}
-}
-
-// Set colours in colour scale
-void Prefs::setScaleColours()
-{
-	static int lastnsegments = -1, n;
-	static GLfloat delta;
-	// Check current value of nScaleSegments_ against last value. If different, recreate array
-	if (lastnsegments != nScaleSegments_)
-	{
-		if (scaleColours_ != NULL)
-		{
-			for (n=0; n<(3+nScaleSegments_*2); n++) delete[] scaleColours_[n];
-			delete[] scaleColours_;
-		}
-		// Create new array
-		scaleColours_ = new GLfloat*[3+nScaleSegments_*2];
-		for (n=0; n<(3+nScaleSegments_*2); n++) scaleColours_[n] = new GLfloat[4];
-		lastnsegments = nScaleSegments_;
-	}
-	// Set values of lo, mid, and hi colours.
-	scaleColours_[0][0] = penColours_[Prefs::SchemeLoColour][0];
-	scaleColours_[0][1] = penColours_[Prefs::SchemeLoColour][1];
-	scaleColours_[0][2] = penColours_[Prefs::SchemeLoColour][2];
-	scaleColours_[0][3] = penColours_[Prefs::SchemeLoColour][3];
-	scaleColours_[nScaleSegments_+1][0] = penColours_[Prefs::SchemeMidColour][0];
-	scaleColours_[nScaleSegments_+1][1] = penColours_[Prefs::SchemeMidColour][1];
-	scaleColours_[nScaleSegments_+1][2] = penColours_[Prefs::SchemeMidColour][2];
-	scaleColours_[nScaleSegments_+1][3] = penColours_[Prefs::SchemeMidColour][3];
-	scaleColours_[nScaleSegments_*2+2][0] = penColours_[Prefs::SchemeHiColour][0];
-	scaleColours_[nScaleSegments_*2+2][1] = penColours_[Prefs::SchemeHiColour][1];
-	scaleColours_[nScaleSegments_*2+2][2] = penColours_[Prefs::SchemeHiColour][2];
-	scaleColours_[nScaleSegments_*2+2][3] = penColours_[Prefs::SchemeHiColour][3];
-	// Interpolate between the lo and mid points.
-	delta = 1.0f / (nScaleSegments_ + 1);	
-	for (n=0; n<nScaleSegments_; n++)
-	{
-		scaleColours_[n+1][0] = scaleColours_[0][0] + (penColours_[Prefs::SchemeMidColour][0]-scaleColours_[0][0]) * n * delta;
-		scaleColours_[n+1][1] = scaleColours_[0][1] + (penColours_[Prefs::SchemeMidColour][1]-scaleColours_[0][1]) * n * delta;
-		scaleColours_[n+1][2] = scaleColours_[0][2] + (penColours_[Prefs::SchemeMidColour][2]-scaleColours_[0][2]) * n * delta;
-		scaleColours_[n+1][3] = scaleColours_[0][3] + (penColours_[Prefs::SchemeMidColour][3]-scaleColours_[0][3]) * n * delta;
-	}
-}
-
 /*
 // GL Options
 */
@@ -687,30 +600,6 @@ GLint Prefs::shininess()
 GLfloat *Prefs::penColour(Colour c)
 {
 	return penColours_[c];
-}
-
-// Return the low limit for the scheme specified
-double Prefs::colourSchemeLo(int i)
-{
-	return colourSchemeLo_[i];
-}
-
-// Sets the low limit for the scheme specified
-void Prefs::setColourSchemeLo(int i, double d)
-{
-	colourSchemeLo_[i] = d;
-}
-
-// Return the high limit for the scheme specified
-double Prefs::colourSchemeHi(int i)
-{
-	return colourSchemeHi_[i];
-}
-
-// Sets the high limit for the scheme specified
-void Prefs::setColourSchemeHi(int i, double d)
-{
-	colourSchemeHi_[i] = d;
 }
 
 void Prefs::setPenColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)

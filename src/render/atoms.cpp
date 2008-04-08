@@ -29,7 +29,6 @@ void Canvas::renderModelAtoms()
 	dbgBegin(Debug::Calls,"Canvas::renderModelAtoms");
 	static Atom::DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
-	static short int cindex;
 	static Prefs::ColourScheme scheme;
 	static double radius, rij;
 	static Vec3<double> ri, rj, rk, ijk;
@@ -51,23 +50,27 @@ void Canvas::renderModelAtoms()
 	{
 		// If the atom is hidden then move on to the next
 		if (i->isHidden()) continue;
-		// Check if its a drawing object and not an element
-		if (i->element() > 118) continue;
 		// Push the current matrix, translate to the atoms coordinates and set the drawing colour
 		glPushMatrix();
-		  // Define atom colours
-		  if (scheme == Prefs::ElementScheme)
+		  // Define atom colour
+		  switch (scheme)
 		  {
-			cindex = i->element();
-			elements.copyAmbientColour(cindex, ambient);
-			elements.copyDiffuseColour(cindex, diffuse);
-		  }
-		  else
-		  {
-			printf("Colour scale selection for atoms is not yet done.\n");
-			cindex = 0;
-			prefs.copyScaleColour(cindex, ambient);
-			prefs.copyScaleColour(cindex, diffuse);
+			case (Prefs::ElementScheme):
+				elements.copyAmbientColour(i->element(), ambient);
+				elements.copyDiffuseColour(i->element(), diffuse);
+				break;
+			case (Prefs::ChargeScheme):
+				prefs.chargeColourScale.colour(i->charge(), ambient);
+				prefs.chargeColourScale.colour(i->charge(), diffuse);
+				break;
+			case (Prefs::VelocityScheme):
+				prefs.velocityColourScale.colour(i->charge(), ambient);
+				prefs.velocityColourScale.colour(i->charge(), diffuse);
+				break;
+			case (Prefs::ForceScheme):
+				prefs.forceColourScale.colour(i->charge(), ambient);
+				prefs.forceColourScale.colour(i->charge(), diffuse);
+				break;
 		  }
 		  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
 		  glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
@@ -198,12 +201,11 @@ void Canvas::renderModelAtoms()
 		  }
 		glPopMatrix();
 	}
-	// End the GL_LINES command
-	//glEnd();
 	// Second pass to render selected sphere atoms (transparency)
 	// Enable alpha component (if we weren't aliasing anyway)
 	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glEnable(GL_BLEND);
-	glEnable(GL_LIGHTING);		// Make sure lighting is on
+	// Make sure lighting is on
+	glEnable(GL_LIGHTING);
 	for (i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
 		// Grab atom style and toggle lighting state if Atom::IndividualStyle is the main drawing style
@@ -213,18 +215,24 @@ void Canvas::renderModelAtoms()
 		if (!i->isSelected()) continue;
 		if (i->isHidden()) continue;
 		// Define atom colours
-		if (scheme == Prefs::ElementScheme)
+		switch (scheme)
 		{
-			cindex = i->element();
-			elements.copyAmbientColour(cindex, ambient);
-			elements.copyDiffuseColour(cindex, diffuse);
-		}
-		else
-		{
-			printf("Colour scale selection for atoms is not yet done.\n");
-			cindex = 0;
-			prefs.copyScaleColour(cindex, ambient);
-			prefs.copyScaleColour(cindex, diffuse);
+			case (Prefs::ElementScheme):
+				elements.copyAmbientColour(i->element(), ambient);
+				elements.copyDiffuseColour(i->element(), diffuse);
+				break;
+			case (Prefs::ChargeScheme):
+				prefs.chargeColourScale.colour(i->charge(), ambient);
+				prefs.chargeColourScale.colour(i->charge(), diffuse);
+				break;
+			case (Prefs::VelocityScheme):
+				prefs.velocityColourScale.colour(i->charge(), ambient);
+				prefs.velocityColourScale.colour(i->charge(), diffuse);
+				break;
+			case (Prefs::ForceScheme):
+				prefs.forceColourScale.colour(i->charge(), ambient);
+				prefs.forceColourScale.colour(i->charge(), diffuse);
+				break;
 		}
 		ambient[3] = ambient[3] / 2.0f;
 		diffuse[3] = diffuse[3] / 2.0f;
