@@ -267,11 +267,11 @@ void Canvas::glSphere(double radius, bool filled)
 	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
 	for(i = 0; i <= lats; i++)
 	{
-		lat0 = M_PI * (-0.5 + (double) (i - 1) / lats);
+		lat0 = PI * (-0.5 + (double) (i - 1) / lats);
 		z0  = sin(lat0);
 		zr0 =  cos(lat0);
 
-		lat1 = M_PI * (-0.5 + (double) i / lats);
+		lat1 = PI * (-0.5 + (double) i / lats);
 		z1 = sin(lat1);
 		zr1 = cos(lat1);
 

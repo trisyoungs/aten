@@ -67,6 +67,7 @@ SET(pro_UIS
   loadmodel.ui
   mainwindow.ui
   prefs.ui
+  selectpattern.ui
 )
 QT4_WRAP_UI(pro_UIS_H ${pro_UIS})
 

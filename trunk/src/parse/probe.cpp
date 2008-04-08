@@ -47,7 +47,7 @@ Filter *Master::probeFile(const char *filename, FilterType probetype)
 	}
 	probefile.close();
 	int n;
-	char *dotpos;
+	const char *dotpos;
 	Dnchar nameonly;
 	Filter *f, *result = NULL;
 	dotpos = strrchr(filename,'.');

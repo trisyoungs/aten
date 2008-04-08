@@ -60,7 +60,7 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	}
 	selectedFilename_ = qPrintable(QFileDialog::getOpenFileName(this, "Select Model File", currentDirectory_.get(), filters, &selFilter));
 	strcpy(s,selectedFilename_.get());
-	c = rindex(s, '/');
+	c = strrchr(s, '/');
 	if (c == NULL) s[0] = '\0';
 	else *c = '\0';
 	currentDirectory_ = s;
