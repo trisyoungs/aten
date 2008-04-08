@@ -74,15 +74,20 @@ install(TARGETS ${target_name}
       RUNTIME DESTINATION bin
       PERMISSIONS WORLD_EXECUTE)
 
-install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/filters" 
+install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data" 
      FILE_PERMISSIONS WORLD_READ
      DIRECTORY_PERMISSIONS WORLD_EXECUTE
      DESTINATION share/aten
      REGEX ".svn" EXCLUDE
 )
+
 if(WIN32)
 FIND_FILE(Rline readline5.dll ENV PATH)
-install(FILES ${Rline}
+Find_File(qtgui QtGui4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+Find_File(qtgl QtOpenGL4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+Find_File(qtcore QtCore4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+
+install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline}
 DESTINATION bin
 PERMISSIONS WORLD_READ
 )
@@ -114,8 +119,8 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY "aten${VERSION_MAJOR}.${VERSION_MINOR}")
 IF(WIN32 AND NOT UNIX)
   # There is a bug in NSI that does not handle full unix paths properly. Make
   # sure there is at least one set of four (4) backlasshes.
-  set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\app.ico")
-  set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\mondrian.ico")
+  set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\aten.ico")
+  set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\uninstall.ico")
   SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\aten.bmp")
   SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\aten.exe")  
   SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} Aten")
