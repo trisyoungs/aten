@@ -199,20 +199,20 @@ void Canvas::renderRegions()
 		  size = m->area.size();
 		  switch (m->area.shape())
 		  {
-			case (RS_CELL):
+			case (ComponentRegion::WholeCell):
 				break;
-			case (RS_CUBOID):
+			case (ComponentRegion::CuboidRegion):
 				glTranslated(centre.x,centre.y,centre.z);
 				glScaled(size.x,size.y,size.z);
 				glCallList(list_[GLOB_UNITCUBE]);
 				break;
-			case (RS_SPHEROID):
+			case (ComponentRegion::SpheroidRegion):
 				glTranslated(centre.x,centre.y,centre.z);
 				glScaled(size.x,size.y,size.z);
 				glCallList(list_[GLOB_UNITATOM]);
 				break;
 			default:
-				printf("render_model_regions :: ComponentRegion type not done.\n");
+				printf("renderRegions :: ComponentRegion type not done.\n");
 				break;
 		  }
 		glPopMatrix();

@@ -185,36 +185,12 @@ void AtenForm::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 	}
 }
 
-/* void AtenForm::on_PopulationSpin_valueChanged(int value)
-{
-	int comp = ui.ComponentList->currentRow();
-	if (comp == -1) return;
-	Model *m = master.model(comp);
-	m->setNRequested(value);
-}
-
-void AtenForm::on_ComponentTranslateCheck_clicked(bool checked)
-{
-	int comp = ui.ComponentList->currentRow();
-	if (comp == -1) return;
-	Model *m = master.model(comp);
-	m->setMoveAllowed(MonteCarlo::Translate, checked);
-}
-
-void AtenForm::on_ComponentRotateCheck_clicked(bool checked)
-{
-	int comp = ui.ComponentList->currentRow();
-	if (comp == -1) return;
-	Model *m = master.model(comp);
-	m->setMoveAllowed(MonteCarlo::Translate, checked);
-} */
-
 void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = master.model(comp);
-	m->area.setShape( (ComponentRegionShape) index);
+	m->area.setShape( (ComponentRegion::RegionShape) index);
 	gui.mainView.postRedisplay();
 }
 

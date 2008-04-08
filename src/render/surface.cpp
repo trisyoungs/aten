@@ -341,7 +341,7 @@ void renderSurfaceGrid(Grid *g)
 }
 
 // Render isosurface with Marching Cubes
-void cubeIt(Grid *g, SurfaceStyle ss)
+void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 {
 	int i, j, k, n, cubetype, *faces;
 	Vec3<double> r, normal, gradient[8];
@@ -358,14 +358,14 @@ void cubeIt(Grid *g, SurfaceStyle ss)
 	// Set glBegin based on the surface style
 	switch (ss)
 	{
-		case (SS_POINTS):
+		case (Grid::PointSurface):
 			glBegin(GL_POINTS);
 			break;
-		case (SS_TRIANGLES):
+		case (Grid::TriangleSurface):
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			glBegin(GL_TRIANGLES);
 			break;
-		case (SS_SOLID):
+		case (Grid::SolidSurface):
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			glBegin(GL_TRIANGLES);
 			break;
@@ -478,7 +478,7 @@ void Canvas::renderSurfaces()
 			glNewList(list,GL_COMPILE);
 			  switch (g->style())
 			  {
-				case (SS_GRID):
+				case (Grid::PointSurface):
 					renderSurfaceGrid(g);
 					break;
 				default:

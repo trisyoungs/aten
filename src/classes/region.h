@@ -25,12 +25,6 @@
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 
-// ComponentRegion Shapes
-enum ComponentRegionShape { RS_CELL, RS_CUBOID, RS_SPHEROID, RS_CYLINDER, RS_NITEMS };
-const char *text_from_RS(ComponentRegionShape);
-const char **get_RS_strings();
-ComponentRegionShape RS_from_text(const char*);
-
 // Forward Declarations
 class Cell;
 class Component;
@@ -44,10 +38,14 @@ class ComponentRegion
 	ComponentRegion();
 	// List pointers
 	ComponentRegion *prev, *next;
+	// ComponentRegion Shapes
+	enum RegionShape { WholeCell, CuboidRegion, SpheroidRegion, CylinderRegion, nRegionShapes };
+	static const char *regionShape(RegionShape);
+	static RegionShape regionShape(const char*);
 
 	private:
 	// Type of ComponentRegion the component is limited to
-	ComponentRegionShape shape_;
+	RegionShape shape_;
 	// Coordinates of the centre of any defined ComponentRegion
 	Vec3<double> centre_;
 	// Size of the ComponentRegion
@@ -59,9 +57,9 @@ class ComponentRegion
 
 	public:
 	// Sets the shape of the ComponentRegion for the component
-	void setShape(ComponentRegionShape r);
+	void setShape(RegionShape r);
 	// Returns the ComponentRegion defined for the component
-	ComponentRegionShape shape();
+	RegionShape shape();
 	// Sets the centre of the defined ComponentRegion
 	void setCentre(Vec3<double> v);
 	// Returns the centre of the defined ComponentRegion
