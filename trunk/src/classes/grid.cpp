@@ -34,7 +34,7 @@ Grid::Grid()
 	maximum_ = -10000.0;
 	cutoff_ = 0.0;
 	log_ = -1;
-	style_ = SS_SOLID;
+	style_ = Grid::SolidSurface;
 	displayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = TRUE;
@@ -164,14 +164,14 @@ bool Grid::isVisible()
 }
 
 // Set the rendering style of the surface
-void Grid::setStyle(SurfaceStyle ss)
+void Grid::setStyle(Grid::SurfaceStyle ss)
 {
 	style_ = ss;
 	log_++;
 }
 
 // Return the rendering style of the surface
-SurfaceStyle Grid::style()
+Grid::SurfaceStyle Grid::style()
 {
 	return style_;
 }
@@ -346,9 +346,10 @@ void Grid::setColour(double r, double g, double b)
 void Grid::bohrToAngstrom()
 {
 	// Only the axes and origin need to be modified...
-	Mat3<double> newaxes = cell_.axes();
-	newaxes *= ANGBOHR;
-	cell_.set(newaxes);
+	Vec3<double> lengths = cell_.lengths();
+	Vec3<double> angles = cell_.angles();
+	lengths *= ANGBOHR;
+	cell_.set(lengths, angles);
 	origin_ *= ANGBOHR;
 }
 

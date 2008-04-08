@@ -463,7 +463,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 				msg(Debug::Verbose,"Pattern '%s' is fixed.\n",p->name());
 				continue;
 			}
-			msg(Debug::Verbose,"Pattern region is '%s'.\n",text_from_RS(r->shape()));
+			msg(Debug::Verbose,"Pattern region is '%s'.\n", ComponentRegion::regionShape(r->shape()));
 
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MonteCarlo::Delete; move>-1; move--)

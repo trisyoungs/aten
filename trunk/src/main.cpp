@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 	{
 		// Try a list of default locations...
 		sprintf(filename,"%s%s",master.dataDir.get(),"/filters/");
-		if (master.openFilters("/usr/local/aten/filters/",TRUE)) found = TRUE;
+		if (master.openFilters("/usr/share/aten/filters/",TRUE)) found = TRUE;
 		else if (master.openFilters("/usr/local/share/aten/filters/",TRUE)) found = TRUE;
 		else
 		{

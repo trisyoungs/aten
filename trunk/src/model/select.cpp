@@ -86,7 +86,7 @@ void Model::selectionDelete()
 	dbgBegin(Debug::Calls,"Model::selectionDelete");
 	Atom *i, *tempi;
 	int count = 0;
-	master.initialiseProgress("Deleting atoms_...", atoms_.nItems());
+	master.initialiseProgress("Deleting atoms...", atoms_.nItems());
 	i = atoms_.first();
 	while (i != NULL)
 	{

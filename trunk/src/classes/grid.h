@@ -29,9 +29,6 @@
 #include "base/debug.h"
 #include <QtOpenGL/QtOpenGL>
 
-// Surface rendering styles
-enum SurfaceStyle { SS_GRID, SS_POINTS, SS_TRIANGLES, SS_SOLID };
-
 // 3D Grid Class
 class Grid
 {
@@ -41,6 +38,8 @@ class Grid
 	~Grid();
 	// List pointers
 	Grid *prev, *next;
+	// Surface rendering styles
+	enum SurfaceStyle { GridSurface, PointSurface, TriangleSurface, SolidSurface };
 
 	/*
 	// Identity

@@ -224,7 +224,7 @@ void AtenForm::on_GridStyleCombo_currentIndexChanged(int index)
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
 	Grid *g = master.grid(row);
-	g->setStyle(SurfaceStyle (index));
+	g->setStyle(Grid::SurfaceStyle (index));
 	gui.mainView.postRedisplay();
 }
 

@@ -28,19 +28,21 @@
 #include "model/model.h"
 
 // MC ComponentRegions
-const char *RS_strings[RS_NITEMS] = { "Cell", "Cuboid", "Spheroid", "Cylinder" };
-const char *text_from_RS(ComponentRegionShape i)
-	{ return RS_strings[i]; }
-ComponentRegionShape RS_from_text(const char *s)
-	{ return (ComponentRegionShape) enumSearch("region shape",RS_NITEMS,RS_strings,s); }
-const char **get_RS_strings()
-	{ return RS_strings; }
+const char *RegionShapeKeywords[ComponentRegion::nRegionShapes] = { "Cell", "Cuboid", "Spheroid", "Cylinder" };
+const char *ComponentRegion::regionShape(ComponentRegion::RegionShape i)
+{
+	return RegionShapeKeywords[i];
+}
+ComponentRegion::RegionShape ComponentRegion::regionShape(const char *s)
+{
+	return (ComponentRegion::RegionShape) enumSearch("region shape", ComponentRegion::nRegionShapes, RegionShapeKeywords, s);
+}
 
 // Constructor
 ComponentRegion::ComponentRegion()
 {
 	// Private variables
-	shape_ = RS_CELL;
+	shape_ = ComponentRegion::WholeCell;
 	centre_.zero();
 	allowOverlap_ = TRUE;
 	size_.set(5.0,5.0,5.0);
@@ -51,13 +53,13 @@ ComponentRegion::ComponentRegion()
 }
 
 // Sets the shape of the ComponentRegion for the component
-void ComponentRegion::setShape(ComponentRegionShape r)
+void ComponentRegion::setShape(ComponentRegion::RegionShape r)
 {
 	shape_ = r;
 }
 
 // Returns the ComponentRegion defined for the component
-ComponentRegionShape ComponentRegion::shape()
+ComponentRegion::RegionShape ComponentRegion::shape()
 {
 	return shape_;
 }
@@ -140,21 +142,21 @@ bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
 	bool result = TRUE;
 	switch (shape_)
 	{
-		case (RS_CELL):
+		case (ComponentRegion::WholeCell):
 			break;
-		case (RS_CUBOID):
+		case (ComponentRegion::CuboidRegion):
 			tempv = v - centre_;
 			if (fabs(tempv.x) > 0.5*size_.x) result = FALSE;
 			else if (fabs(tempv.y) > 0.5*size_.y) result = FALSE;
 			else if (fabs(tempv.z) > 0.5*size_.z) result = FALSE;
 			break;
-		case (RS_SPHEROID):
+		case (ComponentRegion::SpheroidRegion):
 			tempv = v - centre_;
 			// Scale test point by spheroid size
 			tempv /= size_;
 			if (tempv.magnitude() > 1.0) result = FALSE;
 			break;
-		case (RS_CYLINDER):
+		case (ComponentRegion::CylinderRegion):
 			printf("ComponentRegion::checkCoords - Not done yet for this type.\n");
 			break;
 	}
@@ -167,30 +169,30 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 {
 	dbgBegin(Debug::Calls,"ComponentRegion::randomCoords");
 	static Vec3<double> v, tempv;
-	static int nattempts;
+	static int nAttempts;
 	bool done = FALSE;
-	nattempts = 0;
+	nAttempts = 0;
 	// Generate random coords inside this region...
 	do
 	{
 		// Increment the attempts counter
-		nattempts ++;
+		nAttempts ++;
 		switch (shape_)
 		{
-			case (RS_CELL):
+			case (ComponentRegion::WholeCell):
 				v.x = csRandom();
 				v.y = csRandom();
 				v.z = csRandom();
 				v *= cell->transpose();
 				break;
-			case (RS_CUBOID):
+			case (ComponentRegion::CuboidRegion):
 				v = size_;
 				v.x *= csRandom() - 0.5;
 				v.y *= csRandom() - 0.5;
 				v.z *= csRandom() - 0.5;
 				v += centre_;
 				break;
-			case (RS_SPHEROID):
+			case (ComponentRegion::SpheroidRegion):
 				//tempv.set(csRandom(),(csRandom()-0.5)*PI,(csRandom()-0.5)*PI);
 				tempv.set(csRandom(),(csRandom()*2.0-1.0)*PI,(csRandom()-0.5)*PI);
 				v.x = tempv.x * sin(tempv.y) * cos(tempv.z) * size_.x;
@@ -198,7 +200,7 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				v.z = tempv.x * cos(tempv.y)                * size_.z;
 				v += centre_;
 				break;
-			case (RS_CYLINDER):
+			case (ComponentRegion::CylinderRegion):
 				printf("ComponentRegion::randomCoords - Cylinder moves not implemented yet...\n");
 				break;
 		}
@@ -208,9 +210,9 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 			if (!checkOverlap(v,cell,components)) done = TRUE;
 		}
 		else done = TRUE;
-		if ((!done) && (nattempts == 100))
+		if ((!done) && (nAttempts == 100))
 		{
-			printf("Failed to find position in region '%s' that doesn't overlap within %i trials.\n", text_from_RS(shape_), 100);
+			printf("Failed to find position in region '%s' that doesn't overlap within %i trials.\n", ComponentRegion::regionShape(shape_), 100);
 			done = TRUE;
 		}
 	} while (!done);

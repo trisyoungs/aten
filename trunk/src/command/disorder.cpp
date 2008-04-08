@@ -53,7 +53,7 @@ int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 			(m->isMoveAllowed(MonteCarlo::Translate) ? "+" : " "),
 			(m->isMoveAllowed(MonteCarlo::Rotate) ? "+" : " "),
 			(m->isMoveAllowed(MonteCarlo::ZMatrix) ? "+" : " "),
-			text_from_RS(m->area.shape()),
+			ComponentRegion::regionShape(m->area.shape()),
 			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
 			(m->area.allowOverlap() ? "Yes" : "No"));
 	}
@@ -89,8 +89,8 @@ int CommandData::function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj)
 int CommandData::function_CA_REGIONSHAPE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	ComponentRegionShape rs = RS_from_text(c->argc(0));
-	if (rs != RS_NITEMS) obj.m->area.setShape(rs);
+	ComponentRegion::RegionShape rs = ComponentRegion::regionShape(c->argc(0));
+	if (rs != ComponentRegion::nRegionShapes) obj.m->area.setShape(rs);
 	return CR_SUCCESS;
 }
 
