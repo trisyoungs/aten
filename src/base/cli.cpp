@@ -160,6 +160,7 @@ int Master::parseCli(int argc, char *argv[])
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
 	char *arg;
 	CommandList *cl;
+	Forcefield *ff;
 	Prefs::ZmapType zm;
 	Namemap<int> *nm;
 	Filter *f, *modelfilter = NULL;
@@ -248,7 +249,8 @@ int Master::parseCli(int argc, char *argv[])
 						break;
 					// Load the specified forcefield
 					case (Cli::ForcefieldSwitch):
-						master.loadForcefield(argv[++argn]);
+						ff = master.loadForcefield(argv[++argn]);
+						if (ff == NULL) return -1;
 						break;
 					// Force folding (MIM'ing) of atoms in periodic systems on load
 					case (Cli::FoldSwitch):
@@ -263,7 +265,8 @@ int Master::parseCli(int argc, char *argv[])
 					case (Cli::GridSwitch):
 						argn++;
 						f = master.probeFile(argv[argn], FT_GRID_IMPORT);
-						if (f != NULL) f->execute(argv[argn]);
+						if (f == NULL) return -1;
+						else if (!f->execute(argv[argn])) return -1;
 						break;
 					// Display help
 					case (Cli::HelpSwitch):
