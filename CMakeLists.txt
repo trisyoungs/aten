@@ -129,6 +129,17 @@ IF(WIN32 AND NOT UNIX)
   SET(CPACK_NSIS_CONTACT "t.youngs@qub.ac.uk")
   SET(CPACK_NSIS_MODIFY_PATH ON)
   SET(CPACK_PACKAGE_EXECUTABLES "aten" "aten")
+  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+    Push \\\"ATENDATA\\\"
+    Push \\\"$INSTDIR\\\\share\\\\aten\\\\data\\\"
+    Call WriteEnvStr  
+"
+  )
+  set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "    
+    Push \\\"ATENDATA\\\"
+    Call un.DeleteEnvStr  
+"
+)
 ELSE(WIN32 AND NOT UNIX)
 SET(CPACK_GENERATOR "TGZ;TBZ2;RPM;DEB")
 Endif(WIN32 AND NOT UNIX)
