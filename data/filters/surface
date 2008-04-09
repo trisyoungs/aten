@@ -17,7 +17,7 @@ importgrid
 	gridlooporder xyz
 
 	# First line contains number of gridpoints in each direction x,y
-	readline "$nx $nyz"
+	readline "$nx $ny"
 	gridsize $nx $ny 0
 	# Second line contains vectors between gridpoints
 	readline "$xx $xy $xz $yx $yy $yz"
