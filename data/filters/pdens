@@ -1,5 +1,5 @@
-# Simple-style surface definition
-# Last modified: 10/10/07
+# Simple-style volumetric data definition
+# Last modified: 09/04/08
 importgrid
 	name "Probability Densities from pdens"
 	nickname pdens
