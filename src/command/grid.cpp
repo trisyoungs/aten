@@ -69,6 +69,21 @@ int CommandData::function_CA_GRIDAXES(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set colour scale for grid
+int CommandData::function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	int cs = c->argi(0);
+	if ((cs < 0) || (cs > 10))
+	{
+		msg(Debug::None,"ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
+		return CR_FAIL;
+	}
+	obj.g->setColourScale(cs);
+	
+	return CR_SUCCESS;
+}
+
 // Set cubic grid (one double)
 int CommandData::function_CA_GRIDCUBIC(Command *&c, Bundle &obj)
 {

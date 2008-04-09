@@ -178,6 +178,7 @@ void Master::initCommands()
 	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
 	CA_data[CA_GRIDAXES].function = &CommandData::function_CA_GRIDAXES;
 	CA_data[CA_GRIDCUBIC].function = &CommandData::function_CA_GRIDCUBIC;
+	CA_data[CA_GRIDCOLOURSCALE].function = &CommandData::function_CA_GRIDCOLOURSCALE;
 	CA_data[CA_GRIDLOOPORDER].function = &CommandData::function_CA_GRIDLOOPORDER;
 	CA_data[CA_GRIDORIGIN].function = &CommandData::function_CA_GRIDORIGIN;
 	CA_data[CA_GRIDORTHO].function = &CommandData::function_CA_GRIDORTHO;

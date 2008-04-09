@@ -24,13 +24,13 @@
 // Constructor
 ColourScale::ColourScale()
 {
-	left_ = 0.0;
+	left_ = 1e6;
 	midpoint_ = 0.5;
-	right_ = 1.0;
-	range_ = 1.0;
+	right_ = -1.0e6;
+	range_ = 2e6;
 	type_ = ColourScale::TwoPoint;
 	setColour(ColourScale::LeftColour, 1.0, 1.0, 1.0, 1.0);
-	setColour(ColourScale::MidColour, 0.5, 0.5, 1.0, 1.0);
+	setColour(ColourScale::MidColour, 0.5, 0.5, 0.5, 1.0);
 	setColour(ColourScale::RightColour, 0.0, 0.0, 1.0, 1.0);
 }
 
@@ -95,23 +95,24 @@ void ColourScale::colour(double v, GLfloat *target)
 	else if (delta > 1.0) delta = 1.0;
 	if (type_ == ColourScale::TwoPoint)
 	{
-		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftRight_[0];
-		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftRight_[1];
-		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftRight_[2];
-		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftRight_[3];
+		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftRight_[0] * delta;
+		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftRight_[1] * delta;
+		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftRight_[2] * delta;
+		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftRight_[3] * delta;
 	}
 	else if (delta < 0.5)
 	{
-		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftMid_[0];
-		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftMid_[1];
-		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftMid_[2];
-		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftMid_[3];
+		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftMid_[0] * delta;
+		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftMid_[1] * delta;
+		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftMid_[2] * delta;
+		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftMid_[3] * delta;
 	}
 	else
 	{
-		target[0] = colours_[ColourScale::MidColour][0] + deltaMidRight_[0];
-		target[1] = colours_[ColourScale::MidColour][1] + deltaMidRight_[1];
-		target[2] = colours_[ColourScale::MidColour][2] + deltaMidRight_[2];
-		target[3] = colours_[ColourScale::MidColour][3] + deltaMidRight_[3];
+		delta -= 0.5;
+		target[0] = colours_[ColourScale::MidColour][0] + deltaMidRight_[0] * delta;
+		target[1] = colours_[ColourScale::MidColour][1] + deltaMidRight_[1] * delta;
+		target[2] = colours_[ColourScale::MidColour][2] + deltaMidRight_[2] * delta;
+		target[3] = colours_[ColourScale::MidColour][3] + deltaMidRight_[3] * delta;
 	}
 }

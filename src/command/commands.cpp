@@ -319,6 +319,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Finalise grid import" },
 	{ "gridaxes",		"VVVVVVVVV",	"<ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>",
 				"Set axes for current grid" },
+	{ "gridcolourscale",	"V",	"<scaleID>",
+				"Links the surface to the specified colour scale (or zero to return to internal colour)" },
 	{ "gridcubic",		"V",		"<l>",
 				"Set the axes system for the current grid to be cubic" },
 	{ "gridlooporder",	"V",		"<xyz|zyx|213...>",

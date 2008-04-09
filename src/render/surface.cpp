@@ -475,7 +475,9 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 {
 	int i, j, k, n, cubetype, *faces;
 	Vec3<double> r, gradientx, gradienty, normal;
+	int cscale;
 	Vec3<int> npoints = g->nPoints();
+	GLfloat colour[4];
 	double **data;
 	// Grab the data pointer and surface cutoff
 	data = g->data2d();
@@ -497,37 +499,58 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	// Set colour / transparency for surface
 	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
+	cscale = g->colourScale();
+	if (cscale == 0) glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
 	// Render surface
 	for (i = 1; i<npoints.x-2; i++)
 	{
 		for (j = 1; j<npoints.y-2; j++)
 		{
-			gradientx.set(1.0,0,(data[i-1][j] - data[i+1][j])*0.5);
-			gradienty.set(1.0,0,(data[i][j-1] - data[i][j+1])*0.5);
+			gradientx.set(1.0,0,(data[i+1][j] - data[i-1][j])*0.5);
+			gradienty.set(0,1.0,(data[i][j+1] - data[i][j-1])*0.5);
 			normal = (gradientx * gradienty);
 			normal.normalise();
+			if (cscale != 0)
+			{
+				prefs.colourScales[cscale].colour(data[i][j], colour);
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i, j, data[i][j]);
 
-			gradientx.set(1.0,0,(data[i][j] - data[i+2][j])*0.5);
-			gradienty.set(1.0,0,(data[i+1][j-1] - data[i+1][j+1])*0.5);
+			gradientx.set(1.0,0,(data[i+2][j] - data[i][j])*0.5);
+			gradienty.set(0,1.0,(data[i+1][j+1] - data[i+1][j-1])*0.5);
 			normal = gradientx * gradienty;
 			normal.normalise();
+			if (cscale != 0)
+			{
+				prefs.colourScales[cscale].colour(data[i+1][j], colour);
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i+1, j, data[i+1][j]);
 
-			gradientx.set(1.0,0,(data[i][j+1] - data[i+2][j+1])*0.5);
-			gradienty.set(1.0,0,(data[i+1][j] - data[i+1][j+2])*0.5);
+			gradientx.set(1.0,0,(data[i+2][j+1] - data[i][j+1])*0.5);
+			gradienty.set(0,1.0,(data[i+1][j+2] - data[i+1][j])*0.5);
 			normal = gradientx * gradienty;
 			normal.normalise();
+			if (cscale != 0)
+			{
+				prefs.colourScales[cscale].colour(data[i+1][j+1], colour);
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i+1, j+1, data[i+1][j+1]);
 
-			gradientx.set(1.0,0,(data[i-1][j+1] - data[i+1][j+1])*0.5);
-			gradienty.set(1.0,0,(data[i][j] - data[i][j+2])*0.5);
+			gradientx.set(1.0,0,(data[i+1][j+1] - data[i-1][j+1])*0.5);
+			gradienty.set(0,1.0,(data[i][j+2] - data[i][j])*0.5);
 			normal = gradientx * gradienty;
 			normal.normalise();
+			if (cscale != 0)
+			{
+				prefs.colourScales[cscale].colour(data[i][j+1], colour);
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i, j+1, data[i][j+1]);
 		}

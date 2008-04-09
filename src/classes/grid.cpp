@@ -21,6 +21,7 @@
 
 #include "classes/grid.h"
 #include "base/debug.h"
+#include "base/prefs.h"
 #include "base/constants.h"
 #include <QtOpenGL/QtOpenGL>
 
@@ -45,6 +46,7 @@ Grid::Grid()
 	colour_[2] = 0.0f;
 	colour_[3] = 0.5f;
 	loopOrder_.set(0,1,2);
+	colourScale_ = 0;
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -215,6 +217,43 @@ GLfloat *Grid::colour()
 	return colour_;
 }
 
+// Set the colourscale associated with the data
+void Grid::setColourScale(int id)
+{
+	colourScale_ = id;
+	log_ ++;
+	if (colourScale_ == 0) return;
+	int i, j, k;
+	double **data2, *data1;
+	// Adjust the colour scale to encompass all grid values...
+	if (type_ == Grid::VolumetricData)
+	{
+		for (i = 0; i < nPoints_.x; i++)
+		{
+			data2 = data3d_[i];
+			for (j = 0; j<nPoints_.y; j++)
+			{
+				data1 = data2[j];
+				for (k = 0; k<nPoints_.z; k++) prefs.colourScales[colourScale_].adjustRange(data1[k]);
+			}
+		}
+	}
+	else if (type_ == Grid::SurfaceData)
+	{
+		for (i = 0; i < nPoints_.x; i++)
+		{
+			data1 = data2d_[i];
+			for (j = 0; j<nPoints_.y; j++) prefs.colourScales[colourScale_].adjustRange(data1[j]);
+		}
+	}
+}
+
+// Return the colourscale associated with the data
+int Grid::colourScale()
+{
+	return colourScale_;
+}
+
 // Create data array (from npoints vector)
 void Grid::create()
 {
@@ -302,8 +341,6 @@ void Grid::setNPoints(Vec3<int> v)
 	// If nPoints_.z is zero, its a 2D array
 	if (nPoints_.z == 0) type_ = Grid::SurfaceData;
 	else type_ = Grid::VolumetricData;
-	nPoints_.print();
-	printf("GRID TYPE = %i\n",type_);
 	log_ ++;
 	create();
 	dbgEnd(Debug::Calls,"Grid::setNPoints");
