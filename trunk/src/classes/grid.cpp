@@ -125,7 +125,8 @@ double Grid::maximum()
 // Set isovalue cutoff for surface
 void Grid::setCutoff(double d)
 {
-	cutoff_ = d; log_++;
+	cutoff_ = d;
+	log_++;
 }
 
 // Return isovalue cutoff for surface
@@ -301,6 +302,8 @@ void Grid::setNPoints(Vec3<int> v)
 	// If nPoints_.z is zero, its a 2D array
 	if (nPoints_.z == 0) type_ = Grid::SurfaceData;
 	else type_ = Grid::VolumetricData;
+	nPoints_.print();
+	printf("GRID TYPE = %i\n",type_);
 	log_ ++;
 	create();
 	dbgEnd(Debug::Calls,"Grid::setNPoints");
@@ -369,6 +372,7 @@ void Grid::setNextData(double d)
 	else
 	{
 		data2d_[currentPoint_.x][currentPoint_.y] = d;
+		currentPoint_.set(loopOrder_.x, currentPoint_.get(loopOrder_.x) + 1);
 		if (currentPoint_.get(loopOrder_.x) == nPoints_.get(loopOrder_.x))
 		{
 			currentPoint_.set(loopOrder_.x, 0);

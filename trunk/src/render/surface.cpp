@@ -474,7 +474,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 void squareIt(Grid *g, Grid::SurfaceStyle ss)
 {
 	int i, j, k, n, cubetype, *faces;
-	Vec3<double> r, normal, gradient[8];
+	Vec3<double> r, normal;
 	Vec3<int> npoints = g->nPoints();
 	double **data;
 	// Grab the data pointer and surface cutoff
@@ -505,8 +505,8 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 		{
 			glVertex3d(i, j, data[i][j]);
 			glVertex3d(i+1, j, data[i+1][j]);
-			glVertex3d(i, j+1, data[i][j+1]);
 			glVertex3d(i+1, j+1, data[i+1][j+1]);
+			glVertex3d(i, j+1, data[i][j+1]);
 		}
 	}
 	glEnd();
