@@ -199,6 +199,7 @@ enum CommandAction {
 	CA_ADDNEXTGRIDPOINT,
 	CA_FINALISEGRID,
 	CA_GRIDAXES,
+	CA_GRIDCOLOURSCALE,
 	CA_GRIDCUBIC,
 	CA_GRIDLOOPORDER,
 	CA_GRIDORIGIN,
@@ -513,6 +514,7 @@ class CommandData
 	int function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj);
 	int function_CA_FINALISEGRID(Command *&c, Bundle &obj);
 	int function_CA_GRIDAXES(Command *&c, Bundle &obj);
+	int function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj);
 	int function_CA_GRIDCUBIC(Command *&c, Bundle &obj);
 	int function_CA_GRIDORTHO(Command *&c, Bundle &obj);
 	int function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj);

@@ -154,6 +154,8 @@ class Grid
 	SurfaceStyle style_;
 	// Colour (including alpha component)
 	GLfloat colour_[4];
+	// Colour scale to take colouring from (zero for internal colour)
+	int colourScale_;
 
 	public:
 	// Return the surface display list
@@ -181,6 +183,10 @@ class Grid
 	GLfloat transparency();
 	// Return the colour of the surface
 	GLfloat *colour();
+	// Set the colourscale associated with the data
+	void setColourScale(int id);
+	// Return the colourscale associated with the data
+	int colourScale();
 
 	/*
 	// Transformations
