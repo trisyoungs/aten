@@ -6,6 +6,7 @@ bond.h
 bundle.h 
 cell.h 
 clipboard.h 
+colourscale.h
 dnchar.h 
 energystore.h 
 forcefield.h 
@@ -26,6 +27,7 @@ bond.cpp
 bundle.cpp 
 cell.cpp 
 clipboard.cpp 
+colourscale.cpp
 dnchar.cpp 
 energystore.cpp 
 forcefield.cpp 
