@@ -199,16 +199,12 @@ Prefs::Prefs()
 	setPenColour(Prefs::SchemeLoColour, 1.0f, 0.0f, 0.0f, 1.0f);
 	setPenColour(Prefs::SchemeMidColour, 0.7f, 0.7f, 0.7f, 1.0f);
 	setPenColour(Prefs::SchemeHiColour, 0.0f, 0.0f, 1.0f, 1.0f);
-	// Colour scale for atom charge colouring
-	chargeColourScale.setRange(-1.0,1.0);
-	chargeColourScale.setType(ColourScale::ThreePoint);
-	chargeColourScale.setColour(ColourScale::LeftColour, 1.0, 0.0, 0.0);
-	chargeColourScale.setColour(ColourScale::MidColour, 1.0, 1.0, 1.0);
-	chargeColourScale.setColour(ColourScale::RightColour, 0.0, 0.0, 1.0);
-	// Colour scale for atom force colouring
-	ColourScale forceColourScale;
-	// Colour scale for atom velocity colouring
-	ColourScale velocityColourScale;
+	// Colour scale for atom charge colouring (id 0)
+	colourScale[0].setRange(-1.0,1.0);
+	colourScale[0].setType(ColourScale::ThreePoint);
+	colourScale[0].setColour(ColourScale::LeftColour, 1.0, 0.0, 0.0);
+	colourScale[0].setColour(ColourScale::MidColour, 1.0, 1.0, 1.0);
+	colourScale[0].setColour(ColourScale::RightColour, 0.0, 0.0, 1.0);
 
 	// Methods
 	modelUpdate_ = 5;

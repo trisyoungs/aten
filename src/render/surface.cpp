@@ -512,7 +512,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			normal.normalise();
 			if (cscale != 0)
 			{
-				prefs.colourScales[cscale].colour(data[i][j], colour);
+				prefs.colourScale[cscale].colour(data[i][j], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
@@ -524,7 +524,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			normal.normalise();
 			if (cscale != 0)
 			{
-				prefs.colourScales[cscale].colour(data[i+1][j], colour);
+				prefs.colourScale[cscale].colour(data[i+1][j], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
@@ -536,7 +536,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			normal.normalise();
 			if (cscale != 0)
 			{
-				prefs.colourScales[cscale].colour(data[i+1][j+1], colour);
+				prefs.colourScale[cscale].colour(data[i+1][j+1], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
@@ -548,7 +548,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			normal.normalise();
 			if (cscale != 0)
 			{
-				prefs.colourScales[cscale].colour(data[i][j+1], colour);
+				prefs.colourScale[cscale].colour(data[i][j+1], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);

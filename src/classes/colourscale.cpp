@@ -25,7 +25,7 @@
 ColourScale::ColourScale()
 {
 	left_ = 1e6;
-	midpoint_ = 0.5;
+	middle_ = 0.5;
 	right_ = -1.0e6;
 	range_ = 2e6;
 	type_ = ColourScale::TwoPoint;
@@ -38,6 +38,36 @@ ColourScale::ColourScale()
 void ColourScale::setType(ColourScale::ScaleOrder so)
 {
 	type_ = so;
+}
+
+// Return type of colourscale
+ColourScale::ScaleOrder ColourScale::type()
+{
+	return type_;
+}
+
+// Return leftmost value of scale
+double ColourScale::left()
+{
+	return left_;
+}
+
+// Return rightmost value of scale
+double ColourScale::right()
+{
+	return right_;
+}
+
+// Return midpoint value of scale
+double ColourScale::middle()
+{
+	return middle_;
+}
+
+// Return range of scale
+double ColourScale::range()
+{
+	return range_;
 }
 
 // Set colour
@@ -71,8 +101,14 @@ void ColourScale::setRange(double left, double right)
 {
 	left_ = left;
 	right_ = right;
-	midpoint_ = (right - left) * 0.5;
+	middle_ = (right - left) * 0.5;
 	range_ = right_ - left_;
+}
+
+// Set the midpoint of the colour scale
+void ColourScale::setMiddle(double middle)
+{
+	middle_ = middle;
 }
 
 // Adjust colour scale range to cover supplied value
@@ -80,7 +116,7 @@ void ColourScale::adjustRange(double d)
 {
 	if (d < left_) left_ = d;
 	else if (d > right_) right_ = d;
-	midpoint_ = (right_ - left_) * 0.5;
+	middle_ = (right_ - left_) * 0.5;
 	range_ = right_ - left_;
 }
 

@@ -7,6 +7,7 @@ bonds.cpp
 build.cpp 
 cell.cpp 
 charge.cpp 
+colourscale.cpp
 commands.cpp 
 commandlist.cpp 
 disorder.cpp 
