@@ -333,6 +333,12 @@ void Grid::setAxes(const Mat3<double> m)
 	log_++;
 }
 
+// Get cell axes in suitaqble GL format
+void Grid::axesForGl(double *glmat)
+{
+	cell_.axesForGl(glmat);
+}
+
 // Set grid extent (and data[])
 void Grid::setNPoints(Vec3<int> v)
 {
