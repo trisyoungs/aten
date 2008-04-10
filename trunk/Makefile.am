@@ -1,6 +1,6 @@
 SUBDIRS = src
 
-EXTRA_DIST = scripts/*.txt doc/manual.pdf src/gui/icons/*.svg src/gui/icons/*.png data/filters/* data/ff/* data/test/* TODO aten.spec
+EXTRA_DIST = scripts/*.txt doc/manual.pdf src/gui/icons/*.* data/filters/* data/ff/* data/test/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt
 
 #filterdir = $(datadir)/aten/filters
 #filter_DATA = data/filters/*
