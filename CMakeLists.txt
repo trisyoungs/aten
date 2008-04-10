@@ -72,6 +72,7 @@ endif(NOT ${PREFIX})
 
 install(TARGETS ${target_name}
       RUNTIME DESTINATION bin
+)
 
 install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data" 
      DESTINATION share/aten
@@ -86,7 +87,6 @@ Find_File(qtcore QtCore4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 
 install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline}
 DESTINATION bin
-PERMISSIONS WORLD_READ
 )
 ENDIF(WIN32)
 
