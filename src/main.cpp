@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 			// Get string from user
 			//printf(">>> ");
 			//getline(cin,cmd);
-			line = readline("Aten 0.95 > ");
+			line = readline("Aten 0.96 > ");
 			master.interactiveScript.clear();
 			master.interactiveScript.cacheLine(line);
 			master.interactiveScript.execute();

@@ -158,8 +158,12 @@ class Grid
 	GLfloat colour_[4];
 	// Colour scale to take colouring from (zero for internal colour)
 	int colourScale_;
+	// Whether to use the associated colour scale (TRUE) or the internal colour (FALSE)
+	bool useColourScale_;
 
 	public:
+	// Increase the internal log
+	void logChange();
 	// Return the surface display list
 	GLuint displayList();
 	// Return whether re-rendering is necessary
@@ -189,6 +193,8 @@ class Grid
 	void setColourScale(int id);
 	// Return the colourscale associated with the data
 	int colourScale();
+	// Whether the surface uses the defined colour scale or not
+	bool usesColourScale();
 
 	/*
 	// Transformations

@@ -23,6 +23,10 @@
 #define ATEN_COLOURSCALE_H
 
 #include <QtOpenGL/QtOpenGL>
+#include "templates/reflist.h"
+
+// Forward declarations
+class Grid;
 
 // Colour Scale
 class ColourScale
@@ -35,13 +39,12 @@ class ColourScale
 	// Colourscale colours
 	enum ScaleColour { LeftColour, MidColour, RightColour, nScaleColours };
 
+	/*
+	// Data and data range
+	*/
 	private:
 	// Type of ColourScale
 	ScaleOrder type_;
-	// Colours
-	GLfloat colours_[nScaleColours][4];
-	// Colour deltas
-	GLfloat deltaLeftRight_[4], deltaLeftMid_[4], deltaMidRight_[4];
 	// Left, right, and middle of data range
 	double left_, right_, middle_;
 	// Range of data
@@ -52,18 +55,12 @@ class ColourScale
 	void setType(ScaleOrder co);
 	// Return type of colourscale
 	ScaleOrder type();
-	// Set colour
-	void setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
-	// Copy colour
-	void copyColour(ScaleColour col, GLfloat *target);
 	// Set the absolute range of the colour scale
 	void setRange(double left, double right);
 	// Set the midpoint of the colour scale
 	void setMiddle(double middle);
 	// Adjust colour scale range to cover supplied value
 	void adjustRange(double d);
-	// Return colour associated with value provided
-	void colour(double v, GLfloat *c);
 	// Return leftmost value of scale
 	double left();
 	// Return rightmost value of scale
@@ -72,6 +69,38 @@ class ColourScale
 	double middle();
 	// Return range of scale
 	double range();
+
+	/*
+	// Colours
+	*/
+	private:
+	// Colours
+	GLfloat colours_[nScaleColours][4];
+	// Colour deltas
+	GLfloat deltaLeftRight_[4], deltaLeftMid_[4], deltaMidRight_[4];
+
+	public:
+	// Return colour associated with value provided
+	void colour(double v, GLfloat *c);
+	// Set colour
+	void setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Copy colour
+	void copyColour(ScaleColour col, GLfloat *target);
+
+	/*
+	// Linked objects
+	*/
+	private:
+	// Grids that use the colour scale
+	Reflist<Grid,int> grids_;
+	// Refresh all linked objects
+	void refreshObjects();
+
+	public:
+	// Link grid with colourscale
+	void addLink(Grid *g);
+	// Break link between grid and colourscale
+	void breakLink(Grid *g);
 };
 
 #endif

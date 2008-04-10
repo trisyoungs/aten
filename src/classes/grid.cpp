@@ -47,6 +47,8 @@ Grid::Grid()
 	colour_[3] = 0.5f;
 	loopOrder_.set(0,1,2);
 	colourScale_ = 0;
+	prefs.colourScale[0].addLink(this);
+	useColourScale_ = FALSE;
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -56,6 +58,7 @@ Grid::Grid()
 Grid::~Grid()
 {
 	clear();
+	prefs.colourScale[0].breakLink(this);
 }
 
 // Set name of Grid data
@@ -217,12 +220,28 @@ GLfloat *Grid::colour()
 	return colour_;
 }
 
+// Log changes
+void Grid::logChange()
+{
+	log_ ++;
+}
+
 // Set the colourscale associated with the data
 void Grid::setColourScale(int id)
 {
+	// Check range of supplied id
+	if ((id < 0) || (id > 9))
+	{
+		useColourScale_ = FALSE;
+		log_ ++;
+		return;
+	}
+	// Remove old colourscale link
+	prefs.colourScale[colourScale_].breakLink(this);
 	colourScale_ = id;
 	log_ ++;
-	if (colourScale_ == 0) return;
+	prefs.colourScale[colourScale_].addLink(this);
+	useColourScale_ = TRUE;
 	int i, j, k;
 	double **data2, *data1;
 	// Adjust the colour scale to encompass all grid values...
@@ -252,6 +271,12 @@ void Grid::setColourScale(int id)
 int Grid::colourScale()
 {
 	return colourScale_;
+}
+
+// Whether the surface uses the defined colour scale or not
+bool Grid::usesColourScale()
+{
+	return useColourScale_;
 }
 
 // Create data array (from npoints vector)

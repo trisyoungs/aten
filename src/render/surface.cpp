@@ -500,7 +500,8 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 	cscale = g->colourScale();
-	if (cscale == 0) glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
+	if (!g->usesColourScale()) cscale = -1;
+	if (cscale == -1) glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
 	// Render surface
 	for (i = 1; i<npoints.x-2; i++)
 	{
@@ -510,7 +511,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			gradienty.set(0,1.0,(data[i][j+1] - data[i][j-1])*0.5);
 			normal = (gradientx * gradienty);
 			normal.normalise();
-			if (cscale != 0)
+			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i][j], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
@@ -522,7 +523,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			gradienty.set(0,1.0,(data[i+1][j+1] - data[i+1][j-1])*0.5);
 			normal = gradientx * gradienty;
 			normal.normalise();
-			if (cscale != 0)
+			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i+1][j], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
@@ -534,7 +535,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			gradienty.set(0,1.0,(data[i+1][j+2] - data[i+1][j])*0.5);
 			normal = gradientx * gradienty;
 			normal.normalise();
-			if (cscale != 0)
+			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i+1][j+1], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
@@ -546,7 +547,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			gradienty.set(0,1.0,(data[i][j+2] - data[i][j])*0.5);
 			normal = gradientx * gradienty;
 			normal.normalise();
-			if (cscale != 0)
+			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i][j+1], colour);
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
