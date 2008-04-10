@@ -79,8 +79,7 @@ int CommandData::function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj)
 		msg(Debug::None,"ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
 		return CR_FAIL;
 	}
-	obj.g->setColourScale(cs);
-	
+	obj.g->setColourScale(cs-1);
 	return CR_SUCCESS;
 }
 

@@ -20,6 +20,7 @@
 */
 
 #include "classes/colourscale.h"
+#include "classes/grid.h"
 
 // Constructor
 ColourScale::ColourScale()
@@ -85,6 +86,8 @@ void ColourScale::setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GL
 		deltaLeftMid_[n] = colours_[ColourScale::MidColour][n] - colours_[ColourScale::LeftColour][n];
 		deltaMidRight_[n] = colours_[ColourScale::RightColour][n] - colours_[ColourScale::MidColour][n];
 	}
+	// Refresh linked objects
+	refreshObjects();
 }
 
 // Copy colour
@@ -103,6 +106,7 @@ void ColourScale::setRange(double left, double right)
 	right_ = right;
 	middle_ = (right - left) * 0.5;
 	range_ = right_ - left_;
+	refreshObjects();
 }
 
 // Set the midpoint of the colour scale
@@ -151,4 +155,25 @@ void ColourScale::colour(double v, GLfloat *target)
 		target[2] = colours_[ColourScale::MidColour][2] + deltaMidRight_[2] * delta;
 		target[3] = colours_[ColourScale::MidColour][3] + deltaMidRight_[3] * delta;
 	}
+}
+
+// Refresh all linked objects
+void ColourScale::refreshObjects()
+{
+	// Go through lists of linked objects and poke their logs...
+	for (Refitem<Grid,int> *ri = grids_.first(); ri != NULL; ri = ri->next) ri->item->logChange();
+}
+
+// Link grid with colourscale
+void ColourScale::addLink(Grid *g)
+{
+	// Add the grid to the reflist (if it isn't there already
+	grids_.addUnique(g);
+}
+
+// Break link between grid and colourscale
+void ColourScale::breakLink(Grid *g)
+{
+	// Add the grid to the reflist (if it isn't there already
+	grids_.remove(g);
 }

@@ -106,6 +106,15 @@ void Master::initCommands()
 	CA_data[CA_CHARGETYPE].function = &CommandData::function_CA_CHARGETYPE;
 	CA_data[CA_CLEARCHARGES].function = &CommandData::function_CA_CLEARCHARGES;
 
+	// Colourscale commands
+	CA_data[CA_LISTSCALES].function = &CommandData::function_CA_LISTSCALES;
+	CA_data[CA_SCALEMAXCOLOUR].function = &CommandData::function_CA_SCALEMAXCOLOUR;
+	CA_data[CA_SCALEMIDCOLOUR].function = &CommandData::function_CA_SCALEMIDCOLOUR;
+	CA_data[CA_SCALEMIDPOINT].function = &CommandData::function_CA_SCALEMIDPOINT;
+	CA_data[CA_SCALEMINCOLOUR].function = &CommandData::function_CA_SCALEMINCOLOUR;
+	CA_data[CA_SCALERANGE].function = &CommandData::function_CA_SCALERANGE;
+	CA_data[CA_SCALETYPE].function = &CommandData::function_CA_SCALETYPE;
+
 	// Disordered build commands
 	CA_data[CA_DISORDER].function = &CommandData::function_CA_DISORDER;
 	CA_data[CA_LISTCOMPONENTS].function = &CommandData::function_CA_LISTCOMPONENTS;
