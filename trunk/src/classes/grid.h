@@ -66,7 +66,7 @@ class Grid
 	// Gridded Data
 	*/
 	private:
-	// Cell that determine spacing between Gridpoints and their axis system
+	// Cell that determines origin, spacing between Gridpoints, and their axis system
 	Cell cell_;
 	// Surface origin
 	Vec3<double> origin_;
@@ -122,6 +122,8 @@ class Grid
 	double **data2d();
 	// Set loop ordering
 	void setLoopOrder(int n, int xyz);
+	// Get cell axes in suitaqble GL format
+	void axesForGl(double *glmat);
 
 	/*
 	// Data Interface

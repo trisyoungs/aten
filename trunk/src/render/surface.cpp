@@ -566,7 +566,7 @@ void Canvas::renderSurfaces()
 	// If the log of a particular surface is out of data, recreate its display list first
 	static GLuint list;
 	static Vec3<double> origin;
-	static double axes[16];
+	static double glmat[16];
 	static Mat4<double> mat;
 	for (Grid *g = master.grids(); g != NULL; g = g->next)
 	{
@@ -599,10 +599,9 @@ void Canvas::renderSurfaces()
 		  origin = g->origin();
 		  glTranslated(origin.x, origin.y, origin.z);
 		  // Apply matrix transform to get proper grid axes / shear
-		  mat = g->axes();
-		  mat.copyColumnMajor(axes);
+		  g->axesForGl(glmat);
 		  glMatrixMode(GL_MODELVIEW);
-		  glMultMatrixd(axes);
+		  glMultMatrixd(glmat);
 		  // Call the display list
 		  glCallList(list);
 		glPopMatrix();
