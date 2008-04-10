@@ -30,7 +30,7 @@
 #include "base/master.h"
 #include "gui/gui.h"
 
-#define ATENVERSION 0.96
+#define ATENVERSION 0.96.299
 
 int main(int argc, char *argv[])
 {
