@@ -234,7 +234,7 @@ void Grid::setColourScale(int id)
 			for (j = 0; j<nPoints_.y; j++)
 			{
 				data1 = data2[j];
-				for (k = 0; k<nPoints_.z; k++) prefs.colourScales[colourScale_].adjustRange(data1[k]);
+				for (k = 0; k<nPoints_.z; k++) prefs.colourScale[colourScale_].adjustRange(data1[k]);
 			}
 		}
 	}
@@ -243,7 +243,7 @@ void Grid::setColourScale(int id)
 		for (i = 0; i < nPoints_.x; i++)
 		{
 			data1 = data2d_[i];
-			for (j = 0; j<nPoints_.y; j++) prefs.colourScales[colourScale_].adjustRange(data1[j]);
+			for (j = 0; j<nPoints_.y; j++) prefs.colourScale[colourScale_].adjustRange(data1[j]);
 		}
 	}
 }

@@ -43,23 +43,35 @@ class ColourScale
 	// Colour deltas
 	GLfloat deltaLeftRight_[4], deltaLeftMid_[4], deltaMidRight_[4];
 	// Left, right, and middle of data range
-	double left_, right_, midpoint_;
+	double left_, right_, middle_;
 	// Range of data
 	double range_;
 
 	public:
 	// Set type of ColourScale
 	void setType(ScaleOrder co);
+	// Return type of colourscale
+	ScaleOrder type();
 	// Set colour
 	void setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
 	// Copy colour
 	void copyColour(ScaleColour col, GLfloat *target);
 	// Set the absolute range of the colour scale
 	void setRange(double left, double right);
+	// Set the midpoint of the colour scale
+	void setMiddle(double middle);
 	// Adjust colour scale range to cover supplied value
 	void adjustRange(double d);
 	// Return colour associated with value provided
 	void colour(double v, GLfloat *c);
+	// Return leftmost value of scale
+	double left();
+	// Return rightmost value of scale
+	double right();
+	// Return midpoint value of scale
+	double middle();
+	// Return range of scale
+	double range();
 };
 
 #endif

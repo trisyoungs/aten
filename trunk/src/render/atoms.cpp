@@ -60,16 +60,16 @@ void Canvas::renderModelAtoms()
 				elements.copyDiffuseColour(i->element(), diffuse);
 				break;
 			case (Prefs::ChargeScheme):
-				prefs.chargeColourScale.colour(i->charge(), ambient);
-				prefs.chargeColourScale.colour(i->charge(), diffuse);
+				prefs.colourScale[0].colour(i->charge(), ambient);
+				prefs.colourScale[0].colour(i->charge(), diffuse);
 				break;
 			case (Prefs::VelocityScheme):
-				prefs.velocityColourScale.colour(i->charge(), ambient);
-				prefs.velocityColourScale.colour(i->charge(), diffuse);
+				prefs.colourScale[1].colour(i->charge(), ambient);
+				prefs.colourScale[1].colour(i->charge(), diffuse);
 				break;
 			case (Prefs::ForceScheme):
-				prefs.forceColourScale.colour(i->charge(), ambient);
-				prefs.forceColourScale.colour(i->charge(), diffuse);
+				prefs.colourScale[2].colour(i->charge(), ambient);
+				prefs.colourScale[2].colour(i->charge(), diffuse);
 				break;
 		  }
 		  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
@@ -222,16 +222,16 @@ void Canvas::renderModelAtoms()
 				elements.copyDiffuseColour(i->element(), diffuse);
 				break;
 			case (Prefs::ChargeScheme):
-				prefs.chargeColourScale.colour(i->charge(), ambient);
-				prefs.chargeColourScale.colour(i->charge(), diffuse);
+				prefs.colourScale[0].colour(i->charge(), ambient);
+				prefs.colourScale[0].colour(i->charge(), diffuse);
 				break;
 			case (Prefs::VelocityScheme):
-				prefs.velocityColourScale.colour(i->charge(), ambient);
-				prefs.velocityColourScale.colour(i->charge(), diffuse);
+				prefs.colourScale[1].colour(i->charge(), ambient);
+				prefs.colourScale[1].colour(i->charge(), diffuse);
 				break;
 			case (Prefs::ForceScheme):
-				prefs.forceColourScale.colour(i->charge(), ambient);
-				prefs.forceColourScale.colour(i->charge(), diffuse);
+				prefs.colourScale[2].colour(i->charge(), ambient);
+				prefs.colourScale[2].colour(i->charge(), diffuse);
 				break;
 		}
 		ambient[3] = ambient[3] / 2.0f;

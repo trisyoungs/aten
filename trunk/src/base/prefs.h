@@ -261,14 +261,8 @@ class Prefs
 	void setPenColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	// Return the specified colour
 	GLfloat *penColour(Colour c);
-	// Colour scale for atom charge colouring
-	ColourScale chargeColourScale;
-	// Colour scale for atom force colouring
-	ColourScale forceColourScale;
-	// Colour scale for atom velocity colouring
-	ColourScale velocityColourScale;
 	// User-definable colour scales
-	ColourScale colourScales[10];
+	ColourScale colourScale[10];
 
 
 	/*

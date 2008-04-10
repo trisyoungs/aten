@@ -194,6 +194,23 @@ CommandData CA_data[CA_NITEMS] = {
 	{ "clearcharges",	"",		"",
 				"Zero all charges in the current model" },
 	
+	// Colourscale commands
+	{ "listscales",		"",		"",
+				"List details on all colour scales" },
+	{ "scalemaxcolour",	"VVVVv",	"<id> <",
+				"Set colour associated to maximum colour value for colour scale specified" },
+	{ "scalemaxcolour",	"VVVVv",	"<id> <",
+				"Set colour associated to midpoint colour value for colour scale specified" },
+	{ "scalemidpoint",	"VV",		"<id> <midpoint>",
+				"Set the midpoint value in the specified colour scale" },
+	{ "scalemincolour",	"VVVVv",	"<id> <",
+				"Set colour associated to minimum colour value for colour scale specified" },
+	{ "scalerange",		"VVV",		"<id> <min> <max>",
+				"Set the range of the specified colour scale" },
+	{ "scaletype",		"V",		"<type>",
+				"Set the type of the specified colourscale - '2' for two point scale, '3' for three point scale" },
+
+
 	// Disordered Builder Commands
 	{ "disorder",		"V",		"<nsteps>",
 				"Run the disordered builder" },
