@@ -23,16 +23,19 @@
 #include <ctime>
 #include <iostream>
 #include <readline/readline.h>
+#include <readline/history.h>
 #include "parse/parser.h"
 #include "model/model.h"
 #include "command/commandlist.h"
 #include "base/master.h"
 #include "gui/gui.h"
 
+#define ATENVERSION 0.96
+
 int main(int argc, char *argv[])
 {
 	// Print GPL license information
-	printf("Aten version 0.96, Copyright (C) 2007,2008  T. Youngs\n");
+	printf("Aten version ATENVERSION, Copyright (C) 2007,2008  T. Youngs\n");
 	printf("Aten comes with ABSOLUTELY NO WARRANTY.\n");
 	printf("This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	printf("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
@@ -119,12 +122,12 @@ int main(int argc, char *argv[])
 			// Get string from user
 			//printf(">>> ");
 			//getline(cin,cmd);
-			line = readline("Aten 0.96 > ");
+			line = readline("Aten ATENVERSION > ");
 			master.interactiveScript.clear();
 			master.interactiveScript.cacheLine(line);
 			master.interactiveScript.execute();
 			// Add the command to the history and delete it 
-			//add_history(line);
+			add_history(line);
 			delete line;
 		} while (master.programMode() == Master::InteractiveMode);
 		//master.set_program_mode(PM_NONE);
