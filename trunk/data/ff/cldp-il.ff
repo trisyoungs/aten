@@ -177,13 +177,13 @@ NA	CT	2820	1.466
 #alkylimidazolium - OPLS-AA
 NA	HA	3632	1.010	#RES 3632.0
 # Pyridinium - OPLS-AA / Theochem 424, p145 (1998)
-CA	HA	0	1.080	#RES 3071.0
+CA	HA	3071	1.080	#RES 3071.0
 CA	CA	3925	1.380
 CA	NA	4042	1.340
 NA	CT	2820	1.480
 # Ammonium (also pyrrolidinium) - OPLS-AA / JACS 121, p4827 (1999) / AMBER
 N3	CT	3071	1.471
-H	N3	0	1.010	#RES 3632.0
+H	N3	3632	1.010	#RES 3632.0
 # Phosphonium - OPLS-AA
 P3	CT	3550	1.81
 # Tetrafluoroborate	
