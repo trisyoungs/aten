@@ -82,7 +82,6 @@ endif(NOT ${PREFIX})
 
 install(TARGETS ${target_name}
       RUNTIME DESTINATION bin
-      BUNDLE DESTINATION bin
 )
 
 install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/" 
