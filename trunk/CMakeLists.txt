@@ -30,6 +30,16 @@ set(SRCS src/)
 # tell cmake to process CMakeLists.txt in that subdirectory
 add_subdirectory(${SRCS})
 
+If(APPLE)
+  set( MACOSX_BUNDLE_ICON_FILE  "{CMAKE_SOURCE_DIR}/src/gui/icons/aten.png")
+  set(MACOSX_BUNDLE_GUI_IDENTIFIER  "Aten")
+  set(MACOSX_BUNDLE_LONG_VERSION_STRING "0.x.0"  )
+  set(MACOSX_BUNDLE_BUNDLE_NAME  "aten" )
+  set(MACOSX_BUNDLE_SHORT_VERSION_STRING "0.+")
+  set(MACOSX_BUNDLE_BUNDLE_VERSION  "almost 1")
+  set(MACOSX_BUNDLE_COPYRIGHT "Tristan Youngs")
+endif(APPLE)
+
 include_directories(
 ${CMAKE_SOURCE_DIR} 
 ${CMAKE_BINARY_DIR}
@@ -39,7 +49,7 @@ ${SRCS}/
 ${QT_INCLUDE_DIR}
 ${READLINE_INCLUDE_DIR}
 )
-add_executable(${target_name}
+add_executable(${target_name} MACOSX_BUNDLE
 ${SRCS}/main.cpp
 )
 
@@ -72,9 +82,10 @@ endif(NOT ${PREFIX})
 
 install(TARGETS ${target_name}
       RUNTIME DESTINATION bin
+      BUNDLE DESTINATION bin
 )
 
-install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data" 
+install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/" 
      DESTINATION share/aten
      REGEX ".svn" EXCLUDE
 )
@@ -144,7 +155,7 @@ SET(CPACK_GENERATOR "TGZ;TBZ2;RPM;DEB")
 Endif(UNIX)
 
 IF(APPLE)
-SET(CPACK_GENERATOR "TGZ;TBZ2;OSXX11;PackageMaker")
+SET(CPACK_GENERATOR "TGZ;TBZ2;OSXX11")
 Endif(APPLE)
 
 SET(CPACK_CMAKE_GENERATOR ${CMAKE_GENERATOR})
