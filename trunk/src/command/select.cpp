@@ -55,7 +55,7 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 			strcpy(from,p.argc(a));
 			if (strchr(from,'+') == NULL) plus = 0;
 			else if (from[0] == '+') plus = -1;
-			else if (from[strlen(from)] == '+') plus = 1;
+			else if (from[strlen(from)-1] == '+') plus = 1;
 			else
 			{
 				msg(Debug::None,"Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
