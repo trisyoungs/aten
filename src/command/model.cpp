@@ -68,7 +68,7 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = (c->argt(0) == VT_INTEGER ? master.model(c->argi(0)) : master.findModel(c->argc(0)));
+	Model *m = (c->argt(0) == Variable::IntegerVariable ? master.model(c->argi(0)) : master.findModel(c->argc(0)));
 	if (m != NULL) 
 	{
 		master.setCurrentModel(m);

@@ -180,7 +180,7 @@ class Command
 	// Returns whether argument 'n' was provided
 	bool hasArg(int argno);
 	// Return variable type of argument
-	VariableType argt(int argno);
+	Variable::VariableType argt(int argno);
 	// Print data variables
 	void print_args();
 };

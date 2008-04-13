@@ -270,8 +270,12 @@ class Model
 	public:
 	// Select the specified atom
 	void selectAtom(Atom*);
+	// Select the specified atom ID
+	void selectAtom(int id);
 	// Deselect the specified atom
 	void deselectAtom(Atom*);
+	// Deselect the specified atom
+	void deselectAtom(int id);
 	// Toggle the selection state of the atom
 	void selectionToggle(Atom*);
 	// Select all atoms
@@ -298,6 +302,8 @@ class Model
 	void selectElement(Atom*);
 	// Select all atoms of the same element as the atom with the specified id
 	void selectElement(int);
+	// Deelect all atoms of the same element as the atom with the specified id
+	void deselectElement(int);
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom*, double);
 	// Return the first selected atom in the model (if any)

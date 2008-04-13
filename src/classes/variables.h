@@ -26,10 +26,6 @@
 #include "classes/dnchar.h"
 #include "base/sysfunc.h"
 
-// variable Types
-enum VariableType { VT_CHAR, VT_INTEGER, VT_FLOAT, VT_ATOM, VT_PATTERN, VT_MODEL, VT_BOND, VT_ANGLE, VT_TORSION, VT_ATOMTYPE, VT_NITEMS };
-const char *text_from_VT(VariableType);
-
 // Forward Declarations
 class Atom;
 class Bond;
@@ -43,8 +39,12 @@ class ForcefieldAtom;
 class Variable
 {
 	public:
+	// Variable Types
+	enum VariableType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, nVariableTypes };
+	static const char *variableType(VariableType);
+	static VariableType determineType(const char *s);
 	// Constructor
-	Variable(VariableType vt = VT_CHAR);
+	Variable(VariableType vt = CharacterVariable);
 	// List pointers
 	Variable *prev, *next;
 
@@ -132,25 +132,25 @@ class VariableList
 	public:
 	// Set existing (or create new) variable (VT_CHAR)
 	void set(const char*, const char*, const char*);
-	void set(const char *name, const char *value) { set(name,"",value); }
+	void set(const char *name, const char *value);
 	// Set existing (or create new) variable (VT_INT)
 	void set(const char*, const char*, int);
-	void set(const char *name, int value) { set(name,"",value); }
+	void set(const char *name, int value);
 	// Set existing (or create new) variable (VT_FLOAT)
 	void set(const char*, const char*, double);
-	void set(const char *name, double value) { set(name,"",value); }
+	void set(const char *name, double value);
 	// Retrieve a named variable from the list
 	Variable *get(const char *prefix, const char *suffix);
-	Variable *get(const char *name) { return get(name,""); }
+	Variable *get(const char *name);
 	// Return dummy variable
-	Variable *dummy() { return &dummy_; }
+	Variable *dummy();
 	// Add an unnamed constant to the list
 	Variable *addConstant(const char* s);
 	// Add a named variable to the list
-	Variable *addVariable(const char *prefix, const char *suffix, VariableType vt);
-	Variable *addVariable(const char *name, VariableType vt) { return addVariable(name,"",vt); }
+	Variable *addVariable(const char *prefix, const char *suffix, Variable::VariableType vt);
+	Variable *addVariable(const char *name, Variable::VariableType vt);
 	// Create, but don't set, a named variable in the list
-	Variable *createVariable(const char *prefix, const char *suffix, VariableType vt);
+	Variable *createVariable(const char *prefix, const char *suffix, Variable::VariableType vt);
 	// Reset values of all variables
 	void resetAll();
 	// Reset values of variable selection

@@ -57,7 +57,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argt(1) == VT_ATOM) target = c->arga(1);
+		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
 		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
@@ -81,7 +81,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argt(1) == VT_ATOM) target = c->arga(1);
+		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
 		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
@@ -105,7 +105,7 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argt(1) == VT_ATOM) target = c->arga(1);
+		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
 		else target = obj.m->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
@@ -125,7 +125,7 @@ int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 		target = NULL;
 		if (c->hasArg(d))
 		{
-			if (c->argt(d) == VT_ATOM) target = c->arga(d);
+			if (c->argt(d) == Variable::AtomVariable) target = c->arga(d);
 			else target = obj.m->atom(c->argi(d) - 1);
 		}
 		else break;
@@ -147,7 +147,7 @@ int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 		target = NULL;
 		if (c->hasArg(d))
 		{
-			if (c->argt(d) == VT_ATOM) target = c->arga(d);
+			if (c->argt(d) == Variable::AtomVariable) target = c->arga(d);
 			else target = obj.m->atom(c->argi(d) - 1);
 		}
 		else break;
@@ -168,7 +168,7 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 		target = NULL;
 		if (c->hasArg(d))
 		{
-			if (c->argt(d) == VT_ATOM) target = c->arga(d);
+			if (c->argt(d) == Variable::AtomVariable) target = c->arga(d);
 			else target = obj.m->atom(c->argi(d) - 1);
 		}
 		else break;

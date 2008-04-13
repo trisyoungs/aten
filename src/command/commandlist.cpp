@@ -212,9 +212,9 @@ bool Command::hasArg(int argno)
 }
 
 // Return variable type of argument
-VariableType Command::argt(int argno)
+Variable::VariableType Command::argt(int argno)
 {
-	return (args_[argno] == NULL ? VT_NITEMS : args_[argno]->type());
+	return (args_[argno] == NULL ? Variable::nVariableTypes : args_[argno]->type());
 }
 
 // Set command and function
@@ -244,8 +244,8 @@ void Command::print_args()
 		if (args_[i] == NULL) printf ("None.\n");
 		else
 		{
-			printf("%12s [%10s]",args_[i]->name(), text_from_VT(args_[i]->type()));
-			if (args_[i]->type() < VT_ATOM) printf("%20s\n",args_[i]->asCharacter());
+			printf("%12s [%10s]",args_[i]->name(), Variable::variableType(args_[i]->type()));
+			if (args_[i]->type() < Variable::AtomVariable) printf("%20s\n",args_[i]->asCharacter());
 			else printf("%li\n",args_[i]->asPointer());
 		}
 	}
@@ -393,14 +393,15 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 {
 	dbgBegin(Debug::Calls,"Command::addVariables");
 	bool required = TRUE;
-	int n, argcount, varcount;
+	int n, m, argcount, varcount;
 	Variable *b;
 	static char arg[512];
 	char *c;
-	VariableType vt;
+	Variable::VariableType vt;
 	//printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
-	// Are there arguments in the parser that we shouldn't have been given.
-	if ((parser.nArgs() - 1) > strlen(v))
+	// Are there arguments in the parser that we shouldn't have been given?
+	// We don't care about too many variables being given if we want the whole line.
+	if (((parser.nArgs() - 1) > strlen(v)) && (v[0] != 'L'))
 	{
 		printf("Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.nArgs()-1), cmd, strlen(v));
 		dbgEnd(Debug::Calls,"Command::addVariables");
@@ -482,6 +483,17 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				else if (arg[0] == '*') args_[varcount] = parent_->variables.dummy();
 				else args_[varcount] = parent_->variables.addConstant(arg);
+				break;
+			// Rest of line (reconstructed)
+			case ('L'):
+				arg[0] = '\0';
+				for (m=argcount; m< parser.nArgs(); m++)
+				{
+					strcat(arg, parser.argc(m));
+					strcat(arg, " ");
+				}
+				args_[varcount] = parent_->variables.addConstant("abcde");
+				args_[varcount]->set(arg);
 				break;
 		}
 	}
@@ -595,7 +607,7 @@ bool CommandList::addCommand(CommandAction ca)
 	// Pointers to command nodes
 	Command *fn, *fn2, *fn3;
 	CommandAction branchca;
-	VariableType vt;
+	Variable::VariableType vt;
 	int n;
 	Variable *v;
 	bool result = TRUE, varresult = TRUE;
@@ -621,12 +633,12 @@ bool CommandList::addCommand(CommandAction ca)
 				v = variables.get(parser.argc(n));
 				if (v != NULL)
 				{
-					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), text_from_VT((VariableType) ca),  text_from_VT(v->type()));
+					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), Variable::variableType((Variable::VariableType) ca),  Variable::variableType(v->type()));
 					result = FALSE;
 				}
 				else
 				{
-					vt = (VariableType) ca;
+					vt = (Variable::VariableType) ca;
 					v = variables.addVariable(parser.argc(n), vt);
 				}
 			}
@@ -690,18 +702,18 @@ bool CommandList::addCommand(CommandAction ca)
 			{
 				switch (fn->argt(0))
 				{
-					case (VT_ATOM):
+					case (Variable::AtomVariable):
 						varresult = createAtomVariables(fn->arg(0)->name());
 						break;
-					case (VT_PATTERN):
+					case (Variable::PatternVariable):
 						varresult = createPatternVariables(fn->arg(0)->name());
 						break;
-					case (VT_BOND):
-					case (VT_ANGLE):
-					case (VT_TORSION):
+					case (Variable::BondVariable):
+					case (Variable::AngleVariable):
+					case (Variable::TorsionVariable):
 						varresult = createPatternBoundVariables(fn->arg(0)->name());
 						break;
-					case (VT_ATOMTYPE):
+					case (Variable::AtomtypeVariable):
 						varresult = createAtomtypeVariables(fn->arg(0)->name());
 						break;
 				}
@@ -1058,39 +1070,39 @@ void CommandList::setCellVariables(Cell *c)
 bool CommandList::createAtomVariables(const char *base)
 {
 	Variable *v;
-	v = variables.createVariable(base,"symbol",VT_CHAR);
+	v = variables.createVariable(base,"symbol",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"mass",VT_FLOAT);
+	v = variables.createVariable(base,"mass",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"name",VT_CHAR);
+	v = variables.createVariable(base,"name",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"z",VT_INTEGER);
+	v = variables.createVariable(base,"z",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"id",VT_INTEGER);
+	v = variables.createVariable(base,"id",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fftype",VT_CHAR);
+	v = variables.createVariable(base,"fftype",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ffequiv",VT_CHAR);
+	v = variables.createVariable(base,"ffequiv",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"q",VT_FLOAT);
+	v = variables.createVariable(base,"q",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rx",VT_FLOAT);
+	v = variables.createVariable(base,"rx",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ry",VT_FLOAT);
+	v = variables.createVariable(base,"ry",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rz",VT_FLOAT);
+	v = variables.createVariable(base,"rz",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fx",VT_FLOAT);
+	v = variables.createVariable(base,"fx",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fy",VT_FLOAT);
+	v = variables.createVariable(base,"fy",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fz",VT_FLOAT);
+	v = variables.createVariable(base,"fz",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vx",VT_FLOAT);
+	v = variables.createVariable(base,"vx",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vy",VT_FLOAT);
+	v = variables.createVariable(base,"vy",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vz",VT_FLOAT);
+	v = variables.createVariable(base,"vz",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -1132,21 +1144,21 @@ void CommandList::setAtomVariables(const char *varname, Atom *i)
 bool CommandList::createPatternVariables(const char *base)
 {
 	Variable *v;
-	v = variables.createVariable(base,"name",VT_CHAR);
+	v = variables.createVariable(base,"name",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nmols",VT_INTEGER);
+	v = variables.createVariable(base,"nmols",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nmolatoms",VT_INTEGER);
+	v = variables.createVariable(base,"nmolatoms",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"natoms",VT_INTEGER);
+	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nbonds",VT_INTEGER);
+	v = variables.createVariable(base,"nbonds",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nangles",VT_INTEGER);
+	v = variables.createVariable(base,"nangles",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ntorsions",VT_INTEGER);
+	v = variables.createVariable(base,"ntorsions",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ntypes",VT_INTEGER);
+	v = variables.createVariable(base,"ntypes",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -1174,32 +1186,32 @@ bool CommandList::createPatternBoundVariables(const char *base)
 	Variable *v;
 	static char parm[24];
 	int i;
-	v = variables.createVariable(base,"form",VT_CHAR);
+	v = variables.createVariable(base,"form",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
 	strcpy(parm,"id_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[3] = 105 + i;
-		v = variables.createVariable(base,parm,VT_INTEGER);
+		v = variables.createVariable(base,parm,Variable::IntegerVariable);
 		if (v == NULL) return FALSE;
 	}
 	strcpy(parm,"type_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[5] = 105 + i;
-		v = variables.createVariable(base,parm,VT_CHAR);
+		v = variables.createVariable(base,parm,Variable::CharacterVariable);
 		if (v == NULL) return FALSE;
 	}
 	strcpy(parm,"param_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,VT_FLOAT);
+		v = variables.createVariable(base,parm,Variable::FloatVariable);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.createVariable(base,"escale",VT_FLOAT);
+	v = variables.createVariable(base,"escale",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vscale",VT_FLOAT);
+	v = variables.createVariable(base,"vscale",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -1271,18 +1283,18 @@ bool CommandList::createAtomtypeVariables(const char *base)
 	for (i = 0; i < MAXFFPARAMDATA; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,VT_FLOAT);
+		v = variables.createVariable(base,parm,Variable::FloatVariable);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.createVariable(base,"q",VT_FLOAT);
+	v = variables.createVariable(base,"q",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"id",VT_INTEGER);
+	v = variables.createVariable(base,"id",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"name",VT_CHAR);
+	v = variables.createVariable(base,"name",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"equiv",VT_CHAR);
+	v = variables.createVariable(base,"equiv",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"form",VT_CHAR);
+	v = variables.createVariable(base,"form",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }

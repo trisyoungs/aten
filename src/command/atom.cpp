@@ -36,24 +36,24 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 	int el;
 	switch (c->argt(0))
 	{
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			el = c->argi(0);
 			break;
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			// Attempt conversion of the stnmng first from the users type list
 			for (nm = master.typeMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),c->argc(0)) == 0) break;
 			if (nm == NULL) el = elements.find(c->argc(0));
 			else el = nm->data();
 			break;
-		case (VT_ATOM):
+		case (Variable::AtomVariable):
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg(Debug::None,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
+			msg(Debug::None,"Type '%s' is not a valid one to pass to 'newatom'.\n", Variable::variableType(c->argt(0)));
 			el = 0;
 			break;
 	}
@@ -70,20 +70,20 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 	int el;
 	switch (c->argt(0))
 	{
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			el = c->argi(0);
 			break;
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			el = elements.find(c->argc(0));
 			break;
-		case (VT_ATOM):
+		case (Variable::AtomVariable):
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg(Debug::None,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", text_from_VT(c->argt(0)));
+			msg(Debug::None,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", Variable::variableType(c->argt(0)));
 			el = 0;
 			break;
 	}

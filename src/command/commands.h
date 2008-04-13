@@ -312,10 +312,10 @@ enum CommandAction {
 	CA_RUNSCRIPT,
 
 	// Select Commands
+	CA_DESELECT,
 	CA_INVERT,
 	CA_SELECT,
 	CA_SELECTALL,
-	CA_SELECTELEMENT,
 	CA_SELECTFFTYPE,
 	CA_SELECTNONE,
 	CA_SELECTOVERLAPS,
@@ -624,10 +624,10 @@ class CommandData
 	int function_CA_LOADSCRIPT(Command *&c, Bundle &obj);
 	int function_CA_RUNSCRIPT(Command *&c, Bundle &obj);
 	// Select Commands
+	int function_CA_DESELECT(Command *&c, Bundle &obj);
 	int function_CA_INVERT(Command *&c, Bundle &obj);
 	int function_CA_SELECT(Command *&c, Bundle &obj);
 	int function_CA_SELECTALL(Command *&c, Bundle &obj);
-	int function_CA_SELECTELEMENT(Command *&c, Bundle &obj);
 	int function_CA_SELECTFFTYPE(Command *&c, Bundle &obj);
 	int function_CA_SELECTNONE(Command *&c, Bundle &obj);
 	int function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj);

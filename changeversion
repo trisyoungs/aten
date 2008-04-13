@@ -23,7 +23,7 @@ if [ "$#" -eq "2" ]
 then
   cp src/main.cpp src/main.cpp.orig
   #sed -e "s/\(.*\)Aten version [0-9\.]\+\(.*\)/\1Aten version $1.$2\2/g" src/main.cpp.orig > src/main.cpp
-  sed -e 's/#define ATENVERSION "[0-9\.]\+\(.*\)"/#define ATENVERSION "$1.$2"\1/g' src/main.cpp.orig > src/main.cpp
+  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/main.cpp.orig > src/main.cpp
 fi
 grep '#define ATENVERSION' src/main.cpp | sed -e 's/#define ATENVERSION "\([0-9\.]\+\).*"/\1/g'
 

@@ -279,23 +279,23 @@ const char *Format::createString()
 		// For each format node in the list, check the type of the argument and create a relevant format node
 		switch (v->type())
 		{
-			case (VT_CHAR):
+			case (Variable::CharacterVariable):
 				if (fn->length() == 0) strcpy(fmt,"%s");
 				else sprintf(fmt,"%%%is",fn->length());
 				sprintf(bit,fmt,v->asCharacter());
 				break;
-			case (VT_INTEGER):
+			case (Variable::IntegerVariable):
 				if (fn->length() == 0) strcpy(fmt,"%i");
 				else sprintf(fmt,"%%%ii",fn->length());
 				sprintf(bit,fmt,v->asInteger());
 				break;
-			case (VT_FLOAT):
+			case (Variable::FloatVariable):
 				if (fn->length() == 0) strcpy(fmt,"%f");
 				else sprintf(fmt,"%%%i.%if",fn->length(),fn->precision());
 				sprintf(bit,fmt,v->asDouble());
 				break;
 			default:
-				printf("Variables of type '%s' cannot be used in a format string.\n", text_from_VT(v->type()));
+				printf("Variables of type '%s' cannot be used in a format string.\n", Variable::variableType(v->type()));
 		}
 		msg(Debug::Parse,"Format:::createString - added [%s], format [%s]\n", bit, fmt);
 		strcat(result,bit);

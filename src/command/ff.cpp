@@ -110,7 +110,7 @@ int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 // Select current forcefield ('getff <name>')
 int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 {
-	Forcefield *ff = (c->argt(0) == VT_INTEGER ? master.forcefield(c->argi(0)) : master.findForcefield(c->argc(0)));
+	Forcefield *ff = (c->argt(0) == Variable::IntegerVariable ? master.forcefield(c->argi(0)) : master.findForcefield(c->argc(0)));
 	if (ff != NULL)	master.setCurrentForcefield(ff);
 	else return CR_FAIL;
 	return CR_SUCCESS;
