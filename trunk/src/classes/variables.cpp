@@ -29,9 +29,29 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VT_keywords[VT_NITEMS] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype_*" };
-const char *text_from_VT(VariableType vt)
-	{ return VT_keywords[vt]; }
+const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype_*" };
+const char *Variable::variableType(Variable::VariableType vt)
+{
+	return VariableTypeKeywords[vt];
+}
+Variable::VariableType Variable::determineType(const char *s)
+{
+	// Try to determine type_ of the argument
+	int i, ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
+	for (i = 0; i < strlen(s); i++)
+	{
+		ch = s[i];
+		if ((ch > 47) && (ch < 58)) nn ++;
+		else if (ch == '.') ndp ++;
+		else if ((ch == '-') || (ch == '+')) npm ++;
+		else if ((ch == 'e') || (ch == 'E')) ne ++;
+		else nch ++;
+	}
+	// Based on the numbers we calculated, try to determine its type_
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) return Variable::CharacterVariable;
+	else if (ndp == 1) return Variable::FloatVariable;
+	else return Variable::IntegerVariable;
+}
 
 // Constructor
 Variable::Variable(VariableType vt)
@@ -70,7 +90,7 @@ void Variable::setConstant()
 }
 
 // Returns content type of the variable
-VariableType Variable::type()
+Variable::VariableType Variable::type()
 {
 	return type_;
 }
@@ -98,24 +118,24 @@ void Variable::print()
 {
 	switch (type_)
 	{
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			printf("Variable '%s', type_ 'char', value '%s'.\n", name_.get(), asCharacter());
 			break;
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			printf("Variable '%s', type_ 'int', value '%i'.\n", name_.get(), asInteger());
 			break;
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			printf("Variable '%s', type_ 'double', value '%f'.\n", name_.get(), asDouble());
 			break;
-		case (VT_ATOM):
-		case (VT_MODEL):
-		case (VT_PATTERN):
-		case (VT_BOND):
-		case (VT_ANGLE):
-		case (VT_TORSION):
-			printf("Variable '%s', type_ '%s', value '%li'.\n", name_.get(), text_from_VT(type_), ptrValue_);
+		case (Variable::AtomVariable):
+		case (Variable::ModelVariable):
+		case (Variable::PatternVariable):
+		case (Variable::BondVariable):
+		case (Variable::AngleVariable):
+		case (Variable::TorsionVariable):
+			printf("Variable '%s', type_ '%s', value '%li'.\n", name_.get(), Variable::variableType(type_), ptrValue_);
 			break;
-		case (VT_ATOMTYPE):
+		case (Variable::AtomtypeVariable):
 			printf("Variable '%s', type_ 'atomtype_', value '%i'.\n", name_.get(), asInteger());
 			break;
 	}
@@ -124,36 +144,36 @@ void Variable::print()
 // Set (from char)
 void Variable::set(const char *s)
 {
-	if (type_ == VT_CHAR) charValue_.set(s);
-	else if (type_ == VT_INTEGER) intValue_ = atoi(s);
-	else if (type_ == VT_FLOAT) doubleValue_ = atof(s);
-	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a character string >>>>\n", name_.get(), text_from_VT(type_));
+	if (type_ == Variable::CharacterVariable) charValue_.set(s);
+	else if (type_ == Variable::IntegerVariable) intValue_ = atoi(s);
+	else if (type_ == Variable::FloatVariable) doubleValue_ = atof(s);
+	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a character string >>>>\n", name_.get(), Variable::variableType(type_));
 }
 
 // Set (int)
 void Variable::set(int i)
 {
-	if (type_ == VT_CHAR) charValue_.set(itoa(i));
-	else if (type_ == VT_INTEGER) intValue_ = i;
-	else if (type_ == VT_FLOAT) doubleValue_ = i;
-	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from an integer value >>>>\n", name_.get(), text_from_VT(type_));
+	if (type_ == Variable::CharacterVariable) charValue_.set(itoa(i));
+	else if (type_ == Variable::IntegerVariable) intValue_ = i;
+	else if (type_ == Variable::FloatVariable) doubleValue_ = i;
+	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from an integer value >>>>\n", name_.get(), Variable::variableType(type_));
 }
 
-// Set (double)
+// Set (float (double))
 void Variable::set(double d)
 {
-	if (type_ == VT_CHAR) charValue_.set(ftoa(d));
-	else if (type_ == VT_INTEGER) intValue_ = int(d);
-	else if (type_ == VT_FLOAT) doubleValue_ = d;
-	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a double value >>>>\n", name_.get(), text_from_VT(type_));
+	if (type_ == Variable::CharacterVariable) charValue_.set(ftoa(d));
+	else if (type_ == Variable::IntegerVariable) intValue_ = int(d);
+	else if (type_ == Variable::FloatVariable) doubleValue_ = d;
+	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a double value >>>>\n", name_.get(), Variable::variableType(type_));
 }
 
 // Set (atom*)
 void Variable::set(Atom *i)
 {
-	if (type_ != VT_ATOM)
+	if (type_ != Variable::AtomVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'atom*' >>>>\n",name_.get(), text_from_VT(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'atom*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = i;
@@ -163,9 +183,9 @@ void Variable::set(Atom *i)
 // Set (pattern)
 void Variable::set(Pattern *p)
 {
-	if (type_ != VT_PATTERN)
+	if (type_ != Variable::PatternVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'pattern*' >>>>\n",name_.get(), text_from_VT(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'pattern*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = p;
@@ -175,9 +195,9 @@ void Variable::set(Pattern *p)
 // Set (model)
 void Variable::set(Model *m)
 {
-	if (type_ != VT_MODEL)
+	if (type_ != Variable::ModelVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'model*' >>>>\n",name_.get(), text_from_VT(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'model*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = m;
@@ -187,9 +207,9 @@ void Variable::set(Model *m)
 // Set (PatternBound)
 void Variable::set(PatternBound *pb)
 {
-	if (type_ < VT_BOND)
+	if (type_ < Variable::BondVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'PatternBound*' >>>>\n",name_.get(), text_from_VT(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'PatternBound*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = pb;
@@ -199,9 +219,9 @@ void Variable::set(PatternBound *pb)
 // Set (ForcefieldAtom)
 void Variable::set(ForcefieldAtom *ffa)
 {
-	if (type_ < VT_ATOMTYPE)
+	if (type_ < Variable::AtomtypeVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'ForcefieldAtom*' >>>>\n",name_.get(), text_from_VT(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = ffa;
@@ -213,14 +233,14 @@ const char *Variable::asCharacter()
 {
 	switch (type_)
 	{
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			return charValue_.get();
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			return itoa(intValue_);
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			return ftoa(doubleValue_);
 		default:
-			msg(Debug::Verbose,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return "";
 }
@@ -230,14 +250,14 @@ int Variable::asInteger()
 {
 	switch (type_)
 	{
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			return atoi(charValue_.get());
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			return intValue_;
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			return int(doubleValue_);
 		default:
-			msg(Debug::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return 0;
 }
@@ -247,14 +267,14 @@ double Variable::asDouble()
 {
 	switch (type_)
 	{
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			return atof(charValue_.get());
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			return double(intValue_);
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			return doubleValue_;
 		default:
-			msg(Debug::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return 0.0;
 }
@@ -264,12 +284,12 @@ bool Variable::asBool()
 {
 	switch (type_)
 	{
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			return charValue_.asBool();
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			return (intValue_ < 1 ? FALSE : TRUE);
 		default:
-			msg(Debug::Verbose,"Variable::get_as_bool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			msg(Debug::Verbose,"Variable::get_as_bool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return FALSE;
 }
@@ -279,22 +299,22 @@ void Variable::reset()
 {
 	switch (type_)
 	{
-		case (VT_CHAR):
+		case (Variable::CharacterVariable):
 			charValue_.set("");
 			break;
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			intValue_ = 0;
 			break;
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			doubleValue_ = 0.0;
 			break;
-		case (VT_ATOM):
-		case (VT_PATTERN):
-		case (VT_MODEL):
-		case (VT_BOND):
-		case (VT_ANGLE):
-		case (VT_TORSION):
-		case (VT_ATOMTYPE):
+		case (Variable::AtomVariable):
+		case (Variable::PatternVariable):
+		case (Variable::ModelVariable):
+		case (Variable::BondVariable):
+		case (Variable::AngleVariable):
+		case (Variable::TorsionVariable):
+		case (Variable::AtomtypeVariable):
 			ptrValue_ = NULL;
 			break;
 	}
@@ -305,31 +325,31 @@ void Variable::increase(int n)
 {
 	switch (type_)
 	{
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			intValue_ ++;
 			break;
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			doubleValue_ += 1.0;
 			break;
-		case (VT_ATOM):
+		case (Variable::AtomVariable):
 			ptrValue_ = ( (Atom*) ptrValue_)->next;
 			break;
-		case (VT_PATTERN):
+		case (Variable::PatternVariable):
 			ptrValue_ = ( (Pattern*) ptrValue_)->next;
 			break;
-		case (VT_MODEL):
+		case (Variable::ModelVariable):
 			ptrValue_ = ( (Model*) ptrValue_)->next;
 			break;
-		case (VT_BOND):
-		case (VT_ANGLE):
-		case (VT_TORSION):
+		case (Variable::BondVariable):
+		case (Variable::AngleVariable):
+		case (Variable::TorsionVariable):
 			ptrValue_ = ( (PatternBound*) ptrValue_)->next;
 			break;
-		case (VT_ATOMTYPE):
+		case (Variable::AtomtypeVariable):
 			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->next;
 			break;
 		default:
-			printf("Variable::increase <<<< Don't know how to increase variable '%s', type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			printf("Variable::increase <<<< Don't know how to increase variable '%s', type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 			break;
 	}
 }
@@ -339,36 +359,50 @@ void Variable::decrease(int n)
 {
 	switch (type_)
 	{
-		case (VT_INTEGER):
+		case (Variable::IntegerVariable):
 			intValue_ --;
 			break;
-		case (VT_FLOAT):
+		case (Variable::FloatVariable):
 			doubleValue_ -= 1.0;
 			break;
-		case (VT_ATOM):
+		case (Variable::AtomVariable):
 			ptrValue_ = ( (Atom*) ptrValue_)->prev;
 			break;
-		case (VT_PATTERN):
+		case (Variable::PatternVariable):
 			ptrValue_ = ( (Pattern*) ptrValue_)->prev;
 			break;
-		case (VT_MODEL):
+		case (Variable::ModelVariable):
 			ptrValue_ = ( (Model*) ptrValue_)->prev;
 			break;
-		case (VT_BOND):
-		case (VT_ANGLE):
-		case (VT_TORSION):
+		case (Variable::BondVariable):
+		case (Variable::AngleVariable):
+		case (Variable::TorsionVariable):
 			ptrValue_ = ( (PatternBound*) ptrValue_)->prev;
 			break;
-		case (VT_ATOMTYPE):
+		case (Variable::AtomtypeVariable):
 			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->prev;
 			break;
 		default:
-			printf("Variable::decrease <<<< Don't know how to decrease variable '%s', type_ '%s' >>>>\n", name_.get(), text_from_VT(type_));
+			printf("Variable::decrease <<<< Don't know how to decrease variable '%s', type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 			break;
 	}
 }
 
+/*
+// Variable List
+*/
+
+// Return dummy variable
+Variable *VariableList::dummy()
+{
+	return &dummy_;
+}
+
 // Retrieve named variable
+Variable *VariableList::get(const char *name)
+{
+	return get(name,"");
+}
 Variable *VariableList::get(const char *prefix, const char *suffix)
 {
 	static char name[128];
@@ -384,7 +418,11 @@ Variable *VariableList::get(const char *prefix, const char *suffix)
 }
 
 // Add named variable
-Variable *VariableList::addVariable(const char *prefix, const char *suffix, VariableType vt)
+Variable::Variable *VariableList::addVariable(const char *name, Variable::VariableType vt)
+{
+	return addVariable(name,"",vt);
+}
+Variable *VariableList::addVariable(const char *prefix, const char *suffix, Variable::VariableType vt)
 {
 	static char name[128];
 	strcpy(name,prefix);
@@ -400,7 +438,7 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, Vari
 }
 
 // Create, don't set, named variable
-Variable *VariableList::createVariable(const char *prefix, const char *suffix, VariableType vt)
+Variable *VariableList::createVariable(const char *prefix, const char *suffix, Variable::VariableType vt)
 {
 	// First, see if this variable already exists
 	Variable *result = get(prefix, suffix);
@@ -417,7 +455,7 @@ Variable *VariableList::createVariable(const char *prefix, const char *suffix, V
 		}
 		if (result->type() != vt)
 		{
-			printf("Variable '%s' already exists and is of type_ '%s'.\n", name, text_from_VT(vt));
+			printf("Variable '%s' already exists and is of type_ '%s'.\n", name, Variable::variableType(vt));
 			result = NULL;
 		}
 	}
@@ -433,28 +471,17 @@ Variable *VariableList::addConstant(const char *s)
 	strcpy(newname,"_variable");
 	strcat(newname,itoa(vars_.nItems()));
 	result->setName(newname);
-	// Try to determine type_ of the argument
-	int i, ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
-	for (i = 0; i < strlen(s); i++)
-	{
-		ch = s[i];
-		if ((ch > 47) && (ch < 58)) nn ++;
-		else if (ch == '.') ndp ++;
-		else if ((ch == '-') || (ch == '+')) npm ++;
-		else if ((ch == 'e') || (ch == 'E')) ne ++;
-		else nch ++;
-	}
-	// Based on the numbers we calculated, try to determine its type_
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) result->setType(VT_CHAR);
-	else if (ndp == 1) result->setType(VT_FLOAT);
-	else result->setType(VT_INTEGER);
-	//printf("DETERMINED CONSTANT '%s' TO BE OF TYPE '%s'\n",s,text_from_VT(result->get_type_()));
+	result->setType(Variable::determineType(s));
 	result->setConstant();
 	result->set(s);
 	return result;
 }
 
-// Set existing variable (or add new and set) (VT_CHAR)
+// Set existing variable (or add new and set) (Variable::CharacterVariable)
+void VariableList::set(const char *name, const char *value)
+{
+	set(name,"",value);
+}
 void VariableList::set(const char *prefix, const char *suffix, const char *value)
 {
 	static char newname[128];
@@ -465,11 +492,16 @@ void VariableList::set(const char *prefix, const char *suffix, const char *value
 		strcat(newname,suffix);
 	}
 	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, VT_CHAR);
+	if (v == NULL) v = addVariable(newname, Variable::CharacterVariable);
 	v->set(value);
 }
 
-// Set existing variable (or add new and set) (VT_INTEGER)
+// Set existing variable (or add new and set) (Variable::IntegerVariable)
+void VariableList::set(const char *name, int value)
+{
+	set(name,"",value);
+}
+
 void VariableList::set(const char *prefix, const char *suffix, int value)
 {
 	static char newname[128];
@@ -480,11 +512,15 @@ void VariableList::set(const char *prefix, const char *suffix, int value)
 		strcat(newname,suffix);
 	}
 	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, VT_INTEGER);
+	if (v == NULL) v = addVariable(newname, Variable::IntegerVariable);
 	v->set(value);
 }
 
-// Set existing variable (or add new and set) (VT_FLOAT)
+// Set existing variable (or add new and set) (Variable::FloatVariable)
+void VariableList::set(const char *name, double value)
+{
+	set(name,"",value);
+}
 void VariableList::set(const char *prefix, const char *suffix, double value)
 {
 	static char newname[128];
@@ -495,7 +531,7 @@ void VariableList::set(const char *prefix, const char *suffix, double value)
 		strcat(newname,suffix);
 	}
 	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, VT_FLOAT);
+	if (v == NULL) v = addVariable(newname, Variable::FloatVariable);
 	v->set(value);
 }
 

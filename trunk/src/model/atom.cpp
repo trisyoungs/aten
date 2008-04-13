@@ -241,7 +241,7 @@ Atom *Model::atom(int n)
 	// Check range first
 	if ((n < 0) || (n >= atoms_.nItems()))
 	{
-		printf("Model::atom <<<< Atom id '%i' is out of range for model >>>>\n",n);
+		msg(Debug::None,"Atom id '%i' is out of range for model '%s'.\n", n+1, name_.get());
 		dbgEnd(Debug::Calls,"Model::atom");
 		return NULL;
 	}

@@ -112,7 +112,7 @@ int CommandData::function_CA_SPACEGROUP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	if (c->argt(0) == VT_INTEGER) obj.m->setSpacegroup(c->argi(0));
+	if (c->argt(0) == Variable::IntegerVariable) obj.m->setSpacegroup(c->argi(0));
 	else
 	{
 		msg(Debug::None,"Searching for spacegroup '%s'...",c->argc(0));

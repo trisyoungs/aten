@@ -289,10 +289,10 @@ void Master::initCommands()
 	CA_data[CA_RUNSCRIPT].function = &CommandData::function_CA_RUNSCRIPT;
 
 	// Select Commands
+	CA_data[CA_DESELECT].function = &CommandData::function_CA_DESELECT;
 	CA_data[CA_INVERT].function = &CommandData::function_CA_INVERT;
 	CA_data[CA_SELECT].function = &CommandData::function_CA_SELECT;
 	CA_data[CA_SELECTALL].function = &CommandData::function_CA_SELECTALL;
-	CA_data[CA_SELECTELEMENT].function = &CommandData::function_CA_SELECTELEMENT;
 	CA_data[CA_SELECTFFTYPE].function = &CommandData::function_CA_SELECTFFTYPE;
 	CA_data[CA_SELECTNONE].function = &CommandData::function_CA_SELECTNONE;
 	CA_data[CA_SELECTOVERLAPS].function = &CommandData::function_CA_SELECTOVERLAPS;

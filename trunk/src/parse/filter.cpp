@@ -246,43 +246,43 @@ void Filter::setType(FilterType ft)
 		case (FT_MODEL_IMPORT):
 			break;
 		case (FT_TRAJECTORY_IMPORT):
-			v = commands_.variables.createVariable("header","",VT_CHAR);
-			v = commands_.variables.createVariable("natoms","",VT_INTEGER);
-			v = commands_.variables.createVariable("cell","type",VT_CHAR);
+			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
+			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("cell","type",Variable::CharacterVariable);
 			break;
 		case (FT_EXPRESSION_IMPORT):
 			break;
 		case (FT_GRID_IMPORT):
 			break;
 		case (FT_MODEL_EXPORT):
-			v = commands_.variables.createVariable("cell","type",VT_CHAR);
-			v = commands_.variables.createVariable("cell","a",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","b",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","c",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","alpha",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","beta",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","gamma",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","ax",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","ay",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","az",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","bx",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","by",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","bz",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","cx",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","cy",VT_FLOAT);
-			v = commands_.variables.createVariable("cell","cz",VT_FLOAT);
-			v = commands_.variables.createVariable("natoms","",VT_INTEGER);
-			v = commands_.variables.createVariable("title","",VT_CHAR);
+			v = commands_.variables.createVariable("cell","type",Variable::CharacterVariable);
+			v = commands_.variables.createVariable("cell","a",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","b",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","c",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","alpha",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","beta",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","gamma",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","ax",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","ay",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","az",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","bx",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","by",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","bz",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","cx",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","cy",Variable::FloatVariable);
+			v = commands_.variables.createVariable("cell","cz",Variable::FloatVariable);
+			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
 			break;
 		case (FT_TRAJECTORY_EXPORT):
-			v = commands_.variables.createVariable("header","",VT_CHAR);
-			v = commands_.variables.createVariable("natoms","",VT_INTEGER);
+			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
+			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
 			break;
 		case (FT_EXPRESSION_EXPORT):
-			v = commands_.variables.createVariable("title","",VT_CHAR);
-			v = commands_.variables.createVariable("npatterns","",VT_INTEGER);
-			v = commands_.variables.createVariable("energyunit","",VT_CHAR);
-			v = commands_.variables.createVariable("ntypes","",VT_INTEGER);
+			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
+			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("energyunit","",Variable::CharacterVariable);
+			v = commands_.variables.createVariable("ntypes","",Variable::IntegerVariable);
 			break;
 		case (FT_GRID_EXPORT):
 			break;

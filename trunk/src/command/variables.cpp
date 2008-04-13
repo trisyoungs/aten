@@ -39,7 +39,7 @@ int CommandData::function_CA_EVAL(Command *&c, Bundle &obj)
 int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 {
 	// If the first var is a pointer, second must be a pointer!
-	if (c->argt(0) >= VT_ATOM)
+	if (c->argt(0) >= Variable::AtomVariable)
 	{
 		if (c->argt(0) != c->argt(2))
 		{

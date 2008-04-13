@@ -193,21 +193,21 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set charges of all atoms of the given type" },
 	{ "clearcharges",	"",		"",
 				"Zero all charges in the current model" },
-	
+
 	// Colourscale commands
 	{ "listscales",		"",		"",
 				"List details on all colour scales" },
-	{ "scalemaxcolour",	"VVVVv",	"<id> <",
+	{ "scalemaxcolour",	"VVVVv",	"<id> <r> <g> <b> [a]",
 				"Set colour associated to maximum colour value for colour scale specified" },
-	{ "scalemaxcolour",	"VVVVv",	"<id> <",
+	{ "scalemidcolour",	"VVVVv",	"<id> <r> <g> <b> [a]",
 				"Set colour associated to midpoint colour value for colour scale specified" },
 	{ "scalemidpoint",	"VV",		"<id> <midpoint>",
 				"Set the midpoint value in the specified colour scale" },
-	{ "scalemincolour",	"VVVVv",	"<id> <",
+	{ "scalemincolour",	"VVVVv",	"<id> <r> <g> <b> [a]",
 				"Set colour associated to minimum colour value for colour scale specified" },
 	{ "scalerange",		"VVV",		"<id> <min> <max>",
 				"Set the range of the specified colour scale" },
-	{ "scaletype",		"V",		"<type>",
+	{ "scaletype",		"VV",		"<id> <type>",
 				"Set the type of the specified colourscale - '2' for two point scale, '3' for three point scale" },
 
 
@@ -522,14 +522,14 @@ CommandData CA_data[CA_NITEMS] = {
 				"Execute the named script" },
 
 	// Selection commands
+	{ "deselect",		"L",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
+				"Deselect specific atoms / ranges in the current model" },
 	{ "invert",		"",		"",
 				"Invert the current selection" },
-	{ "select",		"V",		"<id>",
-				"Select specific atoms in the current model" },
+	{ "select",		"L",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
+				"Select specific atoms / ranges in the current model" },
 	{ "selectall",		"",		"",
 				"Select all atoms in the current model" },
-	{ "selectelement",	"V",		"<el>",
-				"Select all atoms of a specific element" },
 	{ "selectfftype",	"V",		"<typename>",
 				"Select all atoms of a specific forcefield type" },
 	{ "selectnone",		"",		"",

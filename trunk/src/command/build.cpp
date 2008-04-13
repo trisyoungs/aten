@@ -33,8 +33,8 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 	if (c->hasArg(0))
 	{
 		Atom *i;
-		if (c->argt(0) == VT_INTEGER) i = obj.m->atom(c->argi(0)-1);
-		else if (c->argt(0) == VT_ATOM) i = c->arga(0);
+		if (c->argt(0) == Variable::IntegerVariable) i = obj.m->atom(c->argi(0)-1);
+		else if (c->argt(0) == Variable::AtomVariable) i = c->arga(0);
 		else
 		{
 			msg(Debug::None,"Optional argument to 'addhydrogen' must be an integer or an atom*.\n");

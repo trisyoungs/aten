@@ -124,6 +124,7 @@ class Parser
 	public:
 	bool getArgsExpression(const char *);
 	bool isOperator(int, char);
+	bool isNumber(int);
 };
 
 extern Parser parser;

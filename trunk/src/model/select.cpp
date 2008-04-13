@@ -44,6 +44,13 @@ void Model::selectAtom(Atom *i)
 	dbgEnd(Debug::MoreCalls,"Model::selectAtom (%li)",i);
 }
 
+// Select Atom by ID
+void Model::selectAtom(int id)
+{
+	Atom *i = atom(id);
+	if (i != NULL) selectAtom(i);
+}
+
 // Deselect Atom
 void Model::deselectAtom(Atom *i)
 {
@@ -61,6 +68,13 @@ void Model::deselectAtom(Atom *i)
 		}
 	}
 	dbgEnd(Debug::MoreCalls,"Model::deselectAtom (%li)",i);
+}
+
+// Deelect Atom by ID
+void Model::deselectAtom(int id)
+{
+	Atom *i = atom(id);
+	if (i != NULL) deselectAtom(i);
 }
 
 // Toggle Selection State
@@ -229,22 +243,28 @@ void Model::selectTree(Atom *i)
 void Model::selectElement(Atom *target)
 {
 	// Select all atoms which are the same element as the atom i
+	selectElement(target->element());
+}
+
+// Select by element (from element)
+void Model::selectElement(int el)
+{
+	// Select all atoms which are the same element as the atom with id 'target'
+
 	dbgBegin(Debug::Calls,"Model::selectElement");
-	Atom *i = atoms_.first();
-	while (i != NULL)
-	{
-		if (i->element() == target->element()) selectAtom(i);
-		i = i->next;
-	}
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		if (i->element() == el) selectAtom(i);
 	dbgEnd(Debug::Calls,"Model::selectElement");
 }
 
-// Select by element (from ID)
-void Model::selectElement(int id)
+// Deelect by Element
+void Model::deselectElement(int el)
 {
-	// Select all atoms which are the same element as the atom with id 'target'
-	Atom *i = atom(id);
-	if (i != NULL) selectElement(i);
+	// Select all atoms which are the same element as the atom i
+	dbgBegin(Debug::Calls,"Model::deselectElement");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
+		if (i->element() == el) deselectAtom(i);
+	dbgEnd(Debug::Calls,"Model::deselectElement");
 }
 
 // Select with bounding Sphere
