@@ -23,6 +23,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "base/spacegroup.h"
 
 // Local variables
 bool cellpage_refreshing = FALSE;
@@ -57,16 +58,59 @@ void AtenForm::on_CellAngleCSpin_valueChanged(double d)
 	cellChanged();
 }
 
-void AtenForm::refreshCellPage()
+void AtenForm::on_CellSpacegroupEdit_returnPressed()
+{
+	on_CellSpacegroupSetButton_clicked(FALSE);
+}
+
+void AtenForm::on_CellSpacegroupSetButton_clicked(bool checked)
+{
+	Model *m = master.currentModel();
+	int sg;
+	static char s[64];
+	// Grab the current text of the line edit and determine spacegroup
+	// Try a direct number conversion first...
+	strcpy(s,qPrintable(ui.CellSpacegroupEdit->text()));
+	sg = atoi(s);
+	if (sg == 0) sg = master.findSpacegroupByName(s);
+	// Check for null spacegroup
+	if (sg == 0) msg(Debug::None,"Unrecognised spacegroup '%s'.\n", s);
+	else
+	{
+		m->setSpacegroup(sg);
+		ui.CellSpacegroupEdit->setText("");
+		// Set spacegroup label
+		sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+		ui.SpacegroupLabel->setText(s);
+	}
+}
+
+void AtenForm::on_CellSpacegroupRemoveButton_clicked(bool checked)
+{
+	static char s[64];
+	Model *m = master.currentModel();
+	m->setSpacegroup(0);
+	// Set spacegroup label
+	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+	ui.SpacegroupLabel->setText(s);
+}
+
+void AtenForm::on_CellSpacegroupPackButton_clicked(bool checked)
+{
+	Model *m = master.currentModel();
+	m->beginUndostate("Pack Cell");
+	m->pack();
+	m->endUndostate();
+	gui.modelChanged();
+}
+
+void AtenForm::refreshCellPages()
 {
 	// If the cell page is not visible, don't do anything
-	if (!ui.ShowCellPageButton->isChecked())
-	{
-		dbgEnd(Debug::Calls,"AtenForm::refreshCellPage");
-		return;
-	}
+	if ((!ui.ShowCellDefinePageButton->isChecked()) && (!ui.ShowCellManipulatePageButton->isChecked())) return;
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	Cell *cell = master.currentModel()->cell();
+	Model *m = master.currentModel();
+	Cell *cell = m->cell();
 	Cell::CellType ct = cell->type();
 	static char s[64];
 	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->volume());
@@ -80,6 +124,7 @@ void AtenForm::refreshCellPage()
 		ui.CellDefinitionGroup->setChecked(FALSE);
 		ui.CellReplicateGroup->setEnabled(FALSE);
 		ui.CellScaleGroup->setEnabled(FALSE);
+		ui.CellSpacegroupGroup->setEnabled(FALSE);
 		cellpage_refreshing = FALSE;
 		return;
 	}
@@ -89,6 +134,7 @@ void AtenForm::refreshCellPage()
 		ui.CellDefinitionGroup->setChecked(TRUE);
 		ui.CellReplicateGroup->setEnabled(TRUE);
 		ui.CellScaleGroup->setEnabled(TRUE);
+		ui.CellSpacegroupGroup->setEnabled(TRUE);
 	}
 	// Set values in spin boxes
 	Vec3<double> lengths, angles;
@@ -100,6 +146,9 @@ void AtenForm::refreshCellPage()
 	ui.CellAngleASpin->setValue(angles.x);
 	ui.CellAngleBSpin->setValue(angles.y);
 	ui.CellAngleCSpin->setValue(angles.z);
+	// Set spacegroup label
+	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName,  m->spacegroup());
+	ui.SpacegroupLabel->setText(s);
 	cellpage_refreshing = FALSE;
 }
 
@@ -133,6 +182,7 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 		cellChanged();
 		ui.CellReplicateGroup->setEnabled(TRUE);
 		ui.CellScaleGroup->setEnabled(TRUE);
+		ui.CellSpacegroupGroup->setEnabled(TRUE);
 	}
 	else
 	{
@@ -142,6 +192,7 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 		m->endUndostate();
 		ui.CellReplicateGroup->setEnabled(FALSE);
 		ui.CellScaleGroup->setEnabled(FALSE);
+		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder stack page here, since a cell has been added/removed
 	refreshDisorderPage();

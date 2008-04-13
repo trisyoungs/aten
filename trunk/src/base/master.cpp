@@ -545,13 +545,18 @@ void Master::cancelProgress()
 int Master::findSpacegroupByName(const char *name) const
 {
 	dbgBegin(Debug::Calls,"Master::findSpacegroupByName");
+	static char lcname[256], lcsg[256];
+	strcpy(lcname,lowerCase(name));
 	int result = 0;
 	for (int n=1; n<231; n++)
-		if (strcmp(spacegroups[n].name,name) == 0)
+	{
+		strcpy(lcsg,lowerCase(spacegroups[n].name));
+		if (strcmp(lcsg,lcname) == 0)
 		{
 			result = n;
 			break;
 		}
+	}
 	dbgEnd(Debug::Calls,"Master::findSpacegroupByName");
 	return result;
 }

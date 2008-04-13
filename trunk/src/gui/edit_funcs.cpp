@@ -151,7 +151,7 @@ void AtenForm::on_BondAugmentButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_ElementEdit_editingFinished()
+void AtenForm::on_ElementEdit_returnPressed()
 {
 	// Get the contents of the line edit and check that it is an element symbol
 	int el = elements.find(qPrintable(ui.ElementEdit->text()));

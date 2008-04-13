@@ -455,10 +455,15 @@ void AtenForm::on_ShowPositionPageButton_clicked(bool checked)
 	switchStack(SP_POSITION, checked);
 }
 
-void AtenForm::on_ShowCellPageButton_clicked(bool checked)
+void AtenForm::on_ShowCellDefinePageButton_clicked(bool checked)
 {
-	switchStack(SP_CELL, checked);
-	if (checked) refreshCellPage();
+	switchStack(SP_CELLDEFINE, checked);
+	if (checked) refreshCellPages();
+}
+
+void AtenForm::on_ShowCellManipulatePageButton_clicked(bool checked)
+{
+	switchStack(SP_CELLMANIPULATE, checked);
 }
 
 void AtenForm::on_ShowMinimiserPageButton_clicked(bool checked)

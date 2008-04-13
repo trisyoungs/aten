@@ -90,7 +90,7 @@ void AtenForm::finaliseUi()
 	// Add text edit to CommandToolBar
 	commandEdit_ = new QLineEdit(this);
 	ui.CommandToolBar->addWidget(commandEdit_);
-	QObject::connect(commandEdit_, SIGNAL(editingFinished()), this, SLOT(executeCommand()));
+	QObject::connect(commandEdit_, SIGNAL(returnPressed()), this, SLOT(executeCommand()));
 
 	// Create QActionGroup for perspective / orthographic views
 	QActionGroup *viewtypeGroup = new QActionGroup(this);
@@ -149,7 +149,8 @@ void AtenForm::finaliseUi()
 	stackButtons_[SP_EDIT] = ui.ShowEditPageButton;
 	stackButtons_[SP_TRANSFORM] = ui.ShowTransformPageButton;
 	stackButtons_[SP_POSITION] = ui.ShowPositionPageButton;
-	stackButtons_[SP_CELL] = ui.ShowCellPageButton;
+	stackButtons_[SP_CELLDEFINE] = ui.ShowCellDefinePageButton;
+	stackButtons_[SP_CELLMANIPULATE] = ui.ShowCellManipulatePageButton;
 	stackButtons_[SP_MINIMISER] = ui.ShowMinimiserPageButton;
 	stackButtons_[SP_DISORDER] = ui.ShowDisorderPageButton;
 	stackButtons_[SP_FORCEFIELD] = ui.ShowForcefieldsPageButton;

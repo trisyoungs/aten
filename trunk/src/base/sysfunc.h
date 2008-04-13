@@ -47,4 +47,7 @@ int sInList(const char *query, const char *delimlist);
 // Expression evaluate
 const char *evaluate(const char*, VariableList*);
 
+// Files
+bool fileExists(const char *filename);
+
 #endif

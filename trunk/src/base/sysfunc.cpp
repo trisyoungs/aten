@@ -290,3 +290,14 @@ const char *stripTrailing(const char *s)
 	result[n+1] = '\0';
 	return result;
 }
+
+bool fileExists(const char *filename)
+{
+	fstream f(filename,ios::in);
+	if (f.good())
+	{
+		f.close();
+		return TRUE;
+	}
+	else return FALSE;
+}

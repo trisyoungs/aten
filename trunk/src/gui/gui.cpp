@@ -246,7 +246,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update contents of the atom list
 	if (updateAtoms) mainWindow->refreshAtomPage();
 	// Update the contents of the cell page
-	if (updateCell) mainWindow->refreshCellPage();
+	if (updateCell) mainWindow->refreshCellPages();
 	// Update forcefields in the forcefield window
 	if (updateForcefield) mainWindow->refreshForcefieldPage();
 	// Enable the Atom menu if one or more atoms are selected
