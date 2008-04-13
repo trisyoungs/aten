@@ -33,7 +33,7 @@ class Spacegroup
 	// Name of the spacegroup (plaintext)
 	const char *name;
 	// Name of the spacegroup (formatted)
-	const char *displayname;
+	const char *displayName;
 	// Number of symmetry generators for this spacegroup
 	int nGenerators;
 	// List of symmetry generators for this spacegroup

@@ -245,7 +245,7 @@ void AtenForm::on_ManualTypeTestButton_clicked(bool checked)
 }
 
 // Change target element in type list
-void AtenForm::on_ManualTypeEdit_editingFinished()
+void AtenForm::on_ManualTypeEdit_returnPressed()
 {
 	// Get the contents of the line edit and check that it is an element symbol
 	int el = elements.find(qPrintable(ui.ManualTypeEdit->text()));

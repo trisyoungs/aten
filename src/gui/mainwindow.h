@@ -28,7 +28,7 @@
 #include "gui/ui_prefs.h"
 
 // Stack Pages (must be in order of pages in the stack)
-enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELL, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
+enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP_CELLMANIPULATE, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
 
 // Bitmap Formats
 enum bitmap_format { BIF_BMP, BIF_JPG, BIF_PNG, BIF_PPM, BIF_XBM, BIF_X11, BIF_NITEMS };
@@ -240,7 +240,8 @@ class AtenForm : public QMainWindow
 	void on_ShowEditPageButton_clicked(bool checked);
 	void on_ShowTransformPageButton_clicked(bool checked);
 	void on_ShowPositionPageButton_clicked(bool checked);
-	void on_ShowCellPageButton_clicked(bool checked);
+	void on_ShowCellDefinePageButton_clicked(bool checked);
+	void on_ShowCellManipulatePageButton_clicked(bool checked);
 	void on_ShowMinimiserPageButton_clicked(bool checked);
 	void on_ShowDisorderPageButton_clicked(bool checked);
 	void on_ShowForcefieldsPageButton_clicked(bool checked);
@@ -281,7 +282,7 @@ class AtenForm : public QMainWindow
 	void on_ElementCButton_clicked(bool on);
 	void on_ElementNButton_clicked(bool on);
 	void on_ElementUserButton_clicked(bool on);
-	void on_ElementEdit_editingFinished();
+	void on_ElementEdit_returnPressed();
 	void on_BondAugmentButton_clicked(bool on);
 	void on_AddHydrogenButton_clicked(bool on);
 	void on_AtomAddHydrogenButton_clicked(bool on);
@@ -324,9 +325,9 @@ class AtenForm : public QMainWindow
 	void on_DefineCentreButton_clicked(bool checked);
 	void on_CentreSelectionButton_clicked(bool checked);
 
-	// Cell Page Functions
+	// Cell Definition Page Functions
 	public:
-	void refreshCellPage();
+	void refreshCellPages();
 	void cellChanged();
 	private slots:
 	void on_CellDefinitionGroup_clicked(bool checked);
@@ -336,6 +337,13 @@ class AtenForm : public QMainWindow
 	void on_CellAngleASpin_valueChanged(double d);
 	void on_CellAngleBSpin_valueChanged(double d);
 	void on_CellAngleCSpin_valueChanged(double d);
+	void on_CellSpacegroupSetButton_clicked(bool checked);
+	void on_CellSpacegroupEdit_returnPressed();
+	void on_CellSpacegroupRemoveButton_clicked(bool checked);
+	void on_CellSpacegroupPackButton_clicked(bool checked);
+
+	// Cell Manipulate Page Functions
+	private slots:
 	void on_CellReplicateButton_clicked(bool checked);
 	void on_CellScaleButton_clicked(bool checked);
 
@@ -363,7 +371,7 @@ class AtenForm : public QMainWindow
 	void on_ManualTypeSetButton_clicked(bool checked);
 	void on_ManualTypeClearButton_clicked(bool checked);
 	void on_ManualTypeTestButton_clicked(bool checked);
-	void on_ManualTypeEdit_editingFinished();
+	void on_ManualTypeEdit_returnPressed();
 
 
 	// Grid Page Functions
