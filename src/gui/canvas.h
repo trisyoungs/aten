@@ -44,7 +44,7 @@ enum UserAction { UA_NONE,
 enum key_code { KC_OTHER, KC_ESCAPE, KC_SHIFT_L, KC_SHIFT_R, KC_CONTROL_L, KC_CONTROL_R, KC_ALT_L, KC_ALT_R, KC_LEFT, KC_RIGHT, KC_UP, KC_DOWN, KC_NITEMS };
 
 // GL Objects
-enum GlObject { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_SELCYLINDER, GLOB_WIRECYLINDER, GLOB_SELWIRECYLINDER, GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_MODEL, GLOB_NITEMS };
+enum GlObject { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_SELCYLINDER, GLOB_WIRECYLINDER, GLOB_SELWIRECYLINDER, GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_TUBEARROW, GLOB_MODEL, GLOB_NITEMS };
 
 // Forward declarations
 class Atom;
@@ -124,6 +124,23 @@ class Canvas
 	void createLists();
 
 	/*
+	// Rendering Primitives
+	*/
+	private:
+	// Draw a diamond
+	void diamondPrimitive(double xcenter, double ycentre, double size);
+	// Draw a square
+	void squarePrimitive(double xcentre, double ycentre, double size);
+	// Draw a rectangle
+	void rectanglePrimitive(double l, double t, double r, double b);
+	// Draw a circle
+	void circlePrimitive(double xcentre, double ycenter, double radius);
+	// Manually draw a unit sphere
+	void spherePrimitive(double radius, bool filled);
+	// Manually draw unit cylinder
+	void cylinderPrimitive(double startradius, double endradius, bool filled);
+
+	/*
 	// General Rendering Objects / Calls
 	*/
 	private:
@@ -131,16 +148,8 @@ class Canvas
 	void glText(double, double, const char*);
 	// Render text string at atom's screen coordinates
 	void glText(const Vec3<double>, const char*);
-	// Draw a diamond
-	void glDiamond(double, double, double);
-	// Draw a square
-	void glSquare(double, double, double);
-	// Draw a rectangle
-	void glRectangle(double, double, double, double);
 	// Draw 3d marks for the atoms in the subselection
 	void glSubsel3d();
-	// Draw a circle
-	void glCircle(double, double, double);
 	// Draw a cylinder along vector supplied
 	void glCylinder(const Vec3<double> &vec, double length, int style);
 	// Draw ellipsoid
@@ -149,10 +158,9 @@ class Canvas
 	void glCell(Cell*);
 	// Draw a line arrow
 	void glArrow(const Vec3<double> &from, const Vec3<double> &to);
-	// Manually draw a unit sphere
-	void glSphere(double radius, bool filled);
-	// Manually draw unit cylinder
-	void glCylinder(double radius, bool filled);
+	// Draw a cylinder arrow
+	void glCylinderArrow(const Vec3<double> &from, const Vec3<double> &to);
+
 
 	protected:
 	// Last model rendered by canvas (needed for mouse hover etc.)

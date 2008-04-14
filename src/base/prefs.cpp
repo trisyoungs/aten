@@ -155,8 +155,8 @@ Prefs::Prefs()
 	// GL Options
 	glOptions_ = 0;
 	shininess_ = 10;
-	clipNear_ = 1.0;
-	clipFar_ = 1000.0;
+	clipNear_ = 0.5;
+	clipFar_ = 2000.0;
 	fogNear_ = 1;
 	fogFar_ = 200;
 

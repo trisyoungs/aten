@@ -261,15 +261,15 @@ void Canvas::createLists()
 	*/
 	// Enlarged sphere (for selections with DS_TUBE)
 	glNewList(list_[GLOB_SELTUBEATOM],GL_COMPILE);
-	  glSphere(prefs.tubeSize()*prefs.selectionScale(), TRUE);
+	  spherePrimitive(prefs.tubeSize()*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SPHERE)
 	glNewList(list_[GLOB_SELSPHEREATOM],GL_COMPILE);
-	  glSphere(prefs.atomSize(Atom::SphereStyle)*prefs.selectionScale(), TRUE);
+	  spherePrimitive(prefs.atomSize(Atom::SphereStyle)*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SCALED)
 	glNewList(list_[GLOB_SELUNITATOM],GL_COMPILE);
-	  glSphere(prefs.selectionScale(), TRUE);
+	  spherePrimitive(prefs.selectionScale(), TRUE);
 	glEndList();
 
 	/*
@@ -285,50 +285,62 @@ void Canvas::createLists()
 	glEndList();
 	// Atom Sphere (for DS_TUBE)
 	glNewList(list_[GLOB_TUBEATOM],GL_COMPILE);
-	  glSphere(prefs.atomSize(Atom::TubeStyle)*0.98, TRUE);
+	  spherePrimitive(prefs.atomSize(Atom::TubeStyle)*0.98, TRUE);
 	glEndList();
 	// Atom Sphere (for DS_SPHERE)
 	glNewList(list_[GLOB_SPHEREATOM],GL_COMPILE);
-	  glSphere(prefs.atomSize(Atom::SphereStyle), TRUE);
+	  spherePrimitive(prefs.atomSize(Atom::SphereStyle), TRUE);
 	glEndList();
 	// Unit Atom Sphere (for DS_SCALED)
 	glNewList(list_[GLOB_UNITATOM],GL_COMPILE);
-	  glSphere(1.0, TRUE);
+	  spherePrimitive(1.0, TRUE);
 	glEndList();
 	// Wire Atom Sphere (for DS_TUBE)
 	glNewList(list_[GLOB_WIRETUBEATOM],GL_COMPILE);
-	  glSphere(prefs.tubeSize()*1.1, FALSE);
+	  spherePrimitive(prefs.tubeSize()*1.1, FALSE);
 	glEndList();
 	// Wire Atom Sphere (for DS_SPHERE)
 	glNewList(list_[GLOB_WIRESPHEREATOM],GL_COMPILE);
-	  glSphere(prefs.atomSize(Atom::SphereStyle)*1.1, FALSE);
+	  spherePrimitive(prefs.atomSize(Atom::SphereStyle)*1.1, FALSE);
 	glEndList();
 	// Wire Unit Atom Sphere (for DS_SCALED)
 	glNewList(list_[GLOB_WIREUNITATOM],GL_COMPILE);
-	  glSphere(1.1, FALSE);
+	  spherePrimitive(1.1, FALSE);
 	glEndList();
 	/*
 	// Cylinders (bonds)
 	*/
 	// Solid cylinder
 	glNewList(list_[GLOB_CYLINDER],GL_COMPILE);
-	  glCylinder(prefs.tubeSize(), TRUE);
+	  cylinderPrimitive(prefs.tubeSize(), prefs.tubeSize(), TRUE);
 	glEndList();
 	// Solid selected cylinder
 	glNewList(list_[GLOB_SELCYLINDER],GL_COMPILE);
-	  glCylinder(prefs.tubeSize()*prefs.selectionScale(), TRUE);
+	  cylinderPrimitive(prefs.tubeSize()*prefs.selectionScale(), prefs.tubeSize()*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Wireframe cylinder
 	glNewList(list_[GLOB_WIRECYLINDER],GL_COMPILE);
-	  glCylinder(prefs.tubeSize(), FALSE);
+	  cylinderPrimitive(prefs.tubeSize(), prefs.tubeSize(), FALSE);
 	glEndList();
 	// Selected wireframe cylinder
 	glNewList(list_[GLOB_SELWIRECYLINDER],GL_COMPILE);
-	  glCylinder(prefs.tubeSize()*prefs.selectionScale(), FALSE);
+	  cylinderPrimitive(prefs.tubeSize()*prefs.selectionScale(), prefs.tubeSize()*prefs.selectionScale(), FALSE);
 	glEndList();
 	/*
 	// Objects
 	*/
+	// Cylinder Arrow
+	glNewList(list_[GLOB_TUBEARROW],GL_COMPILE);
+	  glPushMatrix();
+	    glScaled(1.0,1.0,0.6);
+	    cylinderPrimitive(0.1, 0.1, TRUE);
+	  glPopMatrix();
+	  glTranslated(0.0,0.0,0.6);
+	  glPushMatrix();
+	    glScaled(1.0,1.0,0.4);
+	    cylinderPrimitive(0.2, 0.0, TRUE);
+	  glPopMatrix();
+	glEndList();
 	// View axes
 	glNewList(list_[GLOB_GLOBE],GL_COMPILE);
 	  glBegin(GL_LINES);
@@ -347,7 +359,7 @@ void Canvas::createLists()
 	    glVertex3d(0.05f,0.0f,0.65f); glVertex3d(-0.05f,0.0f,0.85f);
 	    glVertex3d(-0.05f,0.0f,0.85f); glVertex3d(0.05f,0.0f,0.85f);
 	  glEnd();
-	  glSphere(0.5, FALSE);
+	  spherePrimitive(0.5, FALSE);
 	glEndList();
 	// Drawing guide
 	delta = extent * spacing;
