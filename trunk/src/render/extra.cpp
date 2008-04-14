@@ -127,7 +127,7 @@ void Canvas::renderExtra2d()
 		case (UA_POSSELECT):
 			glEnable(GL_LINE_STIPPLE);
 			glLineStipple(1,0x5555);
-			glRectangle(rMouseDown_.x, height_-rMouseDown_.y, rMouseLast_.x, height_-rMouseLast_.y);
+			rectanglePrimitive(rMouseDown_.x, height_-rMouseDown_.y, rMouseLast_.x, height_-rMouseLast_.y);
 			glDisable(GL_LINE_STIPPLE);
 			break;
 		// Draw line from last atom in selection list (if any) to the current mouse pos
@@ -166,7 +166,7 @@ void Canvas::renderExtra2d()
 	if (atomHover_ != NULL)
 	{
 		Vec3<double> hoverpos = atomHover_->rScreen();
-		glCircle(hoverpos.x,hoverpos.y,atomHover_->screenRadius());
+		circlePrimitive(hoverpos.x,hoverpos.y,atomHover_->screenRadius());
 	}
 	// Add text
 	//text(1.0,h-12.0,displayModel_->name());

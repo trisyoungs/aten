@@ -31,19 +31,8 @@
 // Primitives
 */
 
-void Canvas::glText(double x, double y, const char *s)
-{
-	contextWidget_->renderText((int)x, (int)y, s);
-}
-
-// Render text at 3D coordinates
-void Canvas::glText(const Vec3<double> r, const char *s)
-{
-	contextWidget_->renderText(r.x, r.y, r.z, s);
-}
-
 // Draw a diamond at the point specified, with 'radius' r.
-void Canvas::glDiamond(double x, double y, double r)
+void Canvas::diamondPrimitive(double x, double y, double r)
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x,y+r);
@@ -54,7 +43,7 @@ void Canvas::glDiamond(double x, double y, double r)
 }
 
 // Draw a box centred at x,y with diameter r
-void Canvas::glSquare(double x, double y, double r)
+void Canvas::squarePrimitive(double x, double y, double r)
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x+r,y+r);
@@ -65,7 +54,7 @@ void Canvas::glSquare(double x, double y, double r)
 }
 
 // Draw a box from top-left x1,y1 to bottom-right x2,y2
-void Canvas::glRectangle(double x1, double y1, double x2, double y2)
+void Canvas::rectanglePrimitive(double x1, double y1, double x2, double y2)
 {
 	glBegin(GL_LINE_LOOP);
 	  glVertex2d(x1,y1);
@@ -76,7 +65,7 @@ void Canvas::glRectangle(double x1, double y1, double x2, double y2)
 }
 
 // Draw a circle of (pixel) radius 'r' centred at x,y
-void Canvas::glCircle(double x, double y, double r)
+void Canvas::circlePrimitive(double x, double y, double r)
 {
 	//r += master.lineardelta;
 	glPushMatrix();
@@ -84,6 +73,79 @@ void Canvas::glCircle(double x, double y, double r)
 	  glScalef(r,r,r);
 	  glCallList(list_[GLOB_CIRCLE]);
 	glPopMatrix();
+}
+
+// Draw a sphere
+void Canvas::spherePrimitive(double radius, bool filled)
+{
+	// Don't use this to render objects to the view - create a display list first!
+	int i, j;
+	int lats = prefs.atomDetail();
+	int longs = int(lats * 1.5);
+	double lat0, z0, zr0, lat1, z1, zr1, lng, x, y;
+	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
+	for(i = 0; i <= lats; i++)
+	{
+		lat0 = PI * (-0.5 + (double) (i - 1) / lats);
+		z0  = sin(lat0);
+		zr0 =  cos(lat0);
+
+		lat1 = PI * (-0.5 + (double) i / lats);
+		z1 = sin(lat1);
+		zr1 = cos(lat1);
+
+		glBegin(GL_QUAD_STRIP);
+		  for(j = 0; j <= longs; j++)
+		  {
+			lng = 2 * PI * (double) (j - 1) / longs;
+			x = cos(lng);
+			y = sin(lng);
+			glNormal3d(x * zr0, y * zr0, z0);
+			glVertex3d(x * zr0 * radius, y * zr0 * radius, z0 * radius);
+			glNormal3d(x * zr1, y * zr1, z1);
+			glVertex3d(x * zr1 * radius, y * zr1 * radius, z1 * radius);
+		  }
+		glEnd();
+	}
+}
+
+// Draw a cylinder
+void Canvas::cylinderPrimitive(double startradius, double endradius, bool filled)
+{
+	int n, m;
+	double d, rdelta, radius1, radius2;
+	rdelta = (endradius - startradius) / prefs.bondDetail();
+	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
+	for (n=0; n<prefs.bondDetail(); n++)		// Slices
+	{
+		radius1 = startradius + n*rdelta;
+		radius2 = startradius + (n+1)*rdelta;
+		glBegin(GL_QUAD_STRIP);
+		  for (m=0; m<=prefs.bondDetail(); m++)	// Stacks
+		  {
+			  d = m * TWOPI / prefs.bondDetail();
+			  glNormal3d(cos(d), sin(d), 0.0);
+			  glVertex3d(cos(d) * radius1, sin(d) * radius1, n * (1.0 / prefs.bondDetail()));
+			  glVertex3d(cos(d) * radius2, sin(d) * radius2, (n + 1) * (1.0 / prefs.bondDetail()));
+		  }
+		glEnd();
+	}
+}
+
+/*
+// Rendering Objects
+*/
+
+// Render text at 2D coordinates
+void Canvas::glText(double x, double y, const char *s)
+{
+	contextWidget_->renderText((int)x, (int)y, s);
+}
+
+// Render text at 3D coordinates
+void Canvas::glText(const Vec3<double> r, const char *s)
+{
+	contextWidget_->renderText(r.x, r.y, r.z, s);
 }
 
 // Draw an arrow from origin along vector v
@@ -111,9 +173,26 @@ void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v)
 	glPopMatrix();
 }
 
-/*
-// Custom
-*/
+
+// Draw a cylinder arrow from origin along vector v
+void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v)
+{
+	// Determine spherical coordinates
+	static double phi, rij;
+	rij = v.magnitude();
+	glPushMatrix();
+	  glTranslated(origin.x, origin.y, origin.z);
+	  // Calculate angle out of XZ plane
+	  phi = DEGRAD * acos(v.z/rij);
+	  glPushMatrix();
+	    // Special case where the bond is exactly in the XY plane.
+	    if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
+	    else glRotated(phi, -v.y/rij , v.x/rij ,0.0f);
+	    glScaled(1.0,1.0,rij);
+	    glCallList(list_[GLOB_TUBEARROW]);
+	  glPopMatrix();
+	glPopMatrix();
+}
 
 void Canvas::glSubsel3d()
 {
@@ -203,35 +282,6 @@ void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style)
 	glPopMatrix();
 }
 
-/*
-void Canvas::gl_ellipsoid(Vec3<double> *pos, Vec3<double> *lookat, Vec3<double> *scale)
-{
-	static double phi, mag;
-	static Vec3<double> direction;
-	direction = *lookat;
-	direction = direction - *pos;
-	mag = direction.mag_and_normalise();
-	// Apply position and scaling transforms
-	glPushMatrix();
-	  glTranslated(pos->x,pos->y,pos->z);
-	  glPushMatrix();
-	    // Determine spherical coordinates for rotation
-	    phi = DEGRAD * acos(direction.z);		// Angle out of XZ plane
-	    // Special case where the bond is exactly in the XY plane.
-	    if ((180.0 - phi) < 0.0001)
-	    {
-		//if (rj->z < 0.0) phi = -phi;
-	  	//glRotatef(phi, -rj->y/rj->z , rj->x/rj->z ,0.0f);
-		glRotatef(phi,1.0,0.0,0.0);
-	    }
-	    else glRotatef(phi, -direction.y , direction.x ,0.0f);
-	    glScaled(scale->x,scale->y,scale->z);
-	    glCallList(list_[GLOB_SPHEREATOM]);
-	  glPopMatrix();
-	glPopMatrix();
-}
-*/
-
 void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, const Vec3<double> &v2)
 {
 	static double phi, mag1, mag2, r[16], t[16];
@@ -257,54 +307,3 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, con
 	glPopMatrix();
 }
 
-void Canvas::glSphere(double radius, bool filled)
-{
-	// Don't use this to render objects to the view - create a display list first!
-	int i, j;
-	int lats = prefs.atomDetail();
-	int longs = int(lats * 1.5);
-	double lat0, z0, zr0, lat1, z1, zr1, lng, x, y;
-	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
-	for(i = 0; i <= lats; i++)
-	{
-		lat0 = PI * (-0.5 + (double) (i - 1) / lats);
-		z0  = sin(lat0);
-		zr0 =  cos(lat0);
-
-		lat1 = PI * (-0.5 + (double) i / lats);
-		z1 = sin(lat1);
-		zr1 = cos(lat1);
-
-		glBegin(GL_QUAD_STRIP);
-		  for(j = 0; j <= longs; j++)
-		  {
-			lng = 2 * PI * (double) (j - 1) / longs;
-			x = cos(lng);
-			y = sin(lng);
-			glNormal3d(x * zr0, y * zr0, z0);
-			glVertex3d(x * zr0 * radius, y * zr0 * radius, z0 * radius);
-			glNormal3d(x * zr1, y * zr1, z1);
-			glVertex3d(x * zr1 * radius, y * zr1 * radius, z1 * radius);
-		  }
-		glEnd();
-	}
-}
-
-void Canvas::glCylinder(double radius, bool filled)
-{
-	int n, m;
-	double d;
-	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
-	for (n=0; n<prefs.bondDetail(); n++)		// Slices
-	{
-		glBegin(GL_QUAD_STRIP);
-		  for (m=0; m<=prefs.bondDetail(); m++)	// Stacks
-		  {
-			  d = m * TWOPI / prefs.bondDetail();
-			  glNormal3d(cos(d), sin(d), 0.0);
-			  glVertex3d(cos(d) * radius, sin(d) * radius, n * (1.0 / prefs.bondDetail()));
-			  glVertex3d(cos(d) * radius, sin(d) * radius, (n + 1) * (1.0 / prefs.bondDetail()));
-		  }
-		glEnd();
-	}
-}
