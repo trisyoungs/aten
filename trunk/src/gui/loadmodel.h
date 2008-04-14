@@ -41,6 +41,8 @@ class AtenLoadModel : public QDialog
 	*/
 	private slots:
 	void on_LoadModelBrowseButton_clicked(bool checked);
+	void on_LoadModelEdit_editingFinished();
+	void on_LoadModelEdit_returnPressed();
 	void on_LoadModelRebondCombo_activated(int index);
 	void on_LoadModelFoldCombo_activated(int index);
 	void on_LoadModelPackCombo_activated(int index);

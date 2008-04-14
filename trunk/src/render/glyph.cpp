@@ -43,7 +43,11 @@ void Canvas::renderModelGlyphs()
 				vec[0] = g->data[0].vector();
 				glArrow(vec[0], g->data[1].vector() - vec[0] );
 				break;
+			// Vector - centre = data[0], direction = data[1]
 			case (Glyph::VectorGlyph):
+				vec[1] = g->data[1].vector() * 0.5;
+				vec[0] = g->data[0].vector() - vec[1];
+				glArrow( vec[0], vec[1] );
 				break;
 			// Sphere - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):

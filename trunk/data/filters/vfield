@@ -9,43 +9,16 @@ importmodel
 
 	# Variable declaration
 	integer n,i,j,k,nx,ny,nz
-	character e,keywd,line
-	double rx,ry,rz
+	double x,y,z,vx,vy,vz
 
 	newmodel VectorField
 
-	# Get size of grid
-	readline "$nx $ny $nz"
-
-	# Read line
+	# Read vector data
 	for $n
-		readline "$keywd $line@100"
-		if $keywd = atom
-			readvar $line "$e $rx $ry $rz"
-			newatom $e
-			setcoords $rx $ry $rz
-		elseif $keywd = arrow
-			readvar $line "$i $j"
-			newglyph arrow
-			glyphatomr 1 $i
-			glyphatomr 2 $j
-		elseif $keywd = sphere
-			readvar $line "$i $rx $ry $rz"
-			newglyph sphere
-			glyphatomr 1 $i
-			glyphdata 2 $rx $ry $rz
-		elseif $keywd = cube
-			readvar $line "$i $rx $ry $rz"
-			newglyph cube
-			glyphatomr 1 $i
-			glyphdata 2 $rx $ry $rz
-		elseif $keywd = tet
-			readvar $line "$i $j $k"
-			newglyph tetrahedron
-			glyphatomr 1 $i
-			glyphatomr 2 $j
-			glyphatomr 3 $k
-		end if
+		readline "$x $y $z $vx $vy $vz"
+		newglyph vector
+		glyphdata 1 $x $y $z
+		glyphdata 2 $vx $vy $vz
 	end
 	finalisemodel
 end
