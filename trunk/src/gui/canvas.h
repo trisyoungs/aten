@@ -148,7 +148,7 @@ class Canvas
 	// Draw the unit cell of the model
 	void glCell(Cell*);
 	// Draw a line arrow
-	void glArrow(const Vec3<double> &from, const Vec3<double>&to);
+	void glArrow(const Vec3<double> &from, const Vec3<double> &to);
 	// Manually draw a unit sphere
 	void glSphere(double radius, bool filled);
 	// Manually draw unit cylinder
