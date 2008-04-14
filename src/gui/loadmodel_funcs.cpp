@@ -45,6 +45,20 @@ void AtenLoadModel::finaliseUi()
 {
 }
 
+// Edit box finished editing
+void AtenLoadModel::on_LoadModelEdit_editingFinished()
+{
+	selectedFilename_ = qPrintable(ui.LoadModelEdit->text());
+}
+
+// Edit box finished editing
+void AtenLoadModel::on_LoadModelEdit_returnPressed()
+{
+	selectedFilename_ = qPrintable(ui.LoadModelEdit->text());
+	selectedFilter_ = NULL;
+	this->accept();
+}
+
 // Call a file dialog
 void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 {
@@ -68,7 +82,6 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	// Find the corresponding Aten filter that was selected
 	for (f = master.filters(FT_MODEL_IMPORT); f != NULL; f = f->next)
 		if (strcmp(f->description(),qPrintable(selFilter)) == 0) break;
-	printf("SLECAEKJHSSDKJ %li\n",selectedFilter_);
 	selectedFilter_ = f;
 }
 
