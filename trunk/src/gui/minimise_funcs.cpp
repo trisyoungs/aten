@@ -56,11 +56,12 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 			cg.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_MONTECARLO):
+			mc.setNCycles(maxcycles);
 			mc.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_SIMPLEX):
 			msg(Debug::None,"Simplex minimiser not yet written!\n");
 			break;
 	}
-	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
