@@ -322,7 +322,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 }
 
 // Interpattern VDW forces
-void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
+void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 {
 	// Calculate the VDW forces from interactions between different molecules
 	// of this pnode and the one supplied
@@ -337,14 +337,16 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	aoff1 = startAtom_;
+	printf("Pattern IDs are %i (this) and %i\n",id_, otherPattern->id_);
+
 	// TODO Move loops so that we can load temporary forces for i then calculate all other forces on it in one go.
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == xpnode ? finish = nMols_ - 1 : finish = nMols_;
+        this == otherPattern ? finish = nMols_ - 1 : finish = nMols_;
 	for (m1=0; m1<finish; m1++)
 	{
-		this == xpnode ? start = m1 + 1 : start = 0;
-		aoff2 = xpnode->startAtom_ + start*nAtoms_;
-		for (m2=start; m2<xpnode->nMols_; m2++)
+		this == otherPattern ? start = m1 + 1 : start = 0;
+		aoff2 = otherPattern->startAtom_ + start*nAtoms_;
+		for (m2=start; m2<otherPattern->nMols_; m2++)
 		{
 			i = -1;
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
@@ -353,7 +355,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 				paramsi = pai->data()->params();
 				f_i = modelatoms[i+aoff1]->f();
 				j = -1;
-				for (paj = xpnode->atoms_.first(); paj != NULL; paj = paj->next)
+				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
 					mim_i = cell->mimd(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
@@ -361,7 +363,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 					if (rij > cutoff) continue;
 					paramsj = paj->data()->params();
 					// TODO Check for conflicting VDW types
-					switch (atoms_[j]->data()->vdwForm())
+					switch (atoms_[i]->data()->vdwForm())
 					{
 						case (VF_UNSPECIFIED):
 							printf("Pattern::vdwInterPatternForces <<<< VDW function is UNSPECIFIED >>>>\n");
@@ -384,7 +386,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *xpnode)
 				// Store temporary force array back into main force array
 				modelatoms[i+aoff1]->f() = f_i;
 			}
-			aoff2 += xpnode->nAtoms_;
+			aoff2 += otherPattern->nAtoms_;
 		}
 		aoff1 += nAtoms_;
 	}

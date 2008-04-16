@@ -199,7 +199,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	prog = 0;
 
 	// Start progess indicator
-	if (gui.exists()) gui.progressCreate("Performing MC minimisation...", nCycles_ * npats * MonteCarlo::nMoveTypes);
+	if (gui.exists()) gui.progressCreate("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert);
 
 	// Loop over MC cycles
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -283,9 +283,17 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			msg(Debug::None," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			for (n=0; n<MonteCarlo::nMoveTypes; n++) msg(Debug::None," %3i",int(acceptanceRatio_[0][n]*100.0));
-			msg(Debug::None,"\n");
+			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMols(), p->nExpectedMols());
+			for (n=0; n<MonteCarlo::nMoveTypes; n++)
+			{
+				sprintf(t," %3i", int(acceptanceRatio_[0][n]*100.0));
+				strcat(s,t);
+			}
+			strcat(s,"\n");
+			msg(Debug::None,s);
+			//msg(Debug::None," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg(Debug::None," %3i",int(acceptanceRatio_[0][n]*100.0));
+			//msg(Debug::None,"\n");
 		}
 		elast = ecurrent;
 
@@ -680,7 +688,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	//else printf("Patterns are NOT valid.\n");
 	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
 	//else printf("Expression is NOT valid.\n");
-	//destmodel->logChange(LOG_COORDS);
+	destmodel->logChange(LOG_COORDS);
 	gui.mainWindow->refreshDisorderPage();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"MonteCarlo::insert");

@@ -121,16 +121,15 @@ void Model::foldAllMolecules()
 	int n,m;
 	Atom *i, *first;
 	Pattern *p;
-	// Molecular fold - fold first atom, other in molecule are MIM'd to this point
+	// Molecular fold - fold first atom, others in molecule are MIM'd to this point
 	if (!autocreatePatterns())
 	{
 		msg(Debug::None,"Model::foldAllMolecules : Molecular fold cannot be performed without a valid pattern definition.\n");
 		dbgEnd(Debug::Calls,"Model::foldAllMolecules");
 		return;
 	}
-	p = patterns_.first();
 	i = atoms_.first();
-	while (p != NULL)
+	for (p = patterns_.first(); p != NULL; p = p->next)
 	{
 		for (m=0; m<p->nMols(); m++)
 		{
@@ -146,7 +145,6 @@ void Model::foldAllMolecules()
 				i = i->next;
 			}
 		}
-		p = p->next;
 	}
 	logChange(LOG_COORDS);
 	dbgEnd(Debug::Calls,"Model::foldAllMolecules");
