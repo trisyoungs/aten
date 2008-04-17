@@ -360,18 +360,16 @@ template <class T> void List<T>::shiftUp(T* item)
 {
 	// If the item is already at the head of the list, return NULL.
 	if (listHead_ == item) return;
-	T* other = item->prev;
-	swap(other,item);
+	swapItems(item->prev,item);
 	regenerate_ = 1;
 }
 
 // Shift item towards tail
 template <class T> void List<T>::shiftDown(T* item)
 {
-	// If the item is already at the tail of the list, return NULL.
+	// If the item is already at the tail of the list, return.
 	if (listTail_ == item) return;
-	T* other = item->next;
-	swap(other,item);
+	swapItems(item->next,item);
 	regenerate_ = 1;
 }
 

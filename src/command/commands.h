@@ -107,6 +107,10 @@ enum CommandAction {
 	CA_ROTX,
 	CA_ROTY,
 	CA_ROTZ,
+	CA_SHIFTDOWN,
+	CA_SHIFTUP,
+	CA_TOEND,
+	CA_TOSTART,
 	CA_TRANSMUTE,
 
 	// Cell commands
@@ -441,6 +445,10 @@ class CommandData
 	int function_CA_ROTX(Command *&c, Bundle &obj);
 	int function_CA_ROTY(Command *&c, Bundle &obj);
 	int function_CA_ROTZ(Command *&c, Bundle &obj);
+	int function_CA_SHIFTDOWN(Command *&c, Bundle &obj);
+	int function_CA_SHIFTUP(Command *&c, Bundle &obj);
+	int function_CA_TOEND(Command *&c, Bundle &obj);
+	int function_CA_TOSTART(Command *&c, Bundle &obj);
 	int function_CA_TRANSMUTE(Command *&c, Bundle &obj);
 	// Cell commands
 	int function_CA_FOLD(Command *&c, Bundle &obj);

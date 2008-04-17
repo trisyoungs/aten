@@ -35,6 +35,7 @@ void Model::shiftSelectionUp()
 	{
 		msg(Debug::None,"No atoms selected.");
 		dbgEnd(Debug::Calls,"Model::shiftSelectionUp");
+		return;
 	}
 	int tempid, oldid;
 	Atom *i, *next;
@@ -42,6 +43,7 @@ void Model::shiftSelectionUp()
 	i = atoms_.first()->next;
 	while (i != NULL)
 	{
+	printf("LKJKLJF\n");
 		next = i->next;
 		if (i->isSelected() && (i != atoms_.first()))
 		{
@@ -73,6 +75,7 @@ void Model::shiftSelectionDown()
 	{
 		msg(Debug::None,"No atoms selected.");
 		dbgEnd(Debug::Calls,"Model::shiftSelectionDown");
+		return;
 	}
 	int tempid, oldid;
 	Atom *i, *next;
@@ -81,13 +84,16 @@ void Model::shiftSelectionDown()
 	i = atoms_.last()->prev;
 	while (i != NULL)
 	{
+		printf("ATOM %li\n",i);
 		next = i->prev;
 		if (i->isSelected())
 		{
 			oldid = i->id();
+			printf("OLDID = %i\n",oldid);
 			// Shift atom down
 			atoms_.shiftDown(i);
 			// Swap atomids with the new 'next' atom
+			printf("Shifted. Prev is now %li\n",i->prev);
 			tempid = i->prev->id();
 			i->prev->setId(oldid);
 			i->setId(tempid);

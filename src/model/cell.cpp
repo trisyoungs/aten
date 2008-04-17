@@ -280,6 +280,9 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		return;
 	}
 
+	// Perform an atomic fold on the crystal before we begin
+	foldAllAtoms();
+
 	// Create two clipboards - copy the original model to one of them
 	Clipboard originalClip, clip;
 	originalClip.copyAll(this);
@@ -359,9 +362,9 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		delatom = FALSE;
 		// Convert coordinates to fractional coords and test them
 		fracr = cellinverse * i->r();
-		if ((fracr.x < 0) || (fracr.x >= 1)) delatom = TRUE;
-		else if ((fracr.y < 0) || (fracr.y >= 1)) delatom = TRUE;
-		else if ((fracr.z < 0) || (fracr.z >= 1)) delatom = TRUE;
+		if ((fracr.x < -0.001) || (fracr.x >= 1.001)) delatom = TRUE;
+		else if ((fracr.y < -0.001) || (fracr.y >= 1.001)) delatom = TRUE;
+		else if ((fracr.z < -0.001) || (fracr.z >= 1.001)) delatom = TRUE;
 		if (delatom)
 		{
 			j = i->next;

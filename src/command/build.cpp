@@ -141,6 +141,38 @@ int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Shift the current selection down ('shiftdown [n]')
+int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.m->shiftSelectionDown();
+	return CR_SUCCESS;
+}
+
+// Shift the current selection up ('shiftup [n]')
+int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.m->shiftSelectionUp();
+	return CR_SUCCESS;
+}
+
+// Move current selection to end of list ('toend')
+int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->moveSelectionToEnd();
+	return CR_SUCCESS;
+}
+
+// Move current selection to start of list ('tostart')
+int CommandData::function_CA_TOSTART(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->moveSelectionToStart();
+	return CR_SUCCESS;
+}
+
 // Transmute the current selection ('transmute <el>')
 int CommandData::function_CA_TRANSMUTE(Command *&c, Bundle &obj)
 {

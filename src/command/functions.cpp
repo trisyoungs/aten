@@ -84,6 +84,10 @@ void Master::initCommands()
 	CA_data[CA_ROTX].function = &CommandData::function_CA_ROTX;
 	CA_data[CA_ROTY].function = &CommandData::function_CA_ROTY;
 	CA_data[CA_ROTZ].function = &CommandData::function_CA_ROTZ;
+	CA_data[CA_SHIFTDOWN].function = &CommandData::function_CA_SHIFTDOWN;
+	CA_data[CA_SHIFTUP].function = &CommandData::function_CA_SHIFTUP;
+	CA_data[CA_TOEND].function = &CommandData::function_CA_TOEND;
+	CA_data[CA_TOSTART].function = &CommandData::function_CA_TOSTART;
 	CA_data[CA_TRANSMUTE].function = &CommandData::function_CA_TRANSMUTE;
 
 	// Cell commands
