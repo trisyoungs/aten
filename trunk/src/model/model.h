@@ -120,7 +120,7 @@ class Model
 	int logs_[LOG_NITEMS];
 	// Log point of the last save / point on load
 	int savePoint_;
-	// Log point of the last project_all() (LOG_COORDS+LOG_CAMERA)
+	// Log point of the last projectAll() (LOG_COORDS+LOG_CAMERA)
 	int projectionPoint_;
 
 	public:

@@ -173,14 +173,14 @@ void AtenForm::on_AssignFFToPatternButton_clicked(bool checked)
 // Perform automatic atom typing
 void AtenForm::on_TypeModelButton_clicked(bool checked)
 {
-	if (master.currentModel()->typeAll()) gui.mainView.postRedisplay();
+	if (master.currentModel()->typeAll()) gui.modelChanged();
 }
 
 // Remove typing from model
 void AtenForm::on_UntypeModelButton_clicked(bool checked)
 {
 	master.currentModel()->removeTyping();
-	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
 
 // Set the selected atoms to have the specified forcefield type
@@ -201,14 +201,14 @@ void AtenForm::on_ManualTypeSetButton_clicked(bool checked)
 	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
 	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
 	if (ffa != NULL) m->selectionSetType(ffa, TRUE);
-	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
 
 // Clear type definitions from the selected atoms
 void AtenForm::on_ManualTypeClearButton_clicked(bool checked)
 {
 	master.currentModel()->selectionSetType(NULL, FALSE);
-	gui.mainView.postRedisplay();
+	gui.modelChanged();
 }
 
 // Test selected atom type on current atom selection

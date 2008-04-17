@@ -418,7 +418,7 @@ Variable *VariableList::get(const char *prefix, const char *suffix)
 }
 
 // Add named variable
-Variable::Variable *VariableList::addVariable(const char *name, Variable::VariableType vt)
+Variable *VariableList::addVariable(const char *name, Variable::VariableType vt)
 {
 	return addVariable(name,"",vt);
 }
