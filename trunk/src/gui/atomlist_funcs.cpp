@@ -177,7 +177,7 @@ void AtenForm::on_ShiftUpButton_clicked(bool checked)
 	peekScrollBar();
 	refreshAtomPage();
 	pokeScrollBar();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_ShiftDownButton_clicked(bool checked)
@@ -189,7 +189,7 @@ void AtenForm::on_ShiftDownButton_clicked(bool checked)
 	peekScrollBar();
 	refreshAtomPage();
 	pokeScrollBar();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_MoveToStartButton_clicked(bool checked)
@@ -197,7 +197,7 @@ void AtenForm::on_MoveToStartButton_clicked(bool checked)
 	master.currentModel()->moveSelectionToStart();
 	master.currentModel()->logChange(LOG_STRUCTURE);
 	refreshAtomPage();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_MoveToEndButton_clicked(bool checked)
@@ -205,5 +205,5 @@ void AtenForm::on_MoveToEndButton_clicked(bool checked)
 	master.currentModel()->moveSelectionToEnd();
 	master.currentModel()->logChange(LOG_STRUCTURE);
 	refreshAtomPage();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
