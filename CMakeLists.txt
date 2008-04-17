@@ -91,11 +91,12 @@ install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/"
 
 if(WIN32)
 FIND_FILE(Rline readline5.dll ENV PATH)
+FIND_FILE(HRline history5.dll ENV PATH)
 Find_File(qtgui QtGui4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 Find_File(qtgl QtOpenGL4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 Find_File(qtcore QtCore4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 
-install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline}
+install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline}
 DESTINATION bin
 )
 ENDIF(WIN32)
@@ -138,7 +139,7 @@ IF(WIN32)
   SET(CPACK_PACKAGE_EXECUTABLES "aten" "aten")
   set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     Push \\\"ATENDATA\\\"
-    Push \\\"$INSTDIR\\\\share\\\\aten\\\\data\\\"
+    Push \\\"$INSTDIR\\\\share\\\\aten\\\"
     Call WriteEnvStr  
 "
   )

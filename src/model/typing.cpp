@@ -123,6 +123,8 @@ bool Model::typeAll()
 		p->propagateBondTypes();
 		msg(Debug::None,"Done.\n");
 	}
+	// Log change in the model
+	logChange(LOG_COORDS);
 	dbgEnd(Debug::Calls,"Model::typeAll");
 	return TRUE;
 }
@@ -257,5 +259,6 @@ void Model::selectionSetType(ForcefieldAtom *ffa, bool fixed)
 {
 	dbgBegin(Debug::Calls,"Pattern::selectionSetType");
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setAtomtype(i, ffa, fixed);
+	logChange(LOG_COORDS);
 	dbgEnd(Debug::Calls,"Pattern::selectionSetType");
 }

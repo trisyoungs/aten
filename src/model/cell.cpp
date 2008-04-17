@@ -351,7 +351,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	Vec3<double> fracr;
 	Mat3<double> cellinverse = cell_.inverseTranspose();
 
-	master.initialiseProgress("Trimming excess atoms_...", atoms_.nItems());
+	master.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
 	i = atoms_.first();
 	count = 0;
 	while (i != NULL)
