@@ -365,31 +365,31 @@ bool GuiQt::saveBeforeClose()
 */
 
 // Convert Qt keysym to key_code
-key_code GuiQt::convertToKeyCode(int sym)
+Canvas::KeyCode GuiQt::convertToKeyCode(int sym)
 {
-	key_code result = KC_OTHER;
+	Canvas::KeyCode result = Canvas::OtherKey;
 	switch (sym)
 	{
 		case (Qt::Key_Left):
-			result = KC_LEFT;
+			result = Canvas::LeftKey;
 			break;
 		case (Qt::Key_Right):
-			result = KC_RIGHT;
+			result = Canvas::RightKey;
 			break;
 		case (Qt::Key_Up):
-			result = KC_UP;
+			result = Canvas::UpKey;
 			break;
 		case (Qt::Key_Down):
-			result = KC_DOWN;
+			result = Canvas::DownKey;
 			break;
 		case (Qt::Key_Shift):
-			result = KC_SHIFT_L;
+			result = Canvas::LeftShiftKey;
 			break;
 		case (Qt::Key_Control):
-			result = KC_CONTROL_L;
+			result = Canvas::LeftControlKey;
 			break;
 		case (Qt::Key_Alt):
-			result = KC_ALT_L;
+			result = Canvas::LeftAltKey;
 			break;
 	}
 	return result;

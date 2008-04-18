@@ -64,12 +64,12 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	Vec3<double> oldangles = cell_.angles();
 	// Set new axes 
 	cell_.set(lengths, angles);
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_CELL, &oldlengths, &oldangles, &lengths, &angles);
+		newchange->set(Change::CellEvent, &oldlengths, &oldangles, &lengths, &angles);
 	}
 	dbgEnd(Debug::Calls,"Model::setCell[vectors]");
 }
@@ -84,12 +84,12 @@ void Model::setCell(Mat3<double> axes)
 	oldlengths = cell_.lengths();
 	// Set new axes 
 	cell_.set(axes);
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_CELL, &oldlengths, &oldangles, &cell_.lengths(), &cell_.angles());
+		newchange->set(Change::CellEvent, &oldlengths, &oldangles, &cell_.lengths(), &cell_.angles());
 	}
 	dbgEnd(Debug::Calls,"Model::setCell[axes]");
 }
@@ -99,8 +99,8 @@ void Model::removeCell()
 {
 	dbgBegin(Debug::Calls,"Model::removeCell");
 	cell_.reset();
-	logChange(LOG_VISUAL);
-	logChange(LOG_STRUCTURE);
+	logChange(Change::VisualLog);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::removeCell");
 }
 
@@ -110,7 +110,7 @@ void Model::foldAllAtoms()
 	dbgBegin(Debug::Calls,"Model::foldAllAtoms");
 	// Standard fold - individual atoms
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) cell_.fold(i);
-	logChange(LOG_COORDS);
+	logChange(Change::CoordinateLog);
 	dbgEnd(Debug::Calls,"Model::foldAllAtoms");
 }
 
@@ -146,7 +146,7 @@ void Model::foldAllMolecules()
 			}
 		}
 	}
-	logChange(LOG_COORDS);
+	logChange(Change::CoordinateLog);
 	dbgEnd(Debug::Calls,"Model::foldAllMolecules");
 }
 
@@ -259,7 +259,7 @@ void Model::scaleCell(const Vec3<double> &scale)
 	}
 	// Set new cell and update model
 	setCell(newaxes);
-	logChange(LOG_COORDS);
+	logChange(Change::CoordinateLog);
 	dbgEnd(Debug::Calls,"Model::scaleCell");
 }
 
@@ -376,7 +376,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	}
 	master.cancelProgress();
 
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::replicateCell");
 }
 

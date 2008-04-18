@@ -119,7 +119,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();
-	srcmodel->logChange(LOG_COORDS);
+	srcmodel->logChange(Change::CoordinateLog);
 	dbgEnd(Debug::Calls,"MethodSd::minimise");
 }
 

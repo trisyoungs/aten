@@ -95,10 +95,18 @@ FIND_FILE(HRline history5.dll ENV PATH)
 Find_File(qtgui QtGui4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 Find_File(qtgl QtOpenGL4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 Find_File(qtcore QtCore4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
-
-install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline}
+Find_File(qtsvg QtSvg4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+Find_File(qtxml QtXml4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+Find_File(qsvg qsvg4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
+install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml}
 DESTINATION bin
 )
+message("tt: ${QT_PLUGINS_DIR}   ${qsvg}")
+install(FILES ${qsvg} 
+DESTINATION bin/iconengines
+)
+
+
 ENDIF(WIN32)
 
 
@@ -140,7 +148,7 @@ IF(WIN32)
   set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     Push \\\"ATENDATA\\\"
     Push \\\"$INSTDIR\\\\share\\\\aten\\\"
-    Call WriteEnvStr  
+    Call WriteEnvStr      
 "
   )
   set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "    

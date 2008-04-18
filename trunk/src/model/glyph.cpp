@@ -25,7 +25,7 @@
 // Create new glyph in this model
 Glyph *Model::addGlyph()
 {
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	return glyphs_.add();
 }
 

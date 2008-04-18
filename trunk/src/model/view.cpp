@@ -117,7 +117,7 @@ void Model::setRotation(double rotx, double roty)
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(LOG_CAMERA);
+	logChange(Change::CameraLog);
 	dbgEnd(Debug::Calls,"Model::setRotation");
 }
 
@@ -155,7 +155,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	}
 	calculateViewMatrix();
 	// Log camera change
-	logChange(LOG_CAMERA);
+	logChange(Change::CameraLog);
 	dbgEnd(Debug::Calls,"Model::adjustCamera");
 }
 
@@ -169,7 +169,7 @@ void Model::adjustOrthoSize(double delta)
 	calculateViewMatrix();
 	gui.mainView.doProjection();
 	// Log camera change
-	logChange(LOG_CAMERA);
+	logChange(Change::CameraLog);
 	dbgEnd(Debug::Calls,"Model::adjustOrthoSize");
 }
 
@@ -201,7 +201,7 @@ void Model::resetCamera(const Vec3<double> &newr)
 	// Recalculate viewing matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(LOG_CAMERA);
+	logChange(Change::CameraLog);
 	dbgEnd(Debug::Calls,"Model::resetCamera");
 }
 
@@ -241,7 +241,7 @@ void Model::resetView()
 	// Recalculate viewing matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(LOG_CAMERA);
+	logChange(Change::CameraLog);
 	dbgEnd(Debug::Calls,"Model::resetView");
 }
 
@@ -273,7 +273,7 @@ void Model::rotate(double dx, double dy)
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(LOG_CAMERA);
+	logChange(Change::CameraLog);
 	dbgEnd(Debug::Calls,"Model::rotate");
 }
 
@@ -293,10 +293,10 @@ void Model::projectAll()
 {
 	// Transform the model coordinates of all atoms into world GL and 2D screen coordinates
 	dbgBegin(Debug::Calls,"Model::projectAll");
-	if (projectionPoint_ != (logs_[LOG_COORDS] + logs_[LOG_CAMERA]))
+	if (projectionPoint_ != (logs_[Change::CoordinateLog] + logs_[Change::CameraLog]))
 	{
 		if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) projectAtom(i);
-		projectionPoint_ = logs_[LOG_COORDS] + logs_[LOG_CAMERA];
+		projectionPoint_ = logs_[Change::CoordinateLog] + logs_[Change::CameraLog];
 	}
 	dbgEnd(Debug::Calls,"Model::projectAll");
 }

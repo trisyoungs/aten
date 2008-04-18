@@ -102,7 +102,7 @@ void Canvas::renderModelMeasurements()
 		glBegin(GL_LINE_STRIP);
 		  switch (m->type())
 		  {
-			case (GT_DISTANCE):
+			case (Measurement::DistanceMeasurement):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				labpos = (ri + rj) * 0.5;
@@ -110,7 +110,7 @@ void Canvas::renderModelMeasurements()
 				glVertex3d(rj.x, rj.y, rj.z);
 				sprintf(text,"%f A",m->value());
 				break;
-			case (GT_ANGLE):
+			case (Measurement::AngleMeasurement):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				rk = atoms[2]->r();
@@ -120,7 +120,7 @@ void Canvas::renderModelMeasurements()
 				glVertex3d(rk.x, rk.y, rk.z);
 				sprintf(text,"%f Deg",m->value());
 				break;
-			case (GT_TORSION):
+			case (Measurement::TorsionMeasurement):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				rk = atoms[2]->r();

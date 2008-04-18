@@ -40,7 +40,7 @@ void Canvas::renderExtra3d()
 	switch (activeMode_)
 	{
 		// Draw on the bounding sphere of a radial selection
-		case (UA_PICKRADIAL):
+		case (Canvas::SelectRadialAction):
 			i = atomHover_;
 			if (i == NULL) break;
 			// Work out the radius of the sphere
@@ -58,7 +58,7 @@ void Canvas::renderExtra3d()
 			glPopMatrix();
 			break;
 		// Draw on bond and new atom for chain drawing
-		case (UA_DRAWCHAIN):
+		case (Canvas::EditChainAction):
 			if (atomHover_ == NULL) break;
 			r = atomHover_->r();
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
@@ -119,29 +119,27 @@ void Canvas::renderExtra2d()
 	// Those for active modes (when button is down)...
 	switch (activeMode_)
 	{
-		case (UA_NONE):
+		case (Canvas::NoAction):
 			break;
 		// Only selection mode where we draw a selection box
-		case (UA_PICKSELECT):
-		case (UA_GEOMSELECT):
-		case (UA_POSSELECT):
+		case (Canvas::SelectAction):
 			glEnable(GL_LINE_STIPPLE);
 			glLineStipple(1,0x5555);
 			rectanglePrimitive(rMouseDown_.x, height_-rMouseDown_.y, rMouseLast_.x, height_-rMouseLast_.y);
 			glDisable(GL_LINE_STIPPLE);
 			break;
 		// Draw line from last atom in selection list (if any) to the current mouse pos
-		case (UA_GEOMDIST):
-		case (UA_GEOMANGLE):
-		case (UA_GEOMTORSION):
+		case (Canvas::MeasureDistanceAction):
+		case (Canvas::MeasureAngleAction):
+		case (Canvas::MeasureTorsionAction):
 			break;
 	}
 	// ...and those for selected modes (whether the button is down or not).
 	switch (selectedMode_)
 	{
 		// Draw on distance ruler for drawing modes
-		case (UA_DRAWATOM):
-		case (UA_DRAWCHAIN):
+		case (Canvas::EditDrawAction):
+		case (Canvas::EditChainAction):
 			// Get angstrom length
 			dx = 1.0 / drawPixelWidth_;
 			halfw = width_ / 2.0;

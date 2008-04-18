@@ -123,7 +123,7 @@ class AtenForm : public QMainWindow
 	// Select Toolbar
 	*/
 	private:
-	void setUserAction(bool checked, UserAction ua);
+	void setUserAction(bool checked, Canvas::UserAction ua);
 	private slots:
 	void on_actionSelectAtoms_triggered(bool on);
 	void on_actionSelectMolecules_triggered(bool on);

@@ -237,7 +237,7 @@ void Model::seekFirstFrame()
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
 	}
 	framePosition_ = 1;
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
 	msg(Debug::None,"Seek to frame %i\n",framePosition_);
@@ -266,7 +266,7 @@ void Model::seekNextFrame()
 	if (trajectoryCached_) currentFrame_ = currentFrame_->next;
 	else success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
 	framePosition_ ++;
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
 	msg(Debug::None,"Seek to frame %i\n",framePosition_);
@@ -300,7 +300,7 @@ void Model::seekPreviousFrame()
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
 	}
 	framePosition_ --;
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
 	msg(Debug::None,"Seek to frame %i\n",framePosition_);
@@ -327,7 +327,7 @@ void Model::seekLastFrame()
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
 	}
 	framePosition_ = totalFrames_;
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
 	msg(Debug::None,"Seek to frame %i\n",framePosition_);

@@ -44,12 +44,12 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 			if (b->order() != bt)
 			{
 				b->setOrder(bt);
-				logChange(LOG_STRUCTURE);
+				logChange(Change::StructureLog);
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
 					Change *newchange = recordingState_->addChange();
-					newchange->set(UE_BOND,i->id(),j->id(),bt);
+					newchange->set(Change::BondEvent,i->id(),j->id(),bt);
 				}
 			}
 		}
@@ -60,12 +60,12 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 			b->setAtoms(i,j);
 			i->acceptBond(b);
 			j->acceptBond(b);
-			logChange(LOG_STRUCTURE);
+			logChange(Change::StructureLog);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
 				Change *newchange = recordingState_->addChange();
-				newchange->set(UE_BOND,i->id(),j->id(),bt);
+				newchange->set(Change::BondEvent,i->id(),j->id(),bt);
 			}
 		}
 	}
@@ -117,12 +117,12 @@ void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 	Bond::BondType bt = b->order();
 	b->atomI()->detachBond(b);
 	b->atomJ()->detachBond(b);
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(-UE_BOND,i->id(),j->id(),bt);
+		newchange->set(-Change::BondEvent,i->id(),j->id(),bt);
 	}
 	dbgEnd(Debug::Calls,"Model::unbondAtoms");
 }
@@ -144,7 +144,7 @@ void Model::clearBonding()
 			bref = i->bonds();
 		}
 	}
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::clearBonding");
 }
 
@@ -305,12 +305,12 @@ void Model::changeBond(Bond *b, Bond::BondType bt)
 {
 	Bond::BondType oldorder = b->order();
 	b->setOrder(bt);
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_BONDORDER,b->atomI()->id(),b->atomJ()->id(),oldorder,bt);
+		newchange->set(Change::BondEventORDER,b->atomI()->id(),b->atomJ()->id(),oldorder,bt);
 	}
 }
 

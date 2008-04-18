@@ -32,8 +32,8 @@ Change::Change()
 	vecData_[1] = NULL;
 	vecData_[2] = NULL;
 	vecData_[3] = NULL;
-	type_ = UE_NONE;
-	direction_ = UD_REVERSE;
+	type_ = Change::NoEvent;
+	direction_ = Change::Reverse;
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -61,7 +61,7 @@ Change::~Change()
 void Change::set(int ue, Atom *i, Atom *j)
 {
 	dbgBegin(Debug::Calls,"Change::set[Atom]");
-	direction_ = (ue > 0 ? UD_REVERSE : UD_FORWARDS);
+	direction_ = (ue > 0 ? Change::Reverse : Change::Forwards);
 	type_ = (UndoEvent) abs(ue);
 	// Copy atom data from source atoms, unless they are NULL
 	if (i != NULL)
@@ -83,7 +83,7 @@ void Change::set(int ue, Atom *i, Atom *j)
 void Change::set(int ue, int i, int j, int k, int l, int m)
 {
 	dbgBegin(Debug::Calls,"Change::set[int]");
-	direction_ = (ue > 0 ? UD_REVERSE : UD_FORWARDS);
+	direction_ = (ue > 0 ? Change::Reverse : Change::Forwards);
 	type_ = (UndoEvent) abs(ue);
 	data_[0] = i;
 	data_[1] = j;
@@ -97,7 +97,7 @@ void Change::set(int ue, int i, int j, int k, int l, int m)
 void Change::set(int ue, Vec3<double> *v1, Vec3<double> *v2, Vec3<double> *v3, Vec3<double> *v4)
 {
 	dbgBegin(Debug::Calls,"Change::set[vector]");
-	direction_ = (ue > 0 ? UD_REVERSE : UD_FORWARDS);
+	direction_ = (ue > 0 ? Change::Reverse : Change::Forwards);
 	type_ = (UndoEvent) abs(ue);
 	// Copy data from source vectors, unless they are NULL
 	if (v1 != NULL)
@@ -133,9 +133,9 @@ void Change::reverse(Model *m)
 	Bond *b;
 	switch (type_)
 	{
-		// Atom creation (UD_REVERSE) and deletion (UD_FORWARDS)
-		case (UE_ATOM):
-			if (direction_ == UD_REVERSE)
+		// Atom creation (Change::Reverse) and deletion (Change::Forwards)
+		case (Change::AtomEvent):
+			if (direction_ == Change::Reverse)
 			{
 				// We delete the atom at the position referenced by the ID in the atom
 				id = atomData_[0]->id();
@@ -151,11 +151,11 @@ void Change::reverse(Model *m)
 				else m->addCopy(modelatoms[id-1], atomData_[0]);
 			}
 			break;
-		// Bond creation (UD_REVERSE) and deletion (UD_FORWARDS)
-		case (UE_BOND):
+		// Bond creation (Change::Reverse) and deletion (Change::Forwards)
+		case (Change::BondEvent):
 			i = modelatoms[data_[0]];
 			j = modelatoms[data_[1]];
-			if (direction_ == UD_REVERSE)
+			if (direction_ == Change::Reverse)
 			{
 				// Delete bond between stored atom ids
 				msg(Debug::Verbose,"Reversing bond creation - atom ids = %i %i\n", data_[0], data_[1]);
@@ -168,10 +168,10 @@ void Change::reverse(Model *m)
 				m->bondAtoms(i,j,(Bond::BondType) data_[2]);
 			}
 			break;
-		// Atom selection (UD_REVERSE) and deselection (UD_FORWARDS)
-		case (UE_SELECT):
+		// Atom selection (Change::Reverse) and deselection (Change::Forwards)
+		case (Change::SelectEvent):
 			i = modelatoms[data_[0]];
-			if (direction_ == UD_REVERSE)
+			if (direction_ == Change::Reverse)
 			{
 				msg(Debug::Verbose,"Reversing atom selection - atom id = %i\n", data_[0]);
 				m->deselectAtom(i);
@@ -182,12 +182,12 @@ void Change::reverse(Model *m)
 				m->selectAtom(i);
 			}
 			break;
-		// Bond order change - from data[3] to data[2] (UD_REVERSE) or vice versa (UD_FORWARDS)
-		case (UE_BONDORDER):
+		// Bond order change - from data[3] to data[2] (Change::Reverse) or vice versa (Change::Forwards)
+		case (Change::BondEventORDER):
 			i = modelatoms[data_[0]];
 			j = modelatoms[data_[1]];
 			b = i->findBond(j);
-			if (direction_ == UD_REVERSE)
+			if (direction_ == Change::Reverse)
 			{
 				msg(Debug::Verbose,"Reversing bond order change - atoms %i-%i, old = %i, new = %i\n", i->id(), j->id(), data_[3], data_[2]);
 				m->changeBond(b,(Bond::BondType) data_[2]);
@@ -198,30 +198,30 @@ void Change::reverse(Model *m)
 				m->changeBond(b,(Bond::BondType) data_[3]);
 			}
 			break;
-		// Geometry measurement creation (UD_REVERSE) and deletion (UD_FORWARDS)
-		case (UE_MEASUREMENT):
+		// Geometry measurement creation (Change::Reverse) and deletion (Change::Forwards)
+		case (Change::MeasurementEvent):
 			i = modelatoms[data_[1]];
 			j = modelatoms[data_[2]];
 			k = modelatoms[data_[3]];
 			l = modelatoms[data_[4]];
-			if (direction_ == UD_REVERSE)
+			if (direction_ == Change::Reverse)
 			{
-				GeometryType gt = (GeometryType) data_[0];
-				msg(Debug::Verbose,"Reversing measurement - type = %i\n", gt);
-				Measurement *me = m->findMeasurement(gt, i, j, k, l);
+				Measurement::MeasurementType mt = (Measurement::MeasurementType) data_[0];
+				msg(Debug::Verbose,"Reversing measurement - type = %i\n", mt);
+				Measurement *me = m->findMeasurement(mt, i, j, k, l);
 				if (me != NULL) m->removeMeasurement(me);
 			}
 			else
 			{
-				GeometryType gt = (GeometryType) data_[0];
-				msg(Debug::Verbose,"Replaying measurement - type = %i\n", gt);
-				m->addMeasurement(gt, i, j, k, l);
+				Measurement::MeasurementType mt = (Measurement::MeasurementType) data_[0];
+				msg(Debug::Verbose,"Replaying measurement - type = %i\n", mt);
+				m->addMeasurement(mt, i, j, k, l);
 			}
 			break;
-		// Atom transmute - from data[2] to data[1] (UD_REVERSE) or vice versa (UD_FORWARDS)
-		case (UE_TRANSMUTE):
+		// Atom transmute - from data[2] to data[1] (Change::Reverse) or vice versa (Change::Forwards)
+		case (Change::TransmuteEvent):
 			i = modelatoms[data_[0]];
-			if (direction_ == UD_REVERSE)
+			if (direction_ == Change::Reverse)
 			{
 				msg(Debug::Verbose,"Reversing atom transmute - atom %i, old = %i, new = %i\n", i->id(), data_[2], data_[1]);
 				m->transmuteAtom(i,data_[1]);
@@ -232,9 +232,9 @@ void Change::reverse(Model *m)
 				m->transmuteAtom(i,data_[2]);
 			}
 			break;
-		// Cell change - from matrix[1] to matrix[0] (UD_REVERSE) or vice versa (UD_FORWARDS)
-		case (UE_CELL):
-			if (direction_ == UD_REVERSE)
+		// Cell change - from matrix[1] to matrix[0] (Change::Reverse) or vice versa (Change::Forwards)
+		case (Change::CellEvent):
+			if (direction_ == Change::Reverse)
 			{
 				msg(Debug::Verbose,"Reversing cell change\n");
 				if (vecData_[0] == NULL) m->removeCell();
@@ -247,10 +247,10 @@ void Change::reverse(Model *m)
 				else m->setCell(*vecData_[2], *vecData_[3]);
 			}
 			break;
-		// Atom label change - from data[2] to data[1] (UD_REVERSE) or vice versa (UD_FORWARDS)
-		case (UE_LABEL):
+		// Atom label change - from data[2] to data[1] (Change::Reverse) or vice versa (Change::Forwards)
+		case (Change::LabelEvent):
 			i = modelatoms[data_[0]];
-			if (direction_ == UD_REVERSE)
+			if (direction_ == Change::Reverse)
 			{
 				msg(Debug::Verbose,"Reversing atom label change - atom %i, from %i to %i\n",data_[0],data_[2],data_[1]);
 				i->setLabels(data_[1]);
@@ -261,10 +261,10 @@ void Change::reverse(Model *m)
 				i->setLabels(data_[2]);
 			}
 			break;
-		// Atom position change - add (UD_REVERSE) or subtract (UD_FORWARDS) vecData_[0]
-		case (UE_TRANSLATE):
+		// Atom position change - add (Change::Reverse) or subtract (Change::Forwards) vecData_[0]
+		case (Change::TranslateEvent):
 			i = modelatoms[data_[0]];
-			if (direction_ == UD_REVERSE)
+			if (direction_ == Change::Reverse)
 			{
 				msg(Debug::Verbose,"Reversing atom translation - atom %i, subtracting %f %f %f\n", data_[0], vecData_[0]->x, vecData_[0]->y, vecData_[0]->z);
 				i->r() -= *vecData_[0];
@@ -275,9 +275,9 @@ void Change::reverse(Model *m)
 				i->r() += *vecData_[0];
 			}
 			break;
-		// Atom list position change - -data[1] (UD_REVERSE) or +data[1] places in list (UD_FORWARDS)
-		case (UE_SHIFT):
-			if (direction_ == UD_REVERSE)
+		// Atom list position change - -data[1] (Change::Reverse) or +data[1] places in list (Change::Forwards)
+		case (Change::ShiftEvent):
+			if (direction_ == Change::Reverse)
 			{
 				msg(Debug::Verbose,"Reversing atom shift - atom %i moves %i places\n", data_[0]+data_[1], -data_[1]);
 				m->atoms_.move(data_[0]+data_[1], -data_[1]);
@@ -301,10 +301,10 @@ void Change::perform(Model *m)
 {
 	dbgBegin(Debug::Calls,"Change::perform");
 	// Re-use the commands in Change::revert, performing the change in the opposite direction
-	direction_ = (direction_ == UD_REVERSE ? UD_FORWARDS : UD_REVERSE);
+	direction_ = (direction_ == Change::Reverse ? Change::Forwards : Change::Reverse);
 	// Now just call reverse instead, and then set the old direction back at the end
 	reverse(m);
-	direction_ = (direction_ == UD_REVERSE ? UD_FORWARDS : UD_REVERSE);
+	direction_ = (direction_ == Change::Reverse ? Change::Forwards : Change::Reverse);
 	dbgEnd(Debug::Calls,"Change::perform");
 }
 
@@ -313,25 +313,25 @@ void Change::perform(Model *m)
 */
 
 // Set log point at start of state
-void Undostate::setStartLog(ChangeLog log, int value)
+void Undostate::setStartLog(Change::ChangeLog log, int value)
 {
 	startLogs_[log] = value;
 }
 
 // Get structure log point at start of state
-int Undostate::startLog(ChangeLog log)
+int Undostate::startLog(Change::ChangeLog log)
 {
 	return startLogs_[log];
 }
 
 // Set log point at end of state
-void Undostate::setEndLog(ChangeLog log, int value)
+void Undostate::setEndLog(Change::ChangeLog log, int value)
 {
 	endLogs_[log] = value;
 }
 
 // Get structure log point at end of state
-int Undostate::endLog(ChangeLog log)
+int Undostate::endLog(Change::ChangeLog log)
 {
 	return endLogs_[log];
 }
@@ -381,11 +381,11 @@ void Undostate::perform(Model *m)
 	dbgEnd(Debug::Calls,"Undostate::perform");
 }
 
-// Check differences between LOG_STRUCTURE and LOG_COORDS for start/end points
+// Check differences between Change::StructureLog and Change::CoordinateLog for start/end points
 bool Undostate::doLogsDiffer()
 {
-	if (startLogs_[LOG_STRUCTURE] != endLogs_[LOG_STRUCTURE]) return TRUE;
-	if (startLogs_[LOG_COORDS] != endLogs_[LOG_COORDS]) return TRUE;
-	if (startLogs_[LOG_SELECTION] != endLogs_[LOG_SELECTION]) return TRUE;
+	if (startLogs_[Change::StructureLog] != endLogs_[Change::StructureLog]) return TRUE;
+	if (startLogs_[Change::CoordinateLog] != endLogs_[Change::CoordinateLog]) return TRUE;
+	if (startLogs_[Change::SelectionLog] != endLogs_[Change::SelectionLog]) return TRUE;
 	return FALSE;
 }

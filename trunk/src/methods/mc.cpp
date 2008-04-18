@@ -305,7 +305,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	srcmodel->energy.print();
 
 	// Finalise
-	srcmodel->logChange(LOG_COORDS);
+	srcmodel->logChange(Change::CoordinateLog);
 
 	dbgEnd(Debug::Calls,"MonteCarlo::minimise");
 	return TRUE;
@@ -688,7 +688,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	//else printf("Patterns are NOT valid.\n");
 	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
 	//else printf("Expression is NOT valid.\n");
-	destmodel->logChange(LOG_COORDS);
+	destmodel->logChange(Change::CoordinateLog);
 	gui.mainWindow->refreshDisorderPage();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"MonteCarlo::insert");

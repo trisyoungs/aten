@@ -32,22 +32,22 @@ void AtenForm::setSketchElement(int el)
 
 void AtenForm::on_DrawAtomButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_DRAWATOM);
+	if (on) setUserAction(on, Canvas::EditDrawAction);
 }
 
 void AtenForm::on_DrawChainButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_DRAWCHAIN);
+	if (on) setUserAction(on, Canvas::EditChainAction);
 }
 
 void AtenForm::on_DrawDeleteButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_DELATOM);
+	if (on) setUserAction(on, Canvas::EditDeleteAction);
 }
 
 void AtenForm::on_DrawTransmuteButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_TRANSATOM);
+	if (on) setUserAction(on, Canvas::EditTransmuteAction);
 }
 
 void AtenForm::on_BondToleranceSpin_valueChanged(double d)
@@ -57,22 +57,22 @@ void AtenForm::on_BondToleranceSpin_valueChanged(double d)
 
 void AtenForm::on_BondSingleButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_BONDSINGLE);
+	if (on) setUserAction(on, Canvas::EditBondSingleAction);
 }
 
 void AtenForm::on_BondDoubleButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_BONDDOUBLE);
+	if (on) setUserAction(on, Canvas::EditBondDoubleAction);
 }
 
 void AtenForm::on_BondTripleButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_BONDTRIPLE);
+	if (on) setUserAction(on, Canvas::EditBondTripleAction);
 }
 
 void AtenForm::on_BondDeleteButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_DELBOND);
+	if (on) setUserAction(on, Canvas::EditDeleteBondAction);
 }
 
 void AtenForm::on_ElementHButton_clicked(bool on)
@@ -92,12 +92,12 @@ void AtenForm::on_ElementNButton_clicked(bool on)
 
 void AtenForm::on_AtomAddHydrogenButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_ATOMADDHYDROGEN);
+	if (on) setUserAction(on, Canvas::EditAddHydrogenAction);
 }
 
 void AtenForm::on_ProbeAtomButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_PROBEATOM);
+	if (on) setUserAction(on, Canvas::EditProbeAction);
 }
 
 void AtenForm::on_ElementUserButton_clicked(bool on)

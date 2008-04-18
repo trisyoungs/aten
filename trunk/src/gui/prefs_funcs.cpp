@@ -123,7 +123,7 @@ void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
 	ui.ElementAmbientColourFrame->setColour(newcol);
 	ui.ElementAmbientColourFrame->update();
 	// Re-set atom colours in model(s)
-	master.currentModel()->logChange(LOG_VISUAL);
+	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -143,7 +143,7 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 	ui.ElementDiffuseColourFrame->setColour(newcol);
 	ui.ElementDiffuseColourFrame->update();
 	// Re-set atom colours in model(s)
-	master.currentModel()->logChange(LOG_VISUAL);
+	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -155,7 +155,7 @@ void AtenPrefs::updateAfterViewPrefs()
 {
 	gui.mainView.createLists();
 	master.currentModel()->renderSource()->projectAll();
-	master.currentModel()->renderSource()->logChange(LOG_VISUAL);
+	master.currentModel()->renderSource()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -212,7 +212,7 @@ void AtenPrefs::on_BondQualitySpin_valueChanged(int value)
 void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state)
 {
 	prefs.setVisible(vo, (state == Qt::Checked ? TRUE : FALSE));
-	master.currentModel()->logChange(LOG_VISUAL);
+	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -308,7 +308,7 @@ void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
-	master.currentModel()->logChange(LOG_VISUAL);
+	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 

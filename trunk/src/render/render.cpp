@@ -118,7 +118,7 @@ void Canvas::renderScene(Model *source)
 	// Draw the main model parts
 	// If renderPoint_ matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
 	glPushMatrix();
-	  if (renderPoint_ == displayModel_->log(LOG_TOTAL)) glCallList(list_[GLOB_MODEL]);
+	  if (renderPoint_ == displayModel_->log(Change::TotalLog)) glCallList(list_[GLOB_MODEL]);
 	  else
 	  {
 		msg(Debug::Verbose,"Recreating display list for model '%s'...", displayModel_->name());
@@ -133,7 +133,7 @@ void Canvas::renderScene(Model *source)
 		  // Render force arrows
 		  if (prefs.shouldRender(Prefs::ViewForceArrows)) renderModelForceArrows();
 		glEndList();
-		renderPoint_ = displayModel_->log(LOG_TOTAL);
+		renderPoint_ = displayModel_->log(Change::TotalLog);
 		msg(Debug::Verbose," Done. (New point = %i)\n",renderPoint_);
 	  }
 	  // Render surfaces

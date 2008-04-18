@@ -111,23 +111,23 @@ class Model
 	*/
 	private:
 	// Integer 'logs' of model changes
-	// LOG_STRUCTURE : create/destroy atoms/bonds, change elements
-	// LOG_COORDS    : atomic coordinates
-	// LOG_VISUAL    : visual changes that require re-rendering
-	// LOG_SELECTION : atom selection
-	// LOG_CAMERA    : view (mainly used to flag reprojection)
-	// LOG_TOTAL     : sum of all changes
-	int logs_[LOG_NITEMS];
+	// Change::StructureLog : create/destroy atoms/bonds, change elements
+	// Change::CoordinateLog    : atomic coordinates
+	// Change::VisualLog    : visual changes that require re-rendering
+	// Change::SelectionLog : atom selection
+	// Change::CameraLog    : view (mainly used to flag reprojection)
+	// Change::TotalLog     : sum of all changes
+	int logs_[Change::nChangeLogs];
 	// Log point of the last save / point on load
 	int savePoint_;
-	// Log point of the last projectAll() (LOG_COORDS+LOG_CAMERA)
+	// Log point of the last projectAll() (Change::CoordinateLog+Change::CameraLog)
 	int projectionPoint_;
 
 	public:
 	// Increment specified log point of the model
-	void logChange(ChangeLog);
+	void logChange(Change::ChangeLog);
 	// Return the log quantity specified
-	int log(ChangeLog cl);
+	int log(Change::ChangeLog cl);
 	// Reset all logs to zero
 	void resetLogs();
 	// Copy logs from undostate
@@ -688,17 +688,17 @@ class Model
 	// Clear all measurements
 	void clearMeasurements();
 	// Find specific measurement
-	Measurement *findMeasurement(GeometryType, Atom*, ...);
+	Measurement *findMeasurement(Measurement::MeasurementType, Atom*, ...);
 	// Clear specific type of measurements
-	void removeMeasurements(GeometryType);
+	void removeMeasurements(Measurement::MeasurementType);
 	// Delete specific measurement
 	void removeMeasurement(Measurement *me);
 	// Delete all measurements involving supplied atom
 	void removeMeasurements(Atom*);
 	// Add measurement (list of atoms)
-	void addMeasurement(GeometryType, Atom*, ...);
+	void addMeasurement(Measurement::MeasurementType, Atom*, ...);
 	// Add measurements of specific type in current selection
-	void addMeasurementsInSelection(GeometryType);
+	void addMeasurementsInSelection(Measurement::MeasurementType);
 	// Measure distances between atoms
 	void measureDistance(Atom*, Atom*);
 	// Measure angles between atoms

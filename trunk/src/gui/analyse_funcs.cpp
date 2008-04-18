@@ -26,42 +26,42 @@
 
 void AtenForm::on_MeasureDistanceButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_GEOMDIST);
+	if (on) setUserAction(on, Canvas::MeasureDistanceAction);
 }
 
 void AtenForm::on_MeasureAngleButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_GEOMANGLE);
+	if (on) setUserAction(on, Canvas::MeasureAngleAction);
 }
 
 void AtenForm::on_MeasureTorsionButton_clicked(bool on)
 {
-	if (on) setUserAction(on, UA_GEOMTORSION);
+	if (on) setUserAction(on, Canvas::MeasureTorsionAction);
 }
 
 void AtenForm::on_RemoveMeasurementsButton_clicked(bool on)
 {
-	master.currentModel()->removeMeasurements(GT_DISTANCE);
-	master.currentModel()->removeMeasurements(GT_ANGLE);
-	master.currentModel()->removeMeasurements(GT_TORSION);
+	master.currentModel()->removeMeasurements(Measurement::DistanceMeasurement);
+	master.currentModel()->removeMeasurements(Measurement::AngleMeasurement);
+	master.currentModel()->removeMeasurements(Measurement::TorsionMeasurement);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_MeasureDistanceSelectionButton_clicked(bool on)
 {
-	master.currentModel()->addMeasurementsInSelection(GT_DISTANCE);
+	master.currentModel()->addMeasurementsInSelection(Measurement::DistanceMeasurement);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_MeasureAngleSelectionButton_clicked(bool on)
 {
-	master.currentModel()->addMeasurementsInSelection(GT_ANGLE);
+	master.currentModel()->addMeasurementsInSelection(Measurement::AngleMeasurement);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_MeasureTorsionSelectionButton_clicked(bool on)
 {
-	master.currentModel()->addMeasurementsInSelection(GT_TORSION);
+	master.currentModel()->addMeasurementsInSelection(Measurement::TorsionMeasurement);
 	gui.mainView.postRedisplay();
 }
 

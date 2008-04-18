@@ -47,12 +47,12 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos)
 	newatom->r() = pos;
 	mass_ += elements.atomicMass(newel);
 	calculateDensity();
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_ATOM,newatom);
+		newchange->set(Change::AtomEvent,newatom);
 	}
 	dbgEnd(Debug::Calls,"Model::addAtom");
 	return newatom;
@@ -65,14 +65,14 @@ Atom *Model::addCopy(Atom *source)
 	Atom *newatom = atoms_.add();
 	newatom->copy(source);
 	newatom->setId(atoms_.nItems() - 1);
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	mass_ += elements.atomicMass(newatom->element());
 	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_ATOM,newatom);
+		newchange->set(Change::AtomEvent,newatom);
 	}
 	dbgEnd(Debug::Calls,"Model::addCopy");
 	return newatom;
@@ -86,14 +86,14 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 	//printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
 	renumberAtoms( (afterthis != NULL ? afterthis->prev : NULL) );
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	mass_ += elements.atomicMass(newatom->element());
 	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_ATOM,newatom);
+		newchange->set(Change::AtomEvent,newatom);
 	}
 	dbgEnd(Debug::Calls,"Model::addCopy");
 	return newatom;
@@ -110,12 +110,12 @@ void Model::removeAtom(Atom *xatom)
 	// Renumber the ids of all atoms in the list after this one
 	for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
 	if (xatom->isSelected()) deselectAtom(xatom);
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(-UE_ATOM,xatom);
+		newchange->set(-Change::AtomEvent,xatom);
 	}
 	atoms_.remove(xatom);
 	dbgEnd(Debug::Calls,"Model::removeAtom");
@@ -162,12 +162,12 @@ void Model::transmuteAtom(Atom *i, short int el)
 			i->setElement(el);
 			mass_ += elements.atomicMass(i);
 			calculateDensity();
-			logChange(LOG_STRUCTURE);
+			logChange(Change::StructureLog);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
 				Change *newchange = recordingState_->addChange();
-				newchange->set(UE_TRANSMUTE,i->id(),oldel,el);
+				newchange->set(Change::TransmuteEvent,i->id(),oldel,el);
 			}
 		}
 	}
@@ -269,7 +269,7 @@ void Model::zeroForcesFixed()
 void Model::setHidden(Atom *i, bool hidden)
 {
 	i->setHidden(hidden);
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 }
 
 // Normalise forces
@@ -300,13 +300,13 @@ void Model::normaliseForces(double norm)
 void Model::translateAtom(Atom *target, Vec3<double> delta)
 {
 	target->r() += delta;
-	logChange(LOG_COORDS);
+	logChange(Change::CoordinateLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_TRANSLATE,target->id());
-		newchange->set(UE_TRANSLATE,&delta);
+		newchange->set(Change::TranslateEvent,target->id());
+		newchange->set(Change::TranslateEvent,&delta);
 	}
 }
 
@@ -316,12 +316,12 @@ void Model::positionAtom(Atom *target, Vec3<double> newr)
 	static Vec3<double> delta;
 	delta = newr - target->r();
 	target->r() = newr;
-	logChange(LOG_COORDS);
+	logChange(Change::CoordinateLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_TRANSLATE,target->id());
-		newchange->set(UE_TRANSLATE,&delta);
+		newchange->set(Change::TranslateEvent,target->id());
+		newchange->set(Change::TranslateEvent,&delta);
 	}
 }
