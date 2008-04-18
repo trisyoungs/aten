@@ -127,7 +127,7 @@ class GuiQt
 	*/
 	public:
 	// Convert Qt key code value to internal key
-	key_code convertToKeyCode(int);
+	Canvas::KeyCode convertToKeyCode(int);
 
 	/*
 	// Windows / Dialogs

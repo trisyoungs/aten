@@ -36,8 +36,8 @@ Canvas::Canvas()
 	drawing_ = FALSE;
 	displayModel_ = NULL;
 	drawPixelWidth_ = 1.0;
-	activeMode_ = UA_NONE;
-	selectedMode_ = UA_PICKSELECT;
+	activeMode_ = Canvas::NoAction;
+	selectedMode_ = Canvas::SelectAction;
 	list_[0] = 0;
 	contextWidget_ = NULL;
 	subselectEnabled_ = FALSE;
@@ -137,7 +137,7 @@ void Canvas::configure()
 	height_ = (float)contextWidget_->height();
 	doProjection();
 	// Flag that render source needs to be reprojected
-	if (displayModel_ != NULL) displayModel_->logChange(LOG_VISUAL);
+	if (displayModel_ != NULL) displayModel_->logChange(Change::VisualLog);
 }
 
 /*
@@ -601,7 +601,7 @@ void Canvas::useSelectedMode()
 }
 
 // Return the currently selected mode
-UserAction Canvas::selectedMode()
+Canvas::UserAction Canvas::selectedMode()
 {
 	return selectedMode_;
 }

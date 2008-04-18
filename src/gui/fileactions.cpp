@@ -50,7 +50,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			addRecent(gui.loadModelDialog->selectedFilename());
 		}
 		refreshModelTabs();
-		master.currentModel()->logChange(LOG_VISUAL);
+		master.currentModel()->logChange(Change::VisualLog);
 		gui.modelChanged();
 	}
 }

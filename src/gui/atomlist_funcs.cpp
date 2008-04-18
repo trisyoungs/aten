@@ -82,7 +82,7 @@ void AtenForm::refreshAtomPage()
 		listSelectionPoint = -1;
 	}
 	listLastModel = m;
-	if (listStructurePoint != (m->log(LOG_STRUCTURE) + m->log(LOG_COORDS)))
+	if (listStructurePoint != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
 	{
 		//printf("List must be cleared and repopulated...\n");
 		// Clear the current list
@@ -138,10 +138,10 @@ void AtenForm::refreshAtomPage()
 			}
 		}
 		// Set new log points
-		listStructurePoint = m->log(LOG_STRUCTURE) + m->log(LOG_COORDS);
-		listSelectionPoint = m->log(LOG_SELECTION);
+		listStructurePoint = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
+		listSelectionPoint = m->log(Change::SelectionLog);
 	}
-	else if (listSelectionPoint != m->log(LOG_SELECTION))
+	else if (listSelectionPoint != m->log(Change::SelectionLog))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		// Grab the list of TTreeWidgetItems
@@ -151,7 +151,7 @@ void AtenForm::refreshAtomPage()
 			i = ri->item->atom();
 			ui.AtomTree->setItemSelected(ri->item, i->isSelected());
 		}
-		listSelectionPoint = m->log(LOG_SELECTION);
+		listSelectionPoint = m->log(Change::SelectionLog);
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
 	REFRESHING = FALSE;
@@ -195,7 +195,7 @@ void AtenForm::on_ShiftDownButton_clicked(bool checked)
 void AtenForm::on_MoveToStartButton_clicked(bool checked)
 {
 	master.currentModel()->moveSelectionToStart();
-	master.currentModel()->logChange(LOG_STRUCTURE);
+	master.currentModel()->logChange(Change::StructureLog);
 	refreshAtomPage();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -203,7 +203,7 @@ void AtenForm::on_MoveToStartButton_clicked(bool checked)
 void AtenForm::on_MoveToEndButton_clicked(bool checked)
 {
 	master.currentModel()->moveSelectionToEnd();
-	master.currentModel()->logChange(LOG_STRUCTURE);
+	master.currentModel()->logChange(Change::StructureLog);
 	refreshAtomPage();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }

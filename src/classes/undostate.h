@@ -22,15 +22,6 @@
 #ifndef ATEN_UNDOLEVEL_H
 #define ATEN_UNDOLEVEL_H
 
-// Change logs
-enum ChangeLog { LOG_STRUCTURE, LOG_COORDS, LOG_VISUAL, LOG_SELECTION, LOG_CAMERA, LOG_TOTAL, LOG_NITEMS };
-
-// State change events
-enum UndoEvent { UE_NONE, UE_ATOM, UE_BOND, UE_MEASUREMENT, UE_SELECT, UE_TRANSMUTE, UE_BONDORDER, UE_CELL, UE_LABEL, UE_TRANSLATE, UE_SHIFT };
-
-// State change directions
-enum UndoDirection { UD_REVERSE, UD_FORWARDS };
-
 #include "classes/dnchar.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
@@ -49,6 +40,12 @@ class Change
 	~Change();
 	// List pointers
 	Change *prev, *next;
+	// Change logs
+	enum ChangeLog { StructureLog, CoordinateLog, VisualLog, SelectionLog, CameraLog, TotalLog, nChangeLogs };
+	// State change events
+	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondEventORDER, CellEvent, LabelEvent, TranslateEvent, ShiftEvent };
+	// State change directions
+	enum UndoDirection { Reverse, Forwards };
 
 	/*
 	// Data
@@ -103,9 +100,9 @@ class Undostate
 	// Short text describing the change
 	Dnchar description_;
 	// Logs at start of state
-	int startLogs_[LOG_NITEMS];
+	int startLogs_[Change::nChangeLogs];
 	// Logs at end of state
-	int endLogs_[LOG_NITEMS];
+	int endLogs_[Change::nChangeLogs];
 
 	public:
 	// Add change to undostate
@@ -113,14 +110,14 @@ class Undostate
 	// Return number of changes in list
 	int nChanges();
 	// Set log point at start of state
-	void setStartLog(ChangeLog log, int value);
+	void setStartLog(Change::ChangeLog log, int value);
 	// Get structure log point at start of state
-	int startLog(ChangeLog log);
+	int startLog(Change::ChangeLog log);
 	// Set log point at end of state
-	void setEndLog(ChangeLog log, int value);
+	void setEndLog(Change::ChangeLog log, int value);
 	// Get structure log point at end of state
-	int endLog(ChangeLog log);
-	// Check difference between LOG_STRUCTURE and LOG_COORDS between start/end points
+	int endLog(Change::ChangeLog log);
+	// Check difference between Change::StructureLog and Change::CoordinateLog between start/end points
 	bool doLogsDiffer();
 	// Set the text associated with the current undo state
 	void setDescription(const char *s);

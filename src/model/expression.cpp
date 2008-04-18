@@ -33,7 +33,7 @@ Forcefield *Model::forcefield()
 // Return whether the expression is valid
 bool Model::isExpressionValid()
 {
-	return (expressionPoint_ == logs_[LOG_STRUCTURE] ? TRUE : FALSE);
+	return (expressionPoint_ == logs_[Change::StructureLog] ? TRUE : FALSE);
 }
 
 // Manually invalidates the expression
@@ -117,7 +117,7 @@ bool Model::createExpression(bool vdwOnly)
 		ffa = uniqueTypes_.add();
 		ffa->copy(ri->item);
 	}
-	expressionPoint_ = logs_[LOG_STRUCTURE];
+	expressionPoint_ = logs_[Change::StructureLog];
 	dbgEnd(Debug::Calls,"Model::createExpression");
 	return TRUE;
 }

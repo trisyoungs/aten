@@ -116,5 +116,5 @@ void canvas::configure()
 	h = (float)context_widget->height();
 	do_projection();
 	// Flag that render source needs to be reprojected
-	if (displaymodel != NULL) displaymodel->logChange(LOG_VISUAL);
+	if (displaymodel != NULL) displaymodel->logChange(Change::VisualLog);
 }

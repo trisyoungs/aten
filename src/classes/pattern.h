@@ -22,11 +22,8 @@
 #ifndef ATEN_PATTERN_H
 #define ATEN_PATTERN_H
 
-//#include "classes/atom.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
-//#include "classes/ring.h"
-//#include "energy/forms.h"
 #include "classes/forcefield.h"
 
 // Forward declarations

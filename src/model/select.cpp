@@ -33,12 +33,12 @@ void Model::selectAtom(Atom *i)
 	{
 		i->setSelected(TRUE);
 		nSelected_ ++;
-		logChange(LOG_SELECTION);
+		logChange(Change::SelectionLog);
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
 			Change *newchange = recordingState_->addChange();
-			newchange->set(UE_SELECT,i->id());
+			newchange->set(Change::SelectEvent,i->id());
 		}
 	}
 	dbgEnd(Debug::MoreCalls,"Model::selectAtom (%li)",i);
@@ -59,12 +59,12 @@ void Model::deselectAtom(Atom *i)
 	{
 		i->setSelected(FALSE);
 		nSelected_ --;
-		logChange(LOG_SELECTION);
+		logChange(Change::SelectionLog);
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
 			Change *newchange = recordingState_->addChange();
-			newchange->set(-UE_SELECT,i->id());
+			newchange->set(-Change::SelectEvent,i->id());
 		}
 	}
 	dbgEnd(Debug::MoreCalls,"Model::deselectAtom (%li)",i);

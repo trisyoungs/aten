@@ -24,15 +24,17 @@
 #include "classes/cell.h"
 
 // Geometry types
-int GT_natoms_[GT_NITEMS] = { 0,2,3,4 };
-int natoms_from_GT(GeometryType gt)
-	{ return GT_natoms_[gt]; }
+int MeasurementAtoms[Measurement::nMeasurementTypes] = { 0,2,3,4 };
+int Measurement::nMeasurementAtoms(Measurement::MeasurementType mt)
+{
+	return MeasurementAtoms[mt];
+}
 
 // Constructor
 Measurement::Measurement()
 {
 	// Private variables
-	type_ = GT_NONE;
+	type_ = Measurement::NoMeasurement;
 	for (int n=0; n<4; n++) atoms_[n] = NULL;
 	value_ = 0.0;
 	// Public variables
@@ -41,13 +43,13 @@ Measurement::Measurement()
 }
 
 // Set type of Measurement
-void Measurement::setType(GeometryType gt)
+void Measurement::setType(Measurement::MeasurementType gt)
 {
 	type_ = gt;
 }
 
 // Return type of Measurement
-GeometryType Measurement::type()
+Measurement::MeasurementType Measurement::type()
 {
 	return type_;
 }
@@ -75,13 +77,13 @@ void Measurement::calculate(Cell *cell)
 {
 	switch (type_)
 	{
-		case (GT_DISTANCE):
+		case (Measurement::DistanceMeasurement):
 			value_ = cell->distance(atoms_[0],atoms_[1]);
 			break;
-		case (GT_ANGLE):
+		case (Measurement::AngleMeasurement):
 			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]) * DEGRAD;
 			break;
-		case (GT_TORSION):
+		case (Measurement::TorsionMeasurement):
 			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]) * DEGRAD;
 			break;
 		default:

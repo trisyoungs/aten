@@ -71,7 +71,7 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr)
 	// Called after mouse-up.
 	// Atom positions may have moved outside the boundaries of the box, so need to re-fold.
 	foldAllAtoms();
-	logChange(LOG_COORDS);
+	logChange(Change::CoordinateLog);
 	projectAll();
 	beginUndostate("Transform Selection");
 	// Go through list of atoms in 'originalr', work out delta, and store
@@ -83,8 +83,8 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr)
 		{
 			delta = ri->item->r() - ri->data;
 			newchange = recordingState_->addChange();
-			newchange->set(UE_TRANSLATE,ri->item->id());
-			newchange->set(UE_TRANSLATE,&delta);
+			newchange->set(Change::TranslateEvent,ri->item->id());
+			newchange->set(Change::TranslateEvent,&delta);
 		}
 	}
 	endUndostate();
@@ -119,7 +119,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		newr = (rotmat * newr) + localcog;
 		i->r() = (viewMatrixInverse_ * newr) + cell_.centre();;
 	}
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	projectSelection();
 	dbgEnd(Debug::Calls,"Model::rotateSelectionWorld");
 }
@@ -168,7 +168,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 		//i->r() = tempv;
 		i = i->nextSelected();
 	}
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::rotateSelectionVector");
 }
 
@@ -201,7 +201,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v)
 		newr = (viewMatrixInverse_ * newr) + cell_.centre();
 		i->r() = newr;
 	}
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	projectSelection();
 	dbgEnd(Debug::Calls,"Model::translateSelectionWorld");
 }
@@ -212,7 +212,7 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec)
 	// Translate the model's current selection by the vector supplied.
 	dbgBegin(Debug::Calls,"Model::translateSelectionLocal");
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) translateAtom(i,tvec);
-	//logChange(LOG_VISUAL);
+	//logChange(Change::VisualLog);
 	projectSelection();
 	dbgEnd(Debug::Calls,"Model::translateSelectionLocal");
 }
@@ -233,7 +233,7 @@ void Model::mirrorSelectionLocal(int axis)
 		// Store new coordinate
 		i->r() = mimd + cog;
 	}
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 	projectSelection();
 	dbgEnd(Debug::Calls,"Model::mirrorSelectionLocal");
 }

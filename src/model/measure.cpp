@@ -40,9 +40,9 @@ void Model::measureDistance(Atom *i, Atom *j)
 {
 	// Measure distances between atoms
 	dbgBegin(Debug::Calls,"Model::measureDistance");
-	Measurement *newdist = findMeasurement(GT_DISTANCE,i,j);
+	Measurement *newdist = findMeasurement(Measurement::DistanceMeasurement,i,j);
 	// If this distance isn't currently in the list, add it. Otherwise, delete it
-	if (newdist == NULL) addMeasurement(GT_DISTANCE,i,j);
+	if (newdist == NULL) addMeasurement(Measurement::DistanceMeasurement,i,j);
 	else removeMeasurement(newdist);
 	dbgEnd(Debug::Calls,"Model::measureDistance");
 }
@@ -52,9 +52,9 @@ void Model::measureAngle(Atom *i, Atom *j, Atom *k)
 {
 	// Measure angles between atoms
 	dbgBegin(Debug::Calls,"Model::measureAngle");
-	Measurement *newangle = findMeasurement(GT_ANGLE,i,j,k);
+	Measurement *newangle = findMeasurement(Measurement::AngleMeasurement,i,j,k);
 	// Check that this angle isn't already in the list. If it is, delete it
-	if (newangle == NULL) addMeasurement(GT_ANGLE,i,j,k);
+	if (newangle == NULL) addMeasurement(Measurement::AngleMeasurement,i,j,k);
 	else removeMeasurement(newangle);
 	dbgEnd(Debug::Calls,"Model::measureAngle");
 }
@@ -64,9 +64,9 @@ void Model::measureTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 {
 	// Measure torsions between atoms
 	dbgBegin(Debug::Calls,"Model::measureTorsion");
-	Measurement *newtorsion = findMeasurement(GT_TORSION,i,j,k,l);
+	Measurement *newtorsion = findMeasurement(Measurement::TorsionMeasurement,i,j,k,l);
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
-	if (newtorsion == NULL) addMeasurement(GT_TORSION,i,j,k,l);
+	if (newtorsion == NULL) addMeasurement(Measurement::TorsionMeasurement,i,j,k,l);
 	else removeMeasurement(newtorsion);
 	dbgEnd(Debug::Calls,"Model::measureTorsion");
 }
@@ -80,17 +80,17 @@ void Model::removeMeasurement(Measurement *me)
 	{
 		Change *newchange = recordingState_->addChange();
 		Atom **atoms = me->atoms();
-		GeometryType type = me->type();
+		Measurement::MeasurementType type = me->type();
 		switch (type)
 		{
-			case (GT_DISTANCE):
-				newchange->set(-UE_MEASUREMENT, type, atoms[0]->id(), atoms[1]->id());
+			case (Measurement::DistanceMeasurement):
+				newchange->set(-Change::MeasurementEvent, type, atoms[0]->id(), atoms[1]->id());
 				break;
-			case (GT_ANGLE):
-				newchange->set(-UE_MEASUREMENT, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
+			case (Measurement::AngleMeasurement):
+				newchange->set(-Change::MeasurementEvent, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 				break;
-			case (GT_TORSION):
-				newchange->set(-UE_MEASUREMENT, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
+			case (Measurement::TorsionMeasurement):
+				newchange->set(-Change::MeasurementEvent, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 				break;
 		}
 	}
@@ -99,7 +99,7 @@ void Model::removeMeasurement(Measurement *me)
 }
 
 // Clear measurements of specific type
-void Model::removeMeasurements(GeometryType gt)
+void Model::removeMeasurements(Measurement::MeasurementType gt)
 {
 	dbgBegin(Debug::Calls,"Model::removeMeasurements");
 	Measurement *me = measurements_.first(), *meNext;
@@ -131,7 +131,7 @@ void Model::removeMeasurements(Atom *xatom)
 	{
 		remove = FALSE;
 		atoms = m->atoms();
-		for (n=0; n<natoms_from_GT(m->type()); n++) if (atoms[n] == xatom) remove = TRUE;
+		for (n=0; n<Measurement::nMeasurementAtoms(m->type()); n++) if (atoms[n] == xatom) remove = TRUE;
 		if (remove)
 		{
 			nextm = m->next;
@@ -144,7 +144,7 @@ void Model::removeMeasurements(Atom *xatom)
 }
 
 // Add Measurement
-void Model::addMeasurement(GeometryType gt, Atom *first, ...)
+void Model::addMeasurement(Measurement::MeasurementType gt, Atom *first, ...)
 {
 	dbgBegin(Debug::Calls,"Model::addMeasurement");
 	Atom *i, **atoms;
@@ -152,7 +152,7 @@ void Model::addMeasurement(GeometryType gt, Atom *first, ...)
 	newm->setType(gt);
 	newm->setAtom(0, first);
 	// Get remaining atoms_...
-	int nexpected = natoms_from_GT(gt);
+	int nexpected = Measurement::nMeasurementAtoms(gt);
 	va_list vars;
 	va_start(vars,first);
 	for (int n=1; n<nexpected; n++)
@@ -180,14 +180,14 @@ void Model::addMeasurement(GeometryType gt, Atom *first, ...)
 			atoms = newm->atoms();
 			switch (gt)
 			{
-				case (GT_DISTANCE):
-					newchange->set(UE_MEASUREMENT, gt, atoms[0]->id(), atoms[1]->id());
+				case (Measurement::DistanceMeasurement):
+					newchange->set(Change::MeasurementEvent, gt, atoms[0]->id(), atoms[1]->id());
 					break;
-				case (GT_ANGLE):
-					newchange->set(UE_MEASUREMENT, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
+				case (Measurement::AngleMeasurement):
+					newchange->set(Change::MeasurementEvent, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 					break;
-				case (GT_TORSION):
-					newchange->set(UE_MEASUREMENT, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
+				case (Measurement::TorsionMeasurement):
+					newchange->set(Change::MeasurementEvent, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 					break;
 			}
 		}
@@ -196,14 +196,14 @@ void Model::addMeasurement(GeometryType gt, Atom *first, ...)
 }
 
 // Add measurements in selection
-void Model::addMeasurementsInSelection(GeometryType gt)
+void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 {
 	dbgBegin(Debug::Calls,"Model::addMeasurementsInSelection");
 	Atom *i, *j, *k, *l;
 	Refitem<Bond,int> *b1, *b2, *b3;
 	switch (gt)
 	{
-		case (GT_DISTANCE):
+		case (Measurement::DistanceMeasurement):
 			i = firstSelected();
 			while (i != NULL)
 			{
@@ -219,7 +219,7 @@ void Model::addMeasurementsInSelection(GeometryType gt)
 				i = i->nextSelected();
 			}
 			break;
-		case (GT_ANGLE):
+		case (Measurement::AngleMeasurement):
 			j = firstSelected();
 			while (j != NULL)
 			{
@@ -243,7 +243,7 @@ void Model::addMeasurementsInSelection(GeometryType gt)
 				j = j->nextSelected();
 			}
 			break;
-		case (GT_TORSION):
+		case (Measurement::TorsionMeasurement):
 			// Find bond j-k where both are selected
 			j = firstSelected();
 			while (j != NULL)
@@ -288,7 +288,7 @@ void Model::addMeasurementsInSelection(GeometryType gt)
 }
 
 // Find Measurement
-Measurement *Model::findMeasurement(GeometryType gt,  Atom *first, ...)
+Measurement *Model::findMeasurement(Measurement::MeasurementType gt,  Atom *first, ...)
 {
 	dbgBegin(Debug::Calls,"Model::findMeasurement");
 	Measurement *result, *m;
@@ -296,7 +296,7 @@ Measurement *Model::findMeasurement(GeometryType gt,  Atom *first, ...)
 	bool proceed;
 	Atom *searchatoms[4], **matoms;
 	searchatoms[0] = first;
-	int nexpected = natoms_from_GT(gt);
+	int nexpected = Measurement::nMeasurementAtoms(gt);
 	va_list vars;
 	va_start(vars,first);
 	proceed = TRUE;

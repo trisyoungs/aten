@@ -69,7 +69,7 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 	master.currentModel()->setRenderFromSelf();
 	Model *m = master.currentModel()->renderSource();
 	m->calculateViewMatrix();
-	m->logChange(LOG_CAMERA);
+	m->logChange(Change::CameraLog);
 	gui.modelChanged();
 }
 
@@ -79,7 +79,7 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 	master.currentModel()->setRenderFromFrames();
 	Model *m = master.currentModel()->renderSource();
 	m->calculateViewMatrix();
-	m->logChange(LOG_CAMERA);
+	m->logChange(Change::CameraLog);
 	gui.modelChanged();
 }
 

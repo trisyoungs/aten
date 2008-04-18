@@ -64,7 +64,7 @@ void Canvas::informMouseUp(Prefs::MouseButton button, double x, double y)
 void Canvas::informMouseMove(double x, double y)
 {
 	// Perform action associated with mode (if any)
-	if (activeMode_ != UA_NONE) modeMotion(x,y);
+	if (activeMode_ != Canvas::NoAction) modeMotion(x,y);
 	rMouseLast_.set(x,y,0.0);
 }
 
@@ -75,7 +75,7 @@ void Canvas::informScroll(bool dir)
 }
 
 // Inform key down
-void Canvas::informKeyDown(key_code key)
+void Canvas::informKeyDown(Canvas::KeyCode key)
 {
 	// Check datamodel...
 	if (displayModel_ == NULL) return;
@@ -85,38 +85,38 @@ void Canvas::informKeyDown(key_code key)
 	viewtarget = displayModel_;
 	switch (key)
 	{
-		case (KC_SHIFT_L):
+		case (Canvas::LeftShiftKey):
 			keyModifier_[Prefs::ShiftKey] = TRUE;
 			break;
-		case (KC_SHIFT_R):
+		case (Canvas::RightShiftKey):
 			keyModifier_[Prefs::ShiftKey] = TRUE;
 			break;
-		case (KC_CONTROL_L):
+		case (Canvas::LeftControlKey):
 			keyModifier_[Prefs::CtrlKey] = TRUE;
 			break;
-		case (KC_CONTROL_R):
+		case (Canvas::RightControlKey):
 			keyModifier_[Prefs::CtrlKey] = TRUE;
 			break;
-		case (KC_ALT_L):
+		case (Canvas::LeftAltKey):
 			keyModifier_[Prefs::AltKey] = TRUE;
 			break;
-		case (KC_ALT_R):
+		case (Canvas::RightAltKey):
 			keyModifier_[Prefs::AltKey] = TRUE;
 			break;
 		//case (GDK_Escape): master.check_before_close(); break;
-		case (KC_LEFT):
+		case (Canvas::LeftKey):
 			viewtarget->rotate(-10.0,0.0);
 			postRedisplay();
 			break;
-		case (KC_RIGHT):
+		case (Canvas::RightKey):
 			viewtarget->rotate(10.0,0.0);
 			postRedisplay();
 			break;
-		case (KC_UP):
+		case (Canvas::UpKey):
 			viewtarget->rotate(0.0,-10.0);
 			postRedisplay();
 			break;
-		case (KC_DOWN):
+		case (Canvas::DownKey):
 			viewtarget->rotate(0.0,10.0);
 			postRedisplay();
 			break;
@@ -124,26 +124,26 @@ void Canvas::informKeyDown(key_code key)
 }
 
 // Inform key up
-void Canvas::informKeyUp(key_code key)
+void Canvas::informKeyUp(Canvas::KeyCode key)
 {
 	switch (key)
 	{
-		case (KC_SHIFT_L):
+		case (Canvas::LeftShiftKey):
 			keyModifier_[Prefs::ShiftKey] = FALSE;
 			break;
-		case (KC_SHIFT_R):
+		case (Canvas::RightShiftKey):
 			keyModifier_[Prefs::ShiftKey] = FALSE;
 			break;
-		case (KC_CONTROL_L):
+		case (Canvas::LeftControlKey):
 			keyModifier_[Prefs::CtrlKey] = FALSE;
 			break;
-		case (KC_CONTROL_R):
+		case (Canvas::RightControlKey):
 			keyModifier_[Prefs::CtrlKey] = FALSE;
 			break;
-		case (KC_ALT_L):
+		case (Canvas::LeftAltKey):
 			keyModifier_[Prefs::AltKey] = FALSE;
 			break;
-		case (KC_ALT_R):
+		case (Canvas::RightAltKey):
 			keyModifier_[Prefs::AltKey] = FALSE;
 			break;
 	}
@@ -167,13 +167,13 @@ void Canvas::setSelectedMode(UserAction ua)
 	// Prepare canvas / model depending on the mode
 	switch (ua)
 	{
-		case (UA_GEOMDIST):
-		case (UA_GEOMANGLE):
-		case (UA_GEOMTORSION):
-		case (UA_BONDSINGLE):
-		case (UA_BONDDOUBLE):
-		case (UA_BONDTRIPLE):
-		case (UA_DELBOND):
+		case (Canvas::MeasureDistanceAction):
+		case (Canvas::MeasureAngleAction):
+		case (Canvas::MeasureTorsionAction):
+		case (Canvas::EditBondSingleAction):
+		case (Canvas::EditBondDoubleAction):
+		case (Canvas::EditBondTripleAction):
+		case (Canvas::EditDeleteBondAction):
 			subselectEnabled_ = TRUE;
 			subselection_.clear();
 			break;
@@ -224,7 +224,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 		}
 	}
 	// Now prepare for the action
-	if (activeMode_ == UA_NONE)
+	if (activeMode_ == Canvas::NoAction)
 	{
 		switch (prefs.mouseAction(button))
 		{
@@ -234,7 +234,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 				// Some modes require actions to be done when the button is first depressed
 				switch (activeMode_)
 				{
-					case (UA_DRAWCHAIN):
+					case (Canvas::EditChainAction):
 						// If there is currently no atom under the mouse, draw one...
 						if (atomHover_ == NULL)
 						{
@@ -249,17 +249,16 @@ void Canvas::beginMode(Prefs::MouseButton button)
 				break;
 			case (Prefs::RotateAction):
 				// Check for multiple key modifiers first.
-				if (manipulate && zrotate) activeMode_ = UA_MANIPROTZ;
-				else if (manipulate) activeMode_ = UA_MANIPROTXY;
-				else if (zrotate) activeMode_ = UA_ROTATEZ;
-				else activeMode_ = UA_ROTATEXY;
+				if (manipulate && zrotate) activeMode_ = Canvas::TransformRotateZAction;
+				else if (manipulate) activeMode_ = Canvas::TransformRotateXYAction;
+				else if (zrotate) activeMode_ = Canvas::RotateZAction;
+				else activeMode_ = Canvas::RotateXYAction;
 				break;
 			case (Prefs::ZoomAction):
-				activeMode_ = UA_ZOOMCAM;
+				activeMode_ = Canvas::ZoomAction;
 				break;
 			case (Prefs::TranslateAction):
-				activeMode_ = UA_MOVECAM;
-				manipulate ? activeMode_ = UA_MANIPTRANS : activeMode_ = UA_MOVECAM;
+				activeMode_ = (manipulate ? Canvas::TransformTranslateAction : Canvas::TranslateAction);
 				break;
 		}
 		// If we're manipulating, prepare the transform
@@ -297,13 +296,14 @@ void Canvas::endMode(Prefs::MouseButton button)
 	atoms = new Atom*[4];
 	// Reset mouse button flag
 	mouseButton_[button] = FALSE;
+	// Copy the current mode and reset it so we redraw properly
+	Canvas::UserAction endingMode = activeMode_;
+	activeMode_ = Canvas::NoAction;
 	// Finalize the action
-	switch (activeMode_)
+	switch (endingMode)
 	{
-		// Group all the plain selection modes together (one for each toolbar in a diff. window)
-		case (UA_PICKSELECT):
-		case (UA_GEOMSELECT):
-		case (UA_POSSELECT):
+		// Plain atom / box select
+		case (Canvas::SelectAction):
 			area = fabs(rMouseUp_.x - rMouseDown_.x) * fabs(rMouseUp_.y - rMouseDown_.y);
 			displayModel_->beginUndostate("Change Selection");
 			displayModel_->projectAll();
@@ -320,26 +320,24 @@ void Canvas::endMode(Prefs::MouseButton button)
 			}
 			else displayModel_->selectBox(rMouseDown_.x, rMouseDown_.y, rMouseUp_.x, rMouseUp_.y);
 			displayModel_->endUndostate();
-			// Set activeMode_ early to prevent presistence of selection box
-			activeMode_ = UA_NONE;
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// Now do the rest
-		case (UA_PICKFRAG):
+		case (Canvas::SelectMoleculeAction):
 			displayModel_->beginUndostate("Select Molecule");
 			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL) displayModel_->selectTree(atomHover_);
 			displayModel_->endUndostate();
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
-		case (UA_PICKELEMENT):
+		case (Canvas::SelectElementAction):
 			displayModel_->beginUndostate("Select Element");
 			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL) displayModel_->selectElement(atomHover_);
 			displayModel_->endUndostate();
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
-		case (UA_PICKRADIAL):
+		case (Canvas::SelectRadialAction):
 			displayModel_->beginUndostate("Select Radial");
 			if (!keyModifier_[Prefs::ShiftKey]) displayModel_->selectNone();
 			if (atomHover_ != NULL)
@@ -352,7 +350,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// Measurements
-		case (UA_GEOMDIST):
+		case (Canvas::MeasureDistanceAction):
 			// Must be two atoms in subselection to continue
 			if (subselection_.nItems() != 2) break;
 			displayModel_->beginUndostate("Measure Distance");
@@ -362,7 +360,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			subselection_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
-		case (UA_GEOMANGLE):
+		case (Canvas::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
 			if (subselection_.nItems() != 3) break;
 			displayModel_->beginUndostate("Measure Angle");
@@ -372,7 +370,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			subselection_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
-		case (UA_GEOMTORSION):
+		case (Canvas::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
 			if (subselection_.nItems() != 4) break;
 			displayModel_->beginUndostate("Measure Torsion");
@@ -383,7 +381,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		// Draw single atom
-		case (UA_DRAWATOM):
+		case (Canvas::EditDrawAction):
 			// Make sure we don't draw on top of an existing atom
 			if (atomHover_ == NULL)
 			{
@@ -395,7 +393,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
 		// Draw chains of atoms
-		case (UA_DRAWCHAIN):
+		case (Canvas::EditChainAction):
 			// If there is no atom under the mouse we draw one
 			i = displayModel_->atomOnScreen(rMouseUp_.x,rMouseUp_.y);
 			if ((atomHover_ == i) && (i != NULL)) break;
@@ -412,31 +410,35 @@ void Canvas::endMode(Prefs::MouseButton button)
 				// Search for existing bond between atoms
 				b = i->findBond(atomHover_);
 				if (b == NULL) bt = Bond::Single;
-				else bt = Bond::increaseBondType(b->order());
+				else
+				{
+					bt = Bond::increaseBondType(b->order());
+					displayModel_->unbondAtoms(i,atomHover_);
+				}
 				displayModel_->bondAtoms(i,atomHover_,bt);
 			}
 			displayModel_->endUndostate();
 			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
-		case (UA_TRANSATOM):
+		case (Canvas::EditTransmuteAction):
 			displayModel_->beginUndostate("Transmute");
 			displayModel_->transmuteAtom(atomHover_, master.sketchElement());
 			displayModel_->endUndostate();
 			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
-		case (UA_DELATOM):
+		case (Canvas::EditDeleteAction):
 			displayModel_->beginUndostate("Delete Atom");
 			displayModel_->deleteAtom(atomHover_);
 			displayModel_->endUndostate();
 			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;
-		case (UA_PROBEATOM):
+		case (Canvas::EditProbeAction):
 			if (atomHover_ != NULL) atomHover_->print();
 			break;
 		// Bonding
-		case (UA_BONDSINGLE):
-		case (UA_BONDDOUBLE):
-		case (UA_BONDTRIPLE):
+		case (Canvas::EditBondSingleAction):
+		case (Canvas::EditBondDoubleAction):
+		case (Canvas::EditBondTripleAction):
 			// Must be two atoms in subselection to continue
 			if (subselection_.nItems() != 2) break;
 			subselection_.fillArray(2,atoms);
@@ -444,19 +446,19 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (b == NULL)
 			{
 				displayModel_->beginUndostate("Bond Atoms");
-				displayModel_->bondAtoms(atoms[0],atoms[1],Bond::BondType(activeMode_-UA_BONDSINGLE+1));
+				displayModel_->bondAtoms(atoms[0],atoms[1],Bond::BondType(endingMode-Canvas::EditBondSingleAction+1));
 				displayModel_->endUndostate();
 			}
 			else
 			{
 				displayModel_->beginUndostate("Change Bond");
-				displayModel_->changeBond(b,Bond::BondType(activeMode_-UA_BONDSINGLE+1));
+				displayModel_->changeBond(b,Bond::BondType(endingMode-Canvas::EditBondSingleAction+1));
 				displayModel_->endUndostate();
 			}
 			subselection_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
-		case (UA_DELBOND):
+		case (Canvas::EditDeleteBondAction):
 			// Must be two atoms in subselection to continue
 			if (subselection_.nItems() != 2) break;
 			subselection_.fillArray(2,atoms);
@@ -470,7 +472,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		// Misc
-		case (UA_ATOMADDHYDROGEN):
+		case (Canvas::EditAddHydrogenAction):
 			if (atomHover_ != NULL)
 			{
 				displayModel_->beginUndostate("Add Hydrogen to Atom");
@@ -480,25 +482,24 @@ void Canvas::endMode(Prefs::MouseButton button)
 			}
 			break;
 		// Model transformations
-		case (UA_MANIPROTXY):
-		case (UA_MANIPROTZ):
-		case (UA_MANIPTRANS):
+		case (Canvas::TransformRotateXYAction):
+		case (Canvas::TransformRotateZAction):
+		case (Canvas::TransformTranslateAction):
 			// Clear list of rSelection_ if nothing was moved
 			if (!hasMoved_) rSelection_.clear();
 			displayModel_->finalizeTransform(rSelection_);
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// View changes (no action)
-		case (UA_ROTATEXY):
-		case (UA_ROTATEZ):
-		case (UA_MOVECAM):
-		case (UA_ZOOMCAM):
+		case (Canvas::RotateXYAction):
+		case (Canvas::RotateZAction):
+		case (Canvas::TranslateAction):
+		case (Canvas::ZoomAction):
 			break;
 		default:
-			printf("No button_up handler defined for UserAction %i.\n", activeMode_);
+			printf("No endMode handler defined for UserAction %i.\n", endingMode);
 			break;
 	}
-	activeMode_ = UA_NONE;
 	dbgEnd(Debug::Calls,"Canvas::endMode");
 }
 
@@ -523,35 +524,35 @@ void Canvas::modeMotion(double x, double y)
 	// Use activeMode_ to determine what needs to be performed
 	switch (activeMode_)
 	{
-		case (UA_NONE):
+		case (Canvas::NoAction):
 			break;
-		case (UA_ROTATEXY):
+		case (Canvas::RotateXYAction):
 			displayModel_->rotate(delta.x/2.0,delta.y/2.0);
 			break;
-		case (UA_ROTATEZ):
+		case (Canvas::RotateZAction):
 			displayModel_->zRotate(delta.x/2.0);
 			break;
-		case (UA_MOVECAM):
+		case (Canvas::TranslateAction):
 			displayModel_->adjustCamera(delta/15.0,0.0);
 			break;
-		case (UA_MANIPROTXY):
+		case (Canvas::ZoomAction):
+			if (prefs.hasPerspective()) displayModel_->adjustCamera(0.0,0.0,delta.y,0.0);
+			else displayModel_->adjustOrthoSize(delta.y);
+			calculateDrawPixelWidth();
+			break;
+		case (Canvas::TransformRotateXYAction):
 			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
 			hasMoved_ = TRUE;
 			break;
-		case (UA_MANIPROTZ):
+		case (Canvas::TransformRotateZAction):
 			displayModel_->rotateSelectionZaxis(delta.x/2.0);
 			hasMoved_ = TRUE;
 			break;
-		case (UA_MANIPTRANS):
+		case (Canvas::TransformTranslateAction):
 			delta.y = -delta.y;
 			delta /= displayModel_->translateScale() * 2.0;
 			displayModel_->translateSelectionWorld(delta);
 			hasMoved_ = TRUE;
-			break;
-		case (UA_ZOOMCAM):
-			if (prefs.hasPerspective()) displayModel_->adjustCamera(0.0,0.0,delta.y,0.0);
-			else displayModel_->adjustOrthoSize(delta.y);
-			calculateDrawPixelWidth();
 			break;
 		default:
 			break;

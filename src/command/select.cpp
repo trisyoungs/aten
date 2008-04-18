@@ -242,7 +242,7 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 		// Write results
 		msg(Debug::None,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
 		// Update model and delete temporary atomtype
-		obj.m->logChange(LOG_SELECTION);
+		obj.m->logChange(Change::SelectionLog);
 		return CR_SUCCESS;
 	}
 	else msg(Debug::None,"Can't test atomtype description without a valid pattern definition!\n");

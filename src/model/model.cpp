@@ -37,7 +37,7 @@ Model::Model()
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
 	orthoSize_ = 20.0;
-	for (int n=0; n<LOG_NITEMS; n++) logs_[n] = 0;
+	for (int n=0; n<Change::nChangeLogs; n++) logs_[n] = 0;
 	spacegroup_ = 0;
 	spacegroupSetting_ = 1;
 	mass_ = 0.0;
@@ -135,20 +135,20 @@ double Model::density()
 }
 
 // Log change
-void Model::logChange(ChangeLog cl)
+void Model::logChange(Change::ChangeLog cl)
 {
-	if (cl >= LOG_TOTAL) printf("Invalid log quantity passed.\n");
+	if (cl >= Change::TotalLog) printf("Invalid log quantity passed.\n");
 	logs_[cl] ++;
-	// For all logs except LOG_CAMERA we also update the total log
-	if (cl != LOG_CAMERA) logs_[LOG_TOTAL] ++;
+	// For all logs except Change::CameraLog we also update the total log
+	if (cl != Change::CameraLog) logs_[Change::TotalLog] ++;
 }
 
 // Copy logs
 void Model::copyLogs(int *newlogs)
 {
-	logs_[LOG_STRUCTURE] = newlogs[LOG_STRUCTURE];
-	logs_[LOG_COORDS] = newlogs[LOG_COORDS];
-	logs_[LOG_SELECTION] = newlogs[LOG_SELECTION];
+	logs_[Change::StructureLog] = newlogs[Change::StructureLog];
+	logs_[Change::CoordinateLog] = newlogs[Change::CoordinateLog];
+	logs_[Change::SelectionLog] = newlogs[Change::SelectionLog];
 }
 
 // Clear
@@ -158,7 +158,7 @@ void Model::clear()
 	patterns_.clear();
 	frames_.clear();
 	// Reset logs and log points
-	for (int n=0; n<LOG_NITEMS; n++) logs_[n] = 0;
+	for (int n=0; n<Change::nChangeLogs; n++) logs_[n] = 0;
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
 	projectionPoint_ = -1;
@@ -255,7 +255,7 @@ void Model::addLabel(Atom *i, Atom::AtomLabel al)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_LABEL,i->id(),oldlabels,i->labels());
+		newchange->set(Change::LabelEvent,i->id(),oldlabels,i->labels());
 	}
 }
 
@@ -268,7 +268,7 @@ void Model::removeLabel(Atom *i, Atom::AtomLabel al)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(-UE_LABEL,i->id(),oldlabels,i->labels());
+		newchange->set(-Change::LabelEvent,i->id(),oldlabels,i->labels());
 	}
 }
 
@@ -281,7 +281,7 @@ void Model::clearLabels(Atom *i)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(UE_LABEL,i->id(),oldlabels,0);
+		newchange->set(Change::LabelEvent,i->id(),oldlabels,0);
 	}
 }
 
@@ -361,7 +361,7 @@ void Model::bohrToAngstrom()
 		lengths *= ANGBOHR;
 		cell_.set(lengths,cell_.angles());
 	}
-	logChange(LOG_COORDS);
+	logChange(Change::CoordinateLog);
 	dbgEnd(Debug::Calls,"Model::bohrToAngstrom");
 }
 
@@ -412,7 +412,7 @@ void Model::print()
 void Model::printLogs()
 {
 	msg(Debug::None,"Logs for model '%s':\n",name_.get());
-	msg(Debug::None,"Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Total [%i]\n", logs_[LOG_STRUCTURE], logs_[LOG_COORDS], logs_[LOG_VISUAL], logs_[LOG_SELECTION], logs_[LOG_CAMERA], logs_[LOG_TOTAL]);
+	msg(Debug::None,"Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Total [%i]\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::VisualLog], logs_[Change::SelectionLog], logs_[Change::CameraLog], logs_[Change::TotalLog]);
 	msg(Debug::None,"Expression point : %i\n", expressionPoint_);
 	msg(Debug::None,"  Patterns point : %i\n", patternsPoint_);
 	msg(Debug::None,"Projection point : %i\n", projectionPoint_);
@@ -530,7 +530,7 @@ double Model::calculateRmsForce()
 */
 
 // Return the log quantity specified
-int Model::log(ChangeLog cl)
+int Model::log(Change::ChangeLog cl)
 {
 	return logs_[cl];
 }
@@ -538,17 +538,17 @@ int Model::log(ChangeLog cl)
 // Reset all logs to zero
 void Model::resetLogs()
 {
-	for (int i=0; i<LOG_NITEMS; i++) logs_[i] = 0;
+	for (int i=0; i<Change::nChangeLogs; i++) logs_[i] = 0;
 }
 
 // Set the save point log for the model
 void Model::updateSavePoint()
 {
-	savePoint_ = logs_[LOG_STRUCTURE] + logs_[LOG_COORDS];
+	savePoint_ = logs_[Change::StructureLog] + logs_[Change::CoordinateLog];
 }
 
 // Return if the model has been modified since last being saved
 bool Model::isModified()
 {
-	return (savePoint_ == (logs_[LOG_STRUCTURE] + logs_[LOG_COORDS]) ? FALSE : TRUE);
+	return (savePoint_ == (logs_[Change::StructureLog] + logs_[Change::CoordinateLog]) ? FALSE : TRUE);
 }

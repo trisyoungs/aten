@@ -35,11 +35,17 @@
 const char *BIF_filters[BIF_NITEMS] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
 const char *BIF_extensions[BIF_NITEMS] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
 bitmap_format BIF_from_text(const char *s)
-	{ return (bitmap_format) enumSearch("bitmap format",BIF_NITEMS,BIF_extensions,s); }
+{
+	return (bitmap_format) enumSearch("bitmap format",BIF_NITEMS,BIF_extensions,s);
+}
 const char *filter_from_BIF(bitmap_format bif)
-	{ return BIF_filters[bif]; }
+{
+	return BIF_filters[bif];
+}
 const char *extension_from_BIF(bitmap_format bif)
-	{ return BIF_extensions[bif]; }
+{
+	return BIF_extensions[bif];
+}
 
 // Constructor
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
@@ -65,12 +71,12 @@ void AtenForm::closeEvent(QCloseEvent *event)
 */
 
 // Change user interaction mode
-void AtenForm::setUserAction(bool on, UserAction ua)
+void AtenForm::setUserAction(bool on, Canvas::UserAction ua)
 {
 	// We pass all changes to the user interaction mode through here.
 	// This way we can 'link' the selectToolBar and all the other buttons....
 	if (!on) return;
-	if ((ua >= UA_PICKSELECT) && (ua <= UA_PICKRADIAL))
+	if ((ua >= Canvas::SelectAction) && (ua <= Canvas::SelectRadialAction))
 	{
 		// One of the select actions in selectGroup
 		dummyButton->setChecked(TRUE);
@@ -86,15 +92,15 @@ void AtenForm::setUserAction(bool on, UserAction ua)
 
 void AtenForm::keyPressEvent(QKeyEvent *event)
 {
-	key_code kc = gui.convertToKeyCode(event->key());
-	if (kc != KC_OTHER) gui.mainView.informKeyDown(kc);
+	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	if (kc != Canvas::OtherKey) gui.mainView.informKeyDown(kc);
 	else event->ignore();
 }
 
 void AtenForm::keyReleaseEvent(QKeyEvent *event)
 {
-	key_code kc = gui.convertToKeyCode(event->key());
-	if (kc != KC_OTHER) gui.mainView.informKeyUp(kc);
+	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
+	if (kc != Canvas::OtherKey) gui.mainView.informKeyUp(kc);
 	else event->ignore();
 }
 
@@ -191,7 +197,7 @@ void AtenForm::loadRecent()
 	if (f != NULL)
 	{
 		f->execute(filename.get());
-		master.currentModel()->logChange(LOG_VISUAL);
+		master.currentModel()->logChange(Change::VisualLog);
 		gui.mainView.postRedisplay();
 	}
 	else
@@ -314,12 +320,12 @@ void AtenForm::runScript()
 	QAction *action = qobject_cast<QAction*> (sender());
 	if (!action)
 	{
-		printf("AtenForm::run_script - Sender was not a QAction.\n");
+		printf("AtenForm::runScript - Sender was not a QAction.\n");
 		return;
 	}
 	// Find the CommandList from the loadedscripts() Reflist
 	Refitem<QAction, CommandList*> *ri = scriptActions_.search(action);
-	if (ri == NULL) printf("AtenForm::run_script - Could not find QAction in Reflist.\n");
+	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
 	else
 	{
 		// Execute the script
@@ -351,17 +357,17 @@ void AtenForm::on_actionMouseTranslate_triggered(bool checked)
 */
 void AtenForm::on_actionSelectAtoms_triggered(bool on)
 {
-	setUserAction(on, UA_PICKSELECT);
+	setUserAction(on, Canvas::SelectAction);
 }
 
 void AtenForm::on_actionSelectMolecules_triggered(bool on)
 {
-	setUserAction(on, UA_PICKFRAG);
+	setUserAction(on, Canvas::SelectMoleculeAction);
 }
 
 void AtenForm::on_actionSelectElement_triggered(bool on)
 {
-	setUserAction(on, UA_PICKELEMENT);
+	setUserAction(on, Canvas::SelectElementAction);
 }
 
 /*
@@ -415,7 +421,7 @@ void AtenForm::switchStack(int buttonid, bool checked)
 {
 	// If the state of the button is *not* checked then we hide the stack since no buttons are checked. Otherwise, uncheck all other buttons and show the corresponding widget in the stack for this button.
 	int n;
-	UserAction ua = gui.mainView.selectedMode();
+	Canvas::UserAction ua = gui.mainView.selectedMode();
 	if (checked)
 	{
 		for (n=0; n<SP_NITEMS; n++) if (n != buttonid) stackButtons_[n]->setChecked(FALSE);
@@ -424,14 +430,14 @@ void AtenForm::switchStack(int buttonid, bool checked)
 	}
 	else ui.MainWindowStack->hide();
 	// Choose a plain selection mode again...
-	if ((ua == UA_NONE) || (ua > UA_PICKRADIAL))
+	if ((ua == Canvas::NoAction) || (ua > Canvas::SelectRadialAction))
 	{
 		ui.actionSelectAtoms->setChecked(TRUE);
-		setUserAction(TRUE, UA_PICKSELECT);
+		setUserAction(TRUE, Canvas::SelectAction);
 	}
 	//ui.actionSelectAtoms->setChecked(TRUE);
 	//set_useraction(TRUE, UA_PICKSELECT);
-	master.currentModel()->logChange(LOG_CAMERA);
+	master.currentModel()->logChange(Change::CameraLog);
 }
 
 void AtenForm::on_ShowAtomPageButton_clicked(bool checked)

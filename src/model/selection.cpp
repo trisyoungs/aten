@@ -58,12 +58,12 @@ void Model::shiftSelectionUp()
 			if (recordingState_ != NULL)
 			{
 				Change *newchange = recordingState_->addChange();
-				newchange->set(UE_SHIFT,oldid,-1);
+				newchange->set(Change::ShiftEvent,oldid,-1);
 			}
 		}
 		i = next;
 	}
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::shiftSelectionUp");
 }
 
@@ -101,12 +101,12 @@ void Model::shiftSelectionDown()
 			if (recordingState_ != NULL)
 			{
 				Change *newchange = recordingState_->addChange();
-				newchange->set(UE_SHIFT,oldid,1);
+				newchange->set(Change::ShiftEvent,oldid,1);
 			}
 		}
 		i = next;
 	}
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::shiftSelectionDown");
 }
 
@@ -126,7 +126,7 @@ void Model::moveSelectionToStart()
 	}
 	// Renumber atoms
 	renumberAtoms();
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::moveSelectionToStart");
 }
 
@@ -146,7 +146,7 @@ void Model::moveSelectionToEnd()
 	}
 	// Renumber atoms
 	renumberAtoms();
-	logChange(LOG_STRUCTURE);
+	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::moveSelectionToEnd");
 }
 
@@ -167,7 +167,7 @@ Vec3<double> Model::selectionCog()
 void Model::selectionSetHidden(bool hidden)
 {
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setHidden(i, hidden);
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 }
 
 // Fix selected atom positions
@@ -189,6 +189,6 @@ void Model::selectionSetStyle(Atom::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setStyle(ds);
-	logChange(LOG_VISUAL);
+	logChange(Change::VisualLog);
 }
 

@@ -22,10 +22,6 @@
 #ifndef ATEN_MEASUREMENT_H
 #define ATEN_MEASUREMENT_H
 
-// Geometry types
-enum GeometryType { GT_NONE, GT_DISTANCE, GT_ANGLE, GT_TORSION, GT_NITEMS };
-int natoms_from_GT(GeometryType);
-
 // Forward Declarations
 class Atom;
 class Cell;
@@ -38,13 +34,16 @@ class Measurement
 	Measurement();
 	// List pointers
 	Measurement *next, *prev;
+	// Geometry types
+	enum MeasurementType { NoMeasurement, DistanceMeasurement, AngleMeasurement, TorsionMeasurement, nMeasurementTypes };
+	static int nMeasurementAtoms(MeasurementType);
 
 	/*
 	// Measurement Data
 	*/
 	private:
 	// Type of Measurement
-	GeometryType type_;
+	MeasurementType type_;
 	// Atoms involved Measurement
 	Atom* atoms_[4];
 	// Value of Measurement
@@ -52,9 +51,9 @@ class Measurement
 
 	public:
 	// Set type of Measurement
-	void setType(GeometryType gt);
+	void setType(MeasurementType gt);
 	// Return type of Measurement
-	GeometryType type();
+	MeasurementType type();
 	// Calculate Measurement value
 	void calculate(Cell *cell);
 	// Return value of the Measurement

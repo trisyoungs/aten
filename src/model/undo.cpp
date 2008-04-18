@@ -49,11 +49,11 @@ void Model::beginUndostate(const char *text)
 	// Create a new state for us to add to
 	recordingState_ = new Undostate;
 	recordingState_->setDescription(text);
-	recordingState_->setStartLog(LOG_STRUCTURE, logs_[LOG_STRUCTURE]);
-	recordingState_->setStartLog(LOG_COORDS, logs_[LOG_COORDS]);
-	recordingState_->setStartLog(LOG_SELECTION, logs_[LOG_SELECTION]);
+	recordingState_->setStartLog(Change::StructureLog, logs_[Change::StructureLog]);
+	recordingState_->setStartLog(Change::CoordinateLog, logs_[Change::CoordinateLog]);
+	recordingState_->setStartLog(Change::SelectionLog, logs_[Change::SelectionLog]);
 	msg(Debug::Verbose,"Undo list prepped for new state.\n");
-	msg(Debug::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", logs_[LOG_STRUCTURE], logs_[LOG_COORDS], logs_[LOG_SELECTION]);
+	msg(Debug::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
 	dbgEnd(Debug::Calls,"Model::beginUndostate");
 }
 
@@ -75,9 +75,9 @@ void Model::endUndostate()
 		dbgEnd(Debug::Calls,"Model::endUndostate");
 		return;
 	}
-	recordingState_->setEndLog(LOG_STRUCTURE, logs_[LOG_STRUCTURE]);
-	recordingState_->setEndLog(LOG_COORDS, logs_[LOG_COORDS]);
-	recordingState_->setEndLog(LOG_SELECTION, logs_[LOG_SELECTION]);
+	recordingState_->setEndLog(Change::StructureLog, logs_[Change::StructureLog]);
+	recordingState_->setEndLog(Change::CoordinateLog, logs_[Change::CoordinateLog]);
+	recordingState_->setEndLog(Change::SelectionLog, logs_[Change::SelectionLog]);
 	// Delete all redo (i.e. future) states from the undo list
 	if (currentUndostate_ == NULL) undoStates_.clear();
 	else for (Undostate *u = currentUndostate_->next; u != NULL; u = undoStates_.removeAndGetNext(u)); 
@@ -86,7 +86,7 @@ void Model::endUndostate()
 	// Set the current undo level to the new state and nullify the pointer
 	currentUndostate_ = recordingState_;
 	msg(Debug::Verbose,"Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndostate_->nChanges());
-	msg(Debug::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", logs_[LOG_STRUCTURE], logs_[LOG_COORDS], logs_[LOG_SELECTION]);
+	msg(Debug::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
@@ -104,10 +104,10 @@ void Model::undo()
 	{
 		// Undo the changes
 		currentUndostate_->reverse(this);
-		logs_[LOG_STRUCTURE] = currentUndostate_->startLog(LOG_STRUCTURE);
-		logs_[LOG_COORDS] = currentUndostate_->startLog(LOG_COORDS);
+		logs_[Change::StructureLog] = currentUndostate_->startLog(Change::StructureLog);
+		logs_[Change::CoordinateLog] = currentUndostate_->startLog(Change::CoordinateLog);
 		// Log a visual change if necessary
-		if (currentUndostate_->doLogsDiffer()) logChange(LOG_VISUAL);
+		if (currentUndostate_->doLogsDiffer()) logChange(Change::VisualLog);
 		// Set new undo/redo pointers
 		currentRedoState_ = currentUndostate_;
 		currentUndostate_ = currentUndostate_->prev;
@@ -124,10 +124,10 @@ void Model::redo()
 	{
 		// Undo the changes
 		currentRedoState_->perform(this);
-		logs_[LOG_STRUCTURE] = currentRedoState_->endLog(LOG_STRUCTURE);
-		logs_[LOG_COORDS] = currentRedoState_->endLog(LOG_COORDS);
+		logs_[Change::StructureLog] = currentRedoState_->endLog(Change::StructureLog);
+		logs_[Change::CoordinateLog] = currentRedoState_->endLog(Change::CoordinateLog);
 		// Log a visual change if necessary
-		if (currentRedoState_->doLogsDiffer()) logChange(LOG_VISUAL);
+		if (currentRedoState_->doLogsDiffer()) logChange(Change::VisualLog);
 		// Set new undo/redo pointers
 		currentUndostate_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;

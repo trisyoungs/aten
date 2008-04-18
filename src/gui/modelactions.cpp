@@ -77,5 +77,5 @@ void AtenForm::on_actionModelShowAll_triggered(bool checked)
 	// Make all atoms in model visible
 	Model *m = master.currentModel();
 	for (Atom *i = m->atoms(); i != NULL; i = i->next) m->setHidden(i, FALSE);
-	m->logChange(LOG_VISUAL);
+	m->logChange(Change::VisualLog);
 }
