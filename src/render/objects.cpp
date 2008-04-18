@@ -265,6 +265,7 @@ void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style)
 		0 = solid
 		1 = expanded solid
 		2 = expanded wireframe
+		3 = wireframe
 	*/
 	// Determine spherical coordinates
 	static double phi;
@@ -279,6 +280,7 @@ void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style)
 	  if (style == 0) glCallList(list_[GLOB_CYLINDER]);
 	  else if (style == 1) glCallList(list_[GLOB_SELCYLINDER]);
 	  else if (style == 2) glCallList(list_[GLOB_SELWIRECYLINDER]);
+	  else if (style == 3) glCallList(list_[GLOB_WIRECYLINDER]);
 	glPopMatrix();
 }
 

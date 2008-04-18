@@ -83,7 +83,7 @@ void Canvas::renderExtra3d()
 			  }
 			  else
 			  {
-				glCylinder(mouse,mouse.magnitude(),1);
+				glCylinder(mouse,mouse.magnitude(),3);
 				glTranslated(mouse.x, mouse.y, mouse.z);
 				switch (prefs.renderStyle())
 				{
