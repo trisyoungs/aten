@@ -73,12 +73,13 @@ Function .onInit
     ;Get installation folder from registry if available
 
   done:
-  StrCmp $SV_ALLUSERS "AllUsers" 0 +2
-    StrCpy $INSTDIR "$PROGRAMFILES\@CPACK_PACKAGE_INSTALL_DIRECTORY@"
+  StrCmp $SV_ALLUSERS "AllUsers" 0 +3
+    StrCpy $INSTDIR "$PROGRAMFILES\@CPACK_PACKAGE_INSTALL_DIRECTORY@"    
+    !define ALL_USERS
 
   StrCmp "@CPACK_NSIS_MODIFY_PATH@" "ON" 0 noOptionsPage
     !insertmacro MUI_INSTALLOPTIONS_EXTRACT "NSIS.InstallOptions.ini"
-
+    
   noOptionsPage:
 FunctionEnd
 
@@ -582,7 +583,7 @@ Section "Installer Section" InstSection
   
   ;Create shortcuts
   CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-@CPACK_NSIS_CREATE_ICONS@
+@CPACK_NSIS_CREATE_ICONS@  
 @CPACK_NSIS_CREATE_ICONS_EXTRA@
   CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
 

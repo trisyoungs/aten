@@ -389,17 +389,21 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 	dbgBegin(Debug::Calls,"Model::guideToModel");
 	static Vec4<double> guidepoint;
 	static Vec3<double> newpoint;
+	static Mat4<double> rotmat;
 	double radius, depth;
-	depth = prefs.drawDepth();
+	depth = -rCamera_.z - prefs.drawDepth();
 	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
-	newpoint.set(0.0,0.0,depth);
+	newpoint.set(rCamera_.x, rCamera_.y, depth);
+	rotmat = rotationMatrix_;
+	rotmat.invert();
+	newpoint *= rotmat;
 	guidepoint = worldToScreen(newpoint);
 	radius = guidepoint.w;
 	// Now, calculate the position of the clicked point on the guide
 	newpoint.x = sx - (gui.mainView.width() / 2.0 );
 	newpoint.y = (gui.mainView.height() - sy) - (gui.mainView.height() / 2.0 );
 	newpoint /= radius;
-	newpoint.z = depth + rCamera_.z;
+	newpoint.z = -prefs.drawDepth();
 	// Convert this world coordinate into model coordinates by multiplying by the inverse of the PM matrix.
 	newpoint *= viewMatrixInverse_;
 	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate

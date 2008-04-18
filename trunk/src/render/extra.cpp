@@ -25,13 +25,17 @@
 #include "methods/mc.h"
 #include "gui/canvas.h"
 
+// Local variables
+double editChainDistance = 0.0;
+
 // Render other 3D objects
 void Canvas::renderExtra3d()
 {
 	dbgBegin(Debug::Calls,"Canvas::renderExtra3d");
 	// Draw on 3D embellishments for active modes
 	static double radius;
-	static Vec3<double> r, mouse;
+	static char s[64];
+	static Vec3<double> r, mouse, textpos;
 	static Vec3<double> tempv;
 	static Atom *i;
 	// Draw on the selection highlights (for atoms in canvas.subsel)
@@ -41,16 +45,15 @@ void Canvas::renderExtra3d()
 	{
 		// Draw on the bounding sphere of a radial selection
 		case (Canvas::SelectRadialAction):
-			i = atomHover_;
-			if (i == NULL) break;
+			if (atomHover_ == NULL) break;
 			// Work out the radius of the sphere
 			tempv = rMouseDown_ - rMouseUp_;
 			radius = tempv.x * tempv.y;
-			radius /= i->screenRadius();
+			radius /= atomHover_->screenRadius();
 			// Convert the pixel radius into model coordinate radius. We will have the selection 'hotspot'
 			// radius of the atom from its screen projection, which itself depends on the drawing style...
-			radius *= prefs.screenRadius(i);
-			r = i->rWorld();
+			radius *= prefs.screenRadius(atomHover_);
+			r = atomHover_->rWorld();
 			glPushMatrix();
 			  glTranslatef(r.x,r.y,r.z);
 			  glScalef(radius,radius,radius);
@@ -65,6 +68,7 @@ void Canvas::renderExtra3d()
 			i = displayModel_->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
 			if (i == NULL) mouse = displayModel_->guideToModel(rMouseLast_);
 			else mouse = i->r();
+			textpos = mouse;
 			mouse -= r;
 			glPushMatrix();
 			  glTranslated(r.x,r.y,r.z);
@@ -95,6 +99,9 @@ void Canvas::renderExtra3d()
 				}
 			  }
 			glPopMatrix();
+			// Draw text showing distance
+			sprintf(s," l = %f A",mouse.magnitude());
+			glText(textpos,s);
 			break;
 	}
 	dbgEnd(Debug::Calls,"Canvas::renderExtra3d");
@@ -105,7 +112,7 @@ void Canvas::renderExtra2d()
 {
 	dbgBegin(Debug::Calls,"Canvas::renderExtra2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
-	static int n, i;
+	static int n, i, skip;
 	static double dx, dy, halfw;
 	// First set up a 2D drawing area...
 	glMatrixMode(GL_PROJECTION);		// Swap to projection matrix...
@@ -144,30 +151,33 @@ void Canvas::renderExtra2d()
 			dx = 1.0 / drawPixelWidth_;
 			halfw = width_ / 2.0;
 			i = int( halfw / dx);
-			if (i < 2) break;
+			//if (i < 2) break;
+			skip = 1;
+			while ( (i/skip) > 5)
+			{
+				skip += (skip == 1 ? 4 : 5);
+			}
 			glBegin(GL_LINES);
-			  for (n = -i; n <= i; n++)
+			  for (n = -i; n <= i; n ++)
 			  {
-				glVertex2d(halfw + n*dx, 10);
+				if ((n%skip) != 0) continue;
 				glVertex2d(halfw + n*dx, 20);
-				glVertex2d(halfw + (n+0.5)*dx, 10);
-				glVertex2d(halfw + (n+0.5)*dx, 15);
+				glVertex2d(halfw + n*dx, 10);
+				if (n != i) glVertex2d(halfw + (n+0.5*skip)*dx, 15);
+				if (n != i) glVertex2d(halfw + (n+0.5*skip)*dx, 10);
 			  }
 			  glVertex2d(halfw - i*dx, 11);
 			  glVertex2d(halfw + i*dx, 11);
 			glEnd();
-			for (n = -i; n < 0; n++) glText(halfw + n*dx - 8, 1, itoa(n));
-			for (n = 0; n <= i; n++) glText(halfw + n*dx - 3, 1, itoa(n));
+			for (n = -i; n <= i; n++)
+			{
+				if ((n%skip) != 0) continue;
+				glText(halfw + n*dx - (n < 0 ? 8 : 3), height_, itoa(n));
+			}
 			break;
 	}
-	// If the mouse is hovering over an atom, draw a circle around it...
-	if (atomHover_ != NULL)
-	{
-		Vec3<double> hoverpos = atomHover_->rScreen();
-		circlePrimitive(hoverpos.x,hoverpos.y,atomHover_->screenRadius());
-	}
 	// Add text
-	//text(1.0,h-12.0,displayModel_->name());
+	//glText(1.0,height_-12.0,displayModel_->name());
 	// Draw on colour scale if necessary
 	if (prefs.colourScheme() != Prefs::ElementScheme)
 	{

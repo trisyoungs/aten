@@ -98,10 +98,9 @@ Find_File(qtcore QtCore4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 Find_File(qtsvg QtSvg4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 Find_File(qtxml QtXml4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
 Find_File(qsvg qsvg4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
-install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml}
+install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml} ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons/aten.ico
 DESTINATION bin
 )
-message("tt: ${QT_PLUGINS_DIR}   ${qsvg}")
 install(FILES ${qsvg} 
 DESTINATION bin/iconengines
 )
@@ -133,19 +132,25 @@ SET(CPACK_PACKAGE_VERSION_MINOR ${VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${VERSION_PATCH})
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "aten${VERSION_MAJOR}.${VERSION_MINOR}")
 IF(WIN32)
+  SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Aten-${VERSION_MAJOR}.${VERSION_MINOR}")
   # There is a bug in NSI that does not handle full unix paths properly. Make
   # sure there is at least one set of four (4) backlasshes.
   set(CPACK_NSIS_MUI_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\aten.ico")
   set(CPACK_NSIS_MUI_UNIICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\uninstall.ico")
   SET(CPACK_PACKAGE_ICON "${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons\\\\aten.bmp")
-  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\aten.exe")  
+  SET(CPACK_NSIS_INSTALLED_ICON_NAME "bin\\\\aten.ico")  
   SET(CPACK_NSIS_DISPLAY_NAME "${CPACK_PACKAGE_INSTALL_DIRECTORY} Aten")
   SET(CPACK_NSIS_HELP_LINK "http:\\\\\\\\www.projectaten.org")
   SET(CPACK_NSIS_URL_INFO_ABOUT "http:\\\\\\\\www.projectaten.org")
-  SET(CPACK_NSIS_CONTACT "t.youngs@qub.ac.uk")
-  SET(CPACK_NSIS_MODIFY_PATH ON)
+  SET(CPACK_NSIS_CONTACT "tris@projectaten.org")
+  SET(CPACK_NSIS_MODIFY_PATH ON)  
   SET(CPACK_PACKAGE_EXECUTABLES "aten" "aten")
-  set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+  set(CPACK_NSIS_CREATE_ICONS_EXTRA "CreateShortCut \\\"$SMPROGRAMS\\\\$STARTMENU_FOLDER\\\\aten.lnk\\\" \\\"$INSTDIR\\\\bin\\\\aten.exe\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\aten.ico\\\"
+      StrCmp $INSTALL_DESKTOP \\\"1\\\" 0 +2
+      CreateShortCut \\\"$DESKTOP\\\\aten.lnk\\\" \\\"$INSTDIR\\\\bin\\\\aten.exe\\\" \\\"\\\" \\\"$INSTDIR\\\\bin\\\\aten.ico\\\"
+"
+  )
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
     Push \\\"ATENDATA\\\"
     Push \\\"$INSTDIR\\\\share\\\\aten\\\"
     Call WriteEnvStr      
@@ -153,7 +158,9 @@ IF(WIN32)
   )
   set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "    
     Push \\\"ATENDATA\\\"
-    Call un.DeleteEnvStr  
+    Call un.DeleteEnvStr 
+    StrCmp $INSTALL_DESKTOP \\\"1\\\" 0 +2
+    Delete \\\"$DESKTOP\\\\aten.lnk\\\"    
 "
 )
 Endif(WIN32)
