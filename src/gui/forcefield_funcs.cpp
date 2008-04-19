@@ -57,12 +57,18 @@ void AtenForm::refreshForcefieldPage()
 		ui.ForcefieldList->setCurrentRow(0);
 		ui.RemoveForcefieldButton->setEnabled(FALSE);
 		ui.EditForcefieldButton->setEnabled(FALSE);
+		ui.AssociateGroup->setEnabled(FALSE);
+		ui.AutomaticTypingGroup->setEnabled(FALSE);
+		ui.ManualTypingGroup->setEnabled(FALSE);
 	}
 	else
 	{
 		ui.ForcefieldList->setCurrentRow(master.currentForcefieldId());
 		ui.RemoveForcefieldButton->setEnabled(TRUE);
 		ui.EditForcefieldButton->setEnabled(TRUE);
+		ui.AssociateGroup->setEnabled(TRUE);
+		ui.AutomaticTypingGroup->setEnabled(TRUE);
+		ui.ManualTypingGroup->setEnabled(TRUE);
 	}
 }
 

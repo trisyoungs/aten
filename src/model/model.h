@@ -362,6 +362,8 @@ class Model
 	void projectAll();
 	// Project the model coordinates of selected atoms
 	void projectSelection();
+	// Return the camera position vector
+	Vec3<double> rCamera();
 
 	/*
 	// Labelling

@@ -36,7 +36,7 @@ Model::Model()
 	rCamera_.set(0.0,0.0,-10.0);
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
-	orthoSize_ = 20.0;
+	orthoSize_ = 5.0;
 	for (int n=0; n<Change::nChangeLogs; n++) logs_[n] = 0;
 	spacegroup_ = 0;
 	spacegroupSetting_ = 1;

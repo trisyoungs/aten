@@ -51,7 +51,7 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
 	gui.mainView.doProjection();
-	master.currentModel()->resetView();
+	//master.currentModel()->resetView();
 	gui.mainView.postRedisplay();
 }
 
@@ -59,7 +59,7 @@ void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
 	gui.mainView.doProjection();
-	master.currentModel()->resetView();
+	//master.currentModel()->resetView();
 	gui.mainView.postRedisplay();
 }
 
