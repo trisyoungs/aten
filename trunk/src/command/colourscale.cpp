@@ -36,13 +36,13 @@ int CommandData::function_CA_LISTSCALES(Command *&c, Bundle &obj)
 		else if (n == 2) strcpy(type,"(Force)");
 		else strcpy(type,"");
 		if (prefs.colourScale[n].type() == ColourScale::TwoPoint)
-			sprintf(s,"   %i  2   %12.5e                                            %12.5e          %12.5e  %s\n", n, prefs.colourScale[n].left(), prefs.colourScale[n].right(), prefs.colourScale[n].range(), type);
-		else sprintf(s,"   %i  3   %12.5e                %12.5e                %12.5e          %12.5e  %s\n", n, prefs.colourScale[n].left(), prefs.colourScale[n].middle(), prefs.colourScale[n].right(), prefs.colourScale[n].range(), type);
+			sprintf(s,"   %i  2   %12.5e                                            %12.5e          %12.5e  %s\n", n, prefs.colourScale[n].minimum(), prefs.colourScale[n].maximum(), prefs.colourScale[n].range(), type);
+		else sprintf(s,"   %i  3   %12.5e                %12.5e                %12.5e          %12.5e  %s\n", n, prefs.colourScale[n].minimum(), prefs.colourScale[n].middle(), prefs.colourScale[n].maximum(), prefs.colourScale[n].range(), type);
 		msg(Debug::None,s);
 		// Now print colour data...
-		prefs.colourScale[n].copyColour(ColourScale::LeftColour, lcol);
+		prefs.colourScale[n].copyColour(ColourScale::MinColour, lcol);
 		prefs.colourScale[n].copyColour(ColourScale::MidColour, mcol);
-		prefs.colourScale[n].copyColour(ColourScale::RightColour, rcol);
+		prefs.colourScale[n].copyColour(ColourScale::MaxColour, rcol);
 		if (prefs.colourScale[n].type() == ColourScale::TwoPoint)
 			sprintf(s,"         [ %4.2f %4.2f %4.2f %4.2f ] -->                         --> [ %4.2f %4.2f %4.2f %4.2f ]\n", lcol[0], lcol[1], lcol[2], lcol[3], rcol[0], rcol[1], rcol[2], rcol[3]);
 		else sprintf(s,"         [ %4.2f %4.2f %4.2f %4.2f ] --> [ %4.2f %4.2f %4.2f %4.2f ] --> [ %4.2f %4.2f %4.2f %4.2f ] \n", lcol[0], lcol[1], lcol[2], lcol[3], mcol[0], mcol[1], mcol[2], mcol[3], rcol[0], rcol[1], rcol[2], rcol[3]);
@@ -63,7 +63,7 @@ int CommandData::function_CA_SCALEMAXCOLOUR(Command *&c, Bundle &obj)
 	}
 	Vec3<GLfloat> colvec = c->arg3f(1);
 	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.colourScale[id].setColour(ColourScale::RightColour, colvec.x, colvec.y, colvec.z, alpha);
+	prefs.colourScale[id].setColour(ColourScale::MaxColour, colvec.x, colvec.y, colvec.z, alpha);
 	return CR_SUCCESS;
 }
 
@@ -109,7 +109,7 @@ int CommandData::function_CA_SCALEMINCOLOUR(Command *&c, Bundle &obj)
 	}
 	Vec3<GLfloat> colvec = c->arg3f(1);
 	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.colourScale[id].setColour(ColourScale::LeftColour, colvec.x, colvec.y, colvec.z, alpha);
+	prefs.colourScale[id].setColour(ColourScale::MinColour, colvec.x, colvec.y, colvec.z, alpha);
 	return CR_SUCCESS;
 }
 

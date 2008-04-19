@@ -53,7 +53,7 @@ class Prefs
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char*);
 	// Colours
-	enum Colour { ForegroundColour, BackgroundColour, SchemeLoColour, SchemeMidColour, SchemeHiColour, SpecularColour, nColours };
+	enum Colour { ForegroundColour, BackgroundColour, SpecularColour, nColours };
 	static const char *colour(Colour);
 	static Colour colour(const char*);
 	// Energy Units

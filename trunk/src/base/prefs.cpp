@@ -72,16 +72,13 @@ Prefs::KeyAction Prefs::keyAction(const char *s)
 }
 
 // Colours
-const char *ColourKeywords[Prefs::nColours] = { "fg", "bg", "schemelo", "schememid", "schemehi", "specular" };
-//const char *Prefs::colourKeyword(Colour i)
-//	{ return COL_strings[i]; }
+const char *ColourKeywords[Prefs::nColours] = { "fg", "bg", "specular" };
 Prefs::Colour Prefs::colour(const char *s)
 {
 	return (Prefs::Colour) enumSearch("colour", Prefs::nColours, ColourKeywords, s);
 }
 
 // Density calculation units
-//const char *DensityUnit[DU_NITEMS] = { "g / cm**3", "atoms / A**3" };
 const char *DensityUnitKeywords[Prefs::nDensityUnits] = { "gpercm", "atomsperang" };
 const char *Prefs::densityUnit(Prefs::DensityUnit i)
 {
@@ -196,15 +193,12 @@ Prefs::Prefs()
 	setPenColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
 	setPenColour(Prefs::ForegroundColour, 0.0f, 0.0f, 0.0f, 1.0f);
 	setPenColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
-	setPenColour(Prefs::SchemeLoColour, 1.0f, 0.0f, 0.0f, 1.0f);
-	setPenColour(Prefs::SchemeMidColour, 0.7f, 0.7f, 0.7f, 1.0f);
-	setPenColour(Prefs::SchemeHiColour, 0.0f, 0.0f, 1.0f, 1.0f);
 	// Colour scale for atom charge colouring (id 0)
 	colourScale[0].setRange(-1.0,1.0);
 	colourScale[0].setType(ColourScale::ThreePoint);
-	colourScale[0].setColour(ColourScale::LeftColour, 1.0, 0.0, 0.0);
+	colourScale[0].setColour(ColourScale::MinColour, 1.0, 0.0, 0.0);
 	colourScale[0].setColour(ColourScale::MidColour, 1.0, 1.0, 1.0);
-	colourScale[0].setColour(ColourScale::RightColour, 0.0, 0.0, 1.0);
+	colourScale[0].setColour(ColourScale::MaxColour, 0.0, 0.0, 1.0);
 
 	// Methods
 	modelUpdate_ = 5;

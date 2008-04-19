@@ -62,7 +62,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSplitter" name="splitter" >
+       <widget class="QSplitter" name="ViewSplitter" >
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
@@ -72,7 +72,7 @@
            <hsizetype>7</hsizetype>
            <vsizetype>7</vsizetype>
            <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
+           <verstretch>100</verstretch>
           </sizepolicy>
          </property>
          <property name="minimumSize" >
@@ -99,7 +99,7 @@
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>5</hsizetype>
-              <vsizetype>5</vsizetype>
+              <vsizetype>7</vsizetype>
               <horstretch>255</horstretch>
               <verstretch>64</verstretch>
              </sizepolicy>
@@ -108,6 +108,12 @@
              <size>
               <width>0</width>
               <height>128</height>
+             </size>
+            </property>
+            <property name="sizeIncrement" >
+             <size>
+              <width>0</width>
+              <height>100</height>
              </size>
             </property>
             <property name="mouseTracking" >
@@ -127,7 +133,7 @@
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>7</hsizetype>
-           <vsizetype>3</vsizetype>
+           <vsizetype>1</vsizetype>
            <horstretch>255</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -198,7 +204,7 @@
        <enum>QFrame::Plain</enum>
       </property>
       <property name="currentIndex" >
-       <number>4</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="AtomListPage" >
        <layout class="QVBoxLayout" >
@@ -2970,7 +2976,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="CellPage" >
+      <widget class="QWidget" name="CellEditPage" >
        <layout class="QHBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -2981,14 +2987,14 @@
         <item>
          <widget class="QGroupBox" name="CellGroup" >
           <property name="title" >
-           <string>Cell Definition</string>
+           <string>Cell Edit</string>
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
-            <number>2</number>
+            <number>4</number>
            </property>
            <item>
             <widget class="QGroupBox" name="CellDefinitionGroup" >
@@ -3569,7 +3575,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="CellEditPage" >
+      <widget class="QWidget" name="CellTransformPage" >
        <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
@@ -3580,14 +3586,14 @@
         <item>
          <widget class="QGroupBox" name="CellManipulateGroup" >
           <property name="title" >
-           <string>Cell Manipulate</string>
+           <string>Cell Transform</string>
           </property>
           <layout class="QVBoxLayout" >
            <property name="margin" >
-            <number>0</number>
+            <number>2</number>
            </property>
            <property name="spacing" >
-            <number>2</number>
+            <number>4</number>
            </property>
            <item>
             <widget class="QGroupBox" name="CellReplicateGroup" >
@@ -6389,6 +6395,130 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="page" >
+       <layout class="QVBoxLayout" >
+        <property name="margin" >
+         <number>9</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QGroupBox" name="GlyphGropu" >
+          <property name="title" >
+           <string>Glyphs</string>
+          </property>
+          <layout class="QVBoxLayout" >
+           <property name="margin" >
+            <number>2</number>
+           </property>
+           <property name="spacing" >
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QListWidget" name="GlyphList" />
+           </item>
+           <item>
+            <layout class="QHBoxLayout" >
+             <property name="margin" >
+              <number>0</number>
+             </property>
+             <property name="spacing" >
+              <number>4</number>
+             </property>
+             <item>
+              <widget class="QPushButton" name="GlyphAddButton" >
+               <property name="text" >
+                <string>Add</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="GlyphDeleteSelectedButton" >
+               <property name="text" >
+                <string>Delete Selected</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="GlyphSelectGroup" >
+             <property name="title" >
+              <string>Select</string>
+             </property>
+             <layout class="QHBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>4</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="GlyphSelectAllButton" >
+                <property name="text" >
+                 <string>All</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="GlyphSelectNoneButton" >
+                <property name="text" >
+                 <string>None</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="GlyphInverstSelectionButton" >
+                <property name="text" >
+                 <string>Invert</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="GlyphHideGroup" >
+             <property name="title" >
+              <string>Hide</string>
+             </property>
+             <layout class="QHBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>4</number>
+              </property>
+              <item>
+               <widget class="QPushButton" name="GlyphHideAllButton" >
+                <property name="text" >
+                 <string>All</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="GlyphHideNoneButton" >
+                <property name="text" >
+                 <string>None</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="GlyphHideSelectionButton" >
+                <property name="text" >
+                 <string>Selected</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
     <item>
@@ -6862,24 +6992,6 @@
      <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="EditMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionEditUndo" />
-    <addaction name="actionEditRedo" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="actionEditSelectExpand" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
-   </widget>
    <widget class="QMenu" name="ToolsMenu" >
     <property name="title" >
      <string>Settings</string>
@@ -6979,18 +7091,33 @@
     <addaction name="separator" />
     <addaction name="actionModelShowAll" />
    </widget>
+   <widget class="QMenu" name="menuGlyphs" >
+    <property name="title" >
+     <string>Glyphs</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="EditMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionEditUndo" />
+    <addaction name="actionEditRedo" />
+    <addaction name="separator" />
+    <addaction name="actionEditCut" />
+    <addaction name="actionEditCopy" />
+    <addaction name="actionEditPaste" />
+    <addaction name="actionEditDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEditInvert" />
+    <addaction name="actionEditSelectExpand" />
+    <addaction name="separator" />
+    <addaction name="actionEditSelectAll" />
+    <addaction name="actionEditSelectNone" />
+   </widget>
    <widget class="QMenu" name="ViewMenu" >
     <property name="title" >
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="SchemeMenu" >
-     <property name="title" >
-      <string>Colour Scheme</string>
-     </property>
-     <addaction name="actionSchemeElement" />
-     <addaction name="actionSchemeCharge" />
-     <addaction name="actionSchemeForces" />
-    </widget>
     <widget class="QMenu" name="StyleMenu" >
      <property name="title" >
       <string>Style</string>
@@ -7019,6 +7146,14 @@
      <addaction name="actionViewSetCellNegY" />
      <addaction name="actionViewSetCellNegZ" />
     </widget>
+    <widget class="QMenu" name="SchemeMenu" >
+     <property name="title" >
+      <string>Colour Scheme</string>
+     </property>
+     <addaction name="actionSchemeElement" />
+     <addaction name="actionSchemeCharge" />
+     <addaction name="actionSchemeForce" />
+    </widget>
     <addaction name="actionViewReset" />
     <addaction name="actionViewZoomIn" />
     <addaction name="actionViewZoomOut" />
@@ -7038,6 +7173,7 @@
    <addaction name="ViewMenu" />
    <addaction name="AtomMenu" />
    <addaction name="ModelMenu" />
+   <addaction name="menuGlyphs" />
    <addaction name="ToolsMenu" />
    <addaction name="ScriptsMenu" />
   </widget>
@@ -7636,16 +7772,28 @@
    </property>
   </action>
   <action name="actionSchemeElement" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Element</string>
    </property>
   </action>
   <action name="actionSchemeCharge" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Charge</string>
    </property>
   </action>
-  <action name="actionSchemeForces" >
+  <action name="actionSchemeForce" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Forces</string>
    </property>
@@ -8160,6 +8308,11 @@
  <layoutdefault spacing="0" margin="0" />
  <customwidgets>
   <customwidget>
+   <class>TCanvas</class>
+   <extends>QWidget</extends>
+   <header>tcanvas.uih</header>
+  </customwidget>
+  <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
    <header>tcolourframe.uih</header>
@@ -8173,11 +8326,6 @@
    <class>TTreeWidget</class>
    <extends>QTreeWidget</extends>
    <header>ttreewidget.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
   </customwidget>
  </customwidgets>
  <resources>

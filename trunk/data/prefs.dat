@@ -54,7 +54,4 @@ densityunits	gpercm		# Density unit - gpercm|atomsperang
 #
 colour	fg		0.0	0.0	0.0	# General foreground colour
 colour	bg		1.0	1.0	1.0	# Workspace background
-colour	schemelo	0.0	0.0	1.0	# Colour scale - lowest
-colour	schememid	0.7	0.7	0.7	# Colour scale - mid-point
-colour	schemehi	1.0	0.0	0.0	# Colour scale - highest
 colour	specular	1.0	0.9	0.75	# Specular reflection colour

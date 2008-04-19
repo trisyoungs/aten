@@ -60,6 +60,9 @@ void Canvas::renderScene(Model *source)
 		return;
 	}
 
+	// Clear colour
+	GLfloat *clrcol = prefs.penColour(Prefs::BackgroundColour);
+	glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 	// Clear colour and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

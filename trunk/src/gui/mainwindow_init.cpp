@@ -70,6 +70,12 @@ void AtenForm::finaliseUi()
 	styleGroup->addAction(ui.actionStyleScaled);
 	styleGroup->addAction(ui.actionStyleIndividual);
 
+	// Create QActionGroup for colour schemes
+	QActionGroup *schemeGroup = new QActionGroup(this);
+	schemeGroup->addAction(ui.actionSchemeElement);
+	schemeGroup->addAction(ui.actionSchemeCharge);
+	schemeGroup->addAction(ui.actionSchemeForce);
+
 	// Create QActionGroup for selections
 	selectGroup = new QActionGroup(this);
 	selectGroup->addAction(ui.actionSelectAtoms);
@@ -314,6 +320,10 @@ void AtenForm::setControls()
 	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
 	// Set controls on edit page
 	ui.BondToleranceSpin->setValue(prefs.bondTolerance());
+	// Set the initial configuration of the splitter
+// 	ui.ViewSplitter->setStretchFactor(0,100000);
+// 	ui.ViewSplitter->setStretchFactor(1,0);
+	ui.ViewSplitter->setSizes( QList<int>() << 500 << 64 );
 	dbgEnd(Debug::Calls,"AtenForm::setControls");
 }
 

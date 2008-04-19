@@ -25,14 +25,13 @@
 // Constructor
 ColourScale::ColourScale()
 {
-	left_ = 1e6;
+	minimum_ = 0;
 	middle_ = 0.5;
-	right_ = -1.0e6;
-	range_ = 2e6;
-	type_ = ColourScale::TwoPoint;
-	setColour(ColourScale::LeftColour, 1.0, 1.0, 1.0, 1.0);
-	setColour(ColourScale::MidColour, 0.5, 0.5, 0.5, 1.0);
-	setColour(ColourScale::RightColour, 0.0, 0.0, 1.0, 1.0);
+	maximum_ = 1.0;
+	range_ = 1.0;
+	setColour(ColourScale::MinColour, 1.0f, 1.0f, 1.0f, 1.0f);
+	setColour(ColourScale::MidColour, 0.5f, 0.5f, 0.5f, 1.0f);
+	setColour(ColourScale::MaxColour, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 // Set type of ColourScale
@@ -47,16 +46,16 @@ ColourScale::ScaleOrder ColourScale::type()
 	return type_;
 }
 
-// Return leftmost value of scale
-double ColourScale::left()
+// Return minimum value of scale
+double ColourScale::minimum()
 {
-	return left_;
+	return minimum_;
 }
 
-// Return rightmost value of scale
-double ColourScale::right()
+// Return maximum value of scale
+double ColourScale::maximum()
 {
-	return right_;
+	return maximum_;
 }
 
 // Return midpoint value of scale
@@ -82,9 +81,9 @@ void ColourScale::setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GL
 	// Recalculate colour deltas
 	for (n=0; n<4; n++)
 	{
-		deltaLeftRight_[n] = colours_[ColourScale::RightColour][n] - colours_[ColourScale::LeftColour][n];
-		deltaLeftMid_[n] = colours_[ColourScale::MidColour][n] - colours_[ColourScale::LeftColour][n];
-		deltaMidRight_[n] = colours_[ColourScale::RightColour][n] - colours_[ColourScale::MidColour][n];
+		deltaMinMax_[n] = colours_[ColourScale::MaxColour][n] - colours_[ColourScale::MinColour][n];
+		deltaMinMid_[n] = colours_[ColourScale::MidColour][n] - colours_[ColourScale::MinColour][n];
+		deltaMidMax_[n] = colours_[ColourScale::MaxColour][n] - colours_[ColourScale::MidColour][n];
 	}
 	// Refresh linked objects
 	refreshObjects();
@@ -100,12 +99,12 @@ void ColourScale::copyColour(ScaleColour col, GLfloat *target)
 }
 
 // Set the absolute range of the colour scale
-void ColourScale::setRange(double left, double right)
+void ColourScale::setRange(double min, double max)
 {
-	left_ = left;
-	right_ = right;
-	middle_ = (right - left) * 0.5;
-	range_ = right_ - left_;
+	minimum_ = min;
+	maximum_ = max;
+	middle_ = (max + min) * 0.5;
+	range_ = maximum_ - minimum_;
 	refreshObjects();
 }
 
@@ -118,10 +117,10 @@ void ColourScale::setMiddle(double middle)
 // Adjust colour scale range to cover supplied value
 void ColourScale::adjustRange(double d)
 {
-	if (d < left_) left_ = d;
-	else if (d > right_) right_ = d;
-	middle_ = (right_ - left_) * 0.5;
-	range_ = right_ - left_;
+	if (d < minimum_) minimum_ = d;
+	else if (d > maximum_) maximum_ = d;
+	middle_ = (maximum_ - minimum_) * 0.5;
+	range_ = maximum_ - minimum_;
 }
 
 // Return colour associated with value provided
@@ -129,31 +128,31 @@ void ColourScale::colour(double v, GLfloat *target)
 {
 	double delta;
 	// Work out relative position of value 'v' on colour scale
-	delta = (v - left_) / range_;
+	delta = (v - minimum_) / range_;
 	// Clamp delta to the range [0,1]
 	if (delta < 0) delta = 0;
 	else if (delta > 1.0) delta = 1.0;
 	if (type_ == ColourScale::TwoPoint)
 	{
-		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftRight_[0] * delta;
-		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftRight_[1] * delta;
-		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftRight_[2] * delta;
-		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftRight_[3] * delta;
+		target[0] = colours_[ColourScale::MinColour][0] + deltaMinMax_[0] * delta;
+		target[1] = colours_[ColourScale::MinColour][1] + deltaMinMax_[1] * delta;
+		target[2] = colours_[ColourScale::MinColour][2] + deltaMinMax_[2] * delta;
+		target[3] = colours_[ColourScale::MinColour][3] + deltaMinMax_[3] * delta;
 	}
 	else if (delta < 0.5)
 	{
-		target[0] = colours_[ColourScale::LeftColour][0] + deltaLeftMid_[0] * delta;
-		target[1] = colours_[ColourScale::LeftColour][1] + deltaLeftMid_[1] * delta;
-		target[2] = colours_[ColourScale::LeftColour][2] + deltaLeftMid_[2] * delta;
-		target[3] = colours_[ColourScale::LeftColour][3] + deltaLeftMid_[3] * delta;
+		target[0] = colours_[ColourScale::MinColour][0] + deltaMinMid_[0] * delta;
+		target[1] = colours_[ColourScale::MinColour][1] + deltaMinMid_[1] * delta;
+		target[2] = colours_[ColourScale::MinColour][2] + deltaMinMid_[2] * delta;
+		target[3] = colours_[ColourScale::MinColour][3] + deltaMinMid_[3] * delta;
 	}
 	else
 	{
 		delta -= 0.5;
-		target[0] = colours_[ColourScale::MidColour][0] + deltaMidRight_[0] * delta;
-		target[1] = colours_[ColourScale::MidColour][1] + deltaMidRight_[1] * delta;
-		target[2] = colours_[ColourScale::MidColour][2] + deltaMidRight_[2] * delta;
-		target[3] = colours_[ColourScale::MidColour][3] + deltaMidRight_[3] * delta;
+		target[0] = colours_[ColourScale::MidColour][0] + deltaMidMax_[0] * delta;
+		target[1] = colours_[ColourScale::MidColour][1] + deltaMidMax_[1] * delta;
+		target[2] = colours_[ColourScale::MidColour][2] + deltaMidMax_[2] * delta;
+		target[3] = colours_[ColourScale::MidColour][3] + deltaMidMax_[3] * delta;
 	}
 }
 
