@@ -42,27 +42,56 @@ void AtenSelectPattern::finaliseUi()
 {
 }
 
-// Item selection changed
-void AtenSelectPattern::on_PatternList_currentRowChanged(int id)
+void AtenSelectPattern::on_PatternTable_doubleClicked(const QModelIndex &index)
 {
-	selectedPattern_ = currentModel_->pattern(id);
+	int row = index.row();
+	if (row == -1) selectedPattern_ = NULL;
+	else selectedPattern_ = currentModel_->pattern(row);
+	accept();
+}
+
+// Item selection changed
+void AtenSelectPattern::on_PatternTable_itemSelectionChanged()
+{
+	int row = ui.PatternTable->currentRow();
+	if (row == -1) selectedPattern_ = NULL;
+	else selectedPattern_ = currentModel_->pattern(row);
 }
 
 // Select a pattern from the specified model
 Pattern *AtenSelectPattern::selectPattern(Model *source)
 {
+	// Set the currentmodel
+	currentModel_ = source;
+
 	// If model is NULL return NULL
-	if (source == NULL) return NULL;
+	if (currentModel_ == NULL) return NULL;
 
 	// First, call autocreatePatterns...
-	if (source->autocreatePatterns()) return NULL;
+	if (!currentModel_->autocreatePatterns()) return NULL;
 
 	// If there are no patterns in the model, return NULL
-	if (source->nPatterns() == 0) return NULL;
+	if (currentModel_->nPatterns() == 0) return NULL;
 
 	// Clear list and repopulate
-	ui.PatternList->clear();
-	for (Pattern *p = source->patterns(); p != NULL; p = p->next) ui.PatternList->addItem(p->name());
+	QTableWidgetItem *item;
+	int count = 0;
+	Forcefield *ff;
+	ui.PatternTable->clear();
+	ui.PatternTable->setHorizontalHeaderLabels(QStringList() << "Pattern" << "Forcefield");
+	ui.PatternTable->setRowCount(currentModel_->nPatterns());
+	for (Pattern *p = currentModel_->patterns(); p != NULL; p = p->next)
+	{
+		// Set pattern name
+		item = new QTableWidgetItem(p->name());
+		ui.PatternTable->setItem(count, 0, item);
+		// Set forcefield name
+		ff = p->forcefield();
+		item = new QTableWidgetItem(ff == NULL ? "<Inherited>" : ff->name());
+		ui.PatternTable->setItem(count, 1, item);
+		count ++;
+	}
+	for (count=0; count<2; count++) ui.PatternTable->resizeColumnToContents(count);
 
 	// Execute the dialog and check on the result
 	return (exec() == 1 ? selectedPattern_ : NULL);

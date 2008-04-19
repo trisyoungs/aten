@@ -39,7 +39,8 @@ class AtenSelectPattern : public QDialog
 	// Widget Functions
 	*/
 	private slots:
-	void on_PatternList_currentRowChanged(int id);
+	void on_PatternTable_doubleClicked(const QModelIndex &index);
+	void on_PatternTable_itemSelectionChanged();
 
 	/*
 	// Private Data

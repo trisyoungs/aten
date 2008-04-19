@@ -84,7 +84,7 @@ void Canvas::spherePrimitive(double radius, bool filled)
 	int longs = int(lats * 1.5);
 	double lat0, z0, zr0, lat1, z1, zr1, lng, x, y;
 	glPolygonMode(GL_FRONT_AND_BACK, (filled ? GL_FILL : GL_LINE));
-	for(i = 0; i <= lats; i++)
+	for (i = 1; i <= lats; i++)
 	{
 		lat0 = PI * (-0.5 + (double) (i - 1) / lats);
 		z0  = sin(lat0);
@@ -95,7 +95,7 @@ void Canvas::spherePrimitive(double radius, bool filled)
 		zr1 = cos(lat1);
 
 		glBegin(GL_QUAD_STRIP);
-		  for(j = 0; j <= longs; j++)
+		  for (j = 0; j <= longs; j++)
 		  {
 			lng = 2 * PI * (double) (j - 1) / longs;
 			x = cos(lng);

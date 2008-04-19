@@ -97,6 +97,7 @@ void Canvas::renderScene(Model *source)
 	{
 		bottom = displayModel_->orthoSize();
 		top = -bottom;
+		top = -bottom;
 		glOrtho(aspect_*top, aspect_*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
 

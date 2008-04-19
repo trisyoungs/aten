@@ -165,7 +165,7 @@ void Model::adjustOrthoSize(double delta)
 	dbgBegin(Debug::Calls,"Model::adjustOrthoSize");
 	orthoSize_ += delta;
 	if (orthoSize_ < 1.0) orthoSize_ = 1.0;
-	if (orthoSize_ > 50.0) orthoSize_ = 50.0;
+	//if (orthoSize_ > 50.0) orthoSize_ = 50.0;
 	calculateViewMatrix();
 	gui.mainView.doProjection();
 	// Log camera change
@@ -213,9 +213,10 @@ void Model::resetView()
 	dbgBegin(Debug::Calls,"Model::resetView");
 	static Vec3<double> newcam, newscreen;
 	Atom *i, target;
+	bool done = FALSE;
 	double z, largest = 0.0;
 	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
-	orthoSize_ = 20.0;
+	orthoSize_ = 1.0;
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (i = atoms_.first(); i != NULL; i = i->next)
@@ -230,14 +231,31 @@ void Model::resetView()
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
 	if (gui.mainView.isValid())
-		do
+		if (prefs.hasPerspective())
 		{
-			// Project our local atom and grab the z screen coordinate
-			calculateViewMatrix();
-			projectAtom(&target);
-			z = target.rWorld().z;
-			adjustCamera(0.0,0.0,-1.0,0.0);
-		} while (z > -5.0);
+			do
+			{
+				// Project our local atom and grab the z screen coordinate
+				adjustCamera(0.0,0.0,-1.0,0.0);
+				calculateViewMatrix();
+				projectAtom(&target);
+				z = target.rWorld().z;
+			} while (z > -5.0);
+		}
+		else
+		{
+			do
+			{
+				// Project our local atom and grab the z screen coordinate
+				adjustCamera(0.0,0.0,-1.0,0.0);
+				calculateViewMatrix();
+				projectAtom(&target);
+				done = TRUE;
+				if ((target.rScreen().x < 0.0) || (target.rScreen().x > gui.mainView.width())) done = FALSE;
+				if ((target.rScreen().y < 0.0) || (target.rScreen().y > gui.mainView.height())) done = FALSE;
+				if (target.rScreen().z < 0.0) done = FALSE;
+			} while (!done);
+		}
 	// Recalculate viewing matrix
 	calculateViewMatrix();
 	// Log camera change
@@ -412,4 +430,8 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 	return newpoint;
 }
 
-
+// Return the camera position vector
+Vec3<double> Model::rCamera()
+{
+	return rCamera_;
+}
