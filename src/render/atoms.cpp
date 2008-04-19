@@ -30,7 +30,7 @@ void Canvas::renderModelAtoms()
 	static Atom::DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
 	static Prefs::ColourScheme scheme;
-	static double radius, rij;
+	static double radius, rij, cval;
 	static Vec3<double> ri, rj, rk, ijk;
 	static Atom *i, *j;
 	static Refitem<Bond,int> *bref;
@@ -64,12 +64,14 @@ void Canvas::renderModelAtoms()
 				prefs.colourScale[0].colour(i->charge(), diffuse);
 				break;
 			case (Prefs::VelocityScheme):
-				prefs.colourScale[1].colour(i->charge(), ambient);
-				prefs.colourScale[1].colour(i->charge(), diffuse);
+				cval = i->v().magnitude();
+				prefs.colourScale[1].colour(cval, ambient);
+				prefs.colourScale[1].colour(cval, diffuse);
 				break;
 			case (Prefs::ForceScheme):
-				prefs.colourScale[2].colour(i->charge(), ambient);
-				prefs.colourScale[2].colour(i->charge(), diffuse);
+				cval = i->f().magnitude();
+				prefs.colourScale[2].colour(cval, ambient);
+				prefs.colourScale[2].colour(cval, diffuse);
 				break;
 		  }
 		  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);

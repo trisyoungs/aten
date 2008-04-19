@@ -54,5 +54,6 @@ void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
 
 void AtenForm::on_actionPreferences_triggered(bool checked)
 {
-	gui.prefsDialog->show();
+	gui.prefsDialog->setControls();
+	gui.prefsDialog->exec();
 }

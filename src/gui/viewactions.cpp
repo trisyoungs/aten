@@ -168,3 +168,26 @@ void AtenForm::on_actionViewSetCellPosZ_triggered(bool checked)
 	 setCellView(0,0,-1);
 }
 
+void AtenForm::on_actionSchemeElement_triggered(bool checked)
+{
+	if (!checked) return;
+	prefs.setColourScheme(Prefs::ElementScheme);
+	master.currentModel()->logChange(Change::VisualLog);
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_actionSchemeCharge_triggered(bool checked)
+{
+	if (!checked) return;
+	prefs.setColourScheme(Prefs::ChargeScheme);
+	master.currentModel()->logChange(Change::VisualLog);
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_actionSchemeForce_triggered(bool checked)
+{
+	if (!checked) return;
+	prefs.setColourScheme(Prefs::ForceScheme);
+	master.currentModel()->logChange(Change::VisualLog);
+	gui.mainView.postRedisplay();
+}

@@ -174,6 +174,9 @@ class AtenForm : public QMainWindow
 	void on_actionViewSetCellPosX_triggered(bool checked);
 	void on_actionViewSetCellPosY_triggered(bool checked);
 	void on_actionViewSetCellPosZ_triggered(bool checked);
+	void on_actionSchemeElement_triggered(bool checked);
+	void on_actionSchemeCharge_triggered(bool checked);
+	void on_actionSchemeForce_triggered(bool checked);
 
 	/*
 	// Model Actions

@@ -40,7 +40,7 @@ class ColourScale
 	// Colourscale order
 	enum ScaleOrder { TwoPoint, ThreePoint };
 	// Colourscale colours
-	enum ScaleColour { LeftColour, MidColour, RightColour, nScaleColours };
+	enum ScaleColour { MinColour, MidColour, MaxColour, nScaleColours };
 
 	/*
 	// Data and data range
@@ -48,8 +48,8 @@ class ColourScale
 	private:
 	// Type of ColourScale
 	ScaleOrder type_;
-	// Left, right, and middle of data range
-	double left_, right_, middle_;
+	// Minimum, maximum, and middle of data range
+	double minimum_, maximum_, middle_;
 	// Range of data
 	double range_;
 
@@ -64,11 +64,11 @@ class ColourScale
 	void setMiddle(double middle);
 	// Adjust colour scale range to cover supplied value
 	void adjustRange(double d);
-	// Return leftmost value of scale
-	double left();
-	// Return rightmost value of scale
-	double right();
-	// Return midpoint value of scale
+	// Return minimum value of scale
+	double minimum();
+	// Return maximum value of scale
+	double maximum();
+	// Return middle value of scale
 	double middle();
 	// Return range of scale
 	double range();
@@ -80,7 +80,7 @@ class ColourScale
 	// Colours
 	GLfloat colours_[nScaleColours][4];
 	// Colour deltas
-	GLfloat deltaLeftRight_[4], deltaLeftMid_[4], deltaMidRight_[4];
+	GLfloat deltaMinMax_[4], deltaMinMid_[4], deltaMidMax_[4];
 
 	public:
 	// Return colour associated with value provided
