@@ -46,6 +46,7 @@ class AtenEdit : public QDialog
 	private slots:
 	void on_FFEditorGenerateTypeButton_clicked(bool on);
 	void on_FFEditorTestTypeButton_clicked(bool on);
+	void on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Atoms Tab
@@ -53,22 +54,25 @@ class AtenEdit : public QDialog
 	private:
 	void setAtomData(ForcefieldAtom *ffa);
 	private slots:
-	void on_FFEditorAtomTable_currentRowChanged(int row);
+	void on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Bonds Tab
 	*/
 	private slots:
+	void on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Angles Tab
 	*/
 	private slots:
+	void on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Torsions Tab
 	*/
 	private slots:
+	void on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Widgets

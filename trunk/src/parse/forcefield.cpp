@@ -51,8 +51,8 @@ bool Forcefield::load(const char *filename)
 		dbgEnd(Debug::Calls,"Forcefield::load");
 		return FALSE;
 	}
-	// Grab the path of the forcefield
-	path_.set(filename);
+	// Store the filename of the forcefield
+	filename_.set(filename);
 	// Now follows blocks of keywords
 	done = FALSE;
 	msg(Debug::None,"Opening forcefield : %s...\n",filename);
@@ -62,7 +62,7 @@ bool Forcefield::load(const char *filename)
 		success = parser.getArgsDelim(&fffile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
-			msg(Debug::None,"EreadVdwor reading FF directive.\n");
+			msg(Debug::None,"Error reading FF directive.\n");
 			fffile.close();
 			dbgEnd(Debug::Calls,"Forcefield::load");
 			return FALSE;
@@ -86,8 +86,8 @@ bool Forcefield::load(const char *filename)
 				}
 				break;
 			case (Forcefield::RulesCommand):
-				rules_ = FFR_from_text(parser.argc(1));
-				msg(Debug::None,"\t: Rule-set to use is '%s'\n", text_from_FFR(rules_));
+				rules_ = Forms::forcefieldRules(parser.argc(1));
+				msg(Debug::None,"\t: Rule-set to use is '%s'\n", Forms::forcefieldRules(rules_));
 				okay = TRUE;
 				break;
 			case (Forcefield::TypesCommand):
@@ -167,7 +167,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 		success = parser.getArgsDelim(&fffile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg(Debug::None,"File ereadVdwor while reading atom type description %i.\n", types_.nItems());
+			if (success == 1) msg(Debug::None,"File error while reading atom type description %i.\n", types_.nItems());
 			if (success == -1) msg(Debug::None,"End of file while reading atom type description %i.\n", types_.nItems());
 			dbgEnd(Debug::Calls,"Forcefield::readTypes");
 			return FALSE;
@@ -188,8 +188,8 @@ bool Forcefield::readTypes(ifstream &fffile)
 		ffa->setName(parser.argc(1));
 		ffa->setEquivalent(parser.argc(1));
 		ffa->atomtype()->setCharacterElement(elements.find(parser.argc(2),Prefs::AlphaZmap));
+		ffa->setAtomtype(parser.argc(3), this, ffa);
 		ffa->setDescription(parser.argc(4));
-		ffa->atomtype()->expand(parser.argc(3),this,ffa);
 	} while (!done);
 	if (types_.nItems() == 1)
 	{
@@ -223,7 +223,7 @@ bool Forcefield::readGenerator(ifstream &fffile)
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg(Debug::None,"File ereadVdwor while reading generator data for atom %i.\n",count+1);
+			if (success == 1) msg(Debug::None,"File error while reading generator data for atom %i.\n",count+1);
 			if (success == -1) msg(Debug::None,"End of file while reading generator data for atom %i.\n",count+1);
 			dbgEnd(Debug::Calls,"Forcefield::readGenerator");
 			return FALSE;
@@ -306,10 +306,10 @@ bool Forcefield::readVdw(ifstream &fffile)
 	int success, count;
 	ForcefieldAtom *ffa;
 	// Get functional form of vdw
-	VdwFunction vdwstyle = VF_from_text(parser.argc(1));
-	if (vdwstyle == VF_NITEMS)
+	Forms::VdwFunction vdwstyle = Forms::vdwFunction(parser.argc(1));
+	if (vdwstyle == Forms::nVdwForms)
 	{
-		vdwstyle = VF_UNSPECIFIED;
+		vdwstyle = Forms::NoVdw;
 		msg(Debug::None,"VDW functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -359,10 +359,10 @@ bool Forcefield::readBonds(ifstream &fffile)
 	bool done = FALSE;
 	int count, success, n;
 	// Get functional form of bond potential
-	BondFunction bondstyle = BF_from_text(parser.argc(1));
-	if (bondstyle == BF_NITEMS)
+	Forms::BondFunction bondstyle = Forms::bondFunction(parser.argc(1));
+	if (bondstyle == Forms::nBondFunctions)
 	{
-		bondstyle = BF_UNSPECIFIED;
+		bondstyle = Forms::NoBond;
 		msg(Debug::None,"Bond stretch functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -401,7 +401,7 @@ bool Forcefield::readBonds(ifstream &fffile)
 			count ++;
 		}
 	} while (!done);
-	msg(Debug::None,"\t: Read in %i bond definitions (%s)\n",count,text_from_BF(bondstyle));
+	msg(Debug::None,"\t: Read in %i bond definitions (%s)\n", count, Forms::bondFunction(bondstyle));
 	dbgEnd(Debug::Calls,"Forcefield::readBonds");
 	return TRUE;
 }
@@ -413,10 +413,10 @@ bool Forcefield::readAngles(ifstream &fffile)
 	ForcefieldBound *newffangle;
 	int count, success, n;
 	// Grab functional form of angle potential
-	AngleFunction anglestyle = AF_from_text(parser.argc(1));
-	if (anglestyle == AF_NITEMS)
+	Forms::AngleFunction anglestyle = Forms::angleFunction(parser.argc(1));
+	if (anglestyle == Forms::nAngleFunctions)
 	{
-		anglestyle = AF_UNSPECIFIED;
+		anglestyle = Forms::NoAngle;
 		msg(Debug::None,"Angle bend functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -457,7 +457,7 @@ bool Forcefield::readAngles(ifstream &fffile)
 			count ++;
 		}
 	} while (!done);
-	msg(Debug::None,"\t: Read in %i angle definitions (%s)\n",count,text_from_AF(anglestyle));
+	msg(Debug::None,"\t: Read in %i angle definitions (%s)\n", count, Forms::angleFunction(anglestyle));
 	dbgEnd(Debug::Calls,"Forcefield::readAngles");
 	return TRUE;
 }
@@ -469,10 +469,10 @@ bool Forcefield::readTorsions(ifstream &fffile)
 	ForcefieldBound *newfftorsion;
 	int count, success, n;
 	// Get functional form of torsion potential
-	TorsionFunction torsionstyle = TF_from_text(parser.argc(1));
-	if (torsionstyle == TF_NITEMS)
+	Forms::TorsionFunction torsionstyle = Forms::torsionFunction(parser.argc(1));
+	if (torsionstyle == Forms::nTorsionFunctions)
 	{
-		torsionstyle = TF_UNSPECIFIED;
+		torsionstyle = Forms::NoTorsion;
 		msg(Debug::None,"Torsion twist functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -518,7 +518,7 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			count ++;
 		}
 	} while (!done);
-	msg(Debug::None,"\t: Read in %i torsion definitions (%s)\n",count,text_from_TF(torsionstyle));
+	msg(Debug::None,"\t: Read in %i torsion definitions (%s)\n", count, Forms::torsionFunction(torsionstyle));
 	dbgEnd(Debug::Calls,"Forcefield::readTorsions");
 	return TRUE;
 }

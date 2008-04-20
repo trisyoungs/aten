@@ -435,7 +435,7 @@ class Prefs
 	*/
 	private:
 	// Method of electrostatic calculation
-	ElecMethod electrostaticsMethod_;
+	Forms::ElecMethod electrostaticsMethod_;
 	// Whether to calculate VDW interactions
 	bool calculateVdw_;
 	// Whether to calculate electrostatic interactions
@@ -457,9 +457,9 @@ class Prefs
 
 	public:
 	// Sets the electrostatic model to use in energy/force calculation
-	void setElectrostaticsMethod(ElecMethod em);
+	void setElectrostaticsMethod(Forms::ElecMethod em);
 	// Return the type of electrostatic treatment to use
-	ElecMethod electrostaticsMethod();
+	Forms::ElecMethod electrostaticsMethod();
 	// Sets whether to calculate intramolecular interactions
 	void setCalculateIntra(bool b);
 	// Return whether to calculate intramolocular interactions

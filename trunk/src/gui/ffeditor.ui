@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Forcefield Editor</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >:/program/icons/aten.png</iconset>
+  </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
     <number>2</number>
@@ -77,11 +80,14 @@
    <item>
     <widget class="QTabWidget" name="FFEditorTabs" >
      <property name="currentIndex" >
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="FFETypesTab" >
       <attribute name="title" >
        <string>Types</string>
+      </attribute>
+      <attribute name="toolTip" >
+       <string>Atomtype definitions</string>
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
@@ -114,10 +120,45 @@
          </column>
          <column>
           <property name="text" >
+           <string>Atomtype</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
            <string>Description</string>
           </property>
          </column>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RemoveTypeButton" >
+           <property name="text" >
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QGridLayout" >
@@ -204,80 +245,14 @@
          </item>
         </layout>
        </item>
-       <item>
-        <widget class="QGroupBox" name="FFEditorTypeGenerateGroup" >
-         <property name="title" >
-          <string>Generate From Model</string>
-         </property>
-         <layout class="QHBoxLayout" >
-          <property name="margin" >
-           <number>9</number>
-          </property>
-          <property name="spacing" >
-           <number>6</number>
-          </property>
-          <item>
-           <layout class="QVBoxLayout" >
-            <property name="margin" >
-             <number>0</number>
-            </property>
-            <property name="spacing" >
-             <number>6</number>
-            </property>
-            <item>
-             <widget class="QPushButton" name="FFEditorGenerateTypeButton" >
-              <property name="text" >
-               <string>For Selection</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <layout class="QHBoxLayout" >
-              <property name="margin" >
-               <number>0</number>
-              </property>
-              <property name="spacing" >
-               <number>6</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_3" >
-                <property name="text" >
-                 <string>Max Depth</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QSpinBox" name="FFEditorDepthSpin" >
-                <property name="value" >
-                 <number>2</number>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QGroupBox" name="FFEditorRingsGroup" >
-            <property name="title" >
-             <string>Rings</string>
-            </property>
-            <property name="checkable" >
-             <bool>true</bool>
-            </property>
-            <property name="checked" >
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="FFEAtoms" >
+     <widget class="QWidget" name="FFEAtomsTab" >
       <attribute name="title" >
        <string>Atoms</string>
+      </attribute>
+      <attribute name="toolTip" >
+       <string>Intermolecular definitions</string>
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
@@ -311,6 +286,31 @@
          <column>
           <property name="text" >
            <string>Data 1</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 2</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 3</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 4</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 5</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 6</string>
           </property>
          </column>
         </widget>
@@ -386,85 +386,412 @@
       <attribute name="title" >
        <string>Bonds</string>
       </attribute>
-      <widget class="QTableWidget" name="FFEditorBondsTable" >
-       <property name="geometry" >
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>451</width>
-         <height>221</height>
-        </rect>
+      <attribute name="toolTip" >
+       <string>Bond term definitions</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
        </property>
-       <column>
-        <property name="text" >
-         <string>Type I</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Type J</string>
-        </property>
-       </column>
-      </widget>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="FFEditorBondsTable" >
+         <column>
+          <property name="text" >
+           <string>Type I</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Type J</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Form</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 1</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 2</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 3</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 4</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 5</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 6</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RemoveBondButton" >
+           <property name="text" >
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AddBondButton" >
+           <property name="text" >
+            <string>Add</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="FFEAnglesTab" >
       <attribute name="title" >
        <string>Angles</string>
       </attribute>
-      <widget class="QTableWidget" name="FFEditorAnglesTable" >
-       <property name="geometry" >
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>301</width>
-         <height>121</height>
-        </rect>
+      <attribute name="toolTip" >
+       <string>Angle term definitions</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
        </property>
-       <column>
-        <property name="text" >
-         <string>Type I</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Type J</string>
-        </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Type K</string>
-        </property>
-       </column>
-      </widget>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="FFEditorAnglesTable" >
+         <column>
+          <property name="text" >
+           <string>Type I</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Type J</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Type K</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Form</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 1</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 2</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 3</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 4</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 5</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 6</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RemoveAngleButton" >
+           <property name="text" >
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AddAngleButton" >
+           <property name="text" >
+            <string>Add</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
      <widget class="QWidget" name="FFETorsionsTab" >
       <attribute name="title" >
        <string>Torsions</string>
       </attribute>
-      <widget class="QTableWidget" name="FFEditorTorsionsTable" >
+      <attribute name="toolTip" >
+       <string>Torsional term definitions</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QTableWidget" name="FFEditorTorsionsTable" >
+         <column>
+          <property name="text" >
+           <string>Type I</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Type J</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Type K</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Type L</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Form</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 1</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 2</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 3</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 4</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 5</string>
+          </property>
+         </column>
+         <column>
+          <property name="text" >
+           <string>Data 6</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="RemoveTorsionButton" >
+           <property name="text" >
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="AddTorsionButton" >
+           <property name="text" >
+            <string>Add</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="FFEInfoTab" >
+      <attribute name="title" >
+       <string>Information</string>
+      </attribute>
+      <attribute name="toolTip" >
+       <string>Descriptive information for the forcefield</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="FFEGenerateTab" >
+      <attribute name="title" >
+       <string>Generate</string>
+      </attribute>
+      <attribute name="toolTip" >
+       <string>Generate terms from/for the current model</string>
+      </attribute>
+      <widget class="QGroupBox" name="FFEditorTypeGenerateGroup" >
        <property name="geometry" >
         <rect>
-         <x>20</x>
-         <y>30</y>
-         <width>301</width>
-         <height>121</height>
+         <x>10</x>
+         <y>170</y>
+         <width>473</width>
+         <height>103</height>
         </rect>
        </property>
-       <column>
-        <property name="text" >
-         <string>Type I</string>
+       <property name="title" >
+        <string>Generate From Model</string>
+       </property>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>9</number>
         </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Type J</string>
+        <property name="spacing" >
+         <number>6</number>
         </property>
-       </column>
-       <column>
-        <property name="text" >
-         <string>Type K</string>
-        </property>
-       </column>
+        <item>
+         <layout class="QVBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="FFEditorGenerateTypeButton" >
+            <property name="text" >
+             <string>For Selection</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>6</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_3" >
+              <property name="text" >
+               <string>Max Depth</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="FFEditorDepthSpin" >
+              <property name="value" >
+               <number>2</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="FFEditorRingsGroup" >
+          <property name="title" >
+           <string>Rings</string>
+          </property>
+          <property name="checkable" >
+           <bool>true</bool>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </widget>
     </widget>
@@ -481,7 +808,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc" />
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

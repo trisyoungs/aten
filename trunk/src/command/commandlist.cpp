@@ -1254,13 +1254,13 @@ void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb
 		switch (ffb->type())
 		{
 			case (ForcefieldBound::BondInteraction):
-				variables.set(varname,"form",text_from_BF(ffb->functionalForm().bondFunc));
+				variables.set(varname,"form", Forms::bondFunction(ffb->functionalForm().bondFunc));
 				break;
 			case (ForcefieldBound::AngleInteraction):
-				variables.set(varname,"form",text_from_AF(ffb->functionalForm().angleFunc));
+				variables.set(varname,"form", Forms::angleFunction(ffb->functionalForm().angleFunc));
 				break;
 			case (ForcefieldBound::TorsionInteraction):
-				variables.set(varname,"form",text_from_TF(ffb->functionalForm().torsionFunc));
+				variables.set(varname,"form", Forms::torsionFunction(ffb->functionalForm().torsionFunc));
 				variables.set(varname,"escale",ffp.data[TF_ESCALE]);
 				variables.set(varname,"vscale",ffp.data[TF_VSCALE]);
 				break;
@@ -1320,7 +1320,7 @@ void CommandList::setAtomtypeVariables(const char *varname, ForcefieldAtom *ffa)
 		variables.set(varname,"id",ffa->typeId());
 		variables.set(varname,"name",ffa->name());
 		variables.set(varname,"equiv",ffa->equivalent());
-		variables.set(varname,"form",keyword_from_VF(ffa->vdwForm()));
+		variables.set(varname,"form",Forms::vdwFunction(ffa->vdwForm()));
 	}
 	dbgEnd(Debug::Calls,"CommandList::setAtomtypeVariables");
 }

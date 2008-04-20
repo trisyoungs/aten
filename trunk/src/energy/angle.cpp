@@ -52,31 +52,31 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 			// Calculate energy contribution
 			switch (pb->data()->functionalForm().angleFunc)
 			{
-				case (AF_UNSPECIFIED):
+				case (Forms::NoAngle):
 					printf("Pattern::angleEnergy <<<< Angle function is UNSPECIFIED >>>>\n");
 					break;
-				case (AF_HARMONIC): 
+				case (Forms::HarmonicAngle): 
 					// U(theta) = 0.5 * forcek * (theta - eq)**2
-					forcek = params.data[AF_HARMONIC_K];
-					eq = params.data[AF_HARMONIC_EQ] / DEGRAD;
+					forcek = params.data[Forms::HarmonicAngleK];
+					eq = params.data[Forms::HarmonicAngleEq] / DEGRAD;
 					theta -= eq;
 					energy += 0.5 * forcek * theta * theta;
 					break;
-				//case (AF_COSINE):
+				//case (Forms::CosineAngle):
 					// U(theta) = forcek * (1 + cos(s*theta - eq))
 					//printf("Angle - cosine...\n");
 					//break;
-				case (AF_UFFCOSINE1):
+				case (Forms::UffCosine1Angle):
 					// U(theta) = (forcek / n*n) * (1 + cos(n*theta))
-					forcek = params.data[AF_UFFCOSINE_K];
-					n = params.data[AF_UFFCOSINE_N];
+					forcek = params.data[Forms::UffCosineAngleK];
+					n = params.data[Forms::UffCosineAngleN];
 					//printf("Energy %8.4f %8.4f %8.4f\n",forcek,n,eq);
 					energy += (forcek / (n*n)) * (1.0 + cos(n * theta));
 					break;
-				case (AF_UFFCOSINE2):
+				case (Forms::UffCosine2Angle):
 					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
-					forcek = params.data[AF_UFFCOSINE_K];
-					eq = params.data[AF_UFFCOSINE_EQ] / DEGRAD;
+					forcek = params.data[Forms::UffCosineAngleK];
+					eq = params.data[Forms::UffCosineAngleEq] / DEGRAD;
 					c2 = 1.0 / (4 * sin(eq)*sin(eq));
 					c1 = -4.0 * c2 * cos(eq);
 					c0 = c2 * (2.0 * cos(eq)*cos(eq) + 1.0);
@@ -128,29 +128,29 @@ void Pattern::angleForces(Model *srcmodel)
 			// Generate forces
 			switch (pb->data()->functionalForm().angleFunc)
 			{
-				case (AF_UNSPECIFIED):
+				case (Forms::NoAngle):
 					printf("Pattern::angleForcess <<<< Angle function is UNSPECIFIED >>>>\n");
 					du_dtheta = 0.0;
 					break;
-				//case (AF_COSINE):
+				//case (Forms::CosineAngle):
 				//	printf("Angle - cosine...\n");
 				//	break;
-				case (AF_HARMONIC): 
+				case (Forms::HarmonicAngle): 
 					// F(theta) = forcek * (theta - eq)
-					forcek = params.data[AF_HARMONIC_K];
-					eq = params.data[AF_HARMONIC_EQ] / DEGRAD;
+					forcek = params.data[Forms::HarmonicAngleK];
+					eq = params.data[Forms::HarmonicAngleEq] / DEGRAD;
 					du_dtheta = dtheta_dcostheta * forcek * (theta - eq);
 					break;
-				case (AF_UFFCOSINE1):
+				case (Forms::UffCosine1Angle):
 					// F(theta) = (forcek / 2*n) * (1 - sin(n*theta))
-					forcek = params.data[AF_UFFCOSINE_K];
-					n = params.data[AF_UFFCOSINE_N];
+					forcek = params.data[Forms::UffCosineAngleK];
+					n = params.data[Forms::UffCosineAngleN];
 					du_dtheta = dtheta_dcostheta * (forcek / n) * sin(n*theta);
 					break;
-				case (AF_UFFCOSINE2):
+				case (Forms::UffCosine2Angle):
 					// F(theta) = forcek * (c0 - c1 * sin(theta) - c2 * sin(2*theta))
-					forcek = params.data[AF_UFFCOSINE_K];
-					eq = params.data[AF_UFFCOSINE_EQ] / DEGRAD;
+					forcek = params.data[Forms::UffCosineAngleK];
+					eq = params.data[Forms::UffCosineAngleEq] / DEGRAD;
 					cosx = cos(eq);
 					sinx = sin(eq);
 					c2 = 1.0 / (4 * sinx*sinx);

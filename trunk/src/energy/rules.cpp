@@ -33,17 +33,17 @@ void Forcefield::generateVdw(Atom *i)
 	ForcefieldAtom *ffi = i->type();
 	switch (rules_)
 	{
-		case (FFR_NORULES):
+		case (Forms::NoRules):
 			msg(Debug::None,"Forcefield::generateVdw <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
-		case (FFR_UFF):
+		case (Forms::UffRules):
 			// UFF VDW types are just the third [2] and fourth [3] data (for simple LJ)
 			epsilon = ffi->generator(3);
 			sigma = ffi->generator(2);
-			ffi->params().data[VF_LJ_EPS] = epsilon;
-			ffi->params().data[VF_LJ_SIGMA] = sigma;
+			ffi->params().data[Forms::LjVdwEpsilon] = epsilon;
+			ffi->params().data[Forms::LjVdwSigma] = sigma;
 			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n", sigma, epsilon);
-			ffi->setVdwForm(VF_LJ);
+			ffi->setVdwForm(Forms::LjVdw);
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateVdw");
@@ -60,10 +60,10 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 	ForcefieldBound *newbond = NULL;
 	switch (rules_)
 	{
-		case (FFR_NORULES):
+		case (Forms::NoRules):
 			msg(Debug::None,"Forcefield::generateBond <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
-		case (FFR_UFF):
+		case (Forms::UffRules):
 			// UFF Harmonic Bond Generator
 			// rij : Equilibrium distance : = ri + rj + rBO - rEN
 			// rBO : Bond-order correction = -0.1332 * (ri + rj) * ln(n)
@@ -80,10 +80,10 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			double Zj = ffj->generator(5);
 			// Create new bond definition in the forcefield space and set its parameters
 			newbond = bonds_.add();
-			newbond->setBondStyle(BF_HARMONIC);
-			newbond->params().data[BF_HARMONIC_EQ] = sumr + rBO - rEN;
-			newbond->params().data[BF_HARMONIC_K] = 664.12 * ( (Zi * Zj) / (sumr + sumr + sumr) );
-			msg(Debug::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BF_HARMONIC_EQ], newbond->params().data[BF_HARMONIC_K]);
+			newbond->setBondStyle(Forms::HarmonicBond);
+			newbond->params().data[Forms::HarmonicBondEq] = sumr + rBO - rEN;
+			newbond->params().data[Forms::HarmonicBondK] = 664.12 * ( (Zi * Zj) / (sumr + sumr + sumr) );
+			msg(Debug::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[Forms::HarmonicBondEq], newbond->params().data[Forms::HarmonicBondK]);
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateBond");
@@ -102,10 +102,10 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 	ForcefieldBound *newangle = NULL;
 	switch (rules_)
 	{
-		case (FFR_NORULES):
+		case (Forms::NoRules):
 			msg(Debug::None,"Forcefield::generateAngle <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
-		case (FFR_UFF):
+		case (Forms::UffRules):
 			// UFF Cosine Angle Generator
 			// U(theta) = (k / (n*n)) * (1 + s*cos(n*theta))
 			// rik2 = rij**2 + rjk**2 - 2 * rij * rjk * cos(eq)
@@ -142,17 +142,17 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			forcek = forcek * (3.0 * rij * rjk * (1.0 - cos(eq)*cos(eq)) - rik2 * cos(eq));
 			//printf("          : eq, rik2, rik5, beta, forcek = %8.4f %8.4f %8.4f %8.4f %8.4f\n",eq,rik2,rik5,beta,forcek);
 			// Store vars in forcefield node
-			newangle->params().data[AF_UFFCOSINE_K] = forcek;
-			newangle->params().data[AF_UFFCOSINE_EQ] = ffj->generator(1);
+			newangle->params().data[Forms::UffCosineAngleK] = forcek;
+			newangle->params().data[Forms::UffCosineAngleEq] = ffj->generator(1);
 			// Determine 'n' based on the geometry of the central atom 'j'
 			if (ffj->generator(1) > 170.0) n = 1;
 			else if (ffj->generator(1) > 115.0) n = 3;
 			else if (ffj->generator(1) > 95.0) n = 2;
 			else n = 4;
-			newangle->params().data[AF_UFFCOSINE_N] = n;
+			newangle->params().data[Forms::UffCosineAngleN] = n;
 			// Set function style
-			if (n == 2) newangle->setAngleStyle(AF_UFFCOSINE2);
-			else newangle->setAngleStyle(AF_UFFCOSINE1);
+			if (n == 2) newangle->setAngleStyle(Forms::UffCosine2Angle);
+			else newangle->setAngleStyle(Forms::UffCosine1Angle);
 			msg(Debug::Verbose,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, n);
 
 			break;
@@ -170,10 +170,10 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 	ForcefieldBound *newtorsion = NULL;
 	switch (rules_)
 	{
-		case (FFR_NORULES):
+		case (Forms::NoRules):
 			msg(Debug::None,"Forcefield::generateTorsion <<<< Tried to generate parameters for a NORULES FF >>>>\n");
 			break;
-		case (FFR_UFF):
+		case (Forms::UffRules):
 			// UFF Torsions  TODO
 
 			newtorsion = torsions_.add();

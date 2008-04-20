@@ -1138,7 +1138,7 @@ bool Pattern::fillExpression()
 			iatoms ++;
 		}
 		// If the forcefield is rule-based, generate the required parameters first
-		if (xff->rules() != FFR_NORULES) xff->generateVdw(ai);
+		if (xff->rules() != Forms::NoRules) xff->generateVdw(ai);
 		// Point to the data
 		//pa->data = pa->type->get_params()->data();
 		ai = ai->next;
@@ -1184,7 +1184,7 @@ bool Pattern::fillExpression()
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (xff->rules() == FFR_NORULES) bonds_[count]->setData(NULL);
+						if (xff->rules() == Forms::NoRules) bonds_[count]->setData(NULL);
 						else
 						{
 							// Generate the new parameters required
@@ -1251,7 +1251,7 @@ bool Pattern::fillExpression()
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (xff->rules() == FFR_NORULES) angles_[count]->setData(NULL);
+						if (xff->rules() == Forms::NoRules) angles_[count]->setData(NULL);
 						else
 						{
 							// Generate the new parameters required
@@ -1321,7 +1321,7 @@ bool Pattern::fillExpression()
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (xff->rules() == FFR_NORULES) torsions_[count]->setData(NULL);
+						if (xff->rules() == Forms::NoRules) torsions_[count]->setData(NULL);
 						else
 						{
 							// Generate the new parameters required
