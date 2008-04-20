@@ -77,13 +77,13 @@ bool Model::createExpression(bool vdwOnly)
 	// 3) Check the electrostatic setup for the model
 	if (prefs.calculateElec())
 	{
-		ElecMethod emodel = prefs.electrostaticsMethod();
+		Forms::ElecMethod emodel = prefs.electrostaticsMethod();
 		switch (emodel)
 		{
-			case (EM_OFF):
+			case (Forms::NoElec):
 				msg(Debug::None,"Electrostatics are off.\n");
 				break;
-			case (EM_COULOMB):
+			case (Forms::CoulombElec):
 				if (cell_.type() != Cell::NoCell) msg(Debug::None,"!!! Coulomb sum requested for periodic model.\n");
 				break;
 			default: // Ewald - issue warnings, but don't return FALSE

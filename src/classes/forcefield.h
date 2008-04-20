@@ -63,7 +63,7 @@ class ForcefieldAtom
 	*/
 	private:
 	// Type of Van der Waals interactions in Forcefield
-	VdwFunction vdwForm_;
+	Forms::VdwFunction vdwForm_;
 	// Unique ffid of atom type in Forcefield
 	int typeId_;
 	// Name of atom type
@@ -73,7 +73,7 @@ class ForcefieldAtom
 	// Description of atom type
 	Dnchar description_;
 	// Original atomtype string used to create the atomtype
-	Dnchar atomTypeString_;
+	Dnchar atomtypeString_;
 	// Atomtype description
 	Atomtype atomtype_;
 	// Parameter data
@@ -94,9 +94,9 @@ class ForcefieldAtom
 	// Return parent forcefield
 	Forcefield *parent();
 	// Set functional form of VDW
-	void setVdwForm(VdwFunction vf);
+	void setVdwForm(Forms::VdwFunction vf);
 	// Returns the funcional VDW form
-	VdwFunction vdwForm();
+	Forms::VdwFunction vdwForm();
 	// Set the type id
 	void setTypeId(int i);
 	// Returns the type id
@@ -119,6 +119,10 @@ class ForcefieldAtom
 	const char *description();
 	// Returns the atomtype description
 	Atomtype *atomtype();
+	// Set the atomtype string (and calculate new atomtype)
+	void setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
+	// Returns the original atomtype string
+	const char *atomtypeString();
 	// Returns ForcefieldParams structure
 	ForcefieldParams &params();
 	// Set generator data
@@ -148,9 +152,9 @@ class ForcefieldBound
 	// Form of bound interaction type
 	union BoundForms
 	{
-		BondFunction bondFunc;
-		AngleFunction angleFunc;
-		TorsionFunction torsionFunc;
+		Forms::BondFunction bondFunc;
+		Forms::AngleFunction angleFunc;
+		Forms::TorsionFunction torsionFunc;
 	} functionalForm_;
 	// Forcefield types involved in this term
 	Dnchar typeNames_[MAXFFBOUNDTYPES];
@@ -165,11 +169,11 @@ class ForcefieldBound
 	// Return the functional form
 	BoundForms functionalForm();
 	// Set the bond functional form
-	void setBondStyle(BondFunction bf);
+	void setBondStyle(Forms::BondFunction bf);
 	// Set the angle functional form
-	void setAngleStyle(AngleFunction af);
+	void setAngleStyle(Forms::AngleFunction af);
 	// Set the torsion functional form
-	void setTorsionStyle(TorsionFunction tf);
+	void setTorsionStyle(Forms::TorsionFunction tf);
 	// Return the data[] array in *params
 	ForcefieldParams &params();
 	// Return the atom type 'n'
@@ -197,22 +201,26 @@ class Forcefield
 	private:
 	// Title of Forcefield
 	Dnchar name_;
-	// Location of Forcefield
-	Dnchar path_;
+	// Filename
+	Dnchar filename_;
 	// Number of generator data per atom (if rule-based)
 	int nGenerators_;
 	// Generator values that have units of energy (and thus should be converted)
 	bool *energyGenerators_;
 	// Which rules the ff uses (if any)
-	ForcefieldRules rules_;
+	Forms::ForcefieldRules rules_;
 
 	public:
 	// Sets the name of the Forcefield
 	void setName(const char *s);
 	// Returns the name of the Forcefield
 	const char *name();
+	// Set filename
+	void setFilename(const char *s);
+	// Return filename
+	const char *filename();
 	// Returns the typing rules of the Forcefield
-	ForcefieldRules rules();
+	Forms::ForcefieldRules rules();
 	// Return the number of generators for each type
 	int nGenerators();
 

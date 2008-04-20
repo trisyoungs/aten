@@ -46,12 +46,12 @@ double Model::totalEnergy(Model *srcmodel)
 	// Calculate VDW correction
 	if (prefs.calculateVdw() && (cell_.type() != Cell::NoCell)) p->vdwCorrectEnergy(&cell_, &energy);
 	// Prepare Ewald (if necessary)
-	ElecMethod emodel = prefs.electrostaticsMethod();
+	Forms::ElecMethod emodel = prefs.electrostaticsMethod();
 	if (prefs.calculateElec())
 	{
-		if (emodel == EM_EWALDAUTO) prefs.estimateEwaldParameters(&srcmodel->cell_);
+		if (emodel == Forms::EwaldAutoElec) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
+		if (emodel != Forms::CoulombElec) fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	while (p != NULL)
 	{
@@ -74,10 +74,10 @@ double Model::totalEnergy(Model *srcmodel)
 		{
 			switch (emodel)
 			{
-				case (EM_OFF):
+				case (Forms::NoElec):
 					msg(Debug::None,"Electrostatics requested but no method of calculation chosen!\n");
 					break;
-				case (EM_COULOMB):
+				case (Forms::CoulombElec):
 					p->coulombIntraPatternEnergy(srcmodel,&energy);
 					for (p2 = p; p2 != NULL; p2 = p2->next) p->coulombInterPatternEnergy(srcmodel,p2,&energy);
 					break;
@@ -113,12 +113,12 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 	energy.clear();
 	Pattern *p;
 	// Prepare Ewald (if necessary)
-	ElecMethod emodel = prefs.electrostaticsMethod();
+	Forms::ElecMethod emodel = prefs.electrostaticsMethod();
 	if (prefs.calculateElec())
 	{
-		if (emodel == EM_EWALDAUTO) prefs.estimateEwaldParameters(&srcmodel->cell_);
+		if (emodel == Forms::EwaldAutoElec) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
+		if (emodel != Forms::CoulombElec) fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	// Calculate VDW interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
 	for (p = patterns_.first(); p != NULL; p = p->next)
@@ -128,10 +128,10 @@ double Model::moleculeEnergy(Model *srcmodel, Pattern *molpattern, int molecule)
 	{
 		switch (emodel)
 		{
-			case (EM_OFF):
+			case (Forms::NoElec):
 				msg(Debug::None,"Electrostatics requested but no method of calculation chosen!\n");
 				break;
-			case (EM_COULOMB):
+			case (Forms::CoulombElec):
 				for (p = patterns_.first(); p != NULL; p = p->next) molpattern->coulombInterPatternEnergy(srcmodel,p,&energy);
 				break;
 			default: // Ewald
@@ -164,12 +164,12 @@ void Model::calculateForces(Model *srcmodel)
 	Pattern *p, *p2;
 	p = patterns_.first();
 	// Prepare Ewald (if necessary)
-	ElecMethod emodel = prefs.electrostaticsMethod();
+	Forms::ElecMethod emodel = prefs.electrostaticsMethod();
 	if (prefs.calculateElec())
 	{
-		if (emodel == EM_EWALDAUTO) prefs.estimateEwaldParameters(&srcmodel->cell_);
+		if (emodel == Forms::EwaldAutoElec) prefs.estimateEwaldParameters(&srcmodel->cell_);
 		// Create the fourier space for use in the Ewald sum
-		if (emodel != EM_COULOMB) fourier.prepare(srcmodel,prefs.ewaldKvec());
+		if (emodel != Forms::CoulombElec) fourier.prepare(srcmodel,prefs.ewaldKvec());
 	}
 	while (p != NULL)
 	{
@@ -191,10 +191,10 @@ void Model::calculateForces(Model *srcmodel)
 		{
 			switch (emodel)
 			{
-				case (EM_OFF):
+				case (Forms::NoElec):
 					msg(Debug::None,"Electrostatics requested but no method of calculation chosen!\n");
 					break;
-				case (EM_COULOMB):
+				case (Forms::CoulombElec):
 					//p->coulombInterPatternForces(xxcfg);
 					//p2 = p;
 					//while (p2 != NULL)

@@ -52,37 +52,37 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 			// Calculate energy
 			switch (pb->data()->functionalForm().torsionFunc)
 			{
-				case (TF_UNSPECIFIED):
+				case (Forms::NoTorsion):
 					printf("Pattern::torsionEnergy <<<< Torsion function is UNSPECIFIED >>>>\n");
 					break;
-				case (TF_COSINE): 
+				case (Forms::CosineTorsion): 
 					// U(phi) = forcek * (1 + cos(period*phi - eq))
-					k1 = params.data[TF_COSINE_K];
-					eq = params.data[TF_COSINE_EQ] / DEGRAD;
-					period = params.data[TF_COSINE_P];
+					k1 = params.data[Forms::CosineTorsionK];
+					eq = params.data[Forms::CosineTorsionEq] / DEGRAD;
+					period = params.data[Forms::CosineTorsionP];
 					energy += k1 * (1.0 + cos(period*phi - eq));
 					break;
-				case (TF_COS3):
+				case (Forms::Cos3Torsion):
 					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) )
-					k1 = params.data[TF_COS3_K1];
-					k2 = params.data[TF_COS3_K2];
-					k3 = params.data[TF_COS3_K3];
+					k1 = params.data[Forms::Cos3TorsionK1];
+					k2 = params.data[Forms::Cos3TorsionK2];
+					k3 = params.data[Forms::Cos3TorsionK3];
 					energy += 0.5 * (k1 * (1.0 + cos(phi)) + k2 * (1.0 - cos(2.0*phi)) + k3 * (1.0 + cos(3.0*phi)));
 					break;
-				case (TF_COS4):
+				case (Forms::Cos4Torsion):
 					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) + k4*(1-cos(4*phi)) )
-					k1 = params.data[TF_COS4_K1];
-					k2 = params.data[TF_COS4_K2];
-					k3 = params.data[TF_COS4_K3];
-					k4 = params.data[TF_COS4_K4];
+					k1 = params.data[Forms::Cos4TorsionK1];
+					k2 = params.data[Forms::Cos4TorsionK2];
+					k3 = params.data[Forms::Cos4TorsionK3];
+					k4 = params.data[Forms::Cos4TorsionK4];
 					energy += 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) + k4*(1.0-cos(4.0*phi)) );
 					break;
-				case (TF_COS3C):
+				case (Forms::Cos3CTorsion):
 					// U(phi) = k0 + 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) )
-					k0 = params.data[TF_COS3C_K0];
-					k1 = params.data[TF_COS3C_K1];
-					k2 = params.data[TF_COS3C_K2];
-					k3 = params.data[TF_COS3C_K3];
+					k0 = params.data[Forms::Cos3CTorsionK0];
+					k1 = params.data[Forms::Cos3CTorsionK1];
+					k2 = params.data[Forms::Cos3CTorsionK2];
+					k3 = params.data[Forms::Cos3CTorsionK3];
 					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
 					break;
 			}
@@ -201,37 +201,37 @@ void Pattern::torsionForces(Model *srcmodel)
 			// Generate derivative of energy function (placed in 'du_dphi')
 			switch (pb->data()->functionalForm().torsionFunc)
 			{
-				case (TF_UNSPECIFIED):
+				case (Forms::NoTorsion):
 					printf("Pattern::torsionForces <<<< Torsion function is UNSPECIFIED >>>>\n");
 					du_dphi = 0.0;
 					break;
-				case (TF_COSINE): 
+				case (Forms::CosineTorsion): 
 					// F(phi) = forcek * period * sin(period*phi - eq)
-					forcek = params.data[TF_COSINE_K];
-					eq = params.data[TF_COSINE_EQ] / DEGRAD;
-					period = params.data[TF_COSINE_P];
+					forcek = params.data[Forms::CosineTorsionK];
+					eq = params.data[Forms::CosineTorsionEq] / DEGRAD;
+					period = params.data[Forms::CosineTorsionP];
 					du_dphi = dphi_dcosphi * period * forcek * sin(period*phi - eq);
 					break;
-				case (TF_COS3):
+				case (Forms::Cos3Torsion):
 					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
-					k1 = -params.data[TF_COS3_K1];
-					k2 = 2.0 * params.data[TF_COS3_K2];
-					k3 = -3.0 * params.data[TF_COS3_K3];
+					k1 = -params.data[Forms::Cos3TorsionK1];
+					k2 = 2.0 * params.data[Forms::Cos3TorsionK2];
+					k3 = -3.0 * params.data[Forms::Cos3TorsionK3];
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi));
 					break;
-				case (TF_COS3C):
+				case (Forms::Cos3CTorsion):
 					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
-					k1 = -params.data[TF_COS3C_K1];
-					k2 = 2.0 * params.data[TF_COS3C_K2];
-					k3 = -3.0 * params.data[TF_COS3C_K3];
+					k1 = -params.data[Forms::Cos3CTorsionK1];
+					k2 = 2.0 * params.data[Forms::Cos3CTorsionK2];
+					k3 = -3.0 * params.data[Forms::Cos3CTorsionK3];
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi));
 					break;
-				case (TF_COS4):
+				case (Forms::Cos4Torsion):
 					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) + 4 * k4*(sin(4*phi)))
-					k1 = -params.data[TF_COS4_K1];
-					k2 = 2.0 * params.data[TF_COS4_K2];
-					k3 = -3.0 * params.data[TF_COS4_K3];
-					k4 = 4.0 * params.data[TF_COS4_K4];
+					k1 = -params.data[Forms::Cos4TorsionK1];
+					k2 = 2.0 * params.data[Forms::Cos4TorsionK2];
+					k3 = -3.0 * params.data[Forms::Cos4TorsionK3];
+					k4 = 4.0 * params.data[Forms::Cos4TorsionK4];
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi) + k4*sin(4.0*phi));
 					break;
 			}

@@ -236,7 +236,7 @@ Prefs::Prefs()
 	densityUnit_ = Prefs::GramsPerCm;
 
 	// Energy
-	electrostaticsMethod_ = EM_EWALDAUTO;
+	electrostaticsMethod_ = Forms::EwaldAutoElec;
 	calculateIntra_ = TRUE;
 	calculateVdw_ = TRUE;
 	calculateElec_ = FALSE;
@@ -913,13 +913,13 @@ int Prefs::maxRingSize()
 */
 
 // Sets the electrostatic model to use in energy/force calculation
-void Prefs::setElectrostaticsMethod(ElecMethod em)
+void Prefs::setElectrostaticsMethod(Forms::ElecMethod em)
 {
 	electrostaticsMethod_ = em;
 }
 
 // Return the type of electrostatic treatment to use
-ElecMethod Prefs::electrostaticsMethod()
+Forms::ElecMethod Prefs::electrostaticsMethod()
 {
 	return electrostaticsMethod_;
 }
