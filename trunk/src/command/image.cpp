@@ -33,13 +33,18 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	// Flag any surfaces to be rerendered for use in this context
 	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 	// Create a QPixmap of the current scene
-	QPixmap pixmap = gui.mainWindow->ui.ModelView->renderPixmap(0,0,FALSE);
+	QPixmap pixmap;
+	if (gui.exists()) pixmap = gui.mainWindow->ui.ModelView->renderPixmap(0,0,FALSE);
 	// Flag any surfaces to be rerendered so they are redisplayed in the original context
 	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 
 	// Convert format to bitmap_format
 	bitmap_format bf = BIF_from_text(c->argc(0));
-	if (bf != BIF_NITEMS) pixmap.save(c->argc(1), extension_from_BIF(bf), -1);
+	if (bf != BIF_NITEMS)
+	{
+		pixmap.save(c->argc(1), extension_from_BIF(bf), -1);
+		msg(Debug::None,"Saved current view as '%s'\n",c->argc(1));
+	}
 	else
 	{
 		msg(Debug::None,"Unrecognised bitmap format.\n");

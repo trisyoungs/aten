@@ -32,6 +32,8 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
+	Forcefield *f;
+	ForcefieldAtom *ffa;
 	Namemap<int> *nm;
 	int el;
 	switch (c->argt(0))
@@ -59,6 +61,20 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 	}
 	if (c->hasArg(3)) master.current.i = obj.m->addAtom(el, c->arg3d(1));
 	else master.current.i = obj.m->addAtom(el, c->parent()->penPosition);
+	// Add the name to the model's namesForcefield, if requested and it exists
+	if (prefs.keepNames() && obj.m->namesForcefield())
+	{
+		// Search for this typename in the ff
+		f = obj.m->namesForcefield();
+		ffa = f->findType(c->argc(0));
+		if (ffa == NULL) 
+		{
+			ffa = f->addType();
+			ffa->setName(c->argc(0));
+		}
+		master.current.i->setType(ffa);
+		master.current.i->setTypeFixed(TRUE);
+	}
 	return CR_SUCCESS;
 }
 

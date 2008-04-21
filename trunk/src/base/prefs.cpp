@@ -224,6 +224,7 @@ Prefs::Prefs()
 	cacheLimit_ = 1024;
 	zmapType_ = Prefs::AutoZmap;
 	coordsInBohr_ = FALSE;
+	keepNames_ = FALSE;
 
 	// Energy unit conversion factors to J
 	energyConversions_[Prefs::Joules] = 1.0;
@@ -814,6 +815,18 @@ void Prefs::setCoordsInBohr(bool b)
 bool Prefs::coordsInBohr()
 {
 	return coordsInBohr_;
+}
+
+// Set whether to keep file type names on load
+void Prefs::setKeepNames(bool b)
+{
+	keepNames_ = b;
+}
+
+// Return whether to keep file type names on load
+bool Prefs::keepNames()
+{
+	return keepNames_;
 }
 
 /*

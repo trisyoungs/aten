@@ -178,7 +178,11 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// Find the filter that was selected
 		for (n=0; n<BIF_NITEMS; n++)
 			if (strcmp(filter_from_BIF( (bitmap_format) n), qPrintable(filter)) == 0) break;
-		if (n != BIF_NITEMS) pixmap.save(filename, extension_from_BIF( (bitmap_format) n), -1);
+		if (n != BIF_NITEMS)
+		{
+			pixmap.save(filename, extension_from_BIF( (bitmap_format) n), -1);
+			msg(Debug::None,"Saved current view as '%s'\n",filename);
+		}
 	}
 }
 

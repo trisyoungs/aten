@@ -234,6 +234,8 @@ class Forcefield
 	public:
 	// Returns the number of atom types specified in the Forcefield
 	int nTypes();
+	// Adds a new type to the forcefield
+	ForcefieldAtom *addType();
 	// Returns the head of tha atomtype list
 	ForcefieldAtom *types();
 	// Get the atomtype specified by the ffid number passed

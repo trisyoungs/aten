@@ -155,12 +155,6 @@ bool Forcefield::readTypes(ifstream &fffile)
 	bool done;
 	ForcefieldAtom *ffa, *idsearch;
 	done = FALSE;
-	// Create _NDEF_ type common to all FFs)
-	ffa = types_.add();
-	ffa->setParent(this);
-	ffa->setName("_NDEF_");
-	ffa->setTypeId(-1);
-	done = FALSE;
 	// Format of lines is 'ffid typename element description'
 	do
 	{

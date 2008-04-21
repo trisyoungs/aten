@@ -30,6 +30,18 @@ Forcefield *Model::forcefield()
 	return forcefield_;
 }
 
+// Set the forcefield containing original atom names for the model
+void Model::setNamesForcefield(Forcefield *f)
+{
+	namesForcefield_ = f;
+}
+
+// Return the forcefield containing original atom names for the model
+Forcefield *Model::namesForcefield()
+{
+	return namesForcefield_;
+}
+
 // Return whether the expression is valid
 bool Model::isExpressionValid()
 {
