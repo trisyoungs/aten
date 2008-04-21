@@ -219,6 +219,13 @@ void Master::removeGrid(Grid *xgrid)
 // Forcefield Management routines
 */
 
+// Add Forcefield
+Forcefield *Master::addForcefield()
+{
+	current.ff = forcefields_.add();
+	return current.ff;
+}
+
 // Load forcefield
 Forcefield *Master::loadForcefield(const char *filename)
 {

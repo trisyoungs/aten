@@ -58,6 +58,11 @@ Forcefield::Forcefield()
 	rules_ = Forms::NoRules;
 	nGenerators_ = 0;
 	energyGenerators_ = NULL;
+	// Create _NDEF_ type common to all FFs)
+	ForcefieldAtom *ffa = types_.add();
+	ffa->setParent(this);
+	ffa->setName("_NDEF_");
+	ffa->setTypeId(-1);
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -341,6 +346,15 @@ int Forcefield::nGenerators()
 int Forcefield::nTypes()
 {
 	return types_.nItems();
+}
+
+// Add a new type to the forcefield
+ForcefieldAtom *Forcefield::addType()
+{
+	ForcefieldAtom *ffa = types_.add();
+	ffa->setParent(this);
+	ffa->setTypeId(types_.nItems()-1);
+	return ffa;
 }
 
 // Returns the head of tha atomtype list

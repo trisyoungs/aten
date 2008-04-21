@@ -398,6 +398,8 @@ class Model
 	private:
 	// Forcefield associated with this model
 	Forcefield *forcefield_;
+	// Forcefield containing original file type names (if requested)
+	Forcefield *namesForcefield_;
 
 	public:
 	// Set the model to use the specified forcefield
@@ -408,6 +410,10 @@ class Model
 	void assignForcefieldCharges();
 	// Reset all model charges to zero
 	void clearCharges();
+	// Set the forcefield containing original atom names for the model
+	void setNamesForcefield(Forcefield *f);
+	// Return the forcefield containing original atom names for the model
+	Forcefield *namesForcefield();
 
 	/*
 	// Typing

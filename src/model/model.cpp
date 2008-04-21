@@ -44,6 +44,7 @@ Model::Model()
 	density_ = 0.0;
 	translateScale_ = 1.0;
 	forcefield_ = NULL;
+	namesForcefield_ = NULL;
 	savePoint_ = 0;
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;

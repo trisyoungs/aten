@@ -49,6 +49,8 @@ Cli cliSwitches[] = {
 		"",		"Print this information" },
 	{ Cli::InteractiveSwitch,	'i',"interactive",	0,
 		"",		"Enter interactive mode" },
+	{ Cli::KeepNamesSwitch,		'\0',"keepnames",	0,
+		"",		"Store atom (type)names given in files in a forcefield created for the model" },
 	{ Cli::MapSwitch,		'm',"map",		1,
 		"<name=element,...>",	"Map file atomtypes to elements" },
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
@@ -276,6 +278,10 @@ int Master::parseCli(int argc, char *argv[])
 					// Enter interactive mode
 					case (Cli::InteractiveSwitch):
 						master.setProgramMode(Master::InteractiveMode);
+						break;
+					// Keep atom names in file
+					case (Cli::KeepNamesSwitch):
+						prefs.setKeepNames(TRUE);
 						break;
 					// Set type mappings
 					case (Cli::MapSwitch):

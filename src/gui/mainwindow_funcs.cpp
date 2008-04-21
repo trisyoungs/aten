@@ -295,7 +295,7 @@ void AtenForm::refreshScriptsMenu()
 		// Set action data
 		qa->setVisible(TRUE);
 		qa->setText(cl->name());
-		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(run_script()));
+		QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
 		scriptActions_.add(qa, cl);
 		ui.ScriptsMenu->addAction(qa);
 	}

@@ -118,6 +118,16 @@ class Master
 	Forcefield *defaultForcefield_;
 
 	public:
+	// Add a new forcefield
+	Forcefield *addForcefield();
+	// Load the specified forcefield
+	Forcefield *loadForcefield(const char *filename);
+	// Find forcefield by name
+	Forcefield *findForcefield(const char *name) const;
+	// Set the default forcefield
+	void setDefaultForcefield(Forcefield *ff);
+	// Get the current default forcefield
+	Forcefield *defaultForcefield() const;
 	// Return the first ff in the list
 	Forcefield *forcefields() const;
 	// Return the nth forcefield in the list
@@ -136,14 +146,6 @@ class Master
 	void removeForcefield(Forcefield*);
 	// Remove FF references from the model list
 	void dereferenceForcefield(Forcefield*);
-	// Load the specified forcefield
-	Forcefield *loadForcefield(const char*);
-	// Find forcefield by name
-	Forcefield *findForcefield(const char*) const;
-	// Set the default forcefield
-	void setDefaultForcefield(Forcefield *ff);
-	// Get the current default forcefield
-	Forcefield *defaultForcefield() const;
 
 	/*
 	// Volumetric Grid Data

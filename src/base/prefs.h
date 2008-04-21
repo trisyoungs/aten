@@ -285,6 +285,8 @@ class Prefs
 	int cacheLimit_;
 	// Type of name->Z mapping to use
 	Prefs::ZmapType zmapType_;
+	// Whether to retain file atom type names on load (in a new forcefield)
+	bool keepNames_;
 
 	public:
 	// Sets whether to calculate bonding on model load
@@ -319,6 +321,10 @@ class Prefs
 	void setCoordsInBohr(bool b);
 	// Whether coordinates should be converted from Bohr to Angstrom
 	bool coordsInBohr();
+	// Set whether to keep file type names on load
+	void setKeepNames(bool b);
+	// Return whether to keep file type names on load
+	bool keepNames();
 
 	/*
 	// Edit Preferences

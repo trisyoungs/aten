@@ -162,6 +162,14 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 	obj.m = master.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
 	msg(Debug::None,"Created model '%s'\n", obj.m->name());
+	if (prefs.keepNames())
+	{
+		Forcefield *f = master.addForcefield();
+		char s[512];
+		sprintf(s,"Names: %s",obj.m->name());
+		f->setName(s);
+		obj.m->setNamesForcefield(f);
+	}
 	return CR_SUCCESS;
 }
 
