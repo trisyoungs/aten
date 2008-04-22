@@ -24,6 +24,10 @@
 #include "gui/gui.h"
 #include "model/model.h"
 
+/*
+// Flip
+*/
+
 void AtenForm::on_FlipXButton_clicked(bool checked)
 {
 	flipSelection(0);
@@ -41,9 +45,18 @@ void AtenForm::on_FlipZButton_clicked(bool checked)
 
 void AtenForm::flipSelection(int axis)
 {
-	master.currentModel()->mirrorSelectionLocal(axis);
-	gui.mainView.postRedisplay();
+	Model *m = master.currentModel();
+	char s[128];
+	sprintf(s,"Mirror %i atoms along %c\n", m->nSelected(), 88+axis);
+	m->beginUndostate(s);
+	m->mirrorSelectionLocal(axis);
+	m->endUndostate();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
+
+/*
+// Centre
+*/
 
 void AtenForm::on_DefineCentreButton_clicked(bool checked)
 {
@@ -66,5 +79,82 @@ void AtenForm::on_CentreSelectionButton_clicked(bool checked)
 	m->beginUndostate(s);
 	m->centre(centre);
 	m->endUndostate();
+	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+/*
+// Translate Functions
+*/
+
+void AtenForm::on_TranslatePosXButton_clicked(bool on)
+{
+	translateSelection(0, 1);
+}
+
+void AtenForm::on_TranslatePosYButton_clicked(bool on)
+{
+	translateSelection(1, 1);
+}
+
+void AtenForm::on_TranslatePosZButton_clicked(bool on)
+{
+	translateSelection(2, 1);
+}
+
+void AtenForm::on_TranslateNegXButton_clicked(bool on)
+{
+	translateSelection(0, -1);
+}
+
+void AtenForm::on_TranslateNegYButton_clicked(bool on)
+{
+	translateSelection(1, -1);
+}
+
+void AtenForm::on_TranslateNegZButton_clicked(bool on)
+{
+	translateSelection(2, -1);
+}
+
+void AtenForm::translateSelection(int axis, int dir)
+{
+	double step = ui.TranslateShiftSpin->value();	
+	Vec3<double> tvec;
+	tvec.set(axis, double(dir));
+	static char s[128];
+	// Grab model in preparation for undostate...
+	Model *m = master.currentModel();
+	if (ui.TranslateModelFrameRadio->isChecked())
+	{
+		// Translate selection in the cartesian axes of the model
+		tvec *= step;
+		sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndostate(s);
+		m->translateSelectionLocal(tvec);
+	}
+	else if (ui.TranslateWorldFrameRadio->isChecked())
+	{
+		// Translate selection in the world (view) axes
+		tvec *= step;
+		sprintf(s,"Translate Screen (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndostate(s);
+		m->translateSelectionWorld(tvec);
+	}
+	else if (ui.TranslateCellFrameRadio->isChecked())
+	{
+		// Translate selection in the cell axes of the model
+		if (m->cell()->type() == Cell::NoCell)
+		{
+			msg(Debug::None,"No unit cell defined for model.\n");
+			return;
+		}
+		tvec = master.currentModel()->cell()->axes().get(axis);
+		tvec *= double(dir) * step;
+		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndostate(s);
+		m->translateSelectionLocal(tvec);
+	}
+	m->endUndostate();
+	m->updateMeasurements();
 	gui.mainView.postRedisplay();
 }

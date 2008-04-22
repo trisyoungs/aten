@@ -281,13 +281,11 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	}
 
 	// Perform an atomic fold on the crystal before we begin
-	foldAllAtoms();
+	if (prefs.replicateFold()) foldAllAtoms();
 
 	// Create two clipboards - copy the original model to one of them
 	Clipboard originalClip, clip;
 	originalClip.copyAll(this);
-	// Centre this clipboard copy to put the atoms at 0,0,0
-	originalClip.translate(-cell_.centre());   // This does not put the atoms at 0.0.0! 
 
 	// Create the new unit cell in the original model
 	oldaxes = cell_.axes();
@@ -349,32 +347,35 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	selectNone();
 
 	// Now trim off atoms that are outside the new cell
-	bool delatom;
-	Atom *i, *j;
-	Vec3<double> fracr;
-	Mat3<double> cellinverse = cell_.inverseTranspose();
-
-	master.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
-	i = atoms_.first();
-	count = 0;
-	while (i != NULL)
+	if (prefs.replicateFold())
 	{
-		delatom = FALSE;
-		// Convert coordinates to fractional coords and test them
-		fracr = cellinverse * i->r();
-		if ((fracr.x < -0.001) || (fracr.x >= 1.001)) delatom = TRUE;
-		else if ((fracr.y < -0.001) || (fracr.y >= 1.001)) delatom = TRUE;
-		else if ((fracr.z < -0.001) || (fracr.z >= 1.001)) delatom = TRUE;
-		if (delatom)
+		bool delatom;
+		Atom *i, *j;
+		Vec3<double> fracr;
+		Mat3<double> cellinverse = cell_.inverseTranspose();
+	
+		master.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
+		i = atoms_.first();
+		count = 0;
+		while (i != NULL)
 		{
-			j = i->next;
-			deleteAtom(i);
-			i = j;
+			delatom = FALSE;
+			// Convert coordinates to fractional coords and test them
+			fracr = cellinverse * i->r();
+			if ((fracr.x < -0.001) || (fracr.x >= 1.001)) delatom = TRUE;
+			else if ((fracr.y < -0.001) || (fracr.y >= 1.001)) delatom = TRUE;
+			else if ((fracr.z < -0.001) || (fracr.z >= 1.001)) delatom = TRUE;
+			if (delatom)
+			{
+				j = i->next;
+				deleteAtom(i);
+				i = j;
+			}
+			else i = i->next;
+			if (!master.updateProgress(++count)) break;
 		}
-		else i = i->next;
-		if (!master.updateProgress(++count)) break;
+		master.cancelProgress();
 	}
-	master.cancelProgress();
 
 	logChange(Change::StructureLog);
 	dbgEnd(Debug::Calls,"Model::replicateCell");

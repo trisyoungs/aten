@@ -866,6 +866,7 @@ bool CommandList::load(const char *filename)
 	CommandAction ca;
 	int success;
 	clear();
+	name_ = filename;
 	// Read in commands
 	while (!cmdfile.eof())
 	{

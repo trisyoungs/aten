@@ -278,7 +278,6 @@ void AtenForm::updateUndoRedo()
 
 void AtenForm::refreshScriptsMenu()
 {
-	static char s[512];
 	// Remove old actions from menu (i.e. current items in Reflist)
 	for (Refitem<QAction, CommandList*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
 	{

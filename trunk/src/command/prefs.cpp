@@ -189,6 +189,20 @@ int CommandData::function_CA_RADIUS(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set whether replicate folds atoms beforehand
+int CommandData::function_CA_REPLICATEFOLD(Command *&c, Bundle &obj)
+{
+	prefs.setReplicateFold(c->argb(0));
+	return CR_SUCCESS;
+}
+
+// Set whether replicate trims atoms afterwards
+int CommandData::function_CA_REPLICATETRIM(Command *&c, Bundle &obj)
+{
+	prefs.setReplicateTrim(c->argb(0));
+	return CR_SUCCESS;
+}
+
 // Atom shininess
 int CommandData::function_CA_SHININESS(Command *&c, Bundle &obj)
 {
