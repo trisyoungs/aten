@@ -40,13 +40,14 @@ int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 {
 	msg(Debug::None,"Current component specification:\n");
 	Vec3<double> v1, v2;
+	char s[150];
 	msg(Debug::None,"                                                      Centre                   Size\n");
 	msg(Debug::None,"Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
 	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
 		v1 = m->area.centre();
 		v2 = m->area.size();
-		printf("%-10s  %5i  %s %s %s %s %s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
+		sprintf(s,"%-10s  %5i  %s %s %s %s %s  %-12s %7.3f %7.3f %7.3f %7.3f %7.3f %7.3f %3s\n",
 			m->name(),m->nRequested(),
 			(m->isMoveAllowed(MonteCarlo::Insert) ? "+" : " "),
 			(m->isMoveAllowed(MonteCarlo::Delete) ? "+" : " "),
@@ -56,6 +57,7 @@ int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 			ComponentRegion::regionShape(m->area.shape()),
 			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
 			(m->area.allowOverlap() ? "Yes" : "No"));
+		msg(Debug::None,s);
 	}
 	return CR_SUCCESS;
 }

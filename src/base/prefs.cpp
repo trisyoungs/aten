@@ -214,6 +214,8 @@ Prefs::Prefs()
 	modelUpdate_ = 5;
 	energyUpdate_ = 1;
 	maxRingSize_ = 6;
+	replicateFold_ = TRUE;
+	replicateTrim_ = TRUE;
 
 	// File
 	bondOnLoad_ = Prefs::SwitchAsFilter;
@@ -920,6 +922,29 @@ int Prefs::maxRingSize()
 	return maxRingSize_;
 }
 
+// Set whether to fold atoms before replication
+void Prefs::setReplicateFold(bool b)
+{
+	replicateFold_ = b;
+}
+
+// Return whether to fold atoms before replication
+bool Prefs::replicateFold()
+{
+	return replicateFold_;
+}
+
+// Set whether to trim atoms after replication
+void Prefs::setReplicateTrim(bool b)
+{
+	replicateTrim_ = b;
+}
+
+// Return whether to trim atoms after replication
+bool Prefs::replicateTrim()
+{
+	return replicateTrim_;
+}
 
 /*
 // Expression (general parameters)

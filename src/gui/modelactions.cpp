@@ -31,25 +31,25 @@
 void AtenForm::on_actionFFType_triggered(bool checked)
 {
 	master.currentModel()->typeAll();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionFFUntype_triggered(bool checked)
 {
 	master.currentModel()->removeTyping();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 {
 	master.currentModel()->foldAllAtoms();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionFoldMolecules_triggered(bool checked)
 {
 	master.currentModel()->foldAllMolecules();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelNext_triggered(bool checked)

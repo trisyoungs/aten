@@ -395,6 +395,10 @@ class Prefs
 	int modelUpdate_, energyUpdate_;
 	// Maximum ring size in ring search algorithm
 	int maxRingSize_;
+	// Whether to fold atoms before replication
+	bool replicateFold_;
+	// Whether to trim atoms after replication
+	bool replicateTrim_;
 
 	public:
 	// Set the model update frequency
@@ -409,6 +413,14 @@ class Prefs
 	bool shouldUpdateEnergy(int n);
 	// Return the maximum ring size allowed
 	int maxRingSize();
+	// Set whether to fold atoms before replication
+	void setReplicateFold(bool b);
+	// Return whether to fold atoms before replication
+	bool replicateFold();
+	// Set whether to trim atoms after replication
+	void setReplicateTrim(bool b);
+	// Return whether to trim atoms after replication
+	bool replicateTrim();
 
 	/*
 	// Units and Conversion

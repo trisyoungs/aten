@@ -34,36 +34,6 @@ void AtenForm::on_RotateAnticlockwiseButton_clicked(bool on)
 	rotateSelection(-1);
 }
 
-void AtenForm::on_TranslatePosXButton_clicked(bool on)
-{
-	translateSelection(0, 1);
-}
-
-void AtenForm::on_TranslatePosYButton_clicked(bool on)
-{
-	translateSelection(1, 1);
-}
-
-void AtenForm::on_TranslatePosZButton_clicked(bool on)
-{
-	translateSelection(2, 1);
-}
-
-void AtenForm::on_TranslateNegXButton_clicked(bool on)
-{
-	translateSelection(0, -1);
-}
-
-void AtenForm::on_TranslateNegYButton_clicked(bool on)
-{
-	translateSelection(1, -1);
-}
-
-void AtenForm::on_TranslateNegZButton_clicked(bool on)
-{
-	translateSelection(2, -1);
-}
-
 /*
 // Rotations
 */
@@ -107,53 +77,6 @@ void AtenForm::rotateSelection(double direction)
 	sprintf(s,"Rotate %i atom(s)\n",m->nSelected());
 	m->beginUndostate(s);
 	m->rotateSelectionVector(o, v, direction * ui.RotateAngleSpin->value());
-	m->endUndostate();
-	m->updateMeasurements();
-	gui.mainView.postRedisplay();
-}
-
-/*
-// Translate Functions
-*/
-
-void AtenForm::translateSelection(int axis, int dir)
-{
-	double step = ui.TranslateShiftSpin->value();	
-	Vec3<double> tvec;
-	tvec.set(axis, double(dir));
-	static char s[128];
-	// Grab model in preparation for undostate...
-	Model *m = master.currentModel();
-	if (ui.TranslateModelFrameRadio->isChecked())
-	{
-		// Translate selection in the cartesian axes of the model
-		tvec *= step;
-		sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndostate(s);
-		m->translateSelectionLocal(tvec);
-	}
-	else if (ui.TranslateWorldFrameRadio->isChecked())
-	{
-		// Translate selection in the world (view) axes
-		tvec *= step;
-		sprintf(s,"Translate Screen (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndostate(s);
-		m->translateSelectionWorld(tvec);
-	}
-	else if (ui.TranslateCellFrameRadio->isChecked())
-	{
-		// Translate selection in the cell axes of the model
-		if (m->cell()->type() == Cell::NoCell)
-		{
-			msg(Debug::None,"No unit cell defined for model.\n");
-			return;
-		}
-		tvec = master.currentModel()->cell()->axes().get(axis);
-		tvec *= double(dir) * step;
-		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndostate(s);
-		m->translateSelectionLocal(tvec);
-	}
 	m->endUndostate();
 	m->updateMeasurements();
 	gui.mainView.postRedisplay();

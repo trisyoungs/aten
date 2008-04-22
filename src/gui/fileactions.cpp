@@ -208,6 +208,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 			// Ensure trajectory toolbar is visible and View->Trajectory is selected
 			ui.TrajectoryToolBar->setVisible(TRUE);
 			ui.actionViewTrajectory->setChecked(TRUE);
+			gui.updateTrajControls();
 		}
 		else msg(Debug::None, "Couldn't determine trajectory file format.\n");
 		gui.modelChanged();

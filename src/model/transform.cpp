@@ -199,7 +199,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v)
 		newr = i->rWorld() + v;
 		//newr += v;
 		newr = (viewMatrixInverse_ * newr) + cell_.centre();
-		i->r() = newr;
+		positionAtom(i, newr);
 	}
 	logChange(Change::VisualLog);
 	projectSelection();
@@ -221,17 +221,24 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec)
 void Model::mirrorSelectionLocal(int axis)
 {
 	dbgBegin(Debug::Calls,"Model::mirrorSelectionLocal");
-	// Get selection's local COG
+	// Get selection's local COG in the desired coordinate
 	Vec3<double> cog = selectionCog();
-	Vec3<double> mimd;
+	for (int n=0; n<3; n++) if (n != axis) cog.set(n, 0.0);
+	Vec3<double> newr;
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected())
 	{
+		// Calculate newr
+		newr = i->r() - cog;
+		newr.set(axis, -newr.get(axis));
+		newr += cog;
+		positionAtom(i, newr);
+
 		// Get coordinates relative to COG
-		mimd = cell_.mimd(i->r(), cog);
+		//mimd = cell_.mimd(i->r(), cog);
 		// Flip specified coordinate
-		mimd.set(axis, -mimd.get(axis));
+		//mimd.set(axis, -mimd.get(axis));
 		// Store new coordinate
-		i->r() = mimd + cog;
+		//positionAtom(i, mimd + cog);
 	}
 	logChange(Change::VisualLog);
 	projectSelection();
