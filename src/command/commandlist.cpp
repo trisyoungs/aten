@@ -175,6 +175,12 @@ double Command::argd(int argno)
 	return (args_[argno] == NULL ? 0.0 : args_[argno]->asDouble());
 }
 
+// Return argument as float
+double Command::argf(int argno)
+{
+	return (float) argd(argno);
+}
+
 // Return argument as bool
 bool Command::argb(int argno)
 {

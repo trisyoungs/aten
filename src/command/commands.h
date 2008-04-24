@@ -212,6 +212,8 @@ enum CommandAction {
 	CA_ADDNEXTGRIDPOINT,
 	CA_FINALISEGRID,
 	CA_GRIDAXES,
+	CA_GRIDCOLOUR,
+	CA_GRIDCOLOURNEGATIVE,
 	CA_GRIDCOLOURSCALE,
 	CA_GRIDCUBIC,
 	CA_GRIDCUTOFF,
@@ -219,6 +221,8 @@ enum CommandAction {
 	CA_GRIDORIGIN,
 	CA_GRIDORTHO,
 	CA_GRIDSIZE,
+	CA_GRIDSYMMETRIC,
+	CA_GRIDTRANSPARENCY,
 	CA_NEWGRID,
 
 	// Image Commands
@@ -544,6 +548,8 @@ class CommandData
 	int function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj);
 	int function_CA_FINALISEGRID(Command *&c, Bundle &obj);
 	int function_CA_GRIDAXES(Command *&c, Bundle &obj);
+	int function_CA_GRIDCOLOUR(Command *&c, Bundle &obj);
+	int function_CA_GRIDCOLOURNEGATIVE(Command *&c, Bundle &obj);
 	int function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj);
 	int function_CA_GRIDCUBIC(Command *&c, Bundle &obj);
 	int function_CA_GRIDCUTOFF(Command *&c, Bundle &obj);
@@ -551,6 +557,8 @@ class CommandData
 	int function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj);
 	int function_CA_GRIDORIGIN(Command *&c, Bundle &obj);
 	int function_CA_GRIDSIZE(Command *&c, Bundle &obj);
+	int function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj);
+	int function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj);
 	int function_CA_NEWGRID(Command *&c, Bundle &obj);
 	// Image Commands
 	int function_CA_SAVEBITMAP(Command *&c, Bundle &obj);

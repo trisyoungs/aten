@@ -41,10 +41,15 @@ Grid::Grid()
 	displayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = TRUE;
-	colour_[0] = 1.0f;
-	colour_[1] = 0.0f;
-	colour_[2] = 0.0f;
-	colour_[3] = 0.5f;
+	positiveColour_[0] = 1.0f;
+	positiveColour_[1] = 0.0f;
+	positiveColour_[2] = 0.0f;
+	positiveColour_[3] = 0.5f;
+	negativeColour_[0] = 0.0f;
+	negativeColour_[1] = 0.0f;
+	negativeColour_[2] = 1.0f;
+	negativeColour_[3] = 0.5f;
+	symmetric_ = FALSE;
 	loopOrder_.set(0,1,2);
 	colourScale_ = 0;
 	prefs.colourScale[0].addLink(this);
@@ -204,20 +209,27 @@ Grid::SurfaceStyle Grid::style()
 // Set transparency of the surface
 void Grid::setTransparency(GLfloat a)
 {
-	colour_[3] = a;
+	positiveColour_[3] = a;
+	negativeColour_[3] = a;
 	log_++;
 }
 
 // Return transparency of the grid's surface
 GLfloat Grid::transparency()
 {
-	return colour_[3];
+	return positiveColour_[3];
 }
 
-// Return the colour of the grid's surface
-GLfloat *Grid::colour()
+// Return the (positive) colour of the grid's surface
+GLfloat *Grid::positiveColour()
 {
-	return colour_;
+	return positiveColour_;
+}
+
+// Return the (positive) colour of the grid's surface
+GLfloat *Grid::negativeColour()
+{
+	return negativeColour_;
 }
 
 // Log changes
@@ -452,20 +464,19 @@ void Grid::setNextData(double d)
 	setLimits(d);
 }
 
-// Set surface colour
-void Grid::setColour(int r, int g, int b)
+void Grid::setPositiveColour(GLfloat r, GLfloat g, GLfloat b)
 {
-	colour_[0] = r;
-	colour_[1] = g;
-	colour_[2] = b;
+	positiveColour_[0] = r;
+	positiveColour_[1] = g;
+	positiveColour_[2] = b;
 	log_ ++;
 }
 
-void Grid::setColour(double r, double g, double b)
+void Grid::setNegativeColour(GLfloat r, GLfloat g, GLfloat b)
 {
-	colour_[0] = (GLfloat) r;
-	colour_[1] = (GLfloat) g;
-	colour_[2] = (GLfloat) b;
+	negativeColour_[0] = r;
+	negativeColour_[1] = g;
+	negativeColour_[2] = b;
 	log_ ++;
 }
 
@@ -489,4 +500,17 @@ GLuint Grid::displayList()
 		if (displayList_ == 0) printf("Critical - couldn't generate display list for grid data.\n");
 	}
 	return displayList_;
+}
+
+// Set whether to use both signs of a symmetric isovalue distribution
+void Grid::setSymmetric(bool b)
+{
+	symmetric_ = b;
+	log_ ++;
+}
+
+// Returns whether to use both signs of a symmetric isovalue distribution
+bool Grid::symmetric()
+{
+	return symmetric_;
 }

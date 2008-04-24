@@ -161,6 +161,8 @@ class Command
 	int argi(int argno);
 	// Return argument as double
 	double argd(int argno);
+	// Return argument as float
+	double argf(int argno);
 	// Return argument as bool
 	bool argb(int argno);
 	// Return arguments as Vec3<double>
