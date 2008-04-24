@@ -24,6 +24,19 @@
 #include "base/master.h"
 #include "gui/gui.h"
 
+// Toggle debug modes
+int CommandData::function_CA_DEBUG(Command *&c, Bundle &obj)
+{
+	Debug::DebugMode dm = Debug::debugMode(c->argc(0));
+	if (dm != Debug::nDebugModes)
+	{
+		// Check to see if level is already active
+		Debug::isDebugActive(dm) ? Debug::removeDebug(dm) : Debug::addDebug(dm);
+	}
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
 // Start GUI
 int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 {

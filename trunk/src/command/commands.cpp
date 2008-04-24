@@ -348,6 +348,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Links the surface to the specified colour scale (or zero to return to internal colour)" },
 	{ "gridcubic",		"V",		"<l>",
 				"Set the axes system for the current grid to be cubic" },
+	{ "gridcutoff",		"V",		"<cutoff>",
+				"Set the cutoff for the current grid" },
 	{ "gridlooporder",	"V",		"<xyz|zyx|213...>",
 				"Set the loop ordering to use in 'addnextgridpoint'" },
 	{ "gridorigin",		"VVV",		"<x> <y> <z>",
@@ -564,6 +566,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the axis definitions for the current site" },
 
 	// System commands
+	{ "debug",		"V",		"<mode>",
+				"Toggle debugging for the specified mode" },
 	{ "gui",		"",		"",
 				"Start the GUI (if it is not already active)" },
 	{ "help",		"V",		"<command>",
@@ -592,6 +596,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Translate the atom selection of the current model" },
 	{ "translateatom",	"VVV",		"<dx> <dy> <dz>",
 				"Translate the current atom" },
+	{ "translatecell",	"VVV",		"<dx> <dy> <dz>",
+				"Translate the current selection along the cell axes by the fractional axes specified" },
 	{ "mirror",		"V",		"<axis>",
 				"Mirror the atom selection of the current model about its geometric centre in the specified axis" },
 	

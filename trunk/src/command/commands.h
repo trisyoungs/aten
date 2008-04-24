@@ -214,6 +214,7 @@ enum CommandAction {
 	CA_GRIDAXES,
 	CA_GRIDCOLOURSCALE,
 	CA_GRIDCUBIC,
+	CA_GRIDCUTOFF,
 	CA_GRIDLOOPORDER,
 	CA_GRIDORIGIN,
 	CA_GRIDORTHO,
@@ -335,6 +336,7 @@ enum CommandAction {
 	CA_SITEAXES,
 
 	// System commands
+	CA_DEBUG,
 	CA_GUI,
 	CA_HELP,
 	CA_SEED,
@@ -351,6 +353,7 @@ enum CommandAction {
 	CA_CENTRE,
 	CA_TRANSLATE,
 	CA_TRANSLATEATOM,
+	CA_TRANSLATECELL,
 	CA_MIRROR,
 
 	// Variables
@@ -543,6 +546,7 @@ class CommandData
 	int function_CA_GRIDAXES(Command *&c, Bundle &obj);
 	int function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj);
 	int function_CA_GRIDCUBIC(Command *&c, Bundle &obj);
+	int function_CA_GRIDCUTOFF(Command *&c, Bundle &obj);
 	int function_CA_GRIDORTHO(Command *&c, Bundle &obj);
 	int function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj);
 	int function_CA_GRIDORIGIN(Command *&c, Bundle &obj);
@@ -651,6 +655,7 @@ class CommandData
 	int function_CA_NEWSITE(Command *&c, Bundle &obj);
 	int function_CA_SITEAXES(Command *&c, Bundle &obj);
 	// System Commands
+	int function_CA_DEBUG(Command *&c, Bundle &obj);
 	int function_CA_GUI(Command *&c, Bundle &obj);
 	int function_CA_SEED(Command *&c, Bundle &obj);
 	int function_CA_HELP(Command *&c, Bundle &obj);
@@ -665,6 +670,7 @@ class CommandData
 	int function_CA_CENTRE(Command *&c, Bundle &obj);
 	int function_CA_TRANSLATE(Command *&c, Bundle &obj);
 	int function_CA_TRANSLATEATOM(Command *&c, Bundle &obj);
+	int function_CA_TRANSLATECELL(Command *&c, Bundle &obj);
 	int function_CA_MIRROR(Command *&c, Bundle &obj);
 	// Variables
 	int function_CA_LET(Command *&c, Bundle &obj);

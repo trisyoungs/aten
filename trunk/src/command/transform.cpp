@@ -21,6 +21,7 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
+#include "base/master.h"
 #include "classes/atom.h"
 
 // Centre selection at given coordinates
@@ -32,7 +33,7 @@ int CommandData::function_CA_CENTRE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Translate current selection
+// Translate current selection in local coordinates ('translate dx dy dz')
 int CommandData::function_CA_TRANSLATE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
@@ -40,12 +41,21 @@ int CommandData::function_CA_TRANSLATE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-
 // Translate activeatom ('translateatom <dx dy dz>')
 int CommandData::function_CA_TRANSLATEATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r() += c->arg3d(0);
+	return CR_SUCCESS;
+}
+
+// Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
+int CommandData::function_CA_TRANSLATECELL(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Vec3<double> tvec;
+	tvec = master.currentModel()->cell()->axes() * c->arg3d(0);
+	obj.m->translateSelectionLocal(tvec);
 	return CR_SUCCESS;
 }
 
