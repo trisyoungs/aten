@@ -191,6 +191,7 @@ void Master::initCommands()
 	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
 	CA_data[CA_GRIDAXES].function = &CommandData::function_CA_GRIDAXES;
 	CA_data[CA_GRIDCUBIC].function = &CommandData::function_CA_GRIDCUBIC;
+	CA_data[CA_GRIDCUTOFF].function = &CommandData::function_CA_GRIDCUTOFF;
 	CA_data[CA_GRIDCOLOURSCALE].function = &CommandData::function_CA_GRIDCOLOURSCALE;
 	CA_data[CA_GRIDLOOPORDER].function = &CommandData::function_CA_GRIDLOOPORDER;
 	CA_data[CA_GRIDORIGIN].function = &CommandData::function_CA_GRIDORIGIN;
@@ -311,6 +312,7 @@ void Master::initCommands()
 	CA_data[CA_SITEAXES].function = &CommandData::function_CA_SITEAXES;
 
 	// System Commands
+	CA_data[CA_DEBUG].function = &CommandData::function_CA_DEBUG;
 	CA_data[CA_GUI].function = &CommandData::function_CA_GUI;
 	CA_data[CA_HELP].function = &CommandData::function_CA_HELP;
 	CA_data[CA_SEED].function = &CommandData::function_CA_SEED;
@@ -327,6 +329,7 @@ void Master::initCommands()
 	CA_data[CA_CENTRE].function = &CommandData::function_CA_CENTRE;
 	CA_data[CA_TRANSLATE].function = &CommandData::function_CA_TRANSLATE;
 	CA_data[CA_TRANSLATEATOM].function = &CommandData::function_CA_TRANSLATEATOM;
+	CA_data[CA_TRANSLATECELL].function = &CommandData::function_CA_TRANSLATECELL;
 	CA_data[CA_MIRROR].function = &CommandData::function_CA_MIRROR;
 
 	// Variable Commands

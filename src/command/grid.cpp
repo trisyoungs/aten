@@ -91,6 +91,14 @@ int CommandData::function_CA_GRIDCUBIC(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set grid cutoff 
+int CommandData::function_CA_GRIDCUTOFF(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setCutoff(c->argd(0));
+	return CR_SUCCESS;
+}
+
 // Set loop order to use in CA_ADDNEXTPOINT
 int CommandData::function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj)
 {

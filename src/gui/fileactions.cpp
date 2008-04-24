@@ -181,7 +181,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		if (n != BIF_NITEMS)
 		{
 			pixmap.save(filename, extension_from_BIF( (bitmap_format) n), -1);
-			msg(Debug::None,"Saved current view as '%s'\n",filename);
+			msg(Debug::None,"Saved current view as '%s'\n", qPrintable(filename));
 		}
 	}
 }
