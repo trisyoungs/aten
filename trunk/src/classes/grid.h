@@ -154,12 +154,14 @@ class Grid
 	bool visible_;
 	// How to render this surface
 	SurfaceStyle style_;
-	// Colour (including alpha component)
-	GLfloat colour_[4];
-	// Colour scale to take colouring from (zero for internal colour)
+	// Local colours (including alpha component)
+	GLfloat positiveColour_[4], negativeColour_[4];
+	// Colour scale to take colouring from (zero for internal colours)
 	int colourScale_;
 	// Whether to use the associated colour scale (TRUE) or the internal colour (FALSE)
 	bool useColourScale_;
+	// Whether to assume a 'symmetric' isovalue distribution about zero and draw surfaces for both signs
+	bool symmetric_;
 
 	public:
 	// Increase the internal log
@@ -180,21 +182,28 @@ class Grid
 	void setStyle(SurfaceStyle ss);
 	// Return the rendering style of the surface
 	SurfaceStyle style();
-	// Set the colour of the surface
-	void setColour(int r, int g, int b);
-	void setColour(double r, double g, double b);
+	// Set the positive colour of the surface
+	void setPositiveColour(GLfloat r, GLfloat g, GLfloat b);
+	// Set the negative colour of the surface
+	void setNegativeColour(GLfloat r, GLfloat g, GLfloat b);
 	// Set transparency of the surface
 	void setTransparency(GLfloat a);
 	// Return the transparency of the surface
 	GLfloat transparency();
-	// Return the colour of the surface
-	GLfloat *colour();
+	// Return the positive colour of the surface
+	GLfloat *positiveColour();
+	// Return the negative colour of the surface
+	GLfloat *negativeColour();
 	// Set the colourscale associated with the data
 	void setColourScale(int id);
 	// Return the colourscale associated with the data
 	int colourScale();
 	// Whether the surface uses the defined colour scale or not
 	bool usesColourScale();
+	// Set whether to use both signs of a symmetric isovalue distribution
+	void setSymmetric(bool b);
+	// Returns whether to use both signs of a symmetric isovalue distribution
+	bool symmetric();
 
 	/*
 	// Transformations

@@ -31,7 +31,7 @@ set(SRCS src/)
 add_subdirectory(${SRCS})
 
 If(APPLE)
-  set( MACOSX_BUNDLE_ICON_FILE  "{CMAKE_SOURCE_DIR}/src/gui/icons/aten.png")
+  set(MACOSX_BUNDLE_ICON_FILE  "{CMAKE_SOURCE_DIR}/src/gui/icons/aten.png")
   set(MACOSX_BUNDLE_GUI_IDENTIFIER  "Aten")
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "0.x.0"  )
   set(MACOSX_BUNDLE_BUNDLE_NAME  "aten" )
@@ -49,7 +49,7 @@ ${SRCS}/
 ${QT_INCLUDE_DIR}
 ${READLINE_INCLUDE_DIR}
 )
-add_executable(${target_name} MACOSX_BUNDLE
+add_executable(${target_name} 
 ${SRCS}/main.cpp
 )
 

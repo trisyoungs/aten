@@ -196,19 +196,19 @@ Prefs::Prefs()
 	// Colour scale for atom charge colouring (id 0)
 	colourScale[0].setRange(-1.0,1.0);
 	colourScale[0].setType(ColourScale::ThreePoint);
-	colourScale[0].setColour(ColourScale::MinColour, 1.0, 0.0, 0.0);
-	colourScale[0].setColour(ColourScale::MidColour, 1.0, 1.0, 1.0);
-	colourScale[0].setColour(ColourScale::MaxColour, 0.0, 0.0, 1.0);
+	colourScale[0].setColour(ColourScale::MinColour, 1.0f, 0.0f, 0.0f);
+	colourScale[0].setColour(ColourScale::MidColour, 1.0f, 1.0f, 1.0f);
+	colourScale[0].setColour(ColourScale::MaxColour, 0.0f, 0.0f, 1.0f);
 	colourScale[1].setRange(-100.0,100.0);
 	colourScale[1].setType(ColourScale::ThreePoint);
-	colourScale[1].setColour(ColourScale::MinColour, 1.0, 0.0, 0.0);
-	colourScale[1].setColour(ColourScale::MidColour, 1.0, 1.0, 1.0);
-	colourScale[1].setColour(ColourScale::MaxColour, 1.0, 0.0, 0.0);
+	colourScale[1].setColour(ColourScale::MinColour, 1.0f, 0.0f, 0.0f);
+	colourScale[1].setColour(ColourScale::MidColour, 1.0f, 1.0f, 1.0f);
+	colourScale[1].setColour(ColourScale::MaxColour, 1.0f, 0.0f, 0.0f);
 	colourScale[2].setRange(-1000.0,1000.0);
 	colourScale[2].setType(ColourScale::ThreePoint);
-	colourScale[2].setColour(ColourScale::MinColour, 1.0, 0.0, 0.0);
-	colourScale[2].setColour(ColourScale::MidColour, 1.0, 1.0, 1.0);
-	colourScale[2].setColour(ColourScale::MaxColour, 1.0, 0.0, 0.0);
+	colourScale[2].setColour(ColourScale::MinColour, 1.0f, 0.0f, 0.0f);
+	colourScale[2].setColour(ColourScale::MidColour, 1.0f, 1.0f, 1.0f);
+	colourScale[2].setColour(ColourScale::MaxColour, 1.0f, 0.0f, 0.0f);
 
 	// Methods
 	modelUpdate_ = 5;

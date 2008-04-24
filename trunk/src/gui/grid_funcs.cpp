@@ -140,8 +140,9 @@ void AtenForm::refreshGridInfo()
 	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
 	// Set surface style, colour and transparency
 	ui.GridStyleCombo->setCurrentIndex(g->style());
-	ui.GridColourFrame->setColour(g->colour());
+	ui.GridColourFrame->setColour(g->positiveColour());
 	ui.GridColourFrame->update();
+	//ui.GridNegColourFrame->setColour(g->negativeColour());
 	ui.GridTransparencySpin->setValue( g->transparency() );
 }
 
@@ -235,13 +236,13 @@ void AtenForm::on_GridColourButton_clicked(bool checked)
 	if (row == -1) return;
 	Grid *g = master.grid(row);
 	// Get current surface colour and convert into a QColor
-	GLfloat *col = g->colour();
+	GLfloat *col = g->positiveColour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
-	g->setColour(newcol.redF(), newcol.greenF(), newcol.blueF());
+	g->setPositiveColour(newcol.redF(), newcol.greenF(), newcol.blueF());
 	ui.GridColourFrame->setColour(newcol);
 	ui.GridColourFrame->update();
 	gui.mainView.postRedisplay();

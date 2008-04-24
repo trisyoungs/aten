@@ -362,10 +362,13 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	int i, j, k, n, cubetype, *faces;
 	Vec3<double> r, normal, gradient[8];
 	Vec3<int> npoints = g->nPoints();
-	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2, twodx, twody, twodz;
+	bool symm;
+	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer and surface cutoff
 	data = g->data3d();
 	cutoff = g->cutoff();
+	symm = g->symmetric();
+	mult = 1.0;
 	// Get distances between grid points
 	r = g->lengths();
 	twodx = r.x / npoints.x * 2.0;
@@ -389,7 +392,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	// Set colour / transparency for surface
 	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 	// Generate isosurface
 	for (i=1; i<npoints.x-2; i++)
 	{
@@ -435,14 +438,46 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 				gradient[7].z = (data[i][j+1][k+2] - vertex[3]) / twodz;
 				// Determine cube type
 				cubetype = 0;
-				if (vertex[0] >= cutoff) cubetype += 1;
-				if (vertex[1] >= cutoff) cubetype += 2;
-				if (vertex[2] >= cutoff) cubetype += 4;
-				if (vertex[3] >= cutoff) cubetype += 8;
-				if (vertex[4] >= cutoff) cubetype += 16;
-				if (vertex[5] >= cutoff) cubetype += 32;
-				if (vertex[6] >= cutoff) cubetype += 64;
-				if (vertex[7] >= cutoff) cubetype += 128;
+				if (!symm)
+				{
+					if (vertex[0] >= cutoff) cubetype += 1;
+					if (vertex[1] >= cutoff) cubetype += 2;
+					if (vertex[2] >= cutoff) cubetype += 4;
+					if (vertex[3] >= cutoff) cubetype += 8;
+					if (vertex[4] >= cutoff) cubetype += 16;
+					if (vertex[5] >= cutoff) cubetype += 32;
+					if (vertex[6] >= cutoff) cubetype += 64;
+					if (vertex[7] >= cutoff) cubetype += 128;
+				}
+				else
+				{
+					if ((vertex[0] + vertex[1] + vertex[2] + vertex[3] + vertex[4] + vertex[5] + vertex[6] + vertex[7]) < 0)
+					{
+						if (vertex[0] <= -cutoff) cubetype += 1;
+						if (vertex[1] <= -cutoff) cubetype += 2;
+						if (vertex[2] <= -cutoff) cubetype += 4;
+						if (vertex[3] <= -cutoff) cubetype += 8;
+						if (vertex[4] <= -cutoff) cubetype += 16;
+						if (vertex[5] <= -cutoff) cubetype += 32;
+						if (vertex[6] <= -cutoff) cubetype += 64;
+						if (vertex[7] <= -cutoff) cubetype += 128;
+						glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->negativeColour());
+						mult = -1.0;
+					}
+					else
+					{
+						if (vertex[0] >= cutoff) cubetype += 1;
+						if (vertex[1] >= cutoff) cubetype += 2;
+						if (vertex[2] >= cutoff) cubetype += 4;
+						if (vertex[3] >= cutoff) cubetype += 8;
+						if (vertex[4] >= cutoff) cubetype += 16;
+						if (vertex[5] >= cutoff) cubetype += 32;
+						if (vertex[6] >= cutoff) cubetype += 64;
+						if (vertex[7] >= cutoff) cubetype += 128;
+						glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+						mult = 1.0;
+					}
+				}
 				// Get edges from list and draw triangles or points
 				faces = facetriples[cubetype];
 				for (n = 0; n<15; n++)
@@ -451,7 +486,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 					// Get edge vectors, interpolate, and set tri-points
 					a = vertex[edgevertices[faces[n]][0]];
 					b = vertex[edgevertices[faces[n]][1]];
-					ipol = (cutoff - a) / (b-a);
+					ipol = ((mult*cutoff) - a) / (b-a);
 
 					v1 = vertexpos[edgevertices[faces[n]][0]];
 					v2 = vertexpos[edgevertices[faces[n]][1]];
@@ -501,7 +536,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 	cscale = g->colourScale();
 	if (!g->usesColourScale()) cscale = -1;
-	if (cscale == -1) glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour());
+	if (cscale == -1) glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 	// Render surface
 	for (i = 1; i<npoints.x-2; i++)
 	{

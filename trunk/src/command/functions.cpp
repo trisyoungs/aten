@@ -188,15 +188,17 @@ void Master::initCommands()
 	CA_data[CA_ADDGRIDPOINT].function = &CommandData::function_CA_ADDGRIDPOINT;
 	CA_data[CA_ADDNEXTGRIDPOINT].function = &CommandData::function_CA_ADDNEXTGRIDPOINT;
 	CA_data[CA_FINALISEGRID].function = &CommandData::function_CA_FINALISEGRID;
-	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
 	CA_data[CA_GRIDAXES].function = &CommandData::function_CA_GRIDAXES;
+	CA_data[CA_GRIDCOLOUR].function = &CommandData::function_CA_GRIDCOLOUR;
+	CA_data[CA_GRIDCOLOURSCALE].function = &CommandData::function_CA_GRIDCOLOURSCALE;
 	CA_data[CA_GRIDCUBIC].function = &CommandData::function_CA_GRIDCUBIC;
 	CA_data[CA_GRIDCUTOFF].function = &CommandData::function_CA_GRIDCUTOFF;
-	CA_data[CA_GRIDCOLOURSCALE].function = &CommandData::function_CA_GRIDCOLOURSCALE;
 	CA_data[CA_GRIDLOOPORDER].function = &CommandData::function_CA_GRIDLOOPORDER;
 	CA_data[CA_GRIDORIGIN].function = &CommandData::function_CA_GRIDORIGIN;
 	CA_data[CA_GRIDORTHO].function = &CommandData::function_CA_GRIDORTHO;
 	CA_data[CA_GRIDSIZE].function = &CommandData::function_CA_GRIDSIZE;
+	CA_data[CA_GRIDTRANSPARENCY].function = &CommandData::function_CA_GRIDTRANSPARENCY;
+	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
 
 	// Image Commands
 	CA_data[CA_SAVEBITMAP].function = &CommandData::function_CA_SAVEBITMAP;

@@ -49,14 +49,6 @@ int CommandData::function_CA_FINALISEGRID(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Create new grid
-int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
-{
-	obj.g = master.addGrid();
-	obj.g->setName(stripTrailing(c->argc(0)));
-	return CR_SUCCESS;
-}
-
 // Set grid axes (nine doubles)
 int CommandData::function_CA_GRIDAXES(Command *&c, Bundle &obj)
 {
@@ -66,6 +58,24 @@ int CommandData::function_CA_GRIDAXES(Command *&c, Bundle &obj)
 	mat.set(1, c->arg3d(3));
 	mat.set(2, c->arg3d(6));
 	obj.g->setAxes(mat);
+	return CR_SUCCESS;
+}
+
+// Set (positive) colour for grid
+int CommandData::function_CA_GRIDCOLOUR(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2));
+	if (c->hasArg(3)) obj.g->setTransparency(c->argd(3));
+	return CR_SUCCESS;
+}
+
+// Set negative colour for grid
+int CommandData::function_CA_GRIDCOLOURNEGATIVE(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2));
+	if (c->hasArg(3)) obj.g->setTransparency(c->argd(3));
 	return CR_SUCCESS;
 }
 
@@ -162,6 +172,26 @@ int CommandData::function_CA_GRIDSIZE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set whether the grid has symmetric isovalues
+int CommandData::function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setSymmetric(c->argb(0));
+	return CR_SUCCESS;
+}
 
+// Set transparency of grid
+int CommandData::function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setTransparency(c->argf(0));
+	return CR_SUCCESS;
+}
 
-
+// Create new grid
+int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
+{
+	obj.g = master.addGrid();
+	obj.g->setName(stripTrailing(c->argc(0)));
+	return CR_SUCCESS;
+}

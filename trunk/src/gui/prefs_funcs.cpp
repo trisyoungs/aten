@@ -571,7 +571,7 @@ void AtenPrefs::colourScale_ColourChanged(bool checked)
 	newcol = QColorDialog::getColor(oldcol, this);
 	if (!oldcol.isValid()) return;
 	// Store new colour
-	prefs.colourScale[n].setColour(type, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.colourScale[n].setColour(type, newcol.redF(), newcol.greenF(), newcol.blueF());
 	TColourFrame *colframe;
 	if (type == ColourScale::MinColour) colframe = scaleMinColourFrame_[n];
 	else if (type == ColourScale::MidColour) colframe = scaleMidColourFrame_[n];
