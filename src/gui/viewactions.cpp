@@ -85,26 +85,15 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 
 void AtenForm::setCartesianView(double x, double y, double z)
 {
-	// Set model rotation matrix to be *along* the specified axis
-	Vec3<double> v;
-	v.set(x,y,z);
-	v.toSpherical();
-	// set_rotation() expects the degrees of rotation about the x and y axes respectively,
-	// so give it phi and theta in the reverse order. 
-	master.currentModel()->setRotation(-v.z,v.y);
+	// Set model rotation matrix to be along the specified axis
+	master.currentModel()->viewAlong(x,y,z);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::setCellView(double x, double y, double z)
 {
-	// Set model rotation matrix to be *along* the specified axis
-	Vec3<double> v;
-	v.set(x,y,z);
-	v *= master.currentModel()->cell()->transpose();
-	v.toSpherical();
-	// set_rotation() expects the degrees of rotation about the x and y axes respectively,
-	// so give it phi and theta in the reverse order. 
-	master.currentModel()->setRotation(-v.z,v.y);
+	// Set model rotation matrix to be *along* the specified cell axis
+	master.currentModel()->viewAlongCell(x,y,z);
 	gui.mainView.postRedisplay();
 }
 

@@ -40,9 +40,6 @@ int main(int argc, char *argv[])
 	printf("This is free software, and you are welcome to redistribute it under certain conditions.\n");
 	printf("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
-	// Prepare command line to act on debug options
-	master.debugCli(argc, argv);
-
 	srand( (unsigned)time( NULL ) );
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
@@ -63,7 +60,7 @@ int main(int argc, char *argv[])
 		if (!master.openFilters(filename,TRUE)) return 1;
 		else found = TRUE;
 	}
-	else printf("$ATENDATA has not been set.\n");
+	else printf("$ATENDATA has not been set. Searching default locations...\n");
 	if (!found)
 	{
 		// Try a list of default locations...

@@ -55,11 +55,11 @@ void GuiQt::run(int argc, char **argv)
 	dbgBegin(Debug::Calls,"GuiQt::run");
 
 	// Initialise Qt, and the icons resource
-        app = new QApplication(argc, argv);
+	app = new QApplication(argc, argv);
 	Q_INIT_RESOURCE(icons);
 
 	// Create the GUI windows
-        mainWindow = new AtenForm;
+	mainWindow = new AtenForm;
 	prefsDialog = new AtenPrefs;
 	editDialog = new AtenEdit;
 	loadModelDialog = new AtenLoadModel;
@@ -72,7 +72,7 @@ void GuiQt::run(int argc, char **argv)
 	selectPatternDialog->setModal(TRUE);
 
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
-	gui.mainView.setWidget(mainWindow->ui.ModelView);	
+	gui.mainView.setWidget(mainWindow->ui.ModelView);
 	mainWindow->ui.ModelView->setCanvas(&gui.mainView);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
@@ -103,7 +103,7 @@ void GuiQt::run(int argc, char **argv)
 	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
 		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
-		m->resetView();
+		//m->resetView();
 		m->calculateViewMatrix();
 	}
 
@@ -112,6 +112,8 @@ void GuiQt::run(int argc, char **argv)
 	mainWindow->refreshForcefieldPage();
 	mainWindow->refreshDisorderPage();
 	updateTrajControls();
+
+	gui.mainView.enableDrawing();
 
 	int n = app->exec();
 	dbgEnd(Debug::Calls,"GuiQt::run");

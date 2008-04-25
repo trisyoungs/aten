@@ -43,33 +43,6 @@ int CommandData::function_CA_ROTATEVIEW(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Translate view
-int CommandData::function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->adjustCamera(c->arg3d(0),0.0);
-	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
-}
-
-// Zoom view
-int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->adjustCamera(0.0,0.0,c->argd(2),0.0);
-	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
-}
-
-// ZRotate view
-int CommandData::function_CA_ZROTATEVIEW(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->zRotate(c->argd(0));
-	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
-}
-
 // Render speed test
 int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 {
@@ -90,5 +63,52 @@ int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 	clock_t tfinish = clock();
 	double nsec = double(tfinish-tstart) / CLOCKS_PER_SEC;
 	msg(Debug::None,"SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
+	return CR_SUCCESS;
+}
+
+// Translate view
+int CommandData::function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->adjustCamera(c->arg3d(0),0.0);
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// View along specified axis
+int CommandData::function_CA_VIEWALONG(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	// Set model rotation matrix to be along the specified axis
+	obj.m->viewAlong(c->argd(0), c->argd(1), c->argd(2));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// View along specified cell axis
+int CommandData::function_CA_VIEWALONGCELL(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	// Set model rotation matrix to be along the specified axis
+	obj.m->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// Zoom view
+int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->adjustCamera(0.0,0.0,c->argd(0),0.0);
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// ZRotate view
+int CommandData::function_CA_ZROTATEVIEW(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->zRotate(c->argd(0));
+	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }

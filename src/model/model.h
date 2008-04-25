@@ -341,6 +341,10 @@ class Model
 	double cameraRotation();
 	// Set model rotation to exact values
 	void setRotation(double rotx, double roty);
+	// Set view to be along the specified cartesian axis
+	void viewAlong(double x, double y, double z);
+	// Set view to be along the specified cell axis
+	void viewAlongCell(double x, double y, double z);
 	// Rotate the model about the x and y axes
 	void rotate(double, double);
 	// Spin the model about the z axis

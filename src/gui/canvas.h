@@ -78,6 +78,8 @@ class Canvas
 	bool valid_;
 	// Flag indicating if we are currently drawing to this canvas
 	bool drawing_;
+	// Flag to prevent rendering (used to restrict unnecessary renders before canvas is even visible)
+	bool noDraw_;
 	// Model 'width' of a single pixel at the current draw depth...
 	double drawPixelWidth_;
 	// Qt Target widget
@@ -110,6 +112,8 @@ class Canvas
 	void configure();
 	// Called when context needs to be redrawn
 	void expose();
+	// Enable rendering
+	void enableDrawing();
 
 	/*
 	// Rendering display lists
