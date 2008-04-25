@@ -26,6 +26,7 @@
 #include "base/debug.h"
 #include "classes/variables.h"
 #include <math.h>
+#include <string.h>
 
 const char *upperCase(const char *s)
 {
