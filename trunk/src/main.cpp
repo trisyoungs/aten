@@ -43,15 +43,18 @@ int main(int argc, char *argv[])
 	srand( (unsigned)time( NULL ) );
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
+	// Initialise QApplication
+	gui.app = new QApplication(argc, argv);
+
 	// Get environment variables
 	master.homeDir = getenv("HOME");
 	master.workDir = getenv("PWD");
 	printf("Home directory is %s, working directory is %s.\n", master.homeDir.get(), master.workDir.get());
 
 	// Read default filters from data directory (pass directory)
-	// Attempt to find our data dir...
 	char filename[256];
 	bool found = FALSE;
+	// If ATENDATA is set, take data from there
 	master.dataDir = getenv("ATENDATA");
 	if (!master.dataDir.empty())
 	{
@@ -67,6 +70,7 @@ int main(int argc, char *argv[])
 		sprintf(filename,"%s%s",master.dataDir.get(),"/filters/");
 		if (master.openFilters("/usr/share/aten/filters/",TRUE)) found = TRUE;
 		else if (master.openFilters("/usr/local/share/aten/filters/",TRUE)) found = TRUE;
+		else if (master.openFilters( qPrintable(gui.app->applicationDirPath() + "/../filters/"), TRUE)) found = TRUE;
 		else
 		{
 			printf("No filter index found in any of these locations.\n");

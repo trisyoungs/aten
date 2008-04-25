@@ -41,12 +41,12 @@ Grid::Grid()
 	displayList_ = 0;
 	renderPoint_ = -1;
 	visible_ = TRUE;
-	positiveColour_[0] = 1.0f;
+	positiveColour_[0] = 0.0f;
 	positiveColour_[1] = 0.0f;
-	positiveColour_[2] = 0.0f;
+	positiveColour_[2] = 1.0f;
 	positiveColour_[3] = 0.5f;
-	negativeColour_[0] = 0.0f;
-	negativeColour_[1] = 0.0f;
+	negativeColour_[0] = 1.0f;
+	negativeColour_[1] = 1.0f;
 	negativeColour_[2] = 1.0f;
 	negativeColour_[3] = 0.5f;
 	symmetric_ = FALSE;

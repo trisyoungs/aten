@@ -390,9 +390,9 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
-	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
+	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 	// Generate isosurface
 	for (i=1; i<npoints.x-2; i++)
 	{
@@ -461,7 +461,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						if (vertex[5] <= -cutoff) cubetype += 32;
 						if (vertex[6] <= -cutoff) cubetype += 64;
 						if (vertex[7] <= -cutoff) cubetype += 128;
-						glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->negativeColour());
+						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->negativeColour());
 						mult = -1.0;
 					}
 					else
@@ -474,7 +474,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 						if (vertex[5] >= cutoff) cubetype += 32;
 						if (vertex[6] >= cutoff) cubetype += 64;
 						if (vertex[7] >= cutoff) cubetype += 128;
-						glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+						glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 						mult = 1.0;
 					}
 				}
@@ -492,7 +492,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 					v2 = vertexpos[edgevertices[faces[n]][1]];
 					r.set(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2]);
 					r *= ipol;
-					normal = -(gradient[edgevertices[faces[n]][0]] + (gradient[edgevertices[faces[n]][1]] - gradient[edgevertices[faces[n]][0]]) * ipol);
+					normal = (gradient[edgevertices[faces[n]][0]] + (gradient[edgevertices[faces[n]][1]] - gradient[edgevertices[faces[n]][0]]) * ipol) * -mult;
 					normal.normalise();
 					r.add(i+v1[0], j+v1[1], k+v1[2]);
 					// Set triangle coordinates and add cube position
