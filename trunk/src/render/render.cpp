@@ -31,6 +31,13 @@ void Canvas::renderScene(Model *source)
 	static Model *trajparent;
 	static double camrot;
 
+	// If the canvas is stil resttricted, don't draw anything
+	if (noDraw_)
+	{
+		dbgEnd(Debug::Calls,"Canvas::renderScene");
+		return;
+	}
+
 	// Begin the GL commands
 	if (!beginGl())
 	{

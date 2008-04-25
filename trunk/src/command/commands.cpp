@@ -620,7 +620,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the specified variable to a supplied value/variable" },
 	
 	// View
-	{ "resetview",		
+	{ "resetview",		"",		"",
 				"Reset the camera and rotation for the current model" },
 	{ "rotateview",		"VV",		"<x> <y>",
 				"Rotate the current model about the x and y axes by the specified amounts" },

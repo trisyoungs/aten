@@ -690,6 +690,8 @@ class CommandData
 	int function_CA_ROTATEVIEW(Command *&c, Bundle &obj);
 	int function_CA_SPEEDTEST(Command *&c, Bundle &obj);
 	int function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj);
+	int function_CA_VIEWALONG(Command *&c, Bundle &obj);
+	int function_CA_VIEWALONGCELL(Command *&c, Bundle &obj);
 	int function_CA_ZOOMVIEW(Command *&c, Bundle &obj);
 	int function_CA_ZROTATEVIEW(Command *&c, Bundle &obj);
 

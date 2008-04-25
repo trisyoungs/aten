@@ -61,7 +61,7 @@ void AtenEdit::finaliseUi()
 void AtenEdit::setControls()
 {
 	dbgBegin(Debug::Calls,"AtenEdit::setControls");
-	dbgBegin(Debug::Calls,"AtenEdit::setControls");
+	dbgEnd(Debug::Calls,"AtenEdit::setControls");
 }
 
 // Populate widget with specified forcefield

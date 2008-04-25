@@ -252,8 +252,6 @@ class Master
 	void printUsage() const;
 
 	public:
-	// Prepare CLI debug options
-	void debugCli(int, char**);
 	// Parse command line options
 	int parseCli(int, char**);
 	// Element map name conversions to apply on load

@@ -34,6 +34,7 @@ Canvas::Canvas()
 	valid_ = FALSE;
 	renderPoint_ = -1;
 	drawing_ = FALSE;
+	noDraw_ = TRUE;
 	displayModel_ = NULL;
 	drawPixelWidth_ = 1.0;
 	activeMode_ = Canvas::NoAction;
@@ -138,6 +139,12 @@ void Canvas::configure()
 	doProjection();
 	// Flag that render source needs to be reprojected
 	if (displayModel_ != NULL) displayModel_->logChange(Change::VisualLog);
+}
+
+// Enable drawing
+void Canvas::enableDrawing()
+{
+	noDraw_ = FALSE;
 }
 
 /*

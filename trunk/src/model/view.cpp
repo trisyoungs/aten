@@ -435,3 +435,34 @@ Vec3<double> Model::rCamera()
 {
 	return rCamera_;
 }
+
+// Set view to be along the specified cartesian axis
+void Model::viewAlong(double x, double y, double z)
+{
+	dbgBegin(Debug::Calls,"Model::viewAlong");
+	// Set model rotation matrix to be along the specified axis
+	Vec3<double> v;
+	v.set(x,y,z);
+	v.toSpherical();
+	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
+	setRotation(-v.z,v.y);
+	// Log camera change
+	logChange(Change::CameraLog);
+	dbgEnd(Debug::Calls,"Model::viewAlong");
+}
+
+// Set view to be along the specified cell axis
+void Model::viewAlongCell(double x, double y, double z)
+{
+	dbgBegin(Debug::Calls,"Model::viewAlongCell");
+	// Set model rotation matrix to be along the specified cell axis
+	Vec3<double> v;
+	v.set(x,y,z);
+	v *= cell()->transpose();
+	v.toSpherical();
+	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
+	setRotation(-v.z,v.y);
+	// Log camera change
+	logChange(Change::CameraLog);
+	dbgEnd(Debug::Calls,"Model::viewAlongCell");
+}

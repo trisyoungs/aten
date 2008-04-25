@@ -197,6 +197,7 @@ void Master::initCommands()
 	CA_data[CA_GRIDORIGIN].function = &CommandData::function_CA_GRIDORIGIN;
 	CA_data[CA_GRIDORTHO].function = &CommandData::function_CA_GRIDORTHO;
 	CA_data[CA_GRIDSIZE].function = &CommandData::function_CA_GRIDSIZE;
+	CA_data[CA_GRIDSYMMETRIC].function = &CommandData::function_CA_GRIDSYMMETRIC;
 	CA_data[CA_GRIDTRANSPARENCY].function = &CommandData::function_CA_GRIDTRANSPARENCY;
 	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
 
@@ -345,6 +346,8 @@ void Master::initCommands()
 	CA_data[CA_ROTATEVIEW].function = &CommandData::function_CA_ROTATEVIEW;
 	CA_data[CA_SPEEDTEST].function = &CommandData::function_CA_SPEEDTEST;
 	CA_data[CA_TRANSLATEVIEW].function = &CommandData::function_CA_TRANSLATEVIEW;
+	CA_data[CA_VIEWALONG].function = &CommandData::function_CA_VIEWALONG;
+	CA_data[CA_VIEWALONGCELL].function = &CommandData::function_CA_VIEWALONGCELL;
 	CA_data[CA_ZOOMVIEW].function = &CommandData::function_CA_ZOOMVIEW;
 	CA_data[CA_ZROTATEVIEW].function = &CommandData::function_CA_ZROTATEVIEW;
 }
