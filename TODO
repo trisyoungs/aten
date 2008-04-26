@@ -25,15 +25,8 @@ Filters To-Do list:
 
 General Qt To-Do list:
 	- Forcefield edit window
-		+ Need method to apply forcefield to all or selected pattern
 	- Better editability in the atomlist stack page
 	- Remember positions / visibility of toolbars (QSettings)
-
-Manual To-Do list:
-	- Section on forcefields
-	- Section on Qt GUI
-	- Filters Handbook is incomplete
-	- Tutorials
 
 Optimisation To-Do list:
 	- Hemispherical Ewald summmation
