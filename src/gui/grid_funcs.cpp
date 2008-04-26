@@ -140,9 +140,11 @@ void AtenForm::refreshGridInfo()
 	ui.GridAxesCZSpin->setValue(axes.rows[2].z);
 	// Set surface style, colour and transparency
 	ui.GridStyleCombo->setCurrentIndex(g->style());
-	ui.GridColourFrame->setColour(g->positiveColour());
-	ui.GridColourFrame->update();
-	//ui.GridNegColourFrame->setColour(g->negativeColour());
+	ui.GridPositiveColourFrame->setColour(g->positiveColour());
+	ui.GridPositiveColourFrame->update();
+	ui.GridNegativeColourFrame->setColour(g->negativeColour());
+	ui.GridNegativeColourFrame->update();
+	ui.GridSymmetricCheck->setChecked( g->symmetric() );
 	ui.GridTransparencySpin->setValue( g->transparency() );
 }
 
@@ -229,7 +231,7 @@ void AtenForm::on_GridStyleCombo_currentIndexChanged(int index)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_GridColourButton_clicked(bool checked)
+void AtenForm::on_GridPositiveColourButton_clicked(bool checked)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -243,8 +245,27 @@ void AtenForm::on_GridColourButton_clicked(bool checked)
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
 	g->setPositiveColour(newcol.redF(), newcol.greenF(), newcol.blueF());
-	ui.GridColourFrame->setColour(newcol);
-	ui.GridColourFrame->update();
+	ui.GridPositiveColourFrame->setColour(newcol);
+	ui.GridPositiveColourFrame->update();
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_GridNegativeColourButton_clicked(bool checked)
+{
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Grid *g = master.grid(row);
+	// Get current surface colour and convert into a QColor
+	GLfloat *col = g->positiveColour();
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour
+	g->setNegativeColour(newcol.redF(), newcol.greenF(), newcol.blueF());
+	ui.GridNegativeColourFrame->setColour(newcol);
+	ui.GridNegativeColourFrame->update();
 	gui.mainView.postRedisplay();
 }
 
@@ -255,5 +276,25 @@ void AtenForm::on_GridTransparencySpin_valueChanged(double value)
 	if (row == -1) return;
 	Grid *g = master.grid(row);
 	g->setTransparency( (GLfloat) value );
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_GridColourscaleSpin_valueChanged(int n)
+{
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Grid *g = master.grid(row);
+	g->setColourScale(n-1);
+	gui.mainView.postRedisplay();
+}
+
+void AtenForm::on_GridSymmetricCheck_clicked(bool checked)
+{
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Grid *g = master.grid(row);
+	g->setSymmetric(checked);
 	gui.mainView.postRedisplay();
 }

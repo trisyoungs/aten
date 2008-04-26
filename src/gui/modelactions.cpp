@@ -79,3 +79,15 @@ void AtenForm::on_actionModelShowAll_triggered(bool checked)
 	for (Atom *i = m->atoms(); i != NULL; i = i->next) m->setHidden(i, FALSE);
 	m->logChange(Change::VisualLog);
 }
+
+void AtenForm::on_actionModelRename_triggered(bool checked)
+{
+	Model *m = master.currentModel();
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
+	if (ok && !text.isEmpty())
+	{
+		m->setName(qPrintable(text));
+		refreshModelTabs();
+	}
+}

@@ -158,3 +158,58 @@ void AtenForm::translateSelection(int axis, int dir)
 	m->updateMeasurements();
 	gui.mainView.postRedisplay();
 }
+
+/*
+// Vector Shift Functions
+*/
+
+void AtenForm::on_DefineVectorButton_clicked(bool checked)
+{
+	// Set vector from defined atoms
+	Model *m = master.currentModel();
+	if (m->nSelected() != 2)
+	{
+		msg(Debug::None,"Exactly two atoms must be selected to define a vector.\n");
+		return;
+	}
+	Atom *i = m->firstSelected();
+	Vec3<double> v = i->nextSelected()->r() - i->r();
+	// Set widgets
+	ui.VectorShiftXSpin->setValue(v.x);
+	ui.VectorShiftYSpin->setValue(v.y);
+	ui.VectorShiftZSpin->setValue(v.z);
+}
+
+void AtenForm::on_VectorShiftPositiveButton_clicked(bool checked)
+{
+	Vec3<double> v;
+	v.x = ui.VectorShiftXSpin->value();
+	v.y = ui.VectorShiftYSpin->value();
+	v.z = ui.VectorShiftZSpin->value();
+	v *= ui.VectorDeltaSpin->value();
+	char s[128];
+	Model *m = master.currentModel();
+	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
+	m->beginUndostate(s);
+	m->translateSelectionLocal(v);
+	m->endUndostate();
+	m->updateMeasurements();
+	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+void AtenForm::on_VectorShiftNegativeButton_clicked(bool checked)
+{
+	Vec3<double> v;
+	v.x = ui.VectorShiftXSpin->value();
+	v.y = ui.VectorShiftYSpin->value();
+	v.z = ui.VectorShiftZSpin->value();
+	v *= -ui.VectorDeltaSpin->value();
+	char s[128];
+	Model *m = master.currentModel();
+	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
+	m->beginUndostate(s);
+	m->translateSelectionLocal(v);
+	m->endUndostate();
+	m->updateMeasurements();
+	gui.modelChanged(TRUE,FALSE,FALSE);
+}

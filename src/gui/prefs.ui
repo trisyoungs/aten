@@ -2018,7 +2018,7 @@
           </size>
          </property>
          <property name="title" >
-          <string>Scales</string>
+          <string>Colour Scales</string>
          </property>
         </widget>
        </item>
@@ -2046,6 +2046,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="PrefsCancelButton" >
+       <property name="text" >
+        <string>Cancel</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="PrefsOkButton" >

@@ -26,13 +26,19 @@
 #include <QtGui/QColorDialog>
 #include "model/model.h"
 
-// Local variables
-bool UPDATING = FALSE;
-
 // Constructor
 AtenPrefs::AtenPrefs(QDialog *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
+	elementsBackup = NULL;
+	UPDATING = FALSE;
+}
+
+// Destructor
+AtenPrefs::~AtenPrefs()
+{
+	// Free element backup
+	if (elementsBackup != NULL) delete[] elementsBackup;
 }
 
 // Finalise GUI
@@ -222,15 +228,35 @@ void AtenPrefs::setControls()
 			scaleMidColourButton_[n]->setEnabled(FALSE);
 		}
 	}
+	// Store current values in the Prefs structure...
+	prefsBackup = prefs;
+	// If this is the first time, create the elements backup array
+	if (elementsBackup == NULL) elementsBackup = new Element[elements.nElements()];
+	for (int i=0; i<elements.nElements(); i++)
+	{
+		elementsBackup[i].atomicRadius = elements.atomicRadius(i);
+		elements.copyAmbientColour(i, elementsBackup[i].ambientColour);
+		elements.copyDiffuseColour(i, elementsBackup[i].diffuseColour);
+	}
 	UPDATING = FALSE;
 	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
 }
-/*
+
 // Close window
-void AtenPrefs::on_PrefsCloseButton_clicked(bool checked)
+void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 {
-	gui.prefsDialog->accept();
-}*/
+	// Copy old preferences values back into main structure, update view and close window
+	prefs = prefsBackup;
+	for (int i=0; i<elements.nElements(); i++)
+	{
+		elements.setAtomicRadius(i,elementsBackup[i].atomicRadius);
+		elements.setAmbientColour(i, elementsBackup[i].ambientColour[0], elementsBackup[i].ambientColour[1], elementsBackup[i].ambientColour[2]);
+		elements.setDiffuseColour(i, elementsBackup[i].diffuseColour[0], elementsBackup[i].diffuseColour[1], elementsBackup[i].diffuseColour[2]);
+	}
+	master.currentModel()->logChange(Change::VisualLog);
+	gui.mainView.postRedisplay();
+	reject();
+}
 
 /*
 // Element Page

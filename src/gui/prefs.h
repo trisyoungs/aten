@@ -24,12 +24,22 @@
 
 #include "gui/gui.h"
 #include "gui/ui_prefs.h"
+#include "base/prefs.h"
+
+// Forwads declarations
+class Element;
 
 // Program preferences window
 class AtenPrefs : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	/*
+	// Window Functions
+	*/
+	private slots:
+	void on_PrefsCancelButton_clicked(bool checked);
 
 	/*
 	// Element Page
@@ -106,6 +116,13 @@ class AtenPrefs : public QDialog
 	void on_BackgroundColourButton_clicked(bool checked);
 	void on_SpecularColourButton_clicked(bool checked);
 
+	/*
+	// Local variables
+	*/
+	private:
+	bool UPDATING;
+	Prefs prefsBackup;
+	Element *elementsBackup;
 
 	/*
 	// Widgets
@@ -113,6 +130,8 @@ class AtenPrefs : public QDialog
 	public:
 	// Constructor
 	AtenPrefs(QDialog *parent = 0);
+	// Destructor
+	~AtenPrefs();
 	// Main form declaration
 	Ui::PrefsDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
