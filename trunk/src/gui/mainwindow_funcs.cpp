@@ -118,6 +118,22 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 }
 
+void AtenForm::on_ModelTabs_doubleClicked(int tabid)
+{
+	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_doubleClicked");
+	// Different model tab has been selected, so set master.currentmodel to reflect it.
+	Model *m = master.model(tabid);
+	if (m == NULL) return;
+	bool ok;
+	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
+	if (ok && !text.isEmpty())
+	{
+		m->setName(qPrintable(text));
+		ui.ModelTabs->setTabText(tabid, text);
+	}
+	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_doubleClicked");
+}
+
 void AtenForm::refreshModelTabs()
 {
 	dbgBegin(Debug::Calls,"AtenForm::refreshModelTabs");

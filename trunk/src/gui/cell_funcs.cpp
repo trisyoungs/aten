@@ -28,86 +28,10 @@
 // Local variables
 bool cellpage_refreshing = FALSE;
 
-void AtenForm::on_CellLengthASpin_valueChanged(double d)
-{
-	cellChanged();
-}
-
-void AtenForm::on_CellLengthBSpin_valueChanged(double d)
-{
-	cellChanged();
-}
-
-void AtenForm::on_CellLengthCSpin_valueChanged(double d)
-{
-	cellChanged();
-}
-
-void AtenForm::on_CellAngleASpin_valueChanged(double d)
-{
-	cellChanged();
-}
-
-void AtenForm::on_CellAngleBSpin_valueChanged(double d)
-{
-	cellChanged();
-}
-
-void AtenForm::on_CellAngleCSpin_valueChanged(double d)
-{
-	cellChanged();
-}
-
-void AtenForm::on_CellSpacegroupEdit_returnPressed()
-{
-	on_CellSpacegroupSetButton_clicked(FALSE);
-}
-
-void AtenForm::on_CellSpacegroupSetButton_clicked(bool checked)
-{
-	Model *m = master.currentModel();
-	int sg;
-	static char s[64];
-	// Grab the current text of the line edit and determine spacegroup
-	// Try a direct number conversion first...
-	strcpy(s,qPrintable(ui.CellSpacegroupEdit->text()));
-	sg = atoi(s);
-	if (sg == 0) sg = master.findSpacegroupByName(s);
-	// Check for null spacegroup
-	if (sg == 0) msg(Debug::None,"Unrecognised spacegroup '%s'.\n", s);
-	else
-	{
-		m->setSpacegroup(sg);
-		ui.CellSpacegroupEdit->setText("");
-		// Set spacegroup label
-		sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
-		ui.SpacegroupLabel->setText(s);
-	}
-}
-
-void AtenForm::on_CellSpacegroupRemoveButton_clicked(bool checked)
-{
-	static char s[64];
-	Model *m = master.currentModel();
-	m->setSpacegroup(0);
-	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
-	ui.SpacegroupLabel->setText(s);
-}
-
-void AtenForm::on_CellSpacegroupPackButton_clicked(bool checked)
-{
-	Model *m = master.currentModel();
-	m->beginUndostate("Pack Cell");
-	m->pack();
-	m->endUndostate();
-	gui.modelChanged();
-}
-
 void AtenForm::refreshCellPages()
 {
 	// If the cell page is not visible, don't do anything
-	if ((!ui.ShowCellDefinePageButton->isChecked()) && (!ui.ShowCellManipulatePageButton->isChecked())) return;
+	//if ((!ui.ShowCellDefinePageButton->isChecked()) && (!ui.ShowCellManipulatePageButton->isChecked())) return;
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model *m = master.currentModel();
 	Cell *cell = m->cell();
@@ -174,6 +98,45 @@ void AtenForm::cellChanged()
 	cellpage_refreshing = FALSE;
 }
 
+/*
+// Cell Definition
+*/
+
+void AtenForm::on_CellLengthASpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellLengthBSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellLengthCSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellAngleASpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellAngleBSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellAngleCSpin_valueChanged(double d)
+{
+	cellChanged();
+}
+
+void AtenForm::on_CellSpacegroupEdit_returnPressed()
+{
+	on_CellSpacegroupSetButton_clicked(FALSE);
+}
+
 void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 {
 	// If the group is checked we store the current spin values in the current model.
@@ -199,6 +162,55 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
+/*
+// Spacegroup Functions
+*/
+
+void AtenForm::on_CellSpacegroupSetButton_clicked(bool checked)
+{
+	Model *m = master.currentModel();
+	int sg;
+	static char s[64];
+	// Grab the current text of the line edit and determine spacegroup
+	// Try a direct number conversion first...
+	strcpy(s,qPrintable(ui.CellSpacegroupEdit->text()));
+	sg = atoi(s);
+	if (sg == 0) sg = master.findSpacegroupByName(s);
+	// Check for null spacegroup
+	if (sg == 0) msg(Debug::None,"Unrecognised spacegroup '%s'.\n", s);
+	else
+	{
+		m->setSpacegroup(sg);
+		ui.CellSpacegroupEdit->setText("");
+		// Set spacegroup label
+		sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+		ui.SpacegroupLabel->setText(s);
+	}
+}
+
+void AtenForm::on_CellSpacegroupRemoveButton_clicked(bool checked)
+{
+	static char s[64];
+	Model *m = master.currentModel();
+	m->setSpacegroup(0);
+	// Set spacegroup label
+	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+	ui.SpacegroupLabel->setText(s);
+}
+
+void AtenForm::on_CellSpacegroupPackButton_clicked(bool checked)
+{
+	Model *m = master.currentModel();
+	m->beginUndostate("Pack Cell");
+	m->pack();
+	m->endUndostate();
+	gui.modelChanged();
+}
+
+/*
+// Replicate Functions
+*/
+
 void AtenForm::on_CellReplicateButton_clicked(bool checked)
 {
 	// Get values from spin boxes...
@@ -215,6 +227,20 @@ void AtenForm::on_CellReplicateButton_clicked(bool checked)
 	m->endUndostate();
 	gui.modelChanged();
 }
+
+void AtenForm::on_CellReplicateFoldCheck_clicked(bool checked)
+{
+	prefs.setReplicateFold(checked);
+}
+
+void AtenForm::on_CellReplicateTrimCheck_clicked(bool checked)
+{
+	prefs.setReplicateTrim(checked);
+}
+
+/*
+// Scale Functions
+*/
 
 void AtenForm::on_CellScaleButton_clicked(bool checked)
 {

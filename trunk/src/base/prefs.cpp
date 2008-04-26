@@ -235,7 +235,7 @@ Prefs::Prefs()
 	energyConversions_[Prefs::KiloCalories] = 4184.0;
 	energyConversions_[Prefs::ElectronVolts] = 96485.14925;
 	energyConversions_[Prefs::Hartree] = 2625494.616;
-	setEnergyUnit(Prefs::KiloJoules);
+	if (this == &prefs) setEnergyUnit(Prefs::KiloJoules);
 	densityUnit_ = Prefs::GramsPerCm;
 
 	// Energy

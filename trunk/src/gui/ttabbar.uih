@@ -24,16 +24,25 @@
 
 #include <QtGui/QTabBar>
 #include <QtCore/QObject>
+#include <QtGui/QMouseEvent>
 
 class TTabBar : public QTabBar
 {
 	Q_OBJECT
 
 	public:
-	TTabBar(QWidget*)
-	{
-	};
+	TTabBar(QWidget *parent) : QTabBar(parent) {};
+	
+	signals:
+	// Tab was double-clicked
+	void doubleClicked(int tabid);
 
+	protected:
+	// Allow tabs to be double-clicked to change text
+	void mouseDoubleClickEvent(QMouseEvent *event)
+	{
+		for (int i = 0; i < count(); i++) if (tabRect(i).contains(event->pos())) emit doubleClicked(i);
+	}
 };
 
 #endif

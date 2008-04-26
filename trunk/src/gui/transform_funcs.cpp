@@ -79,5 +79,5 @@ void AtenForm::rotateSelection(double direction)
 	m->rotateSelectionVector(o, v, direction * ui.RotateAngleSpin->value());
 	m->endUndostate();
 	m->updateMeasurements();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }

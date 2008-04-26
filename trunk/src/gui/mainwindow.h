@@ -86,6 +86,8 @@ class AtenForm : public QMainWindow
 	private slots:
 	// Model Management
 	void on_ModelTabs_currentChanged(int value);
+	void on_ModelTabs_doubleClicked(int tabid);
+
 	public:
 	// Refresh names in ModelTabs
 	void refreshModelTabs();
@@ -182,6 +184,7 @@ class AtenForm : public QMainWindow
 	// Model Actions
 	*/
 	private slots:
+	void on_actionModelRename_triggered(bool checked);
 	void on_actionFFType_triggered(bool checked);
 	void on_actionFFUntype_triggered(bool checked);
 	void on_actionFoldAtoms_triggered(bool checked);
@@ -250,6 +253,7 @@ class AtenForm : public QMainWindow
 	void on_ShowForcefieldsPageButton_clicked(bool checked);
 	void on_ShowGridsPageButton_clicked(bool checked);
 	void on_ShowAnalysePageButton_clicked(bool checked);
+	//void on_ShowGlyphPageButton_clicked(bool checked);
 
 	// Atom Page Functions
 	public:
@@ -327,6 +331,9 @@ class AtenForm : public QMainWindow
 	void on_FlipZButton_clicked(bool checked);
 	void on_DefineCentreButton_clicked(bool checked);
 	void on_CentreSelectionButton_clicked(bool checked);
+	void on_DefineVectorButton_clicked(bool checked);
+	void on_VectorShiftPositiveButton_clicked(bool checked);
+	void on_VectorShiftNegativeButton_clicked(bool checked);
 
 	// Cell Definition Page Functions
 	public:
@@ -348,6 +355,8 @@ class AtenForm : public QMainWindow
 	// Cell Manipulate Page Functions
 	private slots:
 	void on_CellReplicateButton_clicked(bool checked);
+	void on_CellReplicateFoldCheck_clicked(bool checked);
+	void on_CellReplicateTrimCheck_clicked(bool checked);
 	void on_CellScaleButton_clicked(bool checked);
 
 	// Minimiser Page Functions
@@ -376,7 +385,6 @@ class AtenForm : public QMainWindow
 	void on_ManualTypeTestButton_clicked(bool checked);
 	void on_ManualTypeEdit_returnPressed();
 
-
 	// Grid Page Functions
 	public:
 	void refreshGridsPage();
@@ -404,8 +412,11 @@ class AtenForm : public QMainWindow
 	void on_GridAxesCXSpin_valueChanged(double d);
 	void on_GridAxesCYSpin_valueChanged(double d);
 	void on_GridAxesCZSpin_valueChanged(double d);
-	void on_GridColourButton_clicked(bool checked);
+	void on_GridPositiveColourButton_clicked(bool checked);
+	void on_GridNegativeColourButton_clicked(bool checked);
 	void on_GridTransparencySpin_valueChanged(double d);
+	void on_GridColourscaleSpin_valueChanged(int n);
+	void on_GridSymmetricCheck_clicked(bool checked);
 
 	// Disorder Page Functions
 	public:
@@ -416,9 +427,6 @@ class AtenForm : public QMainWindow
 	private slots:
 	void on_ComponentTable_itemSelectionChanged();
 	void on_ComponentTable_itemChanged(QTableWidgetItem *item);
-	//void on_PopulationSpin_valueChanged(int value);
-	//void on_ComponentTranslateCheck_clicked(bool checked);
-	//void on_ComponentRotateCheck_clicked(bool checked);
 	void on_ComponentRegionCombo_currentIndexChanged(int index);
 	void on_ShowRegionsCheck_clicked(bool checked);
 	void on_DisorderStartButton_clicked(bool checked);
