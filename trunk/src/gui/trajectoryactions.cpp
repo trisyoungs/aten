@@ -22,6 +22,7 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/tcanvas.uih"
 #include "model/model.h"
 
 /*
@@ -61,12 +62,12 @@ void AtenForm::on_actionPlayPause_triggered(bool checked)
 	// If button is depressed, begin playback
 	if (checked)
 	{
-		gui.setTrajectoryTimerId(ui.ViewFrame->startTimer(100));
+		gui.setTrajectoryTimerId(gui.mainWidget->startTimer(100));
 		gui.setTrajectoryPlaying(TRUE);
 	}
 	else
 	{
-		ui.ViewFrame->killTimer(gui.trajectoryTimerId());
+		gui.mainWidget->killTimer(gui.trajectoryTimerId());
 		gui.setTrajectoryPlaying(FALSE);
 	}
 	gui.updateTrajControls();
