@@ -524,7 +524,7 @@ void GuiQt::setTrajectoryTimerId(int i)
 // Stop trajectory playback
 void GuiQt::stopTrajectoryPlayback()
 {
-	mainWindow->ui.ViewFrame->killTimer(trajectoryTimerId_);
+	mainWidget->killTimer(trajectoryTimerId_);
 	mainWindow->ui.actionPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
 	gui.updateTrajControls();
