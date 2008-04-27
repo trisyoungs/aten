@@ -123,6 +123,7 @@ void GuiQt::run()
 	mainWindow->refreshGridsPage();
 	mainWindow->refreshForcefieldPage();
 	mainWindow->refreshDisorderPage();
+	mainWindow->refreshCellPages();
 	updateTrajControls();
 
 	gui.mainView.enableDrawing();
@@ -149,7 +150,7 @@ void GuiQt::addModel(Model *m)
 	int tabid = mainWindow->ui.ModelTabs->addTab(m->name());
 	mainWindow->ui.ModelTabs->setCurrentIndex(tabid);
 	m->resetView();
-	gui.modelChanged();
+	gui.modelChanged(TRUE,TRUE,TRUE);
 }
 
 // Remove model from list

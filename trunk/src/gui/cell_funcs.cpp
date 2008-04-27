@@ -26,7 +26,7 @@
 #include "base/spacegroup.h"
 
 // Local variables
-bool cellpage_refreshing = FALSE;
+bool UPDATING = FALSE;
 
 void AtenForm::refreshCellPages()
 {
@@ -39,8 +39,11 @@ void AtenForm::refreshCellPages()
 	static char s[64];
 	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->volume());
 	ui.CellVolumeLabel->setText(s);
-	if (cellpage_refreshing) return;
-	else cellpage_refreshing = TRUE;
+	if (UPDATING) return;
+	else UPDATING = TRUE;
+	// Update checkboxes in replicate group
+	ui.CellReplicateFoldCheck->setChecked( prefs.replicateFold() );
+	ui.CellReplicateTrimCheck->setChecked( prefs.replicateTrim() );
 	// Update the widgets on the page to reflect the current model's unit cell
 	if (cell->type() == Cell::NoCell)
 	{
@@ -49,7 +52,7 @@ void AtenForm::refreshCellPages()
 		ui.CellReplicateGroup->setEnabled(FALSE);
 		ui.CellScaleGroup->setEnabled(FALSE);
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
-		cellpage_refreshing = FALSE;
+		UPDATING = FALSE;
 		return;
 	}
 	else
@@ -73,14 +76,14 @@ void AtenForm::refreshCellPages()
 	// Set spacegroup label
 	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName,  m->spacegroup());
 	ui.SpacegroupLabel->setText(s);
-	cellpage_refreshing = FALSE;
+	UPDATING = FALSE;
 }
 
 void AtenForm::cellChanged()
 {
 	static char s[64];
-	if (cellpage_refreshing) return;
-	else cellpage_refreshing = TRUE;
+	if (UPDATING) return;
+	else UPDATING = TRUE;
 	// Construct length and angle vectors and set cell of model
 	static Vec3<double> lengths, angles;
 	lengths.set(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value());
@@ -95,7 +98,7 @@ void AtenForm::cellChanged()
 	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",m->cell()->volume());
 	ui.CellVolumeLabel->setText(s);
 	gui.modelChanged(FALSE,FALSE,FALSE);
-	cellpage_refreshing = FALSE;
+	UPDATING = FALSE;
 }
 
 /*
