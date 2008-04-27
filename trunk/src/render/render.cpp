@@ -61,8 +61,7 @@ void Canvas::renderScene(Model *source)
 		// Draw on our default message
 		glMatrixMode(GL_MODELVIEW);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glRasterPos2i(1,(int)height_-13);
-		glText(1.0,height_-10.0,"No model to display.");
+		glText(width_/2,height_/2,"No model to display.");
 		dbgEnd(Debug::Calls,"Canvas::renderScene");
 		return;
 	}

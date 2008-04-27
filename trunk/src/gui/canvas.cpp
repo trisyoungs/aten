@@ -118,14 +118,14 @@ void Canvas::realize()
 void Canvas::postRedisplay()
 {
 	dbgBegin(Debug::Calls,"Canvas::postRedisplay");
-	if (gui.exists()) contextWidget_->paintGL();
+	if (valid_) contextWidget_->paintGL();
 	dbgEnd(Debug::Calls,"Canvas::postRedisplay");
 }
 
 // Widget Expose
 void Canvas::expose()
 {
-	if (!gui.exists()) return;
+	if (valid_) return;
 	// Render from the current rendering source
 	renderScene(master.currentModel()->renderSource());
 }
@@ -145,6 +145,12 @@ void Canvas::configure()
 void Canvas::enableDrawing()
 {
 	noDraw_ = FALSE;
+}
+
+// Disable drawing
+void Canvas::disableDrawing()
+{
+	noDraw_ = TRUE;
 }
 
 /*
@@ -502,7 +508,7 @@ void Canvas::createLists()
 void Canvas::doProjection()
 {
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
-	if (!gui.exists() || !gui.mainView.isValid()) return;
+	if (!valid_) return;
 	dbgBegin(Debug::Calls,"Canvas::doProjection");
 	double pmat[16], bottom, top;
 	// Check source
@@ -576,10 +582,10 @@ void Canvas::saveVector(Model *source, vector_format vf, const char *filename)
 	{
 		bufsize += 1024*1024;
 		result = gl2psBeginPage(source->name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_DRAW_BACKGROUND | GL2PS_OCCLUSION_CULL, GL_RGBA, 0, 0, 0, 0, 0, bufsize, vectorfile, filename);
-		printf("Result = %i\n",result);
+		//printf("Result = %i\n",result);
 		renderScene(source);
 		result = gl2psEndPage();
-		printf("Result = %i\n",result);
+		//printf("Result = %i\n",result);
 	}
 }
 

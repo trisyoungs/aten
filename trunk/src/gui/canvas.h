@@ -51,18 +51,8 @@ class Canvas
 
 	// Actions
 	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, EditDrawAction, EditChainAction, EditTransmuteAction, EditDeleteAction, EditProbeAction, EditBondSingleAction, EditBondDoubleAction, EditBondTripleAction, EditDeleteBondAction, EditAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, nUserActions };
-			/*UA_PICKSELECT, UA_PICKFRAG, UA_PICKELEMENT, UA_PICKRADIAL,
-			UA_GEOMSELECT, UA_GEOMDIST, UA_GEOMANGLE, UA_GEOMTORSION, 
-			UA_POSSELECT, UA_POSCENTRE, UA_POSTRANSLATE, UA_POSROTATE,
-			UA_DRAWATOM, UA_DRAWCHAIN, UA_TRANSATOM, UA_DELATOM, UA_PROBEATOM,
-			UA_BONDSINGLE, UA_BONDDOUBLE, UA_BONDTRIPLE, UA_DELBOND,
-			UA_ROTATEXY, UA_ROTATEZ, UA_MOVECAM, UA_ZOOMCAM, 
-			UA_MANIPROTXY, UA_MANIPROTZ, UA_MANIPTRANS,
-			UA_ATOMADDHYDROGEN,
-			*//*UA_NITEMS };*/
-	// Keyboard Key Codes (translated from GTK/KDE keysyms)
+	// Keyboard Key Codes (translated from GTK/Qt keysyms)
 	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
-	//KC_OTHER, KC_ESCAPE, KC_SHIFT_L, KC_SHIFT_R, KC_CONTROL_L, KC_CONTROL_R, KC_ALT_L, KC_ALT_R, KC_LEFT, KC_RIGHT, KC_UP, KC_DOWN, KC_NITEMS };
 
 	/*
 	// Base rendering context
@@ -114,6 +104,8 @@ class Canvas
 	void expose();
 	// Enable rendering
 	void enableDrawing();
+	// Disable rendering
+	void disableDrawing();
 
 	/*
 	// Rendering display lists

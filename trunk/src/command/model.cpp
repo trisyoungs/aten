@@ -49,6 +49,7 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
 	obj.m->renumberAtoms();
+	obj.m->calculateViewMatrix();
 	obj.m->resetView();
 	obj.m->calculateMass();
 	obj.m->calculateDensity();

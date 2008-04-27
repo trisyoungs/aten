@@ -239,7 +239,7 @@ void AtenPrefs::setControls()
 		elements.copyDiffuseColour(i, elementsBackup[i].diffuseColour);
 	}
 	UPDATING = FALSE;
-	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
+	dbgEnd(Debug::Calls,"AtenPrefs::setControls");
 }
 
 // Close window
