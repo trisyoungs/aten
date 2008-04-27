@@ -39,6 +39,7 @@ GuiQt gui;
 // Constructor
 GuiQt::GuiQt()
 {
+	mainWidget = NULL;
 	mainWindow = NULL;
 	prefsDialog = NULL;
 	loadModelDialog = NULL;
@@ -56,11 +57,11 @@ void GuiQt::initialise(int argc, char **argv)
 	app = new QApplication(argc, argv);
 	// Create the QGLWidget
 	mainWidget = new TCanvas(NULL);
-	mainWidget->setMouseTracking(TRUE);
 	mainWidget->setGeometry(0,0,800,600);
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
 	mainView.setWidget(mainWidget);
 	mainWidget->setCanvas(&mainView);
+	mainView.enableDrawing();
 }
 
 // Initialise and create GUI
@@ -92,6 +93,9 @@ void GuiQt::run()
 	loadModelDialog->finaliseUi();
 	selectPatternDialog->finaliseUi();
 
+	// Temporarily disable drawing on the main canvas again
+	gui.mainView.disableDrawing();
+
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
@@ -103,18 +107,16 @@ void GuiQt::run()
 	mainWindow->show();
 	doesExist_ = TRUE;
 
-	// Prepare first model in list
+	// Make first loaded model the current one
 	master.setCurrentModel(master.models());
-	master.currentModel()->renderSource()->calculateViewMatrix();
-	master.currentModel()->renderSource()->projectAll();
 
 	// Add loaded models to tabbar (and reset its view while we're here)
 	int tabid;
 	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
 		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
-		//m->resetView();
 		m->calculateViewMatrix();
+		m->projectAll();
 	}
 
 	// Refresh the necessary stack pages

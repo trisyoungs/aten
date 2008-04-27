@@ -23,6 +23,7 @@
 #include "base/master.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
+#include "gui/tcanvas.uih"
 #include <QtGui/QFileDialog>
 #include <QtCore/QSettings>
 
@@ -112,9 +113,12 @@ void AtenForm::finaliseUi()
 	// Hide the stack widget initially
 	ui.MainWindowStack->hide();
 
+
 	// Add the previously-created QGLWidget to the main interface, and set up calls
-	QVBoxLayout *vbox = new QVBoxLayout(this);
+	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->setMargin(0);
+	gui.mainWidget->setParent(this);
+	gui.mainWidget->setMouseTracking(TRUE);
 	vbox->addWidget( (QWidget*) gui.mainWidget);
 	ui.ViewFrame->setLayout(vbox);
 

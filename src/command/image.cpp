@@ -65,10 +65,6 @@ int CommandData::function_CA_SAVEVECTOR(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
-	if (gui.exists()) gui.mainView.saveVector(obj.m, vf, c->argc(1));
-	else
-	{
-		gui.offscreenCanvas.saveVector(obj.m, vf, c->argc(1));
-	}
+	gui.mainView.saveVector(obj.m, vf, c->argc(1));
 	return CR_SUCCESS;
 }

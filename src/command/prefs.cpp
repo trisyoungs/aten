@@ -147,7 +147,7 @@ int CommandData::function_CA_GL(Command *&c, Bundle &obj)
 	if (go == Prefs::nGlOptions) return CR_FAIL;
 	if (c->argb(1)) prefs.addGlOption(go);
 	else prefs.removeGlOption(go);
-	if (gui.exists()) gui.mainView.initGl();
+	gui.mainView.initGl();
 	if (obj.m != NULL) obj.m->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
