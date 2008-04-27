@@ -61,12 +61,12 @@ void AtenForm::on_actionPlayPause_triggered(bool checked)
 	// If button is depressed, begin playback
 	if (checked)
 	{
-		gui.setTrajectoryTimerId(ui.ModelView->startTimer(100));
+		gui.setTrajectoryTimerId(ui.ViewFrame->startTimer(100));
 		gui.setTrajectoryPlaying(TRUE);
 	}
 	else
 	{
-		ui.ModelView->killTimer(gui.trajectoryTimerId());
+		ui.ViewFrame->killTimer(gui.trajectoryTimerId());
 		gui.setTrajectoryPlaying(FALSE);
 	}
 	gui.updateTrajControls();

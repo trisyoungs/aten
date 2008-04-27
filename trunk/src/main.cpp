@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
 
 	// Initialise QApplication
-	gui.app = new QApplication(argc, argv);
+	gui.initialise(argc, argv);
 
 	// Get environment variables
 	master.homeDir = getenv("HOME");
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 	{
 		// Add empty model if none were specified on the command line
 		if (master.nModels() == 0) Model *m = master.addModel();
-		gui.run(argc,argv);
+		gui.run();
 	}
 
 	// Done.

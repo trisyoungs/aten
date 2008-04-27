@@ -22,6 +22,7 @@
 #include "parse/filter.h"
 #include "base/master.h"
 #include "gui/mainwindow.h"
+#include "gui/gui.h"
 #include <QtGui/QFileDialog>
 #include <QtCore/QSettings>
 
@@ -110,6 +111,12 @@ void AtenForm::finaliseUi()
 
 	// Hide the stack widget initially
 	ui.MainWindowStack->hide();
+
+	// Add the previously-created QGLWidget to the main interface, and set up calls
+	QVBoxLayout *vbox = new QVBoxLayout(this);
+	vbox->setMargin(0);
+	vbox->addWidget( (QWidget*) gui.mainWidget);
+	ui.ViewFrame->setLayout(vbox);
 
 	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
@@ -321,9 +328,7 @@ void AtenForm::setControls()
 	// Set controls on edit page
 	ui.BondToleranceSpin->setValue(prefs.bondTolerance());
 	// Set the initial configuration of the splitter
-// 	ui.ViewSplitter->setStretchFactor(0,100000);
-// 	ui.ViewSplitter->setStretchFactor(1,0);
-	ui.ViewSplitter->setSizes( QList<int>() << 500 << 64 );
+	ui.MainSplitter->setSizes( QList<int>() << 500 << 64 );
 	dbgEnd(Debug::Calls,"AtenForm::setControls");
 }
 

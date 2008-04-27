@@ -27,6 +27,7 @@
 #include "gui/loadmodel.h"
 #include "gui/selectpattern.h"
 #include "gui/ffeditor.h"
+#include "gui/tcanvas.uih"
 #include "model/model.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
@@ -44,13 +45,26 @@ GuiQt::GuiQt()
 	selectPatternDialog = NULL;
 	doesExist_ = FALSE;
 	isAvailable_ = FALSE;
-	NORENDER_ = FALSE;
 	trajectoryPlaying_ = FALSE;
 	trajectoryTimerId_ = -1;
 }
 
+// Initialise QApplication and the main QGlWidget
+void GuiQt::initialise(int argc, char **argv)
+{
+	// Create the QApplication
+	app = new QApplication(argc, argv);
+	// Create the QGLWidget
+	mainWidget = new TCanvas(NULL);
+	mainWidget->setMouseTracking(TRUE);
+	mainWidget->setGeometry(0,0,800,600);
+	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
+	mainView.setWidget(mainWidget);
+	mainWidget->setCanvas(&mainView);
+}
+
 // Initialise and create GUI
-void GuiQt::run(int argc, char **argv)
+void GuiQt::run()
 {
 	dbgBegin(Debug::Calls,"GuiQt::run");
 
@@ -70,10 +84,6 @@ void GuiQt::run(int argc, char **argv)
 	editDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
-
-	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
-	gui.mainView.setWidget(mainWindow->ui.ModelView);
-	mainWindow->ui.ModelView->setCanvas(&gui.mainView);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
@@ -119,43 +129,10 @@ void GuiQt::run(int argc, char **argv)
 	dbgEnd(Debug::Calls,"GuiQt::run");
 }
 
-/*
-// General GUI Routines
-*/
-
-// Returns if the GUI is available
-bool GuiQt::available()
-{
-	return isAvailable_;
-}
-
 // Returns if the GUI has been created
 bool GuiQt::exists()
 {
 	return doesExist_;
-}
-
-// Blocks rendering calls (e.g., for config/model is being updated)
-void GuiQt::pauseRendering()
-{
-	NORENDER_ = TRUE;
-}
-
-// Removes rendering block
-void GuiQt::resumeRendering()
-{
-	NORENDER_ = FALSE;
-}
-
-// Return whether rendering is prohibited
-bool GuiQt::noRendering()
-{
-	return NORENDER_;
-}
-
-void GuiQt::processEvents()
-{
-	// During intensive computations, this should be called periodically so that the interface remains responsive, and the process can be interrupted, modelview can be manipulated etc.
 }
 
 /*
@@ -306,11 +283,6 @@ void GuiQt::updateModelLists()
 {
 }
 
-int GuiQt::userQuestion(const char *s, const char *t)
-{
-	return -1;
-}
-
 void GuiQt::printMessage(const char *s)
 {
 	static char str[8096];
@@ -423,7 +395,7 @@ void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 	progressCanceled_ = FALSE;
 	// Disable some key widgets on the main form
 	mainWindow->ui.MainWindowStack->setEnabled(FALSE);
-	mainWindow->ui.ModelViewFrame->setEnabled(FALSE);
+	mainWindow->ui.ViewFrame->setEnabled(FALSE);
 	mainWindow->ui.StackButtonsFrame->setEnabled(FALSE);
 }
 
@@ -464,7 +436,7 @@ void GuiQt::progressTerminate()
 	// Hide the progress bar and re-enable widgets
 	mainWindow->progressIndicator->setVisible(FALSE);
 	mainWindow->ui.MainWindowStack->setEnabled(TRUE);
-	mainWindow->ui.ModelViewFrame->setEnabled(TRUE);
+	mainWindow->ui.ViewFrame->setEnabled(TRUE);
 	mainWindow->ui.StackButtonsFrame->setEnabled(TRUE);
 }
 
@@ -550,7 +522,7 @@ void GuiQt::setTrajectoryTimerId(int i)
 // Stop trajectory playback
 void GuiQt::stopTrajectoryPlayback()
 {
-	mainWindow->ui.ModelView->killTimer(trajectoryTimerId_);
+	mainWindow->ui.ViewFrame->killTimer(trajectoryTimerId_);
 	mainWindow->ui.actionPlayPause->setChecked(FALSE);
 	trajectoryPlaying_ = FALSE;
 	gui.updateTrajControls();

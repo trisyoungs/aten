@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>821</width>
-    <height>672</height>
+    <width>709</width>
+    <height>575</height>
    </rect>
   </property>
   <property name="sizePolicy" >
@@ -36,10 +36,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>9</number>
+     <number>2</number>
     </property>
     <property name="spacing" >
-     <number>6</number>
+     <number>4</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -47,7 +47,7 @@
        <number>0</number>
       </property>
       <property name="spacing" >
-       <number>2</number>
+       <number>0</number>
       </property>
       <item>
        <widget class="TTabBar" native="1" name="ModelTabs" >
@@ -62,78 +62,23 @@
        </widget>
       </item>
       <item>
-       <widget class="QSplitter" name="ViewSplitter" >
+       <widget class="QSplitter" name="MainSplitter" >
         <property name="orientation" >
          <enum>Qt::Vertical</enum>
         </property>
-        <widget class="QFrame" name="ModelViewFrame" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>7</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>100</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize" >
-          <size>
-           <width>16</width>
-           <height>128</height>
-          </size>
-         </property>
+        <widget class="QFrame" name="ViewFrame" >
          <property name="frameShape" >
           <enum>QFrame::StyledPanel</enum>
          </property>
          <property name="frameShadow" >
           <enum>QFrame::Raised</enum>
          </property>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>0</number>
-          </property>
-          <property name="spacing" >
-           <number>4</number>
-          </property>
-          <item>
-           <widget class="TCanvas" native="1" name="ModelView" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>5</hsizetype>
-              <vsizetype>7</vsizetype>
-              <horstretch>255</horstretch>
-              <verstretch>64</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize" >
-             <size>
-              <width>0</width>
-              <height>128</height>
-             </size>
-            </property>
-            <property name="sizeIncrement" >
-             <size>
-              <width>0</width>
-              <height>100</height>
-             </size>
-            </property>
-            <property name="mouseTracking" >
-             <bool>true</bool>
-            </property>
-            <property name="focusPolicy" >
-             <enum>Qt::StrongFocus</enum>
-            </property>
-            <property name="contextMenuPolicy" >
-             <enum>Qt::CustomContextMenu</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </widget>
         <widget class="QTextEdit" name="TextDisplay" >
          <property name="sizePolicy" >
           <sizepolicy>
            <hsizetype>7</hsizetype>
-           <vsizetype>1</vsizetype>
+           <vsizetype>3</vsizetype>
            <horstretch>255</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -7705,8 +7650,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>821</width>
-     <height>21</height>
+     <width>709</width>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="ToolsMenu" >
@@ -9055,11 +9000,6 @@
    <class>TColourFrame</class>
    <extends>QFrame</extends>
    <header>tcolourframe.uih</header>
-  </customwidget>
-  <customwidget>
-   <class>TCanvas</class>
-   <extends>QWidget</extends>
-   <header>tcanvas.uih</header>
   </customwidget>
   <customwidget>
    <class>TTabBar</class>
