@@ -48,7 +48,7 @@ int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 		master.setProgramMode(Master::GuiMode);
 		// Add empty model if none were specified on the command line
 		if (master.nModels() == 0) Model *m = master.addModel();
-		gui.run(0, NULL);
+		gui.run();
 	}
 	return CR_SUCCESS;
 }

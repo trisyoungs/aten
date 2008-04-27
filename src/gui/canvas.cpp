@@ -125,7 +125,7 @@ void Canvas::postRedisplay()
 // Widget Expose
 void Canvas::expose()
 {
-	if ((!gui.exists()) || gui.noRendering() ) return;
+	if (!gui.exists()) return;
 	// Render from the current rendering source
 	renderScene(master.currentModel()->renderSource());
 }
@@ -552,8 +552,6 @@ void Canvas::doProjection()
 // Set valid
 void Canvas::setValid(bool b)
 {
-	// Wait until the canvas is not drawing
-	while (!valid_) gui.processEvents();
 	// Now disallow drawing before we set the new status
 	valid_ = FALSE;
 	drawing_ = FALSE;

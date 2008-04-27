@@ -24,6 +24,7 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/tcanvas.uih"
 #include "classes/grid.h"
 
 // Save current view as bitmap image
@@ -34,7 +35,7 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 	// Create a QPixmap of the current scene
 	QPixmap pixmap;
-	if (gui.exists()) pixmap = gui.mainWindow->ui.ModelView->renderPixmap(0,0,FALSE);
+	pixmap = gui.mainWidget->renderPixmap(0,0,FALSE);
 	// Flag any surfaces to be rerendered so they are redisplayed in the original context
 	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 

@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
+#include "gui/tcanvas.uih"
 #include <QtGui/QFileDialog>
 #include "model/model.h"
 
@@ -166,7 +167,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// Flag any surfaces to be rerendered for use in this context
 		for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 		// Create a QPixmap of the current scene
-		QPixmap pixmap = ui.ModelView->renderPixmap(0,0,FALSE);
+		QPixmap pixmap = gui.mainWidget->renderPixmap(0,0,FALSE);
 		// Flag any surfaces to be rerendered so they are redisplayed in the original context
 		for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 

@@ -279,8 +279,6 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			if (nTrials_[move] != 0) acceptanceRatio_[0][move] /= nTrials_[move];
 		} // Loop over MC moves
 
-		gui.processEvents();
-
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
 			sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMols(), p->nExpectedMols());
@@ -595,7 +593,6 @@ bool MonteCarlo::disorder(Model *destmodel)
 						currentElecEnergy += deltaElecEnergy;
 						acceptanceRatio_[p->id()][move] ++;
 					}
-					gui.processEvents();
 				}
 				// Get acceptance ratio percentages
 				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];

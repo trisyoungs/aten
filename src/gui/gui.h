@@ -56,29 +56,12 @@ class GuiQt
 	public:
 	// Constructor
 	GuiQt();
-	// Returns if the GUI is available
-	bool available();
 	// Returns if the GUI has been created
 	bool exists();
-	// Initialises all aspects of the GUI and hands over control
-	void run(int, char**);
-	// Question user dialog
-	int userQuestion(const char*, const char*);
-
-	/*
-	// Main Canvas and Rendering
-	*/
-	protected:
-	// Render inhibition flag
-	bool NORENDER_;
-
-	public:
-	// Blocks rendering calls (e.g., for config/model is being updated)
-	void pauseRendering();
-	// Removes rendering block
-	void resumeRendering();
-	// Return whether rendering is prohibited
-	bool noRendering();
+	// Initialise the QApplication (and some other small things)
+	void initialise(int, char**);
+	// Create the GUI and hand over control to Qt
+	void run();
 
 	/*
 	// General Window Functions
@@ -86,8 +69,6 @@ class GuiQt
 	public:
 	// Add a message to the main window's message output box
 	void printMessage(const char*);
-	// Process events from GUI
-	void processEvents();
 	// Save before close
 	bool saveBeforeClose();
 
@@ -147,7 +128,9 @@ class GuiQt
 	AtenSelectPattern *selectPatternDialog;
 	// Call the atompopup menu
 	void callAtomPopup(Atom*, int, int);
-	// Main view
+	// Main view Widget
+	TCanvas *mainWidget;
+	// Main view canvas
 	Canvas mainView;
 
 	/*
