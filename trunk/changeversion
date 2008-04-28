@@ -17,15 +17,14 @@ else
 fi
 
 
-# src/main.cpp
-echo -n "        main.cpp (Program Version) : "
+# src/master.h
+echo -n "        master.h (Program Version) : "
 if [ "$#" -eq "2" ]
 then
-  cp src/main.cpp src/main.cpp.orig
-  #sed -e "s/\(.*\)Aten version [0-9\.]\+\(.*\)/\1Aten version $1.$2\2/g" src/main.cpp.orig > src/main.cpp
-  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/main.cpp.orig > src/main.cpp
+  cp src/base/master.h src/base/master.h.orig
+  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/base/master.h.orig > src/base/master.h
 fi
-grep '#define ATENVERSION' src/main.cpp | sed -e 's/#define ATENVERSION "\([0-9\.]\+\).*"/\1/g'
+grep '#define ATENVERSION' src/base/master.h | sed -e 's/#define ATENVERSION "\([0-9\.]\+\).*"/\1/g'
 
 
 # src/gui/mainwindow_init.cpp

@@ -20,6 +20,8 @@
 */
 
 #include <iostream>
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "base/cli.h"
 #include "base/prefs.h"
 #include "base/master.h"
@@ -90,11 +92,11 @@ int Master::parseCli(int argc, char *argv[])
 {
 	int argn, opt, ntried = 0, n, el;
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
-	char *arg;
-	CommandList *cl;
+	char *arg, *line, prompt[32];
 	Forcefield *ff;
 	Prefs::ZmapType zm;
 	Namemap<int> *nm;
+	CommandList cl, *script;
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -173,15 +175,11 @@ int Master::parseCli(int argc, char *argv[])
 				case (Cli::CentreSwitch):
 					prefs.setCentreOnLoad(Prefs::SwitchOn);
 					break;
-				// Read script commands from passed string
+				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
-					cl = master.commands.add();
-					if (cl->cacheLine(argv[++argn])) master.setProgramMode(Master::CommandMode);
-					else
-					{
-						master.commands.remove(cl);
-						return -1;
-					}
+					cl.clear();
+					if (cl.cacheLine(argv[++argn])) cl.execute();
+					else return -1;
 					break;
 				// Turn on debug messages for all calls
 				case (Cli::DebugAllSwitch):
@@ -240,7 +238,21 @@ int Master::parseCli(int argc, char *argv[])
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
+					sprintf(prompt,"Aten %s > ",ATENVERSION);
+					printf("Entering interactive mode...\n");
 					master.setProgramMode(Master::InteractiveMode);
+					do
+					{
+						// Get string from user
+						line = readline(prompt);
+						master.interactiveScript.clear();
+						master.interactiveScript.cacheLine(line);
+						master.interactiveScript.execute();
+						// Add the command to the history and delete it 
+						add_history(line);
+						delete line;
+					} while (master.programMode() == Master::InteractiveMode);
+					//master.set_program_mode(PM_NONE);
 					break;
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
@@ -283,11 +295,17 @@ int Master::parseCli(int argc, char *argv[])
 					break;
 				// Cache a script file
 				case (Cli::ScriptSwitch):
-					cl = master.scripts.add();
-					if (cl->load(argv[++argn])) master.setProgramMode(Master::CommandMode);
+					script = master.scripts.add();
+					if (script->load(argv[++argn]))
+					{
+						master.setProgramMode(Master::CommandMode);
+						if (!script->execute()) master.setProgramMode(Master::NoMode);
+						// Need to check program mode after each script since it can be changed
+						if (master.programMode() == Master::CommandMode) master.setProgramMode(Master::GuiMode);
+					}
 					else
 					{
-						master.scripts.remove(cl);
+						master.scripts.remove(script);
 						return -1;
 					}
 					break;
@@ -313,14 +331,8 @@ int Master::parseCli(int argc, char *argv[])
 			if (modelfilter != NULL) f = modelfilter;
 			else f = master.probeFile(argv[argn], FT_MODEL_IMPORT);
 			if (f != NULL) f->execute(argv[argn]);
+			else return -1;
 		}
-	}
-	// Check on the number of models that failed to load
-	if (ntried == 0) return 0;
-	else if (master.nModels() == 0)
-	{
-		printf("Couldn't open any of the supplied files!\n");
-		return -1;
 	}
 	return master.nModels();
 }

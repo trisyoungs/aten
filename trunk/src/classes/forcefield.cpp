@@ -409,11 +409,11 @@ int Forcefield::matchType(const Dnchar &a, const Dnchar &b)
 ForcefieldAtom *Forcefield::findType(int query)
 {
 	// Search for the typeId_ specified and return the internal integer id (i.e. position in atomtype list)
-	dbgBegin(Debug::Calls,"Forcefield::find_type[int]");
+	dbgBegin(Debug::Calls,"Forcefield::findType[int]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if (query == result->typeId()) break;
-	dbgEnd(Debug::Calls,"Forcefield::find_type[int]");
+	dbgEnd(Debug::Calls,"Forcefield::findType[int]");
 	return result;
 }
 
@@ -423,23 +423,23 @@ ForcefieldAtom *Forcefield::findType(const char *query)
 	// Search for the atomname specified and return the internal integer id (i.e. position in atomtype list)
 	// We return the first occurrence we find (since there may be more than one - only typeId_ need be unique)
 	// Search both names and equivalents (since aliases may be defined that are not themselves defined as types_)
-	dbgBegin(Debug::Calls,"Forcefield::find_type[char]");
+	dbgBegin(Debug::Calls,"Forcefield::findType[char]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((strcmp(result->name(),query) == 0) || (strcmp(result->equivalent(),query) == 0)) break;
-	dbgEnd(Debug::Calls,"Forcefield::find_type[char]");
+	dbgEnd(Debug::Calls,"Forcefield::findType[char]");
 	return result;
 }
 
 // Return description of typeId_
 Atomtype *Forcefield::typeOfId(int i)
 {
-	dbgBegin(Debug::Calls,"Forcefield::get_atomtype_of_typeId_");
+	dbgBegin(Debug::Calls,"Forcefield::typeOfId");
 	ForcefieldAtom *result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if (result->typeId() == i) break;
-	if (result == NULL) printf("Forcefield::get_atomtype_of_typeId_ <<<< FFID %i not found in forcefield >>>>\n",i);
-	dbgEnd(Debug::Calls,"Forcefield::get_atomtype_of_typeId_");
+	if (result == NULL) printf("Forcefield::typeOfId <<<< FFID %i not found in forcefield >>>>\n",i);
+	dbgEnd(Debug::Calls,"Forcefield::typeOfId");
 	return result->atomtype();
 }
 
