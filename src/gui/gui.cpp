@@ -70,7 +70,6 @@ void GuiQt::run()
 	dbgBegin(Debug::Calls,"GuiQt::run");
 
 	// Initialise Qt, and the icons resource
-	// app = new QApplication(argc, argv);
 	Q_INIT_RESOURCE(icons);
 
 	// Create the GUI windows
@@ -127,6 +126,7 @@ void GuiQt::run()
 	updateTrajControls();
 
 	gui.mainView.enableDrawing();
+	gui.mainView.postRedisplay();
 
 	int n = app->exec();
 	dbgEnd(Debug::Calls,"GuiQt::run");

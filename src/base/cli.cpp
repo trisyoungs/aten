@@ -96,10 +96,11 @@ int Master::parseCli(int argc, char *argv[])
 	Prefs::ZmapType zm;
 	Namemap<int> *nm;
 	Filter *f, *modelfilter = NULL;
-	// Cycle over program arguments and available CLI options (skip [0] which is the binary run)
-	argn = 1;
-	while (argn < argc)
+	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
+	argn = 0;
+	while (argn < (argc-1))
 	{
+		argn++;
 		match = FALSE;
 		// Check for a CLI argument (presence of '-')
 		if (argv[argn][0] == '-')
@@ -114,6 +115,12 @@ int Master::parseCli(int argc, char *argv[])
 				hasNextArg = TRUE;
 				nextArgIsSwitch = (argv[argn+1][0] == '-');
 			}
+			// Manually-exclude some specific (and extremely annoying) extraneous command line options
+			if (strncmp(argv[argn],"-psn",4) == 0)
+			{
+				printf("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
+				continue;
+			} 
 			// Cycle over defined CLI options and search for this one
 			for (opt=0; opt<Cli::nSwitchItems; opt++)
 			{
@@ -307,7 +314,6 @@ int Master::parseCli(int argc, char *argv[])
 			else f = master.probeFile(argv[argn], FT_MODEL_IMPORT);
 			if (f != NULL) f->execute(argv[argn]);
 		}
-		argn++;
 	}
 	// Check on the number of models that failed to load
 	if (ntried == 0) return 0;
