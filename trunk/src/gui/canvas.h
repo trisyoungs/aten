@@ -70,8 +70,6 @@ class Canvas
 	bool drawing_;
 	// Flag to prevent rendering (used to restrict unnecessary renders before canvas is even visible)
 	bool noDraw_;
-	// Model 'width' of a single pixel at the current draw depth...
-	double drawPixelWidth_;
 	// Qt Target widget
 	TCanvas *contextWidget_;
 
@@ -88,10 +86,6 @@ class Canvas
 	bool isValid();
 	// Set the validity of the canvas
 	void setValid(bool);
-	// Recalculate drawing pixel width
-	void calculateDrawPixelWidth();
-	// Return the corrent drawing pixel width
-	double drawPixelWidth();
 	// Set up widget for OpenGL drawing
 	bool setWidget(TCanvas*);
 	// Update Canvas

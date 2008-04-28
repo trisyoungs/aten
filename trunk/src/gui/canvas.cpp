@@ -36,7 +36,6 @@ Canvas::Canvas()
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
 	displayModel_ = NULL;
-	drawPixelWidth_ = 1.0;
 	activeMode_ = Canvas::NoAction;
 	selectedMode_ = Canvas::SelectAction;
 	list_[0] = 0;
@@ -161,21 +160,6 @@ void Canvas::disableDrawing()
 Model *Canvas::displayModel()
 {
 	return displayModel_;
-}
-
-// Calculate drawing pixel width
-void Canvas::calculateDrawPixelWidth()
-{
-	// Get the Angstrom width of a single pixel at the current draw depth in the current view
-	static Vec3<double> r1, r2;
-	if (displayModel_ != NULL)
-	{
-		r1 = displayModel_->guideToModel(width_/2, height_/2);
-		r2 = displayModel_->guideToModel(width_/2+1, height_/2);
-		r2 -= r1;
-		drawPixelWidth_ = r2.x;
-	}
-	else drawPixelWidth_ = 1.0;
 }
 
 // Set GL options
@@ -543,8 +527,6 @@ void Canvas::doProjection()
 		glGetDoublev(GL_PROJECTION_MATRIX,pmat); // Store the resulting projection and
 		GlobePMAT.setFromColumnMajor(pmat);
 		glMatrixMode(GL_MODELVIEW);
-		// Calculate the new drawpixelwidth
-		calculateDrawPixelWidth();
 		endGl();
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");

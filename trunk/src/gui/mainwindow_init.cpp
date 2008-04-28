@@ -113,12 +113,12 @@ void AtenForm::finaliseUi()
 	// Hide the stack widget initially
 	ui.MainWindowStack->hide();
 
-
 	// Add the previously-created QGLWidget to the main interface, and set up calls
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->setMargin(0);
 	gui.mainWidget->setParent(this);
 	gui.mainWidget->setMouseTracking(TRUE);
+	gui.mainWidget->setFocusPolicy(Qt::StrongFocus);
 	vbox->addWidget( (QWidget*) gui.mainWidget);
 	ui.ViewFrame->setLayout(vbox);
 

@@ -273,6 +273,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 			displayModel_->prepareTransform();
 		}
 	}
+	gui.mainView.postRedisplay();
 	dbgEnd(Debug::Calls,"Canvas::begin_mode");
 }
 
@@ -538,7 +539,6 @@ void Canvas::modeMotion(double x, double y)
 		case (Canvas::ZoomAction):
 			if (prefs.hasPerspective()) displayModel_->adjustCamera(0.0,0.0,delta.y,0.0);
 			else displayModel_->adjustOrthoSize(delta.y);
-			calculateDrawPixelWidth();
 			break;
 		case (Canvas::TransformRotateXYAction):
 			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
@@ -588,7 +588,6 @@ void Canvas::modeScroll(bool scrollup)
 			if (prefs.hasPerspective())
 				scrollup ? displayModel_->adjustCamera(0.0,0.0,-5.0,0.0) : displayModel_->adjustCamera(0.0,0.0,5.0,0.0);
 			else scrollup ? displayModel_->adjustOrthoSize(1.0) : displayModel_->adjustOrthoSize(-1.0);
-			calculateDrawPixelWidth();
 			break;
 	}
 	postRedisplay();

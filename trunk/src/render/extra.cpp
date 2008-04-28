@@ -148,7 +148,7 @@ void Canvas::renderExtra2d()
 		case (Canvas::EditDrawAction):
 		case (Canvas::EditChainAction):
 			// Get angstrom length
-			dx = 1.0 / drawPixelWidth_;
+			dx = 1.0 / displayModel_->drawPixelWidth();
 			halfw = width_ / 2.0;
 			i = int( halfw / dx);
 			//if (i < 2) break;

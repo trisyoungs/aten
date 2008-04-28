@@ -374,15 +374,17 @@ Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 	static double x1,x2,radius;
 	static GLint *vmat;
 	screenr.zero();
-	if (!gui.mainView.isValid())
+	if (!gui.mainView.isValid() )
 	{
 		dbgEnd(Debug::Calls,"Model::worldToScreen");
 		return screenr;
 	}
+	calculateViewMatrix();
 	// Projection formula is : worldr = P x M x modelr
 	// Get the 3D coordinates of the atom - Multiply by modelview matrix 'view'
 	modelr.set(v.x, v.y, v.z, 1.0);
 	worldr = viewMatrix_ * modelr;
+	//viewMatrix_.print();
 	// Calculate 2D 'radius' of the atom - Multiply worldr[x+delta] coordinates by P
 	screenr = gui.mainView.PMAT * worldr;
 	screenr.x /= screenr.w;
@@ -410,12 +412,16 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 	static Mat4<double> rotmat;
 	double radius, depth;
 	depth = -rCamera_.z - prefs.drawDepth();
+	//printf("DEPTH = %f, DRAWDEPTH = %f\n",depth, prefs.drawDepth());
 	// First, project a point at the guide z-position into screen coordinates to get the guide 'yardstick'
 	newpoint.set(rCamera_.x, rCamera_.y, depth);
+	//printf("newpoint1 "); newpoint.print();
 	rotmat = rotationMatrix_;
 	rotmat.invert();
 	newpoint *= rotmat;
+	//printf("newpoint2 "); newpoint.print();
 	guidepoint = worldToScreen(newpoint);
+	//printf("guidepoint "); guidepoint.print();
 	radius = guidepoint.w;
 	// Now, calculate the position of the clicked point on the guide
 	newpoint.x = sx - (gui.mainView.width() / 2.0 );
@@ -465,4 +471,17 @@ void Model::viewAlongCell(double x, double y, double z)
 	// Log camera change
 	logChange(Change::CameraLog);
 	dbgEnd(Debug::Calls,"Model::viewAlongCell");
+}
+
+// Calculate and return drawing pixel width
+double Model::drawPixelWidth()
+{
+	// Get the Angstrom width of a single pixel at the current draw depth in the current view
+	static Vec3<double> r1, r2;
+	//printf("\n\n");
+	r1 = guideToModel(gui.mainView.width()/2, gui.mainView.height()/2);
+	r2 = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2);
+	r2 -= r1;
+	//printf("drawpixelwidth = %f\n\n\n",r2.x);
+	return r2.x;
 }
