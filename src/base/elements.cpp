@@ -417,12 +417,8 @@ int ElementMap::ffToZ(const char *s)
 	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)
 	{
 		ffa = ff->findType(s);
-		if (ffa != NULL)
-		{
-			// Found a match, so find out what element it is...
-			result = ffa->atomtype()->characterElement();
-			break;
-		}
+		// Found a match, so find out what element it is...
+		if (ffa != NULL) result = ffa->atomtype()->characterElement();
 		if (result != -1) break;
 	}
 	return result;

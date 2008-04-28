@@ -29,6 +29,8 @@
 #include "base/cli.h"
 #include "templates/namemap.h"
 
+#define ATENVERSION "0.96"
+
 // Forward Declarations
 class Generator;
 class Spacegroup;
@@ -213,8 +215,6 @@ class Master
 	ProgramMode programMode() { return programMode_; }
 	// Cached scripts
 	List<CommandList> scripts;
-	// Cached commands
-	List<CommandList> commands;
 	// Script to store temporary typed commands
 	CommandList tempScript;
 	// Interactive mode command list

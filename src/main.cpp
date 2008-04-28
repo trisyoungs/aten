@@ -22,15 +22,11 @@
 #include <time.h>
 #include <ctime>
 #include <iostream>
-#include <readline/readline.h>
-#include <readline/history.h>
 #include "parse/parser.h"
 #include "model/model.h"
 #include "command/commandlist.h"
 #include "base/master.h"
 #include "gui/gui.h"
-
-#define ATENVERSION "0.96"
 
 int main(int argc, char *argv[])
 {
@@ -91,47 +87,6 @@ int main(int argc, char *argv[])
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
 	if (master.parseCli(argc,argv) == -1) return -1;
 
-	// Do various things depending on the program mode that has been set
-	// Execute scripts / commands if they were provided
-	if (master.programMode() == Master::CommandMode)
-	{
-		// Commands first
-		for (CommandList *cl = master.commands.first(); cl != NULL; cl = cl->next)
-		{
-			if (!cl->execute(NULL)) master.setProgramMode(Master::NoMode);
-			// Need to check program mode after each script since it can be changed
-			if (master.programMode() != Master::CommandMode) break;
-		}
-		// Now scripts
-		for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
-		{
-			if (!cl->execute(NULL)) master.setProgramMode(Master::NoMode);
-			// Need to check program mode after each script since it can be changed
-			if (master.programMode() != Master::CommandMode) break;
-		}
-		// All scripts done - set program mode to PM_GUI if it is still PM_COMMAND
-		if (master.programMode() == Master::CommandMode) master.setProgramMode(Master::GuiMode);
-	}
-	// Enter interactive mode once any commands/scripts have been executed
-	if (master.programMode() == Master::InteractiveMode)
-	{
-		char *line;
-		char prompt[32];
-		sprintf(prompt,"Aten %s > ",ATENVERSION);
-		printf("Entering interactive mode...\n");
-		do
-		{
-			// Get string from user
-			line = readline(prompt);
-			master.interactiveScript.clear();
-			master.interactiveScript.cacheLine(line);
-			master.interactiveScript.execute();
-			// Add the command to the history and delete it 
-			add_history(line);
-			delete line;
-		} while (master.programMode() == Master::InteractiveMode);
-		//master.set_program_mode(PM_NONE);
-	}
 	// Enter full GUI 
 	if (master.programMode() == Master::GuiMode)
 	{
