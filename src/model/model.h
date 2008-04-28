@@ -368,6 +368,8 @@ class Model
 	void projectSelection();
 	// Return the camera position vector
 	Vec3<double> rCamera();
+	// Calculate and return drawing pixel width
+	double drawPixelWidth();
 
 	/*
 	// Labelling

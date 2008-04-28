@@ -50,6 +50,8 @@ template <class T> class Vec4
 	void add(T, T, T, T);
 	// Set all four components simultaneously
 	void set(Vec3<T>, T);
+	// Print data
+	void print() const;
 	// Operators + and +=
 	Vec4<T>& operator+=(Vec4<T>);
 	Vec4<T>& operator+=(Vec3<T>);
@@ -102,6 +104,12 @@ template <class T> void Vec4<T>::set(Vec3<T> v, T a)
 	y = v.y;
 	z = v.z;
 	w = a;
+}
+
+// Print
+template <class T> void Vec4<T>::print() const
+{
+	printf("vec = %8.4f %8.4f %8.4f %8.4f\n",(double)x,(double)y,(double)z,(double)w);
 }
 
 // Operator += (Vec4)

@@ -335,7 +335,9 @@ template <class T> Vec3<T> Vec3<T>::operator*(const Mat4<T> &A) const
 template <class T> void Vec3<T>::normalise()
 {
 	double mag = sqrt(x*x + y*y + z*z);
-	x /= mag; y /= mag; z /= mag;
+	x /= mag;
+	y /= mag;
+	z /= mag;
 }
 
 // Orthogonalise

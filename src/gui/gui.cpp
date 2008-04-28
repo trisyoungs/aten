@@ -109,15 +109,6 @@ void GuiQt::run()
 	// Make first loaded model the current one
 	master.setCurrentModel(master.models());
 
-	// Add loaded models to tabbar (and reset its view while we're here)
-	int tabid;
-	for (Model *m = master.models(); m != NULL; m = m->next)
-	{
-		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
-		m->calculateViewMatrix();
-		m->projectAll();
-	}
-
 	// Refresh the necessary stack pages
 	mainWindow->refreshGridsPage();
 	mainWindow->refreshForcefieldPage();
@@ -126,6 +117,17 @@ void GuiQt::run()
 	updateTrajControls();
 
 	gui.mainView.enableDrawing();
+
+	// Add loaded models to tabbar (and reset its view while we're here)
+	int tabid;
+	for (Model *m = master.models(); m != NULL; m = m->next)
+	{
+		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
+		m->resetView();
+		m->calculateViewMatrix();
+		m->projectAll();
+	}
+
 	gui.mainView.postRedisplay();
 
 	int n = app->exec();
