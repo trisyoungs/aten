@@ -482,6 +482,7 @@ double Model::drawPixelWidth()
 	r1 = guideToModel(gui.mainView.width()/2, gui.mainView.height()/2);
 	r2 = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2);
 	r2 -= r1;
+	r2.print();
 	//printf("drawpixelwidth = %f\n\n\n",r2.x);
 	return r2.x;
 }

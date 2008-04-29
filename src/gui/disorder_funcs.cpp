@@ -102,10 +102,7 @@ void AtenForm::refreshDisorderPage()
 		count ++;
 	}
 	ui.ComponentTable->setRowCount(count);
-	ui.ComponentTable->resizeColumnToContents(0);
-	ui.ComponentTable->resizeColumnToContents(1);
-	ui.ComponentTable->resizeColumnToContents(2);
-	ui.ComponentTable->resizeColumnToContents(3);
+	for (int i=0; i<4; i++) ui.ComponentTable->resizeColumnToContents(i);
 	// Select the last component in the list
 	ui.ComponentTable->setCurrentItem(firstitem);
 	listRefreshing = FALSE;
@@ -119,8 +116,6 @@ void AtenForm::refreshComponentData()
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
 	// Set controls
-	//ui.PopulationSpin->setValue(m->nRequested());
-	//ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
 	Vec3<double> v;
 	v = m->area.size();
 	ui.ComponentSizeXSpin->setValue(v.x);
@@ -130,8 +125,6 @@ void AtenForm::refreshComponentData()
 	ui.ComponentCentreXSpin->setValue(v.x);
 	ui.ComponentCentreYSpin->setValue(v.y);
 	ui.ComponentCentreZSpin->setValue(v.z);
-	//ui.ComponentTranslateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Translate));
-	//ui.ComponentRotateCheck->setChecked(m->isMoveAllowed(MonteCarlo::Rotate));
 }
 
 void AtenForm::setComponentCoords(int centsize, int element, double value)
@@ -164,7 +157,6 @@ void AtenForm::on_ComponentTable_itemSelectionChanged()
 void AtenForm::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 {
 	if (!gui.exists() || listRefreshing) return;
-	printf("This item was in column %i\n",ui.ComponentTable->column(item));
 	int column = ui.ComponentTable->column(item);
 	Model *m;
 	m = ((TTableWidgetItem*) item)->model();
@@ -173,6 +165,7 @@ void AtenForm::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 		// NRequested
 		case (0):
 			m->setNRequested(atoi(qPrintable(item->text())));
+			ui.ComponentTable->resizeColumnToContents(0);
 			break;
 		// Allow rotate
 		case (1):
