@@ -103,6 +103,8 @@ int Master::parseCli(int argc, char *argv[])
 	while (argn < (argc-1))
 	{
 		argn++;
+		// Check for null argument
+		if (argv[argn][0] == '\0') continue;
 		match = FALSE;
 		// Check for a CLI argument (presence of '-')
 		if (argv[argn][0] == '-')
