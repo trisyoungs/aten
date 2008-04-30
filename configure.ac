@@ -54,6 +54,15 @@ AC_ARG_WITH([build-dir],[AC_HELP_STRING([--with-build-dir=<dir>],
     [with_build_dir=""])
 BUILDDIR="$with_build_dir"
 
+# Install Directory (used when packaging - should be '$PREFIX - $BUILDDIR')
+INSTALLDIR="/usr/local"
+AC_ARG_WITH([install-dir],[AC_HELP_STRING([--with-install-dir=<dir>],
+    [Specify 'clean' instal dir prefix, i.e. without any BUILDDIR [default="/usr/local"]])], ,
+    [with_install_dir="/usr/local"])
+if test "x$with_install_dir" != "x"; then
+  INSTALLDIR="$with_install_dir"
+fi
+
 # QT-FRAMEWORK  (Mac only)
 AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
     [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
@@ -92,11 +101,14 @@ GUI_LDLIBS="$QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses"
 GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
 
 
+VERSION=ATEN_VERSION
 # Perform Makefile substitutions
 AC_SUBST(GUI_LDLIBS)
 AC_SUBST(GUI_CFLAGS)
 AC_SUBST(QTDIR)
 AC_SUBST(BUILDDIR)
+AC_SUBST(INSTALLDIR)
+AC_SUBST(VERSION)
 
 
 # Checks for typedefs, structures, and compiler characteristics.
