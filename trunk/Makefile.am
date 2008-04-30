@@ -5,7 +5,7 @@ SUFFIXES: .dt
 .dt.desktop:
 	sed -e "s:PREFIX:${prefix}:" -e "s:VERSION:${ATEN_VERSION}:" $< > $@
 
-EXTRA_DIST = scripts/*.txt doc/manual.pdf src/gui/icons/*.* data/filters/* data/ff/* data/test/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake
+EXTRA_DIST = scripts/*.txt doc/manual.pdf src/gui/icons/*.* data/filters/* data/ff/* data/test/* TODO aten.spec CMakeLists.txt cmake_uninstall.cmake.in NSIS.template.in FindREADLINE.cmake src/CMakeLists.txt src/*/CMakeLists.txt desktop.cmake Aten.dt
 
 atendir = $(datadir)/aten
 aten_DATA = src/gui/icons/aten.png
