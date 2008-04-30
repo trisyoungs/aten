@@ -69,6 +69,30 @@ void Master::clear()
 	for (int i=0; i<FT_NITEMS; i++) filters_[i].clear();
 }
 
+// Sets the current program mode
+void Master::setProgramMode(ProgramMode pm)
+{
+	programMode_ = pm;
+}
+
+// Return the current program mode
+Master::ProgramMode Master::programMode()
+{
+	return programMode_;
+}
+
+// Set current drawing element
+void Master::setSketchElement(short int el)
+{
+	sketchElement_ = el;
+}
+
+// Return current drawing element
+short int Master::sketchElement()
+{
+	return sketchElement_;
+}
+
 /*
 // GUI Routines
 */

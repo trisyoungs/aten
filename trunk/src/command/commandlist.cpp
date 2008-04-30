@@ -428,7 +428,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 		{
 			if (required)
 			{
-				printf("Command '%s' requires argument %i\n", cmd, argcount);
+				msg(Debug::None,"Command '%s' requires argument %i\n", cmd, argcount);
 				dbgEnd(Debug::Calls,"Command::addVariables");
 				return FALSE;
 			}

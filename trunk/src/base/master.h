@@ -29,7 +29,7 @@
 #include "base/cli.h"
 #include "templates/namemap.h"
 
-#define ATENVERSION "0.97"
+#define ATENVERSION "0.96"
 
 // Forward Declarations
 class Generator;
@@ -210,9 +210,9 @@ class Master
 
 	public:
 	// Sets the current program mode
-	void setProgramMode(ProgramMode pm) { programMode_ = pm; }
+	void setProgramMode(ProgramMode pm);
 	// Return the current program mode
-	ProgramMode programMode() { return programMode_; }
+	ProgramMode programMode();
 	// Cached scripts
 	List<CommandList> scripts;
 	// Script to store temporary typed commands
@@ -225,13 +225,13 @@ class Master
 	*/
 	private:
 	// Selected drawing element
-	int sketchElement_;
+	short int sketchElement_;
 
 	public:
 	// Set current drawing element
-	void setSketchElement(int el) { sketchElement_ = el; }
+	void setSketchElement(short int el);
 	// Return current drawing element
-	int sketchElement() { return sketchElement_; }
+	short int sketchElement();
 
 	/*
 	// Progress Indicators

@@ -103,16 +103,19 @@ bool Model::typeAll()
 	autocreatePatterns();
 	if (!arePatternsValid())
 	{
-		msg(Debug::None,"Atom typing cannot be performed without a valid pattern.\n Check pattern definition.\n");
+		msg(Debug::None,"Atom typing cannot be performed without valid patterns.\n Check pattern definition.\n");
 		dbgEnd(Debug::Calls,"Model::typeAll");
 		return FALSE;
 	}
 	// Describe the atoms / rings in the patterns
 	describeAtoms();
+	if (forcefield_ == NULL) msg(Debug::None,"Typing all patterns in model '%s' (no forcefield associated -- using default)...\n");
+	else msg(Debug::None,"Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
 	// Assign forcefield types to atoms
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
-		msg(Debug::None,"Typing pattern %s...",p->name());
+		if (p->forcefield() == NULL) msg(Debug::None,"Typing pattern %s (inheriting parent's forcefield)...", p->name());
+		else msg(Debug::None,"Typing pattern %s (associated forcefield is '%s')...", p->name(), p->forcefield()->name());
 		if (!p->typeAtoms())
 		{
 			dbgEnd(Debug::Calls,"Model::typeAll");

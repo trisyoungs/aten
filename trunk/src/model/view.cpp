@@ -477,12 +477,7 @@ void Model::viewAlongCell(double x, double y, double z)
 double Model::drawPixelWidth()
 {
 	// Get the Angstrom width of a single pixel at the current draw depth in the current view
-	static Vec3<double> r1, r2;
-	//printf("\n\n");
-	r1 = guideToModel(gui.mainView.width()/2, gui.mainView.height()/2);
-	r2 = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2);
-	r2 -= r1;
-	r2.print();
-	//printf("drawpixelwidth = %f\n\n\n",r2.x);
-	return r2.x;
+	static Vec3<double> r;
+	r = guideToModel(gui.mainView.width()/2+1, gui.mainView.height()/2) - guideToModel(gui.mainView.width()/2, gui.mainView.height()/2);
+	return r.magnitude();
 }

@@ -80,6 +80,14 @@ MESSAGE("Install folder ${PREFIX}")
 set(CMAKE_INSTALL_PREFIX "${PREFIX}")
 endif(NOT ${PREFIX})
 
+if(UNIX)
+configure_file(${CMAKE_SOURCE_DIR}/desktop.cmake Aten.desktop)
+install(FILES ${CMAKE_BINARY_DIR}/Aten.desktop 
+        DESTINATION "/usr/share/applications/")
+install(FILES ${CMAKE_SOURCE_DIR}/src/gui/icons/aten.png
+        DESTINATION share/aten)
+endif(UNIX)
+
 install(TARGETS ${target_name}
       RUNTIME DESTINATION bin
 )
