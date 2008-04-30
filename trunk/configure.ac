@@ -47,6 +47,13 @@ AC_ARG_WITH([readline-includes],[AC_HELP_STRING([--with-readline-includes=<dir>]
     [with_readline_includes="/usr/include/readline"])
 RLINCDIR="$with_readline_includes"
 
+# Build Directory (used when packaging)
+BUILDDIR=""
+AC_ARG_WITH([build-dir],[AC_HELP_STRING([--with-build-dir=<dir>],
+    [Specify location of build environment when packaging [default=""]])], ,
+    [with_build_dir=""])
+BUILDDIR="$with_build_dir"
+
 # QT-FRAMEWORK  (Mac only)
 AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
     [Determines which installation of Qt4 to use on OS X (should not be set for Linux)[default=<none>]])], ,
@@ -89,6 +96,7 @@ GUI_CFLAGS="$QTGUI_CFLAGS -I$RLINCDIR"
 AC_SUBST(GUI_LDLIBS)
 AC_SUBST(GUI_CFLAGS)
 AC_SUBST(QTDIR)
+AC_SUBST(BUILDDIR)
 
 
 # Checks for typedefs, structures, and compiler characteristics.
