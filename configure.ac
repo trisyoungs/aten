@@ -59,9 +59,15 @@ INSTALLDIR="/usr/local"
 AC_ARG_WITH([install-dir],[AC_HELP_STRING([--with-install-dir=<dir>],
     [Specify 'clean' instal dir prefix, i.e. without any BUILDDIR [default="/usr/local"]])], ,
     [with_install_dir="/usr/local"])
-if test "x$with_install_dir" != "x"; then
+# If --prefix has been give, use this value by default
+if test "$prefix" != "NONE"; then
+  INSTALLDIR="$prefix"
+fi
+
+if test "$with_install_dir" != "/usr/local"; then
   INSTALLDIR="$with_install_dir"
 fi
+
 
 # QT-FRAMEWORK  (Mac only)
 AC_ARG_WITH([qt],[AC_HELP_STRING([--with-qt=framework|fink|<none>],
