@@ -67,7 +67,6 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 
 %endif
 
-cmake
 make
 
 %install
@@ -83,8 +82,6 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/aten/
 
 %changelog
-* Wed Apr 30 2008 Tristan Youngs <tris@projectaten.org> 
-- changed to 'cmake'.
 * Wed Apr 02 2008 Tristan Youngs <tris@projectaten.org> 
 - added checks to build on different distros with the SuSE build service.
 * Tue Apr 01 2008 Tristan Youngs <tris@projectaten.org>
