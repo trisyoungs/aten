@@ -78,6 +78,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root)
 %doc README TODO COPYING ChangeLog
+/usr/share/applications/Aten.desktop
 /usr/bin/aten
 /usr/share/aten/
 
