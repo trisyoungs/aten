@@ -166,7 +166,8 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 				break;
 			}
 		}
-		trajectoryCached_ = TRUE;	
+		trajectoryCached_ = TRUE;
+		trajectoryFile_->close();
 	}
 	else
 	{
@@ -182,7 +183,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 			return FALSE;
 		}
 	}
-	setRenderFromFrames();
+	//setRenderFromFrames();
 	dbgEnd(Debug::Calls,"Model::initialiseTrajectory");
 	return TRUE;
 }
