@@ -183,7 +183,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 			return FALSE;
 		}
 	}
-	//setRenderFromFrames();
+	setRenderFromFrames();
 	dbgEnd(Debug::Calls,"Model::initialiseTrajectory");
 	return TRUE;
 }

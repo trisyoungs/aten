@@ -33,7 +33,7 @@ Packager: Tristan Youngs
 AutoReq: yes
 
 # Basic package dependencies are listed here. For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
-BuildRequires: gcc-c++
+BuildRequires: gcc-c++ cmake
 
 %if 0%{?suse_version}
 BuildRequires: libqt4 libqt4-devel Mesa-devel readline-devel
