@@ -203,6 +203,20 @@ int CommandData::function_CA_REPLICATETRIM(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Colouring scheme
+int CommandData::function_CA_SCHEME(Command *&c, Bundle &obj)
+{
+	Prefs::ColouringScheme cs = Prefs::colouringScheme(c->argc(0));
+	if (cs != Prefs::nColouringSchemes)
+	{
+		prefs.setColourScheme(cs);
+		if (obj.m != NULL) obj.m->logChange(Change::VisualLog);
+		gui.mainView.postRedisplay();
+	}
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
 // Atom shininess
 int CommandData::function_CA_SHININESS(Command *&c, Bundle &obj)
 {

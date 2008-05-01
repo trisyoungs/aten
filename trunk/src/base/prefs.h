@@ -71,7 +71,8 @@ class Prefs
 	enum GlOption { FogOption=1, LineAliasOption=2, PolyAliasOption=4, BackCullOption=8, DummyOption=16, nGlOptions=5 };
 	static GlOption glOption(const char*);
 	// Atom colouring scheme
-	enum ColourScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColourSchemes };
+	enum ColouringScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColouringSchemes };
+	static ColouringScheme colouringScheme(const char*);
 	// Preferences switches
 	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
@@ -137,6 +138,8 @@ class Prefs
 	// Rendering - Style
 	*/
 	private:
+	// Atom colouring style
+	Prefs::ColouringScheme colourScheme_;
 	// Atom sizes / radii
 	GLdouble atomSize_[Atom::nDrawStyles];
 	// Tube size for DS_SPHERE / DS_TUBE / DS_SCALED
@@ -157,8 +160,7 @@ class Prefs
 	GLfloat spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
 	GLfloat spotlightPosition_[3];
-	// Atom colouring style
-	Prefs::ColourScheme colourScheme_;
+
 
 	public:
 	// Sets the specified atom size to the given value
@@ -204,9 +206,9 @@ class Prefs
 	// Return spotlight position
 	GLfloat *spotlightPosition();
 	// Set atom colour scheme
-	void setColourScheme(Prefs::ColourScheme ac);
+	void setColourScheme(Prefs::ColouringScheme sc);
 	// Return atom colour scheme
-	Prefs::ColourScheme colourScheme();
+	Prefs::ColouringScheme colourScheme();
 	// Set number of segments in colour scale
 	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale

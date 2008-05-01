@@ -272,6 +272,7 @@ void Master::initCommands()
 	CA_data[CA_RADIUS].function = &CommandData::function_CA_RADIUS;
 	CA_data[CA_REPLICATEFOLD].function = &CommandData::function_CA_REPLICATEFOLD;
 	CA_data[CA_REPLICATETRIM].function = &CommandData::function_CA_REPLICATETRIM;
+	CA_data[CA_SCHEME].function = &CommandData::function_CA_SCHEME;
 	CA_data[CA_SHININESS].function = &CommandData::function_CA_SHININESS;
 	CA_data[CA_SHOW].function = &CommandData::function_CA_SHOW;
 	CA_data[CA_STYLE].function = &CommandData::function_CA_STYLE;

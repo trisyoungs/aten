@@ -35,6 +35,13 @@ Prefs::GlOption Prefs::glOption(const char *s)
 	return (Prefs::GlOption) power(2,enumSearch("GL option",Prefs::nGlOptions,GlOptionKeywords,s));
 }
 
+// Colour Schemes
+const char *ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "element", "charge", "velocity", "force" };
+Prefs::ColouringScheme Prefs::colouringScheme(const char *s)
+{
+	return (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
+}
+
 // Mouse buttons
 const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "left", "middle", "right", "wheel" };
 Prefs::MouseButton Prefs::mouseButton(const char *s)
@@ -514,13 +521,13 @@ GLfloat *Prefs::spotlightPosition()
 }
 
 // Set atom colour scheme
-void Prefs::setColourScheme(Prefs::ColourScheme ac)
+void Prefs::setColourScheme(Prefs::ColouringScheme cs)
 {
-	colourScheme_ = ac;
+	colourScheme_ = cs;
 }
 
 // Return atom colour scheme
-Prefs::ColourScheme Prefs::colourScheme()
+Prefs::ColouringScheme Prefs::colourScheme()
 {
 	return colourScheme_;
 }
