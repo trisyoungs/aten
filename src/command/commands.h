@@ -296,6 +296,7 @@ enum CommandAction {
 	CA_RADIUS,
 	CA_REPLICATEFOLD,
 	CA_REPLICATETRIM,
+	CA_SCHEME,
 	CA_SHININESS,
 	CA_SHOW,
 	CA_STYLE,
@@ -624,6 +625,7 @@ class CommandData
 	int function_CA_RADIUS(Command *&c, Bundle &obj);
 	int function_CA_REPLICATEFOLD(Command *&c, Bundle &obj);
 	int function_CA_REPLICATETRIM(Command *&c, Bundle &obj);
+	int function_CA_SCHEME(Command *&c, Bundle &obj);
 	int function_CA_SHININESS(Command *&c, Bundle &obj);
 	int function_CA_SHOW(Command *&c, Bundle &obj);
 	int function_CA_STYLE(Command *&c, Bundle &obj);

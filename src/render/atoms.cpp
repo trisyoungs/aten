@@ -29,7 +29,7 @@ void Canvas::renderModelAtoms()
 	dbgBegin(Debug::Calls,"Canvas::renderModelAtoms");
 	static Atom::DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
-	static Prefs::ColourScheme scheme;
+	static Prefs::ColouringScheme scheme;
 	static double radius, rij, cval;
 	static Vec3<double> ri, rj, rk, ijk;
 	static Atom *i, *j;

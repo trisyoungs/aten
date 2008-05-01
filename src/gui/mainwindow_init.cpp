@@ -37,7 +37,7 @@ void AtenForm::finaliseUi()
 	QStringList filters;
 
 	// Set the title of the main window to reflect the version
-	setWindowTitle("Aten (0.97)");
+	setWindowTitle("Aten (0.98)");
 
 	// Initialise application name, organisation and author, and create settings structure
 	QCoreApplication::setOrganizationDomain("www.projectaten.org");
@@ -329,6 +329,14 @@ void AtenForm::setControls()
 	}
 	// Set some menu items
 	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
+	// Set correct colour scheme menuitem
+	switch (prefs.colourScheme())
+	{
+		case (Prefs::ElementScheme): ui.actionSchemeElement->setChecked(TRUE); break;
+		case (Prefs::ChargeScheme): ui.actionSchemeCharge->setChecked(TRUE); break;
+		case (Prefs::ForceScheme): ui.actionSchemeForce->setChecked(TRUE); break;
+		//case (Prefs::VelocityScheme): ui.actionSchemeVelocity->setChecked(TRUE); break;
+	}
 	// Set controls on edit page
 	ui.BondToleranceSpin->setValue(prefs.bondTolerance());
 	// Set the initial configuration of the splitter
