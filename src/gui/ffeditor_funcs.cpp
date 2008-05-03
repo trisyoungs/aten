@@ -22,6 +22,7 @@
 #include "gui/ffeditor.h"
 #include "base/elements.h"
 #include "classes/forcefield.h"
+#include <QtGui/QMessageBox>
 
 // Local enum variables
 namespace TypeColumn
@@ -48,6 +49,9 @@ namespace TorsionColumn
 AtenEdit::AtenEdit(QDialog *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
+	// Private Variables
+	updating_ = FALSE;
+	targetForcefield_ = NULL;
 }
 
 // Finalise GUI
@@ -67,13 +71,19 @@ void AtenEdit::setControls()
 // Populate widget with specified forcefield
 void AtenEdit::populate(Forcefield *ff)
 {
+	updating_ = TRUE;
 	// Clear tables
 	ui.FFEditorTypesTable->clear();
 	ui.FFEditorAtomsTable->clear();
 	ui.FFEditorBondsTable->clear();
 	ui.FFEditorAnglesTable->clear();
 	ui.FFEditorTorsionsTable->clear();
-	if (ff == NULL) return;
+	targetForcefield_ = ff;
+	if (ff == NULL)
+	{
+		updating_ = FALSE;
+		return;
+	}
 	QTableWidgetItem *item;
 	int count, n;
 	ForcefieldParams ffp;
@@ -224,6 +234,8 @@ void AtenEdit::populate(Forcefield *ff)
 	}
 	for (n=0; n<TorsionColumn::nColumns; n++) ui.FFEditorTorsionsTable->resizeColumnToContents(n);
 	ui.FFEditorTorsionsTable->setColumnWidth(TorsionColumn::Form, 82);
+	// Done
+	updating_ = FALSE;
 }
 
 /*
@@ -257,9 +269,60 @@ void AtenEdit::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
 // Item in type table edited
 void AtenEdit::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
 {
-	// Get position of changed item
-	int row = ui.FFEditorAtomsTable->row(w);
+	if ((targetForcefield_ == NULL) || updating_) return;
+	updating_ = TRUE;
+	// Get position of changed item (skipping _NDEF_)
+	int row = ui.FFEditorAtomsTable->row(w) + 1;
 	int column = ui.FFEditorAtomsTable->column(w);
+	// Get pointer to forcefield type from edited row
+	ForcefieldAtom *ffa = targetForcefield_->type(row);
+	// Set new data based on the column edited
+	char text[512];
+	ForcefieldAtom *old;
+	int n, returnvalue;
+	QComboBox *combo;
+	switch (column)
+	{
+		// Forcefield TypeId
+		case (AtomColumn::Id):
+			// Must search FF to see if another type with this id already exists
+			n = atoi(qPrintable(w->text()));
+			old = targetForcefield_->findByTypeId(n, ffa);
+			if (old != NULL)
+			{
+				sprintf(text, "Another type with id %i already exists (%s).\n", n, old->name());
+				returnvalue = QMessageBox::warning(this, "Forcefield Editor", text, QMessageBox::Ok);
+				// Set the table value item back to the old value
+				w->setText(itoa(ffa->typeId()));
+			}
+			else ffa->setTypeId(n);
+			break;
+		// Type name
+		case (AtomColumn::Name):
+			ffa->setName(qPrintable(w->text()));
+			break;
+		// Atomic charge
+		case (AtomColumn::Charge):
+			ffa->setCharge(atof(qPrintable(w->text())));
+			break;
+		// VDW form
+		case (AtomColumn::Form):
+			combo = (QComboBox*) ui.FFEditorAtomsTable->cellWidget(row-1, column);
+			n = combo->currentIndex();
+			ffa->setVdwForm( (Forms::VdwFunction) n);
+			break;
+		// VDW data
+		case (AtomColumn::Data1):
+		case (AtomColumn::Data2):
+		case (AtomColumn::Data3):
+		case (AtomColumn::Data4):
+		case (AtomColumn::Data5):
+		case (AtomColumn::Data6):
+			n = column - AtomColumn::Data1;
+			ffa->params().data[n] = atof(qPrintable(w->text()));
+			break;
+	}
+	updating_ = FALSE;
 }
 
 /*
@@ -269,9 +332,42 @@ void AtenEdit::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
 // Item in bonds table edited
 void AtenEdit::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 {
+	if ((targetForcefield_ == NULL) || updating_) return;
+	updating_ = TRUE;
 	// Get position of changed item
 	int row = ui.FFEditorBondsTable->row(w);
 	int column = ui.FFEditorBondsTable->column(w);
+	// Get pointer to forcefield bound from edited row
+	ForcefieldBound *ffb = targetForcefield_->bond(row);
+	// Set new data based on the column edited
+	int n;
+	QComboBox *combo;
+	switch (column)
+	{
+		// Types involved in interaction
+		case (BondColumn::Type1):
+		case (BondColumn::Type2):
+			n = column - BondColumn::Type1;
+			ffb->setTypeName(n, qPrintable(w->text()));
+			break;
+		// Potential form
+		case (BondColumn::Form):
+			combo = (QComboBox*) ui.FFEditorBondsTable->cellWidget(row, column);
+			n = combo->currentIndex();
+			ffb->setBondStyle( (Forms::BondFunction) n);
+			break;
+		// Parameter data
+		case (BondColumn::Data1):
+		case (BondColumn::Data2):
+		case (BondColumn::Data3):
+		case (BondColumn::Data4):
+		case (BondColumn::Data5):
+		case (BondColumn::Data6):
+			n = column - BondColumn::Data1;
+			ffb->params().data[n] = atof(qPrintable(w->text()));
+			break;
+	}
+	updating_ = FALSE;
 }
 
 /*
@@ -281,9 +377,43 @@ void AtenEdit::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 // Item in angles table edited
 void AtenEdit::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 {
+	if ((targetForcefield_ == NULL) || updating_) return;
+	updating_ = TRUE;
 	// Get position of changed item
 	int row = ui.FFEditorAnglesTable->row(w);
 	int column = ui.FFEditorAnglesTable->column(w);
+	// Get pointer to forcefield bound from edited row
+	ForcefieldBound *ffb = targetForcefield_->angle(row);
+	// Set new data based on the column edited
+	int n;
+	QComboBox *combo;
+	switch (column)
+	{
+		// Types involved in interaction
+		case (AngleColumn::Type1):
+		case (AngleColumn::Type2):
+		case (AngleColumn::Type3):
+			n = column - AngleColumn::Type1;
+			ffb->setTypeName(n, qPrintable(w->text()));
+			break;
+		// Potential form
+		case (AngleColumn::Form):
+			combo = (QComboBox*) ui.FFEditorAnglesTable->cellWidget(row, column);
+			n = combo->currentIndex();
+			ffb->setAngleStyle( (Forms::AngleFunction) n);
+			break;
+		// Parameter data
+		case (AngleColumn::Data1):
+		case (AngleColumn::Data2):
+		case (AngleColumn::Data3):
+		case (AngleColumn::Data4):
+		case (AngleColumn::Data5):
+		case (AngleColumn::Data6):
+			n = column - AngleColumn::Data1;
+			ffb->params().data[n] = atof(qPrintable(w->text()));
+			break;
+	}
+	updating_ = FALSE;
 }
 
 /*
@@ -293,7 +423,43 @@ void AtenEdit::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 // Item in torsions table edited
 void AtenEdit::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w)
 {
+
+	updating_ = TRUE;
 	// Get position of changed item
 	int row = ui.FFEditorTorsionsTable->row(w);
 	int column = ui.FFEditorTorsionsTable->column(w);
+	if ((targetForcefield_ == NULL) || updating_) return;
+	// Get pointer to forcefield bound from edited row
+	ForcefieldBound *ffb = targetForcefield_->torsion(row);
+	// Set new data based on the column edited
+	int n;
+	QComboBox *combo;
+	switch (column)
+	{
+		// Types involved in interaction
+		case (TorsionColumn::Type1):
+		case (TorsionColumn::Type2):
+		case (TorsionColumn::Type3):
+		case (TorsionColumn::Type4):
+			n = column - TorsionColumn::Type1;
+			ffb->setTypeName(n, qPrintable(w->text()));
+			break;
+		// Potential form
+		case (TorsionColumn::Form):
+			combo = (QComboBox*) ui.FFEditorTorsionsTable->cellWidget(row, column);
+			n = combo->currentIndex();
+			ffb->setTorsionStyle( (Forms::TorsionFunction) n);
+			break;
+		// Parameter data
+		case (TorsionColumn::Data1):
+		case (TorsionColumn::Data2):
+		case (TorsionColumn::Data3):
+		case (TorsionColumn::Data4):
+		case (TorsionColumn::Data5):
+		case (TorsionColumn::Data6):
+			n = column - TorsionColumn::Data1;
+			ffb->params().data[n] = atof(qPrintable(w->text()));
+			break;
+	}
+	updating_ = FALSE;
 }

@@ -47,6 +47,7 @@ Master::Master()
 	// Misc 
 	sketchElement_ = 6;
 	homeDir = "/tmp";
+	defaultForcefield_ = NULL;
 
 	// Clipboard
 	userClipboard = new Clipboard;

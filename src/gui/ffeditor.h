@@ -35,10 +35,16 @@ class AtenEdit : public QDialog
 	Q_OBJECT
 
 	/*
-	// Window Functions
+	// Window Functions / Variables
 	*/
+	private:
+	// Forcefield currently being edited
+	Forcefield *targetForcefield_;
+	// Whether the window is currently being repopulated
+	bool updating_;
+
 	public:
-	void populate(Forcefield *);
+	void populate(Forcefield *target);
 
 	/*
 	// Types Tab

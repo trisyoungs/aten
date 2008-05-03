@@ -357,10 +357,21 @@ ForcefieldAtom *Forcefield::addType()
 	return ffa;
 }
 
-// Returns the head of tha atomtype list
+// Returns the head of the atomtype list
 ForcefieldAtom *Forcefield::types()
 {
 	return types_.first();
+}
+
+// Returns nth defined atomtype
+ForcefieldAtom *Forcefield::type(int n)
+{
+	if ((n < 0) || (n > types_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::types_\n",n);
+		return NULL;
+	}
+	return types_[n];
 }
 
 // Return number of terms defined in bonds list
@@ -375,6 +386,17 @@ ForcefieldBound *Forcefield::bonds()
 	return bonds_.first();
 }
 
+// Returns nth defined bond
+ForcefieldBound *Forcefield::bond(int n)
+{
+	if ((n < 0) || (n > bonds_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::bonds_\n",n);
+		return NULL;
+	}
+	return bonds_[n];
+}
+
 // Return number of terms defined in angles list
 int Forcefield::nAngles()
 {
@@ -387,6 +409,17 @@ ForcefieldBound *Forcefield::angles()
 	return angles_.first();
 }
 
+// Returns nth defined angle
+ForcefieldBound *Forcefield::angle(int n)
+{
+	if ((n < 0) || (n > angles_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::angles_\n",n);
+		return NULL;
+	}
+	return angles_[n];
+}
+
 // Return number of terms defined in torsions list
 int Forcefield::nTorsions()
 {
@@ -397,6 +430,17 @@ int Forcefield::nTorsions()
 ForcefieldBound *Forcefield::torsions()
 {
 	return torsions_.first();
+}
+
+// Returns nth defined torsion
+ForcefieldBound *Forcefield::torsion(int n)
+{
+	if ((n < 0) || (n > torsions_.nItems()))
+	{
+		printf("Index %i is out of range for Forcefield::torsions_\n",n);
+		return NULL;
+	}
+	return torsions_[n];
 }
 
 // Character-match the atomtype names supplied
@@ -432,16 +476,17 @@ ForcefieldAtom *Forcefield::findType(const char *query)
 }
 
 // Return description of typeId_
-Atomtype *Forcefield::typeOfId(int i)
+ForcefieldAtom *Forcefield::findByTypeId(int i, ForcefieldAtom *excluding)
 {
-	dbgBegin(Debug::Calls,"Forcefield::typeOfId");
+	dbgBegin(Debug::Calls,"Forcefield::findByTypeId");
 	ForcefieldAtom *result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next)
-		if (result->typeId() == i) break;
-	if (result == NULL) printf("Forcefield::typeOfId <<<< FFID %i not found in forcefield >>>>\n",i);
-	dbgEnd(Debug::Calls,"Forcefield::typeOfId");
-	return result->atomtype();
+		if ((result->typeId() == i) && (result != excluding)) break;
+//	if (result == NULL) printf("Forcefield::typeOfId <<<< FFID %i not found in forcefield >>>>\n",i);
+	dbgEnd(Debug::Calls,"Forcefield::findByTypeId");
+	return result;
 }
+
 
 // Match two forcefield type strings
 int Forcefield::matchType(const char *test, const char *target)
