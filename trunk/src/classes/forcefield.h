@@ -238,12 +238,14 @@ class Forcefield
 	ForcefieldAtom *addType();
 	// Returns the head of tha atomtype list
 	ForcefieldAtom *types();
+	// Returns the n'th type in the list
+	ForcefieldAtom *type(int n);
 	// Get the atomtype specified by the ffid number passed
 	ForcefieldAtom *findType(int);
 	// Get the array entry of the atomtype specified by the atomname passed
 	ForcefieldAtom *findType(const char*);
-	// Returns the type description of the ForcefieldAtom with the ffid provided
-	Atomtype *typeOfId(int id);
+	// Returns the ForcefieldAtom with the typeId provided
+	ForcefieldAtom *findByTypeId(int id, ForcefieldAtom *excluding = NULL);
 
 	/*
 	// VDW
@@ -266,6 +268,8 @@ class Forcefield
 	int nBonds();
 	// Returns the bond list
 	ForcefieldBound *bonds();
+	// Return the n'th bond in the list
+	ForcefieldBound *bond(int n);
 	// Retrieve bond data corresponding to specified atomtype id's
 	ForcefieldBound *findBond(ForcefieldAtom*, ForcefieldAtom*);
 
@@ -283,6 +287,8 @@ class Forcefield
 	int nAngles();
 	// Returns the angle list
 	ForcefieldBound *angles();
+	// Return the n'th angle in the list
+	ForcefieldBound *angle(int n);
 	// Retrieve angle data corresponding to specified atomtype id's
 	ForcefieldBound *findAngle(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 
@@ -300,6 +306,8 @@ class Forcefield
 	int nTorsions();
 	// Returns the angle list
 	ForcefieldBound *torsions();
+	// Return the n'th torsion in the list
+	ForcefieldBound *torsion(int n);
 	// Retreve torsion data corresponding to specified atomtype id's
 	ForcefieldBound *findTorsion(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 

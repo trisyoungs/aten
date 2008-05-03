@@ -230,7 +230,8 @@ void Model::resetView()
 	resetCamera(newcam);
 	// Now, adjust camera matrix so that this atom is on-screen.
 	// Need to do a check for the viability of the canvas first...
-	if (gui.mainView.isValid())
+	if (gui.mainView.isValid() && (atoms_.nItems() != 0))
+	{
 		if (prefs.hasPerspective())
 		{
 			do
@@ -256,6 +257,12 @@ void Model::resetView()
 				if (target.rScreen().z < 0.0) done = FALSE;
 			} while (!done);
 		}
+	}
+	else
+	{
+		newcam.set(0.0,0.0,-10.0);
+		resetCamera(newcam);
+	}
 	// Recalculate viewing matrix
 	calculateViewMatrix();
 	// Log camera change

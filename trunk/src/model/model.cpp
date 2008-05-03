@@ -33,7 +33,8 @@ Model::Model()
 {
 	// Private variables
 	nSelected_ = 0;
-	rCamera_.set(0.0,0.0,0.0);
+	rCamera_.set(0.0,0.0,-10.0);
+	cameraMatrix_.rows[2].set(0.0,0.0,1.0,-10.0);
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
 	orthoSize_ = 5.0;
