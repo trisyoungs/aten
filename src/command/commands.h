@@ -184,16 +184,28 @@ enum CommandAction {
 	CA_PRINTFORCES,
 
 	// Forcefield Commands
+	CA_ANGLEDEF,
+	CA_BONDDEF,
 	CA_CLEARMAP,
 	CA_DEFAULTFF,
+	CA_EQUIVALENT,
 	CA_FFMODEL,
 	CA_FFPATTERN,
 	CA_FFPATTERNID,
+	CA_FINALISEFF,
+	CA_GENCONVERT,
+	CA_GENERATOR,
 	CA_GETFF,
 	CA_LOADFF,
 	CA_MAP,
+	CA_NEWFF,
+	CA_RULES,
+	CA_TORSIONDEF,
+	CA_TYPEDEF,
 	CA_TYPEMODEL,
 	CA_TYPETEST,
+	CA_UNITS,
+	CA_VDWDEF,
 
 	// Glyph commands
 	CA_GLYPHATOMF,
@@ -269,7 +281,6 @@ enum CommandAction {
 	CA_NEXTMODEL,
 	CA_PREVMODEL,
 	CA_SAVEMODEL,
-	CA_TITLE,
 
 	// Pattern Commands
 	CA_CLEARPATTERNS,
@@ -523,16 +534,28 @@ class CommandData
 	int function_CA_MODELFORCES(Command *&c, Bundle &obj);
 	int function_CA_PRINTFORCES(Command *&c, Bundle &obj);
 	// Forcefield Commands
+	int function_CA_ANGLEDEF(Command *&c, Bundle &obj);
+	int function_CA_BONDDEF(Command *&c, Bundle &obj);
 	int function_CA_CLEARMAP(Command *&c, Bundle &obj);
 	int function_CA_DEFAULTFF(Command *&c, Bundle &obj);
+	int function_CA_EQUIVALENT(Command *&c, Bundle &obj);
+	int function_CA_FINALISEFF(Command *&c, Bundle &obj);
 	int function_CA_FFMODEL(Command *&c, Bundle &obj);
 	int function_CA_FFPATTERN(Command *&c, Bundle &obj);
 	int function_CA_FFPATTERNID(Command *&c, Bundle &obj);
+	int function_CA_GENCONVERT(Command *&c, Bundle &obj);
+	int function_CA_GENERATOR(Command *&c, Bundle &obj);
 	int function_CA_GETFF(Command *&c, Bundle &obj);
 	int function_CA_LOADFF(Command *&c, Bundle &obj);
 	int function_CA_MAP(Command *&c, Bundle &obj);
+	int function_CA_NEWFF(Command *&c, Bundle &obj);
+	int function_CA_RULES(Command *&c, Bundle &obj);
+	int function_CA_TORSIONDEF(Command *&c, Bundle &obj);
+	int function_CA_TYPEDEF(Command *&c, Bundle &obj);
 	int function_CA_TYPEMODEL(Command *&c, Bundle &obj);
 	int function_CA_TYPETEST(Command *&c, Bundle &obj);
+	int function_CA_UNITS(Command *&c, Bundle &obj);
+	int function_CA_VDWDEF(Command *&c, Bundle &obj);
 	// Glyph commands
 	int function_CA_GLYPHATOMF(Command *&c, Bundle &obj);
 	int function_CA_GLYPHATOMR(Command *&c, Bundle &obj);
@@ -600,7 +623,6 @@ class CommandData
 	int function_CA_NEXTMODEL(Command *&c, Bundle &obj);
 	int function_CA_PREVMODEL(Command *&c, Bundle &obj);
 	int function_CA_SAVEMODEL(Command *&c, Bundle &obj);
-	int function_CA_TITLE(Command *&c, Bundle &obj);
 	// Pattern Commands
 	int function_CA_CLEARPATTERNS(Command *&c, Bundle &obj);
 	int function_CA_CREATEPATTERNS(Command *&c, Bundle &obj);

@@ -38,9 +38,9 @@ int CommandData::function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTSETUP(Command *&c, Bundle &obj)
 {
 	msg(Debug::None,"Current Energy Setup:\n");
-	msg(Debug::None,"Intramolecular Terms : %s\n",(prefs.calculateIntra() ? "On" : "Off"));
-	msg(Debug::None,"       van der Waals : %s\n",(prefs.calculateVdw() ? "On" : "Off"));
-	msg(Debug::None,"      Electrostatics : %s (%s)\n",(prefs.calculateElec() ? "On" : "Off"), Forms::elecMethod(prefs.electrostaticsMethod()));
+	msg(Debug::None,"Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
+	msg(Debug::None,"       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
+	msg(Debug::None,"      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
 	msg(Debug::None,"             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
 	return CR_SUCCESS;
 }
@@ -50,7 +50,7 @@ int CommandData::function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
-	Filter *f = master.findFilter(FT_EXPRESSION_EXPORT, c->argc(0));
+	Filter *f = master.findFilter(Filter::ExpressionExport, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{

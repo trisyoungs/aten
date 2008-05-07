@@ -50,13 +50,13 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 			params = pb->data()->params();
 			switch (pb->data()->functionalForm().bondFunc)
 			{
-				case (Forms::NoBond):
+				case (BondFunctions::None):
 					printf("Pattern::bondEnergy <<<< Bond function is UNSPECIFIED >>>>\n");
 					break;
-				case (Forms::HarmonicBond): 
+				case (BondFunctions::Harmonic):
 					// U = 0.5 * forcek * (r - eq)**2
-					forcek = fabs(params.data[Forms::HarmonicBondK]);
-					eq = params.data[Forms::HarmonicBondEq];
+					forcek = fabs(params.data[BondFunctions::HarmonicK]);
+					eq = params.data[BondFunctions::HarmonicEq];
 					r = cell->distance(modelatoms[i]->r(), modelatoms[j]->r());
 					r -= eq;
 					energy += 0.5 * forcek * r * r;
@@ -98,14 +98,14 @@ void Pattern::bondForces(Model *srcmodel)
 			params = pb->data()->params();
 			switch (pb->data()->functionalForm().bondFunc)
 			{
-				case (Forms::NoBond):
+				case (BondFunctions::None):
 					printf("Pattern::bondForcess <<<< Bond function is UNSPECIFIED >>>>\n");
 					du_dr = 0.0;
 					break;
-				case (Forms::HarmonicBond): 
+				case (BondFunctions::Harmonic): 
 					// F(r) = forcek * (r - eq)
-					forcek = params.data[Forms::HarmonicBondK];
-					eq = params.data[Forms::HarmonicBondEq];
+					forcek = params.data[BondFunctions::HarmonicK];
+					eq = params.data[BondFunctions::HarmonicEq];
 					du_dr = forcek * (rij - eq) / rij;
 					break;
 				default:

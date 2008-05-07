@@ -29,24 +29,32 @@
 #include <fstream>
 
 // Filter types
-const char *FT_strings[FT_NITEMS] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
-const char *text_from_FT(FilterType ft)
-	{ return FT_strings[ft]; }
-FilterType FT_from_text(const char *s)
-	{ return (FilterType) enumSearch("filter section",FT_NITEMS,FT_strings,s); }
+const char *FilterTypeKeywords[Filter::nFilterTypes] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
+const char *Filter::filterType(Filter::FilterType ft)
+{
+	return FilterTypeKeywords[ft];
+}
+Filter::FilterType Filter::filterType(const char *s)
+{
+	return (Filter::FilterType) enumSearch("filter type", Filter::nFilterTypes, FilterTypeKeywords, s);
+}
 
 // Filter commands
-const char* FC_data[FC_NITEMS] =  { "name", "nickname", "extension", "glob", "exact", "zmap", "id" };
-FilterCommmand FC_from_text(const char* s)
-	{ return (FilterCommmand) enumSearch("", FC_NITEMS, FC_data, s); }
-const char *text_from_FC(FilterCommmand fc)
-	{ return FC_data[fc]; }
+const char* FilterCommandKeywords[Filter::nFilterCommands] =  { "name", "nickname", "extension", "glob", "exact", "zmap", "id" };
+Filter::FilterCommmand Filter::filterCommand(const char* s)
+{
+	return (Filter::FilterCommmand) enumSearch("", Filter::nFilterCommands, FilterCommandKeywords, s);
+}
+const char *Filter::filterCommand(Filter::FilterCommmand fc)
+{
+	return FilterCommandKeywords[fc];
+}
 
 // Constructor
 Filter::Filter()
 {
 	// Private variables
-	type_ = FT_NITEMS;
+	type_ = Filter::nFilterTypes;
 	hasExtension_ = FALSE;
 	hasZmapping_ = FALSE;
 	zmapping_ = Prefs::AlphaZmap;
@@ -115,7 +123,7 @@ const char *Filter::glob()
 }
 
 // Return the type of filter
-FilterType Filter::type()
+Filter::FilterType Filter::type()
 {
 	return type_;
 }
@@ -160,36 +168,36 @@ bool Filter::load(ifstream &filterFile)
 			return TRUE;
 		}
 		// Check for filter specification commands
-		fc = FC_from_text(parser.argc(0));
+		fc = Filter::filterCommand(parser.argc(0));
 		// Some commands do not require nodes in the list, but set properties in the filter itself
 		switch (fc)
 		{
 			// Long name of filter
-			case (FC_NAME):
+			case (Filter::NameCommand):
 				name_ = parser.argc(1);
 				break;
 			// Nickname for filter
-			case (FC_NICKNAME):
+			case (Filter::NicknameCommand):
 				nickname_ = parser.argc(1);
 				break;
 			// File extension(s)
-			case (FC_EXTENSION):
+			case (Filter::ExtensionCommand):
 				extension_ = parser.argc(1);
 				break;
 			// Exact filename list
-			case (FC_EXACT):
+			case (Filter::ExactCommand):
 				exactNames_ = parser.argc(1);
 				break;
 			// Set file filter glob for GUI
-			case (FC_GLOB):
+			case (Filter::GlobCommand):
 				glob_ = parser.argc(1);
 				break;
 			// Set filter ID
-			case (FC_ID):
+			case (Filter::IdCommand):
 				id_ = parser.argi(1);
 				break;
 			// Set element zmapping to use for import
-			case (FC_ZMAP):
+			case (Filter::ZMapCommand):
 				zm = Prefs::zmapType(parser.argc(1));
 				if (zm != Prefs::nZmapTypes)
 				{
@@ -243,18 +251,18 @@ void Filter::setType(FilterType ft)
 	Variable *v;
 	switch (type_)
 	{
-		case (FT_MODEL_IMPORT):
+		case (Filter::ModelImport):
 			break;
-		case (FT_TRAJECTORY_IMPORT):
+		case (Filter::TrajectoryImport):
 			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
 			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("cell","type",Variable::CharacterVariable);
 			break;
-		case (FT_EXPRESSION_IMPORT):
+		case (Filter::ExpressionImport):
 			break;
-		case (FT_GRID_IMPORT):
+		case (Filter::GridImport):
 			break;
-		case (FT_MODEL_EXPORT):
+		case (Filter::ModelExport):
 			v = commands_.variables.createVariable("cell","type",Variable::CharacterVariable);
 			v = commands_.variables.createVariable("cell","a",Variable::FloatVariable);
 			v = commands_.variables.createVariable("cell","b",Variable::FloatVariable);
@@ -274,17 +282,17 @@ void Filter::setType(FilterType ft)
 			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
 			break;
-		case (FT_TRAJECTORY_EXPORT):
+		case (Filter::TrajectoryExport):
 			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
 			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
 			break;
-		case (FT_EXPRESSION_EXPORT):
+		case (Filter::ExpressionExport):
 			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
 			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("energyunit","",Variable::CharacterVariable);
 			v = commands_.variables.createVariable("ntypes","",Variable::IntegerVariable);
 			break;
-		case (FT_GRID_EXPORT):
+		case (Filter::GridExport):
 			break;
 	}
 	dbgEnd(Debug::Calls,"Filter::setType");
@@ -295,11 +303,11 @@ void Filter::setType(FilterType ft)
 void Filter::print()
 {
 	dbgBegin(Debug::Calls,"Filter::print");
-	printf("Filter Name : '%s'\n",name_.get());
-	printf(" Shell glob : '%s'\n",glob_.get());
-	printf(" Extensions : '%s'\n",extension_.get());
-	printf("Exact Names : '%s'\n",exactNames_.get());
-	printf("       Type : %s\n",text_from_FT(type_));
+	printf("Filter Name : '%s'\n", name_.get());
+	printf(" Shell glob : '%s'\n", glob_.get());
+	printf(" Extensions : '%s'\n", extension_.get());
+	printf("Exact Names : '%s'\n", exactNames_.get());
+	printf("       Type : %s\n", Filter::FilterType(type_));
 	dbgEnd(Debug::Calls,"Filter::print");
 }
 
@@ -315,7 +323,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 	// Setup based on filter type...
 	switch (type_)
 	{
-		case (FT_MODEL_IMPORT):
+		case (Filter::ModelImport):
 			msg(Debug::None,"Load Model : %s (%s)\n", filename, name_.get());
 			// Reset reserved variables
 			commands_.variables.set("title",filename);
@@ -327,7 +335,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 				return FALSE;
 			}
 			break;
-		case (FT_MODEL_EXPORT):
+		case (Filter::ModelExport):
 			msg(Debug::None,"Save Model : %s (%s)...", obj.m->filename(), name_.get());
 			// Open file and set target
 			if (!commands_.setOutputFile(obj.m->filename()))
@@ -340,7 +348,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			commands_.setModelVariables(obj.m);
 			commands_.setCellVariables(obj.m->cell());
 			break;
-		case (FT_EXPRESSION_EXPORT):
+		case (Filter::ExpressionExport):
 			msg(Debug::None,"Save Field : %s (%s)\n", filename, name_.get());
 			// Need a valid pattern and energy expression to export
 			if (!obj.m->autocreatePatterns() || !obj.m->createExpression())
@@ -362,7 +370,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 				return FALSE;
 			}
 			break;
-		case (FT_GRID_IMPORT):
+		case (Filter::GridImport):
 			msg(Debug::None,"Load Grid  : %s (%s)\n", filename, name_.get());
 			// Open file...
 			if (!commands_.setInputFile(filename))
@@ -372,7 +380,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 				return FALSE;
 			}
 			break;
-		case (FT_GRID_EXPORT):
+		case (Filter::GridExport):
 			msg(Debug::None,"Save Grid  : %s (%s)\n",filename,name_.get());
 			// Open file...
 			if (!commands_.setOutputFile(filename))
@@ -382,7 +390,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 				return FALSE;
 			}
 			break;
-		case (FT_TRAJECTORY_IMPORT):
+		case (Filter::TrajectoryImport):
 			// Set variables
 			commands_.variables.set("header",(trajheader ? "true" : "false"));
 			commands_.variables.set("frame",(trajheader ? "false" : "true"));
@@ -412,31 +420,31 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 	// Perform post-filter operations
 	switch (type_)
 	{
-		case (FT_MODEL_IMPORT):
+		case (Filter::ModelImport):
 			// Reset element mapping style
 			prefs.setZmapType(temp_zmap);
 			commands_.closeFiles();
 			msg(Debug::None,"Model import %s.\n",(result ? "completed" : "failed"));
 			break;
-		case (FT_MODEL_EXPORT):
+		case (Filter::ModelExport):
 			obj.m->updateSavePoint();
 			commands_.closeFiles();
 			msg(Debug::None,"Model export %s.\n",(result ? "completed" : "failed"));
 			break;
-		case (FT_EXPRESSION_EXPORT):
+		case (Filter::ExpressionExport):
 			commands_.closeFiles();
 			msg(Debug::None,"Field export %s.\n",(result ? "completed" : "failed"));
 			break;
-		case (FT_TRAJECTORY_IMPORT):
+		case (Filter::TrajectoryImport):
 			//commands_.close_files();
 			//if (trajheader) (result ? msg(Debug::None,"Trajectory opened successfully.\n") : msg(Debug::None,"Failed to open trajectory.\n"));
 			//else if (!result) msg(Debug::None,"Failed to read frame from trajectory.\n");
 			break;
-		case (FT_GRID_IMPORT):
+		case (Filter::GridImport):
 			commands_.closeFiles();
 			msg(Debug::None,"Grid import %s.\n",(result ? "completed" : "failed"));
 			break;
-		case (FT_GRID_EXPORT):
+		case (Filter::GridExport):
 			commands_.closeFiles();
 			msg(Debug::None,"Grid export %s.\n",(result ? "completed" : "failed"));
 			break;

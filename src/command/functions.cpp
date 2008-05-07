@@ -245,7 +245,6 @@ void Master::initCommands()
 	CA_data[CA_PREVMODEL].function = &CommandData::function_CA_PREVMODEL;
 	CA_data[CA_INFO].function = &CommandData::function_CA_INFO;
 	CA_data[CA_SAVEMODEL].function = &CommandData::function_CA_SAVEMODEL;
-	CA_data[CA_TITLE].function = &CommandData::function_CA_TITLE;
 
 	// Pattern Commands
 	CA_data[CA_CLEARPATTERNS].function = &CommandData::function_CA_CLEARPATTERNS;

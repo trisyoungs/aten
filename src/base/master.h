@@ -98,17 +98,17 @@ class Master
 	// Set export partners for import filters
 	void partnerFilters();
 	// List of file filters 
-	List<Filter> filters_[FT_NITEMS];
+	List<Filter> filters_[Filter::nFilterTypes];
 
 	public:
 	// Load filters from specified location
 	bool openFilters(const char* dir, bool isdatadir);
 	// Probe file for its format
-	Filter *probeFile(const char *filename, FilterType);
+	Filter *probeFile(const char *filename, Filter::FilterType);
 	// Find filter of specified type with nickname provided
-	Filter *findFilter(FilterType ft, const char *nickname) const;
+	Filter *findFilter(Filter::FilterType ft, const char *nickname) const;
 	// Return first filter in list (of a given type)
-	Filter *filters(FilterType ft) const;
+	Filter *filters(Filter::FilterType ft) const;
 
 	/*
 	// Forcefields

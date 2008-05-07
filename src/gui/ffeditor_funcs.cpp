@@ -120,7 +120,7 @@ void AtenEdit::populate(Forcefield *ff)
 	ui.FFEditorAtomsTable->setRowCount(ff->nTypes()-1);
 	ui.FFEditorAtomsTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Charge" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
 	slist.clear();
-	for (n=0; n<Forms::nVdwForms; n++) slist << Forms::vdwFunction( (Forms::VdwFunction) n);
+	for (n=0; n<VdwFunctions::nVdwFunctions; n++) slist << VdwFunctions::VdwFunctions[n].keyword;
 	for (ForcefieldAtom *ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
 		ffp = ffa->params();
@@ -150,7 +150,7 @@ void AtenEdit::populate(Forcefield *ff)
 	ui.FFEditorBondsTable->setRowCount(ff->nBonds());
 	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
 	slist.clear();
-	for (n=0; n<Forms::nBondFunctions; n++) slist << Forms::bondFunction( (Forms::BondFunction) n);
+	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->bonds(); ffb != NULL; ffb = ffb->next)
 	{
 		ffp = ffb->params();
@@ -178,7 +178,7 @@ void AtenEdit::populate(Forcefield *ff)
 	ui.FFEditorAnglesTable->setRowCount(ff->nAngles());
 	ui.FFEditorAnglesTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
 	slist.clear();
-	for (n=0; n<Forms::nAngleFunctions; n++) slist << Forms::angleFunction( (Forms::AngleFunction) n);
+	for (n=0; n<AngleFunctions::nAngleFunctions; n++) slist << AngleFunctions::AngleFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
 	{
 		ffp = ffb->params();
@@ -208,7 +208,7 @@ void AtenEdit::populate(Forcefield *ff)
 	ui.FFEditorTorsionsTable->setRowCount(ff->nTorsions());
 	ui.FFEditorTorsionsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
 	slist.clear();
-	for (n=0; n<Forms::nTorsionFunctions; n++) slist << Forms::torsionFunction( (Forms::TorsionFunction) n);
+	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->torsions(); ffb != NULL; ffb = ffb->next)
 	{
 		ffp = ffb->params();
@@ -309,7 +309,7 @@ void AtenEdit::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
 		case (AtomColumn::Form):
 			combo = (QComboBox*) ui.FFEditorAtomsTable->cellWidget(row-1, column);
 			n = combo->currentIndex();
-			ffa->setVdwForm( (Forms::VdwFunction) n);
+			ffa->setVdwForm( (VdwFunctions::VdwFunction) n);
 			break;
 		// VDW data
 		case (AtomColumn::Data1):
@@ -354,7 +354,7 @@ void AtenEdit::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 		case (BondColumn::Form):
 			combo = (QComboBox*) ui.FFEditorBondsTable->cellWidget(row, column);
 			n = combo->currentIndex();
-			ffb->setBondStyle( (Forms::BondFunction) n);
+			ffb->setBondStyle( (BondFunctions::BondFunction) n);
 			break;
 		// Parameter data
 		case (BondColumn::Data1):
@@ -400,7 +400,7 @@ void AtenEdit::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 		case (AngleColumn::Form):
 			combo = (QComboBox*) ui.FFEditorAnglesTable->cellWidget(row, column);
 			n = combo->currentIndex();
-			ffb->setAngleStyle( (Forms::AngleFunction) n);
+			ffb->setAngleStyle( (AngleFunctions::AngleFunction) n);
 			break;
 		// Parameter data
 		case (AngleColumn::Data1):
@@ -448,7 +448,7 @@ void AtenEdit::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w)
 		case (TorsionColumn::Form):
 			combo = (QComboBox*) ui.FFEditorTorsionsTable->cellWidget(row, column);
 			n = combo->currentIndex();
-			ffb->setTorsionStyle( (Forms::TorsionFunction) n);
+			ffb->setTorsionStyle( (TorsionFunctions::TorsionFunction) n);
 			break;
 		// Parameter data
 		case (TorsionColumn::Data1):

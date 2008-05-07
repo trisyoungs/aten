@@ -75,19 +75,19 @@ int CommandData::function_CA_ECUT(Command *&c, Bundle &obj)
 // Set electrostatic method to use ('elec none|coulomb|ewald|ewaldauto')
 int CommandData::function_CA_ELEC(Command *&c, Bundle &obj)
 {
-	Forms::ElecMethod em = Forms::elecMethod(c->argc(0));
-	if (em == Forms::nElecMethods) return CR_FAIL;
+	Electrostatics::ElecMethod em = Electrostatics::elecMethod(c->argc(0));
+	if (em == Electrostatics::nElectrostatics) return CR_FAIL;
 	prefs.setElectrostaticsMethod(em);
-	prefs.setCalculateElec(em == Forms::NoElec ? FALSE : TRUE);
+	prefs.setCalculateElec(em == Electrostatics::None ? FALSE : TRUE);
 	switch (em)
 	{
 		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
-		case (Forms::EwaldElec):
+		case (Electrostatics::Ewald):
 			prefs.setEwaldAlpha(c->argd(1));
 			prefs.setEwaldKvec(c->arg3i(2));
 			break;
 		// Set ewald precision
-		case (Forms::EwaldAutoElec):
+		case (Electrostatics::EwaldAuto):
 			prefs.setEwaldPrecision(c->argd(1));
 			break;
 	}

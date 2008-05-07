@@ -23,6 +23,25 @@
 #include "base/prefs.h"
 #include "base/debug.h"
 
+// Forcefield keywords
+const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };
+Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
+{
+	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
+}
+
+// Generation rules (for rule-based FFs)
+const char *ForcefieldRulesStrings[Forcefield::nForcefieldRules] = { "None", "UniversalFF (Rappe et al.)" };
+const char *ForcefieldRulesKeywords[Forcefield::nForcefieldRules] = { "none", "uff" };
+const char *Forcefield::forcefieldRules(Forcefield::ForcefieldRules i)
+{
+	return ForcefieldRulesStrings[i];
+}
+Forcefield::ForcefieldRules Forcefield::forcefieldRules(const char *s)
+{
+	return (Forcefield::ForcefieldRules) enumSearch("forcefield rules", Forcefield::nForcefieldRules, ForcefieldRulesKeywords, s);
+}
+
 // Constructors
 ForcefieldParams::ForcefieldParams()
 {
@@ -35,7 +54,7 @@ ForcefieldAtom::ForcefieldAtom()
 	name_.set("Unnamed");
 	typeId_ = -1;
 	charge_ = 0.0;
-	vdwForm_ = Forms::NoVdw;
+	vdwForm_ = VdwFunctions::None;
 	generator_ = NULL;
 	parent_ = NULL;
 	// Public variables
@@ -55,14 +74,14 @@ ForcefieldBound::ForcefieldBound()
 Forcefield::Forcefield()
 {
 	// Private variables
-	rules_ = Forms::NoRules;
-	nGenerators_ = 0;
-	energyGenerators_ = NULL;
+	rules_ = NoRules;
+	energyUnit_ = Prefs::Joules;
 	// Create _NDEF_ type common to all FFs)
 	ForcefieldAtom *ffa = types_.add();
 	ffa->setParent(this);
 	ffa->setName("_NDEF_");
 	ffa->setTypeId(-1);
+	for (int i=0; i<MAXFFGENDATA; i++) energyGenerators_[i] = FALSE;
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -76,8 +95,6 @@ ForcefieldAtom::~ForcefieldAtom()
 
 Forcefield::~Forcefield()
 {
-	// Delete all parameter lists
-	if (energyGenerators_ != NULL) delete[] energyGenerators_;
 }
 
 /*
@@ -97,13 +114,13 @@ Forcefield *ForcefieldAtom::parent()
 }
 
 // Set functional form of VDW
-void ForcefieldAtom::setVdwForm(Forms::VdwFunction vf)
+void ForcefieldAtom::setVdwForm(VdwFunctions::VdwFunction vf)
 {
 	vdwForm_ = vf;
 }
 
 // Returns the funcional VDW form
-Forms::VdwFunction ForcefieldAtom::vdwForm()
+VdwFunctions::VdwFunction ForcefieldAtom::vdwForm()
 {
 	return vdwForm_;
 }
@@ -196,20 +213,15 @@ ForcefieldParams &ForcefieldAtom::params()
 // Initialise generator array
 void ForcefieldAtom::initialiseGenerator()
 {
-	if (parent_ == NULL) printf("Can't initialise generator data - parent Forcefield has not been set.\n");
-	else
-	{
-		if (generator_ == NULL) generator_ = new double[parent_->nGenerators()];
-		else printf("Warning - replacing existing generator data array.\n");
-	}
+	if (generator_ != NULL) msg(Debug::None,"Warning - replacing existing generator data for typeId %i (%s)\n", typeId_, name_.get());
+	generator_ = new double[MAXFFGENDATA];
 }
 
 // Set generator data
 void ForcefieldAtom::setGenerator(int i, double d)
 {
-	int limit = (parent_ == NULL ? 0 : parent_->nGenerators());
 	// Check the limit of the position provided
-	if ((i < 0) || (i > limit)) printf("setGenerator() - index %i is out of range (max = %i).\n", limit);
+	if ((i < 0) || (i > MAXFFGENDATA)) printf("setGenerator() - index %i is out of range.\n", i);
 	else generator_[i] = d;
 }
 
@@ -222,9 +234,8 @@ double *ForcefieldAtom::generator()
 // Return single generator value
 double ForcefieldAtom::generator(int i)
 {
-	int limit = (parent_ == NULL ? 0 : parent_->nGenerators());
 	// Check the limit of the position provided
-	if ((i < 0) || (i > limit)) printf("generator() - index %i is out of range (max = %i).\n", limit);
+	if ((i < 0) || (i > MAXFFGENDATA)) printf("generator() - index %i is out of range.\n", i);
 	else return generator_[i];
 	return 0.0;
 }
@@ -265,19 +276,19 @@ ForcefieldBound::BoundForms ForcefieldBound::functionalForm()
 }
 
 // Set the bond functional form
-void ForcefieldBound::setBondStyle(Forms::BondFunction bf)
+void ForcefieldBound::setBondStyle(BondFunctions::BondFunction bf)
 {
 	functionalForm_.bondFunc = bf;
 }
 
 // Set the angle functional form
-void ForcefieldBound::setAngleStyle(Forms::AngleFunction af)
+void ForcefieldBound::setAngleStyle(AngleFunctions::AngleFunction af)
 {
 	functionalForm_.angleFunc = af;
 }
 
 // Set the torsion functional form
-void ForcefieldBound::setTorsionStyle(Forms::TorsionFunction tf)
+void ForcefieldBound::setTorsionStyle(TorsionFunctions::TorsionFunction tf)
 {
 	functionalForm_.torsionFunc = tf;
 }
@@ -331,15 +342,22 @@ const char *Forcefield::filename()
 }
 
 // Returns the typing rules of the Forcefield
-Forms::ForcefieldRules Forcefield::rules()
+Forcefield::ForcefieldRules Forcefield::rules()
 {
 	return rules_;
 }
 
-// Return the number of generators for each type
-int Forcefield::nGenerators()
+// Set conversion flag for energetic generator data
+void Forcefield::setEnergyGenerator(int n)
 {
-	return nGenerators_;
+	if ((n < 0) || (n > MAXFFGENDATA)) msg(Debug::None,"Index %i is out of range for generator data.\n", n);
+	else energyGenerators_[n] = TRUE;
+}
+
+// Set internal energy unit of forcefield
+void Forcefield::setEnergyUnit(Prefs::EnergyUnit eu)
+{
+	energyUnit_ = eu;
 }
 
 // Returns the number of atom types specified in the Forcefield
@@ -374,6 +392,15 @@ ForcefieldAtom *Forcefield::type(int n)
 	return types_[n];
 }
 
+// Add bond term to the forcefield
+ForcefieldBound *Forcefield::addBond(BondFunctions::BondFunction form)
+{
+	ForcefieldBound *ffb = bonds_.add();
+	ffb->setType(ForcefieldBound::BondInteraction);
+	ffb->setBondStyle(form);
+	return ffb;
+}
+
 // Return number of terms defined in bonds list
 int Forcefield::nBonds()
 {
@@ -397,6 +424,15 @@ ForcefieldBound *Forcefield::bond(int n)
 	return bonds_[n];
 }
 
+// Add angle term to the forcefield
+ForcefieldBound *Forcefield::addAngle(AngleFunctions::AngleFunction form)
+{
+	ForcefieldBound *ffb = angles_.add();
+	ffb->setType(ForcefieldBound::AngleInteraction);
+	ffb->setAngleStyle(form);
+	return ffb;
+}
+
 // Return number of terms defined in angles list
 int Forcefield::nAngles()
 {
@@ -418,6 +454,15 @@ ForcefieldBound *Forcefield::angle(int n)
 		return NULL;
 	}
 	return angles_[n];
+}
+
+// Add torsions term to the forcefield
+ForcefieldBound *Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
+{
+	ForcefieldBound *ffb = torsions_.add();
+	ffb->setType(ForcefieldBound::TorsionInteraction);
+	ffb->setTorsionStyle(form);
+	return ffb;
 }
 
 // Return number of terms defined in torsions list
@@ -648,10 +693,9 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 	return result;
 }
 
-void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
+void Forcefield::convertParameters()
 {
-	// Convert units of all the energetic parameters within the forcefield from the unit supplied into program internal units (specified in prefs)
-	// Check for 'NULL' pointers for ff_param variables (for e.g. rule-based forcefields)
+	// Convert units of all the energetic parameters within the forcefield from the forcefield's current units to the program's internal units (specified in prefs)
 	dbgBegin(Debug::Calls,"Forcefield::convertParameters");
 	ForcefieldParams *p;
 	ForcefieldBound *b;
@@ -664,10 +708,10 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 		p = &ffa->params();
 		switch (ffa->vdwForm())
 		{
-			case (Forms::NoVdw):
+			case (VdwFunctions::None):
 				break;
-			case (Forms::LjVdw):
-				p->data[Forms::LjVdwEpsilon] = prefs.convertEnergy(p->data[Forms::LjVdwEpsilon], ff_eunit);
+			case (VdwFunctions::Lj):
+				p->data[VdwFunctions::LjEpsilon] = prefs.convertEnergy(p->data[VdwFunctions::LjEpsilon], energyUnit_);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this VDW type.\n");
@@ -676,8 +720,8 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 		// Only convert those parameters for which the 'energyGenerators_[]' flag is TRUE
 		if (ffa->generator() != NULL)
 		{
-			for (n=0; n<nGenerators_; n++)
-				if (energyGenerators_[n]) ffa->setGenerator(n, prefs.convertEnergy(ffa->generator(n),ff_eunit));
+			for (n=0; n<MAXFFGENDATA; n++)
+				if (energyGenerators_[n]) ffa->setGenerator(n, prefs.convertEnergy(ffa->generator(n), energyUnit_));
 		}
 	}
 	// Bonds 
@@ -686,10 +730,10 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 		p = &b->params();
 		switch (b->functionalForm().bondFunc)
 		{
-			case (Forms::NoBond):
+			case (BondFunctions::None):
 				break;
-			case (Forms::HarmonicBond):
-				p->data[Forms::HarmonicBondK] = prefs.convertEnergy(p->data[Forms::HarmonicBondK],ff_eunit);
+			case (BondFunctions::Harmonic):
+				p->data[BondFunctions::HarmonicK] = prefs.convertEnergy(p->data[BondFunctions::HarmonicK],energyUnit_);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this bond type.\n");
@@ -702,10 +746,19 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 		p = &b->params();
 		switch (b->functionalForm().angleFunc)
 		{
-			case (Forms::NoAngle):
+			case (AngleFunctions::None):
 				break;
-			case (Forms::HarmonicAngle):
-				p->data[Forms::HarmonicAngleK] = prefs.convertEnergy(p->data[Forms::HarmonicAngleK],ff_eunit);
+			case (AngleFunctions::Harmonic):
+				p->data[AngleFunctions::HarmonicK] = prefs.convertEnergy(p->data[AngleFunctions::HarmonicK],energyUnit_);
+				break;
+			case (AngleFunctions::Cosine):
+				p->data[AngleFunctions::CosineK] = prefs.convertEnergy(p->data[AngleFunctions::CosineK],energyUnit_);
+				break;
+			case (AngleFunctions::UffCosine1):
+				p->data[AngleFunctions::UffCosineK] = prefs.convertEnergy(p->data[AngleFunctions::UffCosineK],energyUnit_);
+				break;
+			case (AngleFunctions::UffCosine2):
+				p->data[AngleFunctions::UffCosineK] = prefs.convertEnergy(p->data[AngleFunctions::UffCosineK],energyUnit_);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this angle type.\n");
@@ -718,32 +771,34 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 		p = &b->params();
 		switch (b->functionalForm().torsionFunc)
 		{
-			case (Forms::NoTorsion):
+			case (TorsionFunctions::None):
 				break;
-			case (Forms::CosineTorsion):
-				p->data[Forms::CosineTorsionK] = prefs.convertEnergy(p->data[Forms::CosineTorsionK],ff_eunit);
+			case (TorsionFunctions::Cosine):
+				p->data[TorsionFunctions::CosineK] = prefs.convertEnergy(p->data[TorsionFunctions::CosineK],energyUnit_);
 				break;
-			case (Forms::Cos3Torsion):
-				p->data[Forms::Cos3TorsionK1] = prefs.convertEnergy(p->data[Forms::Cos3TorsionK1],ff_eunit);
-				p->data[Forms::Cos3TorsionK2] = prefs.convertEnergy(p->data[Forms::Cos3TorsionK2],ff_eunit);
-				p->data[Forms::Cos3TorsionK3] = prefs.convertEnergy(p->data[Forms::Cos3TorsionK3],ff_eunit);
+			case (TorsionFunctions::Cos3):
+				p->data[TorsionFunctions::Cos3K1] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3K1],energyUnit_);
+				p->data[TorsionFunctions::Cos3K2] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3K2],energyUnit_);
+				p->data[TorsionFunctions::Cos3K3] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3K3],energyUnit_);
 				break;
-			case (Forms::Cos3CTorsion):
-				p->data[Forms::Cos3CTorsionK0] = prefs.convertEnergy(p->data[Forms::Cos3CTorsionK0],ff_eunit);
-				p->data[Forms::Cos3CTorsionK1] = prefs.convertEnergy(p->data[Forms::Cos3CTorsionK1],ff_eunit);
-				p->data[Forms::Cos3CTorsionK2] = prefs.convertEnergy(p->data[Forms::Cos3CTorsionK2],ff_eunit);
-				p->data[Forms::Cos3CTorsionK3] = prefs.convertEnergy(p->data[Forms::Cos3CTorsionK3],ff_eunit);
+			case (TorsionFunctions::Cos3C):
+				p->data[TorsionFunctions::Cos3CK0] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK0],energyUnit_);
+				p->data[TorsionFunctions::Cos3CK1] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK1],energyUnit_);
+				p->data[TorsionFunctions::Cos3CK2] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK2],energyUnit_);
+				p->data[TorsionFunctions::Cos3CK3] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK3],energyUnit_);
 				break;
-			case (Forms::Cos4Torsion):
-				p->data[Forms::Cos4TorsionK1] = prefs.convertEnergy(p->data[Forms::Cos4TorsionK1],ff_eunit);
-				p->data[Forms::Cos4TorsionK2] = prefs.convertEnergy(p->data[Forms::Cos4TorsionK2],ff_eunit);
-				p->data[Forms::Cos4TorsionK3] = prefs.convertEnergy(p->data[Forms::Cos4TorsionK3],ff_eunit);
-				p->data[Forms::Cos4TorsionK4] = prefs.convertEnergy(p->data[Forms::Cos4TorsionK4],ff_eunit);
+			case (TorsionFunctions::Cos4):
+				p->data[TorsionFunctions::Cos4K1] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K1],energyUnit_);
+				p->data[TorsionFunctions::Cos4K2] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K2],energyUnit_);
+				p->data[TorsionFunctions::Cos4K3] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K3],energyUnit_);
+				p->data[TorsionFunctions::Cos4K4] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K4],energyUnit_);
 				break;
 			default:
 				printf("Don't know how to convert forcefield parameters for this torsion type.\n");
 				break;
 		}
 	}
+	// Set new energy unit of the forcefield to the programs internal unit
+	energyUnit_ = prefs.energyUnit();
 	dbgEnd(Debug::Calls,"Forcefield::convertParameters");
 }

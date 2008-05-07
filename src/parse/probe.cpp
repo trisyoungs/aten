@@ -26,7 +26,7 @@
 #include <iostream>
 
 // Probe model
-Filter *Master::probeFile(const char *filename, FilterType probetype)
+Filter *Master::probeFile(const char *filename, Filter::FilterType probetype)
 {
 	// From the supplied filename and file type, determine (as best we can) the format of the file
 	dbgBegin(Debug::Calls,"Master::probeFile");

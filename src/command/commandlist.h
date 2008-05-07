@@ -149,10 +149,14 @@ class Command
 	private:
 	// Data variables
 	Variable *args_[MAXDATAVARS];
+	// Number of variables defined
+	int nArgs_;
 
 	public:
 	// Set variables from parser arguments
 	bool addVariables(const char*, const char*, VariableList&);
+	// Return number of arguments given to command
+	int nArgs();
 	// Return variable argument
 	Variable *arg(int argno);
 	// Return argument as character
@@ -184,7 +188,7 @@ class Command
 	// Return variable type of argument
 	Variable::VariableType argt(int argno);
 	// Print data variables
-	void print_args();
+	void printArgs();
 };
 
 // Command List Structure

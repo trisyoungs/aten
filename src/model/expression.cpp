@@ -77,25 +77,23 @@ bool Model::createExpression(bool vdwOnly)
 		return FALSE;
 	}
 	// 2) Remove old expression data and create new
-	Pattern *p = patterns_.first();
-	while (p != NULL)
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
 		p->deleteExpression();
 		p->initExpression(vdwOnly);
 		if (!p->fillExpression()) return FALSE;
 		p->createConMat();
-		p = p->next;
 	}
 	// 3) Check the electrostatic setup for the model
 	if (prefs.calculateElec())
 	{
-		Forms::ElecMethod emodel = prefs.electrostaticsMethod();
+		Electrostatics::ElecMethod emodel = prefs.electrostaticsMethod();
 		switch (emodel)
 		{
-			case (Forms::NoElec):
+			case (Electrostatics::None):
 				msg(Debug::None,"Electrostatics are off.\n");
 				break;
-			case (Forms::CoulombElec):
+			case (Electrostatics::Coulomb):
 				if (cell_.type() != Cell::NoCell) msg(Debug::None,"!!! Coulomb sum requested for periodic model.\n");
 				break;
 			default: // Ewald - issue warnings, but don't return FALSE

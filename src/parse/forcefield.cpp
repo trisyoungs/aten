@@ -25,13 +25,6 @@
 #include "parse/parser.h"
 #include "base/sysfunc.h"
 
-// Forcefield keywords
-const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };
-Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
-{
-	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
-}
-
 // Local variables
 double escale14 = 0.5;
 double vscale14 = 0.5;
@@ -86,8 +79,8 @@ bool Forcefield::load(const char *filename)
 				}
 				break;
 			case (Forcefield::RulesCommand):
-				rules_ = Forms::forcefieldRules(parser.argc(1));
-				msg(Debug::None,"\t: Rule-set to use is '%s'\n", Forms::forcefieldRules(rules_));
+				rules_ = Forcefield::forcefieldRules(parser.argc(1));
+				msg(Debug::None,"\t: Rule-set to use is '%s'\n", Forcefield::forcefieldRules(rules_));
 				okay = TRUE;
 				break;
 			case (Forcefield::TypesCommand):
@@ -101,9 +94,8 @@ bool Forcefield::load(const char *filename)
 				break;
 			case (Forcefield::ConvertCommand):
 				// Check that generator data has been initialised
-				if (nGenerators_ == 0) msg(Debug::None, "\t: ERROR - Energetic parameters to convert must be specified *after* 'generator' keyword.\n");
-				else for (n=1; n<parser.nArgs(); n++) energyGenerators_[parser.argi(n)-1] = TRUE;
-				okay = !(nGenerators_ == 0);
+				for (n=1; n<parser.nArgs(); n++) energyGenerators_[parser.argi(n)-1] = TRUE;
+				okay = TRUE;
 				break;
 			case (Forcefield::VdwCommand):
 				okay = readVdw(fffile);
@@ -142,7 +134,7 @@ bool Forcefield::load(const char *filename)
 	} while ( !fffile.eof() );
 	fffile.close();
 	// Last thing - convert energetic units in the forcefield to the internal units of the program
-	convertParameters(ffunit);
+	convertParameters();
 	dbgEnd(Debug::Calls,"Forcefield::load");
 	return TRUE;
 }
@@ -205,12 +197,6 @@ bool Forcefield::readGenerator(ifstream &fffile)
 	int count, success, n;
 	ForcefieldAtom *ffa;
 	bool done = FALSE;
-	// If we are setting nGenerators_ for the first time, allocate convertgen as well
-	if (nGenerators_ == 0)
-	{
-		energyGenerators_ = new bool[nGenerators_];
-		nGenerators_ = parser.argi(1);
-	}
 	count = 0;
 	do
 	{
@@ -236,17 +222,17 @@ bool Forcefield::readGenerator(ifstream &fffile)
 				return FALSE;
 			}
 			ffa->initialiseGenerator();
-			for (n=0; n<nGenerators_; n++) ffa->setGenerator(n,parser.argd(n+2));
+			for (n=0; n<MAXFFGENDATA; n++) ffa->setGenerator(n,parser.argd(n+2));
 			count ++;
 		}
 	} while (!done);
 	if (count != types_.nItems()-1)
 	{
-		msg(Debug::None,"Not all (%i) atom types had generator data defined.\n", types_.nItems()-count-1);
+		msg(Debug::None,"Not all atom types had generator data defined (%i missing).\n", types_.nItems()-count-1);
 		dbgEnd(Debug::Calls,"Forcefield::readGenerator");
 		return FALSE;
 	}
-	msg(Debug::None,"\t: Read in %i generator data for %i atomtypes.\n", nGenerators_, count);
+	msg(Debug::None,"\t: Read in generator data for %i atomtypes.\n", count);
 	dbgEnd(Debug::Calls,"Forcefield::readGenerator");
 	return TRUE;
 }
@@ -300,10 +286,10 @@ bool Forcefield::readVdw(ifstream &fffile)
 	int success, count;
 	ForcefieldAtom *ffa;
 	// Get functional form of vdw
-	Forms::VdwFunction vdwstyle = Forms::vdwFunction(parser.argc(1));
-	if (vdwstyle == Forms::nVdwForms)
+	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(parser.argc(1));
+	if (vdwstyle == VdwFunctions::nVdwFunctions)
 	{
-		vdwstyle = Forms::NoVdw;
+		vdwstyle = VdwFunctions::None;
 		msg(Debug::None,"VDW functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -353,10 +339,10 @@ bool Forcefield::readBonds(ifstream &fffile)
 	bool done = FALSE;
 	int count, success, n;
 	// Get functional form of bond potential
-	Forms::BondFunction bondstyle = Forms::bondFunction(parser.argc(1));
-	if (bondstyle == Forms::nBondFunctions)
+	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(parser.argc(1));
+	if (bondstyle == BondFunctions::nBondFunctions)
 	{
-		bondstyle = Forms::NoBond;
+		bondstyle = BondFunctions::None;
 		msg(Debug::None,"Bond stretch functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -395,7 +381,7 @@ bool Forcefield::readBonds(ifstream &fffile)
 			count ++;
 		}
 	} while (!done);
-	msg(Debug::None,"\t: Read in %i bond definitions (%s)\n", count, Forms::bondFunction(bondstyle));
+	msg(Debug::None,"\t: Read in %i bond definitions (%s)\n", count, BondFunctions::BondFunctions[bondstyle].name);
 	dbgEnd(Debug::Calls,"Forcefield::readBonds");
 	return TRUE;
 }
@@ -407,10 +393,10 @@ bool Forcefield::readAngles(ifstream &fffile)
 	ForcefieldBound *newffangle;
 	int count, success, n;
 	// Grab functional form of angle potential
-	Forms::AngleFunction anglestyle = Forms::angleFunction(parser.argc(1));
-	if (anglestyle == Forms::nAngleFunctions)
+	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(parser.argc(1));
+	if (anglestyle == AngleFunctions::nAngleFunctions)
 	{
-		anglestyle = Forms::NoAngle;
+		anglestyle = AngleFunctions::None;
 		msg(Debug::None,"Angle bend functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -451,7 +437,7 @@ bool Forcefield::readAngles(ifstream &fffile)
 			count ++;
 		}
 	} while (!done);
-	msg(Debug::None,"\t: Read in %i angle definitions (%s)\n", count, Forms::angleFunction(anglestyle));
+	msg(Debug::None,"\t: Read in %i angle definitions (%s)\n", count, AngleFunctions::AngleFunctions[anglestyle].name);
 	dbgEnd(Debug::Calls,"Forcefield::readAngles");
 	return TRUE;
 }
@@ -463,10 +449,10 @@ bool Forcefield::readTorsions(ifstream &fffile)
 	ForcefieldBound *newfftorsion;
 	int count, success, n;
 	// Get functional form of torsion potential
-	Forms::TorsionFunction torsionstyle = Forms::torsionFunction(parser.argc(1));
-	if (torsionstyle == Forms::nTorsionFunctions)
+	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(parser.argc(1));
+	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
 	{
-		torsionstyle = Forms::NoTorsion;
+		torsionstyle = TorsionFunctions::None;
 		msg(Debug::None,"Torsion twist functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
@@ -512,7 +498,7 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			count ++;
 		}
 	} while (!done);
-	msg(Debug::None,"\t: Read in %i torsion definitions (%s)\n", count, Forms::torsionFunction(torsionstyle));
+	msg(Debug::None,"\t: Read in %i torsion definitions (%s)\n", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
 	dbgEnd(Debug::Calls,"Forcefield::readTorsions");
 	return TRUE;
 }

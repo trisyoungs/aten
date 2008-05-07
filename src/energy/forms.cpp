@@ -19,79 +19,108 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <string.h>
 #include "energy/forms.h"
 
-// Generation rules (for rule-based FFs)
-const char *ForcefieldRulesStrings[Forms::nForcefieldRules] = { "No rules defined.", "UniversalFF (Rappe et al.)" };
-const char *ForcefieldRulesKeywords[Forms::nForcefieldRules] = { "none", "uff" };
-const char *Forms::forcefieldRules(Forms::ForcefieldRules i)
-{
-	return ForcefieldRulesStrings[i];
-}
-Forms::ForcefieldRules Forms::forcefieldRules(const char *s)
-{
-	return (Forms::ForcefieldRules) enumSearch("forcefield rules", Forms::nForcefieldRules, ForcefieldRulesKeywords, s);
-}
-
 // Electrostatic model
-const char *ElecMethodKeywords[Forms::nElecMethods] = { "none", "coulomb", "ewald", "ewaldauto" };
-const char *Forms::elecMethod(Forms::ElecMethod i)
+const char *ElecMethodKeywords[Electrostatics::nElectrostatics] = { "none", "coulomb", "ewald", "ewaldauto" };
+const char *Electrostatics::elecMethod(Electrostatics::ElecMethod i)
 {
 	return ElecMethodKeywords[i];
 }
-Forms::ElecMethod Forms::elecMethod(const char *s)
+Electrostatics::ElecMethod Electrostatics::elecMethod(const char *s)
 {
-	return (ElecMethod) enumSearch("electrostatics method", Forms::nElecMethods, ElecMethodKeywords,s);
+	return (Electrostatics::ElecMethod) enumSearch("electrostatics method", Electrostatics::nElectrostatics, ElecMethodKeywords,s);
 }
 
 // VDW potential forms
-const char *VdwFunctionStrings[Forms::nVdwForms] = { "Unspecified", "Lennard-Jones 12-6", "Buckingham exp6" };
-const char *VdwFunctionKeywords[Forms::nVdwForms] = { "none", "lj", "buck" };
-const char *Forms::vdwFunctionString(Forms::VdwFunction i)
+FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
+	{ "None", "none",
+		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
+		{ "null", "null", "null", "null", "null", "null" } },
+	{ "Lennard-Jones 12-6", "lj",
+		{ "Epsilon", "Sigma" },
+		{ "epsilon", "sigma" } },
+	{ "Buckingham", "buck",
+		{ "A", "B", "C" },
+		{ "a", "b", "c" } }
+};
+VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char *s)
 {
-	return VdwFunctionStrings[i];
-}
-const char *Forms::vdwFunction(Forms::VdwFunction i)
-{
-	return VdwFunctionKeywords[i];
-}
-Forms::VdwFunction Forms::vdwFunction(const char *s)
-{
-	return (Forms::VdwFunction) enumSearch("VDW style", Forms::nVdwForms, VdwFunctionKeywords, s);
+	int i;
+	for (i=0; i < VdwFunctions::nVdwFunctions; i++)
+		if (strcmp(VdwFunctions::VdwFunctions[i].keyword,s) == 0) break;
+	return (VdwFunctions::VdwFunction) i;
 }
 
 // Bond potential forms
-const char *BondFunctionStrings[Forms::nBondFunctions] = { "Unspecified", "Harmonic", "Morse" };
-const char *BondFunctionKeywords[Forms::nBondFunctions] = { "none", "harmonic", "morse" };
-const char *Forms::bondFunction(Forms::BondFunction i)
+FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
+	{ "None", "none",
+		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
+		{ "null", "null", "null", "null", "null", "null" } },
+	{ "Harmonic", "harmonic",
+		{ "Force K", "Eq. Distance" },
+		{ "k", "eq" } },
+	{ "Morse", "morse",
+		{ "A", "B", "C" },
+		{ "a", "b", "c" } }
+};
+BondFunctions::BondFunction BondFunctions::bondFunction(const char *s)
 {
-	return BondFunctionKeywords[i];
-}
-Forms::BondFunction Forms::bondFunction(const char *s)
-{
-	return (Forms::BondFunction) enumSearch("bond style", Forms::nBondFunctions, BondFunctionKeywords, s);
+	int i;
+	for (i=0; i < BondFunctions::nBondFunctions; i++)
+		if (strcmp(BondFunctions::BondFunctions[i].keyword,s) == 0) break;
+	return (BondFunctions::BondFunction) i;
 }
 
 // Angle potential forms
-const char *AngleFunctionStrings[Forms::nAngleFunctions] = { "Unspecified", "Harmonic", "Cosine", "UFF Cosine" };
-const char *AngleFunctionKeywords[Forms::nAngleFunctions] = { "none", "harmonic", "cos", "uff" };
-const char *Forms::angleFunction(Forms::AngleFunction i)
+FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
+	{ "None", "none",
+		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
+		{ "null", "null", "null", "null", "null", "null" } },
+	{ "Harmonic", "harmonic",
+		{ "Force K", "Eq. Distance" },
+		{ "k", "eq" } },
+	{ "Cosine", "cos",
+		{ "Force K", "Periodicity", "Eq. Angle" },
+		{ "k", "n", "eq" } },
+	{ "UFF Cosine 1", "uffcos1",
+		{ "Force K", "Periodicity", "Eq. Angle" },
+		{ "k", "n", "eq" } },
+	{ "UFF Cosine 2", "uffcos2",
+		{ "Force K", "Periodicity", "Eq. Angle" },
+		{ "k", "n", "eq" } }
+};
+AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s)
 {
-	return AngleFunctionKeywords[i];
-}
-Forms::AngleFunction Forms::angleFunction(const char *s)
-{
-	return (Forms::AngleFunction) enumSearch("angle style", Forms::nAngleFunctions, AngleFunctionKeywords, s);
+	int i;
+	for (i=0; i < AngleFunctions::nAngleFunctions; i++)
+		if (strcmp(AngleFunctions::AngleFunctions[i].keyword,s) == 0) break;
+	return (AngleFunctions::AngleFunction) i;
 }
 
 // Torsion potential forms
-const char *TorsionFunctionStrings[Forms::nTorsionFunctions] = { "Unspecified", "Cosine", "Triple Cosine", "Quadruple Cosine", "Constant + Triple Cosine" };
-const char *TorsionFunctionKeywords[Forms::nTorsionFunctions] = { "none", "cosine", "cos3", "cos4", "cosc" };
-const char *Forms::torsionFunction(Forms::TorsionFunction i)
+FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFunctions] = {
+	{ "None", "none",
+		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
+		{ "null", "null", "null", "null", "null", "null" } },
+	{ "Cosine", "cos",
+		{ "EScale", "VScale", "Force K", "Periodicity", "Eq. Angle" },
+		{ "escale", "vscale", "k", "n", "eq" } },
+	{ "Triple Cosine", "cos3",
+		{ "EScale", "VScale", "Force K1", "Force K2", "Force K3" },
+		{ "escale", "vscale", "k1", "k2", "k3" } },
+	{ "Quadruple Cosine", "cos4",
+		{ "EScale", "VScale", "Force K1", "Force K2", "Force K3", "Force K4" },
+		{ "escale", "vscale", "k1", "k2", "k3", "k4" } },
+	{ "Triple Cosine + Constant", "cos3c",
+		{ "EScale", "VScale", "Force K0", "Force K1", "Force K2", "Force K3" },
+		{ "escale", "vscale", "k0", "k1", "k2", "k3" } }
+};
+TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *s)
 {
-	return TorsionFunctionKeywords[i];
-}
-Forms::TorsionFunction Forms::torsionFunction(const char *s)
-{
-	return (Forms::TorsionFunction) enumSearch("torsion style", Forms::nTorsionFunctions, TorsionFunctionKeywords, s);
+	int i;
+	for (i=0; i < TorsionFunctions::nTorsionFunctions; i++)
+		if (strcmp(TorsionFunctions::TorsionFunctions[i].keyword,s) == 0) break;
+	return (TorsionFunctions::TorsionFunction) i;
 }

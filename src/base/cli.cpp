@@ -223,13 +223,13 @@ int Master::parseCli(int argc, char *argv[])
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelfilter = master.findFilter(FT_MODEL_IMPORT, argv[++argn]);
+					modelfilter = master.findFilter(Filter::ModelImport, argv[++argn]);
 					if (modelfilter == NULL) return -1;
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
 					argn++;
-					f = master.probeFile(argv[argn], FT_GRID_IMPORT);
+					f = master.probeFile(argv[argn], Filter::GridImport);
 					if (f == NULL) return -1;
 					else if (!f->execute(argv[argn])) return -1;
 					break;
@@ -331,7 +331,7 @@ int Master::parseCli(int argc, char *argv[])
 			// Not a CLI switch, so try to load it as a model
 			ntried ++;
 			if (modelfilter != NULL) f = modelfilter;
-			else f = master.probeFile(argv[argn], FT_MODEL_IMPORT);
+			else f = master.probeFile(argv[argn], Filter::ModelImport);
 			if (f != NULL) f->execute(argv[argn]);
 			else return -1;
 		}
