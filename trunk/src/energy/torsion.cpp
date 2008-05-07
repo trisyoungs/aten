@@ -50,7 +50,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 			phi = srcmodel->torsion(i,j,k,l);
 			params = pb->data()->params();
 			// Calculate energy
-			switch (pb->data()->functionalForm().torsionFunc)
+			switch (pb->data()->torsionStyle())
 			{
 				case (TorsionFunctions::None):
 					printf("Pattern::torsionEnergy <<<< Torsion function is UNSPECIFIED >>>>\n");
@@ -199,7 +199,7 @@ void Pattern::torsionForces(Model *srcmodel)
 			dcos_dxpk = (xpj - xpk * dp) / mag_xpk;
 
 			// Generate derivative of energy function (placed in 'du_dphi')
-			switch (pb->data()->functionalForm().torsionFunc)
+			switch (pb->data()->torsionStyle())
 			{
 				case (TorsionFunctions::None):
 					printf("Pattern::torsionForces <<<< Torsion function is UNSPECIFIED >>>>\n");

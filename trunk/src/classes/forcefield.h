@@ -144,12 +144,7 @@ class ForcefieldBound
 	// Type of bound interaction
 	BoundType type_;
 	// Form of bound interaction type
-	union BoundForms
-	{
-		BondFunctions::BondFunction bondFunc;
-		AngleFunctions::AngleFunction angleFunc;
-		TorsionFunctions::TorsionFunction torsionFunc;
-	} functionalForm_;
+	int functionalForm_;
 	// Forcefield types involved in this term
 	Dnchar typeNames_[MAXFFBOUNDTYPES];
 	// Pointer to parameter data
@@ -160,8 +155,12 @@ class ForcefieldBound
 	void setType(BoundType fc);
 	// Return the type of bound interaction
 	BoundType type();
-	// Return the functional form
-	BoundForms functionalForm();
+	// Return the functional form (cast as a bond style)
+	BondFunctions::BondFunction bondStyle();
+	// Return the functional form (cast as a angle style)
+	AngleFunctions::AngleFunction angleStyle();
+	// Return the functional form (cast as a torsion style)
+	TorsionFunctions::TorsionFunction torsionStyle();
 	// Set the bond functional form
 	void setBondStyle(BondFunctions::BondFunction bf);
 	// Set the angle functional form
