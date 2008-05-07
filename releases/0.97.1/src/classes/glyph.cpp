@@ -115,7 +115,7 @@ Vec3<double> GlyphData::vector()
 			case (GlyphData::VelocityData): return atom_->v();
 		}
 	}
-	else return vector_;
+	return vector_;
 }
 
 // Set text data

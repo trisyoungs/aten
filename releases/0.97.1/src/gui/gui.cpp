@@ -51,7 +51,7 @@ GuiQt::GuiQt()
 }
 
 // Initialise QApplication and the main QGlWidget
-void GuiQt::initialise(int argc, char **argv)
+void GuiQt::initialise(int &argc, char **argv)
 {
 	// Create the QApplication
 	app = new QApplication(argc, argv);

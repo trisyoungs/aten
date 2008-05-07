@@ -59,7 +59,7 @@ class GuiQt
 	// Returns if the GUI has been created
 	bool exists();
 	// Initialise the QApplication (and some other small things)
-	void initialise(int, char**);
+	void initialise(int&, char**);
 	// Create the GUI and hand over control to Qt
 	void run();
 

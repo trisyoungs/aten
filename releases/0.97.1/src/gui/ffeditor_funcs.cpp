@@ -151,7 +151,7 @@ void AtenEdit::populate(Forcefield *ff)
 		QComboBox *combo = new QComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
-		combo->setCurrentIndex(ffb->functionalForm().bondFunc);
+		combo->setCurrentIndex(ffb->bondStyle());
 		ui.FFEditorBondsTable->setCellWidget(count, BondColumn::Form, combo);
 		for (int n=0; n<6; n++)
 		{
@@ -181,7 +181,7 @@ void AtenEdit::populate(Forcefield *ff)
 		QComboBox *combo = new QComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
-		combo->setCurrentIndex(ffb->functionalForm().angleFunc);
+		combo->setCurrentIndex(ffb->angleStyle());
 		ui.FFEditorAnglesTable->setCellWidget(count, AngleColumn::Form, combo);
 		for (int n=0; n<6; n++)
 		{
@@ -213,7 +213,7 @@ void AtenEdit::populate(Forcefield *ff)
 		QComboBox *combo = new QComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(slist);
-		combo->setCurrentIndex(ffb->functionalForm().torsionFunc);
+		combo->setCurrentIndex(ffb->torsionStyle());
 		ui.FFEditorTorsionsTable->setCellWidget(count, TorsionColumn::Form, combo);
 		for (int n=0; n<6; n++)
 		{

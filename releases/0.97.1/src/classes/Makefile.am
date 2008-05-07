@@ -6,4 +6,4 @@ libfourier_a_SOURCES = fourier.cpp
 
 noinst_HEADERS = atomaddress.h atom.h atomtype.h bond.h bundle.h cell.h clipboard.h colourscale.h dnchar.h energystore.h forcefield.h fourier.h glyph.h grid.h measurement.h pattern.h region.h restraint.h ring.h site.h undostate.h variables.h
 
-INCLUDES = -I../ @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@

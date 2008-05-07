@@ -209,7 +209,7 @@ void ForcefieldAtom::setGenerator(int i, double d)
 {
 	int limit = (parent_ == NULL ? 0 : parent_->nGenerators());
 	// Check the limit of the position provided
-	if ((i < 0) || (i > limit)) printf("setGenerator() - index %i is out of range (max = %i).\n", limit);
+	if ((i < 0) || (i > limit)) printf("setGenerator() - index %i is out of range (max = %i).\n", i, limit);
 	else generator_[i] = d;
 }
 
@@ -224,7 +224,7 @@ double ForcefieldAtom::generator(int i)
 {
 	int limit = (parent_ == NULL ? 0 : parent_->nGenerators());
 	// Check the limit of the position provided
-	if ((i < 0) || (i > limit)) printf("generator() - index %i is out of range (max = %i).\n", limit);
+	if ((i < 0) || (i > limit)) printf("generator() - index %i is out of range (max = %i).\n", i, limit);
 	else return generator_[i];
 	return 0.0;
 }
@@ -258,28 +258,40 @@ ForcefieldBound::BoundType ForcefieldBound::type()
 	return type_;
 }
 
-// Return the functional form
-ForcefieldBound::BoundForms ForcefieldBound::functionalForm()
+// Return the functional form (cast as a bond style)
+Forms::BondFunction ForcefieldBound::bondStyle()
 {
-	return functionalForm_;
+	return (Forms::BondFunction) functionalForm_;
+}
+
+// Return the functional form (cast as a angle style)
+Forms::AngleFunction ForcefieldBound::angleStyle()
+{
+	return (Forms::AngleFunction) functionalForm_;
+}
+
+// Return the functional form (cast as a torsion style)
+Forms::TorsionFunction ForcefieldBound::torsionStyle()
+{
+	return (Forms::TorsionFunction) functionalForm_;
 }
 
 // Set the bond functional form
 void ForcefieldBound::setBondStyle(Forms::BondFunction bf)
 {
-	functionalForm_.bondFunc = bf;
+	functionalForm_ = bf;
 }
 
 // Set the angle functional form
 void ForcefieldBound::setAngleStyle(Forms::AngleFunction af)
 {
-	functionalForm_.angleFunc = af;
+	functionalForm_ = af;
 }
 
 // Set the torsion functional form
 void ForcefieldBound::setTorsionStyle(Forms::TorsionFunction tf)
 {
-	functionalForm_.torsionFunc = tf;
+	functionalForm_ = tf;
 }
 
 // Return the data[] array in *params
@@ -639,7 +651,7 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 	for (b = bonds_.first(); b != NULL; b = b->next)
 	{
 		p = &b->params();
-		switch (b->functionalForm().bondFunc)
+		switch (b->bondStyle())
 		{
 			case (Forms::NoBond):
 				break;
@@ -655,7 +667,7 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 	for (b = angles_.first(); b != NULL; b = b->next)
 	{
 		p = &b->params();
-		switch (b->functionalForm().angleFunc)
+		switch (b->angleStyle())
 		{
 			case (Forms::NoAngle):
 				break;
@@ -671,7 +683,7 @@ void Forcefield::convertParameters(Prefs::EnergyUnit ff_eunit)
 	for (b = torsions_.first(); b != NULL; b = b->next)
 	{
 		p = &b->params();
-		switch (b->functionalForm().torsionFunc)
+		switch (b->torsionStyle())
 		{
 			case (Forms::NoTorsion):
 				break;

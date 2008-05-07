@@ -4,4 +4,4 @@ libmodel_a_SOURCES = atom.cpp bond.cpp build.cpp cell.cpp component.cpp energy.c
 
 noinst_HEADERS = model.h
 
-INCLUDES = -I../ @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@

@@ -50,7 +50,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 			// Grab pointer to function data
 			params = pb->data()->params();
 			// Calculate energy contribution
-			switch (pb->data()->functionalForm().angleFunc)
+			switch (pb->data()->angleStyle())
 			{
 				case (Forms::NoAngle):
 					printf("Pattern::angleEnergy <<<< Angle function is UNSPECIFIED >>>>\n");
@@ -62,10 +62,13 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					theta -= eq;
 					energy += 0.5 * forcek * theta * theta;
 					break;
-				//case (Forms::CosineAngle):
-					// U(theta) = forcek * (1 + cos(s*theta - eq))
-					//printf("Angle - cosine...\n");
-					//break;
+				case (Forms::CosineAngle):
+					// U(theta) = forcek * (1 + cos(n*theta - eq))
+					forcek = params.data[Forms::CosineAngleK];
+					eq = params.data[Forms::CosineAngleEq] / DEGRAD;
+					n = params.data[Forms::CosineAngleS];
+					energy += forcek * (1.0 + cos(n * theta - eq));
+					break;
 				case (Forms::UffCosine1Angle):
 					// U(theta) = (forcek / n*n) * (1 + cos(n*theta))
 					forcek = params.data[Forms::UffCosineAngleK];
@@ -83,7 +86,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					energy += forcek * (c0 + c1 * cos(theta) + c2 * cos(2.0 * theta));
 					break;
 				default:
-					printf("No equation coded for angle energy type %i.\n",pb->data()->functionalForm().angleFunc);
+					printf("No equation coded for angle energy type %i.\n",pb->data()->angleStyle());
 					break;
 			}
 		}
@@ -126,15 +129,19 @@ void Pattern::angleForces(Model *srcmodel)
 			dtheta_dcostheta = -1.0 / sin(theta);
 			params = pb->data()->params();
 			// Generate forces
-			switch (pb->data()->functionalForm().angleFunc)
+			switch (pb->data()->angleStyle())
 			{
 				case (Forms::NoAngle):
 					printf("Pattern::angleForcess <<<< Angle function is UNSPECIFIED >>>>\n");
 					du_dtheta = 0.0;
 					break;
-				//case (Forms::CosineAngle):
-				//	printf("Angle - cosine...\n");
-				//	break;
+				case (Forms::CosineAngle):
+					// U(theta) = forcek * (1 + cos(n*theta - eq))
+					forcek = params.data[Forms::CosineAngleK];
+					eq = params.data[Forms::CosineAngleEq] / DEGRAD;
+					n = params.data[Forms::CosineAngleS];
+					du_dtheta = dtheta_dcostheta * forcek * (1.0 - sin(n * theta - eq));
+					break;
 				case (Forms::HarmonicAngle): 
 					// F(theta) = forcek * (theta - eq)
 					forcek = params.data[Forms::HarmonicAngleK];
@@ -159,7 +166,7 @@ void Pattern::angleForces(Model *srcmodel)
 					du_dtheta = dtheta_dcostheta * forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
 					break;
 				default:
-					printf("No equation coded for angle forces type %i.\n",pb->data()->functionalForm().angleFunc);
+					printf("No equation coded for angle forces type %i.\n",pb->data()->angleStyle());
 					break;
 			}
 			// Calculate atomic forces

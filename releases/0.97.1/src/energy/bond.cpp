@@ -48,7 +48,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
 			params = pb->data()->params();
-			switch (pb->data()->functionalForm().bondFunc)
+			switch (pb->data()->bondStyle())
 			{
 				case (Forms::NoBond):
 					printf("Pattern::bondEnergy <<<< Bond function is UNSPECIFIED >>>>\n");
@@ -62,7 +62,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 					energy += 0.5 * forcek * r * r;
 					break;
 				default:
-					printf("No equation coded for bond energy type %i.\n",pb->data()->functionalForm().bondFunc);
+					printf("No equation coded for bond energy type %i.\n",pb->data()->bondStyle());
 					break;
 			}
 		}
@@ -96,7 +96,7 @@ void Pattern::bondForces(Model *srcmodel)
 			rij = mim_i.magnitude();
 			// Select energy function
 			params = pb->data()->params();
-			switch (pb->data()->functionalForm().bondFunc)
+			switch (pb->data()->bondStyle())
 			{
 				case (Forms::NoBond):
 					printf("Pattern::bondForcess <<<< Bond function is UNSPECIFIED >>>>\n");
@@ -109,7 +109,7 @@ void Pattern::bondForces(Model *srcmodel)
 					du_dr = forcek * (rij - eq) / rij;
 					break;
 				default:
-					printf("No equation coded for bond forces type %i.\n",pb->data()->functionalForm().bondFunc);
+					printf("No equation coded for bond forces type %i.\n",pb->data()->bondStyle());
 					break;
 			}
 			// Calculate forces
