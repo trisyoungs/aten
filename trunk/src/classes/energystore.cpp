@@ -386,7 +386,7 @@ void Energy::printElecMatrix(Model *m)
 		dbgEnd(Debug::Calls,"Energy::printElecMatrix");
 		return;
 	}
-	Forms::ElecMethod et = prefs.electrostaticsMethod();
+	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
 	count1 = 0;
 	// Print out electrostatic energy decomposition
 	printf("Electrostatic Interaction Energy:\n      Pattern          Intra  ");
@@ -398,7 +398,7 @@ void Energy::printElecMatrix(Model *m)
 		count2 = 0;
 		switch (et)
 		{
-			case (Forms::CoulombElec):
+			case (Electrostatics::Coulomb):
 				printf("%13s  %13.6e  ",p1->name(),coulombIntra_[count1]);
 				for (p2 = m->patterns(); p2 != NULL; p2 = p2->next)
 				{
@@ -438,7 +438,7 @@ void Energy::printInterMatrix(Model *m)
 		dbgEnd(Debug::Calls,"Energy::printInterMatrix");
 		return;
 	}
-	Forms::ElecMethod et = prefs.electrostaticsMethod();
+	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
 	// Print out total interpattern energy decomposition
 	printf("Total Interaction Energy:\n      Pattern          Intra  ");
 	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next) printf("%13s  ",p1->name());
@@ -451,9 +451,9 @@ void Energy::printInterMatrix(Model *m)
 		energyIntra = vdwIntra_[count1];
 		switch (et)
 		{
-			case (Forms::NoElec):
+			case (Electrostatics::None):
 				break;
-			case (Forms::CoulombElec):
+			case (Electrostatics::Coulomb):
 				energyIntra += coulombIntra_[count1];
 				break;
 			default: // Ewald
@@ -467,9 +467,9 @@ void Energy::printInterMatrix(Model *m)
 			energyInter = vdwInter_[count1][count2];
 			switch (et)
 			{
-				case (Forms::NoElec):
+				case (Electrostatics::None):
 					break;
-				case (Forms::CoulombElec):
+				case (Electrostatics::Coulomb):
 					energyInter += coulombInter_[count1][count2];
 					break;
 				default:	 // Ewald

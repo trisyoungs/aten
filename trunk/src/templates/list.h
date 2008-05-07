@@ -23,7 +23,6 @@
 #define ATEN_LIST_H
 
 #include "base/debug.h"
-//#include "base/constants.h"
 #include <stdlib.h>
 #include <stdio.h>
 

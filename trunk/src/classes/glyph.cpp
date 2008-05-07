@@ -110,12 +110,16 @@ Vec3<double> GlyphData::vector()
 		}
 		switch (atomData_)
 		{
-			case (GlyphData::PositionData): return atom_->r();
-			case (GlyphData::ForceData): return atom_->f();
-			case (GlyphData::VelocityData): return atom_->v();
+			case (GlyphData::PositionData):
+				return atom_->r();
+			case (GlyphData::ForceData):
+				return atom_->f();
+			case (GlyphData::VelocityData):
+				return atom_->v();
 		}
 	}
-	else return vector_;
+	// Default return value is vector data
+	return vector_;
 }
 
 // Set text data

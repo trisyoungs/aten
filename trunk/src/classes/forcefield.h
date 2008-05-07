@@ -27,12 +27,6 @@
 #include "energy/forms.h"
 #include "base/prefs.h"
 
-// Maximum data per ForcefieldParams node. Also define last two elements to be torsion 1-4 scaling factors
-#define MAXFFPARAMDATA 6
-#define MAXFFBOUNDTYPES 4
-#define TF_ESCALE (MAXFFPARAMDATA-2)
-#define TF_VSCALE (MAXFFPARAMDATA-1)
-
 // Forward declarations
 class Atomtype;
 
@@ -63,7 +57,7 @@ class ForcefieldAtom
 	*/
 	private:
 	// Type of Van der Waals interactions in Forcefield
-	Forms::VdwFunction vdwForm_;
+	VdwFunctions::VdwFunction vdwForm_;
 	// Unique ffid of atom type in Forcefield
 	int typeId_;
 	// Name of atom type
@@ -94,9 +88,9 @@ class ForcefieldAtom
 	// Return parent forcefield
 	Forcefield *parent();
 	// Set functional form of VDW
-	void setVdwForm(Forms::VdwFunction vf);
+	void setVdwForm(VdwFunctions::VdwFunction vf);
 	// Returns the funcional VDW form
-	Forms::VdwFunction vdwForm();
+	VdwFunctions::VdwFunction vdwForm();
 	// Set the type id
 	void setTypeId(int i);
 	// Returns the type id
@@ -152,9 +146,9 @@ class ForcefieldBound
 	// Form of bound interaction type
 	union BoundForms
 	{
-		Forms::BondFunction bondFunc;
-		Forms::AngleFunction angleFunc;
-		Forms::TorsionFunction torsionFunc;
+		BondFunctions::BondFunction bondFunc;
+		AngleFunctions::AngleFunction angleFunc;
+		TorsionFunctions::TorsionFunction torsionFunc;
 	} functionalForm_;
 	// Forcefield types involved in this term
 	Dnchar typeNames_[MAXFFBOUNDTYPES];
@@ -169,11 +163,11 @@ class ForcefieldBound
 	// Return the functional form
 	BoundForms functionalForm();
 	// Set the bond functional form
-	void setBondStyle(Forms::BondFunction bf);
+	void setBondStyle(BondFunctions::BondFunction bf);
 	// Set the angle functional form
-	void setAngleStyle(Forms::AngleFunction af);
+	void setAngleStyle(AngleFunctions::AngleFunction af);
 	// Set the torsion functional form
-	void setTorsionStyle(Forms::TorsionFunction tf);
+	void setTorsionStyle(TorsionFunctions::TorsionFunction tf);
 	// Return the data[] array in *params
 	ForcefieldParams &params();
 	// Return the atom type 'n'
@@ -191,9 +185,14 @@ class Forcefield
 	~Forcefield();
 	// List pointers
 	Forcefield *prev, *next;
-	// Forcefield Commands
+        // Forcefield Commands
 	enum ForcefieldCommand { UnknownCommand, NameCommand, UnitsCommand, RulesCommand, TypesCommand, GeneratorCommand, ConvertCommand, EquivalentsCommand, VdwCommand, BondsCommand, AnglesCommand, TorsionsCommand, VScaleCommand, EScaleCommand, nForcefieldCommands };
-	static ForcefieldCommand forcefieldCommand(const char *s);
+        static ForcefieldCommand forcefieldCommand(const char *s);
+
+	// Generation rules (for rule-based FFs)
+	enum ForcefieldRules { NoRules, UffRules, nForcefieldRules };
+	static const char *forcefieldRules(ForcefieldRules);
+	static ForcefieldRules forcefieldRules(const char*);
 
 	/*
 	// Specification
@@ -203,12 +202,12 @@ class Forcefield
 	Dnchar name_;
 	// Filename
 	Dnchar filename_;
-	// Number of generator data per atom (if rule-based)
-	int nGenerators_;
 	// Generator values that have units of energy (and thus should be converted)
-	bool *energyGenerators_;
+	bool energyGenerators_[MAXFFGENDATA];
 	// Which rules the ff uses (if any)
-	Forms::ForcefieldRules rules_;
+	ForcefieldRules rules_;
+	// Energy unit of the forcefield parameters
+	Prefs::EnergyUnit energyUnit_;
 
 	public:
 	// Sets the name of the Forcefield
@@ -220,9 +219,11 @@ class Forcefield
 	// Return filename
 	const char *filename();
 	// Returns the typing rules of the Forcefield
-	Forms::ForcefieldRules rules();
-	// Return the number of generators for each type
-	int nGenerators();
+	ForcefieldRules rules();
+	// Set conversion flag for energetic generator data
+	void setEnergyGenerator(int n);
+	// Set internal energy unit of forcefield
+	void setEnergyUnit(Prefs::EnergyUnit eu);
 
 	/*
 	// Types
@@ -264,6 +265,8 @@ class Forcefield
 	public:
 	// Generate bond parameters (rule-based Forcefield)
 	ForcefieldBound *generateBond(Atom*, Atom*);
+	// Add bond term to the forcefield
+	ForcefieldBound *addBond(BondFunctions::BondFunction form);
 	// Return number of terms defined in bonds list
 	int nBonds();
 	// Returns the bond list
@@ -283,6 +286,8 @@ class Forcefield
 	public:
 	// Generate angle parameters (rule-based Forcefield)
 	ForcefieldBound *generateAngle(Atom*, Atom*, Atom*);
+	// Add angle term to the forcefield
+	ForcefieldBound *addAngle(AngleFunctions::AngleFunction form);
 	// Return number of terms defined in angles list
 	int nAngles();
 	// Returns the angle list
@@ -302,6 +307,8 @@ class Forcefield
 	public:
 	// Generate angle parameters (rule-based Forcefield)
 	ForcefieldBound *generateTorsion(Atom*, Atom*, Atom*, Atom*);
+	// Add torsion term to the forcefield
+	ForcefieldBound *addTorsion(TorsionFunctions::TorsionFunction form);
 	// Return number of terms defined in torsions list
 	int nTorsions();
 	// Returns the angle list
@@ -350,7 +357,7 @@ class Forcefield
 	*/
 	public:
 	// Convert the parameters in the FF to the internal working energy unit
-	void convertParameters(Prefs::EnergyUnit);
+	void convertParameters();
 	// Get the bond order of the bond ij (here for convenience)
 	double bondOrder(Atom*, Atom*);
 };

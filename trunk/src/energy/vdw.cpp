@@ -69,12 +69,13 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 					// TODO Check for conflicting VDW types
 					switch (atoms_[j]->data()->vdwForm())
 					{
-						case (Forms::NoVdw):
-							printf("Pattern::vdwIntraPatternEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
+						case (VdwFunctions::None):
+							//printf("Pattern::vdwIntraPatternEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
 							break;
-						case (Forms::LjVdw): // U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
-							epsilon = 4.0 * sqrt( paramsi.data[Forms::LjVdwEpsilon] * paramsj.data[Forms::LjVdwEpsilon] );
-							sigma = ( paramsi.data[Forms::LjVdwSigma] + paramsj.data[Forms::LjVdwSigma] ) * 0.5 * vrs;
+						case (VdwFunctions::Lj):
+							// U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
+							epsilon = 4.0 * sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
+							sigma = ( paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma] ) * 0.5 * vrs;
 							sigmar2 = (sigma / rij);
 							sigmar2 *= sigmar2;
 							sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -98,12 +99,13 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 			// TODO Check for conflicting VDW types
 			switch (atoms_[j]->data()->vdwForm())
 			{
-				case (Forms::NoVdw):
-					printf("Pattern::vdwIntraPatternEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
+				case (VdwFunctions::None):
+					//printf("Pattern::vdwIntraPatternEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
 					break;
-				case (Forms::LjVdw): // U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
-					epsilon = 4.0 * sqrt( paramsi.data[Forms::LjVdwEpsilon] * paramsj.data[Forms::LjVdwEpsilon] );
-					sigma = ( paramsi.data[Forms::LjVdwSigma] + paramsj.data[Forms::LjVdwSigma] ) * 0.5 * vrs;
+				case (VdwFunctions::Lj):
+					// U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
+					epsilon = 4.0 * sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
+					sigma = ( paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma] ) * 0.5 * vrs;
 					epsilon *= pb->data()->params().data[TF_VSCALE];
 					sigmar2 = (sigma / rij);
 					sigmar2 *= sigmar2;
@@ -198,12 +200,12 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 					// TODO Check for conflicting VDW types
 					switch (atoms_[i]->data()->vdwForm())
 					{
-						case (Forms::NoVdw):
-							printf("Pattern::vdwInterPatternEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
+						case (VdwFunctions::None):
+							//printf("Pattern::vdwInterPatternEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
 							break;
-						case (Forms::LjVdw): 
-							epsilon = 4.0*sqrt(paramsi.data[Forms::LjVdwEpsilon] * paramsj.data[Forms::LjVdwEpsilon]);
-							sigma = 0.5 * (paramsi.data[Forms::LjVdwSigma] + paramsj.data[Forms::LjVdwSigma]) * vrs;
+						case (VdwFunctions::Lj): 
+							epsilon = 4.0*sqrt(paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon]);
+							sigma = 0.5 * (paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma]) * vrs;
 							sigmar2 = (sigma / rij);
 							sigmar2 *= sigmar2;
 							sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -263,12 +265,12 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 					// TODO Check for conflicting VDW types
 					switch (atoms_[j]->data()->vdwForm())
 					{
-						case (Forms::NoVdw):
-							printf("Pattern::vdwIntraPatternForces <<<< VDW function is UNSPECIFIED >>>>\n");
+						case (VdwFunctions::None):
+							//printf("Pattern::vdwIntraPatternForces <<<< VDW function is UNSPECIFIED >>>>\n");
 							break;
-						case (Forms::LjVdw): 
-							epsilon = 48.0 * sqrt( paramsi.data[Forms::LjVdwEpsilon] * paramsj.data[Forms::LjVdwEpsilon] );
-							sigma = ( paramsi.data[Forms::LjVdwSigma] + paramsj.data[Forms::LjVdwSigma] ) * 0.5 * vrs;
+						case (VdwFunctions::Lj):
+							epsilon = 48.0 * sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
+							sigma = ( paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma] ) * 0.5 * vrs;
 							sigmar2 = (sigma / rij);
 							sigmar2 *= sigmar2;
 							sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -298,13 +300,13 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 			// TODO Check for conflicting VDW types
 			switch (atoms_[j]->data()->vdwForm())
 			{
-				case (Forms::NoVdw):
-					printf("Pattern::vdwIntraPatternForces <<<< VDW function is UNSPECIFIED >>>>\n");
+				case (VdwFunctions::None):
+					//printf("Pattern::vdwIntraPatternForces <<<< VDW function is UNSPECIFIED >>>>\n");
 					break;
-				case (Forms::LjVdw): // U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
-					epsilon = 48.0 * sqrt( paramsi.data[Forms::LjVdwEpsilon] * paramsj.data[Forms::LjVdwEpsilon] );
+				case (VdwFunctions::Lj): // U = 4 * eps * [ (s/r)**12 - (s/r)**6 ]
+					epsilon = 48.0 * sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
 					epsilon *= pb->data()->params().data[TF_VSCALE];
-					sigma = ( paramsi.data[Forms::LjVdwSigma] + paramsj.data[Forms::LjVdwSigma] ) * 0.5 * vrs;
+					sigma = ( paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma] ) * 0.5 * vrs;
 					sigmar2 = (sigma / rij);
 					sigmar2 *= sigmar2;
 					sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -365,12 +367,12 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 					// TODO Check for conflicting VDW types
 					switch (atoms_[i]->data()->vdwForm())
 					{
-						case (Forms::NoVdw):
-							printf("Pattern::vdwInterPatternForces <<<< VDW function is UNSPECIFIED >>>>\n");
+						case (VdwFunctions::None):
+							//printf("Pattern::vdwInterPatternForces <<<< VDW function is UNSPECIFIED >>>>\n");
 							break;
-						case (Forms::LjVdw): 
-							epsilon = 48.0*sqrt(paramsi.data[Forms::LjVdwEpsilon] * paramsj.data[Forms::LjVdwEpsilon]);
-							sigma = 0.5 * (paramsi.data[Forms::LjVdwSigma] + paramsj.data[Forms::LjVdwSigma]) * vrs;
+						case (VdwFunctions::Lj): 
+							epsilon = 48.0*sqrt(paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon]);
+							sigma = 0.5 * (paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma]) * vrs;
 							sigmar2 = (sigma / rij);
 							sigmar2 *= sigmar2;
 							sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -435,12 +437,13 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 					// TODO Check for conflicting VDW types
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
-						case (Forms::NoVdw):
-							printf("Pattern::vdwCorrectEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
+						case (VdwFunctions::None):
+							//printf("Pattern::vdwCorrectEnergy <<<< VDW function is UNSPECIFIED >>>>\n");
 							break;
-						case (Forms::LjVdw):	// U = 4/3 * eps * sigma**3 * ( 1/3 * (s/r)**9 - (s/r)**3
-							epsilon = sqrt(paramsi.data[Forms::LjVdwEpsilon] * paramsj.data[Forms::LjVdwEpsilon]);
-							sigma = 0.5 * (paramsi.data[Forms::LjVdwSigma] + paramsj.data[Forms::LjVdwSigma]) * vrs;
+						case (VdwFunctions::Lj):
+							// U = 4/3 * eps * sigma**3 * ( 1/3 * (s/r)**9 - (s/r)**3
+							epsilon = sqrt(paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon]);
+							sigma = 0.5 * (paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma]) * vrs;
 							sigmar9 = sigma / cutoff;
 							sigmar3 = sigmar9 * sigmar9 * sigmar9;
 							sigmar9 = sigmar3 * sigmar3 * sigmar3;
@@ -448,7 +451,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 							dudr *= (sigma * sigma * sigma);
 							break;
 						default:
-							msg(Debug::None,"VDW tail correction not implemented for LJ form %s.\n", Forms::vdwFunction(atoms_[j]->data()->vdwForm()));
+							msg(Debug::None,"VDW tail correction not implemented for %s VDW interactions.\n", VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
 							break;
 					}
 					energy += 2.0 * PI * rho * dudr;

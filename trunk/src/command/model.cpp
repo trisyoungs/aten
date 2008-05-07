@@ -105,7 +105,7 @@ int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 // Load model ('loadmodel <filename> [name]')
 int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 {
-	Filter *f = master.probeFile(c->argc(0), FT_MODEL_IMPORT);
+	Filter *f = master.probeFile(c->argc(0), Filter::ModelImport);
 	if (f != NULL)
 	{
 		if (f->execute(c->argc(0)))
@@ -205,7 +205,7 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
-	Filter *f = master.findFilter(FT_MODEL_EXPORT, c->argc(0));
+	Filter *f = master.findFilter(Filter::ModelExport, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
@@ -215,12 +215,4 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 	obj.m->setFilter(f);
 	obj.m->setFilename(c->argc(1));
 	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
-}
-
-// Set title of model
-int CommandData::function_CA_TITLE(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->setName(c->argc(0));
-	return CR_SUCCESS;
 }

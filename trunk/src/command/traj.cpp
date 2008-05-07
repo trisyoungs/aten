@@ -54,7 +54,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Filter *f = master.probeFile(c->argc(0), FT_TRAJECTORY_IMPORT);
+	Filter *f = master.probeFile(c->argc(0), Filter::TrajectoryImport);
 	if (f == NULL) return CR_FAIL;
 	return (obj.m->initialiseTrajectory(c->argc(0),f) ? CR_SUCCESS : CR_FAIL);
 }

@@ -26,16 +26,6 @@
 #include "base/prefs.h"
 #include <fstream>
 
-// Filter Types
-enum FilterType { FT_MODEL_IMPORT, FT_TRAJECTORY_IMPORT, FT_EXPRESSION_IMPORT, FT_GRID_IMPORT, FT_MODEL_EXPORT,  FT_TRAJECTORY_EXPORT, FT_EXPRESSION_EXPORT, FT_GRID_EXPORT, FT_NITEMS };
-const char *text_from_FT(FilterType);
-FilterType FT_from_text(const char*);
-
-// Filter commands
-enum FilterCommmand { FC_NAME, FC_NICKNAME, FC_EXTENSION, FC_GLOB, FC_EXACT, FC_ZMAP, FC_ID, FC_NITEMS };
-FilterCommmand FC_from_text(const char*);
-const char *text_from_FC(FilterCommmand);
-
 // Forward Declarations
 class Model;
 class Grid;
@@ -51,6 +41,16 @@ class Filter
 	Filter();
 	// List pointers
 	Filter *prev, *next;
+	// Filter Types
+	enum FilterType { ModelImport, TrajectoryImport, ExpressionImport, GridImport, ModelExport, TrajectoryExport, ExpressionExport, GridExport, nFilterTypes };
+	static const char *filterType(FilterType ft);
+	static FilterType filterType(const char *s);
+	
+	// Filter commands
+	enum FilterCommmand { NameCommand, NicknameCommand, ExtensionCommand, GlobCommand, ExactCommand, ZMapCommand, IdCommand, nFilterCommands };
+	static FilterCommmand filterCommand(const char *s);
+	static const char *filterCommand(FilterCommmand fc);
+
 	// Print information on filter
 	void print();
 	// Load filter commands from file

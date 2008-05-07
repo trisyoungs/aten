@@ -246,7 +246,7 @@ Prefs::Prefs()
 	densityUnit_ = Prefs::GramsPerCm;
 
 	// Energy
-	electrostaticsMethod_ = Forms::EwaldAutoElec;
+	electrostaticsMethod_ = Electrostatics::EwaldAuto;
 	calculateIntra_ = TRUE;
 	calculateVdw_ = TRUE;
 	calculateElec_ = FALSE;
@@ -872,7 +872,7 @@ void Prefs::setEnergyUnit(EnergyUnit eu)
 	// Reconvert any forcefields already loaded so that they are in the new energy units
 	EnergyUnit euold = energyUnit_;
 	energyUnit_ = eu;
-	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters(euold);
+	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 	// Calculate Electrostatic conversion factor
 	// COULCONVERT is stored in J/mol. Use this to calculate new elec_convert
 	elecConvert_ = COULCONVERT / energyConversions_[energyUnit_];
@@ -958,13 +958,13 @@ bool Prefs::replicateTrim()
 */
 
 // Sets the electrostatic model to use in energy/force calculation
-void Prefs::setElectrostaticsMethod(Forms::ElecMethod em)
+void Prefs::setElectrostaticsMethod(Electrostatics::ElecMethod em)
 {
 	electrostaticsMethod_ = em;
 }
 
 // Return the type of electrostatic treatment to use
-Forms::ElecMethod Prefs::electrostaticsMethod()
+Electrostatics::ElecMethod Prefs::electrostaticsMethod()
 {
 	return electrostaticsMethod_;
 }

@@ -209,7 +209,7 @@ void AtenForm::loadRecent()
 		}
 	}
 	// If we get to here then the model is not currently loaded...
-	f = master.probeFile(filename.get(), FT_MODEL_IMPORT);
+	f = master.probeFile(filename.get(), Filter::ModelImport);
 	if (f != NULL)
 	{
 		f->execute(filename.get());

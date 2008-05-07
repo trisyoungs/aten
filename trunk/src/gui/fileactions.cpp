@@ -44,7 +44,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 	{
 		f = gui.loadModelDialog->selectedFilter();
 		// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (f == NULL) f = master.probeFile(gui.loadModelDialog->selectedFilename(), FT_MODEL_IMPORT);
+		if (f == NULL) f = master.probeFile(gui.loadModelDialog->selectedFilename(), Filter::ModelImport);
 		if (f != NULL)
 		{
 			f->execute(gui.loadModelDialog->selectedFilename());
@@ -61,17 +61,17 @@ bool AtenForm::runSaveModelDialog()
 	saveModelFilter = NULL;
 	saveModelFilename.clear();
 	Filter *f;
-	int result = dialog[FT_MODEL_EXPORT]->exec();
+	int result = dialog[Filter::ModelExport]->exec();
 	//printf("Save model dialog result = %i\n",result);
 	if (result == 1)
 	{
 		// Get selected filename (only grab first
 		//QString filename = savemodeldialog->selectedFiles().first();
-		saveModelFilename = qPrintable(dialog[FT_MODEL_EXPORT]->selectedFiles().first());
+		saveModelFilename = qPrintable(dialog[Filter::ModelExport]->selectedFiles().first());
 		// Get selected filter
-		QString filter = dialog[FT_MODEL_EXPORT]->selectedFilter();
+		QString filter = dialog[Filter::ModelExport]->selectedFilter();
 		// Find the filter that was selected
-		for (f = master.filters(FT_MODEL_EXPORT); f != NULL; f = f->next)
+		for (f = master.filters(Filter::ModelExport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
 		if (f == NULL) printf("AtenForm::run_savemodel_dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
 		saveModelFilter = f;
@@ -100,7 +100,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// Similarly, if no filename has been set, raise the file dialog.
 	Model *m = master.currentModel();
 	Filter *f = m->filter();
-	if ((f != NULL) && (f->type() != FT_MODEL_EXPORT)) f = NULL;
+	if ((f != NULL) && (f->type() != Filter::ModelExport)) f = NULL;
 	Dnchar filename;
 	filename = m->filename();
 	if (filename.empty() || (f == NULL))
@@ -191,18 +191,18 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
 	Filter *f;
 	Model *m = master.currentModel();
-	if (dialog[FT_TRAJECTORY_IMPORT]->exec() == 1)
+	if (dialog[Filter::TrajectoryImport]->exec() == 1)
 	{
 		// Get selected filename
-		QStringList filenames = dialog[FT_TRAJECTORY_IMPORT]->selectedFiles();
+		QStringList filenames = dialog[Filter::TrajectoryImport]->selectedFiles();
 		QString filename = filenames.first();
 		// Get selected filter
-		QString filter = dialog[FT_TRAJECTORY_IMPORT]->selectedFilter();
+		QString filter = dialog[Filter::TrajectoryImport]->selectedFilter();
 		// Find the filter that was selected
-		for (f = master.filters(FT_TRAJECTORY_IMPORT); f != NULL; f = f->next)
+		for (f = master.filters(Filter::TrajectoryImport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
 		// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (f == NULL) f = master.probeFile(qPrintable(filename), FT_TRAJECTORY_IMPORT);
+		if (f == NULL) f = master.probeFile(qPrintable(filename), Filter::TrajectoryImport);
 		if (f != NULL)
 		{
 			m->initialiseTrajectory(qPrintable(filename), f);
@@ -240,15 +240,15 @@ void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 	Grid *g;
 	QString filename;
 	QStringList filenames;
-	if (dialog[FT_GRID_IMPORT]->exec() == 1)
+	if (dialog[Filter::GridImport]->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		QString filter = dialog[FT_GRID_IMPORT]->selectedFilter();
+		QString filter = dialog[Filter::GridImport]->selectedFilter();
 		// Find the corresponding Aten filter that was selected
-		for (f = master.filters(FT_GRID_IMPORT); f != NULL; f = f->next)
+		for (f = master.filters(Filter::GridImport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
 		// Get selected filename list
-		filenames = dialog[FT_GRID_IMPORT]->selectedFiles();
+		filenames = dialog[Filter::GridImport]->selectedFiles();
 		// Loop over selected files
 		for (int i = 0; i < filenames.count(); ++i)
 		{
@@ -257,7 +257,7 @@ void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 			if (f != NULL) f->execute(qPrintable(filename));
 			else
 			{
-				f = master.probeFile(qPrintable(filename), FT_GRID_IMPORT);
+				f = master.probeFile(qPrintable(filename), Filter::GridImport);
 				if (f != NULL) f->execute(qPrintable(filename));
 			}
 		}
@@ -270,14 +270,14 @@ void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
 	Filter *f;
-	if (dialog[FT_EXPRESSION_EXPORT]->exec() == 1)
+	if (dialog[Filter::ExpressionExport]->exec() == 1)
 	{
 		// Get selected filename (only grab first
-		QString filename = dialog[FT_EXPRESSION_EXPORT]->selectedFiles().first();
+		QString filename = dialog[Filter::ExpressionExport]->selectedFiles().first();
 		// Get selected filter
-		QString filter = dialog[FT_EXPRESSION_EXPORT]->selectedFilter();
+		QString filter = dialog[Filter::ExpressionExport]->selectedFilter();
 		// Find the filter that was selected
-		for (f = master.filters(FT_EXPRESSION_EXPORT); f != NULL; f = f->next)
+		for (f = master.filters(Filter::ExpressionExport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
 		if (f == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
 		else f->execute(qPrintable(filename));

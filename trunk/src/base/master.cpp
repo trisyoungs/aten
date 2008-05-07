@@ -67,7 +67,7 @@ void Master::clear()
 	forcefields_.clear();
 	userClipboard->clear();
 	scripts.clear();
-	for (int i=0; i<FT_NITEMS; i++) filters_[i].clear();
+	for (int i=0; i<Filter::nFilterTypes; i++) filters_[i].clear();
 }
 
 // Sets the current program mode
@@ -414,7 +414,7 @@ bool Master::openFilters(const char *path, bool isdatadir)
 			printf("%s  ",parser.argc(0));
 			if (!loadFilter(longname))
 			{
-				
+				dbgEnd(Debug::Calls,"Master::openFilters");
 				return FALSE;
 			}
 		}
@@ -427,10 +427,10 @@ bool Master::openFilters(const char *path, bool isdatadir)
 		// Set filter partners
 		partnerFilters();
 		// Print data on loaded filters
-		msg(Debug::None,"Found (import/export):  Models (%i/%i) ", filters_[FT_MODEL_IMPORT].nItems(), filters_[FT_MODEL_EXPORT].nItems());
-		msg(Debug::None,"Trajectory (%i/%i) ", filters_[FT_TRAJECTORY_IMPORT].nItems(), filters_[FT_TRAJECTORY_EXPORT].nItems());
-		msg(Debug::None,"Expression (%i/%i) ", filters_[FT_EXPRESSION_IMPORT].nItems(), filters_[FT_EXPRESSION_EXPORT].nItems());
-		msg(Debug::None,"Grid (%i/%i)\n", filters_[FT_GRID_IMPORT].nItems(), filters_[FT_GRID_EXPORT].nItems());
+		msg(Debug::None,"Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
+		msg(Debug::None,"Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
+		msg(Debug::None,"Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
+		msg(Debug::None,"Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
 	}
 	dbgEnd(Debug::Calls,"Master::openFilters");
 	return TRUE;
@@ -440,7 +440,7 @@ bool Master::openFilters(const char *path, bool isdatadir)
 bool Master::loadFilter(const char *filename)
 {
 	dbgBegin(Debug::Calls,"Master::loadFilter");
-	FilterType ft;
+	Filter::FilterType ft;
 	Filter *newfilter;
 	bool error;
 	int success;
@@ -452,9 +452,9 @@ bool Master::loadFilter(const char *filename)
 	while (!filterfile.eof())
 	{
 		// Get filter type from first argument
-		ft = FT_from_text(parser.argc(0));
+		ft = Filter::filterType(parser.argc(0));
 		// Unrecognised filter section?
-		if (ft == FT_NITEMS)
+		if (ft == Filter::nFilterTypes)
 		{
 			msg(Debug::None,"Unrecognised section '%s' in filter.\n",parser.argc(0));
 			error = TRUE;
@@ -468,7 +468,7 @@ bool Master::loadFilter(const char *filename)
 		if (!newfilter->load(filterfile))
 		{
 			filters_[ft].remove(newfilter);
-			printf("Error reading '%s' section from file '%s'\n",text_from_FT(newfilter->type()),filename);
+			printf("Error reading '%s' section from file '%s'\n", Filter::filterType(newfilter->type()), filename);
 			error = TRUE;
 			break;
 		}
@@ -487,7 +487,7 @@ void Master::partnerFilters()
 	Filter *imp, *exp;
 	int importid;
 	printf("Model Formats:");
-	for (imp = filters_[FT_MODEL_IMPORT].first(); imp != NULL; imp = imp->next)
+	for (imp = filters_[Filter::ModelImport].first(); imp != NULL; imp = imp->next)
 	{
 		printf(" %s[r", imp->nickname());
 		importid = imp->id();
@@ -495,7 +495,7 @@ void Master::partnerFilters()
 		if (importid != -1)
 		{
 			// Search for export filter with same ID as the importfilter
-			for (exp = filters_[FT_MODEL_EXPORT].first(); exp != NULL; exp = exp->next)
+			for (exp = filters_[Filter::ModelExport].first(); exp != NULL; exp = exp->next)
 			{
 				if (importid == exp->id())
 				{
@@ -509,7 +509,7 @@ void Master::partnerFilters()
 	}
 	printf("\n");
 	printf("Grid Formats:");
-	for (imp = filters_[FT_GRID_IMPORT].first(); imp != NULL; imp = imp->next)
+	for (imp = filters_[Filter::GridImport].first(); imp != NULL; imp = imp->next)
 	{
 		printf(" %s[r", imp->nickname());
 		importid = imp->id();
@@ -517,7 +517,7 @@ void Master::partnerFilters()
 		if (importid != -1)
 		{
 			// Search for export filter with same ID as the importfilter
-			for (exp = filters_[FT_GRID_EXPORT].first(); exp != NULL; exp = exp->next)
+			for (exp = filters_[Filter::GridExport].first(); exp != NULL; exp = exp->next)
 			{
 				if (importid == exp->id())
 				{
@@ -534,19 +534,19 @@ void Master::partnerFilters()
 }
 
 // Find filter with specified type and nickname
-Filter *Master::findFilter(FilterType ft, const char *nickname) const
+Filter *Master::findFilter(Filter::FilterType ft, const char *nickname) const
 {
 	dbgBegin(Debug::Calls,"Master::findFilter");
 	Filter *result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->nickname(), nickname) == 0) break;
-	if (result == NULL) msg(Debug::None,"No %s filter with nickname '%s' defined.\n",text_from_FT(ft),nickname);
+	if (result == NULL) msg(Debug::None,"No %s filter with nickname '%s' defined.\n", Filter::filterType(ft), nickname);
 	dbgEnd(Debug::Calls,"Master::findFilter");
 	return result;
 }
 
 // Return first filter in list (of a given type)
-Filter *Master::filters(FilterType ft) const
+Filter *Master::filters(Filter::FilterType ft) const
 {
 	return filters_[ft].first();
 }

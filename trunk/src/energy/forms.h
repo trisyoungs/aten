@@ -23,49 +23,71 @@
 #define ATEN_FORMS_H
 
 #include "base/sysfunc.h"
+#include "base/constants.h"
 
-namespace Forms
+// Function Definition
+class FunctionData
 {
-	// Generation rules (for rule-based FFs)
-	enum ForcefieldRules { NoRules, UffRules, nForcefieldRules };
-	const char *forcefieldRules(ForcefieldRules);
-	ForcefieldRules forcefieldRules(const char*);
-	
+	public:
+	// Long name of the function
+	const char *name;
+	// Keyword name for the function
+	const char *keyword;
+	// Parameter names
+	const char *parameters[MAXFFPARAMDATA];
+	// Parameter keywords
+	const char *parameterKeywords[MAXFFPARAMDATA];
+};
+
+// VDW Potential Functions
+namespace VdwFunctions
+{
+	enum VdwFunction { None, Lj, Buckingham, nVdwFunctions };
+	extern FunctionData VdwFunctions[];
+	VdwFunction vdwFunction(const char*);
+	enum LjParameters { LjEpsilon, LjSigma };
+	enum BuckinghamParameters { BuckinghamA, BuckinghamB, BuckinghamC };
+}
+
+// Bond Potential Functions
+namespace BondFunctions
+{
+	enum BondFunction { None, Harmonic, Morse, nBondFunctions };
+	extern FunctionData BondFunctions[];
+	BondFunction bondFunction(const char*);
+	enum HarmonicParameters { HarmonicK, HarmonicEq };
+	enum MorseParameters {};
+}
+
+// Angle potential forms
+namespace AngleFunctions
+{
+	enum AngleFunction { None, Harmonic, Cosine, UffCosine1, UffCosine2, nAngleFunctions };
+	extern FunctionData AngleFunctions[];
+	AngleFunction angleFunction(const char*);
+	enum HarmonicParameters { HarmonicK, HarmonicEq };
+	enum CosineParameters { CosineK, CosineN, CosineEq };
+	enum UffCosineParameters { UffCosineK, UffCosineN, UffCosineEq };
+}
+
+// Torsion potential forms
+namespace TorsionFunctions
+{
+	enum TorsionFunction { None, Cosine, Cos3, Cos4, Cos3C, nTorsionFunctions };
+	extern FunctionData TorsionFunctions[];
+	TorsionFunction torsionFunction(const char*);
+	enum CosineParameter { CosineEScale, CosineVScale, CosineK, CosineN, CosineEq };
+	enum Cos3Parameter { Cos3EScale, Cos3VScale, Cos3K1, Cos3K2, Cos3K3 };
+	enum Cos4Parameter { Cos4EScale, Cos4VScale, Cos4K1, Cos4K2, Cos4K3, Cos4K4 };
+	enum Cos3CParameter { Cos3CEScale, Cos3CVScale, Cos3CK0, Cos3CK1, Cos3CK2, Cos3CK3 };
+}
+
+namespace Electrostatics
+{
 	// Electrostatic model
-	enum ElecMethod { NoElec, CoulombElec, EwaldElec, EwaldAutoElec, nElecMethods };
+	enum ElecMethod { None, Coulomb, Ewald, EwaldAuto, nElectrostatics };
 	const char *elecMethod(ElecMethod);
 	ElecMethod elecMethod(const char*);
-	
-	// VDW potential forms
-	enum VdwFunction { NoVdw, LjVdw, BuckinghamVdw, nVdwForms };
-	const char *vdwFunctionString(VdwFunction);
-	const char *vdwFunction(VdwFunction);
-	VdwFunction vdwFunction(const char*);
-	enum LjVdwParameters { LjVdwEpsilon, LjVdwSigma };
-	enum BuckVdwParameters { BuckVdwA, BuckVdwB, BuckVdwC };
-	
-	// Bond potential forms
-	enum BondFunction { NoBond, HarmonicBond, MorseBond, nBondFunctions };
-	const char *bondFunction(BondFunction);
-	BondFunction bondFunction(const char*);
-	enum HarmonicBondParameters { HarmonicBondK, HarmonicBondEq };
-	
-	// Angle potential forms
-	enum AngleFunction { NoAngle, HarmonicAngle, CosineAngle, UffCosine1Angle, UffCosine2Angle, nAngleFunctions };
-	const char *angleFunction(AngleFunction);
-	AngleFunction angleFunction(const char*);
-	enum HarmonicAngleParameters { HarmonicAngleK, HarmonicAngleEq };
-	enum CosineAngleParameters { CosineAngleK, CosineAngleS, CosineAngleEq };
-	enum UffCosineAngleParameters { UffCosineAngleK, UffCosineAngleN, UffCosineAngleEq };
-	
-	// Torsion potential forms
-	enum TorsionFunction { NoTorsion, CosineTorsion, Cos3Torsion, Cos4Torsion, Cos3CTorsion, nTorsionFunctions };
-	const char *torsionFunction(TorsionFunction);
-	TorsionFunction torsionFunction(const char*);
-	enum CosineTorsionParameters { CosineTorsionK, CosineTorsionEq, CosineTorsionP };
-	enum Cos3TorsionParameters { Cos3TorsionK1, Cos3TorsionK2, Cos3TorsionK3 };
-	enum Cos4TorsionParameters { Cos4TorsionK1, Cos4TorsionK2, Cos4TorsionK3, Cos4TorsionK4 };
-	enum CosCTorsionParameters { Cos3CTorsionK0, Cos3CTorsionK1, Cos3CTorsionK2, Cos3CTorsionK3 };
 }
 
 #endif

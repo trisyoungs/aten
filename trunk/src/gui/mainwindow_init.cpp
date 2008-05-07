@@ -195,48 +195,48 @@ void AtenForm::finaliseUi()
 	progressIndicator->setVisible(FALSE);
 
 	// Create dialog array
-	dialog = new QFileDialog*[FT_NITEMS];
+	dialog = new QFileDialog*[Filter::nFilterTypes];
 
 	// Create open model dialog
-	dialog[FT_MODEL_IMPORT] = new QFileDialog(this);
-	dialog[FT_MODEL_IMPORT]->setFileMode(QFileDialog::ExistingFiles);
-	dialog[FT_MODEL_IMPORT]->setDirectory(master.workDir.get());
-	dialog[FT_MODEL_IMPORT]->setWindowTitle("Open Model(s)");
+	dialog[Filter::ModelImport] = new QFileDialog(this);
+	dialog[Filter::ModelImport]->setFileMode(QFileDialog::ExistingFiles);
+	dialog[Filter::ModelImport]->setDirectory(master.workDir.get());
+	dialog[Filter::ModelImport]->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
-	for (f = master.filters(FT_MODEL_IMPORT); f != NULL; f = f->next) filters << f->description();
+	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next) filters << f->description();
 	if (filters.empty())
 	{
 		ui.actionFileOpen->setEnabled(FALSE);
 		ui.RecentMenu->setEnabled(FALSE);
 	}
-	else dialog[FT_MODEL_IMPORT]->setFilters(filters);
+	else dialog[Filter::ModelImport]->setFilters(filters);
 
 	// Create open trajectory dialog
-	dialog[FT_TRAJECTORY_IMPORT] = new QFileDialog(this);
-	dialog[FT_TRAJECTORY_IMPORT]->setFileMode(QFileDialog::ExistingFile);
-	dialog[FT_TRAJECTORY_IMPORT]->setDirectory(master.workDir.get());
-	dialog[FT_TRAJECTORY_IMPORT]->setWindowTitle("Add Trajectory");
+	dialog[Filter::TrajectoryImport] = new QFileDialog(this);
+	dialog[Filter::TrajectoryImport]->setFileMode(QFileDialog::ExistingFile);
+	dialog[Filter::TrajectoryImport]->setDirectory(master.workDir.get());
+	dialog[Filter::TrajectoryImport]->setWindowTitle("Add Trajectory");
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.filters(FT_TRAJECTORY_IMPORT); f != NULL; f = f->next) filters << f->description();
-	dialog[FT_TRAJECTORY_IMPORT]->setFilters(filters);
+	for (f = master.filters(Filter::TrajectoryImport); f != NULL; f = f->next) filters << f->description();
+	dialog[Filter::TrajectoryImport]->setFilters(filters);
 
 	// Create save model dialog
-	dialog[FT_MODEL_EXPORT] = new QFileDialog(this);
-	dialog[FT_MODEL_EXPORT]->setWindowTitle("Save Model");
-	dialog[FT_MODEL_EXPORT]->setAcceptMode(QFileDialog::AcceptSave);
-	dialog[FT_MODEL_EXPORT]->setDirectory(master.workDir.get());
-	dialog[FT_MODEL_EXPORT]->setConfirmOverwrite(TRUE);
-	dialog[FT_MODEL_EXPORT]->setFileMode(QFileDialog::AnyFile);
+	dialog[Filter::ModelExport] = new QFileDialog(this);
+	dialog[Filter::ModelExport]->setWindowTitle("Save Model");
+	dialog[Filter::ModelExport]->setAcceptMode(QFileDialog::AcceptSave);
+	dialog[Filter::ModelExport]->setDirectory(master.workDir.get());
+	dialog[Filter::ModelExport]->setConfirmOverwrite(TRUE);
+	dialog[Filter::ModelExport]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.filters(FT_MODEL_EXPORT); f != NULL; f = f->next) filters << f->description();
+	for (f = master.filters(Filter::ModelExport); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty())
 	{
 		ui.actionFileSave->setEnabled(FALSE);
 		ui.actionFileSaveAs->setEnabled(FALSE);
 	}
-	else dialog[FT_MODEL_EXPORT]->setFilters(filters);
+	else dialog[Filter::ModelExport]->setFilters(filters);
 
 	// Create save image dialog
 	saveBitmapDialog = new QFileDialog(this);
@@ -280,27 +280,27 @@ void AtenForm::finaliseUi()
 	saveVectorDialog->setFilters(filters);
 
 	// Create save expression dialog
-	dialog[FT_EXPRESSION_EXPORT] = new QFileDialog(this);
-	dialog[FT_EXPRESSION_EXPORT]->setWindowTitle("Save Vector");
-	dialog[FT_EXPRESSION_EXPORT]->setAcceptMode(QFileDialog::AcceptSave);
-	dialog[FT_EXPRESSION_EXPORT]->setDirectory(master.workDir.get());
-	dialog[FT_EXPRESSION_EXPORT]->setFileMode(QFileDialog::AnyFile);
+	dialog[Filter::ExpressionExport] = new QFileDialog(this);
+	dialog[Filter::ExpressionExport]->setWindowTitle("Save Vector");
+	dialog[Filter::ExpressionExport]->setAcceptMode(QFileDialog::AcceptSave);
+	dialog[Filter::ExpressionExport]->setDirectory(master.workDir.get());
+	dialog[Filter::ExpressionExport]->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.filters(FT_EXPRESSION_EXPORT); f != NULL; f = f->next) filters << f->description();
+	for (f = master.filters(Filter::ExpressionExport); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
-	else dialog[FT_EXPRESSION_EXPORT]->setFilters(filters);
+	else dialog[Filter::ExpressionExport]->setFilters(filters);
 
 	// Create open grid dialog
-	dialog[FT_GRID_IMPORT] = new QFileDialog(this);
-	dialog[FT_GRID_IMPORT]->setWindowTitle("Open Grid");
-	dialog[FT_GRID_IMPORT]->setDirectory(master.workDir.get());
-	dialog[FT_GRID_IMPORT]->setFileMode(QFileDialog::ExistingFile);
+	dialog[Filter::GridImport] = new QFileDialog(this);
+	dialog[Filter::GridImport]->setWindowTitle("Open Grid");
+	dialog[Filter::GridImport]->setDirectory(master.workDir.get());
+	dialog[Filter::GridImport]->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.filters(FT_GRID_IMPORT); f != NULL; f = f->next) filters << f->description();
+	for (f = master.filters(Filter::GridImport); f != NULL; f = f->next) filters << f->description();
 	if (filters.empty()) ui.actionFileOpenGrid->setEnabled(FALSE);
-	else dialog[FT_GRID_IMPORT]->setFilters(filters);
+	else dialog[Filter::GridImport]->setFilters(filters);
 
 	// Create open script dialog
 	openScriptDialog = new QFileDialog(this);

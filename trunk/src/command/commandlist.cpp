@@ -45,6 +45,7 @@ Command::Command()
 	branch_ = NULL;
 	format_ = NULL;
 	loopActive_ = FALSE;
+	nArgs_ = 0;
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -240,9 +241,9 @@ void CommandList::clear()
 }
 
 // Print data variables
-void Command::print_args()
+void Command::printArgs()
 {
-	dbgBegin(Debug::Calls,"Command::print_args");
+	dbgBegin(Debug::Calls,"Command::printArgs");
 	int i;
 	for (int i=0; i<MAXDATAVARS; i++)
 	{
@@ -255,7 +256,7 @@ void Command::print_args()
 			else printf("%li\n",args_[i]->asPointer());
 		}
 	}
-	dbgEnd(Debug::Calls,"Command::print_args");
+	dbgEnd(Debug::Calls,"Command::printArgs");
 }
 
 // Return arguments as Vec3<double>
@@ -503,8 +504,15 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				break;
 		}
 	}
+	nArgs_ = varcount + 1;
 	dbgEnd(Debug::Calls,"Command::addVariables");
 	return TRUE;
+}
+
+// Return number of arguments given to command
+int Command::nArgs()
+{
+	return nArgs_;
 }
 
 /*
@@ -1261,13 +1269,13 @@ void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb
 		switch (ffb->type())
 		{
 			case (ForcefieldBound::BondInteraction):
-				variables.set(varname,"form", Forms::bondFunction(ffb->functionalForm().bondFunc));
+				variables.set(varname,"form", BondFunctions::BondFunctions[ffb->functionalForm().bondFunc].keyword);
 				break;
 			case (ForcefieldBound::AngleInteraction):
-				variables.set(varname,"form", Forms::angleFunction(ffb->functionalForm().angleFunc));
+				variables.set(varname,"form", AngleFunctions::AngleFunctions[ffb->functionalForm().angleFunc].keyword);
 				break;
 			case (ForcefieldBound::TorsionInteraction):
-				variables.set(varname,"form", Forms::torsionFunction(ffb->functionalForm().torsionFunc));
+				variables.set(varname,"form", TorsionFunctions::TorsionFunctions[ffb->functionalForm().torsionFunc].keyword);
 				variables.set(varname,"escale",ffp.data[TF_ESCALE]);
 				variables.set(varname,"vscale",ffp.data[TF_VSCALE]);
 				break;
@@ -1327,7 +1335,7 @@ void CommandList::setAtomtypeVariables(const char *varname, ForcefieldAtom *ffa)
 		variables.set(varname,"id",ffa->typeId());
 		variables.set(varname,"name",ffa->name());
 		variables.set(varname,"equiv",ffa->equivalent());
-		variables.set(varname,"form",Forms::vdwFunction(ffa->vdwForm()));
+		variables.set(varname,"form",VdwFunctions::VdwFunctions[ffa->vdwForm()].keyword);
 	}
 	dbgEnd(Debug::Calls,"CommandList::setAtomtypeVariables");
 }

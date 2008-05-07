@@ -51,7 +51,7 @@ GuiQt::GuiQt()
 }
 
 // Initialise QApplication and the main QGlWidget
-void GuiQt::initialise(int argc, char **argv)
+void GuiQt::initialise(int &argc, char **argv)
 {
 	// Create the QApplication
 	app = new QApplication(argc, argv);
@@ -69,7 +69,8 @@ void GuiQt::run()
 {
 	dbgBegin(Debug::Calls,"GuiQt::run");
 
-	// Initialise Qt, and the icons resource
+	// Initialise Qt's icons resource
+
 	Q_INIT_RESOURCE(icons);
 
 	// Create the GUI windows

@@ -67,7 +67,7 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	QString filters, selFilter;
 	Filter *f;
 	filters += "All files (*)";
-	for (f = master.filters(FT_MODEL_IMPORT); f != NULL; f = f->next)
+	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next)
 	{
 		filters += ";;";
 		filters += f->description();
@@ -80,7 +80,7 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	currentDirectory_ = s;
 	ui.LoadModelEdit->setText(selectedFilename_.get());
 	// Find the corresponding Aten filter that was selected
-	for (f = master.filters(FT_MODEL_IMPORT); f != NULL; f = f->next)
+	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next)
 		if (strcmp(f->description(),qPrintable(selFilter)) == 0) break;
 	selectedFilter_ = f;
 }
