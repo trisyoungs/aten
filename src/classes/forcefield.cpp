@@ -269,28 +269,40 @@ ForcefieldBound::BoundType ForcefieldBound::type()
 	return type_;
 }
 
-// Return the functional form
-ForcefieldBound::BoundForms ForcefieldBound::functionalForm()
+// Return the functional form (cast as a bond style)
+BondFunctions::BondFunction ForcefieldBound::bondStyle()
 {
-	return functionalForm_;
+	return (BondFunctions::BondFunction) functionalForm_;
+}
+
+// Return the functional form (cast as a angle style)
+AngleFunctions::AngleFunction ForcefieldBound::angleStyle()
+{
+	return (AngleFunctions::AngleFunction) functionalForm_;
+}
+
+// Return the functional form (cast as a torsion style)
+TorsionFunctions::TorsionFunction ForcefieldBound::torsionStyle()
+{
+	return (TorsionFunctions::TorsionFunction) functionalForm_;
 }
 
 // Set the bond functional form
 void ForcefieldBound::setBondStyle(BondFunctions::BondFunction bf)
 {
-	functionalForm_.bondFunc = bf;
+	functionalForm_ = bf;
 }
 
 // Set the angle functional form
 void ForcefieldBound::setAngleStyle(AngleFunctions::AngleFunction af)
 {
-	functionalForm_.angleFunc = af;
+	functionalForm_ = af;
 }
 
 // Set the torsion functional form
 void ForcefieldBound::setTorsionStyle(TorsionFunctions::TorsionFunction tf)
 {
-	functionalForm_.torsionFunc = tf;
+	functionalForm_ = tf;
 }
 
 // Return the data[] array in *params
@@ -728,7 +740,7 @@ void Forcefield::convertParameters()
 	for (b = bonds_.first(); b != NULL; b = b->next)
 	{
 		p = &b->params();
-		switch (b->functionalForm().bondFunc)
+		switch (b->bondStyle())
 		{
 			case (BondFunctions::None):
 				break;
@@ -744,7 +756,7 @@ void Forcefield::convertParameters()
 	for (b = angles_.first(); b != NULL; b = b->next)
 	{
 		p = &b->params();
-		switch (b->functionalForm().angleFunc)
+		switch (b->angleStyle())
 		{
 			case (AngleFunctions::None):
 				break;
@@ -769,7 +781,7 @@ void Forcefield::convertParameters()
 	for (b = torsions_.first(); b != NULL; b = b->next)
 	{
 		p = &b->params();
-		switch (b->functionalForm().torsionFunc)
+		switch (b->torsionStyle())
 		{
 			case (TorsionFunctions::None):
 				break;

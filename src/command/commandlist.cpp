@@ -1269,13 +1269,13 @@ void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb
 		switch (ffb->type())
 		{
 			case (ForcefieldBound::BondInteraction):
-				variables.set(varname,"form", BondFunctions::BondFunctions[ffb->functionalForm().bondFunc].keyword);
+				variables.set(varname,"form", BondFunctions::BondFunctions[ffb->bondStyle()].keyword);
 				break;
 			case (ForcefieldBound::AngleInteraction):
-				variables.set(varname,"form", AngleFunctions::AngleFunctions[ffb->functionalForm().angleFunc].keyword);
+				variables.set(varname,"form", AngleFunctions::AngleFunctions[ffb->angleStyle()].keyword);
 				break;
 			case (ForcefieldBound::TorsionInteraction):
-				variables.set(varname,"form", TorsionFunctions::TorsionFunctions[ffb->functionalForm().torsionFunc].keyword);
+				variables.set(varname,"form", TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].keyword);
 				variables.set(varname,"escale",ffp.data[TF_ESCALE]);
 				variables.set(varname,"vscale",ffp.data[TF_VSCALE]);
 				break;
