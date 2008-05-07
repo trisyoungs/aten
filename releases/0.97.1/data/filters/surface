@@ -1,0 +1,37 @@
+# Simple-style surface data definition
+# Last modified: 09/04/08
+importgrid
+	name "2D Surface Data"
+	nickname surf
+	extension surf
+	glob *.surf
+
+	# Variable declarations
+	integer n,nx,ny,nz,npoints
+	double ox,oy,oz,data,xx,xy,xz,yx,yy,yz
+	character order
+
+	# Create new grid
+	newgrid NewGrid
+
+	# First line contains number of gridpoints in each direction x,y
+	readline "$nx $ny"
+	gridsize $nx $ny 0
+	# Second line contains vectors between gridpoints
+	readline "$xx $xy $xz $yx $yy $yz"
+	gridaxes $xx $xy $xz $yx $yy $yz 0.0 0.0 1.0
+	# Third line contains grid origin (lower left-hand corner)
+	readline "$ox $oy $oz"
+	gridorigin $ox $oy $oz
+	# Fourth line contains loop order
+	readline $order
+	gridlooporder $order
+
+	# Read in grid data
+	eval $npoints = "$nx * $ny"
+	for $n,1,$npoints
+		readline "$data"
+		addnextgridpoint $data
+	end
+	finalisegrid
+end

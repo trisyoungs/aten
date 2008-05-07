@@ -1,0 +1,111 @@
+<RCC>
+    <qresource prefix="/arrows" >
+        <file>icons/arrow_anticlockwise.svg</file>
+        <file>icons/arrow_clockwise.svg</file>
+        <file>icons/arrow_down.svg</file>
+        <file>icons/arrow_downline.svg</file>
+        <file>icons/arrow_in.svg</file>
+        <file>icons/arrow_left.svg</file>
+        <file>icons/arrow_out.svg</file>
+        <file>icons/arrow_right.svg</file>
+        <file>icons/arrow_up.svg</file>
+        <file>icons/arrow_upline.svg</file>
+    </qresource>
+    <qresource prefix="/basic" >
+        <file>icons/basic_colour.svg</file>
+        <file>icons/basic_define.svg</file>
+        <file>icons/basic_minus.svg</file>
+        <file>icons/basic_plus.svg</file>
+    </qresource>
+    <qresource prefix="/bond" >
+        <file>icons/bond_augment.svg</file>
+        <file>icons/bond_calc.svg</file>
+        <file>icons/bond_calcsel.svg</file>
+        <file>icons/bond_clear.svg</file>
+        <file>icons/bond_clearsel.svg</file>
+        <file>icons/bond_delete.svg</file>
+        <file>icons/bond_double.svg</file>
+        <file>icons/bond_single.svg</file>
+        <file>icons/bond_triple.svg</file>
+    </qresource>
+    <qresource prefix="/build" >
+        <file>icons/build_addh.svg</file>
+        <file>icons/build_atom.svg</file>
+        <file>icons/build_atomaddh.svg</file>
+        <file>icons/build_chain.svg</file>
+        <file>icons/build_delete.svg</file>
+        <file>icons/build_probe.svg</file>
+        <file>icons/build_ptable.svg</file>
+        <file>icons/build_transmute.svg</file>
+    </qresource>
+    <qresource prefix="/draw_styles" >
+        <file>icons/style_individual.svg</file>
+        <file>icons/style_scaled.svg</file>
+        <file>icons/style_sphere.svg</file>
+        <file>icons/style_stick.svg</file>
+        <file>icons/style_tube.svg</file>
+    </qresource>
+    <qresource prefix="/edit" >
+        <file>icons/edit_copy.svg</file>
+        <file>icons/edit_cut.svg</file>
+        <file>icons/edit_delete.svg</file>
+        <file>icons/edit_paste.svg</file>
+    </qresource>
+    <qresource prefix="/file" >
+        <file>icons/file_close.svg</file>
+        <file>icons/file_new.svg</file>
+        <file>icons/file_open.svg</file>
+        <file>icons/file_save.svg</file>
+        <file>icons/file_saveas.svg</file>
+    </qresource>
+    <qresource prefix="/geometry" >
+        <file>icons/measure_angle.svg</file>
+        <file>icons/measure_anglesel.svg</file>
+        <file>icons/measure_distance.svg</file>
+        <file>icons/measure_distancesel.svg</file>
+        <file>icons/measure_torsion.svg</file>
+        <file>icons/measure_torsionsel.svg</file>
+    </qresource>
+    <qresource prefix="/mouse" >
+        <file>icons/mouse_interact.svg</file>
+        <file>icons/mouse_rotate.svg</file>
+        <file>icons/mouse_translate.svg</file>
+    </qresource>
+    <qresource prefix="/playback" >
+        <file>icons/traj_first.svg</file>
+        <file>icons/traj_last.svg</file>
+        <file>icons/traj_next.svg</file>
+        <file>icons/traj_playpause.svg</file>
+        <file>icons/traj_prev.svg</file>
+    </qresource>
+    <qresource prefix="/prefs" />
+    <qresource prefix="/program" >
+        <file>icons/aten.png</file>
+    </qresource>
+    <qresource prefix="/select" >
+        <file>icons/select_all.svg</file>
+        <file>icons/select_atoms.svg</file>
+        <file>icons/select_element.svg</file>
+        <file>icons/select_expand.svg</file>
+        <file>icons/select_invert.svg</file>
+        <file>icons/select_molecules.svg</file>
+        <file>icons/select_none.svg</file>
+    </qresource>
+    <qresource prefix="/stackicons" >
+        <file>icons/stack_atomlist.svg</file>
+        <file>icons/stack_celldefine.svg</file>
+        <file>icons/stack_celledit.svg</file>
+        <file>icons/stack_disorder.svg</file>
+        <file>icons/stack_edit.svg</file>
+        <file>icons/stack_ff.svg</file>
+        <file>icons/stack_minimiser.svg</file>
+        <file>icons/stack_position.svg</file>
+        <file>icons/stack_surfaces.svg</file>
+        <file>icons/stack_transform.svg</file>
+    </qresource>
+    <qresource prefix="/transform" >
+        <file>icons/transform_flipx.svg</file>
+        <file>icons/transform_flipy.svg</file>
+        <file>icons/transform_flipz.svg</file>
+    </qresource>
+</RCC>
