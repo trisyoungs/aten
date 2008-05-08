@@ -90,6 +90,7 @@ int CommandData::function_CA_DEFAULTFF(Command *&c, Bundle &obj)
 // Set equivalent 
 int CommandData::function_CA_EQUIVALENT(Command *&c, Bundle &obj)
 {
+	return CR_FAIL;
 }
 
 // Associate current ff to current model ('ffmodel [name]')

@@ -159,8 +159,7 @@ class Prefs
 	// Spotlight components
 	GLfloat spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
-	GLfloat spotlightPosition_[3];
-
+	GLfloat spotlightPosition_[4];
 
 	public:
 	// Sets the specified atom size to the given value
