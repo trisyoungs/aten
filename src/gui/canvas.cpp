@@ -196,10 +196,10 @@ void Canvas::initGl()
 		//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 		// Set up the light model
 		glEnable(GL_LIGHTING);
-		glLightfv(GL_LIGHT0,GL_AMBIENT,prefs.spotlightColour(Prefs::AmbientComponent));
-		glLightfv(GL_LIGHT0,GL_DIFFUSE,prefs.spotlightColour(Prefs::DiffuseComponent));
-		glLightfv(GL_LIGHT0,GL_SPECULAR,prefs.spotlightColour(Prefs::SpecularComponent));
-		glLightfv(GL_LIGHT0,GL_POSITION,prefs.spotlightPosition());
+		glLightfv(GL_LIGHT0, GL_AMBIENT, prefs.spotlightColour(Prefs::AmbientComponent));
+		glLightfv(GL_LIGHT0, GL_DIFFUSE, prefs.spotlightColour(Prefs::DiffuseComponent));
+		glLightfv(GL_LIGHT0, GL_SPECULAR, prefs.spotlightColour(Prefs::SpecularComponent));
+		glLightfv(GL_LIGHT0, GL_POSITION, prefs.spotlightPosition());
 		prefs.spotlightActive() ? glEnable(GL_LIGHT0) : glDisable(GL_LIGHT0);
 		glDisable(GL_BLEND);
 		glDisable(GL_LINE_SMOOTH);
