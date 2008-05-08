@@ -156,7 +156,7 @@ class Prefs
 	// Spotlight components
 	GLfloat spotlightColour_[Prefs::nColourComponents][4];
 	// Spotlight position
-	GLfloat spotlightPosition_[3];
+	GLfloat spotlightPosition_[4];
 	// Atom colouring style
 	Prefs::ColourScheme colourScheme_;
 

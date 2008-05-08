@@ -148,6 +148,7 @@ Prefs::Prefs()
 	spotlightPosition_[0] = 1.0f;
 	spotlightPosition_[1] = 1.0f;
 	spotlightPosition_[2] = 1.0f;
+	spotlightPosition_[3] = 0.0f;
 
 	// GL Options
 	glOptions_ = 0;
