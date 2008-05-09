@@ -109,7 +109,7 @@ bool Model::typeAll()
 	}
 	// Describe the atoms / rings in the patterns
 	describeAtoms();
-	if (forcefield_ == NULL) msg(Debug::None,"Typing all patterns in model '%s' (no forcefield associated -- using default)...\n");
+	if (forcefield_ == NULL) msg(Debug::None,"Typing all patterns in model '%s' (no forcefield associated -- using default)...\n", name_.get());
 	else msg(Debug::None,"Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
 	// Assign forcefield types to atoms
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
