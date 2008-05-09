@@ -55,7 +55,7 @@ exportmodel
 	id 1
 
 	# Variable Declaration
-	integer imcon
+	integer imcon,id
 	double rx, ry, rz
 	atom i
 
