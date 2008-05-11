@@ -42,21 +42,24 @@ class FunctionData
 // VDW Potential Functions
 namespace VdwFunctions
 {
-	enum VdwFunction { None, Lj, Buckingham, nVdwFunctions };
+	enum VdwFunction { None, InversePower, Lj, LjAB, Buckingham, nVdwFunctions };
 	extern FunctionData VdwFunctions[];
 	VdwFunction vdwFunction(const char*);
 	enum LjParameters { LjEpsilon, LjSigma };
+	enum LjABParameters { LjA, LjB };
 	enum BuckinghamParameters { BuckinghamA, BuckinghamB, BuckinghamC };
+	enum InversePowerParameters { InversePowerEpsilon, InversePowerR, InversePowerN  };
 }
 
 // Bond Potential Functions
 namespace BondFunctions
 {
-	enum BondFunction { None, Harmonic, Morse, nBondFunctions };
+	enum BondFunction { None, Constraint, Harmonic, Morse, nBondFunctions };
 	extern FunctionData BondFunctions[];
 	BondFunction bondFunction(const char*);
 	enum HarmonicParameters { HarmonicK, HarmonicEq };
-	enum MorseParameters {};
+	enum ConstraintParameters { ConstraintR };
+	enum MorseParameters { MorseK, MorseEq, MorseD };
 }
 
 // Angle potential forms

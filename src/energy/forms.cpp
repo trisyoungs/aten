@@ -38,9 +38,15 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 	{ "None", "none",
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" } },
+	{ "Inverse Power", "inversepower",
+		{ "Epsilon", "Radius", "Power" },
+		{ "epsilon", "r", "n" } },
 	{ "Lennard-Jones 12-6", "lj",
 		{ "Epsilon", "Sigma" },
 		{ "epsilon", "sigma" } },
+	{ "Lennard-Jones AB", "ljab",
+		{ "A", "B" },
+		{ "a", "b" } },
 	{ "Buckingham", "buck",
 		{ "A", "B", "C" },
 		{ "a", "b", "c" } }
@@ -58,12 +64,15 @@ FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
 	{ "None", "none",
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" } },
+	{ "Constraint", "constraint",
+		{ "Distance" },
+		{ "r" } },
 	{ "Harmonic", "harmonic",
 		{ "Force K", "Eq. Distance" },
 		{ "k", "eq" } },
 	{ "Morse", "morse",
-		{ "A", "B", "C" },
-		{ "a", "b", "c" } }
+		{ "Force K", "Eq. Distance", "E(Diss.)" },
+		{ "k", "eq", "d" } }
 };
 BondFunctions::BondFunction BondFunctions::bondFunction(const char *s)
 {

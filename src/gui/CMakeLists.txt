@@ -15,7 +15,9 @@ set(qtproject_SRCS
 canvas.h 
 gui.h 
 ttreewidgetitem.h
+ttablewidgetitem.h
 tlistwidgetitem.h 
+tcombobox.h
 mainwindow_funcs.cpp 
 mainwindow_init.cpp 
 loadmodel_funcs.cpp

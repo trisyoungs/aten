@@ -53,7 +53,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 			switch (pb->data()->torsionStyle())
 			{
 				case (TorsionFunctions::None):
-					printf("Pattern::torsionEnergy <<<< Torsion function is UNSPECIFIED >>>>\n");
+					msg(Debug::None,"Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
 					break;
 				case (TorsionFunctions::Cosine): 
 					// U(phi) = forcek * (1 + cos(period*phi - eq))
@@ -84,6 +84,9 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					k2 = params.data[TorsionFunctions::Cos3CK2];
 					k3 = params.data[TorsionFunctions::Cos3CK3];
 					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
+					break;
+				default:
+					msg(Debug::None, "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
 					break;
 			}
 			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->atomId(0),pb->atomId(1),pb->atomId(2),pb->atomId(3), phi,energy);
@@ -202,7 +205,7 @@ void Pattern::torsionForces(Model *srcmodel)
 			switch (pb->data()->torsionStyle())
 			{
 				case (TorsionFunctions::None):
-					printf("Pattern::torsionForces <<<< Torsion function is UNSPECIFIED >>>>\n");
+					msg(Debug::None,"Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
 					du_dphi = 0.0;
 					break;
 				case (TorsionFunctions::Cosine): 
@@ -233,6 +236,9 @@ void Pattern::torsionForces(Model *srcmodel)
 					k3 = -3.0 * params.data[TorsionFunctions::Cos4K3];
 					k4 = 4.0 * params.data[TorsionFunctions::Cos4K4];
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi) + k4*sin(4.0*phi));
+					break;
+				default:
+					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
 					break;
 			}
 

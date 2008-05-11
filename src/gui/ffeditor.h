@@ -27,6 +27,7 @@
 
 // Forward Declarations
 class Forcefield;
+class ForcefieldAtom;
 
 // Forcefield editor window
 class AtenEdit : public QDialog
@@ -57,27 +58,29 @@ class AtenEdit : public QDialog
 	/*
 	// Atoms Tab
 	*/
-	private:
-	void setAtomData(ForcefieldAtom *ffa);
 	private slots:
+	void VdwFunctionChanged(int index);
 	void on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Bonds Tab
 	*/
 	private slots:
+	void BondFunctionChanged(int index);
 	void on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Angles Tab
 	*/
 	private slots:
+	void AngleFunctionChanged(int index);
 	void on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w);
 
 	/*
 	// Torsions Tab
 	*/
 	private slots:
+	void TorsionFunctionChanged(int index);
 	void on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w);
 
 	/*
