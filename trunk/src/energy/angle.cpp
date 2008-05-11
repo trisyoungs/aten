@@ -53,7 +53,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 			switch (pb->data()->angleStyle())
 			{
 				case (AngleFunctions::None):
-					//printf("Pattern::angleEnergy <<<< Angle function is UNSPECIFIED >>>>\n");
+					msg(Debug::None,"Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
 					break;
 				case (AngleFunctions::Harmonic): 
 					// U(theta) = 0.5 * forcek * (theta - eq)**2
@@ -86,8 +86,9 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					energy += forcek * (c0 + c1 * cos(theta) + c2 * cos(2.0 * theta));
 					break;
 				default:
-					printf("No equation coded for angle energy type %i.\n",pb->data()->angleStyle());
+					msg(Debug::None, "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
+
 			}
 		}
 		aoff += nAtoms_;
@@ -132,7 +133,7 @@ void Pattern::angleForces(Model *srcmodel)
 			switch (pb->data()->angleStyle())
 			{
 				case (AngleFunctions::None):
-					//printf("Pattern::angleForces <<<< Angle function is UNSPECIFIED >>>>\n");
+					msg(Debug::None,"Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
 					du_dtheta = 0.0;
 					break;
 				case (AngleFunctions::Harmonic): 
@@ -166,7 +167,7 @@ void Pattern::angleForces(Model *srcmodel)
 					du_dtheta = dtheta_dcostheta * forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
 					break;
 				default:
-					printf("No equation coded for angle forces type %i.\n",pb->data()->angleStyle());
+					msg(Debug::None, "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
 			}
 			// Calculate atomic forces

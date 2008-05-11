@@ -32,8 +32,8 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	dbgBegin(Debug::Calls,"Pattern::bondEnergy");
 	int i,j,m1,aoff;
-	static Vec3<double> mim_i;
-	static double forcek, eq, r, energy;
+	//static Vec3<double> mim_i;
+	static double forcek, eq, rij, energy, d, expo;
 	static ForcefieldParams params;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
@@ -48,21 +48,37 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
 			params = pb->data()->params();
+			rij = cell->distance(modelatoms[i]->r(), modelatoms[j]->r());
 			switch (pb->data()->bondStyle())
 			{
 				case (BondFunctions::None):
-					printf("Pattern::bondEnergy <<<< Bond function is UNSPECIFIED >>>>\n");
+					msg(Debug::None,"Warning: No function is specified for bond energy %i-%i.\n", i, j);
+					break;
+				case (BondFunctions::Constraint):
+					// U =  LARGE * (r - eq)**2
+					forcek = prefs.convertEnergy(8368.0, Prefs::KiloJoules);
+					eq = params.data[BondFunctions::ConstraintR];
+					rij -= eq;
+					energy += 0.5 * forcek * rij * rij;
 					break;
 				case (BondFunctions::Harmonic):
 					// U = 0.5 * forcek * (r - eq)**2
 					forcek = fabs(params.data[BondFunctions::HarmonicK]);
 					eq = params.data[BondFunctions::HarmonicEq];
-					r = cell->distance(modelatoms[i]->r(), modelatoms[j]->r());
-					r -= eq;
-					energy += 0.5 * forcek * r * r;
+					rij -= eq;
+					energy += 0.5 * forcek * rij * rij;
+					break;
+				case (BondFunctions::Morse):
+					// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
+					d = params.data[BondFunctions::MorseD];
+					forcek = fabs(params.data[BondFunctions::MorseK]);
+					eq = params.data[BondFunctions::MorseEq];
+					rij -= eq;
+					expo = 1.0 - exp( -forcek * rij );
+					energy += d * ( expo*expo - 1.0);
 					break;
 				default:
-					printf("No equation coded for bond energy type %i.\n",pb->data()->bondStyle());
+					msg(Debug::None, "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
 					break;
 			}
 		}
@@ -79,7 +95,7 @@ void Pattern::bondForces(Model *srcmodel)
 	dbgBegin(Debug::Calls,"Pattern::bondForcess");
 	int n,i,j,m1,aoff;
 	static Vec3<double> mim_i, fi;
-	static double forcek, eq, rij, du_dr;
+	static double forcek, eq, rij, d, expo, du_dr;
 	static ForcefieldParams params;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
@@ -99,21 +115,35 @@ void Pattern::bondForces(Model *srcmodel)
 			switch (pb->data()->bondStyle())
 			{
 				case (BondFunctions::None):
-					printf("Pattern::bondForcess <<<< Bond function is UNSPECIFIED >>>>\n");
+					msg(Debug::None,"Warning: No function is specified for bond force %i-%i.\n", i, j);
 					du_dr = 0.0;
 					break;
-				case (BondFunctions::Harmonic): 
+				case (BondFunctions::Constraint):
+					// U =  LARGE * (r - eq)**2
+					forcek = prefs.convertEnergy(8368.0, Prefs::KiloJoules);
+					eq = params.data[BondFunctions::ConstraintR];
+					du_dr = forcek * (rij - eq);
+					break;
+				case (BondFunctions::Harmonic):
 					// F(r) = forcek * (r - eq)
 					forcek = params.data[BondFunctions::HarmonicK];
 					eq = params.data[BondFunctions::HarmonicEq];
-					du_dr = forcek * (rij - eq) / rij;
+					du_dr = forcek * (rij - eq);
+					break;
+				case (BondFunctions::Morse):
+					// U = 2.0 * E0 * (1 - exp( -k(rij - r0) ) )
+					d = params.data[BondFunctions::MorseD];
+					forcek = fabs(params.data[BondFunctions::MorseK]);
+					eq = params.data[BondFunctions::MorseEq];
+					expo = 1.0 - exp(-forcek * (rij - eq) );
+					du_dr = 2.0 * d * expo;
 					break;
 				default:
-					printf("No equation coded for bond forces type %i.\n",pb->data()->bondStyle());
+					msg(Debug::None, "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
 					break;
 			}
 			// Calculate forces
-			fi = mim_i * du_dr;
+			fi = (mim_i / rij) * du_dr;
 			modelatoms[i]->f() += fi;
 			modelatoms[j]->f() -= fi;
 		}

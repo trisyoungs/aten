@@ -29,7 +29,7 @@ newmodel box
 cell 20.0 20.0 20.0 90.0 90.0 90.0
 ffmodel
 #elec ewaldauto 5.0e-6
-elec coulomb
+#elec coulomb
 
 # Request the addition of water molecules. If we wish to cram in more (to get a higher density) decrease vdwscale.
 listcomponents

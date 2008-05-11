@@ -182,7 +182,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	createRatioArray(1);
 
 	msg(Debug::None,"Beginning Monte Carlo minimise...\n\n");
-	msg(Debug::None," Step     Energy        Delta          VDW          Elec              T%%  R%%  Z%%  I%%  D%%\n");
+	msg(Debug::None," Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
 
 	// Calculate initial reference energy
 	ecurrent = srcmodel->totalEnergy(srcmodel);
