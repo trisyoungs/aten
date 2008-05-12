@@ -55,9 +55,9 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 					msg(Debug::None,"Warning: No function is specified for bond energy %i-%i.\n", i, j);
 					break;
 				case (BondFunctions::Constraint):
-					// U =  LARGE * (r - eq)**2
-					forcek = prefs.convertEnergy(8368.0, Prefs::KiloJoules);
-					eq = params.data[BondFunctions::ConstraintR];
+					// U = 0.5 * forcek * (r - eq)**2
+					forcek = fabs(params.data[BondFunctions::ConstraintK]);
+					eq = params.data[BondFunctions::ConstraintEq];
 					rij -= eq;
 					energy += 0.5 * forcek * rij * rij;
 					break;
@@ -119,19 +119,19 @@ void Pattern::bondForces(Model *srcmodel)
 					du_dr = 0.0;
 					break;
 				case (BondFunctions::Constraint):
-					// U =  LARGE * (r - eq)**2
-					forcek = prefs.convertEnergy(8368.0, Prefs::KiloJoules);
-					eq = params.data[BondFunctions::ConstraintR];
+					// dU/dr = forcek * (r - eq)
+					forcek = params.data[BondFunctions::ConstraintK];
+					eq = params.data[BondFunctions::ConstraintEq];
 					du_dr = forcek * (rij - eq);
 					break;
 				case (BondFunctions::Harmonic):
-					// F(r) = forcek * (r - eq)
+					// dU/dr = forcek * (r - eq)
 					forcek = params.data[BondFunctions::HarmonicK];
 					eq = params.data[BondFunctions::HarmonicEq];
 					du_dr = forcek * (rij - eq);
 					break;
 				case (BondFunctions::Morse):
-					// U = 2.0 * E0 * (1 - exp( -k(rij - r0) ) )
+					// dU/dr = 2.0 * E0 * (1 - exp( -k(rij - r0) ) )
 					d = params.data[BondFunctions::MorseD];
 					forcek = fabs(params.data[BondFunctions::MorseK]);
 					eq = params.data[BondFunctions::MorseEq];

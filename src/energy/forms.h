@@ -58,7 +58,7 @@ namespace BondFunctions
 	extern FunctionData BondFunctions[];
 	BondFunction bondFunction(const char*);
 	enum HarmonicParameters { HarmonicK, HarmonicEq };
-	enum ConstraintParameters { ConstraintR };
+	enum ConstraintParameters { ConstraintK, ConstraintEq };
 	enum MorseParameters { MorseK, MorseEq, MorseD };
 }
 

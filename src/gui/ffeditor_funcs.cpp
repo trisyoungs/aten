@@ -280,7 +280,7 @@ void AtenEdit::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
 void AtenEdit::VdwFunctionChanged(int index)
 {
 	// Cast sender
-	TComboBox *combo = qobject_cast<TComboBox*> (sender());
+	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
 		printf("AtenEdit::VdwFunctionChanged - Sender could not be cast to a TComboBox.\n");
@@ -358,7 +358,7 @@ void AtenEdit::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
 void AtenEdit::BondFunctionChanged(int index)
 {
 	// Cast sender
-	TComboBox *combo = qobject_cast<TComboBox*> (sender());
+	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
 		printf("AtenEdit::BondFunctionChanged - Sender could not be cast to a TComboBox.\n");
@@ -415,7 +415,7 @@ void AtenEdit::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 void AtenEdit::AngleFunctionChanged(int index)
 {
 	// Cast sender
-	TComboBox *combo = qobject_cast<TComboBox*> (sender());
+	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
 		printf("AtenEdit::AngleFunctionChanged - Sender could not be cast to a TComboBox.\n");
@@ -473,7 +473,7 @@ void AtenEdit::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 void AtenEdit::TorsionFunctionChanged(int index)
 {
 	// Cast sender
-	TComboBox *combo = qobject_cast<TComboBox*> (sender());
+	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
 		printf("AtenEdit::TorsionFunctionChanged - Sender could not be cast to a TComboBox.\n");
