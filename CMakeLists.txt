@@ -129,18 +129,18 @@ ENDIF(WIN32)
 
 if(APPLE)
 ## install the icon for the bundle
-  install(FILES "${CMAKE_SOURCE_DIR}/src/gui/icons/aten.icns" 
+  install(FILES "${CMAKE_SOURCE_DIR}/extra/aten.icns" 
         DESTINATION "${target_name}.app/Contents/Resources/")
   install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/"
      DESTINATION ${target_name}.app/Contents/SharedSupport/
      REGEX ".svn" EXCLUDE)
-  install(FILES "${CMAKE_SOURCE_DIR}/src/gui/icons/aten.icns"
+  install(FILES "${CMAKE_SOURCE_DIR}/extra/aten.icns"
         DESTINATION . RENAME ".VolumeIcon.icns")
-  install(FILES "${CMAKE_SOURCE_DIR}/src/gui/icons/background.png"
+  install(FILES "${CMAKE_SOURCE_DIR}/extra/background.png"
         DESTINATION .background/) 
   install(FILES "${CMAKE_SOURCE_DIR}/COPYING" 
          DESTINATION . RENAME .COPYING)
-  install(FILES "${CMAKE_SOURCE_DIR}/Aten.DS_Store"
+  install(FILES "${CMAKE_SOURCE_DIR}/extra/Aten.DS_Store"
          DESTINATION . RENAME .DS_Store)
 #  INSTALL(CODE "set(input_file
 #        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${target_name}.app/Contents/MacOS/${target_name}\")")
