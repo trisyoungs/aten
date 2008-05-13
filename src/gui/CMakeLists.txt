@@ -45,6 +45,7 @@ gui.cpp
 tlistwidgetitem_funcs.cpp 
 ttablewidgetitem_funcs.cpp 
 tcanvas_funcs.cpp 
+tcombobox_funcs.cpp
 tcolourframe_funcs.cpp 
 ttreewidgetitem_funcs.cpp 
 canvas.cpp 
