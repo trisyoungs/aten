@@ -1,4 +1,4 @@
-project(aten)
+project(Aten)
 
 
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
@@ -7,20 +7,26 @@ set(VERSION_MAJOR "0")
 set(VERSION_MINOR "98")
 set(VERSION_PATCH "1")
 
-set(CMAKE_BUILD_TYPE "Release")
+set(CMAKE_BUILD_TYPE "Debug")
 
-cmake_minimum_required(VERSION 2.4.8)
+if(APPLE)
+  cmake_minimum_required(VERSION 2.6.0)
+  set(CMAKE_OSX_ARCHITECTURES "ppc;i386")
+else(APPLE)
+  cmake_minimum_required(VERSION 2.4.8)
+endif(APPLE)
+
 if(COMMAND cmake_policy)
   cmake_policy(VERSION 2.6)
 endif(COMMAND cmake_policy)
 
-set (target_name aten)
+set (target_name Aten)
 
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 find_package(Qt4 REQUIRED) # find and setup Qt4 for this project
 find_package(READLINE REQUIRED)
 IF(WIN32 OR APPLE)
-find_package(OPENGL REQUIRED)
+ find_package(OPENGL REQUIRED)
 endif(WIN32 OR APPLE)
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
@@ -31,13 +37,13 @@ set(SRCS src/)
 add_subdirectory(${SRCS})
 
 If(APPLE)
-  set(MACOSX_BUNDLE_ICON_FILE  "${CMAKE_SOURCE_DIR}/src/gui/icons/aten.icns")
+  set(MACOSX_BUNDLE_ICON_FILE  "aten.icns")
   set(MACOSX_BUNDLE_GUI_IDENTIFIER  "Aten")
-  set(MACOSX_BUNDLE_LONG_VERSION_STRING "0.x.0"  )
-  set(MACOSX_BUNDLE_BUNDLE_NAME  "aten" )
-  set(MACOSX_BUNDLE_SHORT_VERSION_STRING "0.+")
-  set(MACOSX_BUNDLE_BUNDLE_VERSION  "almost 1")
-  set(MACOSX_BUNDLE_COPYRIGHT "Tristan Youngs")
+  set(MACOSX_BUNDLE_LONG_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+  set(MACOSX_BUNDLE_BUNDLE_NAME  "Aten" )
+  set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}")
+  set(MACOSX_BUNDLE_BUNDLE_VERSION  "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
+  set(MACOSX_BUNDLE_COPYRIGHT "${AUTHOR}")
 endif(APPLE)
 
 include_directories(
@@ -49,7 +55,7 @@ ${SRCS}/
 ${QT_INCLUDE_DIR}
 ${READLINE_INCLUDE_DIR}
 )
-add_executable(${target_name} 
+add_executable(${target_name}  MACOSX_BUNDLE
 ${SRCS}/main.cpp
 )
 
@@ -70,54 +76,83 @@ ${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ${READLINE_LIBRARY}
 )
 ENDIF(WIN32 OR APPLE)
-
 ####################
 ####install target
 ####################
 
 if(NOT ${PREFIX})
-MESSAGE("Install folder ${PREFIX}")
-set(CMAKE_INSTALL_PREFIX "${PREFIX}")
+  MESSAGE("Install folder ${PREFIX}")
+  set(CMAKE_INSTALL_PREFIX "${PREFIX}")
 endif(NOT ${PREFIX})
 
 if(UNIX AND NOT APPLE)
-configure_file(${CMAKE_SOURCE_DIR}/desktop.cmake Aten.desktop)
-install(FILES ${CMAKE_BINARY_DIR}/Aten.desktop 
-        DESTINATION "/usr/share/applications/")
-install(FILES ${CMAKE_SOURCE_DIR}/src/gui/icons/aten.png
+  configure_file(${CMAKE_SOURCE_DIR}/desktop.cmake Aten.desktop)
+  install(FILES ${CMAKE_BINARY_DIR}/Aten.desktop 
+       DESTINATION "/usr/share/applications/")
+  install(FILES ${CMAKE_SOURCE_DIR}/src/gui/icons/aten.png
         DESTINATION share/aten)
 endif(UNIX AND NOT APPLE)
 
-install(TARGETS ${target_name}
+if (APPLE)
+  install(TARGETS ${target_name}
+  BUNDLE DESTINATION .
+  )
+else(APPLE)
+  install(TARGETS ${target_name}
       RUNTIME DESTINATION bin
-)
+   )
+endif(APPLE)
 
-install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/" 
+if (NOT APPLE)
+   install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/" 
      DESTINATION share/aten
      REGEX ".svn" EXCLUDE
-)
-
+   )
+endif(NOT APPLE)
 if(WIN32)
-FIND_FILE(Rline readline5.dll ENV PATH)
-FIND_FILE(HRline history5.dll ENV PATH)
-Find_File(qtgui QtGui4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
-Find_File(qtgl QtOpenGL4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
-Find_File(qtcore QtCore4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
-Find_File(qtsvg QtSvg4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
-Find_File(qtxml QtXml4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
-Find_File(qsvg qsvg4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
-if(NOT qsvg) 
-  Find_File(qsvg qsvgicon4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
-endif(NOT qsvg)
-install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml} ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons/aten.ico
-DESTINATION bin
-)
-install(FILES ${qsvg} 
-DESTINATION bin/iconengines
-)
-
-
+  FIND_FILE(Rline readline5.dll ENV PATH)
+  FIND_FILE(HRline history5.dll ENV PATH)
+  Find_File(qtgui QtGui4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+  Find_File(qtgl QtOpenGL4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+  Find_File(qtcore QtCore4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+  Find_File(qtsvg QtSvg4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+  Find_File(qtxml QtXml4.dll PATHS ${QT_LIBRARY_DIR} NO_DEFAULT_PATH)
+  Find_File(qsvg qsvg4.dll PATHS ${QT_PLUGINS_DIR}/iconengines NO_DEFAULT_PATH)
+  install(FILES ${qtgui} ${qtgl} ${qtcore} ${Rline} ${HRline} ${qtsvg} ${qtxml} ${CMAKE_CURRENT_SOURCE_DIR}/src/gui/icons/aten.ico
+   DESTINATION bin
+  )
+  install(FILES ${qsvg} 
+    DESTINATION bin/iconengines
+  )
 ENDIF(WIN32)
+
+
+if(APPLE)
+## install the icon for the bundle
+  install(FILES "${CMAKE_SOURCE_DIR}/src/gui/icons/aten.icns" 
+        DESTINATION "${target_name}.app/Contents/Resources/")
+  install(DIRECTORY  "${CMAKE_HOME_DIRECTORY}/data/"
+     DESTINATION ${target_name}.app/Contents/SharedSupport/
+     REGEX ".svn" EXCLUDE)
+  install(FILES "${CMAKE_SOURCE_DIR}/src/gui/icons/aten.icns"
+        DESTINATION . RENAME ".VolumeIcon.icns")
+  install(FILES "${CMAKE_SOURCE_DIR}/src/gui/icons/background.png"
+        DESTINATION .background/) 
+  install(FILES "${CMAKE_SOURCE_DIR}/COPYING" 
+         DESTINATION . RENAME .COPYING)
+  install(FILES "${CMAKE_SOURCE_DIR}/Aten.DS_Store"
+         DESTINATION . RENAME .DS_Store)
+#  INSTALL(CODE "set(input_file
+#        \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/${target_name}.app/Contents/MacOS/${target_name}\")")
+#  INSTALL(SCRIPT "${CMAKE_SOURCE_DIR}/CMakeIngestOSXBundleLibraries.cmake")
+endif(APPLE)
+
+
+
+
+
+
+
 
 
 #######################
@@ -151,7 +186,7 @@ SET(CPACK_PACKAGE_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 SET(CPACK_PACKAGE_VERSION_MAJOR ${VERSION_MAJOR})
 SET(CPACK_PACKAGE_VERSION_MINOR ${VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${VERSION_PATCH})
-SET(CPACK_PACKAGE_INSTALL_DIRECTORY "aten${VERSION_MAJOR}.${VERSION_MINOR}")
+SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Aten${VERSION_MAJOR}.${VERSION_MINOR}")
 IF(WIN32)
   SET(CPACK_PACKAGE_INSTALL_DIRECTORY "Aten-${VERSION_MAJOR}.${VERSION_MINOR}")
   # There is a bug in NSI that does not handle full unix paths properly. Make
@@ -191,7 +226,7 @@ IF(UNIX)
 Endif(UNIX)
 
 IF(APPLE)
-  SET(CPACK_GENERATOR "TGZ;TBZ2;OSXX11;PackageMaker")
+  SET(CPACK_GENERATOR "TGZ")
 Endif(APPLE)
 
 SET(CPACK_CMAKE_GENERATOR ${CMAKE_GENERATOR})
