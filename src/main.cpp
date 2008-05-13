@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 		if (master.openFilters("/usr/share/aten/filters/",TRUE)) found = TRUE;
 		else if (master.openFilters("/usr/local/share/aten/filters/",TRUE)) found = TRUE;
 		else if (master.openFilters( qPrintable(gui.app->applicationDirPath() + "/../share/aten/filters/"), TRUE)) found = TRUE;
-		else if (master.openFilters( qPrintable(gui.app->applicationDirPath() + "/../Resources/share/aten/filters/"), TRUE)) found = TRUE;
+		else if (master.openFilters( qPrintable(gui.app->applicationDirPath() + "/../SharedSupport/filters/"), TRUE)) found = TRUE;
 		else
 		{
 			printf("No filter index found in any of these locations.\n");
