@@ -255,20 +255,7 @@ class AtenForm : public QMainWindow
 	void on_ShowAnalysePageButton_clicked(bool checked);
 	//void on_ShowGlyphPageButton_clicked(bool checked);
 
-	// Atom Page Functions
-	public:
-	void refreshAtomPage();
-	private:
-	void peekScrollBar();
-	void pokeScrollBar();
-	private slots:
-	void on_AtomTree_itemSelectionChanged();
-	void on_ShiftUpButton_clicked(bool checked);
-	void on_ShiftDownButton_clicked(bool checked);
-	void on_MoveToStartButton_clicked(bool checked);
-	void on_MoveToEndButton_clicked(bool checked);
-
-	// Edit Page Functions
+	// Edit Toolbar
 	private:
 	void setSketchElement(int el);
 	private slots:
@@ -294,7 +281,6 @@ class AtenForm : public QMainWindow
 	void on_AddHydrogenButton_clicked(bool on);
 	void on_AtomAddHydrogenButton_clicked(bool on);
 	void on_ProbeAtomButton_clicked(bool on);
-	void on_AddAtomButton_clicked(bool on);
 
 	// Analyse page functions
 	private slots:
@@ -334,30 +320,6 @@ class AtenForm : public QMainWindow
 	void on_DefineVectorButton_clicked(bool checked);
 	void on_VectorShiftPositiveButton_clicked(bool checked);
 	void on_VectorShiftNegativeButton_clicked(bool checked);
-
-	// Cell Definition Page Functions
-	public:
-	void refreshCellPages();
-	void cellChanged();
-	private slots:
-	void on_CellDefinitionGroup_clicked(bool checked);
-	void on_CellLengthASpin_valueChanged(double d);
-	void on_CellLengthBSpin_valueChanged(double d);
-	void on_CellLengthCSpin_valueChanged(double d);
-	void on_CellAngleASpin_valueChanged(double d);
-	void on_CellAngleBSpin_valueChanged(double d);
-	void on_CellAngleCSpin_valueChanged(double d);
-	void on_CellSpacegroupSetButton_clicked(bool checked);
-	void on_CellSpacegroupEdit_returnPressed();
-	void on_CellSpacegroupRemoveButton_clicked(bool checked);
-	void on_CellSpacegroupPackButton_clicked(bool checked);
-
-	// Cell Manipulate Page Functions
-	private slots:
-	void on_CellReplicateButton_clicked(bool checked);
-	void on_CellReplicateFoldCheck_clicked(bool checked);
-	void on_CellReplicateTrimCheck_clicked(bool checked);
-	void on_CellScaleButton_clicked(bool checked);
 
 	// Minimiser Page Functions
 	private slots:
@@ -417,26 +379,6 @@ class AtenForm : public QMainWindow
 	void on_GridTransparencySpin_valueChanged(double d);
 	void on_GridColourscaleSpin_valueChanged(int n);
 	void on_GridSymmetricCheck_clicked(bool checked);
-
-	// Disorder Page Functions
-	public:
-	void refreshDisorderPage();
-	private:
-	void refreshComponentData();
-	void setComponentCoords(int centsize, int element, double value);
-	private slots:
-	void on_ComponentTable_itemSelectionChanged();
-	void on_ComponentTable_itemChanged(QTableWidgetItem *item);
-	void on_ComponentRegionCombo_currentIndexChanged(int index);
-	void on_ShowRegionsCheck_clicked(bool checked);
-	void on_DisorderStartButton_clicked(bool checked);
-	void on_VDWScaleSpin_valueChanged(double d);
-	void on_ComponentCentreXSpin_valueChanged(double d);
-	void on_ComponentCentreYSpin_valueChanged(double d);
-	void on_ComponentCentreZSpin_valueChanged(double d);
-	void on_ComponentSizeXSpin_valueChanged(double d);
-	void on_ComponentSizeYSpin_valueChanged(double d);
-	void on_ComponentSizeZSpin_valueChanged(double d);
 
 	/*
 	// Atom Popup Functions

@@ -1,6 +1,6 @@
 /*
-	*** Qt cell functions interface
-	*** src/gui/cell_funcs.cpp
+	*** Qt GUI: Cell Definition Window
+	*** src/gui/celldefine_funcs.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,18 +20,25 @@
 */
 
 #include "base/master.h"
-#include "gui/mainwindow.h"
-#include "gui/gui.h"
 #include "model/model.h"
+#include "gui/gui.h"
+#include "gui/celldefine.h"
 #include "base/spacegroup.h"
 
-// Local variables
-bool UPDATING = FALSE;
-
-void AtenForm::refreshCellPages()
+// Constructor
+AtenCellDefine::AtenCellDefine(QWidget *parent)
 {
-	// If the cell page is not visible, don't do anything
-	//if ((!ui.ShowCellDefinePageButton->isChecked()) && (!ui.ShowCellManipulatePageButton->isChecked())) return;
+	// Private variables
+	refreshing_ = FALSE;
+}
+
+// Destructor
+AtenCellDefine::~AtenCellDefine()
+{
+}
+
+void AtenCellDefine::refresh()
+{
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model *m = master.currentModel();
 	Cell *cell = m->cell();
@@ -39,8 +46,8 @@ void AtenForm::refreshCellPages()
 	static char s[64];
 	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->volume());
 	ui.CellVolumeLabel->setText(s);
-	if (UPDATING) return;
-	else UPDATING = TRUE;
+	if (refreshing_) return;
+	else refreshing_ = TRUE;
 	// Update checkboxes in replicate group
 	ui.CellReplicateFoldCheck->setChecked( prefs.replicateFold() );
 	ui.CellReplicateTrimCheck->setChecked( prefs.replicateTrim() );
@@ -52,7 +59,7 @@ void AtenForm::refreshCellPages()
 		ui.CellReplicateGroup->setEnabled(FALSE);
 		ui.CellScaleGroup->setEnabled(FALSE);
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
-		UPDATING = FALSE;
+		refreshing_ = FALSE;
 		return;
 	}
 	else
@@ -76,14 +83,14 @@ void AtenForm::refreshCellPages()
 	// Set spacegroup label
 	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName,  m->spacegroup());
 	ui.SpacegroupLabel->setText(s);
-	UPDATING = FALSE;
+	refreshing_ = FALSE;
 }
 
-void AtenForm::cellChanged()
+void AtenCellDefine::cellChanged()
 {
 	static char s[64];
-	if (UPDATING) return;
-	else UPDATING = TRUE;
+	if (refreshing_) return;
+	else refreshing_ = TRUE;
 	// Construct length and angle vectors and set cell of model
 	static Vec3<double> lengths, angles;
 	lengths.set(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value());
@@ -98,49 +105,49 @@ void AtenForm::cellChanged()
 	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",m->cell()->volume());
 	ui.CellVolumeLabel->setText(s);
 	gui.modelChanged(FALSE,FALSE,FALSE);
-	UPDATING = FALSE;
+	refreshing_ = FALSE;
 }
 
 /*
 // Cell Definition
 */
 
-void AtenForm::on_CellLengthASpin_valueChanged(double d)
+void AtenCellDefine::on_CellLengthASpin_valueChanged(double d)
 {
 	cellChanged();
 }
 
-void AtenForm::on_CellLengthBSpin_valueChanged(double d)
+void AtenCellDefine::on_CellLengthBSpin_valueChanged(double d)
 {
 	cellChanged();
 }
 
-void AtenForm::on_CellLengthCSpin_valueChanged(double d)
+void AtenCellDefine::on_CellLengthCSpin_valueChanged(double d)
 {
 	cellChanged();
 }
 
-void AtenForm::on_CellAngleASpin_valueChanged(double d)
+void AtenCellDefine::on_CellAngleASpin_valueChanged(double d)
 {
 	cellChanged();
 }
 
-void AtenForm::on_CellAngleBSpin_valueChanged(double d)
+void AtenCellDefine::on_CellAngleBSpin_valueChanged(double d)
 {
 	cellChanged();
 }
 
-void AtenForm::on_CellAngleCSpin_valueChanged(double d)
+void AtenCellDefine::on_CellAngleCSpin_valueChanged(double d)
 {
 	cellChanged();
 }
 
-void AtenForm::on_CellSpacegroupEdit_returnPressed()
+void AtenCellDefine::on_CellSpacegroupEdit_returnPressed()
 {
 	on_CellSpacegroupSetButton_clicked(FALSE);
 }
 
-void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
+void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 {
 	// If the group is checked we store the current spin values in the current model.
 	if (checked)
@@ -169,7 +176,7 @@ void AtenForm::on_CellDefinitionGroup_clicked(bool checked)
 // Spacegroup Functions
 */
 
-void AtenForm::on_CellSpacegroupSetButton_clicked(bool checked)
+void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 {
 	Model *m = master.currentModel();
 	int sg;
@@ -191,7 +198,7 @@ void AtenForm::on_CellSpacegroupSetButton_clicked(bool checked)
 	}
 }
 
-void AtenForm::on_CellSpacegroupRemoveButton_clicked(bool checked)
+void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
 	static char s[64];
 	Model *m = master.currentModel();
@@ -201,59 +208,11 @@ void AtenForm::on_CellSpacegroupRemoveButton_clicked(bool checked)
 	ui.SpacegroupLabel->setText(s);
 }
 
-void AtenForm::on_CellSpacegroupPackButton_clicked(bool checked)
+void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 {
 	Model *m = master.currentModel();
 	m->beginUndostate("Pack Cell");
 	m->pack();
 	m->endUndostate();
 	gui.modelChanged();
-}
-
-/*
-// Replicate Functions
-*/
-
-void AtenForm::on_CellReplicateButton_clicked(bool checked)
-{
-	// Get values from spin boxes...
-	Vec3<double> neg, pos;
-	neg.x = ui.CellReplicateNegXSpin->value();
-	neg.y = ui.CellReplicateNegYSpin->value();
-	neg.z = ui.CellReplicateNegZSpin->value();
-	pos.x = ui.CellReplicatePosXSpin->value();
-	pos.y = ui.CellReplicatePosYSpin->value();
-	pos.z = ui.CellReplicatePosZSpin->value();
-	Model *m = master.currentModel();
-	m->beginUndostate("Replicate Cell");
-	m->replicateCell(neg, pos);
-	m->endUndostate();
-	gui.modelChanged();
-}
-
-void AtenForm::on_CellReplicateFoldCheck_clicked(bool checked)
-{
-	prefs.setReplicateFold(checked);
-}
-
-void AtenForm::on_CellReplicateTrimCheck_clicked(bool checked)
-{
-	prefs.setReplicateTrim(checked);
-}
-
-/*
-// Scale Functions
-*/
-
-void AtenForm::on_CellScaleButton_clicked(bool checked)
-{
-	Vec3<double> scale;
-	scale.x = ui.CellScaleXSpin->value();
-	scale.y = ui.CellScaleYSpin->value();
-	scale.z = ui.CellScaleZSpin->value();
-	Model *m = master.currentModel();
-	m->beginUndostate("Scale Cell");
-	m->scaleCell(scale);
-	m->endUndostate();
-	gui.modelChanged(FALSE,TRUE,FALSE);
 }
