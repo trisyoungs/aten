@@ -292,35 +292,6 @@ class AtenForm : public QMainWindow
 	void on_MeasureAngleSelectionButton_clicked(bool on);
 	void on_MeasureTorsionSelectionButton_clicked(bool on);
 
-	// Transformation Page Functions
-	private:
-	void rotateSelection(double direction);
-	void translateSelection(int axis, int dir);
-	private slots:
-	void on_RotateDefineOriginButton_clicked(bool on);
-	void on_RotateDefineAxisButton_clicked(bool on);
-	void on_RotateClockwiseButton_clicked(bool on);
-	void on_RotateAnticlockwiseButton_clicked(bool on);
-	void on_TranslatePosXButton_clicked(bool on);
-	void on_TranslatePosYButton_clicked(bool on);
-	void on_TranslatePosZButton_clicked(bool on);
-	void on_TranslateNegXButton_clicked(bool on);
-	void on_TranslateNegYButton_clicked(bool on);
-	void on_TranslateNegZButton_clicked(bool on);
-
-	// Position Page Functions
-	private:
-	void flipSelection(int axis);
-	private slots:
-	void on_FlipXButton_clicked(bool checked);
-	void on_FlipYButton_clicked(bool checked);
-	void on_FlipZButton_clicked(bool checked);
-	void on_DefineCentreButton_clicked(bool checked);
-	void on_CentreSelectionButton_clicked(bool checked);
-	void on_DefineVectorButton_clicked(bool checked);
-	void on_VectorShiftPositiveButton_clicked(bool checked);
-	void on_VectorShiftNegativeButton_clicked(bool checked);
-
 	// Minimiser Page Functions
 	private slots:
 	void on_MinimiserMethodCombo_currentIndexChanged(int index);
@@ -338,47 +309,9 @@ class AtenForm : public QMainWindow
 	void on_AssignFFToCurrentButton_clicked(bool checked);
 	void on_AssignFFToAllButton_clicked(bool checked);
 	void on_AssignFFToPatternButton_clicked(bool clicked);
-	void on_TypeModelButton_clicked(bool checked);
-	void on_UntypeModelButton_clicked(bool checked);
 	void on_ForcefieldList_currentRowChanged(int row);
 	void on_ForcefieldList_itemClicked(QListWidgetItem *item);
-	void on_ManualTypeSetButton_clicked(bool checked);
-	void on_ManualTypeClearButton_clicked(bool checked);
-	void on_ManualTypeTestButton_clicked(bool checked);
-	void on_ManualTypeEdit_returnPressed();
 
-	// Grid Page Functions
-	public:
-	void refreshGridsPage();
-	private:
-	void refreshGridInfo();
-	void gridOriginChanged(int component, double value);
-	void gridAxisChanged(int row, int component, double value);
-	private slots:
-	void on_LoadGridButton_clicked(bool checked);
-	void on_RemoveGridButton_clicked(bool checked);
-	void on_SaveGridButton_clicked(bool checked);
-	void on_GridList_currentRowChanged(int row);
-	void on_GridStyleCombo_currentIndexChanged(int index);
-	void on_GridList_itemClicked(QListWidgetItem *item);
-	void on_GridCutoffSpin_valueChanged(double d);
-	void on_GridOriginXSpin_valueChanged(double d);
-	void on_GridOriginYSpin_valueChanged(double d);
-	void on_GridOriginZSpin_valueChanged(double d);
-	void on_GridAxesAXSpin_valueChanged(double d);
-	void on_GridAxesAYSpin_valueChanged(double d);
-	void on_GridAxesAZSpin_valueChanged(double d);
-	void on_GridAxesBXSpin_valueChanged(double d);
-	void on_GridAxesBYSpin_valueChanged(double d);
-	void on_GridAxesBZSpin_valueChanged(double d);
-	void on_GridAxesCXSpin_valueChanged(double d);
-	void on_GridAxesCYSpin_valueChanged(double d);
-	void on_GridAxesCZSpin_valueChanged(double d);
-	void on_GridPositiveColourButton_clicked(bool checked);
-	void on_GridNegativeColourButton_clicked(bool checked);
-	void on_GridTransparencySpin_valueChanged(double d);
-	void on_GridColourscaleSpin_valueChanged(int n);
-	void on_GridSymmetricCheck_clicked(bool checked);
 
 	/*
 	// Atom Popup Functions

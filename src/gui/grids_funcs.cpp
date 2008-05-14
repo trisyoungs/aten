@@ -1,6 +1,6 @@
 /*
-	*** Qt grid functions interface
-	*** src/gui/grid_funcs.cpp
+	*** Qt GUI: Grids functions
+	*** src/gui/grids_funcs.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -21,78 +21,24 @@
 
 #include "base/master.h"
 #include "classes/grid.h"
-#include "gui/mainwindow.h"
+#include "gui/grids.h"
 #include "gui/gui.h"
 #include "gui/tlistwidgetitem.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QColorDialog>
 
-void AtenForm::on_LoadGridButton_clicked(bool checked)
+// Constructor
+AtenGrids::AtenGrids(QWidget *parent)
 {
-	on_actionFileOpenGrid_triggered(FALSE);
 }
 
-void AtenForm::on_GridOriginXSpin_valueChanged(double d)
+// Destructor
+AtenGrids::~AtenGrids()
 {
-	gridOriginChanged(0, d);
 }
 
-void AtenForm::on_GridOriginYSpin_valueChanged(double d)
-{
-	gridOriginChanged(1, d);
-}
-
-void AtenForm::on_GridOriginZSpin_valueChanged(double d)
-{
-	gridOriginChanged(2, d);
-}
-
-void AtenForm::on_GridAxesAXSpin_valueChanged(double d)
-{
-	gridAxisChanged(0,0, d);
-}
-
-void AtenForm::on_GridAxesAYSpin_valueChanged(double d)
-{
-	gridAxisChanged(0,1, d);
-}
-
-void AtenForm::on_GridAxesAZSpin_valueChanged(double d)
-{
-	gridAxisChanged(0,2, d);
-}
-
-void AtenForm::on_GridAxesBXSpin_valueChanged(double d)
-{
-	gridAxisChanged(1,0, d);
-}
-
-void AtenForm::on_GridAxesBYSpin_valueChanged(double d)
-{
-	gridAxisChanged(1,1, d);
-}
-
-void AtenForm::on_GridAxesBZSpin_valueChanged(double d)
-{
-	gridAxisChanged(1,2, d);
-}
-
-void AtenForm::on_GridAxesCXSpin_valueChanged(double d)
-{
-	gridAxisChanged(2,0, d);
-}
-
-void AtenForm::on_GridAxesCYSpin_valueChanged(double d)
-{
-	gridAxisChanged(2,1, d);
-}
-
-void AtenForm::on_GridAxesCZSpin_valueChanged(double d)
-{
-	gridAxisChanged(2,2, d);
-}
-
-void AtenForm::refreshGridsPage()
+// Refresh widget
+void AtenGrids::refresh()
 {
 	// Clear and refresh the grids list
 	ui.GridList->clear();
@@ -109,7 +55,72 @@ void AtenForm::refreshGridsPage()
 	refreshGridInfo();
 }
 
-void AtenForm::refreshGridInfo()
+void AtenGrids::on_LoadGridButton_clicked(bool checked)
+{
+	on_actionFileOpenGrid_triggered(FALSE);
+}
+
+void AtenGrids::on_GridOriginXSpin_valueChanged(double d)
+{
+	gridOriginChanged(0, d);
+}
+
+void AtenGrids::on_GridOriginYSpin_valueChanged(double d)
+{
+	gridOriginChanged(1, d);
+}
+
+void AtenGrids::on_GridOriginZSpin_valueChanged(double d)
+{
+	gridOriginChanged(2, d);
+}
+
+void AtenGrids::on_GridAxesAXSpin_valueChanged(double d)
+{
+	gridAxisChanged(0,0, d);
+}
+
+void AtenGrids::on_GridAxesAYSpin_valueChanged(double d)
+{
+	gridAxisChanged(0,1, d);
+}
+
+void AtenGrids::on_GridAxesAZSpin_valueChanged(double d)
+{
+	gridAxisChanged(0,2, d);
+}
+
+void AtenGrids::on_GridAxesBXSpin_valueChanged(double d)
+{
+	gridAxisChanged(1,0, d);
+}
+
+void AtenGrids::on_GridAxesBYSpin_valueChanged(double d)
+{
+	gridAxisChanged(1,1, d);
+}
+
+void AtenGrids::on_GridAxesBZSpin_valueChanged(double d)
+{
+	gridAxisChanged(1,2, d);
+}
+
+void AtenGrids::on_GridAxesCXSpin_valueChanged(double d)
+{
+	gridAxisChanged(2,0, d);
+}
+
+void AtenGrids::on_GridAxesCYSpin_valueChanged(double d)
+{
+	gridAxisChanged(2,1, d);
+}
+
+void AtenGrids::on_GridAxesCZSpin_valueChanged(double d)
+{
+	gridAxisChanged(2,2, d);
+}
+
+void AtenGrids::refreshGridInfo()
 {
 	// Get the current row selected in the grid list
 	Grid *g;
@@ -149,7 +160,7 @@ void AtenForm::refreshGridInfo()
 }
 
 // Item in forcefield list has changed?
-void AtenForm::on_GridList_itemClicked(QListWidgetItem *item)
+void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 {
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
@@ -160,7 +171,7 @@ void AtenForm::on_GridList_itemClicked(QListWidgetItem *item)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::gridOriginChanged(int component, double value)
+void AtenGrids::gridOriginChanged(int component, double value)
 {
 	// Get the current row selected in the grid list
 	Grid *g;
@@ -175,7 +186,7 @@ void AtenForm::gridOriginChanged(int component, double value)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::gridAxisChanged(int r, int component, double value)
+void AtenGrids::gridAxisChanged(int r, int component, double value)
 {
 	// Get the current row selected in the grid list
 	Grid *g;
@@ -190,7 +201,7 @@ void AtenForm::gridAxisChanged(int r, int component, double value)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_RemoveGridButton_clicked(bool checked)
+void AtenGrids::on_RemoveGridButton_clicked(bool checked)
 {
 	// Get the current row selected in the grid list
 	Grid *g;
@@ -201,17 +212,17 @@ void AtenForm::on_RemoveGridButton_clicked(bool checked)
 	refreshGridsPage();
 }
 
-void AtenForm::on_SaveGridButton_clicked(bool checked)
+void AtenGrids::on_SaveGridButton_clicked(bool checked)
 {
 }
 
-void AtenForm::on_GridList_currentRowChanged(int row)
+void AtenGrids::on_GridList_currentRowChanged(int row)
 {
 	// New item selected, so update the data shown in the page
 	if (row != -1) refreshGridInfo();
 }
 
-void AtenForm::on_GridCutoffSpin_valueChanged(double d)
+void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -221,7 +232,7 @@ void AtenForm::on_GridCutoffSpin_valueChanged(double d)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_GridStyleCombo_currentIndexChanged(int index)
+void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -231,7 +242,7 @@ void AtenForm::on_GridStyleCombo_currentIndexChanged(int index)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_GridPositiveColourButton_clicked(bool checked)
+void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -250,7 +261,7 @@ void AtenForm::on_GridPositiveColourButton_clicked(bool checked)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_GridNegativeColourButton_clicked(bool checked)
+void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -269,7 +280,7 @@ void AtenForm::on_GridNegativeColourButton_clicked(bool checked)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_GridTransparencySpin_valueChanged(double value)
+void AtenGrids::on_GridTransparencySpin_valueChanged(double value)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -279,7 +290,7 @@ void AtenForm::on_GridTransparencySpin_valueChanged(double value)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_GridColourscaleSpin_valueChanged(int n)
+void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
@@ -289,7 +300,7 @@ void AtenForm::on_GridColourscaleSpin_valueChanged(int n)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_GridSymmetricCheck_clicked(bool checked)
+void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 {
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
