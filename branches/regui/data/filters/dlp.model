@@ -1,0 +1,91 @@
+# DL_POLY Configuration Import / Export
+# Last modified: 06/01/2008
+importmodel
+	name "DL_POLY Configuration"
+	extension "CONFIG,REVCON,config,revcon"
+	glob *CON*
+	exact "CONFIG,REVCON,config,revcon"
+	nickname dlpoly
+	id 1
+	zmap ff
+
+	# Variable Declaration
+	character title,e
+	integer n,keytrj,imcon
+	double ax,ay,az,bx,by,bz,cx,cy,cz
+	double rx,ry,rz,vx,vy,vz,fx,fy,fz
+
+	# Title section
+	readline "$title@100"
+	newmodel $title
+	readline "$keytrj $imcon"
+
+	# Cell (if present)
+	if $imcon <> 0
+		readline "$ax $ay $az"
+		readline "$bx $by $bz"
+		readline "$cx $cy $cz"
+		cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+	end
+
+	# Atoms
+	for $n
+		readline "$e"
+		newatom $e
+		readline "$rx $ry $rz"
+		setcoords $rx $ry $rz
+		if $keytrj > 0
+			readline "$vx $vy $vz"
+			setvelocities $vx $vy $vz
+		end
+		if $keytrj > 1
+			readline "$fx $fy $fz"
+			setforces $fx $fy $fz
+		end
+	end
+	rebond
+	fold
+	finalisemodel
+end
+exportmodel
+	name "DL_POLY Configuration"
+	extension CONFIG
+	glob *CON*
+	nickname dlpoly
+	id 1
+
+	# Variable Declaration
+	integer imcon,id
+	double rx, ry, rz
+	atom i
+
+	# Title section
+	writeline "$title"
+	# Convert celltype string to DL_POLY-style integer
+	if $cell.type = none
+		let $imcon = 0
+	elseif $cell.type = cubic
+		let $imcon = 1
+	elseif $cell.type = orthorhombic
+		let $imcon = 2
+	elseif $cell.type = parallelepiped
+		let $imcon = 3
+	end
+	writeline "         0$imcon@10"
+
+	# Cell (if present) 
+	if $imcon <> 0
+		writeline "$cell.ax@20.12$cell.ay@20.12$cell.az@20.12"
+		writeline "$cell.bx@20.12$cell.by@20.12$cell.bz@20.12"
+		writeline "$cell.cx@20.12$cell.cy@20.12$cell.cz@20.12"
+	end
+
+	# Atoms
+	for $i
+		eval $rx = "$i.rx - $cell.centrex"
+		eval $ry = "$i.ry - $cell.centrey"
+		eval $rz = "$i.rz - $cell.centrez"
+		writeline "$i.fftype@-8$i.id@10   $i.mass"
+		writeline "$rx@20.14$ry@20.14$rz@20.14"
+	end
+end
