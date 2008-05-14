@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>AtomListWidget</class>
- <widget class="QWidget" name="AtomListWidget" >
+ <class>AtomlistWidget</class>
+ <widget class="QWidget" name="AtomlistWidget" >
   <property name="geometry" >
    <rect>
     <x>0</x>

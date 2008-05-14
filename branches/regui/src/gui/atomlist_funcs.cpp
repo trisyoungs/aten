@@ -21,28 +21,37 @@
 
 #include "classes/pattern.h"
 #include "gui/ttreewidgetitem.h"
-#include "gui/mainwindow.h"
-#include "gui/gui.h"
+#include "gui/atomlist.h"
 #include "model/model.h"
 #include "base/master.h"
 #include <QtGui/QTreeWidget>
 #include <QtGui/QScrollBar>
 
-// Local Variables
-int listStructurePoint = -1, listSelectionPoint = -1;
-Model *listLastModel = NULL;
-bool REFRESHING = FALSE;
-int listPosition;
+// Constructor
+AtenAtomlist::AtenAtomlist(QWidget *parent)
+{
+	// Private variables
+	listStructurePoint_ = -1;
+	listSelectionPoint_ = -1;
+	listLastModel_ = NULL;
+	refreshing_ = FALSE;
+	listPosition = -1;
+}
+
+// Destructor
+~AtenAtomlist::AtenAtomlist()
+{
+}
 
 /*
 // Atom Tree List Management
 */
 
-void AtenForm::on_AtomTree_itemSelectionChanged()
+void AtenAtomlist::on_AtomTree_itemSelectionChanged()
 {
-	if (REFRESHING) return;
-	dbgBegin(Debug::Calls,"AtenForm::on_AtomTree_selectionChanged");
-	//printf("AtenForm:: atom selection has changed...\n");
+	if (refreshing_) return;
+	dbgBegin(Debug::Calls,"AtenAtomlist::on_AtomTree_selectionChanged");
+	//printf("AtenAtomlist:: atom selection has changed...\n");
 	// Selection has changed, so go through the Reflist of TTreeWidgetItems and check their selection status
 	Model *m = master.currentModel();
 	Atom *i;
@@ -54,20 +63,20 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 		ri->item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
 	gui.modelChanged();
-	dbgEnd(Debug::Calls,"AtenForm::on_AtomTree_selectionChanged");
+	dbgEnd(Debug::Calls,"AtenAtomlist::on_AtomTree_selectionChanged");
 }
 
-void AtenForm::refreshAtomPage()
+void AtenAtomlist::refreshAtomPage()
 {
-	dbgBegin(Debug::Calls,"AtenForm::refreshAtomPage");
+	dbgBegin(Debug::Calls,"AtenAtomlist::refreshAtomPage");
 	// If the atom list page is not visible, don't do anything
 	if (!ui.ShowAtomPageButton->isChecked())
 	{
-		dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
+		dbgEnd(Debug::Calls,"AtenAtomlist::refreshAtomPage");
 		return;
 	}
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
-	REFRESHING = TRUE;
+	refreshing_ = TRUE;
 	//printf("Refreshing atompage.....\n");
 	Pattern *p;
 	TTreeWidgetItem *item;
@@ -78,11 +87,11 @@ void AtenForm::refreshAtomPage()
 	// Check this model against the last one we represented in the list
 	if (m != listLastModel)
 	{
-		listStructurePoint = -1;
-		listSelectionPoint = -1;
+		listStructurePoint_ = -1;
+		listSelectionPoint_ = -1;
 	}
 	listLastModel = m;
-	if (listStructurePoint != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
+	if (listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
 	{
 		//printf("List must be cleared and repopulated...\n");
 		// Clear the current list
@@ -91,8 +100,8 @@ void AtenForm::refreshAtomPage()
 		// If there are no atoms in the current model, exit now.
 		if (m->nAtoms() == 0)
 		{
-			dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
-			REFRESHING = FALSE;
+			dbgEnd(Debug::Calls,"AtenAtomlist::refreshAtomPage");
+			refreshing_ = FALSE;
 			return;
 		}
 		// Add patterns as root nodes in the list, followed by atoms in each pattern.
@@ -138,10 +147,10 @@ void AtenForm::refreshAtomPage()
 			}
 		}
 		// Set new log points
-		listStructurePoint = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
-		listSelectionPoint = m->log(Change::SelectionLog);
+		listStructurePoint_ = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
+		listSelectionPoint_ = m->log(Change::SelectionLog);
 	}
-	else if (listSelectionPoint != m->log(Change::SelectionLog))
+	else if (listSelectionPoint_ != m->log(Change::SelectionLog))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		// Grab the list of TTreeWidgetItems
@@ -151,24 +160,24 @@ void AtenForm::refreshAtomPage()
 			i = ri->item->atom();
 			ui.AtomTree->setItemSelected(ri->item, i->isSelected());
 		}
-		listSelectionPoint = m->log(Change::SelectionLog);
+		listSelectionPoint_ = m->log(Change::SelectionLog);
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
-	REFRESHING = FALSE;
-	dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
+	refreshing_ = FALSE;
+	dbgEnd(Debug::Calls,"AtenAtomlist::refreshAtomPage");
 }
 
-void AtenForm::peekScrollBar()
+void AtenAtomlist::peekScrollBar()
 {
 	listPosition = ui.AtomTree->verticalScrollBar()->sliderPosition();
 }
 
-void AtenForm::pokeScrollBar()
+void AtenAtomlist::pokeScrollBar()
 {
 	ui.AtomTree->verticalScrollBar()->setSliderPosition(listPosition);
 }
 
-void AtenForm::on_ShiftUpButton_clicked(bool checked)
+void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 {
 	Model *m = master.currentModel();
 	m->beginUndostate("Shift Selection Up");
@@ -180,7 +189,7 @@ void AtenForm::on_ShiftUpButton_clicked(bool checked)
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
-void AtenForm::on_ShiftDownButton_clicked(bool checked)
+void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 {
 	Model *m = master.currentModel();
 	m->beginUndostate("Shift Selection Down");
@@ -192,7 +201,7 @@ void AtenForm::on_ShiftDownButton_clicked(bool checked)
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
-void AtenForm::on_MoveToStartButton_clicked(bool checked)
+void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
 	master.currentModel()->moveSelectionToStart();
 	master.currentModel()->logChange(Change::StructureLog);
@@ -200,7 +209,7 @@ void AtenForm::on_MoveToStartButton_clicked(bool checked)
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
-void AtenForm::on_MoveToEndButton_clicked(bool checked)
+void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
 	master.currentModel()->moveSelectionToEnd();
 	master.currentModel()->logChange(Change::StructureLog);

@@ -1,5 +1,5 @@
 /*
-	*** Qt disorder functions interface
+	*** Qt GUI: Disordered builder interface
 	*** src/gui/disorder_funcs.cpp
 	Copyright T. Youngs 2007,2008
 
@@ -21,46 +21,54 @@
 
 #include "methods/mc.h"
 #include "base/master.h"
-#include "gui/mainwindow.h"
+#include "gui/disorder.h"
 #include "gui/gui.h"
 #include "gui/ttablewidgetitem.h"
 #include "model/model.h"
 
-// Local variables
-Reflist<Model, int> componentList;
-bool listRefreshing = FALSE;
+// Constructor
+AtenDisorder::AtenDisorder(QWidget *parent)
+{
+	// Private variables
+	refreshing_ = FALSE;
+}
 
-void AtenForm::on_ComponentCentreXSpin_valueChanged(double d)
+// Destructor
+AtenDisorder::~AtenDisorder()
+{
+}
+
+void AtenDisorder::on_ComponentCentreXSpin_valueChanged(double d)
 {
 	setComponentCoords(0,0,d);
 }
 
-void AtenForm::on_ComponentCentreYSpin_valueChanged(double d)
+void AtenDisorder::on_ComponentCentreYSpin_valueChanged(double d)
 {
 	setComponentCoords(0,1,d);
 }
 
-void AtenForm::on_ComponentCentreZSpin_valueChanged(double d)
+void AtenDisorder::on_ComponentCentreZSpin_valueChanged(double d)
 {
 	setComponentCoords(0,2,d);
 }
 
-void AtenForm::on_ComponentSizeXSpin_valueChanged(double d)
+void AtenDisorder::on_ComponentSizeXSpin_valueChanged(double d)
 {
 	setComponentCoords(1,0,d);
 }
 
-void AtenForm::on_ComponentSizeYSpin_valueChanged(double d)
+void AtenDisorder::on_ComponentSizeYSpin_valueChanged(double d)
 {
 	setComponentCoords(2,1,d);
 }
 
-void AtenForm::on_ComponentSizeZSpin_valueChanged(double d)
+void AtenDisorder::on_ComponentSizeZSpin_valueChanged(double d)
 {
 	setComponentCoords(3,2,d);
 }
 
-void AtenForm::refreshDisorderPage()
+void AtenDisorder::refreshDisorderPage()
 {
 	if (!gui.exists()) return;
 	listRefreshing = TRUE;
@@ -109,7 +117,7 @@ void AtenForm::refreshDisorderPage()
 	refreshComponentData();
 }
 
-void AtenForm::refreshComponentData()
+void AtenDisorder::refreshComponentData()
 {
 	// Get current component
 	int comp = ui.ComponentTable->currentRow();
@@ -127,7 +135,7 @@ void AtenForm::refreshComponentData()
 	ui.ComponentCentreZSpin->setValue(v.z);
 }
 
-void AtenForm::setComponentCoords(int centsize, int element, double value)
+void AtenDisorder::setComponentCoords(int centsize, int element, double value)
 {
 	// Get current component
 	static Vec3<double> v;
@@ -149,12 +157,12 @@ void AtenForm::setComponentCoords(int centsize, int element, double value)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_ComponentTable_itemSelectionChanged()
+void AtenDisorder::on_ComponentTable_itemSelectionChanged()
 {
 	refreshComponentData();
 }
 
-void AtenForm::on_ComponentTable_itemChanged(QTableWidgetItem *item)
+void AtenDisorder::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 {
 	if (!gui.exists() || listRefreshing) return;
 	int column = ui.ComponentTable->column(item);
@@ -178,7 +186,7 @@ void AtenForm::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 	}
 }
 
-void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
+void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
@@ -187,19 +195,19 @@ void AtenForm::on_ComponentRegionCombo_currentIndexChanged(int index)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_ShowRegionsCheck_clicked(bool checked)
+void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
 {
 	prefs.setVisible(Prefs::ViewRegions, checked);
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_DisorderStartButton_clicked(bool checked)
+void AtenDisorder::on_DisorderStartButton_clicked(bool checked)
 {
 	mc.setNCycles(ui.DisorderCyclesSpin->value());
 	mc.disorder(master.currentModel());
 }
 
-void AtenForm::on_VDWScaleSpin_valueChanged(double d)
+void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)
 {
 	mc.setVdwScale(d);
 }
