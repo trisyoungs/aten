@@ -20,30 +20,40 @@
 */
 
 #include "base/master.h"
-#include "gui/mainwindow.h"
+#include "gui/position.h"
 #include "gui/gui.h"
 #include "model/model.h"
+
+// Constructor
+AtenPosition::AtenPosition(QWidget *parent)
+{
+}
+
+// Destructor
+AtenPosition::~AtenPosition()
+{
+}
 
 /*
 // Flip
 */
 
-void AtenForm::on_FlipXButton_clicked(bool checked)
+void AtenPosition::on_FlipXButton_clicked(bool checked)
 {
 	flipSelection(0);
 }
 
-void AtenForm::on_FlipYButton_clicked(bool checked)
+void AtenPosition::on_FlipYButton_clicked(bool checked)
 {
 	flipSelection(1);
 }
 
-void AtenForm::on_FlipZButton_clicked(bool checked)
+void AtenPosition::on_FlipZButton_clicked(bool checked)
 {
 	flipSelection(2);
 }
 
-void AtenForm::flipSelection(int axis)
+void AtenPosition::flipSelection(int axis)
 {
 	Model *m = master.currentModel();
 	char s[128];
@@ -58,7 +68,7 @@ void AtenForm::flipSelection(int axis)
 // Centre
 */
 
-void AtenForm::on_DefineCentreButton_clicked(bool checked)
+void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 {
 	// Get centre of current selection
 	Vec3<double> centre = master.currentModel()->selectionCog();
@@ -67,7 +77,7 @@ void AtenForm::on_DefineCentreButton_clicked(bool checked)
 	ui.CentreZSpin->setValue(centre.z);
 }
 
-void AtenForm::on_CentreSelectionButton_clicked(bool checked)
+void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
 {
 	Vec3<double> centre;
 	centre.x = ui.CentreXSpin->value();
@@ -86,37 +96,37 @@ void AtenForm::on_CentreSelectionButton_clicked(bool checked)
 // Translate Functions
 */
 
-void AtenForm::on_TranslatePosXButton_clicked(bool on)
+void AtenPosition::on_TranslatePosXButton_clicked(bool on)
 {
 	translateSelection(0, 1);
 }
 
-void AtenForm::on_TranslatePosYButton_clicked(bool on)
+void AtenPosition::on_TranslatePosYButton_clicked(bool on)
 {
 	translateSelection(1, 1);
 }
 
-void AtenForm::on_TranslatePosZButton_clicked(bool on)
+void AtenPosition::on_TranslatePosZButton_clicked(bool on)
 {
 	translateSelection(2, 1);
 }
 
-void AtenForm::on_TranslateNegXButton_clicked(bool on)
+void AtenPosition::on_TranslateNegXButton_clicked(bool on)
 {
 	translateSelection(0, -1);
 }
 
-void AtenForm::on_TranslateNegYButton_clicked(bool on)
+void AtenPosition::on_TranslateNegYButton_clicked(bool on)
 {
 	translateSelection(1, -1);
 }
 
-void AtenForm::on_TranslateNegZButton_clicked(bool on)
+void AtenPosition::on_TranslateNegZButton_clicked(bool on)
 {
 	translateSelection(2, -1);
 }
 
-void AtenForm::translateSelection(int axis, int dir)
+void AtenPosition::translateSelection(int axis, int dir)
 {
 	double step = ui.TranslateShiftSpin->value();	
 	Vec3<double> tvec;
@@ -163,7 +173,7 @@ void AtenForm::translateSelection(int axis, int dir)
 // Vector Shift Functions
 */
 
-void AtenForm::on_DefineVectorButton_clicked(bool checked)
+void AtenPosition::on_DefineVectorButton_clicked(bool checked)
 {
 	// Set vector from defined atoms
 	Model *m = master.currentModel();
@@ -180,7 +190,7 @@ void AtenForm::on_DefineVectorButton_clicked(bool checked)
 	ui.VectorShiftZSpin->setValue(v.z);
 }
 
-void AtenForm::on_VectorShiftPositiveButton_clicked(bool checked)
+void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();
@@ -197,7 +207,7 @@ void AtenForm::on_VectorShiftPositiveButton_clicked(bool checked)
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
-void AtenForm::on_VectorShiftNegativeButton_clicked(bool checked)
+void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 {
 	Vec3<double> v;
 	v.x = ui.VectorShiftXSpin->value();

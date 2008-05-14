@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>Form</class>
- <widget class="QWidget" name="Form" >
+ <class>GridsWidget</class>
+ <widget class="QWidget" name="GridsWidget" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Form</string>
+   <string>Grids</string>
   </property>
   <layout class="QHBoxLayout" >
    <property name="margin" >
