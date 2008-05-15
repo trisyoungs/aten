@@ -255,15 +255,35 @@ Forcefield *Master::addForcefield()
 Forcefield *Master::loadForcefield(const char *filename)
 {
 	dbgBegin(Debug::Calls,"Master::loadForcefield");
+	// Try some different locations to find the supplied forcefield.
+	static char s[512];
+	bool result;
 	Forcefield *newff = forcefields_.add();
-	if (!newff->load(filename))
+	// First try - actual / absolute path
+	msg(Debug::Verbose,"Looking for forcefield in absolute path (%s)...\n",filename);
+	if (fileExists(filename)) result = newff->load(filename);
+	else
 	{
-		msg(Debug::None,"Couldn't load forcefield file '%s'.\n",filename);
-		forcefields_.remove(newff);
-		dbgEnd(Debug::Calls,"Master::loadForcefield");
-		return NULL;
+		// Second try - master.dataDir/ff
+		sprintf(s,"%s/%s", dataDir.get(), filename);
+		msg(Debug::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
+		if (fileExists(s)) result = newff->load(s);
+		else
+		{
+			// Last try - user home datadir/ff
+			sprintf(s,"%s/.aten/ff/%s", homeDir.get(), filename);
+			msg(Debug::Verbose,"Looking for forcefield in user's data directory (%s)...\n",s);
+			if (fileExists(s)) result = newff->load(s);
+			else msg(Debug::None,"Can't find forcefield file '%s' in any location.\n", filename);
+		}
 	}
-	else current.ff = newff;
+	if (result) current.ff = newff;
+	else
+	{
+		msg(Debug::None,"Couldn't load forcefield file '%s'.\n", filename);
+		forcefields_.remove(newff);
+		newff = NULL;
+	}
 	dbgEnd(Debug::Calls,"Master::loadForcefield");
 	return newff;
 }
