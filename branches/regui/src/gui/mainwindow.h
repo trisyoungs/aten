@@ -297,22 +297,6 @@ class AtenForm : public QMainWindow
 	void on_MinimiserMethodCombo_currentIndexChanged(int index);
 	void on_MinimiseButton_clicked(bool checked);
 
-	// Forcefield Page Functions
-	public:
-	void refreshForcefieldPage();
-	void refreshForcefieldTypeList();
-	void refreshForcefieldPatterns();
-	private slots:
-	void on_LoadForcefieldButton_clicked(bool checked);
-	void on_RemoveForcefieldButton_clicked(bool checked);
-	void on_EditForcefieldButton_clicked(bool checked);
-	void on_AssignFFToCurrentButton_clicked(bool checked);
-	void on_AssignFFToAllButton_clicked(bool checked);
-	void on_AssignFFToPatternButton_clicked(bool clicked);
-	void on_ForcefieldList_currentRowChanged(int row);
-	void on_ForcefieldList_itemClicked(QListWidgetItem *item);
-
-
 	/*
 	// Atom Popup Functions
 	*/

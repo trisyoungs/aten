@@ -57,9 +57,8 @@ class AtenTransform : public QWidget
 	// Widgets
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenTransform(QWidget *parent = 0);
-	// Destructor
 	~AtenTransform();
 	// Main form declaration
 	Ui::TransformWidget ui;

@@ -74,9 +74,8 @@ class AtenGrids : public QWidget
 	// Widgets
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenGrids(QWidget *parent = 0);
-	// Destructor
 	~AtenGrids();
 	// Main form declaration
 	Ui::GridsWidget ui;

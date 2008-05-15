@@ -68,7 +68,7 @@ void AtenDisorder::on_ComponentSizeZSpin_valueChanged(double d)
 	setComponentCoords(3,2,d);
 }
 
-void AtenDisorder::refreshDisorderPage()
+void AtenDisorder::refresh()
 {
 	if (!gui.exists()) return;
 	listRefreshing = TRUE;

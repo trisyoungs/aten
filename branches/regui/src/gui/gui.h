@@ -31,6 +31,17 @@ class AtenPrefs;
 class AtenEdit;
 class AtenLoadModel;
 class AtenSelectPattern;
+class AtenAtomlist;
+class AtenBuild;
+class AtenCellDefine;
+class AtenCellTransform;
+class AtenDisorder;
+class AtenForcefields;
+class AtenGlyphs;
+class AtenGrids;
+class AtenMinimiser;
+class AtenPosition;
+class AtenTransform;
 class Atom;
 class Model;
 class Forcefield;
@@ -111,13 +122,40 @@ class GuiQt
 	Canvas::KeyCode convertToKeyCode(int);
 
 	/*
-	// Windows / Dialogs
+	// Windows / Subwindows
 	*/
 	public:
-	// Main Qt widget for the interface
-	AtenForm *mainWindow;
 	// Main application structure
 	QApplication *app;
+	// Main Window
+	AtenForm *mainWindow;
+	// Atom list subwindow
+	AtenAtomlist *atomlistWindow;
+	// Build subwindow
+	AtenBuild *buildWindow;
+	// Cell definition subwindow
+	AtenCellDefine *cellDefineWindow;
+	// Cell transform subwindow
+	AtenCellTransform *cellTransformWindow;
+	// Disordered builder window
+	AtenDisorder *disorderWindow;
+	// Forcefields window
+	AtenForcefields *forcefieldsWindow;
+	// Glyphs window
+	AtenGlyphs *glyphsWindow;
+	// Grids window
+	AtenGrids *gridsWindow;
+	// Minimiser window
+	AtenMinimiser *minimiserWindow;
+	// Atom positioning window
+	AtenPosition *positionWindow;
+	// Atom transformation window
+	AtenTransform *transformWindow;
+
+	/*
+	// Dialogs
+	*/
+	public:
 	// Preferences Dialog
 	AtenPrefs *prefsDialog;
 	// Forcefield Editor
@@ -126,12 +164,17 @@ class GuiQt
 	AtenLoadModel *loadModelDialog;
 	// Select pattern dialog
 	AtenSelectPattern *selectPatternDialog;
-	// Call the atompopup menu
-	void callAtomPopup(Atom*, int, int);
+
+	/*
+	// Canvas
+	*/
+	public:
 	// Main view Widget
 	TCanvas *mainWidget;
 	// Main view canvas
 	Canvas mainView;
+	// Call the atompopup menu
+	void callAtomPopup(Atom*, int, int);
 
 	/*
 	// Trajectory State
@@ -178,13 +221,6 @@ class GuiQt
 	void textProgressUpdate(int currentstep);
 	// Terminate the progress dialog
 	void textProgressTerminate();
-
-	/*
-	// Basic Offscreen Canvas
-	*/
-	public:
-	// Offscreen canvas (for use by, e.g., g2ps routines)
-	Canvas offscreenCanvas;
 };
 
 extern GuiQt gui;

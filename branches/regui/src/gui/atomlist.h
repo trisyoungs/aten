@@ -54,10 +54,10 @@ class AtenAtomlist : public QWidget
 	*/
 	private:
 	// Log points of model info displayed in list
-	int listStructurePoint_, listSelectionPoint;
+	int listStructurePoint_, listSelectionPoint_;
 	// Last model displayed in list
-	Model *listLastModel;
-	// If the widget is refreshing
+	Model *listLastModel_;
+	// Whether the widget is currently refreshing
 	bool refreshing_;
 	// Position of list slider
 	int listPosition_;
@@ -67,7 +67,7 @@ class AtenAtomlist : public QWidget
 	*/
 	public:
 	// Constructor / Destructor
-	AtenAtomlist(QDialog *parent = 0);
+	AtenAtomlist(QWidget *parent = 0);
 	~AtenAtomlist();
 	// Main form declaration
 	Ui::AtomlistWidget ui;

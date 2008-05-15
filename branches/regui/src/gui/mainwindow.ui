@@ -131,13 +131,6 @@
      <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="ScriptsMenu" >
-    <property name="title" >
-     <string>Scripts</string>
-    </property>
-    <addaction name="actionLoadScript" />
-    <addaction name="separator" />
-   </widget>
    <widget class="QMenu" name="menuGlyphs" >
     <property name="title" >
      <string>Glyphs</string>
@@ -261,18 +254,6 @@
     <addaction name="actionPreferences" />
     <addaction name="ToolbarMenu" />
    </widget>
-   <widget class="QMenu" name="menuForcefields" >
-    <property name="title" >
-     <string>Forcefields</string>
-    </property>
-    <addaction name="actionLoadForcefield" />
-    <addaction name="actionSaveForcefield" />
-    <addaction name="actionEditForcefield" />
-    <addaction name="separator" />
-    <addaction name="actionForcefieldAssociateModel" />
-    <addaction name="actionForcefieldAssociateAll" />
-    <addaction name="actionForcefieldAssociatePattern" />
-   </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
      <string>Atom</string>
@@ -323,15 +304,34 @@
     <addaction name="separator" />
     <addaction name="actionModelShowAll" />
    </widget>
+   <widget class="QMenu" name="menuForcefields" >
+    <property name="title" >
+     <string>Forcefields</string>
+    </property>
+    <addaction name="actionLoadForcefield" />
+    <addaction name="actionSaveForcefield" />
+    <addaction name="actionEditForcefield" />
+    <addaction name="separator" />
+    <addaction name="actionForcefieldAssociateModel" />
+    <addaction name="actionForcefieldAssociateAll" />
+    <addaction name="actionForcefieldAssociatePattern" />
+   </widget>
+   <widget class="QMenu" name="ScriptsMenu" >
+    <property name="title" >
+     <string>Scripts</string>
+    </property>
+    <addaction name="actionLoadScript" />
+    <addaction name="separator" />
+   </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
    <addaction name="ViewMenu" />
    <addaction name="AtomMenu" />
    <addaction name="ModelMenu" />
-   <addaction name="menuGlyphs" />
-   <addaction name="ToolsMenu" />
-   <addaction name="ScriptsMenu" />
    <addaction name="menuForcefields" />
+   <addaction name="menuGlyphs" />
+   <addaction name="ScriptsMenu" />
+   <addaction name="ToolsMenu" />
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar" />
   <widget class="QToolBar" name="FileToolBar" >
@@ -562,6 +562,27 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+  </widget>
+  <widget class="QToolBar" name="WindowToolbar" >
+   <property name="orientation" >
+    <enum>Qt::Vertical</enum>
+   </property>
+   <attribute name="toolBarArea" >
+    <number>2</number>
+   </attribute>
+   <addaction name="actionAtomlistWindow" />
+   <addaction name="actionGridsWindow" />
+   <addaction name="separator" />
+   <addaction name="actionBuildWindow" />
+   <addaction name="actionTransformWindow" />
+   <addaction name="actionPositionWindow" />
+   <addaction name="separator" />
+   <addaction name="actionCellDefineWindow" />
+   <addaction name="actionCellTransformWindow" />
+   <addaction name="actionDisorderWindow" />
+   <addaction name="separator" />
+   <addaction name="actionMinimiserWindow" />
+   <addaction name="actionForcefieldsWindow" />
   </widget>
   <action name="actionFileOpen" >
    <property name="icon" >
@@ -1748,6 +1769,152 @@
    </property>
    <property name="text" >
     <string>Delete Bond</string>
+   </property>
+  </action>
+  <action name="actionForcefieldsWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_ff.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Forcefields</string>
+   </property>
+   <property name="iconText" >
+    <string>Forcefields</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide forcefields window</string>
+   </property>
+  </action>
+  <action name="actionAtomlistWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_atomlist.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Atomlist</string>
+   </property>
+   <property name="iconText" >
+    <string>Atomlist</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide atomlist window</string>
+   </property>
+  </action>
+  <action name="actionCellDefineWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_celldefine.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Cell Define</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide cell definition window</string>
+   </property>
+  </action>
+  <action name="actionCellTransformWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_celledit.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Cell Transform</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide cell transform window</string>
+   </property>
+  </action>
+  <action name="actionBuildWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_edit.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Build</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide builder window</string>
+   </property>
+  </action>
+  <action name="actionGridsWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_surfaces.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Grids</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide grids window</string>
+   </property>
+  </action>
+  <action name="actionTransformWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_transform.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Transform</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide atom transform window</string>
+   </property>
+  </action>
+  <action name="actionPositionWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_position.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Position</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide atom position window</string>
+   </property>
+  </action>
+  <action name="actionMinimiserWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_minimiser.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Minimiser</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide minimiser window</string>
+   </property>
+  </action>
+  <action name="actionDisorderWindow" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/stackicons/icons/stack_disorder.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Disorder</string>
+   </property>
+   <property name="toolTip" >
+    <string>Show / hide disordered builder window</string>
    </property>
   </action>
  </widget>

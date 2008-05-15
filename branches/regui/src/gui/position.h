@@ -54,9 +54,8 @@ class AtenPosition : public QWidget
 	// Widgets
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenPosition(QWidget *parent = 0);
-	// Destructor
 	~AtenPosition();
 	// Main form declaration
 	Ui::PositionWidget ui;
