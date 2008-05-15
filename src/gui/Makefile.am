@@ -19,7 +19,7 @@ SUFFIXES: .ui .uih .qrc
 	rm $*.cpp
 
 
-libui_a_SOURCES = atomlist.ui build.ui celldefine.ui celltransform.ui disorder.ui ffeditor.ui glyphs.ui grids.ui loadmodel.ui minimiser.ui position.ui prefs.ui selectpattern.ui transform.ui typing.ui mainwindow.ui
+libui_a_SOURCES = atomlist.ui build.ui celldefine.ui celltransform.ui disorder.ui ffeditor.ui forcefields.ui glyphs.ui grids.ui loadmodel.ui minimiser.ui position.ui prefs.ui selectpattern.ui transform.ui mainwindow.ui
 
 libfuncs_a_SOURCES = actions.cpp analyse_funcs.cpp atomlist_funcs.cpp build_funcs.cpp contextmenu_funcs.cpp disorder_funcs.cpp edit_funcs.cpp editactions.cpp ffeditor_funcs.cpp fileactions.cpp forcefield_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp loadmodel_funcs.cpp mainwindow_funcs.cpp minimiser_funcs.cpp modelactions.cpp position_funcs.cpp prefs_funcs.cpp selectpattern_funcs.cpp tcanvas_funcs.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp transform_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp trajectoryactions.cpp viewactions.cpp
 

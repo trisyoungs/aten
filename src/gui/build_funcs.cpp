@@ -25,7 +25,17 @@
 #include "gui/gui.h"
 #include "model/model.h"
 
-void BuildWidget::on_AddAtomButton_clicked(bool on)
+// Constructor
+AtenBuild::AtenBuild(QWidget *parent)
+{
+}
+
+// Destructor
+AtenBuild::~AtenBuild()
+{
+}
+
+void AtenBuild::on_AddAtomButton_clicked(bool on)
 {
 	static char s[256];
 	int el;

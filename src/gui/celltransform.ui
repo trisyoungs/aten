@@ -23,7 +23,7 @@
     <number>6</number>
    </property>
    <item>
-    <widget class="QTabWidget" name="CellTransformWidget" >
+    <widget class="QTabWidget" name="CellTransformTabs" >
      <property name="currentIndex" >
       <number>0</number>
      </property>

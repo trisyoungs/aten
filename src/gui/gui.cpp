@@ -28,6 +28,12 @@
 #include "gui/selectpattern.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
+#include "gui/grids.h"
+#include "gui/disorder.h"
+#include "gui/atomlist.h"
+#include "gui/forcefields.h"
+#include "gui/celldefine.h"
+#include "gui/celltransform.h"
 #include "model/model.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
@@ -110,11 +116,12 @@ void GuiQt::run()
 	// Make first loaded model the current one
 	master.setCurrentModel(master.models());
 
-	// Refresh the necessary stack pages
-	mainWindow->refreshGridsPage();
-	mainWindow->refreshForcefieldPage();
-	mainWindow->refreshDisorderPage();
-	mainWindow->refreshCellPages();
+	// Refresh the necessary windows
+	gridsWindow->refresh();
+	forcefieldsWindow->refresh();
+	disorderWindow->refresh();
+	cellDefineWindow->refresh();
+	cellTransformWindow->refresh();
 	updateTrajControls();
 
 	gui.mainView.enableDrawing();
@@ -229,11 +236,15 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update save button status
 	mainWindow->ui.actionFileSave->setEnabled( m->isModified() );
 	// Update contents of the atom list
-	if (updateAtoms) mainWindow->refreshAtomPage();
+	if (updateAtoms) atomlistWindow->refresh();
 	// Update the contents of the cell page
-	if (updateCell) mainWindow->refreshCellPages();
+	if (updateCell)
+	{
+		cellDefineWindow->refresh();
+		cellTransformWindow->refresh();
+	}
 	// Update forcefields in the forcefield window
-	if (updateForcefield) mainWindow->refreshForcefieldPage();
+	if (updateForcefield) forcefieldsWindow->refresh();
 	// Enable the Atom menu if one or more atoms are selected
 	mainWindow->ui.AtomMenu->setEnabled( master.currentModel()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
@@ -400,9 +411,8 @@ void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 	mainWindow->progressIndicator->setVisible(TRUE);
 	progressCanceled_ = FALSE;
 	// Disable some key widgets on the main form
-	mainWindow->ui.MainWindowStack->setEnabled(FALSE);
 	mainWindow->ui.ViewFrame->setEnabled(FALSE);
-	mainWindow->ui.StackButtonsFrame->setEnabled(FALSE);
+	mainWindow->ui.WindowToolbar->setEnabled(FALSE);
 }
 
 // Update the progress dialog
@@ -441,9 +451,8 @@ void GuiQt::progressTerminate()
 	}
 	// Hide the progress bar and re-enable widgets
 	mainWindow->progressIndicator->setVisible(FALSE);
-	mainWindow->ui.MainWindowStack->setEnabled(TRUE);
 	mainWindow->ui.ViewFrame->setEnabled(TRUE);
-	mainWindow->ui.StackButtonsFrame->setEnabled(TRUE);
+	mainWindow->ui.WindowToolbar->setEnabled(TRUE);
 }
 
 // Notify that the progress indicator should be canceled

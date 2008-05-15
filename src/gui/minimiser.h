@@ -44,9 +44,8 @@ class AtenMinimiser : public QWidget
 	// Widgets
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenMinimiser(QWidget *parent = 0);
-	// Destructor
 	~AtenMinimiser();
 	// Main form declaration
 	Ui::MinimiserWidget ui;

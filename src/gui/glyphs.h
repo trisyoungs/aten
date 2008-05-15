@@ -46,9 +46,8 @@ class AtenGlyphs : public QWidget
 	// Widgets
 	*/
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AtenGlyphs(QWidget *parent = 0);
-	// Destructor
 	~AtenGlyphs();
 	// Main form declaration
 	Ui::GlyphsWidget ui;

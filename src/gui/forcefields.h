@@ -1,6 +1,6 @@
 /*
-	*** Qt GUI: Typing Window
-	*** src/gui/typing.h
+	*** Qt GUI: Forcefields Window
+	*** src/gui/forcefields.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TYPINGWINDOW_H
-#define ATEN_TYPINGWINDOW_H
+#ifndef ATEN_FORCEFIELDSWINDOW_H
+#define ATEN_FORCEFIELDSWINDOW_H
 
-#include "gui/ui_typing.h"
+#include "gui/ui_forcefields.h"
 
 // Program preferences window
-class AtenTyping : public QWidget
+class AtenForcefields : public QWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -33,6 +33,9 @@ class AtenTyping : public QWidget
 	/*
 	// Window Functions
 	*/
+	public:
+	void refresh();
+	void refreshTypes();
 	private slots:
 	void on_TypeModelButton_clicked(bool checked);
 	void on_UntypeModelButton_clicked(bool checked);
@@ -40,6 +43,14 @@ class AtenTyping : public QWidget
 	void on_ManualTypeClearButton_clicked(bool checked);
 	void on_ManualTypeTestButton_clicked(bool checked);
 	void on_ManualTypeEdit_returnPressed();
+	void on_LoadForcefieldButton_clicked(bool checked);
+	void on_RemoveForcefieldButton_clicked(bool checked);
+	void on_EditForcefieldButton_clicked(bool checked);
+	void on_AssignFFToCurrentButton_clicked(bool checked);
+	void on_AssignFFToAllButton_clicked(bool checked);
+	void on_AssignFFToPatternButton_clicked(bool clicked);
+	void on_ForcefieldList_currentRowChanged(int row);
+	void on_ForcefieldList_itemClicked(QListWidgetItem *item);
 
 	/*
 	// Local variables
@@ -52,12 +63,11 @@ class AtenTyping : public QWidget
 	// Widgets
 	*/
 	public:
-	// Constructor
-	AtenTyping(QWidget *parent = 0);
-	// Destructor
-	~AtenTyping();
+	// Constructor / Destructor
+	AtenForcefields(QWidget *parent = 0);
+	~AtenForcefields();
 	// Main form declaration
-	Ui::TypingWidget ui;
+	Ui::ForcefieldsWidget ui;
 	// Finalise widgets (things that couldn't be done in Qt Designer)
 	void finaliseUi();
 	// Set controls to reflect program variables

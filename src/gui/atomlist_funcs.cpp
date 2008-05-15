@@ -35,7 +35,7 @@ AtenAtomlist::AtenAtomlist(QWidget *parent)
 	listSelectionPoint_ = -1;
 	listLastModel_ = NULL;
 	refreshing_ = FALSE;
-	listPosition = -1;
+	listPosition_ = -1;
 }
 
 // Destructor
