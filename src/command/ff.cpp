@@ -168,35 +168,18 @@ int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 // Load forcefield ('loadff <filename> [nickname]')
 int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 {
-	// Try some different locations to find the supplied forcefield.
-	static char s[512];
-	Forcefield *ff = NULL;
-	// First try - actual / absolute path
-	msg(Debug::Verbose,"Looking for forcefield in absolute path (%s)...\n",c->argc(0));
-	if (fileExists(c->argc(0))) ff = master.loadForcefield(c->argc(0));
+	Forcefield *ff = master.loadForcefield(c->argc(0));
+	if (ff == NULL)
+	{
+		msg(Debug::None,"Can't find forcefield file '%s' in any location.\n", c->argc(0));
+		return CR_FAIL;
+	}
 	else
 	{
-		// Second try - master.dataDir/ff
-		sprintf(s,"%s/%s",master.dataDir.get(), c->argc(0));
-		msg(Debug::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
-		if (fileExists(s)) ff = master.loadForcefield(s);
-		else
-		{
-			// Last try - user home datadir/ff
-			sprintf(s,"%s/.aten/ff/%s",master.homeDir.get(), c->argc(0));
-			msg(Debug::Verbose,"Looking for forcefield in user's data directory (%s)...\n",s);
-			if (fileExists(s)) ff = master.loadForcefield(s);
-			else msg(Debug::None,"Can't find forcefield file '%s' in any location.\n",c->argc(0));
-		}
-	}
-	if (ff != NULL)
-	{
-		master.setCurrentForcefield(ff);
 		if (c->hasArg(1)) ff->setName(c->argc(1));
 		msg(Debug::None,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
-		return CR_SUCCESS;
 	}
-	else return CR_FAIL;
+	return CR_SUCCESS;
 }
 
 // Select current forcefield ('getff <name>')
