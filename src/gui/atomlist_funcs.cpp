@@ -20,6 +20,7 @@
 */
 
 #include "classes/pattern.h"
+#include "gui/gui.h"
 #include "gui/ttreewidgetitem.h"
 #include "gui/atomlist.h"
 #include "model/model.h"
@@ -39,7 +40,7 @@ AtenAtomlist::AtenAtomlist(QWidget *parent)
 }
 
 // Destructor
-~AtenAtomlist::AtenAtomlist()
+AtenAtomlist::~AtenAtomlist()
 {
 }
 
@@ -66,13 +67,13 @@ void AtenAtomlist::on_AtomTree_itemSelectionChanged()
 	dbgEnd(Debug::Calls,"AtenAtomlist::on_AtomTree_selectionChanged");
 }
 
-void AtenAtomlist::refreshAtomPage()
+void AtenAtomlist::refresh()
 {
-	dbgBegin(Debug::Calls,"AtenAtomlist::refreshAtomPage");
+	dbgBegin(Debug::Calls,"AtenAtomlist::refresh");
 	// If the atom list page is not visible, don't do anything
-	if (!ui.ShowAtomPageButton->isChecked())
+	if (!ui.AtomlistWidget->visible())
 	{
-		dbgEnd(Debug::Calls,"AtenAtomlist::refreshAtomPage");
+		dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 		return;
 	}
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
@@ -85,12 +86,12 @@ void AtenAtomlist::refreshAtomPage()
 	int n;
 	Model *m = master.currentModel();
 	// Check this model against the last one we represented in the list
-	if (m != listLastModel)
+	if (m != listLastModel_)
 	{
 		listStructurePoint_ = -1;
 		listSelectionPoint_ = -1;
 	}
-	listLastModel = m;
+	listLastModel_ = m;
 	if (listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
 	{
 		//printf("List must be cleared and repopulated...\n");
@@ -100,7 +101,7 @@ void AtenAtomlist::refreshAtomPage()
 		// If there are no atoms in the current model, exit now.
 		if (m->nAtoms() == 0)
 		{
-			dbgEnd(Debug::Calls,"AtenAtomlist::refreshAtomPage");
+			dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 			refreshing_ = FALSE;
 			return;
 		}
@@ -164,17 +165,17 @@ void AtenAtomlist::refreshAtomPage()
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
 	refreshing_ = FALSE;
-	dbgEnd(Debug::Calls,"AtenAtomlist::refreshAtomPage");
+	dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 }
 
 void AtenAtomlist::peekScrollBar()
 {
-	listPosition = ui.AtomTree->verticalScrollBar()->sliderPosition();
+	listPosition_ = ui.AtomTree->verticalScrollBar()->sliderPosition();
 }
 
 void AtenAtomlist::pokeScrollBar()
 {
-	ui.AtomTree->verticalScrollBar()->setSliderPosition(listPosition);
+	ui.AtomTree->verticalScrollBar()->setSliderPosition(listPosition_);
 }
 
 void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
@@ -184,7 +185,7 @@ void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 	m->shiftSelectionUp();
 	m->endUndostate();
 	peekScrollBar();
-	refreshAtomPage();
+	refresh();
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -196,7 +197,7 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 	m->shiftSelectionDown();
 	m->endUndostate();
 	peekScrollBar();
-	refreshAtomPage();
+	refresh();
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -205,7 +206,7 @@ void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
 	master.currentModel()->moveSelectionToStart();
 	master.currentModel()->logChange(Change::StructureLog);
-	refreshAtomPage();
+	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
@@ -213,6 +214,6 @@ void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
 	master.currentModel()->moveSelectionToEnd();
 	master.currentModel()->logChange(Change::StructureLog);
-	refreshAtomPage();
+	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
