@@ -24,7 +24,7 @@
 #include "gui/gui.h"
 #include "model/model.h"
 
-void AtenForm::on_actionBondCalc_triggered(bool on)
+void AtenForm::on_actionCalculateBonding_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding");
@@ -34,7 +34,7 @@ void AtenForm::on_actionBondCalc_triggered(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_actionBondClear_triggered(bool on)
+void AtenForm::on_actionClearBonding_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding");
@@ -43,7 +43,7 @@ void AtenForm::on_actionBondClear_triggered(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_actionBondCalcSel_triggered(bool on)
+void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding (Selection)");
@@ -52,7 +52,7 @@ void AtenForm::on_actionBondCalcSel_triggered(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_actionBondClearSel_triggered(bool on)
+void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding (Selection)");
@@ -61,7 +61,7 @@ void AtenForm::on_actionBondClearSel_triggered(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_actionBondAugment_triggered(bool on)
+void AtenForm::on_actionAugmentBonding_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Augment Bonding");

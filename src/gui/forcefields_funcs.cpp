@@ -33,6 +33,8 @@
 // Constructor
 AtenForcefields::AtenForcefields(QWidget *parent)
 {
+	ui.setupUi(this);
+
 	// Private variables
 	typelistElement_ = -1;
 	shouldRefresh_ = FALSE;

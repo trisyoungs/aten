@@ -26,20 +26,20 @@
 
 void AtenForm::on_actionMeasureDistance_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::MeasureDistanceAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::MeasureDistanceAction);
 }
 
 void AtenForm::on_actionMeasureAngle_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::MeasureAngleAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::MeasureAngleAction);
 }
 
 void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::MeasureTorsionAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::MeasureTorsionAction);
 }
 
-void AtenForm::on_actionRemoveMeasurements_triggered(bool on)
+void AtenForm::on_actionClearMeasurements_triggered(bool on)
 {
 	master.currentModel()->removeMeasurements(Measurement::DistanceMeasurement);
 	master.currentModel()->removeMeasurements(Measurement::AngleMeasurement);

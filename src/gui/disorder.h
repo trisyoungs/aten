@@ -73,10 +73,6 @@ class AtenDisorder : public QWidget
 	~AtenDisorder();
 	// Main form declaration
 	Ui::DisorderWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

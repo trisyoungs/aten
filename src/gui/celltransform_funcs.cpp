@@ -28,6 +28,8 @@
 // Constructor
 AtenCellTransform::AtenCellTransform(QWidget *parent)
 {
+	ui.setupUi(this);
+
 	// Private variables
 	refreshing_ = FALSE;
 }

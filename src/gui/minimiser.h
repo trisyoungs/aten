@@ -53,10 +53,6 @@ class AtenMinimiser : public QWidget
 	~AtenMinimiser();
 	// Main form declaration
 	Ui::MinimiserWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

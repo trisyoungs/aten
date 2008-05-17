@@ -27,6 +27,7 @@
 // Constructor
 AtenPosition::AtenPosition(QWidget *parent)
 {
+	ui.setupUi(this);
 }
 
 // Destructor

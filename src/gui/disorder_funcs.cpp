@@ -29,6 +29,8 @@
 // Constructor
 AtenDisorder::AtenDisorder(QWidget *parent)
 {
+	ui.setupUi(this);
+
 	// Private variables
 	refreshing_ = FALSE;
 }

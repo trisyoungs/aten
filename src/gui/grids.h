@@ -81,10 +81,6 @@ class AtenGrids : public QWidget
 	~AtenGrids();
 	// Main form declaration
 	Ui::GridsWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 	// File dialogs for grids
 	QFileDialog *openGridDialog, *saveGridDialog;
 };

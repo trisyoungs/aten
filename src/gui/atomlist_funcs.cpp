@@ -31,6 +31,8 @@
 // Constructor
 AtenAtomlist::AtenAtomlist(QWidget *parent)
 {
+	ui.setupUi(this);
+
 	// Private variables
 	listStructurePoint_ = -1;
 	listSelectionPoint_ = -1;

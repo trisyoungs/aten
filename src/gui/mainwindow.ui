@@ -36,10 +36,10 @@
   <widget class="QWidget" name="MainWindowLayout" >
    <layout class="QHBoxLayout" >
     <property name="margin" >
-     <number>9</number>
+     <number>2</number>
     </property>
     <property name="spacing" >
-     <number>6</number>
+     <number>4</number>
     </property>
     <item>
      <layout class="QVBoxLayout" >
@@ -235,25 +235,6 @@
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
    </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <widget class="QMenu" name="ToolbarMenu" >
-     <property name="title" >
-      <string>Toolbars</string>
-     </property>
-     <addaction name="actionCommandToolBarVisibility" />
-     <addaction name="actionEditToolBarVisibility" />
-     <addaction name="actionFileToolBarVisibility" />
-     <addaction name="actionSelectToolBarVisibility" />
-     <addaction name="actionStyleToolBarVisibility" />
-     <addaction name="actionTrajectoryToolBarVisibility" />
-     <addaction name="actionMouseToolBarVisibility" />
-    </widget>
-    <addaction name="actionPreferences" />
-    <addaction name="ToolbarMenu" />
-   </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
      <string>Atom</string>
@@ -323,6 +304,12 @@
     <addaction name="actionLoadScript" />
     <addaction name="separator" />
    </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+   </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
    <addaction name="ViewMenu" />
@@ -334,7 +321,7 @@
    <addaction name="ToolsMenu" />
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar" />
-  <widget class="QToolBar" name="FileToolBar" >
+  <widget class="QToolBar" name="FileToolbar" >
    <property name="windowTitle" >
     <string>File / Model</string>
    </property>
@@ -359,7 +346,7 @@
    <addaction name="actionFileSaveAs" />
    <addaction name="actionFileClose" />
   </widget>
-  <widget class="QToolBar" name="StyleToolBar" >
+  <widget class="QToolBar" name="StyleToolbar" >
    <property name="windowTitle" >
     <string>Draw Style</string>
    </property>
@@ -381,7 +368,7 @@
    <addaction name="actionStyleScaled" />
    <addaction name="actionStyleIndividual" />
   </widget>
-  <widget class="QToolBar" name="EditToolBar" >
+  <widget class="QToolBar" name="EditToolbar" >
    <property name="windowTitle" >
     <string>Edit</string>
    </property>
@@ -402,7 +389,7 @@
    <addaction name="actionEditPaste" />
    <addaction name="actionEditDelete" />
   </widget>
-  <widget class="QToolBar" name="TrajectoryToolBar" >
+  <widget class="QToolBar" name="TrajectoryToolbar" >
    <property name="sizePolicy" >
     <sizepolicy>
      <hsizetype>1</hsizetype>
@@ -432,7 +419,7 @@
    <addaction name="actionFrameNext" />
    <addaction name="actionFrameLast" />
   </widget>
-  <widget class="QToolBar" name="CommandToolBar" >
+  <widget class="QToolBar" name="CommandToolbar" >
    <property name="windowTitle" >
     <string>Command Prompt</string>
    </property>
@@ -449,7 +436,7 @@
     <number>4</number>
    </attribute>
   </widget>
-  <widget class="QToolBar" name="MouseToolBar" >
+  <widget class="QToolBar" name="MouseToolbar" >
    <property name="windowTitle" >
     <string>Mouse</string>
    </property>
@@ -469,7 +456,7 @@
    <addaction name="actionMouseRotate" />
    <addaction name="actionMouseTranslate" />
   </widget>
-  <widget class="QToolBar" name="SelectToolBar" >
+  <widget class="QToolBar" name="SelectToolbar" >
    <property name="windowTitle" >
     <string>Selection</string>
    </property>
@@ -494,7 +481,7 @@
    <addaction name="actionEditSelectNone" />
    <addaction name="actionEditInvert" />
   </widget>
-  <widget class="QToolBar" name="DrawToolBar" >
+  <widget class="QToolBar" name="DrawToolbar" >
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -530,6 +517,8 @@
    <addaction name="actionClearBonding" />
    <addaction name="actionCalculateBondingSelection" />
    <addaction name="actionClearBondingSelection" />
+   <addaction name="separator" />
+   <addaction name="actionAugmentBonding" />
   </widget>
   <widget class="QToolBar" name="MeasureToolbar" >
    <property name="orientation" >
@@ -1223,55 +1212,6 @@
     <string>Force</string>
    </property>
   </action>
-  <action name="actionCommandToolBarVisibility" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Command</string>
-   </property>
-  </action>
-  <action name="actionEditToolBarVisibility" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="checked" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Edit</string>
-   </property>
-  </action>
-  <action name="actionFileToolBarVisibility" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="checked" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>File</string>
-   </property>
-  </action>
-  <action name="actionStyleToolBarVisibility" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="checked" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Style</string>
-   </property>
-  </action>
-  <action name="actionTrajectoryToolBarVisibility" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Trajectory</string>
-   </property>
-  </action>
   <action name="actionMouseInteract" >
    <property name="checkable" >
     <bool>true</bool>
@@ -1331,14 +1271,6 @@
     <string>ZRotate</string>
    </property>
   </action>
-  <action name="actionMouseToolBarVisibility" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Mouse</string>
-   </property>
-  </action>
   <action name="actionFileOpenForcefield" >
    <property name="text" >
     <string>Open &amp;Forcefield</string>
@@ -1358,23 +1290,6 @@
    </property>
    <property name="shortcut" >
     <string>Ctrl+Z</string>
-   </property>
-  </action>
-  <action name="actionSelectToolBarVisibility" >
-   <property name="checkable" >
-    <bool>true</bool>
-   </property>
-   <property name="checked" >
-    <bool>true</bool>
-   </property>
-   <property name="text" >
-    <string>Select</string>
-   </property>
-   <property name="iconText" >
-    <string>Select</string>
-   </property>
-   <property name="toolTip" >
-    <string>Select</string>
    </property>
   </action>
   <action name="actionEditRedo" >
@@ -1929,6 +1844,14 @@
    </property>
    <property name="toolTip" >
     <string>Delete individual atoms</string>
+   </property>
+  </action>
+  <action name="actionAugmentBonding" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/bond/icons/bond_augment.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Augment Bonding</string>
    </property>
   </action>
  </widget>

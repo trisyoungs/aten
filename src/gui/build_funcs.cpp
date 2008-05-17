@@ -28,6 +28,7 @@
 // Constructor
 AtenBuild::AtenBuild(QWidget *parent)
 {
+	ui.setupUi(this);
 }
 
 // Destructor

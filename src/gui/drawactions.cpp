@@ -35,12 +35,12 @@ void AtenForm::on_actionDrawChain_triggered(bool on)
 	if (on) gui.mainView.setSelectedMode(Canvas::EditChainAction);
 }
 
-void AtenForm::on_actionDrawDelete_triggered(bool on)
+void AtenForm::on_actionDeleteAtom_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::EditDeleteAction);
 }
 
-void AtenForm::on_actionDrawTransmute_triggered(bool on)
+void AtenForm::on_actionTransmuteAtom_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::EditTransmuteAction);
 }
@@ -65,7 +65,7 @@ void AtenForm::on_actionBondTriple_triggered(bool on)
 	if (on) gui.mainView.setSelectedMode(Canvas::EditBondTripleAction);
 }
 
-void AtenForm::on_actionBondDelete_triggered(bool on)
+void AtenForm::on_actionDeleteBond_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::EditDeleteBondAction);
 }
@@ -90,7 +90,7 @@ void AtenForm::on_actionElementCustom_triggered(bool on)
 	printf("TGAY Not done yet.....\n");
 }
 
-void AtenForm::on_actionAtomAddHydrogen_triggered(bool on)
+void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::EditAddHydrogenAction);
 }
@@ -104,52 +104,6 @@ void AtenForm::on_actionProbeAtom_triggered(bool on)
 // {
 // 	master.setSketchElement(elements.find(qPrintable(ui.ElementUserButton->text())));
 // }
-
-void AtenForm::on_actionBondCalc_triggered(bool on)
-{
-	Model *m = master.currentModel()->renderSource();
-	m->beginUndostate("Calculate Bonding");
-	m->clearBonding();
-	m->calculateBonding();
-	m->endUndostate();
-	gui.mainView.postRedisplay();
-}
-
-void AtenForm::on_actionBondClear_triggered(bool on)
-{
-	Model *m = master.currentModel()->renderSource();
-	m->beginUndostate("Clear Bonding");
-	m->clearBonding();
-	m->endUndostate();
-	gui.mainView.postRedisplay();
-}
-
-void AtenForm::on_actionBondCalcSel_triggered(bool on)
-{
-	Model *m = master.currentModel()->renderSource();
-	m->beginUndostate("Calculate Bonding (Selection)");
-	m->selectionCalculateBonding();
-	m->endUndostate();
-	gui.mainView.postRedisplay();
-}
-
-void AtenForm::on_actionBondClearSel_triggered(bool on)
-{
-	Model *m = master.currentModel()->renderSource();
-	m->beginUndostate("Clear Bonding (Selection)");
-	m->selectionClearBonding();
-	m->endUndostate();
-	gui.mainView.postRedisplay();
-}
-
-void AtenForm::on_actionBondAugment_triggered(bool on)
-{
-	Model *m = master.currentModel()->renderSource();
-	m->beginUndostate("Augment Bonding");
-	m->augmentBonding();
-	m->endUndostate();
-	gui.mainView.postRedisplay();
-}
 
 // void AtenForm::on_actionElementEdit_returnPressed()
 // {

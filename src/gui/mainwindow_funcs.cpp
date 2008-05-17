@@ -378,49 +378,10 @@ void AtenForm::on_actionSelectElement_triggered(bool on)
 }
 
 /*
-// Toolbar Menu
-*/
-
-void AtenForm::on_actionFileToolBarVisibility_triggered(bool v)
-{
-	ui.FileToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionEditToolBarVisibility_triggered(bool v)
-{
-	ui.EditToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionStyleToolBarVisibility_triggered(bool v)
-{
-	ui.StyleToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionTrajectoryToolBarVisibility_triggered(bool v)
-{
-	ui.TrajectoryToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionCommandToolBarVisibility_triggered(bool v)
-{
-	ui.CommandToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionMouseToolBarVisibility_triggered(bool v)
-{
-	ui.MouseToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionSelectToolBarVisibility_triggered(bool v)
-{
-	ui.SelectToolBar->setVisible(v);
-}
-
-/*
 // Window Show / Hide Functions
 */
 
-void AtenForm::on_actionAtomlistWindow_clicked(bool checked)
+void AtenForm::on_actionAtomlistWindow_triggered(bool checked)
 {
 	if (checked)
 	{
@@ -430,25 +391,25 @@ void AtenForm::on_actionAtomlistWindow_clicked(bool checked)
 	else gui.atomlistWindow->hide();
 }
 
-void AtenForm::on_actionBuildWindow_clicked(bool checked)
+void AtenForm::on_actionBuildWindow_triggered(bool checked)
 {
 	if (checked) gui.buildWindow->showWindow();
 	else gui.buildWindow->hide();
 }
 
-void AtenForm::on_actionTransformWindow_clicked(bool checked)
+void AtenForm::on_actionTransformWindow_triggered(bool checked)
 {
 	if (checked) gui.transformWindow->showWindow();
 	else gui.transformWindow->hide();
 }
 
-void AtenForm::on_actionPositionWindow_clicked(bool checked)
+void AtenForm::on_actionPositionWindow_triggered(bool checked)
 {
 	if (checked) gui.positionWindow->showWindow();
 	else gui.positionWindow->hide();
 }
 
-void AtenForm::on_actionCellDefineWindow_clicked(bool checked)
+void AtenForm::on_actionCellDefineWindow_triggered(bool checked)
 {
 	if (checked)
 	{
@@ -458,7 +419,7 @@ void AtenForm::on_actionCellDefineWindow_clicked(bool checked)
 	else gui.cellDefineWindow->hide();
 }
 
-void AtenForm::on_actionCellTransformWindow_clicked(bool checked)
+void AtenForm::on_actionCellTransformWindow_triggered(bool checked)
 {
 	if (checked)
 	{
@@ -468,19 +429,19 @@ void AtenForm::on_actionCellTransformWindow_clicked(bool checked)
 	else gui.cellTransformWindow->hide();
 }
 
-void AtenForm::on_actionMinimiserWindow_clicked(bool checked)
+void AtenForm::on_actionMinimiserWindow_triggered(bool checked)
 {
 	if (checked) gui.minimiserWindow->showWindow();
 	else gui.minimiserWindow->hide();
 }
 
-void AtenForm::on_actionDisorderWindow_clicked(bool checked)
+void AtenForm::on_actionDisorderWindow_triggered(bool checked)
 {
 	if (checked) gui.disorderWindow->showWindow();
 	else gui.disorderWindow->hide();
 }
 
-void AtenForm::on_actionForcefieldsWindow_clicked(bool checked)
+void AtenForm::on_actionForcefieldsWindow_triggered(bool checked)
 {
 	if (checked)
 	{
@@ -490,19 +451,19 @@ void AtenForm::on_actionForcefieldsWindow_clicked(bool checked)
 	else gui.forcefieldsWindow->hide();
 }
 
-void AtenForm::on_actionGridsWindow_clicked(bool checked)
+void AtenForm::on_actionGridsWindow_triggered(bool checked)
 {
 	if (checked) gui.gridsWindow->showWindow();
 	else gui.gridsWindow->hide();
 }
 
-void AtenForm::on_actionGlyphsWindow_clicked(bool checked)
-{
-	if (checked) gui.glyphsWindow->showWindow();
-	else gui.glyphsWindow->hide();
-}
+// void AtenForm::on_actionGlyphsWindow_triggered(bool checked)
+// {
+// 	if (checked) gui.glyphsWindow->showWindow();
+// 	else gui.glyphsWindow->hide();
+// }
 
-// void AtenForm::on_actionAnalyseWindow_clicked(bool checked)
+// void AtenForm::on_actionAnalyseWindow_triggered(bool checked)
 // {
 //	if (checked) gui.analyseWindow->showWindow();
 //	else gui.analyseWindow->hide();

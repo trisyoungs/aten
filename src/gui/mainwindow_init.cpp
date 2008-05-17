@@ -25,7 +25,7 @@
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include <QtGui/QFileDialog>
-#include <QtGui/QDoubleSpin>
+#include <QtGui/QDoubleSpinBox>
 #include <QtCore/QSettings>
 
 // Finalise GUI
@@ -83,13 +83,14 @@ void AtenForm::finaliseUi()
 	mousegroup->addAction(ui.actionMouseTranslate);
 
 	// Hide some toolbars initially
-	ui.TrajectoryToolBar->setVisible(FALSE);
-	ui.CommandToolBar->setVisible(FALSE);
-	ui.MouseToolBar->setVisible(FALSE);
+	ui.TrajectoryToolbar->setVisible(FALSE);
+	ui.CommandToolbar->setVisible(FALSE);
+	ui.MouseToolbar->setVisible(FALSE);
 
 	// Add text edit to CommandToolBar
 	commandEdit_ = new QLineEdit(this);
-	ui.CommandToolBar->addWidget(commandEdit_);
+	ui.CommandToolbar->addWidget(commandEdit_);
+	ui.CommandToolbar->setMinimumSize(128,16);
 	QObject::connect(commandEdit_, SIGNAL(returnPressed()), this, SLOT(executeCommand()));
 
 	// Create QActionGroup for perspective / orthographic views
@@ -122,8 +123,8 @@ void AtenForm::finaliseUi()
 	}
 
 	// Add bond tolerance spinbox to Bond Toolbar
-	bondToleranceSpin_ = new QDoubleSpin(this);
-	ui.DrawToolBar->addWidget(bondToleranceSpin_);
+	bondToleranceSpin_ = new QDoubleSpinBox(this);
+	ui.DrawToolbar->addWidget(bondToleranceSpin_);
 	QObject::connect(bondToleranceSpin_, SIGNAL(valueChanged(double d)), this, SLOT(bondTolerance_valueChanged(double d)));
 
 	// Create master group for toolbar buttons that change user action modes
@@ -283,8 +284,8 @@ void AtenForm::setControls()
 		case (Prefs::ForceScheme): ui.actionSchemeForce->setChecked(TRUE); break;
 		//case (Prefs::VelocityScheme): ui.actionSchemeVelocity->setChecked(TRUE); break;
 	}
-	// Set controls on edit page 
-	bondToleranceSpin->setValue(prefs.bondTolerance());
+	// Set controls on Bond toolbar 
+	bondToleranceSpin_->setValue(prefs.bondTolerance());
 	// Set the initial configuration of the splitter
 	ui.MainSplitter->setSizes( QList<int>() << 500 << 64 );
 	dbgEnd(Debug::Calls,"AtenForm::setControls");

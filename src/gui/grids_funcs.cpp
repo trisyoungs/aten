@@ -30,6 +30,8 @@
 // Constructor
 AtenGrids::AtenGrids(QWidget *parent)
 {
+	ui.setupUi(this);
+
 	// Create open grid dialog
 	QStringList filters;
 	openGridDialog = new QFileDialog(this);
@@ -57,6 +59,7 @@ void AtenGrids::showWindow()
 // Refresh widget
 void AtenGrids::refresh()
 {
+	dbgBegin(Debug::Calls,"AtenGrids::refresh");
 	// Clear and refresh the grids list
 	ui.GridList->clear();
 	TListWidgetItem *item;
@@ -70,11 +73,13 @@ void AtenGrids::refresh()
 	// Select the first item
 	if (master.nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
+	dbgEnd(Debug::Calls,"AtenGrids::refresh");
 }
 
 // Load grid (public function)
 void AtenGrids::loadGrid()
 {
+	dbgBegin(Debug::Calls,"AtenGrids::loadgrid");
 	Filter *f;
 	Grid *g;
 	QString filename;
@@ -103,6 +108,7 @@ void AtenGrids::loadGrid()
 		gui.gridsWindow->refresh();
 		gui.mainView.postRedisplay();
 	}
+	dbgEnd(Debug::Calls,"AtenGrids::loadgrid");
 }
 
 void AtenGrids::on_LoadGridButton_clicked(bool checked)
@@ -172,10 +178,15 @@ void AtenGrids::on_GridAxesCZSpin_valueChanged(double d)
 
 void AtenGrids::refreshGridInfo()
 {
+	dbgBegin(Debug::Calls,"AtenGrids::refreshGridInfo");
 	// Get the current row selected in the grid list
 	Grid *g;
 	int row = ui.GridList->currentRow();
-	if (row == -1) return;
+	if (row == -1)
+	{
+		dbgEnd(Debug::Calls,"AtenGrids::refreshGridInfo");
+		return;
+	}
 	else g = master.grid(row);
 	// Set minimum, maximum, and cutoff
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
@@ -207,6 +218,7 @@ void AtenGrids::refreshGridInfo()
 	ui.GridNegativeColourFrame->update();
 	ui.GridSymmetricCheck->setChecked( g->symmetric() );
 	ui.GridTransparencySpin->setValue( g->transparency() );
+	dbgEnd(Debug::Calls,"AtenGrids::refreshGridInfo");
 }
 
 // Item in forcefield list has changed?
