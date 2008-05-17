@@ -40,6 +40,7 @@ const char *extension_from_BIF(bitmap_format);
 
 // Forward Declarations
 class QFileDialog;
+class QDoubleSpin;
 class QLabel;
 class QTimer;
 class QLineEdit;
@@ -69,7 +70,6 @@ class AtenForm : public QMainWindow
 	void finaliseUi();
 	// Set controls to reflect program variables
 	void setControls();
-
 	protected:
 	void closeEvent(QCloseEvent *event);
 
@@ -87,13 +87,12 @@ class AtenForm : public QMainWindow
 	// Model Management
 	void on_ModelTabs_currentChanged(int value);
 	void on_ModelTabs_doubleClicked(int tabid);
-
 	public:
 	// Refresh names in ModelTabs
 	void refreshModelTabs();
 
 	/*
-	// Editing Actions
+	// Edit Actions
 	*/
 	private slots:
 	void on_actionEditUndo_triggered(bool checked);
@@ -114,7 +113,7 @@ class AtenForm : public QMainWindow
 	void on_StyleToolBar_actionTriggered(QAction *action);
 
 	/*
-	// Mouse Toolbar
+	// Mouse Actions
 	*/
 	private slots:
 	void on_actionMouseInteract_triggered(bool checked);
@@ -122,14 +121,45 @@ class AtenForm : public QMainWindow
 	void on_actionMouseTranslate_triggered(bool checked);
 
 	/*
-	// Select Toolbar
+	// Selection actions
 	*/
-	private:
-	void setUserAction(bool checked, Canvas::UserAction ua);
 	private slots:
 	void on_actionSelectAtoms_triggered(bool on);
 	void on_actionSelectMolecules_triggered(bool on);
 	void on_actionSelectElement_triggered(bool on);
+
+	/*
+	// Draw Actions
+	*/
+	private slots:
+	void on_actionDrawAtom_triggered(bool on);
+	void on_actionDrawChain_triggered(bool on);
+	void on_actionDrawDelete_triggered(bool on);
+	void on_actionDrawTransmute_triggered(bool on);
+	void on_actionBondSingle_triggered(bool on);
+	void on_actionBondDouble_triggered(bool on);
+	void on_actionBondTriple_triggered(bool on);
+	void on_actionBondDelete_triggered(bool on);
+	void on_actionElementH_triggered(bool on);
+	void on_actionElementC_triggered(bool on);
+	void on_actionElementN_triggered(bool on);
+	void on_actionElementCustom_triggered(bool on);
+	void on_actionAtomAddHydrogen_triggered(bool on);
+	void on_actionAddHydrogen_triggered(bool on);
+	void on_actionProbeAtom_triggered(bool on);
+
+	/*
+	// Bonding Actions
+	*/
+	private:
+	QDoubleSpin *bondToleranceSpin_;
+	private slots:
+	void on_actionBondCalc_triggered(bool on);
+	void on_actionBondClear_triggered(bool on);
+	void on_actionBondCalcSel_triggered(bool on);
+	void on_actionBondClearSel_triggered(bool on);
+	void on_actionBondAugment_triggered(bool on);
+	void bondTolerance_valueChanged(double d);
 
 	/*
 	// File Actions
@@ -251,33 +281,6 @@ class AtenForm : public QMainWindow
 	void on_actionCellDefineWindow_clicked(bool checked);
 	void on_actionCellTransformWindow_clicked(bool checked);
 
-	// Edit Toolbar
-	private:
-	void setSketchElement(int el);
-	private slots:
-	void on_DrawAtomButton_clicked(bool on);
-	void on_DrawChainButton_clicked(bool on);
-	void on_DrawDeleteButton_clicked(bool on);
-	void on_DrawTransmuteButton_clicked(bool on);
-	void on_BondToleranceSpin_valueChanged(double d);
-	void on_BondSingleButton_clicked(bool on);
-	void on_BondDoubleButton_clicked(bool on);
-	void on_BondTripleButton_clicked(bool on);
-	void on_BondDeleteButton_clicked(bool on);
-	void on_BondCalcButton_clicked(bool on);
-	void on_BondClearButton_clicked(bool on);
-	void on_BondCalcSelButton_clicked(bool on);
-	void on_BondClearSelButton_clicked(bool on);
-	void on_ElementHButton_clicked(bool on);
-	void on_ElementCButton_clicked(bool on);
-	void on_ElementNButton_clicked(bool on);
-	void on_ElementUserButton_clicked(bool on);
-	void on_ElementEdit_returnPressed();
-	void on_BondAugmentButton_clicked(bool on);
-	void on_AddHydrogenButton_clicked(bool on);
-	void on_AtomAddHydrogenButton_clicked(bool on);
-	void on_ProbeAtomButton_clicked(bool on);
-
 	// Analyse page functions
 	private slots:
 	void on_MeasureDistanceButton_clicked(bool on);
@@ -340,25 +343,21 @@ class AtenForm : public QMainWindow
 	QPushButton *progressButton;
 	QFrame *progressIndicator;
 	// File dialogs for models
-	QFileDialog *openModelDialog, *saveModelDialog;
+	QFileDialog *loadModelDialog, *saveModelDialog;
 	// File dialogs for trajectories
-	QFileDialog *openTrajectoryDialog, *saveTrajectoryDialog;
+	QFileDialog *loadTrajectoryDialog, *saveTrajectoryDialog;
 	// File dialogs for expressions
-	QFileDialog *openExpressionDialog, *saveExpressionsDialog;
+	QFileDialog *loadExpressionDialog, *saveExpressionDialog;
 	// File dialog for save bitmap and save vector image
 	QFileDialog *saveBitmapDialog, *saveVectorDialog;
 	// File dialog for script loading
-	QFileDialog *openScriptDialog;
+	QFileDialog *loadScriptDialog;
 	// Filter set from save model dialog
 	Filter *saveModelFilter;
 	// Filename set from save model dialog
 	Dnchar saveModelFilename;
-	// QButtonGroup for stackpage buttons
-	QButtonGroup *uaGroup;
-	// QActionGroup for SelectToolBar actions
-	QActionGroup *selectGroup;
-	// Dummy button for uaGroup (so we can have none selected)
-	QPushButton *dummyButton;
+	// Group for actions that determine the current user action
+	QActionGroup *uaGroup;
 
 	/*
 	// Settings

@@ -1,6 +1,6 @@
 /*
-	*** Qt edit functions interface
-	*** src/gui/edit_funcs.cpp
+	*** Qt GUI: Draw toolbar actions
+	*** src/gui/drawactions.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -25,87 +25,87 @@
 #include "gui/gui.h"
 #include "model/model.h"
 
-void AtenForm::setSketchElement(int el)
+void AtenForm::on_actionDrawAtom_triggered(bool on)
 {
-	master.setSketchElement(el);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditDrawAction);
 }
 
-void AtenForm::on_DrawAtomButton_clicked(bool on)
+void AtenForm::on_actionDrawChain_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditDrawAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditChainAction);
 }
 
-void AtenForm::on_DrawChainButton_clicked(bool on)
+void AtenForm::on_actionDrawDelete_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditChainAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditDeleteAction);
 }
 
-void AtenForm::on_DrawDeleteButton_clicked(bool on)
+void AtenForm::on_actionDrawTransmute_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditDeleteAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditTransmuteAction);
 }
 
-void AtenForm::on_DrawTransmuteButton_clicked(bool on)
+//void AtenForm::on_actionBondToleranceSpin_valueChanged(double d)
+//{
+//	prefs.setBondTolerance(d);
+//}
+
+void AtenForm::on_actionBondSingle_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditTransmuteAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditBondSingleAction);
 }
 
-void AtenForm::on_BondToleranceSpin_valueChanged(double d)
+void AtenForm::on_actionBondDouble_triggered(bool on)
 {
-	prefs.setBondTolerance(d);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditBondDoubleAction);
 }
 
-void AtenForm::on_BondSingleButton_clicked(bool on)
+void AtenForm::on_actionBondTriple_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditBondSingleAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditBondTripleAction);
 }
 
-void AtenForm::on_BondDoubleButton_clicked(bool on)
+void AtenForm::on_actionBondDelete_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditBondDoubleAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditDeleteBondAction);
 }
 
-void AtenForm::on_BondTripleButton_clicked(bool on)
-{
-	if (on) setUserAction(on, Canvas::EditBondTripleAction);
-}
-
-void AtenForm::on_BondDeleteButton_clicked(bool on)
-{
-	if (on) setUserAction(on, Canvas::EditDeleteBondAction);
-}
-
-void AtenForm::on_ElementHButton_clicked(bool on)
+void AtenForm::on_actionElementH_triggered(bool on)
 {
 	if (on) master.setSketchElement(1);
 }
 
-void AtenForm::on_ElementCButton_clicked(bool on)
+void AtenForm::on_actionElementC_triggered(bool on)
 {
 	if (on) master.setSketchElement(6);
 }
 
-void AtenForm::on_ElementNButton_clicked(bool on)
+void AtenForm::on_actionElementN_triggered(bool on)
 {
 	if (on) master.setSketchElement(7);
 }
 
-void AtenForm::on_AtomAddHydrogenButton_clicked(bool on)
+void AtenForm::on_actionElementCustom_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditAddHydrogenAction);
+	printf("TGAY Not done yet.....\n");
 }
 
-void AtenForm::on_ProbeAtomButton_clicked(bool on)
+void AtenForm::on_actionAtomAddHydrogen_triggered(bool on)
 {
-	if (on) setUserAction(on, Canvas::EditProbeAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::EditAddHydrogenAction);
 }
 
-// void AtenForm::on_ElementUserButton_clicked(bool on)
+void AtenForm::on_actionProbeAtom_triggered(bool on)
+{
+	if (on) gui.mainView.setSelectedMode(Canvas::EditProbeAction);
+}
+
+// void AtenForm::on_actionElementUser_triggered(bool on)
 // {
 // 	master.setSketchElement(elements.find(qPrintable(ui.ElementUserButton->text())));
 // }
 
-void AtenForm::on_BondCalcButton_clicked(bool on)
+void AtenForm::on_actionBondCalc_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding");
@@ -115,7 +115,7 @@ void AtenForm::on_BondCalcButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_BondClearButton_clicked(bool on)
+void AtenForm::on_actionBondClear_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding");
@@ -124,7 +124,7 @@ void AtenForm::on_BondClearButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_BondCalcSelButton_clicked(bool on)
+void AtenForm::on_actionBondCalcSel_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding (Selection)");
@@ -133,7 +133,7 @@ void AtenForm::on_BondCalcSelButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_BondClearSelButton_clicked(bool on)
+void AtenForm::on_actionBondClearSel_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding (Selection)");
@@ -142,7 +142,7 @@ void AtenForm::on_BondClearSelButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_BondAugmentButton_clicked(bool on)
+void AtenForm::on_actionBondAugment_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Augment Bonding");
@@ -151,7 +151,7 @@ void AtenForm::on_BondAugmentButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-// void AtenForm::on_ElementEdit_returnPressed()
+// void AtenForm::on_actionElementEdit_returnPressed()
 // {
 // 	// Get the contents of the line edit and check that it is an element symbol
 // 	int el = elements.find(qPrintable(ui.ElementEdit->text()));
@@ -169,7 +169,7 @@ void AtenForm::on_BondAugmentButton_clicked(bool on)
 // 	}
 // }
 
-void AtenForm::on_AddHydrogenButton_clicked(bool on)
+void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {
 	Model *m = master.currentModel()->renderSource();
 	m->beginUndostate("Hydrogen Satisfy Model");

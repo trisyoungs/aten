@@ -1,6 +1,6 @@
 /*
-	*** Qt analyse functions interface
-	*** src/gui/analyse_funcs.cpp
+	*** Qt GUI: Measurement actions
+	*** src/gui/measureactions.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -24,22 +24,22 @@
 #include "gui/mainwindow.h"
 #include "model/model.h"
 
-void AtenForm::on_MeasureDistanceButton_clicked(bool on)
+void AtenForm::on_actionMeasureDistance_triggered(bool on)
 {
 	if (on) setUserAction(on, Canvas::MeasureDistanceAction);
 }
 
-void AtenForm::on_MeasureAngleButton_clicked(bool on)
+void AtenForm::on_actionMeasureAngle_triggered(bool on)
 {
 	if (on) setUserAction(on, Canvas::MeasureAngleAction);
 }
 
-void AtenForm::on_MeasureTorsionButton_clicked(bool on)
+void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 {
 	if (on) setUserAction(on, Canvas::MeasureTorsionAction);
 }
 
-void AtenForm::on_RemoveMeasurementsButton_clicked(bool on)
+void AtenForm::on_actionRemoveMeasurements_triggered(bool on)
 {
 	master.currentModel()->removeMeasurements(Measurement::DistanceMeasurement);
 	master.currentModel()->removeMeasurements(Measurement::AngleMeasurement);
@@ -47,19 +47,19 @@ void AtenForm::on_RemoveMeasurementsButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_MeasureDistanceSelectionButton_clicked(bool on)
+void AtenForm::on_actionMeasureDistanceSelection_triggered(bool on)
 {
 	master.currentModel()->addMeasurementsInSelection(Measurement::DistanceMeasurement);
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_MeasureAngleSelectionButton_clicked(bool on)
+void AtenForm::on_actionMeasureAngleSelection_triggered(bool on)
 {
 	master.currentModel()->addMeasurementsInSelection(Measurement::AngleMeasurement);
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_MeasureTorsionSelectionButton_clicked(bool on)
+void AtenForm::on_actionMeasureTorsionSelection_triggered(bool on)
 {
 	master.currentModel()->addMeasurementsInSelection(Measurement::TorsionMeasurement);
 	gui.mainView.postRedisplay();

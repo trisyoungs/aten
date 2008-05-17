@@ -25,6 +25,7 @@
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
 #include <QtGui/QFileDialog>
+#include <QtGui/QDoubleSpin>
 #include <QtCore/QSettings>
 
 // Finalise GUI
@@ -75,12 +76,6 @@ void AtenForm::finaliseUi()
 	schemeGroup->addAction(ui.actionSchemeCharge);
 	schemeGroup->addAction(ui.actionSchemeForce);
 
-	// Create QActionGroup for selections
-	selectGroup = new QActionGroup(this);
-	selectGroup->addAction(ui.actionSelectAtoms);
-	selectGroup->addAction(ui.actionSelectMolecules);
-	selectGroup->addAction(ui.actionSelectElement);
-
 	// Create QActionGroup for Mouse toolbar
 	QActionGroup *mousegroup = new QActionGroup(this);
 	mousegroup->addAction(ui.actionMouseInteract);
@@ -126,47 +121,39 @@ void AtenForm::finaliseUi()
 		case (Atom::IndividualStyle): ui.actionStyleIndividual->setChecked(true); break;
 	}
 
+	// Add bond tolerance spinbox to Bond Toolbar
+	bondToleranceSpin_ = new QDoubleSpin(this);
+	ui.DrawToolBar->addWidget(bondToleranceSpin_);
+	QObject::connect(bondToleranceSpin_, SIGNAL(valueChanged(double d)), this, SLOT(bondTolerance_valueChanged(double d)));
+
 	// Create master group for toolbar buttons that change user action modes
-	uaGroup = new QButtonGroup(this);
-	uaGroup->addButton(ui.DrawAtomButton);
-	uaGroup->addButton(ui.DrawChainButton);
-	uaGroup->addButton(ui.DrawDeleteButton);
-	uaGroup->addButton(ui.DrawTransmuteButton);
-	uaGroup->addButton(ui.MeasureDistanceButton);
-	uaGroup->addButton(ui.MeasureAngleButton);
-	uaGroup->addButton(ui.MeasureTorsionButton);
-	uaGroup->addButton(ui.BondSingleButton);
-	uaGroup->addButton(ui.BondDoubleButton);
-	uaGroup->addButton(ui.BondTripleButton);
-	uaGroup->addButton(ui.BondDeleteButton);
-	uaGroup->addButton(ui.AtomAddHydrogenButton);
-	uaGroup->addButton(ui.ProbeAtomButton);
-	// --- Add dummy button so we can have none of the others selected
-	dummyButton = new QPushButton(this);
-	dummyButton->setCheckable(TRUE);
-	dummyButton->setChecked(TRUE);
-	dummyButton->setVisible(FALSE);
-	uaGroup->addButton(dummyButton);
+	uaGroup = new QActionGroup(this);
+	// Select Toolbar
+	uaGroup->addAction(ui.actionSelectAtoms);
+	uaGroup->addAction(ui.actionSelectMolecules);
+	uaGroup->addAction(ui.actionSelectElement);
+	// Draw Toolbar
+	uaGroup->addAction(ui.actionDrawAtom);
+	uaGroup->addAction(ui.actionDrawChain);
+	uaGroup->addAction(ui.actionDeleteAtom);
+	uaGroup->addAction(ui.actionTransmuteAtom);
+	uaGroup->addAction(ui.actionBondSingle);
+	uaGroup->addAction(ui.actionBondDouble);
+	uaGroup->addAction(ui.actionBondTriple);
+	uaGroup->addAction(ui.actionDeleteBond);
+	uaGroup->addAction(ui.actionAddHydrogenAtom);
+	uaGroup->addAction(ui.actionProbeAtom);
+	// Measure Toolbar
+	uaGroup->addAction(ui.actionMeasureDistance);
+	uaGroup->addAction(ui.actionMeasureAngle);
+	uaGroup->addAction(ui.actionMeasureTorsion);
 
 	// Create a subgroup for the element select buttons
-	QButtonGroup *elementGroup = new QButtonGroup(this);
-	elementGroup->addButton(ui.ElementHButton);
-	elementGroup->addButton(ui.ElementCButton);
-	elementGroup->addButton(ui.ElementNButton);
-	elementGroup->addButton(ui.ElementUserButton);
-
-	// Store widgetstack buttons
-	stackButtons_[SP_ATOMS] = ui.ShowAtomPageButton;
-	stackButtons_[SP_EDIT] = ui.ShowEditPageButton;
-	stackButtons_[SP_TRANSFORM] = ui.ShowTransformPageButton;
-	stackButtons_[SP_POSITION] = ui.ShowPositionPageButton;
-	stackButtons_[SP_CELLDEFINE] = ui.ShowCellDefinePageButton;
-	stackButtons_[SP_CELLMANIPULATE] = ui.ShowCellManipulatePageButton;
-	stackButtons_[SP_MINIMISER] = ui.ShowMinimiserPageButton;
-	stackButtons_[SP_DISORDER] = ui.ShowDisorderPageButton;
-	stackButtons_[SP_FORCEFIELD] = ui.ShowForcefieldsPageButton;
-	stackButtons_[SP_GRID] = ui.ShowGridsPageButton;
-	stackButtons_[SP_ANALYSE] = ui.ShowAnalysePageButton;
+	QActionGroup *elementGroup = new QActionGroup(this);
+	elementGroup->addAction(ui.actionElementH);
+	elementGroup->addAction(ui.actionElementC);
+	elementGroup->addAction(ui.actionElementN);
+	elementGroup->addAction(ui.actionElementCustom);
 
 	// Add permanent statusbar widgets
 	statusLabel = new QLabel(this,0);
@@ -188,14 +175,11 @@ void AtenForm::finaliseUi()
 	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,128);
 	progressIndicator->setVisible(FALSE);
 
-	// Create dialog array
-	dialog = new QFileDialog*[Filter::nFilterTypes];
-
 	// Create open model dialog
-	dialog[Filter::ModelImport] = new QFileDialog(this);
-	dialog[Filter::ModelImport]->setFileMode(QFileDialog::ExistingFiles);
-	dialog[Filter::ModelImport]->setDirectory(master.workDir.get());
-	dialog[Filter::ModelImport]->setWindowTitle("Open Model(s)");
+	loadModelDialog = new QFileDialog(this);
+	loadModelDialog->setFileMode(QFileDialog::ExistingFiles);
+	loadModelDialog->setDirectory(master.workDir.get());
+	loadModelDialog->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
 	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next) filters << f->description();
 	if (filters.empty())
@@ -203,25 +187,25 @@ void AtenForm::finaliseUi()
 		ui.actionFileOpen->setEnabled(FALSE);
 		ui.RecentMenu->setEnabled(FALSE);
 	}
-	else dialog[Filter::ModelImport]->setFilters(filters);
+	else loadModelDialog->setFilters(filters);
 
 	// Create open trajectory dialog
-	dialog[Filter::TrajectoryImport] = new QFileDialog(this);
-	dialog[Filter::TrajectoryImport]->setFileMode(QFileDialog::ExistingFile);
-	dialog[Filter::TrajectoryImport]->setDirectory(master.workDir.get());
-	dialog[Filter::TrajectoryImport]->setWindowTitle("Add Trajectory");
+	loadTrajectoryDialog = new QFileDialog(this);
+	loadTrajectoryDialog->setFileMode(QFileDialog::ExistingFile);
+	loadTrajectoryDialog->setDirectory(master.workDir.get());
+	loadTrajectoryDialog->setWindowTitle("Add Trajectory");
 	filters.clear();
 	filters << "All files (*)";
 	for (f = master.filters(Filter::TrajectoryImport); f != NULL; f = f->next) filters << f->description();
-	dialog[Filter::TrajectoryImport]->setFilters(filters);
+	loadTrajectoryDialog->setFilters(filters);
 
 	// Create save model dialog
-	dialog[Filter::ModelExport] = new QFileDialog(this);
-	dialog[Filter::ModelExport]->setWindowTitle("Save Model");
-	dialog[Filter::ModelExport]->setAcceptMode(QFileDialog::AcceptSave);
-	dialog[Filter::ModelExport]->setDirectory(master.workDir.get());
-	dialog[Filter::ModelExport]->setConfirmOverwrite(TRUE);
-	dialog[Filter::ModelExport]->setFileMode(QFileDialog::AnyFile);
+	saveModelDialog = new QFileDialog(this);
+	saveModelDialog->setWindowTitle("Save Model");
+	saveModelDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveModelDialog->setDirectory(master.workDir.get());
+	saveModelDialog->setConfirmOverwrite(TRUE);
+	saveModelDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (f = master.filters(Filter::ModelExport); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
@@ -230,7 +214,7 @@ void AtenForm::finaliseUi()
 		ui.actionFileSave->setEnabled(FALSE);
 		ui.actionFileSaveAs->setEnabled(FALSE);
 	}
-	else dialog[Filter::ModelExport]->setFilters(filters);
+	else saveModelDialog->setFilters(filters);
 
 	// Create save image dialog
 	saveBitmapDialog = new QFileDialog(this);
@@ -241,8 +225,6 @@ void AtenForm::finaliseUi()
 	filters.clear();
 	for (n=0; n < BIF_NITEMS; n++) filters << filter_from_BIF( (bitmap_format) n);
 	saveBitmapDialog->setFilters(filters);
-
-
 
 	// Create save vector dialog
 	saveVectorDialog = new QFileDialog(this);
@@ -255,25 +237,25 @@ void AtenForm::finaliseUi()
 	saveVectorDialog->setFilters(filters);
 
 	// Create save expression dialog
-	dialog[Filter::ExpressionExport] = new QFileDialog(this);
-	dialog[Filter::ExpressionExport]->setWindowTitle("Save Vector");
-	dialog[Filter::ExpressionExport]->setAcceptMode(QFileDialog::AcceptSave);
-	dialog[Filter::ExpressionExport]->setDirectory(master.workDir.get());
-	dialog[Filter::ExpressionExport]->setFileMode(QFileDialog::AnyFile);
+	saveExpressionDialog = new QFileDialog(this);
+	saveExpressionDialog->setWindowTitle("Save Vector");
+	saveExpressionDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveExpressionDialog->setDirectory(master.workDir.get());
+	saveExpressionDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (f = master.filters(Filter::ExpressionExport); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
-	else dialog[Filter::ExpressionExport]->setFilters(filters);
+	else saveExpressionDialog->setFilters(filters);
 
 	// Create open script dialog
-	openScriptDialog = new QFileDialog(this);
-	openScriptDialog->setWindowTitle("Open Script");
-	openScriptDialog->setDirectory(master.workDir.get());
-	openScriptDialog->setFileMode(QFileDialog::ExistingFile);
+	loadScriptDialog = new QFileDialog(this);
+	loadScriptDialog->setWindowTitle("Open Script");
+	loadScriptDialog->setDirectory(master.workDir.get());
+	loadScriptDialog->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
-	openScriptDialog->setFilters(filters);
+	loadScriptDialog->setFilters(filters);
 
 	dbgEnd(Debug::Calls,"AtenForm::finaliseUi");
 }
@@ -301,8 +283,8 @@ void AtenForm::setControls()
 		case (Prefs::ForceScheme): ui.actionSchemeForce->setChecked(TRUE); break;
 		//case (Prefs::VelocityScheme): ui.actionSchemeVelocity->setChecked(TRUE); break;
 	}
-	// Set controls on edit page
-	ui.BondToleranceSpin->setValue(prefs.bondTolerance());
+	// Set controls on edit page 
+	bondToleranceSpin->setValue(prefs.bondTolerance());
 	// Set the initial configuration of the splitter
 	ui.MainSplitter->setSizes( QList<int>() << 500 << 64 );
 	dbgEnd(Debug::Calls,"AtenForm::setControls");
