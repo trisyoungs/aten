@@ -30,8 +30,15 @@
 #include <QtGui/QFileDialog>
 #include "model/model.h"
 
+void AtenForm::on_actionFileQuit_triggered(bool checked)
+{
+	if (!gui.saveBeforeClose()) return;
+	saveSettings();
+	gui.app->exit(0);
+}
+
 /*
-// File Actions
+// Model Actions
 */
 
 void AtenForm::on_actionFileNew_triggered(bool checked)
@@ -159,6 +166,10 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 	else master.removeModel(m);
 }
 
+/*
+// Images
+*/
+
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Save the current view as a bitmap image.
@@ -189,6 +200,10 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	}
 }
 
+/*
+// Trajectories
+*/
+
 void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
 	Filter *f;
@@ -218,8 +233,10 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 	}
 }
 
+/*
+// Expressions
+*/
 
-// Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
 	Filter *f;
@@ -237,9 +254,22 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 	}
 }
 
-void AtenForm::on_actionFileQuit_triggered(bool checked)
+/*
+// Grids
+*/
+
+void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
-	if (!gui.saveBeforeClose()) return;
-	saveSettings();
-	gui.app->exit(0);
+	// Call routine in grids window...
+	gui.gridsWindow->loadGrid();
+}
+
+/*
+// Forcefields
+*/
+
+void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
+{
+	// Call routine in forcefields window...
+	gui.forcefieldsWindow->loadForcefield();
 }

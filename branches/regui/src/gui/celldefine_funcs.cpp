@@ -23,6 +23,8 @@
 #include "model/model.h"
 #include "gui/gui.h"
 #include "gui/celldefine.h"
+#include "gui/celltransform.h"
+#include "gui/disorder.h"
 #include "base/spacegroup.h"
 
 // Constructor
@@ -55,16 +57,11 @@ void AtenCellDefine::refresh()
 	ui.CellVolumeLabel->setText(s);
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
-	// Update checkboxes in replicate group
-	ui.CellReplicateFoldCheck->setChecked( prefs.replicateFold() );
-	ui.CellReplicateTrimCheck->setChecked( prefs.replicateTrim() );
 	// Update the widgets on the page to reflect the current model's unit cell
-	if (cell->type() == Cell::NoCell)
+	if (ct == Cell::NoCell)
 	{
 		// No cell, so disable group boxes and quit
 		ui.CellDefinitionGroup->setChecked(FALSE);
-		ui.CellReplicateGroup->setEnabled(FALSE);
-		ui.CellScaleGroup->setEnabled(FALSE);
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 		refreshing_ = FALSE;
 		return;
@@ -73,8 +70,6 @@ void AtenCellDefine::refresh()
 	{
 		// Activate widgets
 		ui.CellDefinitionGroup->setChecked(TRUE);
-		ui.CellReplicateGroup->setEnabled(TRUE);
-		ui.CellScaleGroup->setEnabled(TRUE);
 		ui.CellSpacegroupGroup->setEnabled(TRUE);
 	}
 	// Set values in spin boxes
@@ -105,7 +100,7 @@ void AtenCellDefine::cellChanged()
 	// Make changes
 	Model *m = master.currentModel();
 	if (m->cell()->type() == Cell::NoCell) m->beginUndostate("Add Cell");
-	else m->beginUndostate("Change Cell");
+	else m->beginUndostate("Edit Cell");
 	m->setCell(lengths, angles);
 	m->endUndostate();
 	m->calculateDensity();
@@ -160,8 +155,6 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 	if (checked)
 	{
 		cellChanged();
-		ui.CellReplicateGroup->setEnabled(TRUE);
-		ui.CellScaleGroup->setEnabled(TRUE);
 		ui.CellSpacegroupGroup->setEnabled(TRUE);
 	}
 	else
@@ -170,12 +163,11 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 		m->beginUndostate("Remove Cell");
 		m->removeCell();
 		m->endUndostate();
-		ui.CellReplicateGroup->setEnabled(FALSE);
-		ui.CellScaleGroup->setEnabled(FALSE);
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder stack page here, since a cell has been added/removed
-	refreshDisorderPage();
+	gui.cellTransformWindow->refresh();
+	gui.disorderWindow->refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 

@@ -61,9 +61,6 @@ void AtenForm::finaliseUi()
 		if (settings_->contains(temp)) addRecent(qPrintable(settings_->value(temp).toString()));
 	}
 
-	// Set editable items in the Atom List
-	ui.AtomTree->setEditTriggers(QAbstractItemView::DoubleClicked);
-
 	// Create QActionGroup for draw styles
 	QActionGroup *styleGroup = new QActionGroup(this);
 	styleGroup->addAction(ui.actionStyleStick);
@@ -110,9 +107,6 @@ void AtenForm::finaliseUi()
 	rendersourceGroup->addAction(ui.actionViewModel);
 	rendersourceGroup->addAction(ui.actionViewTrajectory);
 
-	// Hide the stack widget initially
-	ui.MainWindowStack->hide();
-
 	// Add the previously-created QGLWidget to the main interface, and set up calls
 	QVBoxLayout *vbox = new QVBoxLayout();
 	vbox->setMargin(0);
@@ -132,7 +126,7 @@ void AtenForm::finaliseUi()
 		case (Atom::IndividualStyle): ui.actionStyleIndividual->setChecked(true); break;
 	}
 
-	// Create master group for stackpage buttons that change user action modes
+	// Create master group for toolbar buttons that change user action modes
 	uaGroup = new QButtonGroup(this);
 	uaGroup->addButton(ui.DrawAtomButton);
 	uaGroup->addButton(ui.DrawChainButton);

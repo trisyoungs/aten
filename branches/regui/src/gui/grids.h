@@ -36,6 +36,7 @@ class AtenGrids : public QWidget
 	public:
 	void showWindow();
 	void refresh();
+	void loadGrid();
 	private:
 	void refreshGridInfo();
 	void gridOriginChanged(int component, double value);

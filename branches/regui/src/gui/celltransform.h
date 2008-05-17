@@ -46,6 +46,8 @@ class AtenCellTransform : public QWidget
 	// Local variables
 	*/
 	private:
+	// Whether the window is refreshing
+	bool refreshing_;
 
 	/*
 	// Widgets
