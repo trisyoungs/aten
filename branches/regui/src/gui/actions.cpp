@@ -20,7 +20,6 @@
 */
 
 #include "base/master.h"
-//#include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "model/model.h"
@@ -29,7 +28,7 @@
 // Draw style Actions
 */
 
-void AtenForm::on_StyleToolBar_actionTriggered(QAction *action)
+void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
 {
 	// If the source action is not checked, ignore the signal
 	if (!action->isChecked()) return;

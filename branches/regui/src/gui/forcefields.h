@@ -75,10 +75,6 @@ class AtenForcefields : public QWidget
 	~AtenForcefields();
 	// Main form declaration
 	Ui::ForcefieldsWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 	// File dialogs for forcefields
 	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
 };

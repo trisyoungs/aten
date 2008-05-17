@@ -52,10 +52,6 @@ class AtenBuild : public QWidget
 	~AtenBuild();
 	// Main form declaration
 	Ui::BuildWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

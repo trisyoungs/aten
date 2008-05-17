@@ -27,6 +27,7 @@
 // Constructor
 AtenTransform::AtenTransform(QWidget *parent)
 {
+	ui.setupUi(this);
 }
 
 // Destructor

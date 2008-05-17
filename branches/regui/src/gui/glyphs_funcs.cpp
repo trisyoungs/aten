@@ -26,6 +26,8 @@
 // Constructor
 AtenGlyphs::AtenGlyphs(QWidget *parent)
 {
+	ui.setupUi(this);
+
 	// Private variables
 	refreshing_ = FALSE;
 }

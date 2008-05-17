@@ -105,7 +105,6 @@ void GuiQt::run()
 	positionWindow = new AtenPosition;
 	transformWindow = new AtenTransform;
 	
-
 	// Set the modality of child windows
 	prefsDialog->setModal(TRUE);
 	forcefieldEditorDialog->setModal(TRUE);
@@ -159,6 +158,7 @@ void GuiQt::run()
 	gui.mainView.postRedisplay();
 
 	int n = app->exec();
+
 	dbgEnd(Debug::Calls,"GuiQt::run");
 }
 
@@ -290,7 +290,7 @@ void GuiQt::updateTrajControls()
 	else
 	{
 		// Make sure the trajectory toolbar is visible
-		mainWindow->ui.TrajectoryToolBar->setVisible(TRUE);
+		mainWindow->ui.TrajectoryToolbar->setVisible(TRUE);
 		// If the trajectory is playing, desensitise all but the play/pause button
 		if (trajectoryPlaying_)
 		{

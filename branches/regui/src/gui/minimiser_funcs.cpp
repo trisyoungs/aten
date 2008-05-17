@@ -32,6 +32,7 @@ enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_
 // Constructor
 AtenMinimiser::AtenMinimiser(QWidget *parent)
 {
+	ui.setupUi(this);
 }
 
 // Destructor

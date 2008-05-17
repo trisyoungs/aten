@@ -73,10 +73,6 @@ class AtenAtomlist : public QWidget
 	~AtenAtomlist();
 	// Main form declaration
 	Ui::AtomlistWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

@@ -66,10 +66,6 @@ class AtenCellDefine : public QWidget
 	~AtenCellDefine();
 	// Main form declaration
 	Ui::CellDefineWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 };
 
 #endif

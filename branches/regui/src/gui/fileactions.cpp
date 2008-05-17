@@ -224,7 +224,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 		{
 			m->initialiseTrajectory(qPrintable(filename), f);
 			// Ensure trajectory toolbar is visible and View->Trajectory is selected
-			ui.TrajectoryToolBar->setVisible(TRUE);
+			ui.TrajectoryToolbar->setVisible(TRUE);
 			ui.actionViewTrajectory->setChecked(TRUE);
 			gui.updateTrajControls();
 		}
