@@ -33,6 +33,8 @@ class AtenGlyphs : public QWidget
 	/*
 	// Window Functions
 	*/
+	public:
+	void showWindow();
 	private slots:
 
 	/*

@@ -28,7 +28,7 @@
 // Forward declarations
 class AtenForm;
 class AtenPrefs;
-class AtenEdit;
+class AtenForcefieldEditor;
 class AtenLoadModel;
 class AtenSelectPattern;
 class AtenAtomlist;
@@ -153,13 +153,13 @@ class GuiQt
 	AtenTransform *transformWindow;
 
 	/*
-	// Dialogs
+	// Dialog Windows
 	*/
 	public:
 	// Preferences Dialog
 	AtenPrefs *prefsDialog;
 	// Forcefield Editor
-	AtenEdit *editDialog;
+	AtenForcefieldEditor *forcefieldEditorDialog;
 	// Load model dialog
 	AtenLoadModel *loadModelDialog;
 	// Select pattern dialog

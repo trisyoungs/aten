@@ -224,7 +224,7 @@ class AtenForm : public QMainWindow
 	void refreshScriptsMenu();
 
 	/*
-	// Toolbar Actions
+	// Toolbar Show / Hide
 	*/
 	private slots:
 	void on_actionFileToolBarVisibility_triggered(bool v);
@@ -236,24 +236,20 @@ class AtenForm : public QMainWindow
 	void on_actionSelectToolBarVisibility_triggered(bool v);
 
 	/*
-	// Widget Stack Functions
+	// Window Show / Hide Functions
 	*/
-	private:
-	void switchStack(int buttonid, bool checked);
-	QPushButton *stackButtons_[SP_NITEMS];
 	private slots:
-	void on_ShowAtomPageButton_clicked(bool checked);
-	void on_ShowEditPageButton_clicked(bool checked);
-	void on_ShowTransformPageButton_clicked(bool checked);
-	void on_ShowPositionPageButton_clicked(bool checked);
-	void on_ShowCellDefinePageButton_clicked(bool checked);
-	void on_ShowCellManipulatePageButton_clicked(bool checked);
-	void on_ShowMinimiserPageButton_clicked(bool checked);
-	void on_ShowDisorderPageButton_clicked(bool checked);
-	void on_ShowForcefieldsPageButton_clicked(bool checked);
-	void on_ShowGridsPageButton_clicked(bool checked);
-	void on_ShowAnalysePageButton_clicked(bool checked);
-	//void on_ShowGlyphPageButton_clicked(bool checked);
+	void on_actionAtomlistWindow_clicked(bool checked);
+	void on_actionBuildWindow_clicked(bool checked);
+	void on_actionDisorderWindow_clicked(bool checked);
+	void on_actionForcefieldsWindow_clicked(bool checked);
+	void on_actionTransformWindow_clicked(bool checked);
+	void on_actionPositionWindow_clicked(bool checked);
+	void on_actionGridsWindow_clicked(bool checked);
+	void on_actionGlyphsWindow_clicked(bool checked);
+	void on_actionMinimiserWindow_clicked(bool checked);
+	void on_actionCellDefineWindow_clicked(bool checked);
+	void on_actionCellTransformWindow_clicked(bool checked);
 
 	// Edit Toolbar
 	private:
@@ -291,11 +287,6 @@ class AtenForm : public QMainWindow
 	void on_MeasureDistanceSelectionButton_clicked(bool on);
 	void on_MeasureAngleSelectionButton_clicked(bool on);
 	void on_MeasureTorsionSelectionButton_clicked(bool on);
-
-	// Minimiser Page Functions
-	private slots:
-	void on_MinimiserMethodCombo_currentIndexChanged(int index);
-	void on_MinimiseButton_clicked(bool checked);
 
 	/*
 	// Atom Popup Functions
@@ -348,10 +339,12 @@ class AtenForm : public QMainWindow
 	QLabel *progressLabel;
 	QPushButton *progressButton;
 	QFrame *progressIndicator;
-	// File dialogs for filter types
-	QFileDialog **dialog;
-	// File dialogs for forcefields
-	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
+	// File dialogs for models
+	QFileDialog *openModelDialog, *saveModelDialog;
+	// File dialogs for trajectories
+	QFileDialog *openTrajectoryDialog, *saveTrajectoryDialog;
+	// File dialogs for expressions
+	QFileDialog *openExpressionDialog, *saveExpressionsDialog;
 	// File dialog for save bitmap and save vector image
 	QFileDialog *saveBitmapDialog, *saveVectorDialog;
 	// File dialog for script loading

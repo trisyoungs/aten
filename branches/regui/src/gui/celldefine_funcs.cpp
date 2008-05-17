@@ -37,6 +37,13 @@ AtenCellDefine::~AtenCellDefine()
 {
 }
 
+// Show window
+void AtenCellDefine::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
+}
+
 void AtenCellDefine::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)

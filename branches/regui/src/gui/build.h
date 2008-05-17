@@ -33,6 +33,8 @@ class AtenBuild : public QWidget
 	/*
 	// Window Functions
 	*/
+	public:
+	void showWindow();
 	private slots:
 	void on_AddAtomButton_clicked(bool on);
 

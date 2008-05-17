@@ -34,6 +34,12 @@ AtenPosition::~AtenPosition()
 {
 }
 
+void AtenPosition::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
+}
+
 /*
 // Flip
 */

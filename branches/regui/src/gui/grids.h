@@ -34,6 +34,7 @@ class AtenGrids : public QWidget
 	// Window Functions
 	*/
 	public:
+	void showWindow();
 	void refresh();
 	private:
 	void refreshGridInfo();
@@ -83,6 +84,8 @@ class AtenGrids : public QWidget
 	void finaliseUi();
 	// Set controls to reflect program variables
 	void setControls();
+	// File dialogs for grids
+	QFileDialog *openGridDialog, *saveGridDialog;
 };
 
 #endif

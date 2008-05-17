@@ -24,6 +24,9 @@
 
 #include "gui/ui_forcefields.h"
 
+// Forward Declarations
+class QFileDialog;
+
 // Program preferences window
 class AtenForcefields : public QWidget
 {
@@ -34,6 +37,7 @@ class AtenForcefields : public QWidget
 	// Window Functions
 	*/
 	public:
+	void showWindow();
 	void refresh();
 	void refreshTypes();
 	private slots:
@@ -58,6 +62,8 @@ class AtenForcefields : public QWidget
 	private:
 	// Element selected in Type filter
 	int typelistElement_;
+	// Whether window contents should be refreshed when shown
+	bool shouldRefresh_;
 
 	/*
 	// Widgets
@@ -72,6 +78,8 @@ class AtenForcefields : public QWidget
 	void finaliseUi();
 	// Set controls to reflect program variables
 	void setControls();
+	// File dialogs for forcefields
+	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
 };
 
 #endif

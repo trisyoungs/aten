@@ -35,6 +35,13 @@ AtenBuild::~AtenBuild()
 {
 }
 
+// Show window
+void AtenBuild::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
+}
+
 void AtenBuild::on_AddAtomButton_clicked(bool on)
 {
 	static char s[256];

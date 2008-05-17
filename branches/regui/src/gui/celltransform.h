@@ -34,6 +34,7 @@ class AtenCellTransform : public QWidget
 	// Window Functions
 	*/
 	public:
+	void showWindow();
 	void refresh();
 	private slots:
 	void on_CellReplicateButton_clicked(bool checked);

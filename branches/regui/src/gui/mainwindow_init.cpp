@@ -248,26 +248,7 @@ void AtenForm::finaliseUi()
 	for (n=0; n < BIF_NITEMS; n++) filters << filter_from_BIF( (bitmap_format) n);
 	saveBitmapDialog->setFilters(filters);
 
-	// Create open forcefield dialog
-	openForcefieldDialog = new QFileDialog(this);
-	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
-	openForcefieldDialog->setDirectory(master.dataDir.get());
-	openForcefieldDialog->setWindowTitle("Open Forcefield");
-	filters.clear();
-	filters << "All files (*)";
-	filters << "Forcefield Files (*.ff)";
-	openForcefieldDialog->setFilters(filters);
 
-	// Create save forcefield dialog
-	saveForcefieldDialog = new QFileDialog(this);
-	saveForcefieldDialog->setWindowTitle("Save Forcefield");
-	saveForcefieldDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveForcefieldDialog->setDirectory(master.workDir.get());
-	saveForcefieldDialog->setFileMode(QFileDialog::AnyFile);
-	filters.clear();
-	filters << "All files (*)";
-	filters << "Forcefield Files (*.ff)";
-	saveForcefieldDialog->setFilters(filters);
 
 	// Create save vector dialog
 	saveVectorDialog = new QFileDialog(this);
@@ -290,17 +271,6 @@ void AtenForm::finaliseUi()
 	// Check for empty filters list (causes crash)
 	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
 	else dialog[Filter::ExpressionExport]->setFilters(filters);
-
-	// Create open grid dialog
-	dialog[Filter::GridImport] = new QFileDialog(this);
-	dialog[Filter::GridImport]->setWindowTitle("Open Grid");
-	dialog[Filter::GridImport]->setDirectory(master.workDir.get());
-	dialog[Filter::GridImport]->setFileMode(QFileDialog::ExistingFile);
-	filters.clear();
-	filters << "All files (*)";
-	for (f = master.filters(Filter::GridImport); f != NULL; f = f->next) filters << f->description();
-	if (filters.empty()) ui.actionFileOpenGrid->setEnabled(FALSE);
-	else dialog[Filter::GridImport]->setFilters(filters);
 
 	// Create open script dialog
 	openScriptDialog = new QFileDialog(this);

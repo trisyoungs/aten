@@ -39,6 +39,12 @@ AtenMinimiser::~AtenMinimiser()
 {
 }
 
+void AtenMinimiser::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
+}
+
 void AtenMinimiser::on_MinimiserMethodCombo_currentIndexChanged(int index)
 {
 	ui.MethodOptionsStack->setCurrentIndex(index);

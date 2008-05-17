@@ -30,11 +30,28 @@
 // Constructor
 AtenGrids::AtenGrids(QWidget *parent)
 {
+	// Create open grid dialog
+	QStringList filters;
+	openGridDialog = new QFileDialog(this);
+	openGridDialog->setWindowTitle("Open Grid");
+	openGridDialog->setDirectory(master.workDir.get());
+	openGridDialog->setFileMode(QFileDialog::ExistingFile);
+	filters.clear();
+	filters << "All files (*)";
+	for (Filter *f = master.filters(Filter::GridImport); f != NULL; f = f->next) filters << f->description();
+	if (filters.empty()) ui.LoadGridButton->setEnabled(FALSE);
+	else openGridDialog->setFilters(filters);
 }
 
 // Destructor
 AtenGrids::~AtenGrids()
 {
+}
+
+void AtenGrids::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
 }
 
 // Refresh widget
@@ -57,7 +74,34 @@ void AtenGrids::refresh()
 
 void AtenGrids::on_LoadGridButton_clicked(bool checked)
 {
-	on_actionFileOpenGrid_triggered(FALSE);
+	Filter *f;
+	Grid *g;
+	QString filename;
+	QStringList filenames;
+	if (openGridDialog->exec() == 1)
+	{
+		// Get selected filter in file dialog
+		QString filter = openGridDialog->selectedFilter();
+		// Find the corresponding Aten filter that was selected
+		for (f = master.filters(Filter::GridImport); f != NULL; f = f->next)
+			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
+		// Get selected filename list
+		filenames = openGridDialog->selectedFiles();
+		// Loop over selected files
+		for (int i = 0; i < filenames.count(); ++i)
+		{
+			filename = filenames.at(i);
+			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+			if (f != NULL) f->execute(qPrintable(filename));
+			else
+			{
+				f = master.probeFile(qPrintable(filename), Filter::GridImport);
+				if (f != NULL) f->execute(qPrintable(filename));
+			}
+		}
+		gui.gridsWindow->refresh();
+		gui.mainView.postRedisplay();
+	}
 }
 
 void AtenGrids::on_GridOriginXSpin_valueChanged(double d)
@@ -209,7 +253,7 @@ void AtenGrids::on_RemoveGridButton_clicked(bool checked)
 	if (row == -1) return;
 	else g = master.grid(row);
 	master.removeGrid(g);
-	refreshGridsPage();
+	refresh();
 }
 
 void AtenGrids::on_SaveGridButton_clicked(bool checked)

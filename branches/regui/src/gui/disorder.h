@@ -38,6 +38,7 @@ class AtenDisorder : public QWidget
 	// Window Functions
 	*/
 	public:
+	void showWindow();
 	void refresh();
 	private:
 	void refreshComponentData();

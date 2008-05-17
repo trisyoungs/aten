@@ -31,6 +31,12 @@ AtenGlyphs::AtenGlyphs(QWidget *parent)
 }
 
 // Destructor
-~AtenGlyphs::AtenGlyphs()
+AtenGlyphs::~AtenGlyphs()
 {
+}
+
+void AtenGlyphs::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
 }

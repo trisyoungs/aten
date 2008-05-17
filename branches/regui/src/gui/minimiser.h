@@ -33,7 +33,11 @@ class AtenMinimiser : public QWidget
 	/*
 	// Window Functions
 	*/
+	public:
+	void showWindow();
 	private slots:
+	void on_MinimiserMethodCombo_currentIndexChanged(int index);
+	void on_MinimiseButton_clicked(bool checked);
 
 	/*
 	// Local variables
