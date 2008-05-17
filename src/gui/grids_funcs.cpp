@@ -72,7 +72,8 @@ void AtenGrids::refresh()
 	refreshGridInfo();
 }
 
-void AtenGrids::on_LoadGridButton_clicked(bool checked)
+// Load grid (public function)
+void AtenGrids::loadGrid()
 {
 	Filter *f;
 	Grid *g;
@@ -102,6 +103,11 @@ void AtenGrids::on_LoadGridButton_clicked(bool checked)
 		gui.gridsWindow->refresh();
 		gui.mainView.postRedisplay();
 	}
+}
+
+void AtenGrids::on_LoadGridButton_clicked(bool checked)
+{
+	loadGrid();
 }
 
 void AtenGrids::on_GridOriginXSpin_valueChanged(double d)

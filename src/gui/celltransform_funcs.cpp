@@ -22,7 +22,7 @@
 #include "base/master.h"
 #include "model/model.h"
 #include "gui/gui.h"
-#include "gui/celldefine.h"
+#include "gui/celltransform.h"
 #include "base/spacegroup.h"
 
 // Constructor
@@ -49,48 +49,25 @@ void AtenCellTransform::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model *m = master.currentModel();
-	Cell *cell = m->cell();
-	Cell::CellType ct = cell->type();
-	static char s[64];
-	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->volume());
-	ui.CellVolumeLabel->setText(s);
+	Cell::CellType ct = m->cell()->type();
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
 	// Update checkboxes in replicate group
 	ui.CellReplicateFoldCheck->setChecked( prefs.replicateFold() );
 	ui.CellReplicateTrimCheck->setChecked( prefs.replicateTrim() );
 	// Update the widgets on the page to reflect the current model's unit cell
-	if (cell->type() == Cell::NoCell)
+	if (ct == Cell::NoCell)
 	{
 		// No cell, so disable group boxes and quit
-		ui.CellDefinitionGroup->setChecked(FALSE);
-		ui.CellReplicateGroup->setEnabled(FALSE);
-		ui.CellScaleGroup->setEnabled(FALSE);
-		ui.CellSpacegroupGroup->setEnabled(FALSE);
+		ui.CellTransformTabs->setEnabled(FALSE);
 		refreshing_ = FALSE;
 		return;
 	}
 	else
 	{
 		// Activate widgets
-		ui.CellDefinitionGroup->setChecked(TRUE);
-		ui.CellReplicateGroup->setEnabled(TRUE);
-		ui.CellScaleGroup->setEnabled(TRUE);
-		ui.CellSpacegroupGroup->setEnabled(TRUE);
+		ui.CellTransformTabs->setEnabled(TRUE);
 	}
-	// Set values in spin boxes
-	Vec3<double> lengths, angles;
-	lengths = cell->lengths();
-	angles = cell->angles();
-	ui.CellLengthASpin->setValue(lengths.x);
-	ui.CellLengthBSpin->setValue(lengths.y);
-	ui.CellLengthCSpin->setValue(lengths.z);
-	ui.CellAngleASpin->setValue(angles.x);
-	ui.CellAngleBSpin->setValue(angles.y);
-	ui.CellAngleCSpin->setValue(angles.z);
-	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName,  m->spacegroup());
-	ui.SpacegroupLabel->setText(s);
 	refreshing_ = FALSE;
 }
 

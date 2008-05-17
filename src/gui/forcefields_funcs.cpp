@@ -141,6 +141,20 @@ void AtenForcefields::refreshTypes()
 	ui.FFTypeTable->resizeColumnToContents(2);
 }
 
+// Load forcefield (public function)
+void AtenForcefields::loadForcefield()
+{
+	QString filename;
+	if (openForcefieldDialog->exec() == 1)
+	{
+		// Get selected filter in file dialog
+		QString filter = openForcefieldDialog->selectedFilter();
+		filename = openForcefieldDialog->selectedFiles().first();
+		master.loadForcefield(qPrintable(filename));
+		refresh();
+	}
+}
+
 // Set the current forcefield in master to reflect the list change
 void AtenForcefields::on_ForcefieldList_currentRowChanged(int row)
 {
@@ -173,15 +187,7 @@ void AtenForcefields::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 // Load forcefield 
 void AtenForcefields::on_LoadForcefieldButton_clicked(bool checked)
 {
-	QString filename;
-	if (openForcefieldDialog->exec() == 1)
-	{
-		// Get selected filter in file dialog
-		QString filter = openForcefieldDialog->selectedFilter();
-		filename = openForcefieldDialog->selectedFiles().first();
-		master.loadForcefield(qPrintable(filename));
-		refresh();
-	}
+	loadForcefield();
 }
 
 // Remove selected forcefield in list

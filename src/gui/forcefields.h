@@ -40,6 +40,7 @@ class AtenForcefields : public QWidget
 	void showWindow();
 	void refresh();
 	void refreshTypes();
+	void loadForcefield();
 	private slots:
 	void on_TypeModelButton_clicked(bool checked);
 	void on_UntypeModelButton_clicked(bool checked);

@@ -46,6 +46,7 @@ namespace TorsionColumn
 {
 	enum TorsionColumn { Type1, Type2, Type3, Type4, Form, Data1, Data2, Data3, Data4, Data5, Data6, nColumns };
 }
+
 // Constructor
 AtenForcefieldEditor::AtenForcefieldEditor(QDialog *parent) : QDialog(parent)
 {
