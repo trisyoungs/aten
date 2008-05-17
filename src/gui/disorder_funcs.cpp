@@ -38,6 +38,13 @@ AtenDisorder::~AtenDisorder()
 {
 }
 
+// Show window
+void AtenDisorder::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
+}
+
 void AtenDisorder::on_ComponentCentreXSpin_valueChanged(double d)
 {
 	setComponentCoords(0,0,d);
@@ -71,7 +78,7 @@ void AtenDisorder::on_ComponentSizeZSpin_valueChanged(double d)
 void AtenDisorder::refresh()
 {
 	if (!gui.exists()) return;
-	listRefreshing = TRUE;
+	refreshing_ = TRUE;
 	// (De)sensitize controls
 	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == Cell::NoCell);
 	// Update model (component) list
@@ -113,7 +120,7 @@ void AtenDisorder::refresh()
 	for (int i=0; i<4; i++) ui.ComponentTable->resizeColumnToContents(i);
 	// Select the last component in the list
 	ui.ComponentTable->setCurrentItem(firstitem);
-	listRefreshing = FALSE;
+	refreshing_ = FALSE;
 	refreshComponentData();
 }
 
@@ -164,7 +171,7 @@ void AtenDisorder::on_ComponentTable_itemSelectionChanged()
 
 void AtenDisorder::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 {
-	if (!gui.exists() || listRefreshing) return;
+	if (!gui.exists() || refreshing_) return;
 	int column = ui.ComponentTable->column(item);
 	Model *m;
 	m = ((TTableWidgetItem*) item)->model();

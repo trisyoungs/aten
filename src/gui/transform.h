@@ -33,20 +33,15 @@ class AtenTransform : public QWidget
 	/*
 	// Window Functions
 	*/
+	public:
+	void showWindow();
 	private:
 	void rotateSelection(double direction);
-	void translateSelection(int axis, int dir);
 	private slots:
 	void on_RotateDefineOriginButton_clicked(bool on);
 	void on_RotateDefineAxisButton_clicked(bool on);
 	void on_RotateClockwiseButton_clicked(bool on);
 	void on_RotateAnticlockwiseButton_clicked(bool on);
-	void on_TranslatePosXButton_clicked(bool on);
-	void on_TranslatePosYButton_clicked(bool on);
-	void on_TranslatePosZButton_clicked(bool on);
-	void on_TranslateNegXButton_clicked(bool on);
-	void on_TranslateNegYButton_clicked(bool on);
-	void on_TranslateNegZButton_clicked(bool on);
 
 	/*
 	// Local variables

@@ -33,8 +33,11 @@ class AtenPosition : public QWidget
 	/*
 	// Window Functions
 	*/
+	public:
+	void showWindow();
 	private:
 	void flipSelection(int axis);
+	void translateSelection(int axis, int dir);
 	private slots:
 	void on_FlipXButton_clicked(bool checked);
 	void on_FlipYButton_clicked(bool checked);
@@ -44,6 +47,12 @@ class AtenPosition : public QWidget
 	void on_DefineVectorButton_clicked(bool checked);
 	void on_VectorShiftPositiveButton_clicked(bool checked);
 	void on_VectorShiftNegativeButton_clicked(bool checked);
+	void on_TranslatePosXButton_clicked(bool on);
+	void on_TranslatePosYButton_clicked(bool on);
+	void on_TranslatePosZButton_clicked(bool on);
+	void on_TranslateNegXButton_clicked(bool on);
+	void on_TranslateNegYButton_clicked(bool on);
+	void on_TranslateNegZButton_clicked(bool on);
 
 	/*
 	// Local variables

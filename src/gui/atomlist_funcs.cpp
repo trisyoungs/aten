@@ -36,6 +36,7 @@ AtenAtomlist::AtenAtomlist(QWidget *parent)
 	listSelectionPoint_ = -1;
 	listLastModel_ = NULL;
 	refreshing_ = FALSE;
+	shouldRefresh_ = FALSE;
 	listPosition_ = -1;
 }
 
@@ -47,6 +48,12 @@ AtenAtomlist::~AtenAtomlist()
 /*
 // Atom Tree List Management
 */
+
+void AtenAtomlist::showWindow()
+{
+	if (shouldRefresh_) refresh();
+	show();
+}
 
 void AtenAtomlist::on_AtomTree_itemSelectionChanged()
 {
@@ -71,8 +78,9 @@ void AtenAtomlist::refresh()
 {
 	dbgBegin(Debug::Calls,"AtenAtomlist::refresh");
 	// If the atom list page is not visible, don't do anything
-	if (!ui.AtomlistWidget->visible())
+	if (!gui.atomlistWindow->isVisible())
 	{
+		shouldRefresh_ = TRUE;
 		dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 		return;
 	}
@@ -165,6 +173,7 @@ void AtenAtomlist::refresh()
 	}
 	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
 	refreshing_ = FALSE;
+	shouldRefresh_ = FALSE;
 	dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 }
 

@@ -20,7 +20,7 @@
 */
 
 #include "base/master.h"
-#include "gui/mainwindow.h"
+#include "gui/transform.h"
 #include "gui/gui.h"
 #include "model/model.h"
 
@@ -32,6 +32,12 @@ AtenTransform::AtenTransform(QWidget *parent)
 // Destructor
 AtenTransform::~AtenTransform()
 {
+}
+
+void AtenTransform::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
 }
 
 /*

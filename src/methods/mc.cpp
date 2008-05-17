@@ -26,6 +26,7 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/disorder.h"
 
 // Static Singleton
 MonteCarlo mc;
@@ -686,7 +687,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	//if (destmodel->isExpressionValid()) printf("Expression is valid...\n");
 	//else printf("Expression is NOT valid.\n");
 	destmodel->logChange(Change::CoordinateLog);
-	gui.mainWindow->refreshDisorderPage();
+	gui.disorderWindow->refresh();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"MonteCarlo::insert");
 	return TRUE;

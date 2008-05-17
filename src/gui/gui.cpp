@@ -34,6 +34,11 @@
 #include "gui/forcefields.h"
 #include "gui/celldefine.h"
 #include "gui/celltransform.h"
+#include "gui/build.h"
+#include "gui/glyphs.h"
+#include "gui/minimiser.h"
+#include "gui/transform.h"
+#include "gui/position.h"
 #include "model/model.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
@@ -79,23 +84,38 @@ void GuiQt::run()
 
 	Q_INIT_RESOURCE(icons);
 
-	// Create the GUI windows
+	// Create GUI window, dialog windows, and sub windows
 	mainWindow = new AtenForm;
+	// ...dialog windows...
 	prefsDialog = new AtenPrefs;
-	editDialog = new AtenEdit;
+	forcefieldEditorDialog = new AtenForcefieldEditor;
 	loadModelDialog = new AtenLoadModel;
 	selectPatternDialog = new AtenSelectPattern;
+	// ...subwindows
+	mainWindow = new AtenForm;
+	atomlistWindow = new AtenAtomlist;
+	buildWindow = new AtenBuild;
+	cellDefineWindow = new AtenCellDefine;
+	cellTransformWindow = new AtenCellTransform;
+	disorderWindow = new AtenDisorder;
+	forcefieldsWindow = new AtenForcefields;
+	glyphsWindow = new AtenGlyphs;
+	gridsWindow = new AtenGrids;
+	minimiserWindow = new AtenMinimiser;
+	positionWindow = new AtenPosition;
+	transformWindow = new AtenTransform;
+	
 
 	// Set the modality of child windows
 	prefsDialog->setModal(TRUE);
-	editDialog->setModal(TRUE);
+	forcefieldEditorDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
 	prefsDialog->finaliseUi();
-	editDialog->finaliseUi();
+	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
 	selectPatternDialog->finaliseUi();
 
@@ -105,7 +125,7 @@ void GuiQt::run()
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
-	editDialog->setControls();
+	forcefieldEditorDialog->setControls();
 	loadModelDialog->setControls();
 	selectPatternDialog->setControls();
 

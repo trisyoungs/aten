@@ -37,6 +37,7 @@ class AtenAtomlist : public QWidget
 	// Window Functions
 	*/
 	public:
+	void showWindow();
 	void refresh();
 	private:
 	void peekScrollBar();
@@ -48,7 +49,6 @@ class AtenAtomlist : public QWidget
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
 
-
 	/*
 	// Local variables
 	*/
@@ -57,6 +57,8 @@ class AtenAtomlist : public QWidget
 	int listStructurePoint_, listSelectionPoint_;
 	// Last model displayed in list
 	Model *listLastModel_;
+	// Whether the widget should refresh when it is next shown
+	bool shouldRefresh_;
 	// Whether the widget is currently refreshing
 	bool refreshing_;
 	// Position of list slider

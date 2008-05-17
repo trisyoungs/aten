@@ -100,10 +100,10 @@ void AtenForm::on_ProbeAtomButton_clicked(bool on)
 	if (on) setUserAction(on, Canvas::EditProbeAction);
 }
 
-void AtenForm::on_ElementUserButton_clicked(bool on)
-{
-	master.setSketchElement(elements.find(qPrintable(ui.ElementUserButton->text())));
-}
+// void AtenForm::on_ElementUserButton_clicked(bool on)
+// {
+// 	master.setSketchElement(elements.find(qPrintable(ui.ElementUserButton->text())));
+// }
 
 void AtenForm::on_BondCalcButton_clicked(bool on)
 {
@@ -151,23 +151,23 @@ void AtenForm::on_BondAugmentButton_clicked(bool on)
 	gui.mainView.postRedisplay();
 }
 
-void AtenForm::on_ElementEdit_returnPressed()
-{
-	// Get the contents of the line edit and check that it is an element symbol
-	int el = elements.find(qPrintable(ui.ElementEdit->text()));
-	if (el == -1)
-	{
-		msg(Debug::None,"Unknown element '%s'\n",qPrintable(ui.ElementEdit->text()));
-		ui.ElementEdit->setText(ui.ElementUserButton->text());
-	}
-	else
-	{
-		// Set the text of the user element button and select it
-		ui.ElementUserButton->setText(elements.symbol(el));
-		master.setSketchElement(el);
-		ui.ElementUserButton->setChecked(TRUE);
-	}
-}
+// void AtenForm::on_ElementEdit_returnPressed()
+// {
+// 	// Get the contents of the line edit and check that it is an element symbol
+// 	int el = elements.find(qPrintable(ui.ElementEdit->text()));
+// 	if (el == -1)
+// 	{
+// 		msg(Debug::None,"Unknown element '%s'\n",qPrintable(ui.ElementEdit->text()));
+// 		ui.ElementEdit->setText(ui.ElementUserButton->text());
+// 	}
+// 	else
+// 	{
+// 		// Set the text of the user element button and select it
+// 		ui.ElementUserButton->setText(elements.symbol(el));
+// 		master.setSketchElement(el);
+// 		ui.ElementUserButton->setChecked(TRUE);
+// 	}
+// }
 
 void AtenForm::on_AddHydrogenButton_clicked(bool on)
 {

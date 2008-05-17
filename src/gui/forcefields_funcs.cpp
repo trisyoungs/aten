@@ -33,7 +33,31 @@
 // Constructor
 AtenForcefields::AtenForcefields(QWidget *parent)
 {
+	// Private variables
 	typelistElement_ = -1;
+	shouldRefresh_ = FALSE;
+
+	// Create open forcefield dialog
+	QStringList filters;
+	openForcefieldDialog = new QFileDialog(this);
+	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
+	openForcefieldDialog->setDirectory(master.dataDir.get());
+	openForcefieldDialog->setWindowTitle("Open Forcefield");
+	filters.clear();
+	filters << "All files (*)";
+	filters << "Forcefield Files (*.ff)";
+	openForcefieldDialog->setFilters(filters);
+
+	// Create save forcefield dialog
+	saveForcefieldDialog = new QFileDialog(this);
+	saveForcefieldDialog->setWindowTitle("Save Forcefield");
+	saveForcefieldDialog->setAcceptMode(QFileDialog::AcceptSave);
+	saveForcefieldDialog->setDirectory(master.workDir.get());
+	saveForcefieldDialog->setFileMode(QFileDialog::AnyFile);
+	filters.clear();
+	filters << "All files (*)";
+	filters << "Forcefield Files (*.ff)";
+	saveForcefieldDialog->setFilters(filters);
 }
 
 // Destructor
@@ -41,11 +65,22 @@ AtenForcefields::~AtenForcefields()
 {
 }
 
+// Show window
+void AtenForcefields::showWindow()
+{
+	if (shouldRefresh_) refresh();
+	show();
+}
+
 // Update the list of loaded forcefields
 void AtenForcefields::refresh()
 {
-	// If the cell page is not visible, don't do anything
-	if (!ui.ShowForcefieldsPageButton->isChecked()) return;
+	// If the window is not visible, don't do anything
+	if (!gui.forcefieldsWindow->isVisible())
+	{
+		shouldRefresh_ = TRUE;
+		return;
+	}
 	ui.ForcefieldList->clear();
 	TListWidgetItem *item;
 	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)
@@ -74,6 +109,8 @@ void AtenForcefields::refresh()
 		ui.AutomaticTypingGroup->setEnabled(TRUE);
 		ui.ManualTypingGroup->setEnabled(TRUE);
 	}
+	refreshTypes();
+	shouldRefresh_ = FALSE;
 }
 
 // Update list of forcefield types in typelist
@@ -88,7 +125,7 @@ void AtenForcefields::refreshTypes()
 	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
 	for (ForcefieldAtom *ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 	{
-		if (ffa->atomtype()->characterElement() != typelist_element) continue;
+		if (ffa->atomtype()->characterElement() != typelistElement_) continue;
 		ui.FFTypeTable->setRowCount(count+1);
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFTypeTable->setItem(count, 0, item);
@@ -109,7 +146,7 @@ void AtenForcefields::on_ForcefieldList_currentRowChanged(int row)
 {
 	if (row != -1) master.setCurrentForcefield(row);
 	// Update type list
-	refreshForcefieldTypeList();
+	refreshTypes();
 }
 
 // Item in forcefield list has changed?
@@ -124,12 +161,12 @@ void AtenForcefields::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 	if ((titem->checkState() == Qt::Checked) && (ff != defaultff))
 	{
 		master.setDefaultForcefield(ff);
-		refreshForcefieldPage();
+		refreshTypes();
 	}
 	else if ((titem->checkState() == Qt::Unchecked) && (ff == defaultff))
 	{
 		master.setDefaultForcefield(NULL);
-		refreshForcefieldPage();
+		refreshTypes();
 	}
 }
 
@@ -143,7 +180,7 @@ void AtenForcefields::on_LoadForcefieldButton_clicked(bool checked)
 		QString filter = openForcefieldDialog->selectedFilter();
 		filename = openForcefieldDialog->selectedFiles().first();
 		master.loadForcefield(qPrintable(filename));
-		refreshForcefieldPage();
+		refresh();
 	}
 }
 
@@ -151,14 +188,14 @@ void AtenForcefields::on_LoadForcefieldButton_clicked(bool checked)
 void AtenForcefields::on_RemoveForcefieldButton_clicked(bool checked)
 {
 	master.removeForcefield(master.currentForcefield());
-	refreshForcefieldPage();
+	refresh();
 }
 
 // Call forcefield editor
 void AtenForcefields::on_EditForcefieldButton_clicked(bool checked)
 {
-	gui.editDialog->populate(master.currentForcefield());
-	gui.editDialog->show();
+	gui.forcefieldEditorDialog->populate(master.currentForcefield());
+	gui.forcefieldEditorDialog->show();
 }
 
 // Assign current forcefield to model
@@ -263,8 +300,8 @@ void AtenForcefields::on_ManualTypeEdit_returnPressed()
 	{
 		msg(Debug::None,"Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
 		ui.ManualTypeEdit->setText("H");
-		typelist_element = 1;
+		typelistElement_ = 1;
 	}
-	else typelist_element = el;
-	refreshForcefieldTypeList();
+	else typelistElement_ = el;
+	refreshTypes();
 }

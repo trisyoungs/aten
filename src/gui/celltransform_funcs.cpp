@@ -37,6 +37,13 @@ AtenCellTransform::~AtenCellTransform()
 {
 }
 
+// Show window
+void AtenCellTransform::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
+}
+
 // Refresh window
 void AtenCellTransform::refresh()
 {

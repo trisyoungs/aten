@@ -34,6 +34,7 @@ class AtenCellDefine : public QWidget
 	// Window Functions
 	*/
 	public:
+	void showWindow();
 	void refresh();
 	void cellChanged();
 	private slots:
