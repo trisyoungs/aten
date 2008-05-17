@@ -285,7 +285,7 @@
     <addaction name="separator" />
     <addaction name="actionAtomHide" />
     <addaction name="separator" />
-    <addaction name="actionAtomProbe" />
+    <addaction name="actionProbeAtom" />
    </widget>
    <widget class="QMenu" name="ModelMenu" >
     <property name="title" >
@@ -503,7 +503,7 @@
    </attribute>
    <addaction name="actionDrawAtom" />
    <addaction name="actionDrawChain" />
-   <addaction name="actionEditDelete" />
+   <addaction name="actionDeleteAtom" />
    <addaction name="actionTransmuteAtom" />
    <addaction name="separator" />
    <addaction name="actionAddHydrogen" />
@@ -1560,12 +1560,15 @@
     <string>Copy</string>
    </property>
   </action>
-  <action name="actionAtomProbe" >
+  <action name="actionProbeAtom" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/build/icons/build_probe.svg</iconset>
    </property>
    <property name="text" >
-    <string>Probe</string>
+    <string>Probe Atom</string>
+   </property>
+   <property name="toolTip" >
+    <string>Probe individual atoms</string>
    </property>
   </action>
   <action name="actionTransmuteAtom" >
@@ -1915,6 +1918,17 @@
    </property>
    <property name="toolTip" >
     <string>Show / hide disordered builder window</string>
+   </property>
+  </action>
+  <action name="actionDeleteAtom" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/build/icons/build_delete.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Delete Atom</string>
+   </property>
+   <property name="toolTip" >
+    <string>Delete individual atoms</string>
    </property>
   </action>
  </widget>

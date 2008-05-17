@@ -208,13 +208,13 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
 	Filter *f;
 	Model *m = master.currentModel();
-	if (openTrajectoryDialog->exec() == 1)
+	if (loadTrajectoryDialog->exec() == 1)
 	{
 		// Get selected filename
-		QStringList filenames = openTrajectoryDialog->selectedFiles();
+		QStringList filenames = loadTrajectoryDialog->selectedFiles();
 		QString filename = filenames.first();
 		// Get selected filter
-		QString filter = openTrajectoryDialog->selectedFilter();
+		QString filter = loadTrajectoryDialog->selectedFilter();
 		// Find the filter that was selected
 		for (f = master.filters(Filter::TrajectoryImport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
@@ -240,12 +240,12 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
 	Filter *f;
-	if (saveExpressionsDialog->exec() == 1)
+	if (saveExpressionDialog->exec() == 1)
 	{
 		// Get selected filename (only grab first
-		QString filename = saveExpressionsDialog->selectedFiles().first();
+		QString filename = saveExpressionDialog->selectedFiles().first();
 		// Get selected filter
-		QString filter = saveExpressionsDialog->selectedFilter();
+		QString filter = saveExpressionDialog->selectedFilter();
 		// Find the filter that was selected
 		for (f = master.filters(Filter::ExpressionExport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;

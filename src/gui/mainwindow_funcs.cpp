@@ -80,26 +80,6 @@ void AtenForm::closeEvent(QCloseEvent *event)
 // Input
 */
 
-// Change user interaction mode
-void AtenForm::setUserAction(bool on, Canvas::UserAction ua)
-{
-	// We pass all changes to the user interaction mode through here.
-	// This way we can 'link' the selectToolBar and all the other buttons....
-	if (!on) return;
-	if ((ua >= Canvas::SelectAction) && (ua <= Canvas::SelectRadialAction))
-	{
-		// One of the select actions in selectGroup
-		dummyButton->setChecked(TRUE);
-	}
-	else
-	{
-		// One of the buttons in uaGroup
-		QAction *action = selectGroup->checkedAction();
-		if (action != NULL) action->setChecked(FALSE);
-	}
-	gui.mainView.setSelectedMode(ua);
-}
-
 void AtenForm::keyPressEvent(QKeyEvent *event)
 {
 	Canvas::KeyCode kc = gui.convertToKeyCode(event->key());
@@ -329,10 +309,10 @@ void AtenForm::refreshScriptsMenu()
 void AtenForm::on_actionLoadScript_triggered(bool v)
 {
 	QString filename;
-	if (openScriptDialog->exec() == 1)
+	if (loadScriptDialog->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		filename = openScriptDialog->selectedFiles().first();
+		filename = loadScriptDialog->selectedFiles().first();
 		CommandList *ca = master.scripts.add();
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
 		else master.scripts.remove(ca);
@@ -362,6 +342,7 @@ void AtenForm::runScript()
 /*
 // Mouse Toolbar
 */
+
 void AtenForm::on_actionMouseInteract_triggered(bool checked)
 {
 	prefs.setMouseAction(Prefs::LeftButton, Prefs::InteractAction);
@@ -380,24 +361,26 @@ void AtenForm::on_actionMouseTranslate_triggered(bool checked)
 /*
 // Select Toolbar
 */
+
 void AtenForm::on_actionSelectAtoms_triggered(bool on)
 {
-	setUserAction(on, Canvas::SelectAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::SelectAction);
 }
 
 void AtenForm::on_actionSelectMolecules_triggered(bool on)
 {
-	setUserAction(on, Canvas::SelectMoleculeAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::SelectMoleculeAction);
 }
 
 void AtenForm::on_actionSelectElement_triggered(bool on)
 {
-	setUserAction(on, Canvas::SelectElementAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::SelectElementAction);
 }
 
 /*
 // Toolbar Menu
 */
+
 void AtenForm::on_actionFileToolBarVisibility_triggered(bool v)
 {
 	ui.FileToolBar->setVisible(v);
@@ -432,11 +415,6 @@ void AtenForm::on_actionSelectToolBarVisibility_triggered(bool v)
 {
 	ui.SelectToolBar->setVisible(v);
 }
-
-/*
-// Widget Stack Functions
-*/
-
 
 /*
 // Window Show / Hide Functions
