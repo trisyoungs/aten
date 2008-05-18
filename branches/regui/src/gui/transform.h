@@ -24,7 +24,7 @@
 
 #include "gui/ui_transform.h"
 
-// Program preferences window
+// Atom transform window
 class AtenTransform : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

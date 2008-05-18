@@ -1,5 +1,5 @@
 /*
-	*** Qt atomlist functions interface
+	*** Qt GUI: Atomlist window functions
 	*** src/gui/atomlist_funcs.cpp
 	Copyright T. Youngs 2007,2008
 
@@ -29,6 +29,10 @@
 #include <QtGui/QTreeWidget>
 #include <QtGui/QScrollBar>
 
+/*
+// Atom list window
+*/
+
 // Constructor
 AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
@@ -47,10 +51,6 @@ AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 AtenAtomlist::~AtenAtomlist()
 {
 }
-
-/*
-// Atom Tree List Management
-*/
 
 void AtenAtomlist::showWindow()
 {
@@ -90,11 +90,6 @@ void AtenAtomlist::refresh()
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
 	refreshing_ = TRUE;
 	//printf("Refreshing atompage.....\n");
-	Pattern *p;
-	TTreeWidgetItem *item;
-	Refitem<TTreeWidgetItem,int> *ri;
-	Atom *i;
-	int n;
 	Model *m = master.currentModel();
 	// Check this model against the last one we represented in the list
 	if (m != listLastModel_)
@@ -103,81 +98,8 @@ void AtenAtomlist::refresh()
 		listSelectionPoint_ = -1;
 	}
 	listLastModel_ = m;
-	if (listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
-	{
-		//printf("List must be cleared and repopulated...\n");
-		// Clear the current list
-		ui.AtomTree->clear();
-		ui.AtomTree->clearAtomItems();
-		// If there are no atoms in the current model, exit now.
-		if (m->nAtoms() == 0)
-		{
-			dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
-			refreshing_ = FALSE;
-			return;
-		}
-		// Add patterns as root nodes in the list, followed by atoms in each pattern.
-		// If no patterns are yet defined, store them in a generic rootnode.
-		if (m->nPatterns() == 0)
-		{
-			// Create new root node for all atoms
-			QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTree);
-			ui.AtomTree->setItemExpanded(pat, TRUE);
-			pat->setText(0, tr("All"));
-			for (i = m->atoms(); i != NULL; i = i->next)
-			{
-				// Add the atom
-				item = ui.AtomTree->addTreeItem(pat);
-				//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-				item->setAtom(i);
-				item->setAtomColumns();
-				// Set the row selection property here.
-				ui.AtomTree->setItemSelected(item, i->isSelected());
-			}
-		}
-		else
-		{
-			// Get pointer to first atom in model. We'll skip through it numerically in each pattern
-			i = m->atoms();
-			for (p = m->patterns(); p != NULL; p = p->next)
-			{
-				// Create new root node for the pattern
-				QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTree);
-				ui.AtomTree->setItemExpanded(pat, TRUE);
-				pat->setText(0, p->name());
-				for (n = 0; n<p->totalAtoms(); n++)
-				{
-					// Create atom in the pattern root node
-					item = ui.AtomTree->addTreeItem(pat);
-					//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-					item->setAtom(i);
-					item->setAtomColumns();
-					// Set the row selection property here
-					ui.AtomTree->setItemSelected(item, i->isSelected());
-					i = i->next;
-				}
-			}
-		}
-		// Set new log points
-		listStructurePoint_ = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
-		listSelectionPoint_ = m->log(Change::SelectionLog);
-	}
-	else if (listSelectionPoint_ != m->log(Change::SelectionLog))
-	{
-		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
-		// Grab the list of TTreeWidgetItems
-		//printf("Just updating selection....\n");
-		for (ri = ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
-		{
-			i = ri->item->atom();
-			ui.AtomTree->setItemSelected(ri->item, i->isSelected());
-		}
-		listSelectionPoint_ = m->log(Change::SelectionLog);
-	}
-	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
-	refreshing_ = FALSE;
-	shouldRefresh_ = FALSE;
-	dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
+	// Start the thread...
+	refreshThread.run();
 }
 
 void AtenAtomlist::peekScrollBar()
@@ -235,3 +157,118 @@ void AtenAtomlist::dialogFinished(int result)
 	gui.mainWindow->ui.actionAtomlistDialog->setChecked(FALSE);
 }
 
+/*
+// Refresh thread
+*/
+
+// Constructor
+AtomlistRefreshThread::AtomlistRefreshThread()
+{
+	// Private variables
+	kill_ = FALSE;
+	restart_ = FALSE;
+}
+
+// Execute thread
+void AtomlistRefreshThread::run()
+{
+	Pattern *p;
+	TTreeWidgetItem *item;
+	Refitem<TTreeWidgetItem,int> *ri;
+	Atom *i;
+	int n, count;
+	// Grab model to be displayed
+	Model *m = gui.atomlistDialog->listLastModel_;
+	// Set progress bar
+	gui.atomlistDialog->ui.RefreshProgressBar->setRange(0, m->nAtoms());
+	count = 0;
+	if (gui.atomlistDialog->listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
+	{
+		//printf("List must be cleared and repopulated...\n");
+		// Clear the current list
+		gui.atomlistDialog->ui.AtomTree->clear();
+		gui.atomlistDialog->ui.AtomTree->clearAtomItems();
+		// If there are no atoms in the current model, exit now.
+		if (m->nAtoms() == 0)
+		{
+			gui.atomlistDialog->refreshing_ = FALSE;
+			return;
+		}
+		// Add patterns as root nodes in the list, followed by atoms in each pattern.
+		// If no patterns are yet defined, store them in a generic rootnode.
+		if (m->nPatterns() == 0)
+		{
+			// Create new root node for all atoms
+			QTreeWidgetItem *pat = new QTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
+			gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
+			pat->setText(0, tr("All"));
+			for (i = m->atoms(); i != NULL; i = i->next)
+			{
+				// Add the atom
+				item = gui.atomlistDialog->ui.AtomTree->addTreeItem(pat);
+				//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+				item->setAtom(i);
+				item->setAtomColumns();
+				// Set the row selection property here.
+				gui.atomlistDialog->ui.AtomTree->setItemSelected(item, i->isSelected());
+				// Update progress bar
+				gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
+			}
+		}
+		else
+		{
+			// Get pointer to first atom in model. We'll skip through it numerically in each pattern
+			i = m->atoms();
+			for (p = m->patterns(); p != NULL; p = p->next)
+			{
+				// Create new root node for the pattern
+				QTreeWidgetItem *pat = new QTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
+				gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
+				pat->setText(0, p->name());
+				for (n = 0; n<p->totalAtoms(); n++)
+				{
+					// Create atom in the pattern root node
+					item = gui.atomlistDialog->ui.AtomTree->addTreeItem(pat);
+					//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+					item->setAtom(i);
+					item->setAtomColumns();
+					// Set the row selection property here
+					gui.atomlistDialog->ui.AtomTree->setItemSelected(item, i->isSelected());
+					i = i->next;
+					// Update progress bar
+					gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
+				}
+			}
+		}
+		// Set new log points
+		gui.atomlistDialog->listStructurePoint_ = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
+		gui.atomlistDialog->listSelectionPoint_ = m->log(Change::SelectionLog);
+	}
+	else if (gui.atomlistDialog->listSelectionPoint_ != m->log(Change::SelectionLog))
+	{
+		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
+		// Grab the list of TTreeWidgetItems
+		//printf("Just updating selection....\n");
+		for (ri = gui.atomlistDialog->ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
+		{
+			i = ri->item->atom();
+			gui.atomlistDialog->ui.AtomTree->setItemSelected(ri->item, i->isSelected());
+			// Update progress bar
+			gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
+		}
+		gui.atomlistDialog->listSelectionPoint_ = m->log(Change::SelectionLog);
+	}
+	for (n=0; n<6; n++) gui.atomlistDialog->ui.AtomTree->resizeColumnToContents(n);
+	gui.atomlistDialog->refreshing_ = FALSE;
+	gui.atomlistDialog->shouldRefresh_ = FALSE;
+}
+
+// Restart thread
+void AtomlistRefreshThread::restart()
+{
+}
+
+// Kill thread
+void AtomlistRefreshThread::kill()
+{
+}

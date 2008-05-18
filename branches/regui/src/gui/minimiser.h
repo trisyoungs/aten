@@ -24,7 +24,7 @@
 
 #include "gui/ui_minimiser.h"
 
-// Program preferences window
+// Minimiser window
 class AtenMinimiser : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

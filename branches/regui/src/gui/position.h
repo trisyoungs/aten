@@ -24,7 +24,7 @@
 
 #include "gui/ui_position.h"
 
-// Program preferences window
+// Atom position window
 class AtenPosition : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

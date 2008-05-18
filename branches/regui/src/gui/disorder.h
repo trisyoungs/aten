@@ -28,7 +28,7 @@
 // Forward declarations
 class Model;
 
-// Program preferences window
+// Disordered builder window
 class AtenDisorder : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
