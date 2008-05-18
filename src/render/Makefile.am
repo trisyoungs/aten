@@ -4,4 +4,4 @@ librender_a_SOURCES = atoms.cpp extra.cpp gl2ps.cpp gl2ps_extra.cpp glyph.cpp mo
 
 noinst_HEADERS = gl2ps.h gl2ps_extra.h
 
-INCLUDES = -I../ @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
