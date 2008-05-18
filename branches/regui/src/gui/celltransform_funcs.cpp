@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "model/model.h"
+#include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
 #include "base/spacegroup.h"
@@ -119,4 +120,9 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 	m->scaleCell(scale);
 	m->endUndostate();
 	gui.modelChanged(FALSE,TRUE,FALSE);
+}
+
+void AtenCellTransform::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionCellTransformDialog->setChecked(FALSE);
 }

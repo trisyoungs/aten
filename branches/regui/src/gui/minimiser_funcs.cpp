@@ -23,6 +23,7 @@
 #include "methods/mc.h"
 #include "methods/sd.h"
 #include "methods/cg.h"
+#include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/minimiser.h"
 
@@ -81,4 +82,9 @@ void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 			break;
 	}
 	gui.modelChanged();
+}
+
+void AtenMinimiser::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionMinimiserDialog->setChecked(FALSE);
 }

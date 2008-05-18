@@ -25,7 +25,7 @@
 #include "gui/ui_celltransform.h"
 
 // Program preferences window
-class AtenCellTransform : public QWidget
+class AtenCellTransform : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -41,6 +41,7 @@ class AtenCellTransform : public QWidget
 	void on_CellReplicateFoldCheck_clicked(bool checked);
 	void on_CellReplicateTrimCheck_clicked(bool checked);
 	void on_CellScaleButton_clicked(bool checked);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -50,14 +51,14 @@ class AtenCellTransform : public QWidget
 	bool refreshing_;
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenCellTransform(QWidget *parent = 0);
 	~AtenCellTransform();
 	// Main form declaration
-	Ui::CellTransformWidget ui;
+	Ui::CellTransformDialog ui;
 };
 
 #endif

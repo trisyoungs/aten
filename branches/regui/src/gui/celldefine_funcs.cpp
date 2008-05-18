@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "model/model.h"
+#include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/celldefine.h"
 #include "gui/celltransform.h"
@@ -168,8 +169,8 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder stack page here, since a cell has been added/removed
-	gui.cellTransformWindow->refresh();
-	gui.disorderWindow->refresh();
+	gui.cellTransformDialog->refresh();
+	gui.disorderDialog->refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
@@ -216,4 +217,9 @@ void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 	m->pack();
 	m->endUndostate();
 	gui.modelChanged();
+}
+
+void AtenCellDefine::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionCellDefineDialog->setChecked(FALSE);
 }

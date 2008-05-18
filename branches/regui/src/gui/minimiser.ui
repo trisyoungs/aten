@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>MinimiserWidget</class>
- <widget class="QWidget" name="MinimiserWidget" >
+ <class>MinimiserDialog</class>
+ <widget class="QDialog" name="MinimiserDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

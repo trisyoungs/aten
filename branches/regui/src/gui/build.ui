@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>BuildWidget</class>
- <widget class="QWidget" name="BuildWidget" >
+ <class>BuildDialog</class>
+ <widget class="QDialog" name="BuildDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

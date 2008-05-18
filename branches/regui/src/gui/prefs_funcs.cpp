@@ -27,18 +27,18 @@
 #include "model/model.h"
 
 // Constructor
-AtenPrefs::AtenPrefs(QDialog *parent) : QDialog(parent)
+AtenPrefs::AtenPrefs(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
-	elementsBackup = NULL;
-	UPDATING = FALSE;
+	elementsBackup_ = NULL;
+	refreshing_ = FALSE;
 }
 
 // Destructor
 AtenPrefs::~AtenPrefs()
 {
 	// Free element backup
-	if (elementsBackup != NULL) delete[] elementsBackup;
+	if (elementsBackup_ != NULL) delete[] elementsBackup_;
 }
 
 // Finalise GUI
@@ -156,7 +156,7 @@ void AtenPrefs::finaliseUi()
 void AtenPrefs::setControls()
 {
 	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
-	UPDATING = TRUE;
+	refreshing_ = TRUE;
 	// Select the first element in the elements list
 	ui.ElementList->setCurrentRow(0);
 
@@ -229,16 +229,16 @@ void AtenPrefs::setControls()
 		}
 	}
 	// Store current values in the Prefs structure...
-	prefsBackup = prefs;
+	prefsBackup_ = prefs;
 	// If this is the first time, create the elements backup array
-	if (elementsBackup == NULL) elementsBackup = new Element[elements.nElements()];
+	if (elementsBackup_ == NULL) elementsBackup_ = new Element[elements.nElements()];
 	for (int i=0; i<elements.nElements(); i++)
 	{
-		elementsBackup[i].atomicRadius = elements.atomicRadius(i);
-		elements.copyAmbientColour(i, elementsBackup[i].ambientColour);
-		elements.copyDiffuseColour(i, elementsBackup[i].diffuseColour);
+		elementsBackup_[i].atomicRadius = elements.atomicRadius(i);
+		elements.copyAmbientColour(i, elementsBackup_[i].ambientColour);
+		elements.copyDiffuseColour(i, elementsBackup_[i].diffuseColour);
 	}
-	UPDATING = FALSE;
+	refreshing_ = FALSE;
 	dbgEnd(Debug::Calls,"AtenPrefs::setControls");
 }
 
@@ -246,12 +246,12 @@ void AtenPrefs::setControls()
 void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 {
 	// Copy old preferences values back into main structure, update view and close window
-	prefs = prefsBackup;
+	prefs = prefsBackup_;
 	for (int i=0; i<elements.nElements(); i++)
 	{
-		elements.setAtomicRadius(i,elementsBackup[i].atomicRadius);
-		elements.setAmbientColour(i, elementsBackup[i].ambientColour[0], elementsBackup[i].ambientColour[1], elementsBackup[i].ambientColour[2]);
-		elements.setDiffuseColour(i, elementsBackup[i].diffuseColour[0], elementsBackup[i].diffuseColour[1], elementsBackup[i].diffuseColour[2]);
+		elements.setAtomicRadius(i,elementsBackup_[i].atomicRadius);
+		elements.setAmbientColour(i, elementsBackup_[i].ambientColour[0], elementsBackup_[i].ambientColour[1], elementsBackup_[i].ambientColour[2]);
+		elements.setDiffuseColour(i, elementsBackup_[i].diffuseColour[0], elementsBackup_[i].diffuseColour[1], elementsBackup_[i].diffuseColour[2]);
 	}
 	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
@@ -319,7 +319,7 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 
 void AtenPrefs::updateAfterViewPrefs()
 {
-	if (UPDATING) return;
+	if (refreshing_) return;
 	gui.mainView.createLists();
 	master.currentModel()->renderSource()->projectAll();
 	master.currentModel()->renderSource()->logChange(Change::VisualLog);
@@ -328,7 +328,7 @@ void AtenPrefs::updateAfterViewPrefs()
 
 void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value)
 {
-	if (UPDATING) return;
+	if (refreshing_) return;
 	prefs.setAtomSize(ds, value);
 	updateAfterViewPrefs();
 }
@@ -611,7 +611,7 @@ void AtenPrefs::colourScale_ColourChanged(bool checked)
 
 void AtenPrefs::colourScale_TypeChanged(bool checkedex)
 {
-	if (UPDATING) return;
+	if (refreshing_) return;
 	// Cast sender
 	QCheckBox *check = qobject_cast<QCheckBox*> (sender());
 	if (!check)
@@ -632,8 +632,8 @@ void AtenPrefs::colourScale_TypeChanged(bool checkedex)
 
 void AtenPrefs::colourScale_RangeChanged(double d)
 {
-	if (UPDATING) return;
-	UPDATING = TRUE;
+	if (refreshing_) return;
+	refreshing_ = TRUE;
 	// Cast sender
 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (!spin)
@@ -662,5 +662,5 @@ void AtenPrefs::colourScale_RangeChanged(double d)
 	// Update display
 	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
-	UPDATING = FALSE;
+	refreshing_ = FALSE;
 }

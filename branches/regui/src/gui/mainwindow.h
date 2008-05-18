@@ -287,17 +287,17 @@ class AtenForm : public QMainWindow
 	// Window Show / Hide Functions
 	*/
 	private slots:
-	void on_actionAtomlistWindow_triggered(bool checked);
-	void on_actionBuildWindow_triggered(bool checked);
-	void on_actionDisorderWindow_triggered(bool checked);
-	void on_actionForcefieldsWindow_triggered(bool checked);
-	void on_actionTransformWindow_triggered(bool checked);
-	void on_actionPositionWindow_triggered(bool checked);
-	void on_actionGridsWindow_triggered(bool checked);
-// 	void on_actionGlyphsWindow_triggered(bool checked);
-	void on_actionMinimiserWindow_triggered(bool checked);
-	void on_actionCellDefineWindow_triggered(bool checked);
-	void on_actionCellTransformWindow_triggered(bool checked);
+	void on_actionAtomlistDialog_triggered(bool checked);
+	void on_actionBuildDialog_triggered(bool checked);
+	void on_actionDisorderDialog_triggered(bool checked);
+	void on_actionForcefieldsDialog_triggered(bool checked);
+	void on_actionTransformDialog_triggered(bool checked);
+	void on_actionPositionDialog_triggered(bool checked);
+	void on_actionGridsDialog_triggered(bool checked);
+// 	void on_actionGlyphsDialog_triggered(bool checked);
+	void on_actionMinimiserDialog_triggered(bool checked);
+	void on_actionCellDefineDialog_triggered(bool checked);
+	void on_actionCellTransformDialog_triggered(bool checked);
 
 	/*
 	// Settings Functions

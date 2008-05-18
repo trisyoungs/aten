@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>PositionWidget</class>
- <widget class="QWidget" name="PositionWidget" >
+ <class>PositionDialog</class>
+ <widget class="QDialog" name="PositionDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

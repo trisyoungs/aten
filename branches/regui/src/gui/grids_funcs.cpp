@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "classes/grid.h"
+#include "gui/mainwindow.h"
 #include "gui/grids.h"
 #include "gui/gui.h"
 #include "gui/tlistwidgetitem.h"
@@ -105,7 +106,7 @@ void AtenGrids::loadGrid()
 				if (f != NULL) f->execute(qPrintable(filename));
 			}
 		}
-		gui.gridsWindow->refresh();
+		gui.gridsDialog->refresh();
 		gui.mainView.postRedisplay();
 	}
 	dbgEnd(Debug::Calls,"AtenGrids::loadgrid");
@@ -370,4 +371,9 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	Grid *g = master.grid(row);
 	g->setSymmetric(checked);
 	gui.mainView.postRedisplay();
+}
+
+void AtenGrids::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionGridsDialog->setChecked(FALSE);
 }

@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>CellTransformWidget</class>
- <widget class="QWidget" name="CellTransformWidget" >
+ <class>CellTransformDialog</class>
+ <widget class="QDialog" name="CellTransformDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

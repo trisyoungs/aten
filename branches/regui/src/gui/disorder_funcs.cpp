@@ -21,6 +21,7 @@
 
 #include "methods/mc.h"
 #include "base/master.h"
+#include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "gui/gui.h"
 #include "gui/ttablewidgetitem.h"
@@ -221,3 +222,7 @@ void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)
 	mc.setVdwScale(d);
 }
 
+void AtenDisorder::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionDisorderDialog->setChecked(FALSE);
+}

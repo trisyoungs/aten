@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>DisorderWidget</class>
- <widget class="QWidget" name="DisorderWidget" >
+ <class>DisorderDialog</class>
+ <widget class="QDialog" name="DisorderDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

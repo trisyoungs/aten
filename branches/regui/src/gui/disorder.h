@@ -29,7 +29,7 @@
 class Model;
 
 // Program preferences window
-class AtenDisorder : public QWidget
+class AtenDisorder : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -56,6 +56,7 @@ class AtenDisorder : public QWidget
 	void on_ComponentSizeXSpin_valueChanged(double d);
 	void on_ComponentSizeYSpin_valueChanged(double d);
 	void on_ComponentSizeZSpin_valueChanged(double d);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -65,14 +66,14 @@ class AtenDisorder : public QWidget
 	bool refreshing_;
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenDisorder(QWidget *parent = 0);
 	~AtenDisorder();
 	// Main form declaration
-	Ui::DisorderWidget ui;
+	Ui::DisorderDialog ui;
 };
 
 #endif

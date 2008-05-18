@@ -20,6 +20,7 @@
 */
 
 #include "base/master.h"
+#include "gui/mainwindow.h"
 #include "gui/transform.h"
 #include "gui/gui.h"
 #include "model/model.h"
@@ -97,4 +98,9 @@ void AtenTransform::rotateSelection(double direction)
 	m->endUndostate();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+void AtenTransform::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionTransformDialog->setChecked(FALSE);
 }

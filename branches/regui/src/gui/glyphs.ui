@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>GlyphsWidget</class>
- <widget class="QWidget" name="GlyphsWidget" >
+ <class>GlyphsDialog</class>
+ <widget class="QDialog" name="GlyphsDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

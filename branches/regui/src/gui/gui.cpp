@@ -87,25 +87,37 @@ void GuiQt::run()
 	// Create GUI window, dialog windows, and sub windows
 	mainWindow = new AtenForm;
 	// ...dialog windows...
-	prefsDialog = new AtenPrefs;
-	forcefieldEditorDialog = new AtenForcefieldEditor;
-	loadModelDialog = new AtenLoadModel;
-	selectPatternDialog = new AtenSelectPattern;
-	// ...subwindows
-	mainWindow = new AtenForm;
-	atomlistWindow = new AtenAtomlist;
-	buildWindow = new AtenBuild;
-	cellDefineWindow = new AtenCellDefine;
-	cellTransformWindow = new AtenCellTransform;
-	disorderWindow = new AtenDisorder;
-	forcefieldsWindow = new AtenForcefields;
-	glyphsWindow = new AtenGlyphs;
-	gridsWindow = new AtenGrids;
-	minimiserWindow = new AtenMinimiser;
-	positionWindow = new AtenPosition;
-	transformWindow = new AtenTransform;
-	
-	// Set the modality of child windows
+	prefsDialog = new AtenPrefs(mainWindow);
+	forcefieldEditorDialog = new AtenForcefieldEditor(mainWindow);
+	loadModelDialog = new AtenLoadModel(mainWindow);
+	selectPatternDialog = new AtenSelectPattern(mainWindow);
+	// ...tool windows
+	atomlistDialog = new AtenAtomlist(mainWindow, Qt::Dialog|Qt::Tool);
+	buildDialog = new AtenBuild(mainWindow);
+	cellDefineDialog = new AtenCellDefine(mainWindow);
+	cellTransformDialog = new AtenCellTransform(mainWindow);
+	disorderDialog = new AtenDisorder(mainWindow);
+	forcefieldsDialog = new AtenForcefields(mainWindow);
+	glyphsDialog = new AtenGlyphs(mainWindow);
+	gridsDialog = new AtenGrids(mainWindow);
+	minimiserDialog = new AtenMinimiser(mainWindow);
+	positionDialog = new AtenPosition(mainWindow);
+	transformDialog = new AtenTransform(mainWindow);
+
+	// Connect Finished signal of tool windows to finished slots in structure
+	QObject::connect(atomlistDialog, SIGNAL(finished(int)), atomlistDialog, SLOT(dialogFinished(int)));
+	QObject::connect(buildDialog, SIGNAL(finished(int)), buildDialog, SLOT(dialogFinished(int)));
+	QObject::connect(cellDefineDialog, SIGNAL(finished(int)), cellDefineDialog, SLOT(dialogFinished(int)));
+	QObject::connect(cellTransformDialog, SIGNAL(finished(int)), cellTransformDialog, SLOT(dialogFinished(int)));
+	QObject::connect(disorderDialog, SIGNAL(finished(int)), disorderDialog, SLOT(dialogFinished(int)));
+	QObject::connect(forcefieldsDialog, SIGNAL(finished(int)), forcefieldsDialog, SLOT(dialogFinished(int)));
+	QObject::connect(glyphsDialog, SIGNAL(finished(int)), glyphsDialog, SLOT(dialogFinished(int)));
+	QObject::connect(gridsDialog, SIGNAL(finished(int)), gridsDialog, SLOT(dialogFinished(int)));
+	QObject::connect(minimiserDialog, SIGNAL(finished(int)), minimiserDialog, SLOT(dialogFinished(int)));
+	QObject::connect(positionDialog, SIGNAL(finished(int)), positionDialog, SLOT(dialogFinished(int)));
+	QObject::connect(transformDialog, SIGNAL(finished(int)), transformDialog, SLOT(dialogFinished(int)));
+
+	// Set the modality of some dialogs
 	prefsDialog->setModal(TRUE);
 	forcefieldEditorDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
@@ -136,11 +148,11 @@ void GuiQt::run()
 	master.setCurrentModel(master.models());
 
 	// Refresh the necessary windows
-	gridsWindow->refresh();
-	forcefieldsWindow->refresh();
-	disorderWindow->refresh();
-	cellDefineWindow->refresh();
-	cellTransformWindow->refresh();
+	gridsDialog->refresh();
+	forcefieldsDialog->refresh();
+	disorderDialog->refresh();
+	cellDefineDialog->refresh();
+	cellTransformDialog->refresh();
 	updateTrajControls();
 
 	gui.mainView.enableDrawing();
@@ -256,15 +268,15 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update save button status
 	mainWindow->ui.actionFileSave->setEnabled( m->isModified() );
 	// Update contents of the atom list
-	if (updateAtoms) atomlistWindow->refresh();
+	if (updateAtoms) atomlistDialog->refresh();
 	// Update the contents of the cell page
 	if (updateCell)
 	{
-		cellDefineWindow->refresh();
-		cellTransformWindow->refresh();
+		cellDefineDialog->refresh();
+		cellTransformDialog->refresh();
 	}
 	// Update forcefields in the forcefield window
-	if (updateForcefield) forcefieldsWindow->refresh();
+	if (updateForcefield) forcefieldsDialog->refresh();
 	// Enable the Atom menu if one or more atoms are selected
 	mainWindow->ui.AtomMenu->setEnabled( master.currentModel()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists

@@ -25,7 +25,7 @@
 #include "gui/ui_position.h"
 
 // Program preferences window
-class AtenPosition : public QWidget
+class AtenPosition : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -53,6 +53,7 @@ class AtenPosition : public QWidget
 	void on_TranslateNegXButton_clicked(bool on);
 	void on_TranslateNegYButton_clicked(bool on);
 	void on_TranslateNegZButton_clicked(bool on);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -60,14 +61,14 @@ class AtenPosition : public QWidget
 	private:
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenPosition(QWidget *parent = 0);
 	~AtenPosition();
 	// Main form declaration
-	Ui::PositionWidget ui;
+	Ui::PositionDialog ui;
 };
 
 #endif

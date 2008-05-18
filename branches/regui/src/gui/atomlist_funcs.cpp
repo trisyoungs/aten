@@ -21,6 +21,7 @@
 
 #include "classes/pattern.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
 #include "gui/ttreewidgetitem.h"
 #include "gui/atomlist.h"
 #include "model/model.h"
@@ -29,7 +30,7 @@
 #include <QtGui/QScrollBar>
 
 // Constructor
-AtenAtomlist::AtenAtomlist(QWidget *parent)
+AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 
@@ -80,7 +81,7 @@ void AtenAtomlist::refresh()
 {
 	dbgBegin(Debug::Calls,"AtenAtomlist::refresh");
 	// If the atom list page is not visible, don't do anything
-	if (!gui.atomlistWindow->isVisible())
+	if (!gui.atomlistDialog->isVisible())
 	{
 		shouldRefresh_ = TRUE;
 		dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
@@ -228,3 +229,9 @@ void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
+
+void AtenAtomlist::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionAtomlistDialog->setChecked(FALSE);
+}
+

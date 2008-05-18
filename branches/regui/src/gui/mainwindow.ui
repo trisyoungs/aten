@@ -559,19 +559,19 @@
    <attribute name="toolBarArea" >
     <number>2</number>
    </attribute>
-   <addaction name="actionAtomlistWindow" />
-   <addaction name="actionGridsWindow" />
+   <addaction name="actionAtomlistDialog" />
+   <addaction name="actionGridsDialog" />
    <addaction name="separator" />
-   <addaction name="actionBuildWindow" />
-   <addaction name="actionTransformWindow" />
-   <addaction name="actionPositionWindow" />
+   <addaction name="actionBuildDialog" />
+   <addaction name="actionTransformDialog" />
+   <addaction name="actionPositionDialog" />
    <addaction name="separator" />
-   <addaction name="actionCellDefineWindow" />
-   <addaction name="actionCellTransformWindow" />
-   <addaction name="actionDisorderWindow" />
+   <addaction name="actionCellDefineDialog" />
+   <addaction name="actionCellTransformDialog" />
+   <addaction name="actionDisorderDialog" />
    <addaction name="separator" />
-   <addaction name="actionMinimiserWindow" />
-   <addaction name="actionForcefieldsWindow" />
+   <addaction name="actionMinimiserDialog" />
+   <addaction name="actionForcefieldsDialog" />
   </widget>
   <action name="actionFileOpen" >
    <property name="icon" >
@@ -1689,7 +1689,7 @@
     <string>Delete Bond</string>
    </property>
   </action>
-  <action name="actionForcefieldsWindow" >
+  <action name="actionForcefieldsDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1706,7 +1706,7 @@
     <string>Show / hide forcefields window</string>
    </property>
   </action>
-  <action name="actionAtomlistWindow" >
+  <action name="actionAtomlistDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1723,7 +1723,7 @@
     <string>Show / hide atomlist window</string>
    </property>
   </action>
-  <action name="actionCellDefineWindow" >
+  <action name="actionCellDefineDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1737,7 +1737,7 @@
     <string>Show / hide cell definition window</string>
    </property>
   </action>
-  <action name="actionCellTransformWindow" >
+  <action name="actionCellTransformDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1751,7 +1751,7 @@
     <string>Show / hide cell transform window</string>
    </property>
   </action>
-  <action name="actionBuildWindow" >
+  <action name="actionBuildDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1765,7 +1765,7 @@
     <string>Show / hide builder window</string>
    </property>
   </action>
-  <action name="actionGridsWindow" >
+  <action name="actionGridsDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1779,7 +1779,7 @@
     <string>Show / hide grids window</string>
    </property>
   </action>
-  <action name="actionTransformWindow" >
+  <action name="actionTransformDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1793,7 +1793,7 @@
     <string>Show / hide atom transform window</string>
    </property>
   </action>
-  <action name="actionPositionWindow" >
+  <action name="actionPositionDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1807,7 +1807,7 @@
     <string>Show / hide atom position window</string>
    </property>
   </action>
-  <action name="actionMinimiserWindow" >
+  <action name="actionMinimiserDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1821,7 +1821,7 @@
     <string>Show / hide minimiser window</string>
    </property>
   </action>
-  <action name="actionDisorderWindow" >
+  <action name="actionDisorderDialog" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
