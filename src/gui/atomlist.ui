@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>AtomlistWidget</class>
- <widget class="QWidget" name="AtomlistWidget" >
+ <class>AtomlistDialog</class>
+ <widget class="QDialog" name="AtomlistDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>
@@ -11,6 +11,9 @@
   </property>
   <property name="windowTitle" >
    <string>Atom List</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >:/stackicons/icons/stack_atomlist.svg</iconset>
   </property>
   <layout class="QHBoxLayout" >
    <property name="margin" >
@@ -214,6 +217,8 @@
    <header>ttreewidget.uih</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="icons.qrc" />
+ </resources>
  <connections/>
 </ui>

@@ -34,6 +34,10 @@
 #include "gui/atomlist.h"
 #include "gui/forcefields.h"
 #include "gui/minimiser.h"
+#include "gui/prefs.h"
+#include "gui/loadmodel.h"
+#include "gui/ffeditor.h"
+#include "gui/selectpattern.h"
 #include "model/model.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
@@ -72,6 +76,22 @@ void AtenForm::closeEvent(QCloseEvent *event)
 	{
 		saveSettings();
 		event->accept();
+		// Delete subwindows / dialogs
+		delete gui.prefsDialog;
+		delete gui.forcefieldEditorDialog;
+		delete gui.loadModelDialog;
+		delete gui.selectPatternDialog;
+		delete gui.atomlistDialog;
+		delete gui.buildDialog;
+		delete gui.cellDefineDialog;
+		delete gui.cellTransformDialog;
+		delete gui.disorderDialog;
+		delete gui.forcefieldsDialog;
+		delete gui.glyphsDialog;
+		delete gui.gridsDialog;
+		delete gui.minimiserDialog;
+		delete gui.positionDialog;
+		delete gui.transformDialog;
 	}
 	else event->ignore();
 }
@@ -103,7 +123,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
 	master.setCurrentModel(master.model(n));
-	gui.disorderWindow->refresh();
+	gui.disorderDialog->refresh();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 }
@@ -381,80 +401,80 @@ void AtenForm::on_actionSelectElement_triggered(bool on)
 // Window Show / Hide Functions
 */
 
-void AtenForm::on_actionAtomlistWindow_triggered(bool checked)
+void AtenForm::on_actionAtomlistDialog_triggered(bool checked)
 {
 	if (checked)
 	{
-		gui.atomlistWindow->showWindow();
-		gui.atomlistWindow->refresh();
+		gui.atomlistDialog->showWindow();
+		gui.atomlistDialog->refresh();
 	}
-	else gui.atomlistWindow->hide();
+	else gui.atomlistDialog->hide();
 }
 
-void AtenForm::on_actionBuildWindow_triggered(bool checked)
+void AtenForm::on_actionBuildDialog_triggered(bool checked)
 {
-	if (checked) gui.buildWindow->showWindow();
-	else gui.buildWindow->hide();
+	if (checked) gui.buildDialog->showWindow();
+	else gui.buildDialog->hide();
 }
 
-void AtenForm::on_actionTransformWindow_triggered(bool checked)
+void AtenForm::on_actionTransformDialog_triggered(bool checked)
 {
-	if (checked) gui.transformWindow->showWindow();
-	else gui.transformWindow->hide();
+	if (checked) gui.transformDialog->showWindow();
+	else gui.transformDialog->hide();
 }
 
-void AtenForm::on_actionPositionWindow_triggered(bool checked)
+void AtenForm::on_actionPositionDialog_triggered(bool checked)
 {
-	if (checked) gui.positionWindow->showWindow();
-	else gui.positionWindow->hide();
+	if (checked) gui.positionDialog->showWindow();
+	else gui.positionDialog->hide();
 }
 
-void AtenForm::on_actionCellDefineWindow_triggered(bool checked)
+void AtenForm::on_actionCellDefineDialog_triggered(bool checked)
 {
 	if (checked)
 	{
-		gui.cellDefineWindow->showWindow();
-		gui.cellDefineWindow->refresh();
+		gui.cellDefineDialog->showWindow();
+		gui.cellDefineDialog->refresh();
 	}
-	else gui.cellDefineWindow->hide();
+	else gui.cellDefineDialog->hide();
 }
 
-void AtenForm::on_actionCellTransformWindow_triggered(bool checked)
+void AtenForm::on_actionCellTransformDialog_triggered(bool checked)
 {
 	if (checked)
 	{
-		gui.cellTransformWindow->showWindow();
-		gui.cellTransformWindow->refresh();
+		gui.cellTransformDialog->showWindow();
+		gui.cellTransformDialog->refresh();
 	}
-	else gui.cellTransformWindow->hide();
+	else gui.cellTransformDialog->hide();
 }
 
-void AtenForm::on_actionMinimiserWindow_triggered(bool checked)
+void AtenForm::on_actionMinimiserDialog_triggered(bool checked)
 {
-	if (checked) gui.minimiserWindow->showWindow();
-	else gui.minimiserWindow->hide();
+	if (checked) gui.minimiserDialog->showWindow();
+	else gui.minimiserDialog->hide();
 }
 
-void AtenForm::on_actionDisorderWindow_triggered(bool checked)
+void AtenForm::on_actionDisorderDialog_triggered(bool checked)
 {
-	if (checked) gui.disorderWindow->showWindow();
-	else gui.disorderWindow->hide();
+	if (checked) gui.disorderDialog->showWindow();
+	else gui.disorderDialog->hide();
 }
 
-void AtenForm::on_actionForcefieldsWindow_triggered(bool checked)
+void AtenForm::on_actionForcefieldsDialog_triggered(bool checked)
 {
 	if (checked)
 	{
-		gui.forcefieldsWindow->showWindow();
-		gui.forcefieldsWindow->refresh();
+		gui.forcefieldsDialog->showWindow();
+		gui.forcefieldsDialog->refresh();
 	}
-	else gui.forcefieldsWindow->hide();
+	else gui.forcefieldsDialog->hide();
 }
 
-void AtenForm::on_actionGridsWindow_triggered(bool checked)
+void AtenForm::on_actionGridsDialog_triggered(bool checked)
 {
-	if (checked) gui.gridsWindow->showWindow();
-	else gui.gridsWindow->hide();
+	if (checked) gui.gridsDialog->showWindow();
+	else gui.gridsDialog->hide();
 }
 
 // void AtenForm::on_actionGlyphsWindow_triggered(bool checked)

@@ -63,7 +63,7 @@ class AtenSelectPattern : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenSelectPattern(QDialog *parent = 0);
+	AtenSelectPattern(QWidget *parent = 0);
 	// Main form declaration
 	Ui::SelectPatternDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)

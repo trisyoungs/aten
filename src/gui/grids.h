@@ -25,7 +25,7 @@
 #include "gui/ui_grids.h"
 
 // Program preferences window
-class AtenGrids : public QWidget
+class AtenGrids : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -66,6 +66,7 @@ class AtenGrids : public QWidget
 	void on_GridTransparencySpin_valueChanged(double d);
 	void on_GridColourscaleSpin_valueChanged(int n);
 	void on_GridSymmetricCheck_clicked(bool checked);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -73,14 +74,14 @@ class AtenGrids : public QWidget
 	private:
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenGrids(QWidget *parent = 0);
 	~AtenGrids();
 	// Main form declaration
-	Ui::GridsWidget ui;
+	Ui::GridsDialog ui;
 	// File dialogs for grids
 	QFileDialog *openGridDialog, *saveGridDialog;
 };

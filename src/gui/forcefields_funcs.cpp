@@ -22,6 +22,7 @@
 #include "base/master.h"
 #include "base/elements.h"
 #include "classes/pattern.h"
+#include "gui/mainwindow.h"
 #include "gui/forcefields.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
@@ -78,7 +79,7 @@ void AtenForcefields::showWindow()
 void AtenForcefields::refresh()
 {
 	// If the window is not visible, don't do anything
-	if (!gui.forcefieldsWindow->isVisible())
+	if (!gui.forcefieldsDialog->isVisible())
 	{
 		shouldRefresh_ = TRUE;
 		return;
@@ -312,4 +313,9 @@ void AtenForcefields::on_ManualTypeEdit_returnPressed()
 	}
 	else typelistElement_ = el;
 	refreshTypes();
+}
+
+void AtenForcefields::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionForcefieldsDialog->setChecked(FALSE);
 }

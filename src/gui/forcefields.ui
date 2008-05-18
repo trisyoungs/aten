@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>ForcefieldsWidget</class>
- <widget class="QWidget" name="ForcefieldsWidget" >
+ <class>ForcefieldsDialog</class>
+ <widget class="QDialog" name="ForcefieldsDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

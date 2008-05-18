@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "base/elements.h"
+#include "gui/mainwindow.h"
 #include "gui/build.h"
 #include "gui/gui.h"
 #include "model/model.h"
@@ -61,4 +62,9 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 	m->addAtom(master.sketchElement(), newpos);
 	m->endUndostate();
 	gui.modelChanged();
+}
+
+void AtenBuild::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionBuildDialog->setChecked(FALSE);
 }

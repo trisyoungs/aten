@@ -25,7 +25,7 @@
 #include "gui/ui_minimiser.h"
 
 // Program preferences window
-class AtenMinimiser : public QWidget
+class AtenMinimiser : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -38,6 +38,7 @@ class AtenMinimiser : public QWidget
 	private slots:
 	void on_MinimiserMethodCombo_currentIndexChanged(int index);
 	void on_MinimiseButton_clicked(bool checked);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -45,14 +46,14 @@ class AtenMinimiser : public QWidget
 	private:
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenMinimiser(QWidget *parent = 0);
 	~AtenMinimiser();
 	// Main form declaration
-	Ui::MinimiserWidget ui;
+	Ui::MinimiserDialog ui;
 };
 
 #endif

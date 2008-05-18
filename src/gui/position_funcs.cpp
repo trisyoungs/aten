@@ -21,6 +21,7 @@
 
 #include "base/master.h"
 #include "gui/position.h"
+#include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "model/model.h"
 
@@ -229,4 +230,9 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	m->endUndostate();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+void AtenPosition::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionPositionDialog->setChecked(FALSE);
 }

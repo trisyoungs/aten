@@ -28,7 +28,7 @@
 class QFileDialog;
 
 // Program preferences window
-class AtenForcefields : public QWidget
+class AtenForcefields : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -56,6 +56,7 @@ class AtenForcefields : public QWidget
 	void on_AssignFFToPatternButton_clicked(bool clicked);
 	void on_ForcefieldList_currentRowChanged(int row);
 	void on_ForcefieldList_itemClicked(QListWidgetItem *item);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -67,14 +68,14 @@ class AtenForcefields : public QWidget
 	bool shouldRefresh_;
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenForcefields(QWidget *parent = 0);
 	~AtenForcefields();
 	// Main form declaration
-	Ui::ForcefieldsWidget ui;
+	Ui::ForcefieldsDialog ui;
 	// File dialogs for forcefields
 	QFileDialog *openForcefieldDialog, *saveForcefieldDialog;
 };

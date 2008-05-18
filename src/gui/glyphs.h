@@ -25,7 +25,7 @@
 #include "gui/ui_glyphs.h"
 
 // Program preferences window
-class AtenGlyphs : public QWidget
+class AtenGlyphs : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -36,6 +36,7 @@ class AtenGlyphs : public QWidget
 	public:
 	void showWindow();
 	private slots:
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -45,14 +46,14 @@ class AtenGlyphs : public QWidget
 	bool refreshing_;
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenGlyphs(QWidget *parent = 0);
 	~AtenGlyphs();
 	// Main form declaration
-	Ui::GlyphsWidget ui;
+	Ui::GlyphsDialog ui;
 };
 
 #endif

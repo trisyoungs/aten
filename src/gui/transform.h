@@ -25,7 +25,7 @@
 #include "gui/ui_transform.h"
 
 // Program preferences window
-class AtenTransform : public QWidget
+class AtenTransform : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -42,6 +42,7 @@ class AtenTransform : public QWidget
 	void on_RotateDefineAxisButton_clicked(bool on);
 	void on_RotateClockwiseButton_clicked(bool on);
 	void on_RotateAnticlockwiseButton_clicked(bool on);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -49,14 +50,14 @@ class AtenTransform : public QWidget
 	private:
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenTransform(QWidget *parent = 0);
 	~AtenTransform();
 	// Main form declaration
-	Ui::TransformWidget ui;
+	Ui::TransformDialog ui;
 };
 
 #endif

@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>CellDefineWidget</class>
- <widget class="QWidget" name="CellDefineWidget" >
+ <class>CellDefineDialog</class>
+ <widget class="QDialog" name="CellDefineDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

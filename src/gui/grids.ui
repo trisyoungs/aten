@@ -1,6 +1,6 @@
 <ui version="4.0" >
- <class>GridsWidget</class>
- <widget class="QWidget" name="GridsWidget" >
+ <class>GridsDialog</class>
+ <widget class="QDialog" name="GridsDialog" >
   <property name="geometry" >
    <rect>
     <x>0</x>

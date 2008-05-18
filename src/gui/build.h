@@ -25,7 +25,7 @@
 #include "gui/ui_build.h"
 
 // Program preferences window
-class AtenBuild : public QWidget
+class AtenBuild : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -37,6 +37,7 @@ class AtenBuild : public QWidget
 	void showWindow();
 	private slots:
 	void on_AddAtomButton_clicked(bool on);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -44,14 +45,14 @@ class AtenBuild : public QWidget
 	private:
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenBuild(QWidget *parent = 0);
 	~AtenBuild();
 	// Main form declaration
-	Ui::BuildWidget ui;
+	Ui::BuildDialog ui;
 };
 
 #endif

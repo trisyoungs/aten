@@ -28,7 +28,7 @@
 class Model;
 
 // Program preferences window
-class AtenAtomlist : public QWidget
+class AtenAtomlist : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -48,6 +48,7 @@ class AtenAtomlist : public QWidget
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -65,14 +66,14 @@ class AtenAtomlist : public QWidget
 	int listPosition_;
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenAtomlist(QWidget *parent = 0);
+	AtenAtomlist(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenAtomlist();
 	// Main form declaration
-	Ui::AtomlistWidget ui;
+	Ui::AtomlistDialog ui;
 };
 
 #endif

@@ -25,7 +25,7 @@
 #include "gui/ui_celldefine.h"
 
 // Program preferences window
-class AtenCellDefine : public QWidget
+class AtenCellDefine : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -49,6 +49,7 @@ class AtenCellDefine : public QWidget
 	void on_CellSpacegroupEdit_returnPressed();
 	void on_CellSpacegroupRemoveButton_clicked(bool checked);
 	void on_CellSpacegroupPackButton_clicked(bool checked);
+	void dialogFinished(int result);
 
 	/*
 	// Local variables
@@ -58,14 +59,14 @@ class AtenCellDefine : public QWidget
 	bool refreshing_;
 
 	/*
-	// Widgets
+	// Dialog
 	*/
 	public:
 	// Constructor / Destructor
 	AtenCellDefine(QWidget *parent = 0);
 	~AtenCellDefine();
 	// Main form declaration
-	Ui::CellDefineWidget ui;
+	Ui::CellDefineDialog ui;
 };
 
 #endif

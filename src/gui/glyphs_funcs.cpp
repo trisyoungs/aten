@@ -19,6 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "gui/mainwindow.h"
+#include "gui/gui.h"
 #include "gui/glyphs.h"
 #include "model/model.h"
 #include "base/master.h"
@@ -41,4 +43,9 @@ void AtenGlyphs::showWindow()
 {
 	//if (shouldRefresh_) refresh();
 	show();
+}
+
+void AtenGlyphs::dialogFinished(int result)
+{
+//	gui.mainWindow->ui.actionGlyphsDialog->setChecked(FALSE);
 }
