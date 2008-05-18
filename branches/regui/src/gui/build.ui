@@ -5,180 +5,195 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>189</width>
+    <height>142</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Build</string>
   </property>
-  <widget class="QGroupBox" name="AddAtomGroup" >
-   <property name="geometry" >
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>192</width>
-     <height>115</height>
-    </rect>
+  <layout class="QHBoxLayout" >
+   <property name="margin" >
+    <number>2</number>
    </property>
-   <property name="title" >
-    <string>Add Atom</string>
+   <property name="spacing" >
+    <number>4</number>
    </property>
-   <widget class="QWidget" name="" >
-    <layout class="QGridLayout" >
-     <property name="margin" >
+   <item>
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="currentIndex" >
       <number>0</number>
      </property>
-     <property name="spacing" >
-      <number>2</number>
-     </property>
-     <item row="0" column="1" >
-      <widget class="QDoubleSpinBox" name="AtomXCoordSpin" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+     <widget class="QWidget" name="AddAtomTab" >
+      <attribute name="title" >
+       <string>Add Atom</string>
+      </attribute>
+      <layout class="QHBoxLayout" >
+       <property name="margin" >
+        <number>2</number>
        </property>
-       <property name="decimals" >
-        <number>6</number>
+       <property name="spacing" >
+        <number>4</number>
        </property>
-       <property name="maximum" >
-        <double>100000.000000000000000</double>
-       </property>
-       <property name="minimum" >
-        <double>-100000.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" >
-      <widget class="QDoubleSpinBox" name="AtomYCoordSpin" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals" >
-        <number>6</number>
-       </property>
-       <property name="maximum" >
-        <double>1000000.000000000000000</double>
-       </property>
-       <property name="minimum" >
-        <double>-100000.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0" >
-      <widget class="QLabel" name="label_50" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>1</hsizetype>
-         <vsizetype>5</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text" >
-        <string>Y</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1" >
-      <widget class="QDoubleSpinBox" name="AtomZCoordSpin" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="decimals" >
-        <number>6</number>
-       </property>
-       <property name="maximum" >
-        <double>100000.000000000000000</double>
-       </property>
-       <property name="minimum" >
-        <double>-1000000.000000000000000</double>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0" >
-      <widget class="QLabel" name="label_22" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>1</hsizetype>
-         <vsizetype>5</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text" >
-        <string>X</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" >
-      <widget class="QLabel" name="label_51" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>1</hsizetype>
-         <vsizetype>5</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text" >
-        <string>Z</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2" >
-      <widget class="QCheckBox" name="AddAtomFractionalCheck" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip" >
-        <string>ACtivate to add the atom in fractional coordinates</string>
-       </property>
-       <property name="text" >
-        <string>Frac</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2" >
-      <widget class="QPushButton" name="AddAtomButton" >
-       <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="toolTip" >
-        <string>Create a new atom at th e specified coordinates (with element defined above)</string>
-       </property>
-       <property name="text" >
-        <string>Add</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
+       <item>
+        <layout class="QGridLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>2</number>
+         </property>
+         <item row="0" column="1" >
+          <widget class="QDoubleSpinBox" name="AtomXCoordSpin" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="decimals" >
+            <number>6</number>
+           </property>
+           <property name="maximum" >
+            <double>100000.000000000000000</double>
+           </property>
+           <property name="minimum" >
+            <double>-100000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1" >
+          <widget class="QDoubleSpinBox" name="AtomYCoordSpin" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="decimals" >
+            <number>6</number>
+           </property>
+           <property name="maximum" >
+            <double>1000000.000000000000000</double>
+           </property>
+           <property name="minimum" >
+            <double>-100000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0" >
+          <widget class="QLabel" name="label_50" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>1</hsizetype>
+             <vsizetype>5</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Y</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1" >
+          <widget class="QDoubleSpinBox" name="AtomZCoordSpin" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="decimals" >
+            <number>6</number>
+           </property>
+           <property name="maximum" >
+            <double>100000.000000000000000</double>
+           </property>
+           <property name="minimum" >
+            <double>-1000000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" >
+          <widget class="QLabel" name="label_22" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>1</hsizetype>
+             <vsizetype>5</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>X</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0" >
+          <widget class="QLabel" name="label_51" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>1</hsizetype>
+             <vsizetype>5</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text" >
+            <string>Z</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2" >
+          <widget class="QCheckBox" name="AddAtomFractionalCheck" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>ACtivate to add the atom in fractional coordinates</string>
+           </property>
+           <property name="text" >
+            <string>Frac</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="2" >
+          <widget class="QPushButton" name="AddAtomButton" >
+           <property name="sizePolicy" >
+            <sizepolicy>
+             <hsizetype>7</hsizetype>
+             <vsizetype>0</vsizetype>
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="toolTip" >
+            <string>Create a new atom at th e specified coordinates (with element defined above)</string>
+           </property>
+           <property name="text" >
+            <string>Add</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections/>

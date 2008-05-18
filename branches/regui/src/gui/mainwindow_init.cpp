@@ -26,7 +26,6 @@
 #include "gui/tcanvas.uih"
 #include <QtGui/QFileDialog>
 #include <QtGui/QDoubleSpinBox>
-#include <QtCore/QSettings>
 
 // Finalise GUI
 void AtenForm::finaliseUi()
@@ -40,10 +39,9 @@ void AtenForm::finaliseUi()
 	// Set the title of the main window to reflect the version
 	setWindowTitle("Aten (0.98)");
 
-	// Initialise application name, organisation and author, and create settings structure
+	// Initialise application name, organisation and author
 	QCoreApplication::setOrganizationDomain("www.projectaten.org");
 	QCoreApplication::setApplicationName("Aten");
-	settings_ = new QSettings;
 
 	// Set up recent files list (create all actions first)
 	for (n=0; n<MAXRECENTFILES; n++)
@@ -52,14 +50,6 @@ void AtenForm::finaliseUi()
 		actionRecentFile[n]->setVisible(FALSE);
 		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(loadRecent()));
 		ui.RecentMenu->addAction(actionRecentFile[n]);
-	}
-	// -- Now populate list
-	for (n=0; n<MAXRECENTFILES; n++)
-	{
-		// Construct settings value to search for
-		strcpy(temp,"RecentFile");
-		strcat(temp,itoa(n));
-		if (settings_->contains(temp)) addRecent(qPrintable(settings_->value(temp).toString()));
 	}
 
 	// Create QActionGroup for draw styles
@@ -83,9 +73,13 @@ void AtenForm::finaliseUi()
 	mousegroup->addAction(ui.actionMouseTranslate);
 
 	// Hide some toolbars initially
-	ui.TrajectoryToolbar->setVisible(FALSE);
+	ui.BondToolbar->setVisible(FALSE);
+	ui.DrawToolbar->setVisible(FALSE);
 	ui.CommandToolbar->setVisible(FALSE);
-	ui.MouseToolbar->setVisible(FALSE);
+	ui.ForcefieldsToolbar->setVisible(FALSE);
+	ui.MeasureToolbar->setVisible(FALSE);
+	ui.MinimiserToolbar->setVisible(FALSE);
+	ui.TrajectoryToolbar->setVisible(FALSE);
 
 	// Add text edit to CommandToolBar
 	commandEdit_ = new QLineEdit(this);
@@ -124,8 +118,10 @@ void AtenForm::finaliseUi()
 
 	// Add bond tolerance spinbox to Bond Toolbar
 	bondToleranceSpin_ = new QDoubleSpinBox(this);
+	bondToleranceSpin_->setRange(0.0, 100.0);
+	bondToleranceSpin_->setSingleStep(0.01);
 	ui.DrawToolbar->addWidget(bondToleranceSpin_);
-	QObject::connect(bondToleranceSpin_, SIGNAL(valueChanged(double d)), this, SLOT(bondTolerance_valueChanged(double d)));
+	QObject::connect(bondToleranceSpin_, SIGNAL(valueChanged(double)), this, SLOT(bondTolerance_valueChanged(double)));
 
 	// Create master group for toolbar buttons that change user action modes
 	uaGroup = new QActionGroup(this);
@@ -175,6 +171,9 @@ void AtenForm::finaliseUi()
 	layout->addWidget(progressButton,0);
 	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,128);
 	progressIndicator->setVisible(FALSE);
+
+	// Load Qt Settings
+	loadSettings();
 
 	// Create open model dialog
 	loadModelDialog = new QFileDialog(this);

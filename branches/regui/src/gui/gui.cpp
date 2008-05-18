@@ -26,6 +26,7 @@
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
 #include "gui/selectpattern.h"
+#include "gui/selectelement.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
 #include "gui/grids.h"
@@ -91,6 +92,7 @@ void GuiQt::run()
 	forcefieldEditorDialog = new AtenForcefieldEditor(mainWindow);
 	loadModelDialog = new AtenLoadModel(mainWindow);
 	selectPatternDialog = new AtenSelectPattern(mainWindow);
+	selectElementDialog = new AtenSelectElement(mainWindow);
 	// ...tool windows
 	atomlistDialog = new AtenAtomlist(mainWindow, Qt::Dialog|Qt::Tool);
 	buildDialog = new AtenBuild(mainWindow);
@@ -122,6 +124,7 @@ void GuiQt::run()
 	forcefieldEditorDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
+	selectElementDialog->setModal(TRUE);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
@@ -129,6 +132,7 @@ void GuiQt::run()
 	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
 	selectPatternDialog->finaliseUi();
+	selectElementDialog->finaliseUi();
 
 	// Temporarily disable drawing on the main canvas again
 	gui.mainView.disableDrawing();

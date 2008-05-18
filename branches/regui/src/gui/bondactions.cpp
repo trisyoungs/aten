@@ -72,7 +72,6 @@ void AtenForm::on_actionAugmentBonding_triggered(bool on)
 
 void AtenForm::bondTolerance_valueChanged(double value)
 {
-	printf("Value = %f\n");
-	// TGAY
+	prefs.setBondTolerance(value);
 }
 
