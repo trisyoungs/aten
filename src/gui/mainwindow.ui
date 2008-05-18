@@ -128,7 +128,7 @@
      <x>0</x>
      <y>0</y>
      <width>709</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuGlyphs" >
@@ -458,7 +458,7 @@
   </widget>
   <widget class="QToolBar" name="SelectToolbar" >
    <property name="windowTitle" >
-    <string>Selection</string>
+    <string>Select</string>
    </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
@@ -482,6 +482,9 @@
    <addaction name="actionEditInvert" />
   </widget>
   <widget class="QToolBar" name="DrawToolbar" >
+   <property name="windowTitle" >
+    <string>Build</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -499,6 +502,7 @@
    <addaction name="actionElementH" />
    <addaction name="actionElementC" />
    <addaction name="actionElementN" />
+   <addaction name="actionSelectCustomElement" />
    <addaction name="actionElementCustom" />
    <addaction name="separator" />
    <addaction name="actionBondSingle" />
@@ -507,6 +511,9 @@
    <addaction name="actionDeleteBond" />
   </widget>
   <widget class="QToolBar" name="BondToolbar" >
+   <property name="windowTitle" >
+    <string>Bonding</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -521,6 +528,9 @@
    <addaction name="actionAugmentBonding" />
   </widget>
   <widget class="QToolBar" name="MeasureToolbar" >
+   <property name="windowTitle" >
+    <string>Measure</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -537,6 +547,9 @@
    <addaction name="actionClearMeasurements" />
   </widget>
   <widget class="QToolBar" name="MinimiserToolbar" >
+   <property name="windowTitle" >
+    <string>Minimiser</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -545,6 +558,9 @@
    </attribute>
   </widget>
   <widget class="QToolBar" name="ForcefieldsToolbar" >
+   <property name="windowTitle" >
+    <string>Forcefields</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Horizontal</enum>
    </property>
@@ -553,6 +569,9 @@
    </attribute>
   </widget>
   <widget class="QToolBar" name="WindowToolbar" >
+   <property name="windowTitle" >
+    <string>Tool WIndows</string>
+   </property>
    <property name="orientation" >
     <enum>Qt::Vertical</enum>
    </property>
@@ -1495,21 +1514,36 @@
    </property>
   </action>
   <action name="actionElementH" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>H</string>
    </property>
   </action>
   <action name="actionElementC" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>C</string>
    </property>
   </action>
   <action name="actionElementN" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>N</string>
    </property>
   </action>
   <action name="actionElementCustom" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>O</string>
    </property>
@@ -1526,6 +1560,9 @@
    </property>
   </action>
   <action name="actionAddHydrogenAtom" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/build/icons/build_atomaddh.svg</iconset>
    </property>
@@ -1658,6 +1695,9 @@
    </property>
   </action>
   <action name="actionBondSingle" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/bond/icons/bond_single.svg</iconset>
    </property>
@@ -1666,6 +1706,9 @@
    </property>
   </action>
   <action name="actionBondDouble" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/bond/icons/bond_double.svg</iconset>
    </property>
@@ -1674,6 +1717,9 @@
    </property>
   </action>
   <action name="actionBondTriple" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/bond/icons/bond_triple.svg</iconset>
    </property>
@@ -1682,6 +1728,9 @@
    </property>
   </action>
   <action name="actionDeleteBond" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/bond/icons/bond_delete.svg</iconset>
    </property>
@@ -1836,6 +1885,9 @@
    </property>
   </action>
   <action name="actionDeleteAtom" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="icon" >
     <iconset resource="icons.qrc" >:/build/icons/build_delete.svg</iconset>
    </property>
@@ -1852,6 +1904,14 @@
    </property>
    <property name="text" >
     <string>Augment Bonding</string>
+   </property>
+  </action>
+  <action name="actionSelectCustomElement" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/build/icons/build_ptable.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Pick Custom Element</string>
    </property>
   </action>
  </widget>

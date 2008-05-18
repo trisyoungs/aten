@@ -42,7 +42,6 @@
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
-#include <QtCore/QSettings>
 
 #include "base/sysfunc.h"
 
@@ -65,8 +64,10 @@ const char *extension_from_BIF(bitmap_format bif)
 // Constructor
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
-	int i;
 	ui.setupUi(this);
+
+	// Private variables
+	customElement_ = 8;
 }
 
 // Catch window close event
@@ -174,22 +175,6 @@ void AtenForm::executeCommand()
 void AtenForm::progressCancel()
 {
 	gui.notifyProgressCanceled();
-}
-
-// Save program settings
-void AtenForm::saveSettings()
-{
-	char temp[128];
-	// Save the recent file entries
-	for (int i=0; i<MAXRECENTFILES; i++)
-	{
-		// Create name tag
-		strcpy(temp,"RecentFile");
-		strcat(temp,itoa(i));
-		//if (actionRecentFile[i]->isVisible()) printf("action %i is visible\n",i);
-		if (actionRecentFile[i]->isVisible()) settings_->setValue(temp,actionRecentFile[i]->data().toString());
-		else settings_->remove(temp);
-	}
 }
 
 // Load recent file

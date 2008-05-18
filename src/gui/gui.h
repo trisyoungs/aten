@@ -31,6 +31,7 @@ class AtenPrefs;
 class AtenForcefieldEditor;
 class AtenLoadModel;
 class AtenSelectPattern;
+class AtenSelectElement;
 class AtenAtomlist;
 class AtenBuild;
 class AtenCellDefine;
@@ -164,6 +165,8 @@ class GuiQt
 	AtenLoadModel *loadModelDialog;
 	// Select pattern dialog
 	AtenSelectPattern *selectPatternDialog;
+	// Select element dialog
+	AtenSelectElement *selectElementDialog;
 
 	/*
 	// Canvas

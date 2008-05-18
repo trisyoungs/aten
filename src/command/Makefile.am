@@ -4,4 +4,4 @@ libcommand_a_SOURCES = analyse.cpp atom.cpp bonds.cpp build.cpp cell.cpp charge.
 
 noinst_HEADERS = commandlist.h commands.h
 
-INCLUDES = -I../ @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@

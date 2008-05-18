@@ -133,6 +133,9 @@ class AtenForm : public QMainWindow
 	/*
 	// Draw Actions
 	*/
+	private:
+	// Current custom element
+	int customElement_;
 	private slots:
 	void on_actionDrawAtom_triggered(bool on);
 	void on_actionDrawChain_triggered(bool on);
@@ -146,6 +149,7 @@ class AtenForm : public QMainWindow
 	void on_actionElementC_triggered(bool on);
 	void on_actionElementN_triggered(bool on);
 	void on_actionElementCustom_triggered(bool on);
+	void on_actionSelectCustomElement_triggered(bool on);
 	void on_actionAddHydrogen_triggered(bool on);
 	void on_actionAddHydrogenAtom_triggered(bool on);
 	void on_actionProbeAtom_triggered(bool on);
@@ -349,7 +353,9 @@ class AtenForm : public QMainWindow
 	*/
 	private:
 	// Settings structure
-	QSettings *settings_;
+	QSettings settings_;
+	// Load settings
+	void loadSettings();
 	// Save settings
 	void saveSettings();
 

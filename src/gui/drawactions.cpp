@@ -22,6 +22,7 @@
 #include "base/master.h"
 #include "base/elements.h"
 #include "gui/mainwindow.h"
+#include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "model/model.h"
 
@@ -44,11 +45,6 @@ void AtenForm::on_actionTransmuteAtom_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::EditTransmuteAction);
 }
-
-//void AtenForm::on_actionBondToleranceSpin_valueChanged(double d)
-//{
-//	prefs.setBondTolerance(d);
-//}
 
 void AtenForm::on_actionBondSingle_triggered(bool on)
 {
@@ -87,7 +83,19 @@ void AtenForm::on_actionElementN_triggered(bool on)
 
 void AtenForm::on_actionElementCustom_triggered(bool on)
 {
-	printf("TGAY Not done yet.....\n");
+	if (on) master.setSketchElement(customElement_);
+}
+
+void AtenForm::on_actionSelectCustomElement_triggered(bool on)
+{
+	// Call the select element dialog...
+	int newel = gui.selectElementDialog->selectElement();
+	if (newel != -1)
+	{
+		// Set text of custom element button
+		ui.actionElementCustom->setText( elements.symbol(newel) );
+		customElement_ = newel;
+	}
 }
 
 void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
@@ -99,29 +107,6 @@ void AtenForm::on_actionProbeAtom_triggered(bool on)
 {
 	if (on) gui.mainView.setSelectedMode(Canvas::EditProbeAction);
 }
-
-// void AtenForm::on_actionElementUser_triggered(bool on)
-// {
-// 	master.setSketchElement(elements.find(qPrintable(ui.ElementUserButton->text())));
-// }
-
-// void AtenForm::on_actionElementEdit_returnPressed()
-// {
-// 	// Get the contents of the line edit and check that it is an element symbol
-// 	int el = elements.find(qPrintable(ui.ElementEdit->text()));
-// 	if (el == -1)
-// 	{
-// 		msg(Debug::None,"Unknown element '%s'\n",qPrintable(ui.ElementEdit->text()));
-// 		ui.ElementEdit->setText(ui.ElementUserButton->text());
-// 	}
-// 	else
-// 	{
-// 		// Set the text of the user element button and select it
-// 		ui.ElementUserButton->setText(elements.symbol(el));
-// 		master.setSketchElement(el);
-// 		ui.ElementUserButton->setChecked(TRUE);
-// 	}
-// }
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {

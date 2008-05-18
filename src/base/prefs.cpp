@@ -167,7 +167,7 @@ Prefs::Prefs()
 
 	// Rendering - Objects
 	labelScale_ = 4.0;
-	renderObjects_[Prefs::ViewAtoms] = TRUE;//TGAY
+	renderObjects_[Prefs::ViewAtoms] = TRUE;
 	renderObjects_[Prefs::ViewLabels] = TRUE;
 	renderObjects_[Prefs::ViewMeasurements] = TRUE;
 	renderObjects_[Prefs::ViewGlobe] = TRUE;
