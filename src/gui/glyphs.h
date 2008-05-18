@@ -24,7 +24,7 @@
 
 #include "gui/ui_glyphs.h"
 
-// Program preferences window
+// Glyphs window
 class AtenGlyphs : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

@@ -24,7 +24,7 @@
 
 #include "gui/ui_celldefine.h"
 
-// Program preferences window
+// Cell definition window
 class AtenCellDefine : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

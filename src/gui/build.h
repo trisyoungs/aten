@@ -24,7 +24,7 @@
 
 #include "gui/ui_build.h"
 
-// Program preferences window
+// Build (draw) window
 class AtenBuild : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

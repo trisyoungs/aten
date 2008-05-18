@@ -27,7 +27,7 @@
 // Forward Declarations
 class QFileDialog;
 
-// Program preferences window
+// Forcefields window
 class AtenForcefields : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

@@ -24,7 +24,7 @@
 
 #include "gui/ui_celltransform.h"
 
-// Program preferences window
+// Cell transform window
 class AtenCellTransform : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro

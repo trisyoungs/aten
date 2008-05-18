@@ -23,11 +23,35 @@
 #define ATEN_ATOMLISTWINDOW_H
 
 #include "gui/ui_atomlist.h"
+#include <QtCore/QThread>
 
 // Forward declarations
 class Model;
+class AtomlistRefreshThread;
 
-// Program preferences window
+// Atomlist Refresh thread
+class AtomlistRefreshThread : public QThread
+{
+	public:
+	// Constructor
+	AtomlistRefreshThread();
+
+	private:
+	// Whether the running thread should be restarted
+	bool restart_;
+	// Whether the running thread should be killed
+	bool kill_;
+
+	public:
+	// Execute thread
+	void run();
+	// Restart thread
+	void restart();
+	// Kill thread
+	void kill();
+};
+
+// Atom list
 class AtenAtomlist : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
@@ -49,6 +73,12 @@ class AtenAtomlist : public QDialog
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
 	void dialogFinished(int result);
+
+	/*
+	// Threads
+	*/
+	private:
+	AtomlistRefreshThread refreshThread;
 
 	/*
 	// Local variables
@@ -74,6 +104,8 @@ class AtenAtomlist : public QDialog
 	~AtenAtomlist();
 	// Main form declaration
 	Ui::AtomlistDialog ui;
+	// Friends
+	friend class AtomlistRefreshThread;
 };
 
 #endif

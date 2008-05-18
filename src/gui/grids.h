@@ -24,7 +24,7 @@
 
 #include "gui/ui_grids.h"
 
-// Program preferences window
+// Grids window
 class AtenGrids : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
