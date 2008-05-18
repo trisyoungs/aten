@@ -4,4 +4,4 @@ libmethods_a_SOURCES = calculable.cpp cg.cpp linemin.cpp mc.cpp geometry.cpp pde
 
 noinst_HEADERS = calculable.h cg.h linemin.h mc.h geometry.h pdens.h rdf.h sd.h
 
-INCLUDES = -I../ @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
