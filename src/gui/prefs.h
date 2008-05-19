@@ -120,16 +120,19 @@ class AtenPrefs : public QDialog
 	// Local variables
 	*/
 	private:
-	bool UPDATING;
-	Prefs prefsBackup;
-	Element *elementsBackup;
+	// Whether the window is currently refreshing
+	bool refreshing_;
+	// Local copy of prefs data
+	Prefs prefsBackup_;
+	// Local copy of elements data
+	Element *elementsBackup_;
 
 	/*
 	// Widgets
 	*/
 	public:
 	// Constructor
-	AtenPrefs(QDialog *parent = 0);
+	AtenPrefs(QWidget *parent = 0);
 	// Destructor
 	~AtenPrefs();
 	// Main form declaration

@@ -70,7 +70,7 @@ class AtenLoadModel : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenLoadModel(QDialog *parent = 0);
+	AtenLoadModel(QWidget *parent = 0);
 	// Main form declaration
 	Ui::LoadModelDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)

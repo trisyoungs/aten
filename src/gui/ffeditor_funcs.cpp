@@ -46,8 +46,9 @@ namespace TorsionColumn
 {
 	enum TorsionColumn { Type1, Type2, Type3, Type4, Form, Data1, Data2, Data3, Data4, Data5, Data6, nColumns };
 }
+
 // Constructor
-AtenEdit::AtenEdit(QDialog *parent) : QDialog(parent)
+AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 	// Private Variables
@@ -56,21 +57,21 @@ AtenEdit::AtenEdit(QDialog *parent) : QDialog(parent)
 }
 
 // Finalise GUI
-void AtenEdit::finaliseUi()
+void AtenForcefieldEditor::finaliseUi()
 {
-	dbgBegin(Debug::Calls,"AtenEdit::finaliseUi");
-	dbgEnd(Debug::Calls,"AtenEdit::finaliseUi");
+	dbgBegin(Debug::Calls,"AtenForcefieldEditor::finaliseUi");
+	dbgEnd(Debug::Calls,"AtenForcefieldEditor::finaliseUi");
 }
 
 // Set controls
-void AtenEdit::setControls()
+void AtenForcefieldEditor::setControls()
 {
-	dbgBegin(Debug::Calls,"AtenEdit::setControls");
-	dbgEnd(Debug::Calls,"AtenEdit::setControls");
+	dbgBegin(Debug::Calls,"AtenForcefieldEditor::setControls");
+	dbgEnd(Debug::Calls,"AtenForcefieldEditor::setControls");
 }
 
 // Populate widget with specified forcefield
-void AtenEdit::populate(Forcefield *ff)
+void AtenForcefieldEditor::populate(Forcefield *ff)
 {
 	updating_ = TRUE;
 	// Clear tables
@@ -253,19 +254,19 @@ void AtenEdit::populate(Forcefield *ff)
 */
 
 // Test entered atom type
-void AtenEdit::on_FFEditorTestTypeButton_clicked(bool on)
+void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 {
 	ui.FFEditorTypeScoreLabel->setText("Score : ");
 	ui.FFEditorNumMatchedLabel->setText("Atoms Matched : ");
 }
 
 // Generate type
-void AtenEdit::on_FFEditorGenerateTypeButton_clicked(bool on)
+void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool on)
 {
 }
 
 // Item in type table edited
-void AtenEdit::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
+void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
 {
 	// Get position of changed item
 	int row = ui.FFEditorTypesTable->row(w);
@@ -277,13 +278,13 @@ void AtenEdit::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
 */
 
 // Vdw interaction type changed
-void AtenEdit::VdwFunctionChanged(int index)
+void AtenForcefieldEditor::VdwFunctionChanged(int index)
 {
 	// Cast sender
 	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
-		printf("AtenEdit::VdwFunctionChanged - Sender could not be cast to a TComboBox.\n");
+		printf("AtenForcefieldEditor::VdwFunctionChanged - Sender could not be cast to a TComboBox.\n");
 		return;
 	}
 	// Get ForcefieldAtom pointer and set data
@@ -292,7 +293,7 @@ void AtenEdit::VdwFunctionChanged(int index)
 }
 
 // Item in type table edited
-void AtenEdit::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
+void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
 	updating_ = TRUE;
@@ -355,13 +356,13 @@ void AtenEdit::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
 */
 
 // Bond interaction type changed
-void AtenEdit::BondFunctionChanged(int index)
+void AtenForcefieldEditor::BondFunctionChanged(int index)
 {
 	// Cast sender
 	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
-		printf("AtenEdit::BondFunctionChanged - Sender could not be cast to a TComboBox.\n");
+		printf("AtenForcefieldEditor::BondFunctionChanged - Sender could not be cast to a TComboBox.\n");
 		return;
 	}
 	// Get ForcefieldBound pointer and set data
@@ -370,7 +371,7 @@ void AtenEdit::BondFunctionChanged(int index)
 }
 
 // Item in bonds table edited
-void AtenEdit::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
+void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
 	updating_ = TRUE;
@@ -391,7 +392,7 @@ void AtenEdit::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 			break;
 		// Potential form
 		case (BondColumn::Form):
-			// Handled by AtenEdit::BondsTableComboChanged
+			// Handled by AtenForcefieldEditor::BondsTableComboChanged
 			break;
 		// Parameter data
 		case (BondColumn::Data1):
@@ -412,13 +413,13 @@ void AtenEdit::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 */
 
 // Angle interaction type changed
-void AtenEdit::AngleFunctionChanged(int index)
+void AtenForcefieldEditor::AngleFunctionChanged(int index)
 {
 	// Cast sender
 	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
-		printf("AtenEdit::AngleFunctionChanged - Sender could not be cast to a TComboBox.\n");
+		printf("AtenForcefieldEditor::AngleFunctionChanged - Sender could not be cast to a TComboBox.\n");
 		return;
 	}
 	// Get ForcefieldBound pointer and set data
@@ -427,7 +428,7 @@ void AtenEdit::AngleFunctionChanged(int index)
 }
 
 // Item in angles table edited
-void AtenEdit::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
+void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
 	updating_ = TRUE;
@@ -449,7 +450,7 @@ void AtenEdit::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 			break;
 		// Potential form
 		case (AngleColumn::Form):
-			// Handled by AtenEdit::AnglesTableComboChanged
+			// Handled by AtenForcefieldEditor::AnglesTableComboChanged
 			break;
 		// Parameter data
 		case (AngleColumn::Data1):
@@ -470,13 +471,13 @@ void AtenEdit::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 */
 
 // Torsion interaction type changed
-void AtenEdit::TorsionFunctionChanged(int index)
+void AtenForcefieldEditor::TorsionFunctionChanged(int index)
 {
 	// Cast sender
 	TComboBox *combo = (TComboBox*) sender();
 	if (!combo)
 	{
-		printf("AtenEdit::TorsionFunctionChanged - Sender could not be cast to a TComboBox.\n");
+		printf("AtenForcefieldEditor::TorsionFunctionChanged - Sender could not be cast to a TComboBox.\n");
 		return;
 	}
 	// Get ForcefieldBound pointer and set data
@@ -485,7 +486,7 @@ void AtenEdit::TorsionFunctionChanged(int index)
 }
 
 // Item in torsions table edited
-void AtenEdit::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w)
+void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w)
 {
 
 	updating_ = TRUE;
@@ -509,7 +510,7 @@ void AtenEdit::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w)
 			break;
 		// Potential form
 		case (TorsionColumn::Form):
-			// Handled by AtenEdit::TorsionsTableComboChanged
+			// Handled by AtenForcefieldEditor::TorsionsTableComboChanged
 			break;
 		// Parameter data
 		case (TorsionColumn::Data1):

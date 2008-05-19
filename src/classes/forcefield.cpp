@@ -30,18 +30,6 @@ Forcefield::ForcefieldCommand Forcefield::forcefieldCommand(const char *s)
 	return (Forcefield::ForcefieldCommand) enumSearch("forcefield keyword",Forcefield::nForcefieldCommands,ForcefieldKeywords,s);
 }
 
-// Generation rules (for rule-based FFs)
-const char *ForcefieldRulesStrings[Forcefield::nForcefieldRules] = { "None", "UniversalFF (Rappe et al.)" };
-const char *ForcefieldRulesKeywords[Forcefield::nForcefieldRules] = { "none", "uff" };
-const char *Forcefield::forcefieldRules(Forcefield::ForcefieldRules i)
-{
-	return ForcefieldRulesStrings[i];
-}
-Forcefield::ForcefieldRules Forcefield::forcefieldRules(const char *s)
-{
-	return (Forcefield::ForcefieldRules) enumSearch("forcefield rules", Forcefield::nForcefieldRules, ForcefieldRulesKeywords, s);
-}
-
 // Constructors
 ForcefieldParams::ForcefieldParams()
 {
@@ -74,7 +62,7 @@ ForcefieldBound::ForcefieldBound()
 Forcefield::Forcefield()
 {
 	// Private variables
-	rules_ = NoRules;
+	rules_ = Rules::None;
 	energyUnit_ = Prefs::Joules;
 	// Create _NDEF_ type common to all FFs)
 	ForcefieldAtom *ffa = types_.add();
@@ -354,7 +342,7 @@ const char *Forcefield::filename()
 }
 
 // Returns the typing rules of the Forcefield
-Forcefield::ForcefieldRules Forcefield::rules()
+Rules::ForcefieldRules Forcefield::rules()
 {
 	return rules_;
 }

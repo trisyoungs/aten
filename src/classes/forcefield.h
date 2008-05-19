@@ -188,11 +188,6 @@ class Forcefield
 	enum ForcefieldCommand { UnknownCommand, NameCommand, UnitsCommand, RulesCommand, TypesCommand, GeneratorCommand, ConvertCommand, EquivalentsCommand, VdwCommand, BondsCommand, AnglesCommand, TorsionsCommand, VScaleCommand, EScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 
-	// Generation rules (for rule-based FFs)
-	enum ForcefieldRules { NoRules, UffRules, nForcefieldRules };
-	static const char *forcefieldRules(ForcefieldRules);
-	static ForcefieldRules forcefieldRules(const char*);
-
 	/*
 	// Specification
 	*/
@@ -204,7 +199,7 @@ class Forcefield
 	// Generator values that have units of energy (and thus should be converted)
 	bool energyGenerators_[MAXFFGENDATA];
 	// Which rules the ff uses (if any)
-	ForcefieldRules rules_;
+	Rules::ForcefieldRules rules_;
 	// Energy unit of the forcefield parameters
 	Prefs::EnergyUnit energyUnit_;
 
@@ -218,7 +213,7 @@ class Forcefield
 	// Return filename
 	const char *filename();
 	// Returns the typing rules of the Forcefield
-	ForcefieldRules rules();
+	Rules::ForcefieldRules rules();
 	// Set conversion flag for energetic generator data
 	void setEnergyGenerator(int n);
 	// Set internal energy unit of forcefield

@@ -79,8 +79,8 @@ bool Forcefield::load(const char *filename)
 				}
 				break;
 			case (Forcefield::RulesCommand):
-				rules_ = Forcefield::forcefieldRules(parser.argc(1));
-				msg(Debug::None,"\t: Rule-set to use is '%s'\n", Forcefield::forcefieldRules(rules_));
+				rules_ = Rules::forcefieldRules(parser.argc(1));
+				msg(Debug::None,"\t: Rule-set to use is '%s'\n", Rules::forcefieldRules(rules_));
 				okay = TRUE;
 				break;
 			case (Forcefield::TypesCommand):

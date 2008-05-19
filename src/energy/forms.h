@@ -65,12 +65,13 @@ namespace BondFunctions
 // Angle potential forms
 namespace AngleFunctions
 {
-	enum AngleFunction { None, Harmonic, Cosine, UffCosine1, UffCosine2, nAngleFunctions };
+	enum AngleFunction { None, Harmonic, Cosine, UffCosine1, UffCosine2, HarmonicCosine, nAngleFunctions };
 	extern FunctionData AngleFunctions[];
 	AngleFunction angleFunction(const char*);
 	enum HarmonicParameters { HarmonicK, HarmonicEq };
 	enum CosineParameters { CosineK, CosineN, CosineEq };
 	enum UffCosineParameters { UffCosineK, UffCosineN, UffCosineEq };
+	enum HarmonicCosineParameter { HarmonicCosineK, HarmonicCosineEq };
 }
 
 // Torsion potential forms
@@ -85,12 +86,21 @@ namespace TorsionFunctions
 	enum Cos3CParameter { Cos3CEScale, Cos3CVScale, Cos3CK0, Cos3CK1, Cos3CK2, Cos3CK3 };
 }
 
+// Electostatic calculation methods
 namespace Electrostatics
 {
 	// Electrostatic model
 	enum ElecMethod { None, Coulomb, Ewald, EwaldAuto, nElectrostatics };
 	const char *elecMethod(ElecMethod);
 	ElecMethod elecMethod(const char*);
+}
+
+// Generation rules (for rule-based FFs)
+namespace Rules
+{
+	enum ForcefieldRules { None, Uff, Dreiding, DreidingM, nForcefieldRules };
+	const char *forcefieldRules(ForcefieldRules);
+	ForcefieldRules forcefieldRules(const char*);
 }
 
 #endif

@@ -24,12 +24,21 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
+#include "gui/forcefields.h"
+#include "gui/grids.h"
 #include "gui/tcanvas.uih"
 #include <QtGui/QFileDialog>
 #include "model/model.h"
 
+void AtenForm::on_actionFileQuit_triggered(bool checked)
+{
+	if (!gui.saveBeforeClose()) return;
+	saveSettings();
+	gui.app->exit(0);
+}
+
 /*
-// File Actions
+// Model Actions
 */
 
 void AtenForm::on_actionFileNew_triggered(bool checked)
@@ -61,15 +70,15 @@ bool AtenForm::runSaveModelDialog()
 	saveModelFilter = NULL;
 	saveModelFilename.clear();
 	Filter *f;
-	int result = dialog[Filter::ModelExport]->exec();
+	int result = saveModelDialog->exec();
 	//printf("Save model dialog result = %i\n",result);
 	if (result == 1)
 	{
 		// Get selected filename (only grab first
 		//QString filename = savemodeldialog->selectedFiles().first();
-		saveModelFilename = qPrintable(dialog[Filter::ModelExport]->selectedFiles().first());
+		saveModelFilename = qPrintable(saveModelDialog->selectedFiles().first());
 		// Get selected filter
-		QString filter = dialog[Filter::ModelExport]->selectedFilter();
+		QString filter = saveModelDialog->selectedFilter();
 		// Find the filter that was selected
 		for (f = master.filters(Filter::ModelExport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
@@ -157,6 +166,10 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 	else master.removeModel(m);
 }
 
+/*
+// Images
+*/
+
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
 	// Save the current view as a bitmap image.
@@ -187,17 +200,21 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	}
 }
 
+/*
+// Trajectories
+*/
+
 void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
 	Filter *f;
 	Model *m = master.currentModel();
-	if (dialog[Filter::TrajectoryImport]->exec() == 1)
+	if (loadTrajectoryDialog->exec() == 1)
 	{
 		// Get selected filename
-		QStringList filenames = dialog[Filter::TrajectoryImport]->selectedFiles();
+		QStringList filenames = loadTrajectoryDialog->selectedFiles();
 		QString filename = filenames.first();
 		// Get selected filter
-		QString filter = dialog[Filter::TrajectoryImport]->selectedFilter();
+		QString filter = loadTrajectoryDialog->selectedFilter();
 		// Find the filter that was selected
 		for (f = master.filters(Filter::TrajectoryImport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
@@ -207,7 +224,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 		{
 			m->initialiseTrajectory(qPrintable(filename), f);
 			// Ensure trajectory toolbar is visible and View->Trajectory is selected
-			ui.TrajectoryToolBar->setVisible(TRUE);
+			ui.TrajectoryToolbar->setVisible(TRUE);
 			ui.actionViewTrajectory->setChecked(TRUE);
 			gui.updateTrajControls();
 		}
@@ -216,66 +233,19 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 	}
 }
 
-void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
-{
-	QString filename;
-	if (openForcefieldDialog->exec() == 1)
-	{
-		// Get selected filter in file dialog
-		QString filter = openForcefieldDialog->selectedFilter();
-		filename = openForcefieldDialog->selectedFiles().first();
-		master.loadForcefield(qPrintable(filename));
-		refreshForcefieldPage();
-	}
-}
+/*
+// Expressions
+*/
 
-// void AtenForm::on_actionFileSaveForcefield_triggered(bool checked)
-// {
-// 	printf("Not yet done...\n");
-// }
-
-void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
-{
-	Filter *f;
-	Grid *g;
-	QString filename;
-	QStringList filenames;
-	if (dialog[Filter::GridImport]->exec() == 1)
-	{
-		// Get selected filter in file dialog
-		QString filter = dialog[Filter::GridImport]->selectedFilter();
-		// Find the corresponding Aten filter that was selected
-		for (f = master.filters(Filter::GridImport); f != NULL; f = f->next)
-			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
-		// Get selected filename list
-		filenames = dialog[Filter::GridImport]->selectedFiles();
-		// Loop over selected files
-		for (int i = 0; i < filenames.count(); ++i)
-		{
-			filename = filenames.at(i);
-			// If f == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-			if (f != NULL) f->execute(qPrintable(filename));
-			else
-			{
-				f = master.probeFile(qPrintable(filename), Filter::GridImport);
-				if (f != NULL) f->execute(qPrintable(filename));
-			}
-		}
-		refreshGridsPage();
-		gui.mainView.postRedisplay();
-	}
-}
-
-// Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
 	Filter *f;
-	if (dialog[Filter::ExpressionExport]->exec() == 1)
+	if (saveExpressionDialog->exec() == 1)
 	{
 		// Get selected filename (only grab first
-		QString filename = dialog[Filter::ExpressionExport]->selectedFiles().first();
+		QString filename = saveExpressionDialog->selectedFiles().first();
 		// Get selected filter
-		QString filter = dialog[Filter::ExpressionExport]->selectedFilter();
+		QString filter = saveExpressionDialog->selectedFilter();
 		// Find the filter that was selected
 		for (f = master.filters(Filter::ExpressionExport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
@@ -284,9 +254,22 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 	}
 }
 
-void AtenForm::on_actionFileQuit_triggered(bool checked)
+/*
+// Grids
+*/
+
+void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
-	if (!gui.saveBeforeClose()) return;
-	saveSettings();
-	gui.app->exit(0);
+	// Call routine in grids window...
+	gui.gridsDialog->loadGrid();
+}
+
+/*
+// Forcefields
+*/
+
+void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
+{
+	// Call routine in forcefields window...
+	gui.forcefieldsDialog->loadForcefield();
 }

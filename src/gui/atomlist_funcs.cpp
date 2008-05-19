@@ -1,5 +1,5 @@
 /*
-	*** Qt atomlist functions interface
+	*** Qt GUI: Atomlist window functions
 	*** src/gui/atomlist_funcs.cpp
 	Copyright T. Youngs 2007,2008
 
@@ -20,29 +20,49 @@
 */
 
 #include "classes/pattern.h"
-#include "gui/ttreewidgetitem.h"
-#include "gui/mainwindow.h"
 #include "gui/gui.h"
+#include "gui/mainwindow.h"
+#include "gui/ttreewidgetitem.h"
+#include "gui/atomlist.h"
 #include "model/model.h"
 #include "base/master.h"
 #include <QtGui/QTreeWidget>
 #include <QtGui/QScrollBar>
 
-// Local Variables
-int listStructurePoint = -1, listSelectionPoint = -1;
-Model *listLastModel = NULL;
-bool REFRESHING = FALSE;
-int listPosition;
-
 /*
-// Atom Tree List Management
+// Atom list window
 */
 
-void AtenForm::on_AtomTree_itemSelectionChanged()
+// Constructor
+AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
-	if (REFRESHING) return;
-	dbgBegin(Debug::Calls,"AtenForm::on_AtomTree_selectionChanged");
-	//printf("AtenForm:: atom selection has changed...\n");
+	ui.setupUi(this);
+
+	// Private variables
+	listStructurePoint_ = -1;
+	listSelectionPoint_ = -1;
+	listLastModel_ = NULL;
+	refreshing_ = FALSE;
+	shouldRefresh_ = FALSE;
+	listPosition_ = -1;
+}
+
+// Destructor
+AtenAtomlist::~AtenAtomlist()
+{
+}
+
+void AtenAtomlist::showWindow()
+{
+	if (shouldRefresh_) refresh();
+	show();
+}
+
+void AtenAtomlist::on_AtomTree_itemSelectionChanged()
+{
+	if (refreshing_) return;
+	dbgBegin(Debug::Calls,"AtenAtomlist::on_AtomTree_selectionChanged");
+	//printf("AtenAtomlist:: atom selection has changed...\n");
 	// Selection has changed, so go through the Reflist of TTreeWidgetItems and check their selection status
 	Model *m = master.currentModel();
 	Atom *i;
@@ -54,45 +74,124 @@ void AtenForm::on_AtomTree_itemSelectionChanged()
 		ri->item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
 	}
 	gui.modelChanged();
-	dbgEnd(Debug::Calls,"AtenForm::on_AtomTree_selectionChanged");
+	dbgEnd(Debug::Calls,"AtenAtomlist::on_AtomTree_selectionChanged");
 }
 
-void AtenForm::refreshAtomPage()
+void AtenAtomlist::refresh()
 {
-	dbgBegin(Debug::Calls,"AtenForm::refreshAtomPage");
+	dbgBegin(Debug::Calls,"AtenAtomlist::refresh");
 	// If the atom list page is not visible, don't do anything
-	if (!ui.ShowAtomPageButton->isChecked())
+	if (!gui.atomlistDialog->isVisible())
 	{
-		dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
+		shouldRefresh_ = TRUE;
+		dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 		return;
 	}
 	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
-	REFRESHING = TRUE;
+	refreshing_ = TRUE;
 	//printf("Refreshing atompage.....\n");
+	Model *m = master.currentModel();
+	// Check this model against the last one we represented in the list
+	if (m != listLastModel_)
+	{
+		listStructurePoint_ = -1;
+		listSelectionPoint_ = -1;
+	}
+	listLastModel_ = m;
+	// Start the thread...
+	refreshThread.run();
+}
+
+void AtenAtomlist::peekScrollBar()
+{
+	listPosition_ = ui.AtomTree->verticalScrollBar()->sliderPosition();
+}
+
+void AtenAtomlist::pokeScrollBar()
+{
+	ui.AtomTree->verticalScrollBar()->setSliderPosition(listPosition_);
+}
+
+void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
+{
+	Model *m = master.currentModel();
+	m->beginUndostate("Shift Selection Up");
+	m->shiftSelectionUp();
+	m->endUndostate();
+	peekScrollBar();
+	refresh();
+	pokeScrollBar();
+	gui.modelChanged(FALSE,FALSE,FALSE);
+}
+
+void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
+{
+	Model *m = master.currentModel();
+	m->beginUndostate("Shift Selection Down");
+	m->shiftSelectionDown();
+	m->endUndostate();
+	peekScrollBar();
+	refresh();
+	pokeScrollBar();
+	gui.modelChanged(FALSE,FALSE,FALSE);
+}
+
+void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
+{
+	master.currentModel()->moveSelectionToStart();
+	master.currentModel()->logChange(Change::StructureLog);
+	refresh();
+	gui.modelChanged(FALSE,FALSE,FALSE);
+}
+
+void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
+{
+	master.currentModel()->moveSelectionToEnd();
+	master.currentModel()->logChange(Change::StructureLog);
+	refresh();
+	gui.modelChanged(FALSE,FALSE,FALSE);
+}
+
+void AtenAtomlist::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionAtomlistDialog->setChecked(FALSE);
+}
+
+/*
+// Refresh thread
+*/
+
+// Constructor
+AtomlistRefreshThread::AtomlistRefreshThread()
+{
+	// Private variables
+	kill_ = FALSE;
+	restart_ = FALSE;
+}
+
+// Execute thread
+void AtomlistRefreshThread::run()
+{
 	Pattern *p;
 	TTreeWidgetItem *item;
 	Refitem<TTreeWidgetItem,int> *ri;
 	Atom *i;
-	int n;
-	Model *m = master.currentModel();
-	// Check this model against the last one we represented in the list
-	if (m != listLastModel)
-	{
-		listStructurePoint = -1;
-		listSelectionPoint = -1;
-	}
-	listLastModel = m;
-	if (listStructurePoint != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
+	int n, count;
+	// Grab model to be displayed
+	Model *m = gui.atomlistDialog->listLastModel_;
+	// Set progress bar
+	gui.atomlistDialog->ui.RefreshProgressBar->setRange(0, m->nAtoms());
+	count = 0;
+	if (gui.atomlistDialog->listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
 	{
 		//printf("List must be cleared and repopulated...\n");
 		// Clear the current list
-		ui.AtomTree->clear();
-		ui.AtomTree->clearAtomItems();
+		gui.atomlistDialog->ui.AtomTree->clear();
+		gui.atomlistDialog->ui.AtomTree->clearAtomItems();
 		// If there are no atoms in the current model, exit now.
 		if (m->nAtoms() == 0)
 		{
-			dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
-			REFRESHING = FALSE;
+			gui.atomlistDialog->refreshing_ = FALSE;
 			return;
 		}
 		// Add patterns as root nodes in the list, followed by atoms in each pattern.
@@ -100,18 +199,20 @@ void AtenForm::refreshAtomPage()
 		if (m->nPatterns() == 0)
 		{
 			// Create new root node for all atoms
-			QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTree);
-			ui.AtomTree->setItemExpanded(pat, TRUE);
+			QTreeWidgetItem *pat = new QTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
+			gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
 			pat->setText(0, tr("All"));
 			for (i = m->atoms(); i != NULL; i = i->next)
 			{
 				// Add the atom
-				item = ui.AtomTree->addTreeItem(pat);
+				item = gui.atomlistDialog->ui.AtomTree->addTreeItem(pat);
 				//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 				item->setAtom(i);
 				item->setAtomColumns();
 				// Set the row selection property here.
-				ui.AtomTree->setItemSelected(item, i->isSelected());
+				gui.atomlistDialog->ui.AtomTree->setItemSelected(item, i->isSelected());
+				// Update progress bar
+				gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
 			}
 		}
 		else
@@ -121,89 +222,53 @@ void AtenForm::refreshAtomPage()
 			for (p = m->patterns(); p != NULL; p = p->next)
 			{
 				// Create new root node for the pattern
-				QTreeWidgetItem *pat = new QTreeWidgetItem(ui.AtomTree);
-				ui.AtomTree->setItemExpanded(pat, TRUE);
+				QTreeWidgetItem *pat = new QTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
+				gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
 				pat->setText(0, p->name());
 				for (n = 0; n<p->totalAtoms(); n++)
 				{
 					// Create atom in the pattern root node
-					item = ui.AtomTree->addTreeItem(pat);
+					item = gui.atomlistDialog->ui.AtomTree->addTreeItem(pat);
 					//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 					item->setAtom(i);
 					item->setAtomColumns();
 					// Set the row selection property here
-					ui.AtomTree->setItemSelected(item, i->isSelected());
+					gui.atomlistDialog->ui.AtomTree->setItemSelected(item, i->isSelected());
 					i = i->next;
+					// Update progress bar
+					gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
 				}
 			}
 		}
 		// Set new log points
-		listStructurePoint = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
-		listSelectionPoint = m->log(Change::SelectionLog);
+		gui.atomlistDialog->listStructurePoint_ = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
+		gui.atomlistDialog->listSelectionPoint_ = m->log(Change::SelectionLog);
 	}
-	else if (listSelectionPoint != m->log(Change::SelectionLog))
+	else if (gui.atomlistDialog->listSelectionPoint_ != m->log(Change::SelectionLog))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		// Grab the list of TTreeWidgetItems
 		//printf("Just updating selection....\n");
-		for (ri = ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
+		for (ri = gui.atomlistDialog->ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item->atom();
-			ui.AtomTree->setItemSelected(ri->item, i->isSelected());
+			gui.atomlistDialog->ui.AtomTree->setItemSelected(ri->item, i->isSelected());
+			// Update progress bar
+			gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
 		}
-		listSelectionPoint = m->log(Change::SelectionLog);
+		gui.atomlistDialog->listSelectionPoint_ = m->log(Change::SelectionLog);
 	}
-	for (n=0; n<6; n++) ui.AtomTree->resizeColumnToContents(n);
-	REFRESHING = FALSE;
-	dbgEnd(Debug::Calls,"AtenForm::refreshAtomPage");
+	for (n=0; n<6; n++) gui.atomlistDialog->ui.AtomTree->resizeColumnToContents(n);
+	gui.atomlistDialog->refreshing_ = FALSE;
+	gui.atomlistDialog->shouldRefresh_ = FALSE;
 }
 
-void AtenForm::peekScrollBar()
+// Restart thread
+void AtomlistRefreshThread::restart()
 {
-	listPosition = ui.AtomTree->verticalScrollBar()->sliderPosition();
 }
 
-void AtenForm::pokeScrollBar()
+// Kill thread
+void AtomlistRefreshThread::kill()
 {
-	ui.AtomTree->verticalScrollBar()->setSliderPosition(listPosition);
-}
-
-void AtenForm::on_ShiftUpButton_clicked(bool checked)
-{
-	Model *m = master.currentModel();
-	m->beginUndostate("Shift Selection Up");
-	m->shiftSelectionUp();
-	m->endUndostate();
-	peekScrollBar();
-	refreshAtomPage();
-	pokeScrollBar();
-	gui.modelChanged(FALSE,FALSE,FALSE);
-}
-
-void AtenForm::on_ShiftDownButton_clicked(bool checked)
-{
-	Model *m = master.currentModel();
-	m->beginUndostate("Shift Selection Down");
-	m->shiftSelectionDown();
-	m->endUndostate();
-	peekScrollBar();
-	refreshAtomPage();
-	pokeScrollBar();
-	gui.modelChanged(FALSE,FALSE,FALSE);
-}
-
-void AtenForm::on_MoveToStartButton_clicked(bool checked)
-{
-	master.currentModel()->moveSelectionToStart();
-	master.currentModel()->logChange(Change::StructureLog);
-	refreshAtomPage();
-	gui.modelChanged(FALSE,FALSE,FALSE);
-}
-
-void AtenForm::on_MoveToEndButton_clicked(bool checked)
-{
-	master.currentModel()->moveSelectionToEnd();
-	master.currentModel()->logChange(Change::StructureLog);
-	refreshAtomPage();
-	gui.modelChanged(FALSE,FALSE,FALSE);
 }

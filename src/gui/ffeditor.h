@@ -30,7 +30,7 @@ class Forcefield;
 class ForcefieldAtom;
 
 // Forcefield editor window
-class AtenEdit : public QDialog
+class AtenForcefieldEditor : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -88,7 +88,7 @@ class AtenEdit : public QDialog
 	*/
 	public:
 	// Constructor
-	AtenEdit(QDialog *parent = 0);
+	AtenForcefieldEditor(QWidget *parent = 0);
 	// Main form declaration
 	Ui::FFEditorDialog ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)

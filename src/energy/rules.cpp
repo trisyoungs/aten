@@ -24,6 +24,12 @@
 #include "energy/forms.h"
 #include "base/constants.h"
 
+// References
+// UFF:
+// DREIDING: A Generic Force Field for Molecular Simulations
+//	Stephen L. Mayo, Barry D. Olafson, and William A. Goddard III
+//	J. Phys. Chem. 1990, 94, 8897-8909
+
 // Generate VDW params
 void Forcefield::generateVdw(Atom *i)
 {
@@ -33,10 +39,10 @@ void Forcefield::generateVdw(Atom *i)
 	ForcefieldAtom *ffi = i->type();
 	switch (rules_)
 	{
-		case (Forcefield::NoRules):
-			msg(Debug::None,"Forcefield::generateVdw <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+		case (Rules::None):
+			msg(Debug::None,"Error - tried to generate VDW parameters for a forcefield that has no rules.\n");
 			break;
-		case (Forcefield::UffRules):
+		case (Rules::Uff):
 			// UFF VDW types are just the third [2] and fourth [3] data (for simple LJ)
 			epsilon = ffi->generator(3);
 			sigma = ffi->generator(2);
@@ -44,6 +50,9 @@ void Forcefield::generateVdw(Atom *i)
 			ffi->params().data[VdwFunctions::LjSigma] = sigma;
 			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n", sigma, epsilon);
 			ffi->setVdwForm(VdwFunctions::Lj);
+			break;
+		case (Rules::Dreiding):
+	
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateVdw");
@@ -55,35 +64,50 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 	// Creates bond forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
 	dbgBegin(Debug::Calls,"Forcefield::generateBond");
+	static double k, ri, rj, sumr, chii, chij, rBO, chi, rEN, Zi, Zj;
 	ForcefieldAtom *ffi = i->type();
 	ForcefieldAtom *ffj = j->type();
-	ForcefieldBound *newbond = NULL;
+	// Create new bond and set type to None for now...
+	ForcefieldBound *newbond = bonds_.add();
+	newbond->setBondStyle(BondFunctions::None);
 	switch (rules_)
 	{
-		case (Forcefield::NoRules):
-			msg(Debug::None,"Forcefield::generateBond <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+		case (Rules::None):
+			msg(Debug::None,"Error - tried to generate bond parameters for a forcefield that has no rules.\n");
 			break;
-		case (Forcefield::UffRules):
+		case (Rules::Uff):
 			// UFF Harmonic Bond Generator
 			// rij : Equilibrium distance : = ri + rj + rBO - rEN
 			// rBO : Bond-order correction = -0.1332 * (ri + rj) * ln(n)
 			// rEN : Electronegativity correction : ri*rj * (sqrt(Xi)-sqrt(Xj))**2 / (Xi*ri + Xj*rj)
-			double ri = ffi->generator(0);
-			double rj = ffj->generator(0);
-			double sumr = ri + rj;
-			double chii = ffi->generator(6);
-			double chij = ffj->generator(6);
-			double rBO = -0.1332 * sumr * log(i->bondOrder(j));
-			double chi = (sqrt(chii) - sqrt(chij));
-			double rEN = ri * rj * chi * chi / (chii*ri + chij*rj);
-			double Zi = ffi->generator(5);
-			double Zj = ffj->generator(5);
+			// Note: In the original paper  rij = ri + rj + rBO + rEN, but Marcus Martin (MCCCS Towhee) notes that the last term should be subtracted
+			ri = ffi->generator(0);
+			rj = ffj->generator(0);
+			sumr = ri + rj;
+			chii = ffi->generator(6);
+			chij = ffj->generator(6);
+			rBO = -0.1332 * sumr * log(i->bondOrder(j));
+			chi = (sqrt(chii) - sqrt(chij));
+			rEN = ri * rj * chi * chi / (chii*ri + chij*rj);
+			Zi = ffi->generator(5);
+			Zj = ffj->generator(5);
+			k = prefs.convertEnergy(664.12, Prefs::KiloCalories) * ( (Zi * Zj) / (sumr + sumr + sumr) );
 			// Create new bond definition in the forcefield space and set its parameters
-			newbond = bonds_.add();
 			newbond->setBondStyle(BondFunctions::Harmonic);
 			newbond->params().data[BondFunctions::HarmonicEq] = sumr + rBO - rEN;
-			newbond->params().data[BondFunctions::HarmonicK] = 664.12 * ( (Zi * Zj) / (sumr + sumr + sumr) );
+			newbond->params().data[BondFunctions::HarmonicK] = k;
 			msg(Debug::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
+			break;
+		case (Rules::Dreiding):
+			// Harmonic form (for Morse form, use Rules::DreidingM)
+			// Force constant k = 700.0 kcal/mol * BO(ij)
+			ri = ffi->generator(0);   //XXX
+			rj = ffj->generator(0);  // XXX
+			k = prefs.convertEnergy(700.0, Prefs::KiloCalories) * i->bondOrder(j);
+			newbond->setBondStyle(BondFunctions::Harmonic);
+			newbond->params().data[BondFunctions::HarmonicEq] = ri + rj - 0.01;
+			newbond->params().data[BondFunctions::HarmonicK] = k;
+			msg(Debug::Verbose,"Dreiding Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateBond");
@@ -102,10 +126,10 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 	ForcefieldBound *newangle = NULL;
 	switch (rules_)
 	{
-		case (Forcefield::NoRules):
-			msg(Debug::None,"Forcefield::generateAngle <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+		case (Rules::None):
+			msg(Debug::None,"Error - tried to generate angle parameters for a forcefield that has no rules.\n");
 			break;
-		case (Forcefield::UffRules):
+		case (Rules::Uff):
 			// UFF Cosine Angle Generator
 			// U(theta) = (k / (n*n)) * (1 + s*cos(n*theta))
 			// rik2 = rij**2 + rjk**2 - 2 * rij * rjk * cos(eq)
@@ -170,10 +194,10 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 	ForcefieldBound *newtorsion = NULL;
 	switch (rules_)
 	{
-		case (Forcefield::NoRules):
-			msg(Debug::None,"Forcefield::generateTorsion <<<< Tried to generate parameters for a NORULES FF >>>>\n");
+		case (Rules::None):
+			msg(Debug::None,"Error - tried to generate torsion parameters for a forcefield that has no rules.\n");
 			break;
-		case (Forcefield::UffRules):
+		case (Rules::Uff):
 			// UFF Torsions  TODO
 
 			newtorsion = torsions_.add();

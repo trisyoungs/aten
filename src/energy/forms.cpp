@@ -98,7 +98,10 @@ FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
 		{ "k", "n", "eq" } },
 	{ "UFF Cosine 2", "uffcos2",
 		{ "Force K", "Periodicity", "Eq. Angle" },
-		{ "k", "n", "eq" } }
+		{ "k", "n", "eq" } },
+	{ "Harmonic Cosine", "harmcos",
+		{ "Force K", "Eq. Angle" },
+		{ "k", "eq" } }
 };
 AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s)
 {
@@ -132,4 +135,17 @@ TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *
 	for (i=0; i < TorsionFunctions::nTorsionFunctions; i++)
 		if (strcmp(TorsionFunctions::TorsionFunctions[i].keyword,s) == 0) break;
 	return (TorsionFunctions::TorsionFunction) i;
+}
+
+// Generation rules (for rule-based FFs)
+
+const char *ForcefieldRulesStrings[Rules::nForcefieldRules] = { "None", "UFF", "Dreiding", "Dreiding/M" };
+const char *ForcefieldRulesKeywords[Rules::nForcefieldRules] = { "none", "uff", "dreiding", "dreidingm" };
+const char *Rules::forcefieldRules(Rules::ForcefieldRules i)
+{
+	return ForcefieldRulesStrings[i];
+}
+Rules::ForcefieldRules Rules::forcefieldRules(const char *s)
+{
+	return (Rules::ForcefieldRules) enumSearch("forcefield rules", Rules::nForcefieldRules, ForcefieldRulesKeywords, s);
 }
