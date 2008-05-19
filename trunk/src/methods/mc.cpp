@@ -638,12 +638,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Print out pattern list info here
 	msg(Debug::None,"Final populations for model '%s':\n",destmodel->name());
 	msg(Debug::None,"  ID  name                 nmols \n");
-	p = destmodel->patterns();
-	while (p != NULL)
-	{
-		msg(Debug::None,"  %2i  %-20s  %6i\n",p->id(),p->name(),p->nMols());
-		p = p->next;
-	}
+	for (p = destmodel->patterns(); p != NULL; p = p->next) msg(Debug::None,"  %2i  %-20s  %6i\n", p->id()+1, p->name(), p->nMols());
 
 	// Reset VDW scale ratio and intramolecular status
 	prefs.setVdwScale(1.0);

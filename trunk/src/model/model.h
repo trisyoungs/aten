@@ -509,6 +509,8 @@ class Model
 	Pattern *findPattern(const char*);
 	// Autocreate patterns for the model
 	bool autocreatePatterns();
+	// Validate current pattern definition
+	bool validatePatterns();
 	// Create representative molecules for patterns
 	void createPatternMolecules();
 	// Clear the current pattern definition
