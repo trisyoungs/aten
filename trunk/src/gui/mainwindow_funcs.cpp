@@ -23,11 +23,25 @@
 #include "base/elements.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/disorder.h"
+#include "gui/grids.h"
+#include "gui/glyphs.h"
+#include "gui/build.h"
+#include "gui/celltransform.h"
+#include "gui/celldefine.h"
+#include "gui/transform.h"
+#include "gui/position.h"
+#include "gui/atomlist.h"
+#include "gui/forcefields.h"
+#include "gui/minimiser.h"
+#include "gui/prefs.h"
+#include "gui/loadmodel.h"
+#include "gui/ffeditor.h"
+#include "gui/selectpattern.h"
 #include "model/model.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
-#include <QtCore/QSettings>
 
 #include "base/sysfunc.h"
 
@@ -50,9 +64,10 @@ const char *extension_from_BIF(bitmap_format bif)
 // Constructor
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {
-	int i;
-	for (i=0; i<SP_NITEMS; i++) stackButtons_[i] = NULL;
 	ui.setupUi(this);
+
+	// Private variables
+	customElement_ = 8;
 }
 
 // Catch window close event
@@ -62,6 +77,22 @@ void AtenForm::closeEvent(QCloseEvent *event)
 	{
 		saveSettings();
 		event->accept();
+		// Delete subwindows / dialogs
+		delete gui.prefsDialog;
+		delete gui.forcefieldEditorDialog;
+		delete gui.loadModelDialog;
+		delete gui.selectPatternDialog;
+		delete gui.atomlistDialog;
+		delete gui.buildDialog;
+		delete gui.cellDefineDialog;
+		delete gui.cellTransformDialog;
+		delete gui.disorderDialog;
+		delete gui.forcefieldsDialog;
+		delete gui.glyphsDialog;
+		delete gui.gridsDialog;
+		delete gui.minimiserDialog;
+		delete gui.positionDialog;
+		delete gui.transformDialog;
 	}
 	else event->ignore();
 }
@@ -69,26 +100,6 @@ void AtenForm::closeEvent(QCloseEvent *event)
 /*
 // Input
 */
-
-// Change user interaction mode
-void AtenForm::setUserAction(bool on, Canvas::UserAction ua)
-{
-	// We pass all changes to the user interaction mode through here.
-	// This way we can 'link' the selectToolBar and all the other buttons....
-	if (!on) return;
-	if ((ua >= Canvas::SelectAction) && (ua <= Canvas::SelectRadialAction))
-	{
-		// One of the select actions in selectGroup
-		dummyButton->setChecked(TRUE);
-	}
-	else
-	{
-		// One of the buttons in uaGroup
-		QAction *action = selectGroup->checkedAction();
-		if (action != NULL) action->setChecked(FALSE);
-	}
-	gui.mainView.setSelectedMode(ua);
-}
 
 void AtenForm::keyPressEvent(QKeyEvent *event)
 {
@@ -113,7 +124,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
 	master.setCurrentModel(master.model(n));
-	refreshDisorderPage();
+	gui.disorderDialog->refresh();
 	gui.modelChanged();
 	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 }
@@ -164,22 +175,6 @@ void AtenForm::executeCommand()
 void AtenForm::progressCancel()
 {
 	gui.notifyProgressCanceled();
-}
-
-// Save program settings
-void AtenForm::saveSettings()
-{
-	char temp[128];
-	// Save the recent file entries
-	for (int i=0; i<MAXRECENTFILES; i++)
-	{
-		// Create name tag
-		strcpy(temp,"RecentFile");
-		strcat(temp,itoa(i));
-		//if (actionRecentFile[i]->isVisible()) printf("action %i is visible\n",i);
-		if (actionRecentFile[i]->isVisible()) settings_->setValue(temp,actionRecentFile[i]->data().toString());
-		else settings_->remove(temp);
-	}
 }
 
 // Load recent file
@@ -319,10 +314,10 @@ void AtenForm::refreshScriptsMenu()
 void AtenForm::on_actionLoadScript_triggered(bool v)
 {
 	QString filename;
-	if (openScriptDialog->exec() == 1)
+	if (loadScriptDialog->exec() == 1)
 	{
 		// Get selected filter in file dialog
-		filename = openScriptDialog->selectedFiles().first();
+		filename = loadScriptDialog->selectedFiles().first();
 		CommandList *ca = master.scripts.add();
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
 		else master.scripts.remove(ca);
@@ -352,6 +347,7 @@ void AtenForm::runScript()
 /*
 // Mouse Toolbar
 */
+
 void AtenForm::on_actionMouseInteract_triggered(bool checked)
 {
 	prefs.setMouseAction(Prefs::LeftButton, Prefs::InteractAction);
@@ -370,145 +366,110 @@ void AtenForm::on_actionMouseTranslate_triggered(bool checked)
 /*
 // Select Toolbar
 */
+
 void AtenForm::on_actionSelectAtoms_triggered(bool on)
 {
-	setUserAction(on, Canvas::SelectAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::SelectAction);
 }
 
 void AtenForm::on_actionSelectMolecules_triggered(bool on)
 {
-	setUserAction(on, Canvas::SelectMoleculeAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::SelectMoleculeAction);
 }
 
 void AtenForm::on_actionSelectElement_triggered(bool on)
 {
-	setUserAction(on, Canvas::SelectElementAction);
+	if (on) gui.mainView.setSelectedMode(Canvas::SelectElementAction);
 }
 
 /*
-// Toolbar Menu
-*/
-void AtenForm::on_actionFileToolBarVisibility_triggered(bool v)
-{
-	ui.FileToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionEditToolBarVisibility_triggered(bool v)
-{
-	ui.EditToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionStyleToolBarVisibility_triggered(bool v)
-{
-	ui.StyleToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionTrajectoryToolBarVisibility_triggered(bool v)
-{
-	ui.TrajectoryToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionCommandToolBarVisibility_triggered(bool v)
-{
-	ui.CommandToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionMouseToolBarVisibility_triggered(bool v)
-{
-	ui.MouseToolBar->setVisible(v);
-}
-
-void AtenForm::on_actionSelectToolBarVisibility_triggered(bool v)
-{
-	ui.SelectToolBar->setVisible(v);
-}
-
-/*
-// Widget Stack Functions
+// Window Show / Hide Functions
 */
 
-
-/*
-// Widget Stack Functions
-*/
-
-void AtenForm::switchStack(int buttonid, bool checked)
+void AtenForm::on_actionAtomlistDialog_triggered(bool checked)
 {
-	// If the state of the button is *not* checked then we hide the stack since no buttons are checked. Otherwise, uncheck all other buttons and show the corresponding widget in the stack for this button.
-	int n;
-	Canvas::UserAction ua = gui.mainView.selectedMode();
 	if (checked)
 	{
-		for (n=0; n<SP_NITEMS; n++) if (n != buttonid) stackButtons_[n]->setChecked(FALSE);
-		ui.MainWindowStack->setCurrentIndex(buttonid);
-		ui.MainWindowStack->show();
+		gui.atomlistDialog->showWindow();
+		gui.atomlistDialog->refresh();
 	}
-	else ui.MainWindowStack->hide();
-	// Choose a plain selection mode again...
-	if ((ua == Canvas::NoAction) || (ua > Canvas::SelectRadialAction))
+	else gui.atomlistDialog->hide();
+}
+
+void AtenForm::on_actionBuildDialog_triggered(bool checked)
+{
+	if (checked) gui.buildDialog->showWindow();
+	else gui.buildDialog->hide();
+}
+
+void AtenForm::on_actionTransformDialog_triggered(bool checked)
+{
+	if (checked) gui.transformDialog->showWindow();
+	else gui.transformDialog->hide();
+}
+
+void AtenForm::on_actionPositionDialog_triggered(bool checked)
+{
+	if (checked) gui.positionDialog->showWindow();
+	else gui.positionDialog->hide();
+}
+
+void AtenForm::on_actionCellDefineDialog_triggered(bool checked)
+{
+	if (checked)
 	{
-		ui.actionSelectAtoms->setChecked(TRUE);
-		setUserAction(TRUE, Canvas::SelectAction);
+		gui.cellDefineDialog->showWindow();
+		gui.cellDefineDialog->refresh();
 	}
-	//ui.actionSelectAtoms->setChecked(TRUE);
-	//set_useraction(TRUE, UA_PICKSELECT);
-	master.currentModel()->logChange(Change::CameraLog);
+	else gui.cellDefineDialog->hide();
 }
 
-void AtenForm::on_ShowAtomPageButton_clicked(bool checked)
+void AtenForm::on_actionCellTransformDialog_triggered(bool checked)
 {
-	switchStack(SP_ATOMS, checked);
-	if (checked) refreshAtomPage();
+	if (checked)
+	{
+		gui.cellTransformDialog->showWindow();
+		gui.cellTransformDialog->refresh();
+	}
+	else gui.cellTransformDialog->hide();
 }
 
-void AtenForm::on_ShowEditPageButton_clicked(bool checked)
+void AtenForm::on_actionMinimiserDialog_triggered(bool checked)
 {
-	switchStack(SP_EDIT, checked);
+	if (checked) gui.minimiserDialog->showWindow();
+	else gui.minimiserDialog->hide();
 }
 
-void AtenForm::on_ShowTransformPageButton_clicked(bool checked)
+void AtenForm::on_actionDisorderDialog_triggered(bool checked)
 {
-	switchStack(SP_TRANSFORM, checked);
+	if (checked) gui.disorderDialog->showWindow();
+	else gui.disorderDialog->hide();
 }
 
-void AtenForm::on_ShowPositionPageButton_clicked(bool checked)
+void AtenForm::on_actionForcefieldsDialog_triggered(bool checked)
 {
-	switchStack(SP_POSITION, checked);
+	if (checked)
+	{
+		gui.forcefieldsDialog->showWindow();
+		gui.forcefieldsDialog->refresh();
+	}
+	else gui.forcefieldsDialog->hide();
 }
 
-void AtenForm::on_ShowCellDefinePageButton_clicked(bool checked)
+void AtenForm::on_actionGridsDialog_triggered(bool checked)
 {
-	switchStack(SP_CELLDEFINE, checked);
-	if (checked) refreshCellPages();
+	if (checked) gui.gridsDialog->showWindow();
+	else gui.gridsDialog->hide();
 }
 
-void AtenForm::on_ShowCellManipulatePageButton_clicked(bool checked)
-{
-	switchStack(SP_CELLMANIPULATE, checked);
-}
+// void AtenForm::on_actionGlyphsWindow_triggered(bool checked)
+// {
+// 	if (checked) gui.glyphsWindow->showWindow();
+// 	else gui.glyphsWindow->hide();
+// }
 
-void AtenForm::on_ShowMinimiserPageButton_clicked(bool checked)
-{
-	switchStack(SP_MINIMISER, checked);
-}
-
-void AtenForm::on_ShowDisorderPageButton_clicked(bool checked)
-{
-	switchStack(SP_DISORDER, checked);
-}
-
-void AtenForm::on_ShowForcefieldsPageButton_clicked(bool checked)
-{
-	switchStack(SP_FORCEFIELD, checked);
-	if (checked) refreshForcefieldPage();
-}
-
-void AtenForm::on_ShowGridsPageButton_clicked(bool checked)
-{
-	switchStack(SP_GRID, checked);
-}
-
-void AtenForm::on_ShowAnalysePageButton_clicked(bool checked)
-{
-	switchStack(SP_ANALYSE, checked);
-}
+// void AtenForm::on_actionAnalyseWindow_triggered(bool checked)
+// {
+//	if (checked) gui.analyseWindow->showWindow();
+//	else gui.analyseWindow->hide();
+// }

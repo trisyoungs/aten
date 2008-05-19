@@ -23,18 +23,36 @@
 #include "methods/mc.h"
 #include "methods/sd.h"
 #include "methods/cg.h"
-#include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/gui.h"
+#include "gui/minimiser.h"
 
 // Minimisation algorithms
 enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
 
-void AtenForm::on_MinimiserMethodCombo_currentIndexChanged(int index)
+// Constructor
+AtenMinimiser::AtenMinimiser(QWidget *parent)
+{
+	ui.setupUi(this);
+}
+
+// Destructor
+AtenMinimiser::~AtenMinimiser()
+{
+}
+
+void AtenMinimiser::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
+}
+
+void AtenMinimiser::on_MinimiserMethodCombo_currentIndexChanged(int index)
 {
 	ui.MethodOptionsStack->setCurrentIndex(index);
 }
 
-void AtenForm::on_MinimiseButton_clicked(bool checked)
+void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 {
 	double econverge, fconverge, linetol;
 	int maxcycles;
@@ -64,4 +82,9 @@ void AtenForm::on_MinimiseButton_clicked(bool checked)
 			break;
 	}
 	gui.modelChanged();
+}
+
+void AtenMinimiser::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionMinimiserDialog->setChecked(FALSE);
 }

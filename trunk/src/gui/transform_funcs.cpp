@@ -21,24 +21,42 @@
 
 #include "base/master.h"
 #include "gui/mainwindow.h"
+#include "gui/transform.h"
 #include "gui/gui.h"
 #include "model/model.h"
 
-void AtenForm::on_RotateClockwiseButton_clicked(bool on)
+// Constructor
+AtenTransform::AtenTransform(QWidget *parent)
 {
-	rotateSelection(1);
+	ui.setupUi(this);
 }
 
-void AtenForm::on_RotateAnticlockwiseButton_clicked(bool on)
+// Destructor
+AtenTransform::~AtenTransform()
 {
-	rotateSelection(-1);
+}
+
+void AtenTransform::showWindow()
+{
+	//if (shouldRefresh_) refresh();
+	show();
 }
 
 /*
 // Rotations
 */
 
-void AtenForm::on_RotateDefineOriginButton_clicked(bool on)
+void AtenTransform::on_RotateClockwiseButton_clicked(bool on)
+{
+	rotateSelection(1);
+}
+
+void AtenTransform::on_RotateAnticlockwiseButton_clicked(bool on)
+{
+	rotateSelection(-1);
+}
+
+void AtenTransform::on_RotateDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
 	Vec3<double> v = master.currentModel()->selectionCog();
@@ -48,7 +66,7 @@ void AtenForm::on_RotateDefineOriginButton_clicked(bool on)
 	ui.RotateOriginZSpin->setValue(v.z);
 }
 
-void AtenForm::on_RotateDefineAxisButton_clicked(bool on)
+void AtenTransform::on_RotateDefineAxisButton_clicked(bool on)
 {
 	// Get geometric centre of selection and current origin
 	Vec3<double> v, o;
@@ -63,7 +81,7 @@ void AtenForm::on_RotateDefineAxisButton_clicked(bool on)
 	ui.RotateAxisZSpin->setValue(v.z);
 }
 
-void AtenForm::rotateSelection(double direction)
+void AtenTransform::rotateSelection(double direction)
 {
 	Vec3<double> v, o;
 	v.x = ui.RotateAxisXSpin->value();
@@ -80,4 +98,9 @@ void AtenForm::rotateSelection(double direction)
 	m->endUndostate();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+void AtenTransform::dialogFinished(int result)
+{
+	gui.mainWindow->ui.actionTransformDialog->setChecked(FALSE);
 }

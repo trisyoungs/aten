@@ -18,8 +18,21 @@ SUFFIXES: .ui .uih .qrc
 	$(CXX) -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(QTGUI_CFLAGS) -c -o $@ $*.cpp
 	rm $*.cpp
 
-libgui_a_SOURCES = icons.qrc ffeditor.ui loadmodel.ui selectpattern.ui prefs.ui mainwindow.ui mainwindow_funcs.cpp mainwindow_init.cpp selectpattern_funcs.cpp loadmodel_funcs.cpp input.cpp analyse_funcs.cpp atomlist_funcs.cpp disorder_funcs.cpp forcefield_funcs.cpp transform_funcs.cpp edit_funcs.cpp cell_funcs.cpp position_funcs.cpp grid_funcs.cpp minimise_funcs.cpp contextmenu_funcs.cpp actions.cpp modelactions.cpp editactions.cpp viewactions.cpp trajectoryactions.cpp fileactions.cpp prefs_funcs.cpp gui.cpp tcanvas_funcs.cpp tcolourframe_funcs.cpp tlistwidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp ttablewidgetitem_funcs.cpp canvas.cpp ttabbar.uih tcanvas.uih tcombobox_funcs.cpp tcolourframe.uih ttreewidget.uih ffeditor_funcs.cpp
 
-noinst_HEADERS = canvas.h gui.h ffeditor.h loadmodel.h mainwindow.h selectpattern.h prefs.h tcombobox.h tlistwidgetitem.h ttreewidgetitem.h ttablewidgetitem.h
+SUBWINDOW_UI = atomlist.ui build.ui celldefine.ui celltransform.ui disorder.ui forcefields.ui glyphs.ui grids.ui minimiser.ui position.ui transform.ui
+SUBWINDOW_FUNCS = atomlist_funcs.cpp build_funcs.cpp celldefine_funcs.cpp celltransform_funcs.cpp disorder_funcs.cpp forcefields_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp minimiser_funcs.cpp position_funcs.cpp transform_funcs.cpp
+
+MAINWINDOW_UI = icons.qrc ffeditor.ui loadmodel.ui prefs.ui selectelement.ui selectpattern.ui mainwindow.ui
+MAINWINDOW_FUNCS = actions.cpp bondactions.cpp contextmenu_funcs.cpp drawactions.cpp editactions.cpp fileactions.cpp ffeditor_funcs.cpp gui.cpp loadmodel_funcs.cpp mainwindow_funcs.cpp mainwindow_init.cpp measureactions.cpp modelactions.cpp prefs_funcs.cpp selectelement_funcs.cpp selectpattern_funcs.cpp settings.cpp trajectoryactions.cpp viewactions.cpp
+
+WIDGET_UI = ttabbar.uih tcolourframe.uih ttreewidget.uih tcanvas.uih
+WIDGET_FUNCS = tcanvas_funcs.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlistwidgetitem_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp
+
+CANVAS_FUNCS = canvas.cpp input.cpp
+
+libgui_a_SOURCES = $(CANVAS_FUNCS) $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(SUBWINDOW_FUNCS)
+
+
+noinst_HEADERS = canvas.h ffeditor.h gui.h loadmodel.h mainwindow.h prefs.h selectpattern.h tcombobox.h tlistwidgetitem.h ttablewidgetitem.h ttreewidgetitem.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @GUI_CFLAGS@

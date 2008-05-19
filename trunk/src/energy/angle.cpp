@@ -33,6 +33,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 	dbgBegin(Debug::Calls,"Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
 	static double forcek, n, s, eq, r, theta, dp, energy, c0, c1, c2;
+	static double coseq, delta;
 	static ForcefieldParams params;
 	static PatternBound *pb;
 	static Vec3<double> vecij, veckj;
@@ -80,10 +81,18 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
 					forcek = params.data[AngleFunctions::UffCosineK];
 					eq = params.data[AngleFunctions::UffCosineEq] / DEGRAD;
+					coseq = cos(eq);
 					c2 = 1.0 / (4 * sin(eq)*sin(eq));
-					c1 = -4.0 * c2 * cos(eq);
-					c0 = c2 * (2.0 * cos(eq)*cos(eq) + 1.0);
+					c1 = -4.0 * c2 * coseq;
+					c0 = c2 * (2.0 * coseq*coseq + 1.0);
 					energy += forcek * (c0 + c1 * cos(theta) + c2 * cos(2.0 * theta));
+					break;
+				case (AngleFunctions::HarmonicCosine):
+					// U(theta) = 0.5 * forcek * (cos(theta) - cos(eq)))**2
+					forcek = params.data[AngleFunctions::HarmonicCosineK];
+					coseq = cos(params.data[AngleFunctions::HarmonicCosineEq] / DEGRAD);
+					delta = cos(theta) - coseq;
+					energy += 0.5 * forcek * delta * delta;
 					break;
 				default:
 					msg(Debug::None, "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
@@ -137,26 +146,26 @@ void Pattern::angleForces(Model *srcmodel)
 					du_dtheta = 0.0;
 					break;
 				case (AngleFunctions::Harmonic): 
-					// F(theta) = forcek * (theta - eq)
+					// dU/d(theta) = forcek * (theta - eq)
 					forcek = params.data[AngleFunctions::HarmonicK];
 					eq = params.data[AngleFunctions::HarmonicEq] / DEGRAD;
 					du_dtheta = dtheta_dcostheta * forcek * (theta - eq);
 					break;
 				case (AngleFunctions::Cosine):
-					// U(theta) = forcek * (1 - sin(n*theta - eq))
+					// dU/d(theta) = forcek * (1 - sin(n*theta - eq))
 					forcek = params.data[AngleFunctions::CosineK];
 					eq = params.data[AngleFunctions::CosineEq] / DEGRAD;
 					n = params.data[AngleFunctions::CosineN];
 					du_dtheta = dtheta_dcostheta * forcek * (1.0 - sin(n * theta - eq));
 					break;
 				case (AngleFunctions::UffCosine1):
-					// F(theta) = (forcek / 2*n) * (1 - sin(n*theta))
+					// dU/d(theta) = (forcek / 2*n) * (1 - sin(n*theta))
 					forcek = params.data[AngleFunctions::UffCosineK];
 					n = params.data[AngleFunctions::UffCosineN];
 					du_dtheta = dtheta_dcostheta * (forcek / n) * sin(n*theta);
 					break;
 				case (AngleFunctions::UffCosine2):
-					// F(theta) = forcek * (c0 - c1 * sin(theta) - c2 * sin(2*theta))
+					// dU/d(theta) = forcek * (c0 - c1 * sin(theta) - c2 * sin(2*theta))
 					forcek = params.data[AngleFunctions::UffCosineK];
 					eq = params.data[AngleFunctions::UffCosineEq] / DEGRAD;
 					cosx = cos(eq);
@@ -165,6 +174,12 @@ void Pattern::angleForces(Model *srcmodel)
 					c1 = -4.0 * c2 * cosx;
 					c0 = c2 * (2.0 * cosx*cosx + 1.0);
 					du_dtheta = dtheta_dcostheta * forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
+					break;
+				case (AngleFunctions::HarmonicCosine):
+					// dU/d(theta) = forcek * (cos(theta) - cos(eq)))
+					forcek = params.data[AngleFunctions::HarmonicCosineK];
+					cosx = cos(params.data[AngleFunctions::HarmonicCosineEq] / DEGRAD);
+					//du_dtheta = 
 					break;
 				default:
 					msg(Debug::None, "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);

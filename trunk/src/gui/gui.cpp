@@ -26,8 +26,20 @@
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
 #include "gui/selectpattern.h"
+#include "gui/selectelement.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
+#include "gui/grids.h"
+#include "gui/disorder.h"
+#include "gui/atomlist.h"
+#include "gui/forcefields.h"
+#include "gui/celldefine.h"
+#include "gui/celltransform.h"
+#include "gui/build.h"
+#include "gui/glyphs.h"
+#include "gui/minimiser.h"
+#include "gui/transform.h"
+#include "gui/position.h"
 #include "model/model.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
@@ -73,25 +85,54 @@ void GuiQt::run()
 
 	Q_INIT_RESOURCE(icons);
 
-	// Create the GUI windows
+	// Create GUI window, dialog windows, and sub windows
 	mainWindow = new AtenForm;
-	prefsDialog = new AtenPrefs;
-	editDialog = new AtenEdit;
-	loadModelDialog = new AtenLoadModel;
-	selectPatternDialog = new AtenSelectPattern;
+	// ...dialog windows...
+	prefsDialog = new AtenPrefs(mainWindow);
+	forcefieldEditorDialog = new AtenForcefieldEditor(mainWindow);
+	loadModelDialog = new AtenLoadModel(mainWindow);
+	selectPatternDialog = new AtenSelectPattern(mainWindow);
+	selectElementDialog = new AtenSelectElement(mainWindow);
+	// ...tool windows
+	atomlistDialog = new AtenAtomlist(mainWindow, Qt::Dialog|Qt::Tool);
+	buildDialog = new AtenBuild(mainWindow);
+	cellDefineDialog = new AtenCellDefine(mainWindow);
+	cellTransformDialog = new AtenCellTransform(mainWindow);
+	disorderDialog = new AtenDisorder(mainWindow);
+	forcefieldsDialog = new AtenForcefields(mainWindow);
+	glyphsDialog = new AtenGlyphs(mainWindow);
+	gridsDialog = new AtenGrids(mainWindow);
+	minimiserDialog = new AtenMinimiser(mainWindow);
+	positionDialog = new AtenPosition(mainWindow);
+	transformDialog = new AtenTransform(mainWindow);
 
-	// Set the modality of child windows
+	// Connect Finished signal of tool windows to finished slots in structure
+	QObject::connect(atomlistDialog, SIGNAL(finished(int)), atomlistDialog, SLOT(dialogFinished(int)));
+	QObject::connect(buildDialog, SIGNAL(finished(int)), buildDialog, SLOT(dialogFinished(int)));
+	QObject::connect(cellDefineDialog, SIGNAL(finished(int)), cellDefineDialog, SLOT(dialogFinished(int)));
+	QObject::connect(cellTransformDialog, SIGNAL(finished(int)), cellTransformDialog, SLOT(dialogFinished(int)));
+	QObject::connect(disorderDialog, SIGNAL(finished(int)), disorderDialog, SLOT(dialogFinished(int)));
+	QObject::connect(forcefieldsDialog, SIGNAL(finished(int)), forcefieldsDialog, SLOT(dialogFinished(int)));
+	QObject::connect(glyphsDialog, SIGNAL(finished(int)), glyphsDialog, SLOT(dialogFinished(int)));
+	QObject::connect(gridsDialog, SIGNAL(finished(int)), gridsDialog, SLOT(dialogFinished(int)));
+	QObject::connect(minimiserDialog, SIGNAL(finished(int)), minimiserDialog, SLOT(dialogFinished(int)));
+	QObject::connect(positionDialog, SIGNAL(finished(int)), positionDialog, SLOT(dialogFinished(int)));
+	QObject::connect(transformDialog, SIGNAL(finished(int)), transformDialog, SLOT(dialogFinished(int)));
+
+	// Set the modality of some dialogs
 	prefsDialog->setModal(TRUE);
-	editDialog->setModal(TRUE);
+	forcefieldEditorDialog->setModal(TRUE);
 	loadModelDialog->setModal(TRUE);
 	selectPatternDialog->setModal(TRUE);
+	selectElementDialog->setModal(TRUE);
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	mainWindow->finaliseUi();
 	prefsDialog->finaliseUi();
-	editDialog->finaliseUi();
+	forcefieldEditorDialog->finaliseUi();
 	loadModelDialog->finaliseUi();
 	selectPatternDialog->finaliseUi();
+	selectElementDialog->finaliseUi();
 
 	// Temporarily disable drawing on the main canvas again
 	gui.mainView.disableDrawing();
@@ -99,7 +140,7 @@ void GuiQt::run()
 	// Set controls in the windows
 	mainWindow->setControls();
 	prefsDialog->setControls();
-	editDialog->setControls();
+	forcefieldEditorDialog->setControls();
 	loadModelDialog->setControls();
 	selectPatternDialog->setControls();
 
@@ -110,11 +151,12 @@ void GuiQt::run()
 	// Make first loaded model the current one
 	master.setCurrentModel(master.models());
 
-	// Refresh the necessary stack pages
-	mainWindow->refreshGridsPage();
-	mainWindow->refreshForcefieldPage();
-	mainWindow->refreshDisorderPage();
-	mainWindow->refreshCellPages();
+	// Refresh the necessary windows
+	gridsDialog->refresh();
+	forcefieldsDialog->refresh();
+	disorderDialog->refresh();
+	cellDefineDialog->refresh();
+	cellTransformDialog->refresh();
 	updateTrajControls();
 
 	gui.mainView.enableDrawing();
@@ -132,6 +174,7 @@ void GuiQt::run()
 	gui.mainView.postRedisplay();
 
 	int n = app->exec();
+
 	dbgEnd(Debug::Calls,"GuiQt::run");
 }
 
@@ -229,11 +272,15 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update save button status
 	mainWindow->ui.actionFileSave->setEnabled( m->isModified() );
 	// Update contents of the atom list
-	if (updateAtoms) mainWindow->refreshAtomPage();
+	if (updateAtoms) atomlistDialog->refresh();
 	// Update the contents of the cell page
-	if (updateCell) mainWindow->refreshCellPages();
+	if (updateCell)
+	{
+		cellDefineDialog->refresh();
+		cellTransformDialog->refresh();
+	}
 	// Update forcefields in the forcefield window
-	if (updateForcefield) mainWindow->refreshForcefieldPage();
+	if (updateForcefield) forcefieldsDialog->refresh();
 	// Enable the Atom menu if one or more atoms are selected
 	mainWindow->ui.AtomMenu->setEnabled( master.currentModel()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
@@ -259,7 +306,7 @@ void GuiQt::updateTrajControls()
 	else
 	{
 		// Make sure the trajectory toolbar is visible
-		mainWindow->ui.TrajectoryToolBar->setVisible(TRUE);
+		mainWindow->ui.TrajectoryToolbar->setVisible(TRUE);
 		// If the trajectory is playing, desensitise all but the play/pause button
 		if (trajectoryPlaying_)
 		{
@@ -400,9 +447,8 @@ void GuiQt::progressCreate(const char *jobtitle, int stepstodo)
 	mainWindow->progressIndicator->setVisible(TRUE);
 	progressCanceled_ = FALSE;
 	// Disable some key widgets on the main form
-	mainWindow->ui.MainWindowStack->setEnabled(FALSE);
 	mainWindow->ui.ViewFrame->setEnabled(FALSE);
-	mainWindow->ui.StackButtonsFrame->setEnabled(FALSE);
+	mainWindow->ui.WindowToolbar->setEnabled(FALSE);
 }
 
 // Update the progress dialog
@@ -441,9 +487,8 @@ void GuiQt::progressTerminate()
 	}
 	// Hide the progress bar and re-enable widgets
 	mainWindow->progressIndicator->setVisible(FALSE);
-	mainWindow->ui.MainWindowStack->setEnabled(TRUE);
 	mainWindow->ui.ViewFrame->setEnabled(TRUE);
-	mainWindow->ui.StackButtonsFrame->setEnabled(TRUE);
+	mainWindow->ui.WindowToolbar->setEnabled(TRUE);
 }
 
 // Notify that the progress indicator should be canceled

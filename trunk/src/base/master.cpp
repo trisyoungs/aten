@@ -27,6 +27,7 @@
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
+#include "gui/disorder.h"
 #include "parse/parser.h"
 #include <fstream>
 
@@ -163,7 +164,7 @@ Model *Master::addModel()
 	if (gui.exists())
 	{
 		gui.addModel(current.m);
-		gui.mainWindow->refreshDisorderPage();
+		gui.disorderDialog->refresh();
 	}
 	dbgEnd(Debug::Calls,"Master::addModel");
 	return current.m;
@@ -187,7 +188,7 @@ void Master::removeModel(Model *xmodel)
 	if (gui.exists())
 	{
 		gui.removeModel(id);
-		gui.mainWindow->refreshDisorderPage();
+		gui.disorderDialog->refresh();
 	}
 	dbgEnd(Debug::Calls,"Master::removeModel");
 }

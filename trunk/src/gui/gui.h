@@ -28,9 +28,21 @@
 // Forward declarations
 class AtenForm;
 class AtenPrefs;
-class AtenEdit;
+class AtenForcefieldEditor;
 class AtenLoadModel;
 class AtenSelectPattern;
+class AtenSelectElement;
+class AtenAtomlist;
+class AtenBuild;
+class AtenCellDefine;
+class AtenCellTransform;
+class AtenDisorder;
+class AtenForcefields;
+class AtenGlyphs;
+class AtenGrids;
+class AtenMinimiser;
+class AtenPosition;
+class AtenTransform;
 class Atom;
 class Model;
 class Forcefield;
@@ -111,27 +123,61 @@ class GuiQt
 	Canvas::KeyCode convertToKeyCode(int);
 
 	/*
-	// Windows / Dialogs
+	// Windows / Subwindows
 	*/
 	public:
-	// Main Qt widget for the interface
-	AtenForm *mainWindow;
 	// Main application structure
 	QApplication *app;
+	// Main Window
+	AtenForm *mainWindow;
+	// Atom list subwindow
+	AtenAtomlist *atomlistDialog;
+	// Build subwindow
+	AtenBuild *buildDialog;
+	// Cell definition subwindow
+	AtenCellDefine *cellDefineDialog;
+	// Cell transform subwindow
+	AtenCellTransform *cellTransformDialog;
+	// Disordered builder window
+	AtenDisorder *disorderDialog;
+	// Forcefields window
+	AtenForcefields *forcefieldsDialog;
+	// Glyphs window
+	AtenGlyphs *glyphsDialog;
+	// Grids window
+	AtenGrids *gridsDialog;
+	// Minimiser window
+	AtenMinimiser *minimiserDialog;
+	// Atom positioning window
+	AtenPosition *positionDialog;
+	// Atom transformation window
+	AtenTransform *transformDialog;
+
+	/*
+	// Dialog Windows
+	*/
+	public:
 	// Preferences Dialog
 	AtenPrefs *prefsDialog;
 	// Forcefield Editor
-	AtenEdit *editDialog;
+	AtenForcefieldEditor *forcefieldEditorDialog;
 	// Load model dialog
 	AtenLoadModel *loadModelDialog;
 	// Select pattern dialog
 	AtenSelectPattern *selectPatternDialog;
-	// Call the atompopup menu
-	void callAtomPopup(Atom*, int, int);
+	// Select element dialog
+	AtenSelectElement *selectElementDialog;
+
+	/*
+	// Canvas
+	*/
+	public:
 	// Main view Widget
 	TCanvas *mainWidget;
 	// Main view canvas
 	Canvas mainView;
+	// Call the atompopup menu
+	void callAtomPopup(Atom*, int, int);
 
 	/*
 	// Trajectory State
@@ -178,13 +224,6 @@ class GuiQt
 	void textProgressUpdate(int currentstep);
 	// Terminate the progress dialog
 	void textProgressTerminate();
-
-	/*
-	// Basic Offscreen Canvas
-	*/
-	public:
-	// Offscreen canvas (for use by, e.g., g2ps routines)
-	Canvas offscreenCanvas;
 };
 
 extern GuiQt gui;

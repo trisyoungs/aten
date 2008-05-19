@@ -215,8 +215,8 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 int CommandData::function_CA_RULES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_FF)) return CR_FAIL;
-	Forcefield::ForcefieldRules rules = Forcefield::forcefieldRules(c->argc(0));
-	if (rules == Forcefield::nForcefieldRules) return CR_FAIL;
+	Rules::ForcefieldRules rules = Rules::forcefieldRules(c->argc(0));
+	if (rules == Rules::nForcefieldRules) return CR_FAIL;
 	msg(Debug::None,"\t: Rule-set to use is '%s'\n", rules);
 	return CR_SUCCESS;
 }

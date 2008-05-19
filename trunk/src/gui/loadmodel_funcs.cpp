@@ -24,7 +24,7 @@
 #include "base/master.h"
 
 // Constructor
-AtenLoadModel::AtenLoadModel(QDialog *parent) : QDialog(parent)
+AtenLoadModel::AtenLoadModel(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 	currentDirectory_ = master.workDir.get();

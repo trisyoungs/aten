@@ -25,9 +25,11 @@
 #include "classes/pattern.h"
 
 // Constructor
-AtenSelectPattern::AtenSelectPattern(QDialog *parent) : QDialog(parent)
+AtenSelectPattern::AtenSelectPattern(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
+
+	// Private variables
 	currentModel_ = NULL;
 	selectedPattern_ = NULL;
 }
