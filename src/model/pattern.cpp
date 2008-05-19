@@ -520,3 +520,10 @@ void Model::printPatterns()
 	dbgEnd(Debug::Calls,"Model::printPatterns");
 }
 
+// Validate current pattern definition in model
+bool Model::validatePatterns()
+{
+	dbgBegin(Debug::Calls,"Model::validatePatterns");
+	// Cycle over patterns, checking atom and bond fingerprints of molecules against the first in each
+	dbgEnd(Debug::Calls,"Model::validatePatterns");
+}

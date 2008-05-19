@@ -206,6 +206,8 @@ bool Format::createExact(const char *s, VariableList &vlist)
 				case ('('):
 				case (')'):
 				case (' '):
+				case ('['):
+				case (']'):
 				case (34):	// Double quotes
 				case (39):	// Single quote
 					done = TRUE;
