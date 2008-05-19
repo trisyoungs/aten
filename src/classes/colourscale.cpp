@@ -98,12 +98,14 @@ void ColourScale::copyColour(ScaleColour col, GLfloat *target)
 	target[3] = colours_[col][3];
 }
 
-// Set the absolute range of the colour scale
+// Set the absolute range of the colour scale (but not the middle value)
 void ColourScale::setRange(double min, double max)
 {
 	minimum_ = min;
 	maximum_ = max;
-	middle_ = (max + min) * 0.5;
+	// Make sure the midpoint is within the new bounds
+	if (middle_ < minimum_) middle_ = minimum_;
+	else if (middle_ > maximum_) middle_ = maximum_;
 	range_ = maximum_ - minimum_;
 	refreshObjects();
 }
@@ -112,6 +114,10 @@ void ColourScale::setRange(double min, double max)
 void ColourScale::setMiddle(double middle)
 {
 	middle_ = middle;
+	// Make sure the midpoint is within the new bounds
+	if (middle_ < minimum_) middle_ = minimum_;
+	else if (middle_ > maximum_) middle_ = maximum_;
+	refreshObjects();
 }
 
 // Adjust colour scale range to cover supplied value
