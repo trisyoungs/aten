@@ -108,6 +108,7 @@ class AtenForm : public QMainWindow
 	void on_actionAtomLabelClear_triggered(bool checked);
 	void on_actionAtomLabelClearAll_triggered(bool checked);
 	void on_actionAtomHide_triggered(bool checked);
+	void on_actionProbeAtom_triggered(bool checked);
 
 	/*
 	// Bonding Actions
@@ -152,7 +153,6 @@ class AtenForm : public QMainWindow
 	void on_actionSelectCustomElement_triggered(bool on);
 	void on_actionAddHydrogen_triggered(bool on);
 	void on_actionAddHydrogenAtom_triggered(bool on);
-	void on_actionProbeAtom_triggered(bool on);
 
 	/*
 	// Draw style Actions

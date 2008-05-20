@@ -372,11 +372,11 @@ void Model::projectAtom(Atom *i)
 }
 
 // Project given model coordinates into screen coordinates
-Vec3<int> &Model::modelToScreen(Vec3<double> &pos)
+Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
 {
 	dbgBegin(Debug::MoreCalls,"Model::modelToScreen");
 	static Vec4<double> modelr, screenr, worldr;
-	static Vec3<int> result;
+	static Vec3<double> result;
 	if (!gui.mainView.isValid())
 	{
 		dbgEnd(Debug::MoreCalls,"Model::modelToScreen");
@@ -395,7 +395,7 @@ Vec3<int> &Model::modelToScreen(Vec3<double> &pos)
 	screenr.x /= screenr.w;
 	screenr.y /= screenr.w;
 	vmat = gui.mainView.VMAT;
-	result.set( int(vmat[0] + vmat[2]*(screenr.x+1)*0.5), int(vmat[1] + vmat[3]*(screenr.y+1)*0.5), 0);
+	result.set( vmat[0] + vmat[2]*(screenr.x+1)*0.5, vmat[1] + vmat[3]*(screenr.y+1)*0.5, screenr.z / screenr.w);
 	dbgEnd(Debug::MoreCalls,"Model::modelToScreen");
 	return result;
 }

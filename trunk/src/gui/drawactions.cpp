@@ -103,10 +103,10 @@ void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 	if (on) gui.mainView.setSelectedMode(Canvas::EditAddHydrogenAction);
 }
 
-void AtenForm::on_actionProbeAtom_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(Canvas::EditProbeAction);
-}
+//void AtenForm::on_actionProbeAtom_triggered(bool on)
+//{
+//	if (on) gui.mainView.setSelectedMode(Canvas::EditProbeAction);
+//}
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {

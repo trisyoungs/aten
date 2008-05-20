@@ -146,3 +146,8 @@ void AtenForm::on_actionAtomHide_triggered(bool checked)
 {
 	setAtomHidden(TRUE);
 }
+
+void AtenForm::on_actionProbeAtom_triggered(bool checked)
+{
+	if (target != NULL) target->print();
+}
