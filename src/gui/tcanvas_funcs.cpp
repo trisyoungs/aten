@@ -32,35 +32,48 @@ bool DONTDRAW = FALSE;
 // Constructor
 TCanvas::TCanvas(QWidget *parent)
 {
-	widgetCanvas_ = NULL;
+	// Private variables
+	canvas_ = NULL;
+
+	setAutoFillBackground(FALSE);
 }
 
 // Set the widgetcanvas for the display
 void TCanvas::setCanvas(Canvas *wc)
 {
-	widgetCanvas_ = wc;
+	canvas_ = wc;
 }
 
 void TCanvas::initializeGL()
 {
-	// Call the realize method of the associated widgetCanvas_.
-	if (widgetCanvas_ != NULL) widgetCanvas_->realize();
+	// Call the realize method of the associated canvas_.
+	if (canvas_ != NULL) canvas_->realize();
 	else printf("NO CANVAS SET INIT\n");
 }
 
-void TCanvas::paintGL()
+void TCanvas::paintEvent(QPaintEvent *event)
 {
-	if (widgetCanvas_ != NULL) widgetCanvas_->renderScene(master.currentModel()->renderSource());
+	if (canvas_ != NULL)
+	{
+		// Draw OpenGL objects
+		canvas_->renderScene(master.currentModel()->renderSource());
+		// Draw on text objects
+		QPainter painter;
+		painter.begin(this);
+		painter.setRenderHint(QPainter::Antialiasing);
+		canvas_->renderText(painter);
+		painter.end();
+	}
 	else printf("NO CANVAS SET PAINT\n");
 	swapBuffers();
 }
 
 void TCanvas::resizeGL(int width, int height)
 {
-	if (widgetCanvas_ != NULL)
+	if (canvas_ != NULL)
 	{
-		widgetCanvas_->configure();
-		if (widgetCanvas_->displayModel() != NULL) widgetCanvas_->displayModel()->logChange(Change::CameraLog);
+		canvas_->configure();
+		if (canvas_->displayModel() != NULL) canvas_->displayModel()->logChange(Change::CameraLog);
 	}
 	else printf("NO CANVAS SET RESIZE\n");
 }
@@ -96,7 +109,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 	// If the left mouse button is double-clicked over an atom, show the atomlist window
 	if ((button == Prefs::LeftButton) && (event->type() == QEvent::MouseButtonDblClick))
 	{
-		Atom *tempi = widgetCanvas_->atomHover();
+		Atom *tempi = canvas_->atomHover();
 		if (tempi != NULL)
 		{
 			printf("gui::dblclick show atom list not done.\n");

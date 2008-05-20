@@ -202,3 +202,28 @@ void Canvas::renderScene(Model *source)
 	endGl();
 	dbgEnd(Debug::Calls,"Canvas::renderScene");
 }
+
+// Render list of TextObjects 
+void Canvas::renderText(QPainter &painter)
+{
+	dbgBegin(Debug::Calls,"Canvas::renderText");
+
+	// If the canvas is stil resttricted, don't draw anything
+	if (noDraw_)
+	{
+		dbgEnd(Debug::Calls,"Canvas::renderText");
+		return;
+	}
+
+	// Render text
+	for (TextObject *to = textObjects_.first(); to != NULL; to = to->next)
+	{
+		if (to->rightAlign) painter.drawText(0, to->y, to->x, to->y, Qt::AlignRight, to->text, NULL);
+		else painter.drawText(to->x, to->y, to->text);
+	}
+
+	// Clear list
+	textObjects_.clear();
+
+	dbgEnd(Debug::Calls,"Canvas::renderText");
+}

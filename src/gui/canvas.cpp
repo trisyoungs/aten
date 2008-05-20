@@ -28,6 +28,14 @@
 #include "model/model.h"
 
 // Constructor
+TextObject::TextObject(int xx, int yy, bool ralign, const char *txt) : x(xx), y(yy), rightAlign(ralign)
+{
+	strcpy(text,txt);
+	prev = NULL;
+	next = NULL;
+}
+
+// Constructor
 Canvas::Canvas()
 {
 	// Private variables
@@ -116,17 +124,14 @@ void Canvas::realize()
 // Invalidate
 void Canvas::postRedisplay()
 {
-	dbgBegin(Debug::Calls,"Canvas::postRedisplay");
-	if (valid_) contextWidget_->paintGL();
-	dbgEnd(Debug::Calls,"Canvas::postRedisplay");
+	if (valid_) contextWidget_->update();
 }
 
 // Widget Expose
 void Canvas::expose()
 {
 	if (valid_) return;
-	// Render from the current rendering source
-	renderScene(master.currentModel()->renderSource());
+	contextWidget_->update();
 }
 
 // Widget configure

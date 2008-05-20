@@ -33,6 +33,6 @@ CANVAS_FUNCS = canvas.cpp input.cpp
 libgui_a_SOURCES = $(CANVAS_FUNCS) $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(SUBWINDOW_FUNCS)
 
 
-noinst_HEADERS = canvas.h ffeditor.h gui.h loadmodel.h mainwindow.h prefs.h selectpattern.h tcombobox.h tlistwidgetitem.h ttablewidgetitem.h ttreewidgetitem.h
+noinst_HEADERS = atomlist.h build.h canvas.h celldefine.h celltransform.h disorder.h ffeditor.h forcefields.h glyphs.h grids.h gui.h loadmodel.h mainwindow.h minimiser.h position.h prefs.h selectelement.h selectpattern.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @GUI_CFLAGS@

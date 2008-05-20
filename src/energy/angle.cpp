@@ -149,20 +149,20 @@ void Pattern::angleForces(Model *srcmodel)
 					// dU/d(theta) = forcek * (theta - eq)
 					forcek = params.data[AngleFunctions::HarmonicK];
 					eq = params.data[AngleFunctions::HarmonicEq] / DEGRAD;
-					du_dtheta = dtheta_dcostheta * forcek * (theta - eq);
+					du_dtheta = forcek * (theta - eq);
 					break;
 				case (AngleFunctions::Cosine):
 					// dU/d(theta) = forcek * (1 - sin(n*theta - eq))
 					forcek = params.data[AngleFunctions::CosineK];
 					eq = params.data[AngleFunctions::CosineEq] / DEGRAD;
 					n = params.data[AngleFunctions::CosineN];
-					du_dtheta = dtheta_dcostheta * forcek * (1.0 - sin(n * theta - eq));
+					du_dtheta = forcek * (1.0 - sin(n * theta - eq));
 					break;
 				case (AngleFunctions::UffCosine1):
 					// dU/d(theta) = (forcek / 2*n) * (1 - sin(n*theta))
 					forcek = params.data[AngleFunctions::UffCosineK];
 					n = params.data[AngleFunctions::UffCosineN];
-					du_dtheta = dtheta_dcostheta * (forcek / n) * sin(n*theta);
+					du_dtheta = (forcek / n) * sin(n*theta);
 					break;
 				case (AngleFunctions::UffCosine2):
 					// dU/d(theta) = forcek * (c0 - c1 * sin(theta) - c2 * sin(2*theta))
@@ -173,18 +173,20 @@ void Pattern::angleForces(Model *srcmodel)
 					c2 = 1.0 / (4 * sinx*sinx);
 					c1 = -4.0 * c2 * cosx;
 					c0 = c2 * (2.0 * cosx*cosx + 1.0);
-					du_dtheta = dtheta_dcostheta * forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
+					du_dtheta = forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
 					break;
 				case (AngleFunctions::HarmonicCosine):
-					// dU/d(theta) = forcek * (cos(theta) - cos(eq)))
+					// dU/d(theta) = forcek * (cos(theta) - cos(eq))) * -sin(theta)
 					forcek = params.data[AngleFunctions::HarmonicCosineK];
 					cosx = cos(params.data[AngleFunctions::HarmonicCosineEq] / DEGRAD);
-					//du_dtheta = 
+					du_dtheta = -forcek * (cos(theta) - cosx) * sin(theta);
 					break;
 				default:
 					msg(Debug::None, "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
 			}
+			// Complete chain rule
+			du_dtheta *= dtheta_dcostheta;
 			// Calculate atomic forces
 			fi = vec_kj - vec_ij * dp;
 			fi *= du_dtheta / mag_ij;

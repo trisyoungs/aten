@@ -362,6 +362,8 @@ class Model
 	void resetView();
 	// Project the model coordinates of the atom into local and 2D coordinates
 	void projectAtom(Atom*);
+	// Project given model coordinates into screen coordinates
+	Vec3<int> &modelToScreen(Vec3<double> &pos);
 	// Project the model coordinates of all atoms
 	void projectAll();
 	// Project the model coordinates of selected atoms
