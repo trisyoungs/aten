@@ -39,6 +39,23 @@ class Subselection;
 class Cell;
 class TCanvas;
 
+// Text object
+class TextObject
+{
+	public:
+	// Constructor
+	TextObject(int,int,bool,const char*);
+
+	// Screen coordinates for text
+	int x, y;
+	// Whether to right-align text at the provided coordinate
+	bool rightAlign;
+	// Text to render
+	char text[128];
+	// List pointers
+	TextObject *prev, *next;
+};
+
 /*
 // Canvas Master Class
 // Provides GL rendering functions for a context
@@ -197,10 +214,14 @@ class Canvas
 	void renderModelCell();
 	// Render surfaces
 	void renderSurfaces();
+	// List of text nuggets to render
+	List<TextObject> textObjects_;
 
 	public:
 	// Render a scene based on the specified model
 	void renderScene(Model*);
+	// Render text for the current scene
+	void renderText(QPainter&);
 	// Save scene as vector image
 	void saveVector(Model *source, vector_format vf, const char *filename);
 

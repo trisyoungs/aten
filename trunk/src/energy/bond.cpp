@@ -131,12 +131,12 @@ void Pattern::bondForces(Model *srcmodel)
 					du_dr = forcek * (rij - eq);
 					break;
 				case (BondFunctions::Morse):
-					// dU/dr = 2.0 * E0 * (1 - exp( -k(rij - r0) ) )
+					// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
 					d = params.data[BondFunctions::MorseD];
 					forcek = fabs(params.data[BondFunctions::MorseK]);
 					eq = params.data[BondFunctions::MorseEq];
-					expo = 1.0 - exp(-forcek * (rij - eq) );
-					du_dr = 2.0 * d * expo;
+					expo = exp( -forcek * (rij - eq) );
+					du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 					break;
 				default:
 					msg(Debug::None, "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;

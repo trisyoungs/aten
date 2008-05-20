@@ -360,16 +360,44 @@ void Model::projectAtom(Atom *i)
 	screenr.y /= screenr.w;
 	srz = screenr.z / screenr.w;
 	vmat = gui.mainView.VMAT;
-	srx = vmat[0] + vmat[2]*(screenr.x+1)/2.0;
-	sry = vmat[1] + vmat[3]*(screenr.y+1)/2.0;
+	srx = vmat[0] + vmat[2]*(screenr.x+1)*0.5;
+	sry = vmat[1] + vmat[3]*(screenr.y+1)*0.5;
 	i->rScreen().set(srx,sry,srz);
 	// Calculate 2D 'radius' of the atom - Multiply world[x+delta] coordinates by P
 	worldr.x += prefs.screenRadius(i);
 	screenr = gui.mainView.PMAT * worldr;
 	screenr.x /= screenr.w;
-	screenr.y /= screenr.w;
-	i->setScreenRadius(fabs( (vmat[0] + vmat[2]*(screenr.x+1)/2.0) - srx));
+	i->setScreenRadius(fabs( (vmat[0] + vmat[2]*(screenr.x+1)*0.5) - srx));
 	dbgEnd(Debug::MoreCalls,"Model::projectAtom");
+}
+
+// Project given model coordinates into screen coordinates
+Vec3<int> &Model::modelToScreen(Vec3<double> &pos)
+{
+	dbgBegin(Debug::MoreCalls,"Model::modelToScreen");
+	static Vec4<double> modelr, screenr, worldr;
+	static Vec3<int> result;
+	if (!gui.mainView.isValid())
+	{
+		dbgEnd(Debug::MoreCalls,"Model::modelToScreen");
+		result.zero();
+		return result;
+	}
+	static GLint *vmat;
+	// Projection formula is : worldr = P x M x modelr 
+	modelr.set(pos, 1.0);
+	// We also need to subtract the cell centre coordinate
+	modelr -= cell_.centre();
+	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
+	worldr = viewMatrix_ * modelr;
+	// Calculate 2D screen coordinates - Multiply world coordinates by P
+	screenr = gui.mainView.PMAT * worldr;
+	screenr.x /= screenr.w;
+	screenr.y /= screenr.w;
+	vmat = gui.mainView.VMAT;
+	result.set( int(vmat[0] + vmat[2]*(screenr.x+1)*0.5), int(vmat[1] + vmat[3]*(screenr.y+1)*0.5), 0);
+	dbgEnd(Debug::MoreCalls,"Model::modelToScreen");
+	return result;
 }
 
 Vec4<double> &Model::worldToScreen(const Vec3<double> &v)

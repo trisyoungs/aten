@@ -36,17 +36,16 @@ class TCanvas : public QGLWidget
 	TCanvas(QWidget*);
 
 	private:
-	Canvas *widgetCanvas_;
-
-	public slots:
-
-	signals:
+	// Canvas object used by the widget
+	Canvas *canvas_;
 
 	public:
 	// Set the widgetcanvas for the display
 	void setCanvas(Canvas *wc);
+
+	protected:
 	void initializeGL();
-	void paintGL();
+	void paintEvent(QPaintEvent *event);
 	void resizeGL(int, int);
 	void mousePressEvent(QMouseEvent*);
 	void mouseReleaseEvent(QMouseEvent*);

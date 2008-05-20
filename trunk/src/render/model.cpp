@@ -79,7 +79,11 @@ void Canvas::renderModelLabels()
 			strcat(text,ftoa(i->charge()));
 			strcat(text," e)");
 		}
-		glText(i->r() - cellCentre, text);
+		//glText(i->r() - cellCentre, text);
+		// Add text object to list
+		displayModel_->projectAtom(i);
+		TextObject *to = new TextObject((int)i->rScreen().x, int(height_ - i->rScreen().y), FALSE, text);
+		textObjects_.own(to);
 	}
 	dbgEnd(Debug::Calls,"Canvas::renderModelLabels");
 }
@@ -88,7 +92,9 @@ void Canvas::renderModelLabels()
 void Canvas::renderModelMeasurements()
 {
 	dbgBegin(Debug::Calls,"Canvas::renderModelMeasurements");
-	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre;
+	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre, rji, rjk;
+	static Vec3<int> pos1, pos2;
+	static bool rightalign;
 	static char text[256];
 	static Atom **atoms;
 	// Grab cell origin to get correct positioning
@@ -99,43 +105,65 @@ void Canvas::renderModelMeasurements()
 	  for (Measurement *m = displayModel_->measurements(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
-		glBegin(GL_LINE_STRIP);
-		  switch (m->type())
-		  {
+		switch (m->type())
+		{
 			case (Measurement::DistanceMeasurement):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				labpos = (ri + rj) * 0.5;
-				glVertex3d(ri.x, ri.y, ri.z);
-				glVertex3d(rj.x, rj.y, rj.z);
-				sprintf(text,"%f A",m->value());
+				glBegin(GL_LINE_STRIP);
+				  glVertex3d(ri.x, ri.y, ri.z);
+				  glVertex3d(rj.x, rj.y, rj.z);
+				glEnd();
+				rightalign = FALSE;
+				sprintf(text,"%f A", m->value());
 				break;
 			case (Measurement::AngleMeasurement):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				rk = atoms[2]->r();
-				labpos = rj;
-				glVertex3d(ri.x, ri.y, ri.z);
-				glVertex3d(rj.x, rj.y, rj.z);
-				glVertex3d(rk.x, rk.y, rk.z);
-				sprintf(text,"%f Deg",m->value());
+				glBegin(GL_LINE_STRIP);
+				  glVertex3d(ri.x, ri.y, ri.z);
+				  glVertex3d(rj.x, rj.y, rj.z);
+				  glVertex3d(rk.x, rk.y, rk.z);
+				glEnd();
+				rji = ri - rj;
+				rjk = rk - rj;
+				labpos = (rji + rjk) * 0.2 + rj;
+				rji = rji * 0.2 + rj;
+				rjk = rjk * 0.2 + rj;
+				glBegin(GL_LINE_STRIP);
+				  glVertex3d(rji.x, rji.y, rji.z);
+				  glVertex3d(labpos.x, labpos.y, labpos.z);
+				  glVertex3d(rjk.x, rjk.y, rjk.z);
+				glEnd();
+				// Determine orientation of text
+				pos1 = displayModel_->modelToScreen(labpos);
+				pos2 = displayModel_->modelToScreen(rj);
+				rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
+				sprintf(text,"%f Deg", m->value());
 				break;
 			case (Measurement::TorsionMeasurement):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				rk = atoms[2]->r();
 				rl = atoms[3]->r();
-				glVertex3d(ri.x, ri.y, ri.z);
-				glVertex3d(rj.x, rj.y, rj.z);
-				glVertex3d(rk.x, rk.y, rk.z);
-				glVertex3d(rl.x, rl.y, rl.z);
+				glBegin(GL_LINE_STRIP);
+				  glVertex3d(ri.x, ri.y, ri.z);
+				  glVertex3d(rj.x, rj.y, rj.z);
+				  glVertex3d(rk.x, rk.y, rk.z);
+				  glVertex3d(rl.x, rl.y, rl.z);
+				glEnd();
 				labpos = (rj + rk) * 0.5;
-				sprintf(text,"%f Deg",m->value());
+				rightalign = FALSE;
+				sprintf(text,"%f Deg", m->value());
 				break;
-		  }
-		glEnd();
-		// Draw on label
-		glText(labpos, text);
+		}
+		//glText(labpos, text);
+		// Add text object to list
+		pos1 = displayModel_->modelToScreen(labpos);
+		TextObject *to = new TextObject(pos1.x, height_ - pos1.y, rightalign, text);
+		textObjects_.own(to);
 	  }
 	glPopMatrix();
 	dbgEnd(Debug::Calls,"Canvas::renderModelMeasurements");
