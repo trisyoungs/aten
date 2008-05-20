@@ -254,12 +254,18 @@ int CommandData::function_CA_STYLE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set whether to use nice text rendering ('usenicetext on|off')
+int CommandData::function_CA_USENICETEXT(Command *&c, Bundle &obj)
+{
+	prefs.setUseNiceText(c->argb(0));
+	return CR_SUCCESS;
+}
+
 // Set VDW cutoff ('vcut <cut>')
 int CommandData::function_CA_VCUT(Command *&c, Bundle &obj)
 {
 	prefs.setVdwCutoff(c->argd(0));
 	return CR_SUCCESS;
-
 }
 
 // Turn on/off calculation of vdw ('vdw on|off')

@@ -261,6 +261,9 @@ Prefs::Prefs()
 
 	// Undo levels
 	maxUndoLevels_ = -1;
+
+	// Compatibility options
+	useNiceText_ = TRUE;
 }
 
 // Load user preferences file
@@ -1111,4 +1114,18 @@ int Prefs::maxUndoLevels()
 	return maxUndoLevels_;
 }
 
+/*
+// Compatibility Options
+*/
 
+// Set whether to use nice text rendering
+void Prefs::setUseNiceText(bool b)
+{
+	useNiceText_ = b;
+}
+
+// Return whether to use nice text rendering
+bool Prefs::useNiceText()
+{
+	return useNiceText_;
+}

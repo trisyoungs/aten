@@ -265,7 +265,6 @@ class Prefs
 	// User-definable colour scales
 	ColourScale colourScale[10];
 
-
 	/*
 	// File Preferences
 	*/
@@ -537,6 +536,18 @@ class Prefs
 	void setMaxUndoLevels(int n);
 	// Return the maximum number of undo levels allowed
 	int maxUndoLevels();
+
+	/*
+	// Compatibility Options
+	*/
+	private:
+	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
+	bool useNiceText_;
+	public:
+	// Set whether to use nice text rendering
+	void setUseNiceText(bool b);
+	// Return whether to use nice text rendering
+	bool useNiceText();
 };
 
 extern Prefs prefs;
