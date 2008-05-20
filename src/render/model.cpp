@@ -82,8 +82,11 @@ void Canvas::renderModelLabels()
 		//glText(i->r() - cellCentre, text);
 		// Add text object to list
 		displayModel_->projectAtom(i);
-		TextObject *to = new TextObject((int)i->rScreen().x, int(height_ - i->rScreen().y), FALSE, text);
-		textObjects_.own(to);
+		if (i->rScreen().z < 1.0)
+		{
+			TextObject *to = new TextObject((int)i->rScreen().x, int(height_ - i->rScreen().y), FALSE, text);
+			textObjects_.own(to);
+		}
 	}
 	dbgEnd(Debug::Calls,"Canvas::renderModelLabels");
 }
@@ -93,7 +96,7 @@ void Canvas::renderModelMeasurements()
 {
 	dbgBegin(Debug::Calls,"Canvas::renderModelMeasurements");
 	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre, rji, rjk;
-	static Vec3<int> pos1, pos2;
+	static Vec3<double> pos1, pos2;
 	static bool rightalign;
 	static char text[256];
 	static Atom **atoms;
@@ -162,8 +165,11 @@ void Canvas::renderModelMeasurements()
 		//glText(labpos, text);
 		// Add text object to list
 		pos1 = displayModel_->modelToScreen(labpos);
-		TextObject *to = new TextObject(pos1.x, height_ - pos1.y, rightalign, text);
-		textObjects_.own(to);
+		if (pos1.z < 1.0)
+		{
+			TextObject *to = new TextObject(int(pos1.x), int(height_ - pos1.y), rightalign, text);
+			textObjects_.own(to);
+		}
 	  }
 	glPopMatrix();
 	dbgEnd(Debug::Calls,"Canvas::renderModelMeasurements");
