@@ -59,6 +59,7 @@ void TCanvas::paintEvent(QPaintEvent *event)
 		canvas_->renderScene(master.currentModel()->renderSource());
 		// Draw on text objects
 		QPainter painter;
+		//painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
 		painter.begin(this);
 		painter.setRenderHint(QPainter::Antialiasing);
 		canvas_->renderText(painter);

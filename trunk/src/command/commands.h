@@ -311,6 +311,7 @@ enum CommandAction {
 	CA_SHININESS,
 	CA_SHOW,
 	CA_STYLE,
+	CA_USENICETEXT,
 	CA_VCUT,
 	CA_VDW,
 
@@ -651,6 +652,7 @@ class CommandData
 	int function_CA_SHININESS(Command *&c, Bundle &obj);
 	int function_CA_SHOW(Command *&c, Bundle &obj);
 	int function_CA_STYLE(Command *&c, Bundle &obj);
+	int function_CA_USENICETEXT(Command *&c, Bundle &obj);
 	int function_CA_VCUT(Command *&c, Bundle &obj);
 	int function_CA_VDW(Command *&c, Bundle &obj);
 	// Read / Write Commands

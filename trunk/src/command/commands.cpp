@@ -526,6 +526,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the visibility of view objects: atoms, cell, cellaxes, cellrepeat, forcearrows, globe, labels, measurements, regions" },
 	{ "style",		"V",		"<style>",
 				"Draw models in the specified style" },
+	{ "usenicetext",	"V",		"<on|off>",
+				"Use QPainter (on) or QGlWidget (off) to render label text" },
 	{ "vcut",		"V",		"<cutoff>",
 				"Set the VDW cutoff distance" },
 	{ "vdw",		"V",		"on|off",

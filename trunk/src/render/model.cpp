@@ -130,6 +130,7 @@ void Canvas::renderModelMeasurements()
 				  glVertex3d(rj.x, rj.y, rj.z);
 				  glVertex3d(rk.x, rk.y, rk.z);
 				glEnd();
+				// Angle marker oblongata
 				rji = ri - rj;
 				rjk = rk - rj;
 				labpos = (rji + rjk) * 0.2 + rj;
@@ -140,6 +141,52 @@ void Canvas::renderModelMeasurements()
 				  glVertex3d(labpos.x, labpos.y, labpos.z);
 				  glVertex3d(rjk.x, rjk.y, rjk.z);
 				glEnd();
+				// Curved angle marker
+// 				rji = (ri - rj) * 0.2;
+// 				rjk = (rk - rj) * 0.2;
+// 				pos1 = (rji + rjk) * 0.5;
+// 				rji.toSpherical();
+// 				rjk.toSpherical();
+// 				pos1.toSpherical();
+// 				rji.print();
+// 				rjk.print();
+// 				pos1.print();
+// 				pos2 = (rji + rjk) * 0.5;
+// 				pos2.print();
+// 				pos2.x = 0.2;
+// 				//pos1 = (rji + rjk) * 0.5;
+// 				rji.toCartesian();
+// 				rjk.toCartesian();
+// 				pos1.toCartesian();
+// 				pos2.toCartesian();
+// 				rji += rj;
+// 				rjk += rj;
+// 				pos1 += rj;
+// 				pos2 += rj;
+// 				glBegin(GL_LINE_STRIP);
+// 				  glVertex3d(rji.x, rji.y, rji.z);
+// 				  glVertex3d(pos2.x, pos2.y, pos2.z);
+// 				  glVertex3d(pos1.x, pos1.y, pos1.z);
+// 				  glVertex3d(rjk.x, rjk.y, rjk.z);
+// 				glEnd();
+
+
+				// Get spherical delta
+// 				rji -= rjk;
+// 				rji /= 20.0;
+// 				// Draw segments
+// 				glBegin(GL_LINES);
+// 				  pos1 = rjk + rj;
+// 				  glVertex3d(pos1.x, pos1.y, pos1.z);
+// 				  for (int n=0; n<=20; n++)
+// 				  {
+// 					pos1 = rjk + rji*n;
+// 					pos1.x = 0.1;
+// 					pos1.toCartesian();
+// 					pos1 += rj;
+// 					glVertex3d(pos1.x, pos1.y, pos1.z);
+// 				  }
+// 				glEnd();
 				// Determine orientation of text
 				pos1 = displayModel_->modelToScreen(labpos);
 				pos2 = displayModel_->modelToScreen(rj);
@@ -162,7 +209,6 @@ void Canvas::renderModelMeasurements()
 				sprintf(text,"%f Deg", m->value());
 				break;
 		}
-		//glText(labpos, text);
 		// Add text object to list
 		pos1 = displayModel_->modelToScreen(labpos);
 		if (pos1.z < 1.0)
