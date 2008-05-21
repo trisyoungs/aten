@@ -51,6 +51,11 @@ void TCanvas::initializeGL()
 	else printf("NO CANVAS SET INIT\n");
 }
 
+void TCanvas::paintGL()
+{
+	paintEvent(NULL);
+}
+
 void TCanvas::paintEvent(QPaintEvent *event)
 {
 	if (canvas_ != NULL)
