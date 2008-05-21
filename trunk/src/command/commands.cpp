@@ -484,6 +484,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add a pattern definition to the current model" },
 
 	// Preferences commands
+	{ "anglelabel",		"V",		"<text>",
+				"Set the units label to use for angles" },
 	{ "atomdetail",		"V",		"<n>",
 				"Set the quadric detail of atoms" },
 	{ "bonddetail",		"V",		"<n>",
@@ -492,6 +494,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the specified colour" },
 	{ "densityunits",	"V",		"atomsperang|gpercm",
 				"Set the unit of density to use" },
+	{ "distancelabel",	"V",		"<text>",
+				"Set the units label to use for distances" },
 	{ "ecut",		"V",		"<cutoff>",
 				"Set the electrostatic cutoff distance" },
 	{ "elec",		"Vvvvv",	"<none|coulomb|ewald|ewaldauto> [ [precision] | [alpha] [kx] [ky] [kz] ]",
@@ -510,6 +514,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Turn on/off energy and force calculation of intramolecular terms" },
 	{ "key",		"VV",		"ctrl|shift|alt <action>",
 				"Set the action of modifier keys" },
+	{ "labelsize",		"V",		"<pointsize>",
+				"Set the integer pointsize for label text" },
 	{ "mouse",		"VV",		"left|middle|right|wheel <action>",
 				"Set the action of mouse buttons" },
 	{ "radius",		"VV",		"<style> <r>",

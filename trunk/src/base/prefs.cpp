@@ -166,7 +166,6 @@ Prefs::Prefs()
 	fogFar_ = 200;
 
 	// Rendering - Objects
-	labelScale_ = 4.0;
 	renderObjects_[Prefs::ViewAtoms] = TRUE;
 	renderObjects_[Prefs::ViewLabels] = TRUE;
 	renderObjects_[Prefs::ViewMeasurements] = TRUE;
@@ -262,8 +261,11 @@ Prefs::Prefs()
 	// Undo levels
 	maxUndoLevels_ = -1;
 
-	// Compatibility options
+	// Rendering (including compatibility) options
 	useNiceText_ = TRUE;
+	angleLabel_ = "Deg";
+	distanceLabel_ = "A";
+	labelSize_ = 10;
 }
 
 // Load user preferences file
@@ -332,18 +334,6 @@ void Prefs::setRenderStyle(Atom::DrawStyle ds)
 Atom::DrawStyle Prefs::renderStyle()
 {
 	return renderStyle_;
-}
-
-// Set the scale of labels in the model
-void Prefs::setLabelScale(double v)
-{
-	labelScale_ = v;
-}
-
-// Return the current label scale
-double Prefs::labelScale()
-{
-	return labelScale_;
 }
 
 // Return the current rotation globe size in pixels
@@ -1115,8 +1105,44 @@ int Prefs::maxUndoLevels()
 }
 
 /*
-// Compatibility Options
+// Rendering (and compatibility) Options
 */
+
+// Set the scale of labels in the model
+void Prefs::setLabelSize(int size)
+{
+	labelSize_ = size;
+}
+
+// Return the current label scale
+int Prefs::labelSize()
+{
+	return labelSize_;
+}
+
+// Set the postfix distance label
+void Prefs::setDistanceLabel(const char *s)
+{
+	distanceLabel_ = s;
+}
+
+// Return the postfix distance label
+const char *Prefs::distanceLabel()
+{
+	return distanceLabel_.get();
+}
+
+// Set the postfix angle label
+void Prefs::setAngleLabel(const char *s)
+{
+	angleLabel_ = s;
+}
+
+// Return the postfix angle label
+const char *Prefs::angleLabel()
+{
+	return angleLabel_.get();
+}
 
 // Set whether to use nice text rendering
 void Prefs::setUseNiceText(bool b)

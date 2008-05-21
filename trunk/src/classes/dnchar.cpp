@@ -41,6 +41,12 @@ Dnchar::~Dnchar()
 	if (data_ != NULL) delete[] data_;
 }
 
+// Copy constructor
+Dnchar::Dnchar(const Dnchar &source)
+{
+	set(source.data_);
+}
+
 // Print
 void Dnchar::print() const
 {

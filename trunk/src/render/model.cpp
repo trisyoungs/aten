@@ -97,6 +97,7 @@ void Canvas::renderModelMeasurements()
 	dbgBegin(Debug::Calls,"Canvas::renderModelMeasurements");
 	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre, rji, rjk;
 	static Vec3<double> pos1, pos2;
+	static double gamma, t;
 	static bool rightalign;
 	static char text[256];
 	static Atom **atoms;
@@ -119,7 +120,7 @@ void Canvas::renderModelMeasurements()
 				  glVertex3d(rj.x, rj.y, rj.z);
 				glEnd();
 				rightalign = FALSE;
-				sprintf(text,"%f A", m->value());
+				sprintf(text,"%f %s", m->value(), prefs.distanceLabel());
 				break;
 			case (Measurement::AngleMeasurement):
 				ri = atoms[0]->r();
@@ -131,67 +132,39 @@ void Canvas::renderModelMeasurements()
 				  glVertex3d(rk.x, rk.y, rk.z);
 				glEnd();
 				// Angle marker oblongata
-				rji = ri - rj;
-				rjk = rk - rj;
+// 				rji = ri - rj;
+// 				rjk = rk - rj;
 				labpos = (rji + rjk) * 0.2 + rj;
-				rji = rji * 0.2 + rj;
-				rjk = rjk * 0.2 + rj;
-				glBegin(GL_LINE_STRIP);
-				  glVertex3d(rji.x, rji.y, rji.z);
-				  glVertex3d(labpos.x, labpos.y, labpos.z);
-				  glVertex3d(rjk.x, rjk.y, rjk.z);
-				glEnd();
-				// Curved angle marker
-// 				rji = (ri - rj) * 0.2;
-// 				rjk = (rk - rj) * 0.2;
-// 				pos1 = (rji + rjk) * 0.5;
-// 				rji.toSpherical();
-// 				rjk.toSpherical();
-// 				pos1.toSpherical();
-// 				rji.print();
-// 				rjk.print();
-// 				pos1.print();
-// 				pos2 = (rji + rjk) * 0.5;
-// 				pos2.print();
-// 				pos2.x = 0.2;
-// 				//pos1 = (rji + rjk) * 0.5;
-// 				rji.toCartesian();
-// 				rjk.toCartesian();
-// 				pos1.toCartesian();
-// 				pos2.toCartesian();
-// 				rji += rj;
-// 				rjk += rj;
-// 				pos1 += rj;
-// 				pos2 += rj;
+// 				rji = rji * 0.2 + rj;
+// 				rjk = rjk * 0.2 + rj;
 // 				glBegin(GL_LINE_STRIP);
 // 				  glVertex3d(rji.x, rji.y, rji.z);
-// 				  glVertex3d(pos2.x, pos2.y, pos2.z);
-// 				  glVertex3d(pos1.x, pos1.y, pos1.z);
+// 				  glVertex3d(labpos.x, labpos.y, labpos.z);
 // 				  glVertex3d(rjk.x, rjk.y, rjk.z);
 // 				glEnd();
-
-
-				// Get spherical delta
-// 				rji -= rjk;
-// 				rji /= 20.0;
-// 				// Draw segments
-// 				glBegin(GL_LINES);
-// 				  pos1 = rjk + rj;
-// 				  glVertex3d(pos1.x, pos1.y, pos1.z);
-// 				  for (int n=0; n<=20; n++)
-// 				  {
-// 					pos1 = rjk + rji*n;
-// 					pos1.x = 0.1;
-// 					pos1.toCartesian();
-// 					pos1 += rj;
-// 					glVertex3d(pos1.x, pos1.y, pos1.z);
-// 				  }
-// 				glEnd();
+				// Curved angle marker
+				rji = (ri - rj);
+				rjk = (rk - rj);
+				rji.normalise();
+				rjk.normalise();
+				gamma = acos(rji.dp(rjk));
+				// Draw segments
+				t = 0.0;
+				glBegin(GL_LINES);
+				  for (int n=0; n<11; n++)
+				  {
+					pos1 = rji * (sin((1.0-t)*gamma) / sin(gamma)) + rjk * (sin(t*gamma) / sin(gamma));
+					pos1 *= 0.2;
+					pos1 += rj;
+					glVertex3d(pos1.x, pos1.y, pos1.z);
+					t += 0.1;
+				  }
+				glEnd();
 				// Determine orientation of text
 				pos1 = displayModel_->modelToScreen(labpos);
 				pos2 = displayModel_->modelToScreen(rj);
 				rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
-				sprintf(text,"%f Deg", m->value());
+				sprintf(text,"%f %s", m->value(), prefs.angleLabel());
 				break;
 			case (Measurement::TorsionMeasurement):
 				ri = atoms[0]->r();

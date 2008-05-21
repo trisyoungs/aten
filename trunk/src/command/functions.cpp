@@ -254,10 +254,12 @@ void Master::initCommands()
 	CA_data[CA_NEWPATTERN].function = &CommandData::function_CA_NEWPATTERN;
 
 	// Preferences Commands
+	CA_data[CA_ANGLELABEL].function = &CommandData::function_CA_ANGLELABEL;
 	CA_data[CA_ATOMDETAIL].function = &CommandData::function_CA_ATOMDETAIL;
 	CA_data[CA_BONDDETAIL].function = &CommandData::function_CA_BONDDETAIL;
 	CA_data[CA_COLOUR].function = &CommandData::function_CA_COLOUR;
 	CA_data[CA_DENSITYUNITS].function = &CommandData::function_CA_DENSITYUNITS;
+	CA_data[CA_DISTANCELABEL].function = &CommandData::function_CA_DISTANCELABEL;
 	CA_data[CA_ECUT].function = &CommandData::function_CA_ECUT;
 	CA_data[CA_ELEC].function = &CommandData::function_CA_ELEC;
 	CA_data[CA_ELEMENTAMBIENT].function = &CommandData::function_CA_ELEMENTAMBIENT;
@@ -267,6 +269,7 @@ void Master::initCommands()
 	CA_data[CA_GL].function = &CommandData::function_CA_GL;
 	CA_data[CA_INTRA].function = &CommandData::function_CA_INTRA;
 	CA_data[CA_KEY].function = &CommandData::function_CA_KEY;
+	CA_data[CA_LABELSIZE].function = &CommandData::function_CA_LABELSIZE;
 	CA_data[CA_MOUSE].function = &CommandData::function_CA_MOUSE;
 	CA_data[CA_RADIUS].function = &CommandData::function_CA_RADIUS;
 	CA_data[CA_REPLICATEFOLD].function = &CommandData::function_CA_REPLICATEFOLD;

@@ -290,10 +290,12 @@ enum CommandAction {
 	CA_NEWPATTERN,
 
 	// Preferences Commands
+	CA_ANGLELABEL,
 	CA_ATOMDETAIL,
 	CA_BONDDETAIL,
 	CA_COLOUR,
 	CA_DENSITYUNITS,
+	CA_DISTANCELABEL,
 	CA_ECUT,
 	CA_ELEC,
 	CA_ELEMENTAMBIENT,
@@ -303,6 +305,7 @@ enum CommandAction {
 	CA_GL,
 	CA_INTRA,
 	CA_KEY,
+	CA_LABELSIZE,
 	CA_MOUSE,
 	CA_RADIUS,
 	CA_REPLICATEFOLD,
@@ -631,10 +634,12 @@ class CommandData
 	int function_CA_LISTPATTERNS(Command *&c, Bundle &obj);
 	int function_CA_NEWPATTERN(Command *&c, Bundle &obj);
 	// Preferences Commands
+	int function_CA_ANGLELABEL(Command *&c, Bundle &obj);
 	int function_CA_ATOMDETAIL(Command *&c, Bundle &obj);
 	int function_CA_BONDDETAIL(Command *&c, Bundle &obj);
 	int function_CA_COLOUR(Command *&c, Bundle &obj);
 	int function_CA_DENSITYUNITS(Command *&c, Bundle &obj);
+	int function_CA_DISTANCELABEL(Command *&c, Bundle &obj);
 	int function_CA_ECUT(Command *&c, Bundle &obj);
 	int function_CA_ELEC(Command *&c, Bundle &obj);
 	int function_CA_ELEMENTAMBIENT(Command *&c, Bundle &obj);
@@ -645,6 +650,7 @@ class CommandData
 	int function_CA_GL(Command *&c, Bundle &obj);
 	int function_CA_KEY(Command *&c, Bundle &obj);
 	int function_CA_MOUSE(Command *&c, Bundle &obj);
+	int function_CA_LABELSIZE(Command *&c, Bundle &obj);
 	int function_CA_RADIUS(Command *&c, Bundle &obj);
 	int function_CA_REPLICATEFOLD(Command *&c, Bundle &obj);
 	int function_CA_REPLICATETRIM(Command *&c, Bundle &obj);
