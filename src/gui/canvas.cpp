@@ -130,7 +130,7 @@ void Canvas::postRedisplay()
 // Widget Expose
 void Canvas::expose()
 {
-	if (valid_) return;
+	if (!valid_) return;
 	contextWidget_->update();
 }
 
