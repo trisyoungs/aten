@@ -7,7 +7,7 @@ importmodel
 	glob *.*dat
 
 	# Variables
-	character title,spgrp,discard,ea,eb,ec
+	character spgrp,discard,ea,eb,ec
 	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
 	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj,total
 	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz

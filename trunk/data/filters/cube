@@ -8,7 +8,7 @@ importgrid
 	zmap numeric
 
 	# Variable declaration
-	character title,e
+	character e
 	integer natoms,nx,ny,nz,i,j,k
 	double ox,oy,oz,xx,xy,xz,yx,yy,yz,zx,zy,zz,rx,ry,rz,data
 

@@ -11,7 +11,7 @@ importgrid
 	double spacing,ox,oy,oz,data
 
 	# Create new grid
-	newgrid NewGrid
+	newgrid $title
 
 	# Set loop order
 	gridlooporder zyx

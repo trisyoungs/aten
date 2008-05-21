@@ -31,7 +31,9 @@
 // If Conditions
 const char *IC_strings[6] = { "eq", "l", "le", "g", "ge", "neq" };
 const char *text_from_IC(IfTest i)
-	{ return IC_strings[i-1]; }
+{
+	return IC_strings[i-1];
+}
 
 // Constructors
 Command::Command()

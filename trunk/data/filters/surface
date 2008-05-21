@@ -12,7 +12,7 @@ importgrid
 	character order
 
 	# Create new grid
-	newgrid NewGrid
+	newgrid $title
 
 	# First line contains number of gridpoints in each direction x,y
 	readline "$nx $ny"

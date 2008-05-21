@@ -12,7 +12,8 @@ importmodel
 	character e,keywd,line
 	double rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
 
-	newmodel Nu
+	newmodel $title
+
 	# Read line
 	for $n
 		readline "$keywd $line@200"

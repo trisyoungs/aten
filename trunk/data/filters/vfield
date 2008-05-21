@@ -11,7 +11,7 @@ importmodel
 	integer n,i,j,k,nx,ny,nz
 	double x,y,z,vx,vy,vz
 
-	newmodel VectorField
+	newmodel $title
 
 	# Read vector data
 	for $n
