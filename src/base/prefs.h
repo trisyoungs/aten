@@ -26,6 +26,7 @@
 #include "templates/vector3.h"
 #include "classes/atom.h"
 #include "classes/colourscale.h"
+#include "classes/dnchar.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
@@ -101,8 +102,6 @@ class Prefs
 	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
 	Vec3<int> repeatCellsNeg_;
-	// Scaling factor for 3D labels
-	double labelScale_;
 	// Size in pixels of the viewport to draw the rotation globe in.
 	int globeSize_;
 	// Rendering style of models
@@ -119,10 +118,6 @@ class Prefs
 	void setRenderStyle(Atom::DrawStyle ds);
 	// Return the current drawing style of models
 	Atom::DrawStyle renderStyle();
-	// Set the scale of labels in the model
-	void setLabelScale(double v);
-	// Return the current label scale
-	double labelScale();
 	// Return the current rotation globe size in pixels
 	int globeSize();
 	// Set positive repeat cell value
@@ -538,12 +533,31 @@ class Prefs
 	int maxUndoLevels();
 
 	/*
-	// Compatibility Options
+	// Rendering (including compatibility) Options
 	*/
 	private:
+	// Postfix (units) label for distances
+	Dnchar distanceLabel_;
+	// Postfix (units) label for angles
+	Dnchar angleLabel_;
+	// Pointsize for labels
+	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
 	bool useNiceText_;
+
 	public:
+	// Set the postfix distance label
+	void setDistanceLabel(const char *s);
+	// Return the postfix distance label
+	const char *distanceLabel();
+	// Set the postfix angle label
+	void setAngleLabel(const char *s);
+	// Return the postfix angle label
+	const char *angleLabel();
+	// Set the pointsize of labels in the model
+	void setLabelSize(int size);
+	// Return the current label pointsize
+	int labelSize();
 	// Set whether to use nice text rendering
 	void setUseNiceText(bool b);
 	// Return whether to use nice text rendering

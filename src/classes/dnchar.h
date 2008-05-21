@@ -37,6 +37,8 @@ class Dnchar
 	// Constructor / Destructor
 	Dnchar();
 	~Dnchar();
+	// Copy constructor
+	Dnchar(const Dnchar&);
 	// Print string info
 	void print() const;
 	// Clear string but don't free

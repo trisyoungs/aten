@@ -25,6 +25,14 @@
 #include "gui/gui.h"
 #include "model/model.h"
 
+// Angle label postfix
+int CommandData::function_CA_ANGLELABEL(Command *&c, Bundle &obj)
+{
+	prefs.setAngleLabel(c->argc(0));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
 // Atom quadric detail
 int CommandData::function_CA_ATOMDETAIL(Command *&c, Bundle &obj)
 {
@@ -62,6 +70,14 @@ int CommandData::function_CA_DENSITYUNITS(Command *&c, Bundle &obj)
 	Prefs::DensityUnit du = Prefs::densityUnit(c->argc(0));
 	if (du == Prefs::nDensityUnits) return CR_FAIL;
 	else prefs.setDensityUnits(du);
+	return CR_SUCCESS;
+}
+
+// Distance label postfix
+int CommandData::function_CA_DISTANCELABEL(Command *&c, Bundle &obj)
+{
+	prefs.setDistanceLabel(c->argc(0));
+	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
 
@@ -167,6 +183,14 @@ int CommandData::function_CA_KEY(Command *&c, Bundle &obj)
 	Prefs::KeyAction ka = Prefs::keyAction(c->argc(1));
 	if ((mk != Prefs::nModifierKeys) && (ka != Prefs::nKeyActions)) prefs.setKeyAction(mk,ka);
 	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
+// Text label pointsize
+int CommandData::function_CA_LABELSIZE(Command *&c, Bundle &obj)
+{
+	prefs.setLabelSize(c->argi(0));
+	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
 

@@ -542,16 +542,19 @@ void Canvas::modeMotion(double x, double y)
 			break;
 		case (Canvas::TransformRotateXYAction):
 			displayModel_->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
+			displayModel_->updateMeasurements();
 			hasMoved_ = TRUE;
 			break;
 		case (Canvas::TransformRotateZAction):
 			displayModel_->rotateSelectionZaxis(delta.x/2.0);
+			displayModel_->updateMeasurements();
 			hasMoved_ = TRUE;
 			break;
 		case (Canvas::TransformTranslateAction):
 			delta.y = -delta.y;
 			delta /= displayModel_->translateScale() * 2.0;
 			displayModel_->translateSelectionWorld(delta);
+			displayModel_->updateMeasurements();
 			hasMoved_ = TRUE;
 			break;
 		default:
