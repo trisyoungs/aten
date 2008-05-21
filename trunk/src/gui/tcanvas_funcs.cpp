@@ -53,6 +53,7 @@ void TCanvas::initializeGL()
 
 void TCanvas::paintGL()
 {
+	// Must be implemented, or calls to renderPixmap() will generate garbage images
 	paintEvent(NULL);
 }
 
