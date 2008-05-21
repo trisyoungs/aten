@@ -52,7 +52,7 @@ Grid::Grid()
 	symmetric_ = FALSE;
 	loopOrder_.set(0,1,2);
 	colourScale_ = 0;
-	prefs.colourScale[0].addLink(this);
+	//prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
 	// Public variables
 	prev = NULL;
@@ -63,7 +63,7 @@ Grid::Grid()
 Grid::~Grid()
 {
 	clear();
-	prefs.colourScale[0].breakLink(this);
+	if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 }
 
 // Set name of Grid data
@@ -244,12 +244,15 @@ void Grid::setColourScale(int id)
 	// Check range of supplied id
 	if ((id < 0) || (id > 9))
 	{
+		// Remove link in old colourscale if necessary
+		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 		useColourScale_ = FALSE;
+		colourScale_ = 0;
 		log_ ++;
 		return;
 	}
-	// Remove old colourscale link
-	prefs.colourScale[colourScale_].breakLink(this);
+	// Remove old colourscale link (if one existed)
+
 	colourScale_ = id;
 	log_ ++;
 	prefs.colourScale[colourScale_].addLink(this);

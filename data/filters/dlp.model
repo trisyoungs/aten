@@ -10,7 +10,7 @@ importmodel
 	zmap ff
 
 	# Variable Declaration
-	character title,e
+	character e
 	integer n,keytrj,imcon
 	double ax,ay,az,bx,by,bz,cx,cy,cz
 	double rx,ry,rz,vx,vy,vz,fx,fy,fz

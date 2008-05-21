@@ -9,7 +9,7 @@ importmodel
 
 	# Variable declaration
 	integer natoms,n
-	character e,title
+	character e
 	double rx,ry,rz,q
 
 	# Read data

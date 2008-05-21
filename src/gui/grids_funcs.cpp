@@ -272,7 +272,13 @@ void AtenGrids::on_RemoveGridButton_clicked(bool checked)
 	if (row == -1) return;
 	else g = master.grid(row);
 	master.removeGrid(g);
-	refresh();
+	// Get list item
+	QListWidgetItem *item = ui.GridList->takeItem(row);
+	delete item;
+	row --;
+	if (row < 0) row = 0;
+	if (master.nGrids() != 0) ui.GridList->setCurrentRow(row);
+	gui.mainView.postRedisplay();
 }
 
 void AtenGrids::on_SaveGridButton_clicked(bool checked)

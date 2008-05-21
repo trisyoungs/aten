@@ -6,12 +6,12 @@ importmodel
 	glob *.pdb
 
 	# Variable declarations
-	character keyword,line,title,e,name
+	character keyword,line,e,name
 	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
 	integer n,id,i,bondi,bondj,bondk,bondl,found
 
 	# Create default model
-	newmodel "PDB File"
+	newmodel $title
 	let $found = 0
 	for $n
 		readline "$keyword@6 $line@100"

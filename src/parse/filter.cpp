@@ -252,6 +252,7 @@ void Filter::setType(FilterType ft)
 	switch (type_)
 	{
 		case (Filter::ModelImport):
+			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
 			break;
 		case (Filter::TrajectoryImport):
 			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
@@ -261,6 +262,7 @@ void Filter::setType(FilterType ft)
 		case (Filter::ExpressionImport):
 			break;
 		case (Filter::GridImport):
+			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
 			break;
 		case (Filter::ModelExport):
 			v = commands_.variables.createVariable("cell","type",Variable::CharacterVariable);
@@ -372,6 +374,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			break;
 		case (Filter::GridImport):
 			msg(Debug::None,"Load Grid  : %s (%s)\n", filename, name_.get());
+			// Reset reserved variables
+			commands_.variables.set("title",filename);
 			// Open file...
 			if (!commands_.setInputFile(filename))
 			{
