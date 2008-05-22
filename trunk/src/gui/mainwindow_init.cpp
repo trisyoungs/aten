@@ -120,7 +120,7 @@ void AtenForm::finaliseUi()
 	bondToleranceSpin_ = new QDoubleSpinBox(this);
 	bondToleranceSpin_->setRange(0.0, 100.0);
 	bondToleranceSpin_->setSingleStep(0.01);
-	ui.DrawToolbar->addWidget(bondToleranceSpin_);
+	ui.BondToolbar->addWidget(bondToleranceSpin_);
 	QObject::connect(bondToleranceSpin_, SIGNAL(valueChanged(double)), this, SLOT(bondTolerance_valueChanged(double)));
 
 	// Create master group for toolbar buttons that change user action modes

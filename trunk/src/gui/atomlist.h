@@ -67,7 +67,8 @@ class AtenAtomlist : public QDialog
 	void peekScrollBar();
 	void pokeScrollBar();
 	private slots:
-	void on_AtomTree_itemSelectionChanged();
+	void on_AtomTree_itemPressed(QTreeWidgetItem *item, int column);
+	void on_AtomTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
 	void on_ShiftUpButton_clicked(bool checked);
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);

@@ -58,23 +58,45 @@ void AtenAtomlist::showWindow()
 	show();
 }
 
-void AtenAtomlist::on_AtomTree_itemSelectionChanged()
+void AtenAtomlist::on_AtomTree_itemPressed(QTreeWidgetItem *item, int column)
 {
 	if (refreshing_) return;
-	dbgBegin(Debug::Calls,"AtenAtomlist::on_AtomTree_selectionChanged");
-	//printf("AtenAtomlist:: atom selection has changed...\n");
-	// Selection has changed, so go through the Reflist of TTreeWidgetItems and check their selection status
+	// Cast *item into a TTreeWidgetItem
+	TTreeWidgetItem *ti = (TTreeWidgetItem*) item;
 	Model *m = master.currentModel();
-	Atom *i;
-	for (Refitem<TTreeWidgetItem,int> *ri = ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
+	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
+	if (ti->pattern() != NULL)
 	{
-		//printf("atomitem = %li\n",ri->item);
-		//printf("atomitem atom = %li\n", ri->item->atom());
-		i = ri->item->atom();
-		ri->item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
+		Atom *i = ti->pattern()->firstAtom();
+		for (int n=0; n<ti->pattern()->totalAtoms(); n++)
+		{
+			item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
+			i = i->next;
+		}
 	}
-	gui.modelChanged();
-	dbgEnd(Debug::Calls,"AtenAtomlist::on_AtomTree_selectionChanged");
+	else if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
+	gui.modelChanged(FALSE,FALSE,FALSE);
+}
+
+void AtenAtomlist::on_AtomTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev)
+{
+	if (current == NULL) return;
+	if (refreshing_) return;
+	// Cast *item into a TTreeWidgetItem
+	TTreeWidgetItem *ti = (TTreeWidgetItem*) current;
+	Model *m = master.currentModel();
+	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
+	if (ti->pattern() != NULL)
+	{
+		Atom *i = ti->pattern()->firstAtom();
+		for (int n=0; n<ti->pattern()->totalAtoms(); n++)
+		{
+			current->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
+			i = i->next;
+		}
+	}
+	else if (ti->atom() != NULL) current->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::refresh()
@@ -87,7 +109,6 @@ void AtenAtomlist::refresh()
 		dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 		return;
 	}
-	// Check stored log point against 'structure' and 'visual' log points in model to see if we need to refresh the list
 	refreshing_ = TRUE;
 	//printf("Refreshing atompage.....\n");
 	Model *m = master.currentModel();
@@ -100,6 +121,8 @@ void AtenAtomlist::refresh()
 	listLastModel_ = m;
 	// Start the thread...
 	refreshThread.run();
+	refreshThread.setPriority(QThread::IdlePriority);
+	dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 }
 
 void AtenAtomlist::peekScrollBar()
@@ -198,10 +221,10 @@ void AtomlistRefreshThread::run()
 		// If no patterns are yet defined, store them in a generic rootnode.
 		if (m->nPatterns() == 0)
 		{
-			// Create new root node for all atoms
-			QTreeWidgetItem *pat = new QTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
+			// Create new root node for all atoms (still a TTreeWidgetItem
+			TTreeWidgetItem *pat = new TTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
 			gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
-			pat->setText(0, tr("All"));
+			pat->setText(0, "All");
 			for (i = m->atoms(); i != NULL; i = i->next)
 			{
 				// Add the atom
@@ -222,9 +245,10 @@ void AtomlistRefreshThread::run()
 			for (p = m->patterns(); p != NULL; p = p->next)
 			{
 				// Create new root node for the pattern
-				QTreeWidgetItem *pat = new QTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
+				TTreeWidgetItem *pat = new TTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
 				gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
 				pat->setText(0, p->name());
+				pat->setPattern(p);
 				for (n = 0; n<p->totalAtoms(); n++)
 				{
 					// Create atom in the pattern root node
@@ -252,7 +276,8 @@ void AtomlistRefreshThread::run()
 		for (ri = gui.atomlistDialog->ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item->atom();
-			gui.atomlistDialog->ui.AtomTree->setItemSelected(ri->item, i->isSelected());
+			//gui.atomlistDialog->ui.AtomTree->setItemSelected(ri->item, i->isSelected());
+			ri->item->setSelected(i->isSelected());
 			// Update progress bar
 			gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
 		}

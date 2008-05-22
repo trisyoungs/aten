@@ -33,12 +33,15 @@ enum twffa_column { TW_FFA_NAME=0, TW_FFA_DESCRIPTION };
 // Forward Declarations
 class Atom;
 class ForcefieldAtom;
+class Pattern;
 
+// Custom QTreeWidgetItem
 class TTreeWidgetItem : public QTreeWidgetItem
 {
 	public:
-	// Constructor
+	// Constructors
 	TTreeWidgetItem(QTreeWidgetItem *parent = 0);
+	TTreeWidgetItem(QTreeWidget *parent = 0);
 
 	/*
 	// Pointers
@@ -46,7 +49,7 @@ class TTreeWidgetItem : public QTreeWidgetItem
 	private:
 	Atom *atom_;
 	ForcefieldAtom *forcefieldAtom_;
-	
+	Pattern *pattern_;
 
 	public:
 	// Set the atom pointer in the widget
@@ -57,6 +60,10 @@ class TTreeWidgetItem : public QTreeWidgetItem
 	void setForcefieldAtom(ForcefieldAtom *source);
 	// Return the ForcefieldAtom pointer in the widget
 	ForcefieldAtom *forcefieldAtom();
+	// Set the pattern pointer in the widget
+	void setPattern(Pattern *source);
+	// Return the pattern pointer in the widget
+	Pattern *pattern();
 
 	/*
 	// Set Data functions
