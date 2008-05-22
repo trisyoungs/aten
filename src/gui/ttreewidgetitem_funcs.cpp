@@ -28,6 +28,16 @@ TTreeWidgetItem::TTreeWidgetItem(QTreeWidgetItem *parent) : QTreeWidgetItem(pare
 {
 	// Private variables
 	atom_ = NULL;
+	pattern_ = NULL;
+	forcefieldAtom_ = NULL;
+}
+
+// Constructor
+TTreeWidgetItem::TTreeWidgetItem(QTreeWidget *parent) : QTreeWidgetItem(parent)
+{
+	// Private variables
+	atom_ = NULL;
+	pattern_ = NULL;
 	forcefieldAtom_ = NULL;
 }
 
@@ -55,11 +65,23 @@ ForcefieldAtom *TTreeWidgetItem::forcefieldAtom()
 	return forcefieldAtom_;
 }
 
+// Set the pattern pointer in the widget
+void TTreeWidgetItem::setPattern(Pattern *source)
+{
+	pattern_ = source;
+}
+
+// Return the pattern pointer in the widget
+Pattern *TTreeWidgetItem::pattern()
+{
+	return pattern_;
+}
+
 // Set column data in item
 void TTreeWidgetItem::setAtomColumns()
 {
 	static Vec3<double> r;
-	if (atom_ == NULL) printf("TTreeWidgetItem::set_atom_columns <<<< Atom has not yet been set >>>>\n");
+	if (atom_ == NULL) printf("TTreeWidgetItem::setAtomColumns <<<< Pointer has not yet been set >>>>\n");
 	else
 	{
 		setText(TW_A_ID, itoa(atom_->id()+1));
@@ -73,7 +95,7 @@ void TTreeWidgetItem::setAtomColumns()
 
 void TTreeWidgetItem::setForcefieldAtomColumns()
 {
-	if (forcefieldAtom_ == NULL) printf("TTreeWidgetItem::setForcefieldAtomColumns <<<< FFAtom has not yet been set >>>>\n");
+	if (forcefieldAtom_ == NULL) printf("TTreeWidgetItem::setForcefieldAtomColumns <<<< Pointer has not yet been set >>>>\n");
 	else
 	{
 		setText(TW_FFA_NAME, forcefieldAtom_->name());

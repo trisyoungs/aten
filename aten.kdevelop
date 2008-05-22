@@ -19,10 +19,10 @@
       <useconfiguration>default</useconfiguration>
     </general>
     <run>
-      <mainprogram>/home/tris/src/regui</mainprogram>
+      <mainprogram/>
       <programargs/>
       <globaldebugarguments/>
-      <globalcwd>/home/tris/src/regui</globalcwd>
+      <globalcwd/>
       <useglobalprogram>true</useglobalprogram>
       <terminal>false</terminal>
       <autocompile>false</autocompile>
@@ -57,7 +57,7 @@
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
       <abortonerror>true</abortonerror>
-      <runmultiplejobs>false</runmultiplejobs>
+      <runmultiplejobs>true</runmultiplejobs>
       <numberofjobs>4</numberofjobs>
       <dontact>false</dontact>
       <makebin/>
