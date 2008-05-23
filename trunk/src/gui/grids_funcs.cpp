@@ -37,7 +37,7 @@ AtenGrids::AtenGrids(QWidget *parent)
 	QStringList filters;
 	openGridDialog = new QFileDialog(this);
 	openGridDialog->setWindowTitle("Open Grid");
-	openGridDialog->setDirectory(master.workDir.get());
+	openGridDialog->setDirectory(master.workDir());
 	openGridDialog->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";

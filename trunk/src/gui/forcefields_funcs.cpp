@@ -44,7 +44,7 @@ AtenForcefields::AtenForcefields(QWidget *parent)
 	QStringList filters;
 	openForcefieldDialog = new QFileDialog(this);
 	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
-	openForcefieldDialog->setDirectory(master.dataDir.get());
+	openForcefieldDialog->setDirectory(master.dataDir());
 	openForcefieldDialog->setWindowTitle("Open Forcefield");
 	filters.clear();
 	filters << "All files (*)";
@@ -55,7 +55,7 @@ AtenForcefields::AtenForcefields(QWidget *parent)
 	saveForcefieldDialog = new QFileDialog(this);
 	saveForcefieldDialog->setWindowTitle("Save Forcefield");
 	saveForcefieldDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveForcefieldDialog->setDirectory(master.workDir.get());
+	saveForcefieldDialog->setDirectory(master.workDir());
 	saveForcefieldDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	filters << "All files (*)";
