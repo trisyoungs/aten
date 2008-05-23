@@ -27,7 +27,7 @@
 AtenLoadModel::AtenLoadModel(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
-	currentDirectory_ = master.workDir.get();
+	currentDirectory_ = master.workDir();
 	selectedFilter_ = NULL;
 }
 

@@ -47,7 +47,7 @@ Master::Master()
 
 	// Misc 
 	sketchElement_ = 6;
-	homeDir = "/tmp";
+	homeDir_ = "/tmp";
 	defaultForcefield_ = NULL;
 
 	// Clipboard
@@ -266,13 +266,13 @@ Forcefield *Master::loadForcefield(const char *filename)
 	else
 	{
 		// Second try - master.dataDir/ff
-		sprintf(s,"%s/%s", dataDir.get(), filename);
+		sprintf(s,"%s/%s", dataDir_.get(), filename);
 		msg(Debug::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
 		if (fileExists(s)) result = newff->load(s);
 		else
 		{
 			// Last try - user home datadir/ff
-			sprintf(s,"%s/.aten/ff/%s", homeDir.get(), filename);
+			sprintf(s,"%s/.aten/ff/%s", homeDir_.get(), filename);
 			msg(Debug::Verbose,"Looking for forcefield in user's data directory (%s)...\n",s);
 			if (fileExists(s)) result = newff->load(s);
 			else msg(Debug::None,"Can't find forcefield file '%s' in any location.\n", filename);
@@ -401,59 +401,202 @@ Forcefield *Master::defaultForcefield() const
 }
 
 /*
+// Locations
+*/
+
+// Set location of users's home directory
+void Master::setHomeDir(const char *path)
+{
+	homeDir_ = path;
+}
+
+// Return the home directory path
+const char *Master::homeDir()
+{
+	return homeDir_.get();
+}
+
+// Set working directory
+void Master::setWorkDir(const char *path)
+{
+	workDir_ = path;
+}
+
+// Return the working directory path
+const char *Master::workDir()
+{
+	return workDir_.get();
+}
+
+// Set data directory
+void Master::setDataDir(const char *path)
+{
+	dataDir_ = path;
+}
+
+// Return the data directory path
+const char *Master::dataDir()
+{
+	return dataDir_.get();
+}
+
+/*
 // Filters
 */
 
 // Load filters
-bool Master::openFilters(const char *path, bool isdatadir)
+bool Master::openFilters()
 {
 	dbgBegin(Debug::Calls,"Master::openFilters");
-	// Load in model filters
-	char longname[512];
-	// Open the filter list file (in 'path/index') and read in the list of filters to load in...
-	strcpy(longname,path);
-	strcat(longname,"index");
-	if (isdatadir) msg(Debug::None,"Looking for filter index '%s'...\n", longname);
-	else msg(Debug::None,"Loading user filters '%s'...\n", longname);
-	ifstream listfile(longname,ios::in);
-	if (!listfile.is_open())
+	char filename[512], path[512];
+	bool found = FALSE, failed = FALSE;
+	ifstream *listfile;
+
+	// If ATENDATA is set, take data from there
+	if (!master.dataDir_.empty())
 	{
-		if (isdatadir) msg(Debug::None,"Filter index file not found.\n");
-		else msg(Debug::None,"No user filter index found.\n");
-		dbgEnd(Debug::Calls,"Master::openFilters");
-		return FALSE;
-	}
-	else
-	{
-		// Read filter names from file and open them
-		printf("--> ");
-		while (!listfile.eof())
+		printf("$ATENDATA points to '%s'.\n", dataDir_.get());
+		sprintf(path,"%s%s", dataDir_.get(), "/filters/");
+		sprintf(filename,"%s%s", dataDir_.get(), "/filters/index");
+		listfile = new ifstream(filename,ios::in);
+		if (listfile->is_open())
 		{
-			strcpy(longname,path);
-			if (parser.getArgsDelim(&listfile,Parser::SkipBlanks) != 0) break;
-			strcat(longname,parser.argc(0));
-			printf("%s  ",parser.argc(0));
-			if (!loadFilter(longname))
-			{
-				dbgEnd(Debug::Calls,"Master::openFilters");
-				return FALSE;
-			}
+			if (parseFilterIndex(path, listfile)) found = TRUE;
+			else failed = TRUE;
 		}
-		printf("\n");
-		listfile.close();
+		listfile->close();
 	}
-	// Create gui filter list, partners, and print info (if not 'isdatadir')
-	if (!isdatadir)
+	else printf("$ATENDATA has not been set. Searching default locations...\n");
+	if ((!found) && (!failed))
 	{
-		// Set filter partners
+		// Try a list of known locations. Set dataDir again if we find a valid one
+		sprintf(path,"%s%s", "/usr/share/aten", "/filters/");
+		msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+		sprintf(filename,"%s%s", "/usr/share/aten", "/filters/index");
+		listfile = new ifstream(filename, ios::in);
+		if (listfile->is_open())
+		{
+			if (parseFilterIndex(filename, listfile))
+			{
+				found = TRUE;
+				dataDir_ = "/usr/share/aten/";
+			}
+			else failed = TRUE;
+		}
+		listfile->close();
+
+		if ((!found) && (!failed))
+		{
+			sprintf(path,"%s%s", "/usr/local/share/aten", "/filters/");
+			msg(Debug::None,"Looking for filter index in '%s'...\n", filename);
+			sprintf(filename,"%s%s", "/usr/local/share/aten", "/filters/index");
+			listfile = new ifstream(filename, ios::in);
+			if (listfile->is_open())
+			{
+				if (parseFilterIndex(filename, listfile))
+				{
+					found = TRUE;
+					dataDir_ = "/usr/local/share/aten/";
+				}
+				else failed = TRUE;
+			}
+			listfile->close();
+		}
+
+		if ((!found) && (!failed))
+		{
+			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../share/aten/filters/");
+			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+			sprintf(filename,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../share/aten/filters/index");
+			listfile = new ifstream(filename, ios::in);
+			if (listfile->is_open())
+			{
+				if (parseFilterIndex(path, listfile))
+				{
+					found = TRUE;
+					dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../share/aten/");
+				}
+				else failed = TRUE;
+			}
+			listfile->close();
+		}
+
+		if ((!found) && (!failed))
+		{
+			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../SharedSupport/filters/");
+			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+			sprintf(filename,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../SharedSupport/filters/index");
+			listfile = new ifstream(filename, ios::in);
+			if (listfile->is_open())
+			{
+				if (parseFilterIndex(path, listfile))
+				{
+					found = TRUE;
+					dataDir_ = qPrintable(gui.app->applicationDirPath() + "/../SharedSupport/");
+				}
+				else failed = TRUE;
+			}
+			listfile->close();
+		}
+
+		if (!failed)
+		{
+			// Try for user filter index...
+			sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
+			msg(Debug::None,"Looking for user filter index in '%s'...\n", path);
+			sprintf(filename, "%s/.aten/filters/index/", homeDir_.get());
+			listfile = new ifstream(filename, ios::in);
+			if (listfile->is_open())
+			{
+				if (parseFilterIndex(path, listfile)) found = TRUE;
+				else failed = TRUE;
+			}
+			listfile->close();
+		}
+
+		if (!found)
+		{
+			printf("No filter index found in any of these locations.\n");
+			printf("Set $ATENDATA to point to the (installed) location of the 'data' directory, or to the directory that contains Aten's 'filters' directory.\n");
+			printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
+		}
+	}
+	// Print out info and partner filters if all was successful
+	if ((!failed) && found)
+	{
 		partnerFilters();
-		// Print data on loaded filters
 		msg(Debug::None,"Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
 		msg(Debug::None,"Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
 		msg(Debug::None,"Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
 		msg(Debug::None,"Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
 	}
 	dbgEnd(Debug::Calls,"Master::openFilters");
+	if (failed || (!found)) return FALSE;
+	else return TRUE;
+}
+
+// Parse filter index file
+bool Master::parseFilterIndex(const char *path, ifstream *indexfile)
+{
+	dbgBegin(Debug::Calls,"Master::parseFilterIndex");
+	// Read the list of filters to load in...
+	// Read filter names from file and open them
+	char filterfile[512];
+	printf("--> ");
+	while (!indexfile->eof())
+	{
+		strcpy(filterfile,path);
+		if (parser.getArgsDelim(indexfile, Parser::SkipBlanks) != 0) break;
+		strcat(filterfile, parser.argc(0));
+		printf("%s  ",parser.argc(0));
+		if (!loadFilter(filterfile))
+		{
+			dbgEnd(Debug::Calls,"Master::parseFilterIndex");
+			return FALSE;
+		}
+	}
+	printf("\n");
+	dbgEnd(Debug::Calls,"Master::parseFilterIndex");
 	return TRUE;
 }
 
@@ -488,8 +631,8 @@ bool Master::loadFilter(const char *filename)
 		// If the load is not successful, remove the filter we just created
 		if (!newfilter->load(filterfile))
 		{
-			filters_[ft].remove(newfilter);
 			printf("Error reading '%s' section from file '%s'\n", Filter::filterType(newfilter->type()), filename);
+			filters_[ft].remove(newfilter);
 			error = TRUE;
 			break;
 		}
@@ -520,6 +663,7 @@ void Master::partnerFilters()
 			{
 				if (importid == exp->id())
 				{
+					msg(Debug::Verbose, "--- Partnering model filters for '%s', id = %i\n", imp->nickname(), imp->id());
 					imp->setPartner(exp);
 					printf("w]");
 					break;
@@ -542,6 +686,7 @@ void Master::partnerFilters()
 			{
 				if (importid == exp->id())
 				{
+					msg(Debug::Verbose, "--- Partnering grid filters for '%s', id = %i\n", imp->nickname(), imp->id());
 					imp->setPartner(exp);
 					printf("w]");
 					break;

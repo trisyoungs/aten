@@ -93,6 +93,8 @@ class Master
 	// Import / Export
 	*/
 	private:
+	// Parse filter index and load filters
+	bool parseFilterIndex(const char *path, ifstream *indexfile);
 	// Load filter(s) from specified file
 	bool loadFilter(const char *filename);
 	// Set export partners for import filters
@@ -102,7 +104,7 @@ class Master
 
 	public:
 	// Load filters from specified location
-	bool openFilters(const char* dir, bool isdatadir);
+	bool openFilters();
 	// Probe file for its format
 	Filter *probeFile(const char *filename, Filter::FilterType);
 	// Find filter of specified type with nickname provided
@@ -189,15 +191,30 @@ class Master
 	Clipboard *userClipboard;
 
 	/*
-	// Locations
+	// Program locations
 	*/
-	public:
+	private:
 	// Location of user's home directory
-	Dnchar homeDir;
+	Dnchar homeDir_;
 	// Current working directory
-	Dnchar workDir;
+	Dnchar workDir_;
 	// Data directory
-	Dnchar dataDir;
+	Dnchar dataDir_;
+
+	public:
+	// Set location of users's home directory
+	void setHomeDir(const char *path);
+	// Return the current home directory location
+	const char *homeDir();
+	// Set working directory
+	void setWorkDir(const char *path);
+	// Return the current working directory
+	const char *workDir();
+	// Set data directory
+	void setDataDir(const char *path);
+	// Return the data directory path
+	const char *dataDir();
+
 
 	/*
 	// Program Modes

@@ -178,7 +178,7 @@ void AtenForm::finaliseUi()
 	// Create open model dialog
 	loadModelDialog = new QFileDialog(this);
 	loadModelDialog->setFileMode(QFileDialog::ExistingFiles);
-	loadModelDialog->setDirectory(master.workDir.get());
+	loadModelDialog->setDirectory(master.workDir());
 	loadModelDialog->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
 	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next) filters << f->description();
@@ -192,7 +192,7 @@ void AtenForm::finaliseUi()
 	// Create open trajectory dialog
 	loadTrajectoryDialog = new QFileDialog(this);
 	loadTrajectoryDialog->setFileMode(QFileDialog::ExistingFile);
-	loadTrajectoryDialog->setDirectory(master.workDir.get());
+	loadTrajectoryDialog->setDirectory(master.workDir());
 	loadTrajectoryDialog->setWindowTitle("Add Trajectory");
 	filters.clear();
 	filters << "All files (*)";
@@ -203,7 +203,7 @@ void AtenForm::finaliseUi()
 	saveModelDialog = new QFileDialog(this);
 	saveModelDialog->setWindowTitle("Save Model");
 	saveModelDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveModelDialog->setDirectory(master.workDir.get());
+	saveModelDialog->setDirectory(master.workDir());
 	saveModelDialog->setConfirmOverwrite(TRUE);
 	saveModelDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
@@ -220,7 +220,7 @@ void AtenForm::finaliseUi()
 	saveBitmapDialog = new QFileDialog(this);
 	saveBitmapDialog->setWindowTitle("Save Image");
 	saveBitmapDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveBitmapDialog->setDirectory(master.workDir.get());
+	saveBitmapDialog->setDirectory(master.workDir());
 	saveBitmapDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (n=0; n < BIF_NITEMS; n++) filters << filter_from_BIF( (bitmap_format) n);
@@ -230,7 +230,7 @@ void AtenForm::finaliseUi()
 	saveVectorDialog = new QFileDialog(this);
 	saveVectorDialog->setWindowTitle("Save Vector");
 	saveVectorDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveVectorDialog->setDirectory(master.workDir.get());
+	saveVectorDialog->setDirectory(master.workDir());
 	saveVectorDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
@@ -240,7 +240,7 @@ void AtenForm::finaliseUi()
 	saveExpressionDialog = new QFileDialog(this);
 	saveExpressionDialog->setWindowTitle("Save Vector");
 	saveExpressionDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveExpressionDialog->setDirectory(master.workDir.get());
+	saveExpressionDialog->setDirectory(master.workDir());
 	saveExpressionDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (f = master.filters(Filter::ExpressionExport); f != NULL; f = f->next) filters << f->description();
@@ -251,7 +251,7 @@ void AtenForm::finaliseUi()
 	// Create open script dialog
 	loadScriptDialog = new QFileDialog(this);
 	loadScriptDialog->setWindowTitle("Open Script");
-	loadScriptDialog->setDirectory(master.workDir.get());
+	loadScriptDialog->setDirectory(master.workDir());
 	loadScriptDialog->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
