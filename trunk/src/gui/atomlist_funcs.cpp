@@ -119,9 +119,8 @@ void AtenAtomlist::refresh()
 		listSelectionPoint_ = -1;
 	}
 	listLastModel_ = m;
-	// Start the thread...
+	// Start the refresh (note, this does not run in a thread yet!)
 	refreshThread.run();
-	refreshThread.setPriority(QThread::IdlePriority);
 	dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
 }
 

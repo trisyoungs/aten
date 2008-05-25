@@ -128,14 +128,9 @@
      <x>0</x>
      <y>0</y>
      <width>709</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuGlyphs" >
-    <property name="title" >
-     <string>Glyphs</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="ViewMenu" >
     <property name="title" >
      <string>&amp;View</string>
@@ -235,6 +230,36 @@
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
    </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+   </widget>
+   <widget class="QMenu" name="ScriptsMenu" >
+    <property name="title" >
+     <string>Scripts</string>
+    </property>
+    <addaction name="actionLoadScript" />
+    <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="ModelMenu" >
+    <property name="title" >
+     <string>&amp;Model</string>
+    </property>
+    <addaction name="actionModelRename" />
+    <addaction name="separator" />
+    <addaction name="actionFFType" />
+    <addaction name="actionFFUntype" />
+    <addaction name="separator" />
+    <addaction name="actionFoldAtoms" />
+    <addaction name="actionFoldMolecules" />
+    <addaction name="separator" />
+    <addaction name="actionModelNext" />
+    <addaction name="actionModelPrevious" />
+    <addaction name="separator" />
+    <addaction name="actionModelShowAll" />
+   </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
      <string>Atom</string>
@@ -268,55 +293,11 @@
     <addaction name="separator" />
     <addaction name="actionProbeAtom" />
    </widget>
-   <widget class="QMenu" name="ModelMenu" >
-    <property name="title" >
-     <string>&amp;Model</string>
-    </property>
-    <addaction name="actionModelRename" />
-    <addaction name="separator" />
-    <addaction name="actionFFType" />
-    <addaction name="actionFFUntype" />
-    <addaction name="separator" />
-    <addaction name="actionFoldAtoms" />
-    <addaction name="actionFoldMolecules" />
-    <addaction name="separator" />
-    <addaction name="actionModelNext" />
-    <addaction name="actionModelPrevious" />
-    <addaction name="separator" />
-    <addaction name="actionModelShowAll" />
-   </widget>
-   <widget class="QMenu" name="menuForcefields" >
-    <property name="title" >
-     <string>Forcefields</string>
-    </property>
-    <addaction name="actionLoadForcefield" />
-    <addaction name="actionSaveForcefield" />
-    <addaction name="actionEditForcefield" />
-    <addaction name="separator" />
-    <addaction name="actionForcefieldAssociateModel" />
-    <addaction name="actionForcefieldAssociateAll" />
-    <addaction name="actionForcefieldAssociatePattern" />
-   </widget>
-   <widget class="QMenu" name="ScriptsMenu" >
-    <property name="title" >
-     <string>Scripts</string>
-    </property>
-    <addaction name="actionLoadScript" />
-    <addaction name="separator" />
-   </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-   </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
    <addaction name="ViewMenu" />
    <addaction name="AtomMenu" />
    <addaction name="ModelMenu" />
-   <addaction name="menuForcefields" />
-   <addaction name="menuGlyphs" />
    <addaction name="ScriptsMenu" />
    <addaction name="ToolsMenu" />
   </widget>
