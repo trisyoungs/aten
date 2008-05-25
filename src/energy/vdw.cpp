@@ -30,7 +30,7 @@
 // Calculate energy for specified interaction
 double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams paramsi, ForcefieldParams paramsj, double scale, int i, int j)
 {
-	static double U, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6, pwr, a, b, c;
+	static double U, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6, pwr, a, b, c, d, forcek, eq, expo;
 	switch (type)
 	{
 		case (VdwFunctions::None):
@@ -64,13 +64,22 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams pa
 			U = ar12 - br6;
 			break;
 		case (VdwFunctions::Buckingham):
-			// U = A * exp(-B/rij) - C/(rij**6)
+			// U = A * exp(-rij/B) - C/(rij**6)
 			a = sqrt( paramsi.data[VdwFunctions::BuckinghamA] * paramsj.data[VdwFunctions::BuckinghamA] );
 			b = sqrt( paramsi.data[VdwFunctions::BuckinghamB] * paramsj.data[VdwFunctions::BuckinghamB] );
 			c = sqrt( paramsi.data[VdwFunctions::BuckinghamC] * paramsj.data[VdwFunctions::BuckinghamC] );
 			r6 = rij * rij * rij;
 			r6 *= r6;
-			U = a * exp(-b/rij) - c/r6;
+			U = a * exp(-rij/b) - c/r6;
+			break;
+		case (VdwFunctions::Morse):
+			// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
+			d = sqrt( paramsi.data[VdwFunctions::MorseD] * paramsj.data[VdwFunctions::MorseD]);
+			forcek = sqrt( paramsi.data[VdwFunctions::MorseK] * paramsj.data[VdwFunctions::MorseK] );
+			eq = 0.5 * (paramsi.data[VdwFunctions::MorseEq] + paramsj.data[VdwFunctions::MorseEq]) * scale;
+			rij -= eq;
+			expo = 1.0 - exp( -forcek * rij );
+			U = d * ( expo*expo - 1.0);
 			break;
 	}
 	return U;
@@ -79,7 +88,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams pa
 // Calculate forces for specified interaction (return force on atom i)
 Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, ForcefieldParams paramsi, ForcefieldParams paramsj, double scale, int i, int j)
 {
-	static double U, du_dr, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6;
+	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
 	// Calculate distance from supplied vector
 	rij = vecij.magnitude();
@@ -89,17 +98,52 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			msg(Debug::None, "Warning: No function is specified for vdW forces %i-%i.\n", i, j);
 			du_dr = 0.0;
 			break;
+		case (VdwFunctions::InversePower):
+			// dU/dr = -n * epsilon * (sigma / r)**(n-1) * (sigma/ r**2)
+			epsilon = sqrt( paramsi.data[VdwFunctions::InversePowerEpsilon] * paramsj.data[VdwFunctions::InversePowerEpsilon] );
+			sigma = ( paramsi.data[VdwFunctions::InversePowerR] + paramsj.data[VdwFunctions::InversePowerR] ) * 0.5 * scale;
+			pwr = ( paramsi.data[VdwFunctions::InversePowerN] + paramsj.data[VdwFunctions::InversePowerN] ) * 0.5;
+			du_dr = -pwr * epsilon * pow(sigma / rij, (pwr - 1.0)) * (sigma / (rij*rij));
+			break;
 		case (VdwFunctions::Lj):
-			epsilon = 48.0 * sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
+			// dU/dr = 48 * epsilon * ( sigma/r**13 - 0.5 * sigma/r**7)
+			epsilon = sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
 			sigma = ( paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma] ) * 0.5 * scale;
 			sigmar2 = (sigma / rij);
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
-			du_dr = epsilon * sigmar6 * (sigmar6 - 0.5) / rij;
+			du_dr = 48.0 * epsilon * sigmar6 * (sigmar6 - 0.5) / rij;
+			break;
+		case (VdwFunctions::LjAB):
+			// dU/dr = 6*(B/r**7) - 12*(A/r**13)
+			a = sqrt( paramsi.data[VdwFunctions::LjA] * paramsj.data[VdwFunctions::LjA] );
+			b = sqrt( paramsi.data[VdwFunctions::LjB] * paramsj.data[VdwFunctions::LjB] );
+			r6 = rij * rij * rij;
+			r6 *= r6;
+			ar12 = a / (r6 * r6);
+			br6 = b / r6;
+			du_dr = (6.0 * br6 - 12.0 * ar12) / rij;
+			break;
+		case (VdwFunctions::Buckingham):
+			// dU/dr = A * exp(-rij/B) / B + 6.0 * C/(rij**7)
+			a = sqrt( paramsi.data[VdwFunctions::BuckinghamA] * paramsj.data[VdwFunctions::BuckinghamA] );
+			b = sqrt( paramsi.data[VdwFunctions::BuckinghamB] * paramsj.data[VdwFunctions::BuckinghamB] );
+			c = sqrt( paramsi.data[VdwFunctions::BuckinghamC] * paramsj.data[VdwFunctions::BuckinghamC] );
+			r2 = rij * rij;
+			r6 = r2 * r2 * r2;
+			du_dr = a * b * exp(-rij/b) / b + 6.0 * c/(r6 * rij);
+			break;
+		case (VdwFunctions::Morse):
+			// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
+			d = sqrt( paramsi.data[VdwFunctions::MorseD] * paramsj.data[VdwFunctions::MorseD] );
+			forcek = sqrt(paramsi.data[VdwFunctions::MorseK] * paramsj.data[VdwFunctions::MorseK] );
+			eq = 0.5 * (paramsi.data[VdwFunctions::MorseEq] + paramsj.data[VdwFunctions::MorseEq] ) * scale;
+			expo = exp( -forcek * (rij - eq) );
+			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
 	}
-	// Add the forces (mim_i contains dx, dy, dz between i and j)
-	return (vecij * du_dr / rij);
+	// Calculate final forces (vecij contains dx, dy, dz between target atoms)
+	return -(vecij * du_dr / rij);
 }
 
 // Intrapattern VDW energy
@@ -312,8 +356,8 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 					}
 					// Calculate force contribution
 					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->params(), paj->data()->params(), vrs, i, j);
-					f_i += tempf;
-					modelatoms[j+aoff]->f() -= tempf;
+					f_i -= tempf;
+					modelatoms[j+aoff]->f() += tempf;
 				}
 			}
 			// Put the temporary forces back into the main array
@@ -335,8 +379,8 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 			}
 			// Calculate force contribution
 			tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->params(), paj->data()->params(), vrs, i, j);
-			modelatoms[i+aoff]->f() += tempf;
-			modelatoms[j+aoff]->f() -= tempf;
+			modelatoms[i+aoff]->f() -= tempf;
+			modelatoms[j+aoff]->f() += tempf;
 		}
 		aoff += nAtoms_;
 	}
@@ -389,8 +433,8 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 					}
 					// Calculate force contribution
 					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->params(), paj->data()->params(), vrs, i, j);
-					f_i += tempf;
-					modelatoms[j+aoff2]->f() -= tempf;
+					f_i -= tempf;
+					modelatoms[j+aoff2]->f() += tempf;
 				}
 				// Store temporary force array back into main force array
 				modelatoms[i+aoff1]->f() = f_i;

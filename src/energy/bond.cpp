@@ -143,9 +143,9 @@ void Pattern::bondForces(Model *srcmodel)
 					break;
 			}
 			// Calculate forces
-			fi = (mim_i / rij) * du_dr;
-			modelatoms[i]->f() += fi;
-			modelatoms[j]->f() -= fi;
+			fi = (mim_i / rij) * -du_dr;
+			modelatoms[i]->f() -= fi;
+			modelatoms[j]->f() += fi;
 		}
 		aoff += nAtoms_;
 	}

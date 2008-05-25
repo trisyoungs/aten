@@ -152,20 +152,20 @@ void Pattern::angleForces(Model *srcmodel)
 					du_dtheta = forcek * (theta - eq);
 					break;
 				case (AngleFunctions::Cosine):
-					// dU/d(theta) = forcek * (1 - sin(n*theta - eq))
+					// dU/d(theta) = -forcek * n * sin(n*theta - eq)
 					forcek = params.data[AngleFunctions::CosineK];
 					eq = params.data[AngleFunctions::CosineEq] / DEGRAD;
 					n = params.data[AngleFunctions::CosineN];
-					du_dtheta = forcek * (1.0 - sin(n * theta - eq));
+					du_dtheta = -forcek * n * sin(n * theta - eq);
 					break;
 				case (AngleFunctions::UffCosine1):
-					// dU/d(theta) = (forcek / 2*n) * (1 - sin(n*theta))
+					// dU/d(theta) = -(forcek / n) * sin(n*theta)
 					forcek = params.data[AngleFunctions::UffCosineK];
 					n = params.data[AngleFunctions::UffCosineN];
-					du_dtheta = (forcek / n) * sin(n*theta);
+					du_dtheta = -(forcek / n) * sin(n*theta);
 					break;
 				case (AngleFunctions::UffCosine2):
-					// dU/d(theta) = forcek * (c0 - c1 * sin(theta) - c2 * sin(2*theta))
+					// dU/d(theta) = -forcek * (c1 * sin(theta) + 2 * c2 * sin(2*theta))
 					forcek = params.data[AngleFunctions::UffCosineK];
 					eq = params.data[AngleFunctions::UffCosineEq] / DEGRAD;
 					cosx = cos(eq);
@@ -173,7 +173,7 @@ void Pattern::angleForces(Model *srcmodel)
 					c2 = 1.0 / (4 * sinx*sinx);
 					c1 = -4.0 * c2 * cosx;
 					c0 = c2 * (2.0 * cosx*cosx + 1.0);
-					du_dtheta = forcek * (c0 - c1 * sin(theta) - 2.0 * c2 * sin(2.0 * theta));
+					du_dtheta = -forcek * (c1 * sin(theta) + 2.0 * c2 * sin(2.0 * theta));
 					break;
 				case (AngleFunctions::HarmonicCosine):
 					// dU/d(theta) = forcek * (cos(theta) - cos(eq))) * -sin(theta)
@@ -189,13 +189,13 @@ void Pattern::angleForces(Model *srcmodel)
 			du_dtheta *= dtheta_dcostheta;
 			// Calculate atomic forces
 			fi = vec_kj - vec_ij * dp;
-			fi *= du_dtheta / mag_ij;
+			fi *= -du_dtheta / mag_ij;
 			fk = vec_ij - vec_kj * dp;
-			fk *= du_dtheta / mag_kj;
+			fk *= -du_dtheta / mag_kj;
 			// Add contributions into force arrays
-			modelatoms[i]->f() -= fi;
-			modelatoms[j]->f() += fi + fk;
-			modelatoms[k]->f() -= fk;
+			modelatoms[i]->f() += fi;
+			modelatoms[j]->f() -= fi + fk;
+			modelatoms[k]->f() += fk;
 		}
 		aoff += nAtoms_;
 	}
