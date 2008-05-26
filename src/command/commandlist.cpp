@@ -843,32 +843,38 @@ bool CommandList::cacheCommand()
 */
 
 // Get input stream
-ifstream *CommandList::inputFile() {
+ifstream *CommandList::inputFile()
+{
 	return inputFile_;
 }
 
 // Get output stream
-ofstream *CommandList::outputFile() {
+ofstream *CommandList::outputFile()
+{
 	return outputFile_;
 }
 
 // Return filename associated to infile/outfile
-const char *CommandList::filename() {
+const char *CommandList::filename()
+{
 	return filename_.get();
 }
 
 // Add read option
-void CommandList::addReadOption(Parser::ParseOption po) {
+void CommandList::addReadOption(Parser::ParseOption po)
+{
 	if (!(readOptions_&po)) readOptions_ += po;
 }
 
 // Remove read option
-void CommandList::removeReadOption(Parser::ParseOption po) {
+void CommandList::removeReadOption(Parser::ParseOption po)
+{
 	if (readOptions_&po) readOptions_ -= po;
 }
 
 // Return read options
-int CommandList::readOptions() {
+int CommandList::readOptions()
+{
 	return readOptions_;
 }
 
