@@ -29,7 +29,7 @@
 #include "base/cli.h"
 #include "templates/namemap.h"
 
-#define ATENVERSION "0.98"
+#define ATENVERSION "0.98.1"
 
 // Forward Declarations
 class Generator;

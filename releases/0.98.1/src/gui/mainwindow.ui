@@ -1490,6 +1490,9 @@
    <property name="icon" >
     <iconset resource="icons.qrc" >:/build/icons/build_transmute.svg</iconset>
    </property>
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
    <property name="text" >
     <string>Transmute atom</string>
    </property>

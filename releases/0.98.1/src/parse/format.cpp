@@ -22,6 +22,7 @@
 #include "parse/format.h"
 #include "parse/parser.h"
 #include "base/sysfunc.h"
+#include <cstring>
 
 // Constructors
 FormatNode::FormatNode()
