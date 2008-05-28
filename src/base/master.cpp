@@ -476,7 +476,7 @@ bool Master::openFilters()
 		listfile = new ifstream(filename, ios::in);
 		if (listfile->is_open())
 		{
-			if (parseFilterIndex(filename, listfile))
+			if (parseFilterIndex(path, listfile))
 			{
 				found = TRUE;
 				dataDir_ = "/usr/share/aten/";
@@ -493,7 +493,7 @@ bool Master::openFilters()
 			listfile = new ifstream(filename, ios::in);
 			if (listfile->is_open())
 			{
-				if (parseFilterIndex(filename, listfile))
+				if (parseFilterIndex(path, listfile))
 				{
 					found = TRUE;
 					dataDir_ = "/usr/local/share/aten/";
