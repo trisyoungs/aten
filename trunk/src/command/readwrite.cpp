@@ -23,6 +23,7 @@
 #include "parse/format.h"
 #include "parse/parser.h"
 #include <fstream>
+#include <cstring>
 
 // Add file read option
 int CommandData::function_CA_ADDREADOPTION(Command *&c, Bundle &obj)
