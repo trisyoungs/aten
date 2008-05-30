@@ -33,6 +33,8 @@ AtenGrids::AtenGrids(QWidget *parent)
 {
 	ui.setupUi(this);
 
+	// Private variables
+	refreshing_ = FALSE;
 	// Create open grid dialog
 	QStringList filters;
 	openGridDialog = new QFileDialog(this);
@@ -62,6 +64,7 @@ void AtenGrids::refresh()
 {
 	dbgBegin(Debug::Calls,"AtenGrids::refresh");
 	// Clear and refresh the grids list
+	refreshing_ = TRUE;
 	ui.GridList->clear();
 	TListWidgetItem *item;
 	for (Grid *g = master.grids(); g != NULL; g = g->next)
@@ -74,13 +77,14 @@ void AtenGrids::refresh()
 	// Select the first item
 	if (master.nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
+	refreshing_ = FALSE;
 	dbgEnd(Debug::Calls,"AtenGrids::refresh");
 }
 
 // Load grid (public function)
 void AtenGrids::loadGrid()
 {
-	dbgBegin(Debug::Calls,"AtenGrids::loadgrid");
+	dbgBegin(Debug::Calls,"AtenGrids::loadGrid");
 	Filter *f;
 	Grid *g;
 	QString filename;
@@ -109,7 +113,7 @@ void AtenGrids::loadGrid()
 		gui.gridsDialog->refresh();
 		gui.mainView.postRedisplay();
 	}
-	dbgEnd(Debug::Calls,"AtenGrids::loadgrid");
+	dbgEnd(Debug::Calls,"AtenGrids::loadGrid");
 }
 
 void AtenGrids::on_LoadGridButton_clicked(bool checked)
@@ -119,61 +123,73 @@ void AtenGrids::on_LoadGridButton_clicked(bool checked)
 
 void AtenGrids::on_GridOriginXSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridOriginChanged(0, d);
 }
 
 void AtenGrids::on_GridOriginYSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridOriginChanged(1, d);
 }
 
 void AtenGrids::on_GridOriginZSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridOriginChanged(2, d);
 }
 
 void AtenGrids::on_GridAxesAXSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(0,0, d);
 }
 
 void AtenGrids::on_GridAxesAYSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(0,1, d);
 }
 
 void AtenGrids::on_GridAxesAZSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(0,2, d);
 }
 
 void AtenGrids::on_GridAxesBXSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(1,0, d);
 }
 
 void AtenGrids::on_GridAxesBYSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(1,1, d);
 }
 
 void AtenGrids::on_GridAxesBZSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(1,2, d);
 }
 
 void AtenGrids::on_GridAxesCXSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(2,0, d);
 }
 
 void AtenGrids::on_GridAxesCYSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(2,1, d);
 }
 
 void AtenGrids::on_GridAxesCZSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	gridAxisChanged(2,2, d);
 }
 
@@ -219,6 +235,7 @@ void AtenGrids::refreshGridInfo()
 	ui.GridNegativeColourFrame->update();
 	ui.GridSymmetricCheck->setChecked( g->symmetric() );
 	ui.GridTransparencySpin->setValue( g->transparency() );
+	ui.GridColourscaleSpin->setValue( g->colourScale() );
 	dbgEnd(Debug::Calls,"AtenGrids::refreshGridInfo");
 }
 
@@ -284,6 +301,7 @@ void AtenGrids::on_SaveGridButton_clicked(bool checked)
 
 void AtenGrids::on_GridList_currentRowChanged(int row)
 {
+	if (refreshing_) return;
 	// New item selected, so update the data shown in the page
 	if (row != -1) refreshGridInfo();
 }
@@ -300,6 +318,7 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 
 void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
@@ -310,6 +329,7 @@ void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 
 void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
@@ -329,6 +349,7 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 
 void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
@@ -348,6 +369,7 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 
 void AtenGrids::on_GridTransparencySpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
@@ -358,16 +380,18 @@ void AtenGrids::on_GridTransparencySpin_valueChanged(double value)
 
 void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
 	Grid *g = master.grid(row);
-	g->setColourScale(n-1);
+	g->setColourScale(n);
 	gui.mainView.postRedisplay();
 }
 
 void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 {
+	if (refreshing_) return;
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
