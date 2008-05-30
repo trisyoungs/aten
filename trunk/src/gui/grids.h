@@ -72,6 +72,8 @@ class AtenGrids : public QDialog
 	// Local variables
 	*/
 	private:
+	// Whether the window is currently refreshing
+	bool refreshing_;
 
 	/*
 	// Dialog
