@@ -472,7 +472,7 @@ bool Master::openFilters()
 		// Try a list of known locations. Set dataDir again if we find a valid one
 		sprintf(path,"%s%s", "/usr/share/aten", "/filters/");
 		msg(Debug::None,"Looking for filter index in '%s'...\n", path);
-		sprintf(filename,"%s%s", "/usr/share/aten", "/filters/index");
+		sprintf(filename,"%s%s", path, "index");
 		listfile = new ifstream(filename, ios::in);
 		if (listfile->is_open())
 		{
@@ -488,8 +488,8 @@ bool Master::openFilters()
 		if ((!found) && (!failed))
 		{
 			sprintf(path,"%s%s", "/usr/local/share/aten", "/filters/");
-			msg(Debug::None,"Looking for filter index in '%s'...\n", filename);
-			sprintf(filename,"%s%s", "/usr/local/share/aten", "/filters/index");
+			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+			sprintf(filename,"%s%s", path, "index");
 			listfile = new ifstream(filename, ios::in);
 			if (listfile->is_open())
 			{
