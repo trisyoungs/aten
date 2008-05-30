@@ -507,7 +507,7 @@ bool Master::openFilters()
 		{
 			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../share/aten/filters/");
 			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
-			sprintf(filename,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../share/aten/filters/index");
+			sprintf(filename,"%s%s", path, "index");
 			listfile = new ifstream(filename, ios::in);
 			if (listfile->is_open())
 			{
@@ -525,7 +525,7 @@ bool Master::openFilters()
 		{
 			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../SharedSupport/filters/");
 			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
-			sprintf(filename,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../SharedSupport/filters/index");
+			sprintf(filename,"%s%s", path, "index");
 			listfile = new ifstream(filename, ios::in);
 			if (listfile->is_open())
 			{
