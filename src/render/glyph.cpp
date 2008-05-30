@@ -29,6 +29,7 @@ void Canvas::renderModelGlyphs()
 	dbgBegin(Debug::Calls,"Canvas::renderModelGlyphs");
 	static Vec3<double> vec[MAXGLYPHDATA], avg, normal;
 	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
+	TextObject *to;
 
 	// Render other elemental objects in the model
 	for (Glyph *g = displayModel_->glyphs(); g != NULL; g = g->next)
@@ -112,10 +113,6 @@ void Canvas::renderModelGlyphs()
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				glEnd();
 				break;
-			// Text - left-hand origin = data[0]
-			case (Glyph::TextGlyph):
-				glText(g->data[0].vector(), g->text());
-				break;
 		}
 
 			//case (119): 	// Ellipsoid - coords = coords, velocities = lookat, forces = scaling
@@ -123,4 +120,43 @@ void Canvas::renderModelGlyphs()
 			//	break;
 	}
 	dbgEnd(Debug::Calls,"Canvas::renderModelGlyphs");
+}
+
+// Render model text glyphs
+void Canvas::renderModelTextGlyphs()
+{
+	dbgBegin(Debug::Calls,"Canvas::renderModelTextGlyphs");
+	static Vec3<double> vec[MAXGLYPHDATA], avg, normal;
+	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
+	TextObject *to;
+
+	// Render other elemental objects in the model
+	for (Glyph *g = displayModel_->glyphs(); g != NULL; g = g->next)
+	{
+		// Set relevant polygon mode
+		glPolygonMode(GL_FRONT_AND_BACK, (g->isSolid() ? GL_FILL : GL_LINE));
+		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, col);
+		switch (g->type())
+		{
+			// Text in 2D coordinates - left-hand origin = data[0]
+			case (Glyph::TextGlyph):
+				vec[0] = g->data[0].vector();
+				// Add text object to list
+				to = new TextObject((int)vec[0].x, int(height_ - vec[0].y), FALSE, g->text());
+				textObjects_.own(to);
+				break;
+			// Text in 3D coordinates - left-hand origin = data[0]
+			case (Glyph::TextGlyph3D):
+				vec[0] = g->data[0].vector();
+				// Add text object to list
+				vec[1] = displayModel_->modelToScreen(vec[0]);
+				if (vec[1].z < 1.0)
+				{
+					to = new TextObject((int)vec[1].x, int(height_ - vec[1].y), FALSE, g->text());
+					textObjects_.own(to);
+				}
+				break;
+		}
+	}
+	dbgEnd(Debug::Calls,"Canvas::renderModelTextGlyphs");
 }

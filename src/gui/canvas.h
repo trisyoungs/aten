@@ -198,6 +198,8 @@ class Canvas
 	void renderModelAtoms();
 	// Render glyphs in the current model
 	void renderModelGlyphs();
+	// Render text glyphs in the current model
+	void renderModelTextGlyphs();
 	// Add labels to the model
 	void renderModelLabels();
 	// Add geometry measurements to the model

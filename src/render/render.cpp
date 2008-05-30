@@ -192,6 +192,8 @@ void Canvas::renderScene(Model *source)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.penColour(Prefs::ForegroundColour));
 	glDisable(GL_LIGHTING);
 
+	// Render text glyphs associated with the model
+	renderModelTextGlyphs();
 	if (prefs.shouldRender(Prefs::ViewLabels)) renderModelLabels();
 	if (prefs.shouldRender(Prefs::ViewMeasurements)) renderModelMeasurements();
 
