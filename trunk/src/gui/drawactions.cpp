@@ -95,6 +95,9 @@ void AtenForm::on_actionSelectCustomElement_triggered(bool on)
 		// Set text of custom element button
 		ui.actionElementCustom->setText( elements.symbol(newel) );
 		customElement_ = newel;
+		// Activate custom element button
+		ui.actionElementCustom->setChecked(TRUE);
+		master.setSketchElement(customElement_);
 	}
 }
 

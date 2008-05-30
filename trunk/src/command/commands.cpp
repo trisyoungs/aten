@@ -26,7 +26,10 @@
 #include <string.h>
 
 // Postfix increment operator for CommandAction enum
-CommandAction &operator++(CommandAction &ca, int) { return ca = (ca == CA_NITEMS ? CA_NITEMS : CommandAction(ca + 1)); }
+CommandAction &operator++(CommandAction &ca, int)
+{
+	return ca = (ca == CA_NITEMS ? CA_NITEMS : CommandAction(ca + 1));
+}
 
 // Command action
 CommandData CA_data[CA_NITEMS] = {
@@ -356,8 +359,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the glyph to be drawn in solid (true) or wireframe (false) modes (glyph-permitting)" },
 	{ "glyphtext",		"V",		"<text>",
 				"Set text data in current glyph" },
-	{ "newglyph",		"V",		"<style>",
-				"Add a glyph with the specified style to the current model" },
+	{ "newglyph",		"Vv",		"<style> [text]",
+				"Add a glyph with the specified style (and text if relevant) to the current model" },
 
 	// Grid commands
 	{ "addgridpoint",	"VVVV",		"<ix> <iy> <iz> <value>",

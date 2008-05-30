@@ -39,6 +39,7 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 	master.current.gl = obj.m->addGlyph();
 	if (gs == Glyph::nGlyphTypes) msg(Debug::None,"Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
 	master.current.gl->setType(gs);
+	if (c->hasArg(1)) master.current.gl->setText(c->argc(1));
 	return CR_SUCCESS;
 }
 
