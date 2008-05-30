@@ -126,6 +126,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	master.setCurrentModel(master.model(n));
 	gui.disorderDialog->refresh();
 	gui.modelChanged();
+	gui.updateTrajControls();
 	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
 }
 

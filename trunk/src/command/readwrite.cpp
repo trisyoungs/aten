@@ -205,3 +205,10 @@ int CommandData::function_CA_WRITELINE(Command *&c, Bundle &obj)
 	*outputfile << "\n";
 	return CR_SUCCESS;
 }
+
+// Write line to variable
+int CommandData::function_CA_WRITEVAR(Command *&c, Bundle &obj)
+{
+	c->arg(0)->set(c->format()->createString());
+	return CR_SUCCESS;
+}
