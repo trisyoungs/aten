@@ -320,6 +320,12 @@ void Model::seekLastFrame()
 		dbgEnd(Debug::Calls,"Model::seekLastFrame");
 		return;
 	}
+	if (framePosition_ == totalFrames_)
+	{
+		msg(Debug::None,"Already at end of trajectory (frame %i).\n", framePosition_);
+		dbgEnd(Debug::Calls,"Model::seekNextFrame");
+		return;
+	}
 	if (trajectoryCached_) currentFrame_ = frames_.last();
 	else
 	{
@@ -333,4 +339,44 @@ void Model::seekLastFrame()
 	currentFrame_->calculateViewMatrix();
 	msg(Debug::None,"Seek to frame %i\n",framePosition_);
 	dbgEnd(Debug::Calls,"Model::seekLastFrame");
+}
+
+// Seek to specified frame
+void Model::seekFrame(int frameno)
+{
+	// Seek to the previous frame in the trajectory
+	dbgBegin(Debug::Calls,"Model::seekFrame");
+	// Check that a trajectory exists!
+	if (totalFrames_ == 0)
+	{
+		msg(Debug::None,"No trajectory is available.\n");
+		dbgEnd(Debug::Calls,"Model::seekFrame");
+		return;
+	}
+	if ((frameno < 1) || (frameno > totalFrames_))
+	{
+		msg(Debug::None,"Frame %i is out of range for current trajectory (which has %i frames).\n", frameno, totalFrames_);
+		dbgEnd(Debug::Calls,"Model::seekFrame");
+		return;
+	}
+	if (framePosition_ == frameno)
+	{
+		msg(Debug::None,"Already at specified frame (%i).\n",frameno);
+		dbgEnd(Debug::Calls,"Model::seekFrame");
+		return;
+	}
+	if (trajectoryCached_) currentFrame_ = frames_[frameno - 1];
+	else
+	{
+		// Seek to specified frame in file
+		streampos newpos = trajectoryFirstFrame_ + streampos((framePosition_-1)*frameSize_);
+		trajectoryFile_->seekg(newpos);
+		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE, frames_.first());
+	}
+	framePosition_ = frameno;
+	logChange(Change::VisualLog);
+	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
+	currentFrame_->calculateViewMatrix();
+	msg(Debug::None,"Seek to frame %i\n",framePosition_);
+	dbgEnd(Debug::Calls,"Model::seekFrame");
 }

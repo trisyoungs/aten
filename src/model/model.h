@@ -661,6 +661,8 @@ class Model
 	void seekNextFrame();
 	// Seek to previous frame
 	void seekPreviousFrame();
+	// Seek to specified frame
+	void seekFrame(int frameno);
 
 	/*
 	// Rendering

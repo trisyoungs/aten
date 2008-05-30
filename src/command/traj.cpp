@@ -84,3 +84,16 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 	obj.m->seekPreviousFrame();
 	return CR_SUCCESS;
 }
+
+// Seek to specified frame ('seekframe <n>')
+int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.m->totalFrames() == 0)
+	{
+		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
+		return CR_FAIL;
+	}
+	obj.m->seekFrame(c->argi(0));
+	return CR_SUCCESS;
+}

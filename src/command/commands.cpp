@@ -550,11 +550,11 @@ CommandData CA_data[CA_NITEMS] = {
 				"Read a floating point value from the input file" },
 	{ "readint",		"V",		"<variable>",
 				"Read an integer value from the input file" },
-	{ "readline",		"F",		"<format>",
+	{ "readline",		"F",		"<formatting string>",
 				"Read and parse a line from the input file" },
 	{ "readnext",		"V",		"<variable>",
 				"Read the next delimited item from the file" },
-	{ "readvar",		"VF",		"<variable> <format>",
+	{ "readvar",		"VF",		"<variable> <formatting string>",
 				"Parse a variable according to the supplied format" },
 	{ "removereadoption",	"V",		"<option>",
 				"Remove a read option" },
@@ -564,8 +564,10 @@ CommandData CA_data[CA_NITEMS] = {
 				"Skip a number of characters in the input file" },
 	{ "skipline",		"v",		"[nlines]",
 				"Skip a number of lines in the input file" },
-	{ "writeline",		"G",		"<format>",
+	{ "writeline",		"G",		"<formatting string>",
 				"Write a line to the output file" },
+	{ "writevar",		"VG",		"<variable> <formatting string>",
+				"Write a line to the specified variable" },
 
 	// Script commands
 	{ "listscripts",	"",		"",
@@ -628,6 +630,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Go to the next frame in the current trajectory" },
 	{ "prevframe",		"",		"",
 				"Go to the previous frame in the current trajectory" },
+	{ "seekframe",		"V",		"<frame>",
+				"Jump to the specified frame in the current trajectory" },
 	
 	// Transformation commands		// Transformation commands
 	{ "centre",		"VVV",		"<x> <y> <z>",

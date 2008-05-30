@@ -296,6 +296,7 @@ void Master::initCommands()
 	CA_data[CA_SKIPCHARS].function = &CommandData::function_CA_SKIPCHARS;
 	CA_data[CA_SKIPLINE].function = &CommandData::function_CA_SKIPLINE;
 	CA_data[CA_WRITELINE].function = &CommandData::function_CA_WRITELINE;
+	CA_data[CA_WRITEVAR].function = &CommandData::function_CA_WRITEVAR;
 
 	// Script Commands
 	CA_data[CA_LISTSCRIPTS].function = &CommandData::function_CA_LISTSCRIPTS;
@@ -331,6 +332,7 @@ void Master::initCommands()
 	CA_data[CA_LOADTRAJECTORY].function = &CommandData::function_CA_LOADTRAJECTORY;
 	CA_data[CA_NEXTFRAME].function = &CommandData::function_CA_NEXTFRAME;
 	CA_data[CA_PREVFRAME].function = &CommandData::function_CA_PREVFRAME;
+	CA_data[CA_SEEKFRAME].function = &CommandData::function_CA_SEEKFRAME;
 
 	// Transform Commands
 	CA_data[CA_CENTRE].function = &CommandData::function_CA_CENTRE;

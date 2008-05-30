@@ -60,6 +60,7 @@ void AtenForm::on_actionModelNext_triggered(bool checked)
 	if (newid > (master.nModels() - 1)) newid = 0;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
+	gui.updateTrajControls();
 }
 
 void AtenForm::on_actionModelPrevious_triggered(bool checked)
@@ -70,6 +71,7 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 	if (newid < 0) newid = master.nModels() - 1;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
+	gui.updateTrajControls();
 }
 
 void AtenForm::on_actionModelShowAll_triggered(bool checked)

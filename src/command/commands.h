@@ -332,6 +332,7 @@ enum CommandAction {
 	CA_SKIPCHARS,
 	CA_SKIPLINE,
 	CA_WRITELINE,
+	CA_WRITEVAR,
 
 	// Script Commands
 	CA_LISTSCRIPTS,
@@ -368,6 +369,7 @@ enum CommandAction {
 	CA_LOADTRAJECTORY,
 	CA_NEXTFRAME,
 	CA_PREVFRAME,
+	CA_SEEKFRAME,
 
 	// Transformation Commands
 	CA_CENTRE,
@@ -675,6 +677,7 @@ class CommandData
 	int function_CA_SKIPCHARS(Command *&c, Bundle &obj);
 	int function_CA_SKIPLINE(Command *&c, Bundle &obj);
 	int function_CA_WRITELINE(Command *&c, Bundle &obj);
+	int function_CA_WRITEVAR(Command *&c, Bundle &obj);
 	// Script Commands
 	int function_CA_LISTSCRIPTS(Command *&c, Bundle &obj);
 	int function_CA_LOADSCRIPT(Command *&c, Bundle &obj);
@@ -706,6 +709,7 @@ class CommandData
 	int function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj);
 	int function_CA_NEXTFRAME(Command *&c, Bundle &obj);
 	int function_CA_PREVFRAME(Command *&c, Bundle &obj);
+	int function_CA_SEEKFRAME(Command *&c, Bundle &obj);
 	// Transform Commands
 	int function_CA_CENTRE(Command *&c, Bundle &obj);
 	int function_CA_TRANSLATE(Command *&c, Bundle &obj);
