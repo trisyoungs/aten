@@ -26,6 +26,7 @@
 
 // Forward declarations
 class Atom;
+class Model;
 
 // Unit cell
 class Cell
@@ -151,8 +152,8 @@ class Cell
 	Vec3<double> mimd(Atom*, const Vec3<double>&) const;
 	Vec3<double> mim(Atom*, Atom*) const;
 	Vec3<double> mimd(Atom*, Atom*) const;
-	void fold(Vec3<double>&) const;
-	void fold(Atom*) const;
+	void fold(Vec3<double> &r, Atom *i, Model *parent) const;
+	void fold(Atom *i, Model *parent) const;
 
 	/*
 	// Geometry calculation (takes fractional coords, and returns Angstroms / degrees)

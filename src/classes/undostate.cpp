@@ -178,12 +178,12 @@ void Change::reverse(Model *m)
 			}
 			else
 			{
-				msg(Debug::Verbose,"Replaying atom deselection - atom id = %i\n", data_[0]);
+				msg(Debug::Verbose,"Replaying atom selection - atom id = %i\n", data_[0]);
 				m->selectAtom(i);
 			}
 			break;
 		// Bond order change - from data[3] to data[2] (Change::Reverse) or vice versa (Change::Forwards)
-		case (Change::BondEventORDER):
+		case (Change::BondOrderEvent):
 			i = modelatoms[data_[0]];
 			j = modelatoms[data_[1]];
 			b = i->findBond(j);

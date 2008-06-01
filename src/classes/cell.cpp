@@ -21,6 +21,7 @@
 
 #include "classes/cell.h"
 #include "classes/atom.h"
+#include "model/model.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
 #include <math.h>
@@ -436,7 +437,7 @@ Vec3<double> Cell::mimd(Atom *i, Atom *j) const
 }
 
 // Fold atom
-void Cell::fold(Vec3<double> &r) const
+void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 {
 	// Folds the coordinates in 'r' into the defined unit cell
 	dbgBegin(Debug::MoreCalls,"Cell::fold");
@@ -449,12 +450,16 @@ void Cell::fold(Vec3<double> &r) const
 		// Cubic / Orthorhombic
 		case (Cell::CubicCell):
 		case (Cell::OrthorhombicCell):
-			if (r.x < 0.0) r.x += lengths_.x;
-			else if (r.x > lengths_.x) r.x -= lengths_.x;
-			if (r.y < 0.0) r.y += lengths_.y;
-			else if (r.y > lengths_.y) r.y -= lengths_.y;
-			if (r.z < 0.0) r.z += lengths_.z;
-			else if (r.z > lengths_.z) r.z -= lengths_.z;
+			newr = r;
+			if (newr.x < 0.0) newr.x += lengths_.x;
+			else if (newr.x > lengths_.x) newr.x -= lengths_.x;
+			if (newr.y < 0.0) newr.y += lengths_.y;
+			else if (newr.y > lengths_.y) newr.y -= lengths_.y;
+			if (newr.z < 0.0) newr.z += lengths_.z;
+			else if (newr.z > lengths_.z) newr.z -= lengths_.z;
+			// Use model functions to store new position if we were given one
+			if (parent != NULL) parent->positionAtom(i, newr);
+			else r = newr;
 			break;
 		// Parallelepiped
 		default:
@@ -471,15 +476,18 @@ void Cell::fold(Vec3<double> &r) const
 			//newr.y -= floor(newr.y);
 			//newr.z -= floor(newr.z);
 			// Convert back into world coordinates
-			r = newr * transpose_;
+			newr *= transpose_;
+			// Use model functions to store new position if we were given one
+			if (parent != NULL) parent->positionAtom(i, newr);
+			else r = newr;
 			break;
 	}
 	dbgEnd(Debug::MoreCalls,"Cell::fold");
 }
 
-void Cell::fold(Atom *i) const
+void Cell::fold(Atom *i, Model *parent) const
 {
-	fold(i->r());
+	fold(i->r(), i, parent);
 }
 
 /*

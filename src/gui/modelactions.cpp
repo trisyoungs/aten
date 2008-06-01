@@ -42,13 +42,23 @@ void AtenForm::on_actionFFUntype_triggered(bool checked)
 
 void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 {
-	master.currentModel()->foldAllAtoms();
+	Model *m = master.currentModel();
+	char s[128];
+	sprintf(s,"Fold all atoms");
+	m->beginUndostate(s);
+	m->foldAllAtoms();
+	m->endUndostate();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionFoldMolecules_triggered(bool checked)
 {
-	master.currentModel()->foldAllMolecules();
+	Model *m = master.currentModel();
+	char s[128];
+	sprintf(s,"Fold all molecules");
+	m->beginUndostate(s);
+	m->foldAllMolecules();
+	m->endUndostate();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
