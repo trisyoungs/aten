@@ -44,6 +44,8 @@ exportfield
 			# Convert functional form to be recognised by DL_POLY
 			if $b.form = harmonic
 				writeline "harm     $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4"
+			elseif $b.form = morse
+				writeline "morse    $b.id_i@5 $b.id_j@5 $b.param_c@10.4 $b.param_b@10.4 $b.param_a@10.4"
 			else
 				warn "Functional form of bond term ($b.form) not accounted for in export filter."
 				writeline "xxxx     $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4 $b.param_c@10.4"
@@ -55,6 +57,10 @@ exportfield
 			# Convert functional form to be recognised by DL_POLY
 			if $a.form = harmonic
 				writeline "harm     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
+			elseif $a.form = cosine
+				writeline "cos      $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_c@10.4 $a.param_b@10.4"
+			elseif $a.form = harmcos
+				writeline "hcos     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
 			else
 				warn "Functional form of angle term ($a.form) not accounted for in export filter."
 				writeline "xxxx     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4 $a.param_c@10.4"
@@ -77,7 +83,7 @@ exportfield
 		writeline "finish"
 	end
 	# VDW Specification
-	# Get total number of unique VDW terms to write
+	# Get total number of pair terms to write
 	let $n = 1
 	let $nvdw = 0
 	for $at1
@@ -90,7 +96,7 @@ exportfield
 			# Check functional forms of each atomtype
 			if $at1.form <> $at2.form
 				warn "Functional forms of atomtypes '$at1.equiv' and '$at2.equiv' differ - raw data written to output..." 
-				writeline "$at1.name@-8  $at2.name@-8   $at1.param_a@12.6  $at1.param_b@12.6"
+				writeline "$at1.name@-8  $at2.name@-8   $at1.param_a@12.6  $at1.param_b@12.6  $at1.param_c@12.6 $at1.param_d@12.6 $at1.param_e@12.6 $at1.param_f@12.6"
 			elseif $at1.form = lj
 				# LJ: use Lorentz-Berthelot combination rules
 				eval $sigma = "($at1.param_b + $at2.param_b) * 0.5"

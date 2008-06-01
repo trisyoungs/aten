@@ -289,10 +289,15 @@ void Filter::setType(FilterType ft)
 			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
 			break;
 		case (Filter::ExpressionExport):
-			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
-			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("energyunit","",Variable::CharacterVariable);
-			v = commands_.variables.createVariable("ntypes","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("natomtypes","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("nbondterms","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("nangleterms","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("ntorsionterms","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
+			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
+
 			break;
 		case (Filter::GridExport):
 			break;
@@ -361,9 +366,13 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			}
 			// Set variables
 			commands_.variables.set("title",obj.m->name());
+			commands_.variables.set("natoms",obj.m->nAtoms());
 			commands_.variables.set("npatterns",obj.m->nPatterns());
 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));
-			commands_.variables.set("ntypes",obj.m->nUniqueTypes());
+			commands_.variables.set("natomtypes",obj.m->nUniqueTypes());
+			commands_.variables.set("nbondterms",obj.m->nUniqueBondTerms());
+			commands_.variables.set("nangleterms",obj.m->nUniqueAngleTerms());
+			commands_.variables.set("ntorsionterms",obj.m->nUniqueTorsionTerms());
 			// Open file...
 			if (!commands_.setOutputFile(filename))
 			{

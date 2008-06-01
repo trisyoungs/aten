@@ -51,9 +51,10 @@ bool Model::isExpressionValid()
 // Manually invalidates the expression
 void Model::invalidateExpression()
 {
-	expressionPoint_ --;
+	expressionPoint_  = -1;;
 }
 
+// Create full forcefield expression for model
 bool Model::createExpression(bool vdwOnly)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
@@ -112,7 +113,17 @@ bool Model::createExpression(bool vdwOnly)
 				break;
 		}
 	}
-	// 4) Create list of unique atom types now in model
+	expressionPoint_ = logs_[Change::StructureLog];
+	dbgEnd(Debug::Calls,"Model::createExpression");
+	return TRUE;
+}
+
+// Create lists of unique FF terms in the model
+void Model::createUniqueLists()
+{
+	dbgBegin(Debug::Calls,"Model::createUniqueLists");
+	uniqueTypes_.clear();
+
 	// First, create a list of unique type references
 	Reflist<ForcefieldAtom,int> uniqueRef;
 	Refitem<ForcefieldAtom,int> *ri, *rj;
@@ -127,7 +138,5 @@ bool Model::createExpression(bool vdwOnly)
 		ffa = uniqueTypes_.add();
 		ffa->copy(ri->item);
 	}
-	expressionPoint_ = logs_[Change::StructureLog];
-	dbgEnd(Debug::Calls,"Model::createExpression");
-	return TRUE;
+	dbgEnd(Debug::Calls,"Model::createUniqueLists");
 }
