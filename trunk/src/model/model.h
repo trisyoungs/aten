@@ -33,6 +33,7 @@
 
 // Forward Declarations
 class Forcefield;
+class ForcefieldBound;
 class Bond;
 class Constraint;
 class Pattern;
@@ -424,11 +425,19 @@ class Model
 	Forcefield *namesForcefield();
 
 	/*
-	// Typing
+	// Expression / Typing
 	*/
 	private:
-	// List of unique atom types (copies) in model (useful for FF export)
+	// Atom changeid at which the expression was/is valid
+	int expressionPoint_;
+	// List containing copies of unique atom types in model (useful in expression export)
 	List<ForcefieldAtom> uniqueTypes_;
+	// List containing copies of bond interactions in model (useful in expression export)
+	List<ForcefieldBound> uniqueBondTerms_;
+	// List containing copies of angle interactions in model (useful in expression export)
+	List<ForcefieldBound> uniqueAngleTerms_;
+	// List containing copies of torsion interactions in model (useful in expression export)
+	List<ForcefieldBound> uniqueTorsionTerms_;
 
 	public:
 	// Set type of specified atom
@@ -441,21 +450,24 @@ class Model
 	void removeTyping();
 	// Set atomtypes of selected atoms
 	void selectionSetType(ForcefieldAtom *ffa, bool fixed);
+	// Create unique lists
+	void createUniqueLists();
 	// Return number of unique atom types in model
 	int nUniqueTypes();
 	// Return the list of unique types in the model
 	ForcefieldAtom *uniqueTypes();
-
-	/*
-	// Expression
-	*/
-	private:
-	// Atom changeid at which the expression was/is valid
-	int expressionPoint_;
-
-	public:
-	// Storage for energy
-	Energy energy;
+	// Return number of unique bond interactions in model
+	int nUniqueBondTerms();
+	// Return the list of unique bond interactions in the model
+	ForcefieldBound *uniqueBondTerms();
+	// Return number of unique angle interactions in model
+	int nUniqueAngleTerms();
+	// Return the list of unique angle interactions in the model
+	ForcefieldBound *uniqueAngleTerms();
+	// Return number of unique torsion interactionss in model
+	int nUniqueTorsionTerms();
+	// Return the list of unique torsion interactions in the model
+	ForcefieldBound *uniqueTorsionTerms();
 	// Create total energy function shell for the model
 	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid
@@ -464,6 +476,13 @@ class Model
 	void invalidateExpression();
 	// Generate parameters for total energy function
 	void fillExpression(int);
+
+	/*
+	// Energy / Forces
+	*/
+	public:
+	// Storage for energy
+	Energy energy;
 	// Calculate (and return) the total energy of the specified model configuration
 	double totalEnergy(Model *config);
 	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder

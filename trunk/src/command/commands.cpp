@@ -655,7 +655,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Evaluate the given expression into the supplied variable" },
 	{ "inc",		"V",		"<variable>",
 				"Increase the specified variable" },
-	{ "let",		"V=V",		"<variable> = <variable>",
+	{ "let",		"V=V",		"<variable> = <variable|value>",
 				"Set the specified variable to a supplied value/variable" },
 	
 	// View

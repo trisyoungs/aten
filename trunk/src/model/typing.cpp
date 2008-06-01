@@ -39,6 +39,42 @@ ForcefieldAtom *Model::uniqueTypes()
 	return uniqueTypes_.first();
 }
 
+// Return number of unique bond interactions in the model
+int Model::nUniqueBondTerms()
+{
+	return uniqueBondTerms_.nItems();
+}
+
+// Return the list of unique bond interactions in the model
+ForcefieldBound *Model::uniqueBondTerms()
+{
+	return uniqueBondTerms_.first();
+}
+
+// Return number of unique angle interactions in the model
+int Model::nUniqueAngleTerms()
+{
+	return uniqueAngleTerms_.nItems();
+}
+
+// Return the list of unique angle interactions in the model
+ForcefieldBound *Model::uniqueAngleTerms()
+{
+	return uniqueAngleTerms_.first();
+}
+
+// Return number of unique torsion interactions in the model
+int Model::nUniqueTorsionTerms()
+{
+	return uniqueTorsionTerms_.nItems();
+}
+
+// Return the list of unique torsion interactions in the model
+ForcefieldBound *Model::uniqueTorsionTerms()
+{
+	return uniqueTorsionTerms_.first();
+}
+
 /*
 Atom typing is performed in several steps.
 
