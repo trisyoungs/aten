@@ -109,7 +109,7 @@ void Model::foldAllAtoms()
 {
 	dbgBegin(Debug::Calls,"Model::foldAllAtoms");
 	// Standard fold - individual atoms
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) cell_.fold(i);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) cell_.fold(i, this);
 	logChange(Change::CoordinateLog);
 	dbgEnd(Debug::Calls,"Model::foldAllAtoms");
 }
@@ -124,7 +124,7 @@ void Model::foldAllMolecules()
 	// Molecular fold - fold first atom, others in molecule are MIM'd to this point
 	if (!autocreatePatterns())
 	{
-		msg(Debug::None,"Model::foldAllMolecules : Molecular fold cannot be performed without a valid pattern definition.\n");
+		msg(Debug::None,"Molecular fold cannot be performed without a valid pattern definition.\n");
 		dbgEnd(Debug::Calls,"Model::foldAllMolecules");
 		return;
 	}
@@ -138,7 +138,7 @@ void Model::foldAllMolecules()
 				// If its the first atom, fold and store pointer. If not, MIM w.r.t. stored atom
 				if (n == 0)
 				{
-					cell_.fold(i);
+					cell_.fold(i, this);
 					first = i;
 				}
 				else i->r() = cell_.mim(i,first);
@@ -176,8 +176,7 @@ void Model::pack(int gen)
 		// Apply the rotation and translation
 		newr *= master.generators[gen].rotation;
 		newr +=  cell_.transpose() * master.generators[gen].translation;
-		cell_.fold(newr);
-		i->r() = newr;
+		cell_.fold(i, this);
 	}
 	dbgEnd(Debug::Calls,"Model::pack[gen,atom]");
 }

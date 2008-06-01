@@ -43,7 +43,7 @@ class Change
 	// Change logs
 	enum ChangeLog { StructureLog, CoordinateLog, VisualLog, SelectionLog, CameraLog, TotalLog, nChangeLogs };
 	// State change events
-	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondEventORDER, CellEvent, LabelEvent, TranslateEvent, ShiftEvent };
+	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondOrderEvent, CellEvent, LabelEvent, TranslateEvent, ShiftEvent };
 	// State change directions
 	enum UndoDirection { Reverse, Forwards };
 

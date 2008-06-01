@@ -310,7 +310,7 @@ void Model::changeBond(Bond *b, Bond::BondType bt)
 	if (recordingState_ != NULL)
 	{
 		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::BondEventORDER,b->atomI()->id(),b->atomJ()->id(),oldorder,bt);
+		newchange->set(Change::BondOrderEvent,b->atomI()->id(),b->atomJ()->id(),oldorder,bt);
 	}
 }
 
