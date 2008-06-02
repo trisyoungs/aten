@@ -67,7 +67,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 	srcmodel->zeroForces();
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->zeroForcesFixed();
-	srcmodel->normaliseForces(1.0);
+	//srcmodel->normaliseForces(1.0);
 
 	// Set initial bounding values
 	bound[0] = -0.2;

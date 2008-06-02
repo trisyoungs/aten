@@ -168,6 +168,7 @@ void Pattern::torsionForces(Model *srcmodel)
 			mag_xpj = xpj.magAndNormalise();
 			mag_xpk = xpk.magAndNormalise();
 			dp = xpj.dp(xpk);
+			if (dp < -1.0) dp = -1;
 			phi = acos(dp);
 			// Derivative w.r.t. change in torsion angle
 			dphi_dcosphi = -1.0 / sin(phi);
@@ -217,10 +218,10 @@ void Pattern::torsionForces(Model *srcmodel)
 					break;
 				case (TorsionFunctions::Cos3):
 					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
-					k1 = -params.data[TorsionFunctions::Cos3K1];
-					k2 = 2.0 * params.data[TorsionFunctions::Cos3K2];
-					k3 = -3.0 * params.data[TorsionFunctions::Cos3K3];
-					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi));
+					k1 = params.data[TorsionFunctions::Cos3K1];
+					k2 = params.data[TorsionFunctions::Cos3K2];
+					k3 = params.data[TorsionFunctions::Cos3K3];
+					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) - 2.0*k2*sin(2.0*phi) + 3.0*k3*sin(3.0*phi));
 					break;
 				case (TorsionFunctions::Cos3C):
 					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )

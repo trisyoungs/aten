@@ -488,10 +488,10 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			newfftorsion->setTypeName(2,parser.argc(2));
 			newfftorsion->setTypeName(3,parser.argc(3));
 			newfftorsion->setTorsionStyle(torsionstyle);
-			newfftorsion->params().data[0] = parser.argd(4);
-			newfftorsion->params().data[1] = parser.argd(5);
-			newfftorsion->params().data[2] = parser.argd(6);
-			newfftorsion->params().data[3] = parser.argd(7);
+			newfftorsion->params().data[TF_ESCALE+2] = parser.argd(4);
+			newfftorsion->params().data[TF_ESCALE+3] = parser.argd(5);
+			newfftorsion->params().data[TF_ESCALE+4] = parser.argd(6);
+			newfftorsion->params().data[TF_ESCALE+5] = parser.argd(7);
 			newfftorsion->params().data[TF_ESCALE] = escale14;
 			newfftorsion->params().data[TF_VSCALE] = vscale14;
 			msg(Debug::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->params().data[0], newfftorsion->params().data[1], newfftorsion->params().data[2], newfftorsion->params().data[3]); 
