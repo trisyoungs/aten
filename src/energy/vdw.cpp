@@ -90,8 +90,6 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 {
 	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
-	// Calculate distance from supplied vector
-	rij = vecij.magnitude();
 	switch (type)
 	{
 		case (VdwFunctions::None):
@@ -210,6 +208,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 			}
 			// Calculate the enrgy contribution
 			U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->params(), atoms_[j]->data()->params(), vrs, i, j);
+			U *= atoms_[i]->data()->params().data[TF_ESCALE];
 			conMat_[i][j] == 0 ? energy_inter += U : energy_intra += U;
 		}
 		aoff += nAtoms_;
@@ -378,7 +377,8 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 				continue;
 			}
 			// Calculate force contribution
-			tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->params(), paj->data()->params(), vrs, i, j);
+			tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, atoms_[i]->data()->params(), atoms_[j]->data()->params(), vrs, i, j);
+			tempf *= pb->data()->params().data[TF_ESCALE];
 			modelatoms[i+aoff]->f() -= tempf;
 			modelatoms[j+aoff]->f() += tempf;
 		}

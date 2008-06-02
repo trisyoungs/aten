@@ -81,10 +81,10 @@ namespace TorsionFunctions
 	enum TorsionFunction { None, Cosine, Cos3, Cos4, Cos3C, nTorsionFunctions };
 	extern FunctionData TorsionFunctions[];
 	TorsionFunction torsionFunction(const char*);
-	enum CosineParameter { CosineEScale, CosineVScale, CosineK, CosineN, CosineEq };
-	enum Cos3Parameter { Cos3EScale, Cos3VScale, Cos3K1, Cos3K2, Cos3K3 };
-	enum Cos4Parameter { Cos4EScale, Cos4VScale, Cos4K1, Cos4K2, Cos4K3, Cos4K4 };
-	enum Cos3CParameter { Cos3CEScale, Cos3CVScale, Cos3CK0, Cos3CK1, Cos3CK2, Cos3CK3 };
+	enum CosineParameter { CosineK, CosineN, CosineEq, CosineNULL, CosineEScale, CosineVScale };
+	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3, Cos3NULL, Cos3EScale, Cos3VScale };
+	enum Cos4Parameter { Cos4K1, Cos4K2, Cos4K3, Cos4K4, Cos4EScale, Cos4VScale };
+	enum Cos3CParameter { Cos3CK0, Cos3CK1, Cos3CK2, Cos3CK3, Cos3CEScale, Cos3CVScale };
 }
 
 // Electostatic calculation methods

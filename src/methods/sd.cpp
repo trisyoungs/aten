@@ -97,9 +97,9 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 			newEnergy = lineMinimise(srcmodel);
 			deltaEnergy = newEnergy - currentEnergy;
 			newRms = srcmodel->calculateRmsForce();
-			fdelta = newRms - currentRms;
+			//fdelta = newRms - currentRms;
 			// Check convergence criteria
-			if ((fabs(deltaEnergy) < econ) && (fabs(fdelta) < fcon)) converged = TRUE;
+			if ((fabs(deltaEnergy) < econ) && (newRms < fcon)) converged = TRUE;
 			currentEnergy = newEnergy;
 			currentRms = newRms;
 		}

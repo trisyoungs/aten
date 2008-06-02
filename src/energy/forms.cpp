@@ -117,17 +117,17 @@ FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFuncti
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
 		{ "null", "null", "null", "null", "null", "null" } },
 	{ "Cosine", "cos",
-		{ "EScale", "VScale", "Force K", "Periodicity", "Eq. Angle" },
-		{ "escale", "vscale", "k", "n", "eq" } },
+		{ "Force K", "Periodicity", "Eq. Angle", "---", "EScale", "VScale" },
+		{ "k", "n", "eq", "null", "escale", "vscale" } },
 	{ "Triple Cosine", "cos3",
-		{ "EScale", "VScale", "Force K1", "Force K2", "Force K3" },
-		{ "escale", "vscale", "k1", "k2", "k3" } },
+		{ "Force K1", "Force K2", "Force K3", "---", "EScale", "VScale" },
+		{ "k1", "k2", "k3", "null", "escale", "vscale" } },
 	{ "Quadruple Cosine", "cos4",
-		{ "EScale", "VScale", "Force K1", "Force K2", "Force K3", "Force K4" },
-		{ "escale", "vscale", "k1", "k2", "k3", "k4" } },
+		{ "Force K1", "Force K2", "Force K3", "Force K4", "EScale", "VScale" },
+		{ "k1", "k2", "k3", "k4", "escale", "vscale"} },
 	{ "Triple Cosine + Constant", "cos3c",
-		{ "EScale", "VScale", "Force K0", "Force K1", "Force K2", "Force K3" },
-		{ "escale", "vscale", "k0", "k1", "k2", "k3" } }
+		{ "Force K0", "Force K1", "Force K2", "Force K3", "EScale", "VScale" },
+		{ "k0", "k1", "k2", "k3", "escale", "vscale" } }
 };
 TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *s)
 {
