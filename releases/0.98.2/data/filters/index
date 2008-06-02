@@ -1,0 +1,18 @@
+# Model formats
+cds
+dlp.model
+dlp.hisf
+dlp.hisu
+dlp.field
+gamess
+mol2
+pdb
+xyz
+msi
+akf
+vfield
+
+# Grid formats
+pdens
+cube
+surface
