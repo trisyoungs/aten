@@ -33,16 +33,16 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 	if (c->hasArg(0))
 	{
 		Atom *i;
-		if (c->argt(0) == Variable::IntegerVariable) i = obj.m->atom(c->argi(0)-1);
+		if (c->argt(0) == Variable::IntegerVariable) i = obj.rs->atom(c->argi(0)-1);
 		else if (c->argt(0) == Variable::AtomVariable) i = c->arga(0);
 		else
 		{
 			msg(Debug::None,"Optional argument to 'addhydrogen' must be an integer or an atom*.\n");
 			return CR_FAIL;
 		}
-		obj.m->hydrogenSatisfy(i);
+		obj.rs->hydrogenSatisfy(i);
 	}
-	else obj.m->hydrogenSatisfy();
+	else obj.rs->hydrogenSatisfy();
 	return CR_SUCCESS;
 }
 
@@ -50,7 +50,7 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	master.userClipboard->copySelection(obj.m);
+	master.userClipboard->copySelection(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -58,7 +58,7 @@ int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	master.userClipboard->cutSelection(obj.m);
+	master.userClipboard->cutSelection(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -74,7 +74,7 @@ int CommandData::function_CA_ENDCHAIN(Command *&c, Bundle &obj)
 int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->selectionDelete();
+	obj.rs->selectionDelete();
 	return CR_SUCCESS;
 }
 
@@ -145,7 +145,7 @@ int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.m->shiftSelectionDown();
+	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionDown();
 	return CR_SUCCESS;
 }
 
@@ -153,7 +153,7 @@ int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
 int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.m->shiftSelectionUp();
+	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionUp();
 	return CR_SUCCESS;
 }
 
@@ -161,7 +161,7 @@ int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
 int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->moveSelectionToEnd();
+	obj.rs->moveSelectionToEnd();
 	return CR_SUCCESS;
 }
 
@@ -169,7 +169,7 @@ int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
 int CommandData::function_CA_TOSTART(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->moveSelectionToStart();
+	obj.rs->moveSelectionToStart();
 	return CR_SUCCESS;
 }
 
@@ -178,6 +178,6 @@ int CommandData::function_CA_TRANSMUTE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0));
-	for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected()) obj.m->transmuteAtom(i,el);
+	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
 	return CR_SUCCESS;
 }

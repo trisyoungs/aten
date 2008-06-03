@@ -28,8 +28,8 @@
 int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->parent()->inputFile() == NULL) obj.m->foldAllAtoms();
-	else if (prefs.foldOnLoad() != Prefs::SwitchOff) obj.m->foldAllAtoms();
+	if (c->parent()->inputFile() == NULL) obj.rs->foldAllAtoms();
+	else if (prefs.foldOnLoad() != Prefs::SwitchOff) obj.rs->foldAllAtoms();
 	return CR_SUCCESS;
 }
 
@@ -37,7 +37,7 @@ int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 int CommandData::function_CA_FOLDMOLECULES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->foldAllMolecules();
+	obj.rs->foldAllMolecules();
 	return CR_SUCCESS;
 }
 
@@ -45,7 +45,7 @@ int CommandData::function_CA_FOLDMOLECULES(Command *&c, Bundle &obj)
 int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->fracToReal();
+	obj.rs->fracToReal();
 	return CR_SUCCESS;
 }
 
@@ -53,8 +53,8 @@ int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->parent()->inputFile() == NULL) obj.m->pack();
-	else if (prefs.packOnLoad() != Prefs::SwitchOff) obj.m->pack();
+	if (c->parent()->inputFile() == NULL) obj.rs->pack();
+	else if (prefs.packOnLoad() != Prefs::SwitchOff) obj.rs->pack();
 	return CR_SUCCESS;
 }
 
@@ -62,8 +62,8 @@ int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	msg(Debug::None,"Unit cell type for model '%s' is %s\n", obj.m->name(), Cell::cellType(obj.m->cell()->type()));
-	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
+	msg(Debug::None,"Unit cell type for model '%s' is %s\n", obj.rs->name(), Cell::cellType(obj.rs->cell()->type()));
+	if (obj.rs->cell()->type() != Cell::NoCell) obj.rs->cell()->print();
 	return CR_SUCCESS;
 }
 
@@ -71,7 +71,7 @@ int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 int CommandData::function_CA_REPLICATE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->replicateCell(c->arg3d(0), c->arg3d(3));
+	obj.rs->replicateCell(c->arg3d(0), c->arg3d(3));
 	return CR_SUCCESS;
 }
 
@@ -79,7 +79,7 @@ int CommandData::function_CA_REPLICATE(Command *&c, Bundle &obj)
 int CommandData::function_CA_SCALE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->scaleCell(c->arg3d(0));
+	obj.rs->scaleCell(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
@@ -87,9 +87,9 @@ int CommandData::function_CA_SCALE(Command *&c, Bundle &obj)
 int CommandData::function_CA_CELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->setCell(c->arg3d(0), c->arg3d(3));
-	obj.m->logChange(Change::VisualLog);
-	obj.m->calculateDensity();
+	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
+	obj.rs->logChange(Change::VisualLog);
+	obj.rs->calculateDensity();
 	return CR_SUCCESS;
 }
 
@@ -101,9 +101,9 @@ int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 	mat.rows[0] = c->arg3d(0);
 	mat.rows[1] = c->arg3d(3);
 	mat.rows[2] = c->arg3d(6);
-	obj.m->setCell(mat);
-	obj.m->logChange(Change::VisualLog);
-	obj.m->calculateDensity();
+	obj.rs->setCell(mat);
+	obj.rs->logChange(Change::VisualLog);
+	obj.rs->calculateDensity();
 	return CR_SUCCESS;
 }
 
@@ -112,14 +112,14 @@ int CommandData::function_CA_SPACEGROUP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	if (c->argt(0) == Variable::IntegerVariable) obj.m->setSpacegroup(c->argi(0));
+	if (c->argt(0) == Variable::IntegerVariable) obj.rs->setSpacegroup(c->argi(0));
 	else
 	{
 		msg(Debug::None,"Searching for spacegroup '%s'...",c->argc(0));
 		int sg = master.findSpacegroupByName(c->argc(0));
 		if (sg == 0) msg(Debug::None," not found - no spacegroup set.\n");
 		else msg(Debug::None," found, id = %i.\n",sg);
-		obj.m->setSpacegroup(sg);
+		obj.rs->setSpacegroup(sg);
 	}
 	return CR_SUCCESS;
 }

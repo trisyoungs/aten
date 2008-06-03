@@ -27,7 +27,7 @@ class Cli
 {
 	public:
 	// Command line switches
-	enum CliSwitch { BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, DebugAllSwitch, DebugFileSwitch, DebugMoreSwitch, DebugParseSwitch, DebugSwitch, DebugTypingSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, InteractiveSwitch, KeepNamesSwitch, MapSwitch, NoBondSwitch, NoCentreSwitch, NoFoldSwitch, NoPackSwitch, PackSwitch, ScriptSwitch, UndoLevelSwitch, VerboseSwitch, ZmapSwitch, nSwitchItems };
+	enum CliSwitch { BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, DebugAllSwitch, DebugCommandsSwitch, DebugMoreSwitch, DebugParseSwitch, DebugSwitch, DebugTypingSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, InteractiveSwitch, KeepNamesSwitch, MapSwitch, NoBondSwitch, NoCentreSwitch, NoFoldSwitch, NoPackSwitch, PackSwitch, ScriptSwitch, UndoLevelSwitch, VerboseSwitch, ZmapSwitch, nSwitchItems };
 	/*
 	// Description of command line option
 	*/

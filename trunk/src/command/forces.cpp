@@ -28,8 +28,7 @@
 int CommandData::function_CA_FRAMEFORCES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Model *frame = obj.m->currentFrame();
-	if (obj.m->createExpression()) obj.m->calculateForces(frame);
+	if (obj.m->createExpression()) obj.m->calculateForces(obj.rs);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }

@@ -52,7 +52,7 @@ int CommandData::function_CA_MCMINIMISE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	mc.setNCycles(c->argi(0));
-	mc.minimise(obj.m, econverge, fconverge);
+	mc.minimise(obj.rs, econverge, fconverge);
 	return CR_SUCCESS;
 }
 
@@ -62,7 +62,7 @@ int CommandData::function_CA_SDMINIMISE(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	sd.setTolerance(linetolerance);
 	sd.setNCycles(c->argi(0));
-	sd.minimise(obj.m, econverge, fconverge);
+	sd.minimise(obj.rs, econverge, fconverge);
 	return CR_SUCCESS;
 }
 

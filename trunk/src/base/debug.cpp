@@ -46,7 +46,7 @@ bool Debug::isDebugActive(Debug::DebugMode dm)
 	return ((Debug::debugOutput&dm) ? TRUE : FALSE);
 }
 // Convert text string to debug mode
-const char *DebugModeKeywords[] = { "none", "calls", "morecalls", "typing", "parse", "verbose", "filters" };
+const char *DebugModeKeywords[] = { "none", "calls", "morecalls", "typing", "parse", "verbose", "commands" };
 Debug::DebugMode Debug::debugMode(const char *s)
 {
 	return (Debug::DebugMode) power(2,enumSearch("GL option",Debug::nDebugModes,DebugModeKeywords,s));

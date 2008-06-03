@@ -977,8 +977,9 @@ void CommandList::closeFiles()
 int Command::execute(Command *&c, Model *alttarget)
 {
 	static Bundle obj;
-	// Grab master's pointer Bundle
+	// Grab master's pointer Bundle and set the current rendersource
 	obj = master.current;
+	obj.rs = (obj.m == NULL ? NULL : obj.m->renderSource());
 	// Set destination model to that provided if not NULL
 	if (alttarget != NULL) obj.m = alttarget;
 	return CALL_COMMAND(CA_data[action_],function_)(c, obj);
@@ -1001,7 +1002,7 @@ bool CommandList::execute(Model *alttarget, ifstream *sourcefile)
 	while (c != NULL)
 	{
 		// Run command and get return value
-		msg(Debug::Parse,"Commandlist executing command '%s'...\n",CA_data[c->command()].keyword);
+		msg(Debug::Commands, "Commandlist executing command '%s'...\n",CA_data[c->command()].keyword);
 		switch (c->execute(c, alttarget))
 		{
 			// Command succeeded - get following command

@@ -122,7 +122,7 @@ class Filter
 
 	public:
 	// Execute filter
-	bool execute(const char *filename, ifstream *trajfile = NULL, bool trajheader = FALSE, Model *altmodel = NULL);
+	bool execute(const char *filename, ifstream *trajfile = NULL, bool trajheader = FALSE);
 };
 
 #endif

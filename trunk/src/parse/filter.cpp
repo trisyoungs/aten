@@ -319,7 +319,7 @@ void Filter::print()
 }
 
 // Execute filter
-bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, Model *framemodel)
+bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 {
 	dbgBegin(Debug::Calls,"Filter::execute");
 	// Grab pointer Bundle from master
@@ -407,29 +407,30 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader, 
 			// Set variables
 			commands_.variables.set("header",(trajheader ? "true" : "false"));
 			commands_.variables.set("frame",(trajheader ? "false" : "true"));
+			if (obj.m == NULL)
+			{
+				msg(Debug::None,"No current model set for trajectory import.\n");
+				dbgEnd(Debug::Calls,"Filter::execute");
+				return FALSE;	
+			}
 			// Set model target (if reading a frame)
 			if (!trajheader)
 			{
-				Model *parent = framemodel->trajectoryParent();
-				if (parent == NULL)
+				//Model *parent = framemodel->trajectoryParent();
+				if (obj.m->renderSource() == obj.m)
 				{
-					msg(Debug::None,"Filter::read_trajectory <<<< Trajectory parent is not set in frame model >>>>\n");
-					dbgEnd(Debug::Calls,"Filter::read_trajectory(frame)");
+					msg(Debug::None,"Trajectory frame model has not been set for trajectory import.\n");
+					dbgEnd(Debug::Calls,"Filter::execute");
 					return FALSE;	
 				}
-				commands_.variables.set("natoms",parent->nAtoms());
-				commands_.variables.set("cell.type",lowerCase(Cell::cellType(parent->cell()->type())));
-				framemodel->clear();
+				obj.m->renderSource()->clear();
 			}
-			else
-			{
-				commands_.variables.set("natoms",framemodel->nAtoms());
-				commands_.variables.set("cell.type",lowerCase(Cell::cellType(framemodel->cell()->type())));
-			}
+			commands_.variables.set("natoms",obj.m->nAtoms());
+			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.m->cell()->type())));
 
 	}
 	// Execute CommandList
-	bool result = commands_.execute(framemodel,trajfile);
+	bool result = commands_.execute(NULL,trajfile);
 	// Perform post-filter operations
 	switch (type_)
 	{

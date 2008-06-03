@@ -38,7 +38,7 @@ int CommandData::function_CA_NEWBOND(Command *&c, Bundle &obj)
 		else bt = (Bond::BondType) n;
 	}
 	// Add the bond
-	obj.m->bondAtoms(c->argi(0)-1, c->argi(1)-1, bt);
+	obj.rs->bondAtoms(c->argi(0)-1, c->argi(1)-1, bt);
 	return CR_SUCCESS;
 }
 
@@ -58,10 +58,10 @@ int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
 		else bt = (Bond::BondType) n;
 	}
 	// Find the atoms specified
-	Atom *i = obj.m->findAtom(c->argi(0));
-	Atom *j = obj.m->findAtom(c->argi(1));
+	Atom *i = obj.rs->findAtom(c->argi(0));
+	Atom *j = obj.rs->findAtom(c->argi(1));
 	// Add the bond
-	obj.m->bondAtoms(i, j, bt);
+	obj.rs->bondAtoms(i, j, bt);
 	return CR_SUCCESS;
 }
 
@@ -69,7 +69,7 @@ int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
 int CommandData::function_CA_AUGMENT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->augmentBonding();
+	obj.rs->augmentBonding();
 	return CR_SUCCESS;
 }
 
@@ -80,13 +80,13 @@ int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 	// If we're reading from a file (via a filter) check for prefs override
 	if (c->parent()->inputFile() == NULL)
 	{
-		obj.m->clearBonding();
-		obj.m->calculateBonding();
+		obj.rs->clearBonding();
+		obj.rs->calculateBonding();
 	}
 	else if (prefs.bondOnLoad() != Prefs::SwitchOff)
 	{
-		obj.m->clearBonding();
-		obj.m->calculateBonding();
+		obj.rs->clearBonding();
+		obj.rs->calculateBonding();
 	}
 	return CR_SUCCESS;
 }
@@ -95,7 +95,7 @@ int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 int CommandData::function_CA_CLEARBONDS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->clearBonding();
+	obj.rs->clearBonding();
 	return CR_SUCCESS;
 }
 
@@ -110,7 +110,7 @@ int CommandData::function_CA_BONDTOLERANCE(Command *&c, Bundle &obj)
 int CommandData::function_CA_REBONDPATTERNS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->patternCalculateBonding();
+	obj.rs->patternCalculateBonding();
 	return CR_SUCCESS;
 }
 
@@ -118,6 +118,6 @@ int CommandData::function_CA_REBONDPATTERNS(Command *&c, Bundle &obj)
 int CommandData::function_CA_REBONDSELECTION(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->selectionCalculateBonding();
+	obj.rs->selectionCalculateBonding();
 	return CR_SUCCESS;
 }
