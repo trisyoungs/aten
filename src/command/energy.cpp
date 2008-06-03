@@ -29,8 +29,7 @@ int CommandData::function_CA_FRAMEENERGY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	double energy;
-	Model *frame = obj.m->currentFrame();
-	if (obj.m->createExpression()) energy = obj.m->totalEnergy(frame);
+	if (obj.m->createExpression()) energy = obj.m->totalEnergy(obj.rs);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -49,7 +48,7 @@ int CommandData::function_CA_MODELENERGY(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTELEC(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->energy.printElecMatrix(obj.m);
+	obj.rs->energy.printElecMatrix(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -57,7 +56,7 @@ int CommandData::function_CA_PRINTELEC(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTENERGY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->energy.print();
+	obj.rs->energy.print();
 	return CR_SUCCESS;
 }
 
@@ -65,7 +64,7 @@ int CommandData::function_CA_PRINTENERGY(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTEWALD(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->energy.printEwald();
+	obj.rs->energy.printEwald();
 	return CR_SUCCESS;
 }
 
@@ -73,7 +72,7 @@ int CommandData::function_CA_PRINTEWALD(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTINTER(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->energy.printInterMatrix(obj.m);
+	obj.rs->energy.printInterMatrix(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -81,7 +80,7 @@ int CommandData::function_CA_PRINTINTER(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTINTRA(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->energy.printIntraMatrix(obj.m);
+	obj.rs->energy.printIntraMatrix(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -89,7 +88,7 @@ int CommandData::function_CA_PRINTINTRA(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTSUMMARY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->energy.printSummary();
+	obj.rs->energy.printSummary();
 	return CR_SUCCESS;
 }
 
@@ -97,6 +96,6 @@ int CommandData::function_CA_PRINTSUMMARY(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTVDW(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->energy.printVdwMatrix(obj.m);
+	obj.rs->energy.printVdwMatrix(obj.rs);
 	return CR_SUCCESS;
 }

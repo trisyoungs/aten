@@ -623,6 +623,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Exit the program" },
 
 	// Trajectory commands
+	{ "finaliseframe",	"",		"",
+				"Finalise the current trajectory frame" },
 	{ "firstframe",		"",		"",
 				"Go to the first frame in the current trajectory" },
 	{ "lastframe",		"",		"",

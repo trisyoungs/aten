@@ -69,5 +69,6 @@ importtrajectory
 		end
 		rebond
 		centre 0 0 0
+		finaliseframe
 	end
 end

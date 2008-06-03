@@ -327,6 +327,7 @@ void Master::initCommands()
 	CA_data[CA_QUIT].function = &CommandData::function_CA_QUIT;
 	
 	// Trajectory Commands
+	CA_data[CA_FINALISEFRAME].function = &CommandData::function_CA_FINALISEFRAME;
 	CA_data[CA_FIRSTFRAME].function = &CommandData::function_CA_FIRSTFRAME;
 	CA_data[CA_LASTFRAME].function = &CommandData::function_CA_LASTFRAME;
 	CA_data[CA_LOADTRAJECTORY].function = &CommandData::function_CA_LOADTRAJECTORY;

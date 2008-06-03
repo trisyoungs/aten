@@ -29,7 +29,7 @@
 // Debug messaging modes
 namespace Debug
 {
-	enum DebugMode { None=0, Calls=1, MoreCalls=2, Typing=4, Parse=8, Verbose=16, Filters=32, nDebugModes=7 };
+	enum DebugMode { None=0, Calls=1, MoreCalls=2, Typing=4, Parse=8, Verbose=16, Commands=32, nDebugModes=7 };
 	// Add a debug level to the debug output bitvector
 	void addDebug(Debug::DebugMode);
 	// Remove a debug level from the debug output bitvector

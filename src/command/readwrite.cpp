@@ -74,7 +74,7 @@ int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
 	}
 	inputfile->read((char*) &readc, c->argi(1));
 	c->arg(0)->set(readc);
-	msg(Debug::Filters,"Unformatted char read got '%s'\n",readc);
+	msg(Debug::Commands,"Unformatted char read got '%s'\n",readc);
 	return CR_SUCCESS;
 }
 
@@ -90,7 +90,7 @@ int CommandData::function_CA_READFLOAT(Command *&c, Bundle &obj)
 	double readd;
 	inputfile->read((char*) &readd, 8);
 	c->arg(0)->set(readd);
-	msg(Debug::Filters,"Unformatted double read got '%f'\n",readd);
+	msg(Debug::Commands,"Unformatted double read got '%f'\n",readd);
 	return CR_SUCCESS;
 }
 
@@ -106,7 +106,7 @@ int CommandData::function_CA_READINTEGER(Command *&c, Bundle &obj)
 	int readi;
 	inputfile->read((char*) &readi, 4);
 	c->arg(0)->set(readi);
-	msg(Debug::Filters,"Unformatted int read got '%i'\n",readi);
+	msg(Debug::Commands,"Unformatted int read got '%i'\n",readi);
 	return CR_SUCCESS;
 }
 

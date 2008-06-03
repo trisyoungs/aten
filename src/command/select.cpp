@@ -119,7 +119,7 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 int CommandData::function_CA_DESELECT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	selectAtoms(obj.m, c->argc(0), TRUE);
+	selectAtoms(obj.rs, c->argc(0), TRUE);
 	return CR_SUCCESS;
 }
 
@@ -127,7 +127,7 @@ int CommandData::function_CA_DESELECT(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->selectAll();
+	obj.rs->selectAll();
 	return CR_SUCCESS;
 }
 
@@ -135,7 +135,7 @@ int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	selectAtoms(obj.m, c->argc(0), FALSE);
+	selectAtoms(obj.rs, c->argc(0), FALSE);
 	return CR_SUCCESS;
 }
 
@@ -143,19 +143,19 @@ int CommandData::function_CA_SELECT(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Forcefield *ff = obj.m->forcefield();
+	Forcefield *ff = obj.rs->forcefield();
 	if (ff == NULL)
 	{
 		msg(Debug::None,"No forcefield associated to model.\n");
 		return CR_FAIL;
 	}
 	ForcefieldAtom *ffa;
-	for (Atom *i = obj.m->atoms(); i != NULL; i = i->next)
+	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next)
 	{
 		ffa = i->type();
 		if (ffa != NULL)
 		{
-			if (ff->matchType(ffa->name(),c->argc(0)) != 0) obj.m->selectAtom(i);
+			if (ff->matchType(ffa->name(),c->argc(0)) != 0) obj.rs->selectAtom(i);
 		}
 	}
 	return CR_SUCCESS;
@@ -165,7 +165,7 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->selectionInvert();
+	obj.rs->selectionInvert();
 	return CR_SUCCESS;
 }
 
@@ -173,7 +173,7 @@ int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->selectNone();
+	obj.rs->selectNone();
 	return CR_SUCCESS;
 }
 
@@ -181,7 +181,7 @@ int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->selectOverlaps(c->argd(0));
+	obj.rs->selectOverlaps(c->argd(0));
 	return CR_SUCCESS;
 }
 
@@ -190,7 +190,7 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Pattern *p = NULL;
-	if (c->hasArg(0)) p = obj.m->findPattern(c->argc(0));
+	if (c->hasArg(0)) p = obj.rs->findPattern(c->argc(0));
 	else p = obj.p;
 	if (p == NULL) msg(Debug::None,"No pattern in which to select atoms.\n");
 	else
@@ -198,7 +198,7 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 		Atom *i = p->firstAtom();
 		for (int n=0; n<p->totalAtoms(); n++)
 		{
-			obj.m->selectAtom(i);
+			obj.rs->selectAtom(i);
 			i = i->next;
 		}
 	}
@@ -214,12 +214,12 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 	testat.expand(c->argc(1),NULL,NULL);
 	// Apply it to the atoms in the model, selecting atoms that match
 	int count = 0, matchscore, atomscore;
-	if (obj.m->autocreatePatterns())
+	if (obj.rs->autocreatePatterns())
 	{
 		// Prepare for typing
-		obj.m->describeAtoms();
+		obj.rs->describeAtoms();
 		// Loop over patterns and select atoms
-		for (Pattern *p = obj.m->patterns(); p != NULL; p = p->next)
+		for (Pattern *p = obj.rs->patterns(); p != NULL; p = p->next)
 		{
 			Atom *i = p->firstAtom();
 			for (int n=0; n<p->totalAtoms(); n++)
@@ -228,10 +228,10 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 				i->tempi = 1;
 				if (i->element() == testat.characterElement())
 				{
-					atomscore = testat.matchAtom(i,p->ringList(),obj.m,i);
+					atomscore = testat.matchAtom(i,p->ringList(),obj.rs,i);
 					if (atomscore != 0)
 					{
-						obj.m->selectAtom(i);
+						obj.rs->selectAtom(i);
 						count ++;
 						matchscore = atomscore;
 					}
@@ -242,7 +242,7 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 		// Write results
 		msg(Debug::None,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
 		// Update model and delete temporary atomtype
-		obj.m->logChange(Change::SelectionLog);
+		obj.rs->logChange(Change::SelectionLog);
 		return CR_SUCCESS;
 	}
 	else msg(Debug::None,"Can't test atomtype description without a valid pattern definition!\n");

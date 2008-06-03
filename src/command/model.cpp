@@ -31,7 +31,7 @@ int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Vec3<double> v;
-	for (int n = 0; n < c->argi(0); n++) obj.i = obj.m->addAtom(0, v);
+	for (int n = 0; n < c->argi(0); n++) obj.i = obj.rs->addAtom(0, v);
 	return CR_SUCCESS;
 }
 
@@ -89,7 +89,7 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->print();
+	obj.rs->renderSource()->print();
 	return CR_SUCCESS;
 }
 
@@ -123,7 +123,7 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->printLogs();
+	obj.rs->renderSource()->printLogs();
 	return CR_SUCCESS;
 }
 
@@ -131,18 +131,17 @@ int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
 int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Model *parent = obj.m->trajectoryParent();
-	if (parent == NULL)
+	if (obj.m == obj.rs)
 	{
-		printf("<<<< SEVERE - No trajectory parent set for 'modeltemplate' >>>>\n");
+		printf("Cannot perform model templating in the parent model.\n");
 		return CR_FAIL;
 	}
 	// Create the atoms template
 	Vec3<double> v;
 	Atom *j;
-	for (obj.i = parent->atoms(); obj.i != NULL; obj.i = obj.i->next)
+	for (obj.i = obj.m->atoms(); obj.i != NULL; obj.i = obj.i->next)
 	{
-		j = obj.m->addAtom(obj.i->element(), v);
+		j = obj.rs->addAtom(obj.i->element(), v);
 		j->copyStyle(obj.i);
 	}
 	return CR_SUCCESS;
@@ -152,8 +151,8 @@ int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 int CommandData::function_CA_NAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->setName(c->argc(0));
-	msg(Debug::None,"Created model '%s'\n", obj.m->name());
+	obj.rs->setName(c->argc(0));
+	msg(Debug::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return CR_SUCCESS;
 }
 
@@ -212,7 +211,7 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 		msg(Debug::None,"No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
 		return CR_FAIL;
 	}
-	obj.m->setFilter(f);
-	obj.m->setFilename(c->argc(1));
+	obj.rs->setFilter(f);
+	obj.rs->setFilename(c->argc(1));
 	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
 }

@@ -59,13 +59,13 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			el = 0;
 			break;
 	}
-	if (c->hasArg(3)) master.current.i = obj.m->addAtom(el, c->arg3d(1));
-	else master.current.i = obj.m->addAtom(el, c->parent()->penPosition);
+	if (c->hasArg(3)) master.current.i = obj.rs->addAtom(el, c->arg3d(1));
+	else master.current.i = obj.rs->addAtom(el, c->parent()->penPosition);
 	// Add the name to the model's namesForcefield, if requested and it exists
-	if (prefs.keepNames() && obj.m->namesForcefield())
+	if (prefs.keepNames() && obj.rs->namesForcefield())
 	{
 		// Search for this typename in the ff
-		f = obj.m->namesForcefield();
+		f = obj.rs->namesForcefield();
 		ffa = f->findType(c->argc(0));
 		if (ffa == NULL) 
 		{
@@ -105,9 +105,9 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 	}
 	// Check for presence of unit cell
 	Vec3<double> r = c->arg3d(1);
-	if (obj.m->cell()->type() == Cell::NoCell) msg(Debug::None,"Warning: No unit cell present - atom added with supplied coordinates.\n");
-	else r = obj.m->cell()->fracToReal(r);
-	master.current.i = obj.m->addAtom(el, r);
+	if (obj.rs->cell()->type() == Cell::NoCell) msg(Debug::None,"Warning: No unit cell present - atom added with supplied coordinates.\n");
+	else r = obj.rs->cell()->fracToReal(r);
+	master.current.i = obj.rs->addAtom(el, r);
 	return CR_SUCCESS;
 }
 
@@ -115,8 +115,8 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Atom *i = obj.m->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), c->parent()->penPosition);
-	if (obj.i != NULL) obj.m->bondAtoms(obj.i,i,Bond::Single);
+	Atom *i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), c->parent()->penPosition);
+	if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,Bond::Single);
 	master.current.i = i;
 	return CR_SUCCESS;
 }
@@ -125,7 +125,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETCHARGE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->setCharge(c->argd(0));
 	return CR_SUCCESS;
@@ -135,9 +135,9 @@ int CommandData::function_CA_SETCHARGE(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETCOORDS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(3)) obj.i = obj.m->atom(c->argi(3) - 1);
+	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
-	obj.m->positionAtom(obj.i, c->arg3d(0));
+	obj.rs->positionAtom(obj.i, c->arg3d(0));
 	return CR_SUCCESS;
 }
 
@@ -145,7 +145,7 @@ int CommandData::function_CA_SETCOORDS(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETELEMENT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->setElement(elements.find(c->argc(0)));
 	return CR_SUCCESS;
@@ -155,7 +155,7 @@ int CommandData::function_CA_SETELEMENT(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETFORCES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(3)) obj.i = obj.m->atom(c->argi(3) - 1);
+	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f() = c->arg3d(0);
 	return CR_SUCCESS;
@@ -165,7 +165,7 @@ int CommandData::function_CA_SETFORCES(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETFX(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(0,c->argd(0));
 	return CR_SUCCESS;
@@ -175,7 +175,7 @@ int CommandData::function_CA_SETFX(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETFY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(1,c->argd(0));
 	return CR_SUCCESS;
@@ -185,7 +185,7 @@ int CommandData::function_CA_SETFY(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETFZ(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(2,c->argd(0));
 	return CR_SUCCESS;
@@ -195,7 +195,7 @@ int CommandData::function_CA_SETFZ(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETID(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->setId(c->argi(0));
 	return CR_SUCCESS;
@@ -205,7 +205,7 @@ int CommandData::function_CA_SETID(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETRX(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(0,c->argd(0));
 	return CR_SUCCESS;
@@ -215,7 +215,7 @@ int CommandData::function_CA_SETRX(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETRY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(1,c->argd(0));
 	return CR_SUCCESS;
@@ -225,7 +225,7 @@ int CommandData::function_CA_SETRY(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETRZ(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(2,c->argd(0));
 	return CR_SUCCESS;
@@ -235,7 +235,7 @@ int CommandData::function_CA_SETRZ(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETVELOCITIES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(3)) obj.i = obj.m->atom(c->argi(3) - 1);
+	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v() = c->arg3d(0);
 	return CR_SUCCESS;
@@ -245,7 +245,7 @@ int CommandData::function_CA_SETVELOCITIES(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETVX(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(0,c->argd(0));
 	return CR_SUCCESS;
@@ -255,7 +255,7 @@ int CommandData::function_CA_SETVX(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETVY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(1,c->argd(0));
 	return CR_SUCCESS;
@@ -265,7 +265,7 @@ int CommandData::function_CA_SETVY(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETVZ(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->hasArg(1)) obj.i = obj.m->atom(c->argi(1) - 1);
+	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(2,c->argd(0));
 	return CR_SUCCESS;

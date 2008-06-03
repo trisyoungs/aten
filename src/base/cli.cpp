@@ -41,7 +41,7 @@ Cli cliSwitches[] = {
 		"<commands>", "Execute supplied commands before main program execution" },
 	{ Cli::DebugAllSwitch,		'\0',"debugall",	0,
 		"",		"Print out all debug information" },
-	{ Cli::DebugFileSwitch,		'\0',"debugfile",	0,
+	{ Cli::DebugCommandsSwitch,	'\0',"debugcommands",	0,
 		"",		"Print out verbose information from file filter routines" },
 	{ Cli::DebugMoreSwitch,		'\0',"debugmore",	0,
 		"",		"Print all subroutine call information" },
@@ -192,8 +192,8 @@ int Master::parseCli(int argc, char *argv[])
 					Debug::addDebug(Debug::Typing);
 					break;
 				// Turn on debug messages for atom typing
-				case (Cli::DebugFileSwitch):
-					Debug::addDebug(Debug::Filters);
+				case (Cli::DebugCommandsSwitch):
+					Debug::addDebug(Debug::Commands);
 					break;
 				// Turn on debug messages for more calls
 				case (Cli::DebugMoreSwitch):

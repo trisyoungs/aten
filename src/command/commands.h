@@ -364,6 +364,7 @@ enum CommandAction {
 	CA_QUIT,
 
 	// Trajectory Commands
+	CA_FINALISEFRAME,
 	CA_FIRSTFRAME,
 	CA_LASTFRAME,
 	CA_LOADTRAJECTORY,
@@ -704,6 +705,7 @@ class CommandData
 	int function_CA_HELP(Command *&c, Bundle &obj);
 	int function_CA_QUIT(Command *&c, Bundle &obj);
 	// Trajectory Commands
+	int function_CA_FINALISEFRAME(Command *&c, Bundle &obj);
 	int function_CA_FIRSTFRAME(Command *&c, Bundle &obj);
 	int function_CA_LASTFRAME(Command *&c, Bundle &obj);
 	int function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj);

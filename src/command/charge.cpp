@@ -28,7 +28,7 @@
 int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->assignForcefieldCharges();
+	obj.rs->assignForcefieldCharges();
 	return CR_SUCCESS;
 }
 
@@ -36,13 +36,12 @@ int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Model *frame = obj.m->currentFrame();
-	if (frame == NULL) 
+	if (obj.rs == obj.m) 
 	{
 		msg(Debug::None,"Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
 		return CR_FAIL;
 	}
-	else frame->copyAtomData(obj.m, Atom::ChargeData);
+	else obj.rs->copyAtomData(obj.m, Atom::ChargeData);
 	return CR_SUCCESS;
 }
 
@@ -50,7 +49,7 @@ int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->chargePatternAtom(obj.p,c->argi(0),c->argd(1));
+	obj.rs->chargePatternAtom(obj.p,c->argi(0),c->argd(1));
 	return CR_SUCCESS;
 }
 
@@ -58,8 +57,7 @@ int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 int CommandData::function_CA_CHARGESELECTION(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	for (Atom *i = obj.m->firstSelected(); i != NULL; i = i->nextSelected())
-		i->setCharge(c->argd(0));
+	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) i->setCharge(c->argd(0));
 	return CR_SUCCESS;
 }
 
@@ -74,6 +72,6 @@ int CommandData::function_CA_CHARGETYPE(Command *&c, Bundle &obj)
 int CommandData::function_CA_CLEARCHARGES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->clearCharges();
+	obj.rs->clearCharges();
 	return CR_SUCCESS;
 }

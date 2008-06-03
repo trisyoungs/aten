@@ -105,6 +105,7 @@ void Master::setCurrentModel(Model *m)
 	dbgBegin(Debug::Calls,"Master::setCurrentModel");
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
+	current.rs = (current.m == NULL ? NULL : current.m->renderSource());
 	// Set other Bundle objects based on model
 	current.p = m->patterns();
 	current.i = NULL;
@@ -157,17 +158,18 @@ int Master::nModels() const
 Model *Master::addModel()
 {
 	dbgBegin(Debug::Calls,"Master::addModel");
-	current.m = models_.add();
+	Model *m = models_.add();
 	char newname[16];
-	sprintf(newname,"Unnamed%03i",++modelId_);
-	current.m->setName(newname);
+	sprintf(newname,"Unnamed%03i", ++modelId_);
+	m->setName(newname);
 	if (gui.exists())
 	{
-		gui.addModel(current.m);
+		gui.addModel(m);
 		gui.disorderDialog->refresh();
 	}
+	setCurrentModel(m);
 	dbgEnd(Debug::Calls,"Master::addModel");
-	return current.m;
+	return m;
 }
 
 // Remove model
@@ -180,8 +182,8 @@ void Master::removeModel(Model *xmodel)
 	// Delete the current model, but don't allow there to be zero models_...
 	// (if possible, set the active row to the next model, otherwise  the previous)
 	if (models_.nItems() == 1) m = master.addModel();
-	else xmodel->next != NULL ? m = xmodel->next : m = xmodel->prev;
-	current.m = m;
+	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
+	setCurrentModel(m);
 	// Delete the old model (GUI first, then master)
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);

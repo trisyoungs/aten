@@ -20,6 +20,7 @@
 */
 
 #include "classes/bundle.h"
+#include "model/model.h"
 #include "base/constants.h"
 #include <stdio.h>
 
@@ -27,6 +28,7 @@
 Bundle::Bundle()
 {
 	m = 0;
+	rs = 0;
 	s = 0;
 	ff = 0;
 	g = 0;

@@ -45,6 +45,8 @@ class Bundle
 	public:
 	// Model pointer
 	Model *m;
+	// Render source pointer
+	Model *rs;
 	// Pattern pointer
 	Pattern *p;
 	// Atom pointer

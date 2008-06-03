@@ -21,9 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/master.h"
-//#include "base/debug.h"
 #include "model/model.h"
-//#include "parse/filter.h"
 
 // Create energy expression for current model ('createexpression'}
 int CommandData::function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj)

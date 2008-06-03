@@ -36,7 +36,7 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Get glyph style
 	Glyph::GlyphType gs = Glyph::glyphType(c->argc(0));
-	master.current.gl = obj.m->addGlyph();
+	master.current.gl = obj.rs->addGlyph();
 	if (gs == Glyph::nGlyphTypes) msg(Debug::None,"Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
 	master.current.gl->setType(gs);
 	if (c->hasArg(1)) master.current.gl->setText(c->argc(1));
@@ -59,7 +59,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 	if (c->hasArg(1))
 	{
 		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
-		else target = obj.m->atom(c->argi(1) - 1);
+		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
 	obj.gl->data[d].setAtom(target, GlyphData::ForceData);
@@ -83,7 +83,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 	if (c->hasArg(1))
 	{
 		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
-		else target = obj.m->atom(c->argi(1) - 1);
+		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
 	obj.gl->data[d].setAtom(target, GlyphData::PositionData);
@@ -107,7 +107,7 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 	if (c->hasArg(1))
 	{
 		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
-		else target = obj.m->atom(c->argi(1) - 1);
+		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
 	obj.gl->data[d].setAtom(target, GlyphData::VelocityData);
@@ -127,7 +127,7 @@ int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 		if (c->hasArg(d))
 		{
 			if (c->argt(d) == Variable::AtomVariable) target = c->arga(d);
-			else target = obj.m->atom(c->argi(d) - 1);
+			else target = obj.rs->atom(c->argi(d) - 1);
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
@@ -149,7 +149,7 @@ int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 		if (c->hasArg(d))
 		{
 			if (c->argt(d) == Variable::AtomVariable) target = c->arga(d);
-			else target = obj.m->atom(c->argi(d) - 1);
+			else target = obj.rs->atom(c->argi(d) - 1);
 		}
 		else break;
 		// Finally, check pointer currently in target and store it
@@ -170,7 +170,7 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 		if (c->hasArg(d))
 		{
 			if (c->argt(d) == Variable::AtomVariable) target = c->arga(d);
-			else target = obj.m->atom(c->argi(d) - 1);
+			else target = obj.rs->atom(c->argi(d) - 1);
 		}
 		else break;
 		// Finally, check pointer currently in target and store it

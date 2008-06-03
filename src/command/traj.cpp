@@ -23,6 +23,30 @@
 #include "base/master.h"
 #include "parse/filter.h"
 #include "model/model.h"
+#include "gui/gui.h"
+
+// Finalise current trajectory frame
+int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.rs == obj.m)
+	{
+		msg(Debug::None, "Current model does not appear to be a trajectory frame.\n");
+		return CR_FAIL;
+	}
+	// Do various necessary calculations
+	if (prefs.coordsInBohr()) obj.rs->bohrToAngstrom();
+	obj.rs->renumberAtoms();
+	obj.rs->calculateViewMatrix();
+	obj.rs->resetView();
+	obj.rs->calculateMass();
+	obj.rs->calculateDensity();
+	obj.rs->selectNone();
+	obj.rs->resetLogs();
+	obj.rs->updateSavePoint();
+	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
+	return CR_SUCCESS;
+}
 
 // Skip to first frame ('firstframe')
 int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
@@ -34,6 +58,7 @@ int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	obj.m->seekFirstFrame();
+	gui.modelChanged(FALSE, FALSE, FALSE);
 	return CR_SUCCESS;
 }
 
@@ -47,6 +72,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	obj.m->seekLastFrame();
+	gui.modelChanged(FALSE, FALSE, FALSE);
 	return CR_SUCCESS;
 }
 
@@ -69,6 +95,7 @@ int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	obj.m->seekNextFrame();
+	gui.modelChanged(FALSE, FALSE, FALSE);
 	return CR_SUCCESS;
 }
 
@@ -82,6 +109,7 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	obj.m->seekPreviousFrame();
+	gui.modelChanged(FALSE, FALSE, FALSE);
 	return CR_SUCCESS;
 }
 
@@ -95,5 +123,6 @@ int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	obj.m->seekFrame(c->argi(0));
+	gui.modelChanged(FALSE, FALSE, FALSE);
 	return CR_SUCCESS;
 }

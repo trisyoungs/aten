@@ -26,7 +26,7 @@
 int CommandData::function_CA_CLEARLABELS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->selectionClearLabels();
+	obj.rs->selectionClearLabels();
 	return CR_SUCCESS;
 }
 
@@ -35,7 +35,7 @@ int CommandData::function_CA_LABEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al != Atom::nLabelItems) obj.m->selectionAddLabels(al);
+	if (al != Atom::nLabelItems) obj.rs->selectionAddLabels(al);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -45,7 +45,7 @@ int CommandData::function_CA_REMOVELABEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al != Atom::nLabelItems) obj.m->selectionRemoveLabels(al);
+	if (al != Atom::nLabelItems) obj.rs->selectionRemoveLabels(al);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
