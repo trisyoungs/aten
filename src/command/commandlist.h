@@ -271,9 +271,9 @@ class CommandList
 
 	public:
 	// Create model variables
+	bool createModelVariables();
+	// Set model variables
 	void setModelVariables(Model *m);
-	// Create cell variables
-	void setCellVariables(Cell *cell);
 	// Create atom variables
 	bool createAtomVariables(const char *s);
 	// Set atom variables
