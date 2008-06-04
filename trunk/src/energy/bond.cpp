@@ -77,6 +77,15 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 					expo = 1.0 - exp( -forcek * rij );
 					energy += d * ( expo*expo - 1.0);
 					break;
+				case (BondFunctions::Morse2):
+					// U = E0 * ( (exp( -k(rij - r0) ) - 1)**2)
+					d = params.data[BondFunctions::MorseD];
+					forcek = fabs(params.data[BondFunctions::MorseK]);
+					eq = params.data[BondFunctions::MorseEq];
+					rij -= eq;
+					expo = exp( -forcek * rij ) - 1.0;
+					energy += d * expo * expo;
+					break;
 				default:
 					msg(Debug::None, "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
 					break;

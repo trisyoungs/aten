@@ -254,7 +254,7 @@ bool Forcefield::readEquivalents(ifstream &fffile)
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg(Debug::None,"File ereadVdwor while reading equivalents data for atom %i.\n",count+1);
+			if (success == 1) msg(Debug::None,"File error while reading equivalents data for atom %i.\n",count+1);
 			if (success == -1) msg(Debug::None,"End of file while reading equivalents data for atom %i.\n",count+1);
 			dbgEnd(Debug::Calls,"Forcefield::readEquivalents");
 			return FALSE;
@@ -302,7 +302,7 @@ bool Forcefield::readVdw(ifstream &fffile)
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg(Debug::None,"File ereadVdwor reading VDW data for atom %i.\n",count+1);
+			if (success == 1) msg(Debug::None,"File error reading VDW data for atom %i.\n",count+1);
 			if (success == -1) msg(Debug::None,"End of file while reading VDW data for atom %i.\n",count+1);
 			dbgEnd(Debug::Calls,"Forcefield::readVdw");
 			return FALSE;
@@ -354,8 +354,8 @@ bool Forcefield::readBonds(ifstream &fffile)
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg(Debug::None,"File ereadVdwor reading bond data %i.\n",count+1);
-			if (success == -1) msg(Debug::None,"End of file ereadVdwor reading bond data %i.\n",count+1);
+			if (success == 1) msg(Debug::None,"File error reading bond data %i.\n",count+1);
+			if (success == -1) msg(Debug::None,"End of file error reading bond data %i.\n",count+1);
 			dbgEnd(Debug::Calls,"Forcefield::readBonds");
 			return FALSE;
 		}
@@ -375,9 +375,8 @@ bool Forcefield::readBonds(ifstream &fffile)
 			newffbond->setTypeName(0,parser.argc(0));
 			newffbond->setTypeName(1,parser.argc(1));
 			newffbond->setBondStyle(bondstyle);
-			newffbond->params().data[0] = parser.argd(2);
-			newffbond->params().data[1] = parser.argd(3);
-			msg(Debug::Verbose,"BOND %i : %s  %s  %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->params().data[0], newffbond->params().data[1]); 
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n)) newffbond->params().data[n] = parser.argd(n+2);
+			msg(Debug::Verbose,"BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->params().data[0], newffbond->params().data[1], newffbond->params().data[2], newffbond->params().data[3], newffbond->params().data[4], newffbond->params().data[5]); 
 			count ++;
 		}
 	} while (!done);
@@ -409,8 +408,8 @@ bool Forcefield::readAngles(ifstream &fffile)
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg(Debug::None,"File ereadVdwor reading angle data %i.\n",count+1);
-			if (success == -1) msg(Debug::None,"End of file ereadVdwor reading angle data %i.\n",count+1);
+			if (success == 1) msg(Debug::None,"File error reading angle data %i.\n",count+1);
+			if (success == -1) msg(Debug::None,"End of file while reading angle data %i.\n",count+1);
 			dbgEnd(Debug::Calls,"Forcefield::readAngles");
 			return FALSE;
 		}
@@ -431,9 +430,8 @@ bool Forcefield::readAngles(ifstream &fffile)
 			newffangle->setTypeName(1, parser.argc(1));
 			newffangle->setTypeName(2, parser.argc(2));
 			newffangle->setAngleStyle(anglestyle);
-			newffangle->params().data[0] = parser.argd(3);
-			newffangle->params().data[1] = parser.argd(4);
-			msg(Debug::Verbose,"ANGLE %i : %s  %s  %s  %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->params().data[0], newffangle->params().data[1]); 
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n)) newffangle->params().data[n] = parser.argd(n+3);
+			msg(Debug::Verbose,"ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->params().data[0], newffangle->params().data[1], newffangle->params().data[2], newffangle->params().data[3], newffangle->params().data[4], newffangle->params().data[5]); 
 			count ++;
 		}
 	} while (!done);
@@ -465,8 +463,8 @@ bool Forcefield::readTorsions(ifstream &fffile)
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) msg(Debug::None,"File ereadVdwor reading torsion data %i.\n",count+1);
-			if (success == -1) msg(Debug::None,"End of file ereadVdwor reading torsion data %i.\n",count+1);
+			if (success == 1) msg(Debug::None,"File error reading torsion data %i.\n",count+1);
+			if (success == -1) msg(Debug::None,"End of file error reading torsion data %i.\n",count+1);
 			dbgEnd(Debug::Calls,"Forcefield::readTorsions");
 			return FALSE;
 		}
@@ -492,9 +490,10 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			newfftorsion->params().data[1] = parser.argd(5);
 			newfftorsion->params().data[2] = parser.argd(6);
 			newfftorsion->params().data[3] = parser.argd(7);
+			for (n=0; n<MAXFFPARAMDATA-2; n++) if (!parser.isBlank(n)) newfftorsion->params().data[n] = parser.argd(n+4);
 			newfftorsion->params().data[TF_ESCALE] = escale14;
 			newfftorsion->params().data[TF_VSCALE] = vscale14;
-			msg(Debug::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->params().data[0], newfftorsion->params().data[1], newfftorsion->params().data[2], newfftorsion->params().data[3]); 
+			msg(Debug::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->params().data[0], newfftorsion->params().data[1], newfftorsion->params().data[2], newfftorsion->params().data[3], newfftorsion->params().data[4], newfftorsion->params().data[5]);
 			count ++;
 		}
 	} while (!done);

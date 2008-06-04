@@ -63,16 +63,24 @@ VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char *s)
 FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
 	{ "None", "none",
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
-		{ "null", "null", "null", "null", "null", "null" } },
+		{ "null", "null", "null", "null", "null", "null" },
+		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Constraint", "constraint",
 		{ "Force K", "Eq. Distance" },
-		{ "k", "eq" } },
+		{ "k", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Harmonic", "harmonic",
 		{ "Force K", "Eq. Distance" },
-		{ "k", "eq" } },
+		{ "k", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Morse", "morse",
 		{ "Force K", "Eq. Distance", "E(Diss.)" },
-		{ "k", "eq", "d" } }
+		{ "k", "eq", "d" },
+		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+	{ "Morse2", "morse2",
+		{ "Force K", "Eq. Distance", "E(Diss.)" },
+		{ "k", "eq", "d" },
+		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 BondFunctions::BondFunction BondFunctions::bondFunction(const char *s)
 {
@@ -86,22 +94,28 @@ BondFunctions::BondFunction BondFunctions::bondFunction(const char *s)
 FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
 	{ "None", "none",
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
-		{ "null", "null", "null", "null", "null", "null" } },
+		{ "null", "null", "null", "null", "null", "null" },
+		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Harmonic", "harmonic",
 		{ "Force K", "Eq. Distance" },
-		{ "k", "eq" } },
+		{ "k", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Cosine", "cos",
-		{ "Force K", "Periodicity", "Eq. Angle" },
-		{ "k", "n", "eq" } },
+		{ "Force K", "Periodicity", "Eq. Angle", "Sign" },
+		{ "k", "n", "eq", "s" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 } },
 	{ "UFF Cosine 1", "uffcos1",
 		{ "Force K", "Periodicity", "Eq. Angle" },
-		{ "k", "n", "eq" } },
+		{ "k", "n", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "UFF Cosine 2", "uffcos2",
 		{ "Force K", "Periodicity", "Eq. Angle" },
-		{ "k", "n", "eq" } },
+		{ "k", "n", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Harmonic Cosine", "harmcos",
 		{ "Force K", "Eq. Angle" },
-		{ "k", "eq" } }
+		{ "k", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s)
 {
@@ -115,19 +129,24 @@ AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s)
 FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFunctions] = {
 	{ "None", "none",
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
-		{ "null", "null", "null", "null", "null", "null" } },
+		{ "null", "null", "null", "null", "null", "null" },
+		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Cosine", "cos",
 		{ "Force K", "Periodicity", "Eq. Angle", "---", "EScale", "VScale" },
-		{ "k", "n", "eq", "null", "escale", "vscale" } },
+		{ "k", "n", "eq", "null", "escale", "vscale" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Triple Cosine", "cos3",
 		{ "Force K1", "Force K2", "Force K3", "---", "EScale", "VScale" },
-		{ "k1", "k2", "k3", "null", "escale", "vscale" } },
+		{ "k1", "k2", "k3", "null", "escale", "vscale" },
+		{ 1, 1, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Quadruple Cosine", "cos4",
 		{ "Force K1", "Force K2", "Force K3", "Force K4", "EScale", "VScale" },
-		{ "k1", "k2", "k3", "k4", "escale", "vscale"} },
+		{ "k1", "k2", "k3", "k4", "escale", "vscale"},
+		{ 1, 1, 1, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Triple Cosine + Constant", "cos3c",
 		{ "Force K0", "Force K1", "Force K2", "Force K3", "EScale", "VScale" },
-		{ "k0", "k1", "k2", "k3", "escale", "vscale" } }
+		{ "k0", "k1", "k2", "k3", "escale", "vscale" },
+		{ 1, 1, 1, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *s)
 {
@@ -139,8 +158,8 @@ TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *
 
 // Generation rules (for rule-based FFs)
 
-const char *ForcefieldRulesStrings[Rules::nForcefieldRules] = { "None", "UFF", "Dreiding", "Dreiding/M" };
-const char *ForcefieldRulesKeywords[Rules::nForcefieldRules] = { "none", "uff", "dreiding", "dreidingm" };
+const char *ForcefieldRulesStrings[Rules::nForcefieldRules] = { "None", "UFF", "Dreiding", "Dreiding/X6" };
+const char *ForcefieldRulesKeywords[Rules::nForcefieldRules] = { "none", "uff", "dreiding", "dreidingx6" };
 const char *Rules::forcefieldRules(Rules::ForcefieldRules i)
 {
 	return ForcefieldRulesStrings[i];
