@@ -37,6 +37,10 @@ class FunctionData
 	const char *parameters[MAXFFPARAMDATA];
 	// Parameter keywords
 	const char *parameterKeywords[MAXFFPARAMDATA];
+	// Flag indicating energetic parameter
+	bool isEnergyParameter[MAXFFPARAMDATA];
+	// Default values for parameters
+	double defaultValues[MAXFFPARAMDATA];
 };
 
 // VDW Potential Functions
@@ -55,12 +59,13 @@ namespace VdwFunctions
 // Bond Potential Functions
 namespace BondFunctions
 {
-	enum BondFunction { None, Constraint, Harmonic, Morse, nBondFunctions };
+	enum BondFunction { None, Constraint, Harmonic, Morse, Morse2, nBondFunctions };
 	extern FunctionData BondFunctions[];
 	BondFunction bondFunction(const char*);
 	enum HarmonicParameters { HarmonicK, HarmonicEq };
 	enum ConstraintParameters { ConstraintK, ConstraintEq };
 	enum MorseParameters { MorseK, MorseEq, MorseD };
+	enum Morse2Parameters { Morse2K, Morse2Eq, Morse2D };
 }
 
 // Angle potential forms
@@ -70,7 +75,7 @@ namespace AngleFunctions
 	extern FunctionData AngleFunctions[];
 	AngleFunction angleFunction(const char*);
 	enum HarmonicParameters { HarmonicK, HarmonicEq };
-	enum CosineParameters { CosineK, CosineN, CosineEq };
+	enum CosineParameters { CosineK, CosineN, CosineEq, CosineS };
 	enum UffCosineParameters { UffCosineK, UffCosineN, UffCosineEq };
 	enum HarmonicCosineParameter { HarmonicCosineK, HarmonicCosineEq };
 }
@@ -99,7 +104,7 @@ namespace Electrostatics
 // Generation rules (for rule-based FFs)
 namespace Rules
 {
-	enum ForcefieldRules { None, Uff, Dreiding, DreidingM, nForcefieldRules };
+	enum ForcefieldRules { None, Uff, DreidingLJ, DreidingX6, nForcefieldRules };
 	const char *forcefieldRules(ForcefieldRules);
 	ForcefieldRules forcefieldRules(const char*);
 }

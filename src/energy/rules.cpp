@@ -51,8 +51,7 @@ void Forcefield::generateVdw(Atom *i)
 			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n", sigma, epsilon);
 			ffi->setVdwForm(VdwFunctions::Lj);
 			break;
-		case (Rules::Dreiding):
-	
+		case (Rules::DreidingX6):
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateVdw");
@@ -98,11 +97,12 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			newbond->params().data[BondFunctions::HarmonicK] = k;
 			msg(Debug::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
 			break;
-		case (Rules::Dreiding):
-			// Harmonic form (for Morse form, use Rules::DreidingM)
+		case (Rules::DreidingLJ):
+		case (Rules::DreidingX6):
+			// Harmonic Form
 			// Force constant k = 700.0 kcal/mol * BO(ij)
-			ri = ffi->generator(0);   //XXX
-			rj = ffj->generator(0);  // XXX
+			ri = ffi->generator(0);
+			rj = ffj->generator(0);
 			k = prefs.convertEnergy(700.0, Prefs::KiloCalories) * i->bondOrder(j);
 			newbond->setBondStyle(BondFunctions::Harmonic);
 			newbond->params().data[BondFunctions::HarmonicEq] = ri + rj - 0.01;
@@ -120,10 +120,14 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 	// Creates angle forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
 	dbgBegin(Debug::Calls,"Forcefield::generateAngle");
+	double ri, rj, rk, rij, rjk, rBO, rEN, chii, chij, chik, chi, rik2, rik5, Zi, Zk, beta, forcek, eq;
+	int n;
 	ForcefieldAtom *ffi = i->type();
 	ForcefieldAtom *ffj = j->type();
 	ForcefieldAtom *ffk = k->type();
-	ForcefieldBound *newangle = NULL;
+	// Create new angle and set type to None for now...
+	ForcefieldBound *newangle = angles_.add();
+	newangle->setAngleStyle(AngleFunctions::None);
 	switch (rules_)
 	{
 		case (Rules::None):
@@ -134,9 +138,6 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			// U(theta) = (k / (n*n)) * (1 + s*cos(n*theta))
 			// rik2 = rij**2 + rjk**2 - 2 * rij * rjk * cos(eq)
 			// k = beta (Zi * Zk / rik**5) * rij * rjk * (rij * rjk * (1-cos**2(eq)) - rik**2 * cos(eq))
-			double ri, rj, rk, rij, rjk, rBO, rEN, chii, chij, chik, chi, rik2, rik5, Zi, Zk, beta, forcek;
-			int n;
-			newangle = angles_.add();
 			ri = ffi->generator(0);
 			rj = ffj->generator(0);
 			rk = ffk->generator(0);
@@ -157,7 +158,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			rjk = rj + rk + rBO - rEN;
 			//printf("          : JK rBO, chi, rEN, rjk = %8.4f %8.4f %8.4f %8.4f\n",rBO,chi,rEN,rjk);
 			// Determine rik2 and rik5
-			double eq = ffj->generator(1) / DEGRAD;
+			eq = ffj->generator(1) / DEGRAD;
 			rik2 = rij * rij + rjk * rjk - 2.0 * ( rij * rjk * cos(eq));
 			rik5 = rik2 * rik2 * sqrt(rik2);
 			// Determine k
@@ -178,7 +179,28 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			if (n == 2) newangle->setAngleStyle(AngleFunctions::UffCosine2);
 			else newangle->setAngleStyle(AngleFunctions::UffCosine1);
 			msg(Debug::Verbose,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, n);
-
+			break;
+		case (Rules::DreidingLJ):
+		case (Rules::DreidingX6):
+			// Harmonic cosine form, except for eq=180 (linear molecules) where we use UFFCosine1
+			// Force constants are always 100.0 kcal/mol/rad**2
+			forcek = prefs.convertEnergy(100.0, Prefs::KiloCalories);
+			eq = ffj->generator(1);
+			newangle = angles_.add();
+			if (eq > 179.0)
+			{
+				newangle->setAngleStyle(AngleFunctions::UffCosine1);
+				newangle->params().data[AngleFunctions::UffCosineK] = forcek;
+				newangle->params().data[AngleFunctions::UffCosineN] = 1.0;
+				msg(Debug::Verbose,"Dreiding Angle (UFFCosine1) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = 1\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq);
+			}
+			else
+			{
+				newangle->setAngleStyle(AngleFunctions::HarmonicCosine);
+				newangle->params().data[AngleFunctions::HarmonicCosineK] = forcek / (sin(eq) * sin(eq));
+				newangle->params().data[AngleFunctions::HarmonicCosineEq] = eq;
+				msg(Debug::Verbose,"Dreiding Angle (harmcos) : %s-%s-%s - forcek = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), newangle->params().data[AngleFunctions::HarmonicCosineK], eq);
+			}
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateAngle");
@@ -199,8 +221,10 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			break;
 		case (Rules::Uff):
 			// UFF Torsions  TODO
-
 			newtorsion = torsions_.add();
+		case (Rules::DreidingLJ):
+		case (Rules::DreidingX6):
+			
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateTorsion");
