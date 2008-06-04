@@ -97,6 +97,7 @@ int Master::parseCli(int argc, char *argv[])
 	Prefs::ZmapType zm;
 	Namemap<int> *nm;
 	CommandList cl, *script;
+	cl.createModelVariables();
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -180,6 +181,7 @@ int Master::parseCli(int argc, char *argv[])
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
 					cl.clear();
+					cl.setModelVariables(master.current.m);
 					if (cl.cacheLine(argv[++argn])) cl.execute();
 					else return -1;
 					break;
@@ -295,12 +297,14 @@ int Master::parseCli(int argc, char *argv[])
 				case (Cli::PackSwitch):
 					prefs.setPackOnLoad(Prefs::SwitchOn);
 					break;
-				// Cache a script file
+				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = master.scripts.add();
+					script->createModelVariables();
 					if (script->load(argv[++argn]))
 					{
 						master.setProgramMode(Master::CommandMode);
+						script->setModelVariables(master.current.m);
 						if (!script->execute()) master.setProgramMode(Master::NoMode);
 						// Need to check program mode after each script since it can be changed
 						if (master.programMode() == Master::CommandMode) master.setProgramMode(Master::GuiMode);

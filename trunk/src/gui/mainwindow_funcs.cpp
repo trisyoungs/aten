@@ -161,8 +161,9 @@ void AtenForm::refreshModelTabs()
 
 void AtenForm::executeCommand()
 {
-	// Clear old script commands
+	// Clear old script commands and set current model variables
 	master.tempScript.clear();
+	master.tempScript.setModelVariables(master.current.m);
 	// Grab the current text of the line edit
 	parser.getArgsDelim(qPrintable(commandEdit_->text()), Parser::UseQuotes);
 	// Check for no commands given

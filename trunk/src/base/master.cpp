@@ -52,6 +52,10 @@ Master::Master()
 
 	// Clipboard
 	userClipboard = new Clipboard;
+
+	// CommandLists
+	tempScript.createModelVariables();
+	interactiveScript.createModelVariables();
 }
 
 // Destructor

@@ -1038,26 +1038,68 @@ bool CommandList::execute(Model *alttarget, ifstream *sourcefile)
 	return result;
 }
 
+// Create model variables
+bool CommandList::createModelVariables()
+{
+	Variable *v;
+	v = variables.createVariable("title","",Variable::CharacterVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("natoms","",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("nframes","",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("currentframe","",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell.type","",Variable::CharacterVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","type",Variable::CharacterVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","a",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","b",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","c",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","alpha",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","beta",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","gamma",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","ax",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","ay",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","az",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","bx",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","by",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","bz",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","cx",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","cy",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","cz",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+}
+
 // Set variables for model
 void CommandList::setModelVariables(Model *m)
 {
 	dbgBegin(Debug::Calls,"CommandList::setModelVariables");
+
 	if (m != NULL)
 	{
 		variables.set("title","",m->name());
 		variables.set("natoms","",m->nAtoms());
-	}
-	dbgEnd(Debug::Calls,"CommandList::setModelVariables");
-}
-
-// Set variables for cell
-void CommandList::setCellVariables(Cell *c)
-{
-	dbgBegin(Debug::Calls,"CommandList::setCellVariables");
-	Mat3<double> mat;
-	Vec3<double> vec;
-	if (c != NULL)
-	{
+		variables.set("nframes","",m->totalFrames());
+		variables.set("currentframe","",m->framePosition());
+		Cell *c = m->cell();
+		Mat3<double> mat;
+		Vec3<double> vec;
 		variables.set("cell","type",lowerCase(Cell::cellType(c->type())));
 		mat = c->axes();
 		variables.set("cell","ax",mat.rows[0].x);
@@ -1084,10 +1126,11 @@ void CommandList::setCellVariables(Cell *c)
 	}
 	else
 	{
+		variables.reset("title", "natoms", "nframes", "currentframe", "");
 		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
 		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.ox","cell.oy","cell.oz","");
 	}
-	dbgEnd(Debug::Calls,"CommandList::setCellVariables");
+	dbgEnd(Debug::Calls,"CommandList::setModelVariables");
 }
 
 // Create atom parameter variables

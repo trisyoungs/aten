@@ -74,6 +74,7 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 	{
 		master.setCurrentModel(m);
 		//gui.select_model(m);
+		c->parent()->setModelVariables(master.current.rs);
 		obj.p = NULL;
 		obj.i = m->atoms();
 		return CR_SUCCESS;
@@ -113,6 +114,7 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 			Model *m = master.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
+			c->parent()->setModelVariables(m);
 			return CR_SUCCESS;
 		}
 		else return CR_FAIL;
@@ -152,6 +154,7 @@ int CommandData::function_CA_NAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.rs->setName(c->argc(0));
+	c->parent()->setModelVariables(obj.rs);
 	msg(Debug::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return CR_SUCCESS;
 }
@@ -181,7 +184,8 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 	else
 	{
 		master.setCurrentModel(obj.m->next);
-		msg(Debug::None,"Current model is now '%s'.\n",obj.m->name());
+		msg(Debug::None,"Current model is now '%s'.\n", obj.m->name());
+		c->parent()->setModelVariables(master.current.rs);
 	}
 	return CR_SUCCESS;
 }
@@ -195,6 +199,7 @@ int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 	{
 		master.setCurrentModel(obj.m->prev);
 		msg(Debug::None,"Current model is now '%s'.\n",obj.m->name());
+		c->parent()->setModelVariables(master.current.rs);
 	}
 	return CR_SUCCESS;
 }

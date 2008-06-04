@@ -265,24 +265,7 @@ void Filter::setType(FilterType ft)
 			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
 			break;
 		case (Filter::ModelExport):
-			v = commands_.variables.createVariable("cell","type",Variable::CharacterVariable);
-			v = commands_.variables.createVariable("cell","a",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","b",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","c",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","alpha",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","beta",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","gamma",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","ax",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","ay",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","az",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","bx",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","by",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","bz",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","cx",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","cy",Variable::FloatVariable);
-			v = commands_.variables.createVariable("cell","cz",Variable::FloatVariable);
-			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
-			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
+			commands_.createModelVariables();
 			break;
 		case (Filter::TrajectoryExport):
 			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
@@ -297,7 +280,6 @@ void Filter::setType(FilterType ft)
 			v = commands_.variables.createVariable("ntorsionterms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
-
 			break;
 		case (Filter::GridExport):
 			break;
@@ -353,7 +335,6 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			}
 			// Set variables
 			commands_.setModelVariables(obj.m);
-			commands_.setCellVariables(obj.m->cell());
 			break;
 		case (Filter::ExpressionExport):
 			msg(Debug::None,"Save Field : %s (%s)\n", filename, name_.get());
