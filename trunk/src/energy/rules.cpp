@@ -213,7 +213,8 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 	// Creates torsion forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
 	dbgBegin(Debug::Calls,"Forcefield::generateTorsion");
-	ForcefieldBound *newtorsion = NULL;
+	ForcefieldBound *newtorsion = torsions_.add();
+	newtorsion->setTorsionStyle(TorsionFunctions::None);
 	switch (rules_)
 	{
 		case (Rules::None):
@@ -221,10 +222,10 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			break;
 		case (Rules::Uff):
 			// UFF Torsions  TODO
-			newtorsion = torsions_.add();
+			
+			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
-			
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateTorsion");

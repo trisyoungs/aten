@@ -146,7 +146,11 @@ FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFuncti
 	{ "Triple Cosine + Constant", "cos3c",
 		{ "Force K0", "Force K1", "Force K2", "Force K3", "EScale", "VScale" },
 		{ "k0", "k1", "k2", "k3", "escale", "vscale" },
-		{ 1, 1, 1, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
+		{ 1, 1, 1, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+	{ "Cosine Product", "coscos",
+		{ "Force K", "Periodicity", "Eq. Angle", "---", "EScale", "VScale" },
+		{ "k", "n", "eq", "null", "escale", "vscale" },
+		{ 1, 0, 0, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *s)
 {
