@@ -974,19 +974,15 @@ void CommandList::closeFiles()
 }
 
 // Execute command
-int Command::execute(Command *&c, Model *alttarget)
+int Command::execute(Command *&c)
 {
-	static Bundle obj;
-	// Grab master's pointer Bundle and set the current rendersource
-	obj = master.current;
-	obj.rs = (obj.m == NULL ? NULL : obj.m->renderSource());
-	// Set destination model to that provided if not NULL
-	if (alttarget != NULL) obj.m = alttarget;
-	return CALL_COMMAND(CA_data[action_],function_)(c, obj);
+	// Make sure the current rendersource is up-to-date
+	master.current.rs = (master.current.m == NULL ? NULL : master.current.m->renderSource());
+	return CALL_COMMAND(CA_data[action_],function_)(c, master.current);
 }
 
 // Execute commands in command list
-bool CommandList::execute(Model *alttarget, ifstream *sourcefile)
+bool CommandList::execute(ifstream *sourcefile)
 {
 	dbgBegin(Debug::Calls,"CommandList::execute");
 	// Set alternative input file if one was supplied
@@ -1003,7 +999,7 @@ bool CommandList::execute(Model *alttarget, ifstream *sourcefile)
 	{
 		// Run command and get return value
 		msg(Debug::Commands, "Commandlist executing command '%s'...\n",CA_data[c->command()].keyword);
-		switch (c->execute(c, alttarget))
+		switch (c->execute(c))
 		{
 			// Command succeeded - get following command
 			case (CR_SUCCESS):

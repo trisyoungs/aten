@@ -42,6 +42,12 @@ class AtenTransform : public QDialog
 	void on_RotateDefineAxisButton_clicked(bool on);
 	void on_RotateClockwiseButton_clicked(bool on);
 	void on_RotateAnticlockwiseButton_clicked(bool on);
+	void on_DefineFromPlaneButton_clicked(bool on);
+	void on_ApplyTransformButton_clicked(bool on);
+	void on_RotateIntoButton_clicked(bool on);
+	void on_DefineSourceXButton_clicked(bool on);
+	void on_DefineSourceYButton_clicked(bool on);
+	void on_DefineSourceZButton_clicked(bool on);
 	void dialogFinished(int result);
 
 	/*

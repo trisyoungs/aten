@@ -63,7 +63,7 @@ int CommandData::function_CA_GETPATTERN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Pattern *p = (c->argt(0) == Variable::IntegerVariable ? obj.m->pattern(c->argi(0)) : obj.m->findPattern(c->argc(0)));
-	if (p != NULL) master.current.p = p;
+	if (p != NULL) obj.p = p;
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }

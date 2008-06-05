@@ -411,7 +411,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 
 	}
 	// Execute CommandList
-	bool result = commands_.execute(NULL,trajfile);
+	bool result = commands_.execute(trajfile);
 	// Perform post-filter operations
 	switch (type_)
 	{

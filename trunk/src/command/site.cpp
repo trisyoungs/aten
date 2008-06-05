@@ -79,7 +79,7 @@ int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 	Site *s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
 	if (s == NULL) msg(Debug::None,"No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
-	else master.current.s = s;
+	else obj.s = s;
 	return CR_FAIL;
 }
 

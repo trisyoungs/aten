@@ -73,7 +73,7 @@ class Command
 	// Get command
 	CommandAction command();
 	// Execute command
-	int execute(Command *&c, Model *alttarget);
+	int execute(Command *&c);
 
 	/*
 	// Format
@@ -245,7 +245,7 @@ class CommandList
 	// Load commands from file
 	bool load(const char *filename);
 	// Execute command list
-	bool execute(Model *alttarget = NULL, ifstream *altfile = NULL);
+	bool execute(ifstream *altfile = NULL);
 	// Check structure of command list
 	bool validate();
 
