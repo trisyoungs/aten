@@ -554,7 +554,7 @@ bool Master::openFilters()
 	}
 
 	// Try to load user filters
-	if (!failed)
+	if (found && (!failed))
 	{
 		sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
 		msg(Debug::None,"Looking for user filter index in '%s'...\n", path);

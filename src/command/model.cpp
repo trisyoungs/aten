@@ -74,7 +74,7 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 	{
 		master.setCurrentModel(m);
 		//gui.select_model(m);
-		c->parent()->setModelVariables(master.current.rs);
+		c->parent()->setModelVariables(obj.rs);
 		obj.p = NULL;
 		obj.i = m->atoms();
 		return CR_SUCCESS;
@@ -185,7 +185,7 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 	{
 		master.setCurrentModel(obj.m->next);
 		msg(Debug::None,"Current model is now '%s'.\n", obj.m->name());
-		c->parent()->setModelVariables(master.current.rs);
+		c->parent()->setModelVariables(obj.rs);
 	}
 	return CR_SUCCESS;
 }
@@ -199,7 +199,7 @@ int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 	{
 		master.setCurrentModel(obj.m->prev);
 		msg(Debug::None,"Current model is now '%s'.\n",obj.m->name());
-		c->parent()->setModelVariables(master.current.rs);
+		c->parent()->setModelVariables(obj.rs);
 	}
 	return CR_SUCCESS;
 }

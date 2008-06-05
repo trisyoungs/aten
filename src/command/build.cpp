@@ -66,7 +66,7 @@ int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
 int CommandData::function_CA_ENDCHAIN(Command *&c, Bundle &obj)
 {
 	// TODO end chain with atom id (optional argument)
-	master.current.i = NULL;
+	obj.i = NULL;
 	return CR_SUCCESS;
 }
 

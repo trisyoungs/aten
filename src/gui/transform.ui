@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>302</width>
-    <height>251</height>
+    <width>368</width>
+    <height>286</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -25,11 +25,11 @@
    <item>
     <widget class="QTabWidget" name="tabWidget" >
      <property name="currentIndex" >
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="RotateTab" >
       <attribute name="title" >
-       <string>Rotate</string>
+       <string>Axis Rotate</string>
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
@@ -536,6 +536,613 @@
           </widget>
          </item>
         </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="MatrixTab" >
+      <attribute name="title" >
+       <string>Matrix</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QGroupBox" name="GridOriginGroup" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title" >
+          <string>Transformation / Source</string>
+         </property>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>2</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>2</number>
+            </property>
+            <item row="0" column="3" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixAZSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="4" >
+             <widget class="QPushButton" name="ApplyTransformButton" >
+              <property name="text" >
+               <string>Apply</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixCXSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixAXSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value" >
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="3" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixCZSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value" >
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="4" >
+             <widget class="QPushButton" name="DefineFromPlaneButton" >
+              <property name="text" >
+               <string>Plane</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixBZSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixAYSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixBXSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixCYSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2" >
+             <widget class="QDoubleSpinBox" name="SourceMatrixBYSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value" >
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QToolButton" name="DefineSourceXButton" >
+              <property name="text" >
+               <string>...</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QToolButton" name="DefineSourceYButton" >
+              <property name="text" >
+               <string>...</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" >
+             <widget class="QToolButton" name="DefineSourceZButton" >
+              <property name="text" >
+               <string>...</string>
+              </property>
+              <property name="icon" >
+               <iconset resource="icons.qrc" >:/basic/icons/basic_define.svg</iconset>
+              </property>
+              <property name="iconSize" >
+               <size>
+                <width>16</width>
+                <height>16</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="GridOriginGroup_2" >
+         <property name="sizePolicy" >
+          <sizepolicy>
+           <hsizetype>1</hsizetype>
+           <vsizetype>5</vsizetype>
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title" >
+          <string>Destination</string>
+         </property>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>2</number>
+          </property>
+          <property name="spacing" >
+           <number>4</number>
+          </property>
+          <item>
+           <layout class="QGridLayout" >
+            <property name="margin" >
+             <number>0</number>
+            </property>
+            <property name="spacing" >
+             <number>2</number>
+            </property>
+            <item row="1" column="1" >
+             <widget class="QDoubleSpinBox" name="DestMatrixBYSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value" >
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1" >
+             <widget class="QDoubleSpinBox" name="DestMatrixCYSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0" >
+             <widget class="QDoubleSpinBox" name="DestMatrixBXSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2" >
+             <widget class="QDoubleSpinBox" name="DestMatrixAZSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0" >
+             <widget class="QDoubleSpinBox" name="DestMatrixAXSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value" >
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1" >
+             <widget class="QDoubleSpinBox" name="DestMatrixAYSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0" >
+             <widget class="QDoubleSpinBox" name="DestMatrixCXSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2" >
+             <widget class="QDoubleSpinBox" name="DestMatrixBZSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="2" >
+             <widget class="QDoubleSpinBox" name="DestMatrixCZSpin" >
+              <property name="sizePolicy" >
+               <sizepolicy>
+                <hsizetype>7</hsizetype>
+                <vsizetype>0</vsizetype>
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="decimals" >
+               <number>5</number>
+              </property>
+              <property name="maximum" >
+               <double>10.000000000000000</double>
+              </property>
+              <property name="minimum" >
+               <double>-10.000000000000000</double>
+              </property>
+              <property name="singleStep" >
+               <double>0.100000000000000</double>
+              </property>
+              <property name="value" >
+               <double>1.000000000000000</double>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3" >
+             <widget class="QPushButton" name="RotateIntoButton" >
+              <property name="text" >
+               <string>Rotate</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>

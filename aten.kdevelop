@@ -57,7 +57,7 @@
         <envvar value="1" name="WANT_AUTOMAKE_1_6" />
       </envvars>
       <abortonerror>true</abortonerror>
-      <runmultiplejobs>true</runmultiplejobs>
+      <runmultiplejobs>false</runmultiplejobs>
       <numberofjobs>4</numberofjobs>
       <dontact>false</dontact>
       <makebin/>

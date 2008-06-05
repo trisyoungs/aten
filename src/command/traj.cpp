@@ -59,7 +59,7 @@ int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 	}
 	obj.m->seekFirstFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	c->parent()->setModelVariables(master.current.rs);
+	c->parent()->setModelVariables(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -74,7 +74,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 	}
 	obj.m->seekLastFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	c->parent()->setModelVariables(master.current.rs);
+	c->parent()->setModelVariables(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -98,7 +98,7 @@ int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 	}
 	obj.m->seekNextFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	c->parent()->setModelVariables(master.current.rs);
+	c->parent()->setModelVariables(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -113,7 +113,7 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 	}
 	obj.m->seekPreviousFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	c->parent()->setModelVariables(master.current.rs);
+	c->parent()->setModelVariables(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -128,6 +128,6 @@ int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
 	}
 	obj.m->seekFrame(c->argi(0));
 	gui.modelChanged(FALSE, FALSE, FALSE);
-	c->parent()->setModelVariables(master.current.rs);
+	c->parent()->setModelVariables(obj.rs);
 	return CR_SUCCESS;
 }

@@ -100,6 +100,40 @@ void AtenTransform::rotateSelection(double direction)
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
+/*
+// Matrix Transformations
+*/
+
+void AtenTransform::on_DefineFromPlaneButton_clicked(bool on)
+{
+}
+
+void AtenTransform::on_ApplyTransformButton_clicked(bool on)
+{
+	// Put values into our matrix...
+	Mat3<double> m;
+	m.set(0, ui.SourceMatrixAXSpin->value(), ui.SourceMatrixAYSpin->value(), ui.SourceMatrixAZSpin->value());
+	m.set(1, ui.SourceMatrixBXSpin->value(), ui.SourceMatrixBYSpin->value(), ui.SourceMatrixBZSpin->value());
+	m.set(2, ui.SourceMatrixCXSpin->value(), ui.SourceMatrixCYSpin->value(), ui.SourceMatrixCZSpin->value());
+
+}
+
+void AtenTransform::on_RotateIntoButton_clicked(bool on)
+{
+}
+
+void AtenTransform::on_DefineSourceXButton_clicked(bool on)
+{
+}
+
+void AtenTransform::on_DefineSourceYButton_clicked(bool on)
+{
+}
+
+void AtenTransform::on_DefineSourceZButton_clicked(bool on)
+{
+}
+
 void AtenTransform::dialogFinished(int result)
 {
 	gui.mainWindow->ui.actionTransformDialog->setChecked(FALSE);
