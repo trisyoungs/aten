@@ -47,8 +47,8 @@ void Canvas::renderModelGlyphs()
 			// Vector - centroid = data[0], direction = data[1]
 			case (Glyph::VectorGlyph):
 				vec[0] = g->data[0].vector();
-				vec[1] = g->data[1].vector() * 0.5;
-				glArrow( vec[0] - vec[1], vec[0] + vec[1] );
+				vec[1] = g->data[1].vector();
+				glArrow( vec[0] - (vec[1] * 0.5), vec[1] );
 				break;
 			// Sphere - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):

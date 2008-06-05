@@ -545,21 +545,6 @@ bool Master::openFilters()
 			listfile->close();
 		}
 
-		if (!failed)
-		{
-			// Try for user filter index...
-			sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
-			msg(Debug::None,"Looking for user filter index in '%s'...\n", path);
-			sprintf(filename, "%s/.aten/filters/index/", homeDir_.get());
-			listfile = new ifstream(filename, ios::in);
-			if (listfile->is_open())
-			{
-				if (parseFilterIndex(path, listfile)) found = TRUE;
-				else failed = TRUE;
-			}
-			listfile->close();
-		}
-
 		if (!found)
 		{
 			printf("No filter index found in any of these locations.\n");
@@ -567,6 +552,22 @@ bool Master::openFilters()
 			printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
 		}
 	}
+
+	// Try to load user filters
+	if (!failed)
+	{
+		sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
+		msg(Debug::None,"Looking for user filter index in '%s'...\n", path);
+		sprintf(filename, "%s%s", path, "index");
+		listfile = new ifstream(filename, ios::in);
+		if (listfile->is_open())
+		{
+			if (parseFilterIndex(path, listfile)) found = TRUE;
+			else failed = TRUE;
+		}
+		listfile->close();
+	}
+
 	// Print out info and partner filters if all was successful
 	if ((!failed) && found)
 	{
