@@ -85,6 +85,14 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					k3 = params.data[TorsionFunctions::Cos3CK3];
 					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
 					break;
+				case (TorsionFunctions::CosCos):
+					// U(phi) = 0.5 * k * (1 - cos(n*eq) * cos(n*theta))
+					k1 = params.data[TorsionFunctions::CosCos];
+					k1 = params.data[TorsionFunctions::Cos3CK1];
+					k2 = params.data[TorsionFunctions::Cos3CK2];
+					k3 = params.data[TorsionFunctions::Cos3CK3];
+					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
+					break;
 				default:
 					msg(Debug::None, "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
 					break;
