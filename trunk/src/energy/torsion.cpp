@@ -87,11 +87,10 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					break;
 				case (TorsionFunctions::CosCos):
 					// U(phi) = 0.5 * k * (1 - cos(n*eq) * cos(n*theta))
-					k1 = params.data[TorsionFunctions::CosCos];
-					k1 = params.data[TorsionFunctions::Cos3CK1];
-					k2 = params.data[TorsionFunctions::Cos3CK2];
-					k3 = params.data[TorsionFunctions::Cos3CK3];
-					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
+					k1 = params.data[TorsionFunctions::CosCosK];
+					period = params.data[TorsionFunctions::CosCosN];
+					eq = params.data[TorsionFunctions::CosCosEq];
+					energy += 0.5 * k1 * (1.0 - cos(n*eq)*cos(n*phi));
 					break;
 				default:
 					msg(Debug::None, "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
@@ -218,33 +217,40 @@ void Pattern::torsionForces(Model *srcmodel)
 					du_dphi = 0.0;
 					break;
 				case (TorsionFunctions::Cosine): 
-					// F(phi) = forcek * period * sin(period*phi - eq)
+					// dU/dphi = forcek * period * sin(period*phi - eq)
 					forcek = params.data[TorsionFunctions::CosineK];
 					eq = params.data[TorsionFunctions::CosineEq] / DEGRAD;
 					period = params.data[TorsionFunctions::CosineN];
 					du_dphi = dphi_dcosphi * period * forcek * sin(period*phi - eq);
 					break;
 				case (TorsionFunctions::Cos3):
-					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
+					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
 					k1 = params.data[TorsionFunctions::Cos3K1];
 					k2 = params.data[TorsionFunctions::Cos3K2];
 					k3 = params.data[TorsionFunctions::Cos3K3];
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) - 2.0*k2*sin(2.0*phi) + 3.0*k3*sin(3.0*phi));
 					break;
 				case (TorsionFunctions::Cos3C):
-					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
+					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
 					k1 = -params.data[TorsionFunctions::Cos3CK1];
 					k2 = 2.0 * params.data[TorsionFunctions::Cos3CK2];
 					k3 = -3.0 * params.data[TorsionFunctions::Cos3CK3];
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi));
 					break;
 				case (TorsionFunctions::Cos4):
-					// U(phi) = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) + 4 * k4*(sin(4*phi)))
+					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) + 4 * k4*(sin(4*phi)))
 					k1 = -params.data[TorsionFunctions::Cos4K1];
 					k2 = 2.0 * params.data[TorsionFunctions::Cos4K2];
 					k3 = -3.0 * params.data[TorsionFunctions::Cos4K3];
 					k4 = 4.0 * params.data[TorsionFunctions::Cos4K4];
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi) + k4*sin(4.0*phi));
+					break;
+				case (TorsionFunctions::CosCos):
+					// dU/dphi = 0.5 * k * n * cos(n*eq) * sin(n*theta)
+					k1 = params.data[TorsionFunctions::CosCosK];
+					period = params.data[TorsionFunctions::CosCosN];
+					eq = params.data[TorsionFunctions::CosCosEq];
+					du_dphi = dphi_dcosphi * 0.5 * k1 * period * cos(period*eq)*sin(period*phi);
 					break;
 				default:
 					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);

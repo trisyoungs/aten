@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/elements.h"
 #include "classes/atom.h"
 #include "classes/forcefield.h"
 #include "energy/forms.h"
@@ -46,9 +47,10 @@ void Forcefield::generateVdw(Atom *i)
 			// UFF VDW types are just the third [2] and fourth [3] data (for simple LJ)
 			epsilon = ffi->generator(3);
 			sigma = ffi->generator(2);
-			ffi->params().data[VdwFunctions::LjEpsilon] = epsilon;
+			ffi->params().data[VdwFunctions::LjEpsilon] = epsilon * 0.25;
 			ffi->params().data[VdwFunctions::LjSigma] = sigma;
-			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon = %8.4f %8.4f\n", sigma, epsilon);
+			ffi->params().data[VdwFunctions::LjN] = 2.0;
+			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon, n = %8.4f %8.4f 2.0\n", sigma, epsilon);
 			ffi->setVdwForm(VdwFunctions::Lj);
 			break;
 		case (Rules::DreidingX6):
@@ -213,6 +215,13 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 	// Creates torsion forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
 	dbgBegin(Debug::Calls,"Forcefield::generateTorsion");
+	int hyb1, hyb2, group1, group2;
+	double forcek, vj, vk, n, eq;
+	Atom *sp2, *sp3;
+	ForcefieldAtom *ffi = i->type();
+	ForcefieldAtom *ffj = j->type();
+	ForcefieldAtom *ffk = k->type();
+	ForcefieldAtom *ffl = l->type();
 	ForcefieldBound *newtorsion = torsions_.add();
 	newtorsion->setTorsionStyle(TorsionFunctions::None);
 	switch (rules_)
@@ -221,8 +230,77 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			msg(Debug::None,"Error - tried to generate torsion parameters for a forcefield that has no rules.\n");
 			break;
 		case (Rules::Uff):
-			// UFF Torsions  TODO
-			
+			// UFF Torsions
+			// There are four possibilities:
+			//   a) atoms j and k are both sp3 centres (but not group 16 sp3 centres) [Note: Paper refers to old group 6]
+			//   b) atoms j and k are both sp2 centres
+			//   c) one atom is sp2 and one is sp3
+			//   d) atom j or k is a group 16 element
+			hyb1 = ffj->generator(7);
+			hyb2 = ffk->generator(7);
+			group1 = elements.group(j);
+			group2 = elements.group(k);
+			newtorsion->setTorsionStyle(TorsionFunctions::CosCos);
+			if ((group1 == 16) || (group2 == 16))
+			{
+				// If both elements are group 16 then use special V values for them
+				if (group1 == group2)
+				{
+					vj = prefs.convertEnergy((j->element() == 8 ? 2.0 : 6.8), Prefs::KiloCalories);
+					vk = prefs.convertEnergy((k->element() == 8 ? 2.0 : 6.8), Prefs::KiloCalories);
+					forcek = sqrt(vj*vk);
+				}
+				else forcek = 5.0* sqrt(ffj->generator(9)*ffk->generator(9)) * (1.0 + 4.18*log(j->bondOrder(k)));
+				n = 2.0;
+				eq = 90.0;
+			}
+			else if (hyb1 == hyb2 == 3)
+			{
+				forcek = sqrt(ffj->generator(8)*ffk->generator(8));
+				n = 3.0;
+				eq = 180.0;
+			}
+			else if (hyb1 == hyb2 == 2)
+			{
+				forcek = 5.0* sqrt(ffj->generator(9)*ffk->generator(9)) * (1.0 + 4.18*log(j->bondOrder(k)));
+				n = 2.0;
+				eq = 180.0;
+			}
+			else if (hyb1+hyb2 == 5)
+			{
+				// Find sp2 atom to check for a second sp2 atom
+				sp2 = (hyb1 == 2 ? j : k);
+				sp3 = (sp2 == j ? k : j);
+				bool another = FALSE;
+				for (Refitem<Bond,int> *rb = sp2->bonds(); rb != NULL; rb = rb->next)
+				{
+					if (rb->item->partner(sp2) == sp3) continue;
+					if (rb->item->partner(sp2)->type()->generator(7) == 2) another = TRUE;
+				}
+				if (another)
+				{
+					forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+					n = 3.0;
+					eq = 180.0;
+				}
+				else
+				{
+					forcek = prefs.convertEnergy(1.0, Prefs::KiloCalories);
+					n = 6.0;
+					eq = 0.0;
+				}
+			}
+			else
+			{
+				forcek = 0.0;
+				n = 1.0;
+				eq = 0.0;
+			}
+			// Set parameters
+			newtorsion->params().data[TorsionFunctions::CosCosK] = forcek;
+			newtorsion->params().data[TorsionFunctions::CosCosN] = n;
+			newtorsion->params().data[TorsionFunctions::CosCosEq] = eq;
+			msg(Debug::Verbose,"UFF Torsion (coscos) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):

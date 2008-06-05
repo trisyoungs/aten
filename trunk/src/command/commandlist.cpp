@@ -1084,6 +1084,12 @@ bool CommandList::createModelVariables()
 	if (v == NULL) return FALSE;
 	v = variables.createVariable("cell","cz",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","centrex",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","centrey",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable("cell","centrez",Variable::FloatVariable);
+	if (v == NULL) return FALSE;
 }
 
 // Set variables for model
@@ -1128,7 +1134,7 @@ void CommandList::setModelVariables(Model *m)
 	{
 		variables.reset("title", "natoms", "nframes", "currentframe", "");
 		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
-		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.ox","cell.oy","cell.oz","");
+		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.centrex","cell.centrey","cell.centrez","");
 	}
 	dbgEnd(Debug::Calls,"CommandList::setModelVariables");
 }

@@ -42,6 +42,8 @@ class Element
 	const char *symbol;
 	// Uppercase Element symbol
 	const char *ucSymbol;
+	// Group position in periodic table
+	int group;
 	// Rough elemental radius (for bond calculation etc.)
 	double atomicRadius;
 	// Maximal bond order about the element 
@@ -86,6 +88,8 @@ class ElementMap
 	// Data by Z
 	*/
 	public:
+	// Return periodic table group number
+	int group(int i);
 	// Return atomic mass of atomic number 'i'
 	double atomicMass(int i);
 	// Return name of atomic number 'i'
@@ -117,6 +121,8 @@ class ElementMap
 	// Data by atom*
 	*/
 	public:
+	// Return periodic table group number
+	int group(Atom *i);
 	// Return atomic mass of atomic number 'i'
 	double atomicMass(Atom *i);
 	// Return name of atomic number 'i'

@@ -37,19 +37,24 @@ Electrostatics::ElecMethod Electrostatics::elecMethod(const char *s)
 FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 	{ "None", "none",
 		{ "NULL", "NULL", "NULL", "NULL", "NULL", "NULL" },
-		{ "null", "null", "null", "null", "null", "null" } },
+		{ "null", "null", "null", "null", "null", "null" },
+		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Inverse Power", "inversepower",
 		{ "Epsilon", "Radius", "Power" },
-		{ "epsilon", "r", "n" } },
+		{ "epsilon", "r", "n" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 } },
 	{ "Lennard-Jones 12-6", "lj",
-		{ "Epsilon", "Sigma" },
-		{ "epsilon", "sigma" } },
+		{ "Epsilon", "Sigma", "N" },
+		{ "epsilon", "sigma" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Lennard-Jones AB", "ljab",
 		{ "A", "B" },
-		{ "a", "b" } },
+		{ "a", "b" },
+		{ 1, 1, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Buckingham", "buck",
 		{ "A", "B", "C" },
-		{ "a", "b", "c" } }
+		{ "a", "b", "c" },
+		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char *s)
 {

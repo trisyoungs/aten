@@ -413,14 +413,12 @@ template <class T> int Vec3<T>::maxElement() const
 template <class T> Vec3<T> Vec3<T>::orthogonal() const
 {
 	// Returns a vector orthogonal to this vector
-	// Find largest element and then select one of the others
 	Vec3<T> result;
-	//int a = absmaxelement();
-	//int b = (a == 0 ? 1 : 0);
-	result = *this;
-	result.set(get(1),get(2),get(0));
-	//result.set(a,get(b));
-	//result.set(b,get(a));
+	int a = absMaxElement();
+	if (a == 0) result.set(-y,x,0);
+	else result.set(-get(a),(a == 1 ? x : y),0);
+	result = result * (*this);
+	result.normalise();
 	return result;
 }
 
