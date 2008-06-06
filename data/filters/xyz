@@ -61,6 +61,8 @@ importtrajectory
 	if $header <> true
 		readline "$natoms"
 		readline "$title"
+		name $title
+	print $title
 		# Now the atoms
 		modeltemplate
 		for $n,1,$natoms
@@ -68,6 +70,7 @@ importtrajectory
 			setcoords $rx $ry $rz $n
 		end
 		rebond
+		selectall
 		centre 0 0 0
 		finaliseframe
 	end

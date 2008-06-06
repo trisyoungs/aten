@@ -428,7 +428,7 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, Vari
 	strcpy(name,prefix);
 	if (suffix[0] != '\0')
 	{
-		strcat(name,".");
+		if (prefix[0] != '\0') strcat(name,".");
 		strcat(name,suffix);
 	}
 	Variable *result = vars_.add();
@@ -450,7 +450,7 @@ Variable *VariableList::createVariable(const char *prefix, const char *suffix, V
 		strcpy(name,prefix);
 		if (suffix[0] != '\0')
 		{
-			strcat(name,".");
+			if (prefix[0] != '\0') strcat(name,".");
 			strcat(name,suffix);
 		}
 		if (result->type() != vt)

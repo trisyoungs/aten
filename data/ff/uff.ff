@@ -38,10 +38,10 @@ types
 24	Mg3+2	Mg	""
 25	Al3	Al	""
 26	Si3	Si	""
-27	P_3+3	P	"os=3"
+27	P_3+3	P	""		# Was 'os=3', but removed until os assignment is correct
 28	P_3+5	P	"os=5"
 29	P_3+q	P	"nbonds=4,tetrahedral"
-30	S_3+2	S	"os=2"
+30	S_3+2	S	""		# Was 'os=2', but removed until os assignment is correct
 31	S_3+4	S	"os=4"
 32	S_3+6	S	"os=6"
 33	S_R	S	"aromatic"

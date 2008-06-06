@@ -220,7 +220,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the range of the specified colour scale" },
 	{ "scaletype",		"VV",		"<id> <type>",
 				"Set the type of the specified colourscale - '2' for two point scale, '3' for three point scale" },
-
+	{ "scalevisible",	"VV",		"<id> true|false",
+				"Set the visibility of the specified colourscale" },
 
 	// Disordered Builder Commands
 	{ "disorder",		"V",		"<nsteps>",
@@ -661,10 +662,14 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the specified variable to a supplied value/variable" },
 	
 	// View
+	{ "getview",		"",		"",
+				"Print the rotation matrix, camera position, and camera z-rotation for the current model" },
 	{ "resetview",		"",		"",
 				"Reset the camera and rotation for the current model" },
 	{ "rotateview",		"VV",		"<x> <y>",
 				"Rotate the current model about the x and y axes by the specified amounts" },
+	{ "setview",		"VVVVVVVVVVVVv","",
+				"Set the rotation matrix, camera position, and camera z-rotation for the current model" },
 	{ "speedtest",		"v",		"[nrender]",
 				"Time 100 (or [nrender]) updates of the model display." },
 	{ "translateview",	"VVV",		"<dx> <dy> <dz>",

@@ -141,6 +141,7 @@ enum CommandAction {
 	CA_SCALEMINCOLOUR,
 	CA_SCALERANGE,
 	CA_SCALETYPE,
+	CA_SCALEVISIBLE,
 
 	// Disordered build commands
 	CA_DISORDER,
@@ -386,8 +387,10 @@ enum CommandAction {
 	CA_LET,
 
 	// View
+	CA_GETVIEW,
 	CA_RESETVIEW,
 	CA_ROTATEVIEW,
+	CA_SETVIEW,
 	CA_SPEEDTEST,
 	CA_TRANSLATEVIEW,
 	CA_VIEWALONG,
@@ -504,6 +507,7 @@ class CommandData
 	int function_CA_SCALEMINCOLOUR(Command *&c, Bundle &obj);
 	int function_CA_SCALERANGE(Command *&c, Bundle &obj);
 	int function_CA_SCALETYPE(Command *&c, Bundle &obj);
+	int function_CA_SCALEVISIBLE(Command *&c, Bundle &obj);
 	// Disordered build commands
 	int function_CA_DISORDER(Command *&c, Bundle &obj);
 	int function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj);
@@ -724,8 +728,10 @@ class CommandData
 	int function_CA_DECREASE(Command *&c, Bundle &obj);
 	int function_CA_EVAL(Command *&c, Bundle &obj);
 	// View
+	int function_CA_GETVIEW(Command *&c, Bundle &obj);
 	int function_CA_RESETVIEW(Command *&c, Bundle &obj);
 	int function_CA_ROTATEVIEW(Command *&c, Bundle &obj);
+	int function_CA_SETVIEW(Command *&c, Bundle &obj);
 	int function_CA_SPEEDTEST(Command *&c, Bundle &obj);
 	int function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj);
 	int function_CA_VIEWALONG(Command *&c, Bundle &obj);

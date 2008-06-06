@@ -198,6 +198,10 @@ void Canvas::renderScene(Model *source)
 	if (prefs.shouldRender(Prefs::ViewMeasurements)) renderModelMeasurements();
 
 	renderExtra2d();
+
+	// Render colourscales
+	renderColourscales();
+
 	glDisable(GL_COLOR_MATERIAL);
 
 	glFlush();
@@ -210,7 +214,7 @@ void Canvas::renderText(QPainter &painter)
 {
 	dbgBegin(Debug::Calls,"Canvas::renderText");
 
-	// If the canvas is stil restricted, don't draw anything
+	// If the canvas is still restricted, don't draw anything
 	if (noDraw_)
 	{
 		dbgEnd(Debug::Calls,"Canvas::renderText");

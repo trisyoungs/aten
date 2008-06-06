@@ -25,13 +25,39 @@
 // Constructor
 ColourScale::ColourScale()
 {
-	minimum_ = 0;
+	// Private variables
+	minimum_ = 0.0;
 	middle_ = 0.5;
 	maximum_ = 1.0;
 	range_ = 1.0;
+	visible_ = FALSE;
 	setColour(ColourScale::MinColour, 1.0f, 1.0f, 1.0f, 1.0f);
 	setColour(ColourScale::MidColour, 0.5f, 0.5f, 0.5f, 1.0f);
 	setColour(ColourScale::MaxColour, 0.0f, 0.0f, 1.0f, 1.0f);
+}
+
+// Set the name of the colourscale
+void ColourScale::setName(const char *s)
+{
+	name_ = s;
+}
+
+// Return the name of the colourscale
+const char *ColourScale::name()
+{
+	return name_.get();
+}
+
+// Set whether the colourscale is visible
+void ColourScale::setVisible(bool v)
+{
+	visible_ = v;
+}
+
+// Return whether the colourscale is visible
+bool ColourScale::visible()
+{
+	return visible_;
 }
 
 // Set type of ColourScale
@@ -133,20 +159,22 @@ void ColourScale::adjustRange(double d)
 void ColourScale::colour(double v, GLfloat *target)
 {
 	double delta;
-	// Work out relative position of value 'v' on colour scale
-	delta = (v - minimum_) / range_;
-	// Clamp delta to the range [0,1]
-	if (delta < 0) delta = 0;
-	else if (delta > 1.0) delta = 1.0;
 	if (type_ == ColourScale::TwoPoint)
 	{
+		delta = (v - minimum_) / range_;
+		// Clamp delta to the range [0,1]
+		if (delta < 0.0) delta = 0.0;
+		else if (delta > 1.0) delta = 1.0;
 		target[0] = colours_[ColourScale::MinColour][0] + deltaMinMax_[0] * delta;
 		target[1] = colours_[ColourScale::MinColour][1] + deltaMinMax_[1] * delta;
 		target[2] = colours_[ColourScale::MinColour][2] + deltaMinMax_[2] * delta;
 		target[3] = colours_[ColourScale::MinColour][3] + deltaMinMax_[3] * delta;
 	}
-	else if (delta < 0.5)
+	else if (v < middle_)
 	{
+		delta = (v - minimum_) / (middle_ - minimum_);
+		if (delta < 0.0) delta = 0.0;
+		else if (delta > 1.0) delta = 1.0;
 		target[0] = colours_[ColourScale::MinColour][0] + deltaMinMid_[0] * delta;
 		target[1] = colours_[ColourScale::MinColour][1] + deltaMinMid_[1] * delta;
 		target[2] = colours_[ColourScale::MinColour][2] + deltaMinMid_[2] * delta;
@@ -154,7 +182,9 @@ void ColourScale::colour(double v, GLfloat *target)
 	}
 	else
 	{
-		delta -= 0.5;
+		delta = (v - middle_) / (maximum_ - middle_);
+		if (delta < 0.0) delta = 0.0;
+		else if (delta > 1.0) delta = 1.0;
 		target[0] = colours_[ColourScale::MidColour][0] + deltaMidMax_[0] * delta;
 		target[1] = colours_[ColourScale::MidColour][1] + deltaMidMax_[1] * delta;
 		target[2] = colours_[ColourScale::MidColour][2] + deltaMidMax_[2] * delta;

@@ -39,7 +39,6 @@ const char *text_from_IC(IfTest i)
 Command::Command()
 {
 	// Private variables
-	for (int i=0; i<MAXDATAVARS; i++) args_[i] = NULL;
 	action_ = CA_ROOTNODE;
 	parent_ = NULL;
 	function_ = NULL;
@@ -47,7 +46,6 @@ Command::Command()
 	branch_ = NULL;
 	format_ = NULL;
 	loopActive_ = FALSE;
-	nArgs_ = 0;
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -157,25 +155,29 @@ Command *Command::pointer()
 // Return variable argument
 Variable *Command::arg(int argno)
 {
-	return args_[argno];
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? NULL : rv->item);
 }
 
 // Return argument as character
 const char *Command::argc(int argno)
 {
-	return (args_[argno] == NULL ?  "NULL" : args_[argno]->asCharacter());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ?  "NULL" : rv->item->asCharacter());
 }
 
 // Return argument as integer
 int Command::argi(int argno)
 {
-	return (args_[argno] == NULL ?  0 : args_[argno]->asInteger());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ?  0 : rv->item->asInteger());
 }
 
 // Return argument as double
 double Command::argd(int argno)
 {
-	return (args_[argno] == NULL ? 0.0 : args_[argno]->asDouble());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? 0.0 : rv->item->asDouble());
 }
 
 // Return argument as float
@@ -187,43 +189,49 @@ double Command::argf(int argno)
 // Return argument as bool
 bool Command::argb(int argno)
 {
-	return (args_[argno] == NULL ? -1 : args_[argno]->asBool());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? -1 : rv->item->asBool());
 }
 
 // Return argument as atom pointer
 Atom *Command::arga(int argno)
 {
-	return (args_[argno] == NULL ? NULL : (Atom*) args_[argno]->asPointer());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? NULL : (Atom*) rv->item->asPointer());
 }
 
 // Return argument as pattern pointer
 Pattern *Command::argp(int argno)
 {
-	return (args_[argno] == NULL ? NULL : (Pattern*) args_[argno]->asPointer());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? NULL : (Pattern*) rv->item->asPointer());
 }
 
 // Return argument as PatternBound pointer
 PatternBound *Command::argpb(int argno)
 {
-	return (args_[argno] == NULL ? NULL : (PatternBound*) args_[argno]->asPointer());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? NULL : (PatternBound*) rv->item->asPointer());
 }
 
 // Return argument as ForcefieldAtom pointer
 ForcefieldAtom *Command::argffa(int argno)
 {
-	return (args_[argno] == NULL ? NULL : (ForcefieldAtom*) args_[argno]->asPointer());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? NULL : (ForcefieldAtom*) rv->item->asPointer());
 }
 
 // Returns whether argument 'n' was provided
 bool Command::hasArg(int argno)
 {
-	return (args_[argno] == NULL ? FALSE : TRUE);
+	return ((argno+1) > args_.nItems() ? FALSE : TRUE);
 }
 
 // Return variable type of argument
 Variable::VariableType Command::argt(int argno)
 {
-	return (args_[argno] == NULL ? Variable::nVariableTypes : args_[argno]->type());
+	Refitem<Variable,int> *rv = args_[argno];
+	return (rv == NULL ? Variable::nVariableTypes : rv->item->type());
 }
 
 // Set command and function
@@ -246,17 +254,16 @@ void CommandList::clear()
 void Command::printArgs()
 {
 	dbgBegin(Debug::Calls,"Command::printArgs");
-	int i;
-	for (int i=0; i<MAXDATAVARS; i++)
+	int i = 0;
+	Variable *v;
+	for (Refitem<Variable,int> *rv = args_.first(); rv != NULL; rv = rv->next)
 	{
-		printf("%2i %20li",i,args_[i]);
-		if (args_[i] == NULL) printf ("None.\n");
-		else
-		{
-			printf("%12s [%10s]",args_[i]->name(), Variable::variableType(args_[i]->type()));
-			if (args_[i]->type() < Variable::AtomVariable) printf("%20s\n",args_[i]->asCharacter());
-			else printf("%li\n",args_[i]->asPointer());
-		}
+		v = rv->item;
+		printf("%2i %20li", i, v);
+		printf("%12s [%10s]",v->name(), Variable::variableType(v->type()));
+		if (v->type() < Variable::AtomVariable) printf("%20s\n",v->asCharacter());
+		else printf("%li\n",v->asPointer());
+		i++;
 	}
 	dbgEnd(Debug::Calls,"Command::printArgs");
 }
@@ -266,8 +273,8 @@ Vec3<double> Command::arg3d(int i)
 {
 	dbgBegin(Debug::Calls,"Command::arg3d");
         static Vec3<double> result;
-        if (i > (MAXDATAVARS-3)) printf("Command::get_vector3d - Starting point too close to MAXDATAVARS.\n");
-        result.set(args_[i]->asDouble(),args_[i+1]->asDouble(),args_[i+2]->asDouble());
+        if (i > (args_.nItems()-3)) printf("Command::arg3d - Starting point too close to end of argument list.\n");
+        result.set(args_[i]->item->asDouble(),args_[i+1]->item->asDouble(),args_[i+2]->item->asDouble());
 	dbgEnd(Debug::Calls,"Command::arg3d");
         return result;
 }
@@ -277,8 +284,8 @@ Vec3<float> Command::arg3f(int i)
 {
 	dbgBegin(Debug::Calls,"Command::arg3f");
         static Vec3<float> result;
-        if (i > (MAXDATAVARS-3)) printf("Command::get_vector3f - Starting point too close to MAXDATAVARS.\n");
-        result.set(args_[i]->asFloat(),args_[i+1]->asFloat(),args_[i+2]->asFloat());
+        if (i > (args_.nItems()-3)) printf("Command::arg3f - Starting point too close to end of argument list.\n");
+        result.set(args_[i]->item->asFloat(),args_[i+1]->item->asFloat(),args_[i+2]->item->asFloat());
 	dbgEnd(Debug::Calls,"Command::arg3f");
         return result;
 }
@@ -288,8 +295,8 @@ Vec3<int> Command::arg3i(int i)
 {
 	dbgBegin(Debug::Calls,"Command::arg3i");
 	static Vec3<int> result;
-	if (i > (MAXDATAVARS-3)) printf("Command::get_vector3i - Starting point too close to MAXDATAVARS.\n");
-        result.set(args_[i]->asInteger(),args_[i+1]->asInteger(),args_[i+2]->asInteger());
+	if (i > (args_.nItems()-3)) printf("Command::arg3i - Starting point too close to end of argument list.\n");
+        result.set(args_[i]->item->asInteger(),args_[i+1]->item->asInteger(),args_[i+2]->item->asInteger());
 	dbgEnd(Debug::Calls,"Command::arg3i");
 	return result;
 }
@@ -299,7 +306,7 @@ List<Command> *Command::createBranch()
 {
 	dbgBegin(Debug::Calls,"Command::createBranch");
 	if (branch_ != NULL) printf("Command::createBranch <<<< Already has a branch >>>>\n");
-	branch_ = new List< Command >;
+	branch_ = new List<Command>;
 	dbgEnd(Debug::Calls,"Command::createBranch");
 	return branch_;
 }
@@ -339,7 +346,7 @@ bool Command::setIfTest(const char *s)
 				m += 4;
 				break;
 			default:
-				printf("Unrecognised character '%c' in 'if' condition\n",s[n]);
+				msg(Debug::None, "Unrecognised character '%c' in 'if' condition\n", s[n]);
 				result = FALSE;
 				break;
 		}
@@ -355,21 +362,24 @@ bool Command::ifEvaluate()
 	dbgBegin(Debug::Calls,"Command::ifEvaluate");
 	// Do all as comparisons as floats, except for equalities
 	bool result;
+	static Variable *v1, *v2;
 	static Dnchar value1, value2;
 	static double d1, d2;
 	//print_argss();
+	v1 = args_[0]->item;
+	v2 = args_[2]->item;
 	if ((ifTest_ == IF_EQUAL) || (ifTest_ == IF_NEQUAL))
 	{
 		// Grab current variable values into the value1/value2 character arrays (if var != NULL)
-		value1 = args_[0]->asCharacter();
-		value2 = args_[2]->asCharacter();
+		value1 = v1->asCharacter();
+		value2 = v2->asCharacter();
 	}
 	else
 	{
-		d1 = args_[0]->asDouble();
-		d2 = args_[2]->asDouble();
+		d1 = v1->asDouble();
+		d2 = v2->asDouble();
 	}
-	msg(Debug::Verbose,"IF TEST = var1(%s)=[%s] (%s) var2(%s)=[%s]\n", args_[0]->name(), args_[0]->asCharacter(), text_from_IC(ifTest_), args_[2]->name(), args_[2]->asCharacter());
+	msg(Debug::Verbose, "IF TEST = var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), text_from_IC(ifTest_), v2->name(), v2->asCharacter());
 	// Do comparison
 	switch (ifTest_)
 	{
@@ -403,7 +413,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	dbgBegin(Debug::Calls,"Command::addVariables");
 	bool required = TRUE;
 	int n, m, argcount, varcount;
-	Variable *b;
+	Variable *var;
 	static char arg[512];
 	char *c;
 	Variable::VariableType vt;
@@ -412,7 +422,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	// We don't care about too many variables being given if we want the whole line.
 	if (((parser.nArgs() - 1) > strlen(v)) && (v[0] != 'L'))
 	{
-		printf("Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.nArgs()-1), cmd, strlen(v));
+		msg(Debug::None, "Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.nArgs()-1), cmd, strlen(v));
 		dbgEnd(Debug::Calls,"Command::addVariables");
 		return FALSE;
 	}
@@ -454,25 +464,29 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			// Expressions
 			case ('e'):
 			case ('E'):
-				args_[varcount] = vars.addConstant(arg);
+				var = vars.addConstant(arg);
+				args_.add(var);
 				break;
 			// Discard
 			case ('x'):
 			case ('X'):
+				args_.add(NULL);
 				break;
 			// String as-is
 			case ('s'):
 			case ('S'):
-				args_[varcount] = vars.addConstant(arg);
+				var = vars.addConstant(arg);
+				args_.add(var);
 				break;
 			// Equals
 			case ('='):
 				if (strcmp(arg,"=") != 0)
 				{
-					printf("Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
+					msg(Debug::None, "Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
 					dbgEnd(Debug::Calls,"Command::addVariables");
 					return FALSE;
 				}
+				args_.add(NULL);
 				break;
 			// Variable
 			case ('v'):
@@ -483,30 +497,31 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				if (arg[0] == '$')
 				{
 					// See if it has been declared
-					args_[varcount] = parent_->variables.get(&arg[1]);
-					if (args_[varcount] == NULL)
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
 					{
-						printf("Variable '%s' has not been declared.\n", &arg[1]);
+						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
+					else args_.add(var);
 				}
-				else if (arg[0] == '*') args_[varcount] = parent_->variables.dummy();
-				else args_[varcount] = parent_->variables.addConstant(arg);
+				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
+				else args_.add(parent_->variables.addConstant(arg));
 				break;
 			// Rest of line (reconstructed)
 			case ('L'):
 				arg[0] = '\0';
-				for (m=argcount; m< parser.nArgs(); m++)
+				for (m=argcount; m<parser.nArgs(); m++)
 				{
 					strcat(arg, parser.argc(m));
 					strcat(arg, " ");
 				}
-				args_[varcount] = parent_->variables.addConstant("abcde");
-				args_[varcount]->set(arg);
+				var = parent_->variables.addConstant("abcde");
+				var->set(arg);
+				args_.add(var);
 				break;
 		}
 	}
-	nArgs_ = varcount + 1;
 	dbgEnd(Debug::Calls,"Command::addVariables");
 	return TRUE;
 }
@@ -514,7 +529,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 // Return number of arguments given to command
 int Command::nArgs()
 {
-	return nArgs_;
+	return args_.nItems();
 }
 
 /*
@@ -1034,105 +1049,115 @@ bool CommandList::execute(ifstream *sourcefile)
 	return result;
 }
 
-// Create model variables
-bool CommandList::createModelVariables()
+// Create model variables with specified basename
+bool CommandList::createModelVariables(const char *base)
 {
 	Variable *v;
-	v = variables.createVariable("title","",Variable::CharacterVariable);
+	v = variables.createVariable(base,"title",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("natoms","",Variable::IntegerVariable);
+	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("nframes","",Variable::IntegerVariable);
+	v = variables.createVariable(base,"nframes",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("currentframe","",Variable::IntegerVariable);
+	v = variables.createVariable(base,"currentframe",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell.type","",Variable::CharacterVariable);
+	v = variables.createVariable(base,"cell.type",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","type",Variable::CharacterVariable);
+	v = variables.createVariable(base,"cell.a",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","a",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.b",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","b",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.c",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","c",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.alpha",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","alpha",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.beta",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","beta",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.gamma",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","gamma",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.ax",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","ax",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.ay",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","ay",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.az",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","az",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.bx",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","bx",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.by",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","by",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.bz",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","bz",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.cx",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","cx",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.cy",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","cy",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.cz",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","cz",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.centrex",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","centrex",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.centrey",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","centrey",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.centrez",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable("cell","centrez",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
+}
+
+// Set variables for model with specified prefix
+void CommandList::setModelVariables(const char *base, Model *m)
+{
+	dbgBegin(Debug::Calls,"CommandList::setModelVariables[const char*,Model*]");
+	if (m != NULL)
+	{
+		variables.set(base,"title",m->name());
+		variables.set(base,"natoms",m->nAtoms());
+		variables.set(base,"nframes",m->totalFrames());
+		variables.set(base,"currentframe",m->framePosition());
+		Cell *c = m->cell();
+		Mat3<double> mat;
+		Vec3<double> vec;
+		variables.set(base,"cell.type",lowerCase(Cell::cellType(c->type())));
+		mat = c->axes();
+		variables.set(base,"cell.ax",mat.rows[0].x);
+		variables.set(base,"cell.ay",mat.rows[0].y);
+		variables.set(base,"cell.az",mat.rows[0].z);
+		variables.set(base,"cell.bx",mat.rows[1].x);
+		variables.set(base,"cell.by",mat.rows[1].y);
+		variables.set(base,"cell.bz",mat.rows[1].z);
+		variables.set(base,"cell.cx",mat.rows[2].x);
+		variables.set(base,"cell.cy",mat.rows[2].y);
+		variables.set(base,"cell.cz",mat.rows[2].z);
+		vec = c->lengths();
+		variables.set(base,"cell.a",vec.x);
+		variables.set(base,"cell.b",vec.y);
+		variables.set(base,"cell.c",vec.z);
+		vec = c->angles();
+		variables.set(base,"cell.alpha",vec.x);
+		variables.set(base,"cell.beta",vec.y);
+		variables.set(base,"cell.gamma",vec.z);
+		vec = c->centre();
+		variables.set(base,"cell.centrex",vec.x);
+		variables.set(base,"cell.centrey",vec.y);
+		variables.set(base,"cell.centrez",vec.z);
+	}
+// 	else
+// 	{
+// 		variables.reset("title", "natoms", "nframes", "currentframe", "");
+// 		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
+// 		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.centrex","cell.centrey","cell.centrez","");
+// 	}
+	dbgEnd(Debug::Calls,"CommandList::setModelVariables");
+}
+
+// Create model variables in current commandlist
+bool CommandList::createModelVariables()
+{
+	return (createModelVariables("") && createModelVariables("frame") ? TRUE : FALSE);
 }
 
 // Set variables for model
 void CommandList::setModelVariables(Model *m)
 {
-	dbgBegin(Debug::Calls,"CommandList::setModelVariables");
-
-	if (m != NULL)
-	{
-		variables.set("title","",m->name());
-		variables.set("natoms","",m->nAtoms());
-		variables.set("nframes","",m->totalFrames());
-		variables.set("currentframe","",m->framePosition());
-		Cell *c = m->cell();
-		Mat3<double> mat;
-		Vec3<double> vec;
-		variables.set("cell","type",lowerCase(Cell::cellType(c->type())));
-		mat = c->axes();
-		variables.set("cell","ax",mat.rows[0].x);
-		variables.set("cell","ay",mat.rows[0].y);
-		variables.set("cell","az",mat.rows[0].z);
-		variables.set("cell","bx",mat.rows[1].x);
-		variables.set("cell","by",mat.rows[1].y);
-		variables.set("cell","bz",mat.rows[1].z);
-		variables.set("cell","cx",mat.rows[2].x);
-		variables.set("cell","cy",mat.rows[2].y);
-		variables.set("cell","cz",mat.rows[2].z);
-		vec = c->lengths();
-		variables.set("cell","a",vec.x);
-		variables.set("cell","b",vec.y);
-		variables.set("cell","c",vec.z);
-		vec = c->angles();
-		variables.set("cell","alpha",vec.x);
-		variables.set("cell","beta",vec.y);
-		variables.set("cell","gamma",vec.z);
-		vec = c->centre();
-		variables.set("cell","centrex",vec.x);
-		variables.set("cell","centrey",vec.y);
-		variables.set("cell","centrez",vec.z);
-	}
-	else
-	{
-		variables.reset("title", "natoms", "nframes", "currentframe", "");
-		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
-		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.centrex","cell.centrey","cell.centrez","");
-	}
-	dbgEnd(Debug::Calls,"CommandList::setModelVariables");
+	setModelVariables("",m);
+	setModelVariables("frame", (m->renderSource() == m ? NULL : m->renderSource()));
 }
 
 // Create atom parameter variables

@@ -27,6 +27,7 @@
 
 #include <QtOpenGL/QtOpenGL>
 #include "templates/reflist.h"
+#include "classes/dnchar.h"
 
 // Forward declarations
 class Grid;
@@ -41,6 +42,25 @@ class ColourScale
 	enum ScaleOrder { TwoPoint, ThreePoint };
 	// Colourscale colours
 	enum ScaleColour { MinColour, MidColour, MaxColour, nScaleColours };
+
+	/*
+	// Rendering
+	*/
+	private:
+	// Name of the colourscale
+	Dnchar name_;
+	// Whether the colourscale is currently visible
+	bool visible_;
+
+	public:
+	// Set the name of the colourscale
+	void setName(const char *s);
+	// Return the name of the colourscale
+	const char *name();
+	// Set whether the colourscale is visible
+	void setVisible(bool v);
+	// Return whether the colourscale is visible
+	bool visible();
 
 	/*
 	// Data and data range

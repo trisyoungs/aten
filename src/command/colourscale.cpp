@@ -147,3 +147,17 @@ int CommandData::function_CA_SCALETYPE(Command *&c, Bundle &obj)
 	}
 	return CR_SUCCESS;
 }
+
+// Set visibility of colourscale ('scalevisible <id> true|false')
+int CommandData::function_CA_SCALEVISIBLE(Command *&c, Bundle &obj)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		return CR_FAIL;
+	}
+	prefs.colourScale[id].setVisible(c->argb(1));
+	return CR_SUCCESS;
+}
