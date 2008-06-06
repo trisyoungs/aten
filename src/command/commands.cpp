@@ -496,6 +496,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the quadric detail of bonds" },
 	{ "colour",		"VVVVv",	"<colour> <r> <g> <b>",
 				"Set the specified colour" },
+	{ "commonelements",	"V",		"<elements...>",
+				"Set the common elements that appear in the Select Element dialog" },
 	{ "densityunits",	"V",		"atomsperang|gpercm",
 				"Set the unit of density to use" },
 	{ "distancelabel",	"V",		"<text>",

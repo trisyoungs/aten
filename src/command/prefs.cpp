@@ -64,6 +64,13 @@ int CommandData::function_CA_COLOUR(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Common elements list
+int CommandData::function_CA_COMMONELEMENTS(Command *&c, Bundle &obj)
+{
+	prefs.setCommonElements(c->argc(0));
+	return CR_SUCCESS;
+}
+
 // Set density unit to use in output ('densityunits <unit>')
 int CommandData::function_CA_DENSITYUNITS(Command *&c, Bundle &obj)
 {

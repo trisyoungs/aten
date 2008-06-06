@@ -488,7 +488,7 @@ void VariableList::set(const char *prefix, const char *suffix, const char *value
 	strcpy(newname,prefix);
 	if (suffix[0] != '\0')
 	{
-		strcat(newname,".");
+		if (prefix[0] != '\0') strcat(newname,".");
 		strcat(newname,suffix);
 	}
 	Variable *v = get(newname);
@@ -508,7 +508,7 @@ void VariableList::set(const char *prefix, const char *suffix, int value)
 	strcpy(newname,prefix);
 	if (suffix[0] != '\0')
 	{
-		strcat(newname,".");
+		if (prefix[0] != '\0') strcat(newname,".");
 		strcat(newname,suffix);
 	}
 	Variable *v = get(newname);
@@ -527,7 +527,7 @@ void VariableList::set(const char *prefix, const char *suffix, double value)
 	strcpy(newname,prefix);
 	if (suffix[0] != '\0')
 	{
-		strcat(newname,".");
+		if (prefix[0] != '\0') strcat(newname,".");
 		strcat(newname,suffix);
 	}
 	Variable *v = get(newname);

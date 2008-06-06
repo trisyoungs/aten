@@ -39,6 +39,7 @@ AtenForcefields::AtenForcefields(QWidget *parent)
 	// Private variables
 	typelistElement_ = -1;
 	shouldRefresh_ = FALSE;
+	checkedItem_ = NULL;
 
 	// Create open forcefield dialog
 	QStringList filters;
@@ -90,7 +91,12 @@ void AtenForcefields::refresh()
 	{
 		item = new TListWidgetItem(ui.ForcefieldList);
 		item->setText(ff->name());
-		item->setCheckState(ff == master.defaultForcefield() ? Qt::Checked : Qt::Unchecked);
+		if (ff == master.defaultForcefield())
+		{
+			item->setCheckState(Qt::Checked);
+			checkedItem_ = item;
+		}
+		else item->setCheckState(Qt::Unchecked);
 		item->setForcefield(ff);
 	}
 	// Select the current FF.
@@ -179,11 +185,15 @@ void AtenForcefields::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 	{
 		master.setDefaultForcefield(ff);
 		refreshTypes();
+		// Uncheck old item if necessary
+		if (checkedItem_ != NULL) checkedItem_->setCheckState(Qt::Unchecked);
+		checkedItem_ = titem;
 	}
 	else if ((titem->checkState() == Qt::Unchecked) && (ff == defaultff))
 	{
 		master.setDefaultForcefield(NULL);
 		refreshTypes();
+		checkedItem_ = NULL;
 	}
 }
 

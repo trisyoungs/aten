@@ -295,6 +295,7 @@ enum CommandAction {
 	CA_ATOMDETAIL,
 	CA_BONDDETAIL,
 	CA_COLOUR,
+	CA_COMMONELEMENTS,
 	CA_DENSITYUNITS,
 	CA_DISTANCELABEL,
 	CA_ECUT,
@@ -645,6 +646,7 @@ class CommandData
 	int function_CA_ATOMDETAIL(Command *&c, Bundle &obj);
 	int function_CA_BONDDETAIL(Command *&c, Bundle &obj);
 	int function_CA_COLOUR(Command *&c, Bundle &obj);
+	int function_CA_COMMONELEMENTS(Command *&c, Bundle &obj);
 	int function_CA_DENSITYUNITS(Command *&c, Bundle &obj);
 	int function_CA_DISTANCELABEL(Command *&c, Bundle &obj);
 	int function_CA_ECUT(Command *&c, Bundle &obj);

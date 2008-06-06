@@ -284,7 +284,16 @@ Forcefield *Master::loadForcefield(const char *filename)
 			else msg(Debug::None,"Can't find forcefield file '%s' in any location.\n", filename);
 		}
 	}
-	if (result) current.ff = newff;
+	if (result)
+	{
+		current.ff = newff;
+		// If this is the first (only) forcefield loaded, make it the default
+		if (forcefields_.nItems() == 1)
+		{
+			defaultForcefield_ = newff;
+			msg(Debug::None, "Forcefield '%s' is now the default.\n", newff->name());
+		}
+	}
 	else
 	{
 		msg(Debug::None,"Couldn't load forcefield file '%s'.\n", filename);
@@ -306,6 +315,8 @@ void Master::removeForcefield(Forcefield *xff)
 	dereferenceForcefield(xff);
 	// Finally, delete the ff
 	forcefields_.remove(xff);
+	// Set a new default if necessary
+	if (defaultForcefield_ == xff) defaultForcefield_ = forcefields_.first();
 	dbgEnd(Debug::Calls,"Master::removeForcefield");
 }
 

@@ -327,14 +327,14 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 		case (Filter::ModelExport):
 			msg(Debug::None,"Save Model : %s (%s)...", obj.m->filename(), name_.get());
 			// Open file and set target
-			if (!commands_.setOutputFile(obj.m->filename()))
+			if (!commands_.setOutputFile(obj.rs->filename()))
 			{
-				msg(Debug::None,"Error opening output file '%s'.\n",obj.m->filename());
+				msg(Debug::None,"Error opening output file '%s'.\n",obj.rs->filename());
 				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
 			// Set variables
-			commands_.setModelVariables(obj.m);
+			commands_.setModelVariables(obj.rs);
 			break;
 		case (Filter::ExpressionExport):
 			msg(Debug::None,"Save Field : %s (%s)\n", filename, name_.get());

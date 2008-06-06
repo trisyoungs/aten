@@ -26,6 +26,7 @@
 
 // Forward Declarations
 class QFileDialog;
+class TListWidgetItem;
 
 // Forcefields window
 class AtenForcefields : public QDialog
@@ -66,6 +67,8 @@ class AtenForcefields : public QDialog
 	int typelistElement_;
 	// Whether window contents should be refreshed when shown
 	bool shouldRefresh_;
+	// Current checked item (default forcefield) if any
+	TListWidgetItem *checkedItem_;
 
 	/*
 	// Dialog

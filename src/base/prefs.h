@@ -533,7 +533,7 @@ class Prefs
 	int maxUndoLevels();
 
 	/*
-	// Rendering (including compatibility) Options
+	// General Program (including compatibility) Options
 	*/
 	private:
 	// Postfix (units) label for distances
@@ -544,6 +544,8 @@ class Prefs
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
 	bool useNiceText_;
+	// List of common drawing elements to put in SelectElement dialog
+	Dnchar commonElements_;
 
 	public:
 	// Set the postfix distance label
@@ -562,6 +564,10 @@ class Prefs
 	void setUseNiceText(bool b);
 	// Return whether to use nice text rendering
 	bool useNiceText();
+	// Set list of common elements in SelectElement dialog
+	void setCommonElements(const char *s);
+	// Return list of common elements to use in SelectElement dialog
+	const char *commonElements();
 };
 
 extern Prefs prefs;
