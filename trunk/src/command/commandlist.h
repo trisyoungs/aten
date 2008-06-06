@@ -22,8 +22,6 @@
 #ifndef ATEN_COMMAND_H
 #define ATEN_COMMAND_H
 
-#define MAXDATAVARS 10
-
 #include "templates/list.h"
 #include "templates/reflist.h"
 #include "templates/vector3.h"
@@ -148,9 +146,7 @@ class Command
 	*/
 	private:
 	// Data variables
-	Variable *args_[MAXDATAVARS];
-	// Number of variables defined
-	int nArgs_;
+	Reflist<Variable,int> args_;
 
 	public:
 	// Set variables from parser arguments
@@ -265,11 +261,15 @@ class CommandList
 	/*
 	// Variables
 	*/
+	private:
+	// Create model variables with specified prefix
+	bool createModelVariables(const char *s);
+	// Set model variables with specified prefix
+	void setModelVariables(const char *s, Model *m);
+
 	public:
 	// Associative variable list
 	VariableList variables;
-
-	public:
 	// Create model variables
 	bool createModelVariables();
 	// Set model variables

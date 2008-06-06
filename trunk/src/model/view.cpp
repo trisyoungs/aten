@@ -49,6 +49,12 @@ Vec3<double> Model::guideToModel(const Vec3<double> &v)
 	return guideToModel(v.x, v.y);
 }
 
+// Return the current rotation matrix
+Mat4<double> Model::rotationMatrix()
+{
+	return rotationMatrix_;
+}
+
 // Return the GL-compatible array from the ModelMAT structure
 void Model::copyRotationMatrix(double *m)
 {

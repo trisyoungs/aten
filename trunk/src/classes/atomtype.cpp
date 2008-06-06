@@ -507,7 +507,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg(Debug::Typing,"[failed - is %i, but type needs %i]\n", i->element(), characterElement_);
 			level --;
-			dbgEnd(Debug::Calls,"Atomtype::match_atom");
+			dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 			return 0;
 		}
 	}
@@ -525,7 +525,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg(Debug::Typing,"[failed - is '%s', but type needs %s]\n", atomEnvironment(i->environment()), atomEnvironment(environment_));
 			level --;
-			dbgEnd(Debug::Calls,"Atomtype::match_atom");
+			dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 			return 0;
 		}
 	}
@@ -541,9 +541,9 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		}
 		else
 		{
-			msg(Debug::Typing,"[failed - is '%s', but type needs '%s']\n", i->os(), os_);
+			msg(Debug::Typing,"[failed - is '%i', but type needs '%i']\n", i->os(), os_);
 			level --;
-			dbgEnd(Debug::Calls,"Atomtype::match_atom");
+			dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 			return 0;
 		}
 	}
@@ -561,7 +561,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg(Debug::Typing,"[failed - is '%i', but type needs '%i']\n",i->nBonds(),nBonds_);
 			level --;
-			dbgEnd(Debug::Calls,"Atomtype::match_atom");
+			dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 			return 0;
 		}
 	}
@@ -579,7 +579,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg(Debug::Typing,"[failed - is '%s', but type needs '%s']\n", atomGeometry(i->geometry(parent)), atomGeometry(geometry_));
 			level --;
-			dbgEnd(Debug::Calls,"Atomtype::match_atom");
+			dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 			return 0;
 		}
 	}
@@ -602,7 +602,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			msg(Debug::Typing,"[failed - is '%i', but type needs '%i']\n", n, nHydrogen_);
 			level --;
-			dbgEnd(Debug::Calls,"Atomtype::match_atom");
+			dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 			return 0;
 		}
 	}
@@ -626,7 +626,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 				{
 					msg(Debug::Typing,"(%li %2i) ... Bound atom %li (%i/%i) [failed]\n",this,level,bat,n+1,bat->nRepeat_);
 					level --;
-					dbgEnd(Debug::Calls,"Atomtype::match_atom");
+					dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 					return 0;
 				}
 			}
@@ -717,7 +717,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 				{
 					msg(Debug::Typing,"(%li %2i) ... Ring (%li)  [failed]\n",this,level,atr);
 					level --;
-					dbgEnd(Debug::Calls,"Atomtype::match_atom");
+					dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 					return 0;
 				}
 			} //End of loop over repeats
@@ -725,7 +725,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	}
 	// All checks completed, so return the final typing score
 	level --;
-	dbgEnd(Debug::Calls,"Atomtype::match_atom");
+	dbgEnd(Debug::Calls,"Atomtype::matchAtom");
 	return typescore;
 }
 

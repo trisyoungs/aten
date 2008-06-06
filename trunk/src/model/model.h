@@ -334,6 +334,8 @@ class Model
 	Vec4<double> &worldToScreen(const Vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
 	void calculateViewMatrix();
+	// Return the current rotation matrix
+	Mat4<double> rotationMatrix();
 	// Return the GL-compatible array from the ModelMAT structure
 	void copyRotationMatrix(double *m);
 	// Return the GL-compatible array from the ModelMAT structure

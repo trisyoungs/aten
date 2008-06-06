@@ -25,6 +25,17 @@
 #include "model/model.h"
 #include <time.h>
 
+// Get current view
+int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Mat4<double> rmat = obj.m->rotationMatrix();
+	Vec3<double> camr = obj.m->rCamera();
+	double camrot = obj.m->cameraRotation();
+	printf("View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
+	return CR_SUCCESS;
+}
+
 // Reset view
 int CommandData::function_CA_RESETVIEW(Command *&c, Bundle &obj)
 {
@@ -40,6 +51,17 @@ int CommandData::function_CA_ROTATEVIEW(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->rotate(c->argd(0), c->argd(1));
 	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// Set current view
+int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Mat4<double> rmat = obj.m->rotationMatrix();
+	Vec3<double> camr = obj.m->rCamera();
+	double camrot = obj.m->cameraRotation();
+	printf("View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
 	return CR_SUCCESS;
 }
 

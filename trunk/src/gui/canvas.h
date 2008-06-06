@@ -192,32 +192,34 @@ class Canvas
 	// Scene Rendering
 	*/
 	private:
-	// Render the rotation globe
-	void renderRotationGlobe(double *rotmat, double camrot);
+	// List of text nuggets to render
+	List<TextObject> textObjects_;
+	// Render colourscales
+	void renderColourscales();
+	// Add extra 2D objects
+	void renderExtra2d();
+	// Add extra 3D objects
+	void renderExtra3d();
 	// Render the model specified
 	void renderModelAtoms();
+	// Render model cell
+	void renderModelCell();
+	// Draw model force arrows		// TODO Defunct now glyphs are available?
+	void renderModelForceArrows();
 	// Render glyphs in the current model
 	void renderModelGlyphs();
-	// Render text glyphs in the current model
-	void renderModelTextGlyphs();
 	// Add labels to the model
 	void renderModelLabels();
 	// Add geometry measurements to the model
 	void renderModelMeasurements();
-	// Add extra 3D objects
-	void renderExtra3d();
-	// Add extra 2D objects
-	void renderExtra2d();
+	// Render text glyphs in the current model
+	void renderModelTextGlyphs();
 	// Draw regions specified for MC insertion
 	void renderRegions();
-	// Draw model force arrows
-	void renderModelForceArrows();
-	// Render model cell
-	void renderModelCell();
+	// Render the rotation globe
+	void renderRotationGlobe(double *rotmat, double camrot);
 	// Render surfaces
 	void renderSurfaces();
-	// List of text nuggets to render
-	List<TextObject> textObjects_;
 
 	public:
 	// Render a scene based on the specified model

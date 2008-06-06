@@ -118,6 +118,7 @@ void Master::initCommands()
 	CA_data[CA_SCALEMINCOLOUR].function = &CommandData::function_CA_SCALEMINCOLOUR;
 	CA_data[CA_SCALERANGE].function = &CommandData::function_CA_SCALERANGE;
 	CA_data[CA_SCALETYPE].function = &CommandData::function_CA_SCALETYPE;
+	CA_data[CA_SCALEVISIBLE].function = &CommandData::function_CA_SCALEVISIBLE;
 
 	// Disordered build commands
 	CA_data[CA_DISORDER].function = &CommandData::function_CA_DISORDER;
@@ -349,8 +350,10 @@ void Master::initCommands()
 	CA_data[CA_EVAL].function = &CommandData::function_CA_EVAL;
 
 	// View Commands
+	CA_data[CA_GETVIEW].function = &CommandData::function_CA_GETVIEW;
 	CA_data[CA_RESETVIEW].function = &CommandData::function_CA_RESETVIEW;
 	CA_data[CA_ROTATEVIEW].function = &CommandData::function_CA_ROTATEVIEW;
+	CA_data[CA_SETVIEW].function = &CommandData::function_CA_SETVIEW;
 	CA_data[CA_SPEEDTEST].function = &CommandData::function_CA_SPEEDTEST;
 	CA_data[CA_TRANSLATEVIEW].function = &CommandData::function_CA_TRANSLATEVIEW;
 	CA_data[CA_VIEWALONG].function = &CommandData::function_CA_VIEWALONG;
