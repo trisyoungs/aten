@@ -267,11 +267,12 @@ Prefs::Prefs()
 	// Undo levels
 	maxUndoLevels_ = -1;
 
-	// Rendering (including compatibility) options
+	// General Program (including compatibility) options
 	useNiceText_ = TRUE;
 	angleLabel_ = "Deg";
 	distanceLabel_ = "A";
 	labelSize_ = 10;
+	commonElements_ = "H,C,N,O,Cl";
 }
 
 // Load user preferences file
@@ -1160,4 +1161,16 @@ void Prefs::setUseNiceText(bool b)
 bool Prefs::useNiceText()
 {
 	return useNiceText_;
+}
+
+// Set list of common elements in SelectElement dialog
+void Prefs::setCommonElements(const char *s)
+{
+	commonElements_ = s;
+}
+
+// Return list of common elements to use in SelectElement dialog
+const char *Prefs::commonElements()
+{
+	return commonElements_.get();
 }

@@ -22,6 +22,7 @@
 #include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "base/elements.h"
+#include "parse/parser.h"
 
 // Constructor
 AtenSelectElement::AtenSelectElement(QWidget *parent) : QDialog(parent)
@@ -124,12 +125,39 @@ void AtenSelectElement::finaliseUi()
 		gl->addWidget(elementButtons_[z+n+32],10,3+n);
 	}
 
-	// Set size and connect signal
-	for (n=1; n<elements.nElements(); n++)
-	{
-
-	}
 	ui.PeriodicTableGroup->setLayout(gl);
+
+	// Create common element buttons....
+	QHBoxLayout *hbox = new QHBoxLayout(ui.CommonGroup);
+	//ui.CommonGroup->setLayout()
+	// Parse prefs value 
+	parser.getArgsDelim(prefs.commonElements(), Parser::Defaults);
+	for (n=0; n<parser.nArgs(); n++)
+	{
+		z = elements.find(parser.argc(n));
+		if (z > 0)
+		{
+			// Create button
+			QPushButton *button = addCommonButton(z);
+			commonButtons_.add(button, z);
+			// Add it to the layout
+			hbox->addWidget(button);
+		}
+		else msg(Debug::None, "Unrecognised element '%s' not added to common elements list.\n", parser.argc(n));
+	}
+
+}
+
+QPushButton *AtenSelectElement::addCommonButton(int el)
+{
+	QPushButton *button = new QPushButton(this);
+	button->setText(elements.symbol(el));
+	button->setMinimumSize(24,24);
+	button->setMaximumSize(24,24);
+	GLfloat *colour = elements.ambientColour(el);
+	button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
+	QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(CommonElementButton_clicked(bool)));
+	return button;
 }
 
 // Cancel dialog
@@ -153,6 +181,24 @@ void AtenSelectElement::ElementButton_clicked(bool checked)
 	int result;
 	for (result=1; result<elements.nElements(); result++) if (elementButtons_[result] == button) break;
 	selectedElement_ = (result != elements.nElements() ? result : -1);
+	accept();
+}
+
+// Return clicked common element value
+void AtenSelectElement::CommonElementButton_clicked(bool checked)
+{
+        // Cast sender
+        QPushButton *button = qobject_cast<QPushButton*> (sender());
+        if (!button)
+        {
+                printf("AtenSelectElement::CommonElementButton_clicked - Sender was not a QPushButton.\n");
+                reject();
+		return;
+        }
+
+	Refitem<QPushButton, int> *ri;
+	for (ri = commonButtons_.first(); ri != NULL; ri = ri->next) if (ri->item == button) break;
+	selectedElement_ = (ri != NULL ? ri->data : -1);
 	accept();
 }
 

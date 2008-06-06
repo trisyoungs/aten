@@ -259,6 +259,7 @@ void Master::initCommands()
 	CA_data[CA_ATOMDETAIL].function = &CommandData::function_CA_ATOMDETAIL;
 	CA_data[CA_BONDDETAIL].function = &CommandData::function_CA_BONDDETAIL;
 	CA_data[CA_COLOUR].function = &CommandData::function_CA_COLOUR;
+	CA_data[CA_COMMONELEMENTS].function = &CommandData::function_CA_COMMONELEMENTS;
 	CA_data[CA_DENSITYUNITS].function = &CommandData::function_CA_DENSITYUNITS;
 	CA_data[CA_DISTANCELABEL].function = &CommandData::function_CA_DISTANCELABEL;
 	CA_data[CA_ECUT].function = &CommandData::function_CA_ECUT;

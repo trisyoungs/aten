@@ -35,9 +35,12 @@ class AtenSelectElement : public QDialog
 	/*
 	// Window Functions
 	*/
+	private:
+	QPushButton *addCommonButton(int el);
 	private slots:
 	void on_CancelButton_clicked(bool checked);
 	void ElementButton_clicked(bool checked);
+	void CommonElementButton_clicked(bool checked);
 
 	/*
 	// Local variables
@@ -45,8 +48,8 @@ class AtenSelectElement : public QDialog
 	private:
 	// Selected element
 	int selectedElement_;
-	// Table widget containing element buttons
-	
+	// Reflist of common element buttons
+	Reflist<QPushButton,int> commonButtons_;	
 	// Array of element buttons
 	QPushButton **elementButtons_;
 

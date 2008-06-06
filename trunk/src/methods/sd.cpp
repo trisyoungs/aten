@@ -31,6 +31,7 @@ MethodSd sd;
 // Constructor
 MethodSd::MethodSd()
 {
+	// Private variables
 	nCycles_ = 100;
 }
 

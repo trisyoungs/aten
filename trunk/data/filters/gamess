@@ -61,6 +61,6 @@ exportmodel
 	writeline "$title"
 	writeline "C1"
 	for $i
-		writeline "$i.name@10 *@1 $i.z@4 $i.rx@12.6 $i.ry@12.6 $i.rz@12.6"
+		writeline "$i.name@10  $i.z@4 $i.rx@12.6 $i.ry@12.6 $i.rz@12.6"
 	end
 end
