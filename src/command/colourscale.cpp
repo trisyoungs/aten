@@ -161,3 +161,4 @@ int CommandData::function_CA_SCALEVISIBLE(Command *&c, Bundle &obj)
 	prefs.colourScale[id].setVisible(c->argb(1));
 	return CR_SUCCESS;
 }
+
