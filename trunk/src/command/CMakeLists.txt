@@ -32,7 +32,7 @@ script.cpp
 select.cpp 
 site.cpp 
 system.cpp 
-traj.cpp 
+trajectory.cpp 
 transform.cpp 
 variables.cpp 
 view.cpp
