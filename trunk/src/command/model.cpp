@@ -149,16 +149,6 @@ int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Set name of current model ('name <name>')
-int CommandData::function_CA_NAME(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->setName(c->argc(0));
-	c->parent()->setModelVariables(obj.m);
-	msg(Debug::Verbose,"Renamed model to '%s'\n", obj.rs->name());
-	return CR_SUCCESS;
-}
-
 // Create new model ('newmodel <name>')
 int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 {
@@ -220,3 +210,14 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 	obj.rs->setFilename(c->argc(1));
 	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
 }
+
+// Set name of current model ('setname <name>')
+int CommandData::function_CA_SETNAME(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->setName(c->argc(0));
+	c->parent()->setModelVariables(obj.m);
+	msg(Debug::Verbose,"Renamed model to '%s'\n", obj.rs->name());
+	return CR_SUCCESS;
+}
+

@@ -240,12 +240,12 @@ void Master::initCommands()
 	CA_data[CA_LOADMODEL].function = &CommandData::function_CA_LOADMODEL;
 	CA_data[CA_LOGINFO].function = &CommandData::function_CA_LOGINFO;
 	CA_data[CA_MODELTEMPLATE].function = &CommandData::function_CA_MODELTEMPLATE;
-	CA_data[CA_NAME].function = &CommandData::function_CA_NAME;
 	CA_data[CA_NEWMODEL].function = &CommandData::function_CA_NEWMODEL;
 	CA_data[CA_NEXTMODEL].function = &CommandData::function_CA_NEXTMODEL;
 	CA_data[CA_PREVMODEL].function = &CommandData::function_CA_PREVMODEL;
 	CA_data[CA_INFO].function = &CommandData::function_CA_INFO;
 	CA_data[CA_SAVEMODEL].function = &CommandData::function_CA_SAVEMODEL;
+	CA_data[CA_SETNAME].function = &CommandData::function_CA_SETNAME;
 
 	// Pattern Commands
 	CA_data[CA_CLEARPATTERNS].function = &CommandData::function_CA_CLEARPATTERNS;

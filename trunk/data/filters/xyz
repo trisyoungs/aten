@@ -60,8 +60,8 @@ importtrajectory
 	# No header in XYZ trajectories, so only check for frames
 	if $header <> true
 		readline "$natoms"
-		readline "$title"
-		name $title
+		readline "$title@100"
+		setname $title
 		# Now the atoms
 		modeltemplate
 		for $n,1,$natoms
