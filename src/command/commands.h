@@ -277,11 +277,11 @@ enum CommandAction {
 	CA_LOADMODEL,
 	CA_LOGINFO,
 	CA_MODELTEMPLATE,
-	CA_NAME,
 	CA_NEWMODEL,
 	CA_NEXTMODEL,
 	CA_PREVMODEL,
 	CA_SAVEMODEL,
+	CA_SETNAME,
 
 	// Pattern Commands
 	CA_CLEARPATTERNS,
@@ -630,11 +630,11 @@ class CommandData
 	int function_CA_LOADMODEL(Command *&c, Bundle &obj);
 	int function_CA_LOGINFO(Command *&c, Bundle &obj);
 	int function_CA_MODELTEMPLATE(Command *&c, Bundle &obj);
-	int function_CA_NAME(Command *&c, Bundle &obj);
 	int function_CA_NEWMODEL(Command *&c, Bundle &obj);
 	int function_CA_NEXTMODEL(Command *&c, Bundle &obj);
 	int function_CA_PREVMODEL(Command *&c, Bundle &obj);
 	int function_CA_SAVEMODEL(Command *&c, Bundle &obj);
+	int function_CA_SETNAME(Command *&c, Bundle &obj);
 	// Pattern Commands
 	int function_CA_CLEARPATTERNS(Command *&c, Bundle &obj);
 	int function_CA_CREATEPATTERNS(Command *&c, Bundle &obj);
