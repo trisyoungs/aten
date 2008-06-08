@@ -274,7 +274,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 		}
 	}
 	gui.mainView.postRedisplay();
-	dbgEnd(Debug::Calls,"Canvas::begin_mode");
+	dbgEnd(Debug::Calls,"Canvas::beginMode");
 }
 
 // End Mode

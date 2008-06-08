@@ -320,7 +320,9 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 	{
 		// Get selected filter in file dialog
 		filename = loadScriptDialog->selectedFiles().first();
+		// Create script and model variables within it
 		CommandList *ca = master.scripts.add();
+		ca->createModelVariables();
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
 		else master.scripts.remove(ca);
 	}

@@ -30,7 +30,8 @@ Atom *target = NULL;
 // Show the modelview context menu
 void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 {
-	Model *viewTarget = master.currentModel()->renderSource();
+	//Model *viewTarget = master.currentModel()->renderSource();
+	Model *viewTarget = gui.mainView.displayModel();
 	target = undermouse;
 	//printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
 	if ((viewTarget->nSelected() != 0) && (undermouse->isSelected())) target = NULL;

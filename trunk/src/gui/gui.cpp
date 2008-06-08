@@ -282,7 +282,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update forcefields in the forcefield window
 	if (updateForcefield) forcefieldsDialog->refresh();
 	// Enable the Atom menu if one or more atoms are selected
-	mainWindow->ui.AtomMenu->setEnabled( master.currentModel()->nSelected() == 0 ? FALSE : TRUE);
+	mainWindow->ui.AtomMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
 	mainWindow->updateUndoRedo();
 	// Request redraw of the main canvas

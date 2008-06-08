@@ -1099,6 +1099,7 @@ bool CommandList::createModelVariables(const char *base)
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"cell.centrez",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
+	return TRUE;
 }
 
 // Set variables for model with specified prefix
