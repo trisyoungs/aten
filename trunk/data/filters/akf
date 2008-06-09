@@ -32,6 +32,11 @@ importmodel
 			newglyph arrow
 			glyphatomr 1 $i
 			glyphatomr 2 $j
+		elseif $keywd = vector
+			readvar $line "$i $j"
+			newglyph arrow
+			glyphatomr 1 $i
+			glyphatomr 2 $j
 		elseif $keywd = sphere
 			readvar $line "$i $rx $ry $rz"
 			newglyph sphere

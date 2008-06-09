@@ -92,11 +92,10 @@ void Canvas::renderColourscales()
 		  glVertex2d(x+width,y);
 		glEnd();
 		// Add on text labels
-		glText(x+width/2.0, height_-y-height-4.0, prefs.colourScale[n].name());
-		if (prefs.colourScale[n].type() == ColourScale::TwoPoint) sprintf(label,"[%f : %f]",cmin,cmax);
-		else sprintf(label,"[%f : %f : %f]",cmin,cmid,cmax);
+		if (prefs.colourScale[n].type() == ColourScale::TwoPoint) sprintf(label,"%s [%f : %f]",prefs.colourScale[n].name(),cmin,cmax);
+		else sprintf(label,"%s [%f : %f : %f]",prefs.colourScale[n].name(),cmin,cmid,cmax);
 		glText(x+width+2.0, height_-y-8.0, label);
-		y += height + 20.0;
+		y += height + 10.0;
 	}
 	dbgEnd(Debug::Calls,"Canvas::renderColourscales");
 }

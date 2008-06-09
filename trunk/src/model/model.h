@@ -323,7 +323,7 @@ class Model
 	// Inverse of the view matrix
 	Mat4<double> viewMatrixInverse_;
 	// Camera position
-	Vec3<double> rCamera_;
+	Vec3<double> camera_;
 	// Size of view for orthographic projection
 	double orthoSize_;
 
@@ -334,12 +334,16 @@ class Model
 	Vec4<double> &worldToScreen(const Vec3<double>&);
 	// Called when, e.g. the camera position or view rotation has changed
 	void calculateViewMatrix();
+	// Set the current rotation matrix
+	void setRotationMatrix(Mat4<double> &rmat);
 	// Return the current rotation matrix
 	Mat4<double> rotationMatrix();
 	// Return the GL-compatible array from the ModelMAT structure
 	void copyRotationMatrix(double *m);
 	// Return the GL-compatible array from the ModelMAT structure
 	void copyCameraMatrix(double *m);
+	// Set the camera z-rotation
+	void setCameraRotation(double r);
 	// Return the current camera z-rotation
 	double cameraRotation();
 	// Set model rotation to exact values
@@ -371,8 +375,10 @@ class Model
 	void projectAll();
 	// Project the model coordinates of selected atoms
 	void projectSelection();
+	// Set the camera position vector
+	void setCamera(Vec3<double> &camr);
 	// Return the camera position vector
-	Vec3<double> rCamera();
+	Vec3<double> camera();
 	// Calculate and return drawing pixel width
 	double drawPixelWidth();
 

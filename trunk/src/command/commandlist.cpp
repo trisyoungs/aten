@@ -1158,7 +1158,8 @@ bool CommandList::createModelVariables()
 void CommandList::setModelVariables(Model *m)
 {
 	setModelVariables("",m);
-	setModelVariables("frame", (m->renderSource() == m ? NULL : m->renderSource()));
+	if (m != NULL) setModelVariables("frame", (m->renderSource() == m ? NULL : m->renderSource()));
+	else  setModelVariables("frame", NULL);
 }
 
 // Create atom parameter variables

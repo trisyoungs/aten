@@ -293,7 +293,6 @@ bool Forcefield::readVdw(ifstream &fffile)
 		msg(Debug::None,"VDW functional form not recognised - '%s'\n",parser.argc(1));
 		return FALSE;
 	}
-	// TODO allow 'same' directive?
 	bool done = FALSE;
 	count = 0;
 	do
@@ -350,7 +349,6 @@ bool Forcefield::readBonds(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2   data1  data2  ...  dataN'
-		// N.B. If data1 == 'same' then reuse the last data read in.
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
@@ -404,7 +402,6 @@ bool Forcefield::readAngles(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  data1  data2  ...  dataN'
-		// N.B. If data1 == 'same' then reuse the last data read in.
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
@@ -459,7 +456,6 @@ bool Forcefield::readTorsions(ifstream &fffile)
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  fftype4  data1  data2  ...  dataN'
-		// N.B. If data1 == 'same' then reuse the last data read in.
 		success = parser.getArgsDelim(&fffile,Parser::SkipBlanks);
 		if (success != 0)
 		{
