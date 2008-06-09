@@ -68,7 +68,7 @@ int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
 	obj.m->setRotationMatrix(rmat);
 	// Get camera position
 	camr = c->arg3d(9);
-	obj.m->setCamera(camr);
+	obj.m->resetCamera(camr);
 	// Get camera z-rotation (if present)
 	obj.m->setCameraRotation(c->hasArg(12) ? c->argd(12) : 0.0);
 	return CR_SUCCESS;

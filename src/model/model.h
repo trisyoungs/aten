@@ -363,7 +363,7 @@ class Model
 	void adjustOrthoSize(double);
 	// Return the size of the orthographic projection
 	double orthoSize();
-	// Reset the camera to show the entire model
+	// (Re)set the camera position and matrix
 	void resetCamera(const Vec3<double>&);
 	// Reset modelview matrix and camera position
 	void resetView();
@@ -375,8 +375,6 @@ class Model
 	void projectAll();
 	// Project the model coordinates of selected atoms
 	void projectSelection();
-	// Set the camera position vector
-	void setCamera(Vec3<double> &camr);
 	// Return the camera position vector
 	Vec3<double> camera();
 	// Calculate and return drawing pixel width

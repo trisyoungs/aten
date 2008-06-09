@@ -493,14 +493,6 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 	return newpoint;
 }
 
-// Set the camera position vector
-void Model::setCamera(Vec3<double> &camr)
-{
-	camera_ = camr;
-	// Log camera change
-	logChange(Change::CameraLog);
-}
-
 // Return the camera position vector
 Vec3<double> Model::camera()
 {
