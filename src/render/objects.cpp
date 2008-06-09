@@ -151,10 +151,12 @@ void Canvas::glText(const Vec3<double> r, const char *s)
 // Draw an arrow from origin along vector v
 void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v)
 {
-	static Vec3<double> perp, v2, v3;
+	static Vec3<double> perp, v2, v3, perp2;
 	v2 = v;
 	perp = v2.orthogonal();
+	perp2 = v2 * perp;
 	perp *= 0.1;
+	perp2 *= 0.1;
 	v2 *= 0.9;
 	glPushMatrix();
 	  glTranslated(origin.x,origin.y,origin.z);
@@ -166,6 +168,12 @@ void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v)
 	      glVertex3d(v3.x,v3.y,v3.z);
 	      glVertex3d(v.x,v.y,v.z);
 	      v3 = v2 - perp;
+	      glVertex3d(v3.x,v3.y,v3.z);
+	      glVertex3d(v.x,v.y,v.z);
+	      v3 = v2 + perp2;
+	      glVertex3d(v3.x,v3.y,v3.z);
+	      glVertex3d(v.x,v.y,v.z);
+	      v3 = v2 - perp2;
 	      glVertex3d(v3.x,v3.y,v3.z);
 	      glVertex3d(v.x,v.y,v.z);
 	    glEnd();

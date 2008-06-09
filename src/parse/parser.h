@@ -93,21 +93,21 @@ class Parser
 	*/
 	public:
 	// Returns number of arguments grabbed from last parse
-	int nArgs() { return nArgs_; }
+	int nArgs();
 	// Returns the specified argument as a character string
-	const char *argc(int i) { return arguments_[i].get(); }
+	const char *argc(int i);
 	// Returns the specified argument as an integer
-	int argi(int i) { return arguments_[i].asInteger(); }
+	int argi(int i);
 	// Returns the specified argument as a double
-	double argd(int i) { return arguments_[i].asDouble(); }
+	double argd(int i);
 	// Returns the specified argument as a bool
-	bool argb(int i) { return arguments_[i].asBool(); }
+	bool argb(int i);
 	// Returns the specified argument as a float
-	float argf(int i) { return (float) argd(i); }
+	float argf(int i);
 	// Returns whether the specified argument is empty
-	bool isBlank(int i) { return (arguments_[i][0] == '\0' ? TRUE : FALSE); }
+	bool isBlank(int i);
 	// Set argument manually
-	void setArg(int i, const char *s) { arguments_[i] = s; }
+	void setArg(int i, const char *s);
 
 	/*
 	// Atom type parsing

@@ -42,6 +42,54 @@ Parser::Parser()
 	optionMask_ = Parser::Defaults;
 }
 
+// Returns number of arguments grabbed from last parse
+int Parser::nArgs()
+{
+	return nArgs_;
+}
+
+// Returns the specified argument as a character string
+const char *Parser::argc(int i)
+{
+	return arguments_[i].get();
+}
+
+// Returns the specified argument as an integer
+int Parser::argi(int i)
+{
+	return arguments_[i].asInteger();
+}
+
+// Returns the specified argument as a double
+double Parser::argd(int i)
+{
+	return arguments_[i].asDouble();
+}
+
+// Returns the specified argument as a bool
+bool Parser::argb(int i)
+{
+	return arguments_[i].asBool();
+}
+
+// Returns the specified argument as a float
+float Parser::argf(int i)
+{
+	return (float) argd(i);
+}
+
+// Returns whether the specified argument is empty
+bool Parser::isBlank(int i)
+{
+	return (arguments_[i][0] == '\0' ? TRUE : FALSE);
+}
+
+// Set argument manually
+void Parser::setArg(int i, const char *s)
+{
+	arguments_[i] = s;
+}
+
 /*
 // String parsing methods
 */

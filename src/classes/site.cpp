@@ -68,6 +68,12 @@ const char *Site::name()
 	return name_.get();
 }
 
+// Set type of site centre
+void Site::setType(SiteType st)
+{
+	type_ = st;
+}
+
 // Calculate site centre
 Vec3<double> Site::calculateCentre(Model *srcmodel, int mol)
 {

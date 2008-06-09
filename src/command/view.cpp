@@ -30,9 +30,9 @@ int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Mat4<double> rmat = obj.m->rotationMatrix();
-	Vec3<double> camr = obj.m->rCamera();
+	Vec3<double> camr = obj.m->camera();
 	double camrot = obj.m->cameraRotation();
-	printf("View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
+	msg(Debug::None, "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
 	return CR_SUCCESS;
 }
 
@@ -58,10 +58,19 @@ int CommandData::function_CA_ROTATEVIEW(Command *&c, Bundle &obj)
 int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Mat4<double> rmat = obj.m->rotationMatrix();
-	Vec3<double> camr = obj.m->rCamera();
-	double camrot = obj.m->cameraRotation();
-	printf("View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
+	Mat4<double> rmat;
+	Vec3<double> camr;
+	// Get rotation matrix
+	rmat.rows[0].set(c->arg3d(0),0.0);
+	rmat.rows[1].set(c->arg3d(3),0.0);
+	rmat.rows[2].set(c->arg3d(6),0.0);
+	rmat.rows[3].set(0.0,0.0,0.0,1.0);
+	obj.m->setRotationMatrix(rmat);
+	// Get camera position
+	camr = c->arg3d(9);
+	obj.m->setCamera(camr);
+	// Get camera z-rotation (if present)
+	obj.m->setCameraRotation(c->hasArg(12) ? c->argd(12) : 0.0);
 	return CR_SUCCESS;
 }
 

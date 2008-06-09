@@ -77,7 +77,7 @@ class Site
 
 	public:
 	// Set type of site centre
-	void setType(SiteType st) { type_ = st; }
+	void setType(SiteType st);
 	// List of relative atom ids that define the site
 	List< Listitem<int> > atoms;
 	// Calculate centre from config and molecule ID supplied
