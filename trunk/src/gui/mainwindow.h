@@ -203,6 +203,7 @@ class AtenForm : public QMainWindow
 	void on_actionMinimise_triggered(bool on);
 	void on_actionCalculateEnergy_triggered(bool on);
 	void on_actionCalculateForces_triggered(bool on);
+	void forcefieldCombo_currentIndexChanged(int i);
 	public:
 	void refreshForcefieldCombo();
 

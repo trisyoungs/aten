@@ -121,6 +121,8 @@ void AtenForcefields::refresh()
 		ui.ManualTypingGroup->setEnabled(TRUE);
 	}
 	refreshTypes();
+	// Refresh list of forcefields on Forcefields toolbar
+	gui.mainWindow->refreshForcefieldCombo();
 	shouldRefresh_ = FALSE;
 }
 
@@ -197,6 +199,8 @@ void AtenForcefields::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 		refreshTypes();
 		checkedItem_ = NULL;
 	}
+	// Refresh list of forcefields on Forcefields toolbar
+	gui.mainWindow->refreshForcefieldCombo();
 }
 
 // Load forcefield 

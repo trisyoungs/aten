@@ -216,6 +216,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the midpoint value in the specified colour scale" },
 	{ "scalemincolour",	"VVVVv",	"<id> <r> <g> <b> [a]",
 				"Set colour associated to minimum colour value for colour scale specified" },
+	{ "scalename",		"Vv",		"<id> [name]",
+				"Print (or set) the name of the colour scale specified" },
 	{ "scalerange",		"VVV",		"<id> <min> <max>",
 				"Set the range of the specified colour scale" },
 	{ "scaletype",		"VV",		"<id> <type>",

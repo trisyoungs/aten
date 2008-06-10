@@ -120,6 +120,8 @@ class ColourScale
 	void refreshObjects();
 
 	public:
+	// Return number of objects linked to this colourscale
+	int nLinks();
 	// Link grid with colourscale
 	void addLink(Grid *g);
 	// Break link between grid and colourscale

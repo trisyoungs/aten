@@ -64,53 +64,53 @@ void AtenPrefs::finaliseUi()
 	for (i=0; i<10; i++)
 	{
 		gl->setRowMinimumHeight(i,30);
-		scaleLinksLabel_[i] = new QLabel(this);
-		scaleLinksLabel_[i]->setText(itoa(i+1));
-		gl->addWidget(scaleLinksLabel_[i], i*2, 0);
+		scaleNameEdit_[i] = new QLineEdit(this);
+		scaleNameEdit_[i]->setText("Name");
+		gl->addWidget(scaleNameEdit_[i], i*2, 0);
 		scaleLinksLabel_[i] = new QLabel(this);
 		scaleLinksLabel_[i]->setText("[0]");
 		gl->addWidget(scaleLinksLabel_[i], i*2, 8);
 
 		scaleThreeCheck_[i] = new QCheckBox(this);
-		scaleThreeCheck_[i]->setText("3");
+		scaleThreeCheck_[i]->setText("3-Point");
 		QObject::connect(scaleThreeCheck_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_TypeChanged(bool)));
-		gl->addWidget(scaleThreeCheck_[i], i*2, 1);
+		gl->addWidget(scaleThreeCheck_[i], i*2+1, 0);
 
 		scaleMinColourFrame_[i] = new TColourFrame(this);
 		scaleMinColourFrame_[i]->setMinimumSize(30,30);
 		scaleMinColourFrame_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		gl->addWidget(scaleMinColourFrame_[i], i*2, 2);
+		gl->addWidget(scaleMinColourFrame_[i], i*2, 1);
 
 		scaleMinColourButton_[i] = new QPushButton(this);
 		scaleMinColourButton_[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 		scaleMinColourButton_[i]->setMinimumSize(30,30);
 		scaleMinColourButton_[i]->setMaximumSize(30,30);
 		QObject::connect(scaleMinColourButton_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_ColourChanged(bool)));
-		gl->addWidget(scaleMinColourButton_[i], i*2, 3);
+		gl->addWidget(scaleMinColourButton_[i], i*2, 2);
 
 		scaleMidColourFrame_[i] = new TColourFrame(this);
 		scaleMidColourFrame_[i]->setMinimumSize(30,30);
 		scaleMidColourFrame_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		gl->addWidget(scaleMidColourFrame_[i], i*2, 4);
+		gl->addWidget(scaleMidColourFrame_[i], i*2, 3);
 
 		scaleMidColourButton_[i] = new QPushButton(this);
 		scaleMidColourButton_[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 		scaleMidColourButton_[i]->setMinimumSize(30,30);
 		scaleMidColourButton_[i]->setMaximumSize(30,30);
 		QObject::connect(scaleMidColourButton_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_ColourChanged(bool)));
-		gl->addWidget(scaleMidColourButton_[i], i*2, 5);
+		gl->addWidget(scaleMidColourButton_[i], i*2, 4);
 
 		scaleMaxColourFrame_[i] = new TColourFrame(this);
 		scaleMaxColourFrame_[i]->setMinimumSize(30,30);
 		scaleMaxColourFrame_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		gl->addWidget(scaleMaxColourFrame_[i], i*2, 6);
+		gl->addWidget(scaleMaxColourFrame_[i], i*2, 5);
 
 		scaleMaxColourButton_[i] = new QPushButton(this);
 		scaleMaxColourButton_[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 		scaleMaxColourButton_[i]->setMinimumSize(30,30);
 		scaleMaxColourButton_[i]->setMaximumSize(30,30);
 		QObject::connect(scaleMaxColourButton_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_ColourChanged(bool)));
-		gl->addWidget(scaleMaxColourButton_[i], i*2, 7);
+		gl->addWidget(scaleMaxColourButton_[i], i*2, 6);
 
 		scaleMinSpin_[i] = new QDoubleSpinBox(this);
 		scaleMinSpin_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -118,7 +118,7 @@ void AtenPrefs::finaliseUi()
 		scaleMinSpin_[i]->setDecimals(4);
 		scaleMinSpin_[i]->setRange(-1.0e6,1.0e6);
 		QObject::connect(scaleMinSpin_[i], SIGNAL(valueChanged(double)), this, SLOT(colourScale_RangeChanged(double)));
-		gl->addWidget(scaleMinSpin_[i], i*2+1, 2, 1, 2);
+		gl->addWidget(scaleMinSpin_[i], i*2+1, 1, 1, 2);
 
 		scaleMidSpin_[i] = new QDoubleSpinBox(this);
 		scaleMidSpin_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -126,7 +126,7 @@ void AtenPrefs::finaliseUi()
 		scaleMidSpin_[i]->setDecimals(4);
 		scaleMidSpin_[i]->setRange(-1.0e6,1.0e6);
 		QObject::connect(scaleMidSpin_[i], SIGNAL(valueChanged(double)), this, SLOT(colourScale_RangeChanged(double)));
-		gl->addWidget(scaleMidSpin_[i], i*2+1, 4, 1, 2);
+		gl->addWidget(scaleMidSpin_[i], i*2+1, 3, 1, 2);
 
 		scaleMaxSpin_[i] = new QDoubleSpinBox(this);
 		scaleMaxSpin_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -134,7 +134,7 @@ void AtenPrefs::finaliseUi()
 		scaleMaxSpin_[i]->setDecimals(4);
 		scaleMaxSpin_[i]->setRange(-1.0e6,1.0e6);
 		QObject::connect(scaleMaxSpin_[i], SIGNAL(valueChanged(double)), this, SLOT(colourScale_RangeChanged(double)));
-		gl->addWidget(scaleMaxSpin_[i], i*2+1, 6, 1, 2);
+		gl->addWidget(scaleMaxSpin_[i], i*2+1, 5, 1, 2);
 	}
 	// Put grid layout into frame
 	QVBoxLayout *vbox = new QVBoxLayout;
@@ -195,6 +195,7 @@ void AtenPrefs::setControls()
 
 	// Set colourframe colours etc.
 	GLfloat col[4];
+	char links[32];
 	ui.ForegroundColourFrame->setColour(prefs.penColour(Prefs::ForegroundColour));
 	ui.ForegroundColourFrame->update();
 	ui.BackgroundColourFrame->setColour(prefs.penColour(Prefs::BackgroundColour));
@@ -203,6 +204,11 @@ void AtenPrefs::setControls()
 	ui.SpecularColourFrame->update();
 	for (int n=0; n<10; n++)
 	{
+		// Name / links
+		scaleNameEdit_[n]->setText(prefs.colourScale[n].name());
+		sprintf(links,"[%i]",prefs.colourScale[n].nLinks());
+		scaleLinksLabel_[n]->setText(links);
+		// Colours
 		prefs.colourScale[n].copyColour(ColourScale::MinColour, col);
 		scaleMinColourFrame_[n]->setColour(col);
 		scaleMinColourFrame_[n]->update();
@@ -212,9 +218,11 @@ void AtenPrefs::setControls()
 		prefs.colourScale[n].copyColour(ColourScale::MaxColour, col);
 		scaleMaxColourFrame_[n]->setColour(col);
 		scaleMaxColourFrame_[n]->update();
+		// Numerical ranges
 		scaleMinSpin_[n]->setValue(prefs.colourScale[n].minimum());
 		scaleMidSpin_[n]->setValue(prefs.colourScale[n].middle());
 		scaleMaxSpin_[n]->setValue(prefs.colourScale[n].maximum());
+		// Type
 		if (prefs.colourScale[n].type() == ColourScale::ThreePoint)
 		{
 			scaleThreeCheck_[n]->setChecked(TRUE);

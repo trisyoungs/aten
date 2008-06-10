@@ -113,6 +113,21 @@ int CommandData::function_CA_SCALEMINCOLOUR(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Print/set name of colourscale ('scalename <id> [name]')
+int CommandData::function_CA_SCALENAME(Command *&c, Bundle &obj)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		return CR_FAIL;
+	}
+	if (c->hasArg(1)) prefs.colourScale[id].setName(c->argc(1));
+	else msg(Debug::None, "Name of colourscale %i is '%s'.\n",id+1,prefs.colourScale[id].name());
+	return CR_SUCCESS;
+}
+
 // Set range of colourscale ('scalerange <id> <min> <max>')
 int CommandData::function_CA_SCALERANGE(Command *&c, Bundle &obj)
 {

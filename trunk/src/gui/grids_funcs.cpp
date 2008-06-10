@@ -235,7 +235,7 @@ void AtenGrids::refreshGridInfo()
 	ui.GridNegativeColourFrame->update();
 	ui.GridSymmetricCheck->setChecked( g->symmetric() );
 	ui.GridTransparencySpin->setValue( g->transparency() );
-	ui.GridColourscaleSpin->setValue( g->colourScale() );
+	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
 	dbgEnd(Debug::Calls,"AtenGrids::refreshGridInfo");
 }
 
@@ -385,7 +385,7 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
 	Grid *g = master.grid(row);
-	g->setColourScale(n);
+	g->setColourScale(n-1);
 	gui.mainView.postRedisplay();
 }
 
