@@ -195,6 +195,18 @@ class AtenForm : public QMainWindow
 	void on_actionFileSaveExpression_triggered(bool checked);
 
 	/*
+	// Forcefield Actions
+	*/
+	private:
+	QComboBox *forcefieldCombo_;
+	private slots:
+	void on_actionMinimise_triggered(bool on);
+	void on_actionCalculateEnergy_triggered(bool on);
+	void on_actionCalculateForces_triggered(bool on);
+	public:
+	void refreshForcefieldCombo();
+
+	/*
 	// Measure Actions
 	*/
 	private slots:
@@ -288,20 +300,20 @@ class AtenForm : public QMainWindow
 	void on_actionSchemeForce_triggered(bool checked);
 
 	/*
-	// Window Show / Hide Functions
+	// Window Show / Hide Actions
 	*/
 	private slots:
-	void on_actionAtomlistDialog_triggered(bool checked);
-	void on_actionBuildDialog_triggered(bool checked);
-	void on_actionDisorderDialog_triggered(bool checked);
-	void on_actionForcefieldsDialog_triggered(bool checked);
-	void on_actionTransformDialog_triggered(bool checked);
-	void on_actionPositionDialog_triggered(bool checked);
-	void on_actionGridsDialog_triggered(bool checked);
-// 	void on_actionGlyphsDialog_triggered(bool checked);
-	void on_actionMinimiserDialog_triggered(bool checked);
-	void on_actionCellDefineDialog_triggered(bool checked);
-	void on_actionCellTransformDialog_triggered(bool checked);
+	void on_actionAtomlistWindow_triggered(bool checked);
+	void on_actionBuildWindow_triggered(bool checked);
+	void on_actionDisorderWindow_triggered(bool checked);
+	void on_actionForcefieldsWindow_triggered(bool checked);
+	void on_actionTransformWindow_triggered(bool checked);
+	void on_actionPositionWindow_triggered(bool checked);
+	void on_actionGridsWindow_triggered(bool checked);
+// 	void on_actionGlyphsWindow_triggered(bool checked);
+	void on_actionMinimiserWindow_triggered(bool checked);
+	void on_actionCellDefineWindow_triggered(bool checked);
+	void on_actionCellTransformWindow_triggered(bool checked);
 
 	/*
 	// Settings Functions
@@ -368,6 +380,7 @@ class AtenForm : public QMainWindow
 	private:
 	// Pointers to recent file actions
 	QAction *actionRecentFile[MAXRECENTFILES];
+
 	public:
 	// Add file to top of recent list
 	void addRecent(const char*);

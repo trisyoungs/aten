@@ -44,6 +44,8 @@ int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 	obj.rs->selectNone();
 	obj.rs->resetLogs();
 	obj.rs->updateSavePoint();
+	obj.rs->setFilter(NULL);
+	obj.rs->setFilename("frame");
 	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
 	return CR_SUCCESS;
 }

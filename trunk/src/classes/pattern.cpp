@@ -1280,8 +1280,8 @@ bool Pattern::fillExpression()
 			msg(Debug::None,"...INTERNAL ERROR: expected %i angles, found %i\n", angles_.nItems(), count);
 			incomplete_ = TRUE;
 		}
-		else if (iangles == 0) msg(Debug::None,"... Found parameters for %i angles_.\n", angles_.nItems());
-		else msg(Debug::None,"... Missing parameters for %i of %i angles_.\n", iangles, angles_.nItems());
+		else if (iangles == 0) msg(Debug::None,"... Found parameters for %i angles.\n", angles_.nItems());
+		else msg(Debug::None,"... Missing parameters for %i of %i angles.\n", iangles, angles_.nItems());
 		// Construct the torsion list.
 		// Loop over the bond list and add permutations of the bonding atoms listed for either atom j and k
 		count = 0;
@@ -1350,8 +1350,8 @@ bool Pattern::fillExpression()
 			msg(Debug::None,"...INTERNAL ERROR: expected %i torsions, found %i\n", torsions_.nItems(), count);
 			incomplete_ = TRUE;
 		}
-		else if (itorsions == 0) msg(Debug::None,"... Found parameters for %i torsions_.\n", torsions_.nItems());
-		else msg(Debug::None,"... Missing parameters for %i of %i torsions_.\n", itorsions, torsions_.nItems());
+		else if (itorsions == 0) msg(Debug::None,"... Found parameters for %i torsions.\n", torsions_.nItems());
+		else msg(Debug::None,"... Missing parameters for %i of %i torsions.\n", itorsions, torsions_.nItems());
 	}
 	// Print out a warning if the expression is incomplete.
 	if (incomplete_) msg(Debug::None,"!!! Expression is incomplete.\n");

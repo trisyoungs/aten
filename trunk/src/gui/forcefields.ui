@@ -28,7 +28,7 @@
       <number>0</number>
      </property>
      <property name="spacing" >
-      <number>6</number>
+      <number>4</number>
      </property>
      <item>
       <widget class="QListWidget" name="ForcefieldList" />
@@ -148,34 +148,41 @@
        <property name="title" >
         <string>Associate</string>
        </property>
-       <layout class="QGridLayout" >
+       <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>2</number>
         </property>
         <property name="spacing" >
          <number>4</number>
         </property>
-        <item row="1" column="1" colspan="2" >
-         <widget class="QComboBox" name="FFPatternCombo" />
+        <item>
+         <layout class="QHBoxLayout" >
+          <property name="margin" >
+           <number>0</number>
+          </property>
+          <property name="spacing" >
+           <number>6</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="AssignFFToCurrentButton" >
+            <property name="text" >
+             <string>Current Model</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="AssignFFToAllButton" >
+            <property name="text" >
+             <string>All Models</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="1" column="0" >
+        <item>
          <widget class="QPushButton" name="AssignFFToPatternButton" >
           <property name="text" >
-           <string>To Pattern</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0" colspan="2" >
-         <widget class="QPushButton" name="AssignFFToCurrentButton" >
-          <property name="text" >
-           <string>To Model</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2" >
-         <widget class="QPushButton" name="AssignFFToAllButton" >
-          <property name="text" >
-           <string>To All</string>
+           <string>Pattern in Current Model</string>
           </property>
          </widget>
         </item>

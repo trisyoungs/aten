@@ -94,30 +94,30 @@ void GuiQt::run()
 	selectPatternDialog = new AtenSelectPattern(mainWindow);
 	selectElementDialog = new AtenSelectElement(mainWindow);
 	// ...tool windows
-	atomlistDialog = new AtenAtomlist(mainWindow, Qt::Dialog|Qt::Tool);
-	buildDialog = new AtenBuild(mainWindow);
-	cellDefineDialog = new AtenCellDefine(mainWindow);
-	cellTransformDialog = new AtenCellTransform(mainWindow);
-	disorderDialog = new AtenDisorder(mainWindow);
-	forcefieldsDialog = new AtenForcefields(mainWindow);
-	glyphsDialog = new AtenGlyphs(mainWindow);
-	gridsDialog = new AtenGrids(mainWindow);
-	minimiserDialog = new AtenMinimiser(mainWindow);
-	positionDialog = new AtenPosition(mainWindow);
-	transformDialog = new AtenTransform(mainWindow);
+	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
+	buildWindow = new AtenBuild(mainWindow);
+	cellDefineWindow = new AtenCellDefine(mainWindow);
+	cellTransformWindow = new AtenCellTransform(mainWindow);
+	disorderWindow = new AtenDisorder(mainWindow);
+	forcefieldsWindow = new AtenForcefields(mainWindow);
+	glyphsWindow = new AtenGlyphs(mainWindow);
+	gridsWindow = new AtenGrids(mainWindow);
+	minimiserWindow = new AtenMinimiser(mainWindow);
+	positionWindow = new AtenPosition(mainWindow);
+	transformWindow = new AtenTransform(mainWindow);
 
 	// Connect Finished signal of tool windows to finished slots in structure
-	QObject::connect(atomlistDialog, SIGNAL(finished(int)), atomlistDialog, SLOT(dialogFinished(int)));
-	QObject::connect(buildDialog, SIGNAL(finished(int)), buildDialog, SLOT(dialogFinished(int)));
-	QObject::connect(cellDefineDialog, SIGNAL(finished(int)), cellDefineDialog, SLOT(dialogFinished(int)));
-	QObject::connect(cellTransformDialog, SIGNAL(finished(int)), cellTransformDialog, SLOT(dialogFinished(int)));
-	QObject::connect(disorderDialog, SIGNAL(finished(int)), disorderDialog, SLOT(dialogFinished(int)));
-	QObject::connect(forcefieldsDialog, SIGNAL(finished(int)), forcefieldsDialog, SLOT(dialogFinished(int)));
-	QObject::connect(glyphsDialog, SIGNAL(finished(int)), glyphsDialog, SLOT(dialogFinished(int)));
-	QObject::connect(gridsDialog, SIGNAL(finished(int)), gridsDialog, SLOT(dialogFinished(int)));
-	QObject::connect(minimiserDialog, SIGNAL(finished(int)), minimiserDialog, SLOT(dialogFinished(int)));
-	QObject::connect(positionDialog, SIGNAL(finished(int)), positionDialog, SLOT(dialogFinished(int)));
-	QObject::connect(transformDialog, SIGNAL(finished(int)), transformDialog, SLOT(dialogFinished(int)));
+	QObject::connect(atomlistWindow, SIGNAL(finished(int)), atomlistWindow, SLOT(dialogFinished(int)));
+	QObject::connect(buildWindow, SIGNAL(finished(int)), buildWindow, SLOT(dialogFinished(int)));
+	QObject::connect(cellDefineWindow, SIGNAL(finished(int)), cellDefineWindow, SLOT(dialogFinished(int)));
+	QObject::connect(cellTransformWindow, SIGNAL(finished(int)), cellTransformWindow, SLOT(dialogFinished(int)));
+	QObject::connect(disorderWindow, SIGNAL(finished(int)), disorderWindow, SLOT(dialogFinished(int)));
+	QObject::connect(forcefieldsWindow, SIGNAL(finished(int)), forcefieldsWindow, SLOT(dialogFinished(int)));
+	QObject::connect(glyphsWindow, SIGNAL(finished(int)), glyphsWindow, SLOT(dialogFinished(int)));
+	QObject::connect(gridsWindow, SIGNAL(finished(int)), gridsWindow, SLOT(dialogFinished(int)));
+	QObject::connect(minimiserWindow, SIGNAL(finished(int)), minimiserWindow, SLOT(dialogFinished(int)));
+	QObject::connect(positionWindow, SIGNAL(finished(int)), positionWindow, SLOT(dialogFinished(int)));
+	QObject::connect(transformWindow, SIGNAL(finished(int)), transformWindow, SLOT(dialogFinished(int)));
 
 	// Set the modality of some dialogs
 	prefsDialog->setModal(TRUE);
@@ -152,11 +152,11 @@ void GuiQt::run()
 	master.setCurrentModel(master.models());
 
 	// Refresh the necessary windows
-	gridsDialog->refresh();
-	forcefieldsDialog->refresh();
-	disorderDialog->refresh();
-	cellDefineDialog->refresh();
-	cellTransformDialog->refresh();
+	gridsWindow->refresh();
+	forcefieldsWindow->refresh();
+	disorderWindow->refresh();
+	cellDefineWindow->refresh();
+	cellTransformWindow->refresh();
 	updateTrajControls();
 
 	gui.mainView.enableDrawing();
@@ -272,15 +272,15 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update save button status
 	mainWindow->ui.actionFileSave->setEnabled( m->isModified() );
 	// Update contents of the atom list
-	if (updateAtoms) atomlistDialog->refresh();
+	if (updateAtoms) atomlistWindow->refresh();
 	// Update the contents of the cell page
 	if (updateCell)
 	{
-		cellDefineDialog->refresh();
-		cellTransformDialog->refresh();
+		cellDefineWindow->refresh();
+		cellTransformWindow->refresh();
 	}
 	// Update forcefields in the forcefield window
-	if (updateForcefield) forcefieldsDialog->refresh();
+	if (updateForcefield) forcefieldsWindow->refresh();
 	// Enable the Atom menu if one or more atoms are selected
 	mainWindow->ui.AtomMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists

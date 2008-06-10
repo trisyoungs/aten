@@ -138,5 +138,8 @@ void Model::createUniqueLists()
 		ffa = uniqueTypes_.add();
 		ffa->copy(ri->item);
 	}
+
+	// TODO Bond, angle, torsion lists...
+
 	dbgEnd(Debug::Calls,"Model::createUniqueLists");
 }

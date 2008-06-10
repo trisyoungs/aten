@@ -103,7 +103,7 @@ void AtenAtomlist::refresh()
 {
 	dbgBegin(Debug::Calls,"AtenAtomlist::refresh");
 	// If the atom list page is not visible, don't do anything
-	if (!gui.atomlistDialog->isVisible())
+	if (!gui.atomlistWindow->isVisible())
 	{
 		shouldRefresh_ = TRUE;
 		dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
@@ -176,7 +176,7 @@ void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 
 void AtenAtomlist::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionAtomlistDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionAtomlistWindow->setChecked(FALSE);
 }
 
 /*
@@ -200,20 +200,20 @@ void AtomlistRefreshThread::run()
 	Atom *i;
 	int n, count;
 	// Grab model to be displayed
-	Model *m = gui.atomlistDialog->listLastModel_;
+	Model *m = gui.atomlistWindow->listLastModel_;
 	// Set progress bar
-	gui.atomlistDialog->ui.RefreshProgressBar->setRange(0, m->nAtoms());
+	gui.atomlistWindow->ui.RefreshProgressBar->setRange(0, m->nAtoms());
 	count = 0;
-	if (gui.atomlistDialog->listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
+	if (gui.atomlistWindow->listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
 	{
 		//printf("List must be cleared and repopulated...\n");
 		// Clear the current list
-		gui.atomlistDialog->ui.AtomTree->clear();
-		gui.atomlistDialog->ui.AtomTree->clearAtomItems();
+		gui.atomlistWindow->ui.AtomTree->clear();
+		gui.atomlistWindow->ui.AtomTree->clearAtomItems();
 		// If there are no atoms in the current model, exit now.
 		if (m->nAtoms() == 0)
 		{
-			gui.atomlistDialog->refreshing_ = FALSE;
+			gui.atomlistWindow->refreshing_ = FALSE;
 			return;
 		}
 		// Add patterns as root nodes in the list, followed by atoms in each pattern.
@@ -221,20 +221,20 @@ void AtomlistRefreshThread::run()
 		if (m->nPatterns() == 0)
 		{
 			// Create new root node for all atoms (still a TTreeWidgetItem
-			TTreeWidgetItem *pat = new TTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
-			gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
+			TTreeWidgetItem *pat = new TTreeWidgetItem(gui.atomlistWindow->ui.AtomTree);
+			gui.atomlistWindow->ui.AtomTree->setItemExpanded(pat, TRUE);
 			pat->setText(0, "All");
 			for (i = m->atoms(); i != NULL; i = i->next)
 			{
 				// Add the atom
-				item = gui.atomlistDialog->ui.AtomTree->addTreeItem(pat);
+				item = gui.atomlistWindow->ui.AtomTree->addTreeItem(pat);
 				//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 				item->setAtom(i);
 				item->setAtomColumns();
 				// Set the row selection property here.
-				gui.atomlistDialog->ui.AtomTree->setItemSelected(item, i->isSelected());
+				gui.atomlistWindow->ui.AtomTree->setItemSelected(item, i->isSelected());
 				// Update progress bar
-				gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
+				gui.atomlistWindow->ui.RefreshProgressBar->setValue(++count);
 			}
 		}
 		else
@@ -244,47 +244,47 @@ void AtomlistRefreshThread::run()
 			for (p = m->patterns(); p != NULL; p = p->next)
 			{
 				// Create new root node for the pattern
-				TTreeWidgetItem *pat = new TTreeWidgetItem(gui.atomlistDialog->ui.AtomTree);
-				gui.atomlistDialog->ui.AtomTree->setItemExpanded(pat, TRUE);
+				TTreeWidgetItem *pat = new TTreeWidgetItem(gui.atomlistWindow->ui.AtomTree);
+				gui.atomlistWindow->ui.AtomTree->setItemExpanded(pat, TRUE);
 				pat->setText(0, p->name());
 				pat->setPattern(p);
 				for (n = 0; n<p->totalAtoms(); n++)
 				{
 					// Create atom in the pattern root node
-					item = gui.atomlistDialog->ui.AtomTree->addTreeItem(pat);
+					item = gui.atomlistWindow->ui.AtomTree->addTreeItem(pat);
 					//item->setFlags(Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 					item->setAtom(i);
 					item->setAtomColumns();
 					// Set the row selection property here
-					gui.atomlistDialog->ui.AtomTree->setItemSelected(item, i->isSelected());
+					gui.atomlistWindow->ui.AtomTree->setItemSelected(item, i->isSelected());
 					i = i->next;
 					// Update progress bar
-					gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
+					gui.atomlistWindow->ui.RefreshProgressBar->setValue(++count);
 				}
 			}
 		}
 		// Set new log points
-		gui.atomlistDialog->listStructurePoint_ = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
-		gui.atomlistDialog->listSelectionPoint_ = m->log(Change::SelectionLog);
+		gui.atomlistWindow->listStructurePoint_ = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
+		gui.atomlistWindow->listSelectionPoint_ = m->log(Change::SelectionLog);
 	}
-	else if (gui.atomlistDialog->listSelectionPoint_ != m->log(Change::SelectionLog))
+	else if (gui.atomlistWindow->listSelectionPoint_ != m->log(Change::SelectionLog))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		// Grab the list of TTreeWidgetItems
 		//printf("Just updating selection....\n");
-		for (ri = gui.atomlistDialog->ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
+		for (ri = gui.atomlistWindow->ui.AtomTree->atomItems(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item->atom();
-			//gui.atomlistDialog->ui.AtomTree->setItemSelected(ri->item, i->isSelected());
+			//gui.atomlistWindow->ui.AtomTree->setItemSelected(ri->item, i->isSelected());
 			ri->item->setSelected(i->isSelected());
 			// Update progress bar
-			gui.atomlistDialog->ui.RefreshProgressBar->setValue(++count);
+			gui.atomlistWindow->ui.RefreshProgressBar->setValue(++count);
 		}
-		gui.atomlistDialog->listSelectionPoint_ = m->log(Change::SelectionLog);
+		gui.atomlistWindow->listSelectionPoint_ = m->log(Change::SelectionLog);
 	}
-	for (n=0; n<6; n++) gui.atomlistDialog->ui.AtomTree->resizeColumnToContents(n);
-	gui.atomlistDialog->refreshing_ = FALSE;
-	gui.atomlistDialog->shouldRefresh_ = FALSE;
+	for (n=0; n<6; n++) gui.atomlistWindow->ui.AtomTree->resizeColumnToContents(n);
+	gui.atomlistWindow->refreshing_ = FALSE;
+	gui.atomlistWindow->shouldRefresh_ = FALSE;
 }
 
 // Restart thread

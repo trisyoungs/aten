@@ -66,5 +66,5 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 
 void AtenBuild::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionBuildDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionBuildWindow->setChecked(FALSE);
 }

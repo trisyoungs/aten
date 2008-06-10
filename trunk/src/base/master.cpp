@@ -169,7 +169,7 @@ Model *Master::addModel()
 	if (gui.exists())
 	{
 		gui.addModel(m);
-		gui.disorderDialog->refresh();
+		gui.disorderWindow->refresh();
 	}
 	setCurrentModel(m);
 	dbgEnd(Debug::Calls,"Master::addModel");
@@ -194,7 +194,7 @@ void Master::removeModel(Model *xmodel)
 	if (gui.exists())
 	{
 		gui.removeModel(id);
-		gui.disorderDialog->refresh();
+		gui.disorderWindow->refresh();
 	}
 	dbgEnd(Debug::Calls,"Master::removeModel");
 }
