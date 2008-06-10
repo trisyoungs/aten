@@ -113,6 +113,7 @@ class AtenPrefs : public QDialog
 	void colourScale_ColourChanged(bool checked);
 	void colourScale_RangeChanged(double d);
 	void colourScale_TypeChanged(bool checked);
+	void colourScale_NameChanged();
 	void on_ForegroundColourButton_clicked(bool checked);
 	void on_BackgroundColourButton_clicked(bool checked);
 	void on_SpecularColourButton_clicked(bool checked);

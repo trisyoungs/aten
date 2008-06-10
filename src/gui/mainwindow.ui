@@ -1895,7 +1895,7 @@
     <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_minimise.svg</iconset>
    </property>
    <property name="text" >
-    <string>actionMinimise</string>
+    <string>Minimise the current model</string>
    </property>
   </action>
   <action name="actionCalculateEnergy" >
@@ -1903,7 +1903,7 @@
     <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_energy.svg</iconset>
    </property>
    <property name="text" >
-    <string>Calculate Energy</string>
+    <string>Calculate total energy of the current model</string>
    </property>
   </action>
   <action name="actionCalculateForces" >
@@ -1911,7 +1911,7 @@
     <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_forces.svg</iconset>
    </property>
    <property name="text" >
-    <string>Calculate Forces</string>
+    <string>Calculate atomic forces in the current model</string>
    </property>
   </action>
  </widget>

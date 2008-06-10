@@ -353,6 +353,8 @@ void Master::initCommands()
 
 	// View Commands
 	CA_data[CA_GETVIEW].function = &CommandData::function_CA_GETVIEW;
+	CA_data[CA_ORTHOGRAPHIC].function = &CommandData::function_CA_ORTHOGRAPHIC;
+	CA_data[CA_PERSPECTIVE].function = &CommandData::function_CA_PERSPECTIVE;
 	CA_data[CA_RESETVIEW].function = &CommandData::function_CA_RESETVIEW;
 	CA_data[CA_ROTATEVIEW].function = &CommandData::function_CA_ROTATEVIEW;
 	CA_data[CA_SETVIEW].function = &CommandData::function_CA_SETVIEW;

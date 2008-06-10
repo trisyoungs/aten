@@ -36,10 +36,26 @@ int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set orthographic view
+int CommandData::function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj)
+{
+	prefs.setPerspective(FALSE);
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// Set perspective view
+int CommandData::function_CA_PERSPECTIVE(Command *&c, Bundle &obj)
+{
+	prefs.setPerspective(TRUE);
+	if (c->hasArg(0)) prefs.setPerspectiveFov(c->argd(0));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
 // Reset view
 int CommandData::function_CA_RESETVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->resetView();
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
@@ -131,6 +147,7 @@ int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->adjustCamera(0.0,0.0,c->argd(0),0.0);
+	obj.m->adjustOrthoSize(-c->argd(0));
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }

@@ -390,6 +390,8 @@ enum CommandAction {
 
 	// View
 	CA_GETVIEW,
+	CA_ORTHOGRAPHIC,
+	CA_PERSPECTIVE,
 	CA_RESETVIEW,
 	CA_ROTATEVIEW,
 	CA_SETVIEW,
@@ -733,6 +735,8 @@ class CommandData
 	int function_CA_EVAL(Command *&c, Bundle &obj);
 	// View
 	int function_CA_GETVIEW(Command *&c, Bundle &obj);
+	int function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj);
+	int function_CA_PERSPECTIVE(Command *&c, Bundle &obj);
 	int function_CA_RESETVIEW(Command *&c, Bundle &obj);
 	int function_CA_ROTATEVIEW(Command *&c, Bundle &obj);
 	int function_CA_SETVIEW(Command *&c, Bundle &obj);
