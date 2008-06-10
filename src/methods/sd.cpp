@@ -61,7 +61,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	// Prepare the calculation
 	*/
 	// First, create expression for the current model and assign charges
-	if (!srcmodel->createExpression())
+	if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
 	{
 	        dbgEnd(Debug::Calls,"MethodSd::minimise");
 	        return;

@@ -169,7 +169,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	*/
         // First, create expression for the current model and assign charges
 	msg(Debug::None,"Creating expression for target model...\n");
-        if (!srcmodel->createExpression())
+        if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
 	{
 		dbgEnd(Debug::Calls,"MonteCarlo::minimise");
 		return FALSE;

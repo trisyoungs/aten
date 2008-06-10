@@ -89,6 +89,8 @@ void AtenForm::finaliseUi()
 	// Add combobox to ForcefieldsToolbar
 	forcefieldCombo_ = new QComboBox(this);
 	ui.ForcefieldsToolbar->addWidget(forcefieldCombo_);
+	ui.CommandToolbar->setMinimumSize(128,16);
+	QObject::connect(forcefieldCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(forcefieldCombo_currentIndexChanged(int)));
 
 	// Create QActionGroup for perspective / orthographic views
 	QActionGroup *viewtypeGroup = new QActionGroup(this);

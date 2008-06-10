@@ -103,6 +103,7 @@ class AtenPrefs : public QDialog
 	*/
 	private:
 	// Widgets for Colour Scale editing
+	QLineEdit *scaleNameEdit_[10];
 	QLabel *scaleLinksLabel_[10];
 	QDoubleSpinBox *scaleMinSpin_[10], *scaleMidSpin_[10], *scaleMaxSpin_[10];
 	TColourFrame *scaleMinColourFrame_[10], *scaleMidColourFrame_[10], *scaleMaxColourFrame_[10];

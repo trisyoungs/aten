@@ -51,7 +51,7 @@ Grid::Grid()
 	negativeColour_[3] = 0.5f;
 	symmetric_ = FALSE;
 	loopOrder_.set(0,1,2);
-	colourScale_ = 0;
+	colourScale_ = -1;
 	//prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
 	// Public variables
@@ -247,7 +247,7 @@ void Grid::setColourScale(int id)
 		// Remove link in old colourscale if necessary
 		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 		useColourScale_ = FALSE;
-		colourScale_ = 0;
+		colourScale_ = -1;
 		log_ ++;
 		return;
 	}

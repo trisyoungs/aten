@@ -139,6 +139,7 @@ enum CommandAction {
 	CA_SCALEMIDCOLOUR,
 	CA_SCALEMIDPOINT,
 	CA_SCALEMINCOLOUR,
+	CA_SCALENAME,
 	CA_SCALERANGE,
 	CA_SCALETYPE,
 	CA_SCALEVISIBLE,
@@ -506,6 +507,7 @@ class CommandData
 	int function_CA_SCALEMIDCOLOUR(Command *&c, Bundle &obj);
 	int function_CA_SCALEMIDPOINT(Command *&c, Bundle &obj);
 	int function_CA_SCALEMINCOLOUR(Command *&c, Bundle &obj);
+	int function_CA_SCALENAME(Command *&c, Bundle &obj);
 	int function_CA_SCALERANGE(Command *&c, Bundle &obj);
 	int function_CA_SCALETYPE(Command *&c, Bundle &obj);
 	int function_CA_SCALEVISIBLE(Command *&c, Bundle &obj);

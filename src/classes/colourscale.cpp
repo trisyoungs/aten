@@ -151,7 +151,7 @@ void ColourScale::adjustRange(double d)
 {
 	if (d < minimum_) minimum_ = d;
 	else if (d > maximum_) maximum_ = d;
-	middle_ = (maximum_ - minimum_) * 0.5;
+	//middle_ = (maximum_ - minimum_) * 0.5;
 	range_ = maximum_ - minimum_;
 }
 
@@ -197,6 +197,12 @@ void ColourScale::refreshObjects()
 {
 	// Go through lists of linked objects and poke their logs...
 	for (Refitem<Grid,int> *ri = grids_.first(); ri != NULL; ri = ri->next) ri->item->logChange();
+}
+
+// Return number of objects linked to this colourscale
+int ColourScale::nLinks()
+{
+	return grids_.nItems();
 }
 
 // Link grid with colourscale

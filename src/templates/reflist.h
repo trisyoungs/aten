@@ -76,6 +76,8 @@ template <class T, class D> class Reflist
 	void remove(Refitem<T,D>*);
 	// Delete the reference containing specified item from the list
 	void remove(T*);
+	// Operator =
+	void operator=(Reflist<T,D> &source);
 	// Element access operator
 	Refitem<T,D> *operator[](int);
 	// Search references for item
@@ -113,6 +115,14 @@ template <class T, class D> Reflist<T,D>::~Reflist()
 
 template <class T, class D> Refitem<T,D>::~Refitem()
 {
+}
+
+// Assignment operator =
+template <class T, class D> void Reflist<T,D>::operator=(Reflist<T,D> &source)
+{
+	// Clear any current data...
+	clear();
+	for (Refitem<T,D> *ri = source.first(); ri != NULL; ri = ri->next) add(ri->item, ri->data);
 }
 
 // Returns the head of the atom list

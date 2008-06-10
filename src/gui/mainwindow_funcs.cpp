@@ -480,20 +480,3 @@ void AtenForm::on_actionGridsWindow_triggered(bool checked)
 //	if (checked) gui.analyseWindow->showWindow();
 //	else gui.analyseWindow->hide();
 // }
-
-
-void AtenForm::refreshForcefieldCombo()
-{
-	if (forcefieldCombo_ == NULL) return;
-	QStringList slist;
-	int def = -1, n = 0;
-	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)
-	{
-		if (ff == master.defaultForcefield()) def = n;
-		slist << ff->name();
-		n ++;
-	}
-	forcefieldCombo_->addItems(slist);
-	// Select whichever forcefield is marked as the default
-	if (def != -1) forcefieldCombo_->setCurrentIndex(def);
-}
