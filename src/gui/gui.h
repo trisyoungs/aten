@@ -131,27 +131,27 @@ class GuiQt
 	// Main Window
 	AtenForm *mainWindow;
 	// Atom list subwindow
-	AtenAtomlist *atomlistDialog;
+	AtenAtomlist *atomlistWindow;
 	// Build subwindow
-	AtenBuild *buildDialog;
+	AtenBuild *buildWindow;
 	// Cell definition subwindow
-	AtenCellDefine *cellDefineDialog;
+	AtenCellDefine *cellDefineWindow;
 	// Cell transform subwindow
-	AtenCellTransform *cellTransformDialog;
+	AtenCellTransform *cellTransformWindow;
 	// Disordered builder window
-	AtenDisorder *disorderDialog;
+	AtenDisorder *disorderWindow;
 	// Forcefields window
-	AtenForcefields *forcefieldsDialog;
+	AtenForcefields *forcefieldsWindow;
 	// Glyphs window
-	AtenGlyphs *glyphsDialog;
+	AtenGlyphs *glyphsWindow;
 	// Grids window
-	AtenGrids *gridsDialog;
+	AtenGrids *gridsWindow;
 	// Minimiser window
-	AtenMinimiser *minimiserDialog;
+	AtenMinimiser *minimiserWindow;
 	// Atom positioning window
-	AtenPosition *positionDialog;
+	AtenPosition *positionWindow;
 	// Atom transformation window
-	AtenTransform *transformDialog;
+	AtenTransform *transformWindow;
 
 	/*
 	// Dialog Windows

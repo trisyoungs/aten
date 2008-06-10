@@ -261,7 +261,7 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
 	// Call routine in grids window...
-	gui.gridsDialog->loadGrid();
+	gui.gridsWindow->loadGrid();
 }
 
 /*
@@ -271,5 +271,5 @@ void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
 {
 	// Call routine in forcefields window...
-	gui.forcefieldsDialog->loadForcefield();
+	gui.forcefieldsWindow->loadForcefield();
 }

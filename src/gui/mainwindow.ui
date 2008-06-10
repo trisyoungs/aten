@@ -527,17 +527,6 @@
    <addaction name="actionMeasureTorsionSelection" />
    <addaction name="actionClearMeasurements" />
   </widget>
-  <widget class="QToolBar" name="MinimiserToolbar" >
-   <property name="windowTitle" >
-    <string>Minimiser</string>
-   </property>
-   <property name="orientation" >
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <attribute name="toolBarArea" >
-    <number>4</number>
-   </attribute>
-  </widget>
   <widget class="QToolBar" name="ForcefieldsToolbar" >
    <property name="windowTitle" >
     <string>Forcefields</string>
@@ -548,6 +537,9 @@
    <attribute name="toolBarArea" >
     <number>4</number>
    </attribute>
+   <addaction name="actionMinimise" />
+   <addaction name="actionCalculateEnergy" />
+   <addaction name="actionCalculateForces" />
   </widget>
   <widget class="QToolBar" name="WindowToolbar" >
    <property name="windowTitle" >
@@ -559,19 +551,19 @@
    <attribute name="toolBarArea" >
     <number>2</number>
    </attribute>
-   <addaction name="actionAtomlistDialog" />
-   <addaction name="actionGridsDialog" />
+   <addaction name="actionAtomlistWindow" />
+   <addaction name="actionGridsWindow" />
    <addaction name="separator" />
-   <addaction name="actionBuildDialog" />
-   <addaction name="actionTransformDialog" />
-   <addaction name="actionPositionDialog" />
+   <addaction name="actionBuildWindow" />
+   <addaction name="actionTransformWindow" />
+   <addaction name="actionPositionWindow" />
    <addaction name="separator" />
-   <addaction name="actionCellDefineDialog" />
-   <addaction name="actionCellTransformDialog" />
-   <addaction name="actionDisorderDialog" />
+   <addaction name="actionCellDefineWindow" />
+   <addaction name="actionCellTransformWindow" />
+   <addaction name="actionDisorderWindow" />
    <addaction name="separator" />
-   <addaction name="actionMinimiserDialog" />
-   <addaction name="actionForcefieldsDialog" />
+   <addaction name="actionMinimiserWindow" />
+   <addaction name="actionForcefieldsWindow" />
   </widget>
   <action name="actionFileOpen" >
    <property name="icon" >
@@ -1487,11 +1479,11 @@
    </property>
   </action>
   <action name="actionTransmuteAtom" >
-   <property name="icon" >
-    <iconset resource="icons.qrc" >:/build/icons/build_transmute.svg</iconset>
-   </property>
    <property name="checkable" >
     <bool>true</bool>
+   </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/build/icons/build_transmute.svg</iconset>
    </property>
    <property name="text" >
     <string>Transmute atom</string>
@@ -1722,7 +1714,7 @@
     <string>Delete Bond</string>
    </property>
   </action>
-  <action name="actionForcefieldsDialog" >
+  <action name="actionForcefieldsWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1739,7 +1731,7 @@
     <string>Show / hide forcefields window</string>
    </property>
   </action>
-  <action name="actionAtomlistDialog" >
+  <action name="actionAtomlistWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1756,7 +1748,7 @@
     <string>Show / hide atomlist window</string>
    </property>
   </action>
-  <action name="actionCellDefineDialog" >
+  <action name="actionCellDefineWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1770,7 +1762,7 @@
     <string>Show / hide cell definition window</string>
    </property>
   </action>
-  <action name="actionCellTransformDialog" >
+  <action name="actionCellTransformWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1784,7 +1776,7 @@
     <string>Show / hide cell transform window</string>
    </property>
   </action>
-  <action name="actionBuildDialog" >
+  <action name="actionBuildWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1798,7 +1790,7 @@
     <string>Show / hide builder window</string>
    </property>
   </action>
-  <action name="actionGridsDialog" >
+  <action name="actionGridsWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1812,7 +1804,7 @@
     <string>Show / hide grids window</string>
    </property>
   </action>
-  <action name="actionTransformDialog" >
+  <action name="actionTransformWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1826,7 +1818,7 @@
     <string>Show / hide atom transform window</string>
    </property>
   </action>
-  <action name="actionPositionDialog" >
+  <action name="actionPositionWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1840,7 +1832,7 @@
     <string>Show / hide atom position window</string>
    </property>
   </action>
-  <action name="actionMinimiserDialog" >
+  <action name="actionMinimiserWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1854,7 +1846,7 @@
     <string>Show / hide minimiser window</string>
    </property>
   </action>
-  <action name="actionDisorderDialog" >
+  <action name="actionDisorderWindow" >
    <property name="checkable" >
     <bool>true</bool>
    </property>
@@ -1896,6 +1888,30 @@
    </property>
    <property name="text" >
     <string>Pick Custom Element</string>
+   </property>
+  </action>
+  <action name="actionMinimise" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_minimise.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>actionMinimise</string>
+   </property>
+  </action>
+  <action name="actionCalculateEnergy" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_energy.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Calculate Energy</string>
+   </property>
+  </action>
+  <action name="actionCalculateForces" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/forcefield/icons/forcefield_forces.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>Calculate Forces</string>
    </property>
   </action>
  </widget>

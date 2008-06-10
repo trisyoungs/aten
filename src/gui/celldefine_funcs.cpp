@@ -169,8 +169,8 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder stack page here, since a cell has been added/removed
-	gui.cellTransformDialog->refresh();
-	gui.disorderDialog->refresh();
+	gui.cellTransformWindow->refresh();
+	gui.disorderWindow->refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
@@ -221,5 +221,5 @@ void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 
 void AtenCellDefine::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionCellDefineDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionCellDefineWindow->setChecked(FALSE);
 }

@@ -29,6 +29,8 @@ exportfield
 		error "Current energy unit is not compatible with DL_POLY FIELD output"
 	end
 	writeline "molecules  $npatterns"
+
+	# Loop over patterns (molecule types)
 	for $p
 		# Write pattern name and number of moleculse
 		writeline "$p.name"
@@ -57,7 +59,7 @@ exportfield
 			# Convert functional form to be recognised by DL_POLY
 			if $a.form = harmonic
 				writeline "harm     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
-			elseif $a.form = cosine
+			elseif $a.form = cos
 				writeline "cos      $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_c@10.4 $a.param_b@10.4"
 			elseif $a.form = harmcos
 				writeline "hcos     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
@@ -70,7 +72,7 @@ exportfield
 		writeline "dihedrals  $p.ntorsions"
 		for $t $p
 			# Convert functional form to be recognised by DL_POLY
-			if $t.form = cosine
+			if $t.form = cos
 				writeline "cos    $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.escale@10.4 $t.vscale@10.4"
 			elseif $t.form = cos3
 				writeline "cos3   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.escale@10.4 $t.vscale@10.4"

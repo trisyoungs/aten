@@ -224,5 +224,5 @@ void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)
 
 void AtenDisorder::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionDisorderDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionDisorderWindow->setChecked(FALSE);
 }

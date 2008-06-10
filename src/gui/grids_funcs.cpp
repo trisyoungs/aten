@@ -110,7 +110,7 @@ void AtenGrids::loadGrid()
 				if (f != NULL) f->execute(qPrintable(filename));
 			}
 		}
-		gui.gridsDialog->refresh();
+		gui.gridsWindow->refresh();
 		gui.mainView.postRedisplay();
 	}
 	dbgEnd(Debug::Calls,"AtenGrids::loadGrid");
@@ -402,5 +402,5 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 
 void AtenGrids::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionGridsDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionGridsWindow->setChecked(FALSE);
 }

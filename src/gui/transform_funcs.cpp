@@ -136,5 +136,5 @@ void AtenTransform::on_DefineSourceZButton_clicked(bool on)
 
 void AtenTransform::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionTransformDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionTransformWindow->setChecked(FALSE);
 }

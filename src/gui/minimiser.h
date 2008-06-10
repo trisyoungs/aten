@@ -39,6 +39,8 @@ class AtenMinimiser : public QDialog
 	void on_MinimiserMethodCombo_currentIndexChanged(int index);
 	void on_MinimiseButton_clicked(bool checked);
 	void dialogFinished(int result);
+	public:
+	void doMinimisation();
 
 	/*
 	// Local variables

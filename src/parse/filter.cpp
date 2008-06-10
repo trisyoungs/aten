@@ -345,6 +345,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 				dbgEnd(Debug::Calls,"Filter::execute");
 				return FALSE;
 			}
+			// Generate unique term lists
+			obj.m->createUniqueLists();
 			// Set variables
 			commands_.variables.set("title",obj.m->name());
 			commands_.variables.set("natoms",obj.m->nAtoms());

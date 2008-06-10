@@ -54,6 +54,12 @@ void AtenMinimiser::on_MinimiserMethodCombo_currentIndexChanged(int index)
 
 void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 {
+	doMinimisation();
+	gui.modelChanged();
+}
+
+void AtenMinimiser::doMinimisation()
+{
 	double econverge, fconverge, linetol;
 	int maxcycles;
 	// Get the convergence values from the window controls
@@ -81,10 +87,9 @@ void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 			msg(Debug::None,"Simplex minimiser not yet written!\n");
 			break;
 	}
-	gui.modelChanged();
 }
 
 void AtenMinimiser::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionMinimiserDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionMinimiserWindow->setChecked(FALSE);
 }

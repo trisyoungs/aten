@@ -58,6 +58,11 @@
         <file>icons/file_save.svg</file>
         <file>icons/file_saveas.svg</file>
     </qresource>
+    <qresource prefix="/forcefield" >
+        <file>icons/forcefield_energy.svg</file>
+        <file>icons/forcefield_forces.svg</file>
+        <file>icons/forcefield_minimise.svg</file>
+    </qresource>
     <qresource prefix="/geometry" >
         <file>icons/measure_angle.svg</file>
         <file>icons/measure_anglesel.svg</file>

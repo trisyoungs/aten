@@ -54,6 +54,10 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 	{ "Buckingham", "buck",
 		{ "A", "B", "C" },
 		{ "a", "b", "c" },
+		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+	{ "Morse", "morse",
+		{ "K", "Eq. Dist", "D" },
+		{ "k", "eq", "d" },
 		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char *s)

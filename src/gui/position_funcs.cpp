@@ -234,5 +234,5 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 
 void AtenPosition::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionPositionDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionPositionWindow->setChecked(FALSE);
 }

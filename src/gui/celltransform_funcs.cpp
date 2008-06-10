@@ -124,5 +124,5 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 
 void AtenCellTransform::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionCellTransformDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionCellTransformWindow->setChecked(FALSE);
 }

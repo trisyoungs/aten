@@ -78,7 +78,6 @@ void AtenForm::finaliseUi()
 	ui.CommandToolbar->setVisible(FALSE);
 	ui.ForcefieldsToolbar->setVisible(FALSE);
 	ui.MeasureToolbar->setVisible(FALSE);
-	ui.MinimiserToolbar->setVisible(FALSE);
 	ui.TrajectoryToolbar->setVisible(FALSE);
 
 	// Add text edit to CommandToolBar
@@ -86,6 +85,10 @@ void AtenForm::finaliseUi()
 	ui.CommandToolbar->addWidget(commandEdit_);
 	ui.CommandToolbar->setMinimumSize(128,16);
 	QObject::connect(commandEdit_, SIGNAL(returnPressed()), this, SLOT(executeCommand()));
+
+	// Add combobox to ForcefieldsToolbar
+	forcefieldCombo_ = new QComboBox(this);
+	ui.ForcefieldsToolbar->addWidget(forcefieldCombo_);
 
 	// Create QActionGroup for perspective / orthographic views
 	QActionGroup *viewtypeGroup = new QActionGroup(this);

@@ -1,5 +1,5 @@
 /*
-	*** Qt GUI: Forcefields Widget
+	*** Qt GUI: Forcefields window
 	*** src/gui/forcefield_funcs.cpp
 	Copyright T. Youngs 2007,2008
 
@@ -79,8 +79,10 @@ void AtenForcefields::showWindow()
 // Update the list of loaded forcefields
 void AtenForcefields::refresh()
 {
+	// Always refresh combo box in main window
+	gui.mainWindow->refreshForcefieldCombo();
 	// If the window is not visible, don't do anything
-	if (!gui.forcefieldsDialog->isVisible())
+	if (!gui.forcefieldsWindow->isVisible())
 	{
 		shouldRefresh_ = TRUE;
 		return;
@@ -327,5 +329,5 @@ void AtenForcefields::on_ManualTypeEdit_returnPressed()
 
 void AtenForcefields::dialogFinished(int result)
 {
-	gui.mainWindow->ui.actionForcefieldsDialog->setChecked(FALSE);
+	gui.mainWindow->ui.actionForcefieldsWindow->setChecked(FALSE);
 }
