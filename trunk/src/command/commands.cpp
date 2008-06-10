@@ -668,6 +668,10 @@ CommandData CA_data[CA_NITEMS] = {
 	// View
 	{ "getview",		"",		"",
 				"Print the rotation matrix, camera position, and camera z-rotation for the current model" },
+	{ "orthographic",	"",		"",
+				"Render in an orthographic projection" },
+	{ "perspective",	"v",		"[fov]",
+				"Render in a perspective projection" },
 	{ "resetview",		"",		"",
 				"Reset the camera and rotation for the current model" },
 	{ "rotateview",		"VV",		"<x> <y>",

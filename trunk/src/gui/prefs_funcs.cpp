@@ -66,6 +66,7 @@ void AtenPrefs::finaliseUi()
 		gl->setRowMinimumHeight(i,30);
 		scaleNameEdit_[i] = new QLineEdit(this);
 		scaleNameEdit_[i]->setText("Name");
+		QObject::connect(scaleNameEdit_[i], SIGNAL(returnPressed()), this, SLOT(colourScale_NameChanged()));
 		gl->addWidget(scaleNameEdit_[i], i*2, 0);
 		scaleLinksLabel_[i] = new QLabel(this);
 		scaleLinksLabel_[i]->setText("[0]");
@@ -671,4 +672,22 @@ void AtenPrefs::colourScale_RangeChanged(double d)
 	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 	refreshing_ = FALSE;
+}
+
+void AtenPrefs::colourScale_NameChanged()
+{
+	if (refreshing_) return;
+	// Cast sender
+	QLineEdit *lineedit = qobject_cast<QLineEdit*> (sender());
+	if (!lineedit)
+	{
+		printf("AtenPrefs::colourScale_NameChanged - Sender was not a QLineEdit.\n");
+		return;
+	}
+	// Find which lineedit sent the signal
+	int n;
+	for (n=0; n<10; n++) if (scaleNameEdit_[n] == lineedit) break;
+	if (n == 10) return;
+	prefs.colourScale[n].setName( qPrintable(scaleNameEdit_[n]->text()) );
+	gui.mainView.postRedisplay();
 }
