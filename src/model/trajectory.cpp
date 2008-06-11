@@ -19,9 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//#include "base/master.h"
+#include "base/master.h"
 #include "parse/filter.h"
-//#include "gui/gui.h"
 #include "model/model.h"
 #include <fstream>
 
@@ -124,9 +123,8 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	// Determine frame size and number of frames in file
 	msg(Debug::Verbose,"Testing trajectory frame read...\n");
 	//printf("Initialised config\n");
-	setRenderFromFrames();
 	Model *newframe = addFrame();
-	newframe->setTrajectoryParent(this);
+	setRenderFromFrames();
 	if (!trajectoryFilter_->execute("",trajectoryFile_,FALSE))
 	{
 		msg(Debug::None,"Error testing frame read from trajectory.\n");
@@ -140,7 +138,8 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	}
 	streampos endofframe = trajectoryFile_->tellg();
 	frameSize_ = endofframe - trajectoryFirstFrame_;
-	msg(Debug::None,"Single frame is %i kb.\n",frameSize_/1024);
+	if ((frameSize_/1024) < 10) msg(Debug::None,"Single frame is %i bytes.\n", frameSize_);
+	else msg(Debug::None,"Single frame is %i kb.\n", frameSize_/1024);
 	trajectoryFile_->seekg(0,ios::end);
 	streampos endoffile = trajectoryFile_->tellg();
 	totalFrames_ = (endoffile - trajectoryFirstFrame_) / frameSize_;
@@ -150,7 +149,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	trajectoryFile_->seekg(endofframe);
 	// Pre-Cache frame(s)
 	msg(Debug::None,"Successfully associated trajectory.\n"); 
-	msg(Debug::None,"Number of frames in file : %i\n",totalFrames_);
+	msg(Debug::None,"Number of frames in file : %i\n", totalFrames_);
 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
 	msg(Debug::None,"Estimated trajectory size is %li kb, cache limit = %i kb\n", totalFrames_ * frameSize_/1024, prefs.cacheLimit());
 	if ((totalFrames_ * frameSize_)/1024 < prefs.cacheLimit())
@@ -160,9 +159,8 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 		for (int n=1; n<totalFrames_; n++)
 		{
 			newframe = addFrame();
-			newframe->setTrajectoryParent(this);
 			success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
-			if (success) msg(Debug::None,"Read frame %i from file.\n",n+1);
+			if (success) msg(Debug::None,"Read frame %i from file.\n", n+1);
 			else
 			{
 				frames_.remove(newframe);
@@ -173,6 +171,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 		trajectoryCached_ = TRUE;
 		trajectoryFile_->close();
 	}
+	else msg(Debug::None, "Trajectory will not be cached in memory.\n");
 	dbgEnd(Debug::Calls,"Model::initialiseTrajectory");
 	return TRUE;
 }
@@ -185,6 +184,7 @@ Model *Model::addFrame()
 	nCachedFrames_ ++;
 	// Set currentFrame_ here (always points to the last added frame)
 	currentFrame_ = newframe;
+	newframe->setTrajectoryParent(this);
 	framePosition_ = nCachedFrames_;
 	dbgEnd(Debug::Calls,"Model::addFrame");	
 	return newframe;
@@ -230,7 +230,7 @@ void Model::seekFirstFrame()
 	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg(Debug::None,"Seek to frame %i\n",framePosition_);
+	msg(Debug::None,"Seek to frame %i\n", framePosition_);
 	dbgEnd(Debug::Calls,"Model::seekFirstFrame");
 }
 
@@ -254,9 +254,15 @@ void Model::seekNextFrame()
 		return;
 	}
 	if (trajectoryCached_) currentFrame_ = currentFrame_->next;
-	else success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+	else
+	{
+		removeFrame(currentFrame_);
+		master.current.rs = addFrame();
+		success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+	}
 	framePosition_ ++;
 	logChange(Change::VisualLog);
+	printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
 	msg(Debug::None,"Seek to frame %i\n",framePosition_);

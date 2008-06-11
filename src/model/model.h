@@ -112,12 +112,6 @@ class Model
 	*/
 	private:
 	// Integer 'logs' of model changes
-	// Change::StructureLog : create/destroy atoms/bonds, change elements
-	// Change::CoordinateLog    : atomic coordinates
-	// Change::VisualLog    : visual changes that require re-rendering
-	// Change::SelectionLog : atom selection
-	// Change::CameraLog    : view (mainly used to flag reprojection)
-	// Change::TotalLog     : sum of all changes
 	int logs_[Change::nChangeLogs];
 	// Log point of the last save / point on load
 	int savePoint_;

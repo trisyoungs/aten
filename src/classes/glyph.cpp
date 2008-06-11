@@ -24,7 +24,7 @@
 #include "base/sysfunc.h"
 
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "sphere", "cube", "triangle", "ellipsoid", "tetrahedron", "text", "text3d" };
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "triangle", "ellipsoid", "tetrahedron", "text", "text3d" };
 const char *Glyph::glyphType(Glyph::GlyphType gs)
 {
 	return GlyphTypeKeywords[gs];

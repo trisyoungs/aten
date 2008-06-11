@@ -191,7 +191,7 @@ int CommandData::function_CA_GLYPHDATA(Command *&c, Bundle &obj)
 		msg(Debug::None,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
 	}
-	obj.gl->data[d].setVector(c->argd(1), c->argd(2), c->argd(3));
+	obj.gl->data[d].setVector(c->argd(1), c->hasArg(2) ? c->argd(2) : 0.0, c->hasArg(3) ? c->argd(3) : 0.0);
 	return CR_SUCCESS;
 }
 

@@ -508,6 +508,24 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else args_.add(parent_->variables.addConstant(arg));
 				break;
+			// Atom variable (create subvariables)
+			case ('A'):
+				if (arg[0] != '$')
+				{
+					msg(Debug::None, "This argument (%s) must be a variable.\n", &arg[0]);
+					return FALSE;
+				}
+				// See if it has been declared
+				var = parent_->variables.get(&arg[1]);
+				if (var == NULL)
+				{
+					msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+					return FALSE;
+				}
+				else args_.add(var);
+				// Create extra variables in the command structure
+				if (!parent_->createAtomVariables( &arg[1] )) return FALSE;
+				break;
 			// Rest of line (reconstructed)
 			case ('L'):
 				arg[0] = '\0';

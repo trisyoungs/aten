@@ -45,6 +45,7 @@ void Master::initCommands()
 	// Atom Commands
 	CA_data[CA_CHAIN].function = &CommandData::function_CA_CHAIN;
 	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
+	CA_data[CA_GETATOM].function = &CommandData::function_CA_GETATOM;
 	CA_data[CA_NEWATOM].function = &CommandData::function_CA_NEWATOM;
 	CA_data[CA_NEWATOMFRAC].function = &CommandData::function_CA_NEWATOMFRAC;
 	CA_data[CA_SETCOORDS].function = &CommandData::function_CA_SETCOORDS;

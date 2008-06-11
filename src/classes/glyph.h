@@ -77,7 +77,7 @@ class Glyph
 	// List pointers
 	Glyph *prev, *next;
 	// Glyph style
-	enum GlyphType { ArrowGlyph, VectorGlyph, SphereGlyph, CubeGlyph, TriangleGlyph, EllipsoidGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
+	enum GlyphType { ArrowGlyph, VectorGlyph, SenseVectorGlyph, SphereGlyph, CubeGlyph, TriangleGlyph, EllipsoidGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
 	static const char *glyphType(GlyphType);
 	static GlyphType glyphType(const char*);
 

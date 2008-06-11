@@ -151,11 +151,14 @@ void Model::copyLogs(int *newlogs)
 	logs_[Change::StructureLog] = newlogs[Change::StructureLog];
 	logs_[Change::CoordinateLog] = newlogs[Change::CoordinateLog];
 	logs_[Change::SelectionLog] = newlogs[Change::SelectionLog];
+	logs_[Change::GlyphLog] = newlogs[Change::GlyphLog];
+	logs_[Change::GridLog] = newlogs[Change::GridLog];
 }
 
 // Clear
 void Model::clear()
 {
+	glyphs_.clear();
 	clearAtoms();
 	patterns_.clear();
 	frames_.clear();
@@ -414,7 +417,7 @@ void Model::print()
 void Model::printLogs()
 {
 	msg(Debug::None,"Logs for model '%s':\n",name_.get());
-	msg(Debug::None,"Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Total [%i]\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::VisualLog], logs_[Change::SelectionLog], logs_[Change::CameraLog], logs_[Change::TotalLog]);
+	msg(Debug::None,"Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Glyph [%i], Total [%i]\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::VisualLog], logs_[Change::SelectionLog], logs_[Change::CameraLog], logs_[Change::GlyphLog], logs_[Change::TotalLog]);
 	msg(Debug::None,"Expression point : %i\n", expressionPoint_);
 	msg(Debug::None,"  Patterns point : %i\n", patternsPoint_);
 	msg(Debug::None,"Projection point : %i\n", projectionPoint_);
