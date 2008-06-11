@@ -54,9 +54,14 @@ void Canvas::renderModelGlyphs()
 			case (Glyph::SenseVectorGlyph):
 				vec[0] = g->data[0].vector();
 				vec[2] = g->data[2].vector();
-				vec[1] = vec[0] + g->data[1].vector() * vec[2].x;
-				if (vec[1].x > 0.0) glArrow( vec[0], vec[1], g->data[2].vector().y < 0.0 ? TRUE : FALSE);
-				else glArrow( vec[1], vec[0], g->data[2].vector().y < 0.0 ? TRUE : FALSE);
+				if (g->data[1].hasAtom())
+				{
+					vec[1] = g->data[1].vector() - vec[0];
+					vec[1].normalise();
+				}
+				else vec[1] = g->data[1].vector();
+				vec[1] *= vec[2].x;
+				glArrow( vec[0], vec[1], g->data[2].vector().y < 0.0 ? TRUE : FALSE);
 				break;
 			// Sphere - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):
