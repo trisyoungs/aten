@@ -149,33 +149,46 @@ void Canvas::glText(const Vec3<double> r, const char *s)
 }
 
 // Draw an arrow from origin along vector v
-void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v)
+void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead)
 {
-	static Vec3<double> perp, v2, v3, perp2;
-	v2 = v;
-	perp = v2.orthogonal();
-	perp2 = v2 * perp;
-	perp *= 0.1;
-	perp2 *= 0.1;
-	v2 *= 0.9;
+	//static Vec3<double> perp, v2, v3, perp2;
+	static Vec3<double> orth1, orth2, arrowstart, arrowend, pos;
+	// Get orthogonal vectors to v...
+	orth1 = v.orthogonal();	
+	orth2 = orth1 * v;
+	orth2.normalise();
+	// Arrowheads will be 0.1 Angstroms in length
+	orth1 *= 0.1;
+	orth2 *= 0.1;
+	// Set start and end points for arrow along vector
+	if (swaphead)
+	{
+		arrowstart = v * 0.1;
+		arrowend.zero();
+	}
+	else
+	{
+		arrowstart = v * 0.9;
+		arrowend = v;
+	}
 	glPushMatrix();
 	  glTranslated(origin.x,origin.y,origin.z);
 	  glPushMatrix();
 	    glBegin(GL_LINES);
 	      glVertex3d(0.0,0.0,0.0);
 	      glVertex3d(v.x,v.y,v.z);
-	      v3 = v2 + perp;
-	      glVertex3d(v3.x,v3.y,v3.z);
-	      glVertex3d(v.x,v.y,v.z);
-	      v3 = v2 - perp;
-	      glVertex3d(v3.x,v3.y,v3.z);
-	      glVertex3d(v.x,v.y,v.z);
-	      v3 = v2 + perp2;
-	      glVertex3d(v3.x,v3.y,v3.z);
-	      glVertex3d(v.x,v.y,v.z);
-	      v3 = v2 - perp2;
-	      glVertex3d(v3.x,v3.y,v3.z);
-	      glVertex3d(v.x,v.y,v.z);
+	      pos = arrowstart + orth1;
+	      glVertex3d(pos.x,pos.y,pos.z);
+	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
+	      pos = arrowstart - orth1;
+	      glVertex3d(pos.x,pos.y,pos.z);
+	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
+	      pos = arrowstart + orth2;
+	      glVertex3d(pos.x,pos.y,pos.z);
+	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
+	      pos = arrowstart - orth2;
+	      glVertex3d(pos.x,pos.y,pos.z);
+	      glVertex3d(arrowend.x,arrowend.y,arrowend.z);
 	    glEnd();
 	  glPopMatrix();
 	glPopMatrix();
@@ -183,7 +196,7 @@ void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v)
 
 
 // Draw a cylinder arrow from origin along vector v
-void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v)
+void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead)
 {
 	// Determine spherical coordinates
 	static double phi, rij;

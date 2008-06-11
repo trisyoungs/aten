@@ -31,7 +31,7 @@ void Canvas::renderScene(Model *source)
 	static Model *trajparent;
 	static double camrot;
 
-	// If the canvas is stil resttricted, don't draw anything
+	// If the canvas is stil restricted, don't draw anything
 	if (noDraw_)
 	{
 		dbgEnd(Debug::Calls,"Canvas::renderScene");
@@ -103,7 +103,6 @@ void Canvas::renderScene(Model *source)
 	{
 		bottom = displayModel_->orthoSize();
 		top = -bottom;
-		top = -bottom;
 		glOrtho(aspect_*top, aspect_*bottom, top, bottom, -prefs.clipFar(), prefs.clipFar());
 	}
 
@@ -126,7 +125,7 @@ void Canvas::renderScene(Model *source)
 	// Set the initial state of lighting in the model
 	prefs.renderStyle() == Atom::StickStyle ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 	// Draw the main model parts
-	// If renderPoint_ matches the model's total change point (from get_point()) then just re-render the stored display list. If not, create the display list.
+	// If renderPoint_ matches the model's Change::TotalLog then just re-render the stored display list. If not, create the display list.
 	glPushMatrix();
 	  if (renderPoint_ == displayModel_->log(Change::TotalLog)) glCallList(list_[GLOB_MODEL]);
 	  else

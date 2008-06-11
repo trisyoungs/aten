@@ -41,7 +41,15 @@ class Change
 	// List pointers
 	Change *prev, *next;
 	// Change logs
-	enum ChangeLog { StructureLog, CoordinateLog, VisualLog, SelectionLog, CameraLog, TotalLog, nChangeLogs };
+	// Change::StructureLog  : create/destroy atoms/bonds, change elements
+	// Change::CoordinateLog : atomic coordinates
+	// Change::VisualLog     : visual changes that require re-rendering
+	// Change::SelectionLog  : atom selection
+	// Change::CameraLog     : view (mainly used to flag reprojection)
+	// Change::GlyphLog      : glyphs
+	// Change::GridLog       : grid data
+	// Change::TotalLog      : sum of all changes
+	enum ChangeLog { StructureLog, CoordinateLog, VisualLog, SelectionLog, CameraLog, GlyphLog, GridLog, TotalLog, nChangeLogs };
 	// State change events
 	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondOrderEvent, CellEvent, LabelEvent, TranslateEvent, ShiftEvent };
 	// State change directions

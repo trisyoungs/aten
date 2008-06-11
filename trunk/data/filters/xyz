@@ -62,6 +62,8 @@ importtrajectory
 		readline "$natoms"
 		readline "$title@100"
 		setname $title
+		newglyph text $title
+		glyphdata 1 10 10 0
 		# Now the atoms
 		modeltemplate
 		for $n,1,$natoms

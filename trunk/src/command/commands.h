@@ -68,6 +68,7 @@ enum CommandAction {
 	// Atom Commands
 	CA_CHAIN,
 	CA_ENDCHAIN,
+	CA_GETATOM,
 	CA_NEWATOM,
 	CA_NEWATOMFRAC,
 	CA_SETCHARGE,
@@ -443,6 +444,7 @@ class CommandData
 	// Atom Commands
 	int function_CA_CHAIN(Command *&c, Bundle &obj);
 	int function_CA_ENDCHAIN(Command *&c, Bundle &obj);
+	int function_CA_GETATOM(Command *&c, Bundle &obj);
 	int function_CA_NEWATOM(Command *&c, Bundle &obj);
 	int function_CA_NEWATOMFRAC(Command *&c, Bundle &obj);
 	int function_CA_SETCOORDS(Command *&c, Bundle &obj);

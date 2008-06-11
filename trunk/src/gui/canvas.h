@@ -163,9 +163,9 @@ class Canvas
 	// Draw the unit cell of the model
 	void glCell(Cell*);
 	// Draw a line arrow
-	void glArrow(const Vec3<double> &from, const Vec3<double> &to);
+	void glArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE);
 	// Draw a cylinder arrow
-	void glCylinderArrow(const Vec3<double> &from, const Vec3<double> &to);
+	void glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE);
 
 
 	protected:
