@@ -24,7 +24,7 @@
 #include "base/sysfunc.h"
 
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "triangle", "ellipsoid", "tetrahedron", "text", "text3d" };
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "line", "triangle", "ellipsoid", "tetrahedron", "text", "text3d" };
 const char *Glyph::glyphType(Glyph::GlyphType gs)
 {
 	return GlyphTypeKeywords[gs];
@@ -48,13 +48,16 @@ Glyph::Glyph()
 {
 	// Private variables
 	solid_ = TRUE;
+	parent_ = NULL;
+	lineWidth_ = 1.0f;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
 }
 
 /*
-// GlypData
+// GlyphData
 */
 
 // Return the atom pointer
@@ -122,38 +125,26 @@ Vec3<double> GlyphData::vector()
 	return vector_;
 }
 
-// Set text data
-void Glyph::setText(const char *s)
-{
-	text_ = s;
-}
-
-// Return text data
-const char *Glyph::text()
-{
-	return text_.get();
-}
-
 /*
 // Glyph
 */
+
+// Set parent model
+void Glyph::setParent(Model *parent)
+{
+	parent_ = parent;
+}
+
+// Return parent model
+Model *Glyph::parent()
+{
+	return parent_;
+}
 
 // Return style of Glyph
 Glyph::GlyphType Glyph::type()
 {
 	return type_;
-}
-
-// Set whether the Glyph is solid or not
-void Glyph::setSolid(bool issolid)
-{
-	solid_ = issolid;
-}
-
-// Return whether the Glyph should be drawn as a solid
-bool Glyph::isSolid()
-{
-	return solid_;
 }
 
 // Set style of glyph (and set data vectors to default values)
@@ -180,4 +171,44 @@ void Glyph::setType(GlyphType gt)
 			break;
 	}
 	type_ = gt;
+}
+
+// Set text data
+void Glyph::setText(const char *s)
+{
+	text_ = s;
+}
+
+// Return text data
+const char *Glyph::text()
+{
+	return text_.get();
+}
+
+/*
+// Glyph Style
+*/
+
+// Set whether the Glyph is solid or not
+void Glyph::setSolid(bool issolid)
+{
+	solid_ = issolid;
+}
+
+// Return whether the Glyph should be drawn as a solid
+bool Glyph::isSolid()
+{
+	return solid_;
+}
+
+// Set the linewidth of the glyph
+void Glyph::setLineWidth(GLfloat width)
+{
+	lineWidth_ = width;
+}
+
+// Return the linewidth of the glyph
+GLfloat Glyph::lineWidth()
+{
+	return lineWidth_;
 }

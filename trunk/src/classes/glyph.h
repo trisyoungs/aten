@@ -29,6 +29,9 @@
 
 #define MAXGLYPHDATA 4
 
+// Forward declarations
+class Model;
+
 // Glyph data
 class GlyphData
 {
@@ -77,17 +80,17 @@ class Glyph
 	// List pointers
 	Glyph *prev, *next;
 	// Glyph style
-	enum GlyphType { ArrowGlyph, VectorGlyph, SenseVectorGlyph, SphereGlyph, CubeGlyph, TriangleGlyph, EllipsoidGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
+	enum GlyphType { ArrowGlyph, VectorGlyph, SenseVectorGlyph, SphereGlyph, CubeGlyph, LineGlyph, TriangleGlyph, EllipsoidGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
 	static const char *glyphType(GlyphType);
 	static GlyphType glyphType(const char*);
 
 	private:
 	// Style of Glyph
 	GlyphType type_;
-	// Whether Glyph should be drawn with filled polygons (where possible)
-	bool solid_;
 	// Text data
 	Dnchar text_;
+	// Parent model
+	Model *parent_;
 
 	public:
 	// Data for Glyph
@@ -96,14 +99,33 @@ class Glyph
 	void setType(GlyphType gt);
 	// Return style of Glyph
 	GlyphType type();
-	// Set whether the Glyph is solid or not
-	void setSolid(bool issolid);
-	// Return whether the Glyph should be drawn as a solid
-	bool isSolid();
 	// Set text data
 	void setText(const char *s);
 	// Return text data
 	const char *text();
+	// Set parent model
+	void setParent(Model *parent);
+	// Return parent model
+	Model *parent();
+
+	/*
+	// Style
+	*/
+	private:
+	// Whether Glyph should be drawn with filled polygons (where possible)
+	bool solid_;
+	// Line width to use when drawing
+	GLfloat lineWidth_;
+
+	public:
+	// Set whether the Glyph is solid or not
+	void setSolid(bool issolid);
+	// Return whether the Glyph should be drawn as a solid
+	bool isSolid();
+	// Set the linewidth of the glyph
+	void setLineWidth(GLfloat width);
+	// Return the linewidth of the glyph
+	GLfloat lineWidth();
 };
 
 #endif
