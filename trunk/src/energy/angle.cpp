@@ -71,21 +71,20 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					s = params.data[AngleFunctions::CosineS];
 					energy += forcek * (1.0 + s * cos(n * theta - eq));
 					break;
-				case (AngleFunctions::UffCosine1):
+				case (AngleFunctions::UffCosine):
 					// U(theta) = (forcek / n*n) * (1 + cos(n*theta))
 					forcek = params.data[AngleFunctions::UffCosineK];
 					n = params.data[AngleFunctions::UffCosineN];
 					//printf("Energy %8.4f %8.4f %8.4f\n",forcek,n,eq);
 					energy += (forcek / (n*n)) * (1.0 + cos(n * theta));
 					break;
-				case (AngleFunctions::UffCosine2):
+				case (AngleFunctions::Cos2):
 					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
-					forcek = params.data[AngleFunctions::UffCosineK];
-					eq = params.data[AngleFunctions::UffCosineEq] / DEGRAD;
-					coseq = cos(eq);
-					c2 = 1.0 / (4 * sin(eq)*sin(eq));
-					c1 = -4.0 * c2 * coseq;
-					c0 = c2 * (2.0 * coseq*coseq + 1.0);
+					forcek = params.data[AngleFunctions::Cos2K];
+					eq = params.data[AngleFunctions::Cos2Eq] / DEGRAD;
+					c0 = params.data[AngleFunctions::Cos2C0];
+					c1 = params.data[AngleFunctions::Cos2C1];
+					c2 = params.data[AngleFunctions::Cos2C2];
 					energy += forcek * (c0 + c1 * cos(theta) + c2 * cos(2.0 * theta));
 					break;
 				case (AngleFunctions::HarmonicCosine):
@@ -160,21 +159,18 @@ void Pattern::angleForces(Model *srcmodel)
 					s = params.data[AngleFunctions::CosineS];
 					du_dtheta = -forcek * n * s * sin(n * theta - eq);
 					break;
-				case (AngleFunctions::UffCosine1):
+				case (AngleFunctions::UffCosine):
 					// dU/d(theta) = -(forcek / n) * sin(n*theta)
 					forcek = params.data[AngleFunctions::UffCosineK];
 					n = params.data[AngleFunctions::UffCosineN];
 					du_dtheta = -(forcek / n) * sin(n*theta);
 					break;
-				case (AngleFunctions::UffCosine2):
+				case (AngleFunctions::Cos2):
 					// dU/d(theta) = -forcek * (c1 * sin(theta) + 2 * c2 * sin(2*theta))
-					forcek = params.data[AngleFunctions::UffCosineK];
-					eq = params.data[AngleFunctions::UffCosineEq] / DEGRAD;
-					cosx = cos(eq);
-					sinx = sin(eq);
-					c2 = 1.0 / (4 * sinx*sinx);
-					c1 = -4.0 * c2 * cosx;
-					c0 = c2 * (2.0 * cosx*cosx + 1.0);
+					forcek = params.data[AngleFunctions::Cos2K];
+					eq = params.data[AngleFunctions::Cos2Eq] / DEGRAD;
+					c1 = params.data[AngleFunctions::Cos2C1];
+					c2 = params.data[AngleFunctions::Cos2C2];
 					du_dtheta = -forcek * (c1 * sin(theta) + 2.0 * c2 * sin(2.0 * theta));
 					break;
 				case (AngleFunctions::HarmonicCosine):

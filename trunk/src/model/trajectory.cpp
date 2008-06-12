@@ -262,7 +262,7 @@ void Model::seekNextFrame()
 	}
 	framePosition_ ++;
 	logChange(Change::VisualLog);
-	printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
+	//printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
 	msg(Debug::None,"Seek to frame %i\n",framePosition_);
