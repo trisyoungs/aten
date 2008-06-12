@@ -177,6 +177,9 @@ void AtenForm::finaliseUi()
 	ui.MainWindowStatusBar->insertPermanentWidget(0,progressIndicator,128);
 	progressIndicator->setVisible(FALSE);
 
+	// Populate scripts menu
+	refreshScriptsMenu();
+
 	// Load Qt Settings
 	loadSettings();
 

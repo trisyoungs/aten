@@ -1,0 +1,46 @@
+# Simple script to calculate the dipole moment of the current model and add it as a vector glyph.
+# This only works for neutral, non-periodic systems.
+
+double dx,dy,dz,cogx,cogy,cogz,mag
+atom i
+
+# Check that we have enough atoms to do the calculation
+if $natoms < 2
+	print "Less than two atoms in the model - no dipole to calculate!
+	quit
+end
+
+let $dx = 0
+let $dy = 0
+let $dz = 0
+let $cogx = 0
+let $cogy = 0
+let $cogz = 0
+
+# Perform a loop over all atoms in the model
+for $i
+	eval $dx = "$dx + $i.rx * $i.q"
+	eval $dy = "$dy + $i.ry * $i.q"
+	eval $dz = "$dz + $i.rz * $i.q"
+	eval $cogx = "$cogx + $i.rx"
+	eval $cogy = "$cogy + $i.ry"
+	eval $cogz = "$cogz + $i.rz"
+end
+
+# Take averages and get dipole magnitude
+eval $dx = "$dx / $natoms"
+eval $dy = "$dy / $natoms"
+eval $dz = "$dz / $natoms"
+eval $cogx = "$cogx / $natoms"
+eval $cogy = "$cogy / $natoms"
+eval $cogz = "$cogz / $natoms"
+eval $mag = "($dx*$dx + $dy*$dy + $dz*$dz)^0.5"
+
+# Add glyph to model
+newglyph vector
+glyphdata 1 $cogx $cogy $cogz
+glyphdata 2 $dx $dy $dz
+
+# Print data
+print "Centre-of-geometry is at x=$cogx, y=$cogy, z=$cogz"
+print "Dipole moment is x=$dx, y=$dy, z=$dz, |d|=$mag"
