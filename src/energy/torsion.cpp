@@ -32,7 +32,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
 	dbgBegin(Debug::Calls,"Pattern::torsionEnergy");
 	int n,i,j,k,l,aoff,m1;
-	static double k0, k1, k2, k3, k4, eq, phi, energy, period;
+	static double k0, k1, k2, k3, k4, eq, phi, energy, period, s;
 	PatternBound *pb;
 	static ForcefieldParams params;
 	Vec3<double> vecij, veckj;
@@ -60,7 +60,8 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					k1 = params.data[TorsionFunctions::CosineK];
 					eq = params.data[TorsionFunctions::CosineEq] / DEGRAD;
 					period = params.data[TorsionFunctions::CosineN];
-					energy += k1 * (1.0 + cos(period*phi - eq));
+					s = params.data[TorsionFunctions::CosineS];
+					energy += k1 * (1.0 + s * cos(period*phi - eq));
 					break;
 				case (TorsionFunctions::Cos3):
 					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) )
@@ -91,6 +92,13 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					period = params.data[TorsionFunctions::CosCosN];
 					eq = params.data[TorsionFunctions::CosCosEq];
 					energy += 0.5 * k1 * (1.0 - cos(n*eq)*cos(n*phi));
+					break;
+				case (TorsionFunctions::Dreiding):
+					// U(phi) = 0.5 * k * (1 - cos(n*(theta-eq))
+					k1 = params.data[TorsionFunctions::DreidingK];
+					period = params.data[TorsionFunctions::DreidingN];
+					eq = params.data[TorsionFunctions::DreidingEq];
+					energy += 0.5 * k1 * (1.0 - cos(n*(phi - eq)));
 					break;
 				default:
 					msg(Debug::None, "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
@@ -145,7 +153,7 @@ void Pattern::torsionForces(Model *srcmodel)
 	static double cosphi, phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
 	static Vec3<double> fi, fj, fk, fl;
 	static ForcefieldParams params;
-	static double k0, k1, k2, k3, k4;
+	static double k0, k1, k2, k3, k4, s;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
@@ -221,7 +229,8 @@ void Pattern::torsionForces(Model *srcmodel)
 					forcek = params.data[TorsionFunctions::CosineK];
 					eq = params.data[TorsionFunctions::CosineEq] / DEGRAD;
 					period = params.data[TorsionFunctions::CosineN];
-					du_dphi = dphi_dcosphi * period * forcek * sin(period*phi - eq);
+					s = params.data[TorsionFunctions::CosineS];
+					du_dphi = dphi_dcosphi * period * forcek * s * sin(period*phi - eq);
 					break;
 				case (TorsionFunctions::Cos3):
 					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
@@ -246,11 +255,18 @@ void Pattern::torsionForces(Model *srcmodel)
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi) + k4*sin(4.0*phi));
 					break;
 				case (TorsionFunctions::CosCos):
-					// dU/dphi = 0.5 * k * n * cos(n*eq) * sin(n*theta)
+					// dU/dphi = 0.5 * k * n * cos(n*eq) * sin(n*phi)
 					k1 = params.data[TorsionFunctions::CosCosK];
 					period = params.data[TorsionFunctions::CosCosN];
 					eq = params.data[TorsionFunctions::CosCosEq];
 					du_dphi = dphi_dcosphi * 0.5 * k1 * period * cos(period*eq)*sin(period*phi);
+					break;
+				case (TorsionFunctions::Dreiding):
+					// dU/dphi = 0.5 * k * (1 - cos(n*(theta-eq))
+					k1 = params.data[TorsionFunctions::DreidingK];
+					period = params.data[TorsionFunctions::DreidingN];
+					eq = params.data[TorsionFunctions::DreidingEq];
+					du_dphi += dphi_dcosphi * 0.5 * k1 * sin(n*(phi - eq));
 					break;
 				default:
 					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);

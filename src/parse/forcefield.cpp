@@ -184,7 +184,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 		dbgEnd(Debug::Calls,"Forcefield::readTypes");
 		return FALSE;
 	}
-	msg(Debug::None,"\t: Read in %i type descriptions\n",types_.nItems());
+	msg(Debug::None,"\t: Read in %i type descriptions\n", types_.nItems() - 1);
 	dbgEnd(Debug::Calls,"Forcefield::readTypes");
 	return TRUE;
 }

@@ -36,7 +36,7 @@ void Forcefield::generateVdw(Atom *i)
 {
 	// Simplest of all generation routines - creates the params() data for VDW interactions.
 	dbgBegin(Debug::Calls,"Forcefield::generateVdw");
-	double sigma, epsilon;
+	double sigma, epsilon, r0, d0, a, b;
 	ForcefieldAtom *ffi = i->type();
 	switch (rules_)
 	{
@@ -52,6 +52,14 @@ void Forcefield::generateVdw(Atom *i)
 			ffi->params().data[VdwFunctions::LjN] = 2.0;
 			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon, n = %8.4f %8.4f 2.0\n", sigma, epsilon);
 			ffi->setVdwForm(VdwFunctions::Lj);
+			break;
+		case (Rules::DreidingLJ):
+			r0 = ffi->generator(2);
+			d0 = ffi->generator(3);
+			ffi->params().data[VdwFunctions::LjA] = d0 * pow(r0,12.0);
+			ffi->params().data[VdwFunctions::LjB] = 2.0 * d0 * pow(r0,6.0);
+			msg(Debug::Verbose,"Dreiding LJ (ljab) : A, B, %8.4f %8.4f\n", ffi->params().data[VdwFunctions::LjA], ffi->params().data[VdwFunctions::LjB]);
+			ffi->setVdwForm(VdwFunctions::LjAB);
 			break;
 		case (Rules::DreidingX6):
 			break;
@@ -108,7 +116,7 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			newbond->setBondStyle(BondFunctions::Harmonic);
 			newbond->params().data[BondFunctions::HarmonicEq] = ri + rj - 0.01;
 			newbond->params().data[BondFunctions::HarmonicK] = k;
-			msg(Debug::Verbose,"Dreiding Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
+			msg(Debug::Verbose,"Dreiding Bond (harm) : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateBond");
@@ -248,8 +256,8 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			//   b) atoms j and k are both sp2 centres
 			//   c) one atom is sp2 and one is sp3
 			//   d) atom j or k is a group 16 element
-			hyb1 = ffj->generator(7);
-			hyb2 = ffk->generator(7);
+			hyb1 = (int) ffj->generator(7) + 0.1;
+			hyb2 = (int) ffk->generator(7) + 0.1;
 			group1 = elements.group(j);
 			group2 = elements.group(k);
 			newtorsion->setTorsionStyle(TorsionFunctions::CosCos);
@@ -316,7 +324,88 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
-			
+			// Dreiding Torsions
+			// There are four possibilities:
+			//   a) atoms j and k are both sp3 centres (but not group 16 sp3 centres) [Note: Paper refers to old group 6]
+			//   b) atoms j and k are both sp2 centres
+			//   c) one atom is sp2 and one is sp3
+			//   d) atom j or k is a group 16 element
+			hyb1 = (int) ffj->generator(6) + 0.1;
+			hyb2 = (int) ffk->generator(6) + 0.1;
+			group1 = elements.group(j);
+			group2 = elements.group(k);
+			newtorsion->setTorsionStyle(TorsionFunctions::Dreiding);
+			if ((group1 == 16) || (group2 == 16))
+			{
+				// If both elements are group 16 then use special V values for them
+				if (group1 == group2)	// Rule (h) in paper
+				{
+					forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+					eq = 90.0;
+					n = 2.0;
+				}
+				else			// Rule (i) in paper
+				{
+					forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+					eq = 180.0;
+					n = 2.0;
+				}
+			}
+			else if (hyb1 == hyb2 == 3)	// Rule (a) in paper
+			{
+				forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+				n = 3.0;
+				eq = 180.0;
+			}
+			else if (hyb1 == hyb2 == 15)	// Rule (d) in paper
+			{
+				forcek = prefs.convertEnergy(25.0, Prefs::KiloCalories);
+				n = 2.0;
+				eq = 180.0;
+			}
+			else if ((hyb1 + hyb2 == 17) || (hyb1 == hyb2 == 2))	// Rule (e) in paper
+			{
+				forcek = prefs.convertEnergy(25.0, Prefs::KiloCalories);
+				n = 2.0;
+				eq = 180.0;
+			}
+			else if (hyb1+hyb2 == 5)	// Rules (b) and (j)
+			{
+				// Find sp2 atom to check for a second sp2 atom
+				sp2 = (hyb1 == 2 ? j : k);
+				sp3 = (sp2 == j ? k : j);
+				bool another = FALSE;
+				for (Refitem<Bond,int> *rb = sp2->bonds(); rb != NULL; rb = rb->next)
+				{
+					if (rb->item->partner(sp2) == sp3) continue;
+					if (rb->item->partner(sp2)->type()->generator(6) == 2) another = TRUE;
+				}
+				if (another)	// Rule (j) in paper
+				{
+					forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+					n = 3.0;
+					eq = 180.0;
+				}
+				else		// Rule (b) in paper
+				{
+					forcek = prefs.convertEnergy(1.0, Prefs::KiloCalories);
+					n = 6.0;
+					eq = 0.0;
+				}
+			}
+			else
+			{
+				forcek = 0.0;
+				n = 1.0;
+				eq = 0.0;
+			}
+			// Set parameters
+			newtorsion->params().data[TorsionFunctions::DreidingK] = forcek;
+			newtorsion->params().data[TorsionFunctions::DreidingN] = n;
+			newtorsion->params().data[TorsionFunctions::DreidingEq] = eq;
+			newtorsion->params().data[TorsionFunctions::DreidingEScale] = 1.0;
+			newtorsion->params().data[TorsionFunctions::DreidingVScale] = 1.0;
+			msg(Debug::Verbose,"Dreiding Torsion (dreiding) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateTorsion");
