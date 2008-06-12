@@ -1317,7 +1317,7 @@ bool CommandList::createPatternBoundVariables(const char *base)
 		if (v == NULL) return FALSE;
 	}
 	strcpy(parm,"param_X");
-	for (i = 0; i < MAXFFBOUNDTYPES; i++)
+	for (i = 0; i < MAXFFPARAMDATA; i++)
 	{
 		parm[6] = 97 + i;
 		v = variables.createVariable(base,parm,Variable::FloatVariable);

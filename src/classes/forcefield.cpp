@@ -45,6 +45,7 @@ ForcefieldAtom::ForcefieldAtom()
 	vdwForm_ = VdwFunctions::None;
 	generator_ = NULL;
 	parent_ = NULL;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -54,6 +55,7 @@ ForcefieldBound::ForcefieldBound()
 {
 	// Private variables
 	type_ = NoInteraction;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -63,13 +65,14 @@ Forcefield::Forcefield()
 {
 	// Private variables
 	rules_ = Rules::None;
-	energyUnit_ = Prefs::Joules;
+	energyUnit_ = Prefs::KiloJoules;
 	// Create _NDEF_ type common to all FFs)
 	ForcefieldAtom *ffa = types_.add();
 	ffa->setParent(this);
 	ffa->setName("_NDEF_");
 	ffa->setTypeId(-1);
 	for (int i=0; i<MAXFFGENDATA; i++) energyGenerators_[i] = FALSE;
+
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -698,24 +701,17 @@ void Forcefield::convertParameters()
 	// Convert units of all the energetic parameters within the forcefield from the forcefield's current units to the program's internal units (specified in prefs)
 	dbgBegin(Debug::Calls,"Forcefield::convertParameters");
 	ForcefieldParams *p;
-	ForcefieldBound *b;
+	ForcefieldBound *ffb;
 	ForcefieldAtom *ffa;
-	int n;
+	int n, m;
 	// VDW and Generator Data
 	// Note: First loop (for VDW) is from 1,n+1 instead of 0,n since we skip the dummy atom type which is n=0, present for all ffs.
 	for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)
 	{
 		p = &ffa->params();
-		switch (ffa->vdwForm())
+		if (ffa->vdwForm() != VdwFunctions::None)
 		{
-			case (VdwFunctions::None):
-				break;
-			case (VdwFunctions::Lj):
-				p->data[VdwFunctions::LjEpsilon] = prefs.convertEnergy(p->data[VdwFunctions::LjEpsilon], energyUnit_);
-				break;
-			default:
-				printf("Don't know how to convert forcefield parameters for this VDW type.\n");
-				break;
+			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::VdwFunctions[ffa->vdwForm()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
 		}
 		// Only convert those parameters for which the 'energyGenerators_[]' flag is TRUE
 		if (ffa->generator() != NULL)
@@ -725,78 +721,25 @@ void Forcefield::convertParameters()
 		}
 	}
 	// Bonds 
-	for (b = bonds_.first(); b != NULL; b = b->next)
+	for (ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 	{
-		p = &b->params();
-		switch (b->bondStyle())
-		{
-			case (BondFunctions::None):
-				break;
-			case (BondFunctions::Harmonic):
-				p->data[BondFunctions::HarmonicK] = prefs.convertEnergy(p->data[BondFunctions::HarmonicK],energyUnit_);
-				break;
-			default:
-				printf("Don't know how to convert forcefield parameters for this bond type.\n");
-				break;
-		}
+		if (ffb->bondStyle() == BondFunctions::None) continue;
+		p = &ffb->params();
+		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::BondFunctions[ffb->bondStyle()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
 	}
 	// Angles
-	for (b = angles_.first(); b != NULL; b = b->next)
+	for (ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 	{
-		p = &b->params();
-		switch (b->angleStyle())
-		{
-			case (AngleFunctions::None):
-				break;
-			case (AngleFunctions::Harmonic):
-				p->data[AngleFunctions::HarmonicK] = prefs.convertEnergy(p->data[AngleFunctions::HarmonicK],energyUnit_);
-				break;
-			case (AngleFunctions::Cosine):
-				p->data[AngleFunctions::CosineK] = prefs.convertEnergy(p->data[AngleFunctions::CosineK],energyUnit_);
-				break;
-			case (AngleFunctions::UffCosine1):
-				p->data[AngleFunctions::UffCosineK] = prefs.convertEnergy(p->data[AngleFunctions::UffCosineK],energyUnit_);
-				break;
-			case (AngleFunctions::UffCosine2):
-				p->data[AngleFunctions::UffCosineK] = prefs.convertEnergy(p->data[AngleFunctions::UffCosineK],energyUnit_);
-				break;
-			default:
-				printf("Don't know how to convert forcefield parameters for this angle type.\n");
-				break;
-		}
+		if (ffb->angleStyle() == AngleFunctions::None) continue;
+		p = &ffb->params();
+		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::AngleFunctions[ffb->angleStyle()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
 	}
 	// Torsions
-	for (b = torsions_.first(); b != NULL; b = b->next)
+	for (ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 	{
-		p = &b->params();
-		switch (b->torsionStyle())
-		{
-			case (TorsionFunctions::None):
-				break;
-			case (TorsionFunctions::Cosine):
-				p->data[TorsionFunctions::CosineK] = prefs.convertEnergy(p->data[TorsionFunctions::CosineK],energyUnit_);
-				break;
-			case (TorsionFunctions::Cos3):
-				p->data[TorsionFunctions::Cos3K1] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3K1],energyUnit_);
-				p->data[TorsionFunctions::Cos3K2] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3K2],energyUnit_);
-				p->data[TorsionFunctions::Cos3K3] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3K3],energyUnit_);
-				break;
-			case (TorsionFunctions::Cos3C):
-				p->data[TorsionFunctions::Cos3CK0] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK0],energyUnit_);
-				p->data[TorsionFunctions::Cos3CK1] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK1],energyUnit_);
-				p->data[TorsionFunctions::Cos3CK2] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK2],energyUnit_);
-				p->data[TorsionFunctions::Cos3CK3] = prefs.convertEnergy(p->data[TorsionFunctions::Cos3CK3],energyUnit_);
-				break;
-			case (TorsionFunctions::Cos4):
-				p->data[TorsionFunctions::Cos4K1] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K1],energyUnit_);
-				p->data[TorsionFunctions::Cos4K2] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K2],energyUnit_);
-				p->data[TorsionFunctions::Cos4K3] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K3],energyUnit_);
-				p->data[TorsionFunctions::Cos4K4] = prefs.convertEnergy(p->data[TorsionFunctions::Cos4K4],energyUnit_);
-				break;
-			default:
-				printf("Don't know how to convert forcefield parameters for this torsion type.\n");
-				break;
-		}
+		if (ffb->torsionStyle() == TorsionFunctions::None) continue;
+		p = &ffb->params();
+		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
 	}
 	// Set new energy unit of the forcefield to the programs internal unit
 	energyUnit_ = prefs.energyUnit();

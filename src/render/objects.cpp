@@ -153,6 +153,7 @@ void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swa
 {
 	//static Vec3<double> perp, v2, v3, perp2;
 	static Vec3<double> orth1, orth2, arrowstart, arrowend, pos;
+	if (v.magnitude() < 0.0001) return;
 	// Get orthogonal vectors to v...
 	orth1 = v.orthogonal();	
 	orth2 = orth1 * v;
@@ -201,6 +202,7 @@ void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, 
 	// Determine spherical coordinates
 	static double phi, rij;
 	rij = v.magnitude();
+	if (rij < 0.0001) return;
 	glPushMatrix();
 	  glTranslated(origin.x, origin.y, origin.z);
 	  // Calculate angle out of XZ plane

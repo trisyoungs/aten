@@ -49,11 +49,11 @@ namespace VdwFunctions
 	enum VdwFunction { None, InversePower, Lj, LjAB, Buckingham, Morse, nVdwFunctions };
 	extern FunctionData VdwFunctions[];
 	VdwFunction vdwFunction(const char*);
-	enum LjParameters { LjEpsilon, LjSigma, LjN };
-	enum LjABParameters { LjA, LjB };
-	enum BuckinghamParameters { BuckinghamA, BuckinghamB, BuckinghamC };
-	enum InversePowerParameters { InversePowerEpsilon, InversePowerR, InversePowerN  };
-	enum MorseParameters { MorseK, MorseEq, MorseD };
+	enum LjParameter { LjEpsilon, LjSigma, LjN };
+	enum LjABParameter { LjA, LjB };
+	enum BuckinghamParameter { BuckinghamA, BuckinghamB, BuckinghamC };
+	enum InversePowerParameter { InversePowerEpsilon, InversePowerR, InversePowerN  };
+	enum MorseParameter { MorseK, MorseEq, MorseD };
 }
 
 // Bond Potential Functions
@@ -62,21 +62,22 @@ namespace BondFunctions
 	enum BondFunction { None, Constraint, Harmonic, Morse, Morse2, nBondFunctions };
 	extern FunctionData BondFunctions[];
 	BondFunction bondFunction(const char*);
-	enum HarmonicParameters { HarmonicK, HarmonicEq };
-	enum ConstraintParameters { ConstraintK, ConstraintEq };
-	enum MorseParameters { MorseK, MorseEq, MorseD };
-	enum Morse2Parameters { Morse2K, Morse2Eq, Morse2D };
+	enum HarmonicParameter { HarmonicK, HarmonicEq };
+	enum ConstraintParameter { ConstraintK, ConstraintEq };
+	enum MorseParameter { MorseK, MorseEq, MorseD };
+	enum Morse2Parameter { Morse2K, Morse2Eq, Morse2D };
 }
 
 // Angle potential forms
 namespace AngleFunctions
 {
-	enum AngleFunction { None, Harmonic, Cosine, UffCosine1, UffCosine2, HarmonicCosine, nAngleFunctions };
+	enum AngleFunction { None, Harmonic, Cosine, UffCosine, Cos2, HarmonicCosine, nAngleFunctions };
 	extern FunctionData AngleFunctions[];
 	AngleFunction angleFunction(const char*);
-	enum HarmonicParameters { HarmonicK, HarmonicEq };
-	enum CosineParameters { CosineK, CosineN, CosineEq, CosineS };
-	enum UffCosineParameters { UffCosineK, UffCosineN, UffCosineEq };
+	enum HarmonicParameter { HarmonicK, HarmonicEq };
+	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
+	enum UffCosineParameter { UffCosineK, UffCosineN, UffCosineEq };
+	enum Cos2Parameter { Cos2K, Cos2Eq, Cos2C0, Cos2C1, Cos2C2 };
 	enum HarmonicCosineParameter { HarmonicCosineK, HarmonicCosineEq };
 }
 

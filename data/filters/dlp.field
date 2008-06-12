@@ -49,8 +49,9 @@ exportfield
 			elseif $b.form = morse
 				writeline "morse    $b.id_i@5 $b.id_j@5 $b.param_c@10.4 $b.param_b@10.4 $b.param_a@10.4"
 			else
+			print $b.form
 				warn "Functional form of bond term ($b.form) not accounted for in export filter."
-				writeline "xxxx     $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4 $b.param_c@10.4"
+				writeline "X$b.form    $b.id_i@5 $b.id_j@5 $b.param_a@10.4 $b.param_b@10.4 $b.param_c@10.4 $b.param_d@10.4 $b.param_e@10.4 $b.param_f@10.4"
 			end
 		end
 		# Angles in pattern
@@ -65,7 +66,7 @@ exportfield
 				writeline "hcos     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4"
 			else
 				warn "Functional form of angle term ($a.form) not accounted for in export filter."
-				writeline "xxxx     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4 $a.param_c@10.4"
+				writeline "X$a.form     $a.id_i@5 $a.id_j@5 $a.id_k@5 $a.param_a@10.4 $a.param_b@10.4 $a.param_c@10.4 $a.param_d@10.4 $a.param_e@10.4 $a.param_f@10.4"
 			end
 		end
 		# Torsions in pattern
@@ -78,7 +79,7 @@ exportfield
 				writeline "cos3   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.escale@10.4 $t.vscale@10.4"
 			else
 				warn "Functional form of torsion term ($t.form) not accounted for in export filter."
-				writeline "xxxx   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.param_d@10.4 $t.escale@10.4 $t.vscale@10.4"
+				writeline "X$t.form   $t.id_i@5 $t.id_j@5 $t.id_k@5 $t.id_l@5 $t.param_a@10.4 $t.param_b@10.4 $t.param_c@10.4 $t.param_d@10.4 $t.escale@10.4 $t.vscale@10.4"
 			end
 		end
 		# Terminating line

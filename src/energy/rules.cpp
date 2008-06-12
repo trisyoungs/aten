@@ -69,8 +69,7 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 	ForcefieldAtom *ffi = i->type();
 	ForcefieldAtom *ffj = j->type();
 	// Create new bond and set type to None for now...
-	ForcefieldBound *newbond = bonds_.add();
-	newbond->setBondStyle(BondFunctions::None);
+	ForcefieldBound *newbond = addBond(BondFunctions::None);
 	switch (rules_)
 	{
 		case (Rules::None):
@@ -123,13 +122,13 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 	// No check is performed to see if similar data has already been generated.
 	dbgBegin(Debug::Calls,"Forcefield::generateAngle");
 	double ri, rj, rk, rij, rjk, rBO, rEN, chii, chij, chik, chi, rik2, rik5, Zi, Zk, beta, forcek, eq;
+	double c0, c1, c2;
 	int n;
 	ForcefieldAtom *ffi = i->type();
 	ForcefieldAtom *ffj = j->type();
 	ForcefieldAtom *ffk = k->type();
 	// Create new angle and set type to None for now...
-	ForcefieldBound *newangle = angles_.add();
-	newangle->setAngleStyle(AngleFunctions::None);
+	ForcefieldBound *newangle = addAngle(AngleFunctions::None);
 	switch (rules_)
 	{
 		case (Rules::None):
@@ -168,19 +167,33 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			forcek = beta * (Zi * Zk / rik5) * rij * rjk;
 			forcek = forcek * (3.0 * rij * rjk * (1.0 - cos(eq)*cos(eq)) - rik2 * cos(eq));
 			//printf("          : eq, rik2, rik5, beta, forcek = %8.4f %8.4f %8.4f %8.4f %8.4f\n",eq,rik2,rik5,beta,forcek);
-			// Store vars in forcefield node
-			newangle->params().data[AngleFunctions::UffCosineK] = forcek;
-			newangle->params().data[AngleFunctions::UffCosineEq] = ffj->generator(1);
 			// Determine 'n' based on the geometry of the central atom 'j'
 			if (ffj->generator(1) > 170.0) n = 1;
 			else if (ffj->generator(1) > 115.0) n = 3;
 			else if (ffj->generator(1) > 95.0) n = 2;
 			else n = 4;
-			newangle->params().data[AngleFunctions::UffCosineN] = n;
-			// Set function style
-			if (n == 2) newangle->setAngleStyle(AngleFunctions::UffCosine2);
-			else newangle->setAngleStyle(AngleFunctions::UffCosine1);
-			msg(Debug::Verbose,"UFF Angle : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, n);
+			// If n=2 then we use the general non-linear case (form=cos2). Otherwise, use form=uffcosine/
+			if (n == 2)
+			{
+				newangle->params().data[AngleFunctions::Cos2K] = forcek;
+				newangle->params().data[AngleFunctions::Cos2Eq] = ffj->generator(1);
+				c2 = 1.0 / (4 * sin(ffj->generator(1))*sin(ffj->generator(1)));
+				c1 = -4.0 * c2 * cos(ffj->generator(1));
+				c0 = c2 * (2.0 * cos(ffj->generator(1))*cos(ffj->generator(1)) + 1.0);
+				newangle->params().data[AngleFunctions::Cos2C2] = c2;
+				newangle->params().data[AngleFunctions::Cos2C1] = c1;
+				newangle->params().data[AngleFunctions::Cos2C0] = c0;
+				newangle->setAngleStyle(AngleFunctions::Cos2);
+				msg(Debug::Verbose,"UFF Angle (cos2) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, c0 = %8.4f, c1 = %8.4f, c2 = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, c0, c1, c2);
+			}
+			else
+			{
+				newangle->params().data[AngleFunctions::UffCosineK] = forcek;
+				newangle->params().data[AngleFunctions::UffCosineEq] = ffj->generator(1);
+				newangle->params().data[AngleFunctions::UffCosineN] = n;
+				newangle->setAngleStyle(AngleFunctions::UffCosine);
+				msg(Debug::Verbose,"UFF Angle (uffcosine) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq, n);
+			}
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
@@ -191,10 +204,10 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			newangle = angles_.add();
 			if (eq > 179.0)
 			{
-				newangle->setAngleStyle(AngleFunctions::UffCosine1);
+				newangle->setAngleStyle(AngleFunctions::UffCosine);
 				newangle->params().data[AngleFunctions::UffCosineK] = forcek;
 				newangle->params().data[AngleFunctions::UffCosineN] = 1.0;
-				msg(Debug::Verbose,"Dreiding Angle (UFFCosine1) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = 1\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq);
+				msg(Debug::Verbose,"Dreiding Angle (uffcosine) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = 1\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq);
 			}
 			else
 			{
@@ -222,8 +235,7 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 	ForcefieldAtom *ffj = j->type();
 	ForcefieldAtom *ffk = k->type();
 	ForcefieldAtom *ffl = l->type();
-	ForcefieldBound *newtorsion = torsions_.add();
-	newtorsion->setTorsionStyle(TorsionFunctions::None);
+	ForcefieldBound *newtorsion = addTorsion(TorsionFunctions::None);
 	switch (rules_)
 	{
 		case (Rules::None):
@@ -304,6 +316,7 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
+			
 			break;
 	}
 	dbgEnd(Debug::Calls,"Forcefield::generateTorsion");
