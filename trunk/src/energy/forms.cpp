@@ -141,9 +141,9 @@ FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFuncti
 		{ "null", "null", "null", "null", "null", "null" },
 		{ 0, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Cosine", "cos",
-		{ "Force K", "Periodicity", "Eq. Angle", "---", "EScale", "VScale" },
-		{ "k", "n", "eq", "null", "escale", "vscale" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+		{ "Force K", "Periodicity", "Eq. Angle", "Sign", "EScale", "VScale" },
+		{ "k", "n", "eq", "s", "escale", "vscale" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0 } },
 	{ "Triple Cosine", "cos3",
 		{ "Force K1", "Force K2", "Force K3", "---", "EScale", "VScale" },
 		{ "k1", "k2", "k3", "null", "escale", "vscale" },
@@ -159,7 +159,11 @@ FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFuncti
 	{ "Cosine Product", "coscos",
 		{ "Force K", "Periodicity", "Eq. Angle", "---", "EScale", "VScale" },
 		{ "k", "n", "eq", "null", "escale", "vscale" },
-		{ 1, 0, 0, 1, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+	{ "Dreiding Cosine", "dreiding",
+		{ "Force K", "Periodicity", "Eq. Angle", "---", "EScale", "VScale" },
+		{ "k", "n", "eq", "null", "escale", "vscale" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char *s)
 {

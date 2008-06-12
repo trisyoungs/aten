@@ -152,7 +152,7 @@ void Pattern::angleForces(Model *srcmodel)
 					du_dtheta = forcek * (theta - eq);
 					break;
 				case (AngleFunctions::Cosine):
-					// dU/d(theta) = -forcek * n * sin(n*theta - eq)
+					// dU/d(theta) = -forcek * n * s * sin(n*theta - eq)
 					forcek = params.data[AngleFunctions::CosineK];
 					eq = params.data[AngleFunctions::CosineEq] / DEGRAD;
 					n = params.data[AngleFunctions::CosineN];

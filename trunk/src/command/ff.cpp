@@ -130,10 +130,10 @@ int CommandData::function_CA_FINALISEFF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_FF)) return CR_FAIL;
 	// Print some information about the terms read in from the forcefield
-	msg(Debug::None,"Read in %i type descriptions\n",obj.ff->nTypes());
-	msg(Debug::None,"Read in %i bond definitions\n",obj.ff->nBonds());
-	msg(Debug::None,"Read in %i angle definitions\n",obj.ff->nAngles());
-	msg(Debug::None,"Read in %i torsion definitions\n",obj.ff->nTorsions());
+	msg(Debug::None,"Read in %i type descriptions\n", obj.ff->nTypes() - 1);
+	msg(Debug::None,"Read in %i bond definitions\n", obj.ff->nBonds());
+	msg(Debug::None,"Read in %i angle definitions\n", obj.ff->nAngles());
+	msg(Debug::None,"Read in %i torsion definitions\n", obj.ff->nTorsions());
 	// Convert energetic units in the forcefield to the internal units of the program
 	obj.ff->convertParameters();
 	return CR_SUCCESS;
