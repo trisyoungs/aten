@@ -1,0 +1,67 @@
+# GAMESS-US
+# Last modified: 2007-11-05
+importmodel
+	name "GAMESS-US Output Files"
+	extension out
+	glob *.out
+	nickname gamessus
+	zmap name
+
+	# Variable declaration
+	integer result,nmodels,natoms,n
+	character line,e
+	double rx,ry,rz
+
+	# Determine number of atoms - search for lines containing 'TOTAL NUMBER OF ATOMS'
+	find "TOTAL NUMBER OF ATOMS" $result $line
+	if $result = 0
+		error "Couldn't determine number of atoms from GAMESS-US output."
+	end
+	# Get number of atoms from line
+	readvar $line "*@48 $natoms"
+	# Now search for coordinate sets
+	let $nmodels = 0
+	for $n
+		# Determine number of atoms - search for lines containing 'COORDINATES OF ALL ATOMS ARE'
+		find "COORDINATES OF ALL ATOMS ARE" $result
+		if $result = 1
+			# Found a set of coordinates. Skip 2 lines and then read coordinates
+			eval $nmodels = "$nmodels + 1"
+			skipline 2
+			newmodel $nmodels
+			for $n,1,$natoms
+				readline "$e * $rx $ry $rz"
+				newatom $e
+				setcoords $rx $ry $rz
+			end
+			finalisemodel
+		end
+	end
+end
+#importmodel
+#	name "GAMESS-US Cartesian Coordinates"
+#	extension inp
+#	glob *.inp
+#	nickname gamessus
+	#find "DATA" $result
+	#if $result = 0
+#		error "Couldn't find 'DATA' section in input file."
+#	end
+	# Next line is symmetry type
+#	readline "$symmtyp"
+#end
+exportmodel
+	name "GAMESS-US Cartesian Coordinates"
+	extension inp
+	glob *.inp
+	nickname gamessus
+
+	# Variable declarations
+	atom i
+
+	writeline "$title"
+	writeline "C1"
+	for $i
+		writeline "$i.name@10  $i.z@4 $i.rx@12.6 $i.ry@12.6 $i.rz@12.6"
+	end
+end

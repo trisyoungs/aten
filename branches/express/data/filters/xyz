@@ -1,0 +1,78 @@
+# XMol-style XYZ coordinates files
+# Last modified: 27/11/07.
+importmodel
+	name "XMol XYZ Coordinates"
+	nickname xyz
+	extension xyz
+	glob *.xyz
+	id 2
+
+	# Variable declaration
+	integer natoms,n
+	character e
+	double rx,ry,rz,q
+
+	# Read data
+	readline "$natoms"
+	readline "$title@100"
+	newmodel $title
+	for $n,1,$natoms
+		readline "$e $rx $ry $rz $q"
+		newatom $e
+		setcoords $rx $ry $rz
+		setcharge $q
+	end
+	rebond
+	selectall
+	centre 0 0 0
+	finalisemodel
+end
+exportmodel
+	name "XMol XYZ Coordinates"
+	extension xyz
+	glob *.xyz
+	nickname xyz
+	id 2
+
+	# Variable declaration
+	integer n
+	character e
+	double rx,ry,rz
+	atom i
+
+	writeline "$natoms"
+	writeline "$title"
+	for $i
+		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6   $i.q@12.6"
+	end
+end
+importtrajectory
+	name "XMol XYZ Coordinates"
+	extension "xyz"
+	glob *xyz
+	nickname xyz
+
+	# Variable declaration
+	integer n
+	character e,title
+	double rx,ry,rz
+
+	# No header in XYZ trajectories, so only check for frames
+	if $header <> true
+		readline "$natoms"
+		readline "$title@100"
+		setname $title
+		newglyph text $title
+		glyphdata 1 10 10 0
+		# Now the atoms
+		modeltemplate
+		for $n,1,$natoms
+			readline "$e $rx $ry $rz"
+			setcoords $rx $ry $rz $n
+		end
+		rebond
+		selectall
+		centre 0 0 0
+		finaliseframe
+	end
+end
