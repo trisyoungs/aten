@@ -26,7 +26,7 @@ importmodel
 		find "COORDINATES OF ALL ATOMS ARE" $result
 		if $result = 1
 			# Found a set of coordinates. Skip 2 lines and then read coordinates
-			eval $nmodels = "$nmodels + 1"
+			$nmodels = "$nmodels + 1"
 			skipline 2
 			newmodel $nmodels
 			for $n,1,$natoms

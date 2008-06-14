@@ -28,14 +28,7 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Evaluate expression and assign to variable
-int CommandData::function_CA_EVAL(Command *&c, Bundle &obj)
-{
-	c->arg(0)->set(evaluate(c->argc(2), &c->parent()->variables));
-	return CR_SUCCESS;
-}
-
-// Set variable to value or variable
+// Set variable to value, variable, or expression
 int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 {
 	// If the first var is a pointer, second must be a pointer!
@@ -49,6 +42,23 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 		else c->arg(0)->copyPointer(c->arg(2));
 	}
 	else c->arg(0)->set(c->argc(2));
+	return CR_SUCCESS;
+}
+
+// Set variable to value, variable, or expression
+int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
+{
+	// If the first var is a pointer, second must be a pointer!
+	if (c->argt(0) >= Variable::AtomVariable)
+	{
+		if (c->argt(0) != c->argt(1))
+		{
+			msg(Debug::None,"Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+			return CR_FAIL;
+		}
+		else c->arg(0)->copyPointer(c->arg(1));
+	}
+	else c->arg(0)->set(c->argc(1));
 	return CR_SUCCESS;
 }
 

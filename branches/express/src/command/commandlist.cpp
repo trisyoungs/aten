@@ -461,12 +461,6 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('G'):
 				if (!createFormat(arg, vars, FALSE)) return FALSE;
 				break;
-			// Expressions
-			case ('e'):
-			case ('E'):
-				var = vars.addConstant(arg);
-				args_.add(var);
-				break;
 			// Discard
 			case ('x'):
 			case ('X'):
@@ -488,12 +482,43 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				args_.add(NULL);
 				break;
-			// Variable
-			case ('v'):
-			case ('V'):
-				// If first character is '$', find variable pointer.
-				// If '*' set to the dummy variable.
-				// Otherwise, add constant variable.
+			// Variable or expression
+			case ('e'):
+			case ('E'):
+				/* Any 'V' or 'v' specifier may be an expression, which itself must be quoted in the command.
+				So, if the argument was quoted we will assume its an expression
+				If not: if the first character is a '$' then add a normal variable.
+				If '*' set to the dummy variable.
+				Otherwise, add constant variable.
+				*/
+				if (parser.wasQuoted(argcount))
+				{
+					printf("Caching a quoted expression...\n");
+					var = parent_->variables.addExpression(&arg[0]);
+					if (var == NULL) return FALSE;
+					args_.add(var);
+				}
+				else if (arg[0] == '$')
+				{
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else args_.add(var);
+				}
+				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
+				else args_.add(parent_->variables.addConstant(arg));
+				break;
+			// Plain variable or constant
+			case ('p'):
+			case ('P'):
+				/* If the first character is a '$' then add a normal variable.
+				If '*' set to the dummy variable.
+				Otherwise, add constant variable.
+				*/
 				if (arg[0] == '$')
 				{
 					// See if it has been declared
@@ -507,6 +532,35 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else args_.add(parent_->variables.addConstant(arg));
+				break;
+			// Variable
+			case ('v'):
+			case ('V'):
+				/* If the first character is a '$' then add a normal variable.
+				If '*' set to the dummy variable.
+				*/
+				if (parser.wasQuoted(argcount))
+				{
+					msg(Debug::None, "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
+					return FALSE;
+				}
+				else if (arg[0] == '$')
+				{
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else args_.add(var);
+				}
+				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
+				else
+				{
+					msg(Debug::None, "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
+					return FALSE;
+				}
 				break;
 			// Atom variable (create subvariables)
 			case ('A'):
@@ -843,7 +897,7 @@ bool CommandList::cacheLine(const char *s)
 	return TRUE;
 }
 
-// Cache command arguments in line_parser
+// Cache command arguments in global Parser object
 bool CommandList::cacheCommand()
 {
 	dbgBegin(Debug::Calls,"CommandList::cacheCommand");
@@ -851,21 +905,34 @@ bool CommandList::cacheCommand()
 	int success;
 	bool result = TRUE;
 	// Assume that the main parser object contains the data we require.
-	ca = CA_from_text(parser.argc(0));
-	if (ca != CA_NITEMS)
+	// Check for the first argument being a variable (denoted by a '$') and the second being an '='. If so, move the first argument to the second and add a CA_LET2 command.
+	if ((parser.argc(0)[0] == '$') && (parser.argc(1)[0] == '='))
 	{
-		// If addCommand() returns FALSE then we encountered an error
-		if (!addCommand(ca))
+		parser.setArg(1,parser.argc(0));
+		if (!addCommand(CA_LET2))
 		{
-			msg(Debug::None,"Error adding command '%s'.\n", parser.argc(0));
-			msg(Debug::None,"Command usage is: %s %s\n", CA_data[ca].keyword, CA_data[ca].argText);
+			msg(Debug::None, "Error adding variable assignment command.\n");
 			result = FALSE;
 		}
 	}
 	else
 	{
-		msg(Debug::None,"Unrecognised command '%s'.\n", parser.argc(0));
-		result = FALSE;
+		ca = CA_from_text(parser.argc(0));
+		if (ca != CA_NITEMS)
+		{
+			// If addCommand() returns FALSE then we encountered an error
+			if (!addCommand(ca))
+			{
+				msg(Debug::None,"Error parsing command '%s'.\n", parser.argc(0));
+				msg(Debug::None,"Command usage is: %s %s\n", CA_data[ca].keyword, CA_data[ca].argText);
+				result = FALSE;
+			}
+		}
+		else
+		{
+			msg(Debug::None,"Unrecognised command '%s'.\n", parser.argc(0));
+			result = FALSE;
+		}
 	}
 	dbgEnd(Debug::Calls,"CommandList::cacheCommand");
 	return result;
@@ -933,22 +1000,10 @@ bool CommandList::load(const char *filename)
 			return FALSE;
 		}
 		else if (success == -1) break;
-		// See if we found a legitimate command
-		ca = CA_from_text(parser.argc(0));
-		if (ca != CA_NITEMS)
-		{
-			// Add the command to the list
-			if (addCommand(ca)) continue;
-			else
-			{
-				msg(Debug::None,"CommandList::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
-				dbgEnd(Debug::Calls,"CommandList::load");
-				return FALSE;
-			}
-		}
+		// Attempt to cache the command
+		if (cacheCommand()) continue;
 		else
 		{
-			msg(Debug::None,"Unrecognised command '%s' in file.\n", parser.argc(0));
 			dbgEnd(Debug::Calls,"CommandList::load");
 			return FALSE;
 		}

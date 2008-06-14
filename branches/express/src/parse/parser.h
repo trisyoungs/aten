@@ -42,7 +42,7 @@ class Parser
 	// Constructor
 	Parser();
 	// Parse Options
-	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, Dummy=16, nParseOptions=5};
+	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, nParseOptions=5};
 	static ParseOption parseOption(const char*);
 
 	/*
@@ -55,6 +55,8 @@ class Parser
 	Dnchar line_;
 	// Parsed arguments
 	Dnchar arguments_[MAXARGS];
+	// Whether the argument was quoted
+	bool quoted_[MAXARGS];
 	// Whether the end of the string has been found in get_next_arg()
 	bool endOfLine_;
 	// Number of arguments grabbed from last parse
@@ -106,6 +108,8 @@ class Parser
 	float argf(int i);
 	// Returns whether the specified argument is empty
 	bool isBlank(int i);
+	// Returns whether the argument was quoted in some way
+	bool wasQuoted(int i);
 	// Set argument manually
 	void setArg(int i, const char *s);
 
@@ -117,14 +121,6 @@ class Parser
 	const char *parseAtomtypeString(Dnchar&);
 	// Remove keyword from string and return it
 	const char *trimAtomtypeKeyword(Dnchar&);
-
-	/*
-	// Numerical Expression Parsing
-	*/
-	public:
-	bool getArgsExpression(const char *);
-	bool isOperator(int, char);
-	bool isNumber(int);
 };
 
 extern Parser parser;

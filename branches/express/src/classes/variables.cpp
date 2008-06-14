@@ -1,6 +1,6 @@
 /*
-	*** Associative variable list
-	*** src/classes/variables.cpp
+	*** Variable
+	*** src/classes/variable.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,6 +20,7 @@
 */
 
 #include "classes/variables.h"
+#include "classes/expression.h"
 #include "classes/atom.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"
@@ -29,7 +30,7 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype_*" };
+const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype*", "_EXPRESSION_" };
 const char *Variable::variableType(Variable::VariableType vt)
 {
 	return VariableTypeKeywords[vt];
@@ -47,7 +48,7 @@ Variable::VariableType Variable::determineType(const char *s)
 		else if ((ch == 'e') || (ch == 'E')) ne ++;
 		else nch ++;
 	}
-	// Based on the numbers we calculated, try to determine its type_
+	// Based on the numbers we calculated, try to determine its type
 	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) return Variable::CharacterVariable;
 	else if (ndp == 1) return Variable::FloatVariable;
 	else return Variable::IntegerVariable;
@@ -59,7 +60,7 @@ Variable::Variable(VariableType vt)
 	// Private variables
 	name_.set("unnamed");
 	type_ = vt;
-	constant_ = FALSE;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -81,12 +82,6 @@ void Variable::copyPointer(Variable *v)
 void Variable::setType(VariableType vt)
 {
 	type_ = vt;
-}
-
-// Set the variable to be a constant
-void Variable::setConstant()
-{
-	constant_ = 1;
 }
 
 // Returns content type of the variable
@@ -228,6 +223,18 @@ void Variable::set(ForcefieldAtom *ffa)
 	msg(Debug::Verbose,"FFAtom variable '%s' set to '%li'\n",name_.get(),ffa);
 }
 
+// Set (Expression)
+void Variable::set(Expression *ex)
+{
+	if (type_ != Variable::ExpressionVariable)
+	{
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
+		return;
+	}
+	ptrValue_ = ex;
+	msg(Debug::Verbose,"Expression variable '%s' set to '%li'\n",name_.get(),ex);
+}
+
 // Get as char
 const char *Variable::asCharacter()
 {
@@ -248,6 +255,7 @@ const char *Variable::asCharacter()
 // Get as int
 int Variable::asInteger()
 {
+	Expression *ex;
 	switch (type_)
 	{
 		case (Variable::CharacterVariable):
@@ -256,6 +264,9 @@ int Variable::asInteger()
 			return intValue_;
 		case (Variable::FloatVariable):
 			return int(doubleValue_);
+		case (Variable::ExpressionVariable):
+			ex = (Expression*) ptrValue_;
+			return int (ex->evaluate());
 		default:
 			msg(Debug::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
@@ -265,6 +276,7 @@ int Variable::asInteger()
 // Get as double
 double Variable::asDouble()
 {
+	Expression *ex;
 	switch (type_)
 	{
 		case (Variable::CharacterVariable):
@@ -273,6 +285,9 @@ double Variable::asDouble()
 			return double(intValue_);
 		case (Variable::FloatVariable):
 			return doubleValue_;
+		case (Variable::ExpressionVariable):
+			ex = (Expression*) ptrValue_;
+			return ex->evaluate();
 		default:
 			msg(Debug::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
@@ -289,7 +304,7 @@ bool Variable::asBool()
 		case (Variable::IntegerVariable):
 			return (intValue_ < 1 ? FALSE : TRUE);
 		default:
-			msg(Debug::Verbose,"Variable::get_as_bool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
+			msg(Debug::Verbose,"Variable::asBool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return FALSE;
 }
@@ -386,190 +401,4 @@ void Variable::decrease(int n)
 			printf("Variable::decrease <<<< Don't know how to decrease variable '%s', type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 			break;
 	}
-}
-
-/*
-// Variable List
-*/
-
-// Return dummy variable
-Variable *VariableList::dummy()
-{
-	return &dummy_;
-}
-
-// Retrieve named variable
-Variable *VariableList::get(const char *name)
-{
-	return get(name,"");
-}
-Variable *VariableList::get(const char *prefix, const char *suffix)
-{
-	static char name[128];
-	strcpy(name,prefix);
-	if (suffix[0] != '\0')
-	{
-		strcat(name,".");
-		strcat(name,suffix);
-	}
-	for (Variable *v = vars_.first(); v != NULL; v = v->next)
-		if (strcmp(name,v->name()) == 0) return v;
-	return NULL;
-}
-
-// Add named variable
-Variable *VariableList::addVariable(const char *name, Variable::VariableType vt)
-{
-	return addVariable(name,"",vt);
-}
-Variable *VariableList::addVariable(const char *prefix, const char *suffix, Variable::VariableType vt)
-{
-	static char name[128];
-	strcpy(name,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(name,".");
-		strcat(name,suffix);
-	}
-	Variable *result = vars_.add();
-	result->setName(name);
-	result->setType(vt);
-	return result;
-}
-
-// Create, don't set, named variable
-Variable *VariableList::createVariable(const char *prefix, const char *suffix, Variable::VariableType vt)
-{
-	// First, see if this variable already exists
-	Variable *result = get(prefix, suffix);
-	if (result == NULL) result = addVariable(prefix, suffix, vt);
-	else
-	{
-		// Check type_ of existing variable
-		static char name[128];
-		strcpy(name,prefix);
-		if (suffix[0] != '\0')
-		{
-			if (prefix[0] != '\0') strcat(name,".");
-			strcat(name,suffix);
-		}
-		if (result->type() != vt)
-		{
-			printf("Variable '%s' already exists and is of type_ '%s'.\n", name, Variable::variableType(vt));
-			result = NULL;
-		}
-	}
-	return result;
-}
-
-// Add constant
-Variable *VariableList::addConstant(const char *s)
-{
-	static char newname[24];
-	// Sink name as static character value
-	Variable *result = vars_.add();
-	strcpy(newname,"_variable");
-	strcat(newname,itoa(vars_.nItems()));
-	result->setName(newname);
-	result->setType(Variable::determineType(s));
-	result->setConstant();
-	result->set(s);
-	return result;
-}
-
-// Set existing variable (or add new and set) (Variable::CharacterVariable)
-void VariableList::set(const char *name, const char *value)
-{
-	set(name,"",value);
-}
-void VariableList::set(const char *prefix, const char *suffix, const char *value)
-{
-	static char newname[128];
-	strcpy(newname,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(newname,".");
-		strcat(newname,suffix);
-	}
-	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, Variable::CharacterVariable);
-	v->set(value);
-}
-
-// Set existing variable (or add new and set) (Variable::IntegerVariable)
-void VariableList::set(const char *name, int value)
-{
-	set(name,"",value);
-}
-
-void VariableList::set(const char *prefix, const char *suffix, int value)
-{
-	static char newname[128];
-	strcpy(newname,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(newname,".");
-		strcat(newname,suffix);
-	}
-	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, Variable::IntegerVariable);
-	v->set(value);
-}
-
-// Set existing variable (or add new and set) (Variable::FloatVariable)
-void VariableList::set(const char *name, double value)
-{
-	set(name,"",value);
-}
-void VariableList::set(const char *prefix, const char *suffix, double value)
-{
-	static char newname[128];
-	strcpy(newname,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(newname,".");
-		strcat(newname,suffix);
-	}
-	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, Variable::FloatVariable);
-	v->set(value);
-}
-
-// Print list of variables in list
-void VariableList::print()
-{
-	for (Variable *v = vars_.first(); v != NULL; v = v->next)
-		printf("VAR=[%s] (%li) VALUE=[%s]\n",v->name(),v,v->asCharacter());
-}
-
-// Clear all variable values
-void VariableList::resetAll()
-{
-	dbgBegin(Debug::Calls,"VariableList::resetAll");
-	for (Variable *v = vars_.first(); v != NULL; v = v->next) v->reset();
-	dbgEnd(Debug::Calls,"VariableList::resetAll");
-}
-
-// Clear list of variables
-void VariableList::reset(const char *s, ...)
-{
-	dbgBegin(Debug::Calls,"VariableList::reset");
-	// List of variables must be ended by "".
-	static char name[64];
-	va_list namelist;
-	va_start(namelist,s);
-	Variable *v;
-	// Reset 's' first
-	get(s)->reset();
-	do
-	{
-		strcpy(name,va_arg(namelist,char*));
-		if (name[0] != '\0')
-		{
-			v = get(name);
-			if (v == NULL) printf("VariableList::reset <<<< '%s' not in list >>>>\n",name);
-			else v->reset();
-		}
-	} while (name[0] != '\0');
-	dbgEnd(Debug::Calls,"VariableList::reset");
 }
