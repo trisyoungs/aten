@@ -171,7 +171,7 @@ double ExpressionNode::value()
 		printf("Tried to get a value from an expression token that doesn't have one.\n");
 		return 0.0;
 	}
-	if (used_) return reducedValue_;
+	if (type_ != persistentType_) return reducedValue_;
 	else if (variable_ == NULL) return value_;
 	else return variable_->asDouble();
 }
@@ -470,7 +470,7 @@ bool Expression::set(const char *s, VariableList *vars)
 						ex = expression_.add();
 						ex->setPersistentType(ExpressionNode::FunctionToken);
 						ex->setFunctionType(ExpressionNode::NegateFunction);
-						printf("Added negate function\n");
+						//printf("Added negate function\n");
 						break;
 					}
 				}
@@ -486,7 +486,7 @@ bool Expression::set(const char *s, VariableList *vars)
 				ex->setPersistentType(ExpressionNode::OperatorToken);
 				ex->setOperatorType(ot);
 				prevToken = ExpressionNode::OperatorToken;
-				printf("Added operator %i (%c)\n",ot,*c);
+				//printf("Added operator %i (%c)\n",ot,*c);
 				break;
 			// Normal character
 			default: 
@@ -505,7 +505,6 @@ bool Expression::set(const char *s, VariableList *vars)
 			return FALSE;
 		}
 	}
-	print();
 	// Validate the expression and create a bracket plan...
 	if (!validate() || !createPlan())
 	{
@@ -553,159 +552,13 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 				ex = expression_.add();
 				ex->setPersistentType(ExpressionNode::FunctionToken);
 				ex->setFunctionType(ft);
-				printf("Adding function token '%s' (%i)\n", ExpressionNode::functionType(ft),ft);
+				//printf("Adding function token '%s' (%i)\n", ExpressionNode::functionType(ft),ft);
 			}
 		}
 	}
 	dbgEnd(Debug::Calls,"Expression::addLongOperator");
 	return (ex == NULL ? ExpressionNode::nTokenTypes : ex->type());
 }
-
-// Evaluate numerical expression and return simplified result
-// This is a recursive routine, to be called on sub-expressions (i.e. bracketed parts)
-char operators[] = "^*/%+-";
-// const char *evaluate(const char *s, VariableList *vars)
-// {
-// 	int lbracket, rbracket, n, m, leftarg, rightarg;
-// 	char scopy[128], substr[128], subresult[128], arg[128];
-// 	char *c;
-// 	static double a, b, x;
-// 	static bool isop;
-// 	Variable *v;
-// 	// Grab original string and work on scopy from now on
-// 	strcpy(scopy,s);
-// 	// Resolve brackets into results
-// 	do
-// 	{
-// 		lbracket = -1;
-// 		rbracket = -1;
-// 		n=0;
-// 		// Store position of each '(' we find, and break when we get the first ')'
-// 		for (c = scopy; *c != '\0'; c++)
-// 		{
-// 			if (*c == '(') lbracket = n;
-// 			if (*c == ')')
-// 			{
-// 				rbracket = n;
-// 				break;
-// 			}
-// 			n++;
-// 		}
-// 		// Check for mis-matched brackets
-// 		if (((lbracket == -1) && (rbracket != -1)) || ((lbracket != -1) && (rbracket == -1)))
-// 		{
-// 			printf("evaluate - Mis-matched brackets in expression.\n");
-// 			return "0";
-// 		}
-// 		// Get substring and evaluate it
-// 		m = rbracket-lbracket;
-// 		//printf("Bracketpos = %i %i len=%i\n",lbracket,rbracket, m);
-// 		// If we've found brackets, recursively evaluate the sub expression first
-// 		if ((lbracket != -1) && (rbracket != -1))
-// 		{
-// 			strncpy(substr, &scopy[lbracket+1], m);
-// 			substr[(rbracket-lbracket)-1] = '\0';
-// 			//printf("SUBSTRING to evaluate = %s\n",substr);
-// 			strcpy(subresult, evaluate(substr, vars));
-// 			//printf("RESULT of SUBSTRING EVALUATE = %s\n",subresult);
-// 			// Grab part of expression before left bracket
-// 			strncpy(substr, scopy, lbracket);
-// 			substr[lbracket] = '\0';
-// 			strcat(substr, subresult);
-// 			strcat(substr, &scopy[rbracket+1]);
-// 			// Copy final string back to scopy
-// 			strcpy(scopy, substr);
-// 		}
-// 	} while ((lbracket != -1) && (rbracket != -1));
-// 	// Evaluate now bracketless expression
-// 	// Parse the string into operators and values
-// 	if (!parser.getArgsExpression(scopy))
-// 	{
-// 		printf("evaluate - Error parsing expression.\n");
-// 		return "0";
-// 	}
-// 	// Cycle over operators (in precedence) and replace with evaluated result.
-// 	// Store position of last non-blank argument we encounter to use with token
-// 	for (c = operators; *c != '\0'; c++)
-// 	{
-// 		leftarg = -1;
-// 		for (n=0; n<parser.nArgs()-1; n++)
-// 		{
-// 			isop = parser.isOperator(n, *c);
-// 			if ((!parser.isBlank(n)) && (!isop)) leftarg = n;
-// 			if (!isop) continue;
-// 			// Find next non-blank argument
-// 			rightarg = -1;
-// 			for (m=n+1; m<parser.nArgs(); m++)
-// 				if (!parser.isBlank(m))
-// 				{
-// 					rightarg = m;
-// 					break;
-// 				}
-// 			// Check argument availability
-// 			if ((leftarg != -1) && (rightarg != -1))
-// 			{
-// 				//printf("left / right args %i %i\n",leftarg,rightarg);
-// 				// If either argument is a variable, grab its value
-// 				strcpy(arg,parser.argc(leftarg));
-// 				if (arg[0] == '$')
-// 				{
-// 					v = vars->get(&arg[1]);
-// 					a = (v == NULL ? 0.0 : v->asDouble());
-// 					if (v == NULL) msg(Debug::None,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
-// 				}
-// 				else a = atof(arg);
-// 				strcpy(arg,parser.argc(rightarg));
-// 				if (arg[0] == '$')
-// 				{
-// 					v = vars->get(&arg[1]);
-// 					b = (v == NULL ? 0.0 : v->asDouble());
-// 					if (v == NULL) msg(Debug::None,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
-// 				}
-// 				else b = atof(arg);
-// 				switch (*c)
-// 				{
-// 					case ('^'):
-// 						x = pow(a,b);
-// 						break;
-// 					case ('*'):
-// 						x = a * b;
-// 						break;
-// 					case ('/'):
-// 						x = a / b;
-// 						break;
-// 					case ('%'):
-// 						x = int(a)%(int(b));
-// 						break;
-// 					case ('+'):
-// 						x = a + b;
-// 						break;
-// 					case ('-'):
-// 						x = a - b;
-// 						break;
-// 				}
-// 				// Store result and blank arguments
-// 				parser.setArg(n,ftoa(x));
-// 				parser.setArg(leftarg,"");
-// 				parser.setArg(rightarg,"");
-// 				// Set new leftmost and rightmost arguments
-// 				leftarg = n;
-// 				rightarg = -1;
-// 			}
-// 			else
-// 			{
-// 				printf("evaluate - Operator was missing an argument.\n");
-// 				return "0";
-// 			} 
-// 		}
-// 	}
-// 	// Look for non-blank argument and set it as result
-// 	for (n=0; n<parser.nArgs(); n++) if (!parser.isBlank(n)) break;
-// 	if (n < parser.nArgs()) return parser.argc(n);
-// 	// Failed to find a return value!
-// 	printf("evaluate - failed to find return argument.\n");
-// 	return ".0";
-// }
 
 // Create bracket solution plan
 bool Expression::createPlan()
@@ -743,7 +596,6 @@ bool Expression::createPlan()
 		return FALSE;
 	}
 	dbgEnd(Debug::Calls,"Expression::createPlan");
-	printf("Created %i bracket references\n", brackets_.nItems());
 	return TRUE;
 }
 
@@ -754,13 +606,23 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 	double result;
 	ExpressionNode *leftLastUnused;
 	// Simplify functions first....
-	for (ExpressionNode *ex = left; ex != right->next; ex = ex->nextUnused())
+	leftLastUnused = (left->used() ? left->nextUnused(right) : left);
+	for (ExpressionNode *ex = leftLastUnused; ex != NULL; ex = ex->nextUnused(right))
 	{
 		if (ex->type() != ExpressionNode::FunctionToken) continue;
 		switch (ex->functionType())
 		{
+			case (ExpressionNode::NegateFunction):
+				result = -ex->nextUnused()->value();
+				break;
 			case (ExpressionNode::SqrtFunction):
 				result = sqrt(ex->nextUnused()->value());
+				break;
+			case (ExpressionNode::CosFunction):
+				result = cos(ex->nextUnused()->value());
+				break;
+			case (ExpressionNode::SinFunction):
+				result = sin(ex->nextUnused()->value());
 				break;
 		}
 		// All functions nodes get replaced with their result, and the right-hand argument is set to nothing
@@ -770,24 +632,46 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 	// Now do operators in order of precedence.
 	for (int op = 0; op < ExpressionNode::nOperatorTypes; op++)
 	{
-		if (left->used()) left = left->nextUnused();
-		leftLastUnused = left;
-		for (ExpressionNode *ex = left; ex != right->next; ex = ex->nextUnused())
+		//printf("Doing operator %i\n", op);
+		for (ExpressionNode *ex = left; ex != right->next; ex = ex->next)
 		{
-			if (ex->type() != ExpressionNode::OperatorToken) continue;
+			// Skip used nodes
+			if (ex->used()) continue;
+			if ((ex->type() != ExpressionNode::OperatorToken) || (ex->operatorType() != op))
+			{
+				leftLastUnused = ex;
+				continue;
+			}
 			if (ex->operatorType() != op) continue;
 			switch (ex->operatorType())
 			{
+				case (ExpressionNode::ModulusOperator):
+					result = int(leftLastUnused->value()) % int(ex->nextUnused()->value());
+					break;
+				case (ExpressionNode::PowerOperator):
+					result = pow(leftLastUnused->value(), ex->nextUnused()->value());
+					break;
 				case (ExpressionNode::MultiplyOperator):
-					result = sqrt(ex->nextUnused()->value());
+					result = leftLastUnused->value() * ex->nextUnused()->value();
+					break;
+				case (ExpressionNode::DivideOperator):
+					result = leftLastUnused->value() / ex->nextUnused()->value();
+					break;
+				case (ExpressionNode::AddOperator):
+					result = leftLastUnused->value() + ex->nextUnused()->value();
+					break;
+				case (ExpressionNode::SubtractOperator):
+					result = leftLastUnused->value() - ex->nextUnused()->value();
 					break;
 			}
 			// All operator nodes get replaced with their result, and the left and right-hand arguments are set to nothing
+			//printf("Result of operator is %f\n",result);
 			ex->makeValue(result);
 			ex->nextUnused()->setUsed();
 			leftLastUnused->setUsed();
 			leftLastUnused = ex;
 		}
+		print(NULL, FALSE);
 	}
 }
 
@@ -795,16 +679,25 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 double Expression::evaluate()
 {
 	dbgBegin(Debug::Calls,"Expression::evaluate");
+	ExpressionNode *ex;
 	// Reset all nodes in expression
-	for (ExpressionNode *ex = expression_.first(); ex != NULL; ex = ex->next) ex->reset();
-	// Evaluate all subexpressions determined by the bracket_ list, and then the final expression
+	for (ex = expression_.first(); ex != NULL; ex = ex->next) ex->reset();
+	// Evaluate all subexpressions defined in the bracket_ list
 	for (Refitem<ExpressionNode,ExpressionNode*> *ri = brackets_.first(); ri != NULL; ri = ri->next)
 	{
 		evaluate(ri->item->next, ri->data->prev);
-		print(NULL, FALSE); 
+		ri->item->setUsed();
+		ri->data->setUsed();
 	}
-
+	// Lastly, evaluate whole expression
+	evaluate(expression_.first(), expression_.last());
+	//printf("Reduced expression is:\n");
+	//print(NULL, FALSE);
+	// Find last remaining unused node and return its value
+	ex = expression_.first();
+	if (ex->used()) ex = ex->nextUnused();
 	dbgEnd(Debug::Calls,"Expression::evaluate");
+	return ex->value();
 }
 
 // Print expression
@@ -822,7 +715,8 @@ void Expression::print(ExpressionNode *highlight, bool showUsed)
 		switch (tt)
 		{
 			case (ExpressionNode::ValueToken):
-				if (ex->variable() == NULL) strcpy(bit,ftoa(ex->value()));
+				if (ex->used()) strcpy(bit, ftoa(ex->value()));
+				else if (ex->variable() == NULL) strcpy(bit,ftoa(ex->value()));
 				else sprintf(bit,"$%s", ex->variable()->name());
 				break;
 			case (ExpressionNode::FunctionToken):

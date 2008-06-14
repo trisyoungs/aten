@@ -41,7 +41,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 		}
 		else c->arg(0)->copyPointer(c->arg(2));
 	}
-	else c->arg(0)->set(c->argc(2));
+	else c->arg(0)->set(c->arg(2)->asDouble());
 	return CR_SUCCESS;
 }
 
@@ -58,7 +58,7 @@ int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 		}
 		else c->arg(0)->copyPointer(c->arg(1));
 	}
-	else c->arg(0)->set(c->argc(1));
+	else c->arg(0)->set(c->arg(1)->asDouble());
 	return CR_SUCCESS;
 }
 
