@@ -22,7 +22,9 @@
 #ifndef ATEN_EXPRESSION_H
 #define ATEN_EXPRESSION_H
 
+#include "base/constants.h"
 #include "templates/list.h"
+#include "templates/reflist.h"
 
 // Forward Declarations
 class Variable;
@@ -37,11 +39,11 @@ class ExpressionNode
 	// Node types
 	enum TokenType { ValueToken, OperatorToken, FunctionToken, BracketToken, nTokenTypes };
 	// Operator tokens
-	enum OperatorType { MinusOperator, PlusOperator, DivideOperator, MultiplyOperator, PowerOperator, ModulusOperator, nOperatorTypes };
+	enum OperatorType { ModulusOperator, PowerOperator, MultiplyOperator, DivideOperator, PlusOperator, MinusOperator, nOperatorTypes };
 	static char operatorType(ExpressionNode::OperatorType ot);
 	static ExpressionNode::OperatorType operatorType(char s);
 	// Function tokens
-	enum FunctionType { SqrtFunction, CosFunction, SinFunction, nFunctionTypes };
+	enum FunctionType { NegateFunction, SqrtFunction, CosFunction, SinFunction, nFunctionTypes };
 	static const char *functionType(ExpressionNode::FunctionType ft);
 	static ExpressionNode::FunctionType functionType(const char *s);
 	// Bracket tokens
@@ -51,8 +53,10 @@ class ExpressionNode
 	ExpressionNode *prev, *next;
 	
 	private:
-	// Type of node
+	// Current type of node
 	ExpressionNode::TokenType type_;
+	// Original (persistent) type of node
+	ExpressionNode::TokenType persistentType_;
 	// Sub-type of node
 	OperatorType operator_;
 	FunctionType function_;
@@ -79,8 +83,12 @@ class ExpressionNode
 	ExpressionNode::OperatorType operatorType();
 	ExpressionNode::FunctionType functionType();
 	ExpressionNode::BracketType bracketType();
-	// Set whether the node has been used already
-	void setUsed(bool used);
+	// Set persistent type
+	void setPersistentType(ExpressionNode::TokenType);
+	// Change the node to a plain value node
+	void makeValue(double value);
+	// Flag the node as used
+	void setUsed();
 	// Return whether the node has been used already in the current evaluation
 	bool used();
 	// Set value
@@ -107,14 +115,16 @@ class Expression
 	List<ExpressionNode> expression_;
 	// The VariableList against which the expression was created
 	VariableList *vars_;
+	// Reflist of all bracketed pairs (to speed up execution)
+	Reflist<ExpressionNode,ExpressionNode*> brackets_;
 	// Add long operator
-	bool addLongOperator(const char *s);
+	ExpressionNode::TokenType addLongOperator(const char *s);
 	// Validate expression
 	bool validate();
 	// Create expression plan
-	void createPlan();
+	bool createPlan();
 	// Evaluate subexpression
-	double evaluate(ExpressionNode *left, ExpressionNode *right);
+	void evaluate(ExpressionNode *left, ExpressionNode *right);
 
 	public:
 	// Set expression from string
@@ -122,7 +132,7 @@ class Expression
 	// Evaluate expression and return value
 	double evaluate();
 	// Print expression
-	void print();
+	void print(ExpressionNode *highlight = NULL, bool showUsed = TRUE);
 };
 
 #endif
