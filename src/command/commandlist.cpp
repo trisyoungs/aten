@@ -493,7 +493,6 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				*/
 				if (parser.wasQuoted(argcount))
 				{
-					printf("Caching a quoted expression...\n");
 					var = parent_->variables.addExpression(&arg[0]);
 					if (var == NULL) return FALSE;
 					args_.add(var);

@@ -39,7 +39,7 @@ class ExpressionNode
 	// Node types
 	enum TokenType { ValueToken, OperatorToken, FunctionToken, BracketToken, nTokenTypes };
 	// Operator tokens
-	enum OperatorType { ModulusOperator, PowerOperator, MultiplyOperator, DivideOperator, PlusOperator, MinusOperator, nOperatorTypes };
+	enum OperatorType { ModulusOperator, PowerOperator, MultiplyOperator, DivideOperator, AddOperator, SubtractOperator, nOperatorTypes };
 	static char operatorType(ExpressionNode::OperatorType ot);
 	static ExpressionNode::OperatorType operatorType(char s);
 	// Function tokens
