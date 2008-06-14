@@ -27,7 +27,7 @@ importgrid
 	gridorigin $ox $oy $oz
 
 	# Read in grid data
-	eval $npoints = "$nx * $ny * $nz"
+	$npoints = "$nx * $ny * $nz"
 	for $n,1,$npoints
 		readline "$data"
 		addnextgridpoint $data
