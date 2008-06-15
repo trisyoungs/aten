@@ -24,7 +24,7 @@
 
 #include "templates/list.h"
 #include "classes/dnchar.h"
-#include "classes/variables.h"
+#include "classes/variable.h"
 #include "base/sysfunc.h"
 
 // Forward Declarations

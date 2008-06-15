@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/variables.h"
+#include "classes/variable.h"
 #include "classes/expression.h"
 #include "classes/atom.h"
 #include "classes/pattern.h"
@@ -30,7 +30,7 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype*", "_EXPRESSION_" };
+const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype*", "expression" };
 const char *Variable::variableType(Variable::VariableType vt)
 {
 	return VariableTypeKeywords[vt];
