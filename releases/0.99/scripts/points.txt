@@ -1,0 +1,30 @@
+#
+# Point-like particle test, with electrostatics and VDW contributions
+# 256 negative ions and 256 positive ions
+#
+
+# Load forcefield, model, and trajectory
+ff load dlpolytest/points/points.ff pointsff
+model load dlpolytest/points/points.CONFIG points
+traj open dlpolytest/points/points.HISu
+ff model
+
+# Set up energy expression
+expr create
+expr elec ewald 0.14021 16 16 16 
+expr vcut 25.0
+expr ecut 25.0
+
+# Calculate model energy and print totals
+charge ff
+energy model
+energy total
+
+# Read in 50 frames from the trajectory, calculate and print an energy summary for each
+loop nrg 50
+energy traj
+energy summary
+traj nextframe
+endloop nrg
+
+quit

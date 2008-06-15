@@ -1,0 +1,26 @@
+#loadmodel /u/tristan/src/csmodel/test/dlpoly/torsions/torsions.CONFIG torsions
+newmodel testmodel
+loadff /u/tristan/src/csmodel/test/dlpoly/torsions/csmodel.ff test
+setff test
+
+chain N 0.0  1.0  0.0
+chain N 0.0  0.0  0.0
+chain N 1.0  0.0  0.0
+chain N 1.0  1.0  0.0
+
+pattern simple
+print coords
+set elec none
+select id 0
+energy
+print energy
+forces
+print forces
+
+#loop 1 nrg
+#move atom 0.001 0.0 0.0
+#energy
+#print energy
+#endloop nrg
+
+quit
