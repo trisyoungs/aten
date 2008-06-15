@@ -10,31 +10,31 @@ if $natoms < 2
 	quit
 end
 
-let $dx = 0
-let $dy = 0
-let $dz = 0
-let $cogx = 0
-let $cogy = 0
-let $cogz = 0
+$dx = 0
+$dy = 0
+$dz = 0
+$cogx = 0
+$cogy = 0
+$cogz = 0
 
 # Perform a loop over all atoms in the model
 for $i
-	eval $dx = "$dx + $i.rx * $i.q"
-	eval $dy = "$dy + $i.ry * $i.q"
-	eval $dz = "$dz + $i.rz * $i.q"
-	eval $cogx = "$cogx + $i.rx"
-	eval $cogy = "$cogy + $i.ry"
-	eval $cogz = "$cogz + $i.rz"
+	$dx = "$dx + $i.rx * $i.q"
+	$dy = "$dy + $i.ry * $i.q"
+	$dz = "$dz + $i.rz * $i.q"
+	$cogx = "$cogx + $i.rx"
+	$cogy = "$cogy + $i.ry"
+	$cogz = "$cogz + $i.rz"
 end
 
 # Take averages and get dipole magnitude
-eval $dx = "$dx / $natoms"
-eval $dy = "$dy / $natoms"
-eval $dz = "$dz / $natoms"
-eval $cogx = "$cogx / $natoms"
-eval $cogy = "$cogy / $natoms"
-eval $cogz = "$cogz / $natoms"
-eval $mag = "($dx*$dx + $dy*$dy + $dz*$dz)^0.5"
+$dx = "$dx / $natoms"
+$dy = "$dy / $natoms"
+$dz = "$dz / $natoms"
+$cogx = "$cogx / $natoms"
+$cogy = "$cogy / $natoms"
+$cogz = "$cogz / $natoms"
+$mag = "($dx*$dx + $dy*$dy + $dz*$dz)^0.5"
 
 # Add glyph to model
 newglyph vector
