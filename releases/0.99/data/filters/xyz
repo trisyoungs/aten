@@ -14,7 +14,7 @@ importmodel
 
 	# Read data
 	readline "$natoms"
-	readline "$title@100"
+	readline "$title%100"
 	newmodel $title
 	for $n,1,$natoms
 		readline "$e $rx $ry $rz $q"
@@ -43,7 +43,7 @@ exportmodel
 	writeline "$natoms"
 	writeline "$title"
 	for $i
-		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6   $i.q@12.6"
+		writeline "$i.symbol%3   $i.rx%12.6   $i.ry%12.6   $i.rz%12.6   $i.q%12.6"
 	end
 end
 importtrajectory
@@ -60,7 +60,7 @@ importtrajectory
 	# No header in XYZ trajectories, so only check for frames
 	if $header <> true
 		readline "$natoms"
-		readline "$title@100"
+		readline "$title%100"
 		setname $title
 		newglyph text $title
 		glyphdata 1 10 10 0

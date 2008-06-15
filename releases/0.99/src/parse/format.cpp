@@ -72,7 +72,7 @@ FormatNode* Format::nodes()
 bool FormatNode::set(const char *s, VariableList &vlist)
 {
 	dbgBegin(Debug::Parse,"FormatNode::set");
-	// Format of formatters is 'F@n.m': F = format quantity/variable, n.m = length,precision
+	// Format of formatters is 'F%n.m': F = format quantity/variable, n.m = length,precision
 	int m, pos1, pos2;
 	static char specifier[512], len[32], pre[32];
 	char *c;
@@ -80,16 +80,16 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 	specifier[0] = '\0';
 	len[0] = '\0';
 	pre[0] = '\0';
-	// Everything up to the '@' character is the quantity / variable
+	// Everything up to the '%' character is the quantity / variable
 	for (pos1 = 0; s[pos1] != '\0'; pos1++)
 	{
-		if (s[pos1] == '@') break;
+		if (s[pos1] == '%') break;
 		specifier[pos1] = s[pos1];
 	}
 	specifier[pos1] = '\0';
-	if (s[pos1] == '@')
+	if (s[pos1] == '%')
 	{
-		// Everything past the '@' character (and up to a '.') is the length...
+		// Everything past the '%' character (and up to a '.') is the length...
 		pos1 ++;
 		for (pos2 = pos1; s[pos2] != '\0'; pos2++)
 		{

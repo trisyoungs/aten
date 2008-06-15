@@ -17,7 +17,7 @@ importtrajectory
 	# When aten is trying to read the header, the variable 'header' will be 'true' (and 'frame' will be 'false')
 	if $header = true
 		# Check first 8 characters of first line - if it reads 'timestep' then this trajectory doesn't have a header
-		readline "$title@8"
+		readline "$title%8"
 		if $title = timestep
 			rewind
 		end
@@ -33,23 +33,23 @@ importtrajectory
 		end
 		# Read cell if its present
 		if $imcon > 0
-			readline "$ax@12 $ay@12 $az@12"
-			readline "$bx@12 $by@12 $bz@12"
-			readline "$cx@12 $cy@12 $cz@12"
+			readline "$ax%12 $ay%12 $az%12"
+			readline "$bx%12 $by%12 $bz%12"
+			readline "$cx%12 $cy%12 $cz%12"
 			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 		end
 		# Now the atoms
 		modeltemplate
 		for $n,1,$natoms
 			readline "$e $id $mass $q"
-			readline "$rx@12 $ry@12 $rz@12"
+			readline "$rx%12 $ry%12 $rz%12"
 			setcoords $rx $ry $rz $n
 			if $keytrj > 0
-				readline "$vx@12 $vy@12 $vz@12"
+				readline "$vx%12 $vy%12 $vz%12"
 				setvelocities $vx $vy $vz $n
 			end
 			if $keytrj > 1
-				readline "$fx@12 $fy@12 $fz@12"
+				readline "$fx%12 $fy%12 $fz%12"
 				setforces $fx $fy $fz $n
 			end
 		end

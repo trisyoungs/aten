@@ -16,7 +16,7 @@ importmodel
 
 	# Read line
 	for $n
-		readline "$keywd $line@200"
+		readline "$keywd $line%200"
 		if $keywd = atom
 			readvar $line "$e $rx $ry $rz"
 			newatom $e
@@ -78,7 +78,7 @@ end
 #	writeline "$natoms"
 #	writeline "$title"
 #	for $i
-#		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6"
+#		writeline "$i.symbol%3   $i.rx%12.6   $i.ry%12.6   $i.rz%12.6"
 #	end
 #end
 #importtrajectory
