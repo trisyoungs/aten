@@ -41,7 +41,8 @@ Cell *Model::cell()
 // Sets the spacegroup of the model
 void Model::setSpacegroup(int i)
 {
-	spacegroup_ = i;
+	if ((i < 0) || (i > 230)) msg(Debug::None, "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
+	else spacegroup_ = i;
 }
 
 // Sets the spacegroup setting

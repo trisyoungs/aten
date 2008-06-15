@@ -136,7 +136,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					if (c->parent()->inputFile() != NULL)
 						if (c->parent()->inputFile()->peek() == -1)
 						{
-							msg(Debug::Verbose,"Command 'repeat' reached end of file.\n");
+							msg(Debug::Verbose,"Command 'for' reached end of file.\n");
 							status = FALSE;
 						}
 				}
@@ -160,13 +160,13 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					else if (c->argt(1) == Variable::IntegerVariable) p = obj.m->pattern(c->argi(1));
 					else
 					{
-						printf("Atom loop argument 2 must be of type 'pattern' or 'int'.\n");
+						msg(Debug::None, "Atom loop argument 2 must be of Pattern or Integer type.\n");
 						return CR_FAIL;
 					}
 					// Must have a valid pattern pointer here
 					if (p == NULL)
 					{
-						printf("Atom loop was not given a valid pattern.\n");
+						msg(Debug::None, "Atom loop was not given a valid pattern.\n");
 						return CR_FAIL;
 					}
 					// Check on third argument - if provided, must be an int
@@ -178,7 +178,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 							// Check molecule range
 							if ((i < 1) || (i > p->nMols()))
 							{
-								printf("Atom loop pattern molecule is out of range.\n");
+								msg(Debug::None, "Atom loop pattern molecule is out of range.\n");
 								return CR_FAIL;
 							}
 							int m = p->startAtom();
@@ -187,7 +187,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 						}
 						else
 						{
-							printf("Atom loop argument 3 must be an 'int'\n.");
+							msg(Debug::None, "Atom loop argument 3 must be of Integer type.\n.");
 							return CR_FAIL;
 						}
 					}
@@ -204,7 +204,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (c->argt(0) == Variable::PatternVariable) c->arg(0)->set(obj.m->patterns());
 				else
 				{
-					printf("Pattern loop variable must be a 'pattern'.\n");
+					msg(Debug::None, "Pattern loop variable must be of Pattern type.\n");
 					return CR_FAIL;
 				}
 				if (c->argp(0) == NULL) status = FALSE;
@@ -216,7 +216,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
-					printf("Bond loop must be given a 'pattern'.\n");
+					msg(Debug::None, "Bond loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
 				c->arg(0)->set(c->argp(1)->bonds());
@@ -228,7 +228,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
-					printf("Angle loop must be given a 'pattern'.\n");
+					msg(Debug::None, "Angle loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
 				c->arg(0)->set(c->argp(1)->angles());
@@ -240,7 +240,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
-					printf("Torsion loop must be given a 'pattern'.\n");
+					msg(Debug::None, "Torsion loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
 				c->arg(0)->set(c->argp(1)->torsions());
@@ -254,7 +254,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				{
 					if (c->argt(1) != Variable::AtomtypeVariable)
 					{
-						printf("Second argument to atomtype loop must be also be an 'atomtype' variable.\n");
+						msg(Debug::None, "Second argument to atomtype loop must be a variable of Atomtype type.\n");
 						return CR_FAIL;
 					}
 					// Start atomtype loop at type given instead of first

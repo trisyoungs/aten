@@ -22,7 +22,7 @@ importmodel
 	# 44-46 (natoms), 47-49 (nsatoms), 50-52 (unused), 53-55 (ncon), 56 (cell), 57 (intf), 58 (atom 'r' format),
 	# 59 (centre of symmetry), 60 (err), 61 (rpa), 62 (td), 63 (pd), 64 (unused), 65 (cbl), 66 (esd of C-C),
 	# 67 (polymeric structure), 68-77 (irrelevant), 78-79 (year)
-	readline "*@1 $title@8 *@17 $nf@3 $nr@3 $nd@3 $ne@3 $nsymm@3 *@3 $natm@3 $nsatm@3 *@3 $ncon@3 $cell@1 $atfor@1"
+	readline "*%1 $title%8 *%17 $nf%3 $nr%3 $nd%3 $ne%3 $nsymm%3 *%3 $natm%3 $nsatm%3 *%3 $ncon%3 $cell%1 $atfor%1"
 	newmodel $title
 	print "Number of symmetry-unique related atoms = $natm $nsatm"
 	# Record 2: Unit cell definition (if %cell == 1)
@@ -30,7 +30,7 @@ importmodel
 	# 0-35 (A,B,C,a,b,c), 36-41 (precision digits), 42-53 (cesd), 54-59 (dens), 60-62 (spgrpn), 63-70 (spgrp),
 	# 71-75 (irrelevant)
 	if $cell = 1
-		readline "$a@6 $b@6 $c@6 $al@6 $be@6 $ga@6 $pa@1 $pb@1 $pc@1 $pal@1 $pbe@1 $pga@1 *@18 $spgrpn@3 $spgrp@8"
+		readline "$a%6 $b%6 $c%6 $al%6 $be%6 $ga%6 $pa%1 $pb%1 $pc%1 $pal%1 $pbe%1 $pga%1 *%18 $spgrpn%3 $spgrp%8"
 		# Cell lengths and angles are multiplied by the precision digits (10^n)...
 		$cell.a = "$a / 10.0^$pa"
 		$cell.b = "$b / 10.0^$pb"
@@ -62,7 +62,7 @@ importmodel
 		# Read in new line if mod(n,3) is zero
 		$mod = "($n-1) % 3"
 		if $mod = 0
-			readline "$ea@5 $xa@7 $ya@7 $za@7 *@1 $eb@5 $xb@7 $yb@7 $zb@7 *@1 $ec@5 $xc@7 $yc@7 $zc@7"
+			readline "$ea%5 $xa%7 $ya%7 $za%7 *%1 $eb%5 $xb%7 $yb%7 $zb%7 *%1 $ec%5 $xc%7 $yc%7 $zc%7"
 		end
 		verbose "Atom pass $n : Elements are $ea, $eb, and $ec"
 		# Use variable data based on the $mod value...

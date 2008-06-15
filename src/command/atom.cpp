@@ -127,7 +127,7 @@ int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (c->argt(1) != Variable::AtomVariable)
 	{
-		msg(Debug::None, "Second argument to 'getatom' must be an Atom variable.\n");
+		msg(Debug::None, "Second argument to 'getatom' must be a variable of type 'Atom'.\n");
 		return CR_FAIL;
 	}
 	Atom *i = obj.rs->atom(c->argi(0)-1);

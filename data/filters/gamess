@@ -18,7 +18,7 @@ importmodel
 		error "Couldn't determine number of atoms from GAMESS-US output."
 	end
 	# Get number of atoms from line
-	readvar $line "*@48 $natoms"
+	readvar $line "*%48 $natoms"
 	# Now search for coordinate sets
 	let $nmodels = 0
 	for $n
@@ -62,6 +62,6 @@ exportmodel
 	writeline "$title"
 	writeline "C1"
 	for $i
-		writeline "$i.name@10  $i.z@4 $i.rx@12.6 $i.ry@12.6 $i.rz@12.6"
+		writeline "$i.name%10  $i.z%4 $i.rx%12.6 $i.ry%12.6 $i.rz%12.6"
 	end
 end
