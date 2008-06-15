@@ -76,6 +76,10 @@ template <class T, class D> class Reflist
 	void remove(Refitem<T,D>*);
 	// Delete the reference containing specified item from the list
 	void remove(T*);
+	// Remove the first item in the list
+	void removeFirst();
+	// Remove the last item in the list
+	void removeLast();
 	// Operator =
 	void operator=(Reflist<T,D> &source);
 	// Element access operator
@@ -182,6 +186,18 @@ template <class T, class D> void Reflist<T,D>::remove(Refitem<T,D> *xitem)
 	xitem->next == NULL ? itemsTail_ = xitem->prev : xitem->next->prev = xitem->prev;
 	delete xitem;
 	nItems_ --;
+}
+
+// Remove first item from list
+template <class T, class D> void Reflist<T,D>::removeFirst()
+{
+	remove(itemsHead_);
+}
+
+// Remove last item from list
+template <class T, class D> void Reflist<T,D>::removeLast()
+{
+	remove(itemsTail_);
 }
 
 // Remove item from list

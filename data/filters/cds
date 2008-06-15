@@ -32,23 +32,23 @@ importmodel
 	if $cell = 1
 		readline "$a@6 $b@6 $c@6 $al@6 $be@6 $ga@6 $pa@1 $pb@1 $pc@1 $pal@1 $pbe@1 $pga@1 *@18 $spgrpn@3 $spgrp@8"
 		# Cell lengths and angles are multiplied by the precision digits (10^n)...
-		eval $cell.a = "$a / 10.0^$pa"
-		eval $cell.b = "$b / 10.0^$pb"
-		eval $cell.c = "$c / 10.0^$pc"
-		eval $cell.alpha = "$al / 10.0^$pal"
-		eval $cell.beta = "$be / 10.0^$pbe"
-		eval $cell.gamma = "$ga / 10.0^$pga"
+		$cell.a = "$a / 10.0^$pa"
+		$cell.b = "$b / 10.0^$pb"
+		$cell.c = "$c / 10.0^$pc"
+		$cell.alpha = "$al / 10.0^$pal"
+		$cell.beta = "$be / 10.0^$pbe"
+		$cell.gamma = "$ga / 10.0^$pga"
 		cell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
 		spacegroup $spgrpn
 	end
 	# Record 3: Text information (ignored)
 	# Total number of chars is the sum of nf, nr, nd, and ne read in earlier.
 	# Since the format rigidly defined 80 chars per line, skip by number of lines...
-	eval $nlines = "($nf + $nr + $nd + $ne + 79) / 80"
+	$nlines = "($nf + $nr + $nd + $ne + 79) / 80"
 	skipline $nlines
 	print "Skipping $nlines lines of text information"
 	# Record 4: Equivalent positions of spacegroup (ignored)
-	eval $nlines = "($nsymm*20 + 79) / 80"
+	$nlines = "($nsymm*20 + 79) / 80"
 	skipline $nlines
 	print "Skipping $nlines of spacegroup generator definitions"
 	# Record 5: Atomic radii (ignored)
@@ -57,10 +57,10 @@ importmodel
 	end
 	# Record 6: Atomic coordinates
 	# Coordinates are given 3 per line, so determine number of lines to read in.
-	eval $natoms = "$natm + $nsatm"
+	$natoms = "$natm + $nsatm"
 	for $n,1,$natoms
 		# Read in new line if mod(n,3) is zero
-		eval $mod = "($n-1) % 3"
+		$mod = "($n-1) % 3"
 		if $mod = 0
 			readline "$ea@5 $xa@7 $ya@7 $za@7 *@1 $eb@5 $xb@7 $yb@7 $zb@7 *@1 $ec@5 $xc@7 $yc@7 $zc@7"
 		end
@@ -68,19 +68,19 @@ importmodel
 		# Use variable data based on the $mod value...
 		if $mod = 0
 			newatom $ea
-			eval $rx = "$xa / 100000"
-			eval $ry = "$ya / 100000"
-			eval $rz = "$za / 100000"
+			$rx = "$xa / 100000"
+			$ry = "$ya / 100000"
+			$rz = "$za / 100000"
 		elseif $mod = 1
 			newatom $eb
-			eval $rx = "$xb / 100000"
-			eval $ry = "$yb / 100000"
-			eval $rz = "$zb / 100000"
+			$rx = "$xb / 100000"
+			$ry = "$yb / 100000"
+			$rz = "$zb / 100000"
 		else
 			newatom $ec
-			eval $rx = "$xc / 100000"
-			eval $ry = "$yc / 100000"
-			eval $rz = "$zc / 100000"
+			$rx = "$xc / 100000"
+			$ry = "$yc / 100000"
+			$rz = "$zc / 100000"
 		end
 		setcoords $rx $ry $rz
 	end
@@ -88,20 +88,20 @@ importmodel
 	# Connectivities are given in the format 40I2 (if natm+nsatm < 100) or 26I3,2x (if natm+nsatm >= 100)
 	# First (natm+nsatm) integers are paired to the atoms 1-(natm+nsatm) in that order. Any other integers
 	# are pairs of atoms involved in additional bonds.
-	eval $nextra = "($ncon - $natoms) / 2"
+	$nextra = "($ncon - $natoms) / 2"
 	print "Expecting $ncon connectivity integers and $nextra extra bonding pairs..."
-	eval $total = "$natoms + $nextra"
+	$total = "$natoms + $nextra"
 	for $n,1,$total
 		# Need to remove newline (and space before) when we've read a whole line's worth
 		if $natoms < 100
 			readchars $ii 2
-			eval $mod = "$n%40"
+			$mod = "$n%40"
 			if $mod = 0
 				readchars $discard 1
 			end
 		else
 			readchars $ii 3
-			eval $mod = "$n%26"
+			$mod = "$n%26"
 			if $mod = 0
 				readchars $discard 3
 			end
@@ -110,13 +110,13 @@ importmodel
 		if $n > $natoms
 			if $natoms < 100
 				readchars $jj 2
-				eval $mod = "$n%40"
+				$mod = "$n%40"
 				if $mod = 0
 					readchars $discard 1
 				end
 			else
 				readchars $jj 3
-				eval $mod = "$n%26"
+				$mod = "$n%26"
 				if $mod = 0
 					readchars $discard 3
 				end

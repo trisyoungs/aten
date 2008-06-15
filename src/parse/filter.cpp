@@ -207,21 +207,9 @@ bool Filter::load(ifstream &filterFile)
 				break;
 			// A normal command
 			default:
-				ca = CA_from_text(parser.argc(0));
-				if (ca != CA_NITEMS)
-				{
-					// Add the command to the list
-					if (commands_.addCommand(ca)) continue;
-					else
-					{
-						msg(Debug::None,"Filter::load <<< Error adding command '%s' >>>>\n", parser.argc(0));
-						dbgEnd(Debug::Calls,"Filter::load");
-						return FALSE;
-					}
-				}
+				if (commands_.cacheCommand()) continue;
 				else
 				{
-					msg(Debug::None,"Unrecognised command '%s' in filter.\n", parser.argc(0));
 					dbgEnd(Debug::Calls,"Filter::load");
 					return FALSE;
 				}

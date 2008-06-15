@@ -27,7 +27,7 @@
 Parser parser;
 
 // Parse options
-const char *ParseOptionKeywords[Parser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "__DUMMY__" };
+const char *ParseOptionKeywords[Parser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions" };
 Parser::ParseOption Parser::parseOption(const char *s)
 {
 	return (Parser::ParseOption) power(2,enumSearch("parse option", Parser::nParseOptions, ParseOptionKeywords, s));
@@ -84,6 +84,12 @@ bool Parser::isBlank(int i)
 	return (arguments_[i][0] == '\0' ? TRUE : FALSE);
 }
 
+// Returns whether the specified argument was quoted
+bool Parser::wasQuoted(int i)
+{
+	return quoted_[i];
+}
+
 // Set argument manually
 void Parser::setArg(int i, const char *s)
 {
@@ -99,11 +105,13 @@ bool Parser::getNextArg(int destarg)
 	// Get the next input chunk from the internal string and put into argument specified
 	dbgBegin(Debug::Parse,"Parser::getNextArg");
 	static int n, arglen;
-	static bool done, hadquotes;
+	static bool done, hadquotes, expression, failed;
 	static char c, quotechar;
+	failed = FALSE;
 	done = FALSE;
 	hadquotes = FALSE;
 	quotechar = '\0';
+	expression = FALSE;
 	endOfLine_ = FALSE;
 	arglen = 0;
 	for (n=0; n<line_.length(); n++)
@@ -122,7 +130,7 @@ bool Parser::getNextArg(int destarg)
 			case (9):	// Horizontal Tab
 			case (' '):	// Space
 			case (','):	// Comma
-				if (quotechar != '\0')
+				if ((quotechar != '\0') || expression)
 				{
 					tempArg_[arglen] = c;
 					arglen ++;
@@ -133,6 +141,7 @@ bool Parser::getNextArg(int destarg)
 			// If Parser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
+				if (expression) break;
 				if (!(optionMask_&Parser::UseQuotes)) break;
 				if (quotechar == '\0') quotechar = c;
 				else if (quotechar == c)
@@ -150,7 +159,38 @@ bool Parser::getNextArg(int destarg)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask_&Parser::StripBrackets) break;
+				if ((optionMask_&Parser::StripBrackets) && (!expression)) break;
+				tempArg_[arglen] = c;
+				arglen ++;
+				break;
+			// Expression start
+			case ('{'):
+				if (!(optionMask_&Parser::UseQuotes))
+				{
+					tempArg_[arglen] = c;
+					arglen ++;
+					break;
+				}
+				// Check we are not already 'expressing'
+				if (expression)
+				{
+					msg(Debug::None, "Expression begun inside previous expression (column %i).\n", n+1);
+					failed = TRUE;
+					break;
+				}
+				expression = TRUE;
+				tempArg_[arglen] = c;
+				arglen ++;
+				break;
+			// Expression end
+			case ('}'):
+				if (!expression)
+				{
+					msg(Debug::None, "Expression ended without being begun  (column %i).\n", n+1);
+					failed = TRUE;
+					break;
+				}
+				expression = FALSE;
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
@@ -165,16 +205,19 @@ bool Parser::getNextArg(int destarg)
 				arglen ++;
 				break;
 		}
-		if (done) break;
+		if (done || failed) break;
 	}
 	tempArg_[arglen] = '\0';
 	if (n == line_.length()) endOfLine_ = TRUE;
 	// Store the result in the desired destination
 	if (destarg != -1) arguments_[destarg] = tempArg_;
+	// Set the quotes flag
+	if (destarg != -1) quoted_[destarg] = hadquotes;
 	// Strip off the characters up to position 'n', but not including position 'n' itself
 	line_.eraseStart(n+1);
 	//printf("Rest of line is now [%s]\n",line.get());
 	dbgEnd(Debug::Parse,"Parser::getNextArg");
+	if (failed) return FALSE;
 	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
 }
 
@@ -589,73 +632,3 @@ const char *Parser::trimAtomtypeKeyword(Dnchar &source)
 	return keywd.get();
 }
 
-// Parse tokens in numerical expression
-bool Parser::getArgsExpression(const char *s)
-{
-	dbgBegin(Debug::Parse,"Parser::getArgsExpression");
-	nArgs_ = 0; 
-	for (int n=0; n<MAXARGS; n++) arguments_[n].clear();
-	static int n, arglen;
-	static bool result;
-	static char arg[MAXARGLENGTH];
-	static const char *c;
-	result = TRUE;
-	arglen = 0;
-	for (c = &s[0]; *c != '\0'; c++)
-	{
-		switch (*c)
-		{
-			// Skip delimiters
-			case (9):	// Horizontal Tab
-			case (' '):	// Space
-				break;
-			// Expression tokens
-			case ('+'):
-			case ('-'):
-			case ('/'):
-			case ('*'):
-			case ('^'):
-			case ('%'):
-				// No current other argument - must be error
-				if (arglen == 0)
-				{
-					result = FALSE;
-					break;
-				}
-				// Store current argument
-				arg[arglen] = '\0';
-				arguments_[nArgs_] = arg;
-				nArgs_ ++;
-				arg[0] = *c;
-				arg[1] = '\0';
-				arguments_[nArgs_] = arg;
-				nArgs_ ++;
-				arglen = 0;
-				break;
-			// Normal character
-			default: 
-				arg[arglen] = *c;
-				arglen ++;
-				break;
-		}
-	}
-	// Store current argument
-	if (arglen != 0)
-	{
-		arg[arglen] = '\0';
-		arguments_[nArgs_] = arg;
-		nArgs_ ++;
-	}
-	//for (int i=0; i<nargs; i++) printf("EXPR ARG %i = [%s]\n",i,arguments[i].get());
-	dbgEnd(Debug::Parse,"Parser::getArgsExpression");
-	return result;
-}
-
-// Return whether specified argument is an operator
-bool Parser::isOperator(int argno, char op)
-{
-	// Check length.
-	if (arguments_[argno].length() != 1) return FALSE;
-	// Check character
-	return (arguments_[argno][0] == op ? TRUE : FALSE);
-}

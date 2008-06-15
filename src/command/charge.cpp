@@ -45,7 +45,7 @@ int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Assign charge to a pattern atom, propagated over the model ('chargepatom <patname> <id> <q>')
+// Assign charge to a pattern atom, propagated over the model ('chargepatom <id> <q>')
 int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;

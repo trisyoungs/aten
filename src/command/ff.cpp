@@ -45,7 +45,7 @@ int CommandData::function_CA_ANGLEDEF(Command *&c, Bundle &obj)
 	ForcefieldBound *ffb = obj.ff->addAngle(anglestyle);
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->params().data[n-4] = c->argd(n);
-	msg(Debug::Verbose,"BOND %i : %s  %s  %8.4f %8.4f\n", n, ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
+	msg(Debug::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
 	return CR_SUCCESS;
 }
 
@@ -68,7 +68,7 @@ int CommandData::function_CA_BONDDEF(Command *&c, Bundle &obj)
 	ForcefieldBound *ffb = obj.ff->addBond(bondstyle);
 	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
 	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-3] = c->argd(n);
-	msg(Debug::Verbose,"BOND %i : %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]); 
+	msg(Debug::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]); 
 	return CR_SUCCESS;
 }
 
@@ -152,7 +152,6 @@ int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 {
 	int success, n;
 	// Convert type name to internal index and read in generator data...
-	// Typename (arg 1) is unused, but is present in the file to aid readability
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
@@ -239,8 +238,8 @@ int CommandData::function_CA_TORSIONDEF(Command *&c, Bundle &obj)
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addTorsion(torsionstyle);
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
-	for (n=5; n<MAXFFPARAMDATA+5; n++) if (c->hasArg(n)) ffb->params().data[n-5] = c->argd(n);
-	msg(Debug::Verbose,"TORSION %i : %s  %s  %8.4f %8.4f\n", n, ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
+	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-5] = c->argd(n);
+	msg(Debug::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
 	return CR_SUCCESS;
 }
 
@@ -328,8 +327,8 @@ int CommandData::function_CA_VDWDEF(Command *&c, Bundle &obj)
 		msg(Debug::None,"TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
 		return CR_FAIL;
 	}
-	ffa->setCharge(parser.argd(3));
-	for (int i=4; i<MAXFFPARAMDATA+4; i++) if (c->hasArg(i)) ffa->params().data[i-4] = c->argd(i);
+	ffa->setCharge(parser.argd(2));
+	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->params().data[i-3] = c->argd(i);
 	ffa->setVdwForm(vdwstyle);
 	msg(Debug::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->charge());
 	return CR_SUCCESS;

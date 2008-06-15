@@ -335,3 +335,4 @@ void AtenForcefields::dialogFinished(int result)
 {
 	gui.mainWindow->ui.actionForcefieldsWindow->setChecked(FALSE);
 }
+
