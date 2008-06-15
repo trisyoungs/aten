@@ -231,7 +231,7 @@ bool Expression::validate()
 				}
 			// Function tokens can appear at the start, but not the end
 			case (ExpressionNode::FunctionToken):
-				if ((ltoken == ExpressionNode::nTokenTypes) || (rtoken == ExpressionNode::nTokenTypes))
+				if (rtoken == ExpressionNode::nTokenTypes)
 				{
 					msg(Debug::None, "A token must appear to the right of this function:\n");
 					print(ex);
@@ -351,7 +351,7 @@ bool Expression::validate()
 
 			// Functions must have operators or brackets to the left, and values or brackets to the right
 			case (ExpressionNode::FunctionToken):
-				if ((ltoken != ExpressionNode::OperatorToken) && (ltoken != ExpressionNode::BracketToken))
+				if ((ltoken != ExpressionNode::OperatorToken) && (ltoken != ExpressionNode::BracketToken) && (ltoken != ExpressionNode::nTokenTypes))
 				{
 					msg(Debug::None, "Invalid token to left of function in expression:\n");
 					print(ex);
@@ -441,6 +441,7 @@ bool Expression::set(const char *s, VariableList *vars)
 				ex = expression_.add();
 				ex->setPersistentType(ExpressionNode::BracketToken);
 				ex->setBracketType(*c == '(' ? ExpressionNode::LeftBracket : ExpressionNode::RightBracket);
+				prevToken = ExpressionNode::BracketToken;
 				break;
 			// Single-character operators
 			case ('+'):
@@ -671,7 +672,7 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 			leftLastUnused->setUsed();
 			leftLastUnused = ex;
 		}
-		print(NULL, FALSE);
+		//print(NULL, FALSE);
 	}
 }
 
