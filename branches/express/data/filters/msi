@@ -17,8 +17,8 @@ importmodel
 	# Read in each line as six arguments.
 	# If the first is not 'A' then it is the start of some data block.
 	# We will use a variable $block to store the current block we're in (N=none, M=model, A=atom, B=bond)
-	let $block = N
-	let $cellvar = 0
+	$block = N
+	$cellvar = 0
 	for $n
 		# Read in whole lines and work with them instead of always using readline
 		readline "$line@100"
@@ -32,27 +32,24 @@ importmodel
 		# Check for block specifiers
 		if $ident <> A
 			if $type = Model
-				let $newblock = M
+				$newblock = M
 			elseif $type = Atom
-				let $newblock = A
-				print "SETTING NEW ATOM"
+				$newblock = A
 				newatom 0
 				# We must also set the atom id here (since bonds refer to item number, not Id)
-				let $id = $ident
+				setid $ident
 			elseif $type = Bond
-				let $newblock = B
+				$newblock = B
 			else
 				#print "Didn't recognise MSI block $type "
-				let $newblock = N
+				$newblock = N
 			end
 			# If $newblock is not 0, check the old $block value and perform end tasks
 			if $block = A
-				print "Adding new atom..................................."
-				newatom 0
 			elseif $block = B
-				newbond $bondi $bondj
+				newbondid $bondi $bondj
 			end
-			let $block = $newblock
+			$block = $newblock
 		else
 			# Not a block specifier, so must be data for a block we're already in...
 			if $block = M
@@ -60,37 +57,31 @@ importmodel
 				if $data = Label
 					newmodel $a
 				elseif $data = A3
-					let $cax = $a
-					let $cay = $b
-					let $caz = $c
+					$cax = $a
+					$cay = $b
+					$caz = $c
 					inc $cellvar
 				elseif $data = B3
-					let $cbx = $a
-					let $cby = $b
-					let $cbz = $c
+					$cbx = $a
+					$cby = $b
+					$cbz = $c
 					inc $cellvar
 				elseif $data = C3
-					let $ccx = $a
-					let $ccy = $b
-					let $ccz = $c
+					$ccx = $a
+					$ccy = $b
+					$ccz = $c
 					inc $cellvar
 				end
 			elseif $block = A
 				# Atom block
 				if $data = Charge
-					#let $q = $a
 					setcharge $a
 				elseif $data = XYZ
-					#let $rx = $a
-					#let $ry = $b
-					#let $rz = $c
 					setcoords $a $b $c
 				elseif $data = Force
-					let $fx = $a
-					let $fy = $b
-					let $fz = $c
+					setforces $a $b $c
 				elseif $data = ACL
-					let $e = $b
+					setelement $b
 				end
 			elseif $block = B
 				# Bond block
