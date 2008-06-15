@@ -9,6 +9,7 @@ clipboard.h
 colourscale.h
 dnchar.h 
 energystore.h 
+expression.h
 forcefield.h 
 glyph.h 
 grid.h 
@@ -31,6 +32,7 @@ clipboard.cpp
 colourscale.cpp
 dnchar.cpp 
 energystore.cpp 
+expression.cpp
 forcefield.cpp 
 glyph.cpp 
 grid.cpp 
