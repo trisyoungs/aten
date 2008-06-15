@@ -26,7 +26,7 @@
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
-#include "classes/variables.h"
+#include "classes/variablelist.h"
 #include "base/constants.h"
 #include "parse/parser.h"
 

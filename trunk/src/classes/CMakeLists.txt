@@ -19,7 +19,8 @@ restraint.h
 ring.h 
 site.h 
 undostate.h 
-variables.h
+variable.h
+variablelist.h
 atomaddress.cpp 
 atom.cpp 
 atomtype.cpp 
@@ -40,7 +41,8 @@ restraint.cpp
 ring.cpp 
 site.cpp 
 undostate.cpp 
-variables.cpp
+variable.cpp
+variablelist.cpp
 )
 
 add_library(fourier

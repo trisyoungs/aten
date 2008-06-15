@@ -347,10 +347,10 @@ void Master::initCommands()
 	CA_data[CA_MIRROR].function = &CommandData::function_CA_MIRROR;
 
 	// Variable Commands
-	CA_data[CA_LET].function = &CommandData::function_CA_LET;
-	CA_data[CA_INCREASE].function = &CommandData::function_CA_INCREASE;
 	CA_data[CA_DECREASE].function = &CommandData::function_CA_DECREASE;
-	CA_data[CA_EVAL].function = &CommandData::function_CA_EVAL;
+	CA_data[CA_INCREASE].function = &CommandData::function_CA_INCREASE;
+	CA_data[CA_LET].function = &CommandData::function_CA_LET;
+	CA_data[CA_LET2].function = &CommandData::function_CA_LET2;
 
 	// View Commands
 	CA_data[CA_GETVIEW].function = &CommandData::function_CA_GETVIEW;

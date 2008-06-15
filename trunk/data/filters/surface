@@ -28,7 +28,7 @@ importgrid
 	gridlooporder $order
 
 	# Read in grid data
-	eval $npoints = "$nx * $ny"
+	$npoints = "$nx * $ny"
 	for $n,1,$npoints
 		readline "$data"
 		addnextgridpoint $data

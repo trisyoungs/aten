@@ -82,9 +82,9 @@ exportmodel
 
 	# Atoms
 	for $i
-		eval $rx = "$i.rx - $cell.centrex"
-		eval $ry = "$i.ry - $cell.centrey"
-		eval $rz = "$i.rz - $cell.centrez"
+		$rx = "$i.rx - $cell.centrex"
+		$ry = "$i.ry - $cell.centrey"
+		$rz = "$i.rz - $cell.centrez"
 		writeline "$i.fftype@-8$i.id@10   $i.mass"
 		writeline "$rx@20.14$ry@20.14$rz@20.14"
 	end

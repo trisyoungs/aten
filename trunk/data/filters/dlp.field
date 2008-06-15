@@ -90,7 +90,7 @@ exportfield
 	let $n = 1
 	let $nvdw = 0
 	for $at1
-		eval $nvdw = "$nvdw + $n"
+		$nvdw = "$nvdw + $n"
 		inc $n
 	end 
 	writeline "nvdw  $nvdw"
@@ -102,8 +102,8 @@ exportfield
 				writeline "$at1.name@-8  $at2.name@-8   $at1.param_a@12.6  $at1.param_b@12.6  $at1.param_c@12.6 $at1.param_d@12.6 $at1.param_e@12.6 $at1.param_f@12.6"
 			elseif $at1.form = lj
 				# LJ: use Lorentz-Berthelot combination rules
-				eval $sigma = "($at1.param_b + $at2.param_b) * 0.5"
-				eval $epsilon = "($at1.param_a * $at2.param_a) ^ 0.5"
+				$sigma = "($at1.param_b + $at2.param_b) * 0.5"
+				$epsilon = "($at1.param_a * $at2.param_a) ^ 0.5"
 				writeline "$at1.name@-8  $at2.name@-8  lj  $epsilon@12.6  $sigma@12.6"
 			elseif $at1.form = buck
 				error "Buckingham potential not included in FIELD file export yet."
