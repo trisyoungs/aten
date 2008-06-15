@@ -21,7 +21,7 @@ importmodel
 	$cellvar = 0
 	for $n
 		# Read in whole lines and work with them instead of always using readline
-		readline "$line@100"
+		readline "$line%100"
 		# Parse the stored $line
 		readvar $line "$ident $type $data $a $b $c"
 		# Assume that lines are long enough to not force more than one data argument onto the next line

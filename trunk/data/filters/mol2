@@ -10,13 +10,13 @@ importmodel
 	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
 
 	# Read in lines, looking for the sections we're interested in.
-	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
-	# Read a line and parse it into '@<TRIPOS>' and keyword parts
+	# All sections begin with '%<TRIPOS>', e.g. '%<TRIPOS>MOLECULE'
+	# Read a line and parse it into '%<TRIPOS>' and keyword parts
 	for $n
-		readline "$tripos@9 $keywd"
+		readline "$tripos%9 $keywd"
 		if $keywd = MOLECULE
 			# Molecule information
-			readline "$title@100"
+			readline "$title%100"
 			newmodel $title
 			readline "$natoms $nbonds"
 			# Skip the next three lines, which are type of molecule, charges used XXX, and user comment
@@ -37,6 +37,7 @@ importmodel
 			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
 			readline "$ca $cb $cc $alpha $beta $gamma $spgrp $setting"
 			cell $ca $cb $cc $alpha $beta $gamma
+	print $spgrp
 			spacegroup $spgrp
 		end
 	end

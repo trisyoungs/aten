@@ -13,7 +13,7 @@ importgrid
 	double ox,oy,oz,xx,xy,xz,yx,yy,yz,zx,zy,zz,rx,ry,rz,data
 
 	# Lines 1-2: Comments (use first as title)
-	readline "$title@100"
+	readline "$title%100"
 	newgrid $title
 	skipline
 

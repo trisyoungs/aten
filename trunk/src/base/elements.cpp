@@ -354,7 +354,8 @@ int ElementMap::alphaToZ(const char *s)
 	static char cleaned[32];
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
-		if (s[n] > 64 && s[n] < 91)
+		if (s[n] == ' ') continue;
+		else if (s[n] > 64 && s[n] < 91)
 		{
 			cleaned[len] = s[n];
 			len++;
@@ -382,7 +383,8 @@ int ElementMap::firstAlphaToZ(const char *s)
 	static char cleaned[32];
 	int n, len = 0, result = -1;
 	for (n=0; s[n] != '\0'; n++)
-		if (s[n] > 64 && s[n] < 91)
+		if (s[n] == ' ') continue;
+		else if (s[n] > 64 && s[n] < 91)
 		{
 			cleaned[len] = s[n];
 			len++;
