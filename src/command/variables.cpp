@@ -31,34 +31,92 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 // Set variable to value, variable, or expression
 int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 {
-	// If the first var is a pointer, second must be a pointer!
-	if (c->argt(0) >= Variable::AtomVariable)
+	// Our action depends on the type of the variable being assigned to
+	Variable::VariableType type2 = c->argt(2);
+	switch (c->argt(0))
 	{
-		if (c->argt(0) != c->argt(2))
-		{
-			msg(Debug::None,"Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
-			return CR_FAIL;
-		}
-		else c->arg(0)->copyPointer(c->arg(2));
+		// Integer and real variables may only be set from character, integer, real, or expression variables
+		case (Variable::IntegerVariable):
+			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+			{
+				msg(Debug::None, "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->set(c->arg(2)->asInteger());
+			break;
+		case (Variable::FloatVariable):
+			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+			{
+				msg(Debug::None, "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->set(c->arg(2)->asDouble());
+			break;
+		// Character variables must be assigned from a plain (or converted) variable, *not* an expression.
+		case (Variable::CharacterVariable):
+			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+			{
+				msg(Debug::None, "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->set( type2 == Variable::ExpressionVariable ? ftoa(c->arg(2)->asDouble()) : c->argc(2));
+			break;
+		// All other types are pointers - the second argument must also then be a pointer
+		default:
+			if (c->argt(0) != c->argt(2))
+			{
+				msg(Debug::None, "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->copyPointer(c->arg(2));
+			break;
 	}
-	else c->arg(0)->set(c->arg(2)->asDouble());
 	return CR_SUCCESS;
 }
 
 // Set variable to value, variable, or expression
 int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 {
-	// If the first var is a pointer, second must be a pointer!
-	if (c->argt(0) >= Variable::AtomVariable)
+	// Our action depends on the type of the variable being assigned to
+	Variable::VariableType type2 = c->argt(1);
+	switch (c->argt(0))
 	{
-		if (c->argt(0) != c->argt(1))
-		{
-			msg(Debug::None,"Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
-			return CR_FAIL;
-		}
-		else c->arg(0)->copyPointer(c->arg(1));
+		// Integer and real variables may only be set from character, integer, real, or expression variables
+		case (Variable::IntegerVariable):
+			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+			{
+				msg(Debug::None, "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->set(c->arg(1)->asInteger());
+			break;
+		case (Variable::FloatVariable):
+			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+			{
+				msg(Debug::None, "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->set(c->arg(1)->asDouble());
+			break;
+		// Character variables must be assigned from a plain (or converted) variable, *not* an expression.
+		case (Variable::CharacterVariable):
+			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+			{
+				msg(Debug::None, "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->set( type2 == Variable::ExpressionVariable ? ftoa(c->arg(1)->asDouble()) : c->argc(1));
+			break;
+		// All other types are pointers - the second argument must also then be a pointer
+		default:
+			if (c->argt(0) != c->argt(1))
+			{
+				msg(Debug::None, "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				return CR_FAIL;
+			}
+			else c->arg(0)->copyPointer(c->arg(1));
+			break;
 	}
-	else c->arg(0)->set(c->arg(1)->asDouble());
 	return CR_SUCCESS;
 }
 

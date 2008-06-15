@@ -58,7 +58,7 @@ importmodel
 			if $block = M
 				# Model block
 				if $data = Label
-					newmodel $data
+					newmodel $a
 				elseif $data = A3
 					let $cax = $a
 					let $cay = $b
