@@ -98,6 +98,13 @@ Format *Command::format()
 	return format_;
 }
 
+// Delete the associated format
+void Command::deleteFormat()
+{
+	if (format_ != NULL) delete format_;
+	format_ = NULL;
+}
+
 // Set status of loop
 void Command::setLoopActive(bool b)
 {
@@ -457,6 +464,22 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('g'):
 			case ('G'):
 				if (!createFormat(arg, vars, FALSE)) return FALSE;
+				break;
+			// Delimited (J) / exact (K) format *or* variable
+			case ('J'):
+			case ('K'):
+				if (!parser.wasQuoted(argcount))
+				{
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else args_.add(var);
+				}
+				else if (!createFormat(arg, vars, v[n] == 'J' ? TRUE : FALSE)) return FALSE;
 				break;
 			// Discard
 			case ('x'):
@@ -903,7 +926,11 @@ bool CommandList::cacheCommand()
 	if ((parser.argc(0)[0] == '$') && (parser.argc(1)[0] == '='))
 	{
 		parser.setArg(1,parser.argc(0));
-		if (!addCommand(CA_LET2))
+		// Set command based on type of variable
+		Variable::VariableType vt;
+		Variable *v = variables.get(&parser.argc(0)[1]);
+		vt = (v != NULL ? v->type() : Variable::nVariableTypes);
+		if (!addCommand( vt == Variable::CharacterVariable ? CA_LETCHAR : CA_LET2 ))
 		{
 			msg(Debug::None, "Error adding variable assignment command.\n");
 			result = FALSE;

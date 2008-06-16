@@ -139,7 +139,15 @@ int CommandData::function_CA_READNEXT(Command *&c, Bundle &obj)
 // Parse given variable with format
 int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
 {
-	parser.getArgsFormatted(c->argc(0),c->parent()->readOptions(),c->format());
+	// If the format node in the command is empty create a new (temporary) one
+	if (c->format() == NULL)
+	{
+		// Create format from character variable arg(1)
+		if (!c->createFormat(c->argc(1), c->parent()->variables, TRUE)) return CR_FAIL;
+		parser.getArgsFormatted(c->argc(0),c->parent()->readOptions(),c->format());
+		c->deleteFormat();
+	}
+	else parser.getArgsFormatted(c->argc(0),c->parent()->readOptions(),c->format());
 	return CR_SUCCESS;
 }
 
@@ -209,6 +217,14 @@ int CommandData::function_CA_WRITELINE(Command *&c, Bundle &obj)
 // Write line to variable
 int CommandData::function_CA_WRITEVAR(Command *&c, Bundle &obj)
 {
-	c->arg(0)->set(c->format()->createString());
+	// If the format node in the command is empty create a new (temporary) one
+	if (c->format() == NULL)
+	{
+		// Create format from character variable arg(1)
+		if (!c->createFormat(c->argc(1), c->parent()->variables, FALSE)) return CR_FAIL;
+		c->arg(0)->set(c->format()->createString());
+		c->deleteFormat();
+	}
+	else c->arg(0)->set(c->format()->createString());
 	return CR_SUCCESS;
 }

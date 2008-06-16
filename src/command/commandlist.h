@@ -85,6 +85,8 @@ class Command
 	bool createFormat(const char *s, VariableList &vlist, bool delimited);
 	// Returns the formatter
 	Format *format();
+	// Delete the associated format
+	void deleteFormat();
 
 	/*
 	// Loop Data
