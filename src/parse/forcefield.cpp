@@ -34,7 +34,7 @@ bool Forcefield::load(const char *filename)
 {
 	dbgBegin(Debug::Calls,"Forcefield::load");
 	bool done, okay;
-	int success, n, m, count;
+	int success, n;
 	Prefs::EnergyUnit ffunit;
 	ifstream fffile(filename,ios::in);
 	if (!fffile.good())

@@ -73,7 +73,7 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 {
 	dbgBegin(Debug::Parse,"FormatNode::set");
 	// Format of formatters is 'F%n.m': F = format quantity/variable, n.m = length,precision
-	int m, pos1, pos2;
+	int pos1, pos2;
 	static char specifier[512], len[32], pre[32];
 	char *c;
 	// 'Reset' strings

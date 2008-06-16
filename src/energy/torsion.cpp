@@ -91,7 +91,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					k1 = params.data[TorsionFunctions::CosCosK];
 					period = params.data[TorsionFunctions::CosCosN];
 					eq = params.data[TorsionFunctions::CosCosEq];
-					energy += 0.5 * k1 * (1.0 - cos(n*eq)*cos(n*phi));
+					energy += 0.5 * k1 * (1.0 - cos(period*eq)*cos(period*phi));
 					break;
 				case (TorsionFunctions::Dreiding):
 					// U(phi) = 0.5 * k * (1 - cos(n*(theta-eq))

@@ -112,12 +112,11 @@ bool Pdens::initialise()
 void Pdens::accumulate(Model *sourcemodel)
 {
 	dbgBegin(Debug::Calls,"Pdens::accumulate");
-	int m1, m2, bin;
+	int m1, m2;
 	static Vec3<double> centre1, centre2, mimd;
 	static Vec3<int> gridPoint;
 	static Mat3<double> axes;
 	Cell *cell = sourcemodel->cell();
-	double n, m, o;
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
 	{

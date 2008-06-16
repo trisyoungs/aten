@@ -49,8 +49,7 @@ void LineMinimiser::gradientMove(Model *srcmodel, Model *destmodel, double delta
 double LineMinimiser::lineMinimise(Model *srcmodel)
 {
 	dbgBegin(Debug::Calls,"LineMinimiser::lineMinimise");
-	int m, i;
-	double enew, ecurrent, step, bound[3], energy[3], newmin, mid, a, b, b10, b12;
+	double enew, ecurrent, bound[3], energy[3], newmin, a, b, b10, b12;
 	Model destmodel;
 	bool failed, leftbound;
 	Atom **modelatoms = srcmodel->atomArray();

@@ -45,7 +45,6 @@ class VariableList
 	public:
 	// Constructor / Destructor
 	VariableList();
-	~VariableList();
 
 	private:
 	// List of variables

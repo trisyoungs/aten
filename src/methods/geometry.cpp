@@ -100,7 +100,7 @@ bool Geometry::initialise()
 void Geometry::accumulate(Model *sourcemodel)
 {
 	dbgBegin(Debug::Calls,"Geometry::accumulate");
-	int m1, m2, m3, m4, bin;
+	int m1, m2, m3, bin;
 	static Vec3<double> centre1, centre2, centre3, centre4;
 	Cell *cell = sourcemodel->cell();
 	double geom;

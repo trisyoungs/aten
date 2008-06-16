@@ -60,7 +60,7 @@ void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 
 void AtenMinimiser::doMinimisation()
 {
-	double econverge, fconverge, linetol;
+	double econverge, fconverge;
 	int maxcycles;
 	// Get the convergence values from the window controls
 	econverge = pow(10.0,ui.EnergyConvergeSpin->value());

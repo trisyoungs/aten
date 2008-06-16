@@ -409,7 +409,7 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 	// Calculate the real-space Ewald forces from interactions between different molecules
 	// of this pnode and the one supplied. 
 	dbgBegin(Debug::Calls,"Pattern::ewaldRealInterPatternForces");
-	int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish,atomi,atomj;
+	int i, j, aoff1, aoff2, m1, m2, start, finish, atomi, atomj;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, alpharij, qqrij3, cutoff, alpha;
 	cutoff = prefs.elecCutoff();

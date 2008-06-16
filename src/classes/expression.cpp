@@ -393,7 +393,7 @@ bool Expression::set(const char *s, VariableList *vars)
 {
 	dbgBegin(Debug::Calls,"Expression::set");
 	// To cache an expression we parse the expression into tokens and then create a list of enumarated items in the same order.
-	int n, arglen;
+	int arglen;
 	char arg[64];
 	const char *c;
 	ExpressionNode *ex;

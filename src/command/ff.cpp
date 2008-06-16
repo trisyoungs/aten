@@ -150,7 +150,7 @@ int CommandData::function_CA_GENCONVERT(Command *&c, Bundle &obj)
 // Set generator data for atom type
 int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 {
-	int success, n;
+	int n;
 	// Convert type name to internal index and read in generator data...
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)

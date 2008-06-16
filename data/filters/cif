@@ -1,0 +1,76 @@
+# Crystallographic Information File (cif)
+# Last modified: 16/06/2008
+importmodel
+	name "Crystallographic Information File"
+	nickname cif
+	extension cif
+	glob *.cif
+
+	# CIF files are dictionary-based, so we can recognise keywords as we find them.
+	# Loops are a little more complicated. For these we will build up a custom format string
+	# and then use it to read in the data once the loop definitions are finished.
+	# Blank lines are significant?
+
+	# Variables
+	character discard,format,e,data,keywd,line,char
+	integer n,m,looptype
+	double rx,ry,rz
+	double cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
+
+	print "--------------------------------------"
+	print " This CIF filter is not yet complete!"
+	print "--------------------------------------"
+
+	# Main loop - read lines and check for important keywords
+	for $n
+		readline "$keywd $data"
+		if $keywd = _cell_length_a
+			$cell.a = $data
+		elseif $keywd = _cell_length_b
+			$cell.b = $data
+		elseif $keywd = _cell_length_c
+			$cell.c = $data
+		elseif $keywd = _cell_length_alpha
+			$cell.alpha = $data
+		elseif $keywd = _cell_length_beta
+			$cell.beta = $data
+		elseif $keywd = _cell_length_gamma
+			$cell.gamma = $data
+		elseif $keywd = loop_
+			# Deal with loops here
+			# Clear any previous format we made and the looptype
+			$format = ""
+			$looptype = 0
+			# Loop over next lines to determine the data to expect
+			for $m,1,100
+				# Read and store whole line (we may need it later)
+				readline "$line%100"
+				# Get keyword from line
+				readvar $line "$keywd"
+				# Get first character and next 9 characters
+				readvar $keywd "$char%1 $data%10"
+				# If first character is not '_' then we have entered the actual data
+				if $char <> _
+					# Already have first line of data stored in $line...
+					readvar $line $format
+					# Our next action depends on the loop type
+				end
+
+				if $data = _atom_site
+					# Atom data loop
+					if $keywd = _atom_site_type_symbol
+						writevar $format "$format \$e"
+					elseif $keywd = _atom_site_fract_x
+						writevar $format "$format \$e"
+					elseif $keywd = _atom_site_fract_y
+						writevar $format "$format \$e"
+					elseif $keywd = _atom_site_fract_z
+						writevar $format "$format \$e"
+					end
+				end
+			end
+		end
+	end
+
+	finalisemodel
+end

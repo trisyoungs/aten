@@ -30,7 +30,7 @@
 void selectAtoms(Model *m, const char *target, bool deselect)
 {
 	static char from[32], to[32];
-	int i, j, n, plus, lenfrom;
+	int i, j, n, plus;
 	bool range;
 	Parser p;
 	p.getArgsDelim(target, Parser::Defaults);

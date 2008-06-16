@@ -224,7 +224,7 @@ bool Pattern::typeAtoms()
 	// accept a different atom type if we manage to match a complete set containing more rules.
 	// Return FALSE if one or more atoms could not be typed
 	dbgBegin(Debug::Calls,"Pattern::typeAtoms");
-	int a, n, newmatch, bestmatch, nfailed;
+	int a, newmatch, bestmatch, nfailed;
 	Atomtype *at;
 	Atom *i;
 	ForcefieldAtom *ffa;

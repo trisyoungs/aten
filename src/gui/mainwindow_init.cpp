@@ -33,7 +33,6 @@ void AtenForm::finaliseUi()
 	dbgBegin(Debug::Calls,"AtenForm::finaliseUi");
 	Filter *f;
 	int n;
-	char temp[256];
 	QStringList filters;
 
 	// Set the title of the main window to reflect the version

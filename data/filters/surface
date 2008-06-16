@@ -24,7 +24,7 @@ importgrid
 	readline "$ox $oy $oz"
 	gridorigin $ox $oy $oz
 	# Fourth line contains loop order
-	readline $order
+	readline "$order"
 	gridlooporder $order
 
 	# Read in grid data

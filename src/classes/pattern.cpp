@@ -454,7 +454,7 @@ void Pattern::createConMat()
 {
 	// Create (calculate) the connectivity matrix for this node
 	dbgBegin(Debug::Calls,"Pattern::createConMat");
-	int n,m,a1,a2,b1,b2;
+	int n, m, a1, a2;
 	PatternBound *pb;
 	for (n=0; n<nAtoms_; n++)
 		for (m=0; m<nAtoms_; m++) conMat_[n][m] = 0;
@@ -826,7 +826,7 @@ void Pattern::findRings()
 	int n, rsize, ringpotential;
 	Atom *i;
 	Refitem<Bond,int> *bref;
-	Ring *r, path;
+	Ring path;
 	// Set the initial states of the atoms. i->tempi maintains the maximum possible number of rings that each atom can form based on the number of bonds it has.
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
@@ -1045,7 +1045,7 @@ void Pattern::initExpression(bool vdwOnly)
 	// NAngles can be calculated from atomic nBonds data.
 	// NTorsions can be calculated from the bond list and atomic nBonds data.
 	dbgBegin(Debug::Calls,"Pattern::initExpression");
-	Atom *i, *j;
+	Atom *i;
 	Refitem<Bond,int> *bref;
 	int n, atomId, nBonds, nAngles, nTorsions;
 	nBonds = 0;

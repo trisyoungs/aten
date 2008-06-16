@@ -86,7 +86,6 @@ void AtenGrids::loadGrid()
 {
 	dbgBegin(Debug::Calls,"AtenGrids::loadGrid");
 	Filter *f;
-	Grid *g;
 	QString filename;
 	QStringList filenames;
 	if (openGridDialog->exec() == 1)

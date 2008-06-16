@@ -345,7 +345,7 @@ void Energy::printEwald()
 void Energy::printVdwMatrix(Model *m)
 {
 	dbgBegin(Debug::Calls,"Energy::printVdwMatrix");
-	int i, count1, count2;
+	int count1, count2;
 	Pattern *p1, *p2;
 	if (!calculated_)
 	{

@@ -138,13 +138,10 @@ const char *Filter::description()
 bool Filter::load(ifstream &filterFile)
 {
 	dbgBegin(Debug::Calls,"Filter::load");
-	Command *c;
-	CommandAction ca;
 	FilterCommmand fc;
 	char longname[256];
 	Prefs::ZmapType zm;
 	int success, itemsleft;
-	bool done, error;
 	// First, we must add a command to the flowstack so we know when to return (or raise an error)
 	commands_.clear();
 	// Read in commands

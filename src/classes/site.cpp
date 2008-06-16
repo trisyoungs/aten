@@ -120,7 +120,7 @@ Vec3<double> Site::calculateCentre(Model *srcmodel, int mol)
 Mat3<double> Site::calculateAxes(Model *srcmodel, int mol)
 {
 	dbgBegin(Debug::Calls,"Site::calculateAxes");
-	int offset, n;
+	int offset;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	static Vec3<double> mim, v1, v2;
