@@ -169,6 +169,14 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	while (s[n] != '\0')
 	{
 		//printf("Current s[n] = '%c'\n",s[n]);
+		// Special check for '\' - if this preceeds a '$' or '*' then add the dollar as text rather than assuming it denotes a variable
+		if ((s[n] == '\\') && ((s[n+1] == '$') || (s[n+1] == '*')))
+		{
+			text[nchars] = s[n+1];
+			nchars ++;
+			n += 2;
+			continue;
+		}
 		// If the character is not '$', just add it to 'text' and continue
 		if (s[n] != '$')
 		{

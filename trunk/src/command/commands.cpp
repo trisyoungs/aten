@@ -564,7 +564,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Read and parse a line from the input file" },
 	{ "readnext",		"V",		"<variable>",
 				"Read the next delimited item from the file" },
-	{ "readvar",		"VF",		"<variable> <formatting string>",
+	{ "readvar",		"VJ",		"<variable> <formatting string>",
 				"Parse a variable according to the supplied format" },
 	{ "removereadoption",	"P",		"<option>",
 				"Remove a read option" },
@@ -576,7 +576,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Skip a number of lines in the input file" },
 	{ "writeline",		"G",		"<formatting string>",
 				"Write a line to the output file" },
-	{ "writevar",		"VG",		"<variable> <formatting string>",
+	{ "writevar",		"VK",		"<variable> <formatting string>",
 				"Write a line to the specified variable" },
 
 	// Script commands
@@ -662,10 +662,12 @@ CommandData CA_data[CA_NITEMS] = {
 				"Decrease the specified variable" },
 	{ "inc",		"E",		"<variable>",
 				"Increase the specified variable" },
-	{ "let",		"E=E",		"<variable> = <variable|value>",
-				"Set the specified variable to a supplied value/variable" },
-	{ "_let_",		"EE",		"",
+	{ "let",		"V=E",		"<variable> = <variable|value|expression>",
+				"Set the specified variable" },
+	{ "_let_",		"VE",		"",
 				"Allows '$var = $var|expression' constructs to be used" },
+	{ "_letchar_",		"VP",		"",
+				"Allows '$var = $var' [character] constructs to be used" },
 	
 	// View
 	{ "getview",		"",		"",

@@ -388,6 +388,7 @@ enum CommandAction {
 	CA_INCREASE,
 	CA_LET,
 	CA_LET2,
+	CA_LETCHAR,
 
 	// View
 	CA_GETVIEW,
@@ -735,6 +736,7 @@ class CommandData
 	int function_CA_INCREASE(Command *&c, Bundle &obj);
 	int function_CA_LET(Command *&c, Bundle &obj);
 	int function_CA_LET2(Command *&c, Bundle &obj);
+	int function_CA_LETCHAR(Command *&c, Bundle &obj);
 	// View
 	int function_CA_GETVIEW(Command *&c, Bundle &obj);
 	int function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj);

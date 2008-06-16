@@ -120,6 +120,14 @@ int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Assign string/variable to character variable only
+int CommandData::function_CA_LETCHAR(Command *&c, Bundle &obj)
+{
+	// Our action depends on the type of the variable being assigned to
+	c->arg(0)->set(c->argc(1));
+	return CR_SUCCESS;
+}
+
 // Increase variable
 int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 {
