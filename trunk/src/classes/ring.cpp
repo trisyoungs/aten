@@ -29,6 +29,7 @@ Ring::Ring()
 {
 	// Private variables
 	requestedSize_ = -1;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -171,11 +172,11 @@ void Ring::finish()
 {
 	// Perform some finishing tasks on the list
 	dbgBegin(Debug::Calls,"Ring::finish");
-	Refitem<Atom,int> *ra, *temp, *lowid;
+	Refitem<Atom,int> *ra, *lowid;
 	// Make the list head point to the atom with the lowest id
 	if (atoms_.nItems() == 0)
 	{	
-		printf("No atoms_.in ring - can't finalise!\n");
+		printf("No atoms in ring - can't finalise!\n");
 		dbgEnd(Debug::Calls,"Ring::finish");
 		return;
 	}
@@ -228,7 +229,7 @@ void Ring::print()
 {
 	// Print out the data of the ring.
 	// Beware, since if it has been 'finished' it will be a circular list
-	msg(Debug::Verbose,"Ring has %i atoms_.: ",atoms_.nItems());
+	msg(Debug::Verbose,"Ring has %i atoms: ",atoms_.nItems());
 	Refitem<Atom,int> *ra = atoms_.first();
 	while (ra != NULL)
 	{

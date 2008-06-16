@@ -350,7 +350,7 @@ bool Command::setIfTest(const char *s)
 				result = FALSE;
 				break;
 		}
-	if (result >= IF_NITEMS) result = FALSE;
+	if (m >= IF_NITEMS) result = FALSE;
 	else ifTest_ = (IfTest) m;
 	dbgEnd(Debug::Calls,"Command::setIfTest");
 	return result;
@@ -415,9 +415,6 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	int n, m, argcount, varcount;
 	Variable *var;
 	static char arg[512];
-	char *c;
-	Variable::VariableType vt;
-	//printf("DOING VARIABLES (%s) FOR COMMAND '%s'\n",v,cmd);
 	// Are there arguments in the parser that we shouldn't have been given?
 	// We don't care about too many variables being given if we want the whole line.
 	if (((parser.nArgs() - 1) > strlen(v)) && (v[0] != 'L'))
@@ -706,8 +703,7 @@ Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
 bool CommandList::addCommand(CommandAction ca)
 {
 	dbgBegin(Debug::Calls,"CommandList::addCommand");
-	// Pointers to command nodes
-	Command *fn, *fn2, *fn3;
+	Command *fn;;
 	CommandAction branchca;
 	Variable::VariableType vt;
 	int n;
@@ -901,7 +897,6 @@ bool CommandList::cacheCommand()
 {
 	dbgBegin(Debug::Calls,"CommandList::cacheCommand");
 	CommandAction ca;
-	int success;
 	bool result = TRUE;
 	// Assume that the main parser object contains the data we require.
 	// Check for the first argument being a variable (denoted by a '$') and the second being an '='. If so, move the first argument to the second and add a CA_LET2 command.
@@ -983,8 +978,6 @@ bool CommandList::load(const char *filename)
 	dbgBegin(Debug::Calls,"CommandList::load");
 	scriptFilename_ = filename;
 	ifstream cmdfile(filename,ios::in);
-	Command *c;
-	CommandAction ca;
 	int success;
 	clear();
 	name_ = filename;

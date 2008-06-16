@@ -703,7 +703,7 @@ void Forcefield::convertParameters()
 	ForcefieldParams *p;
 	ForcefieldBound *ffb;
 	ForcefieldAtom *ffa;
-	int n, m;
+	int n;
 	// VDW and Generator Data
 	// Note: First loop (for VDW) is from 1,n+1 instead of 0,n since we skip the dummy atom type which is n=0, present for all ffs.
 	for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)

@@ -386,7 +386,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the axes system for the current grid to be cubic" },
 	{ "gridcutoff",		"E",		"<cutoff>",
 				"Set the cutoff for the current grid" },
-	{ "gridlooporder",	"E",		"<xyz|zyx|213...>",
+	{ "gridlooporder",	"P",		"<xyz|zyx|213...>",
 				"Set the loop ordering to use in 'addnextgridpoint'" },
 	{ "gridorigin",		"EEE",		"<x> <y> <z>",
 				"Set the origin of the axes system for the current grid" },

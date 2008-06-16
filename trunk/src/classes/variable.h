@@ -44,8 +44,9 @@ class Variable
 	enum VariableType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, nVariableTypes };
 	static const char *variableType(VariableType);
 	static VariableType determineType(const char *s);
-	// Constructor
+	// Constructor / Destructor
 	Variable(VariableType vt = CharacterVariable);
+	~Variable();
 	// List pointers
 	Variable *prev, *next;
 

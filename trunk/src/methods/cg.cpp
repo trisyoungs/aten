@@ -39,7 +39,7 @@ void MethodCg::minimise(Model *srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
 	dbgBegin(Debug::Calls,"MethodCg::minimise");
-	int cycle, m, i;
+	int cycle, i;
 	double enew, ecurrent, edelta, rmscurrent, rmsnew, fdelta, g_old_sq, gamma, g_current_sq;
 	double *g_old;
 	Vec3<double> f;

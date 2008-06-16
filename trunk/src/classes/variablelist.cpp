@@ -34,12 +34,6 @@ VariableList::VariableList()
 {
 }
 
-// Destructor
-VariableList::~VariableList()
-{
-	// Delete expression variables manually.
-}
-
 // Return dummy variable
 Variable *VariableList::dummy()
 {

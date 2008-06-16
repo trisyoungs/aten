@@ -482,6 +482,7 @@ bool Master::openFilters()
 			else failed = TRUE;
 		}
 		listfile->close();
+		delete listfile;
 	}
 	else printf("$ATENDATA has not been set. Searching default locations...\n");
 	if ((!found) && (!failed))
@@ -501,6 +502,7 @@ bool Master::openFilters()
 			else failed = TRUE;
 		}
 		listfile->close();
+		delete listfile;
 
 		if ((!found) && (!failed))
 		{
@@ -518,6 +520,7 @@ bool Master::openFilters()
 				else failed = TRUE;
 			}
 			listfile->close();
+			delete listfile;
 		}
 
 		if ((!found) && (!failed))
@@ -536,6 +539,7 @@ bool Master::openFilters()
 				else failed = TRUE;
 			}
 			listfile->close();
+			delete listfile;
 		}
 
 		if ((!found) && (!failed))
@@ -554,6 +558,7 @@ bool Master::openFilters()
 				else failed = TRUE;
 			}
 			listfile->close();
+			delete listfile;
 		}
 
 		if (!found)
@@ -577,6 +582,7 @@ bool Master::openFilters()
 			else failed = TRUE;
 		}
 		listfile->close();
+		delete listfile;
 	}
 
 	// Print out info and partner filters if all was successful

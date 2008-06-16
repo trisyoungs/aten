@@ -363,7 +363,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	Vec3<double> r, normal, gradient[8];
 	Vec3<int> npoints = g->nPoints();
 	bool symm;
-	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *evec, *v1, *v2, twodx, twody, twodz, mult;
+	double ***data, **xdata, *ydata, cutoff, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
 	// Grab the data pointer and surface cutoff
 	data = g->data3d();
 	cutoff = g->cutoff();
@@ -508,7 +508,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 // Render normal ssurface 
 void squareIt(Grid *g, Grid::SurfaceStyle ss)
 {
-	int i, j, k, n, cubetype, *faces;
+	int i, j;
 	Vec3<double> r, gradientx, gradienty, normal;
 	int cscale;
 	Vec3<int> npoints = g->nPoints();

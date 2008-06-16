@@ -225,7 +225,7 @@ void Clipboard::pasteToModel(Model *m, bool selectpasted)
 	// Paste the contents of the clipboard into the model specified.
 	// Deselect all atoms of the model, and select the pasted atoms_.
 	dbgBegin(Debug::Calls,"Clipboard::pasteToModel");
-	Atom *pastedi, *ii, *jj;
+	Atom *pastedi;
 	if (selectpasted) m->selectNone();
 	for (Clipatom *i = atoms_.first(); i != NULL; i = i->getNext())
 	{
@@ -298,7 +298,7 @@ void Clipboard::pasteToModel(Model *destmodel, Pattern *p, int mol)
 void Clipboard::pasteToModel(Model *m, Vec3<double> t)
 {
 	dbgBegin(Debug::Calls,"Clipboard::pasteToModel[translated]");
-	Atom *pastedi, *ii, *jj;
+	Atom *pastedi;
 	// Deselect all atoms of the model, and select the pasted atoms_.
 	m->selectNone();
 	for (Clipatom *i = atoms_.first(); i != NULL; i = i->getNext())

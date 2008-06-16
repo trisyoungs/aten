@@ -282,7 +282,6 @@ void Canvas::endMode(Prefs::MouseButton button)
 {
 	// Finalize the current action on the model
 	dbgBegin(Debug::Calls,"Canvas::endMode");
-	bool manipulate;
 	double area, radius;
 	Atom **atoms, *i;
 	Bond *b;

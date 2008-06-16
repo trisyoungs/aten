@@ -47,7 +47,6 @@ void AtenBuild::showWindow()
 void AtenBuild::on_AddAtomButton_clicked(bool on)
 {
 	static char s[256];
-	int el;
 	Vec3<double> newpos;
 	newpos.set(ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
 	Model *m = master.currentModel()->renderSource();

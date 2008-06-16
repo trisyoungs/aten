@@ -116,7 +116,6 @@ void Rdf::accumulate(Model *sourcemodel)
 	int m1, m2, bin;
 	static Vec3<double> centre1, centre2, mimd;
 	Cell *cell = sourcemodel->cell();
-	double dist;
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
 	{

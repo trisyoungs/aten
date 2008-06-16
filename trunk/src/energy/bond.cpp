@@ -31,7 +31,7 @@
 void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	dbgBegin(Debug::Calls,"Pattern::bondEnergy");
-	int i,j,m1,aoff;
+	int i, j, m1, aoff;
 	//static Vec3<double> mim_i;
 	static double forcek, eq, rij, energy, d, expo;
 	static ForcefieldParams params;
@@ -102,7 +102,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 void Pattern::bondForces(Model *srcmodel)
 {
 	dbgBegin(Debug::Calls,"Pattern::bondForcess");
-	int n,i,j,m1,aoff;
+	int i, j, m1, aoff;
 	static Vec3<double> mim_i, fi;
 	static double forcek, eq, rij, d, expo, du_dr;
 	static ForcefieldParams params;

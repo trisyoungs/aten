@@ -29,7 +29,6 @@ void Canvas::renderModelGlyphs()
 	dbgBegin(Debug::Calls,"Canvas::renderModelGlyphs");
 	static Vec3<double> vec[MAXGLYPHDATA], avg, normal;
 	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
-	TextObject *to;
 
 	// Render other elemental objects in the model
 	for (Glyph *g = displayModel_->glyphs(); g != NULL; g = g->next)

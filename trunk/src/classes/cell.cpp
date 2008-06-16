@@ -197,7 +197,6 @@ void Cell::determineType()
 {
 	dbgBegin(Debug::Calls,"Cell::determineType");
 	// Compare cell angles_....
-	double ab, bc, ac;
 	int count = 0;
 	if (fabs(90.0 - angles_.x) < 1.0e-5) count ++;
 	if (fabs(90.0 - angles_.y) < 1.0e-5) count ++;

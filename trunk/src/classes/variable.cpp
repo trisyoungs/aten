@@ -38,7 +38,8 @@ const char *Variable::variableType(Variable::VariableType vt)
 Variable::VariableType Variable::determineType(const char *s)
 {
 	// Try to determine type_ of the argument
-	int i, ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
+	int ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
+	unsigned int i;
 	for (i = 0; i < strlen(s); i++)
 	{
 		ch = s[i];
@@ -64,6 +65,13 @@ Variable::Variable(VariableType vt)
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+// Destructor
+Variable::~Variable()
+{
+	// Free expression object if one was created
+	if ((type_ == Variable::ExpressionVariable) && (ptrValue_ != NULL)) delete ptrValue_;
 }
 
 // Set name of variable

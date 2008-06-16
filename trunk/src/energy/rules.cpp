@@ -36,7 +36,7 @@ void Forcefield::generateVdw(Atom *i)
 {
 	// Simplest of all generation routines - creates the params() data for VDW interactions.
 	dbgBegin(Debug::Calls,"Forcefield::generateVdw");
-	double sigma, epsilon, r0, d0, a, b;
+	double sigma, epsilon, r0, d0;
 	ForcefieldAtom *ffi = i->type();
 	switch (rules_)
 	{
@@ -274,19 +274,19 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 				n = 2.0;
 				eq = 90.0;
 			}
-			else if (hyb1 == hyb2 == 3)
+			else if ((hyb1 == 3) && (hyb2 == 3))
 			{
 				forcek = sqrt(ffj->generator(8)*ffk->generator(8));
 				n = 3.0;
 				eq = 180.0;
 			}
-			else if (hyb1 == hyb2 == 2)
+			else if ((hyb1 == 2) && (hyb2 == 2))
 			{
 				forcek = 5.0* sqrt(ffj->generator(9)*ffk->generator(9)) * (1.0 + 4.18*log(j->bondOrder(k)));
 				n = 2.0;
 				eq = 180.0;
 			}
-			else if (hyb1+hyb2 == 5)
+			else if ((hyb1+hyb2) == 5)
 			{
 				// Find sp2 atom to check for a second sp2 atom
 				sp2 = (hyb1 == 2 ? j : k);
@@ -351,19 +351,19 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 					n = 2.0;
 				}
 			}
-			else if (hyb1 == hyb2 == 3)	// Rule (a) in paper
+			else if ((hyb1 == 3) && (hyb2 == 3))	// Rule (a) in paper
 			{
 				forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
 				n = 3.0;
 				eq = 180.0;
 			}
-			else if (hyb1 == hyb2 == 15)	// Rule (d) in paper
+			else if ((hyb1 == 15) && (hyb2 == 15))	// Rule (d) in paper
 			{
 				forcek = prefs.convertEnergy(25.0, Prefs::KiloCalories);
 				n = 2.0;
 				eq = 180.0;
 			}
-			else if ((hyb1 + hyb2 == 17) || (hyb1 == hyb2 == 2))	// Rule (e) in paper
+			else if ((hyb1 + hyb2 == 17) || ((hyb1 == 2) && (hyb2 == 2)))	// Rule (e) in paper
 			{
 				forcek = prefs.convertEnergy(25.0, Prefs::KiloCalories);
 				n = 2.0;

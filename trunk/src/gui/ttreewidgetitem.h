@@ -40,8 +40,8 @@ class TTreeWidgetItem : public QTreeWidgetItem
 {
 	public:
 	// Constructors
-	TTreeWidgetItem(QTreeWidgetItem *parent = 0);
-	TTreeWidgetItem(QTreeWidget *parent = 0);
+	TTreeWidgetItem(QTreeWidgetItem *parent);
+	TTreeWidgetItem(QTreeWidget *parent);
 
 	/*
 	// Pointers

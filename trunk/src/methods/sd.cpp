@@ -52,8 +52,8 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
 	dbgBegin(Debug::Calls,"MethodSd::minimise");
-	int cycle, m, i;
-	double newEnergy, currentEnergy, deltaEnergy, currentRms, newRms, fdelta;
+	int cycle, i;
+	double newEnergy, currentEnergy, deltaEnergy, currentRms, newRms;
 	Atom **modelAtoms;
 	bool lineDone, converged;
 

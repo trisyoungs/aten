@@ -347,7 +347,7 @@ template <class T> void Mat3<T>::matrix3Invert(int matsize, double *A)
 	int *pivotrows, *pivotcols, pivotrow, pivotcol;
 	int *pivoted;
 	int row, col, n, m;
-	double *B, large, element;
+	double large, element;
 	dbgBegin(Debug::Calls,"invert[GJ]");
 	// Create and blank temporary arrays we need
 	pivotrows = new int[matsize];
