@@ -201,6 +201,45 @@ int CommandData::function_CA_LABELSIZE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Turn on/off spotlight
+int CommandData::function_CA_LIGHT(Command *&c, Bundle &obj)
+{
+	prefs.setSpotlightActive(c->argb(0));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// Set ambient component of spotlight
+int CommandData::function_CA_LIGHTAMBIENT(Command *&c, Bundle &obj)
+{
+	prefs.setSpotlightColour(Prefs::AmbientComponent, c->argf(0), c->argf(1), c->argf(2));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// Set diffuse component of spotlight
+int CommandData::function_CA_LIGHTDIFFUSE(Command *&c, Bundle &obj)
+{
+	prefs.setSpotlightColour(Prefs::DiffuseComponent, c->argf(0), c->argf(1), c->argf(2));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+int CommandData::function_CA_LIGHTPOSITION(Command *&c, Bundle &obj)
+{
+	prefs.setSpotlightPosition(c->argf(0), c->argf(1), c->argf(2));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
+// Set specular component of spotlight
+int CommandData::function_CA_LIGHTSPECULAR(Command *&c, Bundle &obj)
+{
+	prefs.setSpotlightColour(Prefs::SpecularComponent, c->argf(0), c->argf(1), c->argf(2));
+	gui.mainView.postRedisplay();
+	return CR_SUCCESS;
+}
+
 // Mouse bindings
 int CommandData::function_CA_MOUSE(Command *&c, Bundle &obj)
 {

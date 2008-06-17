@@ -135,11 +135,11 @@ void Canvas::expose()
 }
 
 // Widget configure
-void Canvas::configure()
+void Canvas::configure(int w, int h)
 {
 	// Store the new width and height of the widget and re-do projection
-	width_ = (float)contextWidget_->width();
-	height_ = (float)contextWidget_->height();
+	width_ = (float) w; //(float)contextWidget_->width();
+	height_ = (float) h; //(float)contextWidget_->height();
 	doProjection();
 	// Flag that render source needs to be reprojected
 	if (displayModel_ != NULL) displayModel_->logChange(Change::VisualLog);

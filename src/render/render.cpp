@@ -66,10 +66,10 @@ void Canvas::renderScene(Model *source)
 		return;
 	}
 
-	// Clear colour
+	// Set clear colour
 	GLfloat *clrcol = prefs.penColour(Prefs::BackgroundColour);
 	glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
-	// Clear colour and depth buffer
+	// Clear colour and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Grab rotation & camera matrices, and camera rotation for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
@@ -85,6 +85,10 @@ void Canvas::renderScene(Model *source)
 		trajparent->copyCameraMatrix(cammat);
 		camrot = trajparent->cameraRotation();
 	}
+
+	// Setup pen colour
+	glDisable(GL_COLOR_MATERIAL);
+	glColor3fv(prefs.penColour(Prefs::ForegroundColour));
 
 	// Draw on the rotation globe
 	if (prefs.shouldRender(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);

@@ -274,6 +274,11 @@ void Master::initCommands()
 	CA_data[CA_INTRA].function = &CommandData::function_CA_INTRA;
 	CA_data[CA_KEY].function = &CommandData::function_CA_KEY;
 	CA_data[CA_LABELSIZE].function = &CommandData::function_CA_LABELSIZE;
+	CA_data[CA_LIGHT].function = &CommandData::function_CA_LIGHT;
+	CA_data[CA_LIGHTAMBIENT].function = &CommandData::function_CA_LIGHTAMBIENT;
+	CA_data[CA_LIGHTDIFFUSE].function = &CommandData::function_CA_LIGHTDIFFUSE;
+	CA_data[CA_LIGHTPOSITION].function = &CommandData::function_CA_LIGHTPOSITION;
+	CA_data[CA_LIGHTSPECULAR].function = &CommandData::function_CA_LIGHTSPECULAR;
 	CA_data[CA_MOUSE].function = &CommandData::function_CA_MOUSE;
 	CA_data[CA_RADIUS].function = &CommandData::function_CA_RADIUS;
 	CA_data[CA_REPLICATEFOLD].function = &CommandData::function_CA_REPLICATEFOLD;

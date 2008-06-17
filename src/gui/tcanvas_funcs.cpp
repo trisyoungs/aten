@@ -81,7 +81,7 @@ void TCanvas::resizeGL(int width, int height)
 {
 	if (canvas_ != NULL)
 	{
-		canvas_->configure();
+		canvas_->configure(width, height);
 		if (canvas_->displayModel() != NULL) canvas_->displayModel()->logChange(Change::CameraLog);
 	}
 	else printf("NO CANVAS SET RESIZE\n");

@@ -27,7 +27,9 @@ importmodel
 	for $n
 		readline "$keywd $data"
 		#print "Keyword = $keywd"
-		if $keywd = _cell_length_a
+		if $keywd = _chemical_name_common
+			setname $data
+		elseif $keywd = _cell_length_a
 			$cell.a = $data
 			inc $cellspec
 		elseif $keywd = _cell_length_b
