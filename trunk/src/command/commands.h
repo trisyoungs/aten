@@ -310,6 +310,11 @@ enum CommandAction {
 	CA_INTRA,
 	CA_KEY,
 	CA_LABELSIZE,
+	CA_LIGHT,
+	CA_LIGHTAMBIENT,
+	CA_LIGHTDIFFUSE,
+	CA_LIGHTPOSITION,
+	CA_LIGHTSPECULAR,
 	CA_MOUSE,
 	CA_RADIUS,
 	CA_REPLICATEFOLD,
@@ -739,6 +744,11 @@ class CommandData
 	int function_CA_LETCHAR(Command *&c, Bundle &obj);
 	// View
 	int function_CA_GETVIEW(Command *&c, Bundle &obj);
+	int function_CA_LIGHT(Command *&c, Bundle &obj);
+	int function_CA_LIGHTAMBIENT(Command *&c, Bundle &obj);
+	int function_CA_LIGHTDIFFUSE(Command *&c, Bundle &obj);
+	int function_CA_LIGHTPOSITION(Command *&c, Bundle &obj);
+	int function_CA_LIGHTSPECULAR(Command *&c, Bundle &obj);
 	int function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj);
 	int function_CA_PERSPECTIVE(Command *&c, Bundle &obj);
 	int function_CA_RESETVIEW(Command *&c, Bundle &obj);

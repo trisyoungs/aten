@@ -35,7 +35,8 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 	// Create a QPixmap of the current scene
 	QPixmap pixmap;
-	pixmap = gui.mainWidget->renderPixmap(0,0,FALSE);
+	if (c->hasArg(3)) pixmap = gui.mainWidget->renderPixmap(c->argi(2), c->argi(3), FALSE);
+	else pixmap = gui.mainWidget->renderPixmap(0, 0, FALSE);
 	// Flag any surfaces to be rerendered so they are redisplayed in the original context
 	for (Grid *g = master.grids(); g != NULL; g = g->next) g->requestRerender();
 

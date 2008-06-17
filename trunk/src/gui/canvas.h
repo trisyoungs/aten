@@ -109,8 +109,8 @@ class Canvas
 	void postRedisplay();
 	// Called when context is initialised and ready
 	void realize();
-	// Called when context is resized
-	void configure();
+	// Called when context has changed size etc.
+	void configure(int w, int h);
 	// Called when context needs to be redrawn
 	void expose();
 	// Enable rendering

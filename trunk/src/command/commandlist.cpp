@@ -188,7 +188,7 @@ double Command::argd(int argno)
 }
 
 // Return argument as float
-double Command::argf(int argno)
+float Command::argf(int argno)
 {
 	return (float) argd(argno);
 }
