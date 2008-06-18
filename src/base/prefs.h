@@ -58,7 +58,7 @@ class Prefs
 	static const char *colour(Colour);
 	static Colour colour(const char*);
 	// Energy Units
-	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree,  nEnergyUnits };
+	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree, nEnergyUnits };
 	static const char *energyUnit(EnergyUnit);
 	static EnergyUnit energyUnit(const char*);
 	// Density calculation units
@@ -66,15 +66,17 @@ class Prefs
 	static const char *densityUnit(DensityUnit);
 	static DensityUnit densityUnit(const char*);
 	// View Objects
-	enum ViewObject { ViewAtoms, ViewCell, ViewCellAxes, ViewCellRepeat, ViewForceArrows, ViewGlobe, ViewLabels, ViewMeasurements, ViewRegions, ViewSurfaces, nViewObjects };
+	enum ViewObject { ViewAtoms=1, ViewCell=2, ViewCellAxes=4, ViewCellRepeat=8, ViewForceArrows=16, ViewGlobe=32, ViewLabels=64, ViewMeasurements=128, ViewRegions=256, ViewSurfaces=512, nViewObjects=10 };
 	static ViewObject viewObject(const char*);
+	static const char *viewObject(ViewObject);
 	// GL Options
 	enum GlOption { FogOption=1, LineAliasOption=2, PolyAliasOption=4, BackCullOption=8, DummyOption=16, nGlOptions=5 };
 	static GlOption glOption(const char*);
 	// Atom colouring scheme
 	enum ColouringScheme { ElementScheme, ChargeScheme, VelocityScheme, ForceScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(const char*);
-	// Preferences switches
+	static const char *colouringScheme(ColouringScheme cs);
+	// Filter override switches
 	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
@@ -87,17 +89,15 @@ class Prefs
 	public:
 	// Constructor
 	Prefs();
-	// Load prefs from file
+	// Load preferences from file
 	void load(const char*);
-	// Set GUI controls to reflect prefs choices
-	void setControls();
 
 	/*
 	// Rendering - View Objects
 	*/
 	private:
-	// List of visibilities of renderable objects
-	bool renderObjects_[Prefs::nViewObjects];
+	// List of visibilities of renderable objects on screen and on image
+	int screenObjects_, imageObjects_;
 	// Repeat units in positive xyz directions
 	Vec3<int> repeatCellsPos_;
 	// Repeat units in negative xyz directions
@@ -108,10 +108,22 @@ class Prefs
 	Atom::DrawStyle renderStyle_;
 
 	public:
-	// Set the visibility of an object
-	void setVisible(ViewObject vo, bool b);
+	// Set the visibility of an object on-screen
+	void setVisibleOnScreen(ViewObject vo, bool b);
+	// Set the visibility of an object in saved images
+	void setVisibleOnImage(ViewObject vo, bool b);
 	// Return whether the specified object is visible (i.e. should be rendered)
-	bool shouldRender(ViewObject vo);
+	bool isVisibleOnScreen(ViewObject vo);
+	// Return whether the specified object is visible (i.e. should be rendered) in saved images
+	bool isVisibleOnImage(ViewObject vo);
+	// Return screenobjects bitvector
+	int screenObjects();
+	// Set screenobjects bitvector
+	void setScreenObjects(int i);
+	// Return screenobjects bitvector
+	int imageObjects();
+	// Set imageobjects bitvector
+	void setImageObjects(int i);
 	// Return the radius of an atom calculated from the element and draw style
 	double screenRadius(Atom*);
 	// Set the drawing style of models

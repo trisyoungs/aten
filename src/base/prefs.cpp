@@ -41,6 +41,10 @@ Prefs::ColouringScheme Prefs::colouringScheme(const char *s)
 {
 	return (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
 }
+const char *Prefs::colouringScheme(ColouringScheme cs)
+{
+	return ColouringSchemeKeywords[cs];
+}
 
 // Mouse buttons
 const char *MouseButtonKeywords[Prefs::nMouseButtons] = { "left", "middle", "right", "wheel" };
@@ -109,15 +113,28 @@ Prefs::EnergyUnit Prefs::energyUnit(const char *s)
 }
 
 // ZMapping types
-const char *ZM_keywords[Prefs::nZmapTypes] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
+const char *ZmapTypeKeywords[Prefs::nZmapTypes] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
 Prefs::ZmapType Prefs::zmapType(const char *s)
-	{ return (Prefs::ZmapType) enumSearch("element mapping style",Prefs::nZmapTypes,ZM_keywords,s); }
+{
+	return (Prefs::ZmapType) enumSearch("element mapping style",Prefs::nZmapTypes,ZmapTypeKeywords,s);
+}
 
 // View Objects
-const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions" };
+const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions", "surfaces" };
 Prefs::ViewObject Prefs::viewObject(const char *s)
 {
 	return (Prefs::ViewObject) enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s);
+}
+const char *Prefs::viewObject(Prefs::ViewObject vo)
+{
+	double d = vo;
+	int i, n;
+	for (i=0; i<Prefs::nViewObjects; i++)
+	{
+		d /= 2.0;
+		if (d < 0.75) break;
+	}
+	return ViewObjectKeywords[i];
 }
 
 // Guide Geometries
@@ -166,16 +183,9 @@ Prefs::Prefs()
 	fogFar_ = 200;
 
 	// Rendering - Objects
-	renderObjects_[Prefs::ViewAtoms] = TRUE;
-	renderObjects_[Prefs::ViewLabels] = TRUE;
-	renderObjects_[Prefs::ViewMeasurements] = TRUE;
-	renderObjects_[Prefs::ViewGlobe] = TRUE;
-	renderObjects_[Prefs::ViewCell] = TRUE;
-	renderObjects_[Prefs::ViewCellAxes] = TRUE;
-	renderObjects_[Prefs::ViewCellRepeat] = FALSE;
-	renderObjects_[Prefs::ViewRegions] = TRUE;
-	renderObjects_[Prefs::ViewForceArrows] = FALSE;
-	renderObjects_[Prefs::ViewSurfaces] = TRUE;
+	screenObjects_ = Prefs::ViewAtoms + Prefs::ViewLabels + Prefs::ViewMeasurements + Prefs::ViewGlobe + Prefs::ViewCell;
+	screenObjects_ += Prefs::ViewCellAxes + Prefs::ViewRegions + Prefs::ViewSurfaces;
+	imageObjects_ = screenObjects_ - Prefs::ViewGlobe;
 	renderStyle_ = Atom::StickStyle;
 
 	// Build
@@ -319,16 +329,54 @@ void Prefs::load(const char *filename)
 // Rendering - View Objects
 */
 
-// Set the visibility of an object
-void Prefs::setVisible(ViewObject vo, bool b)
+// Set the visibility of an object on-screen
+void Prefs::setVisibleOnScreen(ViewObject vo, bool b)
 {
-	renderObjects_[vo] = b;
+	if (b &&  (!(screenObjects_&vo))) screenObjects_ += vo;
+	else if ((!b) && (screenObjects_&vo)) screenObjects_ -= vo;
 }
 
-// Return whether the specified object is visible (i.e. should be rendered)
-bool Prefs::shouldRender(ViewObject vo)
+// Set the visibility of an object on-screen
+void Prefs::setVisibleOnImage(ViewObject vo, bool b)
 {
-	return renderObjects_[vo];
+	if (b &&  (!(imageObjects_&vo))) imageObjects_ += vo;
+	else if ((!b) && (imageObjects_&vo)) imageObjects_ -= vo;
+}
+
+// Return whether the specified object is visible (i.e. should be rendered) on screen
+bool Prefs::isVisibleOnScreen(ViewObject vo)
+{
+	return (screenObjects_&vo ? TRUE : FALSE);
+}
+
+// Return whether the specified object is visible (i.e. should be rendered) on saved images
+bool Prefs::isVisibleOnImage(ViewObject vo)
+{
+	return (imageObjects_&vo ? TRUE : FALSE);
+}
+
+// Return screenobjects bitvector
+int Prefs::screenObjects()
+{
+	return screenObjects_;
+}
+
+// Set screenobjects bitvector
+void Prefs::setScreenObjects(int i)
+{
+	screenObjects_ = i;
+}
+
+// Return screenobjects bitvector
+int Prefs::imageObjects()
+{
+	return imageObjects_;
+}
+
+// Set imageobjects bitvector
+void Prefs::setImageObjects(int i)
+{
+	imageObjects_ = i;
 }
 
 // Set the drawing style of models

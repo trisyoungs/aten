@@ -170,10 +170,10 @@ void AtenPrefs::setControls()
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
 	ui.AtomQualitySpin->setValue(prefs.atomDetail());
 	ui.BondQualitySpin->setValue(prefs.bondDetail());
-	ui.GlobeVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewGlobe));
-	ui.CellVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewCell));
-	ui.AxesVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewCellAxes));
-	ui.AtomsVisibleCheck->setChecked(prefs.shouldRender(Prefs::ViewAtoms));
+	ui.GlobeVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewGlobe));
+	ui.CellVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCell));
+	ui.AxesVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewCellAxes));
+	ui.AtomsVisibleCheck->setChecked(prefs.isVisibleOnScreen(Prefs::ViewAtoms));
 	ui.ShininessSpin->setValue(prefs.shininess());
 
 	// Set controls in Lighting page
@@ -388,7 +388,7 @@ void AtenPrefs::on_BondQualitySpin_valueChanged(int value)
 
 void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state)
 {
-	prefs.setVisible(vo, (state == Qt::Checked ? TRUE : FALSE));
+	prefs.setVisibleOnScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
 	master.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
