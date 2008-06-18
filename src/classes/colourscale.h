@@ -76,6 +76,10 @@ class ColourScale
 	int nPoints();
 	// Return first point in colourscale
 	ColourScalePoint *points();
+	// Return last point in colourscale
+	ColourScalePoint *lastPoint();
+	// Return specific point in colourscale
+	ColourScalePoint *point(int id);
 	// Clear all points in colourscale
 	void clear();
 	// Add new point to colourscale

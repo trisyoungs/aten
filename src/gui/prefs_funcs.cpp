@@ -51,105 +51,9 @@ void AtenPrefs::finaliseUi()
 	for (i=0; i<elements.nElements(); i++)
 	{
 		item = new QListWidgetItem(ui.ElementList);
-		//item->setText(0, itoa(i));
 		item->setText(elements.name(i));
 	}
 	ui.ElementList->setCurrentRow(0);
-	// Create grid layout for ColourScalesWidget
-	QGridLayout *gl = new QGridLayout;
-	gl->setMargin(0);
-	gl->setSpacing(2);
-	// Create widgets in grid
-	gl->setColumnStretch(1,1);
-	for (i=0; i<10; i++)
-	{
-		gl->setRowMinimumHeight(i,30);
-		scaleNameEdit_[i] = new QLineEdit(this);
-		scaleNameEdit_[i]->setText("Name");
-		QObject::connect(scaleNameEdit_[i], SIGNAL(returnPressed()), this, SLOT(colourScale_NameChanged()));
-		gl->addWidget(scaleNameEdit_[i], i*2, 0);
-		scaleLinksLabel_[i] = new QLabel(this);
-		scaleLinksLabel_[i]->setText("[0]");
-		gl->addWidget(scaleLinksLabel_[i], i*2, 8);
-
-		scaleThreeCheck_[i] = new QCheckBox(this);
-		scaleThreeCheck_[i]->setText("3-Point");
-		QObject::connect(scaleThreeCheck_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_TypeChanged(bool)));
-		gl->addWidget(scaleThreeCheck_[i], i*2+1, 0);
-
-		scaleMinColourFrame_[i] = new TColourFrame(this);
-		scaleMinColourFrame_[i]->setMinimumSize(30,30);
-		scaleMinColourFrame_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		gl->addWidget(scaleMinColourFrame_[i], i*2, 1);
-
-		scaleMinColourButton_[i] = new QPushButton(this);
-		scaleMinColourButton_[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-		scaleMinColourButton_[i]->setMinimumSize(30,30);
-		scaleMinColourButton_[i]->setMaximumSize(30,30);
-		QObject::connect(scaleMinColourButton_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_ColourChanged(bool)));
-		gl->addWidget(scaleMinColourButton_[i], i*2, 2);
-
-		scaleMidColourFrame_[i] = new TColourFrame(this);
-		scaleMidColourFrame_[i]->setMinimumSize(30,30);
-		scaleMidColourFrame_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		gl->addWidget(scaleMidColourFrame_[i], i*2, 3);
-
-		scaleMidColourButton_[i] = new QPushButton(this);
-		scaleMidColourButton_[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-		scaleMidColourButton_[i]->setMinimumSize(30,30);
-		scaleMidColourButton_[i]->setMaximumSize(30,30);
-		QObject::connect(scaleMidColourButton_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_ColourChanged(bool)));
-		gl->addWidget(scaleMidColourButton_[i], i*2, 4);
-
-		scaleMaxColourFrame_[i] = new TColourFrame(this);
-		scaleMaxColourFrame_[i]->setMinimumSize(30,30);
-		scaleMaxColourFrame_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		gl->addWidget(scaleMaxColourFrame_[i], i*2, 5);
-
-		scaleMaxColourButton_[i] = new QPushButton(this);
-		scaleMaxColourButton_[i]->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-		scaleMaxColourButton_[i]->setMinimumSize(30,30);
-		scaleMaxColourButton_[i]->setMaximumSize(30,30);
-		QObject::connect(scaleMaxColourButton_[i], SIGNAL(clicked(bool)), this, SLOT(colourScale_ColourChanged(bool)));
-		gl->addWidget(scaleMaxColourButton_[i], i*2, 6);
-
-		scaleMinSpin_[i] = new QDoubleSpinBox(this);
-		scaleMinSpin_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		scaleMinSpin_[i]->setMinimumSize(64,30);
-		scaleMinSpin_[i]->setDecimals(4);
-		scaleMinSpin_[i]->setRange(-1.0e6,1.0e6);
-		QObject::connect(scaleMinSpin_[i], SIGNAL(valueChanged(double)), this, SLOT(colourScale_RangeChanged(double)));
-		gl->addWidget(scaleMinSpin_[i], i*2+1, 1, 1, 2);
-
-		scaleMidSpin_[i] = new QDoubleSpinBox(this);
-		scaleMidSpin_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		scaleMidSpin_[i]->setMinimumSize(64,30);
-		scaleMidSpin_[i]->setDecimals(4);
-		scaleMidSpin_[i]->setRange(-1.0e6,1.0e6);
-		QObject::connect(scaleMidSpin_[i], SIGNAL(valueChanged(double)), this, SLOT(colourScale_RangeChanged(double)));
-		gl->addWidget(scaleMidSpin_[i], i*2+1, 3, 1, 2);
-
-		scaleMaxSpin_[i] = new QDoubleSpinBox(this);
-		scaleMaxSpin_[i]->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-		scaleMaxSpin_[i]->setMinimumSize(64,30);
-		scaleMaxSpin_[i]->setDecimals(4);
-		scaleMaxSpin_[i]->setRange(-1.0e6,1.0e6);
-		QObject::connect(scaleMaxSpin_[i], SIGNAL(valueChanged(double)), this, SLOT(colourScale_RangeChanged(double)));
-		gl->addWidget(scaleMaxSpin_[i], i*2+1, 5, 1, 2);
-	}
-	// Put grid layout into frame
-	QVBoxLayout *vbox = new QVBoxLayout;
-	vbox->insertLayout(0,gl);
-	QFrame *frame = new QFrame;
-	frame->setParent(0);
-	frame->setLayout(vbox);
-	// Add QScrollArea to colour scales widget
-	QScrollArea *qsa = new QScrollArea;
-	qsa->setWidget(frame);
-	vbox = new QVBoxLayout;
-	vbox->setSizeConstraint(QLayout::SetNoConstraint);
-	vbox->insertWidget(0,qsa);
-	ui.ColourScaleGroup->setLayout(vbox);
 	dbgEnd(Debug::Calls,"AtenPrefs::finaliseUi");
 }
 
@@ -158,6 +62,7 @@ void AtenPrefs::setControls()
 {
 	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
 	refreshing_ = TRUE;
+
 	// Select the first element in the elements list
 	ui.ElementList->setCurrentRow(0);
 
@@ -194,49 +99,21 @@ void AtenPrefs::setControls()
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::CtrlKey));
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
 
-	// Set colourframe colours etc.
-	GLfloat col[4];
-	char links[32];
-	ui.ForegroundColourFrame->setColour(prefs.penColour(Prefs::ForegroundColour));
-	ui.ForegroundColourFrame->update();
-	ui.BackgroundColourFrame->setColour(prefs.penColour(Prefs::BackgroundColour));
-	ui.BackgroundColourFrame->update();
-	ui.SpecularColourFrame->setColour(prefs.penColour(Prefs::SpecularColour));
-	ui.SpecularColourFrame->update();
+	// Set pen colours and colourscale names
+        ui.ForegroundColourFrame->setColour(prefs.penColour(Prefs::ForegroundColour));
+        ui.ForegroundColourFrame->update();
+        ui.BackgroundColourFrame->setColour(prefs.penColour(Prefs::BackgroundColour));
+        ui.BackgroundColourFrame->update();
+        ui.SpecularColourFrame->setColour(prefs.penColour(Prefs::SpecularColour));
+        ui.SpecularColourFrame->update();
+	QListWidgetItem *item;
+	char name[128];
 	for (int n=0; n<10; n++)
 	{
-		// Name / links
-		scaleNameEdit_[n]->setText(prefs.colourScale[n].name());
-		sprintf(links,"[%i]",prefs.colourScale[n].nLinks());
-		scaleLinksLabel_[n]->setText(links);
-		// Colours
-// 		prefs.colourScale[n].copyColour(ColourScale::MinColour, col);
-// 		scaleMinColourFrame_[n]->setColour(col);
-// 		scaleMinColourFrame_[n]->update();
-// 		prefs.colourScale[n].copyColour(ColourScale::MidColour, col);
-// 		scaleMidColourFrame_[n]->setColour(col);
-// 		scaleMidColourFrame_[n]->update();
-// 		prefs.colourScale[n].copyColour(ColourScale::MaxColour, col);
-// 		scaleMaxColourFrame_[n]->setColour(col);
-// 		scaleMaxColourFrame_[n]->update();
-// 		// Numerical ranges
-// 		scaleMinSpin_[n]->setValue(prefs.colourScale[n].minimum());
-// 		scaleMidSpin_[n]->setValue(prefs.colourScale[n].middle());
-// 		scaleMaxSpin_[n]->setValue(prefs.colourScale[n].maximum());
-// 		// Type
-// 		if (prefs.colourScale[n].type() == ColourScale::ThreePoint)
-// 		{
-// 			scaleThreeCheck_[n]->setChecked(TRUE);
-// 			scaleMidSpin_[n]->setEnabled(TRUE);
-// 			scaleMidColourButton_[n]->setEnabled(TRUE);
-// 		}
-// 		else
-// 		{
-// 			scaleThreeCheck_[n]->setChecked(FALSE);
-// 			scaleMidSpin_[n]->setEnabled(FALSE);
-// 			scaleMidColourButton_[n]->setEnabled(FALSE);
-// 		}
+		item = ui.ScaleList->item(n);
+		sprintf(name, "%i. %s", n+1, prefs.colourScale[n].name());
 	}
+
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
 	// If this is the first time, create the elements backup array
@@ -578,116 +455,104 @@ void AtenPrefs::on_SpecularColourButton_clicked(bool checked)
 	gui.mainView.postRedisplay();
 }
 
-void AtenPrefs::colourScale_ColourChanged(bool checked)
+void AtenPrefs::updateScalePointsList()
 {
-// 	// Cast sender
-// 	QPushButton *button = qobject_cast<QPushButton*> (sender());
-// 	if (!button)
-// 	{
-// 		printf("AtenPrefs::colourScale_ColourChanged - Sender was not a QPushButton.\n");
-// 		return;
-// 	}
-// 	// Find which button sent the signal
-// 	int n;
-// 	ColourScale::ScaleColour type;
-// 	for (n=0; n<10; n++)
-// 	{
-// 		if (scaleMinColourButton_[n] == button) { type = ColourScale::MinColour; break; }
-// 		else if (scaleMidColourButton_[n] == button) { type = ColourScale::MidColour; break; }
-// 		else if (scaleMaxColourButton_[n] == button) { type = ColourScale::MaxColour; break; }
-// 	}
-// 	if (n == 10) return;
-// 	// Get current scale colour and convert it to a QColor
-// 	GLfloat col[4];
-// 	prefs.colourScale[n].copyColour(type, col);
-// 	QColor oldcol, newcol;
-// 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-// 	// Request a colour dialog
-// 	newcol = QColorDialog::getColor(oldcol, this);
-// 	if (!oldcol.isValid()) return;
-// 	// Store new colour
-// 	prefs.colourScale[n].setColour(type, newcol.redF(), newcol.greenF(), newcol.blueF());
-// 	TColourFrame *colframe;
-// 	if (type == ColourScale::MinColour) colframe = scaleMinColourFrame_[n];
-// 	else if (type == ColourScale::MidColour) colframe = scaleMidColourFrame_[n];
-// 	else if (type == ColourScale::MaxColour) colframe = scaleMaxColourFrame_[n];
-// 	colframe->setColour(newcol);
-// 	colframe->update();
-// 	// Update display
-// 	master.currentModel()->logChange(Change::VisualLog);
-// 	gui.mainView.postRedisplay();
-}
-
-void AtenPrefs::colourScale_TypeChanged(bool checkedex)
-{
-// 	if (refreshing_) return;
-// 	// Cast sender
-// 	QCheckBox *check = qobject_cast<QCheckBox*> (sender());
-// 	if (!check)
-// 	{
-// 		printf("AtenPrefs::colourScale_TypeChanged - Sender was not a QCheckBox.\n");
-// 		return;
-// 	}
-// 	// Find which checkbox sent the signal
-// 	int n;
-// 	for (n=0; n<10; n++) if (scaleThreeCheck_[n] == check) break;
-// 	if (n == 10) return;
-// 	prefs.colourScale[n].setType( scaleThreeCheck_[n]->checkState() == Qt::Checked ? ColourScale::ThreePoint : ColourScale::TwoPoint );
-// 	setControls();
-// 	// Update display
-// 	master.currentModel()->logChange(Change::VisualLog);
-// 	gui.mainView.postRedisplay();
-}
-
-void AtenPrefs::colourScale_RangeChanged(double d)
-{
-// 	if (refreshing_) return;
-// 	refreshing_ = TRUE;
-// 	// Cast sender
-// 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
-// 	if (!spin)
-// 	{
-// 		printf("AtenPrefs::colourScale_RangeChanged - Sender was not a QDoubleSpinBox.\n");
-// 		return;
-// 	}
-// 	// Find which button sent the signal
-// 	int n;
-// 	ColourScale::ScaleColour type;
-// 	for (n=0; n<10; n++)
-// 	{
-// 		if (scaleMinSpin_[n] == spin) { type = ColourScale::MinColour; break; }
-// 		else if (scaleMidSpin_[n] == spin) { type = ColourScale::MidColour; break; }
-// 		else if (scaleMaxSpin_[n] == spin) { type = ColourScale::MaxColour; break; }
-// 	}
-// 	if (n == 10) return;
-// 	// Set range for the scale
-// 	if (type != ColourScale::MidColour)
-// 	{
-// 		prefs.colourScale[n].setRange(scaleMinSpin_[n]->value(), scaleMaxSpin_[n]->value());
-// 		scaleMidSpin_[n]->setRange(scaleMinSpin_[n]->value(), scaleMaxSpin_[n]->value());
-// 		scaleMidSpin_[n]->setValue(prefs.colourScale[n].middle());
-// 	}
-// 	else prefs.colourScale[n].setMiddle(scaleMidSpin_[n]->value());
-// 	// Update display
-// 	master.currentModel()->logChange(Change::VisualLog);
-// 	gui.mainView.postRedisplay();
-// 	refreshing_ = FALSE;
-}
-
-void AtenPrefs::colourScale_NameChanged()
-{
-	if (refreshing_) return;
-	// Cast sender
-	QLineEdit *lineedit = qobject_cast<QLineEdit*> (sender());
-	if (!lineedit)
+	// Clear current list items
+	ui.ScalePointsList->clear();
+	// Get the id of the currently selected point and scale
+	int scale = ui.ScaleList->currentRow();
+	if (scale == -1) return;
+	// Cycle over scale points and add the items
+	GLfloat colour[4];
+	QListWidgetItem *item;
+	for (ColourScalePoint *csp = prefs.colourScale[scale].points(); csp != NULL; csp = csp->next)
 	{
-		printf("AtenPrefs::colourScale_NameChanged - Sender was not a QLineEdit.\n");
-		return;
+		item = new QListWidgetItem(ftoa(csp->value()), ui.ScalePointsList);
+		csp->copyColour(colour);
+		item->setBackgroundColor(QColor(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255)));
 	}
-	// Find which lineedit sent the signal
-	int n;
-	for (n=0; n<10; n++) if (scaleNameEdit_[n] == lineedit) break;
-	if (n == 10) return;
-	prefs.colourScale[n].setName( qPrintable(scaleNameEdit_[n]->text()) );
+	// Select first item in list
+	ui.ScalePointsList->setCurrentItem(0);
+}
+
+void AtenPrefs::on_ScaleList_currentRowChanged(int id)
+{
+	if (id == -1) return;
+	// Scale selection has changed, so update points list
+	updateScalePointsList();
+	// Set name in lineedit
+	ui.ScaleNameEdit->setText(prefs.colourScale[id].name());
+}
+
+void AtenPrefs::on_ScalePointsList_currentRowChanged(int id)
+{
+	// Get the id of the currently selected point and scale
+	int scale = ui.ScaleList->currentRow();
+	if (scale == -1) return;
+	if (id == -1) return;
+	// Set colour frame and value spin
+	ColourScalePoint *csp = prefs.colourScale[scale].point(id);
+	ui.PointColourFrame->setColour(csp->colour());
+	ui.PointColourFrame->update();
+	ui.PointValueSpin->setValue(csp->value());
+}
+
+void AtenPrefs::on_ScaleNameEdit_returnPressed()
+{
+	// Get the id of the currently selected point and scale
+	int scale = ui.ScaleList->currentRow();
+	if (scale == -1) return;
+	prefs.colourScale[scale].setName( qPrintable(ui.ScaleNameEdit->text()) );
 	gui.mainView.postRedisplay();
+}
+
+void AtenPrefs::on_PointValueSpin_valueChanged(double d)
+{
+	// Get the id of the currently selected point and scale
+	int scale = ui.ScaleList->currentRow();
+	if (scale == -1) return;
+	int id = ui.ScalePointsList->currentRow();
+	if (id == -1) return;
+	// Set value in colourscale
+	prefs.colourScale[scale].point(id)->setValue(d);
+	gui.mainView.postRedisplay();
+}
+
+void AtenPrefs::on_PointColourButton_clicked(bool checked)
+{
+	// Get the id of the currently selected point and scale
+	int scale = ui.ScaleList->currentRow();
+	if (scale == -1) return;
+	int id = ui.ScalePointsList->currentRow();
+	if (id == -1) return;
+	// Get new colour
+	ColourScalePoint *csp = prefs.colourScale[scale].point(id);
+	GLfloat *col = csp->colour();
+	QColor oldcol, newcol;
+	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+	// Request a colour dialog
+	newcol = QColorDialog::getColor(oldcol, this);
+	// Store new colour, and set colours in frame and pointlist
+ 	csp->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	ui.PointColourFrame->setColour(newcol);
+	ui.PointColourFrame->update();
+	csp->copyColour(col);
+	ui.ScalePointsList->item(id)->setBackgroundColor(QColor(int(col[0]*255),int(col[1]*255),int(col[2]*255)));
+	// Update display
+	gui.mainView.postRedisplay();
+}
+
+void AtenPrefs::on_AddPointButton_clicked(bool checked)
+{
+	// Get the id of the currently selected scale
+	int scale = ui.ScaleList->currentRow();
+	if (scale == -1) return;
+	// Add a new point to the end of the scale and refresh the list
+	double value = (prefs.colourScale[scale].nPoints() == 0 ? 0.0 : prefs.colourScale[scale].lastPoint()->value() + 1.0);
+	prefs.colourScale[scale].addPoint(prefs.colourScale[scale].nPoints()-1, value, 0.5f, 0.5f, 0.5f);
+	updateScalePointsList();
+}
+
+void AtenPrefs::on_RemovePointButton_clicked(bool checked)
+{
 }

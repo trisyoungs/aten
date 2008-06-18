@@ -20,7 +20,7 @@
 */
 
 #ifndef ATEN_COLOURSCALEPOINT_H
-#define ATEN_COLOURSCALEPOINT__H
+#define ATEN_COLOURSCALEPOINT_H
 
 // Fix Windows.h
 #define NOMINMAX
@@ -57,6 +57,8 @@ class ColourScalePoint
 	void setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
 	// Copy colour
 	void copyColour(GLfloat *target);
+	// Return pointer to colour array
+	GLfloat *colour();
 };
 
 // Colour scale delta

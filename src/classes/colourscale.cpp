@@ -146,6 +146,18 @@ ColourScalePoint *ColourScale::points()
 	return points_.first();
 }
 
+// Return last point in colourscale
+ColourScalePoint *ColourScale::lastPoint()
+{
+	return points_.last();
+}
+
+// Return specific point in colourscale
+ColourScalePoint *ColourScale::point(int id)
+{
+	return points_[id];
+}
+
 // Clear all points in colourscale
 void ColourScale::clear()
 {
