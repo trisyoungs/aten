@@ -102,21 +102,18 @@ class AtenPrefs : public QDialog
 	// Colours page
 	*/
 	private:
-	// Widgets for Colour Scale editing
-	QLineEdit *scaleNameEdit_[10];
-	QLabel *scaleLinksLabel_[10];
-	QDoubleSpinBox *scaleMinSpin_[10], *scaleMidSpin_[10], *scaleMaxSpin_[10];
-	TColourFrame *scaleMinColourFrame_[10], *scaleMidColourFrame_[10], *scaleMaxColourFrame_[10];
-	QPushButton *scaleMinColourButton_[10], *scaleMidColourButton_[10], *scaleMaxColourButton_[10];
-	QCheckBox *scaleThreeCheck_[10];
+	void updateScalePointsList();
 	private slots:
-	void colourScale_ColourChanged(bool checked);
-	void colourScale_RangeChanged(double d);
-	void colourScale_TypeChanged(bool checked);
-	void colourScale_NameChanged();
 	void on_ForegroundColourButton_clicked(bool checked);
 	void on_BackgroundColourButton_clicked(bool checked);
 	void on_SpecularColourButton_clicked(bool checked);
+	void on_ScaleList_currentRowChanged(int id);
+	void on_ScalePointsList_currentRowChanged(int id);
+	void on_ScaleNameEdit_returnPressed();
+	void on_PointValueSpin_valueChanged(double d);
+	void on_PointColourButton_clicked(bool checked);
+	void on_AddPointButton_clicked(bool checked);
+	void on_RemovePointButton_clicked(bool checked);
 
 	/*
 	// Local variables

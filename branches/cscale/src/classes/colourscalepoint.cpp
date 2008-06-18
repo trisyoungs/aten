@@ -64,6 +64,12 @@ void ColourScalePoint::copyColour(GLfloat *target)
 	target[3] = colour_[3];
 }
 
+// Return pointer to colour array
+GLfloat *ColourScalePoint::colour()
+{
+	return colour_;
+}
+
 /*
 // Colour scale delta
 */
