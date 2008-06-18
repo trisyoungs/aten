@@ -7,6 +7,7 @@ bundle.h
 cell.h 
 clipboard.h 
 colourscale.h
+colourscalepoint.h
 dnchar.h 
 energystore.h 
 expression.h
@@ -30,6 +31,7 @@ bundle.cpp
 cell.cpp 
 clipboard.cpp 
 colourscale.cpp
+colourscalepoint.cpp
 dnchar.cpp 
 energystore.cpp 
 expression.cpp

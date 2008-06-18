@@ -40,35 +40,35 @@ void Canvas::renderModelGlyphs()
 		{
 			// Arrow - tail = data[0], head = data[1]
 			case (Glyph::ArrowGlyph):
-				vec[0] = g->data[0].vector();
+				vec[0] = g->vector(0);
 				glLineWidth(g->lineWidth());
-				glArrow(vec[0], g->data[1].vector() - vec[0] );
+				glArrow(vec[0], g->vector(1) - vec[0] );
 				break;
 			// Vector - centroid = data[0], direction = data[1]
 			case (Glyph::VectorGlyph):
-				vec[0] = g->data[0].vector();
-				vec[1] = g->data[1].vector();
+				vec[0] = g->vector(0);
+				vec[1] = g->vector(1);
 				glLineWidth(g->lineWidth());
 				glArrow( vec[0] - (vec[1] * 0.5), vec[1] );
 				break;
 			// Sense Vector - end1 = data[0], direction = data[1], length = data[2].x
 			case (Glyph::SenseVectorGlyph):
-				vec[0] = g->data[0].vector();
-				vec[2] = g->data[2].vector();
-				if (g->data[1].hasAtom())
+				vec[0] = g->vector(0);
+				vec[2] = g->vector(2);
+				if (g->atomId(1) != -1)
 				{
-					vec[1] = g->data[1].vector() - vec[0];
+					vec[1] = g->vector(1) - vec[0];
 					vec[1].normalise();
 				}
-				else vec[1] = g->data[1].vector();
+				else vec[1] = g->vector(1);
 				vec[1] *= vec[2].x;
 				glLineWidth(g->lineWidth());
-				glArrow( vec[0], vec[1], g->data[2].vector().y < 0.0 ? TRUE : FALSE);
+				glArrow( vec[0], vec[1], g->vector(2).y < 0.0 ? TRUE : FALSE);
 				break;
 			// Sphere - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):
-				vec[0] = g->data[0].vector();
-				vec[1] = g->data[1].vector();
+				vec[0] = g->vector(0);
+				vec[1] = g->vector(1);
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
@@ -77,8 +77,8 @@ void Canvas::renderModelGlyphs()
 				break;
 			// Cube - centre = data[0], scale = data[1]
 			case (Glyph::CubeGlyph):
-				vec[0] = g->data[0].vector();
-				vec[1] = g->data[1].vector();
+				vec[0] = g->vector(0);
+				vec[1] = g->vector(1);
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
@@ -87,8 +87,8 @@ void Canvas::renderModelGlyphs()
 				break;
 			// Line - vertex 1 = data[0], vertex 2 = data[1]
 			case (Glyph::LineGlyph):
-				vec[0] = g->data[0].vector();
-				vec[1] = g->data[1].vector();
+				vec[0] = g->vector(0);
+				vec[1] = g->vector(1);
 				glLineWidth(g->lineWidth());
 				glBegin(GL_LINES);
 				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
@@ -98,9 +98,9 @@ void Canvas::renderModelGlyphs()
 				break;
 			// Ellipsoid - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
 			case (Glyph::TriangleGlyph):
-				vec[0] = g->data[0].vector();
-				vec[1] = g->data[1].vector();
-				vec[2] = g->data[2].vector();
+				vec[0] = g->vector(0);
+				vec[1] = g->vector(1);
+				vec[2] = g->vector(2);
 				glBegin(GL_TRIANGLES);
 				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
@@ -110,14 +110,14 @@ void Canvas::renderModelGlyphs()
 				break;
 			// Ellipsoid - centre = data[0], edge vector = data[1], face vector = data[2]
 			case (Glyph::EllipsoidGlyph):
-				glEllipsoid(g->data[0].vector(), g->data[1].vector(), g->data[2].vector());
+				glEllipsoid(g->vector(0), g->vector(1), g->vector(2));
 				break;
 			// Tetrahedron - four vertices in data[0] to data[3]
 			case (Glyph::TetrahedronGlyph):
-				vec[0] = g->data[0].vector();
-				vec[1] = g->data[1].vector();
-				vec[2] = g->data[2].vector();
-				vec[3] = g->data[3].vector();
+				vec[0] = g->vector(0);
+				vec[1] = g->vector(1);
+				vec[2] = g->vector(2);
+				vec[3] = g->vector(3);
 				avg = (vec[0] + vec[1] + vec[2] + vec[3]) / 4.0;
 				glBegin(GL_TRIANGLE_STRIP);
 				  normal = avg - vec[0];
@@ -167,14 +167,14 @@ void Canvas::renderModelTextGlyphs()
 		{
 			// Text in 2D coordinates - left-hand origin = data[0]
 			case (Glyph::TextGlyph):
-				vec[0] = g->data[0].vector();
+				vec[0] = g->vector(0);
 				// Add text object to list
 				to = new TextObject((int)vec[0].x, int(height_ - vec[0].y), FALSE, g->text());
 				textObjects_.own(to);
 				break;
 			// Text in 3D coordinates - left-hand origin = data[0]
 			case (Glyph::TextGlyph3D):
-				vec[0] = g->data[0].vector();
+				vec[0] = g->vector(0);
 				// Add text object to list
 				vec[1] = displayModel_->modelToScreen(vec[0]);
 				if (vec[1].z < 1.0)

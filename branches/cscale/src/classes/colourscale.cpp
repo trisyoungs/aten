@@ -26,14 +26,7 @@
 ColourScale::ColourScale()
 {
 	// Private variables
-	minimum_ = 0.0;
-	middle_ = 0.5;
-	maximum_ = 1.0;
-	range_ = 1.0;
 	visible_ = FALSE;
-	setColour(ColourScale::MinColour, 1.0f, 1.0f, 1.0f, 1.0f);
-	setColour(ColourScale::MidColour, 0.5f, 0.5f, 0.5f, 1.0f);
-	setColour(ColourScale::MaxColour, 0.0f, 0.0f, 1.0f, 1.0f);
 }
 
 // Set the name of the colourscale
@@ -60,136 +53,103 @@ bool ColourScale::visible()
 	return visible_;
 }
 
-// Set type of ColourScale
-void ColourScale::setType(ColourScale::ScaleOrder so)
+// Recalculate colour deltas between points
+void ColourScale::calculateDeltas()
 {
-	type_ = so;
-}
-
-// Return type of colourscale
-ColourScale::ScaleOrder ColourScale::type()
-{
-	return type_;
-}
-
-// Return minimum value of scale
-double ColourScale::minimum()
-{
-	return minimum_;
-}
-
-// Return maximum value of scale
-double ColourScale::maximum()
-{
-	return maximum_;
-}
-
-// Return midpoint value of scale
-double ColourScale::middle()
-{
-	return middle_;
-}
-
-// Return range of scale
-double ColourScale::range()
-{
-	return range_;
-}
-
-// Set colour
-void ColourScale::setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
-{
-	int n;
-	colours_[col][0] = r;
-	colours_[col][1] = g;
-	colours_[col][2] = b;
-	colours_[col][3] = a;
-	// Recalculate colour deltas
-	for (n=0; n<4; n++)
+	dbgBegin(Debug::Calls,"ColourScale::calculateDeltas");
+	// Clear old list of deltas
+	deltas_.clear();
+	ColourScaleDelta *delta;
+	for (ColourScalePoint *csp = points_.first(); csp != points_.last(); csp = csp->next)
 	{
-		deltaMinMax_[n] = colours_[ColourScale::MaxColour][n] - colours_[ColourScale::MinColour][n];
-		deltaMinMid_[n] = colours_[ColourScale::MidColour][n] - colours_[ColourScale::MinColour][n];
-		deltaMidMax_[n] = colours_[ColourScale::MaxColour][n] - colours_[ColourScale::MidColour][n];
+		delta = deltas_.add();
+		delta->set(csp, csp->next);
 	}
+	dbgEnd(Debug::Calls,"ColourScale::calculateDeltas");
+}
+
+// Add point to scale
+void ColourScale::addPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	dbgBegin(Debug::Calls,"ColourScale::addPoint");
+	// Check position supplied - if it is 0 add point at start. If npoints then add at end.
+	if ((position < 0) || (position > points_.nItems()))
+	{
+		msg(Debug::None, "Position at which to add scale point (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		dbgEnd(Debug::Calls,"ColourScale::addPoint");
+		return;
+	}
+	ColourScalePoint *csp;
+	if (position == 0) csp = points_.insert(NULL);
+	else if (position == points_.nItems()) csp = points_.add();
+	else csp = points_.insert( points_[position-1] );
+	// Now, set data in new point
+	csp->setColour(r, g, b, a);
+	csp->setValue(value);
+	// Recalculate colour deltas
+	calculateDeltas();
 	// Refresh linked objects
 	refreshObjects();
+	dbgEnd(Debug::Calls,"ColourScale::addPoint");
 }
 
-// Copy colour
-void ColourScale::copyColour(ScaleColour col, GLfloat *target)
-{
-	target[0] = colours_[col][0];
-	target[1] = colours_[col][1];
-	target[2] = colours_[col][2];
-	target[3] = colours_[col][3];
-}
-
-// Set the absolute range of the colour scale (but not the middle value)
-void ColourScale::setRange(double min, double max)
-{
-	minimum_ = min;
-	maximum_ = max;
-	// Make sure the midpoint is within the new bounds
-	if (middle_ < minimum_) middle_ = minimum_;
-	else if (middle_ > maximum_) middle_ = maximum_;
-	range_ = maximum_ - minimum_;
-	refreshObjects();
-}
-
-// Set the midpoint of the colour scale
-void ColourScale::setMiddle(double middle)
-{
-	middle_ = middle;
-	// Make sure the midpoint is within the new bounds
-	if (middle_ < minimum_) middle_ = minimum_;
-	else if (middle_ > maximum_) middle_ = maximum_;
-	refreshObjects();
-}
-
-// Adjust colour scale range to cover supplied value
-void ColourScale::adjustRange(double d)
-{
-	if (d < minimum_) minimum_ = d;
-	else if (d > maximum_) maximum_ = d;
-	//middle_ = (maximum_ - minimum_) * 0.5;
-	range_ = maximum_ - minimum_;
-}
 
 // Return colour associated with value provided
 void ColourScale::colour(double v, GLfloat *target)
 {
-	double delta;
-	if (type_ == ColourScale::TwoPoint)
+	// Step through points associated to scale and find the two that we are inbetween.
+	// Check for no points being defined
+	if (points_.nItems() == 0)
 	{
-		delta = (v - minimum_) / range_;
-		// Clamp delta to the range [0,1]
-		if (delta < 0.0) delta = 0.0;
-		else if (delta > 1.0) delta = 1.0;
-		target[0] = colours_[ColourScale::MinColour][0] + deltaMinMax_[0] * delta;
-		target[1] = colours_[ColourScale::MinColour][1] + deltaMinMax_[1] * delta;
-		target[2] = colours_[ColourScale::MinColour][2] + deltaMinMax_[2] * delta;
-		target[3] = colours_[ColourScale::MinColour][3] + deltaMinMax_[3] * delta;
+		target[0] = 0.0f;
+		target[1] = 0.0f;
+		target[2] = 0.0f;
+		target[3] = 0.0f;
+		return;
 	}
-	else if (v < middle_)
+	// Is supplied value less than the value at the first point?
+	ColourScalePoint *first;
+	first = points_.first();
+	if (v < first->value())
 	{
-		delta = (v - minimum_) / (middle_ - minimum_);
-		if (delta < 0.0) delta = 0.0;
-		else if (delta > 1.0) delta = 1.0;
-		target[0] = colours_[ColourScale::MinColour][0] + deltaMinMid_[0] * delta;
-		target[1] = colours_[ColourScale::MinColour][1] + deltaMinMid_[1] * delta;
-		target[2] = colours_[ColourScale::MinColour][2] + deltaMinMid_[2] * delta;
-		target[3] = colours_[ColourScale::MinColour][3] + deltaMinMid_[3] * delta;
+		first->copyColour(target);
+		return;
 	}
-	else
+	// Find the correct delta to use
+	ColourScaleDelta *delta;
+	for (delta = deltas_.first(); delta != NULL; delta = delta->next)
 	{
-		delta = (v - middle_) / (maximum_ - middle_);
-		if (delta < 0.0) delta = 0.0;
-		else if (delta > 1.0) delta = 1.0;
-		target[0] = colours_[ColourScale::MidColour][0] + deltaMidMax_[0] * delta;
-		target[1] = colours_[ColourScale::MidColour][1] + deltaMidMax_[1] * delta;
-		target[2] = colours_[ColourScale::MidColour][2] + deltaMidMax_[2] * delta;
-		target[3] = colours_[ColourScale::MidColour][3] + deltaMidMax_[3] * delta;
+		if (delta->containsValue(v))
+		{
+			delta->getColour(v, target);
+			return;
+		}
 	}
+	// If we get to here then the supplied value is outside the range of all values, so take colour from the endpoint
+	points_.last()->copyColour(target);
+}
+
+// Adjust range of scale to encompass point supplied
+void ColourScale::adjustRange(double value)
+{
+}
+
+// Return number of points in colourscale
+int ColourScale::nPoints()
+{
+	return points_.nItems();
+}
+
+// Return first point in colourscale
+ColourScalePoint *ColourScale::points()
+{
+	return points_.first();
+}
+
+// Clear all points in colourscale
+void ColourScale::clear()
+{
+	points_.clear();
 }
 
 // Refresh all linked objects

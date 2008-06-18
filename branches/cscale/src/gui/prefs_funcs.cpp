@@ -210,32 +210,32 @@ void AtenPrefs::setControls()
 		sprintf(links,"[%i]",prefs.colourScale[n].nLinks());
 		scaleLinksLabel_[n]->setText(links);
 		// Colours
-		prefs.colourScale[n].copyColour(ColourScale::MinColour, col);
-		scaleMinColourFrame_[n]->setColour(col);
-		scaleMinColourFrame_[n]->update();
-		prefs.colourScale[n].copyColour(ColourScale::MidColour, col);
-		scaleMidColourFrame_[n]->setColour(col);
-		scaleMidColourFrame_[n]->update();
-		prefs.colourScale[n].copyColour(ColourScale::MaxColour, col);
-		scaleMaxColourFrame_[n]->setColour(col);
-		scaleMaxColourFrame_[n]->update();
-		// Numerical ranges
-		scaleMinSpin_[n]->setValue(prefs.colourScale[n].minimum());
-		scaleMidSpin_[n]->setValue(prefs.colourScale[n].middle());
-		scaleMaxSpin_[n]->setValue(prefs.colourScale[n].maximum());
-		// Type
-		if (prefs.colourScale[n].type() == ColourScale::ThreePoint)
-		{
-			scaleThreeCheck_[n]->setChecked(TRUE);
-			scaleMidSpin_[n]->setEnabled(TRUE);
-			scaleMidColourButton_[n]->setEnabled(TRUE);
-		}
-		else
-		{
-			scaleThreeCheck_[n]->setChecked(FALSE);
-			scaleMidSpin_[n]->setEnabled(FALSE);
-			scaleMidColourButton_[n]->setEnabled(FALSE);
-		}
+// 		prefs.colourScale[n].copyColour(ColourScale::MinColour, col);
+// 		scaleMinColourFrame_[n]->setColour(col);
+// 		scaleMinColourFrame_[n]->update();
+// 		prefs.colourScale[n].copyColour(ColourScale::MidColour, col);
+// 		scaleMidColourFrame_[n]->setColour(col);
+// 		scaleMidColourFrame_[n]->update();
+// 		prefs.colourScale[n].copyColour(ColourScale::MaxColour, col);
+// 		scaleMaxColourFrame_[n]->setColour(col);
+// 		scaleMaxColourFrame_[n]->update();
+// 		// Numerical ranges
+// 		scaleMinSpin_[n]->setValue(prefs.colourScale[n].minimum());
+// 		scaleMidSpin_[n]->setValue(prefs.colourScale[n].middle());
+// 		scaleMaxSpin_[n]->setValue(prefs.colourScale[n].maximum());
+// 		// Type
+// 		if (prefs.colourScale[n].type() == ColourScale::ThreePoint)
+// 		{
+// 			scaleThreeCheck_[n]->setChecked(TRUE);
+// 			scaleMidSpin_[n]->setEnabled(TRUE);
+// 			scaleMidColourButton_[n]->setEnabled(TRUE);
+// 		}
+// 		else
+// 		{
+// 			scaleThreeCheck_[n]->setChecked(FALSE);
+// 			scaleMidSpin_[n]->setEnabled(FALSE);
+// 			scaleMidColourButton_[n]->setEnabled(FALSE);
+// 		}
 	}
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
@@ -580,98 +580,98 @@ void AtenPrefs::on_SpecularColourButton_clicked(bool checked)
 
 void AtenPrefs::colourScale_ColourChanged(bool checked)
 {
-	// Cast sender
-	QPushButton *button = qobject_cast<QPushButton*> (sender());
-	if (!button)
-	{
-		printf("AtenPrefs::colourScale_ColourChanged - Sender was not a QPushButton.\n");
-		return;
-	}
-	// Find which button sent the signal
-	int n;
-	ColourScale::ScaleColour type;
-	for (n=0; n<10; n++)
-	{
-		if (scaleMinColourButton_[n] == button) { type = ColourScale::MinColour; break; }
-		else if (scaleMidColourButton_[n] == button) { type = ColourScale::MidColour; break; }
-		else if (scaleMaxColourButton_[n] == button) { type = ColourScale::MaxColour; break; }
-	}
-	if (n == 10) return;
-	// Get current scale colour and convert it to a QColor
-	GLfloat col[4];
-	prefs.colourScale[n].copyColour(type, col);
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	newcol = QColorDialog::getColor(oldcol, this);
-	if (!oldcol.isValid()) return;
-	// Store new colour
-	prefs.colourScale[n].setColour(type, newcol.redF(), newcol.greenF(), newcol.blueF());
-	TColourFrame *colframe;
-	if (type == ColourScale::MinColour) colframe = scaleMinColourFrame_[n];
-	else if (type == ColourScale::MidColour) colframe = scaleMidColourFrame_[n];
-	else if (type == ColourScale::MaxColour) colframe = scaleMaxColourFrame_[n];
-	colframe->setColour(newcol);
-	colframe->update();
-	// Update display
-	master.currentModel()->logChange(Change::VisualLog);
-	gui.mainView.postRedisplay();
+// 	// Cast sender
+// 	QPushButton *button = qobject_cast<QPushButton*> (sender());
+// 	if (!button)
+// 	{
+// 		printf("AtenPrefs::colourScale_ColourChanged - Sender was not a QPushButton.\n");
+// 		return;
+// 	}
+// 	// Find which button sent the signal
+// 	int n;
+// 	ColourScale::ScaleColour type;
+// 	for (n=0; n<10; n++)
+// 	{
+// 		if (scaleMinColourButton_[n] == button) { type = ColourScale::MinColour; break; }
+// 		else if (scaleMidColourButton_[n] == button) { type = ColourScale::MidColour; break; }
+// 		else if (scaleMaxColourButton_[n] == button) { type = ColourScale::MaxColour; break; }
+// 	}
+// 	if (n == 10) return;
+// 	// Get current scale colour and convert it to a QColor
+// 	GLfloat col[4];
+// 	prefs.colourScale[n].copyColour(type, col);
+// 	QColor oldcol, newcol;
+// 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+// 	// Request a colour dialog
+// 	newcol = QColorDialog::getColor(oldcol, this);
+// 	if (!oldcol.isValid()) return;
+// 	// Store new colour
+// 	prefs.colourScale[n].setColour(type, newcol.redF(), newcol.greenF(), newcol.blueF());
+// 	TColourFrame *colframe;
+// 	if (type == ColourScale::MinColour) colframe = scaleMinColourFrame_[n];
+// 	else if (type == ColourScale::MidColour) colframe = scaleMidColourFrame_[n];
+// 	else if (type == ColourScale::MaxColour) colframe = scaleMaxColourFrame_[n];
+// 	colframe->setColour(newcol);
+// 	colframe->update();
+// 	// Update display
+// 	master.currentModel()->logChange(Change::VisualLog);
+// 	gui.mainView.postRedisplay();
 }
 
 void AtenPrefs::colourScale_TypeChanged(bool checkedex)
 {
-	if (refreshing_) return;
-	// Cast sender
-	QCheckBox *check = qobject_cast<QCheckBox*> (sender());
-	if (!check)
-	{
-		printf("AtenPrefs::colourScale_TypeChanged - Sender was not a QCheckBox.\n");
-		return;
-	}
-	// Find which checkbox sent the signal
-	int n;
-	for (n=0; n<10; n++) if (scaleThreeCheck_[n] == check) break;
-	if (n == 10) return;
-	prefs.colourScale[n].setType( scaleThreeCheck_[n]->checkState() == Qt::Checked ? ColourScale::ThreePoint : ColourScale::TwoPoint );
-	setControls();
-	// Update display
-	master.currentModel()->logChange(Change::VisualLog);
-	gui.mainView.postRedisplay();
+// 	if (refreshing_) return;
+// 	// Cast sender
+// 	QCheckBox *check = qobject_cast<QCheckBox*> (sender());
+// 	if (!check)
+// 	{
+// 		printf("AtenPrefs::colourScale_TypeChanged - Sender was not a QCheckBox.\n");
+// 		return;
+// 	}
+// 	// Find which checkbox sent the signal
+// 	int n;
+// 	for (n=0; n<10; n++) if (scaleThreeCheck_[n] == check) break;
+// 	if (n == 10) return;
+// 	prefs.colourScale[n].setType( scaleThreeCheck_[n]->checkState() == Qt::Checked ? ColourScale::ThreePoint : ColourScale::TwoPoint );
+// 	setControls();
+// 	// Update display
+// 	master.currentModel()->logChange(Change::VisualLog);
+// 	gui.mainView.postRedisplay();
 }
 
 void AtenPrefs::colourScale_RangeChanged(double d)
 {
-	if (refreshing_) return;
-	refreshing_ = TRUE;
-	// Cast sender
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
-	if (!spin)
-	{
-		printf("AtenPrefs::colourScale_RangeChanged - Sender was not a QDoubleSpinBox.\n");
-		return;
-	}
-	// Find which button sent the signal
-	int n;
-	ColourScale::ScaleColour type;
-	for (n=0; n<10; n++)
-	{
-		if (scaleMinSpin_[n] == spin) { type = ColourScale::MinColour; break; }
-		else if (scaleMidSpin_[n] == spin) { type = ColourScale::MidColour; break; }
-		else if (scaleMaxSpin_[n] == spin) { type = ColourScale::MaxColour; break; }
-	}
-	if (n == 10) return;
-	// Set range for the scale
-	if (type != ColourScale::MidColour)
-	{
-		prefs.colourScale[n].setRange(scaleMinSpin_[n]->value(), scaleMaxSpin_[n]->value());
-		scaleMidSpin_[n]->setRange(scaleMinSpin_[n]->value(), scaleMaxSpin_[n]->value());
-		scaleMidSpin_[n]->setValue(prefs.colourScale[n].middle());
-	}
-	else prefs.colourScale[n].setMiddle(scaleMidSpin_[n]->value());
-	// Update display
-	master.currentModel()->logChange(Change::VisualLog);
-	gui.mainView.postRedisplay();
-	refreshing_ = FALSE;
+// 	if (refreshing_) return;
+// 	refreshing_ = TRUE;
+// 	// Cast sender
+// 	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+// 	if (!spin)
+// 	{
+// 		printf("AtenPrefs::colourScale_RangeChanged - Sender was not a QDoubleSpinBox.\n");
+// 		return;
+// 	}
+// 	// Find which button sent the signal
+// 	int n;
+// 	ColourScale::ScaleColour type;
+// 	for (n=0; n<10; n++)
+// 	{
+// 		if (scaleMinSpin_[n] == spin) { type = ColourScale::MinColour; break; }
+// 		else if (scaleMidSpin_[n] == spin) { type = ColourScale::MidColour; break; }
+// 		else if (scaleMaxSpin_[n] == spin) { type = ColourScale::MaxColour; break; }
+// 	}
+// 	if (n == 10) return;
+// 	// Set range for the scale
+// 	if (type != ColourScale::MidColour)
+// 	{
+// 		prefs.colourScale[n].setRange(scaleMinSpin_[n]->value(), scaleMaxSpin_[n]->value());
+// 		scaleMidSpin_[n]->setRange(scaleMinSpin_[n]->value(), scaleMaxSpin_[n]->value());
+// 		scaleMidSpin_[n]->setValue(prefs.colourScale[n].middle());
+// 	}
+// 	else prefs.colourScale[n].setMiddle(scaleMidSpin_[n]->value());
+// 	// Update display
+// 	master.currentModel()->logChange(Change::VisualLog);
+// 	gui.mainView.postRedisplay();
+// 	refreshing_ = FALSE;
 }
 
 void AtenPrefs::colourScale_NameChanged()
