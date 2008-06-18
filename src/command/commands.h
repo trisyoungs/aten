@@ -130,19 +130,13 @@ enum CommandAction {
 	CA_CHARGEFF,
 	CA_CHARGEFROMMODEL,
 	CA_CHARGEPATOM,
-	CA_CHARGESELECTION,
+	CA_CHARGE,
 	CA_CHARGETYPE,
 	CA_CLEARCHARGES,
 
 	// Colourscale commands
 	CA_LISTSCALES,
-	CA_SCALEMAXCOLOUR,
-	CA_SCALEMIDCOLOUR,
-	CA_SCALEMIDPOINT,
-	CA_SCALEMINCOLOUR,
 	CA_SCALENAME,
-	CA_SCALERANGE,
-	CA_SCALETYPE,
 	CA_SCALEVISIBLE,
 
 	// Disordered build commands
@@ -509,18 +503,12 @@ class CommandData
 	int function_CA_CHARGEFF(Command *&c, Bundle &obj);
 	int function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj);
 	int function_CA_CHARGEPATOM(Command *&c, Bundle &obj);
-	int function_CA_CHARGESELECTION(Command *&c, Bundle &obj);
+	int function_CA_CHARGE(Command *&c, Bundle &obj);
 	int function_CA_CHARGETYPE(Command *&c, Bundle &obj);
 	int function_CA_CLEARCHARGES(Command *&c, Bundle &obj);
 	// Colourscale commands
 	int function_CA_LISTSCALES(Command *&c, Bundle &obj);
-	int function_CA_SCALEMAXCOLOUR(Command *&c, Bundle &obj);
-	int function_CA_SCALEMIDCOLOUR(Command *&c, Bundle &obj);
-	int function_CA_SCALEMIDPOINT(Command *&c, Bundle &obj);
-	int function_CA_SCALEMINCOLOUR(Command *&c, Bundle &obj);
 	int function_CA_SCALENAME(Command *&c, Bundle &obj);
-	int function_CA_SCALERANGE(Command *&c, Bundle &obj);
-	int function_CA_SCALETYPE(Command *&c, Bundle &obj);
 	int function_CA_SCALEVISIBLE(Command *&c, Bundle &obj);
 	// Disordered build commands
 	int function_CA_DISORDER(Command *&c, Bundle &obj);

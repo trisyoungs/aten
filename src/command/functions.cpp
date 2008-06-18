@@ -107,19 +107,13 @@ void Master::initCommands()
 	CA_data[CA_CHARGEFF].function = &CommandData::function_CA_CHARGEFF;
 	CA_data[CA_CHARGEFROMMODEL].function = &CommandData::function_CA_CHARGEFROMMODEL;
 	CA_data[CA_CHARGEPATOM].function = &CommandData::function_CA_CHARGEPATOM;
-	CA_data[CA_CHARGESELECTION].function = &CommandData::function_CA_CHARGESELECTION;
+	CA_data[CA_CHARGE].function = &CommandData::function_CA_CHARGE;
 	CA_data[CA_CHARGETYPE].function = &CommandData::function_CA_CHARGETYPE;
 	CA_data[CA_CLEARCHARGES].function = &CommandData::function_CA_CLEARCHARGES;
 
 	// Colourscale commands
 	CA_data[CA_LISTSCALES].function = &CommandData::function_CA_LISTSCALES;
-	CA_data[CA_SCALEMAXCOLOUR].function = &CommandData::function_CA_SCALEMAXCOLOUR;
-	CA_data[CA_SCALEMIDCOLOUR].function = &CommandData::function_CA_SCALEMIDCOLOUR;
-	CA_data[CA_SCALEMIDPOINT].function = &CommandData::function_CA_SCALEMIDPOINT;
-	CA_data[CA_SCALEMINCOLOUR].function = &CommandData::function_CA_SCALEMINCOLOUR;
 	CA_data[CA_SCALENAME].function = &CommandData::function_CA_SCALENAME;
-	CA_data[CA_SCALERANGE].function = &CommandData::function_CA_SCALERANGE;
-	CA_data[CA_SCALETYPE].function = &CommandData::function_CA_SCALETYPE;
 	CA_data[CA_SCALEVISIBLE].function = &CommandData::function_CA_SCALEVISIBLE;
 
 	// Disordered build commands

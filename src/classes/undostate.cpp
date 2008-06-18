@@ -32,8 +32,11 @@ Change::Change()
 	vecData_[1] = NULL;
 	vecData_[2] = NULL;
 	vecData_[3] = NULL;
+	realData_[0] = 0.0;
+	realData_[1] = 0.0;
 	type_ = Change::NoEvent;
 	direction_ = Change::Reverse;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -91,6 +94,17 @@ void Change::set(int ue, int i, int j, int k, int l, int m)
 	data_[3] = l;
 	data_[4] = m;
 	dbgEnd(Debug::Calls,"Change::set[int]");
+}
+
+// Set change (double)
+void Change::set(int ue, double a, double b)
+{
+	dbgBegin(Debug::Calls,"Change::set[double]");
+	direction_ = (ue > 0 ? Change::Reverse : Change::Forwards);
+	type_ = (UndoEvent) abs(ue);
+	realData_[0] = a;
+	realData_[0] = b;
+	dbgEnd(Debug::Calls,"Change::set[double]");
 }
 
 // Set change (by passed variable types)
@@ -288,6 +302,20 @@ void Change::reverse(Model *m)
 				m->atoms_.move(data_[0], data_[1]);
 			}
 			m->renumberAtoms();
+			break;
+		// Atom charge change - from realData[1] to realData[0] (Change::Reverse) or vice versa (Change::Forwards)
+		case (Change::ChargeEvent):
+			i = modelatoms[data_[0]];
+			if (direction_ == Change::Reverse)
+			{
+				msg(Debug::Verbose,"Reversing atom charge change - atom %i, from %i to %i\n",data_[0],realData_[1],data_[0]);
+				i->setCharge(realData_[0]);
+			}
+			else
+			{
+				msg(Debug::Verbose,"Replaying atom charge change - atom %i, from %i to %i\n",data_[0],realData_[0],data_[1]);
+				i->setCharge(realData_[1]);
+			}
 			break;
 		default:
 			printf("Don't know how to reverse change (type = %i)\n", type_);
