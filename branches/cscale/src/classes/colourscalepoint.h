@@ -1,0 +1,90 @@
+/*
+	*** Colour scale point
+	*** src/classes/colourscalepoint.h
+	Copyright T. Youngs 2007,2008
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_COLOURSCALEPOINT_H
+#define ATEN_COLOURSCALEPOINT__H
+
+// Fix Windows.h
+#define NOMINMAX
+
+#include <QtOpenGL/QtOpenGL>
+
+// Forward declarations
+class Grid;
+class ColourScaleDelta;
+
+// Colour scale point
+class ColourScalePoint
+{
+	public:
+	// Constructor
+	ColourScalePoint();
+	// List pointer
+	ColourScalePoint *prev, *next;
+	// Friend class
+	friend class ColourScaleDelta;
+
+	private:
+	// Value at which this point occurs
+	double value_;
+	// Colour of this point
+	GLfloat colour_[4];
+
+	public:
+	// Set value for scalepoint
+	void setValue(double d);
+	// Return value for scalepoint
+	double value();
+	// Set colour
+	void setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Copy colour
+	void copyColour(GLfloat *target);
+};
+
+// Colour scale delta
+class ColourScaleDelta
+{
+	public:
+	// Constructor
+	ColourScaleDelta();
+	// List pointer
+	ColourScaleDelta *prev, *next;
+
+	private:
+	// Value at which the delta starts
+	double startValue_;
+	// Range of the data from the startValue
+	double deltaValue_;
+	// Colour of this starting point
+	GLfloat startColour_[4];
+	// Delta betweeh the starting point and the final point
+	GLfloat deltaColour_[4];
+
+	public:
+	// Check whether the delta 'contains' the supplied value
+	bool containsValue(double d);
+	// Create delta from two existing colours
+	void set(ColourScalePoint *point1, ColourScalePoint *point2);
+	// Get colour for value, assuming that v is within the range 0 -> value_
+	void getColour(double v, GLfloat *target);
+};
+
+#endif
