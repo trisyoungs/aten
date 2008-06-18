@@ -91,7 +91,7 @@ void Canvas::renderScene(Model *source)
 	glColor3fv(prefs.penColour(Prefs::ForegroundColour));
 
 	// Draw on the rotation globe
-	if (prefs.shouldRender(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
+	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
 
 	// Reset projection matrix and set perspective view
 	double top, bottom;
@@ -140,25 +140,25 @@ void Canvas::renderScene(Model *source)
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
 		  renderModelCell();
 		  // Draw the model's atoms, bonds, and selection
-		  if (prefs.shouldRender(Prefs::ViewAtoms)) renderModelAtoms();
+		  if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) renderModelAtoms();
 		  // Render glyphs associated with the model
 		  renderModelGlyphs();
 		  // Render force arrows
-		  if (prefs.shouldRender(Prefs::ViewForceArrows)) renderModelForceArrows();
+		  if (prefs.isVisibleOnScreen(Prefs::ViewForceArrows)) renderModelForceArrows();
 		glEndList();
 		renderPoint_ = displayModel_->log(Change::TotalLog);
 		msg(Debug::Verbose," Done. (New point = %i)\n",renderPoint_);
 	  }
 	  // Render surfaces
-	  if (prefs.shouldRender(Prefs::ViewSurfaces)) renderSurfaces();
+	  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces();
 	  // Render MC regions
-	  if ((displayModel_->cell()->type() != Cell::NoCell) && prefs.shouldRender(Prefs::ViewRegions)) renderRegions();
+	  if ((displayModel_->cell()->type() != Cell::NoCell) && prefs.isVisibleOnScreen(Prefs::ViewRegions)) renderRegions();
 	  glColor3fv(prefs.penColour(Prefs::ForegroundColour));
 	  renderExtra3d();
 	glPopMatrix();
 
 	// Draw replicated cells (using display list)
-	if (prefs.shouldRender(Prefs::ViewCellRepeat))
+	if (prefs.isVisibleOnScreen(Prefs::ViewCellRepeat))
 	{
 		static Mat3<double> cellmat;
 		static Vec3<double> cx, cy, cz;
@@ -197,8 +197,8 @@ void Canvas::renderScene(Model *source)
 
 	// Render text glyphs associated with the model
 	renderModelTextGlyphs();
-	if (prefs.shouldRender(Prefs::ViewLabels)) renderModelLabels();
-	if (prefs.shouldRender(Prefs::ViewMeasurements)) renderModelMeasurements();
+	if (prefs.isVisibleOnScreen(Prefs::ViewLabels)) renderModelLabels();
+	if (prefs.isVisibleOnScreen(Prefs::ViewMeasurements)) renderModelMeasurements();
 
 	renderExtra2d();
 

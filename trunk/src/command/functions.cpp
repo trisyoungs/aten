@@ -286,6 +286,7 @@ void Master::initCommands()
 	CA_data[CA_SCHEME].function = &CommandData::function_CA_SCHEME;
 	CA_data[CA_SHININESS].function = &CommandData::function_CA_SHININESS;
 	CA_data[CA_SHOW].function = &CommandData::function_CA_SHOW;
+	CA_data[CA_SHOWONIMAGE].function = &CommandData::function_CA_SHOWONIMAGE;
 	CA_data[CA_STYLE].function = &CommandData::function_CA_STYLE;
 	CA_data[CA_USENICETEXT].function = &CommandData::function_CA_USENICETEXT;
 	CA_data[CA_VCUT].function = &CommandData::function_CA_VCUT;

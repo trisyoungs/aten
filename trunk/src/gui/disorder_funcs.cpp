@@ -207,7 +207,7 @@ void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
 
 void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
 {
-	prefs.setVisible(Prefs::ViewRegions, checked);
+	prefs.setVisibleOnScreen(Prefs::ViewRegions, checked);
 	gui.mainView.postRedisplay();
 }
 

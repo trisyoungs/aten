@@ -276,14 +276,18 @@ int CommandData::function_CA_REPLICATETRIM(Command *&c, Bundle &obj)
 // Colouring scheme
 int CommandData::function_CA_SCHEME(Command *&c, Bundle &obj)
 {
-	Prefs::ColouringScheme cs = Prefs::colouringScheme(c->argc(0));
-	if (cs != Prefs::nColouringSchemes)
+	if (c->hasArg(0))
 	{
-		prefs.setColourScheme(cs);
-		if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
-		gui.mainView.postRedisplay();
+		Prefs::ColouringScheme cs = Prefs::colouringScheme(c->argc(0));
+		if (cs != Prefs::nColouringSchemes)
+		{
+			prefs.setColourScheme(cs);
+			if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+			gui.mainView.postRedisplay();
+		}
+		else return CR_FAIL;
 	}
-	else return CR_FAIL;
+	else msg(Debug::None, "Current atom colouring scheme is '%s'\n", Prefs::colouringScheme( prefs.colourScheme() ));
 	return CR_SUCCESS;
 }
 
@@ -296,31 +300,102 @@ int CommandData::function_CA_SHININESS(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Render Objects
+// Render Objects on screen
 int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 {
-	Prefs::ViewObject vo = Prefs::viewObject(c->argc(0));
-	if (vo != Prefs::nViewObjects)
+	if (c->hasArg(0))
 	{
-		prefs.setVisible(vo, c->argb(1));
-		if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
-		gui.mainView.postRedisplay();
+		Prefs::ViewObject vo = Prefs::viewObject(c->argc(0));
+		if (vo != Prefs::nViewObjects)
+		{
+			prefs.setVisibleOnScreen(vo, c->argb(1));
+			if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+			gui.mainView.postRedisplay();
+		}
+		else return CR_FAIL;
 	}
-	else return CR_FAIL;
+	else
+	{
+		char shown[512], notshown[512];
+		shown[0] = '\0';
+		notshown[0] = '\0';
+		int n = 1;
+		strcat(shown,"Visible: ");
+		strcat(notshown,"Hidden : ");
+		msg(Debug::None, "Current on-screen object status:\n");
+		for (int i=0; i<Prefs::nViewObjects; i++)
+		{
+			if (prefs.isVisibleOnScreen( (Prefs::ViewObject) n))
+			{
+				strcat(shown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(shown, " ");
+			}
+			else
+			{
+				strcat(notshown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(notshown, " ");
+			}
+			n *= 2;
+		}
+		msg(Debug::None, "%s\n", shown);
+		msg(Debug::None, "%s\n", notshown);
+	}
+	return CR_SUCCESS;
+}
+
+// Render Objects on saved images
+int CommandData::function_CA_SHOWONIMAGE(Command *&c, Bundle &obj)
+{
+	if (c->hasArg(0))
+	{
+		Prefs::ViewObject vo = Prefs::viewObject(c->argc(0));
+		if (vo != Prefs::nViewObjects) prefs.setVisibleOnImage(vo, c->argb(1));
+		else return CR_FAIL;
+	}
+	else
+	{
+		char shown[512], notshown[512];
+		shown[0] = '\0';
+		notshown[0] = '\0';
+		int n = 1;
+		strcat(shown,"Visible: ");
+		strcat(notshown,"Hidden : ");
+		msg(Debug::None, "Current on-image object status:\n");
+		for (int i=0; i<Prefs::nViewObjects; i++)
+		{
+			if (prefs.isVisibleOnImage( (Prefs::ViewObject) n))
+			{
+				strcat(shown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(shown, " ");
+			}
+			else
+			{
+				strcat(notshown, Prefs::viewObject( (Prefs::ViewObject) n));
+				strcat(notshown, " ");
+			}
+			n *= 2;
+		}
+		msg(Debug::None, "%s\n", shown);
+		msg(Debug::None, "%s\n", notshown);
+	}
 	return CR_SUCCESS;
 }
 
 // View Styles
 int CommandData::function_CA_STYLE(Command *&c, Bundle &obj)
 {
-	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
-	if (ds != Atom::nDrawStyles)
+	if (c->hasArg(0))
 	{
-		prefs.setRenderStyle(ds);
-		if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
-		gui.mainView.postRedisplay();
+		Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
+		if (ds != Atom::nDrawStyles)
+		{
+			prefs.setRenderStyle(ds);
+			if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+			gui.mainView.postRedisplay();
+		}
+		else return CR_FAIL;
 	}
-	else return CR_FAIL;
+	else msg(Debug::None, "Current model drawing style is '%s'\n", Atom::drawStyle(prefs.renderStyle()));
 	return CR_SUCCESS;
 }
 
