@@ -1,0 +1,60 @@
+format 1			# Determines format of file (normally '1')
+units kcal			# Energy units used in specification
+[dmim]Cl FM 089a		# Name of forcefield
+types 8				# Number of atom types present in forcefield
+#Type	Element	Type Description
+N	N	"bonds=3,-C,-C,-C,ring(size=5,-C,-C,-C,-N)"
+C1	C	"bonds=3,-N,-N,-H"
+H1	H	"bonds=1,-C(-N,-N,ring(size=5,-N,-N,-C,-C))"
+CM	C	"-H,-H,-H,-N(ring(size=5,-C,-C,-C,-N))"
+HM	H	"-C(-H,-H,-N)"
+Cl	Cl	""
+C2	C	"bonds=3,-C,-N,-H"
+H2	H	"bonds=1,-C(-C,-N,ring(size=5,-N,-N,-C,-C))"
+vdw  lj
+#Type	Charge		VDW1	VDW2	VDW3
+N	0.1334		0.1918	3.1755	0.0
+C1	-0.1805		0.0804	3.8423	0.0
+H1	0.2933		0.0339	1.1716	0.0
+CM	-0.3107		0.0756	3.6566	0.0
+HM	0.1795		0.0338	1.4074	0.0
+Cl	-1.0		0.1809	3.5411	0.0
+C2	-0.1763		0.0809	3.6951	0.0
+H2	0.2587		0.0333	1.3632	0.0
+end
+bonds harmonic
+C1	N	859.1253     1.36015
+C2	N	713.9503     1.39535
+C1	H1	674.3920     1.1209
+C2	H2	721.8432     1.11465
+CM	N	501.5750     1.47455
+CM	HM	671.7444     1.1228
+C2	C2	940.3439     1.3928
+end
+angles harmonic
+N	C1	N	156.9030   108.0774
+N	C1	H1	54.1453   125.3868
+C1	N	C2	147.9736   108.9225
+C1	N	CM	110.8586   124.5774
+C2	N	CM	118.2627   125.3303
+C2	C2	N	179.6752   106.7821
+C2	C2	H2	40.3593   130.5855
+N	C2	H2	52.7261   121.5671
+N	CM	HM	100.0414   108.9437
+HM	CM	HM	61.4091   109.7239
+end
+torsions cosine 0.5 0.5
+CM	N	C1	H1	1.7965    180.0000      2.0000
+CM	N	C1	N	4.7584    180.0000      2.0000
+CM	N	C2	C2	4.9230    180.0000      2.0000
+CM	N	C2	H2	1.9729    180.0000      2.0000
+N	C2	C2	N	1.1113    180.0000      2.0000
+N	C2	C2	H2	5.0405    180.0000      2.0000
+N	C1	N	C2	1.1113    180.0000      2.0000
+H2	C2	C2	H2	2.9742    180.0000      2.0000
+C1	N	C2	C2	1.1113    180.0000      2.0000
+C1	N	C2	H2	4.9285    180.0000      2.0000 
+C1	N	CM	HM	0.0000    180.0000      3.0000
+C2	N	CM	HM	0.0000    180.0000      3.0000
+C2	N	C1	H1	4.3894    180.0000      2.0000
+end

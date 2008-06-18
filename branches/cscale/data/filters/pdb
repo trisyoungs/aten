@@ -1,0 +1,63 @@
+# Protein databank coordinates import. Residue data etc. is ignored.
+importmodel
+	name "Protein Databank PDB"
+	nickname pdb
+	extension pdb
+	glob *.pdb
+
+	# Variable declarations
+	character keyword,line,e,name
+	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
+	integer n,id,i,bondi,bondj,bondk,bondl,found
+
+	zmap firstalpha
+
+	# Create default model
+	newmodel $title
+	let $found = 0
+	for $n
+		readline "$keyword%6 $line%100"
+		if $keyword = HEADER
+			readvar $line "$title%100"
+			let $found = 1
+			setname $title
+		elseif $keyword = CRYST1
+			readvar $line "$ca%9 $cb%9 $cc%9 $alpha%7 $beta%7 $gamma%7"
+			cell $ca $cb $cc $alpha $beta $gamma"
+		elseif $keyword = HETATM
+			#readvar $line "*%5 $e%4 *%1 *%1 *%3 *%1 *%1 *%4 *%1 *%3 $rx%8 $ry%8 $rz%8 *%6 *%6 *%6 *%4 *%2 *%2"
+			readvar $line "$id%5 $name%5 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
+			if $e = ""
+				let $e = $name
+			end
+			newatom $e
+			setcoords $rx $ry $rz
+		elseif $keyword = ATOM
+			readvar $line "$id%5 $name%5 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
+			if $e = ""
+				let $e = $name
+			end
+			newatom $e
+			setcoords $rx $ry $rz
+		elseif $keyword = CONECT
+			readvar $line "*%6 $i%5 $bondi%5 $bondj%5 $bondk%5 $bondl%5"
+			if $bondi > 0
+				newbond $i $bondi
+			end
+			if $bondj > 0
+				newbond $i $bondj
+			end
+			if $bondk > 0
+				newbond $i $bondk
+			end
+			if $bondl > 0
+				newbond $i $bondl
+			end
+		end
+	end
+	if $found = n
+		warn "No HEADER record found in file."
+	end
+	rebond
+	finalisemodel
+end
