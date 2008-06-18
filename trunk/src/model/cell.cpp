@@ -174,9 +174,11 @@ void Model::pack(int gen)
 	{
 		// Get the position of the newly-pasted atom
 		newr = i->r();
+		newr.print();
 		// Apply the rotation and translation
 		newr *= master.generators[gen].rotation;
 		newr +=  cell_.transpose() * master.generators[gen].translation;
+		i->r() = newr;
 		cell_.fold(i, this);
 	}
 	dbgEnd(Debug::Calls,"Model::pack[gen,atom]");
