@@ -113,6 +113,7 @@ void AtenPrefs::setControls()
 		item = ui.ScaleList->item(n);
 		sprintf(name, "%i. %s", n+1, prefs.colourScale[n].name());
 	}
+	updateScalePointsList();
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
@@ -465,7 +466,7 @@ void AtenPrefs::updateScalePointsList()
 	// Cycle over scale points and add the items
 	GLfloat colour[4];
 	QListWidgetItem *item;
-	for (ColourScalePoint *csp = prefs.colourScale[scale].points(); csp != NULL; csp = csp->next)
+	for (ColourScalePoint *csp = prefs.colourScale[scale].firstPoint(); csp != NULL; csp = csp->next)
 	{
 		item = new QListWidgetItem(ftoa(csp->value()), ui.ScalePointsList);
 		csp->copyColour(colour);
@@ -549,10 +550,18 @@ void AtenPrefs::on_AddPointButton_clicked(bool checked)
 	if (scale == -1) return;
 	// Add a new point to the end of the scale and refresh the list
 	double value = (prefs.colourScale[scale].nPoints() == 0 ? 0.0 : prefs.colourScale[scale].lastPoint()->value() + 1.0);
-	prefs.colourScale[scale].addPoint(prefs.colourScale[scale].nPoints()-1, value, 0.5f, 0.5f, 0.5f);
+	prefs.colourScale[scale].addPointAtEnd(value, 0.5f, 0.5f, 0.5f);
 	updateScalePointsList();
 }
 
 void AtenPrefs::on_RemovePointButton_clicked(bool checked)
 {
+	// Get the id of the currently selected scale and point
+	int scale = ui.ScaleList->currentRow();
+	if (scale == -1) return;
+	int id = ui.ScalePointsList->currentRow();
+	if (id == -1) return;
+	// Remove selected point
+	prefs.colourScale[scale].removePoint(id);
+	updateScalePointsList();
 }

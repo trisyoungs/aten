@@ -78,8 +78,8 @@ GLfloat *ColourScalePoint::colour()
 ColourScaleDelta::ColourScaleDelta()
 {
 	// Private variables
-	startValue_ = 0.0;
-	deltaValue_ = 0.0;
+	start_ = 0.0;
+	delta_ = 0.0;
 
 	// Public variables
 	prev = NULL;
@@ -89,8 +89,8 @@ ColourScaleDelta::ColourScaleDelta()
 // Check whether the delta 'contains' the supplied value
 bool ColourScaleDelta::containsValue(double d)
 {
-	if (d < startValue_) return FALSE;
-	if (d > (startValue_ + deltaValue_)) return FALSE;
+	if (d < start_) return FALSE;
+	if (d > (start_ + delta_)) return FALSE;
 	return TRUE;
 }
 
@@ -98,7 +98,7 @@ bool ColourScaleDelta::containsValue(double d)
 void ColourScaleDelta::set(ColourScalePoint *point1, ColourScalePoint *point2)
 {
 	// Copy first colour point
-	startValue_ = point1->value_;
+	start_ = point1->value_;
 	startColour_[0] = point1->colour_[0];
 	startColour_[1] = point1->colour_[1];
 	startColour_[2] = point1->colour_[2];
@@ -107,14 +107,14 @@ void ColourScaleDelta::set(ColourScalePoint *point1, ColourScalePoint *point2)
 	deltaColour_[1] = point2->colour_[1] - startColour_[1];
 	deltaColour_[2] = point2->colour_[2] - startColour_[2];
 	deltaColour_[3] = point2->colour_[3] - startColour_[3];
-	deltaValue_ = point2->value_ - startValue_;
+	delta_ = point2->value_ - start_;
 }
 
 // Get colour for value v
-void ColourScaleDelta::getColour(double v, GLfloat *target)
+void ColourScaleDelta::colour(double v, GLfloat *target)
 {
 	// Clamp 'v' to range 0.0 - 1.0 to span range of delta
-	double clampv = (v - startValue_) / deltaValue_;
+	double clampv = (v - start_) / delta_;
 	if (clampv < 0.0) clampv = 0.0;
 	else if (clampv > 1.0) clampv = 1.0;
 	target[0] = startColour_[0] + deltaColour_[0] * clampv;
@@ -123,3 +123,14 @@ void ColourScaleDelta::getColour(double v, GLfloat *target)
 	target[3] = startColour_[3] + deltaColour_[3] * clampv;
 }
 
+// Return the starting value of the range
+double ColourScaleDelta::start()
+{
+	return start_;
+}
+
+// Return the range of the delta
+double ColourScaleDelta::delta()
+{
+	return delta_;
+}

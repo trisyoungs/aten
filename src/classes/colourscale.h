@@ -75,17 +75,25 @@ class ColourScale
 	// Return number of points in colourscale
 	int nPoints();
 	// Return first point in colourscale
-	ColourScalePoint *points();
+	ColourScalePoint *firstPoint();
 	// Return last point in colourscale
 	ColourScalePoint *lastPoint();
 	// Return specific point in colourscale
 	ColourScalePoint *point(int id);
+	// Return first delta in colourscale
+	ColourScaleDelta *firstDelta();
 	// Clear all points in colourscale
 	void clear();
 	// Add new point to colourscale
 	void addPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Add new point to end of colourscale
+	void addPointAtEnd(double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
 	// Set colour and value data for point
-	void setPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	void setPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f, bool setval = TRUE, bool setcol = TRUE);
+	// Set only value for point
+	void setPointValue(int position, double value);
+	// Set only colour for point
+	void setPointColour(int position, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
 	// Remove old point from colourscale
 	void removePoint(int position);
 	// Get colour associated with value supplied

@@ -72,9 +72,9 @@ class ColourScaleDelta
 
 	private:
 	// Value at which the delta starts
-	double startValue_;
+	double start_;
 	// Range of the data from the startValue
-	double deltaValue_;
+	double delta_;
 	// Colour of this starting point
 	GLfloat startColour_[4];
 	// Delta betweeh the starting point and the final point
@@ -86,7 +86,11 @@ class ColourScaleDelta
 	// Create delta from two existing colours
 	void set(ColourScalePoint *point1, ColourScalePoint *point2);
 	// Get colour for value, assuming that v is within the range 0 -> value_
-	void getColour(double v, GLfloat *target);
+	void colour(double v, GLfloat *target);
+	// Return the starting value of the range
+	double start();
+	// Return the range of the delta
+	double delta();
 };
 
 #endif

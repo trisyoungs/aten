@@ -93,6 +93,62 @@ void ColourScale::addPoint(int position, double value, GLfloat r, GLfloat g, GLf
 	dbgEnd(Debug::Calls,"ColourScale::addPoint");
 }
 
+// Add new point to end of colourscale
+void ColourScale::addPointAtEnd(double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	addPoint(points_.nItems(), value, r, g, b, a);
+}
+
+// Set colour and value data for point
+void ColourScale::setPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool setval, bool setcol)
+{
+	dbgBegin(Debug::Calls,"ColourScale::setPoint");
+	// Check position supplied
+	if ((position < 0) || (position >= points_.nItems()))
+	{
+		msg(Debug::None, "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		dbgEnd(Debug::Calls,"ColourScale::setPoint");
+		return;
+	}
+	if (setval) points_[position]->setValue(value);
+	if (setcol) points_[position]->setColour(r, g, b, a);
+	// Recalculate colour deltas
+	calculateDeltas();
+	// Refresh linked objects
+	refreshObjects();
+	dbgEnd(Debug::Calls,"ColourScale::setPoint");
+}
+
+// Set only value for point
+void ColourScale::setPointValue(int position, double value)
+{
+	setPoint(position, value, 0.0f, 0.0f, 0.0f, 0.0f, TRUE, FALSE);
+}
+
+// Set only colour for point
+void ColourScale::setPointColour(int position, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	setPoint(position, 0.0f, r, g, b, a, FALSE, TRUE);
+}
+
+// Remove old point from colourscale
+void ColourScale::removePoint(int position)
+{
+	dbgBegin(Debug::Calls,"ColourScale::removePoint");
+	// Check position supplied
+	if ((position < 0) || (position >= points_.nItems()))
+	{
+		msg(Debug::None, "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		dbgEnd(Debug::Calls,"ColourScale::removePoint");
+		return;
+	}
+	points_.remove( points_[position] );
+	// Recalculate colour deltas
+	calculateDeltas();
+	// Refresh linked objects
+	refreshObjects();
+	dbgEnd(Debug::Calls,"ColourScale::removePoint");
+}
 
 // Return colour associated with value provided
 void ColourScale::colour(double v, GLfloat *target)
@@ -121,7 +177,7 @@ void ColourScale::colour(double v, GLfloat *target)
 	{
 		if (delta->containsValue(v))
 		{
-			delta->getColour(v, target);
+			delta->colour(v, target);
 			return;
 		}
 	}
@@ -141,7 +197,7 @@ int ColourScale::nPoints()
 }
 
 // Return first point in colourscale
-ColourScalePoint *ColourScale::points()
+ColourScalePoint *ColourScale::firstPoint()
 {
 	return points_.first();
 }
@@ -156,6 +212,12 @@ ColourScalePoint *ColourScale::lastPoint()
 ColourScalePoint *ColourScale::point(int id)
 {
 	return points_[id];
+}
+
+// Return first delta in colourscale
+ColourScaleDelta *ColourScale::firstDelta()
+{
+	return deltas_.first();
 }
 
 // Clear all points in colourscale

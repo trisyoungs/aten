@@ -54,6 +54,8 @@ Grid::Grid()
 	colourScale_ = -1;
 	//prefs.colourScale[0].addLink(this);
 	useColourScale_ = FALSE;
+	useDataForZ_ = TRUE;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -292,6 +294,19 @@ int Grid::colourScale()
 bool Grid::usesColourScale()
 {
 	return useColourScale_;
+}
+
+// Set whether to use data2d_ values for the z-component of the 2D surface
+void Grid::setUseDataForZ(bool b)
+{
+	useDataForZ_ = b;
+	log_ ++;
+}
+
+// Whether to use data2d_ value sfor z-component of 2D surface
+bool Grid::useDataForZ()
+{
+	return useDataForZ_;
 }
 
 // Create data array (from npoints vector)

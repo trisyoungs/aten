@@ -324,14 +324,14 @@ void Prefs::load(const char *filename)
 // Set the visibility of an object on-screen
 void Prefs::setVisibleOnScreen(ViewObject vo, bool b)
 {
-	if (b &&  (!(screenObjects_&vo))) screenObjects_ += vo;
+	if (b && (!(screenObjects_&vo))) screenObjects_ += vo;
 	else if ((!b) && (screenObjects_&vo)) screenObjects_ -= vo;
 }
 
 // Set the visibility of an object on-screen
 void Prefs::setVisibleOnImage(ViewObject vo, bool b)
 {
-	if (b &&  (!(imageObjects_&vo))) imageObjects_ += vo;
+	if (b && (!(imageObjects_&vo))) imageObjects_ += vo;
 	else if ((!b) && (imageObjects_&vo)) imageObjects_ -= vo;
 }
 

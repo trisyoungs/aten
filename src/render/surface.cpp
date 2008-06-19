@@ -552,7 +552,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i, j, data[i][j]);
+			glVertex3d(i, j, g->useDataForZ() ? data[i][j] : 0.0);
 
 			gradientx.set(1.0,0,(data[i+2][j] - data[i][j])*0.5);
 			gradienty.set(0,1.0,(data[i+1][j+1] - data[i+1][j-1])*0.5);
@@ -564,7 +564,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i+1, j, data[i+1][j]);
+			glVertex3d(i+1, j, g->useDataForZ() ? data[i+1][j] : 0.0);
 
 			gradientx.set(1.0,0,(data[i+2][j+1] - data[i][j+1])*0.5);
 			gradienty.set(0,1.0,(data[i+1][j+2] - data[i+1][j])*0.5);
@@ -576,7 +576,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i+1, j+1, data[i+1][j+1]);
+			glVertex3d(i+1, j+1, g->useDataForZ() ? data[i+1][j+1] : 0.0);
 
 			gradientx.set(1.0,0,(data[i+1][j+1] - data[i-1][j+1])*0.5);
 			gradienty.set(0,1.0,(data[i][j+2] - data[i][j])*0.5);
@@ -588,7 +588,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
-			glVertex3d(i, j+1, data[i][j+1]);
+			glVertex3d(i, j+1, g->useDataForZ() ? data[i][j+1] : 0.0);
 		}
 	}
 	glEnd();

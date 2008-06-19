@@ -88,6 +88,8 @@ class Grid
 	void setLimits(double d);
 	// Order of loops when reading data point-by-point
 	Vec3<int> loopOrder_;
+	// Use data value for z-component of 2D surface
+	bool useDataForZ_;
 
 	public:
 	// Set spacing for a cubic Grid
@@ -124,6 +126,10 @@ class Grid
 	void setLoopOrder(int n, int xyz);
 	// Get cell axes in suitaqble GL format
 	void axesForGl(double *glmat);
+	// Set whether to use data2d_ values for the z-component of the 2D surface
+	void setUseDataForZ(bool b);
+	// Whether to use data2d_ value sfor z-component of 2D surface
+	bool useDataForZ();
 
 	/*
 	// Data Interface

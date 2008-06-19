@@ -1981,8 +1981,8 @@
         <widget class="QGroupBox" name="ColourScaleGroup" >
          <property name="sizePolicy" >
           <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>7</vsizetype>
+           <hsizetype>1</hsizetype>
+           <vsizetype>1</vsizetype>
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -1995,7 +1995,7 @@
          </property>
          <property name="maximumSize" >
           <size>
-           <width>16777215</width>
+           <width>215</width>
            <height>250</height>
           </size>
          </property>
