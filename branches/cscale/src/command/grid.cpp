@@ -188,6 +188,14 @@ int CommandData::function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set whether 2D grid uses data value as height component
+int CommandData::function_CA_GRIDUSEZ(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	obj.g->setUseDataForZ(c->argb(0));
+	return CR_SUCCESS;
+}
+
 // Create new grid
 int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
 {
