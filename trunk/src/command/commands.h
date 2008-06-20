@@ -124,26 +124,27 @@ enum CommandAction {
 	CA_SCALE,
 	CA_CELL,
 	CA_CELLAXES,
+	CA_NOCELL,
 	CA_SPACEGROUP,
 
 	// Charge commands
 	CA_CHARGEFF,
 	CA_CHARGEFROMMODEL,
 	CA_CHARGEPATOM,
-	CA_CHARGESELECTION,
+	CA_CHARGE,
 	CA_CHARGETYPE,
 	CA_CLEARCHARGES,
 
 	// Colourscale commands
+	CA_ADDPOINT,
+	CA_CLEARPOINTS,
 	CA_LISTSCALES,
-	CA_SCALEMAXCOLOUR,
-	CA_SCALEMIDCOLOUR,
-	CA_SCALEMIDPOINT,
-	CA_SCALEMINCOLOUR,
+	CA_REMOVEPOINT,
 	CA_SCALENAME,
-	CA_SCALERANGE,
-	CA_SCALETYPE,
 	CA_SCALEVISIBLE,
+	CA_SETPOINT,
+	CA_SETPOINTCOLOUR,
+	CA_SETPOINTVALUE,
 
 	// Disordered build commands
 	CA_DISORDER,
@@ -238,6 +239,7 @@ enum CommandAction {
 	CA_GRIDSIZE,
 	CA_GRIDSYMMETRIC,
 	CA_GRIDTRANSPARENCY,
+	CA_GRIDUSEZ,
 	CA_NEWGRID,
 
 	// Image Commands
@@ -504,24 +506,25 @@ class CommandData
 	int function_CA_SCALE(Command *&c, Bundle &obj);
 	int function_CA_CELL(Command *&c, Bundle &obj);
 	int function_CA_CELLAXES(Command *&c, Bundle &obj);
+	int function_CA_NOCELL(Command *&c, Bundle &obj);
 	int function_CA_SPACEGROUP(Command *&c, Bundle &obj);
 	// Charge commands
 	int function_CA_CHARGEFF(Command *&c, Bundle &obj);
 	int function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj);
 	int function_CA_CHARGEPATOM(Command *&c, Bundle &obj);
-	int function_CA_CHARGESELECTION(Command *&c, Bundle &obj);
+	int function_CA_CHARGE(Command *&c, Bundle &obj);
 	int function_CA_CHARGETYPE(Command *&c, Bundle &obj);
 	int function_CA_CLEARCHARGES(Command *&c, Bundle &obj);
 	// Colourscale commands
+	int function_CA_ADDPOINT(Command *&c, Bundle &obj);
+	int function_CA_CLEARPOINTS(Command *&c, Bundle &obj);
 	int function_CA_LISTSCALES(Command *&c, Bundle &obj);
-	int function_CA_SCALEMAXCOLOUR(Command *&c, Bundle &obj);
-	int function_CA_SCALEMIDCOLOUR(Command *&c, Bundle &obj);
-	int function_CA_SCALEMIDPOINT(Command *&c, Bundle &obj);
-	int function_CA_SCALEMINCOLOUR(Command *&c, Bundle &obj);
+	int function_CA_REMOVEPOINT(Command *&c, Bundle &obj);
 	int function_CA_SCALENAME(Command *&c, Bundle &obj);
-	int function_CA_SCALERANGE(Command *&c, Bundle &obj);
-	int function_CA_SCALETYPE(Command *&c, Bundle &obj);
 	int function_CA_SCALEVISIBLE(Command *&c, Bundle &obj);
+	int function_CA_SETPOINT(Command *&c, Bundle &obj);
+	int function_CA_SETPOINTCOLOUR(Command *&c, Bundle &obj);
+	int function_CA_SETPOINTVALUE(Command *&c, Bundle &obj);
 	// Disordered build commands
 	int function_CA_DISORDER(Command *&c, Bundle &obj);
 	int function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj);
@@ -608,6 +611,7 @@ class CommandData
 	int function_CA_GRIDSIZE(Command *&c, Bundle &obj);
 	int function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj);
 	int function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj);
+	int function_CA_GRIDUSEZ(Command *&c, Bundle &obj);
 	int function_CA_NEWGRID(Command *&c, Bundle &obj);
 	// Image Commands
 	int function_CA_SAVEBITMAP(Command *&c, Bundle &obj);

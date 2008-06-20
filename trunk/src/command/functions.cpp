@@ -101,26 +101,27 @@ void Master::initCommands()
 	CA_data[CA_SCALE].function = &CommandData::function_CA_SCALE;
 	CA_data[CA_CELL].function = &CommandData::function_CA_CELL;
 	CA_data[CA_CELLAXES].function = &CommandData::function_CA_CELLAXES;
+	CA_data[CA_NOCELL].function = &CommandData::function_CA_NOCELL;
 	CA_data[CA_SPACEGROUP].function = &CommandData::function_CA_SPACEGROUP;
 
 	// Charge commands
 	CA_data[CA_CHARGEFF].function = &CommandData::function_CA_CHARGEFF;
 	CA_data[CA_CHARGEFROMMODEL].function = &CommandData::function_CA_CHARGEFROMMODEL;
 	CA_data[CA_CHARGEPATOM].function = &CommandData::function_CA_CHARGEPATOM;
-	CA_data[CA_CHARGESELECTION].function = &CommandData::function_CA_CHARGESELECTION;
+	CA_data[CA_CHARGE].function = &CommandData::function_CA_CHARGE;
 	CA_data[CA_CHARGETYPE].function = &CommandData::function_CA_CHARGETYPE;
 	CA_data[CA_CLEARCHARGES].function = &CommandData::function_CA_CLEARCHARGES;
 
 	// Colourscale commands
+	CA_data[CA_ADDPOINT].function = &CommandData::function_CA_ADDPOINT;
+	CA_data[CA_CLEARPOINTS].function = &CommandData::function_CA_CLEARPOINTS;
 	CA_data[CA_LISTSCALES].function = &CommandData::function_CA_LISTSCALES;
-	CA_data[CA_SCALEMAXCOLOUR].function = &CommandData::function_CA_SCALEMAXCOLOUR;
-	CA_data[CA_SCALEMIDCOLOUR].function = &CommandData::function_CA_SCALEMIDCOLOUR;
-	CA_data[CA_SCALEMIDPOINT].function = &CommandData::function_CA_SCALEMIDPOINT;
-	CA_data[CA_SCALEMINCOLOUR].function = &CommandData::function_CA_SCALEMINCOLOUR;
+	CA_data[CA_REMOVEPOINT].function = &CommandData::function_CA_REMOVEPOINT;
 	CA_data[CA_SCALENAME].function = &CommandData::function_CA_SCALENAME;
-	CA_data[CA_SCALERANGE].function = &CommandData::function_CA_SCALERANGE;
-	CA_data[CA_SCALETYPE].function = &CommandData::function_CA_SCALETYPE;
 	CA_data[CA_SCALEVISIBLE].function = &CommandData::function_CA_SCALEVISIBLE;
+	CA_data[CA_SETPOINT].function = &CommandData::function_CA_SETPOINT;
+	CA_data[CA_SETPOINTCOLOUR].function = &CommandData::function_CA_SETPOINTCOLOUR;
+	CA_data[CA_SETPOINTVALUE].function = &CommandData::function_CA_SETPOINTVALUE;
 
 	// Disordered build commands
 	CA_data[CA_DISORDER].function = &CommandData::function_CA_DISORDER;
@@ -202,6 +203,7 @@ void Master::initCommands()
 	CA_data[CA_GRIDSIZE].function = &CommandData::function_CA_GRIDSIZE;
 	CA_data[CA_GRIDSYMMETRIC].function = &CommandData::function_CA_GRIDSYMMETRIC;
 	CA_data[CA_GRIDTRANSPARENCY].function = &CommandData::function_CA_GRIDTRANSPARENCY;
+	CA_data[CA_GRIDUSEZ].function = &CommandData::function_CA_GRIDUSEZ;
 	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
 
 	// Image Commands

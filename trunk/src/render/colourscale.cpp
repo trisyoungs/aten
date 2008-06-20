@@ -26,15 +26,15 @@
 void Canvas::renderColourscales()
 {
 	dbgBegin(Debug::Calls,"Canvas::renderColourscales");
-	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
+	GLfloat col[4];
 
 	// For now, draw in a stack at the bottom of the canvas.
-	double x, y, width, height = 20.0, qwidth, x2;
-	double cmin, cmax, cmid, cstep;
+	double leftx, x, y, width, height = 20.0, start, scalestart;
+	double range, deltaw, cstep;
 	char label[128];
 	int halfslices = 5;
 	width = width_ * 0.6;
-	x = (width_ - width) * 0.25;
+	leftx = (width_ - width) * 0.50;
 	y = 5.0;
 
 	// Loop over colourscales....
@@ -42,43 +42,32 @@ void Canvas::renderColourscales()
 	{
 		if (!prefs.colourScale[n].visible()) continue;
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		cmin = prefs.colourScale[n].minimum();
-		cmax = prefs.colourScale[n].maximum();
-		cmid = prefs.colourScale[n].middle();
-		// Draw QUADS to get the gradient we want.
+		// Get the total range of the colourscale
+		scalestart = prefs.colourScale[n].firstPoint()->value();
+		range = prefs.colourScale[n].lastPoint()->value() - scalestart;
+		// Use the delta list to draw the quads
 		glBegin(GL_QUAD_STRIP);
-		  if (prefs.colourScale[n].type() == ColourScale::TwoPoint)
+		  for (ColourScaleDelta *delta = prefs.colourScale[n].firstDelta(); delta != NULL; delta = delta->next)
 		  {
-			cstep = (cmax - cmin) / (halfslices*2);
-			qwidth = width / (halfslices*2);
-			for (int i=0; i<=halfslices*2; i++)
+			// Grab width (delta) and start value of
+			start = delta->start();
+			deltaw = delta->delta();
+			// Get start and end colours
+			delta->colour(start, col);
+			// Get starting x coordinate for 
+			x = leftx + width * ( (start - scalestart) / range );
+			// Draw quad
+			glColor3f(col[0], col[1], col[2]);
+			glVertex2d(x,y);
+			glVertex2d(x,y+height);
+			// If last delta, finish final quad
+			if (delta->next == NULL)
 			{
-				prefs.colourScale[n].colour(cmin + i*cstep, col);
+				delta->colour(start + deltaw, col);
+				x = leftx + width;
 				glColor3f(col[0], col[1], col[2]);
-				glVertex2d(x+i*qwidth,y);
-				glVertex2d(x+i*qwidth,y+height);
-			}
-		  }
-		  else
-		  {
-			cstep = (cmid - cmin) / halfslices;
-			qwidth = (width * (cmid - cmin) / (cmax - cmin)) / halfslices;
-			for (int i=0; i<=halfslices; i++)
-			{
-				prefs.colourScale[n].colour(cmin + i*cstep, col);
-				glColor3f(col[0], col[1], col[2]);
-				glVertex2d(x+i*qwidth,y);
-				glVertex2d(x+i*qwidth,y+height);
-			}
-			x2 = x + halfslices * qwidth;
-			cstep = (cmax - cmid) / halfslices;
-			qwidth = (width * (cmax - cmid) / (cmax - cmin)) / halfslices;
-			for (int i=1; i<=halfslices; i++)
-			{
-				prefs.colourScale[n].colour(cmid + i*cstep, col);
-				glColor3f(col[0], col[1], col[2]);
-				glVertex2d(x2+i*qwidth,y);
-				glVertex2d(x2+i*qwidth,y+height);
+				glVertex2d(x,y);
+				glVertex2d(x,y+height);
 			}
 		  }
 		glEnd();
@@ -86,15 +75,14 @@ void Canvas::renderColourscales()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glColor3f(0.0f, 0.0f, 0.0f);
 		glBegin(GL_LINE_LOOP);
-		  glVertex2d(x,y);
-		  glVertex2d(x, y+height);
-		  glVertex2d(x+width, y+height);
-		  glVertex2d(x+width,y);
+		  glVertex2d(leftx,y);
+		  glVertex2d(leftx, y+height);
+		  glVertex2d(leftx+width, y+height);
+		  glVertex2d(leftx+width,y);
 		glEnd();
 		// Add on text labels
-		if (prefs.colourScale[n].type() == ColourScale::TwoPoint) sprintf(label,"%s [%f : %f]",prefs.colourScale[n].name(),cmin,cmax);
-		else sprintf(label,"%s [%f : %f : %f]",prefs.colourScale[n].name(),cmin,cmid,cmax);
-		glText(x+width+2.0, height_-y-8.0, label);
+		sprintf(label,"%s [%f : %f]", prefs.colourScale[n].name(), scalestart, scalestart + range);
+		glText(leftx+width+2.0, height_-y-8.0, label);
 		y += height + 10.0;
 	}
 	dbgEnd(Debug::Calls,"Canvas::renderColourscales");

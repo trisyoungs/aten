@@ -82,7 +82,7 @@ Vec3<double> Site::calculateCentre(Model *srcmodel, int mol)
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	static Vec3<double> firstid, mim;
-	Listitem<int> *li;
+	ListItem<int> *li;
 	offset = pattern_->startAtom();
 	offset += pattern_->nAtoms() * mol;
 	// If no atoms are in the list, use all atoms in the molecule
@@ -124,7 +124,7 @@ Mat3<double> Site::calculateAxes(Model *srcmodel, int mol)
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	static Vec3<double> mim, v1, v2;
-	Listitem<int> *li;
+	ListItem<int> *li;
 	offset = pattern_->startAtom();
 	offset += pattern_->nAtoms() * mol;
 	// Calculate 'position' of x-axis (defining vector COG->xpos)

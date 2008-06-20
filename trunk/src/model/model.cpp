@@ -214,13 +214,12 @@ void Model::assignForcefieldCharges()
 			int count = 0;
 			while (count < ptotalatoms)
 			{
-				i->setCharge(i->type()->charge());
+				chargeAtom(i, i->type()->charge());
 				i = i->next;
 				count ++;
 			}
 			// Charge atoms in representative pattern molecule
-			for (i = p->molecule->atoms(); i != NULL; i = i->next)
-				i->setCharge(i->type()->charge());
+			for (i = p->molecule->atoms(); i != NULL; i = i->next) chargeAtom(i, i->type()->charge());
 		}
 	}
 	dbgEnd(Debug::Calls,"Model::assignForcefieldCharges");
@@ -382,7 +381,7 @@ void Model::resetTempi(int value)
 void Model::clearCharges()
 {
 	dbgBegin(Debug::Calls,"Model::clearCharges");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) i->setCharge(0.0);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) chargeAtom(i, 0.0);
 	dbgEnd(Debug::Calls,"Model::clearCharges");
 }
 

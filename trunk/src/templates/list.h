@@ -27,15 +27,15 @@
 #include <stdio.h>
 
 // Template object for types not including prev/next pointers (e.g. PODs)
-template <class T> class Listitem
+template <class T> class ListItem
 {
 	public:
 	// Data object
 	T data;
 	// List pointers
-	Listitem<T> *prev, *next;
+	ListItem<T> *prev, *next;
 	// Constructor
-	Listitem<T>();
+	ListItem<T>();
 };
 
 // List structure for user-generated classes (containing prev/next pointers)
@@ -59,6 +59,7 @@ template <class T> class List
 	// Array regeneration flag
 	bool regenerate_;
 
+
 	public:
 	// Returns the number of items in the list
 	int nItems() const;
@@ -70,8 +71,6 @@ template <class T> class List
 	T *add();
 	// Insert an item into the list (after supplied item)
 	T *insert(T* before);
-	// Element access operator
-	T *operator[](int);
 	// Add the item into this list
 	void own(T*);
 	// Remove an item from the list
@@ -90,8 +89,16 @@ template <class T> class List
 	int indexOf(T*) const;
 	// Generate (if necessary) and return item array
 	T **array();
-	// Move item at position 'old' so it is at position 'newpos'
-	void move(int target, int delta);
+
+
+	/*
+	// Operators
+	*/
+	public:
+	// Assignment operator
+	void operator=(List<T> &source);
+	// Element access operator
+	T *operator[](int);
 
 	/*
 	// Item Moves
@@ -105,6 +112,8 @@ template <class T> class List
 	void shiftUp(T*);
 	// Shift item down (towards tail)
 	void shiftDown(T*);
+	// Move item at position 'old' by 'delta' positions (+/-)
+	void move(int target, int delta);
 	// Move item to end of list
 	void moveToEnd(T*);
 	// Move item to start of list
@@ -121,7 +130,7 @@ template <class T> List<T>::List()
 	items_ = NULL;
 }
 
-template <class T> Listitem<T>::Listitem()
+template <class T> ListItem<T>::ListItem()
 {
 	prev = NULL;
 	next = NULL;
@@ -182,18 +191,6 @@ template <class T> T *List<T>::insert(T* newprev)
 	nItems_ ++;
 	regenerate_ = 1;
 	return newitem;
-}
-
-// Element access operator
-template <class T> T *List<T>::operator[](int index)
-{
-	if ((index < 0) || (index >= nItems_))
-	{
-		printf("list::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nItems_-1);
-		return NULL;
-	}
-	// Scan through for element number 'index' in the list and return it
-	return array()[index];
 }
 
 // Own an existing item
@@ -295,6 +292,38 @@ template <class T> int List<T>::indexOf(T* item) const
 	}
 	return result;
 }
+
+// Create empty list
+template <class T> void List<T>::createEmpty(int newsize)
+{
+	clear();
+	for (int n=0; n<newsize; n++) add();
+	regenerate_ = 1;
+}
+
+// Create (or just return) the item array
+template <class T> T **List<T>::array()
+{
+	if (regenerate_ == 0) return items_;
+	// Delete old atom list (if there is one)
+	if (items_ != NULL) delete[] items_;
+	// Create new list
+	items_ = new T*[nItems_];
+	// Fill in pointers
+	int count = 0;
+	for (T *i = listHead_; i != NULL; i = i->next)
+	{
+	//printf("N=%i\n",count);
+		items_[count] = i;
+		count ++;
+	}
+	regenerate_ = 0;
+	return items_;
+}
+
+/*
+// Item Moves
+*/
 
 // Swap items
 template <class T> void List<T>::swapItems(T* item1, T* item2)
@@ -400,34 +429,6 @@ template <class T> void List<T>::moveToStart(T* item)
 	regenerate_ = 1;
 }
 
-// Create empty list
-template <class T> void List<T>::createEmpty(int newsize)
-{
-	clear();
-	for (int n=0; n<newsize; n++) add();
-	regenerate_ = 1;
-}
-
-// Create (or just return) the item array
-template <class T> T **List<T>::array()
-{
-	if (regenerate_ == 0) return items_;
-	// Delete old atom list (if there is one)
-	if (items_ != NULL) delete[] items_;
-	// Create new list
-	items_ = new T*[nItems_];
-	// Fill in pointers
-	int count = 0;
-	for (T *i = listHead_; i != NULL; i = i->next)
-	{
-	//printf("N=%i\n",count);
-		items_[count] = i;
-		count ++;
-	}
-	regenerate_ = 0;
-	return items_;
-}
-
 // Move item at position 'target' the specified number of places up (+ve) or down (-ve)
 template <class T> void List<T>::move(int target, int delta)
 {
@@ -448,6 +449,39 @@ template <class T> void List<T>::move(int target, int delta)
 	for (int n=0; n<abs(delta); n++) (delta < 0 ? shiftUp(olditem) : shiftDown(olditem));
 	// Flag for regeneration
 	regenerate_ = 1;
+}
+
+/*
+// Operators
+*/
+
+// Assignment operator =
+template <class T> void List<T>::operator=(List<T> &source)
+{
+	// Clear any current data in the list...
+	clear();
+	T *newitem, *olditem;
+	for (olditem = source.first(); olditem != NULL; olditem = olditem->next)
+	{
+		// To ensure that we don't mess around with the pointers of the old list, copy the object and then own it
+		newitem = new T;
+		*newitem = *olditem;
+		newitem->prev = NULL;
+		newitem->next = NULL;
+		own(newitem);
+	}
+}
+
+// Element access operator
+template <class T> T *List<T>::operator[](int index)
+{
+	if ((index < 0) || (index >= nItems_))
+	{
+		printf("list::[] <<<< SEVERE - Array index (%i) out of bounds (0-%i) >>>>\n",index,nItems_-1);
+		return NULL;
+	}
+	// Scan through for element number 'index' in the list and return it
+	return array()[index];
 }
 
 #endif

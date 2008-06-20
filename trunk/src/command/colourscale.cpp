@@ -22,37 +22,55 @@
 #include "command/commandlist.h"
 #include "base/prefs.h"
 
+// Add point to colourscale
+int CommandData::function_CA_ADDPOINT(Command *&c, Bundle &obj)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		return CR_FAIL;
+	}
+	prefs.colourScale[id].addPointAtEnd(c->argd(1), c->argf(2), c->argf(3), c->argf(4), c->hasArg(5) ? c->argf(5) : 1.0f);
+	return CR_SUCCESS;
+}
+
+// Clear points in colourscale
+int CommandData::function_CA_CLEARPOINTS(Command *&c, Bundle &obj)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		return CR_FAIL;
+	}
+	prefs.colourScale[id].clear();
+	return CR_SUCCESS;
+}
+
 // List current colourscale data ('listscales')
 int CommandData::function_CA_LISTSCALES(Command *&c, Bundle &obj)
 {
 	char s[512], type[16];
-	GLfloat lcol[4], mcol[4], rcol[4];
-	msg(Debug::None,"  Id Type  Minimum                     Midpoint                    Maximum               Range\n");
+	GLfloat col[4];
+	msg(Debug::None,"Current colourscale setup:\n");
 	for (int n=0; n<10; n++)
 	{
-		// Set descriptive text if necessary.
-		if (n == 0) strcpy(type,"(Charge)");
-		else if (n == 1) strcpy(type,"(Velocity)");
-		else if (n == 2) strcpy(type,"(Force)");
-		else strcpy(type,"");
-		if (prefs.colourScale[n].type() == ColourScale::TwoPoint)
-			sprintf(s,"   %i  2   %12.5e                                            %12.5e          %12.5e  %s\n", n, prefs.colourScale[n].minimum(), prefs.colourScale[n].maximum(), prefs.colourScale[n].range(), type);
-		else sprintf(s,"   %i  3   %12.5e                %12.5e                %12.5e          %12.5e  %s\n", n, prefs.colourScale[n].minimum(), prefs.colourScale[n].middle(), prefs.colourScale[n].maximum(), prefs.colourScale[n].range(), type);
-		msg(Debug::None,s);
-		// Now print colour data...
-		prefs.colourScale[n].copyColour(ColourScale::MinColour, lcol);
-		prefs.colourScale[n].copyColour(ColourScale::MidColour, mcol);
-		prefs.colourScale[n].copyColour(ColourScale::MaxColour, rcol);
-		if (prefs.colourScale[n].type() == ColourScale::TwoPoint)
-			sprintf(s,"         [ %4.2f %4.2f %4.2f %4.2f ] -->                         --> [ %4.2f %4.2f %4.2f %4.2f ]\n", lcol[0], lcol[1], lcol[2], lcol[3], rcol[0], rcol[1], rcol[2], rcol[3]);
-		else sprintf(s,"         [ %4.2f %4.2f %4.2f %4.2f ] --> [ %4.2f %4.2f %4.2f %4.2f ] --> [ %4.2f %4.2f %4.2f %4.2f ] \n", lcol[0], lcol[1], lcol[2], lcol[3], mcol[0], mcol[1], mcol[2], mcol[3], rcol[0], rcol[1], rcol[2], rcol[3]);
-		msg(Debug::None,s);
+		msg(Debug::None, "Scale %i, name = '%s':\n", n+1, prefs.colourScale[n].name());
+		if (prefs.colourScale[n].nPoints() == 0) msg(Debug::None, "  < No points defined >\n");
+		for (ColourScalePoint *csp = prefs.colourScale[n].firstPoint(); csp != NULL; csp = csp->next)
+		{
+			csp->copyColour(col);
+			msg(Debug::None, "  (%2i)  %12.5e  %8.4f  %8.4f  %8.4f  %8.4f\n", n+1, csp->value(), col[0], col[1], col[2], col[3]);
+		}
 	}
 	return CR_SUCCESS;
 }
 
-// Set maximum colour value ('scalemaxcolour <id> <r> <g> <b> [a]')
-int CommandData::function_CA_SCALEMAXCOLOUR(Command *&c, Bundle &obj)
+// Remove specific point in colourscale
+int CommandData::function_CA_REMOVEPOINT(Command *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -61,55 +79,7 @@ int CommandData::function_CA_SCALEMAXCOLOUR(Command *&c, Bundle &obj)
 		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
-	Vec3<GLfloat> colvec = c->arg3f(1);
-	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.colourScale[id].setColour(ColourScale::MaxColour, colvec.x, colvec.y, colvec.z, alpha);
-	return CR_SUCCESS;
-}
-
-// Set midpoint colour value ('scalemidcolour <id> <r> <g> <b> [a]')
-int CommandData::function_CA_SCALEMIDCOLOUR(Command *&c, Bundle &obj)
-{
-	// Check range of colourscale id
-	int id = c->argi(0) - 1;
-	if ((id < 0) || (id > 9))
-	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
-		return CR_FAIL;
-	}
-	Vec3<GLfloat> colvec = c->arg3f(1);
-	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.colourScale[id].setColour(ColourScale::MidColour, colvec.x, colvec.y, colvec.z, alpha);
-	return CR_SUCCESS;
-}
-
-// Manually set midpoint of colour scale ('scalemidpoint <id> <d>')
-int CommandData::function_CA_SCALEMIDPOINT(Command *&c, Bundle &obj)
-{
-	// Check range of colourscale id
-	int id = c->argi(0) - 1;
-	if ((id < 0) || (id > 9))
-	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
-		return CR_FAIL;
-	}
-	prefs.colourScale[id].setMiddle(c->argd(1));
-	return CR_SUCCESS;
-}
-
-// Set minimum colour value ('scalemincolour <id> <r> <g> <b> [a]')
-int CommandData::function_CA_SCALEMINCOLOUR(Command *&c, Bundle &obj)
-{
-	// Check range of colourscale id
-	int id = c->argi(0) - 1;
-	if ((id < 0) || (id > 9))
-	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
-		return CR_FAIL;
-	}
-	Vec3<GLfloat> colvec = c->arg3f(1);
-	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.colourScale[id].setColour(ColourScale::MinColour, colvec.x, colvec.y, colvec.z, alpha);
+	prefs.colourScale[id].removePoint(c->argi(1)-1);
 	return CR_SUCCESS;
 }
 
@@ -128,41 +98,6 @@ int CommandData::function_CA_SCALENAME(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Set range of colourscale ('scalerange <id> <min> <max>')
-int CommandData::function_CA_SCALERANGE(Command *&c, Bundle &obj)
-{
-	// Check range of colourscale id
-	int id = c->argi(0) - 1;
-	if ((id < 0) || (id > 9))
-	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
-		return CR_FAIL;
-	}
-	prefs.colourScale[id].setRange(c->argd(1), c->argd(2));
-	return CR_SUCCESS;
-}
-
-// Set type of colourscale ('scaletype <id> <type>')
-int CommandData::function_CA_SCALETYPE(Command *&c, Bundle &obj)
-{
-	// Check range of colourscale id
-	int id = c->argi(0) - 1;
-	if ((id < 0) || (id > 9))
-	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
-		return CR_FAIL;
-	}
-	int type = c->argi(1);
-	if (type == 2) prefs.colourScale[id].setType(ColourScale::TwoPoint);
-	else if (type == 3) prefs.colourScale[id].setType(ColourScale::ThreePoint);
-	else
-	{
-		msg(Debug::None, "'%s' is not a valid order for a colour scale.\n");
-		return CR_FAIL;
-	}
-	return CR_SUCCESS;
-}
-
 // Set visibility of colourscale ('scalevisible <id> true|false')
 int CommandData::function_CA_SCALEVISIBLE(Command *&c, Bundle &obj)
 {
@@ -177,3 +112,44 @@ int CommandData::function_CA_SCALEVISIBLE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set existing point in colourscale
+int CommandData::function_CA_SETPOINT(Command *&c, Bundle &obj)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		return CR_FAIL;
+	}
+	prefs.colourScale[id].setPoint(c->argi(1)-1, c->argd(2), c->argf(3), c->argf(4), c->argf(5), c->hasArg(6) ? c->argf(6) : 1.0f);
+	return CR_SUCCESS;
+}
+
+// Set existing point colour in colourscale
+int CommandData::function_CA_SETPOINTCOLOUR(Command *&c, Bundle &obj)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		return CR_FAIL;
+	}
+	prefs.colourScale[id].setPointColour(c->argi(1)-1, c->argf(3), c->argf(4), c->argf(5), c->hasArg(6) ? c->argf(6) : 1.0f);
+	return CR_SUCCESS;
+}
+
+// Set existing point value in colourscale
+int CommandData::function_CA_SETPOINTVALUE(Command *&c, Bundle &obj)
+{
+	// Check range of colourscale id
+	int id = c->argi(0) - 1;
+	if ((id < 0) || (id > 9))
+	{	
+		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		return CR_FAIL;
+	}
+	prefs.colourScale[id].setPointValue(c->argi(1)-1, c->argd(2));
+	return CR_SUCCESS;
+}

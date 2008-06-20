@@ -51,7 +51,7 @@ class Change
 	// Change::TotalLog      : sum of all changes
 	enum ChangeLog { StructureLog, CoordinateLog, VisualLog, SelectionLog, CameraLog, GlyphLog, GridLog, TotalLog, nChangeLogs };
 	// State change events
-	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondOrderEvent, CellEvent, LabelEvent, TranslateEvent, ShiftEvent };
+	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondOrderEvent, CellEvent, LabelEvent, TranslateEvent, ShiftEvent, ChargeEvent };
 	// State change directions
 	enum UndoDirection { Reverse, Forwards };
 
@@ -67,6 +67,8 @@ class Change
 	Atom *atomData_[2];
 	// Vector data describing the change
 	Vec3<double> *vecData_[4];
+	// Double data describing the change
+	double realData_[2];
 	// Generally-applicable data
 	int data_[5];
 
@@ -75,6 +77,8 @@ class Change
 	void set(int ec, Atom *i, Atom *j = NULL);
 	// Set change data (integers)
 	void set(int ec, int i, int j = -1, int k = -1, int l = -1, int m = -1);
+	// Set change data (double)
+	void set(int ec, double a, double b);
 	// Set change data (matrices)
 	void set(int ec, Mat3<double> *m1, Mat3<double> *m2 = NULL);
 	// Set change data (vector)

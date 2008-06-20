@@ -53,11 +53,11 @@ int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Assign charge to selected atoms in model ('chargeselection <q>')
-int CommandData::function_CA_CHARGESELECTION(Command *&c, Bundle &obj)
+// Assign charge to selected atoms in model ('charge <q>')
+int CommandData::function_CA_CHARGE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) i->setCharge(c->argd(0));
+	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->chargeAtom(i, c->argd(0));
 	return CR_SUCCESS;
 }
 

@@ -210,6 +210,12 @@ Atom *Model::findAtomByTempi(int tempi)
 	return NULL;
 }
 
+// Return the list index of the specified atom
+int Model::atomIndex(Atom *i)
+{
+	return atoms_.indexOf(i);
+}
+
 // Renumber Atoms
 void Model::renumberAtoms(Atom *from)
 {
@@ -323,5 +329,20 @@ void Model::positionAtom(Atom *target, Vec3<double> newr)
 		Change *newchange = recordingState_->addChange();
 		newchange->set(Change::TranslateEvent,target->id());
 		newchange->set(Change::TranslateEvent,&delta);
+	}
+}
+
+// Set charge of specified atom
+void Model::chargeAtom(Atom *target, double q)
+{
+	double oldcharge = target->charge();
+	target->setCharge(q);
+	logChange(Change::CoordinateLog);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		Change *newchange = recordingState_->addChange();
+		newchange->set(Change::ChargeEvent, target->id());
+		newchange->set(Change::ChargeEvent, oldcharge, q);
 	}
 }

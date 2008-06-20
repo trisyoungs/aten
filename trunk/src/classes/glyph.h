@@ -45,8 +45,8 @@ class GlyphData
 	private:
 	// Position or direction vector
 	Vec3<double> vector_;
-	// Pointer to atom from which to get 'r'
-	Atom *atom_;
+	// Integer atom id in the parent model from ehich to get r, f, or v
+	int atomId_;
 	// Type of vector data to take from atom (if defined)
 	GlyphDataType atomData_;
 	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
@@ -58,14 +58,14 @@ class GlyphData
 	// Set the vector data
 	void setVector(double x, double y, double z);
 	// Set the atom pointer
-	void setAtom(Atom *target, GlyphDataType av);
-	// Return the atom pointer
-	Atom *atom();
+	void setAtomId(int target, GlyphDataType av);
+	// Return the atom id used
+	int atomId();
 	// Return the type of atom vector pointed to
 	GlyphDataType atomData();
 	// Return the vector data
-	Vec3<double> vector();
-	// Return if the structure contains an atom pointer
+	Vec3<double> vector(Model *parent);
+	// Return if the structure contains a valid atom reference
 	bool hasAtom();
 	// Returns whether one of either atom* or vecdata have been set
 	bool isSet();
@@ -91,10 +91,21 @@ class Glyph
 	Dnchar text_;
 	// Parent model
 	Model *parent_;
+	// Data for Glyph
+	GlyphData data_[MAXGLYPHDATA];
 
 	public:
-	// Data for Glyph
-	GlyphData data[MAXGLYPHDATA];
+	// Set vector data for glyph
+	void setVector(int i, Vec3<double> vec);
+	void setVector(int i, double x, double y, double z);
+	// Set atom data for glyph
+	void setAtom(int i, int atom, GlyphData::GlyphDataType av);
+	// Returns the atom id of the glyp
+	int atomId(int i);
+	// Return whether one of the data is set to an atomId
+	bool hasAtomId(int i);
+	// Return vector data for glyph
+	Vec3<double> vector(int i);
 	// Set style of Glyph
 	void setType(GlyphType gt);
 	// Return style of Glyph

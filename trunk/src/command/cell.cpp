@@ -107,6 +107,14 @@ int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Remove unit cell
+int CommandData::function_CA_NOCELL(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->removeCell();
+	return CR_SUCCESS;
+}
+
 // Set spacegroup
 int CommandData::function_CA_SPACEGROUP(Command *&c, Bundle &obj)
 {
