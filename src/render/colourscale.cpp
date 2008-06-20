@@ -41,36 +41,61 @@ void Canvas::renderColourscales()
 	for (int n=0; n<10; n++)
 	{
 		if (!prefs.colourScale[n].visible()) continue;
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		// Get the total range of the colourscale
-		scalestart = prefs.colourScale[n].firstPoint()->value();
-		range = prefs.colourScale[n].lastPoint()->value() - scalestart;
-		// Use the delta list to draw the quads
-		glBegin(GL_QUAD_STRIP);
-		  for (ColourScaleDelta *delta = prefs.colourScale[n].firstDelta(); delta != NULL; delta = delta->next)
-		  {
-			// Grab width (delta) and start value of
-			start = delta->start();
-			deltaw = delta->delta();
-			// Get start and end colours
-			delta->colour(start, col);
-			// Get starting x coordinate for 
-			x = leftx + width * ( (start - scalestart) / range );
-			// Draw quad
-			glColor3f(col[0], col[1], col[2]);
-			glVertex2d(x,y);
-			glVertex2d(x,y+height);
-			// If last delta, finish final quad
-			if (delta->next == NULL)
-			{
-				delta->colour(start + deltaw, col);
-				x = leftx + width;
+		scalestart = 0.0;
+		range = 0.0;
+		// Special cases: 0 or 1 points in scale...
+		if (prefs.colourScale[n].nPoints() == 0)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glColor3f(0.0f, 0.0f, 0.0f);
+			glText(leftx+10.0, height_-y-8.0, "< No points defined >");
+		}
+		else if (prefs.colourScale[n].nPoints() == 1)
+		{
+			prefs.colourScale[n].firstPoint()->copyColour(col);
+			scalestart = prefs.colourScale[n].firstPoint()->value();
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glBegin(GL_QUADS);
+			  glColor3f(col[0], col[1], col[2]);
+			  glVertex2d(leftx,y);
+			  glVertex2d(leftx,y+height);
+			  glVertex2d(leftx+width,y+height);
+			  glVertex2d(leftx+width,y);
+			glEnd();
+		}
+		else
+		{
+			// Get the total range of the colourscale
+			scalestart = prefs.colourScale[n].firstPoint()->value();
+			range = prefs.colourScale[n].lastPoint()->value() - scalestart;
+			// Use the delta list to draw the quads
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			glBegin(GL_QUAD_STRIP);
+			  for (ColourScaleDelta *delta = prefs.colourScale[n].firstDelta(); delta != NULL; delta = delta->next)
+			  {
+				// Grab width (delta) and start value of
+				start = delta->start();
+				deltaw = delta->delta();
+				// Get start and end colours
+				delta->colour(start, col);
+				// Get starting x coordinate for 
+				x = leftx + width * ( (start - scalestart) / range );
+				// Draw quad
 				glColor3f(col[0], col[1], col[2]);
 				glVertex2d(x,y);
 				glVertex2d(x,y+height);
-			}
-		  }
-		glEnd();
+				// If last delta, finish final quad
+				if (delta->next == NULL)
+				{
+					delta->colour(start + deltaw, col);
+					x = leftx + width;
+					glColor3f(col[0], col[1], col[2]);
+					glVertex2d(x,y);
+					glVertex2d(x,y+height);
+				}
+			  }
+			glEnd();
+		}
 		// Draw a black box surrounding the scalebar
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glColor3f(0.0f, 0.0f, 0.0f);
