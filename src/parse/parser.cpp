@@ -148,6 +148,9 @@ bool Parser::getNextArg(int destarg)
 				{
 					quotechar = '\0';
 					hadquotes = TRUE;
+					// If double-quotes, set the quotes flag
+					if ((destarg != -1) && (c == 34)) quoted_[destarg] = TRUE;
+
 					done = TRUE;
 				}
 				else
@@ -211,8 +214,6 @@ bool Parser::getNextArg(int destarg)
 	if (n == line_.length()) endOfLine_ = TRUE;
 	// Store the result in the desired destination
 	if (destarg != -1) arguments_[destarg] = tempArg_;
-	// Set the quotes flag
-	if (destarg != -1) quoted_[destarg] = hadquotes;
 	// Strip off the characters up to position 'n', but not including position 'n' itself
 	line_.eraseStart(n+1);
 	//printf("Rest of line is now [%s]\n",line.get());
@@ -267,7 +268,11 @@ void Parser::getAllArgsDelim(Dnchar &source)
 	// Parse the string in 'source' into arguments in 'args'
 	dbgBegin(Debug::Parse,"Parser::getAllArgsDelim[string]");
 	nArgs_ = 0; 
-	for (int n=0; n<MAXARGS; n++) arguments_[n].clear();
+	for (int n=0; n<MAXARGS; n++)
+	{
+		arguments_[n].clear();
+		quoted_[n] = FALSE;
+	}
 	endOfLine_ = FALSE;
 	while (!endOfLine_)
 	{
@@ -287,7 +292,11 @@ void Parser::getAllArgsFormatted(Dnchar &source, Format *fmt)
 	dbgBegin(Debug::Parse,"Parser::getAllArgsFormatted");
 	nArgs_ = 0;
 	bool parseresult;
-	for (int n=0; n<MAXARGS; n++) arguments_[n].clear();
+	for (int n=0; n<MAXARGS; n++)
+	{
+		arguments_[n].clear();
+		quoted_[n] = FALSE;
+	}
 	FormatNode *fn = fmt->nodes();
 	while (fn != NULL)
 	{

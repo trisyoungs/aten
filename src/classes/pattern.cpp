@@ -1116,8 +1116,8 @@ bool Pattern::fillExpression()
 	// Create **bonding array
 	//bonding = new int*[nAtoms_];
 	//for (ii=0; ii< nAtoms_; ii++) bonding[ii] = new int[7];
-	List< Listitem<int> > *bonding;
-	bonding = new List< Listitem<int> >[nAtoms_];
+	List< ListItem<int> > *bonding;
+	bonding = new List< ListItem<int> >[nAtoms_];
 	// If there is no specified pattern forcefield, use the parent model's instead
 	forcefield_ == NULL ? xff = parent_->forcefield() : xff = forcefield_;
 	msg(Debug::None,"Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());

@@ -154,6 +154,8 @@ class Model
 	Atom *atom(int n);
 	// Return the number of atoms in the model
 	int nAtoms();
+	// Return the list index of the specified atom
+	int atomIndex(Atom *i);
 	// Delete specified atom
 	void deleteAtom(Atom *target);
 	// Translate specified atom
@@ -184,6 +186,8 @@ class Model
 	Atom **atomArray();
 	// Set visibility of specified atom
 	void setHidden(Atom *i, bool hidden);
+	// Set charge of specified atom
+	void chargeAtom(Atom *i, double q);
 	// Prints out the coordinates of the atoms in the model
 	void printCoords();
 

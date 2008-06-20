@@ -1,6 +1,6 @@
 /*
 	*** Colour scale
-	*** src/classes/ColourScale.h
+	*** src/classes/colourscale.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -26,8 +26,10 @@
 #define NOMINMAX
 
 #include <QtOpenGL/QtOpenGL>
+#include "templates/list.h"
 #include "templates/reflist.h"
 #include "classes/dnchar.h"
+#include "classes/colourscalepoint.h"
 
 // Forward declarations
 class Grid;
@@ -38,10 +40,6 @@ class ColourScale
 	public:
 	// Constructor
 	ColourScale();
-	// Colourscale order
-	enum ScaleOrder { TwoPoint, ThreePoint };
-	// Colourscale colours
-	enum ScaleColour { MinColour, MidColour, MaxColour, nScaleColours };
 
 	/*
 	// Rendering
@@ -66,49 +64,42 @@ class ColourScale
 	// Data and data range
 	*/
 	private:
-	// Type of ColourScale
-	ScaleOrder type_;
-	// Minimum, maximum, and middle of data range
-	double minimum_, maximum_, middle_;
-	// Range of data
-	double range_;
+	// List of points in the colourscale
+	List<ColourScalePoint> points_;
+	// List of colour deltas between points in the colourscale
+	List<ColourScaleDelta> deltas_;
+	// Calculate colour deltas for current list of points
+	void calculateDeltas();
 
 	public:
-	// Set type of ColourScale
-	void setType(ScaleOrder co);
-	// Return type of colourscale
-	ScaleOrder type();
-	// Set the absolute range of the colour scale
-	void setRange(double left, double right);
-	// Set the midpoint of the colour scale
-	void setMiddle(double middle);
-	// Adjust colour scale range to cover supplied value
-	void adjustRange(double d);
-	// Return minimum value of scale
-	double minimum();
-	// Return maximum value of scale
-	double maximum();
-	// Return middle value of scale
-	double middle();
-	// Return range of scale
-	double range();
-
-	/*
-	// Colours
-	*/
-	private:
-	// Colours
-	GLfloat colours_[nScaleColours][4];
-	// Colour deltas
-	GLfloat deltaMinMax_[4], deltaMinMid_[4], deltaMidMax_[4];
-
-	public:
-	// Return colour associated with value provided
-	void colour(double v, GLfloat *c);
-	// Set colour
-	void setColour(ScaleColour col, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
-	// Copy colour
-	void copyColour(ScaleColour col, GLfloat *target);
+	// Return number of points in colourscale
+	int nPoints();
+	// Return first point in colourscale
+	ColourScalePoint *firstPoint();
+	// Return last point in colourscale
+	ColourScalePoint *lastPoint();
+	// Return specific point in colourscale
+	ColourScalePoint *point(int id);
+	// Return first delta in colourscale
+	ColourScaleDelta *firstDelta();
+	// Clear all points in colourscale
+	void clear();
+	// Add new point to colourscale
+	void addPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Add new point to end of colourscale
+	void addPointAtEnd(double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Set colour and value data for point
+	void setPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f, bool setval = TRUE, bool setcol = TRUE);
+	// Set only value for point
+	void setPointValue(int position, double value);
+	// Set only colour for point
+	void setPointColour(int position, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Remove old point from colourscale
+	void removePoint(int position);
+	// Get colour associated with value supplied
+	void colour(double value, GLfloat *target);
+	// Adjust range of scale to encompass point supplied
+	void adjustRange(double value);
 
 	/*
 	// Linked objects

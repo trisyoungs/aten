@@ -22,6 +22,7 @@
 #include "classes/glyph.h"
 #include "base/debug.h"
 #include "base/sysfunc.h"
+#include "model/model.h"
 
 // Glyph styles
 const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "line", "triangle", "ellipsoid", "tetrahedron", "text", "text3d" };
@@ -38,7 +39,7 @@ Glyph::GlyphType Glyph::glyphType(const char *s)
 GlyphData::GlyphData()
 {
 	// Private variables
-	atom_ = NULL;
+	atomId_ = -1;
 	atomData_ = GlyphData::PositionData;
 	atomSetLast_ = FALSE;
 	set_ = FALSE;
@@ -61,9 +62,9 @@ Glyph::Glyph()
 */
 
 // Return the atom pointer
-Atom *GlyphData::atom()
+int GlyphData::atomId()
 {
-	return atom_;
+	return atomId_;
 }
 
 // Return the type of atom vector pointed to
@@ -75,7 +76,7 @@ GlyphData::GlyphDataType GlyphData::atomData()
 // Return if the structure contains an atom pointer
 bool GlyphData::hasAtom()
 {
-	return (atom_ == NULL ? FALSE : TRUE);
+	return (atomId_ == -1 ? FALSE : TRUE);
 }
 
 // Returns whether one of either atom* or vecdata have been set
@@ -93,32 +94,38 @@ void GlyphData::setVector(double x, double y, double z)
 }
 
 // Set the atom pointer
-void GlyphData::setAtom(Atom *target, GlyphDataType type)
+void GlyphData::setAtomId(int target, GlyphDataType type)
 {
-	atom_ = target;
+	atomId_ = target;
 	atomData_ = type;
 	atomSetLast_ = TRUE;
 	set_ = TRUE;
 }
 
 // Return the vector data
-Vec3<double> GlyphData::vector()
+Vec3<double> GlyphData::vector(Model *parent)
 {
 	if (atomSetLast_)
 	{
-		if (atom_ == NULL)
+		if (atomId_ == -1)
 		{
-			printf("Atom was apparently set last in glyph, but pointer is NULL.\n");
+			msg(Debug::None, "Atom was apparently set last in glyph, but stored id is '-1'.\n");
+			return vector_;
+		}
+		Atom *i = parent->atom(atomId_);
+		if (i == NULL)
+		{
+			msg(Debug::None, "Atom ID set in glyph (%i) is outside range for model.\n", atomId_);
 			return vector_;
 		}
 		switch (atomData_)
 		{
 			case (GlyphData::PositionData):
-				return atom_->r();
+				return i->r();
 			case (GlyphData::ForceData):
-				return atom_->f();
+				return i->f();
 			case (GlyphData::VelocityData):
-				return atom_->v();
+				return i->v();
 		}
 	}
 	// Default return value is vector data
@@ -128,6 +135,55 @@ Vec3<double> GlyphData::vector()
 /*
 // Glyph
 */
+
+// Set vector data for glyph
+void Glyph::setVector(int i, double x, double y, double z)
+{
+	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to set vector %i for glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
+	else data_[i].setVector(x, y, z);
+}
+
+// Set vector data for glyph
+void Glyph::setVector(int i, Vec3<double> vec)
+{
+	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to set vector %i for glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
+	else data_[i].setVector(vec.x, vec.y, vec.z);
+}
+
+// Set atom data for glyph
+void Glyph::setAtom(int i, int atom, GlyphData::GlyphDataType av)
+{
+	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to set atom id %i for glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
+	else
+	{
+		data_[i].setAtomId(atom, av);
+		if (atom == -1) (Debug::None,"Warning - no atom stored in glyph data %i.\n",i);
+	}
+}
+
+// Returns the atom id of the glyp
+int Glyph::atomId(int i)
+{
+	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to get atom id %i from glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
+	else return data_[i].atomId();
+	return -1;
+}
+
+// Returns whether the specified data is to be taken from an atom
+bool Glyph::hasAtomId(int i)
+{
+	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to test atom id %i in glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
+	else return data_[i].hasAtom();
+	return FALSE;
+}
+
+// Return vector data for glyph
+Vec3<double> Glyph::vector(int i)
+{
+	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to get vector %i from glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
+	else return data_[i].vector(parent_);
+	return Vec3<double>();
+}
 
 // Set parent model
 void Glyph::setParent(Model *parent)
@@ -155,11 +211,11 @@ void Glyph::setType(GlyphType gt)
 	{
 		case (Glyph::ArrowGlyph):
 		case (Glyph::VectorGlyph):
-			if (!data[1].isSet()) data[1].setVector(0.0,1.0,0.0);
+			if (!data_[1].isSet()) data_[1].setVector(0.0,1.0,0.0);
 			break;
 		case (Glyph::SphereGlyph):
 		case (Glyph::CubeGlyph):
-			if (!data[1].isSet()) data[1].setVector(1.0,1.0,1.0);
+			if (!data_[1].isSet()) data_[1].setVector(1.0,1.0,1.0);
 			break;
 		case (Glyph::TriangleGlyph):
 			break;
