@@ -29,11 +29,12 @@ AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
 	ui.setupUi(this);
 
 	// Setup label contents
-	ui.VersionLabel->setText(ATENVERSION);
+	char s[150];
+	sprintf(s, "%s (from revision %s)", ATENVERSION, ATENREVISION);
+	ui.VersionLabel->setText(s);
 	ui.DateLabel->setText(ATENDATE);
 	ui.UrlLabel->setText(ATENURL);
-	char s[150];
-	sprintf(s,"<a href=\"http://www.projectaten.org/doc/%s/manual.html\">http://www.projectaten.org/doc/%s/manual.html</a>",ATENVERSION,ATENVERSION);
+	sprintf(s, "<a href=\"http://www.projectaten.org/doc/%s/manual.html\">http://www.projectaten.org/doc/%s/manual.html</a>",ATENVERSION,ATENVERSION);
 	ui.ManualLabel->setText(s);
 }
 

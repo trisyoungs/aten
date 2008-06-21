@@ -5,11 +5,12 @@
 COMMITFILE="none"
 COMMITMSG="none"
 COMMITTYPE="none"
+TEST="FALSE"
 
 # Parse CLI arguments / options
-USAGE1="commit [-F <filename>] [-m <text>]"
+USAGE1="commit [-F <filename>] [-m <text>] [-t]"
 
-while getopts "F:m:" options; do
+while getopts "F:m:t" options; do
   case $options in
     F ) COMMITFILE=$OPTARG
 	COMMITTYPE="file"
@@ -17,6 +18,8 @@ while getopts "F:m:" options; do
     m ) COMMITMSG=$OPTARG
 	COMMITTYPE="msg"
         echo "Using supplied text for commit message.";;
+    t ) TEST="true"
+	echo "Test only - no file changes will be made.";;
     \? ) echo -e $USAGE1
          exit 1;;
     * ) echo -e $USAGE1
@@ -25,7 +28,7 @@ while getopts "F:m:" options; do
 done
 
 # Check that a commit type was given
-if [ "$COMMITTYPE" = "none" ]
+if [ "$COMMITTYPE" = "none" ] && [ "$TEST" = "false" ]
 then
   echo "No commit message/file was given."
   exit 0
@@ -37,7 +40,7 @@ let NEWREV=OLDREV+1
 echo "Current version is revision $OLDREV - commited version will be revision $NEWREV..."
 
 # Determine svn URL
-URL=`svn info | grep URL | sed "s/URL: \(.*\)/\1/g"`
+URL=`svn info | grep URL | sed -e "s/URL: \(.*\)/\1/g" -e "s/https/http/g"`
 echo "Subversion repository is: "$URL
 
 # Get current date and time
@@ -46,16 +49,27 @@ DATE=`date "+%a %d %b - %H:%M"`
 # Change URL, revision, and date in src/base/master.h
 echo "Setting #defines in src/base/master.h..."
 cp src/base/master.h src/base/master.h.orig
-sed -e "s/#define ATENREVISION \"\(.*\)\"/#define ATENREVISION \"$NEWREV\"/g" -e "s/#define ATENDATE \".*\"/#define ATENDATE \"$DATE\"/g" -e "s,#define ATENURL \".*\",#define ATENURL \"$URL\",g" src/base/master.h.orig > src/base/master.h
+DESTFILE=src/base/master.h
+if [ "$TEST" = "true" ]
+then
+  DESTFILE=src/base/master.h.test
+fi
+sed -e "s/#define ATENREVISION \"\(.*\)\"/#define ATENREVISION \"$NEWREV\"/g" -e "s/#define ATENDATE \".*\"/#define ATENDATE \"$DATE\"/g" -e "s,#define ATENURL \".*\",#define ATENURL \"$URL\",g" src/base/master.h.orig > $DESTFILE
 echo -n "        master.h (ATENREVISION) : "
-grep '#define ATENREVISION' src/base/master.h | sed -e 's/#define ATENREVISION "\(.*\)"/\1/g'
+grep '#define ATENREVISION' $DESTFILE | sed -e 's/#define ATENREVISION "\(.*\)"/\1/g'
 echo -n "        master.h (ATENDATE)     : "
-grep '#define ATENDATE' src/base/master.h | sed -e 's/#define ATENDATE "\(.*\)"/\1/g'
+grep '#define ATENDATE' $DESTFILE | sed -e 's/#define ATENDATE "\(.*\)"/\1/g'
 echo -n "        master.h (ATENURL)      : "
-grep '#define ATENURL' src/base/master.h | sed -e 's/#define ATENURL "\(.*\)"/\1/g'
+grep '#define ATENURL' $DESTFILE | sed -e 's/#define ATENURL "\(.*\)"/\1/g'
 
 # Update ChangeLog
 #TODO
+
+# If this was just a test we're done at this point
+if [ "$TEST" = "true" ]
+then
+  exit 0
+fi
 
 # Commit changes
 if [ "$COMMITTYPE" = "file" ]
