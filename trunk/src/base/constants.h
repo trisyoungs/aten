@@ -63,8 +63,6 @@
 
 // Data maxima for forcefields
 #define MAXFFGENDATA 10
-#define MAXFFPARAMDATA 6
-#define MAXFFBOUNDTYPES 4
 #define TF_ESCALE (4)
 #define TF_VSCALE (5)
 

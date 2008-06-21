@@ -386,7 +386,7 @@ bool Command::ifEvaluate()
 		d1 = v1->asDouble();
 		d2 = v2->asDouble();
 	}
-	msg(Debug::Verbose, "IF TEST = var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), text_from_IC(ifTest_), v2->name(), v2->asCharacter());
+	msg(Debug::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), text_from_IC(ifTest_), v2->name(), v2->asCharacter());
 	// Do comparison
 	switch (ifTest_)
 	{

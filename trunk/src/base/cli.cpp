@@ -26,6 +26,7 @@
 #include "base/prefs.h"
 #include "base/master.h"
 #include "base/elements.h"
+#include "model/model.h"
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
@@ -79,6 +80,8 @@ Cli cliSwitches[] = {
 		"",		"Force generation of symmetry-equivalent atoms from spacegroup information" },
 	{ Cli::ScriptSwitch,		's',"script",		1,
 		"<file",	"Load and execute the script file specified" },
+	{ Cli::TrajectorySwitch,	't',"pack",		1,
+		"",		"Associate a trajectory with thie last loaded model" },
 	{ Cli::UndoLevelSwitch,		'u',"maxundo",		1,
 		"<nlevels>",	"Set the maximum number of undo levels per model (-1 = unlimited)" },
 	{ Cli::VerboseSwitch,		'v',"verbose",		0,
@@ -313,6 +316,17 @@ int Master::parseCli(int argc, char *argv[])
 					{
 						master.scripts.remove(script);
 						return -1;
+					}
+					break;
+				// Associate trajectory with last loaded model
+				case (Cli::TrajectorySwitch):
+					// Check for a current model
+					if (current.m == NULL) msg(Debug::None, "There is no current model to associate the trajectory to.\n");
+					else
+					{
+						Filter *f = probeFile(argv[++argn], Filter::TrajectoryImport);
+						if (f == NULL) return -1;
+						if (!current.m->initialiseTrajectory(argv[argn],f)) return -1;
 					}
 					break;
 				// Set maximum number of undolevels per model

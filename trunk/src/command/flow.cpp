@@ -273,14 +273,14 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 		{
 			c->setLoopActive(TRUE);
 			c->setLoopIterations(1);
-			msg(Debug::Verbose,"Loop is initialised and running.\n");
+			msg(Debug::Commands,"Loop is initialised and running.\n");
 			c = c->branchCommands();
 		}
 		else
 		{
 			c->setLoopActive(FALSE);
 			c->setLoopIterations(0);
-			msg(Debug::Verbose,"Loop terminated on initialisation.\n");
+			msg(Debug::Commands,"Loop terminated on initialisation.\n");
 			c = c->next;
 		}
 	}

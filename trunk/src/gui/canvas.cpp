@@ -44,6 +44,7 @@ Canvas::Canvas()
 	drawing_ = FALSE;
 	noDraw_ = TRUE;
 	displayModel_ = NULL;
+	displayFrame_ = -1;
 	activeMode_ = Canvas::NoAction;
 	selectedMode_ = Canvas::SelectAction;
 	list_[0] = 0;

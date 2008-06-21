@@ -50,7 +50,6 @@ void Canvas::renderScene(Model *source)
 
 	// Store the source model pointer and grab the trajectoryparent pointer (if there is one)
 	displayModel_ = source;
-	trajparent = source->trajectoryParent();
 	if (displayModel_ == NULL)
 	{
 		// Select projection matrix and load the identity matrix
@@ -64,6 +63,14 @@ void Canvas::renderScene(Model *source)
 		glText(width_/2,height_/2,"No model to display.");
 		dbgEnd(Debug::Calls,"Canvas::renderScene");
 		return;
+	}
+	else trajparent = source->trajectoryParent();
+
+	// If this is a trajectory frame, check its ID against the last one rendered
+	if (trajparent != NULL)
+	{
+		if (trajparent->framePosition() != displayFrame_) renderPoint_ = -1;
+		displayFrame_ = trajparent->framePosition();
 	}
 
 	// Set clear colour

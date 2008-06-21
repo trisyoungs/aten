@@ -56,7 +56,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					msg(Debug::None,"Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
 					break;
 				case (TorsionFunctions::Cosine): 
-					// U(phi) = forcek * (1 + cos(period*phi - eq))
+					// U(phi) = forcek * (1 + s*cos(period*phi - eq))
 					k1 = params.data[TorsionFunctions::CosineK];
 					eq = params.data[TorsionFunctions::CosineEq] / DEGRAD;
 					period = params.data[TorsionFunctions::CosineN];
@@ -225,12 +225,12 @@ void Pattern::torsionForces(Model *srcmodel)
 					du_dphi = 0.0;
 					break;
 				case (TorsionFunctions::Cosine): 
-					// dU/dphi = forcek * period * sin(period*phi - eq)
+					// dU/dphi = forcek * period * s * -sin(period*phi - eq)
 					forcek = params.data[TorsionFunctions::CosineK];
 					eq = params.data[TorsionFunctions::CosineEq] / DEGRAD;
 					period = params.data[TorsionFunctions::CosineN];
 					s = params.data[TorsionFunctions::CosineS];
-					du_dphi = dphi_dcosphi * period * forcek * s * sin(period*phi - eq);
+					du_dphi = dphi_dcosphi * period * forcek * s * -sin(period*phi - eq);
 					break;
 				case (TorsionFunctions::Cos3):
 					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
@@ -266,7 +266,7 @@ void Pattern::torsionForces(Model *srcmodel)
 					k1 = params.data[TorsionFunctions::DreidingK];
 					period = params.data[TorsionFunctions::DreidingN];
 					eq = params.data[TorsionFunctions::DreidingEq];
-					du_dphi += dphi_dcosphi * 0.5 * k1 * sin(n*(phi - eq));
+					du_dphi = dphi_dcosphi * 0.5 * k1 * sin(n*(phi - eq));
 					break;
 				default:
 					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);

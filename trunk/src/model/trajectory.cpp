@@ -150,6 +150,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	// Pre-Cache frame(s)
 	msg(Debug::None,"Successfully associated trajectory.\n"); 
 	msg(Debug::None,"Number of frames in file : %i\n", totalFrames_);
+	framePosition_ = 1;
 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
 	msg(Debug::None,"Estimated trajectory size is %li kb, cache limit = %i kb\n", totalFrames_ * frameSize_/1024, prefs.cacheLimit());
 	if ((totalFrames_ * frameSize_)/1024 < prefs.cacheLimit())
@@ -160,7 +161,11 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 		{
 			newframe = addFrame();
 			success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
-			if (success) msg(Debug::None,"Read frame %i from file.\n", n+1);
+			if (success)
+			{
+				msg(Debug::None,"Read frame %i from file.\n", n+1);
+				framePosition_ ++;
+			}
 			else
 			{
 				frames_.remove(newframe);
@@ -185,7 +190,7 @@ Model *Model::addFrame()
 	// Set currentFrame_ here (always points to the last added frame)
 	currentFrame_ = newframe;
 	newframe->setTrajectoryParent(this);
-	framePosition_ = nCachedFrames_;
+	//framePosition_ = nCachedFrames_;
 	dbgEnd(Debug::Calls,"Model::addFrame");	
 	return newframe;
 }
@@ -198,7 +203,7 @@ void Model::removeFrame(Model *xframe)
 	if (xframe == currentFrame_) currentFrame_ = (xframe->next == NULL ? xframe->prev : xframe->next);
 	frames_.remove(xframe);
 	nCachedFrames_ --;
-	dbgEnd(Debug::Calls,"trajectory::deleteFrame");
+	dbgEnd(Debug::Calls,"Model::removeFrame");
 }
 
 // Seek to first frame
@@ -222,9 +227,11 @@ void Model::seekFirstFrame()
 	currentFrame_ = frames_.first();
 	if (!trajectoryCached_)
 	{
+		currentFrame_->clear();
 		// Seek to position of first frame in file
 		trajectoryFile_->seekg(trajectoryFirstFrame_);
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+		currentFrame_->logChange(Change::VisualLog);
 	}
 	framePosition_ = 1;
 	logChange(Change::VisualLog);
@@ -256,16 +263,16 @@ void Model::seekNextFrame()
 	if (trajectoryCached_) currentFrame_ = currentFrame_->next;
 	else
 	{
-		removeFrame(currentFrame_);
-		master.current.rs = addFrame();
+		currentFrame_->clear();
 		success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+		currentFrame_->logChange(Change::VisualLog);
 	}
 	framePosition_ ++;
 	logChange(Change::VisualLog);
 	//printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg(Debug::None,"Seek to frame %i\n",framePosition_);
+	msg(Debug::None,"Seek to frame %i\n", framePosition_);
 	dbgEnd(Debug::Calls,"Model::seekNextFrame");
 }
 
@@ -290,10 +297,12 @@ void Model::seekPreviousFrame()
 	if (trajectoryCached_) currentFrame_ = currentFrame_->prev;
 	else
 	{
+		currentFrame_->clear();
 		// Read in previous frame from file
 		streampos newpos = trajectoryFirstFrame_ + streampos((framePosition_-2)*frameSize_);
 		trajectoryFile_->seekg(newpos);
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+		currentFrame_->logChange(Change::VisualLog);
 	}
 	framePosition_ --;
 	logChange(Change::VisualLog);
@@ -324,9 +333,11 @@ void Model::seekLastFrame()
 	if (trajectoryCached_) currentFrame_ = frames_.last();
 	else
 	{
+		currentFrame_->clear();
 		// Read in last frame from file
 		trajectoryFile_->seekg(trajectoryLastFrame_);
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+		currentFrame_->logChange(Change::VisualLog);
 	}
 	framePosition_ = totalFrames_;
 	logChange(Change::VisualLog);
@@ -363,10 +374,12 @@ void Model::seekFrame(int frameno)
 	if (trajectoryCached_) currentFrame_ = frames_[frameno - 1];
 	else
 	{
+		currentFrame_->clear();
 		// Seek to specified frame in file
 		streampos newpos = trajectoryFirstFrame_ + streampos((framePosition_-1)*frameSize_);
 		trajectoryFile_->seekg(newpos);
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
+		currentFrame_->logChange(Change::VisualLog);
 	}
 	framePosition_ = frameno;
 	logChange(Change::VisualLog);

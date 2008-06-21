@@ -650,7 +650,7 @@ class Model
 	int totalFrames_;
 	// Whether this is a cached trajectory (TRUE) or just one frame (FALSE)
 	bool trajectoryCached_;
-	// Position marker
+	// Current frame position counter
 	int framePosition_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
