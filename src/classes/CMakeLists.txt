@@ -12,6 +12,9 @@ dnchar.h
 energystore.h 
 expression.h
 forcefield.h 
+forcefieldatom.h 
+forcefieldbound.h 
+forcefieldparams.h 
 glyph.h 
 grid.h 
 measurement.h 
@@ -36,6 +39,9 @@ dnchar.cpp
 energystore.cpp 
 expression.cpp
 forcefield.cpp 
+forcefieldatom.cpp 
+forcefieldbound.cpp 
+forcefieldparams.cpp 
 glyph.cpp 
 grid.cpp 
 measurement.cpp 

@@ -171,6 +171,8 @@ class Canvas
 	protected:
 	// Last model rendered by canvas (needed for mouse hover etc.)
 	Model *displayModel_;
+	// Last frame ID rendered by the canvas
+	int displayFrame_;
 
 	public:
 	// Configure OpenGL

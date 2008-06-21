@@ -19,161 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FFIELD_H
-#define ATEN_FFIELD_H
+#ifndef ATEN_FORCEFIELD_H
+#define ATEN_FORCEFIELD_H
 
-#include "classes/atom.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
 #include "classes/dnchar.h"
-#include "energy/forms.h"
-#include "base/prefs.h"
+//#include "energy/forms.h"
+//#include "base/prefs.h"
 
 // Forward declarations
-class Atomtype;
-
-// Forcefield parameters
-class ForcefieldParams
-{
-	public:
-	// Storage for parameters used in functions
-	double data[MAXFFPARAMDATA];
-	// Constructor
-	ForcefieldParams();
-};
-
-// Forcefield atom type
-class ForcefieldAtom
-{
-	public:
-	// Constructor / Destructor
-	ForcefieldAtom();
-	~ForcefieldAtom();
-	// List pointers
-	ForcefieldAtom *prev, *next;
-	// Copy structure
-	void copy(ForcefieldAtom *source);
-
-	/*
-	// Properties
-	*/
-	private:
-	// Type of Van der Waals interactions in Forcefield
-	VdwFunctions::VdwFunction vdwForm_;
-	// Unique ffid of atom type in Forcefield
-	int typeId_;
-	// Name of atom type
-	Dnchar name_;
-	// Equivalent name of atom type for intramolecular searching
-	Dnchar equivalent_;
-	// Description of atom type
-	Dnchar description_;
-	// Original atomtype string used to create the atomtype
-	Dnchar atomtypeString_;
-	// Atomtype description
-	Atomtype atomtype_;
-	// Parameter data
-	ForcefieldParams params_;
-	// Generator data (if present in a rule-based Forcefield)
-	double *generator_;
-	// Atomic charge
-	double charge_;
-	// Parent forcefield
-	Forcefield *parent_;
-
-	/*
-	// Set / Get
-	*/
-	public:
-	// Set parent forcefield
-	void setParent(Forcefield *ff);
-	// Return parent forcefield
-	Forcefield *parent();
-	// Set functional form of VDW
-	void setVdwForm(VdwFunctions::VdwFunction vf);
-	// Returns the funcional VDW form
-	VdwFunctions::VdwFunction vdwForm();
-	// Set the type id
-	void setTypeId(int i);
-	// Returns the type id
-	int typeId();
-	// Set the charge of the type
-	void setCharge(double q);
-	// Returns the charge of the type
-	double charge();
-	// Set the name of the type
-	void setName(const char *s);
-	// Returns the name of the type
-	const char *name();
-	// Set the equivalent name of the type
-	void setEquivalent(const char *s);
-	// Returns the equivalent name of the type
-	const char *equivalent();
-	// Set the description of the type
-	void setDescription(const char *s);
-	// Returns the description of the type
-	const char *description();
-	// Returns the atomtype description
-	Atomtype *atomtype();
-	// Set the atomtype string (and calculate new atomtype)
-	void setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
-	// Returns the original atomtype string
-	const char *atomtypeString();
-	// Returns ForcefieldParams structure
-	ForcefieldParams &params();
-	// Set generator data
-	void setGenerator(int i, double d);
-	// Initialise generator array
-	void initialiseGenerator();
-	// Return generator data array
-	double *generator();
-	// Return single generator value
-	double generator(int i);
-};
-
-// Forcefield bound interaction type
-class ForcefieldBound
-{
-	public:
-	// List pointers
-	ForcefieldBound *prev, *next;
-	// Constructor
-	ForcefieldBound();
-	// Forcefield Bound Interaction Type
-	enum BoundType { NoInteraction, BondInteraction, AngleInteraction, TorsionInteraction };
-
-	private:
-	// Type of bound interaction
-	BoundType type_;
-	// Form of bound interaction type
-	int functionalForm_;
-	// Forcefield types involved in this term
-	Dnchar typeNames_[MAXFFBOUNDTYPES];
-	// Pointer to parameter data
-	ForcefieldParams params_;
-
-	public:
-	// Set the type of bound interaction
-	void setType(BoundType fc);
-	// Return the type of bound interaction
-	BoundType type();
-	// Return the functional form (cast as a bond style)
-	BondFunctions::BondFunction bondStyle();
-	// Return the functional form (cast as a angle style)
-	AngleFunctions::AngleFunction angleStyle();
-	// Return the functional form (cast as a torsion style)
-	TorsionFunctions::TorsionFunction torsionStyle();
-	// Set the bond functional form
-	void setBondStyle(BondFunctions::BondFunction bf);
-	// Set the angle functional form
-	void setAngleStyle(AngleFunctions::AngleFunction af);
-	// Set the torsion functional form
-	void setTorsionStyle(TorsionFunctions::TorsionFunction tf);
-	// Return the data[] array in *params
-	ForcefieldParams &params();
-	// Return the atom type 'n'
-	const char *typeName(int n);
-	// Set the atom type 'n'
-	void setTypeName(int n, const char *s);
-};
+class Atom;
 
 // Forcefield
 class Forcefield

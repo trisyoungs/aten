@@ -13,5 +13,5 @@ angles harmonic
 N	N	N	100.0	90.0
 end
 torsions cos
-N	N	N	N	1.0	180.0	2.0	0.0
+N	N	N	N	1.0	2.0	180.0
 end
