@@ -1,0 +1,111 @@
+# Crystallographic Information File (cif)
+# Last modified: 16/06/2008
+importmodel
+	name "Crystallographic Information File"
+	nickname cif
+	extension cif
+	glob *.cif
+
+	# CIF files are dictionary-based, so we can recognise keywords as we find them.
+	# Loops are a little more complicated. For these we will build up a custom format string
+	# and then use it to read in the data once the loop definitions are finished.
+
+	# Variables
+	character discard,format,e,data,keywd,line,char,looptype,sg
+	integer n,m,cellspec
+	double rx,ry,rz
+	double cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
+
+	# Blank lines are significant, so don't skip them...
+	removereadoption skipblanks
+
+	newmodel CifModel
+	$cellspec = 0
+	$sg = 0
+
+	# Main loop - read lines and check for important keywords
+	for $n
+		readline "$keywd $data"
+		#print "Keyword = $keywd"
+		if $keywd = _chemical_name_common
+			setname $data
+		elseif $keywd = _cell_length_a
+			$cell.a = $data
+			inc $cellspec
+		elseif $keywd = _cell_length_b
+			$cell.b = $data
+			inc $cellspec
+		elseif $keywd = _cell_length_c
+			$cell.c = $data
+			inc $cellspec
+		elseif $keywd = _cell_angle_alpha
+			$cell.alpha = $data
+			inc $cellspec
+		elseif $keywd = _cell_angle_beta
+			$cell.beta = $data
+			inc $cellspec
+		elseif $keywd = _cell_angle_gamma
+			$cell.gamma = $data
+			inc $cellspec
+		elseif $keywd = _symmetry_space_group_name_H-M
+			$sg = $data
+		elseif $keywd = loop_
+			# Deal with loops here
+			# Clear any previous format we made and the looptype
+			$format = ""
+			$looptype = none
+			# Loop over next lines to determine the data to expect
+			for $m,1,100
+				# Read and store whole line (we may need it later)
+				readline "$line%100"
+				# Get keyword from line
+				readvar $line "$keywd"
+				# Get first character and next 9 characters
+				readvar $keywd "$char%1 $data%9"
+				# If first character is not '_' then we have entered the actual data defined by the loop.
+				# If this was an empty line, we're done with the loop
+				if $char = ""
+					# Just break out of loop (set $m by hand until 'break' is implemented)
+					$m = 10000
+				elseif $char <> _
+					# Already have first line of data stored in $line.
+					#print "LINE BEFORE ATOM is $line"
+					readvar $line $format
+					# Our next action depends on the loop type
+					if $looptype = atom
+						#print "Coords $rx $ry $rz"
+						newatom $e $rx $ry $rz
+					end
+				elseif $data = atom_site
+					# Atom data loop
+					$looptype = atom
+					if $keywd = _atom_site_type_symbol
+						writevar $format "$format \$e"
+					elseif $keywd = _atom_site_fract_x
+						writevar $format "$format \$rx"
+					elseif $keywd = _atom_site_fract_y
+						writevar $format "$format \$ry"
+					elseif $keywd = _atom_site_fract_z
+						writevar $format "$format \$rz"
+					else
+						writevar $format "$format \*"
+					end
+				end
+			end
+		end
+	end
+
+	# Were we given a full cell spec?
+	if $cellspec = 6
+		cell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
+		fractoreal
+		# Apply spacegroup here and pack
+		spacegroup $sg
+		pack
+	else
+		print "Full cell specification not found in file."
+		print "Atom coordinates are still fractional."
+	end
+
+	finalisemodel
+end
