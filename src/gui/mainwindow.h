@@ -323,6 +323,13 @@ class AtenForm : public QMainWindow
 	void on_actionPreferences_triggered(bool checked);
 
 	/*
+	// Help Functions
+	*/
+	private slots:
+	void on_actionAboutAten_triggered(bool checked);
+	void on_actionAboutQt_triggered(bool checked);
+
+	/*
 	// Local Routines
 	*/
 	private slots:

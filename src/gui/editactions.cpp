@@ -1,6 +1,6 @@
 /*
-	*** Qt edit actions
-	*** src/gui/editfuncs.cpp
+	*** Qt GUI: Editing actions
+	*** src/gui/editactions.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

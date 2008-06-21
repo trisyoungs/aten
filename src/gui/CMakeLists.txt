@@ -17,6 +17,7 @@ set(qtproject_SRCS
   ttablewidgetitem.h
   tlistwidgetitem.h 
   tcombobox.h
+  about_funcs.cpp
   actions.cpp
   atomlist_funcs.cpp
   bondactions.cpp
@@ -59,6 +60,7 @@ set(qtproject_SRCS
 )
 
 SET(pro_MOC_HDRS
+  about.h
   atomlist.h
   build.h
   celldefine.h
@@ -84,6 +86,7 @@ SET(pro_MOC_HDRS
 QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
 
 SET(pro_UIS
+  about.ui
   atomlist.ui
   build.ui
   celldefine.ui

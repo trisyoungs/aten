@@ -27,6 +27,7 @@
 
 // Forward declarations
 class AtenForm;
+class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
 class AtenLoadModel;
@@ -157,6 +158,8 @@ class GuiQt
 	// Dialog Windows
 	*/
 	public:
+	// About Dialog
+	AtenAbout *aboutDialog;
 	// Preferences Dialog
 	AtenPrefs *prefsDialog;
 	// Forcefield Editor

@@ -128,7 +128,7 @@
      <x>0</x>
      <y>0</y>
      <width>709</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="ViewMenu" >
@@ -230,12 +230,6 @@
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
    </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-   </widget>
    <widget class="QMenu" name="ScriptsMenu" >
     <property name="title" >
      <string>Scripts</string>
@@ -293,6 +287,19 @@
     <addaction name="separator" />
     <addaction name="actionProbeAtom" />
    </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+   </widget>
+   <widget class="QMenu" name="menuHelp" >
+    <property name="title" >
+     <string>Help</string>
+    </property>
+    <addaction name="actionAboutAten" />
+    <addaction name="actionAboutQt" />
+   </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
    <addaction name="ViewMenu" />
@@ -300,6 +307,7 @@
    <addaction name="ModelMenu" />
    <addaction name="ScriptsMenu" />
    <addaction name="ToolsMenu" />
+   <addaction name="menuHelp" />
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar" />
   <widget class="QToolBar" name="FileToolbar" >
@@ -1912,6 +1920,16 @@
    </property>
    <property name="text" >
     <string>Calculate atomic forces in the current model</string>
+   </property>
+  </action>
+  <action name="actionAboutQt" >
+   <property name="text" >
+    <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionAboutAten" >
+   <property name="text" >
+    <string>About Aten</string>
    </property>
   </action>
  </widget>

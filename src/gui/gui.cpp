@@ -27,6 +27,7 @@
 #include "gui/loadmodel.h"
 #include "gui/selectpattern.h"
 #include "gui/selectelement.h"
+#include "gui/about.h"
 #include "gui/ffeditor.h"
 #include "gui/tcanvas.uih"
 #include "gui/grids.h"
@@ -93,6 +94,7 @@ void GuiQt::run()
 	loadModelDialog = new AtenLoadModel(mainWindow);
 	selectPatternDialog = new AtenSelectPattern(mainWindow);
 	selectElementDialog = new AtenSelectElement(mainWindow);
+	aboutDialog = new AtenAbout(mainWindow);
 	// ...tool windows
 	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
 	buildWindow = new AtenBuild(mainWindow);
