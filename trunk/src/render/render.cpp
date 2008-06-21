@@ -196,6 +196,7 @@ void Canvas::renderScene(Model *source)
 	glDisable(GL_LIGHTING);
 
 	// Render text glyphs associated with the model
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	renderModelTextGlyphs();
 	if (prefs.isVisibleOnScreen(Prefs::ViewLabels)) renderModelLabels();
 	if (prefs.isVisibleOnScreen(Prefs::ViewMeasurements)) renderModelMeasurements();

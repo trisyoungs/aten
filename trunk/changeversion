@@ -27,16 +27,6 @@ fi
 grep '#define ATENVERSION' src/base/master.h | sed -e 's/#define ATENVERSION "\([0-9\.]\+\).*"/\1/g'
 
 
-# src/gui/mainwindow_init.cpp
-echo -n "mainwindow_init.cpp (Window Title) : "
-if [ "$#" -eq "2" ]
-then
-  cp src/gui/mainwindow_init.cpp src/gui/mainwindow_init.cpp.orig
-  sed -e "s/(\"Aten (\([0-9\.]\+\))\")/(\"Aten ($1.$2)\")/g" src/gui/mainwindow_init.cpp.orig > src/gui/mainwindow_init.cpp
-fi
-grep 'setWindowTitle("Aten' src/gui/mainwindow_init.cpp | sed -e 's/.*("Aten (\([0-9\.]\+\))");/\1/g'
-
-
 # ./CMakeLists.txt
 if [ "$#" -eq "2" ]
 then

@@ -258,9 +258,9 @@ void Atom::printSummary()
 {
 	// Print format : " Id     El   FFType         X             Y             Z              Q        S"
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg(Debug::None," %-5i  %-3s  %-8s", id_ + 1, elements.symbol(this),(type_ != NULL ? type_->name() : "None"));
-	msg(Debug::None," %13.6e %13.6e %13.6e  %13.6e  ",r_.x, r_.y, r_.z, charge_);
-	msg(Debug::None,"%c  \n",(selected_ ? 'x' : ' '));
+	char s[128];
+	sprintf(s," %-5i  %-3s  %-8s %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements.symbol(this), type_ != NULL ? type_->name() : "None", r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
+	msg(Debug::None, s);
 }
 
 /*

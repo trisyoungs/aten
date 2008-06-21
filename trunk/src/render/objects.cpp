@@ -195,7 +195,6 @@ void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swa
 	glPopMatrix();
 }
 
-
 // Draw a cylinder arrow from origin along vector v
 void Canvas::glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swaphead)
 {

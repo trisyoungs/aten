@@ -39,6 +39,7 @@
 #include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
+#include "gui/about.h"
 #include "model/model.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
@@ -480,3 +481,13 @@ void AtenForm::on_actionGridsWindow_triggered(bool checked)
 //	if (checked) gui.analyseWindow->showWindow();
 //	else gui.analyseWindow->hide();
 // }
+
+void AtenForm::on_actionAboutAten_triggered(bool checked)
+{
+	gui.aboutDialog->showWindow();
+}
+
+void AtenForm::on_actionAboutQt_triggered(bool checked)
+{
+	QMessageBox::aboutQt(this, "About Qt");
+}
