@@ -24,10 +24,6 @@
 
 #include <QtGui/QListWidgetItem>
 
-// Forward Declarations
-class Forcefield;
-class Grid;
-
 class TListWidgetItem : public QListWidgetItem
 {
 	public:
@@ -35,23 +31,16 @@ class TListWidgetItem : public QListWidgetItem
 	TListWidgetItem(QListWidget *parent = 0);
 
 	/*
-	// Pointers
+	// Pointer
 	*/
 	private:
-	Forcefield *forcefield_;
-	Grid *grid_;
-	
+	void *pointer_;	
 
 	public:
-	// Set the ff pointer in the widget
-	void setForcefield(Forcefield *source);
-	// Return the ff pointer in the widget
-	Forcefield *forcefield();
-	// Set the grid pointer in the widget
-	void setGrid(Grid *source);
-	// Return the grid pointer in the widget
-	Grid *grid();
-
+	// Set the pointer in the widget
+	void setPointer(void *source);
+	// Return the pointer in the widget
+	void *pointer();
 };
 
 #endif

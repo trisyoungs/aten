@@ -1,42 +1,24 @@
-#
-# Build Example - Benzene
-# Not Working!
-#
+# Building a molecule using the pen - Benzene
 
-model new benzene
+integer n
+double l
 
-# First benzene - all carbons drawn explicitly
-pen set -10.0 0.0 0.0
-pen move 0.0 1.0 0.0
-build atom C
-pen rotz 60.0
-pen move 0.0 1.0 0.0
-build chain C double
-pen rotz 60.0
-pen move 0.0 1.0 0.0
-build chain C
-pen rotz 60.0
-pen move 0.0 1.0 0.0
-build chain C double
-pen rotz 60.0
-pen move 0.0 1.0 0.0
-build chain C
-pen rotz 60.0
-pen move 0.0 1.0 0.0
-build chain C double
-build terminate
+# The variable 'l' contains the bond length to use
+$l = 1.39
 
-# Second benzene - looped
-pen set 0.0 0.0 0.0
-loop carb 6
-pen move 0.0 1.0 0.0
-build chain C
-pen rotz 60.0
-endloop carb
-build terminate
+# Create a new model
+newmodel benzene
 
-bond augment
-build addhydrogen
+# Pen starts at the origin 0,0,0 where we put the first atom. We 
+chain C
+for $n,1,5
+	move 0.0 1.39 0.0
+	chain C
+	rotz 60.0
+end
+# Bond first and last atoms
+newbond 1 6 single
 
-# Third benzene - looped, with hydrogens
-pen set 10.0 0.0 0.0
+augment
+#addhydrogen
+

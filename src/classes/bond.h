@@ -39,6 +39,8 @@ class Bond
 	static const char *bondType(BondType);
 	// Increase BondType (instead of defining postfix increment)
 	static BondType increaseBondType(BondType);
+	// Increase BondType (instead of defining postfix increment)
+	static BondType decreaseBondType(BondType);
 
 	private:
 	// Pointers to both atoms involved in the bond

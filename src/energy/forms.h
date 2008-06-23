@@ -71,12 +71,11 @@ namespace BondFunctions
 // Angle potential forms
 namespace AngleFunctions
 {
-	enum AngleFunction { None, Harmonic, Cosine, UffCosine, Cos2, HarmonicCosine, nAngleFunctions };
+	enum AngleFunction { None, Harmonic, Cosine, Cos2, HarmonicCosine, nAngleFunctions };
 	extern FunctionData AngleFunctions[];
 	AngleFunction angleFunction(const char*);
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
-	enum UffCosineParameter { UffCosineK, UffCosineN, UffCosineEq };
 	enum Cos2Parameter { Cos2K, Cos2Eq, Cos2C0, Cos2C1, Cos2C2 };
 	enum HarmonicCosineParameter { HarmonicCosineK, HarmonicCosineEq };
 }

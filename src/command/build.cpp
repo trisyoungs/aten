@@ -46,6 +46,27 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
+int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
+	Atom *i;
+	if (c->hasArg(3))
+	{
+		Vec3<double> pos = c->arg3d(1);
+		i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), pos);
+		if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,c->hasArg(4) ? Bond::bondType(c->argc(4)) : Bond::Single);
+	}
+	else
+	{
+		i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), c->parent()->penPosition);
+		if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,c->hasArg(1) ? Bond::bondType(c->argc(1)) : Bond::Single);
+	}
+	master.current.i = i;
+	return CR_SUCCESS;
+}
+
 // Copy current selection ('copy')
 int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 {

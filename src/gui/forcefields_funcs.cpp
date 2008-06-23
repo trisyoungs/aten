@@ -99,7 +99,7 @@ void AtenForcefields::refresh()
 			checkedItem_ = item;
 		}
 		else item->setCheckState(Qt::Unchecked);
-		item->setForcefield(ff);
+		item->setPointer(ff);
 	}
 	// Select the current FF.
 	if (master.currentForcefield() == NULL)
@@ -182,7 +182,7 @@ void AtenForcefields::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
 	// Get forcefield associated to item
-	Forcefield *ff = titem->forcefield();
+	Forcefield *ff = (Forcefield*) titem->pointer();
 	Forcefield *defaultff = master.defaultForcefield();
 	// Look at checked state
 	if ((titem->checkState() == Qt::Checked) && (ff != defaultff))

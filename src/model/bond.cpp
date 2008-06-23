@@ -334,6 +334,7 @@ void Model::augmentBond(Bond *b, int change)
 	// Calc max difference that we can (must) change the bond by...
 	maxchg = (abs(i->tempi) < abs(j->tempi) ? i->tempi : j->tempi);
 	maxchg /= 2;
+	printf("bond change requested = %i, maxchg = %i\n",change, maxchg);
 	// Sanity check
 	if ((change == +1) && (maxchg >= 0))
 	{
@@ -346,16 +347,19 @@ void Model::augmentBond(Bond *b, int change)
 		return;
 	}
 	// Store current bond order
-	int oldorder = b->order();
+	Bond::BondType oldorder = b->order();
+	printf("klasdflsdkfldsk  oldorder %i\n",oldorder);
 	for (n=0; n<abs(maxchg); n++)
 	{
-		change == +1 ? oldorder ++ : oldorder --;
+		change == 1 ? Bond::increaseBondType(oldorder) : Bond::decreaseBondType(oldorder);
 		j->tempi -= (2*maxchg);
 		i->tempi -= (2*maxchg);
 		//change == +1 ? oldorder ++ : oldorder --;
 	}
+	printf("klasdflsdkfldsk  neworder %i\n",oldorder);
+
 	// Set the new bond order
-	changeBond(b,(Bond::BondType) oldorder);
+	changeBond(b, oldorder);
 	dbgEnd(Debug::Calls,"Model::augmentBond");
 }
 

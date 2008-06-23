@@ -40,6 +40,12 @@ Bond::BondType Bond::increaseBondType(BondType btype)
 	else if (btype == Bond::Double) return Bond::Triple;
 	return Bond::Single;
 }
+Bond::BondType Bond::decreaseBondType(BondType btype)
+{
+	if (btype == Bond::Single) return Bond::Triple;
+	else if (btype == Bond::Double) return Bond::Single;
+	return Bond::Double;
+}
 
 // Constructors
 Bond::Bond()

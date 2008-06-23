@@ -70,16 +70,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					n = params.data[AngleFunctions::CosineN];
 					s = params.data[AngleFunctions::CosineS];
 					energy += forcek * (1.0 + s * cos(n * theta - eq));
-					break;
-				case (AngleFunctions::UffCosine):
-					// U(theta) = (forcek / n*n) * (1 + cos(n*theta - eq))
-					forcek = params.data[AngleFunctions::UffCosineK];
-					eq = params.data[AngleFunctions::UffCosineEq] / DEGRAD;
-					n = params.data[AngleFunctions::UffCosineN];
-	printf("ANGLE CONTRIBUTION: forcek %f, eq %f, n %f, energy %f\n",forcek, eq, n, (forcek / (n*n)) * (1.0 + cos(n * theta)));
-					//printf("Energy %8.4f %8.4f %8.4f\n",forcek,n,eq);
-					energy += (forcek / (n*n)) * (1.0 + cos(n * theta));
-					break;
+	printf("ANGLE %i-%i-%i : forcek %f, eq %f, n %f, theta %f: energy = %f\n",i, j, k, forcek, eq * DEGRAD, n, theta * DEGRAD, (forcek / (n*n)) * (1.0 + s * cos(n * theta)));
 				case (AngleFunctions::Cos2):
 					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
 					forcek = params.data[AngleFunctions::Cos2K];
@@ -160,13 +151,6 @@ void Pattern::angleForces(Model *srcmodel)
 					n = params.data[AngleFunctions::CosineN];
 					s = params.data[AngleFunctions::CosineS];
 					du_dtheta = -forcek * n * s * sin(n * theta - eq);
-					break;
-				case (AngleFunctions::UffCosine):
-					// dU/d(theta) = -(forcek / n) * sin(n*theta)
-					forcek = params.data[AngleFunctions::UffCosineK];
-					eq = params.data[AngleFunctions::UffCosineEq] / DEGRAD;
-					n = params.data[AngleFunctions::UffCosineN];
-					du_dtheta = -(forcek / n) * sin(n*theta);
 					break;
 				case (AngleFunctions::Cos2):
 					// dU/d(theta) = -forcek * (c1 * sin(theta) + 2 * c2 * sin(2*theta))
