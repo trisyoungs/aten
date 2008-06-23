@@ -252,7 +252,7 @@ Atom *Model::atom(int n)
 		return NULL;
 	}
 	dbgEnd(Debug::Calls,"Model::atom");
-	return atoms_.array()[n];
+	return atoms_[n];
 }
 
 // Reset forces on all atoms
