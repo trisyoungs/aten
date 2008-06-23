@@ -26,7 +26,9 @@
 Glyph *Model::addGlyph()
 {
 	logChange(Change::VisualLog);
-	return glyphs_.add();
+	Glyph *newglyph = glyphs_.add();
+	newglyph->setParent(this);
+	return newglyph;
 }
 
 // Return list of glyphs

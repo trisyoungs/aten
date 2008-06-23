@@ -140,7 +140,6 @@ template <class T> ListItem<T>::ListItem()
 template <class T> List<T>::~List()
 {
 	clear();
-	if (items_ != NULL) delete[] items_;
 }
 
 // Returns the number of items in the list
@@ -273,6 +272,9 @@ template <class T> void List<T>::clear()
 		remove(xitem);
 		xitem = listHead_;
 	}
+	// Delete static atoms array if its there
+	if (items_ != NULL) delete[] items_;
+	items_ = NULL;
 	regenerate_ = 1;
 }
 
@@ -313,7 +315,6 @@ template <class T> T **List<T>::array()
 	int count = 0;
 	for (T *i = listHead_; i != NULL; i = i->next)
 	{
-	//printf("N=%i\n",count);
 		items_[count] = i;
 		count ++;
 	}
@@ -470,6 +471,9 @@ template <class T> void List<T>::operator=(List<T> &source)
 		newitem->next = NULL;
 		own(newitem);
 	}
+	// Don't deep-copy the static list, just flag that it must be regenerated if required.
+	regenerate_ = 1;
+	items_ = NULL;
 }
 
 // Element access operator

@@ -51,6 +51,7 @@ Glyph::Glyph()
 	solid_ = TRUE;
 	parent_ = NULL;
 	lineWidth_ = 1.0f;
+	parent_ = NULL;
 
 	// Public variables
 	prev = NULL;
