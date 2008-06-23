@@ -180,7 +180,7 @@ void Variable::set(Atom *i)
 		return;
 	}
 	ptrValue_ = i;
-	msg(Debug::Verbose,"Atom variable '%s' set to '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
+	msg(Debug::Verbose,"Atom variable '%s' has pointer '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
 }
 
 // Set (pattern)
@@ -192,7 +192,7 @@ void Variable::set(Pattern *p)
 		return;
 	}
 	ptrValue_ = p;
-	msg(Debug::Verbose,"Pattern variable '%s' set to '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
+	msg(Debug::Verbose,"Pattern variable '%s' has pointer '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
 }
 
 // Set (model)
@@ -204,7 +204,7 @@ void Variable::set(Model *m)
 		return;
 	}
 	ptrValue_ = m;
-	msg(Debug::Verbose,"Model variable '%s' set to '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
+	msg(Debug::Verbose,"Model variable '%s' has pointer '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
 }
 
 // Set (PatternBound)
@@ -216,7 +216,7 @@ void Variable::set(PatternBound *pb)
 		return;
 	}
 	ptrValue_ = pb;
-	msg(Debug::Verbose,"PatBound variable '%s' set to '%li'\n",name_.get(),pb);
+	msg(Debug::Verbose,"PatBound variable '%s' has pointer '%li'\n",name_.get(),pb);
 }
 
 // Set (ForcefieldAtom)
@@ -228,7 +228,7 @@ void Variable::set(ForcefieldAtom *ffa)
 		return;
 	}
 	ptrValue_ = ffa;
-	msg(Debug::Verbose,"FFAtom variable '%s' set to '%li'\n",name_.get(),ffa);
+	msg(Debug::Verbose,"FFAtom variable '%s' has pointer '%li'\n",name_.get(),ffa);
 }
 
 // Set (Expression)
@@ -240,7 +240,7 @@ void Variable::set(Expression *ex)
 		return;
 	}
 	ptrValue_ = ex;
-	msg(Debug::Verbose,"Expression variable '%s' set to '%li'\n",name_.get(),ex);
+	msg(Debug::Verbose,"Expression variable '%s' has pointer '%li'\n",name_.get(),ex);
 }
 
 // Get as char
