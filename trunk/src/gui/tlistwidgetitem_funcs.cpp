@@ -25,30 +25,17 @@
 TListWidgetItem::TListWidgetItem(QListWidget *parent) : QListWidgetItem(parent)
 {
 	// Private variables
-	forcefield_ = NULL;
-	grid_ = NULL;
+	pointer_ = NULL;
 }
 
-// Set the ff pointer in the widget
-void TListWidgetItem::setForcefield(Forcefield *source)
+// Set the pointer in the widget
+void TListWidgetItem::setPointer(void *source)
 {
-	forcefield_ = source;
+	pointer_ = source;
 }
 
-// Return the ff pointer in the widget
-Forcefield *TListWidgetItem::forcefield()
+// Return the pointer in the widget
+void *TListWidgetItem::pointer()
 {
-	return forcefield_;
-}
-
-// Set the grid pointer in the widget
-void TListWidgetItem::setGrid(Grid *source)
-{
-	grid_ = source;
-}
-
-// Return the grid pointer in the widget
-Grid *TListWidgetItem::grid()
-{
-	return grid_;
+	return pointer_;
 }

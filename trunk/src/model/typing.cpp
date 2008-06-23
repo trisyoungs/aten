@@ -114,8 +114,6 @@ void Model::describeAtoms()
 	{
 		// 1) Locate ring structures
 		p->findRings();
-		// Augment bonding in model
-		//p->augment();   TODO
 		// 2) Reset atom environments
 		p->clearHybrids();
 		printstuff(p);

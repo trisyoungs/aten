@@ -80,7 +80,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Analyse quantities for all frames in current trajectory" },
 	
 	// Atom commands
-	{ "chain",		"Pp",		"<element> [bondtype]",
+	{ "chain",		"Ppppp",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]",
 				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"",
 				"End the current bond chain (the next call to 'chain' will create an unbound atom)" },

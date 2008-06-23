@@ -111,16 +111,6 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Draw atom with bond to alst atom ('chain <el>')
-int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Atom *i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), c->parent()->penPosition);
-	if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,Bond::Single);
-	master.current.i = i;
-	return CR_SUCCESS;
-}
-
 // Retrieve atom info ('getatom <id> <var>')
 int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 {

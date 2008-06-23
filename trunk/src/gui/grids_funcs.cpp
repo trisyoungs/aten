@@ -72,7 +72,7 @@ void AtenGrids::refresh()
 		item = new TListWidgetItem(ui.GridList);
 		item->setText(g->name());
 		item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
-		item->setGrid(g);
+		item->setPointer(g);
 	}
 	// Select the first item
 	if (master.nGrids() != 0) ui.GridList->setCurrentRow(0);
@@ -244,7 +244,7 @@ void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
 	// Get forcefield associated to item
-	Grid *g = titem->grid();
+	Grid *g = (Grid*) titem->pointer();
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
 	gui.mainView.postRedisplay();

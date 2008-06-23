@@ -69,9 +69,9 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 	//srcmodel->normaliseForces(1.0);
 
 	// Set initial bounding values
-	bound[0] = -0.2;
+	bound[0] = -0.001;
 	bound[1] = 0.0;
-	bound[2] = 0.2;
+	bound[2] = 0.001;
 	// Compute gradient at each bounding point
 	gradientMove(srcmodel, &destmodel, bound[0]);
 	energy[0] = srcmodel->totalEnergy(&destmodel);
@@ -118,7 +118,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 		gradientMove(srcmodel, &destmodel, newmin);
 		enew = srcmodel->totalEnergy(&destmodel);
 
-		//printf("PARABOLIC point gives %f @ %f\n",enew,newmin);
+		//printf("PARABOLIC point gives energy %f @ %f\n",enew,newmin);
 		if (enew < energy[1])
 		{
 			// New point found, so copy destmodel coordinates to model and set new energy
@@ -187,18 +187,18 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 					//printf("---GOLD point is better than one of the boundary values...\n");
 					if (leftbound)
 					{
-						bound[0] = newmin;
-						energy[0] = enew;
+						bound[2] = newmin;
+						energy[2] = enew;
 					}
 					else
 					{
-						bound[2] = newmin;
-						energy[2] = enew;
+						bound[0] = newmin;
+						energy[0] = enew;
 					}
 				}
 			}
 		}
-	} while (fabs(bound[0]-bound[2]) > (2.0 * tolerance_));
+	} while (fabs(energy[0]-energy[2]) > (2.0 * tolerance_));
 	//printf("Final bounding values are %f %f %f\n",bound[0],bound[1],bound[2]);
 	dbgEnd(Debug::Calls,"LineMinimiser::minimise");
 	return energy[1];

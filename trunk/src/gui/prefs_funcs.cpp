@@ -99,7 +99,7 @@ void AtenPrefs::setControls()
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::CtrlKey));
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
 
-	// Set pen colours and colourscale names
+	// Set pen colours and colourscale names and checks
         ui.ForegroundColourFrame->setColour(prefs.penColour(Prefs::ForegroundColour));
         ui.ForegroundColourFrame->update();
         ui.BackgroundColourFrame->setColour(prefs.penColour(Prefs::BackgroundColour));
@@ -112,6 +112,7 @@ void AtenPrefs::setControls()
 	{
 		item = ui.ScaleList->item(n);
 		sprintf(name, "%i. %s", n+1, prefs.colourScale[n].name());
+		item->setCheckState( prefs.colourScale[n].visible() ? Qt::Checked : Qt::Unchecked);
 	}
 	updateScalePointsList();
 
@@ -434,7 +435,6 @@ void AtenPrefs::on_BackgroundColourButton_clicked(bool checked)
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
 	prefs.setPenColour(Prefs::BackgroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
-printf("%f %f %f %f\n", newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
 	ui.BackgroundColourFrame->setColour(newcol);
 	ui.BackgroundColourFrame->update();
 	// Update display
@@ -454,6 +454,7 @@ void AtenPrefs::on_SpecularColourButton_clicked(bool checked)
 	ui.SpecularColourFrame->update();
 	// Update display
 	gui.mainView.postRedisplay();
+
 }
 
 void AtenPrefs::updateScalePointsList()
@@ -564,4 +565,14 @@ void AtenPrefs::on_RemovePointButton_clicked(bool checked)
 	// Remove selected point
 	prefs.colourScale[scale].removePoint(id);
 	updateScalePointsList();
+}
+
+void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem *item)
+{
+	// Get row number associated with item
+	int row = ui.ScaleList->row(item);
+	if (row == -1) return;
+	// Look at checked state
+	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked ? TRUE : FALSE) );
+	gui.mainView.postRedisplay();
 }

@@ -985,6 +985,7 @@ void Pattern::augment()
 	for (n=0; n<nAtoms_; n++)
 	{
 		i->tempi = i->totalBondOrder() - 2*elements.valency(i->element());
+		printf("%i\n",i->tempi);
 		i = i->next;
 	}
 	// Stage 1 - Augment heavy atoms with only one heavy atom bond
