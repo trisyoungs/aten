@@ -346,3 +346,4 @@ void Model::chargeAtom(Atom *target, double q)
 		newchange->set(Change::ChargeEvent, oldcharge, q);
 	}
 }
+
