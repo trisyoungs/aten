@@ -516,7 +516,8 @@ void AtenPrefs::on_PointValueSpin_valueChanged(double d)
 	int id = ui.ScalePointsList->currentRow();
 	if (id == -1) return;
 	// Set value in colourscale
-	prefs.colourScale[scale].point(id)->setValue(d);
+	prefs.colourScale[scale].setPointValue(id, d);
+	ui.ScalePointsList->item(id)->setText(ftoa(d));
 	gui.mainView.postRedisplay();
 }
 
@@ -535,11 +536,11 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour, and set colours in frame and pointlist
- 	csp->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.colourScale[scale].setPointColour(id, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
 	ui.PointColourFrame->setColour(newcol);
 	ui.PointColourFrame->update();
 	csp->copyColour(col);
-	ui.ScalePointsList->item(id)->setBackgroundColor(QColor(int(col[0]*255),int(col[1]*255),int(col[2]*255)));
+	ui.ScalePointsList->item(id)->setBackgroundColor(newcol);
 	// Update display
 	gui.mainView.postRedisplay();
 }

@@ -84,12 +84,12 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Calculate current forces which will be our gradient vector
-		srcmodel->zeroForces();
-		srcmodel->calculateForces(srcmodel);
-		srcmodel->zeroForcesFixed();
+		//srcmodel->zeroForces();
+		//srcmodel->calculateForces(srcmodel);
+		//srcmodel->zeroForcesFixed();
 		// We need to (do we?) define some sort of length scale so we take sensible steps along the gradient vector.
 		//srcmodel->normalise_forces(1.0);
-		for (i=0; i<srcmodel->nAtoms(); i++) modelAtoms[i]->f() /= elements.atomicMass(modelAtoms[i]);
+		//for (i=0; i<srcmodel->nAtoms(); i++) modelAtoms[i]->f() /= elements.atomicMass(modelAtoms[i]);
 
 		// Perform linesearch along the gradient vector
 		if (!gui.progressUpdate(cycle)) lineDone = TRUE;
