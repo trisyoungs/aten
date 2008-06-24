@@ -70,7 +70,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					n = params.data[AngleFunctions::CosineN];
 					s = params.data[AngleFunctions::CosineS];
 					energy += forcek * (1.0 + s * cos(n * theta - eq));
-	printf("ANGLE %i-%i-%i : forcek %f, eq %f, n %f, theta %f: energy = %f\n",i, j, k, forcek, eq * DEGRAD, n, theta * DEGRAD, (forcek / (n*n)) * (1.0 + s * cos(n * theta)));
+					break;
 				case (AngleFunctions::Cos2):
 					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
 					forcek = params.data[AngleFunctions::Cos2K];

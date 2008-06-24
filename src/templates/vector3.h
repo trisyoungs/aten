@@ -432,7 +432,9 @@ template <class T> double Vec3<T>::magnitude() const
 template <class T> double Vec3<T>::magAndNormalise()
 {
 	double mag = sqrt(x*x + y*y + z*z);
-	x /= mag; y /= mag; z /= mag;
+	x /= mag;
+	y /= mag;
+	z /= mag;
 	return mag;
 }
 
