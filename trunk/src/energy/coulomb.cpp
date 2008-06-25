@@ -33,7 +33,7 @@
 void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	dbgBegin(Debug::Calls,"Pattern::coulombIntraPatternEnergy");
-	static int n,i,j,aoff,m1;
+	static int n,i,j,aoff,m1,con;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy_intra, energy, cutoff;
 	cutoff = prefs.elecCutoff();
@@ -45,32 +45,21 @@ void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int mol
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
 	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
 	{
-		// Add on contributions for connectivities of 0 (unbound) or > 3
+		// Add on contributions for connectivities of 0 (unbound) or > 2
 		for (i=0; i<nAtoms_; i++)
 		{
 			for (j=i+1; j<nAtoms_; j++)
 			{
-				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
+				con = conMatrix_[i][j];
+				if ((con > 2) || (con == 0))
 				{
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(),modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) / (rij * rij);
-					conMat_[i][j] == 0 ? energy_inter += energy : energy_intra += energy;
+					con == 0 ? energy_inter += energy : energy_intra += (con == 3 ? energy * elecScaleMatrix_[i][j] : energy);
 				}
 			}
-		}
-		// Add on contributions from torsions (which are scaled)
-		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
-		{
-			i = pb->atomId(0) + aoff;
-			j = pb->atomId(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r(),modelatoms[j]->r());
-			rij = mim_i.magnitude();
-			if (rij > cutoff) continue;
-			energy  = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij * rij);
-			energy *= pb->data()->params().data[TF_ESCALE];
-			energy_intra += energy;
 		}
 		aoff += nAtoms_;
 	}
@@ -142,7 +131,7 @@ void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy
 void Pattern::coulombIntraPatternForces(Model *srcmodel)
 {
 	dbgBegin(Debug::Calls,"Pattern::coulombIntraPatternForces");
-	static int n, i, j, aoff, m1;
+	static int n, i, j, aoff, m1, con;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
 	cutoff = prefs.elecCutoff();
@@ -159,12 +148,14 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 			f_i = modelatoms[i+aoff]->f();
 			for (j=i+1; j<nAtoms_; j++)
 			{
-				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
+				con = conMatrix_[i][j];
+				if ((con > 2) || (con == 0))
 				{
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij*rij);
+					if (con == 3) factor *= elecScaleMatrix_[i][j];
 					tempf = mim_i * factor;
 					f_i += tempf;
 					modelatoms[j+aoff]->f() -= tempf;
@@ -172,19 +163,6 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 			}
 			// Re-load forces back into main array
 			modelatoms[i+aoff]->f() = f_i;
-		}
-		// Add on contributions from torsions (which are scaled)
-		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
-		{
-			i = pb->atomId(0) + aoff;
-			j = pb->atomId(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
-			rij = mim_i.magnitude();
-			if (rij > cutoff) continue;
-			factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij*rij);
-			factor *= pb->data()->params().data[TF_ESCALE];
-			modelatoms[i+aoff]->f() += tempf;
-			modelatoms[j+aoff]->f() -= tempf;
 		}
 		aoff += nAtoms_;
 	}

@@ -237,14 +237,14 @@ void Pattern::torsionForces(Model *srcmodel)
 					k1 = params.data[TorsionFunctions::Cos3K1];
 					k2 = params.data[TorsionFunctions::Cos3K2];
 					k3 = params.data[TorsionFunctions::Cos3K3];
-					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) - 2.0*k2*sin(2.0*phi) + 3.0*k3*sin(3.0*phi));
+					du_dphi = dphi_dcosphi * 0.5 * ( -k1*sin(phi) + 2.0*k2*sin(2.0*phi) - 3.0*k3*sin(3.0*phi));
 					break;
 				case (TorsionFunctions::Cos3C):
 					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
-					k1 = -params.data[TorsionFunctions::Cos3CK1];
-					k2 = 2.0 * params.data[TorsionFunctions::Cos3CK2];
-					k3 = -3.0 * params.data[TorsionFunctions::Cos3CK3];
-					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi));
+					k1 = params.data[TorsionFunctions::Cos3CK1];
+					k2 = params.data[TorsionFunctions::Cos3CK2];
+					k3 = params.data[TorsionFunctions::Cos3CK3];
+					du_dphi = dphi_dcosphi * 0.5 * ( -k1*sin(phi) + 2.0*k2*sin(2.0*phi) - 3.0*k3*sin(3.0*phi));
 					break;
 				case (TorsionFunctions::Cos4):
 					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) + 4 * k4*(sin(4*phi)))
@@ -290,10 +290,10 @@ void Pattern::torsionForces(Model *srcmodel)
 			fl.y = -du_dphi * dcos_dxpk.dp(dxpk_dlk.rows[1]);
 			fl.z = -du_dphi * dcos_dxpk.dp(dxpk_dlk.rows[2]);
 
-			modelatoms[i]->f() += fi;
-			modelatoms[j]->f() += fj;
-			modelatoms[k]->f() += fk;
-			modelatoms[l]->f() += fl;
+			modelatoms[i]->f() -= fi;
+			modelatoms[j]->f() -= fj;
+			modelatoms[k]->f() -= fk;
+			modelatoms[l]->f() -= fl;
 
 		}
 		aoff += nAtoms_;

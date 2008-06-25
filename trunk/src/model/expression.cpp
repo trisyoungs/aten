@@ -59,9 +59,10 @@ bool Model::createExpression(bool vdwOnly)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	dbgBegin(Debug::Calls,"Model::createExpression");
-	// 0) If the expression is already valid, return
+	// 0) If the expression is already valid, just update scaling terms in pattern matrices and return
 	if (isExpressionValid())
 	{
+		for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->updateScaleMatrices();
 		dbgEnd(Debug::Calls,"Model::createExpression");
 		return TRUE;
 	}
@@ -83,7 +84,7 @@ bool Model::createExpression(bool vdwOnly)
 		p->deleteExpression();
 		p->initExpression(vdwOnly);
 		if (!p->fillExpression()) return FALSE;
-		p->createConMat();
+		p->createMatrices();
 	}
 	// 3) Check the electrostatic setup for the model
 	if (prefs.calculateElec())

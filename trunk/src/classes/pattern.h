@@ -221,7 +221,11 @@ class Pattern
 	*/
 	private:
 	// Connectivity matrix of atoms in one molecule of the pattern
-	int **conMat_;
+	int **conMatrix_;
+	// Scaling matrix for VDW interactions between atoms in each molecule
+	double **vdwScaleMatrix_;
+	// Scaling matrix for electrostatic interactions between atoms in each molecule
+	double **elecScaleMatrix_;
 	// Flag for incomplete energy node
 	bool incomplete_;
 	// Flag for no intramolecular terms in expression
@@ -242,8 +246,10 @@ class Pattern
 	void initExpression(bool vdwOnly = FALSE);
 	// Fill the energy expression with parameters
 	bool fillExpression();
-	// Create the connectivity matrix
-	void createConMat();
+	// Create the connectivity and scaling matrices
+	void createMatrices();
+	// Update scaling matrices
+	void updateScaleMatrices();
 	// Return number of bonds in one molecule of the pattern
 	int nBonds();
 	// Return number of angles in one molecule of the pattern
