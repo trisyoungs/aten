@@ -71,7 +71,7 @@ Variable::Variable(VariableType vt)
 Variable::~Variable()
 {
 	// Free expression object if one was created
-	if ((type_ == Variable::ExpressionVariable) && (ptrValue_ != NULL)) delete ptrValue_;
+	if ((type_ == Variable::ExpressionVariable) && (ptrValue_ != NULL)) delete (Expression*) ptrValue_;
 }
 
 // Set name of variable

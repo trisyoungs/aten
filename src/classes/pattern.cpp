@@ -41,12 +41,15 @@ Pattern::Pattern()
 	lastAtom_ = NULL;
 	fixed_ = FALSE;
 	forcefield_ = NULL;
-	conMat_ = NULL;
+	conMatrix_ = NULL;
+	elecScaleMatrix_ = NULL;
+	vdwScaleMatrix_ = NULL;
 	incomplete_ = FALSE;
 	testAtomLimit_ = FALSE;
 	testElement_ = FALSE;
 	testBonding_ = FALSE;
 	noIntramolecular_ = FALSE;
+
 	// Public variables
 	molecule = new Model;
 	prev = NULL;
@@ -58,6 +61,7 @@ PatternAtom::PatternAtom()
 	// Private variables
 	data_ = NULL;
 	atom_ = NULL;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -68,6 +72,7 @@ PatternBound::PatternBound()
 	// Private variables
 	for (int i=0; i<MAXFFBOUNDTYPES; i++) id_[i] = -1;
 	data_ = NULL;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -440,37 +445,49 @@ void Pattern::deleteExpression()
 	bonds_.clear();
 	angles_.clear();
 	torsions_.clear();
-	if (conMat_ != NULL)
+	if (conMatrix_ != NULL)
 	{
-		for (int n=0; n<nAtoms_; n++) delete[] conMat_[n];
-		delete[] conMat_;
+		for (int n=0; n<nAtoms_; n++) delete[] conMatrix_[n];
+		delete[] conMatrix_;
 	}
-	conMat_ = NULL;
+	conMatrix_ = NULL;
+	if (vdwScaleMatrix_ != NULL)
+	{
+		for (int n=0; n<nAtoms_; n++) delete[] vdwScaleMatrix_[n];
+		delete[] vdwScaleMatrix_;
+	}
+	vdwScaleMatrix_ = NULL;
+	if (elecScaleMatrix_ != NULL)
+	{
+		for (int n=0; n<nAtoms_; n++) delete[] elecScaleMatrix_[n];
+		delete[] elecScaleMatrix_;
+	}
+	elecScaleMatrix_ = NULL;
 	dbgEnd(Debug::Calls,"Pattern::deleteExpression");
 }
 
-// Create connectivity matrix for molecules in pattern
-void Pattern::createConMat()
+// Create connectivity and scaling matrices for molecules in pattern
+void Pattern::createMatrices()
 {
-	// Create (calculate) the connectivity matrix for this node
-	dbgBegin(Debug::Calls,"Pattern::createConMat");
+	// Note - this must be called *after* the expression bound terms have been filled in.
+	dbgBegin(Debug::Calls,"Pattern::createMatrices");
 	int n, m, a1, a2;
 	PatternBound *pb;
 	for (n=0; n<nAtoms_; n++)
-		for (m=0; m<nAtoms_; m++) conMat_[n][m] = 0;
+		for (m=0; m<nAtoms_; m++) conMatrix_[n][m] = 0;
 
 	// First, build up the bond matrix
 	for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 	{
-		conMat_[ pb->atomId(0) ] [ pb->atomId(1) ] = 1;
-		conMat_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
+		conMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 1;
+		conMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 1;
 	}
 
 	// Print out the bonding matrix
 /*	printf("Bonding Matrix\n");
 	for (n=0; n<nAtoms_; n++)
 	{
-		for (m=0; m<nAtoms_; m++) printf (" %2i ",conMat_[n][m]);
+		for (m=0; m<nAtoms_; m++) printf (" %2i ",conMatrix_[n][m]);
 		printf("\n");
 	} */
 
@@ -479,7 +496,7 @@ void Pattern::createConMat()
 	{
 		for (a2=0; a2<nAtoms_; a2++)
 		{
-			if (conMat_[a1][a2] != 0)
+			if (conMatrix_[a1][a2] != 0)
 			{
 				// A2 *is* bound directly to A1.
 				// So, we may increase the distance of A2 from all *other* atoms that A1 is bound to by one hop.
@@ -488,15 +505,15 @@ void Pattern::createConMat()
 					// We only potentially increase the distance if :
 					//	1) The atom 'm' is *not equal* to a2 (i.e. is not itself)
 					//	2) The atom 'm' we're looking at is also bound to a1.
-					if ((m != a2) && (conMat_[a1][m] != 0))
-					if ((conMat_[a1][m] != 0))
+					if ((m != a2) && (conMatrix_[a1][m] != 0))
+					if ((conMatrix_[a1][m] != 0))
 					{
 						// We only actually increase the distance if :
 						// 	1) Atom 'm' is not directly bound to a2 **OR**
 						//	2) The combined distances of m->a1 and a1->a2 is less than m->a2
 						// The last check means that only the minimum distance m->a2 persists at the end
-						if ((conMat_[m][a2] == 0) || (conMat_[a1][m]+conMat_[a1][a2] < conMat_[m][a2]))
-							conMat_[m][a2] = conMat_[a1][m] + conMat_[a1][a2];
+						if ((conMatrix_[m][a2] == 0) || (conMatrix_[a1][m]+conMatrix_[a1][a2] < conMatrix_[m][a2]))
+							conMatrix_[m][a2] = conMatrix_[a1][m] + conMatrix_[a1][a2];
 					}
 				}
 			}
@@ -506,10 +523,61 @@ void Pattern::createConMat()
 /*	printf("Connectivity Matrix\n");
 	for (n=0; n<nAtoms_; n++)
 	{
-		for (m=0; m<nAtoms_; m++) printf ("%2i",conMat_[n][m]);
+		for (m=0; m<nAtoms_; m++) printf ("%2i",conMatrix_[n][m]);
 		printf("\n"); 
 	} */
-	dbgEnd(Debug::Calls,"Pattern::createConMat");
+
+	// Create scale matrices
+	updateScaleMatrices();
+
+	dbgEnd(Debug::Calls,"Pattern::createMatrices");
+}
+
+// Update scale matrices in pattern
+void Pattern::updateScaleMatrices()
+{
+	dbgBegin(Debug::Calls,"Pattern::updateScaleMatrices");
+	int n, m;
+	PatternBound *pb;
+	// Set all matrix elements to '1.0' initially. Then cycle over torsions, then angles, then bonds and set values accordingly.
+	for (n=0; n<nAtoms_; n++)
+		for (m=0; m<nAtoms_; m++)
+		{
+			vdwScaleMatrix_[n][m] = 1.0;
+			elecScaleMatrix_[n][m] = 1.0;
+		}
+	// Interactions at tneds of torsion atoms are scaled by the factors stored in the torsion term
+	for (pb = torsions_.first(); pb != NULL; pb = pb->next)
+	{
+		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->params().data[TF_VSCALE];
+		vdwScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->params().data[TF_VSCALE];
+		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->params().data[TF_ESCALE];
+		elecScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->params().data[TF_ESCALE];
+	}
+	// Atoms at end of angles are excluded from vdw/elec interactions.
+	// Note that these elements are zeroed in the matrices, but the connectivity matrix is used to determined whether they are calculated.
+	for (pb = angles_.first(); pb != NULL; pb = pb->next)
+	{
+		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(2) ] = 0.0;
+		vdwScaleMatrix_[ pb->atomId(2) ] [ pb->atomId(0) ] = 0.0;
+		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(2) ] = 0.0;
+		elecScaleMatrix_[ pb->atomId(2) ] [ pb->atomId(0) ] = 0.0;
+	}
+	for (pb = bonds_.first(); pb != NULL; pb = pb->next)
+	{
+		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 0.0;
+		vdwScaleMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 0.0;
+		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(1) ] = 0.0;
+		elecScaleMatrix_[ pb->atomId(1) ] [ pb->atomId(0) ] = 0.0;
+	}
+// 	printf("VSCALE Matrix\n");
+// 	for (n=0; n<nAtoms_; n++)
+// 	{
+// 		for (m=0; m<nAtoms_; m++) printf ("%8.4f ",vdwScaleMatrix_[n][m]);
+// 		printf("\n"); 
+// 	}
+
+	dbgEnd(Debug::Calls,"Pattern::updateScaleMatrices");
 }
 
 // Validate pattern
@@ -1083,12 +1151,15 @@ void Pattern::initExpression(bool vdwOnly)
 		angles_.createEmpty(nAngles);
 		torsions_.createEmpty(nTorsions);
 	}
-	if (conMat_ != NULL) msg(Debug::None,"Pattern::initExpression : Error - connectivity matrix already allocated.\n");
-	else
-	{
-		conMat_ = new int*[nAtoms_];
-		for (n=0; n<nAtoms_; n++) conMat_[n] = new int[nAtoms_];
-	}
+	if (conMatrix_ != NULL) msg(Debug::None,"Pattern::initExpression : Warning - connectivity matrix was already allocated.\n");
+	conMatrix_ = new int*[nAtoms_];
+	for (n=0; n<nAtoms_; n++) conMatrix_[n] = new int[nAtoms_];
+	if (vdwScaleMatrix_ != NULL) msg(Debug::None,"Pattern::initExpression : Warning - VDW scaling matrix was already allocated.\n");
+	vdwScaleMatrix_ = new double*[nAtoms_];
+	for (n=0; n<nAtoms_; n++) vdwScaleMatrix_[n] = new double[nAtoms_];
+	if (elecScaleMatrix_ != NULL) msg(Debug::None,"Pattern::initExpression : Warning - electrostatic scaling matrix was already allocated.\n");
+	elecScaleMatrix_ = new double*[nAtoms_];
+	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
 	dbgEnd(Debug::Calls,"Pattern::initExpression");
 }
 

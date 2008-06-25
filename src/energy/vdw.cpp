@@ -152,7 +152,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
 	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
-	static int n,aoff,m1,i,j, start1, finish1;
+	static int n,aoff,m1,i,j, start1, finish1, con;
 	static Vec3<double> mim_i;
 	static double U, rij, energy_inter, energy_intra, cutoff, vrs;
 	PatternAtom *pai, *paj;
@@ -168,7 +168,8 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 	aoff = startAtom_ + start1*nAtoms_;
 	for (m1=start1; m1<finish1; m1++)
 	{
-		// Calculate energies of atom pairs that are unbound or separated by more than three bonds
+		// Calculate energies of atom pairs that are unbound or separated by more than two bonds
+		// I.E. bound interactions up to and including angles are excluded. Torsions are scaled by the scale matrix.
 		i = -1;
 		for (pai = atoms_.first(); pai != atoms_.last(); pai = pai->next)
 		{
@@ -177,7 +178,8 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 			for (paj = pai->next; paj != NULL; paj = paj->next)
 			{
 				j++;
-				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
+				con = conMatrix_[i][j];
+				if ((con > 2) || (con == 0))
 				{
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
@@ -190,35 +192,15 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 					}
 					// Calculate the enrgy contribution
 					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->params(), atoms_[j]->data()->params(), vrs, i, j);
-					conMat_[i][j] == 0 ? energy_inter += U : energy_intra += U;
+					con == 0 ? energy_inter += U : energy_intra += (con == 3 ? U * vdwScaleMatrix_[i][j] : U);
 				}
 			}
-		}
-		// Add scaled contributions from torsions
-		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
-		{
-			i = pb->atomId(0);
-			j = pb->atomId(3);
-			mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
-			rij = mim_i.magnitude();
-			if (rij > cutoff) continue;
-			// Check for conflicting VDW types
-			if (atoms_[i]->data()->vdwForm() != atoms_[j]->data()->vdwForm())
-			{
-				msg(Debug::None, "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
-				continue;
-			}
-			// Calculate the enrgy contribution
-			U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->params(), atoms_[j]->data()->params(), vrs, i, j);
-			U *= atoms_[i]->data()->params().data[TF_ESCALE];
-			conMat_[i][j] == 0 ? energy_inter += U : energy_intra += U;
 		}
 		aoff += nAtoms_;
 	}
 	// Add totals into Energy
 	estore->add(Energy::VdwIntraEnergy,energy_intra,id_);
 	estore->add(Energy::VdwInterEnergy,energy_inter,id_,id_);
-	//printf("TOTAL = %f %f\n",energy_intra,energy_inter);
 	dbgEnd(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
 }
 
@@ -321,7 +303,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 	// arrays since assuming the pattern definition is correct then the sigmas/epsilons in molecule 0 represent
 	// those of all molecules.
 	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternForces");
-	static int n,i,j,aoff,m1;
+	static int n,i,j,aoff,m1,con;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double cutoff, vrs, rij;
 	PatternAtom *pai, *paj;
@@ -344,7 +326,8 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 			for (paj = pai->next; paj != NULL; paj = paj->next)
 			{
 				j++;
-				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
+				con = conMatrix_[i][j];
+				if ((con > 2) || (con == 0))
 				{
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
@@ -357,32 +340,13 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 					}
 					// Calculate force contribution
 					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->params(), paj->data()->params(), vrs, i, j);
+					if (con == 3) tempf *= vdwScaleMatrix_[i][j];
 					f_i -= tempf;
 					modelatoms[j+aoff]->f() += tempf;
 				}
 			}
 			// Put the temporary forces back into the main array
 			modelatoms[i+aoff]->f() = f_i;
-		}
-		// Add scaled contributions from torsions
-		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
-		{
-			i = pb->atomId(0);
-			j = pb->atomId(3);
-			mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
-			rij = mim_i.magnitude();
-			if (rij > cutoff) continue;
-			// Check for conflicting VDW types
-			if (atoms_[i]->data()->vdwForm() != atoms_[j]->data()->vdwForm())
-			{
-				msg(Debug::None, "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
-				continue;
-			}
-			// Calculate force contribution
-			tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, atoms_[i]->data()->params(), atoms_[j]->data()->params(), vrs, i, j);
-			tempf *= pb->data()->params().data[TF_ESCALE];
-			modelatoms[i+aoff]->f() -= tempf;
-			modelatoms[j+aoff]->f() += tempf;
 		}
 		aoff += nAtoms_;
 	}

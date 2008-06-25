@@ -153,7 +153,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Bonds List
 	count = 0;
 	ui.FFEditorBondsTable->setRowCount(ff->nBonds());
-	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
+	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
 	slist.clear();
 	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->bonds(); ffb != NULL; ffb = ffb->next)
@@ -183,7 +183,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Angles List
 	count = 0;
 	ui.FFEditorAnglesTable->setRowCount(ff->nAngles());
-	ui.FFEditorAnglesTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
+	ui.FFEditorAnglesTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
 	slist.clear();
 	for (n=0; n<AngleFunctions::nAngleFunctions; n++) slist << AngleFunctions::AngleFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
@@ -215,7 +215,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	// Torsions List
 	count = 0;
 	ui.FFEditorTorsionsTable->setRowCount(ff->nTorsions());
-	ui.FFEditorTorsionsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
+	ui.FFEditorTorsionsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6");
 	slist.clear();
 	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->torsions(); ffb != NULL; ffb = ffb->next)
@@ -488,12 +488,11 @@ void AtenForcefieldEditor::TorsionFunctionChanged(int index)
 // Item in torsions table edited
 void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w)
 {
-
+	if ((targetForcefield_ == NULL) || updating_) return;
 	updating_ = TRUE;
 	// Get position of changed item
 	int row = ui.FFEditorTorsionsTable->row(w);
 	int column = ui.FFEditorTorsionsTable->column(w);
-	if ((targetForcefield_ == NULL) || updating_) return;
 	// Get pointer to forcefield bound from edited row
 	ForcefieldBound *ffb = targetForcefield_->torsion(row);
 	// Set new data based on the column edited

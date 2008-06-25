@@ -42,8 +42,6 @@ void LineMinimiser::gradientMove(Model *srcmodel, Model *destmodel, double delta
 		destatoms[i]->r().y = srcatoms[i]->r().y + srcatoms[i]->f().y * delta;
 		destatoms[i]->r().z = srcatoms[i]->r().z + srcatoms[i]->f().z * delta;
 	}
-	// TEST - print out distance between atoms 0 and 1
-	printf("Interatomic distance in gradient move of %f is %f\n",delta, destmodel->distance(0,1));
 	dbgEnd(Debug::Calls,"LineMinimiser::gradientMove");
 }
 
@@ -68,12 +66,12 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 	srcmodel->zeroForces();
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->zeroForcesFixed();
-	//srcmodel->normaliseForces(1.0);
+	srcmodel->normaliseForces(1.0);
 
 	// Set initial bounding values
-	bound[0] = -0.1;
-	bound[1] = 0.0;
-	bound[2] = 0.1;
+	bound[0] = 0.01;
+	bound[1] = 0.02;
+	bound[2] = 0.03;
 	// Compute gradient at each bounding point
 	gradientMove(srcmodel, &destmodel, bound[0]);
 	energy[0] = srcmodel->totalEnergy(&destmodel);
@@ -101,14 +99,19 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 		bound[1] = enew;
 	}
 	msg(Debug::Verbose,"Initial bounding values/energies = %f (%f) %f (%f) %f (%f)\n",bound[0],energy[0],bound[1],energy[1],bound[2],energy[2]);
-	printf("START OF LINEMIN:\n");
+// 	printf("START OF LINEMIN:\n");
+// 	for (int n=-20; n<=20; n++)
+// 	{
+// 		gradientMove(srcmodel, &destmodel, n*0.001);
+// 		printf("Energy at %f = %f\n", n*0.001, srcmodel->totalEnergy(&destmodel));
+// 	}
+// 	return 0.0;
 	do
 	{
 		// Perform linesearch along the gradient vector
 		// Set initial three points if this is the first iteration
-		printf("Energies = %f %f %f\n",energy[0],energy[1],energy[2]);
-		printf("Bounds   = %f %f %f\n",bound[0], bound[1], bound[2]);
-
+		//printf("Energies = %f %f %f\n",energy[0],energy[1],energy[2]);
+		//printf("Bounds   = %f %f %f\n",bound[0], bound[1], bound[2]);
 		// Perform parabolic interpolation to find new minimium point
 		b10 = bound[1] - bound[0];
 		b12 = bound[1] - bound[2];
@@ -124,7 +127,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 		if (enew < energy[1])
 		{
 			// New point found, so copy destmodel coordinates to model and set new energy
-			printf("PARABOLIC point is new minimum...\n");
+			//printf("PARABOLIC point is new minimum...\n");
 			ecurrent = enew;
 			srcmodel->copyAtomData(&destmodel, Atom::PositionData);
 			// Overwrite the largest of bound[0] and bound[2]
@@ -157,13 +160,13 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 			else
 			{
 				// Try Golden Search instead, into the largest of the two sections.
-				printf("d1 %f   d2 %f\n",bound[1] - bound[0],bound[1] - bound[2]);
+				//printf("d1 %f   d2 %f\n",bound[1] - bound[0],bound[1] - bound[2]);
 				leftbound = fabs(bound[0]-bound[1]) > fabs(bound[1]-bound[2]);
 				if (leftbound) newmin = bound[1] + 0.3819660 * (bound[1] - bound[0]);
 				else newmin = bound[1] + 0.3819660 * (bound[2] - bound[1]);
 				gradientMove(srcmodel, &destmodel, newmin);
 				enew = srcmodel->totalEnergy(&destmodel);
-				printf("GOLD point is %f @ %f \n",enew,newmin);
+				//printf("GOLD point is %f @ %f \n",enew,newmin);
 				if (enew < energy[1])
 				{
 					//printf("---GOLD point is lower than current minimum...\n");
@@ -186,7 +189,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 				}
 				else
 				{
-					printf("---GOLD point is better than one of the boundary values...\n");
+					//printf("---GOLD point is better than one of the boundary values...\n");
 					if (leftbound)
 					{
 						bound[0] = newmin;

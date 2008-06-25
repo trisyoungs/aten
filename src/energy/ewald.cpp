@@ -78,7 +78,7 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, Energy *estore, int m
 	// Calculate a real-space contribution to the Ewald sum.
 	// Internal interaction of atoms in individual molecules within the pattern is considered.
 	dbgBegin(Debug::Calls,"Pattern::ewaldRealIntraPatternEnergy");
-	static int n,i,j,aoff,m1;
+	static int n,i,j,aoff,m1,con;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy_intra, energy, cutoff, alpha;
 	PatternBound *pb;
@@ -91,32 +91,21 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, Energy *estore, int m
 	aoff = startAtom_;
 	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
 	{
-		// Loop over atom pairs that are either unbound or separated by more than three bonds
+		// Loop over atom pairs that are either unbound or separated by more than two bonds
 		for (i=0; i<nAtoms_-1; i++)
 		{
 			for (j=i+1; j<nAtoms_; j++)
 			{
-				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
+				con = conMatrix_[i][j];
+				if ((con > 2) || (con == 0))
 				{
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) * cserfc(alpha*rij) / rij;
-					conMat_[i][j] == 0 ? energy_inter += energy : energy_intra += energy;
+					con == 0 ? energy_inter += energy : energy_intra += (con == 3 ? energy * elecScaleMatrix_[i][j] : energy);
 				}
 			}
-		}
-		// Add on scaled contributions from torsion
-		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
-		{
-			i = pb->atomId(0) + aoff;
-			j = pb->atomId(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
-			rij = mim_i.magnitude();
-			if (rij > cutoff) continue;
-			energy  = (modelatoms[i]->charge() * modelatoms[j]->charge()) * cserfc(alpha*rij) / rij;
-			energy *= pb->data()->params().data[TF_ESCALE];
-			energy_intra += energy;
 		}
 		aoff += nAtoms_;
 	}
@@ -124,8 +113,6 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, Energy *estore, int m
 	energy_inter *= prefs.elecConvert();
 	estore->add(Energy::EwaldRealIntraEnergy,energy_intra,id_);
 	estore->add(Energy::EwaldRealInterEnergy,energy_inter,id_,id_);
-	//estore->ewaldReal_intra[id] += energy_intra;
-	//estore->ewaldReal_inter[id][id] += energy_inter;
 	dbgEnd(Debug::Calls,"Pattern::ewaldRealIntraPatternEnergy");
 }
 
@@ -283,7 +270,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	// Calculate corrections to the Ewald sum energy
 	dbgBegin(Debug::Calls,"Pattern::ewaldCorrectEnergy");
-	static int aoff, m1, i, j;
+	static int aoff, m1, i, j, con;
 	static double molcorrect, energy, qprod, rij, chargesum, alpha;
 	alpha = prefs.ewaldAlpha();
 	static Vec3<double> mim_i;
@@ -311,12 +298,13 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 		for (i=0; i<nAtoms_-1; i++)
 			for (j=i+1; j<nAtoms_; j++)
 			{
-				if ((conMat_[i][j] < 4) && (conMat_[i][j] != 0))
+				con = conMatrix_[i][j];
+				if ((con < 4) && (con != 0))
 				{
 					// A molecular correction is needed for this atom pair.
-					// For torsions (conMat_ == 3) scale by escale.
+					// Take values from scaling matrix to determine degree of subtraction...
 					qprod = modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge();
-					if (conMat_[i][j] == 3) qprod *= 0.5;
+					qprod *= (1.0 - elecScaleMatrix_[i][j]);
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					molcorrect += qprod *( cserf(alpha*rij)/rij );
@@ -326,7 +314,6 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 	}
 	energy = molcorrect * prefs.elecConvert();
 	estore->add(Energy::EwaldMolecularEnergy,energy,id_);
-	//estore->ewald_mol_correct[id] += energy;
 	dbgEnd(Debug::Calls,"Pattern::ewaldCorrectEnergy");
 }
 
@@ -340,7 +327,7 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 	// Calculate a real-space forces in the Ewald sum.
 	// Internal interaction of atoms in individual molecules within the pattern is considered.
 	dbgBegin(Debug::Calls,"Pattern::ewaldRealIntraPatternForces");
-	static int n, i, j, aoff, m1, atomi, atomj;
+	static int n, i, j, aoff, m1, atomi, atomj, con;
 	static Vec3<double> mim_i, tempf, f_i;
 	static double rij, factor, qqrij3, alpharij, cutoff, alpha;
 	PatternBound *pb;
@@ -361,7 +348,8 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 			for (j=i+1; j<nAtoms_; j++)
 			{
 				atomj = j+aoff;
-				if ((conMat_[i][j] > 3) || (conMat_[i][j] == 0))
+				con = conMatrix_[i][j];
+				if ((con > 2) || (con == 0))
 				{
 					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
@@ -370,6 +358,7 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 					factor = cserfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
 					qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
 					factor = factor * qqrij3 * prefs.elecConvert();
+					if (con == 3) factor *= elecScaleMatrix_[i][j];
 					// Sum forces
 					tempf = mim_i * factor;
 					//tempf.y = mim_i.y * factor;
@@ -380,24 +369,6 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 			}
 			// Re-store forces on atom i
 			modelatoms[atomi]->f() = f_i;
-		}
-		// Add on scaled contributions from torsions
-		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
-		{
-			i = pb->atomId(0) + aoff;
-			j = pb->atomId(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
-			rij = mim_i.magnitude();
-			if (rij > cutoff) continue;
-			alpharij = alpha * rij;
-			factor = cserfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
-			qqrij3 = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij * rij * rij);
-			factor = factor * qqrij3 * prefs.elecConvert();
-			factor *= pb->data()->params().data[TF_ESCALE];
-			// Sum forces
-			tempf = mim_i * factor;
-			modelatoms[i]->f() += tempf;
-			modelatoms[j]->f() -= tempf;
 		}
 		aoff += nAtoms_;
 	}
@@ -534,7 +505,7 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 {
 	// Correct the Ewald forces due to bond / angle / torsion exclusions
 	dbgBegin(Debug::Calls,"Pattern::ewaldCorrectForces");
-	static int n, i, j, aoff, m1, atomi, atomj;
+	static int n, i, j, aoff, m1, atomi, atomj, con;
 	static Vec3<double> mim_i, tempf, f_i;
 	static double rij, factor, qqrij3, alpharij, cutoff, alpha;
 	PatternBound *pb;
@@ -546,7 +517,7 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 	aoff = startAtom_;
 	for (m1=0; m1<nMols_; m1++)
 	{
-		// Subtract forces from intramolecular bonds and angles
+		// Subtract forces from intramolecular bonds, angles, and torsions
 		for (i=0; i<nAtoms_-1; i++)
 		{
 			atomi = i+aoff;
@@ -555,47 +526,29 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 			for (j=i+1; j<nAtoms_; j++)
 			{
 				atomj = j+aoff;
-				if ((conMat_[i][j] < 3) && (conMat_[i][j] > 0))
+				con = conMatrix_[i][j];
+				if ((con < 4) && (con > 0))
 				{
 					mim_i = cell->mimd(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
-					if (rij < cutoff)
-					{
-						alpharij = alpha * rij;
-						//factor = erf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
-						factor = cserf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
-						qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
-						factor = factor * qqrij3 * prefs.elecConvert();
-						// Sum forces
-						tempf = mim_i * factor;
-						f_i -= tempf;
-						modelatoms[atomj]->f() += tempf;
-					}
+					if (rij > cutoff) continue;
+					// Calculate force to subtract
+					alpharij = alpha * rij;
+					//factor = erf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
+					factor = cserf(alpharij) - 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
+					qqrij3 = (modelatoms[atomi]->charge() * modelatoms[atomj]->charge()) / (rij * rij * rij);
+					factor = factor * qqrij3 * prefs.elecConvert();
+					factor *= (1.0 - elecScaleMatrix_[i][j]);
+					// Sum forces
+					tempf = mim_i * factor;
+					f_i -= tempf;
+					modelatoms[atomj]->f() += tempf;
 				}
 			}
 			// Re-store forces on atom i
 			modelatoms[atomi]->f() = f_i;
 		}
-		// Subtract scaled contributions from torsions
-		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
-		{
-			i = pb->atomId(0) + aoff;
-			j = pb->atomId(3) + aoff;
-			mim_i = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
-			rij = mim_i.magnitude();
-			if (rij > cutoff) continue;
-			alpharij = alpha * rij;
-			factor = cserfc(alpharij) + 2.0*alpharij/SQRTPI * exp(-(alpharij*alpharij));
-			qqrij3 = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij * rij * rij);
-			factor = factor * qqrij3 * prefs.elecConvert();
-			factor *= pb->data()->params().data[TF_ESCALE];
-			// Sum forces
-			tempf = mim_i * factor;
-			modelatoms[i]->f() -= tempf;
-			modelatoms[j]->f() += tempf;
-		}
 		aoff += nAtoms_;
 	}
 	dbgEnd(Debug::Calls,"Pattern::ewaldCorrectForces");
 }
-

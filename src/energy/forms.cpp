@@ -46,7 +46,7 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 	{ "Lennard-Jones 12-6", "lj",
 		{ "Epsilon", "Sigma", "N" },
 		{ "epsilon", "sigma" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 } },
 	{ "Lennard-Jones AB", "ljab",
 		{ "A", "B" },
 		{ "a", "b" },
