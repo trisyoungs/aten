@@ -69,8 +69,12 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 		switch (c->argt(0))
 		{
 			case (Variable::IntegerVariable):
-				// If 1 argument was provided, check for end of file. If three, check for limit
-				if (!c->hasArg(2) && (c->parent()->inputFile() != NULL))
+				// If third argument (loop limit) was provided, check against it. Otherwise. continue loop forever unless we're reading from a file where we check for end of file.
+				if (c->hasArg(2))
+				{
+					if (c->argi(0) > c->argi(2)) status = FALSE;
+				}
+				else if (c->parent()->inputFile() != NULL)
 				{
 					// Check for end of file...
 					if (c->parent()->inputFile()->peek() == -1)
@@ -79,7 +83,6 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 						status = FALSE;
 					}
 				}
-				else if (c->argi(0) > c->argi(2)) status = FALSE;
 				break;
 			case (Variable::AtomVariable):
 				// If only one argument, check for NULL. If two, check for last atom in pattern.
