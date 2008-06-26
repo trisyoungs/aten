@@ -183,6 +183,7 @@ void Master::initCommands()
 	CA_data[CA_GLYPHATOMSF].function = &CommandData::function_CA_GLYPHATOMSF;
 	CA_data[CA_GLYPHATOMSR].function = &CommandData::function_CA_GLYPHATOMSR;
 	CA_data[CA_GLYPHATOMSV].function = &CommandData::function_CA_GLYPHATOMSV;
+	CA_data[CA_GLYPHCOLOUR].function = &CommandData::function_CA_GLYPHCOLOUR;
 	CA_data[CA_GLYPHDATA].function = &CommandData::function_CA_GLYPHDATA;
 	CA_data[CA_GLYPHSOLID].function = &CommandData::function_CA_GLYPHSOLID;
 	CA_data[CA_GLYPHTEXT].function = &CommandData::function_CA_GLYPHTEXT;

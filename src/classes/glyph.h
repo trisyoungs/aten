@@ -27,8 +27,6 @@
 #include "templates/vector3.h"
 #include "templates/vector4.h"
 
-#define MAXGLYPHDATA 4
-
 // Forward declarations
 class Model;
 
@@ -38,7 +36,9 @@ class GlyphData
 	public:
 	// Constructor
 	GlyphData();
-	
+	// List pointers
+	GlyphData *prev, *next;
+
 	// Atom data pointer type
 	enum GlyphDataType { PositionData, ForceData, VelocityData };
 
@@ -53,6 +53,8 @@ class GlyphData
 	bool atomSetLast_;
 	// Status of data item (whether it has been set or not)
 	bool set_;
+	// Colour at this data point
+	GLfloat colour_[4];
 
 	public:
 	// Set the vector data
@@ -69,6 +71,10 @@ class GlyphData
 	bool hasAtom();
 	// Returns whether one of either atom* or vecdata have been set
 	bool isSet();
+	// Set the colour associated to this data point
+	void setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Return pointer to colour
+	GLfloat *colour();
 };
 
 // Glyph
@@ -80,9 +86,10 @@ class Glyph
 	// List pointers
 	Glyph *prev, *next;
 	// Glyph style
-	enum GlyphType { ArrowGlyph, VectorGlyph, SenseVectorGlyph, SphereGlyph, CubeGlyph, LineGlyph, TriangleGlyph, EllipsoidGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
+	enum GlyphType { ArrowGlyph, VectorGlyph, SenseVectorGlyph, SphereGlyph, CubeGlyph, QuadGlyph, TriangleGlyph, LineGlyph, EllipsoidGlyph, TetrahedronGlyph, TextGlyph, TextGlyph3D, nGlyphTypes };
 	static const char *glyphType(GlyphType);
 	static GlyphType glyphType(const char*);
+	static int nGlyphData(GlyphType);
 
 	private:
 	// Style of Glyph
@@ -92,7 +99,7 @@ class Glyph
 	// Parent model
 	Model *parent_;
 	// Data for Glyph
-	GlyphData data_[MAXGLYPHDATA];
+	List<GlyphData> data_;
 
 	public:
 	// Set vector data for glyph
@@ -104,8 +111,12 @@ class Glyph
 	int atomId(int i);
 	// Return whether one of the data is set to an atomId
 	bool hasAtomId(int i);
-	// Return vector data for glyph
+	// Return i'th vector data for glyph
 	Vec3<double> vector(int i);
+	// Set i'th colour in glyph
+	void setColour(int i, GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
+	// Return i'th colour for glyph
+	GLfloat *colour(int i);
 	// Set style of Glyph
 	void setType(GlyphType gt);
 	// Return style of Glyph

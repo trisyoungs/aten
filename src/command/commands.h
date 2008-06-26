@@ -218,6 +218,7 @@ enum CommandAction {
 	CA_GLYPHATOMSF,
 	CA_GLYPHATOMSR,
 	CA_GLYPHATOMSV,
+	CA_GLYPHCOLOUR,
 	CA_GLYPHDATA,
 	CA_GLYPHSOLID,
 	CA_GLYPHTEXT,
@@ -591,6 +592,7 @@ class CommandData
 	int function_CA_GLYPHATOMSF(Command *&c, Bundle &obj);
 	int function_CA_GLYPHATOMSR(Command *&c, Bundle &obj);
 	int function_CA_GLYPHATOMSV(Command *&c, Bundle &obj);
+	int function_CA_GLYPHCOLOUR(Command *&c, Bundle &obj);
 	int function_CA_GLYPHDATA(Command *&c, Bundle &obj);
 	int function_CA_GLYPHSOLID(Command *&c, Bundle &obj);
 	int function_CA_GLYPHTEXT(Command *&c, Bundle &obj);

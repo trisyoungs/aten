@@ -24,12 +24,6 @@
 #include "model/model.h"
 #include "classes/glyph.h"
 
-// Local variables
-Atom *atomdata[MAXGLYPHDATA];
-Vec3<double> vecdata[MAXGLYPHDATA];
-bool wasatomdata[MAXGLYPHDATA];
-
-
 // Add glyph to current model
 int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 {
@@ -49,7 +43,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	if ((d < 0) || (d >= MAXGLYPHDATA))
+	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		msg(Debug::None,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
@@ -73,7 +67,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	if ((d < 0) || (d >= MAXGLYPHDATA))
+	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		msg(Debug::None,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
@@ -97,7 +91,7 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	if ((d < 0) || (d >= MAXGLYPHDATA))
+	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		msg(Debug::None,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
@@ -117,7 +111,7 @@ int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
-	for (int d=0; d<MAXGLYPHDATA; d++)
+	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
 	{
 		if (c->hasArg(d))
 		{
@@ -134,7 +128,7 @@ int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
-	for (int d=0; d<MAXGLYPHDATA; d++)
+	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
 	{
 		if (c->hasArg(d))
 		{
@@ -151,7 +145,7 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	// If second argument was given, it refers to either an atom by pointer or by id
-	for (int d=0; d<MAXGLYPHDATA; d++)
+	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
 	{
 		if (c->hasArg(d))
 		{
@@ -160,6 +154,16 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 		}
 		else break;
 	}
+	return CR_SUCCESS;
+}
+
+// Store colour data in current glyph
+int CommandData::function_CA_GLYPHCOLOUR(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
+	// Check range of supplied data item
+	int d = c->argi(0) - 1;
+	obj.gl->setColour(d, c->argf(1), c->argf(2), c->argf(3), c->hasArg(4) ? c->argf(4) : 1.0f);
 	return CR_SUCCESS;
 }
 

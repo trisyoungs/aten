@@ -27,21 +27,20 @@
 void Canvas::renderModelGlyphs()
 {
 	dbgBegin(Debug::Calls,"Canvas::renderModelGlyphs");
-	static Vec3<double> vec[MAXGLYPHDATA], avg, normal;
-	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
+	static Vec3<double> vec[4], avg, normal;
 
 	// Render other elemental objects in the model
 	for (Glyph *g = displayModel_->glyphs(); g != NULL; g = g->next)
 	{
 		// Set relevant polygon mode
 		glPolygonMode(GL_FRONT_AND_BACK, (g->isSolid() ? GL_FILL : GL_LINE));
-		glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, col);
 		switch (g->type())
 		{
 			// Arrow - tail = data[0], head = data[1]
 			case (Glyph::ArrowGlyph):
 				vec[0] = g->vector(0);
 				glLineWidth(g->lineWidth());
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				glArrow(vec[0], g->vector(1) - vec[0] );
 				break;
 			// Vector - centroid = data[0], direction = data[1]
@@ -49,6 +48,7 @@ void Canvas::renderModelGlyphs()
 				vec[0] = g->vector(0);
 				vec[1] = g->vector(1);
 				glLineWidth(g->lineWidth());
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				glArrow( vec[0] - (vec[1] * 0.5), vec[1] );
 				break;
 			// Sense Vector - end1 = data[0], direction = data[1], length = data[2].x
@@ -63,12 +63,14 @@ void Canvas::renderModelGlyphs()
 				else vec[1] = g->vector(1);
 				vec[1] *= vec[2].x;
 				glLineWidth(g->lineWidth());
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				glArrow( vec[0], vec[1], g->vector(2).y < 0.0 ? TRUE : FALSE);
 				break;
 			// Sphere - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):
 				vec[0] = g->vector(0);
 				vec[1] = g->vector(1);
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
@@ -79,6 +81,7 @@ void Canvas::renderModelGlyphs()
 			case (Glyph::CubeGlyph):
 				vec[0] = g->vector(0);
 				vec[1] = g->vector(1);
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				glPushMatrix();
 				  glTranslated(vec[0].x, vec[0].y, vec[0].z);
 				  glScaled(vec[1].x, vec[1].y, vec[1].z);
@@ -91,20 +94,45 @@ void Canvas::renderModelGlyphs()
 				vec[1] = g->vector(1);
 				glLineWidth(g->lineWidth());
 				glBegin(GL_LINES);
+				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(1));
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				glEnd();
 				glPopMatrix();
 				break;
-			// Ellipsoid - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
+			// Triangle - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
 			case (Glyph::TriangleGlyph):
 				vec[0] = g->vector(0);
 				vec[1] = g->vector(1);
 				vec[2] = g->vector(2);
+				glLineWidth(g->lineWidth());
 				glBegin(GL_TRIANGLES);
+				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(1));
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
+				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(2));
 				  glVertex3d(vec[2].x, vec[2].y, vec[2].z);
+				glEnd();
+				glPopMatrix();
+				break;
+			// Quad - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2], vertex 4 = data[3]
+			case (Glyph::QuadGlyph):
+				vec[0] = g->vector(0);
+				vec[1] = g->vector(1);
+				vec[2] = g->vector(2);
+				vec[3] = g->vector(3);
+				glLineWidth(g->lineWidth());
+				glBegin(GL_QUADS);
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
+				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(1));
+				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(2));
+				  glVertex3d(vec[2].x, vec[2].y, vec[2].z);
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(3));
+				  glVertex3d(vec[3].x, vec[3].y, vec[3].z);
 				glEnd();
 				glPopMatrix();
 				break;
@@ -153,7 +181,7 @@ void Canvas::renderModelGlyphs()
 void Canvas::renderModelTextGlyphs()
 {
 	dbgBegin(Debug::Calls,"Canvas::renderModelTextGlyphs");
-	static Vec3<double> vec[MAXGLYPHDATA], avg, normal;
+	static Vec3<double> vec[2], avg, normal;
 	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
 	TextObject *to;
 
