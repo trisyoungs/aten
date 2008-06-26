@@ -35,8 +35,6 @@ void Canvas::renderModelAtoms()
 	static Atom *i, *j;
 	static Refitem<Bond,int> *bref;
 	static Cell *cell;
-	// Reproject atoms if necessary
-	displayModel_->projectAll();
 
 	renderstyle = prefs.renderStyle();
 	scheme = prefs.colourScheme();

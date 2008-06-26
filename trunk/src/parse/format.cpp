@@ -32,6 +32,7 @@ FormatNode::FormatNode()
 	variable_ = NULL;
 	length_ = 0;
 	precision_ = 0;
+	zeroPadInteger_ = FALSE;
 
 	// Public variables
 	next = NULL;
@@ -60,6 +61,12 @@ int FormatNode::length()
 int FormatNode::precision()
 {
 	return precision_;
+}
+
+// Return whether to pad integers with zeros
+bool FormatNode::zeroPadInteger()
+{
+	return zeroPadInteger_;
 }
 
 // Returns first node
@@ -122,6 +129,8 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 	// Store the data
 	length_ = (len[0] == '\0' ? 0 : atoi(len));
 	precision_ = (pre[0] == '\0' ? 0 : atoi(pre));
+	// If the first character of len[0] is zero (or the first is '-' and the second is zero) set padding for integers to true
+	if (len[0] == '0' || ((len[0] == '-') && (len[1] == '0'))) zeroPadInteger_ = TRUE;
 	dbgEnd(Debug::Parse,"FormatNode::set");
 	return TRUE;
 }
@@ -299,7 +308,15 @@ const char *Format::createString()
 				break;
 			case (Variable::IntegerVariable):
 				if (fn->length() == 0) strcpy(fmt,"%i");
-				else sprintf(fmt,"%%%ii",fn->length());
+				else
+				{
+					if (fn->zeroPadInteger())
+					{
+						if (fn->length() < 0) sprintf(fmt,"%%-0%ii",abs(fn->length()));
+						else sprintf(fmt,"%%0%ii",fn->length());
+					}
+					else sprintf(fmt,"%%%ii",fn->length());
+				}
 				sprintf(bit,fmt,v->asInteger());
 				break;
 			case (Variable::FloatVariable):

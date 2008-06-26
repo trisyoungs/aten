@@ -44,6 +44,8 @@ class FormatNode
 	int length_;
 	// Field precision (0 for unspecified)
 	int precision_;
+	// Whether to pad integers with zeros
+	bool zeroPadInteger_;
 
 	public:
 	// Set format node data
@@ -54,6 +56,8 @@ class FormatNode
 	int length();
 	// Get field precision
 	int precision();
+	// Whether to zero-pad integers
+	bool zeroPadInteger();
 };
 
 // Format
