@@ -25,7 +25,8 @@
 #include "model/model.h"
 
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "line", "triangle", "ellipsoid", "tetrahedron", "text", "text3d" };
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "quad", "triangle", "line", "ellipsoid", "tetrahedron", "text", "text3d" };
+int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 2, 2, 4, 3, 2, 3, 4, 1, 1 };
 const char *Glyph::glyphType(Glyph::GlyphType gs)
 {
 	return GlyphTypeKeywords[gs];
@@ -33,6 +34,10 @@ const char *Glyph::glyphType(Glyph::GlyphType gs)
 Glyph::GlyphType Glyph::glyphType(const char *s)
 {
 	return (Glyph::GlyphType) enumSearch("glyph style", Glyph::nGlyphTypes, GlyphTypeKeywords, s);
+}
+int Glyph::nGlyphData(Glyph::GlyphType gt)
+{
+	return GlyphTypeNData[gt];
 }
 
 // Constructors
@@ -43,6 +48,14 @@ GlyphData::GlyphData()
 	atomData_ = GlyphData::PositionData;
 	atomSetLast_ = FALSE;
 	set_ = FALSE;
+	colour_[0] = 0.0f;
+	colour_[1] = 0.0f;
+	colour_[2] = 0.0f;
+	colour_[3] = 1.0f;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 
 Glyph::Glyph()
@@ -133,6 +146,21 @@ Vec3<double> GlyphData::vector(Model *parent)
 	return vector_;
 }
 
+// Set the colour associated to this data point
+void GlyphData::setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	colour_[0] = r;
+	colour_[1] = g;
+	colour_[2] = b;
+	colour_[3] = a;
+}
+
+// Return pointer to colour
+GLfloat *GlyphData::colour()
+{
+	return colour_;
+}
+
 /*
 // Glyph
 */
@@ -140,49 +168,49 @@ Vec3<double> GlyphData::vector(Model *parent)
 // Set vector data for glyph
 void Glyph::setVector(int i, double x, double y, double z)
 {
-	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to set vector %i for glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
-	else data_[i].setVector(x, y, z);
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to set vector %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else data_[i]->setVector(x, y, z);
 }
 
 // Set vector data for glyph
 void Glyph::setVector(int i, Vec3<double> vec)
 {
-	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to set vector %i for glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
-	else data_[i].setVector(vec.x, vec.y, vec.z);
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to set vector %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else data_[i]->setVector(vec.x, vec.y, vec.z);
 }
 
 // Set atom data for glyph
 void Glyph::setAtom(int i, int atom, GlyphData::GlyphDataType av)
 {
-	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to set atom id %i for glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to set atom id %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
 	else
 	{
-		data_[i].setAtomId(atom, av);
+		data_[i]->setAtomId(atom, av);
 		if (atom == -1) (Debug::None,"Warning - no atom stored in glyph data %i.\n",i);
 	}
 }
 
-// Returns the atom id of the glyp
+// Returns the atom id of the glyph
 int Glyph::atomId(int i)
 {
-	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to get atom id %i from glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
-	else return data_[i].atomId();
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to get atom id %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else return data_[i]->atomId();
 	return -1;
 }
 
 // Returns whether the specified data is to be taken from an atom
 bool Glyph::hasAtomId(int i)
 {
-	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to test atom id %i in glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
-	else return data_[i].hasAtom();
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to test atom id %i in glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else return data_[i]->hasAtom();
 	return FALSE;
 }
 
 // Return vector data for glyph
 Vec3<double> Glyph::vector(int i)
 {
-	if ((i < 0) || (i >= MAXGLYPHDATA)) msg(Debug::None, "Tried to get vector %i from glyph when it only has %i in total.\n", i+1, MAXGLYPHDATA);
-	else return data_[i].vector(parent_);
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to get vector %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else return data_[i]->vector(parent_);
 	return Vec3<double>();
 }
 
@@ -207,16 +235,18 @@ Glyph::GlyphType Glyph::type()
 // Set style of glyph (and set data vectors to default values)
 void Glyph::setType(GlyphType gt)
 {
+	// Create list of GlyphData
+	data_.createEmpty( Glyph::nGlyphData(gt) );
 	// Add default values, provided they have not already been set...
 	switch (gt)
 	{
 		case (Glyph::ArrowGlyph):
 		case (Glyph::VectorGlyph):
-			if (!data_[1].isSet()) data_[1].setVector(0.0,1.0,0.0);
+			data_[1]->setVector(0.0,1.0,0.0);
 			break;
 		case (Glyph::SphereGlyph):
 		case (Glyph::CubeGlyph):
-			if (!data_[1].isSet()) data_[1].setVector(1.0,1.0,1.0);
+			data_[1]->setVector(1.0,1.0,1.0);
 			break;
 		case (Glyph::TriangleGlyph):
 			break;
@@ -240,6 +270,22 @@ void Glyph::setText(const char *s)
 const char *Glyph::text()
 {
 	return text_.get();
+}
+
+// Set i'th colour in glyph
+void Glyph::setColour(int i, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to set colour %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else data_[i]->setColour(r, g, b, a);
+}
+
+// Return i'th colour for glyph
+GLfloat *Glyph::colour(int i)
+{
+	static GLfloat black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
+	if ((i < 0) || (i >= data_.nItems())) msg(Debug::None, "Tried to get colour %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else return data_[i]->colour();
+	return black;
 }
 
 /*

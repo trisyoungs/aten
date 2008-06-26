@@ -360,6 +360,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set all atom coordinates data in current glyph" },
 	{ "glyphatomsv",	"Eeee",		"<atom|atomid> [atom|atomid] [atom|atomid] [atom|atomid]",
 				"Set all atom velocities data in current glyph" },
+	{ "glyphcolour",	"EEEEe",	"<n> <r> <g> <b> [a]",
+				"Set colour data <n> in current glyph" },
 	{ "glyphdata",		"EEee",		"<n> <x> <y> <z>",
 				"Set vector data <n> in current glyph" },
 	{ "glyphsolid",		"P",		"<true|false>",
