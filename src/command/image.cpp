@@ -26,7 +26,7 @@
 #include "gui/mainwindow.h"
 #include "gui/tcanvas.uih"
 #include "classes/grid.h"
-
+#include "model/model.h"
 // Save current view as bitmap image
 int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 {
@@ -38,8 +38,7 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	prefs.setScreenObjects(prefs.imageObjects());
 	QPixmap pixmap;
 	gui.mainView.postRedisplay();
-	QImage image = gui.mainWidget->grabFrameBuffer();
-	image.save("test.png","png",-1);
+
 	if (c->hasArg(3)) pixmap = gui.mainWidget->renderPixmap(c->argi(2), c->argi(3), FALSE);
 	else pixmap = gui.mainWidget->renderPixmap(0, 0, FALSE);
 	prefs.setScreenObjects(screenbits);

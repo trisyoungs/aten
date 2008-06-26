@@ -202,6 +202,9 @@ void Canvas::renderScene(Model *source)
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.penColour(Prefs::ForegroundColour));
 	glDisable(GL_LIGHTING);
 
+	// Reproject atoms if necessary
+	displayModel_->projectAll();
+
 	// Render text glyphs associated with the model
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	renderModelTextGlyphs();
