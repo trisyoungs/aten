@@ -125,18 +125,18 @@ void AtenForm::keyReleaseEvent(QKeyEvent *event)
 
 void AtenForm::on_ModelTabs_currentChanged(int n)
 {
-	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
+	msg.enter("AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
 	master.setCurrentModel(master.model(n));
 	gui.disorderWindow->refresh();
 	gui.modelChanged();
 	gui.updateTrajControls();
-	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_currentChanged");
+	msg.exit("AtenForm::on_ModelTabs_currentChanged");
 }
 
 void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 {
-	dbgBegin(Debug::Calls,"AtenForm::on_ModelTabs_doubleClicked");
+	msg.enter("AtenForm::on_ModelTabs_doubleClicked");
 	// Different model tab has been selected, so set master.currentmodel to reflect it.
 	Model *m = master.model(tabid);
 	if (m == NULL) return;
@@ -147,12 +147,12 @@ void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 		m->setName(qPrintable(text));
 		ui.ModelTabs->setTabText(tabid, text);
 	}
-	dbgEnd(Debug::Calls,"AtenForm::on_ModelTabs_doubleClicked");
+	msg.exit("AtenForm::on_ModelTabs_doubleClicked");
 }
 
 void AtenForm::refreshModelTabs()
 {
-	dbgBegin(Debug::Calls,"AtenForm::refreshModelTabs");
+	msg.enter("AtenForm::refreshModelTabs");
 	// Set names on tabs
 	int count = 0;
 	for (Model *m = master.models(); m != NULL; m = m->next)
@@ -160,7 +160,7 @@ void AtenForm::refreshModelTabs()
 		ui.ModelTabs->setTabText(count, m->name());
 		count ++;
 	}
-	dbgEnd(Debug::Calls,"AtenForm::refreshModelTabs");
+	msg.exit("AtenForm::refreshModelTabs");
 }
 
 void AtenForm::executeCommand()
@@ -201,10 +201,10 @@ void AtenForm::loadRecent()
 	// See if any loaded model filename matches this filename
 	for (m = master.models(); m != NULL; m = m->next)
 	{
-		msg(Debug::Verbose,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
+		msg.print(Messenger::Verbose,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
 		if (filename == m->filename())
 		{
-			msg(Debug::Verbose,"Matched filename to loaded model.\n");
+			msg.print(Messenger::Verbose,"Matched filename to loaded model.\n");
 			master.setCurrentModel(m);
 			return;
 		}
@@ -347,7 +347,7 @@ void AtenForm::runScript()
 	else
 	{
 		// Execute the script
-		msg(Debug::None,"Executing script '%s':\n",ri->data->name());
+		msg.print("Executing script '%s':\n",ri->data->name());
 		ri->data->execute();
 	}
 }

@@ -25,7 +25,7 @@
 // Render colourscales
 void Canvas::renderColourscales()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderColourscales");
+	msg.enter("Canvas::renderColourscales");
 	GLfloat col[4];
 
 	// For now, draw in a stack at the bottom of the canvas.
@@ -110,6 +110,6 @@ void Canvas::renderColourscales()
 		glText(leftx+width+2.0, height_-y-8.0, label);
 		y += height + 10.0;
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderColourscales");
+	msg.exit("Canvas::renderColourscales");
 }
 

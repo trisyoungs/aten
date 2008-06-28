@@ -189,7 +189,7 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	sg = atoi(s);
 	if (sg == 0) sg = master.findSpacegroupByName(s);
 	// Check for null spacegroup
-	if (sg == 0) msg(Debug::None,"Unrecognised spacegroup '%s'.\n", s);
+	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
 	else
 	{
 		m->setSpacegroup(sg);

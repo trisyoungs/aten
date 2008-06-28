@@ -73,11 +73,11 @@ double Energy::elec()
 // Add
 void Energy::add(EnergyType et, double energy, int id1, int id2)
 {
-	dbgBegin(Debug::Calls,"Energy::add");
+	msg.enter("Energy::add");
 	if ((id1 >= size_) || (id2 >= size_))
 	{
 		printf("Energy::add <<<< Array element out of range - %i %i - Ignored >>>>\n", id1, id2);
-		dbgEnd(Debug::Calls,"Energy::add");
+		msg.exit("Energy::add");
 		return;
 	}
 	switch (et)
@@ -125,13 +125,13 @@ void Energy::add(EnergyType et, double energy, int id1, int id2)
 			ewaldMolCorrect_[id1] += energy;
 			break;
 	}
-	dbgEnd(Debug::Calls,"Energy::add");
+	msg.exit("Energy::add");
 }
 
 // Deallocate arrays
 void Energy::deallocate()
 {
-	dbgBegin(Debug::Calls,"Energy::deallocate");
+	msg.enter("Energy::deallocate");
 	if (bond_ != NULL) delete[] bond_;
 	if (angle_ != NULL) delete[] angle_;
 	if (torsion_ != NULL) delete[] torsion_;
@@ -153,13 +153,13 @@ void Energy::deallocate()
 	if (ewaldSelfCorrect_ != NULL) delete[] ewaldSelfCorrect_;
 	if (ewaldMolCorrect_ != NULL) delete[] ewaldMolCorrect_;
 	size_ = 0;
-	dbgEnd(Debug::Calls,"Energy::deallocate");
+	msg.exit("Energy::deallocate");
 }
 
 // Resize
 void Energy::resize(int newsize)
 {
-	dbgBegin(Debug::Calls,"Energy::resize");
+	msg.enter("Energy::resize");
 	// Delete old data first
 	deallocate();
 	// Now create new arrays...
@@ -185,15 +185,15 @@ void Energy::resize(int newsize)
 	ewaldSelfCorrect_ = new double[size_];
 	ewaldMolCorrect_ = new double[size_];
 	clear();
-	msg(Debug::Verbose,"Energy store resized to %i\n",size_);
-	dbgEnd(Debug::Calls,"Energy::resize");
+	msg.print(Messenger::Verbose,"Energy store resized to %i\n",size_);
+	msg.exit("Energy::resize");
 }
 
 // CLear values
 void Energy::clear()
 {
 	// Clear all the values in the energy store
-	dbgBegin(Debug::Calls,"Energy::clear");
+	msg.enter("Energy::clear");
 	int n,m;
 	for (n=0; n<size_; n++)
 	{
@@ -228,14 +228,14 @@ void Energy::clear()
 	totEwaldMol_ = 0.0;
 	total_ = 0.0;
 	calculated_ = FALSE;
-	dbgEnd(Debug::Calls,"Energy::clear");
+	msg.exit("Energy::clear");
 }
 
 // Create totals
 void Energy::totalise()
 {
 	// Sum up the energies to get totals for individual aspects and the total overall energy.
-	dbgBegin(Debug::Calls,"Energy::totalise");
+	msg.enter("Energy::totalise");
 	totBond_ = 0.0;
 	totAngle_ = 0.0;
 	totTorsion_ = 0.0;
@@ -285,72 +285,72 @@ void Energy::totalise()
 	totInter_ = totVdw_ + totElec_;
 	total_ = totIntra_ + totInter_;
 	calculated_ = TRUE;
-	dbgEnd(Debug::Calls,"Energy::totalise");
+	msg.exit("Energy::totalise");
 }
 
 // Print out all energy terms
 void Energy::print()
 {
-	dbgBegin(Debug::Calls,"Energy::print");
+	msg.enter("Energy::print");
 	if (!calculated_)
 	{
-		msg(Debug::None,"Energy::print - Total energy has not yet been calculated.\n");
-		dbgEnd(Debug::Calls,"Energy::print");
+		msg.print("Energy::print - Total energy has not yet been calculated.\n");
+		msg.exit("Energy::print");
 		return;
 	}
-	msg(Debug::None,"Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg(Debug::None,"   Bond : %13.6f\n",totBond_);
-	msg(Debug::None,"  Angle : %13.6f\n",totAngle_);
-	msg(Debug::None,"Torsion : %13.6f\n",totTorsion_);
-	msg(Debug::None,"    VDW : %13.6f (tail contribution : %13.6f)\n",totVdw_,vdwTail_);
-	msg(Debug::None,"   Elec : %13.6f\n",totElec_);
-	msg(Debug::None,"  TOTAL : %13.6f\n",total_);
-	dbgEnd(Debug::Calls,"Energy::print");
+	msg.print("Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
+	msg.print("   Bond : %13.6f\n",totBond_);
+	msg.print("  Angle : %13.6f\n",totAngle_);
+	msg.print("Torsion : %13.6f\n",totTorsion_);
+	msg.print("    VDW : %13.6f (tail contribution : %13.6f)\n",totVdw_,vdwTail_);
+	msg.print("   Elec : %13.6f\n",totElec_);
+	msg.print("  TOTAL : %13.6f\n",total_);
+	msg.exit("Energy::print");
 }
 
 // Print energy summary
 void Energy::printSummary()
 {
-	dbgBegin(Debug::Calls,"Energy::printSummary");
+	msg.enter("Energy::printSummary");
 	if (!calculated_)
 	{
-		msg(Debug::None,"Energy::printSummary - Total energy has not yet been calculated.\n");
-		dbgEnd(Debug::Calls,"Energy::printSummary");
+		msg.print("Energy::printSummary - Total energy has not yet been calculated.\n");
+		msg.exit("Energy::printSummary");
 		return;
 	}
-	msg(Debug::None,"Etot = %13.6e %s, b a t = %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, Prefs::energyUnit(prefs.energyUnit()), totBond_, totAngle_, totTorsion_, totVdw_, totElec_);
-	dbgEnd(Debug::Calls,"Energy::printSummary");
+	msg.print("Etot = %13.6e %s, b a t = %13.6e %13.6e %13.6e v = %13.6e e = %13.6e\n", total_, Prefs::energyUnit(prefs.energyUnit()), totBond_, totAngle_, totTorsion_, totVdw_, totElec_);
+	msg.exit("Energy::printSummary");
 }
 
 // Print out Ewald energy terms
 void Energy::printEwald()
 {
-	dbgBegin(Debug::Calls,"Energy::printEwald");
+	msg.enter("Energy::printEwald");
 	if (!calculated_)
 	{
-		msg(Debug::None,"Energy::printEwald - Total energy has not yet been calculated.\n");
-		dbgEnd(Debug::Calls,"Energy::printEwald");
+		msg.print("Energy::printEwald - Total energy has not yet been calculated.\n");
+		msg.exit("Energy::printEwald");
 		return;
 	}
-	msg(Debug::None,"Ewald Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
-	msg(Debug::None," Real : %13.6f\n",totEwaldReal_);
-	msg(Debug::None,"Recip : %13.6f\n",totEwaldRecip_);
-	msg(Debug::None," Self : %13.6f\n",totEwaldSelf_);
-	msg(Debug::None,"  Mol : %13.6f\n",totEwaldMol_);
-	msg(Debug::None,"TOTAL : %13.6f\n",totElec_);
-	dbgEnd(Debug::Calls,"Energy::printEwald");
+	msg.print("Ewald Energy (%s):\n",Prefs::energyUnit(prefs.energyUnit()));
+	msg.print(" Real : %13.6f\n",totEwaldReal_);
+	msg.print("Recip : %13.6f\n",totEwaldRecip_);
+	msg.print(" Self : %13.6f\n",totEwaldSelf_);
+	msg.print("  Mol : %13.6f\n",totEwaldMol_);
+	msg.print("TOTAL : %13.6f\n",totElec_);
+	msg.exit("Energy::printEwald");
 }
 
 // Print out VDW energy decomposition Matrix
 void Energy::printVdwMatrix(Model *m)
 {
-	dbgBegin(Debug::Calls,"Energy::printVdwMatrix");
+	msg.enter("Energy::printVdwMatrix");
 	int count1, count2;
 	Pattern *p1, *p2;
 	if (!calculated_)
 	{
-		msg(Debug::None,"Energy::printVdwMatrix - Total energy has not yet been calculated.\n");
-		dbgEnd(Debug::Calls,"Energy::printVdwMatrix");
+		msg.print("Energy::printVdwMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("Energy::printVdwMatrix");
 		return;
 	}
 	// Print out VDW energy decomposition
@@ -370,20 +370,20 @@ void Energy::printVdwMatrix(Model *m)
 		printf("\n");
 		count1 ++;
 	}
-	dbgEnd(Debug::Calls,"Energy::printVdwMatrix");
+	msg.exit("Energy::printVdwMatrix");
 }
 
 // Print out electrostatic energy decomposition Matrix
 void Energy::printElecMatrix(Model *m)
 {
-	dbgBegin(Debug::Calls,"Energy::printElecMatrix");
+	msg.enter("Energy::printElecMatrix");
 	int count1, count2;
 	Pattern *p1, *p2;
 	double energy;
 	if (!calculated_)
 	{
-		msg(Debug::None,"Energy::printElecMatrix - Total energy has not yet been calculated.\n");
-		dbgEnd(Debug::Calls,"Energy::printElecMatrix");
+		msg.print("Energy::printElecMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("Energy::printElecMatrix");
 		return;
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
@@ -422,20 +422,20 @@ void Energy::printElecMatrix(Model *m)
 		printf("\n");
 		count1 ++;
 	}
-	dbgEnd(Debug::Calls,"Energy::printElecMatrix");
+	msg.exit("Energy::printElecMatrix");
 }
 
 // Print out interpattern energy decomposition Matrix
 void Energy::printInterMatrix(Model *m)
 {
-	dbgBegin(Debug::Calls,"Energy::printInterMatrix");
+	msg.enter("Energy::printInterMatrix");
 	int count1, count2;
 	Pattern *p1, *p2;
 	double energyInter, energyIntra;
 	if (!calculated_)
 	{
-		msg(Debug::None,"Energy::printInterMatrix - Total energy has not yet been calculated.\n");
-		dbgEnd(Debug::Calls,"Energy::printInterMatrix");
+		msg.print("Energy::printInterMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("Energy::printInterMatrix");
 		return;
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
@@ -484,20 +484,20 @@ void Energy::printInterMatrix(Model *m)
 		printf("\n");
 		count1 ++;
 	}
-	dbgEnd(Debug::Calls,"Energy::printInterMatrix");
+	msg.exit("Energy::printInterMatrix");
 }
 
 // Print out intramolecular energy decomposition Matrix
 void Energy::printIntraMatrix(Model *m)
 {
-	dbgBegin(Debug::Calls,"Energy::printIntraMatrix");
+	msg.enter("Energy::printIntraMatrix");
 	int count1;
 	Pattern *p1;
 	double energy;
 	if (!calculated_)
 	{
-		msg(Debug::None,"Energy::printIntraMatrix - Total energy has not yet been calculated.\n");
-		dbgEnd(Debug::Calls,"Energy::printIntraMatrix");
+		msg.print("Energy::printIntraMatrix - Total energy has not yet been calculated.\n");
+		msg.exit("Energy::printIntraMatrix");
 		return;
 	}
 	// Print out VDW energy decomposition
@@ -509,5 +509,5 @@ void Energy::printIntraMatrix(Model *m)
 		printf("%13s  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n", p1->name(), energy, energy/p1->nMols(), bond_[count1], angle_[count1], torsion_[count1]);
 		count1 ++;
 	}
-	dbgEnd(Debug::Calls,"Energy::printIntraMatrix");
+	msg.exit("Energy::printIntraMatrix");
 }

@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "classes/pattern.h"
 #include "model/model.h"
 
@@ -38,7 +38,7 @@ int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.rs == obj.m) 
 	{
-		msg(Debug::None,"Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
+		msg.print("Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
 		return CR_FAIL;
 	}
 	else obj.rs->copyAtomData(obj.m, Atom::ChargeData);

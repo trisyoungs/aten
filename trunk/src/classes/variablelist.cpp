@@ -123,7 +123,7 @@ Variable *VariableList::addExpression(const char *s)
 	Expression *ex = new Expression();
 	if (!ex->set(s, this))
 	{
-		msg(Debug::None, "Failed to cache expression.\n");
+		msg.print( "Failed to cache expression.\n");
 		delete ex;
 		return NULL;
 	}
@@ -205,15 +205,15 @@ void VariableList::print()
 // Clear all variable values
 void VariableList::resetAll()
 {
-	dbgBegin(Debug::Calls,"VariableList::resetAll");
+	msg.enter("VariableList::resetAll");
 	for (Variable *v = vars_.first(); v != NULL; v = v->next) v->reset();
-	dbgEnd(Debug::Calls,"VariableList::resetAll");
+	msg.exit("VariableList::resetAll");
 }
 
 // Clear list of variables
 void VariableList::reset(const char *s, ...)
 {
-	dbgBegin(Debug::Calls,"VariableList::reset");
+	msg.enter("VariableList::reset");
 	// List of variables must be ended by "".
 	static char name[64];
 	va_list namelist;
@@ -231,5 +231,5 @@ void VariableList::reset(const char *s, ...)
 			else v->reset();
 		}
 	} while (name[0] != '\0');
-	dbgEnd(Debug::Calls,"VariableList::reset");
+	msg.exit("VariableList::reset");
 }

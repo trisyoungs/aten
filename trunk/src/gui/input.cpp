@@ -39,9 +39,9 @@ void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y)
 		if (subselection_.search(atomHover_) == NULL)
 		{
 			subselection_.add(atomHover_);
-			msg(Debug::Verbose,"Adding atom %i to canvas subselection.\n",atomHover_);
+			msg.print(Messenger::Verbose,"Adding atom %i to canvas subselection.\n",atomHover_);
 		}
-		else msg(Debug::Verbose,"Atom %i is already in canvas subselection.\n",atomHover_);
+		else msg.print(Messenger::Verbose,"Atom %i is already in canvas subselection.\n",atomHover_);
 	}
 	// Activate mode...
 	beginMode(button);
@@ -156,12 +156,12 @@ void Canvas::informKeyUp(Canvas::KeyCode key)
 // Set selected mode
 void Canvas::setSelectedMode(UserAction ua)
 {
-	dbgBegin(Debug::Calls,"Canvas::setSelectedMode");
+	msg.enter("Canvas::setSelectedMode");
 	selectedMode_ = ua;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::setSelectedMode - datamodel == NULL.\n");
-		dbgEnd(Debug::Calls,"Canvas::setSelectedMode");
+		msg.exit("Canvas::setSelectedMode");
 		return;
 	}
 	// Prepare canvas / model depending on the mode
@@ -182,13 +182,13 @@ void Canvas::setSelectedMode(UserAction ua)
 			break;
 	}
 	gui.mainView.postRedisplay();
-	dbgEnd(Debug::Calls,"Canvas::setSelectedMode");
+	msg.exit("Canvas::setSelectedMode");
 }
 
 // Begin Mode
 void Canvas::beginMode(Prefs::MouseButton button)
 {
-	dbgBegin(Debug::Calls,"widgetCanvas::beginMode");
+	msg.enter("widgetCanvas::beginMode");
 	static bool manipulate, zrotate;
 	static int n;
 	static Atom *i;
@@ -199,7 +199,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::beginMode - datamodel == NULL.\n");
-		dbgEnd(Debug::Calls,"Canvas::beginMode");
+		msg.exit("Canvas::beginMode");
 		return;
 	}
 	// Note the mouse button pressed
@@ -274,14 +274,14 @@ void Canvas::beginMode(Prefs::MouseButton button)
 		}
 	}
 	gui.mainView.postRedisplay();
-	dbgEnd(Debug::Calls,"Canvas::beginMode");
+	msg.exit("Canvas::beginMode");
 }
 
 // End Mode
 void Canvas::endMode(Prefs::MouseButton button)
 {
 	// Finalize the current action on the model
-	dbgBegin(Debug::Calls,"Canvas::endMode");
+	msg.enter("Canvas::endMode");
 	double area, radius;
 	Atom **atoms, *i;
 	Bond *b;
@@ -289,7 +289,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::endMode - datamodel == NULL.\n");
-		dbgEnd(Debug::Calls,"Canvas::endMode");
+		msg.exit("Canvas::endMode");
 		return;
 	}
 	// Create atoms pointer array
@@ -500,19 +500,19 @@ void Canvas::endMode(Prefs::MouseButton button)
 			printf("No endMode handler defined for UserAction %i.\n", endingMode);
 			break;
 	}
-	dbgEnd(Debug::Calls,"Canvas::endMode");
+	msg.exit("Canvas::endMode");
 }
 
 void Canvas::modeMotion(double x, double y)
 {
 	// Actively update variables when moving the mouse (possibly while performing a given action)
-	dbgBegin(Debug::Calls,"Canvas::modeMotion");
+	msg.enter("Canvas::modeMotion");
 	static Vec3<double> delta;
 	//static Model *viewtarget;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::modeMotion - datamodel == NULL.\n");
-		dbgEnd(Debug::Calls,"Canvas::modeMotion");
+		msg.exit("Canvas::modeMotion");
 		return;
 	}
 	// For view operations when we have a trajectory, apply all movement to the parent model
@@ -560,18 +560,18 @@ void Canvas::modeMotion(double x, double y)
 			break;
 	}
 	postRedisplay();
-	dbgEnd(Debug::Calls,"Canvas::modeMotion");
+	msg.exit("Canvas::modeMotion");
 }
 
 void Canvas::modeScroll(bool scrollup)
 {
 	// Handle mouse-wheel scroll events.
 	// Do the requested wheel action as defined in the control panel
-	dbgBegin(Debug::Calls,"Canvas::modeScroll");
+	msg.enter("Canvas::modeScroll");
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::modeScroll - datamodel == NULL.\n");
-		dbgEnd(Debug::Calls,"Canvas::modeScroll");
+		msg.exit("Canvas::modeScroll");
 		return;
 	}
 	switch (prefs.mouseAction(Prefs::WheelButton))
@@ -593,5 +593,5 @@ void Canvas::modeScroll(bool scrollup)
 			break;
 	}
 	postRedisplay();
-	dbgEnd(Debug::Calls,"Canvas::modeScroll");
+	msg.exit("Canvas::modeScroll");
 }

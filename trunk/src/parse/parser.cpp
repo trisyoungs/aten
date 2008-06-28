@@ -103,7 +103,7 @@ void Parser::setArg(int i, const char *s)
 bool Parser::getNextArg(int destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified
-	dbgBegin(Debug::Parse,"Parser::getNextArg");
+	msg.enter("Parser::getNextArg");
 	static int n, arglen;
 	static bool done, hadquotes, expression, failed;
 	static char c, quotechar;
@@ -177,7 +177,7 @@ bool Parser::getNextArg(int destarg)
 				// Check we are not already 'expressing'
 				if (expression)
 				{
-					msg(Debug::None, "Expression begun inside previous expression (column %i).\n", n+1);
+					msg.print( "Expression begun inside previous expression (column %i).\n", n+1);
 					failed = TRUE;
 					break;
 				}
@@ -189,7 +189,7 @@ bool Parser::getNextArg(int destarg)
 			case ('}'):
 				if (!expression)
 				{
-					msg(Debug::None, "Expression ended without being begun  (column %i).\n", n+1);
+					msg.print( "Expression ended without being begun  (column %i).\n", n+1);
 					failed = TRUE;
 					break;
 				}
@@ -217,7 +217,7 @@ bool Parser::getNextArg(int destarg)
 	// Strip off the characters up to position 'n', but not including position 'n' itself
 	line_.eraseStart(n+1);
 	//printf("Rest of line is now [%s]\n",line.get());
-	dbgEnd(Debug::Parse,"Parser::getNextArg");
+	msg.exit("Parser::getNextArg");
 	if (failed) return FALSE;
 	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
 }
@@ -226,12 +226,12 @@ bool Parser::getNextArg(int destarg)
 bool Parser::getNextN(int length)
 {
 	// Put the next 'length' characters from source into temparg.
-	dbgBegin(Debug::Parse,"Parser::getNextN");
+	msg.enter("Parser::getNextN");
 	int arglen = 0;
 	char c;
 	if (line_.length() == 0)
 	{
-		dbgEnd(Debug::Parse,"Parser::getNextN");
+		msg.exit("Parser::getNextN");
 		return FALSE;
 	}
 	if (length > line_.length()) length = line_.length();
@@ -258,7 +258,7 @@ bool Parser::getNextN(int length)
 	// Add terminating character to temparg
 	tempArg_[arglen] = '\0';
 	line_.eraseStart(length);
-	dbgEnd(Debug::Parse,"Parser::getNextN");
+	msg.exit("Parser::getNextN");
 	return TRUE;
 }
 
@@ -266,7 +266,7 @@ bool Parser::getNextN(int length)
 void Parser::getAllArgsDelim(Dnchar &source)
 {
 	// Parse the string in 'source' into arguments in 'args'
-	dbgBegin(Debug::Parse,"Parser::getAllArgsDelim[string]");
+	msg.enter("Parser::getAllArgsDelim[string]");
 	nArgs_ = 0; 
 	for (int n=0; n<MAXARGS; n++)
 	{
@@ -278,18 +278,18 @@ void Parser::getAllArgsDelim(Dnchar &source)
 	{
 		if (getNextArg(nArgs_))
 		{
-			msg(Debug::Parse,"getAllArgsDelim[string] arg=%i [%s]\n", nArgs_, argc(nArgs_));
+			msg.print(Messenger::Parse,"getAllArgsDelim[string] arg=%i [%s]\n", nArgs_, argc(nArgs_));
 			nArgs_ ++;
 		}
 	}
-	dbgEnd(Debug::Parse,"Parser::getAllArgsDelim[string]");
+	msg.exit("Parser::getAllArgsDelim[string]");
 }
 
 // Get all (formatted)
 void Parser::getAllArgsFormatted(Dnchar &source, Format *fmt)
 {
 	// Parse the string in 'source' into arguments in 'args'
-	dbgBegin(Debug::Parse,"Parser::getAllArgsFormatted");
+	msg.enter("Parser::getAllArgsFormatted");
 	nArgs_ = 0;
 	bool parseresult;
 	for (int n=0; n<MAXARGS; n++)
@@ -305,13 +305,13 @@ void Parser::getAllArgsFormatted(Dnchar &source, Format *fmt)
 		else parseresult = getNextN(fn->length());
 		if (!parseresult)
 		{
-			msg(Debug::Verbose,"Parser::getAllArgsFormatted <<<< '%s' passed end of line >>>>\n",fn->variable()->name());
+			msg.print(Messenger::Verbose,"Parser::getAllArgsFormatted <<<< '%s' passed end of line >>>>\n",fn->variable()->name());
 			fn->variable()->reset();
 		}
 		else fn->variable()->set(tempArg_);
 		fn = fn->next;
 	}
-	dbgEnd(Debug::Parse,"Parser::getAllArgsFormatted");
+	msg.exit("Parser::getAllArgsFormatted");
 }
 
 /*
@@ -323,7 +323,7 @@ int Parser::getArgsDelim(ifstream *xfile, int options)
 {
 	// Standard file parse routine.
 	// Splits the line from the file into delimited arguments via the 'parseline' function
-	dbgBegin(Debug::Parse,"Parser::getArgsDelim[file]");
+	msg.enter("Parser::getArgsDelim[file]");
 	bool done = FALSE;
 	static char linefromfile[MAXLINELENGTH];
 	// Lines beginning with '#' are ignored as comments
@@ -336,13 +336,13 @@ int Parser::getArgsDelim(ifstream *xfile, int options)
 		if (xfile->eof())
 		{
 			xfile->close();
-			dbgEnd(Debug::Parse,"Parser::getArgsDelim[file]");
+			msg.exit("Parser::getArgsDelim[file]");
 			return -1;
 		}
 		if (xfile->fail())
 		{
 			xfile->close();
-			dbgEnd(Debug::Parse,"Parser::getArgsDelim[file]");
+			msg.exit("Parser::getArgsDelim[file]");
 			return 1;
 		}
 		line_ = linefromfile;
@@ -352,14 +352,14 @@ int Parser::getArgsDelim(ifstream *xfile, int options)
 		getAllArgsDelim(line_);
 		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
-	dbgEnd(Debug::Parse,"Parser::getArgsDelim[file]");
+	msg.exit("Parser::getArgsDelim[file]");
 	return 0;
 }
 
 // Get next argument (delimited) from file stream
 const char *Parser::getArgDelim(ifstream *xfile)
 {
-	dbgBegin(Debug::Parse,"Parser::getArgDelim[file]");
+	msg.enter("Parser::getArgDelim[file]");
 	static char result[512];
 	static int length;
 	static bool done;
@@ -435,7 +435,7 @@ void Parser::getLinesDelim(const char *s)
 // Skip lines from file
 int Parser::skipLines(ifstream *xfile, int nlines)
 {
-	dbgBegin(Debug::Parse,"Parser::skipLines");
+	msg.enter("Parser::skipLines");
 	static char skipline[MAXLINELENGTH];
 	for (int n=0; n<nlines; n++)
 	{
@@ -443,17 +443,17 @@ int Parser::skipLines(ifstream *xfile, int nlines)
 		if (xfile->eof())
 		{
 			xfile->close();
-			dbgEnd(Debug::Parse,"Parser::skipLines");
+			msg.exit("Parser::skipLines");
 			return -1;
 		}
 		if (xfile->fail())
 		{
 			xfile->close();
-			dbgEnd(Debug::Parse,"Parser::skipLines");
+			msg.exit("Parser::skipLines");
 			return 1;
 		}
 	}
-	dbgEnd(Debug::Parse,"Parser::skipLines");
+	msg.exit("Parser::skipLines");
 	return 0;
 }
 
@@ -465,7 +465,7 @@ int Parser::skipLines(ifstream *xfile, int nlines)
 int Parser::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 {
 	// Splits the line from the file into parts determiend by the supplied format
-	dbgBegin(Debug::Parse,"Parser::getArgsFormatted[file]");
+	msg.enter("Parser::getArgsFormatted[file]");
 	static char linefromfile[MAXLINELENGTH];
 	bool done = FALSE;
 	// Lines beginning with '#' are ignored as comments
@@ -479,13 +479,13 @@ int Parser::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 		if (xfile->eof())
 		{
 			xfile->close();
-			dbgEnd(Debug::Parse,"Parser::getArgsFormatted[file]");
+			msg.exit("Parser::getArgsFormatted[file]");
 			return -1;
 		}
 		if (xfile->fail())
 		{
 			xfile->close();
-			dbgEnd(Debug::Parse,"Parser::getArgsFormatted[file]");
+			msg.exit("Parser::getArgsFormatted[file]");
 			return 1;
 		}
 		line_ = linefromfile;
@@ -495,7 +495,7 @@ int Parser::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 		getAllArgsFormatted(line_,fmt);
 		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
-	dbgEnd(Debug::Parse,"Parser::getArgsFormatted[file]");
+	msg.exit("Parser::getArgsFormatted[file]");
 	return 0;
 }
 
@@ -503,14 +503,14 @@ int Parser::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 void Parser::getArgsFormatted(const char *source, int options, Format *fmt)
 {
 	// Splits the line from the file into parts determiend by the supplied format
-	dbgBegin(Debug::Parse,"Parser::getArgsFormatted[string]");
+	msg.enter("Parser::getArgsFormatted[string]");
 	// Lines beginning with '#' are ignored as comments
 	// Blank lines are skipped if blankskip == TRUE.
 	// Returns : 0=ok, 1=error, -1=eof
 	line_ = source;
 	optionMask_ = options;
 	getAllArgsFormatted(line_,fmt);
-	dbgEnd(Debug::Parse,"Parser::getArgsFormatted[string]");
+	msg.exit("Parser::getArgsFormatted[string]");
 }
 
 /*
@@ -522,7 +522,7 @@ const char *Parser::parseAtomtypeString(Dnchar &source)
 	// Cut the next atomtype command from the supplied string. Put in 'dest', along with any bracketed
 	// argument part. Use brackets a bit like quotes are used above, except we don't toggle the flag.
 	// Ignore spaces and horizontal tabs. Commas separate commands.
-	dbgBegin(Debug::Parse,"Parser::parseAtomtypeString");
+	msg.enter("Parser::parseAtomtypeString");
 	static int n, nchars, bracketlevel;
 	static bool done, el_list;
 	static Dnchar typecmd;
@@ -580,7 +580,7 @@ const char *Parser::parseAtomtypeString(Dnchar &source)
 	source.eraseStart(n+1);
 	//printf("Result = ");
 	//typecmd.print();
-	dbgEnd(Debug::Parse,"Parser::parseAtomtypeString");
+	msg.exit("Parser::parseAtomtypeString");
 	return typecmd.get();
 }
 
@@ -588,7 +588,7 @@ const char *Parser::trimAtomtypeKeyword(Dnchar &source)
 {
 	// Remove the keyword part of the command and put in 'dest', leaving the options (minus brackets)
 	// in the original string. Remove '[' and ']' from keyword since this is only used to keep a list of elements together.
-	dbgBegin(Debug::Parse,"Parser::trimAtomtypeKeyword");
+	msg.enter("Parser::trimAtomtypeKeyword");
 	static bool done, equals;
 	static Dnchar keywd;
 	done = FALSE;
@@ -637,7 +637,7 @@ const char *Parser::trimAtomtypeKeyword(Dnchar &source)
 			source.eraseStart(1);
 			source.eraseEnd(1);
 		}
-	dbgEnd(Debug::Parse,"Parser::trimAtomtypeKeyword");
+	msg.exit("Parser::trimAtomtypeKeyword");
 	return keywd.get();
 }
 

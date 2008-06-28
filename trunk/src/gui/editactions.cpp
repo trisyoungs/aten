@@ -59,8 +59,8 @@ void AtenForm::on_actionEditCopy_triggered(bool checked)
 {
 	// Copy the selected atoms in the model into the paste buffer
 	master.userClipboard->copySelection(master.currentModel()->renderSource());
-	msg(Debug::None,"%i atoms copied to clipboard.\n",master.userClipboard->nAtoms());
-	msg(Debug::Verbose, "Copied selection (%i atoms) from model %s\n",master.userClipboard->nAtoms(), master.currentModel()->name());
+	msg.print("%i atoms copied to clipboard.\n",master.userClipboard->nAtoms());
+	msg.print(Messenger::Verbose, "Copied selection (%i atoms) from model %s\n",master.userClipboard->nAtoms(), master.currentModel()->name());
 }
 
 void AtenForm::on_actionEditPaste_triggered(bool checked)

@@ -21,7 +21,7 @@
 
 #include "classes/forcefieldatom.h"
 #include "base/prefs.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 
 // Constructor
 ForcefieldAtom::ForcefieldAtom()
@@ -157,7 +157,7 @@ ForcefieldParams &ForcefieldAtom::params()
 // Initialise generator array
 void ForcefieldAtom::initialiseGenerator()
 {
-	if (generator_ != NULL) msg(Debug::None,"Warning - replacing existing generator data for typeId %i (%s)\n", typeId_, name_.get());
+	if (generator_ != NULL) msg.print("Warning - replacing existing generator data for typeId %i (%s)\n", typeId_, name_.get());
 	generator_ = new double[MAXFFGENDATA];
 }
 

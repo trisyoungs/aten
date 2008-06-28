@@ -26,7 +26,7 @@
 // Render model glyphs
 void Canvas::renderModelGlyphs()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderModelGlyphs");
+	msg.enter("Canvas::renderModelGlyphs");
 	static Vec3<double> vec[4], avg, normal;
 
 	// Render other elemental objects in the model
@@ -174,13 +174,13 @@ void Canvas::renderModelGlyphs()
 			//	gl_ellipsoid(i->r(),i->v(),i->f());
 			//	break;
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderModelGlyphs");
+	msg.exit("Canvas::renderModelGlyphs");
 }
 
 // Render model text glyphs
 void Canvas::renderModelTextGlyphs()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderModelTextGlyphs");
+	msg.enter("Canvas::renderModelTextGlyphs");
 	static Vec3<double> vec[2], avg, normal;
 	GLfloat col[4] = { 0.0f, 0.0f, 0.9f, 0.5f };
 	TextObject *to;
@@ -213,5 +213,5 @@ void Canvas::renderModelTextGlyphs()
 				break;
 		}
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderModelTextGlyphs");
+	msg.exit("Canvas::renderModelTextGlyphs");
 }

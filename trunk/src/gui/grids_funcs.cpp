@@ -62,7 +62,7 @@ void AtenGrids::showWindow()
 // Refresh widget
 void AtenGrids::refresh()
 {
-	dbgBegin(Debug::Calls,"AtenGrids::refresh");
+	msg.enter("AtenGrids::refresh");
 	// Clear and refresh the grids list
 	refreshing_ = TRUE;
 	ui.GridList->clear();
@@ -78,13 +78,13 @@ void AtenGrids::refresh()
 	if (master.nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
 	refreshing_ = FALSE;
-	dbgEnd(Debug::Calls,"AtenGrids::refresh");
+	msg.exit("AtenGrids::refresh");
 }
 
 // Load grid (public function)
 void AtenGrids::loadGrid()
 {
-	dbgBegin(Debug::Calls,"AtenGrids::loadGrid");
+	msg.enter("AtenGrids::loadGrid");
 	Filter *f;
 	QString filename;
 	QStringList filenames;
@@ -112,7 +112,7 @@ void AtenGrids::loadGrid()
 		gui.gridsWindow->refresh();
 		gui.mainView.postRedisplay();
 	}
-	dbgEnd(Debug::Calls,"AtenGrids::loadGrid");
+	msg.exit("AtenGrids::loadGrid");
 }
 
 void AtenGrids::on_LoadGridButton_clicked(bool checked)
@@ -194,13 +194,13 @@ void AtenGrids::on_GridAxesCZSpin_valueChanged(double d)
 
 void AtenGrids::refreshGridInfo()
 {
-	dbgBegin(Debug::Calls,"AtenGrids::refreshGridInfo");
+	msg.enter("AtenGrids::refreshGridInfo");
 	// Get the current row selected in the grid list
 	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1)
 	{
-		dbgEnd(Debug::Calls,"AtenGrids::refreshGridInfo");
+		msg.exit("AtenGrids::refreshGridInfo");
 		return;
 	}
 	else g = master.grid(row);
@@ -235,7 +235,7 @@ void AtenGrids::refreshGridInfo()
 	ui.GridSymmetricCheck->setChecked( g->symmetric() );
 	ui.GridTransparencySpin->setValue( g->transparency() );
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
-	dbgEnd(Debug::Calls,"AtenGrids::refreshGridInfo");
+	msg.exit("AtenGrids::refreshGridInfo");
 }
 
 // Item in forcefield list has changed?

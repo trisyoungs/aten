@@ -1,15 +1,16 @@
 add_library(base
 cli.h 
 constants.h 
-debug.h 
 elements.h 
 master.h 
+messenger.h
 prefs.h 
 sysfunc.h
 cli.cpp 
 debug.cpp 
 elements.cpp 
 master.cpp 
+messenger.cpp
 prefs.cpp 
 sysfunc.cpp
 )

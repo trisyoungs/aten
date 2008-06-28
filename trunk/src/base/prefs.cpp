@@ -280,7 +280,7 @@ Prefs::Prefs()
 // Load user preferences file
 void Prefs::load(const char *filename)
 {
-	dbgBegin(Debug::Calls,"Prefs::load");
+	msg.enter("Prefs::load");
 	int success;
 	// Open the file
 	ifstream prefsfile(filename,ios::in);
@@ -288,7 +288,7 @@ void Prefs::load(const char *filename)
 	{
 		printf("Couldn't open preferences file in '%s'\n",filename);
 		prefsfile.close();
-		dbgEnd(Debug::Calls,"Prefs::load");
+		msg.exit("Prefs::load");
 		return;
 	}
 	// Create script structure and initialise
@@ -299,7 +299,7 @@ void Prefs::load(const char *filename)
 		success = parser.getArgsDelim(&prefsfile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
-			msg(Debug::None,"prefs::load - Error reading file.\n");
+			msg.print("prefs::load - Error reading file.\n");
 			break;
 		}
 		else if (success == -1) break;
@@ -310,11 +310,11 @@ void Prefs::load(const char *filename)
 	if (prefcmds.nBranches() != 1)
 	{
 		printf("%i unterminated blocks in prefs file.\n",prefcmds.nBranches());
-		dbgEnd(Debug::Calls,"prefs::load");
+		msg.exit("prefs::load");
 		return;
 	}
 	prefcmds.execute();
-	dbgEnd(Debug::Calls,"prefs::load");
+	msg.exit("prefs::load");
 }
 
 /*

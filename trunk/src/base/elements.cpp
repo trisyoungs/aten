@@ -22,7 +22,7 @@
 #include "base/elements.h"
 #include "base/prefs.h"
 #include "base/master.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "parse/parser.h"
 #include "classes/forcefield.h"
@@ -452,12 +452,12 @@ int ElementMap::ffToZ(const char *s)
 int ElementMap::find(const char *query)
 {
 	// Get the element number from the element name provided.
-	dbgBegin(Debug::Calls,"ElementMap::find");
+	msg.enter("ElementMap::find");
 	int result = -1;
 	if (query[0] == '\0')
 	{
 		printf("Warning: Element search requested on blank string.\n");
-		dbgEnd(Debug::Calls,"ElementMap::find");
+		msg.exit("ElementMap::find");
 		return 0;
 	}
 	// Convert the query string according to the specified rule
@@ -500,7 +500,7 @@ int ElementMap::find(const char *query)
 			result = numberToZ(query);
 			break;
 	}
-	dbgEnd(Debug::Calls,"ElementMap::find");
+	msg.exit("ElementMap::find");
 	return ((result == -1) ? 0 : result);
 }
 

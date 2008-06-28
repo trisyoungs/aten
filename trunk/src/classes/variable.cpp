@@ -180,7 +180,7 @@ void Variable::set(Atom *i)
 		return;
 	}
 	ptrValue_ = i;
-	msg(Debug::Verbose,"Atom variable '%s' has pointer '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
+	msg.print(Messenger::Verbose,"Atom variable '%s' has pointer '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
 }
 
 // Set (pattern)
@@ -192,7 +192,7 @@ void Variable::set(Pattern *p)
 		return;
 	}
 	ptrValue_ = p;
-	msg(Debug::Verbose,"Pattern variable '%s' has pointer '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
+	msg.print(Messenger::Verbose,"Pattern variable '%s' has pointer '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
 }
 
 // Set (model)
@@ -204,7 +204,7 @@ void Variable::set(Model *m)
 		return;
 	}
 	ptrValue_ = m;
-	msg(Debug::Verbose,"Model variable '%s' has pointer '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
+	msg.print(Messenger::Verbose,"Model variable '%s' has pointer '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
 }
 
 // Set (PatternBound)
@@ -216,7 +216,7 @@ void Variable::set(PatternBound *pb)
 		return;
 	}
 	ptrValue_ = pb;
-	msg(Debug::Verbose,"PatBound variable '%s' has pointer '%li'\n",name_.get(),pb);
+	msg.print(Messenger::Verbose,"PatBound variable '%s' has pointer '%li'\n",name_.get(),pb);
 }
 
 // Set (ForcefieldAtom)
@@ -228,7 +228,7 @@ void Variable::set(ForcefieldAtom *ffa)
 		return;
 	}
 	ptrValue_ = ffa;
-	msg(Debug::Verbose,"FFAtom variable '%s' has pointer '%li'\n",name_.get(),ffa);
+	msg.print(Messenger::Verbose,"FFAtom variable '%s' has pointer '%li'\n",name_.get(),ffa);
 }
 
 // Set (Expression)
@@ -240,7 +240,7 @@ void Variable::set(Expression *ex)
 		return;
 	}
 	ptrValue_ = ex;
-	msg(Debug::Verbose,"Expression variable '%s' has pointer '%li'\n",name_.get(),ex);
+	msg.print(Messenger::Verbose,"Expression variable '%s' has pointer '%li'\n",name_.get(),ex);
 }
 
 // Get as char
@@ -255,7 +255,7 @@ const char *Variable::asCharacter()
 		case (Variable::FloatVariable):
 			return ftoa(doubleValue_);
 		default:
-			msg(Debug::Verbose,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
+			msg.print(Messenger::Verbose,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return "";
 }
@@ -276,7 +276,7 @@ int Variable::asInteger()
 			ex = (Expression*) ptrValue_;
 			return int (ex->evaluate());
 		default:
-			msg(Debug::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
+			msg.print(Messenger::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return 0;
 }
@@ -297,7 +297,7 @@ double Variable::asDouble()
 			ex = (Expression*) ptrValue_;
 			return ex->evaluate();
 		default:
-			msg(Debug::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
+			msg.print(Messenger::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return 0.0;
 }
@@ -312,7 +312,7 @@ bool Variable::asBool()
 		case (Variable::IntegerVariable):
 			return (intValue_ < 1 ? FALSE : TRUE);
 		default:
-			msg(Debug::Verbose,"Variable::asBool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
+			msg.print(Messenger::Verbose,"Variable::asBool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
 	return FALSE;
 }

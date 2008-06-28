@@ -58,24 +58,24 @@ void Model::invalidateExpression()
 bool Model::createExpression(bool vdwOnly)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
-	dbgBegin(Debug::Calls,"Model::createExpression");
+	msg.enter("Model::createExpression");
 	// 0) If the expression is already valid, just update scaling terms in pattern matrices and return
 	if (isExpressionValid())
 	{
 		for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->updateScaleMatrices();
-		dbgEnd(Debug::Calls,"Model::createExpression");
+		msg.exit("Model::createExpression");
 		return TRUE;
 	}
 	// Reset some variables
 	prefs.invalidateEwaldAuto();
 	uniqueTypes_.clear();
-	if (vdwOnly) msg(Debug::None,"Creating VDW-only expression for model %s...\n",name_.get());
-	else msg(Debug::None,"Creating expression for model %s...\n",name_.get());
+	if (vdwOnly) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
+	else msg.print("Creating expression for model %s...\n",name_.get());
 	// 1) Assign internal atom type data (hybridisations). [typeAll also performs create_pattern()]
 	if (!typeAll())
 	{
-		msg(Debug::None,"Couldn't type atoms.\n");
-		dbgEnd(Debug::Calls,"Model::createExpression");
+		msg.print("Couldn't type atoms.\n");
+		msg.exit("Model::createExpression");
 		return FALSE;
 	}
 	// 2) Remove old expression data and create new
@@ -93,36 +93,36 @@ bool Model::createExpression(bool vdwOnly)
 		switch (emodel)
 		{
 			case (Electrostatics::None):
-				msg(Debug::None,"Electrostatics are off.\n");
+				msg.print("Electrostatics are off.\n");
 				break;
 			case (Electrostatics::Coulomb):
-				if (cell_.type() != Cell::NoCell) msg(Debug::None,"!!! Coulomb sum requested for periodic model.\n");
+				if (cell_.type() != Cell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
 				break;
 			default: // Ewald - issue warnings, but don't return FALSE
 				if (cell_.type() == Cell::NoCell)
 				{
-					msg(Debug::None,"!!! Ewald sum cannot be used for a non-periodic model.\n");
-					//dbgEnd(Debug::Calls,"Model::createExpression");
+					msg.print("!!! Ewald sum cannot be used for a non-periodic model.\n");
+					//msg.exit("Model::createExpression");
 					//return FALSE;
 				}
 				else if (cell_.type() != Cell::CubicCell)
 				{
-					msg(Debug::None,"!!! Ewald sum only implemented for cubic cells.\n");
-					//dbgEnd(Debug::Calls,"Model::createExpression");
+					msg.print("!!! Ewald sum only implemented for cubic cells.\n");
+					//msg.exit("Model::createExpression");
 					//return FALSE;
 				}
 				break;
 		}
 	}
 	expressionPoint_ = logs_[Change::StructureLog];
-	dbgEnd(Debug::Calls,"Model::createExpression");
+	msg.exit("Model::createExpression");
 	return TRUE;
 }
 
 // Create lists of unique FF terms in the model
 void Model::createUniqueLists()
 {
-	dbgBegin(Debug::Calls,"Model::createUniqueLists");
+	msg.enter("Model::createUniqueLists");
 	uniqueTypes_.clear();
 
 	// First, create a list of unique type references
@@ -142,5 +142,5 @@ void Model::createUniqueLists()
 
 	// TODO Bond, angle, torsion lists...
 
-	dbgEnd(Debug::Calls,"Model::createUniqueLists");
+	msg.exit("Model::createUniqueLists");
 }

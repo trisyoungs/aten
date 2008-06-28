@@ -106,7 +106,7 @@ short int Master::sketchElement()
 // Set the active model
 void Master::setCurrentModel(Model *m)
 {
-	dbgBegin(Debug::Calls,"Master::setCurrentModel");
+	msg.enter("Master::setCurrentModel");
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
 	current.rs = (current.m == NULL ? NULL : current.m->renderSource());
@@ -115,7 +115,7 @@ void Master::setCurrentModel(Model *m)
 	current.i = NULL;
 	current.m->renderSource()->calculateViewMatrix();
 	current.m->renderSource()->projectAll();
-	dbgEnd(Debug::Calls,"Master::setCurrentModel");
+	msg.exit("Master::setCurrentModel");
 }
 
 /*
@@ -161,7 +161,7 @@ int Master::nModels() const
 // Add model
 Model *Master::addModel()
 {
-	dbgBegin(Debug::Calls,"Master::addModel");
+	msg.enter("Master::addModel");
 	Model *m = models_.add();
 	char newname[16];
 	sprintf(newname,"Unnamed%03i", ++modelId_);
@@ -172,7 +172,7 @@ Model *Master::addModel()
 		gui.disorderWindow->refresh();
 	}
 	setCurrentModel(m);
-	dbgEnd(Debug::Calls,"Master::addModel");
+	msg.exit("Master::addModel");
 	return m;
 }
 
@@ -180,7 +180,7 @@ Model *Master::addModel()
 void Master::removeModel(Model *xmodel)
 {
 	// Remove this model from the model_list in the main window
-	dbgBegin(Debug::Calls,"Master::removeModel");
+	msg.enter("Master::removeModel");
 	Model *m;
 	// Unset the datamodel for the canvas
 	// Delete the current model, but don't allow there to be zero models_...
@@ -196,17 +196,17 @@ void Master::removeModel(Model *xmodel)
 		gui.removeModel(id);
 		gui.disorderWindow->refresh();
 	}
-	dbgEnd(Debug::Calls,"Master::removeModel");
+	msg.exit("Master::removeModel");
 }
 
 // Find model by name
 Model *Master::findModel(const char *s) const
 {
 	// Search model list for name 's' (script function)
-	dbgBegin(Debug::Calls,"Master::findModel");
+	msg.enter("Master::findModel");
 	Model *result = NULL;
 	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;
-	dbgEnd(Debug::Calls,"Master::findModel");
+	msg.exit("Master::findModel");
 	return result ;
 }
 
@@ -261,27 +261,27 @@ Forcefield *Master::addForcefield()
 // Load forcefield
 Forcefield *Master::loadForcefield(const char *filename)
 {
-	dbgBegin(Debug::Calls,"Master::loadForcefield");
+	msg.enter("Master::loadForcefield");
 	// Try some different locations to find the supplied forcefield.
 	static char s[512];
 	bool result;
 	Forcefield *newff = forcefields_.add();
 	// First try - actual / absolute path
-	msg(Debug::Verbose,"Looking for forcefield in absolute path (%s)...\n",filename);
+	msg.print(Messenger::Verbose,"Looking for forcefield in absolute path (%s)...\n",filename);
 	if (fileExists(filename)) result = newff->load(filename);
 	else
 	{
 		// Second try - master.dataDir/ff
 		sprintf(s,"%s/%s", dataDir_.get(), filename);
-		msg(Debug::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
+		msg.print(Messenger::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
 		if (fileExists(s)) result = newff->load(s);
 		else
 		{
 			// Last try - user home datadir/ff
 			sprintf(s,"%s/.aten/ff/%s", homeDir_.get(), filename);
-			msg(Debug::Verbose,"Looking for forcefield in user's data directory (%s)...\n",s);
+			msg.print(Messenger::Verbose,"Looking for forcefield in user's data directory (%s)...\n",s);
 			if (fileExists(s)) result = newff->load(s);
-			else msg(Debug::None,"Can't find forcefield file '%s' in any location.\n", filename);
+			else msg.print("Can't find forcefield file '%s' in any location.\n", filename);
 		}
 	}
 	if (result)
@@ -291,23 +291,23 @@ Forcefield *Master::loadForcefield(const char *filename)
 		if (forcefields_.nItems() == 1)
 		{
 			defaultForcefield_ = newff;
-			msg(Debug::None, "Forcefield '%s' is now the default.\n", newff->name());
+			msg.print("Forcefield '%s' is now the default.\n", newff->name());
 		}
 	}
 	else
 	{
-		msg(Debug::None,"Couldn't load forcefield file '%s'.\n", filename);
+		msg.print("Couldn't load forcefield file '%s'.\n", filename);
 		forcefields_.remove(newff);
 		newff = NULL;
 	}
-	dbgEnd(Debug::Calls,"Master::loadForcefield");
+	msg.exit("Master::loadForcefield");
 	return newff;
 }
 
 // Unload forcefield from the master's list
 void Master::removeForcefield(Forcefield *xff)
 {
-	dbgBegin(Debug::Calls,"Master::removeForcefield");
+	msg.enter("Master::removeForcefield");
 	Forcefield *newff;
 	// If possible, set the active row to the next model. Otherwise, the previous.
 	xff->next != NULL ? newff = xff->next : newff = xff->prev;
@@ -317,18 +317,18 @@ void Master::removeForcefield(Forcefield *xff)
 	forcefields_.remove(xff);
 	// Set a new default if necessary
 	if (defaultForcefield_ == xff) defaultForcefield_ = forcefields_.first();
-	dbgEnd(Debug::Calls,"Master::removeForcefield");
+	msg.exit("Master::removeForcefield");
 }
 
 // Find forcefield by name
 Forcefield *Master::findForcefield(const char *s) const
 {
 	// Search forcefield list for name 's' (script function)
-	dbgBegin(Debug::Calls,"Master::findForcefield");
+	msg.enter("Master::findForcefield");
 	Forcefield *ff;
 	for (ff = forcefields_.first(); ff != NULL; ff = ff->next) if (strcmp(s,ff->name()) == 0) break;
-	if (ff == NULL) msg(Debug::None,"Forcefield '%s' is not loaded.\n",s);
-	dbgEnd(Debug::Calls,"Master::findForcefield");
+	if (ff == NULL) msg.print("Forcefield '%s' is not loaded.\n",s);
+	msg.exit("Master::findForcefield");
 	return ff;
 }
 
@@ -336,7 +336,7 @@ Forcefield *Master::findForcefield(const char *s) const
 void Master::dereferenceForcefield(Forcefield *xff)
 {
 	// Remove references to the forcefield in the models
-	dbgBegin(Debug::Calls,"Master::dereferenceForcefield");
+	msg.enter("Master::dereferenceForcefield");
 	for (Model *m = models_.first(); m != NULL; m = m->next)
 	{
 		if (m->forcefield() == xff)
@@ -358,15 +358,15 @@ void Master::dereferenceForcefield(Forcefield *xff)
 			}
 		}
 	}
-	dbgEnd(Debug::Calls,"Master::dereferenceForcefield");
+	msg.exit("Master::dereferenceForcefield");
 }
 
 // Set the default forcefield
 void Master::setDefaultForcefield(Forcefield *ff)
 {
 	defaultForcefield_ = ff;
-	if (defaultForcefield_ == NULL) msg(Debug::None,"Default forcefield has been unset.\n");
-	else msg(Debug::None,"Default forcefield is now '%s'.\n", defaultForcefield_->name());
+	if (defaultForcefield_ == NULL) msg.print("Default forcefield has been unset.\n");
+	else msg.print("Default forcefield is now '%s'.\n", defaultForcefield_->name());
 }
 
 // Return the first ff in the list
@@ -464,7 +464,7 @@ const char *Master::dataDir()
 // Load filters
 bool Master::openFilters()
 {
-	dbgBegin(Debug::Calls,"Master::openFilters");
+	msg.enter("Master::openFilters");
 	char filename[512], path[512];
 	bool found = FALSE, failed = FALSE;
 	ifstream *listfile;
@@ -472,7 +472,7 @@ bool Master::openFilters()
 	// If ATENDATA is set, take data from there
 	if (!master.dataDir_.empty())
 	{
-		printf("$ATENDATA points to '%s'.\n", dataDir_.get());
+		msg.print(Messenger::Verbose, "$ATENDATA points to '%s'.\n", dataDir_.get());
 		sprintf(path,"%s%s", dataDir_.get(), "/filters/");
 		sprintf(filename,"%s%s", dataDir_.get(), "/filters/index");
 		listfile = new ifstream(filename,ios::in);
@@ -484,12 +484,12 @@ bool Master::openFilters()
 		listfile->close();
 		delete listfile;
 	}
-	else printf("$ATENDATA has not been set. Searching default locations...\n");
+	else msg.print(Messenger::Verbose, "$ATENDATA has not been set. Searching default locations...\n");
 	if ((!found) && (!failed))
 	{
 		// Try a list of known locations. Set dataDir again if we find a valid one
 		sprintf(path,"%s%s", "/usr/share/aten", "/filters/");
-		msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+		msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 		sprintf(filename,"%s%s", path, "index");
 		listfile = new ifstream(filename, ios::in);
 		if (listfile->is_open())
@@ -507,7 +507,7 @@ bool Master::openFilters()
 		if ((!found) && (!failed))
 		{
 			sprintf(path,"%s%s", "/usr/local/share/aten", "/filters/");
-			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 			sprintf(filename,"%s%s", path, "index");
 			listfile = new ifstream(filename, ios::in);
 			if (listfile->is_open())
@@ -526,7 +526,7 @@ bool Master::openFilters()
 		if ((!found) && (!failed))
 		{
 			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../share/aten/filters/");
-			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 			sprintf(filename,"%s%s", path, "index");
 			listfile = new ifstream(filename, ios::in);
 			if (listfile->is_open())
@@ -545,7 +545,7 @@ bool Master::openFilters()
 		if ((!found) && (!failed))
 		{
 			sprintf(path,"%s%s", qPrintable(gui.app->applicationDirPath()), "/../SharedSupport/filters/");
-			msg(Debug::None,"Looking for filter index in '%s'...\n", path);
+			msg.print(Messenger::Verbose, "Looking for filter index in '%s'...\n", path);
 			sprintf(filename,"%s%s", path, "index");
 			listfile = new ifstream(filename, ios::in);
 			if (listfile->is_open())
@@ -563,9 +563,9 @@ bool Master::openFilters()
 
 		if (!found)
 		{
-			printf("No filter index found in any of these locations.\n");
-			printf("Set $ATENDATA to point to the (installed) location of the 'data' directory, or to the directory that contains Aten's 'filters' directory.\n");
-			printf("e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
+			msg.print(Messenger::Error, "No filter index found in any of these locations.\n");
+			msg.print(Messenger::Error, "Set $ATENDATA to point to the (installed) location of the 'data' directory, or to the directory that contains Aten's 'filters' directory.\n");
+			msg.print(Messenger::Error, "e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
 		}
 	}
 
@@ -573,7 +573,7 @@ bool Master::openFilters()
 	if (found && (!failed))
 	{
 		sprintf(path,"%s%s", homeDir_.get(), "/.aten/filters/");
-		msg(Debug::None,"Looking for user filter index in '%s'...\n", path);
+		msg.print(Messenger::Verbose, "Looking for user filter index in '%s'...\n", path);
 		sprintf(filename, "%s%s", path, "index");
 		listfile = new ifstream(filename, ios::in);
 		if (listfile->is_open())
@@ -589,12 +589,12 @@ bool Master::openFilters()
 	if ((!failed) && found)
 	{
 		partnerFilters();
-		msg(Debug::None,"Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
-		msg(Debug::None,"Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
-		msg(Debug::None,"Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
-		msg(Debug::None,"Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
+		msg.print(Messenger::Verbose, "Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
+		msg.print(Messenger::Verbose, "Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
+		msg.print(Messenger::Verbose, "Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
+		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
 	}
-	dbgEnd(Debug::Calls,"Master::openFilters");
+	msg.exit("Master::openFilters");
 	if (failed || (!found)) return FALSE;
 	else return TRUE;
 }
@@ -602,32 +602,34 @@ bool Master::openFilters()
 // Parse filter index file
 bool Master::parseFilterIndex(const char *path, ifstream *indexfile)
 {
-	dbgBegin(Debug::Calls,"Master::parseFilterIndex");
+	msg.enter("Master::parseFilterIndex");
 	// Read the list of filters to load in...
 	// Read filter names from file and open them
-	char filterfile[512];
-	printf("--> ");
+	char filterfile[512], s[512], bit[64];
+	strcpy(s, "--> ");
 	while (!indexfile->eof())
 	{
 		strcpy(filterfile,path);
 		if (parser.getArgsDelim(indexfile, Parser::SkipBlanks) != 0) break;
 		strcat(filterfile, parser.argc(0));
-		printf("%s  ",parser.argc(0));
+		sprintf(bit, "%s  ",parser.argc(0));
+		strcat(s, bit);
 		if (!loadFilter(filterfile))
 		{
-			dbgEnd(Debug::Calls,"Master::parseFilterIndex");
+			msg.exit("Master::parseFilterIndex");
 			return FALSE;
 		}
 	}
-	printf("\n");
-	dbgEnd(Debug::Calls,"Master::parseFilterIndex");
+	strcat(s, "\n");
+	msg.print(Messenger::Verbose, s);
+	msg.exit("Master::parseFilterIndex");
 	return TRUE;
 }
 
 // Read commands from filter file
 bool Master::loadFilter(const char *filename)
 {
-	dbgBegin(Debug::Calls,"Master::loadFilter");
+	msg.enter("Master::loadFilter");
 	Filter::FilterType ft;
 	Filter *newfilter;
 	bool error;
@@ -644,7 +646,7 @@ bool Master::loadFilter(const char *filename)
 		// Unrecognised filter section?
 		if (ft == Filter::nFilterTypes)
 		{
-			msg(Debug::None,"Unrecognised section '%s' in filter.\n",parser.argc(0));
+			msg.print(Messenger::Error, "Unrecognised section '%s' in filter.\n",parser.argc(0));
 			error = TRUE;
 			break;
 		}
@@ -655,7 +657,7 @@ bool Master::loadFilter(const char *filename)
 		// If the load is not successful, remove the filter we just created
 		if (!newfilter->load(filterfile))
 		{
-			printf("Error reading '%s' section from file '%s'\n", Filter::filterType(newfilter->type()), filename);
+			msg.print(Messenger::Error, "Error reading '%s' section from file '%s'\n", Filter::filterType(newfilter->type()), filename);
 			filters_[ft].remove(newfilter);
 			error = TRUE;
 			break;
@@ -663,21 +665,21 @@ bool Master::loadFilter(const char *filename)
 	}
 	filterfile.close();
 	//variables.print();
-	dbgEnd(Debug::Calls,"Master::loadFilter");
+	msg.exit("Master::loadFilter");
 	return (!error);
 }
 
 // Set filter partners
 void Master::partnerFilters()
 {
-	dbgBegin(Debug::Calls,"Master::partnerFilters");
+	msg.enter("Master::partnerFilters");
 	// Loop through import filters and search / set export partners
+	char s[512], bit[32];
 	Filter *imp, *exp;
 	int importid;
-	printf("Model Formats:");
+	strcpy(s,"Model Formats:");
 	for (imp = filters_[Filter::ModelImport].first(); imp != NULL; imp = imp->next)
 	{
-		printf(" %s[r", imp->nickname());
 		importid = imp->id();
 		exp = NULL;
 		if (importid != -1)
@@ -687,20 +689,20 @@ void Master::partnerFilters()
 			{
 				if (importid == exp->id())
 				{
-					msg(Debug::Verbose, "--- Partnering model filters for '%s', id = %i\n", imp->nickname(), imp->id());
+					msg.print(Messenger::Verbose, "--- Partnering model filters for '%s', id = %i\n", imp->nickname(), imp->id());
 					imp->setPartner(exp);
-					printf("w]");
 					break;
 				}
 			}
 		}
-		if (exp == NULL) printf("o]");
+		sprintf(bit, " %s[r%c]", imp->nickname(), exp == NULL ? 'o' : 'w');
+		strcat(s,bit);
 	}
-	printf("\n");
-	printf("Grid Formats:");
+	strcat(s, "\n");
+	msg.print(Messenger::Verbose, s);
+	strcpy(s,"Grid Formats:");
 	for (imp = filters_[Filter::GridImport].first(); imp != NULL; imp = imp->next)
 	{
-		printf(" %s[r", imp->nickname());
 		importid = imp->id();
 		exp = NULL;
 		if (importid != -1)
@@ -710,28 +712,30 @@ void Master::partnerFilters()
 			{
 				if (importid == exp->id())
 				{
-					msg(Debug::Verbose, "--- Partnering grid filters for '%s', id = %i\n", imp->nickname(), imp->id());
+					msg.print(Messenger::Verbose, "--- Partnering grid filters for '%s', id = %i\n", imp->nickname(), imp->id());
 					imp->setPartner(exp);
 					printf("w]");
 					break;
 				}
 			}
 		}
-		if (exp == NULL) printf("o]");
+		sprintf(bit, " %s[r%c]", imp->nickname(), exp == NULL ? 'o' : 'w');
+		strcat(s,bit);
 	}
-	printf("\n");
-	dbgEnd(Debug::Calls,"Master::partnerFilters");
+	strcat(s, "\n");
+	msg.print(Messenger::Verbose, s);
+	msg.exit("Master::partnerFilters");
 }
 
 // Find filter with specified type and nickname
 Filter *Master::findFilter(Filter::FilterType ft, const char *nickname) const
 {
-	dbgBegin(Debug::Calls,"Master::findFilter");
+	msg.enter("Master::findFilter");
 	Filter *result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->nickname(), nickname) == 0) break;
-	if (result == NULL) msg(Debug::None,"No %s filter with nickname '%s' defined.\n", Filter::filterType(ft), nickname);
-	dbgEnd(Debug::Calls,"Master::findFilter");
+	if (result == NULL) msg.print("No %s filter with nickname '%s' defined.\n", Filter::filterType(ft), nickname);
+	msg.exit("Master::findFilter");
 	return result;
 }
 
@@ -766,7 +770,7 @@ void Master::cancelProgress()
 // Spacegroup name search
 int Master::findSpacegroupByName(const char *name) const
 {
-	dbgBegin(Debug::Calls,"Master::findSpacegroupByName");
+	msg.enter("Master::findSpacegroupByName");
 	static char lcname[256], lcsg[256];
 	strcpy(lcname,lowerCase(name));
 	int result = 0;
@@ -779,14 +783,14 @@ int Master::findSpacegroupByName(const char *name) const
 			break;
 		}
 	}
-	dbgEnd(Debug::Calls,"Master::findSpacegroupByName");
+	msg.exit("Master::findSpacegroupByName");
 	return result;
 }
 
 // Cell type from spacegrgoup
 Cell::CellType Master::spacegroupCellType(int sg) const
 {
-	dbgBegin(Debug::Calls,"Master::spacegroupCellType");
+	msg.enter("Master::spacegroupCellType");
 	Cell::CellType result = Cell::NoCell;
 	// None
 	if (sg == 0) result = Cell::NoCell;
@@ -800,6 +804,6 @@ Cell::CellType Master::spacegroupCellType(int sg) const
 	else if (sg < 195) result = Cell::NoCell;
 	// Cubic
 	else result = Cell::CubicCell;
-	dbgBegin(Debug::Calls,"Master::spacegroupCellType");
+	msg.enter("Master::spacegroupCellType");
 	return result;
 }

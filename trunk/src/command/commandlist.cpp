@@ -260,7 +260,7 @@ void CommandList::clear()
 // Print data variables
 void Command::printArgs()
 {
-	dbgBegin(Debug::Calls,"Command::printArgs");
+	msg.enter("Command::printArgs");
 	int i = 0;
 	Variable *v;
 	for (Refitem<Variable,int> *rv = args_.first(); rv != NULL; rv = rv->next)
@@ -272,56 +272,56 @@ void Command::printArgs()
 		else printf("%li\n",v->asPointer());
 		i++;
 	}
-	dbgEnd(Debug::Calls,"Command::printArgs");
+	msg.exit("Command::printArgs");
 }
 
 // Return arguments as Vec3<double>
 Vec3<double> Command::arg3d(int i)
 {
-	dbgBegin(Debug::Calls,"Command::arg3d");
+	msg.enter("Command::arg3d");
         static Vec3<double> result;
         if (i > (args_.nItems()-3)) printf("Command::arg3d - Starting point too close to end of argument list.\n");
         result.set(args_[i]->item->asDouble(),args_[i+1]->item->asDouble(),args_[i+2]->item->asDouble());
-	dbgEnd(Debug::Calls,"Command::arg3d");
+	msg.exit("Command::arg3d");
         return result;
 }
 
 // Return arguments as Vec3<float>
 Vec3<float> Command::arg3f(int i)
 {
-	dbgBegin(Debug::Calls,"Command::arg3f");
+	msg.enter("Command::arg3f");
         static Vec3<float> result;
         if (i > (args_.nItems()-3)) printf("Command::arg3f - Starting point too close to end of argument list.\n");
         result.set(args_[i]->item->asFloat(),args_[i+1]->item->asFloat(),args_[i+2]->item->asFloat());
-	dbgEnd(Debug::Calls,"Command::arg3f");
+	msg.exit("Command::arg3f");
         return result;
 }
 
 // Return arguments as Vec3<int>
 Vec3<int> Command::arg3i(int i)
 {
-	dbgBegin(Debug::Calls,"Command::arg3i");
+	msg.enter("Command::arg3i");
 	static Vec3<int> result;
 	if (i > (args_.nItems()-3)) printf("Command::arg3i - Starting point too close to end of argument list.\n");
         result.set(args_[i]->item->asInteger(),args_[i+1]->item->asInteger(),args_[i+2]->item->asInteger());
-	dbgEnd(Debug::Calls,"Command::arg3i");
+	msg.exit("Command::arg3i");
 	return result;
 }
 
 // Create branch
 List<Command> *Command::createBranch()
 {
-	dbgBegin(Debug::Calls,"Command::createBranch");
+	msg.enter("Command::createBranch");
 	if (branch_ != NULL) printf("Command::createBranch <<<< Already has a branch >>>>\n");
 	branch_ = new List<Command>;
-	dbgEnd(Debug::Calls,"Command::createBranch");
+	msg.exit("Command::createBranch");
 	return branch_;
 }
 
 // Create branch
 bool Command::createFormat(const char *s, VariableList &vars, bool delimited)
 {
-	dbgBegin(Debug::Calls,"Command::create_format");
+	msg.enter("Command::create_format");
 	bool result = FALSE;
 	if (format_ != NULL) printf("Command::createBranch <<<< Already has a format >>>>\n");
 	else
@@ -329,14 +329,14 @@ bool Command::createFormat(const char *s, VariableList &vars, bool delimited)
 		format_ = new Format;
 		result = format_->create(s, vars, delimited);
 	}
-	dbgEnd(Debug::Calls,"Command::create_format");
+	msg.exit("Command::create_format");
 	return result;
 }
 
 // Set if condition test
 bool Command::setIfTest(const char *s)
 {
-	dbgBegin(Debug::Calls,"Command::setIfTest");
+	msg.enter("Command::setIfTest");
 	bool result = TRUE;
 	int n, m;
 	m = 0;
@@ -353,20 +353,20 @@ bool Command::setIfTest(const char *s)
 				m += 4;
 				break;
 			default:
-				msg(Debug::None, "Unrecognised character '%c' in 'if' condition\n", s[n]);
+				msg.print( "Unrecognised character '%c' in 'if' condition\n", s[n]);
 				result = FALSE;
 				break;
 		}
 	if (m >= IF_NITEMS) result = FALSE;
 	else ifTest_ = (IfTest) m;
-	dbgEnd(Debug::Calls,"Command::setIfTest");
+	msg.exit("Command::setIfTest");
 	return result;
 }
 
 // Evaluate condition
 bool Command::ifEvaluate()
 {
-	dbgBegin(Debug::Calls,"Command::ifEvaluate");
+	msg.enter("Command::ifEvaluate");
 	// Do all as comparisons as floats, except for equalities
 	bool result;
 	static Variable *v1, *v2;
@@ -386,7 +386,7 @@ bool Command::ifEvaluate()
 		d1 = v1->asDouble();
 		d2 = v2->asDouble();
 	}
-	msg(Debug::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), text_from_IC(ifTest_), v2->name(), v2->asCharacter());
+	msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), text_from_IC(ifTest_), v2->name(), v2->asCharacter());
 	// Do comparison
 	switch (ifTest_)
 	{
@@ -410,14 +410,14 @@ bool Command::ifEvaluate()
 			break;
 	}
 	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
-	dbgEnd(Debug::Calls,"Command::ifEvaluate");
+	msg.exit("Command::ifEvaluate");
 	return result;
 }
 
 // Add variables to command
 bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 {
-	dbgBegin(Debug::Calls,"Command::addVariables");
+	msg.enter("Command::addVariables");
 	bool required = TRUE;
 	int n, m, argcount, varcount;
 	Variable *var;
@@ -426,8 +426,8 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	// We don't care about too many variables being given if we want the whole line.
 	if (((parser.nArgs() - 1) > strlen(v)) && (v[0] != 'L'))
 	{
-		msg(Debug::None, "Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.nArgs()-1), cmd, strlen(v));
-		dbgEnd(Debug::Calls,"Command::addVariables");
+		msg.print( "Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.nArgs()-1), cmd, strlen(v));
+		msg.exit("Command::addVariables");
 		return FALSE;
 	}
 	argcount = 0;
@@ -445,8 +445,8 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 		{
 			if (required)
 			{
-				msg(Debug::None,"Command '%s' requires argument %i\n", cmd, argcount);
-				dbgEnd(Debug::Calls,"Command::addVariables");
+				msg.print("Command '%s' requires argument %i\n", cmd, argcount);
+				msg.exit("Command::addVariables");
 				return FALSE;
 			}
 			else break;	// No more arguments, so may as well quit.
@@ -474,7 +474,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -496,8 +496,8 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('='):
 				if (strcmp(arg,"=") != 0)
 				{
-					msg(Debug::None, "Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
-					dbgEnd(Debug::Calls,"Command::addVariables");
+					msg.print( "Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
+					msg.exit("Command::addVariables");
 					return FALSE;
 				}
 				args_.add(NULL);
@@ -523,7 +523,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -544,7 +544,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -560,7 +560,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				*/
 				if (parser.wasQuoted(argcount))
 				{
-					msg(Debug::None, "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
+					msg.print( "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
 					return FALSE;
 				}
 				else if (arg[0] == '$')
@@ -569,7 +569,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -577,7 +577,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else
 				{
-					msg(Debug::None, "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
+					msg.print( "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
 					return FALSE;
 				}
 				break;
@@ -585,14 +585,14 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('A'):
 				if (arg[0] != '$')
 				{
-					msg(Debug::None, "This argument (%s) must be a variable.\n", &arg[0]);
+					msg.print( "This argument (%s) must be a variable.\n", &arg[0]);
 					return FALSE;
 				}
 				// See if it has been declared
 				var = parent_->variables.get(&arg[1]);
 				if (var == NULL)
 				{
-					msg(Debug::None, "Variable '%s' has not been declared.\n", &arg[1]);
+					msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
 					return FALSE;
 				}
 				else args_.add(var);
@@ -613,7 +613,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				break;
 		}
 	}
-	dbgEnd(Debug::Calls,"Command::addVariables");
+	msg.exit("Command::addVariables");
 	return TRUE;
 }
 
@@ -725,7 +725,7 @@ Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
 // Add basic command
 bool CommandList::addCommand(CommandAction ca)
 {
-	dbgBegin(Debug::Calls,"CommandList::addCommand");
+	msg.enter("CommandList::addCommand");
 	Command *fn;;
 	CommandAction branchca;
 	Variable::VariableType vt;
@@ -777,7 +777,7 @@ bool CommandList::addCommand(CommandAction ca)
 			branchca = topBranchType();
 			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
 			{
-				msg(Debug::None,"Error: 'elseif' used without previous if/elseif.\n");
+				msg.print("Error: 'elseif' used without previous if/elseif.\n");
 				result = FALSE;
 				break;
 			}
@@ -799,7 +799,7 @@ bool CommandList::addCommand(CommandAction ca)
 			branchca = topBranchType();
 			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
 			{
-				msg(Debug::None,"Error: 'else' used without previous if/elseif.\n");
+				msg.print("Error: 'else' used without previous if/elseif.\n");
 				result = FALSE;
 				break;
 			}
@@ -844,7 +844,7 @@ bool CommandList::addCommand(CommandAction ca)
 		case (CA_END):
 			if (branchStack_.nItems() == 0)
 			{
-				msg(Debug::None,"CommandList::addCommand - 'end' does not end a block.\n");
+				msg.print("CommandList::addCommand - 'end' does not end a block.\n");
 				result = FALSE;
 				break;
 			}
@@ -887,17 +887,17 @@ bool CommandList::addCommand(CommandAction ca)
 	// Check variable assignment result
 	if (!varresult)
 	{
-		msg(Debug::None,"Error: Command '%s' was not given the correct variables.\n", CA_data[ca].keyword);
+		msg.print("Error: Command '%s' was not given the correct variables.\n", CA_data[ca].keyword);
 		result = FALSE;
 	}
-	dbgEnd(Debug::Calls,"CommandList::addCommand");
+	msg.exit("CommandList::addCommand");
 	return result;
 }
 
 // Cache script commands from line containing semicolon-separated commands
 bool CommandList::cacheLine(const char *s)
 {
-	dbgBegin(Debug::Calls,"CommandList::cacheLine");
+	msg.enter("CommandList::cacheLine");
 	// Use a local parser to split up the semi-colon'd line into individual commands
 	static Parser lines;
 	lines.getLinesDelim(s);
@@ -907,18 +907,18 @@ bool CommandList::cacheLine(const char *s)
 		parser.getArgsDelim(lines.argc(n), Parser::UseQuotes+Parser::SkipBlanks);
 		if (!cacheCommand())
 		{
-			dbgEnd(Debug::Calls,"CommandList::cacheLine");
+			msg.exit("CommandList::cacheLine");
 			return FALSE;
 		}
 	}
-	dbgEnd(Debug::Calls,"CommandList::cacheLine");
+	msg.exit("CommandList::cacheLine");
 	return TRUE;
 }
 
 // Cache command arguments in global Parser object
 bool CommandList::cacheCommand()
 {
-	dbgBegin(Debug::Calls,"CommandList::cacheCommand");
+	msg.enter("CommandList::cacheCommand");
 	CommandAction ca;
 	bool result = TRUE;
 	// Assume that the main parser object contains the data we require.
@@ -932,7 +932,7 @@ bool CommandList::cacheCommand()
 		vt = (v != NULL ? v->type() : Variable::nVariableTypes);
 		if (!addCommand( vt == Variable::CharacterVariable ? CA_LETCHAR : CA_LET2 ))
 		{
-			msg(Debug::None, "Error adding variable assignment command.\n");
+			msg.print( "Error adding variable assignment command.\n");
 			result = FALSE;
 		}
 	}
@@ -944,18 +944,18 @@ bool CommandList::cacheCommand()
 			// If addCommand() returns FALSE then we encountered an error
 			if (!addCommand(ca))
 			{
-				msg(Debug::None,"Error parsing command '%s'.\n", parser.argc(0));
-				msg(Debug::None,"Command usage is: %s %s\n", CA_data[ca].keyword, CA_data[ca].argText);
+				msg.print("Error parsing command '%s'.\n", parser.argc(0));
+				msg.print("Command usage is: %s %s\n", CA_data[ca].keyword, CA_data[ca].argText);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			msg(Debug::None,"Unrecognised command '%s'.\n", parser.argc(0));
+			msg.print("Unrecognised command '%s'.\n", parser.argc(0));
 			result = FALSE;
 		}
 	}
-	dbgEnd(Debug::Calls,"CommandList::cacheCommand");
+	msg.exit("CommandList::cacheCommand");
 	return result;
 }
 
@@ -1002,7 +1002,7 @@ int CommandList::readOptions()
 // Load commands from file
 bool CommandList::load(const char *filename)
 {
-	dbgBegin(Debug::Calls,"CommandList::load");
+	msg.enter("CommandList::load");
 	scriptFilename_ = filename;
 	ifstream cmdfile(filename,ios::in);
 	int success;
@@ -1014,8 +1014,8 @@ bool CommandList::load(const char *filename)
 		success = parser.getArgsDelim(&cmdfile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
-			msg(Debug::None,"CommandList::load - Error reading command file.\n");
-			dbgEnd(Debug::Calls,"CommandList::load");
+			msg.print("CommandList::load - Error reading command file.\n");
+			msg.exit("CommandList::load");
 			return FALSE;
 		}
 		else if (success == -1) break;
@@ -1023,7 +1023,7 @@ bool CommandList::load(const char *filename)
 		if (cacheCommand()) continue;
 		else
 		{
-			dbgEnd(Debug::Calls,"CommandList::load");
+			msg.exit("CommandList::load");
 			return FALSE;
 		}
 	}
@@ -1032,31 +1032,31 @@ bool CommandList::load(const char *filename)
 	if (itemsleft != 1)
 	{
 		printf("CommandList::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
-		dbgEnd(Debug::Calls,"CommandList::load");
+		msg.exit("CommandList::load");
 		return FALSE;
 	}
-	dbgEnd(Debug::Calls,"CommandList::load");
+	msg.exit("CommandList::load");
 	return TRUE;
 }
 
 // Set input file (pointer)
 bool CommandList::setInputFile(const char *sourcefile)
 {
-	dbgBegin(Debug::Calls,"CommandList::setInFile");
+	msg.enter("CommandList::setInFile");
 	if (inputFile_ != NULL) printf("CommandList::setInFile <<<< Inputfile already set >>>>\n");
         inputFile_ = new ifstream(sourcefile,ios::in);
 	filename_ = sourcefile;
-	dbgEnd(Debug::Calls,"CommandList::setInFile");
+	msg.exit("CommandList::setInFile");
 	return (!inputFile_->good() ? FALSE : TRUE);
 }
 
 // Set output file
 bool CommandList::setOutputFile(const char *destfile)
 {
-	dbgBegin(Debug::Calls,"CommandList::setOutputFile");
+	msg.enter("CommandList::setOutputFile");
 	outputFile_ = new ofstream(destfile,ios::out);
 	filename_ = destfile;
-	dbgEnd(Debug::Calls,"CommandList::setOutputFile");
+	msg.exit("CommandList::setOutputFile");
 	if (!outputFile_->good()) return FALSE;
 	else return TRUE;
 }
@@ -1064,7 +1064,7 @@ bool CommandList::setOutputFile(const char *destfile)
 // Close files
 void CommandList::closeFiles()
 {
-	dbgBegin(Debug::Calls,"CommandList::closeFiles");
+	msg.enter("CommandList::closeFiles");
 	if (inputFile_ != NULL)
 	{
 		inputFile_->close();
@@ -1077,7 +1077,7 @@ void CommandList::closeFiles()
 	}
 	inputFile_ = NULL;
 	outputFile_ = NULL;
-	dbgEnd(Debug::Calls,"CommandList::closeFiles");
+	msg.exit("CommandList::closeFiles");
 }
 
 // Execute command
@@ -1091,7 +1091,7 @@ int Command::execute(Command *&c)
 // Execute commands in command list
 bool CommandList::execute(ifstream *sourcefile)
 {
-	dbgBegin(Debug::Calls,"CommandList::execute");
+	msg.enter("CommandList::execute");
 	// Set alternative input file if one was supplied
 	if (sourcefile != NULL)
 	{
@@ -1105,7 +1105,7 @@ bool CommandList::execute(ifstream *sourcefile)
 	while (c != NULL)
 	{
 		// Run command and get return value
-		msg(Debug::Commands, "Commandlist executing command '%s'...\n",CA_data[c->command()].keyword);
+		msg.print(Messenger::Commands, "Commandlist executing command '%s'...\n",CA_data[c->command()].keyword);
 		switch (c->execute(c))
 		{
 			// Command succeeded - get following command
@@ -1137,7 +1137,7 @@ bool CommandList::execute(ifstream *sourcefile)
 				break;
 		}
 	}
-	dbgEnd(Debug::Calls,"CommandList::execute");
+	msg.exit("CommandList::execute");
 	return result;
 }
 
@@ -1197,7 +1197,7 @@ bool CommandList::createModelVariables(const char *base)
 // Set variables for model with specified prefix
 void CommandList::setModelVariables(const char *base, Model *m)
 {
-	dbgBegin(Debug::Calls,"CommandList::setModelVariables[const char*,Model*]");
+	msg.enter("CommandList::setModelVariables[const char*,Model*]");
 	if (m != NULL)
 	{
 		variables.set(base,"title",m->name());
@@ -1237,7 +1237,7 @@ void CommandList::setModelVariables(const char *base, Model *m)
 // 		variables.reset("cell.type","cell.ax","cell.ay","cell.az","cell.bx","cell.by","cell.bz","cell.cx","cell.cy","cell.cz","");
 // 		variables.reset("cell.a","cell.b","cell.c","cell.alpha","cell.beta","cell.gamma","cell.centrex","cell.centrey","cell.centrez","");
 // 	}
-	dbgEnd(Debug::Calls,"CommandList::setModelVariables");
+	msg.exit("CommandList::setModelVariables");
 }
 
 // Create model variables in current commandlist
@@ -1298,7 +1298,7 @@ bool CommandList::createAtomVariables(const char *base)
 // Set variable values for atom
 void CommandList::setAtomVariables(const char *varname, Atom *i)
 {
-	dbgBegin(Debug::Calls,"CommandList::setAtomVariables");
+	msg.enter("CommandList::setAtomVariables");
 	Vec3<double> v;
 	if (i != NULL)
 	{
@@ -1325,7 +1325,7 @@ void CommandList::setAtomVariables(const char *varname, Atom *i)
 		variables.set(varname,"vz",v.z);
 		variables.set(varname,"q",i->charge());
 	}
-	dbgEnd(Debug::Calls,"CommandList::setAtomVariables");
+	msg.exit("CommandList::setAtomVariables");
 }
 
 // Create pattern parameter variables
@@ -1354,7 +1354,7 @@ bool CommandList::createPatternVariables(const char *base)
 // Set variables for pattern
 void CommandList::setPatternVariables(const char *varname, Pattern *p)
 {
-	dbgBegin(Debug::Calls,"CommandList::setPatternVariables");
+	msg.enter("CommandList::setPatternVariables");
 	if (p != NULL)
 	{
 		variables.set(varname,"name",p->name());
@@ -1365,7 +1365,7 @@ void CommandList::setPatternVariables(const char *varname, Pattern *p)
 		variables.set(varname,"nangles",p->nAngles());
 		variables.set(varname,"ntorsions",p->nTorsions());
 	}
-	dbgEnd(Debug::Calls,"CommandList::setPatternVariables");
+	msg.exit("CommandList::setPatternVariables");
 }
 
 // Create pattern bound term variables
@@ -1407,7 +1407,7 @@ bool CommandList::createPatternBoundVariables(const char *base)
 // Set variables for PatternBound
 void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb)
 {
-	dbgBegin(Debug::Calls,"CommandList::setPatternBoundVariables");
+	msg.enter("CommandList::setPatternBoundVariables");
 	static ForcefieldParams ffp;
 	static ForcefieldBound *ffb;
 	static char parm[24];
@@ -1458,7 +1458,7 @@ void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb
 		}
 		
 	}
-	dbgEnd(Debug::Calls,"CommandList::setPatternBoundVariables");
+	msg.exit("CommandList::setPatternBoundVariables");
 }
 
 // Create atomtype parameter variables
@@ -1491,7 +1491,7 @@ bool CommandList::createAtomtypeVariables(const char *base)
 // Set variables for pattern
 void CommandList::setAtomtypeVariables(const char *varname, ForcefieldAtom *ffa)
 {
-	dbgBegin(Debug::Calls,"CommandList::setAtomtypeVariables");
+	msg.enter("CommandList::setAtomtypeVariables");
 	static char parm[24];
 	int i;
 	ForcefieldParams ffp;
@@ -1510,5 +1510,5 @@ void CommandList::setAtomtypeVariables(const char *varname, ForcefieldAtom *ffa)
 		variables.set(varname,"equiv",ffa->equivalent());
 		variables.set(varname,"form",VdwFunctions::VdwFunctions[ffa->vdwForm()].keyword);
 	}
-	dbgEnd(Debug::Calls,"CommandList::setAtomtypeVariables");
+	msg.exit("CommandList::setAtomtypeVariables");
 }

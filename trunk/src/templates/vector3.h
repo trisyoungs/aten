@@ -27,7 +27,7 @@
 
 #include "templates/matrix3.h"
 #include "templates/matrix4.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/constants.h"
 #include "base/mathfunc.h"
 #include <stdio.h>

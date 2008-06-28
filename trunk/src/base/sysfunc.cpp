@@ -23,7 +23,7 @@
 #include <sstream>
 #include "base/constants.h"
 #include "parse/parser.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "classes/variablelist.h"
 #include <math.h>
 #include <string.h>
@@ -224,7 +224,7 @@ const char *removePath(const char *s)
 // 				{
 // 					v = vars->get(&arg[1]);
 // 					a = (v == NULL ? 0.0 : v->asDouble());
-// 					if (v == NULL) msg(Debug::None,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
+// 					if (v == NULL) msg.print("Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
 // 				}
 // 				else a = atof(arg);
 // 				strcpy(arg,parser.argc(rightarg));
@@ -232,7 +232,7 @@ const char *removePath(const char *s)
 // 				{
 // 					v = vars->get(&arg[1]);
 // 					b = (v == NULL ? 0.0 : v->asDouble());
-// 					if (v == NULL) msg(Debug::None,"Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
+// 					if (v == NULL) msg.print("Warning: Unrecognised variable '%s' in expression - using zero...\n",&arg[1]);
 // 				}
 // 				else b = atof(arg);
 // 				switch (*c)

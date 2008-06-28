@@ -78,7 +78,7 @@ FormatNode* Format::nodes()
 // Set format node
 bool FormatNode::set(const char *s, VariableList &vlist)
 {
-	dbgBegin(Debug::Parse,"FormatNode::set");
+	msg.enter("FormatNode::set");
 	// Format of formatters is 'F%n.m': F = format quantity/variable, n.m = length,precision
 	int pos1, pos2;
 	static char specifier[512], len[32], pre[32];
@@ -111,7 +111,7 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 			pre[pos1-(pos2+1)] = '\0';
 		}
 	}
-	msg(Debug::Parse,"FormatNode::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
+	msg.print(Messenger::Parse,"FormatNode::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
 	// If we're given a variable, check that is has been declared
 	if (specifier[0] == '$')
 	{
@@ -131,14 +131,14 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 	precision_ = (pre[0] == '\0' ? 0 : atoi(pre));
 	// If the first character of len[0] is zero (or the first is '-' and the second is zero) set padding for integers to true
 	if (len[0] == '0' || ((len[0] == '-') && (len[1] == '0'))) zeroPadInteger_ = TRUE;
-	dbgEnd(Debug::Parse,"FormatNode::set");
+	msg.exit("FormatNode::set");
 	return TRUE;
 }
 
 // Create using delimited arguments
 bool Format::createDelimited(const char *s, VariableList &vlist)
 {
-	dbgBegin(Debug::Parse,"Format::createDelimited");
+	msg.enter("Format::createDelimited");
 	int n;
 	FormatNode *fn;
 	static Parser lp;
@@ -154,19 +154,19 @@ bool Format::createDelimited(const char *s, VariableList &vlist)
 		if (!fn->set(lp.argc(n), vlist))
 		{
 			printf("Failed to add format node '%s'.\n", lp.argc(n));
-			dbgEnd(Debug::Parse,"Format::createDelimited");
+			msg.exit("Format::createDelimited");
 			return FALSE;
 		}
 	}
-	//if (nfailed != 0) msg(Debug::None,"Warning : Format string contained %i unrecognised identifiers.\n",nfailed);
-	dbgEnd(Debug::Parse,"Format::createDelimited");
+	//if (nfailed != 0) msg.print("Warning : Format string contained %i unrecognised identifiers.\n",nfailed);
+	msg.exit("Format::createDelimited");
 	return TRUE;
 }
 
 // Create using character-by-character method
 bool Format::createExact(const char *s, VariableList &vlist)
 {
-	dbgBegin(Debug::Parse,"Format::createExact");
+	msg.enter("Format::createExact");
 	// Go through supplied string, converting variables as we go
 	static char text[512], varstr[512];
 	int nchars = 0, vchars = 0, n;
@@ -247,7 +247,7 @@ bool Format::createExact(const char *s, VariableList &vlist)
 		if (!fn->set(varstr, vlist))
 		{
 			printf("Failed to add format node '%s'.\n", varstr);
-			dbgEnd(Debug::Parse,"Format::createExact");
+			msg.exit("Format::createExact");
 			return FALSE;
 		}
 		// Reset vchars for the next cycle
@@ -270,11 +270,11 @@ bool Format::createExact(const char *s, VariableList &vlist)
 		if (!fn->set(varstr, vlist))
 		{
 			printf("Failed to add format node '%s'.\n", varstr);
-			dbgEnd(Debug::Parse,"Format::createExact");
+			msg.exit("Format::createExact");
 			return FALSE;
 		}
 	}	
-	dbgEnd(Debug::Parse,"Format::createExact");
+	msg.exit("Format::createExact");
 	return TRUE;
 }
 
@@ -288,7 +288,7 @@ bool Format::create(const char *s, VariableList &vars, bool delimited)
 const char *Format::createString()
 {
 	// Creates a formatted output string from the model supplied
-	dbgBegin(Debug::Parse,"Format::createString");
+	msg.enter("Format::createString");
 	static char result[8096], bit[1024], fmt[16];
 	static Variable *v;
 	result[0] = '\0';
@@ -327,9 +327,9 @@ const char *Format::createString()
 			default:
 				printf("Variables of type '%s' cannot be used in a format string.\n", Variable::variableType(v->type()));
 		}
-		msg(Debug::Parse,"Format:::createString - added [%s], format [%s]\n", bit, fmt);
+		msg.print(Messenger::Parse,"Format:::createString - added [%s], format [%s]\n", bit, fmt);
 		strcat(result,bit);
 	}
-	dbgEnd(Debug::Parse,"Format::createString");
+	msg.exit("Format::createString");
 	return result;
 }

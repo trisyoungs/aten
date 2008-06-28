@@ -35,11 +35,11 @@ int CommandData::function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj)
 // Print expression setup ('printexpression')
 int CommandData::function_CA_PRINTSETUP(Command *&c, Bundle &obj)
 {
-	msg(Debug::None,"Current Energy Setup:\n");
-	msg(Debug::None,"Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
-	msg(Debug::None,"       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
-	msg(Debug::None,"      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
-	msg(Debug::None,"             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
+	msg.print("Current Energy Setup:\n");
+	msg.print("Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
+	msg.print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
+	msg.print("      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
+	msg.print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
 	return CR_SUCCESS;
 }
 
@@ -52,7 +52,7 @@ int CommandData::function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj)
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
-		msg(Debug::None,"script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
+		msg.print("script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
 		return CR_FAIL;
 	}
 	f->execute(c->argc(1));

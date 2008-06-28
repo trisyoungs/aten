@@ -31,7 +31,7 @@ int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.rs == obj.m)
 	{
-		msg(Debug::None, "Current model does not appear to be a trajectory frame.\n");
+		msg.print( "Current model does not appear to be a trajectory frame.\n");
 		return CR_FAIL;
 	}
 	// Do various necessary calculations
@@ -56,7 +56,7 @@ int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekFirstFrame();
@@ -71,7 +71,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekLastFrame();
@@ -95,7 +95,7 @@ int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekNextFrame();
@@ -110,7 +110,7 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekPreviousFrame();
@@ -125,7 +125,7 @@ int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (obj.m->totalFrames() == 0)
 	{
-		msg(Debug::None,"No trajectory associated to model '%s'.\n",obj.m->name());
+		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
 	}
 	obj.m->seekFrame(c->argi(0));

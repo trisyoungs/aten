@@ -21,7 +21,7 @@
 
 #include "command/commands.h"
 #include "base/master.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "model/model.h"
 #include "methods/mc.h"
 
@@ -29,7 +29,7 @@
 int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	msg(Debug::None,"Performing disordered build for model '%s'\n", obj.m->name());
+	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
 	mc.setNCycles(c->argi(0));
 	mc.disorder(obj.m);
 	return CR_SUCCESS;
@@ -38,11 +38,11 @@ int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 // Print current component list ('listcomponents')
 int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 {
-	msg(Debug::None,"Current component specification:\n");
+	msg.print("Current component specification:\n");
 	Vec3<double> v1, v2;
 	char s[150];
-	msg(Debug::None,"                                                      Centre                   Size\n");
-	msg(Debug::None,"Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
+	msg.print("                                                      Centre                   Size\n");
+	msg.print("Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
 	for (Model *m = master.models(); m != NULL; m = m->next)
 	{
 		v1 = m->area.centre();
@@ -57,7 +57,7 @@ int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 			ComponentRegion::regionShape(m->area.shape()),
 			v1.x, v1.y, v1.z, v2.x, v2.y, v2.z,
 			(m->area.allowOverlap() ? "Yes" : "No"));
-		msg(Debug::None,s);
+		msg.print(s);
 	}
 	return CR_SUCCESS;
 }

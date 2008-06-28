@@ -59,15 +59,15 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 // Finalise GUI
 void AtenForcefieldEditor::finaliseUi()
 {
-	dbgBegin(Debug::Calls,"AtenForcefieldEditor::finaliseUi");
-	dbgEnd(Debug::Calls,"AtenForcefieldEditor::finaliseUi");
+	msg.enter("AtenForcefieldEditor::finaliseUi");
+	msg.exit("AtenForcefieldEditor::finaliseUi");
 }
 
 // Set controls
 void AtenForcefieldEditor::setControls()
 {
-	dbgBegin(Debug::Calls,"AtenForcefieldEditor::setControls");
-	dbgEnd(Debug::Calls,"AtenForcefieldEditor::setControls");
+	msg.enter("AtenForcefieldEditor::setControls");
+	msg.exit("AtenForcefieldEditor::setControls");
 }
 
 // Populate widget with specified forcefield

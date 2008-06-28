@@ -27,7 +27,7 @@ int CommandData::function_CA_ERROR(Command *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
-	else msg(Debug::None,"%s\n",fmt->createString());
+	else msg.print("%s\n",fmt->createString());
 	return CR_EXITWITHERROR;
 }
 
@@ -36,7 +36,7 @@ int CommandData::function_CA_PRINT(Command *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
-	else msg(Debug::None,"%s\n",fmt->createString());
+	else msg.print("%s\n",fmt->createString());
 	return CR_SUCCESS;
 }
 
@@ -45,7 +45,7 @@ int CommandData::function_CA_VERBOSE(Command *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'verbose' command.\n");
-	else msg(Debug::Verbose,"%s\n",fmt->createString());
+	else msg.print(Messenger::Verbose,"%s\n",fmt->createString());
 	return CR_SUCCESS;
 }
 
@@ -54,6 +54,6 @@ int CommandData::function_CA_WARN(Command *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
-	else msg(Debug::None,"Warning: %s\n",fmt->createString());
+	else msg.print("Warning: %s\n",fmt->createString());
 	return CR_SUCCESS;
 }

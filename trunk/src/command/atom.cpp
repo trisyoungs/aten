@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/master.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/elements.h"
 #include "classes/forcefield.h"
 #include "parse/filter.h"
@@ -55,7 +55,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg(Debug::None,"Type '%s' is not a valid one to pass to 'newatom'.\n", Variable::variableType(c->argt(0)));
+			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", Variable::variableType(c->argt(0)));
 			el = 0;
 			break;
 	}
@@ -99,13 +99,13 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg(Debug::None,"Type '%s' is not a valid one to pass to CA_ADDATOM.\n", Variable::variableType(c->argt(0)));
+			msg.print("Type '%s' is not a valid one to pass to CA_ADDATOM.\n", Variable::variableType(c->argt(0)));
 			el = 0;
 			break;
 	}
 	// Check for presence of unit cell
 	Vec3<double> r = c->arg3d(1);
-	if (obj.rs->cell()->type() == Cell::NoCell) msg(Debug::None,"Warning: No unit cell present - atom added with supplied coordinates.\n");
+	if (obj.rs->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
 	else r = obj.rs->cell()->fracToReal(r);
 	master.current.i = obj.rs->addAtom(el, r);
 	return CR_SUCCESS;
@@ -117,7 +117,7 @@ int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (c->argt(1) != Variable::AtomVariable)
 	{
-		msg(Debug::None, "Second argument to 'getatom' must be a variable of type 'Atom'.\n");
+		msg.print( "Second argument to 'getatom' must be a variable of type 'Atom'.\n");
 		return CR_FAIL;
 	}
 	Atom *i = obj.rs->atom(c->argi(0)-1);

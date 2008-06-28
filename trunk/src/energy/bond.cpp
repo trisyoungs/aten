@@ -30,7 +30,7 @@
 // Calculate bond energy of pattern (or molecule in pattern)
 void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
-	dbgBegin(Debug::Calls,"Pattern::bondEnergy");
+	msg.enter("Pattern::bondEnergy");
 	int i, j, m1, aoff;
 	//static Vec3<double> mim_i;
 	static double forcek, eq, rij, energy, d, expo;
@@ -52,7 +52,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 			switch (pb->data()->bondStyle())
 			{
 				case (BondFunctions::None):
-					msg(Debug::None,"Warning: No function is specified for bond energy %i-%i.\n", i, j);
+					msg.print("Warning: No function is specified for bond energy %i-%i.\n", i, j);
 					break;
 				case (BondFunctions::Constraint):
 					// U = 0.5 * forcek * (r - eq)**2
@@ -87,7 +87,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 					energy += d * expo * expo;
 					break;
 				default:
-					msg(Debug::None, "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
+					msg.print( "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
 					break;
 			}
 		}
@@ -95,13 +95,13 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 	}
 	// Increment energy for pattern
 	estore->add(Energy::BondEnergy,energy,id_);
-	dbgEnd(Debug::Calls,"Pattern::bondEnergy");
+	msg.exit("Pattern::bondEnergy");
 }
 
 // Calculate bond forces in pattern
 void Pattern::bondForces(Model *srcmodel)
 {
-	dbgBegin(Debug::Calls,"Pattern::bondForcess");
+	msg.enter("Pattern::bondForcess");
 	int i, j, m1, aoff;
 	static Vec3<double> mim_i, fi;
 	static double forcek, eq, rij, d, expo, du_dr;
@@ -124,7 +124,7 @@ void Pattern::bondForces(Model *srcmodel)
 			switch (pb->data()->bondStyle())
 			{
 				case (BondFunctions::None):
-					msg(Debug::None,"Warning: No function is specified for bond force %i-%i.\n", i, j);
+					msg.print("Warning: No function is specified for bond force %i-%i.\n", i, j);
 					du_dr = 0.0;
 					break;
 				case (BondFunctions::Constraint):
@@ -156,7 +156,7 @@ void Pattern::bondForces(Model *srcmodel)
 					du_dr = -2.0 * d * forcek * expo * (expo - 1.0);
 					break;
 				default:
-					msg(Debug::None, "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
+					msg.print( "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondStyle()].name);;
 					break;
 			}
 			// Calculate forces
@@ -166,5 +166,5 @@ void Pattern::bondForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(Debug::Calls,"Pattern::bondForcess");
+	msg.exit("Pattern::bondForcess");
 }

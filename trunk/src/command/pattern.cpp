@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/master.h"
 #include "model/model.h"
 #include "classes/pattern.h"

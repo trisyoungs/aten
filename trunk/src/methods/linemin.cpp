@@ -32,7 +32,7 @@ LineMinimiser::LineMinimiser()
 void LineMinimiser::gradientMove(Model *srcmodel, Model *destmodel, double delta)
 {
 	// Generate a new set of coordinates in destmodel following the normalised gradient vector present in srcmodel, with the stepsize given
-	dbgBegin(Debug::Calls,"LineMinimiser::gradientMove");
+	msg.enter("LineMinimiser::gradientMove");
 	int i;
 	Atom **srcatoms = srcmodel->atomArray();
 	Atom **destatoms = destmodel->atomArray();
@@ -42,13 +42,13 @@ void LineMinimiser::gradientMove(Model *srcmodel, Model *destmodel, double delta
 		destatoms[i]->r().y = srcatoms[i]->r().y + srcatoms[i]->f().y * delta;
 		destatoms[i]->r().z = srcatoms[i]->r().z + srcatoms[i]->f().z * delta;
 	}
-	dbgEnd(Debug::Calls,"LineMinimiser::gradientMove");
+	msg.exit("LineMinimiser::gradientMove");
 }
 
 // Line minimise supplied model along gradient vector 
 double LineMinimiser::lineMinimise(Model *srcmodel)
 {
-	dbgBegin(Debug::Calls,"LineMinimiser::lineMinimise");
+	msg.enter("LineMinimiser::lineMinimise");
 	double enew, ecurrent, bound[3], energy[3], newmin, a, b, b10, b12;
 	Model destmodel;
 	bool failed, leftbound;
@@ -98,7 +98,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 		bound[2] = bound[1];
 		bound[1] = enew;
 	}
-	msg(Debug::Verbose,"Initial bounding values/energies = %f (%f) %f (%f) %f (%f)\n",bound[0],energy[0],bound[1],energy[1],bound[2],energy[2]);
+	msg.print(Messenger::Verbose,"Initial bounding values/energies = %f (%f) %f (%f) %f (%f)\n",bound[0],energy[0],bound[1],energy[1],bound[2],energy[2]);
 // 	printf("START OF LINEMIN:\n");
 // 	for (int n=-20; n<=20; n++)
 // 	{
@@ -205,7 +205,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 		}
 	} while (fabs(bound[0]-bound[2]) > (2.0 * tolerance_));
 	//printf("Final bounding values are %f %f %f\n",bound[0],bound[1],bound[2]);
-	dbgEnd(Debug::Calls,"LineMinimiser::minimise");
+	msg.exit("LineMinimiser::minimise");
 	return energy[1];
 }
 

@@ -20,18 +20,18 @@
 */
 
 #include "command/commandlist.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/master.h"
 #include "gui/gui.h"
 
 // Toggle debug modes
 int CommandData::function_CA_DEBUG(Command *&c, Bundle &obj)
 {
-	Debug::DebugMode dm = Debug::debugMode(c->argc(0));
-	if (dm != Debug::nDebugModes)
+	Messenger::OutputType ot = Messenger::outputType(c->argc(0));
+	if (ot != Messenger::nOutputTypes)
 	{
 		// Check to see if level is already active
-		Debug::isDebugActive(dm) ? Debug::removeDebug(dm) : Debug::addDebug(dm);
+		msg.isOutputActive(ot) ? msg.removeOutputType(ot) : msg.addOutputType(ot);
 	}
 	else return CR_FAIL;
 	return CR_SUCCESS;
@@ -57,9 +57,9 @@ int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 int CommandData::function_CA_HELP(Command *&c, Bundle &obj)
 {
 	CommandAction ca = CA_from_text(c->argc(0));
-	if (ca == CA_NITEMS) msg(Debug::None,"help: Unrecognised command '%s'.\n",c->argc(0));
-	else if (CA_data[ca].hasArguments()) msg(Debug::None,"help:  %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].syntax);
-	else msg(Debug::None,"help:  %s %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].argText, CA_data[ca].syntax);
+	if (ca == CA_NITEMS) msg.print("help: Unrecognised command '%s'.\n",c->argc(0));
+	else if (CA_data[ca].hasArguments()) msg.print("help:  %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].syntax);
+	else msg.print("help:  %s %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].argText, CA_data[ca].syntax);
 	return CR_SUCCESS;
 }
 

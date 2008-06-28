@@ -30,7 +30,7 @@
 void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	// Calculate the energy of the torsions in this pattern with coordinates from *xcfg
-	dbgBegin(Debug::Calls,"Pattern::torsionEnergy");
+	msg.enter("Pattern::torsionEnergy");
 	int n,i,j,k,l,aoff,m1;
 	static double k0, k1, k2, k3, k4, eq, phi, energy, period, s;
 	PatternBound *pb;
@@ -53,7 +53,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 			switch (pb->data()->torsionStyle())
 			{
 				case (TorsionFunctions::None):
-					msg(Debug::None,"Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
+					msg.print("Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
 					break;
 				case (TorsionFunctions::Cosine): 
 					// U(phi) = forcek * (1 + s*cos(period*phi - eq))
@@ -101,7 +101,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					energy += 0.5 * k1 * (1.0 - cos(n*(phi - eq)));
 					break;
 				default:
-					msg(Debug::None, "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
+					msg.print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
 					break;
 			}
 			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->atomId(0),pb->atomId(1),pb->atomId(2),pb->atomId(3), phi,energy);
@@ -111,7 +111,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 	// Increment energy for pattern
 	estore->add(Energy::TorsionEnergy,energy,id_);
 	//estore->torsion[id] += energy;
-	dbgEnd(Debug::Calls,"Pattern::torsionEnergy");
+	msg.exit("Pattern::torsionEnergy");
 }
 
 // Returns a unit vector in the specified direction
@@ -146,7 +146,7 @@ Mat3<double> make_cp_mat(Vec3<double> *v)
 void Pattern::torsionForces(Model *srcmodel)
 {
 	// Calculate force contributions from the torsions in this pattern with coordinates from *xcfg
-	dbgBegin(Debug::Calls,"Pattern::torsionForces");
+	msg.enter("Pattern::torsionForces");
 	int n,i,j,k,l,aoff,m1;
 	static Vec3<double> rij, rkj, rlk, xpj, xpk, dcos_dxpj, dcos_dxpk, temp;
 	static Mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
@@ -221,7 +221,7 @@ void Pattern::torsionForces(Model *srcmodel)
 			switch (pb->data()->torsionStyle())
 			{
 				case (TorsionFunctions::None):
-					msg(Debug::None,"Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
+					msg.print("Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
 					du_dphi = 0.0;
 					break;
 				case (TorsionFunctions::Cosine): 
@@ -298,5 +298,5 @@ void Pattern::torsionForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(Debug::Calls,"Pattern::torsionForces");
+	msg.exit("Pattern::torsionForces");
 }

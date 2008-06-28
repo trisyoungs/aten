@@ -35,13 +35,13 @@
 void Forcefield::generateVdw(Atom *i)
 {
 	// Simplest of all generation routines - creates the params() data for VDW interactions.
-	dbgBegin(Debug::Calls,"Forcefield::generateVdw");
+	msg.enter("Forcefield::generateVdw");
 	double sigma, epsilon, r0, d0;
 	ForcefieldAtom *ffi = i->type();
 	switch (rules_)
 	{
 		case (Rules::None):
-			msg(Debug::None,"Error - tried to generate VDW parameters for a forcefield that has no rules.\n");
+			msg.print("Error - tried to generate VDW parameters for a forcefield that has no rules.\n");
 			break;
 		case (Rules::Uff):
 			// UFF VDW types are just the third [2] and fourth [3] data (for simple LJ)
@@ -51,7 +51,7 @@ void Forcefield::generateVdw(Atom *i)
 			ffi->params().data[VdwFunctions::LjEpsilon] = epsilon * 0.25;
 			ffi->params().data[VdwFunctions::LjSigma] = sigma;
 			ffi->params().data[VdwFunctions::LjN] = 2.0;
-			msg(Debug::Verbose,"UFF LJ    : sigma, epsilon, n = %8.4f %8.4f 2.0\n", sigma, epsilon);
+			msg.print(Messenger::Verbose,"UFF LJ    : sigma, epsilon, n = %8.4f %8.4f 2.0\n", sigma, epsilon);
 			break;
 		case (Rules::DreidingLJ):
 			r0 = ffi->generator(2);
@@ -59,12 +59,12 @@ void Forcefield::generateVdw(Atom *i)
 			ffi->setVdwForm(VdwFunctions::LjAB);
 			ffi->params().data[VdwFunctions::LjA] = d0 * pow(r0,12.0);
 			ffi->params().data[VdwFunctions::LjB] = 2.0 * d0 * pow(r0,6.0);
-			msg(Debug::Verbose,"Dreiding LJ (ljab) : A, B, %8.4f %8.4f\n", ffi->params().data[VdwFunctions::LjA], ffi->params().data[VdwFunctions::LjB]);
+			msg.print(Messenger::Verbose,"Dreiding LJ (ljab) : A, B, %8.4f %8.4f\n", ffi->params().data[VdwFunctions::LjA], ffi->params().data[VdwFunctions::LjB]);
 			break;
 		case (Rules::DreidingX6):
 			break;
 	}
-	dbgEnd(Debug::Calls,"Forcefield::generateVdw");
+	msg.exit("Forcefield::generateVdw");
 }
 
 // Generate bond params
@@ -72,7 +72,7 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 {
 	// Creates bond forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
-	dbgBegin(Debug::Calls,"Forcefield::generateBond");
+	msg.enter("Forcefield::generateBond");
 	static double k, ri, rj, sumr, chii, chij, rBO, chi, rEN, Zi, Zj;
 	ForcefieldAtom *ffi = i->type();
 	ForcefieldAtom *ffj = j->type();
@@ -81,7 +81,7 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 	switch (rules_)
 	{
 		case (Rules::None):
-			msg(Debug::None,"Error - tried to generate bond parameters for a forcefield that has no rules.\n");
+			msg.print("Error - tried to generate bond parameters for a forcefield that has no rules.\n");
 			break;
 		case (Rules::Uff):
 			// UFF Harmonic Bond Generator
@@ -104,7 +104,7 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			newbond->setBondStyle(BondFunctions::Harmonic);
 			newbond->params().data[BondFunctions::HarmonicEq] = sumr + rBO - rEN;
 			newbond->params().data[BondFunctions::HarmonicK] = k;
-			msg(Debug::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
+			msg.print(Messenger::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
@@ -116,10 +116,10 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			newbond->setBondStyle(BondFunctions::Harmonic);
 			newbond->params().data[BondFunctions::HarmonicEq] = ri + rj - 0.01;
 			newbond->params().data[BondFunctions::HarmonicK] = k;
-			msg(Debug::Verbose,"Dreiding Bond (harm) : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
+			msg.print(Messenger::Verbose,"Dreiding Bond (harm) : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
 			break;
 	}
-	dbgEnd(Debug::Calls,"Forcefield::generateBond");
+	msg.exit("Forcefield::generateBond");
 	return newbond;
 }
 
@@ -128,7 +128,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 {
 	// Creates angle forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
-	dbgBegin(Debug::Calls,"Forcefield::generateAngle");
+	msg.enter("Forcefield::generateAngle");
 	double ri, rj, rk, rij, rjk, rBO, rEN, chii, chij, chik, chi, rik2, rik5, Zi, Zk, beta, forcek, eq;
 	double c0, c1, c2;
 	int n;
@@ -140,7 +140,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 	switch (rules_)
 	{
 		case (Rules::None):
-			msg(Debug::None,"Error - tried to generate angle parameters for a forcefield that has no rules.\n");
+			msg.print("Error - tried to generate angle parameters for a forcefield that has no rules.\n");
 			break;
 		case (Rules::Uff):
 			// UFF Cosine Angle Generator
@@ -187,7 +187,7 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			newangle->params().data[AngleFunctions::CosineEq] = 0.0;
 			if (n == 1) newangle->params().data[AngleFunctions::CosineS] = 1.0;
 			else newangle->params().data[AngleFunctions::CosineS] = -1.0;
-			msg(Debug::Verbose,"UFF Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = 0.0, s = %f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->params().data[AngleFunctions::CosineS], n);
+			msg.print(Messenger::Verbose,"UFF Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = 0.0, s = %f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->params().data[AngleFunctions::CosineS], n);
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
@@ -202,18 +202,18 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 				newangle->params().data[AngleFunctions::CosineK] = forcek;
 				newangle->params().data[AngleFunctions::CosineEq] = 0.0;
 				newangle->params().data[AngleFunctions::CosineN] = 1.0;
-				msg(Debug::Verbose,"Dreiding Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = 1\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq);
+				msg.print(Messenger::Verbose,"Dreiding Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = 1\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq);
 			}
 			else
 			{
 				newangle->setAngleStyle(AngleFunctions::HarmonicCosine);
 				newangle->params().data[AngleFunctions::HarmonicCosineK] = forcek / (sin(eq) * sin(eq));
 				newangle->params().data[AngleFunctions::HarmonicCosineEq] = eq;
-				msg(Debug::Verbose,"Dreiding Angle (harmcos) : %s-%s-%s - forcek = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), newangle->params().data[AngleFunctions::HarmonicCosineK], eq);
+				msg.print(Messenger::Verbose,"Dreiding Angle (harmcos) : %s-%s-%s - forcek = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), newangle->params().data[AngleFunctions::HarmonicCosineK], eq);
 			}
 			break;
 	}
-	dbgEnd(Debug::Calls,"Forcefield::generateAngle");
+	msg.exit("Forcefield::generateAngle");
 	return newangle;
 }
 
@@ -222,7 +222,7 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 {
 	// Creates torsion forcefield data for the specified atom types.
 	// No check is performed to see if similar data has already been generated.
-	dbgBegin(Debug::Calls,"Forcefield::generateTorsion");
+	msg.enter("Forcefield::generateTorsion");
 	int hyb1, hyb2, group1, group2;
 	double forcek, vj, vk, n, eq;
 	Atom *sp2, *sp3;
@@ -234,7 +234,7 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 	switch (rules_)
 	{
 		case (Rules::None):
-			msg(Debug::None,"Error - tried to generate torsion parameters for a forcefield that has no rules.\n");
+			msg.print("Error - tried to generate torsion parameters for a forcefield that has no rules.\n");
 			break;
 		case (Rules::Uff):
 			// UFF Torsions
@@ -307,7 +307,7 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			newtorsion->params().data[TorsionFunctions::CosCosK] = forcek;
 			newtorsion->params().data[TorsionFunctions::CosCosN] = n;
 			newtorsion->params().data[TorsionFunctions::CosCosEq] = eq;
-			msg(Debug::Verbose,"UFF Torsion (coscos) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
+			msg.print(Messenger::Verbose,"UFF Torsion (coscos) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
@@ -392,9 +392,9 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			newtorsion->params().data[TorsionFunctions::DreidingEq] = eq;
 			newtorsion->params().data[TorsionFunctions::DreidingEScale] = 1.0;
 			newtorsion->params().data[TorsionFunctions::DreidingVScale] = 1.0;
-			msg(Debug::Verbose,"Dreiding Torsion (dreiding) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
+			msg.print(Messenger::Verbose,"Dreiding Torsion (dreiding) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
 			break;
 	}
-	dbgEnd(Debug::Calls,"Forcefield::generateTorsion");
+	msg.exit("Forcefield::generateTorsion");
 	return newtorsion;
 }

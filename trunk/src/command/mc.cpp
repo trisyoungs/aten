@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "methods/mc.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 
 // Sets acceptance energy for moves ('mc accept <move> <energy>')
 int CommandData::function_CA_MCACCEPT(Command *&c, Bundle &obj)
@@ -62,13 +62,13 @@ int CommandData::function_CA_MCNTRIALS(Command *&c, Bundle &obj)
 // Prints the current MC params ('printmc')
 int CommandData::function_CA_PRINTMC(Command *&c, Bundle &obj)
 {
-	msg(Debug::None,"Current Monte Carlo Parameters are:\n");
-	msg(Debug::None,"Move        Allowed  NTrials  MaxStep   EAccept :\n");
+	msg.print("Current Monte Carlo Parameters are:\n");
+	msg.print("Move        Allowed  NTrials  MaxStep   EAccept :\n");
 	MonteCarlo::MoveType mt;
 	for (int n=0; n<MonteCarlo::nMoveTypes; n++)
 	{
 		mt = (MonteCarlo::MoveType) n;
-		msg(Debug::None,"%11s   %3s   %4i   %8.3f   %8.2e\n", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
+		msg.print("%11s   %3s   %4i   %8.3f   %8.2e\n", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
 	}
 	return CR_SUCCESS;
 }

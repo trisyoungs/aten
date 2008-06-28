@@ -157,7 +157,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Monte Carlo energy minimisation.
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
-	dbgBegin(Debug::Calls,"MonteCarlo::minimise");
+	msg.enter("MonteCarlo::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats, prog;
 	char s[256], t[32];
 	double enew, ecurrent, currentVdwEnergy, currentElecEnergy, elast, phi, theta;
@@ -168,10 +168,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
-	msg(Debug::None,"Creating expression for target model...\n");
+	msg.print("Creating expression for target model...\n");
         if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
 	{
-		dbgEnd(Debug::Calls,"MonteCarlo::minimise");
+		msg.exit("MonteCarlo::minimise");
 		return FALSE;
 	}
 
@@ -182,15 +182,15 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Create ratio array (not per-pattern, just per move type)
 	createRatioArray(1);
 
-	msg(Debug::None,"Beginning Monte Carlo minimise...\n\n");
-	msg(Debug::None," Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
+	msg.print("Beginning Monte Carlo minimise...\n\n");
+	msg.print(" Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
 
 	// Calculate initial reference energy
 	ecurrent = srcmodel->totalEnergy(srcmodel);
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.elec();
 	elast = ecurrent;
-	msg(Debug::None,"       %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
+	msg.print("       %13.6e               %13.6e %13.6e\n", ecurrent,  currentVdwEnergy, currentElecEnergy);
 
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
@@ -289,10 +289,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				strcat(s,t);
 			}
 			strcat(s,"\n");
-			msg(Debug::None,s);
-			//msg(Debug::None," %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
-			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg(Debug::None," %3i",int(acceptanceRatio_[0][n]*100.0));
-			//msg(Debug::None,"\n");
+			msg.print(s);
+			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy);
+			//for (n=0; n<MonteCarlo::nMoveTypes; n++) msg.print(" %3i",int(acceptanceRatio_[0][n]*100.0));
+			//msg.print("\n");
 		}
 		elast = ecurrent;
 
@@ -306,7 +306,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Finalise
 	srcmodel->logChange(Change::CoordinateLog);
 
-	dbgEnd(Debug::Calls,"MonteCarlo::minimise");
+	msg.exit("MonteCarlo::minimise");
 	return TRUE;
 }
 
@@ -314,7 +314,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 bool MonteCarlo::disorder(Model *destmodel)
 {
 	// Monte Carlo Insertion
-	dbgBegin(Debug::Calls,"MonteCarlo::disorder");
+	msg.enter("MonteCarlo::disorder");
 	int n, m, cycle, move, mol, nOldAtoms, nOldPatterns;
 	int patternNMols, prog;
 	char s[256], t[32];
@@ -335,10 +335,10 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
-	msg(Debug::None,"Creating expression for target model...\n");
+	msg.print("Creating expression for target model...\n");
         if (!destmodel->createExpression())
 	{
-		dbgEnd(Debug::Calls,"MonteCarlo::disorder");
+		msg.exit("MonteCarlo::disorder");
 		return FALSE;
 	}
 	nOldPatterns = destmodel->nPatterns();
@@ -348,7 +348,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	destmodel->setPatternsFixed(destmodel->nPatterns());
 
 	// Before we add in the molecule copies, check that we can create expressions for each component (and build reflist)
-	msg(Debug::None,"Checking component models...\n");
+	msg.print("Checking component models...\n");
 	for (c = master.models(); c != NULL; c = c->next)
 	{
 		// Check that this model is a required component
@@ -358,8 +358,8 @@ bool MonteCarlo::disorder(Model *destmodel)
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
 		if (!c->createExpression())
 		{
-			msg(Debug::None,"Failed to create expression for component model '%s'.\n", c->name());
-			dbgEnd(Debug::Calls,"MonteCarlo::disorder");
+			msg.print("Failed to create expression for component model '%s'.\n", c->name());
+			msg.exit("MonteCarlo::disorder");
 			return FALSE;
 		}
 	}
@@ -367,13 +367,13 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Check that there were actually components specified
 	if (components.nItems() == 0)
 	{
-		msg(Debug::None,"No components have been specified for insertion into the model.\n");
-		dbgEnd(Debug::Calls,"MonteCarlo::disorder");
+		msg.print("No components have been specified for insertion into the model.\n");
+		msg.exit("MonteCarlo::disorder");
 		return FALSE;
 	}
 
 	// Autocreate expressions for component models, paste copies in to the target model, and then add a corresponding pattern node.
-	msg(Debug::None,"Preparing destination model...\n");
+	msg.print("Preparing destination model...\n");
 	for (ri = components.first(); ri != NULL; ri = ri->next)
 	{
 		c = ri->item;
@@ -391,17 +391,17 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Create master expression for the new (filled) model
 	if (!destmodel->createExpression())
 	{
-		msg(Debug::None,"Couldn't create master expression for destination model.\n");
+		msg.print("Couldn't create master expression for destination model.\n");
 		return FALSE;
 	}
 
 	// Set starting populations of patterns, add atom space to target model, and print out pattern list info.
-	msg(Debug::None,"Pattern info for insertion to model '%s':\n", destmodel->name());
-	msg(Debug::None,"  ID  nmols  atoms  starti  finali  name\n");
+	msg.print("Pattern info for insertion to model '%s':\n", destmodel->name());
+	msg.print("  ID  nmols  atoms  starti  finali  name\n");
 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
 		// Set nmols, starti, endi, startatom and endatom in the pattern
-		msg(Debug::None,"  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMols(),p->nAtoms(),
+		msg.print("  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMols(),p->nAtoms(),
 			p->startAtom(),p->startAtom() + p->totalAtoms(),p->name());
 	}
 
@@ -413,7 +413,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	for (n = nOldAtoms; n < destmodel->nAtoms(); n++) modelAtoms[n]->setHidden(TRUE);
 
 	// Create a backup model
-	msg(Debug::None,"Preparing workspace for maximum of %i atoms...\n", destmodel->nAtoms());
+	msg.print("Preparing workspace for maximum of %i atoms...\n", destmodel->nAtoms());
 	Model bakmodel;
 	bakmodel.copy(destmodel);
 
@@ -432,22 +432,22 @@ bool MonteCarlo::disorder(Model *destmodel)
 	*/
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern
-	msg(Debug::None,"Beginning Monte Carlo insertion...\n\n");
-	msg(Debug::None," Step     Energy        Delta          VDW          Elec         Model    N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
+	msg.print("Beginning Monte Carlo insertion...\n\n");
+	msg.print(" Step     Energy        Delta          VDW          Elec         Model    N     Nreq   T%%  R%%  Z%%  I%%  D%%\n");
 	// Calculate initial reference energies
 	ecurrent = destmodel->totalEnergy(destmodel);
 	currentVdwEnergy = destmodel->energy.vdw();
 	currentElecEnergy = destmodel->energy.elec();
 
 	elast = ecurrent;
-	msg(Debug::None," %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
+	msg.print(" %-5i %13.6e %13s %13.6e %13.6e \n", 0, ecurrent, "     ---     ", destmodel->energy.vdw(), destmodel->energy.elec());
 
 	// Loop over MC cycles
 	if (gui.exists()) gui.progressCreate("Building disordered system", nCycles_ * components.nItems() * MonteCarlo::nMoveTypes);
 	prog = 0;
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
-		msg(Debug::Verbose,"Begin cycle %i...\n",cycle);
+		msg.print(Messenger::Verbose,"Begin cycle %i...\n",cycle);
 		done = TRUE;
 
 		// Loop over component models searching for ones that are to be added to the target model
@@ -462,15 +462,15 @@ bool MonteCarlo::disorder(Model *destmodel)
 			// Get pointers to variables
 			p = c->componentPattern();
 			r = &c->area;
-			msg(Debug::Verbose,"Working on pattern '%s'\n",p->name());
+			msg.print(Messenger::Verbose,"Working on pattern '%s'\n",p->name());
 			// If the pattern is fixed, move on
 			if (p->isFixed())
 			{
 				prog += MonteCarlo::nMoveTypes;
-				msg(Debug::Verbose,"Pattern '%s' is fixed.\n",p->name());
+				msg.print(Messenger::Verbose,"Pattern '%s' is fixed.\n",p->name());
 				continue;
 			}
-			msg(Debug::Verbose,"Pattern region is '%s'.\n", ComponentRegion::regionShape(r->shape()));
+			msg.print(Messenger::Verbose,"Pattern region is '%s'.\n", ComponentRegion::regionShape(r->shape()));
 
 			// Loop over MC moves in reverse order so we do creation / destruction first
 			for (move=MonteCarlo::Delete; move>-1; move--)
@@ -494,10 +494,10 @@ bool MonteCarlo::disorder(Model *destmodel)
 						// New molecule
 						case (MonteCarlo::Insert):
 							// Check if we've already filled as many as requested
-							msg(Debug::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
+							msg.print(Messenger::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
 							if (patternNMols == p->nExpectedMols()) continue;
 							// Paste a new molecule into the working configuration
-							msg(Debug::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
+							msg.print(Messenger::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
 							//clip.paste_to_model(destmodel,p,patternNMols);
 							// Increase nmols for pattern and natoms for config
 							mol = patternNMols;		// Points to new molecule, since m-1
@@ -561,7 +561,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 					deltaMoleculeEnergy = enew - referenceMoleculeEnergy;
 					deltaVdwEnergy = destmodel->energy.vdw() - referenceVdwEnergy;
 					deltaElecEnergy = destmodel->energy.elec() - referenceElecEnergy;
-					msg(Debug::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
+					msg.print(Messenger::Verbose,"eNew = %f, deltaMoleculeEnergy = %f, deltaVdwEnergy = %f\n", enew, deltaMoleculeEnergy, deltaVdwEnergy);
 					if (deltaMoleculeEnergy > acceptanceEnergy_[move])
 					{
 						//printf("REJECTING MOVE : edelta = %20.14f\n",edelta);
@@ -604,7 +604,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
 			// Print start of first line (current energy and difference)
-			//msg(Debug::None," %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
+			//msg.print(" %-5i %13.6e %13.6e %13.6e %13.6e   ", cycle+1, ecurrent, ecurrent-elastcycle, currentVdwEnergy, currentElecEnergy);
 			for (p = destmodel->patterns(); p != NULL; p = p->next)
 			{
 				n = p->id();
@@ -620,14 +620,14 @@ bool MonteCarlo::disorder(Model *destmodel)
 					strcat(s,t);
 				}
 				strcat(s,"\n");
-				msg(Debug::None,s);
+				msg.print(s);
 			}
 		}
 		elast = ecurrent;
 		// Check for early termination
 		if (done)
 		{
-			msg(Debug::None,"All component populations satisfied.\n");
+			msg.print("All component populations satisfied.\n");
 			break;
 		}
 	}
@@ -637,9 +637,9 @@ bool MonteCarlo::disorder(Model *destmodel)
 	enew = destmodel->totalEnergy(destmodel);
 	destmodel->energy.print();
 	// Print out pattern list info here
-	msg(Debug::None,"Final populations for model '%s':\n",destmodel->name());
-	msg(Debug::None,"  ID  name                 nmols \n");
-	for (p = destmodel->patterns(); p != NULL; p = p->next) msg(Debug::None,"  %2i  %-20s  %6i\n", p->id()+1, p->name(), p->nMols());
+	msg.print("Final populations for model '%s':\n",destmodel->name());
+	msg.print("  ID  name                 nmols \n");
+	for (p = destmodel->patterns(); p != NULL; p = p->next) msg.print("  %2i  %-20s  %6i\n", p->id()+1, p->name(), p->nMols());
 
 	// Reset VDW scale ratio and intramolecular status
 	prefs.setVdwScale(1.0);
@@ -684,7 +684,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	destmodel->logChange(Change::CoordinateLog);
 	gui.disorderWindow->refresh();
 	gui.modelChanged();
-	dbgEnd(Debug::Calls,"MonteCarlo::insert");
+	msg.exit("MonteCarlo::insert");
 	return TRUE;
 }
 

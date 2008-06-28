@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/constants.h"
 #include "base/sysfunc.h"
 #include "classes/dnchar.h"

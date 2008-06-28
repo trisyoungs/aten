@@ -143,7 +143,7 @@ void AtenSelectElement::finaliseUi()
 			// Add it to the layout
 			hbox->addWidget(button);
 		}
-		else msg(Debug::None, "Unrecognised element '%s' not added to common elements list.\n", parser.argc(n));
+		else msg.print( "Unrecognised element '%s' not added to common elements list.\n", parser.argc(n));
 	}
 
 }

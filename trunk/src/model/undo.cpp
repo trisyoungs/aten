@@ -38,12 +38,12 @@ Undostate *Model::currentRedoState()
 // Start recording a new undo state
 void Model::beginUndostate(const char *text)
 {
-	dbgBegin(Debug::Calls,"Model::beginUndostate");
+	msg.enter("Model::beginUndostate");
 	// First, check that we're not already recording a state
 	if (recordingState_ != NULL)
 	{
 		printf("Model::beginUndostate <<<< Last state has not been stored >>>>\n");
-		dbgEnd(Debug::Calls,"Model::beginUndostate");
+		msg.exit("Model::beginUndostate");
 		return;
 	}
 	// Create a new state for us to add to
@@ -52,27 +52,27 @@ void Model::beginUndostate(const char *text)
 	recordingState_->setStartLog(Change::StructureLog, logs_[Change::StructureLog]);
 	recordingState_->setStartLog(Change::CoordinateLog, logs_[Change::CoordinateLog]);
 	recordingState_->setStartLog(Change::SelectionLog, logs_[Change::SelectionLog]);
-	msg(Debug::Verbose,"Undo list prepped for new state.\n");
-	msg(Debug::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
-	dbgEnd(Debug::Calls,"Model::beginUndostate");
+	msg.print(Messenger::Verbose,"Undo list prepped for new state.\n");
+	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
+	msg.exit("Model::beginUndostate");
 }
 
 // Finish recording the new undo state
 void Model::endUndostate()
 {
-	dbgBegin(Debug::Calls,"Model::endUndostate");
+	msg.enter("Model::endUndostate");
 	// Make sure that we have a valid state to store...
 	if (recordingState_ == NULL)
 	{
 		printf("Model::endUndostate <<<< No state to store >>>>\n");
-		dbgEnd(Debug::Calls,"Model::endUndostate");
+		msg.exit("Model::endUndostate");
 		return;
 	}
 	// ...and that it contains something
 	if (recordingState_->nChanges() == 0)
 	{
 		recordingState_ = NULL;
-		dbgEnd(Debug::Calls,"Model::endUndostate");
+		msg.exit("Model::endUndostate");
 		return;
 	}
 	recordingState_->setEndLog(Change::StructureLog, logs_[Change::StructureLog]);
@@ -85,21 +85,21 @@ void Model::endUndostate()
 	undoStates_.own(recordingState_);
 	// Set the current undo level to the new state and nullify the pointer
 	currentUndostate_ = recordingState_;
-	msg(Debug::Verbose,"Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndostate_->nChanges());
-	msg(Debug::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
+	msg.print(Messenger::Verbose,"Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndostate_->nChanges());
+	msg.print(Messenger::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
 	// Check the size of the undoStates_ list - if greater than prefs.maxundo, must remove the first item in the list
 	if (undoStates_.nItems() == (prefs.maxUndoLevels()+1)) undoStates_.remove(undoStates_.first());
-	dbgEnd(Debug::Calls,"Model::endUndostate");
+	msg.exit("Model::endUndostate");
 }
 
 // Perform actions in current Undostate
 void Model::undo()
 {
-	dbgBegin(Debug::Calls,"Model::undo");
-	if (currentUndostate_ == NULL) msg(Debug::None,"Nothing to undo.\n");
+	msg.enter("Model::undo");
+	if (currentUndostate_ == NULL) msg.print("Nothing to undo.\n");
 	else
 	{
 		// Undo the changes
@@ -112,14 +112,14 @@ void Model::undo()
 		currentRedoState_ = currentUndostate_;
 		currentUndostate_ = currentUndostate_->prev;
 	}
-	dbgEnd(Debug::Calls,"Model::undo");
+	msg.exit("Model::undo");
 }
 
 // Perform actions in current Undostate
 void Model::redo()
 {
-	dbgBegin(Debug::Calls,"Model::redo");
-	if (currentRedoState_ == NULL) msg(Debug::None,"Nothing to redo.\n");
+	msg.enter("Model::redo");
+	if (currentRedoState_ == NULL) msg.print("Nothing to redo.\n");
 	else
 	{
 		// Undo the changes
@@ -132,5 +132,5 @@ void Model::redo()
 		currentUndostate_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;
 	}
-	dbgEnd(Debug::Calls,"Model::redo");
+	msg.exit("Model::redo");
 }

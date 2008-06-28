@@ -26,7 +26,7 @@
 #include "classes/dnchar.h"
 #include "classes/cell.h"
 #include "base/constants.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Grid Data Class

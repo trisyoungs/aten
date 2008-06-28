@@ -56,7 +56,7 @@ bool ColourScale::visible()
 // Recalculate colour deltas between points
 void ColourScale::calculateDeltas()
 {
-	dbgBegin(Debug::Calls,"ColourScale::calculateDeltas");
+	msg.enter("ColourScale::calculateDeltas");
 	// Clear old list of deltas
 	deltas_.clear();
 	ColourScaleDelta *delta;
@@ -65,18 +65,18 @@ void ColourScale::calculateDeltas()
 		delta = deltas_.add();
 		delta->set(csp, csp->next);
 	}
-	dbgEnd(Debug::Calls,"ColourScale::calculateDeltas");
+	msg.exit("ColourScale::calculateDeltas");
 }
 
 // Add point to scale
 void ColourScale::addPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
-	dbgBegin(Debug::Calls,"ColourScale::addPoint");
+	msg.enter("ColourScale::addPoint");
 	// Check position supplied - if it is 0 add point at start. If npoints then add at end.
 	if ((position < 0) || (position > points_.nItems()))
 	{
-		msg(Debug::None, "Position at which to add scale point (%i) is invalid - nItems = %i.\n", position, points_.nItems());
-		dbgEnd(Debug::Calls,"ColourScale::addPoint");
+		msg.print( "Position at which to add scale point (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		msg.exit("ColourScale::addPoint");
 		return;
 	}
 	ColourScalePoint *csp;
@@ -90,7 +90,7 @@ void ColourScale::addPoint(int position, double value, GLfloat r, GLfloat g, GLf
 	calculateDeltas();
 	// Refresh linked objects
 	refreshObjects();
-	dbgEnd(Debug::Calls,"ColourScale::addPoint");
+	msg.exit("ColourScale::addPoint");
 }
 
 // Add new point to end of colourscale
@@ -102,12 +102,12 @@ void ColourScale::addPointAtEnd(double value, GLfloat r, GLfloat g, GLfloat b, G
 // Set colour and value data for point
 void ColourScale::setPoint(int position, double value, GLfloat r, GLfloat g, GLfloat b, GLfloat a, bool setval, bool setcol)
 {
-	dbgBegin(Debug::Calls,"ColourScale::setPoint");
+	msg.enter("ColourScale::setPoint");
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
-		msg(Debug::None, "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
-		dbgEnd(Debug::Calls,"ColourScale::setPoint");
+		msg.print( "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		msg.exit("ColourScale::setPoint");
 		return;
 	}
 	if (setval) points_[position]->setValue(value);
@@ -116,7 +116,7 @@ void ColourScale::setPoint(int position, double value, GLfloat r, GLfloat g, GLf
 	calculateDeltas();
 	// Refresh linked objects
 	refreshObjects();
-	dbgEnd(Debug::Calls,"ColourScale::setPoint");
+	msg.exit("ColourScale::setPoint");
 }
 
 // Set only value for point
@@ -134,12 +134,12 @@ void ColourScale::setPointColour(int position, GLfloat r, GLfloat g, GLfloat b, 
 // Remove old point from colourscale
 void ColourScale::removePoint(int position)
 {
-	dbgBegin(Debug::Calls,"ColourScale::removePoint");
+	msg.enter("ColourScale::removePoint");
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
-		msg(Debug::None, "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
-		dbgEnd(Debug::Calls,"ColourScale::removePoint");
+		msg.print( "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		msg.exit("ColourScale::removePoint");
 		return;
 	}
 	points_.remove( points_[position] );
@@ -147,7 +147,7 @@ void ColourScale::removePoint(int position)
 	calculateDeltas();
 	// Refresh linked objects
 	refreshObjects();
-	dbgEnd(Debug::Calls,"ColourScale::removePoint");
+	msg.exit("ColourScale::removePoint");
 }
 
 // Return colour associated with value provided

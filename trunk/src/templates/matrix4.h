@@ -274,7 +274,7 @@ template <class T> void Mat4<T>::matrix4Invert(int matsize, double *A)
 	int *pivoted;
 	int row, col, n, m;
 	double large, element;
-	dbgBegin(Debug::Calls,"invert[GJ]");
+	msg.enter("invert[GJ]");
 	// Create and blank temporary arrays we need
 	pivotrows = new int[matsize];
 	pivotcols = new int[matsize];
@@ -336,7 +336,7 @@ template <class T> void Mat4<T>::matrix4Invert(int matsize, double *A)
 	delete[] pivotrows;
 	delete[] pivotcols;
 	delete[] pivoted;
-	dbgEnd(Debug::Calls,"invert[GJ]");
+	msg.exit("invert[GJ]");
 }
 
 #endif

@@ -44,8 +44,6 @@ Cli cliSwitches[] = {
 		"",		"Print out all debug information" },
 	{ Cli::DebugCommandsSwitch,	'\0',"debugcommands",	0,
 		"",		"Print out verbose information from file filter routines" },
-	{ Cli::DebugMoreSwitch,		'\0',"debugmore",	0,
-		"",		"Print all subroutine call information" },
 	{ Cli::DebugParseSwitch,	'\0',"debugparse",	0,
 		"",		"Print out verbose information from file parsing routines" },
 	{ Cli::DebugSwitch,		'd',"debug",		0,
@@ -78,19 +76,141 @@ Cli cliSwitches[] = {
 		"",		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
 	{ Cli::PackSwitch,		'\0',"pack",		0,
 		"",		"Force generation of symmetry-equivalent atoms from spacegroup information" },
+	{ Cli::QuietSwitch,		'q',"quiet",		0,
+		"",		"Run silently, reporting only errors that stop the program" },
 	{ Cli::ScriptSwitch,		's',"script",		1,
-		"<file",	"Load and execute the script file specified" },
+		"<file>",	"Load and execute the script file specified" },
 	{ Cli::TrajectorySwitch,	't',"pack",		1,
 		"",		"Associate a trajectory with thie last loaded model" },
 	{ Cli::UndoLevelSwitch,		'u',"maxundo",		1,
 		"<nlevels>",	"Set the maximum number of undo levels per model (-1 = unlimited)" },
 	{ Cli::VerboseSwitch,		'v',"verbose",		0,
 		"",		"Enable verbose program output" },
+	{ Cli::VersionSwitch,		'\0',"version",		0,
+		"",		"Print program version and exit" },
 	{ Cli::ZmapSwitch,		'z',"zmap",		1,
 		"<mapstyle>",	"Override filter element mapping style" }
 };
 
-// Parse all options
+// Parse CLI options *before* filters / prefs have been loaded
+bool Master::parseCliEarly(int argc, char *argv[])
+{
+	int argn, opt;
+	bool isShort, match, nextArgIsSwitch, hasNextArg;
+	char *arg, *line;
+	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
+	argn = 0;
+	while (argn < (argc-1))
+	{
+		argn++;
+		// Check for null argument
+		if (argv[argn][0] == '\0') continue;
+		match = FALSE;
+		// Check for a CLI argument (presence of '-')
+		if (argv[argn][0] == '-')
+		{
+			// Is this a long or short option?
+			isShort = (argv[argn][1] != '-');
+			arg = (isShort ? &argv[argn][1] : &argv[argn][2]);
+			// Check what the next CLI argument is
+			if (argn == (argc-1)) hasNextArg = FALSE;
+			else
+			{
+				hasNextArg = TRUE;
+				nextArgIsSwitch = (argv[argn+1][0] == '-');
+			}
+			// Manually-exclude some specific (and extremely annoying) extraneous command line options
+			if (strncmp(argv[argn],"-psn",4) == 0)
+			{
+				printf("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
+				continue;
+			} 
+			// Cycle over defined CLI options and search for this one
+			for (opt=0; opt<Cli::nSwitchItems; opt++)
+			{
+				// Check short option character or long option text
+				if (isShort) match = (*arg == cliSwitches[opt].shortOpt);
+				else match = (strcmp(arg,cliSwitches[opt].longOpt) == 0 ? TRUE : FALSE);
+				if (match) break;
+			}
+			// Check to see if we matched any of the known CLI switches
+			if (!match)
+			{
+				printf("Unrecognised command-line option '%s'.\n",argv[argn]);
+				return -1;
+			}
+			// If this option needs an argument, check that we have one
+			switch (cliSwitches[opt].argument)
+			{
+				// No argument required
+				case (0):
+					break;
+				// Required argument
+				case (1):
+					if ((!hasNextArg) || nextArgIsSwitch)
+					{
+						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
+						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
+						return -1;
+					}
+					break;
+				// Optional argument (never used?)
+				case (2):
+					break;
+			}
+			// Ready to perform switch action!
+			// We recognise only a specific selection of switches here, mostly to do with debugging / versioning etc.
+			switch (opt)
+			{
+				// Turn on debug messages for all calls
+				case (Cli::DebugAllSwitch):
+					msg.addOutputType(Messenger::Calls);
+					msg.addOutputType(Messenger::Verbose);
+					msg.addOutputType(Messenger::Parse);
+					msg.addOutputType(Messenger::Typing);
+					break;
+				// Turn on debug messages for atom typing
+				case (Cli::DebugCommandsSwitch):
+					msg.addOutputType(Messenger::Commands);
+					break;
+				// Turn on debug messages for atom typing
+				case (Cli::DebugParseSwitch):
+					msg.addOutputType(Messenger::Parse);
+					break;
+				// Turn on call debugging
+				case (Cli::DebugSwitch):
+					msg.addOutputType(Messenger::Calls);
+					break;
+				// Turn on debug messages for atom typing
+				case (Cli::DebugTypingSwitch):
+					msg.addOutputType(Messenger::Typing);
+					break;
+				// Display help
+				case (Cli::HelpSwitch):
+					printUsage();
+					return FALSE;
+					break;
+				// Run in silent mode
+				case (Cli::QuietSwitch):
+					printUsage();
+					return FALSE;
+					break;
+				// Turn on verbose messaging
+				case (Cli::VerboseSwitch):
+					msg.addOutputType(Messenger::Verbose);
+					break;
+				// Print version and exit
+				case (Cli::VersionSwitch):
+					printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
+					return FALSE;
+					break;
+			}
+		}
+	}
+	return TRUE;
+}
+
+// Parse CLI options, after filters / prefs have been loaded
 int Master::parseCli(int argc, char *argv[])
 {
 	int argn, opt, ntried = 0, n, el;
@@ -153,8 +273,8 @@ int Master::parseCli(int argc, char *argv[])
 				case (1):
 					if ((!hasNextArg) || nextArgIsSwitch)
 					{
-						if (isShort) msg(Debug::None," '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
-						else msg(Debug::None," '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
+						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
+						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
 						return -1;
 					}
 					break;
@@ -165,6 +285,17 @@ int Master::parseCli(int argc, char *argv[])
 			// Ready to perform switch action!
 			switch (opt)
 			{
+				// All of the following switches were dealt with in parseCliEarly()
+				case (Cli::DebugAllSwitch):
+				case (Cli::DebugCommandsSwitch):
+				case (Cli::DebugParseSwitch):
+				case (Cli::DebugSwitch):
+				case (Cli::DebugTypingSwitch):
+				case (Cli::HelpSwitch):
+				case (Cli::QuietSwitch):
+				case (Cli::VerboseSwitch):
+				case (Cli::VersionSwitch):
+					break;
 				// Convert coordinates from Bohr to Angstrom
 				case (Cli::BohrSwitch):
 					prefs.setCoordsInBohr(TRUE);
@@ -188,35 +319,6 @@ int Master::parseCli(int argc, char *argv[])
 					if (cl.cacheLine(argv[++argn])) cl.execute();
 					else return -1;
 					break;
-				// Turn on debug messages for all calls
-				case (Cli::DebugAllSwitch):
-					Debug::addDebug(Debug::Calls);
-					Debug::addDebug(Debug::MoreCalls);
-					Debug::addDebug(Debug::Verbose);
-					Debug::addDebug(Debug::Parse);
-					Debug::addDebug(Debug::Typing);
-					break;
-				// Turn on debug messages for atom typing
-				case (Cli::DebugCommandsSwitch):
-					Debug::addDebug(Debug::Commands);
-					break;
-				// Turn on debug messages for more calls
-				case (Cli::DebugMoreSwitch):
-					Debug::addDebug(Debug::Calls);
-					Debug::addDebug(Debug::MoreCalls);
-					break;
-				// Turn on debug messages for atom typing
-				case (Cli::DebugParseSwitch):
-					Debug::addDebug(Debug::Parse);
-					break;
-				// Turn on call debugging
-				case (Cli::DebugSwitch):
-					Debug::addDebug(Debug::Calls);
-					break;
-				// Turn on debug messages for atom typing
-				case (Cli::DebugTypingSwitch):
-					Debug::addDebug(Debug::Typing);
-					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
 					prefs.setFoldOnLoad(Prefs::SwitchOn);
@@ -237,11 +339,6 @@ int Master::parseCli(int argc, char *argv[])
 					f = master.probeFile(argv[argn], Filter::GridImport);
 					if (f == NULL) return -1;
 					else if (!f->execute(argv[argn])) return -1;
-					break;
-				// Display help
-				case (Cli::HelpSwitch):
-					printUsage();
-					return -1;
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
@@ -272,7 +369,7 @@ int Master::parseCli(int argc, char *argv[])
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						el = elements.find(afterChar(parser.argc(n), '='));
-						if (el == 0) msg(Debug::None,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+						if (el == 0) printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 						else
 						{
 							nm = typeMap.add();
@@ -321,7 +418,7 @@ int Master::parseCli(int argc, char *argv[])
 				// Associate trajectory with last loaded model
 				case (Cli::TrajectorySwitch):
 					// Check for a current model
-					if (current.m == NULL) msg(Debug::None, "There is no current model to associate the trajectory to.\n");
+					if (current.m == NULL) printf("There is no current model to associate a trajectory to.\n");
 					else
 					{
 						Filter *f = probeFile(argv[++argn], Filter::TrajectoryImport);
@@ -332,10 +429,6 @@ int Master::parseCli(int argc, char *argv[])
 				// Set maximum number of undolevels per model
 				case (Cli::UndoLevelSwitch):
 					prefs.setMaxUndoLevels(atoi(argv[++argn]));
-					break;
-				// Turn on verbose messaging
-				case (Cli::VerboseSwitch):
-					Debug::addDebug(Debug::Verbose);
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):

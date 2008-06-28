@@ -32,7 +32,7 @@
 // Consider only the intrapattern interactions of individual molecules  within this pattern.
 void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
-	dbgBegin(Debug::Calls,"Pattern::coulombIntraPatternEnergy");
+	msg.enter("Pattern::coulombIntraPatternEnergy");
 	static int n,i,j,aoff,m1,con;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy_intra, energy, cutoff;
@@ -67,13 +67,13 @@ void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int mol
 	energy_inter = energy_inter * prefs.elecConvert();
 	estore->add(Energy::CoulombIntraEnergy,energy_intra,id_);
 	estore->add(Energy::CoulombInterEnergy,energy_inter,id_,id_);
-	dbgEnd(Debug::Calls,"Pattern::coulombIntraPatternEnergy");
+	msg.exit("Pattern::coulombIntraPatternEnergy");
 }
 
 // Calculate the coulomb contribution to the energy from interactions between different molecules of this pattern and the one supplied
 void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy *estore, int molecule)
 {
-	dbgBegin(Debug::Calls,"Pattern::coulombInterPatternEnergy");
+	msg.enter("Pattern::coulombInterPatternEnergy");
 	static int n1, n2, i, j, aoff1, aoff2, m1, m2, finish1, start2, finish2, a1, a2;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, energy, cutoff;
@@ -123,14 +123,14 @@ void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy
 	}
 	energy_inter = energy_inter * prefs.elecConvert();
 	estore->add(Energy::CoulombInterEnergy,energy_inter,id_,xpnode->id_);
-	dbgEnd(Debug::Calls,"Pattern::coulombInterPatternEnergy");
+	msg.exit("Pattern::coulombInterPatternEnergy");
 }
 
 // Calculate the internal coulomb forces in the pattern.
 // Consider only the intrapattern interactions of individual molecules  within this pattern.
 void Pattern::coulombIntraPatternForces(Model *srcmodel)
 {
-	dbgBegin(Debug::Calls,"Pattern::coulombIntraPatternForces");
+	msg.enter("Pattern::coulombIntraPatternForces");
 	static int n, i, j, aoff, m1, con;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
@@ -166,13 +166,13 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(Debug::Calls,"Pattern::coulombIntraPatternForces");
+	msg.exit("Pattern::coulombIntraPatternForces");
 }
 
 // Calculate the coulomb forces from interactions between different molecules of this pattern and the one supplied
 void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *xpnode)
 {
-	dbgBegin(Debug::Calls,"Pattern::coulombInterPatternForces");
+	msg.enter("Pattern::coulombInterPatternForces");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish,a1,a2;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff;
@@ -214,6 +214,6 @@ void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *xpnode)
 		}
 		aoff1 += nAtoms_;
 	}
-	dbgEnd(Debug::Calls,"Pattern::coulombInterPatternForces");
+	msg.exit("Pattern::coulombInterPatternForces");
 }
 

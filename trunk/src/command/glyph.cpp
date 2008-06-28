@@ -31,7 +31,7 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 	// Get glyph style
 	Glyph::GlyphType gs = Glyph::glyphType(c->argc(0));
 	master.current.gl = obj.rs->addGlyph();
-	if (gs == Glyph::nGlyphTypes) msg(Debug::None,"Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
+	if (gs == Glyph::nGlyphTypes) msg.print("Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
 	master.current.gl->setType(gs);
 	if (c->hasArg(1)) master.current.gl->setText(c->argc(1));
 	return CR_SUCCESS;
@@ -45,7 +45,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
-		msg(Debug::None,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
+		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -57,7 +57,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 	}
 	// Finally, check pointer currently in target and store it
 	obj.gl->setAtom(d, obj.rs->atomIndex(target), GlyphData::ForceData);
-	if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
+	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
 
@@ -69,7 +69,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
-		msg(Debug::None,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
+		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -81,7 +81,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 	}
 	// Finally, check pointer currently in target and store it
 	obj.gl->setAtom(d, obj.rs->atomIndex(target), GlyphData::PositionData);
-	if (target == NULL) msg(Debug::None,"Warning - NULL atom stored in glyph data %i.\n",d);
+	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
 	return CR_SUCCESS;
 }
 
@@ -93,7 +93,7 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
-		msg(Debug::None,"Data index given to 'setglyphatom' (%i) is out of range.\n", d);
+		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
 		return CR_FAIL;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id

@@ -31,7 +31,7 @@ double editChainDistance = 0.0;
 // Render other 3D objects
 void Canvas::renderExtra3d()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderExtra3d");
+	msg.enter("Canvas::renderExtra3d");
 	// Draw on 3D embellishments for active modes
 	static double radius;
 	static char s[64];
@@ -104,13 +104,13 @@ void Canvas::renderExtra3d()
 			glText(textpos,s);
 			break;
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderExtra3d");
+	msg.exit("Canvas::renderExtra3d");
 }
 
 // Render 2D objects
 void Canvas::renderExtra2d()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderExtra2d");
+	msg.enter("Canvas::renderExtra2d");
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
 	static int n, i, skip;
 	static double dx, dy, halfw;
@@ -184,13 +184,13 @@ void Canvas::renderExtra2d()
 		float midy = height_ / 2;
 		//glBegin(
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderExtra2d");
+	msg.exit("Canvas::renderExtra2d");
 }
 
 // Render disordered insertion regions
 void Canvas::renderRegions()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderRegions");
+	msg.enter("Canvas::renderRegions");
 	static Vec3<double> centre, size;
 	static GLfloat colour[4];
 	int i = 0;
@@ -229,5 +229,5 @@ void Canvas::renderRegions()
 	// Turn off blending (if not antialiasing)
 	if (!prefs.hasGlOption(Prefs::LineAliasOption) && !prefs.hasGlOption(Prefs::PolyAliasOption)) glDisable(GL_BLEND);
 	glDisable(GL_LIGHTING);
-	dbgEnd(Debug::Calls,"Canvas::renderRegions");
+	msg.exit("Canvas::renderRegions");
 }

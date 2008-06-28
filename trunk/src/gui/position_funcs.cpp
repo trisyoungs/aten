@@ -163,7 +163,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 		// Translate selection in the cell axes of the model
 		if (m->cell()->type() == Cell::NoCell)
 		{
-			msg(Debug::None,"No unit cell defined for model.\n");
+			msg.print("No unit cell defined for model.\n");
 			return;
 		}
 		tvec = master.currentModel()->cell()->axes().get(axis);
@@ -187,7 +187,7 @@ void AtenPosition::on_DefineVectorButton_clicked(bool checked)
 	Model *m = master.currentModel();
 	if (m->nSelected() != 2)
 	{
-		msg(Debug::None,"Exactly two atoms must be selected to define a vector.\n");
+		msg.print("Exactly two atoms must be selected to define a vector.\n");
 		return;
 	}
 	Atom *i = m->firstSelected();
