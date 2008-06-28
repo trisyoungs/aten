@@ -27,7 +27,7 @@
 // Render atom labels
 void Canvas::renderModelLabels()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderModelLabels");
+	msg.enter("Canvas::renderModelLabels");
 	// Annotate the model with 2D labels
 	static char text[64];
 	static Atom *i;
@@ -88,13 +88,13 @@ void Canvas::renderModelLabels()
 			textObjects_.own(to);
 		}
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderModelLabels");
+	msg.exit("Canvas::renderModelLabels");
 }
 
 // Render measurements
 void Canvas::renderModelMeasurements()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderModelMeasurements");
+	msg.enter("Canvas::renderModelMeasurements");
 	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre, rji, rjk;
 	static Vec3<double> pos1, pos2;
 	static double gamma, t;
@@ -191,19 +191,19 @@ void Canvas::renderModelMeasurements()
 		}
 	  }
 	glPopMatrix();
-	dbgEnd(Debug::Calls,"Canvas::renderModelMeasurements");
+	msg.exit("Canvas::renderModelMeasurements");
 }
 
 // Render force arrows
 void Canvas::renderModelForceArrows()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderModelForceArrows");
+	msg.enter("Canvas::renderModelForceArrows");
 	for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
 		// Scale forces to more reasonable values  TODO User scaling
 		glArrow(i->r(),i->f() / 30.0);
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderModelForceArrows");
+	msg.exit("Canvas::renderModelForceArrows");
 }
 
 // Render model cell

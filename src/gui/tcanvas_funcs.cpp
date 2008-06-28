@@ -90,14 +90,14 @@ void TCanvas::resizeGL(int width, int height)
 void TCanvas::mousePressEvent(QMouseEvent *event)
 {
 	// Handle button presses (button down) from the mouse
-	dbgBegin(Debug::Calls,"TCanvas::mousePressEvent");
+	msg.enter("TCanvas::mousePressEvent");
 	Prefs::MouseButton button;
 	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
 	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
 	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
-		dbgEnd(Debug::Calls,"TCanvas::mousePressEvent");
+		msg.exit("TCanvas::mousePressEvent");
 		return;
 	}
 	// Do the requested action as defined in the edit panel, but only if another action
@@ -111,7 +111,7 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		{
 			gui.callAtomPopup(tempi, event->globalX(), event->globalY());
 			gui.mainView.postRedisplay();
-			dbgEnd(Debug::Calls,"TCanvas::mousePressEvent");
+			msg.exit("TCanvas::mousePressEvent");
 			return;
 		}
 	}
@@ -123,31 +123,31 @@ void TCanvas::mousePressEvent(QMouseEvent *event)
 		{
 			printf("gui::dblclick show atom list not done.\n");
 			//gui.atomwin_list_refresh();
-			dbgEnd(Debug::Calls,"TCanvas::mousePressEvent");
+			msg.exit("TCanvas::mousePressEvent");
 			return;
 		}
 	}
 	// Inform the main canvas that a button action has occurred
 	gui.mainView.informMouseDown(button,event->x(),event->y());
-	dbgEnd(Debug::Calls,"TCanvas::mousePressEvent");
+	msg.exit("TCanvas::mousePressEvent");
 }
 
 void TCanvas::mouseReleaseEvent(QMouseEvent *event)
 {
 	// Handle button releases (button up) from the mouse
-	dbgBegin(Debug::Calls,"TCanvas::mouseReleaseEvent");
+	msg.enter("TCanvas::mouseReleaseEvent");
 	Prefs::MouseButton button;
 	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
 	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
 	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
-		dbgEnd(Debug::Calls,"TCanvas::mouseReleaseEvent");
+		msg.exit("TCanvas::mouseReleaseEvent");
 		return;
 	}
 	// Finalize the requested action
 	gui.mainView.informMouseUp(button,event->x(),event->y());
-	dbgEnd(Debug::Calls,"TCanvas::mouseReleaseEvent");
+	msg.exit("TCanvas::mouseReleaseEvent");
 }
 
 void TCanvas::mouseMoveEvent(QMouseEvent *event)

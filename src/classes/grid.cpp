@@ -20,7 +20,7 @@
 */
 
 #include "classes/grid.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/prefs.h"
 #include "base/constants.h"
 #include <QtOpenGL/QtOpenGL>
@@ -312,7 +312,7 @@ bool Grid::useDataForZ()
 // Create data array (from npoints vector)
 void Grid::create()
 {
-	dbgBegin(Debug::Calls,"Grid::create");
+	msg.enter("Grid::create");
 	int i, j;
 	if (type_ == Grid::VolumetricData)
 	{
@@ -330,13 +330,13 @@ void Grid::create()
 		data2d_ = new double*[nPoints_.x];
 		for (i = 0; i<nPoints_.x; i++) data2d_[i] = new double[nPoints_.y];
 	}
-	dbgEnd(Debug::Calls,"Grid::create");
+	msg.exit("Grid::create");
 }
 
 // Clear data array
 void Grid::clear()
 {
-	dbgBegin(Debug::Calls,"Grid::clear");
+	msg.enter("Grid::clear");
 	dataFull_ = FALSE;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
@@ -364,7 +364,7 @@ void Grid::clear()
 		data2d_ = NULL;
 	}
 
-	dbgEnd(Debug::Calls,"Grid::clear");
+	msg.exit("Grid::clear");
 }
 
 // Set spacing for a cubic grid
@@ -397,14 +397,14 @@ void Grid::axesForGl(double *glmat)
 // Set grid extent (and data[])
 void Grid::setNPoints(Vec3<int> v)
 {
-	dbgBegin(Debug::Calls,"Grid::setNPoints");
+	msg.enter("Grid::setNPoints");
 	nPoints_ = v;
 	// If nPoints_.z is zero, its a 2D array
 	if (nPoints_.z == 0) type_ = Grid::SurfaceData;
 	else type_ = Grid::VolumetricData;
 	log_ ++;
 	create();
-	dbgEnd(Debug::Calls,"Grid::setNPoints");
+	msg.exit("Grid::setNPoints");
 }
 
 // Update minimum / maximum based on supplied value
@@ -421,17 +421,17 @@ void Grid::setData(int x, int y, int z, double d)
 	// Check limits against npoints vector
 	if ((x < 0) || (x >= nPoints_.x))
 	{
-		msg(Debug::None,"X index %i is outside array bounds (0--%i) for grid data.\n", x, nPoints_.x-1);
+		msg.print("X index %i is outside array bounds (0--%i) for grid data.\n", x, nPoints_.x-1);
 		return;
 	}
 	else if ((y < 0) || (y >= nPoints_.y))
 	{
-		msg(Debug::None,"Y index %i is outside array bounds (0--%i) for grid data.\n", y, nPoints_.y-1);
+		msg.print("Y index %i is outside array bounds (0--%i) for grid data.\n", y, nPoints_.y-1);
 		return;
 	}
 	else if ((type_ == Grid::SurfaceData) && ((z < 0) || (z >= nPoints_.z)))
 	{
-		msg(Debug::None,"Z index %i is outside array bounds (0--%i) for grid data.\n", z, nPoints_.z-1);
+		msg.print("Z index %i is outside array bounds (0--%i) for grid data.\n", z, nPoints_.z-1);
 		return;
 	}
 	// Okay, so store data
@@ -447,7 +447,7 @@ void Grid::setNextData(double d)
 	// Check limit
 	if (dataFull_ == TRUE)
 	{
-		msg(Debug::None,"Grid::setNextData - Array already full.\n");
+		msg.print("Grid::setNextData - Array already full.\n");
 		return;
 	}
 	// Set current point referenced by currentpoint and increase it

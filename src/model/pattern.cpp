@@ -59,7 +59,7 @@ Pattern *Model::pattern(int id)
 // Add Pattern Node
 Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 {
-	dbgBegin(Debug::Calls,"Model::addPattern");
+	msg.enter("Model::addPattern");
 	// Determine starting atom...
 	Pattern *lastp = patterns_.last();
 	int start = (lastp == NULL ? 0 : lastp->startAtom() + lastp->nMols() * lastp->nAtoms());
@@ -67,20 +67,20 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 	newpnode->setParent(this);
 	newpnode->setName(patname);
 	newpnode->initialise(patterns_.nItems()-1,start,mols,numatoms);
-	msg(Debug::Verbose,"New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n",patname,start,mols,numatoms);
+	msg.print(Messenger::Verbose,"New pattern '%s' added - startatom %i, %i mols, %i atoms per mol.\n",patname,start,mols,numatoms);
 	if ((start + mols*numatoms) == atoms_.nItems())
 	{
-		msg(Debug::None,"Pattern description completed (spans %i atoms).\n",atoms_.nItems());
+		msg.print("Pattern description completed (spans %i atoms).\n",atoms_.nItems());
 		energy.resize(patterns_.nItems());
 		// Create representative molecules
-		msg(Debug::None,"Creating representative molecules...");
+		msg.print("Creating representative molecules...");
 		createPatternMolecules();
-		msg(Debug::None,"Done.\n");
+		msg.print("Done.\n");
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
 		patternsPoint_ = logs_[Change::StructureLog];
 	}
-	else if ((start + mols*numatoms) > atoms_.nItems()) msg(Debug::None,"New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname,(start + mols*numatoms) - atoms_.nItems());
-	dbgEnd(Debug::Calls,"Model::addPattern");
+	else if ((start + mols*numatoms) > atoms_.nItems()) msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname,(start + mols*numatoms) - atoms_.nItems());
+	msg.exit("Model::addPattern");
 	return newpnode;
 }
 
@@ -93,7 +93,7 @@ void Model::cutPattern(Pattern *source)
 // Own pattern
 void Model::ownPattern(Pattern *source, bool own)
 {
-	dbgBegin(Debug::Calls,"Model::ownPattern");
+	msg.enter("Model::ownPattern");
 	// Set the starting atom from the last pattern in the model's list
 	Pattern *p = patterns_.last();
 	int start = (p == NULL ? 0 : p->startAtom() + p->nMols() * p->nAtoms());
@@ -105,14 +105,14 @@ void Model::ownPattern(Pattern *source, bool own)
 	source->setId(patterns_.nItems()-1);
 	//source->set_id(patterns_.nItems()-1);
 	if (own) source->setParent(this);
-	dbgEnd(Debug::Calls,"Model::ownPattern");
+	msg.exit("Model::ownPattern");
 }
 
 // Set 'fixed' propety of patterns
 void Model::setPatternsFixed(int upto)
 {
 	// Set all patterns in the current model to be 'fixed'
-	dbgBegin(Debug::Calls,"Model::setPatternsFixed");
+	msg.enter("Model::setPatternsFixed");
 	Pattern *p = patterns_.first();
 	int count = 0;
 	while (p != NULL)
@@ -122,20 +122,20 @@ void Model::setPatternsFixed(int upto)
 		p = p->next;
 		count ++;
 	}
-	dbgEnd(Debug::Calls,"Model::setPatternsFixed");
+	msg.exit("Model::setPatternsFixed");
 }
 
 // Determine the locality of the supplied atom
 Atomaddress Model::locateAtom(Atom *i)
 {
-	dbgBegin(Debug::Calls,"Model::locateAtom");
+	msg.enter("Model::locateAtom");
 	int patternno, molno, atomno, id;
 	Pattern *p;
 	Atomaddress result;
 	if (!autocreatePatterns())
 	{
-		msg(Debug::None,"Model::locateAtom : No valid pattern available for model.\n");
-		dbgEnd(Debug::Calls,"Model::locateAtom");
+		msg.print("Model::locateAtom : No valid pattern available for model.\n");
+		msg.exit("Model::locateAtom");
 		return result;
 	}
 	id = i->id();
@@ -154,7 +154,7 @@ Atomaddress Model::locateAtom(Atom *i)
 	if (patternno == -1)
 	{
 		printf("Fatal error - could not find owner pattern for atom!\n");
-		dbgEnd(Debug::Calls,"Model::locateAtom");
+		msg.exit("Model::locateAtom");
 		return result;
 	}
 	// Next, find its molecule id
@@ -166,26 +166,26 @@ Atomaddress Model::locateAtom(Atom *i)
 	result.setPattern(p);
 	result.setMolecule(molno);
 	result.setOffset(atomno);
-	dbgEnd(Debug::Calls,"Model::locateAtom");
+	msg.exit("Model::locateAtom");
 	return result;
 }
 
 // Clar patterns
 void Model::clearPatterns()
 {
-	dbgBegin(Debug::Calls,"Model::clearPatterns");
+	msg.enter("Model::clearPatterns");
 	patterns_.clear();
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
-	msg(Debug::None,"Pattern list cleared for model '%s'.\n",name_.get());
-	dbgEnd(Debug::Calls,"Model::clearPatterns");
+	msg.print("Pattern list cleared for model '%s'.\n",name_.get());
+	msg.exit("Model::clearPatterns");
 }
 
 // Autocreate patterns
 bool Model::autocreatePatterns()
 {
 	// Determine the pattern (molecule) layout of the model
-	dbgBegin(Debug::Calls,"Model::autocreatePatterns");
+	msg.enter("Model::autocreatePatterns");
 	int n, atomid, nsel2, nmols, idi, idj, idoff;
 	bool same;
 	static Dnchar emp;
@@ -197,18 +197,18 @@ bool Model::autocreatePatterns()
 	// Check current pattern first...
 	if (arePatternsValid())
 	{
-		dbgEnd(Debug::Calls,"Model::autocreatePatterns");
+		msg.exit("Model::autocreatePatterns");
 		return TRUE;
 	}
 	// Delete all old nodes first.
-	msg(Debug::None,"Autodetecting patterns for model '%s'..\n",name_.get());
+	msg.print("Autodetecting patterns for model '%s'..\n",name_.get());
 	patterns_.clear();
 	// If there are no atoms in the molecule, exit here.
 	if (atoms_.nItems() == 0)
 	{
-		msg(Debug::None,"No patterns defined for model '%s' - no atoms present.\n",name_.get());
+		msg.print("No patterns defined for model '%s' - no atoms present.\n",name_.get());
 		patternsPoint_ = logs_[Change::StructureLog];
-		dbgEnd(Debug::Calls,"Model::autocreatePatterns");
+		msg.exit("Model::autocreatePatterns");
 		return TRUE;
 	}
 	// To autodetect, we start off at atoms_head in the model, tree-select this atom and copy the selection to the clipboard. Use the clipboard to check subsequent selections, and if its the same just increase the nmols counter by one. If it's different, assume its the start of a new type of molecule and reset the counters.
@@ -232,13 +232,13 @@ bool Model::autocreatePatterns()
 		}
 		if (nsel2 != nSelected_)
 		{
-			msg(Debug::None,"Warning - model cannot be divided into molecules because of non-ordered atoms_.\nPattern for model will be 1*N.\n");
+			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms_.\nPattern for model will be 1*N.\n");
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
 			patterns_.clear();
 			nmols = 0;
 			selectAll();
 			selectionEmpirical(emp);
-			msg(Debug::None,"Added default pattern: %s\n",emp.get());
+			msg.print("Added default pattern: %s\n",emp.get());
 			p = addPattern(1,atoms_.nItems(),emp.get());
 			break;
 		}
@@ -310,7 +310,7 @@ bool Model::autocreatePatterns()
 			else
 			{
 				// Not the same as the last stored pattern, so store old data and start a new one
-				msg(Debug::None,"New pattern found: %s\n",emp.get());
+				msg.print("New pattern found: %s\n",emp.get());
 				p = addPattern(nmols,patclip.nAtoms(),emp.get());
 				patclip.copySelection(this);
 				selectionEmpirical(emp);
@@ -321,7 +321,7 @@ bool Model::autocreatePatterns()
 	// Store last pattern data 
 	if (nmols != 0)
 	{
-		msg(Debug::None,"New pattern found: %s\n",emp.get());
+		msg.print("New pattern found: %s\n",emp.get());
 		p = addPattern(nmols,patclip.nAtoms(),emp.get());
 	}
 
@@ -331,14 +331,14 @@ bool Model::autocreatePatterns()
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
 	patternsPoint_ = logs_[Change::StructureLog];
 
-	dbgEnd(Debug::Calls,"Model::autocreatePatterns");
+	msg.exit("Model::autocreatePatterns");
 	return TRUE;
 }
 
 // Create representative molecules for patterns
 void Model::createPatternMolecules()
 {
-	dbgBegin(Debug::Calls,"Model::createPatternMolecules");
+	msg.enter("Model::createPatternMolecules");
 	Clipboard clip;
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
@@ -360,13 +360,13 @@ void Model::createPatternMolecules()
 		p->molecule->selectNone();
 	}
 	selectNone();
-	dbgEnd(Debug::Calls,"Model::createPatternMolecules");
+	msg.exit("Model::createPatternMolecules");
 }
 
 // Get empirical formula of selection
 void Model::selectionEmpirical(Dnchar &target)
 {
-	dbgBegin(Debug::Calls,"Model::selectionEmpirical");
+	msg.enter("Model::selectionEmpirical");
 	int n, *elcount;
 	target.clear();
 	elcount = new int[elements.nElements()];
@@ -386,18 +386,18 @@ void Model::selectionEmpirical(Dnchar &target)
 			if (elcount[n] > 1) target.cat(itoa(elcount[n]));
 		}
 	delete elcount;
-	dbgEnd(Debug::Calls,"Model::selectionEmpirical");
+	msg.exit("Model::selectionEmpirical");
 }
 
 // Get atom fingerprint of current selection
 void Model::selectionAtomFingerprint(Dnchar &target)
 {
-	dbgBegin(Debug::Calls,"Model::selectionAtomFingerprint");
+	msg.enter("Model::selectionAtomFingerprint");
 	target.clear();
 	Atom *i = firstSelected();
 	if (i == NULL)
 	{
-		dbgEnd(Debug::Calls,"Model::selectionAtomFingerprint");
+		msg.exit("Model::selectionAtomFingerprint");
 		return;
 	}
 	int lastel = i->element(), newel;
@@ -421,13 +421,13 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 		target.cat(elements.symbol(lastel));
 		target.cat(itoa(count));
 	}
-	dbgEnd(Debug::Calls,"Model::selectionAtomFingerprint");
+	msg.exit("Model::selectionAtomFingerprint");
 }
 
 // Get bond fingerprint of current selection
 void Model::selectionBondFingerprint(Dnchar &target)
 {
-	dbgBegin(Debug::Calls,"Model::selectionBondFingerprint");
+	msg.enter("Model::selectionBondFingerprint");
 	target.clear();
 	int count = 0, diff;
 	Refitem<Bond,int> *ri;
@@ -455,25 +455,25 @@ void Model::selectionBondFingerprint(Dnchar &target)
 		}
 		i = i->next;
 	}
-	dbgEnd(Debug::Calls,"Model::selectionBondFingerprint");
+	msg.exit("Model::selectionBondFingerprint");
 }
 
 // Find pattern by name
 Pattern *Model::findPattern(const char *s)
 {
-	dbgBegin(Debug::Calls,"Model::findPattern");
+	msg.enter("Model::findPattern");
 	Pattern *p = NULL;
 	for (p = patterns_.first(); p != NULL; p = p->next)
 		if (strcmp(p->name(),s) == 0) break;
-	if (p == NULL) msg(Debug::None,"Pattern '%s' does not exist in model '%s'.\n",s,name_.get());
-	dbgEnd(Debug::Calls,"Model::findPattern");
+	if (p == NULL) msg.print("Pattern '%s' does not exist in model '%s'.\n",s,name_.get());
+	msg.exit("Model::findPattern");
 	return p;
 }
 
 // Charge pattern atom
 void Model::chargePatternAtom(Pattern *p, int id, double q)
 {
-	dbgBegin(Debug::Calls,"Model::chargePatternAtom");
+	msg.enter("Model::chargePatternAtom");
 	int n,m,pnatoms;
 	Atom *i = p->firstAtom();
 	pnatoms = p->nAtoms();
@@ -486,45 +486,45 @@ void Model::chargePatternAtom(Pattern *p, int id, double q)
 		for (m=0; m<pnatoms; m++) i = i->next;
 		chargeAtom(i, q);
 	}
-	dbgEnd(Debug::Calls,"Model::chargePatternAtom");
+	msg.exit("Model::chargePatternAtom");
 }
 
 // Find pattern for given atom
 Pattern *Model::pattern(Atom *i)
 {
-	dbgBegin(Debug::Calls,"Model::pattern[atom]");
+	msg.enter("Model::pattern[atom]");
 	int id = i->id();
 	Pattern *p;
 	for (p = patterns_.first(); p != NULL; p = p->next)
 		if ((id >= p->startAtom()) && (id <= p->endAtom())) break;
-	dbgEnd(Debug::Calls,"Model::pattern[atom]");
+	msg.exit("Model::pattern[atom]");
 	return p;
 }
 
 // Print patterns
 void Model::printPatterns()
 {
-	dbgBegin(Debug::Calls,"Model::printPatterns");
+	msg.enter("Model::printPatterns");
 	Pattern *p = patterns_.first();
-	if (p == NULL) msg(Debug::None,"No patterns defined for model '%s'.\n",name_.get());
+	if (p == NULL) msg.print("No patterns defined for model '%s'.\n",name_.get());
 	else
 	{
-		msg(Debug::None,"Pattern info for model '%s':\n", name_.get());
-		msg(Debug::None,"  ID  NMols  Starti  Endi    Name            Forcefield\n");
+		msg.print("Pattern info for model '%s':\n", name_.get());
+		msg.print("  ID  NMols  Starti  Endi    Name            Forcefield\n");
 		while (p != NULL)
 		{
-			msg(Debug::None,"  %2i  %5i  %6i  %6i  %-16s  %s\n", p->id(), p->nMols(), p->startAtom(), p->endAtom(), p->name(), p->forcefield() ? p->forcefield()->name() : "< Inherited >");
+			msg.print("  %2i  %5i  %6i  %6i  %-16s  %s\n", p->id(), p->nMols(), p->startAtom(), p->endAtom(), p->name(), p->forcefield() ? p->forcefield()->name() : "< Inherited >");
 			p = p->next;
 		}
 	}
-	dbgEnd(Debug::Calls,"Model::printPatterns");
+	msg.exit("Model::printPatterns");
 }
 
 // Validate current pattern definition in model
 bool Model::validatePatterns()
 {
-	dbgBegin(Debug::Calls,"Model::validatePatterns");
+	msg.enter("Model::validatePatterns");
 	// Cycle over patterns, checking atom and bond fingerprints of molecules against the first in each
-	dbgEnd(Debug::Calls,"Model::validatePatterns");
+	msg.exit("Model::validatePatterns");
 	return TRUE;
 }

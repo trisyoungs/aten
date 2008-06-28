@@ -22,7 +22,7 @@
 #ifndef ATEN_NAMEMAP_H
 #define ATEN_NAMEMAP_H
 
-//#include "base/debug.h"
+//#include "base/messenger.h"
 //#include <stdlib.h>
 //#include <stdio.h>
 #include "classes/dnchar.h"

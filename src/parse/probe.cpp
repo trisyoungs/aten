@@ -29,20 +29,20 @@
 Filter *Master::probeFile(const char *filename, Filter::FilterType probetype)
 {
 	// From the supplied filename and file type, determine (as best we can) the format of the file
-	dbgBegin(Debug::Calls,"Master::probeFile");
+	msg.enter("Master::probeFile");
 	// Before we do the proper checking, make sure that the file exists and is readable
 	ifstream probefile;
 	probefile.open(filename,ios::in);
 	if (!probefile.is_open())
 	{
-		msg(Debug::None,"File '%s' does not exist.\n",filename);
-		dbgEnd(Debug::Calls,"Master::probeFile");
+		msg.print("File '%s' does not exist.\n",filename);
+		msg.exit("Master::probeFile");
 		return NULL;
 	}
 	if (filename[0] == '\0')
 	{
-		msg(Debug::None,"Filename is empty.\n");
-		dbgEnd(Debug::Calls,"Master::probeFile");
+		msg.print("Filename is empty.\n");
+		msg.exit("Master::probeFile");
 		return NULL;
 	}
 	probefile.close();
@@ -86,8 +86,8 @@ Filter *Master::probeFile(const char *filename, Filter::FilterType probetype)
 	//ifstream modelfile(filename,ios::in);
 	//if (parser.find_phrase(&modelfile,"GAMESS VERSION",10)) result = MF_GAMESSUS;
 	//modelfile.close();
-	if (result == NULL) msg(Debug::None,"Couldn't determine format of file '%s'.\n",filename);
-	else msg(Debug::Verbose,"Master::probeFile - Selected filter '%s'\n",result->name());
-	dbgEnd(Debug::Calls,"Master::probeFile");
+	if (result == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
+	else msg.print(Messenger::Verbose,"Master::probeFile - Selected filter '%s'\n",result->name());
+	msg.exit("Master::probeFile");
 	return result;
 }

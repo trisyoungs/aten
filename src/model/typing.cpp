@@ -91,7 +91,7 @@ void printstuff(Pattern *p)
 	Atom *i = p->firstAtom();
 	for (int n=0; n<p->nAtoms(); n++)
 	{
-		msg(Debug::Verbose,"Atom %i, %s[%i], nbonds=%i, valency=%i, type=%s\n",n,elements.symbol(i),
+		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, valency=%i, type=%s\n",n,elements.symbol(i),
 			i->id(),i->nBonds(),elements.valency(i),Atomtype::atomEnvironment(i->environment()));
 		i = i->next;
 	}
@@ -109,7 +109,7 @@ void Model::setAtomtype(Atom *i, ForcefieldAtom *ffa, bool fixed)
 void Model::describeAtoms()
 {
 	// Locate ring structures, augment bonding, and assign atom hybridisations in all patterns.
-	dbgBegin(Debug::Calls,"Model::describeAtoms");
+	msg.enter("Model::describeAtoms");
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
 		// 1) Locate ring structures
@@ -123,7 +123,7 @@ void Model::describeAtoms()
 		// 4) Go through the ring list and see if any are aromatic
 		for (Ring *r = p->rings(); r != NULL; r = r->next) if (r->isAromatic()) r->setAromatic();
 	}
-	dbgEnd(Debug::Calls,"Model::describeAtoms");
+	msg.exit("Model::describeAtoms");
 }
 
 // Type all atoms
@@ -132,37 +132,37 @@ bool Model::typeAll()
 	// Perform forcefield typing on all patterns in the model.
 	// Most routines here only use the first molecule in the pattern, so we must propagate the type info
 	// to other molecules at the end.
-	dbgBegin(Debug::Calls,"Model::typeAll");
+	msg.enter("Model::typeAll");
 	// Must have a valid pattern...
 	autocreatePatterns();
 	if (!arePatternsValid())
 	{
-		msg(Debug::None,"Atom typing cannot be performed without valid patterns.\n Check pattern definition.\n");
-		dbgEnd(Debug::Calls,"Model::typeAll");
+		msg.print("Atom typing cannot be performed without valid patterns.\n Check pattern definition.\n");
+		msg.exit("Model::typeAll");
 		return FALSE;
 	}
 	// Describe the atoms / rings in the patterns
 	describeAtoms();
-	if (forcefield_ == NULL) msg(Debug::None,"Typing all patterns in model '%s' (no forcefield associated -- using default)...\n", name_.get());
-	else msg(Debug::None,"Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
+	if (forcefield_ == NULL) msg.print("Typing all patterns in model '%s' (no forcefield associated -- using default)...\n", name_.get());
+	else msg.print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
 	// Assign forcefield types to atoms
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
-		if (p->forcefield() == NULL) msg(Debug::None,"Typing pattern %s (inheriting parent's forcefield)...", p->name());
-		else msg(Debug::None,"Typing pattern %s (associated forcefield is '%s')...", p->name(), p->forcefield()->name());
+		if (p->forcefield() == NULL) msg.print("Typing pattern %s (inheriting parent's forcefield)...", p->name());
+		else msg.print("Typing pattern %s (associated forcefield is '%s')...", p->name(), p->forcefield()->name());
 		if (!p->typeAtoms())
 		{
-			dbgEnd(Debug::Calls,"Model::typeAll");
+			msg.exit("Model::typeAll");
 			return FALSE;
 		}
 		// Finally, propagate the data now contained in the initial molecule in each pattern to all other molecules
 		p->propagateAtomtypes();
 		p->propagateBondTypes();
-		msg(Debug::None,"Done.\n");
+		msg.print("Done.\n");
 	}
 	// Log change in the model
 	logChange(Change::CoordinateLog);
-	dbgEnd(Debug::Calls,"Model::typeAll");
+	msg.exit("Model::typeAll");
 	return TRUE;
 }
 
@@ -170,21 +170,21 @@ bool Model::typeAll()
 void Pattern::clearHybrids()
 {
 	// Set all environment flags of the atoms in pattern to Atomtype::NoEnvironment
-	dbgBegin(Debug::Calls,"Pattern::clearHybrids");
+	msg.enter("Pattern::clearHybrids");
 	Atom *i = firstAtom_;
 	for (int n=0; n<nAtoms_; n++)
 	{
 		i->setEnvironment(Atomtype::NoEnvironment);
 		i = i->next;
 	}
-	dbgEnd(Debug::Calls,"Pattern::clearHybrids");
+	msg.exit("Pattern::clearHybrids");
 }
 
 // Assign hybridisation data
 void Pattern::assignHybrids()
 {
 	// Assign hybridisation types to the atoms in this pattern.
-	dbgBegin(Debug::Calls,"Pattern::assignHybrids");
+	msg.enter("Pattern::assignHybrids");
 	Atom *i = firstAtom_;
 	for (int n=0; n<nAtoms_; n++)
 	{
@@ -209,7 +209,7 @@ void Pattern::assignHybrids()
 		}
 		i = i->next;
 	}
-	dbgEnd(Debug::Calls,"Pattern::assignHybrids");
+	msg.exit("Pattern::assignHybrids");
 }
 
 // Type atoms in pattern
@@ -221,7 +221,7 @@ bool Pattern::typeAtoms()
 	// type description, we reject it. Otherwise, store the number of criteria that matched and only
 	// accept a different atom type if we manage to match a complete set containing more rules.
 	// Return FALSE if one or more atoms could not be typed
-	dbgBegin(Debug::Calls,"Pattern::typeAtoms");
+	msg.enter("Pattern::typeAtoms");
 	int a, newmatch, bestmatch, nfailed;
 	Atomtype *at;
 	Atom *i;
@@ -233,8 +233,8 @@ bool Pattern::typeAtoms()
 	if (forcefield_ == NULL) forcefield_ = master.defaultForcefield();
 	if (forcefield_ == NULL)
 	{	
-		msg(Debug::None,"Can't type pattern '%s' - no FF associated to pattern or model, and no default set.\n",name_.get());
-		dbgEnd(Debug::Calls,"Pattern::typeAtoms");
+		msg.print("Can't type pattern '%s' - no FF associated to pattern or model, and no default set.\n",name_.get());
+		msg.exit("Pattern::typeAtoms");
 		return FALSE;
 	}
 	// Loop over atoms in the pattern's molecule
@@ -248,13 +248,13 @@ bool Pattern::typeAtoms()
 			i = i->next;
 			continue;
 		}
-		msg(Debug::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n",a,elements.symbol(i->element()));
+		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n",a,elements.symbol(i->element()));
 		bestmatch = 0;
 		parent_->setAtomtype(i, NULL, FALSE);
 		// Check for element 'XX' first
 		if (i->element() == 0)
 		{
-			msg(Debug::None,"Failed to type atom %i since it has no element type.\n",i->id()+1);
+			msg.print("Failed to type atom %i since it has no element type.\n",i->id()+1);
 			nfailed ++;
 			result = FALSE;
 		}
@@ -266,9 +266,9 @@ bool Pattern::typeAtoms()
 			// First, check element is the same, otherwise skip
 			if (i->element() != at->characterElement()) continue;
 			// See how well this ff description matches the environment of our atom 'i'
-			msg(Debug::Typing,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
+			msg.print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
 			newmatch = at->matchAtom(i,&rings_,parent_,i);
-			msg(Debug::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i\n",ffa->typeId(),newmatch);
+			msg.print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i\n",ffa->typeId(),newmatch);
 			if (newmatch > bestmatch)
 			{
 				// Better match found...
@@ -276,26 +276,26 @@ bool Pattern::typeAtoms()
 				i->setType(ffa);
 			}
 		}
-		msg(Debug::Typing,"Pattern::typeAtoms : FFType for atom is : %i\n",i->type());
+		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFType for atom is : %i\n",i->type());
 		if (i->type() == NULL)
 		{
-			msg(Debug::None,"Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->id()+1,i->nBonds());
+			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->id()+1,i->nBonds());
 			nfailed ++;
 			result = FALSE;
 		}
 		i = i->next;
 	}
 	// Print warning if we failed...
-	if (nfailed != 0) msg(Debug::None,"Failed to type %i atoms in pattern '%s'.\n",nfailed,name_.get());
-	dbgEnd(Debug::Calls,"Pattern::typeAtoms");
+	if (nfailed != 0) msg.print("Failed to type %i atoms in pattern '%s'.\n",nfailed,name_.get());
+	msg.exit("Pattern::typeAtoms");
 	return result;
 }
 
 // Set atomtypes of selected atoms
 void Model::selectionSetType(ForcefieldAtom *ffa, bool fixed)
 {
-	dbgBegin(Debug::Calls,"Pattern::selectionSetType");
+	msg.enter("Pattern::selectionSetType");
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setAtomtype(i, ffa, fixed);
 	logChange(Change::CoordinateLog);
-	dbgEnd(Debug::Calls,"Pattern::selectionSetType");
+	msg.exit("Pattern::selectionSetType");
 }

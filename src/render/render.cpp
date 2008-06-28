@@ -26,7 +26,7 @@
 // Render model
 void Canvas::renderScene(Model *source)
 {
-	dbgBegin(Debug::Calls,"Canvas::renderScene");
+	msg.enter("Canvas::renderScene");
 	static double rotmat[16], cammat[16];
 	static Model *trajparent;
 	static double camrot;
@@ -34,14 +34,14 @@ void Canvas::renderScene(Model *source)
 	// If the canvas is stil restricted, don't draw anything
 	if (noDraw_)
 	{
-		dbgEnd(Debug::Calls,"Canvas::renderScene");
+		msg.exit("Canvas::renderScene");
 		return;
 	}
 
 	// Begin the GL commands
 	if (!beginGl())
 	{
-		dbgEnd(Debug::Calls,"Canvas::renderScene");
+		msg.exit("Canvas::renderScene");
 		return;
 	}
 
@@ -61,7 +61,7 @@ void Canvas::renderScene(Model *source)
 		glMatrixMode(GL_MODELVIEW);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glText(width_/2,height_/2,"No model to display.");
-		dbgEnd(Debug::Calls,"Canvas::renderScene");
+		msg.exit("Canvas::renderScene");
 		return;
 	}
 	else trajparent = source->trajectoryParent();
@@ -141,7 +141,7 @@ void Canvas::renderScene(Model *source)
 	  if (renderPoint_ == displayModel_->log(Change::TotalLog)) glCallList(list_[GLOB_MODEL]);
 	  else
 	  {
-		msg(Debug::Verbose,"Recreating display list for model '%s'...", displayModel_->name());
+		msg.print(Messenger::Verbose,"Recreating display list for model '%s'...", displayModel_->name());
 		//glDeleteLists(list_[GLOB_MODEL],1);
 		glNewList(list_[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
@@ -154,7 +154,7 @@ void Canvas::renderScene(Model *source)
 		  if (prefs.isVisibleOnScreen(Prefs::ViewForceArrows)) renderModelForceArrows();
 		glEndList();
 		renderPoint_ = displayModel_->log(Change::TotalLog);
-		msg(Debug::Verbose," Done. (New point = %i)\n",renderPoint_);
+		msg.print(Messenger::Verbose," Done. (New point = %i)\n",renderPoint_);
 	  }
 	  // Render surfaces
 	  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces();
@@ -220,18 +220,18 @@ void Canvas::renderScene(Model *source)
 
 	glFlush();
 	endGl();
-	dbgEnd(Debug::Calls,"Canvas::renderScene");
+	msg.exit("Canvas::renderScene");
 }
 
 // Render list of TextObjects 
 void Canvas::renderText(QPainter &painter)
 {
-	dbgBegin(Debug::Calls,"Canvas::renderText");
+	msg.enter("Canvas::renderText");
 
 	// If the canvas is still restricted, don't draw anything
 	if (noDraw_)
 	{
-		dbgEnd(Debug::Calls,"Canvas::renderText");
+		msg.exit("Canvas::renderText");
 		return;
 	}
 
@@ -249,5 +249,5 @@ void Canvas::renderText(QPainter &painter)
 	// Clear list
 	textObjects_.clear();
 
-	dbgEnd(Debug::Calls,"Canvas::renderText");
+	msg.exit("Canvas::renderText");
 }

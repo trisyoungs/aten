@@ -80,7 +80,7 @@ void GuiQt::initialise(int &argc, char **argv)
 // Initialise and create GUI
 void GuiQt::run()
 {
-	dbgBegin(Debug::Calls,"GuiQt::run");
+	msg.enter("GuiQt::run");
 
 	// Initialise Qt's icons resource
 
@@ -150,7 +150,8 @@ void GuiQt::run()
 	mainWindow->show();
 	doesExist_ = TRUE;
 
-	// Make first loaded model the current one
+	// Make first loaded model the current one - if no model loaded, add one
+	if (master.nModels() == 0) Model *m = master.addModel();
 	master.setCurrentModel(master.models());
 
 	// Refresh the necessary windows
@@ -177,7 +178,7 @@ void GuiQt::run()
 
 	int n = app->exec();
 
-	dbgEnd(Debug::Calls,"GuiQt::run");
+	msg.exit("GuiQt::run");
 }
 
 // Returns if the GUI has been created

@@ -39,7 +39,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 		case (Variable::IntegerVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
 			{
-				msg(Debug::None, "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->set(c->arg(2)->asInteger());
@@ -47,7 +47,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 		case (Variable::FloatVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
 			{
-				msg(Debug::None, "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->set(c->arg(2)->asDouble());
@@ -56,7 +56,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 		case (Variable::CharacterVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
 			{
-				msg(Debug::None, "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				msg.print( "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->set( type2 == Variable::ExpressionVariable ? ftoa(c->arg(2)->asDouble()) : c->argc(2));
@@ -65,7 +65,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 		default:
 			if (c->argt(0) != c->argt(2))
 			{
-				msg(Debug::None, "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+				msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->copyPointer(c->arg(2));
@@ -85,7 +85,7 @@ int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 		case (Variable::IntegerVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
 			{
-				msg(Debug::None, "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->set(c->arg(1)->asInteger());
@@ -93,7 +93,7 @@ int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 		case (Variable::FloatVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
 			{
-				msg(Debug::None, "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->set(c->arg(1)->asDouble());
@@ -102,7 +102,7 @@ int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 		case (Variable::CharacterVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
 			{
-				msg(Debug::None, "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				msg.print( "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->set( type2 == Variable::ExpressionVariable ? ftoa(c->arg(1)->asDouble()) : c->argc(1));
@@ -111,7 +111,7 @@ int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 		default:
 			if (c->argt(0) != c->argt(1))
 			{
-				msg(Debug::None, "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
+				msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
 				return CR_FAIL;
 			}
 			else c->arg(0)->copyPointer(c->arg(1));

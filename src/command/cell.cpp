@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/master.h"
 #include "model/model.h"
 
@@ -62,7 +62,7 @@ int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	msg(Debug::None,"Unit cell type for model '%s' is %s\n", obj.rs->name(), Cell::cellType(obj.rs->cell()->type()));
+	msg.print("Unit cell type for model '%s' is %s\n", obj.rs->name(), Cell::cellType(obj.rs->cell()->type()));
 	if (obj.rs->cell()->type() != Cell::NoCell) obj.rs->cell()->print();
 	return CR_SUCCESS;
 }
@@ -123,10 +123,10 @@ int CommandData::function_CA_SPACEGROUP(Command *&c, Bundle &obj)
 	if (c->argt(0) == Variable::IntegerVariable) obj.rs->setSpacegroup(c->argi(0));
 	else
 	{
-		msg(Debug::None,"Searching for spacegroup '%s'...",c->argc(0));
+		msg.print("Searching for spacegroup '%s'...",c->argc(0));
 		int sg = master.findSpacegroupByName(c->argc(0));
-		if (sg == 0) msg(Debug::None," not found - no spacegroup set.\n");
-		else msg(Debug::None," found, id = %i.\n",sg);
+		if (sg == 0) msg.print(" not found - no spacegroup set.\n");
+		else msg.print(" found, id = %i.\n",sg);
 		obj.rs->setSpacegroup(sg);
 	}
 	return CR_SUCCESS;

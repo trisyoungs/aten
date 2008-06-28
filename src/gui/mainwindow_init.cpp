@@ -30,7 +30,7 @@
 // Finalise GUI
 void AtenForm::finaliseUi()
 {
-	dbgBegin(Debug::Calls,"AtenForm::finaliseUi");
+	msg.enter("AtenForm::finaliseUi");
 	Filter *f;
 	int n;
 	QStringList filters;
@@ -266,13 +266,13 @@ void AtenForm::finaliseUi()
 	filters << "All files (*)";
 	loadScriptDialog->setFilters(filters);
 
-	dbgEnd(Debug::Calls,"AtenForm::finaliseUi");
+	msg.exit("AtenForm::finaliseUi");
 }
 
 // Set controls
 void AtenForm::setControls()
 {
-	dbgBegin(Debug::Calls,"AtenForm::setControls");
+	msg.enter("AtenForm::setControls");
 	// Set correct Atom::DrawStyle on toolbar
 	switch (prefs.renderStyle())
 	{
@@ -296,6 +296,6 @@ void AtenForm::setControls()
 	bondToleranceSpin_->setValue(prefs.bondTolerance());
 	// Set the initial configuration of the splitter
 	ui.MainSplitter->setSizes( QList<int>() << 500 << 64 );
-	dbgEnd(Debug::Calls,"AtenForm::setControls");
+	msg.exit("AtenForm::setControls");
 }
 

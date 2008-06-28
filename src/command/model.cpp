@@ -21,7 +21,7 @@
 
 #include "command/commands.h"
 #include "base/master.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "classes/forcefield.h"
 #include "parse/filter.h"
 #include "model/model.h"
@@ -56,8 +56,8 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	obj.m->selectNone();
 	obj.m->resetLogs();
 	// Print out some useful info on the model that we've just read in
-	msg(Debug::None,"Atoms  : %i\n",obj.m->nAtoms());
-	msg(Debug::None,"Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
+	msg.print("Atoms  : %i\n",obj.m->nAtoms());
+	msg.print("Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
 	// Lastly, reset all the log points and start afresh
 	obj.m->resetLogs();
@@ -81,7 +81,7 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 	}
 	else
 	{
-		msg(Debug::None,"No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0),c->argi(0));
+		msg.print("No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0),c->argi(0));
 		return CR_FAIL;
 	}
 }
@@ -97,9 +97,9 @@ int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
 // Print loaded models ('listmodels')
 int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 {
-	if (master.nModels() != 0) msg(Debug::None,"Name            NAtoms  Forcefield\n");
+	if (master.nModels() != 0) msg.print("Name            NAtoms  Forcefield\n");
 	for (Model *m = master.models(); m != NULL; m = m->next)
-		msg(Debug::None,"%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
+		msg.print("%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
 	return CR_SUCCESS;
 }
 
@@ -154,7 +154,7 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 {
 	obj.m = master.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
-	msg(Debug::None,"Created model '%s'\n", obj.m->name());
+	msg.print("Created model '%s'\n", obj.m->name());
 	if (prefs.keepNames())
 	{
 		Forcefield *f = master.addForcefield();
@@ -170,11 +170,11 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (obj.m->next == NULL) msg(Debug::None,"Already at last loaded model.\n");
+	if (obj.m->next == NULL) msg.print("Already at last loaded model.\n");
 	else
 	{
 		master.setCurrentModel(obj.m->next);
-		msg(Debug::None,"Current model is now '%s'.\n", obj.m->name());
+		msg.print("Current model is now '%s'.\n", obj.m->name());
 		c->parent()->setModelVariables(obj.m);
 	}
 	return CR_SUCCESS;
@@ -184,11 +184,11 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (obj.m->prev == NULL) msg(Debug::None,"Already at first loaded model.\n");
+	if (obj.m->prev == NULL) msg.print("Already at first loaded model.\n");
 	else
 	{
 		master.setCurrentModel(obj.m->prev);
-		msg(Debug::None,"Current model is now '%s'.\n",obj.m->name());
+		msg.print("Current model is now '%s'.\n",obj.m->name());
 		c->parent()->setModelVariables(obj.m);
 	}
 	return CR_SUCCESS;
@@ -203,7 +203,7 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
-		msg(Debug::None,"No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
+		msg.print("No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	obj.rs->setFilter(f);
@@ -217,7 +217,7 @@ int CommandData::function_CA_SETNAME(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.rs->setName(c->argc(0));
 	c->parent()->setModelVariables(obj.m);
-	msg(Debug::Verbose,"Renamed model to '%s'\n", obj.rs->name());
+	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return CR_SUCCESS;
 }
 

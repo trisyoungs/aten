@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include <time.h>
@@ -32,7 +32,7 @@ int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
 	Mat4<double> rmat = obj.rs->rotationMatrix();
 	Vec3<double> camr = obj.rs->camera();
 	double camrot = obj.rs->cameraRotation();
-	msg(Debug::None, "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
+	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
 	return CR_SUCCESS;
 }
 
@@ -96,7 +96,7 @@ int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	if (!gui.exists())
 	{
-		msg(Debug::None,"Can't perform rendering speedtest without the GUI.\n");
+		msg.print("Can't perform rendering speedtest without the GUI.\n");
 		return CR_FAIL;
 	}
 	clock_t tstart = clock();
@@ -109,7 +109,7 @@ int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 	}
 	clock_t tfinish = clock();
 	double nsec = double(tfinish-tstart) / CLOCKS_PER_SEC;
-	msg(Debug::None,"SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
+	msg.print("SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
 	return CR_SUCCESS;
 }
 

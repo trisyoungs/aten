@@ -195,7 +195,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		if (n != BIF_NITEMS)
 		{
 			pixmap.save(filename, extension_from_BIF( (bitmap_format) n), -1);
-			msg(Debug::None,"Saved current view as '%s'\n", qPrintable(filename));
+			msg.print("Saved current view as '%s'\n", qPrintable(filename));
 		}
 	}
 }
@@ -228,7 +228,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 			ui.actionViewTrajectory->setChecked(TRUE);
 			gui.updateTrajControls();
 		}
-		else msg(Debug::None, "Couldn't determine trajectory file format.\n");
+		else msg.print( "Couldn't determine trajectory file format.\n");
 		gui.modelChanged();
 	}
 }

@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/elements.h"
 #include "gui/gui.h"
 #include "model/model.h"
@@ -287,7 +287,7 @@ int CommandData::function_CA_SCHEME(Command *&c, Bundle &obj)
 		}
 		else return CR_FAIL;
 	}
-	else msg(Debug::None, "Current atom colouring scheme is '%s'\n", Prefs::colouringScheme( prefs.colourScheme() ));
+	else msg.print( "Current atom colouring scheme is '%s'\n", Prefs::colouringScheme( prefs.colourScheme() ));
 	return CR_SUCCESS;
 }
 
@@ -322,7 +322,7 @@ int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 		int n = 1;
 		strcat(shown,"Visible: ");
 		strcat(notshown,"Hidden : ");
-		msg(Debug::None, "Current on-screen object status:\n");
+		msg.print( "Current on-screen object status:\n");
 		for (int i=0; i<Prefs::nViewObjects; i++)
 		{
 			if (prefs.isVisibleOnScreen( (Prefs::ViewObject) n))
@@ -337,8 +337,8 @@ int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 			}
 			n *= 2;
 		}
-		msg(Debug::None, "%s\n", shown);
-		msg(Debug::None, "%s\n", notshown);
+		msg.print( "%s\n", shown);
+		msg.print( "%s\n", notshown);
 	}
 	return CR_SUCCESS;
 }
@@ -360,7 +360,7 @@ int CommandData::function_CA_SHOWONIMAGE(Command *&c, Bundle &obj)
 		int n = 1;
 		strcat(shown,"Visible: ");
 		strcat(notshown,"Hidden : ");
-		msg(Debug::None, "Current on-image object status:\n");
+		msg.print( "Current on-image object status:\n");
 		for (int i=0; i<Prefs::nViewObjects; i++)
 		{
 			if (prefs.isVisibleOnImage( (Prefs::ViewObject) n))
@@ -375,8 +375,8 @@ int CommandData::function_CA_SHOWONIMAGE(Command *&c, Bundle &obj)
 			}
 			n *= 2;
 		}
-		msg(Debug::None, "%s\n", shown);
-		msg(Debug::None, "%s\n", notshown);
+		msg.print( "%s\n", shown);
+		msg.print( "%s\n", notshown);
 	}
 	return CR_SUCCESS;
 }
@@ -395,7 +395,7 @@ int CommandData::function_CA_STYLE(Command *&c, Bundle &obj)
 		}
 		else return CR_FAIL;
 	}
-	else msg(Debug::None, "Current model drawing style is '%s'\n", Atom::drawStyle(prefs.renderStyle()));
+	else msg.print( "Current model drawing style is '%s'\n", Atom::drawStyle(prefs.renderStyle()));
 	return CR_SUCCESS;
 }
 

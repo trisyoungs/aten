@@ -86,7 +86,7 @@ int CommandData::function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj)
 	int cs = c->argi(0);
 	if ((cs < 0) || (cs > 10))
 	{
-		msg(Debug::None,"ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
+		msg.print("ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
 		return CR_FAIL;
 	}
 	obj.g->setColourScale(cs-1);
@@ -115,7 +115,7 @@ int CommandData::function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	if (strlen(c->argc(0)) != 3)
 	{
-		msg(Debug::None,"A string of three characters must be passed to 'gridlooporder' (got '%s').\n",c->argc(0));
+		msg.print("A string of three characters must be passed to 'gridlooporder' (got '%s').\n",c->argc(0));
 		return CR_FAIL;
 	}
 	char ch;
@@ -140,7 +140,7 @@ int CommandData::function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj)
 				obj.g->setLoopOrder(n,2);
 				break;
 			default:
-				msg(Debug::None,"Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
+				msg.print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
 				obj.g->setLoopOrder(n,n);
 				break;
 		}

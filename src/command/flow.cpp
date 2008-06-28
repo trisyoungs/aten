@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/master.h"
 #include "classes/pattern.h"
 #include <fstream>
@@ -79,7 +79,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					// Check for end of file...
 					if (c->parent()->inputFile()->peek() == -1)
 					{
-						msg(Debug::Verbose,"Infinite 'for' reached end of file.\n");
+						msg.print(Messenger::Verbose,"Infinite 'for' reached end of file.\n");
 						status = FALSE;
 					}
 				}
@@ -126,7 +126,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 	else
 	{
 		// Initialise loop variable in arg(0), depending on its type
-		//msg(Debug::Verbose,"Initialising loop : count variable is '%s', type = '%s'\n", countvar->name(), text_from_VT(counttype));
+		//msg.print(Messenger::Verbose,"Initialising loop : count variable is '%s', type = '%s'\n", countvar->name(), text_from_VT(counttype));
 		switch (c->argt(0))
 		{
 			// Integer loop: 1 arg  - loop from 1 until end of file or termination
@@ -139,7 +139,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					if (c->parent()->inputFile() != NULL)
 						if (c->parent()->inputFile()->peek() == -1)
 						{
-							msg(Debug::Verbose,"Command 'for' reached end of file.\n");
+							msg.print(Messenger::Verbose,"Command 'for' reached end of file.\n");
 							status = FALSE;
 						}
 				}
@@ -163,13 +163,13 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					else if (c->argt(1) == Variable::IntegerVariable) p = obj.m->pattern(c->argi(1));
 					else
 					{
-						msg(Debug::None, "Atom loop argument 2 must be of Pattern or Integer type.\n");
+						msg.print( "Atom loop argument 2 must be of Pattern or Integer type.\n");
 						return CR_FAIL;
 					}
 					// Must have a valid pattern pointer here
 					if (p == NULL)
 					{
-						msg(Debug::None, "Atom loop was not given a valid pattern.\n");
+						msg.print( "Atom loop was not given a valid pattern.\n");
 						return CR_FAIL;
 					}
 					// Check on third argument - if provided, must be an int
@@ -181,7 +181,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 							// Check molecule range
 							if ((i < 1) || (i > p->nMols()))
 							{
-								msg(Debug::None, "Atom loop pattern molecule is out of range.\n");
+								msg.print( "Atom loop pattern molecule is out of range.\n");
 								return CR_FAIL;
 							}
 							int m = p->startAtom();
@@ -190,7 +190,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 						}
 						else
 						{
-							msg(Debug::None, "Atom loop argument 3 must be of Integer type.\n.");
+							msg.print( "Atom loop argument 3 must be of Integer type.\n.");
 							return CR_FAIL;
 						}
 					}
@@ -207,7 +207,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (c->argt(0) == Variable::PatternVariable) c->arg(0)->set(obj.m->patterns());
 				else
 				{
-					msg(Debug::None, "Pattern loop variable must be of Pattern type.\n");
+					msg.print( "Pattern loop variable must be of Pattern type.\n");
 					return CR_FAIL;
 				}
 				if (c->argp(0) == NULL) status = FALSE;
@@ -219,7 +219,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
-					msg(Debug::None, "Bond loop must be given a variable of Pattern type.\n");
+					msg.print( "Bond loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
 				c->arg(0)->set(c->argp(1)->bonds());
@@ -231,7 +231,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
-					msg(Debug::None, "Angle loop must be given a variable of Pattern type.\n");
+					msg.print( "Angle loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
 				c->arg(0)->set(c->argp(1)->angles());
@@ -243,7 +243,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
-					msg(Debug::None, "Torsion loop must be given a variable of Pattern type.\n");
+					msg.print( "Torsion loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
 				c->arg(0)->set(c->argp(1)->torsions());
@@ -257,7 +257,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				{
 					if (c->argt(1) != Variable::AtomtypeVariable)
 					{
-						msg(Debug::None, "Second argument to atomtype loop must be a variable of Atomtype type.\n");
+						msg.print( "Second argument to atomtype loop must be a variable of Atomtype type.\n");
 						return CR_FAIL;
 					}
 					// Start atomtype loop at type given instead of first
@@ -276,14 +276,14 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 		{
 			c->setLoopActive(TRUE);
 			c->setLoopIterations(1);
-			msg(Debug::Commands,"Loop is initialised and running.\n");
+			msg.print(Messenger::Commands,"Loop is initialised and running.\n");
 			c = c->branchCommands();
 		}
 		else
 		{
 			c->setLoopActive(FALSE);
 			c->setLoopIterations(0);
-			msg(Debug::Commands,"Loop terminated on initialisation.\n");
+			msg.print(Messenger::Commands,"Loop terminated on initialisation.\n");
 			c = c->next;
 		}
 	}

@@ -31,7 +31,7 @@
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "480"
-#define ATENDATE "Thu 26 Jun - 16:31"
+#define ATENDATE "Sat 28 Jun - 09:52"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -272,7 +272,9 @@ class Master
 	void printUsage() const;
 
 	public:
-	// Parse command line options
+	// Parse early command line options, before filter / prefs load
+	bool parseCliEarly(int, char**);
+	// Parse command line options (after filter / prefs load
 	int parseCli(int, char**);
 	// Element map name conversions to apply on load
 	List< Namemap<int> > typeMap;

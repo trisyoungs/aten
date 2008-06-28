@@ -37,7 +37,7 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 		else if (c->argt(0) == Variable::AtomVariable) i = c->arga(0);
 		else
 		{
-			msg(Debug::None,"Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.\n");
+			msg.print("Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.\n");
 			return CR_FAIL;
 		}
 		obj.rs->hydrogenSatisfy(i);

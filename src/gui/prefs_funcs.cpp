@@ -44,7 +44,7 @@ AtenPrefs::~AtenPrefs()
 // Finalise GUI
 void AtenPrefs::finaliseUi()
 {
-	dbgBegin(Debug::Calls,"AtenPrefs::finaliseUi");
+	msg.enter("AtenPrefs::finaliseUi");
 	int i;
 	// Add elements to element list and select first item
 	QListWidgetItem *item;
@@ -54,13 +54,13 @@ void AtenPrefs::finaliseUi()
 		item->setText(elements.name(i));
 	}
 	ui.ElementList->setCurrentRow(0);
-	dbgEnd(Debug::Calls,"AtenPrefs::finaliseUi");
+	msg.exit("AtenPrefs::finaliseUi");
 }
 
 // Set controls
 void AtenPrefs::setControls()
 {
-	dbgBegin(Debug::Calls,"AtenPrefs::setControls");
+	msg.enter("AtenPrefs::setControls");
 	refreshing_ = TRUE;
 
 	// Select the first element in the elements list
@@ -127,7 +127,7 @@ void AtenPrefs::setControls()
 		elements.copyDiffuseColour(i, elementsBackup_[i].diffuseColour);
 	}
 	refreshing_ = FALSE;
-	dbgEnd(Debug::Calls,"AtenPrefs::setControls");
+	msg.exit("AtenPrefs::setControls");
 }
 
 // Close window

@@ -34,7 +34,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams pa
 	switch (type)
 	{
 		case (VdwFunctions::None):
-			msg(Debug::None, "Warning: No function is specified for vdW energy %i-%i.\n", i, j);
+			msg.print( "Warning: No function is specified for vdW energy %i-%i.\n", i, j);
 			U = 0.0;
 			break;
 		case (VdwFunctions::InversePower):
@@ -94,7 +94,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 	switch (type)
 	{
 		case (VdwFunctions::None):
-			msg(Debug::None, "Warning: No function is specified for vdW forces %i-%i.\n", i, j);
+			msg.print( "Warning: No function is specified for vdW forces %i-%i.\n", i, j);
 			du_dr = 0.0;
 			break;
 		case (VdwFunctions::InversePower):
@@ -151,7 +151,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 {
 	// Calculate the internal VDW contributions with coordinates from *xcfg
 	// Consider only the intrapattern interactions between atoms in individual molecules within the pattern.
-	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
+	msg.enter("Pattern::vdwIntraPatternEnergy");
 	static int n,aoff,m1,i,j, start1, finish1, con;
 	static Vec3<double> mim_i;
 	static double U, rij, energy_inter, energy_intra, cutoff, vrs;
@@ -187,7 +187,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 					// Check for conflicting VDW types
 					if (atoms_[i]->data()->vdwForm() != atoms_[j]->data()->vdwForm())
 					{
-						msg(Debug::None, "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
+						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
 						continue;
 					}
 					// Calculate the enrgy contribution
@@ -201,14 +201,14 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 	// Add totals into Energy
 	estore->add(Energy::VdwIntraEnergy,energy_intra,id_);
 	estore->add(Energy::VdwInterEnergy,energy_inter,id_,id_);
-	dbgEnd(Debug::Calls,"Pattern::vdwIntraPatternEnergy");
+	msg.exit("Pattern::vdwIntraPatternEnergy");
 }
 
 // Interpattern VDW energy
 void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Energy *estore, int molId)
 {
 	// Calculate the VDW contribution to the energy from interactions between molecules of this pattern and the one supplied
-	dbgBegin(Debug::Calls,"Pattern::vdwInterPatternEnergy");
+	msg.enter("Pattern::vdwInterPatternEnergy");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> mim_i;
 	static double rij, energy_inter, cutoff, vrs, U;
@@ -278,7 +278,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 					// Check for conflicting VDW types
 					if (atoms_[i]->data()->vdwForm() != otherPattern->atoms_[j]->data()->vdwForm())
 					{
-						msg(Debug::None, "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[otherPattern->atoms_[j]->data()->vdwForm()].name);
+						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[otherPattern->atoms_[j]->data()->vdwForm()].name);
 						continue;
 					}
 					// Calculate the enrgy contribution
@@ -291,7 +291,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 		aoff1 += nAtoms_;
 	}
 	estore->add(Energy::VdwInterEnergy,energy_inter,id_,otherPattern->id_);
-	dbgEnd(Debug::Calls,"Pattern::vdwInterPatternEnergy");
+	msg.exit("Pattern::vdwInterPatternEnergy");
 }
 
 // Intrapattern VDW forces
@@ -302,7 +302,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 	// 'aoff' stores the atom number offset (molecule offset) but is *only* used for lookups in the coordinate
 	// arrays since assuming the pattern definition is correct then the sigmas/epsilons in molecule 0 represent
 	// those of all molecules.
-	dbgBegin(Debug::Calls,"Pattern::vdwIntraPatternForces");
+	msg.enter("Pattern::vdwIntraPatternForces");
 	static int n,i,j,aoff,m1,con;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double cutoff, vrs, rij;
@@ -335,7 +335,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 					// Check for conflicting VDW types
 					if (atoms_[i]->data()->vdwForm() != atoms_[j]->data()->vdwForm())
 					{
-						msg(Debug::None, "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
+						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[atoms_[j]->data()->vdwForm()].name);
 						continue;
 					}
 					// Calculate force contribution
@@ -350,7 +350,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(Debug::Calls,"Pattern::vdwIntraPatternForces");
+	msg.exit("Pattern::vdwIntraPatternForces");
 }
 
 // Interpattern VDW forces
@@ -358,7 +358,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 {
 	// Calculate the VDW forces from interactions between different molecules
 	// of this pnode and the one supplied
-	dbgBegin(Debug::Calls,"Pattern::vdwInterPatternForces");
+	msg.enter("Pattern::vdwInterPatternForces");
 	static int n1,n2,i,j,aoff1,aoff2,m1,m2,start,finish;
 	static Vec3<double> mim_i, f_i, tempf;
 	static double rij, factor, cutoff, vrs;
@@ -394,7 +394,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 					// Check for conflicting VDW types
 					if (atoms_[i]->data()->vdwForm() != otherPattern->atoms_[j]->data()->vdwForm())
 					{
-						msg(Debug::None, "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[otherPattern->atoms_[j]->data()->vdwForm()].name);
+						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[otherPattern->atoms_[j]->data()->vdwForm()].name);
 						continue;
 					}
 					// Calculate force contribution
@@ -409,7 +409,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 		}
 		aoff1 += nAtoms_;
 	}
-	dbgEnd(Debug::Calls,"Pattern::vdwInterPatternForces");
+	msg.exit("Pattern::vdwInterPatternForces");
 }
 
 /*
@@ -425,7 +425,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 {
 	// Calculate the long-range correction to the VDW energy
-	dbgBegin(Debug::Calls,"Pattern::vdwCorrectEnergy");
+	msg.enter("Pattern::vdwCorrectEnergy");
 	static int i, j;
 	static Pattern *p1, *p2;
 	static double energy, rho, cutoff, du_dr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
@@ -455,14 +455,14 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 					// Check for conflicting VDW types
 					if (p1->atoms_[i]->data()->vdwForm() != p2->atoms_[j]->data()->vdwForm())
 					{
-						msg(Debug::None, "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].name);
+						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].name);
 						continue;
 					}
 					paramsj = paj->data()->params();
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
-							msg(Debug::None, "Warning: No function is specified for vdW energy correction %i-%i.\n", i, j);
+							msg.print( "Warning: No function is specified for vdW energy correction %i-%i.\n", i, j);
 							du_dr = 0.0;
 							break;
 						case (VdwFunctions::Lj):
@@ -476,7 +476,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 							du_dr *= (sigma * sigma * sigma);
 							break;
 						default:
-							msg(Debug::None,"VDW tail correction not implemented for %s VDW interactions.\n", VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name);
+							msg.print("VDW tail correction not implemented for %s VDW interactions.\n", VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name);
 							break;
 					}
 					energy += 2.0 * PI * rho * du_dr;
@@ -485,6 +485,6 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 		}
 	}
 	estore->add(Energy::VdwTailEnergy,energy,-1);
-	dbgEnd(Debug::Calls,"Pattern::vdwCorrectEnergy");
+	msg.exit("Pattern::vdwCorrectEnergy");
 }
 

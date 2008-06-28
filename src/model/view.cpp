@@ -115,7 +115,7 @@ double Model::orthoSize()
 void Model::setRotation(double rotx, double roty)
 {
 	// Rotate the whole system by the amounts specified.
-	dbgBegin(Debug::Calls,"Model::setRotation");
+	msg.enter("Model::setRotation");
 	static double sinx, cosx, siny, cosy;
 	trajectoryParent_ == NULL ? rotationMatrix_.setIdentity() : trajectoryParent_->rotationMatrix_.setIdentity();
 	// Calculate cos/sin terms for needless speedup!
@@ -140,14 +140,14 @@ void Model::setRotation(double rotx, double roty)
 	calculateViewMatrix();
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::setRotation");
+	msg.exit("Model::setRotation");
 }
 
 // Adjust Camera
 void Model::adjustCamera(double dx, double dy, double dz, double angle)
 {
 	// Adjust the models camera variables
-	dbgBegin(Debug::Calls,"Model::adjustCamera");
+	msg.enter("Model::adjustCamera");
 	double sincam, coscam;
 	if (trajectoryParent_ == NULL)
 	{
@@ -178,13 +178,13 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	calculateViewMatrix();
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::adjustCamera");
+	msg.exit("Model::adjustCamera");
 }
 
 // Adjust orthographic size
 void Model::adjustOrthoSize(double delta)
 {
-	dbgBegin(Debug::Calls,"Model::adjustOrthoSize");
+	msg.enter("Model::adjustOrthoSize");
 	orthoSize_ += delta;
 	if (orthoSize_ < 1.0) orthoSize_ = 1.0;
 	//if (orthoSize_ > 50.0) orthoSize_ = 50.0;
@@ -192,14 +192,14 @@ void Model::adjustOrthoSize(double delta)
 	gui.mainView.doProjection();
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::adjustOrthoSize");
+	msg.exit("Model::adjustOrthoSize");
 }
 
 // Reset Camera
 void Model::resetCamera(const Vec3<double> &newr)
 {
 	// Adjust the models camera variables
-	dbgBegin(Debug::Calls,"Model::resetCamera");
+	msg.enter("Model::resetCamera");
 	if (trajectoryParent_ == NULL)
 	{
 		camera_ = newr;
@@ -224,7 +224,7 @@ void Model::resetCamera(const Vec3<double> &newr)
 	calculateViewMatrix();
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::resetCamera");
+	msg.exit("Model::resetCamera");
 }
 
 // Reset View
@@ -232,7 +232,7 @@ void Model::resetView()
 {
 	// Reset the modelview matrix and the camera
 	//return;
-	dbgBegin(Debug::Calls,"Model::resetView");
+	msg.enter("Model::resetView");
 	static Vec3<double> newcam, newscreen;
 	Atom *i, target;
 	bool done = FALSE;
@@ -289,14 +289,14 @@ void Model::resetView()
 	calculateViewMatrix();
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::resetView");
+	msg.exit("Model::resetView");
 }
 
 // Rotate free
 void Model::rotate(double dx, double dy)
 {
 	// Rotate the whole system by the amounts specified.
-	dbgBegin(Debug::Calls,"Model::rotate");
+	msg.enter("Model::rotate");
 	static double rotx, roty, theta, sinx, cosx, siny, cosy, camrot;
 	static Mat4<double> newrotmat, oldrotmat;
 	camrot = (trajectoryParent_ == NULL ? cameraRotation_ : trajectoryParent_->cameraRotation_);
@@ -321,7 +321,7 @@ void Model::rotate(double dx, double dy)
 	calculateViewMatrix();
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::rotate");
+	msg.exit("Model::rotate");
 }
 
 // Calculate View Matrix
@@ -339,33 +339,28 @@ void Model::calculateViewMatrix()
 void Model::projectAll()
 {
 	// Transform the model coordinates of all atoms into world GL and 2D screen coordinates
-	dbgBegin(Debug::Calls,"Model::projectAll");
+	msg.enter("Model::projectAll");
 	if (projectionPoint_ != (logs_[Change::CoordinateLog] + logs_[Change::CameraLog]))
 	{
 		if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) projectAtom(i);
 		projectionPoint_ = logs_[Change::CoordinateLog] + logs_[Change::CameraLog];
 	}
-	dbgEnd(Debug::Calls,"Model::projectAll");
+	msg.exit("Model::projectAll");
 }
 
 // Project the coordinates of all selected atoms in the model
 void Model::projectSelection()
 {
-	dbgBegin(Debug::Calls,"Model::projectSelection");
+	msg.enter("Model::projectSelection");
 	if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) projectAtom(i);
-	dbgEnd(Debug::Calls,"Model::projectSelection");
+	msg.exit("Model::projectSelection");
 }
 
 // Project the coordinates of a single atom in the model
 void Model::projectAtom(Atom *i)
 {
 	// Transform the model coordinates of specified atom into world GL and 2D screen coordinates
-	dbgBegin(Debug::MoreCalls,"Model::projectAtom");
-	if (!gui.mainView.isValid())
-	{
-		dbgEnd(Debug::MoreCalls,"Model::projectAtom");
-		return;
-	}
+	if (!gui.mainView.isValid()) return;
 	static Vec4<double> modelr, screenr, worldr;
 	static double srx, sry, srz;
 	static GLint *vmat;
@@ -390,18 +385,18 @@ void Model::projectAtom(Atom *i)
 	screenr = gui.mainView.PMAT * worldr;
 	screenr.x /= screenr.w;
 	i->setScreenRadius(fabs( (vmat[0] + vmat[2]*(screenr.x+1)*0.5) - srx));
-	dbgEnd(Debug::MoreCalls,"Model::projectAtom");
+
 }
 
 // Project given model coordinates into screen coordinates
 Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
 {
-	dbgBegin(Debug::MoreCalls,"Model::modelToScreen");
+	msg.enter("Model::modelToScreen");
 	static Vec4<double> modelr, screenr, worldr;
 	static Vec3<double> result;
 	if (!gui.mainView.isValid())
 	{
-		dbgEnd(Debug::MoreCalls,"Model::modelToScreen");
+		msg.exit("Model::modelToScreen");
 		result.zero();
 		return result;
 	}
@@ -418,7 +413,7 @@ Vec3<double> &Model::modelToScreen(Vec3<double> &pos)
 	screenr.y /= screenr.w;
 	vmat = gui.mainView.VMAT;
 	result.set( vmat[0] + vmat[2]*(screenr.x+1)*0.5, vmat[1] + vmat[3]*(screenr.y+1)*0.5, screenr.z / screenr.w);
-	dbgEnd(Debug::MoreCalls,"Model::modelToScreen");
+	msg.exit("Model::modelToScreen");
 	return result;
 }
 
@@ -426,14 +421,14 @@ Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 {
 	// Project the supplied world coordinates into screen coordinates.
 	// The returned vec4's 'w' component is the unit 'radius' at that point.
-	dbgBegin(Debug::Calls,"Model::worldToScreen");
+	msg.enter("Model::worldToScreen");
 	static Vec4<double> modelr, screenr, worldr, result;
 	static double x1,x2,radius;
 	static GLint *vmat;
 	screenr.zero();
 	if (!gui.mainView.isValid() )
 	{
-		dbgEnd(Debug::Calls,"Model::worldToScreen");
+		msg.exit("Model::worldToScreen");
 		return screenr;
 	}
 	calculateViewMatrix();
@@ -456,14 +451,14 @@ Vec4<double> &Model::worldToScreen(const Vec3<double> &v)
 	radius = fabs(x2 - x1);
 	// Store info and return
 	result.w = radius;
-	dbgEnd(Debug::Calls,"Model::worldToScreen");
+	msg.exit("Model::worldToScreen");
 	return result;
 }
 
 Vec3<double> Model::guideToModel(double sx, double sy)
 {
 	// Convert the screen coordinates passed to a position on the drawing guide, and then into model coordinates
-	dbgBegin(Debug::Calls,"Model::guideToModel");
+	msg.enter("Model::guideToModel");
 	static Vec4<double> guidepoint;
 	static Vec3<double> newpoint;
 	static Mat4<double> rotmat;
@@ -489,7 +484,7 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 	newpoint *= viewMatrixInverse_;
 	// Also need to account for periodic systems (which are translated so the cell midpoint is centred in the screen) by adding the cell's centre coordinate
 	newpoint += cell_.centre();
-	dbgEnd(Debug::Calls,"Model::guideToModel");
+	msg.exit("Model::guideToModel");
 	return newpoint;
 }
 
@@ -502,7 +497,7 @@ Vec3<double> Model::camera()
 // Set view to be along the specified cartesian axis
 void Model::viewAlong(double x, double y, double z)
 {
-	dbgBegin(Debug::Calls,"Model::viewAlong");
+	msg.enter("Model::viewAlong");
 	// Set model rotation matrix to be along the specified axis
 	Vec3<double> v;
 	v.set(x,y,z);
@@ -511,13 +506,13 @@ void Model::viewAlong(double x, double y, double z)
 	setRotation(-v.z,v.y);
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::viewAlong");
+	msg.exit("Model::viewAlong");
 }
 
 // Set view to be along the specified cell axis
 void Model::viewAlongCell(double x, double y, double z)
 {
-	dbgBegin(Debug::Calls,"Model::viewAlongCell");
+	msg.enter("Model::viewAlongCell");
 	// Set model rotation matrix to be along the specified cell axis
 	Vec3<double> v;
 	v.set(x,y,z);
@@ -527,7 +522,7 @@ void Model::viewAlongCell(double x, double y, double z)
 	setRotation(-v.z,v.y);
 	// Log camera change
 	logChange(Change::CameraLog);
-	dbgEnd(Debug::Calls,"Model::viewAlongCell");
+	msg.exit("Model::viewAlongCell");
 }
 
 // Calculate and return drawing pixel width

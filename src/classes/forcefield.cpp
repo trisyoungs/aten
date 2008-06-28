@@ -21,7 +21,7 @@
 
 #include "classes/forcefield.h"
 #include "base/prefs.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 
 // Forcefield keywords
 const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };
@@ -86,7 +86,7 @@ Rules::ForcefieldRules Forcefield::rules()
 // Set conversion flag for energetic generator data
 void Forcefield::setEnergyGenerator(int n)
 {
-	if ((n < 0) || (n > MAXFFGENDATA)) msg(Debug::None,"Index %i is out of range for generator data.\n", n);
+	if ((n < 0) || (n > MAXFFGENDATA)) msg.print("Index %i is out of range for generator data.\n", n);
 	else energyGenerators_[n] = TRUE;
 }
 
@@ -234,11 +234,11 @@ int Forcefield::matchType(const Dnchar &a, const Dnchar &b)
 ForcefieldAtom *Forcefield::findType(int query)
 {
 	// Search for the typeId_ specified and return the internal integer id (i.e. position in atomtype list)
-	dbgBegin(Debug::Calls,"Forcefield::findType[int]");
+	msg.enter("Forcefield::findType[int]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if (query == result->typeId()) break;
-	dbgEnd(Debug::Calls,"Forcefield::findType[int]");
+	msg.exit("Forcefield::findType[int]");
 	return result;
 }
 
@@ -248,23 +248,23 @@ ForcefieldAtom *Forcefield::findType(const char *query)
 	// Search for the atomname specified and return the internal integer id (i.e. position in atomtype list)
 	// We return the first occurrence we find (since there may be more than one - only typeId_ need be unique)
 	// Search both names and equivalents (since aliases may be defined that are not themselves defined as types_)
-	dbgBegin(Debug::Calls,"Forcefield::findType[char]");
+	msg.enter("Forcefield::findType[char]");
 	ForcefieldAtom *result;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((strcmp(result->name(),query) == 0) || (strcmp(result->equivalent(),query) == 0)) break;
-	dbgEnd(Debug::Calls,"Forcefield::findType[char]");
+	msg.exit("Forcefield::findType[char]");
 	return result;
 }
 
 // Return description of typeId_
 ForcefieldAtom *Forcefield::findByTypeId(int i, ForcefieldAtom *excluding)
 {
-	dbgBegin(Debug::Calls,"Forcefield::findByTypeId");
+	msg.enter("Forcefield::findByTypeId");
 	ForcefieldAtom *result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next)
 		if ((result->typeId() == i) && (result != excluding)) break;
 //	if (result == NULL) printf("Forcefield::typeOfId <<<< FFID %i not found in forcefield >>>>\n",i);
-	dbgEnd(Debug::Calls,"Forcefield::findByTypeId");
+	msg.exit("Forcefield::findByTypeId");
 	return result;
 }
 
@@ -304,18 +304,18 @@ int Forcefield::matchTypes(ForcefieldAtom *ffi, ForcefieldAtom *ffj, const char 
 	// specified in the bond / angle / torsion data supplied. Only check 'one way round' - the routine
 	// must be called again with i and j swapped over to test the inverse case.
 	// Matches against 'equiv' atomnames.
-	dbgBegin(Debug::Calls,"Forcefield::matchTypes");
+	msg.enter("Forcefield::matchTypes");
 	int matchi, matchj;
 	// Best case - exact, direct match:
 	if ((strcmp(ffi->equivalent(),typei) == 0) && (strcmp(ffj->equivalent(),typej) == 0))
 	{
-		dbgEnd(Debug::Calls,"Forcefield::matchTypes");
+		msg.exit("Forcefield::matchTypes");
 		return 0;
 	}
 	// No such luck, so match each atom separately
 	matchi = matchType(ffi->equivalent(),typei);
 	matchj = matchType(ffj->equivalent(),typej);
-	dbgEnd(Debug::Calls,"Forcefield::matchTypes");
+	msg.exit("Forcefield::matchTypes");
 	return (matchi + matchj);
 }
 
@@ -329,7 +329,7 @@ ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
 {
 	// Search the forcefield for the bond definition for the interaction of the atom types i-j
 	// Return NULL if no match found ('result' remains 'NULL' if no kind of match is found).
-	dbgBegin(Debug::Calls,"Forcefield::findBond");
+	msg.enter("Forcefield::findBond");
 	ForcefieldBound *result = NULL;
 	int matchij, matchji, bestmatch;
 	bestmatch = 10;
@@ -351,7 +351,7 @@ ForcefieldBound *Forcefield::findBond(ForcefieldAtom *ffi, ForcefieldAtom *ffj)
 		if (bestmatch == 0) break;
 		b = b ->next;
 	}
-	dbgEnd(Debug::Calls,"Forcefield::findBond");
+	msg.exit("Forcefield::findBond");
 	return result;
 }
 
@@ -360,7 +360,7 @@ ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj,
 {
 	// Search the forcefield for the angle definition for the interaction of the atom types i-j-k
 	// Return NULL is no match found.
-	dbgBegin(Debug::Calls,"Forcefield::findAngle");
+	msg.enter("Forcefield::findAngle");
 	ForcefieldBound *result = NULL;
 	int matchj, matchik, matchki, bestmatch;
 	bestmatch = 10;
@@ -390,7 +390,7 @@ ForcefieldBound *Forcefield::findAngle(ForcefieldAtom *ffi, ForcefieldAtom *ffj,
 		if (bestmatch == 0) break;		// Early exit for an exact match
 		a = a ->next;
 	}
-	dbgEnd(Debug::Calls,"Forcefield::findAngle");
+	msg.exit("Forcefield::findAngle");
 	return result;
 }
 
@@ -399,7 +399,7 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 {
 	// Search the forcefield for the torsion definition for the interaction of the atom types i-j-k-l
 	// Return NULL is no match found.
-	dbgBegin(Debug::Calls,"Forcefield::findTorsion");
+	msg.enter("Forcefield::findTorsion");
 	ForcefieldBound *result = NULL;
 	int matchil, matchli, matchjk, matchkj, matchijkl, matchlkji, bestmatch;
 	bestmatch = 10;
@@ -425,14 +425,14 @@ ForcefieldBound *Forcefield::findTorsion(ForcefieldAtom *ffi, ForcefieldAtom *ff
 		if (bestmatch == 0) break;
 		t = t->next;
 	}
-	dbgEnd(Debug::Calls,"Forcefield::findTorsion");
+	msg.exit("Forcefield::findTorsion");
 	return result;
 }
 
 void Forcefield::convertParameters()
 {
 	// Convert units of all the energetic parameters within the forcefield from the forcefield's current units to the program's internal units (specified in prefs)
-	dbgBegin(Debug::Calls,"Forcefield::convertParameters");
+	msg.enter("Forcefield::convertParameters");
 	ForcefieldParams *p;
 	ForcefieldBound *ffb;
 	ForcefieldAtom *ffa;
@@ -476,5 +476,5 @@ void Forcefield::convertParameters()
 	}
 	// Set new energy unit of the forcefield to the programs internal unit
 	energyUnit_ = prefs.energyUnit();
-	dbgEnd(Debug::Calls,"Forcefield::convertParameters");
+	msg.exit("Forcefield::convertParameters");
 }

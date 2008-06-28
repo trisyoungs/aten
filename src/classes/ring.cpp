@@ -89,23 +89,23 @@ bool Ring::containsAtom(Atom *i)
 // Add atom to ring
 bool Ring::addAtom(Atom *i)
 {
-	dbgBegin(Debug::Calls,"Ring::addAtom");
+	msg.enter("Ring::addAtom");
 	// Size check
 	if (atoms_.nItems() == requestedSize_)
 	{
-		dbgEnd(Debug::Calls,"Ring::addAtom");
+		msg.exit("Ring::addAtom");
 		return FALSE;
 	}
 	// Duplicate check
 	if (atoms_.search(i) != NULL)
 	{
-		dbgEnd(Debug::Calls,"Ring::addAtom");
+		msg.exit("Ring::addAtom");
 		return FALSE;
 	}
 	// Append a ringatomx to the list, pointing to atom i
 	// Store atom ID in the Refitem's data variable
 	atoms_.add(i,i->id());
-	dbgEnd(Debug::Calls,"Ring::addAtom");
+	msg.exit("Ring::addAtom");
 	return TRUE;
 }
 
@@ -119,7 +119,7 @@ void Ring::removeAtom(Refitem<Atom,int> *ri)
 bool Ring::isAromatic()
 {
 	// Determine whether the ring is aromatic.
-	dbgBegin(Debug::Calls,"Ring::isAromatic");
+	msg.enter("Ring::isAromatic");
 	// SP2 atom types should have already been defined, so use these to determine aromaticity.
 	// Use a set of exceptions for heteroatoms_.such as N and O...
 	int okatoms= 0;
@@ -153,7 +153,7 @@ bool Ring::isAromatic()
 	}
 	// Now we just check 'okatoms if it equals the number of atoms_.in the ring, then it should be aromatic!
 	if (okatoms== atoms_.nItems()) result = TRUE;
-	dbgEnd(Debug::Calls,"Ring::isAromatic");
+	msg.exit("Ring::isAromatic");
 	return result;
 }
 
@@ -161,23 +161,23 @@ bool Ring::isAromatic()
 void Ring::setAromatic()
 {
 	// Set the environment flags of the constituent atoms_.of the ring to AtomEnvironment::AromaticEnvironment.
-	dbgBegin(Debug::Calls,"Ring::setAromatic");
+	msg.enter("Ring::setAromatic");
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
 		ra->item->setEnvironment(Atomtype::AromaticEnvironment);
-	dbgEnd(Debug::Calls,"Ring::setAromatic");
+	msg.exit("Ring::setAromatic");
 }
 
 // Finalise ring
 void Ring::finish()
 {
 	// Perform some finishing tasks on the list
-	dbgBegin(Debug::Calls,"Ring::finish");
+	msg.enter("Ring::finish");
 	Refitem<Atom,int> *ra, *lowid;
 	// Make the list head point to the atom with the lowest id
 	if (atoms_.nItems() == 0)
 	{	
 		printf("No atoms in ring - can't finalise!\n");
-		dbgEnd(Debug::Calls,"Ring::finish");
+		msg.exit("Ring::finish");
 		return;
 	}
 	// First, find the lowest atomid
@@ -208,7 +208,7 @@ void Ring::finish()
 		}
 		ra = ra->next;
 	}
-	dbgEnd(Debug::Calls,"Ring::finish");
+	msg.exit("Ring::finish");
 }
 
 // Copy ring
@@ -229,15 +229,15 @@ void Ring::print()
 {
 	// Print out the data of the ring.
 	// Beware, since if it has been 'finished' it will be a circular list
-	msg(Debug::Verbose,"Ring has %i atoms: ",atoms_.nItems());
+	msg.print(Messenger::Verbose,"Ring has %i atoms: ",atoms_.nItems());
 	Refitem<Atom,int> *ra = atoms_.first();
 	while (ra != NULL)
 	{
-		msg(Debug::Verbose,"%s(%i),",elements.symbol(ra->item),ra->data);
+		msg.print(Messenger::Verbose,"%s(%i),",elements.symbol(ra->item),ra->data);
 		//printf("%s(%i),",elements.el[ra->i->el].symbol.c_str(),ra->i->tempi);
 		ra = ra->next;
 	}
-	msg(Debug::Verbose,"\n");
+	msg.print(Messenger::Verbose,"\n");
 }
 
 // Clear atoms_.in reflist
@@ -256,7 +256,7 @@ void Ring::addAtomsToReflist(Reflist<Atom,int> *rlist, Atom *i)
 // Augment ring atom
 void Ring::augmentAtom(Refitem<Atom,int> *refatom, Model *parent)
 {
-	dbgBegin(Debug::Calls,"Ring::augmentAtom");
+	msg.enter("Ring::augmentAtom");
 	// Assumes current bond order differences are in i->tempi
 	Atom *i, *j;
 	i = refatom->item;
@@ -282,5 +282,5 @@ void Ring::augmentAtom(Refitem<Atom,int> *refatom, Model *parent)
 			if (j->tempi > 0) parent->augmentBond(i,j,-1);
 		}
 	}
-	dbgEnd(Debug::Calls,"Ring::augmentAtom");
+	msg.exit("Ring::augmentAtom");
 }

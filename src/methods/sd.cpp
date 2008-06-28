@@ -51,7 +51,7 @@ int MethodSd::nCycles() const
 void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
-	dbgBegin(Debug::Calls,"MethodSd::minimise");
+	msg.enter("MethodSd::minimise");
 	int cycle, i;
 	double newEnergy, currentEnergy, deltaEnergy, currentRms, newRms;
 	Atom **modelAtoms;
@@ -63,7 +63,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	// First, create expression for the current model and assign charges
 	if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
 	{
-	        dbgEnd(Debug::Calls,"MethodSd::minimise");
+	        msg.exit("MethodSd::minimise");
 	        return;
 	}
 	
@@ -77,8 +77,8 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 	converged = FALSE;
 	lineDone = FALSE;
 
-	msg(Debug::None,"Step         Energy          DeltaE          RMS Force\n");
-	msg(Debug::None,"Init  %15.5e          ---      %15.5e\n",currentEnergy,currentRms);
+	msg.print("Step         Energy          DeltaE          RMS Force\n");
+	msg.print("Init  %15.5e          ---      %15.5e\n",currentEnergy,currentRms);
 	gui.progressCreate("Minimising (SD)", nCycles_);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -106,21 +106,21 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon)
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1)) msg(Debug::None,"%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,currentEnergy,deltaEnergy,currentRms);
+		if (prefs.shouldUpdateEnergy(cycle+1)) msg.print("%-5i %15.5e  %15.5e  %15.5e\n",cycle+1,currentEnergy,deltaEnergy,currentRms);
 
 		if (lineDone || converged) break;
 	}
 	gui.progressTerminate();
 
-	if (converged) msg(Debug::None,"Steepest descent converged in %i steps.\n",cycle+1);
-	else msg(Debug::None,"Steepest descent did not converge within %i steps.\n",nCycles_);
-	msg(Debug::None,"Final energy:\n");
+	if (converged) msg.print("Steepest descent converged in %i steps.\n",cycle+1);
+	else msg.print("Steepest descent did not converge within %i steps.\n",nCycles_);
+	msg.print("Final energy:\n");
 	currentEnergy = srcmodel->totalEnergy(srcmodel);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();
 	srcmodel->logChange(Change::CoordinateLog);
-	dbgEnd(Debug::Calls,"MethodSd::minimise");
+	msg.exit("MethodSd::minimise");
 }
 

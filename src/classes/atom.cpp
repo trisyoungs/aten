@@ -24,7 +24,7 @@
 #include "classes/forcefield.h"
 #include "model/model.h"
 #include "base/elements.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 
 // Atom drawing styles
 const char *DrawStyleKeywords[Atom::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
@@ -239,18 +239,18 @@ void Atom::copyStyle(Atom *source)
 void Atom::print()
 {
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg(Debug::None,"Atom ID %i (%s):\n", id_+1, elements.name(this));
-	msg(Debug::None," %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
-	msg(Debug::None," Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
-	msg(Debug::None," World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
-	msg(Debug::None,"Screen Coord : %8.4f %8.4f \n",rScreen_.x,rScreen_.y,rScreen_.z);
-	msg(Debug::None,"  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
-	msg(Debug::None,"      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
-	msg(Debug::None,"      Charge : %8.4f\n",charge_);
-	msg(Debug::None,"      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
-	msg(Debug::None,"       Bonds : %i\n",bonds_.nItems());
-	msg(Debug::None," Environment : %s\n",Atomtype::atomEnvironment(environment_));
-	msg(Debug::None,"        O.S. : %i\n",os_);
+	msg.print("Atom ID %i (%s):\n", id_+1, elements.name(this));
+	msg.print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
+	msg.print(" Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
+	msg.print(" World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
+	msg.print("Screen Coord : %8.4f %8.4f \n",rScreen_.x,rScreen_.y,rScreen_.z);
+	msg.print("  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
+	msg.print("      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
+	msg.print("      Charge : %8.4f\n",charge_);
+	msg.print("      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
+	msg.print("       Bonds : %i\n",bonds_.nItems());
+	msg.print(" Environment : %s\n",Atomtype::atomEnvironment(environment_));
+	msg.print("        O.S. : %i\n",os_);
 }
 
 // Print summary
@@ -260,7 +260,7 @@ void Atom::printSummary()
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
 	char s[128];
 	sprintf(s," %-5i  %-3s  %-8s %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements.symbol(this), type_ != NULL ? type_->name() : "None", r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
-	msg(Debug::None, s);
+	msg.print( s);
 }
 
 /*
@@ -295,7 +295,7 @@ void Atom::acceptBond(Bond *b)
 void Atom::detachBond(Bond *xbond)
 {
 	// Remove the reference to the bond from the Reflist on the atom.
-	dbgBegin(Debug::MoreCalls,"Atom::detachBond");
+	msg.enter("Atom::detachBond");
 	// Mark pointer as NULL. If both are NULL, delete the bond.
 	bonds_.remove(xbond);
 	if (xbond->atomI() == this)
@@ -308,7 +308,7 @@ void Atom::detachBond(Bond *xbond)
 		xbond->setAtomJ(NULL);
 		if (xbond->atomI() == NULL) delete xbond;
 	}
-	dbgEnd(Debug::MoreCalls,"Atom::detachBond");
+	msg.exit("Atom::detachBond");
 }
 
 // Total bond order
@@ -316,29 +316,29 @@ int Atom::totalBondOrder()
 {
 	// Calculate the total bond order of the atom
 	// Returned result is 2*actual bond order (to account for resonant bonds [BO = 1.5])
-	dbgBegin(Debug::Calls,"Atom::totalBondOrder");
+	msg.enter("Atom::totalBondOrder");
 	int result = 0;
 	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
 		result += (2 * bref->item->order());
-	dbgEnd(Debug::Calls,"Atom::totalBondOrder");
+	msg.exit("Atom::totalBondOrder");
 	return result;
 }
 
 // Count bonds of specific type
 int Atom::countBonds(Bond::BondType type)
 {
-	dbgBegin(Debug::Calls,"Atom::countBonds");
+	msg.enter("Atom::countBonds");
 	int count = 0;
 	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
 		if (bref->item->order() == type) count ++;
-	dbgEnd(Debug::Calls,"Atom::countBonds");
+	msg.exit("Atom::countBonds");
 	return count;
 }
 
 // Find bond to atom 'j'
 Bond *Atom::findBond(Atom *j)
 {
-	dbgBegin(Debug::MoreCalls,"Atom::findBond");
+	msg.enter("Atom::findBond");
 	Bond *result = NULL;
 	Refitem<Bond,int> *bref = bonds();
 	while (bref != NULL)
@@ -346,7 +346,7 @@ Bond *Atom::findBond(Atom *j)
 		if (bref->item->partner(this) == j) result = bref->item;
 		bref = bref->next;
 	}
-	dbgEnd(Debug::MoreCalls,"Atom::findBond");
+	msg.exit("Atom::findBond");
 	return result;
 }
 
@@ -355,7 +355,7 @@ double Atom::bondOrder(Atom *j)
 {
 	// Returns the (fractional) bond order of the bond between this atom and j.
 	// Aromatic bonds are given a bond order of 1.5.
-	dbgBegin(Debug::Calls,"Atom::bondOrder");
+	msg.enter("Atom::bondOrder");
 	double order;
 	// First, find the bond
 	Bond *b = findBond(j);
@@ -363,21 +363,21 @@ double Atom::bondOrder(Atom *j)
 	if (b == NULL)
 	{
 		printf("bondOrder : Failed to find bond between atoms!\n");
-		dbgEnd(Debug::Calls,"Atom::bondOrder");
+		msg.exit("Atom::bondOrder");
 		return 0.0;
 	}
 	// Get the enum'd type of the bond and 'convert' it to the bond order
 	order = b->order();
 	// Special case where both atoms are AtomEnvironment::AromaticEnvironment - bond order is then 1.5.
 	if ((environment_ == Atomtype::AromaticEnvironment) && (j->environment_ == Atomtype::AromaticEnvironment)) order = 1.5;
-	dbgEnd(Debug::Calls,"Atom::bondOrder");
+	msg.exit("Atom::bondOrder");
 	return order;
 }
 
 // Determine bonding geometry
 Atomtype::AtomGeometry Atom::geometry(Model *parent)
 {
-	dbgBegin(Debug::Calls,"Atom::geometry");
+	msg.enter("Atom::geometry");
 	static Atomtype::AtomGeometry result;
 	static double angle, largest;
 	static Bond *b1, *b2;
@@ -440,7 +440,7 @@ Atomtype::AtomGeometry Atom::geometry(Model *parent)
 			result = ((angle/6.0) > 115.0 ? Atomtype::SquarePlanarGeometry : Atomtype::TetrahedralGeometry);
 			break;
 	}
-	dbgEnd(Debug::Calls,"Atom::geometry");
+	msg.exit("Atom::geometry");
 	return result;
 }
 

@@ -92,27 +92,27 @@ void Rdf::setRange(double d, double w, int n)
 // Initialise structure
 bool Rdf::initialise()
 {
-	dbgBegin(Debug::Calls,"Rdf::initialise");
+	msg.enter("Rdf::initialise");
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
-		msg(Debug::None,"Rdf::initialise - At least one site has NULL value.\n");
-		dbgEnd(Debug::Calls,"Rdf::initialise");
+		msg.print("Rdf::initialise - At least one site has NULL value.\n");
+		msg.exit("Rdf::initialise");
 		return FALSE;
 	}
 	// Create the data_ arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	msg(Debug::None,"There are %i bins in rdf '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
+	msg.print("There are %i bins in rdf '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
 	nAdded_ = 0;
-	dbgEnd(Debug::Calls,"Rdf::initialise");
+	msg.exit("Rdf::initialise");
 	return TRUE;
 }
 
 // Accumulate quantity data_ from supplied model
 void Rdf::accumulate(Model *sourcemodel)
 {
-	dbgBegin(Debug::Calls,"Rdf::accumulate");
+	msg.enter("Rdf::accumulate");
 	int m1, m2, bin;
 	static Vec3<double> centre1, centre2, mimd;
 	Cell *cell = sourcemodel->cell();
@@ -135,13 +135,13 @@ void Rdf::accumulate(Model *sourcemodel)
 	}
 	// Increase nAdded_umulation counter
 	nAdded_ ++;
-	dbgEnd(Debug::Calls,"Rdf::accumulate");
+	msg.exit("Rdf::accumulate");
 }
 
 // Finalise
 void Rdf::finalise(Model *sourcemodel)
 {
-	dbgBegin(Debug::Calls,"Rdf::finalise");
+	msg.enter("Rdf::finalise");
 	int n;
 	double factor, r1, r2, numDensity;
 	// Normalise the rdf w.r.t. number of frames and number of central molecules
@@ -156,7 +156,7 @@ void Rdf::finalise(Model *sourcemodel)
 		data_[n] /= factor;
 
 	}
-	dbgEnd(Debug::Calls,"Rdf::finalise");
+	msg.exit("Rdf::finalise");
 }
 
 // Save RDF data_

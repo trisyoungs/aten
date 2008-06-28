@@ -23,7 +23,7 @@
 #include "model/model.h"
 #include "base/elements.h"
 #include "base/sysfunc.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 
@@ -45,7 +45,7 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 			// Arguments for ranges cannot have '+' in them
 			if ((strchr(from,'+') != NULL) || (strchr(to,'+')))
 			{
-				msg(Debug::None,"Invalid range symbol (+) given in static range '%s'-'%s'.\n", from, to);
+				msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from, to);
 				continue;
 			}
 		}
@@ -58,7 +58,7 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 			else if (from[strlen(from)-1] == '+') plus = 1;
 			else
 			{
-				msg(Debug::None,"Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
+				msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
 				continue;
 			}
 		}
@@ -78,7 +78,7 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 				i = elements.find(from);
 				if (i == 0)
 				{
-					msg(Debug::None,"Unrecognised element (%s) in select.\n", from);
+					msg.print("Unrecognised element (%s) in select.\n", from);
 					continue;
 				}
 				if (plus == 0) m->selectElement(i);
@@ -100,13 +100,13 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 				i = elements.find(from);
 				if (i == 0)
 				{
-					msg(Debug::None,"Unrecognised element (%s) on left-hand side of range.\n", from);
+					msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
 					continue;
 				}
 				j = elements.find(to);
 				if (j == 0)
 				{
-					msg(Debug::None,"Unrecognised element (%s) on right-hand side of range.\n", to);
+					msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
 					continue;
 				}
 				for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
@@ -146,7 +146,7 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 	Forcefield *ff = obj.rs->forcefield();
 	if (ff == NULL)
 	{
-		msg(Debug::None,"No forcefield associated to model.\n");
+		msg.print("No forcefield associated to model.\n");
 		return CR_FAIL;
 	}
 	ForcefieldAtom *ffa;
@@ -192,7 +192,7 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 	Pattern *p = NULL;
 	if (c->hasArg(0)) p = obj.rs->findPattern(c->argc(0));
 	else p = obj.p;
-	if (p == NULL) msg(Debug::None,"No pattern in which to select atoms.\n");
+	if (p == NULL) msg.print("No pattern in which to select atoms.\n");
 	else
 	{
 		Atom *i = p->firstAtom();
@@ -240,11 +240,11 @@ int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 			}
 		}
 		// Write results
-		msg(Debug::None,"Type description score = %i. Matched %i atoms.\n", matchscore, count);
+		msg.print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
 		// Update model and delete temporary atomtype
 		obj.rs->logChange(Change::SelectionLog);
 		return CR_SUCCESS;
 	}
-	else msg(Debug::None,"Can't test atomtype description without a valid pattern definition!\n");
+	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
 	return CR_FAIL;
 }

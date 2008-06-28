@@ -101,12 +101,12 @@ void AtenAtomlist::on_AtomTree_currentItemChanged(QTreeWidgetItem *current, QTre
 
 void AtenAtomlist::refresh()
 {
-	dbgBegin(Debug::Calls,"AtenAtomlist::refresh");
+	msg.enter("AtenAtomlist::refresh");
 	// If the atom list page is not visible, don't do anything
 	if (!gui.atomlistWindow->isVisible())
 	{
 		shouldRefresh_ = TRUE;
-		dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
+		msg.exit("AtenAtomlist::refresh");
 		return;
 	}
 	refreshing_ = TRUE;
@@ -121,7 +121,7 @@ void AtenAtomlist::refresh()
 	listLastModel_ = m;
 	// Start the refresh (note, this does not run in a thread yet!)
 	refreshThread.run();
-	dbgEnd(Debug::Calls,"AtenAtomlist::refresh");
+	msg.exit("AtenAtomlist::refresh");
 }
 
 void AtenAtomlist::peekScrollBar()

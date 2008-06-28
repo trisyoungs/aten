@@ -116,10 +116,10 @@ bool Canvas::setWidget(TCanvas *w)
 void Canvas::realize()
 {
 	// Sets the canvas to use a widget for output.
-	dbgBegin(Debug::Calls,"Canvas::realize");
+	msg.enter("Canvas::realize");
 	valid_ = TRUE;
 	initGl();
-	dbgEnd(Debug::Calls,"Canvas::realize");
+	msg.exit("Canvas::realize");
 }
 
 // Invalidate
@@ -172,7 +172,7 @@ Model *Canvas::displayModel()
 void Canvas::initGl()
 {
 	if (!valid_) return;
-	dbgBegin(Debug::Calls,"Canvas::initGl");
+	msg.enter("Canvas::initGl");
 	if (beginGl())
 	{
 		// Create lists for globs if this is the first call to init_gl()
@@ -243,14 +243,14 @@ void Canvas::initGl()
 		endGl();
 	}
 	else printf("Failed to set-up OpenGL on canvas.\n");
-	dbgEnd(Debug::Calls,"Canvas::initGl");
+	msg.exit("Canvas::initGl");
 }
 
 // Create display lists
 void Canvas::createLists()
 {
 	if (!isValid()) return;
-	dbgBegin(Debug::Calls,"Canvas::createLists");
+	msg.enter("Canvas::createLists");
 
 	int n,m, ticks, extent;
 	double delta, tickdelta, tickheight, ticktop, tickbottom, spacing;
@@ -487,7 +487,7 @@ void Canvas::createLists()
 	  }
 	glEndList();
 
-	dbgEnd(Debug::Calls,"Canvas::createLists");
+	msg.exit("Canvas::createLists");
 }
 
 /*
@@ -499,7 +499,7 @@ void Canvas::doProjection()
 {
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
 	if (!valid_) return;
-	dbgBegin(Debug::Calls,"Canvas::doProjection");
+	msg.enter("Canvas::doProjection");
 	double pmat[16], bottom, top;
 	// Check source
 	if (beginGl())
@@ -536,7 +536,7 @@ void Canvas::doProjection()
 		endGl();
 	}
 	else printf("Canvas::doProjection <<<< Failed to reset projection matrix >>>>\n");
-	dbgEnd(Debug::Calls,"Canvas::doProjection");
+	msg.exit("Canvas::doProjection");
 }
 
 /*
@@ -561,7 +561,7 @@ void Canvas::saveVector(Model *source, vector_format vf, const char *filename)
 	FILE *vectorfile = fopen(filename, "w");
 	if (vectorfile == NULL)
 	{
-		msg(Debug::None,"Couldn't open output file for vector export.\n");
+		msg.print("Couldn't open output file for vector export.\n");
 		return;
 	}
 	GLint result = GL2PS_OVERFLOW, bufsize = 0;

@@ -39,13 +39,13 @@ int CommandData::function_CA_ANGLEDEF(Command *&c, Bundle &obj)
 	for (n=1; n<4; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			msg(Debug::None,"\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addAngle(anglestyle);
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->params().data[n-4] = c->argd(n);
-	msg(Debug::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
+	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
 	return CR_SUCCESS;
 }
 
@@ -62,13 +62,13 @@ int CommandData::function_CA_BONDDEF(Command *&c, Bundle &obj)
 	for (n=1; n<3; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			msg(Debug::None,"\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addBond(bondstyle);
 	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
 	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-3] = c->argd(n);
-	msg(Debug::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]); 
+	msg.print(Messenger::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]); 
 	return CR_SUCCESS;
 }
 
@@ -118,7 +118,7 @@ int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
 	{
-		msg(Debug::None,"Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, obj.m->nPatterns());
+		msg.print("Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, obj.m->nPatterns());
 		return CR_FAIL;
 	}
 	else obj.m->pattern(nodeid)->setForcefield(obj.ff);
@@ -130,10 +130,10 @@ int CommandData::function_CA_FINALISEFF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_FF)) return CR_FAIL;
 	// Print some information about the terms read in from the forcefield
-	msg(Debug::None,"Read in %i type descriptions\n", obj.ff->nTypes() - 1);
-	msg(Debug::None,"Read in %i bond definitions\n", obj.ff->nBonds());
-	msg(Debug::None,"Read in %i angle definitions\n", obj.ff->nAngles());
-	msg(Debug::None,"Read in %i torsion definitions\n", obj.ff->nTorsions());
+	msg.print("Read in %i type descriptions\n", obj.ff->nTypes() - 1);
+	msg.print("Read in %i bond definitions\n", obj.ff->nBonds());
+	msg.print("Read in %i angle definitions\n", obj.ff->nAngles());
+	msg.print("Read in %i torsion definitions\n", obj.ff->nTorsions());
 	// Convert energetic units in the forcefield to the internal units of the program
 	obj.ff->convertParameters();
 	return CR_SUCCESS;
@@ -155,7 +155,7 @@ int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		msg(Debug::None,"Unrecognised forcefield typeId %i in generator list.\n",c->argi(0));
+		msg.print("Unrecognised forcefield typeId %i in generator list.\n",c->argi(0));
 		return CR_FAIL;
 	}
 	// Create generator array on atom
@@ -170,13 +170,13 @@ int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 	Forcefield *ff = master.loadForcefield(c->argc(0));
 	if (ff == NULL)
 	{
-		msg(Debug::None,"Can't find forcefield file '%s' in any location.\n", c->argc(0));
+		msg.print("Can't find forcefield file '%s' in any location.\n", c->argc(0));
 		return CR_FAIL;
 	}
 	else
 	{
 		if (c->hasArg(1)) ff->setName(c->argc(1));
-		msg(Debug::None,"Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
+		msg.print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 	}
 	return CR_SUCCESS;
 }
@@ -200,7 +200,7 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 	for (n=0; n<parser.nArgs(); n++)
 	{
 		el = elements.find(afterChar(parser.argc(n), '='));
-		if (el == 0) msg(Debug::None,"Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+		if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 		else
 		{
 			nm = master.typeMap.add();
@@ -216,7 +216,7 @@ int CommandData::function_CA_RULES(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_FF)) return CR_FAIL;
 	Rules::ForcefieldRules rules = Rules::forcefieldRules(c->argc(0));
 	if (rules == Rules::nForcefieldRules) return CR_FAIL;
-	msg(Debug::None,"\t: Rule-set to use is '%s'\n", rules);
+	msg.print("\t: Rule-set to use is '%s'\n", rules);
 	return CR_SUCCESS;
 }
 
@@ -233,13 +233,13 @@ int CommandData::function_CA_TORSIONDEF(Command *&c, Bundle &obj)
 	for (n=1; n<4; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			msg(Debug::None,"\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			msg.print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addTorsion(torsionstyle);
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-5] = c->argd(n);
-	msg(Debug::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
+	msg.print(Messenger::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
 	return CR_SUCCESS;
 }
 
@@ -252,7 +252,7 @@ int CommandData::function_CA_TYPEDEF(Command *&c, Bundle &obj)
 	ForcefieldAtom *idsearch = obj.ff->findType(newffid);
 	if (idsearch != NULL)
 	{
-		msg(Debug::None,"Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
+		msg.print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
 		return CR_FAIL;
 	}
 	ForcefieldAtom *ffa = obj.ff->addType();
@@ -280,7 +280,7 @@ int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		msg(Debug::None,"Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
+		msg.print("Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
 		return CR_FAIL;
 	}
 	else
@@ -294,8 +294,8 @@ int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 			int el = i->element();
 			Pattern *p = obj.m->pattern(i);
 			int score = ffa->atomtype()->matchAtom(i,p->ringList(),obj.m,i);
-			if (score != 0) msg(Debug::None,"Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
-			else msg(Debug::None,"Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
+			if (score != 0) msg.print("Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
+			else msg.print("Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
 		}
 		else return CR_FAIL;
 	}
@@ -309,7 +309,7 @@ int CommandData::function_CA_UNITS(Command *&c, Bundle &obj)
 	Prefs::EnergyUnit newunit = Prefs::energyUnit(c->argc(0));
 	if (newunit == Prefs::nEnergyUnits) return CR_FAIL;
 	obj.ff->setEnergyUnit(newunit);
-	msg(Debug::None,"Forcefield energy unit set to %s\n", Prefs::energyUnit(newunit));
+	msg.print("Forcefield energy unit set to %s\n", Prefs::energyUnit(newunit));
 	return CR_SUCCESS;
 }
 
@@ -324,12 +324,12 @@ int CommandData::function_CA_VDWDEF(Command *&c, Bundle &obj)
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(1));
 	if (ffa == NULL)
 	{
-		msg(Debug::None,"TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
+		msg.print("TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
 		return CR_FAIL;
 	}
 	ffa->setCharge(parser.argd(2));
 	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->params().data[i-3] = c->argd(i);
 	ffa->setVdwForm(vdwstyle);
-	msg(Debug::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->charge());
+	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->charge());
 	return CR_SUCCESS;
 }

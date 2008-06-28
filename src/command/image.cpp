@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "base/master.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
@@ -50,11 +50,11 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	if (bf != BIF_NITEMS)
 	{
 		pixmap.save(c->argc(1), extension_from_BIF(bf), -1);
-		msg(Debug::None,"Saved current view as '%s'\n",c->argc(1));
+		msg.print("Saved current view as '%s'\n",c->argc(1));
 	}
 	else
 	{
-		msg(Debug::None,"Unrecognised bitmap format.\n");
+		msg.print("Unrecognised bitmap format.\n");
 		return CR_FAIL;
 	}
 	return CR_SUCCESS;
@@ -67,7 +67,7 @@ int CommandData::function_CA_SAVEVECTOR(Command *&c, Bundle &obj)
 	vector_format vf = VIF_from_text(c->argc(0));
 	if (vf == VIF_NITEMS)
 	{
-		msg(Debug::None,"Unrecognised vector format '%s'.\n",c->argc(0));
+		msg.print("Unrecognised vector format '%s'.\n",c->argc(0));
 		return CR_FAIL;
 	}
 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas

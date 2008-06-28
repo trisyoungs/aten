@@ -22,20 +22,24 @@
 #include <time.h>
 #include <ctime>
 #include <iostream>
-#include "parse/parser.h"
-#include "model/model.h"
-#include "command/commandlist.h"
+//#include "parse/parser.h"
+//#include "model/model.h"
+//#include "command/commandlist.h"
+#include "base/messenger.h"
 #include "base/master.h"
 #include "gui/gui.h"
 
 int main(int argc, char *argv[])
 {
+	// Parse early command-line options
+	if (!master.parseCliEarly(argc, argv)) return -1;
+
 	// Print GPL license information
-	printf("Aten version %s, Copyright (C) 2007,2008  T. Youngs.\n", ATENVERSION);
-	printf("Built from %s@%s.\n", ATENURL, ATENREVISION);
-	printf("Aten comes with ABSOLUTELY NO WARRANTY.\n");
-	printf("This is free software, and you are welcome to redistribute it under certain conditions.\n");
-	printf("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007,2008  T. Youngs.\n", ATENVERSION);
+	msg.print(Messenger::Verbose, "Built from %s@%s.\n", ATENURL, ATENREVISION);
+	msg.print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
+	msg.print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
+	msg.print(Messenger::Verbose, "For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
 	srand( (unsigned)time( NULL ) );
 	//printf("Atom Type is currently %lu bytes.\n",sizeof(atom));
@@ -43,8 +47,8 @@ int main(int argc, char *argv[])
 	// Get environment variables
 	master.setHomeDir(getenv("HOME"));
 	master.setWorkDir(getenv("PWD"));
-	printf("Home directory is %s, working directory is %s.\n", master.homeDir(), master.workDir());
 	master.setDataDir(getenv("ATENDATA"));
+	msg.print(Messenger::Verbose, "Home directory is %s, working directory is %s.\n", master.homeDir(), master.workDir());
 
 	// Initialise QApplication
 	gui.initialise(argc, argv);
@@ -61,12 +65,7 @@ int main(int argc, char *argv[])
 	if (master.parseCli(argc,argv) == -1) return -1;
 
 	// Enter full GUI 
-	if (master.programMode() == Master::GuiMode)
-	{
-		// Add empty model if none were specified on the command line
-		if (master.nModels() == 0) Model *m = master.addModel();
-		gui.run();
-	}
+	if (master.programMode() == Master::GuiMode) gui.run();
 
 	// Done.
 	return 0;

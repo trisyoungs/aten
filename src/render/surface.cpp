@@ -597,7 +597,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 // Render surfaces
 void Canvas::renderSurfaces()
 {
-	dbgBegin(Debug::Calls,"Canvas::renderSurfaces");
+	msg.enter("Canvas::renderSurfaces");
 	// Loop over surfaces held by the master, rendering those that are visible.
 	// If the log of a particular surface is out of data, recreate its display list first
 	static GLuint list;
@@ -642,5 +642,5 @@ void Canvas::renderSurfaces()
 		  glCallList(list);
 		glPopMatrix();
 	}
-	dbgEnd(Debug::Calls,"Canvas::renderSurfaces");
+	msg.exit("Canvas::renderSurfaces");
 }

@@ -26,13 +26,13 @@
 // Position molecule at specified coordinates
 void Model::positionMolecule(Pattern *p, int mol, const Vec3<double> &v)
 {
-	dbgBegin(Debug::Calls,"Model::positionMolecule");
+	msg.enter("Model::positionMolecule");
 	static Vec3<double> newpos, cog;
 	static int pnatoms, offset, n;
 	Atom **modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
-	msg(Debug::Verbose,"Model::positionMolecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms_.nItems());
+	msg.print(Messenger::Verbose,"Model::positionMolecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms_.nItems());
 	if (offset < atoms_.nItems())
 	{
 		cog = p->calculateCog(this,mol);
@@ -49,29 +49,29 @@ void Model::positionMolecule(Pattern *p, int mol, const Vec3<double> &v)
 		}
 	}
 	else printf("Model::positionMolecule : Requested a molecule past end of config contents. (%s %i)\n",p->name(),mol); 
-	dbgEnd(Debug::Calls,"Model::positionMolecule");
+	msg.exit("Model::positionMolecule");
 }
 
 // Translate molecule along vector
 void Model::translateMolecule(Pattern *p, int mol, const Vec3<double> &v)
 {
 	// Vector 'v' should be normalised before passing
-	dbgBegin(Debug::Calls,"Model::translateMolecule");
+	msg.enter("Model::translateMolecule");
 	static int pnatoms, offset, n;
 	Atom **modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
-	msg(Debug::Verbose,"Model::translateMolecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms_.nItems());
+	msg.print(Messenger::Verbose,"Model::translateMolecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms_.nItems());
 	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->r() += v;
 	else printf("Model::translateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
-	dbgEnd(Debug::Calls,"Model::translateMolecule");
+	msg.exit("Model::translateMolecule");
 }
 
 void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 {
 	// Rotate the coordinates of the atoms in pattern p, molecule mol, about their centre of geometry.
 	// rotx and roty are the rotations about the x and y axes respectively, in degrees
-	dbgBegin(Debug::Calls,"Model::rotateMolecule");
+	msg.enter("Model::rotateMolecule");
 	static double cosx, cosy, sinx, siny;
 	static Mat3<double> rotmat;
 	static Vec3<double> delta, newpos, cog;
@@ -103,18 +103,18 @@ void Model::rotateMolecule(Pattern *p, int mol, double rotx, double roty)
 			modelatoms[n]->r() = newpos;
 		}
 	else printf("Model::rotateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
-	dbgEnd(Debug::Calls,"Model::rotateMolecule");
+	msg.exit("Model::rotateMolecule");
 }
 
 // Set the hidden flag on atoms of the specified molecule
 void Model::hideMolecule(Pattern *p, int mol, bool visible)
 {
-	dbgBegin(Debug::Calls,"Model::hideMolecule");
+	msg.enter("Model::hideMolecule");
 	static int pnatoms, offset, n;
 	Atom **modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->setHidden(visible);
 	else printf("Model::hideMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
-	dbgEnd(Debug::Calls,"Model::hideMolecule");
+	msg.exit("Model::hideMolecule");
 }

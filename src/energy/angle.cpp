@@ -30,7 +30,7 @@
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
 void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
-	dbgBegin(Debug::Calls,"Pattern::angleEnergy");
+	msg.enter("Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
 	static double forcek, n, s, eq, r, theta, dp, energy, c0, c1, c2;
 	static double coseq, delta;
@@ -54,7 +54,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 			switch (pb->data()->angleStyle())
 			{
 				case (AngleFunctions::None):
-					msg(Debug::None,"Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
+					msg.print("Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
 					break;
 				case (AngleFunctions::Harmonic): 
 					// U(theta) = 0.5 * forcek * (theta - eq)**2
@@ -88,7 +88,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					energy += 0.5 * forcek * delta * delta;
 					break;
 				default:
-					msg(Debug::None, "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
+					msg.print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
 
 			}
@@ -97,13 +97,13 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 	}
 	// Increment energy for pattern
 	estore->add(Energy::AngleEnergy,energy,id_);
-	dbgEnd(Debug::Calls,"Pattern::angleEnergy");
+	msg.exit("Pattern::angleEnergy");
 }
 
 // Calculate angle forces in pattern
 void Pattern::angleForces(Model *srcmodel)
 {
-	dbgBegin(Debug::Calls,"Pattern::angleForcess");
+	msg.enter("Pattern::angleForcess");
 	static int i,j,k,aoff,m1;
 	static Vec3<double> vec_ij, vec_kj, fi, fk;
 	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx;
@@ -135,7 +135,7 @@ void Pattern::angleForces(Model *srcmodel)
 			switch (pb->data()->angleStyle())
 			{
 				case (AngleFunctions::None):
-					msg(Debug::None,"Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
+					msg.print("Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
 					du_dtheta = 0.0;
 					break;
 				case (AngleFunctions::Harmonic): 
@@ -167,7 +167,7 @@ void Pattern::angleForces(Model *srcmodel)
 					du_dtheta = -forcek * (cos(theta) - cosx) * sin(theta);
 					break;
 				default:
-					msg(Debug::None, "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
+					msg.print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
 			}
 			// Complete chain rule
@@ -184,5 +184,5 @@ void Pattern::angleForces(Model *srcmodel)
 		}
 		aoff += nAtoms_;
 	}
-	dbgEnd(Debug::Calls,"Pattern::angleForcess");
+	msg.exit("Pattern::angleForcess");
 }

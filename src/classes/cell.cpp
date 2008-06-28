@@ -195,7 +195,7 @@ double Cell::density() const
 // Determine Type
 void Cell::determineType()
 {
-	dbgBegin(Debug::Calls,"Cell::determineType");
+	msg.enter("Cell::determineType");
 	// Compare cell angles_....
 	int count = 0;
 	if (fabs(90.0 - angles_.x) < 1.0e-5) count ++;
@@ -216,13 +216,13 @@ void Cell::determineType()
 		axes_.rows[2].x = axes_.rows[2].y = 0.0;
 	}
 	else type_ = Cell::ParallelepipedCell;
-	dbgEnd(Debug::Calls,"Cell::determineType");
+	msg.exit("Cell::determineType");
 }
 
 // Set (by parameters)
 void Cell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
 {
-	dbgBegin(Debug::Calls,"Cell::set[parameters]");
+	msg.enter("Cell::set[parameters]");
 	double temp;
 	// Store cell lengths and angles (in degrees) in structure
 	angles_ = newangles;
@@ -251,13 +251,13 @@ void Cell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
 	calculateCentre();
 	calculateInverse();
 	calculateReciprocal();
-	dbgEnd(Debug::Calls,"Cell::set[parameters]");
+	msg.exit("Cell::set[parameters]");
 }
 
 // Set (by matrix)
 void Cell::set(const Mat3<double> &newaxes)
 {
-	dbgBegin(Debug::Calls,"Cell::set[matrix]");
+	msg.enter("Cell::set[matrix]");
 	// Store the supplied matrix and get transpose for vector calculation
 	axes_ = newaxes;
 	transpose_ = axes_.transpose();
@@ -284,18 +284,18 @@ void Cell::set(const Mat3<double> &newaxes)
 	calculateCentre();
 	calculateInverse();
 	calculateReciprocal();
-	dbgEnd(Debug::Calls,"Cell::set[matrix]");
+	msg.exit("Cell::set[matrix]");
 }
 
 // Calculate reciprocal cell vectors
 void Cell::calculateReciprocal()
 {
 	// Calculate the reciprocal cell of 'this->cell'
-	dbgBegin(Debug::Calls,"Cell::calculateReciprocal");
+	msg.enter("Cell::calculateReciprocal");
 	switch (type_)
 	{
 		case (Cell::NoCell):
-			msg(Debug::None,"Cell : Can't calculate reciprocal cell - no cell defined.\n");
+			msg.print("Cell : Can't calculate reciprocal cell - no cell defined.\n");
 			break;
 		case (Cell::CubicCell):
 		case (Cell::OrthorhombicCell):
@@ -316,29 +316,29 @@ void Cell::calculateReciprocal()
 			reciprocal_.rows[2] = reciprocal_.rows[2] * TWOPI / reciprocalVolume_;
 			break;
 	}
-	dbgEnd(Debug::Calls,"Cell::calculateReciprocal");
+	msg.exit("Cell::calculateReciprocal");
 }
 
 // Calculate centre coordinate of cell
 void Cell::calculateCentre()
 {
-	dbgBegin(Debug::Calls,"Cell::calculateCentre");
+	msg.enter("Cell::calculateCentre");
 	if (type_ != Cell::NoCell)
 	{
 		centre_.set(0.5,0.5,0.5);
 		centre_ *= transpose_;
 	}
 	else centre_.set(0.0,0.0,0.0);
-	dbgEnd(Debug::Calls,"Cell::calculateCentre");
+	msg.exit("Cell::calculateCentre");
 }
 
 // Calculate inverse transpose matrix
 void Cell::calculateInverse()
 {
-	dbgBegin(Debug::Calls,"Cell::calculateInverse");
+	msg.enter("Cell::calculateInverse");
 	itranspose_ = transpose_;
 	itranspose_.invert();
-	dbgEnd(Debug::Calls,"Cell::calculateInverse");
+	msg.exit("Cell::calculateInverse");
 }
 
 /*
@@ -439,7 +439,7 @@ Vec3<double> Cell::mimd(Atom *i, Atom *j) const
 void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 {
 	// Folds the coordinates in 'r' into the defined unit cell
-	dbgBegin(Debug::MoreCalls,"Cell::fold");
+	msg.enter("Cell::fold");
 	static Vec3<double> newr;
 	switch (type_)
 	{
@@ -481,7 +481,7 @@ void Cell::fold(Vec3<double> &r, Atom *i, Model *parent) const
 			else r = newr;
 			break;
 	}
-	dbgEnd(Debug::MoreCalls,"Cell::fold");
+	msg.exit("Cell::fold");
 }
 
 void Cell::fold(Atom *i, Model *parent) const
@@ -496,10 +496,10 @@ void Cell::fold(Atom *i, Model *parent) const
 double Cell::distance(const Vec3<double> &r1, const Vec3<double> &r2) const
 {
 	// Calculate the distance between atoms i and j
-	dbgBegin(Debug::MoreCalls,"Cell::distance");
+	msg.enter("Cell::distance");
 	static Vec3<double> mimi;
 	mimi = mimd(r1,r2);
-	dbgEnd(Debug::MoreCalls,"Cell::distance");
+	msg.exit("Cell::distance");
 	return mimi.magnitude();
 }
 
@@ -512,7 +512,7 @@ double Cell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<do
 {
 	// Calculate the angle formed between atoms i, j, and k
 	// Result is returned in radians.
-	dbgBegin(Debug::MoreCalls,"Cell::angle");
+	msg.enter("Cell::angle");
 	static Vec3<double> vecij, veckj;
 	static double dp, a;
 	vecij = mimd(r1,r2);
@@ -522,7 +522,7 @@ double Cell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<do
 	veckj.normalise();
 	dp = vecij.dp(veckj);
 	a = acos(dp);
-	dbgEnd(Debug::MoreCalls,"Cell::angle");
+	msg.exit("Cell::angle");
 	return a;
 }
 
@@ -535,7 +535,7 @@ double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<do
 {
 	// Calculate the torsion angle formed between the atoms i, j, k, and l.
 	// Return result is in radians.
-	dbgBegin(Debug::MoreCalls,"Cell::torsion");
+	msg.enter("Cell::torsion");
 	static Vec3<double> vecji, veckl, vecjk, veckj, mim_k, xpj, xpk;
 	static double dp, angle;
 	// Vector j->i (minimum image of i w.r.t. j)
@@ -559,7 +559,7 @@ double Cell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<do
 	// Calculate sign of torsion
 	dp = xpj.dp(veckl);
 	if (dp > 0) angle = -angle;
-	dbgEnd(Debug::MoreCalls,"Cell::torsion");
+	msg.exit("Cell::torsion");
 	return angle;
 }
 
@@ -605,8 +605,8 @@ Vec3<double> Cell::randomPos() const
 // Print
 void Cell::print() const
 {
-	msg(Debug::None,"\t        x        y        z          l\n");
-	msg(Debug::None,"\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes_.rows[0].x, axes_.rows[0].y, axes_.rows[0].z, lengths_.x, angles_.x);
-	msg(Debug::None,"\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes_.rows[1].x, axes_.rows[1].y, axes_.rows[1].z, lengths_.y, angles_.y);
-	msg(Debug::None,"\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes_.rows[2].x, axes_.rows[2].y, axes_.rows[2].z, lengths_.z, angles_.z);
+	msg.print("\t        x        y        z          l\n");
+	msg.print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes_.rows[0].x, axes_.rows[0].y, axes_.rows[0].z, lengths_.x, angles_.x);
+	msg.print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes_.rows[1].x, axes_.rows[1].y, axes_.rows[1].z, lengths_.y, angles_.y);
+	msg.print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes_.rows[2].x, axes_.rows[2].y, axes_.rows[2].z, lengths_.z, angles_.z);
 }

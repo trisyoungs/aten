@@ -21,7 +21,7 @@
 
 #include "classes/expression.h"
 #include "base/constants.h"
-#include "base/debug.h"
+#include "base/messenger.h"
 #include "classes/variablelist.h"
 #include <math.h>
 #include <string.h>
@@ -207,7 +207,7 @@ ExpressionNode *ExpressionNode::nextUnused(ExpressionNode *limit)
 // Validate expression
 bool Expression::validate()
 {
-	dbgBegin(Debug::Calls,"Expression::validate");
+	msg.enter("Expression::validate");
 	ExpressionNode::TokenType ltoken, rtoken;
 	int count = 0;
 	// Here we check the grammar of the expression.
@@ -225,7 +225,7 @@ bool Expression::validate()
 			case (ExpressionNode::OperatorToken):
 				if ((ltoken == ExpressionNode::nTokenTypes) || (rtoken == ExpressionNode::nTokenTypes))
 				{
-					msg(Debug::None, "A token must appear either side of this operator:\n");
+					msg.print( "A token must appear either side of this operator:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -233,7 +233,7 @@ bool Expression::validate()
 			case (ExpressionNode::FunctionToken):
 				if (rtoken == ExpressionNode::nTokenTypes)
 				{
-					msg(Debug::None, "A token must appear to the right of this function:\n");
+					msg.print( "A token must appear to the right of this function:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -246,13 +246,13 @@ bool Expression::validate()
 			case (ExpressionNode::OperatorToken):
 				if ((ltoken == ExpressionNode::BracketToken) && (ex->prev->bracketType() == ExpressionNode::LeftBracket))
 				{
-					msg(Debug::None, "Operator immediately follows an opening parenthesis in expression:\n");
+					msg.print( "Operator immediately follows an opening parenthesis in expression:\n");
 					print(ex);
 					return FALSE;
 				}
 				if ((rtoken == ExpressionNode::BracketToken) && (ex->next->bracketType() == ExpressionNode::RightBracket))
 				{
-					msg(Debug::None, "Operator immediately preceeds a closing parenthesis in expression:\n");
+					msg.print( "Operator immediately preceeds a closing parenthesis in expression:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -262,13 +262,13 @@ bool Expression::validate()
 			case (ExpressionNode::ValueToken):
 				if ((ltoken == ExpressionNode::BracketToken) && (ex->prev->bracketType() == ExpressionNode::RightBracket))
 				{
-					msg(Debug::None, "Value immediately follows a closing parenthesis in expression:\n");
+					msg.print( "Value immediately follows a closing parenthesis in expression:\n");
 					print(ex);
 					return FALSE;
 				}
 				if ((rtoken == ExpressionNode::BracketToken) && (ex->next->bracketType() == ExpressionNode::LeftBracket))
 				{
-					msg(Debug::None, "Value immediately preceeds an opening parenthesis in expression:\n");
+					msg.print( "Value immediately preceeds an opening parenthesis in expression:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -278,7 +278,7 @@ bool Expression::validate()
 			case (ExpressionNode::FunctionToken):
 				if ((ltoken == ExpressionNode::BracketToken) && (ex->prev->bracketType() == ExpressionNode::RightBracket))
 				{
-					msg(Debug::None, "Function immediately follows a closing parenthesis in expression:\n");
+					msg.print( "Function immediately follows a closing parenthesis in expression:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -290,13 +290,13 @@ bool Expression::validate()
 				{
 					if ((ltoken == ExpressionNode::BracketToken) && (ex->prev->bracketType() == ExpressionNode::RightBracket))
 					{
-						msg(Debug::None, "Opposing parenthesis may not be adjacent in expressions:\n");
+						msg.print( "Opposing parenthesis may not be adjacent in expressions:\n");
 						print(ex);
 						return FALSE;
 					}
 					else if ((rtoken == ExpressionNode::BracketToken) && (ex->next->bracketType() == ExpressionNode::RightBracket))
 					{
-						msg(Debug::None, "Empty parentheses in expressions are not allowed:\n");
+						msg.print( "Empty parentheses in expressions are not allowed:\n");
 						print(ex);
 						return FALSE;
 					}
@@ -305,13 +305,13 @@ bool Expression::validate()
 				{
 					if ((ltoken == ExpressionNode::BracketToken) && (ex->prev->bracketType() == ExpressionNode::LeftBracket))
 					{
-						msg(Debug::None, "Empty parentheses in expressions are not allowed:\n");
+						msg.print( "Empty parentheses in expressions are not allowed:\n");
 						print(ex);
 						return FALSE;
 					}
 					else if ((rtoken == ExpressionNode::BracketToken) && (ex->next->bracketType() == ExpressionNode::LeftBracket))
 					{
-						msg(Debug::None, "Opposing parenthesis may not be adjacent in expressions:\n");
+						msg.print( "Opposing parenthesis may not be adjacent in expressions:\n");
 						print(ex);
 						return FALSE;
 					}
@@ -324,7 +324,7 @@ bool Expression::validate()
 		{
 			if ((ltoken == ex->type()) || (rtoken == ex->type()))
 			{
-				msg(Debug::None, "Adjacent values, operators, or functions in expression:\n");
+				msg.print( "Adjacent values, operators, or functions in expression:\n");
 				print(ex);
 				return FALSE;
 			}
@@ -337,13 +337,13 @@ bool Expression::validate()
 			case (ExpressionNode::OperatorToken):
 				if ((ltoken != ExpressionNode::ValueToken) && (ltoken != ExpressionNode::BracketToken))
 				{
-					msg(Debug::None, "Invalid token to left of operator in expression:\n");
+					msg.print( "Invalid token to left of operator in expression:\n");
 					print(ex);
 					return FALSE;
 				}
 				if ((rtoken == ExpressionNode::OperatorToken) || (rtoken == ExpressionNode::nTokenTypes))
 				{
-					msg(Debug::None, "Invalid token to right of operator in expression:\n");
+					msg.print( "Invalid token to right of operator in expression:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -353,13 +353,13 @@ bool Expression::validate()
 			case (ExpressionNode::FunctionToken):
 				if ((ltoken != ExpressionNode::OperatorToken) && (ltoken != ExpressionNode::BracketToken) && (ltoken != ExpressionNode::nTokenTypes))
 				{
-					msg(Debug::None, "Invalid token to left of function in expression:\n");
+					msg.print( "Invalid token to left of function in expression:\n");
 					print(ex);
 					return FALSE;
 				}
 				if ((rtoken != ExpressionNode::ValueToken) && (rtoken != ExpressionNode::BracketToken))
 				{
-					msg(Debug::None, "Invalid token to right of function in expression:\n");
+					msg.print( "Invalid token to right of function in expression:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -370,13 +370,13 @@ bool Expression::validate()
 				// N.B. this first test should be unnecessary since it is accounted for above...
 				if (ltoken == ExpressionNode::ValueToken)
 				{
-					msg(Debug::None, "Invalid token to left of function in expression:\n");
+					msg.print( "Invalid token to left of function in expression:\n");
 					print(ex);
 					return FALSE;
 				}
 				if ((rtoken == ExpressionNode::FunctionToken) || (rtoken == ExpressionNode::ValueToken))
 				{
-					msg(Debug::None, "Invalid token to right of value in expression:\n");
+					msg.print( "Invalid token to right of value in expression:\n");
 					print(ex);
 					return FALSE;
 				}
@@ -384,14 +384,14 @@ bool Expression::validate()
 
 		}
 	}
-	dbgEnd(Debug::Calls,"Expression::validate");
+	msg.exit("Expression::validate");
 	return TRUE;
 }
 
 // Set expression from supplied string
 bool Expression::set(const char *s, VariableList *vars)
 {
-	dbgBegin(Debug::Calls,"Expression::set");
+	msg.enter("Expression::set");
 	// To cache an expression we parse the expression into tokens and then create a list of enumarated items in the same order.
 	int arglen;
 	char arg[64];
@@ -417,7 +417,7 @@ bool Expression::set(const char *s, VariableList *vars)
 					prevToken = addLongOperator(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
-						dbgEnd(Debug::Calls,"Expression::set");
+						msg.exit("Expression::set");
 						return FALSE;
 					}
 					arglen = 0;
@@ -433,7 +433,7 @@ bool Expression::set(const char *s, VariableList *vars)
 					prevToken = addLongOperator(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
-						dbgEnd(Debug::Calls,"Expression::set");
+						msg.exit("Expression::set");
 						return FALSE;
 					}
 					arglen = 0;
@@ -457,7 +457,7 @@ bool Expression::set(const char *s, VariableList *vars)
 					prevToken = addLongOperator(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
-						dbgEnd(Debug::Calls,"Expression::set");
+						msg.exit("Expression::set");
 						return FALSE;
 					}
 					arglen = 0;
@@ -479,8 +479,8 @@ bool Expression::set(const char *s, VariableList *vars)
 				ot = ExpressionNode::operatorType(*c);
 				if (ot == ExpressionNode::nOperatorTypes)
 				{
-					msg(Debug::None, "Unrecognised operator '%c'.\n", *c);
-					dbgEnd(Debug::Calls,"Expression::set");
+					msg.print( "Unrecognised operator '%c'.\n", *c);
+					msg.exit("Expression::set");
 					return FALSE;
 				}
 				ex = expression_.add();
@@ -502,24 +502,24 @@ bool Expression::set(const char *s, VariableList *vars)
 		arg[arglen] = '\0';
 		if (addLongOperator(arg) == ExpressionNode::nTokenTypes)
 		{
-			dbgEnd(Debug::Calls,"Expression::set");
+			msg.exit("Expression::set");
 			return FALSE;
 		}
 	}
 	// Validate the expression and create a bracket plan...
 	if (!validate() || !createPlan())
 	{
-		dbgEnd(Debug::Calls,"Expression::set");
+		msg.exit("Expression::set");
 		return FALSE;
 	}
-	dbgEnd(Debug::Calls,"Expression::set");
+	msg.exit("Expression::set");
 	return TRUE;
 }
 
 // Add long operator
 ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 {
-	dbgBegin(Debug::Calls,"Expression::addLongOperator");
+	msg.enter("Expression::addLongOperator");
 	// This gets called on any chunk of parsed expression that isn't a single-character operator.
 	ExpressionNode *ex = NULL;
 	// First check is for a variable (begins with '$'), then for a value (contains at least one numeral), and then for long operators.
@@ -547,7 +547,7 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 		else
 		{
 			ExpressionNode::FunctionType ft = ExpressionNode::functionType(s);
-			if (ft == ExpressionNode::nFunctionTypes) msg(Debug::None, "Unrecognised expression function '%s'.\n", s);
+			if (ft == ExpressionNode::nFunctionTypes) msg.print( "Unrecognised expression function '%s'.\n", s);
 			else
 			{
 				ex = expression_.add();
@@ -557,14 +557,14 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 			}
 		}
 	}
-	dbgEnd(Debug::Calls,"Expression::addLongOperator");
+	msg.exit("Expression::addLongOperator");
 	return (ex == NULL ? ExpressionNode::nTokenTypes : ex->type());
 }
 
 // Create bracket solution plan
 bool Expression::createPlan()
 {
-	dbgBegin(Debug::Calls,"Expression::createPlan");
+	msg.enter("Expression::createPlan");
 	brackets_.clear();
 	Reflist<ExpressionNode,int> bracketStack;
 	// Go through expression and locate matching pairs of brackets
@@ -580,7 +580,7 @@ bool Expression::createPlan()
 			// If bracketStack is empty, then we've encountered an extra right-bracket...
 			if (bracketStack.nItems() == 0)
 			{
-				msg(Debug::None, "Extra right parenthesis found in expression:\n");
+				msg.print( "Extra right parenthesis found in expression:\n");
 				print(ex);
 				return FALSE;
 			}
@@ -592,11 +592,11 @@ bool Expression::createPlan()
 	// If we have left brackets left on the bracketStack then we are unbalanced....
 	if (bracketStack.nItems() != 0)
 	{
-		msg(Debug::None, "Extra left parenthesis found in expression:\n");
+		msg.print( "Extra left parenthesis found in expression:\n");
 		print(bracketStack.last()->item);
 		return FALSE;
 	}
-	dbgEnd(Debug::Calls,"Expression::createPlan");
+	msg.exit("Expression::createPlan");
 	return TRUE;
 }
 
@@ -679,7 +679,7 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 // Evaluate expression
 double Expression::evaluate()
 {
-	dbgBegin(Debug::Calls,"Expression::evaluate");
+	msg.enter("Expression::evaluate");
 	ExpressionNode *ex;
 	// Reset all nodes in expression
 	for (ex = expression_.first(); ex != NULL; ex = ex->next) ex->reset();
@@ -697,7 +697,7 @@ double Expression::evaluate()
 	// Find last remaining unused node and return its value
 	ex = expression_.first();
 	if (ex->used()) ex = ex->nextUnused();
-	dbgEnd(Debug::Calls,"Expression::evaluate");
+	msg.exit("Expression::evaluate");
 	return ex->value();
 }
 

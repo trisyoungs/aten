@@ -29,7 +29,7 @@ int CommandData::function_CA_ADDPOINT(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	prefs.colourScale[id].addPointAtEnd(c->argd(1), c->argf(2), c->argf(3), c->argf(4), c->hasArg(5) ? c->argf(5) : 1.0f);
@@ -43,7 +43,7 @@ int CommandData::function_CA_CLEARPOINTS(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	prefs.colourScale[id].clear();
@@ -55,15 +55,15 @@ int CommandData::function_CA_LISTSCALES(Command *&c, Bundle &obj)
 {
 	char s[512], type[16];
 	GLfloat col[4];
-	msg(Debug::None,"Current colourscale setup:\n");
+	msg.print("Current colourscale setup:\n");
 	for (int n=0; n<10; n++)
 	{
-		msg(Debug::None, "Scale %i, name = '%s':\n", n+1, prefs.colourScale[n].name());
-		if (prefs.colourScale[n].nPoints() == 0) msg(Debug::None, "  < No points defined >\n");
+		msg.print( "Scale %i, name = '%s':\n", n+1, prefs.colourScale[n].name());
+		if (prefs.colourScale[n].nPoints() == 0) msg.print( "  < No points defined >\n");
 		for (ColourScalePoint *csp = prefs.colourScale[n].firstPoint(); csp != NULL; csp = csp->next)
 		{
 			csp->copyColour(col);
-			msg(Debug::None, "  (%2i)  %12.5e  %8.4f  %8.4f  %8.4f  %8.4f\n", n+1, csp->value(), col[0], col[1], col[2], col[3]);
+			msg.print( "  (%2i)  %12.5e  %8.4f  %8.4f  %8.4f  %8.4f\n", n+1, csp->value(), col[0], col[1], col[2], col[3]);
 		}
 	}
 	return CR_SUCCESS;
@@ -76,7 +76,7 @@ int CommandData::function_CA_REMOVEPOINT(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	prefs.colourScale[id].removePoint(c->argi(1)-1);
@@ -90,11 +90,11 @@ int CommandData::function_CA_SCALENAME(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	if (c->hasArg(1)) prefs.colourScale[id].setName(c->argc(1));
-	else msg(Debug::None, "Name of colourscale %i is '%s'.\n",id+1,prefs.colourScale[id].name());
+	else msg.print( "Name of colourscale %i is '%s'.\n",id+1,prefs.colourScale[id].name());
 	return CR_SUCCESS;
 }
 
@@ -105,7 +105,7 @@ int CommandData::function_CA_SCALEVISIBLE(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	prefs.colourScale[id].setVisible(c->argb(1));
@@ -119,7 +119,7 @@ int CommandData::function_CA_SETPOINT(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	prefs.colourScale[id].setPoint(c->argi(1)-1, c->argd(2), c->argf(3), c->argf(4), c->argf(5), c->hasArg(6) ? c->argf(6) : 1.0f);
@@ -133,7 +133,7 @@ int CommandData::function_CA_SETPOINTCOLOUR(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	prefs.colourScale[id].setPointColour(c->argi(1)-1, c->argf(3), c->argf(4), c->argf(5), c->hasArg(6) ? c->argf(6) : 1.0f);
@@ -147,7 +147,7 @@ int CommandData::function_CA_SETPOINTVALUE(Command *&c, Bundle &obj)
 	int id = c->argi(0) - 1;
 	if ((id < 0) || (id > 9))
 	{	
-		msg(Debug::None, "Colour scale %i is out of range.\n",id+1);
+		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
 	prefs.colourScale[id].setPointValue(c->argi(1)-1, c->argd(2));

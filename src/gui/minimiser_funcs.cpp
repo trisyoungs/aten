@@ -84,7 +84,7 @@ void AtenMinimiser::doMinimisation()
 			mc.minimise(master.currentModel(),econverge,fconverge);
 			break;
 		case (MM_SIMPLEX):
-			msg(Debug::None,"Simplex minimiser not yet written!\n");
+			msg.print("Simplex minimiser not yet written!\n");
 			break;
 	}
 }
