@@ -82,6 +82,9 @@ void GuiQt::run()
 {
 	msg.enter("GuiQt::run");
 
+	// If no model loaded, add one
+	if (master.nModels() == 0) Model *m = master.addModel();
+
 	// Initialise Qt's icons resource
 
 	Q_INIT_RESOURCE(icons);
@@ -150,8 +153,7 @@ void GuiQt::run()
 	mainWindow->show();
 	doesExist_ = TRUE;
 
-	// Make first loaded model the current one - if no model loaded, add one
-	if (master.nModels() == 0) Model *m = master.addModel();
+	// Make first loaded model the current one
 	master.setCurrentModel(master.models());
 
 	// Refresh the necessary windows

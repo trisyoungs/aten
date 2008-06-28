@@ -129,7 +129,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 			// New point found, so copy destmodel coordinates to model and set new energy
 			//printf("PARABOLIC point is new minimum...\n");
 			ecurrent = enew;
-			srcmodel->copyAtomData(&destmodel, Atom::PositionData);
+			//srcmodel->copyAtomData(&destmodel, Atom::PositionData);
 			// Overwrite the largest of bound[0] and bound[2]
 			if (energy[2] > energy[0])
 			{
@@ -172,7 +172,7 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 					//printf("---GOLD point is lower than current minimum...\n");
 					// New point found, so copy destmodel coordinates to model and set new energy
 					ecurrent = enew;
-					srcmodel->copyAtomData(&destmodel, Atom::PositionData);
+					//srcmodel->copyAtomData(&destmodel, Atom::PositionData);
 					// Overwrite the largest of bound[0] and bound[2]
 					if (leftbound)
 					{
@@ -205,6 +205,8 @@ double LineMinimiser::lineMinimise(Model *srcmodel)
 		}
 	} while (fabs(bound[0]-bound[2]) > (2.0 * tolerance_));
 	//printf("Final bounding values are %f %f %f\n",bound[0],bound[1],bound[2]);
+	gradientMove(srcmodel, &destmodel, bound[1]);
+	srcmodel->copyAtomData(&destmodel, Atom::PositionData);
 	msg.exit("LineMinimiser::minimise");
 	return energy[1];
 }
