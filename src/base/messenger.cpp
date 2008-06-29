@@ -26,10 +26,10 @@
 Messenger msg;
 
 // Message output types
-const char *OutputTypeKeywords[] = { "calls", "typing", "parse", "verbose", "commands", "_ERROR_" };
+const char *OutputTypeKeywords[] = { "_NONE_", "calls", "typing", "parse", "verbose", "commands", "_ERROR_" };
 Messenger::OutputType Messenger::outputType(const char *s)
 {
-	return (Messenger::OutputType) power(2,enumSearch("output mode",Messenger::nOutputTypes,OutputTypeKeywords,s));
+	return (Messenger::OutputType) power(2,enumSearch("output type",Messenger::nOutputTypes,OutputTypeKeywords,s));
 }
 
 // Constructor

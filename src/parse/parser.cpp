@@ -1,6 +1,6 @@
 /*
 	*** File parsing routines
-	*** src/parse/parse.cpp
+	*** src/parse/parser.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -27,7 +27,7 @@
 Parser parser;
 
 // Parse options
-const char *ParseOptionKeywords[Parser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions" };
+const char *ParseOptionKeywords[Parser::nParseOptions] = { "defaults", "usequotes", "skipblanks", "stripbrackets", "noexpressions", "noescapes" };
 Parser::ParseOption Parser::parseOption(const char *s)
 {
 	return (Parser::ParseOption) power(2,enumSearch("parse option", Parser::nParseOptions, ParseOptionKeywords, s));
@@ -39,7 +39,11 @@ Parser::Parser()
 	// Private variables
 	endOfLine_ = FALSE;
 	nArgs_ = 0;
+	line_[0] = '\0';
+	lineLength_ = 0;
+	linePos_ = 0;
 	optionMask_ = Parser::Defaults;
+	sourceFile_ = NULL;
 }
 
 // Returns number of arguments grabbed from last parse
@@ -100,11 +104,37 @@ void Parser::setArg(int i, const char *s)
 // String parsing methods
 */
 
+// Read single line from file
+int Parser::readLine(ifstream *xfile)
+{
+	msg.enter("Parser::readLine");
+	// Returns : 0=ok, 1=error, -1=eof
+	sourceFile_ = xfile;
+	sourceFile_->getline(line_, MAXLINELENGTH-1);
+	if (sourceFile_->eof())
+	{
+		sourceFile_->close();
+		msg.exit("Parser::readLine");
+		return -1;
+	}
+	if (sourceFile_->fail())
+	{
+		sourceFile_->close();
+		msg.exit("Parser::readLine");
+		return 1;
+	}
+	lineLength_ = strlen(line_);
+	linePos_ = 0;
+	//printf("Line = [%s], length = %i\n",line_,lineLength_);
+	msg.exit("Parser::readLine");
+	return 0;
+}
+
 bool Parser::getNextArg(int destarg)
 {
-	// Get the next input chunk from the internal string and put into argument specified
+	// Get the next input chunk from the internal string and put into argument specified.
 	msg.enter("Parser::getNextArg");
-	static int n, arglen;
+	static int arglen;
 	static bool done, hadquotes, expression, failed;
 	static char c, quotechar;
 	failed = FALSE;
@@ -114,11 +144,24 @@ bool Parser::getNextArg(int destarg)
 	expression = FALSE;
 	endOfLine_ = FALSE;
 	arglen = 0;
-	for (n=0; n<line_.length(); n++)
+	while (linePos_ < lineLength_)
 	{
-		c = line_[n];
+		c = line_[linePos_];
 		switch (c)
 		{
+			// Backslash - escape next character (read new line if its an EOL marker)
+// 			case ('\\'):
+// 				if (optionMask_&Parser::NoEscapes)
+// 				{
+// 					tempArg_[arglen] = c;
+// 					arglen ++;
+// 				}
+// 				else
+// 				{
+// 					// Add next character to argument, unless its an EOL character in which case we read a new line_ and start again
+// 	//xxasdasd
+// 				}
+// 				break;
 			// End of line markers
 			case (10):	// Line feed (\n)
 			case (13):	// Carriage Return
@@ -150,7 +193,6 @@ bool Parser::getNextArg(int destarg)
 					hadquotes = TRUE;
 					// If double-quotes, set the quotes flag
 					if ((destarg != -1) && (c == 34)) quoted_[destarg] = TRUE;
-
 					done = TRUE;
 				}
 				else
@@ -166,37 +208,6 @@ bool Parser::getNextArg(int destarg)
 				tempArg_[arglen] = c;
 				arglen ++;
 				break;
-			// Expression start
-			case ('{'):
-				if (!(optionMask_&Parser::UseQuotes))
-				{
-					tempArg_[arglen] = c;
-					arglen ++;
-					break;
-				}
-				// Check we are not already 'expressing'
-				if (expression)
-				{
-					msg.print( "Expression begun inside previous expression (column %i).\n", n+1);
-					failed = TRUE;
-					break;
-				}
-				expression = TRUE;
-				tempArg_[arglen] = c;
-				arglen ++;
-				break;
-			// Expression end
-			case ('}'):
-				if (!expression)
-				{
-					msg.print( "Expression ended without being begun  (column %i).\n", n+1);
-					failed = TRUE;
-					break;
-				}
-				expression = FALSE;
-				tempArg_[arglen] = c;
-				arglen ++;
-				break;
 			// Comment markers
 			case ('#'):	// "#" Rest/all of line is a comment
 				endOfLine_ = TRUE;
@@ -208,14 +219,17 @@ bool Parser::getNextArg(int destarg)
 				arglen ++;
 				break;
 		}
+		// Increment line position
+		linePos_++;
 		if (done || failed) break;
 	}
+	// Finalise argument
 	tempArg_[arglen] = '\0';
-	if (n == line_.length()) endOfLine_ = TRUE;
+	if (linePos_ == lineLength_) endOfLine_ = TRUE;
 	// Store the result in the desired destination
 	if (destarg != -1) arguments_[destarg] = tempArg_;
 	// Strip off the characters up to position 'n', but not including position 'n' itself
-	line_.eraseStart(n+1);
+	//line_.eraseStart(n+1);
 	//printf("Rest of line is now [%s]\n",line.get());
 	msg.exit("Parser::getNextArg");
 	if (failed) return FALSE;
@@ -225,19 +239,19 @@ bool Parser::getNextArg(int destarg)
 // Rip next n characters
 bool Parser::getNextN(int length)
 {
-	// Put the next 'length' characters from source into temparg.
+	// Put the next 'length' characters from line_ into temparg.
 	msg.enter("Parser::getNextN");
 	int arglen = 0;
 	char c;
-	if (line_.length() == 0)
+	if (lineLength_ == 0)
 	{
 		msg.exit("Parser::getNextN");
 		return FALSE;
 	}
-	if (length > line_.length()) length = line_.length();
+	if (length > lineLength_) length = lineLength_;
 	for (int n=0; n<length; n++)
 	{
-		c = line_[n];
+		c = line_[linePos_ + n];
 		switch (c)
 		{
 			// Brackets
@@ -254,19 +268,20 @@ bool Parser::getNextN(int length)
 				arglen ++;
 				break;
 		}
+		linePos_ ++;
 	}
 	// Add terminating character to temparg
 	tempArg_[arglen] = '\0';
-	line_.eraseStart(length);
+	//line_.eraseStart(length);
 	msg.exit("Parser::getNextN");
 	return TRUE;
 }
 
-// Get all (delimited)
-void Parser::getAllArgsDelim(Dnchar &source)
+// Get all arguments (delimited) from Parser::line_
+void Parser::getAllArgsDelim()
 {
-	// Parse the string in 'source' into arguments in 'args'
-	msg.enter("Parser::getAllArgsDelim[string]");
+	// Parse the string in 'line_' into arguments in 'args'
+	msg.enter("Parser::getAllArgsDelim");
 	nArgs_ = 0; 
 	for (int n=0; n<MAXARGS; n++)
 	{
@@ -278,15 +293,15 @@ void Parser::getAllArgsDelim(Dnchar &source)
 	{
 		if (getNextArg(nArgs_))
 		{
-			msg.print(Messenger::Parse,"getAllArgsDelim[string] arg=%i [%s]\n", nArgs_, argc(nArgs_));
+			msg.print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", nArgs_, argc(nArgs_));
 			nArgs_ ++;
 		}
 	}
-	msg.exit("Parser::getAllArgsDelim[string]");
+	msg.exit("Parser::getAllArgsDelim");
 }
 
 // Get all (formatted)
-void Parser::getAllArgsFormatted(Dnchar &source, Format *fmt)
+void Parser::getAllArgsFormatted(Format *fmt)
 {
 	// Parse the string in 'source' into arguments in 'args'
 	msg.enter("Parser::getAllArgsFormatted");
@@ -323,43 +338,36 @@ int Parser::getArgsDelim(ifstream *xfile, int options)
 {
 	// Standard file parse routine.
 	// Splits the line from the file into delimited arguments via the 'parseline' function
-	msg.enter("Parser::getArgsDelim[file]");
+	msg.enter("Parser::getArgsDelim[ifstream]");
 	bool done = FALSE;
-	static char linefromfile[MAXLINELENGTH];
+	int result;
 	// Lines beginning with '#' are ignored as comments
 	// Blank lines are skipped if blankskip == TRUE.
 	// Returns : 0=ok, 1=error, -1=eof
 	optionMask_ = options;
 	do
 	{
-		xfile->getline(linefromfile,MAXLINELENGTH-1);
-		if (xfile->eof())
+		// Read line from file and parse it
+		result = readLine(xfile);
+		if (result != 0)
 		{
-			xfile->close();
-			msg.exit("Parser::getArgsDelim[file]");
-			return -1;
+			msg.exit("Parser::getArgsDelim[ifstream]");
+			return result;
 		}
-		if (xfile->fail())
-		{
-			xfile->close();
-			msg.exit("Parser::getArgsDelim[file]");
-			return 1;
-		}
-		line_ = linefromfile;
 		// Assume that we will finish after parsing the line we just read in
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
-		getAllArgsDelim(line_);
+		getAllArgsDelim();
 		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
-	msg.exit("Parser::getArgsDelim[file]");
+	msg.exit("Parser::getArgsDelim[ifstream]");
 	return 0;
 }
 
 // Get next argument (delimited) from file stream
 const char *Parser::getArgDelim(ifstream *xfile)
 {
-	msg.enter("Parser::getArgDelim[file]");
+	msg.enter("Parser::getArgDelim[ifstream]");
 	static char result[512];
 	static int length;
 	static bool done;
@@ -368,26 +376,18 @@ const char *Parser::getArgDelim(ifstream *xfile)
 	length = 0;
 	done = FALSE;
 	*xfile >> result;
+	msg.exit("Parser::getArgDelim[ifstream]");
 	return result;
 }
 
 // Parse all arguments (delimited) from string
 void Parser::getArgsDelim(const char *s, int options)
 {
-	line_ = s;
+	strcpy(line_,s);
+	lineLength_ = strlen(line_);
+	linePos_ = 0;
 	optionMask_ = options;
-	getAllArgsDelim(line_ );
-}
-
-// Cut next delimited argument from supplied string
-const char *Parser::getNextDelim(Dnchar &s, int options)
-{
-	static int result;
-	optionMask_ = options;
-	line_  = s.get();
-	result = getNextArg(-1);
-	s = line_ .get();
-	return (result ? tempArg_ : "");
+	getAllArgsDelim();
 }
 
 // Parse string into lines
@@ -436,21 +436,14 @@ void Parser::getLinesDelim(const char *s)
 int Parser::skipLines(ifstream *xfile, int nlines)
 {
 	msg.enter("Parser::skipLines");
-	static char skipline[MAXLINELENGTH];
+	int result;
 	for (int n=0; n<nlines; n++)
 	{
-		xfile->getline(skipline,MAXLINELENGTH-1);
-		if (xfile->eof())
+		result = readLine(xfile);
+		if (result != 0)
 		{
-			xfile->close();
 			msg.exit("Parser::skipLines");
-			return -1;
-		}
-		if (xfile->fail())
-		{
-			xfile->close();
-			msg.exit("Parser::skipLines");
-			return 1;
+			return result;
 		}
 	}
 	msg.exit("Parser::skipLines");
@@ -464,35 +457,24 @@ int Parser::skipLines(ifstream *xfile, int nlines)
 // Parse formatted (from file)
 int Parser::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 {
-	// Splits the line from the file into parts determiend by the supplied format
+	// Splits the line from the file into parts determined by the supplied format
 	msg.enter("Parser::getArgsFormatted[file]");
-	static char linefromfile[MAXLINELENGTH];
+	int result;
 	bool done = FALSE;
-	// Lines beginning with '#' are ignored as comments
-	// Blank lines are skipped if blankskip == TRUE.
-	// Returns : 0=ok, 1=error, -1=eof
 	optionMask_ = options;
 	nArgs_ = 0;
 	do
 	{
-		xfile->getline(linefromfile,MAXLINELENGTH-1);
-		if (xfile->eof())
+		result = readLine(xfile);
+		if (result != 0)
 		{
-			xfile->close();
 			msg.exit("Parser::getArgsFormatted[file]");
-			return -1;
+			return result;
 		}
-		if (xfile->fail())
-		{
-			xfile->close();
-			msg.exit("Parser::getArgsFormatted[file]");
-			return 1;
-		}
-		line_ = linefromfile;
 		// Assume that we will finish after parsing the line we just read in
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
-		getAllArgsFormatted(line_,fmt);
+		getAllArgsFormatted(fmt);
 		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
 	msg.exit("Parser::getArgsFormatted[file]");
@@ -504,12 +486,9 @@ void Parser::getArgsFormatted(const char *source, int options, Format *fmt)
 {
 	// Splits the line from the file into parts determiend by the supplied format
 	msg.enter("Parser::getArgsFormatted[string]");
-	// Lines beginning with '#' are ignored as comments
-	// Blank lines are skipped if blankskip == TRUE.
-	// Returns : 0=ok, 1=error, -1=eof
-	line_ = source;
+	strcpy(line_, source);
 	optionMask_ = options;
-	getAllArgsFormatted(line_,fmt);
+	getAllArgsFormatted(fmt);
 	msg.exit("Parser::getArgsFormatted[string]");
 }
 
@@ -640,4 +619,3 @@ const char *Parser::trimAtomtypeKeyword(Dnchar &source)
 	msg.exit("Parser::trimAtomtypeKeyword");
 	return keywd.get();
 }
-

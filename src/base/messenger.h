@@ -29,7 +29,7 @@ class Messenger
 	// Constructor
 	Messenger();
 	// Messaging output types
-	enum OutputType { Calls=0, Typing=1, Parse=2, Verbose=4, Commands=8, Error=16, nOutputTypes=6 };
+	enum OutputType { None=0, Calls=1, Typing=2, Parse=4, Verbose=8, Commands=16, Error=32, nOutputTypes=7 };
 	// Convert text string to debug mode
 	static OutputType outputType(const char *s);
 
