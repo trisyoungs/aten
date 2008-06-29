@@ -299,7 +299,7 @@ void Prefs::load(const char *filename)
 		success = parser.getArgsDelim(&prefsfile,Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
-			msg.print("prefs::load - Error reading file.\n");
+			msg.print("Error reading prefs file.\n");
 			break;
 		}
 		else if (success == -1) break;

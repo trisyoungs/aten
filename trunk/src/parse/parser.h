@@ -1,6 +1,6 @@
 /*
 	*** File parsing routines
-	*** src/parse/parse.h
+	*** src/parse/parser.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PARSE_H
-#define ATEN_PARSE_H
+#ifndef ATEN_PARSER_H
+#define ATEN_PARSER_H
 
 #include "base/constants.h"
 #include "classes/dnchar.h"
@@ -42,17 +42,23 @@ class Parser
 	// Constructor
 	Parser();
 	// Parse Options
-	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, nParseOptions=5};
+	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
 	static ParseOption parseOption(const char*);
 
 	/*
-	// Set Source Line
+	// Source line, options, and argument data
 	*/
 	private:
 	// Temporary string variable
 	char tempArg_[MAXARGLENGTH];
 	// Line to parse
-	Dnchar line_;
+	char line_[MAXLINELENGTH];
+	// Length of line_
+	int lineLength_;
+	// Current reading position in line_
+	int linePos_;
+	// Source file (set by readLine);
+	ifstream *sourceFile_;
 	// Parsed arguments
 	Dnchar arguments_[MAXARGS];
 	// Whether the argument was quoted
@@ -63,18 +69,18 @@ class Parser
 	int nArgs_;
 	// Option bitmask (set by get_args() calls)
 	int optionMask_;
-	// Gets next delimited arg from internal 'line'
+	// Read next line from source file
+	int readLine(ifstream *source);
+	// Gets next delimited arg from internal line_
 	bool getNextArg(int);
-	// Gets next n chars from internal 'line'
+	// Gets next n chars from internal line_
 	bool getNextN(int);
-	// Gets all delimited args from supplied string
-	void getAllArgsDelim(Dnchar&);
+	// Gets all delimited args from internal line_
+	void getAllArgsDelim();
 	// Gets all arguments from string by format
-	void getAllArgsFormatted(Dnchar&, Format*);
+	void getAllArgsFormatted(Format*);
 
 	public:
-	// Cut and return next argument from string
-	const char *getNextDelim(Dnchar&, int);
 	// Set line and parse using delimiters
 	void getArgsDelim(const char*, int);
 	// Set line and parse into separate lines using ';' and '\n' as delimiters
