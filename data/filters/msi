@@ -26,9 +26,9 @@ importmodel
 		readvar $line "$ident $type $data $a $b $c"
 		# Assume that lines are long enough to not force more than one data argument onto the next line
 		# If the $c variable is '\' then we must read in the next line to get the real $c
-		if $c = \
-			readline $c
-		end
+		#if $c = \
+	#		readline $c
+	#	end
 		# Check for block specifiers
 		if $ident <> A
 			if $type = Model

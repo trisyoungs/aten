@@ -134,9 +134,9 @@ bool Parser::getNextArg(int destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
 	msg.enter("Parser::getNextArg");
-	static int arglen;
+	static int arglen, readresult;
 	static bool done, hadquotes, expression, failed;
-	static char c, quotechar;
+	static char c, quotechar, d;
 	failed = FALSE;
 	done = FALSE;
 	hadquotes = FALSE;
@@ -149,19 +149,40 @@ bool Parser::getNextArg(int destarg)
 		c = line_[linePos_];
 		switch (c)
 		{
-			// Backslash - escape next character (read new line if its an EOL marker)
-// 			case ('\\'):
-// 				if (optionMask_&Parser::NoEscapes)
-// 				{
-// 					tempArg_[arglen] = c;
-// 					arglen ++;
-// 				}
-// 				else
-// 				{
-// 					// Add next character to argument, unless its an EOL character in which case we read a new line_ and start again
-// 	//xxasdasd
-// 				}
-// 				break;
+			// Backslash - escape next character (read new line if its an EOL marker) unless we're inside quotes
+			case (92):
+				d = line_[linePos_ + 1];
+				if ((optionMask_&Parser::NoEscapes) || (quotechar != '\0'))
+				{
+					tempArg_[arglen] = c;
+					arglen ++;
+				}
+				else if ((d == 10) || (d == 13))
+				{
+					// Next char is newline, so read another line from file if we have one
+					if (sourceFile_ == NULL)
+					{
+						done = TRUE;
+						endOfLine_ = TRUE;
+					}
+					else
+					{
+						// Read a new line
+						readresult = readLine(sourceFile_);
+						if (readresult != 0)
+						{
+							failed = TRUE;
+							done = TRUE;
+						}
+					}
+				}
+				else
+				{
+					tempArg_[arglen] = d;
+					arglen ++;
+					linePos_ ++;
+				}
+				break;
 			// End of line markers
 			case (10):	// Line feed (\n)
 			case (13):	// Carriage Return
