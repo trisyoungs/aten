@@ -62,6 +62,20 @@ int CommandData::function_CA_FIND(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Read while line from file and put in supplied variable
+int CommandData::function_CA_GETLINE(Command *&c, Bundle &obj)
+{
+	ifstream *inputfile = c->parent()->inputFile();
+	if (inputfile == NULL)
+	{
+		msg.print("No input file active.\n");
+		return CR_FAIL;
+	}
+	parser.readLine(inputfile);
+	c->arg(0)->set(parser.line());
+	return CR_SUCCESS;
+}
+
 // Read N characters from unformatted file
 int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
 {

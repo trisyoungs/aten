@@ -16,7 +16,7 @@ importmodel
 		readline "$tripos%9 $keywd"
 		if $keywd = MOLECULE
 			# Molecule information
-			readline "$title%100"
+			getline $title
 			newmodel $title
 			readline "$natoms $nbonds"
 			# Skip the next three lines, which are type of molecule, charges used XXX, and user comment

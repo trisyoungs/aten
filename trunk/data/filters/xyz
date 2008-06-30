@@ -14,7 +14,7 @@ importmodel
 
 	# Read data
 	readline "$natoms"
-	readline "$title%100"
+	getline $title
 	newmodel $title
 	for $n,1,$natoms
 		readline "$e $rx $ry $rz $q"
@@ -60,7 +60,7 @@ importtrajectory
 	# No header in XYZ trajectories, so only check for frames
 	if $header <> true
 		readline "$natoms"
-		readline "$title%100"
+		getline $title
 		setname $title
 		newglyph text $title
 		glyphdata 1 10 10 0
