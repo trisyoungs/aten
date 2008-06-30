@@ -276,7 +276,7 @@ bool Parser::getNextN(int length)
 	if (length > lineLength_) length = lineLength_;
 	for (int n=0; n<length; n++)
 	{
-		c = line_[linePos_ + n];
+		c = line_[linePos_];
 		switch (c)
 		{
 			// Brackets
@@ -337,8 +337,8 @@ void Parser::getAllArgsFormatted(Format *fmt)
 		arguments_[n].clear();
 		quoted_[n] = FALSE;
 	}
-	FormatNode *fn = fmt->nodes();
-	while (fn != NULL)
+	
+	for (FormatNode *fn = fmt->nodes(); fn != NULL; fn = fn->next)
 	{
 		// If field length specifier is zero, just get the next arg, otherwise get by length
 		if (fn->length() == 0) parseresult = getNextArg(-1);
@@ -349,7 +349,6 @@ void Parser::getAllArgsFormatted(Format *fmt)
 			fn->variable()->reset();
 		}
 		else fn->variable()->set(tempArg_);
-		fn = fn->next;
 	}
 	msg.exit("Parser::getAllArgsFormatted");
 }
@@ -512,6 +511,8 @@ void Parser::getArgsFormatted(const char *source, int options, Format *fmt)
 	// Splits the line from the file into parts determiend by the supplied format
 	msg.enter("Parser::getArgsFormatted[string]");
 	strcpy(line_, source);
+	linePos_ = 0;
+	lineLength_ = strlen(line_);
 	optionMask_ = options;
 	getAllArgsFormatted(fmt);
 	msg.exit("Parser::getArgsFormatted[string]");
