@@ -572,6 +572,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add a read option: usequotes, skipblanks, stripbrackets" },
 	{ "find",		"PVv",		"<string> <resultvar> [linevar]",
 				"Search for a string in the input file" },
+	{ "getline",		"C",		"<variable>",
+				"Read the next line from the file and place it in the supplied variable" },
 	{ "readchars",		"VE",		"<variable> <nchars>",
 				"Read a number of characters from the input file" },
 	{ "readfloat",		"V",		"<variable>",

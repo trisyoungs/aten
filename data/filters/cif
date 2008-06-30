@@ -57,7 +57,7 @@ importmodel
 			# Loop over next lines to determine the data to expect
 			for $m,1,100
 				# Read and store whole line (we may need it later)
-				readline "$line%100"
+				getline $line
 				# Get keyword from line
 				readvar $line "$keywd"
 				# Get first character and next 9 characters

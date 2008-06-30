@@ -69,8 +69,6 @@ class Parser
 	int nArgs_;
 	// Option bitmask (set by get_args() calls)
 	int optionMask_;
-	// Read next line from source file
-	int readLine(ifstream *source);
 	// Gets next delimited arg from internal line_
 	bool getNextArg(int);
 	// Gets next n chars from internal line_
@@ -81,6 +79,8 @@ class Parser
 	void getAllArgsFormatted(Format*);
 
 	public:
+	// Return pointer to start of current line_
+	const char *line();
 	// Set line and parse using delimiters
 	void getArgsDelim(const char*, int);
 	// Set line and parse into separate lines using ';' and '\n' as delimiters
@@ -89,6 +89,8 @@ class Parser
 	int getArgsDelim(ifstream*, int);
 	// Skip 'n' lines from file
 	int skipLines(ifstream*, int);
+	// Read next line from source file
+	int readLine(ifstream *source);
 	// Get next arg delimited from file stream
 	const char *getArgDelim(ifstream*);
 	// Parse file with format

@@ -334,6 +334,7 @@ enum CommandAction {
 	// Read / Write Commands
 	CA_ADDREADOPTION,
 	CA_FIND,
+	CA_GETLINE,
 	CA_READCHARS,
 	CA_READFLOAT,
 	CA_READINTEGER,
@@ -693,6 +694,7 @@ class CommandData
 	// Read / Write Commands
 	int function_CA_ADDREADOPTION(Command *&c, Bundle &obj);
 	int function_CA_FIND(Command *&c, Bundle &obj);
+	int function_CA_GETLINE(Command *&c, Bundle &obj);
 	int function_CA_READCHARS(Command *&c, Bundle &obj);
 	int function_CA_READFLOAT(Command *&c, Bundle &obj);
 	int function_CA_READINTEGER(Command *&c, Bundle &obj);

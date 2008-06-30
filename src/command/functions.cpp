@@ -298,6 +298,7 @@ void Master::initCommands()
 	// Read / Write Commands
 	CA_data[CA_ADDREADOPTION].function = &CommandData::function_CA_ADDREADOPTION;
 	CA_data[CA_FIND].function = &CommandData::function_CA_FIND;
+	CA_data[CA_GETLINE].function = &CommandData::function_CA_GETLINE;
 	CA_data[CA_READCHARS].function = &CommandData::function_CA_READCHARS;
 	CA_data[CA_READFLOAT].function = &CommandData::function_CA_READFLOAT;
 	CA_data[CA_READINTEGER].function = &CommandData::function_CA_READINTEGER;

@@ -100,6 +100,12 @@ void Parser::setArg(int i, const char *s)
 	arguments_[i] = s;
 }
 
+// Return pointer to current line
+const char *Parser::line()
+{
+	return line_;
+}
+
 /*
 // String parsing methods
 */

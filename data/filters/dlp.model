@@ -16,7 +16,7 @@ importmodel
 	double rx,ry,rz,vx,vy,vz,fx,fy,fz
 
 	# Title section
-	readline "$title%100"
+	getline $title
 	newmodel $title
 	readline "$keytrj $imcon"
 
