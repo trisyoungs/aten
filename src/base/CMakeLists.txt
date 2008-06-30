@@ -7,7 +7,6 @@ messenger.h
 prefs.h 
 sysfunc.h
 cli.cpp 
-debug.cpp 
 elements.cpp 
 master.cpp 
 messenger.cpp

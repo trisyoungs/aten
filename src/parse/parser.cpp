@@ -149,13 +149,17 @@ bool Parser::getNextArg(int destarg)
 		c = line_[linePos_];
 		switch (c)
 		{
-			// Backslash - escape next character (read new line if its an EOL marker) unless we're inside quotes
+			// Backslash - escape next character (read new line if its an EOL marker)
+			// If we're inside quotes, keep backslash *and* next character
 			case (92):
 				d = line_[linePos_ + 1];
 				if ((optionMask_&Parser::NoEscapes) || (quotechar != '\0'))
 				{
 					tempArg_[arglen] = c;
 					arglen ++;
+					tempArg_[arglen] = d;
+					arglen ++;
+					linePos_ ++;
 				}
 				else if ((d == 10) || (d == 13))
 				{

@@ -175,14 +175,12 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	// Clear any existing node list
 	nodes_.clear();
 	n = 0;
-	//printf("createexact [%s]\n", s);
 	while (s[n] != '\0')
 	{
 		//printf("Current s[n] = '%c'\n",s[n]);
 		// Special check for '\' - add next character whatever it is
 		if (s[n] == 92)
 		{
-	//printf("found a backslash...\n");
 			text[nchars] = s[n+1];
 			nchars ++;
 			n += 2;
