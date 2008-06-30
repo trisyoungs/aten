@@ -97,7 +97,7 @@ bool Master::parseCliEarly(int argc, char *argv[])
 {
 	int argn, opt;
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
-	char *arg, *line;
+	char *arg;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
 	while (argn < (argc-1))
@@ -137,7 +137,7 @@ bool Master::parseCliEarly(int argc, char *argv[])
 			if (!match)
 			{
 				printf("Unrecognised command-line option '%s'.\n",argv[argn]);
-				return -1;
+				return FALSE;
 			}
 			// If this option needs an argument, check that we have one
 			switch (cliSwitches[opt].argument)
@@ -151,7 +151,7 @@ bool Master::parseCliEarly(int argc, char *argv[])
 					{
 						if (isShort) msg.print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
 						else msg.print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
-						return -1;
+						return FALSE;
 					}
 					break;
 				// Optional argument (never used?)
