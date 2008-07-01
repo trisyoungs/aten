@@ -156,8 +156,8 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 	msg.print(Messenger::Typing,"  %i atom types/elements given for Atomtype : ",nAllowedElements_);
 	for (n=0; n<parser.nArgs(); n++)
 	{
-		// If name begins with a '$' then we expect an Atomtype id/name and not an element
-		if (parser.argc(n)[0] == '$')
+		// If name begins with a '&' then we expect an Atomtype id/name and not an element
+		if (parser.argc(n)[0] == '&')
 		{
 			// Copy string and remove leading '$'
 			temp = parser.argc(n);

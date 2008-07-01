@@ -1,14 +1,14 @@
 add_library(base
+aten.h
 cli.h 
 constants.h 
 elements.h 
-master.h 
 messenger.h
 prefs.h 
 sysfunc.h
+aten.cpp
 cli.cpp 
 elements.cpp 
-master.cpp 
 messenger.cpp
 prefs.cpp 
 sysfunc.cpp
