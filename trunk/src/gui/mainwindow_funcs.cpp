@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "classes/forcefield.h"
 #include "gui/gui.h"
@@ -126,8 +126,8 @@ void AtenForm::keyReleaseEvent(QKeyEvent *event)
 void AtenForm::on_ModelTabs_currentChanged(int n)
 {
 	msg.enter("AtenForm::on_ModelTabs_currentChanged");
-	// Different model tab has been selected, so set master.currentmodel to reflect it.
-	master.setCurrentModel(master.model(n));
+	// Different model tab has been selected, so set aten.currentmodel to reflect it.
+	aten.setCurrentModel(aten.model(n));
 	gui.disorderWindow->refresh();
 	gui.modelChanged();
 	gui.updateTrajControls();
@@ -137,8 +137,8 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 {
 	msg.enter("AtenForm::on_ModelTabs_doubleClicked");
-	// Different model tab has been selected, so set master.currentmodel to reflect it.
-	Model *m = master.model(tabid);
+	// Different model tab has been selected, so set aten.currentmodel to reflect it.
+	Model *m = aten.model(tabid);
 	if (m == NULL) return;
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
@@ -155,7 +155,7 @@ void AtenForm::refreshModelTabs()
 	msg.enter("AtenForm::refreshModelTabs");
 	// Set names on tabs
 	int count = 0;
-	for (Model *m = master.models(); m != NULL; m = m->next)
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		ui.ModelTabs->setTabText(count, m->name());
 		count ++;
@@ -166,13 +166,13 @@ void AtenForm::refreshModelTabs()
 void AtenForm::executeCommand()
 {
 	// Clear old script commands and set current model variables
-	master.tempScript.clear();
-	master.tempScript.setModelVariables(master.current.m);
+	aten.tempScript.clear();
+	aten.tempScript.setModelVariables(aten.current.m);
 	// Grab the current text of the line edit
 	parser.getArgsDelim(qPrintable(commandEdit_->text()), Parser::UseQuotes);
 	// Check for no commands given
 	if (parser.nArgs() == 0) return;
-	if (master.tempScript.cacheCommand()) master.tempScript.execute(NULL);
+	if (aten.tempScript.cacheCommand()) aten.tempScript.execute(NULL);
 	commandEdit_->setText("");
 	gui.modelChanged();
 }
@@ -199,22 +199,22 @@ void AtenForm::loadRecent()
 	// Grab the filename from the action
 	filename = qPrintable(action->data().toString());
 	// See if any loaded model filename matches this filename
-	for (m = master.models(); m != NULL; m = m->next)
+	for (m = aten.models(); m != NULL; m = m->next)
 	{
 		msg.print(Messenger::Verbose,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
 		if (filename == m->filename())
 		{
 			msg.print(Messenger::Verbose,"Matched filename to loaded model.\n");
-			master.setCurrentModel(m);
+			aten.setCurrentModel(m);
 			return;
 		}
 	}
 	// If we get to here then the model is not currently loaded...
-	f = master.probeFile(filename.get(), Filter::ModelImport);
+	f = aten.probeFile(filename.get(), Filter::ModelImport);
 	if (f != NULL)
 	{
 		f->execute(filename.get());
-		master.currentModel()->logChange(Change::VisualLog);
+		aten.currentModel()->logChange(Change::VisualLog);
 		gui.mainView.postRedisplay();
 	}
 	else
@@ -263,7 +263,7 @@ void AtenForm::addRecent(const char *filename)
 void AtenForm::updateUndoRedo()
 {
 	static char text[128];
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	// Check the model's state pointers
 	if (m->currentUndostate() == NULL)
 	{
@@ -304,7 +304,7 @@ void AtenForm::refreshScriptsMenu()
 	}
 	// Clear Reflist and repopulate, along with scriptsmenu
 	scriptActions_.clear();
-	for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
+	for (CommandList *cl = aten.scripts.first(); cl != NULL; cl = cl->next)
 	{
 		// Create new QAction and add to Reflist
 		QAction *qa = new QAction(this);
@@ -325,10 +325,10 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 		// Get selected filter in file dialog
 		filename = loadScriptDialog->selectedFiles().first();
 		// Create script and model variables within it
-		CommandList *ca = master.scripts.add();
+		CommandList *ca = aten.scripts.add();
 		ca->createModelVariables();
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
-		else master.scripts.remove(ca);
+		else aten.scripts.remove(ca);
 	}
 }
 

@@ -22,7 +22,7 @@
 #include "parse/filter.h"
 #include "parse/parser.h"
 #include "base/sysfunc.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 #include "classes/pattern.h"
 #include "gui/gui.h"
@@ -290,7 +290,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 {
 	msg.enter("Filter::execute");
 	// Grab pointer Bundle from master
-	Bundle &obj = master.current;
+	Bundle &obj = aten.current;
 	// Set element mapping type to that specified in file
 	Prefs::ZmapType temp_zmap = prefs.zmapType();
 	if (hasZmapping_) prefs.setZmapType(zmapping_);

@@ -22,7 +22,7 @@
 #include "command/commandlist.h"
 #include "command/commands.h"
 #include "parse/format.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "classes/forcefield.h"
 #include "base/elements.h"
 #include "classes/pattern.h"
@@ -1107,8 +1107,8 @@ void CommandList::closeFiles()
 int Command::execute(Command *&c)
 {
 	// Make sure the current rendersource is up-to-date
-	master.current.rs = (master.current.m == NULL ? NULL : master.current.m->renderSource());
-	return CALL_COMMAND(CA_data[action_],function_)(c, master.current);
+	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
+	return CALL_COMMAND(CA_data[action_],function_)(c, aten.current);
 }
 
 // Execute commands in command list

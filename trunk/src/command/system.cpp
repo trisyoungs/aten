@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/messenger.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/gui.h"
 
 // Toggle debug modes
@@ -41,13 +41,13 @@ int CommandData::function_CA_DEBUG(Command *&c, Bundle &obj)
 int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 {
 	// If we're in interactive mode, just set program mode and let main.cpp handle it.
-	if (master.programMode() == Master::InteractiveMode) master.setProgramMode(Master::GuiMode);
+	if (aten.programMode() == Aten::InteractiveMode) aten.setProgramMode(Aten::GuiMode);
 	else if (!gui.exists())
 	{
 		// Set program mode and start gui
-		master.setProgramMode(Master::GuiMode);
+		aten.setProgramMode(Aten::GuiMode);
 		// Add empty model if none were specified on the command line
-		if (master.nModels() == 0) Model *m = master.addModel();
+		if (aten.nModels() == 0) Model *m = aten.addModel();
 		gui.run();
 	}
 	return CR_SUCCESS;
@@ -74,7 +74,7 @@ int CommandData::function_CA_SEED(Command *&c, Bundle &obj)
 int CommandData::function_CA_QUIT(Command *&c, Bundle &obj)
 {
 	// Set program mode here, in case we are running in PM_COMMAND
-	master.setProgramMode(Master::NoMode);
+	aten.setProgramMode(Aten::NoMode);
 	// If the GUI is active, close it...
 	if (gui.exists()) gui.saveBeforeClose();
 	return CR_EXIT;

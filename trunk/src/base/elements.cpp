@@ -21,7 +21,7 @@
 
 #include "base/elements.h"
 #include "base/prefs.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "parse/parser.h"
@@ -438,7 +438,7 @@ int ElementMap::ffToZ(const char *s)
 {
 	ForcefieldAtom *ffa;
 	int result = -1;
-	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)
+	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 	{
 		ffa = ff->findType(s);
 		// Found a match, so find out what element it is...

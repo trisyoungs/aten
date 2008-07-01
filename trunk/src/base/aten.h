@@ -1,6 +1,6 @@
 /*
-	*** Master structure
-	*** src/base/master.h
+	*** Aten's master structure
+	*** src/base/aten.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MASTER_H
-#define ATEN_MASTER_H
+#ifndef ATEN_ATEN_H
+#define ATEN_ATEN_H
 
 #include "classes/bundle.h"
 #include "classes/cell.h"
@@ -31,7 +31,7 @@
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "488"
-#define ATENDATE "Mon 30 Jun - 15:24"
+#define ATENDATE "Tue 01 Jul - 14:39"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -42,13 +42,13 @@ class Forcefield;
 class Grid;
 class Clipboard;
 
-// Master
-class Master
+// Master class
+class Aten
 {
 	public:
 	// Constructor / Destructor
-	Master();
-	~Master();
+	Aten();
+	~Aten();
 	// Program mode enum
 	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, NoMode };
 	// Remove all dynamic data
@@ -280,6 +280,6 @@ class Master
 	List< Namemap<int> > typeMap;
 };
 
-extern Master master;
+extern Aten aten;
 
 #endif

@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/messenger.h"
 #include "base/elements.h"
 #include "classes/forcefield.h"
@@ -46,7 +46,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			break;
 		case (Variable::CharacterVariable):
 			// Attempt conversion of the stnmng first from the users type list
-			for (nm = master.typeMap.first(); nm != NULL; nm = nm->next)
+			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),c->argc(0)) == 0) break;
 			if (nm == NULL) el = elements.find(c->argc(0));
 			else el = nm->data();
@@ -59,8 +59,8 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			el = 0;
 			break;
 	}
-	if (c->hasArg(3)) master.current.i = obj.rs->addAtom(el, c->arg3d(1));
-	else master.current.i = obj.rs->addAtom(el, c->parent()->penPosition);
+	if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
+	else aten.current.i = obj.rs->addAtom(el, c->parent()->penPosition);
 	// Add the name to the model's namesForcefield, if requested and it exists
 	if (prefs.keepNames() && obj.rs->namesForcefield())
 	{
@@ -72,8 +72,8 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			ffa = f->addType();
 			ffa->setName(c->argc(0));
 		}
-		master.current.i->setType(ffa);
-		master.current.i->setTypeFixed(TRUE);
+		aten.current.i->setType(ffa);
+		aten.current.i->setTypeFixed(TRUE);
 	}
 	return CR_SUCCESS;
 }
@@ -107,7 +107,7 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 	Vec3<double> r = c->arg3d(1);
 	if (obj.rs->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
 	else r = obj.rs->cell()->fracToReal(r);
-	master.current.i = obj.rs->addAtom(el, r);
+	aten.current.i = obj.rs->addAtom(el, r);
 	return CR_SUCCESS;
 }
 

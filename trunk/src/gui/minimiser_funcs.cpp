@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "methods/mc.h"
 #include "methods/sd.h"
 #include "methods/cg.h"
@@ -72,16 +72,16 @@ void AtenMinimiser::doMinimisation()
 		case (MM_STEEPEST):
 			sd.setNCycles(maxcycles);
 			sd.setTolerance(pow(10.0,ui.SDLineToleranceSpin->value()));
-			sd.minimise(master.currentModel(),econverge,fconverge);
+			sd.minimise(aten.currentModel(),econverge,fconverge);
 			break;
 		case (MM_CONJUGATE):
 			cg.setNCycles(maxcycles);
 			cg.setTolerance(pow(10.0,ui.CGLineToleranceSpin->value()));
-			cg.minimise(master.currentModel(),econverge,fconverge);
+			cg.minimise(aten.currentModel(),econverge,fconverge);
 			break;
 		case (MM_MONTECARLO):
 			mc.setNCycles(maxcycles);
-			mc.minimise(master.currentModel(),econverge,fconverge);
+			mc.minimise(aten.currentModel(),econverge,fconverge);
 			break;
 		case (MM_SIMPLEX):
 			msg.print("Simplex minimiser not yet written!\n");

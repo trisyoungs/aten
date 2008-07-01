@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "gui/mainwindow.h"
 #include "gui/build.h"
@@ -49,16 +49,16 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 	static char s[256];
 	Vec3<double> newpos;
 	newpos.set(ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
-		sprintf(s,"Add Atom (%s at {%f, %f, %f}, frac)", elements.symbol(master.sketchElement()), newpos.x, newpos.y, newpos.z);
+		sprintf(s,"Add Atom (%s at {%f, %f, %f}, frac)", elements.symbol(aten.sketchElement()), newpos.x, newpos.y, newpos.z);
 		if (m->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
 		else newpos = m->cell()->fracToReal(newpos);
 	}
-	else sprintf(s,"Add Atom (%s at {%f, %f, %f})", elements.symbol(master.sketchElement()), newpos.x, newpos.y, newpos.z);
+	else sprintf(s,"Add Atom (%s at {%f, %f, %f})", elements.symbol(aten.sketchElement()), newpos.x, newpos.y, newpos.z);
 	m->beginUndostate(s);
-	m->addAtom(master.sketchElement(), newpos);
+	m->addAtom(aten.sketchElement(), newpos);
 	m->endUndostate();
 	gui.modelChanged();
 }

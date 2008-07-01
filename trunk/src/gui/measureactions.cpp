@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
@@ -41,27 +41,27 @@ void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 
 void AtenForm::on_actionClearMeasurements_triggered(bool on)
 {
-	master.currentModel()->removeMeasurements(Measurement::DistanceMeasurement);
-	master.currentModel()->removeMeasurements(Measurement::AngleMeasurement);
-	master.currentModel()->removeMeasurements(Measurement::TorsionMeasurement);
+	aten.currentModel()->removeMeasurements(Measurement::DistanceMeasurement);
+	aten.currentModel()->removeMeasurements(Measurement::AngleMeasurement);
+	aten.currentModel()->removeMeasurements(Measurement::TorsionMeasurement);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionMeasureDistanceSelection_triggered(bool on)
 {
-	master.currentModel()->addMeasurementsInSelection(Measurement::DistanceMeasurement);
+	aten.currentModel()->addMeasurementsInSelection(Measurement::DistanceMeasurement);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionMeasureAngleSelection_triggered(bool on)
 {
-	master.currentModel()->addMeasurementsInSelection(Measurement::AngleMeasurement);
+	aten.currentModel()->addMeasurementsInSelection(Measurement::AngleMeasurement);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionMeasureTorsionSelection_triggered(bool on)
 {
-	master.currentModel()->addMeasurementsInSelection(Measurement::TorsionMeasurement);
+	aten.currentModel()->addMeasurementsInSelection(Measurement::TorsionMeasurement);
 	gui.mainView.postRedisplay();
 }
 

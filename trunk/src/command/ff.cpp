@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
@@ -75,7 +75,7 @@ int CommandData::function_CA_BONDDEF(Command *&c, Bundle &obj)
 // Clear manual type mapping list ('clearmap')
 int CommandData::function_CA_CLEARMAP(Command *&c, Bundle &obj)
 {
-	master.typeMap.clear();
+	aten.typeMap.clear();
 	return CR_SUCCESS;
 }
 
@@ -83,7 +83,7 @@ int CommandData::function_CA_CLEARMAP(Command *&c, Bundle &obj)
 int CommandData::function_CA_DEFAULTFF(Command *&c, Bundle &obj)
 {
 	// If an argument was supplied, select forcefield by name. Otherwise use current
-	master.setDefaultForcefield(master.findForcefield(c->argc(0)));
+	aten.setDefaultForcefield(aten.findForcefield(c->argc(0)));
 	return CR_SUCCESS;
 }
 
@@ -98,7 +98,7 @@ int CommandData::function_CA_FFMODEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// If an argument was supplied, select forcefield by name. Otherwise use current
-	if (c->hasArg(0)) obj.m->setForcefield(master.findForcefield(c->argc(0)));
+	if (c->hasArg(0)) obj.m->setForcefield(aten.findForcefield(c->argc(0)));
 	else obj.m->setForcefield(obj.ff);
 	return CR_SUCCESS;
 }
@@ -167,7 +167,7 @@ int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 // Load forcefield ('loadff <filename> [nickname]')
 int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 {
-	Forcefield *ff = master.loadForcefield(c->argc(0));
+	Forcefield *ff = aten.loadForcefield(c->argc(0));
 	if (ff == NULL)
 	{
 		msg.print("Can't find forcefield file '%s' in any location.\n", c->argc(0));
@@ -184,8 +184,8 @@ int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 // Select current forcefield ('getff <name>')
 int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 {
-	Forcefield *ff = (c->argt(0) == Variable::IntegerVariable ? master.forcefield(c->argi(0)) : master.findForcefield(c->argc(0)));
-	if (ff != NULL)	master.setCurrentForcefield(ff);
+	Forcefield *ff = (c->argt(0) == Variable::IntegerVariable ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
+	if (ff != NULL)	aten.setCurrentForcefield(ff);
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -203,7 +203,7 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 		if (el == 0) msg.print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 		else
 		{
-			nm = master.typeMap.add();
+			nm = aten.typeMap.add();
 			nm->set(beforeChar(parser.argc(n),'='), el);
 		}
 	}

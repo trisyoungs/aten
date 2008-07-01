@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
@@ -52,7 +52,7 @@ void AtenCellDefine::showWindow()
 void AtenCellDefine::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	Cell *cell = m->cell();
 	Cell::CellType ct = cell->type();
 	static char s[64];
@@ -86,7 +86,7 @@ void AtenCellDefine::refresh()
 	ui.CellAngleBSpin->setValue(angles.y);
 	ui.CellAngleCSpin->setValue(angles.z);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName,  m->spacegroup());
+	sprintf(s,"%s (%i)\n", aten.spacegroups[m->spacegroup()].displayName,  m->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 	refreshing_ = FALSE;
 }
@@ -101,7 +101,7 @@ void AtenCellDefine::cellChanged()
 	lengths.set(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value());
 	angles.set(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	// Make changes
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	if (m->cell()->type() == Cell::NoCell) m->beginUndostate("Add Cell");
 	else m->beginUndostate("Edit Cell");
 	m->setCell(lengths, angles);
@@ -162,7 +162,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 	}
 	else
 	{
-		Model *m = master.currentModel();
+		Model *m = aten.currentModel();
 		m->beginUndostate("Remove Cell");
 		m->removeCell();
 		m->endUndostate();
@@ -180,14 +180,14 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 
 void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	int sg;
 	static char s[64];
 	// Grab the current text of the line edit and determine spacegroup
 	// Try a direct number conversion first...
 	strcpy(s,qPrintable(ui.CellSpacegroupEdit->text()));
 	sg = atoi(s);
-	if (sg == 0) sg = master.findSpacegroupByName(s);
+	if (sg == 0) sg = aten.findSpacegroupByName(s);
 	// Check for null spacegroup
 	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
 	else
@@ -195,7 +195,7 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 		m->setSpacegroup(sg);
 		ui.CellSpacegroupEdit->setText("");
 		// Set spacegroup label
-		sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+		sprintf(s,"%s (%i)\n", aten.spacegroups[m->spacegroup()].displayName, m->spacegroup());
 		ui.SpacegroupLabel->setText(s);
 	}
 }
@@ -203,16 +203,16 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
 	static char s[64];
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	m->setSpacegroup(0);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", master.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+	sprintf(s,"%s (%i)\n", aten.spacegroups[m->spacegroup()].displayName, m->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 }
 
 void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	m->beginUndostate("Pack Cell");
 	m->pack();
 	m->endUndostate();

@@ -21,7 +21,7 @@
 
 #include "classes/forcefield.h"
 #include "parse/parser.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"
@@ -913,7 +913,7 @@ void Prefs::setEnergyUnit(EnergyUnit eu)
 	// Reconvert any forcefields already loaded so that they are in the new energy units
 	EnergyUnit euold = energyUnit_;
 	energyUnit_ = eu;
-	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
+	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 	// Calculate Electrostatic conversion factor
 	// COULCONVERT is stored in J/mol. Use this to calculate new elec_convert
 	elecConvert_ = COULCONVERT / energyConversions_[energyUnit_];

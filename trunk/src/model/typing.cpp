@@ -20,7 +20,7 @@
 */
 
 #include "base/elements.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
@@ -230,7 +230,7 @@ bool Pattern::typeAtoms()
 	// Select the forcefield we're typing with. First, if this pattern doesn't have a specific ff, take the model's ff
 	if (forcefield_ == NULL) forcefield_ = parent_->forcefield();
 	// If there is still no forcefield, set the defaultff
-	if (forcefield_ == NULL) forcefield_ = master.defaultForcefield();
+	if (forcefield_ == NULL) forcefield_ = aten.defaultForcefield();
 	if (forcefield_ == NULL)
 	{	
 		msg.print("Can't type pattern '%s' - no FF associated to pattern or model, and no default set.\n",name_.get());

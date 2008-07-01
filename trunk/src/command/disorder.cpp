@@ -20,7 +20,7 @@
 */
 
 #include "command/commands.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/messenger.h"
 #include "model/model.h"
 #include "methods/mc.h"
@@ -43,7 +43,7 @@ int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 	char s[150];
 	msg.print("                                                      Centre                   Size\n");
 	msg.print("Model        nMols  I D T R Z    Region         X       Y       Z       X       Y       Z     Overlap\n");
-	for (Model *m = master.models(); m != NULL; m = m->next)
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		v1 = m->area.centre();
 		v2 = m->area.size();

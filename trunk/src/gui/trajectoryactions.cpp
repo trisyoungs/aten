@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/tcanvas.uih"
@@ -31,29 +31,29 @@
 
 void AtenForm::on_actionFrameNext_triggered(bool checked)
 {
-	master.currentModel()->seekNextFrame();
-	master.currentModel()->renderSource()->logChange(Change::CameraLog);
+	aten.currentModel()->seekNextFrame();
+	aten.currentModel()->renderSource()->logChange(Change::CameraLog);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFramePrevious_triggered(bool checked)
 {
-	master.currentModel()->seekPreviousFrame();
-	master.currentModel()->renderSource()->logChange(Change::CameraLog);
+	aten.currentModel()->seekPreviousFrame();
+	aten.currentModel()->renderSource()->logChange(Change::CameraLog);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameFirst_triggered(bool checked)
 {
-	master.currentModel()->seekFirstFrame();
-	master.currentModel()->renderSource()->logChange(Change::CameraLog);
+	aten.currentModel()->seekFirstFrame();
+	aten.currentModel()->renderSource()->logChange(Change::CameraLog);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 
 void AtenForm::on_actionFrameLast_triggered(bool checked)
 {
-	master.currentModel()->seekLastFrame();
-	master.currentModel()->renderSource()->logChange(Change::CameraLog);
+	aten.currentModel()->seekLastFrame();
+	aten.currentModel()->renderSource()->logChange(Change::CameraLog);
 	gui.modelChanged(TRUE,TRUE,FALSE);
 }
 

@@ -20,7 +20,7 @@
 */
 
 #include "model/model.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "methods/mc.h"
 #include "gui/canvas.h"
@@ -197,7 +197,7 @@ void Canvas::renderRegions()
 	// Enable alpha component and make sure lighting is on
 	glEnable(GL_BLEND);
 	glEnable(GL_LIGHTING);
-	for (Model *m = master.models(); m != NULL; m = m->next)
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		elements.copyAmbientColour(i, colour);
 		colour[3] = 0.4f;

@@ -19,30 +19,30 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "parse/parser.h"
 #include "parse/filter.h"
 #include <fstream>
 #include <iostream>
 
 // Probe model
-Filter *Master::probeFile(const char *filename, Filter::FilterType probetype)
+Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 {
 	// From the supplied filename and file type, determine (as best we can) the format of the file
-	msg.enter("Master::probeFile");
+	msg.enter("Aten::probeFile");
 	// Before we do the proper checking, make sure that the file exists and is readable
 	ifstream probefile;
 	probefile.open(filename,ios::in);
 	if (!probefile.is_open())
 	{
 		msg.print("File '%s' does not exist.\n",filename);
-		msg.exit("Master::probeFile");
+		msg.exit("Aten::probeFile");
 		return NULL;
 	}
 	if (filename[0] == '\0')
 	{
 		msg.print("Filename is empty.\n");
-		msg.exit("Master::probeFile");
+		msg.exit("Aten::probeFile");
 		return NULL;
 	}
 	probefile.close();
@@ -87,7 +87,7 @@ Filter *Master::probeFile(const char *filename, Filter::FilterType probetype)
 	//if (parser.find_phrase(&modelfile,"GAMESS VERSION",10)) result = MF_GAMESSUS;
 	//modelfile.close();
 	if (result == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
-	else msg.print(Messenger::Verbose,"Master::probeFile - Selected filter '%s'\n",result->name());
-	msg.exit("Master::probeFile");
+	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n",result->name());
+	msg.exit("Aten::probeFile");
 	return result;
 }

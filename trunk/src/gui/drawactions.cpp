@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "gui/mainwindow.h"
 #include "gui/selectelement.h"
@@ -68,22 +68,22 @@ void AtenForm::on_actionDeleteBond_triggered(bool on)
 
 void AtenForm::on_actionElementH_triggered(bool on)
 {
-	if (on) master.setSketchElement(1);
+	if (on) aten.setSketchElement(1);
 }
 
 void AtenForm::on_actionElementC_triggered(bool on)
 {
-	if (on) master.setSketchElement(6);
+	if (on) aten.setSketchElement(6);
 }
 
 void AtenForm::on_actionElementN_triggered(bool on)
 {
-	if (on) master.setSketchElement(7);
+	if (on) aten.setSketchElement(7);
 }
 
 void AtenForm::on_actionElementCustom_triggered(bool on)
 {
-	if (on) master.setSketchElement(customElement_);
+	if (on) aten.setSketchElement(customElement_);
 }
 
 void AtenForm::on_actionSelectCustomElement_triggered(bool on)
@@ -97,7 +97,7 @@ void AtenForm::on_actionSelectCustomElement_triggered(bool on)
 		customElement_ = newel;
 		// Activate custom element button
 		ui.actionElementCustom->setChecked(TRUE);
-		master.setSketchElement(customElement_);
+		aten.setSketchElement(customElement_);
 	}
 }
 
@@ -113,7 +113,7 @@ void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	m->beginUndostate("Hydrogen Satisfy Model");
 	m->hydrogenSatisfy();
 	m->endUndostate();

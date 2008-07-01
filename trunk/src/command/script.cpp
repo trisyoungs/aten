@@ -20,14 +20,14 @@
 */
 
 #include "command/commandlist.h"
-#include "base/master.h"
+#include "base/aten.h"
 
 // List available scripts
 int CommandData::function_CA_LISTSCRIPTS(Command *&c, Bundle &obj)
 {
-	if (master.scripts.nItems() == 0) msg.print("No scripts loaded.\n");
+	if (aten.scripts.nItems() == 0) msg.print("No scripts loaded.\n");
 	else msg.print("Currently loaded scripts:\n");
-	for (CommandList *cl = master.scripts.first(); cl != NULL; cl = cl->next)
+	for (CommandList *cl = aten.scripts.first(); cl != NULL; cl = cl->next)
 		msg.print("  %s (%s)\n", cl->scriptFilename(), cl->name());
 	return CR_SUCCESS;
 }
@@ -35,10 +35,10 @@ int CommandData::function_CA_LISTSCRIPTS(Command *&c, Bundle &obj)
 // Load script from disk
 int CommandData::function_CA_LOADSCRIPT(Command *&c, Bundle &obj)
 {
-	CommandList *cl = master.scripts.add();
+	CommandList *cl = aten.scripts.add();
 	if (!cl->load(c->argc(0)))
 	{
-		master.scripts.remove(cl);
+		aten.scripts.remove(cl);
 		return CR_FAIL;
 	}
 	if (c->hasArg(1)) cl->setName(c->argc(1));
@@ -51,7 +51,7 @@ int CommandData::function_CA_RUNSCRIPT(Command *&c, Bundle &obj)
 {
 	// Find the script...
 	CommandList *cl;
-	for (cl = master.scripts.first(); cl != NULL; cl = cl->next)
+	for (cl = aten.scripts.first(); cl != NULL; cl = cl->next)
 		if (strcmp(c->argc(0), cl->name()) == 0) break;
 	if (cl != NULL)
 	{

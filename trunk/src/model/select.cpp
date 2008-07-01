@@ -21,7 +21,7 @@
 
 #include "model/model.h"
 #include "classes/pattern.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "gui/gui.h"
 
@@ -94,7 +94,7 @@ void Model::selectionDelete()
 	msg.enter("Model::selectionDelete");
 	Atom *i, *tempi;
 	int count = 0;
-	master.initialiseProgress("Deleting atoms...", atoms_.nItems());
+	aten.initialiseProgress("Deleting atoms...", atoms_.nItems());
 	i = atoms_.first();
 	while (i != NULL)
 	{
@@ -105,9 +105,9 @@ void Model::selectionDelete()
 			i = tempi;
 		}
 		else i = i->next;
-		if (!master.updateProgress(++count)) break;
+		if (!aten.updateProgress(++count)) break;
 	}
-	master.cancelProgress();
+	aten.cancelProgress();
 	msg.exit("Model::selectionDelete");
 }
 

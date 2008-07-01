@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/prefs.h"
 #include "base/elements.h"
 #include "classes/cell.h"
@@ -67,7 +67,7 @@ void Canvas::rectanglePrimitive(double x1, double y1, double x2, double y2)
 // Draw a circle of (pixel) radius 'r' centred at x,y
 void Canvas::circlePrimitive(double x, double y, double r)
 {
-	//r += master.lineardelta;
+	//r += aten.lineardelta;
 	glPushMatrix();
 	  glTranslated(x,y,0.0);
 	  glScalef(r,r,r);

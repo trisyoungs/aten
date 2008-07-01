@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 #include "classes/glyph.h"
 
@@ -30,10 +30,10 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Get glyph style
 	Glyph::GlyphType gs = Glyph::glyphType(c->argc(0));
-	master.current.gl = obj.rs->addGlyph();
+	aten.current.gl = obj.rs->addGlyph();
 	if (gs == Glyph::nGlyphTypes) msg.print("Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
-	master.current.gl->setType(gs);
-	if (c->hasArg(1)) master.current.gl->setText(c->argc(1));
+	aten.current.gl->setType(gs);
+	if (c->hasArg(1)) aten.current.gl->setText(c->argc(1));
 	return CR_SUCCESS;
 }
 

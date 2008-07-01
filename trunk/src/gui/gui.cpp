@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/canvas.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
@@ -83,7 +83,7 @@ void GuiQt::run()
 	msg.enter("GuiQt::run");
 
 	// If no model loaded, add one
-	if (master.nModels() == 0) Model *m = master.addModel();
+	if (aten.nModels() == 0) Model *m = aten.addModel();
 
 	// Initialise Qt's icons resource
 
@@ -154,7 +154,7 @@ void GuiQt::run()
 	doesExist_ = TRUE;
 
 	// Make first loaded model the current one
-	master.setCurrentModel(master.models());
+	aten.setCurrentModel(aten.models());
 
 	// Refresh the necessary windows
 	gridsWindow->refresh();
@@ -168,7 +168,7 @@ void GuiQt::run()
 
 	// Add loaded models to tabbar (and reset its view while we're here)
 	int tabid;
-	for (Model *m = master.models(); m != NULL; m = m->next)
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
 		m->resetView();
@@ -217,7 +217,7 @@ void GuiQt::refresh()
 {
 	if (!doesExist_) return;
 	// Select tab corresponding to current mdoel
-	int id = master.currentModelIndex();
+	int id = aten.currentModelIndex();
 	if (id <= mainWindow->ui.ModelTabs->count()) mainWindow->ui.ModelTabs->setCurrentIndex(id);
 	else printf("GUI_ERROR: Current model index (%i) is out of bounds of tab list.\n",id);
 	// Update the disorder page
@@ -225,7 +225,7 @@ void GuiQt::refresh()
 	// Update pattern list in forcefield window
 	mainWindow->refreshForcefieldPatterns();
 	// Enable View->Trajectory menu item if a trajectory is associated
-	mainWindow->ui.actionViewTrajectory->setEnabled( master.currentModel()->currentFrame() == NULL ? FALSE : TRUE);
+	mainWindow->ui.actionViewTrajectory->setEnabled( aten.currentModel()->currentFrame() == NULL ? FALSE : TRUE);
 } */
 
 // Update GUI after model change (or different model selected)
@@ -234,7 +234,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	if (!doesExist_) return;
 	// Update status bar
 	QString s;
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	// Trajectory information label
 	if (m->totalFrames() != 0)
 	{
@@ -298,7 +298,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 void GuiQt::updateTrajControls()
 {
 	// First see if the model has a trajectory associated to it
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	if (m->totalFrames() == 0)
 	{
 		mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
@@ -358,7 +358,7 @@ bool GuiQt::saveBeforeClose()
 	char text[512];
 	int returnvalue;
 	Filter *f;
-	for (Model *m = master.models(); m != NULL; m = m->next)
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		if (m->isModified())
 		{

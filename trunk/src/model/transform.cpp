@@ -21,7 +21,7 @@
 
 #include "model/model.h"
 #include "classes/atom.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/prefs.h"
 
 // Variables
@@ -179,8 +179,8 @@ void Model::rotateSelectionZaxis(double dz)
 	msg.enter("Model::rotateSelectionZaxis");
 	//GLdouble newx, newy;   TODO
 	//dx = (dx / DEGRAD ) * 2.0f;
-	//master.activemodel->adjust_camera(0.0,0.0,0.0,dx);
-	//master.activemodel->mmatTransform_all();
+	//aten.activemodel->adjust_camera(0.0,0.0,0.0,dx);
+	//aten.activemodel->mmatTransform_all();
 	msg.exit("Model::rotateSelectionZaxis");
 }
 

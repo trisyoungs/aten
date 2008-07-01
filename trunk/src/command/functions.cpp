@@ -20,10 +20,10 @@
 */
 
 #include "command/commands.h"
-#include "base/master.h"
+#include "base/aten.h"
 
 // Initialise Command Pointers
-void Master::initCommands()
+void Aten::initCommands()
 {
 	/*
 	// Store pointers to all command functions

@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/position.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
@@ -63,7 +63,7 @@ void AtenPosition::on_FlipZButton_clicked(bool checked)
 
 void AtenPosition::flipSelection(int axis)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Mirror %i atoms along %c\n", m->nSelected(), 88+axis);
 	m->beginUndostate(s);
@@ -79,7 +79,7 @@ void AtenPosition::flipSelection(int axis)
 void AtenPosition::on_DefineCentreButton_clicked(bool checked)
 {
 	// Get centre of current selection
-	Vec3<double> centre = master.currentModel()->selectionCog();
+	Vec3<double> centre = aten.currentModel()->selectionCog();
 	ui.CentreXSpin->setValue(centre.x);
 	ui.CentreYSpin->setValue(centre.y);
 	ui.CentreZSpin->setValue(centre.z);
@@ -91,7 +91,7 @@ void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
 	centre.x = ui.CentreXSpin->value();
 	centre.y = ui.CentreYSpin->value();
 	centre.z = ui.CentreZSpin->value();
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Centre %i atom(s) at %f %f %f\n",m->nSelected(),centre.x,centre.y,centre.z);
 	m->beginUndostate(s);
@@ -141,7 +141,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 	tvec.set(axis, double(dir));
 	static char s[128];
 	// Grab model in preparation for undostate...
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	if (ui.TranslateModelFrameRadio->isChecked())
 	{
 		// Translate selection in the cartesian axes of the model
@@ -166,7 +166,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 			msg.print("No unit cell defined for model.\n");
 			return;
 		}
-		tvec = master.currentModel()->cell()->axes().get(axis);
+		tvec = aten.currentModel()->cell()->axes().get(axis);
 		tvec *= double(dir) * step;
 		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->beginUndostate(s);
@@ -184,7 +184,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 void AtenPosition::on_DefineVectorButton_clicked(bool checked)
 {
 	// Set vector from defined atoms
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	if (m->nSelected() != 2)
 	{
 		msg.print("Exactly two atoms must be selected to define a vector.\n");
@@ -206,7 +206,7 @@ void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 	v.z = ui.VectorShiftZSpin->value();
 	v *= ui.VectorDeltaSpin->value();
 	char s[128];
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->beginUndostate(s);
 	m->translateSelectionLocal(v);
@@ -223,7 +223,7 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	v.z = ui.VectorShiftZSpin->value();
 	v *= -ui.VectorDeltaSpin->value();
 	char s[128];
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
 	m->beginUndostate(s);
 	m->translateSelectionLocal(v);

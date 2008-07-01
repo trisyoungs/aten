@@ -1,6 +1,6 @@
 /*
-	*** Master structure
-	*** src/base/master.cpp
+	*** Aten's master structure
+	*** src/base/aten.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -24,23 +24,24 @@
 #include "classes/grid.h"
 #include "classes/clipboard.h"
 #include "base/spacegroup.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "parse/parser.h"
 #include <fstream>
 
-Master master;
+// Singleton definition
+Aten aten;
 
 // Constructor
-Master::Master()
+Aten::Aten()
 {
 	// Models
 	modelId_ = 0;
 
 	// Modes
-	programMode_ = Master::GuiMode;
+	programMode_ = Aten::GuiMode;
 
 	// Store pointers to member functions
 	initCommands();
@@ -59,14 +60,14 @@ Master::Master()
 }
 
 // Destructor
-Master::~Master()
+Aten::~Aten()
 {
 	clear();
 	delete userClipboard;
 }
 
 // Clear
-void Master::clear()
+void Aten::clear()
 {
 	models_.clear();
 	forcefields_.clear();
@@ -76,25 +77,25 @@ void Master::clear()
 }
 
 // Sets the current program mode
-void Master::setProgramMode(ProgramMode pm)
+void Aten::setProgramMode(ProgramMode pm)
 {
 	programMode_ = pm;
 }
 
 // Return the current program mode
-Master::ProgramMode Master::programMode()
+Aten::ProgramMode Aten::programMode()
 {
 	return programMode_;
 }
 
 // Set current drawing element
-void Master::setSketchElement(short int el)
+void Aten::setSketchElement(short int el)
 {
 	sketchElement_ = el;
 }
 
 // Return current drawing element
-short int Master::sketchElement()
+short int Aten::sketchElement()
 {
 	return sketchElement_;
 }
@@ -104,9 +105,9 @@ short int Master::sketchElement()
 */
 
 // Set the active model
-void Master::setCurrentModel(Model *m)
+void Aten::setCurrentModel(Model *m)
 {
-	msg.enter("Master::setCurrentModel");
+	msg.enter("Aten::setCurrentModel");
 	// Set current.m and tell the mainview canvas to display it
 	current.m = m;
 	current.rs = (current.m == NULL ? NULL : current.m->renderSource());
@@ -115,7 +116,7 @@ void Master::setCurrentModel(Model *m)
 	current.i = NULL;
 	current.m->renderSource()->calculateViewMatrix();
 	current.m->renderSource()->projectAll();
-	msg.exit("Master::setCurrentModel");
+	msg.exit("Aten::setCurrentModel");
 }
 
 /*
@@ -123,45 +124,45 @@ void Master::setCurrentModel(Model *m)
 */
 
 // Return current active model for editing
-Model *Master::currentModel() const
+Model *Aten::currentModel() const
 {
 	return current.m;
 }
 
 // Return first item in the model list
-Model *Master::models() const
+Model *Aten::models() const
 {
 	return models_.first();
 }
 
 // Return nth item in the model list
-Model *Master::model(int n)
+Model *Aten::model(int n)
 {
 	return models_[n];
 }
 
 // Return the current model's index in the model list
-int Master::currentModelId() const
+int Aten::currentModelId() const
 {
 	return models_.indexOf(current.m);
 }
 
 // Return index of specified model
-int Master::modelIndex(Model *m) const
+int Aten::modelIndex(Model *m) const
 {
 	return models_.indexOf(m);
 }
 
 // Return the number of models in the model list
-int Master::nModels() const
+int Aten::nModels() const
 {
 	return models_.nItems();
 }
 
 // Add model
-Model *Master::addModel()
+Model *Aten::addModel()
 {
-	msg.enter("Master::addModel");
+	msg.enter("Aten::addModel");
 	Model *m = models_.add();
 	char newname[16];
 	sprintf(newname,"Unnamed%03i", ++modelId_);
@@ -172,20 +173,20 @@ Model *Master::addModel()
 		gui.disorderWindow->refresh();
 	}
 	setCurrentModel(m);
-	msg.exit("Master::addModel");
+	msg.exit("Aten::addModel");
 	return m;
 }
 
 // Remove model
-void Master::removeModel(Model *xmodel)
+void Aten::removeModel(Model *xmodel)
 {
 	// Remove this model from the model_list in the main window
-	msg.enter("Master::removeModel");
+	msg.enter("Aten::removeModel");
 	Model *m;
 	// Unset the datamodel for the canvas
 	// Delete the current model, but don't allow there to be zero models_...
 	// (if possible, set the active row to the next model, otherwise  the previous)
-	if (models_.nItems() == 1) m = master.addModel();
+	if (models_.nItems() == 1) m = aten.addModel();
 	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
 	setCurrentModel(m);
 	// Delete the old model (GUI first, then master)
@@ -196,17 +197,17 @@ void Master::removeModel(Model *xmodel)
 		gui.removeModel(id);
 		gui.disorderWindow->refresh();
 	}
-	msg.exit("Master::removeModel");
+	msg.exit("Aten::removeModel");
 }
 
 // Find model by name
-Model *Master::findModel(const char *s) const
+Model *Aten::findModel(const char *s) const
 {
 	// Search model list for name 's' (script function)
-	msg.enter("Master::findModel");
+	msg.enter("Aten::findModel");
 	Model *result = NULL;
 	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;
-	msg.exit("Master::findModel");
+	msg.exit("Aten::findModel");
 	return result ;
 }
 
@@ -215,32 +216,32 @@ Model *Master::findModel(const char *s) const
 */
 
 // Return list of surfaces
-Grid *Master::grids() const
+Grid *Aten::grids() const
 {
 	return grids_.first();
 }
 
 // Return number of surfaces loaded
-int Master::nGrids() const
+int Aten::nGrids() const
 {
 	return grids_.nItems();
 }
 
 // Return specified surface
-Grid *Master::grid(int id)
+Grid *Aten::grid(int id)
 {
 	return grids_[id];
 }
 
 // Add new surface
-Grid *Master::addGrid()
+Grid *Aten::addGrid()
 {
 	current.g = grids_.add();
 	return current.g;
 }
 
 // Remove surface
-void Master::removeGrid(Grid *xgrid)
+void Aten::removeGrid(Grid *xgrid)
 {
 	xgrid->next != NULL ? current.g = xgrid->next : current.g = xgrid->prev;
 	// Finally, delete the old surface
@@ -252,16 +253,16 @@ void Master::removeGrid(Grid *xgrid)
 */
 
 // Add Forcefield
-Forcefield *Master::addForcefield()
+Forcefield *Aten::addForcefield()
 {
 	current.ff = forcefields_.add();
 	return current.ff;
 }
 
 // Load forcefield
-Forcefield *Master::loadForcefield(const char *filename)
+Forcefield *Aten::loadForcefield(const char *filename)
 {
-	msg.enter("Master::loadForcefield");
+	msg.enter("Aten::loadForcefield");
 	// Try some different locations to find the supplied forcefield.
 	static char s[512];
 	bool result;
@@ -271,7 +272,7 @@ Forcefield *Master::loadForcefield(const char *filename)
 	if (fileExists(filename)) result = newff->load(filename);
 	else
 	{
-		// Second try - master.dataDir/ff
+		// Second try - aten.dataDir/ff
 		sprintf(s,"%s/%s", dataDir_.get(), filename);
 		msg.print(Messenger::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
 		if (fileExists(s)) result = newff->load(s);
@@ -300,14 +301,14 @@ Forcefield *Master::loadForcefield(const char *filename)
 		forcefields_.remove(newff);
 		newff = NULL;
 	}
-	msg.exit("Master::loadForcefield");
+	msg.exit("Aten::loadForcefield");
 	return newff;
 }
 
 // Unload forcefield from the master's list
-void Master::removeForcefield(Forcefield *xff)
+void Aten::removeForcefield(Forcefield *xff)
 {
-	msg.enter("Master::removeForcefield");
+	msg.enter("Aten::removeForcefield");
 	Forcefield *newff;
 	// If possible, set the active row to the next model. Otherwise, the previous.
 	xff->next != NULL ? newff = xff->next : newff = xff->prev;
@@ -317,26 +318,26 @@ void Master::removeForcefield(Forcefield *xff)
 	forcefields_.remove(xff);
 	// Set a new default if necessary
 	if (defaultForcefield_ == xff) defaultForcefield_ = forcefields_.first();
-	msg.exit("Master::removeForcefield");
+	msg.exit("Aten::removeForcefield");
 }
 
 // Find forcefield by name
-Forcefield *Master::findForcefield(const char *s) const
+Forcefield *Aten::findForcefield(const char *s) const
 {
 	// Search forcefield list for name 's' (script function)
-	msg.enter("Master::findForcefield");
+	msg.enter("Aten::findForcefield");
 	Forcefield *ff;
 	for (ff = forcefields_.first(); ff != NULL; ff = ff->next) if (strcmp(s,ff->name()) == 0) break;
 	if (ff == NULL) msg.print("Forcefield '%s' is not loaded.\n",s);
-	msg.exit("Master::findForcefield");
+	msg.exit("Aten::findForcefield");
 	return ff;
 }
 
 // Dereference forcefield
-void Master::dereferenceForcefield(Forcefield *xff)
+void Aten::dereferenceForcefield(Forcefield *xff)
 {
 	// Remove references to the forcefield in the models
-	msg.enter("Master::dereferenceForcefield");
+	msg.enter("Aten::dereferenceForcefield");
 	for (Model *m = models_.first(); m != NULL; m = m->next)
 	{
 		if (m->forcefield() == xff)
@@ -358,11 +359,11 @@ void Master::dereferenceForcefield(Forcefield *xff)
 			}
 		}
 	}
-	msg.exit("Master::dereferenceForcefield");
+	msg.exit("Aten::dereferenceForcefield");
 }
 
 // Set the default forcefield
-void Master::setDefaultForcefield(Forcefield *ff)
+void Aten::setDefaultForcefield(Forcefield *ff)
 {
 	defaultForcefield_ = ff;
 	if (defaultForcefield_ == NULL) msg.print("Default forcefield has been unset.\n");
@@ -370,49 +371,49 @@ void Master::setDefaultForcefield(Forcefield *ff)
 }
 
 // Return the first ff in the list
-Forcefield *Master::forcefields() const
+Forcefield *Aten::forcefields() const
 {
 	return forcefields_.first();
 }
 
 // Return the nth ff in the list
-Forcefield *Master::forcefield(int n)
+Forcefield *Aten::forcefield(int n)
 {
 	return forcefields_[n];
 }
 
 // Return the number of loaded forcefields
-int Master::nForcefields() const
+int Aten::nForcefields() const
 {
 	return forcefields_.nItems();
 }
 
 // Set active forcefield
-void Master::setCurrentForcefield(Forcefield *ff)
+void Aten::setCurrentForcefield(Forcefield *ff)
 {
 	current.ff = ff;
 }
 
 // Set active forcefield by ID
-void Master::setCurrentForcefield(int id)
+void Aten::setCurrentForcefield(int id)
 {
 	current.ff = forcefields_[id];
 }
 
 // Return the active forcefield
-Forcefield *Master::currentForcefield() const
+Forcefield *Aten::currentForcefield() const
 {
 	return current.ff;
 }
 
 // Return ID of current forcefield
-int Master::currentForcefieldId() const
+int Aten::currentForcefieldId() const
 {
 	return forcefields_.indexOf(current.ff);
 }
 
 // Get the current default forcefield
-Forcefield *Master::defaultForcefield() const
+Forcefield *Aten::defaultForcefield() const
 {
 	return defaultForcefield_;
 }
@@ -422,37 +423,37 @@ Forcefield *Master::defaultForcefield() const
 */
 
 // Set location of users's home directory
-void Master::setHomeDir(const char *path)
+void Aten::setHomeDir(const char *path)
 {
 	homeDir_ = path;
 }
 
 // Return the home directory path
-const char *Master::homeDir()
+const char *Aten::homeDir()
 {
 	return homeDir_.get();
 }
 
 // Set working directory
-void Master::setWorkDir(const char *path)
+void Aten::setWorkDir(const char *path)
 {
 	workDir_ = path;
 }
 
 // Return the working directory path
-const char *Master::workDir()
+const char *Aten::workDir()
 {
 	return workDir_.get();
 }
 
 // Set data directory
-void Master::setDataDir(const char *path)
+void Aten::setDataDir(const char *path)
 {
 	dataDir_ = path;
 }
 
 // Return the data directory path
-const char *Master::dataDir()
+const char *Aten::dataDir()
 {
 	return dataDir_.get();
 }
@@ -462,15 +463,15 @@ const char *Master::dataDir()
 */
 
 // Load filters
-bool Master::openFilters()
+bool Aten::openFilters()
 {
-	msg.enter("Master::openFilters");
+	msg.enter("Aten::openFilters");
 	char filename[512], path[512];
 	bool found = FALSE, failed = FALSE;
 	ifstream *listfile;
 
 	// If ATENDATA is set, take data from there
-	if (!master.dataDir_.empty())
+	if (!aten.dataDir_.empty())
 	{
 		msg.print(Messenger::Verbose, "$ATENDATA points to '%s'.\n", dataDir_.get());
 		sprintf(path,"%s%s", dataDir_.get(), "/filters/");
@@ -594,15 +595,15 @@ bool Master::openFilters()
 		msg.print(Messenger::Verbose, "Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
 		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
 	}
-	msg.exit("Master::openFilters");
+	msg.exit("Aten::openFilters");
 	if (failed || (!found)) return FALSE;
 	else return TRUE;
 }
 
 // Parse filter index file
-bool Master::parseFilterIndex(const char *path, ifstream *indexfile)
+bool Aten::parseFilterIndex(const char *path, ifstream *indexfile)
 {
-	msg.enter("Master::parseFilterIndex");
+	msg.enter("Aten::parseFilterIndex");
 	// Read the list of filters to load in...
 	// Read filter names from file and open them
 	char filterfile[512], s[512], bit[64];
@@ -616,20 +617,20 @@ bool Master::parseFilterIndex(const char *path, ifstream *indexfile)
 		strcat(s, bit);
 		if (!loadFilter(filterfile))
 		{
-			msg.exit("Master::parseFilterIndex");
+			msg.exit("Aten::parseFilterIndex");
 			return FALSE;
 		}
 	}
 	strcat(s, "\n");
 	msg.print(Messenger::Verbose, s);
-	msg.exit("Master::parseFilterIndex");
+	msg.exit("Aten::parseFilterIndex");
 	return TRUE;
 }
 
 // Read commands from filter file
-bool Master::loadFilter(const char *filename)
+bool Aten::loadFilter(const char *filename)
 {
-	msg.enter("Master::loadFilter");
+	msg.enter("Aten::loadFilter");
 	Filter::FilterType ft;
 	Filter *newfilter;
 	bool error;
@@ -665,14 +666,14 @@ bool Master::loadFilter(const char *filename)
 	}
 	filterfile.close();
 	//variables.print();
-	msg.exit("Master::loadFilter");
+	msg.exit("Aten::loadFilter");
 	return (!error);
 }
 
 // Set filter partners
-void Master::partnerFilters()
+void Aten::partnerFilters()
 {
-	msg.enter("Master::partnerFilters");
+	msg.enter("Aten::partnerFilters");
 	// Loop through import filters and search / set export partners
 	char s[512], bit[32];
 	Filter *imp, *exp;
@@ -724,23 +725,23 @@ void Master::partnerFilters()
 	}
 	strcat(s, "\n");
 	msg.print(Messenger::Verbose, s);
-	msg.exit("Master::partnerFilters");
+	msg.exit("Aten::partnerFilters");
 }
 
 // Find filter with specified type and nickname
-Filter *Master::findFilter(Filter::FilterType ft, const char *nickname) const
+Filter *Aten::findFilter(Filter::FilterType ft, const char *nickname) const
 {
-	msg.enter("Master::findFilter");
+	msg.enter("Aten::findFilter");
 	Filter *result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->nickname(), nickname) == 0) break;
 	if (result == NULL) msg.print("No %s filter with nickname '%s' defined.\n", Filter::filterType(ft), nickname);
-	msg.exit("Master::findFilter");
+	msg.exit("Aten::findFilter");
 	return result;
 }
 
 // Return first filter in list (of a given type)
-Filter *Master::filters(Filter::FilterType ft) const
+Filter *Aten::filters(Filter::FilterType ft) const
 {
 	return filters_[ft].first();
 }
@@ -750,27 +751,27 @@ Filter *Master::filters(Filter::FilterType ft) const
 */
 
 // Initialise a progress indicator
-void Master::initialiseProgress(const char *jobtitle, int totalsteps)
+void Aten::initialiseProgress(const char *jobtitle, int totalsteps)
 {
 	gui.progressCreate(jobtitle, totalsteps);
 }
 
 // Update the number of steps (returns if the dialog was canceled)
-bool Master::updateProgress(int currentstep)
+bool Aten::updateProgress(int currentstep)
 {
 	return gui.progressUpdate(currentstep);
 }
 
 // Terminate the current progress
-void Master::cancelProgress()
+void Aten::cancelProgress()
 {
 	gui.progressTerminate();
 }
 
 // Spacegroup name search
-int Master::findSpacegroupByName(const char *name) const
+int Aten::findSpacegroupByName(const char *name) const
 {
-	msg.enter("Master::findSpacegroupByName");
+	msg.enter("Aten::findSpacegroupByName");
 	static char lcname[256], lcsg[256];
 	strcpy(lcname,lowerCase(name));
 	int result = 0;
@@ -783,14 +784,14 @@ int Master::findSpacegroupByName(const char *name) const
 			break;
 		}
 	}
-	msg.exit("Master::findSpacegroupByName");
+	msg.exit("Aten::findSpacegroupByName");
 	return result;
 }
 
 // Cell type from spacegrgoup
-Cell::CellType Master::spacegroupCellType(int sg) const
+Cell::CellType Aten::spacegroupCellType(int sg) const
 {
-	msg.enter("Master::spacegroupCellType");
+	msg.enter("Aten::spacegroupCellType");
 	Cell::CellType result = Cell::NoCell;
 	// None
 	if (sg == 0) result = Cell::NoCell;
@@ -804,6 +805,6 @@ Cell::CellType Master::spacegroupCellType(int sg) const
 	else if (sg < 195) result = Cell::NoCell;
 	// Cubic
 	else result = Cell::CubicCell;
-	msg.enter("Master::spacegroupCellType");
+	msg.enter("Aten::spacegroupCellType");
 	return result;
 }

@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/prefs.h"
 #include "gui/gui.h"
 #include "gui/canvas.h"
@@ -103,7 +103,7 @@ void Canvas::informKeyDown(Canvas::KeyCode key)
 		case (Canvas::RightAltKey):
 			keyModifier_[Prefs::AltKey] = TRUE;
 			break;
-		//case (GDK_Escape): master.check_before_close(); break;
+		//case (GDK_Escape): aten.check_before_close(); break;
 		case (Canvas::LeftKey):
 			viewtarget->rotate(-10.0,0.0);
 			postRedisplay();
@@ -239,7 +239,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 						if (atomHover_ == NULL)
 						{
 							displayModel_->beginUndostate("Draw Chain");
-							i = displayModel_->addAtom(master.sketchElement(), displayModel_->guideToModel(rMouseDown_));
+							i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_));
 							displayModel_->endUndostate();
 							displayModel_->projectAtom(i);
 							atomHover_ = i;
@@ -386,7 +386,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (atomHover_ == NULL)
 			{
 				displayModel_->beginUndostate("Draw Atom");
-				Atom *i = displayModel_->addAtom(master.sketchElement(), displayModel_->guideToModel(rMouseDown_));
+				Atom *i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseDown_));
 				displayModel_->endUndostate();
 				displayModel_->projectAtom(i);
 			}
@@ -401,7 +401,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom
-				i = displayModel_->addAtom(master.sketchElement(), displayModel_->guideToModel(rMouseUp_));
+				i = displayModel_->addAtom(aten.sketchElement(), displayModel_->guideToModel(rMouseUp_));
 				displayModel_->projectAtom(i);
 			}
 			// Now bond the atoms, unless atomHover_ and i are the same (i.e. the button was clicked and not moved)
@@ -422,7 +422,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 			break;
 		case (Canvas::EditTransmuteAction):
 			displayModel_->beginUndostate("Transmute");
-			displayModel_->transmuteAtom(atomHover_, master.sketchElement());
+			displayModel_->transmuteAtom(atomHover_, aten.sketchElement());
 			displayModel_->endUndostate();
 			gui.modelChanged(TRUE,FALSE,TRUE);
 			break;

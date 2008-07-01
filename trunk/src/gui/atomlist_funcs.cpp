@@ -25,7 +25,7 @@
 #include "gui/ttreewidgetitem.h"
 #include "gui/atomlist.h"
 #include "model/model.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include <QtGui/QTreeWidget>
 #include <QtGui/QScrollBar>
 
@@ -63,7 +63,7 @@ void AtenAtomlist::on_AtomTree_itemPressed(QTreeWidgetItem *item, int column)
 	if (refreshing_) return;
 	// Cast *item into a TTreeWidgetItem
 	TTreeWidgetItem *ti = (TTreeWidgetItem*) item;
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
 	if (ti->pattern() != NULL)
 	{
@@ -84,7 +84,7 @@ void AtenAtomlist::on_AtomTree_currentItemChanged(QTreeWidgetItem *current, QTre
 	if (refreshing_) return;
 	// Cast *item into a TTreeWidgetItem
 	TTreeWidgetItem *ti = (TTreeWidgetItem*) current;
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
 	if (ti->pattern() != NULL)
 	{
@@ -111,7 +111,7 @@ void AtenAtomlist::refresh()
 	}
 	refreshing_ = TRUE;
 	//printf("Refreshing atompage.....\n");
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	// Check this model against the last one we represented in the list
 	if (m != listLastModel_)
 	{
@@ -136,7 +136,7 @@ void AtenAtomlist::pokeScrollBar()
 
 void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	m->beginUndostate("Shift Selection Up");
 	m->shiftSelectionUp();
 	m->endUndostate();
@@ -148,7 +148,7 @@ void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 
 void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	m->beginUndostate("Shift Selection Down");
 	m->shiftSelectionDown();
 	m->endUndostate();
@@ -160,16 +160,16 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 
 void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
-	master.currentModel()->moveSelectionToStart();
-	master.currentModel()->logChange(Change::StructureLog);
+	aten.currentModel()->moveSelectionToStart();
+	aten.currentModel()->logChange(Change::StructureLog);
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
-	master.currentModel()->moveSelectionToEnd();
-	master.currentModel()->logChange(Change::StructureLog);
+	aten.currentModel()->moveSelectionToEnd();
+	aten.currentModel()->logChange(Change::StructureLog);
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }

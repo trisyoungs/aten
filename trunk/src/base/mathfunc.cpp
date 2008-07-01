@@ -20,7 +20,7 @@
 */
 
 #include <cstdlib>
-#include "base/master.h"
+#include "base/aten.h"
 
 // Error Function
 double cserfc(double x)

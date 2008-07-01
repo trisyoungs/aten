@@ -20,7 +20,7 @@
 */
 
 #include "command/commands.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/messenger.h"
 #include "classes/forcefield.h"
 #include "parse/filter.h"
@@ -69,10 +69,10 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = (c->argt(0) == Variable::IntegerVariable ? master.model(c->argi(0)) : master.findModel(c->argc(0)));
+	Model *m = (c->argt(0) == Variable::IntegerVariable ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
 	if (m != NULL) 
 	{
-		master.setCurrentModel(m);
+		aten.setCurrentModel(m);
 		//gui.select_model(m);
 		c->parent()->setModelVariables(obj.m);
 		obj.p = NULL;
@@ -97,8 +97,8 @@ int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
 // Print loaded models ('listmodels')
 int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 {
-	if (master.nModels() != 0) msg.print("Name            NAtoms  Forcefield\n");
-	for (Model *m = master.models(); m != NULL; m = m->next)
+	if (aten.nModels() != 0) msg.print("Name            NAtoms  Forcefield\n");
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 		msg.print("%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
 	return CR_SUCCESS;
 }
@@ -106,12 +106,12 @@ int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 // Load model ('loadmodel <filename> [name]')
 int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 {
-	Filter *f = master.probeFile(c->argc(0), Filter::ModelImport);
+	Filter *f = aten.probeFile(c->argc(0), Filter::ModelImport);
 	if (f != NULL)
 	{
 		if (f->execute(c->argc(0)))
 		{
-			Model *m = master.currentModel();
+			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
 			c->parent()->setModelVariables(m);
@@ -152,12 +152,12 @@ int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 // Create new model ('newmodel <name>')
 int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 {
-	obj.m = master.addModel();
+	obj.m = aten.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
 	msg.print("Created model '%s'\n", obj.m->name());
 	if (prefs.keepNames())
 	{
-		Forcefield *f = master.addForcefield();
+		Forcefield *f = aten.addForcefield();
 		char s[512];
 		sprintf(s,"Names: %s",obj.m->name());
 		f->setName(s);
@@ -173,7 +173,7 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 	if (obj.m->next == NULL) msg.print("Already at last loaded model.\n");
 	else
 	{
-		master.setCurrentModel(obj.m->next);
+		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
 		c->parent()->setModelVariables(obj.m);
 	}
@@ -187,7 +187,7 @@ int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 	if (obj.m->prev == NULL) msg.print("Already at first loaded model.\n");
 	else
 	{
-		master.setCurrentModel(obj.m->prev);
+		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
 		c->parent()->setModelVariables(obj.m);
 	}
@@ -199,7 +199,7 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
-	Filter *f = master.findFilter(Filter::ModelExport, c->argc(0));
+	Filter *f = aten.findFilter(Filter::ModelExport, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{

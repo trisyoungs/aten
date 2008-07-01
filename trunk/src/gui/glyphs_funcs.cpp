@@ -23,7 +23,7 @@
 #include "gui/gui.h"
 #include "gui/glyphs.h"
 #include "model/model.h"
-#include "base/master.h"
+#include "base/aten.h"
 
 // Constructor
 AtenGlyphs::AtenGlyphs(QWidget *parent)

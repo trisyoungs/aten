@@ -24,7 +24,7 @@
 #include <readline/history.h>
 #include "base/cli.h"
 #include "base/prefs.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "model/model.h"
 
@@ -93,7 +93,7 @@ Cli cliSwitches[] = {
 };
 
 // Parse CLI options *before* filters / prefs have been loaded
-bool Master::parseCliEarly(int argc, char *argv[])
+bool Aten::parseCliEarly(int argc, char *argv[])
 {
 	int argn, opt;
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
@@ -211,7 +211,7 @@ bool Master::parseCliEarly(int argc, char *argv[])
 }
 
 // Parse CLI options, after filters / prefs have been loaded
-int Master::parseCli(int argc, char *argv[])
+int Aten::parseCli(int argc, char *argv[])
 {
 	int argn, opt, ntried = 0, n, el;
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
@@ -315,7 +315,7 @@ int Master::parseCli(int argc, char *argv[])
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
 					cl.clear();
-					cl.setModelVariables(master.current.m);
+					cl.setModelVariables(aten.current.m);
 					if (cl.cacheLine(argv[++argn])) cl.execute();
 					else return -1;
 					break;
@@ -325,18 +325,18 @@ int Master::parseCli(int argc, char *argv[])
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
-					ff = master.loadForcefield(argv[++argn]);
+					ff = aten.loadForcefield(argv[++argn]);
 					if (ff == NULL) return -1;
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelfilter = master.findFilter(Filter::ModelImport, argv[++argn]);
+					modelfilter = aten.findFilter(Filter::ModelImport, argv[++argn]);
 					if (modelfilter == NULL) return -1;
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
 					argn++;
-					f = master.probeFile(argv[argn], Filter::GridImport);
+					f = aten.probeFile(argv[argn], Filter::GridImport);
 					if (f == NULL) return -1;
 					else if (!f->execute(argv[argn])) return -1;
 					break;
@@ -344,19 +344,19 @@ int Master::parseCli(int argc, char *argv[])
 				case (Cli::InteractiveSwitch):
 					sprintf(prompt,"Aten %s > ",ATENVERSION);
 					printf("Entering interactive mode...\n");
-					master.setProgramMode(Master::InteractiveMode);
+					aten.setProgramMode(Aten::InteractiveMode);
 					do
 					{
 						// Get string from user
 						line = readline(prompt);
-						master.interactiveScript.clear();
-						master.interactiveScript.cacheLine(line);
-						master.interactiveScript.execute();
+						aten.interactiveScript.clear();
+						aten.interactiveScript.cacheLine(line);
+						aten.interactiveScript.execute();
 						// Add the command to the history and delete it 
 						add_history(line);
 						delete line;
-					} while (master.programMode() == Master::InteractiveMode);
-					//master.set_program_mode(PM_NONE);
+					} while (aten.programMode() == Aten::InteractiveMode);
+					//aten.set_program_mode(PM_NONE);
 					break;
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
@@ -399,19 +399,19 @@ int Master::parseCli(int argc, char *argv[])
 					break;
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
-					script = master.scripts.add();
+					script = aten.scripts.add();
 					script->createModelVariables();
 					if (script->load(argv[++argn]))
 					{
-						master.setProgramMode(Master::CommandMode);
-						script->setModelVariables(master.current.m);
-						if (!script->execute()) master.setProgramMode(Master::NoMode);
+						aten.setProgramMode(Aten::CommandMode);
+						script->setModelVariables(aten.current.m);
+						if (!script->execute()) aten.setProgramMode(Aten::NoMode);
 						// Need to check program mode after each script since it can be changed
-						if (master.programMode() == Master::CommandMode) master.setProgramMode(Master::GuiMode);
+						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);
 					}
 					else
 					{
-						master.scripts.remove(script);
+						aten.scripts.remove(script);
 						return -1;
 					}
 					break;
@@ -442,16 +442,16 @@ int Master::parseCli(int argc, char *argv[])
 			// Not a CLI switch, so try to load it as a model
 			ntried ++;
 			if (modelfilter != NULL) f = modelfilter;
-			else f = master.probeFile(argv[argn], Filter::ModelImport);
+			else f = aten.probeFile(argv[argn], Filter::ModelImport);
 			if (f != NULL) f->execute(argv[argn]);
 			else return -1;
 		}
 	}
-	return master.nModels();
+	return aten.nModels();
 }
 
 // Usage help
-void Master::printUsage() const
+void Aten::printUsage() const
 {
 	printf("Usage: aten [options] [<model> ...]\n");
 	printf("\nProgram Options:\n");
