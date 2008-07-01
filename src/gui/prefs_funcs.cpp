@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "gui/prefs.h"
 #include <QtGui/QListWidgetItem>
@@ -141,7 +141,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 		elements.setAmbientColour(i, elementsBackup_[i].ambientColour[0], elementsBackup_[i].ambientColour[1], elementsBackup_[i].ambientColour[2]);
 		elements.setDiffuseColour(i, elementsBackup_[i].diffuseColour[0], elementsBackup_[i].diffuseColour[1], elementsBackup_[i].diffuseColour[2]);
 	}
-	master.currentModel()->logChange(Change::VisualLog);
+	aten.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 	reject();
 }
@@ -177,7 +177,7 @@ void AtenPrefs::on_ElementAmbientColourButton_clicked(bool checked)
 	ui.ElementAmbientColourFrame->setColour(newcol);
 	ui.ElementAmbientColourFrame->update();
 	// Re-set atom colours in model(s)
-	master.currentModel()->logChange(Change::VisualLog);
+	aten.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -197,7 +197,7 @@ void AtenPrefs::on_ElementDiffuseColourButton_clicked(bool checked)
 	ui.ElementDiffuseColourFrame->setColour(newcol);
 	ui.ElementDiffuseColourFrame->update();
 	// Re-set atom colours in model(s)
-	master.currentModel()->logChange(Change::VisualLog);
+	aten.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -209,8 +209,8 @@ void AtenPrefs::updateAfterViewPrefs()
 {
 	if (refreshing_) return;
 	gui.mainView.createLists();
-	master.currentModel()->renderSource()->projectAll();
-	master.currentModel()->renderSource()->logChange(Change::VisualLog);
+	aten.currentModel()->renderSource()->projectAll();
+	aten.currentModel()->renderSource()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -268,7 +268,7 @@ void AtenPrefs::on_BondQualitySpin_valueChanged(int value)
 void AtenPrefs::setVisibleObject(Prefs::ViewObject vo, int state)
 {
 	prefs.setVisibleOnScreen(vo, (state == Qt::Checked ? TRUE : FALSE));
-	master.currentModel()->logChange(Change::VisualLog);
+	aten.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -364,7 +364,7 @@ void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
-	master.currentModel()->logChange(Change::VisualLog);
+	aten.currentModel()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 

@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/elements.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 #include "classes/clipboard.h"
 
@@ -63,7 +63,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 		i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), c->parent()->penPosition);
 		if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,c->hasArg(1) ? Bond::bondType(c->argc(1)) : Bond::Single);
 	}
-	master.current.i = i;
+	aten.current.i = i;
 	return CR_SUCCESS;
 }
 
@@ -71,7 +71,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	master.userClipboard->copySelection(obj.rs);
+	aten.userClipboard->copySelection(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -79,7 +79,7 @@ int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	master.userClipboard->cutSelection(obj.rs);
+	aten.userClipboard->cutSelection(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -121,8 +121,8 @@ int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
 int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Model *m = master.currentModel();
-	master.userClipboard->pasteToModel(m);
+	Model *m = aten.currentModel();
+	aten.userClipboard->pasteToModel(m);
 	return CR_SUCCESS;
 }
 

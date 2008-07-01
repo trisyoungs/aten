@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
@@ -51,7 +51,7 @@ void AtenCellTransform::showWindow()
 void AtenCellTransform::refresh()
 {
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	Cell::CellType ct = m->cell()->type();
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
@@ -88,7 +88,7 @@ void AtenCellTransform::on_CellReplicateButton_clicked(bool checked)
 	pos.x = ui.CellReplicatePosXSpin->value();
 	pos.y = ui.CellReplicatePosYSpin->value();
 	pos.z = ui.CellReplicatePosZSpin->value();
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	m->beginUndostate("Replicate Cell");
 	m->replicateCell(neg, pos);
 	m->endUndostate();
@@ -115,7 +115,7 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 	scale.x = ui.CellScaleXSpin->value();
 	scale.y = ui.CellScaleYSpin->value();
 	scale.z = ui.CellScaleZSpin->value();
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	m->beginUndostate("Scale Cell");
 	m->scaleCell(scale);
 	m->endUndostate();

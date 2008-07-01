@@ -19,11 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/spacegroup.h"
 
 // Define spacegroups and their symmetry generators
-Spacegroup Master::spacegroups[] = {
+Spacegroup Aten::spacegroups[] = {
 	{ "None",	"None",			  0},	//   0 (no spacegroup)
 	{ "P1",		"<i>P</i>1",		  1,	//   1
 		{    0 } },

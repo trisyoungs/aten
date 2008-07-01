@@ -25,7 +25,6 @@
 #include "classes/bundle.h"
 
 // Forward declarations
-class MasterData;
 class Command;
 class CommandData;
 
@@ -432,14 +431,14 @@ class CommandData
 	// Command syntax
 	const char *syntax;
 	// Return whether command accepts any arguments
-	bool hasArguments() { return (!(arguments[0] == '\0')); }
+	bool hasArguments();
 
 	/*
 	// Function
 	*/
 	private:
 	// Provide full access to the master
-	friend class Master;
+	friend class Aten;
 	// All command functions
 	int function_CA_ROOTNODE(Command *&c, Bundle &obj);
 	// Analyse commands

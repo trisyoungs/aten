@@ -20,7 +20,7 @@
 */
 
 #include "model/model.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "classes/pattern.h"
 #include "classes/clipboard.h"

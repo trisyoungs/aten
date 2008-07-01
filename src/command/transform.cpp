@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "classes/atom.h"
 
 // Centre selection at given coordinates
@@ -54,7 +54,7 @@ int CommandData::function_CA_TRANSLATECELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Vec3<double> tvec;
-	tvec = master.currentModel()->cell()->axes() * c->arg3d(0);
+	tvec = aten.currentModel()->cell()->axes() * c->arg3d(0);
 	obj.rs->translateSelectionLocal(tvec);
 	return CR_SUCCESS;
 }

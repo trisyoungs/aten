@@ -23,7 +23,7 @@
 #include "classes/pattern.h"
 #include "classes/atomaddress.h"
 #include "classes/clipboard.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 
 // Number of nodes in pattern

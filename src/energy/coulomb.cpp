@@ -25,7 +25,7 @@
 #include "classes/forcefield.h"
 #include "model/model.h"
 #include "templates/vector3.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/prefs.h"
 
 // Calculate the internal coulomb energy of the pattern.

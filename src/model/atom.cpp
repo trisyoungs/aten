@@ -23,7 +23,7 @@
 #include "classes/atom.h"
 #include "classes/undostate.h"
 #include "base/elements.h"
-#include "base/master.h"
+#include "base/aten.h"
 
 // Return the start of the atom list
 Atom *Model::atoms()

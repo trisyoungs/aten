@@ -20,7 +20,7 @@
 */
 
 #include "parse/filter.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
@@ -187,10 +187,10 @@ void AtenForm::finaliseUi()
 	// Create open model dialog
 	loadModelDialog = new QFileDialog(this);
 	loadModelDialog->setFileMode(QFileDialog::ExistingFiles);
-	loadModelDialog->setDirectory(master.workDir());
+	loadModelDialog->setDirectory(aten.workDir());
 	loadModelDialog->setWindowTitle("Open Model(s)");
 	filters << "All files (*)";
-	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next) filters << f->description();
+	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next) filters << f->description();
 	if (filters.empty())
 	{
 		ui.actionFileOpen->setEnabled(FALSE);
@@ -201,22 +201,22 @@ void AtenForm::finaliseUi()
 	// Create open trajectory dialog
 	loadTrajectoryDialog = new QFileDialog(this);
 	loadTrajectoryDialog->setFileMode(QFileDialog::ExistingFile);
-	loadTrajectoryDialog->setDirectory(master.workDir());
+	loadTrajectoryDialog->setDirectory(aten.workDir());
 	loadTrajectoryDialog->setWindowTitle("Add Trajectory");
 	filters.clear();
 	filters << "All files (*)";
-	for (f = master.filters(Filter::TrajectoryImport); f != NULL; f = f->next) filters << f->description();
+	for (f = aten.filters(Filter::TrajectoryImport); f != NULL; f = f->next) filters << f->description();
 	loadTrajectoryDialog->setFilters(filters);
 
 	// Create save model dialog
 	saveModelDialog = new QFileDialog(this);
 	saveModelDialog->setWindowTitle("Save Model");
 	saveModelDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveModelDialog->setDirectory(master.workDir());
+	saveModelDialog->setDirectory(aten.workDir());
 	saveModelDialog->setConfirmOverwrite(TRUE);
 	saveModelDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.filters(Filter::ModelExport); f != NULL; f = f->next) filters << f->description();
+	for (f = aten.filters(Filter::ModelExport); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty())
 	{
@@ -229,7 +229,7 @@ void AtenForm::finaliseUi()
 	saveBitmapDialog = new QFileDialog(this);
 	saveBitmapDialog->setWindowTitle("Save Image");
 	saveBitmapDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveBitmapDialog->setDirectory(master.workDir());
+	saveBitmapDialog->setDirectory(aten.workDir());
 	saveBitmapDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (n=0; n < BIF_NITEMS; n++) filters << filter_from_BIF( (bitmap_format) n);
@@ -239,7 +239,7 @@ void AtenForm::finaliseUi()
 	saveVectorDialog = new QFileDialog(this);
 	saveVectorDialog->setWindowTitle("Save Vector");
 	saveVectorDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveVectorDialog->setDirectory(master.workDir());
+	saveVectorDialog->setDirectory(aten.workDir());
 	saveVectorDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
@@ -249,10 +249,10 @@ void AtenForm::finaliseUi()
 	saveExpressionDialog = new QFileDialog(this);
 	saveExpressionDialog->setWindowTitle("Save Vector");
 	saveExpressionDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveExpressionDialog->setDirectory(master.workDir());
+	saveExpressionDialog->setDirectory(aten.workDir());
 	saveExpressionDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (f = master.filters(Filter::ExpressionExport); f != NULL; f = f->next) filters << f->description();
+	for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next) filters << f->description();
 	// Check for empty filters list (causes crash)
 	if (filters.empty()) ui.actionFileSaveExpression->setEnabled(FALSE);
 	else saveExpressionDialog->setFilters(filters);
@@ -260,7 +260,7 @@ void AtenForm::finaliseUi()
 	// Create open script dialog
 	loadScriptDialog = new QFileDialog(this);
 	loadScriptDialog->setWindowTitle("Open Script");
-	loadScriptDialog->setDirectory(master.workDir());
+	loadScriptDialog->setDirectory(aten.workDir());
 	loadScriptDialog->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";

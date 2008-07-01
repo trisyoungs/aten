@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/prefs.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "classes/grid.h"
 
 // Add grid point data at specified indices
@@ -199,7 +199,7 @@ int CommandData::function_CA_GRIDUSEZ(Command *&c, Bundle &obj)
 // Create new grid
 int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
 {
-	obj.g = master.addGrid();
+	obj.g = aten.addGrid();
 	obj.g->setName(stripTrailing(c->argc(0)));
 	return CR_SUCCESS;
 }

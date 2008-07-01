@@ -23,7 +23,7 @@
 #include "gui/forcefields.h"
 #include "gui/gui.h"
 #include "gui/minimiser.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 #include "classes/forcefield.h"
 
@@ -38,7 +38,7 @@ void AtenForm::on_actionMinimise_triggered(bool on)
 
 void AtenForm::on_actionCalculateEnergy_triggered(bool on)
 {
-	Model *m = master.current.rs;
+	Model *m = aten.current.rs;
 	// Create expression for the current model
 	if (!m->createExpression()) return;
 	// Calculate total energy
@@ -49,7 +49,7 @@ void AtenForm::on_actionCalculateEnergy_triggered(bool on)
 
 void AtenForm::on_actionCalculateForces_triggered(bool on)
 {
-	Model *m = master.current.rs;
+	Model *m = aten.current.rs;
 	// Create expression for the current model
 	if (!m->createExpression()) return;
 	// Calculate atomic forces
@@ -63,10 +63,10 @@ void AtenForm::refreshForcefieldCombo()
 	QStringList slist;
 	int def = -1, n = 0;
 	slist << "<No Forcefield>";
-	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)
+	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 	{
 		n++;
-		if (ff == master.defaultForcefield()) def = n;
+		if (ff == aten.defaultForcefield()) def = n;
 		slist << ff->name();
 	}
 	forcefieldCombo_->clear();
@@ -82,7 +82,7 @@ void AtenForm::forcefieldCombo_currentIndexChanged(int i)
 {
 	if (updating_) return;
 	// Set the new default forcefield in the master and refresh the forcefields page
-	Forcefield *ff = (i == 0 ? NULL : master.forcefield(i-1));
-	master.setDefaultForcefield(ff);
+	Forcefield *ff = (i == 0 ? NULL : aten.forcefield(i-1));
+	aten.setDefaultForcefield(ff);
 	gui.forcefieldsWindow->refresh();
 }

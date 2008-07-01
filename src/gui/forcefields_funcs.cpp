@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include "classes/pattern.h"
 #include "gui/mainwindow.h"
@@ -45,7 +45,7 @@ AtenForcefields::AtenForcefields(QWidget *parent)
 	QStringList filters;
 	openForcefieldDialog = new QFileDialog(this);
 	openForcefieldDialog->setFileMode(QFileDialog::ExistingFile);
-	openForcefieldDialog->setDirectory(master.dataDir());
+	openForcefieldDialog->setDirectory(aten.dataDir());
 	openForcefieldDialog->setWindowTitle("Open Forcefield");
 	filters.clear();
 	filters << "All files (*)";
@@ -56,7 +56,7 @@ AtenForcefields::AtenForcefields(QWidget *parent)
 	saveForcefieldDialog = new QFileDialog(this);
 	saveForcefieldDialog->setWindowTitle("Save Forcefield");
 	saveForcefieldDialog->setAcceptMode(QFileDialog::AcceptSave);
-	saveForcefieldDialog->setDirectory(master.workDir());
+	saveForcefieldDialog->setDirectory(aten.workDir());
 	saveForcefieldDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
 	filters << "All files (*)";
@@ -89,11 +89,11 @@ void AtenForcefields::refresh()
 	}
 	ui.ForcefieldList->clear();
 	TListWidgetItem *item;
-	for (Forcefield *ff = master.forcefields(); ff != NULL; ff = ff->next)
+	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
 	{
 		item = new TListWidgetItem(ui.ForcefieldList);
 		item->setText(ff->name());
-		if (ff == master.defaultForcefield())
+		if (ff == aten.defaultForcefield())
 		{
 			item->setCheckState(Qt::Checked);
 			checkedItem_ = item;
@@ -102,7 +102,7 @@ void AtenForcefields::refresh()
 		item->setPointer(ff);
 	}
 	// Select the current FF.
-	if (master.currentForcefield() == NULL)
+	if (aten.currentForcefield() == NULL)
 	{
 		ui.ForcefieldList->setCurrentRow(0);
 		ui.RemoveForcefieldButton->setEnabled(FALSE);
@@ -113,7 +113,7 @@ void AtenForcefields::refresh()
 	}
 	else
 	{
-		ui.ForcefieldList->setCurrentRow(master.currentForcefieldId());
+		ui.ForcefieldList->setCurrentRow(aten.currentForcefieldId());
 		ui.RemoveForcefieldButton->setEnabled(TRUE);
 		ui.EditForcefieldButton->setEnabled(TRUE);
 		ui.AssociateGroup->setEnabled(TRUE);
@@ -132,7 +132,7 @@ void AtenForcefields::refreshTypes()
 	ui.FFTypeTable->clear();
 	QTableWidgetItem *item;
 	int count = 0;
-	Forcefield *ff = master.currentForcefield();
+	Forcefield *ff = aten.currentForcefield();
 	if (ff == NULL) return;
 	// Reset header labels
 	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
@@ -163,7 +163,7 @@ void AtenForcefields::loadForcefield()
 		// Get selected filter in file dialog
 		QString filter = openForcefieldDialog->selectedFilter();
 		filename = openForcefieldDialog->selectedFiles().first();
-		master.loadForcefield(qPrintable(filename));
+		aten.loadForcefield(qPrintable(filename));
 		refresh();
 	}
 }
@@ -171,7 +171,7 @@ void AtenForcefields::loadForcefield()
 // Set the current forcefield in master to reflect the list change
 void AtenForcefields::on_ForcefieldList_currentRowChanged(int row)
 {
-	if (row != -1) master.setCurrentForcefield(row);
+	if (row != -1) aten.setCurrentForcefield(row);
 	// Update type list
 	refreshTypes();
 }
@@ -183,11 +183,11 @@ void AtenForcefields::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 	TListWidgetItem *titem = (TListWidgetItem*) item;
 	// Get forcefield associated to item
 	Forcefield *ff = (Forcefield*) titem->pointer();
-	Forcefield *defaultff = master.defaultForcefield();
+	Forcefield *defaultff = aten.defaultForcefield();
 	// Look at checked state
 	if ((titem->checkState() == Qt::Checked) && (ff != defaultff))
 	{
-		master.setDefaultForcefield(ff);
+		aten.setDefaultForcefield(ff);
 		refreshTypes();
 		// Uncheck old item if necessary
 		if (checkedItem_ != NULL) checkedItem_->setCheckState(Qt::Unchecked);
@@ -195,7 +195,7 @@ void AtenForcefields::on_ForcefieldList_itemClicked(QListWidgetItem *item)
 	}
 	else if ((titem->checkState() == Qt::Unchecked) && (ff == defaultff))
 	{
-		master.setDefaultForcefield(NULL);
+		aten.setDefaultForcefield(NULL);
 		refreshTypes();
 		checkedItem_ = NULL;
 	}
@@ -212,46 +212,46 @@ void AtenForcefields::on_LoadForcefieldButton_clicked(bool checked)
 // Remove selected forcefield in list
 void AtenForcefields::on_RemoveForcefieldButton_clicked(bool checked)
 {
-	master.removeForcefield(master.currentForcefield());
+	aten.removeForcefield(aten.currentForcefield());
 	refresh();
 }
 
 // Call forcefield editor
 void AtenForcefields::on_EditForcefieldButton_clicked(bool checked)
 {
-	gui.forcefieldEditorDialog->populate(master.currentForcefield());
+	gui.forcefieldEditorDialog->populate(aten.currentForcefield());
 	gui.forcefieldEditorDialog->show();
 }
 
 // Assign current forcefield to model
 void AtenForcefields::on_AssignFFToCurrentButton_clicked(bool checked)
 {
-	master.currentModel()->setForcefield(master.currentForcefield());
+	aten.currentModel()->setForcefield(aten.currentForcefield());
 }
 
 // Assign current forcefield to all models
 void AtenForcefields::on_AssignFFToAllButton_clicked(bool checked)
 {
-	for (Model *m = master.models(); m != NULL; m = m->next) m->setForcefield(master.currentForcefield());
+	for (Model *m = aten.models(); m != NULL; m = m->next) m->setForcefield(aten.currentForcefield());
 }
 
 // Assign current forcefield to pattern
 void AtenForcefields::on_AssignFFToPatternButton_clicked(bool checked)
 {
-	Pattern *p = gui.selectPatternDialog->selectPattern(master.currentModel());
-	if (p != NULL) p->setForcefield(master.currentForcefield());
+	Pattern *p = gui.selectPatternDialog->selectPattern(aten.currentModel());
+	if (p != NULL) p->setForcefield(aten.currentForcefield());
 }
 
 // Perform automatic atom typing
 void AtenForcefields::on_TypeModelButton_clicked(bool checked)
 {
-	if (master.currentModel()->typeAll()) gui.modelChanged();
+	if (aten.currentModel()->typeAll()) gui.modelChanged();
 }
 
 // Remove typing from model
 void AtenForcefields::on_UntypeModelButton_clicked(bool checked)
 {
-	master.currentModel()->removeTyping();
+	aten.currentModel()->removeTyping();
 	gui.modelChanged();
 }
 
@@ -259,8 +259,8 @@ void AtenForcefields::on_UntypeModelButton_clicked(bool checked)
 void AtenForcefields::on_ManualTypeSetButton_clicked(bool checked)
 {
 	// Check selected forcefield against that assigned to the model
-	Model *m = master.currentModel();
-	Forcefield *ff = master.currentForcefield();
+	Model *m = aten.currentModel();
+	Forcefield *ff = aten.currentForcefield();
 	if ((m == NULL) || (ff == NULL)) return;
 	if (m->forcefield() != ff)
 	{
@@ -279,21 +279,21 @@ void AtenForcefields::on_ManualTypeSetButton_clicked(bool checked)
 // Clear type definitions from the selected atoms
 void AtenForcefields::on_ManualTypeClearButton_clicked(bool checked)
 {
-	master.currentModel()->selectionSetType(NULL, FALSE);
+	aten.currentModel()->selectionSetType(NULL, FALSE);
 	gui.modelChanged();
 }
 
 // Test selected atom type on current atom selection
 void AtenForcefields::on_ManualTypeTestButton_clicked(bool checked)
 {
-	Forcefield *ff = master.currentForcefield();
+	Forcefield *ff = aten.currentForcefield();
 	int row = ui.FFTypeTable->currentRow();
 	if (row == -1) return;
 	QTableWidgetItem *item = ui.FFTypeTable->item(row,0);
 	ForcefieldAtom *ffa = ff->findType(atoi(qPrintable(item->text())));
 	if (ffa != NULL)
 	{
-		Model *m = master.currentModel();
+		Model *m = aten.currentModel();
 		Atomtype *at = ffa->atomtype();
 		if (m->autocreatePatterns())
 		{

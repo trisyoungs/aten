@@ -19,14 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "model/model.h"
 
 void AtenForm::on_actionCalculateBonding_triggered(bool on)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding");
 	m->clearBonding();
 	m->calculateBonding();
@@ -36,7 +36,7 @@ void AtenForm::on_actionCalculateBonding_triggered(bool on)
 
 void AtenForm::on_actionClearBonding_triggered(bool on)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding");
 	m->clearBonding();
 	m->endUndostate();
@@ -45,7 +45,7 @@ void AtenForm::on_actionClearBonding_triggered(bool on)
 
 void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	m->beginUndostate("Calculate Bonding (Selection)");
 	m->selectionCalculateBonding();
 	m->endUndostate();
@@ -54,7 +54,7 @@ void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 
 void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	m->beginUndostate("Clear Bonding (Selection)");
 	m->selectionClearBonding();
 	m->endUndostate();
@@ -63,7 +63,7 @@ void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 
 void AtenForm::on_actionAugmentBonding_triggered(bool on)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	m->beginUndostate("Augment Bonding");
 	m->augmentBonding();
 	m->endUndostate();

@@ -46,20 +46,20 @@ echo "Subversion repository is: "$URL
 # Get current date and time
 DATE=`date "+%a %d %b - %H:%M"`
 
-# Change URL, revision, and date in src/base/master.h
-echo "Setting #defines in src/base/master.h..."
-cp src/base/master.h src/base/master.h.orig
-DESTFILE=src/base/master.h
+# Change URL, revision, and date in src/base/aten.h
+echo "Setting #defines in src/base/aten.h..."
+cp src/base/aten.h src/base/aten.h.orig
+DESTFILE=src/base/aten.h
 if [ "$TEST" = "true" ]
 then
-  DESTFILE=src/base/master.h.test
+  DESTFILE=src/base/aten.h.test
 fi
-sed -e "s/#define ATENREVISION \"\(.*\)\"/#define ATENREVISION \"$NEWREV\"/g" -e "s/#define ATENDATE \".*\"/#define ATENDATE \"$DATE\"/g" -e "s,#define ATENURL \".*\",#define ATENURL \"$URL\",g" src/base/master.h.orig > $DESTFILE
-echo -n "        master.h (ATENREVISION) : "
+sed -e "s/#define ATENREVISION \"\(.*\)\"/#define ATENREVISION \"$NEWREV\"/g" -e "s/#define ATENDATE \".*\"/#define ATENDATE \"$DATE\"/g" -e "s,#define ATENURL \".*\",#define ATENURL \"$URL\",g" src/base/aten.h.orig > $DESTFILE
+echo -n "        aten.h (ATENREVISION) : "
 grep '#define ATENREVISION' $DESTFILE | sed -e 's/#define ATENREVISION "\(.*\)"/\1/g'
-echo -n "        master.h (ATENDATE)     : "
+echo -n "        aten.h (ATENDATE)     : "
 grep '#define ATENDATE' $DESTFILE | sed -e 's/#define ATENDATE "\(.*\)"/\1/g'
-echo -n "        master.h (ATENURL)      : "
+echo -n "        aten.h (ATENURL)      : "
 grep '#define ATENURL' $DESTFILE | sed -e 's/#define ATENURL "\(.*\)"/\1/g'
 
 # Update ChangeLog

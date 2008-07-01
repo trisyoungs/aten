@@ -723,3 +723,8 @@ CommandAction CA_from_text(const char* s)
 	return result;
 }
 
+// Return whether command accepts any arguments
+bool CommandData::hasArguments()
+{
+	return (!(arguments[0] == '\0'));
+}

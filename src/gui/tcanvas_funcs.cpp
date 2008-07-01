@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/canvas.h"
 #include "gui/tcanvas.uih"
 #include "gui/gui.h"
@@ -62,7 +62,7 @@ void TCanvas::paintEvent(QPaintEvent *event)
 	if (canvas_ != NULL)
 	{
 		// Draw OpenGL objects
-		canvas_->renderScene(master.currentModel()->renderSource());
+		canvas_->renderScene(aten.currentModel()->renderSource());
 		// Draw on text objects
 		QPainter painter;
 		//font.setPointSize(prefs.labelSize());
@@ -172,7 +172,7 @@ void TCanvas::timerEvent(QTimerEvent *event)
 	else
 	{
 		DONTDRAW = TRUE;
-		Model *m = master.currentModel();
+		Model *m = aten.currentModel();
 		m->seekNextFrame();
 		if (m->framePosition() == m->totalFrames()) gui.stopTrajectoryPlayback();
 		gui.modelChanged(FALSE,FALSE,FALSE);

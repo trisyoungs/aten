@@ -21,13 +21,13 @@
 
 #include "gui/loadmodel.h"
 #include "gui/gui.h"
-#include "base/master.h"
+#include "base/aten.h"
 
 // Constructor
 AtenLoadModel::AtenLoadModel(QWidget *parent) : QDialog(parent)
 {
 	ui.setupUi(this);
-	currentDirectory_ = master.workDir();
+	currentDirectory_ = aten.workDir();
 	selectedFilter_ = NULL;
 }
 
@@ -67,7 +67,7 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	QString filters, selFilter;
 	Filter *f;
 	filters += "All files (*)";
-	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next)
+	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next)
 	{
 		filters += ";;";
 		filters += f->description();
@@ -80,7 +80,7 @@ void AtenLoadModel::on_LoadModelBrowseButton_clicked(bool checked)
 	currentDirectory_ = s;
 	ui.LoadModelEdit->setText(selectedFilename_.get());
 	// Find the corresponding Aten filter that was selected
-	for (f = master.filters(Filter::ModelImport); f != NULL; f = f->next)
+	for (f = aten.filters(Filter::ModelImport); f != NULL; f = f->next)
 		if (strcmp(f->description(),qPrintable(selFilter)) == 0) break;
 	selectedFilter_ = f;
 }

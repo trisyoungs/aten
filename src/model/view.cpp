@@ -21,7 +21,7 @@
 
 #include "model/model.h"
 #include "classes/atom.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/prefs.h"
 #include "gui/gui.h"
 

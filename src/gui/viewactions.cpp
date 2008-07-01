@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "model/model.h"
@@ -30,19 +30,19 @@
 
 void AtenForm::on_actionViewZoomIn_triggered(bool checked)
 {
-	master.currentModel()->adjustCamera(0.0,0.0,5.0,0.0);
+	aten.currentModel()->adjustCamera(0.0,0.0,5.0,0.0);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewZoomOut_triggered(bool checked)
 {
-	master.currentModel()->adjustCamera(0.0,0.0,-5.0,0.0);
+	aten.currentModel()->adjustCamera(0.0,0.0,-5.0,0.0);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewReset_triggered(bool checked)
 {
-	master.currentModel()->resetView();
+	aten.currentModel()->resetView();
 	gui.mainView.postRedisplay();
 }
 
@@ -51,7 +51,7 @@ void AtenForm::on_actionViewPerspective_triggered(bool checked)
 	if (!checked) return;
 	prefs.setPerspective(TRUE);
 	gui.mainView.doProjection();
-	//master.currentModel()->resetView();
+	//aten.currentModel()->resetView();
 	gui.mainView.postRedisplay();
 }
 
@@ -59,15 +59,15 @@ void AtenForm::on_actionViewOrthographic_triggered(bool checked)
 {
 	prefs.setPerspective(FALSE);
 	gui.mainView.doProjection();
-	//master.currentModel()->resetView();
+	//aten.currentModel()->resetView();
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionViewModel_triggered(bool checked)
 {
 	// Switch render focus from the model's trajectory to the model.
-	master.currentModel()->setRenderFromSelf();
-	Model *m = master.currentModel()->renderSource();
+	aten.currentModel()->setRenderFromSelf();
+	Model *m = aten.currentModel()->renderSource();
 	m->calculateViewMatrix();
 	m->logChange(Change::CameraLog);
 	gui.modelChanged();
@@ -76,8 +76,8 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 {
 	// Switch render focus from the model to the trajectory.
-	master.currentModel()->setRenderFromFrames();
-	Model *m = master.currentModel()->renderSource();
+	aten.currentModel()->setRenderFromFrames();
+	Model *m = aten.currentModel()->renderSource();
 	m->calculateViewMatrix();
 	m->logChange(Change::CameraLog);
 	gui.modelChanged();
@@ -86,14 +86,14 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 void AtenForm::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
-	master.currentModel()->viewAlong(x,y,z);
+	aten.currentModel()->viewAlong(x,y,z);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be *along* the specified cell axis
-	master.currentModel()->viewAlongCell(x,y,z);
+	aten.currentModel()->viewAlongCell(x,y,z);
 	gui.mainView.postRedisplay();
 }
 
@@ -161,7 +161,7 @@ void AtenForm::on_actionSchemeElement_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
-	master.currentModel()->renderSource()->logChange(Change::VisualLog);
+	aten.currentModel()->renderSource()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -169,7 +169,7 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
-	master.currentModel()->renderSource()->logChange(Change::VisualLog);
+	aten.currentModel()->renderSource()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }
 
@@ -177,6 +177,6 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
-	master.currentModel()->renderSource()->logChange(Change::VisualLog);
+	aten.currentModel()->renderSource()->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 }

@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "classes/grid.h"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
@@ -39,11 +39,11 @@ AtenGrids::AtenGrids(QWidget *parent)
 	QStringList filters;
 	openGridDialog = new QFileDialog(this);
 	openGridDialog->setWindowTitle("Open Grid");
-	openGridDialog->setDirectory(master.workDir());
+	openGridDialog->setDirectory(aten.workDir());
 	openGridDialog->setFileMode(QFileDialog::ExistingFile);
 	filters.clear();
 	filters << "All files (*)";
-	for (Filter *f = master.filters(Filter::GridImport); f != NULL; f = f->next) filters << f->description();
+	for (Filter *f = aten.filters(Filter::GridImport); f != NULL; f = f->next) filters << f->description();
 	if (filters.empty()) ui.LoadGridButton->setEnabled(FALSE);
 	else openGridDialog->setFilters(filters);
 }
@@ -67,7 +67,7 @@ void AtenGrids::refresh()
 	refreshing_ = TRUE;
 	ui.GridList->clear();
 	TListWidgetItem *item;
-	for (Grid *g = master.grids(); g != NULL; g = g->next)
+	for (Grid *g = aten.grids(); g != NULL; g = g->next)
 	{
 		item = new TListWidgetItem(ui.GridList);
 		item->setText(g->name());
@@ -75,7 +75,7 @@ void AtenGrids::refresh()
 		item->setPointer(g);
 	}
 	// Select the first item
-	if (master.nGrids() != 0) ui.GridList->setCurrentRow(0);
+	if (aten.nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refresh");
@@ -93,7 +93,7 @@ void AtenGrids::loadGrid()
 		// Get selected filter in file dialog
 		QString filter = openGridDialog->selectedFilter();
 		// Find the corresponding Aten filter that was selected
-		for (f = master.filters(Filter::GridImport); f != NULL; f = f->next)
+		for (f = aten.filters(Filter::GridImport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
 		// Get selected filename list
 		filenames = openGridDialog->selectedFiles();
@@ -105,7 +105,7 @@ void AtenGrids::loadGrid()
 			if (f != NULL) f->execute(qPrintable(filename));
 			else
 			{
-				f = master.probeFile(qPrintable(filename), Filter::GridImport);
+				f = aten.probeFile(qPrintable(filename), Filter::GridImport);
 				if (f != NULL) f->execute(qPrintable(filename));
 			}
 		}
@@ -203,7 +203,7 @@ void AtenGrids::refreshGridInfo()
 		msg.exit("AtenGrids::refreshGridInfo");
 		return;
 	}
-	else g = master.grid(row);
+	else g = aten.grid(row);
 	// Set minimum, maximum, and cutoff
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
 	ui.GridCutoffSpin->setMinimum(g->minimum());
@@ -256,7 +256,7 @@ void AtenGrids::gridOriginChanged(int component, double value)
 	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = master.grid(row);
+	else g = aten.grid(row);
 	// Get and re-set origin
 	static Vec3<double> o;
 	o = g->origin();
@@ -271,7 +271,7 @@ void AtenGrids::gridAxisChanged(int r, int component, double value)
 	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = master.grid(row);
+	else g = aten.grid(row);
 	// Get and re-set axes
 	static Mat3<double> axes;
 	axes = g->axes();
@@ -286,11 +286,11 @@ void AtenGrids::on_RemoveGridButton_clicked(bool checked)
 	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = master.grid(row);
-	master.removeGrid(g);
+	else g = aten.grid(row);
+	aten.removeGrid(g);
 	refresh();
-	if (row == master.nGrids()) row --;
-	if (master.nGrids() != 0) ui.GridList->setCurrentRow(row);
+	if (row == aten.nGrids()) row --;
+	if (aten.nGrids() != 0) ui.GridList->setCurrentRow(row);
 	gui.mainView.postRedisplay();
 }
 
@@ -310,7 +310,7 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = master.grid(row);
+	Grid *g = aten.grid(row);
 	g->setCutoff(d);
 	gui.mainView.postRedisplay();
 }
@@ -321,7 +321,7 @@ void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = master.grid(row);
+	Grid *g = aten.grid(row);
 	g->setStyle(Grid::SurfaceStyle (index));
 	gui.mainView.postRedisplay();
 }
@@ -332,7 +332,7 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = master.grid(row);
+	Grid *g = aten.grid(row);
 	// Get current surface colour and convert into a QColor
 	GLfloat *col = g->positiveColour();
 	QColor oldcol, newcol;
@@ -352,7 +352,7 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = master.grid(row);
+	Grid *g = aten.grid(row);
 	// Get current surface colour and convert into a QColor
 	GLfloat *col = g->positiveColour();
 	QColor oldcol, newcol;
@@ -372,7 +372,7 @@ void AtenGrids::on_GridTransparencySpin_valueChanged(double value)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = master.grid(row);
+	Grid *g = aten.grid(row);
 	g->setTransparency( (GLfloat) value );
 	gui.mainView.postRedisplay();
 }
@@ -383,7 +383,7 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = master.grid(row);
+	Grid *g = aten.grid(row);
 	g->setColourScale(n-1);
 	gui.mainView.postRedisplay();
 }
@@ -394,7 +394,7 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = master.grid(row);
+	Grid *g = aten.grid(row);
 	g->setSymmetric(checked);
 	gui.mainView.postRedisplay();
 }

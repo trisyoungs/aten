@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "model/model.h"
 
 // Create energy expression for current model ('createexpression'}
@@ -48,7 +48,7 @@ int CommandData::function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
-	Filter *f = master.findFilter(Filter::ExpressionExport, c->argc(0));
+	Filter *f = aten.findFilter(Filter::ExpressionExport, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{

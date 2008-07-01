@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/transform.h"
 #include "gui/gui.h"
@@ -59,7 +59,7 @@ void AtenTransform::on_RotateAnticlockwiseButton_clicked(bool on)
 void AtenTransform::on_RotateDefineOriginButton_clicked(bool on)
 {
 	// Get geometric centre of selection
-	Vec3<double> v = master.currentModel()->selectionCog();
+	Vec3<double> v = aten.currentModel()->selectionCog();
 	// Set widgets
 	ui.RotateOriginXSpin->setValue(v.x);
 	ui.RotateOriginYSpin->setValue(v.y);
@@ -70,7 +70,7 @@ void AtenTransform::on_RotateDefineAxisButton_clicked(bool on)
 {
 	// Get geometric centre of selection and current origin
 	Vec3<double> v, o;
-	v = master.currentModel()->selectionCog();
+	v = aten.currentModel()->selectionCog();
 	o.x = ui.RotateOriginXSpin->value();
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
@@ -91,7 +91,7 @@ void AtenTransform::rotateSelection(double direction)
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
 	char s[128];
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	sprintf(s,"Rotate %i atom(s)\n",m->nSelected());
 	m->beginUndostate(s);
 	m->rotateSelectionVector(o, v, direction * ui.RotateAngleSpin->value());

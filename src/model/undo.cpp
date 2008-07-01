@@ -20,7 +20,7 @@
 */
 
 #include "model/model.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/elements.h"
 
 // Return the current undo level pointer

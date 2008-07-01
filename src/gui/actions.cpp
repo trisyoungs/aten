@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "model/model.h"
@@ -41,7 +41,7 @@ void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
 	else if (action == ui.actionStyleIndividual) ds = Atom::IndividualStyle;
 	prefs.setRenderStyle(ds);
 	// Inform the displayed model
-	m = master.currentModel()->renderSource();
+	m = aten.currentModel()->renderSource();
 	m->projectAll();
 	m->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();

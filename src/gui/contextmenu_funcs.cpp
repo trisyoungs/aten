@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
@@ -30,7 +30,7 @@ Atom *target = NULL;
 // Show the modelview context menu
 void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 {
-	//Model *viewTarget = master.currentModel()->renderSource();
+	//Model *viewTarget = aten.currentModel()->renderSource();
 	Model *viewTarget = gui.mainView.displayModel();
 	target = undermouse;
 	//printf("AtomPopup: model %li, undermouse = %li, nselected = %i\n", viewTarget, target, viewTarget->nSelected());
@@ -45,7 +45,7 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 // Set atom style
 void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 {
-	if (target == NULL) master.currentModel()->renderSource()->selectionSetStyle(ds);
+	if (target == NULL) aten.currentModel()->renderSource()->selectionSetStyle(ds);
 	else target->setStyle(ds);
 	target = NULL;
 }
@@ -73,7 +73,7 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 // Set atom labels
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	m->beginUndostate("Add Labels");
 	if (target == NULL) m->selectionAddLabels(al);
 	else target->addLabel(al);
@@ -84,16 +84,16 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 // Clear atom labels
 void AtenForm::removeAtomLabels(bool all)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	if (all)
 	{
 		m->beginUndostate("Clear All Labels");
-		master.currentModel()->clearAllLabels();
+		aten.currentModel()->clearAllLabels();
 	}
 	else
 	{
 		m->beginUndostate("Clear All Labels");
-		master.currentModel()->selectionClearLabels();
+		aten.currentModel()->selectionClearLabels();
 	}
 	m->endUndostate();
 	gui.mainView.postRedisplay();
@@ -137,7 +137,7 @@ void AtenForm::on_actionAtomLabelClearAll_triggered(bool checked)
 // Set atom hidden
 void AtenForm::setAtomHidden(bool hidden)
 {
-	Model *m = master.currentModel()->renderSource();
+	Model *m = aten.currentModel()->renderSource();
 	if (target == NULL) m->selectionSetHidden(hidden);
 	else m->setHidden(target, hidden);
 	target = NULL;

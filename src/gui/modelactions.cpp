@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
@@ -30,19 +30,19 @@
 
 void AtenForm::on_actionFFType_triggered(bool checked)
 {
-	master.currentModel()->typeAll();
+	aten.currentModel()->typeAll();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionFFUntype_triggered(bool checked)
 {
-	master.currentModel()->removeTyping();
+	aten.currentModel()->removeTyping();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Fold all atoms");
 	m->beginUndostate(s);
@@ -53,7 +53,7 @@ void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 
 void AtenForm::on_actionFoldMolecules_triggered(bool checked)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Fold all molecules");
 	m->beginUndostate(s);
@@ -67,7 +67,7 @@ void AtenForm::on_actionModelNext_triggered(bool checked)
 	// Get current ID of modeltabs, increase it, and check we're still within range
 	int newid = ui.ModelTabs->currentIndex();
 	newid ++;
-	if (newid > (master.nModels() - 1)) newid = 0;
+	if (newid > (aten.nModels() - 1)) newid = 0;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
 	gui.updateTrajControls();
@@ -78,7 +78,7 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 	// Get current ID of modeltabs, decrease it, and check we're still within range
 	int newid = ui.ModelTabs->currentIndex();
 	newid --;
-	if (newid < 0) newid = master.nModels() - 1;
+	if (newid < 0) newid = aten.nModels() - 1;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
 	gui.updateTrajControls();
@@ -87,14 +87,14 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
 {
 	// Make all atoms in model visible
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	for (Atom *i = m->atoms(); i != NULL; i = i->next) m->setHidden(i, FALSE);
 	m->logChange(Change::VisualLog);
 }
 
 void AtenForm::on_actionModelRename_triggered(bool checked)
 {
-	Model *m = master.currentModel();
+	Model *m = aten.currentModel();
 	bool ok;
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())

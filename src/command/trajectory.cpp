@@ -20,7 +20,7 @@
 */
 
 #include "command/commands.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "parse/filter.h"
 #include "model/model.h"
 #include "gui/gui.h"
@@ -84,7 +84,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Filter *f = master.probeFile(c->argc(0), Filter::TrajectoryImport);
+	Filter *f = aten.probeFile(c->argc(0), Filter::TrajectoryImport);
 	if (f == NULL) return CR_FAIL;
 	return (obj.m->initialiseTrajectory(c->argc(0),f) ? CR_SUCCESS : CR_FAIL);
 }

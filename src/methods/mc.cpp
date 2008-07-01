@@ -23,7 +23,7 @@
 #include "classes/clipboard.h"
 #include "model/model.h"
 #include "methods/mc.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
@@ -349,7 +349,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 
 	// Before we add in the molecule copies, check that we can create expressions for each component (and build reflist)
 	msg.print("Checking component models...\n");
-	for (c = master.models(); c != NULL; c = c->next)
+	for (c = aten.models(); c != NULL; c = c->next)
 	{
 		// Check that this model is a required component
 		if (c->nRequested() == 0) continue;

@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/messenger.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "classes/pattern.h"
 #include "classes/site.h"
 #include "parse/parser.h"

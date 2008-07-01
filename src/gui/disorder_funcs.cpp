@@ -20,7 +20,7 @@
 */
 
 #include "methods/mc.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "gui/gui.h"
@@ -83,7 +83,7 @@ void AtenDisorder::refresh()
 	if (!gui.exists()) return;
 	refreshing_ = TRUE;
 	// (De)sensitize controls
-	ui.DisorderStartButton->setDisabled(master.currentModel()->cell()->type() == Cell::NoCell);
+	ui.DisorderStartButton->setDisabled(aten.currentModel()->cell()->type() == Cell::NoCell);
 	// Update model (component) list
 	TTableWidgetItem *item, *firstitem = NULL;
 	//ui.ComponentTable->setCurrentRow(-1);
@@ -91,7 +91,7 @@ void AtenDisorder::refresh()
 	componentList.clear();
 	ui.ComponentTable->setHorizontalHeaderLabels(QStringList() << "N" << "R" << "T" << "Model");
 	int count = 0;
-	for (Model *m = master.models(); m != NULL; m = m->next)
+	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != Cell::NoCell) continue;
 		// Add model to reflist
@@ -200,7 +200,7 @@ void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
-	Model *m = master.model(comp);
+	Model *m = aten.model(comp);
 	m->area.setShape( (ComponentRegion::RegionShape) index);
 	gui.mainView.postRedisplay();
 }
@@ -214,7 +214,7 @@ void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
 void AtenDisorder::on_DisorderStartButton_clicked(bool checked)
 {
 	mc.setNCycles(ui.DisorderCyclesSpin->value());
-	mc.disorder(master.currentModel());
+	mc.disorder(aten.currentModel());
 }
 
 void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)

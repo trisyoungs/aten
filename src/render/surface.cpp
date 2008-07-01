@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/master.h"
+#include "base/aten.h"
 #include "gui/canvas.h"
 #include "classes/grid.h"
 
@@ -604,7 +604,7 @@ void Canvas::renderSurfaces()
 	static Vec3<double> origin;
 	static double glmat[16];
 	static Mat4<double> mat;
-	for (Grid *g = master.grids(); g != NULL; g = g->next)
+	for (Grid *g = aten.grids(); g != NULL; g = g->next)
 	{
 		// Check visibility
 		if (!g->isVisible()) continue;

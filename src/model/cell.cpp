@@ -26,7 +26,7 @@
 #include "templates/matrix3.h"
 #include "base/spacegroup.h"
 #include "base/generator.h"
-#include "base/master.h"
+#include "base/aten.h"
 #include "base/constants.h"
 #include "parse/parser.h"
 #include <math.h>
@@ -164,7 +164,7 @@ void Model::pack(int gen)
 		msg.enter("Model::pack[gen,atom]");
 		return;
 	}
-	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", master.generators[gen].description, gen);
+	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", aten.generators[gen].description, gen);
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -176,8 +176,8 @@ void Model::pack(int gen)
 		newr = i->r();
 		newr.print();
 		// Apply the rotation and translation
-		newr *= master.generators[gen].rotation;
-		newr +=  cell_.transpose() * master.generators[gen].translation;
+		newr *= aten.generators[gen].rotation;
+		newr +=  cell_.transpose() * aten.generators[gen].translation;
 		i->r() = newr;
 		cell_.fold(i, this);
 	}
@@ -191,10 +191,10 @@ void Model::pack()
 	if (spacegroup_ == 0) msg.print("No spacegroup defined in model - no packing will be performed.\n");
 	else
 	{
-		msg.print("Packing cell according to spacegroup '%s'...\n", master.spacegroups[spacegroup_].name);
+		msg.print("Packing cell according to spacegroup '%s'...\n", aten.spacegroups[spacegroup_].name);
 		selectAll();
-		for (int n=0; n<master.spacegroups[spacegroup_].nGenerators; n++)
-			pack(master.spacegroups[spacegroup_].generators[n]);
+		for (int n=0; n<aten.spacegroups[spacegroup_].nGenerators; n++)
+			pack(aten.spacegroups[spacegroup_].generators[n]);
 		// Select overlapping atoms and delete
 		selectOverlaps(0.1);
 		selectionDelete();
@@ -315,7 +315,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 
 	// Set up progress indicator
 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
-	master.initialiseProgress("Creating cell copies...", count);
+	aten.initialiseProgress("Creating cell copies...", count);
 
 	// Create cell copies
 	count = 0;
@@ -333,7 +333,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				//tvec.print();
 				clip.pasteToModel(this,tvec);
 				msg.print(Messenger::Verbose,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
-				if (!master.updateProgress(++count))
+				if (!aten.updateProgress(++count))
 				{
 					stop = TRUE;
 					break;
@@ -343,7 +343,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		}
 		if (stop) break;
 	}
-	master.cancelProgress();
+	aten.cancelProgress();
 
 	// Deselect all atoms
 	selectNone();
@@ -356,7 +356,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		Vec3<double> fracr;
 		Mat3<double> cellinverse = cell_.inverseTranspose();
 	
-		master.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
+		aten.initialiseProgress("Trimming excess atoms...", atoms_.nItems());
 		i = atoms_.first();
 		count = 0;
 		while (i != NULL)
@@ -374,9 +374,9 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				i = j;
 			}
 			else i = i->next;
-			if (!master.updateProgress(++count)) break;
+			if (!aten.updateProgress(++count)) break;
 		}
-		master.cancelProgress();
+		aten.cancelProgress();
 	}
 
 	logChange(Change::StructureLog);
