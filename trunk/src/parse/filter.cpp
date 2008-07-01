@@ -258,13 +258,12 @@ void Filter::setType(FilterType ft)
 			break;
 		case (Filter::ExpressionExport):
 			v = commands_.variables.createVariable("energyunit","",Variable::CharacterVariable);
-			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("natomtypes","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("nbondterms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("nangleterms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("ntorsionterms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
-			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
+			commands_.createModelVariables();
 			break;
 		case (Filter::GridExport):
 			break;
@@ -310,7 +309,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			}
 			break;
 		case (Filter::ModelExport):
-			msg.print("Save Model : %s (%s)...", obj.m->filename(), name_.get());
+			msg.print("Save Model : %s (%s)...", obj.rs->filename(), name_.get());
 			// Open file and set target
 			if (!commands_.setOutputFile(obj.rs->filename()))
 			{
@@ -324,23 +323,22 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 		case (Filter::ExpressionExport):
 			msg.print("Save Field : %s (%s)\n", filename, name_.get());
 			// Need a valid pattern and energy expression to export
-			if (!obj.m->autocreatePatterns() || !obj.m->createExpression())
+			if (!obj.rs->autocreatePatterns() || !obj.rs->createExpression())
 			{
 				msg.print("Filter::execute - Must have valid pattern and energy expression to export a field file\n.");
 				msg.exit("Filter::execute");
 				return FALSE;
 			}
 			// Generate unique term lists
-			obj.m->createUniqueLists();
+			obj.rs->createUniqueLists();
 			// Set variables
-			commands_.variables.set("title",obj.m->name());
-			commands_.variables.set("natoms",obj.m->nAtoms());
-			commands_.variables.set("npatterns",obj.m->nPatterns());
+			commands_.setModelVariables(obj.rs);
+			commands_.variables.set("npatterns",obj.rs->nPatterns());
 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));
-			commands_.variables.set("natomtypes",obj.m->nUniqueTypes());
-			commands_.variables.set("nbondterms",obj.m->nUniqueBondTerms());
-			commands_.variables.set("nangleterms",obj.m->nUniqueAngleTerms());
-			commands_.variables.set("ntorsionterms",obj.m->nUniqueTorsionTerms());
+			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());
+			commands_.variables.set("nbondterms",obj.rs->nUniqueBondTerms());
+			commands_.variables.set("nangleterms",obj.rs->nUniqueAngleTerms());
+			commands_.variables.set("ntorsionterms",obj.rs->nUniqueTorsionTerms());
 			// Open file...
 			if (!commands_.setOutputFile(filename))
 			{
@@ -375,7 +373,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			// Set variables
 			commands_.variables.set("header",(trajheader ? "true" : "false"));
 			commands_.variables.set("frame",(trajheader ? "false" : "true"));
-			if (obj.m == NULL)
+			if (obj.rs == NULL)
 			{
 				msg.print("No current model set for trajectory import.\n");
 				msg.exit("Filter::execute");
@@ -385,16 +383,16 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!trajheader)
 			{
 				//Model *parent = framemodel->trajectoryParent();
-				if (obj.m->renderSource() == obj.m)
+				if (obj.rs->renderSource() == obj.rs)
 				{
 					msg.print("Trajectory frame model has not been set for trajectory import.\n");
 					msg.exit("Filter::execute");
 					return FALSE;	
 				}
-				obj.m->renderSource()->clear();
+				obj.rs->renderSource()->clear();
 			}
-			commands_.variables.set("natoms",obj.m->nAtoms());
-			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.m->cell()->type())));
+			commands_.variables.set("natoms",obj.rs->nAtoms());
+			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.rs->cell()->type())));
 
 	}
 	// Execute CommandList
@@ -409,7 +407,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			msg.print("Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (Filter::ModelExport):
-			obj.m->updateSavePoint();
+			obj.rs->updateSavePoint();
 			commands_.closeFiles();
 			msg.print("Model export %s.\n",(result ? "completed" : "failed"));
 			break;
