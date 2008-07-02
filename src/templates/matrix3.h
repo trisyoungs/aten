@@ -51,7 +51,7 @@ template <class T> class Mat3
 	Vec3<T> rows[3];
 
 	/*
-	// Set
+	// Set / Get
 	*/
 	public:
 	// Initialise elements of one row
@@ -64,11 +64,8 @@ template <class T> class Mat3
 	void set(int i, T d);
 	// Set diagonal elements of matrix (off-diagonals to zero)
 	void setDiagonal(T rx, T ry, T rz);
-
-	/*
-	// Get
-	*/
-	public:
+	// Adjust individual element of matrix (by row/column)
+	void add(int row, int col, T d);
 	// Return the row specified
 	Vec3<T> get(int i);
 	// Puts the matrix into the passed 1D-array of type <T>, row-major
@@ -77,6 +74,15 @@ template <class T> class Mat3
 	void copyColumnMajor(T*);
 	// Returns the specified element of the matrix
 	T getElement(int i);
+
+	/*
+	// Operators
+	*/
+	Mat3 operator*(const Mat3&) const;
+	Vec3<T> operator*(const Vec3<T>&) const;
+	Mat3& operator*=(const Mat3&);
+	Mat3& operator-=(const T);
+	Mat3 operator-(const Mat3&) const;
 
 	/*
 	// Methods
@@ -101,24 +107,19 @@ template <class T> class Mat3
 	void createOrthogonal(const Vec3<T>&);
 	// Multiply matrix rows by vector elements
 	void rowMultiply(const Vec3<T>&);
-
-	/*
-	// Operators
-	*/
-	Mat3 operator*(const Mat3&) const;
-	Vec3<T> operator*(const Vec3<T>&) const;
-	Mat3& operator*=(const Mat3&);
-	Mat3& operator-=(const T);
-	Mat3 operator-(const Mat3&) const;
 };
 
-// Constructors
+// Constructor
 template <class T> Mat3<T>::Mat3(T xx, T xy, T xz, T yx, T yy, T yz, T zx, T zy, T zz)
 {
 	rows[0].set(xx, xy, xz);
 	rows[1].set(yx, yy, yz);
 	rows[2].set(zx, zy, zz);
 }
+
+/*
+// Set / Get
+*/
 
 // Initialise elements of one row
 template <class T> void Mat3<T>::set(int row, T a, T b, T c)
@@ -153,6 +154,12 @@ template <class T> void Mat3<T>::setDiagonal(T rx, T ry, T rz)
 	rows[2].z = rz;
 }
 
+// Adjust individual element of matrix (by row/column)
+template <class T> void Mat3<T>::add(int row, int col, T d)
+{
+	rows[row].add(col,d);
+}
+
 // Return the row specified
 template <class T> Vec3<T> Mat3<T>::get(int i)
 {
@@ -183,14 +190,6 @@ template <class T> void Mat3<T>::copyColumnMajor(T *colm)
 	colm[2] = rows[2].x;	colm[5] = rows[2].y;	colm[8] = rows[2].z;
 }
 
-// Swap rows
-template <class T> void Mat3<T>::swapRows(int row1, int row2)
-{
-	Vec3<T> temp = rows[row2];
-	rows[row2] = rows[row1];
-	rows[row1] = temp;
-}
-
 // Set identity matrix
 template <class T> void Mat3<T>::setIdentity()
 {
@@ -207,6 +206,11 @@ template <class T> void Mat3<T>::zero()
 	rows[1].zero();
 	rows[2].zero();
 }
+
+/*
+// Operators
+*/
+
 // Operator * and *=
 template <class T> Vec3<T> Mat3<T>::operator*(const Vec3<T> &v) const {
 	Vec3<T> result;
@@ -215,7 +219,6 @@ template <class T> Vec3<T> Mat3<T>::operator*(const Vec3<T> &v) const {
 	result.z = rows[2].dp(v);
 	return result;
 }
-
 
 // Operator * and *=
 template <class T> Mat3<T> Mat3<T>::operator*(const Mat3<T> &B) const {
@@ -274,8 +277,21 @@ template <class T> Mat3<T> Mat3<T>::operator-(const Mat3<T> &m) const {
 	return result;
 }
 
+/*
+// Methods
+*/
+
+// Swap rows
+template <class T> void Mat3<T>::swapRows(int row1, int row2)
+{
+	Vec3<T> temp = rows[row2];
+	rows[row2] = rows[row1];
+	rows[row1] = temp;
+}
+
 // Transpose
-template <class T> Mat3<T> Mat3<T>::transpose() const {
+template <class T> Mat3<T> Mat3<T>::transpose() const
+{
 	Mat3<T> result;
 	result.rows[0].x = rows[0].x;
 	result.rows[0].y = rows[1].x;
@@ -325,7 +341,8 @@ template <class T> void Mat3<T>::rowMultiply(const Vec3<T> &v)
 }
 
 // Print
-template <class T> void Mat3<T>::print() const {
+template <class T> void Mat3<T>::print() const
+{
 	printf("Mat3_X %8.4f %8.4f %8.4f\n",rows[0].x,rows[0].y,rows[0].z);
 	printf("Mat3_Y %8.4f %8.4f %8.4f\n",rows[1].x,rows[1].y,rows[1].z);
 	printf("Mat3_Z %8.4f %8.4f %8.4f\n",rows[2].x,rows[2].y,rows[2].z);

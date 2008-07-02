@@ -169,10 +169,11 @@ void AtenForm::executeCommand()
 	aten.tempScript.clear();
 	aten.tempScript.setModelVariables(aten.current.m);
 	// Grab the current text of the line edit
-	parser.getArgsDelim(qPrintable(commandEdit_->text()), Parser::UseQuotes);
+	if (aten.tempScript.cacheLine(qPrintable(commandEdit_->text()))) aten.tempScript.execute();
+	//parser.getArgsDelim(qPrintable(commandEdit_->text()), Parser::UseQuotes);
 	// Check for no commands given
-	if (parser.nArgs() == 0) return;
-	if (aten.tempScript.cacheCommand()) aten.tempScript.execute(NULL);
+	//if (parser.nArgs() == 0) return;
+	//if (aten.tempScript.cacheCommand()) aten.tempScript.execute(NULL);
 	commandEdit_->setText("");
 	gui.modelChanged();
 }

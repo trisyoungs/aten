@@ -39,6 +39,13 @@ Cell::CellType Cell::cellType(const char *s)
 	return (CellType) enumSearch("cell type",Cell::nCellTypes,CellTypeKeywords,s);
 }
 
+// Cell definition parameters
+const char *CellParameterKeywords[Cell::nCellParameters] = { "a", "b", "c", "alpha", "beta", "gamma", "ax", "ay", "az", "bx", "by", "bz", "cx", "cy", "cz" };
+Cell::CellParameter Cell::cellParameter(const char *s)
+{
+	return (CellParameter) enumSearch("cell parameter",Cell::nCellParameters,CellParameterKeywords,s);
+}
+
 // Constructor
 Cell::Cell()
 {
@@ -66,22 +73,100 @@ void Cell::reset()
 	centre_.zero();
 }
 
-// Set lengths and calculates matrix
-void Cell::setLengths(const Vec3<double> &lengths)
+// Set (by parameters)
+void Cell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
 {
-	set(lengths,angles_);
+	msg.enter("Cell::set[vectors]");
+	// Store cell lengths and angles (in degrees) in structure
+	angles_ = newangles;
+	lengths_ = newlengths;
+	// Calculate new matrix
+	calculateMatrix();
+	// Update dependent quantities
+	update();
+	msg.exit("Cell::set[vectors]");
+}
+
+// Set (by matrix)
+void Cell::set(const Mat3<double> &newaxes)
+{
+	msg.enter("Cell::set[matrix]");
+	// Store the supplied matrix
+	axes_ = newaxes;
+	// Calculate new vectors
+	calculateVectors();
+	// Update dependent quantities
+	update();
+	msg.exit("Cell::set[matrix]");
+}
+
+// Set lengths and calculates matrix
+void Cell::setLengths(const Vec3<double> &newlengths)
+{
+	// Store new cell lengths
+	lengths_ = newlengths;
+	// Calculate new matrix
+	calculateMatrix();
+	// Update dependent quantities
+	update();
 }
 
 // Set individual length
 void Cell::setLength(int i, double d)
 {
+	// Store new cell lengths
 	lengths_.set(i,d);
+	// Calculate new matrix
+	calculateMatrix();
+	// Update dependent quantities
+	update();
 }
 
 // Set individual angle
 void Cell::setAngle(int i, double d)
 {
+	// Store the supplied matrix
 	angles_.set(i,d);
+	// Calculate new vectors
+	calculateVectors();
+	// Update dependent quantities
+	update();
+}
+
+// Set / adjust individual parameter
+void Cell::setParameter(Cell::CellParameter cp, double value, bool adjust)
+{
+	switch (cp)
+	{
+		case (Cell::nCellParameters):
+			printf("No cell parameter supplied to Cell::adjustParameter.\n");
+			break;
+		// Cell lengths
+		case (Cell::CellA):
+		case (Cell::CellB):
+		case (Cell::CellC):
+			adjust ? lengths_.add(cp - Cell::CellA, value) : lengths_.set(cp - Cell::CellA, value);
+			// Calculate new matrix
+			calculateMatrix();
+			break;
+		// Cell angles
+		case (Cell::CellAlpha):
+		case (Cell::CellBeta):
+		case (Cell::CellGamma):
+			adjust ? angles_.add(cp - Cell::CellAlpha, value) : angles_.set(cp - Cell::CellAlpha, value);
+			// Calculate new matrix
+			calculateMatrix();
+			break;
+		// Cell matrix elements
+		default:
+			// Adjust current matrix, then recalculate vectors
+			int i = cp - Cell::CellAX;
+			adjust ? axes_.add(i/3, i%3, value) : axes_.set(i/3, i%3, value);
+			calculateVectors();
+			break;
+	}
+	// Update dependent quantities
+	update();
 }
 
 // Return the type of cell
@@ -192,11 +277,25 @@ double Cell::density() const
 	return density_;
 }
 
+// Update dependent quantities
+void Cell::update()
+{
+	// Calculate transpose of axes
+	transpose_ = axes_.transpose();
+	// Determine type of cell
+	determineType();
+	// Calculate the cell volume
+	volume_ = axes_.determinant();
+	calculateCentre();
+	calculateInverse();
+	calculateReciprocal();
+}
+
 // Determine Type
 void Cell::determineType()
 {
 	msg.enter("Cell::determineType");
-	// Compare cell angles_....
+	// Compare cell angles....
 	int count = 0;
 	if (fabs(90.0 - angles_.x) < 1.0e-5) count ++;
 	if (fabs(90.0 - angles_.y) < 1.0e-5) count ++;
@@ -219,48 +318,10 @@ void Cell::determineType()
 	msg.exit("Cell::determineType");
 }
 
-// Set (by parameters)
-void Cell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
+// Calculate cell lengths/angles from current matrix
+void Cell::calculateVectors()
 {
-	msg.enter("Cell::set[parameters]");
-	double temp;
-	// Store cell lengths and angles (in degrees) in structure
-	angles_ = newangles;
-	lengths_ = newlengths;
-	// Work in unit vectors. Assume that A lays along x-axis
-	axes_.set(0,1.0,0.0,0.0);
-	// Assume that B lays in the xy plane. Since A={1,0,0}, cos(gamma) equals 'x' of the B vector.
-	temp = cos(angles_.z/DEGRAD);
-	axes_.set(1,temp,sqrt(1.0 - temp*temp),0.0);
-	// The C vector can now be determined in parts.
-	// It's x-component is equal to cos(beta) since {1,0,0}{x,y,z} = {1}{x} = cos(beta)
-	axes_.set(2,cos(angles_.y/DEGRAD),0.0,0.0);
-	// The y-component can be determined by completing the dot product between the B and C vectors
-	axes_.rows[2].y = ( cos(angles_.x/DEGRAD) - axes_.rows[1].x*axes_.rows[2].x ) / axes_.rows[1].y;
-	// The z-component is simply the remainder of the unit vector...
-	axes_.rows[2].z = sqrt(1.0 - axes_.rows[2].x*axes_.rows[2].x - axes_.rows[2].y*axes_.rows[2].y);
-	// Lastly, adjust these unit vectors to give the proper cell lengths
-	axes_.rows[0] *= lengths_.x;
-	axes_.rows[1] *= lengths_.y;
-	axes_.rows[2] *= lengths_.z;
-	transpose_ = axes_.transpose();
-	// Determine type of cell
-	determineType();
-	// Calculate the cell volume
-	volume_ = axes_.determinant();
-	calculateCentre();
-	calculateInverse();
-	calculateReciprocal();
-	msg.exit("Cell::set[parameters]");
-}
-
-// Set (by matrix)
-void Cell::set(const Mat3<double> &newaxes)
-{
-	msg.enter("Cell::set[matrix]");
-	// Store the supplied matrix and get transpose for vector calculation
-	axes_ = newaxes;
-	transpose_ = axes_.transpose();
+	msg.enter("Cell::calculateVectors");
 	// Calculate cell lengths
 	lengths_.x = axes_.rows[0].magnitude();
 	lengths_.y = axes_.rows[1].magnitude();
@@ -277,14 +338,31 @@ void Cell::set(const Mat3<double> &newaxes)
 	angles_.y = acos(vecx.dp(vecz));
 	angles_.z = acos(vecx.dp(vecy));
 	angles_ *= DEGRAD;
-	// Determine type of cell
-	determineType();
-	// Calculate the cell volume
-	volume_ = axes_.determinant();
-	calculateCentre();
-	calculateInverse();
-	calculateReciprocal();
-	msg.exit("Cell::set[matrix]");
+	msg.exit("Cell::calculateVectors");
+}
+
+// Calculate cell matrix from current vectors
+void Cell::calculateMatrix()
+{
+	msg.enter("Cell::calculateMatrix");
+	double temp;
+	// Work in unit vectors. Assume that A lays along x-axis
+	axes_.set(0,1.0,0.0,0.0);
+	// Assume that B lays in the xy plane. Since A={1,0,0}, cos(gamma) equals 'x' of the B vector.
+	temp = cos(angles_.z/DEGRAD);
+	axes_.set(1,temp,sqrt(1.0 - temp*temp),0.0);
+	// The C vector can now be determined in parts.
+	// It's x-component is equal to cos(beta) since {1,0,0}{x,y,z} = {1}{x} = cos(beta)
+	axes_.set(2,cos(angles_.y/DEGRAD),0.0,0.0);
+	// The y-component can be determined by completing the dot product between the B and C vectors
+	axes_.rows[2].y = ( cos(angles_.x/DEGRAD) - axes_.rows[1].x*axes_.rows[2].x ) / axes_.rows[1].y;
+	// The z-component is simply the remainder of the unit vector...
+	axes_.rows[2].z = sqrt(1.0 - axes_.rows[2].x*axes_.rows[2].x - axes_.rows[2].y*axes_.rows[2].y);
+	// Lastly, adjust these unit vectors to give the proper cell lengths
+	axes_.rows[0] *= lengths_.x;
+	axes_.rows[1] *= lengths_.y;
+	axes_.rows[2] *= lengths_.z;
+	msg.exit("Cell::calculateMatrix");
 }
 
 // Calculate reciprocal cell vectors

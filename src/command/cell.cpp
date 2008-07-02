@@ -24,6 +24,15 @@
 #include "base/aten.h"
 #include "model/model.h"
 
+// Adjust parameter of unit cell
+int CommandData::function_CA_ADJUSTCELL(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
+	if (cp != Cell::nCellParameters) obj.rs->cell()->setParameter(cp, c->argd(1), TRUE);
+	return CR_SUCCESS;
+}
+
 // Fold atoms into unit cell
 int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 {
@@ -112,6 +121,15 @@ int CommandData::function_CA_NOCELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.rs->removeCell();
+	return CR_SUCCESS;
+}
+
+// Set parameter of unit cell
+int CommandData::function_CA_SETCELL(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
+	if (cp != Cell::nCellParameters) obj.rs->cell()->setParameter(cp, c->argd(1));
 	return CR_SUCCESS;
 }
 

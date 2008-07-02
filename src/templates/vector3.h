@@ -48,9 +48,13 @@ template <class T> class Vec3
 	T x,y,z;
 	// Set the vector to 0,0,0
 	void zero();
+	// Set the specific element to value
+	void set(int, T);
 	// Set all three components simultaneously
 	void set(T, T, T);
-	// Add plain values to all three components
+	// Add value to single component
+	void add(int, T);
+	// Add values to all three components simultaneously
 	void add(T, T, T);
 
 	// Operators + and +=
@@ -111,8 +115,6 @@ template <class T> class Vec3
 	int maxElement() const;
 	// Returns an orthogonal vector
 	Vec3<T> orthogonal() const;
-	// Set the specific element to value
-	void set(int, T);
 	// Returns the value of the specified element
 	T get(int) const;
 	// Generate random unit vector
@@ -125,7 +127,7 @@ template <class T> class Vec3
 	void toCartesian();
 };
 
-// Conclassor
+// Constructor
 template <class T> Vec3<T>::Vec3(T xx, T yy, T zz)
 {
 	x = xx;
@@ -133,47 +135,77 @@ template <class T> Vec3<T>::Vec3(T xx, T yy, T zz)
 	z = zz;
 }
 
+/*
+// Set
+*/
+
 // Zero
 template <class T> void Vec3<T>::zero()
 {
-	x = 0; y = 0; z = 0;
+	x = 0;
+	y = 0;
+	z = 0;
+}
+
+// Set element
+template <class T> void Vec3<T>::set(int el, T value)
+{
+	if (el == 0) x = value;
+	else if (el == 1) y = value;
+	else if (el == 2) z = value;
 }
 
 // Set
 template <class T> void Vec3<T>::set(T a, T b, T c)
 {
-	x = a; y = b; z = c;
+	x = a;
+	y = b;
+	z = c;
 }
 
-// Add
+// Adjust element
+template <class T> void Vec3<T>::add(int el, T value)
+{
+	if (el == 0) x += value;
+	else if (el == 1) y += value;
+	else if (el == 2) z += value;
+}
+
+// Add to all
 template <class T> void Vec3<T>::add(T a, T b, T c)
 {
-	x += a; y += b; z += c;
+	x += a;
+	y += b;
+	z += c;
 }
 
-/* Operator = (from vec4)
-template <class T> void Vec3<T>::operator=(const Vec4<T> &v)
-{
-	x = v.x; y = v.y; z = v.z;
-} */
+/*
+// Operators
+*/
 
 // Operator += (T)
 template <class T> void Vec3<T>::operator+=(T v)
 {
-	x += v; y += v; z += v;
+	x += v;
+	y += v;
+	z += v;
 }
 
 // Operator += (Vec3)
 template <class T> void Vec3<T>::operator+=(const Vec3<T> &v)
 {
-	x += v.x; y += v.y; z += v.z;
+	x += v.x;
+	y += v.y;
+	z += v.z;
 }
 
 // Operator + (T)
 template <class T> Vec3<T> Vec3<T>::operator+(T v) const
 {
 	Vec3<T> result;
-	result.x = x+v; result.y = y+v; result.z = z+v;
+	result.x = x+v;
+	result.y = y+v;
+	result.z = z+v;
 	return result;
 }
 
@@ -181,7 +213,9 @@ template <class T> Vec3<T> Vec3<T>::operator+(T v) const
 template <class T> Vec3<T> Vec3<T>::operator+(const Vec3<T> &v) const
 {
 	Vec3<T> result;
-	result.x = x+v.x; result.y = y+v.y; result.z = z+v.z;
+	result.x = x+v.x;
+	result.y = y+v.y;
+	result.z = z+v.z;
 	return result;
 }
 
@@ -331,6 +365,10 @@ template <class T> Vec3<T> Vec3<T>::operator*(const Mat4<T> &A) const
 	return result;
 } */
 
+/*
+// Methods
+*/
+
 // Normalise
 template <class T> void Vec3<T>::normalise()
 {
@@ -442,14 +480,6 @@ template <class T> double Vec3<T>::magAndNormalise()
 template <class T> double Vec3<T>::dp(const Vec3<T> &v) const
 {
 	return (x*v.x + y*v.y + z*v.z);
-}
-
-// Set element
-template <class T> void Vec3<T>::set(int el, T value)
-{
-	if (el == 0) x = value;
-	else if (el == 1) y = value;
-	else if (el == 2) z = value;
 }
 
 // Get element
