@@ -66,7 +66,7 @@ void Model::deselectAtom(Atom *i)
 	}
 }
 
-// Deelect Atom by ID
+// Deselect Atom by ID
 void Model::deselectAtom(int id)
 {
 	Atom *i = atom(id);

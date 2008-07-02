@@ -27,39 +27,52 @@
 #include "classes/forcefield.h"
 #include "classes/pattern.h"
 
-void selectAtoms(Model *m, const char *target, bool deselect)
+void selectAtoms(Model *m, Variable *slxn, bool deselect)
 {
-	static char from[32], to[32];
+	static char from[32], to[32], text[256];
 	int i, j, n, plus;
 	bool range;
-	Parser p;
-	p.getArgsDelim(target, Parser::Defaults);
-	for (int a=0; a<p.nArgs(); a++)
+	printf("kldsjfldsf\n");
+	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
+	if (slxn->type() == Variable::AtomVariable)
 	{
+		Atom *ii = (Atom*) slxn->asPointer();
+		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
+	}
+/*	else if (slxn->type() == Variable::IntegerVariable)
+	{
+		printf("integer is %i\n",slxn->asInteger());
+		deselect ? m->deselectAtom(slxn->asInteger()) : m->selectAtom(slxn->asInteger());
+	}*/
+	else
+	{
+		// Copy variable contents into local character array
+		strcpy(text, slxn->asCharacter());
+	printf("range text is '%s'\n", text);
 		// If arg contains a '-', select by range
-		if (strchr(p.argc(a),'-') != NULL)
+		if (strchr(text, '-') != NULL)
 		{
 			range = TRUE;
-			strcpy(from,beforeChar(p.argc(a),'-'));
-			strcpy(to,afterChar(p.argc(a),'-'));
+			strcpy(from,beforeChar(text,'-'));
+			strcpy(to,afterChar(text,'-'));
 			// Arguments for ranges cannot have '+' in them
 			if ((strchr(from,'+') != NULL) || (strchr(to,'+')))
 			{
 				msg.print("Invalid range symbol (+) given in static range '%s'-'%s'.\n", from, to);
-				continue;
+				return;
 			}
 		}
 		else
 		{
 			range = FALSE;
-			strcpy(from,p.argc(a));
+			strcpy(from,text);
 			if (strchr(from,'+') == NULL) plus = 0;
 			else if (from[0] == '+') plus = -1;
 			else if (from[strlen(from)-1] == '+') plus = 1;
 			else
 			{
 				msg.print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from);
-				continue;
+				return;
 			}
 		}
 		// Do the selection
@@ -79,7 +92,7 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) in select.\n", from);
-					continue;
+					return;
 				}
 				if (plus == 0) m->selectElement(i);
 				else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
@@ -101,13 +114,13 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
-					continue;
+					return;
 				}
 				j = elements.find(to);
 				if (j == 0)
 				{
 					msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
-					continue;
+					return;
 				}
 				for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 			}
@@ -115,11 +128,11 @@ void selectAtoms(Model *m, const char *target, bool deselect)
 	}
 }
 
-// Deelect atom, range of atoms, or elements ('select <n>')
+// Deselect atom, range of atoms, or elements ('select <n>')
 int CommandData::function_CA_DESELECT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	selectAtoms(obj.rs, c->argc(0), TRUE);
+	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), TRUE);
 	return CR_SUCCESS;
 }
 
@@ -135,7 +148,8 @@ int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	selectAtoms(obj.rs, c->argc(0), FALSE);
+	// Loop over arguments given to command, passing them in turn to selectAtoms
+	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), FALSE);
 	return CR_SUCCESS;
 }
 

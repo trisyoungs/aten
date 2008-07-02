@@ -429,7 +429,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	while (v[n] != '\0')
 	{
 		// Check for lowercase letter (optional argument)
-		required = (v[n] > 90 ? FALSE : TRUE);
+		required = ((v[n] > 90) || (v[n] == '*') ? FALSE : TRUE);
 		argcount ++;
 
 		//printf("Adding variable %c which should have value %s\n", *c, parser.argc(argcount));
@@ -482,7 +482,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			// String as-is
 			case ('s'):
 			case ('S'):
-				var = vars.addConstant(arg);
+				var = vars.addConstant(arg, TRUE);
 				args_.add(var);
 				break;
 			// Equals
@@ -544,6 +544,25 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else args_.add(parent_->variables.addConstant(arg));
+				break;
+			// Plain variable or character constant
+			case ('q'):
+			case ('Q'):
+				/* If the first character is a '$' then add a normal variable.
+				Otherwise, add character constant variable.
+				*/
+				if (arg[0] == '$')
+				{
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else args_.add(var);
+				}
+				else args_.add(parent_->variables.addConstant(arg, TRUE));
 				break;
 			// Variable
 			case ('v'):
@@ -959,9 +978,12 @@ bool CommandList::cacheCommand()
 	msg.enter("CommandList::cacheCommand");
 	CommandAction ca;
 	bool result = TRUE;
-	// Assume that the main parser object contains the data we require.
-	// Check for the first argument being a variable (denoted by a '$') and the second being an '='. If so, move the first argument to the second and add a CA_LET2 command.
-	if ((parser.argc(0)[0] == '$') && (parser.argc(1)[0] == '='))
+	/*
+	Assume that the main parser object contains the data we require.
+	If there is no argument 0 in the parser, then just return true. Otherwise, check for the first argument being a variable (denoted by a '$') and the second being an '='. If so, move the first argument to the second and add a CA_LET2 command.
+	*/
+	if (parser.isBlank(0)) result = TRUE;
+	else if ((parser.argc(0)[0] == '$') && (parser.argc(1)[0] == '='))
 	{
 		parser.setArg(1,parser.argc(0));
 		// Set command based on type of variable

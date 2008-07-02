@@ -612,11 +612,11 @@ CommandData CA_data[CA_NITEMS] = {
 				"Execute the named script" },
 
 	// Selection commands
-	{ "deselect",		"P*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
+	{ "deselect",		"Q*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
 				"Deselect specific atoms / ranges in the current model" },
 	{ "invert",		"",		"",
 				"Invert the current selection" },
-	{ "select",		"P*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
+	{ "select",		"Q*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
 				"Select specific atoms / ranges in the current model" },
 	{ "selectall",		"",		"",
 				"Select all atoms in the current model" },

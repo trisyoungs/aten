@@ -174,7 +174,7 @@ void Model::pack(int gen)
 	{
 		// Get the position of the newly-pasted atom
 		newr = i->r();
-		newr.print();
+// 		newr.print();
 		// Apply the rotation and translation
 		newr *= aten.generators[gen].rotation;
 		newr +=  cell_.transpose() * aten.generators[gen].translation;
