@@ -105,13 +105,13 @@ Variable *VariableList::createVariable(const char *prefix, const char *suffix, V
 }
 
 // Add constant
-Variable *VariableList::addConstant(const char *s)
+Variable *VariableList::addConstant(const char *s, bool forcecharacter)
 {
 	static char newname[24];
 	Variable *result = constants_.add();
 	sprintf(newname,"constant%i",constants_.nItems());
 	result->setName(newname);
-	result->setType(Variable::determineType(s));
+	forcecharacter ? result->setType(Variable::CharacterVariable) : result->setType(Variable::determineType(s));
 	result->set(s);
 	return result;
 }
