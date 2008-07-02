@@ -46,6 +46,7 @@ Command::Command()
 	branch_ = NULL;
 	format_ = NULL;
 	loopActive_ = FALSE;
+
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -58,6 +59,7 @@ CommandList::CommandList()
 	outputFile_ = NULL;
 	readOptions_ = 0;
 	pushBranch(&commands_, CA_ROOTNODE, NULL);
+
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -418,32 +420,23 @@ bool Command::ifEvaluate()
 bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 {
 	msg.enter("Command::addVariables");
-	bool required = TRUE;
-	int n, m, argcount, varcount;
+	bool required = TRUE, repeat = FALSE;
+	int n, m, argcount, last = -1;
 	Variable *var;
 	static char arg[512];
-	// Are there arguments in the parser that we shouldn't have been given?
-	// We don't care about too many variables being given if we want the whole line.
-	if (((parser.nArgs() - 1) > strlen(v)) && (v[0] != 'L'))
-	{
-		msg.print( "Too many arguments (%i) given to command '%s' (which expects %li at most).\n", (parser.nArgs()-1), cmd, strlen(v));
-		msg.exit("Command::addVariables");
-		return FALSE;
-	}
 	argcount = 0;
-	varcount = -1;
-	for (n = 0; v[n] != '\0'; n++)
+	n = 0;
+	while (v[n] != '\0')
 	{
 		// Check for lowercase letter (optional argument)
 		required = (v[n] > 90 ? FALSE : TRUE);
 		argcount ++;
-		varcount ++;
-		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
+
+		//printf("Adding variable %c which should have value %s\n", *c, parser.argc(argcount));
 		// Is this a required argument?
-		//if ((parser.is_blank(argcount)) || (argcount >= parser.nArgs()))
-		if (argcount >= parser.nArgs())
+		if (argcount > (parser.nArgs() - 1))
 		{
-			if (required)
+			if (required && (!repeat))
 			{
 				msg.print("Command '%s' requires argument %i\n", cmd, argcount);
 				msg.exit("Command::addVariables");
@@ -622,19 +615,41 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				// Create extra variables in the command structure
 				if (!parent_->createAtomVariables( &arg[1] )) return FALSE;
 				break;
-			// Rest of line (reconstructed)
-			case ('L'):
-				arg[0] = '\0';
-				for (m=argcount; m<parser.nArgs(); m++)
+// 			// Rest of line (reconstructed)
+// 			case ('L'):
+// 				arg[0] = '\0';
+// 				for (m=argcount; m<parser.nArgs(); m++)
+// 				{
+// 					strcat(arg, parser.argc(m));
+// 					strcat(arg, " ");
+// 				}
+// 				var = parent_->variables.addConstant("abcde");
+// 				var->set(arg);
+// 				args_.add(var);
+// 				break;
+			// Repeat as many of the last variable type as possible
+			case ('*'):
+				if (n == 0)
 				{
-					strcat(arg, parser.argc(m));
-					strcat(arg, " ");
+					printf("Repeat specifier given to command arguments list without prior specifier.\n");
+					msg.exit("Command::addVariables");
+					return FALSE;
 				}
-				var = parent_->variables.addConstant("abcde");
-				var->set(arg);
-				args_.add(var);
+				// Set the repeat flag to TRUE so we don't increment 'c' again, and set 'c' to 'last'
+				repeat = TRUE;
+				n --;
+				// Now, carry on as normal, save for a check for the end of the argument list at the start of the loop above...
 				break;
 		}
+		// Go to next character (if we're not repeating)
+		if (!repeat) n++;
+	}
+	// Are there still unused arguments in the parser?
+	if (argcount < (parser.nArgs() - 1))
+	{
+		msg.print( "Unexpected argument '%s' given to command '%s'.\n", parser.argc(argcount), cmd);
+		msg.exit("Command::addVariables");
+		return FALSE;
 	}
 	msg.exit("Command::addVariables");
 	return TRUE;

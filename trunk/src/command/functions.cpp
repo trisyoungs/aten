@@ -92,6 +92,7 @@ void Aten::initCommands()
 	CA_data[CA_TRANSMUTE].function = &CommandData::function_CA_TRANSMUTE;
 
 	// Cell commands
+	CA_data[CA_ADJUSTCELL].function = &CommandData::function_CA_ADJUSTCELL;
 	CA_data[CA_FOLD].function = &CommandData::function_CA_FOLD;
 	CA_data[CA_FOLDMOLECULES].function = &CommandData::function_CA_FOLDMOLECULES;
 	CA_data[CA_FRACTOREAL].function = &CommandData::function_CA_FRACTOREAL;
@@ -102,6 +103,7 @@ void Aten::initCommands()
 	CA_data[CA_CELL].function = &CommandData::function_CA_CELL;
 	CA_data[CA_CELLAXES].function = &CommandData::function_CA_CELLAXES;
 	CA_data[CA_NOCELL].function = &CommandData::function_CA_NOCELL;
+	CA_data[CA_SETCELL].function = &CommandData::function_CA_SETCELL;
 	CA_data[CA_SPACEGROUP].function = &CommandData::function_CA_SPACEGROUP;
 
 	// Charge commands

@@ -114,6 +114,7 @@ enum CommandAction {
 	CA_TRANSMUTE,
 
 	// Cell commands
+	CA_ADJUSTCELL,
 	CA_FOLD,
 	CA_FOLDMOLECULES,
 	CA_FRACTOREAL,
@@ -124,6 +125,7 @@ enum CommandAction {
 	CA_CELL,
 	CA_CELLAXES,
 	CA_NOCELL,
+	CA_SETCELL,
 	CA_SPACEGROUP,
 
 	// Charge commands
@@ -498,6 +500,7 @@ class CommandData
 	int function_CA_TOSTART(Command *&c, Bundle &obj);
 	int function_CA_TRANSMUTE(Command *&c, Bundle &obj);
 	// Cell commands
+	int function_CA_ADJUSTCELL(Command *&c, Bundle &obj);
 	int function_CA_FOLD(Command *&c, Bundle &obj);
 	int function_CA_FOLDMOLECULES(Command *&c, Bundle &obj);
 	int function_CA_FRACTOREAL(Command *&c, Bundle &obj);
@@ -508,6 +511,7 @@ class CommandData
 	int function_CA_CELL(Command *&c, Bundle &obj);
 	int function_CA_CELLAXES(Command *&c, Bundle &obj);
 	int function_CA_NOCELL(Command *&c, Bundle &obj);
+	int function_CA_SETCELL(Command *&c, Bundle &obj);
 	int function_CA_SPACEGROUP(Command *&c, Bundle &obj);
 	// Charge commands
 	int function_CA_CHARGEFF(Command *&c, Bundle &obj);

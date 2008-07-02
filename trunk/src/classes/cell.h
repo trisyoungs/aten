@@ -38,6 +38,9 @@ class Cell
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
 	static const char *cellType(CellType);
 	static CellType cellType(const char *);
+	// Cell definition parameters
+	enum CellParameter { CellA, CellB, CellC, CellAlpha, CellBeta, CellGamma, CellAX, CellAY, CellAZ, CellBX, CellBY, CellBZ, CellCX, CellCY, CellCZ, nCellParameters };
+	static CellParameter cellParameter(const char *);
 
 	private:
 	// Cell type
@@ -68,12 +71,29 @@ class Cell
 	Vec3<double> randomPos() const;
 	
 	/*
-	// Set / Get
+	// Internal Methods
 	*/
 	private:
+	// Calculate cell lengths/angles from current matrix
+	void calculateVectors();
+	// Calculate cell matrix from current vectors
+	void calculateMatrix();
+	// Update quantities that depend on the cell lengths/angles after they've changed
+	void update();
 	// Determine the cell type from its lengths / angles
 	void determineType();
+	// Calculate density of cell
+	void calculateDensity();
+	// Calculate cell reciprocal
+	void calculateReciprocal();
+	// Calculate inverse of axes transpose
+	void calculateInverse();
+	// Calculate coordinates at centre of cell
+	void calculateCentre();
 
+	/*
+	// Set / Get
+	*/
 	public:
 	// Remove the cell definition (i.e. set 'type' to CT_NONE)
 	void reset();
@@ -87,6 +107,8 @@ class Cell
 	void setLength(int i, double d);
 	// Set individual angle
 	void setAngle(int i, double d);
+	// Set / adjust individual parameter
+	void setParameter(Cell::CellParameter cp, double value, bool adjust = FALSE);
 	// Return the type of cell
 	CellType type() const;
 	// Return the cell vector matrix
@@ -117,21 +139,6 @@ class Cell
 	double reciprocalVolume() const;
 	// Return the density of the cell
 	double density() const;
-
-	/*
-	// Methods
-	*/
-	public:
-	// Calculate density of cell
-	void calculateDensity();
-	// Calculate cell reciprocal
-	void calculateReciprocal();
-	// Calculate inverse of axes transpose
-	void calculateInverse();
-
-	private:
-	// Calculate coordinates at centre of cell
-	void calculateCentre();
 
 	/*
 	// Atom Positioning

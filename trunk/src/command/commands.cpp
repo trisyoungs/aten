@@ -33,7 +33,7 @@ CommandAction &operator++(CommandAction &ca, int)
 
 // Command action
 CommandData CA_data[CA_NITEMS] = {
-	// Eariables
+	// Variables
 	{ "character",		"",		"<variables>",
 				"Create character (string) variables with the names provided" },
 	{ "integer",		"",		"<variables>",
@@ -172,6 +172,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Transmute selection to element given" },
 	
 	// Cell commands
+	{ "adjustcell",		"PE",		"<quantity> <change>",
+				"Adjust a single value of the current cell specification (e.g. <quantity> = a, beta, cz, etc.)" },
 	{ "fold",		"",		"",
 				"Fold atoms into model's unit cell" },
 	{ "foldmolecules",	"",		"",
@@ -192,6 +194,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set or create a unit cell for the current model from the cell axes provided" },
 	{ "nocell",		"", 		"",
 				"Remove any cell definition from the current model" },
+	{ "setcell",		"PE",		"<quantity> <value>",
+				"Set a single value of the current cell specification (e.g. <quantity> = a, beta, cz, etc.)" },
 	{ "spacegroup",		"P",		"<spgrp>",
 				"Set the spacegroup for the current model" },
 	
@@ -320,7 +324,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Associate current forcefield to specified pattern ID" },
 	{ "finaliseff",		"",		"",
 				"Finalise current forcefield." },
-	{ "genconvert",		"EL",		"<data1> [data2..data10]",
+	{ "genconvert",		"E*",		"<data1> [data2..data10]",
 				"Set energetic generator data to convert" },
 	{ "generator",		"EEeeeeeeeee",	"<typeId> <data1> [data2...data10]",
 				"Set generator data for specified atom type" },
@@ -608,11 +612,11 @@ CommandData CA_data[CA_NITEMS] = {
 				"Execute the named script" },
 
 	// Selection commands
-	{ "deselect",		"L",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
+	{ "deselect",		"P*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
 				"Deselect specific atoms / ranges in the current model" },
 	{ "invert",		"",		"",
 				"Invert the current selection" },
-	{ "select",		"L",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
+	{ "select",		"P*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
 				"Select specific atoms / ranges in the current model" },
 	{ "selectall",		"",		"",
 				"Select all atoms in the current model" },
