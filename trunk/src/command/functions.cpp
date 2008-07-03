@@ -129,8 +129,12 @@ void Aten::initCommands()
 	CA_data[CA_DISORDER].function = &CommandData::function_CA_DISORDER;
 	CA_data[CA_LISTCOMPONENTS].function = &CommandData::function_CA_LISTCOMPONENTS;
 	CA_data[CA_NMOLS].function = &CommandData::function_CA_NMOLS;
+	CA_data[CA_REGION].function = &CommandData::function_CA_REGION;
 	CA_data[CA_REGIONCENTRE].function = &CommandData::function_CA_REGIONCENTRE;
+	CA_data[CA_REGIONCENTREF].function = &CommandData::function_CA_REGIONCENTREF;
+	CA_data[CA_REGIONF].function = &CommandData::function_CA_REGIONF;
 	CA_data[CA_REGIONGEOMETRY].function = &CommandData::function_CA_REGIONGEOMETRY;
+	CA_data[CA_REGIONGEOMETRYF].function = &CommandData::function_CA_REGIONGEOMETRYF;
 	CA_data[CA_REGIONOVERLAPS].function = &CommandData::function_CA_REGIONOVERLAPS;
 	CA_data[CA_REGIONSHAPE].function = &CommandData::function_CA_REGIONSHAPE;
 	CA_data[CA_VDWSCALE].function = &CommandData::function_CA_VDWSCALE;

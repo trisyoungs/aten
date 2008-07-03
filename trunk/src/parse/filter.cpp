@@ -383,17 +383,17 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!trajheader)
 			{
 				//Model *parent = framemodel->trajectoryParent();
-				if (obj.rs->renderSource() == obj.rs)
+				if (obj.rs->renderSource() == obj.m)
 				{
 					msg.print("Trajectory frame model has not been set for trajectory import.\n");
 					msg.exit("Filter::execute");
 					return FALSE;	
 				}
-				obj.rs->renderSource()->clear();
+				//obj.rs->renderSource()->clear();
 			}
-			commands_.variables.set("natoms",obj.rs->nAtoms());
-			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.rs->cell()->type())));
-
+			commands_.variables.set("natoms",obj.m->nAtoms());
+			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.m->cell()->type())));
+			break;
 	}
 	// Execute CommandList
 	bool result = commands_.execute(trajfile);

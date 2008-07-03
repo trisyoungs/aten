@@ -1,6 +1,6 @@
 /*
-	** Monte Carlo ComponentRegion
-	*** src/classes/ComponentRegion.h
+	** Monte Carlo Region
+	*** src/classes/region.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -48,8 +48,12 @@ class ComponentRegion
 	RegionShape shape_;
 	// Coordinates of the centre of any defined ComponentRegion
 	Vec3<double> centre_;
+	// Whether the region centre is defined in fractional coordinates
+	bool centreFrac_;
 	// Size of the ComponentRegion
 	Vec3<double> size_;
+	// Whether the region size is defined in fractional coordinates
+	bool sizeFrac_;
 	// Length of cylindrical ComponentRegion
 	double length_;
 	// Whether to allow overlap with other ComponentRegions, or to avoid them
@@ -62,12 +66,20 @@ class ComponentRegion
 	RegionShape shape();
 	// Sets the centre of the defined ComponentRegion
 	void setCentre(Vec3<double> v);
-	// Returns the centre of the defined ComponentRegion
+	// Sets the centre of the defined ComponentRegion in fractional coordinates
+	void setCentreFrac(Vec3<double> v);
+	// Returns the centre of the defined ComponentRegion (fractional or real)
 	Vec3<double> centre();
+	// Returns whether the centre was set in real or fractional coordinates
+	bool isCentreFrac();
 	// Sets the size of the defined ComponentRegion
 	void setSize(Vec3<double> v);
+	// Sets the size of the defined ComponentRegion in fractional coordinates
+	void setSizeFrac(Vec3<double> v);
 	// Returns the size of the defined ComponentRegion
 	Vec3<double> size();
+	// Returns whether the size of the region was set in real or fractional coordinates
+	bool isSizeFrac();
 	// Sets the length of the ComponentRegion (for some ComponentRegion types)
 	void setLength(double v);
 	// Returns the ComponentRegion length

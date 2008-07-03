@@ -715,7 +715,7 @@ class Model
 	void bohrToAngstrom();
 	// Convert from Angstrom to Bohr
 	void angstromToBohr();
-	// COnvert fractional coordinates to real coordinates
+	// Cnvert fractional coordinates to real coordinates
 	void fracToReal();
 
 	/*

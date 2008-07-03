@@ -121,8 +121,12 @@ int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
 int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Model *m = aten.currentModel();
-	aten.userClipboard->pasteToModel(m);
+	if (!c->hasArg(2)) aten.userClipboard->pasteToModel(obj.rs);
+	else
+	{
+		Vec3<double> shift = c->arg3d(0);
+		aten.userClipboard->pasteToModel(obj.rs, shift);
+	}
 	return CR_SUCCESS;
 }
 

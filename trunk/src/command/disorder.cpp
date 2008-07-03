@@ -62,7 +62,20 @@ int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Set region centre to position ('regioncentre <x y z>')
+// Set region definition ('region <shape> <cx cy cz> <x y z> yes|no')
+int CommandData::function_CA_REGION(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	ComponentRegion::RegionShape rs = ComponentRegion::regionShape(c->argc(0));
+	if (rs == ComponentRegion::nRegionShapes) return CR_FAIL;
+	obj.m->area.setShape(rs);
+	obj.m->area.setCentre(c->arg3d(1));
+	obj.m->area.setSize(c->arg3d(4));
+	obj.m->area.setAllowOverlap(c->argb(7));
+	return CR_SUCCESS;
+}
+
+// Set region centre ('regioncentre <x y z>')
 int CommandData::function_CA_REGIONCENTRE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
@@ -70,11 +83,41 @@ int CommandData::function_CA_REGIONCENTRE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Set geometry of region ('regiongeometry <x y z> [l]')
+// Set region centre in fractional coordinates ('regioncentref <x y z>')
+int CommandData::function_CA_REGIONCENTREF(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->area.setCentreFrac(c->arg3d(0));
+	return CR_SUCCESS;
+}
+
+// Set region definition in fractional coordinates ('regionf <shape> <cx cy cz> <x y z> yes|no')
+int CommandData::function_CA_REGIONF(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	ComponentRegion::RegionShape rs = ComponentRegion::regionShape(c->argc(0));
+	if (rs == ComponentRegion::nRegionShapes) return CR_FAIL;
+	obj.m->area.setShape(rs);
+	obj.m->area.setCentreFrac(c->arg3d(1));
+	obj.m->area.setSizeFrac(c->arg3d(4));
+	obj.m->area.setAllowOverlap(c->argb(7));
+	return CR_SUCCESS;
+}
+
+// Set geometry of region in fractional coordinates ('regiongeometryf <x y z> [l]')
 int CommandData::function_CA_REGIONGEOMETRY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.m->area.setSize(c->arg3d(0));
+	if (!c->hasArg(3)) obj.m->area.setLength(c->argd(3));
+	return CR_SUCCESS;
+}
+
+// Set geometry of region ('regiongeometryf <x y z> [l]')
+int CommandData::function_CA_REGIONGEOMETRYF(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->area.setSizeFrac(c->arg3d(0));
 	if (!c->hasArg(3)) obj.m->area.setLength(c->argd(3));
 	return CR_SUCCESS;
 }

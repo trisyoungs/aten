@@ -204,7 +204,9 @@ void Canvas::renderRegions()
 		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();
 		  centre = m->area.centre();
+		  if (m->area.isCentreFrac()) centre = displayModel_->cell()->fracToReal(centre);
 		  size = m->area.size();
+		  if (m->area.isSizeFrac()) size = displayModel_->cell()->fracToReal(size);
 		  switch (m->area.shape())
 		  {
 			case (ComponentRegion::WholeCell):

@@ -32,23 +32,16 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 	static char from[32], to[32], text[256];
 	int i, j, n, plus;
 	bool range;
-	printf("kldsjfldsf\n");
 	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
 	if (slxn->type() == Variable::AtomVariable)
 	{
 		Atom *ii = (Atom*) slxn->asPointer();
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
 	}
-/*	else if (slxn->type() == Variable::IntegerVariable)
-	{
-		printf("integer is %i\n",slxn->asInteger());
-		deselect ? m->deselectAtom(slxn->asInteger()) : m->selectAtom(slxn->asInteger());
-	}*/
 	else
 	{
 		// Copy variable contents into local character array
 		strcpy(text, slxn->asCharacter());
-	printf("range text is '%s'\n", text);
 		// If arg contains a '-', select by range
 		if (strchr(text, '-') != NULL)
 		{
