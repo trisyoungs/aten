@@ -31,7 +31,7 @@ int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
 	mc.setNCycles(c->argi(0));
-	mc.disorder(obj.m);
+	if (!mc.disorder(obj.m)) return CR_FAIL;
 	return CR_SUCCESS;
 }
 

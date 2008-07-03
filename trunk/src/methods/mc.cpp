@@ -331,6 +331,13 @@ bool MonteCarlo::disorder(Model *destmodel)
 	Clipboard clip;
 	Reflist<Model,int> components;
 
+	// Model must have a cell to continue
+	if (destmodel->cell()->type() == Cell::NoCell)
+	{
+		msg.print("Model must have a cell definition to be the target of a disordered build.\n");
+		return FALSE;
+	}
+
 	/*
 	// Prepare the calculation
 	*/
