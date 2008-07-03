@@ -5,14 +5,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>313</height>
+    <width>363</width>
+    <height>257</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Disordered Builder</string>
   </property>
-  <layout class="QHBoxLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
     <number>2</number>
    </property>
@@ -20,7 +20,7 @@
     <number>4</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" >
+    <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
      </property>
@@ -61,23 +61,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="DisorderStartButton" >
-       <property name="text" >
-        <string>Build</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
-     <property name="spacing" >
-      <number>6</number>
-     </property>
-     <item>
       <widget class="QGroupBox" name="ComponentRegionGroup" >
        <property name="title" >
         <string>Region</string>
@@ -89,16 +72,6 @@
         <property name="spacing" >
          <number>4</number>
         </property>
-        <item>
-         <widget class="QCheckBox" name="ShowRegionsCheck" >
-          <property name="text" >
-           <string>Show Regions</string>
-          </property>
-          <property name="checked" >
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
         <item>
          <widget class="QComboBox" name="ComponentRegionCombo" >
           <property name="sizePolicy" >
@@ -143,7 +116,7 @@
            <number>2</number>
           </property>
           <item row="1" column="1" >
-           <widget class="QDoubleSpinBox" name="ComponentCentreXSpin" >
+           <widget class="QDoubleSpinBox" name="CentreXSpin" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>7</hsizetype>
@@ -160,42 +133,6 @@
             </property>
             <property name="minimum" >
              <double>-1000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1" >
-           <widget class="QDoubleSpinBox" name="ComponentCentreYSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="maximum" >
-             <double>1000.000000000000000</double>
-            </property>
-            <property name="minimum" >
-             <double>-1000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0" >
-           <widget class="QLabel" name="label_25" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>1</hsizetype>
-              <vsizetype>5</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Z</string>
             </property>
            </widget>
           </item>
@@ -214,80 +151,8 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" >
-           <widget class="QLabel" name="label_24" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>1</hsizetype>
-              <vsizetype>5</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text" >
-             <string>Y</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="2" >
-           <widget class="QDoubleSpinBox" name="ComponentSizeXSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="maximum" >
-             <double>2000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2" >
-           <widget class="QDoubleSpinBox" name="ComponentSizeYSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="maximum" >
-             <double>2000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1" >
-           <widget class="QDoubleSpinBox" name="ComponentCentreZSpin" >
-            <property name="sizePolicy" >
-             <sizepolicy>
-              <hsizetype>7</hsizetype>
-              <vsizetype>0</vsizetype>
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="decimals" >
-             <number>5</number>
-            </property>
-            <property name="maximum" >
-             <double>1000.000000000000000</double>
-            </property>
-            <property name="minimum" >
-             <double>-1000.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="2" >
-           <widget class="QDoubleSpinBox" name="ComponentSizeZSpin" >
+           <widget class="QDoubleSpinBox" name="SizeXSpin" >
             <property name="sizePolicy" >
              <sizepolicy>
               <hsizetype>7</hsizetype>
@@ -315,7 +180,28 @@
              </sizepolicy>
             </property>
             <property name="text" >
-             <string>Position</string>
+             <string>Centre</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1" >
+           <widget class="QDoubleSpinBox" name="CentreZSpin" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="decimals" >
+             <number>5</number>
+            </property>
+            <property name="maximum" >
+             <double>1000.000000000000000</double>
+            </property>
+            <property name="minimum" >
+             <double>-1000.000000000000000</double>
             </property>
            </widget>
           </item>
@@ -334,89 +220,202 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" >
+           <widget class="QLabel" name="label_24" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>1</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Y</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1" >
+           <widget class="QDoubleSpinBox" name="CentreYSpin" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="decimals" >
+             <number>5</number>
+            </property>
+            <property name="maximum" >
+             <double>1000.000000000000000</double>
+            </property>
+            <property name="minimum" >
+             <double>-1000.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" >
+           <widget class="QDoubleSpinBox" name="SizeZSpin" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="decimals" >
+             <number>5</number>
+            </property>
+            <property name="maximum" >
+             <double>2000.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" >
+           <widget class="QLabel" name="label_25" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>1</hsizetype>
+              <vsizetype>5</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Z</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" >
+           <widget class="QDoubleSpinBox" name="SizeYSpin" >
+            <property name="sizePolicy" >
+             <sizepolicy>
+              <hsizetype>7</hsizetype>
+              <vsizetype>0</vsizetype>
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="decimals" >
+             <number>5</number>
+            </property>
+            <property name="maximum" >
+             <double>2000.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1" >
+           <widget class="QCheckBox" name="CentreFracCheck" >
+            <property name="text" >
+             <string>Frac</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2" >
+           <widget class="QCheckBox" name="SizeFracCheck" >
+            <property name="text" >
+             <string>Frac</string>
+            </property>
+           </widget>
+          </item>
          </layout>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="ShowRegionsCheck" >
+          <property name="text" >
+           <string>Show Regions</string>
+          </property>
+          <property name="checked" >
+           <bool>true</bool>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
      </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
      <item>
-      <layout class="QGridLayout" >
-       <property name="margin" >
-        <number>0</number>
+      <widget class="QPushButton" name="DisorderStartButton" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-       <property name="spacing" >
-        <number>2</number>
+       <property name="text" >
+        <string>Build</string>
        </property>
-       <item row="1" column="1" >
-        <widget class="QDoubleSpinBox" name="VDWScaleSpin" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="decimals" >
-          <number>5</number>
-         </property>
-         <property name="maximum" >
-          <double>100.000000000000000</double>
-         </property>
-         <property name="singleStep" >
-          <double>0.010000000000000</double>
-         </property>
-         <property name="value" >
-          <double>1.000000000000000</double>
-         </property>
-        </widget>
-       </item>
-       <item row="1" column="0" >
-        <widget class="QLabel" name="label_30" >
-         <property name="text" >
-          <string>VDW Scale</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1" >
-        <widget class="QSpinBox" name="DisorderCyclesSpin" >
-         <property name="sizePolicy" >
-          <sizepolicy>
-           <hsizetype>7</hsizetype>
-           <vsizetype>0</vsizetype>
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="maximum" >
-          <number>10000</number>
-         </property>
-         <property name="value" >
-          <number>100</number>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0" >
-        <widget class="QLabel" name="label_27" >
-         <property name="text" >
-          <string>Cycles</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
+      </widget>
      </item>
      <item>
-      <spacer>
-       <property name="orientation" >
-        <enum>Qt::Vertical</enum>
+      <widget class="QLabel" name="label_27" >
+       <property name="text" >
+        <string>Cycles</string>
        </property>
-       <property name="sizeHint" >
-        <size>
-         <width>20</width>
-         <height>0</height>
-        </size>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="DisorderCyclesSpin" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
        </property>
-      </spacer>
+       <property name="maximum" >
+        <number>10000</number>
+       </property>
+       <property name="value" >
+        <number>100</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_30" >
+       <property name="text" >
+        <string>VDW Scale</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="VDWScaleSpin" >
+       <property name="sizePolicy" >
+        <sizepolicy>
+         <hsizetype>7</hsizetype>
+         <vsizetype>0</vsizetype>
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="decimals" >
+        <number>5</number>
+       </property>
+       <property name="maximum" >
+        <double>100.000000000000000</double>
+       </property>
+       <property name="singleStep" >
+        <double>0.010000000000000</double>
+       </property>
+       <property name="value" >
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

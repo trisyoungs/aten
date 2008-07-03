@@ -316,7 +316,10 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::CommandSwitch):
 					cl.clear();
 					cl.setModelVariables(aten.current.m);
-					if (cl.cacheLine(argv[++argn])) cl.execute();
+					if (cl.cacheLine(argv[++argn]))
+					{
+						if (!cl.execute()) return -1;
+					}
 					else return -1;
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load

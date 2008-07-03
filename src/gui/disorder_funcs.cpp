@@ -48,34 +48,44 @@ void AtenDisorder::showWindow()
 	show();
 }
 
-void AtenDisorder::on_ComponentCentreXSpin_valueChanged(double d)
+void AtenDisorder::on_CentreXSpin_valueChanged(double d)
 {
-	setComponentCoords(0,0,d);
+	setComponentCentre();
 }
 
-void AtenDisorder::on_ComponentCentreYSpin_valueChanged(double d)
+void AtenDisorder::on_CentreYSpin_valueChanged(double d)
 {
-	setComponentCoords(0,1,d);
+	setComponentCentre();
 }
 
-void AtenDisorder::on_ComponentCentreZSpin_valueChanged(double d)
+void AtenDisorder::on_CentreZSpin_valueChanged(double d)
 {
-	setComponentCoords(0,2,d);
+	setComponentCentre();
 }
 
-void AtenDisorder::on_ComponentSizeXSpin_valueChanged(double d)
+void AtenDisorder::on_SizeXSpin_valueChanged(double d)
 {
-	setComponentCoords(1,0,d);
+	setComponentSize();
 }
 
-void AtenDisorder::on_ComponentSizeYSpin_valueChanged(double d)
+void AtenDisorder::on_SizeYSpin_valueChanged(double d)
 {
-	setComponentCoords(2,1,d);
+	setComponentSize();
 }
 
-void AtenDisorder::on_ComponentSizeZSpin_valueChanged(double d)
+void AtenDisorder::on_SizeZSpin_valueChanged(double d)
 {
-	setComponentCoords(3,2,d);
+	setComponentSize();
+}
+
+void AtenDisorder::on_CentreFracCheck_clicked(bool checked)
+{
+	setComponentCentre();
+}
+
+void AtenDisorder::on_SizeFracCheck_clicked(bool checked)
+{
+	setComponentSize();
 }
 
 void AtenDisorder::refresh()
@@ -133,37 +143,45 @@ void AtenDisorder::refreshComponentData()
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
+	refreshing_ = TRUE;
 	// Set controls
 	Vec3<double> v;
 	v = m->area.size();
-	ui.ComponentSizeXSpin->setValue(v.x);
-	ui.ComponentSizeYSpin->setValue(v.y);
-	ui.ComponentSizeZSpin->setValue(v.z);
+	ui.SizeXSpin->setValue(v.x);
+	ui.SizeYSpin->setValue(v.y);
+	ui.SizeZSpin->setValue(v.z);
+	ui.SizeFracCheck->setChecked(m->area.isSizeFrac());
 	v = m->area.centre();
-	ui.ComponentCentreXSpin->setValue(v.x);
-	ui.ComponentCentreYSpin->setValue(v.y);
-	ui.ComponentCentreZSpin->setValue(v.z);
+	ui.CentreXSpin->setValue(v.x);
+	ui.CentreYSpin->setValue(v.y);
+	ui.CentreZSpin->setValue(v.z);
+	ui.CentreFracCheck->setChecked(m->area.isCentreFrac());
+	refreshing_ = FALSE;
 }
 
-void AtenDisorder::setComponentCoords(int centsize, int element, double value)
+void AtenDisorder::setComponentCentre()
 {
+	if (refreshing_) return;
+	Vec3<double> v;
+	v.set(ui.SizeXSpin->value(), ui.SizeYSpin->value(), ui.SizeZSpin->value());
 	// Get current component
-	static Vec3<double> v;
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
-	if (centsize == 0)
-	{
-		v = m->area.centre();
-		v.set(element, value);
-		m->area.setCentre(v);
-	}
-	else
-	{
-		v = m->area.size();
-		v.set(element, value);
-		m->area.setSize(v);
-	}
+	ui.CentreFracCheck->isChecked() ? m->area.setCentreFrac(v) : m->area.setCentre(v);
+	gui.mainView.postRedisplay();
+}
+
+void AtenDisorder::setComponentSize()
+{
+	if (refreshing_) return;
+	Vec3<double> v;
+	v.set(ui.SizeXSpin->value(), ui.SizeYSpin->value(), ui.SizeZSpin->value());
+	// Get current component
+	int comp = ui.ComponentTable->currentRow();
+	if (comp == -1) return;
+	Model *m = componentList[comp]->item;
+	ui.SizeFracCheck->isChecked() ? m->area.setSizeFrac(v) : m->area.setSize(v);
 	gui.mainView.postRedisplay();
 }
 

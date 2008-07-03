@@ -273,7 +273,7 @@ Forcefield *Aten::loadForcefield(const char *filename)
 	else
 	{
 		// Second try - aten.dataDir/ff
-		sprintf(s,"%s/%s", dataDir_.get(), filename);
+		sprintf(s,"%s/ff/%s", dataDir_.get(), filename);
 		msg.print(Messenger::Verbose,"Looking for forcefield in installed location (%s)...\n",s);
 		if (fileExists(s)) result = newff->load(s);
 		else

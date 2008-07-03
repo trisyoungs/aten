@@ -42,7 +42,8 @@ class AtenDisorder : public QDialog
 	void refresh();
 	private:
 	void refreshComponentData();
-	void setComponentCoords(int centsize, int element, double value);
+	void setComponentCentre();
+	void setComponentSize();
 	private slots:
 	void on_ComponentTable_itemSelectionChanged();
 	void on_ComponentTable_itemChanged(QTableWidgetItem *item);
@@ -50,12 +51,14 @@ class AtenDisorder : public QDialog
 	void on_ShowRegionsCheck_clicked(bool checked);
 	void on_DisorderStartButton_clicked(bool checked);
 	void on_VDWScaleSpin_valueChanged(double d);
-	void on_ComponentCentreXSpin_valueChanged(double d);
-	void on_ComponentCentreYSpin_valueChanged(double d);
-	void on_ComponentCentreZSpin_valueChanged(double d);
-	void on_ComponentSizeXSpin_valueChanged(double d);
-	void on_ComponentSizeYSpin_valueChanged(double d);
-	void on_ComponentSizeZSpin_valueChanged(double d);
+	void on_CentreXSpin_valueChanged(double d);
+	void on_CentreYSpin_valueChanged(double d);
+	void on_CentreZSpin_valueChanged(double d);
+	void on_SizeXSpin_valueChanged(double d);
+	void on_SizeYSpin_valueChanged(double d);
+	void on_SizeZSpin_valueChanged(double d);
+	void on_CentreFracCheck_clicked(bool checked);
+	void on_SizeFracCheck_clicked(bool checked);
 	void dialogFinished(int result);
 
 	/*

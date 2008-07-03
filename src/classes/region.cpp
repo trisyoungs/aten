@@ -228,9 +228,9 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				//tempv.set(csRandom(),(csRandom()-0.5)*PI,(csRandom()-0.5)*PI);
 				tempv.set(csRandom(),(csRandom()*2.0-1.0)*PI,(csRandom()-0.5)*PI);
 				realsize = (sizeFrac_ ? cell->fracToReal(size_) : size_);
-				v.x = tempv.x * sin(tempv.y) * cos(tempv.z) * size_.x;
-				v.y = tempv.x * sin(tempv.y) * sin(tempv.z) * size_.y;
-				v.z = tempv.x * cos(tempv.y)                * size_.z;
+				v.x = tempv.x * sin(tempv.y) * cos(tempv.z) * realsize.x;
+				v.y = tempv.x * sin(tempv.y) * sin(tempv.z) * realsize.y;
+				v.z = tempv.x * cos(tempv.y)                * realsize.z;
 				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			case (ComponentRegion::CylinderRegion):
