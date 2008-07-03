@@ -151,8 +151,12 @@ enum CommandAction {
 	CA_DISORDER,
 	CA_LISTCOMPONENTS,
 	CA_NMOLS,
+	CA_REGION,
 	CA_REGIONCENTRE,
+	CA_REGIONCENTREF,
+	CA_REGIONF,
 	CA_REGIONGEOMETRY,
+	CA_REGIONGEOMETRYF,
 	CA_REGIONOVERLAPS,
 	CA_REGIONSHAPE,
 	CA_VDWSCALE,
@@ -534,8 +538,12 @@ class CommandData
 	int function_CA_DISORDER(Command *&c, Bundle &obj);
 	int function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj);
 	int function_CA_NMOLS(Command *&c, Bundle &obj);
+	int function_CA_REGION(Command *&c, Bundle &obj);
 	int function_CA_REGIONCENTRE(Command *&c, Bundle &obj);
+	int function_CA_REGIONCENTREF(Command *&c, Bundle &obj);
+	int function_CA_REGIONF(Command *&c, Bundle &obj);
 	int function_CA_REGIONGEOMETRY(Command *&c, Bundle &obj);
+	int function_CA_REGIONGEOMETRYF(Command *&c, Bundle &obj);
 	int function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj);
 	int function_CA_REGIONSHAPE(Command *&c, Bundle &obj);
 	int function_CA_VDWSCALE(Command *&c, Bundle &obj);

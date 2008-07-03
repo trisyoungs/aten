@@ -22,6 +22,7 @@
 #include "base/aten.h"
 #include "parse/filter.h"
 #include "model/model.h"
+#include "gui/gui.h"
 #include <fstream>
 
 // Set parent model of trajectory
@@ -156,23 +157,26 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	if ((totalFrames_ * frameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
+		gui.progressCreate("Caching Frames", totalFrames_);
 		// Read all frames from trajectory file
 		for (int n=1; n<totalFrames_; n++)
 		{
+			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
 			success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
 			if (success)
 			{
-				msg.print("Read frame %i from file.\n", n+1);
+				//msg.print("Read frame %i from file.\n", n+1);
 				framePosition_ ++;
 			}
 			else
 			{
 				frames_.remove(newframe);
-				msg.print("Cached %i frames from trajectory before fail.\n", n-1);
+				msg.print("Error during read of frame %i.\n", n);
 				break;
 			}
 		}
+		msg.print("Cached %i frames from file.\n", framePosition_);
 		trajectoryCached_ = TRUE;
 		trajectoryFile_->close();
 	}

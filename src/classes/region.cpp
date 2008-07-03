@@ -47,6 +47,9 @@ ComponentRegion::ComponentRegion()
 	allowOverlap_ = TRUE;
 	size_.set(5.0,5.0,5.0);
 	length_ = 5.0;
+	centreFrac_ = FALSE;
+	sizeFrac_ = FALSE;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -68,6 +71,14 @@ ComponentRegion::RegionShape ComponentRegion::shape()
 void ComponentRegion::setCentre(Vec3<double> v)
 {
 	centre_ = v;
+	centreFrac_ = FALSE;
+}
+
+// Sets the centre of the defined ComponentRegion in fractional coordinates
+void ComponentRegion::setCentreFrac(Vec3<double> v)
+{
+	centre_ = v;
+	centreFrac_ = TRUE;
 }
 
 // Returns the centre of the defined ComponentRegion
@@ -76,16 +87,36 @@ Vec3<double> ComponentRegion::centre()
 	return centre_;
 }
 
+// Returns whether the centre was set in real or fractional coordinates
+bool ComponentRegion::isCentreFrac()
+{
+	return centreFrac_;
+}
+
 // Sets the size_.of the defined ComponentRegion
 void ComponentRegion::setSize(Vec3<double> v)
 {
 	size_ = v;
+	sizeFrac_ = FALSE;
+}
+
+// Sets the size of the defined ComponentRegion in fractional coordinates
+void ComponentRegion::setSizeFrac(Vec3<double> v)
+{
+	size_ = v;
+	sizeFrac_ = TRUE;
 }
 
 // Returns the size_.of the defined ComponentRegion
 Vec3<double> ComponentRegion::size()
 {
 	return size_;
+}
+
+// Returns whether the size of the region was set in real or fractional coordinates
+bool ComponentRegion::isSizeFrac()
+{
+	return sizeFrac_;
 }
 
 // Sets the length of the ComponentRegion (for some ComponentRegion types)
@@ -138,22 +169,23 @@ bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
 {
 	// Check whether the supplied coordinates overlap with other regions in the list bar this one
 	msg.enter("ComponentRegion::checkCoords");
-	static Vec3<double> tempv;
+	static Vec3<double> tempv, realsize;
 	bool result = TRUE;
 	switch (shape_)
 	{
 		case (ComponentRegion::WholeCell):
 			break;
 		case (ComponentRegion::CuboidRegion):
-			tempv = v - centre_;
-			if (fabs(tempv.x) > 0.5*size_.x) result = FALSE;
-			else if (fabs(tempv.y) > 0.5*size_.y) result = FALSE;
-			else if (fabs(tempv.z) > 0.5*size_.z) result = FALSE;
+			tempv = v - (centreFrac_ ? cell->fracToReal(centre_) : centre_);
+			realsize = (sizeFrac_ ? cell->fracToReal(size_) : size_);
+			if (fabs(tempv.x) > 0.5*realsize.x) result = FALSE;
+			else if (fabs(tempv.y) > 0.5*realsize.y) result = FALSE;
+			else if (fabs(tempv.z) > 0.5*realsize.z) result = FALSE;
 			break;
 		case (ComponentRegion::SpheroidRegion):
-			tempv = v - centre_;
+			tempv = v - (centreFrac_ ? cell->fracToReal(centre_) : centre_);
 			// Scale test point by spheroid size
-			tempv /= size_;
+			tempv /= (sizeFrac_ ? cell->fracToReal(size_) : size_);
 			if (tempv.magnitude() > 1.0) result = FALSE;
 			break;
 		case (ComponentRegion::CylinderRegion):
@@ -168,7 +200,7 @@ bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
 Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &components)
 {
 	msg.enter("ComponentRegion::randomCoords");
-	static Vec3<double> v, tempv;
+	static Vec3<double> v, tempv, realsize;
 	static int nAttempts;
 	bool done = FALSE;
 	nAttempts = 0;
@@ -186,19 +218,20 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				v *= cell->transpose();
 				break;
 			case (ComponentRegion::CuboidRegion):
-				v = size_;
+				v = sizeFrac_ ? cell->fracToReal(size_) : size_;
 				v.x *= csRandom() - 0.5;
 				v.y *= csRandom() - 0.5;
 				v.z *= csRandom() - 0.5;
-				v += centre_;
+				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			case (ComponentRegion::SpheroidRegion):
 				//tempv.set(csRandom(),(csRandom()-0.5)*PI,(csRandom()-0.5)*PI);
 				tempv.set(csRandom(),(csRandom()*2.0-1.0)*PI,(csRandom()-0.5)*PI);
+				realsize = (sizeFrac_ ? cell->fracToReal(size_) : size_);
 				v.x = tempv.x * sin(tempv.y) * cos(tempv.z) * size_.x;
 				v.y = tempv.x * sin(tempv.y) * sin(tempv.z) * size_.y;
 				v.z = tempv.x * cos(tempv.y)                * size_.z;
-				v += centre_;
+				v += centreFrac_ ? cell->fracToReal(centre_) : centre_;
 				break;
 			case (ComponentRegion::CylinderRegion):
 				printf("ComponentRegion::randomCoords - Cylinder moves not implemented yet...\n");

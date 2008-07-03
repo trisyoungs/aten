@@ -1,4 +1,4 @@
-/*
+ /*
 	*** Master rendering routines
 	*** src/render/render.cpp
 	Copyright T. Youngs 2007,2008
@@ -28,7 +28,6 @@ void Canvas::renderScene(Model *source)
 {
 	msg.enter("Canvas::renderScene");
 	static double rotmat[16], cammat[16];
-	static Model *trajparent;
 	static double camrot;
 
 	// If the canvas is stil restricted, don't draw anything
@@ -64,13 +63,12 @@ void Canvas::renderScene(Model *source)
 		msg.exit("Canvas::renderScene");
 		return;
 	}
-	else trajparent = source->trajectoryParent();
 
 	// If this is a trajectory frame, check its ID against the last one rendered
-	if (trajparent != NULL)
+	if (source->trajectoryParent() != NULL)
 	{
-		if (trajparent->framePosition() != displayFrame_) renderPoint_ = -1;
-		displayFrame_ = trajparent->framePosition();
+		if (source->trajectoryParent()->framePosition() != displayFrame_) renderPoint_ = -1;
+		displayFrame_ = source->trajectoryParent()->framePosition();
 	}
 
 	// Set clear colour
@@ -80,18 +78,9 @@ void Canvas::renderScene(Model *source)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Grab rotation & camera matrices, and camera rotation for the model. If we're displaying a trajectory frame, grab the parent's matrix instead.
-	if (trajparent == NULL)
-	{
-		displayModel_->copyRotationMatrix(rotmat);
-		displayModel_->copyCameraMatrix(cammat);
-		camrot = displayModel_->cameraRotation();
-	}
-	else
-	{
-		trajparent->copyRotationMatrix(rotmat);
-		trajparent->copyCameraMatrix(cammat);
-		camrot = trajparent->cameraRotation();
-	}
+	displayModel_->copyRotationMatrix(rotmat);
+	displayModel_->copyCameraMatrix(cammat);
+	camrot = displayModel_->cameraRotation();
 
 	// Setup pen colour
 	glDisable(GL_COLOR_MATERIAL);

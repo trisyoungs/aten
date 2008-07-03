@@ -25,7 +25,7 @@ importtrajectory
 		# Next, number of atoms in the system (as a double)
 		readint $recsize
 		readfloat $dnatoms
-		let $natoms = $dnatoms
+		$natoms = $dnatoms
 		readint $recsize
 		# Atom names
 		readint $recsize
