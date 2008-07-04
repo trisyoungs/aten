@@ -195,6 +195,25 @@ void VariableList::set(const char *prefix, const char *suffix, double value)
 	v->set(value);
 }
 
+// Set existing variable (or add new and set) (Variable::AtomVariable)
+void VariableList::set(const char *name, Atom *i)
+{
+	set(name,"",i);
+}
+void VariableList::set(const char *prefix, const char *suffix, Atom *i)
+{
+	static char newname[128];
+	strcpy(newname,prefix);
+	if (suffix[0] != '\0')
+	{
+		if (prefix[0] != '\0') strcat(newname,".");
+		strcat(newname,suffix);
+	}
+	Variable *v = get(newname);
+	if (v == NULL) v = addVariable(newname, Variable::AtomVariable);
+	v->set(i);
+}
+
 // Print list of variables in list
 void VariableList::print()
 {
