@@ -524,9 +524,9 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else args_.add(parent_->variables.addConstant(arg));
 				break;
-			// Plain variable or constant
-			case ('p'):
-			case ('P'):
+			// Normal, non-expression variable or constant
+			case ('n'):
+			case ('N'):
 				/* If the first character is a '$' then add a normal variable.
 				If '*' set to the dummy variable.
 				Otherwise, add constant variable.
@@ -593,11 +593,12 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					return FALSE;
 				}
 				break;
-			// Atom variable (create subvariables)
+			// Pointer-style variable (that also need to create subvariables)
 			case ('A'):
+			case ('P'):
 				if (arg[0] != '$')
 				{
-					msg.print( "This argument (%s) must be a variable.\n", &arg[0]);
+					msg.print( "This argument (%s) must be a variable, and must be of the correct type.\n", &arg[0]);
 					return FALSE;
 				}
 				// See if it has been declared
@@ -609,7 +610,15 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				else args_.add(var);
 				// Create extra variables in the command structure
-				if (!parent_->createAtomVariables( &arg[1] )) return FALSE;
+				switch (v[n])
+				{
+					case ('A'):
+						if (!parent_->createAtomVariables( &arg[1] )) return FALSE;
+						break;
+					case ('P'):
+						if (!parent_->createPatternVariables( &arg[1] )) return FALSE;
+						break;
+				}
 				break;
 			// Character variable
 			case ('C'):
@@ -1398,6 +1407,14 @@ bool CommandList::createPatternVariables(const char *base)
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"nmolatoms",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"lastid",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"firstid",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"lastatom",Variable::AtomVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
+	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"nbonds",Variable::IntegerVariable);
@@ -1421,6 +1438,10 @@ void CommandList::setPatternVariables(const char *varname, Pattern *p)
 		variables.set(varname,"nmols",p->nMols());
 		variables.set(varname,"nmolatoms",p->nAtoms());
 		variables.set(varname,"natoms",p->totalAtoms());
+		variables.set(varname,"firstid",p->startAtom() + 1);
+		variables.set(varname,"lastid",p->startAtom() + p->totalAtoms() - 1);
+		variables.set(varname,"lastatom",p->lastAtom());
+		variables.set(varname,"firstatom",p->firstAtom());
 		variables.set(varname,"nbonds",p->nBonds());
 		variables.set(varname,"nangles",p->nAngles());
 		variables.set(varname,"ntorsions",p->nTorsions());

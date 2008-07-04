@@ -1,5 +1,5 @@
 /*
-	*** atom command functions
+	*** Atom command functions
 	*** src/command/atom.cpp
 	Copyright T. Youngs 2007,2008
 
@@ -62,7 +62,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
 		case (Variable::CharacterVariable):
-			// Attempt conversion of the stnmng first from the users type list
+			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),c->argc(0)) == 0) break;
 			if (nm == NULL) el = elements.find(c->argc(0));
@@ -79,19 +79,19 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 	if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
 	else aten.current.i = obj.rs->addAtom(el, c->parent()->penPosition);
 	// Add the name to the model's namesForcefield, if requested and it exists
-	if (prefs.keepNames() && obj.rs->namesForcefield())
-	{
-		// Search for this typename in the ff
-		f = obj.rs->namesForcefield();
-		ffa = f->findType(c->argc(0));
-		if (ffa == NULL) 
-		{
-			ffa = f->addType();
-			ffa->setName(c->argc(0));
-		}
-		aten.current.i->setType(ffa);
-		aten.current.i->setTypeFixed(TRUE);
-	}
+// 	if (prefs.keepNames() && obj.rs->namesForcefield())
+// 	{
+// 		// Search for this typename in the ff
+// 		f = obj.rs->namesForcefield();
+// 		ffa = f->findType(c->argc(0));
+// 		if (ffa == NULL) 
+// 		{
+// 			ffa = f->addType();
+// 			ffa->setName(c->argc(0));
+// 		}
+// 		aten.current.i->setType(ffa);
+// 		aten.current.i->setTypeFixed(TRUE);
+// 	}
 	return CR_SUCCESS;
 }
 

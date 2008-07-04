@@ -50,20 +50,24 @@ int CommandData::function_CA_CREATEPATTERNS(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Print pattern definition for current model ('listpatterns')
-int CommandData::function_CA_LISTPATTERNS(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.m->printPatterns();
-	return CR_SUCCESS;
-}
-
 // Select working pattern from model ('getpattern <name>')
 int CommandData::function_CA_GETPATTERN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Pattern *p = (c->argt(0) == Variable::IntegerVariable ? obj.m->pattern(c->argi(0)) : obj.m->findPattern(c->argc(0)));
-	if (p != NULL) obj.p = p;
+	if (p != NULL)
+	{
+		obj.p = p;
+		c->parent()->setPatternVariables(c->arg(1)->name(), p);
+	}
 	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
+// Print pattern definition for current model ('listpatterns')
+int CommandData::function_CA_LISTPATTERNS(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.m->printPatterns();
 	return CR_SUCCESS;
 }

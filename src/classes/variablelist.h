@@ -58,15 +58,18 @@ class VariableList
 	List<Variable> expressions_;
 
 	public:
-	// Set existing (or create new) variable (VT_CHAR)
+	// Set existing (or create new) variable (character string)
 	void set(const char*, const char*, const char*);
 	void set(const char *name, const char *value);
-	// Set existing (or create new) variable (VT_INT)
+	// Set existing (or create new) variable (integer)
 	void set(const char*, const char*, int);
 	void set(const char *name, int value);
-	// Set existing (or create new) variable (VT_FLOAT)
+	// Set existing (or create new) variable (double)
 	void set(const char*, const char*, double);
 	void set(const char *name, double value);
+	// Set existing (or create new) variable (Atom*)
+	void set(const char*, const char*, Atom*);
+	void set(const char *name, Atom *i);
 	// Retrieve a named variable from the list
 	Variable *get(const char *prefix, const char *suffix);
 	Variable *get(const char *name);
