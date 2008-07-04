@@ -29,6 +29,7 @@ void Canvas::renderModelGlyphs()
 	msg.enter("Canvas::renderModelGlyphs");
 	static Vec3<double> vec[4], avg, normal;
 
+	glEnable(GL_LIGHTING);
 	// Render other elemental objects in the model
 	for (Glyph *g = displayModel_->glyphs(); g != NULL; g = g->next)
 	{
@@ -149,21 +150,27 @@ void Canvas::renderModelGlyphs()
 				avg = (vec[0] + vec[1] + vec[2] + vec[3]) / 4.0;
 				glBegin(GL_TRIANGLE_STRIP);
 				  normal = avg - vec[0];
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				  glNormal3d(normal.x, normal.y, normal.z);
 				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
 				  normal = avg - vec[1];
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(1));
 				  glNormal3d(normal.x, normal.y, normal.z);
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				  normal = avg - vec[2];
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(2));
 				  glNormal3d(normal.x, normal.y, normal.z);
 				  glVertex3d(vec[2].x, vec[2].y, vec[2].z);
 				  normal = avg - vec[3];
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(3));
 				  glNormal3d(normal.x, normal.y, normal.z);
 				  glVertex3d(vec[3].x, vec[3].y, vec[3].z);
 				  normal = avg - vec[0];
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				  glNormal3d(normal.x, normal.y, normal.z);
 				  glVertex3d(vec[0].x, vec[0].y, vec[0].z);
 				  normal = avg - vec[1];
+				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(1));
 				  glNormal3d(normal.x, normal.y, normal.z);
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				glEnd();

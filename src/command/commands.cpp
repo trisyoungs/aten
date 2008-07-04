@@ -690,16 +690,16 @@ CommandData CA_data[CA_NITEMS] = {
 				"Mirror the atom selection of the current model about its geometric centre in the specified axis" },
 	
 	// Variables
-	{ "dec",		"E",		"<variable>",
+	{ "dec",		"V",		"<variable>",
 				"Decrease the specified variable" },
-	{ "inc",		"E",		"<variable>",
+	{ "inc",		"V",		"<variable>",
 				"Increase the specified variable" },
-	{ "let",		"V=E",		"<variable> = <variable|value|expression>",
+	{ "let",		"VOE",		"<variable> [-+/*]= <variable|value|expression>",
 				"Set the specified variable" },
-	{ "_let_",		"VE",		"",
-				"Allows '$var = $var|expression' constructs to be used" },
-	{ "_letchar_",		"VN",		"",
-				"Allows '$var = $var' [character] constructs to be used" },
+	{ "letchar",		"V~N",		"<variable> =|+= <variable|value>",
+				"Set the specified character variable" },
+	{ "letptr",		"V=V",		"<variable> = <variable>",
+				"Set the specified pointer variable" },
 	
 	// View
 	{ "getview",		"",		"",

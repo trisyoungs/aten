@@ -390,7 +390,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
 	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 	// Generate isosurface
@@ -532,7 +532,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.penColour(Prefs::SpecularColour));
+	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
 	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
 	cscale = g->colourScale();
 	if (!g->usesColourScale()) cscale = -1;

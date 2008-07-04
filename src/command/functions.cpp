@@ -366,8 +366,8 @@ void Aten::initCommands()
 	CA_data[CA_DECREASE].function = &CommandData::function_CA_DECREASE;
 	CA_data[CA_INCREASE].function = &CommandData::function_CA_INCREASE;
 	CA_data[CA_LET].function = &CommandData::function_CA_LET;
-	CA_data[CA_LET2].function = &CommandData::function_CA_LET2;
 	CA_data[CA_LETCHAR].function = &CommandData::function_CA_LETCHAR;
+	CA_data[CA_LETPTR].function = &CommandData::function_CA_LETPTR;
 
 	// View Commands
 	CA_data[CA_GETVIEW].function = &CommandData::function_CA_GETVIEW;

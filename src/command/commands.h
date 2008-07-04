@@ -402,8 +402,8 @@ enum CommandAction {
 	CA_DECREASE,
 	CA_INCREASE,
 	CA_LET,
-	CA_LET2,
 	CA_LETCHAR,
+	CA_LETPTR,
 
 	// View
 	CA_GETVIEW,
@@ -761,8 +761,8 @@ class CommandData
 	int function_CA_DECREASE(Command *&c, Bundle &obj);
 	int function_CA_INCREASE(Command *&c, Bundle &obj);
 	int function_CA_LET(Command *&c, Bundle &obj);
-	int function_CA_LET2(Command *&c, Bundle &obj);
 	int function_CA_LETCHAR(Command *&c, Bundle &obj);
+	int function_CA_LETPTR(Command *&c, Bundle &obj);
 	// View
 	int function_CA_GETVIEW(Command *&c, Bundle &obj);
 	int function_CA_LIGHT(Command *&c, Bundle &obj);

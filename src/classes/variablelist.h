@@ -77,6 +77,8 @@ class VariableList
 	Variable *dummy();
 	// Add an unnamed constant to the list
 	Variable *addConstant(const char *s, bool forcecharacter = FALSE);
+	// Add an unnamed integer constant to the list
+	Variable *addConstant(int i);
 	// Add an unnamed expression to the list
 	Variable *addExpression(const char *s);
 	// Add a named variable to the list

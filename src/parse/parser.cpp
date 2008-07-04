@@ -524,6 +524,20 @@ void Parser::getArgsFormatted(const char *source, int options, Format *fmt)
 	msg.exit("Parser::getArgsFormatted[string]");
 }
 
+// Shift all arguments up one position (leaving arg[0] blank)
+void Parser::shiftArgsUp()
+{
+	msg.enter("Parser::shiftArgsUp");
+	for (int i=MAXARGS-1; i>0; i--)
+	{
+		arguments_[i] = arguments_[i-1];
+		quoted_[i] = quoted_[i-1];
+	}
+	nArgs_ ++;
+	arguments_[0].clear();
+	msg.exit("Parser::shiftArgsUp");
+}
+
 /*
 // Atom type definition functions
 */

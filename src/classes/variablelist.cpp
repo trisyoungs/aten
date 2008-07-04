@@ -116,6 +116,18 @@ Variable *VariableList::addConstant(const char *s, bool forcecharacter)
 	return result;
 }
 
+// Add constant
+Variable *VariableList::addConstant(int i)
+{
+	static char newname[24];
+	Variable *result = constants_.add();
+	sprintf(newname,"constant%i",constants_.nItems());
+	result->setName(newname);
+	result->setType(Variable::IntegerVariable);
+	result->set(i);
+	return result;
+}
+
 // Add expression
 Variable *VariableList::addExpression(const char *s)
 {

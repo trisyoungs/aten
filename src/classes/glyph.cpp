@@ -48,10 +48,7 @@ GlyphData::GlyphData()
 	atomData_ = GlyphData::PositionData;
 	atomSetLast_ = FALSE;
 	set_ = FALSE;
-	colour_[0] = 0.0f;
-	colour_[1] = 0.0f;
-	colour_[2] = 0.0f;
-	colour_[3] = 1.0f;
+	prefs.copyColour(Prefs::GlyphColour, colour_);
 
 	// Public variables
 	prev = NULL;
