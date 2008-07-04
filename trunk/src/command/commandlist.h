@@ -31,8 +31,19 @@
 #include "parse/parser.h"
 
 // If Conditions
-enum IfTest { IF_EQUAL=1, IF_LESS=2, IF_LEQUAL=3, IF_GREATER=4, IF_GEQUAL=5, IF_NEQUAL=6, IF_NITEMS };
-const char *text_from_IC(IfTest);
+namespace IfTest
+{
+	enum IfTest { EqualTo=1, LessThan=2, LessThanEqualTo=3, GreaterThan=4, GreaterThanEqualTo=5, NotEqualTo=6 };
+	const char *ifTest(IfTest);
+}
+
+// Variable Assignment Operators
+namespace AssignOp
+{
+	enum AssignOp { Equals, PlusEquals, MinusEquals, DivideEquals, MultiplyEquals, nAssignOps };
+	AssignOp assignOp(const char *s);
+	const char *assignOp(AssignOp);
+}
 
 // Forward declarations
 class CommandList;
@@ -135,7 +146,7 @@ class Command
 	*/
 	private:
 	// If condition structure
-	IfTest ifTest_;
+	IfTest::IfTest ifTest_;
 
 	public:
 	// Set if test type

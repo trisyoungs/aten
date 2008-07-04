@@ -54,11 +54,11 @@ int CommandData::function_CA_BONDDETAIL(Command *&c, Bundle &obj)
 // Colours
 int CommandData::function_CA_COLOUR(Command *&c, Bundle &obj)
 {
-	Prefs::Colour col = Prefs::colour(c->argc(0));
-	if (col == Prefs::nColours) return CR_FAIL;
+	Prefs::PenColour col = Prefs::penColour(c->argc(0));
+	if (col == Prefs::nPenColours) return CR_FAIL;
 	Vec3<GLfloat> colvec = c->arg3f(1);
 	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
-	prefs.setPenColour(col, colvec.x, colvec.y, colvec.z, alpha);
+	prefs.setColour(col, colvec.x, colvec.y, colvec.z, alpha);
 	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;

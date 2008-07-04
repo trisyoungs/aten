@@ -97,6 +97,8 @@ class Parser
 	int getArgsFormatted(ifstream*, int, Format*);
 	// Parse file with format
 	void getArgsFormatted(const char*, int, Format*);
+	// Shift all arguments up one position (leaving arg[0] blank)
+	void shiftArgsUp();
 
 	/*
 	// Argument Access

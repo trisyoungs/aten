@@ -72,7 +72,7 @@ void Canvas::renderScene(Model *source)
 	}
 
 	// Set clear colour
-	GLfloat *clrcol = prefs.penColour(Prefs::BackgroundColour);
+	GLfloat *clrcol = prefs.colour(Prefs::BackgroundColour);
 	glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 	// Clear colour and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -84,7 +84,7 @@ void Canvas::renderScene(Model *source)
 
 	// Setup pen colour
 	glDisable(GL_COLOR_MATERIAL);
-	glColor3fv(prefs.penColour(Prefs::ForegroundColour));
+	glColor3fv(prefs.colour(Prefs::ForegroundColour));
 
 	// Draw on the rotation globe
 	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
@@ -149,7 +149,7 @@ void Canvas::renderScene(Model *source)
 	  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces();
 	  // Render MC regions
 	  if ((displayModel_->cell()->type() != Cell::NoCell) && prefs.isVisibleOnScreen(Prefs::ViewRegions)) renderRegions();
-	  glColor3fv(prefs.penColour(Prefs::ForegroundColour));
+	  glColor3fv(prefs.colour(Prefs::ForegroundColour));
 	  renderExtra3d();
 	glPopMatrix();
 
@@ -188,7 +188,7 @@ void Canvas::renderScene(Model *source)
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.penColour(Prefs::ForegroundColour));
+	glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, prefs.colour(Prefs::ForegroundColour));
 	glDisable(GL_LIGHTING);
 
 	// Reproject atoms if necessary

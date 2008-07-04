@@ -100,11 +100,11 @@ void AtenPrefs::setControls()
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
 
 	// Set pen colours and colourscale names and checks
-        ui.ForegroundColourFrame->setColour(prefs.penColour(Prefs::ForegroundColour));
+        ui.ForegroundColourFrame->setColour(prefs.colour(Prefs::ForegroundColour));
         ui.ForegroundColourFrame->update();
-        ui.BackgroundColourFrame->setColour(prefs.penColour(Prefs::BackgroundColour));
+        ui.BackgroundColourFrame->setColour(prefs.colour(Prefs::BackgroundColour));
         ui.BackgroundColourFrame->update();
-        ui.SpecularColourFrame->setColour(prefs.penColour(Prefs::SpecularColour));
+        ui.SpecularColourFrame->setColour(prefs.colour(Prefs::SpecularColour));
         ui.SpecularColourFrame->update();
 	QListWidgetItem *item;
 	char name[128];
@@ -413,13 +413,13 @@ void AtenPrefs::on_AltButtonCombo_currentIndexChanged(int ka)
 
 void AtenPrefs::on_ForegroundColourButton_clicked(bool checked)
 {
-	GLfloat *col = prefs.penColour(Prefs::ForegroundColour);
+	GLfloat *col = prefs.colour(Prefs::ForegroundColour);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
-	prefs.setPenColour(Prefs::ForegroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.setColour(Prefs::ForegroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
 	ui.ForegroundColourFrame->setColour(newcol);
 	ui.ForegroundColourFrame->update();
 	// Update display
@@ -428,13 +428,13 @@ void AtenPrefs::on_ForegroundColourButton_clicked(bool checked)
 
 void AtenPrefs::on_BackgroundColourButton_clicked(bool checked)
 {
-	GLfloat *col = prefs.penColour(Prefs::BackgroundColour);
+	GLfloat *col = prefs.colour(Prefs::BackgroundColour);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
-	prefs.setPenColour(Prefs::BackgroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.setColour(Prefs::BackgroundColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
 	ui.BackgroundColourFrame->setColour(newcol);
 	ui.BackgroundColourFrame->update();
 	// Update display
@@ -443,13 +443,13 @@ void AtenPrefs::on_BackgroundColourButton_clicked(bool checked)
 
 void AtenPrefs::on_SpecularColourButton_clicked(bool checked)
 {
-	GLfloat *col = prefs.penColour(Prefs::SpecularColour);
+	GLfloat *col = prefs.colour(Prefs::SpecularColour);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
 	newcol = QColorDialog::getColor(oldcol, this);
 	// Store new colour
-	prefs.setPenColour(Prefs::SpecularColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
+	prefs.setColour(Prefs::SpecularColour, newcol.redF(), newcol.greenF(), newcol.blueF(), 1.0);
 	ui.SpecularColourFrame->setColour(newcol);
 	ui.SpecularColourFrame->update();
 	// Update display

@@ -83,10 +83,10 @@ Prefs::KeyAction Prefs::keyAction(const char *s)
 }
 
 // Colours
-const char *ColourKeywords[Prefs::nColours] = { "fg", "bg", "specular" };
-Prefs::Colour Prefs::colour(const char *s)
+const char *PenColourKeywords[Prefs::nPenColours] = { "fg", "bg", "specular" };
+Prefs::PenColour Prefs::penColour(const char *s)
 {
-	return (Prefs::Colour) enumSearch("colour", Prefs::nColours, ColourKeywords, s);
+	return (Prefs::PenColour) enumSearch("colour", Prefs::nPenColours, PenColourKeywords, s);
 }
 
 // Density calculation units
@@ -207,9 +207,10 @@ Prefs::Prefs()
 	keyAction_[Prefs::AltKey] = Prefs::NoKeyAction;
 
 	// Colours
-	setPenColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
-	setPenColour(Prefs::ForegroundColour, 0.0f, 0.0f, 0.0f, 1.0f);
-	setPenColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
+	setColour(Prefs::SpecularColour, 0.9f, 0.9f, 0.9f, 1.0f);
+	setColour(Prefs::ForegroundColour, 0.0f, 0.0f, 0.0f, 1.0f);
+	setColour(Prefs::BackgroundColour, 1.0f, 1.0f, 1.0f, 1.0f);
+	setColour(Prefs::GlyphColour, 0.0f, 0.0f, 1.0f, 0.7f);
 
 	// Colour scales
 	colourScale[0].setName("Charge");
@@ -648,17 +649,27 @@ GLint Prefs::shininess()
 */
 
 // Return the specified colour
-GLfloat *Prefs::penColour(Colour c)
+GLfloat *Prefs::colour(PenColour c)
 {
-	return penColours_[c];
+	return colours_[c];
 }
 
-void Prefs::setPenColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+// Copy the specified colour
+void Prefs::copyColour(PenColour c, GLfloat *target)
 {
-	penColours_[c][0] = r;
-	penColours_[c][1] = g;
-	penColours_[c][2] = b;
-	penColours_[c][3] = a;
+	target[0] = colours_[c][0];
+	target[1] = colours_[c][1];
+	target[2] = colours_[c][2];
+	target[3] = colours_[c][3];
+}
+
+// Set the specified colour
+void Prefs::setColour(PenColour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
+{
+	colours_[c][0] = r;
+	colours_[c][1] = g;
+	colours_[c][2] = b;
+	colours_[c][3] = a;
 }
 
 /*

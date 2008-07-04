@@ -28,21 +28,28 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Set variable to value, variable, or expression
+// Increase variable
+int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
+{
+	c->arg(0)->increase(1);
+	return CR_SUCCESS;
+}
+
+// Set non-pointer or non-character variable to value, variable, or expression
 int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 {
 	// Our action depends on the type of the variable being assigned to
+	Variable::VariableType type1 = c->argt(0);
 	Variable::VariableType type2 = c->argt(2);
-	switch (c->argt(0))
+	// Integer and real variables may only be set from character, integer, real, or expression variables
+	switch (type1)
 	{
-		// Integer and real variables may only be set from character, integer, real, or expression variables
 		case (Variable::IntegerVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
 			{
 				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
-			else c->arg(0)->set(c->arg(2)->asInteger());
 			break;
 		case (Variable::FloatVariable):
 			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
@@ -50,71 +57,31 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
-			else c->arg(0)->set(c->arg(2)->asDouble());
-			break;
-		// Character variables must be assigned from a plain (or converted) variable, *not* an expression.
-		case (Variable::CharacterVariable):
-			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
-			{
-				msg.print( "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
-				return CR_FAIL;
-			}
-			else c->arg(0)->set( type2 == Variable::ExpressionVariable ? ftoa(c->arg(2)->asDouble()) : c->argc(2));
 			break;
 		// All other types are pointers - the second argument must also then be a pointer
 		default:
-			if (c->argt(0) != c->argt(2))
-			{
-				msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
-				return CR_FAIL;
-			}
-			else c->arg(0)->copyPointer(c->arg(2));
+			printf("CA_LET doesn't know how to handle variable assignments of type '%s'\n", Variable::variableType(c->argt(0)));
+			return CR_FAIL;
 			break;
 	}
-	return CR_SUCCESS;
-}
-
-// Set variable to value, variable, or expression
-int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
-{
-	// Our action depends on the type of the variable being assigned to
-	Variable::VariableType type2 = c->argt(1);
-	switch (c->argt(0))
+	// Perform assignment operation requested
+	switch (c->argi(1))
 	{
-		// Integer and real variables may only be set from character, integer, real, or expression variables
-		case (Variable::IntegerVariable):
-			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
-			{
-				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
-				return CR_FAIL;
-			}
-			else c->arg(0)->set(c->arg(1)->asInteger());
+		case (AssignOp::Equals):
+			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(2)->asInteger() : c->arg(2)->asDouble() );
 			break;
-		case (Variable::FloatVariable):
-			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
-			{
-				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
-				return CR_FAIL;
-			}
-			else c->arg(0)->set(c->arg(1)->asDouble());
+		case (AssignOp::MinusEquals):
+			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() - c->arg(2)->asInteger() : c->arg(0)->asDouble() - c->arg(2)->asDouble() );
 			break;
-		// Character variables must be assigned from a plain (or converted) variable, *not* an expression.
-		case (Variable::CharacterVariable):
-			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
-			{
-				msg.print( "Cannot set character variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
-				return CR_FAIL;
-			}
-			else c->arg(0)->set( type2 == Variable::ExpressionVariable ? ftoa(c->arg(1)->asDouble()) : c->argc(1));
+		case (AssignOp::PlusEquals):
+			if (type1 == Variable::IntegerVariable) c->arg(0)->set( c->arg(0)->asInteger() + c->arg(2)->asInteger() );
+			else c->arg(0)->set( c->arg(0)->asDouble() + c->arg(2)->asDouble() );
 			break;
-		// All other types are pointers - the second argument must also then be a pointer
-		default:
-			if (c->argt(0) != c->argt(1))
-			{
-				msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(1)->name());
-				return CR_FAIL;
-			}
-			else c->arg(0)->copyPointer(c->arg(1));
+		case (AssignOp::DivideEquals):
+			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() / c->arg(2)->asInteger() : c->arg(0)->asDouble() / c->arg(2)->asDouble() );
+			break;
+		case (AssignOp::MultiplyEquals):
+			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() * c->arg(2)->asInteger() : c->arg(0)->asDouble() * c->arg(2)->asDouble() );
 			break;
 	}
 	return CR_SUCCESS;
@@ -123,14 +90,32 @@ int CommandData::function_CA_LET2(Command *&c, Bundle &obj)
 // Assign string/variable to character variable only
 int CommandData::function_CA_LETCHAR(Command *&c, Bundle &obj)
 {
-	// Our action depends on the type of the variable being assigned to
-	c->arg(0)->set(c->argc(1));
+	// Our action depends on the operator provided which we cast from the second argument
+	switch (c->argi(1))
+	{
+		// Straight assigment
+		case (AssignOp::Equals):
+			c->arg(0)->set(c->argc(2));
+			break;
+		// Concatenation
+		case (AssignOp::PlusEquals):
+			c->arg(0)->set(c->argc(2));
+			break;
+		default:
+			printf("Operator given to CA_LETCHAR (%i) that we don't know how to handle.\n", c->argi(1));
+			break;
+	}
 	return CR_SUCCESS;
 }
 
-// Increase variable
-int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
+// Assign pointer variable to another pointer variable
+int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 {
-	c->arg(0)->increase(1);
+	if (c->argt(0) != c->argt(2))
+	{
+		msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
+		return CR_FAIL;
+	}
+	else c->arg(0)->copyPointer(c->arg(2));
 	return CR_SUCCESS;
 }

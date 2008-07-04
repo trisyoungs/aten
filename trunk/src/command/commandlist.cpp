@@ -29,10 +29,20 @@
 #include "model/model.h"
 
 // If Conditions
-const char *IC_strings[6] = { "eq", "l", "le", "g", "ge", "neq" };
-const char *text_from_IC(IfTest i)
+const char *IfTestStrings[6] = { "eq", "l", "le", "g", "ge", "neq" };
+const char *IfTest::ifTest(IfTest i)
 {
-	return IC_strings[i-1];
+	return IfTestStrings[i-1];
+}
+// Variable Operators
+const char *AssignOpKeywords[AssignOp::nAssignOps] = { "=", "+=", "-=", "/=", "*=" };
+AssignOp::AssignOp AssignOp::assignOp(const char *s)
+{
+	return (AssignOp::AssignOp) enumSearch("assignment operator", AssignOp::nAssignOps, AssignOpKeywords, s);
+}
+const char *AssignOp::assignOp(AssignOp::AssignOp ao)
+{
+	return AssignOpKeywords[ao];
 }
 
 // Constructors
@@ -359,8 +369,8 @@ bool Command::setIfTest(const char *s)
 				result = FALSE;
 				break;
 		}
-	if (m >= IF_NITEMS) result = FALSE;
-	else ifTest_ = (IfTest) m;
+	if (m > IfTest::NotEqualTo) result = FALSE;
+	else ifTest_ = (IfTest::IfTest) m;
 	msg.exit("Command::setIfTest");
 	return result;
 }
@@ -377,7 +387,7 @@ bool Command::ifEvaluate()
 	//print_argss();
 	v1 = args_[0]->item;
 	v2 = args_[2]->item;
-	if ((ifTest_ == IF_EQUAL) || (ifTest_ == IF_NEQUAL))
+	if ((ifTest_ == IfTest::EqualTo) || (ifTest_ == IfTest::NotEqualTo))
 	{
 		// Grab current variable values into the value1/value2 character arrays (if var != NULL)
 		value1 = v1->asCharacter();
@@ -388,26 +398,26 @@ bool Command::ifEvaluate()
 		d1 = v1->asDouble();
 		d2 = v2->asDouble();
 	}
-	msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), text_from_IC(ifTest_), v2->name(), v2->asCharacter());
+	msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), IfTest::ifTest(ifTest_), v2->name(), v2->asCharacter());
 	// Do comparison
 	switch (ifTest_)
 	{
-		case (IF_EQUAL):
+		case (IfTest::EqualTo):
 			result = (value1 == value2 ? TRUE : FALSE);
 			break;
-		case (IF_LESS):
+		case (IfTest::LessThan):
 			result = (d1 < d2 ? TRUE : FALSE);
 			break;
-		case (IF_LEQUAL):
+		case (IfTest::LessThanEqualTo):
 			result = (d1 <= d2 ? TRUE : FALSE);
 			break;
-		case (IF_GREATER):
+		case (IfTest::GreaterThan):
 			result = (d1 > d2 ? TRUE : FALSE);
 			break;
-		case (IF_GEQUAL):
+		case (IfTest::GreaterThanEqualTo):
 			result = (d1 >= d2 ? TRUE : FALSE);
 			break;
-		case (IF_NEQUAL):
+		case (IfTest::NotEqualTo):
 			result = (value1 != value2 ? TRUE : FALSE);
 			break;
 	}
@@ -423,6 +433,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	bool required = TRUE, repeat = FALSE;
 	int n, m, argcount, last = -1;
 	Variable *var;
+	AssignOp::AssignOp ao;
 	static char arg[512];
 	argcount = 0;
 	n = 0;
@@ -432,7 +443,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 		required = ((v[n] > 90) || (v[n] == '*') ? FALSE : TRUE);
 		argcount ++;
 
-		//printf("Adding variable %c which should have value %s\n", *c, parser.argc(argcount));
+		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
 		// Is this a required argument?
 		if (argcount > (parser.nArgs() - 1))
 		{
@@ -485,15 +496,42 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				var = vars.addConstant(arg, TRUE);
 				args_.add(var);
 				break;
-			// Equals
+			// Operators
+			case ('O'):
+			case ('~'):
 			case ('='):
-				if (strcmp(arg,"=") != 0)
+				// Get operator enum
+				ao = AssignOp::assignOp(&arg[0]);
+				if (ao == AssignOp::nAssignOps)
 				{
-					msg.print( "Expected '=' after argument %i for command '%s'.\n", argcount, cmd);
-					msg.exit("Command::addVariables");
+					msg.print("Unrecognised assignment operator '%s'.\n", &arg[0]);
 					return FALSE;
 				}
-				args_.add(NULL);
+				// Whether we accept the operator we found depends on the specifier
+				switch (v[n])
+				{
+					// 'O' - accept any
+					case ('O'):
+						break;
+					// '=' - accept '=' only
+					case ('='):
+						if (ao != AssignOp::Equals) 
+						{
+							msg.print( "Expected '=' as argument %i for command '%s'.\n", argcount, cmd);
+							return FALSE;
+						}
+						break;
+					// '~' - accept '=' and '+=' only
+					case ('~'):
+						if ((ao != AssignOp::Equals) && (ao != AssignOp::PlusEquals)) 
+						{
+							msg.print( "Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmd);
+							return FALSE;
+						}
+						break;
+				}
+				// Add operator as an integer variable
+				args_.add(parent_->variables.addConstant(ao));
 				break;
 			// Variable or expression
 			case ('e'):
@@ -643,18 +681,6 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				// Create extra variables in the command structure
 				if (!parent_->createAtomVariables( &arg[1] )) return FALSE;
 				break;
-// 			// Rest of line (reconstructed)
-// 			case ('L'):
-// 				arg[0] = '\0';
-// 				for (m=argcount; m<parser.nArgs(); m++)
-// 				{
-// 					strcat(arg, parser.argc(m));
-// 					strcat(arg, " ");
-// 				}
-// 				var = parent_->variables.addConstant("abcde");
-// 				var->set(arg);
-// 				args_.add(var);
-// 				break;
 			// Repeat as many of the last variable type as possible
 			case ('*'):
 				if (n == 0)
@@ -986,23 +1012,45 @@ bool CommandList::cacheCommand()
 {
 	msg.enter("CommandList::cacheCommand");
 	CommandAction ca;
-	bool result = TRUE;
+	bool result = TRUE, addcmd = FALSE;
 	/*
 	Assume that the main parser object contains the data we require.
 	If there is no argument 0 in the parser, then just return true. Otherwise, check for the first argument being a variable (denoted by a '$') and the second being an '='. If so, move the first argument to the second and add a CA_LET2 command.
 	*/
 	if (parser.isBlank(0)) result = TRUE;
-	else if ((parser.argc(0)[0] == '$') && (parser.argc(1)[0] == '='))
+	else if (parser.argc(0)[0] == '$')
 	{
-		parser.setArg(1,parser.argc(0));
+		// Shift all arguments up one position in the parser
+		parser.shiftArgsUp();
 		// Set command based on type of variable
-		Variable::VariableType vt;
-		Variable *v = variables.get(&parser.argc(0)[1]);
-		vt = (v != NULL ? v->type() : Variable::nVariableTypes);
-		if (!addCommand( vt == Variable::CharacterVariable ? CA_LETCHAR : CA_LET2 ))
+		Variable *v = variables.get(&parser.argc(1)[1]);
+		if (v == NULL)
 		{
-			msg.print( "Error adding variable assignment command.\n");
+			msg.print( "Variable '%s' has not been declared.\n", &parser.argc(1)[1]);
 			result = FALSE;
+		}
+		else
+		{
+			// The command we use depends on the type of the target variable
+			addcmd = TRUE;
+			switch (v->type())
+			{
+				case (Variable::CharacterVariable):
+					addcmd = addCommand(CA_LETCHAR);
+					break;
+				case (Variable::IntegerVariable):
+				case (Variable::FloatVariable):
+					addcmd = addCommand(CA_LET);
+					break;
+				default:
+					addcmd = addCommand(CA_LETPTR);
+					break;
+			}
+			if (!addcmd)
+			{
+				msg.print( "Error adding variable assignment command.\n");
+				result = FALSE;
+			}
 		}
 	}
 	else

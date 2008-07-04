@@ -53,10 +53,10 @@ class Prefs
 	// Modifier actions
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
 	static KeyAction keyAction(const char*);
-	// Colours
-	enum Colour { ForegroundColour, BackgroundColour, SpecularColour, nColours };
-	static const char *colour(Colour);
-	static Colour colour(const char*);
+	// Standard 'Pen' Colours
+	enum PenColour { ForegroundColour, BackgroundColour, SpecularColour, GlyphColour, nPenColours };
+	static const char *penColour(PenColour);
+	static PenColour penColour(const char*);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, ElectronVolts, Hartree, nEnergyUnits };
 	static const char *energyUnit(EnergyUnit);
@@ -262,13 +262,15 @@ class Prefs
 	*/
 	private:
 	// RGB colour values
-	GLfloat penColours_[Prefs::nColours][4];
+	GLfloat colours_[Prefs::nPenColours][4];
 
 	public:
 	// Set the specified colour to the integer RGB values supplied
-	void setPenColour(Colour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
-	// Return the specified colour
-	GLfloat *penColour(Colour c);
+	void setColour(PenColour c, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+	// Copy the specified colour
+	void copyColour(PenColour c, GLfloat*);
+	// Return a pointer to the specified colour
+	GLfloat *colour(PenColour c);
 	// User-definable colour scales
 	ColourScale colourScale[10];
 
