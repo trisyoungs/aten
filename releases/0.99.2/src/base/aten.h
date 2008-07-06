@@ -29,10 +29,10 @@
 #include "base/cli.h"
 #include "templates/namemap.h"
 
-#define ATENVERSION "0.99"
-#define ATENREVISION "500"
-#define ATENDATE "Sun 06 Jul - 10:49"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#define ATENVERSION "0.99.2"
+#define ATENREVISION "502"
+#define ATENDATE "Sun 06 Jul - 12:38"
+#define ATENURL "http://aten.googlecode.com/svn/releases/0.99.2"
 
 // Forward Declarations
 class Generator;

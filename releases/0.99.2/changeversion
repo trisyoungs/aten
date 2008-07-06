@@ -17,14 +17,14 @@ else
 fi
 
 
-# src/master.h
-echo -n "        master.h (Program Version) : "
+# src/aten.h
+echo -n "          aten.h (Program Version) : "
 if [ "$#" -eq "2" ]
 then
-  cp src/base/master.h src/base/master.h.orig
-  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/base/master.h.orig > src/base/master.h
+  cp src/base/aten.h src/base/aten.h.orig
+  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/base/aten.h.orig > src/base/aten.h
 fi
-grep '#define ATENVERSION' src/base/master.h | sed -e 's/#define ATENVERSION "\([0-9\.]\+\).*"/\1/g'
+grep '#define ATENVERSION' src/base/aten.h | sed -e 's/#define ATENVERSION "\([0-9\.]\+\).*"/\1/g'
 
 
 # ./CMakeLists.txt
