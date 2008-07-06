@@ -56,7 +56,7 @@ void AtenCellDefine::refresh()
 	Cell *cell = m->cell();
 	Cell::CellType ct = cell->type();
 	static char s[64];
-	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",cell->volume());
+	sprintf(s," Volume : %10.3f &#8491;<sup>3</sup>",cell->volume());
 	ui.CellVolumeLabel->setText(s);
 	if (refreshing_) return;
 	else refreshing_ = TRUE;

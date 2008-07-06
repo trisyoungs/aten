@@ -633,7 +633,9 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				break;
 			// Pointer-style variable (that also need to create subvariables)
 			case ('A'):
+			case ('a'):
 			case ('P'):
+			case ('p'):
 				if (arg[0] != '$')
 				{
 					msg.print( "This argument (%s) must be a variable, and must be of the correct type.\n", &arg[0]);
@@ -651,9 +653,11 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				switch (v[n])
 				{
 					case ('A'):
+					case ('a'):
 						if (!parent_->createAtomVariables( &arg[1] )) return FALSE;
 						break;
 					case ('P'):
+					case ('p'):
 						if (!parent_->createPatternVariables( &arg[1] )) return FALSE;
 						break;
 				}

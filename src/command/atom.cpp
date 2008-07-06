@@ -27,22 +27,16 @@
 #include "parse/filter.h"
 #include "model/model.h"
 
-// Retrieve atom info ('getatom <id> <var>')
+// Retrieve atom info ('getatom <id> [var]')
 int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->argt(1) != Variable::AtomVariable)
-	{
-		msg.print( "Second argument to 'getatom' must be a variable of type 'Atom'.\n");
-		return CR_FAIL;
-	}
 	Atom *i = obj.rs->atom(c->argi(0)-1);
 	if (i == NULL) return CR_FAIL;
 	// Set atom information
-	c->parent()->setAtomVariables(c->arg(1)->name(), i);
+	if (c->hasArg(1)) c->parent()->setAtomVariables(c->arg(1)->name(), i);
 	return CR_SUCCESS;
 }
-
 
 // Draw unbound atom ('newatom <el> [x y z]')
 int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
