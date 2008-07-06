@@ -128,7 +128,7 @@ Prefs::ViewObject Prefs::viewObject(const char *s)
 const char *Prefs::viewObject(Prefs::ViewObject vo)
 {
 	double d = vo;
-	int i, n;
+	int i;
 	for (i=0; i<Prefs::nViewObjects; i++)
 	{
 		d /= 2.0;
