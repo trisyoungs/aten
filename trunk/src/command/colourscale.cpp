@@ -53,7 +53,6 @@ int CommandData::function_CA_CLEARPOINTS(Command *&c, Bundle &obj)
 // List current colourscale data ('listscales')
 int CommandData::function_CA_LISTSCALES(Command *&c, Bundle &obj)
 {
-	char s[512], type[16];
 	GLfloat col[4];
 	msg.print("Current colourscale setup:\n");
 	for (int n=0; n<10; n++)

@@ -79,19 +79,20 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 	if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
 	else aten.current.i = obj.rs->addAtom(el, c->parent()->penPosition);
 	// Add the name to the model's namesForcefield, if requested and it exists
-// 	if (prefs.keepNames() && obj.rs->namesForcefield())
-// 	{
-// 		// Search for this typename in the ff
-// 		f = obj.rs->namesForcefield();
-// 		ffa = f->findType(c->argc(0));
-// 		if (ffa == NULL) 
-// 		{
-// 			ffa = f->addType();
-// 			ffa->setName(c->argc(0));
-// 		}
-// 		aten.current.i->setType(ffa);
-// 		aten.current.i->setTypeFixed(TRUE);
-// 	}
+ 	if (prefs.keepNames() && obj.rs->namesForcefield())
+ 	{
+ 		// Search for this typename in the ff
+ 		f = obj.rs->namesForcefield();
+ 		ffa = f->findType(c->argc(0));
+ 		if (ffa == NULL) 
+ 		{
+ 			ffa = f->addType();
+ 			ffa->setName(c->argc(0));
+			ffa->atomtype()->setCharacterElement(el);
+ 		}
+ 		aten.current.i->setType(ffa);
+ 		aten.current.i->setTypeFixed(TRUE);
+ 	}
 	return CR_SUCCESS;
 }
 
