@@ -1,0 +1,24 @@
+# Building a molecule using the pen - Benzene
+
+integer n
+double l
+
+# The variable 'l' contains the bond length to use
+$l = 1.39
+
+# Create a new model
+newmodel benzene
+
+# Pen starts at the origin 0,0,0 where we put the first atom. We 
+chain C
+for $n,1,5
+	move 0.0 1.39 0.0
+	chain C
+	rotz 60.0
+end
+# Bond first and last atoms
+newbond 1 6 single
+
+augment
+#addhydrogen
+
