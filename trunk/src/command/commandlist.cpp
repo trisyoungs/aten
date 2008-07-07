@@ -30,17 +30,17 @@
 
 // If Conditions
 const char *IfTestStrings[6] = { "eq", "l", "le", "g", "ge", "neq" };
-const char *IfTest::ifTest(IfTest i)
+const char *IfTests::ifTest(IfTest i)
 {
 	return IfTestStrings[i-1];
 }
 // Variable Operators
-const char *AssignOpKeywords[AssignOp::nAssignOps] = { "=", "+=", "-=", "/=", "*=" };
-AssignOp::AssignOp AssignOp::assignOp(const char *s)
+const char *AssignOpKeywords[AssignOps::nAssignOps] = { "=", "+=", "-=", "/=", "*=" };
+AssignOps::AssignOp AssignOps::assignOp(const char *s)
 {
-	return (AssignOp::AssignOp) enumSearch("assignment operator", AssignOp::nAssignOps, AssignOpKeywords, s);
+	return (AssignOps::AssignOp) enumSearch("assignment operator", AssignOps::nAssignOps, AssignOpKeywords, s);
 }
-const char *AssignOp::assignOp(AssignOp::AssignOp ao)
+const char *AssignOps::assignOp(AssignOps::AssignOp ao)
 {
 	return AssignOpKeywords[ao];
 }
@@ -369,8 +369,8 @@ bool Command::setIfTest(const char *s)
 				result = FALSE;
 				break;
 		}
-	if (m > IfTest::NotEqualTo) result = FALSE;
-	else ifTest_ = (IfTest::IfTest) m;
+	if (m > IfTests::NotEqualTo) result = FALSE;
+	else ifTest_ = (IfTests::IfTest) m;
 	msg.exit("Command::setIfTest");
 	return result;
 }
@@ -387,7 +387,7 @@ bool Command::ifEvaluate()
 	//print_argss();
 	v1 = args_[0]->item;
 	v2 = args_[2]->item;
-	if ((ifTest_ == IfTest::EqualTo) || (ifTest_ == IfTest::NotEqualTo))
+	if ((ifTest_ == IfTests::EqualTo) || (ifTest_ == IfTests::NotEqualTo))
 	{
 		// Grab current variable values into the value1/value2 character arrays (if var != NULL)
 		value1 = v1->asCharacter();
@@ -398,26 +398,26 @@ bool Command::ifEvaluate()
 		d1 = v1->asDouble();
 		d2 = v2->asDouble();
 	}
-	msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), IfTest::ifTest(ifTest_), v2->name(), v2->asCharacter());
+	msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), IfTests::ifTest(ifTest_), v2->name(), v2->asCharacter());
 	// Do comparison
 	switch (ifTest_)
 	{
-		case (IfTest::EqualTo):
+		case (IfTests::EqualTo):
 			result = (value1 == value2 ? TRUE : FALSE);
 			break;
-		case (IfTest::LessThan):
+		case (IfTests::LessThan):
 			result = (d1 < d2 ? TRUE : FALSE);
 			break;
-		case (IfTest::LessThanEqualTo):
+		case (IfTests::LessThanEqualTo):
 			result = (d1 <= d2 ? TRUE : FALSE);
 			break;
-		case (IfTest::GreaterThan):
+		case (IfTests::GreaterThan):
 			result = (d1 > d2 ? TRUE : FALSE);
 			break;
-		case (IfTest::GreaterThanEqualTo):
+		case (IfTests::GreaterThanEqualTo):
 			result = (d1 >= d2 ? TRUE : FALSE);
 			break;
-		case (IfTest::NotEqualTo):
+		case (IfTests::NotEqualTo):
 			result = (value1 != value2 ? TRUE : FALSE);
 			break;
 	}
@@ -433,7 +433,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	bool required = TRUE, repeat = FALSE;
 	int n, m, argcount, last = -1;
 	Variable *var;
-	AssignOp::AssignOp ao;
+	AssignOps::AssignOp ao;
 	static char arg[512];
 	argcount = 0;
 	n = 0;
@@ -501,8 +501,8 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('~'):
 			case ('='):
 				// Get operator enum
-				ao = AssignOp::assignOp(&arg[0]);
-				if (ao == AssignOp::nAssignOps)
+				ao = AssignOps::assignOp(&arg[0]);
+				if (ao == AssignOps::nAssignOps)
 				{
 					msg.print("Unrecognised assignment operator '%s'.\n", &arg[0]);
 					return FALSE;
@@ -515,7 +515,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 						break;
 					// '=' - accept '=' only
 					case ('='):
-						if (ao != AssignOp::Equals) 
+						if (ao != AssignOps::Equals) 
 						{
 							msg.print( "Expected '=' as argument %i for command '%s'.\n", argcount, cmd);
 							return FALSE;
@@ -523,7 +523,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 						break;
 					// '~' - accept '=' and '+=' only
 					case ('~'):
-						if ((ao != AssignOp::Equals) && (ao != AssignOp::PlusEquals)) 
+						if ((ao != AssignOps::Equals) && (ao != AssignOps::PlusEquals)) 
 						{
 							msg.print( "Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmd);
 							return FALSE;
