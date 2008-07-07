@@ -196,6 +196,17 @@ int CommandData::function_CA_GRIDUSEZ(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Load grid ('loadgrid <filename>')
+int CommandData::function_CA_LOADGRID(Command *&c, Bundle &obj)
+{
+	Filter *f = aten.probeFile(c->argc(0), Filter::GridImport);
+	if (f != NULL)
+	{
+		if (f->execute(c->argc(0))) return CR_SUCCESS;
+		else return CR_FAIL;
+	} else return CR_FAIL;
+}
+
 // Create new grid
 int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
 {
