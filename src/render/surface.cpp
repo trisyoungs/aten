@@ -348,7 +348,7 @@ void renderSurfaceGrid(Grid *g)
 			ydata = data2d[i];
 			for (j=0; j<npoints.y; j++)
 			{
-				if (ydata[k] < cutoff) continue;
+				if (ydata[j] < cutoff) continue;
 				glVertex3i(i, j, 0);
 			}
 		}
