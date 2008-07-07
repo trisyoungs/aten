@@ -211,6 +211,7 @@ void Aten::initCommands()
 	CA_data[CA_GRIDSYMMETRIC].function = &CommandData::function_CA_GRIDSYMMETRIC;
 	CA_data[CA_GRIDTRANSPARENCY].function = &CommandData::function_CA_GRIDTRANSPARENCY;
 	CA_data[CA_GRIDUSEZ].function = &CommandData::function_CA_GRIDUSEZ;
+	CA_data[CA_LOADGRID].function = &CommandData::function_CA_LOADGRID;
 	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
 
 	// Image Commands

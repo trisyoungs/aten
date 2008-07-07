@@ -416,6 +416,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the transparency of the surface (when not using a colourscale)" },
 	{ "gridusez",		"N",		"yes|no",
 				"Whether a 2D surface uses the vertex data value as its z (height) data" },
+	{ "loadgrid",		"N",		"<gridfile>",
+				"Load grid data" },
 	{ "newgrid",		"N",		"<title>",
 				"Create new grid data" },
 	

@@ -246,6 +246,7 @@ enum CommandAction {
 	CA_GRIDSYMMETRIC,
 	CA_GRIDTRANSPARENCY,
 	CA_GRIDUSEZ,
+	CA_LOADGRID,
 	CA_NEWGRID,
 
 	// Image Commands
@@ -626,6 +627,7 @@ class CommandData
 	int function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj);
 	int function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj);
 	int function_CA_GRIDUSEZ(Command *&c, Bundle &obj);
+	int function_CA_LOADGRID(Command *&c, Bundle &obj);
 	int function_CA_NEWGRID(Command *&c, Bundle &obj);
 	// Image Commands
 	int function_CA_SAVEBITMAP(Command *&c, Bundle &obj);

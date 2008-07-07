@@ -18,7 +18,7 @@ types
 9	HCR	H	"-C(-N(-C(n=2),n=2),ring(size=5))"		# H on carbon adjacent to two N
 10	HCW	H	"-C(-N(-C(n=2)),-C,ring(size=5))"		# H on carbon adjacent to N and C
 11	HC	H	"-C(-C,-H)"					# Hydrogen on other carbon in R group
-12	H1	H	"-C(-N,-H)"					# Hydrogen on first carbon in R group
+12	H1	H	"-C(-N(ring(size=5)),-H)"			# Hydrogen on first carbon in R group
 13	NA	N	"nbonds=3,ring(size=5,-N,-C(n=3)),-C(n=3)"	# Nitrogen with alkyl group attached
 # Alkylimidazolium
 21	NAH	N	"nbonds=3,ring(size=5,-N,-C(n=3)),-C(n=2),-H"	# Nitrogen with hydrogen attached
