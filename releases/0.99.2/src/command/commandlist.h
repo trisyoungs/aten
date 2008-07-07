@@ -31,14 +31,14 @@
 #include "parse/parser.h"
 
 // If Conditions
-namespace IfTest
+namespace IfTests
 {
 	enum IfTest { EqualTo=1, LessThan=2, LessThanEqualTo=3, GreaterThan=4, GreaterThanEqualTo=5, NotEqualTo=6 };
 	const char *ifTest(IfTest);
 }
 
 // Variable Assignment Operators
-namespace AssignOp
+namespace AssignOps
 {
 	enum AssignOp { Equals, PlusEquals, MinusEquals, DivideEquals, MultiplyEquals, nAssignOps };
 	AssignOp assignOp(const char *s);
@@ -146,7 +146,7 @@ class Command
 	*/
 	private:
 	// If condition structure
-	IfTest::IfTest ifTest_;
+	IfTests::IfTest ifTest_;
 
 	public:
 	// Set if test type

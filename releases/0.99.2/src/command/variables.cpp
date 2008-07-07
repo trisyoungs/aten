@@ -67,20 +67,20 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 	// Perform assignment operation requested
 	switch (c->argi(1))
 	{
-		case (AssignOp::Equals):
+		case (AssignOps::Equals):
 			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(2)->asInteger() : c->arg(2)->asDouble() );
 			break;
-		case (AssignOp::MinusEquals):
+		case (AssignOps::MinusEquals):
 			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() - c->arg(2)->asInteger() : c->arg(0)->asDouble() - c->arg(2)->asDouble() );
 			break;
-		case (AssignOp::PlusEquals):
+		case (AssignOps::PlusEquals):
 			if (type1 == Variable::IntegerVariable) c->arg(0)->set( c->arg(0)->asInteger() + c->arg(2)->asInteger() );
 			else c->arg(0)->set( c->arg(0)->asDouble() + c->arg(2)->asDouble() );
 			break;
-		case (AssignOp::DivideEquals):
+		case (AssignOps::DivideEquals):
 			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() / c->arg(2)->asInteger() : c->arg(0)->asDouble() / c->arg(2)->asDouble() );
 			break;
-		case (AssignOp::MultiplyEquals):
+		case (AssignOps::MultiplyEquals):
 			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() * c->arg(2)->asInteger() : c->arg(0)->asDouble() * c->arg(2)->asDouble() );
 			break;
 	}
@@ -94,11 +94,11 @@ int CommandData::function_CA_LETCHAR(Command *&c, Bundle &obj)
 	switch (c->argi(1))
 	{
 		// Straight assigment
-		case (AssignOp::Equals):
+		case (AssignOps::Equals):
 			c->arg(0)->set(c->argc(2));
 			break;
 		// Concatenation
-		case (AssignOp::PlusEquals):
+		case (AssignOps::PlusEquals):
 			c->arg(0)->set(c->argc(2));
 			break;
 		default:
