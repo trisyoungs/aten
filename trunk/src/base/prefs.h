@@ -66,7 +66,7 @@ class Prefs
 	static const char *densityUnit(DensityUnit);
 	static DensityUnit densityUnit(const char*);
 	// View Objects
-	enum ViewObject { ViewAtoms=1, ViewCell=2, ViewCellAxes=4, ViewCellRepeat=8, ViewForceArrows=16, ViewGlobe=32, ViewLabels=64, ViewMeasurements=128, ViewRegions=256, ViewSurfaces=512, nViewObjects=10 };
+	enum ViewObject { ViewAtoms=1, ViewCell=2, ViewCellAxes=4, ViewCellRepeat=8, ViewForceArrows=16, ViewGlobe=32, ViewLabels=64, ViewMeasurements=128, ViewRegions=256, ViewSurfaces=512, nViewObjects=11 };
 	static ViewObject viewObject(const char*);
 	static const char *viewObject(ViewObject);
 	// GL Options
@@ -296,6 +296,8 @@ class Prefs
 	Prefs::ZmapType zmapType_;
 	// Whether to retain file atom type names on load (in a new forcefield)
 	bool keepNames_;
+	// Whether to retain view when GUI starts (i.e. don't reset it)
+	bool keepView_;
 
 	public:
 	// Sets whether to calculate bonding on model load
@@ -334,6 +336,10 @@ class Prefs
 	void setKeepNames(bool b);
 	// Return whether to keep file type names on load
 	bool keepNames();
+	// Set whether to keep view on GUI start
+	void setKeepView(bool b);
+	// Return whether to keep view on GUI start
+	bool keepView();
 
 	/*
 	// Edit Preferences

@@ -171,7 +171,7 @@ void GuiQt::run()
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
 		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
-		m->resetView();
+		if (!prefs.keepView()) m->resetView();
 		m->calculateViewMatrix();
 		m->projectAll();
 	}

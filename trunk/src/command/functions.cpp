@@ -42,7 +42,8 @@ void Aten::initCommands()
 	CA_data[CA_SAVEQUANTITIES].function = &CommandData::function_CA_SAVEQUANTITIES;
 	CA_data[CA_TRAJANALYSE].function = &CommandData::function_CA_TRAJANALYSE;
 
-	// Atom Commands
+	// Atom commands
+	CA_data[CA_ATOMSTYLE].function = &CommandData::function_CA_ATOMSTYLE;
 	CA_data[CA_CHAIN].function = &CommandData::function_CA_CHAIN;
 	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
 	CA_data[CA_GETATOM].function = &CommandData::function_CA_GETATOM;
@@ -208,6 +209,7 @@ void Aten::initCommands()
 	CA_data[CA_GRIDORIGIN].function = &CommandData::function_CA_GRIDORIGIN;
 	CA_data[CA_GRIDORTHO].function = &CommandData::function_CA_GRIDORTHO;
 	CA_data[CA_GRIDSIZE].function = &CommandData::function_CA_GRIDSIZE;
+	CA_data[CA_GRIDSTYLE].function = &CommandData::function_CA_GRIDSTYLE;
 	CA_data[CA_GRIDSYMMETRIC].function = &CommandData::function_CA_GRIDSYMMETRIC;
 	CA_data[CA_GRIDTRANSPARENCY].function = &CommandData::function_CA_GRIDTRANSPARENCY;
 	CA_data[CA_GRIDUSEZ].function = &CommandData::function_CA_GRIDUSEZ;

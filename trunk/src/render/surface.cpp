@@ -505,7 +505,7 @@ void cubeIt(Grid *g, Grid::SurfaceStyle ss)
 	glEnd();
 }
 
-// Render normal ssurface 
+// Render normal surface 
 void squareIt(Grid *g, Grid::SurfaceStyle ss)
 {
 	int i, j;
@@ -532,11 +532,11 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			break;
 	}
 	// Set colour / transparency for surface
-	glMaterialfv(GL_FRONT, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
-	glMateriali(GL_FRONT, GL_SHININESS, prefs.shininess());
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, prefs.colour(Prefs::SpecularColour));
+	glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, prefs.shininess());
 	cscale = g->colourScale();
 	if (!g->usesColourScale()) cscale = -1;
-	if (cscale == -1) glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
+	if (cscale == -1) glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->positiveColour());
 	// Render surface
 	for (i = 1; i<npoints.x-2; i++)
 	{
@@ -549,7 +549,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i][j], colour);
-				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i, j, g->useDataForZ() ? data[i][j] : 0.0);
@@ -561,7 +561,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i+1][j], colour);
-				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i+1, j, g->useDataForZ() ? data[i+1][j] : 0.0);
@@ -573,7 +573,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i+1][j+1], colour);
-				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i+1, j+1, g->useDataForZ() ? data[i+1][j+1] : 0.0);
@@ -585,7 +585,7 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 			if (cscale != -1)
 			{
 				prefs.colourScale[cscale].colour(data[i][j+1], colour);
-				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, colour);
+				glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colour);
 			}
 			glNormal3d(normal.x, normal.y, normal.z);
 			glVertex3d(i, j+1, g->useDataForZ() ? data[i][j+1] : 0.0);

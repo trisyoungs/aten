@@ -144,36 +144,39 @@ bool ComponentRegion::allowOverlap()
 }
 
 // Overlap check
-bool ComponentRegion::checkOverlap(const Vec3<double> &v, Cell *cell, Reflist<Model,int> &components)
+bool ComponentRegion::pointOverlaps(const Vec3<double> &v, Cell *cell, Reflist<Model,int> &components)
 {
 	// Check whether the supplied coordinates overlap with other regions in the list bar this one
-	msg.enter("ComponentRegion::checkOverlap");
+	msg.enter("ComponentRegion::pointOverlaps");
 	static Vec3<double> tempv;
 	bool result = FALSE;
 	ComponentRegion *r;
 	Refitem<Model,int> *ri;
+//	printf("Number of components in list is %i\n",components.nItems());
 	for (ri = components.first(); ri != NULL; ri = ri->next)
 	{
 		r = &ri->item->area;
 		if (r == this) continue;
-		if (r->checkCoords(v,cell)) result = TRUE;
-		//printf("Overlap with region '%s' is %s.\n",text_from_RS(r->get_shape()),(result ? "TRUE" : "FALSE"));
+		if (r->coordsInRegion(v,cell)) result = TRUE;
+		//printf("Overlap of region '%s' with region '%s' is %i.\n", regionShape(shape_), regionShape(r->shape()), r->coordsInRegion(v,cell));
 		if (result) break;
 	}
-	msg.exit("ComponentRegion::checkOverlap");
+	msg.exit("ComponentRegion::pointOverlaps");
 	return result;
 }
 
-// Check that specified coordinates are inside region
-bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
+// Check that specified coordinates are inside this region
+bool ComponentRegion::coordsInRegion(const Vec3<double> &v, Cell *cell)
 {
 	// Check whether the supplied coordinates overlap with other regions in the list bar this one
-	msg.enter("ComponentRegion::checkCoords");
+	msg.enter("ComponentRegion::coordsInRegion");
 	static Vec3<double> tempv, realsize;
 	bool result = TRUE;
 	switch (shape_)
 	{
 		case (ComponentRegion::WholeCell):
+			// Checking for overlap with whole cell is silly, so always accept....
+			result = FALSE;
 			break;
 		case (ComponentRegion::CuboidRegion):
 			tempv = v - (centreFrac_ ? cell->fracToReal(centre_) : centre_);
@@ -189,10 +192,10 @@ bool ComponentRegion::checkCoords(const Vec3<double> &v, Cell *cell)
 			if (tempv.magnitude() > 1.0) result = FALSE;
 			break;
 		case (ComponentRegion::CylinderRegion):
-			printf("ComponentRegion::checkCoords - Not done yet for this type.\n");
+			printf("ComponentRegion::coordsInRegion - Not done yet for this type.\n");
 			break;
 	}
-	msg.exit("ComponentRegion::checkCoords");
+	msg.exit("ComponentRegion::coordsInRegion");
 	return result;
 }
 
@@ -238,14 +241,11 @@ Vec3<double> ComponentRegion::randomCoords(Cell *cell, Reflist<Model,int> &compo
 				break;
 		}
 		// Now, check that this random coordinate doesn't overlap with others (if this is required)
-		if (!allowOverlap_)
-		{
-			if (!checkOverlap(v,cell,components)) done = TRUE;
-		}
+		if ((!allowOverlap_) && (pointOverlaps(v,cell,components))) done = FALSE;
 		else done = TRUE;
 		if ((!done) && (nAttempts == 100))
 		{
-			printf("Failed to find position in region '%s' that doesn't overlap within %i trials.\n", ComponentRegion::regionShape(shape_), 100);
+			printf("Failed to find position in region '%s' that doesn't overlap with others within %i trials.\n", ComponentRegion::regionShape(shape_), 100);
 			done = TRUE;
 		}
 	} while (!done);

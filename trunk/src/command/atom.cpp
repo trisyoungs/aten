@@ -27,6 +27,16 @@
 #include "parse/filter.h"
 #include "model/model.h"
 
+// Set atom style for current selection
+int CommandData::function_CA_ATOMSTYLE(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
+	if (ds != Atom::nDrawStyles) for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) i->setStyle(ds);
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
 // Retrieve atom info ('getatom <id> [var]')
 int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 {

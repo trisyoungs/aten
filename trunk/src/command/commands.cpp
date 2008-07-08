@@ -80,6 +80,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Analyse quantities for all frames in current trajectory" },
 	
 	// Atom commands
+	{ "atomstyle",		"N",		"<style>",
+				"Set the individual style of the current atom selection" },
 	{ "chain",		"Nnnnn",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]",
 				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"",
@@ -410,6 +412,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the axes system for the current grid to be orthorhombic" },
 	{ "gridsize",		"EEE",		"<nx> <ny> <nz>",
 				"Set the number of points along each axis for the current grid" },
+	{ "gridstyle",		"N",		"<style>",
+				"Set the drawing style of the current grid" },
 	{ "gridsymmetric",	"N",		"yes|no",
 				"Set whether the isodata is symmetric about zero (i.e. whether to draw both halves)" },
 	{ "gridtransparency",	"E",		"<alpha>",
