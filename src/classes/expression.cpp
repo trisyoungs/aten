@@ -465,8 +465,9 @@ bool Expression::set(const char *s, VariableList *vars)
 				// For the minus symbol we check to see if its a unary minus first...
 				if (*c == '-')
 				{
-					// If previous token is operator, bracket, or nothing at all then it must be a unary minus
-					if ((prevToken != ExpressionNode::ValueToken) && (prevToken != ExpressionNode::FunctionToken))
+					// If previous token is an operator, left bracket, or nothing at all then it must be a unary minus (function)
+					if ((prevToken == ExpressionNode::OperatorToken) || ((prevToken == ExpressionNode::BracketToken) && (ex->bracketType() == ExpressionNode::LeftBracket)) || (prevToken == ExpressionNode::nTokenTypes))
+					//if ((prevToken != ExpressionNode::ValueToken) && (prevToken != ExpressionNode::FunctionToken) && (prevToken != ExpressionNode::BracketToken))
 					{
 						ex = expression_.add();
 						ex->setPersistentType(ExpressionNode::FunctionToken);

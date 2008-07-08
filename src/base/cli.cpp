@@ -64,6 +64,8 @@ Cli cliSwitches[] = {
 		"",		"Enter interactive mode" },
 	{ Cli::KeepNamesSwitch,		'\0',"keepnames",	0,
 		"",		"Store atom (type)names given in files in a forcefield created for the model" },
+	{ Cli::KeepViewSwitch,		'k',"keepview",		0,
+		"",		"Keep (don't reset) view when GUI starts" },
 	{ Cli::MapSwitch,		'm',"map",		1,
 		"<name=element,...>",	"Map file atomtypes to elements" },
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
@@ -364,6 +366,10 @@ int Aten::parseCli(int argc, char *argv[])
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
 					prefs.setKeepNames(TRUE);
+					break;
+				// Keep (don't reset) view when GUI starts
+				case (Cli::KeepViewSwitch):
+					prefs.setKeepView(TRUE);
 					break;
 				// Set type mappings
 				case (Cli::MapSwitch):

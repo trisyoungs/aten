@@ -65,6 +65,7 @@ enum CommandAction {
 	CA_TRAJANALYSE,
 
 	// Atom Commands
+	CA_ATOMSTYLE,
 	CA_CHAIN,
 	CA_ENDCHAIN,
 	CA_GETATOM,
@@ -243,6 +244,7 @@ enum CommandAction {
 	CA_GRIDORIGIN,
 	CA_GRIDORTHO,
 	CA_GRIDSIZE,
+	CA_GRIDSTYLE,
 	CA_GRIDSYMMETRIC,
 	CA_GRIDTRANSPARENCY,
 	CA_GRIDUSEZ,
@@ -459,6 +461,7 @@ class CommandData
 	int function_CA_SAVEQUANTITIES(Command *&c, Bundle &obj);
 	int function_CA_TRAJANALYSE(Command *&c, Bundle &obj);
 	// Atom Commands
+	int function_CA_ATOMSTYLE(Command *&c, Bundle &obj);
 	int function_CA_CHAIN(Command *&c, Bundle &obj);
 	int function_CA_ENDCHAIN(Command *&c, Bundle &obj);
 	int function_CA_GETATOM(Command *&c, Bundle &obj);
@@ -624,6 +627,7 @@ class CommandData
 	int function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj);
 	int function_CA_GRIDORIGIN(Command *&c, Bundle &obj);
 	int function_CA_GRIDSIZE(Command *&c, Bundle &obj);
+	int function_CA_GRIDSTYLE(Command *&c, Bundle &obj);
 	int function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj);
 	int function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj);
 	int function_CA_GRIDUSEZ(Command *&c, Bundle &obj);

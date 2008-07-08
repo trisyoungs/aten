@@ -123,7 +123,7 @@ Prefs::ZmapType Prefs::zmapType(const char *s)
 const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions", "surfaces" };
 Prefs::ViewObject Prefs::viewObject(const char *s)
 {
-	return (Prefs::ViewObject) enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s);
+	return (Prefs::ViewObject) power(2,enumSearch("view object", Prefs::nViewObjects, ViewObjectKeywords, s));
 }
 const char *Prefs::viewObject(Prefs::ViewObject vo)
 {
@@ -149,7 +149,7 @@ Prefs::Prefs()
 	atomSize_[Atom::TubeStyle] = 0.095;
 	atomSize_[Atom::SphereStyle] = 0.35;
 	atomSize_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
-	tubeSize_ = 0.1;
+	tubeSize_ = 0.4;
 	selectionScale_ = 1.5;
 	globeSize_ = 75;
 	atomDetail_ = 10;
@@ -243,6 +243,7 @@ Prefs::Prefs()
 	zmapType_ = Prefs::AutoZmap;
 	coordsInBohr_ = FALSE;
 	keepNames_ = FALSE;
+	keepView_ = FALSE;
 
 	// Energy unit conversion factors to J
 	energyConversions_[Prefs::Joules] = 1.0;
@@ -888,6 +889,18 @@ void Prefs::setKeepNames(bool b)
 bool Prefs::keepNames()
 {
 	return keepNames_;
+}
+
+// Set whether to keep view on GUI start
+void Prefs::setKeepView(bool b)
+{
+	keepView_ = b;
+}
+
+// Return whether to keep view on GUI start
+bool Prefs::keepView()
+{
+	return keepView_;
 }
 
 /*

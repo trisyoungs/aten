@@ -32,7 +32,7 @@ int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
 	Mat4<double> rmat = obj.rs->rotationMatrix();
 	Vec3<double> camr = obj.rs->camera();
 	double camrot = obj.rs->cameraRotation();
-	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot);
+	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot * DEGRAD);
 	return CR_SUCCESS;
 }
 
@@ -86,7 +86,7 @@ int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
 	camr = c->arg3d(9);
 	obj.rs->resetCamera(camr);
 	// Get camera z-rotation (if present)
-	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) : 0.0);
+	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);
 	return CR_SUCCESS;
 }
 
@@ -156,7 +156,7 @@ int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
 int CommandData::function_CA_ZROTATEVIEW(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->zRotate(c->argd(0));
+	obj.rs->zRotate(c->argd(0) / DEGRAD);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }

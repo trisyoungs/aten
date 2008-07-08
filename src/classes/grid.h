@@ -41,7 +41,8 @@ class Grid
 	// Grid type
 	enum GridType { NoData, VolumetricData, SurfaceData, nGridTypes };
 	// Surface rendering styles
-	enum SurfaceStyle { GridSurface, PointSurface, TriangleSurface, SolidSurface };
+	enum SurfaceStyle { GridSurface, PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };
+	static SurfaceStyle surfaceStyle(const char *s);
 
 	/*
 	// Identity
