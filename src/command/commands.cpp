@@ -424,7 +424,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Load grid data" },
 	{ "newgrid",		"N",		"<title>",
 				"Create new grid data" },
-	
+
 	// Image commands
 	{ "savebitmap",		"NNnn",		"<format> <filename> [width] [height]",
 				"Save the current model view as a bitmap image: formats available are bmp, jpg, png, ppm, xbm, and xpm" },
@@ -438,7 +438,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add labels to the current atom selection" },
 	{ "removelabel",	"N",		"<label>",
 				"Remove labels from the current atom selection" },
-	
+
 	// MC commands
 	{ "mcaccept",		"NE",		"<movetype> <energy>",
 				"Set Monte Carlo move type acceptance energies" },
@@ -532,7 +532,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the units label to use for distances" },
 	{ "ecut",		"N",		"<cutoff>",
 				"Set the electrostatic cutoff distance" },
-	{ "elec",		"Neeee",	"<none|coulomb|ewald|ewaldauto> [ [precision] | [alpha] [kx] [ky] [kz] ]",
+	{ "elec",		"Neeee",	"<none|coulomb|ewald|ewaldauto> [ <precision> | <alpha> <kx> <ky> <kz> ]",
 				"Set the style of electrostatic energy calculation" },
 	{ "elementambient",	"NEEE",		"<element> <r> <g> <b>",
 				"Set ambient colour of element" },

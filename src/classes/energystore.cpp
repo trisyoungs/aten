@@ -96,6 +96,7 @@ void Energy::add(EnergyType et, double energy, int id1, int id2)
 			break;
 		case (Energy::VdwInterEnergy):
 			vdwInter_[id1][id2] += energy;
+	printf("Added energy %f to vdw inter %i %i\n",energy, id1, id2);
 			break;
 		case (Energy::VdwTailEnergy):
 			vdwTail_ += energy;
@@ -261,14 +262,17 @@ void Energy::totalise()
 		for (m=n; m<size_; m++)
 		{
 			// Symmetrise matrices here (for printed output)
-			vdwInter_[n][m] += vdwInter_[m][n];
-			vdwInter_[m][n] = vdwInter_[n][m];
-			coulombInter_[n][m] += coulombInter_[m][n];
-			coulombInter_[m][n] = coulombInter_[n][m];
-			ewaldRealInter_[n][m] += ewaldRealInter_[m][n];
-			ewaldRealInter_[m][n] = ewaldRealInter_[n][m];
-			ewaldRecipInter_[n][m] += ewaldRecipInter_[m][n];
-			ewaldRecipInter_[m][n] = ewaldRecipInter_[n][m];
+			if (n != m)
+			{
+				vdwInter_[n][m] += vdwInter_[m][n];
+				vdwInter_[m][n] = vdwInter_[n][m];
+				coulombInter_[n][m] += coulombInter_[m][n];
+				coulombInter_[m][n] = coulombInter_[n][m];
+				ewaldRealInter_[n][m] += ewaldRealInter_[m][n];
+				ewaldRealInter_[m][n] = ewaldRealInter_[n][m];
+				ewaldRecipInter_[n][m] += ewaldRecipInter_[m][n];
+				ewaldRecipInter_[m][n] = ewaldRecipInter_[n][m];
+			}
 			// Sum intermolecular contributions
 			totVdw_ += vdwInter_[n][m];
 			totElec_ += coulombInter_[n][m];

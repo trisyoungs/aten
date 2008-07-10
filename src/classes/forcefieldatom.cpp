@@ -61,6 +61,8 @@ Forcefield *ForcefieldAtom::parent()
 void ForcefieldAtom::setVdwForm(VdwFunctions::VdwFunction vf)
 {
 	vdwForm_ = vf;
+	// Copy default parameters to structure
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_.data[i] = VdwFunctions::VdwFunctions[vf].defaultValues[i];
 }
 
 // Returns the funcional VDW form
