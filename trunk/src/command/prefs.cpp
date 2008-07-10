@@ -100,20 +100,31 @@ int CommandData::function_CA_ELEC(Command *&c, Bundle &obj)
 {
 	Electrostatics::ElecMethod em = Electrostatics::elecMethod(c->argc(0));
 	if (em == Electrostatics::nElectrostatics) return CR_FAIL;
-	prefs.setElectrostaticsMethod(em);
-	prefs.setCalculateElec(em == Electrostatics::None ? FALSE : TRUE);
 	switch (em)
 	{
 		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
 		case (Electrostatics::Ewald):
+			if (!c->hasArg(4))
+			{
+				msg.print("Must supply the alpha parameter and kmax vectors to used this electrostatics option.\n");
+				return CR_FAIL;
+			}
 			prefs.setEwaldAlpha(c->argd(1));
 			prefs.setEwaldKvec(c->arg3i(2));
 			break;
 		// Set ewald precision
 		case (Electrostatics::EwaldAuto):
+			if (!c->hasArg(1))
+			{
+				msg.print("Must supply the Ewald precision parameter to used this electrostatics option.\n");
+				return CR_FAIL;
+			}
 			prefs.setEwaldPrecision(c->argd(1));
 			break;
 	}
+	// Set method
+	prefs.setElectrostaticsMethod(em);
+	prefs.setCalculateElec(em == Electrostatics::None ? FALSE : TRUE);
 	return CR_SUCCESS;
 }
 

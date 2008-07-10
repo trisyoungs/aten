@@ -317,8 +317,8 @@ bool Forcefield::readVdw(ifstream &fffile)
 				return FALSE;
 			}
 			ffa->setCharge(parser.argd(2));
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) ffa->params().data[n] = parser.argd(n+3);
 			ffa->setVdwForm(vdwstyle);
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) ffa->params().data[n] = parser.argd(n+3);
 			msg.print(Messenger::Verbose,"VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->charge(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->params().data[3], ffa->params().data[4], ffa->params().data[5]);
 			count ++;
 		}

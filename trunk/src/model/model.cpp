@@ -193,7 +193,7 @@ void Model::assignForcefieldCharges()
 	Forcefield *xff, *patff;
 	if (!arePatternsValid())
 	{
-		msg.print("Model::assignCharges - Cannot assign atomic charges without a valid pattern setup.\n");
+		msg.print("Cannot assign atomic charges without a valid pattern setup.\n");
 		msg.exit("Model::assignForcefieldCharges");
 		return;
 	}
@@ -205,8 +205,7 @@ void Model::assignForcefieldCharges()
 		patff = p->forcefield();
 		// Grab pattern forcefield in preference to model's
 		if (patff != NULL) xff = patff;
-		if (xff == NULL)
-			msg.print("assignCharges : No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
+		if (xff == NULL) msg.print("No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
 		else
 		{
 			i = p->firstAtom();
