@@ -67,7 +67,12 @@ GuiQt::GuiQt()
 void GuiQt::initialise(int &argc, char **argv)
 {
 	// Create the QApplication
-	app = new QApplication(argc, argv);
+	#ifdef Q_WS_X11
+		bool useGUI = getenv( "DISPLAY" ) != 0;
+	#else
+		bool useGUI = TRUE;
+	#endif
+	app = new QApplication(argc, argv, useGUI);
 	// Create the QGLWidget
 	mainWidget = new TCanvas(NULL);
 	mainWidget->setGeometry(0,0,800,600);

@@ -377,21 +377,22 @@ void Cell::calculateReciprocal()
 			break;
 		case (Cell::CubicCell):
 		case (Cell::OrthorhombicCell):
-			reciprocal_.rows[0].set(TWOPI / axes_.rows[0].x, 0.0, 0.0);
-			reciprocal_.rows[1].set(0.0, TWOPI / axes_.rows[1].y, 0.0);
-			reciprocal_.rows[2].set(0.0, 0.0, TWOPI / axes_.rows[2].z);
-			reciprocalVolume_ = TWOPI / (axes_.rows[0].x * axes_.rows[1].y * axes_.rows[2].z);
+			reciprocal_.rows[0].set(1.0 / axes_.rows[0].x, 0.0, 0.0);
+			reciprocal_.rows[1].set(0.0, 1.0 / axes_.rows[1].y, 0.0);
+			reciprocal_.rows[2].set(0.0, 0.0, 1.0 / axes_.rows[2].z);
+			reciprocalVolume_ = 1.0 / (axes_.rows[0].x * axes_.rows[1].y * axes_.rows[2].z);
 			break;
 		case (Cell::ParallelepipedCell):
 			// Reciprocal cell vectors are perpendicular to normal cell axes_t.
-			// Calculate from cross products of normal cell triples
+			// Calculate from cross products of normal cell vectors
 			reciprocal_.rows[0] = axes_.rows[1] * axes_.rows[2];
 			reciprocal_.rows[1] = axes_.rows[0] * axes_.rows[2];
 			reciprocal_.rows[2] = axes_.rows[0] * axes_.rows[1];
 			reciprocalVolume_ = fabs( axes_.rows[0].x*reciprocal_.rows[0].x + axes_.rows[1].y*reciprocal_.rows[1].y + axes_.rows[2].z*reciprocal_.rows[2].z);
-			reciprocal_.rows[0] = reciprocal_.rows[0] * TWOPI / reciprocalVolume_;
-			reciprocal_.rows[1] = reciprocal_.rows[1] * TWOPI / reciprocalVolume_;
-			reciprocal_.rows[2] = reciprocal_.rows[2] * TWOPI / reciprocalVolume_;
+			reciprocal_.rows[0] = reciprocal_.rows[0] / reciprocalVolume_;
+			reciprocal_.rows[1] = reciprocal_.rows[1] / reciprocalVolume_;
+			reciprocal_.rows[2] = reciprocal_.rows[2] / reciprocalVolume_;
+			reciprocalVolume_ = 1.0 / reciprocalVolume_;
 			break;
 	}
 	msg.exit("Cell::calculateReciprocal");
