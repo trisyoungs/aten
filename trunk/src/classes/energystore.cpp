@@ -96,7 +96,6 @@ void Energy::add(EnergyType et, double energy, int id1, int id2)
 			break;
 		case (Energy::VdwInterEnergy):
 			vdwInter_[id1][id2] += energy;
-	printf("Added energy %f to vdw inter %i %i\n",energy, id1, id2);
 			break;
 		case (Energy::VdwTailEnergy):
 			vdwTail_ += energy;

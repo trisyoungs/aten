@@ -134,10 +134,9 @@ template <class T> void Mat4<T>::copyColumnMajor(T *colm) const
 	colm[3] = rows[3].x;	colm[7] = rows[3].y;	colm[11] = rows[3].z;	colm[15] = rows[3].w;
 }
 
-// Reset
+// Reset to the identity matrix
 template <class T> void Mat4<T>::setIdentity()
 {
-	// Reset to the identity matrix
 	rows[0].set(1,0,0,0);
 	rows[1].set(0,1,0,0);
 	rows[2].set(0,0,1,0);
@@ -153,12 +152,10 @@ template <class T> void Mat4<T>::zero()
 	rows[3].zero();
 }
 
-// Matrix multiply (operator *)
+// Matrix multiply (operator *) (return new matrix)
 template <class T> Mat4<T> Mat4<T>::operator*(const Mat4<T> &B) const
 {
-	// Multiply matrix A by matrix B. Put result in local matrix
 	// [ row(A|this).column(B) ]
-
 	Mat4 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x + rows[0].w*B.rows[3].x;
 	AB.rows[1].x = rows[1].x*B.rows[0].x + rows[1].y*B.rows[1].x + rows[1].z*B.rows[2].x + rows[1].w*B.rows[3].x;
@@ -185,8 +182,7 @@ template <class T> Mat4<T> Mat4<T>::operator*(const Mat4<T> &B) const
 // Matrix multiply (operator *=)
 template <class T> Mat4<T> &Mat4<T>::operator*=(const Mat4<T> &B)
 {
-	// Multiply matrix A by matrix B. Put result in local matrix
-	// [ column(A|this).row(B) ]
+	// [ row(A|this).column(B) ]
 	Mat4 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x + rows[0].w*B.rows[3].x;
 	AB.rows[1].x = rows[1].x*B.rows[0].x + rows[1].y*B.rows[1].x + rows[1].z*B.rows[2].x + rows[1].w*B.rows[3].x;

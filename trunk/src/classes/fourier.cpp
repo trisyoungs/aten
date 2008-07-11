@@ -92,7 +92,7 @@ void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 	// (Re-)Calculate the range of reciprocal space vectors of the coordinates in the supplied config.
 	msg.enter("FourierData:::calculate");
 	Vec3<double> pos;
-	Mat3<double> tempmat;
+	Mat3<double> fouriermat;
 	int firstsin, n, k, sinpos, i;
 	if (srcmodel->nAtoms() != nAtoms)
 	{
@@ -106,6 +106,8 @@ void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 	// Only create positive k-vector positions for cos since is an even function. For sin calculate negative
 	// also (odd function), where rSin[k] runs from k=0,2*kmax+1, with k=kmax the central (zero) vector (=complex(1,0)).
 	// Thus, rSin[kmax+i] gives the i'th positive kvector and rsun[kmax-i] gives the i'th negative kvector.
+	// Grab reciprocal cell and multiply by TWOPI
+	fouriermat = cell->reciprocal() * TWOPI;
 	for (i=startatom; i<startatom+atomstodo; i++)
 	{
 		// Set central (zero) vector elements to be cmplx(1.0,0.0)
@@ -113,10 +115,9 @@ void FourierData::calculate(Model *srcmodel, int startatom, int atomstodo)
 		rCos[0][i].y = 1.0; rSin[kMax][i].y = 0.0;
 		rCos[0][i].z = 1.0; rSin[kMax][i].z = 0.0;
 		// Calculate first vector in the positive k-direction
-		tempmat = cell->reciprocal();
-		pos.x = tempmat.rows[0].dp(modelatoms[i]->r());
-		pos.y = tempmat.rows[1].dp(modelatoms[i]->r());
-		pos.z = tempmat.rows[2].dp(modelatoms[i]->r());
+		pos.x = fouriermat.rows[0].dp(modelatoms[i]->r());
+		pos.y = fouriermat.rows[1].dp(modelatoms[i]->r());
+		pos.z = fouriermat.rows[2].dp(modelatoms[i]->r());
 		rCos[1][i].x = cos(pos.x);
 		rCos[1][i].y = cos(pos.y);
 		rCos[1][i].z = cos(pos.z);

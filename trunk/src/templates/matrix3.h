@@ -78,9 +78,11 @@ template <class T> class Mat3
 	/*
 	// Operators
 	*/
-	Mat3 operator*(const Mat3&) const;
 	Vec3<T> operator*(const Vec3<T>&) const;
+	Mat3 operator*(const Mat3&) const;
+	Mat3 operator*(const double) const;
 	Mat3& operator*=(const Mat3&);
+	Mat3& operator*=(const double);
 	Mat3& operator-=(const T);
 	Mat3 operator-(const Mat3&) const;
 
@@ -193,7 +195,6 @@ template <class T> void Mat3<T>::copyColumnMajor(T *colm)
 // Set identity matrix
 template <class T> void Mat3<T>::setIdentity()
 {
-	// Reset to the identity matrix
 	rows[0].set(1,0,0);
 	rows[1].set(0,1,0);
 	rows[2].set(0,0,1);
@@ -211,8 +212,9 @@ template <class T> void Mat3<T>::zero()
 // Operators
 */
 
-// Operator * and *=
-template <class T> Vec3<T> Mat3<T>::operator*(const Vec3<T> &v) const {
+// Multiply vector by matrix (return vector)
+template <class T> Vec3<T> Mat3<T>::operator*(const Vec3<T> &v) const
+{
 	Vec3<T> result;
 	result.x = rows[0].dp(v);
 	result.y = rows[1].dp(v);
@@ -220,9 +222,9 @@ template <class T> Vec3<T> Mat3<T>::operator*(const Vec3<T> &v) const {
 	return result;
 }
 
-// Operator * and *=
-template <class T> Mat3<T> Mat3<T>::operator*(const Mat3<T> &B) const {
-	// Multiply matrix A by matrix B. Put result in local matrix
+// Multiply matrix A by matrix B (return new matrix)
+template <class T> Mat3<T> Mat3<T>::operator*(const Mat3<T> &B) const
+{
 	// [ row(A|this).column(B) ]
 	Mat3 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x;
@@ -236,13 +238,23 @@ template <class T> Mat3<T> Mat3<T>::operator*(const Mat3<T> &B) const {
 	AB.rows[0].z = rows[0].x*B.rows[0].z + rows[0].y*B.rows[1].z + rows[0].z*B.rows[2].z;
 	AB.rows[1].z = rows[1].x*B.rows[0].z + rows[1].y*B.rows[1].z + rows[1].z*B.rows[2].z;
 	AB.rows[2].z = rows[2].x*B.rows[0].z + rows[2].y*B.rows[1].z + rows[2].z*B.rows[2].z;
- 	return AB;
+	return AB;
 }
 
+// Multiply this matrix by constant value (return new matrix)
+template <class T> Mat3<T> Mat3<T>::operator*(const double d) const
+{
+	Mat3 AB;
+	AB.rows[0] = rows[0] * d;
+	AB.rows[1] = rows[1] * d;
+	AB.rows[2] = rows[2] * d;
+	return AB;
+}
+
+// Multiply this matrix by matrix B
 template <class T> Mat3<T> &Mat3<T>::operator*=(const Mat3<T> &B)
 {
-	// Multiply matrix A by matrix B. Put result in local matrix
-	// [ column(A|this).row(B) ]
+	// [ row(A|this).column(B) ]
 	Mat3 AB;
 	AB.rows[0].x = rows[0].x*B.rows[0].x + rows[0].y*B.rows[1].x + rows[0].z*B.rows[2].x;
 	AB.rows[1].x = rows[1].x*B.rows[0].x + rows[1].y*B.rows[1].x + rows[1].z*B.rows[2].x;
@@ -259,17 +271,28 @@ template <class T> Mat3<T> &Mat3<T>::operator*=(const Mat3<T> &B)
 	return *this;
 }
 
+// Multiply all elements by constant value
+template <class T> Mat3<T> &Mat3<T>::operator*=(const double d)
+{
+	rows[0] *= d;
+	rows[1] *= d;
+	rows[2] *= d;
+	return *this;
+}
+
+// Subtract value from each element
 template <class T> Mat3<T> &Mat3<T>::operator-=(const T a)
 {
-	// Subtract value from each element
 	this->rows[0] -= a;
 	this->rows[1] -= a;
 	this->rows[2] -= a;
 	return *this;
 }
 
-template <class T> Mat3<T> Mat3<T>::operator-(const Mat3<T> &m) const {
-	// Subtract value from each element
+// Subtract supplied matrix elements from this matrix
+template <class T> Mat3<T> Mat3<T>::operator-(const Mat3<T> &m) const
+{
+	
 	Mat3<T> result;
 	result.rows[0] = rows[0] - m.rows[0];
 	result.rows[1] = rows[1] - m.rows[1];
