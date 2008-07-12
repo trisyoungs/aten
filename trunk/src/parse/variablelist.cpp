@@ -20,10 +20,10 @@
 */
 
 #include "parse/variablelist.h"
+#include "parse/expression.h"
 #include "classes/atom.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"
-#include "classes/expression.h"
 #include "model/model.h"
 #include "base/elements.h"
 #include <string.h>

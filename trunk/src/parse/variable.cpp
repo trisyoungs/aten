@@ -20,7 +20,7 @@
 */
 
 #include "parse/variable.h"
-#include "classes/expression.h"
+#include "parse/expression.h"
 #include "classes/atom.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"

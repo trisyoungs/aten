@@ -10,7 +10,6 @@ colourscale.h
 colourscalepoint.h
 dnchar.h 
 energystore.h 
-expression.h
 forcefield.h 
 forcefieldatom.h 
 forcefieldbound.h 
@@ -35,7 +34,6 @@ colourscale.cpp
 colourscalepoint.cpp
 dnchar.cpp 
 energystore.cpp 
-expression.cpp
 forcefield.cpp 
 forcefieldatom.cpp 
 forcefieldbound.cpp 
