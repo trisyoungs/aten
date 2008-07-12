@@ -24,7 +24,7 @@
 #include "base/constants.h"
 #include "parse/parser.h"
 #include "base/messenger.h"
-#include "classes/variablelist.h"
+#include "parse/variablelist.h"
 #include <math.h>
 #include <string.h>
 

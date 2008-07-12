@@ -25,8 +25,8 @@
 
 #include <math.h>
 #include "templates/vector3.h"
+#include "energy/fourier.h"
 #include "classes/pattern.h"
-#include "classes/fourier.h"
 #include "classes/forcefield.h"
 #include "classes/energystore.h"
 #include "classes/cell.h"

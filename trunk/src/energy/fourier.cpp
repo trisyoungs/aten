@@ -1,6 +1,6 @@
 /*
 	*** Fourier storage (reciprocal space vectors)
-	*** src/classes/fourier.cpp
+	*** src/energy/fourier.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/fourier.h"
+#include "energy/fourier.h"
 #include "model/model.h"
 
 // Singleton Declaration

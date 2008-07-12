@@ -10,6 +10,11 @@ torsion.cpp
 vdw.cpp
 )
 
+add_library(fourier
+fourier.h
+fourier.cpp 
+)
+
 include_directories(
 ../
 ${QT_INCLUDE_DIR}

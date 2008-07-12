@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/variablelist.h"
+#include "parse/variablelist.h"
 #include "parse/format.h"
 #include "parse/parser.h"
 #include "base/sysfunc.h"
