@@ -149,7 +149,7 @@ Prefs::Prefs()
 	atomSize_[Atom::TubeStyle] = 0.095;
 	atomSize_[Atom::SphereStyle] = 0.35;
 	atomSize_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
-	tubeSize_ = 0.4;
+	tubeSize_ = 0.15;
 	selectionScale_ = 1.5;
 	globeSize_ = 75;
 	atomDetail_ = 10;
