@@ -23,7 +23,7 @@
 #include "classes/pattern.h"
 #include "classes/energystore.h"
 #include "classes/forcefield.h"
-#include "classes/fourier.h"
+#include "energy/fourier.h"
 #include "base/prefs.h"
 #include "base/elements.h"
 

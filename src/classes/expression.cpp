@@ -22,7 +22,7 @@
 #include "classes/expression.h"
 #include "base/constants.h"
 #include "base/messenger.h"
-#include "classes/variablelist.h"
+#include "parse/variablelist.h"
 #include <math.h>
 #include <string.h>
 

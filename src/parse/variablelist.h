@@ -1,6 +1,6 @@
 /*
 	*** Variable list
-	*** src/classes/variablelist.h
+	*** src/parse/variablelist.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -24,7 +24,7 @@
 
 #include "templates/list.h"
 #include "classes/dnchar.h"
-#include "classes/variable.h"
+#include "parse/variable.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
 
