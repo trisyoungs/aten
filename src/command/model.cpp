@@ -65,7 +65,7 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Select working model ('getmodel <name>')
+// Select working model ('getmodel <name> [variable]')
 int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
@@ -74,9 +74,15 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 	{
 		aten.setCurrentModel(m);
 		//gui.select_model(m);
-		c->parent()->setModelVariables(obj.m);
+		c->parent()->setModelVariables("",obj.m);
 		obj.p = NULL;
 		obj.i = m->atoms();
+		// If a model variables was supplied, set the subvariables
+		if (c->hasArg(1))
+		{
+			c->arg(1)->set(m);
+			c->parent()->setModelVariables(c->arg(1)->name(), m);
+		}
 		return CR_SUCCESS;
 	}
 	else
@@ -114,7 +120,7 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
-			c->parent()->setModelVariables(m);
+			c->parent()->setModelVariables("",m);
 			return CR_SUCCESS;
 		}
 		else return CR_FAIL;
@@ -175,7 +181,7 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 	{
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
-		c->parent()->setModelVariables(obj.m);
+		c->parent()->setModelVariables("",obj.m);
 	}
 	return CR_SUCCESS;
 }
@@ -189,7 +195,7 @@ int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 	{
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
-		c->parent()->setModelVariables(obj.m);
+		c->parent()->setModelVariables("",obj.m);
 	}
 	return CR_SUCCESS;
 }
@@ -216,7 +222,7 @@ int CommandData::function_CA_SETNAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.rs->setName(c->argc(0));
-	c->parent()->setModelVariables(obj.m);
+	c->parent()->setModelVariables("",obj.m);  // ROLE
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return CR_SUCCESS;
 }

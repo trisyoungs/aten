@@ -43,7 +43,7 @@ class ExpressionNode
 	static char operatorType(ExpressionNode::OperatorType ot);
 	static ExpressionNode::OperatorType operatorType(char s);
 	// Function tokens
-	enum FunctionType { NegateFunction, SqrtFunction, CosFunction, SinFunction, TanFunction, nFunctionTypes };
+	enum FunctionType { NegateFunction, SqrtFunction, CosFunction, SinFunction, TanFunction, AbsFunction, nFunctionTypes };
 	static const char *functionType(ExpressionNode::FunctionType ft);
 	static ExpressionNode::FunctionType functionType(const char *s);
 	// Bracket tokens
