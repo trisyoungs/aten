@@ -83,6 +83,7 @@ void Model::copyCameraMatrix(double *m)
 void Model::setCameraRotation(double r)
 {
 	cameraRotation_ = r;
+	calculateViewMatrix();
 	// Log camera change
 	logChange(Change::CameraLog);
 }

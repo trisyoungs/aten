@@ -34,34 +34,24 @@
 #include "base/mathfunc.h"
 #include "model/model.h"
 
+// Estimate alpha and kmax parameters based on a given precision value
 void Prefs::estimateEwaldParameters(Cell *cell)
 {
-	// Estimate alpha and kmax parameters based on a given precision value
 	msg.enter("Prefs::estimateEwaldParameterss");
 	if (prefs.hasValidEwaldAuto())
 	{
 		msg.exit("Prefs::estimateEwaldParameters");
 		return;
 	}
-        // Estimate ewaldAlpha_
-	// The precision is stored as 'prei' multiplied by 10^prepow
+        // Estimate ewaldAlpha - uses same method as in DL_POLY. No reference? Page 108 in v2.18 manual.
         double tolerance = sqrt( fabs( log(ewaldPrecision_*elecCutoff_) ) );
         ewaldAlpha_ = sqrt( fabs( log(ewaldPrecision_*elecCutoff_*tolerance) ) )/elecCutoff_;
         // Estimate kmax
         tolerance = sqrt( -log( ewaldPrecision_*elecCutoff_*( (2.0*tolerance*ewaldAlpha_)*(2.0*tolerance*ewaldAlpha_) ) ) );
-	// TODO Ewald estimates for other cell types
-	int k;
-	switch (cell->type())
-	{
-		case (Cell::CubicCell):
-			k = (int) floor(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
-			ewaldKvec_.set(k,k,k);
-			break;
-		default:
-			printf("No estimation of parameters is available yet for this cell type.\n");
-			break;
-	}
-	msg.print("Pattern::ewald_estimate_parameters : For precision = %6.4e, alpha = %8.6f and kmax = %i %i %i.\n", ewaldPrecision_, ewaldAlpha_, ewaldKvec_.x, ewaldKvec_.y, ewaldKvec_.z);
+	ewaldKvec_.x = (int) floor(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
+	ewaldKvec_.y = (int) floor(0.25 + cell->lengths().y*ewaldAlpha_*tolerance/PI + 0.5);
+	ewaldKvec_.z = (int) floor(0.25 + cell->lengths().z*ewaldAlpha_*tolerance/PI + 0.5);
+	msg.print("Ewald parameters estimated at alpha = %8.6f and kmax = %i %i %i for a precision of %6.4e.\n", ewaldAlpha_, ewaldKvec_.x, ewaldKvec_.y, ewaldKvec_.z, ewaldPrecision_);
 	validEwaldAuto_ = TRUE;
 	msg.exit("Prefs::estimateEwaldParameters");
 }
@@ -171,7 +161,6 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 	}
 	energy_inter = energy_inter * prefs.elecConvert();
 	estore->add(Energy::EwaldRealInterEnergy,energy_inter,id_,xpnode->id_);
-	//estore->ewaldReal_inter[id][xpnode->id] += energy_inter;
 	msg.exit("Pattern::ewaldRealInterPatternEnergy");
 }
 
@@ -186,9 +175,9 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	// Only needs to be called once from an arbitrary pattern.
 	msg.enter("Pattern::ewaldReciprocalEnergy");
 	static int kx, ky, kz, i, n, kmax, finalatom;
-	static Vec3<double> kvec;
+	static Vec3<double> kvec, cross_ab, cross_bc, cross_ca, perpl;
 	static Mat3<double> rcell;
-	static double cutoff, mag, magsq, exp1, alphasq, pos, xycos, xysin, xyzcos, xyzsin;
+	static double cutoffsq, magsq, exp1, alphasq, pos, xycos, xysin, xyzcos, xyzsin, rvolume;
 	static double factor, alpha, energy_inter;
 	double *sumcos, *sumsin;
 
@@ -197,28 +186,42 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 	sumcos = new double[npats];
 	sumsin = new double[npats];
 
+	// TODO
 	if (molecule != -1) printf("Ewald reciprocal energy is not yet complete for indvidual molecule|system calculations.\n");
 
 	// Get reciprocal volume and cell vectors
-	factor = fourier.cell->reciprocalVolume() * prefs.elecConvert();
+	rvolume = fourier.cell->reciprocalVolume();
+	factor = rvolume * TWOPI * prefs.elecConvert();
 
-	// TODO Assume a cubic cell for now. Other cell types!
+	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
 	rcell = fourier.cell->reciprocal().transpose();
-	cutoff = fourier.kVec.x * rcell.rows[0].x * 1.05;
+	cross_ab = rcell.rows[0] * rcell.rows[1];
+	cross_bc = rcell.rows[1] * rcell.rows[2];
+	cross_ca = rcell.rows[2] * rcell.rows[0];
+	perpl.set(rvolume / cross_ab.magnitude(), rvolume / cross_bc.magnitude(), rvolume / cross_ca.magnitude());
+	perpl.x *= fourier.kVec.x;
+	perpl.y *= fourier.kVec.y;
+	perpl.z *= fourier.kVec.z;
+
+	cutoffsq = perpl.min() * 1.05 * TWOPI;
+	cutoffsq *= cutoffsq;
 	alphasq = alpha * alpha;
 	kmax = fourier.kMax;
+	//printf("Cutoffsq = %f  (%f)\n",cutoffsq,sqrt(cutoffsq));
+
 	for (kx=-fourier.kVec.x; kx<=fourier.kVec.x; kx++)
 	for (ky=-fourier.kVec.y; ky<=fourier.kVec.y; ky++)
 	for (kz=-fourier.kVec.z; kz<=fourier.kVec.z; kz++)
 	{
 		if ((kx == 0) && (ky == 0) && (kz == 0)) continue;
-		// TODO Cubic / orthorhombic cell assumed!
-		kvec.x = kx * rcell.rows[0].x;
+	/*	kvec.x = kx * rcell.rows[0].x;	    Old code assuming cubic / orthorhombic cell
 		kvec.y = ky * rcell.rows[1].y;
-		kvec.z = kz * rcell.rows[2].z;
-		mag = kvec.magnitude();
-		if (mag > cutoff) continue;
-		magsq = mag * mag;
+		kvec.z = kz * rcell.rows[2].z;*/
+		kvec.set(kx,ky,kz);
+		kvec *= rcell * TWOPI;
+		magsq = kvec.x*kvec.x + kvec.y*kvec.y + kvec.z*kvec.z;
+		//printf("Mag = %f, cutoff = %f\n",mag,cutoff);
+		if (magsq > cutoffsq) continue;
 		// Now sum contributions over atoms, broken up into patterns
 		Pattern *p = firstp;
 		while (p != NULL)
@@ -246,9 +249,8 @@ void Pattern::ewaldReciprocalEnergy(Model *srcmodel, Pattern *firstp, int npats,
 		for (i=0; i<npats; i++)
 			for (n=i; n<npats; n++)
 			{
-				estore->add(Energy::EwaldRecipInterEnergy,energy_inter,i,n);
 				energy_inter = exp1*(sumcos[i]*sumcos[n] + sumsin[i]*sumsin[n]);
-				//estore->ewaldRecip_inter[i][n] += exp1*(sumcos[i]*sumcos[n] + sumsin[i]*sumsin[n]);
+				estore->add(Energy::EwaldRecipInterEnergy,energy_inter,i,n);
 			}
 	}
 	delete sumcos;
@@ -277,6 +279,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 
+	// TODO
 	if (molecule != -1) printf("Ewald energy correction is not yet complete for indvidual molecule|system calculations.\n");
 
 	// Correct the reciprocal Ewald energy for charges interacting with themselves
@@ -289,7 +292,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 	}
 	energy = (alpha/SQRTPI) * chargesum * prefs.elecConvert();
 	estore->add(Energy::EwaldSelfEnergy,energy,id_);
-	//estore->ewald_self_correct[id] += energy;
+
 	// Correct the reciprocal Ewald energy for molecular interactions, i.e. bond, angle, torsion exclusions
 	molcorrect = 0.0;
 	aoff = startAtom_;
@@ -390,11 +393,11 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 
 	aoff1 = startAtom_;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == xpnode ? finish = nMols_ - 1 : finish = nMols_;
+	this == xpnode ? finish = nMols_ - 1 : finish = nMols_;
 	for (m1=0; m1<finish; m1++)
 	{
 		this == xpnode ? start = m1 + 1 : start = 0;
-	       	aoff2 = xpnode->startAtom_ + start*xpnode->nAtoms_;
+		aoff2 = xpnode->startAtom_ + start*xpnode->nAtoms_;
 		for (m2=start; m2<xpnode->nMols_; m2++)
 		{
 			for (i=0; i<nAtoms_; i++)
@@ -403,7 +406,7 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 				// Copy the current forces on i
 				f_i = modelatoms[atomi]->f();
 				for (j=0; j<xpnode->nAtoms_; j++)
-		  		{
+				{
 					atomj = j + aoff2;
 					mim_i = cell->mimd(modelatoms[atomi]->r() ,modelatoms[atomj]->r());
 					rij = mim_i.magnitude();
@@ -442,36 +445,47 @@ void Pattern::ewaldReciprocalForces(Model *srcmodel)
 	// Must be called for the first pattern in the list only!
 	msg.enter("Pattern::ewaldReciprocalForces");
 	static int kx, ky, kz, i, n, kmax;
-	static Vec3<double> kvec;
+	static Vec3<double> kvec, cross_ab, cross_bc, cross_ca, perpl;
 	static Mat3<double> rcell;
-	static double cutoff, mag, magsq, exp1, alphasq, factor, force, pos, sumcos, sumsin, xycos, xysin, alpha;
+	static double cutoffsq, magsq, exp1, alphasq, factor, force, pos, sumcos, sumsin, xycos, xysin, alpha, rvolume;
 	double *xyzcos, *xyzsin;
 
 	alpha = prefs.ewaldAlpha();
 	Atom **modelatoms = srcmodel->atomArray();
 	xyzcos = new double[srcmodel->nAtoms()];
 	xyzsin = new double[srcmodel->nAtoms()];
-	// Grab the reciprocal unit cell
-	rcell = fourier.cell->reciprocal();
 
-	// Assume a cubic cell for now.
-	cutoff = fourier.kVec.x * rcell.rows[0].x * 1.05;
+	// Get reciprocal volume and cell vectors
+	rvolume = fourier.cell->reciprocalVolume();
+	factor = 2.0 * rvolume * TWOPI * prefs.elecConvert();
+
+	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
+	rcell = fourier.cell->reciprocal().transpose();
+	cross_ab = rcell.rows[0] * rcell.rows[1];
+	cross_bc = rcell.rows[1] * rcell.rows[2];
+	cross_ca = rcell.rows[2] * rcell.rows[0];
+	perpl.set(rvolume / cross_ab.magnitude(), rvolume / cross_bc.magnitude(), rvolume / cross_ca.magnitude());
+	perpl.x *= fourier.kVec.x;
+	perpl.y *= fourier.kVec.y;
+	perpl.z *= fourier.kVec.z;
+
+	cutoffsq = perpl.min() * 1.05 * TWOPI;
+	cutoffsq *= cutoffsq;
 	alphasq = alpha * alpha;
 	kmax = fourier.kMax;
-	factor = 2.0 * fourier.cell->reciprocalVolume() * prefs.elecConvert();
+	//printf("Cutoffsq = %f  (%f)\n",cutoffsq,sqrt(cutoffsq));
+
 
 	for (kx=-fourier.kVec.x; kx<=fourier.kVec.x; kx++)
 	for (ky=-fourier.kVec.y; ky<=fourier.kVec.y; ky++)
 	for (kz=-fourier.kVec.z; kz<=fourier.kVec.z; kz++)
 	{
 		if ((kx == 0) && (ky == 0) && (kz == 0)) continue;
-		// TODO Cubic cell assumed!
-		kvec.x = kx * rcell.rows[0].x;
-		kvec.y = ky * rcell.rows[1].y;
-		kvec.z = kz * rcell.rows[2].z;
-		mag = kvec.magnitude();
-		if (mag > cutoff) continue;
-		magsq = mag * mag;
+		// Calculate magnitude of this vector
+		kvec.set(kx,ky,kz);
+		kvec *= rcell * TWOPI;
+		magsq = kvec.x*kvec.x + kvec.y*kvec.y + kvec.z*kvec.z;
+		if (magsq > cutoffsq) continue;
 		sumcos = 0.0;
 		sumsin = 0.0;
 		for (i=0; i<fourier.nAtoms; i++)

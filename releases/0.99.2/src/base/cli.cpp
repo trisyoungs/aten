@@ -64,6 +64,8 @@ Cli cliSwitches[] = {
 		"",		"Enter interactive mode" },
 	{ Cli::KeepNamesSwitch,		'\0',"keepnames",	0,
 		"",		"Store atom (type)names given in files in a forcefield created for the model" },
+	{ Cli::KeepViewSwitch,		'k',"keepview",		0,
+		"",		"Keep (don't reset) view when GUI starts" },
 	{ Cli::MapSwitch,		'm',"map",		1,
 		"<name=element,...>",	"Map file atomtypes to elements" },
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
@@ -220,7 +222,7 @@ int Aten::parseCli(int argc, char *argv[])
 	Prefs::ZmapType zm;
 	Namemap<int> *nm;
 	CommandList cl, *script;
-	cl.createModelVariables();
+	cl.createModelVariables("");
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -315,7 +317,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
 					cl.clear();
-					cl.setModelVariables(aten.current.m);
+					cl.setModelVariables("",aten.current.m);
 					if (cl.cacheLine(argv[++argn]))
 					{
 						if (!cl.execute()) return -1;
@@ -365,6 +367,10 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::KeepNamesSwitch):
 					prefs.setKeepNames(TRUE);
 					break;
+				// Keep (don't reset) view when GUI starts
+				case (Cli::KeepViewSwitch):
+					prefs.setKeepView(TRUE);
+					break;
 				// Set type mappings
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
@@ -403,11 +409,11 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.scripts.add();
-					script->createModelVariables();
+					script->createModelVariables("");
 					if (script->load(argv[++argn]))
 					{
 						aten.setProgramMode(Aten::CommandMode);
-						script->setModelVariables(aten.current.m);
+						script->setModelVariables("",aten.current.m);
 						if (!script->execute()) aten.setProgramMode(Aten::NoMode);
 						// Need to check program mode after each script since it can be changed
 						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);

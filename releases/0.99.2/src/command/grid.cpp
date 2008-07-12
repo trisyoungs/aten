@@ -172,6 +172,16 @@ int CommandData::function_CA_GRIDSIZE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Set drawing style of grid
+int CommandData::function_CA_GRIDSTYLE(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
+	Grid::SurfaceStyle ss = Grid::surfaceStyle(c->argc(0));
+	if (ss != Grid::nSurfaceStyles) obj.g->setStyle(ss);
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
 // Set whether the grid has symmetric isovalues
 int CommandData::function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj)
 {
@@ -194,6 +204,17 @@ int CommandData::function_CA_GRIDUSEZ(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_GRID)) return CR_FAIL;
 	obj.g->setUseDataForZ(c->argb(0));
 	return CR_SUCCESS;
+}
+
+// Load grid ('loadgrid <filename>')
+int CommandData::function_CA_LOADGRID(Command *&c, Bundle &obj)
+{
+	Filter *f = aten.probeFile(c->argc(0), Filter::GridImport);
+	if (f != NULL)
+	{
+		if (f->execute(c->argc(0))) return CR_SUCCESS;
+		else return CR_FAIL;
+	} else return CR_FAIL;
 }
 
 // Create new grid

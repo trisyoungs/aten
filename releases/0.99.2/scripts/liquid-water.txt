@@ -12,7 +12,7 @@ move 1.0 0.0 0.0
 chain H
 nmols 267
 
-loadff data/ff/spc.ff wff
+loadff spc.ff
 ffmodel
 
 createexpression
@@ -39,7 +39,7 @@ disorder 10
 
 mcminimise 100
 
-#savefield2 dlpoly test.FIELD
+#saveexpression dlpoly test.FIELD
 #savemodel dlpoly test.CONFIG
 
 #quit

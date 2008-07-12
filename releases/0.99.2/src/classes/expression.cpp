@@ -40,7 +40,7 @@ ExpressionNode::OperatorType ExpressionNode::operatorType(char c)
 }
 
 // Function Tokens
-const char *FunctionTypeKeywords[ExpressionNode::nFunctionTypes] = { "-", "sqrt", "cos", "sin", "tan" };
+const char *FunctionTypeKeywords[ExpressionNode::nFunctionTypes] = { "-", "sqrt", "cos", "sin", "tan", "abs" };
 const char *ExpressionNode::functionType(ExpressionNode::FunctionType ft)
 {
 	return FunctionTypeKeywords[ft];
@@ -465,8 +465,9 @@ bool Expression::set(const char *s, VariableList *vars)
 				// For the minus symbol we check to see if its a unary minus first...
 				if (*c == '-')
 				{
-					// If previous token is operator, bracket, or nothing at all then it must be a unary minus
-					if ((prevToken != ExpressionNode::ValueToken) && (prevToken != ExpressionNode::FunctionToken))
+					// If previous token is an operator, left bracket, or nothing at all then it must be a unary minus (function)
+					if ((prevToken == ExpressionNode::OperatorToken) || ((prevToken == ExpressionNode::BracketToken) && (ex->bracketType() == ExpressionNode::LeftBracket)) || (prevToken == ExpressionNode::nTokenTypes))
+					//if ((prevToken != ExpressionNode::ValueToken) && (prevToken != ExpressionNode::FunctionToken) && (prevToken != ExpressionNode::BracketToken))
 					{
 						ex = expression_.add();
 						ex->setPersistentType(ExpressionNode::FunctionToken);
@@ -533,6 +534,7 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 			ex->setPersistentType(ExpressionNode::ValueToken);
 			ex->setVariable(v);
 		}
+		else msg.print("Variable '%s' in expression has not been declared.\n", &s[1]);
 	}
 	else
 	{
@@ -627,6 +629,9 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 				break;
 			case (ExpressionNode::TanFunction):
 				result = tan(ex->nextUnused()->value() / DEGRAD);
+				break;
+			case (ExpressionNode::AbsFunction):
+				result = fabs(ex->nextUnused()->value());
 				break;
 		}
 		// All functions nodes get replaced with their result, and the right-hand argument is set to nothing

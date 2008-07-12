@@ -25,6 +25,13 @@
 #include "base/constants.h"
 #include <QtOpenGL/QtOpenGL>
 
+// Surface rendering styles
+const char *SurfaceStyleKeywords[] = { "grid", "points", "triangles", "solid" };
+Grid::SurfaceStyle Grid::surfaceStyle(const char *s)
+{
+	return (Grid::SurfaceStyle) enumSearch("surface style", Grid::nSurfaceStyles, SurfaceStyleKeywords, s);
+}
+
 // Constructor
 Grid::Grid()
 {

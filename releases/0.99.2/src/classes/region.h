@@ -89,9 +89,9 @@ class ComponentRegion
 	// Returns whether to allow overlap over other ComponentRegions when inserting
 	bool allowOverlap();
 	// Determines whether the supplied coordinates are within the ComponentRegion defined
-	bool checkCoords(const Vec3<double>&, Cell*);
+	bool coordsInRegion(const Vec3<double>&, Cell*);
 	// Determines whether the supplied coordinates overlap any of the other ComponentRegions supplied
-	bool checkOverlap(const Vec3<double>&, Cell*, Reflist<Model,int> &components);
+	bool pointOverlaps(const Vec3<double>&, Cell*, Reflist<Model,int> &components);
 	// Generate a random coordinate inside the ComponentRegion
 	Vec3<double> randomCoords(Cell*, Reflist<Model,int> &components);
 };

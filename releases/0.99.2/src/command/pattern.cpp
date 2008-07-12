@@ -58,7 +58,8 @@ int CommandData::function_CA_GETPATTERN(Command *&c, Bundle &obj)
 	if (p != NULL)
 	{
 		obj.p = p;
-		c->parent()->setPatternVariables(c->arg(1)->name(), p);
+		c->arg(1)->set(p);
+		if (c->hasArg(1)) c->parent()->setPatternVariables(c->arg(1)->name(), p);
 	}
 	else return CR_FAIL;
 	return CR_SUCCESS;

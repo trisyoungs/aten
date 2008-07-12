@@ -96,21 +96,17 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					if (c->loopIterations() > c->argp(1)->totalAtoms()) status = FALSE;
 				}
 				else if (c->arga(0) == NULL) status = FALSE;
-				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
 				break;
 			case (Variable::PatternVariable):
 				if (c->argp(0) == NULL) status = FALSE;
-				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
 				break;
 			case (Variable::BondVariable):
 			case (Variable::AngleVariable):
 			case (Variable::TorsionVariable):
 				if (c->argpb(0) == NULL) status = FALSE;
-				c->parent()->setPatternBoundVariables(c->arg(0)->name(), c->argpb(0));
 				break;
 			case (Variable::AtomtypeVariable):
 				if (c->argffa(0) == NULL) status = FALSE;
-				c->parent()->setAtomtypeVariables(c->arg(0)->name(), c->argffa(0));
 				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", Variable::variableType(c->argt(0)));

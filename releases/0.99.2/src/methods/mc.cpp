@@ -360,6 +360,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	{
 		// Check that this model is a required component
 		if (c->nRequested() == 0) continue;
+		if (c->cell()->type() != Cell::NoCell) continue;
 		// Add this model to the component reflist
 		components.add(c);
 		// TODO Autocreation of patterns may not give a 1*N pattern. Add option to force 1*N pattern.
@@ -541,7 +542,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							destmodel->translateMolecule(p,mol,v);
 							// Check new COG is inside region
 							cog = p->calculateCog(destmodel,mol);
-							if ((!r->checkCoords(cog,cell)) || r->checkOverlap(cog,cell,components)) penalty += 1e6;
+							if ((!r->coordsInRegion(cog,cell)) || r->pointOverlaps(cog,cell,components)) penalty += 1e6;
 							break;
 						// Rotate molecule about COG
 						case (MonteCarlo::Rotate):

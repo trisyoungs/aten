@@ -250,7 +250,7 @@ void Filter::setType(FilterType ft)
 			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
 			break;
 		case (Filter::ModelExport):
-			commands_.createModelVariables();
+			commands_.createModelVariables("");
 			break;
 		case (Filter::TrajectoryExport):
 			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
@@ -263,7 +263,7 @@ void Filter::setType(FilterType ft)
 			v = commands_.variables.createVariable("nangleterms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("ntorsionterms","",Variable::IntegerVariable);
 			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
-			commands_.createModelVariables();
+			commands_.createModelVariables("");
 			break;
 		case (Filter::GridExport):
 			break;
@@ -318,7 +318,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 				return FALSE;
 			}
 			// Set variables
-			commands_.setModelVariables(obj.rs);
+			commands_.setModelVariables("",obj.rs);
 			break;
 		case (Filter::ExpressionExport):
 			msg.print("Save Field : %s (%s)\n", filename, name_.get());
@@ -332,7 +332,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			// Generate unique term lists
 			obj.rs->createUniqueLists();
 			// Set variables
-			commands_.setModelVariables(obj.rs);
+			commands_.setModelVariables("",obj.rs);
 			commands_.variables.set("npatterns",obj.rs->nPatterns());
 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));
 			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());
