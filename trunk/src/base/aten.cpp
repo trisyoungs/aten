@@ -55,8 +55,8 @@ Aten::Aten()
 	userClipboard = new Clipboard;
 
 	// CommandLists
-	tempScript.createModelVariables();
-	interactiveScript.createModelVariables();
+	tempScript.createModelVariables("");
+	interactiveScript.createModelVariables("");
 }
 
 // Destructor

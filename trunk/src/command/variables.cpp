@@ -31,6 +31,19 @@
 int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 {
 	c->arg(0)->decrease(1);
+	// Set subvariables if necessary
+	switch (c->argt(0))
+	{
+		case (Variable::AtomVariable):
+			c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
+			break;
+		case (Variable::PatternVariable):
+			c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
+			break;
+		case (Variable::ModelVariable):
+			c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
+			break;
+	}
 	return CR_SUCCESS;
 }
 
@@ -38,6 +51,19 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 {
 	c->arg(0)->increase(1);
+	// Set subvariables if necessary
+	switch (c->argt(0))
+	{
+		case (Variable::AtomVariable):
+			c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
+			break;
+		case (Variable::PatternVariable):
+			c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
+			break;
+		case (Variable::ModelVariable):
+			c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
+			break;
+	}
 	return CR_SUCCESS;
 }
 
@@ -122,14 +148,30 @@ int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 		msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 		return CR_FAIL;
 	}
-	else c->arg(0)->copyPointer(c->arg(2));
+	else
+	{
+		c->arg(0)->copyPointer(c->arg(2));
+		// Set subvariables
+		switch (c->argt(0))
+		{
+			case (Variable::AtomVariable):
+				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
+				break;
+			case (Variable::PatternVariable):
+				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
+				break;
+			case (Variable::ModelVariable):
+				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
+				break;
+
+		}
+	}
 	return CR_SUCCESS;
 }
 
 /*
 // Variable set / create
 */
-
 
 // Create model variables with specified basename
 bool CommandList::createModelVariables(const char *base)
@@ -138,6 +180,8 @@ bool CommandList::createModelVariables(const char *base)
 	v = variables.createVariable(base,"title",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"nframes",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
@@ -193,6 +237,7 @@ void CommandList::setModelVariables(const char *base, Model *m)
 		variables.set(base,"title",m->name());
 		variables.set(base,"natoms",m->nAtoms());
 		variables.set(base,"nframes",m->totalFrames());
+		variables.set(base,"firstatom",m->atoms());
 		variables.set(base,"currentframe",m->framePosition());
 		Cell *c = m->cell();
 		Mat3<double> mat;
@@ -220,22 +265,18 @@ void CommandList::setModelVariables(const char *base, Model *m)
 		variables.set(base,"cell.centrex",vec.x);
 		variables.set(base,"cell.centrey",vec.y);
 		variables.set(base,"cell.centrez",vec.z);
+		// If this model has a trajectory frame, set those variables as well
+		Model *frame = m->renderSource();
+		if (frame != m)
+		{
+			char s[128];
+			strcpy(s,base);
+			if (s[0] != '\0') strcat(s,".");
+			strcat(s,"frame");
+			setModelVariables(s, frame);
+		}
 	}
 	msg.exit("CommandList::setModelVariables");
-}
-
-// Create model variables in current commandlist
-bool CommandList::createModelVariables()
-{
-	return (createModelVariables("") && createModelVariables("frame") ? TRUE : FALSE);
-}
-
-// Set variables for model
-void CommandList::setModelVariables(Model *m)
-{
-	setModelVariables("",m);
-	if (m != NULL) setModelVariables("frame", (m->renderSource() == m ? NULL : m->renderSource()));
-	else  setModelVariables("frame", NULL);
 }
 
 // Create atom parameter variables

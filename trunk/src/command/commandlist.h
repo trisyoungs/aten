@@ -49,6 +49,7 @@ namespace AssignOps
 class CommandList;
 class Format;
 class Filter;
+class Model;
 class ForcefieldAtom;
 
 // Command node
@@ -188,6 +189,8 @@ class Command
 	Atom *arga(int argno);
 	// Return argument as pattern pointer
 	Pattern *argp(int argno);
+	// Return argument as model pointer
+	Model *argm(int argno);
 	// Return argument as PatternBound pointer
 	PatternBound *argpb(int argno);
 	// Return argument as ForcefieldAtom pointer
@@ -274,19 +277,13 @@ class CommandList
 	/*
 	// Variables
 	*/
-	private:
+	public:
+	// Associative variable list
+	VariableList variables;
 	// Create model variables with specified prefix
 	bool createModelVariables(const char *s);
 	// Set model variables with specified prefix
 	void setModelVariables(const char *s, Model *m);
-
-	public:
-	// Associative variable list
-	VariableList variables;
-	// Create model variables
-	bool createModelVariables();
-	// Set model variables
-	void setModelVariables(Model *m);
 	// Create atom variables
 	bool createAtomVariables(const char *s);
 	// Set atom variables
@@ -304,6 +301,8 @@ class CommandList
 	bool createAtomtypeVariables(const char*);
 	// Set atomtype variables
 	void setAtomtypeVariables(const char*, ForcefieldAtom*);
+	// Create subvariables for the specified variable (if necessary)
+	bool createSubvariables(Variable *v);
 
 	/*
 	// Local Variables

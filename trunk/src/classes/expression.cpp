@@ -40,7 +40,7 @@ ExpressionNode::OperatorType ExpressionNode::operatorType(char c)
 }
 
 // Function Tokens
-const char *FunctionTypeKeywords[ExpressionNode::nFunctionTypes] = { "-", "sqrt", "cos", "sin", "tan" };
+const char *FunctionTypeKeywords[ExpressionNode::nFunctionTypes] = { "-", "sqrt", "cos", "sin", "tan", "abs" };
 const char *ExpressionNode::functionType(ExpressionNode::FunctionType ft)
 {
 	return FunctionTypeKeywords[ft];
@@ -534,6 +534,7 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 			ex->setPersistentType(ExpressionNode::ValueToken);
 			ex->setVariable(v);
 		}
+		else msg.print("Variable '%s' in expression has not been declared.\n", &s[1]);
 	}
 	else
 	{
@@ -628,6 +629,9 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 				break;
 			case (ExpressionNode::TanFunction):
 				result = tan(ex->nextUnused()->value() / DEGRAD);
+				break;
+			case (ExpressionNode::AbsFunction):
+				result = fabs(ex->nextUnused()->value());
 				break;
 		}
 		// All functions nodes get replaced with their result, and the right-hand argument is set to nothing
