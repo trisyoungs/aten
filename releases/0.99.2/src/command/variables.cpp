@@ -32,18 +32,7 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 {
 	c->arg(0)->decrease(1);
 	// Set subvariables if necessary
-	switch (c->argt(0))
-	{
-		case (Variable::AtomVariable):
-			c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
-			break;
-		case (Variable::PatternVariable):
-			c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
-			break;
-		case (Variable::ModelVariable):
-			c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
-			break;
-	}
+	c->parent()->setSubvariables( c->arg(0) );
 	return CR_SUCCESS;
 }
 
@@ -52,18 +41,7 @@ int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 {
 	c->arg(0)->increase(1);
 	// Set subvariables if necessary
-	switch (c->argt(0))
-	{
-		case (Variable::AtomVariable):
-			c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
-			break;
-		case (Variable::PatternVariable):
-			c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
-			break;
-		case (Variable::ModelVariable):
-			c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
-			break;
-	}
+	c->parent()->setSubvariables( c->arg(0) );
 	return CR_SUCCESS;
 }
 

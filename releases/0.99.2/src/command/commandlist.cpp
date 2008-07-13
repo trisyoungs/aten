@@ -849,6 +849,31 @@ bool CommandList::createSubvariables(Variable *v)
 	return TRUE;
 }
 
+// Set subvariables for variable (based on its type)
+void CommandList::setSubvariables(Variable *v)
+{
+	switch (v->type())
+	{
+		case (Variable::AtomVariable):
+			setAtomVariables( v->name(), (Atom*) v->asPointer() );
+			break;
+		case (Variable::PatternVariable):
+			setPatternVariables( v->name(), (Pattern*) v->asPointer() );
+			break;
+		case (Variable::ModelVariable):
+			setModelVariables( v->name(), (Model*) v->asPointer() );
+			break;
+		case (Variable::BondVariable):
+		case (Variable::AngleVariable):
+		case (Variable::TorsionVariable):
+			setPatternBoundVariables( v->name(), (PatternBound*) v->asPointer() );
+			break;
+		case (Variable::AtomtypeVariable):
+			setAtomtypeVariables( v->name(), (ForcefieldAtom*) v->asPointer() );
+			break;
+	}
+}
+
 // Add basic command
 bool CommandList::addCommand(CommandAction ca)
 {
