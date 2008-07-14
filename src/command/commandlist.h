@@ -303,6 +303,8 @@ class CommandList
 	void setAtomtypeVariables(const char*, ForcefieldAtom*);
 	// Create subvariables for the specified variable (if necessary)
 	bool createSubvariables(Variable *v);
+	// Set subvariables for the specified variable (if necessary)
+	void setSubvariables(Variable *v);
 
 	/*
 	// Local Variables
