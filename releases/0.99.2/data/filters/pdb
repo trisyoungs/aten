@@ -25,21 +25,24 @@ importmodel
 			cell $ca $cb $cc $alpha $beta $gamma"
 		elseif $keyword = HETATM
 			#readvar $line "*%5 $e%4 *%1 *%1 *%3 *%1 *%1 *%4 *%1 *%3 $rx%8 $ry%8 $rz%8 *%6 *%6 *%6 *%4 *%2 *%2"
-			readvar $line "$id%5 $name%5 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
-			if $e = ""
-				let $e = $name
+			readvar $line "$id%5 *%1 $name%4 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
+			if $e = ''
+				$e = $name
 			end
-			newatom $e
-			setcoords $rx $ry $rz
+			newatom $e $rx $ry $rz
 		elseif $keyword = ATOM
-			readvar $line "$id%5 $name%5 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
-			if $e = ""
-				let $e = $name
+			readvar $line "$id%5 *%1 $name%4 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
+			if $e = '' 
+				$e = $name
 			end
 			newatom $e
 			setcoords $rx $ry $rz
 		elseif $keyword = CONECT
-			readvar $line "*%6 $i%5 $bondi%5 $bondj%5 $bondk%5 $bondl%5"
+			$bondi = 0
+			$bondj = 0
+			$bondk = 0
+			$bondl = 0
+			readvar $line "$i $bondi $bondj $bondk $bondl"
 			if $bondi > 0
 				newbond $i $bondi
 			end
