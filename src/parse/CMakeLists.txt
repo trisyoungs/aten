@@ -1,18 +1,12 @@
 add_library(parse
-expression.h
 filter.h 
 format.h 
 parser.h
-variable.h
-variablelist.h
-expression.cpp
 filter.cpp 
 forcefield.cpp 
 format.cpp 
 parser.cpp 
 probe.cpp
-variable.cpp
-variablelist.cpp
 )
 
 include_directories(
