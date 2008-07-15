@@ -823,10 +823,6 @@ Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
 	return cn;
 }
 
-/*
-// Variable set / create
-*/
-
 // Create subvariables for variable (based on its type)
 bool CommandList::createSubvariables(Variable *v)
 {
@@ -870,394 +866,13 @@ void CommandList::setSubvariables(Variable *v)
 		case (Variable::BondVariable):
 		case (Variable::AngleVariable):
 		case (Variable::TorsionVariable):
-			setPatternBoundVariables(v->name(), (PatternBound*) v->asPointer());
+			setPatternBoundVariables( v->name(), (PatternBound*) v->asPointer() );
 			break;
 		case (Variable::AtomtypeVariable):
-			setAtomtypeVariables(v->name(), (ForcefieldAtom*) v->asPointer());
+			setAtomtypeVariables( v->name(), (ForcefieldAtom*) v->asPointer() );
 			break;
 	}
 }
-
-// Create model variables with specified basename
-bool CommandList::createModelVariables(const char *base)
-{
-	Variable *v;
-	v = variables.createVariable(base,"title",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nframes",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"currentframe",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.type",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.a",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.b",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.c",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.alpha",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.beta",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.gamma",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.ax",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.ay",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.az",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.bx",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.by",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.bz",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.cx",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.cy",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.cz",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.centrex",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.centrey",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.centrez",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	return TRUE;
-}
-
-// Set variables for model with specified prefix
-void CommandList::setModelVariables(const char *base, Model *m)
-{
-	msg.enter("CommandList::setModelVariables[const char*,Model*]");
-	if (m != NULL)
-	{
-		variables.set(base,"title",m->name());
-		variables.set(base,"natoms",m->nAtoms());
-		variables.set(base,"nframes",m->totalFrames());
-		variables.set(base,"firstatom",m->atoms());
-		variables.set(base,"currentframe",m->framePosition());
-		Cell *c = m->cell();
-		Mat3<double> mat;
-		Vec3<double> vec;
-		variables.set(base,"cell.type",lowerCase(Cell::cellType(c->type())));
-		mat = c->axes();
-		variables.set(base,"cell.ax",mat.rows[0].x);
-		variables.set(base,"cell.ay",mat.rows[0].y);
-		variables.set(base,"cell.az",mat.rows[0].z);
-		variables.set(base,"cell.bx",mat.rows[1].x);
-		variables.set(base,"cell.by",mat.rows[1].y);
-		variables.set(base,"cell.bz",mat.rows[1].z);
-		variables.set(base,"cell.cx",mat.rows[2].x);
-		variables.set(base,"cell.cy",mat.rows[2].y);
-		variables.set(base,"cell.cz",mat.rows[2].z);
-		vec = c->lengths();
-		variables.set(base,"cell.a",vec.x);
-		variables.set(base,"cell.b",vec.y);
-		variables.set(base,"cell.c",vec.z);
-		vec = c->angles();
-		variables.set(base,"cell.alpha",vec.x);
-		variables.set(base,"cell.beta",vec.y);
-		variables.set(base,"cell.gamma",vec.z);
-		vec = c->centre();
-		variables.set(base,"cell.centrex",vec.x);
-		variables.set(base,"cell.centrey",vec.y);
-		variables.set(base,"cell.centrez",vec.z);
-		// If this model has a trajectory frame, set those variables as well
-		Model *frame = m->renderSource();
-		if (frame != m)
-		{
-			char s[128];
-			strcpy(s,base);
-			if (s[0] != '\0') strcat(s,".");
-			strcat(s,"frame");
-			setModelVariables(s, frame);
-		}
-	}
-	msg.exit("CommandList::setModelVariables");
-}
-
-// Create atom parameter variables
-bool CommandList::createAtomVariables(const char *base)
-{
-	Variable *v;
-	v = variables.createVariable(base,"symbol",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"mass",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"name",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"z",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"id",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fftype",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ffequiv",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"q",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rx",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ry",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rz",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fx",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fy",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fz",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vx",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vy",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vz",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	return TRUE;
-}
-
-// Set variable values for atom
-void CommandList::setAtomVariables(const char *varname, Atom *i)
-{
-	msg.enter("CommandList::setAtomVariables");
-	Vec3<double> v;
-	if (i != NULL)
-	{
-		// Element and ff type
-		variables.set(varname,"symbol",elements.symbol(i));
-		variables.set(varname,"mass",elements.atomicMass(i));
-		variables.set(varname,"name",elements.name(i));
-		variables.set(varname,"z",i->element());
-		variables.set(varname,"id",i->id()+1);
-		ForcefieldAtom *ffa = i->type();
-		variables.set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->name()));
-		variables.set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->equivalent()));
-		v = i->r();
-		variables.set(varname,"rx",v.x);
-		variables.set(varname,"ry",v.y);
-		variables.set(varname,"rz",v.z);
-		v = i->f();
-		variables.set(varname,"fx",v.x);
-		variables.set(varname,"fy",v.y);
-		variables.set(varname,"fz",v.z);
-		v = i->v();
-		variables.set(varname,"vx",v.x);
-		variables.set(varname,"vy",v.y);
-		variables.set(varname,"vz",v.z);
-		variables.set(varname,"q",i->charge());
-	}
-	msg.exit("CommandList::setAtomVariables");
-}
-
-// Create pattern parameter variables
-bool CommandList::createPatternVariables(const char *base)
-{
-	Variable *v;
-	v = variables.createVariable(base,"name",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nmols",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nmolatoms",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"lastid",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"firstid",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"lastatom",Variable::AtomVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nbonds",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nangles",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ntorsions",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ntypes",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	return TRUE;
-}
-
-// Set variables for pattern
-void CommandList::setPatternVariables(const char *varname, Pattern *p)
-{
-	msg.enter("CommandList::setPatternVariables");
-	if (p != NULL)
-	{
-		variables.set(varname,"name",p->name());
-		variables.set(varname,"nmols",p->nMols());
-		variables.set(varname,"nmolatoms",p->nAtoms());
-		variables.set(varname,"natoms",p->totalAtoms());
-		variables.set(varname,"firstid",p->startAtom() + 1);
-		variables.set(varname,"lastid",p->startAtom() + p->totalAtoms() - 1);
-		variables.set(varname,"lastatom",p->lastAtom());
-		variables.set(varname,"firstatom",p->firstAtom());
-		variables.set(varname,"nbonds",p->nBonds());
-		variables.set(varname,"nangles",p->nAngles());
-		variables.set(varname,"ntorsions",p->nTorsions());
-	}
-	msg.exit("CommandList::setPatternVariables");
-}
-
-// Create pattern bound term variables
-bool CommandList::createPatternBoundVariables(const char *base)
-{
-	Variable *v;
-	static char parm[24];
-	int i;
-	v = variables.createVariable(base,"form",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	strcpy(parm,"id_X");
-	for (i = 0; i < MAXFFBOUNDTYPES; i++)
-	{
-		parm[3] = 105 + i;
-		v = variables.createVariable(base,parm,Variable::IntegerVariable);
-		if (v == NULL) return FALSE;
-	}
-	strcpy(parm,"type_X");
-	for (i = 0; i < MAXFFBOUNDTYPES; i++)
-	{
-		parm[5] = 105 + i;
-		v = variables.createVariable(base,parm,Variable::CharacterVariable);
-		if (v == NULL) return FALSE;
-	}
-	strcpy(parm,"param_X");
-	for (i = 0; i < MAXFFPARAMDATA; i++)
-	{
-		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,Variable::FloatVariable);
-		if (v == NULL) return FALSE;
-	}
-	v = variables.createVariable(base,"escale",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vscale",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	return TRUE;
-}
-
-// Set variables for PatternBound
-void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb)
-{
-	msg.enter("CommandList::setPatternBoundVariables");
-	static ForcefieldParams ffp;
-	static ForcefieldBound *ffb;
-	static char parm[24];
-	int i;
-	if (pb != NULL)
-	{
-		// Grab ForcefieldBound pointer from pattern bound structure
-		ffb = pb->data();
-		// Set atom ids involved
-		strcpy(parm,"id_X");
-		for (i = 0; i < MAXFFBOUNDTYPES; i++)
-		{
-			parm[3] = 105 + i;
-			variables.set(varname,parm,pb->atomId(i)+1);
-		}
-		// Set type names involved
-		strcpy(parm,"type_X");
-		for (i = 0; i < MAXFFBOUNDTYPES; i++)
-		{
-			parm[5] = 105 + i;
-			variables.set(varname,parm,ffb->typeName(i));
-		}
-		// Grab ForcefieldParams data
-		ffp = ffb->params();
-		strcpy(parm,"param_X");
-		for (int i = 0; i < MAXFFPARAMDATA; i++)
-		{
-			parm[6] = 97 + i;
-			variables.set(varname,parm,ffp.data[i]);
-		}
-		// Set functional form and any additional variables
-		switch (ffb->type())
-		{
-			case (ForcefieldBound::BondInteraction):
-				variables.set(varname,"form", BondFunctions::BondFunctions[ffb->bondStyle()].keyword);
-				break;
-			case (ForcefieldBound::AngleInteraction):
-				variables.set(varname,"form", AngleFunctions::AngleFunctions[ffb->angleStyle()].keyword);
-				break;
-			case (ForcefieldBound::TorsionInteraction):
-				variables.set(varname,"form", TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].keyword);
-				variables.set(varname,"escale",ffp.data[TF_ESCALE]);
-				variables.set(varname,"vscale",ffp.data[TF_VSCALE]);
-				break;
-			default:	
-				printf("CommandList::setPatternBoundVariables <<<< Functional form not defined >>>>\n");
-				break;
-		}
-		
-	}
-	msg.exit("CommandList::setPatternBoundVariables");
-}
-
-// Create atomtype parameter variables
-bool CommandList::createAtomtypeVariables(const char *base)
-{
-	static char parm[24];
-	int i;
-	Variable *v;
-	strcpy(parm,"param_X");
-	for (i = 0; i < MAXFFPARAMDATA; i++)
-	{
-		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,Variable::FloatVariable);
-		if (v == NULL) return FALSE;
-	}
-	v = variables.createVariable(base,"q",Variable::FloatVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"id",Variable::IntegerVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"name",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"equiv",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"form",Variable::CharacterVariable);
-	if (v == NULL) return FALSE;
-	return TRUE;
-}
-
-
-// Set variables for pattern
-void CommandList::setAtomtypeVariables(const char *varname, ForcefieldAtom *ffa)
-{
-	msg.enter("CommandList::setAtomtypeVariables");
-	static char parm[24];
-	int i;
-	ForcefieldParams ffp;
-	if (ffa != NULL)
-	{
-		ffp = ffa->params();
-		strcpy(parm,"param_X");
-		for (i = 0; i < MAXFFPARAMDATA; i++)
-		{
-			parm[6] = 97 + i;
-			variables.set(varname,parm,ffp.data[i]);
-		}
-		variables.set(varname,"q",ffa->charge());
-		variables.set(varname,"id",ffa->typeId());
-		variables.set(varname,"name",ffa->name());
-		variables.set(varname,"equiv",ffa->equivalent());
-		variables.set(varname,"form",VdwFunctions::VdwFunctions[ffa->vdwForm()].keyword);
-	}
-	msg.exit("CommandList::setAtomtypeVariables");
-}
-
-/*
-// Command Addition
-*/
 
 // Add basic command
 bool CommandList::addCommand(CommandAction ca)
@@ -1502,46 +1117,6 @@ bool CommandList::cacheCommand()
 	return result;
 }
 
-// Load commands from file
-bool CommandList::load(const char *filename)
-{
-	msg.enter("CommandList::load");
-	scriptFilename_ = filename;
-	ifstream cmdfile(filename,ios::in);
-	int success;
-	clear();
-	name_ = filename;
-	// Read in commands
-	while (!cmdfile.eof())
-	{
-		success = parser.getArgsDelim(&cmdfile,Parser::UseQuotes+Parser::SkipBlanks);
-		if (success == 1)
-		{
-			msg.print("CommandList::load - Error reading command file.\n");
-			msg.exit("CommandList::load");
-			return FALSE;
-		}
-		else if (success == -1) break;
-		// Attempt to cache the command
-		if (cacheCommand()) continue;
-		else
-		{
-			msg.exit("CommandList::load");
-			return FALSE;
-		}
-	}
-	// Check the flowstack - it should be empty...
-	int itemsleft = branchStack_.nItems();
-	if (itemsleft != 1)
-	{
-		printf("CommandList::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
-		msg.exit("CommandList::load");
-		return FALSE;
-	}
-	msg.exit("CommandList::load");
-	return TRUE;
-}
-
 /*
 // Files
 */
@@ -1580,6 +1155,46 @@ void CommandList::removeReadOption(Parser::ParseOption po)
 int CommandList::readOptions()
 {
 	return readOptions_;
+}
+
+// Load commands from file
+bool CommandList::load(const char *filename)
+{
+	msg.enter("CommandList::load");
+	scriptFilename_ = filename;
+	ifstream cmdfile(filename,ios::in);
+	int success;
+	clear();
+	name_ = filename;
+	// Read in commands
+	while (!cmdfile.eof())
+	{
+		success = parser.getArgsDelim(&cmdfile,Parser::UseQuotes+Parser::SkipBlanks);
+		if (success == 1)
+		{
+			msg.print("CommandList::load - Error reading command file.\n");
+			msg.exit("CommandList::load");
+			return FALSE;
+		}
+		else if (success == -1) break;
+		// Attempt to cache the command
+		if (cacheCommand()) continue;
+		else
+		{
+			msg.exit("CommandList::load");
+			return FALSE;
+		}
+	}
+	// Check the flowstack - it should be empty...
+	int itemsleft = branchStack_.nItems();
+	if (itemsleft != 1)
+	{
+		printf("CommandList::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
+		msg.exit("CommandList::load");
+		return FALSE;
+	}
+	msg.exit("CommandList::load");
+	return TRUE;
 }
 
 // Set input file (pointer)

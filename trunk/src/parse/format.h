@@ -23,7 +23,7 @@
 #define ATEN_FORMAT_H
 
 #include "templates/list.h"
-#include "parse/variable.h"
+#include "classes/variable.h"
 
 // Format node
 class FormatNode

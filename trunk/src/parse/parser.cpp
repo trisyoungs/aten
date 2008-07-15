@@ -279,7 +279,9 @@ bool Parser::getNextN(int length)
 		msg.exit("Parser::getNextN");
 		return FALSE;
 	}
-	if (length > lineLength_) length = lineLength_;
+	int charsleft = lineLength_ - (linePos_+1);
+	if (length > charsleft) length = charsleft;
+	//if (length > lineLength_) length = lineLength_;
 	for (int n=0; n<length; n++)
 	{
 		c = line_[linePos_];
@@ -303,6 +305,7 @@ bool Parser::getNextN(int length)
 	}
 	// Add terminating character to temparg
 	tempArg_[arglen] = '\0';
+	//printf("getNextN found [%s], length = %i\n", tempArg_, arglen);
 	//line_.eraseStart(length);
 	msg.exit("Parser::getNextN");
 	return TRUE;
@@ -355,6 +358,7 @@ void Parser::getAllArgsFormatted(Format *fmt)
 			fn->variable()->reset();
 		}
 		else fn->variable()->set(tempArg_);
+// 		printf("Variable %s now has value '%s'\n",fn->variable()->name(), fn->variable()->asCharacter());
 	}
 	msg.exit("Parser::getAllArgsFormatted");
 }
