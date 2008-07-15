@@ -135,7 +135,7 @@ int CommandData::function_CA_SETPOINTCOLOUR(Command *&c, Bundle &obj)
 		msg.print( "Colour scale %i is out of range.\n",id+1);
 		return CR_FAIL;
 	}
-	prefs.colourScale[id].setPointColour(c->argi(1)-1, c->argf(2), c->argf(3), c->argf(4), c->hasArg(5) ? c->argf(6) : 1.0f);
+	prefs.colourScale[id].setPointColour(c->argi(1)-1, c->argf(2), c->argf(3), c->argf(4), c->hasArg(5) ? c->argf(5) : 1.0f);
 	return CR_SUCCESS;
 }
 
