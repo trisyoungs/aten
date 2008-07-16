@@ -26,9 +26,9 @@
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
-#include "classes/variablelist.h"
-#include "base/constants.h"
+#include "parse/variablelist.h"
 #include "parse/parser.h"
+#include "base/constants.h"
 
 // If Conditions
 namespace IfTests
