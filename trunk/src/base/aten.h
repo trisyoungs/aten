@@ -29,9 +29,9 @@
 #include "base/cli.h"
 #include "templates/namemap.h"
 
-#define ATENVERSION "0.99.3"
+#define ATENVERSION "0.99"
 #define ATENREVISION "526"
-#define ATENDATE "Wed 16 Jul - 10:25"
+#define ATENDATE "Wed 16 Jul - 11:36"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
