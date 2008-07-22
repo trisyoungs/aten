@@ -30,7 +30,7 @@ void Canvas::renderModelAtoms()
 	static Atom::DrawStyle style_i, renderstyle;
 	static GLfloat ambient[4], diffuse[4];
 	static Prefs::ColouringScheme scheme;
-	static double radius, rij, cval;
+	static double radius, rij, cval, bondradius;
 	static Vec3<double> ri, rj, rk, ijk;
 	static Atom *i, *j;
 	static Refitem<Bond,int> *bref;
@@ -126,30 +126,31 @@ void Canvas::renderModelAtoms()
 			if (style_i != Atom::StickStyle)
 			{
 				// Draw cylinder bonds.
+				bondradius = (style_i == Atom::TubeStyle ? prefs.atomSize(style_i) : prefs.tubeSize());
 				switch (bref->item->order())
 				{
 					case (Bond::Single):	// Single bond
-						glCylinder(rj,rij,0);
+						glCylinder(rj,rij,0,bondradius);
 						break;
 					case (Bond::Double):	// Double bond
 						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						glCylinder(rj,rij,0);
+						glCylinder(rj,rij,0,bondradius);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						glCylinder(rj,rij,0);
+						glCylinder(rj,rij,0,bondradius);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 					case (Bond::Triple):	// Triple bond
 						ijk = i->findBondPlane(j,bref->item,rj);
 						ijk *= 0.1;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
-						glCylinder(rj,rij,0);
+						glCylinder(rj,rij,0,bondradius);
 						glTranslated(ijk.x,ijk.y,ijk.z);
-						glCylinder(rj,rij,0);
+						glCylinder(rj,rij,0,bondradius);
 						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						glCylinder(rj,rij,0);
+						glCylinder(rj,rij,0,bondradius);
 						glTranslated(ijk.x,ijk.y,ijk.z);
 						break;
 				}
@@ -260,30 +261,31 @@ void Canvas::renderModelAtoms()
 			rij = rj.magnitude() * 0.5;
 			rj *= 0.5;
 			// Draw cylinder bonds.
+			bondradius = (style_i == Atom::TubeStyle ? prefs.atomSize(style_i) : prefs.tubeSize());
 			switch (bref->item->order())
 			{
 				case (Bond::Single):	// Single bond
-					glCylinder(rj,rij,1);
+					glCylinder(rj,rij,1,bondradius);
 					break;
 				case (Bond::Double):	// Double bond
 					ijk = i->findBondPlane(j,bref->item,rj);
 					ijk *= 0.1;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.
 					glTranslated(ijk.x,ijk.y,ijk.z);
-					glCylinder(rj,rij,1);
+					glCylinder(rj,rij,1,bondradius);
 					glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-					glCylinder(rj,rij,1);
+					glCylinder(rj,rij,1,bondradius);
 					glTranslated(ijk.x,ijk.y,ijk.z);
 					break;
 				case (Bond::Triple):	// Triple bond
 					ijk = i->findBondPlane(j,bref->item,rj);
 					ijk *= 0.1;
 					// Can now draw the bond. Displace each part of the bond +rk or -rk.
-					glCylinder(rj,rij,1);
+					glCylinder(rj,rij,1,bondradius);
 					glTranslated(ijk.x,ijk.y,ijk.z);
-					glCylinder(rj,rij,1);
+					glCylinder(rj,rij,1,bondradius);
 					glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-					glCylinder(rj,rij,1);
+					glCylinder(rj,rij,1,bondradius);
 					glTranslated(ijk.x,ijk.y,ijk.z);
 					break;
 			}

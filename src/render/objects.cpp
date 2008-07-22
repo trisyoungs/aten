@@ -281,7 +281,7 @@ void Canvas::renderRotationGlobe(double *rmat, double camrot)
 	glViewport(0,0,(int)width_,(int)height_);
 }
 
-void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style)
+void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double radius)
 {
 	/* Styles are:
 		0 = solid
@@ -297,7 +297,7 @@ void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style)
 	  // Special case where the bond is exactly in the XY plane.
 	  if ((180.0 - phi) < 0.0001) glRotated(phi,1.0,0.0,0.0);
 	  else glRotated(phi, -rj.y/rij , rj.x/rij ,0.0f);
-	  glScaled(1.0,1.0,rij);
+	  glScaled(radius,radius,rij);
 	  // Draw cylinder (bond)
 	  if (style == 0) glCallList(list_[GLOB_CYLINDER]);
 	  else if (style == 1) glCallList(list_[GLOB_SELCYLINDER]);

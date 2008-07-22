@@ -146,7 +146,7 @@ Prefs::Prefs()
 	// Rendering - Style
 	colourScheme_ = Prefs::ElementScheme;
 	atomSize_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
-	atomSize_[Atom::TubeStyle] = 0.095;
+	atomSize_[Atom::TubeStyle] = 0.15;
 	atomSize_[Atom::SphereStyle] = 0.35;
 	atomSize_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
 	tubeSize_ = 0.15;
