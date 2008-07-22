@@ -157,7 +157,7 @@ class Canvas
 	// Draw 3d marks for the atoms in the subselection
 	void glSubsel3d();
 	// Draw a cylinder along vector supplied
-	void glCylinder(const Vec3<double> &vec, double length, int style);
+	void glCylinder(const Vec3<double> &vec, double length, int style, double radius);
 	// Draw ellipsoid
 	void glEllipsoid(const Vec3<double>&, const Vec3<double>&, const Vec3<double>&);
 	// Draw the unit cell of the model

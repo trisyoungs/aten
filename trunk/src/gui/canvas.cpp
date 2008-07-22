@@ -264,7 +264,7 @@ void Canvas::createLists()
 	*/
 	// Enlarged sphere (for selections with DS_TUBE)
 	glNewList(list_[GLOB_SELTUBEATOM],GL_COMPILE);
-	  spherePrimitive(prefs.tubeSize()*prefs.selectionScale(), TRUE);
+	  spherePrimitive(prefs.atomSize(Atom::TubeStyle)*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SPHERE)
 	glNewList(list_[GLOB_SELSPHEREATOM],GL_COMPILE);
@@ -313,21 +313,21 @@ void Canvas::createLists()
 	/*
 	// Cylinders (bonds)
 	*/
-	// Solid cylinder
+	// Solid cylinder of radius 1
 	glNewList(list_[GLOB_CYLINDER],GL_COMPILE);
-	  cylinderPrimitive(prefs.tubeSize(), prefs.tubeSize(), TRUE);
+	  cylinderPrimitive(1.0, 1.0, TRUE);
 	glEndList();
 	// Solid selected cylinder
 	glNewList(list_[GLOB_SELCYLINDER],GL_COMPILE);
-	  cylinderPrimitive(prefs.tubeSize()*prefs.selectionScale(), prefs.tubeSize()*prefs.selectionScale(), TRUE);
+	  cylinderPrimitive(prefs.selectionScale(), prefs.selectionScale(), TRUE);
 	glEndList();
 	// Wireframe cylinder
 	glNewList(list_[GLOB_WIRECYLINDER],GL_COMPILE);
-	  cylinderPrimitive(prefs.tubeSize(), prefs.tubeSize(), FALSE);
+	  cylinderPrimitive(1.0, 1.0, FALSE);
 	glEndList();
 	// Selected wireframe cylinder
 	glNewList(list_[GLOB_SELWIRECYLINDER],GL_COMPILE);
-	  cylinderPrimitive(prefs.tubeSize()*prefs.selectionScale(), prefs.tubeSize()*prefs.selectionScale(), FALSE);
+	  cylinderPrimitive(prefs.selectionScale(), prefs.selectionScale(), FALSE);
 	glEndList();
 	/*
 	// Objects
