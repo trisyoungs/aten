@@ -64,6 +64,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 		// Do loop iteration.
 		// Increase count and iteration variables
 		c->arg(0)->increase(1);
+		c->parent()->setSubvariables(c->arg(0));
 		c->increaseIterations();
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
