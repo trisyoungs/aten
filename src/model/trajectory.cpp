@@ -176,6 +176,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 				break;
 			}
 		}
+		gui.progressTerminate();
 		msg.print("Cached %i frames from file.\n", framePosition_);
 		trajectoryCached_ = TRUE;
 		trajectoryFile_->close();
