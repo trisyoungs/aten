@@ -40,11 +40,13 @@ Run {{{./configure}}} to set up the build. The default installation location can
 
 Run {{{cmake .}}} from the top level directory, or {{{cmake /path/to/aten}}} from your chosen build directory.
 
+
 ==3. Compile==
 
 Once configured successfully, run {{{make}}} to compile the source and build the program. Then, go make some tea or brew some coffee.
 
-  * (All) When the Qt GUI is building, I get a version error for {{{moc}}} along the lines of 'uic: File generated with too recent version of Qt Designer (4.0 vs. 3.*.*)'. If you have both Qt4 and Qt3 installed the $PATH is sometimes set so that the Qt3 binaries are found first. Reconfigure the build with {{{./configure -with-qdtir=<path>}}} where <path> is the location of the Qt4 binaries ({{{moc}}}, {{{uic}}}, and {{{rcc}}}).
+  * (All) When the Qt GUI is building, I get a version error involving {{{moc}}} along the lines of either: 'uic: File generated with too recent version of Qt Designer (4.0 vs. 3.*.*)' or 'This file was generated using the moc from 3.X.X. It cannot be used with the include files from this version'. If you have both Qt4 and Qt3 development packages installed the $PATH is sometimes set so that the Qt3 binaries are found first. Reconfigure the build with {{{./configure -with-qdtir=<path>}}} where <path> is the location of the Qt4 binaries ({{{moc}}}, {{{uic}}}, and {{{rcc}}}).
+
 
 ==4. Install==
 
