@@ -45,7 +45,12 @@ Run {{{cmake .}}} from the top level directory, or {{{cmake /path/to/aten}}} fro
 
 Once configured successfully, run {{{make}}} to compile the source and build the program. Then, go make some tea or brew some coffee.
 
-  * (All) When the Qt GUI is building, I get a version error involving {{{moc}}} along the lines of either: 'uic: File generated with too recent version of Qt Designer (4.0 vs. 3.*.*)' or 'This file was generated using the moc from 3.X.X. It cannot be used with the include files from this version'. If you have both Qt4 and Qt3 development packages installed the $PATH is sometimes set so that the Qt3 binaries are found first. Reconfigure the build with {{{./configure -with-qdtir=<path>}}} where <path> is the location of the Qt4 binaries ({{{moc}}}, {{{uic}}}, and {{{rcc}}}).
+===Common Problems===
+
+*(All) When the Qt GUI is building, I get an error 'uic: File generated with too recent version of Qt Designer (4.0 vs. 3.x.x)'*
+*(All) Alternatively, 'This file was generated using the moc from 3.X.X. It cannot be used with the include files from this version...'*
+  * If you have both Qt4 and Qt3 development packages installed the $PATH is sometimes set so that the Qt3 binaries are found first. Reconfigure the build with {{{./configure -with-qdtir=<path>}}} where <path> is the location of the Qt4 binaries ({{{moc}}}, {{{uic}}}, and {{{rcc}}}).
+  * This errors can occur when both the Qt3 and Qt4 development packages are installed The $PATH is sometimes set so that the Qt3 binaries are found first, so the Meta-object compiler from Qt3 is called, and then the generated source includes the Qt4 headers. Running 'which moc' will tell you which binary is being used - you can then run this binary with the -v option to check the version. If its version 3.x.x then you will need to reconfigure the build with {{{./configure -with-qdtir=<path>}}} where <path> is the location of the Qt4 binaries ({{{moc}}}, {{{uic}}}, and {{{rcc}}}). Typically, the Qt3 binaries are located in /usr/lib/qt3/bin while the Qt4 binaries are in /usr/bin, but this may not be the case on your particular flavour of Linux.
 
 
 ==4. Install==
