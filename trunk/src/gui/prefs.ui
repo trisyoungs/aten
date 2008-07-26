@@ -56,7 +56,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex" >
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="ElementsTab" >
       <attribute name="title" >
@@ -1348,6 +1348,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip" >
+               <string>Atom and selection radius for Tube styled atoms</string>
+              </property>
               <property name="decimals" >
                <number>3</number>
               </property>
@@ -1371,6 +1374,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip" >
+               <string>Atom and selection radius for Sphere styled atoms</string>
               </property>
               <property name="decimals" >
                <number>3</number>
@@ -1403,6 +1409,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="toolTip" >
+               <string>Scaling factor for selected atoms</string>
+              </property>
               <property name="decimals" >
                <number>3</number>
               </property>
@@ -1418,7 +1427,7 @@
              </widget>
             </item>
             <item row="0" column="3" >
-             <widget class="QDoubleSpinBox" name="TubeBondSizeSpin" >
+             <widget class="QDoubleSpinBox" name="BondRadiusSpin" >
               <property name="sizePolicy" >
                <sizepolicy>
                 <hsizetype>7</hsizetype>
@@ -1426,6 +1435,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip" >
+               <string>Set the bond radius used in Sphere and Scaled styles</string>
               </property>
               <property name="decimals" >
                <number>3</number>
@@ -1444,7 +1456,7 @@
             <item row="0" column="2" >
              <widget class="QLabel" name="label_566" >
               <property name="text" >
-               <string>Tube Bond Size</string>
+               <string>Bond Radius</string>
               </property>
              </widget>
             </item>
@@ -1457,6 +1469,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip" >
+               <string>Selection radius for stick atoms</string>
               </property>
               <property name="decimals" >
                <number>3</number>
@@ -1481,6 +1496,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="toolTip" >
+               <string>Atom and selection radius for Scaled styled atoms</string>
               </property>
               <property name="decimals" >
                <number>3</number>

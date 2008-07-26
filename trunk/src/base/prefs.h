@@ -148,9 +148,9 @@ class Prefs
 	// Atom colouring style
 	Prefs::ColouringScheme colourScheme_;
 	// Atom sizes / radii
-	GLdouble atomSize_[Atom::nDrawStyles];
-	// Tube size for DS_SPHERE / DS_TUBE / DS_SCALED
-	GLdouble tubeSize_;
+	GLdouble atomStyleRadius_[Atom::nDrawStyles];
+	// Bond radius for Scaled and Sphere drawing styles
+	GLdouble bondRadius_;
 	// Size scaling for atom selection transparency
 	GLdouble selectionScale_;
 	// Detail of atom quadric (slices/stacks)
@@ -170,13 +170,13 @@ class Prefs
 
 	public:
 	// Sets the specified atom size to the given value
-	void setAtomSize(Atom::DrawStyle ds, double f);
-	// Return the specified atom size
-	GLdouble atomSize(Atom::DrawStyle ds);
-	// Sets the tube size in DS_TUBE
-	void setTubeSize(double f);
-	// Return the tube size used in DS_TUBE
-	GLdouble tubeSize();
+	void setAtomStyleRadius(Atom::DrawStyle ds, double f);
+	// Return the specified atom radius
+	GLdouble atomStyleRadius(Atom::DrawStyle ds);
+	// Sets the bond radius used in Scaled and Sphere styles
+	void setBondRadius(double f);
+	// Return the bond radius used in Scaled and Sphere styles
+	GLdouble bondRadius();
 	// Sets the detail for atom quadrics
 	void setAtomDetail(int n);
 	// Return the current detail of atom quadrics
