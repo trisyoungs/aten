@@ -377,6 +377,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>ForcefieldList</tabstop>
+  <tabstop>AssignFFToCurrentButton</tabstop>
+  <tabstop>AssignFFToAllButton</tabstop>
+  <tabstop>AssignFFToPatternButton</tabstop>
+  <tabstop>TypeModelButton</tabstop>
+  <tabstop>UntypeModelButton</tabstop>
+  <tabstop>ManualTypeEdit</tabstop>
+  <tabstop>FFTypeTable</tabstop>
+  <tabstop>ManualTypeSetButton</tabstop>
+  <tabstop>ManualTypeClearButton</tabstop>
+  <tabstop>ManualTypeTestButton</tabstop>
+  <tabstop>LoadForcefieldButton</tabstop>
+  <tabstop>RemoveForcefieldButton</tabstop>
+  <tabstop>EditForcefieldButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc" />
  </resources>

@@ -340,6 +340,7 @@ class AtenForm : public QMainWindow
 	// Update undo/redo labels
 	void updateUndoRedo();
 
+
 	/*
 	// Local Widgets
 	*/
@@ -367,6 +368,9 @@ class AtenForm : public QMainWindow
 	Dnchar saveModelFilename;
 	// Group for actions that determine the current user action
 	QActionGroup *uaGroup;
+	// Dummy toolbutton for inclusion in action group
+	QAction *dummyToolButton;
+
 
 	/*
 	// Settings
@@ -378,6 +382,7 @@ class AtenForm : public QMainWindow
 	void loadSettings();
 	// Save settings
 	void saveSettings();
+
 
 	/*
 	// Recent files

@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>214</width>
-    <height>375</height>
+    <height>363</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -116,8 +116,8 @@
         <widget class="QPushButton" name="ShiftUpButton" >
          <property name="maximumSize" >
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -129,14 +129,20 @@
          <property name="icon" >
           <iconset resource="icons.qrc" >:/arrows/icons/arrow_up.svg</iconset>
          </property>
+         <property name="iconSize" >
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="ShiftDownButton" >
          <property name="maximumSize" >
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -147,6 +153,12 @@
          </property>
          <property name="icon" >
           <iconset resource="icons.qrc" >:/arrows/icons/arrow_down.svg</iconset>
+         </property>
+         <property name="iconSize" >
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -170,8 +182,8 @@
         <widget class="QPushButton" name="MoveToStartButton" >
          <property name="maximumSize" >
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -183,14 +195,20 @@
          <property name="icon" >
           <iconset resource="icons.qrc" >:/arrows/icons/arrow_upline.svg</iconset>
          </property>
+         <property name="iconSize" >
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="MoveToEndButton" >
          <property name="maximumSize" >
           <size>
-           <width>30</width>
-           <height>30</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -201,6 +219,12 @@
          </property>
          <property name="icon" >
           <iconset resource="icons.qrc" >:/arrows/icons/arrow_downline.svg</iconset>
+         </property>
+         <property name="iconSize" >
+          <size>
+           <width>20</width>
+           <height>20</height>
+          </size>
          </property>
         </widget>
        </item>

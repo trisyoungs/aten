@@ -122,16 +122,58 @@ void AtenTransform::on_RotateIntoButton_clicked(bool on)
 {
 }
 
-void AtenTransform::on_DefineSourceXButton_clicked(bool on)
+void defineSourceAButton_callback(Reflist<Atom,int> *picked)
 {
+	gui.transformWindow->ui.DefineSourceAButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r();
+	v -= picked->first()->item->r();
+	gui.transformWindow->ui.SourceMatrixAXSpin->setValue(v.x);
+	gui.transformWindow->ui.SourceMatrixAYSpin->setValue(v.y);
+	gui.transformWindow->ui.SourceMatrixAZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_DefineSourceYButton_clicked(bool on)
+void defineSourceBButton_callback(Reflist<Atom,int> *picked)
 {
+	gui.transformWindow->ui.DefineSourceBButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r();
+	v -= picked->first()->item->r();
+	gui.transformWindow->ui.SourceMatrixBXSpin->setValue(v.x);
+	gui.transformWindow->ui.SourceMatrixBYSpin->setValue(v.y);
+	gui.transformWindow->ui.SourceMatrixBZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_DefineSourceZButton_clicked(bool on)
+void defineSourceCButton_callback(Reflist<Atom,int> *picked)
 {
+	gui.transformWindow->ui.DefineSourceCButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r();
+	v -= picked->first()->item->r();
+	gui.transformWindow->ui.SourceMatrixCXSpin->setValue(v.x);
+	gui.transformWindow->ui.SourceMatrixCYSpin->setValue(v.y);
+	gui.transformWindow->ui.SourceMatrixCZSpin->setValue(v.z);
+}
+
+void AtenTransform::on_DefineSourceAButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&defineSourceAButton_callback);
+}
+
+void AtenTransform::on_DefineSourceBButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&defineSourceBButton_callback);
+}
+
+void AtenTransform::on_DefineSourceCButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&defineSourceCButton_callback);
 }
 
 void AtenTransform::dialogFinished(int result)

@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>261</width>
-    <height>175</height>
+    <height>171</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -25,10 +25,10 @@
    <item>
     <layout class="QHBoxLayout" >
      <property name="margin" >
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="spacing" >
-      <number>6</number>
+      <number>4</number>
      </property>
      <item>
       <widget class="QLineEdit" name="LoadModelEdit" >
@@ -184,6 +184,12 @@
    </item>
    <item>
     <widget class="QDialogButtonBox" name="LoadModelButtonGroup" >
+     <property name="maximumSize" >
+      <size>
+       <width>16777215</width>
+       <height>24</height>
+      </size>
+     </property>
      <property name="orientation" >
       <enum>Qt::Horizontal</enum>
      </property>

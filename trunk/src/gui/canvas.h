@@ -67,7 +67,7 @@ class Canvas
 	Canvas();
 
 	// Actions
-	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, EditDrawAction, EditChainAction, EditTransmuteAction, EditDeleteAction, EditProbeAction, EditBondSingleAction, EditBondDoubleAction, EditBondTripleAction, EditDeleteBondAction, EditAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, nUserActions };
+	enum UserAction { NoAction, SelectAction, SelectMoleculeAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, EditDrawAction, EditChainAction, EditTransmuteAction, EditDeleteAction, EditProbeAction, EditBondSingleAction, EditBondDoubleAction, EditBondTripleAction, EditDeleteBondAction, EditAddHydrogenAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ManualPickAction, nUserActions };
 	// Keyboard Key Codes (translated from GTK/Qt keysyms)
 	enum KeyCode { OtherKey, EscapeKey, LeftShiftKey, RightShiftKey, LeftControlKey, RightControlKey, LeftAltKey, RightAltKey, LeftKey, RightKey, UpKey, DownKey, nKeyCodes };
 
@@ -167,7 +167,6 @@ class Canvas
 	// Draw a cylinder arrow
 	void glCylinderArrow(const Vec3<double> &origin, const Vec3<double> &vector, bool swaphead = FALSE);
 
-
 	protected:
 	// Last model rendered by canvas (needed for mouse hover etc.)
 	Model *displayModel_;
@@ -234,21 +233,31 @@ class Canvas
 	/*
 	// Selection
 	*/
-	protected:
+	private:
+	// Number of atoms to pick in PickAtomsAction
+	int nAtomsToPick_;
+	// User action before picking mode was entered
+	QAction *actionBeforePick_;
+	// List of picked atoms
+	Reflist<Atom,int> pickedAtoms_;
+	// Pointer to callback function when PickAtomsAction exits
+	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
 	// Atom that the mouse pointer is currently hovering over
 	Atom *atomHover_;
-	// Subselection (list of clicked atoms for interactive tools)
-	Reflist<Atom,int> subselection_;
 	// Whether we are selecting atoms and placing them in the subsel list	
-	bool subselectEnabled_;
-	// Reflist of atoms selected, filled in some interaction modes
-	Reflist< Atom,Vec3<double> > rSelection_;
+	bool pickEnabled_;
+	// Reflist of selected atoms and their positions so manipulations may be un-done
+	Reflist< Atom,Vec3<double> > oldPositions_;
 
 	public:
 	// Returns the atom currently under the mouse
 	Atom *atomHover();
 	// Clears the subsel of atoms
-	void clearSubselection();
+	void clearPicked();
+	// Manually enter picking mode to select N atoms
+	void beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*));
+	// End manual picking
+	void endManualPick(bool resetaction);
 
 	/*
 	// Mouse

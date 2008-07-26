@@ -81,7 +81,7 @@ void AtenForm::on_actionEditDelete_triggered(bool checked)
 	// Delete the selected atoms in the model
 	char s[128];
 	// Clear the main canvas' selection array to be on the safe side, since we might have deleted an atom in it
-	gui.mainView.clearSubselection();
+	gui.mainView.clearPicked();
 	Model *m = aten.currentModel()->renderSource();
 	sprintf(s,"Delete %i atom%s\n",m->nSelected(),(m->nSelected() == 1 ? "" : "s"));
 	m->beginUndostate(s);

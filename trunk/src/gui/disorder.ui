@@ -356,6 +356,12 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="font" >
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
        <property name="text" >
         <string>Build</string>
        </property>
@@ -421,6 +427,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>ComponentTable</tabstop>
+  <tabstop>ComponentRegionCombo</tabstop>
+  <tabstop>CentreXSpin</tabstop>
+  <tabstop>CentreYSpin</tabstop>
+  <tabstop>CentreZSpin</tabstop>
+  <tabstop>SizeXSpin</tabstop>
+  <tabstop>SizeYSpin</tabstop>
+  <tabstop>SizeZSpin</tabstop>
+  <tabstop>CentreFracCheck</tabstop>
+  <tabstop>SizeFracCheck</tabstop>
+  <tabstop>ShowRegionsCheck</tabstop>
+  <tabstop>DisorderStartButton</tabstop>
+  <tabstop>DisorderCyclesSpin</tabstop>
+  <tabstop>VDWScaleSpin</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

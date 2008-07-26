@@ -225,7 +225,7 @@ void Canvas::glSubsel3d()
 	Atom::DrawStyle renderstyle, style_i;
 	Atom *i, *lastatom = NULL;
 	renderstyle = prefs.renderStyle();
-	ri = subselection_.first();
+	ri = pickedAtoms_.first();
 	while (ri != NULL)
 	{
 		i = ri->item;
