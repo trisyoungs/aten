@@ -268,11 +268,11 @@ void Canvas::createLists()
 	*/
 	// Enlarged sphere (for selections with DS_TUBE)
 	glNewList(list_[GLOB_SELTUBEATOM],GL_COMPILE);
-	  spherePrimitive(prefs.atomSize(Atom::TubeStyle)*prefs.selectionScale(), TRUE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle)*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SPHERE)
 	glNewList(list_[GLOB_SELSPHEREATOM],GL_COMPILE);
-	  spherePrimitive(prefs.atomSize(Atom::SphereStyle)*prefs.selectionScale(), TRUE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle)*prefs.selectionScale(), TRUE);
 	glEndList();
 	// Enlarged sphere (for selections with DS_SCALED)
 	glNewList(list_[GLOB_SELUNITATOM],GL_COMPILE);
@@ -292,11 +292,11 @@ void Canvas::createLists()
 	glEndList();
 	// Atom Sphere (for DS_TUBE)
 	glNewList(list_[GLOB_TUBEATOM],GL_COMPILE);
-	  spherePrimitive(prefs.atomSize(Atom::TubeStyle)*0.98, TRUE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::TubeStyle)*0.98, TRUE);
 	glEndList();
 	// Atom Sphere (for DS_SPHERE)
 	glNewList(list_[GLOB_SPHEREATOM],GL_COMPILE);
-	  spherePrimitive(prefs.atomSize(Atom::SphereStyle), TRUE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle), TRUE);
 	glEndList();
 	// Unit Atom Sphere (for DS_SCALED)
 	glNewList(list_[GLOB_UNITATOM],GL_COMPILE);
@@ -304,11 +304,11 @@ void Canvas::createLists()
 	glEndList();
 	// Wire Atom Sphere (for DS_TUBE)
 	glNewList(list_[GLOB_WIRETUBEATOM],GL_COMPILE);
-	  spherePrimitive(prefs.tubeSize()*1.1, FALSE);
+	  spherePrimitive(prefs.bondRadius()*1.1, FALSE);
 	glEndList();
 	// Wire Atom Sphere (for DS_SPHERE)
 	glNewList(list_[GLOB_WIRESPHEREATOM],GL_COMPILE);
-	  spherePrimitive(prefs.atomSize(Atom::SphereStyle)*1.1, FALSE);
+	  spherePrimitive(prefs.atomStyleRadius(Atom::SphereStyle)*1.1, FALSE);
 	glEndList();
 	// Wire Unit Atom Sphere (for DS_SCALED)
 	glNewList(list_[GLOB_WIREUNITATOM],GL_COMPILE);

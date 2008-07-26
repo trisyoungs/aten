@@ -145,11 +145,11 @@ Prefs::Prefs()
 {
 	// Rendering - Style
 	colourScheme_ = Prefs::ElementScheme;
-	atomSize_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
-	atomSize_[Atom::TubeStyle] = 0.15;
-	atomSize_[Atom::SphereStyle] = 0.35;
-	atomSize_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
-	tubeSize_ = 0.15;
+	atomStyleRadius_[Atom::StickStyle] = 0.1;      // Only used as a selection radius
+	atomStyleRadius_[Atom::TubeStyle] = 0.15;
+	atomStyleRadius_[Atom::SphereStyle] = 0.35;
+	atomStyleRadius_[Atom::ScaledStyle] = 1.0;     // Used as a general scaling factor for all atoms
+	bondRadius_ = 0.15;
 	selectionScale_ = 1.5;
 	globeSize_ = 75;
 	atomDetail_ = 10;
@@ -420,7 +420,7 @@ double Prefs::screenRadius(Atom *i)
 	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
 	Atom::DrawStyle dstyle;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
-	return (dstyle == Atom::ScaledStyle) ? (elements.atomicRadius(i) * atomSize_[Atom::ScaledStyle]) : atomSize_[dstyle];
+	return (dstyle == Atom::ScaledStyle) ? (elements.atomicRadius(i) * atomStyleRadius_[Atom::ScaledStyle]) : atomStyleRadius_[dstyle];
 }
 
 /*
@@ -428,27 +428,27 @@ double Prefs::screenRadius(Atom *i)
 */
 
 // Sets the specified atom size to the given value
-void Prefs::setAtomSize(Atom::DrawStyle ds, double f)
+void Prefs::setAtomStyleRadius(Atom::DrawStyle ds, double f)
 {
-	atomSize_[(int)ds] = f;
+	atomStyleRadius_[(int)ds] = f;
 }
 
 // Return the specified atom size
-GLdouble Prefs::atomSize(Atom::DrawStyle ds)
+GLdouble Prefs::atomStyleRadius(Atom::DrawStyle ds)
 {
-	return atomSize_[(int)ds];
+	return atomStyleRadius_[(int)ds];
 }
 
 // Sets the tube size in DS_TUBE
-void Prefs::setTubeSize(double f)
+void Prefs::setBondRadius(double f)
 {
-	tubeSize_ = f;
+	bondRadius_ = f;
 }
 
 // Return the tube size used in DS_TUBE
-GLdouble Prefs::tubeSize()
+GLdouble Prefs::bondRadius()
 {
-	return tubeSize_;
+	return bondRadius_;
 }
 
 // Sets the detail for atom quadrics

@@ -265,7 +265,7 @@ int CommandData::function_CA_MOUSE(Command *&c, Bundle &obj)
 int CommandData::function_CA_RADIUS(Command *&c, Bundle &obj)
 {
 	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
-	if (ds != Atom::nDrawStyles) prefs.setAtomSize(ds, c->argd(1));
+	if (ds != Atom::nDrawStyles) prefs.setAtomStyleRadius(ds, c->argd(1));
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }

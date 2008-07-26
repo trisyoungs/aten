@@ -61,7 +61,7 @@ class AtenPrefs : public QDialog
 	void on_TubeRadiusSpin_valueChanged(double value);
 	void on_SphereRadiusSpin_valueChanged(double value);
 	void on_ScaledRadiusSpin_valueChanged(double value);
-	void on_TubeBondSizeSpin_valueChanged(double value);
+	void on_BondRadiusSpin_valueChanged(double value);
 	void on_SelectionScaleSpin_valueChanged(double value);
 	void on_AtomQualitySpin_valueChanged(int value);
 	void on_BondQualitySpin_valueChanged(int value);

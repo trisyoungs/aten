@@ -67,11 +67,11 @@ void AtenPrefs::setControls()
 	ui.ElementList->setCurrentRow(0);
 
 	// Set controls in view page
-	ui.StickRadiusSpin->setValue(prefs.atomSize(Atom::StickStyle));
-	ui.TubeRadiusSpin->setValue(prefs.atomSize(Atom::TubeStyle));
-	ui.SphereRadiusSpin->setValue(prefs.atomSize(Atom::SphereStyle));
-	ui.ScaledRadiusSpin->setValue(prefs.atomSize(Atom::ScaledStyle));
-	ui.TubeBondSizeSpin->setValue(prefs.tubeSize());
+	ui.StickRadiusSpin->setValue(prefs.atomStyleRadius(Atom::StickStyle));
+	ui.TubeRadiusSpin->setValue(prefs.atomStyleRadius(Atom::TubeStyle));
+	ui.SphereRadiusSpin->setValue(prefs.atomStyleRadius(Atom::SphereStyle));
+	ui.ScaledRadiusSpin->setValue(prefs.atomStyleRadius(Atom::ScaledStyle));
+	ui.BondRadiusSpin->setValue(prefs.bondRadius());
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
 	ui.AtomQualitySpin->setValue(prefs.atomDetail());
 	ui.BondQualitySpin->setValue(prefs.bondDetail());
@@ -217,7 +217,7 @@ void AtenPrefs::updateAfterViewPrefs()
 void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value)
 {
 	if (refreshing_) return;
-	prefs.setAtomSize(ds, value);
+	prefs.setAtomStyleRadius(ds, value);
 	updateAfterViewPrefs();
 }
 
@@ -241,9 +241,9 @@ void AtenPrefs::on_ScaledRadiusSpin_valueChanged(double value)
 	setRadiusChanged(Atom::ScaledStyle, value);
 }
 
-void AtenPrefs::on_TubeBondSizeSpin_valueChanged(double value)
+void AtenPrefs::on_BondRadiusSpin_valueChanged(double value)
 {
-	prefs.setTubeSize(value);
+	prefs.setBondRadius(value);
 	updateAfterViewPrefs();
 }
 

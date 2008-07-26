@@ -85,7 +85,7 @@ void Canvas::renderModelAtoms()
 		  }
 		  else style_i = renderstyle;
 		  // Get atom radius
-		  radius = prefs.atomSize(style_i);
+		  radius = prefs.atomStyleRadius(style_i);
 		  if (style_i == Atom::ScaledStyle) radius *= elements.atomicRadius(i);
 		  /*
 		  // Draw the atom.
@@ -126,7 +126,7 @@ void Canvas::renderModelAtoms()
 			if (style_i != Atom::StickStyle)
 			{
 				// Draw cylinder bonds.
-				bondradius = (style_i == Atom::TubeStyle ? prefs.atomSize(style_i) : prefs.tubeSize());
+				bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
 				switch (bref->item->order())
 				{
 					case (Bond::Single):	// Single bond
@@ -261,7 +261,7 @@ void Canvas::renderModelAtoms()
 			rij = rj.magnitude() * 0.5;
 			rj *= 0.5;
 			// Draw cylinder bonds.
-			bondradius = (style_i == Atom::TubeStyle ? prefs.atomSize(style_i) : prefs.tubeSize());
+			bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
 			switch (bref->item->order())
 			{
 				case (Bond::Single):	// Single bond
