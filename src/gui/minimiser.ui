@@ -146,6 +146,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="MinimiseButton" >
+            <property name="font" >
+             <font>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
             <property name="text" >
              <string>Minimise</string>
             </property>
@@ -180,7 +186,7 @@
         </sizepolicy>
        </property>
        <property name="title" >
-        <string>Converge Criteria</string>
+        <string>Convergence Criteria</string>
        </property>
        <layout class="QGridLayout" >
         <property name="margin" >
@@ -189,66 +195,6 @@
         <property name="spacing" >
          <number>4</number>
         </property>
-        <item row="0" column="0" >
-         <widget class="QLabel" name="label_9" >
-          <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>Energy:</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1" >
-         <widget class="QLabel" name="label_45" >
-          <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>1.0E</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1" >
-         <widget class="QLabel" name="label_26" >
-          <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>1.0E</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0" >
-         <widget class="QLabel" name="label_10" >
-          <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>1</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text" >
-           <string>RMS Force:</string>
-          </property>
-         </widget>
-        </item>
         <item row="0" column="2" >
          <widget class="QSpinBox" name="EnergyConvergeSpin" >
           <property name="sizePolicy" >
@@ -293,6 +239,79 @@
            <number>-4</number>
           </property>
          </widget>
+        </item>
+        <item row="0" column="1" >
+         <widget class="QLabel" name="label_26" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>1.0E</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" >
+         <widget class="QLabel" name="label_9" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>Energy:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1" >
+         <widget class="QLabel" name="label_45" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>1.0E</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0" >
+         <widget class="QLabel" name="label_10" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>RMS Force:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" >
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </widget>
@@ -483,6 +502,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>MinimiserMethodCombo</tabstop>
+  <tabstop>MinimiseCyclesSpin</tabstop>
+  <tabstop>MinimiseButton</tabstop>
+  <tabstop>EnergyConvergeSpin</tabstop>
+  <tabstop>ForceConvergeSpin</tabstop>
+  <tabstop>SDLineToleranceSpin</tabstop>
+  <tabstop>CGLineToleranceSpin</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc" />
  </resources>

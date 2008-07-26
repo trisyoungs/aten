@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>208</width>
-    <height>230</height>
+    <height>198</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -33,10 +33,10 @@
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>2</number>
        </property>
        <property name="spacing" >
-        <number>6</number>
+        <number>4</number>
        </property>
        <item>
         <layout class="QHBoxLayout" >
@@ -224,10 +224,10 @@
        <item>
         <layout class="QHBoxLayout" >
          <property name="margin" >
-          <number>0</number>
+          <number>2</number>
          </property>
          <property name="spacing" >
-          <number>6</number>
+          <number>4</number>
          </property>
          <item>
           <widget class="QCheckBox" name="CellReplicateFoldCheck" >
@@ -284,6 +284,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="CellReplicateButton" >
+           <property name="font" >
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="toolTip" >
             <string>Replicate current cell</string>
            </property>
@@ -315,10 +321,10 @@
       </attribute>
       <layout class="QVBoxLayout" >
        <property name="margin" >
-        <number>9</number>
+        <number>2</number>
        </property>
        <property name="spacing" >
-        <number>6</number>
+        <number>4</number>
        </property>
        <item>
         <layout class="QGridLayout" >
@@ -435,6 +441,13 @@
              <height>0</height>
             </size>
            </property>
+           <property name="font" >
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="toolTip" >
             <string>Scale current cell</string>
            </property>
@@ -464,6 +477,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>CellTransformTabs</tabstop>
+  <tabstop>CellReplicateNegXSpin</tabstop>
+  <tabstop>CellReplicatePosXSpin</tabstop>
+  <tabstop>CellReplicateNegYSpin</tabstop>
+  <tabstop>CellReplicatePosYSpin</tabstop>
+  <tabstop>CellReplicateNegZSpin</tabstop>
+  <tabstop>CellReplicatePosZSpin</tabstop>
+  <tabstop>CellReplicateFoldCheck</tabstop>
+  <tabstop>CellReplicateTrimCheck</tabstop>
+  <tabstop>CellReplicateButton</tabstop>
+  <tabstop>CellScaleXSpin</tabstop>
+  <tabstop>CellScaleYSpin</tabstop>
+  <tabstop>CellScaleZSpin</tabstop>
+  <tabstop>CellScaleButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc" />
  </resources>

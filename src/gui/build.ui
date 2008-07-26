@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>189</width>
-    <height>142</height>
+    <width>165</width>
+    <height>114</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -179,6 +179,12 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="font" >
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
            <property name="toolTip" >
             <string>Create a new atom at th e specified coordinates (with element defined above)</string>
            </property>
@@ -195,6 +201,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>AtomXCoordSpin</tabstop>
+  <tabstop>AtomYCoordSpin</tabstop>
+  <tabstop>AtomZCoordSpin</tabstop>
+  <tabstop>AddAtomFractionalCheck</tabstop>
+  <tabstop>AddAtomButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

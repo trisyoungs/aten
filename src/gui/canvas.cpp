@@ -24,6 +24,7 @@
 #include "gui/gui.h"
 #include "gui/canvas.h"
 #include "gui/tcanvas.uih"
+#include "gui/mainwindow.h"
 #include "render/gl2ps.h"
 #include "model/model.h"
 
@@ -49,12 +50,15 @@ Canvas::Canvas()
 	selectedMode_ = Canvas::SelectAction;
 	list_[0] = 0;
 	contextWidget_ = NULL;
-	subselectEnabled_ = FALSE;
+	pickEnabled_ = FALSE;
 	for (int i=0; i<3; i++)
 	{
 		mouseButton_[i] = FALSE;
 		keyModifier_[i] = FALSE;
 	}
+	actionBeforePick_ = NULL;
+	pickAtomsCallback_ = NULL;
+	nAtomsToPick_ = -1;
 }
 
 // Set the internal name of the canvas
@@ -587,10 +591,10 @@ Atom *Canvas::atomHover()
 	return atomHover_;
 }
 
-// Clears the subsel of atoms
-void Canvas::clearSubselection()
+// Clears the list of picked atoms
+void Canvas::clearPicked()
 {
-	subselection_.clear();
+	pickedAtoms_.clear();
 }
 
 // Set the active mode to the current user mode
@@ -603,4 +607,34 @@ void Canvas::useSelectedMode()
 Canvas::UserAction Canvas::selectedMode()
 {
 	return selectedMode_;
+}
+
+// Enter picking mode
+void Canvas::beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*))
+{
+	msg.enter("Canvas::beginManualPick");
+	// End old mode
+	endManualPick(FALSE);
+	// Store the current usermode, unless it is already PickAtomsAction
+	if (selectedMode_ != Canvas::ManualPickAction) actionBeforePick_ = gui.mainWindow->uaGroup->checkedAction();
+	setSelectedMode(Canvas::ManualPickAction);
+	gui.mainWindow->dummyToolButton->trigger();
+	pickAtomsCallback_ = callback;
+	nAtomsToPick_ = natoms;
+	msg.exit("Canvas::beginManualPick");
+}
+
+// End manual picking
+void Canvas::endManualPick(bool resetaction)
+{
+	// If a previous callback was defined then call it before we move on
+	if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
+	pickAtomsCallback_ = NULL;
+	if (resetaction)
+	{
+		if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->trigger();
+		else actionBeforePick_->trigger();
+	}
+	pickedAtoms_.clear();
+	nAtomsToPick_ = -1;
 }

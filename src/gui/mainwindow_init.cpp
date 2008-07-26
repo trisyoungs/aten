@@ -150,6 +150,10 @@ void AtenForm::finaliseUi()
 	uaGroup->addAction(ui.actionMeasureDistance);
 	uaGroup->addAction(ui.actionMeasureAngle);
 	uaGroup->addAction(ui.actionMeasureTorsion);
+	// Invisible tool button for PickAtomsAction
+	dummyToolButton = new QAction(this);
+	uaGroup->addAction(dummyToolButton);
+	
 
 	// Create a subgroup for the element select buttons
 	QActionGroup *elementGroup = new QActionGroup(this);

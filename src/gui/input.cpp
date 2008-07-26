@@ -32,13 +32,13 @@ void Canvas::informMouseDown(Prefs::MouseButton button, double x, double y)
 	rMouseUp_.set(x,y,0.0);
 	// Determine if there is an atom under the mouse
 	atomHover_ = displayModel_->atomOnScreen(x,y);
-	// If a model is being rendered, perform atom selection (if enabled)
-	if (subselectEnabled_ && (atomHover_ != NULL))
+	// Perform atom picking before entering mode (if required)
+	if (pickEnabled_ && (atomHover_ != NULL))
 	{
 		// Don't add the same atom more than once
-		if (subselection_.search(atomHover_) == NULL)
+		if (pickedAtoms_.search(atomHover_) == NULL)
 		{
-			subselection_.add(atomHover_);
+			pickedAtoms_.add(atomHover_);
 			msg.print(Messenger::Verbose,"Adding atom %i to canvas subselection.\n",atomHover_);
 		}
 		else msg.print(Messenger::Verbose,"Atom %i is already in canvas subselection.\n",atomHover_);
@@ -157,16 +157,18 @@ void Canvas::informKeyUp(Canvas::KeyCode key)
 void Canvas::setSelectedMode(UserAction ua)
 {
 	msg.enter("Canvas::setSelectedMode");
-	selectedMode_ = ua;
 	if (displayModel_ == NULL)
 	{
 		printf("Pointless Canvas::setSelectedMode - datamodel == NULL.\n");
 		msg.exit("Canvas::setSelectedMode");
 		return;
 	}
-	// Prepare canvas / model depending on the mode
+	// If previous action was Canvas::ManualPickAction then finalise it first
+	if (selectedMode_ == Canvas::ManualPickAction) endManualPick(FALSE);
+	// Prepare canvas for the selected action
 	switch (ua)
 	{
+		case (Canvas::ManualPickAction):
 		case (Canvas::MeasureDistanceAction):
 		case (Canvas::MeasureAngleAction):
 		case (Canvas::MeasureTorsionAction):
@@ -174,13 +176,15 @@ void Canvas::setSelectedMode(UserAction ua)
 		case (Canvas::EditBondDoubleAction):
 		case (Canvas::EditBondTripleAction):
 		case (Canvas::EditDeleteBondAction):
-			subselectEnabled_ = TRUE;
-			subselection_.clear();
+			pickEnabled_ = TRUE;
+			pickedAtoms_.clear();
 			break;
 		default:
-			subselectEnabled_ = FALSE;
+			pickEnabled_ = FALSE;
 			break;
 	}
+	// Finally, set the mode and refresh
+	selectedMode_ = ua;
 	gui.mainView.postRedisplay();
 	msg.exit("Canvas::setSelectedMode");
 }
@@ -268,8 +272,8 @@ void Canvas::beginMode(Prefs::MouseButton button)
 			   Instead, store pointers to all selected atoms in a Reflist, along
 			   with their current positions.
 			*/
-			rSelection_.clear();
-			for (Atom *i = displayModel_->firstSelected(); i != NULL; i = i->nextSelected()) rSelection_.add(i, i->r());
+			oldPositions_.clear();
+			for (Atom *i = displayModel_->firstSelected(); i != NULL; i = i->nextSelected()) oldPositions_.add(i, i->r());
 			displayModel_->prepareTransform();
 		}
 	}
@@ -352,32 +356,32 @@ void Canvas::endMode(Prefs::MouseButton button)
 		// Measurements
 		case (Canvas::MeasureDistanceAction):
 			// Must be two atoms in subselection to continue
-			if (subselection_.nItems() != 2) break;
+			if (pickedAtoms_.nItems() != 2) break;
 			displayModel_->beginUndostate("Measure Distance");
-			subselection_.fillArray(2,atoms);
+			pickedAtoms_.fillArray(2,atoms);
 			displayModel_->measureDistance(atoms[0],atoms[1]);
 			displayModel_->endUndostate();
-			subselection_.clear();
+			pickedAtoms_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		case (Canvas::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
-			if (subselection_.nItems() != 3) break;
+			if (pickedAtoms_.nItems() != 3) break;
 			displayModel_->beginUndostate("Measure Angle");
-			subselection_.fillArray(3,atoms);
+			pickedAtoms_.fillArray(3,atoms);
 			displayModel_->measureAngle(atoms[0],atoms[1],atoms[2]);
 			displayModel_->endUndostate();
-			subselection_.clear();
+			pickedAtoms_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		case (Canvas::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
-			if (subselection_.nItems() != 4) break;
+			if (pickedAtoms_.nItems() != 4) break;
 			displayModel_->beginUndostate("Measure Torsion");
-			subselection_.fillArray(4,atoms);
+			pickedAtoms_.fillArray(4,atoms);
 			displayModel_->measureTorsion(atoms[0],atoms[1],atoms[2],atoms[3]);
 			displayModel_->endUndostate();
-			subselection_.clear();
+			pickedAtoms_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		// Draw single atom
@@ -440,8 +444,8 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (Canvas::EditBondDoubleAction):
 		case (Canvas::EditBondTripleAction):
 			// Must be two atoms in subselection to continue
-			if (subselection_.nItems() != 2) break;
-			subselection_.fillArray(2,atoms);
+			if (pickedAtoms_.nItems() != 2) break;
+			pickedAtoms_.fillArray(2,atoms);
 			b = atoms[0]->findBond(atoms[1]);
 			if (b == NULL)
 			{
@@ -455,20 +459,21 @@ void Canvas::endMode(Prefs::MouseButton button)
 				displayModel_->changeBond(b,Bond::BondType(endingMode-Canvas::EditBondSingleAction+1));
 				displayModel_->endUndostate();
 			}
-			subselection_.clear();
+			pickedAtoms_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
+		// Delete bond
 		case (Canvas::EditDeleteBondAction):
 			// Must be two atoms in subselection to continue
-			if (subselection_.nItems() != 2) break;
-			subselection_.fillArray(2,atoms);
+			if (pickedAtoms_.nItems() != 2) break;
+			pickedAtoms_.fillArray(2,atoms);
 			if (atoms[0]->findBond(atoms[1]) != NULL)
 			{
 				displayModel_->beginUndostate("Delete Bond");
 				displayModel_->unbondAtoms(atoms[0],atoms[1]);
 				displayModel_->endUndostate();
 			}
-			subselection_.clear();
+			pickedAtoms_.clear();
 			gui.modelChanged(FALSE,FALSE,FALSE);
 			break;
 		// Misc
@@ -485,9 +490,9 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (Canvas::TransformRotateXYAction):
 		case (Canvas::TransformRotateZAction):
 		case (Canvas::TransformTranslateAction):
-			// Clear list of rSelection_ if nothing was moved
-			if (!hasMoved_) rSelection_.clear();
-			displayModel_->finalizeTransform(rSelection_);
+			// Clear list of oldPositions_ if nothing was moved
+			if (!hasMoved_) oldPositions_.clear();
+			displayModel_->finalizeTransform(oldPositions_);
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// View changes (no action)
@@ -495,6 +500,13 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (Canvas::RotateZAction):
 		case (Canvas::TranslateAction):
 		case (Canvas::ZoomAction):
+			break;
+		// Manual picking mode (for toolwindow axis definitions etc.)
+		case (Canvas::ManualPickAction):
+			// Have we picked the right number of atoms?
+			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
+			// Call callback and re-set used mode (if callback was defined)
+			endManualPick(TRUE);
 			break;
 		default:
 			printf("No endMode handler defined for UserAction %i.\n", endingMode);

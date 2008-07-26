@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>408</width>
-    <height>191</height>
+    <height>165</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -605,6 +605,18 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>CellLengthASpin</tabstop>
+  <tabstop>CellLengthBSpin</tabstop>
+  <tabstop>CellLengthCSpin</tabstop>
+  <tabstop>CellAngleASpin</tabstop>
+  <tabstop>CellAngleBSpin</tabstop>
+  <tabstop>CellAngleCSpin</tabstop>
+  <tabstop>CellSpacegroupEdit</tabstop>
+  <tabstop>CellSpacegroupPackButton</tabstop>
+  <tabstop>CellSpacegroupRemoveButton</tabstop>
+  <tabstop>CellSpacegroupSetButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc" />
  </resources>

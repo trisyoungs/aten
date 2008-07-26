@@ -45,9 +45,9 @@ class AtenTransform : public QDialog
 	void on_DefineFromPlaneButton_clicked(bool on);
 	void on_ApplyTransformButton_clicked(bool on);
 	void on_RotateIntoButton_clicked(bool on);
-	void on_DefineSourceXButton_clicked(bool on);
-	void on_DefineSourceYButton_clicked(bool on);
-	void on_DefineSourceZButton_clicked(bool on);
+	void on_DefineSourceAButton_clicked(bool on);
+	void on_DefineSourceBButton_clicked(bool on);
+	void on_DefineSourceCButton_clicked(bool on);
 	void dialogFinished(int result);
 
 	/*
