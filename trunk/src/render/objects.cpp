@@ -225,8 +225,7 @@ void Canvas::glSubsel3d()
 	Atom::DrawStyle renderstyle, style_i;
 	Atom *i, *lastatom = NULL;
 	renderstyle = prefs.renderStyle();
-	ri = pickedAtoms_.first();
-	while (ri != NULL)
+	for (ri = pickedAtoms_.first(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 		ir = i->r();
@@ -254,8 +253,17 @@ void Canvas::glSubsel3d()
 				break;
 		  }
 		glPopMatrix();
+		// Draw line between this and last atom (if there was one)
+		if (lastatom != NULL)
+		{
+			glBegin(GL_LINES);
+			  ir = lastatom->rScreen();
+			  glVertex2d(ir.x, ir.y);
+			  ir = lastatom->rScreen();
+			  glVertex2d(ir.x, ir.y);
+			glEnd();
+		}
 		lastatom = i;
-		ri = ri->next;
 	}
 }
 

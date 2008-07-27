@@ -618,7 +618,7 @@ void Canvas::beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*))
 	// Store the current usermode, unless it is already PickAtomsAction
 	if (selectedMode_ != Canvas::ManualPickAction) actionBeforePick_ = gui.mainWindow->uaGroup->checkedAction();
 	setSelectedMode(Canvas::ManualPickAction);
-	gui.mainWindow->dummyToolButton->trigger();
+	gui.mainWindow->dummyToolButton->activate(QAction::Trigger);
 	pickAtomsCallback_ = callback;
 	nAtomsToPick_ = natoms;
 	msg.exit("Canvas::beginManualPick");
@@ -627,14 +627,17 @@ void Canvas::beginManualPick(int natoms, void (*callback)(Reflist<Atom,int>*))
 // End manual picking
 void Canvas::endManualPick(bool resetaction)
 {
+	msg.enter("Canvas::endManualPick");
 	// If a previous callback was defined then call it before we move on
 	if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
 	pickAtomsCallback_ = NULL;
 	if (resetaction)
 	{
-		if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->trigger();
-		else actionBeforePick_->trigger();
+		if (actionBeforePick_ == NULL) gui.mainWindow->ui.actionSelectAtoms->activate(QAction::Trigger);
+		else actionBeforePick_->activate(QAction::Trigger);
 	}
 	pickedAtoms_.clear();
 	nAtomsToPick_ = -1;
+	gui.mainView.postRedisplay();
+	msg.exit("Canvas::endManualPick");
 }

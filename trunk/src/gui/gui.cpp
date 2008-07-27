@@ -173,7 +173,7 @@ void GuiQt::run()
 		tabid = mainWindow->ui.ModelTabs->addTab(m->name());
 		if (!prefs.keepView()) m->resetView();
 		m->calculateViewMatrix();
-		m->projectAll();
+		//m->projectAll();
 	}
 
 	gui.mainView.postRedisplay();

@@ -161,6 +161,8 @@ Atom *Model::atomOnScreen(double x1, double y1)
 		if (i->isHidden()) continue;
 		wr = -i->rWorld();
 		sr = i->rScreen();
+	//	printf("Screen coords:");
+	//	sr.print();
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));

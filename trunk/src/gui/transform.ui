@@ -192,6 +192,12 @@
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="minimumSize" >
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
                 <property name="maximumSize" >
                  <size>
                   <width>24</width>
@@ -369,6 +375,12 @@
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
+                <property name="minimumSize" >
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
                 <property name="maximumSize" >
                  <size>
                   <width>24</width>
@@ -376,7 +388,7 @@
                  </size>
                 </property>
                 <property name="toolTip" >
-                 <string>Define translation axis from current selection</string>
+                 <string>Define translation axis between current origin and centre of current selection</string>
                 </property>
                 <property name="text" >
                  <string/>
@@ -389,6 +401,40 @@
                   <width>20</width>
                   <height>20</height>
                  </size>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2" >
+               <widget class="QPushButton" name="RotatePickAxisButton" >
+                <property name="minimumSize" >
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="maximumSize" >
+                 <size>
+                  <width>24</width>
+                  <height>24</height>
+                 </size>
+                </property>
+                <property name="toolTip" >
+                 <string>Define rotation axis from two picked atoms</string>
+                </property>
+                <property name="text" >
+                 <string/>
+                </property>
+                <property name="icon" >
+                 <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+                </property>
+                <property name="iconSize" >
+                 <size>
+                  <width>20</width>
+                  <height>20</height>
+                 </size>
+                </property>
+                <property name="checkable" >
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -451,6 +497,12 @@
              <verstretch>0</verstretch>
             </sizepolicy>
            </property>
+           <property name="minimumSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
            <property name="maximumSize" >
             <size>
              <width>24</width>
@@ -486,6 +538,12 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
+           </property>
+           <property name="minimumSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
            <property name="maximumSize" >
             <size>
@@ -553,7 +611,7 @@
               <number>2</number>
              </property>
              <item row="2" column="1" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixCXSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixCXSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -577,7 +635,7 @@
               </widget>
              </item>
              <item row="1" column="2" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixBYSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixBYSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -604,7 +662,10 @@
               </widget>
              </item>
              <item row="0" column="4" >
-              <widget class="QPushButton" name="DefineFromPlaneButton" >
+              <widget class="QPushButton" name="TransformDefineFromPlaneButton" >
+               <property name="enabled" >
+                <bool>false</bool>
+               </property>
                <property name="maximumSize" >
                 <size>
                  <width>16777215</width>
@@ -626,7 +687,7 @@
               </widget>
              </item>
              <item row="4" column="3" >
-              <widget class="QDoubleSpinBox" name="OriginZSpin" >
+              <widget class="QDoubleSpinBox" name="TransformOriginZSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -647,7 +708,7 @@
               </widget>
              </item>
              <item row="2" column="4" >
-              <widget class="QPushButton" name="ApplyTransformButton" >
+              <widget class="QPushButton" name="TransformApplyButton" >
                <property name="font" >
                 <font>
                  <weight>75</weight>
@@ -663,7 +724,7 @@
               </widget>
              </item>
              <item row="4" column="4" >
-              <widget class="QPushButton" name="OriginCellCentreButton" >
+              <widget class="QPushButton" name="TransformOriginCellCentreButton" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>1</hsizetype>
@@ -681,7 +742,7 @@
               </widget>
              </item>
              <item row="4" column="1" >
-              <widget class="QDoubleSpinBox" name="OriginXSpin" >
+              <widget class="QDoubleSpinBox" name="TransformOriginXSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -702,7 +763,7 @@
               </widget>
              </item>
              <item row="1" column="0" >
-              <widget class="QToolButton" name="DefineSourceBButton" >
+              <widget class="QToolButton" name="TransformDefineSourceBButton" >
                <property name="maximumSize" >
                 <size>
                  <width>24</width>
@@ -730,7 +791,7 @@
               </widget>
              </item>
              <item row="0" column="2" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixAYSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixAYSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -754,7 +815,7 @@
               </widget>
              </item>
              <item row="4" column="0" >
-              <widget class="QToolButton" name="DefineOriginButton" >
+              <widget class="QToolButton" name="TransformDefineOriginButton" >
                <property name="maximumSize" >
                 <size>
                  <width>24</width>
@@ -779,7 +840,7 @@
               </widget>
              </item>
              <item row="2" column="2" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixCYSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixCYSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -803,7 +864,7 @@
               </widget>
              </item>
              <item row="1" column="3" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixBZSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixBZSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -827,7 +888,7 @@
               </widget>
              </item>
              <item row="0" column="3" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixAZSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixAZSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -851,7 +912,7 @@
               </widget>
              </item>
              <item row="1" column="1" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixBXSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixBXSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -875,7 +936,7 @@
               </widget>
              </item>
              <item row="2" column="0" >
-              <widget class="QToolButton" name="DefineSourceCButton" >
+              <widget class="QToolButton" name="TransformDefineSourceCButton" >
                <property name="maximumSize" >
                 <size>
                  <width>24</width>
@@ -903,7 +964,7 @@
               </widget>
              </item>
              <item row="4" column="2" >
-              <widget class="QDoubleSpinBox" name="OriginYSpin" >
+              <widget class="QDoubleSpinBox" name="TransformOriginYSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -924,7 +985,7 @@
               </widget>
              </item>
              <item row="0" column="1" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixAXSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixAXSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -951,7 +1012,7 @@
               </widget>
              </item>
              <item row="0" column="0" >
-              <widget class="QToolButton" name="DefineSourceAButton" >
+              <widget class="QToolButton" name="TransformDefineSourceAButton" >
                <property name="maximumSize" >
                 <size>
                  <width>24</width>
@@ -979,7 +1040,7 @@
               </widget>
              </item>
              <item row="2" column="3" >
-              <widget class="QDoubleSpinBox" name="SourceMatrixCZSpin" >
+              <widget class="QDoubleSpinBox" name="TransformSourceMatrixCZSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -1035,8 +1096,171 @@
              <property name="spacing" >
               <number>2</number>
              </property>
+             <item row="1" column="2" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixBYSpin" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="decimals" >
+                <number>5</number>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
+               </property>
+               <property name="minimum" >
+                <double>-10.000000000000000</double>
+               </property>
+               <property name="singleStep" >
+                <double>0.100000000000000</double>
+               </property>
+               <property name="value" >
+                <double>1.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4" >
+              <widget class="QPushButton" name="TransformRotateIntoButton" >
+               <property name="enabled" >
+                <bool>false</bool>
+               </property>
+               <property name="font" >
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text" >
+                <string>Rotate</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixAYSpin" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="decimals" >
+                <number>5</number>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
+               </property>
+               <property name="minimum" >
+                <double>-10.000000000000000</double>
+               </property>
+               <property name="singleStep" >
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixCYSpin" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="decimals" >
+                <number>5</number>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
+               </property>
+               <property name="minimum" >
+                <double>-10.000000000000000</double>
+               </property>
+               <property name="singleStep" >
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
              <item row="1" column="1" >
-              <widget class="QDoubleSpinBox" name="DestMatrixBYSpin" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixBXSpin" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="decimals" >
+                <number>5</number>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
+               </property>
+               <property name="minimum" >
+                <double>-10.000000000000000</double>
+               </property>
+               <property name="singleStep" >
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixBZSpin" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="decimals" >
+                <number>5</number>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
+               </property>
+               <property name="minimum" >
+                <double>-10.000000000000000</double>
+               </property>
+               <property name="singleStep" >
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixAZSpin" >
+               <property name="sizePolicy" >
+                <sizepolicy>
+                 <hsizetype>7</hsizetype>
+                 <vsizetype>0</vsizetype>
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="decimals" >
+                <number>5</number>
+               </property>
+               <property name="maximum" >
+                <double>10.000000000000000</double>
+               </property>
+               <property name="minimum" >
+                <double>-10.000000000000000</double>
+               </property>
+               <property name="singleStep" >
+                <double>0.100000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixCZSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -1063,7 +1287,7 @@
               </widget>
              </item>
              <item row="2" column="1" >
-              <widget class="QDoubleSpinBox" name="DestMatrixCYSpin" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixCXSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -1083,158 +1307,11 @@
                </property>
                <property name="singleStep" >
                 <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0" >
-              <widget class="QDoubleSpinBox" name="DestMatrixBXSpin" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="decimals" >
-                <number>5</number>
-               </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
-               <property name="minimum" >
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="singleStep" >
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="2" >
-              <widget class="QDoubleSpinBox" name="DestMatrixAZSpin" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="decimals" >
-                <number>5</number>
-               </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
-               <property name="minimum" >
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="singleStep" >
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0" >
-              <widget class="QDoubleSpinBox" name="DestMatrixAXSpin" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="decimals" >
-                <number>5</number>
-               </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
-               <property name="minimum" >
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="singleStep" >
-                <double>0.100000000000000</double>
-               </property>
-               <property name="value" >
-                <double>1.000000000000000</double>
                </property>
               </widget>
              </item>
              <item row="0" column="1" >
-              <widget class="QDoubleSpinBox" name="DestMatrixAYSpin" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="decimals" >
-                <number>5</number>
-               </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
-               <property name="minimum" >
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="singleStep" >
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0" >
-              <widget class="QDoubleSpinBox" name="DestMatrixCXSpin" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="decimals" >
-                <number>5</number>
-               </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
-               <property name="minimum" >
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="singleStep" >
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="2" >
-              <widget class="QDoubleSpinBox" name="DestMatrixBZSpin" >
-               <property name="sizePolicy" >
-                <sizepolicy>
-                 <hsizetype>7</hsizetype>
-                 <vsizetype>0</vsizetype>
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="decimals" >
-                <number>5</number>
-               </property>
-               <property name="maximum" >
-                <double>10.000000000000000</double>
-               </property>
-               <property name="minimum" >
-                <double>-10.000000000000000</double>
-               </property>
-               <property name="singleStep" >
-                <double>0.100000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="2" >
-              <widget class="QDoubleSpinBox" name="DestMatrixCZSpin" >
+              <widget class="QDoubleSpinBox" name="TransformTargetMatrixAXSpin" >
                <property name="sizePolicy" >
                 <sizepolicy>
                  <hsizetype>7</hsizetype>
@@ -1260,14 +1337,113 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="3" >
-              <widget class="QPushButton" name="RotateIntoButton" >
+             <item row="0" column="0" >
+              <widget class="QPushButton" name="TransformDefineTargetAButton" >
+               <property name="minimumSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
                <property name="text" >
-                <string>Rotate</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="checkable" >
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0" >
+              <widget class="QPushButton" name="TransformDefineTargetBButton" >
+               <property name="minimumSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="checkable" >
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0" >
+              <widget class="QPushButton" name="TransformDefineTargetCButton" >
+               <property name="minimumSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
+               </property>
+               <property name="text" >
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/basic/icons/basic_pick.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+               <property name="checkable" >
+                <bool>true</bool>
                </property>
               </widget>
              </item>
             </layout>
+           </item>
+           <item>
+            <spacer>
+             <property name="orientation" >
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" >
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>

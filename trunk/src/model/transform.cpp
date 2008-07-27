@@ -254,3 +254,19 @@ void Model::centre(double newx, double newy, double newz)
 	translateSelectionLocal(cog);
 	msg.exit("Model::centre");
 }
+
+// Matrix transform current selection
+void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix)
+{
+	msg.enter("Model::matrixTransformSelection");
+	Vec3<double> newr;
+	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected())
+	{
+		newr = i->r() - origin;
+		newr *= matrix;
+		positionAtom(i, newr);
+	}
+	logChange(Change::VisualLog);
+	projectSelection();
+	msg.exit("Model::matrixTransformSelection");
+}

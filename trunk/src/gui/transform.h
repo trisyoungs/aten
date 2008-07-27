@@ -39,15 +39,21 @@ class AtenTransform : public QDialog
 	void rotateSelection(double direction);
 	private slots:
 	void on_RotateDefineOriginButton_clicked(bool on);
+	void on_RotatePickAxisButton_clicked(bool on);
 	void on_RotateDefineAxisButton_clicked(bool on);
 	void on_RotateClockwiseButton_clicked(bool on);
 	void on_RotateAnticlockwiseButton_clicked(bool on);
-	void on_DefineFromPlaneButton_clicked(bool on);
-	void on_ApplyTransformButton_clicked(bool on);
 	void on_RotateIntoButton_clicked(bool on);
-	void on_DefineSourceAButton_clicked(bool on);
-	void on_DefineSourceBButton_clicked(bool on);
-	void on_DefineSourceCButton_clicked(bool on);
+	void on_TransformDefineSourceAButton_clicked(bool on);
+	void on_TransformDefineSourceBButton_clicked(bool on);
+	void on_TransformDefineSourceCButton_clicked(bool on);
+	void on_TransformDefineFromPlaneButton_clicked(bool on);
+	void on_TransformApplyButton_clicked(bool on);
+	void on_TransformOriginCellCentreButton_clicked(bool on);
+	void on_TransformDefineOriginButton_clicked(bool on);
+	void on_TransformDefineTargetAButton_clicked(bool on);
+	void on_TransformDefineTargetBButton_clicked(bool on);
+	void on_TransformDefineTargetCButton_clicked(bool on);
 	void dialogFinished(int result);
 
 	/*

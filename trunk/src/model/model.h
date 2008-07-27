@@ -619,6 +619,8 @@ class Model
 	void rotateSelectionVector(Vec3<double>, Vec3<double>, double);
 	// Mirror selection about specified axis
 	void mirrorSelectionLocal(int axis);
+	// Matrix transform current selection
+	void matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix);
 
 	/*
 	// Trajectory Frames
