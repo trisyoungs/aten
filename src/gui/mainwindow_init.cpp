@@ -152,6 +152,7 @@ void AtenForm::finaliseUi()
 	uaGroup->addAction(ui.actionMeasureTorsion);
 	// Invisible tool button for PickAtomsAction
 	dummyToolButton = new QAction(this);
+	dummyToolButton->setCheckable(TRUE);
 	uaGroup->addAction(dummyToolButton);
 	
 

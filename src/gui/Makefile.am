@@ -30,7 +30,7 @@ WIDGET_FUNCS = tcanvas_funcs.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp tlis
 
 CANVAS_FUNCS = canvas.cpp input.cpp
 
-libgui_a_SOURCES = $(CANVAS_FUNCS) $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(SUBWINDOW_FUNCS)
+libgui_a_SOURCES = $(WIDGET_UI) $(SUBWINDOW_UI) $(MAINWINDOW_UI) $(CANVAS_FUNCS) $(WIDGET_FUNCS) gui.cpp $(MAINWINDOW_FUNCS) $(SUBWINDOW_FUNCS)
 
 
 noinst_HEADERS = about.h atomlist.h build.h canvas.h celldefine.h celltransform.h disorder.h ffeditor.h forcefields.h glyphs.h grids.h gui.h loadmodel.h mainwindow.h minimiser.h position.h prefs.h selectelement.h selectpattern.h tcombobox.h tlistwidgetitem.h transform.h ttablewidgetitem.h ttreewidgetitem.h

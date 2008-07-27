@@ -81,6 +81,24 @@ void AtenTransform::on_RotateDefineAxisButton_clicked(bool on)
 	ui.RotateAxisZSpin->setValue(v.z);
 }
 
+void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
+{
+	gui.transformWindow->ui.RotatePickAxisButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r();
+	v -= picked->first()->item->r();
+	gui.transformWindow->ui.RotateAxisXSpin->setValue(v.x);
+	gui.transformWindow->ui.RotateAxisYSpin->setValue(v.y);
+	gui.transformWindow->ui.RotateAxisZSpin->setValue(v.z);
+}
+
+void AtenTransform::on_RotatePickAxisButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&rotatePickAxisButton_callback);
+}
+
 void AtenTransform::rotateSelection(double direction)
 {
 	Vec3<double> v, o;
@@ -101,79 +119,169 @@ void AtenTransform::rotateSelection(double direction)
 }
 
 /*
-// Matrix Transformations
+// Matrix Transformations - Apply matrix
 */
 
-void AtenTransform::on_DefineFromPlaneButton_clicked(bool on)
-{
-}
-
-void AtenTransform::on_ApplyTransformButton_clicked(bool on)
+void AtenTransform::on_TransformApplyButton_clicked(bool on)
 {
 	// Put values into our matrix...
-	Mat3<double> m;
-	m.set(0, ui.SourceMatrixAXSpin->value(), ui.SourceMatrixAYSpin->value(), ui.SourceMatrixAZSpin->value());
-	m.set(1, ui.SourceMatrixBXSpin->value(), ui.SourceMatrixBYSpin->value(), ui.SourceMatrixBZSpin->value());
-	m.set(2, ui.SourceMatrixCXSpin->value(), ui.SourceMatrixCYSpin->value(), ui.SourceMatrixCZSpin->value());
-
+	Mat3<double> mat;
+	mat.set(0, ui.TransformSourceMatrixAXSpin->value(), ui.TransformSourceMatrixAYSpin->value(), ui.TransformSourceMatrixAZSpin->value());
+	mat.set(1, ui.TransformSourceMatrixBXSpin->value(), ui.TransformSourceMatrixBYSpin->value(), ui.TransformSourceMatrixBZSpin->value());
+	mat.set(2, ui.TransformSourceMatrixCXSpin->value(), ui.TransformSourceMatrixCYSpin->value(), ui.TransformSourceMatrixCZSpin->value());
+	// ...and grab coordinate origin
+	Vec3<double> v;
+	v.set(ui.TransformOriginXSpin->value(), ui.TransformOriginYSpin->value(), ui.TransformOriginZSpin->value());
+	// Perform transformation
+	char s[128];
+	Model *m = aten.currentModel();
+	sprintf(s,"Transform %i atom(s)\n", m->nSelected());
+	m->beginUndostate(s);
+	m->matrixTransformSelection(v, mat);
+	m->endUndostate();
+	m->updateMeasurements();
+	gui.mainView.postRedisplay();
 }
+
+void transformDefineSourceAButton_callback(Reflist<Atom,int> *picked)
+{
+	gui.transformWindow->ui.TransformDefineSourceAButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r();
+	v -= picked->first()->item->r();
+	gui.transformWindow->ui.TransformSourceMatrixAXSpin->setValue(v.x);
+	gui.transformWindow->ui.TransformSourceMatrixAYSpin->setValue(v.y);
+	gui.transformWindow->ui.TransformSourceMatrixAZSpin->setValue(v.z);
+}
+
+void transformDefineSourceBButton_callback(Reflist<Atom,int> *picked)
+{
+	gui.transformWindow->ui.TransformDefineSourceBButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r();
+	v -= picked->first()->item->r();
+	gui.transformWindow->ui.TransformSourceMatrixBXSpin->setValue(v.x);
+	gui.transformWindow->ui.TransformSourceMatrixBYSpin->setValue(v.y);
+	gui.transformWindow->ui.TransformSourceMatrixBZSpin->setValue(v.z);
+}
+
+void transformDefineSourceCButton_callback(Reflist<Atom,int> *picked)
+{
+	gui.transformWindow->ui.TransformDefineSourceCButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r();
+	v -= picked->first()->item->r();
+	gui.transformWindow->ui.TransformSourceMatrixCXSpin->setValue(v.x);
+	gui.transformWindow->ui.TransformSourceMatrixCYSpin->setValue(v.y);
+	gui.transformWindow->ui.TransformSourceMatrixCZSpin->setValue(v.z);
+}
+
+void AtenTransform::on_TransformDefineSourceAButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&transformDefineSourceAButton_callback);
+}
+
+void AtenTransform::on_TransformDefineSourceBButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&transformDefineSourceBButton_callback);
+}
+
+void AtenTransform::on_TransformDefineSourceCButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&transformDefineSourceCButton_callback);
+}
+
+void AtenTransform::on_TransformDefineFromPlaneButton_clicked(bool on)
+{
+}
+
+void AtenTransform::on_TransformOriginCellCentreButton_clicked(bool on)
+{
+	Vec3<double> o;
+	if (aten.currentModel()->cell()->type() == Cell::NoCell) o.set(0.0,0.0,0.0);
+	else o = aten.currentModel()->cell()->centre();
+	ui.TransformOriginXSpin->setValue(o.x);
+	ui.TransformOriginYSpin->setValue(o.y);
+	ui.TransformOriginZSpin->setValue(o.z);
+}
+
+void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
+{
+	// Get geometric centre of selection
+	Vec3<double> v = aten.currentModel()->selectionCog();
+	// Set widgets
+	ui.TransformOriginXSpin->setValue(v.x);
+	ui.TransformOriginYSpin->setValue(v.y);
+	ui.TransformOriginZSpin->setValue(v.z);
+}
+
+/*
+// Matrix Transformation - Rotate Into
+*/
 
 void AtenTransform::on_RotateIntoButton_clicked(bool on)
 {
+	gui.mainView.postRedisplay();
 }
 
-void defineSourceAButton_callback(Reflist<Atom,int> *picked)
+void transformDefineTargetAButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.DefineSourceAButton->setChecked(FALSE);
+	gui.transformWindow->ui.TransformDefineTargetAButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
-	gui.transformWindow->ui.SourceMatrixAXSpin->setValue(v.x);
-	gui.transformWindow->ui.SourceMatrixAYSpin->setValue(v.y);
-	gui.transformWindow->ui.SourceMatrixAZSpin->setValue(v.z);
+	gui.transformWindow->ui.TransformTargetMatrixAXSpin->setValue(v.x);
+	gui.transformWindow->ui.TransformTargetMatrixAYSpin->setValue(v.y);
+	gui.transformWindow->ui.TransformTargetMatrixAZSpin->setValue(v.z);
 }
 
-void defineSourceBButton_callback(Reflist<Atom,int> *picked)
+void transformDefineTargetBButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.DefineSourceBButton->setChecked(FALSE);
+	gui.transformWindow->ui.TransformDefineTargetBButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
-	gui.transformWindow->ui.SourceMatrixBXSpin->setValue(v.x);
-	gui.transformWindow->ui.SourceMatrixBYSpin->setValue(v.y);
-	gui.transformWindow->ui.SourceMatrixBZSpin->setValue(v.z);
+	gui.transformWindow->ui.TransformTargetMatrixBXSpin->setValue(v.x);
+	gui.transformWindow->ui.TransformTargetMatrixBYSpin->setValue(v.y);
+	gui.transformWindow->ui.TransformTargetMatrixBZSpin->setValue(v.z);
 }
 
-void defineSourceCButton_callback(Reflist<Atom,int> *picked)
+void transformDefineTargetCButton_callback(Reflist<Atom,int> *picked)
 {
-	gui.transformWindow->ui.DefineSourceCButton->setChecked(FALSE);
+	gui.transformWindow->ui.TransformDefineTargetCButton->setChecked(FALSE);
 	// If there are not two atoms in the list then the mode must have been canceled
 	if (picked->nItems() != 2) return;
 	Vec3<double> v = picked->last()->item->r();
 	v -= picked->first()->item->r();
-	gui.transformWindow->ui.SourceMatrixCXSpin->setValue(v.x);
-	gui.transformWindow->ui.SourceMatrixCYSpin->setValue(v.y);
-	gui.transformWindow->ui.SourceMatrixCZSpin->setValue(v.z);
+	gui.transformWindow->ui.TransformTargetMatrixCXSpin->setValue(v.x);
+	gui.transformWindow->ui.TransformTargetMatrixCYSpin->setValue(v.y);
+	gui.transformWindow->ui.TransformTargetMatrixCZSpin->setValue(v.z);
 }
 
-void AtenTransform::on_DefineSourceAButton_clicked(bool on)
+void AtenTransform::on_TransformDefineTargetAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&defineSourceAButton_callback);
+	gui.mainView.beginManualPick(2,&transformDefineTargetAButton_callback);
 }
 
-void AtenTransform::on_DefineSourceBButton_clicked(bool on)
+void AtenTransform::on_TransformDefineTargetBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&defineSourceBButton_callback);
+	gui.mainView.beginManualPick(2,&transformDefineTargetBButton_callback);
 }
 
-void AtenTransform::on_DefineSourceCButton_clicked(bool on)
+void AtenTransform::on_TransformDefineTargetCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	gui.mainView.beginManualPick(2,&defineSourceCButton_callback);
+	gui.mainView.beginManualPick(2,&transformDefineTargetCButton_callback);
 }
 
 void AtenTransform::dialogFinished(int result)
