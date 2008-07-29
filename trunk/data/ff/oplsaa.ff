@@ -156,7 +156,7 @@ types
 147	CA		C	"ring(size=6),ring(size=6)"		"Naphthalene fusion C (C9)"
 148	CT		C	"-H(n=3),-C(ring(size=6,-C(n=6)))"	"all-atom C: CH3, toluene"
 149	CT		C	"-H(n=2),-C(ring(size=6,-C(n=6))),-C"	"all-atom C: CH2, ethyl benzene"
-150	Ceq		C	""	"diene =CH-CH=; see 178 also" XXX
+150	Ceq		C	"-C(bond=double),-H,-C(bond=single,=C)"		"diene =CH-CH=; see 178 also"
 151	Cl		Cl	"-C"					"Cl in alkyl chlorides"
 152	CT		C	"-Cl,-C,-H,-H"				"RCH2Cl in alkyl chlorides"
 153	HC		H	"-C(-Cl)"				"H in alkyl chlorides"
@@ -184,7 +184,7 @@ types
 175	CT		C	""	"C(R2OH): triols"
 176	HC		H	""	"H(CXOH): triols"
 177	OS		O	"-C(ring(size=6,-C(n=6),n=2))"		"diphenyl ether"
-178	Ceq		C	""	"diene =CR-RC=; see 150 also" XXX
+178	Ceq		C	"=C,-C(bond=single,=C),-C"		"diene =CR-RC=; see 150 also"
 179	OS		O	"-C(ring(size=6,-C(n=6))),-C(-H(n=3))"	"O: anisole"
 180	OS		O	"-C(n=2)"				"O: dialkyl ether"
 181	CT		C	"-H(n=3),-&180"				"C(H3OR): methyl ether"

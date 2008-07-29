@@ -90,14 +90,14 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					// U(phi) = 0.5 * k * (1 - cos(n*eq) * cos(n*theta))
 					k1 = params.data[TorsionFunctions::CosCosK];
 					period = params.data[TorsionFunctions::CosCosN];
-					eq = params.data[TorsionFunctions::CosCosEq];
+					eq = params.data[TorsionFunctions::CosCosEq] / DEGRAD;
 					energy += 0.5 * k1 * (1.0 - cos(period*eq)*cos(period*phi));
 					break;
 				case (TorsionFunctions::Dreiding):
 					// U(phi) = 0.5 * k * (1 - cos(n*(theta-eq))
 					k1 = params.data[TorsionFunctions::DreidingK];
 					period = params.data[TorsionFunctions::DreidingN];
-					eq = params.data[TorsionFunctions::DreidingEq];
+					eq = params.data[TorsionFunctions::DreidingEq] / DEGRAD;
 					energy += 0.5 * k1 * (1.0 - cos(n*(phi - eq)));
 					break;
 				default:
@@ -258,14 +258,14 @@ void Pattern::torsionForces(Model *srcmodel)
 					// dU/dphi = 0.5 * k * n * cos(n*eq) * sin(n*phi)
 					k1 = params.data[TorsionFunctions::CosCosK];
 					period = params.data[TorsionFunctions::CosCosN];
-					eq = params.data[TorsionFunctions::CosCosEq];
+					eq = params.data[TorsionFunctions::CosCosEq] / DEGRAD;
 					du_dphi = dphi_dcosphi * 0.5 * k1 * period * cos(period*eq)*sin(period*phi);
 					break;
 				case (TorsionFunctions::Dreiding):
 					// dU/dphi = 0.5 * k * (1 - cos(n*(theta-eq))
 					k1 = params.data[TorsionFunctions::DreidingK];
 					period = params.data[TorsionFunctions::DreidingN];
-					eq = params.data[TorsionFunctions::DreidingEq];
+					eq = params.data[TorsionFunctions::DreidingEq] / DEGRAD;
 					du_dphi = dphi_dcosphi * 0.5 * k1 * sin(n*(phi - eq));
 					break;
 				default:

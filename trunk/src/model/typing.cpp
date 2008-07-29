@@ -188,7 +188,7 @@ void Pattern::assignHybrids()
 	Atom *i = firstAtom_;
 	for (int n=0; n<nAtoms_; n++)
 	{
-		// Set to AE_UNBOUND to begin with
+		// Set to no environment to begin with
 		i->setEnvironment(Atomtype::NoEnvironment);
 		// Work out the hybridisation based on the bond types connected to the atom.
 		// We can increase the hybridisation at any point, but never decrease it.
@@ -200,7 +200,7 @@ void Pattern::assignHybrids()
 					if (i->environment() < Atomtype::Sp3Environment) i->setEnvironment(Atomtype::Sp3Environment);
 					break;
 				case (Bond::Double):
-					if (i->environment() < Atomtype::Sp3Environment) i->setEnvironment(Atomtype::Sp2Environment);
+					if (i->environment() < Atomtype::Sp2Environment) i->setEnvironment(Atomtype::Sp2Environment);
 					break;
 				case (Bond::Triple):
 					if (i->environment() < Atomtype::SpEnvironment) i->setEnvironment(Atomtype::SpEnvironment);

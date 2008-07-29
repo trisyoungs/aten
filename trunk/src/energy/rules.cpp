@@ -180,14 +180,28 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			else if (ffj->generator(1) > 115.0) n = 3;
 			else if (ffj->generator(1) > 95.0) n = 2;
 			else n = 4;
-			// We always use the Cosine form, with 'eq' set to zero and 's' set to +1 for linear and tetrahedral90 cases or -1 otherwise
-			newangle->setAngleStyle(AngleFunctions::Cosine);
-			newangle->params().data[AngleFunctions::CosineN] = n;
-			newangle->params().data[AngleFunctions::CosineK] = forcek / (n*n);
-			newangle->params().data[AngleFunctions::CosineEq] = 0.0;
-			if (n == 1) newangle->params().data[AngleFunctions::CosineS] = 1.0;
-			else newangle->params().data[AngleFunctions::CosineS] = -1.0;
-			msg.print(Messenger::Verbose,"UFF Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = 0.0, s = %f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->params().data[AngleFunctions::CosineS], n);
+			if (n == 2)
+			{
+				// Use Cos2 form for general nonlinear case
+				newangle->setAngleStyle(AngleFunctions::Cos2);
+				newangle->params().data[AngleFunctions::Cos2C2] = 1.0 / (4.0 * sin(eq)*sin(eq));
+				newangle->params().data[AngleFunctions::Cos2C1] = -4.0 * newangle->params().data[AngleFunctions::Cos2C2] * cos(eq);
+				newangle->params().data[AngleFunctions::Cos2C0] = newangle->params().data[AngleFunctions::Cos2C2];
+				newangle->params().data[AngleFunctions::Cos2C0] *= 2.0 * cos(eq) * cos(eq) + 1.0;
+				newangle->params().data[AngleFunctions::Cos2K] = forcek;
+				msg.print(Messenger::Verbose,"UFF Angle (cos2) : %s-%s-%s - forcek = %8.4f, C0 = %8.5f, C1 = %8.4f, C2 = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->params().data[AngleFunctions::Cos2C0], newangle->params().data[AngleFunctions::Cos2C1], newangle->params().data[AngleFunctions::Cos2C0]);
+			}
+			else
+			{
+				// We always use the Cosine form, with 'eq' set to zero and 's' set to +1 for linear and tetrahedral90 cases or -1 otherwise
+				newangle->setAngleStyle(AngleFunctions::Cosine);
+				newangle->params().data[AngleFunctions::CosineN] = n;
+				newangle->params().data[AngleFunctions::CosineK] = forcek / (n*n);
+				newangle->params().data[AngleFunctions::CosineEq] = 0.0;
+				if (n == 1) newangle->params().data[AngleFunctions::CosineS] = 1.0;
+				else newangle->params().data[AngleFunctions::CosineS] = -1.0;
+				msg.print(Messenger::Verbose,"UFF Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = 0.0, s = %f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->params().data[AngleFunctions::CosineS], n);
+			}
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
@@ -248,24 +262,27 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			group1 = elements.group(j);
 			group2 = elements.group(k);
 			newtorsion->setTorsionStyle(TorsionFunctions::CosCos);
-			if ((group1 == 16) || (group2 == 16))
+			if ((hyb1 == 3) && (hyb2 == 3))
 			{
-				// If both elements are group 16 then use special V values for them
-				if (group1 == group2)
+				if ((group1 == 16) || (group2 == 16))
 				{
-					vj = prefs.convertEnergy((j->element() == 8 ? 2.0 : 6.8), Prefs::KiloCalories);
-					vk = prefs.convertEnergy((k->element() == 8 ? 2.0 : 6.8), Prefs::KiloCalories);
-					forcek = sqrt(vj*vk);
+					// If both elements are group 16 then use special V values for them
+					if (group1 == group2)
+					{
+						vj = prefs.convertEnergy((j->element() == 8 ? 2.0 : 6.8), Prefs::KiloCalories);
+						vk = prefs.convertEnergy((k->element() == 8 ? 2.0 : 6.8), Prefs::KiloCalories);
+						forcek = sqrt(vj*vk);
+					}
+					else forcek = 5.0* sqrt(ffj->generator(9)*ffk->generator(9)) * (1.0 + 4.18*log(j->bondOrder(k)));
+					n = 2.0;
+					eq = 90.0;
 				}
-				else forcek = 5.0* sqrt(ffj->generator(9)*ffk->generator(9)) * (1.0 + 4.18*log(j->bondOrder(k)));
-				n = 2.0;
-				eq = 90.0;
-			}
-			else if ((hyb1 == 3) && (hyb2 == 3))
-			{
-				forcek = sqrt(ffj->generator(8)*ffk->generator(8));
-				n = 3.0;
-				eq = 180.0;
+				else
+				{
+					forcek = sqrt(ffj->generator(8)*ffk->generator(8));
+					n = 3.0;
+					eq = 180.0;
+				}
 			}
 			else if ((hyb1 == 2) && (hyb2 == 2))
 			{
@@ -322,27 +339,30 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			group1 = elements.group(j);
 			group2 = elements.group(k);
 			newtorsion->setTorsionStyle(TorsionFunctions::Dreiding);
-			if ((group1 == 16) || (group2 == 16))
+			if ((hyb1 == 3) && (hyb2 == 3))
 			{
-				// If both elements are group 16 then use special V values for them
-				if (group1 == group2)	// Rule (h) in paper
+				if ((group1 == 16) || (group2 == 16))
 				{
-					forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
-					eq = 90.0;
-					n = 2.0;
+					// If both elements are group 16 then use special V values for them
+					if (group1 == group2)	// Rule (h) in paper
+					{
+						forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+						eq = 90.0;
+						n = 2.0;
+					}
+					else			// Rule (i) in paper
+					{
+						forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+						eq = 180.0;
+						n = 2.0;
+					}
 				}
-				else			// Rule (i) in paper
+				else		// Rule (a) in paper
 				{
 					forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
+					n = 3.0;
 					eq = 180.0;
-					n = 2.0;
 				}
-			}
-			else if ((hyb1 == 3) && (hyb2 == 3))	// Rule (a) in paper
-			{
-				forcek = prefs.convertEnergy(2.0, Prefs::KiloCalories);
-				n = 3.0;
-				eq = 180.0;
 			}
 			else if ((hyb1 == 15) && (hyb2 == 15))	// Rule (d) in paper
 			{
