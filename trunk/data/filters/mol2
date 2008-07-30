@@ -1,8 +1,8 @@
 importmodel
 	name "Tripos (Sybyl) Mol2"
 	nickname mol2
-	extension "mol,mol2"
-	glob *.mol*
+	extension mol2
+	glob *.mol2
 
 	# Variable declaration
 	integer n,natoms,nbonds,id,ii,jj,spgrp,setting
