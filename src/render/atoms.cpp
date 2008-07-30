@@ -168,33 +168,22 @@ void Canvas::renderModelAtoms()
 					case (Bond::Double):	// Double bond
 						// Must define a plane in which the bond will lay
 						ijk = i->findBondPlane(j,bref->item,rj);
-						ijk *= 0.1;
+						ijk *= 0.05;
 						// Can now draw the bond. Displace each part of the bond +rk or -rk.
-						glTranslated(ijk.x,ijk.y,ijk.z);
-						glVertex3d(0.0,0.0,0.0);
-						glVertex3d(rj.x,rj.y,rj.z);
-						glTranslated(-2.0*ijk.x,-2.0*ijk.y,-2.0*ijk.z);
-						glVertex3d(0.0,0.0,0.0);
-						glVertex3d(rj.x,rj.y,rj.z);
-						glTranslated(ijk.x,ijk.y,ijk.z);
+						glVertex3d(ijk.x,ijk.y,ijk.z);
+						glVertex3d(rj.x+ijk.x,rj.y+ijk.y,rj.z+ijk.z);
+						glVertex3d(-ijk.x,-ijk.y,-ijk.z);
+						glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
 						break;
 					case (Bond::Triple):	// Triple bond
-						// Draw the components arbitrarily oriented
-						rk = rj;
-						rk.x = rk.y;
-						rk.y = rk.z;
-						rk.z = rj.x;
-						rk.normalise();
-						rk *= 0.1;
+						ijk = i->findBondPlane(j,bref->item,rj);
+						ijk *= 0.1;
 						glVertex3d(0.0,0.0,0.0);
 						glVertex3d(rj.x,rj.y,rj.z);
-						glTranslated(rk.x,rk.y,rk.z);
-						glVertex3d(0.0,0.0,0.0);
-						glVertex3d(rj.x,rj.y,rj.z);
-						glTranslated(-2.0*rk.x,-2.0*rk.y,-2.0*rk.z);
-						glVertex3d(0.0,0.0,0.0);
-						glVertex3d(rj.x,rj.y,rj.z);
-						glTranslated(rk.x,rk.y,rk.z);
+						glVertex3d(ijk.x,ijk.y,ijk.z);
+						glVertex3d(rj.x+ijk.x,rj.y+ijk.y,rj.z+ijk.z);
+						glVertex3d(-ijk.x,-ijk.y,-ijk.z);
+						glVertex3d(rj.x-ijk.x,rj.y-ijk.y,rj.z-ijk.z);
 						break;
 				  }
 				glEnd();
