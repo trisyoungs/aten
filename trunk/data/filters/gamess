@@ -12,8 +12,9 @@ importmodel
 	character line,e
 	double rx,ry,rz
 
-	# Determine number of atoms - search for lines containing 'TOTAL NUMBER OF ATOMS'
+	# Determine number of atoms - search for line containing 'TOTAL NUMBER OF ATOMS'
 	find "TOTAL NUMBER OF ATOMS" $result $line
+	print "$result == $line"
 	if $result = 0
 		error "Couldn't determine number of atoms from GAMESS-US output."
 	end
@@ -34,6 +35,8 @@ importmodel
 				newatom $e
 				setcoords $rx $ry $rz
 			end
+			# Recalculate bonding
+			rebond
 			finalisemodel
 		end
 	end
