@@ -220,6 +220,38 @@ class Prefs
 	// Get number of segments in colour scale
 	int nScaleSegments();
 
+
+	/*
+	// Rendering - Options
+	*/
+	private:
+	// Postfix (units) label for distances
+	Dnchar distanceLabel_;
+	// Postfix (units) label for angles
+	Dnchar angleLabel_;
+	// Pointsize for labels
+	int labelSize_;
+	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
+	bool useNiceText_;
+
+	public:
+	// Set the postfix distance label
+	void setDistanceLabel(const char *s);
+	// Return the postfix distance label
+	const char *distanceLabel();
+	// Set the postfix angle label
+	void setAngleLabel(const char *s);
+	// Return the postfix angle label
+	const char *angleLabel();
+	// Set the pointsize of labels in the model
+	void setLabelSize(int size);
+	// Return the current label pointsize
+	int labelSize();
+	// Set whether to use nice text rendering
+	void setUseNiceText(bool b);
+	// Return whether to use nice text rendering
+	bool useNiceText();
+
 	/*
 	// GL Options
 	*/
@@ -257,6 +289,7 @@ class Prefs
 	// Return the current shininess of GL objects
 	GLint shininess();
 
+
 	/*
 	// Colours
 	*/
@@ -273,6 +306,7 @@ class Prefs
 	GLfloat *colour(PenColour c);
 	// User-definable colour scales
 	ColourScale colourScale[10];
+
 
 	/*
 	// File Preferences
@@ -341,6 +375,7 @@ class Prefs
 	// Return whether to keep view on GUI start
 	bool keepView();
 
+
 	/*
 	// Edit Preferences
 	*/
@@ -402,6 +437,7 @@ class Prefs
 	// Return the action associated with the specified keymod button
 	KeyAction keyAction(ModifierKey mk);
 
+
 	/*
 	// Method Preferences
 	*/
@@ -437,6 +473,7 @@ class Prefs
 	// Return whether to trim atoms after replication
 	bool replicateTrim();
 
+
 	/*
 	// Units and Conversion
 	*/
@@ -462,6 +499,7 @@ class Prefs
 	double convertEnergy(double energy, EnergyUnit);
 	// Return the electrostastic energy conversion factor
 	double elecConvert();
+
 
 	/*
 	// Expression (general parameters)
@@ -539,6 +577,7 @@ class Prefs
 	// Return the VDW radius scaling factor
 	double vdwScale();
 
+
 	/*
 	// Undo levels
 	*/
@@ -552,38 +591,15 @@ class Prefs
 	// Return the maximum number of undo levels allowed
 	int maxUndoLevels();
 
+
 	/*
-	// General Program (including compatibility) Options
+	// GUI
 	*/
 	private:
-	// Postfix (units) label for distances
-	Dnchar distanceLabel_;
-	// Postfix (units) label for angles
-	Dnchar angleLabel_;
-	// Pointsize for labels
-	int labelSize_;
-	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
-	bool useNiceText_;
 	// List of common drawing elements to put in SelectElement dialog
 	Dnchar commonElements_;
 
 	public:
-	// Set the postfix distance label
-	void setDistanceLabel(const char *s);
-	// Return the postfix distance label
-	const char *distanceLabel();
-	// Set the postfix angle label
-	void setAngleLabel(const char *s);
-	// Return the postfix angle label
-	const char *angleLabel();
-	// Set the pointsize of labels in the model
-	void setLabelSize(int size);
-	// Return the current label pointsize
-	int labelSize();
-	// Set whether to use nice text rendering
-	void setUseNiceText(bool b);
-	// Return whether to use nice text rendering
-	bool useNiceText();
 	// Set list of common elements in SelectElement dialog
 	void setCommonElements(const char *s);
 	// Return list of common elements to use in SelectElement dialog

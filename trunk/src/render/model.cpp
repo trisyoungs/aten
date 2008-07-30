@@ -38,8 +38,8 @@ void Canvas::renderModelLabels()
 	cellCentre = displayModel_->cell()->centre();
 	for (Atom *i = displayModel_->atoms(); i != NULL; i = i->next)
 	{
-		// Check if atom has labels
-		if (!i->hasLabels()) continue;
+		// Check if atom has labels and is visible
+		if ((!i->hasLabels()) || (i->isHidden())) continue;
 		labels = i->labels();
 		ffa = i->type();
 		// Blank label string
@@ -97,8 +97,9 @@ void Canvas::renderModelMeasurements()
 	msg.enter("Canvas::renderModelMeasurements");
 	static Vec3<double> ri, rj, rk, rl, labpos, cellCentre, rji, rjk;
 	static Vec3<double> pos1, pos2;
-	static double gamma, t;
-	static bool rightalign;
+	double gamma, t;
+	int i;
+	bool rightalign, skip;
 	static char text[256];
 	static Atom **atoms;
 	// Grab cell origin to get correct positioning
@@ -109,6 +110,17 @@ void Canvas::renderModelMeasurements()
 	  for (Measurement *m = displayModel_->measurements(); m != NULL; m = m->next)
 	  {
 		atoms = m->atoms();
+		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
+		skip = FALSE;
+		for (i=0; i<Measurement::nMeasurementAtoms(m->type()); i++)
+		{
+			if (atoms[i]->isHidden())
+			{
+				skip = TRUE;
+				break;
+			}
+		}
+		if (skip) continue;
 		switch (m->type())
 		{
 			case (Measurement::DistanceMeasurement):
