@@ -75,10 +75,15 @@ exportmodel
 	writeline "$title"
 	writeline "Coordinates churned out by Aten."
 	for $i
-		writeline "$i.symbol%3 $i.rx%12.6 $i.fixed $i.ry%12.6 $i.fixed $i.rz%12.6 $i.fixed"
+		if $i.fixed = 0
+			writeline "$i.symbol%3 $i.rx%12.6 1 $i.ry%12.6 1 $i.rz%12.6 1"
+		else
+			writeline "$i.symbol%3 $i.rx%12.6 0 $i.ry%12.6 0 $i.rz%12.6 0"
+		end if
 	end
+
 	# Write translation vector for cell
-	if $cell.type <> None
+	if $cell.type <> none
 		writeline "Tv  $cell.ax%12.6 0 $cell.ay%12.6 0 $cell.az%12.6 0"
 		writeline "Tv  $cell.bx%12.6 0 $cell.by%12.6 0 $cell.bz%12.6 0"
 		writeline "Tv  $cell.cx%12.6 0 $cell.cy%12.6 0 $cell.cz%12.6 0"
