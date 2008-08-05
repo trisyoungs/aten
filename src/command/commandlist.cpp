@@ -541,7 +541,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				// Add operator as an integer variable
 				args_.add(parent_->variables.addConstant(ao));
 				break;
-			// Variable or expression
+			// Variable, expression, or constant
 			case ('e'):
 			case ('E'):
 				/* Any 'V' or 'v' specifier may be an expression, which itself must be quoted in the command.
