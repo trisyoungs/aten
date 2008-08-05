@@ -134,15 +134,14 @@ void AtenDisorder::refresh()
 	// Select the last component in the list
 	ui.ComponentTable->setCurrentItem(firstitem);
 	refreshing_ = FALSE;
-	refreshComponentData();
+	refreshComponentData(0);
 }
 
-void AtenDisorder::refreshComponentData()
+void AtenDisorder::refreshComponentData(int comp)
 {
-	// Get current component
-	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
+	printf("Refreshing data for model '%s' on row %i\n",m->name(),comp);
 	refreshing_ = TRUE;
 	// Set controls
 	Vec3<double> v;
@@ -156,6 +155,7 @@ void AtenDisorder::refreshComponentData()
 	ui.CentreYSpin->setValue(v.y);
 	ui.CentreZSpin->setValue(v.z);
 	ui.CentreFracCheck->setChecked(m->area.isCentreFrac());
+	ui.ComponentRegionCombo->setCurrentIndex(m->area.shape());
 	refreshing_ = FALSE;
 }
 
@@ -163,7 +163,7 @@ void AtenDisorder::setComponentCentre()
 {
 	if (refreshing_) return;
 	Vec3<double> v;
-	v.set(ui.SizeXSpin->value(), ui.SizeYSpin->value(), ui.SizeZSpin->value());
+	v.set(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	// Get current component
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
@@ -185,9 +185,9 @@ void AtenDisorder::setComponentSize()
 	gui.mainView.postRedisplay();
 }
 
-void AtenDisorder::on_ComponentTable_itemSelectionChanged()
+void AtenDisorder::on_ComponentTable_itemClicked(QTableWidgetItem *item)
 {
-	refreshComponentData();
+	refreshComponentData(item->row());
 }
 
 void AtenDisorder::on_ComponentTable_itemChanged(QTableWidgetItem *item)
@@ -216,9 +216,11 @@ void AtenDisorder::on_ComponentTable_itemChanged(QTableWidgetItem *item)
 
 void AtenDisorder::on_ComponentRegionCombo_currentIndexChanged(int index)
 {
+	if (refreshing_) return;
 	int comp = ui.ComponentTable->currentRow();
 	if (comp == -1) return;
-	Model *m = aten.model(comp);
+	Model *m = componentList[comp]->item;
+	printf("Setting model %s region to be %i\n",m->name(), index);
 	m->area.setShape( (ComponentRegion::RegionShape) index);
 	gui.mainView.postRedisplay();
 }

@@ -65,6 +65,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	Vec3<double> oldangles = cell_.angles();
 	// Set new axes 
 	cell_.set(lengths, angles);
+	calculateDensity();
 	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
@@ -85,6 +86,7 @@ void Model::setCell(Mat3<double> axes)
 	oldlengths = cell_.lengths();
 	// Set new axes 
 	cell_.set(axes);
+	calculateDensity();
 	logChange(Change::StructureLog);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)

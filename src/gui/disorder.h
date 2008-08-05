@@ -41,11 +41,11 @@ class AtenDisorder : public QDialog
 	void showWindow();
 	void refresh();
 	private:
-	void refreshComponentData();
+	void refreshComponentData(int row);
 	void setComponentCentre();
 	void setComponentSize();
 	private slots:
-	void on_ComponentTable_itemSelectionChanged();
+	void on_ComponentTable_itemClicked(QTableWidgetItem *widget);
 	void on_ComponentTable_itemChanged(QTableWidgetItem *item);
 	void on_ComponentRegionCombo_currentIndexChanged(int index);
 	void on_ShowRegionsCheck_clicked(bool checked);
