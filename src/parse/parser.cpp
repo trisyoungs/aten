@@ -23,6 +23,7 @@
 #include "base/elements.h"
 #include "parse/parser.h"
 #include "parse/format.h"
+#include "base/sysfunc.h"
 
 Parser parser;
 
@@ -44,6 +45,26 @@ Parser::Parser()
 	linePos_ = 0;
 	optionMask_ = Parser::Defaults;
 	sourceFile_ = NULL;
+}
+
+// Determine form of argument
+Parser::ArgumentForm Parser::argumentForm(int i)
+{
+	// If the argument was quoted withg single-quotes then we assume it is an expression
+	// Similarly, if it was double-quoted we assume it is a character constant
+	if (quoted_[i] == 34) return Parser::ConstantForm;
+	else if (quoted_[i] == 39) return Parser::ExpressionForm;
+	else
+	{
+		int noperators, n, nvars, nbrackets;
+		noperators = countChars(arguments_[i].get(), "-+*/^%");
+		nbrackets = countChars(arguments_[i].get(), "()");
+		nvars = countChars(arguments_[i].get(), "$");
+		// If there are operators or brackets it can only be an expression
+		if ((noperators > 0) || (nbrackets > 0)) return Parser::ExpressionForm;
+		else if (nvars == 1) return Parser::VariableForm;
+		else return Parser::ConstantForm;
+	}
 }
 
 // Returns number of arguments grabbed from last parse
@@ -91,7 +112,7 @@ bool Parser::isBlank(int i)
 // Returns whether the specified argument was quoted
 bool Parser::wasQuoted(int i)
 {
-	return quoted_[i];
+	return (quoted_[i] == 0 ? FALSE : TRUE);
 }
 
 // Set argument manually
@@ -223,7 +244,7 @@ bool Parser::getNextArg(int destarg)
 					quotechar = '\0';
 					hadquotes = TRUE;
 					// If double-quotes, set the quotes flag
-					if ((destarg != -1) && (c == 34)) quoted_[destarg] = TRUE;
+					if (destarg != -1) quoted_[destarg] = c;
 					done = TRUE;
 				}
 				else
@@ -320,7 +341,7 @@ void Parser::getAllArgsDelim()
 	for (int n=0; n<MAXARGS; n++)
 	{
 		arguments_[n].clear();
-		quoted_[n] = FALSE;
+		quoted_[n] = 0;
 	}
 	endOfLine_ = FALSE;
 	while (!endOfLine_)
@@ -344,7 +365,7 @@ void Parser::getAllArgsFormatted(Format *fmt)
 	for (int n=0; n<MAXARGS; n++)
 	{
 		arguments_[n].clear();
-		quoted_[n] = FALSE;
+		quoted_[n] = 0;
 	}
 	
 	for (FormatNode *fn = fmt->nodes(); fn != NULL; fn = fn->next)

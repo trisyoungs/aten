@@ -1,13 +1,15 @@
 # GAMESS-US Trajectory Filter, and Cartesian Input Model Filters (I/O)
-# Last modified: 2007-11-05
+# Last modified: 05/08/08
 # Notes:
 #	Output model filter sets symmetry to C1.
+# ChangeLog:
+#	05/08/08 - Changed extension from 'out' to 'log'. Added reading of .inpi files. Nicknames now 'gamuslog' and 'gamusinp'
 
 importmodel
-	name "GAMESS-US Output Files"
+	name "GAMESS-US Log Files"
 	extension log
 	glob *.log
-	nickname gamessus
+	nickname gamuslog
 	zmap name
 
 	# Variable declaration
@@ -29,7 +31,7 @@ importmodel
 		find "COORDINATES OF ALL ATOMS ARE" $result
 		if $result = 1
 			# Found a set of coordinates. Skip 2 lines and then read coordinates
-			$nmodels = "$nmodels + 1"
+			$nmodels += 1
 			skipline 2
 			newmodel $nmodels
 			for $n,1,$natoms
@@ -48,7 +50,7 @@ importmodel
 	name "GAMESS-US Cartesian Input"
 	extension inp
 	glob *.inp
-	nickname gamessus
+	nickname gamusinp
 	id 5
 	zmap name
 
@@ -71,7 +73,6 @@ importmodel
 	readline "$symm"
 	if $symm <> C1
 		# Single blank line means the master frame is in use, and only this line to skip
-	print "sdkfdskf;k [ $symm ]"
 		readline "$tester"
 		if $tester <> ""
 			skipline
@@ -81,7 +82,7 @@ importmodel
 	# Coordinates follow, terminated by $END
 	for $n
 		readline "$symbol $z $rx $ry $rz
-		if $symbol = 'END'
+		if $symbol = "$END"
 			break
 		end
 		newatom $symbol $rx $ry $rz
@@ -96,7 +97,7 @@ exportmodel
 	name "GAMESS-US Cartesian Input"
 	extension inp
 	glob *.inp
-	nickname gamessus
+	nickname gamusinp
 	id 5
 
 	# Variable declarations

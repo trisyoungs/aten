@@ -1,5 +1,6 @@
 # DL_POLY Configuration Import / Export
-# Last modified: 06/01/2008
+# Last modified: 05/08/08
+
 importmodel
 	name "DL_POLY Configuration"
 	extension "CONFIG,REVCON,config,revcon"
@@ -47,6 +48,7 @@ importmodel
 	fold
 	finalisemodel
 end
+
 exportmodel
 	name "DL_POLY Configuration"
 	extension CONFIG

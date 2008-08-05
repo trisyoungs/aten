@@ -150,6 +150,20 @@ const char *stripTrailing(const char *s)
 	return result;
 }
 
+// Count number of times that supplied characters occur in supplied string
+int countChars(const char *s, const char *chars)
+{
+	int total = 0, n;
+	const char *c;
+	while (*s != '\0')
+	{
+		for (n=0; chars[n] != '\0'; n++) if (chars[n] == *s) total ++;
+		s++;
+	}
+	return total;
+}
+
+// Return whether file exists
 bool fileExists(const char *filename)
 {
 	fstream f(filename,ios::in);

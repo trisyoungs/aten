@@ -1,4 +1,8 @@
 # Protein databank coordinates import. Residue data etc. is ignored.
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+
 importmodel
 	name "Protein Databank PDB"
 	nickname pdb
@@ -17,27 +21,27 @@ importmodel
 	let $found = 0
 	for $n
 		readline "$keyword%6 $line%100"
-		if $keyword = HEADER
+		if $keyword = "HEADER"
 			let $found = 1
 			setname $line
-		elseif $keyword = CRYST1
+		elseif $keyword = "CRYST1"
 			readvar $line "$ca%9 $cb%9 $cc%9 $alpha%7 $beta%7 $gamma%7"
 			cell $ca $cb $cc $alpha $beta $gamma"
-		elseif $keyword = HETATM
+		elseif $keyword = "HETATM"
 			#readvar $line "*%5 $e%4 *%1 *%1 *%3 *%1 *%1 *%4 *%1 *%3 $rx%8 $ry%8 $rz%8 *%6 *%6 *%6 *%4 *%2 *%2"
 			readvar $line "$id%5 *%1 $name%4 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
-			if $e = ''
+			if $e = ""
 				$e = $name
 			end
 			newatom $e $rx $ry $rz
-		elseif $keyword = ATOM
+		elseif $keyword = "ATOM"
 			readvar $line "$id%5 *%1 $name%4 *%14 $rx%8 $ry%8 $rz%8 *%22 $e%2"
-			if $e = '' 
+			if $e = ""
 				$e = $name
 			end
 			newatom $e
 			setcoords $rx $ry $rz
-		elseif $keyword = CONECT
+		elseif $keyword = "CONECT"
 			$bondi = 0
 			$bondj = 0
 			$bondk = 0

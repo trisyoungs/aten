@@ -1,5 +1,6 @@
 # Aten 'Custom' file format example using keywords, and includes glyphs
 # Last modified: 07/03/2008
+
 importmodel
 	name "Aten Keyword Format"
 	nickname akf

@@ -1,5 +1,8 @@
 # Simple-style surface data definition
-# Last modified: 09/04/08
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+
 importgrid
 	name "2D Surface Data"
 	nickname surf
@@ -28,7 +31,7 @@ importgrid
 	gridlooporder $order
 
 	# Read in grid data
-	$npoints = "$nx * $ny"
+	$npoints = $nx*$ny
 	for $n,1,$npoints
 		readline "$data"
 		addnextgridpoint $data

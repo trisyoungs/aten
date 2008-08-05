@@ -1,5 +1,7 @@
 # Gaussian Cube Format
 # Last modified: 28/10/07
+# ChangeLog:
+
 importgrid
 	name "Gaussian CUBE"
 	nickname cube

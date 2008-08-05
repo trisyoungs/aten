@@ -1,5 +1,7 @@
 # XMol-style XYZ coordinates files
-# Last modified: 27/11/07.
+# Last modified: 05/08/08
+# ChangeLog:
+
 importmodel
 	name "XMol XYZ Coordinates"
 	nickname xyz
@@ -27,6 +29,7 @@ importmodel
 	centre 0 0 0
 	finalisemodel
 end
+
 exportmodel
 	name "XMol XYZ Coordinates"
 	extension xyz
@@ -46,6 +49,7 @@ exportmodel
 		writeline "$i.symbol%3   $i.rx%12.6   $i.ry%12.6   $i.rz%12.6   $i.q%12.6"
 	end
 end
+
 importtrajectory
 	name "XMol XYZ Coordinates"
 	extension "xyz"

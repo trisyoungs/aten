@@ -1,5 +1,8 @@
 # Simple-style volumetric data definition
-# Last modified: 09/04/08
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+
 importgrid
 	name "Probability Densities from pdens"
 	nickname pdens
@@ -29,7 +32,7 @@ importgrid
 
 
 	# Read in grid data
-	$npoints = "$nx * $ny * $nz"
+	$npoints = $nx*$ny*$nz
 	for $n,1,$npoints
 		readline "$data"
 		addnextgridpoint $data
