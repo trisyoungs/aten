@@ -440,6 +440,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	bool required = TRUE, repeat = FALSE;
 	int n, m, argcount, last = -1;
 	Variable *var;
+	Variable::VariableType vt;
 	AssignOps::AssignOp ao;
 	static char arg[512];
 	argcount = 0;
@@ -456,7 +457,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 		{
 			if (required && (!repeat))
 			{
-				msg.print("Command '%s' requires argument %i\n", cmd, argcount);
+				msg.print("Error: '%s' requires argument %i\n", cmd, argcount);
 				msg.exit("Command::addVariables");
 				return FALSE;
 			}
@@ -485,7 +486,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -511,7 +512,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				ao = AssignOps::assignOp(&arg[0]);
 				if (ao == AssignOps::nAssignOps)
 				{
-					msg.print("Unrecognised assignment operator '%s'.\n", &arg[0]);
+					msg.print("Error: Unrecognised assignment operator '%s'.\n", &arg[0]);
 					return FALSE;
 				}
 				// Whether we accept the operator we found depends on the specifier
@@ -524,7 +525,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					case ('='):
 						if (ao != AssignOps::Equals) 
 						{
-							msg.print( "Expected '=' as argument %i for command '%s'.\n", argcount, cmd);
+							msg.print("Error: Expected '=' as argument %i for command '%s'.\n", argcount, cmd);
 							return FALSE;
 						}
 						break;
@@ -532,7 +533,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					case ('~'):
 						if ((ao != AssignOps::Equals) && (ao != AssignOps::PlusEquals)) 
 						{
-							msg.print( "Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmd);
+							msg.print("Error: Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmd);
 							return FALSE;
 						}
 						break;
@@ -561,7 +562,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -582,7 +583,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -602,7 +603,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
@@ -619,7 +620,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				*/
 				if (parser.wasQuoted(argcount))
 				{
-					msg.print( "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
+					msg.print("Error: '%s' expected a declared variable for argument %i, but found '%s' instead.\n", cmd, argcount, &arg[0]);
 					return FALSE;
 				}
 				else if (arg[0] == '$')
@@ -628,7 +629,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else
@@ -642,7 +643,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else
 				{
-					msg.print( "Command '%s' expects an actual variable for argument %i - found '%s'.\n", cmd, argcount, &arg[0]);
+					msg.print("Error: '%s' expected a declared variable for argument %i, but found '%s' instead.\n", cmd, argcount, &arg[0]);
 					return FALSE;
 				}
 				break;
@@ -655,14 +656,32 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('m'):
 				if (arg[0] != '$')
 				{
-					msg.print( "This argument (%s) must be a variable, and must be of the correct type.\n", &arg[0]);
+					switch (v[n])
+					{
+						case ('A'):
+						case ('a'):
+							vt = Variable::AtomVariable;
+							break;
+						case ('P'):
+						case ('p'):
+							vt = Variable::ModelVariable;
+							break;
+						case ('M'):
+						case ('m'):
+							vt = Variable::ModelVariable;
+							break;
+						default:
+							vt = Variable::nVariableTypes;
+							break;
+					}
+					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead.\n", cmd, Variable::variableType(vt), &arg[0]);
 					return FALSE;
 				}
 				// See if it has been declared
 				var = parent_->variables.get(&arg[1]);
 				if (var == NULL)
 				{
-					msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+					msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
 					return FALSE;
 				}
 				else args_.add(var);
@@ -673,19 +692,19 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('C'):
 				if (arg[0] != '$')
 				{
-					msg.print( "This argument (%s) must be a character variable.\n", &arg[0]);
+					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' instead.\n", cmd, &arg[0]);
 					return FALSE;
 				}
 				// See if it has been declared
 				var = parent_->variables.get(&arg[1]);
 				if (var == NULL)
 				{
-					msg.print( "Variable '%s' has not been declared.\n", &arg[1]);
+					msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
 					return FALSE;
 				}
 				else if (var->type() != Variable::CharacterVariable)
 				{
-					msg.print( "This argument (%s) must be a character variable.\n", &arg[1]);
+					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' which is of type '%s'.\n", cmd, &arg[1], Variable::variableType(var->type()));
 					return FALSE;
 				}
 				else args_.add(var);
@@ -694,7 +713,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('*'):
 				if (n == 0)
 				{
-					printf("Repeat specifier given to command arguments list without prior specifier.\n");
+					printf("Internal error: Repeat specifier given to command arguments list without prior specifier.\n");
 					msg.exit("Command::addVariables");
 					return FALSE;
 				}
@@ -710,7 +729,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	// Are there still unused arguments in the parser?
 	if (argcount < (parser.nArgs() - 1))
 	{
-		msg.print( "Unexpected argument '%s' given to command '%s'.\n", parser.argc(argcount), cmd);
+		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(argcount), cmd);
 		msg.exit("Command::addVariables");
 		return FALSE;
 	}
@@ -915,7 +934,7 @@ bool CommandList::addCommand(CommandAction ca)
 				v = variables.get(parser.argc(n));
 				if (v != NULL)
 				{
-					printf("Variable '%s': redeclared as type [%s] (was [%s]).\n", parser.argc(n), Variable::variableType((Variable::VariableType) ca),  Variable::variableType(v->type()));
+					printf("Error: Variable '%s': redeclared as type '%s' (from '%s').\n", parser.argc(n), Variable::variableType((Variable::VariableType) ca),  Variable::variableType(v->type()));
 					result = FALSE;
 				}
 				else
@@ -1041,7 +1060,7 @@ bool CommandList::addCommand(CommandAction ca)
 			break;
 		// Unrecognised command
 		case (CA_NITEMS):
-			printf("Unrecognised command in CommandList::addCommand()\n");
+			printf("Internal error: Unrecognised command in CommandList::addCommand()\n");
 			result = FALSE;
 			break;
 		// All other commands do not alter the flow of the CommandList...
@@ -1053,7 +1072,7 @@ bool CommandList::addCommand(CommandAction ca)
 	// Check variable assignment result
 	if (!varresult)
 	{
-		msg.print("Error: Command '%s' was not given the correct variables.\n", CA_data[ca].keyword);
+		//msg.print("Error: Command '%s' was not given the correct variables.\n", CA_data[ca].keyword);
 		result = FALSE;
 	}
 	msg.exit("CommandList::addCommand");
@@ -1135,7 +1154,7 @@ bool CommandList::cacheCommand()
 			// If addCommand() returns FALSE then we encountered an error
 			if (!addCommand(ca))
 			{
-				msg.print("Error parsing command '%s'.\n", parser.argc(0));
+				//msg.print("Error parsing command '%s'.\n", parser.argc(0));
 				msg.print("Command usage is: %s %s\n", CA_data[ca].keyword, CA_data[ca].argText);
 				result = FALSE;
 			}
