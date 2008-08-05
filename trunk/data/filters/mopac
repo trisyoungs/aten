@@ -1,8 +1,11 @@
 # Mopac input file
-# Last modified: 04/08/08.
+# Last modified: 05/08/08.
 # Notes:
 #   Import filter does not account for the presence of '+' or '&' in the keyword section
 #   Cartesian coordinate format is assumed
+# ChangeLog:
+#	05/08/08 - Initial version.
+
 importmodel
 	name "Mopac Control File"
 	nickname mopac
@@ -58,6 +61,7 @@ importmodel
 	centre 0 0 0
 	finalisemodel
 end
+
 exportmodel
 	name "Mopac Control File"
 	extension mop

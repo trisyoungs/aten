@@ -44,6 +44,9 @@ class Parser
 	// Parse Options
 	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
 	static ParseOption parseOption(const char*);
+	// Determine form of argument
+	enum ArgumentForm { ConstantForm, VariableForm, ExpressionForm };
+	ArgumentForm argumentForm(int i);
 
 	/*
 	// Source line, options, and argument data
@@ -61,8 +64,8 @@ class Parser
 	ifstream *sourceFile_;
 	// Parsed arguments
 	Dnchar arguments_[MAXARGS];
-	// Whether the argument was quoted
-	bool quoted_[MAXARGS];
+	// Quotation used around the argument
+	int quoted_[MAXARGS];
 	// Whether the end of the string has been found in get_next_arg()
 	bool endOfLine_;
 	// Number of arguments grabbed from last parse

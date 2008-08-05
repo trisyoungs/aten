@@ -38,14 +38,10 @@ const char *lowerCase(const char*);
 const char *beforeChar(const char*, char);
 const char *afterChar(const char*, char);
 const char *stripTrailing(const char*);
+int countChars(const char *string, const char *searchchars);
 
 // Enum search
 int enumSearch(const char *name, int nitems, const char **list, const char *query);
-//int enumSearchData(const char *name, int nitems, const char **list, const char *query);
-int sInList(const char *query, const char *delimlist);
-
-// Expression evaluate
-const char *evaluate(const char*, VariableList*);
 
 // Files
 bool fileExists(const char *filename);

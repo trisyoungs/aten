@@ -1,5 +1,6 @@
 # DL_POLY Formatted Trajectory file filter.
 # Last modified: 06/01/2007.
+
 importtrajectory
 	name "DL_POLY Formatted History"
 	extension "HISf"

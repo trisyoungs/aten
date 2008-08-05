@@ -1,5 +1,8 @@
 # Crystallographic Information File (cif)
-# Last modified: 16/06/2008
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules in r550. Added 'rebond' command.
+
 importmodel
 	name "Crystallographic Information File"
 	nickname cif
@@ -29,25 +32,25 @@ importmodel
 		#print "Keyword = $keywd"
 		if $keywd = _chemical_name_common
 			setname $data
-		elseif $keywd = _cell_length_a
+		elseif $keywd = "_cell_length_a"
 			$cell.a = $data
 			inc $cellspec
-		elseif $keywd = _cell_length_b
+		elseif $keywd = "_cell_length_b"
 			$cell.b = $data
 			inc $cellspec
-		elseif $keywd = _cell_length_c
+		elseif $keywd = "_cell_length_c"
 			$cell.c = $data
 			inc $cellspec
-		elseif $keywd = _cell_angle_alpha
+		elseif $keywd = "_cell_angle_alpha"
 			$cell.alpha = $data
 			inc $cellspec
-		elseif $keywd = _cell_angle_beta
+		elseif $keywd = "_cell_angle_beta"
 			$cell.beta = $data
 			inc $cellspec
-		elseif $keywd = _cell_angle_gamma
+		elseif $keywd = "_cell_angle_gamma"
 			$cell.gamma = $data
 			inc $cellspec
-		elseif $keywd = _symmetry_space_group_name_H-M
+		elseif $keywd = "_symmetry_space_group_name_H-M"
 			$sg = $data
 		elseif $keywd = loop_
 			# Deal with loops here
@@ -67,7 +70,7 @@ importmodel
 				if $char = ""
 					# Just break out of loop (set $m by hand until 'break' is implemented)
 					$m = 10000
-				elseif $char <> _
+				elseif $char <> "_"
 					# Already have first line of data stored in $line.
 					#print "LINE BEFORE ATOM is $line"
 					readvar $line $format
@@ -107,5 +110,6 @@ importmodel
 		print "Atom coordinates are still fractional."
 	end
 
+	rebond
 	finalisemodel
 end

@@ -1,5 +1,8 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 06/03/2008
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+
 exportfield
 	name "DL_POLY Forcefield Specification"
 	nickname dlpoly
@@ -90,7 +93,7 @@ exportfield
 	let $n = 1
 	let $nvdw = 0
 	for $at1
-		$nvdw = "$nvdw + $n"
+		$nvdw = $nvdw+$n
 		inc $n
 	end 
 	writeline "nvdw  $nvdw"

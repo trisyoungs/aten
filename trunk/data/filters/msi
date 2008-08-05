@@ -1,5 +1,8 @@
 # MSI Datafile version 3.8
-# Last modified: 20/11/07
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules.
+
 importmodel
 	name "MSI Datafile v3.8"
 	nickname msi
@@ -32,62 +35,62 @@ importmodel
 		# Check for block specifiers
 		if $ident <> A
 			if $type = Model
-				$newblock = M
+				$newblock = "M"
 			elseif $type = Atom
-				$newblock = A
+				$newblock = "A"
 				newatom 0
 				# We must also set the atom id here (since bonds refer to item number, not Id)
 				setid $ident
 			elseif $type = Bond
-				$newblock = B
+				$newblock = "B"
 			else
 				#print "Didn't recognise MSI block $type "
-				$newblock = N
+				$newblock = "N"
 			end
 			# If $newblock is not 0, check the old $block value and perform end tasks
-			if $block = A
-			elseif $block = B
+			if $block = "A"
+			elseif $block = "B"
 				newbondid $bondi $bondj
 			end
 			$block = $newblock
 		else
 			# Not a block specifier, so must be data for a block we're already in...
-			if $block = M
+			if $block = "M"
 				# Model block
-				if $data = Label
+				if $data = "Label"
 					newmodel $a
-				elseif $data = A3
+				elseif $data = "A3"
 					$cax = $a
 					$cay = $b
 					$caz = $c
 					inc $cellvar
-				elseif $data = B3
+				elseif $data = "B3"
 					$cbx = $a
 					$cby = $b
 					$cbz = $c
 					inc $cellvar
-				elseif $data = C3
+				elseif $data = "C3"
 					$ccx = $a
 					$ccy = $b
 					$ccz = $c
 					inc $cellvar
 				end
-			elseif $block = A
+			elseif $block = "A"
 				# Atom block
 				if $data = Charge
 					setcharge $a
-				elseif $data = XYZ
+				elseif $data = "XYZ"
 					setcoords $a $b $c
-				elseif $data = Force
+				elseif $data = "Force"
 					setforces $a $b $c
-				elseif $data = ACL
+				elseif $data = "ACL"
 					setelement $b
 				end
-			elseif $block = B
+			elseif $block = "B"
 				# Bond block
-				if $data = Atom1
+				if $data = "Atom1"
 					let $bondi = $a
-				elseif $data = Atom2
+				elseif $data = "Atom2"
 					let $bondj = $a
 				end
 			end
@@ -98,6 +101,7 @@ importmodel
 		cellaxes $cax $cay $caz $cbx $cby $cbz $ccx $ccy $ccz
 		fold
 	end
-	centre 0 0 0
+
+	# Finalise model
 	finalisemodel
 end

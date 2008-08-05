@@ -442,6 +442,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	Variable *var;
 	Variable::VariableType vt;
 	AssignOps::AssignOp ao;
+	Parser::ArgumentForm af;
 	static char arg[512];
 	argcount = 0;
 	n = 0;
@@ -544,86 +545,69 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			// Variable, expression, or constant
 			case ('e'):
 			case ('E'):
-				/* Any 'V' or 'v' specifier may be an expression, which itself must be quoted in the command.
-				So, if the argument was quoted we will assume its an expression
-				If not: if the first character is a '$' then add a normal variable.
-				If '*' set to the dummy variable.
-				Otherwise, add constant variable.
-				*/
-				if (parser.wasQuoted(argcount))
+				// Get form of argument in parser object
+				af = parser.argumentForm(argcount);
+				if (af == Parser::ExpressionForm)
 				{
 					var = parent_->variables.addExpression(&arg[0]);
 					if (var == NULL) return FALSE;
 					args_.add(var);
 				}
-				else if (arg[0] == '$')
+				else if (af == Parser::VariableForm)
 				{
 					// See if it has been declared
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
 				}
-				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else args_.add(parent_->variables.addConstant(arg));
 				break;
-			// Normal, non-expression variable or constant
+			// Normal, non-expression variable or constant (Q forces constant tpye to be Character)
 			case ('n'):
 			case ('N'):
-				/* If the first character is a '$' then add a normal variable.
-				If '*' set to the dummy variable.
-				Otherwise, add constant variable.
-				*/
-				if (arg[0] == '$')
-				{
-					// See if it has been declared
-					var = parent_->variables.get(&arg[1]);
-					if (var == NULL)
-					{
-						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
-						return FALSE;
-					}
-					else args_.add(var);
-				}
-				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
-				else args_.add(parent_->variables.addConstant(arg));
-				break;
-			// Plain variable or character constant
 			case ('q'):
 			case ('Q'):
-				/* If the first character is a '$' then add a normal variable.
-				Otherwise, add character constant variable.
-				*/
-				if (arg[0] == '$')
+				// Get form of argument in parser object
+				af = parser.argumentForm(argcount);
+				if (af == Parser::ExpressionForm)
+				{
+					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", cmd, argcount, &arg[0]);
+					return FALSE;
+				}
+				else if (af == Parser::VariableForm)
 				{
 					// See if it has been declared
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)
 					{
-						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
+						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
 						return FALSE;
 					}
 					else args_.add(var);
 				}
-				else args_.add(parent_->variables.addConstant(arg, TRUE));
+				else
+				{
+					if ((v[n] == 'q') || (v[n] == 'Q')) args_.add(parent_->variables.addConstant(arg), TRUE);
+					else args_.add(parent_->variables.addConstant(arg));
+				}
 				break;
 			// Variable ('U' indicates a pointer variable having subvariables)
 			case ('v'):
 			case ('V'):
 			case ('u'):
 			case ('U'):
-				/* If the first character is a '$' then add a normal variable.
-				If '*' set to the dummy variable.
-				*/
-				if (parser.wasQuoted(argcount))
+				// Get form of argument in parser object
+				af = parser.argumentForm(argcount);
+				if (af == Parser::ExpressionForm)
 				{
-					msg.print("Error: '%s' expected a declared variable for argument %i, but found '%s' instead.\n", cmd, argcount, &arg[0]);
+					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", cmd, argcount, &arg[0]);
 					return FALSE;
 				}
-				else if (arg[0] == '$')
+				else if (af == Parser::VariableForm)
 				{
 					// See if it has been declared
 					var = parent_->variables.get(&arg[1]);
@@ -640,7 +624,6 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 						if (!parent_->createSubvariables(var)) return FALSE;
 					}
 				}
-				else if (arg[0] == '*') args_.add(parent_->variables.dummy());
 				else
 				{
 					msg.print("Error: '%s' expected a declared variable for argument %i, but found '%s' instead.\n", cmd, argcount, &arg[0]);
