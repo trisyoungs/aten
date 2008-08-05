@@ -157,6 +157,8 @@ void Aten::initCommands()
 	CA_data[CA_SAVEEXPRESSION].function = &CommandData::function_CA_SAVEEXPRESSION;
 
 	// Flow control
+	CA_data[CA_BREAK].function = &CommandData::function_CA_BREAK;
+	CA_data[CA_CONTINUE].function = &CommandData::function_CA_CONTINUE;
 	CA_data[CA_ELSE].function = &CommandData::function_CA_ELSE;
 	CA_data[CA_ELSEIF].function = &CommandData::function_CA_ELSEIF;
 	CA_data[CA_END].function = &CommandData::function_CA_END;

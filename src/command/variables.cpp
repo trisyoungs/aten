@@ -271,6 +271,10 @@ bool CommandList::createAtomVariables(const char *base)
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"id",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"fixed",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"selected",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"fftype",Variable::CharacterVariable);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"ffequiv",Variable::CharacterVariable);
@@ -311,6 +315,8 @@ void CommandList::setAtomVariables(const char *varname, Atom *i)
 		variables.set(varname,"name",elements.name(i));
 		variables.set(varname,"z",i->element());
 		variables.set(varname,"id",i->id()+1);
+		variables.set(varname,"fixed",i->hasFixedPosition());
+		variables.set(varname,"selected",i->isSelected());
 		ForcefieldAtom *ffa = i->type();
 		variables.set(varname,"fftype",(ffa == NULL ? elements.symbol(i) : ffa->name()));
 		variables.set(varname,"ffequiv",(ffa == NULL ? elements.symbol(i) : ffa->equivalent()));

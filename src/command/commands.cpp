@@ -290,6 +290,10 @@ CommandData CA_data[CA_NITEMS] = {
 				"Save the expression for the current model" },
 
 	// Flow control
+	{ "break",		"",		"",
+				"Exit from the current for loop" },
+	{ "continue",		"",		"",
+				"Skip to the next iteration of the current loop" },
 	{ "else",		"",		"",
 				"Perform the subsequent block if all previous if/elseif tests failed" },
 	{ "elseif",		"ESE",		"<variable> <condition> <variable|constant>",

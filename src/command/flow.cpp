@@ -32,6 +32,24 @@ int CommandData::function_CA_ROOTNODE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Break out of current loop
+int CommandData::function_CA_BREAK(Command *&c, Bundle &obj)
+{
+	// Set next command to be the node after the root FOR command
+	c = c->pointer();
+	c->setLoopActive(FALSE);
+	c = c->next;
+	return CR_SUCCESSNOMOVE;
+}
+
+// Cycle current loop
+int CommandData::function_CA_CONTINUE(Command *&c, Bundle &obj)
+{
+	// Set next command to be the root loop node
+	c = c->pointer();
+	return CR_SUCCESSNOMOVE;
+}
+
 // Else statement
 int CommandData::function_CA_ELSE(Command *&c, Bundle &obj)
 {

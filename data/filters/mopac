@@ -1,0 +1,86 @@
+# Mopac input file
+# Last modified: 04/08/08.
+# Notes:
+#   Import filter does not account for the presence of '+' or '&' in the keyword section
+#   Cartesian coordinate format is assumed
+importmodel
+	name "Mopac Control File"
+	nickname mopac
+	extension mop
+	glob *.mop
+	id 4
+
+	# Variable declaration
+	integer natoms,n,cellcount,fx,fy,fz
+	character e,line
+	double rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
+
+	# Initialise variables
+	$cellcount = 0
+
+	# Discard first line (keywords)
+	getline $line
+
+	# Next two lines are description
+	getline $title
+	newmodel $title
+	getline $line
+	print "$title"
+	print "$line"
+
+	# All remaining lines make up the geometry
+	for $n
+		readline "$e $rx $fx $ry $fy $rz $fy"
+		# If the element is 'Tv' its part of the cell specification
+		if $e = Tv
+			$cellcount += 1
+			if $cellcount = 1
+				$ax = $rx
+				$ay = $ry
+				$az = $rz
+			elseif $cellcount = 2
+				$bx = $rx
+				$by = $ry
+				$bz = $rz
+			elseif $cellcount = 3
+				$cx = $rx
+				$cy = $ry
+				$cz = $rz
+			else
+				print "Extra translation vector data found - ignored..."
+			end
+		else
+			newatom $e $rx $ry $rz
+		end
+	end
+	rebond
+	selectall
+	centre 0 0 0
+	finalisemodel
+end
+exportmodel
+	name "Mopac Control File"
+	extension mop
+	glob *.mop
+	nickname mopac
+	id 4
+
+	# Variable declaration
+	integer n
+	character e
+	double rx,ry,rz
+	atom i
+
+	writeline "PM6 BFGS"
+	writeline "$title"
+	writeline "Coordinates churned out by Aten."
+	for $i
+		writeline "$i.symbol%3 $i.rx%12.6 $i.fixed $i.ry%12.6 $i.fixed $i.rz%12.6 $i.fixed"
+	end
+	# Write translation vector for cell
+	if $cell.type <> None
+		writeline "Tv  $cell.ax%12.6 0 $cell.ay%12.6 0 $cell.az%12.6 0"
+		writeline "Tv  $cell.bx%12.6 0 $cell.by%12.6 0 $cell.bz%12.6 0"
+		writeline "Tv  $cell.cx%12.6 0 $cell.cy%12.6 0 $cell.cz%12.6 0"
+	end
+end
