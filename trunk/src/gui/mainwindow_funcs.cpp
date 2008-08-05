@@ -146,6 +146,7 @@ void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 	{
 		m->setName(qPrintable(text));
 		ui.ModelTabs->setTabText(tabid, text);
+		gui.disorderWindow->refresh();
 	}
 	msg.exit("AtenForm::on_ModelTabs_doubleClicked");
 }
@@ -160,6 +161,7 @@ void AtenForm::refreshModelTabs()
 		ui.ModelTabs->setTabText(count, m->name());
 		count ++;
 	}
+	gui.disorderWindow->refresh();
 	msg.exit("AtenForm::refreshModelTabs");
 }
 
