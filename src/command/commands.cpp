@@ -300,7 +300,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Perform a conditional test on the supplied variable against the second variable (or constant), if all previous tests failed" },
 	{ "end",		"",		"",
 				"End the current for/if block" },
-	{ "for",		"Eee",		"<variable> [start] [end]",
+	{ "for",		"Vee",		"<variable> [start] [end]",
 				"" },
 	{ "_GOTO_",		"",		"",
 				"" },
