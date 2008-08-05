@@ -823,6 +823,15 @@ Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
 	return cn;
 }
 
+// Return basenode of topmost branch of specified type in current stack (if any)
+Command *CommandList::topmostBranch(CommandAction ca)
+{
+	Command *result;
+	for (Command *result = branchCommandStack_.last(); result != NULL; result = result->prev)
+		if (result->command() == ca) break;
+	return result->pointer();
+}
+
 // Create subvariables for variable (based on its type)
 bool CommandList::createSubvariables(Variable *v)
 {
@@ -878,7 +887,7 @@ void CommandList::setSubvariables(Variable *v)
 bool CommandList::addCommand(CommandAction ca)
 {
 	msg.enter("CommandList::addCommand");
-	Command *c;
+	Command *c, *topc;
 	CommandAction branchca;
 	Variable::VariableType vt;
 	int n;
@@ -967,7 +976,7 @@ bool CommandList::addCommand(CommandAction ca)
 			break;
 		// Loop for n iterations (or until file ends) or over items
 		case (CA_FOR):
-			c = addTopBranchCommand(ca, NULL);
+			c = addTopBranchCommand(CA_FOR, NULL);
 			pushBranch(c->createBranch(), ca, c);
 			varresult = c->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
 			// Create subvariables if necessary
@@ -977,7 +986,7 @@ bool CommandList::addCommand(CommandAction ca)
 		case (CA_END):
 			if (branchStack_.nItems() == 0)
 			{
-				msg.print("CommandList::addCommand - 'end' does not end a block.\n");
+				msg.print("Error: 'end' does not end a block.\n");
 				result = FALSE;
 				break;
 			}
@@ -999,12 +1008,36 @@ bool CommandList::addCommand(CommandAction ca)
 					addTopBranchCommand(CA_TERMINATE, NULL);
 					break;
 				default:
-					printf("CommandList::add_basic <<<< No END action defined for command '%s' >>>>\n", CA_data[branchca].keyword);
+					printf("CommandList::addCommand <<<< No END action defined for command '%s' >>>>\n", CA_data[branchca].keyword);
 					result = FALSE;
 					break;
 			}
 			// Remove the topmost branch from the stack
 			popBranch();
+			break;
+		// Break out from current loop
+		case (CA_BREAK):
+			// Find the topmost FOR branch
+			topc = topmostBranch(CA_FOR);
+			if (topc == NULL)
+			{
+				msg.print("Error: no loop for 'break' to terminate.\n");
+				result = FALSE;
+				break;
+			}
+			c = addTopBranchCommand(CA_BREAK, topc);
+			break;
+		// Cycle current loop
+		case (CA_CONTINUE):
+			// Find the topmost FOR branch
+			topc = topmostBranch(CA_FOR);
+			if (topc == NULL)
+			{
+				msg.print("Error: no loop for 'cycle' to iterate.\n");
+				result = FALSE;
+				break;
+			}
+			c = addTopBranchCommand(CA_CONTINUE, topc);
 			break;
 		// Unrecognised command
 		case (CA_NITEMS):

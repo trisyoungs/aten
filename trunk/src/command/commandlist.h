@@ -106,7 +106,7 @@ class Command
 	private:
 	// Whether the loop is currently executing
 	bool loopActive_;
-	// NUmber of iterations performed by loop
+	// Number of iterations performed by loop
 	int loopIterations_;
 
 	public:
@@ -137,9 +137,9 @@ class Command
 	List<Command> *branch();
 	// Returns first item in branch 
 	Command *branchCommands();
-	// Set FormatNode pointer variable
+	// Set command pointer variable (used in flow control)
 	void setPointer(Command *f);
-	// Return FormatNode pointer variable
+	// Return pointer variable
 	Command *pointer();
 
 	/*
@@ -232,6 +232,8 @@ class CommandList
 	void popBranch();
 	// Add command to topmost branch
 	Command* addTopBranchCommand(CommandAction, Command*);
+	// Return basenode of topmost branch of specified type in current stack (if any)
+	Command *topmostBranch(CommandAction);
 
 	public:
 	// Set name of CommandList

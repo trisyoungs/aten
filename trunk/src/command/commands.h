@@ -179,6 +179,8 @@ enum CommandAction {
 	CA_SAVEEXPRESSION,
 
 	// Flow control
+	CA_BREAK,
+	CA_CONTINUE,
 	CA_ELSE,
 	CA_ELSEIF,
 	CA_END,
@@ -566,6 +568,8 @@ class CommandData
 	int function_CA_PRINTSETUP(Command *&c, Bundle &obj);
 	int function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj);
 	// Flow control
+	int function_CA_BREAK(Command *&c, Bundle &obj);
+	int function_CA_CONTINUE(Command *&c, Bundle &obj);
 	int function_CA_ELSE(Command *&c, Bundle &obj);
 	int function_CA_ELSEIF(Command *&c, Bundle &obj);
 	int function_CA_END(Command *&c, Bundle &obj);
