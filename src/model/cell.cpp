@@ -134,7 +134,7 @@ void Model::foldAllMolecules()
 	i = atoms_.first();
 	for (p = patterns_.first(); p != NULL; p = p->next)
 	{
-		for (m=0; m<p->nMols(); m++)
+		for (m=0; m<p->nMolecules(); m++)
 		{
 			for (n=0; n<p->nAtoms(); n++)
 			{
@@ -240,7 +240,7 @@ void Model::scaleCell(const Vec3<double> &scale)
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
 		i = p->firstAtom();
-		for (n=0; n<p->nMols(); n++)
+		for (n=0; n<p->nMolecules(); n++)
 		{
 			// Get fractional coordinate COG of this molecule
 			oldcog = p->calculateCog(this,n);

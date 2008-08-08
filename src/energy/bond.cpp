@@ -40,8 +40,8 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 	Cell *cell = srcmodel->cell();
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
-	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startAtom_,nMols_,nAtoms_,nbonds);
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
+	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startAtom_,nMolecules_,nAtoms_,nbonds);
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule+1); m1++)
 	{
 		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{
@@ -110,7 +110,7 @@ void Pattern::bondForces(Model *srcmodel)
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		for (pb = bonds_.first(); pb != NULL; pb = pb->next)
 		{

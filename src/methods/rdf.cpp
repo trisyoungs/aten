@@ -117,12 +117,12 @@ void Rdf::accumulate(Model *sourcemodel)
 	static Vec3<double> centre1, centre2, mimd;
 	Cell *cell = sourcemodel->cell();
 	// Loop over molecules for site1
-	for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
+	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
 		// Get first centre
 		centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
 		// Loop over molecules for site2
-		for (m2 = 0; m2 < sites_[1]->pattern()->nMols(); m2++)
+		for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 		{
 			centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
 			// Calculate minimum image distance and bin
@@ -145,9 +145,9 @@ void Rdf::finalise(Model *sourcemodel)
 	int n;
 	double factor, r1, r2, numDensity;
 	// Normalise the rdf w.r.t. number of frames and number of central molecules
-	for (n=0; n<nBins_; n++) data_[n] /= double(nAdded_) * sites_[0]->pattern()->nMols() ;
+	for (n=0; n<nBins_; n++) data_[n] /= double(nAdded_) * sites_[0]->pattern()->nMolecules() ;
 	// Normalise nAdded_ording to number density of sites_ in RDF shells
-	numDensity = sites_[1]->pattern()->nMols() / sourcemodel->cell()->volume();
+	numDensity = sites_[1]->pattern()->nMolecules() / sourcemodel->cell()->volume();
 	for (n=0; n<nBins_; n++)
 	{
 		r1 = lower_ + double(n) * binWidth_;

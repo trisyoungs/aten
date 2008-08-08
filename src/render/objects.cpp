@@ -339,3 +339,22 @@ void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &v1, con
 	glPopMatrix();
 }
 
+void Canvas::glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z)
+{
+	static double phi, mag1, mag2, r[16], t[16];
+	static Mat4<double> rotmat;
+	// Extremely slow but working ellipsoid drawing. Make a matrix consisting of the two 'axes' defined
+	// by vec1 and vec2, and a third orthogonal to these.
+	rotmat.rows[0].set(x.x,x.y,x.z,0.0);
+	rotmat.rows[1].set(y.x,y.y,y.z,0.0);
+	rotmat.rows[2].set(z.x,z.y,z.z,0.0);
+	// Apply position and scaling transforms
+	glPushMatrix();
+	  glTranslated(centre.x,centre.y,centre.z);
+	  glPushMatrix();
+	    rotmat.copyRowMajor(r);
+	    glMultMatrixd(r);
+	    glCallList(list_[GLOB_UNITATOM]);
+	  glPopMatrix();
+	glPopMatrix();
+}

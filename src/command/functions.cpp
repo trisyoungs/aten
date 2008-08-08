@@ -83,6 +83,7 @@ void Aten::initCommands()
 	CA_data[CA_LOCATE].function = &CommandData::function_CA_LOCATE;
 	CA_data[CA_MOVE].function = &CommandData::function_CA_MOVE;
 	CA_data[CA_PASTE].function = &CommandData::function_CA_PASTE;
+	CA_data[CA_RESETPEN].function = &CommandData::function_CA_RESETPEN;
 	CA_data[CA_ROTX].function = &CommandData::function_CA_ROTX;
 	CA_data[CA_ROTY].function = &CommandData::function_CA_ROTY;
 	CA_data[CA_ROTZ].function = &CommandData::function_CA_ROTZ;

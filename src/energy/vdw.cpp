@@ -164,7 +164,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	start1 = (lonemolecule == -1 ? 0 : lonemolecule);
-	finish1 = (lonemolecule == -1 ? nMols_ : lonemolecule+1);
+	finish1 = (lonemolecule == -1 ? nMolecules_ : lonemolecule+1);
 	aoff = startAtom_ + start1*nAtoms_;
 	for (m1=start1; m1<finish1; m1++)
 	{
@@ -223,7 +223,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 	if (molId == -1)
 	{
 		start1 = 0;
-		finish1 = (this == otherPattern ? nMols_ - 1 : nMols_);
+		finish1 = (this == otherPattern ? nMolecules_ - 1 : nMolecules_);
 	}
 	else
 	{
@@ -237,23 +237,23 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 		if (this == otherPattern)
 		{
 			// Same pattern - if a specific molecule was given then we loop over all molecules.
-			// If not, loop over m1+1 to nMols_.
+			// If not, loop over m1+1 to nMolecules_.
 			if (molId == -1)
 			{
 				start2 = m1 + 1;
-				finish2 = nMols_;
+				finish2 = nMolecules_;
 			}
 			else
 			{
 				start2 = 0;
-				finish2 = nMols_;
+				finish2 = nMolecules_;
 			}
 		}
 		else
 		{
 			// Simple - go over all molecules in the dissimilar pattern
 			start2 = 0;
-			finish2 = otherPattern->nMols_;
+			finish2 = otherPattern->nMolecules_;
 		}
 
 		//if (m1 == 0) printf("IPE - finish1 = %i, start2 = %i, finish2 = %i\n",finish1,start2,finish2);
@@ -313,7 +313,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		// Add contributions from atom pairs that are unbound or separated by more than three bonds
 		i = -1;
@@ -372,12 +372,12 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 
 	// TODO Move loops so that we can load temporary forces for i then calculate all other forces on it in one go.
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == otherPattern ? finish = nMols_ - 1 : finish = nMols_;
+        this == otherPattern ? finish = nMolecules_ - 1 : finish = nMolecules_;
 	for (m1=0; m1<finish; m1++)
 	{
 		this == otherPattern ? start = m1 + 1 : start = 0;
 		aoff2 = otherPattern->startAtom_ + start*nAtoms_;
-		for (m2=start; m2<otherPattern->nMols_; m2++)
+		for (m2=start; m2<otherPattern->nMolecules_; m2++)
 		{
 			i = -1;
 			for (pai = atoms_.first(); pai != NULL; pai = pai->next)
@@ -435,14 +435,14 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 	vrs = prefs.vdwScale();
 	// The way the patterns are stored does not give direct access to the number of different
 	// atom types used *or* the number densities of each. So, assume each atom in the pattern 
-	// molecule is a unique VDW type and that the number density is nMols_/cellvolume
+	// molecule is a unique VDW type and that the number density is nMolecules_/cellvolume
 	volume = cell->volume();
 	energy = 0.0;
 	for (p1 = this; p1 != NULL; p1 = p1->next)
 	{
 		for (p2 = this; p2 != NULL; p2 = p2->next)
 		{
-			rho = (p1->nMols_ * p2->nMols_) /volume;
+			rho = (p1->nMolecules_ * p2->nMolecules_) /volume;
 			i = -1;
 			for (pai = p1->atoms_.first(); pai != NULL; pai = pai->next)
 			{

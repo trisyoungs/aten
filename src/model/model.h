@@ -145,6 +145,8 @@ class Model
 	public:
 	// Create a new atom
 	Atom *addAtom(short int el, Vec3<double> r);
+	// Create a new atom at the Model's current pen position
+	Atom *addAtomAtPen(short int el);
 	// Create copy of supplied atom
 	Atom *addCopy(Atom *source);
 	// Create copy of supplied atom at the specified position
@@ -578,10 +580,26 @@ class Model
 	private:
 	// Iteratively add hydrogens to the specified atom in the desired general geometry
 	void addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry);
+	// Pen orientation matrix
+	Mat3<double> penOrientation_;
+	// Pen position
+	Vec3<double> penPosition_;
 
 	public:
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogenSatisfy(Atom *target = NULL);
+	// Return the pen orientation matrix
+	Mat3<double> penOrientation();
+	// Rotate the pen orientation matrix about the specified axis
+	void rotatePenAxis(int axis, double degrees);
+	// Reset the pen axis system
+	void resetPenOrientation();
+	// Return the current pen position
+	Vec3<double> penPosition();
+	// Move the pen (in its current axis system)
+	void movePenPosition(Vec3<double> v);
+	// Set the pen position absolutely
+	void setPenPosition(Vec3<double> v);
 
 	/*
 	// Geometry (using staticatoms[])

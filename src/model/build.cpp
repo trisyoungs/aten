@@ -150,3 +150,62 @@ void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 	}
 	msg.exit("Model::addHydrogens");
 }
+
+// Return the pen orientation matrix
+Mat3<double> Model::penOrientation()
+{
+	return penOrientation_;
+}
+
+// Rotate the pen orientation matrix about the specified axis
+void Model::rotatePenAxis(int axis, double degrees)
+{
+	Mat3<double> rotmat;
+	double theta = degrees / DEGRAD;
+	switch (axis)
+	{
+		case (0):
+			rotmat.set(0,1.0,0.0,0.0);
+			rotmat.set(1,0.0,cos(theta),sin(theta));
+			rotmat.set(2,0.0,-sin(theta),cos(theta));
+			break;
+		case (1):
+			rotmat.set(0,cos(theta),0.0,-sin(theta));
+			rotmat.set(1,0.0,1.0,0.0);
+			rotmat.set(2,sin(theta),0.0,cos(theta));
+			break;
+		case (2):
+			rotmat.set(0,cos(theta),sin(theta),0.0);
+			rotmat.set(1,-sin(theta),cos(theta),0.0);
+			rotmat.set(2,0.0,0.0,1.0);
+			break;
+		default:
+			msg.print("%i is not a valid axis for Model::rotatePenAxis\n", axis);
+			break;
+	}
+	penOrientation_ *= rotmat;
+}
+
+// Reset pen axis system
+void Model::resetPenOrientation()
+{
+	penOrientation_.setIdentity();
+}
+
+// Return the current pen position
+Vec3<double> Model::penPosition()
+{
+	return penPosition_;
+}
+
+// Move the pen position in its axis system
+void Model::movePenPosition(Vec3<double> v)
+{
+	penPosition_ += penOrientation_ * v;
+}
+
+// Set the pen position absolutely
+void Model::setPenPosition(Vec3<double> v)
+{
+	penPosition_ = v;
+}

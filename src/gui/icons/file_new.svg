@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/tris/src/aten/src/gui-qt/icons"
+   sodipodi:docbase="/home/tris/src/aten/src/gui/icons"
    sodipodi:docname="file_new.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
@@ -23,7 +23,7 @@
     <linearGradient
        id="linearGradient3186">
       <stop
-         style="stop-color:#ffffcd;stop-opacity:1;"
+         style="stop-color:#f5f5f5;stop-opacity:1;"
          offset="0"
          id="stop3188" />
       <stop
@@ -79,7 +79,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="3.542605"
      inkscape:cx="37.309026"
-     inkscape:cy="63.600425"
+     inkscape:cy="63.459286"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="100px"
@@ -130,17 +130,17 @@
     <g
        id="g2163"
        transform="matrix(1.0193542,0,0,1.1542086,-1.7047721,-7.0536273)"
-       style="fill:url(#linearGradient3243);fill-opacity:1">
+       style="fill:url(#linearGradient3243);fill-opacity:1.0">
       <path
          sodipodi:nodetypes="cccccc"
          id="rect2160"
          d="M 19.163479,88.735485 L 58.11528,88.735485 L 78.383137,68.556914 L 78.383137,8.2395668 L 19.163479,8.2395668 L 19.163479,88.735485"
-         style="fill:url(#linearGradient3245);fill-opacity:1;stroke:#000000;stroke-opacity:1" />
+         style="fill:url(#linearGradient3245);fill-opacity:1.0;stroke:#000000;stroke-opacity:1" />
       <path
          sodipodi:nodetypes="cccc"
          id="rect3134"
          d="M 58.639205,69.080838 L 77.579566,69.080838 L 58.639205,88.021199 L 58.639205,69.080838 z "
-         style="fill:url(#linearGradient3247);fill-opacity:1;stroke:#000000;stroke-opacity:1" />
+         style="fill:url(#linearGradient3247);fill-opacity:1.0;stroke:#000000;stroke-opacity:1" />
     </g>
     <g
        id="g2180"

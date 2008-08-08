@@ -81,7 +81,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			break;
 	}
 	if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
-	else aten.current.i = obj.rs->addAtom(el, c->parent()->penPosition);
+	else aten.current.i = obj.rs->addAtomAtPen(el);
 	// Add the name to the model's namesForcefield, if requested and it exists
  	if (prefs.keepNames() && obj.rs->namesForcefield())
  	{

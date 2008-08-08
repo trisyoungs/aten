@@ -573,14 +573,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			case ('N'):
 			case ('q'):
 			case ('Q'):
-				// Get form of argument in parser object
-				af = parser.argumentForm(argcount);
-				if (af == Parser::ExpressionForm)
-				{
-					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", cmd, argcount, &arg[0]);
-					return FALSE;
-				}
-				else if (af == Parser::VariableForm)
+				if (arg[0] == '$')
 				{
 					// See if it has been declared
 					var = parent_->variables.get(&arg[1]);

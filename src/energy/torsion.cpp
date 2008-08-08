@@ -38,7 +38,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 	Vec3<double> vecij, veckj;
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule + 1); m1++)
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule + 1); m1++)
 	{
 		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 		{
@@ -159,7 +159,7 @@ void Pattern::torsionForces(Model *srcmodel)
 	Cell *cell = srcmodel->cell();
 
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 		{

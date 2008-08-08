@@ -60,7 +60,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 	}
 	else
 	{
-		i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), c->parent()->penPosition);
+		i = obj.rs->addAtomAtPen(elements.find(c->argc(0),Prefs::AlphaZmap));
 		if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,c->hasArg(1) ? Bond::bondType(c->argc(1)) : Bond::Single);
 	}
 	aten.current.i = i;
@@ -102,18 +102,14 @@ int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
 // Set pen coordinates ('locate <dx dy dz>')
 int CommandData::function_CA_LOCATE(Command *&c, Bundle &obj)
 {
-	c->parent()->penPosition.x = c->argd(0);
-	c->parent()->penPosition.y = c->argd(1);
-	c->parent()->penPosition.z = c->argd(2);
+	obj.rs->setPenPosition(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
 int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
 {
-	c->parent()->penPosition += c->parent()->penOrientation.rows[0] * c->argd(0);
-	c->parent()->penPosition += c->parent()->penOrientation.rows[1] * c->argd(1);
-	c->parent()->penPosition += c->parent()->penOrientation.rows[2] * c->argd(2);
+	obj.rs->movePenPosition(c->arg3d(0));
 	return CR_SUCCESS;
 }
 
@@ -130,39 +126,35 @@ int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Reset pen orientation
+int CommandData::function_CA_RESETPEN(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->resetPenOrientation();
+	return CR_SUCCESS;
+}
+
 // Rotate pen orientation about x axis ('rotx <theta>')
 int CommandData::function_CA_ROTX(Command *&c, Bundle &obj)
 {
-	Mat3<double> rotmat;
-	double theta = c->argd(0) / DEGRAD;
-	rotmat.set(0,1.0,0.0,0.0);
-	rotmat.set(1,0.0,cos(theta),sin(theta));
-	rotmat.set(2,0.0,-sin(theta),cos(theta));
-	c->parent()->penOrientation *= rotmat;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->rotatePenAxis(0, c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Rotate pen orientation about y axis ('roty <theta>')
 int CommandData::function_CA_ROTY(Command *&c, Bundle &obj)
 {
-	Mat3<double> rotmat;
-	double theta = c->argd(0) / DEGRAD;
-	rotmat.set(0,cos(theta),0.0,-sin(theta));
-	rotmat.set(1,0.0,1.0,0.0);
-	rotmat.set(2,sin(theta),0.0,cos(theta));
-	c->parent()->penOrientation *= rotmat;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->rotatePenAxis(1, c->argd(0));
 	return CR_SUCCESS;
 }
 
 // Rotate pen orientation about z axis ('rotz <theta>')
 int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 {
-	Mat3<double> rotmat;
-	double theta = c->argd(0) / DEGRAD;
-	rotmat.set(0,cos(theta),sin(theta),0.0);
-	rotmat.set(1,-sin(theta),cos(theta),0.0);
-	rotmat.set(2,0.0,0.0,1.0);
-	c->parent()->penOrientation *= rotmat;
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->rotatePenAxis(2, c->argd(0));
 	return CR_SUCCESS;
 }
 

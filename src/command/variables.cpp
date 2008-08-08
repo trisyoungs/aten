@@ -375,7 +375,7 @@ void CommandList::setPatternVariables(const char *varname, Pattern *p)
 	if (p != NULL)
 	{
 		variables.set(varname,"name",p->name());
-		variables.set(varname,"nmols",p->nMols());
+		variables.set(varname,"nmols",p->nMolecules());
 		variables.set(varname,"nmolatoms",p->nAtoms());
 		variables.set(varname,"natoms",p->totalAtoms());
 		variables.set(varname,"firstid",p->startAtom() + 1);

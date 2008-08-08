@@ -43,7 +43,7 @@ void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int mol
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule+1); m1++)
 	{
 		// Add on contributions for connectivities of 0 (unbound) or > 2
 		for (i=0; i<nAtoms_; i++)
@@ -83,14 +83,14 @@ void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy
 	energy_inter = 0.0;
 	aoff1 = startAtom_;
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-	if ((this == xpnode) && (molecule == -1)) finish1 = nMols_ - 1;
-	else finish1 = nMols_;
+	if ((this == xpnode) && (molecule == -1)) finish1 = nMolecules_ - 1;
+	else finish1 = nMolecules_;
 	for (m1=0; m1<finish1; m1++)
 	{
 		if (molecule == -1)
 		{
 			start2 = (this == xpnode ? m1 + 1 : 0);
-			finish2 = xpnode->nMols_;
+			finish2 = xpnode->nMolecules_;
 		}
 		else
 		{
@@ -139,7 +139,7 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		// Add on contributions for connectivities of 0 (unbound) or > 3
 		for (i=0; i<nAtoms_; i++)
@@ -181,12 +181,12 @@ void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *xpnode)
 	cutoff = prefs.elecCutoff();
 	aoff1 = startAtom_;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-        this == xpnode ? finish = nMols_ - 1 : finish = nMols_;
+        this == xpnode ? finish = nMolecules_ - 1 : finish = nMolecules_;
 	for (m1=0; m1<finish; m1++)
 	{
 		this == xpnode ? start = m1 + 1 : start = 0;
 	       	aoff2 = xpnode->startAtom_ + start*nAtoms_;
-		for (m2=start; m2<xpnode->nMols_; m2++)
+		for (m2=start; m2<xpnode->nMolecules_; m2++)
 		{
 			for (a1=0; a1<nAtoms_; a1++)
 			{

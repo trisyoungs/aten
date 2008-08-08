@@ -25,8 +25,8 @@
 #include "model/model.h"
 
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "quad", "triangle", "line", "ellipsoid", "tetrahedron", "text", "text3d" };
-int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 2, 2, 4, 3, 2, 3, 4, 1, 1 };
+const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "vector", "svector", "sphere", "cube", "quad", "triangle", "line", "ellipsoid", "ellipsoidxyz", "tetrahedron", "text", "text3d" };
+int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 2, 2, 4, 3, 2, 3, 4, 4, 1, 1 };
 const char *Glyph::glyphType(Glyph::GlyphType gs)
 {
 	return GlyphTypeKeywords[gs];
