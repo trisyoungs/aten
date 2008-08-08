@@ -105,6 +105,7 @@ enum CommandAction {
 	CA_LOCATE,
 	CA_MOVE,
 	CA_PASTE,
+	CA_RESETPEN,
 	CA_ROTX,
 	CA_ROTY,
 	CA_ROTZ,
@@ -503,6 +504,7 @@ class CommandData
 	int function_CA_LOCATE(Command *&c, Bundle &obj);
 	int function_CA_MOVE(Command *&c, Bundle &obj);
 	int function_CA_PASTE(Command *&c, Bundle &obj);
+	int function_CA_RESETPEN(Command *&c, Bundle &obj);
 	int function_CA_ROTX(Command *&c, Bundle &obj);
 	int function_CA_ROTY(Command *&c, Bundle &obj);
 	int function_CA_ROTZ(Command *&c, Bundle &obj);

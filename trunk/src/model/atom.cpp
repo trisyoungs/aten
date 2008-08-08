@@ -58,6 +58,12 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos)
 	return newatom;
 }
 
+// Create a new atom at the Model's current pen position
+Atom *Model::addAtomAtPen(short int el)
+{
+	return addAtom(el, penPosition_);
+}
+
 // Add atom copy
 Atom *Model::addCopy(Atom *source)
 {

@@ -289,7 +289,7 @@ void Model::selectType(int element, const char *typedesc)
 				{
 					// Select this atom in all pattern molecules
 					p->selectAtom(n);
-					count ++;
+					count += p->nMolecules();
 					matchscore = atomscore;
 				}
 			}

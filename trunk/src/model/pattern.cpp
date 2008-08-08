@@ -62,7 +62,7 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 	msg.enter("Model::addPattern");
 	// Determine starting atom...
 	Pattern *lastp = patterns_.last();
-	int start = (lastp == NULL ? 0 : lastp->startAtom() + lastp->nMols() * lastp->nAtoms());
+	int start = (lastp == NULL ? 0 : lastp->startAtom() + lastp->nMolecules() * lastp->nAtoms());
 	Pattern *newpnode = patterns_.add();
 	newpnode->setParent(this);
 	newpnode->setName(patname);
@@ -96,7 +96,7 @@ void Model::ownPattern(Pattern *source, bool own)
 	msg.enter("Model::ownPattern");
 	// Set the starting atom from the last pattern in the model's list
 	Pattern *p = patterns_.last();
-	int start = (p == NULL ? 0 : p->startAtom() + p->nMols() * p->nAtoms());
+	int start = (p == NULL ? 0 : p->startAtom() + p->nMolecules() * p->nAtoms());
 	// Add the pattern onto the end of the current list
 	patterns_.own(source);
 	energy.resize(patterns_.nItems());
@@ -481,7 +481,7 @@ void Model::chargePatternAtom(Pattern *p, int id, double q)
 	for (n=0; n<id; n++) i = i->next;
 	chargeAtom(i, q);
 	// Loop over molecules-1, setting charge and then skipping on pnatoms
-	for (n=1; n<p->nMols(); n++)
+	for (n=1; n<p->nMolecules(); n++)
 	{
 		for (m=0; m<pnatoms; m++) i = i->next;
 		chargeAtom(i, q);
@@ -513,7 +513,7 @@ void Model::printPatterns()
 		msg.print("  ID  NMols  Starti  Endi    Name            Forcefield\n");
 		while (p != NULL)
 		{
-			msg.print("  %2i  %5i  %6i  %6i  %-16s  %s\n", p->id(), p->nMols(), p->startAtom(), p->endAtom(), p->name(), p->forcefield() ? p->forcefield()->name() : "< Inherited >");
+			msg.print("  %2i  %5i  %6i  %6i  %-16s  %s\n", p->id(), p->nMolecules(), p->startAtom(), p->endAtom(), p->name(), p->forcefield() ? p->forcefield()->name() : "< Inherited >");
 			p = p->next;
 		}
 	}

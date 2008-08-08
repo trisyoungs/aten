@@ -31,7 +31,7 @@ Pattern::Pattern()
 {
 	parent_ = NULL;
 	id_ = 0;
-	nMols_ = 0;
+	nMolecules_ = 0;
 	nExpectedMols_ = 0;
 	nAtoms_ = 0;
 	totalAtoms_ = 0;
@@ -255,7 +255,7 @@ int Pattern::endAtom()
 // (Re)Calculate totalAtoms_
 void Pattern::calcTotalAtoms()
 {
-	totalAtoms_ = nAtoms_ * nMols_;
+	totalAtoms_ = nAtoms_ * nMolecules_;
 }
 
 // Returns the total number of atoms in the pattern
@@ -265,25 +265,25 @@ int Pattern::totalAtoms()
 }
 
 // Sets the number of molecules in the pattern
-void Pattern::setNMols(int n)
+void Pattern::setNMolecules(int n)
 {
-	nMols_ = n;
+	nMolecules_ = n;
 }
 
 // Returns the number of molecules in the pattern
-int Pattern::nMols()
+int Pattern::nMolecules()
 {
-	return nMols_;
+	return nMolecules_;
 }
 
 // Sets the expected number of molecules in the pattern
-void Pattern::setNExpectedMols(int n)
+void Pattern::setNExpectedMolecules(int n)
 {
 	nExpectedMols_ = n;
 }
 
 // Returns the expected number of molecules in the pattern
-int Pattern::nExpectedMols()
+int Pattern::nExpectedMolecules()
 {
 	return nExpectedMols_;
 }
@@ -385,7 +385,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 	}
 	// Store parameters
 	id_ = patid;
-	nMols_ = mols;			// Number of molecules in pattern
+	nMolecules_ = mols;			// Number of molecules in pattern
 	nAtoms_ = atomsmol;		// Number of atoms per molecule
 	totalAtoms_ = mols*nAtoms_;	// Total number of atoms described by the pattern
 	startAtom_ = start;		// Starting atom (integer position in atom list)
@@ -405,7 +405,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
 	}
-	msg.print("New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_, nMols_, nAtoms_, totalAtoms_, name_.get());
+	msg.print("New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_, nMolecules_, nAtoms_, totalAtoms_, name_.get());
 	msg.exit("Pattern::initialise");
 }
 
@@ -417,18 +417,18 @@ void Pattern::empty()
 	// Zero everything except nAtoms_
 	firstAtom_ = NULL;
 	lastAtom_ = NULL;
-	nMols_ = 0;
+	nMolecules_ = 0;
 	totalAtoms_ = 0;
 	msg.exit("Pattern::empty_pattern");
 }
 
 // Set contents of pattern
-void Pattern::setContents(int newstartAtom_, int newnMols_, int newnAtoms_)
+void Pattern::setContents(int newstartAtom_, int newnMolecules_, int newnAtoms_)
 {
 	if (newstartAtom_ != -1) startAtom_ = newstartAtom_;
-	if (newnMols_ != -1) nMols_ = newnMols_;
+	if (newnMolecules_ != -1) nMolecules_ = newnMolecules_;
 	if (newnAtoms_ != -1) nAtoms_ = newnAtoms_;
-	totalAtoms_ = nMols_ * nAtoms_;
+	totalAtoms_ = nMolecules_ * nAtoms_;
 	endAtom_ = startAtom_ + nAtoms_ - 1;
 }
 
@@ -607,11 +607,11 @@ bool Pattern::validate()
 	elcomp1 = new int[elements.nElements()+1];
 	elcomp2 = new int[elements.nElements()+1];
 	for (m=0; m<elements.nElements()+1; m++) elcomp1[m] = 0;
-	if (nMols_ == 1) testElement_ = TRUE;
+	if (nMolecules_ == 1) testElement_ = TRUE;
 	else
 	{
 		Atom *i = firstAtom_;
-		for (m=0; m<nMols_; m++)
+		for (m=0; m<nMolecules_; m++)
 		{
 			ok = TRUE;
 			if (m == 0)
@@ -658,7 +658,7 @@ Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 	// Calculate the centre of geometry for this molecule
 	msg.enter("Pattern::calculate_cog");
 	int offset = startAtom_ + mol*nAtoms_;
-	msg.print(Messenger::Verbose,"Pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMols_);
+	msg.print(Messenger::Verbose,"Pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
 	Cell *cell = srcmodel->cell();
 	cog.zero();
@@ -679,7 +679,7 @@ Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 {
 	// Calculate the centre of geometry for this molecule
 	msg.enter("Pattern::calculateCom");
-	msg.print(Messenger::Verbose,"Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)\n", mol, name_.get(), nMols_);
+	msg.print(Messenger::Verbose,"Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)\n", mol, name_.get(), nMolecules_);
 	Vec3<double> com;
 	double massnorm = 0.0;
 	static Vec3<double> mim_i;
@@ -722,7 +722,7 @@ void Pattern::propagateAtomtypes()
 		j = j->next;
 	}
 	// Loop over other molecules and copy the data
-	for (n=1; n<nMols_; n++)
+	for (n=1; n<nMolecules_; n++)
 	{
 		// Set pointer 'i' to be the starting atom of the first molecule
 		i = firstAtom_;
@@ -751,7 +751,7 @@ void Pattern::propagateBondTypes()
 	j = firstAtom_;
 	for (n=0; n<nAtoms_; n++) j = j->next;
 	// Loop over remaining molecules
-	for (n=1; n<nMols_; n++)
+	for (n=1; n<nMolecules_; n++)
 	{
 		// Set 'i' to be the first atom of the first molecule
 		i = firstAtom_;
@@ -787,7 +787,7 @@ void Pattern::selectAtom(int id)
 	msg.exit("Pattern::selectAtom");
 	int n,m;
 	Atom *i = firstAtom_;
-	for (m=0; m<nMols_; m++)
+	for (m=0; m<nMolecules_; m++)
 	{
 		for (n=0; n<nAtoms_; n++)
 		{

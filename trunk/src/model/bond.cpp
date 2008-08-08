@@ -195,7 +195,7 @@ void Model::patternCalculateBonding()
 	{
 		// Loop over molecules
 		i = p->firstAtom();
-		for (m=0; m<p->nMols(); m++)
+		for (m=0; m<p->nMolecules(); m++)
 		{
 			for (ii = 0; ii < p->nAtoms()-1; ii ++)
 			{

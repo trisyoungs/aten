@@ -107,12 +107,12 @@ void Geometry::accumulate(Model *sourcemodel)
 	if (nSites_ == 2)
 	{
 		// Loop over molecules for site1
-		for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
+		for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 		{
 			// Get first centre
 			centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
 			// Loop over molecules for site2
-			for (m2 = 0; m2 < sites_[1]->pattern()->nMols(); m2++)
+			for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 			{
 				centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
 				// Calculate minimum image distance and bin
@@ -127,16 +127,16 @@ void Geometry::accumulate(Model *sourcemodel)
 	else if (nSites_ == 3)
 	{
 		// Loop over molecules for site1
-		for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
+		for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 		{
 			// Get first centre
 			centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
 			// Loop over molecules for site2
-			for (m2 = 0; m2 < sites_[1]->pattern()->nMols(); m2++)
+			for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 			{
 				centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
 				// Loop over molecules for site3
-				for (m3 = 0; m3 < sites_[2]->pattern()->nMols(); m3++)
+				for (m3 = 0; m3 < sites_[2]->pattern()->nMolecules(); m3++)
 				{
 					centre3 = sites_[2]->calculateCentre(sourcemodel,m3);
 
@@ -154,16 +154,16 @@ void Geometry::accumulate(Model *sourcemodel)
 	else if (nSites_ == 4)
 	{
 		// Loop over molecules for site1
-		for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
+		for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 		{
 			// Get first centre
 			centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
 			// Loop over molecules for site2
-			for (m2 = 0; m2 < sites_[1]->pattern()->nMols(); m2++)
+			for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 			{
 				centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
 				// Loop over molecules for site3
-				for (m3 = 0; m3 < sites_[2]->pattern()->nMols(); m3++)
+				for (m3 = 0; m3 < sites_[2]->pattern()->nMolecules(); m3++)
 				{
 					centre3 = sites_[2]->calculateCentre(sourcemodel,m3);
 

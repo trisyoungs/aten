@@ -509,7 +509,7 @@ void Energy::printIntraMatrix(Model *m)
 	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next)
 	{
 		energy = bond_[count1] + angle_[count1] + torsion_[count1];
-		printf("%13s  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n", p1->name(), energy, energy/p1->nMols(), bond_[count1], angle_[count1], torsion_[count1]);
+		printf("%13s  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n", p1->name(), energy, energy/p1->nMolecules(), bond_[count1], angle_[count1], torsion_[count1]);
 		count1 ++;
 	}
 	msg.exit("Energy::printIntraMatrix");

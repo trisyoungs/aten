@@ -158,8 +158,10 @@ class Canvas
 	void glSubsel3d();
 	// Draw a cylinder along vector supplied
 	void glCylinder(const Vec3<double> &vec, double length, int style, double radius);
-	// Draw ellipsoid
-	void glEllipsoid(const Vec3<double>&, const Vec3<double>&, const Vec3<double>&);
+	// Draw ellipsoid (construct third vector from the tqo supplied)
+	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y);
+	// Draw ellipsoid in the supplied axis sytem
+	void glEllipsoid(const Vec3<double> &centre, const Vec3<double> &x, const Vec3<double> &y, const Vec3<double> &z);
 	// Draw the unit cell of the model
 	void glCell(Cell*);
 	// Draw a line arrow

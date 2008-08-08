@@ -176,6 +176,7 @@ void Model::addEllipsoidGlyphs()
 		g->setVector(0, centroid);
 		g->setVector(1,x);
 		g->setVector(2,y);
+		g->setVector(3,y);
 	}
 	msg.exit("Model::addEllipsoidGlyphs");
 }

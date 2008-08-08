@@ -220,10 +220,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 				// Select random pattern and molecule
 				npats != 1 ? randpat = csRandomi(npats) : randpat = 0;
 				p = srcmodel->pattern(randpat);
-				mol = csRandomi(p->nMols());
+				mol = csRandomi(p->nMolecules());
 	
 				// Copy the coordinates of the current molecule
-				if (p->nMols() != 0) bakmodel.copyAtomData(srcmodel, Atom::PositionData, p->offset(mol),p->nAtoms());
+				if (p->nMolecules() != 0) bakmodel.copyAtomData(srcmodel, Atom::PositionData, p->offset(mol),p->nAtoms());
 
 				// Calculate reference energy (before move)
 				referenceMoleculeEnergy = srcmodel->moleculeEnergy(srcmodel, p, mol);
@@ -390,7 +390,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 		for (mol=0; mol<c->nRequested(); mol++) clip.pasteToModel(destmodel);
 		// Create a new pattern node in the destination model to cover these molecules and set it as the component's pattern
 		p = destmodel->addPattern(c->nRequested(), c->nAtoms(), c->name());
-		p->setNExpectedMols(c->nRequested());
+		p->setNExpectedMolecules(c->nRequested());
 		c->setComponentPattern(p);
 		// Set the forcefield of the new pattern fo that of the source model
 		p->setForcefield(c->forcefield());
@@ -409,12 +409,12 @@ bool MonteCarlo::disorder(Model *destmodel)
 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
 		// Set nmols, starti, endi, startatom and endatom in the pattern
-		msg.print("  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMols(),p->nAtoms(),
+		msg.print("  %2i  %5i  %5i  %6i  %6i  %s\n",p->id(),p->nMolecules(),p->nAtoms(),
 			p->startAtom(),p->startAtom() + p->totalAtoms(),p->name());
 	}
 
 	// Reset number of molecules in component patterns to zero (except those for the original patterns of the model)
-	for (p = destmodel->pattern(nOldPatterns); p != NULL; p = p->next) p->setNMols(0);
+	for (p = destmodel->pattern(nOldPatterns); p != NULL; p = p->next) p->setNMolecules(0);
 
 	// Hide unused atoms to begin with
 	Atom **modelAtoms = destmodel->atomArray();
@@ -495,7 +495,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 					// Reset penalty value
 					penalty = 0.0;
 					// Grab number of molecules currently in this pattern
-					patternNMols = p->nMols();
+					patternNMols = p->nMolecules();
 					// Perform the move
 					switch (move)
 					{
@@ -503,13 +503,13 @@ bool MonteCarlo::disorder(Model *destmodel)
 						case (MonteCarlo::Insert):
 							// Check if we've already filled as many as requested
 							msg.print(Messenger::Verbose,"insert : Component %s has %i molecules.\n",c->name(),patternNMols);
-							if (patternNMols == p->nExpectedMols()) continue;
+							if (patternNMols == p->nExpectedMolecules()) continue;
 							// Paste a new molecule into the working configuration
 							msg.print(Messenger::Verbose,"insert : Pasting new molecule - component %s, mol %i\n",c->name(),patternNMols);
 							//clip.paste_to_model(destmodel,p,patternNMols);
 							// Increase nmols for pattern and natoms for config
 							mol = patternNMols;		// Points to new molecule, since m-1
-							p->setNMols(mol+1);
+							p->setNMolecules(mol+1);
 							// Set the hidden flag on the new molecule to FALSE
 							destmodel->hideMolecule(p,mol,FALSE);
 							// Randomise position of new molecule
@@ -579,7 +579,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 							case (MonteCarlo::Insert):
 								// Set the hidden flag on the new molecule to TRUE
 								destmodel->hideMolecule(p,mol,TRUE);
-								p->setNMols(mol);
+								p->setNMolecules(mol);
 								break;
 							case (MonteCarlo::Delete):
 							default:
@@ -607,7 +607,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 				if (nTrials_[move] != 0) acceptanceRatio_[p->id()][move] /= nTrials_[move];
 			}
 			// Check to see if this component has the required number of molecules
-			if (c->nRequested() != p->nMols()) done = FALSE;
+			if (c->nRequested() != p->nMolecules()) done = FALSE;
 		}
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
@@ -619,9 +619,9 @@ bool MonteCarlo::disorder(Model *destmodel)
 				s[0] = '\n';
 				if (p == destmodel->patterns())
 				{
-					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-8s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMols(), p->nExpectedMols());
+					sprintf(s," %-5i %13.6e %13.6e %13.6e %13.6e   %-8s %-4i (%-4i)", cycle+1, ecurrent, ecurrent-elast, currentVdwEnergy, currentElecEnergy, p->name(), p->nMolecules(), p->nExpectedMolecules());
 				}
-				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->name(), p->nMols(), p->nExpectedMols());
+				else sprintf(s,"%65s%-8s %-4i (%-4i)", " ", p->name(), p->nMolecules(), p->nExpectedMolecules());
 				for (m=0; m<MonteCarlo::nMoveTypes; m++)
 				{
 					sprintf(t," %3i", int(acceptanceRatio_[n][m]*100.0));
@@ -647,7 +647,7 @@ bool MonteCarlo::disorder(Model *destmodel)
 	// Print out pattern list info here
 	msg.print("Final populations for model '%s':\n",destmodel->name());
 	msg.print("  ID  name                 nmols \n");
-	for (p = destmodel->patterns(); p != NULL; p = p->next) msg.print("  %2i  %-20s  %6i\n", p->id()+1, p->name(), p->nMols());
+	for (p = destmodel->patterns(); p != NULL; p = p->next) msg.print("  %2i  %-20s  %6i\n", p->id()+1, p->name(), p->nMolecules());
 
 	// Reset VDW scale ratio and intramolecular status
 	prefs.setVdwScale(1.0);
@@ -672,13 +672,13 @@ bool MonteCarlo::disorder(Model *destmodel)
 	{
 		// Get model pointer
 		c = ri->item;
-		c->setNRequested( c->nRequested() - c->componentPattern()->nMols() );
+		c->setNRequested( c->nRequested() - c->componentPattern()->nMolecules() );
 	}
 	// Fix pattern startAtom and endAtom (pointers to first atom are okay)
 	for (p = destmodel->patterns(); p != NULL; p = p->next)
 	{
 		// For the first pattern, set StartAtom to zero. Otherwise, use previous pattern's endAtom.
-		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMols()*p->prev->nAtoms() );
+		p->setStartAtom( p == destmodel->patterns() ? 0 : p->prev->startAtom() + p->prev->nMolecules()*p->prev->nAtoms() );
 		p->setEndAtom( p->startAtom() + p->nAtoms() - 1 );
 		//printf("PATTERN %li NEW START/END = %i/%i\n",p,p->startAtom(),p->endAtom());
 	}

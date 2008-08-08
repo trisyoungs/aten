@@ -79,7 +79,7 @@ void Pattern::ewaldRealIntraPatternEnergy(Model *srcmodel, Energy *estore, int m
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
 	aoff = startAtom_;
-	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMols_ : molecule+1); m1++)
+	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule+1); m1++)
 	{
 		// Loop over atom pairs that are either unbound or separated by more than two bonds
 		for (i=0; i<nAtoms_-1; i++)
@@ -122,14 +122,14 @@ void Pattern::ewaldRealInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Ener
 	energy_inter = 0.0;
 	aoff1 = startAtom_;
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-	if ((this == xpnode) && (molecule == -1)) finish1 = nMols_ - 1;
-	else finish1 = nMols_;
+	if ((this == xpnode) && (molecule == -1)) finish1 = nMolecules_ - 1;
+	else finish1 = nMolecules_;
 	for (m1=0; m1<finish1; m1++)
 	{
 		if (molecule == -1)
 		{
 			start2 = (this == xpnode ? m1 + 1 : 0);
-			finish2 = xpnode->nMols_;
+			finish2 = xpnode->nMolecules_;
 		}
 		else
 		{
@@ -285,7 +285,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 	// Correct the reciprocal Ewald energy for charges interacting with themselves
 	chargesum = 0.0;
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		for (i=0; i<nAtoms_; i++) chargesum += (modelatoms[i+aoff]->charge() * modelatoms[i+aoff]->charge());
 		aoff += nAtoms_;
@@ -296,7 +296,7 @@ void Pattern::ewaldCorrectEnergy(Model *srcmodel, Energy *estore, int molecule)
 	// Correct the reciprocal Ewald energy for molecular interactions, i.e. bond, angle, torsion exclusions
 	molcorrect = 0.0;
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		for (i=0; i<nAtoms_-1; i++)
 			for (j=i+1; j<nAtoms_; j++)
@@ -340,7 +340,7 @@ void Pattern::ewaldRealIntraPatternForces(Model *srcmodel)
 	Cell *cell = srcmodel->cell();
 
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		// Add force contributions for atom pairs that are unbond or separated by at least three bonds
 		for (i=0; i<nAtoms_; i++)
@@ -393,12 +393,12 @@ void Pattern::ewaldRealInterPatternForces(Model *srcmodel, Pattern *xpnode)
 
 	aoff1 = startAtom_;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
-	this == xpnode ? finish = nMols_ - 1 : finish = nMols_;
+	this == xpnode ? finish = nMolecules_ - 1 : finish = nMolecules_;
 	for (m1=0; m1<finish; m1++)
 	{
 		this == xpnode ? start = m1 + 1 : start = 0;
 		aoff2 = xpnode->startAtom_ + start*xpnode->nAtoms_;
-		for (m2=start; m2<xpnode->nMols_; m2++)
+		for (m2=start; m2<xpnode->nMolecules_; m2++)
 		{
 			for (i=0; i<nAtoms_; i++)
 			{
@@ -529,7 +529,7 @@ void Pattern::ewaldCorrectForces(Model *srcmodel)
 	Cell *cell = srcmodel->cell();
 
 	aoff = startAtom_;
-	for (m1=0; m1<nMols_; m1++)
+	for (m1=0; m1<nMolecules_; m1++)
 	{
 		// Subtract forces from intramolecular bonds, angles, and torsions
 		for (i=0; i<nAtoms_-1; i++)

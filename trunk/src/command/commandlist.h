@@ -309,15 +309,6 @@ class CommandList
 	void setSubvariables(Variable *v);
 
 	/*
-	// Local Variables
-	*/
-	public:
-	// Pen orientation matrix
-	Mat3<double> penOrientation;
-	// Pen position
-	Vec3<double> penPosition;
-
-	/*
 	// Files
 	*/
 	private:

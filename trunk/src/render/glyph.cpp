@@ -100,7 +100,6 @@ void Canvas::renderModelGlyphs()
 				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(1));
 				  glVertex3d(vec[1].x, vec[1].y, vec[1].z);
 				glEnd();
-				glPopMatrix();
 				break;
 			// Triangle - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
 			case (Glyph::TriangleGlyph):
@@ -116,7 +115,6 @@ void Canvas::renderModelGlyphs()
 				  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(2));
 				  glVertex3d(vec[2].x, vec[2].y, vec[2].z);
 				glEnd();
-				glPopMatrix();
 				break;
 			// Quad - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2], vertex 4 = data[3]
 			case (Glyph::QuadGlyph):
@@ -135,7 +133,6 @@ void Canvas::renderModelGlyphs()
 				  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, g->colour(3));
 				  glVertex3d(vec[3].x, vec[3].y, vec[3].z);
 				glEnd();
-				glPopMatrix();
 				break;
 			// Ellipsoid - centre = data[0], edge vector = data[1], face vector = data[2]
 			case (Glyph::EllipsoidGlyph):

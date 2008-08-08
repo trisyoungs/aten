@@ -194,7 +194,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 						{
 							int i = c->argi(2);
 							// Check molecule range
-							if ((i < 1) || (i > p->nMols()))
+							if ((i < 1) || (i > p->nMolecules()))
 							{
 								msg.print( "Atom loop pattern molecule is out of range.\n");
 								return CR_FAIL;

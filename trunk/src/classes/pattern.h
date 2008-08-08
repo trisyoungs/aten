@@ -116,7 +116,7 @@ class Pattern
 	// Internally numbered atom IDs which this node starts at
 	int startAtom_;
 	// Number of 'molecules' this pattern encompasses
-	int nMols_;
+	int nMolecules_;
 	// Expected number of molecules (used by disordered builder)
 	int nExpectedMols_;
 	// Total number of atoms in the pattern
@@ -180,13 +180,13 @@ class Pattern
 	// Resets the 'tempi' variables of all atoms in the pattern to the given integer
 	void resetTempI(int);
 	// Sets the number of molecules in the pattern
-	void setNMols(int n);
+	void setNMolecules(int n);
 	// Returns the number of molecules in the pattern
-	int nMols();
+	int nMolecules();
 	// Sets the expected number of molecules in the pattern
-	void setNExpectedMols(int n);
+	void setNExpectedMolecules(int n);
 	// Returns the expected number of molecules in the pattern
-	int nExpectedMols();
+	int nExpectedMolecules();
 	// Sets the parent model
 	void setParent(Model *m);
 	// Returns the model for which the pattern was created

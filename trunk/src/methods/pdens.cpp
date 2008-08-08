@@ -118,13 +118,13 @@ void Pdens::accumulate(Model *sourcemodel)
 	static Mat3<double> axes;
 	Cell *cell = sourcemodel->cell();
 	// Loop over molecules for site1
-	for (m1=0; m1 < sites_[0]->pattern()->nMols(); m1++)
+	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
 		// Get central position and local coordinate system
 		centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
 		axes = sites_[0]->calculateAxes(sourcemodel,m1);
 		// Loop over molecules for site2
-		for (m2 = 0; m2 < sites_[1]->pattern()->nMols(); m2++)
+		for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 		{
 			centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
 			// Calculate minimum image vector...
@@ -163,8 +163,8 @@ void Pdens::finalise(Model *sourcemodel)
 	int n, m, o;
 	double factor, numberDensity;
 	// Normalise the pdens w.r.t. number of frames, number of central molecules, and number density of system
-	numberDensity = sites_[1]->pattern()->nMols() / sourcemodel->cell()->volume() * (stepSize_ * stepSize_ * stepSize_);
-	factor = double(nAdded_) * sites_[0]->pattern()->nMols() * numberDensity;
+	numberDensity = sites_[1]->pattern()->nMolecules() / sourcemodel->cell()->volume() * (stepSize_ * stepSize_ * stepSize_);
+	factor = double(nAdded_) * sites_[0]->pattern()->nMolecules() * numberDensity;
 	for (n=0; n<totalSteps_; n++)
 		for (m=0; m<totalSteps_; m++)
 			for (o=0; o<totalSteps_; o++) data_[n][m][o] /= factor;
