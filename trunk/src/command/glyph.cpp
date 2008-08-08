@@ -23,17 +23,36 @@
 #include "base/aten.h"
 #include "model/model.h"
 #include "classes/glyph.h"
+#include "classes/dnchar.h"
 
-// Add glyph to current model
-int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
+// Auto-add ellipsoids to current atom selection
+int CommandData::function_CA_AUTOELLIPSOIDS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	// Get glyph style
-	Glyph::GlyphType gs = Glyph::glyphType(c->argc(0));
-	aten.current.gl = obj.rs->addGlyph();
-	if (gs == Glyph::nGlyphTypes) msg.print("Warning: Unrecognised glyph style '%s' - not set.\n",c->argc(0));
-	aten.current.gl->setType(gs);
-	if (c->hasArg(1)) aten.current.gl->setText(c->argc(1));
+	obj.m->addEllipsoidGlyphs();
+	return CR_SUCCESS;
+}
+
+// Auto-add polyhedra to current atom selection
+int CommandData::function_CA_AUTOPOLYHEDRA(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	bool centresonly = TRUE, linkatoms = TRUE;
+	Dnchar keywd, value;
+	double rcut = 4.0;
+	for (int i=0; i < c->nArgs(); i++)
+	{
+		// Split argument into keyword and value
+		keywd = beforeChar(c->argc(i), '=');
+		value = afterChar(c->argc(i), '=');
+		if (keywd == "fragments") centresonly = FALSE;
+		else if (keywd == "centres") centresonly = TRUE;
+		else if (keywd == "nolink") linkatoms = FALSE;
+		else if (keywd == "rcut") rcut = atof(value.get());
+		else msg.print("Unknown option '%s' given to 'autopolyhedra'.\n", keywd.get());
+	}
+	// Add the polyhedra
+	obj.m->addPolyhedraGlyphs(centresonly, linkatoms, rcut);
 	return CR_SUCCESS;
 }
 
@@ -190,5 +209,21 @@ int CommandData::function_CA_GLYPHTEXT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL+BP_GLYPH)) return CR_FAIL;
 	obj.gl->setText(c->argc(0));
+	return CR_SUCCESS;
+}
+
+// Add glyph to current model
+int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	// Get glyph style
+	Glyph::GlyphType gt = Glyph::glyphType(c->argc(0));
+	if (gt == Glyph::nGlyphTypes)
+	{
+		msg.print("Unrecognised glyph style '%s'.\n", c->argc(0));
+		return CR_FAIL;
+	}
+	aten.current.gl = obj.rs->addGlyph(gt);
+	if (c->hasArg(1)) aten.current.gl->setText(c->argc(1));
 	return CR_SUCCESS;
 }

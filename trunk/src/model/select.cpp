@@ -253,7 +253,7 @@ void Model::selectElement(int el)
 	msg.exit("Model::selectElement");
 }
 
-// Deelect by Element
+// Deselect by Element
 void Model::deselectElement(int el)
 {
 	// Select all atoms which are the same element as the atom i
@@ -261,6 +261,46 @@ void Model::deselectElement(int el)
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 		if (i->element() == el) deselectAtom(i);
 	msg.exit("Model::deselectElement");
+}
+
+
+// Select all atoms which match the provided type
+void Model::selectType(int element, const char *typedesc)
+{
+	msg.enter("Model::selectType");
+	Atomtype testat;
+	testat.setCharacterElement(element);
+	testat.expand(typedesc,NULL,NULL);
+	int count = 0, matchscore, atomscore, n;
+	// Prepare for typing
+	describeAtoms();
+	// Loop over patterns and select atoms
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	{
+		Atom *i = p->firstAtom();
+		for (n=0; n<p->nAtoms(); n++)
+		{
+			p->resetTempI(0);
+			i->tempi = 1;
+			if (i->element() == testat.characterElement())
+			{
+				atomscore = testat.matchAtom(i,p->ringList(),this,i);
+				if (atomscore != 0)
+				{
+					// Select this atom in all pattern molecules
+					p->selectAtom(n);
+					count ++;
+					matchscore = atomscore;
+				}
+			}
+			i = i->next;
+		}
+	}
+	// Update model
+	logChange(Change::SelectionLog);
+	// Write results
+	msg.print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
+	msg.exit("Model::selectType");
 }
 
 // Select with bounding Sphere

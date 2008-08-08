@@ -24,98 +24,100 @@
 #include "base/elements.h"
 
 // Return the current undo level pointer
-Undostate *Model::currentUndostate()
+UndoState *Model::currentUndoState()
 {
-	return currentUndostate_;
+	return currentUndoState_;
 }
 
 // Return the current redo level pointer
-Undostate *Model::currentRedoState()
+UndoState *Model::currentRedoState()
 {
 	return currentRedoState_;
 }
 
 // Start recording a new undo state
-void Model::beginUndostate(const char *text)
+void Model::beginUndoState(const char *text)
 {
-	msg.enter("Model::beginUndostate");
+	msg.enter("Model::beginUndoState");
 	// First, check that we're not already recording a state
 	if (recordingState_ != NULL)
 	{
-		printf("Model::beginUndostate <<<< Last state has not been stored >>>>\n");
-		msg.exit("Model::beginUndostate");
+		printf("Model::beginUndoState <<<< Last state has not been stored >>>>\n");
+		msg.exit("Model::beginUndoState");
 		return;
 	}
 	// Create a new state for us to add to
-	recordingState_ = new Undostate;
+	recordingState_ = new UndoState;
 	recordingState_->setDescription(text);
 	recordingState_->setStartLog(Change::StructureLog, logs_[Change::StructureLog]);
 	recordingState_->setStartLog(Change::CoordinateLog, logs_[Change::CoordinateLog]);
 	recordingState_->setStartLog(Change::SelectionLog, logs_[Change::SelectionLog]);
 	msg.print(Messenger::Verbose,"Undo list prepped for new state.\n");
 	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
-	msg.exit("Model::beginUndostate");
+	msg.exit("Model::beginUndoState");
 }
 
 // Finish recording the new undo state
-void Model::endUndostate()
+void Model::endUndoState()
 {
-	msg.enter("Model::endUndostate");
+	msg.enter("Model::endUndoState");
 	// Make sure that we have a valid state to store...
 	if (recordingState_ == NULL)
 	{
-		printf("Model::endUndostate <<<< No state to store >>>>\n");
-		msg.exit("Model::endUndostate");
+		printf("Model::endUndoState <<<< No state to store >>>>\n");
+		msg.exit("Model::endUndoState");
 		return;
 	}
 	// ...and that it contains something
 	if (recordingState_->nChanges() == 0)
 	{
 		recordingState_ = NULL;
-		msg.exit("Model::endUndostate");
+		msg.exit("Model::endUndoState");
 		return;
 	}
 	recordingState_->setEndLog(Change::StructureLog, logs_[Change::StructureLog]);
 	recordingState_->setEndLog(Change::CoordinateLog, logs_[Change::CoordinateLog]);
 	recordingState_->setEndLog(Change::SelectionLog, logs_[Change::SelectionLog]);
 	// Delete all redo (i.e. future) states from the undo list
-	if (currentUndostate_ == NULL) undoStates_.clear();
-	else for (Undostate *u = currentUndostate_->next; u != NULL; u = undoStates_.removeAndGetNext(u)); 
+	if (currentUndoState_ == NULL) undoStates_.clear();
+	else for (UndoState *u = currentUndoState_->next; u != NULL; u = undoStates_.removeAndGetNext(u)); 
 	// Add the new state to the end of the undo level list
 	undoStates_.own(recordingState_);
 	// Set the current undo level to the new state and nullify the pointer
-	currentUndostate_ = recordingState_;
-	msg.print(Messenger::Verbose,"Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndostate_->nChanges());
+	currentUndoState_ = recordingState_;
+	msg.print(Messenger::Verbose,"Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndoState_->nChanges());
 	msg.print(Messenger::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
 	// Check the size of the undoStates_ list - if greater than prefs.maxundo, must remove the first item in the list
 	if (undoStates_.nItems() == (prefs.maxUndoLevels()+1)) undoStates_.remove(undoStates_.first());
-	msg.exit("Model::endUndostate");
+	//listUndoStates();
+	msg.exit("Model::endUndoState");
 }
 
-// Perform actions in current Undostate
+// Perform actions in current UndoState
 void Model::undo()
 {
 	msg.enter("Model::undo");
-	if (currentUndostate_ == NULL) msg.print("Nothing to undo.\n");
+	if (currentUndoState_ == NULL) msg.print("Nothing to undo.\n");
 	else
 	{
 		// Undo the changes
-		currentUndostate_->reverse(this);
-		logs_[Change::StructureLog] = currentUndostate_->startLog(Change::StructureLog);
-		logs_[Change::CoordinateLog] = currentUndostate_->startLog(Change::CoordinateLog);
+		currentUndoState_->undo(this);
+		logs_[Change::StructureLog] = currentUndoState_->startLog(Change::StructureLog);
+		logs_[Change::CoordinateLog] = currentUndoState_->startLog(Change::CoordinateLog);
 		// Log a visual change if necessary
-		if (currentUndostate_->doLogsDiffer()) logChange(Change::VisualLog);
+		if (currentUndoState_->doLogsDiffer()) logChange(Change::VisualLog);
 		// Set new undo/redo pointers
-		currentRedoState_ = currentUndostate_;
-		currentUndostate_ = currentUndostate_->prev;
+		currentRedoState_ = currentUndoState_;
+		currentUndoState_ = currentUndoState_->prev;
 	}
+	//listUndoStates();
 	msg.exit("Model::undo");
 }
 
-// Perform actions in current Undostate
+// Perform actions in current UndoState
 void Model::redo()
 {
 	msg.enter("Model::redo");
@@ -123,14 +125,33 @@ void Model::redo()
 	else
 	{
 		// Undo the changes
-		currentRedoState_->perform(this);
+		currentRedoState_->redo(this);
 		logs_[Change::StructureLog] = currentRedoState_->endLog(Change::StructureLog);
 		logs_[Change::CoordinateLog] = currentRedoState_->endLog(Change::CoordinateLog);
 		// Log a visual change if necessary
 		if (currentRedoState_->doLogsDiffer()) logChange(Change::VisualLog);
 		// Set new undo/redo pointers
-		currentUndostate_ = currentRedoState_;
+		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;
 	}
+	//listUndoStates();
 	msg.exit("Model::redo");
+}
+
+// List undo states and the changes within
+void Model::listUndoStates()
+{
+	char suffix[32];
+	int count = 0;
+	printf("Current UndoStates in Model '%s' are:\n", name_.get());
+	for (UndoState *u = undoStates_.first(); u != NULL; u = u->next)
+	{
+		count ++;
+		if (currentUndoState_ == u) strcpy(suffix,"(Current Undo State)");
+		else if (currentRedoState_ == u) strcpy(suffix,"(Current Redo State)");
+		else suffix[0] = '\0';
+		printf(" %3i : '%s'\n", count, u->description());
+		printf("       Ptr=%li, %4i changes %s\n", u, u->nChanges(), suffix);
+		u->print(this);
+	}	
 }

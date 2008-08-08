@@ -66,9 +66,9 @@ void AtenPosition::flipSelection(int axis)
 	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Mirror %i atoms along %c\n", m->nSelected(), 88+axis);
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->mirrorSelectionLocal(axis);
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -94,9 +94,9 @@ void AtenPosition::on_CentreSelectionButton_clicked(bool checked)
 	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Centre %i atom(s) at %f %f %f\n",m->nSelected(),centre.x,centre.y,centre.z);
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->centre(centre);
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -147,7 +147,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 		// Translate selection in the cartesian axes of the model
 		tvec *= step;
 		sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndostate(s);
+		m->beginUndoState(s);
 		m->translateSelectionLocal(tvec);
 	}
 	else if (ui.TranslateWorldFrameRadio->isChecked())
@@ -155,7 +155,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 		// Translate selection in the world (view) axes
 		tvec *= step;
 		sprintf(s,"Translate Screen (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndostate(s);
+		m->beginUndoState(s);
 		m->translateSelectionWorld(tvec);
 	}
 	else if (ui.TranslateCellFrameRadio->isChecked())
@@ -169,10 +169,10 @@ void AtenPosition::translateSelection(int axis, int dir)
 		tvec = aten.currentModel()->cell()->axes().get(axis);
 		tvec *= double(dir) * step;
 		sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n",m->nSelected(), tvec.x, tvec.y, tvec.z);
-		m->beginUndostate(s);
+		m->beginUndoState(s);
 		m->translateSelectionLocal(tvec);
 	}
-	m->endUndostate();
+	m->endUndoState();
 	m->updateMeasurements();
 	gui.mainView.postRedisplay();
 }
@@ -208,9 +208,9 @@ void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 	char s[128];
 	Model *m = aten.currentModel();
 	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->translateSelectionLocal(v);
-	m->endUndostate();
+	m->endUndoState();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
@@ -225,9 +225,9 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	char s[128];
 	Model *m = aten.currentModel();
 	sprintf(s,"Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->translateSelectionLocal(v);
-	m->endUndostate();
+	m->endUndoState();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }

@@ -57,9 +57,9 @@ void AtenBuild::on_AddAtomButton_clicked(bool on)
 		else newpos = m->cell()->fracToReal(newpos);
 	}
 	else sprintf(s,"Add Atom (%s at {%f, %f, %f})", elements.symbol(aten.sketchElement()), newpos.x, newpos.y, newpos.z);
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->addAtom(aten.sketchElement(), newpos);
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged();
 }
 

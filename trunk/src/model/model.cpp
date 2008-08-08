@@ -50,7 +50,7 @@ Model::Model()
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
 	filter_ = NULL;
-	currentUndostate_ = NULL;
+	currentUndoState_ = NULL;
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
 	name_ = "NewModel";

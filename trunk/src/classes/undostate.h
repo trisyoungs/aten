@@ -51,9 +51,9 @@ class Change
 	// Change::TotalLog      : sum of all changes
 	enum ChangeLog { StructureLog, CoordinateLog, VisualLog, SelectionLog, CameraLog, GlyphLog, GridLog, TotalLog, nChangeLogs };
 	// State change events
-	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondOrderEvent, CellEvent, LabelEvent, TranslateEvent, ShiftEvent, ChargeEvent };
+	enum UndoEvent { NoEvent, AtomEvent, BondEvent, MeasurementEvent, SelectEvent, TransmuteEvent, BondOrderEvent, CellEvent, LabelEvent, TranslateEvent, ShiftEvent, ChargeEvent, GlyphEvent };
 	// State change directions
-	enum UndoDirection { Reverse, Forwards };
+	enum ChangeDirection { Undo, Redo };
 
 	/*
 	// Data
@@ -62,7 +62,7 @@ class Change
 	// Type of change
 	UndoEvent type_;
 	// Direction of change
-	UndoDirection direction_;
+	ChangeDirection direction_;
 	// Atom data describing the change
 	Atom *atomData_[2];
 	// Vector data describing the change
@@ -88,20 +88,22 @@ class Change
 	// Actions
 	*/
 	public:
-	// Reverse (undo) stored change
-	void reverse(Model *m);
-	// Perform (redo) stored change
-	void perform(Model *m);
+	// Undo stored change
+	void undo(Model *m);
+	// Redo stored change
+	void redo(Model *m);
+	// Print change information
+	void print(Model *m);
 };
 
 // Undo state
-class Undostate
+class UndoState
 {
 	public:
 	// Constructor
-	Undostate();
+	UndoState();
 	// List pointers
-	Undostate *prev, *next;
+	UndoState *prev, *next;
 
 	/*
 	// Changelist
@@ -135,10 +137,12 @@ class Undostate
 	void setDescription(const char *s);
 	// Return the current text associated with the state
 	const char *description();
-	// Reverse (undo) the changes specified in the state
-	void reverse(Model *m);
-	// Perform (redo) the changes specified in the state
-	void perform(Model *m);
+	// Undo the changes specified in the state
+	void undo(Model *m);
+	// Redo the changes specified in the state
+	void redo(Model *m);
+	// Print changes captured in state
+	void print(Model *m);
 };
 
 #endif

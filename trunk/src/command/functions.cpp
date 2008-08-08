@@ -186,6 +186,8 @@ void Aten::initCommands()
 	CA_data[CA_TYPETEST].function = &CommandData::function_CA_TYPETEST;
 
 	// Glyph commands
+	CA_data[CA_AUTOELLIPSOIDS].function = &CommandData::function_CA_AUTOELLIPSOIDS;
+	CA_data[CA_AUTOPOLYHEDRA].function = &CommandData::function_CA_AUTOPOLYHEDRA;
 	CA_data[CA_GLYPHATOMF].function = &CommandData::function_CA_GLYPHATOMF;
 	CA_data[CA_GLYPHATOMR].function = &CommandData::function_CA_GLYPHATOMR;
 	CA_data[CA_GLYPHATOMV].function = &CommandData::function_CA_GLYPHATOMV;

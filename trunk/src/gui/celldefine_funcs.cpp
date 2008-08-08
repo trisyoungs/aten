@@ -102,10 +102,10 @@ void AtenCellDefine::cellChanged()
 	angles.set(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	// Make changes
 	Model *m = aten.currentModel();
-	if (m->cell()->type() == Cell::NoCell) m->beginUndostate("Add Cell");
-	else m->beginUndostate("Edit Cell");
+	if (m->cell()->type() == Cell::NoCell) m->beginUndoState("Add Cell");
+	else m->beginUndoState("Edit Cell");
 	m->setCell(lengths, angles);
-	m->endUndostate();
+	m->endUndoState();
 	m->calculateDensity();
 	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",m->cell()->volume());
 	ui.CellVolumeLabel->setText(s);
@@ -163,9 +163,9 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 	else
 	{
 		Model *m = aten.currentModel();
-		m->beginUndostate("Remove Cell");
+		m->beginUndoState("Remove Cell");
 		m->removeCell();
-		m->endUndostate();
+		m->endUndoState();
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder stack page here, since a cell has been added/removed
@@ -213,9 +213,9 @@ void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel();
-	m->beginUndostate("Pack Cell");
+	m->beginUndoState("Pack Cell");
 	m->pack();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged();
 }
 

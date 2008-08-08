@@ -49,9 +49,9 @@ void AtenForm::on_actionEditCut_triggered(bool checked)
 	char s[128];
 	Model *m = aten.currentModel()->renderSource();
 	sprintf(s,"Cut %i atom%s\n",m->nSelected(),(m->nSelected() == 1 ? "" : "s"));
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	aten.userClipboard->cutSelection(m);
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
@@ -69,9 +69,9 @@ void AtenForm::on_actionEditPaste_triggered(bool checked)
 	char s[128];
 	Model *m = aten.currentModel()->renderSource();
 	sprintf(s,"Paste %i atom%s\n",aten.userClipboard->nAtoms(),(aten.userClipboard->nAtoms() == 1 ? "" : "s"));
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	aten.userClipboard->pasteToModel(m);
-	m->endUndostate();
+	m->endUndoState();
 	gui.mainView.postRedisplay();
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
@@ -84,9 +84,9 @@ void AtenForm::on_actionEditDelete_triggered(bool checked)
 	gui.mainView.clearPicked();
 	Model *m = aten.currentModel()->renderSource();
 	sprintf(s,"Delete %i atom%s\n",m->nSelected(),(m->nSelected() == 1 ? "" : "s"));
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->selectionDelete();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
@@ -94,9 +94,9 @@ void AtenForm::on_actionEditSelectAll_triggered(bool checked)
 {
 	// Select all atoms in the current model
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Select All");
+	m->beginUndoState("Select All");
 	m->selectAll();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -104,9 +104,9 @@ void AtenForm::on_actionEditSelectNone_triggered(bool checked)
 {
 	// Select all atoms in the current model
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Select None");
+	m->beginUndoState("Select None");
 	m->selectNone();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -114,18 +114,18 @@ void AtenForm::on_actionEditInvert_triggered(bool checked)
 {
 	// Invert selection in the current model
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Invert Selection");
+	m->beginUndoState("Invert Selection");
 	m->selectionInvert();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectExpand_triggered(bool on)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Expand Selection");
+	m->beginUndoState("Expand Selection");
 	m->selectionExpand();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

@@ -334,7 +334,7 @@ void Model::augmentBond(Bond *b, int change)
 	// Calc max difference that we can (must) change the bond by...
 	maxchg = (abs(i->tempi) < abs(j->tempi) ? i->tempi : j->tempi);
 	maxchg /= 2;
-	//printf("bond change requested = %i, maxchg = %i\n",change, maxchg);
+	//printf("Bond change requested between atom IDs %i and %i = %i, maxchg = %i\n", i->id(), j->id(), change, maxchg);
 	// Sanity check
 	if ((change == +1) && (maxchg >= 0))
 	{
@@ -380,6 +380,7 @@ void Model::augmentBonding()
 		msg.enter("Model::augmentBonding");
 		return;
 	}
+	describeAtoms();
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next) p->augment();
 	msg.exit("Model::augmentBonding");
 }

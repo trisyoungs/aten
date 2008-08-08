@@ -27,46 +27,46 @@
 void AtenForm::on_actionCalculateBonding_triggered(bool on)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Calculate Bonding");
+	m->beginUndoState("Calculate Bonding");
 	m->clearBonding();
 	m->calculateBonding();
-	m->endUndostate();
+	m->endUndoState();
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionClearBonding_triggered(bool on)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Clear Bonding");
+	m->beginUndoState("Clear Bonding");
 	m->clearBonding();
-	m->endUndostate();
+	m->endUndoState();
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Calculate Bonding (Selection)");
+	m->beginUndoState("Calculate Bonding (Selection)");
 	m->selectionCalculateBonding();
-	m->endUndostate();
+	m->endUndoState();
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Clear Bonding (Selection)");
+	m->beginUndoState("Clear Bonding (Selection)");
 	m->selectionClearBonding();
-	m->endUndostate();
+	m->endUndoState();
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionAugmentBonding_triggered(bool on)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Augment Bonding");
+	m->beginUndoState("Augment Bonding");
 	m->augmentBonding();
-	m->endUndostate();
+	m->endUndoState();
 	gui.mainView.postRedisplay();
 }
 

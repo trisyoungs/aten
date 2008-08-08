@@ -450,6 +450,8 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	{
 		// Check for lowercase letter (optional argument)
 		required = ((v[n] > 90) || (v[n] == '*') ? FALSE : TRUE);
+		
+		// Move on to next argument.
 		argcount ++;
 
 		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
@@ -566,7 +568,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				else args_.add(parent_->variables.addConstant(arg));
 				break;
-			// Normal, non-expression variable or constant (Q forces constant tpye to be Character)
+			// Normal, non-expression variable or constant (Q forces constant type to be Character)
 			case ('n'):
 			case ('N'):
 			case ('q'):
@@ -700,10 +702,11 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					msg.exit("Command::addVariables");
 					return FALSE;
 				}
-				// Set the repeat flag to TRUE so we don't increment 'c' again, and set 'c' to 'last'
+				// Set the repeat flag to TRUE, and go back to last parameter type considered
 				repeat = TRUE;
 				n --;
-				// Now, carry on as normal, save for a check for the end of the argument list at the start of the loop above...
+				// Decrement argcount so we consider again the current argument
+				argcount --;
 				break;
 		}
 		// Go to next character (if we're not repeating)
