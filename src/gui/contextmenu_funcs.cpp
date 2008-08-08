@@ -74,11 +74,11 @@ void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 void AtenForm::setAtomLabel(Atom::AtomLabel al)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Add Labels");
+	m->beginUndoState("Add Labels");
 	if (target == NULL) m->selectionAddLabels(al);
 	else target->addLabel(al);
 	target = NULL;
-	m->endUndostate();
+	m->endUndoState();
 }
 
 // Clear atom labels
@@ -87,15 +87,15 @@ void AtenForm::removeAtomLabels(bool all)
 	Model *m = aten.currentModel()->renderSource();
 	if (all)
 	{
-		m->beginUndostate("Clear All Labels");
+		m->beginUndoState("Clear All Labels");
 		aten.currentModel()->clearAllLabels();
 	}
 	else
 	{
-		m->beginUndostate("Clear All Labels");
+		m->beginUndoState("Clear All Labels");
 		aten.currentModel()->selectionClearLabels();
 	}
-	m->endUndostate();
+	m->endUndoState();
 	gui.mainView.postRedisplay();
 }
 

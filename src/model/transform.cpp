@@ -71,7 +71,7 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr)
 	// Called after mouse-up.
 	// Atom positions may have moved outside the boundaries of the box, so need to re-fold.
 	foldAllAtoms();
-	beginUndostate("Transform Selection");
+	beginUndoState("Transform Selection");
 	// Go through list of atoms in 'originalr', work out delta, and store
 	if (recordingState_ != NULL)
 	{
@@ -87,7 +87,7 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr)
 	}
 	logChange(Change::CoordinateLog);
 	projectAll();
-	endUndostate();
+	endUndoState();
 }
 
 // Free Rotation of Selection

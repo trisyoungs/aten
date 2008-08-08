@@ -188,3 +188,37 @@ void Model::selectionSetStyle(Atom::DrawStyle ds)
 	logChange(Change::VisualLog);
 }
 
+// Select bound and selected atoms from the current atom
+void Model::fragmentFromSelectionSelector(Atom *i, Reflist<Atom,int> &list)
+{
+	Atom *j;
+	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	{
+		j = bref->item->partner(i);
+		if (j->isSelected())
+		{
+			deselectAtom(j);
+			list.add(j);
+			fragmentFromSelectionSelector(j, list);
+		}
+	}
+}
+
+// Get atoms of a bound fragment with the current selection
+void Model::fragmentFromSelection(Atom *start, Reflist<Atom,int> &list)
+{
+	msg.enter("Model::fragmentFromSelection");
+	if ((start == NULL) || (!start->isSelected()))
+	{
+		msg.print("No atom provided, or atom is not selected.");
+		msg.exit("Model::fragmentFromSelection");
+		return;
+	}
+	// Clear the provided list and add the start atom
+	list.clear();
+	list.add(start);
+	// From the atom provided, put all bound and selected atoms in the reflist provided
+	deselectAtom(start);
+	fragmentFromSelectionSelector(start, list);
+	msg.exit("Model::fragmentFromSelection");
+}

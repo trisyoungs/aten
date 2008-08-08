@@ -85,7 +85,7 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 	Atom *newatom = atoms_.insert(afterthis);
 	//printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
-	renumberAtoms( (afterthis != NULL ? afterthis->prev : NULL) );
+	renumberAtoms(afterthis);
 	logChange(Change::StructureLog);
 	mass_ += elements.atomicMass(newatom->element());
 	calculateDensity();
@@ -229,7 +229,7 @@ void Model::renumberAtoms(Atom *from)
 	}
 	else
 	{
-		count = from->id();
+		count = from->id() + 1;
 		i = from->next;
 	}
 	for (i = i; i != NULL; i = i->next)

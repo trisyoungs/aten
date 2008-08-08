@@ -27,6 +27,7 @@
 #include "classes/energystore.h"
 #include "classes/cell.h"
 #include "classes/measurement.h"
+#include "classes/glyph.h"
 #include "classes/undostate.h"
 #include "methods/mc.h"
 //#include <QtOpenGL/QtOpenGL>
@@ -41,7 +42,7 @@ class Filter;
 class Glyph;
 class Spacegroup;
 class Site;
-class Undostate;
+class UndoState;
 class Atomaddress;
 class Calculable;
 class Measurement;
@@ -301,14 +302,20 @@ class Model
 	void selectElement(Atom*);
 	// Select all atoms of the same element as the atom with the specified id
 	void selectElement(int);
-	// Deelect all atoms of the same element as the atom with the specified id
+	// DeSelect all atoms of the same element as the atom with the specified id
 	void deselectElement(int);
+	// Select all atoms which match the provided type
+	void selectType(int element, const char *typedesc);
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom*, double);
 	// Return the first selected atom in the model (if any)
 	Atom *firstSelected();
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance);
+	// Get atoms of a bound fragment with the current selection
+	void fragmentFromSelection(Atom *start, Reflist<Atom,int> &list);
+	// Recursive selector for fragmentFromSelection()
+	void fragmentFromSelectionSelector(Atom *start, Reflist<Atom,int> &list);
 
 	/*
 	// View
@@ -789,34 +796,40 @@ class Model
 
 	public:
 	// Create new glyph in this model
-	Glyph *addGlyph();
+	Glyph *addGlyph(Glyph::GlyphType gt);
 	// Return list of glyphs
 	Glyph *glyphs();
+	// Automatically add polyhedra glyphs to current atom selection
+	void addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut);
+	// Automatically add ellipsoids to current atom selection
+	void addEllipsoidGlyphs();
 
 	/*
 	// Undo / Redo
 	*/
 	private:
 	// Pointer to current and previous states of the model in the list
-	Undostate *currentUndostate_, *currentRedoState_;
+	UndoState *currentUndoState_, *currentRedoState_;
 	// List of undo states for the model
-	List<Undostate> undoStates_;
+	List<UndoState> undoStates_;
 	// Current state that we're adding changes to
-	Undostate *recordingState_;
+	UndoState *recordingState_;
 
 	public:
 	// Return the current undo level pointer
-	Undostate *currentUndostate();
+	UndoState *currentUndoState();
 	// Return the current redo level pointer
-	Undostate *currentRedoState();
+	UndoState *currentRedoState();
 	// Signal to begin recording new changes
-	void beginUndostate(const char *text);
+	void beginUndoState(const char *text);
 	// Signal to end recording of changes and to add recorded changes as a new undolevel in the model
-	void endUndostate();
+	void endUndoState();
 	// Perform the undo action pointed to by 'currentundostate'
 	void undo();
 	// Perform the redo action pointed to by 'currentredostate'
 	void redo();
+	// List undo states
+	void listUndoStates();
 
 	/*
 	// Component Definition (for disordered builder only)

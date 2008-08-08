@@ -91,6 +91,7 @@ void AtenDisorder::on_SizeFracCheck_clicked(bool checked)
 void AtenDisorder::refresh()
 {
 	if (!gui.exists()) return;
+	msg.enter("AtenDisorder::refresh");
 	refreshing_ = TRUE;
 	// (De)sensitize controls
 	ui.DisorderStartButton->setDisabled(aten.currentModel()->cell()->type() == Cell::NoCell);
@@ -134,14 +135,14 @@ void AtenDisorder::refresh()
 	// Select the last component in the list
 	ui.ComponentTable->setCurrentItem(firstitem);
 	refreshing_ = FALSE;
-	refreshComponentData(0);
+	if (count > 0) refreshComponentData(0);
+	msg.exit("AtenDisorder::refresh");
 }
 
 void AtenDisorder::refreshComponentData(int comp)
 {
 	if (comp == -1) return;
 	Model *m = componentList[comp]->item;
-	printf("Refreshing data for model '%s' on row %i\n",m->name(),comp);
 	refreshing_ = TRUE;
 	// Set controls
 	Vec3<double> v;

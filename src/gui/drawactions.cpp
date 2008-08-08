@@ -114,9 +114,9 @@ void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {
 	Model *m = aten.currentModel()->renderSource();
-	m->beginUndostate("Hydrogen Satisfy Model");
+	m->beginUndoState("Hydrogen Satisfy Model");
 	m->hydrogenSatisfy();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged();
 }
 

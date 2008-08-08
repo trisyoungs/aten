@@ -216,40 +216,9 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	Atomtype testat;
-	testat.setCharacterElement(elements.find(c->argc(0)));
-	testat.expand(c->argc(1),NULL,NULL);
-	// Apply it to the atoms in the model, selecting atoms that match
-	int count = 0, matchscore, atomscore;
 	if (obj.rs->autocreatePatterns())
 	{
-		// Prepare for typing
-		obj.rs->describeAtoms();
-		// Loop over patterns and select atoms
-		for (Pattern *p = obj.rs->patterns(); p != NULL; p = p->next)
-		{
-			Atom *i = p->firstAtom();
-			for (int n=0; n<p->totalAtoms(); n++)
-			{
-				p->resetTempI(0);
-				i->tempi = 1;
-				if (i->element() == testat.characterElement())
-				{
-					atomscore = testat.matchAtom(i,p->ringList(),obj.rs,i);
-					if (atomscore != 0)
-					{
-						obj.rs->selectAtom(i);
-						count ++;
-						matchscore = atomscore;
-					}
-				}
-				i = i->next;
-			}
-		}
-		// Write results
-		msg.print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
-		// Update model and delete temporary atomtype
-		obj.rs->logChange(Change::SelectionLog);
+		obj.rs->selectType(elements.find(c->argc(0)), c->argc(1));
 		return CR_SUCCESS;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");

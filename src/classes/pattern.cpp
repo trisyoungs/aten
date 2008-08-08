@@ -701,7 +701,7 @@ Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 }
 
 /*
-// Data Propagation Routines
+// Data Propagation / Selector Routines
 */
 
 void Pattern::propagateAtomtypes()
@@ -779,6 +779,23 @@ void Pattern::propagateBondTypes()
 		}
 	}
 	msg.exit("Pattern::propagateBondTypes");
+}
+
+// Select atom 'i' in all molecules
+void Pattern::selectAtom(int id)
+{
+	msg.exit("Pattern::selectAtom");
+	int n,m;
+	Atom *i = firstAtom_;
+	for (m=0; m<nMols_; m++)
+	{
+		for (n=0; n<nAtoms_; n++)
+		{
+			if (n == id) parent_->selectAtom(i);
+			i = i->next;
+		}
+	}
+	msg.exit("Pattern::selectAtom");
 }
 
 /*
@@ -1048,6 +1065,7 @@ void Pattern::augment()
 	only bond within the cycle. Then, do it for terminal atoms or heavy atoms bound to only one other heavy
 	atom. Then, do it for the rest.
 	*/
+	// 
 	// Calculate current bond orders for atoms in the pattern.
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
@@ -1082,6 +1100,7 @@ void Pattern::augment()
 	// Stage 2 - Augment within cycles
 	for (Ring *r = rings_.first(); r != NULL; r = r->next)
 	{
+	printf("djflkdsjlfkjdsklfklfjk\n");
 		// Check atoms bond order difference
 		for (Refitem<Atom,int> *ra = r->firstAtom(); ra != NULL; ra = ra->next)
 			if (ra->item->tempi != 0) r->augmentAtom(ra, parent_);

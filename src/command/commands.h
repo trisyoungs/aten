@@ -220,6 +220,8 @@ enum CommandAction {
 	CA_VDWDEF,
 
 	// Glyph commands
+	CA_AUTOELLIPSOIDS,
+	CA_AUTOPOLYHEDRA,
 	CA_GLYPHATOMF,
 	CA_GLYPHATOMR,
 	CA_GLYPHATOMV,
@@ -606,6 +608,8 @@ class CommandData
 	int function_CA_UNITS(Command *&c, Bundle &obj);
 	int function_CA_VDWDEF(Command *&c, Bundle &obj);
 	// Glyph commands
+	int function_CA_AUTOELLIPSOIDS(Command *&c, Bundle &obj);
+	int function_CA_AUTOPOLYHEDRA(Command *&c, Bundle &obj);
 	int function_CA_GLYPHATOMF(Command *&c, Bundle &obj);
 	int function_CA_GLYPHATOMR(Command *&c, Bundle &obj);
 	int function_CA_GLYPHATOMV(Command *&c, Bundle &obj);

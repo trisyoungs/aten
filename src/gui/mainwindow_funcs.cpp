@@ -268,7 +268,7 @@ void AtenForm::updateUndoRedo()
 	static char text[128];
 	Model *m = aten.currentModel();
 	// Check the model's state pointers
-	if (m->currentUndostate() == NULL)
+	if (m->currentUndoState() == NULL)
 	{
 		ui.actionEditUndo->setText("Undo");
 		ui.actionEditUndo->setEnabled(FALSE);
@@ -276,7 +276,7 @@ void AtenForm::updateUndoRedo()
 	else
 	{
 		strcpy(text,"Undo (");
-		strcat(text,m->currentUndostate()->description());
+		strcat(text,m->currentUndoState()->description());
 		strcat(text,")");
 		ui.actionEditUndo->setText(text);
 		ui.actionEditUndo->setEnabled(TRUE);

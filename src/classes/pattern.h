@@ -321,13 +321,15 @@ class Pattern
 	void augment();
 
 	/*
-	// Propagation
+	// Propagation / Selectors
 	*/
 	public:
 	// Copy atomtypes for first molecule to all other molecules
 	void propagateAtomtypes();
 	// Copy bondtypes for first molecule to all other molecules
 	void propagateBondTypes();
+	// Select atom 'i' in all molecules
+	void selectAtom(int id);
 
 	/*
 	// Properties

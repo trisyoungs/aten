@@ -89,9 +89,9 @@ void AtenCellTransform::on_CellReplicateButton_clicked(bool checked)
 	pos.y = ui.CellReplicatePosYSpin->value();
 	pos.z = ui.CellReplicatePosZSpin->value();
 	Model *m = aten.currentModel();
-	m->beginUndostate("Replicate Cell");
+	m->beginUndoState("Replicate Cell");
 	m->replicateCell(neg, pos);
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged();
 }
 
@@ -116,9 +116,9 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 	scale.y = ui.CellScaleYSpin->value();
 	scale.z = ui.CellScaleZSpin->value();
 	Model *m = aten.currentModel();
-	m->beginUndostate("Scale Cell");
+	m->beginUndoState("Scale Cell");
 	m->scaleCell(scale);
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }
 

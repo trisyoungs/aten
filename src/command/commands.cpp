@@ -366,6 +366,10 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add a new EDW definition to the current forcefield." },
 
 	// Glyph commands
+	{ "autoellipsoids",	"n*",		"[options]",
+				"Automatically add ellipsoids to the current atom selection" },
+	{ "autopolyhedra",	"n*",		"[options]",
+				"Automatically add polyhedra to the current atom selection" },
 	{ "glyphatomf",		"Ee",		"<n> [atom|atomid]",
 				"Set current (or specified) atom's forces as data <n> in current glyph" },
 	{ "glyphatomr",		"Ee",		"<n> [atom|atomid]",

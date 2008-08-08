@@ -45,9 +45,9 @@ void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Fold all atoms");
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->foldAllAtoms();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
@@ -56,9 +56,9 @@ void AtenForm::on_actionFoldMolecules_triggered(bool checked)
 	Model *m = aten.currentModel();
 	char s[128];
 	sprintf(s,"Fold all molecules");
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->foldAllMolecules();
-	m->endUndostate();
+	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

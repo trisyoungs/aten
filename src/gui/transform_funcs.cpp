@@ -111,9 +111,9 @@ void AtenTransform::rotateSelection(double direction)
 	char s[128];
 	Model *m = aten.currentModel();
 	sprintf(s,"Rotate %i atom(s)\n",m->nSelected());
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->rotateSelectionVector(o, v, direction * ui.RotateAngleSpin->value());
-	m->endUndostate();
+	m->endUndoState();
 	m->updateMeasurements();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
@@ -136,9 +136,9 @@ void AtenTransform::on_TransformApplyButton_clicked(bool on)
 	char s[128];
 	Model *m = aten.currentModel();
 	sprintf(s,"Transform %i atom(s)\n", m->nSelected());
-	m->beginUndostate(s);
+	m->beginUndoState(s);
 	m->matrixTransformSelection(v, mat);
-	m->endUndostate();
+	m->endUndoState();
 	m->updateMeasurements();
 	gui.mainView.postRedisplay();
 }

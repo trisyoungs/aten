@@ -137,9 +137,9 @@ void AtenAtomlist::pokeScrollBar()
 void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel();
-	m->beginUndostate("Shift Selection Up");
+	m->beginUndoState("Shift Selection Up");
 	m->shiftSelectionUp();
-	m->endUndostate();
+	m->endUndoState();
 	peekScrollBar();
 	refresh();
 	pokeScrollBar();
@@ -149,9 +149,9 @@ void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 {
 	Model *m = aten.currentModel();
-	m->beginUndostate("Shift Selection Down");
+	m->beginUndoState("Shift Selection Down");
 	m->shiftSelectionDown();
-	m->endUndostate();
+	m->endUndoState();
 	peekScrollBar();
 	refresh();
 	pokeScrollBar();
