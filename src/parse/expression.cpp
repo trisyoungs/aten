@@ -22,186 +22,24 @@
 #include "base/constants.h"
 #include "base/messenger.h"
 #include "parse/expression.h"
+#include "parse/expressionnode.h"
 #include "parse/variablelist.h"
+#include "base/mathfunc.h"
 #include <math.h>
 #include <string.h>
 
-// Operator Tokens
-char OperatorTypeKeywords[ExpressionNode::nOperatorTypes] = { '%', '^', '*', '/', '+', '-' };
-char ExpressionNode::operatorType(ExpressionNode::OperatorType ot)
-{
-	return OperatorTypeKeywords[ot];
-}
-ExpressionNode::OperatorType ExpressionNode::operatorType(char c)
-{
-	int result;
-	for (result=0; result<ExpressionNode::nOperatorTypes; result++) if (c == OperatorTypeKeywords[result]) break;
-	return (ExpressionNode::OperatorType) result;
-}
-
-// Function Tokens
-const char *FunctionTypeKeywords[ExpressionNode::nFunctionTypes] = { "-", "sqrt", "cos", "sin", "tan", "abs" };
-const char *ExpressionNode::functionType(ExpressionNode::FunctionType ft)
-{
-	return FunctionTypeKeywords[ft];
-}
-ExpressionNode::FunctionType ExpressionNode::functionType(const char *s)
-{
-	return (ExpressionNode::FunctionType) enumSearch("function type", ExpressionNode::nFunctionTypes, FunctionTypeKeywords, s);
-}
-
-// Constructors
-ExpressionNode::ExpressionNode()
-{
-	// Private Variables
-	type_ = ExpressionNode::nTokenTypes;
-	persistentType_ = ExpressionNode::nTokenTypes;
-	operator_ = ExpressionNode::nOperatorTypes;
-	function_ = ExpressionNode::nFunctionTypes;
-	bracket_ = ExpressionNode::nBracketTypes;
-	used_ = FALSE;
-	value_ = 0.0;
-	reducedValue_ = 0.0;
-	variable_ = NULL;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
-}
-
+// Constructor
 Expression::Expression()
 {
 	// Private variables
+	evaluatesToFloat_ = TRUE;
 	vars_ = NULL;
 }
 
-// Reset expression node
-void ExpressionNode::reset()
+// Return whether expression returns a floating-point result
+bool Expression::evaluatesToFloat()
 {
-	used_ = FALSE;
-	reducedValue_ = 0.0;
-	type_ = persistentType_;
-}
-
-// Set general type of node
-void ExpressionNode::setType(ExpressionNode::TokenType tt)
-{
-	type_ = tt;
-}
-
-// Set operator type
-void ExpressionNode::setOperatorType(ExpressionNode::OperatorType ot)
-{
-	operator_ = ot;
-}
-
-// Set function type
-void ExpressionNode::setFunctionType(ExpressionNode::FunctionType ft)
-{
-	function_ = ft;
-}
-
-// Set bracket type
-void ExpressionNode::setBracketType(ExpressionNode::BracketType bt)
-{
-	bracket_ = bt;
-}
-
-// Return general node type
-ExpressionNode::TokenType ExpressionNode::type()
-{
-	return type_;
-}
-
-// Return operator type
-ExpressionNode::OperatorType ExpressionNode::operatorType()
-{
-	return operator_;
-}
-
-// Return function type
-ExpressionNode::FunctionType ExpressionNode::functionType()
-{
-	return function_;
-}
-
-// Return bracket type
-ExpressionNode::BracketType ExpressionNode::bracketType()
-{
-	return bracket_;
-}
-
-// Set original type
-void ExpressionNode::setPersistentType(ExpressionNode::TokenType tt)
-{
-	type_ = tt;
-	persistentType_ = tt;
-}
-
-// Change the node into a value node
-void ExpressionNode::makeValue(double value)
-{
-	reducedValue_ = value;
-	type_ = ExpressionNode::ValueToken;
-}
-
-// Flag the node as used
-void ExpressionNode::setUsed()
-{
-	used_ = TRUE;
-}
-
-// Return whether the node has been used already in the current evaluation
-bool ExpressionNode::used()
-{
-	return used_;
-}
-
-// Set value
-void ExpressionNode::setValue(double value)
-{
-	value_ = value;
-}
-
-// Return numerical value
-double ExpressionNode::value()
-{
-	if (type_ != ExpressionNode::ValueToken)
-	{
-		printf("Tried to get a value from an expression token that doesn't have one.\n");
-		return 0.0;
-	}
-	if (type_ != persistentType_) return reducedValue_;
-	else if (variable_ == NULL) return value_;
-	else return variable_->asDouble();
-}
-
-// Set variable
-void ExpressionNode::setVariable(Variable *var)
-{
-	variable_ = var;
-}
-
-// Return variable
-Variable *ExpressionNode::variable()
-{
-	return variable_;
-}
-
-// Return next unused node in this node's list
-ExpressionNode *ExpressionNode::nextUnused(ExpressionNode *limit)
-{
-	ExpressionNode *result = this;
-	do
-	{
-		if (result == limit)
-		{
-			result = NULL;
-			break;
-		}
-		result = result->next;
-	} while (result->used());
-	return result;
+	return evaluatesToFloat_;
 }
 
 // Validate expression
@@ -381,7 +219,6 @@ bool Expression::validate()
 					return FALSE;
 				}
 				break;
-
 		}
 	}
 	msg.exit("Expression::validate");
@@ -414,7 +251,7 @@ bool Expression::set(const char *s, VariableList *vars)
 				if (arglen != 0)
 				{
 					arg[arglen] = '\0';
-					prevToken = addLongOperator(arg);
+					prevToken = addLongToken(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
 						msg.exit("Expression::set");
@@ -430,7 +267,7 @@ bool Expression::set(const char *s, VariableList *vars)
 				if (arglen != 0)
 				{
 					arg[arglen] = '\0';
-					prevToken = addLongOperator(arg);
+					prevToken = addLongToken(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
 						msg.exit("Expression::set");
@@ -454,7 +291,7 @@ bool Expression::set(const char *s, VariableList *vars)
 				if (arglen != 0)
 				{
 					arg[arglen] = '\0';
-					prevToken = addLongOperator(arg);
+					prevToken = addLongToken(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
 						msg.exit("Expression::set");
@@ -501,7 +338,7 @@ bool Expression::set(const char *s, VariableList *vars)
 	if (arglen != 0)
 	{
 		arg[arglen] = '\0';
-		if (addLongOperator(arg) == ExpressionNode::nTokenTypes)
+		if (addLongToken(arg) == ExpressionNode::nTokenTypes)
 		{
 			msg.exit("Expression::set");
 			return FALSE;
@@ -513,14 +350,18 @@ bool Expression::set(const char *s, VariableList *vars)
 		msg.exit("Expression::set");
 		return FALSE;
 	}
+	// Lastly, determine the return type of the expression by running it...
+	ex = evaluate();
+	evaluatesToFloat_ = ex->isFloat();
+	msg.print(Messenger::Expressions, "Expression '%s' reduces to %s.\n", s, ex->isFloat() ? "a float" : "an integer");
 	msg.exit("Expression::set");
 	return TRUE;
 }
 
-// Add long operator
-ExpressionNode::TokenType Expression::addLongOperator(const char *s)
+// Add long (non-operator) token
+ExpressionNode::TokenType Expression::addLongToken(const char *s)
 {
-	msg.enter("Expression::addLongOperator");
+	msg.enter("Expression::addLongToken");
 	// This gets called on any chunk of parsed expression that isn't a single-character operator.
 	ExpressionNode *ex = NULL;
 	// First check is for a variable (begins with '$'), then for a value (contains at least one numeral), and then for long operators.
@@ -531,7 +372,7 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 		if (v != NULL)
 		{
 			ex = expression_.add();
-			ex->setPersistentType(ExpressionNode::ValueToken);
+			ex->setPersistentType(ExpressionNode::ValueToken, v->type() == Variable::FloatVariable);
 			ex->setVariable(v);
 		}
 		else msg.print("Variable '%s' in expression has not been declared.\n", &s[1]);
@@ -543,8 +384,9 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 		if ((vt == Variable::IntegerVariable) || (vt == Variable::FloatVariable))
 		{
 			ex = expression_.add();
-			ex->setPersistentType(ExpressionNode::ValueToken);
-			ex->setValue(atof(s));
+			ex->setPersistentType(ExpressionNode::ValueToken, vt == Variable::FloatVariable);
+			if (vt == Variable::IntegerVariable) ex->setValue(atoi(s));
+			else ex->setValue(atof(s));
 		}
 		else
 		{
@@ -559,7 +401,7 @@ ExpressionNode::TokenType Expression::addLongOperator(const char *s)
 			}
 		}
 	}
-	msg.exit("Expression::addLongOperator");
+	msg.exit("Expression::addLongToken");
 	return (ex == NULL ? ExpressionNode::nTokenTypes : ex->type());
 }
 
@@ -607,35 +449,55 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 {
 	// Evaluate the expression up to and including the node limits passed.
 	double result;
-	ExpressionNode *leftLastUnused;
+	int iresult;
+	bool floatResult = TRUE, leftfloat, rightfloat;
+	ExpressionNode *leftLastUnused, *rightNode;
 	// Simplify functions first....
 	leftLastUnused = (left->used() ? left->nextUnused(right) : left);
 	for (ExpressionNode *ex = leftLastUnused; ex != NULL; ex = ex->nextUnused(right))
 	{
 		if (ex->type() != ExpressionNode::FunctionToken) continue;
+		floatResult = TRUE;
+		rightNode = ex->nextUnused();
+		rightfloat = rightNode->isFloat();
 		switch (ex->functionType())
 		{
 			case (ExpressionNode::NegateFunction):
-				result = -ex->nextUnused()->value();
+				if (rightfloat) result = -ex->nextUnused()->asDouble();
+				else
+				{
+					iresult = -ex->nextUnused()->asInteger();
+					floatResult = FALSE;
+				}
 				break;
 			case (ExpressionNode::SqrtFunction):
-				result = sqrt(ex->nextUnused()->value());
+				result = sqrt(rightNode->asDouble());
 				break;
 			case (ExpressionNode::CosFunction):
-				result = cos(ex->nextUnused()->value() / DEGRAD);
+				result = cos(rightNode->asDouble() / DEGRAD);
 				break;
 			case (ExpressionNode::SinFunction):
-				result = sin(ex->nextUnused()->value() / DEGRAD);
+				result = sin(rightNode->asDouble() / DEGRAD);
 				break;
 			case (ExpressionNode::TanFunction):
-				result = tan(ex->nextUnused()->value() / DEGRAD);
+				result = tan(rightNode->asDouble() / DEGRAD);
 				break;
 			case (ExpressionNode::AbsFunction):
-				result = fabs(ex->nextUnused()->value());
+				if (rightfloat) result = fabs(rightNode->asDouble());
+				else
+				{
+					iresult = abs(rightNode->asInteger());
+					floatResult = FALSE;
+				}
+				break;
+			//case (expressionNode::INTEGER):
+				// floatResult = FALSE;
+				//iresult = 0;
 				break;
 		}
-		// All functions nodes get replaced with their result, and the right-hand argument is set to nothing
-		ex->makeValue(result);
+		// All function nodes get replaced with their result, and the right-hand argument is subsequently ignored
+		if (floatResult) ex->makeValue(result);
+		else ex->makeValue(iresult);
 		ex->nextUnused()->setUsed();
 	}
 	// Now do operators in order of precedence.
@@ -652,40 +514,76 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 				continue;
 			}
 			if (ex->operatorType() != op) continue;
-			switch (ex->operatorType())
+			rightNode = ex->nextUnused();
+			// Check which variable types are involved
+			leftfloat = leftLastUnused->isFloat();
+			rightfloat = rightNode->isFloat();
+			// If both sides are integers do integer arithmetic
+			if ((!leftfloat) && (!rightfloat))
 			{
-				case (ExpressionNode::ModulusOperator):
-					result = int(leftLastUnused->value()) % int(ex->nextUnused()->value());
-					break;
-				case (ExpressionNode::PowerOperator):
-					result = pow(leftLastUnused->value(), ex->nextUnused()->value());
-					break;
-				case (ExpressionNode::MultiplyOperator):
-					result = leftLastUnused->value() * ex->nextUnused()->value();
-					break;
-				case (ExpressionNode::DivideOperator):
-					result = leftLastUnused->value() / ex->nextUnused()->value();
-					break;
-				case (ExpressionNode::AddOperator):
-					result = leftLastUnused->value() + ex->nextUnused()->value();
-					break;
-				case (ExpressionNode::SubtractOperator):
-					result = leftLastUnused->value() - ex->nextUnused()->value();
-					break;
+				floatResult = FALSE;
+				switch (ex->operatorType())
+				{
+					case (ExpressionNode::ModulusOperator):
+						iresult = leftLastUnused->asInteger() % rightNode->asInteger();
+						break;
+					case (ExpressionNode::PowerOperator):
+						iresult = power(leftLastUnused->asInteger(), rightNode->asInteger());
+						break;
+					case (ExpressionNode::MultiplyOperator):
+						iresult = leftLastUnused->asInteger() * rightNode->asInteger();
+						break;
+					case (ExpressionNode::DivideOperator):
+						iresult = leftLastUnused->asInteger() / rightNode->asInteger();
+						break;
+					case (ExpressionNode::AddOperator):
+						iresult = leftLastUnused->asInteger() + rightNode->asInteger();
+						break;
+					case (ExpressionNode::SubtractOperator):
+						iresult = leftLastUnused->asInteger() - rightNode->asInteger();
+						break;
+				}
+			}
+			else
+			{
+				floatResult = TRUE;
+				switch (ex->operatorType())
+				{
+					case (ExpressionNode::ModulusOperator):
+						floatResult = FALSE;
+						iresult = leftLastUnused->asInteger() % rightNode->asInteger();
+						break;
+					case (ExpressionNode::PowerOperator):
+						result = pow(leftLastUnused->asDouble(), rightNode->asDouble());
+						break;
+					case (ExpressionNode::MultiplyOperator):
+						result = leftLastUnused->asDouble() * rightNode->asDouble();
+						break;
+					case (ExpressionNode::DivideOperator):
+						result = leftLastUnused->asDouble() / rightNode->asDouble();
+						break;
+					case (ExpressionNode::AddOperator):
+						result = leftLastUnused->asDouble() + rightNode->asDouble();
+						break;
+					case (ExpressionNode::SubtractOperator):
+						result = leftLastUnused->asDouble() - rightNode->asDouble();
+						break;
+				}
 			}
 			// All operator nodes get replaced with their result, and the left and right-hand arguments are set to nothing
 			//printf("Result of operator is %f\n",result);
-			ex->makeValue(result);
+			if (floatResult) ex->makeValue(result);
+			else ex->makeValue(iresult);
 			ex->nextUnused()->setUsed();
 			leftLastUnused->setUsed();
 			leftLastUnused = ex;
 		}
-		//print(NULL, FALSE);
+		if (msg.isOutputActive(Messenger::Expressions)) print(NULL, FALSE);
 	}
 }
 
-// Evaluate expression
-double Expression::evaluate()
+// Evaluate expression, returning result node
+ExpressionNode *Expression::evaluate()
 {
 	msg.enter("Expression::evaluate");
 	ExpressionNode *ex;
@@ -700,13 +598,27 @@ double Expression::evaluate()
 	}
 	// Lastly, evaluate whole expression
 	evaluate(expression_.first(), expression_.last());
-	//printf("Reduced expression is:\n");
-	//print(NULL, FALSE);
+	msg.print(Messenger::Expressions, "Reduced expression is:\n");
+	if (msg.isOutputActive(Messenger::Expressions)) print(NULL, FALSE);
 	// Find last remaining unused node and return its value
 	ex = expression_.first();
 	if (ex->used()) ex = ex->nextUnused();
 	msg.exit("Expression::evaluate");
-	return ex->value();
+	return ex;
+}
+
+// Evaluate integer expression
+int Expression::evaluateAsInteger()
+{
+	if (evaluatesToFloat_) printf("This is a floating-point expression. Why request an integer?\n");
+	return evaluate()->asInteger();
+}
+
+// Evaluate float expression
+double Expression::evaluateAsDouble()
+{
+	if (!evaluatesToFloat_) printf("This is an integer expression. Why request a double?\n");
+	return evaluate()->asDouble();
 }
 
 // Print expression
@@ -724,15 +636,19 @@ void Expression::print(ExpressionNode *highlight, bool showUsed)
 		switch (tt)
 		{
 			case (ExpressionNode::ValueToken):
-				if (ex->used()) strcpy(bit, ftoa(ex->value()));
-				else if (ex->variable() == NULL) strcpy(bit,ftoa(ex->value()));
+				if (ex->used())
+				{
+					if (ex->isFloat()) strcpy(bit, ftoa(ex->asDouble()));
+					else strcpy(bit, itoa(ex->asInteger()));
+				}
+				else if (ex->variable() == NULL) strcpy(bit,ftoa(ex->asDouble()));
 				else sprintf(bit,"$%s", ex->variable()->name());
 				break;
 			case (ExpressionNode::FunctionToken):
-				strcpy(bit, FunctionTypeKeywords[ex->functionType()]);
+				strcpy(bit, ExpressionNode::functionType(ex->functionType()));
 				break;
 			case (ExpressionNode::OperatorToken):
-				bit[0] = OperatorTypeKeywords[ex->operatorType()];
+				bit[0] = ExpressionNode::operatorType(ex->operatorType());
 				bit[1] = '\0';
 				break;
 			case (ExpressionNode::BracketToken):

@@ -43,8 +43,10 @@ set(qtproject_SRCS
   measureactions.cpp
   minimiser_funcs.cpp
   modelactions.cpp
+  mouseactions.cpp
   position_funcs.cpp
   prefs_funcs.cpp
+  selectactions.cpp
   selectelement_funcs.cpp
   selectpattern_funcs.cpp
   settings.cpp

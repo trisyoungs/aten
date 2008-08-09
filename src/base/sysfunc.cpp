@@ -151,14 +151,18 @@ const char *stripTrailing(const char *s)
 }
 
 // Count number of times that supplied characters occur in supplied string
-int countChars(const char *s, const char *chars)
+int countChars(const char *s, const char *chars, int offset)
 {
-	int total = 0, n;
+	int total = 0, n, count = 0;
 	const char *c;
 	while (*s != '\0')
 	{
-		for (n=0; chars[n] != '\0'; n++) if (chars[n] == *s) total ++;
+		if (count >= offset)
+		{
+			for (n=0; chars[n] != '\0'; n++) if (chars[n] == *s) total ++;
+		}
 		s++;
+		count++;
 	}
 	return total;
 }

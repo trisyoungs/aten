@@ -38,7 +38,7 @@ const char *lowerCase(const char*);
 const char *beforeChar(const char*, char);
 const char *afterChar(const char*, char);
 const char *stripTrailing(const char*);
-int countChars(const char *string, const char *searchchars);
+int countChars(const char *string, const char *searchchars, int offset = 0);
 
 // Enum search
 int enumSearch(const char *name, int nitems, const char **list, const char *query);

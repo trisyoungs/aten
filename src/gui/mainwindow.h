@@ -263,12 +263,17 @@ class AtenForm : public QMainWindow
 	/*
 	// Trajectory Actions
 	*/
+	private:
+	QSlider *trajectorySlider_;
+	QSpinBox *trajectorySpin_;
 	private slots:
 	void on_actionFrameNext_triggered(bool checked);
 	void on_actionFramePrevious_triggered(bool checked);
 	void on_actionFrameFirst_triggered(bool checked);
 	void on_actionFrameLast_triggered(bool checked);
 	void on_actionPlayPause_triggered(bool checked);
+	void trajectorySlider_sliderMoved();
+	void trajectorySpin_valueChanged(int i);
 
 	/*
 	// View Actions

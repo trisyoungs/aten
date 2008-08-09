@@ -25,83 +25,10 @@
 #include "base/constants.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
+#include "parse/expressionnode.h"
 
 // Forward Declarations
-class Variable;
 class VariableList;
-
-// Expression Node
-class ExpressionNode
-{
-	public:
-	// Constructor
-	ExpressionNode();
-	// Node types
-	enum TokenType { ValueToken, OperatorToken, FunctionToken, BracketToken, nTokenTypes };
-	// Operator tokens
-	enum OperatorType { ModulusOperator, PowerOperator, MultiplyOperator, DivideOperator, AddOperator, SubtractOperator, nOperatorTypes };
-	static char operatorType(ExpressionNode::OperatorType ot);
-	static ExpressionNode::OperatorType operatorType(char s);
-	// Function tokens
-	enum FunctionType { NegateFunction, SqrtFunction, CosFunction, SinFunction, TanFunction, AbsFunction, nFunctionTypes };
-	static const char *functionType(ExpressionNode::FunctionType ft);
-	static ExpressionNode::FunctionType functionType(const char *s);
-	// Bracket tokens
-	enum BracketType { LeftBracket, RightBracket, nBracketTypes };
-
-	// List pointers
-	ExpressionNode *prev, *next;
-	
-	private:
-	// Current type of node
-	ExpressionNode::TokenType type_;
-	// Original (persistent) type of node
-	ExpressionNode::TokenType persistentType_;
-	// Sub-type of node
-	OperatorType operator_;
-	FunctionType function_;
-	BracketType bracket_;
-	// Whether this node has already been used up in the current evaluation
-	bool used_;
-	// Numeric value (if variable_ == NULL)
-	double value_;
-	// Variable pointer
-	Variable *variable_;
-	// 'Reduced' value of node (when used_ = TRUE)
-	double reducedValue_;
-
-	public:
-	// Reset node
-	void reset();
-	// Set type of node
-	void setType(ExpressionNode::TokenType);
-	void setOperatorType(ExpressionNode::OperatorType);
-	void setFunctionType(ExpressionNode::FunctionType);
-	void setBracketType(ExpressionNode::BracketType);
-	// Return node type
-	ExpressionNode::TokenType type();
-	ExpressionNode::OperatorType operatorType();
-	ExpressionNode::FunctionType functionType();
-	ExpressionNode::BracketType bracketType();
-	// Set persistent type
-	void setPersistentType(ExpressionNode::TokenType);
-	// Change the node to a plain value node
-	void makeValue(double value);
-	// Flag the node as used
-	void setUsed();
-	// Return whether the node has been used already in the current evaluation
-	bool used();
-	// Set value
-	void setValue(double value);
-	// Set variable
-	void setVariable(Variable *var);
-	// Return variable
-	Variable *variable();
-	// Return numerical value (may be value_ variable_->asDouble(), or reducedValue_.
-	double value();
-	// Return next unused node in this node's list
-	ExpressionNode *nextUnused(ExpressionNode *limit = NULL);
-};
 
 // Expression
 class Expression
@@ -115,22 +42,29 @@ class Expression
 	List<ExpressionNode> expression_;
 	// The VariableList against which the expression was created
 	VariableList *vars_;
+	// Type of final result, whether double (TRUE) or integer (FALSE)
+	bool evaluatesToFloat_;
 	// Reflist of all bracketed pairs (to speed up execution)
 	Reflist<ExpressionNode,ExpressionNode*> brackets_;
-	// Add long operator
-	ExpressionNode::TokenType addLongOperator(const char *s);
+	// Add long (non-operator)
+	ExpressionNode::TokenType addLongToken(const char *s);
 	// Validate expression
 	bool validate();
 	// Create expression plan
 	bool createPlan();
 	// Evaluate subexpression
 	void evaluate(ExpressionNode *left, ExpressionNode *right);
+	// Evaluate whole expression (reduce to one node)
+	ExpressionNode *evaluate();
 
 	public:
 	// Set expression from string
 	bool set(const char *s, VariableList *vars);
+	// Return whether the result of the expression is a floating point (or integer)
+	bool evaluatesToFloat();
 	// Evaluate expression and return value
-	double evaluate();
+	double evaluateAsDouble();
+	int evaluateAsInteger();
 	// Print expression
 	void print(ExpressionNode *highlight = NULL, bool showUsed = TRUE);
 };

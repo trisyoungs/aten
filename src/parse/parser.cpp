@@ -57,7 +57,7 @@ Parser::ArgumentForm Parser::argumentForm(int i)
 	else
 	{
 		int noperators, n, nvars, nbrackets;
-		noperators = countChars(arguments_[i].get(), "-+*/^%");
+		noperators = countChars(arguments_[i].get(), "-+*/^%", 1);
 		nbrackets = countChars(arguments_[i].get(), "()");
 		nvars = countChars(arguments_[i].get(), "$");
 		// If there are operators or brackets it can only be an expression
@@ -300,7 +300,7 @@ bool Parser::getNextN(int length)
 		msg.exit("Parser::getNextN");
 		return FALSE;
 	}
-	int charsleft = lineLength_ - (linePos_+1);
+	int charsleft = lineLength_ - linePos_;
 	if (length > charsleft) length = charsleft;
 	//if (length > lineLength_) length = lineLength_;
 	for (int n=0; n<length; n++)

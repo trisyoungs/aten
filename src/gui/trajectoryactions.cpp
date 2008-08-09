@@ -72,3 +72,11 @@ void AtenForm::on_actionPlayPause_triggered(bool checked)
 	}
 	gui.updateTrajControls();
 }
+
+void AtenForm::trajectorySlider_sliderMoved()
+{
+}
+
+void AtenForm::trajectorySpin_valueChanged(int i)
+{
+}

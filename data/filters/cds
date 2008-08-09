@@ -10,7 +10,7 @@ importmodel
 	glob *.*dat
 
 	# Variables
-	character spgrp,discard,ea,eb,ec
+	character spgrp,discard,ea,eb,ec,e
 	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
 	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj,total
 	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz
@@ -60,7 +60,8 @@ importmodel
 	end
 	# Record 6: Atomic coordinates
 	# Coordinates are given 3 per line, so determine number of lines to read in.
-	$natoms = "$natm + $nsatm"
+	$natoms = $natm+$nsatm
+	print "Expecting $natoms in file"
 	for $n,1,$natoms
 		# Read in new line if mod(n,3) is zero
 		$mod = ($n-1)%3
@@ -70,22 +71,22 @@ importmodel
 		verbose "Atom pass $n : Elements are $ea, $eb, and $ec"
 		# Use variable data based on the $mod value...
 		if $mod = 0
-			newatom $ea
+			$e = $ea
 			$rx = $xa/100000
 			$ry = $ya/100000
 			$rz = $za/100000
 		elseif $mod = 1
-			newatom $eb
+			$e = $eb
 			$rx = $xb/100000
 			$ry = $yb/100000
 			$rz = $zb/100000
 		else
-			newatom $ec
+			$e = $ec
 			$rx = $xc/100000
 			$ry = $yc/100000
 			$rz = $zc/100000
 		end
-		setcoords $rx $ry $rz
+		newatom $e $rx $ry $rz
 	end
 	# Record 7: Connectivity
 	# Connectivities are given in the format 40I2 (if natm+nsatm < 100) or 26I3,2x (if natm+nsatm >= 100)
@@ -134,7 +135,7 @@ importmodel
 			newbond $ii $jj
 		end
 	end
-	# Convert our stored coordinates (which are fractional) to real coordinates
+	# Convert the stored fractional coordinates into real coordinates
 	fractoreal
 	# Finalise the packing in the model
 	pack

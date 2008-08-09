@@ -662,7 +662,7 @@ Vec3<double> Cell::realToFrac(const Vec3<double> &v) const
 Vec3<double> Cell::fracToReal(const Vec3<double> &v) const
 {
 	// Convert the fractional cell coordinates supplied into real cell coordinates
-	return (v * transpose_);
+	return (transpose_ * v);
 }
 
 /*

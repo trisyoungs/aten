@@ -356,44 +356,6 @@ void AtenForm::runScript()
 }
 
 /*
-// Mouse Toolbar
-*/
-
-void AtenForm::on_actionMouseInteract_triggered(bool checked)
-{
-	prefs.setMouseAction(Prefs::LeftButton, Prefs::InteractAction);
-}
-
-void AtenForm::on_actionMouseRotate_triggered(bool checked)
-{
-	prefs.setMouseAction(Prefs::LeftButton, Prefs::RotateAction);
-}
-
-void AtenForm::on_actionMouseTranslate_triggered(bool checked)
-{
-	prefs.setMouseAction(Prefs::LeftButton, Prefs::TranslateAction);
-}
-
-/*
-// Select Toolbar
-*/
-
-void AtenForm::on_actionSelectAtoms_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(Canvas::SelectAction);
-}
-
-void AtenForm::on_actionSelectMolecules_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(Canvas::SelectMoleculeAction);
-}
-
-void AtenForm::on_actionSelectElement_triggered(bool on)
-{
-	if (on) gui.mainView.setSelectedMode(Canvas::SelectElementAction);
-}
-
-/*
 // Window Show / Hide Functions
 */
 
