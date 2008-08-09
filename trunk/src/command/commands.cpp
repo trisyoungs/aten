@@ -308,8 +308,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"" },
 	{ "_GOTONONIF_",	"",		"",
 				"" },
-	{ "if",			"ESE",		"<variable> <condition> <variable|constant>",
-				"Perform a conditional test on the supplied variable against the second variable (or constant)" },
+	{ "if",			"ESE",		"<expression> <condition> <expression>",
+				"Perform a conditional test between the supplied expressions (or variables or constants)" },
 	{ "_TERMINATE_",	"",		"",
 				"" },
 	

@@ -93,6 +93,14 @@ void AtenForm::finaliseUi()
 	ui.CommandToolbar->setMinimumSize(128,16);
 	QObject::connect(forcefieldCombo_, SIGNAL(currentIndexChanged(int)), this, SLOT(forcefieldCombo_currentIndexChanged(int)));
 
+	// Add extra widgets to trajectory toolbar
+	trajectorySlider_ = new QSlider(Qt::Horizontal, this);
+	ui.TrajectoryToolbar->addWidget(trajectorySlider_);
+	QObject::connect(trajectorySlider_, SIGNAL(sliderMoved()), this, SLOT(trajectorySlider_sliderMoved()));
+	trajectorySpin_ = new QSpinBox(this);
+	ui.TrajectoryToolbar->addWidget(trajectorySpin_);
+	QObject::connect(trajectorySpin_, SIGNAL(valueChanged(int)), this, SLOT(trajectorySpin_valueChanged(int)));
+
 	// Create QActionGroup for perspective / orthographic views
 	QActionGroup *viewtypeGroup = new QActionGroup(this);
 	viewtypeGroup->addAction(ui.actionViewOrthographic);

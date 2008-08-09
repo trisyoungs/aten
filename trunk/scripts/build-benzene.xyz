@@ -23,8 +23,7 @@ for $n,1,6
 	rotz 120.0
 end
 
-# Calculate bonding
+# Calculate bonding and automatically add multiple bonds
 rebond
-
 augment
 

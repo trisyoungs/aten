@@ -44,6 +44,8 @@ Cli cliSwitches[] = {
 		"",		"Print out all debug information" },
 	{ Cli::DebugCommandsSwitch,	'\0',"debugcommands",	0,
 		"",		"Print out verbose information from file filter routines" },
+	{ Cli::DebugExpressionsSwitch,	'\0',"debugexpressions",0,
+		"",		"Print out verbose information from expression routines" },
 	{ Cli::DebugParseSwitch,	'\0',"debugparse",	0,
 		"",		"Print out verbose information from file parsing routines" },
 	{ Cli::DebugSwitch,		'd',"debug",		0,
@@ -167,6 +169,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Turn on debug messages for all calls
 				case (Cli::DebugAllSwitch):
 					msg.addOutputType(Messenger::Calls);
+					msg.addOutputType(Messenger::Expressions);
 					msg.addOutputType(Messenger::Verbose);
 					msg.addOutputType(Messenger::Parse);
 					msg.addOutputType(Messenger::Typing);
@@ -174,6 +177,10 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Turn on debug messages for atom typing
 				case (Cli::DebugCommandsSwitch):
 					msg.addOutputType(Messenger::Commands);
+					break;
+				// Turn on debug messages for expression
+				case (Cli::DebugExpressionsSwitch):
+					msg.addOutputType(Messenger::Expressions);
 					break;
 				// Turn on debug messages for atom typing
 				case (Cli::DebugParseSwitch):
@@ -290,6 +297,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// All of the following switches were dealt with in parseCliEarly()
 				case (Cli::DebugAllSwitch):
 				case (Cli::DebugCommandsSwitch):
+				case (Cli::DebugExpressionsSwitch):
 				case (Cli::DebugParseSwitch):
 				case (Cli::DebugSwitch):
 				case (Cli::DebugTypingSwitch):

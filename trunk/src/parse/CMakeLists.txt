@@ -1,11 +1,13 @@
 add_library(parse
 expression.h
+expressionnode.h
 filter.h 
 format.h 
 parser.h
 variable.h
 variablelist.h
 expression.cpp
+expressionnode.cpp
 filter.cpp 
 forcefield.cpp 
 format.cpp 

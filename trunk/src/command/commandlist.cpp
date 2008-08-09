@@ -22,6 +22,7 @@
 #include "command/commandlist.h"
 #include "command/commands.h"
 #include "parse/format.h"
+#include "parse/expression.h"
 #include "base/aten.h"
 #include "classes/forcefield.h"
 #include "base/elements.h"
@@ -340,15 +341,15 @@ List<Command> *Command::createBranch()
 // Create branch
 bool Command::createFormat(const char *s, VariableList &vars, bool delimited)
 {
-	msg.enter("Command::create_format");
+	msg.enter("Command::createFormat");
 	bool result = FALSE;
-	if (format_ != NULL) printf("Command::createBranch <<<< Already has a format >>>>\n");
+	if (format_ != NULL) printf("Command::createFormat <<<< Already has a format >>>>\n");
 	else
 	{
 		format_ = new Format;
 		result = format_->create(s, vars, delimited);
 	}
-	msg.exit("Command::create_format");
+	msg.exit("Command::createFormat");
 	return result;
 }
 
@@ -386,47 +387,105 @@ bool Command::setIfTest(const char *s)
 bool Command::ifEvaluate()
 {
 	msg.enter("Command::ifEvaluate");
-	// Do all as comparisons as floats, except for equalities
 	bool result;
 	static Variable *v1, *v2;
-	static Dnchar value1, value2;
+	static char string1[512], string2[512];
 	static double d1, d2;
-	//print_argss();
+	Variable::VariableType vt1, vt2;
+	static int i1, i2;
 	v1 = args_[0]->item;
 	v2 = args_[2]->item;
-	if ((ifTest_ == IfTests::EqualTo) || (ifTest_ == IfTests::NotEqualTo))
+	// Determine how to do the comparison
+	vt1 = v1->type();
+	vt2 = v2->type();
+	if (vt1 == Variable::ExpressionVariable) vt1 = ((Expression*) v1->asPointer())->evaluatesToFloat() ? Variable::FloatVariable : Variable::IntegerVariable;
+	if (vt2 == Variable::ExpressionVariable) vt2 = ((Expression*) v2->asPointer())->evaluatesToFloat() ? Variable::FloatVariable : Variable::IntegerVariable;
+	if (vt2 > vt1) vt1 = vt2;
+	if (vt1 == Variable::CharacterVariable)
 	{
-		// Grab current variable values into the value1/value2 character arrays (if var != NULL)
-		value1 = v1->asCharacter();
-		value2 = v2->asCharacter();
+		strcpy(string1, v1->asCharacter());
+		strcpy(string2, v2->asCharacter());
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), string1, IfTests::ifTest(ifTest_), v2->name(), string2);
+
+		switch (ifTest_)
+		{
+			case (IfTests::EqualTo):
+				result = (strcmp(string1,string2) == 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThan):
+				result = (strcmp(string1,string2) < 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThanEqualTo):
+				result = (strcmp(string1,string2) <= 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThan):
+				result = (strcmp(string1,string2) > 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThanEqualTo):
+				result = (strcmp(string1,string2) >= 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::NotEqualTo):
+				result = (strcmp(string1,string2) != 0 ? TRUE : FALSE);
+				break;
+		}
+	}
+	else if (vt1 == Variable::IntegerVariable)
+	{
+		i1 = v1->asInteger();
+		i2 = v2->asInteger();
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%i] (%s) var2(%s)=[%i] : %s\n", v1->name(), i1, IfTests::ifTest(ifTest_), v2->name(), i2, result ? "True" : "False");
+		switch (ifTest_)
+		{
+			case (IfTests::EqualTo):
+				result = (i1 == i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThan):
+				result = (i1 < i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThanEqualTo):
+				result = (i1 <= i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThan):
+				result = (i1 > i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThanEqualTo):
+				result = (i1 >= i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::NotEqualTo):
+				result = (i1 != i2 ? TRUE : FALSE);
+				break;
+		}
 	}
 	else
 	{
 		d1 = v1->asDouble();
 		d2 = v2->asDouble();
-	}
-	msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), v1->asCharacter(), IfTests::ifTest(ifTest_), v2->name(), v2->asCharacter());
-	// Do comparison
-	switch (ifTest_)
-	{
-		case (IfTests::EqualTo):
-			result = (value1 == value2 ? TRUE : FALSE);
-			break;
-		case (IfTests::LessThan):
-			result = (d1 < d2 ? TRUE : FALSE);
-			break;
-		case (IfTests::LessThanEqualTo):
-			result = (d1 <= d2 ? TRUE : FALSE);
-			break;
-		case (IfTests::GreaterThan):
-			result = (d1 > d2 ? TRUE : FALSE);
-			break;
-		case (IfTests::GreaterThanEqualTo):
-			result = (d1 >= d2 ? TRUE : FALSE);
-			break;
-		case (IfTests::NotEqualTo):
-			result = (value1 != value2 ? TRUE : FALSE);
-			break;
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
+		// Do comparison
+		switch (ifTest_)
+		{
+			case (IfTests::EqualTo):
+				msg.print("Warning: Comparing between floating point values...\n");
+				result = (d1 == d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThan):
+				result = (d1 < d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThanEqualTo):
+				result = (d1 <= d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThan):
+				result = (d1 > d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThanEqualTo):
+				result = (d1 >= d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::NotEqualTo):
+				msg.print("Warning: Comparing between floating point values...\n");
+				result = (d1 != d2 ? TRUE : FALSE);
+				break;
+		}
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
 	}
 	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
 	msg.exit("Command::ifEvaluate");
@@ -708,7 +767,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	// Are there still unused arguments in the parser?
 	if (argcount < (parser.nArgs() - 1))
 	{
-		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(argcount), cmd);
+		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(++argcount), cmd);
 		msg.exit("Command::addVariables");
 		return FALSE;
 	}

@@ -274,7 +274,7 @@ int Variable::asInteger()
 			return int(doubleValue_);
 		case (Variable::ExpressionVariable):
 			ex = (Expression*) ptrValue_;
-			return int (ex->evaluate());
+			return int (ex->evaluateAsInteger());
 		default:
 			msg.print(Messenger::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
@@ -295,7 +295,7 @@ double Variable::asDouble()
 			return doubleValue_;
 		case (Variable::ExpressionVariable):
 			ex = (Expression*) ptrValue_;
-			return ex->evaluate();
+			return ex->evaluateAsDouble();
 		default:
 			msg.print(Messenger::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
 	}
