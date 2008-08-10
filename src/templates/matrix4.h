@@ -52,6 +52,11 @@ template <class T> class Mat4
 	// Access
 	*/
 	public:
+	// Aliases for matrix rows
+	Vec4<T> &x();
+	Vec4<T> &y();
+	Vec4<T> &z();
+	Vec4<T> &w();
 	// Set the matrix from a 1D array of values
 	void setFromColumnMajor(T*);
 	// Puts the matrix into the passed 1D-array of type <T>, row-major
@@ -85,10 +90,6 @@ template <class T> class Mat4
 	Vec3<T> operator*(const Vec3<T>&) const;
 };
 
-/*
-// Mat4
-*/
-
 // Constructor
 template <class T> Mat4<T>::Mat4()
 {
@@ -102,6 +103,31 @@ template <class T> Mat4<T>::Mat4(const Mat3<T> &m)
 	rows[1].set(m.rows[1], 0.0);
 	rows[2].set(m.rows[2], 0.0);
 	rows[3].set(0.0, 0.0, 0.0, 1.0);
+}
+
+/*
+// Set / Get
+*/
+
+// Aliases for matrix rows
+template <class T> Vec4<T> &Mat4<T>::x()
+{
+	return rows[0];
+}
+
+template <class T> Vec4<T> &Mat4<T>::y()
+{
+	return rows[1];
+}
+
+template <class T> Vec4<T> &Mat4<T>::z()
+{
+	return rows[2];
+}
+
+template <class T> Vec4<T> &Mat4<T>::w()
+{
+	return rows[3];
 }
 
 // Set (T[])

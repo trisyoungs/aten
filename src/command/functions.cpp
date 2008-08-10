@@ -339,6 +339,7 @@ void Aten::initCommands()
 	CA_data[CA_SELECTFFTYPE].function = &CommandData::function_CA_SELECTFFTYPE;
 	CA_data[CA_SELECTNONE].function = &CommandData::function_CA_SELECTNONE;
 	CA_data[CA_SELECTOVERLAPS].function = &CommandData::function_CA_SELECTOVERLAPS;
+	CA_data[CA_SELECTPATTERN].function = &CommandData::function_CA_SELECTPATTERN;
 	CA_data[CA_SELECTTYPE].function = &CommandData::function_CA_SELECTTYPE;
 	
 	// Site Commands
