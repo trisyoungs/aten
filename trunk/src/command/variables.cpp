@@ -214,9 +214,9 @@ void CommandList::setModelVariables(const char *base, Model *m)
 	{
 		variables.set(base,"title",m->name());
 		variables.set(base,"natoms",m->nAtoms());
-		variables.set(base,"nframes",m->totalFrames());
+		variables.set(base,"nframes",m->nTrajectoryFrames());
 		variables.set(base,"firstatom",m->atoms());
-		variables.set(base,"currentframe",m->framePosition());
+		variables.set(base,"currentframe",m->trajectoryPosition());
 		Cell *c = m->cell();
 		Mat3<double> mat;
 		Vec3<double> vec;

@@ -73,10 +73,24 @@ void AtenForm::on_actionPlayPause_triggered(bool checked)
 	gui.updateTrajControls();
 }
 
-void AtenForm::trajectorySlider_sliderMoved()
+void AtenForm::trajectorySlider_sliderMoved(int i)
 {
+	if (trajectoryToolbarRefreshing_) return;
+	
 }
 
 void AtenForm::trajectorySpin_valueChanged(int i)
 {
+	if (trajectoryToolbarRefreshing_) return;
+}
+
+void AtenForm::updateTrajectoryToolbar()
+{
+	trajectoryToolbarRefreshing_ = TRUE;
+	trajectorySlider_->setMinimum(1);
+	trajectorySlider_->setMaximum(aten.currentModel()->nTrajectoryFrames());
+	trajectorySlider_->setValue(aten.currentModel()->trajectoryPosition());
+	trajectorySpin_->setRange(1,aten.currentModel()->nTrajectoryFrames());
+	trajectorySpin_->setValue(aten.currentModel()->trajectoryPosition());
+	trajectoryToolbarRefreshing_ = FALSE;
 }

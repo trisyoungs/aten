@@ -61,10 +61,10 @@ Model::Model()
 	trajectoryLastFrame_ = (streampos) 0;
 	frameSize_ = 0;
 	nCachedFrames_ = 0;
-	totalFrames_ = 0;
+	nTrajectoryFrames_ = 0;
 	renderFromSelf_ = TRUE;
 	trajectoryCached_ = FALSE;
-	framePosition_ = 0;
+	trajectoryPosition_ = 0;
 	trajectoryPlaying_ = FALSE;
 	currentFrame_ = NULL;
 	componentPattern_ = NULL;
