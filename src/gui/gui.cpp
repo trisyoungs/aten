@@ -236,12 +236,12 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	QString s;
 	Model *m = aten.currentModel();
 	// Trajectory information label
-	if (m->totalFrames() != 0)
+	if (m->nTrajectoryFrames() != 0)
 	{
 		s = "(Frame ";
-		s += (m->renderSource() == m ? "Main" : itoa(m->framePosition()));
+		s += (m->renderSource() == m ? "Main" : itoa(m->trajectoryPosition()));
 		s += " of ";
-		s += itoa(m->totalFrames());
+		s += itoa(m->nTrajectoryFrames());
 		s += ") ";
 	}
 	m = m->renderSource();
@@ -299,18 +299,11 @@ void GuiQt::updateTrajControls()
 {
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
-	if (m->totalFrames() == 0)
-	{
-		mainWindow->ui.actionFrameFirst->setDisabled(TRUE);
-		mainWindow->ui.actionFramePrevious->setDisabled(TRUE);
-		mainWindow->ui.actionFrameNext->setDisabled(TRUE);
-		mainWindow->ui.actionFrameLast->setDisabled(TRUE);
-		mainWindow->ui.actionPlayPause->setDisabled(TRUE);
-		mainWindow->ui.actionViewTrajectory->setDisabled(TRUE);
-	}
+	if (m->nTrajectoryFrames() == 0) mainWindow->ui.TrajectoryToolbar->setDisabled(TRUE);
 	else
 	{
 		// Make sure the trajectory toolbar is visible
+		mainWindow->ui.TrajectoryToolbar->setDisabled(FALSE);
 		mainWindow->ui.TrajectoryToolbar->setVisible(TRUE);
 		// If the trajectory is playing, desensitise all but the play/pause button
 		if (trajectoryPlaying_)
@@ -333,6 +326,8 @@ void GuiQt::updateTrajControls()
 		// Select the correct view action
 		if (m->renderSource() == m) mainWindow->ui.actionViewModel->setChecked(TRUE);
 		else mainWindow->ui.actionViewTrajectory->setChecked(TRUE);
+		// Set slider and spinbox
+		mainWindow->updateTrajectoryToolbar();
 	}
 }
 

@@ -674,11 +674,11 @@ class Model
 	// Number of frames cached
 	int nCachedFrames_;
 	// Total number of frames available in file or cache
-	int totalFrames_;
+	int nTrajectoryFrames_;
 	// Whether this is a cached trajectory (TRUE) or just one frame (FALSE)
 	bool trajectoryCached_;
 	// Current frame position counter
-	int framePosition_;
+	int trajectoryPosition_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
 	// Pointer to config to be drawn
@@ -700,9 +700,9 @@ class Model
 	// Return the current frame pointer
 	Model *currentFrame();
 	// Return the total number of frames in the trajectory (file or cached)
-	int totalFrames();
+	int nTrajectoryFrames();
 	// Return the current integer frame position
-	int framePosition();
+	int trajectoryPosition();
 	// Seek to first frame
 	void seekFirstFrame();
 	// Seek to last frame

@@ -96,7 +96,7 @@ void AtenForm::finaliseUi()
 	// Add extra widgets to trajectory toolbar
 	trajectorySlider_ = new QSlider(Qt::Horizontal, this);
 	ui.TrajectoryToolbar->addWidget(trajectorySlider_);
-	QObject::connect(trajectorySlider_, SIGNAL(sliderMoved()), this, SLOT(trajectorySlider_sliderMoved()));
+	QObject::connect(trajectorySlider_, SIGNAL(sliderMoved(int)), this, SLOT(trajectorySlider_sliderMoved(int)));
 	trajectorySpin_ = new QSpinBox(this);
 	ui.TrajectoryToolbar->addWidget(trajectorySpin_);
 	QObject::connect(trajectorySpin_, SIGNAL(valueChanged(int)), this, SLOT(trajectorySpin_valueChanged(int)));

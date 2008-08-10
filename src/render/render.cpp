@@ -67,8 +67,8 @@ void Canvas::renderScene(Model *source)
 	// If this is a trajectory frame, check its ID against the last one rendered
 	if (source->trajectoryParent() != NULL)
 	{
-		if (source->trajectoryParent()->framePosition() != displayFrame_) renderPoint_ = -1;
-		displayFrame_ = source->trajectoryParent()->framePosition();
+		if (source->trajectoryParent()->trajectoryPosition() != displayFrame_) renderPoint_ = -1;
+		displayFrame_ = source->trajectoryParent()->trajectoryPosition();
 	}
 
 	// Set clear colour

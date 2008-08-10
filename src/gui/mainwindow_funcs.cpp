@@ -70,6 +70,7 @@ AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 	customElement_ = 8;
 	forcefieldCombo_ = NULL;
 	commandEdit_ = NULL;
+	trajectoryToolbarRefreshing_ = FALSE;
 
 	ui.setupUi(this);
 }

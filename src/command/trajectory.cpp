@@ -54,7 +54,7 @@ int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (obj.m->totalFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
@@ -69,7 +69,7 @@ int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (obj.m->totalFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
@@ -93,7 +93,7 @@ int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (obj.m->totalFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
@@ -108,7 +108,7 @@ int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (obj.m->totalFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;
@@ -123,7 +123,7 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (obj.m->totalFrames() == 0)
+	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
 		return CR_FAIL;

@@ -125,7 +125,7 @@ int CommandData::function_CA_TRAJANALYSE(Command *&c, Bundle &obj)
 	Model *frame;
 	Calculable *calc;
 	// Check that the model has a trajectory associated to it
-	totalframes = obj.m->totalFrames();
+	totalframes = obj.m->nTrajectoryFrames();
 	if (totalframes == 0)
 	{
 		msg.print("No trajectory associated to model.\n");

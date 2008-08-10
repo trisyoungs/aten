@@ -56,15 +56,15 @@ Model *Model::currentFrame()
 }
 
 // Return the total number of frames in the trajectory (file or cached)
-int Model::totalFrames()
+int Model::nTrajectoryFrames()
 {
-	return totalFrames_;
+	return nTrajectoryFrames_;
 }
 
 // Return the current integer frame position
-int Model::framePosition()
+int Model::trajectoryPosition()
 {
-	return framePosition_;
+	return trajectoryPosition_;
 }
 
 // Clear trajectory
@@ -80,8 +80,8 @@ void Model::clearTrajectory()
 	}
 	trajectoryFilename_ = "Unnamed";
 	nCachedFrames_ = 0;
-	totalFrames_ = 0;
-	framePosition_ = 0;
+	nTrajectoryFrames_ = 0;
+	trajectoryPosition_ = 0;
 	trajectoryCached_ = FALSE;
 	msg.exit("Model::clearTrajectory");
 }
@@ -143,23 +143,23 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 	else msg.print("Single frame is %i kb.\n", frameSize_/1024);
 	trajectoryFile_->seekg(0,ios::end);
 	streampos endoffile = trajectoryFile_->tellg();
-	totalFrames_ = (endoffile - trajectoryFirstFrame_) / frameSize_;
-	trajectoryLastFrame_ = trajectoryFirstFrame_ + streampos((totalFrames_ - 1) * frameSize_);
-	msg.print(Messenger::Verbose,"File position of first = %lu, frameSize_ = %i, nframes =%i\n", int(trajectoryFirstFrame_), frameSize_, totalFrames_);
+	nTrajectoryFrames_ = (endoffile - trajectoryFirstFrame_) / frameSize_;
+	trajectoryLastFrame_ = trajectoryFirstFrame_ + streampos((nTrajectoryFrames_ - 1) * frameSize_);
+	msg.print(Messenger::Verbose,"File position of first = %lu, frameSize_ = %i, nframes =%i\n", int(trajectoryFirstFrame_), frameSize_, nTrajectoryFrames_);
 	// Skip back to end of first frame ready to read in next frame...
 	trajectoryFile_->seekg(endofframe);
 	// Pre-Cache frame(s)
 	msg.print("Successfully associated trajectory.\n"); 
-	msg.print("Number of frames in file : %i\n", totalFrames_);
-	framePosition_ = 1;
+	msg.print("Number of frames in file : %i\n", nTrajectoryFrames_);
+	trajectoryPosition_ = 1;
 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
-	msg.print("Estimated trajectory size is %li kb, cache limit = %i kb\n", totalFrames_ * frameSize_/1024, prefs.cacheLimit());
-	if ((totalFrames_ * frameSize_)/1024 < prefs.cacheLimit())
+	msg.print("Estimated trajectory size is %li kb, cache limit = %i kb\n", nTrajectoryFrames_ * frameSize_/1024, prefs.cacheLimit());
+	if ((nTrajectoryFrames_ * frameSize_)/1024 < prefs.cacheLimit())
 	{
 		msg.print("Caching all frames from trajectory...\n");
-		gui.progressCreate("Caching Frames", totalFrames_);
+		gui.progressCreate("Caching Frames", nTrajectoryFrames_);
 		// Read all frames from trajectory file
-		for (int n=1; n<totalFrames_; n++)
+		for (int n=1; n<nTrajectoryFrames_; n++)
 		{
 			if (!gui.progressUpdate(n)) break;
 			newframe = addFrame();
@@ -167,7 +167,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 			if (success)
 			{
 				//msg.print("Read frame %i from file.\n", n+1);
-				framePosition_ ++;
+				trajectoryPosition_ ++;
 			}
 			else
 			{
@@ -177,7 +177,7 @@ bool Model::initialiseTrajectory(const char *fname, Filter *f)
 			}
 		}
 		gui.progressTerminate();
-		msg.print("Cached %i frames from file.\n", framePosition_);
+		msg.print("Cached %i frames from file.\n", trajectoryPosition_);
 		trajectoryCached_ = TRUE;
 		trajectoryFile_->close();
 	}
@@ -195,7 +195,7 @@ Model *Model::addFrame()
 	// Set currentFrame_ here (always points to the last added frame)
 	currentFrame_ = newframe;
 	newframe->setTrajectoryParent(this);
-	//framePosition_ = nCachedFrames_;
+	//trajectoryPosition_ = nCachedFrames_;
 	msg.exit("Model::addFrame");	
 	return newframe;
 }
@@ -217,13 +217,13 @@ void Model::seekFirstFrame()
 	// Seek to the first frame in the trajectory
 	msg.enter("Model::seekFirstFrame");
 	// Check that a trajectory exists!
-	if (totalFrames_ == 0)
+	if (nTrajectoryFrames_ == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekFirstFrame");
 		return;
 	}
-	if (framePosition_ == 1)
+	if (trajectoryPosition_ == 1)
 	{
 		msg.print("Already at start of trajectory.\n");
 		msg.exit("Model::seekFirstFrame");
@@ -238,11 +238,11 @@ void Model::seekFirstFrame()
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
 		currentFrame_->logChange(Change::VisualLog);
 	}
-	framePosition_ = 1;
+	trajectoryPosition_ = 1;
 	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg.print("Seek to frame %i\n", framePosition_);
+	msg.print("Seek to frame %i\n", trajectoryPosition_);
 	msg.exit("Model::seekFirstFrame");
 }
 
@@ -252,16 +252,16 @@ void Model::seekNextFrame()
 	// Seek to the next frame in the trajectory
 	msg.enter("Model::seekNextFrame");
 	// Check that a trajectory exists!
-	if (totalFrames_ == 0)
+	if (nTrajectoryFrames_ == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
 	bool success;
-	if (framePosition_ == totalFrames_)
+	if (trajectoryPosition_ == nTrajectoryFrames_)
 	{
-		msg.print("Already at end of trajectory (frame %i).\n",framePosition_);
+		msg.print("Already at end of trajectory (frame %i).\n",trajectoryPosition_);
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
@@ -272,12 +272,12 @@ void Model::seekNextFrame()
 		success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
 		currentFrame_->logChange(Change::VisualLog);
 	}
-	framePosition_ ++;
+	trajectoryPosition_ ++;
 	logChange(Change::VisualLog);
 	//printf("Frame = %li, parent = %li (model = %li)\n",currentFrame_,currentFrame_->trajectoryParent_,this);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg.print("Seek to frame %i\n", framePosition_);
+	msg.print("Seek to frame %i\n", trajectoryPosition_);
 	msg.exit("Model::seekNextFrame");
 }
 
@@ -287,13 +287,13 @@ void Model::seekPreviousFrame()
 	// Seek to the previous frame in the trajectory
 	msg.enter("Model::seekPreviousFrame");
 	// Check that a trajectory exists!
-	if (totalFrames_ == 0)
+	if (nTrajectoryFrames_ == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekPreviousFrame");
 		return;
 	}
-	if (framePosition_ == 1)
+	if (trajectoryPosition_ == 1)
 	{
 		msg.print("Already at start of trajectory.\n");
 		msg.exit("Model::seekPreviousFrame");
@@ -304,16 +304,16 @@ void Model::seekPreviousFrame()
 	{
 		currentFrame_->clear();
 		// Read in previous frame from file
-		streampos newpos = trajectoryFirstFrame_ + streampos((framePosition_-2)*frameSize_);
+		streampos newpos = trajectoryFirstFrame_ + streampos((trajectoryPosition_-2)*frameSize_);
 		trajectoryFile_->seekg(newpos);
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
 		currentFrame_->logChange(Change::VisualLog);
 	}
-	framePosition_ --;
+	trajectoryPosition_ --;
 	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg.print("Seek to frame %i\n",framePosition_);
+	msg.print("Seek to frame %i\n",trajectoryPosition_);
 	msg.exit("Model::seekPreviousFrame");
 }
 
@@ -323,15 +323,15 @@ void Model::seekLastFrame()
 	// Seek to the last frame in the trajectory
 	msg.enter("Model::seekLastFrame");
 	// Check that a trajectory exists!
-	if (totalFrames_ == 0)
+	if (nTrajectoryFrames_ == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekLastFrame");
 		return;
 	}
-	if (framePosition_ == totalFrames_)
+	if (trajectoryPosition_ == nTrajectoryFrames_)
 	{
-		msg.print("Already at end of trajectory (frame %i).\n", framePosition_);
+		msg.print("Already at end of trajectory (frame %i).\n", trajectoryPosition_);
 		msg.exit("Model::seekNextFrame");
 		return;
 	}
@@ -344,11 +344,11 @@ void Model::seekLastFrame()
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
 		currentFrame_->logChange(Change::VisualLog);
 	}
-	framePosition_ = totalFrames_;
+	trajectoryPosition_ = nTrajectoryFrames_;
 	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg.print("Seek to frame %i\n",framePosition_);
+	msg.print("Seek to frame %i\n",trajectoryPosition_);
 	msg.exit("Model::seekLastFrame");
 }
 
@@ -358,19 +358,19 @@ void Model::seekFrame(int frameno)
 	// Seek to the previous frame in the trajectory
 	msg.enter("Model::seekFrame");
 	// Check that a trajectory exists!
-	if (totalFrames_ == 0)
+	if (nTrajectoryFrames_ == 0)
 	{
 		msg.print("No trajectory is available.\n");
 		msg.exit("Model::seekFrame");
 		return;
 	}
-	if ((frameno < 1) || (frameno > totalFrames_))
+	if ((frameno < 1) || (frameno > nTrajectoryFrames_))
 	{
-		msg.print("Frame %i is out of range for current trajectory (which has %i frames).\n", frameno, totalFrames_);
+		msg.print("Frame %i is out of range for current trajectory (which has %i frames).\n", frameno, nTrajectoryFrames_);
 		msg.exit("Model::seekFrame");
 		return;
 	}
-	if (framePosition_ == frameno)
+	if (trajectoryPosition_ == frameno)
 	{
 		msg.print("Already at specified frame (%i).\n",frameno);
 		msg.exit("Model::seekFrame");
@@ -381,15 +381,15 @@ void Model::seekFrame(int frameno)
 	{
 		currentFrame_->clear();
 		// Seek to specified frame in file
-		streampos newpos = trajectoryFirstFrame_ + streampos((framePosition_-1)*frameSize_);
+		streampos newpos = trajectoryFirstFrame_ + streampos((trajectoryPosition_-1)*frameSize_);
 		trajectoryFile_->seekg(newpos);
 		bool success = trajectoryFilter_->execute("", trajectoryFile_, FALSE);
 		currentFrame_->logChange(Change::VisualLog);
 	}
-	framePosition_ = frameno;
+	trajectoryPosition_ = frameno;
 	logChange(Change::VisualLog);
 	// Recalculate the view matrix for the trajectory frame, since it may have been changed by another frame model
 	currentFrame_->calculateViewMatrix();
-	msg.print("Seek to frame %i\n",framePosition_);
+	msg.print("Seek to frame %i\n",trajectoryPosition_);
 	msg.exit("Model::seekFrame");
 }
