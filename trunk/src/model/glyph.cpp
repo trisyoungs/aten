@@ -112,8 +112,9 @@ void Model::addEllipsoidGlyphs()
 	// From the current selection of atoms, add polyhedra to/around them.
 	Reflist<Atom,int> atoms;
 	Atom *i, *xi, *xj, *yi;
-	Vec3<double> centroid, x, y, z, v;
-	double mag, best = 0.0, angle;
+	Vec3<double> centroid, v, extents;
+	Mat3<double> axes;
+	double mag, best = 0.0, angle, minz, maxz;
 	Refitem<Atom,int> *ri, *rj;
 	Glyph *g;
 	while (nSelected_ > 0)
@@ -136,47 +137,57 @@ void Model::addEllipsoidGlyphs()
 					best = mag;
 					xi = ri->item;
 					xj = rj->item;
-					x = v * 0.5;
-					centroid = x + xj->r();
+					axes.x() = v * 0.5;
+					centroid = axes.x() + xj->r();
+					extents.x = axes.x().magAndNormalise();
 				}
 			}
 		}
 		//printf("Atom ids %i and %i determine X and centroid\n", xi->id(), xj->id());
-		g = addGlyph(Glyph::LineGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1, centroid + x);
-		g = addGlyph(Glyph::SphereGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1, 0.1, 0.1, 0.1);
 
-		// Now find the atom in the selection that makes the angle closest to 90deg with xi-centroid
-		best = PI;
+		// Now find the atom in the selection that makes the angle closest to 90deg with xi-centroid and is furthest away
+		best = TWOPI;
 		for (ri = atoms.first(); ri != NULL; ri = ri->next)
 		{
 			if ((ri->item == xi) || (ri->item == xj)) continue;
-			angle = fabs(cell_.angle(xi->r(), centroid, ri->item->r()) - PI);
+			mag = cell_.distance(centroid, ri->item->r());
+			//angle = fabs(cell_.angle(xi->r(), centroid, ri->item->r()));
+			angle = cell_.angle(xi->r(), centroid, ri->item->r());
+			if (angle < HALFPI) angle = HALFPI + (HALFPI - angle);
+			// Magnitudinalise (!) w.r.t. distance as well.
+			angle /= mag;
+			//printf("Anglemag for atom %i is %f\n", ri->item->id(), angle);
 			if (angle < best)
 			{
 				yi = ri->item;
 				best = angle;
+				extents.y = mag;
 			}
 		}
-		//printf("Best Y atom is id %i, forming angle of %f Deg\n", yi->id(), cell_.angle(xi->r(), centroid, yi->r()) * DEGRAD);
+		//printf("Best Y atom is id %i, forming anglemag of %f Deg\n", yi->id(), cell_.angle(xi->r(), centroid, yi->r()));
 		// Orthogonalise Y axis w.r.t. X axis, and create z-axis
-		y = yi->r() - centroid;
-		y.orthogonalise(x);
-		g = addGlyph(Glyph::ArrowGlyph);
+		axes.y() = cell_.mimd(yi->r(), centroid);
+		axes.y().orthogonalise(axes.x());
+		axes.y().normalise();
+		axes.z() = axes.x() * axes.y();
+		// With the three axes so obtained, determine the extent of the ellipsoid in the Z direction
+		minz = 1000.0;
+		maxz = -1000.0;
+		for (ri = atoms.first(); ri != NULL; ri = ri->next)
+		{
+			v = (ri->item->r() - centroid) * axes;
+			if (v.z < minz) minz = v.z;
+			else if (v.z > maxz) maxz = v.z;
+		}
+		if (fabs(minz) > maxz) maxz = fabs(minz);
+		extents.z = maxz;
+		if (extents.z < 0.5) extents.z = 0.5;
+		axes.rowMultiply(extents);
+		g = addGlyph(Glyph::EllipsoidXYZGlyph);
 		g->setVector(0, centroid);
-		g->setVector(1, centroid + y);
-		z = x * y;
-		g = addGlyph(Glyph::ArrowGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1, centroid + z);
-		g = addGlyph(Glyph::EllipsoidGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1,x);
-		g->setVector(2,y);
-		g->setVector(3,y);
+		g->setVector(1,axes.x());
+		g->setVector(2,axes.y());
+		g->setVector(3,axes.z());
 	}
 	msg.exit("Model::addEllipsoidGlyphs");
 }

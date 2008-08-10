@@ -54,6 +54,10 @@ template <class T> class Mat3
 	// Set / Get
 	*/
 	public:
+	// Aliases for matrix rows
+	Vec3<T> &x();
+	Vec3<T> &y();
+	Vec3<T> &z();
 	// Initialise elements of one row
 	void set(int row, T a, T b, T c);
 	// Initialise elements of one row
@@ -122,6 +126,22 @@ template <class T> Mat3<T>::Mat3(T xx, T xy, T xz, T yx, T yy, T yz, T zx, T zy,
 /*
 // Set / Get
 */
+
+// Aliases for matrix rows
+template <class T> Vec3<T> &Mat3<T>::x()
+{
+	return rows[0];
+}
+
+template <class T> Vec3<T> &Mat3<T>::y()
+{
+	return rows[1];
+}
+
+template <class T> Vec3<T> &Mat3<T>::z()
+{
+	return rows[2];
+}
 
 // Initialise elements of one row
 template <class T> void Mat3<T>::set(int row, T a, T b, T c)

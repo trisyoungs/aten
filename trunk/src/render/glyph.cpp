@@ -136,7 +136,13 @@ void Canvas::renderModelGlyphs()
 				break;
 			// Ellipsoid - centre = data[0], edge vector = data[1], face vector = data[2]
 			case (Glyph::EllipsoidGlyph):
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				glEllipsoid(g->vector(0), g->vector(1), g->vector(2));
+				break;
+			// Ellipsoid - centre = data[0], X = data[1], Y = data[2], Z= data[3]
+			case (Glyph::EllipsoidXYZGlyph):
+				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
+				glEllipsoid(g->vector(0), g->vector(1), g->vector(2), g->vector(3));
 				break;
 			// Tetrahedron - four vertices in data[0] to data[3]
 			case (Glyph::TetrahedronGlyph):

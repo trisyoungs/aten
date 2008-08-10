@@ -197,7 +197,11 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Pattern *p = NULL;
-	if (c->hasArg(0)) p = obj.rs->findPattern(c->argc(0));
+	if (c->hasArg(0))
+	{
+		if (c->argt(0) == Variable::IntegerVariable) p = obj.rs->pattern(c->argi(0)-1);
+		else p = obj.rs->findPattern(c->argc(0));
+	}
 	else p = obj.p;
 	if (p == NULL) msg.print("No pattern in which to select atoms.\n");
 	else

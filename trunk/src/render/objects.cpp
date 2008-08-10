@@ -173,6 +173,7 @@ void Canvas::glArrow(const Vec3<double> &origin, const Vec3<double> &v, bool swa
 		arrowend = v;
 	}
 	glPushMatrix();
+	  // TODO Save on this glPushMatrix by just recentering vectors around origin?
 	  glTranslated(origin.x,origin.y,origin.z);
 	  glPushMatrix();
 	    glBegin(GL_LINES);

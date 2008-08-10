@@ -83,7 +83,7 @@ Prefs::KeyAction Prefs::keyAction(const char *s)
 }
 
 // Colours
-const char *PenColourKeywords[Prefs::nPenColours] = { "fg", "bg", "specular" };
+const char *PenColourKeywords[Prefs::nPenColours] = { "fg", "bg", "specular", "glyph" };
 Prefs::PenColour Prefs::penColour(const char *s)
 {
 	return (Prefs::PenColour) enumSearch("colour", Prefs::nPenColours, PenColourKeywords, s);
