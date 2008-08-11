@@ -86,7 +86,7 @@ Cli cliSwitches[] = {
 		"<file>",	"Load and execute the script file specified" },
 	{ Cli::TrajectorySwitch,	't',"pack",		1,
 		"",		"Associate a trajectory with thie last loaded model" },
-	{ Cli::UndoLevelSwitch,		'u',"maxundo",		1,
+	{ Cli::UndoLevelSwitch,		'u',"undolevels",	1,
 		"<nlevels>",	"Set the maximum number of undo levels per model (-1 = unlimited)" },
 	{ Cli::VerboseSwitch,		'v',"verbose",		0,
 		"",		"Enable verbose program output" },

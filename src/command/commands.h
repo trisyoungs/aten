@@ -69,6 +69,7 @@ enum CommandAction {
 	CA_CHAIN,
 	CA_ENDCHAIN,
 	CA_GETATOM,
+	CA_HIDE,
 	CA_NEWATOM,
 	CA_NEWATOMFRAC,
 	CA_SETCHARGE,
@@ -86,6 +87,8 @@ enum CommandAction {
 	CA_SETVX,
 	CA_SETVY,
 	CA_SETVZ,
+	CA_SHOW,
+	CA_SHOWALL,
 
 	// Bond commands
 	CA_AUGMENT,
@@ -337,7 +340,7 @@ enum CommandAction {
 	CA_REPLICATETRIM,
 	CA_SCHEME,
 	CA_SHININESS,
-	CA_SHOW,
+	CA_SHOWONSCREEN,
 	CA_SHOWONIMAGE,
 	CA_STYLE,
 	CA_USENICETEXT,
@@ -470,6 +473,7 @@ class CommandData
 	int function_CA_CHAIN(Command *&c, Bundle &obj);
 	int function_CA_ENDCHAIN(Command *&c, Bundle &obj);
 	int function_CA_GETATOM(Command *&c, Bundle &obj);
+	int function_CA_HIDE(Command *&c, Bundle &obj);
 	int function_CA_NEWATOM(Command *&c, Bundle &obj);
 	int function_CA_NEWATOMFRAC(Command *&c, Bundle &obj);
 	int function_CA_SETCOORDS(Command *&c, Bundle &obj);
@@ -487,6 +491,8 @@ class CommandData
 	int function_CA_SETVX(Command *&c, Bundle &obj);
 	int function_CA_SETVY(Command *&c, Bundle &obj);
 	int function_CA_SETVZ(Command *&c, Bundle &obj);
+	int function_CA_SHOW(Command *&c, Bundle &obj);
+	int function_CA_SHOWALL(Command *&c, Bundle &obj);
 	// Bond commands
 	int function_CA_AUGMENT(Command *&c, Bundle &obj);
 	int function_CA_BONDTOLERANCE(Command *&c, Bundle &obj);
@@ -712,7 +718,7 @@ class CommandData
 	int function_CA_REPLICATETRIM(Command *&c, Bundle &obj);
 	int function_CA_SCHEME(Command *&c, Bundle &obj);
 	int function_CA_SHININESS(Command *&c, Bundle &obj);
-	int function_CA_SHOW(Command *&c, Bundle &obj);
+	int function_CA_SHOWONSCREEN(Command *&c, Bundle &obj);
 	int function_CA_SHOWONIMAGE(Command *&c, Bundle &obj);
 	int function_CA_STYLE(Command *&c, Bundle &obj);
 	int function_CA_USENICETEXT(Command *&c, Bundle &obj);

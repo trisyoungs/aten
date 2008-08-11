@@ -88,6 +88,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"End the current bond chain (the next call to 'chain' will create an unbound atom)" },
 	{ "getatom",		"Ea",		"<id> [variable]",
 				"Retrieve information for atom id, placed in variable supplied" },
+	{ "hide",		"",		"",
+				"Hide the current selection of atoms" },
 	{ "newatom",		"Neee",		"<element> [x y z]",
 				"Create a new atom in the current model" },
 	{ "newatomfrac",	"NEEE",		"<element> <fracx> <fracy> <fracz>",
@@ -122,7 +124,11 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the y velocity of the current (or specified) atom" },
 	{ "setvz",		"Ee",		"<vz> [id]",
 				"Set the z velocity of the current (or specified) atom" },
-	
+	{ "show",		"",		"",
+				"Show the current selection of atoms" },
+	{ "showall",		"",		"",
+				"Show all atoms in the current model" },
+
 	// Bonding commands
 	{ "augment",		"",		"",
 				"Automatically augment all bonds in the current model" },
@@ -582,7 +588,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"SHow (or set) the atomic colouring scheme to use" },
 	{ "shininess",		"E",		"<n>",
 				"Set the shininess of atoms" },
-	{ "show",		"nn",		"[object] yes|no",
+	{ "showonscreen",	"nn",		"[object] yes|no",
 				"Set (or lists) the visibility of view objects on-screen" },
 	{ "showonimage",	"nn",		"<object> yes|no",
 				"Set (or lists) the visibility of view objects on saved images" },

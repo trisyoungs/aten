@@ -48,6 +48,14 @@ int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Hide current atom selection
+int CommandData::function_CA_HIDE(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->selectionSetHidden(TRUE);
+	return CR_SUCCESS;
+}
+
 // Draw unbound atom ('newatom <el> [x y z]')
 int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 {
@@ -286,5 +294,21 @@ int CommandData::function_CA_SETVZ(Command *&c, Bundle &obj)
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(2,c->argd(0));
+	return CR_SUCCESS;
+}
+
+// Show current atom selection
+int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->selectionSetHidden(FALSE);
+	return CR_SUCCESS;
+}
+
+// Show all atoms
+int CommandData::function_CA_SHOWALL(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->setHidden(i,FALSE);
 	return CR_SUCCESS;
 }
