@@ -51,6 +51,8 @@
         <file>icons/edit_cut.svg</file>
         <file>icons/edit_delete.svg</file>
         <file>icons/edit_paste.svg</file>
+        <file>icons/edit_redo.svg</file>
+        <file>icons/edit_undo.svg</file>
     </qresource>
     <qresource prefix="/file" >
         <file>icons/file_close.svg</file>
@@ -71,6 +73,13 @@
         <file>icons/measure_distancesel.svg</file>
         <file>icons/measure_torsion.svg</file>
         <file>icons/measure_torsionsel.svg</file>
+    </qresource>
+    <qresource prefix="/model" >
+        <file>icons/model_foldatoms.svg</file>
+        <file>icons/model_foldmolecules.svg</file>
+        <file>icons/model_next.svg</file>
+        <file>icons/model_prev.svg</file>
+        <file>icons/model_rename.svg</file>
     </qresource>
     <qresource prefix="/mouse" >
         <file>icons/mouse_interact.svg</file>

@@ -128,7 +128,7 @@
      <x>0</x>
      <y>0</y>
      <width>709</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="ViewMenu" >
@@ -230,30 +230,6 @@
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
    </widget>
-   <widget class="QMenu" name="ScriptsMenu" >
-    <property name="title" >
-     <string>Scripts</string>
-    </property>
-    <addaction name="actionLoadScript" />
-    <addaction name="separator" />
-   </widget>
-   <widget class="QMenu" name="ModelMenu" >
-    <property name="title" >
-     <string>&amp;Model</string>
-    </property>
-    <addaction name="actionModelRename" />
-    <addaction name="separator" />
-    <addaction name="actionFFType" />
-    <addaction name="actionFFUntype" />
-    <addaction name="separator" />
-    <addaction name="actionFoldAtoms" />
-    <addaction name="actionFoldMolecules" />
-    <addaction name="separator" />
-    <addaction name="actionModelNext" />
-    <addaction name="actionModelPrevious" />
-    <addaction name="separator" />
-    <addaction name="actionModelShowAll" />
-   </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
      <string>Atom</string>
@@ -287,18 +263,42 @@
     <addaction name="separator" />
     <addaction name="actionProbeAtom" />
    </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>Help</string>
     </property>
     <addaction name="actionAboutAten" />
     <addaction name="actionAboutQt" />
+   </widget>
+   <widget class="QMenu" name="ScriptsMenu" >
+    <property name="title" >
+     <string>Scripts</string>
+    </property>
+    <addaction name="actionLoadScript" />
+    <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="ModelMenu" >
+    <property name="title" >
+     <string>&amp;Model</string>
+    </property>
+    <addaction name="actionModelRename" />
+    <addaction name="separator" />
+    <addaction name="actionFFType" />
+    <addaction name="actionFFUntype" />
+    <addaction name="separator" />
+    <addaction name="actionModelFoldAtoms" />
+    <addaction name="actionModelFoldMolecules" />
+    <addaction name="separator" />
+    <addaction name="actionModelNext" />
+    <addaction name="actionModelPrevious" />
+    <addaction name="separator" />
+    <addaction name="actionModelShowAll" />
+   </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -1043,7 +1043,10 @@
     <string>Remove Typing</string>
    </property>
   </action>
-  <action name="actionFoldAtoms" >
+  <action name="actionModelFoldAtoms" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/model/icons/model_foldatoms.svg</iconset>
+   </property>
    <property name="text" >
     <string>Fold Atoms</string>
    </property>
@@ -1051,7 +1054,10 @@
     <string>Ctrl+F</string>
    </property>
   </action>
-  <action name="actionFoldMolecules" >
+  <action name="actionModelFoldMolecules" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/model/icons/model_foldmolecules.svg</iconset>
+   </property>
    <property name="text" >
     <string>Fold Molecules</string>
    </property>
@@ -1060,6 +1066,9 @@
    </property>
   </action>
   <action name="actionModelNext" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/model/icons/model_next.svg</iconset>
+   </property>
    <property name="text" >
     <string>Next</string>
    </property>
@@ -1068,6 +1077,9 @@
    </property>
   </action>
   <action name="actionModelPrevious" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/model/icons/model_prev.svg</iconset>
+   </property>
    <property name="text" >
     <string>Previous</string>
    </property>
@@ -1202,16 +1214,6 @@
     <string>Ctrl+H</string>
    </property>
   </action>
-  <action name="actionSet_From_Element" >
-   <property name="text" >
-    <string>Set From Element</string>
-   </property>
-  </action>
-  <action name="actionForce" >
-   <property name="text" >
-    <string>Force</string>
-   </property>
-  </action>
   <action name="actionMouseInteract" >
    <property name="checkable" >
     <bool>true</bool>
@@ -1285,6 +1287,9 @@
    <property name="enabled" >
     <bool>false</bool>
    </property>
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/edit/icons/edit_undo.svg</iconset>
+   </property>
    <property name="text" >
     <string>&amp;Undo</string>
    </property>
@@ -1293,6 +1298,9 @@
    </property>
   </action>
   <action name="actionEditRedo" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/edit/icons/edit_redo.svg</iconset>
+   </property>
    <property name="text" >
     <string>Redo</string>
    </property>
@@ -1456,23 +1464,19 @@
    </property>
   </action>
   <action name="actionLoadScript" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/file/icons/file_open.svg</iconset>
+   </property>
    <property name="text" >
     <string>Load Script</string>
    </property>
   </action>
   <action name="actionModelRename" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/model/icons/model_rename.svg</iconset>
+   </property>
    <property name="text" >
     <string>Rename</string>
-   </property>
-  </action>
-  <action name="actionCut" >
-   <property name="text" >
-    <string>Cut</string>
-   </property>
-  </action>
-  <action name="actionCopy" >
-   <property name="text" >
-    <string>Copy</string>
    </property>
   </action>
   <action name="actionProbeAtom" >
