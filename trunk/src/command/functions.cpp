@@ -47,6 +47,7 @@ void Aten::initCommands()
 	CA_data[CA_CHAIN].function = &CommandData::function_CA_CHAIN;
 	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
 	CA_data[CA_GETATOM].function = &CommandData::function_CA_GETATOM;
+	CA_data[CA_HIDE].function = &CommandData::function_CA_HIDE;
 	CA_data[CA_NEWATOM].function = &CommandData::function_CA_NEWATOM;
 	CA_data[CA_NEWATOMFRAC].function = &CommandData::function_CA_NEWATOMFRAC;
 	CA_data[CA_SETCOORDS].function = &CommandData::function_CA_SETCOORDS;
@@ -64,6 +65,8 @@ void Aten::initCommands()
 	CA_data[CA_SETVX].function = &CommandData::function_CA_SETVX;
 	CA_data[CA_SETVY].function = &CommandData::function_CA_SETVY;
 	CA_data[CA_SETVZ].function = &CommandData::function_CA_SETVZ;
+	CA_data[CA_SHOW].function = &CommandData::function_CA_SHOW;
+	CA_data[CA_SHOWALL].function = &CommandData::function_CA_SHOWALL;
 
 	// Bond commands
 	CA_data[CA_AUGMENT].function = &CommandData::function_CA_AUGMENT;
@@ -302,7 +305,7 @@ void Aten::initCommands()
 	CA_data[CA_REPLICATETRIM].function = &CommandData::function_CA_REPLICATETRIM;
 	CA_data[CA_SCHEME].function = &CommandData::function_CA_SCHEME;
 	CA_data[CA_SHININESS].function = &CommandData::function_CA_SHININESS;
-	CA_data[CA_SHOW].function = &CommandData::function_CA_SHOW;
+	CA_data[CA_SHOWONSCREEN].function = &CommandData::function_CA_SHOWONSCREEN;
 	CA_data[CA_SHOWONIMAGE].function = &CommandData::function_CA_SHOWONIMAGE;
 	CA_data[CA_STYLE].function = &CommandData::function_CA_STYLE;
 	CA_data[CA_USENICETEXT].function = &CommandData::function_CA_USENICETEXT;

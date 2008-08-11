@@ -312,7 +312,7 @@ int CommandData::function_CA_SHININESS(Command *&c, Bundle &obj)
 }
 
 // Render Objects on screen
-int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
+int CommandData::function_CA_SHOWONSCREEN(Command *&c, Bundle &obj)
 {
 	if (c->hasArg(0))
 	{

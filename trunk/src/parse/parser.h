@@ -28,7 +28,7 @@
 #include <iostream>
 using namespace std;
 
-#define MAXARGS 50
+#define MAXARGS 100
 #define MAXARGLENGTH 256
 #define MAXLINELENGTH 1024
 

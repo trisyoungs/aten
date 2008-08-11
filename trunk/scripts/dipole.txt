@@ -19,22 +19,22 @@ $cogz = 0
 
 # Perform a loop over all atoms in the model
 for $i
-	$dx = "$dx + $i.rx * $i.q"
-	$dy = "$dy + $i.ry * $i.q"
-	$dz = "$dz + $i.rz * $i.q"
-	$cogx = "$cogx + $i.rx"
-	$cogy = "$cogy + $i.ry"
-	$cogz = "$cogz + $i.rz"
+	$dx += $i.rx*$i.q"
+	$dy += $i.ry*$i.q"
+	$dz += $i.rz*$i.q"
+	$cogx += $i.rx"
+	$cogy += $i.ry"
+	$cogz += $i.rz"
 end
 
 # Take averages and get dipole magnitude
-$dx = "$dx / $natoms"
-$dy = "$dy / $natoms"
-$dz = "$dz / $natoms"
-$cogx = "$cogx / $natoms"
-$cogy = "$cogy / $natoms"
-$cogz = "$cogz / $natoms"
-$mag = "($dx*$dx + $dy*$dy + $dz*$dz)^0.5"
+$dx /= $natoms
+$dy /= $natoms
+$dz /= $natoms
+$cogx /= $natoms
+$cogy /= $natoms
+$cogz /= $natoms
+$mag = 'sqrt($dx*$dx + $dy*$dy + $dz*$dz)'
 
 # Add glyph to model
 newglyph vector
