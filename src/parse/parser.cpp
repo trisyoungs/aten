@@ -50,7 +50,7 @@ Parser::Parser()
 // Determine form of argument
 Parser::ArgumentForm Parser::argumentForm(int i)
 {
-	// If the argument was quoted withg single-quotes then we assume it is an expression
+	// If the argument was quoted with single-quotes then we assume it is an expression
 	// Similarly, if it was double-quoted we assume it is a character constant
 	if (quoted_[i] == 34) return Parser::ConstantForm;
 	else if (quoted_[i] == 39) return Parser::ExpressionForm;
@@ -60,8 +60,10 @@ Parser::ArgumentForm Parser::argumentForm(int i)
 		noperators = countChars(arguments_[i].get(), "-+*/^%", 1);
 		nbrackets = countChars(arguments_[i].get(), "()");
 		nvars = countChars(arguments_[i].get(), "$");
+		bool hasneg = arguments_[i].get()[0] == '-';
 		// If there are operators or brackets it can only be an expression
 		if ((noperators > 0) || (nbrackets > 0)) return Parser::ExpressionForm;
+		else if ((hasneg) && (nvars > 0)) return Parser::ExpressionForm;
 		else if (nvars == 1) return Parser::VariableForm;
 		else return Parser::ConstantForm;
 	}

@@ -128,63 +128,9 @@
      <x>0</x>
      <y>0</y>
      <width>709</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="ViewMenu" >
-    <property name="title" >
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="StyleMenu" >
-     <property name="title" >
-      <string>Style</string>
-     </property>
-     <addaction name="actionStyleStick" />
-     <addaction name="actionStyleTube" />
-     <addaction name="actionStyleSphere" />
-     <addaction name="actionStyleScaled" />
-     <addaction name="actionStyleIndividual" />
-    </widget>
-    <widget class="QMenu" name="menuSetView" >
-     <property name="title" >
-      <string>Set View Along</string>
-     </property>
-     <addaction name="actionViewSetCartesianPosX" />
-     <addaction name="actionViewSetCartesianPosY" />
-     <addaction name="actionViewSetCartesianPosZ" />
-     <addaction name="actionViewSetCartesianNegX" />
-     <addaction name="actionViewSetCartesianNegY" />
-     <addaction name="actionViewSetCartesianNegZ" />
-     <addaction name="separator" />
-     <addaction name="actionViewSetCellPosX" />
-     <addaction name="actionViewSetCellPosY" />
-     <addaction name="actionViewSetCellPosZ" />
-     <addaction name="actionViewSetCellNegX" />
-     <addaction name="actionViewSetCellNegY" />
-     <addaction name="actionViewSetCellNegZ" />
-    </widget>
-    <widget class="QMenu" name="SchemeMenu" >
-     <property name="title" >
-      <string>Colour Scheme</string>
-     </property>
-     <addaction name="actionSchemeElement" />
-     <addaction name="actionSchemeCharge" />
-     <addaction name="actionSchemeForce" />
-    </widget>
-    <addaction name="actionViewReset" />
-    <addaction name="actionViewZoomIn" />
-    <addaction name="actionViewZoomOut" />
-    <addaction name="menuSetView" />
-    <addaction name="separator" />
-    <addaction name="actionViewPerspective" />
-    <addaction name="actionViewOrthographic" />
-    <addaction name="separator" />
-    <addaction name="StyleMenu" />
-    <addaction name="SchemeMenu" />
-    <addaction name="separator" />
-    <addaction name="actionViewModel" />
-    <addaction name="actionViewTrajectory" />
-   </widget>
    <widget class="QMenu" name="EditMenu" >
     <property name="title" >
      <string>&amp;Edit</string>
@@ -283,8 +229,8 @@
     </property>
     <addaction name="actionModelRename" />
     <addaction name="separator" />
-    <addaction name="actionFFType" />
-    <addaction name="actionFFUntype" />
+    <addaction name="actionModelFFType" />
+    <addaction name="actionModelFFUntype" />
     <addaction name="separator" />
     <addaction name="actionModelFoldAtoms" />
     <addaction name="actionModelFoldMolecules" />
@@ -299,6 +245,60 @@
      <string>Settings</string>
     </property>
     <addaction name="actionPreferences" />
+   </widget>
+   <widget class="QMenu" name="ViewMenu" >
+    <property name="title" >
+     <string>&amp;View</string>
+    </property>
+    <widget class="QMenu" name="StyleMenu" >
+     <property name="title" >
+      <string>Style</string>
+     </property>
+     <addaction name="actionStyleStick" />
+     <addaction name="actionStyleTube" />
+     <addaction name="actionStyleSphere" />
+     <addaction name="actionStyleScaled" />
+     <addaction name="actionStyleIndividual" />
+    </widget>
+    <widget class="QMenu" name="menuSetView" >
+     <property name="title" >
+      <string>Set View Along</string>
+     </property>
+     <addaction name="actionViewSetCartesianPosX" />
+     <addaction name="actionViewSetCartesianPosY" />
+     <addaction name="actionViewSetCartesianPosZ" />
+     <addaction name="actionViewSetCartesianNegX" />
+     <addaction name="actionViewSetCartesianNegY" />
+     <addaction name="actionViewSetCartesianNegZ" />
+     <addaction name="separator" />
+     <addaction name="actionViewSetCellPosX" />
+     <addaction name="actionViewSetCellPosY" />
+     <addaction name="actionViewSetCellPosZ" />
+     <addaction name="actionViewSetCellNegX" />
+     <addaction name="actionViewSetCellNegY" />
+     <addaction name="actionViewSetCellNegZ" />
+    </widget>
+    <widget class="QMenu" name="SchemeMenu" >
+     <property name="title" >
+      <string>Colour Scheme</string>
+     </property>
+     <addaction name="actionSchemeElement" />
+     <addaction name="actionSchemeCharge" />
+     <addaction name="actionSchemeForce" />
+    </widget>
+    <addaction name="actionViewReset" />
+    <addaction name="actionViewZoomIn" />
+    <addaction name="actionViewZoomOut" />
+    <addaction name="menuSetView" />
+    <addaction name="separator" />
+    <addaction name="actionViewPerspective" />
+    <addaction name="actionViewOrthographic" />
+    <addaction name="separator" />
+    <addaction name="StyleMenu" />
+    <addaction name="SchemeMenu" />
+    <addaction name="separator" />
+    <addaction name="actionViewModel" />
+    <addaction name="actionViewTrajectory" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -533,7 +533,7 @@
    <addaction name="actionMeasureDistanceSelection" />
    <addaction name="actionMeasureAngleSelection" />
    <addaction name="actionMeasureTorsionSelection" />
-   <addaction name="actionClearMeasurements" />
+   <addaction name="actionMeasureClearAll" />
   </widget>
   <widget class="QToolBar" name="ForcefieldsToolbar" >
    <property name="windowTitle" >
@@ -1033,12 +1033,12 @@
     <string>Forces</string>
    </property>
   </action>
-  <action name="actionFFType" >
+  <action name="actionModelFFType" >
    <property name="text" >
     <string>Perform Typing</string>
    </property>
   </action>
-  <action name="actionFFUntype" >
+  <action name="actionModelFFUntype" >
    <property name="text" >
     <string>Remove Typing</string>
    </property>
@@ -1191,6 +1191,9 @@
    </property>
   </action>
   <action name="actionFileSaveImage" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/file/icons/file_saveimage.svg</iconset>
+   </property>
    <property name="text" >
     <string>Save &amp;Image</string>
    </property>
@@ -1638,7 +1641,7 @@
     <string>Measure all torsion angles in selection</string>
    </property>
   </action>
-  <action name="actionClearMeasurements" >
+  <action name="actionMeasureClearAll" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/file/icons/file_close.svg</iconset>
    </property>

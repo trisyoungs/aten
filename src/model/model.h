@@ -628,7 +628,7 @@ class Model
 	// Return the translation scale
 	double translateScale();
 	// Finalize atom transform
-	void finalizeTransform(Reflist< Atom,Vec3<double> >&);
+	void finalizeTransform(Reflist< Atom,Vec3<double> >&, const char *statetitle);
 	// Rotate the atom selection
 	void rotateSelectionWorld(double, double);
 	// Spin the atom selection

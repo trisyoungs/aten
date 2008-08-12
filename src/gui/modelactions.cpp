@@ -28,19 +28,19 @@
 // Model Menu Actions
 */
 
-void AtenForm::on_actionFFType_triggered(bool checked)
+void AtenForm::on_actionModelFFType_triggered(bool checked)
 {
 	aten.currentModel()->typeAll();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
-void AtenForm::on_actionFFUntype_triggered(bool checked)
+void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten.currentModel()->removeTyping();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
-void AtenForm::on_actionFoldAtoms_triggered(bool checked)
+void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
 {
 	Model *m = aten.currentModel();
 	char s[128];
@@ -51,7 +51,7 @@ void AtenForm::on_actionFoldAtoms_triggered(bool checked)
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
-void AtenForm::on_actionFoldMolecules_triggered(bool checked)
+void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 {
 	Model *m = aten.currentModel();
 	char s[128];

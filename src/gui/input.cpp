@@ -268,7 +268,7 @@ void Canvas::beginMode(Prefs::MouseButton button)
 		// If we're manipulating, prepare the transform
 		if (manipulate)
 		{
-			/* We don't begin an undostate here - this will be done in end_mode().
+			/* We don't begin an undostate here - this will be done in endMode().
 			   Instead, store pointers to all selected atoms in a Reflist, along
 			   with their current positions.
 			*/
@@ -492,7 +492,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 		case (Canvas::TransformTranslateAction):
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
-			displayModel_->finalizeTransform(oldPositions_);
+			displayModel_->finalizeTransform(oldPositions_, "Transform Selection");
 			gui.modelChanged(TRUE,FALSE,FALSE);
 			break;
 		// View changes (no action)
