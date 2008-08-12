@@ -39,7 +39,7 @@ void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 	if (on) gui.mainView.setSelectedMode(Canvas::MeasureTorsionAction);
 }
 
-void AtenForm::on_actionClearMeasurements_triggered(bool on)
+void AtenForm::on_actionMeasureClearAll_triggered(bool on)
 {
 	aten.currentModel()->removeMeasurements(Measurement::DistanceMeasurement);
 	aten.currentModel()->removeMeasurements(Measurement::AngleMeasurement);

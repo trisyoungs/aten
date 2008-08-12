@@ -2,7 +2,7 @@
 
 # Variables
 integer n
-double lcc, lch
+double lcc,lch
 
 # The variables 'lcc' and 'lch' contain the bond lengths to use
 $lcc = 1.39

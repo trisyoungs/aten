@@ -166,7 +166,7 @@ void GuiQt::run()
 
 	gui.mainView.enableDrawing();
 
-	// Add loaded models to tabbar (and reset its view while we're here)
+	// Add loaded models to tabbar (and reset the view while we're here)
 	int tabid;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{

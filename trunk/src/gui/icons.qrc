@@ -60,6 +60,7 @@
         <file>icons/file_open.svg</file>
         <file>icons/file_save.svg</file>
         <file>icons/file_saveas.svg</file>
+        <file>icons/file_saveimage.svg</file>
     </qresource>
     <qresource prefix="/forcefield" >
         <file>icons/forcefield_energy.svg</file>

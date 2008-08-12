@@ -116,6 +116,11 @@ void Aten::setCurrentModel(Model *m)
 	current.i = NULL;
 	current.m->renderSource()->calculateViewMatrix();
 	current.m->renderSource()->projectAll();
+	// Set window title
+	// Set the title of the main window to reflect the version
+	char title[256];
+	sprintf(title, "Aten (%s) - %s [%s]", ATENVERSION, current.m->name(), current.m->filename());
+	if (gui.exists()) gui.mainWindow->setWindowTitle(title);
 	msg.exit("Aten::setCurrentModel");
 }
 

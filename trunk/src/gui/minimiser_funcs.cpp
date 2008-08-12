@@ -26,6 +26,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/minimiser.h"
+#include "model/model.h"
 
 // Minimisation algorithms
 enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
@@ -66,6 +67,9 @@ void AtenMinimiser::doMinimisation()
 	econverge = pow(10.0,ui.EnergyConvergeSpin->value());
 	fconverge = pow(10.0,ui.ForceConvergeSpin->value());
 	maxcycles = ui.MinimiseCyclesSpin->value();
+	// Store current positions of atoms so we can undo the minimisation
+	Reflist< Atom, Vec3<double> > oldpos;
+	for (Atom *i = aten.currentModel()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
@@ -87,6 +91,10 @@ void AtenMinimiser::doMinimisation()
 			msg.print("Simplex minimiser not yet written!\n");
 			break;
 	}
+	// Finalise the 'transformation' and create an undo state
+	aten.currentModel()->finalizeTransform(oldpos, "Minimise");
+	// Update the view
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenMinimiser::dialogFinished(int result)

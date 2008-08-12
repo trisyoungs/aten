@@ -610,14 +610,14 @@ ExpressionNode *Expression::evaluate()
 // Evaluate integer expression
 int Expression::evaluateAsInteger()
 {
-	if (evaluatesToFloat_) printf("This is a floating-point expression. Why request an integer?\n");
+	//if (evaluatesToFloat_) printf("This is a floating-point expression. Why request an integer?\n");
 	return evaluate()->asInteger();
 }
 
 // Evaluate float expression
 double Expression::evaluateAsDouble()
 {
-	if (!evaluatesToFloat_) printf("This is an integer expression. Why request a double?\n");
+	//if (!evaluatesToFloat_) printf("This is an integer expression. Why request a double?\n");
 	return evaluate()->asDouble();
 }
 

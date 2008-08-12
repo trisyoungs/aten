@@ -214,7 +214,7 @@ class AtenForm : public QMainWindow
 	void on_actionMeasureDistance_triggered(bool on);
 	void on_actionMeasureAngle_triggered(bool on);
 	void on_actionMeasureTorsion_triggered(bool on);
-	void on_actionClearMeasurements_triggered(bool on);
+	void on_actionMeasureClearAll_triggered(bool on);
 	void on_actionMeasureDistanceSelection_triggered(bool on);
 	void on_actionMeasureAngleSelection_triggered(bool on);
 	void on_actionMeasureTorsionSelection_triggered(bool on);
@@ -224,10 +224,10 @@ class AtenForm : public QMainWindow
 	*/
 	private slots:
 	void on_actionModelRename_triggered(bool checked);
-	void on_actionFFType_triggered(bool checked);
-	void on_actionFFUntype_triggered(bool checked);
-	void on_actionFoldAtoms_triggered(bool checked);
-	void on_actionFoldMolecules_triggered(bool checked);
+	void on_actionModelFFType_triggered(bool checked);
+	void on_actionModelFFUntype_triggered(bool checked);
+	void on_actionModelFoldAtoms_triggered(bool checked);
+	void on_actionModelFoldMolecules_triggered(bool checked);
 	void on_actionModelNext_triggered(bool checked);
 	void on_actionModelPrevious_triggered(bool checked);
 	void on_actionModelShowAll_triggered(bool checked);
