@@ -31,7 +31,7 @@
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "560"
-#define ATENDATE "Tue 12 Aug - 17:40"
+#define ATENDATE "Wed 13 Aug - 10:50"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
