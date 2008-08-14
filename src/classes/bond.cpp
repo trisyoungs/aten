@@ -34,6 +34,16 @@ const char *Bond::bondType(Bond::BondType bt)
 {
 	return BondTypeKeywords[bt];
 }
+Bond::BondType Bond::bondType(int i)
+{
+	if ((i < Bond::Unspecified) || (i > Bond::Triple))
+	{
+		msg.print("Integer %i doesn't readily convert to a BondType - assuming Single.\n", i);
+		return Bond::Single;
+	}
+	return (Bond::BondType) i;
+	
+}
 Bond::BondType Bond::increaseBondType(BondType btype)
 {
 	if (btype == Bond::Single) return Bond::Double;

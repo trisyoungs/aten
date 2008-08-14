@@ -56,12 +56,32 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 	{
 		Vec3<double> pos = c->arg3d(1);
 		i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), pos);
-		if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,c->hasArg(4) ? Bond::bondType(c->argc(4)) : Bond::Single);
+		if (obj.i != NULL)
+		{
+			Bond::BondType bt;
+			if (c->hasArg(4))
+			{
+				if (c->argt(4) == Variable::CharacterVariable) bt = Bond::bondType(c->argc(4));
+				else bt = Bond::bondType(c->argi(4));
+			}
+			else bt = Bond::Single;
+			obj.rs->bondAtoms(obj.i, i, bt);
+		}
 	}
 	else
 	{
 		i = obj.rs->addAtomAtPen(elements.find(c->argc(0),Prefs::AlphaZmap));
-		if (obj.i != NULL) obj.rs->bondAtoms(obj.i,i,c->hasArg(1) ? Bond::bondType(c->argc(1)) : Bond::Single);
+		if (obj.i != NULL)
+		{
+			Bond::BondType bt;
+			if (c->hasArg(1))
+			{
+				if (c->argt(1) == Variable::CharacterVariable) bt = Bond::bondType(c->argc(1));
+				else bt = Bond::bondType(c->argi(1));
+			}
+			else bt = Bond::Single;
+			obj.rs->bondAtoms(obj.i,i, bt);
+		}
 	}
 	aten.current.i = i;
 	return CR_SUCCESS;

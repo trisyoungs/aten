@@ -159,7 +159,7 @@ void Model::calculateBonding()
 	double tolerance = prefs.bondTolerance();
 	double radius_i, radsum;
 	clearBonding();
-	msg.print("Calculating bonds in model (tolerance = %5.2f)...",tolerance);
+	msg.print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...",tolerance);
 	for (i = atoms_.first(); i != NULL; i = i->next)
 	{
 		// Check for excluded elements
@@ -175,7 +175,7 @@ void Model::calculateBonding()
 			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 		}
 	}
-	msg.print(" Done.\n");
+	msg.print(Messenger::Verbose, "Done.\n");
 	msg.exit("Model::calculateBonding");
 }
 

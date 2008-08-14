@@ -65,12 +65,17 @@ void Messenger::setQuiet(bool b)
 	quiet_ = b;
 }
 
+// Return status of quiet mode
+bool Messenger::isQuiet()
+{
+	return quiet_;
+}
+
 // Standard message
 void Messenger::print(const char *fmt ...)
 {
 	// Print to the text view in the main window if it has been initialised.
-	// If program is in quiet mode, don't print anything
-	if (quiet_) return;
+	// If program is in quiet mode, don't print anything to stdout
 	// Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
 	va_list arguments;
 	static char msgs[8096];
@@ -80,7 +85,7 @@ void Messenger::print(const char *fmt ...)
 	vsprintf(msgs,fmt,arguments);
 	// We always print standard messages to stdout *or* the GUI (if it has been initialised)
 	if (gui.exists()) gui.printMessage(msgs);
-	else printf("%s",msgs);
+	else if (!quiet_) printf("%s",msgs);
 	va_end(arguments);
 }
 
@@ -104,7 +109,7 @@ void Messenger::print(Messenger::OutputType ot, const char *fmt ...)
 // 	}
 // 	else
 	if (ot == Messenger::Error) printf("%s",msgs);
-	else if (isOutputActive(ot)) printf("%s",msgs);
+	else if (isOutputActive(ot) && (!quiet_)) printf("%s",msgs);
 	va_end(arguments);
 }
 

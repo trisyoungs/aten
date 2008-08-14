@@ -199,10 +199,9 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					printUsage();
 					return FALSE;
 					break;
-				// Run in silent mode
+				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
-					printUsage();
-					return FALSE;
+					msg.setQuiet(TRUE);
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):

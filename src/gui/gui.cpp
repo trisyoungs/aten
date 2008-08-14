@@ -503,9 +503,12 @@ void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
 	// Reset the counters
 	textProgressStepsToDo_ = stepstodo;
 	textProgressPercent_ = 0;
+	// Don't print anything if we're in quiet mode
+	if (msg.isQuiet()) return;
 	// Print out the empty progress indicator
 	printf("--- %s\n", jobtitle);
 	printf("Progress [-]                              (  0%%)");
+	fflush(stdout);
 }
 
 // Update the text progress dialog
@@ -516,22 +519,27 @@ void GuiQt::textProgressUpdate(int currentstep)
 	static int n, ndots;
 	static double dpercent;
 	static int percent;
+	// Don't print anything if we're in quiet mode
+	if (msg.isQuiet()) return;
 	// Work out percentage and print dots and spaces
 	dpercent = double(currentstep) / double(textProgressStepsToDo_);
 	percent = int(dpercent * 100.0);
 	ndots = int(dpercent * 30.0);
 	dpercent *= 100.0;
+	// Always print the header and twister character
+	printf("\rProgress [%c]",*c);
+	// Increase the twister character
+	c ++;
+	if (*c == '\0') c = twister;
+	// New dots or percentage to output?
 	if (percent != textProgressPercent_)
 	{
-		// Print the header
-		printf("\rProgress [%c]",*c);
-		// Increase the twoster character
-		c ++;
-		if (*c == '\0') c = twister;
+
 		for (n=0; n<ndots; n++) printf(".");
 		for (n=ndots; n<30; n++) printf(" ");
 		// Lastly, print percentage
 		printf("(%-3i%%)",percent);
+		fflush(stdout);
 		textProgressPercent_ = percent;
 	}
 }

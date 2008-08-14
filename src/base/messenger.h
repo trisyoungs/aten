@@ -53,6 +53,8 @@ class Messenger
 	bool isOutputActive(Messenger::OutputType);
 	// Set status of quiet mode
 	void setQuiet(bool b);
+	// Return status of quiet mode
+	bool isQuiet();
 
 	/*
 	// Messaging functions

@@ -35,9 +35,9 @@ for $stack,1,$nstacks
 	end
 	
 	# Move pen along tube length, and one step around circumference to offset next layer
-	#move 0.0 0.0 $rcc*1.5
-	#roty -30.0
-	#move $rcc 0 0
-	#rotz $deltaz
-	#roty 30.0
+	move 0.0 0.0 $rcc*1.5
+	roty -30.0
+	move $rcc 0 0
+	rotz $deltaz
+	roty 30.0
 end
