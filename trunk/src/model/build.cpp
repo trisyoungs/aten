@@ -161,28 +161,43 @@ Mat3<double> Model::penOrientation()
 void Model::rotatePenAxis(int axis, double degrees)
 {
 	Mat3<double> rotmat;
-	double theta = degrees / DEGRAD;
-	switch (axis)
-	{
-		case (0):
-			rotmat.set(0,1.0,0.0,0.0);
-			rotmat.set(1,0.0,cos(theta),sin(theta));
-			rotmat.set(2,0.0,-sin(theta),cos(theta));
-			break;
-		case (1):
-			rotmat.set(0,cos(theta),0.0,-sin(theta));
-			rotmat.set(1,0.0,1.0,0.0);
-			rotmat.set(2,sin(theta),0.0,cos(theta));
-			break;
-		case (2):
-			rotmat.set(0,cos(theta),sin(theta),0.0);
-			rotmat.set(1,-sin(theta),cos(theta),0.0);
-			rotmat.set(2,0.0,0.0,1.0);
-			break;
-		default:
-			msg.print("%i is not a valid axis for Model::rotatePenAxis\n", axis);
-			break;
-	}
+	double theta = degrees / DEGRAD, c, s, t;
+	Vec3<double> v = penOrientation_.rows[axis];
+	// Define quaternion components
+	Vec4<double> q;
+	q.set(v.x * sin(theta/2.0), v.y*sin(theta/2.0), v.z*sin(theta/2.0), cos(theta/2.0));
+	q.normalise();
+	// Create rotation matrix from quaternion
+	rotmat.set(0, 1.0 - 2.0*q.y*q.y - 2.0*q.z*q.z, 2.0*q.x*q.y + 2.0*q.w*q.z, 2.0*q.x*q.z - 2.0*q.w*q.y);
+	rotmat.set(1, 2.0*q.x*q.y - 2.0*q.w*q.z, 1.0 - 2.0*q.x*q.x - 2.0*q.z*q.z, 2.0*q.y*q.z + 2.0*q.w*q.x);
+	rotmat.set(2, 2.0*q.x*q.z + 2.0*q.w*q.y, 2.0*q.y*q.z - 2.0*q.w*q.x, 1.0 - 2.0*q.x*q.x - 2.0*q.y*q.y);
+/*	c = cos(theta);
+	s = sin(theta);
+	t = 1.0 - c;
+	rotmat.set(0, t*v.x*v.x + c, t*v.x*v.y + s*v.z, t*v.x*v.z - s*v.y);
+	rotmat.set(1, t*v.x*v.y - s*v.z, t*v.y*v.y + c, t*v.y*v.z + s*v.x);
+	rotmat.set(2, t*v.x*v.z + s*v.y, t*v.y*v.z - s*v.x, t*v.z*v.z + c);*/
+// 	switch (axis)
+// 	{
+// 		case (0):
+// 			rotmat.set(0,1.0,0.0,0.0);
+// 			rotmat.set(1,0.0,cos(theta),sin(theta));
+// 			rotmat.set(2,0.0,-sin(theta),cos(theta));
+// 			break;
+// 		case (1):
+// 			rotmat.set(0,cos(theta),0.0,-sin(theta));
+// 			rotmat.set(1,0.0,1.0,0.0);
+// 			rotmat.set(2,sin(theta),0.0,cos(theta));
+// 			break;
+// 		case (2):
+// 			rotmat.set(0,cos(theta),sin(theta),0.0);
+// 			rotmat.set(1,-sin(theta),cos(theta),0.0);
+// 			rotmat.set(2,0.0,0.0,1.0);
+// 			break;
+// 		default:
+// 			msg.print("%i is not a valid axis for Model::rotatePenAxis\n", axis);
+// 			break;
+// 	}
 	penOrientation_ *= rotmat;
 }
 
