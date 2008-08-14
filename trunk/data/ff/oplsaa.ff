@@ -153,7 +153,7 @@ types
 144	HC		H	"-C(bond=double),-H"			"alkene H (H-C=)  all atom"
 145	CA		C	"ring(size=6,-C(n=6)),-H"		"Benzene C - 12 site JACS,112,4768-90"
 146	HA		H	"-C(ring(size=6,-C(n=6)))"		"Benzene H - 12 site (see 145)"
-147	CA		C	"ring(size=6),ring(size=6)"		"Naphthalene fusion C (C9)"
+147	CA		C	"ring(size=6,-C(n=6)),ring(size=6,=C(n=6))"		"Naphthalene fusion C (C9)"
 148	CT		C	"-H(n=3),-C(ring(size=6,-C(n=6)))"	"all-atom C: CH3, toluene"
 149	CT		C	"-H(n=2),-C(ring(size=6,-C(n=6))),-C"	"all-atom C: CH2, ethyl benzene"
 150	Ceq		C	"-C(bond=double),-H,-C(bond=single,=C)"		"diene =CH-CH=; see 178 also"
@@ -751,7 +751,7 @@ types
 730	Br		Br	"-&729"					"Br: bromobenzene"
 731	CA		C	"ring(size=6,-C(n=6)),-I"		"C(I): iodobenzene - tentative"
 732	I		I	"-&731"					"I: iodobenzene - tentative"
-733	CY		C	"-C(ring(notself,size=6,-C(n=6))),ring(-C(n=2))" "all-atom C: CH, cyclopropyl/butyl benzene"
+733	CY		C	"-C(ring(notself,size=6,-C(n=6))),ring(size=3,-C(n=2))" "all-atom C: CH, cyclopropyl/butyl benzene"
 735	CA		C	"ring(size=6,-C(n=6)),-S(-H)"		"C(S): thiophenol"
 734	SH		S	"-&735"					"all-atom S: thiophenol (HS is #204)"
 736	CA		C	""	"CG of Benzamidine" XXX

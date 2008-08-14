@@ -82,7 +82,7 @@ CommandData CA_data[CA_NITEMS] = {
 	// Atom commands
 	{ "atomstyle",		"N",		"<style>",
 				"Set the individual style of the current atom selection" },
-	{ "chain",		"Nnnnn",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]",
+	{ "chain",		"Neeee",	"<element> [bondtype] | <element> <x> <y> <z> [bondtype]",
 				"Create a new atom in the current model, bound to the last" },
 	{ "endchain",		"",		"",
 				"End the current bond chain (the next call to 'chain' will create an unbound atom)" },

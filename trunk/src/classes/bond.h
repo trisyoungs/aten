@@ -35,6 +35,8 @@ class Bond
 	enum BondType { Unspecified, Single, Double, Triple, nBondTypes };
 	// Bond type from text
 	static BondType bondType(const char *s);
+	// Bond type from integer
+	static BondType bondType(int i);
 	// BondType Keywords
 	static const char *bondType(BondType);
 	// Increase BondType (instead of defining postfix increment)
