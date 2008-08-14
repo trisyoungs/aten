@@ -35,13 +35,13 @@ template <class T> class Vec4
 	public:
 	// Constructor
 	Vec4<T>();
-
-	/*
-	// 4-Vector
-	*/
-	public:
 	// Components of vector
 	T x,y,z,w;
+
+	/*
+	// Set / adjust
+	*/
+	public:
 	// Set the vector to 0,0,0
 	void zero();
 	// Set all four components simultaneously
@@ -50,8 +50,11 @@ template <class T> class Vec4
 	void add(T, T, T, T);
 	// Set all four components simultaneously
 	void set(Vec3<T>, T);
-	// Print data
-	void print() const;
+
+	/*
+	// Operators
+	*/
+	public:
 	// Operators + and +=
 	Vec4<T>& operator+=(Vec4<T>);
 	Vec4<T>& operator+=(Vec3<T>);
@@ -62,6 +65,15 @@ template <class T> class Vec4
 	Vec4<T>& operator-=(Vec3<T>);
 	Vec4<T> operator-(Vec4<T>);
 	Vec4<T> operator-(Vec3<T>);
+
+	/*
+	// Methods
+	*/
+	public:
+	// Print data
+	void print() const;
+	// Normalise to unity
+	void normalise();
 };
 
 // Constructur
@@ -106,11 +118,9 @@ template <class T> void Vec4<T>::set(Vec3<T> v, T a)
 	w = a;
 }
 
-// Print
-template <class T> void Vec4<T>::print() const
-{
-	printf("vec = %8.4f %8.4f %8.4f %8.4f\n",(double)x,(double)y,(double)z,(double)w);
-}
+/*
+// Operators
+*/
 
 // Operator += (Vec4)
 template <class T> Vec4<T>& Vec4<T>::operator+=(Vec4<T> v)
@@ -192,6 +202,26 @@ template <class T> Vec4<T> Vec4<T>::operator-(Vec3<T> v)
 	result.z = z-v.z;
 	result.w = w-v.w;
 	return result;
+}
+
+/*
+// Methods
+*/
+
+// Print
+template <class T> void Vec4<T>::print() const
+{
+	printf("vec(xyzw) = %8.4f %8.4f %8.4f %8.4f\n", (double)x, (double)y, (double)z, (double)w);
+}
+
+// Normalise
+template <class T> void Vec4<T>::normalise()
+{
+	double mag = sqrt(w*w + x*x + y*y + z*z);
+	w /= mag;
+	x /= mag;
+	y /= mag;
+	z /= mag;
 }
 
 #endif

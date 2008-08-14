@@ -39,13 +39,13 @@ template <class T> class Vec3
 	public:
 	// Constructor
 	Vec3<T>(T xx = 0, T yy = 0, T zz = 0);
-	
-	/*
-	// 3-Vector
-	*/
-	public:
 	// Components of vector
 	T x,y,z;
+
+	/*
+	// Set / adjust
+	*/
+	public:
 	// Set the vector to 0,0,0
 	void zero();
 	// Set the specific element to value
@@ -57,36 +57,38 @@ template <class T> class Vec3
 	// Add values to all three components simultaneously
 	void add(T, T, T);
 
+	/*
+	// Operators
+	*/
+	public:
 	// Operators + and +=
-	////void operator=(const Vec4<T>&);
 	void operator+=(T);
 	void operator+=(const Vec3<T>&);
 	Vec3<T> operator+(T) const;
 	Vec3<T> operator+(const Vec3<T>&) const;
-
 	// Operators - and -=
 	void operator-=(T);
 	void operator-=(const Vec3<T>&);
 	Vec3<T> operator-(T) const;
 	Vec3<T> operator-() const;
 	Vec3<T> operator-(const Vec3<T>&) const;
-
 	// Operators / and /=
 	void operator/=(const T);
 	void operator/=(const Vec3<T>&);
 	Vec3<T> operator/(T) const;
 	Vec3<T> operator/(const Vec3<T>&) const;
-
 	// Operators * and *=
 	Vec3<T> operator*(T) const;
 	void operator*=(T);
-	//void operator*=(const Vec3<T>&);
 	Vec3<T> operator*(const Vec3<T>&) const;
 	Vec3<T> operator*(const Mat3<T>&) const;
 	void operator*=(const Mat3<T>&);
-	////Vec3<T> operator*(const Mat4<T>&) const;
 	void operator*=(const Mat4<T> &A);
 
+	/*
+	// Methods
+	*/
+	public:
 	// Normalise the vector to unity
 	void normalise();
 	// Orthogonalise (Gram-Schmidt) w.r.t. supplied vector
@@ -136,7 +138,7 @@ template <class T> Vec3<T>::Vec3(T xx, T yy, T zz)
 }
 
 /*
-// Set
+// Set / adjust
 */
 
 // Zero
