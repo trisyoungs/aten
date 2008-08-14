@@ -1071,7 +1071,7 @@ void Pattern::augment()
 	for (n=0; n<nAtoms_; n++)
 	{
 		i->tempi = i->totalBondOrder() - 2*elements.valency(i->element());
-		printf("%i\n",i->tempi);
+		//printf("%i\n",i->tempi);
 		i = i->next;
 	}
 	// Stage 1 - Augment heavy atoms with only one heavy atom bond
@@ -1100,7 +1100,6 @@ void Pattern::augment()
 	// Stage 2 - Augment within cycles
 	for (Ring *r = rings_.first(); r != NULL; r = r->next)
 	{
-	printf("djflkdsjlfkjdsklfklfjk\n");
 		// Check atoms bond order difference
 		for (Refitem<Atom,int> *ra = r->firstAtom(); ra != NULL; ra = ra->next)
 			if (ra->item->tempi != 0) r->augmentAtom(ra, parent_);
@@ -1109,12 +1108,12 @@ void Pattern::augment()
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
-		printf("%li  i->tempi = %i\n",i,i->tempi);
+		//printf("%li  i->tempi = %i\n",i,i->tempi);
 		if (i->tempi != 0)
 		{
 			for (bref = i->bonds(); bref != NULL; bref = bref->next)
 			{
-				printf("%li    bond   i->tempi = %i\n",i,i->tempi);
+				//printf("%li    bond   i->tempi = %i\n",i,i->tempi);
 				if (i->tempi == 0) break;
 				if (i->tempi < 0) parent_->augmentBond(bref->item,+1);
 				else if (i->tempi > 0) parent_->augmentBond(bref->item,-1);
