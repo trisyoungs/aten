@@ -30,8 +30,8 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "563"
-#define ATENDATE "Thu 14 Aug - 22:54"
+#define ATENREVISION "565"
+#define ATENDATE "Fri 15 Aug - 20:20"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -106,14 +106,17 @@ class Aten
 	List<Filter> filters_[Filter::nFilterTypes];
 
 	public:
-	// Load filters from specified location
+	// Load filters
 	bool openFilters();
+	// Reload filters
+	bool reloadFilters();
 	// Probe file for its format
 	Filter *probeFile(const char *filename, Filter::FilterType);
 	// Find filter of specified type with nickname provided
 	Filter *findFilter(Filter::FilterType ft, const char *nickname) const;
 	// Return first filter in list (of a given type)
 	Filter *filters(Filter::FilterType ft) const;
+
 
 	/*
 	// Forcefields
@@ -154,24 +157,6 @@ class Aten
 	// Remove FF references from the model list
 	void dereferenceForcefield(Forcefield*);
 
-	/*
-	// Volumetric Grid Data
-	*/
-	private:
-	// Currently loaded grids
-	List<Grid> grids_;
-
-	public:
-	// Return list of surfaces
-	Grid *grids() const;
-	// Return number of surfaces loaded
-	int nGrids() const;
-	// Return specified surface
-	Grid *grid(int id);
-	// Add new surface
-	Grid *addGrid();
-	// Remove surface
-	void removeGrid(Grid *s);
 
 	/*
 	// Spacegroups
@@ -186,12 +171,22 @@ class Aten
 	// Returns cell type of specified spacegroup id
 	Cell::CellType spacegroupCellType(int sg) const;
 
+
 	/*
-	// Clipboard
+	// Clipboards
 	*/
+	private:
+	// Grid 'clipboard'
+	Grid* gridClipboard_;
+
 	public:
 	// User clipboard
 	Clipboard *userClipboard;
+	// Copy specified grid
+	void copyGrid(Grid *g);
+	// Return grid on clipboard
+	Grid *gridClipboard();
+	
 
 	/*
 	// Program locations

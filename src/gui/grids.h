@@ -24,6 +24,9 @@
 
 #include "gui/ui_grids.h"
 
+// Forward Declarations
+class QMenuBar;
+
 // Grids window
 class AtenGrids : public QDialog
 {
@@ -74,6 +77,8 @@ class AtenGrids : public QDialog
 	private:
 	// Whether the window is currently refreshing
 	bool refreshing_;
+	// Menu bar for window
+	QMenuBar *menuBar_;
 
 	/*
 	// Dialog

@@ -8,6 +8,7 @@ component.cpp
 energy.cpp 
 expression.cpp 
 glyph.cpp
+grid.cpp
 measure.cpp 
 model.cpp 
 molecule.cpp 

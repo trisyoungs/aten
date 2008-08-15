@@ -28,6 +28,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
+#include "gui/grids.h"
 #include "parse/parser.h"
 #include <fstream>
 
@@ -51,8 +52,9 @@ Aten::Aten()
 	homeDir_ = "/tmp";
 	defaultForcefield_ = NULL;
 
-	// Clipboard
+	// Clipboards
 	userClipboard = new Clipboard;
+	gridClipboard_ = NULL;
 
 	// CommandLists
 	tempScript.createModelVariables("");
@@ -64,6 +66,7 @@ Aten::~Aten()
 {
 	clear();
 	delete userClipboard;
+	if (gridClipboard_ != NULL) delete gridClipboard_;
 }
 
 // Clear
@@ -113,6 +116,7 @@ void Aten::setCurrentModel(Model *m)
 	current.rs = (current.m == NULL ? NULL : current.m->renderSource());
 	// Set other Bundle objects based on model
 	current.p = m->patterns();
+	current.g = m->grids();
 	current.i = NULL;
 	current.m->renderSource()->calculateViewMatrix();
 	current.m->renderSource()->projectAll();
@@ -120,7 +124,11 @@ void Aten::setCurrentModel(Model *m)
 	// Set the title of the main window to reflect the version
 	char title[256];
 	sprintf(title, "Aten (%s) - %s [%s]", ATENVERSION, current.m->name(), current.m->filename());
-	if (gui.exists()) gui.mainWindow->setWindowTitle(title);
+	if (gui.exists())
+	{
+		gui.mainWindow->setWindowTitle(title);
+		gui.gridsWindow->refresh();
+	}
 	msg.exit("Aten::setCurrentModel");
 }
 
@@ -172,11 +180,8 @@ Model *Aten::addModel()
 	char newname[16];
 	sprintf(newname,"Unnamed%03i", ++modelId_);
 	m->setName(newname);
-	if (gui.exists())
-	{
-		gui.addModel(m);
-		gui.disorderWindow->refresh();
-	}
+	gui.addModel(m);
+	gui.disorderWindow->refresh();
 	setCurrentModel(m);
 	msg.exit("Aten::addModel");
 	return m;
@@ -197,11 +202,8 @@ void Aten::removeModel(Model *xmodel)
 	// Delete the old model (GUI first, then master)
 	int id = models_.indexOf(xmodel);
 	models_.remove(xmodel);
-	if (gui.exists())
-	{
-		gui.removeModel(id);
-		gui.disorderWindow->refresh();
-	}
+	gui.removeModel(id);
+	gui.disorderWindow->refresh();
 	msg.exit("Aten::removeModel");
 }
 
@@ -214,43 +216,6 @@ Model *Aten::findModel(const char *s) const
 	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;
 	msg.exit("Aten::findModel");
 	return result ;
-}
-
-/*
-// Grid Management Routines
-*/
-
-// Return list of surfaces
-Grid *Aten::grids() const
-{
-	return grids_.first();
-}
-
-// Return number of surfaces loaded
-int Aten::nGrids() const
-{
-	return grids_.nItems();
-}
-
-// Return specified surface
-Grid *Aten::grid(int id)
-{
-	return grids_[id];
-}
-
-// Add new surface
-Grid *Aten::addGrid()
-{
-	current.g = grids_.add();
-	return current.g;
-}
-
-// Remove surface
-void Aten::removeGrid(Grid *xgrid)
-{
-	xgrid->next != NULL ? current.g = xgrid->next : current.g = xgrid->prev;
-	// Finally, delete the old surface
-	grids_.remove(xgrid);
 }
 
 /*
@@ -605,6 +570,13 @@ bool Aten::openFilters()
 	else return TRUE;
 }
 
+// Reload filters
+bool Aten::reloadFilters()
+{
+	msg.enter("Aten::reloadFilters");
+	msg.exit("Aten::reloadFilters");
+}
+
 // Parse filter index file
 bool Aten::parseFilterIndex(const char *path, ifstream *indexfile)
 {
@@ -773,6 +745,10 @@ void Aten::cancelProgress()
 	gui.progressTerminate();
 }
 
+/*
+// Spacegroup data
+*/
+
 // Spacegroup name search
 int Aten::findSpacegroupByName(const char *name) const
 {
@@ -812,4 +788,21 @@ Cell::CellType Aten::spacegroupCellType(int sg) const
 	else result = Cell::CubicCell;
 	msg.enter("Aten::spacegroupCellType");
 	return result;
+}
+
+/*
+// Grid clipboard functions
+*/
+
+// Copy specified grid
+void Aten::copyGrid(Grid *g)
+{
+	// If there is an old grid here, delete it first
+	if (gridClipboard_ != NULL) delete gridClipboard_;
+	*gridClipboard_ = *g;
+}
+
+// Return grid on clipboard
+Grid *Aten::gridClipboard()
+{
 }

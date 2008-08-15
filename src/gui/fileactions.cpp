@@ -178,11 +178,11 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	if (saveBitmapDialog->exec() == 1)
 	{
 		// Flag any surfaces to be rerendered for use in this context
-		for (Grid *g = aten.grids(); g != NULL; g = g->next) g->requestRerender();
+		aten.currentModel()->rerenderGrids();
 		// Create a QPixmap of the current scene
 		QPixmap pixmap = gui.mainWidget->renderPixmap(0,0,FALSE);
 		// Flag any surfaces to be rerendered so they are redisplayed in the original context
-		for (Grid *g = aten.grids(); g != NULL; g = g->next) g->requestRerender();
+		aten.currentModel()->rerenderGrids();
 
 		// Get selected filename
 		QStringList filenames = saveBitmapDialog->selectedFiles();

@@ -75,6 +75,62 @@ Grid::~Grid()
 	if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 }
 
+// Assignment operator
+void Grid::operator=(Grid &source)
+{
+	// Copy PODs directly
+	type_ = source.type_;
+	dataFull_ = source.dataFull_;
+	minimum_ = source.minimum_;
+	maximum_ = source.maximum_;
+	cutoff_ = source.cutoff_;
+	log_ = -1;
+	style_ = source.style_;
+	displayList_ = 0;
+	renderPoint_ = -1;
+	visible_ = source.visible_;
+	for (int i=0; i<4; i++)
+	{
+		positiveColour_[i] = source.positiveColour_[i];
+		negativeColour_[i] = source.negativeColour_[i];
+	}
+	symmetric_ = source.symmetric_;
+	loopOrder_ = source.loopOrder_;
+	colourScale_ = source.colourScale_;
+	useColourScale_ = source.useColourScale_;
+	useDataForZ_ = source.useDataForZ_;
+	cell_ = source.cell_;
+	origin_ = source.origin_;
+	nPoints_ = source.nPoints_;
+	// Delete any existing 2D or 3D array in this Grid
+	deleteArrays();
+	// Create new data structure
+	create();
+	// Copy data from source structure
+	int x,y,z;
+	if (type_ == Grid::VolumetricData)
+	{
+		for (x=0; x<nPoints_.x; x++)
+		{
+			for (y=0; y<nPoints_.y; y++)
+			{
+				for (z=0; z<nPoints_.z; z++) data3d_[x][y][z] = source.data3d_[x][y][z];
+			}
+		}
+	}
+	else
+	{
+		for (x=0; x<nPoints_.x; x++)
+		{
+			for (y=0; y<nPoints_.y; y++) data2d_[x][y] = source.data2d_[x][y];
+		}
+	}
+}
+
+/*
+// Identity
+*/
+
 // Set name of Grid data
 void Grid::setName(const char *s)
 {
@@ -98,6 +154,10 @@ Grid::GridType Grid::type()
 {
 	return type_;
 }
+
+/*
+// Gridded Data
+*/
 
 // Return the Grid axes
 Mat3<double> Grid::axes()
@@ -340,16 +400,10 @@ void Grid::create()
 	msg.exit("Grid::create");
 }
 
-// Clear data array
-void Grid::clear()
+// Clear array data only
+void Grid::deleteArrays()
 {
-	msg.enter("Grid::clear");
-	dataFull_ = FALSE;
-	minimum_ = 10000.0;
-	maximum_ = -10000.0;
-	cutoff_ = 0.0;
-	currentPoint_.zero();
-	visible_ = TRUE;
+	msg.enter("Grid::deleteArrays");
 	int i, j;
 	if (data3d_ != NULL)
 	{
@@ -370,7 +424,20 @@ void Grid::clear()
 		delete[] data2d_;
 		data2d_ = NULL;
 	}
+	msg.exit("Grid::deleteArrays");
+}
 
+// Clear all data
+void Grid::clear()
+{
+	msg.enter("Grid::clear");
+	dataFull_ = FALSE;
+	minimum_ = 10000.0;
+	maximum_ = -10000.0;
+	cutoff_ = 0.0;
+	currentPoint_.zero();
+	visible_ = TRUE;
+	deleteArrays();
 	msg.exit("Grid::clear");
 }
 

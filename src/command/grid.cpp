@@ -22,6 +22,7 @@
 #include "command/commandlist.h"
 #include "base/prefs.h"
 #include "base/aten.h"
+#include "model/model.h"
 #include "classes/grid.h"
 
 // Add grid point data at specified indices
@@ -217,10 +218,11 @@ int CommandData::function_CA_LOADGRID(Command *&c, Bundle &obj)
 	} else return CR_FAIL;
 }
 
-// Create new grid
+// Create new grid in the current model
 int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
 {
-	obj.g = aten.addGrid();
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.g = aten.currentModel()->addGrid();
 	obj.g->setName(stripTrailing(c->argc(0)));
 	return CR_SUCCESS;
 }

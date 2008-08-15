@@ -875,6 +875,27 @@ class Model
 	void setMoveAllowed(MonteCarlo::MoveType m, bool b);
 	// Set whether the Component may be translated
 	bool isMoveAllowed(MonteCarlo::MoveType m);
+
+	/*
+	// Grid Data
+	*/
+	private:
+	// Grids currently associated to the model
+	List<Grid> grids_;
+
+	public:
+	// Return list of surfaces
+	Grid *grids() const;
+	// Return number of surfaces loaded
+	int nGrids() const;
+	// Return specified surface
+	Grid *grid(int id);
+	// Add new surface
+	Grid *addGrid();
+	// Remove surface
+	void removeGrid(Grid *s);
+	// Request rerendering of all grid data
+	void rerenderGrids();
 };
 
 #endif

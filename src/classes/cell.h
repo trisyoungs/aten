@@ -41,7 +41,12 @@ class Cell
 	// Cell definition parameters
 	enum CellParameter { CellA, CellB, CellC, CellAlpha, CellBeta, CellGamma, CellAX, CellAY, CellAZ, CellBX, CellBY, CellBZ, CellCX, CellCY, CellCZ, nCellParameters };
 	static CellParameter cellParameter(const char *);
+	// Assignment operator
+	void operator=(Cell &source);
 
+	/*
+	// Cell Definition
+	*/
 	private:
 	// Cell type
 	CellType type_;
