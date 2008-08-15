@@ -25,6 +25,7 @@
 #include "classes/pattern.h"
 #include "classes/clipboard.h"
 #include "classes/site.h"
+#include "classes/grid.h"
 #include "classes/glyph.h"
 #include "methods/calculable.h"
 
@@ -74,6 +75,7 @@ Model::Model()
 	moveAllowed_[MonteCarlo::Translate] = TRUE;
 	moveAllowed_[MonteCarlo::Rotate] = TRUE;
 	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
+
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -83,6 +85,7 @@ Model::Model()
 Model::~Model()
 {
 	clearBonding();
+	grids_.clear();
 	atoms_.clear();
 	patterns_.clear();
 	measurements_.clear();
@@ -152,7 +155,6 @@ void Model::copyLogs(int *newlogs)
 	logs_[Change::CoordinateLog] = newlogs[Change::CoordinateLog];
 	logs_[Change::SelectionLog] = newlogs[Change::SelectionLog];
 	logs_[Change::GlyphLog] = newlogs[Change::GlyphLog];
-	logs_[Change::GridLog] = newlogs[Change::GridLog];
 }
 
 // Clear

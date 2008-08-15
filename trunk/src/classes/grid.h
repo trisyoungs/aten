@@ -43,6 +43,8 @@ class Grid
 	// Surface rendering styles
 	enum SurfaceStyle { GridSurface, PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };
 	static SurfaceStyle surfaceStyle(const char *s);
+	// Assignment operator
+	void operator=(Grid &source);
 
 	/*
 	// Identity
@@ -77,7 +79,9 @@ class Grid
 	double ***data3d_;
 	// Surface values
 	double **data2d_;
-	// Clear voxel data
+	// Clear array data only
+	void deleteArrays();
+	// Clear all data
 	void clear();
 	// Create voxel data
 	void create();

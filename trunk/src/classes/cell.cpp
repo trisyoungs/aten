@@ -62,6 +62,22 @@ Cell::Cell()
 	reciprocalVolume_ = 0.0;
 }
 
+// Assignment operator
+void Cell::operator=(Cell &source)
+{
+	type_ = source.type_;
+	axes_ = source.axes_;
+	transpose_ = source.transpose_;
+	reciprocal_ = source.reciprocal_;
+	itranspose_ = source.itranspose_;
+	centre_ = source.centre_;
+	lengths_ = source.lengths_;
+	angles_ = source.angles_;
+	volume_ = source.volume_;
+	reciprocalVolume_ = source.reciprocalVolume_;
+	density_ = source.density_;
+}
+
 /*
 // Set
 */

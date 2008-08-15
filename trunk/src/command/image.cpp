@@ -27,12 +27,13 @@
 #include "gui/tcanvas.uih"
 #include "classes/grid.h"
 #include "model/model.h"
+
 // Save current view as bitmap image
 int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// Flag any surfaces to be rerendered for use in this context
-	for (Grid *g = aten.grids(); g != NULL; g = g->next) g->requestRerender();
+	aten.currentModel()->rerenderGrids();
 	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
 	int screenbits = prefs.screenObjects();
 	prefs.setScreenObjects(prefs.imageObjects());
@@ -43,7 +44,7 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	else pixmap = gui.mainWidget->renderPixmap(0, 0, FALSE);
 	prefs.setScreenObjects(screenbits);
 	// Flag any surfaces to be rerendered so they are redisplayed in the original context
-	for (Grid *g = aten.grids(); g != NULL; g = g->next) g->requestRerender();
+	aten.currentModel()->rerenderGrids();
 
 	// Convert format to bitmap_format
 	bitmap_format bf = BIF_from_text(c->argc(0));

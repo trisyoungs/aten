@@ -21,10 +21,11 @@
 
 #include "base/aten.h"
 #include "gui/canvas.h"
+#include "model/model.h"
 #include "classes/grid.h"
 
 /*
-	Marching Cube vertex / <edge> numbering
+	Marching Cube vertex and [edge] numbering
 
 		7---------6			128------64
 	       /|        /|		       /|        /|
@@ -598,13 +599,13 @@ void squareIt(Grid *g, Grid::SurfaceStyle ss)
 void Canvas::renderSurfaces()
 {
 	msg.enter("Canvas::renderSurfaces");
-	// Loop over surfaces held by the master, rendering those that are visible.
+	// Loop over surfaces held by the model, rendering those that are visible.
 	// If the log of a particular surface is out of data, recreate its display list first
 	static GLuint list;
 	static Vec3<double> origin;
 	static double glmat[16];
 	static Mat4<double> mat;
-	for (Grid *g = aten.grids(); g != NULL; g = g->next)
+	for (Grid *g = displayModel_->grids(); g != NULL; g = g->next)
 	{
 		// Check visibility
 		if (!g->isVisible()) continue;

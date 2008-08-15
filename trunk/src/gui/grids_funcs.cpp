@@ -21,6 +21,7 @@
 
 #include "base/aten.h"
 #include "classes/grid.h"
+#include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
 #include "gui/gui.h"
@@ -35,6 +36,20 @@ AtenGrids::AtenGrids(QWidget *parent)
 
 	// Private variables
 	refreshing_ = FALSE;
+
+	// Create menubar
+	menuBar_ = new QMenuBar(this);
+	QMenu *menu = menuBar_->addMenu("File");
+	menu->addAction(ui.actionGridLoad);
+	menu = menuBar_->addMenu("Edit");
+	menu->addAction(ui.actionGridCut);
+	menu->addAction(ui.actionGridCopy);
+	menu->addAction(ui.actionGridPaste);
+	menu->addAction(ui.actionGridDelete);
+	QHBoxLayout *layout = new QHBoxLayout();
+	layout->addWidget(menuBar_);
+	ui.menuFrame->setLayout(layout);
+	
 	// Create open grid dialog
 	QStringList filters;
 	openGridDialog = new QFileDialog(this);
@@ -44,7 +59,7 @@ AtenGrids::AtenGrids(QWidget *parent)
 	filters.clear();
 	filters << "All files (*)";
 	for (Filter *f = aten.filters(Filter::GridImport); f != NULL; f = f->next) filters << f->description();
-	if (filters.empty()) ui.LoadGridButton->setEnabled(FALSE);
+	if (filters.empty()) ui.actionGridLoad->setEnabled(FALSE);
 	else openGridDialog->setFilters(filters);
 }
 
@@ -67,7 +82,8 @@ void AtenGrids::refresh()
 	refreshing_ = TRUE;
 	ui.GridList->clear();
 	TListWidgetItem *item;
-	for (Grid *g = aten.grids(); g != NULL; g = g->next)
+	Model *m = aten.currentModel();
+	for (Grid *g = m->grids(); g != NULL; g = g->next)
 	{
 		item = new TListWidgetItem(ui.GridList);
 		item->setText(g->name());
@@ -75,7 +91,7 @@ void AtenGrids::refresh()
 		item->setPointer(g);
 	}
 	// Select the first item
-	if (aten.nGrids() != 0) ui.GridList->setCurrentRow(0);
+	if (m->nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refresh");
@@ -197,13 +213,14 @@ void AtenGrids::refreshGridInfo()
 	msg.enter("AtenGrids::refreshGridInfo");
 	// Get the current row selected in the grid list
 	Grid *g;
+	Model *m = aten.currentModel();
 	int row = ui.GridList->currentRow();
 	if (row == -1)
 	{
 		msg.exit("AtenGrids::refreshGridInfo");
 		return;
 	}
-	else g = aten.grid(row);
+	else g = m->grid(row);
 	// Set minimum, maximum, and cutoff
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
 	ui.GridCutoffSpin->setMinimum(g->minimum());
@@ -253,10 +270,10 @@ void AtenGrids::on_GridList_itemClicked(QListWidgetItem *item)
 void AtenGrids::gridOriginChanged(int component, double value)
 {
 	// Get the current row selected in the grid list
-	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	// Get and re-set origin
 	static Vec3<double> o;
 	o = g->origin();
@@ -268,10 +285,10 @@ void AtenGrids::gridOriginChanged(int component, double value)
 void AtenGrids::gridAxisChanged(int r, int component, double value)
 {
 	// Get the current row selected in the grid list
-	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	// Get and re-set axes
 	static Mat3<double> axes;
 	axes = g->axes();
@@ -283,14 +300,14 @@ void AtenGrids::gridAxisChanged(int r, int component, double value)
 void AtenGrids::on_RemoveGridButton_clicked(bool checked)
 {
 	// Get the current row selected in the grid list
-	Grid *g;
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	else g = aten.grid(row);
-	aten.removeGrid(g);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
+	m->removeGrid(g);
 	refresh();
-	if (row == aten.nGrids()) row --;
-	if (aten.nGrids() != 0) ui.GridList->setCurrentRow(row);
+	if (row == m->nGrids()) row --;
+	if (m->nGrids() != 0) ui.GridList->setCurrentRow(row);
 	gui.mainView.postRedisplay();
 }
 
@@ -310,7 +327,8 @@ void AtenGrids::on_GridCutoffSpin_valueChanged(double d)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	g->setCutoff(d);
 	gui.mainView.postRedisplay();
 }
@@ -321,7 +339,8 @@ void AtenGrids::on_GridStyleCombo_currentIndexChanged(int index)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	g->setStyle(Grid::SurfaceStyle (index));
 	gui.mainView.postRedisplay();
 }
@@ -332,7 +351,8 @@ void AtenGrids::on_GridPositiveColourButton_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
 	GLfloat *col = g->positiveColour();
 	QColor oldcol, newcol;
@@ -352,7 +372,8 @@ void AtenGrids::on_GridNegativeColourButton_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	// Get current surface colour and convert into a QColor
 	GLfloat *col = g->positiveColour();
 	QColor oldcol, newcol;
@@ -372,7 +393,8 @@ void AtenGrids::on_GridTransparencySpin_valueChanged(double value)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	g->setTransparency( (GLfloat) value );
 	gui.mainView.postRedisplay();
 }
@@ -383,7 +405,8 @@ void AtenGrids::on_GridColourscaleSpin_valueChanged(int n)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	g->setColourScale(n-1);
 	gui.mainView.postRedisplay();
 }
@@ -394,7 +417,8 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	// Get current surface in list
 	int row = ui.GridList->currentRow();
 	if (row == -1) return;
-	Grid *g = aten.grid(row);
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
 	g->setSymmetric(checked);
 	gui.mainView.postRedisplay();
 }
