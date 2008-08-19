@@ -224,6 +224,18 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	aten.current.gl = obj.rs->addGlyph(gt);
-	if (c->hasArg(1)) aten.current.gl->setText(c->argc(1));
+	// Parse extra options
+	Dnchar keywd, value;
+	for (int i=1; i < c->nArgs(); i++)
+	{
+		// Split argument into keyword and value
+		keywd = beforeChar(c->argc(i), '=');
+		value = afterChar(c->argc(i), '=');
+		if (keywd == "text") aten.current.gl->setText(value.get());
+		else if (keywd == "solid") aten.current.gl->setSolid(TRUE);
+		else if (keywd == "wire") aten.current.gl->setSolid(FALSE);
+		else if (keywd == "linewidth") aten.current.gl->setLineWidth((GLfloat) atof(value.get()));
+		else msg.print("Unknown option '%s' given to 'newglyph'.\n", keywd.get());
+	}
 	return CR_SUCCESS;
 }

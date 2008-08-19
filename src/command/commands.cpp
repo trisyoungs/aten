@@ -398,8 +398,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the glyph to be drawn in solid (true) or wireframe (false) modes (glyph-permitting)" },
 	{ "glyphtext",		"N",		"<text>",
 				"Set text data in current glyph" },
-	{ "newglyph",		"Nn",		"<style> [text]",
-				"Add a glyph with the specified style (and text if relevant) to the current model" },
+	{ "newglyph",		"Nn",		"<style> [options]",
+				"Add a glyph with the specified style to the current model" },
 
 	// Grid commands
 	{ "addgridpoint",	"EEEE",		"<ix> <iy> <iz> <value>",

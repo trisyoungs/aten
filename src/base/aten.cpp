@@ -575,6 +575,7 @@ bool Aten::reloadFilters()
 {
 	msg.enter("Aten::reloadFilters");
 	msg.exit("Aten::reloadFilters");
+	return TRUE;
 }
 
 // Parse filter index file
