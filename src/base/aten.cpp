@@ -806,4 +806,6 @@ void Aten::copyGrid(Grid *g)
 // Return grid on clipboard
 Grid *Aten::gridClipboard()
 {
+	return gridClipboard_;
 }
+

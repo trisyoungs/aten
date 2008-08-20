@@ -884,7 +884,7 @@ Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
 Command *CommandList::topmostBranch(CommandAction ca)
 {
 	Command *result;
-	for (Command *result = branchCommandStack_.last(); result != NULL; result = result->prev)
+	for (result = branchCommandStack_.last(); result != NULL; result = result->prev)
 		if (result->command() == ca) break;
 	return result->pointer();
 }

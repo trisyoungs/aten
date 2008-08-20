@@ -413,8 +413,8 @@ void Change::print(Model *m)
 			break;
 		// Atom charge change - from realData[1] to realData[0] (Change::Undo) or vice versa (Change::Redo)
 		case (Change::ChargeEvent):
-			if (direction_ == Change::Undo) printf("       Atom charge change - atom %i, from %i to %i\n",data_[0],realData_[1],data_[0]);
-			else printf("       Atom charge change - atom %i, from %i to %i\n",data_[0],realData_[0],data_[1]);
+			if (direction_ == Change::Undo) printf("       Atom charge change - atom %i, from %f to %f\n",data_[0],realData_[1],realData_[0]);
+			else printf("       Atom charge change - atom %i, from %f to %f\n",data_[0],realData_[0],realData_[1]);
 			break;
 		// Glyph creation (Change::Redo) or deletion (Change::Undo)
 		case (Change::GlyphEvent):
