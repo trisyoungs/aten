@@ -212,21 +212,6 @@ void GuiQt::removeModel(int id)
 	gui.modelChanged();
 }
 
-/* Redraw main window canvas
-void GuiQt::refresh()
-{
-	if (!doesExist_) return;
-	// Select tab corresponding to current mdoel
-	int id = aten.currentModelIndex();
-	if (id <= mainWindow->ui.ModelTabs->count()) mainWindow->ui.ModelTabs->setCurrentIndex(id);
-	else printf("GUI_ERROR: Current model index (%i) is out of bounds of tab list.\n",id);
-	// Update the disorder page
-	mainWindow->refreshDisorderPage();
-	// Update pattern list in forcefield window
-	mainWindow->refreshForcefieldPatterns();
-	// Enable View->Trajectory menu item if a trajectory is associated
-	mainWindow->ui.actionViewTrajectory->setEnabled( aten.currentModel()->currentFrame() == NULL ? FALSE : TRUE);
-} */
 
 // Update GUI after model change (or different model selected)
 void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefield)
@@ -275,7 +260,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	}
 	mainWindow->statusLabel->setText(s);
 	// Update save button status
-	mainWindow->ui.actionFileSave->setEnabled( m->isModified() );
+	mainWindow->ui.actionFileSave->setEnabled( m->changeLog.isModified() );
 	// Update contents of the atom list
 	if (updateAtoms) atomlistWindow->refresh();
 	// Update the contents of the cell page
@@ -290,13 +275,30 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	mainWindow->ui.AtomMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
 	mainWindow->updateUndoRedo();
+	// Update main window title
+	gui.updateWindowTitle();
 	// Request redraw of the main canvas
 	mainView.postRedisplay();
+}
+
+/*
+// Main Window Refresh Functions
+*/
+
+// Refresh window title
+void GuiQt::updateWindowTitle()
+{
+	if (!doesExist_) return;
+	Model *m = aten.currentModel();
+	static char title[512];
+	sprintf(title, "Aten (%s) - %s [%s]%s", ATENVERSION, m->name(), m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
+	mainWindow->setWindowTitle(title);
 }
 
 // Update trajectory controls
 void GuiQt::updateTrajControls()
 {
+	if (!doesExist_) return;
 	// First see if the model has a trajectory associated to it
 	Model *m = aten.currentModel();
 	if (m->nTrajectoryFrames() == 0) mainWindow->ui.TrajectoryToolbar->setDisabled(TRUE);
@@ -331,11 +333,6 @@ void GuiQt::updateTrajControls()
 	}
 }
 
-// Update model lists
-void GuiQt::updateModelLists()
-{
-}
-
 void GuiQt::printMessage(const char *s)
 {
 	static char str[8096];
@@ -355,7 +352,7 @@ bool GuiQt::saveBeforeClose()
 	Filter *f;
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		if (m->isModified())
+		if (m->changeLog.isModified())
 		{
 			// Create a model message dialog
 			sprintf(text, "Model '%s' has been modified.\n", m->name());

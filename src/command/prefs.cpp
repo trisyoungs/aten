@@ -37,7 +37,7 @@ int CommandData::function_CA_ANGLELABEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_ATOMDETAIL(Command *&c, Bundle &obj)
 {
 	prefs.setAtomDetail(c->argi(0));
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -46,7 +46,7 @@ int CommandData::function_CA_ATOMDETAIL(Command *&c, Bundle &obj)
 int CommandData::function_CA_BONDDETAIL(Command *&c, Bundle &obj)
 {
 	prefs.setBondDetail(c->argi(0));
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -59,7 +59,7 @@ int CommandData::function_CA_COLOUR(Command *&c, Bundle &obj)
 	Vec3<GLfloat> colvec = c->arg3f(1);
 	GLfloat alpha = (c->hasArg(4) ? (GLfloat) c->argd(4) : 1.0f);
 	prefs.setColour(col, colvec.x, colvec.y, colvec.z, alpha);
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -136,7 +136,7 @@ int CommandData::function_CA_ELEMENTAMBIENT(Command *&c, Bundle &obj)
 	elements.setAmbientColour(el,0,c->argi(1));
 	elements.setAmbientColour(el,1,c->argi(2));
 	elements.setAmbientColour(el,2,c->argi(3));
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -149,7 +149,7 @@ int CommandData::function_CA_ELEMENTDIFFUSE(Command *&c, Bundle &obj)
 	elements.setDiffuseColour(el,0,c->argi(1));
 	elements.setDiffuseColour(el,1,c->argi(2));
 	elements.setDiffuseColour(el,2,c->argi(3));
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -160,7 +160,7 @@ int CommandData::function_CA_ELEMENTRADIUS(Command *&c, Bundle &obj)
 	int el = elements.find(c->argc(0));
 	if (el == 0) return CR_FAIL;
 	elements.setAtomicRadius(el, c->argd(1));
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -182,7 +182,7 @@ int CommandData::function_CA_GL(Command *&c, Bundle &obj)
 	if (c->argb(1)) prefs.addGlOption(go);
 	else prefs.removeGlOption(go);
 	gui.mainView.initGl();
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -293,7 +293,7 @@ int CommandData::function_CA_SCHEME(Command *&c, Bundle &obj)
 		if (cs != Prefs::nColouringSchemes)
 		{
 			prefs.setColourScheme(cs);
-			if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+			if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 			gui.mainView.postRedisplay();
 		}
 		else return CR_FAIL;
@@ -306,7 +306,7 @@ int CommandData::function_CA_SCHEME(Command *&c, Bundle &obj)
 int CommandData::function_CA_SHININESS(Command *&c, Bundle &obj)
 {
 	prefs.setShininess(c->argi(0));
-	if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return CR_SUCCESS;
 }
@@ -320,7 +320,7 @@ int CommandData::function_CA_SHOWONSCREEN(Command *&c, Bundle &obj)
 		if (vo != Prefs::nViewObjects)
 		{
 			prefs.setVisibleOnScreen(vo, c->argb(1));
-			if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+			if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 			gui.mainView.postRedisplay();
 		}
 		else return CR_FAIL;
@@ -401,7 +401,7 @@ int CommandData::function_CA_STYLE(Command *&c, Bundle &obj)
 		if (ds != Atom::nDrawStyles)
 		{
 			prefs.setRenderStyle(ds);
-			if (obj.rs != NULL) obj.rs->logChange(Change::VisualLog);
+			if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 			gui.mainView.postRedisplay();
 		}
 		else return CR_FAIL;

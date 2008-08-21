@@ -54,14 +54,13 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	obj.m->calculateMass();
 	obj.m->calculateDensity();
 	obj.m->selectNone();
-	obj.m->resetLogs();
 	// Print out some useful info on the model that we've just read in
 	msg.print("Atoms  : %i\n",obj.m->nAtoms());
 	msg.print("Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
 	// Lastly, reset all the log points and start afresh
-	obj.m->resetLogs();
-	obj.m->updateSavePoint();
+	obj.m->changeLog.reset();
+	obj.m->changeLog.updateSavePoint();
 	return CR_SUCCESS;
 }
 

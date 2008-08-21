@@ -26,6 +26,7 @@
 #include "base/prefs.h"
 #include "classes/energystore.h"
 #include "classes/cell.h"
+#include "classes/log.h"
 #include "classes/measurement.h"
 #include "classes/glyph.h"
 #include "classes/undostate.h"
@@ -57,7 +58,7 @@ class Model
 	// List pointers
 	Model *prev, *next;
 	// Friend declarations
-	friend class Change;
+	friend class IdShiftEvent;
 
 	/*
 	// Model
@@ -108,30 +109,13 @@ class Model
 	// Copy range of atom data from specified model
 	void copyAtomData(Model*, int, int, int);
 
-	/*
-	// Logs
-	*/
-	private:
-	// Integer 'logs' of model changes
-	int logs_[Change::nChangeLogs];
-	// Log point of the last save / point on load
-	int savePoint_;
-	// Log point of the last projectAll() (Change::CoordinateLog+Change::CameraLog)
-	int projectionPoint_;
 
+	/*
+	// Log
+	*/
 	public:
-	// Increment specified log point of the model
-	void logChange(Change::ChangeLog);
-	// Return the log quantity specified
-	int log(Change::ChangeLog cl);
-	// Reset all logs to zero
-	void resetLogs();
-	// Copy logs from undostate
-	void copyLogs(int *sourcelogs);
-	// Set the save point log for the model
-	void updateSavePoint();
-	// Return if the model has been modified since last being saved
-	bool isModified();
+	Log changeLog;
+
 
 	/*
 	// Atoms
@@ -333,6 +317,8 @@ class Model
 	Vec3<double> camera_;
 	// Size of view for orthographic projection
 	double orthoSize_;
+	// Log point at the last projection (Log::Coordinate+Log::Camera)
+	int projectionPoint_;
 
 	public:
 	// Pre-generated display list for atoms

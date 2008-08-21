@@ -56,13 +56,14 @@ void Model::shiftSelectionUp()
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				Change *newchange = recordingState_->addChange();
-				newchange->set(Change::ShiftEvent,oldid,-1);
+				IdShiftEvent *newchange = new IdShiftEvent;
+				newchange->set(oldid, -1);
+				recordingState_->addEvent(newchange);
 			}
 		}
 		i = next;
 	}
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	msg.exit("Model::shiftSelectionUp");
 }
 
@@ -96,13 +97,14 @@ void Model::shiftSelectionDown()
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				Change *newchange = recordingState_->addChange();
-				newchange->set(Change::ShiftEvent,oldid,1);
+				IdShiftEvent *newchange = new IdShiftEvent;
+				newchange->set(oldid, 1);
+				recordingState_->addEvent(newchange);
 			}
 		}
 		i = next;
 	}
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	msg.exit("Model::shiftSelectionDown");
 }
 
@@ -122,7 +124,7 @@ void Model::moveSelectionToStart()
 	}
 	// Renumber atoms
 	renumberAtoms();
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	msg.exit("Model::moveSelectionToStart");
 }
 
@@ -142,7 +144,7 @@ void Model::moveSelectionToEnd()
 	}
 	// Renumber atoms
 	renumberAtoms();
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	msg.exit("Model::moveSelectionToEnd");
 }
 
@@ -163,7 +165,7 @@ Vec3<double> Model::selectionCog()
 void Model::selectionSetHidden(bool hidden)
 {
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setHidden(i, hidden);
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 }
 
 // Fix selected atom positions
@@ -185,7 +187,7 @@ void Model::selectionSetStyle(Atom::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setStyle(ds);
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 }
 
 // Select bound and selected atoms from the current atom

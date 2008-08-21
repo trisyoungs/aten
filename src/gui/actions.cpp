@@ -43,7 +43,7 @@ void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
 	// Inform the displayed model
 	m = aten.currentModel()->renderSource();
 	m->projectAll();
-	m->logChange(Change::VisualLog);
+	m->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 

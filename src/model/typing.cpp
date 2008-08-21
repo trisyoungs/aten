@@ -161,7 +161,7 @@ bool Model::typeAll()
 		msg.print("Done.\n");
 	}
 	// Log change in the model
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Model::typeAll");
 	return TRUE;
 }
@@ -296,6 +296,15 @@ void Model::selectionSetType(ForcefieldAtom *ffa, bool fixed)
 {
 	msg.enter("Pattern::selectionSetType");
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) setAtomtype(i, ffa, fixed);
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Pattern::selectionSetType");
+}
+
+// Remove typing from the model
+void Model::removeTyping()
+{
+	// Remove all atom typing from the current model
+	msg.enter("Model::removeTyping");
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) setAtomtype(i, NULL, FALSE);
+	msg.exit("Model::removeTyping");
 }

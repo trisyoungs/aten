@@ -47,12 +47,13 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos)
 	newatom->r() = pos;
 	mass_ += elements.atomicMass(newel);
 	calculateDensity();
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::AtomEvent,newatom);
+		AtomEvent *newchange = new AtomEvent;
+		newchange->set(TRUE, newatom);
+		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::addAtom");
 	return newatom;
@@ -71,14 +72,15 @@ Atom *Model::addCopy(Atom *source)
 	Atom *newatom = atoms_.add();
 	newatom->copy(source);
 	newatom->setId(atoms_.nItems() - 1);
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	mass_ += elements.atomicMass(newatom->element());
 	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::AtomEvent,newatom);
+		AtomEvent *newchange = new AtomEvent;
+		newchange->set(TRUE, newatom);
+		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::addCopy");
 	return newatom;
@@ -92,14 +94,15 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 	//printf("Adding copy after... %li %li\n",afterthis,source);
 	newatom->copy(source);
 	renumberAtoms(afterthis);
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	mass_ += elements.atomicMass(newatom->element());
 	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::AtomEvent,newatom);
+		AtomEvent *newchange = new AtomEvent;
+		newchange->set(TRUE,newatom);
+		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::addCopy");
 	return newatom;
@@ -116,12 +119,13 @@ void Model::removeAtom(Atom *xatom)
 	// Renumber the ids of all atoms in the list after this one
 	for (Atom *i = xatom->next; i != NULL; i = i->next) i->decreaseId();
 	if (xatom->isSelected()) deselectAtom(xatom);
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(-Change::AtomEvent,xatom);
+		AtomEvent *newchange = new AtomEvent;
+		newchange->set(FALSE,xatom);
+		recordingState_->addEvent(newchange);
 	}
 	atoms_.remove(xatom);
 	msg.exit("Model::removeAtom");
@@ -168,12 +172,13 @@ void Model::transmuteAtom(Atom *i, short int el)
 			i->setElement(el);
 			mass_ += elements.atomicMass(i);
 			calculateDensity();
-			logChange(Change::StructureLog);
+			changeLog.add(Log::Structure);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				Change *newchange = recordingState_->addChange();
-				newchange->set(Change::TransmuteEvent,i->id(),oldel,el);
+				TransmuteEvent *newchange = new TransmuteEvent;
+				newchange->set(i->id(),oldel,el);
+				recordingState_->addEvent(newchange);
 			}
 		}
 	}
@@ -281,7 +286,7 @@ void Model::zeroForcesFixed()
 void Model::setHidden(Atom *i, bool hidden)
 {
 	i->setHidden(hidden);
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 }
 
 // Normalise forces
@@ -312,13 +317,13 @@ void Model::normaliseForces(double norm)
 void Model::translateAtom(Atom *target, Vec3<double> delta)
 {
 	target->r() += delta;
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::TranslateEvent,target->id());
-		newchange->set(Change::TranslateEvent,&delta);
+		TranslateEvent *newchange = new TranslateEvent;
+		newchange->set(target->id(), delta);
+		recordingState_->addEvent(newchange);
 	}
 }
 
@@ -328,13 +333,13 @@ void Model::positionAtom(Atom *target, Vec3<double> newr)
 	static Vec3<double> delta;
 	delta = newr - target->r();
 	target->r() = newr;
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::TranslateEvent,target->id());
-		newchange->set(Change::TranslateEvent,&delta);
+		TranslateEvent *newchange = new TranslateEvent;
+		newchange->set(target->id(), delta);
+		recordingState_->addEvent(newchange);
 	}
 }
 
@@ -343,13 +348,12 @@ void Model::chargeAtom(Atom *target, double q)
 {
 	double oldcharge = target->charge();
 	target->setCharge(q);
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::ChargeEvent, target->id());
-		newchange->set(Change::ChargeEvent, oldcharge, q);
+		ChargeEvent *newchange = new ChargeEvent;
+		newchange->set(target->id(), oldcharge, q);
+		recordingState_->addEvent(newchange);
 	}
 }
-

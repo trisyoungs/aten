@@ -86,15 +86,11 @@ class GuiQt
 	bool saveBeforeClose();
 
 	/*
-	// Gui Refresh Functions
+	// Main Window Refresh Functions
 	*/
 	public:
-	// Update model tabs and lists
-	void updateModelLists();
-	// Update forcefield list
-	void updateForcefieldList();
-	// Update grid list
-	void updateGridList();
+	// Refresh window title
+	void updateWindowTitle();
 	// Update trajectory control widgets
 	void updateTrajControls();
 	// Refreshes all widgets to do with the model

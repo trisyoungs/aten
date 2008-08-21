@@ -43,13 +43,15 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 			// Check order of existing bond
 			if (b->order() != bt)
 			{
+				Bond::BondType oldtype = b->order();
 				b->setOrder(bt);
-				logChange(Change::StructureLog);
+				changeLog.add(Log::Structure);
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
-					Change *newchange = recordingState_->addChange();
-					newchange->set(Change::BondEvent,i->id(),j->id(),bt);
+					BondTypeEvent *newchange = new BondTypeEvent;
+					newchange->set(i->id(), j->id(), oldtype, bt);
+					recordingState_->addEvent(newchange);
 				}
 			}
 		}
@@ -60,12 +62,13 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 			b->setAtoms(i,j);
 			i->acceptBond(b);
 			j->acceptBond(b);
-			logChange(Change::StructureLog);
+			changeLog.add(Log::Structure);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				Change *newchange = recordingState_->addChange();
-				newchange->set(Change::BondEvent,i->id(),j->id(),bt);
+				BondEvent *newchange = new BondEvent;
+				newchange->set(TRUE, i->id(), j->id(), bt);
+				recordingState_->addEvent(newchange);
 			}
 		}
 	}
@@ -117,12 +120,13 @@ void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 	Bond::BondType bt = b->order();
 	b->atomI()->detachBond(b);
 	b->atomJ()->detachBond(b);
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(-Change::BondEvent,i->id(),j->id(),bt);
+		BondEvent *newchange = new BondEvent;
+		newchange->set(FALSE, i->id(), j->id(), bt);
+		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::unbondAtoms");
 }
@@ -144,7 +148,7 @@ void Model::clearBonding()
 			bref = i->bonds();
 		}
 	}
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	msg.exit("Model::clearBonding");
 }
 
@@ -305,12 +309,13 @@ void Model::changeBond(Bond *b, Bond::BondType bt)
 {
 	Bond::BondType oldorder = b->order();
 	b->setOrder(bt);
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::BondOrderEvent,b->atomI()->id(),b->atomJ()->id(),oldorder,bt);
+		BondTypeEvent *newchange = new BondTypeEvent;
+		newchange->set(b->atomI()->id(), b->atomJ()->id(), oldorder, bt);
+		recordingState_->addEvent(newchange);
 	}
 }
 

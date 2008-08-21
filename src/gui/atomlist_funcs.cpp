@@ -161,7 +161,7 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
 	aten.currentModel()->moveSelectionToStart();
-	aten.currentModel()->logChange(Change::StructureLog);
+	aten.currentModel()->changeLog.add(Log::Structure);
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -169,7 +169,7 @@ void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
 	aten.currentModel()->moveSelectionToEnd();
-	aten.currentModel()->logChange(Change::StructureLog);
+	aten.currentModel()->changeLog.add(Log::Structure);
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
@@ -204,7 +204,7 @@ void AtomlistRefreshThread::run()
 	// Set progress bar
 	gui.atomlistWindow->ui.RefreshProgressBar->setRange(0, m->nAtoms());
 	count = 0;
-	if (gui.atomlistWindow->listStructurePoint_ != (m->log(Change::StructureLog) + m->log(Change::CoordinateLog)))
+	if (gui.atomlistWindow->listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates)))
 	{
 		//printf("List must be cleared and repopulated...\n");
 		// Clear the current list
@@ -264,10 +264,10 @@ void AtomlistRefreshThread::run()
 			}
 		}
 		// Set new log points
-		gui.atomlistWindow->listStructurePoint_ = m->log(Change::StructureLog) + m->log(Change::CoordinateLog);
-		gui.atomlistWindow->listSelectionPoint_ = m->log(Change::SelectionLog);
+		gui.atomlistWindow->listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
+		gui.atomlistWindow->listSelectionPoint_ = m->changeLog.log(Log::Selection);
 	}
-	else if (gui.atomlistWindow->listSelectionPoint_ != m->log(Change::SelectionLog))
+	else if (gui.atomlistWindow->listSelectionPoint_ != m->changeLog.log(Log::Selection))
 	{
 		// If we haven't cleared and repopulated the list and the selection point is old, go through the list and apply the new atom selection
 		// Grab the list of TTreeWidgetItems
@@ -280,7 +280,7 @@ void AtomlistRefreshThread::run()
 			// Update progress bar
 			gui.atomlistWindow->ui.RefreshProgressBar->setValue(++count);
 		}
-		gui.atomlistWindow->listSelectionPoint_ = m->log(Change::SelectionLog);
+		gui.atomlistWindow->listSelectionPoint_ = m->changeLog.log(Log::Selection);
 	}
 	for (n=0; n<6; n++) gui.atomlistWindow->ui.AtomTree->resizeColumnToContents(n);
 	gui.atomlistWindow->refreshing_ = FALSE;
