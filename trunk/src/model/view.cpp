@@ -54,7 +54,7 @@ void Model::setRotationMatrix(Mat4<double> &rmat)
 {
 	rotationMatrix_ = rmat;
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 }
 
 // Return the current rotation matrix
@@ -85,7 +85,7 @@ void Model::setCameraRotation(double r)
 	cameraRotation_ = r;
 	calculateViewMatrix();
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 }
 
 // Return the current camera z-rotation
@@ -140,7 +140,7 @@ void Model::setRotation(double rotx, double roty)
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::setRotation");
 }
 
@@ -178,7 +178,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	}
 	calculateViewMatrix();
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::adjustCamera");
 }
 
@@ -192,7 +192,7 @@ void Model::adjustOrthoSize(double delta)
 	calculateViewMatrix();
 	gui.mainView.doProjection();
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::adjustOrthoSize");
 }
 
@@ -224,7 +224,7 @@ void Model::resetCamera(const Vec3<double> &newr)
 	// Recalculate viewing matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::resetCamera");
 }
 
@@ -289,7 +289,7 @@ void Model::resetView()
 	// Recalculate viewing matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::resetView");
 }
 
@@ -321,7 +321,7 @@ void Model::rotate(double dx, double dy)
 	// Recalculate view matrix
 	calculateViewMatrix();
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::rotate");
 }
 
@@ -341,10 +341,10 @@ void Model::projectAll()
 {
 	// Transform the model coordinates of all atoms into world GL and 2D screen coordinates
 	msg.enter("Model::projectAll");
-	if (projectionPoint_ != (logs_[Change::CoordinateLog] + logs_[Change::CameraLog]))
+	if (projectionPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera)))
 	{
 		if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) projectAtom(i);
-		projectionPoint_ = logs_[Change::CoordinateLog] + logs_[Change::CameraLog];
+		projectionPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera);
 	}
 	msg.exit("Model::projectAll");
 }
@@ -506,7 +506,7 @@ void Model::viewAlong(double x, double y, double z)
 	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
 	setRotation(-v.z,v.y);
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlong");
 }
 
@@ -522,7 +522,7 @@ void Model::viewAlongCell(double x, double y, double z)
 	// setRotation() expects the degrees of rotation about the x and y axes respectively, so give it phi and theta in the reverse order. 
 	setRotation(-v.z,v.y);
 	// Log camera change
-	logChange(Change::CameraLog);
+	changeLog.add(Log::Camera);
 	msg.exit("Model::viewAlongCell");
 }
 

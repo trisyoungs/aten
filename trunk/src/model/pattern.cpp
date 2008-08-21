@@ -47,7 +47,7 @@ Pattern *Model::lastPattern()
 // Return whether the patterns are valid
 bool Model::arePatternsValid()
 {
-	return (patternsPoint_ == logs_[Change::StructureLog] ? TRUE : FALSE);
+	return (patternsPoint_ == changeLog.log(Log::Structure) ? TRUE : FALSE);
 }
 
 // Return n'th pattern node
@@ -77,7 +77,7 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 		createPatternMolecules();
 		msg.print("Done.\n");
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
-		patternsPoint_ = logs_[Change::StructureLog];
+		patternsPoint_ = changeLog.log(Log::Structure);
 	}
 	else if ((start + mols*numatoms) > atoms_.nItems()) msg.print("New pattern '%s' extends %i atoms past number of atoms in owner model.\n",patname,(start + mols*numatoms) - atoms_.nItems());
 	msg.exit("Model::addPattern");
@@ -207,7 +207,7 @@ bool Model::autocreatePatterns()
 	if (atoms_.nItems() == 0)
 	{
 		msg.print("No patterns defined for model '%s' - no atoms present.\n",name_.get());
-		patternsPoint_ = logs_[Change::StructureLog];
+		patternsPoint_ = changeLog.log(Log::Structure);
 		msg.exit("Model::autocreatePatterns");
 		return TRUE;
 	}
@@ -329,7 +329,7 @@ bool Model::autocreatePatterns()
 	selectNone();
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
-	patternsPoint_ = logs_[Change::StructureLog];
+	patternsPoint_ = changeLog.log(Log::Structure);
 
 	msg.exit("Model::autocreatePatterns");
 	return TRUE;

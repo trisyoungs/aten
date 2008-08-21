@@ -39,7 +39,6 @@ Model::Model()
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
 	orthoSize_ = 5.0;
-	for (int n=0; n<Change::nChangeLogs; n++) logs_[n] = 0;
 	spacegroup_ = 0;
 	spacegroupSetting_ = 1;
 	mass_ = 0.0;
@@ -47,7 +46,6 @@ Model::Model()
 	translateScale_ = 1.0;
 	forcefield_ = NULL;
 	namesForcefield_ = NULL;
-	savePoint_ = 0;
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
 	filter_ = NULL;
@@ -118,6 +116,14 @@ Filter *Model::filter()
 // Sets the name of the model
 void Model::setName(const char *s)
 {
+	changeLog.add(Log::Misc);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		ModelRenameEvent *newchange = new ModelRenameEvent;
+		newchange->set(name_.get(), s);
+		recordingState_->addEvent(newchange);
+	}
 	name_ = s;
 }
 
@@ -139,24 +145,6 @@ double Model::density()
 	return density_;
 }
 
-// Log change
-void Model::logChange(Change::ChangeLog cl)
-{
-	if (cl >= Change::TotalLog) printf("Invalid log quantity passed.\n");
-	logs_[cl] ++;
-	// For all logs except Change::CameraLog we also update the total log
-	if (cl != Change::CameraLog) logs_[Change::TotalLog] ++;
-}
-
-// Copy logs
-void Model::copyLogs(int *newlogs)
-{
-	logs_[Change::StructureLog] = newlogs[Change::StructureLog];
-	logs_[Change::CoordinateLog] = newlogs[Change::CoordinateLog];
-	logs_[Change::SelectionLog] = newlogs[Change::SelectionLog];
-	logs_[Change::GlyphLog] = newlogs[Change::GlyphLog];
-}
-
 // Clear
 void Model::clear()
 {
@@ -165,7 +153,7 @@ void Model::clear()
 	patterns_.clear();
 	frames_.clear();
 	// Reset logs and log points
-	for (int n=0; n<Change::nChangeLogs; n++) logs_[n] = 0;
+	changeLog.reset();
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
 	projectionPoint_ = -1;
@@ -182,72 +170,6 @@ void Model::calculateMass()
 }
 
 /*
-// Forcefields
-*/
-
-// Assign charges from forcefield
-void Model::assignForcefieldCharges()
-{
-	// Assign atom-type charges from the currently associated forcefield to the model
-	// Perform forcefield typing if necessary
-	msg.enter("Model::assignForcefieldCharges");
-	Atom *i;
-	Forcefield *xff, *patff;
-	if (!arePatternsValid())
-	{
-		msg.print("Cannot assign atomic charges without a valid pattern setup.\n");
-		msg.exit("Model::assignForcefieldCharges");
-		return;
-	}
-	typeAll();
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
-	{
-		// Grab current model (global) forcefield
-		xff = forcefield_;	
-		patff = p->forcefield();
-		// Grab pattern forcefield in preference to model's
-		if (patff != NULL) xff = patff;
-		if (xff == NULL) msg.print("No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
-		else
-		{
-			i = p->firstAtom();
-			int ptotalatoms = p->totalAtoms();
-			int count = 0;
-			while (count < ptotalatoms)
-			{
-				chargeAtom(i, i->type()->charge());
-				i = i->next;
-				count ++;
-			}
-			// Charge atoms in representative pattern molecule
-			for (i = p->molecule->atoms(); i != NULL; i = i->next) chargeAtom(i, i->type()->charge());
-		}
-	}
-	msg.exit("Model::assignForcefieldCharges");
-}
-
-// Set model's forcefield
-void Model::setForcefield(Forcefield *newff)
-{
-	// Change the associated forcefield of the model to 'newff'
-	if (forcefield_ != newff)
-	{
-		invalidateExpression();
-		forcefield_ = newff;
-		msg.print("Forcefield '%s' now associated with model '%s'.\n",forcefield_->name(),name_.get());
-	}
-}
-
-// Remove typing from the model
-void Model::removeTyping()
-{
-	// Remove all atom typing from the current model
-	msg.enter("Model::removeTyping");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) setAtomtype(i, NULL, FALSE);
-	msg.exit("Model::removeTyping");
-}
-
-/*
 // Labelling
 */
 
@@ -259,8 +181,9 @@ void Model::addLabel(Atom *i, Atom::AtomLabel al)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::LabelEvent,i->id(),oldlabels,i->labels());
+		LabelEvent *newchange = new LabelEvent;
+		newchange->set(i->id(), oldlabels, i->labels());
+		recordingState_->addEvent(newchange);
 	}
 }
 
@@ -272,8 +195,9 @@ void Model::removeLabel(Atom *i, Atom::AtomLabel al)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(-Change::LabelEvent,i->id(),oldlabels,i->labels());
+		LabelEvent *newchange = new LabelEvent;
+		newchange->set(i->id(), oldlabels, i->labels());
+		recordingState_->addEvent(newchange);
 	}
 }
 
@@ -285,8 +209,9 @@ void Model::clearLabels(Atom *i)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::LabelEvent,i->id(),oldlabels,0);
+		LabelEvent *newchange = new LabelEvent;
+		newchange->set(i->id(), oldlabels, 0);
+		recordingState_->addEvent(newchange);
 	}
 }
 
@@ -366,7 +291,7 @@ void Model::bohrToAngstrom()
 		lengths *= ANGBOHR;
 		cell_.set(lengths,cell_.angles());
 	}
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Model::bohrToAngstrom");
 }
 
@@ -417,7 +342,7 @@ void Model::print()
 void Model::printLogs()
 {
 	msg.print("Logs for model '%s':\n",name_.get());
-	msg.print("Structure [%i], Coordinates [%i], Visual [%i], Selection [%i], Camera [%i], Glyph [%i], Total [%i]\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::VisualLog], logs_[Change::SelectionLog], logs_[Change::CameraLog], logs_[Change::GlyphLog], logs_[Change::TotalLog]);
+	changeLog.print();
 	msg.print("Expression point : %i\n", expressionPoint_);
 	msg.print("  Patterns point : %i\n", patternsPoint_);
 	msg.print("Projection point : %i\n", projectionPoint_);
@@ -528,32 +453,4 @@ double Model::calculateRmsForce()
 	rmsforce /= atoms_.nItems();
 	msg.exit("Model::calculateRmsForce");
 	return sqrt(rmsforce);
-}
-
-/*
-// Logs
-*/
-
-// Return the log quantity specified
-int Model::log(Change::ChangeLog cl)
-{
-	return logs_[cl];
-}
-
-// Reset all logs to zero
-void Model::resetLogs()
-{
-	for (int i=0; i<Change::nChangeLogs; i++) logs_[i] = 0;
-}
-
-// Set the save point log for the model
-void Model::updateSavePoint()
-{
-	savePoint_ = logs_[Change::StructureLog] + logs_[Change::CoordinateLog];
-}
-
-// Return if the model has been modified since last being saved
-bool Model::isModified()
-{
-	return (savePoint_ == (logs_[Change::StructureLog] + logs_[Change::CoordinateLog]) ? FALSE : TRUE);
 }

@@ -97,7 +97,6 @@ int CommandData::function_CA_CELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
-	obj.rs->logChange(Change::VisualLog);
 	obj.rs->calculateDensity();
 	return CR_SUCCESS;
 }
@@ -111,7 +110,6 @@ int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 	mat.rows[1] = c->arg3d(3);
 	mat.rows[2] = c->arg3d(6);
 	obj.rs->setCell(mat);
-	obj.rs->logChange(Change::VisualLog);
 	obj.rs->calculateDensity();
 	return CR_SUCCESS;
 }

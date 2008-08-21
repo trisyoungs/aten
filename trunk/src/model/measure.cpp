@@ -78,21 +78,22 @@ void Model::removeMeasurement(Measurement *me)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
+		MeasurementEvent *newchange = new MeasurementEvent;
 		Atom **atoms = me->atoms();
 		Measurement::MeasurementType type = me->type();
 		switch (type)
 		{
 			case (Measurement::DistanceMeasurement):
-				newchange->set(-Change::MeasurementEvent, type, atoms[0]->id(), atoms[1]->id());
+				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id());
 				break;
 			case (Measurement::AngleMeasurement):
-				newchange->set(-Change::MeasurementEvent, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
+				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 				break;
 			case (Measurement::TorsionMeasurement):
-				newchange->set(-Change::MeasurementEvent, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
+				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 				break;
 		}
+		recordingState_->addEvent(newchange);
 	}
 	measurements_.remove(me);
 	msg.exit("Model::removeMeasurement");
@@ -176,20 +177,21 @@ void Model::addMeasurement(Measurement::MeasurementType gt, Atom *first, ...)
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
-			Change *newchange = recordingState_->addChange();
+			MeasurementEvent *newchange = new MeasurementEvent;
 			atoms = newm->atoms();
 			switch (gt)
 			{
 				case (Measurement::DistanceMeasurement):
-					newchange->set(Change::MeasurementEvent, gt, atoms[0]->id(), atoms[1]->id());
+					newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id());
 					break;
 				case (Measurement::AngleMeasurement):
-					newchange->set(Change::MeasurementEvent, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
+					newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 					break;
 				case (Measurement::TorsionMeasurement):
-					newchange->set(Change::MeasurementEvent, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
+					newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 					break;
 			}
+			recordingState_->addEvent(newchange);
 		}
 	}
 	msg.exit("Model::addMeasurement");

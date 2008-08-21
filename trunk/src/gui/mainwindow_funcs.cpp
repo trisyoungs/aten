@@ -129,9 +129,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 	msg.enter("AtenForm::on_ModelTabs_currentChanged");
 	// Different model tab has been selected, so set aten.currentmodel to reflect it.
 	aten.setCurrentModel(aten.model(n));
-	gui.disorderWindow->refresh();
 	gui.modelChanged();
-	gui.updateTrajControls();
 	msg.exit("AtenForm::on_ModelTabs_currentChanged");
 }
 
@@ -145,8 +143,11 @@ void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
 	{
+		m->beginUndoState("Rename Model");
 		m->setName(qPrintable(text));
+		m->endUndoState();
 		ui.ModelTabs->setTabText(tabid, text);
+		gui.updateWindowTitle();
 		gui.disorderWindow->refresh();
 	}
 	msg.exit("AtenForm::on_ModelTabs_doubleClicked");
@@ -218,7 +219,7 @@ void AtenForm::loadRecent()
 	if (f != NULL)
 	{
 		f->execute(filename.get());
-		aten.currentModel()->logChange(Change::VisualLog);
+		aten.currentModel()->changeLog.add(Log::Visual);
 		gui.mainView.postRedisplay();
 	}
 	else

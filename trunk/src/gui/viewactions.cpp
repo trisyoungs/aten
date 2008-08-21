@@ -69,7 +69,7 @@ void AtenForm::on_actionViewModel_triggered(bool checked)
 	aten.currentModel()->setRenderFromSelf();
 	Model *m = aten.currentModel()->renderSource();
 	m->calculateViewMatrix();
-	m->logChange(Change::CameraLog);
+	m->changeLog.add(Log::Camera);
 	gui.modelChanged();
 }
 
@@ -79,7 +79,7 @@ void AtenForm::on_actionViewTrajectory_triggered(bool checked)
 	aten.currentModel()->setRenderFromFrames();
 	Model *m = aten.currentModel()->renderSource();
 	m->calculateViewMatrix();
-	m->logChange(Change::CameraLog);
+	m->changeLog.add(Log::Camera);
 	gui.modelChanged();
 }
 
@@ -161,7 +161,7 @@ void AtenForm::on_actionSchemeElement_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ElementScheme);
-	aten.currentModel()->renderSource()->logChange(Change::VisualLog);
+	aten.currentModel()->renderSource()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 
@@ -169,7 +169,7 @@ void AtenForm::on_actionSchemeCharge_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ChargeScheme);
-	aten.currentModel()->renderSource()->logChange(Change::VisualLog);
+	aten.currentModel()->renderSource()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }
 
@@ -177,6 +177,6 @@ void AtenForm::on_actionSchemeForce_triggered(bool checked)
 {
 	if (!checked) return;
 	prefs.setColourScheme(Prefs::ForceScheme);
-	aten.currentModel()->renderSource()->logChange(Change::VisualLog);
+	aten.currentModel()->renderSource()->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 }

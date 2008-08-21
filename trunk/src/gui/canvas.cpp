@@ -147,7 +147,7 @@ void Canvas::configure(int w, int h)
 	height_ = (float) h; //(float)contextWidget_->height();
 	doProjection();
 	// Flag that render source needs to be reprojected
-	if (displayModel_ != NULL) displayModel_->logChange(Change::VisualLog);
+	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
 }
 
 // Enable drawing

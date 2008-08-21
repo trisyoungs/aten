@@ -66,12 +66,13 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	// Set new axes 
 	cell_.set(lengths, angles);
 	calculateDensity();
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::CellEvent, &oldlengths, &oldangles, &lengths, &angles);
+		CellEvent *newchange = new CellEvent;
+		newchange->set(oldlengths, oldangles, lengths, angles);
+		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::setCell[vectors]");
 }
@@ -87,12 +88,13 @@ void Model::setCell(Mat3<double> axes)
 	// Set new axes 
 	cell_.set(axes);
 	calculateDensity();
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		Change *newchange = recordingState_->addChange();
-		newchange->set(Change::CellEvent, &oldlengths, &oldangles, &cell_.lengths(), &cell_.angles());
+		CellEvent *newchange = new CellEvent;
+		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles());
+		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::setCell[axes]");
 }
@@ -101,9 +103,15 @@ void Model::setCell(Mat3<double> axes)
 void Model::removeCell()
 {
 	msg.enter("Model::removeCell");
+	changeLog.add(Log::Visual);
+	changeLog.add(Log::Structure);
+	if (recordingState_ != NULL)
+	{
+		CellEvent *newchange = new CellEvent;
+		newchange->set(cell_.lengths(), cell_.angles(), cell_.lengths(), cell_.angles(), cell_.type() == Cell::NoCell, FALSE);
+		recordingState_->addEvent(newchange);
+	}
 	cell_.reset();
-	logChange(Change::VisualLog);
-	logChange(Change::StructureLog);
 	msg.exit("Model::removeCell");
 }
 
@@ -113,7 +121,7 @@ void Model::foldAllAtoms()
 	msg.enter("Model::foldAllAtoms");
 	// Standard fold - individual atoms
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) cell_.fold(i, this);
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Model::foldAllAtoms");
 }
 
@@ -149,7 +157,7 @@ void Model::foldAllMolecules()
 			}
 		}
 	}
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Model::foldAllMolecules");
 }
 
@@ -263,7 +271,7 @@ void Model::scaleCell(const Vec3<double> &scale)
 	}
 	// Set new cell and update model
 	setCell(newaxes);
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	msg.exit("Model::scaleCell");
 }
 
@@ -381,7 +389,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		aten.cancelProgress();
 	}
 
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	msg.exit("Model::replicateCell");
 }
 

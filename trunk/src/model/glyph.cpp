@@ -25,7 +25,7 @@
 // Create new glyph in this model
 Glyph *Model::addGlyph(Glyph::GlyphType gt)
 {
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 	Glyph *newglyph = glyphs_.add();
 	newglyph->setParent(this);
 	newglyph->setType(gt);

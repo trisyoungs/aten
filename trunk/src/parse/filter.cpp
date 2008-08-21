@@ -407,7 +407,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			msg.print("Model import %s.\n",(result ? "completed" : "failed"));
 			break;
 		case (Filter::ModelExport):
-			obj.rs->updateSavePoint();
+			obj.rs->changeLog.updateSavePoint();
 			commands_.closeFiles();
 			msg.print("Model export %s.\n",(result ? "completed" : "failed"));
 			break;

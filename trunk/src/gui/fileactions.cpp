@@ -60,7 +60,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 			addRecent(gui.loadModelDialog->selectedFilename());
 		}
 		refreshModelTabs();
-		aten.currentModel()->logChange(Change::VisualLog);
+		aten.currentModel()->changeLog.add(Log::Visual);
 		gui.modelChanged();
 	}
 }
@@ -133,7 +133,7 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 	char text[512];
 	Filter *f;
 	Model *m = aten.currentModel();
-	if (m->isModified())
+	if (m->changeLog.isModified())
 	{
 		// Create a model message dialog
 		sprintf(text, "Model '%s' has been modified.\n", m->name());

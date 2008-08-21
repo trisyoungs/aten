@@ -32,12 +32,13 @@ void Model::selectAtom(Atom *i)
 	{
 		i->setSelected(TRUE);
 		nSelected_ ++;
-		logChange(Change::SelectionLog);
+		changeLog.add(Log::Selection);
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
-			Change *newchange = recordingState_->addChange();
-			newchange->set(Change::SelectEvent,i->id());
+			SelectEvent *newchange = new SelectEvent;
+			newchange->set(TRUE, i->id());
+			recordingState_->addEvent(newchange);
 		}
 	}
 }
@@ -56,12 +57,13 @@ void Model::deselectAtom(Atom *i)
 	{
 		i->setSelected(FALSE);
 		nSelected_ --;
-		logChange(Change::SelectionLog);
+		changeLog.add(Log::Selection);
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
-			Change *newchange = recordingState_->addChange();
-			newchange->set(-Change::SelectEvent,i->id());
+			SelectEvent *newchange = new SelectEvent;
+			newchange->set(FALSE, i->id());
+			recordingState_->addEvent(newchange);
 		}
 	}
 }
@@ -297,7 +299,7 @@ void Model::selectType(int element, const char *typedesc)
 		}
 	}
 	// Update model
-	logChange(Change::SelectionLog);
+	changeLog.add(Log::Selection);
 	// Write results
 	msg.print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
 	msg.exit("Model::selectType");

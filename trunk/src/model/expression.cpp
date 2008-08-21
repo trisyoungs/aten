@@ -45,13 +45,66 @@ Forcefield *Model::namesForcefield()
 // Return whether the expression is valid
 bool Model::isExpressionValid()
 {
-	return (expressionPoint_ == logs_[Change::StructureLog] ? TRUE : FALSE);
+	return (expressionPoint_ == changeLog.log(Log::Structure) ? TRUE : FALSE);
 }
 
 // Manually invalidates the expression
 void Model::invalidateExpression()
 {
 	expressionPoint_  = -1;;
+}
+
+// Assign charges from forcefield
+void Model::assignForcefieldCharges()
+{
+	// Assign atom-type charges from the currently associated forcefield to the model
+	// Perform forcefield typing if necessary
+	msg.enter("Model::assignForcefieldCharges");
+	Atom *i;
+	Forcefield *xff, *patff;
+	if (!arePatternsValid())
+	{
+		msg.print("Cannot assign atomic charges without a valid pattern setup.\n");
+		msg.exit("Model::assignForcefieldCharges");
+		return;
+	}
+	typeAll();
+	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	{
+		// Grab current model (global) forcefield
+		xff = forcefield_;	
+		patff = p->forcefield();
+		// Grab pattern forcefield in preference to model's
+		if (patff != NULL) xff = patff;
+		if (xff == NULL) msg.print("No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
+		else
+		{
+			i = p->firstAtom();
+			int ptotalatoms = p->totalAtoms();
+			int count = 0;
+			while (count < ptotalatoms)
+			{
+				chargeAtom(i, i->type()->charge());
+				i = i->next;
+				count ++;
+			}
+			// Charge atoms in representative pattern molecule
+			for (i = p->molecule->atoms(); i != NULL; i = i->next) chargeAtom(i, i->type()->charge());
+		}
+	}
+	msg.exit("Model::assignForcefieldCharges");
+}
+
+// Set model's forcefield
+void Model::setForcefield(Forcefield *newff)
+{
+	// Change the associated forcefield of the model to 'newff'
+	if (forcefield_ != newff)
+	{
+		invalidateExpression();
+		forcefield_ = newff;
+		msg.print("Forcefield '%s' now associated with model '%s'.\n",forcefield_->name(),name_.get());
+	}
 }
 
 // Create full forcefield expression for model
@@ -114,7 +167,7 @@ bool Model::createExpression(bool vdwOnly)
 				break;
 		}
 	}
-	expressionPoint_ = logs_[Change::StructureLog];
+	expressionPoint_ = changeLog.log(Log::Structure);
 	msg.exit("Model::createExpression");
 	return TRUE;
 }

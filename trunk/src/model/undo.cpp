@@ -49,11 +49,9 @@ void Model::beginUndoState(const char *text)
 	// Create a new state for us to add to
 	recordingState_ = new UndoState;
 	recordingState_->setDescription(text);
-	recordingState_->setStartLog(Change::StructureLog, logs_[Change::StructureLog]);
-	recordingState_->setStartLog(Change::CoordinateLog, logs_[Change::CoordinateLog]);
-	recordingState_->setStartLog(Change::SelectionLog, logs_[Change::SelectionLog]);
+	recordingState_->setStartLogs(changeLog);
 	msg.print(Messenger::Verbose,"Undo list prepped for new state.\n");
-	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
+	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
 	msg.exit("Model::beginUndoState");
 }
 
@@ -75,9 +73,7 @@ void Model::endUndoState()
 		msg.exit("Model::endUndoState");
 		return;
 	}
-	recordingState_->setEndLog(Change::StructureLog, logs_[Change::StructureLog]);
-	recordingState_->setEndLog(Change::CoordinateLog, logs_[Change::CoordinateLog]);
-	recordingState_->setEndLog(Change::SelectionLog, logs_[Change::SelectionLog]);
+	recordingState_->setEndLogs(changeLog);
 	// Delete all redo (i.e. future) states from the undo list
 	if (currentUndoState_ == NULL) undoStates_.clear();
 	else for (UndoState *u = currentUndoState_->next; u != NULL; u = undoStates_.removeAndGetNext(u)); 
@@ -86,7 +82,7 @@ void Model::endUndoState()
 	// Set the current undo level to the new state and nullify the pointer
 	currentUndoState_ = recordingState_;
 	msg.print(Messenger::Verbose,"Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndoState_->nChanges());
-	msg.print(Messenger::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", logs_[Change::StructureLog], logs_[Change::CoordinateLog], logs_[Change::SelectionLog]);
+	msg.print(Messenger::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
@@ -105,10 +101,10 @@ void Model::undo()
 	{
 		// Undo the changes
 		currentUndoState_->undo(this);
-		logs_[Change::StructureLog] = currentUndoState_->startLog(Change::StructureLog);
-		logs_[Change::CoordinateLog] = currentUndoState_->startLog(Change::CoordinateLog);
-		// Log a visual change if necessary
-		if (currentUndoState_->doLogsDiffer()) logChange(Change::VisualLog);
+		changeLog.setLog(Log::Structure, currentUndoState_->startLog(Log::Structure));
+		changeLog.setLog(Log::Coordinates, currentUndoState_->startLog(Log::Coordinates));
+		// Log a visual change 
+		changeLog.add(Log::Visual);
 		// Set new undo/redo pointers
 		currentRedoState_ = currentUndoState_;
 		currentUndoState_ = currentUndoState_->prev;
@@ -126,10 +122,10 @@ void Model::redo()
 	{
 		// Undo the changes
 		currentRedoState_->redo(this);
-		logs_[Change::StructureLog] = currentRedoState_->endLog(Change::StructureLog);
-		logs_[Change::CoordinateLog] = currentRedoState_->endLog(Change::CoordinateLog);
+		changeLog.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
+		changeLog.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
 		// Log a visual change if necessary
-		if (currentRedoState_->doLogsDiffer()) logChange(Change::VisualLog);
+		if (currentRedoState_->doLogsDiffer()) changeLog.add(Log::Visual);
 		// Set new undo/redo pointers
 		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;
@@ -152,6 +148,6 @@ void Model::listUndoStates()
 		else suffix[0] = '\0';
 		printf(" %3i : '%s'\n", count, u->description());
 		printf("       Ptr=%li, %4i changes %s\n", u, u->nChanges(), suffix);
-		u->print(this);
+		u->print();
 	}	
 }

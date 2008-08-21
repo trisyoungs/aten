@@ -75,17 +75,17 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const cha
 	// Go through list of atoms in 'originalr', work out delta, and store
 	if (recordingState_ != NULL)
 	{
-		Change *newchange;
+		TranslateEvent *newchange;
 		Vec3<double> delta;
 		for (Refitem< Atom,Vec3<double> > *ri = originalr.first(); ri != NULL; ri = ri->next)
 		{
 			delta = ri->item->r() - ri->data;
-			newchange = recordingState_->addChange();
-			newchange->set(Change::TranslateEvent,ri->item->id());
-			newchange->set(Change::TranslateEvent,&delta);
+			newchange = new TranslateEvent;
+			newchange->set(ri->item->id(), delta);
+			recordingState_->addEvent(newchange);
 		}
 	}
-	logChange(Change::CoordinateLog);
+	changeLog.add(Log::Coordinates);
 	projectAll();
 	endUndoState();
 }
@@ -119,7 +119,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		newr = (rotmat * newr) + localcog;
 		i->r() = (viewMatrixInverse_ * newr) + cell_.centre();;
 	}
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 	projectSelection();
 	msg.exit("Model::rotateSelectionWorld");
 }
@@ -168,7 +168,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 		//i->r() = tempv;
 		i = i->nextSelected();
 	}
-	logChange(Change::StructureLog);
+	changeLog.add(Log::Structure);
 	msg.exit("Model::rotateSelectionVector");
 }
 
@@ -201,7 +201,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v)
 		newr = (viewMatrixInverse_ * newr) + cell_.centre();
 		positionAtom(i, newr);
 	}
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 	projectSelection();
 	msg.exit("Model::translateSelectionWorld");
 }
@@ -212,7 +212,7 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec)
 	// Translate the model's current selection by the vector supplied.
 	msg.enter("Model::translateSelectionLocal");
 	for (Atom *i = firstSelected(); i != NULL; i = i->nextSelected()) translateAtom(i,tvec);
-	//logChange(Change::VisualLog);
+	//changeLog.add(Log::Visual);
 	projectSelection();
 	msg.exit("Model::translateSelectionLocal");
 }
@@ -240,7 +240,7 @@ void Model::mirrorSelectionLocal(int axis)
 		// Store new coordinate
 		//positionAtom(i, mimd + cog);
 	}
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 	projectSelection();
 	msg.exit("Model::mirrorSelectionLocal");
 }
@@ -266,7 +266,7 @@ void Model::matrixTransformSelection(Vec3<double> origin, Mat3<double> matrix)
 		newr *= matrix;
 		positionAtom(i, newr);
 	}
-	logChange(Change::VisualLog);
+	changeLog.add(Log::Visual);
 	projectSelection();
 	msg.exit("Model::matrixTransformSelection");
 }

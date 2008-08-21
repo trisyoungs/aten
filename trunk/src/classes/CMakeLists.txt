@@ -16,12 +16,14 @@ forcefieldbound.h
 forcefieldparams.h 
 glyph.h 
 grid.h 
+log.h
 measurement.h 
 pattern.h 
 region.h 
 restraint.h 
 ring.h 
 site.h 
+undoevent.h 
 undostate.h 
 atomaddress.cpp 
 atom.cpp 
@@ -40,12 +42,14 @@ forcefieldbound.cpp
 forcefieldparams.cpp 
 glyph.cpp 
 grid.cpp 
+log.cpp
 measurement.cpp 
 pattern.cpp 
 region.cpp 
 restraint.cpp 
 ring.cpp 
 site.cpp 
+undoevent.cpp 
 undostate.cpp 
 )
 

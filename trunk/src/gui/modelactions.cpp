@@ -43,9 +43,7 @@ void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
 {
 	Model *m = aten.currentModel();
-	char s[128];
-	sprintf(s,"Fold all atoms");
-	m->beginUndoState(s);
+	m->beginUndoState("Fold all atoms");
 	m->foldAllAtoms();
 	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
@@ -54,9 +52,7 @@ void AtenForm::on_actionModelFoldAtoms_triggered(bool checked)
 void AtenForm::on_actionModelFoldMolecules_triggered(bool checked)
 {
 	Model *m = aten.currentModel();
-	char s[128];
-	sprintf(s,"Fold all molecules");
-	m->beginUndoState(s);
+	m->beginUndoState("Fold all molecules");
 	m->foldAllMolecules();
 	m->endUndoState();
 	gui.modelChanged(TRUE,FALSE,FALSE);
@@ -70,7 +66,6 @@ void AtenForm::on_actionModelNext_triggered(bool checked)
 	if (newid > (aten.nModels() - 1)) newid = 0;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
-	gui.updateTrajControls();
 }
 
 void AtenForm::on_actionModelPrevious_triggered(bool checked)
@@ -81,7 +76,6 @@ void AtenForm::on_actionModelPrevious_triggered(bool checked)
 	if (newid < 0) newid = aten.nModels() - 1;
 	// Activate new model tab
 	ui.ModelTabs->setCurrentIndex(newid);
-	gui.updateTrajControls();
 }
 
 void AtenForm::on_actionModelShowAll_triggered(bool checked)
@@ -89,7 +83,7 @@ void AtenForm::on_actionModelShowAll_triggered(bool checked)
 	// Make all atoms in model visible
 	Model *m = aten.currentModel();
 	for (Atom *i = m->atoms(); i != NULL; i = i->next) m->setHidden(i, FALSE);
-	m->logChange(Change::VisualLog);
+	m->changeLog.add(Log::Visual);
 }
 
 void AtenForm::on_actionModelRename_triggered(bool checked)
@@ -99,7 +93,10 @@ void AtenForm::on_actionModelRename_triggered(bool checked)
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
 	{
+		m->beginUndoState("Rename Model");
 		m->setName(qPrintable(text));
+		m->endUndoState();
 		refreshModelTabs();
+		gui.updateWindowTitle();
 	}
 }
