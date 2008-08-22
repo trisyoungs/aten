@@ -43,8 +43,8 @@ class Ring
 	private:
 	// List of referenced atoms
 	Reflist<Atom,int> atoms_;
-	// List of referenced bonds
-	Reflist<Bond,int> bonds_;
+	// List of referenced bonds (and their types)
+	Reflist<Bond,Bond::BondType> bonds_;
 	// Requested size of ring when ring searching
 	int requestedSize_;
 
@@ -54,7 +54,7 @@ class Ring
 	// Return last referenced atom
 	Refitem<Atom,int> *lastAtom();
 	// Return first referenced bond
-	Refitem<Bond,int> *bonds();
+	Refitem<Bond,Bond::BondType> *bonds();
 	// Return size of atom reflist
 	int nAtoms();
 	// Search ring list for specified atom
@@ -69,6 +69,10 @@ class Ring
 	void removeAtom(Refitem<Atom,int>*);
 	// Flag the atoms involved in the ring as being aromatic
 	void setAromatic();
+	// Store current bond types for referenced bonds
+	void storeBondTypes();
+	// Recall stored bond orders for referenced bonds
+	void recallBondTypes();
 	// Return the total bond order penalty of atoms in the ring
 	int totalBondOrderPenalty();
 

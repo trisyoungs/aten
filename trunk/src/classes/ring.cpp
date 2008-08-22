@@ -75,7 +75,7 @@ int Ring::nAtoms()
 }
 
 // Return first referenced bond
-Refitem<Bond,int> *Ring::bonds()
+Refitem<Bond,Bond::BondType> *Ring::bonds()
 {
 	return bonds_.first();
 }
@@ -136,9 +136,17 @@ int Ring::totalBondOrderPenalty()
 	return result;
 }
 
-/*
-// Methods
-*/
+// Store current bond types for referenced bonds
+void Ring::storeBondTypes()
+{
+	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->data = rb->item->type();
+}
+
+// Recall stored bond orders for referenced bonds
+void Ring::recallBondTypes()
+{
+	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->data = rb->item->type();
+}
 
 // Set aromatic
 void Ring::setAromatic()
@@ -148,11 +156,15 @@ void Ring::setAromatic()
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
 		ra->item->setEnvironment(Atomtype::AromaticEnvironment);
 	// Set bonds to be Bond::Aromatic
-	for (Refitem<Bond,int> *rb = bonds_.first(); rb != NULL; rb = rb->next)
+	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next)
 		rb->item->setType(Bond::Aromatic);
 	printf("Oooh - an aromatic ring\n");
 	msg.exit("Ring::setAromatic");
 }
+
+/*
+// Methods
+*/
 
 // Finalise ring
 void Ring::finalise()

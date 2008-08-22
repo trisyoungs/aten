@@ -9,15 +9,16 @@ double rcc, deltaz
 $nbenz = 10
 # C-C bond length is given by rcc
 $rcc = 1.39
-# Number of stacks of molecules to generate (length of tube)
-$nstacks = 3
+# Number of stacks of molecules to generate (length of tube, will be doubled later on)
+$nstacks = 5
 # Rotation increment around circumference is deltaz
 $deltaz = 360.0/($nbenz*2.0)
 
 # Create target model
 newmodel buckytube
 
-# Draw terminating hydrogens at first end
+$nstacks *= 2
+$nstacks -= 1
 
 # Outer loop - loop over stacks
 for $stack,1,$nstacks

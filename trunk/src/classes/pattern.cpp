@@ -707,7 +707,7 @@ Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 
 void Pattern::propagateAtomtypes()
 {
-	// Copy type information contained in the first molecule in the pattern to all other molecules in the pattern, and the pattern's representative molecule
+	// Copy type information contained in the first molecule in the pattern to all other molecules in the pattern
 	msg.enter("Pattern::propagateAtomtypes");
 	Atom *i, *j;
 	int n, m;
@@ -1050,6 +1050,7 @@ void Pattern::augmentOLD()
 	msg.enter("Pattern::augment");
 	Atom *i;
 	Refitem<Bond,int> *bref, *heavybond;
+	Refitem<Bond,Bond::BondType> *rb;
 	Refitem<Atom,int> *aref;
 	int n, nHeavy, pielec, remainder;
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
@@ -1096,8 +1097,8 @@ void Pattern::augmentOLD()
 		// Get current total bond-order penalty of atoms in ring
 		
 		// Loop over bonds in ring
-		for (bref = r->bonds(); bref != NULL; bref = bref->next)
-			parent_->changeBond(bref->item, bref->item->augmented());
+		for (rb = r->bonds(); rb != NULL; rb = rb->next)
+			parent_->changeBond(rb->item, rb->item->augmented());
 // 		// Determine if the ring is aromatic
 // 		pielec = 0;
 // 		for (bref = r->bonds(); bref != NULL; bref = bref->next)
@@ -1155,14 +1156,30 @@ void Pattern::augmentOLD()
 	msg.exit("Pattern::augment");
 }
 
+// Return total bond order penalty of atoms in one molecule of the pattern
+int Pattern::totalBondOrderPenalty()
+{
+	Atom *i = firstAtom_;
+	int result = 0;
+	for (int n=0; n<nAtoms_; n++)
+	{
+		result += elements.bondOrderPenalty(i, i->totalBondOrder()/2);
+		i = i->next;
+	}
+	return result;
+}
+
 // New augmentation code
 void Pattern::augment()
 {
 	msg.enter("Pattern::augment");
-	Atom *i;
+	Atom *i, *iprev, *inext;
+	Refitem<Bond,Bond::BondType> *rb;
 	Refitem<Bond,int> *bref, *heavybond;
 	Refitem<Atom,int> *aref;
-	int n, nHeavy, pielec, remainder, totalpenalty, ringpenalty;
+	Bond *b1, *b2, *b3;
+	Bond::BondType bt;
+	int n, nHeavy, pielec, remainder, totalpenalty, ringpenalty, newpenalty, tboi, tboj;
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
 	/*
 	Assume the structure is chemically 'correct' - i.e. each element is bound to a likely
@@ -1201,39 +1218,131 @@ void Pattern::augment()
 		else i->tempi = 0;
 		i = i->next;
 	}
-	// Copy a representative pattern molecule to work on
-	Model molecule;
-	Clipboard clip;
-	// Just select the first molecule in the pattern, and copy-paste to the model
-	parent_->selectNone();
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
+	// Stage 2 - Augment within cycles
+// 	for (Ring *r = rings_.first(); r != NULL; r = r->next)
+// 		for (rb = r->bonds(); rb != NULL; rb = rb->next)
+// 			parent_->changeBond(rb->item, rb->item->augmented());
+	// Stage 3 - Augmenting all remaining atoms
+// 	i = firstAtom_;
+// 	for (n=0; n<nAtoms_; n++)
+// 	{
+// 		if (i->tempi == 1)
+// 		{
+// 			i = i->next;
+// 			continue;
+// 		}
+// 		for (bref = i->bonds(); bref != NULL; bref = bref->next)
+// 			parent_->changeBond(bref->item, bref->item->augmented());
+// 		i = i->next;
+// 	}
+	// Stage 4 - Attempt to fix any problems, mostly with (poly)cyclic systems
+	// Get total, reference bond order penalty for the molecule - we will try to reduce this as much as possible if we can
+	totalpenalty = totalBondOrderPenalty();
+	msg.print(Messenger::Verbose, "Bond order penalty after first pass is %i.\n", totalpenalty);
+	if (totalpenalty > 0)
 	{
-		parent_->selectAtom(i);
-		i = i->next;
+		msg.print("Augmentation second pass...\n");
+		// Construct bond reference list for the first molecule, storing current bond type in extradata for our base reference
+		Reflist<Bond,Bond::BondType> bondlist;
+		Refitem<Bond,Bond::BondType> *bi;
+		i = firstAtom_;
+		for (n=0; n<nAtoms_; n++)
+		{
+			for (bref = i->bonds(); bref != NULL; bref = bref->next) bondlist.addUnique(bref->item, bref->item->type());
+			i = i->next;
+		}
+		// First, search for atoms in rings that have a bond order penalty
+		for (Ring *r = rings_.first(); r != NULL; r = r->next)
+		{
+			// Try a straight augmentation of the ring first...
+			for (rb = r->bonds(); rb != NULL; rb = rb->next)
+				parent_->changeBond(rb->item, rb->item->augmented());
+
+			// Get current total bond-order penalty of atoms in ring
+			ringpenalty = r->totalBondOrderPenalty();
+			if (ringpenalty == 0) continue;
+			// Store current bond types in the ring bondlist's extradata so we can undo any changes
+			r->storeBondTypes();
+
+			// Find a double bond in the current ring, and convert into one single and two double bonds
+ 			for (aref = r->atoms(); aref != NULL; aref = aref->next)
+			{
+				b2 = aref->item->findBond(r->getNext(aref)->item);
+				if (b2->type() != Bond::Double) continue;
+				// Get bond neighbours
+				b1 = aref->item->findBond(r->getPrev(aref)->item);
+				b3 = r->getNext(aref)->item->findBond(r->getNext(r->getNext(aref))->item);
+				b1->setType(Bond::Double);
+				b2->setType(Bond::Single);
+				b3->setType(Bond::Double);
+				// Get new total bond order for ring - if we've made things worse, revert and try another bond
+				newpenalty = totalBondOrderPenalty();
+				if (newpenalty > ringpenalty)
+				{
+					r->recallBondTypes();
+					continue;
+				}
+				// Otherwise, try to re-augment other atoms in the ring
+ 				for (rb = r->bonds(); rb != NULL; rb = rb->next)
+ 					parent_->changeBond(rb->item, rb->item->augmented());
+				// Check total again - if less than the previous 'ringpenalty' than store new bonds and continue
+				newpenalty = r->totalBondOrderPenalty();
+				if (newpenalty < ringpenalty)
+				{
+					r->storeBondTypes();
+					totalpenalty = totalpenalty - ringpenalty + newpenalty;
+					ringpenalty = newpenalty;
+					printf("New total penalty = %i\n", totalpenalty);
+				}
+				else r->recallBondTypes();
+				if (newpenalty == 0) break;
+			}
+
+// 			// Loop over atoms in ring, swapping bonds and attempting re-augmentation
+// 			for (aref = r->atoms(); aref != NULL; aref = aref->next)
+// 			{
+// 				printf("Swapping bonds at atom %i and re-augmenting...\n", aref->item->id()+1);
+// 				inext = r->getNext(aref)->item;
+// 				iprev = r->getPrev(aref)->item;
+// 				newpenalty = elements.bondOrderPenalty(inext, inext->totalBondOrder()/2);
+// 				newpenalty += elements.bondOrderPenalty(iprev, iprev->totalBondOrder()/2);
+// 				b1 = aref->item->findBond(inext);
+// 				b2 = aref->item->findBond(iprev);
+// 				bt = b1->type();
+// 				b1->setType(b2->type());
+// 				b2->setType(bt);
+// 				tboi = elements.bondOrderPenalty(inext, inext->totalBondOrder()/2);
+// 				tboj = elements.bondOrderPenalty(iprev, iprev->totalBondOrder()/2);
+// 				// Reject swap moves that make the total bond order worse
+// 				if ((tboi+tboj) > newpenalty)
+// 				{
+// 					bt = b1->type();
+// 					b1->setType(b2->type());
+// 					b2->setType(bt);
+// 					continue;
+// 				}
+// 				// Re-augment atoms in ring
+// 				for (rb = r->bonds(); rb != NULL; rb = rb->next)
+// 					parent_->changeBond(rb->item, rb->item->augmented());
+// 				// Check total again - if less than the previous 'ringpenalty' than store new bonds and continue
+// 				newpenalty = r->totalBondOrderPenalty();
+// 				if (newpenalty < ringpenalty)
+// 				{
+// 					r->storeBondTypes();
+// 					totalpenalty = totalpenalty - ringpenalty + newpenalty;
+// 					ringpenalty = newpenalty;
+// 					printf("New total penalty = %i\n", totalpenalty);
+// 				}
+// 				else r->recallBondTypes();
+// 				if (newpenalty == 0) break;
+// 			}
+
+
+		}
+		msg.print(Messenger::Verbose, "Bond order penalty after second pass is %i.\n", totalpenalty);
 	}
-	// Copy selection which now represents one molecule of this pattern
-	clip.copySelection(parent_);
-	clip.pasteToModel(&molecule);
-	// Construct bond reference list for the molecule model, storing current bond type as extradata
-	Reflist<Bond,Bond::BondType> bondlist;
-	Refitem<Bond,Bond::BondType> *bi;
-	for (i = molecule.atoms(); i != NULL; i = i->next)
-		for (bref = i->bonds(); bref != NULL; bref = bref->next) bondlist.addUnique(bref->item, bref->item->type());
-	// Get total, reference bond order penalty for the molecule
-	totalpenalty = molecule.totalBondOrderPenalty();
-	// Now, attempt to 'fix' any atoms that have non-zero bond order penalties
-	// First, try within rings...
-	for (Ring *r = rings_.first(); r != NULL; r = r->next)
-	{
-		// Get current total bond-order penalty of atoms in ring
-		ringpenalty = r->totalBondOrderPenalty();
-		if (ringpenalty == 0) continue;
-		// Loop over bonds in ring
-		for (bref = r->bonds(); bref != NULL; bref = bref->next)
-			parent_->changeBond(bref->item, bref->item->augmented());
-	}
-	//propagateBondTypes();
+	// Copy bond types from extradata back into first pattern molecule, using the parent_ so it may be undone
+	propagateBondTypes();
 	msg.exit("Pattern::augment");
 }
 
