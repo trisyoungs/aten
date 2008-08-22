@@ -145,7 +145,7 @@ void Ring::storeBondTypes()
 // Recall stored bond orders for referenced bonds
 void Ring::recallBondTypes()
 {
-	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->data = rb->item->type();
+	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->item->setType(rb->data);
 }
 
 // Set aromatic
