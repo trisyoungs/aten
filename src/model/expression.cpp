@@ -89,7 +89,7 @@ void Model::assignForcefieldCharges()
 				count ++;
 			}
 			// Charge atoms in representative pattern molecule
-			for (i = p->molecule->atoms(); i != NULL; i = i->next) chargeAtom(i, i->type()->charge());
+			// DELETE for (i = p->molecule->atoms(); i != NULL; i = i->next) chargeAtom(i, i->type()->charge());
 		}
 	}
 	msg.exit("Model::assignForcefieldCharges");

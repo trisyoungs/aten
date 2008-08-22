@@ -74,16 +74,16 @@ void Clipbond::setAtoms(Clipatom *i, Clipatom *j)
 	atomJ_ = j;
 }
 
-// Set bond order
-void Clipbond::setOrder(Bond::BondType bt)
+// Set bond type
+void Clipbond::setType(Bond::BondType bt)
 {
-	order_ = bt;
+	type_ = bt;
 }
 
-// Return order of bond
-Bond::BondType Clipbond::order()
+// Return type of bond
+Bond::BondType Clipbond::type()
 {
-	return order_;
+	return type_;
 }
 
 // Return first atom in bond
@@ -169,7 +169,7 @@ void Clipboard::copyBonds()
 			{
 				Clipbond *b = bonds_.add();
 				b->setAtoms(ii, jj);
-				b->setOrder(oldbond->order());
+				b->setType(oldbond->type());
 			}
 		}
 	}
@@ -324,7 +324,7 @@ void Clipboard::pasteBonds(Model *m)
 	msg.enter("Clipboard::pasteBonds");
 	// By this point, bondi and bondj pointers in the bondlist will refer to clipatom* pointers
 	for (Clipbond *b = bonds_.first(); b != NULL; b = b->next)
-		m->bondAtoms(b->atomI()->atomPointer(), b->atomJ()->atomPointer(), b->order());
+		m->bondAtoms(b->atomI()->atomPointer(), b->atomJ()->atomPointer(), b->type());
 	msg.exit("Clipboard::pasteBonds");
 }
 

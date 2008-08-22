@@ -32,23 +32,23 @@ class Bond
 	// Constructor
 	Bond();
 	// Bond types
-	enum BondType { Unspecified, Single, Double, Triple, nBondTypes };
+	enum BondType { Any, Single, Double, Triple, Aromatic, nBondTypes };
 	// Bond type from text
 	static BondType bondType(const char *s);
-	// Bond type from integer
-	static BondType bondType(int i);
+	// Bond type from order
+	static BondType bondType(double order);
 	// BondType Keywords
 	static const char *bondType(BondType);
-	// Increase BondType (instead of defining postfix increment)
-	static BondType increaseBondType(BondType);
-	// Increase BondType (instead of defining postfix increment)
-	static BondType decreaseBondType(BondType);
+	// Increase simple BondType (instead of defining postfix increment)
+	static BondType increase(BondType);
+	// Decrease simple BondType (instead of defining postfix increment)
+	static BondType decrease(BondType);
 
 	private:
 	// Pointers to both atoms involved in the bond
 	Atom *atomI_, *atomJ_;
-	// Bond order
-	BondType order_;
+	// Bond type
+	BondType type_;
 
 	public:
 	// Set atoms for bond
@@ -61,12 +61,16 @@ class Bond
 	void setAtomJ(Atom *j);
 	// Return second atom in bond
 	Atom *atomJ();
-	// Set bond order
-	void setOrder(BondType bt);
-	// Return order of bond
-	BondType order();
+	// Set bond type
+	void setType(BondType bt);
+	// Return type of bond
+	BondType type();
+	// Return real-valued bond order
+	double order();
 	// Returns the partner of the specified atom in the bond structure
 	Atom *partner(Atom *i);
+	// Return bond type that best satisfies the involved atoms valencies
+	Bond::BondType augmented();
 };
 
 #endif

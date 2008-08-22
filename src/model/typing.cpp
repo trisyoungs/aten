@@ -91,8 +91,8 @@ void printstuff(Pattern *p)
 	Atom *i = p->firstAtom();
 	for (int n=0; n<p->nAtoms(); n++)
 	{
-		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, valency=%i, type=%s\n",n,elements.symbol(i),
-			i->id(),i->nBonds(),elements.valency(i),Atomtype::atomEnvironment(i->environment()));
+		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n",n,elements.symbol(i),
+			i->id(),i->nBonds(),Atomtype::atomEnvironment(i->environment()));
 		i = i->next;
 	}
 }
@@ -108,7 +108,7 @@ void Model::setAtomtype(Atom *i, ForcefieldAtom *ffa, bool fixed)
 // Describe atoms in model
 void Model::describeAtoms()
 {
-	// Locate ring structures, augment bonding, and assign atom hybridisations in all patterns.
+	// Locate ring structure and assign atom hybridisations in all patterns.
 	msg.enter("Model::describeAtoms");
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
@@ -121,7 +121,7 @@ void Model::describeAtoms()
 		p->assignHybrids();
 		printstuff(p);
 		// 4) Go through the ring list and see if any are aromatic
-		for (Ring *r = p->rings(); r != NULL; r = r->next) if (r->isAromatic()) r->setAromatic();
+		//for (Ring *r = p->rings(); r != NULL; r = r->next) if (r->isAromatic()) r->setAromatic();
 	}
 	msg.exit("Model::describeAtoms");
 }
@@ -194,7 +194,7 @@ void Pattern::assignHybrids()
 		// We can increase the hybridisation at any point, but never decrease it.
 		for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
 		{
-			switch (bref->item->order())
+			switch (bref->item->type())
 			{
 				case (Bond::Single):
 					if (i->environment() < Atomtype::Sp3Environment) i->setEnvironment(Atomtype::Sp3Environment);

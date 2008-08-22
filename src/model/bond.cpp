@@ -43,8 +43,8 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 			// Check order of existing bond
 			if (b->order() != bt)
 			{
-				Bond::BondType oldtype = b->order();
-				b->setOrder(bt);
+				Bond::BondType oldtype = b->type();
+				b->setType(bt);
 				changeLog.add(Log::Structure);
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
@@ -58,7 +58,7 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 		else
 		{
 			b = new Bond;
-			b->setOrder(bt);
+			b->setType(bt);
 			b->setAtoms(i,j);
 			i->acceptBond(b);
 			j->acceptBond(b);
@@ -117,7 +117,7 @@ void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 		}
 	}
 	// Store type for use later
-	Bond::BondType bt = b->order();
+	Bond::BondType bt = b->type();
 	b->atomI()->detachBond(b);
 	b->atomJ()->detachBond(b);
 	changeLog.add(Log::Structure);
@@ -307,8 +307,8 @@ void Model::selectionClearBonding()
 // Alter type of bond
 void Model::changeBond(Bond *b, Bond::BondType bt)
 {
-	Bond::BondType oldorder = b->order();
-	b->setOrder(bt);
+	Bond::BondType oldorder = b->type();
+	b->setType(bt);
 	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
@@ -319,67 +319,14 @@ void Model::changeBond(Bond *b, Bond::BondType bt)
 	}
 }
 
-// Optimise bond order between specified atoms
-void Model::augmentBond(Atom *i, Atom *j, int change)
-{
-	Bond *b = i->findBond(j);
-	if (b != NULL) augmentBond(b, change);
-	else printf("Model::augmentBond <<<< Couldn't find bond between *i and *j >>>>\n");
-}
-
-// Optimise bond order of selected bond
-void Model::augmentBond(Bond *b, int change)
-{
-	// Increase the type of the bond between this atom and 'j' by as much as both atoms will allow.
-	// Assumes current bond order differences are held in i->tempi.
-	msg.enter("Model::augmentBond");
-	int maxchg, n;
-	Atom *i = b->atomI();
-	Atom *j = b->atomJ();
-	// Calc max difference that we can (must) change the bond by...
-	maxchg = (abs(i->tempi) < abs(j->tempi) ? i->tempi : j->tempi);
-	maxchg /= 2;
-	// Sanity check
-	if ((change == +1) && (maxchg >= 0))
-	{
-		msg.exit("Model::augmentBond");
-		return;
-	}
-	if ((change == -1) && (maxchg <= 0))
-	{
-		msg.exit("Model::augmentBond");
-		return;
-	}
-	// Store current bond order
-	Bond::BondType oldorder = b->order();
-	for (n=0; n<abs(maxchg); n++)
-	{
-		oldorder = change == 1 ? Bond::increaseBondType(oldorder) : Bond::decreaseBondType(oldorder);
-		j->tempi -= (2*maxchg);
-		i->tempi -= (2*maxchg);
-		//change == +1 ? oldorder ++ : oldorder --;
-	}
-
-	// Set the new bond order
-	changeBond(b, oldorder);
-	msg.exit("Model::augmentBond");
-}
-
 // Augment bonding for all model patterns
 void Model::augmentBonding()
 {
 	msg.enter("Model::augmentBonding");
-	/*
-	Assign bond types to the pattern, i.e. automatically determine double, triple, resonant bonds etc.
-	We do this by assuming that the structure is chemically 'correct' - i.e. each element is bound to a likely
-	number of other elements. If hydrogens are missing then the results will be unpredictable.
-	For ions, we do the best we can and force correct bond orders on carbon atoms at the expense of 
-	incorrect bond orders on heteroatoms (if possible).
-	*/
 	if (!autocreatePatterns())
 	{
 		msg.print("Can't augment bonding without a valid pattern.\n");
-		msg.enter("Model::augmentBonding");
+		msg.exit("Model::augmentBonding");
 		return;
 	}
 	describeAtoms();

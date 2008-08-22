@@ -6,11 +6,11 @@ double rcc, deltaz
 
 # Setup
 # The number of benzene laying on the same stack circumference is nbenz
-$nbenz = 20
+$nbenz = 10
 # C-C bond length is given by rcc
 $rcc = 1.39
 # Number of stacks of molecules to generate (length of tube)
-$nstacks = 5
+$nstacks = 3
 # Rotation increment around circumference is deltaz
 $deltaz = 360.0/($nbenz*2.0)
 

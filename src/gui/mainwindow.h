@@ -108,7 +108,7 @@ class AtenForm : public QMainWindow
 	void on_actionAtomLabelClear_triggered(bool checked);
 	void on_actionAtomLabelClearAll_triggered(bool checked);
 	void on_actionAtomHide_triggered(bool checked);
-	void on_actionProbeAtom_triggered(bool checked);
+	void on_actionAtomProbe_triggered(bool checked);
 
 	/*
 	// Bonding Actions

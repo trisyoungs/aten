@@ -141,6 +141,7 @@ void AtenForm::setAtomHidden(bool hidden)
 	if (target == NULL) m->selectionSetHidden(hidden);
 	else m->setHidden(target, hidden);
 	target = NULL;
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionAtomHide_triggered(bool checked)
@@ -148,7 +149,7 @@ void AtenForm::on_actionAtomHide_triggered(bool checked)
 	setAtomHidden(TRUE);
 }
 
-void AtenForm::on_actionProbeAtom_triggered(bool checked)
+void AtenForm::on_actionAtomProbe_triggered(bool checked)
 {
 	if (target != NULL) target->print();
 }

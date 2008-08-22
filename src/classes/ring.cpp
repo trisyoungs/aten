@@ -35,37 +35,49 @@ Ring::Ring()
 	next = NULL;
 }
 
-// Destructors
+// Destructor
 Ring::~Ring()
 {
 	atoms_.clear();
 }
 
+/*
+// Referenced atoms / bonds
+*/
+
 // Circular list browsing
-Refitem<Atom,int> *Ring::getNext(Refitem<Atom,int> *ri) {
+Refitem<Atom,int> *Ring::getNext(Refitem<Atom,int> *ri)
+{
 	return (ri->next == NULL ? atoms_.first() : ri->next);
 }
 
-Refitem<Atom,int> *Ring::getPrev(Refitem<Atom,int> *ri) {
+Refitem<Atom,int> *Ring::getPrev(Refitem<Atom,int> *ri)
+{
 	return (ri->prev == NULL ? atoms_.last() : ri->prev);
 }
 
-// Return atom reflist first item
-Refitem<Atom,int> *Ring::firstAtom()
+// Return first referenced atom
+Refitem<Atom,int> *Ring::atoms()
 {
 	return atoms_.first();
 }
 
-// Return atom reflist last item
+// Return last referenced atom
 Refitem<Atom,int> *Ring::lastAtom()
 {
 	return atoms_.last();
 }
 
-// Return size of atom reflist
+// Return number of referenced atoms
 int Ring::nAtoms()
 {
 	return atoms_.nItems();
+}
+
+// Return first referenced bond
+Refitem<Bond,int> *Ring::bonds()
+{
+	return bonds_.first();
 }
 
 // Set requested size
@@ -86,6 +98,7 @@ bool Ring::containsAtom(Atom *i)
 	return atoms_.search(i);
 }
 
+
 // Add atom to ring
 bool Ring::addAtom(Atom *i)
 {
@@ -102,7 +115,7 @@ bool Ring::addAtom(Atom *i)
 		msg.exit("Ring::addAtom");
 		return FALSE;
 	}
-	// Append a ringatomx to the list, pointing to atom i
+	// Append a ringatom to the list, pointing to atom i
 	// Store atom ID in the Refitem's data variable
 	atoms_.add(i,i->id());
 	msg.exit("Ring::addAtom");
@@ -115,79 +128,49 @@ void Ring::removeAtom(Refitem<Atom,int> *ri)
 	atoms_.remove(ri);
 }
 
-// Is ring aromatic
-bool Ring::isAromatic()
+// Return the total bond order penalty of atoms in the ring
+int Ring::totalBondOrderPenalty()
 {
-	// Determine whether the ring is aromatic.
-	msg.enter("Ring::isAromatic");
-	// SP2 atom types should have already been defined, so use these to determine aromaticity.
-	// Use a set of exceptions for heteroatoms_.such as N and O...
-	int okatoms= 0;
-	bool exitearly = FALSE, result = FALSE;
-	Refitem<Atom,int> *ra = atoms_.first();
-	while (ra != NULL)
-	{
-		switch (ra->item->element())
-		{
-			case (6):	// Carbon
-				// Accept nothing less than an AtomEnvironment::SpEnvironment2. If its not AtomEnvironment::SpEnvironment" we can break early.
-				if (ra->item->isEnvironment(Atomtype::Sp2Environment)) okatoms++;
-				else exitearly = TRUE;
-				break;
-			case (7):	// Nitrogen
-				// Add nitrogens anyway, but if they're not flagged as AtomEnvironment::SpEnvironment2 we must change it's
-				// state afterwards, provided the ring checks out to be aromatic. (set_aromatic())
-				okatoms++;
-				break;
-			case (8):	// Oxygen
-				// Same as for nitrogen
-				okatoms++;
-				break;
-			case (16):	// Sulfur
-				// Again, see O and N
-				okatoms++;
-				break;
-		}
-		ra = ra->next;
-		if (exitearly) break;
-	}
-	// Now we just check 'okatoms if it equals the number of atoms_.in the ring, then it should be aromatic!
-	if (okatoms== atoms_.nItems()) result = TRUE;
-	msg.exit("Ring::isAromatic");
+	int result = 0;
+	for (Refitem<Atom,int> *ri = atoms_.first(); ri != NULL; ri = ri->next) result += elements.bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
 	return result;
 }
+
+/*
+// Methods
+*/
 
 // Set aromatic
 void Ring::setAromatic()
 {
-	// Set the environment flags of the constituent atoms_.of the ring to AtomEnvironment::AromaticEnvironment.
 	msg.enter("Ring::setAromatic");
+	// Set atom environments to be Atomtype::AromaticEnvironment
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
 		ra->item->setEnvironment(Atomtype::AromaticEnvironment);
+	// Set bonds to be Bond::Aromatic
+	for (Refitem<Bond,int> *rb = bonds_.first(); rb != NULL; rb = rb->next)
+		rb->item->setType(Bond::Aromatic);
+	printf("Oooh - an aromatic ring\n");
 	msg.exit("Ring::setAromatic");
 }
 
 // Finalise ring
-void Ring::finish()
+void Ring::finalise()
 {
 	// Perform some finishing tasks on the list
-	msg.enter("Ring::finish");
+	msg.enter("Ring::finalise");
 	Refitem<Atom,int> *ra, *lowid;
 	// Make the list head point to the atom with the lowest id
 	if (atoms_.nItems() == 0)
 	{	
 		printf("No atoms in ring - can't finalise!\n");
-		msg.exit("Ring::finish");
+		msg.exit("Ring::finalise");
 		return;
 	}
-	// First, find the lowest atomid
-	ra = atoms_.first();
-	lowid = ra;
-	while (ra != NULL)
-	{
-		if (ra->data < lowid->data) lowid = ra;
-		ra = ra->next;
-	}
+	// First, find the lowest atomid in the ring
+	lowid = atoms_.first();
+	for (ra = atoms_.first(); ra != NULL; ra = ra->next)
+		if (ra->item->id() < lowid->item->id()) lowid = ra;
 	// Make this atom (with lowest id) the head of the list
 	ra = atoms_.first();
 	while (ra != lowid)
@@ -195,20 +178,18 @@ void Ring::finish()
 		atoms_.moveHeadToTail();
 		ra = atoms_.first();
 	}
-	// Set the bond type flags in each ringatomx
-	ra = atoms_.first();
-	while (ra != NULL)
+	// Construct reference list of bonds
+	bonds_.clear();
+	for (ra = atoms_.first(); ra != NULL; ra = ra->next)
 	{
+		Bond *b = ra->item->findBond(getNext(ra)->item);
+		if (b == NULL) printf("Odd internal error - couldn't find bond between atoms in ring.\n");
+		else bonds_.add(b);
 		// Search the bond list of this atom for the next atom in the list
-		Refitem<Bond,int> *bref = ra->item->bonds();
-		while (bref != NULL)
-		{
-			if (bref->item->partner(ra->item) == getNext(ra)->item) ra->data = bref->item->order();
-			bref = bref->next;
-		}
-		ra = ra->next;
+		//for (Refitem<Bond,int> *bref = ra->item->bonds(); bref != NULL; bref = bref->next)
+		//	if (bref->item->partner(ra->item) == getNext(ra)->item) ra->data = bref->item->order();
 	}
-	msg.exit("Ring::finish");
+	msg.exit("Ring::finalise");
 }
 
 // Copy ring
@@ -251,36 +232,4 @@ void Ring::addAtomsToReflist(Reflist<Atom,int> *rlist, Atom *i)
 {
 	// Add all atoms_.in the ring 'r' to the list, excluding the atom 'i'
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next) if (ra->item != i) rlist->add(ra->item);
-}
-
-// Augment ring atom
-void Ring::augmentAtom(Refitem<Atom,int> *refatom, Model *parent)
-{
-	msg.enter("Ring::augmentAtom");
-	// Assumes current bond order differences are in i->tempi
-	Atom *i, *j;
-	i = refatom->item;
-	if (i->tempi < 0)
-	{
-		// Atom has fewer bonds than expected, so try to augment within ring.
-		j = getNext(refatom)->item;
-		if (j->tempi < 0) parent->augmentBond(i,j,+1);
-		if (i->tempi != 0)
-		{
-			j = getPrev(refatom)->item;
-			if (j->tempi < 0) parent->augmentBond(i,j,+1);
-		}
-	}
-	else if (i->tempi > 0)
-	{
-		// Atom has more bonds than expected, so try to de-augment within ring.
-		j = getNext(refatom)->item;
-		if (j->tempi > 0) parent->augmentBond(i,j,-1);
-		if (i->tempi != 0)
-		{
-			j = getPrev(refatom)->item;
-			if (j->tempi > 0) parent->augmentBond(i,j,-1);
-		}
-	}
-	msg.exit("Ring::augmentAtom");
 }

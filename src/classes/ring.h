@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_RING
-#define ATEN_RING
+#ifndef ATEN_RING_H
+#define ATEN_RING_H
 
 #include "classes/atom.h"
 
@@ -37,20 +37,24 @@ class Ring
 	Refitem<Atom,int> *getNext(Refitem<Atom,int> *ri);
 	Refitem<Atom,int> *getPrev(Refitem<Atom,int> *ri);
 
+	/*
+	// Constituent Atoms / Bonds
+	*/
 	private:
 	// List of referenced atoms
 	Reflist<Atom,int> atoms_;
+	// List of referenced bonds
+	Reflist<Bond,int> bonds_;
 	// Requested size of ring when ring searching
 	int requestedSize_;
 
-	/*
-	// Methods
-	*/
 	public:
-	// Return atom reflist first item
-	Refitem<Atom,int> *firstAtom();
-	// Return atom reflist last item
+	// Return first referenced atom
+	Refitem<Atom,int> *atoms();
+	// Return last referenced atom
 	Refitem<Atom,int> *lastAtom();
+	// Return first referenced bond
+	Refitem<Bond,int> *bonds();
 	// Return size of atom reflist
 	int nAtoms();
 	// Search ring list for specified atom
@@ -63,18 +67,20 @@ class Ring
 	bool addAtom(Atom*);
 	// Remove the specified refitem from the find
 	void removeAtom(Refitem<Atom,int>*);
+	// Flag the atoms involved in the ring as being aromatic
+	void setAromatic();
+	// Return the total bond order penalty of atoms in the ring
+	int totalBondOrderPenalty();
+
+
+	/*
+	// Methods
+	*/
+	public:
 	// Duplicate the data (and list) in the specified ring
 	void copy(Ring*);
-	// 'Finalize' the list ready for use
-	void finish();
-	// Returns TRUE if the ring is aromatic, FALSE if otherwise
-	bool isAromatic();
-	// Sets the atom environments of the atoms in the ring to AtomEnvironment::AromaticEnvironment
-	void setAromatic();
-	// Augments the specified atom within the ring
-	void augmentAtom(Refitem<Atom,int>*, Model *parent);
-	// Comparison operator between two rings
-	//bool same_as(ring*);
+	// Prepare the structure ready for use after atoms have been added
+	void finalise();
 	// Print out the data contained in the structure
 	void print();
 	// Add atoms in ring to supplied reflist
