@@ -1223,25 +1223,25 @@ void Pattern::augment()
 // 		for (rb = r->bonds(); rb != NULL; rb = rb->next)
 // 			parent_->changeBond(rb->item, rb->item->augmented());
 	// Stage 3 - Augmenting all remaining atoms
-// 	i = firstAtom_;
-// 	for (n=0; n<nAtoms_; n++)
-// 	{
-// 		if (i->tempi == 1)
-// 		{
-// 			i = i->next;
-// 			continue;
-// 		}
-// 		for (bref = i->bonds(); bref != NULL; bref = bref->next)
-// 			parent_->changeBond(bref->item, bref->item->augmented());
-// 		i = i->next;
-// 	}
+ 	i = firstAtom_;
+	for (n=0; n<nAtoms_; n++)
+	{
+/*		if (i->tempi == 1)
+		{
+			i = i->next;
+			continue;
+		}*/
+		for (bref = i->bonds(); bref != NULL; bref = bref->next)
+			parent_->changeBond(bref->item, bref->item->augmented());
+		i = i->next;
+	}
 	// Stage 4 - Attempt to fix any problems, mostly with (poly)cyclic systems
 	// Get total, reference bond order penalty for the molecule - we will try to reduce this as much as possible if we can
 	totalpenalty = totalBondOrderPenalty();
 	msg.print(Messenger::Verbose, "Bond order penalty after first pass is %i.\n", totalpenalty);
 	if (totalpenalty > 0)
 	{
-		msg.print("Augmentation second pass...\n");
+		msg.print("...Augmentation second pass...\n");
 		// Construct bond reference list for the first molecule, storing current bond type in extradata for our base reference
 		Reflist<Bond,Bond::BondType> bondlist;
 		Refitem<Bond,Bond::BondType> *bi;
@@ -1292,7 +1292,7 @@ void Pattern::augment()
 					r->storeBondTypes();
 					totalpenalty = totalpenalty - ringpenalty + newpenalty;
 					ringpenalty = newpenalty;
-					printf("New total penalty = %i\n", totalpenalty);
+					//printf("New total penalty = %i\n", totalpenalty);
 				}
 				else r->recallBondTypes();
 				if (newpenalty == 0) break;
