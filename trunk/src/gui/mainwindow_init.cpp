@@ -153,7 +153,7 @@ void AtenForm::finaliseUi()
 	uaGroup->addAction(ui.actionBondTriple);
 	uaGroup->addAction(ui.actionDeleteBond);
 	uaGroup->addAction(ui.actionAddHydrogenAtom);
-	uaGroup->addAction(ui.actionProbeAtom);
+	uaGroup->addAction(ui.actionAtomProbe);
 	// Measure Toolbar
 	uaGroup->addAction(ui.actionMeasureDistance);
 	uaGroup->addAction(ui.actionMeasureAngle);

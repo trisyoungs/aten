@@ -21,6 +21,7 @@
 
 #include "classes/pattern.h"
 #include "classes/ring.h"
+#include "classes/clipboard.h"
 #include "templates/vector3.h"
 #include "model/model.h"
 #include "base/elements.h"
@@ -51,7 +52,7 @@ Pattern::Pattern()
 	noIntramolecular_ = FALSE;
 
 	// Public variables
-	molecule = new Model;
+	// DELETE molecule = new Model;
 	prev = NULL;
 	next = NULL;
 }
@@ -712,15 +713,16 @@ void Pattern::propagateAtomtypes()
 	int n, m;
 	// Set 'j' to be the starting atom of the second molecule
 	// Set representative molecule data at the same time
+	// DELETE j = firstAtom_;
+	// DELETE i = molecule->atoms();
+// 	// DELETE for (n=0; n<nAtoms_; n++)
+// 	{
+// 		i->setEnvironment(j->environment());
+// 		i->setType(j->type());
+// 		i = i->next;
+// 		j = j->next;
+// 	}
 	j = firstAtom_;
-	i = molecule->atoms();
-	for (n=0; n<nAtoms_; n++)
-	{
-		i->setEnvironment(j->environment());
-		i->setType(j->type());
-		i = i->next;
-		j = j->next;
-	}
 	// Loop over other molecules and copy the data
 	for (n=1; n<nMolecules_; n++)
 	{
@@ -771,7 +773,7 @@ void Pattern::propagateBondTypes()
 				// 'k' now points to the bond partner of 'j'
 				b2 = j->findBond(k);
 				if (b2 == NULL) msg.print("Bizarre fatal error. Couldn't find bond in Pattern::propagateBondTypes\n");
-				else b2->setOrder(b1->order());
+				else b2->setType(b1->type());
 				bref = bref->next;
 			}
 			i = i->next;
@@ -1005,21 +1007,21 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 			if (currentpath->nAtoms() == currentpath->requestedSize())
 			{
 				// The correct number of atoms is in the current path. Does it form a cycle?
-				if (i->findBond(currentpath->firstAtom()->item) != NULL)
+				if (i->findBond(currentpath->atoms()->item) != NULL)
 				{
 					msg.print(Messenger::Verbose," --- Storing current ring.\n");
 					r = rings_.add();
 					r->copy(currentpath);
 					// Must now update atom 'tempi' values to reflect the inclusion of these atoms in
 					// another ring, and also the total ringpotential variable
-					Refitem<Atom,int> *ra = r->firstAtom();
+					Refitem<Atom,int> *ra = r->atoms();
 					while (ra != NULL)
 					{
 						ra->item->tempi -= 1;
 						ringpotential -= 1;
 						ra = ra->next;
 					}
-					r->finish();
+					r->finalise();
 					r->print();
 					done = TRUE;
 				}
@@ -1043,85 +1045,195 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 	msg.exit("Pattern::ringSearch");
 }
 
-void Pattern::augment()
+void Pattern::augmentOLD()
 {
 	msg.enter("Pattern::augment");
 	Atom *i;
-	Refitem<Bond,int> *bref;
-	int n, nHeavy;
+	Refitem<Bond,int> *bref, *heavybond;
+	Refitem<Atom,int> *aref;
+	int n, nHeavy, pielec, remainder;
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
 	/*
-	We do not reset the present bonding assignments, only check if they're correct. If we find an atom whose
-	bond order is too high, we only decrease it if we can find a bound atom in a similar situation.
-	So, for the atom 'i':
-	-- If its total bond order is equal to its natural valency, do nothing and move on.
-	-- If its total bond order is less, get the bound atom with the highest unoccupied valency and increase
-		the bond as much as possible. If 'i' is still not satisfied, repeat until all bound atoms have been
-		tried.
-	-- If its total bond order is higher, search for an atom that also has a too-high bond order. If one is found,
-		decrease the bond enough to re-balance. If we can't find one, stop and throw an error.
-
-	Perform this task in three stages to make the whole process more robust. First, do it for rings where we
-	only bond within the cycle. Then, do it for terminal atoms or heavy atoms bound to only one other heavy
-	atom. Then, do it for the rest.
+	Assume the structure is chemically 'correct' - i.e. each element is bound to a likely
+	number of other elements.
+	If hydrogens are missing then the results will be unpredictable.
+	Based on methods suggested in:
+	'Automatic atom type and bond type perception in molecular mechanical calculations'
+	J. Wang, W. Wang, P. A. Kollman, and D. A. Case
+	Journal of Molecular Graphics and Modelling, 25 (2), 247-260 (2006)
 	*/
-	// 
-	// Calculate current bond orders for atoms in the pattern.
-	i = firstAtom_;
-	for (n=0; n<nAtoms_; n++)
-	{
-		i->tempi = i->totalBondOrder() - 2*elements.valency(i->element());
-		//printf("%i\n",i->tempi);
-		i = i->next;
-	}
 	// Stage 1 - Augment heavy atoms with only one heavy atom bond
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
+		if (i->element() == 1)
+		{
+			i->tempi = 1;
+			i = i->next;
+			continue;
+		}
 		// Calculate number of heavy atoms attached
 		nHeavy = 0;
-		bref = i->bonds();
-		while (bref != NULL)
+		for (bref = i->bonds(); bref != NULL ; bref = bref->next)
 		{
-			if (bref->item->partner(i)->element() != 1) nHeavy ++;
-			bref = bref->next;
-		}
-		if (nHeavy == 1 && i->tempi != 0)
-		{
-			for (bref = i->bonds(); bref != NULL; bref = bref->next)
+			if (bref->item->partner(i)->element() != 1)
 			{
-				if (i->tempi == 0) break;
-				if (i->tempi < 0) parent_->augmentBond(bref->item,+1);
-				else if (i->tempi > 0) parent_->augmentBond(bref->item,-1);
+				nHeavy ++;
+				heavybond = bref;
 			}
 		}
+		if (nHeavy == 1)
+		{
+			i->tempi = 1;
+			parent_->changeBond(heavybond->item, heavybond->item->augmented());
+		}
+		else i->tempi = 0;
 		i = i->next;
 	}
 	// Stage 2 - Augment within cycles
 	for (Ring *r = rings_.first(); r != NULL; r = r->next)
 	{
-		// Check atoms bond order difference
-		for (Refitem<Atom,int> *ra = r->firstAtom(); ra != NULL; ra = ra->next)
-			if (ra->item->tempi != 0) r->augmentAtom(ra, parent_);
+		// Get current total bond-order penalty of atoms in ring
+		
+		// Loop over bonds in ring
+		for (bref = r->bonds(); bref != NULL; bref = bref->next)
+			parent_->changeBond(bref->item, bref->item->augmented());
+// 		// Determine if the ring is aromatic
+// 		pielec = 0;
+// 		for (bref = r->bonds(); bref != NULL; bref = bref->next)
+// 			if (bref->item->type() == Bond::Double) pielec += 2;
+// 		for (aref = r->atoms(); aref != NULL; aref = aref->next)
+// 		{
+// 			switch (aref->item->element())
+// 			{
+// 				case (7):
+// 					if (aref->item->nBonds() == 3) pielec += 2;
+// 					break;
+// 				case (8):
+// 					if (aref->item->nBonds() == 2) pielec += 2;
+// 					break;
+// 			}
+// 		}
+// 		// From the total pi electron count, use Huckel's rule
+// 		printf("pi electrons %i\n",pielec);
+// 		n = 1;
+// 		do
+// 		{
+// 			remainder = pielec - (4*n + 2);
+// 			printf("remainder for n = %i is %i\n", n, remainder);
+// 			// If remainder == 0, we have an aromatic ring
+// 			if (remainder == 0) r->setAromatic();
+// 			n++;
+// 		} while (remainder >= 0);
 	}
 	// Stage 3 - Second pass, augmenting all atoms
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
 	{
+		if (i->tempi == 1)
+		{
+			i = i->next;
+			continue;
+		}
 		//printf("%li  i->tempi = %i\n",i,i->tempi);
-		if (i->tempi != 0)
+		if (i->tempi == 0)
 		{
 			for (bref = i->bonds(); bref != NULL; bref = bref->next)
 			{
 				//printf("%li    bond   i->tempi = %i\n",i,i->tempi);
 				if (i->tempi == 0) break;
-				if (i->tempi < 0) parent_->augmentBond(bref->item,+1);
-				else if (i->tempi > 0) parent_->augmentBond(bref->item,-1);
+/*				if (i->tempi < 0) parent_->augmentBond(bref->item,+1);
+				else if (i->tempi > 0) parent_->augmentBond(bref->item,-1);*/
 			}
 		}
 		i = i->next;
 	}
+	// Set aromatic environment flags if this ring is aromatic
+// 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
+// 		ra->item->setEnvironment(Atomtype::AromaticEnvironment);
 	propagateBondTypes();
+	msg.exit("Pattern::augment");
+}
+
+// New augmentation code
+void Pattern::augment()
+{
+	msg.enter("Pattern::augment");
+	Atom *i;
+	Refitem<Bond,int> *bref, *heavybond;
+	Refitem<Atom,int> *aref;
+	int n, nHeavy, pielec, remainder, totalpenalty, ringpenalty;
+	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
+	/*
+	Assume the structure is chemically 'correct' - i.e. each element is bound to a likely
+	number of other elements.
+	If hydrogens are missing then the results will be unpredictable.
+	Based on methods suggested in:
+	'Automatic atom type and bond type perception in molecular mechanical calculations'
+	J. Wang, W. Wang, P. A. Kollman, and D. A. Case
+	Journal of Molecular Graphics and Modelling, 25 (2), 247-260 (2006)
+	*/
+	// Stage 1 - Augment heavy atoms with only one heavy atom bond
+	i = firstAtom_;
+	for (n=0; n<nAtoms_; n++)
+	{
+		if (i->element() == 1)
+		{
+			i->tempi = 1;
+			i = i->next;
+			continue;
+		}
+		// Calculate number of heavy atoms attached
+		nHeavy = 0;
+		for (bref = i->bonds(); bref != NULL ; bref = bref->next)
+		{
+			if (bref->item->partner(i)->element() != 1)
+			{
+				nHeavy ++;
+				heavybond = bref;
+			}
+		}
+		if (nHeavy == 1)
+		{
+			i->tempi = 1;
+			parent_->changeBond(heavybond->item, heavybond->item->augmented());
+		}
+		else i->tempi = 0;
+		i = i->next;
+	}
+	// Copy a representative pattern molecule to work on
+	Model molecule;
+	Clipboard clip;
+	// Just select the first molecule in the pattern, and copy-paste to the model
+	parent_->selectNone();
+	i = firstAtom_;
+	for (n=0; n<nAtoms_; n++)
+	{
+		parent_->selectAtom(i);
+		i = i->next;
+	}
+	// Copy selection which now represents one molecule of this pattern
+	clip.copySelection(parent_);
+	clip.pasteToModel(&molecule);
+	// Construct bond reference list for the molecule model, storing current bond type as extradata
+	Reflist<Bond,Bond::BondType> bondlist;
+	Refitem<Bond,Bond::BondType> *bi;
+	for (i = molecule.atoms(); i != NULL; i = i->next)
+		for (bref = i->bonds(); bref != NULL; bref = bref->next) bondlist.addUnique(bref->item, bref->item->type());
+	// Get total, reference bond order penalty for the molecule
+	totalpenalty = molecule.totalBondOrderPenalty();
+	// Now, attempt to 'fix' any atoms that have non-zero bond order penalties
+	// First, try within rings...
+	for (Ring *r = rings_.first(); r != NULL; r = r->next)
+	{
+		// Get current total bond-order penalty of atoms in ring
+		ringpenalty = r->totalBondOrderPenalty();
+		if (ringpenalty == 0) continue;
+		// Loop over bonds in ring
+		for (bref = r->bonds(); bref != NULL; bref = bref->next)
+			parent_->changeBond(bref->item, bref->item->augmented());
+	}
+	//propagateBondTypes();
 	msg.exit("Pattern::augment");
 }
 

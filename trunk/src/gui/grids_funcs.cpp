@@ -47,7 +47,8 @@ AtenGrids::AtenGrids(QWidget *parent)
 	menu->addAction(ui.actionGridPaste);
 	menu->addAction(ui.actionGridDelete);
 	QHBoxLayout *layout = new QHBoxLayout();
-	layout->addWidget(menuBar_);
+	layout->setMenuBar(menuBar_);
+	layout->setMargin(0);
 	ui.menuFrame->setLayout(layout);
 	
 	// Create open grid dialog
@@ -131,9 +132,35 @@ void AtenGrids::loadGrid()
 	msg.exit("AtenGrids::loadGrid");
 }
 
-void AtenGrids::on_LoadGridButton_clicked(bool checked)
+void AtenGrids::on_actionGridLoad_triggered(bool checked)
 {
 	loadGrid();
+}
+
+void AtenGrids::on_actionGridCopy_triggered(bool checked)
+{
+}
+
+void AtenGrids::on_actionGridCut_triggered(bool checked)
+{
+}
+
+void AtenGrids::on_actionGridDelete_triggered(bool checked)
+{
+	// Get the current row selected in the grid list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
+	m->removeGrid(g);
+	refresh();
+	if (row == m->nGrids()) row --;
+	if (m->nGrids() != 0) ui.GridList->setCurrentRow(row);
+	gui.mainView.postRedisplay();
+}
+
+void AtenGrids::on_actionGridPaste_triggered(bool checked)
+{
 }
 
 void AtenGrids::on_GridOriginXSpin_valueChanged(double d)
@@ -295,24 +322,6 @@ void AtenGrids::gridAxisChanged(int r, int component, double value)
 	axes.rows[r].set(component, value);
 	g->setAxes(axes);
 	gui.mainView.postRedisplay();
-}
-
-void AtenGrids::on_RemoveGridButton_clicked(bool checked)
-{
-	// Get the current row selected in the grid list
-	int row = ui.GridList->currentRow();
-	if (row == -1) return;
-	Model *m = aten.currentModel();
-	Grid *g = m->grid(row);
-	m->removeGrid(g);
-	refresh();
-	if (row == m->nGrids()) row --;
-	if (m->nGrids() != 0) ui.GridList->setCurrentRow(row);
-	gui.mainView.postRedisplay();
-}
-
-void AtenGrids::on_SaveGridButton_clicked(bool checked)
-{
 }
 
 void AtenGrids::on_GridList_currentRowChanged(int row)

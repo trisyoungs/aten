@@ -208,8 +208,6 @@ class Forcefield
 	public:
 	// Convert the parameters in the FF to the internal working energy unit
 	void convertParameters();
-	// Get the bond order of the bond ij (here for convenience)
-	double bondOrder(Atom*, Atom*);
 };
 
 #endif

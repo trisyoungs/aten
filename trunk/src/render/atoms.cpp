@@ -127,7 +127,7 @@ void Canvas::renderModelAtoms()
 			{
 				// Draw cylinder bonds.
 				bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
-				switch (bref->item->order())
+				switch (bref->item->type())
 				{
 					case (Bond::Single):	// Single bond
 						glCylinder(rj,rij,0,bondradius);
@@ -159,7 +159,7 @@ void Canvas::renderModelAtoms()
 			{
 				// Draw stick bond(s)
 				glBegin(GL_LINES);
-				  switch (bref->item->order())
+				  switch (bref->item->type())
 				  {
 					case (Bond::Single):	// Single bond
 						glVertex3d(0.0,0.0,0.0);
@@ -251,7 +251,7 @@ void Canvas::renderModelAtoms()
 			rj *= 0.5;
 			// Draw cylinder bonds.
 			bondradius = (style_i == Atom::TubeStyle ? prefs.atomStyleRadius(style_i) : prefs.bondRadius());
-			switch (bref->item->order())
+			switch (bref->item->type())
 			{
 				case (Bond::Single):	// Single bond
 					glCylinder(rj,rij,1,bondradius);

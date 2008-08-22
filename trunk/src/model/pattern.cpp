@@ -72,9 +72,9 @@ Pattern *Model::addPattern(int mols, int numatoms, const char *patname)
 	{
 		msg.print("Pattern description completed (spans %i atoms).\n",atoms_.nItems());
 		energy.resize(patterns_.nItems());
-		// Create representative molecules
-		msg.print("Creating representative molecules...");
-		createPatternMolecules();
+		// DELETE // Create representative molecules
+		// DELETE msg.print("Creating representative molecules...");
+		// DELETE createPatternMolecules();
 		msg.print("Done.\n");
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
 		patternsPoint_ = changeLog.log(Log::Structure);
@@ -335,33 +335,33 @@ bool Model::autocreatePatterns()
 	return TRUE;
 }
 
-// Create representative molecules for patterns
-void Model::createPatternMolecules()
-{
-	msg.enter("Model::createPatternMolecules");
-	Clipboard clip;
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
-	{
-		// Just select the first molecule in the pattern, and copy-paste to the model
-		selectNone();
-		Atom *i = p->firstAtom();
-		for (int n=0; n<p->nAtoms(); n++)
-		{
-			selectAtom(i);
-			i = i->next;
-		}
-		// Copy selection which now represents one molecule of this pattern
-		clip.copySelection(this);
-		// Clear the pattern's representative molecule
-		p->molecule->clear();
-		clip.pasteToModel(p->molecule);
-		p->molecule->setName(p->name());
-		p->molecule->centre(0.0,0.0,0.0);
-		p->molecule->selectNone();
-	}
-	selectNone();
-	msg.exit("Model::createPatternMolecules");
-}
+// DELETE // // Create representative molecules for patterns
+// void Model::createPatternMolecules()
+// {
+// 	msg.enter("Model::createPatternMolecules");
+// 	Clipboard clip;
+// 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+// 	{
+// 		// Just select the first molecule in the pattern, and copy-paste to the model
+// 		selectNone();
+// 		Atom *i = p->firstAtom();
+// 		for (int n=0; n<p->nAtoms(); n++)
+// 		{
+// 			selectAtom(i);
+// 			i = i->next;
+// 		}
+// 		// Copy selection which now represents one molecule of this pattern
+// 		clip.copySelection(this);
+// 		// Clear the pattern's representative molecule
+// 		// DELETE p->molecule->clear();
+// 		//clip.pasteToModel(p->molecule);
+// 		//p->molecule->setName(p->name());
+// 		//p->molecule->centre(0.0,0.0,0.0);
+// 		//p->molecule->selectNone();
+// 	}
+// 	selectNone();
+// 	msg.exit("Model::createPatternMolecules");
+// }
 
 // Get empirical formula of selection
 void Model::selectionEmpirical(Dnchar &target)

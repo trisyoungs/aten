@@ -45,9 +45,11 @@ class AtenGrids : public QDialog
 	void gridOriginChanged(int component, double value);
 	void gridAxisChanged(int row, int component, double value);
 	private slots:
-	void on_LoadGridButton_clicked(bool checked);
-	void on_RemoveGridButton_clicked(bool checked);
-	void on_SaveGridButton_clicked(bool checked);
+	void on_actionGridLoad_triggered(bool checked);
+	void on_actionGridCopy_triggered(bool checked);
+	void on_actionGridCut_triggered(bool checked);
+	void on_actionGridDelete_triggered(bool checked);
+	void on_actionGridPaste_triggered(bool checked);
 	void on_GridList_currentRowChanged(int row);
 	void on_GridStyleCombo_currentIndexChanged(int index);
 	void on_GridList_itemClicked(QListWidgetItem *item);

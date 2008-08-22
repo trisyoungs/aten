@@ -207,7 +207,7 @@
     <addaction name="separator" />
     <addaction name="actionAtomHide" />
     <addaction name="separator" />
-    <addaction name="actionProbeAtom" />
+    <addaction name="actionAtomProbe" />
    </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
@@ -1482,7 +1482,7 @@
     <string>Rename</string>
    </property>
   </action>
-  <action name="actionProbeAtom" >
+  <action name="actionAtomProbe" >
    <property name="icon" >
     <iconset resource="icons.qrc" >:/build/icons/build_probe.svg</iconset>
    </property>

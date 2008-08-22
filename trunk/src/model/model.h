@@ -177,6 +177,9 @@ class Model
 	void chargeAtom(Atom *i, double q);
 	// Prints out the coordinates of the atoms in the model
 	void printCoords();
+	// Return total bond order penalty of atoms in the first pattern molecule
+	int totalBondOrderPenalty();
+
 
 	/*
 	// Unit Cell
@@ -222,9 +225,9 @@ class Model
 	*/
 	public:
 	// Augment specified bond
-	void augmentBond(Bond *b, int change);
+	//void augmentBond(Bond *b, int change);
 	// Augment bond between supplied atoms
-	void augmentBond(Atom *i, Atom *j, int change);
+	//void augmentBond(Bond *b, int change);
 	// Add bond of specified type between atoms
 	void bondAtoms(Atom *i, Atom *j, Bond::BondType bt);
 	// Add bond of specified type between atoms (by id)
@@ -532,7 +535,7 @@ class Model
 	// Validate current pattern definition
 	bool validatePatterns();
 	// Create representative molecules for patterns
-	void createPatternMolecules();
+	// DELETE void createPatternMolecules();
 	// Clear the current pattern definition
 	void clearPatterns();
 	// Return whether the patterns are valid

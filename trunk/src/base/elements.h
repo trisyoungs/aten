@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ELEMAP_H
-#define ATEN_ELEMAP_H
+#ifndef ATEN_ELEMENTMAP_H
+#define ATEN_ELEMENTMAP_H
 
 #include "base/prefs.h"
 #include <QtOpenGL/QtOpenGL>
@@ -46,12 +46,14 @@ class Element
 	int group;
 	// Rough elemental radius (for bond calculation etc.)
 	double atomicRadius;
-	// Maximal bond order about the element 
-	int valency;
 	// Ambient colour
 	GLfloat ambientColour[4];
 	// Diffuse colour
 	GLfloat diffuseColour[4];
+	// Numeric measure of 'penalties' for total bond orders 0 - 8
+	int bondOrderPenalty[9];
+	// Formal charges for bond orders 0 - 8
+	int formalCharges[9];
 };
 
 // Element map
@@ -100,8 +102,8 @@ class ElementMap
 	void setAtomicRadius(int i, double r);
 	// Return effective radius of atomic number 'i'
 	double atomicRadius(int i);
-	// Return valency of atomic number 'i'
-	int valency(int i);
+	// Return bond order penalty for TBO 'bo' of atomic number 'i'
+	int bondOrderPenalty(int i, int bo);
 	// Return the ambient colour of the element
 	GLfloat *ambientColour(int i);
 	// Copy the ambient colour of the element into the array provided
@@ -131,8 +133,8 @@ class ElementMap
 	const char *symbol(Atom *i);
 	// Return effective radius of atomic number 'i'
 	double atomicRadius(Atom *i);
-	// Return valency of atomic number 'i'
-	int valency(Atom *i);
+	// Return bond order penalty for TBO 'bo' of atomic number 'i'
+	int bondOrderPenalty(Atom *i, int bo);
 	// Return the ambient colour of the element
 	GLfloat *ambientColour(Atom *i);
 	// Return the diffuse colour of the element

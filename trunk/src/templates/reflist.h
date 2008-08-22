@@ -67,15 +67,17 @@ template <class T, class D> class Reflist
 	// Returns the number of atoms in the list
 	int nItems();
 	// Add reference to the list
-	void add(T*);
+	void add(T *item);
 	// Add reference to the list with extra data
-	void add(T* x, D extradata);
+	void add(T* item, D extradata);
 	// Add reference to list, unless already there
-	void addUnique(T*);
+	void addUnique(T *item);
+	// Add reference to list, unless already there
+	void addUnique(T *, D extradata);
 	// Delete the reference from the list
-	void remove(Refitem<T,D>*);
+	void remove(Refitem<T,D> *item);
 	// Delete the reference containing specified item from the list
-	void remove(T*);
+	void remove(T *item);
 	// Remove the first item in the list
 	void removeFirst();
 	// Remove the last item in the list
@@ -85,15 +87,15 @@ template <class T, class D> class Reflist
 	// Element access operator
 	Refitem<T,D> *operator[](int);
 	// Search references for item
-	Refitem<T,D> *search(T*);
+	Refitem<T,D> *search(T *item);
 	// Clear the list of all references
 	void clear();
 	// Move head of list to tail of list
 	void moveHeadToTail();
 	// Add references to contents of list (head of which is provided)
-	void createFromList(T*);
-	// Fills the supplied array with pointer values to the reference items
-	void fillArray(int, T**);
+	void createFromList(T *listhead);
+	// Fills the supplied array with 'n' pointer values to the reference items
+	void fillArray(int nitems, T **itemarray);
 };
 
 // Constructors
@@ -176,6 +178,12 @@ template <class T, class D> void Reflist<T,D>::add(T* target, D extradata)
 template <class T, class D> void Reflist<T,D>::addUnique(T* target)
 {
 	if (search(target) == NULL) add(target);
+}
+
+// Add unique item to list
+template <class T, class D> void Reflist<T,D>::addUnique(T* target, D extradata)
+{
+	if (search(target) == NULL) add(target, extradata);
 }
 
 // Remove Refitem from list

@@ -31,16 +31,34 @@ void Model::hydrogenSatisfy(Atom *target)
 {
 	// Cycles over atoms in model (or only the atom supplied), and works out how many hydrogens (and in which geometry) should be added to each
 	msg.enter("Model::hydrogenSatisfy");
-	int numh, tbo, nsingle, ndouble;
+	int numh, tbo, nsingle, ndouble, valency;
 	Atom *i, *endatom;
 	i = (target == NULL ? atoms_.first() : target);
 	endatom = (target == NULL ? NULL : target->next);
 	for (i = i; i != endatom; i = i->next)
 	{
 		// Step 1 - Work out how many single-bonds (i.e. hydrogens) we need to add to satisfy the atom's valency
+		switch (i->element())
+		{
+			case (1):
+				valency = 2;
+				break;
+			case (6):
+				valency = 8;
+				break;
+			case (7):
+				valency = 6;
+				break;
+			case (8):
+				valency = 4;
+				break;
+			default:
+				valency = 0;
+				break;
+		}
 		// Calculate total bond order of atom and work out single bond deficit
 		tbo = i->totalBondOrder();
-		numh = (elements.valency(i)*2 - tbo) / 2;
+		numh = (valency - tbo) / 2;
 		// Step 2 - Work out geometry that we'll add hydrogens in, based on the atom's valency
 		nsingle = i->countBonds(Bond::Single);
 		ndouble = i->countBonds(Bond::Double);

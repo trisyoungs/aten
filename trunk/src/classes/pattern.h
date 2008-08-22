@@ -57,9 +57,9 @@ class PatternAtom
 	void setData(ForcefieldAtom *ffa);
 	// Get ff type of pattern atom
 	ForcefieldAtom *data();
-	// Set pointer to atom in patterns representative molecule
+	// Set pointer to atom in first molecule
 	void setAtom(Atom *a);
-	// Get pointer to atom in patterns representative molecule
+	// Get pointer to atom in first molecule
 	Atom *atom();
 };
 
@@ -140,7 +140,7 @@ class Pattern
 
 	public:
 	// Basic model containing a representative molecule of the pattern
-	Model *molecule;
+	//Model *molecule;
 	// Sets up variables in pattern
 	void initialise(int, int, int, int);
 	// Takes the supplied atom and places a copy in the local list 
@@ -307,8 +307,6 @@ class Pattern
 	List<Ring>* ringList();
 	// Returns the first ring in the ring list
 	Ring *rings();
-	// Automatically augment bond types in the pattern
-	void augmentBonding();
 	// Reset the atom environment flags
 	void clearHybrids();
 	// Set atom hybridisations
@@ -319,6 +317,8 @@ class Pattern
 	void findRings();
 	// Augment atoms in pattern
 	void augment();
+	// Augment atoms in pattern
+	void augmentOLD();
 
 	/*
 	// Propagation / Selectors

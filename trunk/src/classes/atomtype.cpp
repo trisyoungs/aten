@@ -72,7 +72,7 @@ Atomtype::Atomtype()
 	nAllowedElements_ = 0;
 	nBonds_ = -1;
 	allowedElements_ = NULL;
-	boundBond_ = Bond::Unspecified;
+	boundBond_ = Bond::Any;
 	nRepeat_ = 1;
 	acyclic_ = FALSE;
 	nHydrogen_ = -1;
@@ -426,7 +426,7 @@ int Atomtype::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model 
 	for (boundi = alist->first(); boundi != NULL; boundi = boundi->next)
 	{
 		// Extra check for bond type definition here
-		if (boundBond_ == Bond::Unspecified) bondscore = 1;
+		if (boundBond_ == Bond::Any) bondscore = 1;
 		else (boundBond_ == boundi->data ? bondscore = 1 : bondscore = 0);
 		// Now do proper atom type check (if we passed the bond check)
 		if (bondscore != 0) score = matchAtom(boundi->item, ringdata, parent, topatom);

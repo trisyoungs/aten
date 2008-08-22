@@ -315,13 +315,13 @@ void Atom::detachBond(Bond *xbond)
 int Atom::totalBondOrder()
 {
 	// Calculate the total bond order of the atom
-	// Returned result is 2*actual bond order (to account for resonant bonds [BO = 1.5])
+	// Returned result is 2*actual bond order (to account for aromatic bonds [BO = 1.5])
 	msg.enter("Atom::totalBondOrder");
-	int result = 0;
+	double result = 0;
 	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
-		result += (2 * bref->item->order());
+		result += bref->item->order();
 	msg.exit("Atom::totalBondOrder");
-	return result;
+	return int(result * 2.0 + 0.1);
 }
 
 // Count bonds of specific type
@@ -350,13 +350,10 @@ Bond *Atom::findBond(Atom *j)
 	return result;
 }
 
-// Calculate bond order with specified partner
+// Return bond order with specified bond partner
 double Atom::bondOrder(Atom *j)
 {
-	// Returns the (fractional) bond order of the bond between this atom and j.
-	// Aromatic bonds are given a bond order of 1.5.
 	msg.enter("Atom::bondOrder");
-	double order;
 	// First, find the bond
 	Bond *b = findBond(j);
 	// Criticality check
@@ -366,12 +363,8 @@ double Atom::bondOrder(Atom *j)
 		msg.exit("Atom::bondOrder");
 		return 0.0;
 	}
-	// Get the enum'd type of the bond and 'convert' it to the bond order
-	order = b->order();
-	// Special case where both atoms are AtomEnvironment::AromaticEnvironment - bond order is then 1.5.
-	if ((environment_ == Atomtype::AromaticEnvironment) && (j->environment_ == Atomtype::AromaticEnvironment)) order = 1.5;
 	msg.exit("Atom::bondOrder");
-	return order;
+	return b->order();
 }
 
 // Determine bonding geometry
@@ -449,7 +442,7 @@ void Atom::addBoundToReflist(Reflist<Atom,int> *rlist)
 {
 	// Add all atoms bound to the supplied atom to the atomReflist.
 	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
-		rlist->add(bref->item->partner(this),bref->item->order());
+		rlist->add(bref->item->partner(this), bref->item->type());
 }
 
 // Find plane of three atoms

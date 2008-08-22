@@ -416,7 +416,7 @@ void Canvas::endMode(Prefs::MouseButton button)
 				if (b == NULL) bt = Bond::Single;
 				else
 				{
-					bt = Bond::increaseBondType(b->order());
+					bt = Bond::increase(b->type());
 					displayModel_->unbondAtoms(i,atomHover_);
 				}
 				displayModel_->bondAtoms(i,atomHover_,bt);

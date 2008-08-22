@@ -357,3 +357,12 @@ void Model::chargeAtom(Atom *target, double q)
 		recordingState_->addEvent(newchange);
 	}
 }
+
+// Return total bond order penalty of atoms in the model
+int Model::totalBondOrderPenalty()
+{
+	int result = 0;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) result += elements.bondOrderPenalty(i, i->totalBondOrder()/2);
+	return result;
+}
+
