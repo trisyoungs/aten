@@ -319,6 +319,8 @@ class Pattern
 	void augment();
 	// Augment atoms in pattern
 	void augmentOLD();
+	// Return total bond order penalty of atoms in one molecule of the pattern
+	int totalBondOrderPenalty();
 
 	/*
 	// Propagation / Selectors
