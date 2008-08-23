@@ -18,7 +18,6 @@ set(qtproject_SRCS
   tlistwidgetitem.h 
   tcombobox.h
   about_funcs.cpp
-  actions.cpp
   atomlist_funcs.cpp
   bondactions.cpp
   build_funcs.cpp
@@ -50,6 +49,8 @@ set(qtproject_SRCS
   selectelement_funcs.cpp
   selectpattern_funcs.cpp
   settings.cpp
+  styleactions.cpp
+  systemactions.cpp
   tcanvas_funcs.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp

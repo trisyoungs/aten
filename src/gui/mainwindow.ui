@@ -128,54 +128,9 @@
      <x>0</x>
      <y>0</y>
      <width>709</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="EditMenu" >
-    <property name="title" >
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionEditUndo" />
-    <addaction name="actionEditRedo" />
-    <addaction name="separator" />
-    <addaction name="actionEditCut" />
-    <addaction name="actionEditCopy" />
-    <addaction name="actionEditPaste" />
-    <addaction name="actionEditDelete" />
-    <addaction name="separator" />
-    <addaction name="actionEditInvert" />
-    <addaction name="actionEditSelectExpand" />
-    <addaction name="separator" />
-    <addaction name="actionEditSelectAll" />
-    <addaction name="actionEditSelectNone" />
-   </widget>
-   <widget class="QMenu" name="FileMenu" >
-    <property name="title" >
-     <string>&amp;File</string>
-    </property>
-    <widget class="QMenu" name="RecentMenu" >
-     <property name="title" >
-      <string>&amp;Recent Files</string>
-     </property>
-    </widget>
-    <addaction name="actionFileNew" />
-    <addaction name="actionFileOpen" />
-    <addaction name="RecentMenu" />
-    <addaction name="separator" />
-    <addaction name="actionFileClose" />
-    <addaction name="actionFileSave" />
-    <addaction name="actionFileSaveAs" />
-    <addaction name="actionFileSaveExpression" />
-    <addaction name="separator" />
-    <addaction name="actionFileAddTrajectory" />
-    <addaction name="separator" />
-    <addaction name="actionFileOpenForcefield" />
-    <addaction name="actionFileOpenGrid" />
-    <addaction name="separator" />
-    <addaction name="actionFileSaveImage" />
-    <addaction name="separator" />
-    <addaction name="actionFileQuit" />
-   </widget>
    <widget class="QMenu" name="AtomMenu" >
     <property name="title" >
      <string>Atom</string>
@@ -209,20 +164,6 @@
     <addaction name="separator" />
     <addaction name="actionAtomProbe" />
    </widget>
-   <widget class="QMenu" name="menuHelp" >
-    <property name="title" >
-     <string>Help</string>
-    </property>
-    <addaction name="actionAboutAten" />
-    <addaction name="actionAboutQt" />
-   </widget>
-   <widget class="QMenu" name="ScriptsMenu" >
-    <property name="title" >
-     <string>Scripts</string>
-    </property>
-    <addaction name="actionLoadScript" />
-    <addaction name="separator" />
-   </widget>
    <widget class="QMenu" name="ModelMenu" >
     <property name="title" >
      <string>&amp;Model</string>
@@ -240,26 +181,35 @@
     <addaction name="separator" />
     <addaction name="actionModelShowAll" />
    </widget>
-   <widget class="QMenu" name="ToolsMenu" >
+   <widget class="QMenu" name="menuHelp" >
     <property name="title" >
-     <string>Settings</string>
+     <string>Help</string>
     </property>
-    <addaction name="actionPreferences" />
+    <addaction name="actionAboutAten" />
+    <addaction name="actionAboutQt" />
+   </widget>
+   <widget class="QMenu" name="EditMenu" >
+    <property name="title" >
+     <string>&amp;Edit</string>
+    </property>
+    <addaction name="actionEditUndo" />
+    <addaction name="actionEditRedo" />
+    <addaction name="separator" />
+    <addaction name="actionEditCut" />
+    <addaction name="actionEditCopy" />
+    <addaction name="actionEditPaste" />
+    <addaction name="actionEditDelete" />
+    <addaction name="separator" />
+    <addaction name="actionEditInvert" />
+    <addaction name="actionEditSelectExpand" />
+    <addaction name="separator" />
+    <addaction name="actionEditSelectAll" />
+    <addaction name="actionEditSelectNone" />
    </widget>
    <widget class="QMenu" name="ViewMenu" >
     <property name="title" >
      <string>&amp;View</string>
     </property>
-    <widget class="QMenu" name="StyleMenu" >
-     <property name="title" >
-      <string>Style</string>
-     </property>
-     <addaction name="actionStyleStick" />
-     <addaction name="actionStyleTube" />
-     <addaction name="actionStyleSphere" />
-     <addaction name="actionStyleScaled" />
-     <addaction name="actionStyleIndividual" />
-    </widget>
     <widget class="QMenu" name="menuSetView" >
      <property name="title" >
       <string>Set View Along</string>
@@ -277,6 +227,16 @@
      <addaction name="actionViewSetCellNegX" />
      <addaction name="actionViewSetCellNegY" />
      <addaction name="actionViewSetCellNegZ" />
+    </widget>
+    <widget class="QMenu" name="StyleMenu" >
+     <property name="title" >
+      <string>Style</string>
+     </property>
+     <addaction name="actionStyleStick" />
+     <addaction name="actionStyleTube" />
+     <addaction name="actionStyleSphere" />
+     <addaction name="actionStyleScaled" />
+     <addaction name="actionStyleIndividual" />
     </widget>
     <widget class="QMenu" name="SchemeMenu" >
      <property name="title" >
@@ -299,6 +259,48 @@
     <addaction name="separator" />
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
+   </widget>
+   <widget class="QMenu" name="ScriptsMenu" >
+    <property name="title" >
+     <string>Scripts</string>
+    </property>
+    <addaction name="actionLoadScript" />
+    <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="FileMenu" >
+    <property name="title" >
+     <string>&amp;File</string>
+    </property>
+    <widget class="QMenu" name="RecentMenu" >
+     <property name="title" >
+      <string>&amp;Recent Files</string>
+     </property>
+    </widget>
+    <addaction name="actionFileNew" />
+    <addaction name="actionFileOpen" />
+    <addaction name="RecentMenu" />
+    <addaction name="separator" />
+    <addaction name="actionFileClose" />
+    <addaction name="actionFileSave" />
+    <addaction name="actionFileSaveAs" />
+    <addaction name="actionFileSaveExpression" />
+    <addaction name="separator" />
+    <addaction name="actionFileAddTrajectory" />
+    <addaction name="separator" />
+    <addaction name="actionFileOpenForcefield" />
+    <addaction name="actionFileOpenGrid" />
+    <addaction name="separator" />
+    <addaction name="actionFileSaveImage" />
+    <addaction name="separator" />
+    <addaction name="actionFileQuit" />
+   </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="separator" />
+    <addaction name="actionReloadFilters" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -972,6 +974,9 @@
    </property>
   </action>
   <action name="actionViewZoomIn" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/view/icons/view_zoomin.svg</iconset>
+   </property>
    <property name="text" >
     <string>Zoom In</string>
    </property>
@@ -980,6 +985,9 @@
    </property>
   </action>
   <action name="actionViewZoomOut" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/view/icons/view_zoomout.svg</iconset>
+   </property>
    <property name="text" >
     <string>Zoom Out</string>
    </property>
@@ -1937,6 +1945,11 @@
   <action name="actionAboutAten" >
    <property name="text" >
     <string>About Aten</string>
+   </property>
+  </action>
+  <action name="actionReloadFilters" >
+   <property name="text" >
+    <string>Reload Filters</string>
    </property>
   </action>
  </widget>
