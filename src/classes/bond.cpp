@@ -25,7 +25,7 @@
 #include <math.h>
 
 // BondType enum
-const char *BondTypeKeywords[Bond::nBondTypes] = { "single", "double", "triple", "aromatic", "_ANY_" };
+const char *BondTypeKeywords[Bond::nBondTypes] = { "_ANY_", "single", "double", "triple", "aromatic" };
 Bond::BondType Bond::bondType(const char *s)
 {
 	return (Bond::BondType) enumSearch("bond type",Bond::nBondTypes,BondTypeKeywords,s);
