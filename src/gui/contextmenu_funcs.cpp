@@ -53,21 +53,25 @@ void AtenForm::setAtomStyle(Atom::DrawStyle ds)
 void AtenForm::on_actionAtomStyleStick_triggered(bool checked)
 {
 	setAtomStyle(Atom::StickStyle);
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionAtomStyleTube_triggered(bool checked)
 {
 	setAtomStyle(Atom::TubeStyle);
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionAtomStyleSphere_triggered(bool checked)
 {
 	setAtomStyle(Atom::SphereStyle);
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionAtomStyleScaled_triggered(bool checked)
 {
 	setAtomStyle(Atom::ScaledStyle);
+	gui.mainView.postRedisplay();
 }
 
 // Set atom labels
@@ -79,6 +83,7 @@ void AtenForm::setAtomLabel(Atom::AtomLabel al)
 	else target->addLabel(al);
 	target = NULL;
 	m->endUndoState();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 // Clear atom labels
@@ -92,11 +97,11 @@ void AtenForm::removeAtomLabels(bool all)
 	}
 	else
 	{
-		m->beginUndoState("Clear All Labels");
+		m->beginUndoState("Clear Labels From Selection");
 		aten.currentModel()->selectionClearLabels();
 	}
 	m->endUndoState();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionAtomLabelID_triggered(bool checked)

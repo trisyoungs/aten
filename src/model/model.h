@@ -534,8 +534,6 @@ class Model
 	bool autocreatePatterns();
 	// Validate current pattern definition
 	bool validatePatterns();
-	// Create representative molecules for patterns
-	// DELETE void createPatternMolecules();
 	// Clear the current pattern definition
 	void clearPatterns();
 	// Return whether the patterns are valid

@@ -52,7 +52,6 @@ Pattern::Pattern()
 	noIntramolecular_ = FALSE;
 
 	// Public variables
-	// DELETE molecule = new Model;
 	prev = NULL;
 	next = NULL;
 }
@@ -711,17 +710,6 @@ void Pattern::propagateAtomtypes()
 	msg.enter("Pattern::propagateAtomtypes");
 	Atom *i, *j;
 	int n, m;
-	// Set 'j' to be the starting atom of the second molecule
-	// Set representative molecule data at the same time
-	// DELETE j = firstAtom_;
-	// DELETE i = molecule->atoms();
-// 	// DELETE for (n=0; n<nAtoms_; n++)
-// 	{
-// 		i->setEnvironment(j->environment());
-// 		i->setType(j->type());
-// 		i = i->next;
-// 		j = j->next;
-// 	}
 	j = firstAtom_;
 	// Loop over other molecules and copy the data
 	for (n=1; n<nMolecules_; n++)

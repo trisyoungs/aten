@@ -43,6 +43,10 @@ Atom::AtomLabel Atom::atomLabel(const char *s)
 {
 	return (Atom::AtomLabel) power(2,enumSearch("atom label", Atom::nLabelItems, AtomLabelKeywords, s));
 }
+const char *Atom::atomLabel(Atom::AtomLabel al)
+{
+	return AtomLabelKeywords[al];
+}
 
 // Constructor
 Atom::Atom()
@@ -226,6 +230,7 @@ void Atom::copy(Atom *source)
 	environment_ = source->environment_;
 	type_ = source->type_;
 	fixedType_ = source->fixedType_;
+	labels_ = source->labels_;
 }
 
 // Copy atom style
