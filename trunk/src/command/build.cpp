@@ -80,7 +80,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 				else bt = Bond::bondType(c->argi(1));
 			}
 			else bt = Bond::Single;
-			obj.rs->bondAtoms(obj.i,i, bt);
+			obj.rs->bondAtoms(obj.i, i, bt);
 		}
 	}
 	aten.current.i = i;
