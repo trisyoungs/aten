@@ -354,7 +354,7 @@ void LabelEvent::undo(Model *m)
 	else
 	{
 		msg.print(Messenger::Verbose,"Replaying atom label change - atom %i, from %i to %i\n", targetId_, oldLabels_, newLabels_);
-		i->setLabels(oldLabels_);
+		i->setLabels(newLabels_);
 	}
 	msg.exit("LabelEvent::undo");
 }
@@ -362,8 +362,8 @@ void LabelEvent::undo(Model *m)
 // Print event info
 void LabelEvent::print()
 {
-	if (direction_ == UndoEvent::Undo) printf("       Atom label change - atom %i, from %i to %i\n", targetId_, newLabels_, oldLabels_);
-	else printf("       Atom label change - atom %i, from %i to %i\n", targetId_, oldLabels_, newLabels_);
+	if (direction_ == UndoEvent::Undo) printf("       Reversing atom label change - atom %i, from %i to %i\n", targetId_, newLabels_, oldLabels_);
+	else printf("       Replaying atom label change - atom %i, from %i to %i\n", targetId_, oldLabels_, newLabels_);
 }
 
 /*

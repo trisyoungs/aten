@@ -7,8 +7,10 @@
 loadff data/ff/cldp-il.ff ilff
 
 # Prepare first component to add in - [dmim] cation
+# Request that we want 100 molecules maximum of each (how many you end up with will vary)
 # Load model from file and call it 'dmim'
-loadmodel test/siesta-dmim.xyz dmim
+loadmodel data/test/siesta-dmim.xyz dmim
+nmols 100
 
 # Associate the current forcefield (the only one) to the model
 ffmodel
@@ -26,6 +28,7 @@ info
 # Create a new model (naming it 'chloride') and draw a chloride atom
 newmodel chloride
 newatom Cl
+nmols 100
 
 # Associate forcefield to the model
 ffmodel
@@ -43,15 +46,10 @@ info
 # First, create another empty model (called 'box') and create a cubic
 # cell in it
 newmodel box
-setcell 30.0 30.0 30.0 90.0 90.0 90.0
+cell 30.0 30.0 30.0 90.0 90.0 90.0
 
 # Associate the forcefield with the box (there are no atoms in it, but it still needs a valid forcefield)
 ffmodel
-
-
-# Request that we want 100 molecules maximum of each (how many you end up with will vary)
-addcomponent cation dmim 100
-addcomponent anion chloride 100
 
 # Tweak the Monte Carlo parameters for the disordered insertion
 mcntrials insert 50
@@ -60,7 +58,7 @@ printmc
 
 # Request the Ewald sum for electrostatics (or none for just VDW intermolecular energies)
 #elec ewald 0.256 10 10 10
-elec off
+elec none
 printsetup
 
 # Print out the current component list for the disordered builder
