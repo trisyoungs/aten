@@ -30,22 +30,13 @@
 #include <QtGui/QFileDialog>
 #include "model/model.h"
 
-void AtenForm::on_actionFileQuit_triggered(bool checked)
-{
-	if (!gui.saveBeforeClose()) return;
-	saveSettings();
-	gui.app->exit(0);
-}
-
-/*
-// Model Actions
-*/
-
+// Add new model to workspace
 void AtenForm::on_actionFileNew_triggered(bool checked)
 {
 	aten.addModel();
 }
 
+// Open existing file
 void AtenForm::on_actionFileOpen_triggered(bool checked)
 {
 	Filter *f;
@@ -65,6 +56,7 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 	}
 }
 
+// Local save function
 bool AtenForm::runSaveModelDialog()
 {
 	saveModelFilter = NULL;
@@ -89,6 +81,7 @@ bool AtenForm::runSaveModelDialog()
 	else return FALSE;
 }
 
+// Save current model under a different name
 void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 {
 	Model *m;
@@ -102,6 +95,7 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 	}
 }
 
+// Save current model
 void AtenForm::on_actionFileSave_triggered(bool checked)
 {
 	// Check the filter of the current model
@@ -127,6 +121,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
+// Close current model
 void AtenForm::on_actionFileClose_triggered(bool checked)
 {
 	// If the current model has been modified, ask for confirmation before we close it
@@ -166,13 +161,9 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 	else aten.removeModel(m);
 }
 
-/*
-// Images
-*/
-
+// Save the current view as a bitmap image.
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
-	// Save the current view as a bitmap image.
 	// Get filename from user
 	int n;
 	if (saveBitmapDialog->exec() == 1)
@@ -200,10 +191,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	}
 }
 
-/*
-// Trajectories
-*/
-
+// Add trajectory to model
 void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 {
 	Filter *f;
@@ -233,10 +221,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 	}
 }
 
-/*
-// Expressions
-*/
-
+// Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
 	Filter *f;
@@ -254,22 +239,25 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 	}
 }
 
-/*
-// Grids
-*/
-
+// Open grid file
 void AtenForm::on_actionFileOpenGrid_triggered(bool checked)
 {
 	// Call routine in grids window...
 	gui.gridsWindow->loadGrid();
 }
 
-/*
-// Forcefields
-*/
-
+// Open forcefield file
 void AtenForm::on_actionFileOpenForcefield_triggered(bool checked)
 {
 	// Call routine in forcefields window...
 	gui.forcefieldsWindow->loadForcefield();
 }
+
+// Quit program
+void AtenForm::on_actionFileQuit_triggered(bool checked)
+{
+	if (!gui.saveBeforeClose()) return;
+	saveSettings();
+	gui.app->exit(0);
+}
+

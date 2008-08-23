@@ -124,4 +124,8 @@
         <file>icons/transform_flipy.svg</file>
         <file>icons/transform_flipz.svg</file>
     </qresource>
+    <qresource prefix="/view" >
+        <file>icons/view_zoomin.svg</file>
+        <file>icons/view_zoomout.svg</file>
+    </qresource>
 </RCC>

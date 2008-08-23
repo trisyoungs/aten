@@ -6,33 +6,24 @@
 loadff data/ff/uff.ff uff
 
 # Create component models (all single atoms of different types)
+
+# 'blue' will be contained in an orthorhomboid spanning the cell in the x-direction
 newmodel blue
-addatom N
-ffmodel
+newatom N
+nmols 100
+region cuboid 10 10 10 20 10 10 yes
 
 newmodel red
-addatom O
-ffmodel
+newatom O
+nmols 250
+regionoverlap false
 
 newmodel yellow
-addatom Au
-ffmodel
+newatom Au
 
 # Create box to MC in to
 newmodel regions
-setcell 20.0 20.0 20.0 90. 90. 90.
-ffmodel
-
-# Request components and set their regions
-addcomponent cube blue 100
-setoverlap blue true
-setcentre blue 10 10 10
-setshape blue cuboid
-setgeometry blue 20.0 10.0 10.0
-
-addcomponent bulk red 250
-setoverlap red false
-printcomponents
+cell 20.0 20.0 20.0 90 90 90
 
 vdwscale 1.0
 

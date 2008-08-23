@@ -1,6 +1,6 @@
 /*
-	*** Qt mainwindow action functions
-	*** src/gui/action_funcs.cpp
+	*** Qt draw style action functions
+	*** src/gui/styleactions.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -47,12 +47,3 @@ void AtenForm::on_StyleToolbar_actionTriggered(QAction *action)
 	gui.mainView.postRedisplay();
 }
 
-/*
-// Settings Actions
-*/
-
-void AtenForm::on_actionPreferences_triggered(bool checked)
-{
-	gui.prefsDialog->setControls();
-	gui.prefsDialog->exec();
-}

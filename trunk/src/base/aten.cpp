@@ -574,6 +574,43 @@ bool Aten::openFilters()
 bool Aten::reloadFilters()
 {
 	msg.enter("Aten::reloadFilters");
+	char indexfile[512], path[512], filterfile[128], message[512], shortname[128];
+	ifstream *file;
+	msg.print("Clearing current filters....\n");
+	filters_[Filter::ModelImport].clear();
+	filters_[Filter::ModelExport].clear();
+	filters_[Filter::TrajectoryImport].clear();
+	filters_[Filter::TrajectoryExport].clear();
+	filters_[Filter::ExpressionImport].clear();
+	filters_[Filter::ExpressionExport].clear();
+	filters_[Filter::GridImport].clear();
+	filters_[Filter::GridExport].clear();
+	sprintf(path,"%s%s", dataDir_.get(), "/filters");
+	msg.print("Reading filters from '%s'...\n", path);
+	sprintf(indexfile, "%s/%s", path, "index");
+	file = new ifstream(indexfile, ios::in);
+	if (file->is_open())
+	{
+		while (!file->eof())
+		{
+			if (parser.getArgsDelim(file, Parser::SkipBlanks) != 0) break;
+			strcpy(shortname, parser.argc(0));
+			sprintf(filterfile, "%s/%s", path, shortname);
+			if (!loadFilter(filterfile))
+			{
+				sprintf(message, "Error(s) encountered while reading filter file '%s' (see message box for details).\nOne or more filters contained within will be unavailable.\n", shortname);
+				QMessageBox::warning(gui.mainWindow, "Aten", message, QMessageBox::Ok);
+			}
+		}
+		// Print out info and partner filters 
+		partnerFilters();
+		msg.print("Found (import/export):  Models (%i/%i) ", filters_[Filter::ModelImport].nItems(), filters_[Filter::ModelExport].nItems());
+		msg.print("Trajectory (%i/%i) ", filters_[Filter::TrajectoryImport].nItems(), filters_[Filter::TrajectoryExport].nItems());
+		msg.print("Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
+		msg.print("Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
+	}
+	file->close();
+	delete file;
 	msg.exit("Aten::reloadFilters");
 	return TRUE;
 }
@@ -582,7 +619,6 @@ bool Aten::reloadFilters()
 bool Aten::parseFilterIndex(const char *path, ifstream *indexfile)
 {
 	msg.enter("Aten::parseFilterIndex");
-	// Read the list of filters to load in...
 	// Read filter names from file and open them
 	char filterfile[512], s[512], bit[64];
 	strcpy(s, "--> ");

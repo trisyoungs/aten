@@ -325,10 +325,11 @@ class AtenForm : public QMainWindow
 	void on_actionCellTransformWindow_triggered(bool checked);
 
 	/*
-	// Settings Functions
+	// System Functions
 	*/
 	private slots:
 	void on_actionPreferences_triggered(bool checked);
+	void on_actionReloadFilters_triggered(bool checked);
 
 	/*
 	// Help Functions
