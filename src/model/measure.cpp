@@ -40,9 +40,21 @@ void Model::measureDistance(Atom *i, Atom *j)
 {
 	// Measure distances between atoms
 	msg.enter("Model::measureDistance");
-	Measurement *newdist = findMeasurement(Measurement::DistanceMeasurement,i,j);
+	Measurement *newdist = findMeasurement(Measurement::Distance,i,j);
 	// If this distance isn't currently in the list, add it. Otherwise, delete it
-	if (newdist == NULL) addMeasurement(Measurement::DistanceMeasurement,i,j);
+	if (newdist == NULL) addMeasurement(Measurement::Distance,i,j);
+	else removeMeasurement(newdist);
+	msg.exit("Model::measureDistance");
+}
+
+// Add angle measurement (atom ids)
+void Model::measureDistance(int i, int j)
+{
+	// Measure torsions between atom ids
+	msg.enter("Model::measureDistance");
+	Measurement *newdist = findMeasurement(Measurement::Distance, atom(i), atom(j));
+	// If this torsion isn't in the list, add it. Otherwise, delete it.
+	if (newdist == NULL) addMeasurement(Measurement::Distance, atom(i), atom(j));
 	else removeMeasurement(newdist);
 	msg.exit("Model::measureDistance");
 }
@@ -52,9 +64,21 @@ void Model::measureAngle(Atom *i, Atom *j, Atom *k)
 {
 	// Measure angles between atoms
 	msg.enter("Model::measureAngle");
-	Measurement *newangle = findMeasurement(Measurement::AngleMeasurement,i,j,k);
+	Measurement *newangle = findMeasurement(Measurement::Angle,i,j,k);
 	// Check that this angle isn't already in the list. If it is, delete it
-	if (newangle == NULL) addMeasurement(Measurement::AngleMeasurement,i,j,k);
+	if (newangle == NULL) addMeasurement(Measurement::Angle,i,j,k);
+	else removeMeasurement(newangle);
+	msg.exit("Model::measureAngle");
+}
+
+// Add angle measurement (atom ids)
+void Model::measureAngle(int i, int j, int k)
+{
+	// Measure torsions between atom ids
+	msg.enter("Model::measureAngle");
+	Measurement *newangle = findMeasurement(Measurement::Angle, atom(i), atom(j), atom(k));
+	// If this torsion isn't in the list, add it. Otherwise, delete it.
+	if (newangle == NULL) addMeasurement(Measurement::Angle, atom(i), atom(j), atom(k));
 	else removeMeasurement(newangle);
 	msg.exit("Model::measureAngle");
 }
@@ -64,9 +88,21 @@ void Model::measureTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 {
 	// Measure torsions between atoms
 	msg.enter("Model::measureTorsion");
-	Measurement *newtorsion = findMeasurement(Measurement::TorsionMeasurement,i,j,k,l);
+	Measurement *newtorsion = findMeasurement(Measurement::Torsion,i,j,k,l);
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
-	if (newtorsion == NULL) addMeasurement(Measurement::TorsionMeasurement,i,j,k,l);
+	if (newtorsion == NULL) addMeasurement(Measurement::Torsion,i,j,k,l);
+	else removeMeasurement(newtorsion);
+	msg.exit("Model::measureTorsion");
+}
+
+// Add torsion measurement (atom ids)
+void Model::measureTorsion(int i, int j, int k, int l)
+{
+	// Measure torsions between atom ids
+	msg.enter("Model::measureTorsion");
+	Measurement *newtorsion = findMeasurement(Measurement::Torsion, atom(i), atom(j), atom(k), atom(l));
+	// If this torsion isn't in the list, add it. Otherwise, delete it.
+	if (newtorsion == NULL) addMeasurement(Measurement::Torsion, atom(i), atom(j), atom(k), atom(l));
 	else removeMeasurement(newtorsion);
 	msg.exit("Model::measureTorsion");
 }
@@ -83,13 +119,13 @@ void Model::removeMeasurement(Measurement *me)
 		Measurement::MeasurementType type = me->type();
 		switch (type)
 		{
-			case (Measurement::DistanceMeasurement):
+			case (Measurement::Distance):
 				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id());
 				break;
-			case (Measurement::AngleMeasurement):
+			case (Measurement::Angle):
 				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 				break;
-			case (Measurement::TorsionMeasurement):
+			case (Measurement::Torsion):
 				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 				break;
 		}
@@ -181,13 +217,13 @@ void Model::addMeasurement(Measurement::MeasurementType gt, Atom *first, ...)
 			atoms = newm->atoms();
 			switch (gt)
 			{
-				case (Measurement::DistanceMeasurement):
+				case (Measurement::Distance):
 					newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id());
 					break;
-				case (Measurement::AngleMeasurement):
+				case (Measurement::Angle):
 					newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 					break;
-				case (Measurement::TorsionMeasurement):
+				case (Measurement::Torsion):
 					newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 					break;
 			}
@@ -205,7 +241,7 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 	Refitem<Bond,int> *b1, *b2, *b3;
 	switch (gt)
 	{
-		case (Measurement::DistanceMeasurement):
+		case (Measurement::Distance):
 			i = firstSelected();
 			while (i != NULL)
 			{
@@ -221,7 +257,7 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 				i = i->nextSelected();
 			}
 			break;
-		case (Measurement::AngleMeasurement):
+		case (Measurement::Angle):
 			j = firstSelected();
 			while (j != NULL)
 			{
@@ -245,7 +281,7 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 				j = j->nextSelected();
 			}
 			break;
-		case (Measurement::TorsionMeasurement):
+		case (Measurement::Torsion):
 			// Find bond j-k where both are selected
 			j = firstSelected();
 			while (j != NULL)
@@ -392,4 +428,20 @@ void Model::updateMeasurements()
 	msg.enter("Model::updateMeasurements");
 	for (Measurement *m = measurements_.first(); m != NULL; m = m->next) m->calculate(&cell_);
 	msg.exit("Model::updateMeasurements");
+}
+
+// List measurements
+void Model::listMeasurements()
+{
+	msg.enter("Model::listMeasurements");
+	msg.print("Distances:");
+	for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
+		if (m->type() == Measurement::Distance) m->print();
+	msg.print("Angles:");
+	for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
+		if (m->type() == Measurement::Angle) m->print();
+	msg.print("Torsions:");
+	for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
+		if (m->type() == Measurement::Torsion) m->print();
+	msg.exit("Model::listMeasurements");
 }

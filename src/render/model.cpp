@@ -123,7 +123,7 @@ void Canvas::renderModelMeasurements()
 		if (skip) continue;
 		switch (m->type())
 		{
-			case (Measurement::DistanceMeasurement):
+			case (Measurement::Distance):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				labpos = (ri + rj) * 0.5;
@@ -134,7 +134,7 @@ void Canvas::renderModelMeasurements()
 				rightalign = FALSE;
 				sprintf(text,"%f %s", m->value(), prefs.distanceLabel());
 				break;
-			case (Measurement::AngleMeasurement):
+			case (Measurement::Angle):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				rk = atoms[2]->r();
@@ -178,7 +178,7 @@ void Canvas::renderModelMeasurements()
 				rightalign = (pos1.x < pos2.x ? TRUE : FALSE);
 				sprintf(text,"%f %s", m->value(), prefs.angleLabel());
 				break;
-			case (Measurement::TorsionMeasurement):
+			case (Measurement::Torsion):
 				ri = atoms[0]->r();
 				rj = atoms[1]->r();
 				rk = atoms[2]->r();

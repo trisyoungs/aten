@@ -41,27 +41,31 @@ void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 
 void AtenForm::on_actionMeasureClearAll_triggered(bool on)
 {
-	aten.currentModel()->removeMeasurements(Measurement::DistanceMeasurement);
-	aten.currentModel()->removeMeasurements(Measurement::AngleMeasurement);
-	aten.currentModel()->removeMeasurements(Measurement::TorsionMeasurement);
+	aten.currentModel()->removeMeasurements(Measurement::Distance);
+	aten.currentModel()->removeMeasurements(Measurement::Angle);
+	aten.currentModel()->removeMeasurements(Measurement::Torsion);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionMeasureDistanceSelection_triggered(bool on)
 {
-	aten.currentModel()->addMeasurementsInSelection(Measurement::DistanceMeasurement);
+	aten.currentModel()->addMeasurementsInSelection(Measurement::Distance);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionMeasureAngleSelection_triggered(bool on)
 {
-	aten.currentModel()->addMeasurementsInSelection(Measurement::AngleMeasurement);
+	aten.currentModel()->addMeasurementsInSelection(Measurement::Angle);
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionMeasureTorsionSelection_triggered(bool on)
 {
-	aten.currentModel()->addMeasurementsInSelection(Measurement::TorsionMeasurement);
+	aten.currentModel()->addMeasurementsInSelection(Measurement::Torsion);
 	gui.mainView.postRedisplay();
 }
 
+void AtenForm::on_actionMeasureList_triggered(bool on)
+{
+	aten.currentModel()->listMeasurements();
+}

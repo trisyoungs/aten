@@ -26,7 +26,9 @@
 int CommandData::function_CA_CLEARLABELS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Clear all labels in selection");
 	obj.rs->selectionClearLabels();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -35,7 +37,12 @@ int CommandData::function_CA_LABEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al != Atom::nLabelItems) obj.rs->selectionAddLabels(al);
+	if (al != Atom::nLabelItems)
+	{
+		obj.rs->beginUndoState("Add labels to selection");
+		obj.rs->selectionAddLabels(al);
+		obj.rs->endUndoState();
+	}
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }
@@ -45,7 +52,12 @@ int CommandData::function_CA_REMOVELABEL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al != Atom::nLabelItems) obj.rs->selectionRemoveLabels(al);
+	if (al != Atom::nLabelItems)
+	{
+		obj.rs->beginUndoState("Remove labels from selection");
+		obj.rs->selectionRemoveLabels(al);
+		obj.rs->endUndoState();
+	}
 	else return CR_FAIL;
 	return CR_SUCCESS;
 }

@@ -66,12 +66,8 @@ enum CommandAction {
 
 	// Atom Commands
 	CA_ATOMSTYLE,
-	CA_CHAIN,
-	CA_ENDCHAIN,
 	CA_GETATOM,
 	CA_HIDE,
-	CA_NEWATOM,
-	CA_NEWATOMFRAC,
 	CA_SETCHARGE,
 	CA_SETCOORDS,
 	CA_SETELEMENT,
@@ -102,12 +98,12 @@ enum CommandAction {
 
 	// Build commands
 	CA_ADDHYDROGEN,
-	CA_COPY,
-	CA_CUT,
-	CA_DELETE,
+	CA_CHAIN,
+	CA_ENDCHAIN,
 	CA_LOCATE,
 	CA_MOVE,
-	CA_PASTE,
+	CA_NEWATOM,
+	CA_NEWATOMFRAC,
 	CA_RESETPEN,
 	CA_ROTX,
 	CA_ROTY,
@@ -165,6 +161,14 @@ enum CommandAction {
 	CA_REGIONOVERLAPS,
 	CA_REGIONSHAPE,
 	CA_VDWSCALE,
+
+	// Edit commands
+	CA_COPY,
+	CA_CUT,
+	CA_DELETE,
+	CA_PASTE,
+	CA_REDO,
+	CA_UNDO,
 
 	// Energy Commands
 	CA_FRAMEENERGY,
@@ -274,6 +278,11 @@ enum CommandAction {
 	CA_MCMAXSTEP,
 	CA_MCNTRIALS,
 	CA_PRINTMC,
+
+	// Measurements
+	CA_CLEARMEASUREMENTS,
+	CA_LISTMEASUREMENTS,
+	CA_MEASURE,
 
 	// Messaging
 	CA_ERROR,
@@ -470,12 +479,8 @@ class CommandData
 	int function_CA_TRAJANALYSE(Command *&c, Bundle &obj);
 	// Atom Commands
 	int function_CA_ATOMSTYLE(Command *&c, Bundle &obj);
-	int function_CA_CHAIN(Command *&c, Bundle &obj);
-	int function_CA_ENDCHAIN(Command *&c, Bundle &obj);
 	int function_CA_GETATOM(Command *&c, Bundle &obj);
 	int function_CA_HIDE(Command *&c, Bundle &obj);
-	int function_CA_NEWATOM(Command *&c, Bundle &obj);
-	int function_CA_NEWATOMFRAC(Command *&c, Bundle &obj);
 	int function_CA_SETCOORDS(Command *&c, Bundle &obj);
 	int function_CA_SETCHARGE(Command *&c, Bundle &obj);
 	int function_CA_SETELEMENT(Command *&c, Bundle &obj);
@@ -504,12 +509,12 @@ class CommandData
 	int function_CA_REBOND(Command *&c, Bundle &obj);
 	// Build commands
 	int function_CA_ADDHYDROGEN(Command *&c, Bundle &obj);
-	int function_CA_COPY(Command *&c, Bundle &obj);
-	int function_CA_CUT(Command *&c, Bundle &obj);
-	int function_CA_DELETE(Command *&c, Bundle &obj);
+	int function_CA_CHAIN(Command *&c, Bundle &obj);
+	int function_CA_ENDCHAIN(Command *&c, Bundle &obj);
 	int function_CA_LOCATE(Command *&c, Bundle &obj);
 	int function_CA_MOVE(Command *&c, Bundle &obj);
-	int function_CA_PASTE(Command *&c, Bundle &obj);
+	int function_CA_NEWATOM(Command *&c, Bundle &obj);
+	int function_CA_NEWATOMFRAC(Command *&c, Bundle &obj);
 	int function_CA_RESETPEN(Command *&c, Bundle &obj);
 	int function_CA_ROTX(Command *&c, Bundle &obj);
 	int function_CA_ROTY(Command *&c, Bundle &obj);
@@ -563,6 +568,13 @@ class CommandData
 	int function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj);
 	int function_CA_REGIONSHAPE(Command *&c, Bundle &obj);
 	int function_CA_VDWSCALE(Command *&c, Bundle &obj);
+	// Edit commands
+	int function_CA_COPY(Command *&c, Bundle &obj);
+	int function_CA_CUT(Command *&c, Bundle &obj);
+	int function_CA_DELETE(Command *&c, Bundle &obj);
+	int function_CA_PASTE(Command *&c, Bundle &obj);
+	int function_CA_REDO(Command *&c, Bundle &obj);
+	int function_CA_UNDO(Command *&c, Bundle &obj);
 	// Energy Commands
 	int function_CA_FRAMEENERGY(Command *&c, Bundle &obj);
 	int function_CA_MODELENERGY(Command *&c, Bundle &obj);
@@ -662,6 +674,10 @@ class CommandData
 	int function_CA_MCMAXSTEP(Command *&c, Bundle &obj);
 	int function_CA_MCNTRIALS(Command *&c, Bundle &obj);
 	int function_CA_PRINTMC(Command *&c, Bundle &obj);
+	// Measurements
+	int function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj);
+	int function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj);
+	int function_CA_MEASURE(Command *&c, Bundle &obj);
 	// Messaging
 	int function_CA_ERROR(Command *&c, Bundle &obj);
 	int function_CA_PRINT(Command *&c, Bundle &obj);

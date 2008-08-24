@@ -38,7 +38,9 @@ int CommandData::function_CA_NEWBOND(Command *&c, Bundle &obj)
 		else bt = (Bond::BondType) n;
 	}
 	// Add the bond
+	obj.rs->beginUndoState("Bond Atoms");
 	obj.rs->bondAtoms(c->argi(0)-1, c->argi(1)-1, bt);
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -61,7 +63,9 @@ int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
 	Atom *i = obj.rs->findAtom(c->argi(0));
 	Atom *j = obj.rs->findAtom(c->argi(1));
 	// Add the bond
+	obj.rs->beginUndoState("Bond Atoms");
 	obj.rs->bondAtoms(i, j, bt);
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -69,7 +73,9 @@ int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
 int CommandData::function_CA_AUGMENT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Augment Bonds");
 	obj.rs->augmentBonding();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -80,8 +86,10 @@ int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 	// If we're reading from a file (via a filter) check for prefs override
 	if (c->parent()->inputFile() == NULL)
 	{
+		obj.rs->beginUndoState("Calculate Bonding");
 		obj.rs->clearBonding();
 		obj.rs->calculateBonding();
+		obj.rs->endUndoState();
 	}
 	else if (prefs.bondOnLoad() != Prefs::SwitchOff)
 	{
@@ -95,7 +103,9 @@ int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 int CommandData::function_CA_CLEARBONDS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Clear Bonding");
 	obj.rs->clearBonding();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -110,7 +120,9 @@ int CommandData::function_CA_BONDTOLERANCE(Command *&c, Bundle &obj)
 int CommandData::function_CA_REBONDPATTERNS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Calculate Bonding (Patterns)");
 	obj.rs->patternCalculateBonding();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -118,6 +130,8 @@ int CommandData::function_CA_REBONDPATTERNS(Command *&c, Bundle &obj)
 int CommandData::function_CA_REBONDSELECTION(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Calculate Bonding (Selection)");
 	obj.rs->selectionCalculateBonding();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }

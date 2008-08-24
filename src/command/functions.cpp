@@ -44,12 +44,8 @@ void Aten::initCommands()
 
 	// Atom commands
 	CA_data[CA_ATOMSTYLE].function = &CommandData::function_CA_ATOMSTYLE;
-	CA_data[CA_CHAIN].function = &CommandData::function_CA_CHAIN;
-	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
 	CA_data[CA_GETATOM].function = &CommandData::function_CA_GETATOM;
 	CA_data[CA_HIDE].function = &CommandData::function_CA_HIDE;
-	CA_data[CA_NEWATOM].function = &CommandData::function_CA_NEWATOM;
-	CA_data[CA_NEWATOMFRAC].function = &CommandData::function_CA_NEWATOMFRAC;
 	CA_data[CA_SETCOORDS].function = &CommandData::function_CA_SETCOORDS;
 	CA_data[CA_SETCHARGE].function = &CommandData::function_CA_SETCHARGE;
 	CA_data[CA_SETELEMENT].function = &CommandData::function_CA_SETELEMENT;
@@ -80,12 +76,12 @@ void Aten::initCommands()
 
 	// Build commands
 	CA_data[CA_ADDHYDROGEN].function = &CommandData::function_CA_ADDHYDROGEN;
-	CA_data[CA_DELETE].function = &CommandData::function_CA_DELETE;
-	CA_data[CA_COPY].function = &CommandData::function_CA_COPY;
-	CA_data[CA_CUT].function = &CommandData::function_CA_CUT;
+	CA_data[CA_CHAIN].function = &CommandData::function_CA_CHAIN;
+	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
 	CA_data[CA_LOCATE].function = &CommandData::function_CA_LOCATE;
 	CA_data[CA_MOVE].function = &CommandData::function_CA_MOVE;
-	CA_data[CA_PASTE].function = &CommandData::function_CA_PASTE;
+	CA_data[CA_NEWATOM].function = &CommandData::function_CA_NEWATOM;
+	CA_data[CA_NEWATOMFRAC].function = &CommandData::function_CA_NEWATOMFRAC;
 	CA_data[CA_RESETPEN].function = &CommandData::function_CA_RESETPEN;
 	CA_data[CA_ROTX].function = &CommandData::function_CA_ROTX;
 	CA_data[CA_ROTY].function = &CommandData::function_CA_ROTY;
@@ -143,6 +139,14 @@ void Aten::initCommands()
 	CA_data[CA_REGIONOVERLAPS].function = &CommandData::function_CA_REGIONOVERLAPS;
 	CA_data[CA_REGIONSHAPE].function = &CommandData::function_CA_REGIONSHAPE;
 	CA_data[CA_VDWSCALE].function = &CommandData::function_CA_VDWSCALE;
+
+	// Edit Commands
+	CA_data[CA_DELETE].function = &CommandData::function_CA_DELETE;
+	CA_data[CA_COPY].function = &CommandData::function_CA_COPY;
+	CA_data[CA_CUT].function = &CommandData::function_CA_CUT;
+	CA_data[CA_PASTE].function = &CommandData::function_CA_PASTE;
+	CA_data[CA_REDO].function = &CommandData::function_CA_REDO;
+	CA_data[CA_UNDO].function = &CommandData::function_CA_UNDO;
 
 	// Energy Commands
 	CA_data[CA_FRAMEENERGY].function = &CommandData::function_CA_FRAMEENERGY;
@@ -239,6 +243,11 @@ void Aten::initCommands()
 	CA_data[CA_MCMAXSTEP].function = &CommandData::function_CA_MCMAXSTEP;
 	CA_data[CA_MCNTRIALS].function = &CommandData::function_CA_MCNTRIALS;
 	CA_data[CA_PRINTMC].function = &CommandData::function_CA_PRINTMC;
+
+	// Measurement Commands
+	CA_data[CA_CLEARMEASUREMENTS].function = &CommandData::function_CA_CLEARMEASUREMENTS;
+	CA_data[CA_LISTMEASUREMENTS].function = &CommandData::function_CA_LISTMEASUREMENTS;
+	CA_data[CA_MEASURE].function = &CommandData::function_CA_MEASURE;
 
 	// Messaging Commands
 	CA_data[CA_ERROR].function = &CommandData::function_CA_ERROR;

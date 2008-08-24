@@ -34,7 +34,7 @@ int Measurement::nMeasurementAtoms(Measurement::MeasurementType mt)
 Measurement::Measurement()
 {
 	// Private variables
-	type_ = Measurement::NoMeasurement;
+	type_ = Measurement::None;
 	for (int n=0; n<4; n++) atoms_[n] = NULL;
 	value_ = 0.0;
 	// Public variables
@@ -77,17 +77,37 @@ void Measurement::calculate(Cell *cell)
 {
 	switch (type_)
 	{
-		case (Measurement::DistanceMeasurement):
+		case (Measurement::Distance):
 			value_ = cell->distance(atoms_[0],atoms_[1]);
 			break;
-		case (Measurement::AngleMeasurement):
+		case (Measurement::Angle):
 			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]) * DEGRAD;
 			break;
-		case (Measurement::TorsionMeasurement):
+		case (Measurement::Torsion):
 			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]) * DEGRAD;
 			break;
 		default:
 			printf("Measurement::calculate <<<< Unrecognised geometry type >>>>\n");
+			break;
+	}
+}
+
+// Print measurement info
+void Measurement::print()
+{
+	switch (type_)
+	{
+		case (Measurement::Distance):
+			msg.print("%4i %4i             %f", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
+			break;
+		case (Measurement::Angle):
+			msg.print("%4i %4i %4i        %f", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
+			break;
+		case (Measurement::Torsion):
+			msg.print("%4i %4i %4i %4i   %f", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
+			break;
+		default:
+			printf("Measurement::print <<<< Unrecognised geometry type >>>>\n");
 			break;
 	}
 }
