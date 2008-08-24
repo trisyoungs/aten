@@ -131,56 +131,6 @@
      <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="AtomMenu" >
-    <property name="title" >
-     <string>Atom</string>
-    </property>
-    <widget class="QMenu" name="AtomLabelsMenu" >
-     <property name="title" >
-      <string>Labels</string>
-     </property>
-     <addaction name="actionAtomLabelID" />
-     <addaction name="actionAtomLabelCharge" />
-     <addaction name="actionAtomLabelElement" />
-     <addaction name="actionAtomLabelFFType" />
-     <addaction name="actionAtomLabelFFEquiv" />
-     <addaction name="separator" />
-     <addaction name="actionAtomLabelClear" />
-     <addaction name="actionAtomLabelClearAll" />
-    </widget>
-    <widget class="QMenu" name="AtomStyleMenu" >
-     <property name="title" >
-      <string>Style</string>
-     </property>
-     <addaction name="actionAtomStyleStick" />
-     <addaction name="actionAtomStyleTube" />
-     <addaction name="actionAtomStyleSphere" />
-     <addaction name="actionAtomStyleScaled" />
-    </widget>
-    <addaction name="AtomStyleMenu" />
-    <addaction name="AtomLabelsMenu" />
-    <addaction name="separator" />
-    <addaction name="actionAtomHide" />
-    <addaction name="separator" />
-    <addaction name="actionAtomProbe" />
-   </widget>
-   <widget class="QMenu" name="ModelMenu" >
-    <property name="title" >
-     <string>&amp;Model</string>
-    </property>
-    <addaction name="actionModelRename" />
-    <addaction name="separator" />
-    <addaction name="actionModelFFType" />
-    <addaction name="actionModelFFUntype" />
-    <addaction name="separator" />
-    <addaction name="actionModelFoldAtoms" />
-    <addaction name="actionModelFoldMolecules" />
-    <addaction name="separator" />
-    <addaction name="actionModelNext" />
-    <addaction name="actionModelPrevious" />
-    <addaction name="separator" />
-    <addaction name="actionModelShowAll" />
-   </widget>
    <widget class="QMenu" name="menuHelp" >
     <property name="title" >
      <string>Help</string>
@@ -260,12 +210,79 @@
     <addaction name="actionViewModel" />
     <addaction name="actionViewTrajectory" />
    </widget>
+   <widget class="QMenu" name="ToolsMenu" >
+    <property name="title" >
+     <string>Settings</string>
+    </property>
+    <addaction name="actionPreferences" />
+    <addaction name="separator" />
+    <addaction name="actionReloadFilters" />
+   </widget>
    <widget class="QMenu" name="ScriptsMenu" >
     <property name="title" >
      <string>Scripts</string>
     </property>
     <addaction name="actionLoadScript" />
     <addaction name="separator" />
+   </widget>
+   <widget class="QMenu" name="AtomMenu" >
+    <property name="title" >
+     <string>Atom</string>
+    </property>
+    <widget class="QMenu" name="AtomLabelsMenu" >
+     <property name="title" >
+      <string>Labels</string>
+     </property>
+     <addaction name="actionAtomLabelID" />
+     <addaction name="actionAtomLabelCharge" />
+     <addaction name="actionAtomLabelElement" />
+     <addaction name="actionAtomLabelFFType" />
+     <addaction name="actionAtomLabelFFEquiv" />
+     <addaction name="separator" />
+     <addaction name="actionAtomLabelClear" />
+     <addaction name="actionAtomLabelClearAll" />
+    </widget>
+    <widget class="QMenu" name="AtomStyleMenu" >
+     <property name="title" >
+      <string>Style</string>
+     </property>
+     <addaction name="actionAtomStyleStick" />
+     <addaction name="actionAtomStyleTube" />
+     <addaction name="actionAtomStyleSphere" />
+     <addaction name="actionAtomStyleScaled" />
+    </widget>
+    <addaction name="AtomStyleMenu" />
+    <addaction name="AtomLabelsMenu" />
+    <addaction name="separator" />
+    <addaction name="actionAtomHide" />
+    <addaction name="separator" />
+    <addaction name="actionAtomProbe" />
+   </widget>
+   <widget class="QMenu" name="ModelMenu" >
+    <property name="title" >
+     <string>&amp;Model</string>
+    </property>
+    <widget class="QMenu" name="menuMeasurements" >
+     <property name="title" >
+      <string>Measurements</string>
+     </property>
+     <addaction name="actionMeasureClearAll" />
+     <addaction name="actionMeasureList" />
+    </widget>
+    <addaction name="actionModelRename" />
+    <addaction name="separator" />
+    <addaction name="actionModelFFType" />
+    <addaction name="actionModelFFUntype" />
+    <addaction name="separator" />
+    <addaction name="actionModelFoldAtoms" />
+    <addaction name="actionModelFoldMolecules" />
+    <addaction name="separator" />
+    <addaction name="actionModelNext" />
+    <addaction name="actionModelPrevious" />
+    <addaction name="separator" />
+    <addaction name="actionModelShowAll" />
+    <addaction name="separator" />
+    <addaction name="menuMeasurements" />
    </widget>
    <widget class="QMenu" name="FileMenu" >
     <property name="title" >
@@ -293,14 +310,6 @@
     <addaction name="actionFileSaveImage" />
     <addaction name="separator" />
     <addaction name="actionFileQuit" />
-   </widget>
-   <widget class="QMenu" name="ToolsMenu" >
-    <property name="title" >
-     <string>Settings</string>
-    </property>
-    <addaction name="actionPreferences" />
-    <addaction name="separator" />
-    <addaction name="actionReloadFilters" />
    </widget>
    <addaction name="FileMenu" />
    <addaction name="EditMenu" />
@@ -1654,7 +1663,7 @@
     <iconset resource="icons.qrc" >:/file/icons/file_close.svg</iconset>
    </property>
    <property name="text" >
-    <string>Clear Measurements</string>
+    <string>Clear</string>
    </property>
   </action>
   <action name="actionLoadForcefield" >
@@ -1950,6 +1959,30 @@
   <action name="actionReloadFilters" >
    <property name="text" >
     <string>Reload Filters</string>
+   </property>
+  </action>
+  <action name="action" >
+   <property name="text" >
+    <string>List</string>
+   </property>
+  </action>
+  <action name="actionClear" >
+   <property name="text" >
+    <string>Clear</string>
+   </property>
+  </action>
+  <action name="actionMeasureList" >
+   <property name="icon" >
+    <iconset resource="icons.qrc" >:/geometry/icons/measure_list.svg</iconset>
+   </property>
+   <property name="text" >
+    <string>List</string>
+   </property>
+   <property name="iconText" >
+    <string>List Measurements</string>
+   </property>
+   <property name="toolTip" >
+    <string>List all measurements in the model</string>
    </property>
   </action>
  </widget>

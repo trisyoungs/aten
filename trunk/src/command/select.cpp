@@ -29,14 +29,17 @@
 
 void selectAtoms(Model *m, Variable *slxn, bool deselect)
 {
-	static char from[32], to[32], text[256];
+	static char from[32], to[32], text[256], s[512];
 	int i, j, n, plus;
 	bool range;
 	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
 	if (slxn->type() == Variable::AtomVariable)
 	{
 		Atom *ii = (Atom*) slxn->asPointer();
+		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
+		m->beginUndoState(s);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
+		m->endUndoState();
 	}
 	else
 	{
@@ -69,6 +72,8 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 			}
 		}
 		// Do the selection
+		sprintf(s,"%select (%s)", deselect ? "Des" : "S", slxn->asCharacter());
+		m->beginUndoState(s);
 		if (!range)
 		{
 			if (Variable::determineType(from) == Variable::IntegerVariable)
@@ -118,6 +123,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 				for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 			}
 		}
+		m->endUndoState();
 	}
 }
 
@@ -133,7 +139,9 @@ int CommandData::function_CA_DESELECT(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Select all atoms");
 	obj.rs->selectAll();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -157,6 +165,9 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 		return CR_FAIL;
 	}
 	ForcefieldAtom *ffa;
+	char s[128];
+	sprintf(s,"Select by forcefield type (%s)", c->argc(0));
+	obj.rs->beginUndoState(s);
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next)
 	{
 		ffa = i->type();
@@ -165,6 +176,7 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 			if (ff->matchType(ffa->name(),c->argc(0)) != 0) obj.rs->selectAtom(i);
 		}
 	}
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -172,7 +184,9 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Invert selection");
 	obj.rs->selectionInvert();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -180,7 +194,9 @@ int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Deselect all atoms");
 	obj.rs->selectNone();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -188,7 +204,11 @@ int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
 int CommandData::function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	char s[128];
+	sprintf(s,"Select overlapping atoms (within %f)", c->argd(0));
+	obj.rs->beginUndoState(s);
 	obj.rs->selectOverlaps(c->argd(0));
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -206,13 +226,18 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 	if (p == NULL) msg.print("No pattern in which to select atoms.\n");
 	else
 	{
+		char s[256];
+		sprintf(s,"Select pattern '%s'", p->name());
+		obj.rs->beginUndoState(s);
 		Atom *i = p->firstAtom();
 		for (int n=0; n<p->totalAtoms(); n++)
 		{
 			obj.rs->selectAtom(i);
 			i = i->next;
 		}
+		obj.rs->endUndoState();
 	}
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 

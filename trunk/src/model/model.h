@@ -758,12 +758,20 @@ class Model
 	void addMeasurementsInSelection(Measurement::MeasurementType);
 	// Measure distances between atoms
 	void measureDistance(Atom*, Atom*);
+	// Measure distances between atom ids
+	void measureDistance(int i, int j);
 	// Measure angles between atoms
 	void measureAngle(Atom*, Atom*, Atom*);
+	// Measure angles between atom ids
+	void measureAngle(int i, int j, int k);
 	// Measure torsions between atoms
 	void measureTorsion(Atom*, Atom*, Atom*, Atom*);
+	// Measure torsions between atom ids
+	void measureTorsion(int i, int j, int k, int l);
 	// Update stored measurements
 	void updateMeasurements();
+	// List stored measurements
+	void listMeasurements();
 
 	/*
 	// Sites
@@ -813,6 +821,8 @@ class Model
 	// Undo / Redo
 	*/
 	private:
+	// Whether undo/redo is enabled (default is false)
+	bool undoRedoEnabled_;
 	// Pointer to current and previous states of the model in the list
 	UndoState *currentUndoState_, *currentRedoState_;
 	// List of undo states for the model
@@ -821,6 +831,8 @@ class Model
 	UndoState *recordingState_;
 
 	public:
+	// Flag that undo/redo should be enabled for the model
+	void enableUndoRedo();
 	// Return the current undo level pointer
 	UndoState *currentUndoState();
 	// Return the current redo level pointer

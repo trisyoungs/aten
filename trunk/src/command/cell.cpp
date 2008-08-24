@@ -37,7 +37,12 @@ int CommandData::function_CA_ADJUSTCELL(Command *&c, Bundle &obj)
 int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->parent()->inputFile() == NULL) obj.rs->foldAllAtoms();
+	if (c->parent()->inputFile() == NULL)
+	{
+		obj.rs->beginUndoState("Fold Atoms");
+		obj.rs->foldAllAtoms();
+		obj.rs->endUndoState();
+	}
 	else if (prefs.foldOnLoad() != Prefs::SwitchOff) obj.rs->foldAllAtoms();
 	return CR_SUCCESS;
 }
@@ -46,7 +51,9 @@ int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 int CommandData::function_CA_FOLDMOLECULES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Fold Molecules");
 	obj.rs->foldAllMolecules();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -54,7 +61,9 @@ int CommandData::function_CA_FOLDMOLECULES(Command *&c, Bundle &obj)
 int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Convert fractional to real coordinates");
 	obj.rs->fracToReal();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -62,7 +71,12 @@ int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (c->parent()->inputFile() == NULL) obj.rs->pack();
+	if (c->parent()->inputFile() == NULL)
+	{
+		obj.rs->beginUndoState("Pack Cell");
+		obj.rs->pack();
+		obj.rs->endUndoState();
+	}
 	else if (prefs.packOnLoad() != Prefs::SwitchOff) obj.rs->pack();
 	return CR_SUCCESS;
 }
@@ -80,7 +94,9 @@ int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 int CommandData::function_CA_REPLICATE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Replicate cell");
 	obj.rs->replicateCell(c->arg3d(0), c->arg3d(3));
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -88,6 +104,7 @@ int CommandData::function_CA_REPLICATE(Command *&c, Bundle &obj)
 int CommandData::function_CA_SCALE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Scale cell");
 	obj.rs->scaleCell(c->arg3d(0));
 	return CR_SUCCESS;
 }
@@ -97,6 +114,7 @@ int CommandData::function_CA_CELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
+	obj.rs->endUndoState();
 	obj.rs->calculateDensity();
 	return CR_SUCCESS;
 }
@@ -109,7 +127,9 @@ int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 	mat.rows[0] = c->arg3d(0);
 	mat.rows[1] = c->arg3d(3);
 	mat.rows[2] = c->arg3d(6);
+	obj.rs->beginUndoState("Set cell");
 	obj.rs->setCell(mat);
+	obj.rs->endUndoState();
 	obj.rs->calculateDensity();
 	return CR_SUCCESS;
 }
@@ -118,7 +138,9 @@ int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 int CommandData::function_CA_NOCELL(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Remove cell");
 	obj.rs->removeCell();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 

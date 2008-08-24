@@ -46,6 +46,7 @@ int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 	obj.rs->changeLog.updateSavePoint();
 	obj.rs->setFilter(NULL);
 	obj.rs->setFilename("frame");
+	obj.rs->enableUndoRedo();
 	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
 	return CR_SUCCESS;
 }

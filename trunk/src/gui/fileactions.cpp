@@ -164,6 +164,25 @@ void AtenForm::on_actionFileClose_triggered(bool checked)
 // Save the current view as a bitmap image.
 void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 {
+	// Get geometry from user - initial setup is to use current canvas geometry
+	char geometry[128];
+	int width, height;
+	bool ok;
+	sprintf(geometry,"%ix%i\n", gui.mainView.width(), gui.mainView.height());
+	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry, &ok);
+	if (ok && !text.isEmpty())
+	{
+		width = atoi(beforeChar(geometry,'x'));
+		height = atoi(afterChar(geometry,'x'));
+		if ((width < 1) || (height > 1))
+		{
+			char text[512];
+			sprintf("The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry);
+			QMessageBox::warning(this, "Aten", text, QMessageBox::Ok);
+			return;
+		}
+	}
+	else return;
 	// Get filename from user
 	int n;
 	if (saveBitmapDialog->exec() == 1)
@@ -171,7 +190,7 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		// Flag any surfaces to be rerendered for use in this context
 		aten.currentModel()->rerenderGrids();
 		// Create a QPixmap of the current scene
-		QPixmap pixmap = gui.mainWidget->renderPixmap(0,0,FALSE);
+		QPixmap pixmap = gui.mainWidget->renderPixmap(width,height,FALSE);
 		// Flag any surfaces to be rerendered so they are redisplayed in the original context
 		aten.currentModel()->rerenderGrids();
 

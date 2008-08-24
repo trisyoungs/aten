@@ -11,6 +11,7 @@ colourscale.cpp
 commands.cpp 
 commandlist.cpp 
 disorder.cpp 
+edit.cpp
 energy.cpp 
 expression.cpp 
 ff.cpp 
@@ -22,6 +23,7 @@ grid.cpp
 image.cpp 
 labels.cpp 
 mc.cpp 
+measure.cpp
 messaging.cpp 
 minimise.cpp 
 model.cpp 

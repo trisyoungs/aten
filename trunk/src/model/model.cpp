@@ -73,6 +73,7 @@ Model::Model()
 	moveAllowed_[MonteCarlo::Translate] = TRUE;
 	moveAllowed_[MonteCarlo::Rotate] = TRUE;
 	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
+	undoRedoEnabled_ = FALSE;
 
 	// Public variables
 	next = NULL;

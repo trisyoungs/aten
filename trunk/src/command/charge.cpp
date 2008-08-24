@@ -28,7 +28,9 @@
 int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Assign forcefield charges");
 	obj.rs->assignForcefieldCharges();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -49,7 +51,9 @@ int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Charge single pattern atom");
 	obj.rs->chargePatternAtom(obj.p,c->argi(0),c->argd(1));
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -57,7 +61,9 @@ int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 int CommandData::function_CA_CHARGE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Charge selected atoms");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->chargeAtom(i, c->argd(0));
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -72,6 +78,8 @@ int CommandData::function_CA_CHARGETYPE(Command *&c, Bundle &obj)
 int CommandData::function_CA_CLEARCHARGES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Remove charges");
 	obj.rs->clearCharges();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }

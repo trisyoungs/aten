@@ -59,6 +59,7 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	msg.print("Cell   : %s\n",Cell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != Cell::NoCell) obj.m->cell()->print();
 	// Lastly, reset all the log points and start afresh
+	obj.m->enableUndoRedo();
 	obj.m->changeLog.reset();
 	obj.m->changeLog.updateSavePoint();
 	return CR_SUCCESS;
@@ -168,6 +169,8 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 		f->setName(s);
 		obj.m->setNamesForcefield(f);
 	}
+	// Check to see whether we are using a filter, enabling undo/redo if not
+	if (c->parent()->inputFile() == NULL) obj.m->enableUndoRedo();
 	return CR_SUCCESS;
 }
 

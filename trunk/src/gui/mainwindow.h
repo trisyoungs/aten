@@ -116,11 +116,11 @@ class AtenForm : public QMainWindow
 	private:
 	QDoubleSpinBox *bondToleranceSpin_;
 	private slots:
-	void on_actionCalculateBonding_triggered(bool on);
-	void on_actionClearBonding_triggered(bool on);
-	void on_actionCalculateBondingSelection_triggered(bool on);
-	void on_actionClearBondingSelection_triggered(bool on);
-	void on_actionAugmentBonding_triggered(bool on);
+	void on_actionCalculateBonding_triggered(bool checked);
+	void on_actionClearBonding_triggered(bool checked);
+	void on_actionCalculateBondingSelection_triggered(bool checked);
+	void on_actionClearBondingSelection_triggered(bool checked);
+	void on_actionAugmentBonding_triggered(bool checked);
 	void bondTolerance_valueChanged(double d);
 
 	/*
@@ -138,21 +138,21 @@ class AtenForm : public QMainWindow
 	// Current custom element
 	int customElement_;
 	private slots:
-	void on_actionDrawAtom_triggered(bool on);
-	void on_actionDrawChain_triggered(bool on);
-	void on_actionDeleteAtom_triggered(bool on);
-	void on_actionTransmuteAtom_triggered(bool on);
-	void on_actionBondSingle_triggered(bool on);
-	void on_actionBondDouble_triggered(bool on);
-	void on_actionBondTriple_triggered(bool on);
-	void on_actionDeleteBond_triggered(bool on);
-	void on_actionElementH_triggered(bool on);
-	void on_actionElementC_triggered(bool on);
-	void on_actionElementN_triggered(bool on);
-	void on_actionElementCustom_triggered(bool on);
-	void on_actionSelectCustomElement_triggered(bool on);
-	void on_actionAddHydrogen_triggered(bool on);
-	void on_actionAddHydrogenAtom_triggered(bool on);
+	void on_actionDrawAtom_triggered(bool checked);
+	void on_actionDrawChain_triggered(bool checked);
+	void on_actionDeleteAtom_triggered(bool checked);
+	void on_actionTransmuteAtom_triggered(bool checked);
+	void on_actionBondSingle_triggered(bool checked);
+	void on_actionBondDouble_triggered(bool checked);
+	void on_actionBondTriple_triggered(bool checked);
+	void on_actionDeleteBond_triggered(bool checked);
+	void on_actionElementH_triggered(bool checked);
+	void on_actionElementC_triggered(bool checked);
+	void on_actionElementN_triggered(bool checked);
+	void on_actionElementCustom_triggered(bool checked);
+	void on_actionSelectCustomElement_triggered(bool checked);
+	void on_actionAddHydrogen_triggered(bool checked);
+	void on_actionAddHydrogenAtom_triggered(bool checked);
 
 	/*
 	// Draw style Actions
@@ -200,9 +200,9 @@ class AtenForm : public QMainWindow
 	private:
 	QComboBox *forcefieldCombo_;
 	private slots:
-	void on_actionMinimise_triggered(bool on);
-	void on_actionCalculateEnergy_triggered(bool on);
-	void on_actionCalculateForces_triggered(bool on);
+	void on_actionMinimise_triggered(bool checked);
+	void on_actionCalculateEnergy_triggered(bool checked);
+	void on_actionCalculateForces_triggered(bool checked);
 	void forcefieldCombo_currentIndexChanged(int i);
 	public:
 	void refreshForcefieldCombo();
@@ -211,16 +211,17 @@ class AtenForm : public QMainWindow
 	// Measure Actions
 	*/
 	private slots:
-	void on_actionMeasureDistance_triggered(bool on);
-	void on_actionMeasureAngle_triggered(bool on);
-	void on_actionMeasureTorsion_triggered(bool on);
-	void on_actionMeasureClearAll_triggered(bool on);
-	void on_actionMeasureDistanceSelection_triggered(bool on);
-	void on_actionMeasureAngleSelection_triggered(bool on);
-	void on_actionMeasureTorsionSelection_triggered(bool on);
+	void on_actionMeasureDistance_triggered(bool checked);
+	void on_actionMeasureAngle_triggered(bool checked);
+	void on_actionMeasureTorsion_triggered(bool checked);
+	void on_actionMeasureClearAll_triggered(bool checked);
+	void on_actionMeasureDistanceSelection_triggered(bool checked);
+	void on_actionMeasureAngleSelection_triggered(bool checked);
+	void on_actionMeasureTorsionSelection_triggered(bool checked);
+	void on_actionMeasureList_triggered(bool checked);
 
 	/*
-	// Model Actions
+	// Model Menu
 	*/
 	private slots:
 	void on_actionModelRename_triggered(bool checked);
@@ -256,9 +257,9 @@ class AtenForm : public QMainWindow
 	// Selection actions
 	*/
 	private slots:
-	void on_actionSelectAtoms_triggered(bool on);
-	void on_actionSelectMolecules_triggered(bool on);
-	void on_actionSelectElement_triggered(bool on);
+	void on_actionSelectAtoms_triggered(bool checked);
+	void on_actionSelectMolecules_triggered(bool checked);
+	void on_actionSelectElement_triggered(bool checked);
 
 	/*
 	// Trajectory Actions

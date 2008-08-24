@@ -35,7 +35,7 @@ class Measurement
 	// List pointers
 	Measurement *next, *prev;
 	// Geometry types
-	enum MeasurementType { NoMeasurement, DistanceMeasurement, AngleMeasurement, TorsionMeasurement, nMeasurementTypes };
+	enum MeasurementType { None, Distance, Angle, Torsion, nMeasurementTypes };
 	static int nMeasurementAtoms(MeasurementType);
 
 	/*
@@ -62,6 +62,8 @@ class Measurement
 	void setAtom(int n, Atom *i);
 	// Return atoms array
 	Atom **atoms();
+	// Print measurement info
+	void print();
 };
 
 #endif

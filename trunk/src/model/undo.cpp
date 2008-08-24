@@ -23,6 +23,13 @@
 #include "base/aten.h"
 #include "base/elements.h"
 
+// Flag that undo/redo should be enabled
+void Model::enableUndoRedo()
+{
+	msg.print(Messenger::Verbose, "Undo/redo has been enabled for this model.\n");
+	undoRedoEnabled_ = TRUE;
+}
+
 // Return the current undo level pointer
 UndoState *Model::currentUndoState()
 {
@@ -38,6 +45,7 @@ UndoState *Model::currentRedoState()
 // Start recording a new undo state
 void Model::beginUndoState(const char *text)
 {
+	if (!undoRedoEnabled_) return;
 	msg.enter("Model::beginUndoState");
 	// First, check that we're not already recording a state
 	if (recordingState_ != NULL)
@@ -59,6 +67,7 @@ void Model::beginUndoState(const char *text)
 void Model::endUndoState()
 {
 	msg.enter("Model::endUndoState");
+	if (!undoRedoEnabled_) return;
 	// Make sure that we have a valid state to store...
 	if (recordingState_ == NULL)
 	{

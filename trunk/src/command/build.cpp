@@ -24,6 +24,7 @@
 #include "base/aten.h"
 #include "model/model.h"
 #include "classes/clipboard.h"
+#include "classes/forcefield.h"
 
 // Add hydrogens to model ('addhydrogen')
 int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
@@ -32,6 +33,7 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 	// Optional argument specifies an atom, either by id or pointer
 	if (c->hasArg(0))
 	{
+		obj.rs->beginUndoState("Add Hydrogens to Atom");
 		Atom *i;
 		if (c->argt(0) == Variable::IntegerVariable) i = obj.rs->atom(c->argi(0)-1);
 		else if (c->argt(0) == Variable::AtomVariable) i = c->arga(0);
@@ -42,7 +44,12 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 		}
 		obj.rs->hydrogenSatisfy(i);
 	}
-	else obj.rs->hydrogenSatisfy();
+	else
+	{
+		obj.rs->beginUndoState("Add Hydrogens to Model");
+		obj.rs->hydrogenSatisfy();
+	}
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -51,6 +58,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
+	obj.rs->beginUndoState("Draw Chain");
 	Atom *i;
 	if (c->hasArg(3))
 	{
@@ -83,23 +91,8 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 			obj.rs->bondAtoms(obj.i, i, bt);
 		}
 	}
+	obj.rs->endUndoState();
 	aten.current.i = i;
-	return CR_SUCCESS;
-}
-
-// Copy current selection ('copy')
-int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	aten.userClipboard->copySelection(obj.rs);
-	return CR_SUCCESS;
-}
-
-// Cut current selection ('cut')
-int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	aten.userClipboard->cutSelection(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -108,14 +101,6 @@ int CommandData::function_CA_ENDCHAIN(Command *&c, Bundle &obj)
 {
 	// TODO end chain with atom id (optional argument)
 	obj.i = NULL;
-	return CR_SUCCESS;
-}
-
-// Delete current selection ('delete')
-int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->selectionDelete();
 	return CR_SUCCESS;
 }
 
@@ -133,16 +118,98 @@ int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Paste copied selection ('paste')
-int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
+// Draw unbound atom ('newatom <el> [x y z]')
+int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	if (!c->hasArg(2)) aten.userClipboard->pasteToModel(obj.rs);
-	else
+	// Determine element (based on type of variable provided)
+	Forcefield *f;
+	ForcefieldAtom *ffa;
+	Namemap<int> *nm;
+	int el;
+	switch (c->argt(0))
 	{
-		Vec3<double> shift = c->arg3d(0);
-		aten.userClipboard->pasteToModel(obj.rs, shift);
+		case (Variable::IntegerVariable):
+			el = c->argi(0);
+			break;
+		case (Variable::FloatVariable):
+			el = (int) floor(c->argd(0) + 0.15);
+			break;
+		case (Variable::CharacterVariable):
+			// Attempt conversion of the string first from the users type list
+			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
+				if (strcmp(nm->name(),c->argc(0)) == 0) break;
+			if (nm == NULL) el = elements.find(c->argc(0));
+			else el = nm->data();
+			break;
+		case (Variable::AtomVariable):
+			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
+			break;
+		default:
+			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", Variable::variableType(c->argt(0)));
+			el = 0;
+			break;
 	}
+	obj.rs->beginUndoState("Draw Atom");
+	if (c->hasArg(3)) aten.current.i = obj.rs->addAtom(el, c->arg3d(1));
+	else aten.current.i = obj.rs->addAtomAtPen(el);
+	// Add the name to the model's namesForcefield, if requested and it exists
+ 	if (prefs.keepNames() && obj.rs->namesForcefield())
+ 	{
+ 		// Search for this typename in the ff
+ 		f = obj.rs->namesForcefield();
+ 		ffa = f->findType(c->argc(0));
+ 		if (ffa == NULL) 
+ 		{
+ 			ffa = f->addType();
+ 			ffa->setName(c->argc(0));
+			ffa->atomtype()->setCharacterElement(el);
+ 		}
+ 		aten.current.i->setType(ffa);
+ 		aten.current.i->setTypeFixed(TRUE);
+ 	}
+	obj.rs->endUndoState();
+	return CR_SUCCESS;
+}
+
+// Draw unbound atom ('newatom <el> [fracx fracy fracz]')
+int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	// Determine element (based on type of variable provided)
+	int el;
+	switch (c->argt(0))
+	{
+		case (Variable::IntegerVariable):
+			el = c->argi(0);
+			break;
+		case (Variable::FloatVariable):
+			el = (int) floor(c->argd(0) + 0.15);
+			break;
+		case (Variable::CharacterVariable):
+			el = elements.find(c->argc(0));
+			break;
+		case (Variable::AtomVariable):
+			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
+			break;
+		default:
+			msg.print("Type '%s' is not a valid one to pass to CA_ADDATOM.\n", Variable::variableType(c->argt(0)));
+			el = 0;
+			break;
+	}
+	// Check for presence of unit cell
+	Vec3<double> r = c->arg3d(1);
+	if (r.x < 0.0) r.x += 1.0;
+	else if (r.x > 1.0) r.x -= 1.0;
+	if (r.y < 0.0) r.y += 1.0;
+	else if (r.y > 1.0) r.y -= 1.0;
+	if (r.z < 0.0) r.z += 1.0;
+	else if (r.z > 1.0) r.z -= 1.0;	
+	if (obj.rs->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
+	else r = obj.rs->cell()->fracToReal(r);
+	obj.rs->beginUndoState("Draw atom (fractional)");
+	aten.current.i = obj.rs->addAtom(el, r);
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -182,7 +249,9 @@ int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Shift selection down");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionDown();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -190,7 +259,9 @@ int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
 int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Shift selection up");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionUp();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -198,7 +269,9 @@ int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
 int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Move selection to end");
 	obj.rs->moveSelectionToEnd();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -206,7 +279,9 @@ int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
 int CommandData::function_CA_TOSTART(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Move selection to start");
 	obj.rs->moveSelectionToStart();
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
 
@@ -215,6 +290,8 @@ int CommandData::function_CA_TRANSMUTE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	int el = elements.find(c->argc(0));
+	obj.rs->beginUndoState("Transmute selection");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
+	obj.rs->endUndoState();
 	return CR_SUCCESS;
 }
