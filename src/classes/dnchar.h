@@ -25,6 +25,15 @@
 // Dynamic character array
 class Dnchar
 {
+	public:
+	// Constructor / Destructor
+	Dnchar();
+	~Dnchar();
+	// Copy constructor
+	Dnchar(const Dnchar&);
+	// List pointers
+	Dnchar *prev, *next;
+
 	private:
 	// Current size
 	int size_;
@@ -34,11 +43,6 @@ class Dnchar
 	char *data_;
 
 	public:
-	// Constructor / Destructor
-	Dnchar();
-	~Dnchar();
-	// Copy constructor
-	Dnchar(const Dnchar&);
 	// Print string info
 	void print() const;
 	// Clear string but don't free

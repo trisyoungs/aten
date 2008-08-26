@@ -27,6 +27,24 @@
 #include "base/prefs.h"
 #include "base/elements.h"
 
+// Return first bond in the model
+Bond *Model::bonds()
+{
+	return bonds_.first();
+}
+
+// Return number of bonds in the model
+int Model::nBonds()
+{
+	return bonds_.nItems();
+}
+
+// Return the nth bond in the model
+Bond *Model::bond(int n)
+{
+	return bonds_[n];
+}
+
 // Add Bond (pointers)
 void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 {
@@ -57,7 +75,7 @@ void Model::bondAtoms(Atom *i, Atom *j, Bond::BondType bt)
 		}
 		else
 		{
-			b = new Bond;
+			b = bonds_.add();
 			b->setType(bt);
 			b->setAtoms(i,j);
 			i->acceptBond(b);
@@ -118,8 +136,9 @@ void Model::unbondAtoms(Atom *i, Atom *j, Bond *bij)
 	}
 	// Store type for use later
 	Bond::BondType bt = b->type();
-	b->atomI()->detachBond(b);
-	b->atomJ()->detachBond(b);
+	i->detachBond(b);
+	j->detachBond(b);
+	bonds_.remove(b);
 	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)

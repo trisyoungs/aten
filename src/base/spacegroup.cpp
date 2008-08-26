@@ -19,11 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
 #include "base/spacegroup.h"
+#include "base/generator.h"
+#include "base/sysfunc.h"
+#include "classes/cell.h"
+
+// Singleton declaration
+SpacegroupMap spacegroups;
 
 // Define spacegroups and their symmetry generators
-Spacegroup Aten::spacegroups[] = {
+Spacegroup SpacegroupMap::spacegroups_[] = {
 	{ "None",	"None",			  0},	//   0 (no spacegroup)
 	{ "P1",		"<i>P</i>1",		  1,	//   1
 		{    0 } },
@@ -486,3 +491,95 @@ Spacegroup Aten::spacegroups[] = {
 	{ "Ia-3d",	"<i>Ia</i>-3<i>d</i>",	 96,	// 230
 		{    0,  20,  13,  19, 288, 313, 306, 299, 292, 301, 318, 311, 192, 193, 173, 172, 512, 513, 514, 515, 516, 517, 518, 519,   1,  58,  14,  41, 334, 361, 356, 350, 338, 352, 365, 359, 194, 195, 177, 176, 598, 599, 596, 597, 603, 602, 601, 600,  29,  31,  32,  33, 320, 328, 329, 330, 324, 331, 332, 333, 188, 189, 181, 180, 504, 485, 476, 497, 508, 499, 490, 481,  89,  62,  36,  35, 414, 422, 423, 424, 418, 425, 426, 427, 190, 191, 185, 184, 606, 607, 604, 605, 611, 610, 609, 608 } }
 };
+
+// Constructor
+SpacegroupMap::SpacegroupMap()
+{
+	// Private variables
+	nGenerators_ = 786;
+}
+
+/*
+// Methods
+*/
+
+// Return id for the named spacegroup
+int SpacegroupMap::spacegroup(const char *name) const
+{
+	msg.enter("SpacegroupMap::spacegroup");
+	static char lcname[256], lcsg[256];
+	strcpy(lcname,lowerCase(name));
+	int result = 0;
+	for (int n=1; n<231; n++)
+	{
+		strcpy(lcsg,lowerCase(spacegroups_[n].name));
+		if (strcmp(lcsg,lcname) == 0)
+		{
+			result = n;
+			break;
+		}
+	}
+	msg.exit("SpacegroupMap::spacegroup");
+	return result;
+}
+
+// Return plaintext name for the specified spacegroup
+const char *SpacegroupMap::name(int sg) const
+{
+	return spacegroups_[sg].name;
+}
+
+// Return rich text name for the specified spacegroup
+const char *SpacegroupMap::displayName(int sg) const
+{
+	return spacegroups_[sg].displayName;
+}
+
+// Return number of generators for spacegroup
+int SpacegroupMap::nGenerators(int sg) const
+{
+	return spacegroups_[sg].nGenerators;
+}
+
+// Return specific generator in list for specified spacegroup
+int SpacegroupMap::generator(int sg, int gen) const
+{
+	if ((gen < 0) || (gen >= spacegroups_[sg].nGenerators))
+	{
+		printf("Generator number %i is out of range for spacegroup %i.\n", gen, sg);
+		return 0;
+	}
+	return spacegroups_[sg].generators[gen];
+}
+
+// Return specific generator
+Generator &SpacegroupMap::generator(int gen) const
+{
+	if ((gen < 0) || (gen > nGenerators_))
+	{
+		printf("Generator id %i is out of range.\n", gen);
+		return generators_[0];
+	}
+	return generators_[gen];
+}
+
+// Returns cell type of specified spacegroup id
+Cell::CellType SpacegroupMap::cellType(int sg) const
+{
+	msg.enter("SpacegroupMap::cellType");
+	Cell::CellType result = Cell::NoCell;
+	// None
+	if (sg == 0) result = Cell::NoCell;
+	// Triclinic and monoclinic
+	else if (sg < 16) result = Cell::ParallelepipedCell;
+	// Orthorhombic and tetragonal
+	else if (sg < 143) result = Cell::OrthorhombicCell;
+	// Trigonal
+	else if (sg < 168) result = Cell::ParallelepipedCell;
+	// Hexagonal
+	else if (sg < 195) result = Cell::NoCell;
+	// Cubic
+	else result = Cell::CubicCell;
+	msg.exit("SpacegroupMap::cellType");
+	return result;
+}

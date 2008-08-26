@@ -79,19 +79,19 @@ class Model
 	// Sets the filename of the model
 	void setFilename(const char *s);
 	// Return the stored filename of the model
-	const char *filename();
+	const char *filename() const;
 	// Sets the file filter of the model
 	void setFilter(Filter *f);
 	// Return the stored file filter of the model
-	Filter *filter();
+	Filter *filter() const;
 	// Sets the name of the model
 	void setName(const char *s);
 	// Return the name of the model
-	const char *name();
+	const char *name() const;
 	// Return the mass of the molecule
-	double mass();
+	double mass() const;
 	// Return the density of the model
-	double density();
+	double density() const;
 	// Clear all data in model
 	void clear();
 	// Calculate the total mass of the model
@@ -136,13 +136,13 @@ class Model
 	// Create copy of supplied atom at the specified position
 	Atom *addCopy(Atom *after, Atom *source);
 	// Return the start of the atom list
-	Atom *atoms();
+	Atom *atoms() const;
 	// Return the n'th atom in the atom list
 	Atom *atom(int n);
 	// Return the number of atoms in the model
-	int nAtoms();
+	int nAtoms() const;
 	// Return the list index of the specified atom
-	int atomIndex(Atom *i);
+	int atomIndex(Atom *i) const;
 	// Delete specified atom
 	void deleteAtom(Atom *target);
 	// Translate specified atom
@@ -176,9 +176,9 @@ class Model
 	// Set charge of specified atom
 	void chargeAtom(Atom *i, double q);
 	// Prints out the coordinates of the atoms in the model
-	void printCoords();
+	void printCoords() const;
 	// Return total bond order penalty of atoms in the first pattern molecule
-	int totalBondOrderPenalty();
+	int totalBondOrderPenalty() const;
 
 
 	/*
@@ -209,6 +209,8 @@ class Model
 	void setSpacegroupSetting(int i);
 	// Return the spacegroup of the model
 	int spacegroup();
+	// Return the spacegroup setting of the model
+	int spacegroupSetting();
 	// Apply the given symmetry generator to the current atom selection in the model
 	void pack(int);
 	// Apply the symmetry operators listed in the model's spacegroup
@@ -221,13 +223,19 @@ class Model
 	void scaleCell(const Vec3<double>&);
 
 	/*
-	// Bonding
+	// Bonds
 	*/
+	private:
+	// Bonds in the model
+	List<Bond> bonds_;
+
 	public:
-	// Augment specified bond
-	//void augmentBond(Bond *b, int change);
-	// Augment bond between supplied atoms
-	//void augmentBond(Bond *b, int change);
+	// Return first bond in the model
+	Bond *bonds();
+	// Return number of bonds in the model
+	int nBonds();
+	// Return the nth bond in the model
+	Bond *bond(int n);
 	// Add bond of specified type between atoms
 	void bondAtoms(Atom *i, Atom *j, Bond::BondType bt);
 	// Add bond of specified type between atoms (by id)

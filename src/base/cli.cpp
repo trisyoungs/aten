@@ -52,6 +52,8 @@ Cli cliSwitches[] = {
 		"",		"Print major subroutine call information" },
 	{ Cli::DebugTypingSwitch,	'\0',"debugtyping",	0,
 		"",		"Print out verbose information from atom typing routines" },
+	{ Cli::ExportSwitch,		'e',"export",		1,
+		"<nickname>",	"Export all loaded models in the nicknamed format" },
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
 		"<file>",	"Load the specified forcefield file" },
 	{ Cli::FoldSwitch,		'\0',"fold",		0,
@@ -330,6 +332,13 @@ int Aten::parseCli(int argc, char *argv[])
 						if (!cl.execute()) return -1;
 					}
 					else return -1;
+					break;
+				// Export all models in nicknamed format (single-shot mode)
+				case (Cli::ExportSwitch):
+					f = aten.findFilter(Filter::ModelExport, argv[++argn]);
+					if (f == NULL) return -1;
+					aten.setExportFilter(f);
+					aten.setProgramMode(Aten::BatchExportMode);
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):

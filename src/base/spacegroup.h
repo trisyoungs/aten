@@ -25,6 +25,7 @@
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 #include "classes/cell.h"
+#include "base/generator.h"
 
 // Spacegroup
 class Spacegroup
@@ -39,5 +40,39 @@ class Spacegroup
 	// List of symmetry generators for this spacegroup
 	int generators[192];
 };
+
+// Spacegroup Map
+class SpacegroupMap
+{
+	public:
+	// Constructor
+	SpacegroupMap();
+
+	private:
+	// Spacegroup generator data
+	static Generator generators_[];
+	// Spacegroup definitions
+	static Spacegroup spacegroups_[];
+	// Number of defined generators
+	int nGenerators_;
+
+	public:
+	// Return id for the named spacegroup
+	int spacegroup(const char *name) const;
+	// Return plaintext name for the specified spacegroup
+	const char *name(int sg) const;
+	// Return richtext name for the specified spacegroup
+	const char *displayName(int sg) const;
+	// Return number of generators for spacegroup
+	int nGenerators(int sg) const;
+	// Return id of nth generator for spacegroup
+	int generator(int sg, int gen) const;
+	// Return generator with ID specified
+	Generator &generator(int gen) const;
+	// Returns cell type of specified spacegroup id
+	Cell::CellType cellType(int sg) const;
+};
+
+extern SpacegroupMap spacegroups;
 
 #endif

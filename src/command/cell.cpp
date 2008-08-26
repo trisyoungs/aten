@@ -21,7 +21,7 @@
 
 #include "command/commandlist.h"
 #include "base/messenger.h"
-#include "base/aten.h"
+#include "base/spacegroup.h"
 #include "model/model.h"
 
 // Adjust parameter of unit cell
@@ -162,7 +162,7 @@ int CommandData::function_CA_SPACEGROUP(Command *&c, Bundle &obj)
 	else
 	{
 		msg.print("Searching for spacegroup '%s'...",c->argc(0));
-		int sg = aten.findSpacegroupByName(c->argc(0));
+		int sg = spacegroups.spacegroup(c->argc(0));
 		if (sg == 0) msg.print(" not found - no spacegroup set.\n");
 		else msg.print(" found, id = %i.\n",sg);
 		obj.rs->setSpacegroup(sg);

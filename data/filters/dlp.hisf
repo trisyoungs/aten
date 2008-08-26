@@ -3,10 +3,10 @@
 
 importtrajectory
 	name "DL_POLY Formatted History"
-	extension "HISf"
+	extension HISf
 	glob *HISf
 	nickname dlpoly
-	exact "HISTORY"
+	exact HISTORY
 
 	# Variable declaration
 	character title,e

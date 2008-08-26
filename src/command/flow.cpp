@@ -175,7 +175,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					// Second argument determines pattern
 					Pattern *p;
 					if (c->argt(1) == Variable::PatternVariable) p = c->argp(1);
-					else if (c->argt(1) == Variable::IntegerVariable) p = obj.m->pattern(c->argi(1));
+					else if (c->argt(1) == Variable::IntegerVariable) p = obj.rs->pattern(c->argi(1));
 					else
 					{
 						msg.print( "Atom loop argument 2 must be of Pattern or Integer type.\n");
@@ -201,7 +201,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 							}
 							int m = p->startAtom();
 							m += (i-1) * p->nAtoms();
-							c->arg(0)->set(obj.m->atom(m));
+							c->arg(0)->set(obj.rs->atom(m));
 						}
 						else
 						{
@@ -211,7 +211,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					}
 					else c->arg(0)->set(p->firstAtom());
 				}
-				else c->arg(0)->set(obj.m->atoms());
+				else c->arg(0)->set(obj.rs->atoms());
 				if (c->arga(0) == NULL) status = FALSE;
 				// Set secondary variables from atom loop variable
 				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
@@ -219,7 +219,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 			// Pattern loop	 1 arg  - loop over patterns in model
 			case (Variable::PatternVariable):
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-				if (c->argt(0) == Variable::PatternVariable) c->arg(0)->set(obj.m->patterns());
+				if (c->argt(0) == Variable::PatternVariable) c->arg(0)->set(obj.rs->patterns());
 				else
 				{
 					msg.print( "Pattern loop variable must be of Pattern type.\n");
@@ -232,6 +232,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 			// Loop over forcefield bond terms of pattern
 			case (Variable::BondVariable):
 				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+				// Attempt loop over pattern ff bonds
 				if (c->argt(1) != Variable::PatternVariable)
 				{
 					msg.print( "Bond loop must be given a variable of Pattern type.\n");
@@ -278,7 +279,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					// Start atomtype loop at type given instead of first
 					c->arg(0)->set((ForcefieldAtom*) c->arg(1)->asPointer());
 				}
-				else c->arg(0)->set(obj.m->uniqueTypes());
+				else c->arg(0)->set(obj.rs->uniqueTypes());
 				c->parent()->setAtomtypeVariables(c->arg(0)->name(), (ForcefieldAtom*) c->arg(0)->asPointer());
 				if (c->argpb(0) == NULL) status = FALSE;
 				break;

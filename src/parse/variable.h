@@ -79,6 +79,8 @@ class Variable
 	void set(double d);
 	// Set value of variable (atom*)
 	void set(Atom*);
+	// Set value of variable (bond*)
+	void set(Bond*);
 	// Set value of variable (pattern*)
 	void set(Pattern*);
 	// Set value of variable (model*)

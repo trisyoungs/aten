@@ -90,6 +90,7 @@ enum CommandAction {
 	CA_AUGMENT,
 	CA_BONDTOLERANCE,
 	CA_CLEARBONDS,
+	CA_GETBOND,
 	CA_NEWBOND,
 	CA_NEWBONDID,
 	CA_REBONDPATTERNS,
@@ -502,6 +503,7 @@ class CommandData
 	int function_CA_AUGMENT(Command *&c, Bundle &obj);
 	int function_CA_BONDTOLERANCE(Command *&c, Bundle &obj);
 	int function_CA_CLEARBONDS(Command *&c, Bundle &obj);
+	int function_CA_GETBOND(Command *&c, Bundle &obj);
 	int function_CA_NEWBOND(Command *&c, Bundle &obj);
 	int function_CA_NEWBONDID(Command *&c, Bundle &obj);
 	int function_CA_REBONDPATTERNS(Command *&c, Bundle &obj);
@@ -589,6 +591,14 @@ class CommandData
 	int function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj);
 	int function_CA_PRINTSETUP(Command *&c, Bundle &obj);
 	int function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj);
+	// Filter Commands
+	int function_CA_EXACT(Command *&c, Bundle &obj);
+	int function_CA_EXTENSION(Command *&c, Bundle &obj);
+	int function_CA_GLOB(Command *&c, Bundle &obj);
+	int function_CA_ID(Command *&c, Bundle &obj);
+	int function_CA_NAME(Command *&c, Bundle &obj);
+	int function_CA_NICKNAME(Command *&c, Bundle &obj);
+	int function_CA_ZMAP(Command *&c, Bundle &obj);
 	// Flow control
 	int function_CA_BREAK(Command *&c, Bundle &obj);
 	int function_CA_CONTINUE(Command *&c, Bundle &obj);

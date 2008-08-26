@@ -10,6 +10,7 @@ aten.cpp
 cli.cpp 
 elements.cpp 
 messenger.cpp
+modes.cpp
 prefs.cpp 
 sysfunc.cpp
 )

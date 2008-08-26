@@ -26,13 +26,13 @@
 #include "base/aten.h"
 
 // Return the start of the atom list
-Atom *Model::atoms()
+Atom *Model::atoms() const
 {
 	return atoms_.first();
 }
 
 // Return the number of atoms in the model
-int Model::nAtoms()
+int Model::nAtoms() const
 {
 	return atoms_.nItems();
 }
@@ -222,7 +222,7 @@ Atom *Model::findAtomByTempi(int tempi)
 }
 
 // Return the list index of the specified atom
-int Model::atomIndex(Atom *i)
+int Model::atomIndex(Atom *i) const
 {
 	return atoms_.indexOf(i);
 }
@@ -359,7 +359,7 @@ void Model::chargeAtom(Atom *target, double q)
 }
 
 // Return total bond order penalty of atoms in the model
-int Model::totalBondOrderPenalty()
+int Model::totalBondOrderPenalty() const
 {
 	int result = 0;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) result += elements.bondOrderPenalty(i, i->totalBondOrder()/2);

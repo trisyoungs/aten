@@ -2,7 +2,7 @@ noinst_LIBRARIES = libbase.a libmath.a libsg.a
 
 libmath_a_SOURCES = mathfunc.cpp
 
-libbase_a_SOURCES = aten.cpp cli.cpp elements.cpp messenger.cpp prefs.cpp sysfunc.cpp 
+libbase_a_SOURCES = aten.cpp cli.cpp elements.cpp messenger.cpp modes.cpp prefs.cpp sysfunc.cpp 
 
 libsg_a_SOURCES = generator.cpp spacegroup.cpp
 

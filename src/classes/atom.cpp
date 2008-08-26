@@ -299,20 +299,12 @@ void Atom::acceptBond(Bond *b)
 // Detach bond
 void Atom::detachBond(Bond *xbond)
 {
-	// Remove the reference to the bond from the Reflist on the atom.
 	msg.enter("Atom::detachBond");
-	// Mark pointer as NULL. If both are NULL, delete the bond.
+	// Remove the reference to the bond from the Reflist on the atom.
 	bonds_.remove(xbond);
-	if (xbond->atomI() == this)
-	{
-		xbond->setAtomI(NULL);
-		if (xbond->atomJ() == NULL) delete xbond;
-	}
-	else
-	{
-		xbond->setAtomJ(NULL);
-		if (xbond->atomI() == NULL) delete xbond;
-	}
+	// Mark pointer as NULL.
+	if (xbond->atomI() == this) xbond->setAtomI(NULL);
+	else xbond->setAtomJ(NULL);
 	msg.exit("Atom::detachBond");
 }
 

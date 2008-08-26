@@ -41,10 +41,10 @@ Aten::Aten()
 	// Models
 	modelId_ = 0;
 
-	// Modes
+	// Default program mode
 	programMode_ = Aten::GuiMode;
 
-	// Store pointers to member functions
+	// Store pointers to command functions
 	initCommands();
 
 	// Misc 
@@ -59,6 +59,9 @@ Aten::Aten()
 	// CommandLists
 	tempScript.createModelVariables("");
 	interactiveScript.createModelVariables("");
+
+	// Single-shot mode variables
+	exportFilter_ = NULL;
 }
 
 // Destructor
@@ -780,51 +783,6 @@ bool Aten::updateProgress(int currentstep)
 void Aten::cancelProgress()
 {
 	gui.progressTerminate();
-}
-
-/*
-// Spacegroup data
-*/
-
-// Spacegroup name search
-int Aten::findSpacegroupByName(const char *name) const
-{
-	msg.enter("Aten::findSpacegroupByName");
-	static char lcname[256], lcsg[256];
-	strcpy(lcname,lowerCase(name));
-	int result = 0;
-	for (int n=1; n<231; n++)
-	{
-		strcpy(lcsg,lowerCase(spacegroups[n].name));
-		if (strcmp(lcsg,lcname) == 0)
-		{
-			result = n;
-			break;
-		}
-	}
-	msg.exit("Aten::findSpacegroupByName");
-	return result;
-}
-
-// Cell type from spacegrgoup
-Cell::CellType Aten::spacegroupCellType(int sg) const
-{
-	msg.enter("Aten::spacegroupCellType");
-	Cell::CellType result = Cell::NoCell;
-	// None
-	if (sg == 0) result = Cell::NoCell;
-	// Triclinic and monoclinic
-	else if (sg < 16) result = Cell::ParallelepipedCell;
-	// Orthorhombic and tetragonal
-	else if (sg < 143) result = Cell::OrthorhombicCell;
-	// Trigonal
-	else if (sg < 168) result = Cell::ParallelepipedCell;
-	// Hexagonal
-	else if (sg < 195) result = Cell::NoCell;
-	// Cubic
-	else result = Cell::CubicCell;
-	msg.enter("Aten::spacegroupCellType");
-	return result;
 }
 
 /*

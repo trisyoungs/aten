@@ -22,6 +22,44 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 
+// Augment bonds in current model ('augment')
+int CommandData::function_CA_AUGMENT(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Augment Bonds");
+	obj.rs->augmentBonding();
+	obj.rs->endUndoState();
+	return CR_SUCCESS;
+}
+
+// Change bond tolerance ('bondtol <d>')
+int CommandData::function_CA_BONDTOLERANCE(Command *&c, Bundle &obj)
+{
+	prefs.setBondTolerance(c->argd(0));
+	return CR_SUCCESS;
+}
+
+// Clear bonds in current model ('clearbonds')
+int CommandData::function_CA_CLEARBONDS(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	obj.rs->beginUndoState("Clear Bonding");
+	obj.rs->clearBonding();
+	obj.rs->endUndoState();
+	return CR_SUCCESS;
+}
+
+// Retrieve bond info ('getbond <id> [var]')
+int CommandData::function_CA_GETBOND(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	Bond *b = obj.rs->bond(c->argi(0)-1);
+	if (b == NULL) return CR_FAIL;
+	// Set bond information
+	c->parent()->setPatternBoundVariables(c->arg(1)->name(), b);
+	return CR_SUCCESS;
+}
+
 // Add bond between atoms ('newbond <atom1> <atom2> [bondtype]')
 int CommandData::function_CA_NEWBOND(Command *&c, Bundle &obj)
 {
@@ -69,16 +107,6 @@ int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
-// Augment bonds in current model ('augment')
-int CommandData::function_CA_AUGMENT(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->beginUndoState("Augment Bonds");
-	obj.rs->augmentBonding();
-	obj.rs->endUndoState();
-	return CR_SUCCESS;
-}
-
 // Calculate bonds in current model ('rebond')
 int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 {
@@ -96,23 +124,6 @@ int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 		obj.rs->clearBonding();
 		obj.rs->calculateBonding();
 	}
-	return CR_SUCCESS;
-}
-
-// Clear bonds in current model ('clearbonds')
-int CommandData::function_CA_CLEARBONDS(Command *&c, Bundle &obj)
-{
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->beginUndoState("Clear Bonding");
-	obj.rs->clearBonding();
-	obj.rs->endUndoState();
-	return CR_SUCCESS;
-}
-
-// Change bond tolerance ('bondtol <d>')
-int CommandData::function_CA_BONDTOLERANCE(Command *&c, Bundle &obj)
-{
-	prefs.setBondTolerance(c->argd(0));
 	return CR_SUCCESS;
 }
 

@@ -6,7 +6,7 @@
 importmodel
 	name "Cambridge Database Structure"
 	nickname cds
-	extension "dat,fdat"
+	extension dat,fdat
 	glob *.*dat
 
 	# Variables
