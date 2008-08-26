@@ -67,6 +67,7 @@ void Aten::initCommands()
 	// Bond commands
 	CA_data[CA_AUGMENT].function = &CommandData::function_CA_AUGMENT;
 	CA_data[CA_BONDTOLERANCE].function = &CommandData::function_CA_BONDTOLERANCE;
+	CA_data[CA_GETBOND].function = &CommandData::function_CA_GETBOND;
 	CA_data[CA_NEWBOND].function = &CommandData::function_CA_NEWBOND;
 	CA_data[CA_NEWBONDID].function = &CommandData::function_CA_NEWBONDID;
 	CA_data[CA_REBONDPATTERNS].function = &CommandData::function_CA_REBONDPATTERNS;

@@ -52,7 +52,7 @@ end
 
 importtrajectory
 	name "XMol XYZ Coordinates"
-	extension "xyz"
+	extension xyz
 	glob *xyz
 	nickname xyz
 

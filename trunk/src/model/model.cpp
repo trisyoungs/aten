@@ -97,7 +97,7 @@ void Model::setFilename(const char *s)
 }
 
 // Return the stored filename of the model
-const char *Model::filename()
+const char *Model::filename() const
 {
 	return filename_.get();
 }
@@ -109,7 +109,7 @@ void Model::setFilter(Filter *f)
 }
 
 // Return the stored file filter of the model
-Filter *Model::filter()
+Filter *Model::filter() const
 {
 	return filter_;
 }
@@ -129,19 +129,19 @@ void Model::setName(const char *s)
 }
 
 // Return the name of the model
-const char *Model::name()
+const char *Model::name() const
 {
 	return name_.get();
 }
 
 // Return the mass of the molecule
-double Model::mass()
+double Model::mass() const
 {
 	return mass_;
 }
 
 // Return the density of the model
-double Model::density()
+double Model::density() const
 {
 	return density_;
 }
@@ -244,7 +244,7 @@ void Model::selectionAddLabels(Atom::AtomLabel al)
 // OTHER STUFF
 */
 
-void Model::printCoords()
+void Model::printCoords() const
 {
 	msg.enter("Model::printCoords");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)

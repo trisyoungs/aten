@@ -30,13 +30,11 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "571"
-#define ATENDATE "Sun 24 Aug - 19:47"
+#define ATENREVISION "576"
+#define ATENDATE "Tue 26 Aug - 12:37"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
-class Generator;
-class Spacegroup;
 class Model;
 class Forcefield;
 class Grid;
@@ -50,9 +48,10 @@ class Aten
 	Aten();
 	~Aten();
 	// Program mode enum
-	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, NoMode };
+	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, BatchExportMode, NoMode };
 	// Remove all dynamic data
 	void clear();
+
 
 	/*
 	// Current Objects
@@ -60,6 +59,7 @@ class Aten
 	public:
 	// Current object Bundle
 	Bundle current;
+
 
 	/*
 	// Models
@@ -91,6 +91,7 @@ class Aten
 	void removeModel(Model*);
 	// Find model by name
 	Model *findModel(const char *name) const;
+
 
 	/*
 	// Import / Export
@@ -159,20 +160,6 @@ class Aten
 
 
 	/*
-	// Spacegroups
-	*/
-	public:
-	// Spacegroup generators
-	static Generator generators[];
-	// Spacegroup definitions
-	static Spacegroup spacegroups[];
-	// Searches for the named spacegroup
-	int findSpacegroupByName(const char *name) const;
-	// Returns cell type of specified spacegroup id
-	Cell::CellType spacegroupCellType(int sg) const;
-
-
-	/*
 	// Clipboards
 	*/
 	private:
@@ -235,6 +222,7 @@ class Aten
 	// Interactive mode command list
 	CommandList interactiveScript;
 
+
 	/*
 	// Building
 	*/
@@ -248,6 +236,7 @@ class Aten
 	// Return current drawing element
 	short int sketchElement();
 
+
 	/*
 	// Progress Indicators
 	*/
@@ -258,6 +247,7 @@ class Aten
 	bool updateProgress(int currentstep);
 	// Terminate the current progress
 	void cancelProgress();
+
 
 	/*
 	// CLI
@@ -273,6 +263,20 @@ class Aten
 	int parseCli(int, char**);
 	// Element map name conversions to apply on load
 	List< Namemap<int> > typeMap;
+
+
+	/*
+	// Single-shot program modes
+	*/
+	private:
+	// Model format in which to export models
+	Filter *exportFilter_;
+
+	public:
+	// Set format to use in export
+	void setExportFilter(Filter *f);
+	// Export all currently loaded models in the referenced format
+	void exportModels();
 };
 
 extern Aten aten;

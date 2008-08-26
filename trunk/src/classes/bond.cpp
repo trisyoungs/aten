@@ -67,6 +67,10 @@ Bond::Bond()
 	type_ = Bond::Any;
 	atomI_ = NULL;
 	atomJ_ = NULL;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 
 // Set atoms for bond

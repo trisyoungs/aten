@@ -30,9 +30,14 @@
 // Constructor
 Dnchar::Dnchar()
 {
+	// Private variables
 	data_ = NULL;
 	size_ = 0;
 	endPosition_ = -1;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
 }
 
 // Destructor

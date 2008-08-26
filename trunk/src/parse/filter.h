@@ -69,7 +69,7 @@ class Filter
 	// Nickname for the filter
 	Dnchar nickname_;
 	// File extension(s)
-	Dnchar extension_;
+	List<Dnchar> extensions_;
 	// File filter glob (for gui)
 	Dnchar glob_;
 	// Partner filter
@@ -77,7 +77,7 @@ class Filter
 	// Filter description
 	Dnchar description_;
 	// Filename alias list
-	Dnchar exactNames_;
+	List<Dnchar> exactNames_;
 	// Whether the file has an associated extension
 	bool hasExtension_;
 	// Whether separate zmapping has been defined
@@ -92,10 +92,10 @@ class Filter
 	const char *name();
 	// Return the short nickname of the filter
 	const char *nickname();
-	// Return the file extension
-	const char *extension();
+	// Return the first file extension
+	Dnchar *extensions();
 	// Return the aliases list
-	const char *exactNames();
+	Dnchar *exactNames();
 	// Return whether filter has an extension
 	bool hasExtension();
 	// Set the partner filter

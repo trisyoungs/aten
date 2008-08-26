@@ -22,6 +22,8 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 #include "base/elements.h"
+#include "base/aten.h"
+#include "base/spacegroup.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"
 #include "classes/forcefieldatom.h"
@@ -159,6 +161,8 @@ bool CommandList::createModelVariables(const char *base)
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"nbonds",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"nframes",Variable::IntegerVariable);
@@ -203,6 +207,13 @@ bool CommandList::createModelVariables(const char *base)
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"cell.centrez",Variable::FloatVariable);
 	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"cell.spgrp.id",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"cell.spgrp.name",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"cell.spgrp.setting",Variable::IntegerVariable);
+	if (v == NULL) return FALSE;
+
 	return TRUE;
 }
 
@@ -214,6 +225,7 @@ void CommandList::setModelVariables(const char *base, Model *m)
 	{
 		variables.set(base,"title",m->name());
 		variables.set(base,"natoms",m->nAtoms());
+		variables.set(base,"nbonds",m->nBonds());
 		variables.set(base,"nframes",m->nTrajectoryFrames());
 		variables.set(base,"firstatom",m->atoms());
 		variables.set(base,"currentframe",m->trajectoryPosition());
@@ -253,6 +265,9 @@ void CommandList::setModelVariables(const char *base, Model *m)
 			strcat(s,"frame");
 			setModelVariables(s, frame);
 		}
+		variables.set(base,"cell.spgrp.id", m->spacegroup());
+		variables.set(base,"cell.spgrp.name", spacegroups.name(m->spacegroup()));
+		variables.set(base,"cell.spgrp.setting", m->spacegroupSetting());
 	}
 	msg.exit("CommandList::setModelVariables");
 }
@@ -480,6 +495,43 @@ void CommandList::setPatternBoundVariables(const char *varname, PatternBound *pb
 		
 	}
 	msg.exit("CommandList::setPatternBoundVariables");
+}
+
+// Set variables for PatternBound (from simple Bond)
+void CommandList::setPatternBoundVariables(const char *varname, Bond *b)
+{
+	msg.enter("CommandList::setPatternBoundVariables[bond]");
+	static char parm[24];
+	int i;
+	if (b != NULL)
+	{
+		// Set atom ids involved
+		variables.set(varname,"id_i",b->atomI()->id()+1);
+		variables.set(varname,"id_j",b->atomJ()->id()+1);
+		strcpy(parm,"id_X");
+		for (i = 2; i < MAXFFBOUNDTYPES; i++)
+		{
+			parm[3] = 105 + i;
+			variables.set(varname,parm,0);
+		}
+		// Set default type names
+		strcpy(parm,"type_X");
+		for (i = 1; i < MAXFFBOUNDTYPES; i++)
+		{
+			parm[5] = 105 + i;
+			variables.set(varname,parm,"none");
+		}
+		// Set default ForcefieldParams data
+		strcpy(parm,"param_X");
+		for (int i = 0; i < MAXFFPARAMDATA; i++)
+		{
+			parm[6] = 97 + i;
+			variables.set(varname,parm,0.0);
+		}
+		// Set bond form (type)
+		variables.set(varname,"form",Bond::bondType(b->type()));
+	}
+	msg.exit("CommandList::setPatternBoundVariables[bond]");
 }
 
 // Create atomtype parameter variables

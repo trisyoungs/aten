@@ -687,6 +687,8 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			// Pointer-style variable (that also need to create subvariables)
 			case ('A'):
 			case ('a'):
+			case ('B'):
+			case ('b'):
 			case ('P'):
 			case ('p'):
 			case ('M'):
@@ -699,9 +701,13 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 						case ('a'):
 							vt = Variable::AtomVariable;
 							break;
+						case ('B'):
+						case ('b'):
+							vt = Variable::BondVariable;
+							break;
 						case ('P'):
 						case ('p'):
-							vt = Variable::ModelVariable;
+							vt = Variable::PatternVariable;
 							break;
 						case ('M'):
 						case ('m'):

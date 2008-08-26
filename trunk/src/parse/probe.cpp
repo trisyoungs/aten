@@ -59,10 +59,8 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 		// Try to match file extension
 		if (dotpos != NULL)
 		{
-			// Parse file extension list into separate extensions
-			parser.getArgsDelim(f->extension(),Parser::Defaults);
-			for (n=0; n<parser.nArgs(); n++)
-				if (strcmp(dotpos,parser.argc(n)) == 0)
+			for (Dnchar *d = f->extensions(); d != NULL; d = d->next)
+				if (*d == dotpos)
 				{
 					result = f;
 					break;
@@ -70,12 +68,10 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 		}
 		if (result != NULL) break;
 		// Try to match exact filename
-		// Parse file extension list into separate extensions
-		parser.getArgsDelim(f->exactNames(),Parser::Defaults);
-		for (n=0; n<parser.nArgs(); n++)
+		for (Dnchar *d = f->exactNames(); d != NULL; d = d->next)
 		{
 			//printf("Comparing '%s' with '%s'\n",nameonly.get(),parser.argc(n));
-			if (nameonly == parser.argc(n))
+			if (*d == nameonly)
 			{
 				result = f;
 				break;

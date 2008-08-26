@@ -76,9 +76,8 @@ class ElementMap
 	int nElements_;
 
 	public:
-	// Constructor / Destructor
+	// Constructor
 	ElementMap();
-	~ElementMap();
 	// Return atomic number of element in string
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm

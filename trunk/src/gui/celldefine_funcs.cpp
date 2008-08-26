@@ -86,7 +86,7 @@ void AtenCellDefine::refresh()
 	ui.CellAngleBSpin->setValue(angles.y);
 	ui.CellAngleCSpin->setValue(angles.z);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", aten.spacegroups[m->spacegroup()].displayName,  m->spacegroup());
+	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()),  m->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 	refreshing_ = FALSE;
 }
@@ -187,7 +187,7 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	// Try a direct number conversion first...
 	strcpy(s,qPrintable(ui.CellSpacegroupEdit->text()));
 	sg = atoi(s);
-	if (sg == 0) sg = aten.findSpacegroupByName(s);
+	if (sg == 0) sg = spacegroups.spacegroup(s);
 	// Check for null spacegroup
 	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
 	else
@@ -195,7 +195,7 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 		m->setSpacegroup(sg);
 		ui.CellSpacegroupEdit->setText("");
 		// Set spacegroup label
-		sprintf(s,"%s (%i)\n", aten.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()), m->spacegroup());
 		ui.SpacegroupLabel->setText(s);
 	}
 }
@@ -206,7 +206,7 @@ void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 	Model *m = aten.currentModel();
 	m->setSpacegroup(0);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", aten.spacegroups[m->spacegroup()].displayName, m->spacegroup());
+	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()), m->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 }
 

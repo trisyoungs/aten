@@ -57,6 +57,12 @@ int Model::spacegroup()
 	return spacegroup_;
 }
 
+// Return the spacegroup setting of the model
+int Model::spacegroupSetting()
+{
+	return spacegroupSetting_;
+}
+
 // Set cell (vectors)
 void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
@@ -174,7 +180,7 @@ void Model::pack(int gen)
 		msg.enter("Model::pack[gen,atom]");
 		return;
 	}
-	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", aten.generators[gen].description, gen);
+	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", spacegroups.generator(gen).description, gen);
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -186,8 +192,8 @@ void Model::pack(int gen)
 		newr = i->r();
 // 		newr.print();
 		// Apply the rotation and translation
-		newr *= aten.generators[gen].rotation;
-		newr +=  cell_.transpose() * aten.generators[gen].translation;
+		newr *= spacegroups.generator(gen).rotation;
+		newr +=  cell_.transpose() * spacegroups.generator(gen).translation;
 		i->r() = newr;
 		cell_.fold(i, this);
 	}
@@ -201,10 +207,10 @@ void Model::pack()
 	if (spacegroup_ == 0) msg.print("No spacegroup defined in model - no packing will be performed.\n");
 	else
 	{
-		msg.print("Packing cell according to spacegroup '%s'...\n", aten.spacegroups[spacegroup_].name);
+		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(spacegroup_));
 		selectAll();
-		for (int n=0; n<aten.spacegroups[spacegroup_].nGenerators; n++)
-			pack(aten.spacegroups[spacegroup_].generators[n]);
+		for (int n=0; n<spacegroups.nGenerators(spacegroup_); n++)
+			pack(spacegroups.generator(spacegroup_, n));
 		// Select overlapping atoms and delete
 		selectOverlaps(0.1);
 		selectionDelete();

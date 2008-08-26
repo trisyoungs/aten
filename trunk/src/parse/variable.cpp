@@ -176,11 +176,23 @@ void Variable::set(Atom *i)
 {
 	if (type_ != Variable::AtomVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'atom*' >>>>\n",name_.get(), Variable::variableType(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'atom*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = i;
 	msg.print(Messenger::Verbose,"Atom variable '%s' has pointer '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
+}
+
+// Set (bond*)
+void Variable::set(Bond *b)
+{
+	if (type_ != Variable::BondVariable)
+	{
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'bond*' >>>>\n",name_.get(), Variable::variableType(type_));
+		return;
+	}
+	ptrValue_ = b;
+	msg.print(Messenger::Verbose,"Bond variable '%s' has pointer '%li')\n", name_.get(), b);
 }
 
 // Set (pattern)
@@ -188,7 +200,7 @@ void Variable::set(Pattern *p)
 {
 	if (type_ != Variable::PatternVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'pattern*' >>>>\n",name_.get(), Variable::variableType(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'pattern*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = p;
@@ -200,7 +212,7 @@ void Variable::set(Model *m)
 {
 	if (type_ != Variable::ModelVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'model*' >>>>\n",name_.get(), Variable::variableType(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'model*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = m;
@@ -212,7 +224,7 @@ void Variable::set(PatternBound *pb)
 {
 	if (type_ < Variable::BondVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'PatternBound*' >>>>\n",name_.get(), Variable::variableType(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'PatternBound*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = pb;
@@ -224,7 +236,7 @@ void Variable::set(ForcefieldAtom *ffa)
 {
 	if (type_ < Variable::AtomtypeVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = ffa;
@@ -236,7 +248,7 @@ void Variable::set(Expression *ex)
 {
 	if (type_ != Variable::ExpressionVariable)
 	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type_ 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
 		return;
 	}
 	ptrValue_ = ex;

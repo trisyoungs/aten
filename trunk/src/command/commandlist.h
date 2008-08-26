@@ -185,7 +185,7 @@ class Command
 	Vec3<float> arg3f(int);
 	// Return arguments as Vec3<int>
 	Vec3<int> arg3i(int);
-	// Return argument as atom pointer
+	// Return argument as Atom pointer
 	Atom *arga(int argno);
 	// Return argument as pattern pointer
 	Pattern *argp(int argno);
@@ -299,6 +299,8 @@ class CommandList
 	bool createPatternBoundVariables(const char*);
 	// Set pattern bound term variables
 	void setPatternBoundVariables(const char*, PatternBound*);
+	// Set pattern bound term variables (from simple Bond)
+	void setPatternBoundVariables(const char*, Bond*);
 	// Create atomtype atomtype variables
 	bool createAtomtypeVariables(const char*);
 	// Set atomtype variables

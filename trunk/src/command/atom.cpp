@@ -44,6 +44,7 @@ int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 	Atom *i = obj.rs->atom(c->argi(0)-1);
 	if (i == NULL) return CR_FAIL;
 	// Set atom information
+	obj.i = i;
 	if (c->hasArg(1)) c->parent()->setAtomVariables(c->arg(1)->name(), i);
 	return CR_SUCCESS;
 }

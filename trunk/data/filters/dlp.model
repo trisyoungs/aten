@@ -3,9 +3,9 @@
 
 importmodel
 	name "DL_POLY Configuration"
-	extension "CONFIG,REVCON,config,revcon"
+	extension CONFIG,REVCON,config,revcon
 	glob *CON*
-	exact "CONFIG,REVCON,config,revcon"
+	exact CONFIG,REVCON,config,revcon
 	nickname dlpoly
 	id 1
 	zmap ff

@@ -31,6 +31,8 @@ class Bond
 	public:
 	// Constructor
 	Bond();
+	// List pointers
+	Bond *prev, *next;
 	// Bond types
 	enum BondType { Any, Single, Double, Triple, Aromatic, nBondTypes };
 	// Bond type from text

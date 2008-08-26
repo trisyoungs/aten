@@ -27,6 +27,7 @@
 #include "parse/parser.h"
 #include "classes/forcefield.h"
 
+// Singleton declaration
 ElementMap elements;
 
 // Definitions
@@ -291,11 +292,6 @@ ElementMap::ElementMap()
 {
 	// Determine number of defined elements
 	nElements_ = sizeof(el_) / sizeof(el_[0]);
-}
-
-// Destructor
-ElementMap::~ElementMap()
-{
 }
 
 // Return group number of atomic number 'i'

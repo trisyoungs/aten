@@ -66,8 +66,8 @@ void Model::beginUndoState(const char *text)
 // Finish recording the new undo state
 void Model::endUndoState()
 {
-	msg.enter("Model::endUndoState");
 	if (!undoRedoEnabled_) return;
+	msg.enter("Model::endUndoState");
 	// Make sure that we have a valid state to store...
 	if (recordingState_ == NULL)
 	{

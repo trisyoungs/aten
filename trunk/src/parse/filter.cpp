@@ -63,6 +63,7 @@ Filter::Filter()
 	id_ = -1;
 	partner_ = NULL;
 	commands_.setFilter(this);
+
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -87,15 +88,15 @@ const char *Filter::nickname()
 }
 
 // Return the file extension
-const char *Filter::extension()
+Dnchar *Filter::extensions()
 {
-	return extension_.get();
+	return extensions_.first();
 }
 
 // Return the aliases list
-const char *Filter::exactNames()
+Dnchar *Filter::exactNames()
 {
-	return exactNames_.get();
+	return exactNames_.first();
 }
 
 // Return whether filter has an extension
@@ -141,13 +142,14 @@ bool Filter::load(ifstream &filterFile)
 	FilterCommmand fc;
 	char longname[256];
 	Prefs::ZmapType zm;
-	int success, itemsleft;
+	int success, itemsleft, n;
+	Dnchar *d;
 	// First, we must add a command to the flowstack so we know when to return (or raise an error)
 	commands_.clear();
 	// Read in commands
 	while (!filterFile.eof())
 	{
-		success = parser.getArgsDelim(&filterFile,Parser::UseQuotes+Parser::SkipBlanks);
+		success = parser.getArgsDelim(&filterFile, Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
 			msg.print("Filter::load - Error reading filter file.\n");
@@ -156,14 +158,7 @@ bool Filter::load(ifstream &filterFile)
 		}
 		else if (success == -1) break;
 		// Check branchstack - if empty then we're done (all filters have  a final 'END' command so the CA_ROOTNODE will get terminated)
-		if (commands_.nBranches() == 0)
-		{
-			// Create long filefilter string
-			sprintf(longname,"%s (%s)",name_.get(),glob_.get());
-			description_ = longname;
-			msg.exit("Filter::load");
-			return TRUE;
-		}
+		if (commands_.nBranches() == 0) break;
 		// Check for filter specification commands
 		fc = Filter::filterCommand(parser.argc(0));
 		// Some commands do not require nodes in the list, but set properties in the filter itself
@@ -179,11 +174,19 @@ bool Filter::load(ifstream &filterFile)
 				break;
 			// File extension(s)
 			case (Filter::ExtensionCommand):
-				extension_ = parser.argc(1);
+				for (n=1; n<parser.nArgs(); n++)
+				{
+					d = extensions_.add();
+					d->set(parser.argc(n));
+				}
 				break;
 			// Exact filename list
 			case (Filter::ExactCommand):
-				exactNames_ = parser.argc(1);
+				for (n=1; n<parser.nArgs(); n++)
+				{
+					d = exactNames_.add();
+					d->set(parser.argc(n));
+				}
 				break;
 			// Set file filter glob for GUI
 			case (Filter::GlobCommand):
@@ -220,7 +223,15 @@ bool Filter::load(ifstream &filterFile)
 	itemsleft = commands_.nBranches();
 	if (itemsleft != 0)
 	{
-		printf("Filter::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
+		msg.print("%i block%s not been terminated within the filter.\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
+		msg.exit("Filter::load");
+		return FALSE;
+	}
+	// Check a few other things:
+	// At least one extension must have been specified
+	if (extensions_.nItems() == 0)
+	{
+		msg.print("At least one extension must be specified for the filter.\n");
 		msg.exit("Filter::load");
 		return FALSE;
 	}
@@ -276,10 +287,23 @@ void Filter::setType(FilterType ft)
 void Filter::print()
 {
 	msg.enter("Filter::print");
+	char s[512];
 	printf("Filter Name : '%s'\n", name_.get());
 	printf(" Shell glob : '%s'\n", glob_.get());
-	printf(" Extensions : '%s'\n", extension_.get());
-	printf("Exact Names : '%s'\n", exactNames_.get());
+	s[0] = '\0';
+	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next)
+	{
+		strcat(s,d->get());
+		strcat(s," ");
+	}
+	printf(" Extensions : '%s'\n", s);
+	s[0] = '\0';
+	for (Dnchar *d = exactNames_.first(); d != NULL; d = d->next)
+	{
+		strcat(s,d->get());
+		strcat(s," ");
+	}
+	printf("Exact Names : '%s'\n", s);
 	printf("       Type : %s\n", Filter::FilterType(type_));
 	msg.exit("Filter::print");
 }
