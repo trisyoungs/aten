@@ -115,10 +115,10 @@ void Canvas::renderExtra2d()
 	// Draw on any 2D objects, e.g. selection boxes, labels etc.
 	static int n, i, skip;
 	static double dx, dy, halfw;
-	// First set up a 2D drawing area...
-	glMatrixMode(GL_PROJECTION);		// Swap to projection matrix...
-	glLoadIdentity();			// ...clear it...
-	glOrtho(0.0,width_,0.0,height_,-1,1);	// ...and setup a 2D canvas.
+	// First set up a 2D drawing area.
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0.0,width_*1.0,0.0,height_*1.0,-1,1);
 	// Now draw
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

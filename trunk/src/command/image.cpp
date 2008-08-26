@@ -45,6 +45,8 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	prefs.setScreenObjects(screenbits);
 	// Flag any surfaces to be rerendered so they are redisplayed in the original context
 	aten.currentModel()->rerenderGrids();
+	// Reconfigure canvas to widget size (necessary if image size was changed)
+	gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
 
 	// Convert format to bitmap_format
 	bitmap_format bf = BIF_from_text(c->argc(0));

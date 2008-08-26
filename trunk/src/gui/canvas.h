@@ -78,7 +78,9 @@ class Canvas
 	// Internal name of the canvas for error reporting
 	const char *name_;
 	// Width, height, and aspect ratio of the canvas
-	double width_, height_, aspect_;
+	int width_, height_;
+	// Aspect ratio of canvas
+	double aspect_;
 	// Point at which the stored atom display list was valid (sum of Change::StructureLog and Change::CoordinateLog points)
 	int renderPoint_;
 	// Flag to indicate whether we may draw to the canvas
@@ -94,9 +96,9 @@ class Canvas
 	// Set the internal name of the canvas
 	void setName(const char *s);
 	// Return the current height of the drawing area
-	double height();
+	int height();
 	// Return the current width of the drawing area
-	double width();
+	int width();
 	// Return whether the canvas is currently drawing
 	bool isDrawing();
 	// Return if the canvas is valid

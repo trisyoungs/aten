@@ -68,13 +68,13 @@ void Canvas::setName(const char *s)
 }
 
 // Return the current height of the drawing area
-double Canvas::height()
+int Canvas::height()
 {
 	return height_;
 }
 
 // Return the current width of the drawing area
-double Canvas::width()
+int Canvas::width()
 {
 	return width_;
 }
@@ -143,8 +143,8 @@ void Canvas::expose()
 void Canvas::configure(int w, int h)
 {
 	// Store the new width and height of the widget and re-do projection
-	width_ = (float) w; //(float)contextWidget_->width();
-	height_ = (float) h; //(float)contextWidget_->height();
+	width_ = w;
+	height_ = h;
 	doProjection();
 	// Flag that render source needs to be reprojected
 	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
@@ -509,12 +509,12 @@ void Canvas::doProjection()
 	if (beginGl())
 	{
 		// Set the viewport size to the whole area and grab the matrix
-		glViewport(0,0,(int)width_,(int)height_);
+		glViewport(0,0, width_, height_);
 		glGetIntegerv(GL_VIEWPORT,VMAT);
 		// Calculate and store a projection matrix
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		aspect_ = width_ / height_;
+		aspect_ = (width_*1.0) / height_;
 		if (prefs.hasPerspective())
 		{
 			// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
