@@ -55,7 +55,7 @@ void Canvas::renderScene(Model *source)
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		// Set up a 2D canvas
-		glOrtho(0.0,width_,0.0,height_,-1,1);
+		glOrtho(0.0,width_*1.0,0.0,height_*1.0,-1,1);
 		// Draw on our default message
 		glMatrixMode(GL_MODELVIEW);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

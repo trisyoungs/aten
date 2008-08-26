@@ -273,7 +273,7 @@ void Canvas::renderRotationGlobe(double *rmat, double camrot)
 	// Draw the coordinate axes at the bottom right of the screen.
 	// First set up the small viewport and apply our stored projection matrix.
 	int globesize = prefs.globeSize();
-	glViewport((int)width_-globesize,0,globesize,globesize);
+	glViewport(width_-globesize,0,globesize,globesize);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	static double pmat[16];
@@ -287,7 +287,7 @@ void Canvas::renderRotationGlobe(double *rmat, double camrot)
 	glDisable(GL_LIGHTING);
 	glCallList(list_[GLOB_GLOBE]);
 	// Reset the viewport back to the entire canvas
-	glViewport(0,0,(int)width_,(int)height_);
+	glViewport(0, 0, width_, height_);
 }
 
 void Canvas::glCylinder(const Vec3<double> &rj, double rij, int style, double radius)

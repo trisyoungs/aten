@@ -168,16 +168,17 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	char geometry[128];
 	int width, height;
 	bool ok;
-	sprintf(geometry,"%ix%i\n", gui.mainView.width(), gui.mainView.height());
+	sprintf(geometry,"%ix%i\n", (int) gui.mainView.width(), (int) gui.mainView.height());
 	QString text = QInputDialog::getText(this, tr("Image Size"), tr("Size of bitmap image (width x height) in pixels:"), QLineEdit::Normal, geometry, &ok);
 	if (ok && !text.isEmpty())
 	{
+		strcpy(geometry,qPrintable(text));
 		width = atoi(beforeChar(geometry,'x'));
 		height = atoi(afterChar(geometry,'x'));
-		if ((width < 1) || (height > 1))
+		if ((width < 1) || (height < 1))
 		{
 			char text[512];
-			sprintf("The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry);
+			sprintf(text, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry);
 			QMessageBox::warning(this, "Aten", text, QMessageBox::Ok);
 			return;
 		}
@@ -193,6 +194,8 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 		QPixmap pixmap = gui.mainWidget->renderPixmap(width,height,FALSE);
 		// Flag any surfaces to be rerendered so they are redisplayed in the original context
 		aten.currentModel()->rerenderGrids();
+		// Reconfigure canvas to widget size (necessary if image size was changed)
+		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
 
 		// Get selected filename
 		QStringList filenames = saveBitmapDialog->selectedFiles();

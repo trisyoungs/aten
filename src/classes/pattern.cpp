@@ -1263,14 +1263,30 @@ void Pattern::augment()
 				b1->setType(Bond::Double);
 				b2->setType(Bond::Single);
 				b3->setType(Bond::Double);
-				// Get new total bond order for ring - if we've made things worse, revert and try another bond
+				// Get new total bond order for ring - if we've made things worse, revert and try just shifting the bond
 				newpenalty = totalBondOrderPenalty();
 				if (newpenalty > ringpenalty)
 				{
+					// Try shift left...
 					r->recallBondTypes();
-					continue;
+					b1->setType(Bond::Double);
+					b2->setType(Bond::Single);
+					newpenalty = totalBondOrderPenalty();
+					if (newpenalty > ringpenalty)
+					{
+						// Try shift right...
+						r->recallBondTypes();
+						b3->setType(Bond::Double);
+						b2->setType(Bond::Single);
+						newpenalty = totalBondOrderPenalty();
+						if (newpenalty > ringpenalty)
+						{
+							r->recallBondTypes();
+							continue;
+						}
+					}
 				}
-				// Otherwise, try to re-augment other atoms in the ring
+				// Now try to re-augment other atoms in the ring with the modified bonding arrangement
  				for (rb = r->bonds(); rb != NULL; rb = rb->next)
  					parent_->changeBond(rb->item, rb->item->augmented());
 				// Check total again - if less than the previous 'ringpenalty' than store new bonds and continue
@@ -1285,46 +1301,6 @@ void Pattern::augment()
 				else r->recallBondTypes();
 				if (newpenalty == 0) break;
 			}
-
-// 			// Loop over atoms in ring, swapping bonds and attempting re-augmentation
-// 			for (aref = r->atoms(); aref != NULL; aref = aref->next)
-// 			{
-// 				printf("Swapping bonds at atom %i and re-augmenting...\n", aref->item->id()+1);
-// 				inext = r->getNext(aref)->item;
-// 				iprev = r->getPrev(aref)->item;
-// 				newpenalty = elements.bondOrderPenalty(inext, inext->totalBondOrder()/2);
-// 				newpenalty += elements.bondOrderPenalty(iprev, iprev->totalBondOrder()/2);
-// 				b1 = aref->item->findBond(inext);
-// 				b2 = aref->item->findBond(iprev);
-// 				bt = b1->type();
-// 				b1->setType(b2->type());
-// 				b2->setType(bt);
-// 				tboi = elements.bondOrderPenalty(inext, inext->totalBondOrder()/2);
-// 				tboj = elements.bondOrderPenalty(iprev, iprev->totalBondOrder()/2);
-// 				// Reject swap moves that make the total bond order worse
-// 				if ((tboi+tboj) > newpenalty)
-// 				{
-// 					bt = b1->type();
-// 					b1->setType(b2->type());
-// 					b2->setType(bt);
-// 					continue;
-// 				}
-// 				// Re-augment atoms in ring
-// 				for (rb = r->bonds(); rb != NULL; rb = rb->next)
-// 					parent_->changeBond(rb->item, rb->item->augmented());
-// 				// Check total again - if less than the previous 'ringpenalty' than store new bonds and continue
-// 				newpenalty = r->totalBondOrderPenalty();
-// 				if (newpenalty < ringpenalty)
-// 				{
-// 					r->storeBondTypes();
-// 					totalpenalty = totalpenalty - ringpenalty + newpenalty;
-// 					ringpenalty = newpenalty;
-// 					printf("New total penalty = %i\n", totalpenalty);
-// 				}
-// 				else r->recallBondTypes();
-// 				if (newpenalty == 0) break;
-// 			}
-
 
 		}
 		msg.print(Messenger::Verbose, "Bond order penalty after second pass is %i.\n", totalpenalty);
