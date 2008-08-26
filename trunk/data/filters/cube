@@ -14,21 +14,20 @@ importgrid
 	integer natoms,nx,ny,nz,i,j,k
 	double ox,oy,oz,xx,xy,xz,yx,yy,yz,zx,zy,zz,rx,ry,rz,data
 
+	# Since we must create the model first, and then set all grid date afterwards,
+	# store all grid-related values for later until we've finalised the model.
+
 	# Lines 1-2: Comments (use first as title)
 	getline $title
-	newgrid $title
 	skipline
 
 	# Line 3: Number of atoms and coordinate origin of surface
 	readline "$natoms $ox $oy $oz"
-	gridorigin $ox $oy $oz
 
 	# Lines 4-6: Number of voxels and axis vector
 	readline "$nx $xx $xy $xz"
 	readline "$ny $yx $yy $yz"
 	readline "$nz $zx $zy $zz"
-	gridsize $nx $ny $nz
-	gridaxes $xx $xy $xz $yx $yy $yz $zx $zy $zz
 
 	# Lines 7-(7+natoms) Molecule Definition
 	newmodel $title
@@ -39,6 +38,12 @@ importgrid
 	end
 	finalisemodel
 	rebond
+
+	# Create a grid associated to this model, and set it up with data we read previously
+	newgrid $title
+	gridorigin $ox $oy $oz
+	gridsize $nx $ny $nz
+	gridaxes $xx $xy $xz $yx $yy $yz $zx $zy $zz
 
 	# Volumetric data (five points per line)
 	for $i,1,$nx
