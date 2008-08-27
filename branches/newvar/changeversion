@@ -1,0 +1,67 @@
+#!/bin/bash
+
+# Change the version of the source code to the supplied value
+
+# Check that a new version name was supplied
+if [ "$#" -eq "1" ]
+then
+  echo "Improper version number supplied (use 'changeversion MAJOR MINOR', or no args to check existing files)"
+  exit 1
+fi
+
+if [ "$#" -eq "0" ]
+then
+  echo "Checking current version numbers only..."
+else
+  echo "Changing version numbers in files..."
+fi
+
+
+echo -n "          aten.h (Program Version) : "
+if [ "$#" -eq "2" ]
+then
+  cp src/base/aten.h src/base/aten.h.orig
+  sed -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/base/aten.h.orig > src/base/aten.h
+fi
+grep '#define ATENVERSION' src/base/aten.h | sed -e 's/#define ATENVERSION "\([0-9\.]\+\).*"/\1/g'
+
+
+# ./CMakeLists.txt
+if [ "$#" -eq "2" ]
+then
+  cp ./CMakeLists.txt CMakeLists.txt.orig
+  sed -e "s/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/set(VERSION_MAJOR \"$1\")/g" -e "s/set(VERSION_MINOR \"\([0-9\.]\+\)\")/set(VERSION_MINOR \"$2\")/g" ./CMakeLists.txt.orig > CMakeLists.txt
+fi
+echo -n "  ./CMakeLists.txt (Major Version) : "
+grep 'set(VERSION_MAJOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/\1/g'
+echo -n "                   (Minor Version) : "
+grep 'set(VERSION_MINOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MINOR \"\([0-9\.]\+\)\")/\1/g'
+echo -n "                   (Patch Version) : "
+grep 'set(VERSION_PATCH' ./CMakeLists.txt | sed -e 's/set(VERSION_PATCH \"\([0-9\.]\+\)\")/\1/g'
+
+
+# ./configure.ac
+echo -n "  ./configure.ac (Package Version) : "
+if [ "$#" -eq "2" ]
+then
+  cp ./configure.ac ./configure.ac.orig
+  sed -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9\.]\+\)\])/m4_define([ATEN_VERSION],[$1.$2])/g" ./configure.ac.orig > ./configure.ac
+fi
+grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9\.]\+\)\])/\1/g'
+
+
+# Change specfile name and contents
+if [ "$#" -eq "2" ]
+then
+  echo "Writing new specfile..."
+  cp aten.spec temp.spec
+  sed -e "s/Version: [0-9\.]\+/Version: $1.$2/g" temp.spec > aten.spec
+  grep "Version:" aten.spec
+  rm temp.spec
+else
+  echo -n "                          Specfile : "
+  grep "Version:" aten.spec | sed -e 's/Version: \([0-9\.]\+\)/\1/g'
+fi
+
+exit 0
+

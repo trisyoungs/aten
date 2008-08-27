@@ -1,0 +1,31 @@
+#
+# Disordered Regions Example
+#
+
+# Use Universal FF for VDW parameters
+loadff data/ff/uff.ff uff
+
+# Create component models (all single atoms of different types)
+
+# 'blue' will be contained in an orthorhomboid spanning the cell in the x-direction
+newmodel blue
+newatom N
+nmols 100
+region cuboid 10 10 10 20 10 10 yes
+
+newmodel red
+newatom O
+nmols 250
+regionoverlap false
+
+newmodel yellow
+newatom Au
+
+# Create box to MC in to
+newmodel regions
+cell 20.0 20.0 20.0 90 90 90
+
+vdwscale 1.0
+
+# Begin
+disorder 100

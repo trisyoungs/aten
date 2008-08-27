@@ -1,0 +1,107 @@
+# MSI Datafile version 3.8
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules.
+
+importmodel
+	name "MSI Datafile v3.8"
+	nickname msi
+	extension msi
+	glob *.msi
+
+	# Variable declarations
+	integer n,cellvar,id,bondi,bondj
+	character block,newblock,type,line,ident,data,a,b,c,e
+	double rx,ry,rz,fx,fy,fz,cax,cay,caz,cbx,cby,cbz,ccx,ccy,ccz,q
+
+	# Request that parentheses are removed as we read lines
+	addreadoption stripbrackets
+
+	# Read in each line as six arguments.
+	# If the first is not 'A' then it is the start of some data block.
+	# We will use a variable $block to store the current block we're in (N=none, M=model, A=atom, B=bond)
+	$block = N
+	$cellvar = 0
+	for $n
+		# Read in whole lines and work with them instead of always using readline
+		getline $line
+		# Parse the stored $line
+		readvar $line "$ident $type $data $a $b $c"
+		# Assume that lines are long enough to not force more than one data argument onto the next line
+		# If the $c variable is '\' then we must read in the next line to get the real $c
+		#if $c = \
+	#		readline $c
+	#	end
+		# Check for block specifiers
+		if $ident <> A
+			if $type = Model
+				$newblock = "M"
+			elseif $type = Atom
+				$newblock = "A"
+				newatom 0
+				# We must also set the atom id here (since bonds refer to item number, not Id)
+				setid $ident
+			elseif $type = Bond
+				$newblock = "B"
+			else
+				#print "Didn't recognise MSI block $type "
+				$newblock = "N"
+			end
+			# If $newblock is not 0, check the old $block value and perform end tasks
+			if $block = "A"
+			elseif $block = "B"
+				newbondid $bondi $bondj
+			end
+			$block = $newblock
+		else
+			# Not a block specifier, so must be data for a block we're already in...
+			if $block = "M"
+				# Model block
+				if $data = "Label"
+					newmodel $a
+				elseif $data = "A3"
+					$cax = $a
+					$cay = $b
+					$caz = $c
+					inc $cellvar
+				elseif $data = "B3"
+					$cbx = $a
+					$cby = $b
+					$cbz = $c
+					inc $cellvar
+				elseif $data = "C3"
+					$ccx = $a
+					$ccy = $b
+					$ccz = $c
+					inc $cellvar
+				end
+			elseif $block = "A"
+				# Atom block
+				if $data = Charge
+					setcharge $a
+				elseif $data = "XYZ"
+					setcoords $a $b $c
+				elseif $data = "Force"
+					setforces $a $b $c
+				elseif $data = "ACL"
+					setelement $b
+				end
+			elseif $block = "B"
+				# Bond block
+				if $data = "Atom1"
+					let $bondi = $a
+				elseif $data = "Atom2"
+					let $bondj = $a
+				end
+			end
+		end
+	end
+	# Add on unit cell if one was specified
+	if $cellvar > 2
+		cellaxes $cax $cay $caz $cbx $cby $cbz $ccx $ccy $ccz
+		fold
+	end
+
+	# Finalise model
+	finalisemodel
+end

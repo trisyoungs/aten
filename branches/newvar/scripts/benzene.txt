@@ -1,0 +1,29 @@
+# Building a molecule using the pen - Benzene
+
+# Variables
+integer n
+double lcc,lch
+
+# The variables 'lcc' and 'lch' contain the bond lengths to use
+$lcc = 1.39
+$lch = 1.00
+
+# Create a new model
+newmodel benzene
+
+# Draw the molecule in the XY plane - all our rotations will be about the z axis
+# Pen starts at the origin but the first carbon will be at {0 lch 0}
+for $n,1,6
+	move 0.0 $lcc 0.0
+	newatom C
+	rotz -60.0
+	move 0.0 $lch 0.0
+	newatom H
+	move 0.0 -$lch 0.0
+	rotz 120.0
+end
+
+# Calculate bonding and automatically add multiple bonds
+rebond
+augment
+

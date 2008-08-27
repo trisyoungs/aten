@@ -1,0 +1,145 @@
+# Cambridge Database Filter
+# Last modified: 05/08/08
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+
+importmodel
+	name "Cambridge Database Structure"
+	nickname cds
+	extension dat,fdat
+	glob *.*dat
+
+	# Variables
+	character spgrp,discard,ea,eb,ec,e
+	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
+	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj,total
+	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz
+	double a,b,c,al,be,ga,cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
+
+	zmap firstalpha
+
+	# Record 1: Directory information (single line)
+	# Contained information (first col = 0):
+	# 0 (#), 1-8 (refcode), 9 (crys.sys), 10 (category), 11-16 (accession date), 17-22 (unused), 23-25 (ncards),
+	# 26-28 (nrfrac), 29-31 (nrem), 32-34 (ndis), 35-37 (nerr), 38-40 (number of symm pos), 41-43 (nrad),
+	# 44-46 (natoms), 47-49 (nsatoms), 50-52 (unused), 53-55 (ncon), 56 (cell), 57 (intf), 58 (atom 'r' format),
+	# 59 (centre of symmetry), 60 (err), 61 (rpa), 62 (td), 63 (pd), 64 (unused), 65 (cbl), 66 (esd of C-C),
+	# 67 (polymeric structure), 68-77 (irrelevant), 78-79 (year)
+	readline "*%1 $title%8 *%17 $nf%3 $nr%3 $nd%3 $ne%3 $nsymm%3 *%3 $natm%3 $nsatm%3 *%3 $ncon%3 $cell%1 $atfor%1"
+	newmodel $title
+	print "Number of symmetry-unique related atoms = $natm $nsatm"
+	# Record 2: Unit cell definition (if %cell == 1)
+	# Contained information (first col = 0):
+	# 0-35 (A,B,C,a,b,c), 36-41 (precision digits), 42-53 (cesd), 54-59 (dens), 60-62 (spgrpn), 63-70 (spgrp),
+	# 71-75 (irrelevant)
+	if $cell = 1
+		readline "$a%6 $b%6 $c%6 $al%6 $be%6 $ga%6 $pa%1 $pb%1 $pc%1 $pal%1 $pbe%1 $pga%1 *%18 $spgrpn%3 $spgrp%8"
+		# Cell lengths and angles are multiplied by the precision digits (10^n)...
+		$cell.a = $a/10.0^$pa
+		$cell.b = $b/10.0^$pb
+		$cell.c = $c/10.0^$pc
+		$cell.alpha = $al/10.0^$pal
+		$cell.beta = $be/10.0^$pbe
+		$cell.gamma = $ga/10.0^$pga
+		cell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
+		spacegroup $spgrpn
+	end
+	# Record 3: Text information (ignored)
+	# Total number of chars is the sum of nf, nr, nd, and ne read in earlier.
+	# Since the format rigidly defined 80 chars per line, skip by number of lines...
+	$nlines = ($nf+$nr+$nd+$ne+79)/80
+	skipline $nlines
+	print "Skipping $nlines lines of text information"
+	# Record 4: Equivalent positions of spacegroup (ignored)
+	$nlines = ($nsymm*20+79)/80
+	skipline $nlines
+	print "Skipping $nlines of spacegroup generator definitions"
+	# Record 5: Atomic radii (ignored)
+	if $natm > 1
+		skipline
+	end
+	# Record 6: Atomic coordinates
+	# Coordinates are given 3 per line, so determine number of lines to read in.
+	$natoms = $natm+$nsatm
+	print "Expecting $natoms in file"
+	for $n,1,$natoms
+		# Read in new line if mod(n,3) is zero
+		$mod = ($n-1)%3
+		if $mod = 0
+			readline "$ea%5 $xa%7 $ya%7 $za%7 *%1 $eb%5 $xb%7 $yb%7 $zb%7 *%1 $ec%5 $xc%7 $yc%7 $zc%7"
+		end
+		verbose "Atom pass $n : Elements are $ea, $eb, and $ec"
+		# Use variable data based on the $mod value...
+		if $mod = 0
+			$e = $ea
+			$rx = $xa/100000
+			$ry = $ya/100000
+			$rz = $za/100000
+		elseif $mod = 1
+			$e = $eb
+			$rx = $xb/100000
+			$ry = $yb/100000
+			$rz = $zb/100000
+		else
+			$e = $ec
+			$rx = $xc/100000
+			$ry = $yc/100000
+			$rz = $zc/100000
+		end
+		newatom $e $rx $ry $rz
+	end
+	# Record 7: Connectivity
+	# Connectivities are given in the format 40I2 (if natm+nsatm < 100) or 26I3,2x (if natm+nsatm >= 100)
+	# First (natm+nsatm) integers are paired to the atoms 1-(natm+nsatm) in that order. Any other integers
+	# are pairs of atoms involved in additional bonds.
+	$nextra = ($ncon-$natoms)/2
+	print "Expecting $ncon connectivity integers and $nextra extra bonding pairs..."
+	$total = $natoms+$nextra
+	for $n,1,$total
+		# Need to remove newline (and space before) when we've read a whole line's worth
+		if $natoms < 100
+			readchars $ii 2
+			$mod = $n%40
+			if $mod = 0
+				readchars $discard 1
+			end
+		else
+			readchars $ii 3
+			$mod = $n%26
+			if $mod = 0
+				readchars $discard 3
+			end
+		end
+		# Do we need to read an extra integer? (n > natoms)
+		if $n > $natoms
+			if $natoms < 100
+				readchars $jj 2
+				$mod = $n%40
+				if $mod = 0
+					readchars $discard 1
+				end
+			else
+				readchars $jj 3
+				$mod = $n%26
+				if $mod = 0
+					readchars $discard 3
+				end
+			end
+		else
+			# Set second atom to be id 'n'
+			let $jj = $n
+		end
+		# Check for dummy bond (if $ii = 0 don't create a bond)
+		if $ii > 0
+			verbose "Bonding atoms $ii $jj (model atom indices)"
+			newbond $ii $jj
+		end
+	end
+	# Convert the stored fractional coordinates into real coordinates
+	fractoreal
+	# Finalise the packing in the model
+	pack
+	fold
+	# Perform post-load operations
+	finalisemodel
+end

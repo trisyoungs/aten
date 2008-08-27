@@ -1,0 +1,144 @@
+# DL_POLY Unformatted Trajectory file filter.
+# Last modified: 06/01/2007.
+
+importtrajectory
+	name "DL_POLY Unformatted History"
+	extension HISu
+	glob *HISu
+	nickname dlpolyu
+	exact HISTORY
+
+	# Variable declaration
+	character title,name
+	integer recsize,n,nskip
+	double dnatoms,mass,q,dnstep,dkeytrj,dimcon,tstep
+	double ax,bx,cx,ay,by,cy,az,bz,cz,rx,ry,rz,fx,fy,fz,vx,vy,vz
+
+	# DL_POLY unformatted history files may contain a header.
+	# Since its a Fortran code, each record in the file is preceded and followed by an integer specifying
+	# the record size in characters.
+	# When aten is trying to read the header, the variable 'header' will be 'true' (and 'frame' will be 'false')
+	if $header = true
+		# First line is 80-character header.
+		readint $recsize
+		readchars $title 80
+		readint $recsize
+		# Next, number of atoms in the system (as a double)
+		readint $recsize
+		readfloat $dnatoms
+		$natoms = $dnatoms
+		readint $recsize
+		# Atom names
+		readint $recsize
+		for $n,1,$natoms
+			readchars $name 8
+		end
+		readint $recsize
+		# Atomic masses
+		readint $recsize
+		skipchars $recsize
+		#repeat $n $natoms
+		#for $n,1,$natoms
+		#	readfloat $mass
+		#end
+		readint $recsize
+		# Atom charges
+		readint $recsize
+		skipchars $recsize
+		#for $n,1,$natoms
+		#	readfloat $q
+		#end
+		readint $recsize
+	else
+		# First data for frame is : nstep, $natoms, keytrj, imcon, tstep, all as doubles 
+		readint $recsize
+		readfloat $dnstep
+		readfloat $dnatoms
+		readfloat $dkeytrj
+		readfloat $dimcon
+		readfloat $tstep
+		readint $recsize
+		# Unit cell
+		if $cell.type <> none
+			readint $recsize
+			readfloat $ax
+			readfloat $ay
+			readfloat $az
+			readfloat $bx
+			readfloat $by
+			readfloat $bz
+			readfloat $cx
+			readfloat $cy
+			readfloat $cz
+			readint $recsize
+			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+		end
+		# Create atoms in model all at once, since we need to reference them all at different points
+		modeltemplate
+		# X-Coordinates
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $rx
+			setrx $rx $n
+		end
+		readint $recsize
+		# Y-Coordinates
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $ry
+			setry $ry $n
+		end
+		readint $recsize
+		# Z-Coordinates
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $rz
+			setrz $rz $n
+		end
+		readint $recsize
+		# X-Velocities
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $vx
+			setvx $vx $n
+		end
+		readint $recsize
+		# Y-Velocities
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $vy
+			setvy $vy $n
+		end
+		readint $recsize
+		# Z-Velocities
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $vz
+			setvz $vz $n
+		end
+		readint $recsize
+		# X-Forces
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $fx
+			setfx $fx $n
+		end
+		readint $recsize
+		# Y-Forces
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $fy
+			setfy $fy $n
+		end
+		readint $recsize
+		# Z-Forces
+		readint $recsize
+		for $n,1,$natoms
+			readfloat $fz
+			setfz $fz $n
+		end
+		readint $recsize
+		fold
+		rebond
+	end
+end

@@ -1,0 +1,24 @@
+# Vector Field Data
+# Last modified: 11/04/08
+importmodel
+	name "2D/3D Vector Field"
+	nickname vfield
+	extension vf
+	glob *.vf
+	id 10
+
+	# Variable declaration
+	integer n,i,j,k,nx,ny,nz
+	double x,y,z,vx,vy,vz
+
+	newmodel $title
+
+	# Read vector data
+	for $n
+		readline "$x $y $z $vx $vy $vz"
+		newglyph vector
+		glyphdata 1 $x $y $z
+		glyphdata 2 $vx $vy $vz
+	end
+	finalisemodel
+end

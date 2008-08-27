@@ -1,0 +1,99 @@
+# Tripos (Sybyl) Mol2 filter
+# Last modified: 05/08/08
+# Notes:
+#	Full spec is at: http://www.tripos.com/tripos_resources/fileroot/mol2_format_Dec07.pdf
+# ChangeLog:
+#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+#	30/06/08 - Changed extension list to only match 'mol2'
+
+importmodel
+	name "Tripos (Sybyl) Mol2"
+	nickname mol2
+	extension mol2
+	glob *.mol2
+	id 6
+
+	# Variable declaration
+	integer n,natoms,nbonds,id,ii,jj,spgrp,setting
+	character tripos,keywd,e,bondtype
+	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
+
+	# Read in lines, looking for the sections we're interested in.
+	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
+	# Read a line and parse it into '@<TRIPOS>' and keyword parts
+	for $n
+		readline "$tripos%9 $keywd"
+		if $keywd = "MOLECULE"
+			# Molecule information
+			getline $title
+			newmodel $title
+			readline "$natoms $nbonds"
+			# Skip the next three lines, which are type of molecule, charges used XXX, and user comment
+			skipline 4
+		elseif $keywd = "ATOM"
+			for $n,1,$natoms
+				readline "$id $e $rx $ry $rz"
+				newatom $e $rx $ry $rz
+			end
+		elseif $keywd = "BOND"
+			for $n,1,$nbonds
+				readline "* $ii $jj $bondtype"
+				newbond $ii $jj $bondtype
+			end
+		elseif $keywd = "CRYSIN"
+			# Crystal cell information
+			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
+			readline "$ca $cb $cc $alpha $beta $gamma $spgrp $setting"
+			cell $ca $cb $cc $alpha $beta $gamma
+			spacegroup $spgrp
+		end
+	end
+
+	# Perform post-load operations
+	pack
+	fold
+	finalisemodel
+end
+
+exportmodel
+	name "Tripos (Sybyl) Mol2"
+	nickname mol2
+	extension mol2
+	glob *.mol2
+	id 6
+
+	# Variables
+	atom i
+	bond b
+	integer n
+
+	# Write title section
+	writeline "@<TRIPOS>MOLECULE"
+	writeline $title
+	writeline "$natoms  $nbonds"
+	writeline "SMALL"
+	writeline "NO_CHARGES"
+	writeline "Coordinates churned out by Aten"
+	writeline ""
+	
+	# Write atoms section
+	writeline "@<TRIPOS>ATOM"
+	for $i
+		writeline "$i.id%6  $i.symbol%5  $i.rx%10.5  $i.ry%10.5  $i.rz%10.5"
+	end
+
+	# Write bonds section
+	if $nbonds > 0
+		writeline "@<TRIPOS>BOND"
+		for $n,1,$nbonds
+			getbond $n $b
+			writeline "$n%5  $b.id_i%5  $b.id_j%5  $b.form"
+		end
+	end
+
+	# Write cell section (if the model has one)
+	if $cell.type <> none
+		writeline "@<TRIPOS>CRYSIN"
+		writeline "$cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma $cell.spgrp.id $cell.spgrp.setting"
+	end
+end
