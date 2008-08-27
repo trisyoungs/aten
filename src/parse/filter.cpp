@@ -312,11 +312,14 @@ void Filter::print()
 bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 {
 	msg.enter("Filter::execute");
+	bool result, proceed;
 	// Grab pointer Bundle from master
 	Bundle &obj = aten.current;
 	// Set element mapping type to that specified in file
 	Prefs::ZmapType temp_zmap = prefs.zmapType();
 	if (hasZmapping_) prefs.setZmapType(zmapping_);
+	// Flag to indicate we should proceed to execute filter
+	proceed = TRUE;
 	// Setup based on filter type...
 	switch (type_)
 	{
@@ -328,8 +331,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!commands_.setInputFile(filename))
 			{
 				msg.print("Error opening input file '%s'.\n",filename);
-				msg.exit("Filter::execute");
-				return FALSE;
+				proceed = FALSE;
 			}
 			break;
 		case (Filter::ModelExport):
@@ -338,8 +340,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!commands_.setOutputFile(obj.rs->filename()))
 			{
 				msg.print("Error opening output file '%s'.\n",obj.rs->filename());
-				msg.exit("Filter::execute");
-				return FALSE;
+				proceed = FALSE;
+				break;
 			}
 			// Set variables
 			commands_.setModelVariables("",obj.rs);
@@ -350,8 +352,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!obj.rs->autocreatePatterns() || !obj.rs->createExpression())
 			{
 				msg.print("Filter::execute - Must have valid pattern and energy expression to export a field file\n.");
-				msg.exit("Filter::execute");
-				return FALSE;
+				proceed = FALSE;
 			}
 			// Generate unique term lists
 			obj.rs->createUniqueLists();
@@ -367,8 +368,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!commands_.setOutputFile(filename))
 			{
 				msg.print("Error opening field file '%s'.\n", filename);
-				msg.exit("Filter::execute");
-				return FALSE;
+				proceed = FALSE;
 			}
 			break;
 		case (Filter::GridImport):
@@ -379,8 +379,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!commands_.setInputFile(filename))
 			{
 				msg.print("Error opening grid file '%s'.\n", filename);
-				msg.exit("Filter::execute");
-				return FALSE;
+				proceed = FALSE;
 			}
 			break;
 		case (Filter::GridExport):
@@ -389,8 +388,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (!commands_.setOutputFile(filename))
 			{
 				msg.print("Error opening grid file '%s'.\n", filename);
-				msg.exit("Filter::execute");
-				return FALSE;
+				proceed = FALSE;
 			}
 			break;
 		case (Filter::TrajectoryImport):
@@ -400,8 +398,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			if (obj.rs == NULL)
 			{
 				msg.print("No current model set for trajectory import.\n");
-				msg.exit("Filter::execute");
-				return FALSE;	
+				proceed = FALSE;
+				break;
 			}
 			// Set model target (if reading a frame)
 			if (!trajheader)
@@ -410,8 +408,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 				if (obj.rs->renderSource() == obj.m)
 				{
 					msg.print("Trajectory frame model has not been set for trajectory import.\n");
-					msg.exit("Filter::execute");
-					return FALSE;	
+					proceed = FALSE;
+					break;
 				}
 				//obj.rs->renderSource()->clear();
 			}
@@ -420,7 +418,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			break;
 	}
 	// Execute CommandList
-	bool result = commands_.execute(trajfile);
+	result = (proceed ? commands_.execute(trajfile) : FALSE);
 	// Perform post-filter operations
 	switch (type_)
 	{
@@ -445,6 +443,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			//else if (!result) msg.print("Failed to read frame from trajectory.\n");
 			break;
 		case (Filter::GridImport):
+			// Reset element mapping style
+			prefs.setZmapType(temp_zmap);
 			commands_.closeFiles();
 			msg.print("Grid import %s.\n",(result ? "completed" : "failed"));
 			break;

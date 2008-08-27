@@ -45,6 +45,7 @@ enum CommandAction {
 	CA_ATOM,
 	CA_PATTERN,
 	CA_MODEL,
+	CA_GRID,
 	CA_BOND,
 	CA_ANGLE,
 	CA_TORSION,
@@ -99,6 +100,7 @@ enum CommandAction {
 
 	// Build commands
 	CA_ADDHYDROGEN,
+	CA_BOHR,
 	CA_CHAIN,
 	CA_ENDCHAIN,
 	CA_LOCATE,
@@ -247,6 +249,7 @@ enum CommandAction {
 	CA_ADDGRIDPOINT,
 	CA_ADDNEXTGRIDPOINT,
 	CA_FINALISEGRID,
+	CA_GETGRID,
 	CA_GRIDAXES,
 	CA_GRIDCOLOUR,
 	CA_GRIDCOLOURNEGATIVE,
@@ -511,6 +514,7 @@ class CommandData
 	int function_CA_REBOND(Command *&c, Bundle &obj);
 	// Build commands
 	int function_CA_ADDHYDROGEN(Command *&c, Bundle &obj);
+	int function_CA_BOHR(Command *&c, Bundle &obj);
 	int function_CA_CHAIN(Command *&c, Bundle &obj);
 	int function_CA_ENDCHAIN(Command *&c, Bundle &obj);
 	int function_CA_LOCATE(Command *&c, Bundle &obj);
@@ -655,6 +659,7 @@ class CommandData
 	int function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj);
 	int function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj);
 	int function_CA_FINALISEGRID(Command *&c, Bundle &obj);
+	int function_CA_GETGRID(Command *&c, Bundle &obj);
 	int function_CA_GRIDAXES(Command *&c, Bundle &obj);
 	int function_CA_GRIDCOLOUR(Command *&c, Bundle &obj);
 	int function_CA_GRIDCOLOURNEGATIVE(Command *&c, Bundle &obj);

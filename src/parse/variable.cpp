@@ -24,13 +24,14 @@
 #include "classes/atom.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"
+#include "classes/grid.h"
 #include "model/model.h"
 #include "base/elements.h"
 #include <string.h>
 #include <stdarg.h>
 
 // Variable Types
-const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "bond*", "angle*", "torsion*", "atomtype*", "expression" };
+const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "expression" };
 const char *Variable::variableType(Variable::VariableType vt)
 {
 	return VariableTypeKeywords[vt];
@@ -217,6 +218,18 @@ void Variable::set(Model *m)
 	}
 	ptrValue_ = m;
 	msg.print(Messenger::Verbose,"Model variable '%s' has pointer '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
+}
+
+// Set (grid)
+void Variable::set(Grid *g)
+{
+	if (type_ != Variable::GridVariable)
+	{
+		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'grid*' >>>>\n",name_.get(), Variable::variableType(type_));
+		return;
+	}
+	ptrValue_ = g;
+	msg.print(Messenger::Verbose,"Grid variable '%s' has pointer '%li' ('%s')\n",name_.get(),g,(g == NULL ? "" : g->name()));
 }
 
 // Set (PatternBound)

@@ -77,6 +77,7 @@ void Aten::initCommands()
 
 	// Build commands
 	CA_data[CA_ADDHYDROGEN].function = &CommandData::function_CA_ADDHYDROGEN;
+	CA_data[CA_BOHR].function = &CommandData::function_CA_BOHR;
 	CA_data[CA_CHAIN].function = &CommandData::function_CA_CHAIN;
 	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
 	CA_data[CA_LOCATE].function = &CommandData::function_CA_LOCATE;
