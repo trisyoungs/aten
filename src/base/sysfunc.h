@@ -22,9 +22,6 @@
 #ifndef ATEN_SYSFUNC_H
 #define ATEN_SYSFUNC_H
 
-// Forward declarations
-class VariableList;
-
 // Number/string conversion
 const char *itoa(int);
 const char *ftoa(double);

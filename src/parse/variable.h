@@ -57,13 +57,16 @@ class Variable
 	private:
 	// Name of the variable
 	Dnchar name_;
-	// Value of variable
+	// Whether the variable is dereferenced (local) or referenced
+	bool referenced_;
+	// Value of variable (for dereferenced variables)
 	void *ptrValue_;
 	Dnchar charValue_;
 	int intValue_;
 	double doubleValue_;
-	// Content type of variable
+	// Content type of variable (unset until first access for referenced variables)
 	VariableType type_;
+	
 
 	public:
 	// Print contents of variable
