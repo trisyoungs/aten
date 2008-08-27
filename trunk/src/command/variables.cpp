@@ -25,6 +25,7 @@
 #include "base/aten.h"
 #include "base/spacegroup.h"
 #include "classes/pattern.h"
+#include "classes/grid.h"
 #include "classes/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
@@ -143,7 +144,9 @@ int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 			case (Variable::ModelVariable):
 				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
 				break;
-
+			case (Variable::GridVariable):
+				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
+				break;
 		}
 	}
 	return CR_SUCCESS;
@@ -164,6 +167,8 @@ bool CommandList::createModelVariables(const char *base)
 	v = variables.createVariable(base,"nbonds",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
+	if (v == NULL) return FALSE;
+	v = variables.createVariable(base,"ngrids",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
 	v = variables.createVariable(base,"nframes",Variable::IntegerVariable);
 	if (v == NULL) return FALSE;
@@ -223,11 +228,13 @@ void CommandList::setModelVariables(const char *base, Model *m)
 	msg.enter("CommandList::setModelVariables[const char*,Model*]");
 	if (m != NULL)
 	{
+		char s[128];
 		variables.set(base,"title",m->name());
 		variables.set(base,"natoms",m->nAtoms());
 		variables.set(base,"nbonds",m->nBonds());
 		variables.set(base,"nframes",m->nTrajectoryFrames());
 		variables.set(base,"firstatom",m->atoms());
+		variables.set(base,"ngrids",m->nGrids());
 		variables.set(base,"currentframe",m->trajectoryPosition());
 		Cell *c = m->cell();
 		Mat3<double> mat;
@@ -402,6 +409,26 @@ void CommandList::setPatternVariables(const char *varname, Pattern *p)
 		variables.set(varname,"ntorsions",p->nTorsions());
 	}
 	msg.exit("CommandList::setPatternVariables");
+}
+
+// Create grid parameter variables
+bool CommandList::createGridVariables(const char *base)
+{
+	Variable *v;
+	v = variables.createVariable(base,"name",Variable::CharacterVariable);
+	if (v == NULL) return FALSE;
+	return TRUE;
+}
+
+// Set variables for grid
+void CommandList::setGridVariables(const char *varname, Grid *g)
+{
+	msg.enter("CommandList::setGridVariables");
+	if (g != NULL)
+	{
+		variables.set(varname,"name",g->name());
+	}
+	msg.exit("CommandList::setGridVariables");
 }
 
 // Create pattern bound term variables

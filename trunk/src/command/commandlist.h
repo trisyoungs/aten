@@ -191,6 +191,8 @@ class Command
 	Pattern *argp(int argno);
 	// Return argument as model pointer
 	Model *argm(int argno);
+	// Return argument as grid pointer
+	Grid *argg(int argno);
 	// Return argument as PatternBound pointer
 	PatternBound *argpb(int argno);
 	// Return argument as ForcefieldAtom pointer
@@ -291,10 +293,14 @@ class CommandList
 	// Set atom variables
 	void setAtomVariables(const char*, Atom*);
 	void setAtomVariables(const char*, int);
-	// Create atom variables
+	// Create pattern variables
 	bool createPatternVariables(const char *s);
 	// Set pattern variables
 	void setPatternVariables(const char*, Pattern*);
+	// Create grid variables
+	bool createGridVariables(const char *s);
+	// Set grid variables
+	void setGridVariables(const char*, Grid*);
 	// Create pattern bound term variables
 	bool createPatternBoundVariables(const char*);
 	// Set pattern bound term variables

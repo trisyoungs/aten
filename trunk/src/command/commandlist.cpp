@@ -217,35 +217,60 @@ bool Command::argb(int argno)
 Atom *Command::arga(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
-	return (rv == NULL ? NULL : (Atom*) rv->item->asPointer());
+	if (rv == NULL) return NULL;
+	else if (rv->item->type() != Variable::AtomVariable) msg.print("Command can't convert variable '%s' into an Atom\n.", rv->item->name());
+	else return (Atom*) rv->item->asPointer();
+	return NULL;
 }
 
 // Return argument as pattern pointer
 Pattern *Command::argp(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
-	return (rv == NULL ? NULL : (Pattern*) rv->item->asPointer());
+	if (rv == NULL) return NULL;
+	else if (rv->item->type() != Variable::PatternVariable) msg.print("Command can't convert variable '%s' into a Pattern\n.", rv->item->name());
+	else return (Pattern*) rv->item->asPointer();
+	return NULL;
+}
+
+// Return argument as grid pointer
+Grid *Command::argg(int argno)
+{
+	Refitem<Variable,int> *rv = args_[argno];
+	if (rv == NULL) return NULL;
+	else if (rv->item->type() != Variable::GridVariable) msg.print("Command can't convert variable '%s' into a Grid\n.", rv->item->name());
+	else return (Grid*) rv->item->asPointer();
+	return NULL;
 }
 
 // Return argument as model pointer
 Model *Command::argm(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
-	return (rv == NULL ? NULL : (Model*) rv->item->asPointer());
+	if (rv == NULL) return NULL;
+	else if (rv->item->type() != Variable::ModelVariable) msg.print("Command can't convert variable '%s' into a Model\n.", rv->item->name());
+	else return (Model*) rv->item->asPointer();
+	return NULL;
 }
 
 // Return argument as PatternBound pointer
 PatternBound *Command::argpb(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
-	return (rv == NULL ? NULL : (PatternBound*) rv->item->asPointer());
+	if (rv == NULL) return NULL;
+	else if ((rv->item->type() < Variable::BondVariable) || (rv->item->type() > Variable::TorsionVariable)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
+	else return (PatternBound*) rv->item->asPointer();
+	return NULL;
 }
 
 // Return argument as ForcefieldAtom pointer
 ForcefieldAtom *Command::argffa(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
-	return (rv == NULL ? NULL : (ForcefieldAtom*) rv->item->asPointer());
+	if (rv == NULL) return NULL;
+	else if (rv->item->type() != Variable::AtomtypeVariable) msg.print("Command can't convert variable '%s' into a ForcefieldAtom\n.", rv->item->name());
+	else return (ForcefieldAtom*) rv->item->asPointer();
+	return NULL;
 }
 
 // Returns whether argument 'n' was provided
@@ -905,6 +930,9 @@ bool CommandList::createSubvariables(Variable *v)
 			break;
 		case (Variable::PatternVariable):
 			if (!createPatternVariables( v->name() )) return FALSE;
+			break;
+		case (Variable::GridVariable):
+			if (!createGridVariables( v->name() )) return FALSE;
 			break;
 		case (Variable::ModelVariable):
 			if (!createModelVariables( v->name() )) return FALSE;

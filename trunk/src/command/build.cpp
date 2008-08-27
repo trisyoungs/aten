@@ -54,6 +54,12 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
+int CommandData::function_CA_BOHR(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+}
+
+// Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
 int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;

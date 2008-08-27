@@ -32,6 +32,7 @@ class Bond;
 class Cell;
 class Pattern;
 class Model;
+class Grid;
 class PatternBound;
 class ForcefieldAtom;
 class Expression;
@@ -41,7 +42,7 @@ class Variable
 {
 	public:
 	// Variable Types
-	enum VariableType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, nVariableTypes };
+	enum VariableType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, nVariableTypes };
 	static const char *variableType(VariableType);
 	static VariableType determineType(const char *s);
 	// Constructor / Destructor
@@ -85,6 +86,8 @@ class Variable
 	void set(Pattern*);
 	// Set value of variable (model*)
 	void set(Model*);
+	// Set value of variable (grid*)
+	void set(Grid*);
 	// Set value of variable (PatternBound*)
 	void set(PatternBound*);
 	// Set value of variable (ForcefieldAtom*)

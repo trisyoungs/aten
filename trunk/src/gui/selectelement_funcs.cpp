@@ -187,14 +187,14 @@ void AtenSelectElement::ElementButton_clicked(bool checked)
 // Return clicked common element value
 void AtenSelectElement::CommonElementButton_clicked(bool checked)
 {
-        // Cast sender
-        QPushButton *button = qobject_cast<QPushButton*> (sender());
-        if (!button)
-        {
-                printf("AtenSelectElement::CommonElementButton_clicked - Sender was not a QPushButton.\n");
-                reject();
+	// Cast sender
+	QPushButton *button = qobject_cast<QPushButton*> (sender());
+	if (!button)
+	{
+		printf("AtenSelectElement::CommonElementButton_clicked - Sender was not a QPushButton.\n");
+		reject();
 		return;
-        }
+	}
 
 	Refitem<QPushButton, int> *ri;
 	for (ri = commonButtons_.first(); ri != NULL; ri = ri->next) if (ri->item == button) break;
