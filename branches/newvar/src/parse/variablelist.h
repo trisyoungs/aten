@@ -27,6 +27,7 @@
 #include "parse/variable.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
+#include "parse/vreferencelist.h"
 
 // Forward Declarations
 class Atom;
@@ -38,7 +39,7 @@ class PatternBound;
 class ForcefieldAtom;
 
 // Variable list
-class VariableList
+class VariableList : public VReferenceList
 {
 	/*
 	// Variable List

@@ -79,6 +79,8 @@ class Aten
 	Model *models() const;
 	// Return nth item in the model list
 	Model *model(int n);
+	// Return pointer to model list
+	List<Model> *modelList();
 	// Return the current model's index in the model list
 	int currentModelId() const;
 	// Return index of specified model
