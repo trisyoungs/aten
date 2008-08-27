@@ -316,7 +316,7 @@ void Grid::setColourScale(int id)
 		// Remove link in old colourscale if necessary
 		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
 		useColourScale_ = FALSE;
-		colourScale_ = -1;
+		//colourScale_ = -1;
 		log_ ++;
 		return;
 	}

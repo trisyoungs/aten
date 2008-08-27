@@ -80,7 +80,7 @@ void AtenGrids::refresh()
 {
 	msg.enter("AtenGrids::refresh");
 	// Clear and refresh the grids list
-	refreshing_ = TRUE;
+// 	refreshing_ = TRUE;
 	ui.GridList->clear();
 	TListWidgetItem *item;
 	Model *m = aten.currentModel();
@@ -94,7 +94,7 @@ void AtenGrids::refresh()
 	// Select the first item
 	if (m->nGrids() != 0) ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
-	refreshing_ = FALSE;
+// 	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refresh");
 }
 
@@ -248,6 +248,7 @@ void AtenGrids::refreshGridInfo()
 		return;
 	}
 	else g = m->grid(row);
+	refreshing_ = TRUE;
 	// Set minimum, maximum, and cutoff
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
 	ui.GridCutoffSpin->setMinimum(g->minimum());
@@ -274,11 +275,16 @@ void AtenGrids::refreshGridInfo()
 	ui.GridStyleCombo->setCurrentIndex(g->style());
 	ui.GridPositiveColourFrame->setColour(g->positiveColour());
 	ui.GridPositiveColourFrame->update();
+	ui.GridSymmetricCheck->setChecked( g->symmetric() );
 	ui.GridNegativeColourFrame->setColour(g->negativeColour());
 	ui.GridNegativeColourFrame->update();
-	ui.GridSymmetricCheck->setChecked( g->symmetric() );
+	if (!g->usesColourScale()) ui.GridPositiveColourButton->setEnabled( !g->symmetric() );
 	ui.GridTransparencySpin->setValue( g->transparency() );
 	ui.GridColourscaleSpin->setValue( g->colourScale()+1 );
+	ui.GridColourscaleSpin->setEnabled( g->usesColourScale() );
+	ui.GridNegativeColourButton->setEnabled( !g->usesColourScale() );
+	ui.GridPositiveColourButton->setEnabled( !g->usesColourScale() );
+	refreshing_ = FALSE;
 	msg.exit("AtenGrids::refreshGridInfo");
 }
 
@@ -429,6 +435,19 @@ void AtenGrids::on_GridSymmetricCheck_clicked(bool checked)
 	Model *m = aten.currentModel();
 	Grid *g = m->grid(row);
 	g->setSymmetric(checked);
+	gui.mainView.postRedisplay();
+}
+
+void AtenGrids::on_GridUseColourScaleCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	// Get current surface in list
+	int row = ui.GridList->currentRow();
+	if (row == -1) return;
+	Model *m = aten.currentModel();
+	Grid *g = m->grid(row);
+	g->setColourScale(checked ? ui.GridColourscaleSpin->value()-1 : -1);
+	refreshGridInfo();
 	gui.mainView.postRedisplay();
 }
 

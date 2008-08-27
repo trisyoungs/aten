@@ -71,6 +71,7 @@ class AtenGrids : public QDialog
 	void on_GridTransparencySpin_valueChanged(double d);
 	void on_GridColourscaleSpin_valueChanged(int n);
 	void on_GridSymmetricCheck_clicked(bool checked);
+	void on_GridUseColourScaleCheck_clicked(bool checked);
 	void dialogFinished(int result);
 
 	/*
