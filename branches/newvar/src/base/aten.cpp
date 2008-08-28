@@ -62,6 +62,9 @@ Aten::Aten()
 
 	// Single-shot mode variables
 	exportFilter_ = NULL;
+
+	// Variable accessors
+	addAccessor("models", VObject::ListArray, VObject::ModelType, aten.modelList(), TRUE);
 }
 
 // Destructor

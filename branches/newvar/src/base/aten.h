@@ -30,9 +30,9 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "579"
-#define ATENDATE "Wed 27 Aug - 11:24"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#define ATENREVISION "583"
+#define ATENDATE "Thu 28 Aug - 19:25"
+#define ATENURL "http://aten.googlecode.com/svn/branches/newvar"
 
 // Forward Declarations
 class Model;
@@ -41,7 +41,7 @@ class Grid;
 class Clipboard;
 
 // Master class
-class Aten
+class Aten : public VAccess
 {
 	public:
 	// Constructor / Destructor

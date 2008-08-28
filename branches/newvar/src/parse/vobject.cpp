@@ -1,6 +1,6 @@
 /*
-	*** Variable Access Interface
-	*** src/classes/vreferencelist.h
+	*** Variable Object Functions
+	*** src/parse/vobject.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,18 +19,5 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VREFLIST_H
-#define ATEN_VREFLIST_H
+#include "parse/vobject.h"
 
-#include "templates/list.h"
-#include "parse/vreference.h"
-
-// Variable Reference List
-class VReferenceList
-{
-	public:
-	// List of variable reference definitions
-	List<VReference> references;
-};
-
-#endif

@@ -31,7 +31,7 @@
 #include <stdarg.h>
 
 // Variable Types
-const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "expression" };
+const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "expression", "reference" };
 const char *Variable::variableType(Variable::VariableType vt)
 {
 	return VariableTypeKeywords[vt];

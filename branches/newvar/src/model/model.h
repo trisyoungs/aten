@@ -30,7 +30,7 @@
 #include "classes/measurement.h"
 #include "classes/glyph.h"
 #include "classes/undostate.h"
-#include "parse/vreferencelist.h"
+#include "parse/vaccess.h"
 #include "methods/mc.h"
 //#include <QtOpenGL/QtOpenGL>
 
@@ -50,7 +50,7 @@ class Calculable;
 class Measurement;
 
 // Model
-class Model : public VReferenceList
+class Model : public VAccess
 {
 	public:
 	// Constructor / Destructor

@@ -1,6 +1,6 @@
 /*
-	*** Variable Reference
-	*** src/classes/vreference.h
+	*** Variable Access Object
+	*** src/parse/vobject.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,33 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VREFERENCE_H
-#define ATEN_VREFERENCE_H
+#ifndef ATEN_VOBJECT_H
+#define ATEN_VOBJECT_H
 
 #include "classes/dnchar.h"
 
 // Variable Reference Object
-class VReference
+class VObject
 {
 	public:
 	// Constructor
-	VReference();
+	VObject();
 	// List types
 	enum ListType { SimpleVariable, ListArray, ReflistArray, NormalArray };
 	// Data types
 	enum DataType { StringType, IntegerType, DoubleType, ModelType, PatternType, AtomType, BondType};
-	// Constructor
-	VReference(const char *name, VReference::ListType lt, VReference::DataType datatype, void *address, bool readonly);
 	// List pointers
-	VReference *prev, *next;
+	VObject *prev, *next;
 
-	public:
+	private:
 	// Name
 	Dnchar name;
 	// List type
-	VReference::ListType listType;
+	VObject::ListType listType;
 	// Variable type pointed to
-	VReference::DataType dataType;
+	VObject::DataType dataType;
 	// Whether read only
 	bool readOnly;
 	// Actual address of referenced data

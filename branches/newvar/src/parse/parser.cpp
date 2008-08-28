@@ -24,6 +24,7 @@
 #include "parse/parser.h"
 #include "parse/format.h"
 #include "base/sysfunc.h"
+#include <ctype.h>
 
 Parser parser;
 
@@ -56,6 +57,15 @@ Parser::ArgumentForm Parser::argumentForm(int i)
 	else if (quoted_[i] == 39) return Parser::ExpressionForm;
 	else
 	{
+		// At least one full stop surrounded by a letter on the right and a letter or a square bracket on the left
+		char *c = strchr(arguments_[i].get(), '.');
+		if (c != '\0')
+		{
+			char *r = c++;
+			char *l = c--;
+			printf("leftchar = '%c', rightchar = '%c'\n", *l, *r);
+			if ((!isdigit(*l)) && (!isdigit(*r))) return Parser::ReferenceForm;
+		}
 		int noperators, n, nvars, nbrackets;
 		noperators = countChars(arguments_[i].get(), "-+*/^%", 1);
 		nbrackets = countChars(arguments_[i].get(), "()");

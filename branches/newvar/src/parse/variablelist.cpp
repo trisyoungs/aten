@@ -20,12 +20,13 @@
 */
 
 #include "parse/variablelist.h"
-#include "parse/vreferencelist.h"
+#include "parse/vaccess.h"
 #include "parse/expression.h"
 #include "classes/atom.h"
 #include "classes/pattern.h"
 #include "classes/forcefield.h"
 #include "model/model.h"
+#include "base/aten.h"
 #include "base/elements.h"
 #include <string.h>
 #include <stdarg.h>
@@ -33,9 +34,8 @@
 // Constructor
 VariableList::VariableList()
 {
-	// Accessors
-	// All vreference lists contain arrays of loaded models....
-	references.own(VReference("models", VReference::ListArray, VReference::ModelType, aten.modelList(), TRUE));
+	// Added reference to 'models' accessor in Aten
+	addReference("models", aten.accessor("models"));
 }
 
 // Return dummy variable
