@@ -42,7 +42,7 @@ class Variable
 {
 	public:
 	// Variable Types
-	enum VariableType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, nVariableTypes };
+	enum VariableType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, ReferenceVariable, nVariableTypes };
 	static const char *variableType(VariableType);
 	static VariableType determineType(const char *s);
 	// Constructor / Destructor

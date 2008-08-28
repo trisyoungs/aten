@@ -27,7 +27,7 @@
 #include "parse/variable.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
-#include "parse/vreferencelist.h"
+#include "parse/vaccess.h"
 
 // Forward Declarations
 class Atom;
@@ -39,7 +39,7 @@ class PatternBound;
 class ForcefieldAtom;
 
 // Variable list
-class VariableList : public VReferenceList
+class VariableList : public VAccess
 {
 	/*
 	// Variable List
@@ -49,7 +49,7 @@ class VariableList : public VReferenceList
 	VariableList();
 
 	private:
-	// List of variables
+	// List of variables / references
 	List<Variable> vars_;
 	// Static, dummy variable '*'
 	Variable dummy_;
@@ -82,6 +82,8 @@ class VariableList : public VReferenceList
 	Variable *addConstant(int i);
 	// Add an unnamed expression to the list
 	Variable *addExpression(const char *s);
+	// Add a reference to the variable list
+	Variable *addReference(const char *s, VObject *vobparent = NULL);
 	// Add a named variable to the list
 	Variable *addVariable(const char *prefix, const char *suffix, Variable::VariableType vt);
 	Variable *addVariable(const char *name, Variable::VariableType vt);
