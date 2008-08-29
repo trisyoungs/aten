@@ -26,7 +26,7 @@
 #define NOMINMAX
 
 #include "templates/vector3.h"
-#include "base/messenger.h"
+#include "aten/messenger.h"
 #include <algorithm>
 #include <math.h>
 #include <stdio.h>

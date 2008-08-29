@@ -8,6 +8,8 @@ ring.h
 site.h
 undoevent.h
 undostate.h
+vaccess.h
+vobject.h
 atomtype.cpp
 clipboard.cpp
 colourscale.cpp
@@ -17,6 +19,8 @@ ring.cpp
 site.cpp
 undoevent.cpp
 undostate.cpp
+vaccess.cpp
+vobject.cpp
 )
 
 include_directories(

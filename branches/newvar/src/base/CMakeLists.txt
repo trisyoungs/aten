@@ -7,8 +7,10 @@ cell.h
 colourscalepoint.h
 constants.h
 dnchar.h
+elements.h
 glyph.h
 log.h
+mathfunc.h
 measurement.h
 pattern.h
 region.h
@@ -20,8 +22,10 @@ bundle.cpp
 cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
+elements.cpp
 glyph.cpp
 log.cpp
+mathfunc.cpp
 measurement.cpp
 pattern.cpp
 region.cpp

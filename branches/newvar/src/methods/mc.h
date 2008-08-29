@@ -23,8 +23,8 @@
 #define ATEN_MONTECARLO_H
 
 #include "templates/list.h"
-#include "classes/region.h"
-#include "classes/dnchar.h"
+#include "base/region.h"
+#include "base/dnchar.h"
 
 // Forward declarations
 class Model;

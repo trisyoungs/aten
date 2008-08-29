@@ -23,7 +23,7 @@
 #define ATEN_FORMS_H
 
 #include "base/sysfunc.h"
-#include "classes/forcefieldparams.h"
+#include "energy/forcefieldparams.h"
 
 // Function Definition
 class FunctionData

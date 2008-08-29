@@ -23,11 +23,10 @@
 #define ATEN_PREFS_H
 
 #include "energy/forms.h"
-#include "templates/vector3.h"
-#include "classes/atom.h"
+#include "base/atom.h"
+#include "base/elements.h"
 #include "classes/colourscale.h"
-#include "classes/dnchar.h"
-#include <QtOpenGL/QtOpenGL>
+#include "base/dnchar.h"
 
 // Forward declarations
 class Cell;
@@ -324,7 +323,7 @@ class Prefs
 	// Size limit (kbytes) for caching trajectory frames
 	int cacheLimit_;
 	// Type of name->Z mapping to use
-	Prefs::ZmapType zmapType_;
+	ElementMap::ZmapType zmapType_;
 	// Whether to retain file atom type names on load (in a new forcefield)
 	bool keepNames_;
 	// Whether to retain view when GUI starts (i.e. don't reset it)
@@ -356,9 +355,9 @@ class Prefs
 	// Return the cache limit for trajectory files
 	int cacheLimit();
 	// Sets the style of element conversion to use
-	void setZmapType(Prefs::ZmapType i);
+	void setZmapType(ElementMap::ZmapType i);
 	// Return the style of element conversion in use
-	Prefs::ZmapType zmapType();
+	ElementMap::ZmapType zmapType();
 	// Sets whether to convert coords from Bohr to Angstrom on load
 	void setCoordsInBohr(bool b);
 	// Whether coordinates should be converted from Bohr to Angstrom
