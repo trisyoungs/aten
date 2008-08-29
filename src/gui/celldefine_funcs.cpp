@@ -21,11 +21,11 @@
 
 #include "aten/aten.h"
 #include "model/model.h"
-// #include "gui/mainwindow.h"
-// #include "gui/gui.h"
+#include "gui/mainwindow.h"
+#include "gui/gui.h"
 #include "gui/celldefine.h"
-// #include "gui/celltransform.h"
-// #include "gui/disorder.h"
+#include "gui/celltransform.h"
+#include "gui/disorder.h"
 #include "base/spacegroup.h"
 
 // Constructor
@@ -168,7 +168,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 		m->endUndoState();
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
-	// Must also update the disordered builder stack page here, since a cell has been added/removed
+	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
 	gui.cellTransformWindow->refresh();
 	gui.disorderWindow->refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);

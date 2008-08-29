@@ -44,24 +44,6 @@ Ringtype::RingtypeCommand Ringtype::ringtypeCommand(const char *s)
 	return (Ringtype::RingtypeCommand) enumSearch("",Ringtype::nRingtypeCommands,RingtypeCommandKeywords,s);
 }
 
-// Atom environment
-const char *AtomEnvironmentText[Atomtype::nEnvironments] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
-const char *Atomtype::atomEnvironment(Atomtype::AtomEnvironment ae)
-{
-	return AtomEnvironmentText[ae];
-}
-
-// Geometries about atomic centres
-const char *AtomGeometryKeywords[Atomtype::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
-Atomtype::AtomGeometry Atomtype::atomGeometry(const char *s)
-{
-	return (Atomtype::AtomGeometry) enumSearch("atom geometry",Atomtype::nAtomGeometries,AtomGeometryKeywords,s);
-}
-const char *Atomtype::atomGeometry(Atomtype::AtomGeometry i)
-{
-	return AtomGeometryKeywords[i];
-}
-
 // Constructors
 Atomtype::Atomtype()
 {
@@ -77,6 +59,7 @@ Atomtype::Atomtype()
 	acyclic_ = FALSE;
 	nHydrogen_ = -1;
 	characterElement_ = 0;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;

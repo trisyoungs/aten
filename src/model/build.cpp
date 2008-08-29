@@ -60,8 +60,8 @@ void Model::hydrogenSatisfy(Atom *target)
 		tbo = i->totalBondOrder();
 		numh = (valency - tbo) / 2;
 		// Step 2 - Work out geometry that we'll add hydrogens in, based on the atom's valency
-		nsingle = i->countBonds(Bond::Single);
-		ndouble = i->countBonds(Bond::Double);
+		nsingle = countBondsToAtom(i,Bond::Single);
+		ndouble = countBondsToAtom(i,Bond::Double);
 		if (numh != 0)
 		{
 			// Simplest cases - atom has no bonds or all single bonds - we add in a tetrahedral geometry

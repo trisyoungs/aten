@@ -18,11 +18,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "model/model.h"
-#include "classes/forcefield.h"
-#include "base/prefs.h"
-#include "base/elements.h"
+#include "energy/forcefield.h"
+#include "energy/forcefieldatom.h"
+// #include "base/prefs.h"
+// #include "base/elements.h"
 
 // Return the forcefield used by the model
 Forcefield *Model::forcefield()

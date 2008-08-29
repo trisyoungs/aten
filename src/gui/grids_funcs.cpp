@@ -19,15 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "classes/grid.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
 #include "gui/gui.h"
 #include "gui/tlistwidgetitem.h"
-#include <QtGui/QFileDialog>
-#include <QtGui/QColorDialog>
 
 // Constructor
 AtenGrids::AtenGrids(QWidget *parent)

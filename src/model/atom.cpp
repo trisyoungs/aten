@@ -20,10 +20,10 @@
 */
 
 #include "model/model.h"
-#include "classes/atom.h"
+#include "base/atom.h"
 #include "classes/undostate.h"
+#include "classes/undoevent.h"
 #include "base/elements.h"
-#include "base/aten.h"
 
 // Return the start of the atom list
 Atom *Model::atoms() const
@@ -366,3 +366,13 @@ int Model::totalBondOrderPenalty() const
 	return result;
 }
 
+// Count bonds of specific type
+int Model::countBondsToAtom(Atom *i, Bond::BondType type)
+{
+	msg.enter("Model::countBondsToAtom");
+	int count = 0;
+	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+		if (bref->item->order() == type) count ++;
+	msg.exit("Model::countBondsToAtom");
+	return count;
+}

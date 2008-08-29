@@ -20,17 +20,14 @@
 */
 
 #include "model/model.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "classes/clipboard.h"
-#include "templates/vector3.h"
-#include "templates/matrix3.h"
+#include "classes/undoevent.h"
+#include "classes/undostate.h"
 #include "base/spacegroup.h"
 #include "base/generator.h"
-#include "base/aten.h"
-#include "base/constants.h"
-#include "parse/parser.h"
-#include <math.h>
-#include <iostream>
+#include "aten/aten.h"
+#include "aten/prefs.h"
 
 // Return pointer to unit cell structure
 Cell *Model::cell()
@@ -180,7 +177,7 @@ void Model::pack(int gen)
 		msg.enter("Model::pack[gen,atom]");
 		return;
 	}
-	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", spacegroups.generator(gen).description, gen);
+	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", generators.generator(gen).description, gen);
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -192,8 +189,8 @@ void Model::pack(int gen)
 		newr = i->r();
 // 		newr.print();
 		// Apply the rotation and translation
-		newr *= spacegroups.generator(gen).rotation;
-		newr +=  cell_.transpose() * spacegroups.generator(gen).translation;
+		newr *= generators.generator(gen).rotation;
+		newr +=  cell_.transpose() * generators.generator(gen).translation;
 		i->r() = newr;
 		cell_.fold(i, this);
 	}
