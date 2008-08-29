@@ -21,12 +21,12 @@
 
 // #include "base/aten.h"
 // #include "base/prefs.h"
-// #include "gui/gui.h"
+#include "gui/gui.h"
 #include "gui/canvas.h"
-// #include "gui/tcanvas.uih"
+#include "gui/tcanvas.uih"
 // #include "gui/mainwindow.h"
 // #include "render/gl2ps.h"
-// #include "model/model.h"
+#include "model/model.h"
 
 // Constructor
 TextObject::TextObject(int xx, int yy, bool ralign, const char *txt) : x(xx), y(yy), rightAlign(ralign)

@@ -22,7 +22,7 @@
 #ifndef ATEN_GLYPH_H
 #define ATEN_GLYPH_H
 
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 #include "templates/vector3.h"
 #include "templates/vector4.h"
 

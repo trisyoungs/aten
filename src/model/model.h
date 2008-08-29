@@ -22,15 +22,16 @@
 #ifndef ATEN_MODEL_H
 #define ATEN_MODEL_H
 
-#include "templates/vector3.h"
-#include "base/prefs.h"
-#include "classes/energystore.h"
-#include "classes/cell.h"
-#include "classes/log.h"
-#include "classes/measurement.h"
-#include "classes/glyph.h"
-#include "classes/undostate.h"
-#include "parse/vaccess.h"
+// #include "templates/vector3.h"
+// #include "base/prefs.h"
+#include "energy/energystore.h"
+#include "base/cell.h"
+#include "base/log.h"
+#include "base/measurement.h"
+#include "base/glyph.h"
+// #include "classes/glyph.h"
+// #include "classes/undostate.h"
+// #include "parse/vaccess.h"
 #include "methods/mc.h"
 //#include <QtOpenGL/QtOpenGL>
 
@@ -41,7 +42,6 @@ class Bond;
 class Constraint;
 class Pattern;
 class Filter;
-class Glyph;
 class Spacegroup;
 class Site;
 class UndoState;

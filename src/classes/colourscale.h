@@ -28,8 +28,8 @@
 #include <QtOpenGL/QtOpenGL>
 #include "templates/list.h"
 #include "templates/reflist.h"
-#include "classes/dnchar.h"
-#include "classes/colourscalepoint.h"
+#include "base/dnchar.h"
+#include "base/colourscalepoint.h"
 
 // Forward declarations
 class Grid;

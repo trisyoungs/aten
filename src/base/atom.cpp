@@ -1,6 +1,6 @@
 /*
 	*** Basic atom
-	*** src/classes/atom.cpp
+	*** src/base/atom.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/atom.h"
-#include "classes/bond.h"
-#include "classes/forcefield.h"
+#include "base/atom.h"
+#include "base/bond.h"
+#include "base/forcefield.h"
 #include "model/model.h"
 #include "base/elements.h"
 #include "base/messenger.h"

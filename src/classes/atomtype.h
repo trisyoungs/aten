@@ -22,7 +22,7 @@
 #ifndef ATEN_ATOMTYPE_H
 #define ATEN_ATOMTYPE_H
 
-#include "classes/bond.h"
+#include "base/bond.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
 

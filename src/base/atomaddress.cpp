@@ -1,6 +1,6 @@
 /*
 	*** Atom location
-	*** src/classes/Atomaddress.cpp
+	*** src/base/atomaddress.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/atomaddress.h"
+#include "base/atomaddress.h"
 #include "base/messenger.h"
 
 // Constructor
