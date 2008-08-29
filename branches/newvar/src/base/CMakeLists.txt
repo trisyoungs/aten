@@ -8,6 +8,7 @@ colourscalepoint.h
 constants.h
 dnchar.h
 elements.h
+forcefieldparams.h
 generator.h
 glyph.h
 log.h
@@ -25,6 +26,7 @@ cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
 elements.cpp
+forcefieldparams.cpp
 generator.cpp
 glyph.cpp
 log.cpp
@@ -34,6 +36,18 @@ pattern.cpp
 region.cpp
 spacegroup.cpp
 sysfunc.cpp
+)
+
+add_library(math
+mathfunc.h
+mathfunc.cpp
+)
+
+add_library(sg
+generator.h
+spacegroup.h
+generator.cpp 
+spacegroup.cpp
 )
 
 include_directories(
