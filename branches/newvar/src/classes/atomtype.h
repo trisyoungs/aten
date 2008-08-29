@@ -22,6 +22,7 @@
 #ifndef ATEN_ATOMTYPE_H
 #define ATEN_ATOMTYPE_H
 
+#include "base/atom.h"
 #include "base/bond.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
@@ -76,14 +77,6 @@ class Atomtype
 	// Atom typing commands
 	enum AtomtypeCommand { SpCommand, Sp2Command, Sp3Command, AromaticCommand, RingCommand, NoRingCommand, NBondsCommand, BondCommand, RepeatCommand, OxidationStateCommand, NHydrogensCommand, nAtomtypeCommands };
 	static AtomtypeCommand atomtypeCommand(const char*);
-	// Atom environment
-	enum AtomEnvironment { NoEnvironment, UnboundEnvironment, Sp3Environment, Sp2Environment, SpEnvironment, AromaticEnvironment, nEnvironments };
-	static const char *atomEnvironment(AtomEnvironment);
-	// Geometries about atomic centres
-	enum AtomGeometry { NoGeometry, UnboundGeometry, OneBondGeometry, LinearGeometry, TShapeGeometry, TrigPlanarGeometry, TetrahedralGeometry, SquarePlanarGeometry, TrigBipyramidGeometry, OctahedralGeometry, nAtomGeometries };
-	static AtomGeometry atomGeometry(const char*);
-	static const char *atomGeometry(AtomGeometry);
-
 
 	/*
 	// Character
@@ -111,9 +104,9 @@ class Atomtype
 	*/
 	private:
 	// Environment of atom
-	AtomEnvironment environment_;
+	Atom::AtomEnvironment environment_;
 	// Geometry of bonding about atom
-	AtomGeometry geometry_;
+	Atom::AtomGeometry geometry_;
 	// Required oxidation state (99 for don't mind)
 	short int os_;
 	// List of atoms to which this atom must be bound

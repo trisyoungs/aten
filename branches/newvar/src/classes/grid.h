@@ -23,10 +23,9 @@
 #define ATEN_GRID_H
 
 #include "templates/vector3.h"
-#include "classes/dnchar.h"
-#include "classes/cell.h"
+#include "base/dnchar.h"
+#include "base/cell.h"
 #include "base/constants.h"
-#include "base/messenger.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Grid Data Class

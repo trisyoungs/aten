@@ -22,12 +22,9 @@
 #ifndef ATEN_ATOM_H
 #define ATEN_ATOM_H
 
-#include "classes/atomtype.h"
 #include "templates/vector3.h"
 #include "templates/vector4.h"
 #include "templates/reflist.h"
-#include "base/constants.h"
-#include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
 class Model;
@@ -56,6 +53,13 @@ class Atom
 	enum HAddGeom { LinearHydrogen, PlanarHydrogen, TetrahedralHydrogen };
 	// Atom structure data
 	enum AtomData { AllData=0, PositionData=1, ForceData=2, VelocityData=4, ChargeData=8, FixedData=16, ElementData=32 };
+	// Atom environment
+	enum AtomEnvironment { NoEnvironment, UnboundEnvironment, Sp3Environment, Sp2Environment, SpEnvironment, AromaticEnvironment, nEnvironments };
+	static const char *atomEnvironment(AtomEnvironment);
+	// Geometries about atomic centres
+	enum AtomGeometry { NoGeometry, UnboundGeometry, OneBondGeometry, LinearGeometry, TShapeGeometry, TrigPlanarGeometry, TetrahedralGeometry, SquarePlanarGeometry, TrigBipyramidGeometry, OctahedralGeometry, nAtomGeometries };
+	static AtomGeometry atomGeometry(const char*);
+	static const char *atomGeometry(AtomGeometry);
 
 	/*
 	// Misc Functions
@@ -113,7 +117,7 @@ class Atom
 	// Whether the assigned forcefield type is fixed
 	bool fixedType_;
 	// Chemical environment of atom
-	Atomtype::AtomEnvironment environment_;
+	Atom::AtomEnvironment environment_;
 	// Whether the atom will be moved in minimisations etc.
 	bool fixedPosition_;
 
@@ -143,11 +147,11 @@ class Atom
 	// Check the ff type of the atom against the supplied value
 	bool typeIs(ForcefieldAtom *type);
 	// Set the environment of the atom
-	void setEnvironment(Atomtype::AtomEnvironment ae);
+	void setEnvironment(Atom::AtomEnvironment ae);
 	// Return the environment of the atom
-	Atomtype::AtomEnvironment environment();
+	Atom::AtomEnvironment environment();
 	// Check the environment of the atom against the supplied value
-	bool isEnvironment(Atomtype::AtomEnvironment ae);
+	bool isEnvironment(Atom::AtomEnvironment ae);
 	// Set whether the atom's position is fixed
 	void setPositionFixed(bool b);
 	// Return whether the atom's position is fixed
@@ -173,12 +177,10 @@ class Atom
 	void detachBond(Bond*);
 	// Return the total bond order of the atom
 	int totalBondOrder();
-	// Return the number of bonds of specified type to the atom
-	int countBonds(Bond::BondType);
 	// Calculate the bond order between this atom and the specified atom
 	double bondOrder(Atom*);
 	// Calculates the geometry of the atom's bound environment
-	Atomtype::AtomGeometry geometry(Model*);
+	Atom::AtomGeometry geometry(Model*);
 	// Returns bond pointer between this and atom 'j' (if it exists)
 	Bond *findBond(Atom*);
 	// Determine bond plane

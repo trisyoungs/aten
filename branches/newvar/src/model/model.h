@@ -180,6 +180,8 @@ class Model
 	void printCoords() const;
 	// Return total bond order penalty of atoms in the first pattern molecule
 	int totalBondOrderPenalty() const;
+	// Return the number of bonds of specified type to the atom
+	int countBondsToAtom(Atom *i, Bond::BondType);
 
 
 	/*

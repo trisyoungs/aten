@@ -20,12 +20,10 @@
 */
 
 #include "model/model.h"
-#include "classes/pattern.h"
-#include "classes/energystore.h"
-#include "classes/forcefield.h"
+#include "base/pattern.h"
 #include "energy/fourier.h"
-#include "base/prefs.h"
-#include "base/elements.h"
+#include "energy/forms.h"
+#include "aten/prefs.h"
 
 // Calculate total energy of model (from supplied coordinates)
 double Model::totalEnergy(Model *srcmodel)

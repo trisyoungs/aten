@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/transform.h"
 #include "gui/gui.h"

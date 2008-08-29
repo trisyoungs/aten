@@ -19,12 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/atom.h"
-#include "base/bond.h"
-#include "base/forcefield.h"
-#include "model/model.h"
-#include "base/elements.h"
-#include "base/messenger.h"
+// #include "base/atom.h"
+// #include "base/forcefield.h"
+// #include "model/model.h"
+// #include "base/elements.h"
+// #include "base/messenger.h"
 
 // Atom drawing styles
 const char *DrawStyleKeywords[Atom::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
@@ -46,6 +45,24 @@ Atom::AtomLabel Atom::atomLabel(const char *s)
 const char *Atom::atomLabel(Atom::AtomLabel al)
 {
 	return AtomLabelKeywords[al];
+}
+
+// Atom environment
+const char *AtomEnvironmentText[Atomtype::nEnvironments] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
+const char *Atomtype::atomEnvironment(Atomtype::AtomEnvironment ae)
+{
+	return AtomEnvironmentText[ae];
+}
+
+// Geometries about atomic centres
+const char *AtomGeometryKeywords[Atomtype::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+Atomtype::AtomGeometry Atomtype::atomGeometry(const char *s)
+{
+	return (Atomtype::AtomGeometry) enumSearch("atom geometry",Atomtype::nAtomGeometries,AtomGeometryKeywords,s);
+}
+const char *Atomtype::atomGeometry(Atomtype::AtomGeometry i)
+{
+	return AtomGeometryKeywords[i];
 }
 
 // Constructor
@@ -319,17 +336,6 @@ int Atom::totalBondOrder()
 		result += bref->item->order();
 	msg.exit("Atom::totalBondOrder");
 	return int(result * 2.0 + 0.1);
-}
-
-// Count bonds of specific type
-int Atom::countBonds(Bond::BondType type)
-{
-	msg.enter("Atom::countBonds");
-	int count = 0;
-	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
-		if (bref->item->order() == type) count ++;
-	msg.exit("Atom::countBonds");
-	return count;
 }
 
 // Find bond to atom 'j'
