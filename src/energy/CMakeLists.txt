@@ -1,9 +1,11 @@
-add_library(energy
+add_library(ff
+forcefield.h
 forms.h
 angle.cpp 
 bond.cpp 
 coulomb.cpp 
 ewald.cpp 
+forcefield.cpp
 forms.cpp 
 rules.cpp 
 torsion.cpp 
