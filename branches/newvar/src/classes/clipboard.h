@@ -22,7 +22,7 @@
 #ifndef ATEN_CLIPBOARD_H
 #define ATEN_CLIPBOARD_H
 
-#include "classes/atom.h"
+#include "base/atom.h"
 #include "templates/list.h"
 
 // Forward declarations

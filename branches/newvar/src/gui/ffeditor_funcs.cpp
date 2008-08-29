@@ -20,11 +20,9 @@
 */
 
 #include "gui/ffeditor.h"
-#include "base/elements.h"
-#include "classes/forcefield.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
-#include <QtGui/QMessageBox>
+#include "energy/forcefield.h"
+#include "energy/forcefieldatom.h"
+#include "energy/forcefieldbound.h"
 #include "gui/tcombobox.h"
 
 // Local enum variables

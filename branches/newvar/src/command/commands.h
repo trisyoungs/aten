@@ -22,7 +22,7 @@
 #ifndef ATEN_COMMANDS_H
 #define ATEN_COMMANDS_H
 
-#include "classes/bundle.h"
+#include "base/bundle.h"
 
 // Forward declarations
 class Command;

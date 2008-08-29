@@ -19,11 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "base/elements.h"
+#include "aten/aten.h"
 #include "gui/prefs.h"
-#include <QtGui/QListWidgetItem>
-#include <QtGui/QColorDialog>
 #include "model/model.h"
 
 // Constructor

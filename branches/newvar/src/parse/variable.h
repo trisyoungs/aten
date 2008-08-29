@@ -23,7 +23,7 @@
 #define ATEN_VARIABLE_H
 
 #include "templates/list.h"
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 #include "base/sysfunc.h"
 
 // Forward Declarations

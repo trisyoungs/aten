@@ -20,9 +20,9 @@
 */
 
 #include "gui/selectpattern.h"
-#include "gui/gui.h"
+#include "energy/forcefield.h"
 #include "model/model.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 
 // Constructor
 AtenSelectPattern::AtenSelectPattern(QWidget *parent) : QDialog(parent)

@@ -23,7 +23,7 @@
 #define ATEN_FILTER_H
 
 #include "command/commandlist.h"
-#include "base/prefs.h"
+#include "base/elements.h"
 #include <fstream>
 
 // Forward Declarations
@@ -83,7 +83,7 @@ class Filter
 	// Whether separate zmapping has been defined
 	bool hasZmapping_;
 	// Type of element mapping to use
-	Prefs::ZmapType zmapping_;
+	ElementMap::ZmapType zmapping_;
 
 	public:
 	// Return the ID of the filter

@@ -19,15 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "classes/grid.h"
+#include "aten/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
 #include "gui/forcefields.h"
 #include "gui/grids.h"
 #include "gui/tcanvas.uih"
-#include <QtGui/QFileDialog>
 #include "model/model.h"
 
 // Add new model to workspace

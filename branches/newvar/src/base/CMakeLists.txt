@@ -8,6 +8,7 @@ colourscalepoint.h
 constants.h
 dnchar.h
 elements.h
+generator.h
 glyph.h
 log.h
 mathfunc.h
@@ -15,6 +16,7 @@ measurement.h
 pattern.h
 region.h
 sysfunc.h
+spacegroup.h
 atomaddress.cpp
 atom.cpp
 bond.cpp
@@ -23,12 +25,14 @@ cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
 elements.cpp
+generator.cpp
 glyph.cpp
 log.cpp
 mathfunc.cpp
 measurement.cpp
 pattern.cpp
 region.cpp
+spacegroup.cpp
 sysfunc.cpp
 )
 

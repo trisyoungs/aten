@@ -22,7 +22,7 @@
 #ifndef ATEN_VOBJECT_H
 #define ATEN_VOBJECT_H
 
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 
 // Variable Reference Object
 class VObject

@@ -19,9 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "base/elements.h"
-#include "classes/forcefield.h"
+#include "aten/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
@@ -41,6 +39,7 @@
 #include "gui/selectpattern.h"
 #include "gui/about.h"
 #include "model/model.h"
+#include "classes/undostate.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>

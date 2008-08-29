@@ -23,11 +23,9 @@
 #define ATEN_VARIABLELIST_H
 
 #include "templates/list.h"
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 #include "parse/variable.h"
-#include "base/sysfunc.h"
-#include "base/constants.h"
-#include "parse/vaccess.h"
+#include "base/vobject.h"
 
 // Forward Declarations
 class Atom;

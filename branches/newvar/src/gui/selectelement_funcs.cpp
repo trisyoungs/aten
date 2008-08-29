@@ -20,8 +20,6 @@
 */
 
 #include "gui/selectelement.h"
-#include "gui/gui.h"
-#include "base/elements.h"
 #include "parse/parser.h"
 
 // Constructor

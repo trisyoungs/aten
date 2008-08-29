@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "model/model.h"
-#include "gui/mainwindow.h"
-#include "gui/gui.h"
+// #include "gui/mainwindow.h"
+// #include "gui/gui.h"
 #include "gui/celldefine.h"
-#include "gui/celltransform.h"
-#include "gui/disorder.h"
+// #include "gui/celltransform.h"
+// #include "gui/disorder.h"
 #include "base/spacegroup.h"
 
 // Constructor

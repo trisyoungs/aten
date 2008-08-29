@@ -19,15 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include "gui/ttreewidgetitem.h"
 #include "gui/atomlist.h"
 #include "model/model.h"
-#include "base/aten.h"
-#include <QtGui/QTreeWidget>
-#include <QtGui/QScrollBar>
+#include "aten/aten.h"
 
 /*
 // Atom list window
