@@ -35,7 +35,7 @@
 VariableList::VariableList()
 {
 	// Added reference to 'models' accessor in Aten
-	addReference("models", aten.accessor("models"));
+	addReference("models", atenAccessors.findAccessor("models"));
 }
 
 // Return dummy variable

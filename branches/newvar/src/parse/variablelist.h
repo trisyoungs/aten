@@ -39,7 +39,7 @@ class PatternBound;
 class ForcefieldAtom;
 
 // Variable list
-class VariableList : public VAccess
+class VariableList
 {
 	/*
 	// Variable List

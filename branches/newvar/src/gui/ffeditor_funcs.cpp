@@ -22,6 +22,8 @@
 #include "gui/ffeditor.h"
 #include "base/elements.h"
 #include "classes/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
 #include <QtGui/QMessageBox>
 #include "gui/tcombobox.h"
 

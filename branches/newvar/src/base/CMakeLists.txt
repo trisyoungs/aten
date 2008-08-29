@@ -7,6 +7,7 @@ messenger.h
 prefs.h 
 sysfunc.h
 aten.cpp
+atenaccess.cpp
 cli.cpp 
 elements.cpp 
 messenger.cpp

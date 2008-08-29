@@ -30,24 +30,70 @@ class VObject
 	public:
 	// Constructor
 	VObject();
-	// List types
-	enum ListType { SimpleVariable, ListArray, ReflistArray, NormalArray };
-	// Data types
-	enum DataType { StringType, IntegerType, DoubleType, ModelType, PatternType, AtomType, BondType};
 	// List pointers
 	VObject *prev, *next;
+	// List types
+	enum ListType { NoArray, ListArray, ReflistArray, NormalArray };
+	// Data types
+	enum DataType { NoDataSet, StringData, IntegerData, DoubleData, ModelData, PatternData, AtomData, BondData};
 
+	/*
+	// Object Data
+	*/
 	private:
 	// Name
-	Dnchar name;
+	Dnchar name_;
 	// List type
-	VObject::ListType listType;
+	VObject::ListType listType_;
 	// Variable type pointed to
-	VObject::DataType dataType;
-	// Whether read only
-	bool readOnly;
-	// Actual address of referenced data
-	void *varAddress;
+	VObject::DataType dataType_;
+	// Whether variable is read/write (TRUE) or read-only (FALSE)
+	bool readWrite_;
+
+	/*
+	// Set / Get
+	*/
+	public:
+// 	// Set name of object
+// 	void setName(const char *name);
+// 	// Return name of object
+// 	const char *name();
+// 	// Set variable array/list type
+// 	void setListType(VObject::ListType);
+// 	// Return variable array/list type
+// 	VObject::ListType listType();
+// 	// Set datatype and varaddress
+// 	void setData(int *
+};
+
+// Returned object data
+class VResult
+{
+	public:
+	// Constructor
+	VResult();
+
+	/*
+	// Object Data
+	*/
+	private:
+	// Variable type pointed to
+	VObject::DataType type_;
+	// Pointer to data
+	void *data_;
+
+	/*
+	// Set / Get
+	*/
+	public:
+	// Set data type 
+	void setType(VObject::DataType type);
+	// Return data type
+	VObject::DataType type();
+	// Set pointer
+	void setData(void *p);
+	// Return pointer value
+	void *data();
 };
 
 #endif

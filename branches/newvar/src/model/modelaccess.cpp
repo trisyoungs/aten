@@ -1,6 +1,6 @@
 /*
-	*** Forcefield term parameters
-	*** src/classes/forcefieldparams.h
+	*** Model Access
+	*** src/model/modelaccess.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,20 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FORCEFIELDPARAMS_H
-#define ATEN_FORCEFIELDPARAMS_H
+#include "model/model.h"
+#include "parse/vaccess.h"
 
-#include "base/constants.h"
+ModelAccessors modelAccessors;
 
-// Forcefield parameters
-class ForcefieldParams
+// Constructor
+ModelAccessors::ModelAccessors()
 {
-	public:
-	// Storage for parameters used in functions
-	double data[MAXFFPARAMDATA];
-	// Constructor
-	ForcefieldParams();
+	addAccessor("atoms",		VObject::ListArray,	VObject::AtomData,	FALSE);
+	addAccessor("name",		VObject::NoArray,	VObject::StringData,	FALSE);
+	addAccessor("natoms",	VObject::NoArray,	VObject::IntegerData,	FALSE);
 };
-
-#endif
-

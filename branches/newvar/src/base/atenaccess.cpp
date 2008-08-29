@@ -1,6 +1,6 @@
 /*
-	*** Forcefield term parameters
-	*** src/classes/forcefieldparams.h
+	*** Aten Access
+	*** src/base/atenaccess.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,20 +19,26 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FORCEFIELDPARAMS_H
-#define ATEN_FORCEFIELDPARAMS_H
+#include "base/aten.h"
+#include "parse/vaccess.h"
 
-#include "base/constants.h"
+// Singleton declaration
+AtenAccessors atenAccessors;
 
-// Forcefield parameters
-class ForcefieldParams
+// Constructor
+AtenAccessors::AtenAccessors()
 {
-	public:
-	// Storage for parameters used in functions
-	double data[MAXFFPARAMDATA];
-	// Constructor
-	ForcefieldParams();
-};
+	addAccessor("models",	VObject::ListArray,	VObject::ModelData,	FALSE);
+}
 
-#endif
-
+// Retriever
+void AtenAccessors::retrieveData(VObject source, int accessorid, VResult &result)
+{
+	// Cast accessorid into local enum
+	if ((accessorid < 0) || (accessorid >= nAccessors))
+	{
+		printf("Critical error accessing object in Aten - accessor id %i is out of range.\n", accessorid);
+		result.setType(VObject::NoDataSet);
+		return;
+	}
+}
