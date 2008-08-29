@@ -80,9 +80,6 @@ class Prefs
 	enum FilterSwitch { SwitchAsFilter, SwitchOff, SwitchOn };
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
-	// Name->Z mapping methods
-	enum ZmapType { AlphaZmap, FirstAlphaZmap, NameZmap, NumericZmap, ForcefieldZmap, AutoZmap, nZmapTypes };
-	static ZmapType zmapType(const char*);
 	// Spotlight Components
 	enum ColourComponent { AmbientComponent, DiffuseComponent, SpecularComponent, nColourComponents };
 

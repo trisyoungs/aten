@@ -112,13 +112,6 @@ Prefs::EnergyUnit Prefs::energyUnit(const char *s)
 	return (Prefs::EnergyUnit) enumSearch("energy unit", Prefs::nEnergyUnits, EnergyUnitKeywords, s);
 }
 
-// ZMapping types
-const char *ZmapTypeKeywords[Prefs::nZmapTypes] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
-Prefs::ZmapType Prefs::zmapType(const char *s)
-{
-	return (Prefs::ZmapType) enumSearch("element mapping style",Prefs::nZmapTypes,ZmapTypeKeywords,s);
-}
-
 // View Objects
 const char *ViewObjectKeywords[Prefs::nViewObjects] = { "atoms", "cell", "cellaxes", "cellrepeat", "forcearrows", "globe", "labels", "measurements", "regions", "surfaces" };
 Prefs::ViewObject Prefs::viewObject(const char *s)
