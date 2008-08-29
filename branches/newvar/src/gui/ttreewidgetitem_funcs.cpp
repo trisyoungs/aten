@@ -20,8 +20,8 @@
 */
 
 #include "base/elements.h"
-//#include "energy/forcefield.h"
-#include "energy/forcefieldatom.h"
+#include "base/sysfunc.h"
+#include "classes/forcefieldatom.h"
 #include "base/atom.h"
 #include "gui/ttreewidgetitem.h"
 

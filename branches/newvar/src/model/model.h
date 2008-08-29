@@ -22,9 +22,7 @@
 #ifndef ATEN_MODEL_H
 #define ATEN_MODEL_H
 
-// #include "templates/vector3.h"
-// #include "base/prefs.h"
-#include "energy/energystore.h"
+#include "ff/energystore.h"
 #include "base/cell.h"
 #include "base/log.h"
 #include "base/measurement.h"
@@ -33,7 +31,6 @@
 #include "base/atom.h"
 #include "base/vaccess.h"
 #include "methods/mc.h"
-//#include <QtOpenGL/QtOpenGL>
 
 // Forward Declarations
 class Forcefield;

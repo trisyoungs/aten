@@ -22,7 +22,7 @@
 #ifndef ATEN_CALCULABLE_H
 #define ATEN_CALCULABLE_H
 
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 
 // Forward Declarations
 class Model;

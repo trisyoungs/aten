@@ -1,7 +1,7 @@
 noinst_LIBRARIES = libff.a libfourier.a
 
-libenergy_a_SOURCES = angle.cpp bond.cpp coulomb.cpp forcefield.cpp ewald.cpp forms.cpp rules.cpp torsion.cpp vdw.cpp
-libff_a_SOURCES = fourier.cpp
+libff_a_SOURCES = angle.cpp bond.cpp coulomb.cpp forcefield.cpp ewald.cpp forms.cpp rules.cpp torsion.cpp vdw.cpp
+libfourier_a_SOURCES = fourier.cpp
 
 noinst_HEADERS = forms.h forcefield.h fourier.h
 

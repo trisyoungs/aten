@@ -96,7 +96,7 @@ int CommandData::function_CA_EQUIVALENT(Command *&c, Bundle &obj)
 // Associate current ff to current model ('ffmodel [name]')
 int CommandData::function_CA_FFMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// If an argument was supplied, select forcefield by name. Otherwise use current
 	if (c->hasArg(0)) obj.m->setForcefield(aten.findForcefield(c->argc(0)));
 	else obj.m->setForcefield(obj.ff);
@@ -106,7 +106,7 @@ int CommandData::function_CA_FFMODEL(Command *&c, Bundle &obj)
 // Set current forcefield for named pattern ('ffpattern')
 int CommandData::function_CA_FFPATTERN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+BP_FF)) return CR_FAIL;
 	obj.p->setForcefield(obj.ff);
 	return CR_SUCCESS;
 }
@@ -114,7 +114,7 @@ int CommandData::function_CA_FFPATTERN(Command *&c, Bundle &obj)
 // Set current forcefield for pattern id given ('ffpatternid <id>')
 int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+BP_FF)) return CR_FAIL;
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
 	{
@@ -268,14 +268,14 @@ int CommandData::function_CA_TYPEDEF(Command *&c, Bundle &obj)
 // Perform typing on current model
 int CommandData::function_CA_TYPEMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	return (obj.m->typeAll() ? CR_SUCCESS : CR_FAIL);
 }
 
 // Test specified type ID of current forcefield
 int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+BP_FF)) return CR_FAIL;
 	// Find the specified type...
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)

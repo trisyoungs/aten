@@ -22,7 +22,7 @@
 #ifndef ATEN_PREFS_H
 #define ATEN_PREFS_H
 
-#include "energy/forms.h"
+#include "base/forms.h"
 #include "base/atom.h"
 #include "base/elements.h"
 #include "classes/colourscale.h"

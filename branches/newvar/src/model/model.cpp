@@ -20,13 +20,17 @@
 */
 
 #include "model/model.h"
-#include "base/aten.h"
+#include "classes/undostate.h"
+#include "classes/undoevent.h"
+#include "aten/prefs.h"
 #include "base/elements.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "classes/clipboard.h"
 #include "classes/site.h"
 #include "classes/grid.h"
-#include "classes/glyph.h"
+#include "classes/forcefieldbound.h"
+#include "classes/forcefieldatom.h"
+// #include "classes/glyph.h"
 #include "methods/calculable.h"
 
 // Constructors

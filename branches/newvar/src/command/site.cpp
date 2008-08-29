@@ -30,7 +30,7 @@
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
 int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// First, check that the pattern name provided refers to a pattern of the current model
 	Pattern *p = obj.m->findPattern(c->argc(1));
 	if (p == NULL) return CR_FAIL;
@@ -55,7 +55,7 @@ int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 // Print site definitions for model ('listsites')
 int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Site *s = obj.m->sites.first();
 	if (s == NULL) msg.print("No sites defined for model '%s'.\n",obj.m->name());
 	else
@@ -75,7 +75,7 @@ int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
 // Select named site from currently defined model sites ('getsite <name>')
 int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Site *s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
 	if (s == NULL) msg.print("No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());

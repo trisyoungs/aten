@@ -26,7 +26,7 @@
 // Create energy expression for current model ('createexpression'}
 int CommandData::function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (!obj.m->autocreatePatterns()) return CR_FAIL;
 	if (!obj.m->createExpression()) return CR_FAIL;
 	return CR_SUCCESS;
@@ -46,7 +46,7 @@ int CommandData::function_CA_PRINTSETUP(Command *&c, Bundle &obj)
 // Save expression ('saveexpression <format> <file>')
 int CommandData::function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
 	Filter *f = aten.findFilter(Filter::ExpressionExport, c->argc(0));
 	// Check that a suitable format was found

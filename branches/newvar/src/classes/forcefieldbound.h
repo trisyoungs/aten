@@ -22,7 +22,7 @@
 #ifndef ATEN_FORCEFIELDBOUND_H
 #define ATEN_FORCEFIELDBOUND_H
 
-// #include "energy/forcefieldparams.h"
+#include "base/forcefieldparams.h"
 // #include "base/dnchar.h"
 // #include "energy/forms.h"
 

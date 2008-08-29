@@ -29,7 +29,7 @@
 // Create 'n' new atoms at once in model
 int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Vec3<double> v;
 	for (int n = 0; n < c->argi(0); n++) obj.i = obj.rs->addAtom(0, v);
 	return CR_SUCCESS;
@@ -38,7 +38,7 @@ int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
 // Finalise current model
 int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// If this command is being run from a filter, set the output filter in the model.
 	Filter *f = c->parent()->filter();
 	if (f != NULL)
@@ -95,7 +95,7 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 // Print all information for model ('info')
 int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->renderSource()->print();
 	return CR_SUCCESS;
 }
@@ -130,7 +130,7 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 // Print log information for model ('loginfo')
 int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->renderSource()->printLogs();
 	return CR_SUCCESS;
 }
@@ -138,7 +138,7 @@ int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
 // Use parent model as atom template
 int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m == obj.rs)
 	{
 		printf("Cannot perform model templating in the parent model.\n");
@@ -177,7 +177,7 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 // Skip to next loaded model ('nextmodel')
 int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m->next == NULL) msg.print("Already at last loaded model.\n");
 	else
 	{
@@ -191,7 +191,7 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 // Skip to previous loaded model ('prevmodel')
 int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m->prev == NULL) msg.print("Already at first loaded model.\n");
 	else
 	{
@@ -205,7 +205,7 @@ int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 // Save current model ('savemodel <format> <filename>')
 int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Find filter with a nickname matching that given in argc(0)
 	Filter *f = aten.findFilter(Filter::ModelExport, c->argc(0));
 	// Check that a suitable format was found
@@ -222,7 +222,7 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 // Set name of current model ('setname <name>')
 int CommandData::function_CA_SETNAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->setName(c->argc(0));
 	c->parent()->setModelVariables("",obj.m);  // ROLE
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());

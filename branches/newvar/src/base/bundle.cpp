@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/bundle.h"
-#include "model/model.h"
+#include "base/bundle.h"
+//#include "model/model.h"
 #include "base/constants.h"
 #include <stdio.h>
 
@@ -40,50 +40,50 @@ Bundle::Bundle()
 // Check for non-null pointers
 bool Bundle::isNull(int ptrs)
 {
-	if ((ptrs&BP_ATOM) && (i == 0)) return TRUE;
-	if ((ptrs&BP_PATTERN) && (p == 0)) return TRUE;
-	if ((ptrs&BP_MODEL) && (m == 0)) return TRUE;
-	if ((ptrs&BP_GRID) && (g == 0)) return TRUE;
-	if ((ptrs&BP_SITE) && (s == 0)) return TRUE;
-	if ((ptrs&BP_FF) && (ff == 0)) return TRUE;
-	if ((ptrs&BP_GLYPH) && (gl == 0)) return TRUE;
+	if ((ptrs&Bundle::AtomPointer) && (i == 0)) return TRUE;
+	if ((ptrs&Bundle::PatternPointer) && (p == 0)) return TRUE;
+	if ((ptrs&Bundle::ModelPointer) && (m == 0)) return TRUE;
+	if ((ptrs&Bundle::GridPointer) && (g == 0)) return TRUE;
+	if ((ptrs&Bundle::SitePointer) && (s == 0)) return TRUE;
+	if ((ptrs&Bundle::ForcefieldPointer) && (ff == 0)) return TRUE;
+	if ((ptrs&Bundle::GlyphPointer) && (gl == 0)) return TRUE;
 	return FALSE;
 }
 
 // Notify of non-null pointers
 bool Bundle::notifyNull(int ptrs)
 {
-	if ((ptrs&BP_ATOM) && (i == 0))
+	if ((ptrs&Bundle::AtomPointer) && (i == 0))
 	{
 		printf("--> No active atom.\n");
 		return TRUE;
 	}
-	if ((ptrs&BP_PATTERN) && (p == 0))
+	if ((ptrs&Bundle::PatternPointer) && (p == 0))
 	{
 		printf("--> No active pattern.\n");
 		return TRUE;
 	}
-	if ((ptrs&BP_MODEL) && (m == 0))
+	if ((ptrs&Bundle::ModelPointer) && (m == 0))
 	{
 		printf("--> No active model.\n");
 		return TRUE;
 	}
-	if ((ptrs&BP_GRID) && (g == 0))
+	if ((ptrs&Bundle::GridPointer) && (g == 0))
 	{
 		printf("--> No active grid.\n");
 		return TRUE;
 	}
-	if ((ptrs&BP_SITE) && (s == 0))
+	if ((ptrs&Bundle::SitePointer) && (s == 0))
 	{
 		printf("--> No active site.\n");
 		return TRUE;
 	}
-	if ((ptrs&BP_FF) && (ff == 0))
+	if ((ptrs&Bundle::ForcefieldPointer) && (ff == 0))
 	{
 		printf("--> No active forcefield.\n");
 		return TRUE;
 	}
-	if ((ptrs&BP_GLYPH) && (gl == 0))
+	if ((ptrs&Bundle::GlyphPointer) && (gl == 0))
 	{
 		printf("--> No active glyph.\n");
 		return TRUE;

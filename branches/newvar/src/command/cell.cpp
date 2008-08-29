@@ -27,7 +27,7 @@
 // Adjust parameter of unit cell
 int CommandData::function_CA_ADJUSTCELL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
 	if (cp != Cell::nCellParameters) obj.rs->cell()->setParameter(cp, c->argd(1), TRUE);
 	return CR_SUCCESS;
@@ -36,7 +36,7 @@ int CommandData::function_CA_ADJUSTCELL(Command *&c, Bundle &obj)
 // Fold atoms into unit cell
 int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->parent()->inputFile() == NULL)
 	{
 		obj.rs->beginUndoState("Fold Atoms");
@@ -50,7 +50,7 @@ int CommandData::function_CA_FOLD(Command *&c, Bundle &obj)
 // Fold molecules
 int CommandData::function_CA_FOLDMOLECULES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Fold Molecules");
 	obj.rs->foldAllMolecules();
 	obj.rs->endUndoState();
@@ -60,7 +60,7 @@ int CommandData::function_CA_FOLDMOLECULES(Command *&c, Bundle &obj)
 // Convert fractional coordinates to real coordinates
 int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Convert fractional to real coordinates");
 	obj.rs->fracToReal();
 	obj.rs->endUndoState();
@@ -70,7 +70,7 @@ int CommandData::function_CA_FRACTOREAL(Command *&c, Bundle &obj)
 // Do crystal packing in model
 int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->parent()->inputFile() == NULL)
 	{
 		obj.rs->beginUndoState("Pack Cell");
@@ -84,7 +84,7 @@ int CommandData::function_CA_PACK(Command *&c, Bundle &obj)
 // Print cell information ('printcell')
 int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	msg.print("Unit cell type for model '%s' is %s\n", obj.rs->name(), Cell::cellType(obj.rs->cell()->type()));
 	if (obj.rs->cell()->type() != Cell::NoCell) obj.rs->cell()->print();
 	return CR_SUCCESS;
@@ -93,7 +93,7 @@ int CommandData::function_CA_PRINTCELL(Command *&c, Bundle &obj)
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
 int CommandData::function_CA_REPLICATE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Replicate cell");
 	obj.rs->replicateCell(c->arg3d(0), c->arg3d(3));
 	obj.rs->endUndoState();
@@ -103,7 +103,7 @@ int CommandData::function_CA_REPLICATE(Command *&c, Bundle &obj)
 // Scale cell and molecule COGs ('scale <x y z>')
 int CommandData::function_CA_SCALE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Scale cell");
 	obj.rs->scaleCell(c->arg3d(0));
 	return CR_SUCCESS;
@@ -112,7 +112,7 @@ int CommandData::function_CA_SCALE(Command *&c, Bundle &obj)
 // Set/create unit cell ('cell <a b c> <alpha beta gamma>')
 int CommandData::function_CA_CELL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
 	obj.rs->endUndoState();
 	obj.rs->calculateDensity();
@@ -122,7 +122,7 @@ int CommandData::function_CA_CELL(Command *&c, Bundle &obj)
 // Set/create unit cell ('cellaxes <ax ay az> <bx by bz> <cx cy cz>')
 int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Mat3<double> mat;
 	mat.rows[0] = c->arg3d(0);
 	mat.rows[1] = c->arg3d(3);
@@ -137,7 +137,7 @@ int CommandData::function_CA_CELLAXES(Command *&c, Bundle &obj)
 // Remove unit cell
 int CommandData::function_CA_NOCELL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Remove cell");
 	obj.rs->removeCell();
 	obj.rs->endUndoState();
@@ -147,7 +147,7 @@ int CommandData::function_CA_NOCELL(Command *&c, Bundle &obj)
 // Set parameter of unit cell
 int CommandData::function_CA_SETCELL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Cell::CellParameter cp = Cell::cellParameter(c->argc(0));
 	if (cp != Cell::nCellParameters) obj.rs->cell()->setParameter(cp, c->argd(1));
 	return CR_SUCCESS;
@@ -156,7 +156,7 @@ int CommandData::function_CA_SETCELL(Command *&c, Bundle &obj)
 // Set spacegroup
 int CommandData::function_CA_SPACEGROUP(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
 	if (c->argt(0) == Variable::IntegerVariable) obj.rs->setSpacegroup(c->argi(0));
 	else

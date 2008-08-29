@@ -20,10 +20,11 @@
 */
 
 #include "model/model.h"
-#include "classes/pattern.h"
-#include "classes/atomaddress.h"
+#include "base/pattern.h"
+#include "base/atomaddress.h"
 #include "classes/clipboard.h"
-#include "base/aten.h"
+#include "ff/forcefield.h"
+#include "base/sysfunc.h"
 #include "base/elements.h"
 
 // Number of nodes in pattern

@@ -28,7 +28,7 @@
 // Copy current selection ('copy')
 int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	aten.userClipboard->copySelection(obj.rs);
 	return CR_SUCCESS;
 }
@@ -36,7 +36,7 @@ int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 // Cut current selection ('cut')
 int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	char s[128];
 	sprintf(s,"Cut %i atom%s\n",obj.rs->nSelected(),(obj.rs->nSelected() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
@@ -48,7 +48,7 @@ int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
 // Delete current selection ('delete')
 int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	char s[128];
 	sprintf(s,"Delete %i atom%s\n", obj.rs->nSelected(), (obj.rs->nSelected() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
@@ -60,7 +60,7 @@ int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
 // Paste copied selection ('paste')
 int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	char s[128];
 	sprintf(s,"Paste %i atom%s\n", aten.userClipboard->nAtoms(), (aten.userClipboard->nAtoms() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
@@ -77,7 +77,7 @@ int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
 // Redo most recent change
 int CommandData::function_CA_REDO(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	aten.currentModel()->redo();
 	return CR_SUCCESS;
 }
@@ -85,7 +85,7 @@ int CommandData::function_CA_REDO(Command *&c, Bundle &obj)
 // Undo most recent change
 int CommandData::function_CA_UNDO(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	aten.currentModel()->undo();
 	return CR_SUCCESS;
 }

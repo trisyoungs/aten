@@ -20,6 +20,8 @@
 */
 
 #include "model/model.h"
+#include "classes/undoevent.h"
+#include "classes/undostate.h"
 
 // Return the number of selected atoms
 int Model::nSelected()

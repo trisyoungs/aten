@@ -21,8 +21,8 @@
 
 #include "model/model.h"
 #include "base/pattern.h"
-#include "energy/fourier.h"
-#include "energy/forms.h"
+#include "ff/fourier.h"
+#include "base/forms.h"
 #include "aten/prefs.h"
 
 // Calculate total energy of model (from supplied coordinates)

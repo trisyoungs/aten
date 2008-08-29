@@ -20,9 +20,9 @@
 */
 
 #include "base/elements.h"
-#include "classes/bond.h"
-#include "classes/ring.h"
-#include <math.h>
+#include "base/bond.h"
+#include "base/atom.h"
+#include "base/sysfunc.h"
 
 // BondType enum
 const char *BondTypeKeywords[Bond::nBondTypes] = { "_ANY_", "single", "double", "triple", "aromatic" };

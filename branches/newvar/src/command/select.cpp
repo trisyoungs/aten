@@ -130,7 +130,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 // Deselect atom, range of atoms, or elements ('select <n>')
 int CommandData::function_CA_DESELECT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), TRUE);
 	return CR_SUCCESS;
 }
@@ -138,7 +138,7 @@ int CommandData::function_CA_DESELECT(Command *&c, Bundle &obj)
 // Select all ('selectall')
 int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Select all atoms");
 	obj.rs->selectAll();
 	obj.rs->endUndoState();
@@ -148,7 +148,7 @@ int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
 // Select atom, range of atoms, or elements ('select <n>')
 int CommandData::function_CA_SELECT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
 	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), FALSE);
 	return CR_SUCCESS;
@@ -157,7 +157,7 @@ int CommandData::function_CA_SELECT(Command *&c, Bundle &obj)
 // Select by forcefield type ('selecffttype <fftype>')
 int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Forcefield *ff = obj.rs->forcefield();
 	if (ff == NULL)
 	{
@@ -183,7 +183,7 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 // Invert selection
 int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Invert selection");
 	obj.rs->selectionInvert();
 	obj.rs->endUndoState();
@@ -193,7 +193,7 @@ int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
 // Select no atoms ('selectnone')
 int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Deselect all atoms");
 	obj.rs->selectNone();
 	obj.rs->endUndoState();
@@ -203,7 +203,7 @@ int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
 // Detect and select overlapping atoms
 int CommandData::function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	char s[128];
 	sprintf(s,"Select overlapping atoms (within %f)", c->argd(0));
 	obj.rs->beginUndoState(s);
@@ -215,7 +215,7 @@ int CommandData::function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj)
 // Select all atoms in current (or named/id'd) pattern ('selectpattern [name|id]')
 int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Pattern *p = NULL;
 	if (c->hasArg(0))
 	{
@@ -244,7 +244,7 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
 int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.rs->autocreatePatterns())
 	{
 		obj.rs->selectType(elements.find(c->argc(0)), c->argc(1));

@@ -24,7 +24,7 @@
 
 #include "templates/vector3.h"
 #include "templates/list.h"
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 
 // Site types
 enum SiteType { ST_ATOMCOM, ST_ATOMCOG, ST_MOLCOM, ST_MOLCOG, ST_NITEMS };

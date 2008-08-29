@@ -31,7 +31,7 @@
 // Save current view as bitmap image
 int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Flag any surfaces to be rerendered for use in this context
 	aten.currentModel()->rerenderGrids();
 	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
@@ -66,7 +66,7 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 // Save current view a vector graphic
 int CommandData::function_CA_SAVEVECTOR(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	vector_format vf = VIF_from_text(c->argc(0));
 	if (vf == VIF_NITEMS)
 	{

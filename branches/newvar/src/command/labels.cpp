@@ -25,7 +25,7 @@
 // Clear labels in selection
 int CommandData::function_CA_CLEARLABELS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Clear all labels in selection");
 	obj.rs->selectionClearLabels();
 	obj.rs->endUndoState();
@@ -35,7 +35,7 @@ int CommandData::function_CA_CLEARLABELS(Command *&c, Bundle &obj)
 // Add label to current selection
 int CommandData::function_CA_LABEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
 	if (al != Atom::nLabelItems)
 	{
@@ -50,7 +50,7 @@ int CommandData::function_CA_LABEL(Command *&c, Bundle &obj)
 // Remove label from current selection
 int CommandData::function_CA_REMOVELABEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
 	if (al != Atom::nLabelItems)
 	{
