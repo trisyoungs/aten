@@ -21,6 +21,7 @@
 
 #include "base/elements.h"
 #include "classes/forcefield.h"
+#include "classes/forcefieldatom.h"
 #include "gui/ttreewidgetitem.h"
 
 // Constructor

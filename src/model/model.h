@@ -50,7 +50,7 @@ class Calculable;
 class Measurement;
 
 // Model
-class Model : public VAccess
+class Model
 {
 	public:
 	// Constructor / Destructor
@@ -905,5 +905,19 @@ class Model : public VAccess
 	// Request rerendering of all grid data
 	void rerenderGrids();
 };
+
+// Model Accessor
+class ModelAccessors : public VAccess
+{
+	public:
+	// Constructor
+	ModelAccessors();
+	// Accessor list
+	enum Accessors { Atoms, Name, NAtoms, nAccessors };
+	// Retrieve specified data from Model class
+	void retrieveData(VObject source, int acessorid, VResult &result);
+};
+
+extern ModelAccessors modelAccessor;
 
 #endif

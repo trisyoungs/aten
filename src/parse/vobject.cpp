@@ -19,5 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <stdlib.h>
 #include "parse/vobject.h"
 
+// Constructor
+VObject::VObject()
+{
+	// Private variables
+	listType_ = VObject::NoArray;
+	dataType_ = VObject::NoDataSet;
+
+	// Public variables
+	prev = NULL;
+	next = NULL;
+}

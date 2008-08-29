@@ -11,6 +11,7 @@ glyph.cpp
 grid.cpp
 measure.cpp 
 model.cpp 
+modelaccess.cpp
 molecule.cpp 
 pattern.cpp 
 select.cpp 

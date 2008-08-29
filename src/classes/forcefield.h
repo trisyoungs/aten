@@ -22,14 +22,12 @@
 #ifndef ATEN_FORCEFIELD_H
 #define ATEN_FORCEFIELD_H
 
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
 #include "classes/dnchar.h"
-//#include "energy/forms.h"
-//#include "base/prefs.h"
 
 // Forward declarations
 class Atom;
+class ForcefieldAtom;
+class ForcefieldBound;
 
 // Forcefield
 class Forcefield

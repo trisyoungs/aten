@@ -4,8 +4,10 @@ expressionnode.h
 filter.h 
 format.h 
 parser.h
+vaccess.h
 variable.h
 variablelist.h
+vobject.h
 expression.cpp
 expressionnode.cpp
 filter.cpp 
@@ -13,8 +15,10 @@ forcefield.cpp
 format.cpp 
 parser.cpp 
 probe.cpp
+vaccess.cpp
 variable.cpp
 variablelist.cpp
+vobject.cpp
 )
 
 include_directories(

@@ -41,7 +41,7 @@ class Grid;
 class Clipboard;
 
 // Master class
-class Aten : public VAccess
+class Aten
 {
 	public:
 	// Constructor / Destructor
@@ -281,6 +281,19 @@ class Aten : public VAccess
 	void exportModels();
 };
 
+// Aten Accessors
+class AtenAccessors : public VAccess
+{
+	public:
+	// Constructor
+	AtenAccessors();
+	// Accessor list
+	enum Accessors { Models, nAccessors };
+	// Retrieve specified data from Aten class
+	void retrieveData(VObject source, int acessorid, VResult &result);
+};
+
 extern Aten aten;
+extern AtenAccessors atenAccessors;
 
 #endif
