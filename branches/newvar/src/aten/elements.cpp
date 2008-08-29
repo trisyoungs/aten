@@ -34,6 +34,13 @@ ElementMap elements;
 #define LANTHANIDES 98
 #define ACTINIDES 99
 
+// ZMapping types
+const char *ZmapTypeKeywords[Prefs::nZmapTypes] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
+Prefs::ZmapType Prefs::zmapType(const char *s)
+{
+	return (Prefs::ZmapType) enumSearch("element mapping style", Prefs::nZmapTypes, ZmapTypeKeywords, s);
+}
+
 /*
 // Default Element Data
 // Element radii taken from:

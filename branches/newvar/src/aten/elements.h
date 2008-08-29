@@ -22,7 +22,6 @@
 #ifndef ATEN_ELEMENTMAP_H
 #define ATEN_ELEMENTMAP_H
 
-#include "base/prefs.h"
 #include <QtOpenGL/QtOpenGL>
 
 // Forward Declarations
@@ -59,6 +58,12 @@ class Element
 // Element map
 class ElementMap
 {
+	public:
+	// Constructor
+	ElementMap();
+	// Name->Z mapping methods
+	enum ZmapType { AlphaZmap, FirstAlphaZmap, NameZmap, NumericZmap, ForcefieldZmap, AutoZmap, nZmapTypes };
+
 	private:
 	// Element data array
 	static Element el_[];
@@ -76,8 +81,6 @@ class ElementMap
 	int nElements_;
 
 	public:
-	// Constructor
-	ElementMap();
 	// Return atomic number of element in string
 	int find(const char*);
 	// Return atomic number of element in string, specifying algorithm
