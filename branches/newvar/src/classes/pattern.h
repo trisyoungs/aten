@@ -24,7 +24,7 @@
 
 #include "templates/vector3.h"
 #include "templates/list.h"
-#include "classes/forcefield.h"
+#include "base/constants.h"
 
 // Forward declarations
 class Energy;
