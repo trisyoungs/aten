@@ -20,10 +20,8 @@
 
 #include "base/pattern.h"
 #include "model/model.h"
-#include "energy/forcefield.h"
-#include "energy/forcefieldatom.h"
-// #include "base/prefs.h"
-// #include "base/elements.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
 
 // Return the forcefield used by the model
 Forcefield *Model::forcefield()

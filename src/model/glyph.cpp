@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/glyph.h"
+#include "base/glyph.h"
 #include "model/model.h"
 
 // Create new glyph in this model

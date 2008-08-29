@@ -31,9 +31,6 @@ class Grid;
 class Pattern;
 class Glyph;
 
-// Bundle Pointers
-enum BundlePointer { BP_ATOM=1, BP_PATTERN=2, BP_MODEL=4, BP_FF=8, BP_GRID=16, BP_SITE=32, BP_GLYPH=64 };
-
 // Pointer Bundle
 // Convenience structure to hold/pass a Bundle of current object pointers
 class Bundle
@@ -41,6 +38,8 @@ class Bundle
 	public:
 	// Constructor
 	Bundle();
+	// Bundle Pointer Types
+	enum BundlePointer { AtomPointer=1, PatternPointer=2, ModelPointer=4, ForcefieldPointer=8, GridPointer=16, SitePointer=32, GlyphPointer=64 };
 
 	public:
 	// Model pointer

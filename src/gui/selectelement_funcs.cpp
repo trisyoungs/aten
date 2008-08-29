@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/sysfunc.h"
 #include "gui/selectelement.h"
 #include "parse/parser.h"
 

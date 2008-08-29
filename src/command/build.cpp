@@ -29,7 +29,7 @@
 // Add hydrogens to model ('addhydrogen')
 int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Optional argument specifies an atom, either by id or pointer
 	if (c->hasArg(0))
 	{
@@ -56,13 +56,13 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
 int CommandData::function_CA_BOHR(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
 int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
 	obj.rs->beginUndoState("Draw Chain");
 	Atom *i;
@@ -127,7 +127,7 @@ int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
 // Draw unbound atom ('newatom <el> [x y z]')
 int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
 	Forcefield *f;
 	ForcefieldAtom *ffa;
@@ -181,7 +181,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 // Draw unbound atom ('newatom <el> [fracx fracy fracz]')
 int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
 	int el;
 	switch (c->argt(0))
@@ -222,7 +222,7 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 // Reset pen orientation
 int CommandData::function_CA_RESETPEN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->resetPenOrientation();
 	return CR_SUCCESS;
 }
@@ -230,7 +230,7 @@ int CommandData::function_CA_RESETPEN(Command *&c, Bundle &obj)
 // Rotate pen orientation about x axis ('rotx <theta>')
 int CommandData::function_CA_ROTX(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->rotatePenAxis(0, c->argd(0));
 	return CR_SUCCESS;
 }
@@ -238,7 +238,7 @@ int CommandData::function_CA_ROTX(Command *&c, Bundle &obj)
 // Rotate pen orientation about y axis ('roty <theta>')
 int CommandData::function_CA_ROTY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->rotatePenAxis(1, c->argd(0));
 	return CR_SUCCESS;
 }
@@ -246,7 +246,7 @@ int CommandData::function_CA_ROTY(Command *&c, Bundle &obj)
 // Rotate pen orientation about z axis ('rotz <theta>')
 int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->rotatePenAxis(2, c->argd(0));
 	return CR_SUCCESS;
 }
@@ -254,7 +254,7 @@ int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 // Shift the current selection down ('shiftdown [n]')
 int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Shift selection down");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionDown();
 	obj.rs->endUndoState();
@@ -264,7 +264,7 @@ int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
 // Shift the current selection up ('shiftup [n]')
 int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Shift selection up");
 	for (int n=0; n<(c->hasArg(0) ? c->argi(0) : 1); n++) obj.rs->shiftSelectionUp();
 	obj.rs->endUndoState();
@@ -274,7 +274,7 @@ int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
 // Move current selection to end of list ('toend')
 int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Move selection to end");
 	obj.rs->moveSelectionToEnd();
 	obj.rs->endUndoState();
@@ -284,7 +284,7 @@ int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
 // Move current selection to start of list ('tostart')
 int CommandData::function_CA_TOSTART(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Move selection to start");
 	obj.rs->moveSelectionToStart();
 	obj.rs->endUndoState();
@@ -294,7 +294,7 @@ int CommandData::function_CA_TOSTART(Command *&c, Bundle &obj)
 // Transmute the current selection ('transmute <el>')
 int CommandData::function_CA_TRANSMUTE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	int el = elements.find(c->argc(0));
 	obj.rs->beginUndoState("Transmute selection");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);

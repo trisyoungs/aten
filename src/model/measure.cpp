@@ -20,8 +20,9 @@
 */
 
 #include "model/model.h"
-#include "classes/measurement.h"
-#include "classes/bond.h"
+#include "base/measurement.h"
+#include "classes/undoevent.h"
+#include "classes/undostate.h"
 
 // Return first measurement in the list
 Measurement *Model::measurements()

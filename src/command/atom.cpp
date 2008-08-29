@@ -30,7 +30,7 @@
 // Set atom style for current selection
 int CommandData::function_CA_ATOMSTYLE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
 	if (ds != Atom::nDrawStyles) for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) i->setStyle(ds);
 	else return CR_FAIL;
@@ -40,7 +40,7 @@ int CommandData::function_CA_ATOMSTYLE(Command *&c, Bundle &obj)
 // Retrieve atom info ('getatom <id> [var]')
 int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Atom *i = obj.rs->atom(c->argi(0)-1);
 	if (i == NULL) return CR_FAIL;
 	// Set atom information
@@ -52,7 +52,7 @@ int CommandData::function_CA_GETATOM(Command *&c, Bundle &obj)
 // Hide current atom selection
 int CommandData::function_CA_HIDE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->selectionSetHidden(TRUE);
 	return CR_SUCCESS;
 }
@@ -60,7 +60,7 @@ int CommandData::function_CA_HIDE(Command *&c, Bundle &obj)
 // Set current atom charge
 int CommandData::function_CA_SETCHARGE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->setCharge(c->argd(0));
@@ -70,7 +70,7 @@ int CommandData::function_CA_SETCHARGE(Command *&c, Bundle &obj)
 // Set current atom coordinates
 int CommandData::function_CA_SETCOORDS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.rs->positionAtom(obj.i, c->arg3d(0));
@@ -80,7 +80,7 @@ int CommandData::function_CA_SETCOORDS(Command *&c, Bundle &obj)
 // Set current atom element
 int CommandData::function_CA_SETELEMENT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->setElement(elements.find(c->argc(0)));
@@ -90,7 +90,7 @@ int CommandData::function_CA_SETELEMENT(Command *&c, Bundle &obj)
 // Set current atom forces
 int CommandData::function_CA_SETFORCES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f() = c->arg3d(0);
@@ -100,7 +100,7 @@ int CommandData::function_CA_SETFORCES(Command *&c, Bundle &obj)
 // Set current atom x force
 int CommandData::function_CA_SETFX(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(0,c->argd(0));
@@ -110,7 +110,7 @@ int CommandData::function_CA_SETFX(Command *&c, Bundle &obj)
 // Set current atom y force
 int CommandData::function_CA_SETFY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(1,c->argd(0));
@@ -120,7 +120,7 @@ int CommandData::function_CA_SETFY(Command *&c, Bundle &obj)
 // Set current atom z force
 int CommandData::function_CA_SETFZ(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->f().set(2,c->argd(0));
@@ -130,7 +130,7 @@ int CommandData::function_CA_SETFZ(Command *&c, Bundle &obj)
 // Set current atom ID
 int CommandData::function_CA_SETID(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->setId(c->argi(0));
@@ -140,7 +140,7 @@ int CommandData::function_CA_SETID(Command *&c, Bundle &obj)
 // Set current atom x coordinate
 int CommandData::function_CA_SETRX(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(0,c->argd(0));
@@ -150,7 +150,7 @@ int CommandData::function_CA_SETRX(Command *&c, Bundle &obj)
 // Set current atom y coordinate
 int CommandData::function_CA_SETRY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(1,c->argd(0));
@@ -160,7 +160,7 @@ int CommandData::function_CA_SETRY(Command *&c, Bundle &obj)
 // Set current atom z coordinate
 int CommandData::function_CA_SETRZ(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->r().set(2,c->argd(0));
@@ -170,7 +170,7 @@ int CommandData::function_CA_SETRZ(Command *&c, Bundle &obj)
 // Set current atom velocities
 int CommandData::function_CA_SETVELOCITIES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v() = c->arg3d(0);
@@ -180,7 +180,7 @@ int CommandData::function_CA_SETVELOCITIES(Command *&c, Bundle &obj)
 // Set current atom x velocity
 int CommandData::function_CA_SETVX(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(0,c->argd(0));
@@ -190,7 +190,7 @@ int CommandData::function_CA_SETVX(Command *&c, Bundle &obj)
 // Set current atom y velocity
 int CommandData::function_CA_SETVY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(1,c->argd(0));
@@ -200,7 +200,7 @@ int CommandData::function_CA_SETVY(Command *&c, Bundle &obj)
 // Set current atom z velocity
 int CommandData::function_CA_SETVZ(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
 	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
 	obj.i->v().set(2,c->argd(0));
@@ -210,7 +210,7 @@ int CommandData::function_CA_SETVZ(Command *&c, Bundle &obj)
 // Show current atom selection
 int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->selectionSetHidden(FALSE);
 	return CR_SUCCESS;
 }
@@ -218,7 +218,7 @@ int CommandData::function_CA_SHOW(Command *&c, Bundle &obj)
 // Show all atoms
 int CommandData::function_CA_SHOWALL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) obj.rs->setHidden(i,FALSE);
 	return CR_SUCCESS;
 }

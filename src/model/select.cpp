@@ -20,8 +20,12 @@
 */
 
 #include "model/model.h"
-#include "classes/pattern.h"
-#include "base/aten.h"
+#include "classes/undoevent.h"
+#include "classes/undostate.h"
+#include "classes/atomtype.h"
+#include "base/pattern.h"
+#include "aten/aten.h"
+#include "aten/prefs.h"
 #include "base/elements.h"
 #include "gui/gui.h"
 

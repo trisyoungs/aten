@@ -27,7 +27,7 @@
 // Clear all measurements in current model
 int CommandData::function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	aten.currentModel()->clearMeasurements();
 	return CR_SUCCESS;
 }
@@ -35,7 +35,7 @@ int CommandData::function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj)
 // List all measurements in current model
 int CommandData::function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	aten.currentModel()->listMeasurements();
 	return CR_SUCCESS;
 }
@@ -43,7 +43,7 @@ int CommandData::function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj)
 // Make a measurement within the current model
 int CommandData::function_CA_MEASURE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(3))
 	{
 		obj.rs->beginUndoState("Measure torsion");

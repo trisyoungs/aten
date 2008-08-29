@@ -133,10 +133,11 @@ AC_CHECK_FUNCS([floor pow select sqrt strchr strrchr strstr])
 # Define Makefiles in AC_OUTPUT 
 AC_OUTPUT(Makefile
 src/Makefile
+src/aten/Makefile
 src/base/Makefile
 src/classes/Makefile
 src/command/Makefile
-src/energy/Makefile
+src/ff/Makefile
 src/gui/Makefile
 src/methods/Makefile
 src/model/Makefile

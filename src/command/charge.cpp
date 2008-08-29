@@ -27,7 +27,7 @@
 // Assign charges from forcefield atom types ('chargeff')
 int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Assign forcefield charges");
 	obj.rs->assignForcefieldCharges();
 	obj.rs->endUndoState();
@@ -37,7 +37,7 @@ int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 // Copy atomic charges from model to model's current trajectory frame
 int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.rs == obj.m) 
 	{
 		msg.print("Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
@@ -50,7 +50,7 @@ int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 // Assign charge to a pattern atom, propagated over the model ('chargepatom <id> <q>')
 int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Charge single pattern atom");
 	obj.rs->chargePatternAtom(obj.p,c->argi(0),c->argd(1));
 	obj.rs->endUndoState();
@@ -60,7 +60,7 @@ int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 // Assign charge to selected atoms in model ('charge <q>')
 int CommandData::function_CA_CHARGE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Charge selected atoms");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->chargeAtom(i, c->argd(0));
 	obj.rs->endUndoState();
@@ -77,7 +77,7 @@ int CommandData::function_CA_CHARGETYPE(Command *&c, Bundle &obj)
 // Clears charge in current model ('clearcharges')
 int CommandData::function_CA_CLEARCHARGES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->beginUndoState("Remove charges");
 	obj.rs->clearCharges();
 	obj.rs->endUndoState();

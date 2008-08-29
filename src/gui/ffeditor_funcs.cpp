@@ -19,11 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "base/sysfunc.h"
 #include "gui/ffeditor.h"
-#include "energy/forcefield.h"
-#include "energy/forcefieldatom.h"
-#include "energy/forcefieldbound.h"
 #include "gui/tcombobox.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
 
 // Local enum variables
 namespace TypeColumn

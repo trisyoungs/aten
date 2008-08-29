@@ -23,7 +23,8 @@
 #define ATEN_FORCEFIELD_H
 
 #include "base/dnchar.h"
-#include "energy/forms.h"
+#include "base/forms.h"
+#include "aten/prefs.h"
 
 // Forward declarations
 class Atom;

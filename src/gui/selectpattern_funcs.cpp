@@ -20,7 +20,7 @@
 */
 
 #include "gui/selectpattern.h"
-#include "energy/forcefield.h"
+#include "ff/forcefield.h"
 #include "model/model.h"
 #include "base/pattern.h"
 

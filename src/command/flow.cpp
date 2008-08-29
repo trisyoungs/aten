@@ -168,7 +168,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 			//		2 args - loop over all atoms in arg 2 (pattern)
 			//		3 args - loop over atoms in molecule arg 3 in pattern arg 2
 			case (Variable::AtomVariable):
-				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				// If no second variable is given, loop over all atoms
 				if (c->hasArg(1))
 				{
@@ -218,7 +218,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Pattern loop	 1 arg  - loop over patterns in model
 			case (Variable::PatternVariable):
-				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				if (c->argt(0) == Variable::PatternVariable) c->arg(0)->set(obj.rs->patterns());
 				else
 				{
@@ -231,7 +231,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over forcefield bond terms of pattern
 			case (Variable::BondVariable):
-				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				// Attempt loop over pattern ff bonds
 				if (c->argt(1) != Variable::PatternVariable)
 				{
@@ -244,7 +244,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over forcefield angle terms of pattern
 			case (Variable::AngleVariable):
-				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
 					msg.print( "Angle loop must be given a variable of Pattern type.\n");
@@ -256,7 +256,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over forcefield torsion terms of pattern
 			case (Variable::TorsionVariable):
-				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				if (c->argt(1) != Variable::PatternVariable)
 				{
 					msg.print( "Torsion loop must be given a variable of Pattern type.\n");
@@ -268,7 +268,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over unique ForcefieldAtoms in model
 			case (Variable::AtomtypeVariable):
-				if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				if (c->hasArg(1))
 				{
 					if (c->argt(1) != Variable::AtomtypeVariable)

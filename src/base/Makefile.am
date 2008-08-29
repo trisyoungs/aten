@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libbase.a libmath.a libsg.cpp
+noinst_LIBRARIES = libbase.a libmath.a libsg.a
 
 libmath_a_SOURCES = mathfunc.cpp
 

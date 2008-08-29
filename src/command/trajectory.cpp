@@ -28,7 +28,7 @@
 // Finalise current trajectory frame
 int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.rs == obj.m)
 	{
 		msg.print( "Current model does not appear to be a trajectory frame.\n");
@@ -54,7 +54,7 @@ int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 // Skip to first frame ('firstframe')
 int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
@@ -69,7 +69,7 @@ int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 // Skip to last frame ('lastframe')
 int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
@@ -84,7 +84,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 // Open and associate trajectory ('loadtrajectory <file>')
 int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	Filter *f = aten.probeFile(c->argc(0), Filter::TrajectoryImport);
 	if (f == NULL) return CR_FAIL;
 	return (obj.m->initialiseTrajectory(c->argc(0),f) ? CR_SUCCESS : CR_FAIL);
@@ -93,7 +93,7 @@ int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 // Go to next frame ('nextframe')
 int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
@@ -108,7 +108,7 @@ int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 // Go to previous frame ('prevframe')
 int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
@@ -123,7 +123,7 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 // Seek to specified frame ('seekframe <n>')
 int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());

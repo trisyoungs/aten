@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "classes/pattern.h"
-#include "base/elements.h"
+#include "base/pattern.h"
+//#include "base/elements.h"
 
 // Position molecule at specified coordinates
 void Model::positionMolecule(Pattern *p, int mol, const Vec3<double> &v)

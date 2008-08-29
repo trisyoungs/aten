@@ -20,7 +20,6 @@
 */
 
 #include "base/atomaddress.h"
-#include "base/messenger.h"
 
 // Constructor
 Atomaddress::Atomaddress()

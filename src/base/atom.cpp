@@ -19,10 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "base/atom.h"
-// #include "base/forcefield.h"
-// #include "model/model.h"
-// #include "base/elements.h"
+#include "base/atom.h"
+#include "base/bond.h"
+#include "base/sysfunc.h"
+#include "classes/forcefieldatom.h"
+#include "model/model.h"
+#include "base/elements.h"
 // #include "base/messenger.h"
 
 // Atom drawing styles
@@ -48,19 +50,19 @@ const char *Atom::atomLabel(Atom::AtomLabel al)
 }
 
 // Atom environment
-const char *AtomEnvironmentText[Atomtype::nEnvironments] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
-const char *Atomtype::atomEnvironment(Atomtype::AtomEnvironment ae)
+const char *AtomEnvironmentText[Atom::nEnvironments] = { "Unspecified", "Unbound atom", "Aliphatic sp3", "Resonant sp2", "Triple-bond sp", "Aromatic sp2" };
+const char *Atom::atomEnvironment(Atom::AtomEnvironment ae)
 {
 	return AtomEnvironmentText[ae];
 }
 
 // Geometries about atomic centres
-const char *AtomGeometryKeywords[Atomtype::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
-Atomtype::AtomGeometry Atomtype::atomGeometry(const char *s)
+const char *AtomGeometryKeywords[Atom::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+Atom::AtomGeometry Atom::atomGeometry(const char *s)
 {
-	return (Atomtype::AtomGeometry) enumSearch("atom geometry",Atomtype::nAtomGeometries,AtomGeometryKeywords,s);
+	return (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s);
 }
-const char *Atomtype::atomGeometry(Atomtype::AtomGeometry i)
+const char *Atom::atomGeometry(Atom::AtomGeometry i)
 {
 	return AtomGeometryKeywords[i];
 }
@@ -72,7 +74,7 @@ Atom::Atom()
 	charge_ = 0.0;
 	el_ = 0;
 	os_ = 0;
-	environment_ = Atomtype::NoEnvironment;
+	environment_ = Atom::NoEnvironment;
 	type_ = NULL;
 	fixedType_ = FALSE;
 	fixedPosition_ = FALSE;
@@ -200,19 +202,19 @@ bool Atom::typeIs(ForcefieldAtom *type)
 }
 
 // Set the environment of the atom
-void Atom::setEnvironment(Atomtype::AtomEnvironment ae)
+void Atom::setEnvironment(Atom::AtomEnvironment ae)
 {
 	environment_ = ae;
 }
 
 // Return the environment of the atom
-Atomtype::AtomEnvironment Atom::environment()
+Atom::AtomEnvironment Atom::environment()
 {
 	return environment_;
 }
 
 // Check the environment of the atom against the supplied value
-bool Atom::isEnvironment(Atomtype::AtomEnvironment ae)
+bool Atom::isEnvironment(Atom::AtomEnvironment ae)
 {
 	return (environment_ == ae ? TRUE : FALSE);
 }
@@ -271,7 +273,7 @@ void Atom::print()
 	msg.print("      Charge : %8.4f\n",charge_);
 	msg.print("      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
 	msg.print("       Bonds : %i\n",bonds_.nItems());
-	msg.print(" Environment : %s\n",Atomtype::atomEnvironment(environment_));
+	msg.print(" Environment : %s\n",Atom::atomEnvironment(environment_));
 	msg.print("        O.S. : %i\n",os_);
 }
 
@@ -371,36 +373,36 @@ double Atom::bondOrder(Atom *j)
 }
 
 // Determine bonding geometry
-Atomtype::AtomGeometry Atom::geometry(Model *parent)
+Atom::AtomGeometry Atom::geometry(Model *parent)
 {
 	msg.enter("Atom::geometry");
-	static Atomtype::AtomGeometry result;
+	static Atom::AtomGeometry result;
 	static double angle, largest;
 	static Bond *b1, *b2;
 	static Refitem<Bond,int> *bref1, *bref2;
-	result = Atomtype::NoGeometry;
+	result = Atom::NoGeometry;
 	// Separate the tests by number of bound atoms...
 	switch (nBonds())
 	{
 		// Simple cases first
 		case (0):
-			result = Atomtype::UnboundGeometry;
+			result = Atom::UnboundGeometry;
 			break;
 		case (1):
-			result = Atomtype::OneBondGeometry;
+			result = Atom::OneBondGeometry;
 			break;
 		case (5):
-			result = Atomtype::TrigBipyramidGeometry;
+			result = Atom::TrigBipyramidGeometry;
 			break;
 		case (6):
-			result = Atomtype::OctahedralGeometry;
+			result = Atom::OctahedralGeometry;
 			break;
 		// For the remaining types, take averages of bond angles about the atom
 		case (2):
 			b1 = bonds()->item;
 			b2 = bonds()->next->item;
 			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
-			result = (angle > 170.0 ? Atomtype::LinearGeometry : Atomtype::TetrahedralGeometry);
+			result = (angle > 170.0 ? Atom::LinearGeometry : Atom::TetrahedralGeometry);
 			break;
 		case (3):
 			bref1 = bonds();
@@ -415,7 +417,7 @@ Atomtype::AtomGeometry Atom::geometry(Model *parent)
 			b1 = bref1->next->item;
 			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			if (angle > largest) largest = angle;
-			result = (largest > 170.0 ? Atomtype::TShapeGeometry : (largest > 115.0 ? Atomtype::TrigPlanarGeometry : Atomtype::TetrahedralGeometry));
+			result = (largest > 170.0 ? Atom::TShapeGeometry : (largest > 115.0 ? Atom::TrigPlanarGeometry : Atom::TetrahedralGeometry));
 			break;
 		case (4):
 			// Two possibilities - tetrahedral or square planar. Tetrahedral will have an
@@ -433,7 +435,7 @@ Atomtype::AtomGeometry Atom::geometry(Model *parent)
 				}
 				bref1 = bref1->next;
 			}
-			result = ((angle/6.0) > 115.0 ? Atomtype::SquarePlanarGeometry : Atomtype::TetrahedralGeometry);
+			result = ((angle/6.0) > 115.0 ? Atom::SquarePlanarGeometry : Atom::TetrahedralGeometry);
 			break;
 	}
 	msg.exit("Atom::geometry");

@@ -20,7 +20,7 @@
 */
 
 #include "model/model.h"
-#include "parse/vaccess.h"
+#include "base/vaccess.h"
 
 ModelAccessors modelAccessors;
 
@@ -29,5 +29,5 @@ ModelAccessors::ModelAccessors()
 {
 	addAccessor("atoms",		VObject::ListArray,	VObject::AtomData,	FALSE);
 	addAccessor("name",		VObject::NoArray,	VObject::StringData,	FALSE);
-	addAccessor("natoms",	VObject::NoArray,	VObject::IntegerData,	FALSE);
+	addAccessor("natoms",		VObject::NoArray,	VObject::IntegerData,	FALSE);
 };

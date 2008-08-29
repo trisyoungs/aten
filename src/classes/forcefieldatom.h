@@ -23,8 +23,9 @@
 #define ATEN_FORCEFIELDATOM_H
 
 #include "classes/atomtype.h"
+#include "base/forcefieldparams.h"
 #include "base/dnchar.h"
-#include "energy/forms.h"
+#include "base/forms.h"
 
 // Forward declarations
 class Forcefield;
