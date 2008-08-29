@@ -23,7 +23,7 @@
 #define ATEN_PARSER_H
 
 #include "base/constants.h"
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 #include <fstream>
 #include <iostream>
 using namespace std;

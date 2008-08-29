@@ -25,14 +25,19 @@
 #include "templates/vector3.h"
 #include "templates/list.h"
 #include "base/constants.h"
+#include "base/dnchar.h"
 
 // Forward declarations
 class Energy;
 class Atom;
+class ForcefieldAtom;
+class ForcefieldBound;
+class Forcefield;
 class Atomtype;
 class ComponentRegion;
 class Model;
 class Ring;
+class Cell;
 
 // Structures to hold/point to forcefield descriptions in patterns.
 class PatternAtom

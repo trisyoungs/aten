@@ -29,16 +29,15 @@
 #include "base/log.h"
 #include "base/measurement.h"
 #include "base/glyph.h"
-// #include "classes/glyph.h"
-// #include "classes/undostate.h"
-// #include "parse/vaccess.h"
+#include "base/bond.h"
+#include "base/atom.h"
+#include "base/vaccess.h"
 #include "methods/mc.h"
 //#include <QtOpenGL/QtOpenGL>
 
 // Forward Declarations
 class Forcefield;
 class ForcefieldBound;
-class Bond;
 class Constraint;
 class Pattern;
 class Filter;
@@ -48,6 +47,7 @@ class UndoState;
 class Atomaddress;
 class Calculable;
 class Measurement;
+class Grid;
 
 // Model
 class Model

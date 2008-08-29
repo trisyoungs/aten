@@ -22,16 +22,15 @@
 #ifndef ATEN_ATEN_H
 #define ATEN_ATEN_H
 
-#include "classes/bundle.h"
-#include "classes/cell.h"
+#include "base/bundle.h"
+#include "templates/list.h"
 #include "parse/filter.h"
-#include "command/commandlist.h"
-#include "base/cli.h"
+#include "base/vaccess.h"
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "583"
-#define ATENDATE "Thu 28 Aug - 19:25"
+#define ATENDATE "Fri 29 Aug - 14:55"
 #define ATENURL "http://aten.googlecode.com/svn/branches/newvar"
 
 // Forward Declarations

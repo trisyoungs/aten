@@ -23,7 +23,7 @@
 #define ATEN_VACCESS_H
 
 #include "templates/list.h"
-#include "parse/vobject.h"
+#include "base/vobject.h"
 
 // Forward declarations
 class VariableList;

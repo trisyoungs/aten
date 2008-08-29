@@ -22,12 +22,12 @@
 #ifndef ATEN_UNDOEVENT_H
 #define ATEN_UNDOEVENT_H
 
-#include "classes/dnchar.h"
-#include "classes/atom.h"
-#include "classes/bond.h"
-#include "classes/glyph.h"
-#include "classes/measurement.h"
-#include "templates/vector3.h"
+// #include "base/dnchar.h"
+// #include "base/atom.h"
+// #include "base/bond.h"
+// #include "base/glyph.h"
+// #include "base/measurement.h"
+// #include "templates/vector3.h"
 
 // Forward declarations
 class Model;

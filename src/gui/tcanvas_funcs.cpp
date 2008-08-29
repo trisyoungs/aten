@@ -19,12 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "gui/canvas.h"
+#include "aten/aten.h"
 #include "gui/tcanvas.uih"
 #include "gui/gui.h"
 #include "model/model.h"
-#include <QtGui/QMouseEvent>
 
 // Local variables
 bool DONTDRAW = FALSE;

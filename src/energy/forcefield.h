@@ -22,7 +22,7 @@
 #ifndef ATEN_FORCEFIELD_H
 #define ATEN_FORCEFIELD_H
 
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 
 // Forward declarations
 class Atom;

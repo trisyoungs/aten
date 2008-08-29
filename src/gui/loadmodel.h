@@ -22,7 +22,7 @@
 #ifndef ATEN_LOADMODELWINDOW_H
 #define ATEN_LOADMODELWINDOW_H
 
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 #include "gui/gui.h"
 #include "gui/ui_loadmodel.h"
 

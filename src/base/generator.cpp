@@ -20,7 +20,9 @@
 */
 
 #include "base/generator.h"
-#include "base/spacegroup.h"
+
+// Singleton
+GeneratorMap generators;
 
 // Useful Numbers
 #define ONSX 0.16666666
@@ -29,7 +31,7 @@
 #define FVSX 0.83333333
 
 // Define spacegroup generators in the master
-Generator SpacegroupMap::generators_[] = {
+Generator GeneratorMap::generators_[] = {
 	{ "x,y,z",			Mat3<double>( 1, 0, 0, 0, 1, 0, 0, 0, 1), Vec3<double>(   0,   0,   0) },
 	{ "-x,-y,-z",     		Mat3<double>(-1, 0, 0, 0,-1, 0, 0, 0,-1), Vec3<double>(   0,   0,   0) },
 	{ "-x,y,-z",      		Mat3<double>(-1, 0, 0, 0, 1, 0, 0, 0,-1), Vec3<double>(   0,   0,   0) },

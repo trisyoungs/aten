@@ -20,12 +20,10 @@
 */
 
 #include "parse/filter.h"
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
-#include <QtGui/QFileDialog>
-#include <QtGui/QDoubleSpinBox>
 
 // Finalise GUI
 void AtenForm::finaliseUi()

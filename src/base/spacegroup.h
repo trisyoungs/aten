@@ -24,8 +24,7 @@
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"
-#include "classes/cell.h"
-#include "base/generator.h"
+#include "base/cell.h"
 
 // Spacegroup
 class Spacegroup
@@ -49,8 +48,6 @@ class SpacegroupMap
 	SpacegroupMap();
 
 	private:
-	// Spacegroup generator data
-	static Generator generators_[];
 	// Spacegroup definitions
 	static Spacegroup spacegroups_[];
 	// Number of defined generators
@@ -67,8 +64,6 @@ class SpacegroupMap
 	int nGenerators(int sg) const;
 	// Return id of nth generator for spacegroup
 	int generator(int sg, int gen) const;
-	// Return generator with ID specified
-	Generator &generator(int gen) const;
 	// Returns cell type of specified spacegroup id
 	Cell::CellType cellType(int sg) const;
 };

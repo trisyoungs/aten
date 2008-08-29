@@ -23,9 +23,9 @@
 #include "gui/forcefields.h"
 #include "gui/gui.h"
 #include "gui/minimiser.h"
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "model/model.h"
-#include "classes/forcefield.h"
+#include "energy/forcefield.h"
 
 // Local variables
 bool updating_ = FALSE;

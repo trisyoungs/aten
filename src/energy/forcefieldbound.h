@@ -22,11 +22,9 @@
 #ifndef ATEN_FORCEFIELDBOUND_H
 #define ATEN_FORCEFIELDBOUND_H
 
-#include "classes/forcefieldparams.h"
-#include "classes/dnchar.h"
-#include "energy/forms.h"
-
-#define MAXFFBOUNDTYPES 4
+// #include "energy/forcefieldparams.h"
+// #include "base/dnchar.h"
+// #include "energy/forms.h"
 
 // Forcefield bound interaction type
 class ForcefieldBound

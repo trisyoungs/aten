@@ -1,5 +1,5 @@
 /*
-	*** Spacegroup generator
+	*** Spacegroup generators
 	*** src/base/generator.h
 	Copyright T. Youngs 2007,2008
 
@@ -38,5 +38,23 @@ class Generator
 	// Translation vector
 	Vec3<double> translation;
 };
+
+// Symmetry generator map
+class GeneratorMap
+{
+	public:
+	// Constructor
+	GeneratorMap();
+
+	private:
+	// Spacegroup generator data
+	static Generator generators_[];
+
+	public:
+	// Return generator with ID specified
+	Generator &generator(int gen) const;
+};
+
+extern GeneratorMap generators;
 
 #endif

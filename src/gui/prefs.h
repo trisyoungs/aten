@@ -24,7 +24,7 @@
 
 #include "gui/gui.h"
 #include "gui/ui_prefs.h"
-#include "base/prefs.h"
+#include "aten/prefs.h"
 
 // Forwads declarations
 class Element;

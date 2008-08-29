@@ -22,7 +22,7 @@
 #ifndef ATEN_MAINWINDOW_H
 #define ATEN_MAINWINDOW_H
 
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 #include "gui/canvas.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
