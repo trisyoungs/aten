@@ -1,6 +1,6 @@
 /*
 	*** Variable Object Functions
-	*** src/parse/vobject.cpp
+	*** src/base/vobject.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,7 +20,7 @@
 */
 
 #include <stdlib.h>
-#include "parse/vobject.h"
+#include "base/vobject.h"
 
 // Constructor
 VObject::VObject()

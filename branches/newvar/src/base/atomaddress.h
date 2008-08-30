@@ -1,6 +1,6 @@
 /*
 	*** Atom location
-	*** src/classes/atomaddress.h
+	*** src/base/atomaddress.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

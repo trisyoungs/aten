@@ -1,6 +1,6 @@
 /*
 	*** Periodic cell definition
-	*** src/classes/cell.cpp
+	*** src/base/cell.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,13 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/cell.h"
-#include "classes/atom.h"
+#include "base/cell.h"
+#include "base/atom.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
-#include "base/constants.h"
-#include <math.h>
-#include <algorithm>
 using namespace std;
 
 // Cell types

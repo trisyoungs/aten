@@ -1,6 +1,6 @@
 /*
 	*** Rendering glyph
-	*** src/classes/glyph.cpp
+	*** src/base/glyph.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,9 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/glyph.h"
-#include "base/messenger.h"
+#include "base/glyph.h"
+// #include "base/messenger.h"
 #include "base/sysfunc.h"
+#include "aten/prefs.h"
 #include "model/model.h"
 
 // Glyph styles

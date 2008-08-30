@@ -1,6 +1,6 @@
 /*
 	*** Aten's master structure
-	*** src/base/aten.cpp
+	*** src/aten/aten.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,17 +20,15 @@
 */
 
 #include "model/model.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "classes/grid.h"
 #include "classes/clipboard.h"
-#include "base/spacegroup.h"
-#include "base/aten.h"
+#include "ff/forcefield.h"
+#include "aten/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "gui/grids.h"
-#include "parse/parser.h"
-#include <fstream>
 
 // Singleton definition
 Aten aten;

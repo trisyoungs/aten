@@ -1,6 +1,6 @@
 /*
 	** Monte Carlo Region
-	*** src/classes/region.h
+	*** src/base/region.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

@@ -1,6 +1,6 @@
 /*
 	*** Molecule pattern
-	*** src/classes/pattern.h
+	*** src/base/pattern.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

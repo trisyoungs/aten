@@ -1,6 +1,6 @@
 /*
 	*** Pointer Bundle
-	*** src/classes/Bundle.cpp
+	*** src/base/Bundle.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

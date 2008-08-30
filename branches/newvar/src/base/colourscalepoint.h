@@ -1,6 +1,6 @@
 /*
 	*** Colour scale point
-	*** src/classes/colourscalepoint.h
+	*** src/base/colourscalepoint.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

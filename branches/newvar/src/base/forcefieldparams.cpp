@@ -1,6 +1,6 @@
 /*
 	*** Forcefield term parameters
-	*** src/classes/forcefieldparams.cpp
+	*** src/base/forcefieldparams.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/forcefieldparams.h"
+#include "base/forcefieldparams.h"
 
 // Constructor
 ForcefieldParams::ForcefieldParams()

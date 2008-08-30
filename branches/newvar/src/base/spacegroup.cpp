@@ -20,9 +20,9 @@
 */
 
 #include "base/spacegroup.h"
-#include "base/generator.h"
+//#include "base/generator.h"
 #include "base/sysfunc.h"
-#include "classes/cell.h"
+#include "base/cell.h"
 
 // Singleton declaration
 SpacegroupMap spacegroups;
@@ -550,17 +550,6 @@ int SpacegroupMap::generator(int sg, int gen) const
 		return 0;
 	}
 	return spacegroups_[sg].generators[gen];
-}
-
-// Return specific generator
-Generator &SpacegroupMap::generator(int gen) const
-{
-	if ((gen < 0) || (gen > nGenerators_))
-	{
-		printf("Generator id %i is out of range.\n", gen);
-		return generators_[0];
-	}
-	return generators_[gen];
 }
 
 // Returns cell type of specified spacegroup id

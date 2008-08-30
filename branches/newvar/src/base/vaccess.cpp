@@ -1,6 +1,6 @@
 /*
 	*** Variable Access Functions
-	*** src/parse/vaccess.cpp
+	*** src/base/vaccess.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse/vaccess.h"
+#include "base/vaccess.h"
 
 // Add new accessor
 void VAccess::addAccessor(const char *name, VObject::ListType lt, VObject::DataType datatype, bool readonly)

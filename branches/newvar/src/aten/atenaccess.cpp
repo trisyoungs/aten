@@ -1,6 +1,6 @@
 /*
 	*** Aten Access
-	*** src/base/atenaccess.cpp
+	*** src/aten/atenaccess.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "parse/vaccess.h"
+#include "aten/aten.h"
+#include "base/vaccess.h"
 
 // Singleton declaration
 AtenAccessors atenAccessors;
