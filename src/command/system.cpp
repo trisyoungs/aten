@@ -20,8 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "gui/gui.h"
 
 // Toggle debug modes

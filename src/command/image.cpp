@@ -20,20 +20,18 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "base/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/tcanvas.uih"
-#include "classes/grid.h"
 #include "model/model.h"
+#include "classes/prefs.h"
 
 // Save current view as bitmap image
 int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Flag any surfaces to be rerendered for use in this context
-	aten.currentModel()->rerenderGrids();
+	obj.rs->rerenderGrids();
 	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
 	int screenbits = prefs.screenObjects();
 	prefs.setScreenObjects(prefs.imageObjects());
@@ -44,7 +42,7 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	else pixmap = gui.mainWidget->renderPixmap(0, 0, FALSE);
 	prefs.setScreenObjects(screenbits);
 	// Flag any surfaces to be rerendered so they are redisplayed in the original context
-	aten.currentModel()->rerenderGrids();
+	obj.rs->rerenderGrids();
 	// Reconfigure canvas to widget size (necessary if image size was changed)
 	gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
 

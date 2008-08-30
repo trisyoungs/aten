@@ -1,6 +1,6 @@
 /*
 	*** Variable list
-	*** src/parse/variablelist.h
+	*** src/command/variablelist.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -22,9 +22,10 @@
 #ifndef ATEN_VARIABLELIST_H
 #define ATEN_VARIABLELIST_H
 
-#include "templates/list.h"
-#include "base/dnchar.h"
 #include "command/variable.h"
+#include "templates/list.h"
+#include "base/constants.h"
+#include "base/dnchar.h"
 #include "base/vobject.h"
 
 // Forward Declarations

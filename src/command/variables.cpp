@@ -22,11 +22,10 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 #include "base/elements.h"
-#include "base/aten.h"
 #include "base/spacegroup.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "classes/grid.h"
-#include "classes/forcefield.h"
+#include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 

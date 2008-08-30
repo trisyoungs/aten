@@ -19,11 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "aten/aten.h"
 #include "command/commandlist.h"
-#include "base/prefs.h"
-#include "base/aten.h"
 #include "model/model.h"
 #include "classes/grid.h"
+#include "classes/prefs.h"
 
 // Add grid point data at specified indices
 int CommandData::function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj)

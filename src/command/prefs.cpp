@@ -20,10 +20,11 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "base/elements.h"
+#include "aten/aten.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "ff/forcefield.h"
+#include "classes/prefs.h"
 
 // Angle label postfix
 int CommandData::function_CA_ANGLELABEL(Command *&c, Bundle &obj)

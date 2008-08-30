@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/aten.h"
+#include "aten/aten.h"
 
 // List available scripts
 int CommandData::function_CA_LISTSCRIPTS(Command *&c, Bundle &obj)

@@ -21,7 +21,7 @@
 
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
-#include "aten/prefs.h"
+#include "classes/prefs.h"
 
 /*
 // Mouse Toolbar

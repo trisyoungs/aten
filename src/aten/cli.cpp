@@ -19,14 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+
+#include "aten/cli.h"
+#include "aten/aten.h"
+#include "model/model.h"
+#include "classes/prefs.h"
 #include <iostream>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include "base/cli.h"
-#include "base/prefs.h"
-#include "base/aten.h"
-#include "base/elements.h"
-#include "model/model.h"
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
@@ -227,7 +227,7 @@ int Aten::parseCli(int argc, char *argv[])
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
 	char *arg, *line, prompt[32];
 	Forcefield *ff;
-	Prefs::ZmapType zm;
+	ElementMap::ZmapType zm;
 	Namemap<int> *nm;
 	CommandList cl, *script;
 	cl.createModelVariables("");
@@ -457,8 +457,8 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
-					zm = Prefs::zmapType(argv[++argn]);
-					if (zm != Prefs::nZmapTypes) prefs.setZmapType(zm);
+					zm = ElementMap::zmapType(argv[++argn]);
+					if (zm != ElementMap::nZmapTypes) prefs.setZmapType(zm);
 					break;
 			}
 		}
