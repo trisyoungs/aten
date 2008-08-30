@@ -1,6 +1,6 @@
 /*
 	*** File parsing routines
-	*** src/parse/parser.h
+	*** src/base/parser.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -22,7 +22,7 @@
 #ifndef ATEN_PARSER_H
 #define ATEN_PARSER_H
 
-#include "base/constants.h"
+//#include "base/constants.h"
 #include "base/dnchar.h"
 #include <fstream>
 #include <iostream>
