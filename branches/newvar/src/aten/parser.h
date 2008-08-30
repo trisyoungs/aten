@@ -32,9 +32,6 @@ using namespace std;
 #define MAXARGLENGTH 256
 #define MAXLINELENGTH 1024
 
-// Forward declarations
-class Format;
-
 // Parser
 class Parser
 {
@@ -78,8 +75,6 @@ class Parser
 	bool getNextN(int);
 	// Gets all delimited args from internal line_
 	void getAllArgsDelim();
-	// Gets all arguments from string by format
-	void getAllArgsFormatted(Format*);
 
 	public:
 	// Return pointer to start of current line_
@@ -96,10 +91,6 @@ class Parser
 	int readLine(ifstream *source);
 	// Get next arg delimited from file stream
 	const char *getArgDelim(ifstream*);
-	// Parse file with format
-	int getArgsFormatted(ifstream*, int, Format*);
-	// Parse file with format
-	void getArgsFormatted(const char*, int, Format*);
 	// Shift all arguments up one position (leaving arg[0] blank)
 	void shiftArgsUp();
 

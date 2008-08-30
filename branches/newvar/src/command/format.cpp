@@ -1,6 +1,6 @@
 /*
-	*** Line / variable formatting
-	*** src/parse/format.cpp
+	*** Line / variable formatter
+	*** src/command/format.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,120 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse/variablelist.h"
-#include "parse/format.h"
-#include "parse/parser.h"
-#include "base/sysfunc.h"
-#include <cstring>
+// #include "parse/variablelist.h"
+#include "command/format.h"
+// #include "parse/parser.h"
+// #include "base/sysfunc.h"
+// #include <cstring>
 
-// Constructors
-FormatNode::FormatNode()
-{
-	// Private variables
-	variable_ = NULL;
-	length_ = 0;
-	precision_ = 0;
-	zeroPadInteger_ = FALSE;
-
-	// Public variables
-	next = NULL;
-	prev = NULL;
-}
-
-// Destructors
-Format::~Format()
-{
-	nodes_.clear();
-}
-
-// Get format node variable
-Variable *FormatNode::variable()
-{
-	return variable_;
-}
-
-// Get field length
-int FormatNode::length()
-{
-	return length_;
-}
-
-// Get field precision
-int FormatNode::precision()
-{
-	return precision_;
-}
-
-// Return whether to pad integers with zeros
-bool FormatNode::zeroPadInteger()
-{
-	return zeroPadInteger_;
-}
-
-// Returns first node
+// Returns first node in format
 FormatNode* Format::nodes()
 {
 	return nodes_.first();
-}
-
-// Set format node
-bool FormatNode::set(const char *s, VariableList &vlist)
-{
-	msg.enter("FormatNode::set");
-	// Format of formatters is 'F%n.m': F = format quantity/variable, n.m = length,precision
-	int pos1, pos2;
-	static char specifier[512], len[32], pre[32];
-	char *c;
-	// 'Reset' strings
-	specifier[0] = '\0';
-	len[0] = '\0';
-	pre[0] = '\0';
-	// Everything up to the '%' character is the quantity / variable
-	for (pos1 = 0; s[pos1] != '\0'; pos1++)
-	{
-		if (s[pos1] == '%') break;
-		specifier[pos1] = s[pos1];
-	}
-	specifier[pos1] = '\0';
-	if (s[pos1] == '%')
-	{
-		// Everything past the '%' character (and up to a '.') is the length...
-		pos1 ++;
-		for (pos2 = pos1; s[pos2] != '\0'; pos2++)
-		{
-			if (s[pos2] == '.') break;
-			len[pos2-pos1] = s[pos2];
-		}
-		len[pos2-pos1] = '\0';
-		// Lastly, if a decimal point exists then the last part is the precision
-		if (s[pos2] == '.')
-		{
-			for (pos1=pos2+1; s[pos1] != '\0'; pos1++) pre[pos1-(pos2+1)] = s[pos1];
-			pre[pos1-(pos2+1)] = '\0';
-		}
-	}
-	msg.print(Messenger::Parse,"FormatNode::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
-	// If we're given a variable, check that is has been declared
-	if (specifier[0] == '$')
-	{
-		c = specifier;
-		c ++;
-		variable_ = vlist.get(c);
-		if (variable_ == NULL)
-		{
-			printf("Variable '%s' in format string has not been declared.\n", c);
-			return FALSE;
-		}
-	}
-	else if (specifier[0] == '*') variable_ = vlist.dummy();
-	else variable_ = vlist.addConstant(specifier);
-	// Store the data
-	length_ = (len[0] == '\0' ? 0 : atoi(len));
-	precision_ = (pre[0] == '\0' ? 0 : atoi(pre));
-	// If the first character of len[0] is zero (or the first is '-' and the second is zero) set padding for integers to true
-	if (len[0] == '0' || ((len[0] == '-') && (len[1] == '0'))) zeroPadInteger_ = TRUE;
-	msg.exit("FormatNode::set");
-	return TRUE;
 }
 
 // Create using delimited arguments
@@ -145,7 +41,7 @@ bool Format::createDelimited(const char *s, VariableList &vlist)
 	// Clear any existing node list
 	nodes_.clear();
 	// First, parseline the formatting string
-	lp.getArgsDelim(s,Parser::Defaults);
+	lp.getArgsDelim(s,Format::Defaults);
 	// Now, step through the args[] array and convert the substrings into format nodes
 	for (n=0; n<lp.nArgs(); n++)
 	{
@@ -332,4 +228,77 @@ const char *Format::createString()
 	}
 	msg.exit("Format::createString");
 	return result;
+}
+
+/*
+// Formatted Parsing
+*/
+
+// Get all (formatted)
+void Format::getAllArgsFormatted(Format *fmt)
+{
+	// Parse the string in 'source' into arguments in 'args'
+	msg.enter("Format::getAllArgsFormatted");
+	nArgs_ = 0;
+	bool parseresult;
+	for (int n=0; n<MAXARGS; n++)
+	{
+		arguments_[n].clear();
+		quoted_[n] = 0;
+	}
+	
+	for (FormatNode *fn = fmt->nodes(); fn != NULL; fn = fn->next)
+	{
+		// If field length specifier is zero, just get the next arg, otherwise get by length
+		if (fn->length() == 0) parseresult = getNextArg(-1);
+		else parseresult = getNextN(fn->length());
+		if (!parseresult)
+		{
+			msg.print(Messenger::Verbose,"Format::getAllArgsFormatted <<<< '%s' passed end of line >>>>\n",fn->variable()->name());
+			fn->variable()->reset();
+		}
+		else fn->variable()->set(tempArg_);
+// 		printf("Variable %s now has value '%s'\n",fn->variable()->name(), fn->variable()->asCharacter());
+	}
+	msg.exit("Format::getAllArgsFormatted");
+}
+
+// Parse formatted (from file)
+int Format::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
+{
+	// Splits the line from the file into parts determined by the supplied format
+	msg.enter("Format::getArgsFormatted[file]");
+	int result;
+	bool done = FALSE;
+	optionMask_ = options;
+	nArgs_ = 0;
+	do
+	{
+		result = readLine(xfile);
+		if (result != 0)
+		{
+			msg.exit("Format::getArgsFormatted[file]");
+			return result;
+		}
+		// Assume that we will finish after parsing the line we just read in
+		done = TRUE;
+		// To check for blank lines, do the parsing and then check nargs()
+		getAllArgsFormatted(fmt);
+		if ((optionMask_&Format::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
+	} while (!done);
+	msg.exit("Format::getArgsFormatted[file]");
+	return 0;
+}
+
+// Parse formatted (from string)
+void Format::getArgsFormatted(const char *source, int options, Format *fmt)
+{
+	// Splits the line from the file into parts determiend by the supplied format
+	msg.enter("Format::getArgsFormatted[string]");
+	strcpy(line_, source);
+	linePos_ = 0;
+	lineLength_ = strlen(line_);
+	optionMask_ = options;
+	getAllArgsFormatted(fmt);
+	msg.exit("Format::getArgsFormatted[string]");
 }

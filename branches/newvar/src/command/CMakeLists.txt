@@ -3,6 +3,7 @@ commandlist.h
 commands.h
 expression.h
 expressionnode.h
+filter.h
 variable.h
 variablelist.h
 analyse.cpp 
@@ -19,8 +20,9 @@ edit.cpp
 energy.cpp 
 expression.cpp 
 expressionnode.cpp 
-ff.cpp 
+filter.cpp
 flow.cpp 
+forcefield.cpp 
 forces.cpp 
 functions.cpp 
 glyph.cpp 

@@ -1,6 +1,6 @@
 /*
 	*** Command list
-	*** src/command/CommandList.h
+	*** src/command/commandlist.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,16 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_COMMAND_H
-#define ATEN_COMMAND_H
+#ifndef ATEN_COMMANDLIST_H
+#define ATEN_COMMANDLIST_H
 
-#include "templates/list.h"
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
-#include "parse/variablelist.h"
-#include "parse/parser.h"
-#include "base/constants.h"
+#include "command/variablelist.h"
+#include "aten/parser.h"
 
 // If Conditions
 namespace IfTests

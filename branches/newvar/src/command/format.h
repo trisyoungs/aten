@@ -1,6 +1,6 @@
 /*
-	*** Line / variable formatting
-	*** src/parse/format.h
+	*** Line / variable formatter
+	*** src/command/format.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -23,50 +23,12 @@
 #define ATEN_FORMAT_H
 
 #include "templates/list.h"
-#include "parse/variablelist.h"
-
-// Format node
-class FormatNode
-{
-	public:
-	// Constructor
-	FormatNode();
-	// List pointers
-	FormatNode *next, *prev;
-
-	/*
-	// Format Node
-	*/
-	private:
-	// Associated variable
-	Variable *variable_;
-	// Field length (0 for unspecified)
-	int length_;
-	// Field precision (0 for unspecified)
-	int precision_;
-	// Whether to pad integers with zeros
-	bool zeroPadInteger_;
-
-	public:
-	// Set format node data
-	bool set(const char *s, VariableList &vars);
-	// Get format node variable
-	Variable *variable();
-	// Get field length
-	int length();
-	// Get field precision
-	int precision();
-	// Whether to zero-pad integers
-	bool zeroPadInteger();
-};
+#include "command/variablelist.h"
+#include "command/formatnode.h"
 
 // Format
 class Format
 {
-	public:
-	// Destructor
-	~Format();
-
 	/*
 	// Node List
 	*/
@@ -85,6 +47,19 @@ class Format
 	bool create(const char *s, VariableList &vars, bool delimited);
 	// Create a formatted string from the format data
 	const char *createString();
+
+	/*
+	// File parsing (using global parser object)
+	*/
+	private:
+	// Gets all arguments from string by format
+	void getAllArgsFormatted(Format*);
+
+	public:
+	// Parse file with format
+	int getArgsFormatted(ifstream*, int);
+	// Parse file with format
+	void getArgsFormatted(const char*, int);
 };
 
 #endif
