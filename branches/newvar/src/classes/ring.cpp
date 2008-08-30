@@ -19,9 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "model/model.h"
 #include "classes/ring.h"
-#include "classes/bond.h"
+#include "base/atom.h"
 #include "base/elements.h"
 
 // Constructor
@@ -154,7 +153,7 @@ void Ring::setAromatic()
 	msg.enter("Ring::setAromatic");
 	// Set atom environments to be Atomtype::AromaticEnvironment
 	for (Refitem<Atom,int> *ra = atoms_.first(); ra != NULL; ra = ra->next)
-		ra->item->setEnvironment(Atomtype::AromaticEnvironment);
+		ra->item->setEnvironment(Atom::AromaticEnvironment);
 	// Set bonds to be Bond::Aromatic
 	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next)
 		rb->item->setType(Bond::Aromatic);

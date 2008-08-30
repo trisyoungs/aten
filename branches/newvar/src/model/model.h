@@ -789,6 +789,10 @@ class Model
 	List<Site> sites;
 	// Find site by name
 	Site *findSite(const char*);
+	// Calculate site centre from config and molecule ID supplied
+	Vec3<double> siteCentre(Site *s, int molid);
+	// Calculate local coordinate system for site / molecule ID supplied
+	Mat3<double> siteAxes(Site *s, int molid);
 
 	/*
 	// Calculated quantities

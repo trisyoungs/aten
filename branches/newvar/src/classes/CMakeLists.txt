@@ -5,16 +5,12 @@ grid.h
 restraint.h
 ring.h
 site.h
-undoevent.h
-undostate.h
 atomtype.cpp
 colourscale.cpp
 grid.cpp
 restraint.cpp
 ring.cpp
 site.cpp
-undoevent.cpp
-undostate.cpp
 )
 
 include_directories(

@@ -20,9 +20,8 @@
 */
 
 #include "base/glyph.h"
-// #include "base/messenger.h"
 #include "base/sysfunc.h"
-#include "aten/prefs.h"
+#include "classes/prefs.h"
 #include "model/model.h"
 
 // Glyph styles
@@ -44,14 +43,11 @@ int Glyph::nGlyphData(Glyph::GlyphType gt)
 // Constructors
 GlyphData::GlyphData()
 {
-	// Private variables
-	atomId_ = -1;
-	atomData_ = GlyphData::PositionData;
-	atomSetLast_ = FALSE;
-	set_ = FALSE;
-	prefs.copyColour(Prefs::GlyphColour, colour_);
-
 	// Public variables
+	atomId = -1;
+	atomData = GlyphData::PositionData;
+	set = FALSE;
+	prefs.copyColour(Prefs::GlyphColour, colour);
 	prev = NULL;
 	next = NULL;
 }
@@ -60,103 +56,11 @@ Glyph::Glyph()
 {
 	// Private variables
 	solid_ = TRUE;
-	parent_ = NULL;
 	lineWidth_ = 1.0f;
-	parent_ = NULL;
 
 	// Public variables
 	prev = NULL;
 	next = NULL;
-}
-
-/*
-// GlyphData
-*/
-
-// Return the atom pointer
-int GlyphData::atomId()
-{
-	return atomId_;
-}
-
-// Return the type of atom vector pointed to
-GlyphData::GlyphDataType GlyphData::atomData()
-{
-	return atomData_;
-}
-
-// Return if the structure contains an atom pointer
-bool GlyphData::hasAtom()
-{
-	return (atomId_ == -1 ? FALSE : TRUE);
-}
-
-// Returns whether one of either atom* or vecdata have been set
-bool GlyphData::isSet()
-{
-	return set_;
-}
-
-// Set the vector data
-void GlyphData::setVector(double x, double y, double z)
-{
-	vector_.set(x,y,z);
-	atomSetLast_ = FALSE;
-	set_ = TRUE;
-}
-
-// Set the atom pointer
-void GlyphData::setAtomId(int target, GlyphDataType type)
-{
-	atomId_ = target;
-	atomData_ = type;
-	atomSetLast_ = TRUE;
-	set_ = TRUE;
-}
-
-// Return the vector data
-Vec3<double> GlyphData::vector(Model *parent)
-{
-	if (atomSetLast_)
-	{
-		if (atomId_ == -1)
-		{
-			msg.print( "Atom was apparently set last in glyph, but stored id is '-1'.\n");
-			return vector_;
-		}
-		Atom *i = parent->atom(atomId_);
-		if (i == NULL)
-		{
-			msg.print( "Atom ID set in glyph (%i) is outside range for model.\n", atomId_);
-			return vector_;
-		}
-		switch (atomData_)
-		{
-			case (GlyphData::PositionData):
-				return i->r();
-			case (GlyphData::ForceData):
-				return i->f();
-			case (GlyphData::VelocityData):
-				return i->v();
-		}
-	}
-	// Default return value is vector data
-	return vector_;
-}
-
-// Set the colour associated to this data point
-void GlyphData::setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a)
-{
-	colour_[0] = r;
-	colour_[1] = g;
-	colour_[2] = b;
-	colour_[3] = a;
-}
-
-// Return pointer to colour
-GLfloat *GlyphData::colour()
-{
-	return colour_;
 }
 
 /*
@@ -167,14 +71,17 @@ GLfloat *GlyphData::colour()
 void Glyph::setVector(int i, double x, double y, double z)
 {
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set vector %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else data_[i]->setVector(x, y, z);
+	else
+	{
+		data_[i]->vector.set(x,y,z);
+		data_[i]->set = TRUE;
+	}
 }
 
 // Set vector data for glyph
 void Glyph::setVector(int i, Vec3<double> vec)
 {
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set vector %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else data_[i]->setVector(vec.x, vec.y, vec.z);
+	setVector(i, vec.x, vec.y, vec.z);
 }
 
 // Set atom data for glyph
@@ -183,8 +90,10 @@ void Glyph::setAtom(int i, int atom, GlyphData::GlyphDataType av)
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set atom id %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
 	else
 	{
-		data_[i]->setAtomId(atom, av);
-		if (atom == -1) msg.print("Warning - no atom stored in glyph data %i.\n",i);
+		data_[i]->atomId = atom;
+		data_[i]->atomData =  av;
+		data_[i]->set = TRUE;
+		if (atom == -1) msg.print("Warning - no atom id stored in data %i.\n",i);
 	}
 }
 
@@ -192,7 +101,7 @@ void Glyph::setAtom(int i, int atom, GlyphData::GlyphDataType av)
 int Glyph::atomId(int i)
 {
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get atom id %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->atomId();
+	else return data_[i]->atomId;
 	return -1;
 }
 
@@ -200,29 +109,27 @@ int Glyph::atomId(int i)
 bool Glyph::hasAtomId(int i)
 {
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to test atom id %i in glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->hasAtom();
+	else return (data_[i]->atomId == -1 ? FALSE : TRUE);
 	return FALSE;
 }
 
-// Return vector data for glyph
-Vec3<double> Glyph::vector(int i)
+// Returns the number of data set for the Glyph
+int Glyph::nData()
 {
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->vector(parent_);
-	return Vec3<double>();
+	return data_.nItems();
 }
 
 // Set parent model
-void Glyph::setParent(Model *parent)
-{
-	parent_ = parent;
-}
+// void Glyph::setParent(Model *parent)
+// {
+// 	parent_ = parent;
+// }
 
 // Return parent model
-Model *Glyph::parent()
-{
-	return parent_;
-}
+// Model *Glyph::parent()
+// {
+// 	return parent_;
+// }
 
 // Return style of Glyph
 Glyph::GlyphType Glyph::type()
@@ -240,11 +147,11 @@ void Glyph::setType(GlyphType gt)
 	{
 		case (Glyph::ArrowGlyph):
 		case (Glyph::VectorGlyph):
-			data_[1]->setVector(0.0,1.0,0.0);
+			setVector(1,0.0,1.0,0.0);
 			break;
 		case (Glyph::SphereGlyph):
 		case (Glyph::CubeGlyph):
-			data_[1]->setVector(1.0,1.0,1.0);
+			setVector(1,1.0,1.0,1.0);
 			break;
 		case (Glyph::TriangleGlyph):
 			break;
@@ -274,7 +181,13 @@ const char *Glyph::text()
 void Glyph::setColour(int i, GLfloat r, GLfloat g, GLfloat b, GLfloat a)
 {
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set colour %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else data_[i]->setColour(r, g, b, a);
+	else
+	{
+		data_[i]->colour[0] = r;
+		data_[i]->colour[1] = g;
+		data_[i]->colour[2] = b;
+		data_[i]->colour[3] = a;
+	}
 }
 
 // Return i'th colour for glyph
@@ -282,7 +195,7 @@ GLfloat *Glyph::colour(int i)
 {
 	static GLfloat black[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get colour %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->colour();
+	else return data_[i]->colour;
 	return black;
 }
 
