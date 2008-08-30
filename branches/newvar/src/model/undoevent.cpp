@@ -1,6 +1,6 @@
 /*
 	*** UndoEvents
-	*** src/classes/undoevent.cpp
+	*** src/model/undoevent.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/undoevent.h"
+#include "model/undoevent.h"
 #include "model/model.h"
 
 // Constructor

@@ -24,7 +24,7 @@
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"
-#include "aten/prefs.h"
+#include "classes/prefs.h"
 #include "render/gl2ps_extra.h"
 
 // GL Objects

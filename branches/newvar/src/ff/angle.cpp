@@ -20,11 +20,8 @@
 */
 
 #include <math.h>
-#include "templates/vector3.h"
-#include "classes/pattern.h"
-#include "classes/energystore.h"
-#include "classes/forcefield.h"
-#include "classes/cell.h"
+#include "base/pattern.h"
+#include "classes/forcefieldbound.h"
 #include "model/model.h"
 
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)

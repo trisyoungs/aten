@@ -1,6 +1,6 @@
 /*
 	*** Single event in UndoState
-	*** src/classes/undoevent.h
+	*** src/model/undoevent.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -22,12 +22,11 @@
 #ifndef ATEN_UNDOEVENT_H
 #define ATEN_UNDOEVENT_H
 
-// #include "base/dnchar.h"
-// #include "base/atom.h"
-// #include "base/bond.h"
-// #include "base/glyph.h"
-// #include "base/measurement.h"
-// #include "templates/vector3.h"
+#include "base/dnchar.h"
+#include "base/atom.h"
+#include "base/bond.h"
+#include "base/glyph.h"
+#include "base/measurement.h"
 
 // Forward declarations
 class Model;

@@ -25,12 +25,9 @@
 
 #include <math.h>
 #include "templates/vector3.h"
-#include "energy/fourier.h"
-#include "classes/pattern.h"
-#include "classes/forcefield.h"
-#include "classes/energystore.h"
-#include "classes/cell.h"
-#include "base/prefs.h"
+#include "ff/fourier.h"
+#include "base/pattern.h"
+#include "classes/prefs.h"
 #include "base/mathfunc.h"
 #include "model/model.h"
 

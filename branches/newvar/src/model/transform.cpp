@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "classes/undoevent.h"
-#include "classes/undostate.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
 
 // Variables
 Vec3<double> cog, localcog;

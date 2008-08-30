@@ -1,4 +1,5 @@
 add_library(model
+clipboard.h
 model.h
 undoevent.h
 undostate.h
@@ -6,6 +7,7 @@ atom.cpp
 bond.cpp 
 build.cpp 
 cell.cpp 
+clipboard.cpp
 component.cpp
 energy.cpp 
 expression.cpp 

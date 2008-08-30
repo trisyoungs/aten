@@ -19,11 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/clipboard.h"
+#include "model/clipboard.h"
 #include "base/bond.h"
-// #include "classes/pattern.h"
-// #include "model/model.h"
-// #include "base/messenger.h"
+#include "base/pattern.h"
+#include "model/model.h"
 
 // Constructors
 Clipatom::Clipatom()

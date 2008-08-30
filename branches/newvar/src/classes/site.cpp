@@ -73,3 +73,15 @@ void Site::setType(SiteType st)
 {
 	type_ = st;
 }
+
+// Set centre of site
+void Site::setCentre(Vec3<double> v)
+{
+	centre_ = v;
+}
+
+// Set axes of site
+void Site::setAxes(Mat3<double> m)
+{
+	axes_ = m;
+}

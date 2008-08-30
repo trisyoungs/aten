@@ -20,9 +20,9 @@
 */
 
 #include "model/model.h"
+#include "model/undostate.h"
+#include "model/undoevent.h"
 #include "base/atom.h"
-#include "classes/undostate.h"
-#include "classes/undoevent.h"
 #include "base/elements.h"
 
 // Return the start of the atom list

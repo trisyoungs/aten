@@ -22,7 +22,7 @@
 #include "model/model.h"
 #include "base/pattern.h"
 #include "base/atomaddress.h"
-#include "classes/clipboard.h"
+#include "model/clipboard.h"
 #include "ff/forcefield.h"
 #include "base/sysfunc.h"
 #include "base/elements.h"

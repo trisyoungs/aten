@@ -23,6 +23,7 @@
 #define ATEN_CLIPBOARD_H
 
 #include "base/atom.h"
+#include "base/bond.h"
 #include "templates/list.h"
 
 // Forward declarations

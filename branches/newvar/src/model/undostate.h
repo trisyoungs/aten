@@ -1,6 +1,6 @@
 /*
 	*** UndoState
-	*** src/classes/undostate.h
+	*** src/model/undostate.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -22,12 +22,9 @@
 #ifndef ATEN_UNDOSTATE_H
 #define ATEN_UNDOSTATE_H
 
-// #include "classes/undoevent.h"
-// #include "classes/dnchar.h"
-// #include "classes/log.h"
-// #include "templates/list.h"
-// #include "templates/vector3.h"
-// #include "templates/matrix3.h"
+#include "base/dnchar.h"
+#include "base/log.h"
+#include "templates/list.h"
 
 // Forward declarations
 class Model;

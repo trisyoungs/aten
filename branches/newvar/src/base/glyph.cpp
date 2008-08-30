@@ -46,6 +46,7 @@ GlyphData::GlyphData()
 	// Public variables
 	atomId = -1;
 	atomData = GlyphData::PositionData;
+	atomSetLast = FALSE;
 	set = FALSE;
 	prefs.copyColour(Prefs::GlyphColour, colour);
 	prev = NULL;
@@ -75,6 +76,7 @@ void Glyph::setVector(int i, double x, double y, double z)
 	{
 		data_[i]->vector.set(x,y,z);
 		data_[i]->set = TRUE;
+		data_[i]->atomSetLast = FALSE;
 	}
 }
 
@@ -93,6 +95,7 @@ void Glyph::setAtom(int i, int atom, GlyphData::GlyphDataType av)
 		data_[i]->atomId = atom;
 		data_[i]->atomData =  av;
 		data_[i]->set = TRUE;
+		data_[i]->atomSetLast = TRUE;
 		if (atom == -1) msg.print("Warning - no atom id stored in data %i.\n",i);
 	}
 }
@@ -105,13 +108,29 @@ int Glyph::atomId(int i)
 	return -1;
 }
 
-// Returns whether the specified data is to be taken from an atom
-bool Glyph::hasAtomId(int i)
+// Returns whether the atom was set last for data 'i'
+bool Glyph::atomSetLast(int i)
 {
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to test atom id %i in glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return (data_[i]->atomId == -1 ? FALSE : TRUE);
+	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get atomSetLast %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else return data_[i]->atomSetLast;
 	return FALSE;
 }
+
+// Returns the data type for data id 'i'
+GlyphData::GlyphDataType Glyph::atomData(int i)
+{
+	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get dataType id %i from glyph when it has only %i data in total.\n", i+1, data_.nItems());
+	else return data_[i]->atomData;
+	return GlyphData::PositionData;
+}
+
+// // Returns whether the specified data is to be taken from an atom
+// bool Glyph::hasAtomId(int i)
+// {
+// 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to test atom id %i in glyph when it has only %i in total.\n", i+1, data_.nItems());
+// 	else return (data_[i]->atomId == -1 ? FALSE : TRUE);
+// 	return FALSE;
+// }
 
 // Returns the number of data set for the Glyph
 int Glyph::nData()

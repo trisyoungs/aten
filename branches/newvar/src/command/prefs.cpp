@@ -170,7 +170,12 @@ int CommandData::function_CA_ENERGYUNITS(Command *&c, Bundle &obj)
 {
 	Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0));
 	if (eu == Prefs::nEnergyUnits) return CR_FAIL;
-	else prefs.setEnergyUnit(eu);
+	else
+	{
+		prefs.setEnergyUnit(eu);
+		// Convert loaded forcefields
+		for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
+	}
 	return CR_SUCCESS;
 }
 

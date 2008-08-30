@@ -27,7 +27,7 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 {
 	changeLog.add(Log::Visual);
 	Glyph *newglyph = glyphs_.add();
-	newglyph->setParent(this);
+	//newglyph->setParent(this);
 	newglyph->setType(gt);
 	return newglyph;
 }
@@ -51,13 +51,13 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid)
 			if (id == -1)
 			{
 				msg.print( "Atom was apparently set last in glyph, but stored id is '-1'.\n");
-				return Vec3<double>;
+				return Vec3<double>();
 			}
 			// Check range of stored atom id
 			if (id >= atoms_.nItems())
 			{
 				msg.print( "Atom ID set in glyph (%i) is outside range for model.\n", id);
-				return Vec3<double>;
+				return Vec3<double>();
 			}
 			Atom *i = atoms_[id];
 			switch (g->atomData(dataid))
@@ -71,7 +71,7 @@ Vec3<double> Model::glyphVector(Glyph *g, int dataid)
 			}
 		}
 		// Default return value is vector data
-		return vector_;
+		return g->vector(dataid);
 	}
 	return Vec3<double>();
 }

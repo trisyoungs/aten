@@ -21,8 +21,8 @@
 
 #include "model/model.h"
 #include "base/measurement.h"
-#include "classes/undoevent.h"
-#include "classes/undostate.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
 
 // Return first measurement in the list
 Measurement *Model::measurements()

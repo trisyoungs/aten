@@ -23,7 +23,7 @@
 #include "base/pattern.h"
 #include "ff/fourier.h"
 #include "base/forms.h"
-#include "aten/prefs.h"
+#include "classes/prefs.h"
 
 // Calculate total energy of model (from supplied coordinates)
 double Model::totalEnergy(Model *srcmodel)
