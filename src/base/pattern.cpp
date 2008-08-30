@@ -1,6 +1,6 @@
 /*
 	*** Molecule pattern
-	*** src/classes/pattern.cpp
+	*** src/base/pattern.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "classes/ring.h"
-#include "classes/clipboard.h"
-#include "templates/vector3.h"
 #include "model/model.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldbound.h"
+#include "classes/forcefieldatom.h"
 #include "base/elements.h"
-#include "base/messenger.h"
 
 // Constructors
 Pattern::Pattern()

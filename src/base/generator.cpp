@@ -819,3 +819,14 @@ Generator GeneratorMap::generators_[] = {
 	{ "-z+14,y+12,-x+14",     	Mat3<double>( 0, 0,-1, 0, 1, 0,-1, 0, 0), Vec3<double>(0.25, 0.5,0.25) },
 	{ "z+12,-y+34,-x+34",     	Mat3<double>( 0, 0, 1, 0,-1, 0,-1, 0, 0), Vec3<double>( 0.5,0.75,0.75) }
 };
+
+// Return specific generator
+Generator &GeneratorMap::generator(int gen) const
+{
+	if ((gen < 0) || (gen > 786))
+	{
+		printf("Generator id %i is out of range.\n", gen);
+		return generators_[0];
+	}
+	return generators_[gen];
+}

@@ -1,6 +1,6 @@
 /*
 	*** Forcefield atom type
-	*** src/classes/Atomtype.cpp
+	*** src/classes/atomtype.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

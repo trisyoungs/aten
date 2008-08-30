@@ -1,6 +1,6 @@
 /*
 	*** Rendering Glyph
-	*** src/classes/Glyph.h
+	*** src/base/glyph.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

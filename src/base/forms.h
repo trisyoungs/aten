@@ -1,6 +1,6 @@
 /*
 	*** Forcefield term functional forms
-	*** src/energy/forms.h
+	*** src/base/forms.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

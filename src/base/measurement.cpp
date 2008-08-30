@@ -1,6 +1,6 @@
 /*
 	*** Geometry measurement
-	*** src/classes/measurement.cpp
+	*** src/base/measurement.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/measurement.h"
-#include "classes/atom.h"
-#include "classes/cell.h"
+#include "base/measurement.h"
+#include "base/cell.h"
+#include <stdlib.h>
 
 // Geometry types
 int MeasurementAtoms[Measurement::nMeasurementTypes] = { 0,2,3,4 };
@@ -37,6 +37,7 @@ Measurement::Measurement()
 	type_ = Measurement::None;
 	for (int n=0; n<4; n++) atoms_[n] = NULL;
 	value_ = 0.0;
+
 	// Public variables
 	next = NULL;
 	prev = NULL;
@@ -92,22 +93,3 @@ void Measurement::calculate(Cell *cell)
 	}
 }
 
-// Print measurement info
-void Measurement::print()
-{
-	switch (type_)
-	{
-		case (Measurement::Distance):
-			msg.print("%4i %4i             %f", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
-			break;
-		case (Measurement::Angle):
-			msg.print("%4i %4i %4i        %f", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
-			break;
-		case (Measurement::Torsion):
-			msg.print("%4i %4i %4i %4i   %f", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
-			break;
-		default:
-			printf("Measurement::print <<<< Unrecognised geometry type >>>>\n");
-			break;
-	}
-}

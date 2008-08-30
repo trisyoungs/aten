@@ -1,6 +1,6 @@
 /*
 	*** Dynamic character array
-	*** src/classes/dnchar.h
+	*** src/base/dnchar.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

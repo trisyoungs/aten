@@ -1,6 +1,6 @@
 /*
 	*** Fourier storage (reciprocal space vectors)
-	*** src/energy/fourier.cpp
+	*** src/ff/fourier.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

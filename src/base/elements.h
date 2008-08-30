@@ -63,6 +63,7 @@ class ElementMap
 	ElementMap();
 	// Name->Z mapping methods
 	enum ZmapType { AlphaZmap, FirstAlphaZmap, NameZmap, NumericZmap, ForcefieldZmap, AutoZmap, nZmapTypes };
+	static ElementMap::ZmapType zmapType(const char *s);
 
 	private:
 	// Element data array

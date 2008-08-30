@@ -1,6 +1,6 @@
 /*
 	*** Ewald sum energy / force calculation
-	*** src/energy/ewald.cpp
+	*** src/ff/ewald.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

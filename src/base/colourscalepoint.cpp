@@ -1,6 +1,6 @@
 /*
 	*** Colour scale
-	*** src/classes/colourscale.cpp
+	*** src/base/colourscale.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

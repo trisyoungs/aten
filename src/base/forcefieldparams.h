@@ -1,6 +1,6 @@
 /*
 	*** Forcefield term parameters
-	*** src/classes/forcefieldparams.h
+	*** src/base/forcefieldparams.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

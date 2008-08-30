@@ -1,6 +1,6 @@
 /*
 	*** Atomic bond
-	*** src/classes/bond.h
+	*** src/base/bond.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

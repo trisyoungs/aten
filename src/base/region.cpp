@@ -1,6 +1,6 @@
 /*
 	** Monte Carlo region
-	*** src/classes/region.cpp
+	*** src/base/region.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,12 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/region.h"
-#include "classes/cell.h"
-#include "templates/reflist.h"
+#include "base/region.h"
+#include "base/cell.h"
 #include "base/sysfunc.h"
-#include "base/constants.h"
-#include "methods/mc.h"
 #include "model/model.h"
 
 // MC ComponentRegions

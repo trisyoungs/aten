@@ -1,6 +1,6 @@
 /*
 	*** Geometry Measurement
-	*** src/classes/measurement.h
+	*** src/base/measurement.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -62,8 +62,6 @@ class Measurement
 	void setAtom(int n, Atom *i);
 	// Return atoms array
 	Atom **atoms();
-	// Print measurement info
-	void print();
 };
 
 #endif

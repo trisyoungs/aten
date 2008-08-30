@@ -1,6 +1,6 @@
 /*
 	*** Aten's master structure
-	*** src/base/aten.h
+	*** src/aten/aten.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -30,7 +30,7 @@
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "583"
-#define ATENDATE "Fri 29 Aug - 17:49"
+#define ATENDATE "Sat 30 Aug - 12:10"
 #define ATENURL "http://aten.googlecode.com/svn/branches/newvar"
 
 // Forward Declarations

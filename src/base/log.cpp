@@ -1,6 +1,6 @@
 /*
 	*** Log Class
-	*** src/classes/log.cpp
+	*** src/base/log.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,8 +20,8 @@
 */
 
 #include "base/constants.h"
-#include "base/messenger.h"
-#include "classes/log.h"
+#include "aten/messenger.h"
+#include "base/log.h"
 
 // Constructor
 Log::Log()
