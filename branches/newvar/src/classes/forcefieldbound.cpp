@@ -21,7 +21,8 @@
 
 #include "classes/forcefieldbound.h"
 #include "base/constants.h"
-#include "energy/forms.h"
+// #include "base/forms.h"
+#include <stdlib.h>
 #include <stdio.h>
 
 // Constructor

@@ -1,11 +1,13 @@
 add_library(base
 aten.h
 cli.h 
+clipboard.h
 messenger.h
 prefs.h 
 aten.cpp
 atenaccess.cpp
 cli.cpp 
+clipboard.cpp
 messenger.cpp
 modes.cpp
 prefs.cpp 

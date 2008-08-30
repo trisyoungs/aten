@@ -21,7 +21,8 @@
 
 #include "classes/grid.h"
 #include "base/messenger.h"
-#include "base/prefs.h"
+// #include "base/prefs.h"
+#include "base/sysfunc.h"
 #include "base/constants.h"
 #include <QtOpenGL/QtOpenGL>
 
