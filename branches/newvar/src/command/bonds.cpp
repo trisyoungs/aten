@@ -21,6 +21,7 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
+#include "classes/prefs.h"
 
 // Augment bonds in current model ('augment')
 int CommandData::function_CA_AUGMENT(Command *&c, Bundle &obj)

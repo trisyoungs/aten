@@ -21,8 +21,7 @@
 
 #include "methods/cg.h"
 #include "model/model.h"
-#include "classes/energystore.h"
-#include "base/prefs.h"
+#include "ff/energystore.h"
 #include "gui/gui.h"
 
 // Static Singleton

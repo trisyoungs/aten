@@ -1,6 +1,6 @@
 /*
 	*** Arithmetic Expression Node
-	*** src/parse/expressionnode.h
+	*** src/command/expressionnode.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -21,6 +21,9 @@
 
 #ifndef ATEN_EXPRESSIONNODE_H
 #define ATEN_EXPRESSIONNODE_H
+
+#include "base/constants.h"
+#include <stdlib.h>
 
 // Forward Declarations
 class Variable;

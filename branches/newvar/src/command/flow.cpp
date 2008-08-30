@@ -21,10 +21,7 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/messenger.h"
-#include "base/aten.h"
-#include "classes/pattern.h"
-#include <fstream>
+#include "base/pattern.h"
 
 // Root node (no action)
 int CommandData::function_CA_ROOTNODE(Command *&c, Bundle &obj)

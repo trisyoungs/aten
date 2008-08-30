@@ -19,12 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <math.h>
-#include "templates/vector3.h"
-#include "classes/pattern.h"
-#include "classes/forcefield.h"
-#include "classes/energystore.h"
 #include "model/model.h"
+#include "classes/forcefieldbound.h"
+#include "base/pattern.h"
+#include "base/forms.h"
 
 // Torsion energy
 void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)

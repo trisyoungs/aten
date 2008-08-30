@@ -20,9 +20,10 @@
 */
 
 #include "command/commandlist.h"
+#include "model/model.h"
+#include "classes/prefs.h"
 #include "base/messenger.h"
 #include "base/spacegroup.h"
-#include "model/model.h"
 
 // Adjust parameter of unit cell
 int CommandData::function_CA_ADJUSTCELL(Command *&c, Bundle &obj)

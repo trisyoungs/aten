@@ -19,10 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "model/model.h"
-#include "classes/forcefield.h"
-#include "base/elements.h"
 #include "gui/canvas.h"
+#include "model/model.h"
+#include "classes/forcefieldatom.h"
+#include "base/elements.h"
+#include "base/sysfunc.h"
 
 // Render atom labels
 void Canvas::renderModelLabels()

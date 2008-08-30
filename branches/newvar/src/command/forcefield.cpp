@@ -19,17 +19,20 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "aten/aten.h"
 #include "command/commandlist.h"
-#include "base/aten.h"
-#include "base/elements.h"
-#include "classes/forcefield.h"
-#include "classes/pattern.h"
 #include "model/model.h"
+#include "base/elements.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
+#include "base/pattern.h"
+
 
 // Add a new angle definition to the current forcefield
 int CommandData::function_CA_ANGLEDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	int n;
 	// Get functional form of bond potential
 	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(c->argc(0));
@@ -52,7 +55,7 @@ int CommandData::function_CA_ANGLEDEF(Command *&c, Bundle &obj)
 // Add a new bond definition to the current forcefield
 int CommandData::function_CA_BONDDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	int n;
 	// Get functional form of bond potential
 	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(c->argc(0));
@@ -115,7 +118,7 @@ int CommandData::function_CA_FFMODEL(Command *&c, Bundle &obj)
 // Set current forcefield for named pattern ('ffpattern')
 int CommandData::function_CA_FFPATTERN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return CR_FAIL;
 	obj.p->setForcefield(obj.ff);
 	return CR_SUCCESS;
 }
@@ -123,7 +126,7 @@ int CommandData::function_CA_FFPATTERN(Command *&c, Bundle &obj)
 // Set current forcefield for pattern id given ('ffpatternid <id>')
 int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return CR_FAIL;
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
 	{
@@ -137,7 +140,7 @@ int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 // Finalise current forcefield
 int CommandData::function_CA_FINALISEFF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	// Print some information about the terms read in from the forcefield
 	msg.print("Read in %i type descriptions\n", obj.ff->nTypes() - 1);
 	msg.print("Read in %i bond definitions\n", obj.ff->nBonds());
@@ -151,7 +154,7 @@ int CommandData::function_CA_FINALISEFF(Command *&c, Bundle &obj)
 // Set energetic parameters to convert in generator data
 int CommandData::function_CA_GENCONVERT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	for (int n=0; n<c->nArgs(); n++) obj.ff->setEnergyGenerator(c->argi(n));
 	return CR_SUCCESS;
 }
@@ -233,7 +236,7 @@ int CommandData::function_CA_PRINTSETUP(Command *&c, Bundle &obj)
 // Set rules to use in parameter generation
 int CommandData::function_CA_RULES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	Rules::ForcefieldRules rules = Rules::forcefieldRules(c->argc(0));
 	if (rules == Rules::nForcefieldRules) return CR_FAIL;
 	msg.print("\t: Rule-set to use is '%s'\n", rules);
@@ -259,7 +262,7 @@ int CommandData::function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj)
 // Add a new torsion definition to the current forcefield
 int CommandData::function_CA_TORSIONDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	int n;
 	// Get functional form of bond potential
 	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(c->argc(0));
@@ -282,7 +285,7 @@ int CommandData::function_CA_TORSIONDEF(Command *&c, Bundle &obj)
 // Add a new type definition to the current forcefield
 int CommandData::function_CA_TYPEDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	// Search for this ID to make sure it hasn't already been used
 	int newffid = c->argi(0);
 	ForcefieldAtom *idsearch = obj.ff->findType(newffid);
@@ -295,7 +298,7 @@ int CommandData::function_CA_TYPEDEF(Command *&c, Bundle &obj)
 	ffa->setTypeId(newffid);
 	ffa->setName(c->argc(1));
 	ffa->setEquivalent(c->argc(1));
-	ffa->atomtype()->setCharacterElement(elements.find(c->argc(2), Prefs::AlphaZmap));
+	ffa->atomtype()->setCharacterElement(elements.find(c->argc(2), ElementMap::AlphaZmap));
 	ffa->setAtomtype(c->argc(3), obj.ff, ffa);
 	if (c->hasArg(4)) ffa->setDescription(c->argc(4));
 	return CR_SUCCESS;
@@ -311,7 +314,7 @@ int CommandData::function_CA_TYPEMODEL(Command *&c, Bundle &obj)
 // Test specified type ID of current forcefield
 int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return CR_FAIL;
 	// Find the specified type...
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
@@ -341,7 +344,7 @@ int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 // Set units used in the forcefield
 int CommandData::function_CA_UNITS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	Prefs::EnergyUnit newunit = Prefs::energyUnit(c->argc(0));
 	if (newunit == Prefs::nEnergyUnits) return CR_FAIL;
 	obj.ff->setEnergyUnit(newunit);
@@ -352,7 +355,7 @@ int CommandData::function_CA_UNITS(Command *&c, Bundle &obj)
 // Add a new VDW definition to the current forcefield
 int CommandData::function_CA_VDWDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_FF)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
 	// Get functional form of vdw
 	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(c->argc(0));
 	if (vdwstyle == VdwFunctions::nVdwFunctions) return CR_FAIL;

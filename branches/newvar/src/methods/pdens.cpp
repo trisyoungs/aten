@@ -20,9 +20,9 @@
 */
 
 #include "methods/pdens.h"
-#include "classes/site.h"
-#include "classes/pattern.h"
 #include "model/model.h"
+#include "classes/site.h"
+#include "base/pattern.h"
 #include <fstream>
 
 // Constructor
@@ -121,12 +121,12 @@ void Pdens::accumulate(Model *sourcemodel)
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
 		// Get central position and local coordinate system
-		centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
-		axes = sites_[0]->calculateAxes(sourcemodel,m1);
+		centre1 = sourcemodel->siteCentre(sites_[0],m1);
+		axes = sourcemodel->siteAxes(sites_[0],m1);
 		// Loop over molecules for site2
 		for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 		{
-			centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
+			centre2 = sourcemodel->siteCentre(sites_[1],m2);
 			// Calculate minimum image vector...
 			mimd = cell->mimd(centre2,centre1);
 			// ...translate into local coordinate system...

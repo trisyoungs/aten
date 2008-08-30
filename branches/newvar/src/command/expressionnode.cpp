@@ -1,6 +1,6 @@
 /*
 	*** Arithmetic Expression node
-	*** src/parse/expressionnode.cpp
+	*** src/command/expressionnode.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,12 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/constants.h"
-#include "base/messenger.h"
-#include "parse/expression.h"
-#include "parse/variablelist.h"
-#include <math.h>
-#include <string.h>
+#include "command/expressionnode.h"
+#include "base/sysfunc.h"
+#include "command/variable.h"
+#include <stdio.h>
 
 // Operator Tokens
 char OperatorTypeKeywords[ExpressionNode::nOperatorTypes] = { '%', '^', '*', '/', '+', '-' };

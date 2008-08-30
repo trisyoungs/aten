@@ -1,5 +1,5 @@
 /*
-	*** Geometryy measurement calculation
+	*** Geometry measurement calculation
 	*** src/methods/geometry.cpp
 	Copyright T. Youngs 2007,2008
 
@@ -20,9 +20,9 @@
 */
 
 #include "methods/geometry.h"
-#include "classes/site.h"
-#include "classes/pattern.h"
 #include "model/model.h"
+#include "classes/site.h"
+#include "base/pattern.h"
 
 // Constructor
 Geometry::Geometry()
@@ -100,7 +100,7 @@ bool Geometry::initialise()
 void Geometry::accumulate(Model *sourcemodel)
 {
 	msg.enter("Geometry::accumulate");
-	int m1, m2, m3, bin;
+	int m1, m2, m3, m4, bin;
 	static Vec3<double> centre1, centre2, centre3, centre4;
 	Cell *cell = sourcemodel->cell();
 	double geom;
@@ -110,11 +110,11 @@ void Geometry::accumulate(Model *sourcemodel)
 		for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 		{
 			// Get first centre
-			centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
+			centre1 = sourcemodel->siteCentre(sites_[0],m1);
 			// Loop over molecules for site2
 			for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 			{
-				centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
+				centre2 = sourcemodel->siteCentre(sites_[1],m2);
 				// Calculate minimum image distance and bin
 				geom = cell->distance(centre1,centre2);
 				// Add distance to data array
@@ -130,16 +130,15 @@ void Geometry::accumulate(Model *sourcemodel)
 		for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 		{
 			// Get first centre
-			centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
+			centre1 = sourcemodel->siteCentre(sites_[0],m1);
 			// Loop over molecules for site2
 			for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 			{
-				centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
+				centre2 = sourcemodel->siteCentre(sites_[1],m2);
 				// Loop over molecules for site3
 				for (m3 = 0; m3 < sites_[2]->pattern()->nMolecules(); m3++)
 				{
-					centre3 = sites_[2]->calculateCentre(sourcemodel,m3);
-
+					centre3 = sourcemodel->siteCentre(sites_[2],m3);
 
 					// Calculate minimum image distance and bin
 					geom = cell->angle(centre1, centre2, centre3);
@@ -157,23 +156,27 @@ void Geometry::accumulate(Model *sourcemodel)
 		for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 		{
 			// Get first centre
-			centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
+			centre1 = sourcemodel->siteCentre(sites_[0],m1);
 			// Loop over molecules for site2
 			for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 			{
-				centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
+				centre2 = sourcemodel->siteCentre(sites_[1],m2);
 				// Loop over molecules for site3
 				for (m3 = 0; m3 < sites_[2]->pattern()->nMolecules(); m3++)
 				{
-					centre3 = sites_[2]->calculateCentre(sourcemodel,m3);
+					centre3 = sourcemodel->siteCentre(sites_[2],m3);
+					// Loop over molecules for site4
+					for (m4 = 0; m4 < sites_[3]->pattern()->nMolecules(); m4++)
+					{
+						centre4 = sourcemodel->siteCentre(sites_[3],m4);
 
-
-					// Calculate minimum image distance and bin
-					geom = cell->angle(centre1, centre2, centre3);
-					// Add distance to data array
-					bin = int(geom / binWidth_);
-					//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
-					if (bin < nBins_) data_[bin] += 1.0;
+						// Calculate minimum image distance and bin
+						geom = cell->torsion(centre1, centre2, centre3, centre4);
+						// Add distance to data array
+						bin = int(geom / binWidth_);
+						//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
+						if (bin < nBins_) data_[bin] += 1.0;
+					}
 				}
 			}
 		}

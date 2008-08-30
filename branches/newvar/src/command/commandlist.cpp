@@ -20,13 +20,9 @@
 */
 
 #include "command/commandlist.h"
-#include "command/commands.h"
-#include "parse/format.h"
-#include "parse/expression.h"
-#include "base/aten.h"
-#include "classes/forcefield.h"
-#include "base/elements.h"
-#include "classes/pattern.h"
+#include "command/format.h"
+#include "command/expression.h"
+#include "aten/aten.h"
 #include "model/model.h"
 
 // If Conditions

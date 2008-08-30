@@ -22,10 +22,9 @@
 #ifndef ATEN_EXPRESSION_H
 #define ATEN_EXPRESSION_H
 
-#include "base/constants.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
-#include "parse/expressionnode.h"
+#include "command/expressionnode.h"
 
 // Forward Declarations
 class VariableList;

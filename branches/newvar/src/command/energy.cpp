@@ -20,8 +20,6 @@
 */
 
 #include "command/commands.h"
-#include "base/prefs.h"
-#include "base/messenger.h"
 #include "model/model.h"
 
 // Calculate energy of current trajectory frame ('frameenergy')

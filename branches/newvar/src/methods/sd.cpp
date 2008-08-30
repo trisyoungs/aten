@@ -19,10 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/elements.h"
 #include "methods/sd.h"
 #include "model/model.h"
-#include "classes/energystore.h"
+#include "ff/energystore.h"
 #include "gui/gui.h"
 
 // Static Singleton

@@ -19,9 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/commands.h"
-#include "base/aten.h"
-#include "base/messenger.h"
+#include "command/commandlist.h"
+#include "aten/aten.h"
 #include "model/model.h"
 #include "methods/mc.h"
 

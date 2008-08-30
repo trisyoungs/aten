@@ -19,13 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/pattern.h"
-#include "classes/forcefield.h"
 #include "model/model.h"
-#include "templates/vector3.h"
-#include "classes/energystore.h"
-#include "base/prefs.h"
-#include <math.h>
+#include "classes/forcefieldatom.h"
+#include "classes/prefs.h"
+#include "base/pattern.h"
+#include "base/forms.h"
 
 // Calculate energy for specified interaction
 double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams paramsi, ForcefieldParams paramsj, double scale, int i, int j)
