@@ -24,7 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/atomlist.h"
 #include "model/model.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 
 /*
 // Atom list window

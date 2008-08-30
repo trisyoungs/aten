@@ -20,7 +20,7 @@
 */
 
 #include "base/elements.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "base/pattern.h"

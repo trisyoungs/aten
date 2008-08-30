@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "command/filter.h"
 #include "model/model.h"
 #include "classes/prefs.h"

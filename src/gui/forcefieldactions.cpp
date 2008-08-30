@@ -23,7 +23,7 @@
 #include "gui/forcefields.h"
 #include "gui/gui.h"
 #include "gui/minimiser.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 

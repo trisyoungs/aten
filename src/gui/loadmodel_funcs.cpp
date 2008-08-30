@@ -21,7 +21,7 @@
 
 #include "gui/loadmodel.h"
 #include "gui/gui.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 
 // Constructor
 AtenLoadModel::AtenLoadModel(QWidget *parent) : QDialog(parent)

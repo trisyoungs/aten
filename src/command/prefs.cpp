@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "gui/gui.h"
 #include "model/model.h"
 #include "ff/forcefield.h"

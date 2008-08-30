@@ -21,7 +21,7 @@
 
 #include "command/commands.h"
 #include "command/commandlist.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "ff/forcefield.h"
 #include "command/filter.h"
 #include "model/model.h"

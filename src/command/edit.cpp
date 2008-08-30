@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
 #include "model/clipboard.h"
 

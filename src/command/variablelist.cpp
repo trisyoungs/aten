@@ -22,7 +22,7 @@
 #include "command/variablelist.h"
 #include "command/expression.h"
 #include "base/vaccess.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include <string.h>
 #include <stdarg.h>
 

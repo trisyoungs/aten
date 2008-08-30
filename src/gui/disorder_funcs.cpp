@@ -20,7 +20,7 @@
 */
 
 #include "methods/mc.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "gui/gui.h"
