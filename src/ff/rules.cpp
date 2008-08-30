@@ -19,11 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/elements.h"
-#include "classes/atom.h"
-#include "classes/forcefield.h"
-#include "energy/forms.h"
-#include "base/constants.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
+#include "base/forms.h"
 
 // References
 // UFF:

@@ -20,10 +20,9 @@
 */
 
 #include "command/commandlist.h"
-#include "base/elements.h"
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "model/model.h"
-#include "classes/clipboard.h"
+#include "model/clipboard.h"
 
 // Copy current selection ('copy')
 int CommandData::function_CA_COPY(Command *&c, Bundle &obj)

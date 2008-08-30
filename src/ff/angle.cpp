@@ -19,10 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <math.h>
-#include "base/pattern.h"
-#include "classes/forcefieldbound.h"
 #include "model/model.h"
+#include "classes/forcefieldbound.h"
+#include "base/pattern.h"
 
 // Calculate angle energy of pattern (or individual molecule if 'molecule' != -1)
 void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)

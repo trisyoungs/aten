@@ -20,7 +20,7 @@
 */
 
 #include "command/commandlist.h"
-#include "base/prefs.h"
+#include "classes/prefs.h"
 
 // Add point to colourscale
 int CommandData::function_CA_ADDPOINT(Command *&c, Bundle &obj)

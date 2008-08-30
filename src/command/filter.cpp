@@ -1,6 +1,6 @@
 /*
 	*** File filter definition
-	*** src/parse/filter.cpp
+	*** src/command/filter.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,14 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse/filter.h"
-#include "parse/parser.h"
-#include "base/sysfunc.h"
-#include "base/aten.h"
+#include "aten/aten.h"
+#include "command/filter.h"
 #include "model/model.h"
-#include "classes/pattern.h"
-#include "gui/gui.h"
-#include <fstream>
+#include "classes/prefs.h"
+#include "base/elements.h"
 
 // Filter types
 const char *FilterTypeKeywords[Filter::nFilterTypes] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
@@ -57,7 +54,7 @@ Filter::Filter()
 	type_ = Filter::nFilterTypes;
 	hasExtension_ = FALSE;
 	hasZmapping_ = FALSE;
-	zmapping_ = Prefs::AlphaZmap;
+	zmapping_ = ElementMap::AlphaZmap;
 	name_.set("unnamed");
 	glob_.set("*");
 	id_ = -1;
@@ -141,7 +138,7 @@ bool Filter::load(ifstream &filterFile)
 	msg.enter("Filter::load");
 	FilterCommmand fc;
 	char longname[256];
-	Prefs::ZmapType zm;
+	ElementMap::ZmapType zm;
 	int success, itemsleft, n;
 	Dnchar *d;
 	// First, we must add a command to the flowstack so we know when to return (or raise an error)
@@ -198,8 +195,8 @@ bool Filter::load(ifstream &filterFile)
 				break;
 			// Set element zmapping to use for import
 			case (Filter::ZMapCommand):
-				zm = Prefs::zmapType(parser.argc(1));
-				if (zm != Prefs::nZmapTypes)
+				zm = ElementMap::zmapType(parser.argc(1));
+				if (zm != ElementMap::nZmapTypes)
 				{
 					zmapping_ = zm;
 					hasZmapping_ = TRUE;
@@ -316,7 +313,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 	// Grab pointer Bundle from master
 	Bundle &obj = aten.current;
 	// Set element mapping type to that specified in file
-	Prefs::ZmapType temp_zmap = prefs.zmapType();
+	ElementMap::ZmapType temp_zmap = prefs.zmapType();
 	if (hasZmapping_) prefs.setZmapType(zmapping_);
 	// Flag to indicate we should proceed to execute filter
 	proceed = TRUE;

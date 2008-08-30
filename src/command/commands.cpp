@@ -21,9 +21,7 @@
 
 #include "command/commandlist.h"
 #include "command/commands.h"
-#include "classes/bundle.h"
-#include "base/sysfunc.h"
-#include <string.h>
+#include "base/bundle.h"
 
 // Postfix increment operator for CommandAction enum
 CommandAction &operator++(CommandAction &ca, int)

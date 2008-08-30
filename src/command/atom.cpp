@@ -20,12 +20,8 @@
 */
 
 #include "command/commandlist.h"
-#include "base/aten.h"
-#include "base/messenger.h"
-#include "base/elements.h"
-#include "classes/forcefield.h"
-#include "parse/filter.h"
 #include "model/model.h"
+#include "base/elements.h"
 
 // Set atom style for current selection
 int CommandData::function_CA_ATOMSTYLE(Command *&c, Bundle &obj)
@@ -62,7 +58,7 @@ int CommandData::function_CA_SETCHARGE(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->setCharge(c->argd(0));
 	return CR_SUCCESS;
 }
@@ -72,7 +68,7 @@ int CommandData::function_CA_SETCOORDS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.rs->positionAtom(obj.i, c->arg3d(0));
 	return CR_SUCCESS;
 }
@@ -82,7 +78,7 @@ int CommandData::function_CA_SETELEMENT(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->setElement(elements.find(c->argc(0)));
 	return CR_SUCCESS;
 }
@@ -92,7 +88,7 @@ int CommandData::function_CA_SETFORCES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->f() = c->arg3d(0);
 	return CR_SUCCESS;
 }
@@ -102,7 +98,7 @@ int CommandData::function_CA_SETFX(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->f().set(0,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -112,7 +108,7 @@ int CommandData::function_CA_SETFY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->f().set(1,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -122,7 +118,7 @@ int CommandData::function_CA_SETFZ(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->f().set(2,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -132,7 +128,7 @@ int CommandData::function_CA_SETID(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->setId(c->argi(0));
 	return CR_SUCCESS;
 }
@@ -142,7 +138,7 @@ int CommandData::function_CA_SETRX(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->r().set(0,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -152,7 +148,7 @@ int CommandData::function_CA_SETRY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->r().set(1,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -162,7 +158,7 @@ int CommandData::function_CA_SETRZ(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->r().set(2,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -172,7 +168,7 @@ int CommandData::function_CA_SETVELOCITIES(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(3)) obj.i = obj.rs->atom(c->argi(3) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->v() = c->arg3d(0);
 	return CR_SUCCESS;
 }
@@ -182,7 +178,7 @@ int CommandData::function_CA_SETVX(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->v().set(0,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -192,7 +188,7 @@ int CommandData::function_CA_SETVY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->v().set(1,c->argd(0));
 	return CR_SUCCESS;
 }
@@ -202,7 +198,7 @@ int CommandData::function_CA_SETVZ(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	if (c->hasArg(1)) obj.i = obj.rs->atom(c->argi(1) - 1);
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return CR_FAIL;
 	obj.i->v().set(2,c->argd(0));
 	return CR_SUCCESS;
 }

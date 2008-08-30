@@ -1,6 +1,6 @@
 /*
 	*** Arithmetic Expression
-	*** src/parse/expression.cpp
+	*** src/command/expression.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,11 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/constants.h"
-#include "base/messenger.h"
-#include "parse/expression.h"
-#include "parse/expressionnode.h"
-#include "parse/variablelist.h"
+#include "command/expression.h"
+#include "command/expressionnode.h"
+#include "command/variablelist.h"
 #include "base/mathfunc.h"
 #include <math.h>
 #include <string.h>

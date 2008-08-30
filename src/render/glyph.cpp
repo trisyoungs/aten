@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "classes/glyph.h"
 #include "gui/canvas.h"
+#include "base/glyph.h"
 
 // Render model glyphs
 void Canvas::renderModelGlyphs()

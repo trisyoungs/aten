@@ -20,11 +20,11 @@
 */
 
 #include "command/commandlist.h"
-#include "base/elements.h"
-#include "base/aten.h"
+#include "aten/aten.h"
 #include "model/model.h"
-#include "classes/clipboard.h"
-#include "classes/forcefield.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "base/elements.h"
 
 // Add hydrogens to model ('addhydrogen')
 int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
@@ -69,7 +69,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 	if (c->hasArg(3))
 	{
 		Vec3<double> pos = c->arg3d(1);
-		i = obj.rs->addAtom(elements.find(c->argc(0),Prefs::AlphaZmap), pos);
+		i = obj.rs->addAtom(elements.find(c->argc(0),ElementMap::AlphaZmap), pos);
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -84,7 +84,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 	}
 	else
 	{
-		i = obj.rs->addAtomAtPen(elements.find(c->argc(0),Prefs::AlphaZmap));
+		i = obj.rs->addAtomAtPen(elements.find(c->argc(0),ElementMap::AlphaZmap));
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;

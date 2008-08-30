@@ -20,9 +20,8 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "classes/pattern.h"
 #include "model/model.h"
+#include "base/pattern.h"
 
 // Assign charges from forcefield atom types ('chargeff')
 int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)

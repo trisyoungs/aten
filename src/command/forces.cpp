@@ -21,8 +21,6 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/prefs.h"
-#include "base/messenger.h"
 
 // Calculate forces at trajectory configuration ('frameforces')
 int CommandData::function_CA_FRAMEFORCES(Command *&c, Bundle &obj)

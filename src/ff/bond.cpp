@@ -19,11 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <math.h>
-#include "templates/vector3.h"
-#include "base/pattern.h"
-#include "classes/forcefieldbound.h"
 #include "model/model.h"
+#include "classes/forcefieldbound.h"
+#include "base/pattern.h"
 
 // Calculate bond energy of pattern (or molecule in pattern)
 void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)

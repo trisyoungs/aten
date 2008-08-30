@@ -19,11 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "aten/aten.h"
 #include "model/model.h"
-#include "base/aten.h"
-#include "base/elements.h"
-#include "methods/mc.h"
 #include "gui/canvas.h"
+#include "base/sysfunc.h"
 
 // Local variables
 double editChainDistance = 0.0;

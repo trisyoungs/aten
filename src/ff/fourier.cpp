@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "energy/fourier.h"
+#include "ff/fourier.h"
 #include "model/model.h"
 
 // Singleton Declaration
