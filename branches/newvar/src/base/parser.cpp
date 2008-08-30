@@ -1,6 +1,6 @@
 /*
 	*** File parsing routines
-	*** src/parse/parser.cpp
+	*** src/base/parser.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,13 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/prefs.h"
-#include "base/elements.h"
-#include "parse/parser.h"
-#include "parse/format.h"
+#include "base/parser.h"
 #include "base/sysfunc.h"
-#include <ctype.h>
+#include "base/mathfunc.h"
+#include "base/constants.h"
 
+// Singleton
 Parser parser;
 
 // Parse options

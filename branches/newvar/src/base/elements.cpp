@@ -20,11 +20,8 @@
 */
 
 #include "base/elements.h"
-//#include "aten/prefs.h"
 #include "aten/aten.h"
-// #include "base/messenger.h"
 #include "base/sysfunc.h"
-// #include "parse/parser.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "base/atom.h"
