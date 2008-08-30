@@ -141,7 +141,6 @@ src/ff/Makefile
 src/gui/Makefile
 src/methods/Makefile
 src/model/Makefile
-src/parse/Makefile
 src/render/Makefile
 src/templates/Makefile
 )

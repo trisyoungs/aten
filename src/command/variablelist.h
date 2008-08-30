@@ -24,7 +24,7 @@
 
 #include "templates/list.h"
 #include "base/dnchar.h"
-#include "parse/variable.h"
+#include "command/variable.h"
 #include "base/vobject.h"
 
 // Forward Declarations

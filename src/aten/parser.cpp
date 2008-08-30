@@ -367,35 +367,6 @@ void Parser::getAllArgsDelim()
 	msg.exit("Parser::getAllArgsDelim");
 }
 
-// Get all (formatted)
-void Parser::getAllArgsFormatted(Format *fmt)
-{
-	// Parse the string in 'source' into arguments in 'args'
-	msg.enter("Parser::getAllArgsFormatted");
-	nArgs_ = 0;
-	bool parseresult;
-	for (int n=0; n<MAXARGS; n++)
-	{
-		arguments_[n].clear();
-		quoted_[n] = 0;
-	}
-	
-	for (FormatNode *fn = fmt->nodes(); fn != NULL; fn = fn->next)
-	{
-		// If field length specifier is zero, just get the next arg, otherwise get by length
-		if (fn->length() == 0) parseresult = getNextArg(-1);
-		else parseresult = getNextN(fn->length());
-		if (!parseresult)
-		{
-			msg.print(Messenger::Verbose,"Parser::getAllArgsFormatted <<<< '%s' passed end of line >>>>\n",fn->variable()->name());
-			fn->variable()->reset();
-		}
-		else fn->variable()->set(tempArg_);
-// 		printf("Variable %s now has value '%s'\n",fn->variable()->name(), fn->variable()->asCharacter());
-	}
-	msg.exit("Parser::getAllArgsFormatted");
-}
-
 /*
 // Delimited Parsing Routines
 */
@@ -515,50 +486,6 @@ int Parser::skipLines(ifstream *xfile, int nlines)
 	}
 	msg.exit("Parser::skipLines");
 	return 0;
-}
-
-/*
-// Formatted Parsing
-*/
-
-// Parse formatted (from file)
-int Parser::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
-{
-	// Splits the line from the file into parts determined by the supplied format
-	msg.enter("Parser::getArgsFormatted[file]");
-	int result;
-	bool done = FALSE;
-	optionMask_ = options;
-	nArgs_ = 0;
-	do
-	{
-		result = readLine(xfile);
-		if (result != 0)
-		{
-			msg.exit("Parser::getArgsFormatted[file]");
-			return result;
-		}
-		// Assume that we will finish after parsing the line we just read in
-		done = TRUE;
-		// To check for blank lines, do the parsing and then check nargs()
-		getAllArgsFormatted(fmt);
-		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
-	} while (!done);
-	msg.exit("Parser::getArgsFormatted[file]");
-	return 0;
-}
-
-// Parse formatted (from string)
-void Parser::getArgsFormatted(const char *source, int options, Format *fmt)
-{
-	// Splits the line from the file into parts determiend by the supplied format
-	msg.enter("Parser::getArgsFormatted[string]");
-	strcpy(line_, source);
-	linePos_ = 0;
-	lineLength_ = strlen(line_);
-	optionMask_ = options;
-	getAllArgsFormatted(fmt);
-	msg.exit("Parser::getArgsFormatted[string]");
 }
 
 // Shift all arguments up one position (leaving arg[0] blank)
