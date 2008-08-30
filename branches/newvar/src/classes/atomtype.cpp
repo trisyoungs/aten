@@ -20,13 +20,15 @@
 */
 
 #include "classes/atomtype.h"
-#include "classes/atom.h"
-#include "classes/bond.h"
-#include "classes/ring.h"
-#include "classes/forcefield.h"
-#include "templates/reflist.h"
+#include "base/sysfunc.h"
+#include "base/atom.h"
+#include "base/dnchar.h"
+// #include "classes/bond.h"
+// #include "classes/ring.h"
+// #include "classes/forcefield.h"
+// #include "templates/reflist.h"
 #include "base/elements.h"
-#include "parse/parser.h"
+// #include "parse/parser.h"
 
 int printlevel = 0;
 
@@ -48,8 +50,8 @@ Ringtype::RingtypeCommand Ringtype::ringtypeCommand(const char *s)
 Atomtype::Atomtype()
 {
 	// Private variables
-	environment_ = NoEnvironment;
-	geometry_ = NoGeometry;
+	environment_ = Atom::NoEnvironment;
+	geometry_ = Atom::NoGeometry;
 	os_ = 99;
 	nAllowedElements_ = 0;
 	nBonds_ = -1;
