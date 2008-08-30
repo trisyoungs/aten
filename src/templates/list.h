@@ -22,7 +22,6 @@
 #ifndef ATEN_LIST_H
 #define ATEN_LIST_H
 
-#include "aten/messenger.h"
 #include <stdlib.h>
 #include <stdio.h>
 

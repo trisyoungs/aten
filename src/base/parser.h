@@ -22,7 +22,6 @@
 #ifndef ATEN_PARSER_H
 #define ATEN_PARSER_H
 
-//#include "base/constants.h"
 #include "base/dnchar.h"
 #include <fstream>
 #include <iostream>

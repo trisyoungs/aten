@@ -22,7 +22,7 @@
 #ifndef ATEN_REFLIST_H
 #define ATEN_REFLIST_H
 
-#include "aten/messenger.h"
+#include "base/messenger.h"
 #include <stddef.h>
 #include <stdio.h>
 
