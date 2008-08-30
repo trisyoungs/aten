@@ -7,6 +7,7 @@ coulomb.cpp
 ewald.cpp 
 forcefield.cpp
 forms.cpp 
+loadforcefield.cpp
 rules.cpp 
 torsion.cpp 
 vdw.cpp

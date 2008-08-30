@@ -30,7 +30,7 @@
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "583"
-#define ATENDATE "Sat 30 Aug - 12:50"
+#define ATENDATE "Sat 30 Aug - 12:56"
 #define ATENURL "http://aten.googlecode.com/svn/branches/newvar"
 
 // Forward Declarations

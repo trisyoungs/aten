@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libaten.a libmath.a
 
-libaten_a_SOURCES = aten.cpp atenaccess.cpp cli.cpp messenger.cpp modes.cpp prefs.cpp
+libaten_a_SOURCES = aten.cpp atenaccess.cpp cli.cpp messenger.cpp modes.cpp prefs.cpp probe.cpp
 
 noinst_HEADERS = cli.h aten.h messenger.h prefs.h
 
