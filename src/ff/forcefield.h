@@ -24,7 +24,7 @@
 
 #include "base/dnchar.h"
 #include "base/forms.h"
-#include "aten/prefs.h"
+#include "classes/prefs.h"
 
 // Forward declarations
 class Atom;

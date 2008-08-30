@@ -80,8 +80,6 @@ class Site
 	void setType(SiteType st);
 	// List of relative atom ids that define the site
 	List< ListItem<int> > atoms;
-	// Calculate centre from config and molecule ID supplied
-	Vec3<double> calculateCentre(Model*, int);
 
 	/*
 	// Site Axes
@@ -95,8 +93,6 @@ class Site
 	List< ListItem<int> > xAxisAtoms;
 	// List of atoms whose average defines the y axis (from site centre)
 	List< ListItem<int> > yAxisAtoms;
-	// Calculate local coordinate system from config and molecule ID supplied
-	Mat3<double> calculateAxes(Model*, int);
 };
 
 #endif

@@ -20,9 +20,9 @@
 */
 
 #include "classes/site.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "base/sysfunc.h"
-#include "model/model.h"
+// #include "model/model.h"
 
 // Site types
 const char *ST_strings[ST_NITEMS] = { "Molecule COM", "Molecule COG", "Atom(s) COM", "Atom(s) COG" };
@@ -72,91 +72,4 @@ const char *Site::name()
 void Site::setType(SiteType st)
 {
 	type_ = st;
-}
-
-// Calculate site centre
-Vec3<double> Site::calculateCentre(Model *srcmodel, int mol)
-{
-	msg.enter("Site::calculateCentre");
-	int offset, n;
-	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
-	static Vec3<double> firstid, mim;
-	ListItem<int> *li;
-	offset = pattern_->startAtom();
-	offset += pattern_->nAtoms() * mol;
-	// If no atoms are in the list, use all atoms in the molecule
-	if (atoms.nItems() != 0)
-	{
-		li = atoms.first();
-		centre_ = modelatoms[offset + li->data]->r();
-		firstid = centre_;
-		for (li = li->next; li != NULL; li = li->next)
-		{
-			mim = cell->mim(modelatoms[offset + li->data]->r(), firstid);
-			centre_ += mim;
-		}
-		// Take average
-		centre_ /= atoms.nItems();
-	}
-	else
-	{
-		// Use all atoms for centre. Grab first as the MIM point
-		centre_ = modelatoms[offset]->r();
-		firstid = centre_;
-		for (n=1; n<pattern_->nAtoms(); n++)
-		{
-			mim = cell->mim(modelatoms[offset + n]->r(), firstid);
-			centre_ += mim;
-		}
-		// Take average
-		centre_ /= pattern_->nAtoms();
-	}
-	msg.exit("Site::calculateCentre");
-	return centre_;
-}
-
-// Calculate site local axis system
-Mat3<double> Site::calculateAxes(Model *srcmodel, int mol)
-{
-	msg.enter("Site::calculateAxes");
-	int offset;
-	Atom **modelatoms = srcmodel->atomArray();
-	Cell *cell = srcmodel->cell();
-	static Vec3<double> mim, v1, v2;
-	ListItem<int> *li;
-	offset = pattern_->startAtom();
-	offset += pattern_->nAtoms() * mol;
-	// Calculate 'position' of x-axis (defining vector COG->xpos)
-	// Get mim coordinates relative to (already-calculated) site centre
-	v1.zero();
-	for (li = xAxisAtoms.first(); li != NULL; li = li->next)
-	{
-		mim = cell->mim(modelatoms[offset + li->data]->r(), centre_);
-		v1 += mim;
-	}
-	// Take average and subtract site centre to get vector
-	v1 /= xAxisAtoms.nItems();
-	v1 -= centre_;
-	// Calculate 'position' of y-axis (defining vector COG->xpos)
-	// Get mim coordinates relative to (already-calculated) site centre
-	v2.zero();
-	for (li = yAxisAtoms.first(); li != NULL; li = li->next)
-	{
-		mim = cell->mim(modelatoms[offset + li->data]->r(), centre_);
-		v2 += mim;
-	}
-	// Take average and subtract site centre to get vector
-	v2 /= yAxisAtoms.nItems();
-	v2 -= centre_;
-	// Orthogonalise, normalise, and generate corresponding z-axis
-	v2.orthogonalise(v1);
-	v1.normalise();
-	v2.normalise();
-	axes_.set(0,v1);
-	axes_.set(1,v2);
-	axes_.set(2,v1 * v2);
-	//axes.print();
-	msg.enter("Site::calculateAxes");
-	return axes_;
 }

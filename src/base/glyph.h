@@ -29,7 +29,7 @@
 #include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
-class Model;
+//class Model;
 
 // Glyph data
 class GlyphData
@@ -43,39 +43,19 @@ class GlyphData
 	// Atom data pointer type
 	enum GlyphDataType { PositionData, ForceData, VelocityData };
 
-	private:
-	// Position or direction vector
-	Vec3<double> vector_;
-	// Integer atom id in the parent model from ehich to get r, f, or v
-	int atomId_;
-	// Type of vector data to take from atom (if defined)
-	GlyphDataType atomData_;
-	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
-	bool atomSetLast_;
-	// Status of data item (whether it has been set or not)
-	bool set_;
-	// Colour at this data point
-	GLfloat colour_[4];
-
 	public:
-	// Set the vector data
-	void setVector(double x, double y, double z);
-	// Set the atom pointer
-	void setAtomId(int target, GlyphDataType av);
-	// Return the atom id used
-	int atomId();
-	// Return the type of atom vector pointed to
-	GlyphDataType atomData();
-	// Return the vector data
-	Vec3<double> vector(Model *parent);
-	// Return if the structure contains a valid atom reference
-	bool hasAtom();
-	// Returns whether one of either atom* or vecdata have been set
-	bool isSet();
-	// Set the colour associated to this data point
-	void setColour(GLfloat r, GLfloat g, GLfloat b, GLfloat a = 1.0f);
-	// Return pointer to colour
-	GLfloat *colour();
+	// Position or direction vector
+	Vec3<double> vector;
+	// Integer atom id in the parent model from ehich to get r, f, or v
+	int atomId;
+	// Type of vector data to take from atom (if defined)
+	GlyphDataType atomData;
+	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
+	bool atomSetLast;
+	// Status of data item (whether it has been set or not)
+	bool set;
+	// Colour at this data point
+	GLfloat colour[4];
 };
 
 // Glyph
@@ -98,11 +78,13 @@ class Glyph
 	// Text data
 	Dnchar text_;
 	// Parent model
-	Model *parent_;
-	// Data for Glyph
+	//Model *parent_;
+	// Vector data for Glyph
 	List<GlyphData> data_;
 
 	public:
+	// Returns the number of data set for the Glyph
+	int nData();
 	// Set vector data for glyph
 	void setVector(int i, Vec3<double> vec);
 	void setVector(int i, double x, double y, double z);
@@ -127,9 +109,9 @@ class Glyph
 	// Return text data
 	const char *text();
 	// Set parent model
-	void setParent(Model *parent);
+// 	void setParent(Model *parent);
 	// Return parent model
-	Model *parent();
+// 	Model *parent();
 
 	/*
 	// Style

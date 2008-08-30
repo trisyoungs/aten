@@ -1,5 +1,7 @@
 add_library(model
 model.h
+undoevent.h
+undostate.h
 atom.cpp 
 bond.cpp 
 build.cpp 
@@ -21,6 +23,8 @@ trajectory.cpp
 transform.cpp 
 typing.cpp 
 undo.cpp 
+undoevent.cpp
+undostate.cpp
 view.cpp
 )
 
