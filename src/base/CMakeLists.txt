@@ -14,6 +14,7 @@ glyph.h
 log.h
 mathfunc.h
 measurement.h
+parser.h
 pattern.h
 region.h
 sysfunc.h
@@ -32,6 +33,7 @@ glyph.cpp
 log.cpp
 mathfunc.cpp
 measurement.cpp
+parser.cpp
 pattern.cpp
 region.cpp
 spacegroup.cpp
