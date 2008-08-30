@@ -184,11 +184,6 @@ enum CommandAction {
 	CA_PRINTSUMMARY,
 	CA_PRINTVDW,
 
-	// Expression Commands
-	CA_CREATEEXPRESSION,
-	CA_PRINTSETUP,
-	CA_SAVEEXPRESSION,
-
 	// Flow control
 	CA_BREAK,
 	CA_CONTINUE,
@@ -206,10 +201,11 @@ enum CommandAction {
 	CA_MODELFORCES,
 	CA_PRINTFORCES,
 
-	// Forcefield Commands
+	// Forcefield/Expression Commands
 	CA_ANGLEDEF,
 	CA_BONDDEF,
 	CA_CLEARMAP,
+	CA_CREATEEXPRESSION,
 	CA_DEFAULTFF,
 	CA_EQUIVALENT,
 	CA_FFMODEL,
@@ -222,7 +218,9 @@ enum CommandAction {
 	CA_LOADFF,
 	CA_MAP,
 	CA_NEWFF,
+	CA_PRINTSETUP,
 	CA_RULES,
+	CA_SAVEEXPRESSION,
 	CA_TORSIONDEF,
 	CA_TYPEDEF,
 	CA_TYPEMODEL,
@@ -591,10 +589,6 @@ class CommandData
 	int function_CA_PRINTENERGY(Command *&c, Bundle &obj);
 	int function_CA_PRINTSUMMARY(Command *&c, Bundle &obj);
 	int function_CA_PRINTVDW(Command *&c, Bundle &obj);
-	// Expression Commands
-	int function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj);
-	int function_CA_PRINTSETUP(Command *&c, Bundle &obj);
-	int function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj);
 	// Filter Commands
 	int function_CA_EXACT(Command *&c, Bundle &obj);
 	int function_CA_EXTENSION(Command *&c, Bundle &obj);
@@ -622,6 +616,7 @@ class CommandData
 	int function_CA_ANGLEDEF(Command *&c, Bundle &obj);
 	int function_CA_BONDDEF(Command *&c, Bundle &obj);
 	int function_CA_CLEARMAP(Command *&c, Bundle &obj);
+	int function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj);
 	int function_CA_DEFAULTFF(Command *&c, Bundle &obj);
 	int function_CA_EQUIVALENT(Command *&c, Bundle &obj);
 	int function_CA_FINALISEFF(Command *&c, Bundle &obj);
@@ -634,7 +629,9 @@ class CommandData
 	int function_CA_LOADFF(Command *&c, Bundle &obj);
 	int function_CA_MAP(Command *&c, Bundle &obj);
 	int function_CA_NEWFF(Command *&c, Bundle &obj);
+	int function_CA_PRINTSETUP(Command *&c, Bundle &obj);
 	int function_CA_RULES(Command *&c, Bundle &obj);
+	int function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj);
 	int function_CA_TORSIONDEF(Command *&c, Bundle &obj);
 	int function_CA_TYPEDEF(Command *&c, Bundle &obj);
 	int function_CA_TYPEMODEL(Command *&c, Bundle &obj);
