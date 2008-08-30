@@ -20,7 +20,7 @@
 */
 
 #include "command/commands.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 
 // Initialise Command Pointers
 void Aten::initCommands()

@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "classes/grid.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"

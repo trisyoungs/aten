@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"

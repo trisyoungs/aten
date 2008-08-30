@@ -20,8 +20,8 @@
 */
 
 
-#include "aten/cli.h"
-#include "aten/aten.h"
+#include "main/cli.h"
+#include "main/aten.h"
 #include "model/model.h"
 #include "classes/prefs.h"
 #include <iostream>

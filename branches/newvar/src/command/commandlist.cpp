@@ -22,7 +22,7 @@
 #include "command/commandlist.h"
 #include "command/format.h"
 #include "command/expression.h"
-#include "aten/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
 
 // If Conditions
