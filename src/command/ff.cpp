@@ -1,6 +1,6 @@
 /*
 	*** Forcefield command functions
-	*** src/command/ff.cpp
+	*** src/command/forcefield.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -76,6 +76,15 @@ int CommandData::function_CA_BONDDEF(Command *&c, Bundle &obj)
 int CommandData::function_CA_CLEARMAP(Command *&c, Bundle &obj)
 {
 	aten.typeMap.clear();
+	return CR_SUCCESS;
+}
+
+// Create energy expression for current model ('createexpression'}
+int CommandData::function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (!obj.m->autocreatePatterns()) return CR_FAIL;
+	if (!obj.m->createExpression()) return CR_FAIL;
 	return CR_SUCCESS;
 }
 
@@ -210,6 +219,17 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Print expression setup ('printexpression')
+int CommandData::function_CA_PRINTSETUP(Command *&c, Bundle &obj)
+{
+	msg.print("Current Energy Setup:\n");
+	msg.print("Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
+	msg.print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
+	msg.print("      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
+	msg.print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
+	return CR_SUCCESS;
+}
+
 // Set rules to use in parameter generation
 int CommandData::function_CA_RULES(Command *&c, Bundle &obj)
 {
@@ -217,6 +237,22 @@ int CommandData::function_CA_RULES(Command *&c, Bundle &obj)
 	Rules::ForcefieldRules rules = Rules::forcefieldRules(c->argc(0));
 	if (rules == Rules::nForcefieldRules) return CR_FAIL;
 	msg.print("\t: Rule-set to use is '%s'\n", rules);
+	return CR_SUCCESS;
+}
+
+// Save expression ('saveexpression <format> <file>')
+int CommandData::function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	// Find filter with a nickname matching that given in argc(0)
+	Filter *f = aten.findFilter(Filter::ExpressionExport, c->argc(0));
+	// Check that a suitable format was found
+	if (f == NULL)
+	{
+		msg.print("script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
+		return CR_FAIL;
+	}
+	f->execute(c->argc(1));
 	return CR_SUCCESS;
 }
 

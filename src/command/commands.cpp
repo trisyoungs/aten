@@ -300,14 +300,6 @@ CommandData CA_data[CA_NITEMS] = {
 				"Print a one-line summary of the last calculated energy" },
 	{ "printvdw",		"",		"",
 				"Print the EDW pattern matrix of the last calculated energy" },
-	
-	// Expression commands
-	{ "createexpression",	"",		"",
-				"Create and fill a forcefield expression for the current model" },
-	{ "printsetup",		"",		"",
-				"Print the current energy/force calculation setup" },
-	{ "saveexpression",	"NN",		"<format> <filename>",
-				"Save the expression for the current model" },
 
 	// Flow control
 	{ "break",		"",		"",
@@ -346,6 +338,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add a bond definition to the current forcefield." },
 	{ "clearmap",		"",		"",
 				"Clear manual type mapping list." },
+	{ "createexpression",	"",		"",
+				"Create and fill a forcefield expression for the current model" },
 	{ "defaultff",		"N",		"<ff>",
 				"Make named forcefield the default for occasions where no other is specified." },
 	{ "equivalents",	"NN",		"<name> <'names...'>",
@@ -370,8 +364,12 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add typename mappings" },
 	{ "newff",		"N",		"<name>",
 				"Create a new, empty forcefield." },
+	{ "printsetup",		"",		"",
+				"Print the current energy/force calculation setup" },
 	{ "rules",		"N",		"<rules set>",
 				"Set rules set to use for parameter generation" },
+	{ "saveexpression",	"NN",		"<format> <filename>",
+				"Save the expression for the current model" },
 	{ "torsiondef",		"NNNNNEeeeee", "<form> <name1> <name2> <name3> <name4> <data1> [data2 ... data6]",
 				"Add a torsion definition to the current forcefield." },
 	{ "typedef",		"ENNNn", "<typeid> <name> <element> <type> [description]",

@@ -161,11 +161,6 @@ void Aten::initCommands()
 	CA_data[CA_PRINTSUMMARY].function = &CommandData::function_CA_PRINTSUMMARY;
 	CA_data[CA_PRINTVDW].function = &CommandData::function_CA_PRINTVDW;
 
-	// Expression Commands
-	CA_data[CA_CREATEEXPRESSION].function = &CommandData::function_CA_CREATEEXPRESSION;
-	CA_data[CA_PRINTSETUP].function = &CommandData::function_CA_PRINTSETUP;
-	CA_data[CA_SAVEEXPRESSION].function = &CommandData::function_CA_SAVEEXPRESSION;
-
 	// Flow control
 	CA_data[CA_BREAK].function = &CommandData::function_CA_BREAK;
 	CA_data[CA_CONTINUE].function = &CommandData::function_CA_CONTINUE;
@@ -184,16 +179,31 @@ void Aten::initCommands()
 	CA_data[CA_PRINTFORCES].function = &CommandData::function_CA_PRINTFORCES;
 
 	// Forcefield Commands
+        CA_data[CA_ANGLEDEF].function = &CommandData::function_CA_ANGLEDEF;
+        CA_data[CA_BONDDEF].function = &CommandData::function_CA_BONDDEF;
 	CA_data[CA_CLEARMAP].function = &CommandData::function_CA_CLEARMAP;
+	CA_data[CA_CREATEEXPRESSION].function = &CommandData::function_CA_CREATEEXPRESSION;
 	CA_data[CA_DEFAULTFF].function = &CommandData::function_CA_DEFAULTFF;
+        CA_data[CA_EQUIVALENT].function = &CommandData::function_CA_EQUIVALENT;
 	CA_data[CA_FFMODEL].function = &CommandData::function_CA_FFMODEL;
 	CA_data[CA_FFPATTERN].function = &CommandData::function_CA_FFPATTERN;
 	CA_data[CA_FFPATTERNID].function = &CommandData::function_CA_FFPATTERNID;
+        CA_data[CA_FINALISEFF].function = &CommandData::function_CA_FINALISEFF;
+        CA_data[CA_GENCONVERT].function = &CommandData::function_CA_GENCONVERT;
+        CA_data[CA_GENERATOR].function = &CommandData::function_CA_GENERATOR;
 	CA_data[CA_GETFF].function = &CommandData::function_CA_GETFF;
 	CA_data[CA_LOADFF].function = &CommandData::function_CA_LOADFF;
 	CA_data[CA_MAP].function = &CommandData::function_CA_MAP;
+        CA_data[CA_NEWFF].function = &CommandData::function_CA_NEWFF;
+	CA_data[CA_PRINTSETUP].function = &CommandData::function_CA_PRINTSETUP;
+        CA_data[CA_RULES].function = &CommandData::function_CA_RULES;
+	CA_data[CA_SAVEEXPRESSION].function = &CommandData::function_CA_SAVEEXPRESSION;
+        CA_data[CA_TORSIONDEF].function = &CommandData::function_CA_TORSIONDEF;
+        CA_data[CA_TYPEDEF].function = &CommandData::function_CA_TYPEDEF;
 	CA_data[CA_TYPEMODEL].function = &CommandData::function_CA_TYPEMODEL;
 	CA_data[CA_TYPETEST].function = &CommandData::function_CA_TYPETEST;
+        CA_data[CA_UNITS].function = &CommandData::function_CA_UNITS;
+        CA_data[CA_VDWDEF].function = &CommandData::function_CA_VDWDEF;
 
 	// Glyph commands
 	CA_data[CA_AUTOELLIPSOIDS].function = &CommandData::function_CA_AUTOELLIPSOIDS;
