@@ -9,6 +9,7 @@ cli.cpp
 messenger.cpp
 modes.cpp
 prefs.cpp 
+probe.cpp
 )
 
 include_directories(
