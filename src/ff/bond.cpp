@@ -21,10 +21,8 @@
 
 #include <math.h>
 #include "templates/vector3.h"
-#include "classes/pattern.h"
-#include "classes/forcefield.h"
-#include "classes/energystore.h"
-#include "classes/cell.h"
+#include "base/pattern.h"
+#include "classes/forcefieldbound.h"
 #include "model/model.h"
 
 // Calculate bond energy of pattern (or molecule in pattern)

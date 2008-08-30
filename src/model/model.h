@@ -824,6 +824,8 @@ class Model
 	Glyph *addGlyph(Glyph::GlyphType gt);
 	// Return list of glyphs
 	Glyph *glyphs();
+	// Return vector for data point in Glyph
+	Vec3<double> glyphVector(Glyph *g, int dataid);
 	// Automatically add polyhedra glyphs to current atom selection
 	void addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut);
 	// Automatically add ellipsoids to current atom selection

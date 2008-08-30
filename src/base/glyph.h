@@ -90,10 +90,14 @@ class Glyph
 	void setVector(int i, double x, double y, double z);
 	// Set atom data for glyph
 	void setAtom(int i, int atom, GlyphData::GlyphDataType av);
-	// Returns the atom id of the glyp
+	// Returns the atom id of the glyph
 	int atomId(int i);
+	// Returns whether the atom of the data 'i' was set last
+	bool atomSetLast(int i);
+	// Return the atom data type for data 'i'
+	GlyphData::GlyphDataType atomData(int i);
 	// Return whether one of the data is set to an atomId
-	bool hasAtomId(int i);
+// 	bool hasAtomId(int i);
 	// Return i'th vector data for glyph
 	Vec3<double> vector(int i);
 	// Set i'th colour in glyph

@@ -22,9 +22,11 @@
 //#include "classes/forcefield.h"
 //#include "parse/parser.h"
 //#include "base/aten.h"
-//#include "base/elements.h"
-//#include "base/prefs.h"
-//#include "base/sysfunc.h"
+#include "command/commandlist.h"
+#include "classes/prefs.h"
+#include "base/sysfunc.h"
+#include "base/elements.h"
+#include <iostream>
 
 Prefs prefs;
 
@@ -233,7 +235,7 @@ Prefs::Prefs()
 	packOnLoad_ = Prefs::SwitchAsFilter;
 	loadAllCoords_ = TRUE;
 	cacheLimit_ = 1024;
-	zmapType_ = Prefs::AutoZmap;
+	zmapType_ = ElementMap::AutoZmap;
 	coordsInBohr_ = FALSE;
 	keepNames_ = FALSE;
 	keepView_ = FALSE;
@@ -849,13 +851,13 @@ int Prefs::cacheLimit()
 }
 
 // Sets the style of element conversion to use
-void Prefs::setZmapType(Prefs::ZmapType i)
+void Prefs::setZmapType(ElementMap::ZmapType i)
 {
 	zmapType_ = i;
 }
 
 // Return the style of element conversion in use
-Prefs::ZmapType Prefs::zmapType()
+ElementMap::ZmapType Prefs::zmapType()
 {
 	return zmapType_;
 }
@@ -927,10 +929,7 @@ double Prefs::elecConvert()
 // Set the internal energy units to use
 void Prefs::setEnergyUnit(EnergyUnit eu)
 {
-	// Reconvert any forcefields already loaded so that they are in the new energy units
-	EnergyUnit euold = energyUnit_;
 	energyUnit_ = eu;
-	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 	// Calculate Electrostatic conversion factor
 	// COULCONVERT is stored in J/mol. Use this to calculate new elec_convert
 	elecConvert_ = COULCONVERT / energyConversions_[energyUnit_];

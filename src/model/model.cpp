@@ -20,18 +20,17 @@
 */
 
 #include "model/model.h"
-#include "classes/undostate.h"
-#include "classes/undoevent.h"
-#include "aten/prefs.h"
-#include "base/elements.h"
-#include "base/pattern.h"
-#include "classes/clipboard.h"
+#include "model/undostate.h"
+#include "model/undoevent.h"
+#include "model/clipboard.h"
+#include "methods/calculable.h"
+#include "classes/prefs.h"
 #include "classes/site.h"
 #include "classes/grid.h"
 #include "classes/forcefieldbound.h"
 #include "classes/forcefieldatom.h"
-// #include "classes/glyph.h"
-#include "methods/calculable.h"
+#include "base/elements.h"
+#include "base/pattern.h"
 
 // Constructors
 Model::Model()

@@ -9,6 +9,7 @@ constants.h
 dnchar.h
 elements.h
 forcefieldparams.h
+forms.h
 generator.h
 glyph.h
 log.h
@@ -29,6 +30,7 @@ colourscalepoint.cpp
 dnchar.cpp
 elements.cpp
 forcefieldparams.cpp
+forms.cpp
 generator.cpp
 glyph.cpp
 log.cpp

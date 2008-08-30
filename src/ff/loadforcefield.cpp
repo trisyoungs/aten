@@ -1,6 +1,6 @@
 /*
 	*** Forcefield import
-	*** src/parse/forcefield.cpp
+	*** src/ff/loadforcefield.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,10 +20,10 @@
 */
 
 #include <fstream>
-#include "classes/forcefield.h"
-#include "base/elements.h"
-#include "parse/parser.h"
-#include "base/sysfunc.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
+#include "base/parser.h"
 
 // Local variables
 double escale14 = 0.5;
@@ -174,7 +174,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 		ffa->setTypeId(newffid);
 		ffa->setName(parser.argc(1));
 		ffa->setEquivalent(parser.argc(1));
-		ffa->atomtype()->setCharacterElement(elements.find(parser.argc(2),Prefs::AlphaZmap));
+		ffa->atomtype()->setCharacterElement(elements.find(parser.argc(2),ElementMap::AlphaZmap));
 		ffa->setAtomtype(parser.argc(3), this, ffa);
 		ffa->setDescription(parser.argc(4));
 	} while (!done);

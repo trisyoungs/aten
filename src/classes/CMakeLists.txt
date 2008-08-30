@@ -2,12 +2,14 @@ add_library(classes
 atomtype.h
 colourscale.h
 grid.h
+prefs.h
 restraint.h
 ring.h
 site.h
 atomtype.cpp
 colourscale.cpp
 grid.cpp
+prefs.cpp
 restraint.cpp
 ring.cpp
 site.cpp

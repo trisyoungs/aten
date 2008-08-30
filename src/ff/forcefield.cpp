@@ -19,9 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/forcefield.h"
-#include "base/prefs.h"
-#include "base/messenger.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
+#include "base/sysfunc.h"
 
 // Forcefield keywords
 const char *ForcefieldKeywords[Forcefield::nForcefieldCommands] = { "_NULL_", "name", "units", "rules", "types", "generator", "convert", "equivalents", "vdw", "bonds", "angles", "torsions", "vscale", "escale" };

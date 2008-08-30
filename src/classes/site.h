@@ -78,6 +78,8 @@ class Site
 	public:
 	// Set type of site centre
 	void setType(SiteType st);
+	// Set centre of site
+	void setCentre(Vec3<double>);
 	// List of relative atom ids that define the site
 	List< ListItem<int> > atoms;
 
@@ -89,6 +91,8 @@ class Site
 	Mat3<double> axes_;
 
 	public:
+	// Set axes
+	void setAxes(Mat3<double>);
 	// List of atoms whose average defines the x axis (from site centre)
 	List< ListItem<int> > xAxisAtoms;
 	// List of atoms whose average defines the y axis (from site centre)

@@ -1,6 +1,6 @@
 /*
 	*** Forcefield term functional forms
-	*** src/ff/forms.cpp
+	*** src/base/forms.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -20,7 +20,8 @@
 */
 
 #include <string.h>
-#include "energy/forms.h"
+#include "base/forms.h"
+#include "base/sysfunc.h"
 
 // Electrostatic model
 const char *ElecMethodKeywords[Electrostatics::nElectrostatics] = { "none", "coulomb", "ewald", "ewaldauto" };

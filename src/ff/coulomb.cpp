@@ -20,13 +20,9 @@
 */
 
 #include <math.h>
-#include "classes/pattern.h"
-#include "classes/energystore.h"
-#include "classes/forcefield.h"
+#include "base/pattern.h"
 #include "model/model.h"
-#include "templates/vector3.h"
-#include "base/aten.h"
-#include "base/prefs.h"
+#include "classes/prefs.h"
 
 // Calculate the internal coulomb energy of the pattern.
 // Consider only the intrapattern interactions of individual molecules  within this pattern.

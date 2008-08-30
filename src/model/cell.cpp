@@ -21,13 +21,13 @@
 
 #include "model/model.h"
 #include "base/pattern.h"
-#include "classes/clipboard.h"
-#include "classes/undoevent.h"
-#include "classes/undostate.h"
+#include "model/clipboard.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
 #include "base/spacegroup.h"
 #include "base/generator.h"
 #include "aten/aten.h"
-#include "aten/prefs.h"
+#include "classes/prefs.h"
 
 // Return pointer to unit cell structure
 Cell *Model::cell()

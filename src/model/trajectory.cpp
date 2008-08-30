@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse/filter.h"
+#include "command/filter.h"
 #include "model/model.h"
 #include "gui/gui.h"
-#include "aten/prefs.h"
+#include "classes/prefs.h"
 #include <fstream>
 
 // Set parent model of trajectory
