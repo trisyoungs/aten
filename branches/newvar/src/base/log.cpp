@@ -20,7 +20,7 @@
 */
 
 #include "base/constants.h"
-#include "aten/messenger.h"
+#include "base/messenger.h"
 #include "base/log.h"
 
 // Constructor

@@ -79,9 +79,12 @@ class GuiQt
 	/*
 	// General Window Functions
 	*/
-	public:
+	private:
 	// Add a message to the main window's message output box
 	void printMessage(const char*);
+	public:
+	// Print normal message (passed through global Messenger)
+	void print(const char* ...);
 	// Save before close
 	bool saveBeforeClose();
 

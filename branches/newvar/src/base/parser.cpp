@@ -23,6 +23,7 @@
 #include "base/sysfunc.h"
 #include "base/mathfunc.h"
 #include "base/constants.h"
+#include "base/messenger.h"
 
 // Singleton
 Parser parser;

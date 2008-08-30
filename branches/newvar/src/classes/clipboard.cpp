@@ -20,9 +20,10 @@
 */
 
 #include "classes/clipboard.h"
-#include "classes/pattern.h"
-#include "model/model.h"
-#include "base/messenger.h"
+#include "base/bond.h"
+// #include "classes/pattern.h"
+// #include "model/model.h"
+// #include "base/messenger.h"
 
 // Constructors
 Clipatom::Clipatom()

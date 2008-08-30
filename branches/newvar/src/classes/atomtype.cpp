@@ -23,12 +23,11 @@
 #include "base/sysfunc.h"
 #include "base/atom.h"
 #include "base/dnchar.h"
-// #include "classes/bond.h"
-// #include "classes/ring.h"
-// #include "classes/forcefield.h"
-// #include "templates/reflist.h"
+#include "classes/ring.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
 #include "base/elements.h"
-// #include "aten/parser.h"
+#include "base/parser.h"
 
 int printlevel = 0;
 
@@ -164,7 +163,7 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 		else
 		{
 			// WATCH Since Atomtype::el became Atomtype::characterElement_, this does not get set. Should it have been set before? WATCH
-			el = elements.find(parser.argc(n),Prefs::AlphaZmap);
+			el = elements.find(parser.argc(n),ElementMap::AlphaZmap);
 			if (el == 0)
 			{
 				nAllowedElements_ --;
@@ -291,7 +290,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	static bool found;
 	static char c;
 	static int n, level = 0;
-	static AtomGeometry ag;
+	static Atom::AtomGeometry ag;
 	static AtomtypeCommand atc;
 	level ++;
 	msg.print(Messenger::Typing,"Atomtype::expand - Received string [%s]\n",data);
@@ -335,16 +334,16 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			{
 				// Hybridisation / environment settings (no options)
 				case (Atomtype::SpCommand):
-					environment_ = Atomtype::SpEnvironment;
+					environment_ = Atom::SpEnvironment;
 					break;
 				case (Atomtype::Sp2Command):
-					environment_ = Atomtype::Sp2Environment;
+					environment_ = Atom::Sp2Environment;
 					break;
 				case (Atomtype::Sp3Command):
-					environment_ = Atomtype::Sp3Environment;
+					environment_ = Atom::Sp3Environment;
 					break;
 				case (Atomtype::AromaticCommand):
-					environment_ = Atomtype::AromaticEnvironment;
+					environment_ = Atom::AromaticEnvironment;
 					break;
 				// Ring specification (possible options)
 				case (Atomtype::RingCommand):
@@ -383,8 +382,8 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		// Check for geometry specifications (if it wasn't a bound specifier or type command)
 		if (!found)
 		{
-			ag = Atomtype::atomGeometry(keywd.get());
-			if (ag != Atomtype::nAtomGeometries) geometry_ = ag;
+			ag = Atom::atomGeometry(keywd.get());
+			if (ag != Atom::nAtomGeometries) geometry_ = ag;
 			else
 			{
 				if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
@@ -452,7 +451,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	// Set the scoring to one (which will be the case if there are no specifications to match)
 	typescore = 1;
 	level ++;
-	msg.print(Messenger::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements.symbol(i), i->nBonds(), atomEnvironment(i->environment()));
+	msg.print(Messenger::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements.symbol(i), i->nBonds(), Atom::atomEnvironment(i->environment()));
 	// Element check
 	msg.print(Messenger::Typing,"(%li %2i) ... Element  ",this,level);
 	if (nAllowedElements_ == 0) msg.print(Messenger::Typing,"[defaulted]\n");
@@ -498,17 +497,17 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	}
 	// Atom environment check
 	msg.print(Messenger::Typing,"(%li %2i) ... Environment  ",this,level);
-	if (environment_ == Atomtype::NoEnvironment) msg.print(Messenger::Typing," [defaulted]\n");
+	if (environment_ == Atom::NoEnvironment) msg.print(Messenger::Typing," [defaulted]\n");
 	else
 	{
 		if (i->isEnvironment(environment_))
 		{
 			typescore++;
-			msg.print(Messenger::Typing,"[passed - matched '%s']\n", atomEnvironment(i->environment()));
+			msg.print(Messenger::Typing,"[passed - matched '%s']\n", Atom::atomEnvironment(i->environment()));
 		}
 		else
 		{
-			msg.print(Messenger::Typing,"[failed - is '%s', but type needs %s]\n", atomEnvironment(i->environment()), atomEnvironment(environment_));
+			msg.print(Messenger::Typing,"[failed - is '%s', but type needs %s]\n", Atom::atomEnvironment(i->environment()), Atom::atomEnvironment(environment_));
 			level --;
 			msg.exit("Atomtype::matchAtom");
 			return 0;
@@ -552,17 +551,17 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	}
 	// Local atom geometry check
 	msg.print(Messenger::Typing,"(%li %2i) ... Geometry  ",this,level);
-	if (geometry_ == Atomtype::NoGeometry) msg.print(Messenger::Typing,"[defaulted]\n");
+	if (geometry_ == Atom::NoGeometry) msg.print(Messenger::Typing,"[defaulted]\n");
 	else
 	{
 		if (i->geometry(parent) == geometry_)
 		{
 			typescore++;
-			msg.print(Messenger::Typing,"[passed - matched '%s']\n",atomGeometry(geometry_));
+			msg.print(Messenger::Typing,"[passed - matched '%s']\n", Atom::atomGeometry(geometry_));
 		}
 		else
 		{
-			msg.print(Messenger::Typing,"[failed - is '%s', but type needs '%s']\n", atomGeometry(i->geometry(parent)), atomGeometry(geometry_));
+			msg.print(Messenger::Typing,"[failed - is '%s', but type needs '%s']\n", Atom::atomGeometry(i->geometry(parent)), Atom::atomGeometry(geometry_));
 			level --;
 			msg.exit("Atomtype::matchAtom");
 			return 0;
