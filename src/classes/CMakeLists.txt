@@ -1,6 +1,5 @@
 add_library(classes
 atomtype.h
-clipboard.h
 colourscale.h
 grid.h
 restraint.h
@@ -9,7 +8,6 @@ site.h
 undoevent.h
 undostate.h
 atomtype.cpp
-clipboard.cpp
 colourscale.cpp
 grid.cpp
 restraint.cpp

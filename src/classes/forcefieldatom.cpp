@@ -20,8 +20,6 @@
 */
 
 #include "classes/forcefieldatom.h"
-#include "base/prefs.h"
-#include "base/messenger.h"
 
 // Constructor
 ForcefieldAtom::ForcefieldAtom()

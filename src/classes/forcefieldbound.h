@@ -23,7 +23,7 @@
 #define ATEN_FORCEFIELDBOUND_H
 
 #include "base/forcefieldparams.h"
-// #include "base/dnchar.h"
+#include "base/dnchar.h"
 #include "base/forms.h"
 
 // Forcefield bound interaction type
