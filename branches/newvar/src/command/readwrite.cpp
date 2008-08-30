@@ -20,8 +20,8 @@
 */
 
 #include "command/commandlist.h"
-#include "parse/format.h"
-#include "parse/parser.h"
+#include "command/format.h"
+#include "base/parser.h"
 #include <fstream>
 #include <cstring>
 
@@ -133,7 +133,7 @@ int CommandData::function_CA_READLINE(Command *&c, Bundle &obj)
 		msg.print("No input file active.\n");
 		return CR_FAIL;
 	}
-	parser.getArgsFormatted(inputfile,c->parent()->readOptions(),c->format());
+	c->format()->getArgsFormatted(inputfile,c->parent()->readOptions());
 	return CR_SUCCESS;
 }
 
@@ -158,10 +158,10 @@ int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
 	{
 		// Create format from character variable arg(1)
 		if (!c->createFormat(c->argc(1), c->parent()->variables, TRUE)) return CR_FAIL;
-		parser.getArgsFormatted(c->argc(0),c->parent()->readOptions(),c->format());
+		c->format()->getArgsFormatted(c->argc(0),c->parent()->readOptions());
 		c->deleteFormat();
 	}
-	else parser.getArgsFormatted(c->argc(0),c->parent()->readOptions(),c->format());
+	else c->format()->getArgsFormatted(c->argc(0),c->parent()->readOptions());
 	return CR_SUCCESS;
 }
 

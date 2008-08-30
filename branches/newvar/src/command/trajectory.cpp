@@ -20,8 +20,7 @@
 */
 
 #include "command/commands.h"
-#include "base/aten.h"
-#include "parse/filter.h"
+#include "aten/aten.h"
 #include "model/model.h"
 #include "gui/gui.h"
 

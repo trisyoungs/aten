@@ -20,11 +20,12 @@
 */
 
 #include "command/commands.h"
-#include "base/aten.h"
-#include "base/messenger.h"
-#include "classes/forcefield.h"
-#include "parse/filter.h"
+#include "command/commandlist.h"
+#include "aten/aten.h"
+#include "ff/forcefield.h"
+#include "command/filter.h"
 #include "model/model.h"
+#include "classes/prefs.h"
 
 // Create 'n' new atoms at once in model
 int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)

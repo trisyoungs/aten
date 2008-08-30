@@ -23,7 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
-#include "classes/clipboard.h"
+#include "model/clipboard.h"
 
 /*
 // Editing Actions

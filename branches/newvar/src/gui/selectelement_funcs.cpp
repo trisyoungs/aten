@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/sysfunc.h"
 #include "gui/selectelement.h"
-#include "parse/parser.h"
+#include "base/parser.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenSelectElement::AtenSelectElement(QWidget *parent) : QDialog(parent)

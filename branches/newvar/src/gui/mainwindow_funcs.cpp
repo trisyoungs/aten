@@ -39,7 +39,7 @@
 #include "gui/selectpattern.h"
 #include "gui/about.h"
 #include "model/model.h"
-#include "classes/undostate.h"
+#include "model/undostate.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>

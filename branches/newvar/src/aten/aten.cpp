@@ -19,16 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "model/model.h"
-#include "base/pattern.h"
-#include "classes/grid.h"
-#include "classes/clipboard.h"
-#include "ff/forcefield.h"
 #include "aten/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
 #include "gui/grids.h"
+#include "model/model.h"
+#include "model/clipboard.h"
+#include "ff/forcefield.h"
+#include "classes/grid.h"
+#include "base/pattern.h"
 
 // Singleton definition
 Aten aten;

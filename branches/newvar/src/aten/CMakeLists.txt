@@ -1,11 +1,9 @@
 add_library(base
 aten.h
 cli.h 
-messenger.h
 aten.cpp
 atenaccess.cpp
 cli.cpp 
-messenger.cpp
 modes.cpp
 probe.cpp
 )

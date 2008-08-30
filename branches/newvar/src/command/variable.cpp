@@ -1,6 +1,6 @@
 /*
 	*** Variable
-	*** src/parse/variable.cpp
+	*** src/command/variable.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,16 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse/variable.h"
-#include "parse/expression.h"
-#include "classes/atom.h"
-#include "classes/pattern.h"
-#include "classes/forcefield.h"
-#include "classes/grid.h"
+#include "command/variable.h"
+#include "command/expression.h"
 #include "model/model.h"
+#include "classes/forcefieldatom.h"
+#include "classes/grid.h"
+#include "base/pattern.h"
 #include "base/elements.h"
 #include <string.h>
-#include <stdarg.h>
 
 // Variable Types
 const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "expression", "reference" };

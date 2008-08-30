@@ -21,11 +21,9 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/elements.h"
-#include "base/sysfunc.h"
-#include "base/messenger.h"
-#include "classes/forcefield.h"
-#include "classes/pattern.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "base/pattern.h"
 
 void selectAtoms(Model *m, Variable *slxn, bool deselect)
 {

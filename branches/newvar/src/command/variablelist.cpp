@@ -1,6 +1,6 @@
 /*
 	*** Variable list
-	*** src/parse/variablelist.cpp
+	*** src/command/variablelist.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,15 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse/variablelist.h"
-#include "parse/vaccess.h"
-#include "parse/expression.h"
-#include "classes/atom.h"
-#include "classes/pattern.h"
-#include "classes/forcefield.h"
-#include "model/model.h"
-#include "base/aten.h"
-#include "base/elements.h"
+#include "command/variablelist.h"
+#include "command/expression.h"
+#include "base/vaccess.h"
+#include "aten/aten.h"
 #include <string.h>
 #include <stdarg.h>
 

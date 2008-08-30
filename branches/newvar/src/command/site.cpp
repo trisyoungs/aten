@@ -20,11 +20,8 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "base/aten.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "classes/site.h"
-#include "parse/parser.h"
 #include "model/model.h"
 
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
@@ -86,7 +83,7 @@ int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
 int CommandData::function_CA_SITEAXES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_SITE)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::SitePointer)) return CR_FAIL;
 	int n;
 	ListItem<int> *li;
 	// Parse atom list for x-axis

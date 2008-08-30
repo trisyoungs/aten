@@ -20,15 +20,13 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "base/aten.h"
 #include "model/model.h"
 
 // Clear all measurements in current model
 int CommandData::function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-	aten.currentModel()->clearMeasurements();
+	obj.rs->clearMeasurements();
 	return CR_SUCCESS;
 }
 
@@ -36,7 +34,7 @@ int CommandData::function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj)
 int CommandData::function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-	aten.currentModel()->listMeasurements();
+	obj.rs->listMeasurements();
 	return CR_SUCCESS;
 }
 
@@ -47,17 +45,17 @@ int CommandData::function_CA_MEASURE(Command *&c, Bundle &obj)
 	if (c->hasArg(3))
 	{
 		obj.rs->beginUndoState("Measure torsion");
-		aten.currentModel()->measureTorsion(c->argi(0), c->argi(1), c->argi(2), c->argi(3));
+		obj.rs->measureTorsion(c->argi(0), c->argi(1), c->argi(2), c->argi(3));
 	}
 	else if (c->hasArg(2))
 	{
 		obj.rs->beginUndoState("Measure angle");
-		aten.currentModel()->measureAngle(c->argi(0), c->argi(1), c->argi(2));
+		obj.rs->measureAngle(c->argi(0), c->argi(1), c->argi(2));
 	}
 	else
 	{
 		obj.rs->beginUndoState("Measure distance");
-		aten.currentModel()->measureDistance(c->argi(0), c->argi(1));
+		obj.rs->measureDistance(c->argi(0), c->argi(1));
 	}
 	obj.rs->endUndoState();
 	return CR_SUCCESS;

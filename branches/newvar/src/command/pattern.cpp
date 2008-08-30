@@ -20,10 +20,8 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "base/aten.h"
 #include "model/model.h"
-#include "classes/pattern.h"
+#include "base/pattern.h"
 
 // Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
 int CommandData::function_CA_NEWPATTERN(Command *&c, Bundle &obj)

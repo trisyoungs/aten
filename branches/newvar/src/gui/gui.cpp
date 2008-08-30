@@ -590,7 +590,7 @@ void GuiQt::stopTrajectoryPlayback()
 */
 
 // Standard message
-void Gui::print(const char *fmt ...)
+void GuiQt::print(const char *fmt ...)
 {
         // Print to the text view in the main window if it has been initialised.
         // If program is in quiet mode, don't print anything to stdout
@@ -602,7 +602,7 @@ void Gui::print(const char *fmt ...)
         va_start(arguments,fmt);
         vsprintf(msgs,fmt,arguments);
         // We always print standard messages to stdout *or* the GUI (if it has been initialised)
-        if (exists_) gui.printMessage(msgs);
+        if (doesExist_) gui.printMessage(msgs);
         else if (!msg.isQuiet()) printf("%s",msgs);
         va_end(arguments);
 }
