@@ -40,19 +40,19 @@ PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 // Set value of variable (char)
 void PointerVariable::set(const char *s)
 {
-	printf("A pointer variable cannot be set from a character.\n");
+	printf("A Pointer variable cannot be set from a character.\n");
 }
 
 // Set value of variable (int)
 void PointerVariable::set(int i)
 {
-	printf("A pointer variable cannot be set from an integer.\n");
+	printf("A Pointer variable cannot be set from an integer.\n");
 }
 
 // Set value of variable (double)
 void PointerVariable::set(double d)
 {
-	printf("A pointer variable cannot be set from a double.\n");
+	printf("A Pointer variable cannot be set from a double.\n");
 }
 
 // Set value of variable (pointer)
@@ -65,35 +65,35 @@ void PointerVariable::set(void *ptr, VTypes::DataType type)
 // Get value of variable as character string
 const char *PointerVariable::asCharacter()
 {
-	printf("A pointer variable cannot be returned as a character.\n");
+	printf("A Pointer variable cannot be returned as a character.\n");
 	return "NULL";
 }
 
 // Get value of variable as integer
 int PointerVariable::asInteger()
 {
-	printf("A pointer variable cannot be returned as an integer.\n");
+	printf("A Pointer variable cannot be returned as an integer.\n");
 	return 0;
 }
 
 // Get value of variable as double
 double PointerVariable::asDouble()
 {
-	printf("A pointer variable cannot be returned as a double.\n");
+	printf("A Pointer variable cannot be returned as a double.\n");
 	return 0.0;
 }
 
 // Get value of variable as float
 float PointerVariable::asFloat()
 {
-	printf("A pointer variable cannot be returned as a float.\n");
+	printf("A Pointer variable cannot be returned as a float.\n");
 	return 0.0f;
 }
 
 // Get value of variable as a boolean
 bool PointerVariable::asBool()
 {
-	printf("A pointer variable cannot be returned as a boolean.\n");
+	printf("A Pointer variable cannot be returned as a boolean.\n");
 	return FALSE;
 }
 

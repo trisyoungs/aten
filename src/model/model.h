@@ -29,7 +29,6 @@
 #include "base/glyph.h"
 #include "base/bond.h"
 #include "base/atom.h"
-#include "base/vaccess.h"
 #include "methods/mc.h"
 
 // Forward Declarations
@@ -910,19 +909,5 @@ class Model
 	// Request rerendering of all grid data
 	void rerenderGrids();
 };
-
-// Model Accessor
-class ModelAccessors : public VAccess
-{
-	public:
-	// Constructor
-	ModelAccessors();
-	// Accessor list
-	enum Accessors { Atoms, Name, NAtoms, nAccessors };
-	// Retrieve specified data from Model class
-// 	void retrieveData(VObject source, int acessorid, VResult &result);
-};
-
-extern ModelAccessors modelAccessor;
 
 #endif

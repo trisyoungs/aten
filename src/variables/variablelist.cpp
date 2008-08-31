@@ -25,6 +25,7 @@
 #include "variables/character.h"
 #include "variables/real.h"
 #include "variables/pointer.h"
+#include "variables/reference.h"
 // #include "base/vaccess.h"
 #include "main/aten.h"
 #include <string.h>
@@ -68,6 +69,9 @@ Variable *VariableList::createVariable(VTypes::DataType dt)
 		case (VTypes::TorsionData):
 		case (VTypes::AtomtypeData):
 			result = new PointerVariable(dt);
+			break;
+		case (VTypes::ReferenceData):
+			result = new ReferenceVariable;
 			break;
 		default:
 			printf("Don't yet know how to create a variable of type %i\n", dt);
@@ -133,13 +137,11 @@ ExpressionVariable *VariableList::addExpression(const char *s)
 	newvar->setName(newname);
 	// Cast to ExpressionVariable and initialise it
 	ExpressionVariable *result = (ExpressionVariable*) newvar;
-	if (!result->initialise(s, this))
+	if (!result->initialise(s))
 	{
 		msg.print( "Failed to cache expression.\n");
 		return NULL;
 	}
-// 	// Check which type the expression evaluates to, and set this as the secondary variable type
-// 	newvar->setSecondaryType( result->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData );
 	return result;
 }
 

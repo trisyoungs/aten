@@ -25,12 +25,11 @@
 #include "base/bundle.h"
 #include "templates/list.h"
 #include "command/filter.h"
-#include "base/vaccess.h"
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "623"
-#define ATENDATE "Sun 31 Aug - 22:29"
+#define ATENDATE "Mon 01 Sep - 00:01"
 #define ATENURL "http://aten.googlecode.com/svn/branches/newvar"
 
 // Forward Declarations
@@ -280,19 +279,6 @@ class Aten
 	void exportModels();
 };
 
-// Aten Accessors
-class AtenAccessors : public VAccess
-{
-	public:
-	// Constructor
-	AtenAccessors();
-	// Accessor list
-	enum Accessors { Models, nAccessors };
-	// Retrieve specified data from Aten class
-// 	void retrieveData(VObject source, int acessorid, VResult &result);
-};
-
 extern Aten aten;
-extern AtenAccessors atenAccessors;
 
 #endif
