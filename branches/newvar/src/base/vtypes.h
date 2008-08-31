@@ -1,6 +1,6 @@
 /*
-	*** Variable Storage Object Template
-	*** src/templates/vobject.h
+	*** Variable Types
+	*** src/base/vtypes.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VOBJECT_H
-#define ATEN_VOBJECT_H
+#ifndef ATEN_VTYPES_H
+#define ATEN_VTYPES_H
 
 // Variable description
 class VTypes
@@ -29,28 +29,9 @@ class VTypes
 	// List types
 	enum ListType { NoArray, ListArray, ReflistArray, NormalArray };
 	// Data Types
-	enum DataType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, ReferenceVariable, nVariableTypes };
-	static const char *variableType(DataType);
+	enum DataType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, ReferenceVariable, nDataTypes };
+	static const char *dataType(DataType);
+	VTypes::DataType determineType(const char *s);
 };
-
-// Variable Storage Object Template
-template <class T> class VObject
-{
-	public:
-	// Object Data
-	T data;
-};
-
-// Constructor
-template <class T> VObject<T>::VObject()
-{
-	// Private variables
-	listType_ = VTypes::NoArray;
-	dataType_ = VTypes::NoDataSet;
-
-	// Public variables
-	prev = NULL;
-	next = NULL;
-}
 
 #endif
