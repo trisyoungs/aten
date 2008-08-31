@@ -15,7 +15,6 @@ glyph.cpp
 grid.cpp
 measure.cpp 
 model.cpp 
-modelaccess.cpp
 molecule.cpp 
 pattern.cpp 
 select.cpp 
@@ -29,8 +28,6 @@ undoevent.cpp
 undostate.cpp
 view.cpp
 )
-
-
 
 include_directories(
 ../

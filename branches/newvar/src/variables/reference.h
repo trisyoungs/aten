@@ -1,6 +1,6 @@
 /*
-	*** Arithmetic Expression
-	*** src/parse/expression.h
+	*** Reference Variable
+	*** src/variables/reference.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,24 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_EXPRESSION_H
-#define ATEN_EXPRESSION_H
+#ifndef ATEN_REFERENCEVARIABLE_H
+#define ATEN_REFERENCEVARIABLE_H
 
-#include "variables/expressionnode.h"
 #include "variables/variable.h"
-#include "templates/list.h"
-#include "templates/reflist.h"
 #include "templates/vobject.h"
 
-// Forward Declarations
-class VariableList;
-
-// Expression Variable
-class ExpressionVariable : public Variable, VObject<int>
+// Integer Variable
+class ReferenceVariable : public Variable, VObject<Variable*>
 {
 	public:
 	// Constructor
-	ExpressionVariable();
+	ReferenceVariable();
 
 	/*
 	// Set / Get
@@ -64,42 +58,10 @@ class ExpressionVariable : public Variable, VObject<int>
 	bool asBool();
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type);
-	// Double increase
+	// Integer increase
 	void increase(int);
-	// Double decrease
+	// Integer decrease
 	void decrease(int);
-
-	/*
-	// Expression Data
-	*/
-	private:
-	// The actual expression
-	List<ExpressionNode> expression_;
-	// Type of final result, whether real (TRUE) or integer (FALSE)
-	bool evaluatesToReal_;
-	// Reflist of all bracketed pairs (to speed up execution)
-	Reflist<ExpressionNode,ExpressionNode*> brackets_;
-	// Add long (non-operator)
-	ExpressionNode::TokenType addLongToken(const char *s);
-	// Validate expression
-	bool validate();
-	// Create expression plan
-	bool createPlan();
-	// Evaluate subexpression
-	void evaluate(ExpressionNode *left, ExpressionNode *right);
-	// Evaluate whole expression (reduce to one node)
-	ExpressionNode *evaluate();
-
-	public:
-	// Set expression from string
-	bool initialise(const char *s);
-	// Return whether the result of the expression is a floating point (or integer)
-	bool evaluatesToReal();
-	// Evaluate expression and return value
-	double evaluateAsReal();
-	int evaluateAsInteger();
-	// Print expression
-	void print(ExpressionNode *highlight = NULL, bool showUsed = TRUE);
 };
 
 #endif
