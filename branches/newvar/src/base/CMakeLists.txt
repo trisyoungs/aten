@@ -21,6 +21,7 @@ pattern.h
 region.h
 sysfunc.h
 spacegroup.h
+vaccess.h
 atomaddress.cpp
 atom.cpp
 bond.cpp
@@ -42,6 +43,7 @@ pattern.cpp
 region.cpp
 spacegroup.cpp
 sysfunc.cpp
+vaccess.cpp
 )
 
 add_library(math

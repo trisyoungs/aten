@@ -920,7 +920,7 @@ class ModelAccessors : public VAccess
 	// Accessor list
 	enum Accessors { Atoms, Name, NAtoms, nAccessors };
 	// Retrieve specified data from Model class
-	void retrieveData(VObject source, int acessorid, VResult &result);
+// 	void retrieveData(VObject source, int acessorid, VResult &result);
 };
 
 extern ModelAccessors modelAccessor;

@@ -1,6 +1,6 @@
 /*
-	*** Variable
-	*** src/parse/variable.h
+	*** Basic Variable
+	*** src/variables/variable.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -22,31 +22,15 @@
 #ifndef ATEN_VARIABLE_H
 #define ATEN_VARIABLE_H
 
-#include "templates/list.h"
 #include "base/dnchar.h"
-#include "base/sysfunc.h"
-
-// Forward Declarations
-class Atom;
-class Bond;
-class Cell;
-class Pattern;
-class Model;
-class Grid;
-class PatternBound;
-class ForcefieldAtom;
-class Expression;
+#include "base/vobject.h"
 
 // Variable
 class Variable
 {
 	public:
-	// Variable Types
-	enum VariableType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, ReferenceVariable, nVariableTypes };
-	static const char *variableType(VariableType);
-	static VariableType determineType(const char *s);
 	// Constructor / Destructor
-	Variable(VariableType vt = CharacterVariable);
+	Variable();
 	~Variable();
 	// List pointers
 	Variable *prev, *next;
@@ -57,70 +41,47 @@ class Variable
 	private:
 	// Name of the variable
 	Dnchar name_;
-	// Whether the variable is dereferenced (local) or referenced
-	bool referenced_;
-	// Value of variable (for dereferenced variables)
-	void *ptrValue_;
-	Dnchar charValue_;
-	int intValue_;
-	double doubleValue_;
-	// Content type of variable (unset until first access for referenced variables)
-	VariableType type_;
-	
+	// Type of stored data
+	VTypes::DataType dataType_;
+	// List type (if any)
+	VTypes::ListType listType_;
 
 	public:
-	// Print contents of variable
-	void print();
 	// Clears value of variable
-	void reset();
+	//void reset();
 	// Set name of variable
 	void setName(const char* s);
-	// Set value of variable (char)
-	void set(const char*);
-	// Set value of variable (int)
-	void set(int i);
-	// Set value of variable (double)
-	void set(double d);
-	// Set value of variable (atom*)
-	void set(Atom*);
-	// Set value of variable (bond*)
-	void set(Bond*);
-	// Set value of variable (pattern*)
-	void set(Pattern*);
-	// Set value of variable (model*)
-	void set(Model*);
-	// Set value of variable (grid*)
-	void set(Grid*);
-	// Set value of variable (PatternBound*)
-	void set(PatternBound*);
-	// Set value of variable (ForcefieldAtom*)
-	void set(ForcefieldAtom*);
-	// Set value of variable (Expression*)
-	void set(Expression*);
-	// Copy pointer contents of source variable
-	void copyPointer(Variable *v);
-	// Sets the content type of the variable
-	void setType(VariableType vt);
-	// Returns content type of the variable
-	VariableType type();
 	// Get name of variable
 	const char *name();
+	// Sets the content type of the variable
+	void setType(VTypes::DataType vt);
+	// Returns content type of the variable
+	VTypes::DataType type();
+
+	// Set value of variable (char)
+	virtual void set(const char*)=0;
+	// Set value of variable (int)
+	virtual void set(int i)=0;
+	// Set value of variable (double)
+	virtual void set(double d)=0;
+	// Set value of variable (pointer)
+	virtual void set(void *ptr, VTypes::DataType type)=0;
 	// Get value of variable as character string
-	const char *asCharacter();
+	virtual const char *asCharacter()=0;
 	// Get value of variable as integer
-	int asInteger();
+	virtual int asInteger()=0;
 	// Get value of variable as double
-	double asDouble();
+	virtual double asDouble()=0;
 	// Get value of variable as float
-	float asFloat();
+	virtual float asFloat()=0;
 	// Get value of variable as a boolean
-	bool asBool();
-	// Get value of variable as pointer
-	void *asPointer();
+	virtual bool asBool()=0;
+	// Get value of variable as pointer of specified type
+	virtual void *asPointer(VTypes::DataType type)=0;
 	// Integer increase
-	void increase(int);
+	virtual void increase(int);
 	// Integer decrease
-	void decrease(int);
+	virtual void decrease(int);
 };
 
 #endif

@@ -22,7 +22,8 @@
 #ifndef ATEN_VARIABLELIST_H
 #define ATEN_VARIABLELIST_H
 
-#include "command/variable.h"
+#include "variables/variable.h"
+#include "variables/character.h"
 #include "templates/list.h"
 #include "base/constants.h"
 #include "base/dnchar.h"
@@ -36,6 +37,7 @@ class Pattern;
 class Model;
 class PatternBound;
 class ForcefieldAtom;
+class ExpressionVariable;
 
 // Variable list
 class VariableList
@@ -51,7 +53,7 @@ class VariableList
 	// List of variables / references
 	List<Variable> vars_;
 	// Static, dummy variable '*'
-	Variable dummy_;
+	CharacterVariable dummy_;
 	// List of constant values
 	List<Variable> constants_;
 	// List of expressions
@@ -80,14 +82,14 @@ class VariableList
 	// Add an unnamed integer constant to the list
 	Variable *addConstant(int i);
 	// Add an unnamed expression to the list
-	Variable *addExpression(const char *s);
+	ExpressionVariable *addExpression(const char *s);
 	// Add a reference to the variable list
-	Variable *addReference(const char *s, VObject *vobparent = NULL);
+// 	Variable *addReference(const char *s, VObject *vobparent = NULL);
 	// Add a named variable to the list
-	Variable *addVariable(const char *prefix, const char *suffix, Variable::VariableType vt);
-	Variable *addVariable(const char *name, Variable::VariableType vt);
+	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
+	Variable *addVariable(const char *name, VTypes::DataType vt);
 	// Create, but don't set, a named variable in the list
-	Variable *createVariable(const char *prefix, const char *suffix, Variable::VariableType vt);
+	Variable *createVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
 	// Reset values of all variables
 	void resetAll();
 	// Reset values of variable selection
