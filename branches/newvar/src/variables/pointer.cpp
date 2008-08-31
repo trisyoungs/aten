@@ -26,9 +26,9 @@
 #include <stdlib.h>
 
 // Constructor
-PointerVariable::PointerVariable()
+PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 {
-	dataType_ = VTypes::NoData;
+	dataType_ = ptrtype;
 	listType_ = VTypes::NoArray;
 	data = NULL;
 }
@@ -58,7 +58,7 @@ void PointerVariable::set(double d)
 // Set value of variable (pointer)
 void PointerVariable::set(void *ptr, VTypes::DataType type)
 {
-	if (type != dataType_) printf("A Pointer variable of type XXX"
+	if (type != dataType_) printf("A Pointer variable of type '%s' (%s) cannot be set from a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
 	else data = ptr;
 }
 
@@ -66,36 +66,41 @@ void PointerVariable::set(void *ptr, VTypes::DataType type)
 const char *PointerVariable::asCharacter()
 {
 	printf("A pointer variable cannot be returned as a character.\n");
+	return "NULL";
 }
 
 // Get value of variable as integer
 int PointerVariable::asInteger()
 {
 	printf("A pointer variable cannot be returned as an integer.\n");
+	return 0;
 }
 
 // Get value of variable as double
 double PointerVariable::asDouble()
 {
 	printf("A pointer variable cannot be returned as a double.\n");
+	return 0.0;
 }
 
 // Get value of variable as float
 float PointerVariable::asFloat()
 {
 	printf("A pointer variable cannot be returned as a float.\n");
+	return 0.0f;
 }
 
 // Get value of variable as a boolean
 bool PointerVariable::asBool()
 {
 	printf("A pointer variable cannot be returned as a boolean.\n");
+	return FALSE;
 }
 
 // Get value of variable as pointer of specified type
 void *PointerVariable::asPointer(VTypes::DataType type)
 {
-	if (type != dataType_) printf("Error  - a Pointer variable of type %s is being requested as a %s.\n",sdsd);
+	if (type != dataType_) printf("Error - a Pointer variable of type '%s' (%s) is being requested as a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
 	return data;
 }
 

@@ -24,6 +24,7 @@
 #include "variables/integer.h"
 #include "variables/character.h"
 #include "variables/real.h"
+#include "variables/pointer.h"
 // #include "base/vaccess.h"
 #include "main/aten.h"
 #include <string.h>
@@ -57,6 +58,16 @@ Variable *VariableList::createVariable(VTypes::DataType dt)
 			break;
 		case (VTypes::ExpressionData):
 			result = new ExpressionVariable;
+			break;
+		case (VTypes::AtomData):
+		case (VTypes::PatternData):
+		case (VTypes::ModelData):
+		case (VTypes::GridData):
+		case (VTypes::BondData):
+		case (VTypes::AngleData):
+		case (VTypes::TorsionData):
+		case (VTypes::AtomtypeData):
+			result = new PointerVariable(dt);
 			break;
 		default:
 			printf("Don't yet know how to create a variable of type %i\n", dt);
