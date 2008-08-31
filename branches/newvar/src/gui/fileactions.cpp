@@ -27,6 +27,7 @@
 #include "gui/grids.h"
 #include "gui/tcanvas.uih"
 #include "model/model.h"
+#include "base/sysfunc.h"
 
 // Add new model to workspace
 void AtenForm::on_actionFileNew_triggered(bool checked)

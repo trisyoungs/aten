@@ -57,7 +57,7 @@ int CommandData::function_CA_GETBOND(Command *&c, Bundle &obj)
 	Bond *b = obj.rs->bond(c->argi(0)-1);
 	if (b == NULL) return CR_FAIL;
 	// Set bond information
-	c->parent()->setPatternBoundVariables(c->arg(1)->name(), b);
+// 	c->parent()->setPatternBoundVariables(c->arg(1)->name(), b); TGAY
 	return CR_SUCCESS;
 }
 

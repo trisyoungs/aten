@@ -20,12 +20,16 @@
 */
 
 #include "variables/integer.h"
+#include "base/sysfunc.h"
+#include "base/constants.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-// Constructor / Destructor
+// Constructor
 IntegerVariable::IntegerVariable()
 {
-	dataType_ = VObject::IntegerVariable;
-	listType_ = VObject::NoList;
+	dataType_ = VTypes::IntegerData;
+	listType_ = VTypes::NoArray;
 	data = 0;
 }
 
@@ -52,7 +56,7 @@ void IntegerVariable::set(double d)
 }
 
 // Set value of variable (pointer)
-void IntegerVariable::set(void *ptr, VObject::DataType type)
+void IntegerVariable::set(void *ptr, VTypes::DataType type)
 {
 	printf("An Integer variable cannot be set from a pointer.\n");
 }
@@ -88,7 +92,7 @@ bool IntegerVariable::asBool()
 }
 
 // Get value of variable as pointer of specified type
-void *IntegerVariable::asPointer(VObject::DataType type)
+void *IntegerVariable::asPointer(VTypes::DataType type)
 {
 	printf("An Integer variable cannot be returned as a pointer.\n");
 	return NULL;
@@ -101,7 +105,7 @@ void IntegerVariable::increase(int i)
 }
 
 // Integer decrease
-void IntegerVariable::decrease(int)
+void IntegerVariable::decrease(int i)
 {
 	data -= i;
 }

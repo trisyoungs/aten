@@ -20,16 +20,17 @@
 */
 
 #include "main/aten.h"
-#include "base/pattern.h"
 #include "gui/mainwindow.h"
 #include "gui/forcefields.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
-#include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
 #include "gui/tlistwidgetitem.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "base/pattern.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenForcefields::AtenForcefields(QWidget *parent)

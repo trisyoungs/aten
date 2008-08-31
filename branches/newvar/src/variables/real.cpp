@@ -1,6 +1,6 @@
 /*
 	*** Double Variable
-	*** src/variables/integer.cpp
+	*** src/variables/real.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,13 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "variables/integer.h"
+#include "variables/real.h"
+#include "base/sysfunc.h"
+#include "base/constants.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 // Constructor / Destructor
-DoubleVariable::DoubleVariable()
+RealVariable::RealVariable()
 {
-	dataType_ = VObject::DoubleVariable;
-	listType_ = VObject::NoList;
+	dataType_ = VTypes::RealData;
+	listType_ = VTypes::NoArray;
 	data = 0.0;
 }
 
@@ -34,74 +38,74 @@ DoubleVariable::DoubleVariable()
 */
 
 // Set value of variable (char)
-void DoubleVariable::set(const char *s)
+void RealVariable::set(const char *s)
 {
 	data = atof(s);
 }
 
 // Set value of variable (int)
-void DoubleVariable::set(int i)
+void RealVariable::set(int i)
 {
 	data = i;
 }
 
 // Set value of variable (double)
-void DoubleVariable::set(double d)
+void RealVariable::set(double d)
 {
 	data = d;
 }
 
 // Set value of variable (pointer)
-void DoubleVariable::set(void *ptr, VObject::DataType type)
+void RealVariable::set(void *ptr, VTypes::DataType type)
 {
 	printf("A Double variable cannot be set from a pointer.\n");
 }
 
 // Get value of variable as character string
-const char *DoubleVariable::asCharacter()
+const char *RealVariable::asCharacter()
 {
 	return ftoa(data);
 }
 
 // Get value of variable as integer
-int DoubleVariable::asDouble()
+int RealVariable::asInteger()
 {
 	return (int) data;
 }
 
 // Get value of variable as double
-double DoubleVariable::asDouble()
+double RealVariable::asDouble()
 {
 	return data;
 }
 
 // Get value of variable as float
-float DoubleVariable::asFloat()
+float RealVariable::asFloat()
 {
 	return (float) data;
 }
 
 // Get value of variable as a boolean
-bool DoubleVariable::asBool()
+bool RealVariable::asBool()
 {
 	return (data <= 0 ? FALSE : TRUE);
 }
 
 // Get value of variable as pointer of specified type
-void *DoubleVariable::asPointer(VObject::DataType type)
+void *RealVariable::asPointer(VTypes::DataType type)
 {
 	printf("A Double variable cannot be returned as a pointer.\n");
 	return NULL;
 }
 
-// Double increase
-void DoubleVariable::increase(int i)
+// Integer increase
+void RealVariable::increase(int i)
 {
 	data += i;
 }
 
-// Double decrease
-void DoubleVariable::decrease(int)
+// Integer decrease
+void RealVariable::decrease(int i)
 {
 	data -= i;
 }

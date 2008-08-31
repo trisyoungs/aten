@@ -43,8 +43,8 @@ class Expression
 	List<ExpressionNode> expression_;
 	// The VariableList against which the expression was created
 	VariableList *vars_;
-	// Type of final result, whether double (TRUE) or integer (FALSE)
-	bool evaluatesToFloat_;
+	// Type of final result, whether real (TRUE) or integer (FALSE)
+	bool evaluatesToReal_;
 	// Reflist of all bracketed pairs (to speed up execution)
 	Reflist<ExpressionNode,ExpressionNode*> brackets_;
 	// Add long (non-operator)
@@ -60,11 +60,11 @@ class Expression
 
 	public:
 	// Set expression from string
-	bool set(const char *s, VariableList *vars);
+	bool initialise(const char *s, VariableList *vars);
 	// Return whether the result of the expression is a floating point (or integer)
-	bool evaluatesToFloat();
+	bool evaluatesToReal();
 	// Evaluate expression and return value
-	double evaluateAsDouble();
+	double evaluateAsReal();
 	int evaluateAsInteger();
 	// Print expression
 	void print(ExpressionNode *highlight = NULL, bool showUsed = TRUE);
@@ -78,11 +78,13 @@ class ExpressionVariable : public Variable, VObject<Expression>
 	ExpressionVariable();
 
 	/*
-	// Initialisation
+	// Exposed functions
 	*/
 	public:
-	// Initialise expression from string
-	bool initialise(const char *expr, VariableList *sourcevars);
+	// Set expression from string
+	bool initialise(const char *s, VariableList *vars);
+	// Return whether the result of the expression is a floating point (or integer)
+	bool evaluatesToReal();
 
 	/*
 	// Set / Get

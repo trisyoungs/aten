@@ -35,8 +35,8 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 	{
 		obj.rs->beginUndoState("Add Hydrogens to Atom");
 		Atom *i;
-		if (c->argt(0) == Variable::IntegerVariable) i = obj.rs->atom(c->argi(0)-1);
-		else if (c->argt(0) == Variable::AtomVariable) i = c->arga(0);
+		if (c->argt(0) == VTypes::IntegerData) i = obj.rs->atom(c->argi(0)-1);
+		else if (c->argt(0) == VTypes::AtomData) i = c->arga(0);
 		else
 		{
 			msg.print("Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.\n");
@@ -75,7 +75,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 			Bond::BondType bt;
 			if (c->hasArg(4))
 			{
-				if (c->argt(4) == Variable::CharacterVariable) bt = Bond::bondType(c->argc(4));
+				if (c->argt(4) == VTypes::CharacterData) bt = Bond::bondType(c->argc(4));
 				else bt = Bond::bondType(c->argi(4));
 			}
 			else bt = Bond::Single;
@@ -90,7 +90,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 			Bond::BondType bt;
 			if (c->hasArg(1))
 			{
-				if (c->argt(1) == Variable::CharacterVariable) bt = Bond::bondType(c->argc(1));
+				if (c->argt(1) == VTypes::CharacterData) bt = Bond::bondType(c->argc(1));
 				else bt = Bond::bondType(c->argi(1));
 			}
 			else bt = Bond::Single;
@@ -135,24 +135,24 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 	int el;
 	switch (c->argt(0))
 	{
-		case (Variable::IntegerVariable):
+		case (VTypes::IntegerData):
 			el = c->argi(0);
 			break;
-		case (Variable::FloatVariable):
+		case (VTypes::RealData):
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
-		case (Variable::CharacterVariable):
+		case (VTypes::CharacterData):
 			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),c->argc(0)) == 0) break;
 			if (nm == NULL) el = elements.find(c->argc(0));
 			else el = nm->data();
 			break;
-		case (Variable::AtomVariable):
+		case (VTypes::AtomData):
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", Variable::variableType(c->argt(0)));
+			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", VTypes::dataType(c->argt(0)));
 			el = 0;
 			break;
 	}
@@ -186,20 +186,20 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 	int el;
 	switch (c->argt(0))
 	{
-		case (Variable::IntegerVariable):
+		case (VTypes::IntegerData):
 			el = c->argi(0);
 			break;
-		case (Variable::FloatVariable):
+		case (VTypes::RealData):
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
-		case (Variable::CharacterVariable):
+		case (VTypes::CharacterData):
 			el = elements.find(c->argc(0));
 			break;
-		case (Variable::AtomVariable):
+		case (VTypes::AtomData):
 			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
 			break;
 		default:
-			msg.print("Type '%s' is not a valid one to pass to CA_ADDATOM.\n", Variable::variableType(c->argt(0)));
+			msg.print("Type '%s' is not a valid one to pass to CA_ADDATOM.\n", VTypes::dataType(c->argt(0)));
 			el = 0;
 			break;
 	}

@@ -22,10 +22,10 @@
 #ifndef ATEN_FORMAT_H
 #define ATEN_FORMAT_H
 
-#include "templates/list.h"
-#include "command/variablelist.h"
+#include "variables/variablelist.h"
 #include "command/formatnode.h"
 #include "base/parser.h"
+#include "templates/list.h"
 
 // Format
 class Format : public Parser

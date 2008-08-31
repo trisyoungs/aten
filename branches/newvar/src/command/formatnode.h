@@ -22,8 +22,8 @@
 #ifndef ATEN_FORMATNODE_H
 #define ATEN_FORMATNODE_H
 
+#include "variables/variablelist.h"
 #include "templates/list.h"
-#include "command/variablelist.h"
 
 // Format node
 class FormatNode

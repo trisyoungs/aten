@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/prefs.h"
 #include "model/model.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenPrefs::AtenPrefs(QWidget *parent) : QDialog(parent)

@@ -23,7 +23,7 @@
 #include "variables/expression.h"
 #include "variables/integer.h"
 #include "variables/character.h"
-#include "variables/double.h"
+#include "variables/real.h"
 // #include "base/vaccess.h"
 #include "main/aten.h"
 #include <string.h>
@@ -112,22 +112,23 @@ Variable *VariableList::addConstant(int i)
 }
 
 // Add expression
-Variable *VariableList::addExpression(const char *s)
+ExpressionVariable *VariableList::addExpression(const char *s)
 {
-	// Create structure and try to cache the expression text within it
-	Expression *ex = new Expression();
-	if (!ex->set(s, this))
+	// Create new variable in which to store expression
+	Variable *newvar = createVariable(VTypes::ExpressionData);
+	static char newname[24];
+	expressions_.own(newvar);
+	sprintf(newname,"expression%i", expressions_.nItems());
+	newvar->setName(newname);
+	// Cast to ExpressionVariable and initialise it
+	ExpressionVariable *result = (ExpressionVariable*) newvar;
+	if (!result->initialise(s, this))
 	{
 		msg.print( "Failed to cache expression.\n");
-		delete ex;
 		return NULL;
 	}
-	// Now create variable overcoat to put it in
-	static char newname[24];
-	Variable *result = expressions_.add();
-	sprintf(newname,"expression%i",expressions_.nItems());
-	result->setName(newname);
-	result->set(ex);
+// 	// Check which type the expression evaluates to, and set this as the secondary variable type
+// 	newvar->setSecondaryType( result->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData );
 	return result;
 }
 
@@ -135,26 +136,19 @@ Variable *VariableList::addExpression(const char *s)
 // Set Methods
 */
 
-// Set existing variable (or add new and set) (Variable::CharacterVariable)
+// Set existing variable (character)
 void VariableList::set(const char *name, const char *value)
 {
 	set(name,"",value);
 }
 void VariableList::set(const char *prefix, const char *suffix, const char *value)
 {
-	static char newname[128];
-	strcpy(newname,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(newname,".");
-		strcat(newname,suffix);
-	}
-	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, Variable::CharacterVariable);
+	Variable *v = get(prefix, suffix);
+	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
 	v->set(value);
 }
 
-// Set existing variable (or add new and set) (Variable::IntegerVariable)
+// Set existing variable (integer)
 void VariableList::set(const char *name, int value)
 {
 	set(name,"",value);
@@ -162,54 +156,33 @@ void VariableList::set(const char *name, int value)
 
 void VariableList::set(const char *prefix, const char *suffix, int value)
 {
-	static char newname[128];
-	strcpy(newname,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(newname,".");
-		strcat(newname,suffix);
-	}
-	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, Variable::IntegerVariable);
+	Variable *v = get(prefix, suffix);
+	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
 	v->set(value);
 }
 
-// Set existing variable (or add new and set) (Variable::FloatVariable)
+// Set existing variable (real)
 void VariableList::set(const char *name, double value)
 {
 	set(name,"",value);
 }
 void VariableList::set(const char *prefix, const char *suffix, double value)
 {
-	static char newname[128];
-	strcpy(newname,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(newname,".");
-		strcat(newname,suffix);
-	}
-	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, Variable::FloatVariable);
+	Variable *v = get(prefix, suffix);
+	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
 	v->set(value);
 }
 
-// Set existing variable (or add new and set) (Variable::AtomVariable)
-void VariableList::set(const char *name, Atom *i)
+// Set existing variable (pointer data)
+void VariableList::set(const char *name, void *ptr, VTypes::DataType dt)
 {
-	set(name,"",i);
+	set(name,"",ptr, dt);
 }
-void VariableList::set(const char *prefix, const char *suffix, Atom *i)
+void VariableList::set(const char *prefix, const char *suffix, void *ptr, VTypes::DataType dt)
 {
-	static char newname[128];
-	strcpy(newname,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(newname,".");
-		strcat(newname,suffix);
-	}
-	Variable *v = get(newname);
-	if (v == NULL) v = addVariable(newname, Variable::AtomVariable);
-	v->set(i);
+	Variable *v = get(prefix, suffix);
+	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
+	v->set(ptr, dt);
 }
 
 /*
@@ -231,15 +204,14 @@ Variable *VariableList::get(const char *name)
 // Retrieve named variable (prefix.suffix)
 Variable *VariableList::get(const char *prefix, const char *suffix)
 {
-	static char name[128];
+	static char name[256];
 	strcpy(name,prefix);
 	if (suffix[0] != '\0')
 	{
-		strcat(name,".");
-		strcat(name,suffix);
+		if (prefix[0] != '\0') strcat(name,".");
+		strcat(name, suffix);
 	}
-	for (Variable *v = vars_.first(); v != NULL; v = v->next)
-		if (strcmp(name,v->name()) == 0) return v;
+	for (Variable *v = vars_.first(); v != NULL; v = v->next) if (strcmp(name,v->name()) == 0) return v;
 	return NULL;
 }
 
@@ -258,7 +230,7 @@ void VariableList::print()
 void VariableList::resetAll()
 {
 	msg.enter("VariableList::resetAll");
-	for (Variable *v = vars_.first(); v != NULL; v = v->next) v->reset();
+	//for (Variable *v = vars_.first(); v != NULL; v = v->next) v->reset();
 	msg.exit("VariableList::resetAll");
 }
 
@@ -272,15 +244,15 @@ void VariableList::reset(const char *s, ...)
 	va_start(namelist,s);
 	Variable *v;
 	// Reset 's' first
-	get(s)->reset();
+// 	get(s)->reset();
 	do
 	{
 		strcpy(name,va_arg(namelist,char*));
 		if (name[0] != '\0')
 		{
 			v = get(name);
-			if (v == NULL) printf("VariableList::reset <<<< '%s' not in list >>>>\n",name);
-			else v->reset();
+// 			if (v == NULL) printf("VariableList::reset <<<< '%s' not in list >>>>\n",name);
+// 			else v->reset();
 		}
 	} while (name[0] != '\0');
 	msg.exit("VariableList::reset");

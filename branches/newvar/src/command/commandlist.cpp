@@ -21,9 +21,10 @@
 
 #include "command/commandlist.h"
 #include "command/format.h"
-#include "command/expression.h"
+#include "variables/expression.h"
 #include "main/aten.h"
 #include "model/model.h"
+#include "base/sysfunc.h"
 
 // If Conditions
 const char *IfTestStrings[6] = { "eq", "l", "le", "g", "ge", "neq" };
@@ -214,9 +215,7 @@ Atom *Command::arga(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
 	if (rv == NULL) return NULL;
-	else if (rv->item->type() != Variable::AtomVariable) msg.print("Command can't convert variable '%s' into an Atom\n.", rv->item->name());
-	else return (Atom*) rv->item->asPointer();
-	return NULL;
+	return (Atom*) rv->item->asPointer(VTypes::AtomData);
 }
 
 // Return argument as pattern pointer
@@ -224,9 +223,7 @@ Pattern *Command::argp(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
 	if (rv == NULL) return NULL;
-	else if (rv->item->type() != Variable::PatternVariable) msg.print("Command can't convert variable '%s' into a Pattern\n.", rv->item->name());
-	else return (Pattern*) rv->item->asPointer();
-	return NULL;
+	return (Pattern*) rv->item->asPointer(VTypes::PatternData);
 }
 
 // Return argument as grid pointer
@@ -234,9 +231,7 @@ Grid *Command::argg(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
 	if (rv == NULL) return NULL;
-	else if (rv->item->type() != Variable::GridVariable) msg.print("Command can't convert variable '%s' into a Grid\n.", rv->item->name());
-	else return (Grid*) rv->item->asPointer();
-	return NULL;
+	return (Grid*) rv->item->asPointer(VTypes::GridData);
 }
 
 // Return argument as model pointer
@@ -244,9 +239,7 @@ Model *Command::argm(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
 	if (rv == NULL) return NULL;
-	else if (rv->item->type() != Variable::ModelVariable) msg.print("Command can't convert variable '%s' into a Model\n.", rv->item->name());
-	else return (Model*) rv->item->asPointer();
-	return NULL;
+	return (Model*) rv->item->asPointer(VTypes::ModelData);
 }
 
 // Return argument as PatternBound pointer
@@ -254,8 +247,8 @@ PatternBound *Command::argpb(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
 	if (rv == NULL) return NULL;
-	else if ((rv->item->type() < Variable::BondVariable) || (rv->item->type() > Variable::TorsionVariable)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
-	else return (PatternBound*) rv->item->asPointer();
+	else if ((rv->item->type() < VTypes::BondData) || (rv->item->type() > VTypes::TorsionData)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
+	else return (PatternBound*) rv->item->asPointer(VTypes::BondData);
 	return NULL;
 }
 
@@ -264,9 +257,7 @@ ForcefieldAtom *Command::argffa(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
 	if (rv == NULL) return NULL;
-	else if (rv->item->type() != Variable::AtomtypeVariable) msg.print("Command can't convert variable '%s' into a ForcefieldAtom\n.", rv->item->name());
-	else return (ForcefieldAtom*) rv->item->asPointer();
-	return NULL;
+	return (ForcefieldAtom*) rv->item->asPointer(VTypes::AtomtypeData);
 }
 
 // Returns whether argument 'n' was provided
@@ -276,10 +267,10 @@ bool Command::hasArg(int argno)
 }
 
 // Return variable type of argument
-Variable::VariableType Command::argt(int argno)
+VTypes::DataType Command::argt(int argno)
 {
 	Refitem<Variable,int> *rv = args_[argno];
-	return (rv == NULL ? Variable::nVariableTypes : rv->item->type());
+	return (rv == NULL ? VTypes::nDataTypes : rv->item->type());
 }
 
 // Set command and function
@@ -308,9 +299,10 @@ void Command::printArgs()
 	{
 		v = rv->item;
 		printf("%2i %20li", i, v);
-		printf("%12s [%10s]",v->name(), Variable::variableType(v->type()));
-		if (v->type() < Variable::AtomVariable) printf("%20s\n",v->asCharacter());
-		else printf("%li\n",v->asPointer());
+		printf("%12s [%10s]",v->name(), VTypes::dataType(v->type()));
+		if (v->type() < VTypes::AtomData) printf("%20s\n",v->asCharacter());
+// 		else printf("%li\n", v->asPointer());
+		else printf("ptr\n");
 		i++;
 	}
 	msg.exit("Command::printArgs");
@@ -412,17 +404,17 @@ bool Command::ifEvaluate()
 	static Variable *v1, *v2;
 	static char string1[512], string2[512];
 	static double d1, d2;
-	Variable::VariableType vt1, vt2;
+	VTypes::DataType vt1, vt2;
 	static int i1, i2;
 	v1 = args_[0]->item;
 	v2 = args_[2]->item;
 	// Determine how to do the comparison
 	vt1 = v1->type();
 	vt2 = v2->type();
-	if (vt1 == Variable::ExpressionVariable) vt1 = ((Expression*) v1->asPointer())->evaluatesToFloat() ? Variable::FloatVariable : Variable::IntegerVariable;
-	if (vt2 == Variable::ExpressionVariable) vt2 = ((Expression*) v2->asPointer())->evaluatesToFloat() ? Variable::FloatVariable : Variable::IntegerVariable;
+	if (vt1 == VTypes::ExpressionData) vt1 = ((ExpressionVariable*) v1)->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData;
+	if (vt2 == VTypes::ExpressionData) vt2 = ((ExpressionVariable*) v2)->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData;
 	if (vt2 > vt1) vt1 = vt2;
-	if (vt1 == Variable::CharacterVariable)
+	if (vt1 == VTypes::CharacterData)
 	{
 		strcpy(string1, v1->asCharacter());
 		strcpy(string2, v2->asCharacter());
@@ -450,7 +442,7 @@ bool Command::ifEvaluate()
 				break;
 		}
 	}
-	else if (vt1 == Variable::IntegerVariable)
+	else if (vt1 == VTypes::IntegerData)
 	{
 		i1 = v1->asInteger();
 		i2 = v2->asInteger();
@@ -520,7 +512,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	bool required = TRUE, repeat = FALSE;
 	int n, m, argcount, last = -1;
 	Variable *var;
-	Variable::VariableType vt;
+	VTypes::DataType vt;
 	AssignOps::AssignOp ao;
 	Parser::ArgumentForm af;
 	static char arg[512];
@@ -696,7 +688,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 						args_.add(var);
 						// Create subvariables if necessary
 						// Create extra variables in the command structure
-						if (!parent_->createSubvariables(var)) return FALSE;
+// 						if (!parent_->createSubvariables(var)) return FALSE; TGAY
 					}
 				}
 				else
@@ -720,25 +712,25 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					{
 						case ('A'):
 						case ('a'):
-							vt = Variable::AtomVariable;
+							vt = VTypes::AtomData;
 							break;
 						case ('B'):
 						case ('b'):
-							vt = Variable::BondVariable;
+							vt = VTypes::BondData;
 							break;
 						case ('P'):
 						case ('p'):
-							vt = Variable::PatternVariable;
+							vt = VTypes::PatternData;
 							break;
 						case ('M'):
 						case ('m'):
-							vt = Variable::ModelVariable;
+							vt = VTypes::ModelData;
 							break;
 						default:
-							vt = Variable::nVariableTypes;
+							vt = VTypes::nDataTypes;
 							break;
 					}
-					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead.\n", cmd, Variable::variableType(vt), &arg[0]);
+					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead.\n", cmd, VTypes::dataType(vt), &arg[0]);
 					return FALSE;
 				}
 				// See if it has been declared
@@ -750,7 +742,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				else args_.add(var);
 				// Create extra variables in the command structure
-				if (!parent_->createSubvariables(var)) return FALSE;
+// 				if (!parent_->createSubvariables(var)) return FALSE; TGAY
 				break;
 			// Character variable
 			case ('C'):
@@ -766,9 +758,9 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 					msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
 					return FALSE;
 				}
-				else if (var->type() != Variable::CharacterVariable)
+				else if (var->type() != VTypes::CharacterData)
 				{
-					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' which is of type '%s'.\n", cmd, &arg[1], Variable::variableType(var->type()));
+					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' which is of type '%s'.\n", cmd, &arg[1], VTypes::dataType(var->type()));
 					return FALSE;
 				}
 				else args_.add(var);
@@ -916,59 +908,59 @@ Command *CommandList::topmostBranch(CommandAction ca)
 	return result->pointer();
 }
 
-// Create subvariables for variable (based on its type)
-bool CommandList::createSubvariables(Variable *v)
-{
-	switch (v->type())
-	{
-		case (Variable::AtomVariable):
-			if (!createAtomVariables( v->name() )) return FALSE;
-			break;
-		case (Variable::PatternVariable):
-			if (!createPatternVariables( v->name() )) return FALSE;
-			break;
-		case (Variable::GridVariable):
-			if (!createGridVariables( v->name() )) return FALSE;
-			break;
-		case (Variable::ModelVariable):
-			if (!createModelVariables( v->name() )) return FALSE;
-			break;
-		case (Variable::BondVariable):
-		case (Variable::AngleVariable):
-		case (Variable::TorsionVariable):
-			if (!createPatternBoundVariables(v->name())) return FALSE;
-			break;
-		case (Variable::AtomtypeVariable):
-			if (!createAtomtypeVariables(v->name())) return FALSE;
-			break;
-	}
-	return TRUE;
-}
+// // Create subvariables for variable (based on its type)
+// bool CommandList::createSubvariables(Variable *v)
+// {
+// 	switch (v->type())
+// 	{
+// 		case (VTypes::AtomData):
+// 			if (!createAtomVariables( v->name() )) return FALSE;
+// 			break;
+// 		case (VTypes::PatternData):
+// 			if (!createPatternVariables( v->name() )) return FALSE;
+// 			break;
+// 		case (VTypes::GridData):
+// 			if (!createGridVariables( v->name() )) return FALSE;
+// 			break;
+// 		case (VTypes::ModelData):
+// 			if (!createModelVariables( v->name() )) return FALSE;
+// 			break;
+// 		case (VTypes::BondData):
+// 		case (VTypes::AngleData):
+// 		case (VTypes::TorsionData):
+// 			if (!createPatternBoundVariables(v->name())) return FALSE;
+// 			break;
+// 		case (VTypes::AtomtypeData):
+// 			if (!createAtomtypeVariables(v->name())) return FALSE;
+// 			break;
+// 	}
+// 	return TRUE;
+// }
 
-// Set subvariables for variable (based on its type)
-void CommandList::setSubvariables(Variable *v)
-{
-	switch (v->type())
-	{
-		case (Variable::AtomVariable):
-			setAtomVariables( v->name(), (Atom*) v->asPointer() );
-			break;
-		case (Variable::PatternVariable):
-			setPatternVariables( v->name(), (Pattern*) v->asPointer() );
-			break;
-		case (Variable::ModelVariable):
-			setModelVariables( v->name(), (Model*) v->asPointer() );
-			break;
-		case (Variable::BondVariable):
-		case (Variable::AngleVariable):
-		case (Variable::TorsionVariable):
-			setPatternBoundVariables( v->name(), (PatternBound*) v->asPointer() );
-			break;
-		case (Variable::AtomtypeVariable):
-			setAtomtypeVariables( v->name(), (ForcefieldAtom*) v->asPointer() );
-			break;
-	}
-}
+// // Set subvariables for variable (based on its type)
+// void CommandList::setSubvariables(Variable *v)
+// {
+// 	switch (v->type())
+// 	{
+// 		case (VTypes::AtomData):
+// 			setAtomVariables( v->name(), (Atom*) v->asPointer() );
+// 			break;
+// 		case (VTypes::PatternData):
+// 			setPatternVariables( v->name(), (Pattern*) v->asPointer() );
+// 			break;
+// 		case (VTypes::ModelData):
+// 			setModelVariables( v->name(), (Model*) v->asPointer() );
+// 			break;
+// 		case (VTypes::BondData):
+// 		case (VTypes::AngleData):
+// 		case (VTypes::TorsionData):
+// 			setPatternBoundVariables( v->name(), (PatternBound*) v->asPointer() );
+// 			break;
+// 		case (VTypes::AtomtypeData):
+// 			setAtomtypeVariables( v->name(), (ForcefieldAtom*) v->asPointer() );
+// 			break;
+// 	}
+// }
 
 // Add basic command
 bool CommandList::addCommand(CommandAction ca)
@@ -976,7 +968,7 @@ bool CommandList::addCommand(CommandAction ca)
 	msg.enter("CommandList::addCommand");
 	Command *c, *topc;
 	CommandAction branchca;
-	Variable::VariableType vt;
+	VTypes::DataType vt;
 	int n;
 	Variable *v;
 	bool result = TRUE, varresult = TRUE;
@@ -1002,12 +994,12 @@ bool CommandList::addCommand(CommandAction ca)
 				v = variables.get(parser.argc(n));
 				if (v != NULL)
 				{
-					printf("Error: Variable '%s': redeclared as type '%s' (from '%s').\n", parser.argc(n), Variable::variableType((Variable::VariableType) ca),  Variable::variableType(v->type()));
+					printf("Error: Variable '%s': redeclared as type '%s' (from '%s').\n", parser.argc(n), VTypes::dataType((VTypes::DataType) ca),  VTypes::dataType(v->type()));
 					result = FALSE;
 				}
 				else
 				{
-					vt = (Variable::VariableType) ca;
+					vt = (VTypes::DataType) ca;
 					v = variables.addVariable(parser.argc(n), vt);
 				}
 			}
@@ -1067,7 +1059,7 @@ bool CommandList::addCommand(CommandAction ca)
 			pushBranch(c->createBranch(), ca, c);
 			varresult = c->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
 			// Create subvariables if necessary
-			if (varresult) varresult = createSubvariables(c->arg(0));
+// 			if (varresult) varresult = createSubvariables(c->arg(0)); TGAY
 			break;
 		// End the topmost branch in the stack
 		case (CA_END):
@@ -1196,11 +1188,11 @@ bool CommandList::cacheCommand()
 			addcmd = TRUE;
 			switch (v->type())
 			{
-				case (Variable::CharacterVariable):
+				case (VTypes::CharacterData):
 					addcmd = addCommand(CA_LETCHAR);
 					break;
-				case (Variable::IntegerVariable):
-				case (Variable::FloatVariable):
+				case (VTypes::IntegerData):
+				case (VTypes::RealData):
 					addcmd = addCommand(CA_LET);
 					break;
 				default:

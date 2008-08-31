@@ -26,6 +26,7 @@
 #include "command/filter.h"
 #include "model/model.h"
 #include "classes/prefs.h"
+#include "base/sysfunc.h"
 
 // Create 'n' new atoms at once in model
 int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
@@ -70,19 +71,19 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = (c->argt(0) == Variable::IntegerVariable ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
+	Model *m = (c->argt(0) == VTypes::IntegerData ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
 		//gui.select_model(m);
-		c->parent()->setModelVariables("",obj.m);
+// 		c->parent()->setModelVariables("",obj.m); TGAY
 		obj.p = NULL;
 		obj.i = m->atoms();
 		// If a model variables was supplied, set the subvariables
 		if (c->hasArg(1))
 		{
-			c->arg(1)->set(m);
-			c->parent()->setModelVariables(c->arg(1)->name(), m);
+			c->arg(1)->set(m, VTypes::ModelData);
+// 			c->parent()->setModelVariables(c->arg(1)->name(), m); TGAY
 		}
 		return CR_SUCCESS;
 	}
@@ -121,7 +122,7 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
-			c->parent()->setModelVariables("",m);
+// 			c->parent()->setModelVariables("",m); TGAY
 			return CR_SUCCESS;
 		}
 		else return CR_FAIL;
@@ -184,7 +185,7 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 	{
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
-		c->parent()->setModelVariables("",obj.m);
+// 		c->parent()->setModelVariables("",obj.m); TGAY
 	}
 	return CR_SUCCESS;
 }
@@ -198,7 +199,7 @@ int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 	{
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
-		c->parent()->setModelVariables("",obj.m);
+// 		c->parent()->setModelVariables("",obj.m); TGAY
 	}
 	return CR_SUCCESS;
 }
@@ -225,7 +226,7 @@ int CommandData::function_CA_SETNAME(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	obj.rs->setName(c->argc(0));
-	c->parent()->setModelVariables("",obj.m);  // ROLE
+// 	c->parent()->setModelVariables("",obj.m);  // ROLE    TGAY
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return CR_SUCCESS;
 }

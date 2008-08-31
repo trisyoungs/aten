@@ -22,6 +22,7 @@
 #include "command/commandlist.h"
 #include "model/model.h"
 #include "base/glyph.h"
+#include "base/sysfunc.h"
 
 // Auto-add ellipsoids to current atom selection
 int CommandData::function_CA_AUTOELLIPSOIDS(Command *&c, Bundle &obj)
@@ -69,7 +70,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
+		if (c->argt(1) == VTypes::AtomData) target = c->arga(1);
 		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
@@ -93,7 +94,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argt(1) == Variable::AtomVariable) target = c->arga(1);
+		if (c->argt(1) == VTypes::AtomData) target = c->arga(1);
 		else target = obj.rs->atom(c->argi(1) - 1);
 	}
 	// Finally, check pointer currently in target and store it
@@ -117,7 +118,7 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 	Atom *target = obj.i;
 	if (c->hasArg(1))
 	{
-		if (c->argt(1) == Variable::AtomVariable) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(1)), GlyphData::VelocityData);
+		if (c->argt(1) == VTypes::AtomData) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(1)), GlyphData::VelocityData);
 		else obj.gl->setAtom(d, c->argi(1)-1, GlyphData::VelocityData); 
 	}
 	return CR_SUCCESS;
@@ -132,7 +133,7 @@ int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argt(d) == Variable::AtomVariable) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(d)), GlyphData::ForceData);
+			if (c->argt(d) == VTypes::AtomData) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(d)), GlyphData::ForceData);
 			else obj.gl->setAtom(d, c->argi(d)-1, GlyphData::ForceData); 
 		}
 		else break;
@@ -149,7 +150,7 @@ int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argt(d) == Variable::AtomVariable) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(d)), GlyphData::PositionData);
+			if (c->argt(d) == VTypes::AtomData) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(d)), GlyphData::PositionData);
 			else obj.gl->setAtom(d, c->argi(d)-1, GlyphData::PositionData); 
 		}
 		else break;
@@ -166,7 +167,7 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 	{
 		if (c->hasArg(d))
 		{
-			if (c->argt(d) == Variable::AtomVariable) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(d)), GlyphData::VelocityData);
+			if (c->argt(d) == VTypes::AtomData) obj.gl->setAtom(d, obj.rs->atomIndex(c->arga(d)), GlyphData::VelocityData);
 			else obj.gl->setAtom(d, c->argi(d)-1, GlyphData::VelocityData); 
 		}
 		else break;

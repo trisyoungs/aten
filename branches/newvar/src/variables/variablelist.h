@@ -65,15 +65,15 @@ class VariableList
 	// Set existing (or create new) variable (character string)
 	void set(const char*, const char*, const char*);
 	void set(const char *name, const char *value);
-	// Set existing (or create new) variable (integer)
+	// Set existing variable (integer)
 	void set(const char*, const char*, int);
 	void set(const char *name, int value);
-	// Set existing (or create new) variable (double)
+	// Set existing variable (double)
 	void set(const char*, const char*, double);
 	void set(const char *name, double value);
-	// Set existing (or create new) variable (Atom*)
-	void set(const char*, const char*, Atom*);
-	void set(const char *name, Atom *i);
+	// Set existing variable (pointer)
+	void set(const char*, const char*, void *ptr, VTypes::DataType vt);
+	void set(const char *name, void *ptr, VTypes::DataType vt);
 	// Retrieve a named variable from the list
 	Variable *get(const char *prefix, const char *suffix);
 	Variable *get(const char *name);

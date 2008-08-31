@@ -24,6 +24,7 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "classes/prefs.h"
+#include "base/sysfunc.h"
 #include <iostream>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -230,7 +231,7 @@ int Aten::parseCli(int argc, char *argv[])
 	ElementMap::ZmapType zm;
 	Namemap<int> *nm;
 	CommandList cl, *script;
-	cl.createModelVariables("");
+// 	cl.createModelVariables(""); TGAY
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -326,7 +327,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
 					cl.clear();
-					cl.setModelVariables("",aten.current.m);
+// 					cl.setModelVariables("",aten.current.m);/* TGAY*/
 					if (cl.cacheLine(argv[++argn]))
 					{
 						if (!cl.execute()) return -1;
@@ -425,11 +426,11 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.scripts.add();
-					script->createModelVariables("");
+// 					script->createModelVariables(""); TGAY
 					if (script->load(argv[++argn]))
 					{
 						aten.setProgramMode(Aten::CommandMode);
-						script->setModelVariables("",aten.current.m);
+// 						script->setModelVariables("",aten.current.m); TGAY
 						if (!script->execute()) aten.setProgramMode(Aten::NoMode);
 						// Need to check program mode after each script since it can be changed
 						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);

@@ -20,12 +20,13 @@
 */
 
 #include "main/aten.h"
-#include "classes/grid.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"
 #include "gui/gui.h"
 #include "gui/tlistwidgetitem.h"
+#include "classes/grid.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenGrids::AtenGrids(QWidget *parent)

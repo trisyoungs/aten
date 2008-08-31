@@ -24,6 +24,7 @@
 #include "model/model.h"
 #include "classes/grid.h"
 #include "classes/prefs.h"
+#include "base/sysfunc.h"
 
 // Add grid point data at specified indices
 int CommandData::function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj)
