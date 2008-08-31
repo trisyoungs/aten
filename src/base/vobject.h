@@ -34,8 +34,9 @@ class VObject
 	VObject *prev, *next;
 	// List types
 	enum ListType { NoArray, ListArray, ReflistArray, NormalArray };
-	// Data types
-	enum DataType { NoDataSet, StringData, IntegerData, DoubleData, ModelData, PatternData, AtomData, BondData};
+	// Data Types
+	enum DataType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, ReferenceVariable, nVariableTypes };
+	static const char *variableType(VariableType);
 
 	/*
 	// Object Data
@@ -43,12 +44,14 @@ class VObject
 	private:
 	// Name
 	Dnchar name_;
-	// List type
+	// List type of pointed data
 	VObject::ListType listType_;
-	// Variable type pointed to
+	// Data type pointed to
 	VObject::DataType dataType_;
 	// Whether variable is read/write (TRUE) or read-only (FALSE)
 	bool readWrite_;
+	// Pointer to data
+	void *ptr_;
 
 	/*
 	// Set / Get
