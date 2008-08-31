@@ -27,7 +27,7 @@ ModelAccessors modelAccessors;
 // Constructor
 ModelAccessors::ModelAccessors()
 {
-	addAccessor("atoms",		VObject::ListArray,	VObject::AtomData,	FALSE);
-	addAccessor("name",		VObject::NoArray,	VObject::StringData,	FALSE);
-	addAccessor("natoms",		VObject::NoArray,	VObject::IntegerData,	FALSE);
+// 	addAccessor("atoms",		VObject::ListArray,	VObject::AtomData,	FALSE);
+// 	addAccessor("name",		VObject::NoArray,	VObject::StringData,	FALSE);
+// 	addAccessor("natoms",		VObject::NoArray,	VObject::IntegerData,	FALSE);
 };

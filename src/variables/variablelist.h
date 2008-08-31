@@ -58,6 +58,8 @@ class VariableList
 	List<Variable> constants_;
 	// List of expressions
 	List<Variable> expressions_;
+	// Create variable of specified type
+	Variable *createVariable(VTypes::DataType dt);
 
 	public:
 	// Set existing (or create new) variable (character string)
@@ -77,7 +79,7 @@ class VariableList
 	Variable *get(const char *name);
 	// Return dummy variable
 	Variable *dummy();
-	// Add an unnamed constant to the list
+	// Add an unnamed constant
 	Variable *addConstant(const char *s, bool forcecharacter = FALSE);
 	// Add an unnamed integer constant to the list
 	Variable *addConstant(int i);
@@ -89,7 +91,7 @@ class VariableList
 	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
 	Variable *addVariable(const char *name, VTypes::DataType vt);
 	// Create, but don't set, a named variable in the list
-	Variable *createVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
+// 	Variable *createVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
 	// Reset values of all variables
 	void resetAll();
 	// Reset values of variable selection

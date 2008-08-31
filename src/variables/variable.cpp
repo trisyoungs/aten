@@ -1,6 +1,6 @@
 /*
 	*** Variable
-	*** src/command/variable.cpp
+	*** src/variables/variable.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/variable.h"
-#include "command/expression.h"
+#include "variables/variable.h"
+#include "variables/expression.h"
 #include "model/model.h"
 #include "classes/forcefieldatom.h"
 #include "classes/grid.h"
@@ -34,7 +34,7 @@ Variable::Variable()
 	// Private variables
 	name_.set("unnamed");
 	listType_ = VTypes::NoArray;
-	dataType_ = VTypes::NoDataSet;
+	dataType_ = VTypes::NoData;
 
 	// Public variables
 	prev = NULL;
@@ -45,7 +45,7 @@ Variable::Variable()
 Variable::~Variable()
 {
 	// Free expression object if one was created
-	if ((type_ == Variable::ExpressionVariable) && (ptrValue_ != NULL)) delete (Expression*) ptrValue_;
+// 	if ((dataType_ == Variable::ExpressionVariable) && (ptrValue_ != NULL)) delete (Expression*) ptrValue_;
 }
 
 // Set name of variable
@@ -54,22 +54,16 @@ void Variable::setName(const char* s)
 	name_.set(s);
 }
 
-// Copy pointer contents of source variable
-void Variable::copyPointer(Variable *v)
-{
-	ptrValue_ = v->ptrValue_;
-}
-
 // Sets the content type of the variable
-void Variable::setType(VariableType vt)
+void Variable::setType(VTypes::DataType dt)
 {
-	type_ = vt;
+	dataType_ = dt;
 }
 
 // Returns content type of the variable
-Variable::VariableType Variable::type()
+VTypes::DataType Variable::type()
 {
-	return type_;
+	return dataType_;
 }
 
 // Get name of variable
@@ -78,333 +72,102 @@ const char *Variable::name()
 	return name_.get();
 }
 
-// Get value of variable as float
-float Variable::asFloat()
+// Set parent VariableList
+void Variable::setParent(VariableList *vlist)
 {
-	return float(asDouble());
+	parent_ = vlist;
 }
 
-// Get value of variable as pointer
-void *Variable::asPointer()
-{
-	return ptrValue_;
-}
+// // Reset
+// void Variable::reset()
+// {
+// 	switch (dataType_)
+// 	{
+// 		case (Variable::CharacterVariable):
+// 			charValue_.set("");
+// 			break;
+// 		case (Variable::IntegerVariable):
+// 			intValue_ = 0;
+// 			break;
+// 		case (Variable::FloatVariable):
+// 			doubleValue_ = 0.0;
+// 			break;
+// 		case (Variable::AtomVariable):
+// 		case (Variable::PatternVariable):
+// 		case (Variable::ModelVariable):
+// 		case (Variable::BondVariable):
+// 		case (Variable::AngleVariable):
+// 		case (Variable::TorsionVariable):
+// 		case (Variable::AtomtypeVariable):
+// 			ptrValue_ = NULL;
+// 			break;
+// 	}
+// }
 
-// Print
-void Variable::print()
-{
-	switch (type_)
-	{
-		case (Variable::CharacterVariable):
-			printf("Variable '%s', type_ 'char', value '%s'.\n", name_.get(), asCharacter());
-			break;
-		case (Variable::IntegerVariable):
-			printf("Variable '%s', type_ 'int', value '%i'.\n", name_.get(), asInteger());
-			break;
-		case (Variable::FloatVariable):
-			printf("Variable '%s', type_ 'double', value '%f'.\n", name_.get(), asDouble());
-			break;
-		case (Variable::AtomVariable):
-		case (Variable::ModelVariable):
-		case (Variable::PatternVariable):
-		case (Variable::BondVariable):
-		case (Variable::AngleVariable):
-		case (Variable::TorsionVariable):
-			printf("Variable '%s', type_ '%s', value '%li'.\n", name_.get(), Variable::variableType(type_), ptrValue_);
-			break;
-		case (Variable::AtomtypeVariable):
-			printf("Variable '%s', type_ 'atomtype_', value '%i'.\n", name_.get(), asInteger());
-			break;
-	}
-}
-
-// Set (from char)
-void Variable::set(const char *s)
-{
-	if (type_ == Variable::CharacterVariable) charValue_.set(s);
-	else if (type_ == Variable::IntegerVariable) intValue_ = atoi(s);
-	else if (type_ == Variable::FloatVariable) doubleValue_ = atof(s);
-	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a character string >>>>\n", name_.get(), Variable::variableType(type_));
-}
-
-// Set (int)
-void Variable::set(int i)
-{
-	if (type_ == Variable::CharacterVariable) charValue_.set(itoa(i));
-	else if (type_ == Variable::IntegerVariable) intValue_ = i;
-	else if (type_ == Variable::FloatVariable) doubleValue_ = i;
-	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from an integer value >>>>\n", name_.get(), Variable::variableType(type_));
-}
-
-// Set (float (double))
-void Variable::set(double d)
-{
-	if (type_ == Variable::CharacterVariable) charValue_.set(ftoa(d));
-	else if (type_ == Variable::IntegerVariable) intValue_ = int(d);
-	else if (type_ == Variable::FloatVariable) doubleValue_ = d;
-	else printf("Variable::set <<<< Can't set variable '%s' which is of type_ '%s' from a double value >>>>\n", name_.get(), Variable::variableType(type_));
-}
-
-// Set (atom*)
-void Variable::set(Atom *i)
-{
-	if (type_ != Variable::AtomVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'atom*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = i;
-	msg.print(Messenger::Verbose,"Atom variable '%s' has pointer '%li' ('%s')\n",name_.get(),i,(i == NULL ? "" : elements.symbol(i)));
-}
-
-// Set (bond*)
-void Variable::set(Bond *b)
-{
-	if (type_ != Variable::BondVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'bond*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = b;
-	msg.print(Messenger::Verbose,"Bond variable '%s' has pointer '%li')\n", name_.get(), b);
-}
-
-// Set (pattern)
-void Variable::set(Pattern *p)
-{
-	if (type_ != Variable::PatternVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'pattern*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = p;
-	msg.print(Messenger::Verbose,"Pattern variable '%s' has pointer '%li' ('%s')\n",name_.get(),p,(p == NULL ? "" : p->name()));
-}
-
-// Set (model)
-void Variable::set(Model *m)
-{
-	if (type_ != Variable::ModelVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'model*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = m;
-	msg.print(Messenger::Verbose,"Model variable '%s' has pointer '%li' ('%s')\n",name_.get(),m,(m == NULL ? "" : m->name()));
-}
-
-// Set (grid)
-void Variable::set(Grid *g)
-{
-	if (type_ != Variable::GridVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'grid*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = g;
-	msg.print(Messenger::Verbose,"Grid variable '%s' has pointer '%li' ('%s')\n",name_.get(),g,(g == NULL ? "" : g->name()));
-}
-
-// Set (PatternBound)
-void Variable::set(PatternBound *pb)
-{
-	if (type_ < Variable::BondVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'PatternBound*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = pb;
-	msg.print(Messenger::Verbose,"PatBound variable '%s' has pointer '%li'\n",name_.get(),pb);
-}
-
-// Set (ForcefieldAtom)
-void Variable::set(ForcefieldAtom *ffa)
-{
-	if (type_ < Variable::AtomtypeVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = ffa;
-	msg.print(Messenger::Verbose,"FFAtom variable '%s' has pointer '%li'\n",name_.get(),ffa);
-}
-
-// Set (Expression)
-void Variable::set(Expression *ex)
-{
-	if (type_ != Variable::ExpressionVariable)
-	{
-		printf("Variable::set <<<< Tried to set variable '%s' which is of type_ '%s' as if it were of type 'ForcefieldAtom*' >>>>\n",name_.get(), Variable::variableType(type_));
-		return;
-	}
-	ptrValue_ = ex;
-	msg.print(Messenger::Verbose,"Expression variable '%s' has pointer '%li'\n",name_.get(),ex);
-}
-
-// Get as char
-const char *Variable::asCharacter()
-{
-	switch (type_)
-	{
-		case (Variable::CharacterVariable):
-			return charValue_.get();
-		case (Variable::IntegerVariable):
-			return itoa(intValue_);
-		case (Variable::FloatVariable):
-			return ftoa(doubleValue_);
-		default:
-			msg.print(Messenger::Verbose,"Variable::asCharacter <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
-	}
-	return "";
-}
-
-// Get as int
-int Variable::asInteger()
-{
-	Expression *ex;
-	switch (type_)
-	{
-		case (Variable::CharacterVariable):
-			return atoi(charValue_.get());
-		case (Variable::IntegerVariable):
-			return intValue_;
-		case (Variable::FloatVariable):
-			return int(doubleValue_);
-		case (Variable::ExpressionVariable):
-			ex = (Expression*) ptrValue_;
-			return int (ex->evaluateAsInteger());
-		default:
-			msg.print(Messenger::Verbose,"Variable::asInteger <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
-	}
-	return 0;
-}
-
-// Get as double
-double Variable::asDouble()
-{
-	Expression *ex;
-	switch (type_)
-	{
-		case (Variable::CharacterVariable):
-			return atof(charValue_.get());
-		case (Variable::IntegerVariable):
-			return double(intValue_);
-		case (Variable::FloatVariable):
-			return doubleValue_;
-		case (Variable::ExpressionVariable):
-			ex = (Expression*) ptrValue_;
-			return ex->evaluateAsDouble();
-		default:
-			msg.print(Messenger::Verbose,"Variable::asDouble <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
-	}
-	return 0.0;
-}
-
-// Get as boolean
-bool Variable::asBool()
-{
-	switch (type_)
-	{
-		case (Variable::CharacterVariable):
-			return charValue_.asBool();
-		case (Variable::IntegerVariable):
-			return (intValue_ < 1 ? FALSE : TRUE);
-		default:
-			msg.print(Messenger::Verbose,"Variable::asBool <<<< Tried to get variable '%s' which is of type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
-	}
-	return FALSE;
-}
-
-// Reset
-void Variable::reset()
-{
-	switch (type_)
-	{
-		case (Variable::CharacterVariable):
-			charValue_.set("");
-			break;
-		case (Variable::IntegerVariable):
-			intValue_ = 0;
-			break;
-		case (Variable::FloatVariable):
-			doubleValue_ = 0.0;
-			break;
-		case (Variable::AtomVariable):
-		case (Variable::PatternVariable):
-		case (Variable::ModelVariable):
-		case (Variable::BondVariable):
-		case (Variable::AngleVariable):
-		case (Variable::TorsionVariable):
-		case (Variable::AtomtypeVariable):
-			ptrValue_ = NULL;
-			break;
-	}
-}
-
-// Integer increase
-void Variable::increase(int n)
-{
-	switch (type_)
-	{
-		case (Variable::IntegerVariable):
-			intValue_ ++;
-			break;
-		case (Variable::FloatVariable):
-			doubleValue_ += 1.0;
-			break;
-		case (Variable::AtomVariable):
-			ptrValue_ = ( (Atom*) ptrValue_)->next;
-			break;
-		case (Variable::PatternVariable):
-			ptrValue_ = ( (Pattern*) ptrValue_)->next;
-			break;
-		case (Variable::ModelVariable):
-			ptrValue_ = ( (Model*) ptrValue_)->next;
-			break;
-		case (Variable::BondVariable):
-		case (Variable::AngleVariable):
-		case (Variable::TorsionVariable):
-			ptrValue_ = ( (PatternBound*) ptrValue_)->next;
-			break;
-		case (Variable::AtomtypeVariable):
-			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->next;
-			break;
-		default:
-			printf("Variable::increase <<<< Don't know how to increase variable '%s', type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
-			break;
-	}
-}
-
-// Integer Decrease
-void Variable::decrease(int n)
-{
-	switch (type_)
-	{
-		case (Variable::IntegerVariable):
-			intValue_ --;
-			break;
-		case (Variable::FloatVariable):
-			doubleValue_ -= 1.0;
-			break;
-		case (Variable::AtomVariable):
-			ptrValue_ = ( (Atom*) ptrValue_)->prev;
-			break;
-		case (Variable::PatternVariable):
-			ptrValue_ = ( (Pattern*) ptrValue_)->prev;
-			break;
-		case (Variable::ModelVariable):
-			ptrValue_ = ( (Model*) ptrValue_)->prev;
-			break;
-		case (Variable::BondVariable):
-		case (Variable::AngleVariable):
-		case (Variable::TorsionVariable):
-			ptrValue_ = ( (PatternBound*) ptrValue_)->prev;
-			break;
-		case (Variable::AtomtypeVariable):
-			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->prev;
-			break;
-		default:
-			printf("Variable::decrease <<<< Don't know how to decrease variable '%s', type_ '%s' >>>>\n", name_.get(), Variable::variableType(type_));
-			break;
-	}
-}
+// // Integer increase
+// void Variable::increase(int n)
+// {
+// 	switch (dataType_)
+// 	{
+// 		case (Variable::IntegerVariable):
+// 			intValue_ ++;
+// 			break;
+// 		case (Variable::FloatVariable):
+// 			doubleValue_ += 1.0;
+// 			break;
+// 		case (Variable::AtomVariable):
+// 			ptrValue_ = ( (Atom*) ptrValue_)->next;
+// 			break;
+// 		case (Variable::PatternVariable):
+// 			ptrValue_ = ( (Pattern*) ptrValue_)->next;
+// 			break;
+// 		case (Variable::ModelVariable):
+// 			ptrValue_ = ( (Model*) ptrValue_)->next;
+// 			break;
+// 		case (Variable::BondVariable):
+// 		case (Variable::AngleVariable):
+// 		case (Variable::TorsionVariable):
+// 			ptrValue_ = ( (PatternBound*) ptrValue_)->next;
+// 			break;
+// 		case (Variable::AtomtypeVariable):
+// 			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->next;
+// 			break;
+// 		default:
+// 			printf("Variable::increase <<<< Don't know how to increase variable '%s', dataType_ '%s' >>>>\n", name_.get(), Variable::variableType(dataType_));
+// 			break;
+// 	}
+// }
+// 
+// // Integer Decrease
+// void Variable::decrease(int n)
+// {
+// 	switch (dataType_)
+// 	{
+// 		case (Variable::IntegerVariable):
+// 			intValue_ --;
+// 			break;
+// 		case (Variable::FloatVariable):
+// 			doubleValue_ -= 1.0;
+// 			break;
+// 		case (Variable::AtomVariable):
+// 			ptrValue_ = ( (Atom*) ptrValue_)->prev;
+// 			break;
+// 		case (Variable::PatternVariable):
+// 			ptrValue_ = ( (Pattern*) ptrValue_)->prev;
+// 			break;
+// 		case (Variable::ModelVariable):
+// 			ptrValue_ = ( (Model*) ptrValue_)->prev;
+// 			break;
+// 		case (Variable::BondVariable):
+// 		case (Variable::AngleVariable):
+// 		case (Variable::TorsionVariable):
+// 			ptrValue_ = ( (PatternBound*) ptrValue_)->prev;
+// 			break;
+// 		case (Variable::AtomtypeVariable):
+// 			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->prev;
+// 			break;
+// 		default:
+// 			printf("Variable::decrease <<<< Don't know how to decrease variable '%s', dataType_ '%s' >>>>\n", name_.get(), Variable::variableType(dataType_));
+// 			break;
+// 	}
+// }

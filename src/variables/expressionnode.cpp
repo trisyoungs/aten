@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/expressionnode.h"
+#include "variables/expressionnode.h"
+#include "variables/variable.h"
 #include "base/sysfunc.h"
-#include "command/variable.h"
 #include <stdio.h>
 
 // Operator Tokens

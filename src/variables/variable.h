@@ -25,6 +25,9 @@
 #include "base/dnchar.h"
 #include "base/vtypes.h"
 
+// Forward declaration
+class VariableList;
+
 // Variable
 class Variable
 {
@@ -45,6 +48,8 @@ class Variable
 	VTypes::DataType dataType_;
 	// List type (if any)
 	VTypes::ListType listType_;
+	// VariableList in which this variable exists
+	VariableList *parent_;
 
 	public:
 	// Clears value of variable
@@ -57,6 +62,8 @@ class Variable
 	void setType(VTypes::DataType vt);
 	// Returns content type of the variable
 	VTypes::DataType type();
+	// Set parent variablelist
+	void setParent(VariableList *vlist);
 
 	// Set value of variable (char)
 	virtual void set(const char*)=0;

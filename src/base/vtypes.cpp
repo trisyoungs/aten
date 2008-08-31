@@ -23,7 +23,7 @@
 #include <string.h>
 
 // Variable Types
-const char *DataTypeKeywords[VTypes::nDataTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "expression", "reference" };
+const char *DataTypeKeywords[VTypes::nDataTypes] = { "none", "character", "integer", "real", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "expression", "reference" };
 const char *VTypes::dataType(VTypes::DataType dt)
 {
 	return DataTypeKeywords[dt];
@@ -43,7 +43,7 @@ VTypes::DataType VTypes::determineType(const char *s)
 		else nch ++;
 	}
 	// Based on the numbers we calculated, try to determine its type
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) return VTypes::CharacterVariable;
-	else if (ndp == 1) return VTypes::FloatVariable;
-	else return VTypes::IntegerVariable;
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) return VTypes::CharacterData;
+	else if (ndp == 1) return VTypes::RealData;
+	else return VTypes::IntegerData;
 }
