@@ -23,7 +23,7 @@
 #define ATEN_VARIABLE_H
 
 #include "base/dnchar.h"
-#include "base/vobject.h"
+#include "base/vtypes.h"
 
 // Variable
 class Variable

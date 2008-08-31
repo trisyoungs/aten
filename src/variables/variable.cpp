@@ -28,38 +28,13 @@
 #include "base/elements.h"
 #include <string.h>
 
-// Variable Types
-const char *VariableTypeKeywords[Variable::nVariableTypes] = { "char", "int", "double", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "expression", "reference" };
-const char *Variable::variableType(Variable::VariableType vt)
-{
-	return VariableTypeKeywords[vt];
-}
-Variable::VariableType Variable::determineType(const char *s)
-{
-	// Try to determine type_ of the argument
-	int ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
-	unsigned int i;
-	for (i = 0; i < strlen(s); i++)
-	{
-		ch = s[i];
-		if ((ch > 47) && (ch < 58)) nn ++;
-		else if (ch == '.') ndp ++;
-		else if ((ch == '-') || (ch == '+')) npm ++;
-		else if ((ch == 'e') || (ch == 'E')) ne ++;
-		else nch ++;
-	}
-	// Based on the numbers we calculated, try to determine its type
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) return Variable::CharacterVariable;
-	else if (ndp == 1) return Variable::FloatVariable;
-	else return Variable::IntegerVariable;
-}
-
 // Constructor
-Variable::Variable(VariableType vt)
+Variable::Variable()
 {
 	// Private variables
 	name_.set("unnamed");
-	type_ = vt;
+	listType_ = VTypes::NoArray;
+	dataType_ = VTypes::NoDataSet;
 
 	// Public variables
 	prev = NULL;

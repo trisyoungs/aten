@@ -24,10 +24,10 @@
 
 #include "variables/variable.h"
 #include "variables/character.h"
-#include "templates/list.h"
 #include "base/constants.h"
 #include "base/dnchar.h"
-#include "base/vobject.h"
+#include "templates/vobject.h"
+#include "templates/list.h"
 
 // Forward Declarations
 class Atom;
