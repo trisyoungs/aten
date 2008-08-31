@@ -1,6 +1,6 @@
 /*
-	*** Double (Real) Variable
-	*** src/variables/double.h
+	*** Real (floating-point) Variable
+	*** src/variables/real.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,18 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_DOUBLEVARIABLE_H
-#define ATEN_DOUBLEVARIABLE_H
+#ifndef ATEN_REALVARIABLE_H
+#define ATEN_REALVARIABLE_H
 
 #include "variables/variable.h"
-#include "base/vobject.h"
+#include "templates/vobject.h"
 
-// Double Variable
-class DoubleVariable : public Variable : public VObject<int>
+// Real Variable
+class RealVariable : public Variable, VObject<int>
 {
 	public:
 	// Constructor
-	DoubleVariable();
+	RealVariable();
 
 	/*
 	// Set / Get
@@ -38,35 +38,26 @@ class DoubleVariable : public Variable : public VObject<int>
 	public:
 	// Clears value of variable
 	//void reset();
-	// Set name of variable
-	void setName(const char* s);
-	// Get name of variable
-	const char *name();
-	// Sets the content type of the variable
-	void setType(VObject::DataType vt);
-	// Returns content type of the variable
-	VObject::DataType type();
-
 	// Set value of variable (char)
-	void set(const char*)=0;
+	void set(const char*);
 	// Set value of variable (int)
-	void set(int i)=0;
+	void set(int i);
 	// Set value of variable (double)
-	void set(double d)=0;
+	void set(double d);
 	// Set value of variable (pointer)
-	void set(void *ptr, VObject::DataType type)=0;
+	void set(void *ptr, VTypes::DataType type);
 	// Get value of variable as character string
-	const char *asCharacter()=0;
+	const char *asCharacter();
 	// Get value of variable as integer
-	int asDouble()=0;
+	int asInteger();
 	// Get value of variable as double
-	double asDouble()=0;
+	double asDouble();
 	// Get value of variable as float
-	float asFloat()=0;
+	float asFloat();
 	// Get value of variable as a boolean
-	bool asBool()=0;
+	bool asBool();
 	// Get value of variable as pointer of specified type
-	void *asPointer(VObject::DataType type)=0;
+	void *asPointer(VTypes::DataType type);
 	// Double increase
 	void increase(int);
 	// Double decrease

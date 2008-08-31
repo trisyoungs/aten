@@ -1,6 +1,6 @@
 /*
 	*** Variable list
-	*** src/command/variablelist.cpp
+	*** src/variables/variablelist.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,9 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/variablelist.h"
-#include "command/expression.h"
-#include "base/vaccess.h"
+#include "variables/variablelist.h"
+#include "variables/expression.h"
+#include "variables/integer.h"
+#include "variables/character.h"
+#include "variables/double.h"
+// #include "base/vaccess.h"
 #include "main/aten.h"
 #include <string.h>
 #include <stdarg.h>
@@ -30,40 +33,45 @@
 VariableList::VariableList()
 {
 	// Added reference to 'models' accessor in Aten
-	addReference("models", atenAccessors.findAccessor("models"));
+	//addReference("models", atenAccessors.findAccessor("models"));
 }
 
-// Return dummy variable
-Variable *VariableList::dummy()
-{
-	return &dummy_;
-}
+/*
+// Variable Creation
+*/
 
-// Retrieve named variable
-Variable *VariableList::get(const char *name)
+// Create variable of specified type (private function)
+Variable *VariableList::createVariable(VTypes::DataType dt)
 {
-	return get(name,"");
-}
-Variable *VariableList::get(const char *prefix, const char *suffix)
-{
-	static char name[128];
-	strcpy(name,prefix);
-	if (suffix[0] != '\0')
+	Variable *result = NULL;
+	switch (dt)
 	{
-		strcat(name,".");
-		strcat(name,suffix);
+		case (VTypes::CharacterData):
+			result = new CharacterVariable;
+			break;
+		case (VTypes::IntegerData):
+			result = new IntegerVariable;
+			break;
+		case (VTypes::RealData):
+			result = new RealVariable;
+			break;
+		case (VTypes::ExpressionData):
+			result = new ExpressionVariable;
+			break;
+		default:
+			printf("Don't yet know how to create a variable of type %i\n", dt);
+			break;
 	}
-	for (Variable *v = vars_.first(); v != NULL; v = v->next)
-		if (strcmp(name,v->name()) == 0) return v;
-	return NULL;
+	if (result != NULL) result->setParent(this);
+	return result;
 }
 
 // Add named variable
-Variable *VariableList::addVariable(const char *name, Variable::VariableType vt)
+Variable *VariableList::addVariable(const char *name, VTypes::DataType dt)
 {
-	return addVariable(name,"",vt);
+	return addVariable(name,"",dt);
 }
-Variable *VariableList::addVariable(const char *prefix, const char *suffix, Variable::VariableType vt)
+Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTypes::DataType dt)
 {
 	static char name[128];
 	strcpy(name,prefix);
@@ -72,59 +80,35 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, Vari
 		if (prefix[0] != '\0') strcat(name,".");
 		strcat(name,suffix);
 	}
-	Variable *result = vars_.add();
-	result->setName(name);
-	result->setType(vt);
-	return result;
-}
-
-// Create, don't set, named variable
-Variable *VariableList::createVariable(const char *prefix, const char *suffix, Variable::VariableType vt)
-{
-	// First, see if this variable already exists
-	Variable *result = get(prefix, suffix);
-	if (result == NULL) result = addVariable(prefix, suffix, vt);
-	else
-	{
-		// Check type_ of existing variable
-		static char name[128];
-		strcpy(name,prefix);
-		if (suffix[0] != '\0')
-		{
-			if (prefix[0] != '\0') strcat(name,".");
-			strcat(name,suffix);
-		}
-		if (result->type() != vt)
-		{
-			printf("Variable '%s' already exists and is of type_ '%s'.\n", name, Variable::variableType(vt));
-			result = NULL;
-		}
-	}
-	return result;
+	Variable *newvar = createVariable(dt);
+	vars_.own(newvar);
+	newvar->setName(name);
+	return newvar;
 }
 
 // Add constant
 Variable *VariableList::addConstant(const char *s, bool forcecharacter)
 {
 	static char newname[24];
-	Variable *result = constants_.add();
-	sprintf(newname,"constant%i",constants_.nItems());
-	result->setName(newname);
-	forcecharacter ? result->setType(Variable::CharacterVariable) : result->setType(Variable::determineType(s));
-	result->set(s);
-	return result;
+	VTypes::DataType dt = forcecharacter ? VTypes::CharacterData : VTypes::determineType(s);
+	Variable *newvar = createVariable(dt);
+	constants_.own(newvar);
+	sprintf(newname,"constant%i", constants_.nItems());
+	newvar->setName(newname);
+	newvar->set(s);
+	return newvar;
 }
 
 // Add constant
 Variable *VariableList::addConstant(int i)
 {
 	static char newname[24];
-	Variable *result = constants_.add();
-	sprintf(newname,"constant%i",constants_.nItems());
-	result->setName(newname);
-	result->setType(Variable::IntegerVariable);
-	result->set(i);
-	return result;
+	Variable *newvar = new IntegerVariable;
+	constants_.own(newvar);
+	sprintf(newname,"constant%i", constants_.nItems());
+	newvar->setName(newname);
+	newvar->set(i);
+	return newvar;
 }
 
 // Add expression
@@ -143,10 +127,13 @@ Variable *VariableList::addExpression(const char *s)
 	Variable *result = expressions_.add();
 	sprintf(newname,"expression%i",expressions_.nItems());
 	result->setName(newname);
-	result->setType(Variable::ExpressionVariable);
 	result->set(ex);
 	return result;
 }
+
+/*
+// Set Methods
+*/
 
 // Set existing variable (or add new and set) (Variable::CharacterVariable)
 void VariableList::set(const char *name, const char *value)
@@ -224,6 +211,41 @@ void VariableList::set(const char *prefix, const char *suffix, Atom *i)
 	if (v == NULL) v = addVariable(newname, Variable::AtomVariable);
 	v->set(i);
 }
+
+/*
+// Variable Retrieval
+*/
+
+// Return dummy variable
+Variable *VariableList::dummy()
+{
+	return &dummy_;
+}
+
+// Retrieve named variable
+Variable *VariableList::get(const char *name)
+{
+	return get(name,"");
+}
+
+// Retrieve named variable (prefix.suffix)
+Variable *VariableList::get(const char *prefix, const char *suffix)
+{
+	static char name[128];
+	strcpy(name,prefix);
+	if (suffix[0] != '\0')
+	{
+		strcat(name,".");
+		strcat(name,suffix);
+	}
+	for (Variable *v = vars_.first(); v != NULL; v = v->next)
+		if (strcmp(name,v->name()) == 0) return v;
+	return NULL;
+}
+
+/*
+// Print / Reset
+*/
 
 // Print list of variables in list
 void VariableList::print()

@@ -22,9 +22,11 @@
 #ifndef ATEN_EXPRESSION_H
 #define ATEN_EXPRESSION_H
 
+#include "variables/expressionnode.h"
+#include "variables/variable.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
-#include "command/expressionnode.h"
+#include "templates/vobject.h"
 
 // Forward Declarations
 class VariableList;
@@ -66,6 +68,52 @@ class Expression
 	int evaluateAsInteger();
 	// Print expression
 	void print(ExpressionNode *highlight = NULL, bool showUsed = TRUE);
+};
+
+// Expression Variable
+class ExpressionVariable : public Variable, VObject<Expression>
+{
+	public:
+	// Constructor
+	ExpressionVariable();
+
+	/*
+	// Initialisation
+	*/
+	public:
+	// Initialise expression from string
+	bool initialise(const char *expr, VariableList *sourcevars);
+
+	/*
+	// Set / Get
+	*/
+	public:
+	// Clears value of variable
+	//void reset();
+	// Set value of variable (char)
+	void set(const char*);
+	// Set value of variable (int)
+	void set(int i);
+	// Set value of variable (double)
+	void set(double d);
+	// Set value of variable (pointer)
+	void set(void *ptr, VTypes::DataType type);
+	// Get value of variable as character string
+	const char *asCharacter();
+	// Get value of variable as integer
+	int asInteger();
+	// Get value of variable as double
+	double asDouble();
+	// Get value of variable as float
+	float asFloat();
+	// Get value of variable as a boolean
+	bool asBool();
+	// Get value of variable as pointer of specified type
+	void *asPointer(VTypes::DataType type);
+	// Double increase
+	void increase(int);
+	// Double decrease
+	void decrease(int);
 };
 
 #endif

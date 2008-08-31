@@ -29,9 +29,9 @@ class VTypes
 	// List types
 	enum ListType { NoArray, ListArray, ReflistArray, NormalArray };
 	// Data Types
-	enum DataType { CharacterVariable, IntegerVariable, FloatVariable, AtomVariable, PatternVariable, ModelVariable, GridVariable, BondVariable, AngleVariable, TorsionVariable, AtomtypeVariable, ExpressionVariable, ReferenceVariable, nDataTypes };
+	enum DataType { NoData, CharacterData, IntegerData, RealData, AtomData, PatternData, ModelData, GridData, BondData, AngleData, TorsionData, AtomtypeData, ExpressionData, ReferenceData, nDataTypes };
 	static const char *dataType(DataType);
-	VTypes::DataType determineType(const char *s);
+	static VTypes::DataType determineType(const char *s);
 };
 
 #endif

@@ -1,6 +1,6 @@
 /*
 	*** Arithmetic Expression
-	*** src/command/expression.cpp
+	*** src/variables/expression.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,10 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/expression.h"
-#include "command/expressionnode.h"
-#include "command/variablelist.h"
+#include "variables/expression.h"
+#include "variables/expressionnode.h"
+#include "variables/variablelist.h"
 #include "base/mathfunc.h"
+#include "base/sysfunc.h"
 #include <math.h>
 #include <string.h>
 
@@ -370,7 +371,7 @@ ExpressionNode::TokenType Expression::addLongToken(const char *s)
 		if (v != NULL)
 		{
 			ex = expression_.add();
-			ex->setPersistentType(ExpressionNode::ValueToken, v->type() == Variable::FloatVariable);
+			ex->setPersistentType(ExpressionNode::ValueToken, v->type() == VTypes::RealData);
 			ex->setVariable(v);
 		}
 		else msg.print("Variable '%s' in expression has not been declared.\n", &s[1]);
@@ -378,12 +379,12 @@ ExpressionNode::TokenType Expression::addLongToken(const char *s)
 	else
 	{
 		// Check for numeral
-		Variable::VariableType vt = Variable::determineType(s);
-		if ((vt == Variable::IntegerVariable) || (vt == Variable::FloatVariable))
+		VTypes::DataType vt = VTypes::determineType(s);
+		if ((vt == VTypes::IntegerData) || (vt == VTypes::RealData))
 		{
 			ex = expression_.add();
-			ex->setPersistentType(ExpressionNode::ValueToken, vt == Variable::FloatVariable);
-			if (vt == Variable::IntegerVariable) ex->setValue(atoi(s));
+			ex->setPersistentType(ExpressionNode::ValueToken, vt == VTypes::RealData);
+			if (vt == VTypes::IntegerData) ex->setValue(atoi(s));
 			else ex->setValue(atof(s));
 		}
 		else
