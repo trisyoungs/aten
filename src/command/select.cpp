@@ -24,6 +24,7 @@
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "base/pattern.h"
+#include "base/sysfunc.h"
 
 void selectAtoms(Model *m, Variable *slxn, bool deselect)
 {
@@ -31,9 +32,9 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 	int i, j, n, plus;
 	bool range;
 	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
-	if (slxn->type() == Variable::AtomVariable)
+	if (slxn->type() == VTypes::AtomData)
 	{
-		Atom *ii = (Atom*) slxn->asPointer();
+		Atom *ii = (Atom*) slxn->asPointer(VTypes::AtomData);
 		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
 		m->beginUndoState(s);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
@@ -74,7 +75,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 		m->beginUndoState(s);
 		if (!range)
 		{
-			if (Variable::determineType(from) == Variable::IntegerVariable)
+			if (VTypes::determineType(from) == VTypes::IntegerData)
 			{
 				i = atoi(from);
 				// Integer atom ID selection
@@ -98,7 +99,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 		else
 		{
 			// Range of id's or elements
-			if (Variable::determineType(from) == Variable::IntegerVariable)
+			if (VTypes::determineType(from) == VTypes::IntegerData)
 			{
 				i = atoi(from);
 				j = atoi(to);
@@ -217,7 +218,7 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 	Pattern *p = NULL;
 	if (c->hasArg(0))
 	{
-		if (c->argt(0) == Variable::IntegerVariable) p = obj.rs->pattern(c->argi(0)-1);
+		if (c->argt(0) == VTypes::IntegerData) p = obj.rs->pattern(c->argi(0)-1);
 		else p = obj.rs->findPattern(c->argc(0));
 	}
 	else p = obj.p;

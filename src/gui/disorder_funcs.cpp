@@ -26,6 +26,7 @@
 #include "gui/gui.h"
 #include "gui/ttablewidgetitem.h"
 #include "model/model.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenDisorder::AtenDisorder(QWidget *parent)

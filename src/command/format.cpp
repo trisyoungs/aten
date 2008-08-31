@@ -198,12 +198,12 @@ const char *Format::createString()
 		// For each format node in the list, check the type of the argument and create a relevant format node
 		switch (v->type())
 		{
-			case (Variable::CharacterVariable):
+			case (VTypes::CharacterData):
 				if (fn->length() == 0) strcpy(fmt,"%s");
 				else sprintf(fmt,"%%%is",fn->length());
 				sprintf(bit,fmt,v->asCharacter());
 				break;
-			case (Variable::IntegerVariable):
+			case (VTypes::IntegerData):
 				if (fn->length() == 0) strcpy(fmt,"%i");
 				else
 				{
@@ -216,13 +216,13 @@ const char *Format::createString()
 				}
 				sprintf(bit,fmt,v->asInteger());
 				break;
-			case (Variable::FloatVariable):
+			case (VTypes::RealData):
 				if (fn->length() == 0) strcpy(fmt,"%f");
 				else sprintf(fmt,"%%%i.%if",fn->length(),fn->precision());
 				sprintf(bit,fmt,v->asDouble());
 				break;
 			default:
-				printf("Variables of type '%s' cannot be used in a format string.\n", Variable::variableType(v->type()));
+				printf("Variables of type '%s' cannot be used in a format string.\n", VTypes::dataType(v->type()));
 		}
 		msg.print(Messenger::Parse,"Format:::createString - added [%s], format [%s]\n", bit, fmt);
 		strcat(result,bit);
@@ -256,7 +256,7 @@ void Format::getAllArgsFormatted()
 		if (!parseresult)
 		{
 			msg.print(Messenger::Verbose,"Format::getAllArgsFormatted <<<< '%s' passed end of line >>>>\n",fn->variable()->name());
-			fn->variable()->reset();
+// 			fn->variable()->reset(); TGAY
 		}
 		else fn->variable()->set(tempArg_);
 // 		printf("Variable %s now has value '%s'\n",fn->variable()->name(), fn->variable()->asCharacter());

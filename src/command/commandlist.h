@@ -282,37 +282,37 @@ class CommandList
 	public:
 	// Associative variable list
 	VariableList variables;
-	// Create model variables with specified prefix
-	bool createModelVariables(const char *s);
-	// Set model variables with specified prefix
-	void setModelVariables(const char *s, Model *m);
-	// Create atom variables
-	bool createAtomVariables(const char *s);
-	// Set atom variables
-	void setAtomVariables(const char*, Atom*);
-	void setAtomVariables(const char*, int);
-	// Create pattern variables
-	bool createPatternVariables(const char *s);
-	// Set pattern variables
-	void setPatternVariables(const char*, Pattern*);
-	// Create grid variables
-	bool createGridVariables(const char *s);
-	// Set grid variables
-	void setGridVariables(const char*, Grid*);
-	// Create pattern bound term variables
-	bool createPatternBoundVariables(const char*);
-	// Set pattern bound term variables
-	void setPatternBoundVariables(const char*, PatternBound*);
-	// Set pattern bound term variables (from simple Bond)
-	void setPatternBoundVariables(const char*, Bond*);
-	// Create atomtype atomtype variables
-	bool createAtomtypeVariables(const char*);
-	// Set atomtype variables
-	void setAtomtypeVariables(const char*, ForcefieldAtom*);
-	// Create subvariables for the specified variable (if necessary)
-	bool createSubvariables(Variable *v);
-	// Set subvariables for the specified variable (if necessary)
-	void setSubvariables(Variable *v);
+// 	// Create model variables with specified prefix
+// 	bool createModelVariables(const char *s);
+// 	// Set model variables with specified prefix
+// 	void setModelVariables(const char *s, Model *m);
+// 	// Create atom variables
+// 	bool createAtomVariables(const char *s);
+// 	// Set atom variables
+// 	void setAtomVariables(const char*, Atom*);
+// 	void setAtomVariables(const char*, int);
+// 	// Create pattern variables
+// 	bool createPatternVariables(const char *s);
+// 	// Set pattern variables
+// 	void setPatternVariables(const char*, Pattern*);
+// 	// Create grid variables
+// 	bool createGridVariables(const char *s);
+// 	// Set grid variables
+// 	void setGridVariables(const char*, Grid*);
+// 	// Create pattern bound term variables
+// 	bool createPatternBoundVariables(const char*);
+// 	// Set pattern bound term variables
+// 	void setPatternBoundVariables(const char*, PatternBound*);
+// 	// Set pattern bound term variables (from simple Bond)
+// 	void setPatternBoundVariables(const char*, Bond*);
+// 	// Create atomtype atomtype variables
+// 	bool createAtomtypeVariables(const char*);
+// 	// Set atomtype variables
+// 	void setAtomtypeVariables(const char*, ForcefieldAtom*);
+// 	// Create subvariables for the specified variable (if necessary)
+// 	bool createSubvariables(Variable *v);
+// 	// Set subvariables for the specified variable (if necessary)
+// 	void setSubvariables(Variable *v);
 
 	/*
 	// Files

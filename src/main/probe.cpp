@@ -20,6 +20,7 @@
 */
 
 #include "main/aten.h"
+#include "base/sysfunc.h"
 #include <fstream>
 #include <iostream>
 

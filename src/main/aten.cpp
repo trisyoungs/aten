@@ -29,6 +29,7 @@
 #include "ff/forcefield.h"
 #include "classes/grid.h"
 #include "base/pattern.h"
+#include "base/sysfunc.h"
 
 // Singleton definition
 Aten aten;
@@ -55,8 +56,8 @@ Aten::Aten()
 	gridClipboard_ = NULL;
 
 	// CommandLists
-	tempScript.createModelVariables("");
-	interactiveScript.createModelVariables("");
+// 	tempScript.createModelVariables(""); TGAY
+// 	interactiveScript.createModelVariables("");  TGAY
 
 	// Single-shot mode variables
 	exportFilter_ = NULL;

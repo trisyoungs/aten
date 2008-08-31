@@ -26,7 +26,7 @@
 #include "templates/vobject.h"
 
 // Real Variable
-class RealVariable : public Variable, VObject<int>
+class RealVariable : public Variable, VObject<double>
 {
 	public:
 	// Constructor

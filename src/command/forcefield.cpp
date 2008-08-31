@@ -27,6 +27,7 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 #include "base/pattern.h"
+#include "base/sysfunc.h"
 
 
 // Add a new angle definition to the current forcefield
@@ -179,7 +180,7 @@ int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 // Select current forcefield ('getff <name>')
 int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 {
-	Forcefield *ff = (c->argt(0) == Variable::IntegerVariable ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
+	Forcefield *ff = (c->argt(0) == VTypes::IntegerData ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
 	if (ff != NULL)	aten.setCurrentForcefield(ff);
 	else return CR_FAIL;
 	return CR_SUCCESS;

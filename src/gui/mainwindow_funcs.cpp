@@ -170,7 +170,7 @@ void AtenForm::executeCommand()
 {
 	// Clear old script commands and set current model variables
 	aten.tempScript.clear();
-	aten.tempScript.setModelVariables("",aten.current.m);
+// 	aten.tempScript.setModelVariables("",aten.current.m);/* TGAY*/
 	// Grab the current text of the line edit
 	if (aten.tempScript.cacheLine(qPrintable(commandEdit_->text()))) aten.tempScript.execute();
 	//parser.getArgsDelim(qPrintable(commandEdit_->text()), Parser::UseQuotes);
@@ -330,7 +330,7 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 		filename = loadScriptDialog->selectedFiles().first();
 		// Create script and model variables within it
 		CommandList *ca = aten.scripts.add();
-		ca->createModelVariables("");
+// 		ca->createModelVariables(""); TGAY
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
 		else aten.scripts.remove(ca);
 	}

@@ -79,12 +79,12 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 		// Do loop iteration.
 		// Increase count and iteration variables
 		c->arg(0)->increase(1);
-		c->parent()->setSubvariables(c->arg(0));
+// 		c->parent()->setSubvariables(c->arg(0)); TGAY
 		c->increaseIterations();
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
 		{
-			case (Variable::IntegerVariable):
+			case (VTypes::IntegerData):
 				// If third argument (loop limit) was provided, check against it. Otherwise. continue loop forever unless we're reading from a file where we check for end of file.
 				if (c->hasArg(2))
 				{
@@ -100,7 +100,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					}
 				}
 				break;
-			case (Variable::AtomVariable):
+			case (VTypes::AtomData):
 				// If only one argument, check for NULL. If two, check for last atom in pattern.
 				// If three, check for last atom in molecule
 				if (c->hasArg(2))
@@ -113,19 +113,19 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				}
 				else if (c->arga(0) == NULL) status = FALSE;
 				break;
-			case (Variable::PatternVariable):
+			case (VTypes::PatternData):
 				if (c->argp(0) == NULL) status = FALSE;
 				break;
-			case (Variable::BondVariable):
-			case (Variable::AngleVariable):
-			case (Variable::TorsionVariable):
+			case (VTypes::BondData):
+			case (VTypes::AngleData):
+			case (VTypes::TorsionData):
 				if (c->argpb(0) == NULL) status = FALSE;
 				break;
-			case (Variable::AtomtypeVariable):
+			case (VTypes::AtomtypeData):
 				if (c->argffa(0) == NULL) status = FALSE;
 				break;
 			default:
-				printf("Don't know how to set iterate loop with variable of type '%s'.\n", Variable::variableType(c->argt(0)));
+				printf("Don't know how to set iterate loop with variable of type '%s'.\n", VTypes::dataType(c->argt(0)));
 				return CR_FAIL;
 		}
 		if (status == TRUE) c = c->branchCommands();
@@ -143,7 +143,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 		{
 			// Integer loop: 1 arg  - loop from 1 until end of file or termination
 			//		 3 args - loop from arg 2 (int) to arg 3 (int)
-			case (Variable::IntegerVariable):
+			case (VTypes::IntegerData):
 				if (!c->hasArg(2))
 				{
 					c->arg(0)->set(1);
@@ -164,15 +164,15 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 			// Atom loop:	1 arg  - loop over all atoms in model
 			//		2 args - loop over all atoms in arg 2 (pattern)
 			//		3 args - loop over atoms in molecule arg 3 in pattern arg 2
-			case (Variable::AtomVariable):
+			case (VTypes::AtomData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				// If no second variable is given, loop over all atoms
 				if (c->hasArg(1))
 				{
 					// Second argument determines pattern
 					Pattern *p;
-					if (c->argt(1) == Variable::PatternVariable) p = c->argp(1);
-					else if (c->argt(1) == Variable::IntegerVariable) p = obj.rs->pattern(c->argi(1));
+					if (c->argt(1) == VTypes::PatternData) p = c->argp(1);
+					else if (c->argt(1) == VTypes::IntegerData) p = obj.rs->pattern(c->argi(1));
 					else
 					{
 						msg.print( "Atom loop argument 2 must be of Pattern or Integer type.\n");
@@ -187,7 +187,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					// Check on third argument - if provided, must be an int
 					if (c->hasArg(2))
 					{
-						if (c->argt(2) == Variable::IntegerVariable)
+						if (c->argt(2) == VTypes::IntegerData)
 						{
 							int i = c->argi(2);
 							// Check molecule range
@@ -198,7 +198,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 							}
 							int m = p->startAtom();
 							m += (i-1) * p->nAtoms();
-							c->arg(0)->set(obj.rs->atom(m));
+							c->arg(0)->set(obj.rs->atom(m), VTypes::AtomData);
 						}
 						else
 						{
@@ -206,17 +206,17 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 							return CR_FAIL;
 						}
 					}
-					else c->arg(0)->set(p->firstAtom());
+					else c->arg(0)->set(p->firstAtom(), VTypes::AtomData);
 				}
-				else c->arg(0)->set(obj.rs->atoms());
+				else c->arg(0)->set(obj.rs->atoms(), VTypes::AtomData);
 				if (c->arga(0) == NULL) status = FALSE;
 				// Set secondary variables from atom loop variable
-				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
+// 				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0)); TGAY
 				break;
 			// Pattern loop	 1 arg  - loop over patterns in model
-			case (Variable::PatternVariable):
+			case (VTypes::PatternData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-				if (c->argt(0) == Variable::PatternVariable) c->arg(0)->set(obj.rs->patterns());
+				if (c->argt(0) == VTypes::PatternData) c->arg(0)->set(obj.rs->patterns(), VTypes::PatternData);
 				else
 				{
 					msg.print( "Pattern loop variable must be of Pattern type.\n");
@@ -224,64 +224,64 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				}
 				if (c->argp(0) == NULL) status = FALSE;
 				// Set pattern variables from the pattern pointer
-				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
+// 				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0)); TGAY
 				break;
 			// Loop over forcefield bond terms of pattern
-			case (Variable::BondVariable):
+			case (VTypes::BondData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				// Attempt loop over pattern ff bonds
-				if (c->argt(1) != Variable::PatternVariable)
+				if (c->argt(1) != VTypes::PatternData)
 				{
 					msg.print( "Bond loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
-				c->arg(0)->set(c->argp(1)->bonds());
-				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
+// 				c->arg(0)->set(c->argp(1)->bonds());
+// 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
 				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			// Loop over forcefield angle terms of pattern
-			case (Variable::AngleVariable):
+			case (VTypes::AngleData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-				if (c->argt(1) != Variable::PatternVariable)
+				if (c->argt(1) != VTypes::PatternData)
 				{
 					msg.print( "Angle loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
-				c->arg(0)->set(c->argp(1)->angles());
-				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
+// 				c->arg(0)->set(c->argp(1)->angles());
+// 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
 				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			// Loop over forcefield torsion terms of pattern
-			case (Variable::TorsionVariable):
+			case (VTypes::TorsionData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-				if (c->argt(1) != Variable::PatternVariable)
+				if (c->argt(1) != VTypes::PatternData)
 				{
 					msg.print( "Torsion loop must be given a variable of Pattern type.\n");
 					return CR_FAIL;
 				}
-				c->arg(0)->set(c->argp(1)->torsions());
-				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
+// 				c->arg(0)->set(c->argp(1)->torsions());
+// 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
 				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			// Loop over unique ForcefieldAtoms in model
-			case (Variable::AtomtypeVariable):
+			case (VTypes::AtomtypeData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 				if (c->hasArg(1))
 				{
-					if (c->argt(1) != Variable::AtomtypeVariable)
+					if (c->argt(1) != VTypes::AtomtypeData)
 					{
 						msg.print( "Second argument to atomtype loop must be a variable of Atomtype type.\n");
 						return CR_FAIL;
 					}
 					// Start atomtype loop at type given instead of first
-					c->arg(0)->set((ForcefieldAtom*) c->arg(1)->asPointer());
+// 					c->arg(0)->set((ForcefieldAtom*) c->arg(1)->asPointer()); TGAY
 				}
-				else c->arg(0)->set(obj.rs->uniqueTypes());
-				c->parent()->setAtomtypeVariables(c->arg(0)->name(), (ForcefieldAtom*) c->arg(0)->asPointer());
+// 				else c->arg(0)->set(obj.rs->uniqueTypes());
+// 				c->parent()->setAtomtypeVariables(c->arg(0)->name(), (ForcefieldAtom*) c->arg(0)->asPointer()); TGAY
 				if (c->argpb(0) == NULL) status = FALSE;
 				break;
 			default:
-				printf("Kick Developer - Loops over '%s' are missing.\n", Variable::variableType(c->argt(0)));
+				printf("Kick Developer - Loops over '%s' are missing.\n", VTypes::dataType(c->argt(0)));
 				return CR_FAIL;
 		}
 		// Check loop's starting status

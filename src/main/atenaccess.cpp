@@ -28,17 +28,17 @@ AtenAccessors atenAccessors;
 // Constructor
 AtenAccessors::AtenAccessors()
 {
-	addAccessor("models",	VObject::ListArray,	VObject::ModelData,	FALSE);
+// 	addAccessor("models",	VObject::ListArray,	VObject::ModelData,	FALSE);
 }
 
 // Retriever
-void AtenAccessors::retrieveData(VObject source, int accessorid, VResult &result)
-{
-	// Cast accessorid into local enum
-	if ((accessorid < 0) || (accessorid >= nAccessors))
-	{
-		printf("Critical error accessing object in Aten - accessor id %i is out of range.\n", accessorid);
-		result.setType(VObject::NoDataSet);
-		return;
-	}
-}
+// void AtenAccessors::retrieveData(VObject source, int accessorid, VResult &result)
+// {
+// 	// Cast accessorid into local enum
+// 	if ((accessorid < 0) || (accessorid >= nAccessors))
+// 	{
+// 		printf("Critical error accessing object in Aten - accessor id %i is out of range.\n", accessorid);
+// 		result.setType(VObject::NoDataSet);
+// 		return;
+// 	}
+// }

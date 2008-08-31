@@ -24,6 +24,7 @@
 #include "model/model.h"
 #include "classes/prefs.h"
 #include "base/elements.h"
+#include "base/sysfunc.h"
 
 // Filter types
 const char *FilterTypeKeywords[Filter::nFilterTypes] = { "importmodel", "importtrajectory", "importfield", "importgrid", "exportmodel", "exporttrajectory", "exportfield", "exportgrid" };
@@ -245,33 +246,33 @@ void Filter::setType(FilterType ft)
 	switch (type_)
 	{
 		case (Filter::ModelImport):
-			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
+// 			v = commands_.variables.createVariable("title","",VTypes::CharacterData); TGAY
 			break;
 		case (Filter::TrajectoryImport):
-			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
-			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
-			v = commands_.variables.createVariable("cell","type",Variable::CharacterVariable);
+// 			v = commands_.variables.createVariable("header","",VTypes::CharacterData); TGAY
+// 			v = commands_.variables.createVariable("natoms","",VTypes::IntegerData);
+// 			v = commands_.variables.createVariable("cell","type",VTypes::CharacterData);
 			break;
 		case (Filter::ExpressionImport):
 			break;
 		case (Filter::GridImport):
-			v = commands_.variables.createVariable("title","",Variable::CharacterVariable);
+// 			v = commands_.variables.createVariable("title","",VTypes::CharacterData); TGAY
 			break;
 		case (Filter::ModelExport):
-			commands_.createModelVariables("");
+// 			commands_.createModelVariables(""); TGAY
 			break;
 		case (Filter::TrajectoryExport):
-			v = commands_.variables.createVariable("header","",Variable::CharacterVariable);
-			v = commands_.variables.createVariable("natoms","",Variable::IntegerVariable);
+// 			v = commands_.variables.createVariable("header","",VTypes::CharacterData); TGAY
+// 			v = commands_.variables.createVariable("natoms","",VTypes::IntegerData);
 			break;
 		case (Filter::ExpressionExport):
-			v = commands_.variables.createVariable("energyunit","",Variable::CharacterVariable);
-			v = commands_.variables.createVariable("natomtypes","",Variable::IntegerVariable);
-			v = commands_.variables.createVariable("nbondterms","",Variable::IntegerVariable);
-			v = commands_.variables.createVariable("nangleterms","",Variable::IntegerVariable);
-			v = commands_.variables.createVariable("ntorsionterms","",Variable::IntegerVariable);
-			v = commands_.variables.createVariable("npatterns","",Variable::IntegerVariable);
-			commands_.createModelVariables("");
+// 			v = commands_.variables.createVariable("energyunit","",VTypes::CharacterData); TGAY
+// 			v = commands_.variables.createVariable("natomtypes","",VTypes::IntegerData);
+// 			v = commands_.variables.createVariable("nbondterms","",VTypes::IntegerData);
+// 			v = commands_.variables.createVariable("nangleterms","",VTypes::IntegerData);
+// 			v = commands_.variables.createVariable("ntorsionterms","",VTypes::IntegerData);
+// 			v = commands_.variables.createVariable("npatterns","",VTypes::IntegerData);
+// 			commands_.createModelVariables(""); TGAY
 			break;
 		case (Filter::GridExport):
 			break;
@@ -341,7 +342,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 				break;
 			}
 			// Set variables
-			commands_.setModelVariables("",obj.rs);
+// 			commands_.setModelVariables("",obj.rs); TGAY
 			break;
 		case (Filter::ExpressionExport):
 			msg.print("Save Field : %s (%s)\n", filename, name_.get());
@@ -354,7 +355,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			// Generate unique term lists
 			obj.rs->createUniqueLists();
 			// Set variables
-			commands_.setModelVariables("",obj.rs);
+// 			commands_.setModelVariables("",obj.rs); TGAY
 			commands_.variables.set("npatterns",obj.rs->nPatterns());
 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));
 			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());

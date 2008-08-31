@@ -41,7 +41,7 @@ class Variable
 	/*
 	// Variable Contents
 	*/
-	private:
+	protected:
 	// Name of the variable
 	Dnchar name_;
 	// Type of stored data
@@ -59,7 +59,7 @@ class Variable
 	// Get name of variable
 	const char *name();
 	// Sets the content type of the variable
-	void setType(VTypes::DataType vt);
+	void setType(VTypes::DataType dt);
 	// Returns content type of the variable
 	VTypes::DataType type();
 	// Set parent variablelist
@@ -86,9 +86,9 @@ class Variable
 	// Get value of variable as pointer of specified type
 	virtual void *asPointer(VTypes::DataType type)=0;
 	// Integer increase
-	virtual void increase(int);
+	virtual void increase(int)=0;
 	// Integer decrease
-	virtual void decrease(int);
+	virtual void decrease(int)=0;
 };
 
 #endif

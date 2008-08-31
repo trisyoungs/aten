@@ -52,12 +52,12 @@ int CommandData::function_CA_CREATEPATTERNS(Command *&c, Bundle &obj)
 int CommandData::function_CA_GETPATTERN(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-	Pattern *p = (c->argt(0) == Variable::IntegerVariable ? obj.m->pattern(c->argi(0)) : obj.m->findPattern(c->argc(0)));
+	Pattern *p = (c->argt(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)) : obj.m->findPattern(c->argc(0)));
 	if (p != NULL)
 	{
 		obj.p = p;
-		c->arg(1)->set(p);
-		if (c->hasArg(1)) c->parent()->setPatternVariables(c->arg(1)->name(), p);
+		c->arg(1)->set(p, VTypes::PatternData);
+// 		if (c->hasArg(1)) c->parent()->setPatternVariables(c->arg(1)->name(), p); TGAY
 	}
 	else return CR_FAIL;
 	return CR_SUCCESS;

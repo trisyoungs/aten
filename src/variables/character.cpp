@@ -1,6 +1,6 @@
 /*
 	*** Character Variable
-	*** src/variables/integer.cpp
+	*** src/variables/character.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,13 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "variables/integer.h"
+#include "variables/character.h"
+#include "base/sysfunc.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-// Constructor / Destructor
+// Constructor
 CharacterVariable::CharacterVariable()
 {
-	dataType_ = VObject::CharacterVariable;
-	listType_ = VObject::NoList;
+	dataType_ = VTypes::CharacterData;
+	listType_ = VTypes::NoArray;
 }
 
 /*
@@ -51,7 +54,7 @@ void CharacterVariable::set(double d)
 }
 
 // Set value of variable (pointer)
-void CharacterVariable::set(void *ptr, VObject::DataType type)
+void CharacterVariable::set(void *ptr, VTypes::DataType type)
 {
 	printf("A Character variable cannot be set from a pointer.\n");
 }
@@ -65,13 +68,13 @@ const char *CharacterVariable::asCharacter()
 // Get value of variable as integer
 int CharacterVariable::asInteger()
 {
-	return atoi(data).get();
+	return atoi(data.get());
 }
 
 // Get value of variable as double
 double CharacterVariable::asDouble()
 {
-	retrrn atof(data.get());
+	return atof(data.get());
 }
 
 // Get value of variable as float
@@ -87,7 +90,7 @@ bool CharacterVariable::asBool()
 }
 
 // Get value of variable as pointer of specified type
-void *CharacterVariable::asPointer(VObject::DataType type)
+void *CharacterVariable::asPointer(VTypes::DataType type)
 {
 	printf("A Character variable cannot be returned as a pointer.\n");
 	return NULL;

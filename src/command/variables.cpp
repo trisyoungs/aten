@@ -34,7 +34,7 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 {
 	c->arg(0)->decrease(1);
 	// Set subvariables if necessary
-	c->parent()->setSubvariables( c->arg(0) );
+// 	c->parent()->setSubvariables( c->arg(0) ); TGAY
 	return CR_SUCCESS;
 }
 
@@ -43,7 +43,7 @@ int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 {
 	c->arg(0)->increase(1);
 	// Set subvariables if necessary
-	c->parent()->setSubvariables( c->arg(0) );
+// 	c->parent()->setSubvariables( c->arg(0) ); TGAY
 	return CR_SUCCESS;
 }
 
@@ -51,20 +51,20 @@ int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 {
 	// Our action depends on the type of the variable being assigned to
-	Variable::VariableType type1 = c->argt(0);
-	Variable::VariableType type2 = c->argt(2);
+	VTypes::DataType type1 = c->argt(0);
+	VTypes::DataType type2 = c->argt(2);
 	// Integer and real variables may only be set from character, integer, real, or expression variables
 	switch (type1)
 	{
-		case (Variable::IntegerVariable):
-			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+		case (VTypes::IntegerData):
+			if ((type2 > VTypes::RealData) && (type2 < VTypes::ExpressionData))
 			{
 				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			break;
-		case (Variable::FloatVariable):
-			if ((type2 > Variable::FloatVariable) && (type2 < Variable::ExpressionVariable))
+		case (VTypes::RealData):
+			if ((type2 > VTypes::RealData) && (type2 < VTypes::ExpressionData))
 			{
 				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
@@ -72,7 +72,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 			break;
 		// All other types are pointers - the second argument must also then be a pointer
 		default:
-			printf("CA_LET doesn't know how to handle variable assignments of type '%s'\n", Variable::variableType(c->argt(0)));
+			printf("CA_LET doesn't know how to handle variable assignments of type '%s'\n", VTypes::dataType(c->argt(0)));
 			return CR_FAIL;
 			break;
 	}
@@ -80,20 +80,20 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 	switch (c->argi(1))
 	{
 		case (AssignOps::Equals):
-			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(2)->asInteger() : c->arg(2)->asDouble() );
+			c->arg(0)->set( type1 == VTypes::IntegerData ? c->arg(2)->asInteger() : c->arg(2)->asDouble() );
 			break;
 		case (AssignOps::MinusEquals):
-			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() - c->arg(2)->asInteger() : c->arg(0)->asDouble() - c->arg(2)->asDouble() );
+			c->arg(0)->set( type1 == VTypes::IntegerData ? c->arg(0)->asInteger() - c->arg(2)->asInteger() : c->arg(0)->asDouble() - c->arg(2)->asDouble() );
 			break;
 		case (AssignOps::PlusEquals):
-			if (type1 == Variable::IntegerVariable) c->arg(0)->set( c->arg(0)->asInteger() + c->arg(2)->asInteger() );
+			if (type1 == VTypes::IntegerData) c->arg(0)->set( c->arg(0)->asInteger() + c->arg(2)->asInteger() );
 			else c->arg(0)->set( c->arg(0)->asDouble() + c->arg(2)->asDouble() );
 			break;
 		case (AssignOps::DivideEquals):
-			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() / c->arg(2)->asInteger() : c->arg(0)->asDouble() / c->arg(2)->asDouble() );
+			c->arg(0)->set( type1 == VTypes::IntegerData ? c->arg(0)->asInteger() / c->arg(2)->asInteger() : c->arg(0)->asDouble() / c->arg(2)->asDouble() );
 			break;
 		case (AssignOps::MultiplyEquals):
-			c->arg(0)->set( type1 == Variable::IntegerVariable ? c->arg(0)->asInteger() * c->arg(2)->asInteger() : c->arg(0)->asDouble() * c->arg(2)->asDouble() );
+			c->arg(0)->set( type1 == VTypes::IntegerData ? c->arg(0)->asInteger() * c->arg(2)->asInteger() : c->arg(0)->asDouble() * c->arg(2)->asDouble() );
 			break;
 	}
 	return CR_SUCCESS;
@@ -130,22 +130,23 @@ int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 	}
 	else
 	{
-		c->arg(0)->copyPointer(c->arg(2));
+// 		c->arg(0)->copyPointer(c->arg(2)); TGAY
 		// Set subvariables
 		switch (c->argt(0))
 		{
-			case (Variable::AtomVariable):
-				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
-				break;
-			case (Variable::PatternVariable):
-				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
-				break;
-			case (Variable::ModelVariable):
-				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
-				break;
-			case (Variable::GridVariable):
-				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
-				break;
+			// TGAY 
+// 			case (VTypes::AtomData):
+// 				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
+// 				break;
+// 			case (VTypes::PatternData):
+// 				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
+// 				break;
+// 			case (VTypes::ModelData):
+// 				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
+// 				break;
+// 			case (VTypes::GridData):
+// 				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
+// 				break;
 		}
 	}
 	return CR_SUCCESS;
@@ -154,68 +155,68 @@ int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 /*
 // Variable set / create
 */
-
+/*
 // Create model variables with specified basename
 bool CommandList::createModelVariables(const char *base)
 {
 	Variable *v;
-	v = variables.createVariable(base,"title",Variable::CharacterVariable);
+	v = variables.createVariable(base,"title",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
+	v = variables.createVariable(base,"natoms",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nbonds",Variable::IntegerVariable);
+	v = variables.createVariable(base,"nbonds",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
+	v = variables.createVariable(base,"firstatom",VTypes::AtomData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ngrids",Variable::IntegerVariable);
+	v = variables.createVariable(base,"ngrids",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nframes",Variable::IntegerVariable);
+	v = variables.createVariable(base,"nframes",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"currentframe",Variable::IntegerVariable);
+	v = variables.createVariable(base,"currentframe",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.type",Variable::CharacterVariable);
+	v = variables.createVariable(base,"cell.type",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.a",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.a",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.b",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.b",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.c",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.c",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.alpha",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.alpha",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.beta",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.beta",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.gamma",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.gamma",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.ax",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.ax",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.ay",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.ay",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.az",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.az",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.bx",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.bx",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.by",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.by",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.bz",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.bz",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.cx",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.cx",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.cy",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.cy",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.cz",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.cz",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.centrex",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.centrex",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.centrey",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.centrey",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.centrez",Variable::FloatVariable);
+	v = variables.createVariable(base,"cell.centrez",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.spgrp.id",Variable::IntegerVariable);
+	v = variables.createVariable(base,"cell.spgrp.id",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.spgrp.name",Variable::IntegerVariable);
+	v = variables.createVariable(base,"cell.spgrp.name",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"cell.spgrp.setting",Variable::IntegerVariable);
+	v = variables.createVariable(base,"cell.spgrp.setting",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
 
 	return TRUE;
@@ -282,43 +283,43 @@ void CommandList::setModelVariables(const char *base, Model *m)
 bool CommandList::createAtomVariables(const char *base)
 {
 	Variable *v;
-	v = variables.createVariable(base,"symbol",Variable::CharacterVariable);
+	v = variables.createVariable(base,"symbol",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"mass",Variable::FloatVariable);
+	v = variables.createVariable(base,"mass",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"name",Variable::CharacterVariable);
+	v = variables.createVariable(base,"name",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"z",Variable::IntegerVariable);
+	v = variables.createVariable(base,"z",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"id",Variable::IntegerVariable);
+	v = variables.createVariable(base,"id",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fixed",Variable::IntegerVariable);
+	v = variables.createVariable(base,"fixed",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"selected",Variable::IntegerVariable);
+	v = variables.createVariable(base,"selected",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fftype",Variable::CharacterVariable);
+	v = variables.createVariable(base,"fftype",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ffequiv",Variable::CharacterVariable);
+	v = variables.createVariable(base,"ffequiv",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"q",Variable::FloatVariable);
+	v = variables.createVariable(base,"q",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rx",Variable::FloatVariable);
+	v = variables.createVariable(base,"rx",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ry",Variable::FloatVariable);
+	v = variables.createVariable(base,"ry",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"rz",Variable::FloatVariable);
+	v = variables.createVariable(base,"rz",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fx",Variable::FloatVariable);
+	v = variables.createVariable(base,"fx",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fy",Variable::FloatVariable);
+	v = variables.createVariable(base,"fy",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"fz",Variable::FloatVariable);
+	v = variables.createVariable(base,"fz",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vx",Variable::FloatVariable);
+	v = variables.createVariable(base,"vx",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vy",Variable::FloatVariable);
+	v = variables.createVariable(base,"vy",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vz",Variable::FloatVariable);
+	v = variables.createVariable(base,"vz",VTypes::RealData);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -362,29 +363,29 @@ void CommandList::setAtomVariables(const char *varname, Atom *i)
 bool CommandList::createPatternVariables(const char *base)
 {
 	Variable *v;
-	v = variables.createVariable(base,"name",Variable::CharacterVariable);
+	v = variables.createVariable(base,"name",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nmols",Variable::IntegerVariable);
+	v = variables.createVariable(base,"nmols",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nmolatoms",Variable::IntegerVariable);
+	v = variables.createVariable(base,"nmolatoms",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"lastid",Variable::IntegerVariable);
+	v = variables.createVariable(base,"lastid",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"firstid",Variable::IntegerVariable);
+	v = variables.createVariable(base,"firstid",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"lastatom",Variable::AtomVariable);
+	v = variables.createVariable(base,"lastatom",VTypes::AtomData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"firstatom",Variable::AtomVariable);
+	v = variables.createVariable(base,"firstatom",VTypes::AtomData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"natoms",Variable::IntegerVariable);
+	v = variables.createVariable(base,"natoms",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nbonds",Variable::IntegerVariable);
+	v = variables.createVariable(base,"nbonds",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"nangles",Variable::IntegerVariable);
+	v = variables.createVariable(base,"nangles",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ntorsions",Variable::IntegerVariable);
+	v = variables.createVariable(base,"ntorsions",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"ntypes",Variable::IntegerVariable);
+	v = variables.createVariable(base,"ntypes",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -414,7 +415,7 @@ void CommandList::setPatternVariables(const char *varname, Pattern *p)
 bool CommandList::createGridVariables(const char *base)
 {
 	Variable *v;
-	v = variables.createVariable(base,"name",Variable::CharacterVariable);
+	v = variables.createVariable(base,"name",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -436,32 +437,32 @@ bool CommandList::createPatternBoundVariables(const char *base)
 	Variable *v;
 	static char parm[24];
 	int i;
-	v = variables.createVariable(base,"form",Variable::CharacterVariable);
+	v = variables.createVariable(base,"form",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
 	strcpy(parm,"id_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[3] = 105 + i;
-		v = variables.createVariable(base,parm,Variable::IntegerVariable);
+		v = variables.createVariable(base,parm,VTypes::IntegerData);
 		if (v == NULL) return FALSE;
 	}
 	strcpy(parm,"type_X");
 	for (i = 0; i < MAXFFBOUNDTYPES; i++)
 	{
 		parm[5] = 105 + i;
-		v = variables.createVariable(base,parm,Variable::CharacterVariable);
+		v = variables.createVariable(base,parm,VTypes::CharacterData);
 		if (v == NULL) return FALSE;
 	}
 	strcpy(parm,"param_X");
 	for (i = 0; i < MAXFFPARAMDATA; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,Variable::FloatVariable);
+		v = variables.createVariable(base,parm,VTypes::RealData);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.createVariable(base,"escale",Variable::FloatVariable);
+	v = variables.createVariable(base,"escale",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"vscale",Variable::FloatVariable);
+	v = variables.createVariable(base,"vscale",VTypes::RealData);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -570,18 +571,18 @@ bool CommandList::createAtomtypeVariables(const char *base)
 	for (i = 0; i < MAXFFPARAMDATA; i++)
 	{
 		parm[6] = 97 + i;
-		v = variables.createVariable(base,parm,Variable::FloatVariable);
+		v = variables.createVariable(base,parm,VTypes::RealData);
 		if (v == NULL) return FALSE;
 	}
-	v = variables.createVariable(base,"q",Variable::FloatVariable);
+	v = variables.createVariable(base,"q",VTypes::RealData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"id",Variable::IntegerVariable);
+	v = variables.createVariable(base,"id",VTypes::IntegerData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"name",Variable::CharacterVariable);
+	v = variables.createVariable(base,"name",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"equiv",Variable::CharacterVariable);
+	v = variables.createVariable(base,"equiv",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
-	v = variables.createVariable(base,"form",Variable::CharacterVariable);
+	v = variables.createVariable(base,"form",VTypes::CharacterData);
 	if (v == NULL) return FALSE;
 	return TRUE;
 }
@@ -610,4 +611,4 @@ void CommandList::setAtomtypeVariables(const char *varname, ForcefieldAtom *ffa)
 		variables.set(varname,"form",VdwFunctions::VdwFunctions[ffa->vdwForm()].keyword);
 	}
 	msg.exit("CommandList::setAtomtypeVariables");
-}
+}*/

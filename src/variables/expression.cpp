@@ -31,14 +31,14 @@
 Expression::Expression()
 {
 	// Private variables
-	evaluatesToFloat_ = TRUE;
+	evaluatesToReal_ = TRUE;
 	vars_ = NULL;
 }
 
 // Return whether expression returns a floating-point result
-bool Expression::evaluatesToFloat()
+bool Expression::evaluatesToReal()
 {
-	return evaluatesToFloat_;
+	return evaluatesToReal_;
 }
 
 // Validate expression
@@ -225,9 +225,9 @@ bool Expression::validate()
 }
 
 // Set expression from supplied string
-bool Expression::set(const char *s, VariableList *vars)
+bool Expression::initialise(const char *s, VariableList *vars)
 {
-	msg.enter("Expression::set");
+	msg.enter("Expression::initialise");
 	// To cache an expression we parse the expression into tokens and then create a list of enumarated items in the same order.
 	int arglen;
 	char arg[64];
@@ -253,7 +253,7 @@ bool Expression::set(const char *s, VariableList *vars)
 					prevToken = addLongToken(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
-						msg.exit("Expression::set");
+						msg.exit("Expression::initialise");
 						return FALSE;
 					}
 					arglen = 0;
@@ -269,7 +269,7 @@ bool Expression::set(const char *s, VariableList *vars)
 					prevToken = addLongToken(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
-						msg.exit("Expression::set");
+						msg.exit("Expression::initialise");
 						return FALSE;
 					}
 					arglen = 0;
@@ -293,7 +293,7 @@ bool Expression::set(const char *s, VariableList *vars)
 					prevToken = addLongToken(arg);
 					if (prevToken == ExpressionNode::nTokenTypes)
 					{
-						msg.exit("Expression::set");
+						msg.exit("Expression::initialise");
 						return FALSE;
 					}
 					arglen = 0;
@@ -317,7 +317,7 @@ bool Expression::set(const char *s, VariableList *vars)
 				if (ot == ExpressionNode::nOperatorTypes)
 				{
 					msg.print( "Unrecognised operator '%c'.\n", *c);
-					msg.exit("Expression::set");
+					msg.exit("Expression::initialise");
 					return FALSE;
 				}
 				ex = expression_.add();
@@ -339,21 +339,21 @@ bool Expression::set(const char *s, VariableList *vars)
 		arg[arglen] = '\0';
 		if (addLongToken(arg) == ExpressionNode::nTokenTypes)
 		{
-			msg.exit("Expression::set");
+			msg.exit("Expression::initialise");
 			return FALSE;
 		}
 	}
 	// Validate the expression and create a bracket plan...
 	if (!validate() || !createPlan())
 	{
-		msg.exit("Expression::set");
+		msg.exit("Expression::initialise");
 		return FALSE;
 	}
 	// Lastly, determine the return type of the expression by running it...
 	ex = evaluate();
-	evaluatesToFloat_ = ex->isFloat();
-	msg.print(Messenger::Expressions, "Expression '%s' reduces to %s.\n", s, ex->isFloat() ? "a float" : "an integer");
-	msg.exit("Expression::set");
+	evaluatesToReal_ = ex->isReal();
+	msg.print(Messenger::Expressions, "Expression '%s' reduces to %s.\n", s, ex->isReal() ? "a real" : "an integer");
+	msg.exit("Expression::initialise");
 	return TRUE;
 }
 
@@ -458,11 +458,11 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 		if (ex->type() != ExpressionNode::FunctionToken) continue;
 		floatResult = TRUE;
 		rightNode = ex->nextUnused();
-		rightfloat = rightNode->isFloat();
+		rightfloat = rightNode->isReal();
 		switch (ex->functionType())
 		{
 			case (ExpressionNode::NegateFunction):
-				if (rightfloat) result = -ex->nextUnused()->asDouble();
+				if (rightfloat) result = -ex->nextUnused()->asReal();
 				else
 				{
 					iresult = -ex->nextUnused()->asInteger();
@@ -470,19 +470,19 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 				}
 				break;
 			case (ExpressionNode::SqrtFunction):
-				result = sqrt(rightNode->asDouble());
+				result = sqrt(rightNode->asReal());
 				break;
 			case (ExpressionNode::CosFunction):
-				result = cos(rightNode->asDouble() / DEGRAD);
+				result = cos(rightNode->asReal() / DEGRAD);
 				break;
 			case (ExpressionNode::SinFunction):
-				result = sin(rightNode->asDouble() / DEGRAD);
+				result = sin(rightNode->asReal() / DEGRAD);
 				break;
 			case (ExpressionNode::TanFunction):
-				result = tan(rightNode->asDouble() / DEGRAD);
+				result = tan(rightNode->asReal() / DEGRAD);
 				break;
 			case (ExpressionNode::AbsFunction):
-				if (rightfloat) result = fabs(rightNode->asDouble());
+				if (rightfloat) result = fabs(rightNode->asReal());
 				else
 				{
 					iresult = abs(rightNode->asInteger());
@@ -515,8 +515,8 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 			if (ex->operatorType() != op) continue;
 			rightNode = ex->nextUnused();
 			// Check which variable types are involved
-			leftfloat = leftLastUnused->isFloat();
-			rightfloat = rightNode->isFloat();
+			leftfloat = leftLastUnused->isReal();
+			rightfloat = rightNode->isReal();
 			// If both sides are integers do integer arithmetic
 			if ((!leftfloat) && (!rightfloat))
 			{
@@ -553,19 +553,19 @@ void Expression::evaluate(ExpressionNode *left, ExpressionNode *right)
 						iresult = leftLastUnused->asInteger() % rightNode->asInteger();
 						break;
 					case (ExpressionNode::PowerOperator):
-						result = pow(leftLastUnused->asDouble(), rightNode->asDouble());
+						result = pow(leftLastUnused->asReal(), rightNode->asReal());
 						break;
 					case (ExpressionNode::MultiplyOperator):
-						result = leftLastUnused->asDouble() * rightNode->asDouble();
+						result = leftLastUnused->asReal() * rightNode->asReal();
 						break;
 					case (ExpressionNode::DivideOperator):
-						result = leftLastUnused->asDouble() / rightNode->asDouble();
+						result = leftLastUnused->asReal() / rightNode->asReal();
 						break;
 					case (ExpressionNode::AddOperator):
-						result = leftLastUnused->asDouble() + rightNode->asDouble();
+						result = leftLastUnused->asReal() + rightNode->asReal();
 						break;
 					case (ExpressionNode::SubtractOperator):
-						result = leftLastUnused->asDouble() - rightNode->asDouble();
+						result = leftLastUnused->asReal() - rightNode->asReal();
 						break;
 				}
 			}
@@ -613,11 +613,11 @@ int Expression::evaluateAsInteger()
 	return evaluate()->asInteger();
 }
 
-// Evaluate float expression
-double Expression::evaluateAsDouble()
+// Evaluate real-valued expression
+double Expression::evaluateAsReal()
 {
 	//if (!evaluatesToFloat_) printf("This is an integer expression. Why request a double?\n");
-	return evaluate()->asDouble();
+	return evaluate()->asReal();
 }
 
 // Print expression
@@ -637,10 +637,10 @@ void Expression::print(ExpressionNode *highlight, bool showUsed)
 			case (ExpressionNode::ValueToken):
 				if (ex->used())
 				{
-					if (ex->isFloat()) strcpy(bit, ftoa(ex->asDouble()));
+					if (ex->isReal()) strcpy(bit, ftoa(ex->asReal()));
 					else strcpy(bit, itoa(ex->asInteger()));
 				}
-				else if (ex->variable() == NULL) strcpy(bit,ftoa(ex->asDouble()));
+				else if (ex->variable() == NULL) strcpy(bit,ftoa(ex->asReal()));
 				else sprintf(bit,"$%s", ex->variable()->name());
 				break;
 			case (ExpressionNode::FunctionToken):
@@ -671,3 +671,108 @@ void Expression::print(ExpressionNode *highlight, bool showUsed)
 	}
 }
 
+/*
+// Expression Variable
+*/
+
+// Constructor / Destructor
+ExpressionVariable::ExpressionVariable()
+{
+	dataType_ = VTypes::ExpressionData;
+	listType_ = VTypes::NoArray;
+}
+
+/*
+// Exposed Functions
+*/
+
+// Set expression from string
+bool ExpressionVariable::initialise(const char *s, VariableList *vars)
+{
+	return data.initialise(s, vars);
+}
+
+// Return whether the result of the expression is a floating point (or integer)
+bool ExpressionVariable::evaluatesToReal()
+{
+	return data.evaluatesToReal();
+}
+
+/*
+// Set / Get
+*/
+
+// Set value of variable (char)
+void ExpressionVariable::set(const char *s)
+{
+	printf("An Expression variable cannot be set.\n");
+}
+
+// Set value of variable (int)
+void ExpressionVariable::set(int i)
+{
+	printf("An Expression variable cannot be set.\n");
+}
+
+// Set value of variable (double)
+void ExpressionVariable::set(double d)
+{
+	printf("An Expression variable cannot be set.\n");
+}
+
+// Set value of variable (pointer)
+void ExpressionVariable::set(void *ptr, VTypes::DataType type)
+{
+	printf("An Expression variable cannot be set.\n");
+}
+
+// Get value of variable as character string
+const char *ExpressionVariable::asCharacter()
+{
+	printf("Cannot get an Expression variable as a character.\n");
+	return "NULL";
+}
+
+// Get value of variable as integer
+int ExpressionVariable::asInteger()
+{
+	return data.evaluateAsInteger();
+}
+
+// Get value of variable as double
+double ExpressionVariable::asDouble()
+{
+	return data.evaluateAsReal();
+}
+
+// Get value of variable as float
+float ExpressionVariable::asFloat()
+{
+	return (float) data.evaluateAsReal();
+}
+
+// Get value of variable as a boolean
+bool ExpressionVariable::asBool()
+{
+	printf("Cannot get an Expression variable as a boolean.\n");
+	return "NULL";
+}
+
+// Get value of variable as pointer of specified type
+void *ExpressionVariable::asPointer(VTypes::DataType type)
+{
+	printf("Cannot get an Expression variable as a pointer.\n");
+	return NULL;
+}
+
+// Character increase
+void ExpressionVariable::increase(int i)
+{
+	printf("An Expression variable cannot be increased.");
+}
+
+// Character decrease
+void ExpressionVariable::decrease(int)
+{
+	printf("An Expression variable cannot be decreased.");
+}

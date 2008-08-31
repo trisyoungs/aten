@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "command/variablelist.h"
 #include "command/formatnode.h"
+#include "variables/variablelist.h"
 #include "base/messenger.h"
 #include "base/parser.h"
 #include "base/sysfunc.h"

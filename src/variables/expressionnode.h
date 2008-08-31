@@ -64,15 +64,15 @@ class ExpressionNode
 	// Whether this node has already been used up in the current evaluation
 	bool used_;
 	// Whether this node is floating point or integer type
-	bool floatType_;
+	bool realType_;
 	// Numeric value (if variable_ == NULL) (floating point)
-	double doubleValue_;
-	int intValue_;
+	double realValue_;
+	int integerValue_;
 	// Variable pointer
 	Variable *variable_;
 	// 'Reduced' value of node (when used_ = TRUE)
-	double reducedDoubleValue_;
-	int reducedIntValue_;
+	double reducedRealValue_;
+	int reducedIntegerValue_;
 
 	public:
 	// Reset node
@@ -82,13 +82,13 @@ class ExpressionNode
 	void setOperatorType(ExpressionNode::OperatorType);
 	void setFunctionType(ExpressionNode::FunctionType);
 	void setBracketType(ExpressionNode::BracketType);
-	void setFloat(bool b);
+	void setReal(bool b);
 	// Return node type
 	ExpressionNode::TokenType type();
 	ExpressionNode::OperatorType operatorType();
 	ExpressionNode::FunctionType functionType();
 	ExpressionNode::BracketType bracketType();
-	bool isFloat();
+	bool isReal();
 	// Set persistent type
 	void setPersistentType(ExpressionNode::TokenType, bool isFloat = TRUE);
 	// Change the node to a plain value node
@@ -105,8 +105,8 @@ class ExpressionNode
 	void setVariable(Variable *var);
 	// Return variable
 	Variable *variable();
-	// Return numerical value (may be value_ variable_->asDouble(), or reducedValue_.
-	double asDouble();
+	// Return numerical value (may be value_ variable_->asDouble(), or reducedValue_)
+	double asReal();
 	int asInteger();
 	// Return next unused node in this node's list
 	ExpressionNode *nextUnused(ExpressionNode *limit = NULL);

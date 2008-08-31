@@ -58,11 +58,11 @@ ExpressionNode::ExpressionNode()
 	function_ = ExpressionNode::nFunctionTypes;
 	bracket_ = ExpressionNode::nBracketTypes;
 	used_ = FALSE;
-	doubleValue_ = 0.0;
-	intValue_ = 0;
-	floatType_ = TRUE;
-	reducedDoubleValue_ = 0.0;
-	reducedIntValue_ = 0;
+	realValue_ = 0.0;
+	integerValue_ = 0;
+	realType_ = TRUE;
+	reducedRealValue_ = 0.0;
+	reducedIntegerValue_ = 0;
 	variable_ = NULL;
 
 	// Public variables
@@ -74,10 +74,10 @@ ExpressionNode::ExpressionNode()
 void ExpressionNode::reset()
 {
 	used_ = FALSE;
-	reducedDoubleValue_ = 0.0;
-	reducedIntValue_ = 0;
+	reducedRealValue_ = 0.0;
+	reducedIntegerValue_ = 0;
 	type_ = persistentType_;
-	floatType_ = persistentFloat_;
+	realType_ = persistentFloat_;
 }
 
 // Set general type of node
@@ -139,17 +139,17 @@ void ExpressionNode::setPersistentType(ExpressionNode::TokenType tt, bool isfloa
 // Change the node into a double value node
 void ExpressionNode::makeValue(double value)
 {
-	reducedDoubleValue_ = value;
+	reducedRealValue_ = value;
 	type_ = ExpressionNode::ValueToken;
-	floatType_ = TRUE;
+	realType_ = TRUE;
 }
 
 // Change the node into an integer value node
 void ExpressionNode::makeValue(int value)
 {
-	reducedIntValue_ = value;
+	reducedIntegerValue_ = value;
 	type_ = ExpressionNode::ValueToken;
-	floatType_ = FALSE;
+	realType_ = FALSE;
 }
 
 // Flag the node as used
@@ -165,33 +165,33 @@ bool ExpressionNode::used()
 }
 
 // Return if the node is a floating point number
-bool ExpressionNode::isFloat()
+bool ExpressionNode::isReal()
 {
-	return floatType_;
+	return realType_;
 }
 
 // Set value (double)
 void ExpressionNode::setValue(double value)
 {
-	doubleValue_ = value;
+	realValue_ = value;
 }
 
 // Set value (integer)
 void ExpressionNode::setValue(int value)
 {
-	intValue_ = value;
+	integerValue_ = value;
 }
 
 // Return numerical value
-double ExpressionNode::asDouble()
+double ExpressionNode::asReal()
 {
 	if (type_ != ExpressionNode::ValueToken)
 	{
 		printf("Tried to get a value from an expression token that doesn't have one.\n");
 		return 0.0;
 	}
-	if (type_ != persistentType_) return (floatType_ ? reducedDoubleValue_ : (double) reducedIntValue_);
-	else if (variable_ == NULL) return (floatType_ ? doubleValue_ : (double) intValue_);
+	if (type_ != persistentType_) return (realType_ ? reducedRealValue_ : (double) reducedIntegerValue_);
+	else if (variable_ == NULL) return (realType_ ? realValue_ : (double) integerValue_);
 	else return variable_->asDouble();
 }
 
@@ -203,8 +203,8 @@ int ExpressionNode::asInteger()
 		printf("Tried to get a value from an expression token that doesn't have one.\n");
 		return 0;
 	}
-	if (type_ != persistentType_) return (floatType_ ? (int) reducedDoubleValue_ : reducedIntValue_);
-	else if (variable_ == NULL) return (floatType_ ? (int) doubleValue_ : intValue_);
+	if (type_ != persistentType_) return (realType_ ? (int) reducedRealValue_ : reducedIntegerValue_);
+	else if (variable_ == NULL) return (realType_ ? (int) realValue_ : integerValue_);
 	else return variable_->asInteger();
 }
 

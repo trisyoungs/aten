@@ -42,6 +42,7 @@
 #include "gui/transform.h"
 #include "gui/position.h"
 #include "model/model.h"
+#include "base/sysfunc.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtGui/QProgressBar>
