@@ -1,13 +1,9 @@
 add_library(command
 commandlist.h 
 commands.h
-expression.h
-expressionnode.h
 filter.h
 format.h
 formatnode.h
-variable.h
-variablelist.h
 analyse.cpp 
 atom.cpp 
 bonds.cpp 
@@ -20,8 +16,6 @@ commandlist.cpp
 disorder.cpp 
 edit.cpp
 energy.cpp 
-expression.cpp 
-expressionnode.cpp 
 filter.cpp
 flow.cpp 
 forcefield.cpp 
@@ -47,9 +41,7 @@ site.cpp
 system.cpp 
 trajectory.cpp 
 transform.cpp 
-variable.cpp 
 variables.cpp 
-variablelist.cpp 
 view.cpp
 )
 
