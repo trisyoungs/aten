@@ -11,11 +11,11 @@ variablelist.cpp
 
 add_library(types
 character.h
-double.h
 integer.h
+real.h
 character.cpp
-double.cpp
 integer.cpp
+real.h
 )
 
 include_directories(
