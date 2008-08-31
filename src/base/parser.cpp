@@ -63,7 +63,7 @@ Parser::ArgumentForm Parser::argumentForm(int i)
 		{
 			char *r = c++;
 			char *l = c--;
-			printf("leftchar = '%c', rightchar = '%c'\n", *l, *r);
+			//printf("leftchar = '%c', rightchar = '%c'\n", *l, *r);
 			if ((!isdigit(*l)) && (!isdigit(*r))) return Parser::ReferenceForm;
 		}
 		int noperators, n, nvars, nbrackets;
