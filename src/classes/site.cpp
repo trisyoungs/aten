@@ -1,6 +1,6 @@
 /*
 	*** Molecule site
-	*** src/classes/site.h
+	*** src/classes/site.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

@@ -26,11 +26,11 @@
 #include "templates/vobject.h"
 
 // Integer Variable
-class IntegerVariable : public Variable, VObject<int>
+class PointerVariable : public Variable, VObject<void*>
 {
 	public:
 	// Constructor
-	IntegerVariable();
+	PointerVariable(VTypes::DataType);
 
 	/*
 	// Set / Get
