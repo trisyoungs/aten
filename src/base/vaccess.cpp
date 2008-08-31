@@ -22,16 +22,16 @@
 #include "base/vaccess.h"
 
 // Add new accessor
-void VAccess::addAccessor(const char *name, VObject::ListType lt, VObject::DataType datatype, bool readonly)
-{
-}
+// void VAccess::addAccessor(const char *name, VTypes::ListType lt, VTypes::DataType datatype, bool readonly)
+// {
+// }
 
 // Find and return accessor by name
-VObject *VAccess::findAccessor(const char *name)
-{
-}
+// VObject *VAccess::findAccessor(const char *name)
+// {
+// }
 
 // Dig down through accessor list to find the specified value
-bool VAccess::dig(const char *refpath, VariableList &vlist, VResult &result)
-{
-}
+// bool VAccess::dig(const char *refpath, VariableList &vlist, VResult &result)
+// {
+// }

@@ -30,7 +30,7 @@
 
 #define ATENVERSION "0.99"
 #define ATENREVISION "613"
-#define ATENDATE "Sun 31 Aug - 13:15"
+#define ATENDATE "Sun 31 Aug - 14:35"
 #define ATENURL "http://aten.googlecode.com/svn/branches/newvar"
 
 // Forward Declarations
@@ -289,7 +289,7 @@ class AtenAccessors : public VAccess
 	// Accessor list
 	enum Accessors { Models, nAccessors };
 	// Retrieve specified data from Aten class
-	void retrieveData(VObject source, int acessorid, VResult &result);
+// 	void retrieveData(VObject source, int acessorid, VResult &result);
 };
 
 extern Aten aten;

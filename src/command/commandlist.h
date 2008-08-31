@@ -25,7 +25,7 @@
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
-#include "command/variablelist.h"
+#include "variables/variablelist.h"
 #include "base/parser.h"
 
 // If Conditions
@@ -198,7 +198,7 @@ class Command
 	// Returns whether argument 'n' was provided
 	bool hasArg(int argno);
 	// Return variable type of argument
-	Variable::VariableType argt(int argno);
+	VTypes::DataType argt(int argno);
 	// Print data variables
 	void printArgs();
 };

@@ -33,17 +33,17 @@ class VAccess
 {
 	private:
 	// List of variable reference definitions
-	List<VObject> accessors_;
+// 	List<VObject> accessors_;
 
 	public:
 	// Add new accessor
-	void addAccessor(const char *name, VObject::ListType lt, VObject::DataType datatype, bool readonly);
+// 	void addAccessor(const char *name, VObject::ListType lt, VObject::DataType datatype, bool readonly);
 	// Find and return accessor by name
-	VObject *findAccessor(const char *name);
+// 	VObject *findAccessor(const char *name);
 	// Dig down through accessor list to find the specified value
-	bool dig(const char *refpath, VariableList &vlist, VResult &result);
+// 	bool dig(const char *refpath, VariableList &vlist, VResult &result);
 	// Get pointer to data referenced by a VObject
-	virtual void retrieveData(VObject source, int accessorid, VResult &result) = 0;
+// 	virtual void retrieveData(VObject source, int accessorid, VResult &result) = 0;
 };
 
 #endif
