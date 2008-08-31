@@ -1,9 +1,12 @@
 add_library(ff
+energystore.h
 forcefield.h
 angle.cpp 
 bond.cpp 
 coulomb.cpp 
+energystore.cpp
 ewald.cpp 
+expression.cpp
 forcefield.cpp
 loadforcefield.cpp
 rules.cpp 

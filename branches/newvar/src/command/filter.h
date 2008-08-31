@@ -1,6 +1,6 @@
 /*
 	*** File filter definition
-	*** src/parse/filter.h
+	*** src/command/filter.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.

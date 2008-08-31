@@ -1,6 +1,6 @@
 /*
 	*** Energy store
-	*** src/ff/energy.h
+	*** src/ff/energystore.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ESTORE_H
-#define ATEN_ESTORE_H
+#ifndef ATEN_ENERGYSTORE_H
+#define ATEN_ENERGYSTORE_H
 
 // Forward Declarations
 class Pattern;

@@ -21,7 +21,8 @@
 
 // #include "parse/variablelist.h"
 #include "command/format.h"
-// #include "parse/parser.h"
+#include "base/messenger.h"
+#include "base/parser.h"
 // #include "base/sysfunc.h"
 // #include <cstring>
 
@@ -41,7 +42,7 @@ bool Format::createDelimited(const char *s, VariableList &vlist)
 	// Clear any existing node list
 	nodes_.clear();
 	// First, parseline the formatting string
-	lp.getArgsDelim(s,Format::Defaults);
+	lp.getArgsDelim(s,Parser::Defaults);
 	// Now, step through the args[] array and convert the substrings into format nodes
 	for (n=0; n<lp.nArgs(); n++)
 	{
@@ -235,9 +236,9 @@ const char *Format::createString()
 */
 
 // Get all (formatted)
-void Format::getAllArgsFormatted(Format *fmt)
+void Format::getAllArgsFormatted()
 {
-	// Parse the string in 'source' into arguments in 'args'
+	// Parse the string in the sub-classed Parser's line into arguments in 'args'
 	msg.enter("Format::getAllArgsFormatted");
 	nArgs_ = 0;
 	bool parseresult;
@@ -247,7 +248,7 @@ void Format::getAllArgsFormatted(Format *fmt)
 		quoted_[n] = 0;
 	}
 	
-	for (FormatNode *fn = fmt->nodes(); fn != NULL; fn = fn->next)
+	for (FormatNode *fn = nodes_.first(); fn != NULL; fn = fn->next)
 	{
 		// If field length specifier is zero, just get the next arg, otherwise get by length
 		if (fn->length() == 0) parseresult = getNextArg(-1);
@@ -264,7 +265,7 @@ void Format::getAllArgsFormatted(Format *fmt)
 }
 
 // Parse formatted (from file)
-int Format::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
+int Format::getArgsFormatted(ifstream *xfile, int options)
 {
 	// Splits the line from the file into parts determined by the supplied format
 	msg.enter("Format::getArgsFormatted[file]");
@@ -283,7 +284,7 @@ int Format::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 		// Assume that we will finish after parsing the line we just read in
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
-		getAllArgsFormatted(fmt);
+		getAllArgsFormatted();
 		if ((optionMask_&Format::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
 	msg.exit("Format::getArgsFormatted[file]");
@@ -291,7 +292,7 @@ int Format::getArgsFormatted(ifstream *xfile, int options, Format *fmt)
 }
 
 // Parse formatted (from string)
-void Format::getArgsFormatted(const char *source, int options, Format *fmt)
+void Format::getArgsFormatted(const char *source, int options)
 {
 	// Splits the line from the file into parts determiend by the supplied format
 	msg.enter("Format::getArgsFormatted[string]");
@@ -299,6 +300,6 @@ void Format::getArgsFormatted(const char *source, int options, Format *fmt)
 	linePos_ = 0;
 	lineLength_ = strlen(line_);
 	optionMask_ = options;
-	getAllArgsFormatted(fmt);
+	getAllArgsFormatted();
 	msg.exit("Format::getArgsFormatted[string]");
 }
