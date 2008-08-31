@@ -124,6 +124,14 @@ GlyphData::GlyphDataType Glyph::atomData(int i)
 	return GlyphData::PositionData;
 }
 
+// Returns the atom id of the glyph
+Vec3<double> Glyph::vector(int i)
+{
+	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
+	else return data_[i]->vector;
+	return Vec3<double>();
+}
+
 // // Returns whether the specified data is to be taken from an atom
 // bool Glyph::hasAtomId(int i)
 // {

@@ -4,6 +4,8 @@ commands.h
 expression.h
 expressionnode.h
 filter.h
+format.h
+formatnode.h
 variable.h
 variablelist.h
 analyse.cpp 
@@ -24,6 +26,8 @@ filter.cpp
 flow.cpp 
 forcefield.cpp 
 forces.cpp 
+format.cpp
+formatnode.cpp
 functions.cpp 
 glyph.cpp 
 grid.cpp 

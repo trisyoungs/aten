@@ -42,10 +42,6 @@ class Generator
 // Symmetry generator map
 class GeneratorMap
 {
-	public:
-	// Constructor
-	GeneratorMap();
-
 	private:
 	// Spacegroup generator data
 	static Generator generators_[];

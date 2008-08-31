@@ -47,7 +47,7 @@ class Parser
 	/*
 	// Source line, options, and argument data
 	*/
-	private:
+	protected:
 	// Temporary string variable
 	char tempArg_[MAXARGLENGTH];
 	// Line to parse

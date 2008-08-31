@@ -176,6 +176,15 @@ int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 	return CR_SUCCESS;
 }
 
+// Select current forcefield ('getff <name>')
+int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
+{
+	Forcefield *ff = (c->argt(0) == Variable::IntegerVariable ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
+	if (ff != NULL)	aten.setCurrentForcefield(ff);
+	else return CR_FAIL;
+	return CR_SUCCESS;
+}
+
 // Load forcefield ('loadff <filename> [nickname]')
 int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 {
@@ -190,15 +199,6 @@ int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 		if (c->hasArg(1)) ff->setName(c->argc(1));
 		msg.print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 	}
-	return CR_SUCCESS;
-}
-
-// Select current forcefield ('getff <name>')
-int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
-{
-	Forcefield *ff = (c->argt(0) == Variable::IntegerVariable ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
-	if (ff != NULL)	aten.setCurrentForcefield(ff);
-	else return CR_FAIL;
 	return CR_SUCCESS;
 }
 
@@ -220,6 +220,13 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 		}
 	}
 	return CR_SUCCESS;
+}
+
+// Create new, empty forcefield ('newff <name>')
+int CommandData::function_CA_NEWFF(Command *&c, Bundle &obj)
+{
+	obj.ff = aten.addForcefield();
+	obj.ff->setName(c->argc(0));
 }
 
 // Print expression setup ('printexpression')

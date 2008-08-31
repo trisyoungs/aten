@@ -25,9 +25,10 @@
 #include "templates/list.h"
 #include "command/variablelist.h"
 #include "command/formatnode.h"
+#include "base/parser.h"
 
 // Format
-class Format
+class Format : public Parser
 {
 	/*
 	// Node List
@@ -53,7 +54,7 @@ class Format
 	*/
 	private:
 	// Gets all arguments from string by format
-	void getAllArgsFormatted(Format*);
+	void getAllArgsFormatted();
 
 	public:
 	// Parse file with format

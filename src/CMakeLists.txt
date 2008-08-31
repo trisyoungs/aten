@@ -5,7 +5,7 @@ add_subdirectory(command)
 add_subdirectory(ff)
 add_subdirectory(methods)
 add_subdirectory(model)
-add_subdirectory(aten)
+add_subdirectory(main)
 add_subdirectory(render)
 
 
