@@ -23,7 +23,7 @@
 #define ATEN_VACCESS_H
 
 #include "templates/list.h"
-// #include "base/vobject.h"
+#include "variables/variable.h"
 
 // Forward declarations
 class VariableList;
@@ -31,15 +31,14 @@ class VariableList;
 // Variable access class
 class VAccess
 {
-	private:
-	// List of variable reference definitions
-// 	List<VObject> accessors_;
+	protected:
+	// Add new accessor
+	void add(const char *name, VTypes::ArrayType lt, VTypes::DataType dt, bool readonly);
 
 	public:
-	// Add new accessor
-// 	void addAccessor(const char *name, VObject::ListType lt, VObject::DataType datatype, bool readonly);
+	// Add these accessors to 
 	// Find and return accessor by name
-// 	VObject *findAccessor(const char *name);
+	Variable *findAccessor(const char *name);
 	// Dig down through accessor list to find the specified value
 // 	bool dig(const char *refpath, VariableList &vlist, VResult &result);
 	// Get pointer to data referenced by a VObject

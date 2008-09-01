@@ -156,6 +156,12 @@ Model *Aten::model(int n)
 	return models_[n];
 }
 
+// Return pointer to the actual model list
+List<Model> *Aten::modelList()
+{
+	return &models_;
+}
+
 // Return the current model's index in the model list
 int Aten::currentModelId() const
 {

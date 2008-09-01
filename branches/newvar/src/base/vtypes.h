@@ -26,8 +26,8 @@
 class VTypes
 {
 	public:
-	// List types
-	enum ListType { NoArray, ListArray, ReflistArray, NormalArray };
+	// Array types
+	enum ArrayType { NoArray, ListArray, ReflistArray, NormalArray };
 	// Data Types
 	enum DataType { CharacterData, IntegerData, RealData, AtomData, PatternData, ModelData, GridData, BondData, AngleData, TorsionData, AtomtypeData, ExpressionData, ReferenceData, NoData, nDataTypes };
 	static const char *dataType(DataType);

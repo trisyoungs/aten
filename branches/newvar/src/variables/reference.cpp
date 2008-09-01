@@ -29,7 +29,7 @@
 ReferenceVariable::ReferenceVariable()
 {
 	dataType_ = VTypes::ReferenceData;
-	listType_ = VTypes::NoArray;
+	arrayType_ = VTypes::NoArray;
 	data = NULL;
 }
 

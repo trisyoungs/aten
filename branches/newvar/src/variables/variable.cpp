@@ -33,8 +33,9 @@ Variable::Variable()
 {
 	// Private variables
 	name_.set("unnamed");
-	listType_ = VTypes::NoArray;
+	arrayType_ = VTypes::NoArray;
 	dataType_ = VTypes::NoData;
+	arrayIndex_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -66,6 +67,18 @@ VTypes::DataType Variable::type()
 	return dataType_;
 }
 
+// Sets the content type of the variable
+void Variable::setArrayType(VTypes::ArrayType at)
+{
+	arrayType_ = at;
+}
+
+// Returns content type of the variable
+VTypes::ArrayType Variable::arrayType()
+{
+	return arrayType_;
+}
+
 // Get name of variable
 const char *Variable::name()
 {
@@ -76,6 +89,18 @@ const char *Variable::name()
 void Variable::setParent(VariableList *vlist)
 {
 	parent_ = vlist;
+}
+
+// Set array index variable
+void Variable::setArrayIndex(Variable *v)
+{
+	arrayIndex_ = v;
+}
+
+// Return array index variable
+Variable *Variable::arrayIndex()
+{
+	return arrayIndex_;
 }
 
 // // Reset

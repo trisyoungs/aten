@@ -28,7 +28,7 @@
 CharacterVariable::CharacterVariable()
 {
 	dataType_ = VTypes::CharacterData;
-	listType_ = VTypes::NoArray;
+	arrayType_ = VTypes::NoArray;
 }
 
 /*

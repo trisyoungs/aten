@@ -1,5 +1,4 @@
 add_library(variables
-atenaccess.h
 character.h
 expression.h
 expressionnode.h
@@ -11,7 +10,6 @@ reference.h
 vaccess.h
 variable.h
 variablelist.h
-atenaccess.cpp
 character.cpp
 expression.cpp
 expressionnode.cpp

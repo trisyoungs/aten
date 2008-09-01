@@ -29,7 +29,7 @@
 PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 {
 	dataType_ = ptrtype;
-	listType_ = VTypes::NoArray;
+	arrayType_ = VTypes::NoArray;
 	data = NULL;
 }
 

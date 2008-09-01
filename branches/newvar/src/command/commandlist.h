@@ -158,7 +158,9 @@ class Command
 	*/
 	private:
 	// Data variables
-	Reflist<Variable,int> args_;
+	Reflist<Variable,Variable*> args_;
+	// Add variable to reference list, given the name
+	bool addVariable(const char *varname, VariableList &sourcelist);
 
 	public:
 	// Set variables from parser arguments
