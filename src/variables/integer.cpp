@@ -29,7 +29,7 @@
 IntegerVariable::IntegerVariable()
 {
 	dataType_ = VTypes::IntegerData;
-	listType_ = VTypes::NoArray;
+	arrayType_ = VTypes::NoArray;
 	data = 0;
 }
 

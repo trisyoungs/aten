@@ -88,8 +88,8 @@ class VariableList
 	// Add a reference to the variable list
 // 	Variable *addReference(const char *s, VObject *vobparent = NULL);
 	// Add a named variable to the list
-	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
-	Variable *addVariable(const char *name, VTypes::DataType vt);
+	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt, VTypes::ArrayType at = VTypes::NoArray);
+	Variable *addVariable(const char *name, VTypes::DataType vt, VTypes::ArrayType at = VTypes::NoArray);
 	// Create, but don't set, a named variable in the list
 // 	Variable *createVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
 	// Reset values of all variables

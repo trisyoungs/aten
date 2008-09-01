@@ -1,6 +1,6 @@
 /*
-	*** Aten Access
-	*** src/variables/atenaccess.cpp
+	*** Model Accessors
+	*** src/variables/modelaccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,27 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "variables/atenaccess.h"
-#include "base/vaccess.h"
+#ifndef ATEN_MODELACCESS_H
+#define ATEN_MODELACCESS_H
 
-// Singleton declaration
-AtenAccessors atenAccessors;
+#include "variables/vaccess.h"
 
-// Constructor
-AtenAccessors::AtenAccessors()
+// Model Accessor
+class ModelAccessors : public VAccess
 {
-// 	addAccessor("models",	VObject::ListArray,	VObject::ModelData,	FALSE);
-}
+	public:
+	// Constructor
+	ModelAccessors();
+	// Accessor list
+	enum Accessors { Atoms, Name, NAtoms, nAccessors };
+	// Retrieve specified data from Model class
+// 	void retrieveData(VObject source, int acessorid, VResult &result);
+};
 
-// Retriever
-// void AtenAccessors::retrieveData(VObject source, int accessorid, VResult &result)
-// {
-// 	// Cast accessorid into local enum
-// 	if ((accessorid < 0) || (accessorid >= nAccessors))
-// 	{
-// 		printf("Critical error accessing object in Aten - accessor id %i is out of range.\n", accessorid);
-// 		result.setType(VObject::NoDataSet);
-// 		return;
-// 	}
-// }
+extern ModelAccessors modelAccessor;
 
+#endif

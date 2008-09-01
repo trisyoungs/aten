@@ -20,7 +20,7 @@
 */
 
 #include "variables/modelaccess.h"
-#include "base/vaccess.h"
+#include "variables/vaccess.h"
 
 ModelAccessors modelAccessors;
 

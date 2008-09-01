@@ -172,28 +172,28 @@ Command *Command::pointer()
 // Return variable argument
 Variable *Command::arg(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	return (rv == NULL ? NULL : rv->item);
 }
 
 // Return argument as character
 const char *Command::argc(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	return (rv == NULL ?  "NULL" : rv->item->asCharacter());
 }
 
 // Return argument as integer
 int Command::argi(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	return (rv == NULL ?  0 : rv->item->asInteger());
 }
 
 // Return argument as double
 double Command::argd(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	return (rv == NULL ? 0.0 : rv->item->asDouble());
 }
 
@@ -206,14 +206,14 @@ float Command::argf(int argno)
 // Return argument as bool
 bool Command::argb(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	return (rv == NULL ? -1 : rv->item->asBool());
 }
 
 // Return argument as atom pointer
 Atom *Command::arga(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	if (rv == NULL) return NULL;
 	return (Atom*) rv->item->asPointer(VTypes::AtomData);
 }
@@ -221,7 +221,7 @@ Atom *Command::arga(int argno)
 // Return argument as pattern pointer
 Pattern *Command::argp(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	if (rv == NULL) return NULL;
 	return (Pattern*) rv->item->asPointer(VTypes::PatternData);
 }
@@ -229,7 +229,7 @@ Pattern *Command::argp(int argno)
 // Return argument as grid pointer
 Grid *Command::argg(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	if (rv == NULL) return NULL;
 	return (Grid*) rv->item->asPointer(VTypes::GridData);
 }
@@ -237,7 +237,7 @@ Grid *Command::argg(int argno)
 // Return argument as model pointer
 Model *Command::argm(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	if (rv == NULL) return NULL;
 	return (Model*) rv->item->asPointer(VTypes::ModelData);
 }
@@ -245,7 +245,7 @@ Model *Command::argm(int argno)
 // Return argument as PatternBound pointer
 PatternBound *Command::argpb(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	if (rv == NULL) return NULL;
 	else if ((rv->item->type() < VTypes::BondData) || (rv->item->type() > VTypes::TorsionData)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
 	else return (PatternBound*) rv->item->asPointer(VTypes::BondData);
@@ -255,7 +255,7 @@ PatternBound *Command::argpb(int argno)
 // Return argument as ForcefieldAtom pointer
 ForcefieldAtom *Command::argffa(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	if (rv == NULL) return NULL;
 	return (ForcefieldAtom*) rv->item->asPointer(VTypes::AtomtypeData);
 }
@@ -269,7 +269,7 @@ bool Command::hasArg(int argno)
 // Return variable type of argument
 VTypes::DataType Command::argt(int argno)
 {
-	Refitem<Variable,int> *rv = args_[argno];
+	Refitem<Variable,Variable*> *rv = args_[argno];
 	return (rv == NULL ? VTypes::nDataTypes : rv->item->type());
 }
 
@@ -295,7 +295,7 @@ void Command::printArgs()
 	msg.enter("Command::printArgs");
 	int i = 0;
 	Variable *v;
-	for (Refitem<Variable,int> *rv = args_.first(); rv != NULL; rv = rv->next)
+	for (Refitem<Variable,Variable*> *rv = args_.first(); rv != NULL; rv = rv->next)
 	{
 		v = rv->item;
 		printf("%2i %20li", i, v);
@@ -505,6 +505,51 @@ bool Command::ifEvaluate()
 	return result;
 }
 
+/*
+// Command Variables
+*/
+
+// Add variable to reference list, given the name (minus the 'dollar')
+bool Command::addVariable(const char *varname, VariableList &sourcelist)
+{
+	msg.enter("Command::addVariable");
+	Variable *v;
+	// Search for array index (square brackets)
+	int lbracket = -1, rbracket = -1;
+	for (int n = 0; n<strlen(varname); n++)
+	{
+		if (varname[n] == '[') lbracket = n;
+		if (varname[n] == ']') rbracket = n;
+	}
+	// Check values of lbracket and rbracket
+	if ((lbracket == -1) && (rbracket == -1))
+	{
+		// No array element, just the name. See if it has been declared
+		var = parent_->sourcelist.get(varname);
+		if (var == NULL)
+		{
+			msg.print("Error: Variable '%s' has not been declared.\n", varname);
+			return FALSE;
+		}
+	}
+	else if ((lbracket == -1) || (rbracket == -1))
+	{
+		// One bracket given but not the other
+		msg.print("Array index for variable '%s' is missing a '%c'.\n", varname, lbracket == -1 ? '[' : ']');
+		return FALSE;
+	}
+	else if (lbracket > rbracket)
+	{
+		// Brackets provided the wrong way around!
+		msg.print("Brackets around array index for variable '%s' face the wrong way.\n", varname);
+		return FALSE;
+	}
+	// If we get here then the array brackets are valid, and we should get the contents
+	Xxx
+	msg.exit("Command::addVariable");
+	return TRUE;
+}
+
 // Add variables to command
 bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 {
@@ -629,6 +674,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				}
 				else if (af == Parser::VariableForm)
 				{
+					XXXX
 					// See if it has been declared
 					var = parent_->variables.get(&arg[1]);
 					if (var == NULL)

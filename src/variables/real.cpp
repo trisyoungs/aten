@@ -29,7 +29,7 @@
 RealVariable::RealVariable()
 {
 	dataType_ = VTypes::RealData;
-	listType_ = VTypes::NoArray;
+	arrayType_ = VTypes::NoArray;
 	data = 0.0;
 }
 

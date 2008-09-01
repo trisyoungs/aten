@@ -34,8 +34,14 @@
 // Constructor
 VariableList::VariableList()
 {
-	// Added reference to 'models' accessor in Aten
-	//addReference("models", atenAccessors.findAccessor("models"));
+	// Add accessors to model list and current model/frame in Aten
+	Variable *v;
+	v = addVariable("frame", VTypes::ModelData);
+	v->set(&aten.current.rs, VTypes::ModelData);
+	v = addVariable("model", VTypes::ModelData);
+	v->set(&aten.current.m, VTypes::ModelData);
+	v = addVariable("models", VTypes::ModelData, VTypes::ListArray);
+	v->set(aten.modelList(), VTypes::ModelData);
 }
 
 /*
@@ -82,11 +88,11 @@ Variable *VariableList::createVariable(VTypes::DataType dt)
 }
 
 // Add named variable
-Variable *VariableList::addVariable(const char *name, VTypes::DataType dt)
+Variable *VariableList::addVariable(const char *name, VTypes::DataType dt, VTypes::ArrayType at)
 {
-	return addVariable(name,"",dt);
+	return addVariable(name,"",dt,at);
 }
-Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTypes::DataType dt)
+Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTypes::DataType dt, VTypes::ArrayType at)
 {
 	static char name[128];
 	strcpy(name,prefix);
@@ -97,6 +103,7 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTyp
 	}
 	Variable *newvar = createVariable(dt);
 	vars_.own(newvar);
+	newvar->setArrayType(at);
 	newvar->setName(name);
 	return newvar;
 }

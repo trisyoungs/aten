@@ -23,6 +23,7 @@
 #define ATEN_REFERENCEVARIABLE_H
 
 #include "variables/variable.h"
+#include "templates/reflist.h"
 #include "templates/vobject.h"
 
 // Integer Variable
@@ -62,6 +63,13 @@ class ReferenceVariable : public Variable, VObject<Variable*>
 	void increase(int);
 	// Integer decrease
 	void decrease(int);
+
+	/*
+	// Reference Data
+	*/
+	private:
+	// Path to follow from base variable pointer
+	Reflist<Variable,Variable*> path_;
 };
 
 #endif
