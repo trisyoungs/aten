@@ -8,6 +8,7 @@ modelaccess.h
 pointer.h
 real.h
 reference.h
+vaccess.h
 variable.h
 variablelist.h
 atenaccess.cpp
@@ -19,6 +20,7 @@ modelaccess.cpp
 pointer.cpp
 real.cpp
 reference.cpp
+vaccess.cpp
 variable.cpp
 variablelist.cpp
 )
