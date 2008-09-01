@@ -21,7 +21,6 @@ pattern.h
 region.h
 sysfunc.h
 spacegroup.h
-vaccess.h
 vtypes.h
 atomaddress.cpp
 atom.cpp
@@ -44,7 +43,6 @@ pattern.cpp
 region.cpp
 spacegroup.cpp
 sysfunc.cpp
-vaccess.cpp
 vtypes.cpp
 )
 
