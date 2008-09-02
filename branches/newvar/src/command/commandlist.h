@@ -159,12 +159,14 @@ class Command
 	private:
 	// Data variables
 	Reflist<Variable,Variable*> args_;
-	// Add variable to reference list, given the name
-	bool addVariable(const char *varname, VariableList &sourcelist);
+	// Construct / retrieve variable and return its pointer
+	Variable *constructOrRetrieve(const char *
+	// Add variable argument to reference list, given the name
+	bool addArgument(const char *varname, VariableList &srcvars, Parser::ArgumentForm af = Parser::UnknownForm);
 
 	public:
-	// Set variables from parser arguments
-	bool addVariables(const char*, const char*, VariableList&);
+	// Set arguments from parser arguments
+	bool setArguments(const char *cmdname, const char *specifiers, VariableList &sourcevars);
 	// Return number of arguments given to command
 	int nArgs();
 	// Return variable argument

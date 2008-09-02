@@ -510,7 +510,7 @@ bool Command::ifEvaluate()
 */
 
 // Add variable to reference list, given the name (minus the 'dollar')
-bool Command::addVariable(const char *varname, VariableList &sourcelist)
+bool Command::addVariable(const char *varname, VariableList &sourcelist, )
 {
 	msg.enter("Command::addVariable");
 	Variable *v;
@@ -551,9 +551,9 @@ bool Command::addVariable(const char *varname, VariableList &sourcelist)
 }
 
 // Add variables to command
-bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
+bool Command::setArguments(const char *cmdname, const char *specifiers, VariableList &vars)
 {
-	msg.enter("Command::addVariables");
+	msg.enter("Command::setArguments");
 	bool required = TRUE, repeat = FALSE;
 	int n, m, argcount, last = -1;
 	Variable *var;
@@ -578,7 +578,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			if (required && (!repeat))
 			{
 				msg.print("Error: '%s' requires argument %i\n", cmd, argcount);
-				msg.exit("Command::addVariables");
+				msg.exit("Command::setArguments");
 				return FALSE;
 			}
 			else break;	// No more arguments, so may as well quit.
@@ -664,6 +664,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 			// Variable, expression, or constant
 			case ('e'):
 			case ('E'):
+				if (addVariable(
 				// Get form of argument in parser object
 				af = parser.argumentForm(argcount);
 				if (af == Parser::ExpressionForm)
@@ -816,7 +817,7 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 				if (n == 0)
 				{
 					printf("Internal error: Repeat specifier given to command arguments list without prior specifier.\n");
-					msg.exit("Command::addVariables");
+					msg.exit("Command::setArguments");
 					return FALSE;
 				}
 				// Set the repeat flag to TRUE, and go back to last parameter type considered
@@ -833,10 +834,10 @@ bool Command::addVariables(const char *cmd, const char *v, VariableList &vars)
 	if (argcount < (parser.nArgs() - 1))
 	{
 		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(++argcount), cmd);
-		msg.exit("Command::addVariables");
+		msg.exit("Command::setArguments");
 		return FALSE;
 	}
-	msg.exit("Command::addVariables");
+	msg.exit("Command::setArguments");
 	return TRUE;
 }
 
