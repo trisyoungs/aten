@@ -41,7 +41,7 @@ class Parser
 	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
 	static ParseOption parseOption(const char*);
 	// Determine form of argument
-	enum ArgumentForm { ConstantForm, VariableForm, ExpressionForm, ReferenceForm };
+	enum ArgumentForm { ConstantForm, VariableForm, ExpressionForm, ReferenceForm, UnknownForm  };
 	ArgumentForm argumentForm(int i);
 
 	/*
