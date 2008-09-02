@@ -1,0 +1,835 @@
+/*
+	*** Command
+	*** src/command/command.cpp
+	Copyright T. Youngs 2007,2008
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "command/command.h"
+#include "command/format.h"
+#include "variables/expression.h"
+#include "main/aten.h"
+#include "model/model.h"
+#include "base/sysfunc.h"
+
+// If Conditions
+const char *IfTestStrings[6] = { "eq", "l", "le", "g", "ge", "neq" };
+const char *IfTests::ifTest(IfTest i)
+{
+	return IfTestStrings[i-1];
+}
+// Variable Operators
+const char *AssignOpKeywords[AssignOps::nAssignOps] = { "=", "+=", "-=", "/=", "*=" };
+AssignOps::AssignOp AssignOps::assignOp(const char *s)
+{
+	return (AssignOps::AssignOp) enumSearch("assignment operator", AssignOps::nAssignOps, AssignOpKeywords, s);
+}
+const char *AssignOps::assignOp(AssignOps::AssignOp ao)
+{
+	return AssignOpKeywords[ao];
+}
+
+// Constructor
+Command::Command()
+{
+	// Private variables
+	action_ = CA_ROOTNODE;
+	parent_ = NULL;
+	function_ = NULL;
+	ptr_ = NULL;
+	branch_ = NULL;
+	format_ = NULL;
+	loopActive_ = FALSE;
+
+	// Public variables
+	next = NULL;
+	prev = NULL;
+}
+
+// Destructor
+Command::~Command()
+{
+	if (branch_ != NULL) delete branch_;
+	if (format_ != NULL) delete format_;
+}
+
+/*
+// Command
+*/
+
+// Set parent CommandList
+void Command::setParent(CommandList *cl)
+{
+	parent_ = cl;
+}
+
+// Get parent CommandList
+CommandList *Command::parent()
+{
+	return parent_;
+}
+
+// Get command
+CommandAction Command::command()
+{
+	return action_;
+}
+
+// Returns the formatter
+Format *Command::format()
+{
+	return format_;
+}
+
+// Delete the associated format
+void Command::deleteFormat()
+{
+	if (format_ != NULL) delete format_;
+	format_ = NULL;
+}
+
+// Set status of loop
+void Command::setLoopActive(bool b)
+{
+	loopActive_ = b;
+}
+
+// Get status of loop
+bool Command::isLoopActive()
+{
+	return loopActive_;
+}
+
+// Set iteration count
+void Command::setLoopIterations(int n)
+{
+	loopIterations_ = n;
+}
+
+// Get iteration count
+int Command::loopIterations()
+{
+	return loopIterations_;
+}
+
+// Increase interation count
+void Command::increaseIterations()
+{
+	loopIterations_ ++;
+}
+
+// Returns branch list structure
+List<Command> *Command::branch()
+{
+	return branch_;
+}
+
+// Returns first item in branch 
+Command *Command::branchCommands()
+{
+	return (branch_ != NULL ? branch_->first() : NULL);
+}
+
+// Set FormatNode pointer variable
+void Command::setPointer(Command *f)
+{
+	ptr_ = f;
+}
+
+// Return FormatNode pointer variable
+Command *Command::pointer()
+{
+	return ptr_;
+}
+
+// Return variable argument
+Variable *Command::arg(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	return (rv == NULL ? NULL : rv->item);
+}
+
+// Return argument as character
+const char *Command::argc(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	return (rv == NULL ?  "NULL" : rv->item->asCharacter());
+}
+
+// Return argument as integer
+int Command::argi(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	return (rv == NULL ?  0 : rv->item->asInteger());
+}
+
+// Return argument as double
+double Command::argd(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	return (rv == NULL ? 0.0 : rv->item->asDouble());
+}
+
+// Return argument as float
+float Command::argf(int argno)
+{
+	return (float) argd(argno);
+}
+
+// Return argument as bool
+bool Command::argb(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	return (rv == NULL ? -1 : rv->item->asBool());
+}
+
+// Return argument as atom pointer
+Atom *Command::arga(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	if (rv == NULL) return NULL;
+	return (Atom*) rv->item->asPointer(VTypes::AtomData);
+}
+
+// Return argument as pattern pointer
+Pattern *Command::argp(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	if (rv == NULL) return NULL;
+	return (Pattern*) rv->item->asPointer(VTypes::PatternData);
+}
+
+// Return argument as grid pointer
+Grid *Command::argg(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	if (rv == NULL) return NULL;
+	return (Grid*) rv->item->asPointer(VTypes::GridData);
+}
+
+// Return argument as model pointer
+Model *Command::argm(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	if (rv == NULL) return NULL;
+	return (Model*) rv->item->asPointer(VTypes::ModelData);
+}
+
+// Return argument as PatternBound pointer
+PatternBound *Command::argpb(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	if (rv == NULL) return NULL;
+	else if ((rv->item->type() < VTypes::BondData) || (rv->item->type() > VTypes::TorsionData)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
+	else return (PatternBound*) rv->item->asPointer(VTypes::BondData);
+	return NULL;
+}
+
+// Return argument as ForcefieldAtom pointer
+ForcefieldAtom *Command::argffa(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	if (rv == NULL) return NULL;
+	return (ForcefieldAtom*) rv->item->asPointer(VTypes::AtomtypeData);
+}
+
+// Returns whether argument 'n' was provided
+bool Command::hasArg(int argno)
+{
+	return ((argno+1) > args_.nItems() ? FALSE : TRUE);
+}
+
+// Return variable type of argument
+VTypes::DataType Command::argt(int argno)
+{
+	Refitem<Variable,Variable*> *rv = args_[argno];
+	return (rv == NULL ? VTypes::nDataTypes : rv->item->type());
+}
+
+// Set command and function
+void Command::setCommand(CommandAction ca)
+{
+	action_ = ca;
+	function_ = CA_data[ca].function;
+}
+
+// Print data variables
+void Command::printArgs()
+{
+	msg.enter("Command::printArgs");
+	int i = 0;
+	Variable *v;
+	for (Refitem<Variable,Variable*> *rv = args_.first(); rv != NULL; rv = rv->next)
+	{
+		v = rv->item;
+		printf("%2i %20li", i, v);
+		printf("%12s [%10s]",v->name(), VTypes::dataType(v->type()));
+		if (v->type() < VTypes::AtomData) printf("%20s\n",v->asCharacter());
+// 		else printf("%li\n", v->asPointer());
+		else printf("ptr\n");
+		i++;
+	}
+	msg.exit("Command::printArgs");
+}
+
+// Return arguments as Vec3<double>
+Vec3<double> Command::arg3d(int i)
+{
+	msg.enter("Command::arg3d");
+        static Vec3<double> result;
+        if (i > (args_.nItems()-3)) printf("Command::arg3d - Starting point too close to end of argument list.\n");
+        result.set(args_[i]->item->asDouble(),args_[i+1]->item->asDouble(),args_[i+2]->item->asDouble());
+	msg.exit("Command::arg3d");
+        return result;
+}
+
+// Return arguments as Vec3<float>
+Vec3<float> Command::arg3f(int i)
+{
+	msg.enter("Command::arg3f");
+        static Vec3<float> result;
+        if (i > (args_.nItems()-3)) printf("Command::arg3f - Starting point too close to end of argument list.\n");
+        result.set(args_[i]->item->asFloat(),args_[i+1]->item->asFloat(),args_[i+2]->item->asFloat());
+	msg.exit("Command::arg3f");
+        return result;
+}
+
+// Return arguments as Vec3<int>
+Vec3<int> Command::arg3i(int i)
+{
+	msg.enter("Command::arg3i");
+	static Vec3<int> result;
+	if (i > (args_.nItems()-3)) printf("Command::arg3i - Starting point too close to end of argument list.\n");
+        result.set(args_[i]->item->asInteger(),args_[i+1]->item->asInteger(),args_[i+2]->item->asInteger());
+	msg.exit("Command::arg3i");
+	return result;
+}
+
+// Create branch
+List<Command> *Command::createBranch()
+{
+	msg.enter("Command::createBranch");
+	if (branch_ != NULL) printf("Command::createBranch <<<< Already has a branch >>>>\n");
+	branch_ = new List<Command>;
+	msg.exit("Command::createBranch");
+	return branch_;
+}
+
+// Create branch
+bool Command::createFormat(const char *s, VariableList &vars, bool delimited)
+{
+	msg.enter("Command::createFormat");
+	bool result = FALSE;
+	if (format_ != NULL) printf("Command::createFormat <<<< Already has a format >>>>\n");
+	else
+	{
+		format_ = new Format;
+		result = format_->create(s, vars, delimited);
+	}
+	msg.exit("Command::createFormat");
+	return result;
+}
+
+// Set if condition test
+bool Command::setIfTest(const char *s)
+{
+	msg.enter("Command::setIfTest");
+	bool result = TRUE;
+	int n, m;
+	m = 0;
+	for (n=0; s[n] != '\0'; n++)
+		switch (s[n])
+		{
+			case ('='):
+				m += 1;
+				break;
+			case ('<'):
+				m += 2;
+				break;
+			case ('>'):
+				m += 4;
+				break;
+			default:
+				msg.print( "Unrecognised character '%c' in 'if' condition\n", s[n]);
+				result = FALSE;
+				break;
+		}
+	if (m > IfTests::NotEqualTo) result = FALSE;
+	else ifTest_ = (IfTests::IfTest) m;
+	msg.exit("Command::setIfTest");
+	return result;
+}
+
+// Evaluate condition
+bool Command::ifEvaluate()
+{
+	msg.enter("Command::ifEvaluate");
+	bool result;
+	static Variable *v1, *v2;
+	static char string1[512], string2[512];
+	static double d1, d2;
+	VTypes::DataType vt1, vt2;
+	static int i1, i2;
+	v1 = args_[0]->item;
+	v2 = args_[2]->item;
+	// Determine how to do the comparison
+	vt1 = v1->type();
+	vt2 = v2->type();
+	if (vt1 == VTypes::ExpressionData) vt1 = ((ExpressionVariable*) v1)->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData;
+	if (vt2 == VTypes::ExpressionData) vt2 = ((ExpressionVariable*) v2)->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData;
+	if (vt2 > vt1) vt1 = vt2;
+	if (vt1 == VTypes::CharacterData)
+	{
+		strcpy(string1, v1->asCharacter());
+		strcpy(string2, v2->asCharacter());
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), string1, IfTests::ifTest(ifTest_), v2->name(), string2);
+
+		switch (ifTest_)
+		{
+			case (IfTests::EqualTo):
+				result = (strcmp(string1,string2) == 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThan):
+				result = (strcmp(string1,string2) < 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThanEqualTo):
+				result = (strcmp(string1,string2) <= 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThan):
+				result = (strcmp(string1,string2) > 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThanEqualTo):
+				result = (strcmp(string1,string2) >= 0 ? TRUE : FALSE);
+				break;
+			case (IfTests::NotEqualTo):
+				result = (strcmp(string1,string2) != 0 ? TRUE : FALSE);
+				break;
+		}
+	}
+	else if (vt1 == VTypes::IntegerData)
+	{
+		i1 = v1->asInteger();
+		i2 = v2->asInteger();
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%i] (%s) var2(%s)=[%i] : %s\n", v1->name(), i1, IfTests::ifTest(ifTest_), v2->name(), i2, result ? "True" : "False");
+		switch (ifTest_)
+		{
+			case (IfTests::EqualTo):
+				result = (i1 == i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThan):
+				result = (i1 < i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThanEqualTo):
+				result = (i1 <= i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThan):
+				result = (i1 > i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThanEqualTo):
+				result = (i1 >= i2 ? TRUE : FALSE);
+				break;
+			case (IfTests::NotEqualTo):
+				result = (i1 != i2 ? TRUE : FALSE);
+				break;
+		}
+	}
+	else
+	{
+		d1 = v1->asDouble();
+		d2 = v2->asDouble();
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
+		// Do comparison
+		switch (ifTest_)
+		{
+			case (IfTests::EqualTo):
+				msg.print("Warning: Comparing between floating point values...\n");
+				result = (d1 == d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThan):
+				result = (d1 < d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::LessThanEqualTo):
+				result = (d1 <= d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThan):
+				result = (d1 > d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::GreaterThanEqualTo):
+				result = (d1 >= d2 ? TRUE : FALSE);
+				break;
+			case (IfTests::NotEqualTo):
+				msg.print("Warning: Comparing between floating point values...\n");
+				result = (d1 != d2 ? TRUE : FALSE);
+				break;
+		}
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
+	}
+	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
+	msg.exit("Command::ifEvaluate");
+	return result;
+}
+
+/*
+// Command Variables
+*/
+
+// Add variable to reference list, given the name (minus the 'dollar')
+bool Command::addVariable(const char *varname, VariableList &sourcelist, )
+{
+	msg.enter("Command::addVariable");
+	Variable *v;
+	// Search for array index (square brackets)
+	int lbracket = -1, rbracket = -1;
+	for (int n = 0; n<strlen(varname); n++)
+	{
+		if (varname[n] == '[') lbracket = n;
+		if (varname[n] == ']') rbracket = n;
+	}
+	// Check values of lbracket and rbracket
+	if ((lbracket == -1) && (rbracket == -1))
+	{
+		// No array element, just the name. See if it has been declared
+		var = parent_->sourcelist.get(varname);
+		if (var == NULL)
+		{
+			msg.print("Error: Variable '%s' has not been declared.\n", varname);
+			return FALSE;
+		}
+	}
+	else if ((lbracket == -1) || (rbracket == -1))
+	{
+		// One bracket given but not the other
+		msg.print("Array index for variable '%s' is missing a '%c'.\n", varname, lbracket == -1 ? '[' : ']');
+		return FALSE;
+	}
+	else if (lbracket > rbracket)
+	{
+		// Brackets provided the wrong way around!
+		msg.print("Brackets around array index for variable '%s' face the wrong way.\n", varname);
+		return FALSE;
+	}
+	// If we get here then the array brackets are valid, and we should get the contents
+	Xxx
+	msg.exit("Command::addVariable");
+	return TRUE;
+}
+
+// Add variables to command
+bool Command::setArguments(const char *cmdname, const char *specifiers, VariableList &vars)
+{
+	msg.enter("Command::setArguments");
+	bool required = TRUE, repeat = FALSE;
+	int n, m, argcount, last = -1;
+	Variable *var;
+	VTypes::DataType vt;
+	AssignOps::AssignOp ao;
+	Parser::ArgumentForm af;
+	static char arg[512];
+	argcount = 0;
+	n = 0;
+	while (v[n] != '\0')
+	{
+		// Check for lowercase letter (optional argument)
+		required = ((v[n] > 90) || (v[n] == '*') ? FALSE : TRUE);
+		
+		// Move on to next argument.
+		argcount ++;
+
+		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
+		// Is this a required argument?
+		if (argcount > (parser.nArgs() - 1))
+		{
+			if (required && (!repeat))
+			{
+				msg.print("Error: '%s' requires argument %i\n", cmd, argcount);
+				msg.exit("Command::setArguments");
+				return FALSE;
+			}
+			else break;	// No more arguments, so may as well quit.
+		}
+		strcpy(arg,parser.argc(argcount));
+		// Go through possible specifiers
+		switch (v[n])
+		{
+			// Formats (delimited)
+			case ('f'):
+			case ('F'):
+				if (!createFormat(arg, vars, TRUE)) return FALSE;
+				break;
+			// Formats (exact)
+			case ('g'):
+			case ('G'):
+				if (!createFormat(arg, vars, FALSE)) return FALSE;
+				break;
+			// Delimited (J) / exact (K) format *or* variable
+			case ('J'):
+			case ('K'):
+				if (!parser.wasQuoted(argcount))
+				{
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else args_.add(var);
+				}
+				else if (!createFormat(arg, vars, v[n] == 'J' ? TRUE : FALSE)) return FALSE;
+				break;
+			// Discard
+			case ('x'):
+			case ('X'):
+				args_.add(NULL);
+				break;
+			// String as-is
+			case ('s'):
+			case ('S'):
+				var = vars.addConstant(arg, TRUE);
+				args_.add(var);
+				break;
+			// Operators
+			case ('O'):
+			case ('~'):
+			case ('='):
+				// Get operator enum
+				ao = AssignOps::assignOp(&arg[0]);
+				if (ao == AssignOps::nAssignOps)
+				{
+					msg.print("Error: Unrecognised assignment operator '%s'.\n", &arg[0]);
+					return FALSE;
+				}
+				// Whether we accept the operator we found depends on the specifier
+				switch (v[n])
+				{
+					// 'O' - accept any
+					case ('O'):
+						break;
+					// '=' - accept '=' only
+					case ('='):
+						if (ao != AssignOps::Equals) 
+						{
+							msg.print("Error: Expected '=' as argument %i for command '%s'.\n", argcount, cmd);
+							return FALSE;
+						}
+						break;
+					// '~' - accept '=' and '+=' only
+					case ('~'):
+						if ((ao != AssignOps::Equals) && (ao != AssignOps::PlusEquals)) 
+						{
+							msg.print("Error: Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmd);
+							return FALSE;
+						}
+						break;
+				}
+				// Add operator as an integer variable
+				args_.add(parent_->variables.addConstant(ao));
+				break;
+			// Variable, expression, or constant
+			case ('e'):
+			case ('E'):
+				if (addVariable(
+				// Get form of argument in parser object
+				af = parser.argumentForm(argcount);
+				if (af == Parser::ExpressionForm)
+				{
+					var = parent_->variables.addExpression(&arg[0]);
+					if (var == NULL) return FALSE;
+					args_.add(var);
+				}
+				else if (af == Parser::VariableForm)
+				{
+					XXXX
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else args_.add(var);
+				}
+				else args_.add(parent_->variables.addConstant(arg));
+				break;
+			// Normal, non-expression variable or constant (Q forces constant type to be Character)
+			case ('n'):
+			case ('N'):
+			case ('q'):
+			case ('Q'):
+				if (arg[0] == '$')
+				{
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else args_.add(var);
+				}
+				else
+				{
+					if ((v[n] == 'q') || (v[n] == 'Q')) args_.add(parent_->variables.addConstant(arg), TRUE);
+					else args_.add(parent_->variables.addConstant(arg));
+				}
+				break;
+			// Variable ('U' indicates a pointer variable having subvariables)
+			case ('v'):
+			case ('V'):
+			case ('u'):
+			case ('U'):
+				// Get form of argument in parser object
+				af = parser.argumentForm(argcount);
+				if (af == Parser::ExpressionForm)
+				{
+					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", cmd, argcount, &arg[0]);
+					return FALSE;
+				}
+				else if (af == Parser::VariableForm)
+				{
+					// See if it has been declared
+					var = parent_->variables.get(&arg[1]);
+					if (var == NULL)
+					{
+						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
+						return FALSE;
+					}
+					else
+					{
+						args_.add(var);
+						// Create subvariables if necessary
+						// Create extra variables in the command structure
+// 						if (!parent_->createSubvariables(var)) return FALSE; TGAY
+					}
+				}
+				else
+				{
+					msg.print("Error: '%s' expected a declared variable for argument %i, but found '%s' instead.\n", cmd, argcount, &arg[0]);
+					return FALSE;
+				}
+				break;
+			// Pointer-style variable (that also need to create subvariables)
+			case ('A'):
+			case ('a'):
+			case ('B'):
+			case ('b'):
+			case ('P'):
+			case ('p'):
+			case ('M'):
+			case ('m'):
+				if (arg[0] != '$')
+				{
+					switch (v[n])
+					{
+						case ('A'):
+						case ('a'):
+							vt = VTypes::AtomData;
+							break;
+						case ('B'):
+						case ('b'):
+							vt = VTypes::BondData;
+							break;
+						case ('P'):
+						case ('p'):
+							vt = VTypes::PatternData;
+							break;
+						case ('M'):
+						case ('m'):
+							vt = VTypes::ModelData;
+							break;
+						default:
+							vt = VTypes::nDataTypes;
+							break;
+					}
+					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead.\n", cmd, VTypes::dataType(vt), &arg[0]);
+					return FALSE;
+				}
+				// See if it has been declared
+				var = parent_->variables.get(&arg[1]);
+				if (var == NULL)
+				{
+					msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
+					return FALSE;
+				}
+				else args_.add(var);
+				// Create extra variables in the command structure
+// 				if (!parent_->createSubvariables(var)) return FALSE; TGAY
+				break;
+			// Character variable
+			case ('C'):
+				if (arg[0] != '$')
+				{
+					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' instead.\n", cmd, &arg[0]);
+					return FALSE;
+				}
+				// See if it has been declared
+				var = parent_->variables.get(&arg[1]);
+				if (var == NULL)
+				{
+					msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
+					return FALSE;
+				}
+				else if (var->type() != VTypes::CharacterData)
+				{
+					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' which is of type '%s'.\n", cmd, &arg[1], VTypes::dataType(var->type()));
+					return FALSE;
+				}
+				else args_.add(var);
+				break;
+			// Repeat as many of the last variable type as possible
+			case ('*'):
+				if (n == 0)
+				{
+					printf("Internal error: Repeat specifier given to command arguments list without prior specifier.\n");
+					msg.exit("Command::setArguments");
+					return FALSE;
+				}
+				// Set the repeat flag to TRUE, and go back to last parameter type considered
+				repeat = TRUE;
+				n --;
+				// Decrement argcount so we consider again the current argument
+				argcount --;
+				break;
+		}
+		// Go to next character (if we're not repeating)
+		if (!repeat) n++;
+	}
+	// Are there still unused arguments in the parser?
+	if (argcount < (parser.nArgs() - 1))
+	{
+		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(++argcount), cmd);
+		msg.exit("Command::setArguments");
+		return FALSE;
+	}
+	msg.exit("Command::setArguments");
+	return TRUE;
+}
+
+// Return number of arguments given to command
+int Command::nArgs()
+{
+	return args_.nItems();
+}
+
+// Execute command
+int Command::execute(Command *&c)
+{
+	// Make sure the current rendersource is up-to-date
+	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
+	return CALL_COMMAND(CA_data[action_],function_)(c, aten.current);
+}
+
