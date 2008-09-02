@@ -1,4 +1,5 @@
 add_library(command
+command.h
 commandlist.h 
 commands.h
 filter.h
@@ -11,6 +12,7 @@ build.cpp
 cell.cpp 
 charge.cpp 
 colourscale.cpp
+command.cpp
 commands.cpp 
 commandlist.cpp 
 disorder.cpp 
