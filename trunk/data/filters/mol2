@@ -55,45 +55,45 @@ importmodel
 	finalisemodel
 end
 
-exportmodel
-	name "Tripos (Sybyl) Mol2"
-	nickname mol2
-	extension mol2
-	glob *.mol2
-	id 6
-
-	# Variables
-	atom i
-	bond b
-	integer n
-
-	# Write title section
-	writeline "@<TRIPOS>MOLECULE"
-	writeline $title
-	writeline "$natoms  $nbonds"
-	writeline "SMALL"
-	writeline "NO_CHARGES"
-	writeline "Coordinates churned out by Aten"
-	writeline ""
-	
-	# Write atoms section
-	writeline "@<TRIPOS>ATOM"
-	for $i
-		writeline "$i.id%6  $i.symbol%5  $i.rx%10.5  $i.ry%10.5  $i.rz%10.5"
-	end
-
-	# Write bonds section
-	if $nbonds > 0
-		writeline "@<TRIPOS>BOND"
-		for $n,1,$nbonds
-			getbond $n $b
-			writeline "$n%5  $b.id_i%5  $b.id_j%5  $b.form"
-		end
-	end
-
-	# Write cell section (if the model has one)
-	if $cell.type <> none
-		writeline "@<TRIPOS>CRYSIN"
-		writeline "$cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma $cell.spgrp.id $cell.spgrp.setting"
-	end
-end
+#exportmodel
+#	name "Tripos (Sybyl) Mol2"
+#	nickname mol2
+#	extension mol2
+#	glob *.mol2
+#	id 6
+#
+#	# Variables
+#	atom i
+#	bond b
+#	integer n
+#
+#	# Write title section
+#	writeline "@<TRIPOS>MOLECULE"
+#	writeline $title
+#	writeline "$natoms  $nbonds"
+#	writeline "SMALL"
+#	writeline "NO_CHARGES"
+#	writeline "Coordinates churned out by Aten"
+#	writeline ""
+#	
+#	# Write atoms section
+#	writeline "@<TRIPOS>ATOM"
+#	for $i
+#		writeline "$i.id%6  $i.symbol%5  $i.rx%10.5  $i.ry%10.5  $i.rz%10.5"
+#	end
+#
+#	# Write bonds section
+#	if $nbonds > 0
+#		writeline "@<TRIPOS>BOND"
+#		for $n,1,$nbonds
+#			getbond $n $b
+#			writeline "$n%5  $b.id_i%5  $b.id_j%5  $b.form"
+#		end
+#	end
+#
+#	# Write cell section (if the model has one)
+#	if $cell.type <> none
+#		writeline "@<TRIPOS>CRYSIN"
+#		writeline "$cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma $cell.spgrp.id $cell.spgrp.setting"
+#	end
+#end

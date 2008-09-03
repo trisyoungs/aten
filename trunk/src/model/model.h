@@ -426,7 +426,7 @@ class Model
 	// Return the forcefield used by the model
 	Forcefield *forcefield();
 	// Assign forcefield charges to model atoms
-	void assignForcefieldCharges();
+	bool assignForcefieldCharges();
 	// Reset all model charges to zero
 	void clearCharges();
 	// Set the forcefield containing original atom names for the model

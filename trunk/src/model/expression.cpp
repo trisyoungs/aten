@@ -55,18 +55,18 @@ void Model::invalidateExpression()
 }
 
 // Assign charges from forcefield
-void Model::assignForcefieldCharges()
+bool Model::assignForcefieldCharges()
 {
 	// Assign atom-type charges from the currently associated forcefield to the model
 	// Perform forcefield typing if necessary
 	msg.enter("Model::assignForcefieldCharges");
 	Atom *i;
 	Forcefield *xff, *patff;
-	if (!arePatternsValid())
+	if (!createExpression())
 	{
 		msg.print("Cannot assign atomic charges without a valid pattern setup.\n");
 		msg.exit("Model::assignForcefieldCharges");
-		return;
+		return FALSE;
 	}
 	typeAll();
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
@@ -91,6 +91,7 @@ void Model::assignForcefieldCharges()
 		}
 	}
 	msg.exit("Model::assignForcefieldCharges");
+	return TRUE;
 }
 
 // Set model's forcefield
