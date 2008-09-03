@@ -1,4 +1,6 @@
 add_library(variables
+accesspath.h
+accessstep.h
 character.h
 expression.h
 expressionnode.h
@@ -10,6 +12,8 @@ reference.h
 vaccess.h
 variable.h
 variablelist.h
+accesspath.cpp
+accessstep.cpp
 character.cpp
 expression.cpp
 expressionnode.cpp

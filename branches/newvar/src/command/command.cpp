@@ -21,6 +21,7 @@
 
 #include "command/command.h"
 #include "command/format.h"
+#include "variables/accesspath.h"
 #include "variables/expression.h"
 #include "main/aten.h"
 #include "model/model.h"
@@ -157,31 +158,31 @@ Command *Command::pointer()
 }
 
 // Return variable argument
-Variable *Command::arg(int argno)
+AccessPath *Command::arg(int argno)
 {
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	return (rv == NULL ? NULL : rv->item);
+	AccessPath *ap = args_[argno];
+	return ap;
 }
 
 // Return argument as character
 const char *Command::argc(int argno)
 {
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	return (rv == NULL ?  "NULL" : rv->item->asCharacter());
+	AccessPath *ap = args_[argno];
+	return (ap == NULL ?  "NULL" : ap->asCharacter());
 }
 
 // Return argument as integer
 int Command::argi(int argno)
 {
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	return (rv == NULL ?  0 : rv->item->asInteger());
+	AccessPath *ap = args_[argno];
+	return (ap == NULL ?  0 : ap->asInteger());
 }
 
 // Return argument as double
 double Command::argd(int argno)
 {
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	return (rv == NULL ? 0.0 : rv->item->asDouble());
+	AccessPath *ap = args_[argno];
+	return (ap == NULL ? 0.0 : ap->asDouble());
 }
 
 // Return argument as float
@@ -193,59 +194,58 @@ float Command::argf(int argno)
 // Return argument as bool
 bool Command::argb(int argno)
 {
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	return (rv == NULL ? -1 : rv->item->asBool());
+	AccessPath *ap = args_[argno];
+	return (ap == NULL ? -1 : ap->asBool());
 }
 
-// Return argument as atom pointer
-Atom *Command::arga(int argno)
+// Return argument as pointer
+void *Command::argp(int argno, VTypes::DataType dt)
 {
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	if (rv == NULL) return NULL;
-	return (Atom*) rv->item->asPointer(VTypes::AtomData);
+	AccessPath *ap = args_[argno];
+	return (ap == NULL ? NULL : ap->asPointer(dt));
 }
 
-// Return argument as pattern pointer
-Pattern *Command::argp(int argno)
-{
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	if (rv == NULL) return NULL;
-	return (Pattern*) rv->item->asPointer(VTypes::PatternData);
-}
+// // Return argument as pattern pointer
+// Pattern *Command::argp(int argno)
+// {
+// 	AccessPath *ap = args_[argno];
+// 	if (ap == NULL) return NULL;
+// 	return (Pattern*) rv->item->asPointer(VTypes::PatternData);
+// }
 
-// Return argument as grid pointer
-Grid *Command::argg(int argno)
-{
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	if (rv == NULL) return NULL;
-	return (Grid*) rv->item->asPointer(VTypes::GridData);
-}
+// // Return argument as grid pointer
+// Grid *Command::argg(int argno)
+// {
+// 	Refitem<Variable,Variable*> *rv = args_[argno];
+// 	if (rv == NULL) return NULL;
+// 	return (Grid*) rv->item->asPointer(VTypes::GridData);
+// }
 
-// Return argument as model pointer
-Model *Command::argm(int argno)
-{
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	if (rv == NULL) return NULL;
-	return (Model*) rv->item->asPointer(VTypes::ModelData);
-}
+// // Return argument as model pointer
+// Model *Command::argm(int argno)
+// {
+// 	Refitem<Variable,Variable*> *rv = args_[argno];
+// 	if (rv == NULL) return NULL;
+// 	return (Model*) rv->item->asPointer(VTypes::ModelData);
+// }
 
-// Return argument as PatternBound pointer
-PatternBound *Command::argpb(int argno)
-{
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	if (rv == NULL) return NULL;
-	else if ((rv->item->type() < VTypes::BondData) || (rv->item->type() > VTypes::TorsionData)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
-	else return (PatternBound*) rv->item->asPointer(VTypes::BondData);
-	return NULL;
-}
+// // Return argument as PatternBound pointer
+// PatternBound *Command::argpb(int argno)
+// {
+// 	Refitem<Variable,Variable*> *rv = args_[argno];
+// 	if (rv == NULL) return NULL;
+// 	else if ((rv->item->type() < VTypes::BondData) || (rv->item->type() > VTypes::TorsionData)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
+// 	else return (PatternBound*) rv->item->asPointer(VTypes::BondData);
+// 	return NULL;
+// }
 
-// Return argument as ForcefieldAtom pointer
-ForcefieldAtom *Command::argffa(int argno)
-{
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	if (rv == NULL) return NULL;
-	return (ForcefieldAtom*) rv->item->asPointer(VTypes::AtomtypeData);
-}
+// // Return argument as ForcefieldAtom pointer
+// ForcefieldAtom *Command::argffa(int argno)
+// {
+// 	Refitem<Variable,Variable*> *rv = args_[argno];
+// 	if (rv == NULL) return NULL;
+// 	return (ForcefieldAtom*) rv->item->asPointer(VTypes::AtomtypeData);
+// }
 
 // Returns whether argument 'n' was provided
 bool Command::hasArg(int argno)
@@ -256,8 +256,8 @@ bool Command::hasArg(int argno)
 // Return variable type of argument
 VTypes::DataType Command::argt(int argno)
 {
-	Refitem<Variable,Variable*> *rv = args_[argno];
-	return (rv == NULL ? VTypes::nDataTypes : rv->item->type());
+	AccessPath *ap = args_[argno];
+	return (ap == NULL ? VTypes::NoData : ap->returnType());
 }
 
 // Set command and function
@@ -272,15 +272,12 @@ void Command::printArgs()
 {
 	msg.enter("Command::printArgs");
 	int i = 0;
-	Variable *v;
-	for (Refitem<Variable,Variable*> *rv = args_.first(); rv != NULL; rv = rv->next)
+	for (AccessPath *ap = args_.first(); ap != NULL; ap = ap->next)
 	{
-		v = rv->item;
-		printf("%2i %20li", i, v);
-		printf("%12s [%10s]",v->name(), VTypes::dataType(v->type()));
-		if (v->type() < VTypes::AtomData) printf("%20s\n",v->asCharacter());
-// 		else printf("%li\n", v->asPointer());
-		else printf("ptr\n");
+		printf("%2i %20li", i, ap);
+		//printf("%12s [%10s]", v->name(), VTypes::dataType(v->type()));
+		if (ap->returnType() < VTypes::AtomData) printf("%20s\n", ap->asCharacter());
+ 		else printf("%li\n", ap->asPointer(ap->returnType()));
 		i++;
 	}
 	msg.exit("Command::printArgs");
@@ -292,7 +289,7 @@ Vec3<double> Command::arg3d(int i)
 	msg.enter("Command::arg3d");
         static Vec3<double> result;
         if (i > (args_.nItems()-3)) printf("Command::arg3d - Starting point too close to end of argument list.\n");
-        result.set(args_[i]->item->asDouble(),args_[i+1]->item->asDouble(),args_[i+2]->item->asDouble());
+        result.set(args_[i]->asDouble(), args_[i+1]->asDouble(), args_[i+2]->asDouble());
 	msg.exit("Command::arg3d");
         return result;
 }
@@ -303,7 +300,7 @@ Vec3<float> Command::arg3f(int i)
 	msg.enter("Command::arg3f");
         static Vec3<float> result;
         if (i > (args_.nItems()-3)) printf("Command::arg3f - Starting point too close to end of argument list.\n");
-        result.set(args_[i]->item->asFloat(),args_[i+1]->item->asFloat(),args_[i+2]->item->asFloat());
+        result.set(args_[i]->asFloat(), args_[i+1]->asFloat(), args_[i+2]->asFloat());
 	msg.exit("Command::arg3f");
         return result;
 }
@@ -314,7 +311,7 @@ Vec3<int> Command::arg3i(int i)
 	msg.enter("Command::arg3i");
 	static Vec3<int> result;
 	if (i > (args_.nItems()-3)) printf("Command::arg3i - Starting point too close to end of argument list.\n");
-        result.set(args_[i]->item->asInteger(),args_[i+1]->item->asInteger(),args_[i+2]->item->asInteger());
+        result.set(args_[i]->asInteger(), args_[i+1]->asInteger(), args_[i+2]->asInteger());
 	msg.exit("Command::arg3i");
 	return result;
 }
@@ -326,11 +323,12 @@ List<Command> *Command::createBranch()
 	if (branch_ != NULL) printf("Command::createBranch <<<< Already has a branch >>>>\n");
 	branch_ = new List<Command>;
 	msg.exit("Command::createBranch");
-	return branch_;
+	return branch_;	// Get return value as double
+	double asDouble();
 }
 
 // Create branch
-bool Command::createFormat(const char *s, VariableList &vars, bool delimited)
+bool Command::createFormat(const char *s, bool delimited, VariableList &sourcevars)
 {
 	msg.enter("Command::createFormat");
 	bool result = FALSE;
@@ -338,7 +336,7 @@ bool Command::createFormat(const char *s, VariableList &vars, bool delimited)
 	else
 	{
 		format_ = new Format;
-		result = format_->create(s, vars, delimited);
+		result = format_->create(s, sourcevars, delimited);
 	}
 	msg.exit("Command::createFormat");
 	return result;
@@ -379,24 +377,22 @@ bool Command::ifEvaluate()
 {
 	msg.enter("Command::ifEvaluate");
 	bool result;
-	static Variable *v1, *v2;
+	static AccessPath *ap1, *ap2;
 	static char string1[512], string2[512];
 	static double d1, d2;
 	VTypes::DataType vt1, vt2;
 	static int i1, i2;
-	v1 = args_[0]->item;
-	v2 = args_[2]->item;
+	ap1 = args_[0];
+	ap2 = args_[2];
 	// Determine how to do the comparison
-	vt1 = v1->type();
-	vt2 = v2->type();
-	if (vt1 == VTypes::ExpressionData) vt1 = ((ExpressionVariable*) v1)->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData;
-	if (vt2 == VTypes::ExpressionData) vt2 = ((ExpressionVariable*) v2)->evaluatesToReal() ? VTypes::RealData : VTypes::IntegerData;
+	vt1 = ap1->returnType();
+	vt2 = ap2->returnType();
 	if (vt2 > vt1) vt1 = vt2;
 	if (vt1 == VTypes::CharacterData)
 	{
-		strcpy(string1, v1->asCharacter());
-		strcpy(string2, v2->asCharacter());
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), string1, IfTests::ifTest(ifTest_), v2->name(), string2);
+		strcpy(string1, ap1->asCharacter());
+		strcpy(string2, ap2->asCharacter());
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", ap1->originalPath(), string1, IfTests::ifTest(ifTest_), ap2->originalPath(), string2);
 
 		switch (ifTest_)
 		{
@@ -422,9 +418,9 @@ bool Command::ifEvaluate()
 	}
 	else if (vt1 == VTypes::IntegerData)
 	{
-		i1 = v1->asInteger();
-		i2 = v2->asInteger();
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%i] (%s) var2(%s)=[%i] : %s\n", v1->name(), i1, IfTests::ifTest(ifTest_), v2->name(), i2, result ? "True" : "False");
+		i1 = ap1->asInteger();
+		i2 = ap2->asInteger();
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%i] (%s) var2(%s)=[%i] : %s\n", ap1->originalPath(), i1, IfTests::ifTest(ifTest_), ap2->originalPath(), i2, result ? "True" : "False");
 		switch (ifTest_)
 		{
 			case (IfTests::EqualTo):
@@ -449,9 +445,9 @@ bool Command::ifEvaluate()
 	}
 	else
 	{
-		d1 = v1->asDouble();
-		d2 = v2->asDouble();
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
+		d1 = ap1->asDouble();
+		d2 = ap2->asDouble();
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", ap1->originalPath(), d1, IfTests::ifTest(ifTest_), ap2->originalPath(), d2, result ? "True" : "False");
 		// Do comparison
 		switch (ifTest_)
 		{
@@ -476,7 +472,7 @@ bool Command::ifEvaluate()
 				result = (d1 != d2 ? TRUE : FALSE);
 				break;
 		}
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", ap1->originalPath(), d1, IfTests::ifTest(ifTest_), ap2->originalPath(), d2, result ? "True" : "False");
 	}
 	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
 	msg.exit("Command::ifEvaluate");
@@ -488,43 +484,17 @@ bool Command::ifEvaluate()
 */
 
 // Add variable to reference list, given the name (minus the 'dollar')
-bool Command::addVariable(const char *varname, VariableList &sourcelist, )
+bool Command::addArgument(const char *varname, Parser::ArgumentForm af)
 {
-	msg.enter("Command::addVariable");
-	Variable *v;
-	// Search for array index (square brackets)
-	int lbracket = -1, rbracket = -1;
-	for (int n = 0; n<strlen(varname); n++)
-	{
-		if (varname[n] == '[') lbracket = n;
-		if (varname[n] == ']') rbracket = n;
-	}
-	// Check values of lbracket and rbracket
-	if ((lbracket == -1) && (rbracket == -1))
-	{
-		// No array element, just the name. See if it has been declared
-		var = parent_->sourcelist.get(varname);
-		if (var == NULL)
-		{
-			msg.print("Error: Variable '%s' has not been declared.\n", varname);
-			return FALSE;
-		}
-	}
-	else if ((lbracket == -1) || (rbracket == -1))
-	{
-		// One bracket given but not the other
-		msg.print("Array index for variable '%s' is missing a '%c'.\n", varname, lbracket == -1 ? '[' : ']');
-		return FALSE;
-	}
-	else if (lbracket > rbracket)
-	{
-		// Brackets provided the wrong way around!
-		msg.print("Brackets around array index for variable '%s' face the wrong way.\n", varname);
-		return FALSE;
-	}
-	// If we get here then the array brackets are valid, and we should get the contents
-	Xxx
-	msg.exit("Command::addVariable");
+	msg.enter("Command::addArgument");
+	bool result = FALSE;
+	// If argument form wasn't provided, attempt to work it out.
+	Parser::ArgumentForm af = (form == Parser::UnknownForm ? Parser::argumentForm(varname) : form);
+	// Now we have the argument form, attempt to create an access path from the string
+	AccessPath *ap = args_.add();
+
+
+	msg.exit("Command::addArgument");
 	return TRUE;
 }
 
