@@ -35,7 +35,6 @@ Variable::Variable()
 	name_.set("unnamed");
 	arrayType_ = VTypes::NoArray;
 	dataType_ = VTypes::NoData;
-	arrayIndex_ = NULL;
 
 	// Public variables
 	prev = NULL;
@@ -89,18 +88,6 @@ const char *Variable::name()
 void Variable::setParent(VariableList *vlist)
 {
 	parent_ = vlist;
-}
-
-// Set array index variable
-void Variable::setArrayIndex(Variable *v)
-{
-	arrayIndex_ = v;
-}
-
-// Return array index variable
-Variable *Variable::arrayIndex()
-{
-	return arrayIndex_;
 }
 
 // // Reset

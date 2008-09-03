@@ -36,7 +36,7 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 		obj.rs->beginUndoState("Add Hydrogens to Atom");
 		Atom *i;
 		if (c->argt(0) == VTypes::IntegerData) i = obj.rs->atom(c->argi(0)-1);
-		else if (c->argt(0) == VTypes::AtomData) i = c->arga(0);
+		else if (c->argt(0) == VTypes::AtomData) i = (Atom*) c->argp(0, VTypes::AtomData);
 		else
 		{
 			msg.print("Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.\n");
@@ -130,6 +130,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
 	Forcefield *f;
+	Atom *i;
 	ForcefieldAtom *ffa;
 	Namemap<int> *nm;
 	int el;
@@ -149,7 +150,8 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 			else el = nm->data();
 			break;
 		case (VTypes::AtomData):
-			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
+			i = (Atom*) c->argp(0, VTypes::AtomData);
+			i == NULL ? el = 0 : i->element();
 			break;
 		default:
 			msg.print("Type '%s' is not a valid one to pass to 'newatom'.\n", VTypes::dataType(c->argt(0)));
@@ -184,6 +186,7 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
 	// Determine element (based on type of variable provided)
 	int el;
+	Atom *i;
 	switch (c->argt(0))
 	{
 		case (VTypes::IntegerData):
@@ -196,7 +199,8 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 			el = elements.find(c->argc(0));
 			break;
 		case (VTypes::AtomData):
-			c->arga(0) == NULL ? el = 0 : c->arga(0)->element();
+			i = (Atom*) c->argp(0, VTypes::AtomData);
+			i == NULL ? el = 0 : i->element();
 			break;
 		default:
 			msg.print("Type '%s' is not a valid one to pass to CA_ADDATOM.\n", VTypes::dataType(c->argt(0)));

@@ -23,9 +23,22 @@
 #define ATEN_COMMAND_H
 
 #include "templates/reflist.h"
+#include "templates/list.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
 #include "base/parser.h"
+#include "base/vtypes.h"
+
+// Forward declarations
+class CommandList;
+class Format;
+class Filter;
+class Model;
+class ForcefieldAtom;
+class PatternBound;
+class Variable;
+class AccessPath;
+class VariableList;
 
 // If Conditions
 namespace IfTests
@@ -41,13 +54,6 @@ namespace AssignOps
 	AssignOp assignOp(const char *s);
 	const char *assignOp(AssignOp);
 }
-
-// Forward declarations
-class CommandList;
-class Format;
-class Filter;
-class Model;
-class ForcefieldAtom;
 
 // Command node
 class Command
@@ -91,7 +97,7 @@ class Command
 
 	public:
 	// Create format structure
-	bool createFormat(const char *s, bool delimited);
+	bool createFormat(const char *s, bool delimited, VariableList &vars);
 	// Returns the formatter
 	Format *format();
 	// Delete the associated format
@@ -157,9 +163,7 @@ class Command
 	*/
 	private:
 	// Data variables
-	Reflist<Variable,Variable*> args_;
-	// Construct / retrieve variable and return its pointer
-	Variable *constructOrRetrieve(const char *
+	List<AccessPath> args_;
 	// Add variable argument to reference list, given the name
 	bool addArgument(const char *varname, Parser::ArgumentForm af = Parser::UnknownForm);
 
@@ -169,7 +173,7 @@ class Command
 	// Return number of arguments given to command
 	int nArgs();
 	// Return variable argument
-	Variable *arg(int argno);
+	AccessPath *arg(int argno);
 	// Return argument as character
 	const char *argc(int argno);
 	// Return argument as integer
@@ -187,17 +191,17 @@ class Command
 	// Return arguments as Vec3<int>
 	Vec3<int> arg3i(int);
 	// Return argument as Atom pointer
-	Atom *arga(int argno);
-	// Return argument as pattern pointer
-	Pattern *argp(int argno);
+// 	Atom *arga(int argno);
+	// Return argument as pointer
+	void *argp(int argno, VTypes::DataType );
 	// Return argument as model pointer
-	Model *argm(int argno);
+// 	Model *argm(int argno);
 	// Return argument as grid pointer
-	Grid *argg(int argno);
+// 	Grid *argg(int argno);
 	// Return argument as PatternBound pointer
-	PatternBound *argpb(int argno);
+// 	PatternBound *argpb(int argno);
 	// Return argument as ForcefieldAtom pointer
-	ForcefieldAtom *argffa(int argno);
+// 	ForcefieldAtom *argffa(int argno);
 	// Returns whether argument 'n' was provided
 	bool hasArg(int argno);
 	// Return variable type of argument

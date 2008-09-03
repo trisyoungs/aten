@@ -42,7 +42,8 @@ class Parser
 	static ParseOption parseOption(const char*);
 	// Determine form of argument
 	enum ArgumentForm { ConstantForm, VariableForm, ExpressionForm, ReferenceForm, UnknownForm  };
-	ArgumentForm argumentForm(int i);
+	ArgumentForm argumentForm(int argno);
+	ArgumentForm argumentForm(const char *s);
 
 	/*
 	// Source line, options, and argument data

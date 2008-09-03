@@ -25,6 +25,7 @@
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
+#include "command/command.h"
 #include "variables/variablelist.h"
 #include "base/parser.h"
 
@@ -111,9 +112,10 @@ class CommandList
 	/*
 	// Variables
 	*/
-	public:
+	private:
 	// Associative variable list
-	VariableList variables;
+	VariableList variables_;
+
 // 	// Create model variables with specified prefix
 // 	bool createModelVariables(const char *s);
 // 	// Set model variables with specified prefix

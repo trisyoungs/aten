@@ -50,8 +50,6 @@ class Variable
 	VTypes::ArrayType arrayType_;
 	// VariableList in which this variable exists
 	VariableList *parent_;
-	// Array index variable (if any)
-	Variable *arrayIndex_;
 
 	public:
 	// Clears value of variable
@@ -70,10 +68,6 @@ class Variable
 	VTypes::ArrayType arrayType();
 	// Set parent variablelist
 	void setParent(VariableList *vlist);
-	// Set array index variable
-	void setArrayIndex(Variable *v);
-	// Return array index variable
-	Variable *arrayIndex();
 
 	// Set value of variable (char)
 	virtual void set(const char*)=0;
