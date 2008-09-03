@@ -29,9 +29,9 @@ int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	obj.rs->beginUndoState("Assign forcefield charges");
-	obj.rs->assignForcefieldCharges();
+	bool result = obj.rs->assignForcefieldCharges();
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return (result ? CR_SUCCESS : CR_FAIL);
 }
 
 // Copy atomic charges from model to model's current trajectory frame

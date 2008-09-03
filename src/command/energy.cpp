@@ -48,7 +48,7 @@ int CommandData::function_CA_MODELENERGY(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTELEC(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->energy.printElecMatrix(obj.rs);
+	obj.m->energy.printElecMatrix(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -56,7 +56,7 @@ int CommandData::function_CA_PRINTELEC(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTENERGY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->energy.print();
+	obj.m->energy.print();
 	return CR_SUCCESS;
 }
 
@@ -64,7 +64,7 @@ int CommandData::function_CA_PRINTENERGY(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTEWALD(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->energy.printEwald();
+	obj.m->energy.printEwald();
 	return CR_SUCCESS;
 }
 
@@ -72,7 +72,7 @@ int CommandData::function_CA_PRINTEWALD(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTINTER(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->energy.printInterMatrix(obj.rs);
+	obj.m->energy.printInterMatrix(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -80,7 +80,7 @@ int CommandData::function_CA_PRINTINTER(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTINTRA(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->energy.printIntraMatrix(obj.rs);
+	obj.m->energy.printIntraMatrix(obj.rs);
 	return CR_SUCCESS;
 }
 
@@ -88,7 +88,7 @@ int CommandData::function_CA_PRINTINTRA(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTSUMMARY(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->energy.printSummary();
+	obj.m->energy.printSummary();
 	return CR_SUCCESS;
 }
 
@@ -96,6 +96,6 @@ int CommandData::function_CA_PRINTSUMMARY(Command *&c, Bundle &obj)
 int CommandData::function_CA_PRINTVDW(Command *&c, Bundle &obj)
 {
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
-	obj.rs->energy.printVdwMatrix(obj.rs);
+	obj.m->energy.printVdwMatrix(obj.rs);
 	return CR_SUCCESS;
 }

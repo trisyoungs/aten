@@ -11,7 +11,7 @@ types
 2	C2	C	"nbonds=4,-C(-[N,P]),-H(n=2),-C"		# Second carbon in R group (> ethyl)
 3	CE	C	"nbonds=4,-C(-[N,P]),-H(n=3)"			# Terminal carbon of ethyl R group
 4	CS	C	"nbonds=4,-C(n=2),-H(n=2)"			# General carbon in R group
-5	CT	C	"nbonds=4,-C(-C(-H(n=2))),-H(n=3)"		# Terminal carbon in R group (> ethyl)
+5	CT	C	"nbonds=4,-C(-C(-H(n=2)),-C),-H(n=3)"		# Terminal carbon in R group (> ethyl)
 6	CR	C	"nbonds=3,-N(n=2,-C(n=2)),ring(size=5)"		# Carbon adjacent to two nitrogens with alkyl groups
 7	CW	C	"nbonds=3,-N(-C,-C),-C,ring(size=5)"		# Carbon adjacent to nitrogen (with alkyl group) and carbon
 8	HA	H	"nbonds=1"					# ???

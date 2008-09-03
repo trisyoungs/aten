@@ -45,10 +45,9 @@ void Aten::exportModels()
 		// Find rightmost '.'
 		strcpy(filename, m->filename());
 		c = &filename[0];
-		for (n=0; c != '\0'; n++)
+		for (n=strlen(filename); n>=0; n--)
 		{
 			if (filename[n] == '.') break;
-			c++;
 		}
 		if (n != -1) filename[n] = '\0';
 		// Append new suffix
