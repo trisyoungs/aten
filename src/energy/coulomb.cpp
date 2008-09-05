@@ -56,7 +56,7 @@ void Pattern::coulombIntraPatternEnergy(Model *srcmodel, Energy *estore, int mol
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(),modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) / (rij * rij);
+					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) / rij;
 					con == 0 ? energy_inter += energy : energy_intra += (con == 3 ? energy * elecScaleMatrix_[i][j] : energy);
 				}
 			}
@@ -113,7 +113,7 @@ void Pattern::coulombInterPatternEnergy(Model *srcmodel, Pattern *xpnode, Energy
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
 	//printf("Coulomb ij %i %i %8.4f %8.4f %8.4f \n",i,j,xcfg->q[i],xcfg->q[j],rij);
-					energy  = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij * rij);
+					energy  = (modelatoms[i]->charge() * modelatoms[j]->charge()) / rij;
 					energy_inter += energy;
 				}
 			}
@@ -154,7 +154,7 @@ void Pattern::coulombIntraPatternForces(Model *srcmodel)
 					mim_i = cell->mimd(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = mim_i.magnitude();
 					if (rij > cutoff) continue;
-					factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij*rij);
+					factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij);
 					if (con == 3) factor *= elecScaleMatrix_[i][j];
 					tempf = mim_i * factor;
 					f_i += tempf;
@@ -201,7 +201,7 @@ void Pattern::coulombInterPatternForces(Model *srcmodel, Pattern *xpnode)
 					if (rij < cutoff)
 					{
 	//printf("Coulomb ij %i %i %8.4f %8.4f %8.4f \n",i,j,xcfg->q[i],xcfg->q[j],rij);
-						factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij*rij);
+						factor = (modelatoms[i]->charge() * modelatoms[j]->charge()) / (rij*rij);
 						tempf = mim_i * factor;
 						f_i += tempf;
 						modelatoms[j]->f() -= tempf;
