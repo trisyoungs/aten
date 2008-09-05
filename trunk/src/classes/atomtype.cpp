@@ -77,6 +77,7 @@ Atomtype::Atomtype()
 	acyclic_ = FALSE;
 	nHydrogen_ = -1;
 	characterElement_ = 0;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -88,6 +89,7 @@ Ringtype::Ringtype()
 	nAtoms_ = -1;
 	nRepeat_ = 1;
 	selfAbsent_ = FALSE;
+
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -636,7 +638,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	if (ringList_.first() == NULL) msg.print(Messenger::Typing,"(%li %2i) ... Rings  [defaulted]\n",this,level);
 	else
 	{
-		// Get list of rings out test atom is involved in
+		// Get list of rings our test atom is involved in
 		ringchecklist.clear();
 		// Search the list of atoms in this ring for 'i'
 		for (r = ringdata->first(); r != NULL; r = r->next) if (r->containsAtom(i)) ringchecklist.add(r);
@@ -654,7 +656,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 					// Check for presence of top atom 
 					if (atr->selfAbsent_)
 					{
-						 if (refring->item->containsAtom(topatom)) continue;
+						if (refring->item->containsAtom(topatom)) continue;
 						else ringscore ++;
 					}
 					// Size check
