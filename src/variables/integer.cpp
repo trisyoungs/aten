@@ -38,27 +38,31 @@ IntegerVariable::IntegerVariable()
 */
 
 // Set value of variable (char)
-void IntegerVariable::set(const char *s)
+bool IntegerVariable::set(const char *s)
 {
 	data = atoi(s);
+	return TRUE;
 }
 
 // Set value of variable (int)
-void IntegerVariable::set(int i)
+bool IntegerVariable::set(int i)
 {
 	data = i;
+	return TRUE;
 }
 
 // Set value of variable (double)
-void IntegerVariable::set(double d)
+bool IntegerVariable::set(double d)
 {
 	data = (int) d;
+	return TRUE;
 }
 
 // Set value of variable (pointer)
-void IntegerVariable::set(void *ptr, VTypes::DataType type)
+bool IntegerVariable::set(void *ptr, VTypes::DataType type)
 {
 	printf("An Integer variable cannot be set from a pointer.\n");
+	return FALSE;
 }
 
 // Get value of variable as character string
@@ -99,14 +103,16 @@ void *IntegerVariable::asPointer(VTypes::DataType type)
 }
 
 // Integer increase
-void IntegerVariable::increase(int i)
+bool IntegerVariable::increase(int i)
 {
 	data += i;
+	return TRUE;
 }
 
 // Integer decrease
-void IntegerVariable::decrease(int i)
+bool IntegerVariable::decrease(int i)
 {
 	data -= i;
+	return TRUE;
 }
 

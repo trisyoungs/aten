@@ -48,7 +48,7 @@ class AccessStep
 	// Set target variable
 	void setTarget(Variable *var);
 	// Create arrayindex 'branch'
-	bool setArrayIndex(const char *path, VariableList &sourcevars);
+	bool setArrayIndex(const char *path, VariableList *sourcevars);
 	// Get return value as integer
 	int asInteger();
 	// Get return value as double
@@ -57,8 +57,6 @@ class AccessStep
 	int asBool();
 	// Get return value as pointer
 	int asPointer(VTypes::DataType dt);
-
-	
 };
 
 #endif

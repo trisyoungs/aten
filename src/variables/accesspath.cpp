@@ -21,6 +21,9 @@
 
 #include "variables/accesspath.h"
 #include "variables/accessstep.h"
+#include "variables/variablelist.h"
+#include "base/messenger.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AccessPath::AccessPath()
@@ -33,68 +36,233 @@ AccessPath::AccessPath()
 	next = NULL;
 }
 
+// Walk path to retrieve end variable
+Variable *AccessPath::walk()
+{
+	msg.enter("AccessPath::walk");
+	msg.exit("AccessPath::walk");
+}
+
 // Set (create) access path from text path
-bool AccessPath::set(const char *path, VariableList &sourcevars, Parser::ArgumentForm pathtype)
+bool AccessPath::setPath(const char *path, VariableList *sourcevars, Parser::ArgumentForm pathtype)
 {
 	msg.enter("AccessPath::set");
 	static char arrayindex[256];
+	AccessStep *step;
+	Variable *v;
+	int n, lbr = -1, rbr = -1;
+	bool success = TRUE;
+	// Store original path
+	originalPath_ = path;
 	// If argument form wasn't provided, attempt to work it out.
-	Parser::ArgumentForm af = (pathtype == Parser::UnknownForm ? parser.argumentForm(varname) : form);
+	Parser::ArgumentForm af = (pathtype == Parser::UnknownForm ? parser.argumentForm(path) : pathtype);
 	switch (af)
 	{
 		case (Parser::ConstantForm):
 			// Add constant value to parents variablelist
-			result.item = parent_->variables.addConstant(varname);
+			step = path_.add();
+			v = sourcevars->addConstant(path);
+			step->setTarget(v);
+			returnType_ = v->type();
 			break;
 		case (Parser::VariableForm):
 			// Search for array index (left square bracket)
-			int lbr = -1, rbr = -1;
-			for (int n = 0; n<strlen(varname); n++) 
+			for (n = 0; n<strlen(path); n++) 
 			{
-				if (varname[n] == '[') lbr = n;
-				if (varname[n] == ']') rbr = n;
+				if (path[n] == '[') lbr = n;
+				if (path[n] == ']') rbr = n;
 			}
 			// Check values of lbracket and rbracket
 			if ((lbr == -1) && (rbr == -1))
 			{
 				// No array element, just the name. See if it has been declared
-				result.item = parent_->variables.get(varname);
-				if (result.item == NULL) msg.print("Error: Variable '%s' has not been declared.\n", varname);
+				v = sourcevars->get(path);
+				if (v == NULL)
+				{
+					msg.print("Error: Variable '%s' has not been declared.\n", path);
+					success = FALSE;
+				}
+				else returnType_ = v->type();
 				break;
 			}
 			else if ((lbr == -1) || (rbr == -1))
 			{
 				// One bracket given but not the other
-				msg.print("Array index for variable '%s' is missing a '%c'.\n", varname, lbr == -1 ? '[' : ']');
+				msg.print("Array index for variable '%s' is missing a '%c'.\n", path, lbr == -1 ? '[' : ']');
+				success = FALSE;
 				break;
 			}
 			else if (lbr > rbr)
 			{
 				// Brackets provided the wrong way around!
-				msg.print("Brackets around array index for variable '%s' face the wrong way.\n", varname);
+				msg.print("Brackets around array index for variable '%s' face the wrong way.\n", path);
+				success = FALSE;
 				break;
 			}
 			else
 			{
 				// If we get here then the array brackets are valid, and we should get the contents. But first, get the variable...
-				result.item = parent_->variables.get(varname);
-				if (result.item == NULL) msg.print("Error: Variable '%s' has not been declared.\n", varname);
+				v = sourcevars->get(path);
+				if (v == NULL)
+				{
+					msg.print("Error: Variable '%s' has not been 	declared.\n", path);
+					success = FALSE;
+				}
 				else
 				{
-					strcpy(arrayindex, afterChar(beforeChar(varname, ']'), '['));
-					result.data = constructOrRetrieve(arrayindex);
-					if (result.data == NULL)
+					step = path_.add();
+					step->setTarget(v);
+					returnType_ = v->type();
+					strcpy(arrayindex, afterChar(beforeChar(path, ']'), '['));
+					if (!step->setArrayIndex(arrayindex, sourcevars))
 					{
-						msg.print("Failed to parse array index '%s' for '%s'.\n", arrayindex, varname);
+						msg.print("Failed to parse array index '%s' for '%s'.\n", arrayindex, path);
+						success = FALSE;
 						break;
 					}
 				}
 			}
 			break;
 		case (Parser::ExpressionForm):
-			// Add constant value to parents variablelist
-			result.item = parent_->variables.addConstant(varname);
+			// Attempt to construct expression
+			v = sourcevars->addExpression(path);
+			if (v == NULL) success = FALSE;
+			else
+			{
+				step = path_.add();
+				step->setTarget(v);
+				returnType_ = v->type();
+			}
+			break;
+		case (Parser::VariablePathForm):
 			break;
 	}
 	msg.exit("AccessPath::set");
+}
+
+// Set single-node path from target variable
+void AccessPath::setPath(Variable *v)
+{
+	AccessStep *step = path_.add();
+	step->setTarget(v);
+}
+
+// Get return type of path
+VTypes::DataType AccessPath::returnType()
+{
+	return returnType_;
+}
+
+// Return original path as text
+const char *AccessPath::originalPath()
+{
+	return originalPath_.get();
+}
+
+// Get return value as integer
+int AccessPath::asInteger()
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return 0;
+	return v->asInteger();
+}
+
+// Get return value as double
+double AccessPath::asDouble()
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return 0.0;
+	return v->asDouble();
+}
+
+// Get return value as float
+float AccessPath::asFloat()
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return 0.0f;
+	return v->asFloat();
+}
+
+// Get return value as character
+const char *AccessPath::asCharacter()
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return "NULL";
+	return v->asCharacter();
+}
+
+// Get return value as bool
+bool AccessPath::asBool()
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return FALSE;
+	return v->asBool();
+}
+
+// Get return value as pointer
+void *AccessPath::asPointer(VTypes::DataType dt)
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return NULL;
+	return v->asPointer(dt);
+}
+
+// Increase variable by integer amount
+bool AccessPath::increase(int i)
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return FALSE;
+	return v->increase(i);
+}
+
+// Decrease variable by integer amount
+bool AccessPath::decrease(int i)
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return FALSE;
+	return v->decrease(i);
+}
+
+// Set variable target from integer
+bool AccessPath::set(int i)
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return FALSE;
+	return v->set(i);
+}
+
+// Set variable target from double
+bool AccessPath::set(double d)
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return FALSE;
+	return v->set(d);
+}
+
+// Set variable target from character
+bool AccessPath::set(const char *s)
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return FALSE;
+	return v->set(s);
+}
+
+// Set variable target from pointer
+bool AccessPath::set(void *ptr, VTypes::DataType dt)
+{
+	// Retrieve the target variable
+	Variable *v = walk();
+	if (v == NULL) return FALSE;
+	return v->set(ptr, dt);
 }

@@ -70,13 +70,13 @@ class Variable
 	void setParent(VariableList *vlist);
 
 	// Set value of variable (char)
-	virtual void set(const char*)=0;
+	virtual bool set(const char*)=0;
 	// Set value of variable (int)
-	virtual void set(int i)=0;
+	virtual bool set(int i)=0;
 	// Set value of variable (double)
-	virtual void set(double d)=0;
+	virtual bool set(double d)=0;
 	// Set value of variable (pointer)
-	virtual void set(void *ptr, VTypes::DataType type)=0;
+	virtual bool set(void *ptr, VTypes::DataType type)=0;
 	// Get value of variable as character string
 	virtual const char *asCharacter()=0;
 	// Get value of variable as integer
@@ -90,9 +90,9 @@ class Variable
 	// Get value of variable as pointer of specified type
 	virtual void *asPointer(VTypes::DataType type)=0;
 	// Integer increase
-	virtual void increase(int)=0;
+	virtual bool increase(int)=0;
 	// Integer decrease
-	virtual void decrease(int)=0;
+	virtual bool decrease(int)=0;
 };
 
 #endif

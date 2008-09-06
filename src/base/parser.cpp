@@ -49,31 +49,32 @@ Parser::Parser()
 }
 
 // Determine form of argument (internal argument id)
-Parser::ArgumentForm Parser::argumentForm(int argno)
+Parser::ArgumentForm Parser::argumentForm(int argno, bool implicitdollar)
 {
 	// If the argument was quoted with single-quotes then we assume it is an expression
 	// Similarly, if it was double-quoted we assume it is a character constant
 	if (quoted_[argno] == 34) return Parser::ConstantForm;
 	else if (quoted_[argno] == 39) return Parser::ExpressionForm;
-	else return argumentForm(arguments_[argno].get());
+	else return argumentForm(arguments_[argno].get(), implicitdollar);
 }
 
 // Determine form of argument (from character string, no quoting recognition)
-Parser::ArgumentForm Parser::argumentForm(const char *s)
+Parser::ArgumentForm Parser::argumentForm(const char *s, bool implicitdollar)
 {
-	// At least one full stop surrounded by a letter on the right and a letter or a square bracket on the left
+	// At least one full stop surrounded by a letter on the right and a letter or a square bracket on the left indicates a variable path
 	char *c = strchr(s, '.');
 	if (c != '\0')
 	{
 		char *r = c++;
 		char *l = c--;
 		//printf("leftchar = '%c', rightchar = '%c'\n", *l, *r);
-		if ((!isdigit(*l)) && (!isdigit(*r))) return Parser::ReferenceForm;
+		if ((!isdigit(*l)) && (!isdigit(*r))) return Parser::VariablePathForm;
 	}
 	int noperators, n, nvars, nbrackets;
 	noperators = countChars(s, "-+*/^%", 1);
 	nbrackets = countChars(s, "()");
 	nvars = countChars(s, "$");
+	if (implicitdollar) nvars ++;
 	bool hasneg = s[0] == '-';
 	// If there are operators or brackets it can only be an expression
 	if ((noperators > 0) || (nbrackets > 0)) return Parser::ExpressionForm;

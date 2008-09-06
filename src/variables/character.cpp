@@ -20,6 +20,7 @@
 */
 
 #include "variables/character.h"
+#include "base/constants.h"
 #include "base/sysfunc.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,27 +37,31 @@ CharacterVariable::CharacterVariable()
 */
 
 // Set value of variable (char)
-void CharacterVariable::set(const char *s)
+bool CharacterVariable::set(const char *s)
 {
 	data = s;
+	return TRUE;
 }
 
 // Set value of variable (int)
-void CharacterVariable::set(int i)
+bool CharacterVariable::set(int i)
 {
 	data = itoa(i);
+	return TRUE;
 }
 
 // Set value of variable (double)
-void CharacterVariable::set(double d)
+bool CharacterVariable::set(double d)
 {
 	data = ftoa(d);
+	return TRUE;
 }
 
 // Set value of variable (pointer)
-void CharacterVariable::set(void *ptr, VTypes::DataType type)
+bool CharacterVariable::set(void *ptr, VTypes::DataType type)
 {
 	printf("A Character variable cannot be set from a pointer.\n");
+	return FALSE;
 }
 
 // Get value of variable as character string
@@ -97,14 +102,16 @@ void *CharacterVariable::asPointer(VTypes::DataType type)
 }
 
 // Character increase
-void CharacterVariable::increase(int i)
+bool CharacterVariable::increase(int i)
 {
 	printf("A Character variable cannot be increased.");
+	return FALSE;
 }
 
 // Character decrease
-void CharacterVariable::decrease(int)
+bool CharacterVariable::decrease(int)
 {
 	printf("A Character variable cannot be decreased.");
+	return FALSE;
 }
 

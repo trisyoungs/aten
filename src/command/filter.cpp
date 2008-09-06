@@ -324,7 +324,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 		case (Filter::ModelImport):
 			msg.print("Load Model : %s (%s)\n", filename, name_.get());
 			// Reset reserved variables
-			commands_.variables.set("title",filename);
+// 			commands_.variables.set("title",filename); TGAY
 			// Open file and set target
 			if (!commands_.setInputFile(filename))
 			{
@@ -356,12 +356,12 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			obj.rs->createUniqueLists();
 			// Set variables
 // 			commands_.setModelVariables("",obj.rs); TGAY
-			commands_.variables.set("npatterns",obj.rs->nPatterns());
-			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));
-			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());
-			commands_.variables.set("nbondterms",obj.rs->nUniqueBondTerms());
-			commands_.variables.set("nangleterms",obj.rs->nUniqueAngleTerms());
-			commands_.variables.set("ntorsionterms",obj.rs->nUniqueTorsionTerms());
+// 			commands_.variables.set("npatterns",obj.rs->nPatterns());
+// 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));   TGAY
+// 			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());
+// 			commands_.variables.set("nbondterms",obj.rs->nUniqueBondTerms());
+// 			commands_.variables.set("nangleterms",obj.rs->nUniqueAngleTerms());
+// 			commands_.variables.set("ntorsionterms",obj.rs->nUniqueTorsionTerms());
 			// Open file...
 			if (!commands_.setOutputFile(filename))
 			{
@@ -372,7 +372,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 		case (Filter::GridImport):
 			msg.print("Load Grid  : %s (%s)\n", filename, name_.get());
 			// Reset reserved variables
-			commands_.variables.set("title",filename);
+// 			commands_.variables.set("title",filename);
 			// Open file...
 			if (!commands_.setInputFile(filename))
 			{
@@ -391,8 +391,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			break;
 		case (Filter::TrajectoryImport):
 			// Set variables
-			commands_.variables.set("header",(trajheader ? "true" : "false"));
-			commands_.variables.set("frame",(trajheader ? "false" : "true"));
+// 		TGAY	commands_.variables.set("header",(trajheader ? "true" : "false"));
+// 			commands_.variables.set("frame",(trajheader ? "false" : "true"));
 			if (obj.rs == NULL)
 			{
 				msg.print("No current model set for trajectory import.\n");
@@ -411,8 +411,8 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 				}
 				//obj.rs->renderSource()->clear();
 			}
-			commands_.variables.set("natoms",obj.m->nAtoms());
-			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.m->cell()->type())));
+// 			commands_.variables.set("natoms",obj.m->nAtoms());
+// 			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.m->cell()->type())));
 			break;
 	}
 	// Execute CommandList

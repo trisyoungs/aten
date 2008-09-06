@@ -23,6 +23,7 @@
 #define ATEN_PARSER_H
 
 #include "base/dnchar.h"
+#include "base/constants.h"
 #include <fstream>
 #include <iostream>
 using namespace std;
@@ -41,9 +42,9 @@ class Parser
 	enum ParseOption { Defaults=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoExpressions=16, NoEscapes=32, nParseOptions=6};
 	static ParseOption parseOption(const char*);
 	// Determine form of argument
-	enum ArgumentForm { ConstantForm, VariableForm, ExpressionForm, ReferenceForm, UnknownForm  };
-	ArgumentForm argumentForm(int argno);
-	ArgumentForm argumentForm(const char *s);
+	enum ArgumentForm { VariableForm, VariablePathForm, ExpressionForm, ConstantForm, UnknownForm  };
+	ArgumentForm argumentForm(int argno, bool implicitdollar = FALSE);
+	ArgumentForm argumentForm(const char *s, bool implicitdollar = FALSE);
 
 	/*
 	// Source line, options, and argument data

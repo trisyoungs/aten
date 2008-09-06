@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "variables/accesspath.h"
 #include "command/commandlist.h"
 #include "command/format.h"
 #include "base/parser.h"
@@ -157,11 +158,11 @@ int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
 	if (c->format() == NULL)
 	{
 		// Create format from character variable arg(1)
-		if (!c->createFormat(c->argc(1), c->parent()->variables, TRUE)) return CR_FAIL;
-		c->format()->getArgsFormatted(c->argc(0),c->parent()->readOptions());
+		if (!c->createFormat(c->argc(1), TRUE)) return CR_FAIL;
+		c->format()->getArgsFormatted(c->argc(0), c->parent()->readOptions());
 		c->deleteFormat();
 	}
-	else c->format()->getArgsFormatted(c->argc(0),c->parent()->readOptions());
+	else c->format()->getArgsFormatted(c->argc(0), c->parent()->readOptions());
 	return CR_SUCCESS;
 }
 
@@ -235,7 +236,7 @@ int CommandData::function_CA_WRITEVAR(Command *&c, Bundle &obj)
 	if (c->format() == NULL)
 	{
 		// Create format from character variable arg(1)
-		if (!c->createFormat(c->argc(1), c->parent()->variables, FALSE)) return CR_FAIL;
+		if (!c->createFormat(c->argc(1), FALSE)) return CR_FAIL;
 		c->arg(0)->set(c->format()->createString());
 		c->deleteFormat();
 	}

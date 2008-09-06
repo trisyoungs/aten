@@ -38,28 +38,36 @@ PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 */
 
 // Set value of variable (char)
-void PointerVariable::set(const char *s)
+bool PointerVariable::set(const char *s)
 {
 	printf("A Pointer variable cannot be set from a character.\n");
+	return FALSE;
 }
 
 // Set value of variable (int)
-void PointerVariable::set(int i)
+bool PointerVariable::set(int i)
 {
 	printf("A Pointer variable cannot be set from an integer.\n");
+	return FALSE;
 }
 
 // Set value of variable (double)
-void PointerVariable::set(double d)
+bool PointerVariable::set(double d)
 {
 	printf("A Pointer variable cannot be set from a double.\n");
+	return FALSE;
 }
 
 // Set value of variable (pointer)
-void PointerVariable::set(void *ptr, VTypes::DataType type)
+bool PointerVariable::set(void *ptr, VTypes::DataType type)
 {
-	if (type != dataType_) printf("A Pointer variable of type '%s' (%s) cannot be set from a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
+	if (type != dataType_)
+	{
+		printf("A Pointer variable of type '%s' (%s) cannot be set from a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
+		return FALSE;
+	}
 	else data = ptr;
+	return TRUE;
 }
 
 // Get value of variable as character string
@@ -105,14 +113,16 @@ void *PointerVariable::asPointer(VTypes::DataType type)
 }
 
 // Integer increase
-void PointerVariable::increase(int i)
+bool PointerVariable::increase(int i)
 {
 	printf("More work needed here...\n");
+	return FALSE;
 }
 
 // Integer decrease
-void PointerVariable::decrease(int i)
+bool PointerVariable::decrease(int i)
 {
 	printf("More work needed here...\n");
+	return FALSE;
 }
 

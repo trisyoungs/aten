@@ -22,6 +22,7 @@
 #ifndef ATEN_ACCESSPATH_H
 #define ATEN_ACCESSPATH_H
 
+#include "variables/accessstep.h"
 #include "base/vtypes.h"
 #include "base/parser.h"
 #include "base/dnchar.h"
@@ -29,7 +30,7 @@
 
 // Forward declarations
 class VariableList;
-class AccessStep;
+class Variable;
 
 // Variable Access Path
 class AccessPath
@@ -47,10 +48,14 @@ class AccessPath
 	VTypes::DataType returnType_;
 	// Original path text
 	Dnchar originalPath_;
+	// Walk path and get final target variable
+	Variable *walk();
 
 	public:
 	// Set path from character constant
-	bool set(const char *path, VariableList &sourcevars, Parser::ArgumentForm pathtype);
+	bool setPath(const char *path, VariableList *sourcevars, Parser::ArgumentForm pathtype);
+	// Set single-node path from target variable
+	void setPath(Variable *v);
 	// Get return type of path
 	VTypes::DataType returnType();
 	// Return original path as text
@@ -67,6 +72,18 @@ class AccessPath
 	bool asBool();
 	// Get return value as pointer
 	void *asPointer(VTypes::DataType dt);
+	// Increase variable by integer amount
+	bool increase(int i);
+	// Decrease variable by integer amount
+	bool decrease(int i);
+	// Set variable target from integer
+	bool set(int i);
+	// Set variable target from double
+	bool set(double d);
+	// Set variable target from character
+	bool set(const char *s);
+	// Set variable target from pointer
+	bool set(void *ptr, VTypes::DataType dt); 
 };
 
 #endif

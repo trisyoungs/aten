@@ -35,3 +35,32 @@ AccessStep::AccessStep()
 	next = NULL;
 }
 
+// Set target variable
+void AccessStep::setTarget(Variable *var)
+{
+}
+
+// Create arrayindex 'branch'
+bool AccessStep::setArrayIndex(const char *path, VariableList *sourcevars)
+{
+}
+
+// Get return value as integer
+int AccessStep::asInteger()
+{
+}
+
+// Get return value as double
+int AccessStep::asDouble()
+{
+}
+
+// Get return value as bool
+int AccessStep::asBool()
+{
+}
+
+// Get return value as pointer
+int AccessStep::asPointer(VTypes::DataType dt)
+{
+}

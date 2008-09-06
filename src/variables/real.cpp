@@ -38,27 +38,31 @@ RealVariable::RealVariable()
 */
 
 // Set value of variable (char)
-void RealVariable::set(const char *s)
+bool RealVariable::set(const char *s)
 {
 	data = atof(s);
+	return TRUE;
 }
 
 // Set value of variable (int)
-void RealVariable::set(int i)
+bool RealVariable::set(int i)
 {
 	data = i;
+	return TRUE;
 }
 
 // Set value of variable (double)
-void RealVariable::set(double d)
+bool RealVariable::set(double d)
 {
 	data = d;
+	return TRUE;
 }
 
 // Set value of variable (pointer)
-void RealVariable::set(void *ptr, VTypes::DataType type)
+bool RealVariable::set(void *ptr, VTypes::DataType type)
 {
 	printf("A Double variable cannot be set from a pointer.\n");
+	return FALSE;
 }
 
 // Get value of variable as character string
@@ -99,14 +103,16 @@ void *RealVariable::asPointer(VTypes::DataType type)
 }
 
 // Integer increase
-void RealVariable::increase(int i)
+bool RealVariable::increase(int i)
 {
 	data += i;
+	return TRUE;
 }
 
 // Integer decrease
-void RealVariable::decrease(int i)
+bool RealVariable::decrease(int i)
 {
 	data -= i;
+	return TRUE;
 }
 
