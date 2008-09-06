@@ -26,7 +26,7 @@
 #include "templates/vobject.h"
 
 // Real Variable
-class RealVariable : public Variable, VObject<double>
+class RealVariable : public Variable
 {
 	public:
 	// Constructor
@@ -38,30 +38,42 @@ class RealVariable : public Variable, VObject<double>
 	public:
 	// Clears value of variable
 	//void reset();
+	// Set size of array (only for VTypes::ArrayType == NormalArray)
+	bool setArraySize(int size);
 	// Set value of variable (char)
-	bool set(const char*);
+	bool set(const char *s, int index = -1);
 	// Set value of variable (int)
-	bool set(int i);
+	bool set(int i, int index = -1);
 	// Set value of variable (double)
-	bool set(double d);
+	bool set(double d, int index = -1);
 	// Set value of variable (pointer)
-	bool set(void *ptr, VTypes::DataType type);
+	bool set(void *ptr, VTypes::DataType type, int index = -1);
 	// Get value of variable as character string
-	const char *asCharacter();
+	const char *asCharacter(int index = -1);
 	// Get value of variable as integer
-	int asInteger();
+	int asInteger(int index = -1);
 	// Get value of variable as double
-	double asDouble();
+	double asDouble(int index = -1);
 	// Get value of variable as float
-	float asFloat();
+	float asFloat(int index = -1);
 	// Get value of variable as a boolean
-	bool asBool();
+	bool asBool(int index = -1);
 	// Get value of variable as pointer of specified type
-	void *asPointer(VTypes::DataType type);
+	void *asPointer(VTypes::DataType type, int index = -1);
 	// Double increase
-	bool increase(int);
+	bool increase(int, int index = -1);
 	// Double decrease
-	bool decrease(int);
+	bool decrease(int, int index = -1);
+
+	/*
+	// Variable Data
+	*/
+	private:
+	// Real data
+	double realData_;
+	// Array data, and size of array
+	double realArrayData_[];
+	int arraySize_;
 };
 
 #endif

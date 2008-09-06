@@ -30,7 +30,9 @@ RealVariable::RealVariable()
 {
 	dataType_ = VTypes::RealData;
 	arrayType_ = VTypes::NoArray;
-	data = 0.0;
+	doubleData_ = 0.0;
+	doubleArrayData_ = NULL;
+	arraySize_ = -1;
 }
 
 /*
@@ -38,79 +40,113 @@ RealVariable::RealVariable()
 */
 
 // Set value of variable (char)
-bool RealVariable::set(const char *s)
+bool RealVariable::set(const char *s, int index)
 {
-	data = atof(s);
-	return TRUE;
+	return (set(atof(s), index));
 }
 
 // Set value of variable (int)
-bool RealVariable::set(int i)
+bool RealVariable::set(int i, int index)
 {
-	data = i;
-	return TRUE;
+	return set( (double) i, index);
 }
 
 // Set value of variable (double)
-bool RealVariable::set(double d)
+bool RealVariable::set(double d, int index)
 {
-	data = d;
+	// Check read/write status
+	if (readOnly_)
+	{
+		msg.print("Variable '%s' is read-only.\n", name_.get());
+		return FALSE;
+	}
+	bool outofbounds = FALSE;
+	// Check array index given
+	if (index == -1)
+	{
+		if (arrayType_ != VTypes::NoArray)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		realData_ = d;
+	}
+	else
+	{
+		if (arrayType_ == VTypes::NoArray)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		// Get array and set value...
+		if (arrayType_ == VTypes::NormalArray)
+		{
+			if (index > arraySize_) outofbounds = TRUE;
+			else arrayRealData_[index-1] = d;
+		}
+		else msg.print("This array element cannot be set.\n");
+		if (outofbounds)
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+	}
 	return TRUE;
 }
 
 // Set value of variable (pointer)
-bool RealVariable::set(void *ptr, VTypes::DataType type)
+bool RealVariable::set(void *ptr, VTypes::DataType type, int index)
 {
 	printf("A Double variable cannot be set from a pointer.\n");
 	return FALSE;
 }
 
 // Get value of variable as character string
-const char *RealVariable::asCharacter()
+const char *RealVariable::asCharacter(int index)
 {
 	return ftoa(data);
 }
 
 // Get value of variable as integer
-int RealVariable::asInteger()
+int RealVariable::asInteger(int index)
 {
 	return (int) data;
 }
 
 // Get value of variable as double
-double RealVariable::asDouble()
+double RealVariable::asDouble(int index)
 {
 	return data;
 }
 
 // Get value of variable as float
-float RealVariable::asFloat()
+float RealVariable::asFloat(int index)
 {
 	return (float) data;
 }
 
 // Get value of variable as a boolean
-bool RealVariable::asBool()
+bool RealVariable::asBool(int index)
 {
 	return (data <= 0 ? FALSE : TRUE);
 }
 
 // Get value of variable as pointer of specified type
-void *RealVariable::asPointer(VTypes::DataType type)
+void *RealVariable::asPointer(VTypes::DataType type, int index)
 {
 	printf("A Double variable cannot be returned as a pointer.\n");
 	return NULL;
 }
 
 // Integer increase
-bool RealVariable::increase(int i)
+bool RealVariable::increase(int i, int index)
 {
 	data += i;
 	return TRUE;
 }
 
 // Integer decrease
-bool RealVariable::decrease(int i)
+bool RealVariable::decrease(int i, int index)
 {
 	data -= i;
 	return TRUE;

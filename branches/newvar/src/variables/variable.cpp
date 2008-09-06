@@ -35,6 +35,7 @@ Variable::Variable()
 	name_.set("unnamed");
 	arrayType_ = VTypes::NoArray;
 	dataType_ = VTypes::NoData;
+	readOnly_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -54,6 +55,12 @@ void Variable::setName(const char* s)
 	name_.set(s);
 }
 
+// Get name of variable
+const char *Variable::name()
+{
+	return name_.get();
+}
+
 // Sets the content type of the variable
 void Variable::setType(VTypes::DataType dt)
 {
@@ -66,22 +73,28 @@ VTypes::DataType Variable::type()
 	return dataType_;
 }
 
-// Sets the content type of the variable
+// Sets the array type of the variable
 void Variable::setArrayType(VTypes::ArrayType at)
 {
 	arrayType_ = at;
 }
 
-// Returns content type of the variable
+// Returns array type of the variable
 VTypes::ArrayType Variable::arrayType()
 {
 	return arrayType_;
 }
 
-// Get name of variable
-const char *Variable::name()
+// Set readonly status of variable
+void Variable::setReadOnly(bool b)
 {
-	return name_.get();
+	readOnly_ = b;
+}
+
+// Return readonly status
+bool Variable::readOnly()
+{
+	return readOnly_;
 }
 
 // Set parent VariableList
