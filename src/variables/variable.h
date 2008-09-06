@@ -39,7 +39,7 @@ class Variable
 	Variable *prev, *next;
 
 	/*
-	// Variable Contents
+	// Variable Character
 	*/
 	protected:
 	// Name of the variable
@@ -48,6 +48,8 @@ class Variable
 	VTypes::DataType dataType_;
 	// List type (if any)
 	VTypes::ArrayType arrayType_;
+	// Whether data is read-only
+	bool readOnly_;
 	// VariableList in which this variable exists
 	VariableList *parent_;
 
@@ -69,30 +71,36 @@ class Variable
 	// Set parent variablelist
 	void setParent(VariableList *vlist);
 
+	/*
+	// Set / get
+	*/
+	public:
+	// Set size of array (only for VTypes::ArrayType == NormalArray)
+	virtual bool setArraySize(int size)=0;
 	// Set value of variable (char)
-	virtual bool set(const char*)=0;
+	virtual bool set(const char*, int index = -1)=0;
 	// Set value of variable (int)
-	virtual bool set(int i)=0;
+	virtual bool set(int i, int index = -1)=0;
 	// Set value of variable (double)
-	virtual bool set(double d)=0;
+	virtual bool set(double d, int index = -1)=0;
 	// Set value of variable (pointer)
-	virtual bool set(void *ptr, VTypes::DataType type)=0;
+	virtual bool set(void *ptr, VTypes::DataType type, int index = -1)=0;
 	// Get value of variable as character string
-	virtual const char *asCharacter()=0;
+	virtual const char *asCharacter(int index = -1)=0;
 	// Get value of variable as integer
-	virtual int asInteger()=0;
+	virtual int asInteger(int index = -1)=0;
 	// Get value of variable as double
-	virtual double asDouble()=0;
+	virtual double asDouble(int index = -1)=0;
 	// Get value of variable as float
-	virtual float asFloat()=0;
+	virtual float asFloat(int index = -1)=0;
 	// Get value of variable as a boolean
-	virtual bool asBool()=0;
+	virtual bool asBool(int index = -1)=0;
 	// Get value of variable as pointer of specified type
-	virtual void *asPointer(VTypes::DataType type)=0;
+	virtual void *asPointer(VTypes::DataType type, int index = -1)=0;
 	// Integer increase
-	virtual bool increase(int)=0;
+	virtual bool increase(int, int index = -1)=0;
 	// Integer decrease
-	virtual bool decrease(int)=0;
+	virtual bool decrease(int, int index = -1)=0;
 };
 
 #endif

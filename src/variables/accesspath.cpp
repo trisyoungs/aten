@@ -40,6 +40,17 @@ AccessPath::AccessPath()
 Variable *AccessPath::walk()
 {
 	msg.enter("AccessPath::walk");
+	AccessStep *step = NULL;
+	// DataType of the most recently stored pointer, and the pointer itself
+	VTypes::DataType ptrType = VTypes::NoData;
+	void *ptr = NULL;
+	// Get first node in path, its type, and its value
+	step = path_.first();
+	// Go through nodes in the list one by one, calling the relevant static member functions in access-enabled objects
+	for (step = path_.first(); step != NULL; step = step->next)
+	{
+		// If t
+	}
 	msg.exit("AccessPath::walk");
 }
 

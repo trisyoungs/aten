@@ -53,7 +53,7 @@ class AccessPath
 
 	public:
 	// Set path from character constant
-	bool setPath(const char *path, VariableList *sourcevars, Parser::ArgumentForm pathtype);
+	bool setPath(const char *path, VariableList *sourcevars, Parser::ArgumentForm pathtype = Parser::UnknownForm);
 	// Set single-node path from target variable
 	void setPath(Variable *v);
 	// Get return type of path

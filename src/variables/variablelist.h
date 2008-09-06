@@ -26,7 +26,6 @@
 #include "variables/character.h"
 #include "base/constants.h"
 #include "base/dnchar.h"
-#include "templates/vobject.h"
 #include "templates/list.h"
 
 // Forward Declarations

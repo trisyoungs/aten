@@ -21,6 +21,7 @@
 
 #include "variables/character.h"
 #include "base/constants.h"
+#include "base/messenger.h"
 #include "base/sysfunc.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,8 +29,11 @@
 // Constructor
 CharacterVariable::CharacterVariable()
 {
+	// Private variables
 	dataType_ = VTypes::CharacterData;
 	arrayType_ = VTypes::NoArray;
+	charArrayData_ = NULL;
+	arraySize_ = -1;
 }
 
 /*
@@ -37,79 +41,113 @@ CharacterVariable::CharacterVariable()
 */
 
 // Set value of variable (char)
-bool CharacterVariable::set(const char *s)
+bool CharacterVariable::set(const char *s, int index)
 {
-	data = s;
+	// Check read/write status
+	if (readOnly_)
+	{
+		msg.print("Variable '%s' is read-only.\n", name_.get());
+		return FALSE;
+	}
+	bool outofbounds = FALSE;
+	// Check array index given
+	if (index == -1)
+	{
+		if (arrayType_ != VTypes::NoArray)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		charData_ = s;
+	}
+	else
+	{
+		if (arrayType_ == VTypes::NoArray)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		// Get array and set value...
+		if (arrayType_ == VTypes::NormalArray)
+		{
+			if (index > arraySize_) outofbounds = TRUE;
+			else arrayCharData_[index-1] = s;
+		}
+		else msg.print("This array element cannot be set.\n");
+		if (outofbounds)
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+	}
 	return TRUE;
 }
 
 // Set value of variable (int)
-bool CharacterVariable::set(int i)
+bool CharacterVariable::set(int i, int index)
 {
-	data = itoa(i);
-	return TRUE;
+	return set(itoa(i), index);
 }
 
 // Set value of variable (double)
-bool CharacterVariable::set(double d)
+bool CharacterVariable::set(double d, int index)
 {
-	data = ftoa(d);
-	return TRUE;
+	return set(ftoa(d), index);
 }
 
 // Set value of variable (pointer)
-bool CharacterVariable::set(void *ptr, VTypes::DataType type)
+bool CharacterVariable::set(void *ptr, VTypes::DataType type, int index)
 {
 	printf("A Character variable cannot be set from a pointer.\n");
 	return FALSE;
 }
 
 // Get value of variable as character string
-const char *CharacterVariable::asCharacter()
+const char *CharacterVariable::asCharacter(int index)
 {
 	return data.get();
 }
 
 // Get value of variable as integer
-int CharacterVariable::asInteger()
+int CharacterVariable::asInteger(int index)
 {
 	return atoi(data.get());
 }
 
 // Get value of variable as double
-double CharacterVariable::asDouble()
+double CharacterVariable::asDouble(int index)
 {
 	return atof(data.get());
 }
 
 // Get value of variable as float
-float CharacterVariable::asFloat()
+float CharacterVariable::asFloat(int index)
 {
 	return (float) atof(data.get());
 }
 
 // Get value of variable as a boolean
-bool CharacterVariable::asBool()
+bool CharacterVariable::asBool(int index)
 {
 	return data.asBool();
 }
 
 // Get value of variable as pointer of specified type
-void *CharacterVariable::asPointer(VTypes::DataType type)
+void *CharacterVariable::asPointer(VTypes::DataType type, int index)
 {
 	printf("A Character variable cannot be returned as a pointer.\n");
 	return NULL;
 }
 
 // Character increase
-bool CharacterVariable::increase(int i)
+bool CharacterVariable::increase(int i, int index)
 {
 	printf("A Character variable cannot be increased.");
 	return FALSE;
 }
 
 // Character decrease
-bool CharacterVariable::decrease(int)
+bool CharacterVariable::decrease(int i, int index)
 {
 	printf("A Character variable cannot be decreased.");
 	return FALSE;

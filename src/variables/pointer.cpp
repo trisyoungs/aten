@@ -30,7 +30,9 @@ PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 {
 	dataType_ = ptrtype;
 	arrayType_ = VTypes::NoArray;
-	data = NULL;
+	ptrData_ = NULL;
+	arrayPtrData_ = NULL;
+	arraySize_ = -1;
 }
 
 /*
@@ -38,89 +40,170 @@ PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 */
 
 // Set value of variable (char)
-bool PointerVariable::set(const char *s)
+bool PointerVariable::set(const char *s, int index)
 {
-	printf("A Pointer variable cannot be set from a character.\n");
+	msg.print("A Pointer variable cannot be set from a character.\n");
 	return FALSE;
 }
 
 // Set value of variable (int)
-bool PointerVariable::set(int i)
+bool PointerVariable::set(int i, int index)
 {
-	printf("A Pointer variable cannot be set from an integer.\n");
+	msg.print("A Pointer variable cannot be set from an integer.\n");
 	return FALSE;
 }
 
 // Set value of variable (double)
-bool PointerVariable::set(double d)
+bool PointerVariable::set(double d, int index)
 {
-	printf("A Pointer variable cannot be set from a double.\n");
+	msg.print("A Pointer variable cannot be set from a double.\n");
 	return FALSE;
 }
 
 // Set value of variable (pointer)
-bool PointerVariable::set(void *ptr, VTypes::DataType type)
+bool PointerVariable::set(void *ptr, VTypes::DataType type, int index)
 {
 	if (type != dataType_)
 	{
-		printf("A Pointer variable of type '%s' (%s) cannot be set from a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
+		msg.print("A Pointer variable of type '%s' (%s) cannot be set from a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
 		return FALSE;
 	}
-	else data = ptr;
+	// Check read/write status
+	if (readOnly_)
+	{
+		msg.print("Variable '%s' is read-only.\n", name_.get());
+		return FALSE;
+	}
+	bool outofbounds = FALSE;
+	// Check array index given
+	if (index == -1)
+	{
+		if (arrayType_ != VTypes::NoArray)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		ptrData_ = ptr;
+	}
+	else
+	{
+		if (arrayType_ == VTypes::NoArray)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		// Get array and set value...
+		if (arrayType_ == VTypes::NormalArray)
+		{
+			if (index > arraySize_) outofbounds = TRUE;
+			else arrayPtrData_[index-1] = ptr;
+		}
+		else msg.print("This array element cannot be set.\n");
+		if (outofbounds)
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+	}
 	return TRUE;
 }
 
 // Get value of variable as character string
-const char *PointerVariable::asCharacter()
+const char *PointerVariable::asCharacter(int index)
 {
 	printf("A Pointer variable cannot be returned as a character.\n");
 	return "NULL";
 }
 
 // Get value of variable as integer
-int PointerVariable::asInteger()
+int PointerVariable::asInteger(int index)
 {
 	printf("A Pointer variable cannot be returned as an integer.\n");
 	return 0;
 }
 
 // Get value of variable as double
-double PointerVariable::asDouble()
+double PointerVariable::asDouble(int index)
 {
 	printf("A Pointer variable cannot be returned as a double.\n");
 	return 0.0;
 }
 
 // Get value of variable as float
-float PointerVariable::asFloat()
+float PointerVariable::asFloat(int index)
 {
 	printf("A Pointer variable cannot be returned as a float.\n");
 	return 0.0f;
 }
 
 // Get value of variable as a boolean
-bool PointerVariable::asBool()
+bool PointerVariable::asBool(int index)
 {
 	printf("A Pointer variable cannot be returned as a boolean.\n");
 	return FALSE;
 }
 
 // Get value of variable as pointer of specified type
-void *PointerVariable::asPointer(VTypes::DataType type)
+void *PointerVariable::asPointer(VTypes::DataType type, int index)
 {
 	if (type != dataType_) printf("Error - a Pointer variable of type '%s' (%s) is being requested as a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
-	return data;
+	void *result = NULL;
+	bool outofbounds = FALSE;
+	// Check array index given
+	if (index == -1)
+	{
+		if (arrayType_ != VTypes::NoArray)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		ptrData_ = ptr;
+	}
+	else
+	{
+		if (arrayType_ == VTypes::NoArray)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		// Get array and value...
+		switch (arrayType_)
+		{
+			case (VTypes::NormalArray):
+				if (index > arraySize_) outofbounds = TRUE;
+				else result = arrayPtrData_[index-1];
+				break;
+			case (VTypes::ListArray):
+				// Cast pointer into a List and retrieve value
+				switch (dataType_)
+				{
+					case (VTypes::ModelData):
+						if (index > ((List<Model>*) ptrData_).nItems()) outofbounds = TRUE;
+						else result = ((List<Model>*) ptrData_)[index-1];
+						break;
+					case (VTypes::AtomData):
+						if (index > ((List<Atom>*) ptrData_).nItems()) outofbounds = TRUE;
+						else result = ((List<Atom>*) ptrData_)[index-1];
+						break;
+					default:
+						printf("NOT DONE YET!\n");
+						break;
+				}
+		}
+		if (outofbounds) msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+	}
+	return result;
 }
 
 // Integer increase
-bool PointerVariable::increase(int i)
+bool PointerVariable::increase(int i, int index)
 {
 	printf("More work needed here...\n");
 	return FALSE;
 }
 
 // Integer decrease
-bool PointerVariable::decrease(int i)
+bool PointerVariable::decrease(int i, int index)
 {
 	printf("More work needed here...\n");
 	return FALSE;

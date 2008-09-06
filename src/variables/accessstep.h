@@ -52,11 +52,11 @@ class AccessStep
 	// Get return value as integer
 	int asInteger();
 	// Get return value as double
-	int asDouble();
+	double asDouble();
 	// Get return value as bool
-	int asBool();
+	bool asBool();
 	// Get return value as pointer
-	int asPointer(VTypes::DataType dt);
+	void *asPointer(VTypes::DataType dt);
 };
 
 #endif
