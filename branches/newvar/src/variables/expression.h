@@ -45,13 +45,13 @@ class ExpressionVariable : public Variable, VObject<int>
 	// Clears value of variable
 	//void reset();
 	// Set value of variable (char)
-	void set(const char*);
+	bool set(const char*);
 	// Set value of variable (int)
-	void set(int i);
+	bool set(int i);
 	// Set value of variable (double)
-	void set(double d);
+	bool set(double d);
 	// Set value of variable (pointer)
-	void set(void *ptr, VTypes::DataType type);
+	bool set(void *ptr, VTypes::DataType type);
 	// Get value of variable as character string
 	const char *asCharacter();
 	// Get value of variable as integer
@@ -65,9 +65,9 @@ class ExpressionVariable : public Variable, VObject<int>
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type);
 	// Double increase
-	void increase(int);
+	bool increase(int);
 	// Double decrease
-	void decrease(int);
+	bool decrease(int);
 
 	/*
 	// Expression Data

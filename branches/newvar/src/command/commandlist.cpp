@@ -213,6 +213,7 @@ bool CommandList::addCommand(CommandAction ca)
 	msg.enter("CommandList::addCommand");
 	Command *c, *topc;
 	CommandAction branchca;
+	Parser::ArgumentForm form;
 	VTypes::DataType vt;
 	int n;
 	Variable *v;
@@ -235,17 +236,25 @@ bool CommandList::addCommand(CommandAction ca)
 		case (CA_ATOMTYPE):
 			for (n=1; n<parser.nArgs(); n++)
 			{
+				// First, check that the argument is a plain variable
+				form = parser.argumentForm(n, TRUE);
+				if (form != Parser::VariableForm)
+				{
+					msg.print("Invalid variable name '%s' found in declaration.\n", parser.argc(n));
+					result = FALSE;
+					break;
+				}
 				// Check for existing variable with same name
-				v = variables.get(parser.argc(n));
+				v = variables_.get(parser.argc(n));
 				if (v != NULL)
 				{
-					printf("Error: Variable '%s': redeclared as type '%s' (from '%s').\n", parser.argc(n), VTypes::dataType((VTypes::DataType) ca),  VTypes::dataType(v->type()));
+					msg.print("Error: Variable '%s': redeclared as type '%s' (from '%s').\n", parser.argc(n), VTypes::dataType((VTypes::DataType) ca),  VTypes::dataType(v->type()));
 					result = FALSE;
 				}
 				else
 				{
 					vt = (VTypes::DataType) ca;
-					v = variables.addVariable(parser.argc(n), vt);
+					v = variables_.addVariable(parser.argc(n), vt);
 				}
 			}
 			break;
@@ -253,7 +262,7 @@ bool CommandList::addCommand(CommandAction ca)
 		case (CA_IF):
 			c = addTopBranchCommand(CA_IF, NULL);
 			pushBranch(c->createBranch(), CA_IF, c);
-			varresult = c->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
+			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
 			if (!c->setIfTest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else If' statement (acts as CA_END to previous 'if' or 'elseif' branch.
@@ -275,7 +284,7 @@ bool CommandList::addCommand(CommandAction ca)
 			//printf("New node is %li, command = %s\n",c,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
 			pushBranch(c->createBranch(), CA_ELSEIF, c);
-			varresult = c->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
+			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
 			if (!c->setIfTest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else' statement (acts as CA_END to previous 'if' or 'elseif' branch.
@@ -302,7 +311,7 @@ bool CommandList::addCommand(CommandAction ca)
 		case (CA_FOR):
 			c = addTopBranchCommand(CA_FOR, NULL);
 			pushBranch(c->createBranch(), ca, c);
-			varresult = c->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
+			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
 			// Create subvariables if necessary
 // 			if (varresult) varresult = createSubvariables(c->arg(0)); TGAY
 			break;
@@ -371,7 +380,7 @@ bool CommandList::addCommand(CommandAction ca)
 		// All other commands do not alter the flow of the CommandList...
 		default:
 			c = addTopBranchCommand(ca, NULL);
-			varresult = c->addVariables(CA_data[ca].keyword, CA_data[ca].arguments, variables);
+			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
 			break;
 	}
 	// Check variable assignment result
@@ -421,7 +430,8 @@ bool CommandList::cacheCommand()
 		// Shift all arguments up one position in the parser
 		parser.shiftArgsUp();
 		// Set command based on type of variable
-		Variable *v = variables.get(&parser.argc(1)[1]);
+		// TGAY return type of variablepath needs to be checked here.
+		Variable *v = variables_.get(&parser.argc(1)[1]);
 		if (v == NULL)
 		{
 			msg.print( "Variable '%s' has not been declared.\n", &parser.argc(1)[1]);

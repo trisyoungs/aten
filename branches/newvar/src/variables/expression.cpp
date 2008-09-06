@@ -45,27 +45,31 @@ ExpressionVariable::ExpressionVariable()
 */
 
 // Set value of variable (char)
-void ExpressionVariable::set(const char *s)
+bool ExpressionVariable::set(const char *s)
 {
 	printf("An Expression variable cannot be set.\n");
+	return FALSE;
 }
 
 // Set value of variable (int)
-void ExpressionVariable::set(int i)
+bool ExpressionVariable::set(int i)
 {
 	printf("An Expression variable cannot be set.\n");
+	return FALSE;
 }
 
 // Set value of variable (double)
-void ExpressionVariable::set(double d)
+bool ExpressionVariable::set(double d)
 {
 	printf("An Expression variable cannot be set.\n");
+	return FALSE;
 }
 
 // Set value of variable (pointer)
-void ExpressionVariable::set(void *ptr, VTypes::DataType type)
+bool ExpressionVariable::set(void *ptr, VTypes::DataType type)
 {
 	printf("An Expression variable cannot be set.\n");
+	return FALSE;
 }
 
 // Get value of variable as character string
@@ -97,7 +101,7 @@ float ExpressionVariable::asFloat()
 bool ExpressionVariable::asBool()
 {
 	printf("Cannot get an Expression variable as a boolean.\n");
-	return "NULL";
+	return FALSE;
 }
 
 // Get value of variable as pointer of specified type
@@ -108,15 +112,17 @@ void *ExpressionVariable::asPointer(VTypes::DataType type)
 }
 
 // Character increase
-void ExpressionVariable::increase(int i)
+bool ExpressionVariable::increase(int i)
 {
 	printf("An Expression variable cannot be increased.");
+	return FALSE;
 }
 
 // Character decrease
-void ExpressionVariable::decrease(int)
+bool ExpressionVariable::decrease(int)
 {
 	printf("An Expression variable cannot be decreased.");
+	return FALSE;
 }
 
 /*

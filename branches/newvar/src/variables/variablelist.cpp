@@ -25,8 +25,6 @@
 #include "variables/character.h"
 #include "variables/real.h"
 #include "variables/pointer.h"
-#include "variables/reference.h"
-// #include "base/vaccess.h"
 #include "main/aten.h"
 #include <string.h>
 #include <stdarg.h>
@@ -75,9 +73,6 @@ Variable *VariableList::createVariable(VTypes::DataType dt)
 		case (VTypes::TorsionData):
 		case (VTypes::AtomtypeData):
 			result = new PointerVariable(dt);
-			break;
-		case (VTypes::ReferenceData):
-			result = new ReferenceVariable;
 			break;
 		default:
 			printf("Don't yet know how to create a variable of type %i\n", dt);
@@ -134,7 +129,7 @@ Variable *VariableList::addConstant(int i)
 }
 
 // Add expression
-ExpressionVariable *VariableList::addExpression(const char *s)
+Variable *VariableList::addExpression(const char *s)
 {
 	// Create new variable in which to store expression
 	Variable *newvar = createVariable(VTypes::ExpressionData);

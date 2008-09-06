@@ -84,9 +84,7 @@ class VariableList
 	// Add an unnamed integer constant to the list
 	Variable *addConstant(int i);
 	// Add an unnamed expression to the list
-	ExpressionVariable *addExpression(const char *s);
-	// Add a reference to the variable list
-// 	Variable *addReference(const char *s, VObject *vobparent = NULL);
+	Variable *addExpression(const char *s);
 	// Add a named variable to the list
 	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt, VTypes::ArrayType at = VTypes::NoArray);
 	Variable *addVariable(const char *name, VTypes::DataType vt, VTypes::ArrayType at = VTypes::NoArray);

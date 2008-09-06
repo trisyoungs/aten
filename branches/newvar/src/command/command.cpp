@@ -55,6 +55,7 @@ Command::Command()
 	branch_ = NULL;
 	format_ = NULL;
 	loopActive_ = FALSE;
+	variableList_ = NULL;
 
 	// Public variables
 	next = NULL;
@@ -328,7 +329,7 @@ List<Command> *Command::createBranch()
 }
 
 // Create branch
-bool Command::createFormat(const char *s, bool delimited, VariableList &sourcevars)
+bool Command::createFormat(const char *s, bool delimited)
 {
 	msg.enter("Command::createFormat");
 	bool result = FALSE;
@@ -336,7 +337,7 @@ bool Command::createFormat(const char *s, bool delimited, VariableList &sourceva
 	else
 	{
 		format_ = new Format;
-		result = format_->create(s, sourcevars, delimited);
+		result = format_->create(s, *variableList_, delimited);
 	}
 	msg.exit("Command::createFormat");
 	return result;
@@ -484,22 +485,45 @@ bool Command::ifEvaluate()
 */
 
 // Add variable to reference list, given the name (minus the 'dollar')
-bool Command::addArgument(const char *varname, Parser::ArgumentForm af)
+bool Command::addArgument(const char *varname, VariableList *sourcevars, Parser::ArgumentForm form)
 {
 	msg.enter("Command::addArgument");
-	bool result = FALSE;
+	bool result;
+	variableList_ = sourcevars;
 	// If argument form wasn't provided, attempt to work it out.
-	Parser::ArgumentForm af = (form == Parser::UnknownForm ? Parser::argumentForm(varname) : form);
+	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(varname) : form);
 	// Now we have the argument form, attempt to create an access path from the string
 	AccessPath *ap = args_.add();
-
-
+	// We must remove the leading '$' from variable/path-type arguments
+	result = ap->setPath(af <= Parser::VariablePathForm ? varname : &varname[1], sourcevars, form);
 	msg.exit("Command::addArgument");
-	return TRUE;
+	return result;
+}
+
+// Add constant to reference list
+void Command::addConstant(const char *s, VariableList *sourcevars, bool forcechar)
+{
+	msg.enter("Command::addConstant");
+	variableList_ = sourcevars;
+	Variable *v = variableList_->addConstant(s, forcechar);
+	AccessPath *ap = args_.add();
+	ap->setPath(v);
+	msg.exit("Command::addConstant");
+}
+
+// Add constant to reference list
+void Command::addConstant(int i, VariableList *sourcevars)
+{
+	msg.enter("Command::addConstant[int]");
+	variableList_ = sourcevars;
+	Variable *v = variableList_->addConstant(i);
+	AccessPath *ap = args_.add();
+	ap->setPath(v);
+	msg.exit("Command::addConstant[int]");
 }
 
 // Add variables to command
-bool Command::setArguments(const char *cmdname, const char *specifiers, VariableList &vars)
+bool Command::setArguments(const char *cmdname, const char *specifiers, VariableList *sourcevars)
 {
 	msg.enter("Command::setArguments");
 	bool required = TRUE, repeat = FALSE;
@@ -511,10 +535,12 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 	static char arg[512];
 	argcount = 0;
 	n = 0;
-	while (v[n] != '\0')
+	// Store reference to source variablelist
+	variableList_ = sourcevars;
+	while (specifiers[n] != '\0')
 	{
 		// Check for lowercase letter (optional argument)
-		required = ((v[n] > 90) || (v[n] == '*') ? FALSE : TRUE);
+		required = ((specifiers[n] > 90) || (specifiers[n] == '*') ? FALSE : TRUE);
 		
 		// Move on to next argument.
 		argcount ++;
@@ -525,7 +551,7 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 		{
 			if (required && (!repeat))
 			{
-				msg.print("Error: '%s' requires argument %i\n", cmd, argcount);
+				msg.print("Error: '%s' requires argument %i\n", cmdname, argcount);
 				msg.exit("Command::setArguments");
 				return FALSE;
 			}
@@ -533,44 +559,44 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 		}
 		strcpy(arg,parser.argc(argcount));
 		// Go through possible specifiers
-		switch (v[n])
+		switch (specifiers[n])
 		{
 			// Formats (delimited)
 			case ('f'):
 			case ('F'):
-				if (!createFormat(arg, vars, TRUE)) return FALSE;
+				if (!createFormat(arg, TRUE)) return FALSE;
 				break;
 			// Formats (exact)
 			case ('g'):
 			case ('G'):
-				if (!createFormat(arg, vars, FALSE)) return FALSE;
+				if (!createFormat(arg, FALSE)) return FALSE;
 				break;
 			// Delimited (J) / exact (K) format *or* variable
 			case ('J'):
 			case ('K'):
-				if (!parser.wasQuoted(argcount))
-				{
-					// See if it has been declared
-					var = parent_->variables.get(&arg[1]);
-					if (var == NULL)
-					{
-						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
-						return FALSE;
-					}
-					else args_.add(var);
-				}
-				else if (!createFormat(arg, vars, v[n] == 'J' ? TRUE : FALSE)) return FALSE;
+// 				if (!parser.wasQuoted(argcount))
+// 				{
+// 					// See if it has been declared
+// 					var = sourcevars.get(&arg[1]);
+// 					if (var == NULL)
+// 					{
+// 						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
+// 						return FALSE;
+// 					}
+// 					else args_.add(var);
+// 				}
+// 				else
+				if (!createFormat(arg, specifiers[n] == 'J' ? TRUE : FALSE)) return FALSE;
 				break;
 			// Discard
 			case ('x'):
 			case ('X'):
-				args_.add(NULL);
+				args_.add();
 				break;
 			// String as-is
 			case ('s'):
 			case ('S'):
-				var = vars.addConstant(arg, TRUE);
-				args_.add(var);
+				addConstant(arg, sourcevars, TRUE);
 				break;
 			// Operators
 			case ('O'):
@@ -581,10 +607,11 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				if (ao == AssignOps::nAssignOps)
 				{
 					msg.print("Error: Unrecognised assignment operator '%s'.\n", &arg[0]);
+					msg.exit("Command::setArguments");
 					return FALSE;
 				}
 				// Whether we accept the operator we found depends on the specifier
-				switch (v[n])
+				switch (specifiers[n])
 				{
 					// 'O' - accept any
 					case ('O'):
@@ -593,7 +620,8 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 					case ('='):
 						if (ao != AssignOps::Equals) 
 						{
-							msg.print("Error: Expected '=' as argument %i for command '%s'.\n", argcount, cmd);
+							msg.print("Error: Expected '=' as argument %i for command '%s'.\n", argcount, cmdname);
+							msg.exit("Command::setArguments");
 							return FALSE;
 						}
 						break;
@@ -601,94 +629,69 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 					case ('~'):
 						if ((ao != AssignOps::Equals) && (ao != AssignOps::PlusEquals)) 
 						{
-							msg.print("Error: Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmd);
+							msg.print("Error: Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmdname);
+							msg.exit("Command::setArguments");
 							return FALSE;
 						}
 						break;
 				}
 				// Add operator as an integer variable
-				args_.add(parent_->variables.addConstant(ao));
+				addConstant(ao, sourcevars);
+// 				args_.add(parent_->variables.addConstant(ao));
 				break;
 			// Variable, expression, or constant
 			case ('e'):
 			case ('E'):
-				if (addVariable(
-				// Get form of argument in parser object
-				af = parser.argumentForm(argcount);
-				if (af == Parser::ExpressionForm)
+				if (!addArgument(arg, sourcevars))
 				{
-					var = parent_->variables.addExpression(&arg[0]);
-					if (var == NULL) return FALSE;
-					args_.add(var);
+					msg.exit("Command::setArguments");
+					return FALSE;
 				}
-				else if (af == Parser::VariableForm)
-				{
-					XXXX
-					// See if it has been declared
-					var = parent_->variables.get(&arg[1]);
-					if (var == NULL)
-					{
-						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
-						return FALSE;
-					}
-					else args_.add(var);
-				}
-				else args_.add(parent_->variables.addConstant(arg));
 				break;
 			// Normal, non-expression variable or constant (Q forces constant type to be Character)
 			case ('n'):
 			case ('N'):
 			case ('q'):
 			case ('Q'):
+				// Check for some kind of variable/path
 				if (arg[0] == '$')
 				{
-					// See if it has been declared
-					var = parent_->variables.get(&arg[1]);
-					if (var == NULL)
+					if (!addArgument(arg, sourcevars))
 					{
 						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
+						msg.exit("Command::setArguments");
 						return FALSE;
 					}
-					else args_.add(var);
 				}
 				else
 				{
-					if ((v[n] == 'q') || (v[n] == 'Q')) args_.add(parent_->variables.addConstant(arg), TRUE);
-					else args_.add(parent_->variables.addConstant(arg));
+					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(arg, sourcevars, TRUE); 
+					else addConstant(arg, sourcevars); 
 				}
 				break;
-			// Variable ('U' indicates a pointer variable having subvariables)
+			// Variable
 			case ('v'):
 			case ('V'):
-			case ('u'):
-			case ('U'):
 				// Get form of argument in parser object
 				af = parser.argumentForm(argcount);
 				if (af == Parser::ExpressionForm)
 				{
-					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", cmd, argcount, &arg[0]);
+					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", argcount, cmdname, arg);
+					msg.exit("Command::setArguments");
 					return FALSE;
 				}
-				else if (af == Parser::VariableForm)
+				else if (af <= Parser::VariablePathForm)
 				{
-					// See if it has been declared
-					var = parent_->variables.get(&arg[1]);
-					if (var == NULL)
+					if (!addArgument(arg, sourcevars, af))
 					{
-						msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
+						//msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
+						msg.exit("Command::setArguments");
 						return FALSE;
-					}
-					else
-					{
-						args_.add(var);
-						// Create subvariables if necessary
-						// Create extra variables in the command structure
-// 						if (!parent_->createSubvariables(var)) return FALSE; TGAY
 					}
 				}
 				else
 				{
-					msg.print("Error: '%s' expected a declared variable for argument %i, but found '%s' instead.\n", cmd, argcount, &arg[0]);
+					msg.print("Error: '%s' expected a variable for argument %i, but found '%s' instead.\n", cmdname, argcount, arg);
 					return FALSE;
 				}
 				break;
@@ -701,64 +704,67 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 			case ('p'):
 			case ('M'):
 			case ('m'):
-				if (arg[0] != '$')
+				switch (specifiers[n])
 				{
-					switch (v[n])
+					case ('A'):
+					case ('a'):
+						vt = VTypes::AtomData;
+						break;
+					case ('B'):
+					case ('b'):
+						vt = VTypes::BondData;
+						break;
+					case ('P'):
+					case ('p'):
+						vt = VTypes::PatternData;
+						break;
+					case ('M'):
+					case ('m'):
+						vt = VTypes::ModelData;
+						break;
+					default:
+						vt = VTypes::nDataTypes;
+						break;
+				}
+				af = parser.argumentForm(argcount);
+				if (af <= Parser::VariablePathForm)
+				{
+					if (!addArgument(arg, sourcevars, af))
 					{
-						case ('A'):
-						case ('a'):
-							vt = VTypes::AtomData;
-							break;
-						case ('B'):
-						case ('b'):
-							vt = VTypes::BondData;
-							break;
-						case ('P'):
-						case ('p'):
-							vt = VTypes::PatternData;
-							break;
-						case ('M'):
-						case ('m'):
-							vt = VTypes::ModelData;
-							break;
-						default:
-							vt = VTypes::nDataTypes;
-							break;
+						msg.exit("Command::setArguments");
+						return FALSE;
 					}
-					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead.\n", cmd, VTypes::dataType(vt), &arg[0]);
-					return FALSE;
+					// Must also check return value of variable
 				}
-				// See if it has been declared
-				var = parent_->variables.get(&arg[1]);
-				if (var == NULL)
+				else
 				{
-					msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
+					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead.\n", cmdname, VTypes::dataType(vt), arg);
 					return FALSE;
 				}
-				else args_.add(var);
-				// Create extra variables in the command structure
-// 				if (!parent_->createSubvariables(var)) return FALSE; TGAY
 				break;
 			// Character variable
 			case ('C'):
-				if (arg[0] != '$')
+				af = parser.argumentForm(argcount);
+				if (af <= Parser::VariablePathForm)
 				{
-					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' instead.\n", cmd, &arg[0]);
+					if (!addArgument(arg, sourcevars, af))
+					{
+						msg.exit("Command::setArguments");
+						return FALSE;
+					}
+					// Must also check return value of variable
+					if (args_.last()->returnType() != VTypes::CharacterData)
+					{
+						msg.print("Error: '%s' expected a variable of type 'character', but found '%s' instead.\n", cmdname, arg);
+						msg.exit("Command::setArguments");
+						return FALSE;
+					}
+				}
+				else
+				{
+					msg.exit("Command::setArguments");
 					return FALSE;
 				}
-				// See if it has been declared
-				var = parent_->variables.get(&arg[1]);
-				if (var == NULL)
-				{
-					msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
-					return FALSE;
-				}
-				else if (var->type() != VTypes::CharacterData)
-				{
-					msg.print("Error: '%s' expected a variable of type 'character', but found '%s' which is of type '%s'.\n", cmd, &arg[1], VTypes::dataType(var->type()));
-					return FALSE;
-				}
-				else args_.add(var);
 				break;
 			// Repeat as many of the last variable type as possible
 			case ('*'):
@@ -781,7 +787,7 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 	// Are there still unused arguments in the parser?
 	if (argcount < (parser.nArgs() - 1))
 	{
-		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(++argcount), cmd);
+		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(++argcount), cmdname);
 		msg.exit("Command::setArguments");
 		return FALSE;
 	}

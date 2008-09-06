@@ -738,7 +738,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the specified variable" },
 	{ "letchar",		"V~N",		"<variable> =|+= <variable|value>",
 				"Set the specified character variable" },
-	{ "letptr",		"U=U",		"<variable> = <variable>",
+	{ "letptr",		"V=V",		"<variable> = <variable>",
 				"Set the specified pointer variable" },
 	
 	// View

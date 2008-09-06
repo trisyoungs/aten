@@ -8,7 +8,6 @@ integer.h
 modelaccess.h
 pointer.h
 real.h
-reference.h
 vaccess.h
 variable.h
 variablelist.h
@@ -21,7 +20,6 @@ integer.cpp
 modelaccess.cpp
 pointer.cpp
 real.cpp
-reference.cpp
 vaccess.cpp
 variable.cpp
 variablelist.cpp

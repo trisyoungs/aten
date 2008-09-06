@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "variables/accesspath.h"
 #include "command/commandlist.h"
 #include "model/model.h"
 #include "base/pattern.h"
@@ -72,8 +73,8 @@ int CommandData::function_CA_END(Command *&c, Bundle &obj)
 int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 {
 	// Grab variable list from command's parent list
-	VariableList &vars = c->parent()->variables;
 	bool status = TRUE;
+	int n;
 	if (c->isLoopActive())
 	{
 		// Do loop iteration.
@@ -105,24 +106,26 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				// If three, check for last atom in molecule
 				if (c->hasArg(2))
 				{
-					if (c->loopIterations() > c->argp(1)->nAtoms()) status = FALSE;
+					n = ((Model*) c->argp(2, VTypes::ModelData))->nAtoms();
+					if (c->loopIterations() > n) status = FALSE;
 				}
 				else if (c->hasArg(1))
 				{
-					if (c->loopIterations() > c->argp(1)->totalAtoms()) status = FALSE;
+					n = ((Pattern*) c->argp(2, VTypes::PatternData))->totalAtoms();
+					if (c->loopIterations() > n) status = FALSE;
 				}
-				else if (c->arga(0) == NULL) status = FALSE;
+				else if (c->argp(0, VTypes::AtomData) == NULL) status = FALSE;
 				break;
 			case (VTypes::PatternData):
-				if (c->argp(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				break;
 			case (VTypes::BondData):
 			case (VTypes::AngleData):
 			case (VTypes::TorsionData):
-				if (c->argpb(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				break;
 			case (VTypes::AtomtypeData):
-				if (c->argffa(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", VTypes::dataType(c->argt(0)));
@@ -171,7 +174,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				{
 					// Second argument determines pattern
 					Pattern *p;
-					if (c->argt(1) == VTypes::PatternData) p = c->argp(1);
+					if (c->argt(1) == VTypes::PatternData) p = (Pattern*) c->argp(1, VTypes::PatternData);
 					else if (c->argt(1) == VTypes::IntegerData) p = obj.rs->pattern(c->argi(1));
 					else
 					{
@@ -209,7 +212,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					else c->arg(0)->set(p->firstAtom(), VTypes::AtomData);
 				}
 				else c->arg(0)->set(obj.rs->atoms(), VTypes::AtomData);
-				if (c->arga(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::AtomData) == NULL) status = FALSE;
 				// Set secondary variables from atom loop variable
 // 				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0)); TGAY
 				break;
@@ -222,7 +225,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					msg.print( "Pattern loop variable must be of Pattern type.\n");
 					return CR_FAIL;
 				}
-				if (c->argp(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				// Set pattern variables from the pattern pointer
 // 				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0)); TGAY
 				break;
@@ -237,7 +240,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				}
 // 				c->arg(0)->set(c->argp(1)->bonds());
 // 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
-				if (c->argpb(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::BondData) == NULL) status = FALSE;
 				break;
 			// Loop over forcefield angle terms of pattern
 			case (VTypes::AngleData):
@@ -249,7 +252,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				}
 // 				c->arg(0)->set(c->argp(1)->angles());
 // 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
-				if (c->argpb(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::AngleData) == NULL) status = FALSE;
 				break;
 			// Loop over forcefield torsion terms of pattern
 			case (VTypes::TorsionData):
@@ -261,7 +264,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				}
 // 				c->arg(0)->set(c->argp(1)->torsions());
 // 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
-				if (c->argpb(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::TorsionData) == NULL) status = FALSE;
 				break;
 			// Loop over unique ForcefieldAtoms in model
 			case (VTypes::AtomtypeData):
@@ -278,7 +281,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				}
 // 				else c->arg(0)->set(obj.rs->uniqueTypes());
 // 				c->parent()->setAtomtypeVariables(c->arg(0)->name(), (ForcefieldAtom*) c->arg(0)->asPointer()); TGAY
-				if (c->argpb(0) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::AtomtypeData) == NULL) status = FALSE;
 				break;
 			default:
 				printf("Kick Developer - Loops over '%s' are missing.\n", VTypes::dataType(c->argt(0)));

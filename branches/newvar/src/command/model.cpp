@@ -79,12 +79,12 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 // 		c->parent()->setModelVariables("",obj.m); TGAY
 		obj.p = NULL;
 		obj.i = m->atoms();
-		// If a model variables was supplied, set the subvariables
-		if (c->hasArg(1))
-		{
-			c->arg(1)->set(m, VTypes::ModelData);
-// 			c->parent()->setModelVariables(c->arg(1)->name(), m); TGAY
-		}
+// 		// If a model variables was supplied, set the subvariables
+// 		if (c->hasArg(1))
+// 		{
+// 			c->arg(1)->set(m, VTypes::ModelData);
+// // 			c->parent()->setModelVariables(c->arg(1)->name(), m); TGAY
+// 		}
 		return CR_SUCCESS;
 	}
 	else
