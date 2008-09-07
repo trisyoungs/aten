@@ -40,6 +40,14 @@ IntegerVariable::IntegerVariable()
 // Set / Get
 */
 
+// Set size of array
+bool IntegerVariable::setArraySize(int size)
+{
+	if (arraySize_ != -1) msg.print("Warning - Integer variable '%s' already has an array.\n", name_.get());
+	integerArrayData_ = new int[size];
+	arraySize_ = size;
+}
+
 // Set value of variable (char)
 bool IntegerVariable::set(const char *s, int index)
 {
@@ -89,13 +97,6 @@ bool IntegerVariable::set(double d, int index)
 	return set( (int) d);
 }
 
-// Set value of variable (pointer)
-bool IntegerVariable::set(void *ptr, VTypes::DataType type, int index)
-{
-	printf("An Integer variable cannot be set from a pointer.\n");
-	return FALSE;
-}
-
 // Get value of variable as character string
 const char *IntegerVariable::asCharacter(int index)
 {
@@ -137,23 +138,10 @@ double IntegerVariable::asDouble(int index)
 	return (double) asInteger(index);
 }
 
-// Get value of variable as float
-float IntegerVariable::asFloat(int index)
-{
-	return (float) asInteger(index);
-}
-
 // Get value of variable as a boolean
 bool IntegerVariable::asBool(int index)
 {
 	return (asInteger(index) < 1 ? FALSE : TRUE);
-}
-
-// Get value of variable as pointer of specified type
-void *IntegerVariable::asPointer(VTypes::DataType type, int index)
-{
-	printf("An Integer variable cannot be returned as a pointer.\n");
-	return NULL;
 }
 
 // Step variable

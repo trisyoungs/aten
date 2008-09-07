@@ -82,9 +82,9 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 	{
 		result->setParent(this);
 		// Create array if a valid size was given
-		if (arraysize >= -1) if (arraysize > 0) result->setArraySize(arraysize);
-		else
+		if (arraysize != -1)
 		{
+			if (arraysize > 0) result->setArraySize(arraysize);
 			msg.print("Invalid array size (%i) given for variable.\n", arraysize);
 			return NULL;
 		}
@@ -121,8 +121,8 @@ Variable *VariableList::addConstant(const char *s, bool forcecharacter)
 	constants_.own(newvar);
 	sprintf(newname,"constant%i", constants_.nItems());
 	newvar->setName(newname);
-	newvar->setReadOnly();
 	newvar->set(s);
+	newvar->setReadOnly();
 	return newvar;
 }
 

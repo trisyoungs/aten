@@ -21,6 +21,12 @@
 
 #include "variables/vaccess.h"
 
+// Return address of VariableList
+VariableList *VAccess::accessors()
+{
+	return &accessors_;
+}
+
 // Add new accessor
 // void VAccess::addAccessor(const char *name, VTypes::ListType lt, VTypes::DataType datatype, bool readonly)
 // {

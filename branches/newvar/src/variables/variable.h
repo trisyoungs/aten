@@ -91,7 +91,7 @@ class Variable
 	// Get value of variable as double
 	virtual double asDouble(int index = -1);
 	// Get value of variable as float
-	virtual float asFloat(int index = -1);
+	float asFloat(int index = -1);
 	// Get value of variable as a boolean
 	virtual bool asBool(int index = -1);
 	// Get value of variable as pointer of specified type

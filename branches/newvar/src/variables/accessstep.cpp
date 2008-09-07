@@ -22,8 +22,10 @@
 #include "variables/accesspath.h"
 #include "variables/accessstep.h"
 #include "variables/variable.h"
+#include "variables/variablelist.h"
 #include "base/constants.h"
 #include "base/messenger.h"
+#include "base/sysfunc.h"
 #include <stdlib.h>
 
 // Constructor
@@ -38,10 +40,101 @@ AccessStep::AccessStep()
 	next = NULL;
 }
 
-// Set target variable
-void AccessStep::setTarget(Variable *var)
+// Set target from variable name/array index
+bool AccessStep::setTarget(const char *var, VariableList *sourcevars, Parser::ArgumentForm vartype)
 {
-	target_ = var;
+	static char arrayindex[512];
+	bool success = TRUE;
+	Variable *v;
+	int n, lbr = -1, rbr = -1;
+	// Set this step - source 'var' must *not* be of path form
+	Parser::ArgumentForm af = (vartype == Parser::UnknownForm ? parser.argumentForm(var) : vartype);
+	switch (af)
+	{
+		case (Parser::ConstantForm):
+			// Add constant value to parents variablelist
+			v = sourcevars->addConstant(var);
+			target_ = v;
+			break;
+		case (Parser::VariableForm):
+			// Search for array index (left square bracket)
+			for (n = 0; n<strlen(var); n++) 
+			{
+				if (var[n] == '[') lbr = n;
+				if (var[n] == ']') rbr = n;
+			}
+			// Check values of lbracket and rbracket
+			if ((lbr == -1) && (rbr == -1))
+			{
+				// No array element, just the name. See if it has been declared
+				v = sourcevars->get(var);
+				if (v == NULL)
+				{
+					msg.print("Error: Variable '%s' has not been declared.\n", var);
+					success = FALSE;
+				}
+				break;
+			}
+			else if ((lbr == -1) || (rbr == -1))
+			{
+				// One bracket given but not the other
+				msg.print("Array index for variable '%s' is missing a '%c'.\n", var, lbr == -1 ? '[' : ']');
+				success = FALSE;
+				break;
+			}
+			else if (lbr > rbr)
+			{
+				// Brackets provided the wrong way around!
+				msg.print("Brackets around array index for variable '%s' face the wrong way.\n", var);
+				success = FALSE;
+				break;
+			}
+			else
+			{
+				// If we get here then the array brackets are valid, and we should get the contents. But first, get the variable...
+				v = sourcevars->get(var);
+				if (v == NULL)
+				{
+					msg.print("Error: Variable '%s' has not been declared.\n", var);
+					success = FALSE;
+				}
+				else
+				{
+					target_ = v;
+// 					returnType_ = v->type();
+					strcpy(arrayindex, afterChar(beforeChar(var, ']'), '['));
+					if (!setArrayIndex(arrayindex, sourcevars))
+					{
+						msg.print("Failed to parse array index '%s' for '%s'.\n", arrayindex, var);
+						success = FALSE;
+						break;
+					}
+				}
+			}
+			break;
+		case (Parser::ExpressionForm):
+			// Attempt to construct expression
+			v = sourcevars->addExpression(var);
+			if (v == NULL) success = FALSE;
+			else
+			{
+				target_ = v;
+// 				returnType_ = v->type();
+			}
+			break;
+		case (Parser::VariablePathForm):
+			msg.print("An AccessStep target cannot be initialised from a variable path.\n");
+			success = FALSE;
+			break;
+	}
+	msg.exit("AccessStep::setTarget");
+	return success;
+}
+
+// Set target variable
+void AccessStep::setTarget(Variable *v)
+{
+	target_ = v;
 }
 
 // Create arrayindex 'branch'
@@ -84,4 +177,15 @@ void * AccessStep::asPointer(VTypes::DataType dt)
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a pointer.\n");
 	else return target_->asPointer(dt);
 	return 0;
+}
+
+// Get return type of step (i.e. DataType of target variable)
+VTypes::DataType AccessStep::returnType()
+{
+	if (target_ == NULL)
+	{
+		msg.print("No target variable is set in AccessStep - return type not available.\n");
+		return VTypes::NoData;
+	}
+	return target_->type();
 }

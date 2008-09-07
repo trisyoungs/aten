@@ -79,6 +79,12 @@ template <class T> class PointerVariableList : public Variable
 	void setListData(List<T> *list);
 };
 
+// Constructor
+template <class T> PointerVariableList::PointerVariableList(VTypes::DataType ptrtype)
+{
+	dataType_ = ptrtype;
+}
+
 /*
 // Set / Get (Basic PointerVariableList)
 */

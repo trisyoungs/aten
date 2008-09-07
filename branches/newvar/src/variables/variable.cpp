@@ -147,8 +147,7 @@ double Variable::asDouble(int index)
 // Get value of variable as float
 float Variable::asFloat(int index)
 {
-	printf("A variable of type '%s' cannot be returned as a float.\n", VTypes::dataType(dataType_));
-	return 0.0f;
+	return (float) asDouble(index);
 }
 
 // Get value of variable as bool

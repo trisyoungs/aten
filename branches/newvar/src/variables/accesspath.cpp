@@ -21,6 +21,7 @@
 
 #include "variables/accesspath.h"
 #include "variables/accessstep.h"
+#include "variables/modelaccess.h"
 #include "variables/variablelist.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
@@ -58,97 +59,54 @@ Variable *AccessPath::walk()
 bool AccessPath::setPath(const char *path, VariableList *sourcevars, Parser::ArgumentForm pathtype)
 {
 	msg.enter("AccessPath::set");
-	static char arrayindex[256];
+	static char opath[512];
+	Dnchar bit;
 	AccessStep *step;
-	Variable *v;
-	int n, lbr = -1, rbr = -1;
-	bool success = TRUE;
+	char *c;
+	VTypes::DataType lastType = VTypes::NoData;
+	VariableList *pathvars;
+	bool success;
 	// Store original path
 	originalPath_ = path;
 	// If argument form wasn't provided, attempt to work it out.
 	Parser::ArgumentForm af = (pathtype == Parser::UnknownForm ? parser.argumentForm(path) : pathtype);
 	switch (af)
 	{
+		case (Parser::VariableForm):
 		case (Parser::ConstantForm):
+		case (Parser::ExpressionForm):
 			// Add constant value to parents variablelist
 			step = path_.add();
-			v = sourcevars->addConstant(path);
-			step->setTarget(v);
-			returnType_ = v->type();
-			break;
-		case (Parser::VariableForm):
-			// Search for array index (left square bracket)
-			for (n = 0; n<strlen(path); n++) 
-			{
-				if (path[n] == '[') lbr = n;
-				if (path[n] == ']') rbr = n;
-			}
-			// Check values of lbracket and rbracket
-			if ((lbr == -1) && (rbr == -1))
-			{
-				// No array element, just the name. See if it has been declared
-				v = sourcevars->get(path);
-				if (v == NULL)
-				{
-					msg.print("Error: Variable '%s' has not been declared.\n", path);
-					success = FALSE;
-				}
-				else returnType_ = v->type();
-				break;
-			}
-			else if ((lbr == -1) || (rbr == -1))
-			{
-				// One bracket given but not the other
-				msg.print("Array index for variable '%s' is missing a '%c'.\n", path, lbr == -1 ? '[' : ']');
-				success = FALSE;
-				break;
-			}
-			else if (lbr > rbr)
-			{
-				// Brackets provided the wrong way around!
-				msg.print("Brackets around array index for variable '%s' face the wrong way.\n", path);
-				success = FALSE;
-				break;
-			}
-			else
-			{
-				// If we get here then the array brackets are valid, and we should get the contents. But first, get the variable...
-				v = sourcevars->get(path);
-				if (v == NULL)
-				{
-					msg.print("Error: Variable '%s' has not been 	declared.\n", path);
-					success = FALSE;
-				}
-				else
-				{
-					step = path_.add();
-					step->setTarget(v);
-					returnType_ = v->type();
-					strcpy(arrayindex, afterChar(beforeChar(path, ']'), '['));
-					if (!step->setArrayIndex(arrayindex, sourcevars))
-					{
-						msg.print("Failed to parse array index '%s' for '%s'.\n", arrayindex, path);
-						success = FALSE;
-						break;
-					}
-				}
-			}
-			break;
-		case (Parser::ExpressionForm):
-			// Attempt to construct expression
-			v = sourcevars->addExpression(path);
-			if (v == NULL) success = FALSE;
-			else
-			{
-				step = path_.add();
-				step->setTarget(v);
-				returnType_ = v->type();
-			}
+			success = step->setTarget(path, sourcevars, af);
+			if (success) returnType_ = step->returnType();
 			break;
 		case (Parser::VariablePathForm):
+			// Take a copy of the original path to work on
+			strcpy(opath, path);
+			c = opath;
+			while (c != '\0')
+			{
+				// Get section of path existing before the next '.'
+				bit = beforeChar(opath, '.');
+				// If this is the first added node then the variable must exist in the local VariableList.
+				// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
+				switch (lastType)
+				{
+					case (VTypes::NoData):
+						pathvars = sourcevars;
+						break;
+					case (VTypes::ModelData):
+						pathvars = modelAccessors.accessors();
+						break;
+				}
+				// Add the new path step
+				step = path_.add();
+				success = step->setTarget(bit.get(), pathvars, af);
+			}
 			break;
 	}
 	msg.exit("AccessPath::set");
+	return success;
 }
 
 // Set single-node path from target variable

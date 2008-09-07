@@ -22,6 +22,7 @@
 #ifndef ATEN_ACCESSSTEP_H
 #define ATEN_ACCESSSTEP_H
 
+#include "base/parser.h"
 #include "base/vtypes.h"
 
 // Forward declarations
@@ -46,7 +47,9 @@ class AccessStep
 
 	public:
 	// Set target variable
-	void setTarget(Variable *var);
+	bool setTarget(const char *var, VariableList *sourcevars, Parser::ArgumentForm pathtype = Parser::UnknownForm);
+	// Set target to variable supplied (no array index)
+	void setTarget(Variable *v);
 	// Create arrayindex 'branch'
 	bool setArrayIndex(const char *path, VariableList *sourcevars);
 	// Get return value as integer
@@ -57,6 +60,8 @@ class AccessStep
 	bool asBool();
 	// Get return value as pointer
 	void *asPointer(VTypes::DataType dt);
+	// Get return type of step (i.e. DataType of target variable)
+	VTypes::DataType returnType();
 };
 
 #endif
