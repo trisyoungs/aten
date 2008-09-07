@@ -31,7 +31,6 @@ CharacterVariable::CharacterVariable()
 {
 	// Private variables
 	dataType_ = VTypes::CharacterData;
-	arrayType_ = VTypes::NoArray;
 	charArrayData_ = NULL;
 	arraySize_ = -1;
 }
@@ -49,11 +48,10 @@ bool CharacterVariable::set(const char *s, int index)
 		msg.print("Variable '%s' is read-only.\n", name_.get());
 		return FALSE;
 	}
-	bool outofbounds = FALSE;
 	// Check array index given
 	if (index == -1)
 	{
-		if (arrayType_ != VTypes::NoArray)
+		if (arraySize_ != -1)
 		{
 			msg.print("No array index given to array '%s'.\n", name_.get());
 			return FALSE;
@@ -62,23 +60,17 @@ bool CharacterVariable::set(const char *s, int index)
 	}
 	else
 	{
-		if (arrayType_ == VTypes::NoArray)
+		if (arraySize_ == -1)
 		{
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		// Get array and set value...
-		if (arrayType_ == VTypes::NormalArray)
-		{
-			if (index > arraySize_) outofbounds = TRUE;
-			else arrayCharData_[index-1] = s;
-		}
-		else msg.print("This array element cannot be set.\n");
-		if (outofbounds)
+		if ((index > arraySize_) || (index < 1))
 		{
 			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
 			return FALSE;
 		}
+		else charArrayData_[index-1] = s;
 	}
 	return TRUE;
 }
@@ -95,61 +87,78 @@ bool CharacterVariable::set(double d, int index)
 	return set(ftoa(d), index);
 }
 
-// Set value of variable (pointer)
-bool CharacterVariable::set(void *ptr, VTypes::DataType type, int index)
-{
-	printf("A Character variable cannot be set from a pointer.\n");
-	return FALSE;
-}
-
 // Get value of variable as character string
 const char *CharacterVariable::asCharacter(int index)
 {
-	return data.get();
+	// Check array index given
+	if (index == -1)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return "NULL";
+		}
+		return charData_.get();
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return "NULL";
+		}
+		if ((index > arraySize_) || (index < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return "NULL";
+		}
+		return charArrayData_[index-1].get();
+	}
 }
 
 // Get value of variable as integer
 int CharacterVariable::asInteger(int index)
 {
-	return atoi(data.get());
+	return atoi(asCharacter(index));
 }
 
 // Get value of variable as double
 double CharacterVariable::asDouble(int index)
 {
-	return atof(data.get());
+	return atof(asCharacter(index));
 }
 
 // Get value of variable as float
 float CharacterVariable::asFloat(int index)
 {
-	return (float) atof(data.get());
+	return (float) atof(asCharacter(index));
 }
 
 // Get value of variable as a boolean
 bool CharacterVariable::asBool(int index)
 {
-	return data.asBool();
+	// Check array index given
+	if (index == -1)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		return charData_.asBool();
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		if ((index > arraySize_) || (index < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+		return charArrayData_[index-1].asBool();
+	}
 }
-
-// Get value of variable as pointer of specified type
-void *CharacterVariable::asPointer(VTypes::DataType type, int index)
-{
-	printf("A Character variable cannot be returned as a pointer.\n");
-	return NULL;
-}
-
-// Character increase
-bool CharacterVariable::increase(int i, int index)
-{
-	printf("A Character variable cannot be increased.");
-	return FALSE;
-}
-
-// Character decrease
-bool CharacterVariable::decrease(int i, int index)
-{
-	printf("A Character variable cannot be decreased.");
-	return FALSE;
-}
-

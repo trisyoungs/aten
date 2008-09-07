@@ -58,7 +58,7 @@ class VariableList
 	// List of expressions
 	List<Variable> expressions_;
 	// Create variable of specified type
-	Variable *createVariable(VTypes::DataType dt);
+	Variable *createVariable(VTypes::DataType dt, int arraysize = -1);
 
 	public:
 	// Set existing (or create new) variable (character string)
@@ -85,8 +85,8 @@ class VariableList
 	// Add an unnamed expression to the list
 	Variable *addExpression(const char *s);
 	// Add a named variable to the list
-	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt, VTypes::ArrayType at = VTypes::NoArray);
-	Variable *addVariable(const char *name, VTypes::DataType vt, VTypes::ArrayType at = VTypes::NoArray);
+	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt, int arraysize = -1);
+	Variable *addVariable(const char *name, VTypes::DataType vt, int arraysize = -1);
 	// Create, but don't set, a named variable in the list
 // 	Variable *createVariable(const char *prefix, const char *suffix, VTypes::DataType vt);
 	// Reset values of all variables

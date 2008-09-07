@@ -1,6 +1,6 @@
 /*
-	*** Variable Types
-	*** src/base/vtypes.h
+	*** Variable Storage Object Template
+	*** src/templates/vobject.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,17 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VTYPES_H
-#define ATEN_VTYPES_H
+#ifndef ATEN_VOBJECT_H
+#define ATEN_VOBJECT_H
 
-// Variable description
-class VTypes
+// Variable Storage Object Template
+template <class T> class VObject
 {
 	public:
-	// Data Types
-	enum DataType { CharacterData, IntegerData, RealData, AtomData, PatternData, ModelData, GridData, BondData, AngleData, TorsionData, AtomtypeData, ExpressionData, ReferenceData, NoData, nDataTypes };
-	static const char *dataType(DataType);
-	static VTypes::DataType determineType(const char *s);
+	// Object Data
+	T data;
 };
 
 #endif

@@ -72,10 +72,8 @@ class AccessPath
 	bool asBool();
 	// Get return value as pointer
 	void *asPointer(VTypes::DataType dt);
-	// Increase variable by integer amount
-	bool increase(int i);
-	// Decrease variable by integer amount
-	bool decrease(int i);
+	// Step variable target
+	bool step(int i);
 	// Set variable target from integer
 	bool set(int i);
 	// Set variable target from double

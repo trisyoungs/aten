@@ -23,7 +23,6 @@
 #define ATEN_INTEGERVARIABLE_H
 
 #include "variables/variable.h"
-#include "templates/vobject.h"
 
 // Integer Variable
 class IntegerVariable : public Variable
@@ -60,20 +59,17 @@ class IntegerVariable : public Variable
 	bool asBool(int index = -1);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, int index = -1);
-	// Integer increase
-	bool increase(int, int index = -1);
-	// Integer decrease
-	bool decrease(int, int index = -1);
+	// Step variable
+	bool step(int delta, int index = -1);
 
 	/*
 	// Variable Data
 	*/
 	private:
 	// Double data
-	double integerData_;
-	// Array data, and size of array
-	double integerArrayData_[];
-	int arraySize_;
+	int integerData_;
+	// Array data
+	int *integerArrayData_;
 };
 
 #endif
