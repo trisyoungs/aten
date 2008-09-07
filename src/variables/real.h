@@ -23,7 +23,6 @@
 #define ATEN_REALVARIABLE_H
 
 #include "variables/variable.h"
-#include "templates/vobject.h"
 
 // Real Variable
 class RealVariable : public Variable
@@ -60,10 +59,8 @@ class RealVariable : public Variable
 	bool asBool(int index = -1);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, int index = -1);
-	// Double increase
-	bool increase(int, int index = -1);
-	// Double decrease
-	bool decrease(int, int index = -1);
+	// Step variable
+	bool step(int delta, int index = -1);
 
 	/*
 	// Variable Data
@@ -71,9 +68,8 @@ class RealVariable : public Variable
 	private:
 	// Real data
 	double realData_;
-	// Array data, and size of array
-	double realArrayData_[];
-	int arraySize_;
+	// Array data
+	double *realArrayData_;
 };
 
 #endif

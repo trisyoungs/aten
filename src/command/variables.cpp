@@ -33,7 +33,7 @@
 // Decrease variable by 1
 int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 {
-	c->arg(0)->decrease(1);
+	c->arg(0)->step(-1);
 	// Set subvariables if necessary
 // 	c->parent()->setSubvariables( c->arg(0) ); TGAY
 	return CR_SUCCESS;
@@ -42,7 +42,7 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 // Increase variable
 int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 {
-	c->arg(0)->increase(1);
+	c->arg(0)->step(1);
 	// Set subvariables if necessary
 // 	c->parent()->setSubvariables( c->arg(0) ); TGAY
 	return CR_SUCCESS;

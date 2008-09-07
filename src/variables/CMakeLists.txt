@@ -7,6 +7,7 @@ expressionnode.h
 integer.h
 modelaccess.h
 pointer.h
+pointerlist.h
 real.h
 vaccess.h
 variable.h

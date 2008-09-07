@@ -33,20 +33,13 @@ Variable::Variable()
 {
 	// Private variables
 	name_.set("unnamed");
-	arrayType_ = VTypes::NoArray;
 	dataType_ = VTypes::NoData;
 	readOnly_ = FALSE;
+	arraySize_ = -1;
 
 	// Public variables
 	prev = NULL;
 	next = NULL;
-}
-
-// Destructor
-Variable::~Variable()
-{
-	// Free expression object if one was created
-// 	if ((dataType_ == Variable::ExpressionVariable) && (ptrValue_ != NULL)) delete (Expression*) ptrValue_;
 }
 
 // Set name of variable
@@ -73,24 +66,6 @@ VTypes::DataType Variable::type()
 	return dataType_;
 }
 
-// Sets the array type of the variable
-void Variable::setArrayType(VTypes::ArrayType at)
-{
-	arrayType_ = at;
-}
-
-// Returns array type of the variable
-VTypes::ArrayType Variable::arrayType()
-{
-	return arrayType_;
-}
-
-// Set readonly status of variable
-void Variable::setReadOnly(bool b)
-{
-	readOnly_ = b;
-}
-
 // Return readonly status
 bool Variable::readOnly()
 {
@@ -101,6 +76,100 @@ bool Variable::readOnly()
 void Variable::setParent(VariableList *vlist)
 {
 	parent_ = vlist;
+}
+
+// Set the readonly status of the variable to TRUE
+void Variable::setReadOnly()
+{
+	readOnly_ = TRUE;
+}
+
+/*
+// Set/get (virtuals)
+*/
+
+// Set size of array (only for non-list derivations)
+bool Variable::setArraySize(int size)
+{
+	printf("A variable of type '%s' cannot have its array size set.\n", VTypes::dataType(dataType_));
+	return FALSE;
+}
+
+// Set value of variable (char)
+bool Variable::set(const char *s, int index)
+{
+	printf("A variable of type '%s' cannot be set from a character.\n", VTypes::dataType(dataType_));
+	return FALSE;
+}
+
+// Set value of variable (int)
+bool Variable::set(int i, int index)
+{
+	printf("A variable of type '%s' cannot be set from an integer.\n", VTypes::dataType(dataType_));
+	return FALSE;
+}
+
+// Set value of variable (double)
+bool Variable::set(double d, int index)
+{
+	printf("A variable of type '%s' cannot be set from a double.\n", VTypes::dataType(dataType_));
+	return FALSE;
+}
+
+// Set value of variable (pointer)
+bool Variable::set(void *ptr, VTypes::DataType type, int index)
+{
+	printf("A variable of type '%s' cannot be set from a pointer.\n", VTypes::dataType(dataType_));
+	return FALSE;
+}
+
+// Get value of variable as character string
+const char *Variable::asCharacter(int index)
+{
+	printf("A variable of type '%s' cannot be returned as a character.\n", VTypes::dataType(dataType_));
+	return "NULL";
+}
+
+// Get value of variable as integer
+int Variable::asInteger(int index)
+{
+	printf("A variable of type '%s' cannot be returned as an integer.\n", VTypes::dataType(dataType_));
+	return 0;
+}
+
+// Get value of variable as double
+double Variable::asDouble(int index)
+{
+	printf("A variable of type '%s' cannot be returned as a double.\n", VTypes::dataType(dataType_));
+	return 0.0;
+}
+
+// Get value of variable as float
+float Variable::asFloat(int index)
+{
+	printf("A variable of type '%s' cannot be returned as a float.\n", VTypes::dataType(dataType_));
+	return 0.0f;
+}
+
+// Get value of variable as bool
+bool Variable::asBool(int index)
+{
+	printf("A variable of type '%s' cannot be returned as a bool.\n", VTypes::dataType(dataType_));
+	return FALSE;
+}
+
+// Get value of variable as pointer
+void *Variable::asPointer(VTypes::DataType type, int index)
+{
+	printf("A variable of type '%s' cannot be returned as a pointer.\n", VTypes::dataType(dataType_));
+	return NULL;
+}
+
+// Step variable
+bool Variable::step(int delta, int index)
+{
+	printf("A variable of type '%s' cannot be stepped.\n", VTypes::dataType(dataType_));
+	return FALSE;
 }
 
 // // Reset

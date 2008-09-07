@@ -225,21 +225,12 @@ void *AccessPath::asPointer(VTypes::DataType dt)
 }
 
 // Increase variable by integer amount
-bool AccessPath::increase(int i)
+bool AccessPath::step(int delta)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
 	if (v == NULL) return FALSE;
-	return v->increase(i);
-}
-
-// Decrease variable by integer amount
-bool AccessPath::decrease(int i)
-{
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return FALSE;
-	return v->decrease(i);
+	return v->step(delta);
 }
 
 // Set variable target from integer

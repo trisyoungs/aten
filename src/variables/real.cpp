@@ -22,6 +22,7 @@
 #include "variables/real.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
+#include "base/messenger.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -29,9 +30,8 @@
 RealVariable::RealVariable()
 {
 	dataType_ = VTypes::RealData;
-	arrayType_ = VTypes::NoArray;
-	doubleData_ = 0.0;
-	doubleArrayData_ = NULL;
+	realData_ = 0.0;
+	realArrayData_ = NULL;
 	arraySize_ = -1;
 }
 
@@ -60,11 +60,10 @@ bool RealVariable::set(double d, int index)
 		msg.print("Variable '%s' is read-only.\n", name_.get());
 		return FALSE;
 	}
-	bool outofbounds = FALSE;
 	// Check array index given
 	if (index == -1)
 	{
-		if (arrayType_ != VTypes::NoArray)
+		if (arraySize_ != -1)
 		{
 			msg.print("No array index given to array '%s'.\n", name_.get());
 			return FALSE;
@@ -73,82 +72,107 @@ bool RealVariable::set(double d, int index)
 	}
 	else
 	{
-		if (arrayType_ == VTypes::NoArray)
+		if (arraySize_ == -1)
 		{
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
 		// Get array and set value...
-		if (arrayType_ == VTypes::NormalArray)
-		{
-			if (index > arraySize_) outofbounds = TRUE;
-			else arrayRealData_[index-1] = d;
-		}
-		else msg.print("This array element cannot be set.\n");
-		if (outofbounds)
+		if ((index > arraySize_) || (index < 1))
 		{
 			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
 			return FALSE;
 		}
+		else realArrayData_[index-1] = d;
 	}
 	return TRUE;
-}
-
-// Set value of variable (pointer)
-bool RealVariable::set(void *ptr, VTypes::DataType type, int index)
-{
-	printf("A Double variable cannot be set from a pointer.\n");
-	return FALSE;
 }
 
 // Get value of variable as character string
 const char *RealVariable::asCharacter(int index)
 {
-	return ftoa(data);
+	return ftoa(asDouble(index));
 }
 
 // Get value of variable as integer
 int RealVariable::asInteger(int index)
 {
-	return (int) data;
+	return (int) asDouble(index);
 }
 
 // Get value of variable as double
 double RealVariable::asDouble(int index)
 {
-	return data;
+	// Check read/write status
+	if (readOnly_)
+	{
+		msg.print("Variable '%s' is read-only.\n", name_.get());
+		return 0.0;
+	}
+	// Check array index given
+	if (index == -1)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		return realData_;
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		if ((index > arraySize_) || (index < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+		return realArrayData_[index-1];
+	}
 }
 
 // Get value of variable as float
 float RealVariable::asFloat(int index)
 {
-	return (float) data;
+	return (float) asDouble(index);
 }
 
 // Get value of variable as a boolean
 bool RealVariable::asBool(int index)
 {
-	return (data <= 0 ? FALSE : TRUE);
+	return (asDouble(index) <= 0 ? FALSE : TRUE);
 }
 
-// Get value of variable as pointer of specified type
-void *RealVariable::asPointer(VTypes::DataType type, int index)
+// Step variable
+bool RealVariable::step(int delta, int index)
 {
-	printf("A Double variable cannot be returned as a pointer.\n");
-	return NULL;
-}
-
-// Integer increase
-bool RealVariable::increase(int i, int index)
-{
-	data += i;
+	// Check array index given
+	if (index == -1)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		realData_ += delta;
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		if ((index > arraySize_) || (index < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+		realArrayData_[index-1] += delta;
+	}
 	return TRUE;
 }
-
-// Integer decrease
-bool RealVariable::decrease(int i, int index)
-{
-	data -= i;
-	return TRUE;
-}
-

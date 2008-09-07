@@ -68,10 +68,8 @@ class CharacterVariable : public Variable
 	bool asBool(int index = -1);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, int index = -1);
-	// Integer increase
-	bool increase(int, int index = -1);
-	// Integer decrease
-	bool decrease(int, int index = -1);
+	// Step variable
+	bool step(int delta, int index = -1);
 
 	/*
 	// Variable Data
@@ -79,9 +77,8 @@ class CharacterVariable : public Variable
 	private:
 	// Character data
 	Dnchar charData_;
-	// Array data, and size of array
-	Dnchar *arrayCharData_;
-	int arraySize_;
+	// Array data
+	Dnchar *charArrayData_;
 };
 
 #endif

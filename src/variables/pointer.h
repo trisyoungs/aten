@@ -23,7 +23,6 @@
 #define ATEN_POINTERVARIABLE_H
 
 #include "variables/variable.h"
-#include "templates/vobject.h"
 
 // Integer Variable
 class PointerVariable : public Variable
@@ -60,10 +59,8 @@ class PointerVariable : public Variable
 	bool asBool(int index = -1);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, int index = -1);
-	// Integer increase
-	bool increase(int, int index = -1);
-	// Integer decrease
-	bool decrease(int, int index = -1);
+	// Step variable
+	bool step(int delta, int index = -1);
 
 	/*
 	// Variable Data
@@ -71,9 +68,8 @@ class PointerVariable : public Variable
 	private:
 	// Pointer data
 	void *ptrData_;
-	// Array data, and size of array
-	void *ptrArrayData_[];
-	int arraySize_;
+	// Array data
+	void **ptrArrayData_;
 };
 
 #endif

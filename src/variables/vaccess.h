@@ -33,7 +33,7 @@ class VAccess
 {
 	protected:
 	// Add new accessor
-	void add(const char *name, VTypes::ArrayType lt, VTypes::DataType dt, bool readonly);
+	//void add(const char *name, VTypes::ArrayType lt, VTypes::DataType dt, bool readonly);
 
 	public:
 	// Add these accessors to 

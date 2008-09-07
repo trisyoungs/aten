@@ -22,6 +22,7 @@
 #include "variables/integer.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
+#include "base/messenger.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -30,7 +31,6 @@ IntegerVariable::IntegerVariable()
 {
 	// Private variables
 	dataType_ = VTypes::IntegerData;
-	arrayType_ = VTypes::NoArray;
 	integerData_ = 0;
 	integerArrayData_ = NULL;
 	arraySize_ = -1;
@@ -59,7 +59,7 @@ bool IntegerVariable::set(int i, int index)
 	// Check array index given
 	if (index == -1)
 	{
-		if (arrayType_ != VTypes::NoArray)
+		if (arraySize_ != -1)
 		{
 			msg.print("No array index given to array '%s'.\n", name_.get());
 			return FALSE;
@@ -68,23 +68,17 @@ bool IntegerVariable::set(int i, int index)
 	}
 	else
 	{
-		if (arrayType_ == VTypes::NoArray)
+		if (arraySize_ == -1)
 		{
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		// Get array and set value...
-		if (arrayType_ == VTypes::NormalArray)
-		{
-			if (index > arraySize_) outofbounds = TRUE;
-			else arrayIntegerData_[index-1] = i;
-		}
-		else msg.print("This array element cannot be set.\n");
-		if (outofbounds)
+		if ((index > arraySize_) || (index < 1))
 		{
 			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
 			return FALSE;
 		}
+		else integerArrayData_[index-1] = i;
 	}
 	return TRUE;
 }
@@ -105,31 +99,54 @@ bool IntegerVariable::set(void *ptr, VTypes::DataType type, int index)
 // Get value of variable as character string
 const char *IntegerVariable::asCharacter(int index)
 {
-	return itoa(data_);
+	return itoa(asInteger(index));
 }
 
 // Get value of variable as integer
 int IntegerVariable::asInteger(int index)
 {
-	return data_;
+	// Check array index given
+	if (index == -1)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		return integerData_;
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		if ((index > arraySize_) || (index < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+		return integerArrayData_[index-1];
+	}
 }
 
 // Get value of variable as double
 double IntegerVariable::asDouble(int index)
 {
-	return (double) data_;
+	return (double) asInteger(index);
 }
 
 // Get value of variable as float
 float IntegerVariable::asFloat(int index)
 {
-	return (float) data_;
+	return (float) asInteger(index);
 }
 
 // Get value of variable as a boolean
 bool IntegerVariable::asBool(int index)
 {
-	return (data_ < 1 ? FALSE : TRUE);
+	return (asInteger(index) < 1 ? FALSE : TRUE);
 }
 
 // Get value of variable as pointer of specified type
@@ -139,16 +156,32 @@ void *IntegerVariable::asPointer(VTypes::DataType type, int index)
 	return NULL;
 }
 
-// Integer increase
-bool IntegerVariable::increase(int i, int index)
+// Step variable
+bool IntegerVariable::step(int delta, int index)
 {
-	data_ += i;
-	return TRUE;
-}
-
-// Integer decrease
-bool IntegerVariable::decrease(int i, int index)
-{
-	data_ -= i;
+	// Check array index given
+	if (index == -1)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		integerData_ += delta;
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		if ((index > arraySize_) || (index < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			return FALSE;
+		}
+		integerArrayData_[index-1] += delta;
+	}
 	return TRUE;
 }

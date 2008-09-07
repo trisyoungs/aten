@@ -38,8 +38,8 @@ VariableList::VariableList()
 	v->set(&aten.current.rs, VTypes::ModelData);
 	v = addVariable("model", VTypes::ModelData);
 	v->set(&aten.current.m, VTypes::ModelData);
-	v = addVariable("models", VTypes::ModelData, VTypes::ListArray);
-	v->set(aten.modelList(), VTypes::ModelData);
+	//v = addVariable("models", VTypes::ModelData, VTypes::ListArray);
+	//v->set(aten.modelList(), VTypes::ModelData);
 }
 
 /*
@@ -47,7 +47,7 @@ VariableList::VariableList()
 */
 
 // Create variable of specified type (private function)
-Variable *VariableList::createVariable(VTypes::DataType dt)
+Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 {
 	Variable *result = NULL;
 	switch (dt)
@@ -78,16 +78,26 @@ Variable *VariableList::createVariable(VTypes::DataType dt)
 			printf("Don't yet know how to create a variable of type %i\n", dt);
 			break;
 	}
-	if (result != NULL) result->setParent(this);
+	if (result != NULL)
+	{
+		result->setParent(this);
+		// Create array if a valid size was given
+		if (arraysize >= -1) if (arraysize > 0) result->setArraySize(arraysize);
+		else
+		{
+			msg.print("Invalid array size (%i) given for variable.\n", arraysize);
+			return NULL;
+		}
+	}
 	return result;
 }
 
 // Add named variable
-Variable *VariableList::addVariable(const char *name, VTypes::DataType dt, VTypes::ArrayType at)
+Variable *VariableList::addVariable(const char *name, VTypes::DataType dt, int arraysize)
 {
-	return addVariable(name,"",dt,at);
+	return addVariable(name,"",dt,arraysize);
 }
-Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTypes::DataType dt, VTypes::ArrayType at)
+Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTypes::DataType dt, int arraysize)
 {
 	static char name[128];
 	strcpy(name,prefix);
@@ -96,9 +106,8 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTyp
 		if (prefix[0] != '\0') strcat(name,".");
 		strcat(name,suffix);
 	}
-	Variable *newvar = createVariable(dt);
+	Variable *newvar = createVariable(dt, arraysize);
 	vars_.own(newvar);
-	newvar->setArrayType(at);
 	newvar->setName(name);
 	return newvar;
 }
@@ -112,6 +121,7 @@ Variable *VariableList::addConstant(const char *s, bool forcecharacter)
 	constants_.own(newvar);
 	sprintf(newname,"constant%i", constants_.nItems());
 	newvar->setName(newname);
+	newvar->setReadOnly();
 	newvar->set(s);
 	return newvar;
 }

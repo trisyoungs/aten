@@ -36,7 +36,6 @@ ExpressionVariable::ExpressionVariable()
 {
 	// Private variables
 	dataType_ = VTypes::ExpressionData;
-	arrayType_ = VTypes::NoArray;
 	evaluatesToReal_ = TRUE;
 }
 
