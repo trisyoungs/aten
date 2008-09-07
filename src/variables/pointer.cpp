@@ -29,6 +29,7 @@
 // Constructor
 PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 {
+	// Private variables
 	dataType_ = ptrtype;
 	ptrData_ = NULL;
 	ptrArrayData_ = NULL;
@@ -38,6 +39,14 @@ PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 /*
 // Set / Get
 */
+
+// Set size of array
+bool PointerVariable::setArraySize(int size)
+{
+	if (arraySize_ != -1) msg.print("Warning - Pointer variable '%s' already has an array.\n", name_.get());
+	ptrArrayData_ = new void*[size];
+	arraySize_ = size;
+}
 
 // Set value of variable (pointer)
 bool PointerVariable::set(void *ptr, VTypes::DataType type, int index)

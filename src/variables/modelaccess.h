@@ -36,6 +36,6 @@ class ModelAccessors : public VAccess
 // 	void retrieveData(VObject source, int acessorid, VResult &result);
 };
 
-extern ModelAccessors modelAccessor;
+extern ModelAccessors modelAccessors;
 
 #endif

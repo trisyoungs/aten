@@ -46,7 +46,7 @@ class CharacterVariable : public Variable
 	// Returns content type of the variable
 	VTypes::DataType type();
 
-	// Set size of array (only for VTypes::ArrayType == NormalArray)
+	// Set size of array
 	bool setArraySize(int size);
 	// Set value of variable (char)
 	bool set(const char *s, int index = -1);
@@ -54,22 +54,14 @@ class CharacterVariable : public Variable
 	bool set(int i, int index = -1);
 	// Set value of variable (double)
 	bool set(double d, int index = -1);
-	// Set value of variable (pointer)
-	bool set(void *ptr, VTypes::DataType type, int index = -1);
 	// Get value of variable as character string
 	const char *asCharacter(int index = -1);
 	// Get value of variable as integer
 	int asInteger(int index = -1);
 	// Get value of variable as double
 	double asDouble(int index = -1);
-	// Get value of variable as float
-	float asFloat(int index = -1);
 	// Get value of variable as a boolean
 	bool asBool(int index = -1);
-	// Get value of variable as pointer of specified type
-	void *asPointer(VTypes::DataType type, int index = -1);
-	// Step variable
-	bool step(int delta, int index = -1);
 
 	/*
 	// Variable Data

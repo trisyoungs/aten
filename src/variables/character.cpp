@@ -39,6 +39,14 @@ CharacterVariable::CharacterVariable()
 // Set / Get
 */
 
+// Set size of array
+bool CharacterVariable::setArraySize(int size)
+{
+	if (arraySize_ != -1) msg.print("Warning - Character variable '%s' already has an array.\n", name_.get());
+	charArrayData_ = new Dnchar[size];
+	arraySize_ = size;
+}
+
 // Set value of variable (char)
 bool CharacterVariable::set(const char *s, int index)
 {
@@ -126,12 +134,6 @@ int CharacterVariable::asInteger(int index)
 double CharacterVariable::asDouble(int index)
 {
 	return atof(asCharacter(index));
-}
-
-// Get value of variable as float
-float CharacterVariable::asFloat(int index)
-{
-	return (float) atof(asCharacter(index));
 }
 
 // Get value of variable as a boolean

@@ -39,6 +39,14 @@ RealVariable::RealVariable()
 // Set / Get
 */
 
+// Set size of array
+bool RealVariable::setArraySize(int size)
+{
+	if (arraySize_ != -1) msg.print("Warning - Real variable '%s' already has an array.\n", name_.get());
+	realArrayData_ = new double[size];
+	arraySize_ = size;
+}
+
 // Set value of variable (char)
 bool RealVariable::set(const char *s, int index)
 {
@@ -133,12 +141,6 @@ double RealVariable::asDouble(int index)
 		}
 		return realArrayData_[index-1];
 	}
-}
-
-// Get value of variable as float
-float RealVariable::asFloat(int index)
-{
-	return (float) asDouble(index);
 }
 
 // Get value of variable as a boolean

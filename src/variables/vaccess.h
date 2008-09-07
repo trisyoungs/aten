@@ -24,19 +24,25 @@
 
 #include "templates/list.h"
 #include "variables/variable.h"
-
-// Forward declarations
-class VariableList;
+#include "variables/variablelist.h"
 
 // Variable access class
 class VAccess
 {
 	protected:
-	// Add new accessor
-	//void add(const char *name, VTypes::ArrayType lt, VTypes::DataType dt, bool readonly);
+	// VariableList in which accessors are stored
+	VariableList accessors_;
+	// Add new variable accessor
+	void addAccessor(const char *name, VTypes::DataType dt, bool readonly);
+	// Add new list accessor
+	void addListAccessor(const char *name, VTypes::DataType dt);
+	// Add new list accessor
+	void addRefListAccessor(const char *name, VTypes::DataType dt);
+
 
 	public:
-	// Add these accessors to 
+	// Return address of VariableList
+	VariableList *accessors();
 	// Find and return accessor by name
 	Variable *findAccessor(const char *name);
 	// Dig down through accessor list to find the specified value
