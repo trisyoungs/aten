@@ -41,16 +41,24 @@ AccessPath::AccessPath()
 Variable *AccessPath::walk()
 {
 	msg.enter("AccessPath::walk");
+	Variable *result = NULL;
 	AccessStep *step = NULL;
 	// DataType of the most recently stored pointer, and the pointer itself
 	VTypes::DataType ptrType = VTypes::NoData;
 	void *ptr = NULL;
 	// Get first node in path, its type, and its value
 	step = path_.first();
-	// Go through nodes in the list one by one, calling the relevant static member functions in access-enabled objects
+	// Go through remaining nodes in the list one by one, calling the relevant static member functions in access-enabled objects
 	for (step = path_.first(); step != NULL; step = step->next)
 	{
-		// If t
+		// If a previous ptrType was set, use this to determine the accessor set to search.
+		// Otherwise, store the return result / 
+// 		if (ptrType == VTypes::NoData
+		// Check return type of step
+		
+
+		// Prepare for next step
+		ptrType = step->returnType();
 	}
 	msg.exit("AccessPath::walk");
 }
@@ -75,7 +83,6 @@ bool AccessPath::setPath(const char *path, VariableList *sourcevars, Parser::Arg
 		case (Parser::VariableForm):
 		case (Parser::ConstantForm):
 		case (Parser::ExpressionForm):
-			// Add constant value to parents variablelist
 			step = path_.add();
 			success = step->setTarget(path, sourcevars, af);
 			if (success) returnType_ = step->returnType();
@@ -101,7 +108,7 @@ bool AccessPath::setPath(const char *path, VariableList *sourcevars, Parser::Arg
 				}
 				// Add the new path step
 				step = path_.add();
-				success = step->setTarget(bit.get(), pathvars, af);
+				success = step->setTarget(bit.get(), pathvars, Parser::VariableForm);
 			}
 			break;
 	}

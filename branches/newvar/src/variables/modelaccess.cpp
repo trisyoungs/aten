@@ -28,6 +28,6 @@ ModelAccessors modelAccessors;
 ModelAccessors::ModelAccessors()
 {
 // 	addAccessor("atoms",		VObject::ListArray,	VObject::AtomData,	FALSE);
- 	addAccessor("name",		VTypes::CharacterData,	TRUE);
+ 	acessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	TRUE);
 // 	addAccessor("natoms",		VObject::NoArray,	VObject::IntegerData,	FALSE);
 };

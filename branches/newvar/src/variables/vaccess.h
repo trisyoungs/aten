@@ -33,11 +33,11 @@ class VAccess
 	// VariableList in which accessors are stored
 	VariableList accessors_;
 	// Add new variable accessor
-	void addAccessor(const char *name, VTypes::DataType dt, bool readonly);
+	Variable *addAccessor(const char *name, VTypes::DataType dt, bool readonly);
 	// Add new list accessor
-	void addListAccessor(const char *name, VTypes::DataType dt);
+	Variable *addListAccessor(const char *name, VTypes::DataType dt);
 	// Add new list accessor
-	void addRefListAccessor(const char *name, VTypes::DataType dt);
+	Variable *addRefListAccessor(const char *name, VTypes::DataType dt);
 
 
 	public:

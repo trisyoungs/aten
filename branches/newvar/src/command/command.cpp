@@ -169,6 +169,7 @@ AccessPath *Command::arg(int argno)
 const char *Command::argc(int argno)
 {
 	AccessPath *ap = args_[argno];
+	printf("argc pointer is %li\n",ap);
 	return (ap == NULL ?  "NULL" : ap->asCharacter());
 }
 
@@ -492,6 +493,7 @@ bool Command::addArgument(const char *varname, VariableList *sourcevars, Parser:
 	variableList_ = sourcevars;
 	// If argument form wasn't provided, attempt to work it out.
 	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(varname) : form);
+	printf("Adding argument '%s', form = %i...\n", varname, form);
 	// Now we have the argument form, attempt to create an access path from the string
 	AccessPath *ap = args_.add();
 	// We must remove the leading '$' from variable/path-type arguments
@@ -504,8 +506,10 @@ bool Command::addArgument(const char *varname, VariableList *sourcevars, Parser:
 void Command::addConstant(const char *s, VariableList *sourcevars, bool forcechar)
 {
 	msg.enter("Command::addConstant");
+	printf("Adding constant '%s'...\n", s);
 	variableList_ = sourcevars;
 	Variable *v = variableList_->addConstant(s, forcechar);
+	printf("...constant value set is '%s'\n", v->asCharacter());
 	AccessPath *ap = args_.add();
 	ap->setPath(v);
 	msg.exit("Command::addConstant");
@@ -515,6 +519,7 @@ void Command::addConstant(const char *s, VariableList *sourcevars, bool forcecha
 void Command::addConstant(int i, VariableList *sourcevars)
 {
 	msg.enter("Command::addConstant[int]");
+	printf("Adding constant integer '%d'...\n", i);
 	variableList_ = sourcevars;
 	Variable *v = variableList_->addConstant(i);
 	AccessPath *ap = args_.add();
@@ -545,7 +550,7 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 		// Move on to next argument.
 		argcount ++;
 
-		//printf("Adding variable %c which should have value %s\n", v[n], parser.argc(argcount));
+		printf("Adding variable %c which should have value %s\n", specifiers[n], parser.argc(argcount));
 		// Is this a required argument?
 		if (argcount > (parser.nArgs() - 1))
 		{

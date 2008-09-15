@@ -163,7 +163,7 @@ class Command
 	*/
 	private:
 	// Argument list
-	List<AccessPath> args_;
+	Reflist<Variable,int> args_;
 	// Variable list from which the command arguments were set
 	VariableList *variableList_;
 	// Add variable argument to reference list, given the name
@@ -179,7 +179,7 @@ class Command
 	// Return number of arguments given to command
 	int nArgs();
 	// Return variable argument
-	AccessPath *arg(int argno);
+	Variable *arg(int argno);
 	// Return argument as character
 	const char *argc(int argno);
 	// Return argument as integer
