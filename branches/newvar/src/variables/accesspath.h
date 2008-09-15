@@ -46,20 +46,12 @@ class AccessPath : public Variable
 	List<AccessStep> path_;
 	// Eventual return result of path
 	VTypes::DataType returnType_;
-	// Original path text
-	Dnchar originalPath_;
 	// Walk path and get final target variable
 	Variable *walk();
 
 	public:
 	// Set path from character constant
-	bool setPath(const char *path, VariableList *sourcevars, Parser::ArgumentForm pathtype = Parser::UnknownForm);
-	// Set single-node path from target variable
-	void setPath(Variable *v);
-	// Get return type of path
-	VTypes::DataType returnType();
-	// Return original path as text
-	const char *originalPath();
+	bool setPath(const char *path);
 	// Set value of variable (char)
 	bool set(const char*, int index = -1);
 	// Set value of variable (int)

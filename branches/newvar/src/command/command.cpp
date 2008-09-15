@@ -159,32 +159,31 @@ Command *Command::pointer()
 }
 
 // Return variable argument
-AccessPath *Command::arg(int argno)
+Variable *Command::arg(int argno)
 {
-	AccessPath *ap = args_[argno];
-	return ap;
+	Refitem<Variable,int> *ri = args_[argno];
+	return ri->item;
 }
 
 // Return argument as character
 const char *Command::argc(int argno)
 {
-	AccessPath *ap = args_[argno];
-	printf("argc pointer is %li\n",ap);
-	return (ap == NULL ?  "NULL" : ap->asCharacter());
+	Refitem<Variable,int> *ri = args_[argno];
+	return (ri == NULL ?  "NULL" : ri->item->asCharacter());
 }
 
 // Return argument as integer
 int Command::argi(int argno)
 {
-	AccessPath *ap = args_[argno];
-	return (ap == NULL ?  0 : ap->asInteger());
+	Refitem<Variable,int> *ri = args_[argno];
+	return (ri == NULL ?  0 : ri->item->asInteger());
 }
 
 // Return argument as double
 double Command::argd(int argno)
 {
-	AccessPath *ap = args_[argno];
-	return (ap == NULL ? 0.0 : ap->asDouble());
+	Refitem<Variable,int> *ri = args_[argno];
+	return (ri == NULL ? 0.0 : ri->item->asDouble());
 }
 
 // Return argument as float
@@ -196,22 +195,22 @@ float Command::argf(int argno)
 // Return argument as bool
 bool Command::argb(int argno)
 {
-	AccessPath *ap = args_[argno];
-	return (ap == NULL ? -1 : ap->asBool());
+	Refitem<Variable,int> *ri = args_[argno];
+	return (ri == NULL ? -1 : ri->item->asBool());
 }
 
 // Return argument as pointer
 void *Command::argp(int argno, VTypes::DataType dt)
 {
-	AccessPath *ap = args_[argno];
-	return (ap == NULL ? NULL : ap->asPointer(dt));
+	Refitem<Variable,int> *ri = args_[argno];
+	return (ri == NULL ? NULL : ri->item->asPointer(dt));
 }
 
 // // Return argument as pattern pointer
 // Pattern *Command::argp(int argno)
 // {
-// 	AccessPath *ap = args_[argno];
-// 	if (ap == NULL) return NULL;
+// 	Refitem<Variable,int> *ri = args_[argno];
+// 	if (ri == NULL) return NULL;
 // 	return (Pattern*) rv->item->asPointer(VTypes::PatternData);
 // }
 
@@ -258,8 +257,8 @@ bool Command::hasArg(int argno)
 // Return variable type of argument
 VTypes::DataType Command::argt(int argno)
 {
-	AccessPath *ap = args_[argno];
-	return (ap == NULL ? VTypes::NoData : ap->returnType());
+	Refitem<Variable,int> *ri = args_[argno];
+	return (ri == NULL ? VTypes::NoData : ri->item->type());
 }
 
 // Set command and function
@@ -274,12 +273,12 @@ void Command::printArgs()
 {
 	msg.enter("Command::printArgs");
 	int i = 0;
-	for (AccessPath *ap = args_.first(); ap != NULL; ap = ap->next)
+	for (Refitem<Variable,int> *ri = args_.first(); ri != NULL; ri = ri->next)
 	{
-		printf("%2i %20li", i, ap);
+		printf("%2i %20li", i, ri);
 		//printf("%12s [%10s]", v->name(), VTypes::dataType(v->type()));
-		if (ap->returnType() < VTypes::AtomData) printf("%20s\n", ap->asCharacter());
- 		else printf("%li\n", ap->asPointer(ap->returnType()));
+		if (ri->item->type() < VTypes::AtomData) printf("%20s\n", ri->item->asCharacter());
+ 		else printf("%li\n", ri->item->asPointer(ri->item->type()));
 		i++;
 	}
 	msg.exit("Command::printArgs");
@@ -291,7 +290,7 @@ Vec3<double> Command::arg3d(int i)
 	msg.enter("Command::arg3d");
         static Vec3<double> result;
         if (i > (args_.nItems()-3)) printf("Command::arg3d - Starting point too close to end of argument list.\n");
-        result.set(args_[i]->asDouble(), args_[i+1]->asDouble(), args_[i+2]->asDouble());
+        result.set(args_[i]->item->asDouble(), args_[i+1]->item->asDouble(), args_[i+2]->item->asDouble());
 	msg.exit("Command::arg3d");
         return result;
 }
@@ -302,7 +301,7 @@ Vec3<float> Command::arg3f(int i)
 	msg.enter("Command::arg3f");
         static Vec3<float> result;
         if (i > (args_.nItems()-3)) printf("Command::arg3f - Starting point too close to end of argument list.\n");
-        result.set(args_[i]->asFloat(), args_[i+1]->asFloat(), args_[i+2]->asFloat());
+        result.set(args_[i]->item->asFloat(), args_[i+1]->item->asFloat(), args_[i+2]->item->asFloat());
 	msg.exit("Command::arg3f");
         return result;
 }
@@ -313,7 +312,7 @@ Vec3<int> Command::arg3i(int i)
 	msg.enter("Command::arg3i");
 	static Vec3<int> result;
 	if (i > (args_.nItems()-3)) printf("Command::arg3i - Starting point too close to end of argument list.\n");
-        result.set(args_[i]->asInteger(), args_[i+1]->asInteger(), args_[i+2]->asInteger());
+        result.set(args_[i]->item->asInteger(), args_[i+1]->item->asInteger(), args_[i+2]->item->asInteger());
 	msg.exit("Command::arg3i");
 	return result;
 }
@@ -379,22 +378,22 @@ bool Command::ifEvaluate()
 {
 	msg.enter("Command::ifEvaluate");
 	bool result;
-	static AccessPath *ap1, *ap2;
+	static Variable *v1, *v2;
 	static char string1[512], string2[512];
 	static double d1, d2;
 	VTypes::DataType vt1, vt2;
 	static int i1, i2;
-	ap1 = args_[0];
-	ap2 = args_[2];
+	v1 = args_[0]->item;
+	v2 = args_[2]->item;
 	// Determine how to do the comparison
-	vt1 = ap1->returnType();
-	vt2 = ap2->returnType();
+	vt1 = v1->type();
+	vt2 = v2->type();
 	if (vt2 > vt1) vt1 = vt2;
 	if (vt1 == VTypes::CharacterData)
 	{
-		strcpy(string1, ap1->asCharacter());
-		strcpy(string2, ap2->asCharacter());
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", ap1->originalPath(), string1, IfTests::ifTest(ifTest_), ap2->originalPath(), string2);
+		strcpy(string1, v1->asCharacter());
+		strcpy(string2, v2->asCharacter());
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%s] (%s) var2(%s)=[%s]\n", v1->name(), string1, IfTests::ifTest(ifTest_), v2->name(), string2);
 
 		switch (ifTest_)
 		{
@@ -420,9 +419,9 @@ bool Command::ifEvaluate()
 	}
 	else if (vt1 == VTypes::IntegerData)
 	{
-		i1 = ap1->asInteger();
-		i2 = ap2->asInteger();
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%i] (%s) var2(%s)=[%i] : %s\n", ap1->originalPath(), i1, IfTests::ifTest(ifTest_), ap2->originalPath(), i2, result ? "True" : "False");
+		i1 = v1->asInteger();
+		i2 = v2->asInteger();
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%i] (%s) var2(%s)=[%i] : %s\n", v1->name(), i1, IfTests::ifTest(ifTest_), v2->name(), i2, result ? "True" : "False");
 		switch (ifTest_)
 		{
 			case (IfTests::EqualTo):
@@ -447,9 +446,9 @@ bool Command::ifEvaluate()
 	}
 	else
 	{
-		d1 = ap1->asDouble();
-		d2 = ap2->asDouble();
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", ap1->originalPath(), d1, IfTests::ifTest(ifTest_), ap2->originalPath(), d2, result ? "True" : "False");
+		d1 = v1->asDouble();
+		d2 = v2->asDouble();
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
 		// Do comparison
 		switch (ifTest_)
 		{
@@ -474,7 +473,7 @@ bool Command::ifEvaluate()
 				result = (d1 != d2 ? TRUE : FALSE);
 				break;
 		}
-		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", ap1->originalPath(), d1, IfTests::ifTest(ifTest_), ap2->originalPath(), d2, result ? "True" : "False");
+		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
 	}
 	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
 	msg.exit("Command::ifEvaluate");
@@ -485,45 +484,54 @@ bool Command::ifEvaluate()
 // Command Variables
 */
 
-// Add variable to reference list, given the name (minus the 'dollar')
-bool Command::addArgument(const char *varname, VariableList *sourcevars, Parser::ArgumentForm form)
+// Add variable/constant/expression/path to reference list, given the name
+bool Command::addArgument(const char *text, Parser::ArgumentForm form)
 {
 	msg.enter("Command::addArgument");
-	bool result;
-	variableList_ = sourcevars;
+	Variable *v;
+	bool result = TRUE;
 	// If argument form wasn't provided, attempt to work it out.
-	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(varname) : form);
-	printf("Adding argument '%s', form = %i...\n", varname, form);
-	// Now we have the argument form, attempt to create an access path from the string
-	AccessPath *ap = args_.add();
-	// We must remove the leading '$' from variable/path-type arguments
-	result = ap->setPath(af <= Parser::VariablePathForm ? varname : &varname[1], sourcevars, form);
+	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(text) : form);
+	printf("Adding argument '%s', form = %i...\n", text, form);
+	// Now we have the argument form, get/create a suitable variable
+	switch (form)
+	{
+		case (Parser::ConstantForm):
+			addConstant(text, variableList_);
+			break;
+		case (Parser::ExpressionForm):
+			// Attempt to construct expression
+			v = variableList_->addExpression(text);
+			if (v == NULL) result = FALSE;
+			break;
+		case (Parser::VariableForm):
+		case (Parser::VariablePathForm):
+			v = variableList_->addPath(text);
+			if (v == NULL) result = FALSE;
+			break;
+	}
 	msg.exit("Command::addArgument");
 	return result;
 }
 
 // Add constant to reference list
-void Command::addConstant(const char *s, VariableList *sourcevars, bool forcechar)
+void Command::addConstant(const char *s, bool forcechar)
 {
 	msg.enter("Command::addConstant");
 	printf("Adding constant '%s'...\n", s);
-	variableList_ = sourcevars;
 	Variable *v = variableList_->addConstant(s, forcechar);
 	printf("...constant value set is '%s'\n", v->asCharacter());
-	AccessPath *ap = args_.add();
-	ap->setPath(v);
+	args_.add(v);
 	msg.exit("Command::addConstant");
 }
 
 // Add constant to reference list
-void Command::addConstant(int i, VariableList *sourcevars)
+void Command::addConstant(int i)
 {
 	msg.enter("Command::addConstant[int]");
 	printf("Adding constant integer '%d'...\n", i);
-	variableList_ = sourcevars;
 	Variable *v = variableList_->addConstant(i);
-	AccessPath *ap = args_.add();
-	ap->setPath(v);
+	args_.add(v);
 	msg.exit("Command::addConstant[int]");
 }
 
@@ -596,12 +604,12 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 			// Discard
 			case ('x'):
 			case ('X'):
-				args_.add();
+				args_.add(NULL);
 				break;
 			// String as-is
 			case ('s'):
 			case ('S'):
-				addConstant(arg, sourcevars, TRUE);
+				addConstant(arg, TRUE);
 				break;
 			// Operators
 			case ('O'):
@@ -641,13 +649,12 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 						break;
 				}
 				// Add operator as an integer variable
-				addConstant(ao, sourcevars);
-// 				args_.add(parent_->variables.addConstant(ao));
+				addConstant(ao);
 				break;
 			// Variable, expression, or constant
 			case ('e'):
 			case ('E'):
-				if (!addArgument(arg, sourcevars))
+				if (!addArgument(arg))
 				{
 					msg.exit("Command::setArguments");
 					return FALSE;
@@ -661,7 +668,7 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				// Check for some kind of variable/path
 				if (arg[0] == '$')
 				{
-					if (!addArgument(arg, sourcevars))
+					if (!addArgument(arg))
 					{
 						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
 						msg.exit("Command::setArguments");
@@ -670,8 +677,8 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				}
 				else
 				{
-					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(arg, sourcevars, TRUE); 
-					else addConstant(arg, sourcevars); 
+					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(arg, TRUE); 
+					else addConstant(arg); 
 				}
 				break;
 			// Variable
@@ -687,7 +694,7 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				}
 				else if (af <= Parser::VariablePathForm)
 				{
-					if (!addArgument(arg, sourcevars, af))
+					if (!addArgument(arg, af))
 					{
 						//msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
 						msg.exit("Command::setArguments");
@@ -734,12 +741,13 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				af = parser.argumentForm(argcount);
 				if (af <= Parser::VariablePathForm)
 				{
-					if (!addArgument(arg, sourcevars, af))
+					if (!addArgument(arg, af))
 					{
 						msg.exit("Command::setArguments");
 						return FALSE;
 					}
 					// Must also check return value of variable
+					printf("Check return value!\n");
 				}
 				else
 				{
@@ -752,13 +760,13 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				af = parser.argumentForm(argcount);
 				if (af <= Parser::VariablePathForm)
 				{
-					if (!addArgument(arg, sourcevars, af))
+					if (!addArgument(arg, af))
 					{
 						msg.exit("Command::setArguments");
 						return FALSE;
 					}
 					// Must also check return value of variable
-					if (args_.last()->returnType() != VTypes::CharacterData)
+					if (args_.last()->item->type() != VTypes::CharacterData)
 					{
 						msg.print("Error: '%s' expected a variable of type 'character', but found '%s' instead.\n", cmdname, arg);
 						msg.exit("Command::setArguments");

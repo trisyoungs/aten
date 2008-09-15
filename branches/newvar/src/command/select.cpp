@@ -27,13 +27,13 @@
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 
-void selectAtoms(Model *m, AccessPath *slxn, bool deselect)
+void selectAtoms(Model *m, Variable *slxn, bool deselect)
 {
 	static char from[32], to[32], text[256], s[512];
 	int i, j, n, plus;
 	bool range;
 	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
-	if (slxn->returnType() == VTypes::AtomData)
+	if (slxn->type() == VTypes::AtomData)
 	{
 		Atom *ii = (Atom*) slxn->asPointer(VTypes::AtomData);
 		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);

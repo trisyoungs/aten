@@ -20,6 +20,7 @@
 */
 
 #include "variables/variablelist.h"
+#include "variables/accesspath.h"
 #include "variables/expression.h"
 #include "variables/integer.h"
 #include "variables/character.h"
@@ -155,6 +156,21 @@ Variable *VariableList::addExpression(const char *s)
 		return NULL;
 	}
 	return result;
+}
+
+// Add variable acces path
+Variable *VariableList::addPath(const char *s)
+{
+	// Create new variable in which to store the path
+	AccessPath *newvar = new AccessPath;
+	newvar->setParent(this);
+	paths_.own(newvar);
+	if (!newvar->setPath(s))
+	{
+		msg.print( "Failed to cache variable/path.\n");
+		return NULL;
+	}
+	return newvar;
 }
 
 /*
