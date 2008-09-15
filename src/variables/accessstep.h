@@ -46,14 +46,12 @@ class AccessStep
 	AccessPath *arrayIndex_;
 	// Return type of target variable
 	VTypes::DataType returnType_;
+	// Create arrayindex path
+	bool setArrayIndex(const char *path, VariableList *parentvars);
 
 	public:
 	// Set target variable
-	bool setTarget(const char *var, VariableList *sourcevars, Parser::ArgumentForm pathtype = Parser::UnknownForm);
-	// Set target to variable supplied (no array index)
-	void setTarget(Variable *v);
-	// Create arrayindex 'branch'
-	bool setArrayIndex(const char *path, VariableList *sourcevars);
+	bool setTarget(const char *var, VariableList *parentvars, VariableList *searchvars);
 	// Get return value as integer
 	int asInteger();
 	// Get return value as double

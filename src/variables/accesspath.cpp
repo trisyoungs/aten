@@ -64,7 +64,7 @@ Variable *AccessPath::walk()
 }
 
 // Set (create) access path from text path
-bool AccessPath::setPath(const char *path, VariableList *sourcevars, Parser::ArgumentForm pathtype)
+bool AccessPath::setPath(const char *path)
 {
 	msg.enter("AccessPath::set");
 	static char opath[512];
@@ -74,69 +74,43 @@ bool AccessPath::setPath(const char *path, VariableList *sourcevars, Parser::Arg
 	VTypes::DataType lastType = VTypes::NoData;
 	VariableList *pathvars;
 	bool success;
-	// Store original path
-	originalPath_ = path;
-	// If argument form wasn't provided, attempt to work it out.
-	Parser::ArgumentForm af = (pathtype == Parser::UnknownForm ? parser.argumentForm(path) : pathtype);
-	switch (af)
+	// Make sure the parent variable list has been set...
+	if (parent_ == NULL)
 	{
-		case (Parser::VariableForm):
-		case (Parser::ConstantForm):
-		case (Parser::ExpressionForm):
-			step = path_.add();
-			success = step->setTarget(path, sourcevars, af);
-			if (success) returnType_ = step->returnType();
-			break;
-		case (Parser::VariablePathForm):
-			// Take a copy of the original path to work on
-			strcpy(opath, path);
-			c = opath;
-			while (c != '\0')
-			{
-				// Get section of path existing before the next '.'
-				bit = beforeChar(opath, '.');
-				// If this is the first added node then the variable must exist in the local VariableList.
-				// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
-				switch (lastType)
-				{
-					case (VTypes::NoData):
-						pathvars = sourcevars;
-						break;
-					case (VTypes::ModelData):
-						pathvars = modelAccessors.accessors();
-						break;
-				}
-				// Add the new path step
-				step = path_.add();
-				success = step->setTarget(bit.get(), pathvars, Parser::VariableForm);
-			}
-			break;
+		printf("Internal error - parent VariableList has not been set in AccessPath.\n");
+		msg.exit("AccessPath::set");
+		return FALSE;
+	}
+	// Store original path
+	name_ = path;
+	// Take a copy of the original path to work on
+	strcpy(opath, path);
+	c = opath;
+	while (c != '\0')
+	{
+		// Get section of path existing before the next '.'
+		bit = beforeChar(opath, '.');
+		// If this is the first added node then the variable must exist in the local VariableList.
+		// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
+		switch (lastType)
+		{
+			case (VTypes::NoData):
+				pathvars = parent_;
+				break;
+			case (VTypes::ModelData):
+				pathvars = modelAccessors.accessors();
+				break;
+		}
+		// Add the new path step
+		step = path_.add();
+		success = step->setTarget(bit.get(), parent_, pathvars);
 	}
 	msg.exit("AccessPath::set");
 	return success;
 }
 
-// Set single-node path from target variable
-void AccessPath::setPath(Variable *v)
-{
-	AccessStep *step = path_.add();
-	step->setTarget(v);
-}
-
-// Get return type of path
-VTypes::DataType AccessPath::returnType()
-{
-	return returnType_;
-}
-
-// Return original path as text
-const char *AccessPath::originalPath()
-{
-	return originalPath_.get();
-}
-
 // Get return value as integer
-int AccessPath::asInteger()
+int AccessPath::asInteger(int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -145,7 +119,7 @@ int AccessPath::asInteger()
 }
 
 // Get return value as double
-double AccessPath::asDouble()
+double AccessPath::asDouble(int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -154,7 +128,7 @@ double AccessPath::asDouble()
 }
 
 // Get return value as float
-float AccessPath::asFloat()
+float AccessPath::asFloat(int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -163,7 +137,7 @@ float AccessPath::asFloat()
 }
 
 // Get return value as character
-const char *AccessPath::asCharacter()
+const char *AccessPath::asCharacter(int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -172,7 +146,7 @@ const char *AccessPath::asCharacter()
 }
 
 // Get return value as bool
-bool AccessPath::asBool()
+bool AccessPath::asBool(int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -181,7 +155,7 @@ bool AccessPath::asBool()
 }
 
 // Get return value as pointer
-void *AccessPath::asPointer(VTypes::DataType dt)
+void *AccessPath::asPointer(VTypes::DataType dt, int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -190,7 +164,7 @@ void *AccessPath::asPointer(VTypes::DataType dt)
 }
 
 // Increase variable by integer amount
-bool AccessPath::step(int delta)
+bool AccessPath::step(int delta, int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -199,7 +173,7 @@ bool AccessPath::step(int delta)
 }
 
 // Set variable target from integer
-bool AccessPath::set(int i)
+bool AccessPath::set(int i, int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -208,7 +182,7 @@ bool AccessPath::set(int i)
 }
 
 // Set variable target from double
-bool AccessPath::set(double d)
+bool AccessPath::set(double d, int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -217,7 +191,7 @@ bool AccessPath::set(double d)
 }
 
 // Set variable target from character
-bool AccessPath::set(const char *s)
+bool AccessPath::set(const char *s, int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();
@@ -226,7 +200,7 @@ bool AccessPath::set(const char *s)
 }
 
 // Set variable target from pointer
-bool AccessPath::set(void *ptr, VTypes::DataType dt)
+bool AccessPath::set(void *ptr, VTypes::DataType dt, int index)
 {
 	// Retrieve the target variable
 	Variable *v = walk();

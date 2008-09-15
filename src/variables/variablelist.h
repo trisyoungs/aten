@@ -57,6 +57,8 @@ class VariableList
 	List<Variable> constants_;
 	// List of expressions
 	List<Variable> expressions_;
+	// List of variable paths
+	List<Variable> paths_;
 	// Create variable of specified type
 	Variable *createVariable(VTypes::DataType dt, int arraysize = -1);
 
@@ -78,12 +80,14 @@ class VariableList
 	Variable *get(const char *name);
 	// Return dummy variable
 	Variable *dummy();
-	// Add an unnamed constant
+	// Add a constant to the list
 	Variable *addConstant(const char *s, bool forcecharacter = FALSE);
-	// Add an unnamed integer constant to the list
+	// Add an integer constant to the list
 	Variable *addConstant(int i);
-	// Add an unnamed expression to the list
+	// Add an expression to the list
 	Variable *addExpression(const char *s);
+	// Add a variable access path to the list
+	Variable *addPath(const char *s);
 	// Add a named variable to the list
 	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt, int arraysize = -1);
 	Variable *addVariable(const char *name, VTypes::DataType vt, int arraysize = -1);

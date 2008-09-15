@@ -60,14 +60,14 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 		case (VTypes::IntegerData):
 			if ((type2 > VTypes::RealData) && (type2 < VTypes::ExpressionData))
 			{
-				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->originalPath(), c->arg(2)->originalPath());
+				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			break;
 		case (VTypes::RealData):
 			if ((type2 > VTypes::RealData) && (type2 < VTypes::ExpressionData))
 			{
-				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->originalPath(), c->arg(2)->originalPath());
+				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			break;
@@ -126,7 +126,7 @@ int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 {
 	if (c->argt(0) != c->argt(2))
 	{
-		msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->originalPath(), c->arg(2)->originalPath());
+		msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 		return CR_FAIL;
 	}
 	else
