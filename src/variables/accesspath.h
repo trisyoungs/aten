@@ -23,6 +23,7 @@
 #define ATEN_ACCESSPATH_H
 
 #include "variables/accessstep.h"
+#include "variables/variable.h"
 #include "base/vtypes.h"
 #include "base/parser.h"
 #include "base/dnchar.h"
@@ -30,10 +31,9 @@
 
 // Forward declarations
 class VariableList;
-class Variable;
 
 // Variable Access Path
-class AccessPath
+class AccessPath : public Variable
 {
 	public:
 	// Constructor
@@ -60,28 +60,28 @@ class AccessPath
 	VTypes::DataType returnType();
 	// Return original path as text
 	const char *originalPath();
-	// Get return value as integer
-	int asInteger();
-	// Get return value as double
-	double asDouble();
-	// Get return value as float
-	float asFloat();
-	// Get return value as character
-	const char *asCharacter();
-	// Get return value as bool
-	bool asBool();
-	// Get return value as pointer
-	void *asPointer(VTypes::DataType dt);
-	// Step variable target
-	bool step(int i);
-	// Set variable target from integer
-	bool set(int i);
-	// Set variable target from double
-	bool set(double d);
-	// Set variable target from character
-	bool set(const char *s);
-	// Set variable target from pointer
-	bool set(void *ptr, VTypes::DataType dt); 
+	// Set value of variable (char)
+	bool set(const char*, int index = -1);
+	// Set value of variable (int)
+	bool set(int i, int index = -1);
+	// Set value of variable (double)
+	bool set(double d, int index = -1);
+	// Set value of variable (pointer)
+	bool set(void *ptr, VTypes::DataType type, int index = -1);
+	// Get value of variable as character string
+	const char *asCharacter(int index = -1);
+	// Get value of variable as integer
+	int asInteger(int index = -1);
+	// Get value of variable as double
+	double asDouble(int index = -1);
+	// Get value of variable as float
+	float asFloat(int index = -1);
+	// Get value of variable as a boolean
+	bool asBool(int index = -1);
+	// Get value of variable as pointer of specified type
+	void *asPointer(VTypes::DataType type, int index = -1);
+	// Step variable
+	bool step(int delta, int index = -1);
 };
 
 #endif

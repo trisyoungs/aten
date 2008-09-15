@@ -44,6 +44,8 @@ class AccessStep
 	Variable *target_;
 	// Array index associated to variable (if any)
 	AccessPath *arrayIndex_;
+	// Return type of target variable
+	VTypes::DataType returnType_;
 
 	public:
 	// Set target variable

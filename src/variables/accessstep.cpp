@@ -56,6 +56,16 @@ bool AccessStep::setTarget(const char *var, VariableList *sourcevars, Parser::Ar
 			v = sourcevars->addConstant(var);
 			target_ = v;
 			break;
+		case (Parser::ExpressionForm):
+			// Attempt to construct expression
+			v = sourcevars->addExpression(var);
+			if (v == NULL) success = FALSE;
+			else
+			{
+				target_ = v;
+// 				returnType_ = v->type();
+			}
+			break;
 		case (Parser::VariableForm):
 			// Search for array index (left square bracket)
 			for (n = 0; n<strlen(var); n++) 
@@ -110,16 +120,6 @@ bool AccessStep::setTarget(const char *var, VariableList *sourcevars, Parser::Ar
 						break;
 					}
 				}
-			}
-			break;
-		case (Parser::ExpressionForm):
-			// Attempt to construct expression
-			v = sourcevars->addExpression(var);
-			if (v == NULL) success = FALSE;
-			else
-			{
-				target_ = v;
-// 				returnType_ = v->type();
 			}
 			break;
 		case (Parser::VariablePathForm):

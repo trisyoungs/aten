@@ -32,6 +32,10 @@ class ModelAccessors : public VAccess
 	ModelAccessors();
 	// Accessor list
 	enum Accessors { Atoms, Name, NAtoms, nAccessors };
+
+	private:
+	// Array of acessor pointers for look-up
+	Variable *acessorPointers[ModelAccessors::nAccessors];
 	// Retrieve specified data from Model class
 // 	void retrieveData(VObject source, int acessorid, VResult &result);
 };
