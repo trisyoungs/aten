@@ -268,6 +268,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	{
 		cellDefineWindow->refresh();
 		cellTransformWindow->refresh();
+		disorderWindow->refresh();
 	}
 	// Update forcefields in the forcefield window
 	if (updateForcefield) forcefieldsWindow->refresh();
