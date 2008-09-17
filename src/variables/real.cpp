@@ -42,9 +42,14 @@ RealVariable::RealVariable()
 // Set size of array
 bool RealVariable::setArraySize(int size)
 {
-	if (arraySize_ != -1) msg.print("Warning - Real variable '%s' already has an array.\n", name_.get());
+	if (arraySize_ != -1)
+	{
+		msg.print("Real variable '%s' already has an array.\n", name_.get());
+		return FALSE;
+	}
 	realArrayData_ = new double[size];
 	arraySize_ = size;
+	return TRUE;
 }
 
 // Set value of variable (char)

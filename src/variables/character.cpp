@@ -42,9 +42,14 @@ CharacterVariable::CharacterVariable()
 // Set size of array
 bool CharacterVariable::setArraySize(int size)
 {
-	if (arraySize_ != -1) msg.print("Warning - Character variable '%s' already has an array.\n", name_.get());
+	if (arraySize_ != -1)
+	{
+		msg.print("Character variable '%s' already has an array.\n", name_.get());
+		return FALSE;
+	}
 	charArrayData_ = new Dnchar[size];
 	arraySize_ = size;
+	return TRUE;
 }
 
 // Set value of variable (char)

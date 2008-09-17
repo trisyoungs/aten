@@ -26,6 +26,7 @@
 #include "variables/character.h"
 #include "variables/real.h"
 #include "variables/pointer.h"
+#include "variables/bundle.h"
 #include "main/aten.h"
 #include <string.h>
 #include <stdarg.h>
@@ -35,10 +36,10 @@ VariableList::VariableList()
 {
 	// Add accessors to model list and current model/frame in Aten
 	Variable *v;
-	v = addVariable("frame", VTypes::ModelData);
-	v->set(&aten.current.rs, VTypes::ModelData);
-	v = addVariable("model", VTypes::ModelData);
-	v->set(&aten.current.m, VTypes::ModelData);
+// 	v = addBundlePointer("frame", VTypes::ModelData);
+// 	v->set(&aten.current, VTypes::ModelData);
+	v = addBundlePointer("model", VTypes::ModelData);
+	v->set(&aten.current, VTypes::ModelData);
 	//v = addVariable("models", VTypes::ModelData, VTypes::ListArray);
 	//v->set(aten.modelList(), VTypes::ModelData);
 }
@@ -110,6 +111,16 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTyp
 	Variable *newvar = createVariable(dt, arraysize);
 	vars_.own(newvar);
 	newvar->setName(name);
+	return newvar;
+}
+
+// Add pointer to pointer reference variable
+Variable *VariableList::addBundlePointer(const char *name, VTypes::DataType dt)
+{
+	Variable *newvar = new BundleVariable(dt);
+	newvar->setParent(this);
+	newvar->setName(name);
+	vars_.own(newvar);
 	return newvar;
 }
 

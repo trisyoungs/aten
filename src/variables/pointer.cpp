@@ -43,9 +43,14 @@ PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 // Set size of array
 bool PointerVariable::setArraySize(int size)
 {
-	if (arraySize_ != -1) msg.print("Warning - Pointer variable '%s' already has an array.\n", name_.get());
+	if (arraySize_ != -1)
+	{
+		msg.print("Pointer variable '%s' already has an array.\n", name_.get());
+		return FALSE;
+	}
 	ptrArrayData_ = new void*[size];
 	arraySize_ = size;
+	return TRUE; 
 }
 
 // Set value of variable (pointer)

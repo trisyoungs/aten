@@ -43,9 +43,14 @@ IntegerVariable::IntegerVariable()
 // Set size of array
 bool IntegerVariable::setArraySize(int size)
 {
-	if (arraySize_ != -1) msg.print("Warning - Integer variable '%s' already has an array.\n", name_.get());
+	if (arraySize_ != -1)
+	{
+		msg.print("Integer variable '%s' already has an array.\n", name_.get());
+		return FALSE;
+	}
 	integerArrayData_ = new int[size];
 	arraySize_ = size;
+	return TRUE;
 }
 
 // Set value of variable (char)

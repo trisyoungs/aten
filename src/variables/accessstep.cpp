@@ -43,7 +43,8 @@ AccessStep::AccessStep()
 // Set target from variable name/array index
 bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableList *sourcevars)
 {
-	static char arrayindex[512];
+	msg.enter("AccessStep::setTarget");
+	Dnchar part;
 	bool result = TRUE;
 	Variable *v;
 	int n, lbr = -1, rbr = -1;
@@ -53,12 +54,19 @@ bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableL
 		if (text[n] == '[') lbr = n;
 		if (text[n] == ']') rbr = n;
 	}
+	printf("lbr=%i, rbr=%i\n",lbr,rbr);
 	// Check values of lbracket and rbracket
 	if ((lbr == -1) && (rbr == -1))
 	{
 		// No array element, just the name. See if it has been declared
-		v = sourcevars->get(text);
-		if (v == NULL) msg.print("Error: Variable '%s' has not been declared.\n", text);
+		v = sourcevars->get( text[0] == '$' ? &text[1] : &text[0] );
+		if (v == NULL)
+		{
+			msg.print("Error: Variable '%s' has not been declared.\n", text);
+			result = FALSE;
+		}
+		else msg.print(Messenger::Expressions, "AccessStep variable is '%s'\n", v->name());
+		target_ = v;
 	}
 	else if ((lbr == -1) || (rbr == -1))
 	{
@@ -75,15 +83,20 @@ bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableL
 	else
 	{
 		// If we get here then the array brackets are valid, and we should get the contents. But first, get the variable...
-		v = sourcevars->get(text);
-		if (v == NULL) msg.print("Error: Variable '%s' has not been declared.\n", text);
+		part = beforeChar(text[0] == '$' ? &text[1] : &text[0], '[');
+		v = sourcevars->get( part.get() );
+		if (v == NULL)
+		{
+			msg.print("Error: Variable '%s' has not been declared.\n", part.get());
+			result = FALSE;
+		}
 		else
 		{
 			target_ = v;
-			strcpy(arrayindex, afterChar(beforeChar(text, ']'), '['));
-			if (!setArrayIndex(arrayindex, parentvars))
+			part = afterChar(beforeChar(text, ']'), '[');
+			if (!setArrayIndex(part.get(), parentvars))
 			{
-				msg.print("Failed to parse array index '%s' for '%s'.\n", arrayindex, text);
+				msg.print("Failed to parse array index '%s' for '%s'.\n", part.get(), text);
 				result = FALSE;
 			}
 		}
@@ -95,12 +108,14 @@ bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableL
 // Create arrayindex 'branch'
 bool AccessStep::setArrayIndex(const char *path, VariableList *parentvars)
 {
+	msg.enter("AccessStep::setArrayIndex");
 	// Check existing pointer...
 	if (arrayIndex_ != NULL) msg.print("AccessStep already has an array index set.\n");
 	arrayIndex_ = new AccessPath;
 	arrayIndex_->setParent(parentvars);
-	if (!arrayIndex_->setPath(path)) return FALSE;
-	else return TRUE;
+	bool result = arrayIndex_->setPath(path);
+	msg.exit("AccessStep::setArrayIndex");
+	return result;
 }
 
 // Get return value as integer

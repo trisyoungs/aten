@@ -67,13 +67,13 @@ const char *afterChar(const char *s, char delim)
 {
 	static char result[128];
 	static int i, count;
-	static bool foundcomma;
-	foundcomma = FALSE;
+	static bool founddelim;
+	founddelim = FALSE;
 	count = 0;
 	for (i = 0; s[i] != '\0'; i++)
 	{
-		if (s[i] == delim) foundcomma = TRUE;
-		else if (foundcomma)
+		if (s[i] == delim) founddelim = TRUE;
+		else if (founddelim)
 		{
 			result[count] = s[i];
 			count ++;
