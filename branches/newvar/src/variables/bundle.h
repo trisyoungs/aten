@@ -1,6 +1,6 @@
 /*
-	*** Pointer Variable
-	*** src/variables/pointer.h
+	*** Bundle-based Variable
+	*** src/variables/bundle.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,17 +19,20 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_POINTERVARIABLE_H
-#define ATEN_POINTERVARIABLE_H
+#ifndef ATEN_BUNDLEVARIABLE_H
+#define ATEN_BUNDLEVARIABLE_H
 
 #include "variables/variable.h"
 
-// Pointer Variable
-class PointerVariable : public Variable
+// Forward declarations
+class Bundle;
+
+// Bundle-based Variable
+class BundleVariable : public Variable
 {
 	public:
 	// Constructor
-	PointerVariable(VTypes::DataType);
+	BundleVariable(VTypes::DataType);
 
 	/*
 	// Set / Get
@@ -39,7 +42,7 @@ class PointerVariable : public Variable
 	//void reset();
 	// Set size of array (only for VTypes::ArrayType == NormalArray)
 	bool setArraySize(int size);
-	// Set value of variable (pointer)
+	// Set value of variable (pointer to pointer variable)
 	bool set(void *ptr, VTypes::DataType type, int index = -1);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, int index = -1);
@@ -50,10 +53,8 @@ class PointerVariable : public Variable
 	// Variable Data
 	*/
 	private:
-	// Pointer data
-	void *ptrData_;
-	// Array data
-	void **ptrArrayData_;
+	// Pointer to bundle
+	Bundle *data_;
 };
 
 #endif

@@ -492,9 +492,9 @@ bool Command::addArgument(const char *text, Parser::ArgumentForm form)
 	bool result = TRUE;
 	// If argument form wasn't provided, attempt to work it out.
 	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(text) : form);
-	printf("Adding argument '%s', form = %i...\n", text, form);
+	printf("Adding argument '%s', form = %i...\n", text, af);
 	// Now we have the argument form, get/create a suitable variable
-	switch (form)
+	switch (af)
 	{
 		case (Parser::ConstantForm):
 			addConstant(text, variableList_);
@@ -503,11 +503,14 @@ bool Command::addArgument(const char *text, Parser::ArgumentForm form)
 			// Attempt to construct expression
 			v = variableList_->addExpression(text);
 			if (v == NULL) result = FALSE;
+			else printf("Expression added.... %li\n", v);
+			args_.add(v);
 			break;
 		case (Parser::VariableForm):
 		case (Parser::VariablePathForm):
 			v = variableList_->addPath(text);
 			if (v == NULL) result = FALSE;
+			args_.add(v);
 			break;
 	}
 	msg.exit("Command::addArgument");

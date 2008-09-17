@@ -70,6 +70,7 @@ bool AccessPath::setPath(const char *path)
 	static char opath[512];
 	Dnchar bit;
 	AccessStep *step;
+	int n;
 	char *c;
 	VTypes::DataType lastType = VTypes::NoData;
 	VariableList *pathvars;
@@ -86,7 +87,7 @@ bool AccessPath::setPath(const char *path)
 	// Take a copy of the original path to work on
 	strcpy(opath, path);
 	c = opath;
-	while (c != '\0')
+	while (*c != '\0')
 	{
 		// Get section of path existing before the next '.'
 		bit = beforeChar(opath, '.');
@@ -104,6 +105,8 @@ bool AccessPath::setPath(const char *path)
 		// Add the new path step
 		step = path_.add();
 		success = step->setTarget(bit.get(), parent_, pathvars);
+		// Increase the char pointer
+		for (n=0; n<bit.length(); n++) c ++;
 	}
 	msg.exit("AccessPath::set");
 	return success;
