@@ -9,4 +9,5 @@ Name=Aten
 StartupNotify=false
 Terminal=0
 Type=Application
-Categories=Applications
+Categories=Education;Science
+X-SuSE-translate=false
