@@ -23,6 +23,7 @@
 #include "base/generator.h"
 #include "base/sysfunc.h"
 #include "classes/cell.h"
+#include <string.h>
 
 // Singleton declaration
 SpacegroupMap spacegroups;
