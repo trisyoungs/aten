@@ -20,6 +20,7 @@
 */
 
 #include "variables/vaccess.h"
+#include "base/messenger.h"
 
 // Return address of VariableList
 VariableList *VAccess::accessors()
@@ -28,16 +29,11 @@ VariableList *VAccess::accessors()
 }
 
 // Add new accessor
-// void VAccess::addAccessor(const char *name, VTypes::ListType lt, VTypes::DataType datatype, bool readonly)
-// {
-// }
-
-// Find and return accessor by name
-// VObject *VAccess::findAccessor(const char *name)
-// {
-// }
-
-// Dig down through accessor list to find the specified value
-// bool VAccess::dig(const char *refpath, VariableList &vlist, VResult &result)
-// {
-// }
+Variable *VAccess::addAccessor(const char *name, VTypes::DataType dt, bool readonly)
+{
+	msg.enter("VAccess::addAccessor");
+	Variable *result = accessors_.addVariable(name, dt);
+	if (readonly) result->setReadOnly();
+	msg.exit("VAccess::addAccessor");
+	return result;
+}

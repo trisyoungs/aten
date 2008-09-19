@@ -109,7 +109,7 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTyp
 		strcat(name,suffix);
 	}
 	Variable *newvar = createVariable(dt, arraysize);
-	vars_.own(newvar);
+	variables_.own(newvar);
 	newvar->setName(name);
 	return newvar;
 }
@@ -120,7 +120,7 @@ Variable *VariableList::addBundlePointer(const char *name, VTypes::DataType dt)
 	Variable *newvar = new BundleVariable(dt);
 	newvar->setParent(this);
 	newvar->setName(name);
-	vars_.own(newvar);
+	variables_.own(newvar);
 	return newvar;
 }
 
@@ -263,7 +263,7 @@ Variable *VariableList::get(const char *prefix, const char *suffix)
 		if (prefix[0] != '\0') strcat(name,".");
 		strcat(name, suffix);
 	}
-	for (Variable *v = vars_.first(); v != NULL; v = v->next) if (strcmp(name,v->name()) == 0) return v;
+	for (Variable *v = variables_.first(); v != NULL; v = v->next) if (strcmp(name,v->name()) == 0) return v;
 	return NULL;
 }
 
@@ -274,7 +274,7 @@ Variable *VariableList::get(const char *prefix, const char *suffix)
 // Print list of variables in list
 void VariableList::print()
 {
-	for (Variable *v = vars_.first(); v != NULL; v = v->next)
+	for (Variable *v = variables_.first(); v != NULL; v = v->next)
 		printf("VAR=[%s] (%li) VALUE=[%s]\n",v->name(),v,v->asCharacter());
 }
 
@@ -282,7 +282,7 @@ void VariableList::print()
 void VariableList::resetAll()
 {
 	msg.enter("VariableList::resetAll");
-	//for (Variable *v = vars_.first(); v != NULL; v = v->next) v->reset();
+	//for (Variable *v = variables_.first(); v != NULL; v = v->next) v->reset();
 	msg.exit("VariableList::resetAll");
 }
 

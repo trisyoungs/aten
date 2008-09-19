@@ -35,9 +35,11 @@ class ModelAccessors : public VAccess
 
 	private:
 	// Array of acessor pointers for look-up
-	Variable *acessorPointers[ModelAccessors::nAccessors];
-	// Retrieve specified data from Model class
-// 	void retrieveData(VObject source, int acessorid, VResult &result);
+	Variable *accessorPointers[ModelAccessors::nAccessors];
+
+	public:
+	// Retrieve specified data
+	bool findAccessor(void *classptr, Variable *accessor, ReturnValue &rv);
 };
 
 extern ModelAccessors modelAccessors;

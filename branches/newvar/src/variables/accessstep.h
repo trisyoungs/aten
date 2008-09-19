@@ -52,13 +52,19 @@ class AccessStep
 	public:
 	// Set target variable
 	bool setTarget(const char *var, VariableList *parentvars, VariableList *searchvars);
-	// Get return value as integer
+	// Return target variable's name
+	const char *targetName();
+	// Return target variable pointer
+	Variable *target();
+	// Get target value as integer
 	int asInteger();
-	// Get return value as double
+	// Get target value as double
 	double asDouble();
-	// Get return value as bool
+	// Get target value as character
+	const char *asCharacter();
+	// Get target value as bool
 	bool asBool();
-	// Get return value as pointer
+	// Get target value as pointer
 	void *asPointer(VTypes::DataType dt);
 	// Get return type of step (i.e. DataType of target variable)
 	VTypes::DataType returnType();

@@ -24,6 +24,10 @@
 
 #include "variables/accessstep.h"
 #include "variables/variable.h"
+#include "variables/integer.h"
+#include "variables/character.h"
+#include "variables/real.h"
+#include "variables/pointer.h"
 #include "base/vtypes.h"
 #include "base/parser.h"
 #include "base/dnchar.h"

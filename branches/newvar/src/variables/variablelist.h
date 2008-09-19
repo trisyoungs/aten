@@ -50,7 +50,7 @@ class VariableList
 
 	private:
 	// List of variables / references
-	List<Variable> vars_;
+	List<Variable> variables_;
 	// Static, dummy variable '*'
 	CharacterVariable dummy_;
 	// List of constant values
