@@ -14,7 +14,7 @@ License: GPL
 BuildRoot: /var/tmp/%{fullname}
 
 # Software group
-Group: Applications/Editors
+Group: Productivity/Scientific/Chemistry
 
 # Source tar ball.
 Source: %{fullname}.tar.gz

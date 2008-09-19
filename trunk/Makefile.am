@@ -19,6 +19,6 @@ ff_DATA = data/ff/*
 testdir = $(atendir)/test
 test_DATA = data/test/*
 
-desktopdir = @BUILDDIR@/usr/share/applications
+desktopdir = /usr/share/applications
 desktop_DATA = Aten.desktop
 
