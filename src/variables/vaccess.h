@@ -23,6 +23,7 @@
 #define ATEN_VACCESS_H
 
 #include "templates/list.h"
+#include "variables/returnvalue.h"
 #include "variables/variable.h"
 #include "variables/variablelist.h"
 
@@ -43,12 +44,10 @@ class VAccess
 	public:
 	// Return address of VariableList
 	VariableList *accessors();
-	// Find and return accessor by name
-	Variable *findAccessor(const char *name);
-	// Dig down through accessor list to find the specified value
-// 	bool dig(const char *refpath, VariableList &vlist, VResult &result);
-	// Get pointer to data referenced by a VObject
-// 	virtual void retrieveData(VObject source, int accessorid, VResult &result) = 0;
+
+	public:
+	// Find and return named accessor value
+	virtual bool findAccessor(void *classptr, Variable *accessor, ReturnValue &rv)=0;
 };
 
 #endif

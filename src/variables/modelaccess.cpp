@@ -28,6 +28,17 @@ ModelAccessors modelAccessors;
 ModelAccessors::ModelAccessors()
 {
 // 	addAccessor("atoms",		VObject::ListArray,	VObject::AtomData,	FALSE);
- 	acessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	TRUE);
+ 	accessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	TRUE);
 // 	addAccessor("natoms",		VObject::NoArray,	VObject::IntegerData,	FALSE);
 };
+
+// Retrieve specified data
+bool ModelAccessors::findAccessor(void *classptr, Variable *accessor, ReturnValue &rv)
+{
+	msg.enter("ModelAccessors::findAccessor");
+	bool result = TRUE;
+	// Search through list of accessors to get enumerated value
+// 	for (Variable *v = 
+	msg.exit("ModelAccessors::findAccessor");
+	return result;
+}

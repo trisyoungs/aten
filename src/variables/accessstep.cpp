@@ -118,11 +118,25 @@ bool AccessStep::setArrayIndex(const char *path, VariableList *parentvars)
 	return result;
 }
 
+// Return target variable's name
+const char *AccessStep::targetName()
+{
+	if (target_ == NULL) msg.print("No target variable set in AccessStep - no name to return.");
+	else return target_->name();
+	return "NONAME";
+}
+
+// Return target variable pointer
+Variable *AccessStep::target()
+{
+	return target_;
+}
+
 // Get return value as integer
 int AccessStep::asInteger()
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as an integer.\n");
-	else return target_->asInteger();
+	else return target_->asInteger( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 	return 0;
 }
 
@@ -130,15 +144,23 @@ int AccessStep::asInteger()
 double AccessStep::asDouble()
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a double.\n");
-	else return target_->asDouble();
+	else return target_->asDouble( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 	return 0.0;
+}
+
+// Get return value as character
+const char *AccessStep::asCharacter()
+{
+	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a character.\n");
+	else return target_->asCharacter( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+	return "NULL";
 }
 
 // Get return value as bool
 bool AccessStep::asBool()
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a bool.\n");
-	else return target_->asBool();
+	else return target_->asBool( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 	return FALSE;
 }
 
@@ -146,7 +168,7 @@ bool AccessStep::asBool()
 void * AccessStep::asPointer(VTypes::DataType dt)
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a pointer.\n");
-	else return target_->asPointer(dt);
+	else return target_->asPointer(dt,  arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 	return 0;
 }
 

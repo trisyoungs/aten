@@ -29,7 +29,7 @@ class PointerVariable : public Variable
 {
 	public:
 	// Constructor
-	PointerVariable(VTypes::DataType);
+	PointerVariable(VTypes::DataType type = VTypes::NoData);
 
 	/*
 	// Set / Get
@@ -41,6 +41,8 @@ class PointerVariable : public Variable
 	bool setArraySize(int size);
 	// Set value of variable (pointer)
 	bool set(void *ptr, VTypes::DataType type, int index = -1);
+	// Reset (non-array) variable with type and pointer provided
+	bool reset(void *ptr, VTypes::DataType type);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, int index = -1);
 	// Step variable

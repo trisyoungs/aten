@@ -10,6 +10,7 @@ modelaccess.h
 pointer.h
 pointerlist.h
 real.h
+returnvalue.h
 vaccess.h
 variable.h
 variablelist.h
@@ -23,6 +24,7 @@ integer.cpp
 modelaccess.cpp
 pointer.cpp
 real.cpp
+returnvalue.cpp
 vaccess.cpp
 variable.cpp
 variablelist.cpp

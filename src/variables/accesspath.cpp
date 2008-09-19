@@ -22,6 +22,7 @@
 #include "variables/accesspath.h"
 #include "variables/accessstep.h"
 #include "variables/modelaccess.h"
+#include "variables/returnvalue.h"
 #include "variables/variablelist.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
@@ -41,26 +42,42 @@ AccessPath::AccessPath()
 Variable *AccessPath::walk()
 {
 	msg.enter("AccessPath::walk");
-	Variable *result = NULL;
 	AccessStep *step = NULL;
-	// DataType of the most recently stored pointer, and the pointer itself
-	VTypes::DataType ptrType = VTypes::NoData;
-	void *ptr = NULL;
-	// Get first node in path, its type, and its value
-	step = path_.first();
+	int arrayindex;
+	static ReturnValue result;
+	result.reset();
+	bool failed = FALSE;
+	// DataType of the most recently 'got' value
+	VTypes::DataType lastType = VTypes::NoData;
 	// Go through remaining nodes in the list one by one, calling the relevant static member functions in access-enabled objects
 	for (step = path_.first(); step != NULL; step = step->next)
 	{
-		// If a previous ptrType was set, use this to determine the accessor set to search.
-		// Otherwise, store the return result / 
-// 		if (ptrType == VTypes::NoData
-		// Check return type of step
-		
-
+		// If a previous ptrType was set, use this to determine the accessor set to search. Otherwise, get the value stored in the variable.
+		switch (lastType)
+		{
+			case (VTypes::NoData):
+				result.set(step);
+				break;
+			case (VTypes::IntegerData):
+			case (VTypes::RealData):
+			case (VTypes::CharacterData):
+			case (VTypes::ExpressionData):
+				msg.print("AccessPath '%s' is trying to access a subvariable of a non-class type (%s).\n", name_.get(), step->targetName());
+				failed = TRUE;
+				result.reset();
+				break;
+			// For pointer types, get return value from static VAccess classes
+			case (VTypes::ModelData):
+				if (!modelAccessors.findAccessor(result.asPointer(), step->target(), result)) failed = TRUE;
+				break;
+			case (VTypes::AtomData):
+				break;
+		}
 		// Prepare for next step
-		ptrType = step->returnType();
+		lastType = step->returnType();
 	}
 	msg.exit("AccessPath::walk");
+	return result.value();
 }
 
 // Set (create) access path from text path
@@ -90,9 +107,16 @@ bool AccessPath::setPath(const char *path)
 	while (*c != '\0')
 	{
 		// Get section of path existing before the next '.'
-		bit = beforeChar(opath, '.');
+		bit = beforeChar(c, '.');
+		// Check for an empty string bit - caused by '..'
+		if (bit.empty())
+		{
+			msg.print("Empty section found in variable path.\n");
+			msg.exit("AccessPath::set");
+			return FALSE;
+		}
 		// If this is the first added node then the variable must exist in the local VariableList.
-		// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
+		// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to us5e
 		switch (lastType)
 		{
 			case (VTypes::NoData):
@@ -102,11 +126,17 @@ bool AccessPath::setPath(const char *path)
 				pathvars = modelAccessors.accessors();
 				break;
 		}
+		printf("Last variable type was '%s'.\n", VTypes::dataType(lastType));
 		// Add the new path step
 		step = path_.add();
 		success = step->setTarget(bit.get(), parent_, pathvars);
+		if (!success) break;
 		// Increase the char pointer
 		for (n=0; n<bit.length(); n++) c ++;
+		// If we're on a '.', skip on a further character
+		if (*c == '.') c++;
+		// Store lasttype
+		lastType = step->returnType();
 	}
 	msg.exit("AccessPath::set");
 	return success;

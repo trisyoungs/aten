@@ -1,0 +1,104 @@
+/*
+	*** Variable Return Value
+	*** src/variables/returnvalue.cpp
+	Copyright T. Youngs 2007,2008
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#include "variables/returnvalue.h"
+#include "variables/accessstep.h"
+// #include "base/constants.h"
+#include "base/messenger.h"
+#include "base/sysfunc.h"
+#include <stdlib.h>
+
+// Constructor
+ReturnValue::ReturnValue()
+{
+	// Private variables
+	type_ = VTypes::NoData;
+}
+
+// Reset data
+void ReturnValue::reset()
+{
+	type_ = VTypes::NoData;
+}
+
+// Copy variable data from AccessStep
+void ReturnValue::set(AccessStep *source)
+{
+	type_ = source->returnType();
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			msg.print("No datatype set for AccessStep - no data to copy!\n");
+			break;
+		case (VTypes::IntegerData):
+			valueI_.set(source->asInteger());
+			break;
+		case (VTypes::RealData):
+			valueR_.set(source->asDouble());
+			break;
+		case (VTypes::CharacterData):
+			valueC_.set(source->asCharacter());
+			break;
+		case (VTypes::ExpressionData):
+			msg.print("What - setting returnvalue from ExpressionData?\n");
+			break;
+		default:
+			valueP_.reset(source->asPointer(type_), type_);
+			break;
+	}
+}
+
+// Return local variable containing last stored value
+Variable *ReturnValue::value()
+{
+	Variable *result;
+	switch (type_)
+	{
+		case (VTypes::NoData):
+			msg.print("No datatype set for AccessStep - no data to return!\n");
+			result = NULL;
+			break;
+		case (VTypes::IntegerData):
+			result = &valueI_;
+			break;
+		case (VTypes::RealData):
+			result = &valueR_;
+			break;
+		case (VTypes::CharacterData):
+			result = &valueC_;
+			break;
+		case (VTypes::ExpressionData):
+			msg.print("What - setting returnvalue from ExpressionData?\n");
+			break;
+		default:
+			result = &valueP_;
+			break;
+	}
+	return result;
+}
+
+// Return pointer value from local PointerVariable
+void *ReturnValue::asPointer()
+{
+	if ((type_ < VTypes::AtomData) || (type_ > VTypes::AtomtypeData)) msg.print("ReturnValue contains no pointer to return.\n");
+	else return valueP_.asPointer(type_);
+	return NULL;
+}

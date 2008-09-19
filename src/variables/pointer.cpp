@@ -95,6 +95,14 @@ bool PointerVariable::set(void *ptr, VTypes::DataType type, int index)
 	return TRUE;
 }
 
+// Reset (non-array) variable with type and pointer provided
+bool PointerVariable::reset(void *ptr, VTypes::DataType type)
+{
+	dataType_ = type;
+	ptrData_ = ptr;
+	return TRUE;
+}
+
 // Get value of variable as pointer of specified type
 void *PointerVariable::asPointer(VTypes::DataType type, int index)
 {
