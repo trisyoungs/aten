@@ -31,11 +31,17 @@
 AccessPath::AccessPath()
 {
 	// Private variables
-	returnType_ = VTypes::NoData;
+	resultVariable_ = NULL;
 
 	// Public variables
 	prev = NULL;
 	next = NULL;
+}
+
+// Destructor
+AccessPath::~AccessPath()
+{
+	if (resultVariable_ != NULL) delete resultVariable_;
 }
 
 // Walk path to retrieve end variable
@@ -77,8 +83,24 @@ Variable *AccessPath::walk()
 		// Prepare for next step
 		lastType = step->returnType();
 	}
+	// Put value now stored in the ReturnValue structure in the local Variable
+	switch (dataType_)
+	{
+		case (VTypes::IntegerData):
+			resultVariable_->set(result.value()->asInteger());
+			break;
+		case (VTypes::RealData):
+			resultVariable_->set(result.value()->asDouble());
+			break;
+		case (VTypes::CharacterData):
+			resultVariable_->set(result.value()->asCharacter());
+			break;
+		default:
+			resultVariable_->set(result.value()->asPointer(dataType_), dataType_);
+			break;
+	}
 	msg.exit("AccessPath::walk");
-	return result.value();
+	return resultVariable_;
 }
 
 // Walk path and set final target variable
@@ -135,7 +157,7 @@ bool AccessPath::walkAndSet(Variable *srcvar, VTypes::DataType dt)
 // Set (create) access path from text path
 bool AccessPath::setPath(const char *path)
 {
-	msg.enter("AccessPath::set");
+	msg.enter("AccessPath::setPath");
 	static char opath[512];
 	Dnchar bit;
 	AccessStep *step;
@@ -147,7 +169,7 @@ bool AccessPath::setPath(const char *path)
 	if (parent_ == NULL)
 	{
 		printf("Internal error - parent VariableList has not been set in AccessPath.\n");
-		msg.exit("AccessPath::set");
+		msg.exit("AccessPath::setPath");
 		return FALSE;
 	}
 	// Store original path
@@ -163,13 +185,12 @@ bool AccessPath::setPath(const char *path)
 		if (bit.empty())
 		{
 			msg.print("Empty section found in variable path.\n");
-			msg.exit("AccessPath::set");
+			msg.exit("AccessPath::setPath");
 			return FALSE;
 		}
 		// If this is the first added node then the variable must exist in the local VariableList.
 		step = path_.add();
 		// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
-		printf("Last variable type was '%s'.\n", VTypes::dataType(lastType));
 		switch (lastType)
 		{
 			case (VTypes::NoData):
@@ -188,7 +209,27 @@ bool AccessPath::setPath(const char *path)
 		// Store lasttype
 		lastType = step->returnType();
 	}
-	msg.exit("AccessPath::set");
+	// Set the return type of the path as the type of the last step, and create a suitable return variable
+	if (success)
+	{
+		dataType_ = step->returnType();
+		switch (dataType_)
+		{
+			case (VTypes::IntegerData):
+				resultVariable_ = new IntegerVariable;
+				break;
+			case (VTypes::RealData):
+				resultVariable_ = new RealVariable;
+				break;
+			case (VTypes::CharacterData):
+				resultVariable_ = new CharacterVariable;
+				break;
+			default:
+				resultVariable_ = new PointerVariable(dataType_);
+				break;
+		}
+	}
+	msg.exit("AccessPath::setPath");
 	return success;
 }
 

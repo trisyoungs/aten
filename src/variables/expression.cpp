@@ -71,57 +71,16 @@ bool ExpressionVariable::set(void *ptr, VTypes::DataType type)
 	return FALSE;
 }
 
-// Get value of variable as character string
-const char *ExpressionVariable::asCharacter()
-{
-	printf("Cannot get an Expression variable as a character.\n");
-	return "NULL";
-}
-
 // Get value of variable as integer
-int ExpressionVariable::asInteger()
+int ExpressionVariable::asInteger(int index)
 {
-	return evaluateAsInteger();
+	return evaluate()->asInteger();
 }
 
 // Get value of variable as double
-double ExpressionVariable::asDouble()
+double ExpressionVariable::asDouble(int index)
 {
-	return evaluateAsReal();
-}
-
-// Get value of variable as float
-float ExpressionVariable::asFloat()
-{
-	return (float) evaluateAsReal();
-}
-
-// Get value of variable as a boolean
-bool ExpressionVariable::asBool()
-{
-	printf("Cannot get an Expression variable as a boolean.\n");
-	return FALSE;
-}
-
-// Get value of variable as pointer of specified type
-void *ExpressionVariable::asPointer(VTypes::DataType type)
-{
-	printf("Cannot get an Expression variable as a pointer.\n");
-	return NULL;
-}
-
-// Character increase
-bool ExpressionVariable::increase(int i)
-{
-	printf("An Expression variable cannot be increased.");
-	return FALSE;
-}
-
-// Character decrease
-bool ExpressionVariable::decrease(int)
-{
-	printf("An Expression variable cannot be decreased.");
-	return FALSE;
+	return evaluate()->asReal();
 }
 
 /*
@@ -463,8 +422,8 @@ ExpressionNode::TokenType ExpressionVariable::addLongToken(const char *s)
 	// First check is for a variable (begins with '$'), then for a value (contains at least one numeral), and then for long operators.
 	if (s[0] == '$')
 	{
-		// Check to see that this variable already exists
-		Variable *v = parent_->get(&s[1]);
+		// Create path to variable
+		Variable *v = parent_->addPath(s);
 		if (v != NULL)
 		{
 			ex = expression_.add();
@@ -703,20 +662,6 @@ ExpressionNode *ExpressionVariable::evaluate()
 	return ex;
 }
 
-// Evaluate integer expression
-int ExpressionVariable::evaluateAsInteger()
-{
-	//if (evaluatesToFloat_) printf("This is a floating-point expression. Why request an integer?\n");
-	return evaluate()->asInteger();
-}
-
-// Evaluate real-valued expression
-double ExpressionVariable::evaluateAsReal()
-{
-	//if (!evaluatesToFloat_) printf("This is an integer expression. Why request a double?\n");
-	return evaluate()->asReal();
-}
-
 // Print expression
 void ExpressionVariable::print(ExpressionNode *highlight, bool showUsed)
 {
@@ -738,7 +683,7 @@ void ExpressionVariable::print(ExpressionNode *highlight, bool showUsed)
 					else strcpy(bit, itoa(ex->asInteger()));
 				}
 				else if (ex->variable() == NULL) strcpy(bit,ftoa(ex->asReal()));
-				else sprintf(bit,"$%s", ex->variable()->name());
+				else sprintf(bit,"%s", ex->variable()->name());
 				break;
 			case (ExpressionNode::FunctionToken):
 				strcpy(bit, ExpressionNode::functionType(ex->functionType()));

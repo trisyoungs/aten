@@ -101,12 +101,13 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 		}
 	}
 	msg.print(Messenger::Parse,"FormatNode::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
-	// If we're given a variable, check that is has been declared
+	// If we're given a variable, create a path to it
 	if (specifier[0] == '$')
 	{
 		c = specifier;
 		c ++;
-		variable_ = vlist.get(c);
+// 		variable_ = vlist.get(c);
+		variable_ = vlist.addPath(c);
 		if (variable_ == NULL)
 		{
 			printf("Variable '%s' in format string has not been declared.\n", c);
