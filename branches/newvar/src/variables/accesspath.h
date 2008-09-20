@@ -52,6 +52,8 @@ class AccessPath : public Variable
 	VTypes::DataType returnType_;
 	// Walk path and get final target variable
 	Variable *walk();
+	// Walk path and set final target variable
+	bool walkAndSet(Variable *srcvar, VTypes::DataType dt);
 
 	public:
 	// Set path from character constant

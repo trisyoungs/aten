@@ -22,6 +22,13 @@
 #include "variables/vaccess.h"
 #include "base/messenger.h"
 
+// Constructor
+VAccess::VAccess()
+{
+	// Clear default variables in VariableList
+	accessors_.clear();
+}
+
 // Return address of VariableList
 VariableList *VAccess::accessors()
 {

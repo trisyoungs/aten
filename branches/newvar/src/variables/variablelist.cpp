@@ -120,22 +120,6 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTyp
 	return newvar;
 }
 
-// Add list variable
-// Variable *VariableList::addListVariable(const char *name, VTypes::DataType dt)
-// {
-// 	// Check data type given...
-// 	if ((dt < VTypes::AtomData) || (dt > VTypes::AtomtypeData))
-// 	{
-// 		msg.print("A ListVariable must be given a pointer datatype.\n");
-// 		return NULL;
-// 	}
-// 	PointerListVariable *newvar = new PointerListVariable(dt);
-// 	newvar->setListArray();
-// 	variables_.own(newvar);
-// 	newvar->setName(name);
-// 	return newvar;
-// }
-
 // Add pointer to pointer reference variable
 Variable *VariableList::addBundlePointer(const char *name, VTypes::DataType dt)
 {
@@ -290,7 +274,7 @@ Variable *VariableList::get(const char *prefix, const char *suffix)
 }
 
 /*
-// Print / Reset
+// Misc
 */
 
 // Print list of variables in list
@@ -300,34 +284,11 @@ void VariableList::print()
 		printf("VAR=[%s] (%li) VALUE=[%s]\n",v->name(),v,v->asCharacter());
 }
 
-// Clear all variable values
-void VariableList::resetAll()
+// Clear all variables, expressions etc. stored in class
+void VariableList::clear()
 {
-	msg.enter("VariableList::resetAll");
-	//for (Variable *v = variables_.first(); v != NULL; v = v->next) v->reset();
-	msg.exit("VariableList::resetAll");
-}
-
-// Clear list of variables
-void VariableList::reset(const char *s, ...)
-{
-	msg.enter("VariableList::reset");
-	// List of variables must be ended by "".
-	static char name[64];
-	va_list namelist;
-	va_start(namelist,s);
-	Variable *v;
-	// Reset 's' first
-// 	get(s)->reset();
-	do
-	{
-		strcpy(name,va_arg(namelist,char*));
-		if (name[0] != '\0')
-		{
-			v = get(name);
-// 			if (v == NULL) printf("VariableList::reset <<<< '%s' not in list >>>>\n",name);
-// 			else v->reset();
-		}
-	} while (name[0] != '\0');
-	msg.exit("VariableList::reset");
+	variables_.clear();
+	expressions_.clear();
+	constants_.clear();
+	paths_.clear();
 }

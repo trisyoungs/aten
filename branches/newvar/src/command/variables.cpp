@@ -109,6 +109,7 @@ int CommandData::function_CA_LETCHAR(Command *&c, Bundle &obj)
 		// Straight assigment
 		case (AssignOps::Equals):
 			c->arg(0)->set(c->argc(2));
+			printf("this var '%s' should have been set to this var '%s'\n", c->argc(0), c->argc(2));
 			break;
 		// Concatenation
 		case (AssignOps::PlusEquals):

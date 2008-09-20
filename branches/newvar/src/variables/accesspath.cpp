@@ -68,16 +68,68 @@ Variable *AccessPath::walk()
 				break;
 			// For pointer types, get return value from static VAccess classes
 			case (VTypes::ModelData):
-				if (!modelAccessors.findAccessor(result.asPointer(), step->variableId(), result)) failed = TRUE;
+				if (!modelAccessors.retrieve(result.asPointer(), step->variableId(), result)) failed = TRUE;
 				break;
 			case (VTypes::AtomData):
 				break;
 		}
+		if (failed) break;
 		// Prepare for next step
 		lastType = step->returnType();
 	}
 	msg.exit("AccessPath::walk");
 	return result.value();
+}
+
+// Walk path and set final target variable
+bool AccessPath::walkAndSet(Variable *srcvar, VTypes::DataType dt)
+{
+	msg.enter("AccessPath::walkAndSet");
+	AccessStep *step = NULL;
+	int arrayindex;
+	static ReturnValue result;
+	result.reset();
+	bool success = TRUE;
+	// DataType of the most recently 'got' value
+	VTypes::DataType lastType = VTypes::NoData;
+	// Go through remaining nodes in the list one by one, calling the relevant static member functions in access-enabled objects
+	for (step = path_.first(); step != NULL; step = step->next)
+	{
+		// If a previous ptrType was set, use this to determine the accessor set to search. Otherwise, get the value stored in the variable.
+		switch (lastType)
+		{
+			case (VTypes::NoData):
+				step->setTargetValue(srcvar);
+				break;
+			case (VTypes::IntegerData):
+			case (VTypes::RealData):
+			case (VTypes::CharacterData):
+			case (VTypes::ExpressionData):
+				msg.print("AccessPath '%s' is trying to access a subvariable of a non-class type (%s).\n", name_.get(), step->targetName());
+				success = FALSE;
+				result.reset();
+				break;
+			// For pointer types, get/set return value from static VAccess classes
+			case (VTypes::ModelData):
+				// If this is not the last step, retrieve. Otherwise, set.
+				if (step->next == NULL) 
+				{
+					if (!modelAccessors.set(result.asPointer(), step->variableId(), srcvar)) success = FALSE;
+				}
+				else
+				{
+					if (!modelAccessors.retrieve(result.asPointer(), step->variableId(), result)) success = FALSE;
+				}
+				break;
+			case (VTypes::AtomData):
+				break;
+		}
+		if (!success) break;
+		// Prepare for next step
+		lastType = step->returnType();
+	}
+	msg.exit("AccessPath::walkAndSet");
+	return success;
 }
 
 // Set (create) access path from text path
@@ -197,44 +249,38 @@ void *AccessPath::asPointer(VTypes::DataType dt, int index)
 // Increase variable by integer amount
 bool AccessPath::step(int delta, int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return FALSE;
-	return v->step(delta);
+	printf("Oh no. Don't think so!\n");
+	return FALSE;
 }
 
 // Set variable target from integer
 bool AccessPath::set(int i, int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return FALSE;
-	return v->set(i);
+	static IntegerVariable ivar;
+	ivar.set(i);
+	return walkAndSet(&ivar, VTypes::IntegerData);
 }
 
 // Set variable target from double
 bool AccessPath::set(double d, int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return FALSE;
-	return v->set(d);
+	static RealVariable dvar;
+	dvar.set(d);
+	return walkAndSet(&dvar, VTypes::RealData);
 }
 
 // Set variable target from character
 bool AccessPath::set(const char *s, int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return FALSE;
-	return v->set(s);
+	static CharacterVariable cvar;
+	cvar.set(s);
+	return walkAndSet(&cvar, VTypes::CharacterData);
 }
 
 // Set variable target from pointer
 bool AccessPath::set(void *ptr, VTypes::DataType dt, int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return FALSE;
-	return v->set(ptr, dt);
+	static PointerVariable pvar;
+	pvar.reset(ptr, dt);
+	return walkAndSet(&pvar, dt);
 }

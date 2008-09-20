@@ -21,7 +21,7 @@
 
 #include "variables/modelaccess.h"
 #include "variables/vaccess.h"
-#include "model/model.h""
+#include "model/model.h"
 #include "base/messenger.h"
 
 ModelAccessors modelAccessors;
@@ -30,18 +30,18 @@ ModelAccessors modelAccessors;
 ModelAccessors::ModelAccessors()
 {
  	accessorPointers[ModelAccessors::Atoms] = addListAccessor("atoms",		VTypes::AtomData);
- 	accessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	TRUE);
+ 	accessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	FALSE);
  	accessorPointers[ModelAccessors::NAtoms] = addAccessor("natoms",		VTypes::IntegerData,	TRUE);
 };
 
 // Retrieve specified data
-bool ModelAccessors::findAccessor(void *classptr, int vid, ReturnValue &rv)
+bool ModelAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 {
-	msg.enter("ModelAccessors::findAccessor");
+	msg.enter("ModelAccessors::retrieve");
 	bool result = TRUE;
 	// Cast pointer into Model*
 	Model *m = (Model*) classptr;
-	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::findAccessor.\n");
+	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::retrieve.\n");
 	// Search through list of accessors to get enumerated value
 	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
 	switch (vid)
@@ -55,10 +55,44 @@ bool ModelAccessors::findAccessor(void *classptr, int vid, ReturnValue &rv)
 			rv.set(m->nAtoms());
 			break;
 		default:
-			printf("Unknown enumeration %i given to ModelAccessors::findAccessor.\n", vid);
+			printf("Unknown enumeration %i given to ModelAccessors::retrieve.\n", vid);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ModelAccessors::findAccessor");
+	msg.exit("ModelAccessors::retrieve");
+	return result;
+}
+
+// Set specified data
+bool ModelAccessors::set(void *classptr, int vid, Variable *srcvar)
+{
+	msg.enter("ModelAccessors::set");
+	bool result = TRUE;
+	// Cast pointer into Model*
+	Model *m = (Model*) classptr;
+	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::set.\n");
+	// Search through list of accessors to get enumerated value
+	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
+	// Check range of supplied vid
+	if ((vid < 0) | (vid > ModelAccessors::nAccessors))
+	{
+		printf("Unknown enumeration %i given to ModelAccessors::set.\n", vid);
+		msg.exit("ModelAccessors::set");
+		return FALSE;
+	} 
+	switch (vid)
+	{
+		case (ModelAccessors::Name):
+			m->setName(srcvar->asCharacter());
+			break;
+		case (ModelAccessors::Atoms):
+		case (ModelAccessors::NAtoms):
+			msg.print("Member '%s' in Model is read-only.\n", accessorPointers[vid]->name());
+			result = FALSE;
+			break;
+		default:
+			break;
+	}
+	msg.exit("ModelAccessors::set");
 	return result;
 }

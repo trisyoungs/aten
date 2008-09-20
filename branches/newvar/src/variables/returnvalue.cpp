@@ -112,6 +112,7 @@ Variable *ReturnValue::value()
 			break;
 		case (VTypes::CharacterData):
 			result = &valueC_;
+			printf("rv says chardata - value is '%s'\n", valueC_.asCharacter());
 			break;
 		case (VTypes::ExpressionData):
 			msg.print("What - setting returnvalue from ExpressionData?\n");
