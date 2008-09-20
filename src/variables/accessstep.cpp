@@ -34,6 +34,7 @@ AccessStep::AccessStep()
 	// Private variables
 	target_ = NULL;
 	arrayIndex_ = NULL;
+	variableId_ = -1;
 
 	// Public variables
 	prev = NULL;
@@ -130,6 +131,18 @@ const char *AccessStep::targetName()
 Variable *AccessStep::target()
 {
 	return target_;
+}
+
+// Set enumerated target variable ID
+void AccessStep::setVariableId(int id)
+{
+	variableId_ = id;
+}
+
+// Return variable ID
+int AccessStep::variableId()
+{
+	return variableId_;
 }
 
 // Get return value as integer

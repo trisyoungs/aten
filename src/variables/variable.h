@@ -51,10 +51,10 @@ class Variable
 	VariableList *parent_;
 	// Size of array (if any, not for list types)
 	int arraySize_;
+	// Whether the array is a dynamic list type (List or Reflist)
+	bool listArray_;
 
 	public:
-	// Clears value of variable
-	//void reset();
 	// Set name of variable
 	void setName(const char* s);
 	// Get name of variable
@@ -69,6 +69,12 @@ class Variable
 	void setReadOnly();
 	// Return the readonly status of the variable
 	bool readOnly();
+	// Set listarray flag to true
+	void setListArray();
+	// Return whether the array is a listarray
+	bool listArray();
+	// Return whether the variable is an array of any sort
+	bool isArray();
 
 	/*
 	// Set / get

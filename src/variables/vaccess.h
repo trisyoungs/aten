@@ -40,14 +40,15 @@ class VAccess
 	// Add new list accessor
 	Variable *addRefListAccessor(const char *name, VTypes::DataType dt);
 
-
 	public:
 	// Return address of VariableList
 	VariableList *accessors();
 
 	public:
 	// Find and return named accessor value
-	virtual bool findAccessor(void *classptr, Variable *accessor, ReturnValue &rv)=0;
+	virtual bool findAccessor(void *classptr, int vid, ReturnValue &rv)=0;
+	// Return 'id' (position in list) of supplied accessor
+	int accessorId(Variable *accessor);
 };
 
 #endif

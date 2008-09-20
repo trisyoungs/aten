@@ -44,6 +44,12 @@ VariableList::VariableList()
 	//v->set(aten.modelList(), VTypes::ModelData);
 }
 
+// Return list position (id) of Variable in list
+int VariableList::variableId(Variable *v)
+{
+	return variables_.indexOf(v);
+}
+
 /*
 // Variable Creation
 */
@@ -113,6 +119,22 @@ Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTyp
 	newvar->setName(name);
 	return newvar;
 }
+
+// Add list variable
+// Variable *VariableList::addListVariable(const char *name, VTypes::DataType dt)
+// {
+// 	// Check data type given...
+// 	if ((dt < VTypes::AtomData) || (dt > VTypes::AtomtypeData))
+// 	{
+// 		msg.print("A ListVariable must be given a pointer datatype.\n");
+// 		return NULL;
+// 	}
+// 	PointerListVariable *newvar = new PointerListVariable(dt);
+// 	newvar->setListArray();
+// 	variables_.own(newvar);
+// 	newvar->setName(name);
+// 	return newvar;
+// }
 
 // Add pointer to pointer reference variable
 Variable *VariableList::addBundlePointer(const char *name, VTypes::DataType dt)

@@ -68,7 +68,7 @@ Variable *AccessPath::walk()
 				break;
 			// For pointer types, get return value from static VAccess classes
 			case (VTypes::ModelData):
-				if (!modelAccessors.findAccessor(result.asPointer(), step->target(), result)) failed = TRUE;
+				if (!modelAccessors.findAccessor(result.asPointer(), step->variableId(), result)) failed = TRUE;
 				break;
 			case (VTypes::AtomData):
 				break;
@@ -90,7 +90,6 @@ bool AccessPath::setPath(const char *path)
 	int n;
 	char *c;
 	VTypes::DataType lastType = VTypes::NoData;
-	VariableList *pathvars;
 	bool success;
 	// Make sure the parent variable list has been set...
 	if (parent_ == NULL)
@@ -116,20 +115,19 @@ bool AccessPath::setPath(const char *path)
 			return FALSE;
 		}
 		// If this is the first added node then the variable must exist in the local VariableList.
-		// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to us5e
+		step = path_.add();
+		// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
+		printf("Last variable type was '%s'.\n", VTypes::dataType(lastType));
 		switch (lastType)
 		{
 			case (VTypes::NoData):
-				pathvars = parent_;
+				success = step->setTarget(bit.get(), parent_, parent_);
 				break;
 			case (VTypes::ModelData):
-				pathvars = modelAccessors.accessors();
+				success = step->setTarget(bit.get(), parent_, modelAccessors.accessors());
+				if (success) step->setVariableId(modelAccessors.accessorId(step->target()));
 				break;
 		}
-		printf("Last variable type was '%s'.\n", VTypes::dataType(lastType));
-		// Add the new path step
-		step = path_.add();
-		success = step->setTarget(bit.get(), parent_, pathvars);
 		if (!success) break;
 		// Increase the char pointer
 		for (n=0; n<bit.length(); n++) c ++;
