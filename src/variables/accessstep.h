@@ -74,6 +74,8 @@ class AccessStep
 	void *asPointer(VTypes::DataType dt);
 	// Get return type of step (i.e. DataType of target variable)
 	VTypes::DataType returnType();
+	// Set value of target variable from source variable
+	void setTargetValue(Variable *srcvar);
 };
 
 #endif

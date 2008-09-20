@@ -195,3 +195,27 @@ VTypes::DataType AccessStep::returnType()
 	}
 	return target_->type();
 }
+
+// Set value of target variable from source variable
+void AccessStep::setTargetValue(Variable *srcvar)
+{
+	// Check type of target variable and set accordingly
+	switch (returnType_)
+	{
+		case (VTypes::NoData):
+			printf("Error setting target variable in AccessStep - no data type set.\n");
+			break;
+		case (VTypes::IntegerData):
+			target_->set(srcvar->asInteger());
+			break;
+		case (VTypes::CharacterData):
+			target_->set(srcvar->asCharacter());
+			break;
+		case (VTypes::RealData):
+			target_->set(srcvar->asDouble());
+			break;
+		default:
+			target_->set(srcvar->asPointer(returnType_), returnType_);
+			break;
+	}
+}

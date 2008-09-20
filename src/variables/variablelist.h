@@ -96,10 +96,8 @@ class VariableList
 	Variable *addListVariable(const char *name, VTypes::DataType vt);
 	// Add pointer to data in Bundle variable
 	Variable *addBundlePointer(const char *name, VTypes::DataType vt);
-	// Reset values of all variables
-	void resetAll();
-	// Reset values of variable selection
-	void reset(const char*, ...);
+	// Clear all variables, expressions etc. stored in class
+	void clear();
 	// Print list of variables and their values
 	void print();
 };

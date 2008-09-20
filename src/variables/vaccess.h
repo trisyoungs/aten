@@ -30,6 +30,10 @@
 // Variable access class
 class VAccess
 {
+	public:
+	// Constructor
+	VAccess();
+
 	protected:
 	// VariableList in which accessors are stored
 	VariableList accessors_;
@@ -43,10 +47,10 @@ class VAccess
 	public:
 	// Return address of VariableList
 	VariableList *accessors();
-
-	public:
 	// Find and return named accessor value
-	virtual bool findAccessor(void *classptr, int vid, ReturnValue &rv)=0;
+	virtual bool retrieve(void *classptr, int vid, ReturnValue &rv)=0;
+	// Find ans set named accessor value
+	virtual bool set(void *classptr, int vid, Variable *srcvar)=0;
 	// Return 'id' (position in list) of supplied accessor
 	int accessorId(Variable *accessor);
 };
