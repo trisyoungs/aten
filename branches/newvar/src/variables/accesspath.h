@@ -40,20 +40,21 @@ class VariableList;
 class AccessPath : public Variable
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AccessPath();
+	~AccessPath();
 	// List pointers
 	AccessPath *prev, *next;
 
 	private:
 	// Variable 'path'
 	List<AccessStep> path_;
-	// Eventual return result of path
-	VTypes::DataType returnType_;
 	// Walk path and get final target variable
 	Variable *walk();
 	// Walk path and set final target variable
 	bool walkAndSet(Variable *srcvar, VTypes::DataType dt);
+	// Variable to contain return value
+	Variable *resultVariable_;
 
 	public:
 	// Set path from character constant

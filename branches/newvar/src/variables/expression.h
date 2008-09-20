@@ -52,22 +52,10 @@ class ExpressionVariable : public Variable, VObject<int>
 	bool set(double d);
 	// Set value of variable (pointer)
 	bool set(void *ptr, VTypes::DataType type);
-	// Get value of variable as character string
-	const char *asCharacter();
 	// Get value of variable as integer
-	int asInteger();
+	int asInteger(int index = -1);
 	// Get value of variable as double
-	double asDouble();
-	// Get value of variable as float
-	float asFloat();
-	// Get value of variable as a boolean
-	bool asBool();
-	// Get value of variable as pointer of specified type
-	void *asPointer(VTypes::DataType type);
-	// Double increase
-	bool increase(int);
-	// Double decrease
-	bool decrease(int);
+	double asDouble(int index = -1);
 
 	/*
 	// Expression Data
@@ -95,9 +83,6 @@ class ExpressionVariable : public Variable, VObject<int>
 	bool initialise(const char *s);
 	// Return whether the result of the expression is a floating point (or integer)
 	bool evaluatesToReal();
-	// Evaluate expression and return value
-	double evaluateAsReal();
-	int evaluateAsInteger();
 	// Print expression
 	void print(ExpressionNode *highlight = NULL, bool showUsed = TRUE);
 };
