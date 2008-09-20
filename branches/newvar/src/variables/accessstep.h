@@ -42,6 +42,8 @@ class AccessStep
 	private:
 	// Target variable
 	Variable *target_;
+	// Enumerated index of variable (for class accessor variables)
+	int variableId_;
 	// Array index associated to variable (if any)
 	AccessPath *arrayIndex_;
 	// Return type of target variable
@@ -56,6 +58,10 @@ class AccessStep
 	const char *targetName();
 	// Return target variable pointer
 	Variable *target();
+	// Set enumerated target variable ID
+	void setVariableId(int);
+	// Return variable ID
+	int variableId();
 	// Get target value as integer
 	int asInteger();
 	// Get target value as double

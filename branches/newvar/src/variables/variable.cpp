@@ -36,6 +36,7 @@ Variable::Variable()
 	dataType_ = VTypes::NoData;
 	readOnly_ = FALSE;
 	arraySize_ = -1;
+	listArray_ = FALSE;
 
 	// Public variables
 	prev = NULL;
@@ -82,6 +83,25 @@ void Variable::setParent(VariableList *vlist)
 void Variable::setReadOnly()
 {
 	readOnly_ = TRUE;
+}
+
+// Set listarray flag to true
+void Variable::setListArray()
+{
+	listArray_ = TRUE;
+}
+
+// Return whether the array is a listarray
+bool Variable::listArray()
+{
+	return listArray_;
+}
+
+// Return whether the array is a listarray
+bool Variable::isArray()
+{
+	if (listArray_ || (arraySize_ > 0)) return TRUE;
+	else return FALSE;
 }
 
 /*

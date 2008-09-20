@@ -39,7 +39,7 @@ class ModelAccessors : public VAccess
 
 	public:
 	// Retrieve specified data
-	bool findAccessor(void *classptr, Variable *accessor, ReturnValue &rv);
+	bool findAccessor(void *classptr, int vid, ReturnValue &rv);
 };
 
 extern ModelAccessors modelAccessors;

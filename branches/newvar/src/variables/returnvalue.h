@@ -56,6 +56,14 @@ class ReturnValue
 	void reset();
 	// Copy variable data from AccessStep
 	void set(AccessStep *source);
+	// Set from integer value
+	void set(int i);
+	// Set from double value
+	void set(double d);
+	// Set from character value
+	void set(const char *c);
+	// Set from pointer value
+	void set(void *ptr, VTypes::DataType type);
 	// Return local variable containing last stored value
 	Variable *value();
 	// Return pointer value from local PointerVariable

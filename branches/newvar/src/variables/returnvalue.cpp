@@ -66,6 +66,34 @@ void ReturnValue::set(AccessStep *source)
 	}
 }
 
+// Set from integer value
+void ReturnValue::set(int i)
+{
+	type_ = VTypes::IntegerData;
+	valueI_.set(i);
+}
+
+// Set from double value
+void ReturnValue::set(double d)
+{
+	type_ = VTypes::RealData;
+	valueR_.set(d);
+}
+
+// Set from character value
+void ReturnValue::set(const char *c)
+{
+	type_ = VTypes::CharacterData;
+	valueC_.set(c);
+}
+
+// Set from pointer value
+void ReturnValue::set(void *ptr, VTypes::DataType dt)
+{
+	type_ = dt;
+	valueP_.reset(ptr, type_);
+}
+
 // Return local variable containing last stored value
 Variable *ReturnValue::value()
 {

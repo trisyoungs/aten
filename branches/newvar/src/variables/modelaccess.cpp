@@ -21,24 +21,44 @@
 
 #include "variables/modelaccess.h"
 #include "variables/vaccess.h"
+#include "model/model.h""
+#include "base/messenger.h"
 
 ModelAccessors modelAccessors;
 
 // Constructor
 ModelAccessors::ModelAccessors()
 {
-// 	addAccessor("atoms",		VObject::ListArray,	VObject::AtomData,	FALSE);
+ 	accessorPointers[ModelAccessors::Atoms] = addListAccessor("atoms",		VTypes::AtomData);
  	accessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	TRUE);
-// 	addAccessor("natoms",		VObject::NoArray,	VObject::IntegerData,	FALSE);
+ 	accessorPointers[ModelAccessors::NAtoms] = addAccessor("natoms",		VTypes::IntegerData,	TRUE);
 };
 
 // Retrieve specified data
-bool ModelAccessors::findAccessor(void *classptr, Variable *accessor, ReturnValue &rv)
+bool ModelAccessors::findAccessor(void *classptr, int vid, ReturnValue &rv)
 {
 	msg.enter("ModelAccessors::findAccessor");
 	bool result = TRUE;
+	// Cast pointer into Model*
+	Model *m = (Model*) classptr;
+	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::findAccessor.\n");
 	// Search through list of accessors to get enumerated value
-// 	for (Variable *v = 
+	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
+	switch (vid)
+	{
+		case (ModelAccessors::Atoms):
+			break;
+		case (ModelAccessors::Name):
+			rv.set(m->name());
+			break;
+		case (ModelAccessors::NAtoms):
+			rv.set(m->nAtoms());
+			break;
+		default:
+			printf("Unknown enumeration %i given to ModelAccessors::findAccessor.\n", vid);
+			result = FALSE;
+			break;
+	}
 	msg.exit("ModelAccessors::findAccessor");
 	return result;
 }

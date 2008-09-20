@@ -37,3 +37,20 @@ Variable *VAccess::addAccessor(const char *name, VTypes::DataType dt, bool reado
 	msg.exit("VAccess::addAccessor");
 	return result;
 }
+
+// Add new accessor
+Variable *VAccess::addListAccessor(const char *name, VTypes::DataType dt)
+{
+	msg.enter("VAccess::addListAccessor");
+	Variable *result = accessors_.addVariable(name, dt);
+	result->setReadOnly();
+	result->setListArray();
+	msg.exit("VAccess::addListAccessor");
+	return result;
+}
+
+// Return 'id' (position in list) of supplied accessor
+int VAccess::accessorId(Variable *accessor)
+{
+	return accessors_.variableId(accessor);
+}
