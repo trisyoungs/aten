@@ -35,6 +35,7 @@
 
 // Forward declarations
 class VariableList;
+class ReturnValue;
 
 // Variable Access Path
 class AccessPath : public Variable
@@ -49,10 +50,8 @@ class AccessPath : public Variable
 	private:
 	// Variable 'path'
 	List<AccessStep> path_;
-	// Walk path and get final target variable
-	Variable *walk();
-	// Walk path and set final target variable
-	bool walkAndSet(Variable *srcvar, VTypes::DataType dt);
+	// Walk path and get/set/step final target variable
+	bool walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, int step);
 	// Variable to contain return value
 	Variable *resultVariable_;
 

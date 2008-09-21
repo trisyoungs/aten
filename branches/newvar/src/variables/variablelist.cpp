@@ -80,10 +80,11 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 		case (VTypes::AngleData):
 		case (VTypes::TorsionData):
 		case (VTypes::AtomtypeData):
+		case (VTypes::CellData):
 			result = new PointerVariable(dt);
 			break;
 		default:
-			printf("Don't yet know how to create a variable of type %i\n", dt);
+			printf("Don't yet know how to create a variable of type '%s'\n", VTypes::dataType(dt));
 			break;
 	}
 	if (result != NULL)

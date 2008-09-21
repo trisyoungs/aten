@@ -153,60 +153,6 @@ Command *CommandList::topmostBranch(CommandAction ca)
 	return result->pointer();
 }
 
-// // Create subvariables for variable (based on its type)
-// bool CommandList::createSubvariables(Variable *v)
-// {
-// 	switch (v->type())
-// 	{
-// 		case (VTypes::AtomData):
-// 			if (!createAtomVariables( v->name() )) return FALSE;
-// 			break;
-// 		case (VTypes::PatternData):
-// 			if (!createPatternVariables( v->name() )) return FALSE;
-// 			break;
-// 		case (VTypes::GridData):
-// 			if (!createGridVariables( v->name() )) return FALSE;
-// 			break;
-// 		case (VTypes::ModelData):
-// 			if (!createModelVariables( v->name() )) return FALSE;
-// 			break;
-// 		case (VTypes::BondData):
-// 		case (VTypes::AngleData):
-// 		case (VTypes::TorsionData):
-// 			if (!createPatternBoundVariables(v->name())) return FALSE;
-// 			break;
-// 		case (VTypes::AtomtypeData):
-// 			if (!createAtomtypeVariables(v->name())) return FALSE;
-// 			break;
-// 	}
-// 	return TRUE;
-// }
-
-// // Set subvariables for variable (based on its type)
-// void CommandList::setSubvariables(Variable *v)
-// {
-// 	switch (v->type())
-// 	{
-// 		case (VTypes::AtomData):
-// 			setAtomVariables( v->name(), (Atom*) v->asPointer() );
-// 			break;
-// 		case (VTypes::PatternData):
-// 			setPatternVariables( v->name(), (Pattern*) v->asPointer() );
-// 			break;
-// 		case (VTypes::ModelData):
-// 			setModelVariables( v->name(), (Model*) v->asPointer() );
-// 			break;
-// 		case (VTypes::BondData):
-// 		case (VTypes::AngleData):
-// 		case (VTypes::TorsionData):
-// 			setPatternBoundVariables( v->name(), (PatternBound*) v->asPointer() );
-// 			break;
-// 		case (VTypes::AtomtypeData):
-// 			setAtomtypeVariables( v->name(), (ForcefieldAtom*) v->asPointer() );
-// 			break;
-// 	}
-// }
-
 // Add basic command
 bool CommandList::addCommand(CommandAction ca)
 {
@@ -431,7 +377,8 @@ bool CommandList::cacheCommand()
 		parser.shiftArgsUp();
 		// Set command based on type of variable
 		// TGAY return type of variablepath needs to be checked here.
-		Variable *v = variables_.get(&parser.argc(1)[1]);
+// 		Variable *v = variables_.get(&parser.argc(1)[1]);
+		Variable *v = variables_.addPath(parser.argc(1));
 		if (v == NULL)
 		{
 			msg.print( "Variable '%s' has not been declared.\n", &parser.argc(1)[1]);

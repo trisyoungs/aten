@@ -54,6 +54,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Create torsion* variables with the names provided" },
 	{ "atomtype",		"",		"<variables>",
 				"Create atomtype* variables with the names provided" },
+	{ "_cell_",		"",		"<variables>",
+				"Create cell* variables with the names provided" },
 	
 	// Root node
 	{ "_ROOTNODE_",		"",		"",

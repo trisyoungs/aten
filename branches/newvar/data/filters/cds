@@ -10,11 +10,11 @@ importmodel
 	glob *.*dat
 
 	# Variables
-	character spgrp,discard,ea,eb,ec,e
+	character spgrp,discard,ea,eb,ec,e,title
 	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
 	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj,total
 	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz
-	double a,b,c,al,be,ga,cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
+	double a,b,c,al,be,ga,cella,cellb,cellc,alpha,beta,gamma
 
 	zmap firstalpha
 
@@ -35,13 +35,13 @@ importmodel
 	if $cell = 1
 		readline "$a%6 $b%6 $c%6 $al%6 $be%6 $ga%6 $pa%1 $pb%1 $pc%1 $pal%1 $pbe%1 $pga%1 *%18 $spgrpn%3 $spgrp%8"
 		# Cell lengths and angles are multiplied by the precision digits (10^n)...
-		$cell.a = $a/10.0^$pa
-		$cell.b = $b/10.0^$pb
-		$cell.c = $c/10.0^$pc
-		$cell.alpha = $al/10.0^$pal
-		$cell.beta = $be/10.0^$pbe
-		$cell.gamma = $ga/10.0^$pga
-		cell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
+		$model.cell.a = $a/10.0^$pa
+		$model.cell.b = $b/10.0^$pb
+		$model.cell.c = $c/10.0^$pc
+		$model.cell.alpha = $al/10.0^$pal
+		$model.cell.beta = $be/10.0^$pbe
+		$model.cell.gamma = $ga/10.0^$pga
+		#cell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
 		spacegroup $spgrpn
 	end
 	# Record 3: Text information (ignored)

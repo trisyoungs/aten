@@ -2,6 +2,7 @@ add_library(variables
 accesspath.h
 accessstep.h
 bundle.h
+cellaccess.h
 character.h
 expression.h
 expressionnode.h
@@ -17,6 +18,7 @@ variablelist.h
 accesspath.cpp
 accessstep.cpp
 bundle.cpp
+cellaccess.cpp
 character.cpp
 expression.cpp
 expressionnode.cpp

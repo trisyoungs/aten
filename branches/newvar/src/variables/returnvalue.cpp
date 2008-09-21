@@ -125,7 +125,7 @@ Variable *ReturnValue::value()
 // Return pointer value from local PointerVariable
 void *ReturnValue::asPointer()
 {
-	if ((type_ < VTypes::AtomData) || (type_ > VTypes::AtomtypeData)) msg.print("ReturnValue contains no pointer to return.\n");
+	if ((type_ < VTypes::AtomData) || (type_ > VTypes::CellData)) msg.print("ReturnValue contains no pointer to return.\n");
 	else return valueP_.asPointer(type_);
 	return NULL;
 }

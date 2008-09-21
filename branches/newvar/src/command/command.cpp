@@ -206,48 +206,6 @@ void *Command::argp(int argno, VTypes::DataType dt)
 	return (ri == NULL ? NULL : ri->item->asPointer(dt));
 }
 
-// // Return argument as pattern pointer
-// Pattern *Command::argp(int argno)
-// {
-// 	Refitem<Variable,int> *ri = args_[argno];
-// 	if (ri == NULL) return NULL;
-// 	return (Pattern*) rv->item->asPointer(VTypes::PatternData);
-// }
-
-// // Return argument as grid pointer
-// Grid *Command::argg(int argno)
-// {
-// 	Refitem<Variable,Variable*> *rv = args_[argno];
-// 	if (rv == NULL) return NULL;
-// 	return (Grid*) rv->item->asPointer(VTypes::GridData);
-// }
-
-// // Return argument as model pointer
-// Model *Command::argm(int argno)
-// {
-// 	Refitem<Variable,Variable*> *rv = args_[argno];
-// 	if (rv == NULL) return NULL;
-// 	return (Model*) rv->item->asPointer(VTypes::ModelData);
-// }
-
-// // Return argument as PatternBound pointer
-// PatternBound *Command::argpb(int argno)
-// {
-// 	Refitem<Variable,Variable*> *rv = args_[argno];
-// 	if (rv == NULL) return NULL;
-// 	else if ((rv->item->type() < VTypes::BondData) || (rv->item->type() > VTypes::TorsionData)) msg.print("Command can't convert variable '%s' into a PatternBound\n.", rv->item->name());
-// 	else return (PatternBound*) rv->item->asPointer(VTypes::BondData);
-// 	return NULL;
-// }
-
-// // Return argument as ForcefieldAtom pointer
-// ForcefieldAtom *Command::argffa(int argno)
-// {
-// 	Refitem<Variable,Variable*> *rv = args_[argno];
-// 	if (rv == NULL) return NULL;
-// 	return (ForcefieldAtom*) rv->item->asPointer(VTypes::AtomtypeData);
-// }
-
 // Returns whether argument 'n' was provided
 bool Command::hasArg(int argno)
 {

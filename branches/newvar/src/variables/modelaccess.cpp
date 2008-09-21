@@ -30,6 +30,7 @@ ModelAccessors modelAccessors;
 ModelAccessors::ModelAccessors()
 {
  	accessorPointers[ModelAccessors::Atoms] = addListAccessor("atoms",		VTypes::AtomData);
+ 	accessorPointers[ModelAccessors::Cell] = addAccessor("cell",		VTypes::CellData, TRUE);
  	accessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	FALSE);
  	accessorPointers[ModelAccessors::NAtoms] = addAccessor("natoms",		VTypes::IntegerData,	TRUE);
 };
@@ -47,6 +48,10 @@ bool ModelAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 	switch (vid)
 	{
 		case (ModelAccessors::Atoms):
+			rv.set(m->atoms(), VTypes::AtomData);
+			break;
+		case (ModelAccessors::Cell):
+			rv.set(m->cell(), VTypes::CellData);
 			break;
 		case (ModelAccessors::Name):
 			rv.set(m->name());
@@ -74,7 +79,7 @@ bool ModelAccessors::set(void *classptr, int vid, Variable *srcvar)
 	// Search through list of accessors to get enumerated value
 // 	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
 	// Check range of supplied vid
-	if ((vid < 0) | (vid > ModelAccessors::nAccessors))
+	if ((vid < 0) || (vid > ModelAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to ModelAccessors::set.\n", vid);
 		msg.exit("ModelAccessors::set");

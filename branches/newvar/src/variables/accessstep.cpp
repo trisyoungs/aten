@@ -177,7 +177,7 @@ bool AccessStep::asBool()
 }
 
 // Get return value as pointer
-void * AccessStep::asPointer(VTypes::DataType dt)
+void *AccessStep::asPointer(VTypes::DataType dt)
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a pointer.\n");
 	else return target_->asPointer(dt,  arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
@@ -196,7 +196,7 @@ VTypes::DataType AccessStep::type()
 }
 
 // Set value of target variable from source variable
-void AccessStep::setTargetValue(Variable *srcvar)
+void AccessStep::setTargetVariable(Variable *srcvar)
 {
 	// Check type of target variable and set accordingly
 	VTypes::DataType dt = target_ == NULL ? VTypes::NoData : target_->type();
@@ -206,16 +206,22 @@ void AccessStep::setTargetValue(Variable *srcvar)
 			printf("Error setting target variable in AccessStep - no data type set.\n");
 			break;
 		case (VTypes::IntegerData):
-			target_->set(srcvar->asInteger());
+			target_->set(srcvar->asInteger(), arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 			break;
 		case (VTypes::CharacterData):
-			target_->set(srcvar->asCharacter());
+			target_->set(srcvar->asCharacter(), arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 			break;
 		case (VTypes::RealData):
-			target_->set(srcvar->asDouble());
+			target_->set(srcvar->asDouble(), arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 			break;
 		default:
-			target_->set(srcvar->asPointer(dt), dt);
+			target_->set(srcvar->asPointer(dt), dt, arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger());
 			break;
 	}
+}
+
+// Step value of target variable from source variable
+bool AccessStep::stepTargetVariable(int delta)
+{
+	return target_->step(delta, arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
 }
