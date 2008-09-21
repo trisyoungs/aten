@@ -43,7 +43,7 @@ bool ModelAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 	Model *m = (Model*) classptr;
 	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::retrieve.\n");
 	// Search through list of accessors to get enumerated value
-	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
+// 	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
 	switch (vid)
 	{
 		case (ModelAccessors::Atoms):
@@ -72,7 +72,7 @@ bool ModelAccessors::set(void *classptr, int vid, Variable *srcvar)
 	Model *m = (Model*) classptr;
 	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::set.\n");
 	// Search through list of accessors to get enumerated value
-	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
+// 	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
 	// Check range of supplied vid
 	if ((vid < 0) | (vid > ModelAccessors::nAccessors))
 	{

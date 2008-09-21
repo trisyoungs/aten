@@ -55,7 +55,6 @@ bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableL
 		if (text[n] == '[') lbr = n;
 		if (text[n] == ']') rbr = n;
 	}
-	printf("lbr=%i, rbr=%i\n",lbr,rbr);
 	// Check values of lbracket and rbracket
 	if ((lbr == -1) && (rbr == -1))
 	{
@@ -186,7 +185,7 @@ void * AccessStep::asPointer(VTypes::DataType dt)
 }
 
 // Get return type of step (i.e. DataType of target variable)
-VTypes::DataType AccessStep::returnType()
+VTypes::DataType AccessStep::type()
 {
 	if (target_ == NULL)
 	{
@@ -200,7 +199,8 @@ VTypes::DataType AccessStep::returnType()
 void AccessStep::setTargetValue(Variable *srcvar)
 {
 	// Check type of target variable and set accordingly
-	switch (returnType_)
+	VTypes::DataType dt = target_ == NULL ? VTypes::NoData : target_->type();
+	switch (dt)
 	{
 		case (VTypes::NoData):
 			printf("Error setting target variable in AccessStep - no data type set.\n");
@@ -215,7 +215,7 @@ void AccessStep::setTargetValue(Variable *srcvar)
 			target_->set(srcvar->asDouble());
 			break;
 		default:
-			target_->set(srcvar->asPointer(returnType_), returnType_);
+			target_->set(srcvar->asPointer(dt), dt);
 			break;
 	}
 }

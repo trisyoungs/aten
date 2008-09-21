@@ -81,7 +81,7 @@ Variable *AccessPath::walk()
 		}
 		if (failed) break;
 		// Prepare for next step
-		lastType = step->returnType();
+		lastType = step->type();
 	}
 	// Put value now stored in the ReturnValue structure in the local Variable
 	switch (dataType_)
@@ -148,7 +148,7 @@ bool AccessPath::walkAndSet(Variable *srcvar, VTypes::DataType dt)
 		}
 		if (!success) break;
 		// Prepare for next step
-		lastType = step->returnType();
+		lastType = step->type();
 	}
 	msg.exit("AccessPath::walkAndSet");
 	return success;
@@ -200,6 +200,9 @@ bool AccessPath::setPath(const char *path)
 				success = step->setTarget(bit.get(), parent_, modelAccessors.accessors());
 				if (success) step->setVariableId(modelAccessors.accessorId(step->target()));
 				break;
+			default:
+				printf("This variable type has not been implemented in AccessPath::setPath.\n");
+				break;
 		}
 		if (!success) break;
 		// Increase the char pointer
@@ -207,12 +210,12 @@ bool AccessPath::setPath(const char *path)
 		// If we're on a '.', skip on a further character
 		if (*c == '.') c++;
 		// Store lasttype
-		lastType = step->returnType();
+		lastType = step->type();
 	}
 	// Set the return type of the path as the type of the last step, and create a suitable return variable
 	if (success)
 	{
-		dataType_ = step->returnType();
+		dataType_ = step->type();
 		switch (dataType_)
 		{
 			case (VTypes::IntegerData):

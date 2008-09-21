@@ -46,8 +46,6 @@ class AccessStep
 	int variableId_;
 	// Array index associated to variable (if any)
 	AccessPath *arrayIndex_;
-	// Return type of target variable
-	VTypes::DataType returnType_;
 	// Create arrayindex path
 	bool setArrayIndex(const char *path, VariableList *parentvars);
 
@@ -73,7 +71,7 @@ class AccessStep
 	// Get target value as pointer
 	void *asPointer(VTypes::DataType dt);
 	// Get return type of step (i.e. DataType of target variable)
-	VTypes::DataType returnType();
+	VTypes::DataType type();
 	// Set value of target variable from source variable
 	void setTargetValue(Variable *srcvar);
 };

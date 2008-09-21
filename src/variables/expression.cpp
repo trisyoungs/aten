@@ -39,6 +39,13 @@ ExpressionVariable::ExpressionVariable()
 	evaluatesToReal_ = TRUE;
 }
 
+// Destructor
+ExpressionVariable::~ExpressionVariable()
+{
+	expression_.clear();
+	brackets_.clear();
+}
+
 /*
 // Set / Get
 */

@@ -492,7 +492,7 @@ bool Command::addArgument(const char *text, Parser::ArgumentForm form)
 	bool result = TRUE;
 	// If argument form wasn't provided, attempt to work it out.
 	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(text) : form);
-	printf("Adding argument '%s', form = %i...\n", text, af);
+// 	printf("Adding argument '%s', form = %i...\n", text, af);
 	// Now we have the argument form, get/create a suitable variable
 	switch (af)
 	{
@@ -503,7 +503,7 @@ bool Command::addArgument(const char *text, Parser::ArgumentForm form)
 			// Attempt to construct expression
 			v = variableList_->addExpression(text);
 			if (v == NULL) result = FALSE;
-			else printf("Expression added.... %li\n", v);
+// 			else printf("Expression added.... %li\n", v);
 			args_.add(v);
 			break;
 		case (Parser::VariableForm):
@@ -521,9 +521,7 @@ bool Command::addArgument(const char *text, Parser::ArgumentForm form)
 void Command::addConstant(const char *s, bool forcechar)
 {
 	msg.enter("Command::addConstant");
-	printf("Adding constant '%s'...\n", s);
 	Variable *v = variableList_->addConstant(s, forcechar);
-	printf("...constant value set is '%s'\n", v->asCharacter());
 	args_.add(v);
 	msg.exit("Command::addConstant");
 }
@@ -532,7 +530,6 @@ void Command::addConstant(const char *s, bool forcechar)
 void Command::addConstant(int i)
 {
 	msg.enter("Command::addConstant[int]");
-	printf("Adding constant integer '%d'...\n", i);
 	Variable *v = variableList_->addConstant(i);
 	args_.add(v);
 	msg.exit("Command::addConstant[int]");
@@ -561,7 +558,7 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 		// Move on to next argument.
 		argcount ++;
 
-		printf("Adding variable %c which should have value %s\n", specifiers[n], parser.argc(argcount));
+// 		printf("Adding variable %c which should have value %s\n", specifiers[n], parser.argc(argcount));
 		// Is this a required argument?
 		if (argcount > (parser.nArgs() - 1))
 		{

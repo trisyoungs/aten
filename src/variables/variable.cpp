@@ -43,6 +43,11 @@ Variable::Variable()
 	next = NULL;
 }
 
+// Destructor (virtual)
+Variable::~Variable()
+{
+}
+
 // Set name of variable
 void Variable::setName(const char* s)
 {
