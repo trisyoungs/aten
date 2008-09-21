@@ -21,7 +21,6 @@
 
 #include "variables/returnvalue.h"
 #include "variables/accessstep.h"
-// #include "base/constants.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include <stdlib.h>
@@ -42,7 +41,7 @@ void ReturnValue::reset()
 // Copy variable data from AccessStep
 void ReturnValue::set(AccessStep *source)
 {
-	type_ = source->returnType();
+	type_ = source->type();
 	switch (type_)
 	{
 		case (VTypes::NoData):
@@ -112,10 +111,9 @@ Variable *ReturnValue::value()
 			break;
 		case (VTypes::CharacterData):
 			result = &valueC_;
-			printf("rv says chardata - value is '%s'\n", valueC_.asCharacter());
 			break;
 		case (VTypes::ExpressionData):
-			msg.print("What - setting returnvalue from ExpressionData?\n");
+			msg.print("ReturnValue cannot be set from ExpressionData.\n");
 			break;
 		default:
 			result = &valueP_;

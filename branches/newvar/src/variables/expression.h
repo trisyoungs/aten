@@ -35,8 +35,9 @@ class VariableList;
 class ExpressionVariable : public Variable, VObject<int>
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	ExpressionVariable();
+	~ExpressionVariable();
 
 	/*
 	// Set / Get

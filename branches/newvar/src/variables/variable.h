@@ -32,8 +32,9 @@ class VariableList;
 class Variable
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	Variable();
+	virtual ~Variable();
 	// List pointers
 	Variable *prev, *next;
 
