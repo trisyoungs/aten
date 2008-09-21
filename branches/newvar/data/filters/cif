@@ -1,6 +1,7 @@
 # Crystallographic Information File (cif)
-# Last modified: 05/08/08
+# Last modified: 21/09/08
 # ChangeLog:
+#	21/09/08 - Adjusted to use new data access rules.
 #	05/08/08 - Quoting adjusted to follow new Parser rules in r550. Added 'rebond' command.
 
 importmodel
@@ -17,7 +18,7 @@ importmodel
 	character discard,format,e,data,keywd,line,char,looptype,sg
 	integer n,m,cellspec
 	double rx,ry,rz
-	double cell.a,cell.b,cell.c,cell.alpha,cell.beta,cell.gamma
+	double a,b,c,alpha,beta,gamma
 
 	# Blank lines are significant, so don't skip them...
 	removereadoption skipblanks
@@ -29,34 +30,40 @@ importmodel
 	# Main loop - read lines and check for important keywords
 	for $n
 		readline "$keywd $data"
-		#print "Keyword = $keywd"
-		if $keywd = _chemical_name_common
+		print "Keyword = $keywd"
+		if $keywd = "_chemical_name_common"
 			setname $data
 		elseif $keywd = "_cell_length_a"
-			$cell.a = $data
+			$a = $data
 			inc $cellspec
+			print "$cellspec"
 		elseif $keywd = "_cell_length_b"
-			$cell.b = $data
+			$b = $data
 			inc $cellspec
+			print "$cellspec"
 		elseif $keywd = "_cell_length_c"
-			$cell.c = $data
+			$c = $data
 			inc $cellspec
+			print "$cellspec"
 		elseif $keywd = "_cell_angle_alpha"
-			$cell.alpha = $data
+			$alpha = $data
 			inc $cellspec
+			print "$cellspec"
 		elseif $keywd = "_cell_angle_beta"
-			$cell.beta = $data
+			$beta = $data
 			inc $cellspec
+			print "$cellspec"
 		elseif $keywd = "_cell_angle_gamma"
-			$cell.gamma = $data
+			$gamma = $data
 			inc $cellspec
+			print "$cellspec"
 		elseif $keywd = "_symmetry_space_group_name_H-M"
 			$sg = $data
-		elseif $keywd = loop_
+		elseif $keywd = "loop_"
 			# Deal with loops here
 			# Clear any previous format we made and the looptype
 			$format = ""
-			$looptype = none
+			$looptype = "none"
 			# Loop over next lines to determine the data to expect
 			for $m,1,100
 				# Read and store whole line (we may need it later)
@@ -67,6 +74,7 @@ importmodel
 				readvar $keywd "$char%1 $data%9"
 				# If first character is not '_' then we have entered the actual data defined by the loop.
 				# If this was an empty line, we're done with the loop
+				#print "Char=[${char}]"
 				if $char = ""
 					# Just break out of loop (set $m by hand until 'break' is implemented)
 					$m = 10000
@@ -75,20 +83,20 @@ importmodel
 					#print "LINE BEFORE ATOM is $line"
 					readvar $line $format
 					# Our next action depends on the loop type
-					if $looptype = atom
+					if $looptype = "atom"
 						#print "Coords $rx $ry $rz"
 						newatom $e $rx $ry $rz
 					end
-				elseif $data = atom_site
+				elseif $data = "atom_site"
 					# Atom data loop
-					$looptype = atom
-					if $keywd = _atom_site_type_symbol
+					$looptype = "atom"
+					if $keywd = "_atom_site_type_symbol"
 						writevar $format "$format \$e"
-					elseif $keywd = _atom_site_fract_x
+					elseif $keywd = "_atom_site_fract_x"
 						writevar $format "$format \$rx"
-					elseif $keywd = _atom_site_fract_y
+					elseif $keywd = "_atom_site_fract_y"
 						writevar $format "$format \$ry"
-					elseif $keywd = _atom_site_fract_z
+					elseif $keywd = "_atom_site_fract_z"
 						writevar $format "$format \$rz"
 					else
 						writevar $format "$format \*"
@@ -100,7 +108,7 @@ importmodel
 
 	# Were we given a full cell spec?
 	if $cellspec = 6
-		cell $cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma
+		cell $a $b $c $alpha $beta $gamma
 		fractoreal
 		# Apply spacegroup here and pack
 		spacegroup $sg

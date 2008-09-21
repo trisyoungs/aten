@@ -19,12 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "parse/variablelist.h"
 #include "command/format.h"
 #include "base/messenger.h"
 #include "base/parser.h"
-// #include "base/sysfunc.h"
-// #include <cstring>
 
 // Returns first node in format
 FormatNode* Format::nodes()

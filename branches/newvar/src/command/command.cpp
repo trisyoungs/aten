@@ -443,30 +443,30 @@ bool Command::ifEvaluate()
 */
 
 // Add variable/constant/expression/path to reference list, given the name
-bool Command::addArgument(const char *text, Parser::ArgumentForm form)
+bool Command::addArgument(int argid, Parser::ArgumentForm form)
 {
 	msg.enter("Command::addArgument");
 	Variable *v;
 	bool result = TRUE;
 	// If argument form wasn't provided, attempt to work it out.
-	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(text) : form);
-// 	printf("Adding argument '%s', form = %i...\n", text, af);
+	Parser::ArgumentForm af = (form == Parser::UnknownForm ? parser.argumentForm(argid) : form);
+// 	printf("Adding argument '%s', form = %i...\n", parser.argc(argid), af);
 	// Now we have the argument form, get/create a suitable variable
 	switch (af)
 	{
 		case (Parser::ConstantForm):
-			addConstant(text, variableList_);
+			addConstant(parser.argc(argid), variableList_);
 			break;
 		case (Parser::ExpressionForm):
 			// Attempt to construct expression
-			v = variableList_->addExpression(text);
+			v = variableList_->addExpression(parser.argc(argid));
 			if (v == NULL) result = FALSE;
 // 			else printf("Expression added.... %li\n", v);
 			args_.add(v);
 			break;
 		case (Parser::VariableForm):
 		case (Parser::VariablePathForm):
-			v = variableList_->addPath(text);
+			v = variableList_->addPath(parser.argc(argid));
 			if (v == NULL) result = FALSE;
 			args_.add(v);
 			break;
@@ -497,13 +497,12 @@ void Command::addConstant(int i)
 bool Command::setArguments(const char *cmdname, const char *specifiers, VariableList *sourcevars)
 {
 	msg.enter("Command::setArguments");
-	bool required = TRUE, repeat = FALSE;
+	bool required = TRUE, repeat = FALSE, failed = FALSE;
 	int n, m, argcount, last = -1;
 	Variable *var;
 	VTypes::DataType vt;
 	AssignOps::AssignOp ao;
 	Parser::ArgumentForm af;
-	static char arg[512];
 	argcount = 0;
 	n = 0;
 	// Store reference to source variablelist
@@ -523,41 +522,32 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 			if (required && (!repeat))
 			{
 				msg.print("Error: '%s' requires argument %i\n", cmdname, argcount);
-				msg.exit("Command::setArguments");
-				return FALSE;
+				failed = TRUE;
+				break;
 			}
 			else break;	// No more arguments, so may as well quit.
 		}
-		strcpy(arg,parser.argc(argcount));
 		// Go through possible specifiers
 		switch (specifiers[n])
 		{
 			// Formats (delimited)
 			case ('f'):
 			case ('F'):
-				if (!createFormat(arg, TRUE)) return FALSE;
+				if (!createFormat(parser.argc(argcount), TRUE)) failed = TRUE;
 				break;
 			// Formats (exact)
 			case ('g'):
 			case ('G'):
-				if (!createFormat(arg, FALSE)) return FALSE;
+				if (!createFormat(parser.argc(argcount), FALSE)) failed = TRUE;
 				break;
 			// Delimited (J) / exact (K) format *or* variable
 			case ('J'):
 			case ('K'):
-// 				if (!parser.wasQuoted(argcount))
-// 				{
-// 					// See if it has been declared
-// 					var = sourcevars.get(&arg[1]);
-// 					if (var == NULL)
-// 					{
-// 						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
-// 						return FALSE;
-// 					}
-// 					else args_.add(var);
-// 				}
-// 				else
-				if (!createFormat(arg, specifiers[n] == 'J' ? TRUE : FALSE)) return FALSE;
+				if (!parser.wasQuoted(argcount))
+				{
+					if (!addArgument(argcount)) failed = TRUE;
+				}
+				else if (!createFormat(parser.argc(argcount), specifiers[n] == 'J' ? TRUE : FALSE)) failed = TRUE;
 				break;
 			// Discard
 			case ('x'):
@@ -567,19 +557,19 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 			// String as-is
 			case ('s'):
 			case ('S'):
-				addConstant(arg, TRUE);
+				addConstant(parser.argc(argcount), TRUE);
 				break;
 			// Operators
 			case ('O'):
 			case ('~'):
 			case ('='):
 				// Get operator enum
-				ao = AssignOps::assignOp(&arg[0]);
+				ao = AssignOps::assignOp(parser.argc(argcount));
 				if (ao == AssignOps::nAssignOps)
 				{
-					msg.print("Error: Unrecognised assignment operator '%s'.\n", &arg[0]);
-					msg.exit("Command::setArguments");
-					return FALSE;
+					msg.print("Error: Unrecognised assignment operator '%s'.\n", parser.argc(argcount));
+					failed = TRUE;
+					break;
 				}
 				// Whether we accept the operator we found depends on the specifier
 				switch (specifiers[n])
@@ -592,8 +582,7 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 						if (ao != AssignOps::Equals) 
 						{
 							msg.print("Error: Expected '=' as argument %i for command '%s'.\n", argcount, cmdname);
-							msg.exit("Command::setArguments");
-							return FALSE;
+							failed = TRUE;
 						}
 						break;
 					// '~' - accept '=' and '+=' only
@@ -601,22 +590,17 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 						if ((ao != AssignOps::Equals) && (ao != AssignOps::PlusEquals)) 
 						{
 							msg.print("Error: Expected '=' or '+=' as argument %i for command '%s'.\n", argcount, cmdname);
-							msg.exit("Command::setArguments");
-							return FALSE;
+							failed = TRUE;
 						}
 						break;
 				}
 				// Add operator as an integer variable
-				addConstant(ao);
+				if (!failed) addConstant(ao);
 				break;
 			// Variable, expression, or constant
 			case ('e'):
 			case ('E'):
-				if (!addArgument(arg))
-				{
-					msg.exit("Command::setArguments");
-					return FALSE;
-				}
+				if (!addArgument(argcount)) failed = TRUE;
 				break;
 			// Normal, non-expression variable or constant (Q forces constant type to be Character)
 			case ('n'):
@@ -624,20 +608,13 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 			case ('q'):
 			case ('Q'):
 				// Check for some kind of variable/path
-				if (arg[0] == '$')
+				af = parser.argumentForm(argcount);
+				if (af > Parser::VariablePathForm)
 				{
-					if (!addArgument(arg))
-					{
-						msg.print("Error: Variable '%s' has not been declared.\n", &arg[1]);
-						msg.exit("Command::setArguments");
-						return FALSE;
-					}
+					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(parser.argc(argcount), TRUE); 
+					else addConstant(parser.argc(argcount)); 
 				}
-				else
-				{
-					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(arg, TRUE); 
-					else addConstant(arg); 
-				}
+				else if (!addArgument(argcount)) failed = TRUE;
 				break;
 			// Variable
 			case ('v'):
@@ -646,23 +623,17 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				af = parser.argumentForm(argcount);
 				if (af == Parser::ExpressionForm)
 				{
-					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", argcount, cmdname, arg);
-					msg.exit("Command::setArguments");
-					return FALSE;
+					msg.print("Error: argument %i to '%s' cannot be an expression (found '%s').\n", argcount, cmdname, parser.argc(argcount));
+					failed = TRUE;
 				}
 				else if (af <= Parser::VariablePathForm)
 				{
-					if (!addArgument(arg, af))
-					{
-						//msg.print( "Error: Variable '%s' has not been declared.\n", &arg[1]);
-						msg.exit("Command::setArguments");
-						return FALSE;
-					}
+					if (!addArgument(argcount, af)) failed = TRUE;
 				}
 				else
 				{
-					msg.print("Error: '%s' expected a variable for argument %i, but found '%s' instead.\n", cmdname, argcount, arg);
-					return FALSE;
+					msg.print("Error: '%s' expected a variable for argument %i, but found '%s' instead.\n", cmdname, argcount, parser.argc(argcount));
+					failed = TRUE;
 				}
 				break;
 			// Pointer-style variable (that also need to create subvariables)
@@ -697,20 +668,18 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 						break;
 				}
 				af = parser.argumentForm(argcount);
-				if (af <= Parser::VariablePathForm)
+				if (af > Parser::VariablePathForm)
 				{
-					if (!addArgument(arg, af))
-					{
-						msg.exit("Command::setArguments");
-						return FALSE;
-					}
-					// Must also check return value of variable
-					printf("Check return value!\n");
+					msg.print( "Error: '%s' expected a variable, but found '%s' instead.\n", cmdname, parser.argc(argcount));
+					failed = TRUE;
+					break;
 				}
-				else
+				// Add argument and check return type value
+				if (!addArgument(argcount, af)) failed = TRUE;
+				else if (args_.last()->item->type() != vt)
 				{
-					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead.\n", cmdname, VTypes::dataType(vt), arg);
-					return FALSE;
+					msg.print( "Error: '%s' expected a variable of type '%s', but found '%s' instead which is of type '%s'.\n", cmdname, VTypes::dataType(vt), parser.argc(argcount), VTypes::dataType(args_.last()->item->type()));
+					failed = TRUE;
 				}
 				break;
 			// Character variable
@@ -718,32 +687,22 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				af = parser.argumentForm(argcount);
 				if (af <= Parser::VariablePathForm)
 				{
-					if (!addArgument(arg, af))
-					{
-						msg.exit("Command::setArguments");
-						return FALSE;
-					}
+					if (!addArgument(argcount, af)) failed = TRUE;
 					// Must also check return value of variable
-					if (args_.last()->item->type() != VTypes::CharacterData)
+					else if (args_.last()->item->type() != VTypes::CharacterData)
 					{
-						msg.print("Error: '%s' expected a variable of type 'character', but found '%s' instead.\n", cmdname, arg);
-						msg.exit("Command::setArguments");
-						return FALSE;
+						msg.print("Error: '%s' expected a variable of type 'character', but found '%s' instead.\n", cmdname, parser.argc(argcount));
+						failed = TRUE;
 					}
 				}
-				else
-				{
-					msg.exit("Command::setArguments");
-					return FALSE;
-				}
+				else failed = TRUE;
 				break;
 			// Repeat as many of the last variable type as possible
 			case ('*'):
 				if (n == 0)
 				{
 					printf("Internal error: Repeat specifier given to command arguments list without prior specifier.\n");
-					msg.exit("Command::setArguments");
-					return FALSE;
+					failed = TRUE;
 				}
 				// Set the repeat flag to TRUE, and go back to last parameter type considered
 				repeat = TRUE;
@@ -752,18 +711,20 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 				argcount --;
 				break;
 		}
+		// Check for failure
+		if (failed) break;
 		// Go to next character (if we're not repeating)
 		if (!repeat) n++;
 	}
 	// Are there still unused arguments in the parser?
-	if (argcount < (parser.nArgs() - 1))
+	if ((argcount < (parser.nArgs() - 1)) && (!failed))
 	{
 		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(++argcount), cmdname);
 		msg.exit("Command::setArguments");
 		return FALSE;
 	}
 	msg.exit("Command::setArguments");
-	return TRUE;
+	return (failed ? FALSE : TRUE);
 }
 
 // Return number of arguments given to command

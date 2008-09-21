@@ -167,7 +167,7 @@ class Command
 	// Variable list from which the command arguments were set
 	VariableList *variableList_;
 	// Add variable argument to reference list, given the name
-	bool addArgument(const char *varname, Parser::ArgumentForm af = Parser::UnknownForm);
+	bool addArgument(int argid, Parser::ArgumentForm af = Parser::UnknownForm);
 	// Add constant to reference list
 	void addConstant(const char *s, bool forcechar = FALSE);
 	// Add integer constant to reference list
