@@ -1,6 +1,6 @@
 /*
-	*** Variable Types
-	*** src/base/vtypes.h
+	*** Cell Accessors
+	*** src/variables/cellaccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,18 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VTYPES_H
-#define ATEN_VTYPES_H
+#ifndef ATEN_CELLACCESS_H
+#define ATEN_CELLACCESS_H
 
-// Variable description
-class VTypes
+#include "variables/vaccess.h"
+
+// Cell Accessor
+class CellAccessors : public VAccess
 {
 	public:
-	// Data Types
-	enum DataType { CharacterData, IntegerData, RealData, AtomData, PatternData, ModelData, GridData, BondData, AngleData, TorsionData, AtomtypeData, CellData, ExpressionData, NoData, nDataTypes };
-	static const char *dataType(DataType);
-	static bool isPointer(DataType);
-	static VTypes::DataType determineType(const char *s);
+	// Constructor
+	CellAccessors();
+	// Accessor list
+	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, Type, nAccessors };
+
+	private:
+	// Array of acessor pointers for look-up
+	Variable *accessorPointers[CellAccessors::nAccessors];
+
+	public:
+	// Retrieve specified data
+	bool retrieve(void *classptr, int vid, ReturnValue &rv);
+	// Set specified data
+	bool set(void *classptr, int vid, Variable *sourcevar);
 };
+
+extern CellAccessors cellAccessors;
 
 #endif

@@ -73,7 +73,9 @@ class AccessStep
 	// Get return type of step (i.e. DataType of target variable)
 	VTypes::DataType type();
 	// Set value of target variable from source variable
-	void setTargetValue(Variable *srcvar);
+	void setTargetVariable(Variable *srcvar);
+	// Step target variable by specified amount
+	bool stepTargetVariable(int delta);
 };
 
 #endif

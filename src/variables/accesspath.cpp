@@ -21,6 +21,7 @@
 
 #include "variables/accesspath.h"
 #include "variables/accessstep.h"
+#include "variables/cellaccess.h"
 #include "variables/modelaccess.h"
 #include "variables/returnvalue.h"
 #include "variables/variablelist.h"
@@ -44,114 +45,81 @@ AccessPath::~AccessPath()
 	if (resultVariable_ != NULL) delete resultVariable_;
 }
 
-// Walk path to retrieve end variable
-Variable *AccessPath::walk()
+// Walk path to retrieve/set/step end variable
+bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, int delta)
 {
 	msg.enter("AccessPath::walk");
 	AccessStep *step = NULL;
 	int arrayindex;
-	static ReturnValue result;
-	result.reset();
-	bool failed = FALSE;
+	VAccess *accesslist;
+	rv.reset();
+	bool result = TRUE;
 	// DataType of the most recently 'got' value
 	VTypes::DataType lastType = VTypes::NoData;
-	// Go through remaining nodes in the list one by one, calling the relevant static member functions in access-enabled objects
+	// Go through nodes in the list one by one, calling the relevant static member functions in access-enabled objects
 	for (step = path_.first(); step != NULL; step = step->next)
 	{
 		// If a previous ptrType was set, use this to determine the accessor set to search. Otherwise, get the value stored in the variable.
-		switch (lastType)
+//  		printf("Current step = %s\n", step->target()->name());
+
+		// If no previous data set (i.e. this is the first step) don't use an access list
+		if (lastType == VTypes::NoData)
 		{
-			case (VTypes::NoData):
-				result.set(step);
-				break;
-			case (VTypes::IntegerData):
-			case (VTypes::RealData):
-			case (VTypes::CharacterData):
-			case (VTypes::ExpressionData):
-				msg.print("AccessPath '%s' is trying to access a subvariable of a non-class type (%s).\n", name_.get(), step->targetName());
-				failed = TRUE;
-				result.reset();
-				break;
-			// For pointer types, get return value from static VAccess classes
-			case (VTypes::ModelData):
-				if (!modelAccessors.retrieve(result.asPointer(), step->variableId(), result)) failed = TRUE;
-				break;
-			case (VTypes::AtomData):
-				break;
+			if (step->next == NULL)
+			{
+				if (srcvar != NULL) step->setTargetVariable(srcvar);
+				else if (delta != 0) step->stepTargetVariable(delta);
+				else rv.set(step);
+			}
+			else rv.set(step);
 		}
-		if (failed) break;
+		else if (VTypes::isPointer(lastType))
+		{
+			// Get pointer to accesslist
+			switch (lastType)
+			{
+				case (VTypes::ModelData):
+					accesslist = &modelAccessors;
+					break;
+				case (VTypes::CellData):
+					accesslist = &cellAccessors;
+					break;
+				default:
+					printf("Subvariable setting within pointers of type '%s' is not implemented.\n", VTypes::dataType(lastType));
+					accesslist = NULL;
+					break;
+			}
+			if (accesslist == NULL)
+			{
+				result = FALSE;
+				break;
+			}
+			// If this is not the last step, retrieve. Otherwise, set or step.
+			if (step->next == NULL) 
+			{
+				if (srcvar != NULL) result = accesslist->set(rv.asPointer(), step->variableId(), srcvar);
+				else if (delta != 0)
+				{
+					msg.print("Subvariables of pointer classes cannot be stepped.\n");
+					result = FALSE;
+				}
+				else result = accesslist->retrieve(rv.asPointer(), step->variableId(), rv);
+			}
+			else result = accesslist->retrieve(rv.asPointer(), step->variableId(), rv);
+		}
+		else
+		{
+			msg.print("AccessPath '%s' is trying to access a subvariable of a non-class type (%s).\n", name_.get(), step->targetName());
+			result = FALSE;
+			rv.reset();
+			break;
+		}
+		if (!result) break;
 		// Prepare for next step
 		lastType = step->type();
-	}
-	// Put value now stored in the ReturnValue structure in the local Variable
-	switch (dataType_)
-	{
-		case (VTypes::IntegerData):
-			resultVariable_->set(result.value()->asInteger());
-			break;
-		case (VTypes::RealData):
-			resultVariable_->set(result.value()->asDouble());
-			break;
-		case (VTypes::CharacterData):
-			resultVariable_->set(result.value()->asCharacter());
-			break;
-		default:
-			resultVariable_->set(result.value()->asPointer(dataType_), dataType_);
-			break;
 	}
 	msg.exit("AccessPath::walk");
-	return resultVariable_;
-}
-
-// Walk path and set final target variable
-bool AccessPath::walkAndSet(Variable *srcvar, VTypes::DataType dt)
-{
-	msg.enter("AccessPath::walkAndSet");
-	AccessStep *step = NULL;
-	int arrayindex;
-	static ReturnValue result;
-	result.reset();
-	bool success = TRUE;
-	// DataType of the most recently 'got' value
-	VTypes::DataType lastType = VTypes::NoData;
-	// Go through remaining nodes in the list one by one, calling the relevant static member functions in access-enabled objects
-	for (step = path_.first(); step != NULL; step = step->next)
-	{
-		// If a previous ptrType was set, use this to determine the accessor set to search. Otherwise, get the value stored in the variable.
-		switch (lastType)
-		{
-			case (VTypes::NoData):
-				step->setTargetValue(srcvar);
-				break;
-			case (VTypes::IntegerData):
-			case (VTypes::RealData):
-			case (VTypes::CharacterData):
-			case (VTypes::ExpressionData):
-				msg.print("AccessPath '%s' is trying to access a subvariable of a non-class type (%s).\n", name_.get(), step->targetName());
-				success = FALSE;
-				result.reset();
-				break;
-			// For pointer types, get/set return value from static VAccess classes
-			case (VTypes::ModelData):
-				// If this is not the last step, retrieve. Otherwise, set.
-				if (step->next == NULL) 
-				{
-					if (!modelAccessors.set(result.asPointer(), step->variableId(), srcvar)) success = FALSE;
-				}
-				else
-				{
-					if (!modelAccessors.retrieve(result.asPointer(), step->variableId(), result)) success = FALSE;
-				}
-				break;
-			case (VTypes::AtomData):
-				break;
-		}
-		if (!success) break;
-		// Prepare for next step
-		lastType = step->type();
-	}
-	msg.exit("AccessPath::walkAndSet");
-	return success;
+	return result;
 }
 
 // Set (create) access path from text path
@@ -200,8 +168,12 @@ bool AccessPath::setPath(const char *path)
 				success = step->setTarget(bit.get(), parent_, modelAccessors.accessors());
 				if (success) step->setVariableId(modelAccessors.accessorId(step->target()));
 				break;
+			case (VTypes::CellData):
+				success = step->setTarget(bit.get(), parent_, cellAccessors.accessors());
+				if (success) step->setVariableId(cellAccessors.accessorId(step->target()));
+				break;
 			default:
-				printf("This variable type has not been implemented in AccessPath::setPath.\n");
+				printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));
 				break;
 		}
 		if (!success) break;
@@ -239,62 +211,69 @@ bool AccessPath::setPath(const char *path)
 // Get return value as integer
 int AccessPath::asInteger(int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return 0;
-	return v->asInteger();
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		if (!resultVariable_->set(rv.value()->asInteger())) return 0;
+		return resultVariable_->asInteger();
+	}
+	else return 0;
 }
 
 // Get return value as double
 double AccessPath::asDouble(int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return 0.0;
-	return v->asDouble();
-}
-
-// Get return value as float
-float AccessPath::asFloat(int index)
-{
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return 0.0f;
-	return v->asFloat();
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		if (!resultVariable_->set(rv.value()->asDouble())) return 0.0;
+		return resultVariable_->asDouble();
+	}
+	else return 0.0;
 }
 
 // Get return value as character
 const char *AccessPath::asCharacter(int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return "NULL";
-	return v->asCharacter();
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		if (!resultVariable_->set(rv.value()->asCharacter())) return "NULL";
+		return resultVariable_->asCharacter();
+	}
+	else return "NULL";
 }
 
 // Get return value as bool
 bool AccessPath::asBool(int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return FALSE;
-	return v->asBool();
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		if (!resultVariable_->set(rv.value()->asCharacter())) return FALSE;
+		return resultVariable_->asBool();
+	}
+	else return FALSE;
 }
 
 // Get return value as pointer
 void *AccessPath::asPointer(VTypes::DataType dt, int index)
 {
-	// Retrieve the target variable
-	Variable *v = walk();
-	if (v == NULL) return NULL;
-	return v->asPointer(dt);
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, 0))
+	{
+		if (!resultVariable_->set(rv.value()->asPointer(dt), dt)) return NULL;
+		return resultVariable_->asPointer(dt);
+	}
+	else return NULL;
 }
 
 // Increase variable by integer amount
 bool AccessPath::step(int delta, int index)
 {
-	printf("Oh no. Don't think so!\n");
-	return FALSE;
+	ReturnValue rv;
+	if (walk(rv, NULL, VTypes::NoData, delta)) return TRUE;
+	else return FALSE;
 }
 
 // Set variable target from integer
@@ -302,7 +281,8 @@ bool AccessPath::set(int i, int index)
 {
 	static IntegerVariable ivar;
 	ivar.set(i);
-	return walkAndSet(&ivar, VTypes::IntegerData);
+	ReturnValue rv;
+	return walk(rv, &ivar, VTypes::IntegerData, 0);
 }
 
 // Set variable target from double
@@ -310,7 +290,8 @@ bool AccessPath::set(double d, int index)
 {
 	static RealVariable dvar;
 	dvar.set(d);
-	return walkAndSet(&dvar, VTypes::RealData);
+	ReturnValue rv;
+	return walk(rv, &dvar, VTypes::RealData, 0);
 }
 
 // Set variable target from character
@@ -318,7 +299,8 @@ bool AccessPath::set(const char *s, int index)
 {
 	static CharacterVariable cvar;
 	cvar.set(s);
-	return walkAndSet(&cvar, VTypes::CharacterData);
+	ReturnValue rv;
+	return walk(rv, &cvar, VTypes::CharacterData, 0);
 }
 
 // Set variable target from pointer
@@ -326,5 +308,6 @@ bool AccessPath::set(void *ptr, VTypes::DataType dt, int index)
 {
 	static PointerVariable pvar;
 	pvar.reset(ptr, dt);
-	return walkAndSet(&pvar, dt);
+	ReturnValue rv;
+	return walk(rv, &pvar, dt, 0);
 }
