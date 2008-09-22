@@ -30,33 +30,27 @@ importmodel
 	# Main loop - read lines and check for important keywords
 	for $n
 		readline "$keywd $data"
-		print "Keyword = $keywd"
+		#print "Keyword = $keywd"
 		if $keywd = "_chemical_name_common"
 			setname $data
 		elseif $keywd = "_cell_length_a"
 			$a = $data
 			inc $cellspec
-			print "$cellspec"
 		elseif $keywd = "_cell_length_b"
 			$b = $data
 			inc $cellspec
-			print "$cellspec"
 		elseif $keywd = "_cell_length_c"
 			$c = $data
 			inc $cellspec
-			print "$cellspec"
 		elseif $keywd = "_cell_angle_alpha"
 			$alpha = $data
 			inc $cellspec
-			print "$cellspec"
 		elseif $keywd = "_cell_angle_beta"
 			$beta = $data
 			inc $cellspec
-			print "$cellspec"
 		elseif $keywd = "_cell_angle_gamma"
 			$gamma = $data
 			inc $cellspec
-			print "$cellspec"
 		elseif $keywd = "_symmetry_space_group_name_H-M"
 			$sg = $data
 		elseif $keywd = "loop_"
@@ -65,7 +59,7 @@ importmodel
 			$format = ""
 			$looptype = "none"
 			# Loop over next lines to determine the data to expect
-			for $m,1,100
+			for $m,1,9999
 				# Read and store whole line (we may need it later)
 				getline $line
 				# Get keyword from line
@@ -84,7 +78,6 @@ importmodel
 					readvar $line $format
 					# Our next action depends on the loop type
 					if $looptype = "atom"
-						#print "Coords $rx $ry $rz"
 						newatom $e $rx $ry $rz
 					end
 				elseif $data = "atom_site"

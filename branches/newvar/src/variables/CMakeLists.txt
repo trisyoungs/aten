@@ -1,6 +1,7 @@
 add_library(variables
 accesspath.h
 accessstep.h
+atomaccess.h
 bundle.h
 cellaccess.h
 character.h
@@ -17,6 +18,7 @@ variable.h
 variablelist.h
 accesspath.cpp
 accessstep.cpp
+atomaccess.cpp
 bundle.cpp
 cellaccess.cpp
 character.cpp

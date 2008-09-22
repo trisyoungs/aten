@@ -1,10 +1,10 @@
 # Model formats
 cds
 cif
-#dlp.model
-#dlp.hisf
-#dlp.hisu
-#dlp.field
+dlp.model
+dlp.hisf
+dlp.hisu
+dlp.field
 #gamess
 #mol
 #mol2

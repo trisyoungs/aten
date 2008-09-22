@@ -239,11 +239,6 @@ void Format::getAllArgsFormatted()
 	msg.enter("Format::getAllArgsFormatted");
 	nArgs_ = 0;
 	bool parseresult;
-	for (int n=0; n<MAXARGS; n++)
-	{
-		arguments_[n].clear();
-		quoted_[n] = 0;
-	}
 	
 	for (FormatNode *fn = nodes_.first(); fn != NULL; fn = fn->next)
 	{
@@ -252,10 +247,14 @@ void Format::getAllArgsFormatted()
 		else parseresult = getNextN(fn->length());
 		if (!parseresult)
 		{
-			msg.print(Messenger::Verbose,"Format::getAllArgsFormatted <<<< '%s' passed end of line >>>>\n",fn->variable()->name());
-// 			fn->variable()->reset(); TGAY
+			msg.print(Messenger::Verbose,"Format::getAllArgsFormatted <<<< '%s' passed end of line >>>>\n", fn->variable()->name());
+			fn->variable()->set("");
 		}
-		else fn->variable()->set(tempArg_);
+		else
+		{
+			fn->variable()->set(tempArg_);
+			nArgs_ ++;
+		}
 // 		printf("Variable %s now has value '%s'\n",fn->variable()->name(), fn->variable()->asCharacter());
 	}
 	msg.exit("Format::getAllArgsFormatted");
@@ -282,7 +281,7 @@ int Format::getArgsFormatted(ifstream *xfile, int options)
 		done = TRUE;
 		// To check for blank lines, do the parsing and then check nargs()
 		getAllArgsFormatted();
-		if ((optionMask_&Format::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
+		if ((optionMask_&Parser::SkipBlanks) && (nArgs_ == 0)) done = FALSE;
 	} while (!done);
 	msg.exit("Format::getArgsFormatted[file]");
 	return 0;

@@ -21,6 +21,7 @@
 
 #include "variables/accesspath.h"
 #include "variables/accessstep.h"
+#include "variables/atomaccess.h"
 #include "variables/cellaccess.h"
 #include "variables/modelaccess.h"
 #include "variables/returnvalue.h"
@@ -83,6 +84,9 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 					break;
 				case (VTypes::CellData):
 					accesslist = &cellAccessors;
+					break;
+				case (VTypes::AtomData):
+					accesslist = &atomAccessors;
 					break;
 				default:
 					printf("Subvariable setting within pointers of type '%s' is not implemented.\n", VTypes::dataType(lastType));
@@ -172,11 +176,20 @@ bool AccessPath::setPath(const char *path)
 				success = step->setTarget(bit.get(), parent_, cellAccessors.accessors());
 				if (success) step->setVariableId(cellAccessors.accessorId(step->target()));
 				break;
+			case (VTypes::AtomData):
+				success = step->setTarget(bit.get(), parent_, atomAccessors.accessors());
+				if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
+				break;
 			default:
 				printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));
+				success = FALSE;
 				break;
 		}
-		if (!success) break;
+		if (!success)
+		{
+			msg.print("Unable to resolve path '%s'.\n", path);
+			break;
+		}
 		// Increase the char pointer
 		for (n=0; n<bit.length(); n++) c ++;
 		// If we're on a '.', skip on a further character

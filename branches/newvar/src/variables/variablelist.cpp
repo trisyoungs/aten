@@ -183,11 +183,7 @@ Variable *VariableList::addPath(const char *s)
 	AccessPath *newvar = new AccessPath;
 	newvar->setParent(this);
 	paths_.own(newvar);
-	if (!newvar->setPath(s))
-	{
-		msg.print( "Failed to cache variable/path.\n");
-		return NULL;
-	}
+	if (!newvar->setPath(s)) return NULL;
 	return newvar;
 }
 
