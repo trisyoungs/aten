@@ -52,11 +52,17 @@ bool CellAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 {
 	msg.enter("CellAccessors::retrieve");
 	bool result = TRUE;
-	// Cast pointer into Model*
+	// Cast pointer into Cell*
 	Cell *c = (Cell*) classptr;
 	if (c == NULL) printf("Warning - NULL Cell pointer passed to CellAccessors::retrieve.\n");
-	// Search through list of accessors to get enumerated value
 // 	printf("Enumerated ID supplied to CellAccessors is %i.\n", vid);
+	// Check range of supplied vid
+	if ((vid < 0) || (vid > CellAccessors::nAccessors))
+	{
+		printf("Unknown enumeration %i given to CellAccessors::retrieve.\n", vid);
+		msg.exit("CellAccessors::retrieve");
+		return FALSE;
+	} 
 	switch (vid)
 	{
 		case (CellAccessors::A):
@@ -97,10 +103,9 @@ bool CellAccessors::set(void *classptr, int vid, Variable *srcvar)
 {
 	msg.enter("CellAccessors::set");
 	bool result = TRUE;
-	// Cast pointer into Model*
+	// Cast pointer into Cell*
 	Cell *c = (Cell*) classptr;
 	if (c == NULL) printf("Warning - NULL Cell pointer passed to CellAccessors::set.\n");
-	// Search through list of accessors to get enumerated value
 // 	printf("Enumerated ID supplied to CellAccessors is %i.\n", vid);
 	// Check range of supplied vid
 	if ((vid < 0) || (vid > CellAccessors::nAccessors))
