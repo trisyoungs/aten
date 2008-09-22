@@ -30,8 +30,8 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "640"
-#define ATENDATE "Fri 19 Sep - 15:29"
+#define ATENREVISION "653"
+#define ATENDATE "Mon 22 Sep - 11:43"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
