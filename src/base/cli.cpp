@@ -426,10 +426,11 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::ScriptSwitch):
 					script = aten.scripts.add();
 					script->createModelVariables("");
+					script->setModelVariables("",aten.current.m);
 					if (script->load(argv[++argn]))
 					{
 						aten.setProgramMode(Aten::CommandMode);
-						script->setModelVariables("",aten.current.m);
+// 						script->setModelVariables("",aten.current.m);
 						if (!script->execute()) aten.setProgramMode(Aten::NoMode);
 						// Need to check program mode after each script since it can be changed
 						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);
