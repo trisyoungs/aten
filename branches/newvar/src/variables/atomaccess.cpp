@@ -30,11 +30,8 @@ AtomAccessors atomAccessors;
 // Constructor
 AtomAccessors::AtomAccessors()
 {
-	enum Accessors { Charge, Element, Mass, RX, RY, RZ, Symbol, nAccessors };
-
  	accessorPointers[AtomAccessors::Charge] = addAccessor("charge",		VTypes::RealData, FALSE);
  	accessorPointers[AtomAccessors::Element] = addAccessor("element",		VTypes::IntegerData, TRUE);
-//  	accessorPointers[AtomAccessors::FFType] = addAccessor("fftype",		VTypes::CharacterData,	FALSE);
  	accessorPointers[AtomAccessors::FX] = addAccessor("fx",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::FY] = addAccessor("fy",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::FZ] = addAccessor("fz",		VTypes::RealData,	FALSE);
@@ -43,7 +40,7 @@ AtomAccessors::AtomAccessors()
  	accessorPointers[AtomAccessors::RY] = addAccessor("ry",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::RZ] = addAccessor("rz",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::Symbol] = addAccessor("symbol",		VTypes::CharacterData,	TRUE);
-
+  	accessorPointers[AtomAccessors::Type] = addAccessor("type",		VTypes::AtomtypeData,	FALSE);
 };
 
 // Retrieve specified data

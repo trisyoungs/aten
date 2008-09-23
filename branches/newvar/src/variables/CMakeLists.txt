@@ -7,6 +7,7 @@ cellaccess.h
 character.h
 expression.h
 expressionnode.h
+ffatom.h
 integer.h
 modelaccess.h
 pointer.h
@@ -24,6 +25,7 @@ cellaccess.cpp
 character.cpp
 expression.cpp
 expressionnode.cpp
+ffatom.cpp
 integer.cpp
 modelaccess.cpp
 pointer.cpp
