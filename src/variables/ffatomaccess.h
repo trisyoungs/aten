@@ -1,6 +1,6 @@
 /*
-	*** Atom Accessors
-	*** src/variables/atomaccess.h
+	*** ForcefieldAtom Accessors
+	*** src/variables/ffatomaccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,23 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ATOMACCESS_H
-#define ATEN_ATOMACCESS_H
+#ifndef ATEN_FFATOMACCESS_H
+#define ATEN_FFATOMACCESS_H
 
 #include "variables/vaccess.h"
 
-// Atom Accessor
-class AtomAccessors : public VAccess
+// ForcefieldAtom Accessor
+class FFAtomAccessors : public VAccess
 {
 	public:
 	// Constructor
-	AtomAccessors();
+	FFAtomAccessors();
 	// Accessor list
-	enum Accessors { Charge, Element, FX, FY, FZ, Mass, RX, RY, RZ, Symbol, Type, nAccessors };
+	enum Accessors { Atomtype, Charge, Data, Description, Equivalent, Id, Name, ParentFF, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up
-	Variable *accessorPointers[AtomAccessors::nAccessors];
+	Variable *accessorPointers[FFAtomAccessors::nAccessors];
 
 	public:
 	// Retrieve specified data
@@ -44,6 +44,6 @@ class AtomAccessors : public VAccess
 	bool set(void *classptr, int vid, Variable *sourcevar);
 };
 
-extern AtomAccessors atomAccessors;
+extern FFAtomAccessors ffatomAccessors;
 
 #endif

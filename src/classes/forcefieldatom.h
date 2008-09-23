@@ -69,6 +69,7 @@ class ForcefieldAtom
 	// Parent forcefield
 	Forcefield *parent_;
 
+
 	/*
 	// Set / Get
 	*/
