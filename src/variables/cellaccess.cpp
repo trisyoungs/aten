@@ -32,9 +32,9 @@ CellAccessors::CellAccessors()
  	accessorPointers[CellAccessors::A] = addAccessor("a",		VTypes::RealData, FALSE);
  	accessorPointers[CellAccessors::B] = addAccessor("b",		VTypes::RealData, FALSE);
  	accessorPointers[CellAccessors::C] = addAccessor("c",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Alpha] = addAccessor("alpha",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Beta] = addAccessor("beta",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Gamma] = addAccessor("gamma",		VTypes::RealData, FALSE);
+ 	accessorPointers[CellAccessors::Alpha] = addAccessor("alpha",	VTypes::RealData, FALSE);
+ 	accessorPointers[CellAccessors::Beta] = addAccessor("beta",	VTypes::RealData, FALSE);
+ 	accessorPointers[CellAccessors::Gamma] = addAccessor("gamma",	VTypes::RealData, FALSE);
  	accessorPointers[CellAccessors::AX] = addAccessor("ax",		VTypes::RealData, FALSE);
  	accessorPointers[CellAccessors::AY] = addAccessor("ay",		VTypes::RealData, FALSE);
  	accessorPointers[CellAccessors::AZ] = addAccessor("az",		VTypes::RealData, FALSE);
@@ -44,7 +44,10 @@ CellAccessors::CellAccessors()
  	accessorPointers[CellAccessors::CX] = addAccessor("cx",		VTypes::RealData, FALSE);
  	accessorPointers[CellAccessors::CY] = addAccessor("cy",		VTypes::RealData, FALSE);
  	accessorPointers[CellAccessors::CZ] = addAccessor("cz",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Type] = addAccessor("type",		VTypes::CharacterData, TRUE);
+ 	accessorPointers[CellAccessors::CX] = addAccessor("centrex",	VTypes::RealData, FALSE);
+ 	accessorPointers[CellAccessors::CY] = addAccessor("centrey",	VTypes::RealData, FALSE);
+ 	accessorPointers[CellAccessors::CZ] = addAccessor("centrez",	VTypes::RealData, FALSE);
+ 	accessorPointers[CellAccessors::Type] = addAccessor("type",	VTypes::CharacterData, TRUE);
 };
 
 // Retrieve specified data
@@ -85,6 +88,11 @@ bool CellAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 		case (CellAccessors::CY):
 		case (CellAccessors::CZ):
 			rv.set(c->axes().getElement(vid - CellAccessors::AX));
+			break;
+		case (CellAccessors::CentreX):
+		case (CellAccessors::CentreY):
+		case (CellAccessors::CentreZ):
+			rv.set(c->centre().get(vid - CellAccessors::CentreX));
 			break;
 		case (CellAccessors::Type):
 			rv.set(Cell::cellType(c->type()));
