@@ -34,9 +34,6 @@
 // Constructor
 ExpressionVariable::ExpressionVariable()
 {
-	// Private variables
-	dataType_ = VTypes::ExpressionData;
-	evaluatesToReal_ = TRUE;
 }
 
 // Destructor
@@ -413,9 +410,7 @@ bool ExpressionVariable::initialise(const char *s)
 		return FALSE;
 	}
 	// Lastly, determine the return type of the expression by running it...
-	ex = evaluate();
-	evaluatesToReal_ = ex->isReal();
-	msg.print(Messenger::Expressions, "Expression '%s' reduces to %s.\n", s, ex->isReal() ? "a real" : "an integer");
+	determineType();
 	msg.exit("ExpressionVariable::initialise");
 	return TRUE;
 }
@@ -719,3 +714,106 @@ void ExpressionVariable::print(ExpressionNode *highlight, bool showUsed)
 		printf(">>>>  %s\n", s);
 	}
 }
+
+// Evaluate expression, returning result node
+void ExpressionVariable::determineType()
+{
+	msg.enter("ExpressionVariable::determineType");
+	// Reset all nodes in expression
+	for (ExpressionNode *ex = expression_.first(); ex != NULL; ex = ex->next) ex->reset();
+	// Evaluate all subexpressions defined in the bracket_ list
+	for (Refitem<ExpressionNode,ExpressionNode*> *ri = brackets_.first(); ri != NULL; ri = ri->next)
+	{
+		isReal(ri->item->next, ri->data->prev);
+		ri->item->setUsed();
+		ri->data->setUsed();
+	}
+	// Lastly, evaluate whole expression
+	dataType_ = isReal(expression_.first(), expression_.last()) ? VTypes::RealData : VTypes::IntegerData;
+	msg.print(Messenger::Expressions, "Expression returns a%s.\n", dataType_ == VTypes::RealData ? " real value" : "n integer value");
+	if (msg.isOutputActive(Messenger::Expressions)) print(NULL, FALSE);
+	msg.exit("ExpressionVariable::determineType");
+}
+
+// Return whether subexpression evaluates to a real (TRUE) or an integer (FALSE)
+bool ExpressionVariable::isReal(ExpressionNode *left, ExpressionNode *right)
+{
+	// Evaluate the return type of the expression up to and including the node limits passed.
+	bool floatResult = TRUE, leftfloat, rightfloat;
+	ExpressionNode *leftLastUnused, *rightNode;
+	// Simplify functions first....
+	leftLastUnused = (left->used() ? left->nextUnused(right) : left);
+	for (ExpressionNode *ex = leftLastUnused; ex != NULL; ex = ex->nextUnused(right))
+	{
+		if (ex->type() != ExpressionNode::FunctionToken) continue;
+		floatResult = TRUE;
+		rightNode = ex->nextUnused();
+		rightfloat = rightNode->isReal();
+		switch (ex->functionType())
+		{
+			case (ExpressionNode::NegateFunction):
+				if (!rightfloat) floatResult = FALSE;
+				break;
+			case (ExpressionNode::SqrtFunction):
+				break;
+			case (ExpressionNode::CosFunction):
+				break;
+			case (ExpressionNode::SinFunction):
+				break;
+			case (ExpressionNode::TanFunction):
+				break;
+			case (ExpressionNode::AbsFunction):
+				if (!rightfloat) floatResult = FALSE;
+				break;
+			//case (expressionNode::INTEGER):
+				// floatResult = FALSE;
+				//iresult = 0;
+				break;
+		}
+		// All function nodes get replaced with their result, and the right-hand argument is subsequently ignored
+		if (floatResult) ex->makeValue(1.0);
+		else ex->makeValue(1);
+		ex->nextUnused()->setUsed();
+	}
+	// Now do operators in order of precedence.
+	for (int op = 0; op < ExpressionNode::nOperatorTypes; op++)
+	{
+		//printf("Doing operator %i\n", op);
+		for (ExpressionNode *ex = left; ex != right->next; ex = ex->next)
+		{
+			// Skip used nodes
+			if (ex->used()) continue;
+			if ((ex->type() != ExpressionNode::OperatorToken) || (ex->operatorType() != op))
+			{
+				leftLastUnused = ex;
+				continue;
+			}
+			if (ex->operatorType() != op) continue;
+			rightNode = ex->nextUnused();
+			// Check which variable types are involved
+			leftfloat = leftLastUnused->isReal();
+			rightfloat = rightNode->isReal();
+			// If both sides are integers we will return an integer
+			if ((!leftfloat) && (!rightfloat)) floatResult = FALSE;
+			else
+			{
+				// Otherwise, the result will be a float unless its the modulus operator
+
+				floatResult = TRUE;
+				if (ex->operatorType() == ExpressionNode::ModulusOperator) floatResult = FALSE;
+				else floatResult = TRUE;
+			}
+			// All operator nodes get replaced with their result, and the left and right-hand arguments are set to nothing
+			//printf("Result of operator is %f\n",result);
+			if (floatResult) ex->makeValue(1.0);
+			else ex->makeValue(1);
+			ex->nextUnused()->setUsed();
+			leftLastUnused->setUsed();
+			leftLastUnused = ex;
+		}
+		if (msg.isOutputActive(Messenger::Expressions)) print(NULL, FALSE);
+	}
+	return leftLastUnused->isReal();
+}
+
+
