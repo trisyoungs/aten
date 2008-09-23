@@ -58,14 +58,14 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 	switch (type1)
 	{
 		case (VTypes::IntegerData):
-			if ((type2 > VTypes::RealData) && (type2 < VTypes::ExpressionData))
+			if (type2 > VTypes::RealData)
 			{
 				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;
 			}
 			break;
 		case (VTypes::RealData):
-			if ((type2 > VTypes::RealData) && (type2 < VTypes::ExpressionData))
+			if (type2 > VTypes::RealData)
 			{
 				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 				return CR_FAIL;

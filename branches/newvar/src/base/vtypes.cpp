@@ -24,16 +24,15 @@
 #include <string.h>
 
 // Variable Types
-const char *DataTypeKeywords[VTypes::nDataTypes] = { "character", "integer", "real", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "cell*", "expression", "none" };
+const char *DataTypeKeywords[VTypes::nDataTypes] = { "character", "integer", "real", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "cell*", "none" };
 const char *VTypes::dataType(VTypes::DataType dt)
 {
 	return DataTypeKeywords[dt];
 }
 bool VTypes::isPointer(VTypes::DataType dt)
 {
-	if (dt <= VTypes::RealData) return FALSE;
-	else if (dt >= VTypes::ExpressionData) return FALSE;
-	return TRUE;
+	if (dt > VTypes::RealData) return TRUE;
+	return FALSE;
 }
 VTypes::DataType VTypes::determineType(const char *s)
 {

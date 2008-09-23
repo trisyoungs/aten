@@ -69,9 +69,6 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 		case (VTypes::RealData):
 			result = new RealVariable;
 			break;
-		case (VTypes::ExpressionData):
-			result = new ExpressionVariable;
-			break;
 		case (VTypes::AtomData):
 		case (VTypes::PatternData):
 		case (VTypes::ModelData):
@@ -161,19 +158,19 @@ Variable *VariableList::addConstant(int i)
 Variable *VariableList::addExpression(const char *s)
 {
 	// Create new variable in which to store expression
-	Variable *newvar = createVariable(VTypes::ExpressionData);
+	ExpressionVariable *newvar = new ExpressionVariable;
+	newvar->setParent(this);
 	static char newname[24];
 	expressions_.own(newvar);
 	sprintf(newname,"expression%i", expressions_.nItems());
 	newvar->setName(newname);
 	// Cast to ExpressionVariable and initialise it
-	ExpressionVariable *result = (ExpressionVariable*) newvar;
-	if (!result->initialise(s))
+	if (!newvar->initialise(s))
 	{
 		msg.print( "Failed to cache expression.\n");
 		return NULL;
 	}
-	return result;
+	return newvar;
 }
 
 // Add variable acces path

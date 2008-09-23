@@ -78,6 +78,10 @@ class ExpressionVariable : public Variable, VObject<int>
 	void evaluate(ExpressionNode *left, ExpressionNode *right);
 	// Evaluate whole expression (reduce to one node)
 	ExpressionNode *evaluate();
+	// Evaluate the return type of the expression
+	void determineType();
+	// Evaluate type of expression part
+	bool isReal(ExpressionNode *left, ExpressionNode *right);
 
 	public:
 	// Set expression from string

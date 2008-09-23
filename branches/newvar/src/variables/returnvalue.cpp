@@ -56,9 +56,6 @@ void ReturnValue::set(AccessStep *source)
 		case (VTypes::CharacterData):
 			valueC_.set(source->asCharacter());
 			break;
-		case (VTypes::ExpressionData):
-			msg.print("What - setting returnvalue from ExpressionData?\n");
-			break;
 		default:
 			valueP_.reset(source->asPointer(type_), type_);
 			break;
@@ -111,9 +108,6 @@ Variable *ReturnValue::value()
 			break;
 		case (VTypes::CharacterData):
 			result = &valueC_;
-			break;
-		case (VTypes::ExpressionData):
-			msg.print("ReturnValue cannot be set from ExpressionData.\n");
 			break;
 		default:
 			result = &valueP_;
