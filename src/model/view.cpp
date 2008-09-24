@@ -52,7 +52,10 @@ Vec3<double> Model::guideToModel(const Vec3<double> &v)
 // Set the current rotation matrix
 void Model::setRotationMatrix(Mat4<double> &rmat)
 {
-	rotationMatrix_ = rmat;
+	if (trajectoryParent_ == NULL) rotationMatrix_ = rmat;
+	else trajectoryParent_->rotationMatrix_ = rmat;
+	// Recalculate view matrix
+	calculateViewMatrix();
 	// Log camera change
 	changeLog.add(Log::Camera);
 }
@@ -67,6 +70,7 @@ Mat4<double> Model::rotationMatrix()
 void Model::copyRotationMatrix(double *m)
 {
 	// If a trajectory frame, return the parent's matrix
+	printf("In copyRotationMatrix, this = %li, trajectoryParent_ = %li\n", this, trajectoryParent_);
 	if (trajectoryParent_ == NULL) rotationMatrix_.copyColumnMajor(m);
 	else trajectoryParent_->rotationMatrix_.copyColumnMajor(m);
 }
