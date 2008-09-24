@@ -1,6 +1,7 @@
 # XMol-style XYZ coordinates files
-# Last modified: 05/08/08
+# Last modified: 24/09/08
 # ChangeLog:
+#	24/09/08 - Modified to correctly read trajectories containing different numbers/ordering of atoms
 
 importmodel
 	name "XMol XYZ Coordinates"
@@ -70,10 +71,9 @@ importtrajectory
 		#glyphtext $title
 		#glyphdata 1 10 10 0
 		# Now the atoms
-		modeltemplate
 		for $n,1,$natoms
 			readline "$e $rx $ry $rz"
-			setcoords $rx $ry $rz $n
+			newatom $e $rx $ry $rz
 		end
 		rebond
 		selectall

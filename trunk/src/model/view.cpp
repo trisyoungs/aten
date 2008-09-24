@@ -70,7 +70,6 @@ Mat4<double> Model::rotationMatrix()
 void Model::copyRotationMatrix(double *m)
 {
 	// If a trajectory frame, return the parent's matrix
-	printf("In copyRotationMatrix, this = %li, trajectoryParent_ = %li\n", this, trajectoryParent_);
 	if (trajectoryParent_ == NULL) rotationMatrix_.copyColumnMajor(m);
 	else trajectoryParent_->rotationMatrix_.copyColumnMajor(m);
 }
