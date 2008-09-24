@@ -76,17 +76,21 @@ int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
 	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
 	Mat4<double> rmat;
 	Vec3<double> camr;
+	printf("Old view matrix is:\n");
+	obj.rs->rotationMatrix().print();
+	// Get camera position
+	camr = c->arg3d(9);
+	obj.rs->resetCamera(camr);
 	// Get rotation matrix
 	rmat.rows[0].set(c->arg3d(0),0.0);
 	rmat.rows[1].set(c->arg3d(3),0.0);
 	rmat.rows[2].set(c->arg3d(6),0.0);
 	rmat.rows[3].set(0.0,0.0,0.0,1.0);
 	obj.rs->setRotationMatrix(rmat);
-	// Get camera position
-	camr = c->arg3d(9);
-	obj.rs->resetCamera(camr);
 	// Get camera z-rotation (if present)
 	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);
+	printf("New view matrix is:\n");
+	obj.rs->rotationMatrix().print();
 	return CR_SUCCESS;
 }
 
