@@ -56,6 +56,10 @@ class AccessStep
 	const char *targetName();
 	// Return target variable pointer
 	Variable *target();
+	// Return whether the step has an array index path set
+	bool hasArrayIndex();
+	// Return array index as integer value
+	int arrayIndex();
 	// Set enumerated target variable ID
 	void setVariableId(int);
 	// Return variable ID

@@ -20,6 +20,7 @@
 */
 
 #include "variables/ffatomaccess.h"
+#include "variables/accessstep.h"
 #include "variables/vaccess.h"
 #include "classes/forcefieldatom.h"
 #include "base/elements.h"
@@ -41,15 +42,16 @@ FFAtomAccessors::FFAtomAccessors()
 };
 
 // Retrieve specified data
-bool FFAtomAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
+bool FFAtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 {
 	msg.enter("FFAtomAccessors::retrieve");
 	bool result = TRUE;
 	// Cast pointer into ForcefieldAtom*
-	ForcefieldAtom *i = (ForcefieldAtom*) classptr;
-	if (i == NULL) printf("Warning - NULL ForcefieldAtom pointer passed to FFAtomAccessors::retrieve.\n");
+	ForcefieldAtom *ffa = (ForcefieldAtom*) classptr;
+	if (ffa == NULL) printf("Warning - NULL ForcefieldAtom pointer passed to FFAtomAccessors::retrieve.\n");
 // 	printf("Enumerated ID supplied to FFAtomAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > FFAtomAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to FFAtomAccessors::set.\n", vid);
@@ -59,8 +61,29 @@ bool FFAtomAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
+		case (FFAtomAccessors::Atomtype):
+			rv.set(ffa->atomtypeString());
+			break;
 		case (FFAtomAccessors::Charge):
-			rv.set(i->charge());
+			rv.set(ffa->charge());
+			break;
+		case (FFAtomAccessors::Data):
+// 			rv.set(ffa->charge());
+			break;
+		case (FFAtomAccessors::Description):
+			rv.set(ffa->description());
+			break;
+		case (FFAtomAccessors::Equivalent):
+			rv.set(ffa->equivalent());
+			break;
+		case (FFAtomAccessors::Id):
+			rv.set(ffa->typeId());
+			break;
+		case (FFAtomAccessors::Name):
+			rv.set(ffa->name());
+			break;
+		case (FFAtomAccessors::ParentFF):
+			rv.set(ffa->parent(), VTypes::ForcefieldData);
 			break;
 		default:
 			printf("Unknown enumeration %i given to FFAtomAccessors::retrieve.\n", vid);
@@ -72,7 +95,7 @@ bool FFAtomAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 }
 
 // Set specified data
-bool FFAtomAccessors::set(void *classptr, int vid, Variable *srcvar)
+bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("FFAtomAccessors::set");
 	bool result = TRUE;
@@ -81,6 +104,7 @@ bool FFAtomAccessors::set(void *classptr, int vid, Variable *srcvar)
 	if (i == NULL) printf("Warning - NULL ForcefieldAtom pointer passed to FFAtomAccessors::set.\n");
 // 	printf("Enumerated ID supplied to FFAtomAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > FFAtomAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to FFAtomAccessors::set.\n", vid);
@@ -93,11 +117,9 @@ bool FFAtomAccessors::set(void *classptr, int vid, Variable *srcvar)
 		case (FFAtomAccessors::Charge):
 			i->setCharge(srcvar->asDouble());
 			break;
-		case (FFAtomAccessors::Charge):
+		case (FFAtomAccessors::ParentFF):
 			msg.print("Member '%s' in ForcefieldAtom is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
-			break;
-		default:
 			break;
 	}
 	msg.exit("FFAtomAccessors::set");

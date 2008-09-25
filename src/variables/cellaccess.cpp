@@ -20,6 +20,7 @@
 */
 
 #include "variables/cellaccess.h"
+#include "variables/accessstep.h"
 #include "variables/vaccess.h"
 #include "base/cell.h"
 #include "base/messenger.h"
@@ -51,7 +52,7 @@ CellAccessors::CellAccessors()
 };
 
 // Retrieve specified data
-bool CellAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
+bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 {
 	msg.enter("CellAccessors::retrieve");
 	bool result = TRUE;
@@ -60,6 +61,7 @@ bool CellAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 	if (c == NULL) printf("Warning - NULL Cell pointer passed to CellAccessors::retrieve.\n");
 // 	printf("Enumerated ID supplied to CellAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > CellAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to CellAccessors::retrieve.\n", vid);
@@ -107,7 +109,7 @@ bool CellAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 }
 
 // Set specified data
-bool CellAccessors::set(void *classptr, int vid, Variable *srcvar)
+bool CellAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("CellAccessors::set");
 	bool result = TRUE;
@@ -116,6 +118,7 @@ bool CellAccessors::set(void *classptr, int vid, Variable *srcvar)
 	if (c == NULL) printf("Warning - NULL Cell pointer passed to CellAccessors::set.\n");
 // 	printf("Enumerated ID supplied to CellAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > CellAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to CellAccessors::set.\n", vid);

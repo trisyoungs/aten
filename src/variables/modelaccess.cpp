@@ -20,6 +20,7 @@
 */
 
 #include "variables/modelaccess.h"
+#include "variables/accessstep.h"
 #include "variables/vaccess.h"
 #include "model/model.h"
 #include "base/messenger.h"
@@ -36,7 +37,7 @@ ModelAccessors::ModelAccessors()
 };
 
 // Retrieve specified data
-bool ModelAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
+bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 {
 	msg.enter("ModelAccessors::retrieve");
 	bool result = TRUE;
@@ -45,6 +46,7 @@ bool ModelAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::retrieve.\n");
 // 	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > ModelAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to ModelAccessors::retrieve.\n", vid);
@@ -76,7 +78,7 @@ bool ModelAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 }
 
 // Set specified data
-bool ModelAccessors::set(void *classptr, int vid, Variable *srcvar)
+bool ModelAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("ModelAccessors::set");
 	bool result = TRUE;
@@ -85,6 +87,7 @@ bool ModelAccessors::set(void *classptr, int vid, Variable *srcvar)
 	if (m == NULL) printf("Warning - NULL Model pointer passed to ModelAccessors::set.\n");
 // 	printf("Enumerated ID supplied to ModelAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > ModelAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to ModelAccessors::set.\n", vid);
@@ -98,11 +101,10 @@ bool ModelAccessors::set(void *classptr, int vid, Variable *srcvar)
 			m->setName(srcvar->asCharacter());
 			break;
 		case (ModelAccessors::Atoms):
+		case (ModelAccessors::Cell):
 		case (ModelAccessors::NAtoms):
 			msg.print("Member '%s' in Model is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
-			break;
-		default:
 			break;
 	}
 	msg.exit("ModelAccessors::set");
