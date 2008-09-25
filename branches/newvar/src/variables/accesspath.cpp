@@ -101,15 +101,15 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 			// If this is not the last step, retrieve. Otherwise, set or step.
 			if (step->next == NULL) 
 			{
-				if (srcvar != NULL) result = accesslist->set(rv.asPointer(), step->variableId(), srcvar);
+				if (srcvar != NULL) result = accesslist->set(rv.asPointer(), step, srcvar);
 				else if (delta != 0)
 				{
 					msg.print("Subvariables of pointer classes cannot be stepped.\n");
 					result = FALSE;
 				}
-				else result = accesslist->retrieve(rv.asPointer(), step->variableId(), rv);
+				else result = accesslist->retrieve(rv.asPointer(), step, rv);
 			}
-			else result = accesslist->retrieve(rv.asPointer(), step->variableId(), rv);
+			else result = accesslist->retrieve(rv.asPointer(), step, rv);
 		}
 		else
 		{

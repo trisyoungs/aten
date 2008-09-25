@@ -39,9 +39,9 @@ class FFAtomAccessors : public VAccess
 
 	public:
 	// Retrieve specified data
-	bool retrieve(void *classptr, int vid, ReturnValue &rv);
+	bool retrieve(void *classptr, AccessStep *step, ReturnValue &rv);
 	// Set specified data
-	bool set(void *classptr, int vid, Variable *sourcevar);
+	bool set(void *classptr, AccessStep *step, Variable *sourcevar);
 };
 
 extern FFAtomAccessors ffatomAccessors;

@@ -20,6 +20,7 @@
 */
 
 #include "variables/atomaccess.h"
+#include "variables/accessstep.h"
 #include "variables/vaccess.h"
 #include "model/model.h"
 #include "base/elements.h"
@@ -44,7 +45,7 @@ AtomAccessors::AtomAccessors()
 };
 
 // Retrieve specified data
-bool AtomAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
+bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 {
 	msg.enter("AtomAccessors::retrieve");
 	bool result = TRUE;
@@ -53,6 +54,7 @@ bool AtomAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 	if (i == NULL) printf("Warning - NULL Atom pointer passed to AtomAccessors::retrieve.\n");
 // 	printf("Enumerated ID supplied to AtomAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > AtomAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to AtomAccessors::set.\n", vid);
@@ -94,7 +96,7 @@ bool AtomAccessors::retrieve(void *classptr, int vid, ReturnValue &rv)
 }
 
 // Set specified data
-bool AtomAccessors::set(void *classptr, int vid, Variable *srcvar)
+bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("AtomAccessors::set");
 	bool result = TRUE;
@@ -103,6 +105,7 @@ bool AtomAccessors::set(void *classptr, int vid, Variable *srcvar)
 	if (i == NULL) printf("Warning - NULL Atom pointer passed to AtomAccessors::set.\n");
 // 	printf("Enumerated ID supplied to AtomAccessors is %i.\n", vid);
 	// Check range of supplied vid
+	int vid = step->variableId();
 	if ((vid < 0) || (vid > AtomAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to AtomAccessors::set.\n", vid);
@@ -132,8 +135,6 @@ bool AtomAccessors::set(void *classptr, int vid, Variable *srcvar)
 		case (AtomAccessors::Mass):
 			msg.print("Member '%s' in Atom is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
-			break;
-		default:
 			break;
 	}
 	msg.exit("AtomAccessors::set");

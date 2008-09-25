@@ -93,11 +93,20 @@ bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableL
 		else
 		{
 			target_ = v;
-			part = afterChar(beforeChar(text, ']'), '[');
-			if (!setArrayIndex(part.get(), parentvars))
+			// At this point, we must check that the target variable actually is an array...
+			if (!target_->isArray())
 			{
-				msg.print("Failed to parse array index '%s' for '%s'.\n", part.get(), text);
+				msg.print("Array index given to '%s', which is not an array variable.\n", target_->name());
 				result = FALSE;
+			}
+			else
+			{
+				part = afterChar(beforeChar(text, ']'), '[');
+				if (!setArrayIndex(part.get(), parentvars))
+				{
+					msg.print("Failed to parse array index '%s' for '%s'.\n", part.get(), text);
+					result = FALSE;
+				}
 			}
 		}
 	}
@@ -130,6 +139,18 @@ const char *AccessStep::targetName()
 Variable *AccessStep::target()
 {
 	return target_;
+}
+
+// Return whether the step has an array index path set
+bool AccessStep::hasArrayIndex()
+{
+	return (arrayIndex_ != NULL);
+}
+
+// Return array index as integer value
+int AccessStep::arrayIndex()
+{
+	return arrayIndex_->asInteger();
 }
 
 // Set enumerated target variable ID

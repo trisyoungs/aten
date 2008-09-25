@@ -48,9 +48,9 @@ class VAccess
 	// Return address of VariableList
 	VariableList *accessors();
 	// Find and return named accessor value
-	virtual bool retrieve(void *classptr, int vid, ReturnValue &rv)=0;
-	// Find ans set named accessor value
-	virtual bool set(void *classptr, int vid, Variable *srcvar)=0;
+	virtual bool retrieve(void *classptr, AccessStep *step, ReturnValue &rv)=0;
+	// Find and set named accessor value
+	virtual bool set(void *classptr, AccessStep *step, Variable *srcvar)=0;
 	// Return 'id' (position in list) of supplied accessor
 	int accessorId(Variable *accessor);
 };
