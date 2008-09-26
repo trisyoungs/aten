@@ -86,6 +86,8 @@ template <class T> class List
 	void createEmpty(int);
 	// Find list index of supplied item
 	int indexOf(T*) const;
+	// Return item at given position
+	T *itemAt(int n);
 	// Generate (if necessary) and return item array
 	T **array();
 
@@ -292,6 +294,12 @@ template <class T> int List<T>::indexOf(T* item) const
 		result = -1;
 	}
 	return result;
+}
+
+// Return item at given position
+template <class T> T *List<T>::itemAt(int n)
+{
+	return array()[n];
 }
 
 // Create empty list

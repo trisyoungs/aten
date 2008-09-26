@@ -43,11 +43,11 @@ class BundleVariable : public Variable
 	// Set size of array (only for VTypes::ArrayType == NormalArray)
 	bool setArraySize(int size);
 	// Set value of variable (pointer to pointer variable)
-	bool set(void *ptr, VTypes::DataType type, int index = -1);
+	bool set(void *ptr, VTypes::DataType type, Variable *index = NULL);
 	// Get value of variable as pointer of specified type
-	void *asPointer(VTypes::DataType type, int index = -1);
+	void *asPointer(VTypes::DataType type, Variable *index = NULL);
 	// Step variable
-	bool step(int delta, int index = -1);
+	bool step(int delta, Variable *index = NULL);
 
 	/*
 	// Variable Data

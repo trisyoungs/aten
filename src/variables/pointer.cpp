@@ -54,7 +54,7 @@ bool PointerVariable::setArraySize(int size)
 }
 
 // Set value of variable (pointer)
-bool PointerVariable::set(void *ptr, VTypes::DataType type, int index)
+bool PointerVariable::set(void *ptr, VTypes::DataType type, Variable *index)
 {
 	if (type != dataType_)
 	{
@@ -67,9 +67,8 @@ bool PointerVariable::set(void *ptr, VTypes::DataType type, int index)
 		msg.print("Variable '%s' is read-only.\n", name_.get());
 		return FALSE;
 	}
-	bool outofbounds = FALSE;
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -85,12 +84,13 @@ bool PointerVariable::set(void *ptr, VTypes::DataType type, int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		else ptrArrayData_[index-1] = ptr;
+		else ptrArrayData_[n-1] = ptr;
 	}
 	return TRUE;
 }
@@ -104,12 +104,12 @@ bool PointerVariable::reset(void *ptr, VTypes::DataType type)
 }
 
 // Get value of variable as pointer of specified type
-void *PointerVariable::asPointer(VTypes::DataType type, int index)
+void *PointerVariable::asPointer(VTypes::DataType type, Variable *index)
 {
 	if (type != dataType_) printf("Error - a Pointer variable of type '%s' (%s) is being requested as a pointer of type '%s'\n", VTypes::dataType(dataType_), name(), VTypes::dataType(type));
 	void *result = NULL;
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -125,18 +125,19 @@ void *PointerVariable::asPointer(VTypes::DataType type, int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		else result = ptrArrayData_[index-1];
+		else result = ptrArrayData_[n-1];
 	}
 	return result;
 }
 
 // Step variable
-bool PointerVariable::step(int i, int index)
+bool PointerVariable::step(int i, Variable *index)
 {
 	printf("More work needed here...\n");
 	return FALSE;

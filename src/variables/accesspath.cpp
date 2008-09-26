@@ -222,7 +222,7 @@ bool AccessPath::setPath(const char *path)
 }
 
 // Get return value as integer
-int AccessPath::asInteger(int index)
+int AccessPath::asInteger(Variable *index)
 {
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
@@ -234,7 +234,7 @@ int AccessPath::asInteger(int index)
 }
 
 // Get return value as double
-double AccessPath::asDouble(int index)
+double AccessPath::asDouble(Variable *index)
 {
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
@@ -246,7 +246,7 @@ double AccessPath::asDouble(int index)
 }
 
 // Get return value as character
-const char *AccessPath::asCharacter(int index)
+const char *AccessPath::asCharacter(Variable *index)
 {
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
@@ -258,7 +258,7 @@ const char *AccessPath::asCharacter(int index)
 }
 
 // Get return value as bool
-bool AccessPath::asBool(int index)
+bool AccessPath::asBool(Variable *index)
 {
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
@@ -270,7 +270,7 @@ bool AccessPath::asBool(int index)
 }
 
 // Get return value as pointer
-void *AccessPath::asPointer(VTypes::DataType dt, int index)
+void *AccessPath::asPointer(VTypes::DataType dt, Variable *index)
 {
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
@@ -282,7 +282,7 @@ void *AccessPath::asPointer(VTypes::DataType dt, int index)
 }
 
 // Increase variable by integer amount
-bool AccessPath::step(int delta, int index)
+bool AccessPath::step(int delta, Variable *index)
 {
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, delta)) return TRUE;
@@ -290,7 +290,7 @@ bool AccessPath::step(int delta, int index)
 }
 
 // Set variable target from integer
-bool AccessPath::set(int i, int index)
+bool AccessPath::set(int i, Variable *index)
 {
 	static IntegerVariable ivar;
 	ivar.set(i);
@@ -299,7 +299,7 @@ bool AccessPath::set(int i, int index)
 }
 
 // Set variable target from double
-bool AccessPath::set(double d, int index)
+bool AccessPath::set(double d, Variable *index)
 {
 	static RealVariable dvar;
 	dvar.set(d);
@@ -308,7 +308,7 @@ bool AccessPath::set(double d, int index)
 }
 
 // Set variable target from character
-bool AccessPath::set(const char *s, int index)
+bool AccessPath::set(const char *s, Variable *index)
 {
 	static CharacterVariable cvar;
 	cvar.set(s);
@@ -317,7 +317,7 @@ bool AccessPath::set(const char *s, int index)
 }
 
 // Set variable target from pointer
-bool AccessPath::set(void *ptr, VTypes::DataType dt, int index)
+bool AccessPath::set(void *ptr, VTypes::DataType dt, Variable *index)
 {
 	static PointerVariable pvar;
 	pvar.reset(ptr, dt);

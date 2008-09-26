@@ -1,5 +1,7 @@
 # DL_POLY Formatted Trajectory file filter.
 # Last modified: 06/01/2007.
+#	26/09/2008 - Adjusted to use new variable access style.
+# 	06/01/2007 - Initial version.
 
 importtrajectory
 	name "DL_POLY Formatted History"
@@ -15,7 +17,7 @@ importtrajectory
 	double rx,ry,rz,fx,fy,fz,vx,vy,vz
 
 	# DL_POLY formatted history files may contain a header.
-	# When aten is trying to read the header, the variable 'header' will be 'true' (and 'frame' will be 'false')
+	# When Aten is trying to read the header, the variable 'header' will be 'true' (and 'frame' will be 'false')
 	if $header = true
 		# Check first 8 characters of first line - if it reads 'timestep' then this trajectory doesn't have a header
 		readline "$title%8"
@@ -34,7 +36,7 @@ importtrajectory
 		end
 		# Read cell if its present
 		if $imcon > 0
-			readline "$ax%12 $ay%12 $az%12"
+			readline "$model.cell.ax%12 $ay%12 $az%12"
 			readline "$bx%12 $by%12 $bz%12"
 			readline "$cx%12 $cy%12 $cz%12"
 			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz

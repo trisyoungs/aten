@@ -49,19 +49,19 @@ class CharacterVariable : public Variable
 	// Set size of array
 	bool setArraySize(int size);
 	// Set value of variable (char)
-	bool set(const char *s, int index = -1);
+	bool set(const char *s, Variable *index = NULL);
 	// Set value of variable (int)
-	bool set(int i, int index = -1);
+	bool set(int i, Variable *index = NULL);
 	// Set value of variable (double)
-	bool set(double d, int index = -1);
+	bool set(double d, Variable *index = NULL);
 	// Get value of variable as character string
-	const char *asCharacter(int index = -1);
+	const char *asCharacter(Variable *index = NULL);
 	// Get value of variable as integer
-	int asInteger(int index = -1);
+	int asInteger(Variable *index = NULL);
 	// Get value of variable as double
-	double asDouble(int index = -1);
+	double asDouble(Variable *index = NULL);
 	// Get value of variable as a boolean
-	bool asBool(int index = -1);
+	bool asBool(Variable *index = NULL);
 
 	/*
 	// Variable Data

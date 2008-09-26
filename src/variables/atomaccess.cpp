@@ -36,6 +36,7 @@ AtomAccessors::AtomAccessors()
  	accessorPointers[AtomAccessors::FX] = addAccessor("fx",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::FY] = addAccessor("fy",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::FZ] = addAccessor("fz",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::Id] = addAccessor("id",		VTypes::IntegerData,	TRUE);
  	accessorPointers[AtomAccessors::Mass] = addAccessor("mass",		VTypes::RealData,	TRUE);
  	accessorPointers[AtomAccessors::RX] = addAccessor("rx",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::RY] = addAccessor("ry",		VTypes::RealData,	FALSE);
@@ -75,6 +76,9 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (AtomAccessors::FZ):
 			rv.set(i->f().get(vid - AtomAccessors::FX));
 			break;
+		case (AtomAccessors::Id):
+			rv.set(i->id());
+			break;
 		case (AtomAccessors::Mass):
 			rv.set(elements.atomicMass(i));
 			break;
@@ -87,7 +91,7 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(elements.symbol(i));
 			break;
 		default:
-			printf("Unknown enumeration %i given to AtomAccessors::retrieve.\n", vid);
+			printf("AtomAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 	}
@@ -133,7 +137,12 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (AtomAccessors::Symbol):
 		case (AtomAccessors::Mass):
+		case (AtomAccessors::Id):
 			msg.print("Member '%s' in Atom is read-only.\n", accessorPointers[vid]->name());
+			result = FALSE;
+			break;
+		default:
+			printf("AtomAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 	}

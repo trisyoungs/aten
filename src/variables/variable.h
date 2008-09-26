@@ -24,6 +24,7 @@
 
 #include "base/dnchar.h"
 #include "base/vtypes.h"
+#include <stdlib.h>
 
 // Forward declaration
 class VariableList;
@@ -84,27 +85,27 @@ class Variable
 	// Set size of array (only for non-list derivations)
 	virtual bool setArraySize(int size);
 	// Set value of variable (char)
-	virtual bool set(const char*, int index = -1);
+	virtual bool set(const char*, Variable *index = NULL);
 	// Set value of variable (int)
-	virtual bool set(int i, int index = -1);
+	virtual bool set(int i, Variable *index = NULL);
 	// Set value of variable (double)
-	virtual bool set(double d, int index = -1);
+	virtual bool set(double d, Variable *index = NULL);
 	// Set value of variable (pointer)
-	virtual bool set(void *ptr, VTypes::DataType type, int index = -1);
+	virtual bool set(void *ptr, VTypes::DataType type, Variable *index = NULL);
 	// Get value of variable as character string
-	virtual const char *asCharacter(int index = -1);
+	virtual const char *asCharacter(Variable *index = NULL);
 	// Get value of variable as integer
-	virtual int asInteger(int index = -1);
+	virtual int asInteger(Variable *index = NULL);
 	// Get value of variable as double
-	virtual double asDouble(int index = -1);
+	virtual double asDouble(Variable *index = NULL);
 	// Get value of variable as float
-	float asFloat(int index = -1);
+	float asFloat(Variable *index = NULL);
 	// Get value of variable as a boolean
-	virtual bool asBool(int index = -1);
+	virtual bool asBool(Variable *index = NULL);
 	// Get value of variable as pointer of specified type
-	virtual void *asPointer(VTypes::DataType type, int index = -1);
+	virtual void *asPointer(VTypes::DataType type, Variable *index = NULL);
 	// Step variable
-	virtual bool step(int delta, int index = -1);
+	virtual bool step(int delta, Variable *index = NULL);
 };
 
 #endif

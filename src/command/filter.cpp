@@ -245,26 +245,6 @@ void Filter::setType(FilterType ft)
 	Variable *v;
 	switch (type_)
 	{
-		case (Filter::ModelImport):
-// 			v = commands_.variables.createVariable("title","",VTypes::CharacterData); TGAY
-			break;
-		case (Filter::TrajectoryImport):
-// 			v = commands_.variables.createVariable("header","",VTypes::CharacterData); TGAY
-// 			v = commands_.variables.createVariable("natoms","",VTypes::IntegerData);
-// 			v = commands_.variables.createVariable("cell","type",VTypes::CharacterData);
-			break;
-		case (Filter::ExpressionImport):
-			break;
-		case (Filter::GridImport):
-// 			v = commands_.variables.createVariable("title","",VTypes::CharacterData); TGAY
-			break;
-		case (Filter::ModelExport):
-// 			commands_.createModelVariables(""); TGAY
-			break;
-		case (Filter::TrajectoryExport):
-// 			v = commands_.variables.createVariable("header","",VTypes::CharacterData); TGAY
-// 			v = commands_.variables.createVariable("natoms","",VTypes::IntegerData);
-			break;
 		case (Filter::ExpressionExport):
 // 			v = commands_.variables.createVariable("energyunit","",VTypes::CharacterData); TGAY
 // 			v = commands_.variables.createVariable("natomtypes","",VTypes::IntegerData);
@@ -391,8 +371,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			break;
 		case (Filter::TrajectoryImport):
 			// Set variables
-// 		TGAY	commands_.variables.set("header",(trajheader ? "true" : "false"));
-// 			commands_.variables.set("frame",(trajheader ? "false" : "true"));
+			commands_.setHeaderVars(trajheader);
 			if (obj.rs == NULL)
 			{
 				msg.print("No current model set for trajectory import.\n");
@@ -411,8 +390,6 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 				}
 				//obj.rs->renderSource()->clear();
 			}
-// 			commands_.variables.set("natoms",obj.m->nAtoms());
-// 			commands_.variables.set("cell.type",lowerCase(Cell::cellType(obj.m->cell()->type())));
 			break;
 	}
 	// Execute CommandList

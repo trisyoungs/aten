@@ -121,171 +121,77 @@ bool Variable::setArraySize(int size)
 }
 
 // Set value of variable (char)
-bool Variable::set(const char *s, int index)
+bool Variable::set(const char *s, Variable *index)
 {
 	printf("A variable of type '%s' cannot be set from a character (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return FALSE;
 }
 
 // Set value of variable (int)
-bool Variable::set(int i, int index)
+bool Variable::set(int i, Variable *index)
 {
 	printf("A variable of type '%s' cannot be set from an integer (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return FALSE;
 }
 
 // Set value of variable (double)
-bool Variable::set(double d, int index)
+bool Variable::set(double d, Variable *index)
 {
 	printf("A variable of type '%s' cannot be set from a double (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return FALSE;
 }
 
 // Set value of variable (pointer)
-bool Variable::set(void *ptr, VTypes::DataType type, int index)
+bool Variable::set(void *ptr, VTypes::DataType type, Variable *index)
 {
 	printf("A variable of type '%s' cannot be set from a pointer (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return FALSE;
 }
 
 // Get value of variable as character string
-const char *Variable::asCharacter(int index)
+const char *Variable::asCharacter(Variable *index)
 {
 	printf("A variable of type '%s' cannot be returned as a character (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return "NULL";
 }
 
 // Get value of variable as integer
-int Variable::asInteger(int index)
+int Variable::asInteger(Variable *index)
 {
 	printf("A variable of type '%s' cannot be returned as an integer (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return 0;
 }
 
 // Get value of variable as double
-double Variable::asDouble(int index)
+double Variable::asDouble(Variable *index)
 {
 	printf("A variable of type '%s' cannot be returned as a double (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return 0.0;
 }
 
 // Get value of variable as float
-float Variable::asFloat(int index)
+float Variable::asFloat(Variable *index)
 {
 	return (float) asDouble(index);
 }
 
 // Get value of variable as bool
-bool Variable::asBool(int index)
+bool Variable::asBool(Variable *index)
 {
 	printf("A variable of type '%s' cannot be returned as a bool (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return FALSE;
 }
 
 // Get value of variable as pointer
-void *Variable::asPointer(VTypes::DataType type, int index)
+void *Variable::asPointer(VTypes::DataType type, Variable *index)
 {
 	printf("A variable of type '%s' cannot be returned as a pointer (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return NULL;
 }
 
 // Step variable
-bool Variable::step(int delta, int index)
+bool Variable::step(int delta, Variable *index)
 {
 	printf("A variable of type '%s' cannot be stepped (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return FALSE;
 }
-
-// // Reset
-// void Variable::reset()
-// {
-// 	switch (dataType_)
-// 	{
-// 		case (Variable::CharacterVariable):
-// 			charValue_.set("");
-// 			break;
-// 		case (Variable::IntegerVariable):
-// 			intValue_ = 0;
-// 			break;
-// 		case (Variable::FloatVariable):
-// 			doubleValue_ = 0.0;
-// 			break;
-// 		case (Variable::AtomVariable):
-// 		case (Variable::PatternVariable):
-// 		case (Variable::ModelVariable):
-// 		case (Variable::BondVariable):
-// 		case (Variable::AngleVariable):
-// 		case (Variable::TorsionVariable):
-// 		case (Variable::AtomtypeVariable):
-// 			ptrValue_ = NULL;
-// 			break;
-// 	}
-// }
-
-// // Integer increase
-// void Variable::increase(int n)
-// {
-// 	switch (dataType_)
-// 	{
-// 		case (Variable::IntegerVariable):
-// 			intValue_ ++;
-// 			break;
-// 		case (Variable::FloatVariable):
-// 			doubleValue_ += 1.0;
-// 			break;
-// 		case (Variable::AtomVariable):
-// 			ptrValue_ = ( (Atom*) ptrValue_)->next;
-// 			break;
-// 		case (Variable::PatternVariable):
-// 			ptrValue_ = ( (Pattern*) ptrValue_)->next;
-// 			break;
-// 		case (Variable::ModelVariable):
-// 			ptrValue_ = ( (Model*) ptrValue_)->next;
-// 			break;
-// 		case (Variable::BondVariable):
-// 		case (Variable::AngleVariable):
-// 		case (Variable::TorsionVariable):
-// 			ptrValue_ = ( (PatternBound*) ptrValue_)->next;
-// 			break;
-// 		case (Variable::AtomtypeVariable):
-// 			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->next;
-// 			break;
-// 		default:
-// 			printf("Variable::increase <<<< Don't know how to increase variable '%s', dataType_ '%s' >>>>\n", name_.get(), Variable::variableType(dataType_));
-// 			break;
-// 	}
-// }
-// 
-// // Integer Decrease
-// void Variable::decrease(int n)
-// {
-// 	switch (dataType_)
-// 	{
-// 		case (Variable::IntegerVariable):
-// 			intValue_ --;
-// 			break;
-// 		case (Variable::FloatVariable):
-// 			doubleValue_ -= 1.0;
-// 			break;
-// 		case (Variable::AtomVariable):
-// 			ptrValue_ = ( (Atom*) ptrValue_)->prev;
-// 			break;
-// 		case (Variable::PatternVariable):
-// 			ptrValue_ = ( (Pattern*) ptrValue_)->prev;
-// 			break;
-// 		case (Variable::ModelVariable):
-// 			ptrValue_ = ( (Model*) ptrValue_)->prev;
-// 			break;
-// 		case (Variable::BondVariable):
-// 		case (Variable::AngleVariable):
-// 		case (Variable::TorsionVariable):
-// 			ptrValue_ = ( (PatternBound*) ptrValue_)->prev;
-// 			break;
-// 		case (Variable::AtomtypeVariable):
-// 			ptrValue_ = ( (ForcefieldAtom*) ptrValue_)->prev;
-// 			break;
-// 		default:
-// 			printf("Variable::decrease <<<< Don't know how to decrease variable '%s', dataType_ '%s' >>>>\n", name_.get(), Variable::variableType(dataType_));
-// 			break;
-// 	}
-// }
