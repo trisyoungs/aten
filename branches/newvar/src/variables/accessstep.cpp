@@ -169,7 +169,7 @@ int AccessStep::variableId()
 int AccessStep::asInteger()
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as an integer.\n");
-	else return target_->asInteger( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+	else return target_->asInteger( arrayIndex_ );
 	return 0;
 }
 
@@ -177,7 +177,7 @@ int AccessStep::asInteger()
 double AccessStep::asDouble()
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a double.\n");
-	else return target_->asDouble( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+	else return target_->asDouble( arrayIndex_ );
 	return 0.0;
 }
 
@@ -185,7 +185,7 @@ double AccessStep::asDouble()
 const char *AccessStep::asCharacter()
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a character.\n");
-	else return target_->asCharacter( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+	else return target_->asCharacter( arrayIndex_ );
 	return "NULL";
 }
 
@@ -193,7 +193,7 @@ const char *AccessStep::asCharacter()
 bool AccessStep::asBool()
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a bool.\n");
-	else return target_->asBool( arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+	else return target_->asBool( arrayIndex_ );
 	return FALSE;
 }
 
@@ -201,7 +201,7 @@ bool AccessStep::asBool()
 void *AccessStep::asPointer(VTypes::DataType dt)
 {
 	if (target_ == NULL) msg.print("AccessStep has no target variable to return as a pointer.\n");
-	else return target_->asPointer(dt,  arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+	else return target_->asPointer(dt,  arrayIndex_ );
 	return 0;
 }
 
@@ -227,16 +227,16 @@ void AccessStep::setTargetVariable(Variable *srcvar)
 			printf("Error setting target variable in AccessStep - no data type set.\n");
 			break;
 		case (VTypes::IntegerData):
-			target_->set(srcvar->asInteger(), arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+			target_->set(srcvar->asInteger(), arrayIndex_ );
 			break;
 		case (VTypes::CharacterData):
-			target_->set(srcvar->asCharacter(), arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+			target_->set(srcvar->asCharacter(), arrayIndex_ );
 			break;
 		case (VTypes::RealData):
-			target_->set(srcvar->asDouble(), arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+			target_->set(srcvar->asDouble(), arrayIndex_ );
 			break;
 		default:
-			target_->set(srcvar->asPointer(dt), dt, arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger());
+			target_->set(srcvar->asPointer(dt), dt, arrayIndex_ );
 			break;
 	}
 }
@@ -244,5 +244,5 @@ void AccessStep::setTargetVariable(Variable *srcvar)
 // Step value of target variable from source variable
 bool AccessStep::stepTargetVariable(int delta)
 {
-	return target_->step(delta, arrayIndex_ == NULL ? -1 : arrayIndex_->asInteger() );
+	return target_->step(delta, arrayIndex_ );
 }

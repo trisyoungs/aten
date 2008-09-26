@@ -76,13 +76,13 @@ bool ExpressionVariable::set(void *ptr, VTypes::DataType type)
 }
 
 // Get value of variable as integer
-int ExpressionVariable::asInteger(int index)
+int ExpressionVariable::asInteger(Variable *index)
 {
 	return evaluate()->asInteger();
 }
 
 // Get value of variable as double
-double ExpressionVariable::asDouble(int index)
+double ExpressionVariable::asDouble(Variable *index)
 {
 	return evaluate()->asReal();
 }

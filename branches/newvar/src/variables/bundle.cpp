@@ -48,7 +48,7 @@ bool BundleVariable::setArraySize(int size)
 }
 
 // Set value of variable (pointer to pointer variable)
-bool BundleVariable::set(void *bundle, VTypes::DataType type, int index)
+bool BundleVariable::set(void *bundle, VTypes::DataType type, Variable *index)
 {
 	if (type != dataType_)
 	{
@@ -62,18 +62,23 @@ bool BundleVariable::set(void *bundle, VTypes::DataType type, int index)
 		return FALSE;
 	}
 	// Check array index given
-	if (index != -1) msg.print("Array index given to BundleVariable '%s'.\n", name_.get());
+	if (index != NULL)
+	msg.print("Array index given to BundleVariable '%s'.\n", name_.get());
 	data_ = (Bundle*) bundle;
 	return TRUE;
 }
 
 // Get value of variable as pointer of specified type
-void *BundleVariable::asPointer(VTypes::DataType type, int index)
+void *BundleVariable::asPointer(VTypes::DataType type, Variable *index)
 {
 	if (type != dataType_) printf("Error - a member of type '%s' is being requested from a BundleVariable of type '%s' (%s)\n", VTypes::dataType(type), name(), VTypes::dataType(dataType_));
 	void *result = NULL;
 	// Check array index given
-	if (index != -1) msg.print("Array index given to BundleVariable '%s'.\n", name_.get());
+	if (index != NULL)
+	{
+		msg.print("Array index given to BundleVariable '%s'.\n", name_.get());
+		return NULL;
+	}
 	switch (dataType_)
 	{
 		case (VTypes::ModelData):
@@ -89,7 +94,7 @@ void *BundleVariable::asPointer(VTypes::DataType type, int index)
 }
 
 // Step variable
-bool BundleVariable::step(int i, int index)
+bool BundleVariable::step(int i, Variable *index)
 {
 	printf("More work needed here...\n");
 	return FALSE;

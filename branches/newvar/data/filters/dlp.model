@@ -89,7 +89,7 @@ exportmodel
 		$rx = $i.rx-$model.cell.centrex
 		$ry = $i.ry-$model.cell.centrey
 		$rz = $i.rz-$model.cell.centrez
-		writeline "$i.fftype%-8$i.id%10   $i.mass"
+		writeline "${i.type%-8}${i.id%10}   $i.mass"
 		writeline "$rx%20.14$ry%20.14$rz%20.14"
 	end
 end

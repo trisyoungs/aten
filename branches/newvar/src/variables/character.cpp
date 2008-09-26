@@ -53,7 +53,7 @@ bool CharacterVariable::setArraySize(int size)
 }
 
 // Set value of variable (char)
-bool CharacterVariable::set(const char *s, int index)
+bool CharacterVariable::set(const char *s, Variable *index)
 {
 	// Check read/write status
 	if (readOnly_)
@@ -62,7 +62,7 @@ bool CharacterVariable::set(const char *s, int index)
 		return FALSE;
 	}
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -78,33 +78,34 @@ bool CharacterVariable::set(const char *s, int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		else charArrayData_[index-1] = s;
+		else charArrayData_[n-1] = s;
 	}
 	return TRUE;
 }
 
 // Set value of variable (int)
-bool CharacterVariable::set(int i, int index)
+bool CharacterVariable::set(int i, Variable *index)
 {
 	return set(itoa(i), index);
 }
 
 // Set value of variable (double)
-bool CharacterVariable::set(double d, int index)
+bool CharacterVariable::set(double d, Variable *index)
 {
 	return set(ftoa(d), index);
 }
 
 // Get value of variable as character string
-const char *CharacterVariable::asCharacter(int index)
+const char *CharacterVariable::asCharacter(Variable *index)
 {
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -120,32 +121,33 @@ const char *CharacterVariable::asCharacter(int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return "NULL";
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return "NULL";
 		}
-		return charArrayData_[index-1].get();
+		return charArrayData_[n-1].get();
 	}
 }
 
 // Get value of variable as integer
-int CharacterVariable::asInteger(int index)
+int CharacterVariable::asInteger(Variable *index)
 {
 	return atoi(asCharacter(index));
 }
 
 // Get value of variable as double
-double CharacterVariable::asDouble(int index)
+double CharacterVariable::asDouble(Variable *index)
 {
 	return atof(asCharacter(index));
 }
 
 // Get value of variable as a boolean
-bool CharacterVariable::asBool(int index)
+bool CharacterVariable::asBool(Variable *index)
 {
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -161,11 +163,12 @@ bool CharacterVariable::asBool(int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
 			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
 			return FALSE;
 		}
-		return charArrayData_[index-1].asBool();
+		return charArrayData_[n-1].asBool();
 	}
 }

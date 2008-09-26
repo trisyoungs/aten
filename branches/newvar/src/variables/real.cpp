@@ -53,19 +53,19 @@ bool RealVariable::setArraySize(int size)
 }
 
 // Set value of variable (char)
-bool RealVariable::set(const char *s, int index)
+bool RealVariable::set(const char *s, Variable *index)
 {
 	return (set(atof(s), index));
 }
 
 // Set value of variable (int)
-bool RealVariable::set(int i, int index)
+bool RealVariable::set(int i, Variable *index)
 {
 	return set( (double) i, index);
 }
 
 // Set value of variable (double)
-bool RealVariable::set(double d, int index)
+bool RealVariable::set(double d, Variable *index)
 {
 	// Check read/write status
 	if (readOnly_)
@@ -74,7 +74,7 @@ bool RealVariable::set(double d, int index)
 		return FALSE;
 	}
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -90,31 +90,32 @@ bool RealVariable::set(double d, int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		// Get array and set value...
-		if ((index > arraySize_) || (index < 1))
+		// Get array index and set value...
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		else realArrayData_[index-1] = d;
+		else realArrayData_[n-1] = d;
 	}
 	return TRUE;
 }
 
 // Get value of variable as character string
-const char *RealVariable::asCharacter(int index)
+const char *RealVariable::asCharacter(Variable *index)
 {
 	return ftoa(asDouble(index));
 }
 
 // Get value of variable as integer
-int RealVariable::asInteger(int index)
+int RealVariable::asInteger(Variable *index)
 {
 	return (int) asDouble(index);
 }
 
 // Get value of variable as double
-double RealVariable::asDouble(int index)
+double RealVariable::asDouble(Variable *index)
 {
 	// Check read/write status
 	if (readOnly_)
@@ -123,7 +124,7 @@ double RealVariable::asDouble(int index)
 		return 0.0;
 	}
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -139,26 +140,27 @@ double RealVariable::asDouble(int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		return realArrayData_[index-1];
+		return realArrayData_[n-1];
 	}
 }
 
 // Get value of variable as a boolean
-bool RealVariable::asBool(int index)
+bool RealVariable::asBool(Variable *index)
 {
 	return (asDouble(index) <= 0 ? FALSE : TRUE);
 }
 
 // Step variable
-bool RealVariable::step(int delta, int index)
+bool RealVariable::step(int delta, Variable *index)
 {
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -174,12 +176,13 @@ bool RealVariable::step(int delta, int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		realArrayData_[index-1] += delta;
+		realArrayData_[n-1] += delta;
 	}
 	return TRUE;
 }

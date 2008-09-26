@@ -26,6 +26,7 @@
 #include "variables/character.h"
 #include "variables/real.h"
 #include "variables/pointer.h"
+#include "variables/pointerlist.h"
 #include "variables/bundle.h"
 #include "main/aten.h"
 #include <string.h>
@@ -36,12 +37,14 @@ VariableList::VariableList()
 {
 	// Add accessors to model list and current model/frame in Aten
 	Variable *v;
-// 	v = addBundlePointer("frame", VTypes::ModelData);
-// 	v->set(&aten.current, VTypes::ModelData);
+	v = addVariable("header", VTypes::CharacterData);
+	v->set("false");
+	v = addVariable("frame", VTypes::CharacterData);
+	v->set("false");
 	v = addBundlePointer("model", VTypes::ModelData);
 	v->set(&aten.current, VTypes::ModelData);
-	//v = addVariable("models", VTypes::ModelData, VTypes::ListArray);
-	//v->set(aten.modelList(), VTypes::ModelData);
+	v = addListVariable("models", VTypes::ModelData);
+	v->set(aten.modelList(), VTypes::ModelData);
 }
 
 // Return list position (id) of Variable in list
@@ -181,6 +184,61 @@ Variable *VariableList::addPath(const char *s)
 	newvar->setParent(this);
 	paths_.own(newvar);
 	if (!newvar->setPath(s)) return NULL;
+	return newvar;
+}
+
+// Add List<> type variable
+Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt)
+{
+	Variable *newvar;
+	PointerListVariable<Atom> *s;
+	switch (vt)
+	{
+		case (VTypes::CharacterData):
+		case (VTypes::IntegerData):
+		case (VTypes::RealData):
+		case (VTypes::CellData):
+			printf("Cannot create a list variable in this VariableList since '%s' is a non-pointer/unsuitable type.\n", VTypes::dataType(vt));
+			newvar = NULL;
+			break;
+		case (VTypes::AtomData):
+			s = new PointerListVariable<Atom>(vt);
+			break;
+		case (VTypes::PatternData):
+			newvar = new PointerListVariable<Pattern>(vt);
+			break;
+		case (VTypes::ModelData):
+			newvar = new PointerListVariable<Model>(vt);
+			break;
+		case (VTypes::GridData):
+			newvar = new PointerListVariable<Grid>(vt);
+			break;
+		case (VTypes::BondData):
+// 			newvar = new PointerListVariable<Bond>;
+			printf("Aaaaargh\n");  // TGAY
+			break;
+		case (VTypes::AngleData):
+// 			newvar = new PointerListVariable<>;
+			printf("Aaaaargh\n");  // TGAY
+			break;
+		case (VTypes::TorsionData):
+// 			newvar = new PointerListVariable<>;
+			printf("Aaaaargh\n");  // TGAY
+			break;
+		case (VTypes::AtomtypeData):
+			newvar = new PointerListVariable<ForcefieldAtom>(vt);
+			break;
+		default:
+			printf("Don't yet know how to create a list variable of type '%s'\n", VTypes::dataType(vt));
+			newvar = NULL;
+			break;
+	}
+	if (newvar != NULL)
+	{	
+		variables_.own(newvar);
+		newvar->setName(name);
+		newvar->setListArray();
+	}
 	return newvar;
 }
 

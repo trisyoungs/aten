@@ -54,9 +54,9 @@ class ExpressionVariable : public Variable, VObject<int>
 	// Set value of variable (pointer)
 	bool set(void *ptr, VTypes::DataType type);
 	// Get value of variable as integer
-	int asInteger(int index = -1);
+	int asInteger(Variable *index = NULL);
 	// Get value of variable as double
-	double asDouble(int index = -1);
+	double asDouble(Variable *index = NULL);
 
 	/*
 	// Expression Data

@@ -86,7 +86,7 @@ bool FFAtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv
 			rv.set(ffa->parent(), VTypes::ForcefieldData);
 			break;
 		default:
-			printf("Unknown enumeration %i given to FFAtomAccessors::retrieve.\n", vid);
+			printf("FFAtomAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 	}
@@ -119,6 +119,10 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (FFAtomAccessors::ParentFF):
 			msg.print("Member '%s' in ForcefieldAtom is read-only.\n", accessorPointers[vid]->name());
+			result = FALSE;
+			break;
+		default:
+			printf("FFAtomAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 	}

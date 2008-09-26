@@ -59,27 +59,27 @@ class AccessPath : public Variable
 	// Set path from character constant
 	bool setPath(const char *path);
 	// Set value of variable (char)
-	bool set(const char*, int index = -1);
+	bool set(const char*, Variable *index = NULL);
 	// Set value of variable (int)
-	bool set(int i, int index = -1);
+	bool set(int i, Variable *index = NULL);
 	// Set value of variable (double)
-	bool set(double d, int index = -1);
+	bool set(double d, Variable *index = NULL);
 	// Set value of variable (pointer)
-	bool set(void *ptr, VTypes::DataType type, int index = -1);
+	bool set(void *ptr, VTypes::DataType type, Variable *index = NULL);
 	// Get value of variable as character string
-	const char *asCharacter(int index = -1);
+	const char *asCharacter(Variable *index = NULL);
 	// Get value of variable as integer
-	int asInteger(int index = -1);
+	int asInteger(Variable *index = NULL);
 	// Get value of variable as double
-	double asDouble(int index = -1);
+	double asDouble(Variable *index = NULL);
 	// Get value of variable as float
-	float asFloat(int index = -1);
+	float asFloat(Variable *index = NULL);
 	// Get value of variable as a boolean
-	bool asBool(int index = -1);
+	bool asBool(Variable *index = NULL);
 	// Get value of variable as pointer of specified type
-	void *asPointer(VTypes::DataType type, int index = -1);
+	void *asPointer(VTypes::DataType type, Variable *index = NULL);
 	// Step variable
-	bool step(int delta, int index = -1);
+	bool step(int delta, Variable *index = NULL);
 };
 
 #endif

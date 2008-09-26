@@ -54,13 +54,13 @@ bool IntegerVariable::setArraySize(int size)
 }
 
 // Set value of variable (char)
-bool IntegerVariable::set(const char *s, int index)
+bool IntegerVariable::set(const char *s, Variable *index)
 {
 	return set( atoi(s) );
 }
 
 // Set value of variable (int)
-bool IntegerVariable::set(int i, int index)
+bool IntegerVariable::set(int i, Variable *index)
 {
 	// Check read/write status
 	if (readOnly_)
@@ -70,7 +70,7 @@ bool IntegerVariable::set(int i, int index)
 	}
 	bool outofbounds = FALSE;
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -86,33 +86,34 @@ bool IntegerVariable::set(int i, int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		else integerArrayData_[index-1] = i;
+		else integerArrayData_[n-1] = i;
 	}
 	return TRUE;
 }
 
 // Set value of variable (double)
-bool IntegerVariable::set(double d, int index)
+bool IntegerVariable::set(double d, Variable *index)
 {
 	return set( (int) d);
 }
 
 // Get value of variable as character string
-const char *IntegerVariable::asCharacter(int index)
+const char *IntegerVariable::asCharacter(Variable *index)
 {
 	return itoa(asInteger(index));
 }
 
 // Get value of variable as integer
-int IntegerVariable::asInteger(int index)
+int IntegerVariable::asInteger(Variable *index)
 {
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -128,32 +129,33 @@ int IntegerVariable::asInteger(int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		return integerArrayData_[index-1];
+		return integerArrayData_[n-1];
 	}
 }
 
 // Get value of variable as double
-double IntegerVariable::asDouble(int index)
+double IntegerVariable::asDouble(Variable *index)
 {
 	return (double) asInteger(index);
 }
 
 // Get value of variable as a boolean
-bool IntegerVariable::asBool(int index)
+bool IntegerVariable::asBool(Variable *index)
 {
 	return (asInteger(index) < 1 ? FALSE : TRUE);
 }
 
 // Step variable
-bool IntegerVariable::step(int delta, int index)
+bool IntegerVariable::step(int delta, Variable *index)
 {
 	// Check array index given
-	if (index == -1)
+	if (index == NULL)
 	{
 		if (arraySize_ != -1)
 		{
@@ -169,12 +171,13 @@ bool IntegerVariable::step(int delta, int index)
 			msg.print("Array index given to variable '%s'.\n", name_.get());
 			return FALSE;
 		}
-		if ((index > arraySize_) || (index < 1))
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
 		{
-			msg.print("Array index %i is out of bounds for array '%s'.\n", index, name_.get());
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		integerArrayData_[index-1] += delta;
+		integerArrayData_[n-1] += delta;
 	}
 	return TRUE;
 }

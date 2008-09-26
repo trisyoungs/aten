@@ -69,7 +69,7 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(m->nAtoms());
 			break;
 		default:
-			printf("Unknown enumeration %i given to ModelAccessors::retrieve.\n", vid);
+			printf("ModelAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 	}
@@ -104,6 +104,10 @@ bool ModelAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (ModelAccessors::Cell):
 		case (ModelAccessors::NAtoms):
 			msg.print("Member '%s' in Model is read-only.\n", accessorPointers[vid]->name());
+			result = FALSE;
+			break;
+		default:
+			printf("ModelAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 	}
