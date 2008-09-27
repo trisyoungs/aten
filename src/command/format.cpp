@@ -47,7 +47,7 @@ bool Format::createDelimited(const char *s, VariableList &vlist)
 		fn = nodes_.add();
 		if (!fn->set(lp.argc(n), vlist))
 		{
-			printf("Failed to add format node '%s'.\n", lp.argc(n));
+			msg.print("Failed to add format node '%s'.\n", lp.argc(n));
 			msg.exit("Format::createDelimited");
 			return FALSE;
 		}
@@ -140,7 +140,7 @@ bool Format::createExact(const char *s, VariableList &vlist)
 		fn = nodes_.add();
 		if (!fn->set(varstr, vlist))
 		{
-			printf("Failed to add format node '%s'.\n", varstr);
+			msg.print("Failed to add format node '%s'.\n", varstr);
 			msg.exit("Format::createExact");
 			return FALSE;
 		}
@@ -163,7 +163,7 @@ bool Format::createExact(const char *s, VariableList &vlist)
 		fn->set(varstr, vlist);
 		if (!fn->set(varstr, vlist))
 		{
-			printf("Failed to add format node '%s'.\n", varstr);
+			msg.print("Failed to add format node '%s'.\n", varstr);
 			msg.exit("Format::createExact");
 			return FALSE;
 		}
@@ -219,7 +219,8 @@ const char *Format::createString()
 				sprintf(bit,fmt,v->asDouble());
 				break;
 			default:
-				printf("Variables of type '%s' cannot be used in a format string.\n", VTypes::dataType(v->type()));
+				msg.print("Variables of type '%s' cannot be used in a format string.\n", VTypes::dataType(v->type()));
+				break;
 		}
 		msg.print(Messenger::Parse,"Format:::createString - added [%s], format [%s]\n", bit, fmt);
 		strcat(result,bit);

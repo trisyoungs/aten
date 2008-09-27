@@ -208,6 +208,7 @@ bool Filter::load(ifstream &filterFile)
 				if (commands_.cacheCommand()) continue;
 				else
 				{
+					msg.print("Error occurred at line %i.\n", parser.lastLine());
 					msg.exit("Filter::load");
 					return FALSE;
 				}
@@ -252,7 +253,6 @@ void Filter::setType(FilterType ft)
 // 			v = commands_.variables.createVariable("nangleterms","",VTypes::IntegerData);
 // 			v = commands_.variables.createVariable("ntorsionterms","",VTypes::IntegerData);
 // 			v = commands_.variables.createVariable("npatterns","",VTypes::IntegerData);
-// 			commands_.createModelVariables(""); TGAY
 			break;
 		case (Filter::GridExport):
 			break;
@@ -303,8 +303,6 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 	{
 		case (Filter::ModelImport):
 			msg.print("Load Model : %s (%s)\n", filename, name_.get());
-			// Reset reserved variables
-// 			commands_.variables.set("title",filename); TGAY
 			// Open file and set target
 			if (!commands_.setInputFile(filename))
 			{
@@ -321,8 +319,6 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 				proceed = FALSE;
 				break;
 			}
-			// Set variables
-// 			commands_.setModelVariables("",obj.rs); TGAY
 			break;
 		case (Filter::ExpressionExport):
 			msg.print("Save Field : %s (%s)\n", filename, name_.get());
@@ -334,14 +330,6 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			}
 			// Generate unique term lists
 			obj.rs->createUniqueLists();
-			// Set variables
-// 			commands_.setModelVariables("",obj.rs); TGAY
-// 			commands_.variables.set("npatterns",obj.rs->nPatterns());
-// 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));   TGAY
-// 			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());
-// 			commands_.variables.set("nbondterms",obj.rs->nUniqueBondTerms());
-// 			commands_.variables.set("nangleterms",obj.rs->nUniqueAngleTerms());
-// 			commands_.variables.set("ntorsionterms",obj.rs->nUniqueTorsionTerms());
 			// Open file...
 			if (!commands_.setOutputFile(filename))
 			{
@@ -352,7 +340,6 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 		case (Filter::GridImport):
 			msg.print("Load Grid  : %s (%s)\n", filename, name_.get());
 			// Reset reserved variables
-// 			commands_.variables.set("title",filename);
 			// Open file...
 			if (!commands_.setInputFile(filename))
 			{

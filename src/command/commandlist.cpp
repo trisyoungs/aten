@@ -383,14 +383,8 @@ bool CommandList::cacheCommand()
 		// Shift all arguments up one position in the parser
 		parser.shiftArgsUp();
 		// Set command based on type of variable
-		// TGAY return type of variablepath needs to be checked here.
-// 		Variable *v = variables_.get(&parser.argc(1)[1]);
 		Variable *v = variables_.addPath(parser.argc(1));
-		if (v == NULL)
-		{
-			msg.print( "Variable '%s' has not been declared.\n", &parser.argc(1)[1]);
-			result = FALSE;
-		}
+		if (v == NULL) result = FALSE;
 		else
 		{
 			// The command we use depends on the type of the target variable

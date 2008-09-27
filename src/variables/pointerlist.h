@@ -24,8 +24,10 @@
 
 #include "variables/variable.h"
 #include "model/model.h"
+#include "classes/forcefieldatom.h"
+#include "classes/grid.h"
 #include "base/atom.h"
-#include "base/cell.h"
+#include "base/pattern.h"
 
 // Forward declarations
 class Model;
@@ -35,7 +37,7 @@ template <class T> class PointerListVariable : public Variable
 {
 	public:
 	// Constructor
-	PointerListVariable<T>(VTypes::DataType);
+	PointerListVariable<T>(VTypes::DataType, List<T> *list);
 
 	/*
 	// Set / Get
@@ -75,41 +77,88 @@ template <class T> class PointerListVariable : public Variable
 	*/
 	private:
 	List<T> *listData_;
-
-	public:
-	// Set list pointer variable
-	void setListData(List<T> *list);
 };
 
 // Constructor
-template <class T> PointerListVariable<T>::PointerListVariable(VTypes::DataType ptrtype)
+template <class T> PointerListVariable<T>::PointerListVariable(VTypes::DataType ptrtype, List<T> *list)
 {
 	dataType_ = ptrtype;
+	listData_ = list;
 	readOnly_ = TRUE;
 }
 
 /*
 // Set / Get (Basic PointerListVariable)
+// All must be declared here, even those that would otherwise be taken from the base Variable class, since this is a template.
 */
+
+// Get value of variable as character string
+template <class T> const char *PointerListVariable<T>::asCharacter(Variable *index)
+{
+	printf("A variable of type PointerList cannot be returned as a character (%s).\n", name_.get());
+	return "NULL";
+}
+
+// Get value of variable as integer
+template <class T> int PointerListVariable<T>::asInteger(Variable *index)
+{
+	printf("A variable of type PointerList cannot be returned as an integer (%s).\n", name_.get());
+	return 0;
+}
+
+// Get value of variable as double
+template <class T> double PointerListVariable<T>::asDouble(Variable *index)
+{
+	printf("A variable of type PointerList cannot be returned as a double (%s).\n", name_.get());
+	return 0.0;
+}
+
+// Get value of variable as float
+template <class T> float PointerListVariable<T>::asFloat(Variable *index)
+{
+	printf("A variable of type PointerList cannot be returned as a float (%s).\n", name_.get());
+	return 0.0f;
+}
+
+// Get value of variable as bool
+template <class T> bool PointerListVariable<T>::asBool(Variable *index)
+{
+	printf("A variable of type PointerList cannot be returned as a bool (%s).\n", name_.get());
+	return FALSE;
+}
+
+// Set size of array (only for non-list derivations)
+template <class T> bool PointerListVariable<T>::setArraySize(int size)
+{
+	printf("Since '%s' is a PointerList variable, setting the array size is meaningless.\n", name_.get());
+	return FALSE;
+}
 
 // Set value of variable (char)
 template <class T> bool PointerListVariable<T>::set(const char *s, Variable *index)
 {
-	msg.print("A Pointer variable cannot be set from a character.\n");
+	msg.print("A PointerList variable cannot be set from a character (and is read-only anyway).\n");
 	return FALSE;
 }
 
 // Set value of variable (int)
 template <class T> bool PointerListVariable<T>::set(int i, Variable *index)
 {
-	msg.print("A Pointer variable cannot be set from an integer.\n");
+	msg.print("A PointerList variable cannot be set from an integer (and is read-only anyway).\n");
 	return FALSE;
 }
 
 // Set value of variable (double)
 template <class T> bool PointerListVariable<T>::set(double d, Variable *index)
 {
-	msg.print("A Pointer variable cannot be set from a double.\n");
+	msg.print("A PointerList variable cannot be set from a double (and is read-only anyway).\n");
+	return FALSE;
+}
+
+// Set value of variable (double)
+template <class T> bool PointerListVariable<T>::set(void *ptr, VTypes::DataType type, Variable *index)
+{
+	msg.print("A PointerList variable could be set from a pointer, but is read-only.\n");
 	return FALSE;
 }
 

@@ -31,9 +31,17 @@ ModelAccessors modelAccessors;
 ModelAccessors::ModelAccessors()
 {
  	accessorPointers[ModelAccessors::Atoms] = addListAccessor("atoms",		VTypes::AtomData);
- 	accessorPointers[ModelAccessors::Cell] = addAccessor("cell",		VTypes::CellData, TRUE);
- 	accessorPointers[ModelAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	FALSE);
+ 	accessorPointers[ModelAccessors::Cell] = addAccessor("cell",			VTypes::CellData, TRUE);
+ 	accessorPointers[ModelAccessors::Frame] = addAccessor("frame",			VTypes::ModelData, TRUE);
+//  	accessorPointers[ModelAccessors::Frames] = addListAccessor("frames",		VTypes::ModelData);
+ 	accessorPointers[ModelAccessors::Name] = addAccessor("name",			VTypes::CharacterData,	FALSE);
+ 	accessorPointers[ModelAccessors::NAngleTerms] = addAccessor("nangleterms",	VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NAtoms] = addAccessor("natoms",		VTypes::IntegerData,	TRUE);
+ 	accessorPointers[ModelAccessors::NAtomtypes] = addAccessor("natomtypes",	VTypes::IntegerData,	TRUE);
+ 	accessorPointers[ModelAccessors::NBondTerms] = addAccessor("nbondterms",	VTypes::IntegerData,	TRUE);
+ 	accessorPointers[ModelAccessors::NPatterns] = addAccessor("npatterns",		VTypes::IntegerData,	TRUE);
+ 	accessorPointers[ModelAccessors::NTorsionTerms] = addAccessor("ntorsionterms",	VTypes::IntegerData,	TRUE);
+ 	accessorPointers[ModelAccessors::Patterns] = addListAccessor("patterns",	VTypes::PatternData);
 };
 
 // Retrieve specified data
@@ -52,22 +60,89 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		printf("Unknown enumeration %i given to ModelAccessors::retrieve.\n", vid);
 		msg.exit("ModelAccessors::retrieve");
 		return FALSE;
-	} 
+	}
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (step->hasArrayIndex())
+	{
+		if (accessorPointers[vid]->isArray())
+		{
+			// Get index and do simple lower-limit check
+			index = step->arrayIndex();
+			if (index < 1)
+			{
+				printf("Array index '%i' given to member '%s' in ModelAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
+				msg.exit("ModelAccessors::retrieve");
+				return FALSE;
+			}
+		}
+		else
+		{
+			printf("Array index given to member '%s' in ModelAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
+			msg.exit("ModelAccessors::retrieve");
+			return FALSE;
+		}
+	}
+	else
+	{
+		if (accessorPointers[vid]->isArray())
+		{
+			printf("Array index missing for member '%s' in ModelAccessors::retrieve.\n", accessorPointers[vid]->name());
+			msg.exit("ModelAccessors::retrieve");
+			return FALSE;
+		}
+	}
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
+			// Set variables
+// 			commands_.setModelVariables("",obj.rs); TGAY
+// 			commands_.variables.set("npatterns",obj.rs->nPatterns());
+// 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));   TGAY
+// 			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());
+// 			commands_.variables.set("nbondterms",obj.rs->nUniqueBondTerms());
+// 			commands_.variables.set("nangleterms",obj.rs->nUniqueAngleTerms());
+// 			commands_.variables.set("ntorsionterms",obj.rs->nUniqueTorsionTerms());
 		case (ModelAccessors::Atoms):
-			rv.set(m->atoms(), VTypes::AtomData);
+			if (index > m->nAtoms())
+			{
+				msg.print("Atom array index is out of bounds for model '%s'\n", m->name());
+				result = FALSE;
+			}
+			else rv.set(m->atom(index-1), VTypes::AtomData);
 			break;
 		case (ModelAccessors::Cell):
 			rv.set(m->cell(), VTypes::CellData);
 			break;
+		case (ModelAccessors::Frame):
+			rv.set(m->currentFrame(), VTypes::ModelData);
+			break;
+// 		case (ModelAccessors::Frames):
+// 			if (index > m->nTrajectoryFrames())
+// 			{
+// 				msg.print("Frame array index is out of bounds for model '%s'\n", m->name());
+// 				result = FALSE;
+// 			}
+// 			else rv.set(m->atom(index-1), VTypes::AtomData);
+
+
 		case (ModelAccessors::Name):
 			rv.set(m->name());
 			break;
+
+ 		case (ModelAccessors::NAngleTerms):
 		case (ModelAccessors::NAtoms):
 			rv.set(m->nAtoms());
 			break;
+		case (ModelAccessors::NAtomtypes):
+		case (ModelAccessors::NBondTerms):
+		case (ModelAccessors::NPatterns):
+		case (ModelAccessors::NTorsionTerms):
+		case (ModelAccessors::Patterns):
+
+
+
+
 		default:
 			printf("ModelAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
