@@ -58,6 +58,8 @@ class Parser
 	int lineLength_;
 	// Current reading position in line_
 	int linePos_;
+	// Integer line number of last read line
+	int lastLine_;
 	// Source file (set by readLine);
 	ifstream *sourceFile_;
 	// Parsed arguments
@@ -80,6 +82,8 @@ class Parser
 	public:
 	// Return pointer to start of current line_
 	const char *line();
+	// Return integer line number of last read line
+	int lastLine();
 	// Set line and parse using delimiters
 	void getArgsDelim(const char*, int);
 	// Set line and parse into separate lines using ';' and '\n' as delimiters

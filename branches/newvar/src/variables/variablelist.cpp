@@ -39,12 +39,9 @@ VariableList::VariableList()
 	Variable *v;
 	v = addVariable("header", VTypes::CharacterData);
 	v->set("false");
-	v = addVariable("frame", VTypes::CharacterData);
-	v->set("false");
 	v = addBundlePointer("model", VTypes::ModelData);
 	v->set(&aten.current, VTypes::ModelData);
-	v = addListVariable("models", VTypes::ModelData);
-	v->set(aten.modelList(), VTypes::ModelData);
+	v = addListVariable("models", VTypes::ModelData, aten.modelList());
 }
 
 // Return list position (id) of Variable in list
@@ -188,10 +185,9 @@ Variable *VariableList::addPath(const char *s)
 }
 
 // Add List<> type variable
-Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt)
+Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt, void *ptr)
 {
 	Variable *newvar;
-	PointerListVariable<Atom> *s;
 	switch (vt)
 	{
 		case (VTypes::CharacterData):
@@ -202,16 +198,16 @@ Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt)
 			newvar = NULL;
 			break;
 		case (VTypes::AtomData):
-			s = new PointerListVariable<Atom>(vt);
+			newvar = new PointerListVariable<Atom>(vt, (List<Atom>*) ptr);
 			break;
 		case (VTypes::PatternData):
-			newvar = new PointerListVariable<Pattern>(vt);
+			newvar = new PointerListVariable<Pattern>(vt, (List<Pattern>*) ptr);
 			break;
 		case (VTypes::ModelData):
-			newvar = new PointerListVariable<Model>(vt);
+			newvar = new PointerListVariable<Model>(vt, (List<Model>*) ptr);
 			break;
 		case (VTypes::GridData):
-			newvar = new PointerListVariable<Grid>(vt);
+			newvar = new PointerListVariable<Grid>(vt, (List<Grid>*) ptr);
 			break;
 		case (VTypes::BondData):
 // 			newvar = new PointerListVariable<Bond>;
@@ -226,7 +222,7 @@ Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt)
 			printf("Aaaaargh\n");  // TGAY
 			break;
 		case (VTypes::AtomtypeData):
-			newvar = new PointerListVariable<ForcefieldAtom>(vt);
+			newvar = new PointerListVariable<ForcefieldAtom>(vt, (List<ForcefieldAtom>*) ptr);
 			break;
 		default:
 			printf("Don't yet know how to create a list variable of type '%s'\n", VTypes::dataType(vt));

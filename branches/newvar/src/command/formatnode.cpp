@@ -110,7 +110,7 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 		variable_ = vlist.addPath(c);
 		if (variable_ == NULL)
 		{
-			printf("Variable '%s' in format string has not been declared.\n", c);
+			msg.exit("FormatNode::set");
 			return FALSE;
 		}
 	}

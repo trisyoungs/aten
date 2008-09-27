@@ -46,6 +46,7 @@ Parser::Parser()
 	linePos_ = 0;
 	optionMask_ = Parser::Defaults;
 	sourceFile_ = NULL;
+	lastLine_ = 0;
 }
 
 // Determine form of argument (internal argument id)
@@ -143,6 +144,12 @@ const char *Parser::line()
 	return line_;
 }
 
+// Return integer line number of last read line
+int Parser::lastLine()
+{
+	return lastLine_;
+}
+
 /*
 // String parsing methods
 */
@@ -152,6 +159,8 @@ int Parser::readLine(ifstream *xfile)
 {
 	msg.enter("Parser::readLine");
 	// Returns : 0=ok, 1=error, -1=eof
+	// Check previous pointer - if different from this one reset lastLine_.
+	if (sourceFile_ != xfile) lastLine_ = 0;
 	sourceFile_ = xfile;
 	sourceFile_->getline(line_, MAXLINELENGTH-1);
 	if (sourceFile_->eof())
@@ -168,6 +177,7 @@ int Parser::readLine(ifstream *xfile)
 	}
 	lineLength_ = strlen(line_);
 	linePos_ = 0;
+	lastLine_ ++;
 	//printf("Line = [%s], length = %i\n",line_,lineLength_);
 	msg.exit("Parser::readLine");
 	return 0;

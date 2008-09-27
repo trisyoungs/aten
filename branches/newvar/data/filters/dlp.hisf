@@ -1,6 +1,6 @@
 # DL_POLY Formatted Trajectory file filter.
-# Last modified: 06/01/2007.
-#	26/09/2008 - Adjusted to use new variable access style.
+# Last modified: 27/09/20078
+#	27/09/2008 - Adjusted to use new variable access style.
 # 	06/01/2007 - Initial version.
 
 importtrajectory
@@ -15,6 +15,7 @@ importtrajectory
 	integer nstep,keytrj,imcon,trajnatoms,n,id
 	double tstep,ax,bx,cx,ay,by,cy,az,bz,cz,mass,q
 	double rx,ry,rz,fx,fy,fz,vx,vy,vz
+	model frame
 
 	# DL_POLY formatted history files may contain a header.
 	# When Aten is trying to read the header, the variable 'header' will be 'true' (and 'frame' will be 'false')
@@ -31,21 +32,23 @@ importtrajectory
 		# Frame header - '"timestep"	nstep	natms	keytrj	imcon	tstep'
 		readline "$title $nstep $trajnatoms $keytrj $imcon $tstep"
 		# Check number of atoms in trajectory frame
-		if $natoms <> $trajnatoms
-			error "Number of atoms in file(${trajnatoms}) doesn't match number in parent model (${natoms})."
+		if $model.natoms <> $trajnatoms
+			error "Number of atoms in file(${trajnatoms}) doesn't match number in parent model (${model.natoms})."
 		end
+		# Grab frame pointer
+		$frame = $model.frame
 		# Read cell if its present
 		if $imcon > 0
-			readline "$model.cell.ax%12 $ay%12 $az%12"
-			readline "$bx%12 $by%12 $bz%12"
-			readline "$cx%12 $cy%12 $cz%12"
-			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
+			readline "$frame.cell.ax%12 $frame.cell.ay%12 $frame.cell.az%12"
+			readline "$frame.cell.bx%12 $frame.cell.by%12 $frame.cell.bz%12"
+			readline "$frame.cell.cx%12 $frame.cell.cy%12 $frame.cell.cz%12"
+			# cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
 		end
 		# Now the atoms
 		modeltemplate
-		for $n,1,$natoms
+		for $n,1,$frame.natoms
 			readline "$e $id $mass $q"
-			readline "$rx%12 $ry%12 $rz%12"
+			readline "$frame.atoms[$n].rx%12 $ry%12 $rz%12"
 			setcoords $rx $ry $rz $n
 			if $keytrj > 0
 				readline "$vx%12 $vy%12 $vz%12"
