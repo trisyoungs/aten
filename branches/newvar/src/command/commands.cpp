@@ -56,6 +56,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Create atomtype* variables with the names provided" },
 	{ "_cell_",		"",		"<variables>",
 				"Create cell* variables with the names provided" },
+	{ "_prefs_",		"",		"<variables>",
+				"Create prefs* variables with the names provided" },
 	
 	// Root node
 	{ "_ROOTNODE_",		"",		"",

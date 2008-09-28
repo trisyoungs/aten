@@ -42,6 +42,7 @@ VariableList::VariableList()
 	v = addBundlePointer("model", VTypes::ModelData);
 	v->set(&aten.current, VTypes::ModelData);
 	v = addListVariable("models", VTypes::ModelData, aten.modelList());
+	v = addVariable("prefs", VTypes::PrefsData);
 }
 
 // Return list position (id) of Variable in list

@@ -241,23 +241,7 @@ bool Filter::load(ifstream &filterFile)
 // Set type (and initialise any necessary variables)
 void Filter::setType(FilterType ft)
 {
-	msg.enter("Filter::setType");
 	type_ = ft;
-	Variable *v;
-	switch (type_)
-	{
-		case (Filter::ExpressionExport):
-// 			v = commands_.variables.createVariable("energyunit","",VTypes::CharacterData); TGAY
-// 			v = commands_.variables.createVariable("natomtypes","",VTypes::IntegerData);
-// 			v = commands_.variables.createVariable("nbondterms","",VTypes::IntegerData);
-// 			v = commands_.variables.createVariable("nangleterms","",VTypes::IntegerData);
-// 			v = commands_.variables.createVariable("ntorsionterms","",VTypes::IntegerData);
-// 			v = commands_.variables.createVariable("npatterns","",VTypes::IntegerData);
-			break;
-		case (Filter::GridExport):
-			break;
-	}
-	msg.exit("Filter::setType");
 }
 
 

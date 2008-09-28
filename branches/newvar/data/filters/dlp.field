@@ -21,7 +21,7 @@ exportfield
 	integer nvdw, n
 
 	# First, write header consisting of title, energy units, and number of molecule types
-	writeline "$model.title"
+	writeline "$model.name"
 	if $energyunit = kj
 		writeline "units  kj"
 	elseif $energyunit = kcal

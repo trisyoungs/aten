@@ -95,14 +95,6 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
-			// Set variables
-// 			commands_.setModelVariables("",obj.rs); TGAY
-// 			commands_.variables.set("npatterns",obj.rs->nPatterns());
-// 			commands_.variables.set("energyunit",Prefs::energyUnit(prefs.energyUnit()));   TGAY
-// 			commands_.variables.set("natomtypes",obj.rs->nUniqueTypes());
-// 			commands_.variables.set("nbondterms",obj.rs->nUniqueBondTerms());
-// 			commands_.variables.set("nangleterms",obj.rs->nUniqueAngleTerms());
-// 			commands_.variables.set("ntorsionterms",obj.rs->nUniqueTorsionTerms());
 		case (ModelAccessors::Atoms):
 			if (index > m->nAtoms())
 			{
@@ -124,25 +116,33 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 // 				result = FALSE;
 // 			}
 // 			else rv.set(m->atom(index-1), VTypes::AtomData);
-
-
 		case (ModelAccessors::Name):
 			rv.set(m->name());
 			break;
-
  		case (ModelAccessors::NAngleTerms):
+			rv.set(m->nUniqueAngleTerms());
+			break;
 		case (ModelAccessors::NAtoms):
 			rv.set(m->nAtoms());
 			break;
 		case (ModelAccessors::NAtomtypes):
 		case (ModelAccessors::NBondTerms):
+			rv.set(m->nUniqueBondTerms());
+			break;
 		case (ModelAccessors::NPatterns):
+			rv.set(m->nPatterns());
+			break;
 		case (ModelAccessors::NTorsionTerms):
+			rv.set(m->nUniqueTorsionTerms());
+			break;
 		case (ModelAccessors::Patterns):
-
-
-
-
+			if (index > m->nPatterns())
+			{
+				msg.print("Pattern array index is out of bounds for model '%s'\n", m->name());
+				result = FALSE;
+			}
+			else rv.set(m->pattern(index-1), VTypes::PatternData);
+			break;
 		default:
 			printf("ModelAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;

@@ -12,6 +12,7 @@ integer.h
 modelaccess.h
 pointer.h
 pointerlist.h
+prefsaccess.h
 real.h
 returnvalue.h
 vaccess.h
@@ -29,6 +30,7 @@ ffatom.cpp
 integer.cpp
 modelaccess.cpp
 pointer.cpp
+prefsaccess.cpp
 real.cpp
 returnvalue.cpp
 vaccess.cpp
