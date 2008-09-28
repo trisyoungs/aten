@@ -51,6 +51,7 @@ enum CommandAction {
 	CA_TORSION,
 	CA_ATOMTYPE,
 	CA_CELLVAR,
+	CA_PREFSVAR,
 
 	// Root node
 	CA_ROOTNODE,

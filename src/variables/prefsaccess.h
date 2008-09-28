@@ -1,6 +1,6 @@
 /*
-	*** Cell Accessors
-	*** src/variables/cellaccess.h
+	*** Prefs Accessors
+	*** src/variables/prefsaccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,23 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CELLACCESS_H
-#define ATEN_CELLACCESS_H
+#ifndef ATEN_PREFSACCESS_H
+#define ATEN_PREFSACCESS_H
 
 #include "variables/vaccess.h"
 
-// Cell Accessor
-class CellAccessors : public VAccess
+// Atom Accessor
+class PrefsAccessors : public VAccess
 {
 	public:
 	// Constructor
-	CellAccessors();
+	PrefsAccessors();
 	// Accessor list
-	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, CentreX, CentreY, CentreZ, Matrix, Type, nAccessors };
+	enum Accessors { EnergyUnit, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up
-	Variable *accessorPointers[CellAccessors::nAccessors];
+	Variable *accessorPointers[PrefsAccessors::nAccessors];
 
 	public:
 	// Retrieve specified data
@@ -44,6 +44,6 @@ class CellAccessors : public VAccess
 	bool set(void *classptr, AccessStep *step, Variable *sourcevar);
 };
 
-extern CellAccessors cellAccessors;
+extern PrefsAccessors prefsAccessors;
 
 #endif
