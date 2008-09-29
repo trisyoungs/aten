@@ -19,19 +19,22 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "main/aten.h"
 #include "variables/prefsaccess.h"
 #include "variables/accessstep.h"
 #include "variables/vaccess.h"
+#include "command/command.h"
 #include "model/model.h"
 #include "base/elements.h"
 #include "base/messenger.h"
+#include "classes/prefs.h"
 
 PrefsAccessors prefsAccessors;
 
 // Constructor
 PrefsAccessors::PrefsAccessors()
 {
- 	accessorPointers[PrefsAccessors::FX] = addAccessor("fx",		VTypes::RealData,	FALSE);
+ 	accessorPointers[PrefsAccessors::EnergyUnit] = addAccessor("energyunit",	VTypes::CharacterData,	FALSE);
 };
 
 // Retrieve specified data
@@ -53,7 +56,7 @@ bool PrefsAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	switch (vid)
 	{
 		case (PrefsAccessors::EnergyUnit):
-			rv.set();
+			rv.set(Prefs::energyUnit(prefs.energyUnit()));
 			break;
 		default:
 			printf("PrefsAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
@@ -69,6 +72,7 @@ bool PrefsAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("PrefsAccessors::set");
 	bool result = TRUE;
+	CommandNode c;
 	// We don't need to cast the classptr since we use the global singleton
 // 	printf("Enumerated ID supplied to PrefsAccessors is %i.\n", vid);
 	// Check range of supplied vid
@@ -83,7 +87,8 @@ bool PrefsAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	switch (vid)
 	{
 		case (PrefsAccessors::EnergyUnit):
-			i->setCharge(srcvar->asDouble());
+			c.addConstant(srcvar->asCharacter(), TRUE);
+			if (CALL_COMMAND(CA_data[Command::CA_ENERGYUNITS],function_)(c, aten.current) != Command::Success) result = FALSE;
 			break;
 		default:
 			printf("PrefsAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

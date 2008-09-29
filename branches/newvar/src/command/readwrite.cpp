@@ -32,7 +32,7 @@ int CommandData::function_CA_ADDREADOPTION(Command *&c, Bundle &obj)
 	// Get parse option from variable
 	Parser::ParseOption po = Parser::parseOption(c->argc(0));
 	if (po != Parser::nParseOptions) c->parent()->addReadOption(po);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Search for line containing specified string
@@ -42,7 +42,7 @@ int CommandData::function_CA_FIND(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	static char linefromfile[MAXLINELENGTH];
 	int iresult = -1;
@@ -60,7 +60,7 @@ int CommandData::function_CA_FIND(Command *&c, Bundle &obj)
 		else if (inputfile->eof() || inputfile->fail()) iresult = 0;
 	} while (iresult == -1);
 	c->arg(1)->set(iresult);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Read while line from file and put in supplied variable
@@ -70,11 +70,11 @@ int CommandData::function_CA_GETLINE(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	parser.readLine(inputfile);
 	c->arg(0)->set(parser.line());
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Read N characters from unformatted file
@@ -85,12 +85,12 @@ int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	inputfile->read((char*) &readc, c->argi(1));
 	c->arg(0)->set(readc);
 	msg.print(Messenger::Commands,"Unformatted char read got '%s'\n",readc);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Read double from unformatted file
@@ -100,13 +100,13 @@ int CommandData::function_CA_READFLOAT(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	double readd;
 	inputfile->read((char*) &readd, 8);
 	c->arg(0)->set(readd);
 	msg.print(Messenger::Commands,"Unformatted double read got '%f'\n",readd);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Read integer from unformatted file
@@ -116,13 +116,13 @@ int CommandData::function_CA_READINTEGER(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	int readi;
 	inputfile->read((char*) &readi, 4);
 	c->arg(0)->set(readi);
 	msg.print(Messenger::Commands,"Unformatted int read got '%i'\n",readi);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Read line and parse with format
@@ -132,10 +132,10 @@ int CommandData::function_CA_READLINE(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	c->format()->getArgsFormatted(inputfile,c->parent()->readOptions());
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Get next whitespace-delimited argument from file
@@ -145,10 +145,10 @@ int CommandData::function_CA_READNEXT(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	c->arg(0)->set(parser.getArgDelim(inputfile));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Parse given variable with format
@@ -158,12 +158,12 @@ int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
 	if (c->format() == NULL)
 	{
 		// Create format from character variable arg(1)
-		if (!c->createFormat(c->argc(1), TRUE)) return CR_FAIL;
+		if (!c->createFormat(c->argc(1), TRUE)) return Command::Fail;
 		c->format()->getArgsFormatted(c->argc(0), c->parent()->readOptions());
 		c->deleteFormat();
 	}
 	else c->format()->getArgsFormatted(c->argc(0), c->parent()->readOptions());
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Remove file read option
@@ -172,7 +172,7 @@ int CommandData::function_CA_REMOVEREADOPTION(Command *&c, Bundle &obj)
 	// Get parse option from variable
 	Parser::ParseOption po = Parser::parseOption(c->argc(0));
 	if (po != Parser::nParseOptions) c->parent()->removeReadOption(po);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Go to start of current file
@@ -182,10 +182,10 @@ int CommandData::function_CA_REWIND(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	inputfile->seekg(0, ios::beg);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Discard N characters from unformatted file
@@ -195,10 +195,10 @@ int CommandData::function_CA_SKIPCHARS(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	inputfile->ignore(c->argi(0));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Skip line(s) of file
@@ -208,11 +208,11 @@ int CommandData::function_CA_SKIPLINE(Command *&c, Bundle &obj)
 	if (inputfile == NULL)
 	{
 		msg.print("No input file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	if (c->hasArg(0)) parser.skipLines(inputfile,c->argi(0));
 	else parser.skipLines(inputfile,1);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Write line with format
@@ -222,11 +222,11 @@ int CommandData::function_CA_WRITELINE(Command *&c, Bundle &obj)
 	if (outputfile == NULL)
 	{
 		msg.print("No output file active.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	*outputfile << c->format()->createString();
 	*outputfile << "\n";
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Write line to variable
@@ -236,10 +236,10 @@ int CommandData::function_CA_WRITEVAR(Command *&c, Bundle &obj)
 	if (c->format() == NULL)
 	{
 		// Create format from character variable arg(1)
-		if (!c->createFormat(c->argc(1), FALSE)) return CR_FAIL;
+		if (!c->createFormat(c->argc(1), FALSE)) return Command::Fail;
 		c->arg(0)->set(c->format()->createString());
 		c->deleteFormat();
 	}
 	else c->arg(0)->set(c->format()->createString());
-	return CR_SUCCESS;
+	return Command::Success;
 }

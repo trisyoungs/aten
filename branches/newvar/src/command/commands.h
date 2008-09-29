@@ -25,426 +25,12 @@
 #include "base/bundle.h"
 
 // Forward declarations
-class Command;
+class CommandNode;
 class CommandData;
 
 // Function pointer typedef and call #define
-typedef int (CommandData::*CommandFunction)(Command *&c, Bundle &obj);
+typedef int (CommandData::*CommandFunction)(CommandNode *&c, Bundle &obj);
 #define CALL_COMMAND(object,ptrToMember) ((object).*(ptrToMember)) 
-
-// Function return values
-enum CommandReturn { CR_SUCCESS, CR_SUCCESSNOMOVE, CR_FAIL, CR_FAILCONTINUE, CR_EXIT, CR_EXITWITHERROR };
-
-// Command actions
-enum CommandAction {
-
-	// Variable declaration
-	CA_CHAR,
-	CA_INT,
-	CA_FLOAT,
-	CA_ATOM,
-	CA_PATTERN,
-	CA_MODEL,
-	CA_GRID,
-	CA_BOND,
-	CA_ANGLE,
-	CA_TORSION,
-	CA_ATOMTYPE,
-	CA_CELLVAR,
-	CA_PREFSVAR,
-
-	// Root node
-	CA_ROOTNODE,
-
-	// Analysis commands
-	CA_FINALISE,
-	CA_FRAMEANALYSE,
-	CA_GEOMETRY,
-	CA_MODELANALYSE,
-	CA_PDENS,
-	CA_PRINTJOBS,
-	CA_RDF,
-	CA_SAVEQUANTITIES,
-	CA_TRAJANALYSE,
-
-	// Atom Commands
-	CA_ATOMSTYLE,
-	CA_GETATOM,
-	CA_HIDE,
-	CA_SETCHARGE,
-	CA_SETCOORDS,
-	CA_SETELEMENT,
-	CA_SETFORCES,
-	CA_SETFX,
-	CA_SETFY,
-	CA_SETFZ,
-	CA_SETID,
-	CA_SETRX,
-	CA_SETRY,
-	CA_SETRZ,
-	CA_SETVELOCITIES,
-	CA_SETVX,
-	CA_SETVY,
-	CA_SETVZ,
-	CA_SHOW,
-	CA_SHOWALL,
-
-	// Bond commands
-	CA_AUGMENT,
-	CA_BONDTOLERANCE,
-	CA_CLEARBONDS,
-	CA_GETBOND,
-	CA_NEWBOND,
-	CA_NEWBONDID,
-	CA_REBONDPATTERNS,
-	CA_REBONDSELECTION,
-	CA_REBOND,
-
-	// Build commands
-	CA_ADDHYDROGEN,
-	CA_BOHR,
-	CA_CHAIN,
-	CA_ENDCHAIN,
-	CA_LOCATE,
-	CA_MOVE,
-	CA_NEWATOM,
-	CA_NEWATOMFRAC,
-	CA_RESETPEN,
-	CA_ROTX,
-	CA_ROTY,
-	CA_ROTZ,
-	CA_SHIFTDOWN,
-	CA_SHIFTUP,
-	CA_TOEND,
-	CA_TOSTART,
-	CA_TRANSMUTE,
-
-	// Cell commands
-	CA_ADJUSTCELL,
-	CA_FOLD,
-	CA_FOLDMOLECULES,
-	CA_FRACTOREAL,
-	CA_PACK,
-	CA_PRINTCELL,
-	CA_REPLICATE,
-	CA_SCALE,
-	CA_CELL,
-	CA_CELLAXES,
-	CA_NOCELL,
-	CA_SETCELL,
-	CA_SPACEGROUP,
-
-	// Charge commands
-	CA_CHARGEFF,
-	CA_CHARGEFROMMODEL,
-	CA_CHARGEPATOM,
-	CA_CHARGE,
-	CA_CHARGETYPE,
-	CA_CLEARCHARGES,
-
-	// Colourscale commands
-	CA_ADDPOINT,
-	CA_CLEARPOINTS,
-	CA_LISTSCALES,
-	CA_REMOVEPOINT,
-	CA_SCALENAME,
-	CA_SCALEVISIBLE,
-	CA_SETPOINT,
-	CA_SETPOINTCOLOUR,
-	CA_SETPOINTVALUE,
-
-	// Disordered build commands
-	CA_DISORDER,
-	CA_LISTCOMPONENTS,
-	CA_NMOLS,
-	CA_REGION,
-	CA_REGIONCENTRE,
-	CA_REGIONCENTREF,
-	CA_REGIONF,
-	CA_REGIONGEOMETRY,
-	CA_REGIONGEOMETRYF,
-	CA_REGIONOVERLAPS,
-	CA_REGIONSHAPE,
-	CA_VDWSCALE,
-
-	// Edit commands
-	CA_COPY,
-	CA_CUT,
-	CA_DELETE,
-	CA_PASTE,
-	CA_REDO,
-	CA_UNDO,
-
-	// Energy Commands
-	CA_FRAMEENERGY,
-	CA_MODELENERGY,
-	CA_PRINTELEC,
-	CA_PRINTEWALD,
-	CA_PRINTINTER,
-	CA_PRINTINTRA,
-	CA_PRINTENERGY,
-	CA_PRINTSUMMARY,
-	CA_PRINTVDW,
-
-	// Flow control
-	CA_BREAK,
-	CA_CONTINUE,
-	CA_ELSE,
-	CA_ELSEIF,
-	CA_END,
-	CA_FOR,
-	CA_GOTO,
-	CA_GOTONONIF,
-	CA_IF,
-	CA_TERMINATE,
-
-	// Force Commands
-	CA_FRAMEFORCES,
-	CA_MODELFORCES,
-	CA_PRINTFORCES,
-
-	// Forcefield/Expression Commands
-	CA_ANGLEDEF,
-	CA_BONDDEF,
-	CA_CLEARMAP,
-	CA_CREATEEXPRESSION,
-	CA_DEFAULTFF,
-	CA_EQUIVALENT,
-	CA_FFMODEL,
-	CA_FFPATTERN,
-	CA_FFPATTERNID,
-	CA_FINALISEFF,
-	CA_GENCONVERT,
-	CA_GENERATOR,
-	CA_GETFF,
-	CA_LOADFF,
-	CA_MAP,
-	CA_NEWFF,
-	CA_PRINTSETUP,
-	CA_RULES,
-	CA_SAVEEXPRESSION,
-	CA_TORSIONDEF,
-	CA_TYPEDEF,
-	CA_TYPEMODEL,
-	CA_TYPETEST,
-	CA_UNITS,
-	CA_VDWDEF,
-
-	// Glyph commands
-	CA_AUTOELLIPSOIDS,
-	CA_AUTOPOLYHEDRA,
-	CA_GLYPHATOMF,
-	CA_GLYPHATOMR,
-	CA_GLYPHATOMV,
-	CA_GLYPHATOMSF,
-	CA_GLYPHATOMSR,
-	CA_GLYPHATOMSV,
-	CA_GLYPHCOLOUR,
-	CA_GLYPHDATA,
-	CA_GLYPHSOLID,
-	CA_GLYPHTEXT,
-	CA_NEWGLYPH,
-
-	// Grid Commands
-	CA_ADDGRIDPOINT,
-	CA_ADDNEXTGRIDPOINT,
-	CA_FINALISEGRID,
-	CA_GETGRID,
-	CA_GRIDAXES,
-	CA_GRIDCOLOUR,
-	CA_GRIDCOLOURNEGATIVE,
-	CA_GRIDCOLOURSCALE,
-	CA_GRIDCUBIC,
-	CA_GRIDCUTOFF,
-	CA_GRIDLOOPORDER,
-	CA_GRIDORIGIN,
-	CA_GRIDORTHO,
-	CA_GRIDSIZE,
-	CA_GRIDSTYLE,
-	CA_GRIDSYMMETRIC,
-	CA_GRIDTRANSPARENCY,
-	CA_GRIDUSEZ,
-	CA_LOADGRID,
-	CA_NEWGRID,
-
-	// Image Commands
-	CA_SAVEBITMAP,
-	CA_SAVEVECTOR,
-
-	// Labeling commands
-	CA_CLEARLABELS,
-	CA_LABEL,
-	CA_REMOVELABEL,
-
-	// MC Commands
-	CA_MCACCEPT,
-	CA_MCALLOW,
-	CA_MCMAXSTEP,
-	CA_MCNTRIALS,
-	CA_PRINTMC,
-
-	// Measurements
-	CA_CLEARMEASUREMENTS,
-	CA_LISTMEASUREMENTS,
-	CA_MEASURE,
-
-	// Messaging
-	CA_ERROR,
-	CA_PRINT,
-	CA_VERBOSE,
-	CA_WARN,
-
-	// Minimisation Commands
-	CA_CGMINIMISE,
-	CA_CONVERGE,
-	CA_LINETOL,
-	CA_MCMINIMISE,
-	CA_SDMINIMISE,
-	CA_SIMPLEXMINIMISE,
-	
-	// Model Commands
-	CA_CREATEATOMS,
-	CA_FINALISEMODEL,
-	CA_GETMODEL,
-	CA_INFO,
-	CA_LISTMODELS,
-	CA_LOADMODEL,
-	CA_LOGINFO,
-	CA_MODELTEMPLATE,
-	CA_NEWMODEL,
-	CA_NEXTMODEL,
-	CA_PREVMODEL,
-	CA_SAVEMODEL,
-	CA_SETNAME,
-
-	// Pattern Commands
-	CA_CLEARPATTERNS,
-	CA_CREATEPATTERNS,
-	CA_GETPATTERN,
-	CA_LISTPATTERNS,
-	CA_NEWPATTERN,
-
-	// Preferences Commands
-	CA_ANGLELABEL,
-	CA_ATOMDETAIL,
-	CA_BONDDETAIL,
-	CA_COLOUR,
-	CA_COMMONELEMENTS,
-	CA_DENSITYUNITS,
-	CA_DISTANCELABEL,
-	CA_ECUT,
-	CA_ELEC,
-	CA_ELEMENTAMBIENT,
-	CA_ELEMENTDIFFUSE,
-	CA_ELEMENTRADIUS,
-	CA_ENERGYUNITS,
-	CA_GL,
-	CA_INTRA,
-	CA_KEY,
-	CA_LABELSIZE,
-	CA_LIGHT,
-	CA_LIGHTAMBIENT,
-	CA_LIGHTDIFFUSE,
-	CA_LIGHTPOSITION,
-	CA_LIGHTSPECULAR,
-	CA_MOUSE,
-	CA_RADIUS,
-	CA_REPLICATEFOLD,
-	CA_REPLICATETRIM,
-	CA_SCHEME,
-	CA_SHININESS,
-	CA_SHOWONSCREEN,
-	CA_SHOWONIMAGE,
-	CA_STYLE,
-	CA_USENICETEXT,
-	CA_VCUT,
-	CA_VDW,
-
-	// Read / Write Commands
-	CA_ADDREADOPTION,
-	CA_FIND,
-	CA_GETLINE,
-	CA_READCHARS,
-	CA_READFLOAT,
-	CA_READINTEGER,
-	CA_READLINE,
-	CA_READNEXT,
-	CA_READVAR,
-	CA_REMOVEREADOPTION,
-	CA_REWIND,
-	CA_SKIPCHARS,
-	CA_SKIPLINE,
-	CA_WRITELINE,
-	CA_WRITEVAR,
-
-	// Script Commands
-	CA_LISTSCRIPTS,
-	CA_LOADSCRIPT,
-	CA_RUNSCRIPT,
-
-	// Select Commands
-	CA_DESELECT,
-	CA_INVERT,
-	CA_SELECT,
-	CA_SELECTALL,
-	CA_SELECTFFTYPE,
-	CA_SELECTNONE,
-	CA_SELECTOVERLAPS,
-	CA_SELECTPATTERN,
-	CA_SELECTTYPE,
-	
-	// Site Commands
-	CA_GETSITE,
-	CA_LISTSITES,
-	CA_NEWSITE,
-	CA_SITEAXES,
-
-	// System commands
-	CA_DEBUG,
-	CA_GUI,
-	CA_HELP,
-	CA_SEED,
-	CA_QUIT,
-
-	// Trajectory Commands
-	CA_FINALISEFRAME,
-	CA_FIRSTFRAME,
-	CA_LASTFRAME,
-	CA_LOADTRAJECTORY,
-	CA_NEXTFRAME,
-	CA_PREVFRAME,
-	CA_SEEKFRAME,
-
-	// Transformation Commands
-	CA_CENTRE,
-	CA_TRANSLATE,
-	CA_TRANSLATEATOM,
-	CA_TRANSLATECELL,
-	CA_MIRROR,
-
-	// Variables
-	CA_DECREASE,
-	CA_INCREASE,
-	CA_LET,
-	CA_LETCHAR,
-	CA_LETPTR,
-
-	// View
-	CA_GETVIEW,
-	CA_ORTHOGRAPHIC,
-	CA_PERSPECTIVE,
-	CA_RESETVIEW,
-	CA_ROTATEVIEW,
-	CA_SETVIEW,
-	CA_SPEEDTEST,
-	CA_TRANSLATEVIEW,
-	CA_VIEWALONG,
-	CA_VIEWALONGCELL,
-	CA_ZOOMVIEW,
-	CA_ZROTATEVIEW,
-
-	CA_NITEMS
-};
 
 class CommandData
 {
@@ -463,383 +49,809 @@ class CommandData
 	// Return whether command accepts any arguments
 	bool hasArguments();
 
-	/*
-	// Function
-	*/
-	private:
-	// Provide full access to the master
-	friend class Aten;
-	// All command functions
-	int function_CA_ROOTNODE(Command *&c, Bundle &obj);
-	// Analyse commands
-	int function_CA_FINALISE(Command *&c, Bundle &obj);
-	int function_CA_FRAMEANALYSE(Command *&c, Bundle &obj);
-	int function_CA_GEOMETRY(Command *&c, Bundle &obj);	
-	int function_CA_MODELANALYSE(Command *&c, Bundle &obj);
-	int function_CA_PDENS(Command *&c, Bundle &obj);
-	int function_CA_PRINTJOBS(Command *&c, Bundle &obj);
-	int function_CA_RDF(Command *&c, Bundle &obj);
-	int function_CA_SAVEQUANTITIES(Command *&c, Bundle &obj);
-	int function_CA_TRAJANALYSE(Command *&c, Bundle &obj);
-	// Atom Commands
-	int function_CA_ATOMSTYLE(Command *&c, Bundle &obj);
-	int function_CA_GETATOM(Command *&c, Bundle &obj);
-	int function_CA_HIDE(Command *&c, Bundle &obj);
-	int function_CA_SETCOORDS(Command *&c, Bundle &obj);
-	int function_CA_SETCHARGE(Command *&c, Bundle &obj);
-	int function_CA_SETELEMENT(Command *&c, Bundle &obj);
-	int function_CA_SETFORCES(Command *&c, Bundle &obj);
-	int function_CA_SETFX(Command *&c, Bundle &obj);
-	int function_CA_SETFY(Command *&c, Bundle &obj);
-	int function_CA_SETFZ(Command *&c, Bundle &obj);
-	int function_CA_SETID(Command *&c, Bundle &obj);
-	int function_CA_SETRX(Command *&c, Bundle &obj);
-	int function_CA_SETRY(Command *&c, Bundle &obj);
-	int function_CA_SETRZ(Command *&c, Bundle &obj);
-	int function_CA_SETVELOCITIES(Command *&c, Bundle &obj);
-	int function_CA_SETVX(Command *&c, Bundle &obj);
-	int function_CA_SETVY(Command *&c, Bundle &obj);
-	int function_CA_SETVZ(Command *&c, Bundle &obj);
-	int function_CA_SHOW(Command *&c, Bundle &obj);
-	int function_CA_SHOWALL(Command *&c, Bundle &obj);
-	// Bond commands
-	int function_CA_AUGMENT(Command *&c, Bundle &obj);
-	int function_CA_BONDTOLERANCE(Command *&c, Bundle &obj);
-	int function_CA_CLEARBONDS(Command *&c, Bundle &obj);
-	int function_CA_GETBOND(Command *&c, Bundle &obj);
-	int function_CA_NEWBOND(Command *&c, Bundle &obj);
-	int function_CA_NEWBONDID(Command *&c, Bundle &obj);
-	int function_CA_REBONDPATTERNS(Command *&c, Bundle &obj);
-	int function_CA_REBONDSELECTION(Command *&c, Bundle &obj);
-	int function_CA_REBOND(Command *&c, Bundle &obj);
-	// Build commands
-	int function_CA_ADDHYDROGEN(Command *&c, Bundle &obj);
-	int function_CA_BOHR(Command *&c, Bundle &obj);
-	int function_CA_CHAIN(Command *&c, Bundle &obj);
-	int function_CA_ENDCHAIN(Command *&c, Bundle &obj);
-	int function_CA_LOCATE(Command *&c, Bundle &obj);
-	int function_CA_MOVE(Command *&c, Bundle &obj);
-	int function_CA_NEWATOM(Command *&c, Bundle &obj);
-	int function_CA_NEWATOMFRAC(Command *&c, Bundle &obj);
-	int function_CA_RESETPEN(Command *&c, Bundle &obj);
-	int function_CA_ROTX(Command *&c, Bundle &obj);
-	int function_CA_ROTY(Command *&c, Bundle &obj);
-	int function_CA_ROTZ(Command *&c, Bundle &obj);
-	int function_CA_SHIFTDOWN(Command *&c, Bundle &obj);
-	int function_CA_SHIFTUP(Command *&c, Bundle &obj);
-	int function_CA_TOEND(Command *&c, Bundle &obj);
-	int function_CA_TOSTART(Command *&c, Bundle &obj);
-	int function_CA_TRANSMUTE(Command *&c, Bundle &obj);
-	// Cell commands
-	int function_CA_ADJUSTCELL(Command *&c, Bundle &obj);
-	int function_CA_FOLD(Command *&c, Bundle &obj);
-	int function_CA_FOLDMOLECULES(Command *&c, Bundle &obj);
-	int function_CA_FRACTOREAL(Command *&c, Bundle &obj);
-	int function_CA_PACK(Command *&c, Bundle &obj);
-	int function_CA_PRINTCELL(Command *&c, Bundle &obj);
-	int function_CA_REPLICATE(Command *&c, Bundle &obj);
-	int function_CA_SCALE(Command *&c, Bundle &obj);
-	int function_CA_CELL(Command *&c, Bundle &obj);
-	int function_CA_CELLAXES(Command *&c, Bundle &obj);
-	int function_CA_NOCELL(Command *&c, Bundle &obj);
-	int function_CA_SETCELL(Command *&c, Bundle &obj);
-	int function_CA_SPACEGROUP(Command *&c, Bundle &obj);
-	// Charge commands
-	int function_CA_CHARGEFF(Command *&c, Bundle &obj);
-	int function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj);
-	int function_CA_CHARGEPATOM(Command *&c, Bundle &obj);
-	int function_CA_CHARGE(Command *&c, Bundle &obj);
-	int function_CA_CHARGETYPE(Command *&c, Bundle &obj);
-	int function_CA_CLEARCHARGES(Command *&c, Bundle &obj);
-	// Colourscale commands
-	int function_CA_ADDPOINT(Command *&c, Bundle &obj);
-	int function_CA_CLEARPOINTS(Command *&c, Bundle &obj);
-	int function_CA_LISTSCALES(Command *&c, Bundle &obj);
-	int function_CA_REMOVEPOINT(Command *&c, Bundle &obj);
-	int function_CA_SCALENAME(Command *&c, Bundle &obj);
-	int function_CA_SCALEVISIBLE(Command *&c, Bundle &obj);
-	int function_CA_SETPOINT(Command *&c, Bundle &obj);
-	int function_CA_SETPOINTCOLOUR(Command *&c, Bundle &obj);
-	int function_CA_SETPOINTVALUE(Command *&c, Bundle &obj);
-	// Disordered build commands
-	int function_CA_DISORDER(Command *&c, Bundle &obj);
-	int function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj);
-	int function_CA_NMOLS(Command *&c, Bundle &obj);
-	int function_CA_REGION(Command *&c, Bundle &obj);
-	int function_CA_REGIONCENTRE(Command *&c, Bundle &obj);
-	int function_CA_REGIONCENTREF(Command *&c, Bundle &obj);
-	int function_CA_REGIONF(Command *&c, Bundle &obj);
-	int function_CA_REGIONGEOMETRY(Command *&c, Bundle &obj);
-	int function_CA_REGIONGEOMETRYF(Command *&c, Bundle &obj);
-	int function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj);
-	int function_CA_REGIONSHAPE(Command *&c, Bundle &obj);
-	int function_CA_VDWSCALE(Command *&c, Bundle &obj);
-	// Edit commands
-	int function_CA_COPY(Command *&c, Bundle &obj);
-	int function_CA_CUT(Command *&c, Bundle &obj);
-	int function_CA_DELETE(Command *&c, Bundle &obj);
-	int function_CA_PASTE(Command *&c, Bundle &obj);
-	int function_CA_REDO(Command *&c, Bundle &obj);
-	int function_CA_UNDO(Command *&c, Bundle &obj);
-	// Energy Commands
-	int function_CA_FRAMEENERGY(Command *&c, Bundle &obj);
-	int function_CA_MODELENERGY(Command *&c, Bundle &obj);
-	int function_CA_PRINTELEC(Command *&c, Bundle &obj);
-	int function_CA_PRINTEWALD(Command *&c, Bundle &obj);
-	int function_CA_PRINTINTER(Command *&c, Bundle &obj);
-	int function_CA_PRINTINTRA(Command *&c, Bundle &obj);
-	int function_CA_PRINTENERGY(Command *&c, Bundle &obj);
-	int function_CA_PRINTSUMMARY(Command *&c, Bundle &obj);
-	int function_CA_PRINTVDW(Command *&c, Bundle &obj);
-	// Filter Commands
-	int function_CA_EXACT(Command *&c, Bundle &obj);
-	int function_CA_EXTENSION(Command *&c, Bundle &obj);
-	int function_CA_GLOB(Command *&c, Bundle &obj);
-	int function_CA_ID(Command *&c, Bundle &obj);
-	int function_CA_NAME(Command *&c, Bundle &obj);
-	int function_CA_NICKNAME(Command *&c, Bundle &obj);
-	int function_CA_ZMAP(Command *&c, Bundle &obj);
-	// Flow control
-	int function_CA_BREAK(Command *&c, Bundle &obj);
-	int function_CA_CONTINUE(Command *&c, Bundle &obj);
-	int function_CA_ELSE(Command *&c, Bundle &obj);
-	int function_CA_ELSEIF(Command *&c, Bundle &obj);
-	int function_CA_END(Command *&c, Bundle &obj);
-	int function_CA_FOR(Command *&c, Bundle &obj);
-	int function_CA_GOTO(Command *&c, Bundle &obj);
-	int function_CA_GOTONONIF(Command *&c, Bundle &obj);
-	int function_CA_IF(Command *&c, Bundle &obj);
-	int function_CA_TERMINATE(Command *&c, Bundle &obj);
-	// Force Commands
-	int function_CA_FRAMEFORCES(Command *&c, Bundle &obj);
-	int function_CA_MODELFORCES(Command *&c, Bundle &obj);
-	int function_CA_PRINTFORCES(Command *&c, Bundle &obj);
-	// Forcefield Commands
-	int function_CA_ANGLEDEF(Command *&c, Bundle &obj);
-	int function_CA_BONDDEF(Command *&c, Bundle &obj);
-	int function_CA_CLEARMAP(Command *&c, Bundle &obj);
-	int function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj);
-	int function_CA_DEFAULTFF(Command *&c, Bundle &obj);
-	int function_CA_EQUIVALENT(Command *&c, Bundle &obj);
-	int function_CA_FINALISEFF(Command *&c, Bundle &obj);
-	int function_CA_FFMODEL(Command *&c, Bundle &obj);
-	int function_CA_FFPATTERN(Command *&c, Bundle &obj);
-	int function_CA_FFPATTERNID(Command *&c, Bundle &obj);
-	int function_CA_GENCONVERT(Command *&c, Bundle &obj);
-	int function_CA_GENERATOR(Command *&c, Bundle &obj);
-	int function_CA_GETFF(Command *&c, Bundle &obj);
-	int function_CA_LOADFF(Command *&c, Bundle &obj);
-	int function_CA_MAP(Command *&c, Bundle &obj);
-	int function_CA_NEWFF(Command *&c, Bundle &obj);
-	int function_CA_PRINTSETUP(Command *&c, Bundle &obj);
-	int function_CA_RULES(Command *&c, Bundle &obj);
-	int function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj);
-	int function_CA_TORSIONDEF(Command *&c, Bundle &obj);
-	int function_CA_TYPEDEF(Command *&c, Bundle &obj);
-	int function_CA_TYPEMODEL(Command *&c, Bundle &obj);
-	int function_CA_TYPETEST(Command *&c, Bundle &obj);
-	int function_CA_UNITS(Command *&c, Bundle &obj);
-	int function_CA_VDWDEF(Command *&c, Bundle &obj);
-	// Glyph commands
-	int function_CA_AUTOELLIPSOIDS(Command *&c, Bundle &obj);
-	int function_CA_AUTOPOLYHEDRA(Command *&c, Bundle &obj);
-	int function_CA_GLYPHATOMF(Command *&c, Bundle &obj);
-	int function_CA_GLYPHATOMR(Command *&c, Bundle &obj);
-	int function_CA_GLYPHATOMV(Command *&c, Bundle &obj);
-	int function_CA_GLYPHATOMSF(Command *&c, Bundle &obj);
-	int function_CA_GLYPHATOMSR(Command *&c, Bundle &obj);
-	int function_CA_GLYPHATOMSV(Command *&c, Bundle &obj);
-	int function_CA_GLYPHCOLOUR(Command *&c, Bundle &obj);
-	int function_CA_GLYPHDATA(Command *&c, Bundle &obj);
-	int function_CA_GLYPHSOLID(Command *&c, Bundle &obj);
-	int function_CA_GLYPHTEXT(Command *&c, Bundle &obj);
-	int function_CA_NEWGLYPH(Command *&c, Bundle &obj);
-	// Grid Commands
-	int function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj);
-	int function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj);
-	int function_CA_FINALISEGRID(Command *&c, Bundle &obj);
-	int function_CA_GETGRID(Command *&c, Bundle &obj);
-	int function_CA_GRIDAXES(Command *&c, Bundle &obj);
-	int function_CA_GRIDCOLOUR(Command *&c, Bundle &obj);
-	int function_CA_GRIDCOLOURNEGATIVE(Command *&c, Bundle &obj);
-	int function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj);
-	int function_CA_GRIDCUBIC(Command *&c, Bundle &obj);
-	int function_CA_GRIDCUTOFF(Command *&c, Bundle &obj);
-	int function_CA_GRIDORTHO(Command *&c, Bundle &obj);
-	int function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj);
-	int function_CA_GRIDORIGIN(Command *&c, Bundle &obj);
-	int function_CA_GRIDSIZE(Command *&c, Bundle &obj);
-	int function_CA_GRIDSTYLE(Command *&c, Bundle &obj);
-	int function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj);
-	int function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj);
-	int function_CA_GRIDUSEZ(Command *&c, Bundle &obj);
-	int function_CA_LOADGRID(Command *&c, Bundle &obj);
-	int function_CA_NEWGRID(Command *&c, Bundle &obj);
-	// Image Commands
-	int function_CA_SAVEBITMAP(Command *&c, Bundle &obj);
-	int function_CA_SAVEVECTOR(Command *&c, Bundle &obj);
-	// Labeling commands
-	int function_CA_CLEARLABELS(Command *&c, Bundle &obj);
-	int function_CA_LABEL(Command *&c, Bundle &obj);
-	int function_CA_REMOVELABEL(Command *&c, Bundle &obj);
-	// MC Commands
-	int function_CA_MCACCEPT(Command *&c, Bundle &obj);
-	int function_CA_MCALLOW(Command *&c, Bundle &obj);
-	int function_CA_MCMAXSTEP(Command *&c, Bundle &obj);
-	int function_CA_MCNTRIALS(Command *&c, Bundle &obj);
-	int function_CA_PRINTMC(Command *&c, Bundle &obj);
-	// Measurements
-	int function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj);
-	int function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj);
-	int function_CA_MEASURE(Command *&c, Bundle &obj);
-	// Messaging
-	int function_CA_ERROR(Command *&c, Bundle &obj);
-	int function_CA_PRINT(Command *&c, Bundle &obj);
-	int function_CA_VERBOSE(Command *&c, Bundle &obj);
-	int function_CA_WARN(Command *&c, Bundle &obj);
-	// Minimisation Commands
-	int function_CA_CGMINIMISE(Command *&c, Bundle &obj);
-	int function_CA_CONVERGE(Command *&c, Bundle &obj);
-	int function_CA_LINETOL(Command *&c, Bundle &obj);
-	int function_CA_MCMINIMISE(Command *&c, Bundle &obj);
-	int function_CA_SDMINIMISE(Command *&c, Bundle &obj);
-	int function_CA_SIMPLEXMINIMISE(Command *&c, Bundle &obj);
-	// Model Commands
-	int function_CA_CREATEATOMS(Command *&c, Bundle &obj);
-	int function_CA_FINALISEMODEL(Command *&c, Bundle &obj);
-	int function_CA_GETMODEL(Command *&c, Bundle &obj);
-	int function_CA_INFO(Command *&c, Bundle &obj);
-	int function_CA_LISTMODELS(Command *&c, Bundle &obj);
-	int function_CA_LOADMODEL(Command *&c, Bundle &obj);
-	int function_CA_LOGINFO(Command *&c, Bundle &obj);
-	int function_CA_MODELTEMPLATE(Command *&c, Bundle &obj);
-	int function_CA_NEWMODEL(Command *&c, Bundle &obj);
-	int function_CA_NEXTMODEL(Command *&c, Bundle &obj);
-	int function_CA_PREVMODEL(Command *&c, Bundle &obj);
-	int function_CA_SAVEMODEL(Command *&c, Bundle &obj);
-	int function_CA_SETNAME(Command *&c, Bundle &obj);
-	// Pattern Commands
-	int function_CA_CLEARPATTERNS(Command *&c, Bundle &obj);
-	int function_CA_CREATEPATTERNS(Command *&c, Bundle &obj);
-	int function_CA_GETPATTERN(Command *&c, Bundle &obj);
-	int function_CA_LISTPATTERNS(Command *&c, Bundle &obj);
-	int function_CA_NEWPATTERN(Command *&c, Bundle &obj);
-	// Preferences Commands
-	int function_CA_ANGLELABEL(Command *&c, Bundle &obj);
-	int function_CA_ATOMDETAIL(Command *&c, Bundle &obj);
-	int function_CA_BONDDETAIL(Command *&c, Bundle &obj);
-	int function_CA_COLOUR(Command *&c, Bundle &obj);
-	int function_CA_COMMONELEMENTS(Command *&c, Bundle &obj);
-	int function_CA_DENSITYUNITS(Command *&c, Bundle &obj);
-	int function_CA_DISTANCELABEL(Command *&c, Bundle &obj);
-	int function_CA_ECUT(Command *&c, Bundle &obj);
-	int function_CA_ELEC(Command *&c, Bundle &obj);
-	int function_CA_ELEMENTAMBIENT(Command *&c, Bundle &obj);
-	int function_CA_ELEMENTDIFFUSE(Command *&c, Bundle &obj);
-	int function_CA_ELEMENTRADIUS(Command *&c, Bundle &obj);
-	int function_CA_ENERGYUNITS(Command *&c, Bundle &obj);
-	int function_CA_INTRA(Command *&c, Bundle &obj);
-	int function_CA_GL(Command *&c, Bundle &obj);
-	int function_CA_KEY(Command *&c, Bundle &obj);
-	int function_CA_MOUSE(Command *&c, Bundle &obj);
-	int function_CA_LABELSIZE(Command *&c, Bundle &obj);
-	int function_CA_RADIUS(Command *&c, Bundle &obj);
-	int function_CA_REPLICATEFOLD(Command *&c, Bundle &obj);
-	int function_CA_REPLICATETRIM(Command *&c, Bundle &obj);
-	int function_CA_SCHEME(Command *&c, Bundle &obj);
-	int function_CA_SHININESS(Command *&c, Bundle &obj);
-	int function_CA_SHOWONSCREEN(Command *&c, Bundle &obj);
-	int function_CA_SHOWONIMAGE(Command *&c, Bundle &obj);
-	int function_CA_STYLE(Command *&c, Bundle &obj);
-	int function_CA_USENICETEXT(Command *&c, Bundle &obj);
-	int function_CA_VCUT(Command *&c, Bundle &obj);
-	int function_CA_VDW(Command *&c, Bundle &obj);
-	// Read / Write Commands
-	int function_CA_ADDREADOPTION(Command *&c, Bundle &obj);
-	int function_CA_FIND(Command *&c, Bundle &obj);
-	int function_CA_GETLINE(Command *&c, Bundle &obj);
-	int function_CA_READCHARS(Command *&c, Bundle &obj);
-	int function_CA_READFLOAT(Command *&c, Bundle &obj);
-	int function_CA_READINTEGER(Command *&c, Bundle &obj);
-	int function_CA_READLINE(Command *&c, Bundle &obj);
-	int function_CA_READNEXT(Command *&c, Bundle &obj);
-	int function_CA_READVAR(Command *&c, Bundle &obj);
-	int function_CA_REMOVEREADOPTION(Command *&c, Bundle &obj);
-	int function_CA_REWIND(Command *&c, Bundle &obj);
-	int function_CA_SKIPCHARS(Command *&c, Bundle &obj);
-	int function_CA_SKIPLINE(Command *&c, Bundle &obj);
-	int function_CA_WRITELINE(Command *&c, Bundle &obj);
-	int function_CA_WRITEVAR(Command *&c, Bundle &obj);
-	// Script Commands
-	int function_CA_LISTSCRIPTS(Command *&c, Bundle &obj);
-	int function_CA_LOADSCRIPT(Command *&c, Bundle &obj);
-	int function_CA_RUNSCRIPT(Command *&c, Bundle &obj);
-	// Select Commands
-	int function_CA_DESELECT(Command *&c, Bundle &obj);
-	int function_CA_INVERT(Command *&c, Bundle &obj);
-	int function_CA_SELECT(Command *&c, Bundle &obj);
-	int function_CA_SELECTALL(Command *&c, Bundle &obj);
-	int function_CA_SELECTFFTYPE(Command *&c, Bundle &obj);
-	int function_CA_SELECTNONE(Command *&c, Bundle &obj);
-	int function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj);
-	int function_CA_SELECTPATTERN(Command *&c, Bundle &obj);
-	int function_CA_SELECTTYPE(Command *&c, Bundle &obj);
-	// Site Commands
-	int function_CA_GETSITE(Command *&c, Bundle &obj);
-	int function_CA_LISTSITES(Command *&c, Bundle &obj);
-	int function_CA_NEWSITE(Command *&c, Bundle &obj);
-	int function_CA_SITEAXES(Command *&c, Bundle &obj);
-	// System Commands
-	int function_CA_DEBUG(Command *&c, Bundle &obj);
-	int function_CA_GUI(Command *&c, Bundle &obj);
-	int function_CA_SEED(Command *&c, Bundle &obj);
-	int function_CA_HELP(Command *&c, Bundle &obj);
-	int function_CA_QUIT(Command *&c, Bundle &obj);
-	// Trajectory Commands
-	int function_CA_FINALISEFRAME(Command *&c, Bundle &obj);
-	int function_CA_FIRSTFRAME(Command *&c, Bundle &obj);
-	int function_CA_LASTFRAME(Command *&c, Bundle &obj);
-	int function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj);
-	int function_CA_NEXTFRAME(Command *&c, Bundle &obj);
-	int function_CA_PREVFRAME(Command *&c, Bundle &obj);
-	int function_CA_SEEKFRAME(Command *&c, Bundle &obj);
-	// Transform Commands
-	int function_CA_CENTRE(Command *&c, Bundle &obj);
-	int function_CA_TRANSLATE(Command *&c, Bundle &obj);
-	int function_CA_TRANSLATEATOM(Command *&c, Bundle &obj);
-	int function_CA_TRANSLATECELL(Command *&c, Bundle &obj);
-	int function_CA_MIRROR(Command *&c, Bundle &obj);
-	// Variables
-	int function_CA_DECREASE(Command *&c, Bundle &obj);
-	int function_CA_INCREASE(Command *&c, Bundle &obj);
-	int function_CA_LET(Command *&c, Bundle &obj);
-	int function_CA_LETCHAR(Command *&c, Bundle &obj);
-	int function_CA_LETPTR(Command *&c, Bundle &obj);
-	// View
-	int function_CA_GETVIEW(Command *&c, Bundle &obj);
-	int function_CA_LIGHT(Command *&c, Bundle &obj);
-	int function_CA_LIGHTAMBIENT(Command *&c, Bundle &obj);
-	int function_CA_LIGHTDIFFUSE(Command *&c, Bundle &obj);
-	int function_CA_LIGHTPOSITION(Command *&c, Bundle &obj);
-	int function_CA_LIGHTSPECULAR(Command *&c, Bundle &obj);
-	int function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj);
-	int function_CA_PERSPECTIVE(Command *&c, Bundle &obj);
-	int function_CA_RESETVIEW(Command *&c, Bundle &obj);
-	int function_CA_ROTATEVIEW(Command *&c, Bundle &obj);
-	int function_CA_SETVIEW(Command *&c, Bundle &obj);
-	int function_CA_SPEEDTEST(Command *&c, Bundle &obj);
-	int function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj);
-	int function_CA_VIEWALONG(Command *&c, Bundle &obj);
-	int function_CA_VIEWALONGCELL(Command *&c, Bundle &obj);
-	int function_CA_ZOOMVIEW(Command *&c, Bundle &obj);
-	int function_CA_ZROTATEVIEW(Command *&c, Bundle &obj);
-
 	public:
 	CommandFunction function;
 };
 
-CommandAction CA_from_text(const char*);
- // External definitions
-extern CommandData CA_data[CA_NITEMS];
+// Command actions
+class Command {
+
+	public:
+	// Command return values
+	enum ReturnValue { Success, SuccessNoMove, Fail, FailContinue, Exit, ExitWithError };
+	// Command list
+	enum Function {
+	
+		// Variable declaration
+		CA_CHAR,
+		CA_INT,
+		CA_FLOAT,
+		CA_ATOM,
+		CA_PATTERN,
+		CA_MODEL,
+		CA_GRID,
+		CA_BOND,
+		CA_ANGLE,
+		CA_TORSION,
+		CA_ATOMTYPE,
+		CA_CELLVAR,
+		CA_PREFSVAR,
+	
+		// Root node
+		CA_ROOTNODE,
+	
+		// Analysis commands
+		CA_FINALISE,
+		CA_FRAMEANALYSE,
+		CA_GEOMETRY,
+		CA_MODELANALYSE,
+		CA_PDENS,
+		CA_PRINTJOBS,
+		CA_RDF,
+		CA_SAVEQUANTITIES,
+		CA_TRAJANALYSE,
+	
+		// Atom Commands
+		CA_ATOMSTYLE,
+		CA_GETATOM,
+		CA_HIDE,
+		CA_SETCHARGE,
+		CA_SETCOORDS,
+		CA_SETELEMENT,
+		CA_SETFORCES,
+		CA_SETFX,
+		CA_SETFY,
+		CA_SETFZ,
+		CA_SETID,
+		CA_SETRX,
+		CA_SETRY,
+		CA_SETRZ,
+		CA_SETVELOCITIES,
+		CA_SETVX,
+		CA_SETVY,
+		CA_SETVZ,
+		CA_SHOW,
+		CA_SHOWALL,
+	
+		// Bond commands
+		CA_AUGMENT,
+		CA_BONDTOLERANCE,
+		CA_CLEARBONDS,
+		CA_GETBOND,
+		CA_NEWBOND,
+		CA_NEWBONDID,
+		CA_REBONDPATTERNS,
+		CA_REBONDSELECTION,
+		CA_REBOND,
+	
+		// Build commands
+		CA_ADDHYDROGEN,
+		CA_BOHR,
+		CA_CHAIN,
+		CA_ENDCHAIN,
+		CA_LOCATE,
+		CA_MOVE,
+		CA_NEWATOM,
+		CA_NEWATOMFRAC,
+		CA_RESETPEN,
+		CA_ROTX,
+		CA_ROTY,
+		CA_ROTZ,
+		CA_SHIFTDOWN,
+		CA_SHIFTUP,
+		CA_TOEND,
+		CA_TOSTART,
+		CA_TRANSMUTE,
+	
+		// Cell commands
+		CA_ADJUSTCELL,
+		CA_FOLD,
+		CA_FOLDMOLECULES,
+		CA_FRACTOREAL,
+		CA_PACK,
+		CA_PRINTCELL,
+		CA_REPLICATE,
+		CA_SCALE,
+		CA_CELL,
+		CA_CELLAXES,
+		CA_NOCELL,
+		CA_SETCELL,
+		CA_SPACEGROUP,
+	
+		// Charge commands
+		CA_CHARGEFF,
+		CA_CHARGEFROMMODEL,
+		CA_CHARGEPATOM,
+		CA_CHARGE,
+		CA_CHARGETYPE,
+		CA_CLEARCHARGES,
+	
+		// Colourscale commands
+		CA_ADDPOINT,
+		CA_CLEARPOINTS,
+		CA_LISTSCALES,
+		CA_REMOVEPOINT,
+		CA_SCALENAME,
+		CA_SCALEVISIBLE,
+		CA_SETPOINT,
+		CA_SETPOINTCOLOUR,
+		CA_SETPOINTVALUE,
+	
+		// Disordered build commands
+		CA_DISORDER,
+		CA_LISTCOMPONENTS,
+		CA_NMOLS,
+		CA_REGION,
+		CA_REGIONCENTRE,
+		CA_REGIONCENTREF,
+		CA_REGIONF,
+		CA_REGIONGEOMETRY,
+		CA_REGIONGEOMETRYF,
+		CA_REGIONOVERLAPS,
+		CA_REGIONSHAPE,
+		CA_VDWSCALE,
+	
+		// Edit commands
+		CA_COPY,
+		CA_CUT,
+		CA_DELETE,
+		CA_PASTE,
+		CA_REDO,
+		CA_UNDO,
+	
+		// Energy Commands
+		CA_FRAMEENERGY,
+		CA_MODELENERGY,
+		CA_PRINTELEC,
+		CA_PRINTEWALD,
+		CA_PRINTINTER,
+		CA_PRINTINTRA,
+		CA_PRINTENERGY,
+		CA_PRINTSUMMARY,
+		CA_PRINTVDW,
+	
+		// Flow control
+		CA_BREAK,
+		CA_CONTINUE,
+		CA_ELSE,
+		CA_ELSEIF,
+		CA_END,
+		CA_FOR,
+		CA_GOTO,
+		CA_GOTONONIF,
+		CA_IF,
+		CA_TERMINATE,
+	
+		// Force Commands
+		CA_FRAMEFORCES,
+		CA_MODELFORCES,
+		CA_PRINTFORCES,
+	
+		// Forcefield/Expression Commands
+		CA_ANGLEDEF,
+		CA_BONDDEF,
+		CA_CLEARMAP,
+		CA_CREATEEXPRESSION,
+		CA_DEFAULTFF,
+		CA_EQUIVALENT,
+		CA_FFMODEL,
+		CA_FFPATTERN,
+		CA_FFPATTERNID,
+		CA_FINALISEFF,
+		CA_GENCONVERT,
+		CA_GENERATOR,
+		CA_GETFF,
+		CA_LOADFF,
+		CA_MAP,
+		CA_NEWFF,
+		CA_PRINTSETUP,
+		CA_RULES,
+		CA_SAVEEXPRESSION,
+		CA_TORSIONDEF,
+		CA_TYPEDEF,
+		CA_TYPEMODEL,
+		CA_TYPETEST,
+		CA_UNITS,
+		CA_VDWDEF,
+	
+		// Glyph commands
+		CA_AUTOELLIPSOIDS,
+		CA_AUTOPOLYHEDRA,
+		CA_GLYPHATOMF,
+		CA_GLYPHATOMR,
+		CA_GLYPHATOMV,
+		CA_GLYPHATOMSF,
+		CA_GLYPHATOMSR,
+		CA_GLYPHATOMSV,
+		CA_GLYPHCOLOUR,
+		CA_GLYPHDATA,
+		CA_GLYPHSOLID,
+		CA_GLYPHTEXT,
+		CA_NEWGLYPH,
+	
+		// Grid Commands
+		CA_ADDGRIDPOINT,
+		CA_ADDNEXTGRIDPOINT,
+		CA_FINALISEGRID,
+		CA_GETGRID,
+		CA_GRIDAXES,
+		CA_GRIDCOLOUR,
+		CA_GRIDCOLOURNEGATIVE,
+		CA_GRIDCOLOURSCALE,
+		CA_GRIDCUBIC,
+		CA_GRIDCUTOFF,
+		CA_GRIDLOOPORDER,
+		CA_GRIDORIGIN,
+		CA_GRIDORTHO,
+		CA_GRIDSIZE,
+		CA_GRIDSTYLE,
+		CA_GRIDSYMMETRIC,
+		CA_GRIDTRANSPARENCY,
+		CA_GRIDUSEZ,
+		CA_LOADGRID,
+		CA_NEWGRID,
+	
+		// Image Commands
+		CA_SAVEBITMAP,
+		CA_SAVEVECTOR,
+	
+		// Labeling commands
+		CA_CLEARLABELS,
+		CA_LABEL,
+		CA_REMOVELABEL,
+	
+		// MC Commands
+		CA_MCACCEPT,
+		CA_MCALLOW,
+		CA_MCMAXSTEP,
+		CA_MCNTRIALS,
+		CA_PRINTMC,
+	
+		// Measurements
+		CA_CLEARMEASUREMENTS,
+		CA_LISTMEASUREMENTS,
+		CA_MEASURE,
+	
+		// Messaging
+		CA_ERROR,
+		CA_PRINT,
+		CA_VERBOSE,
+		CA_WARN,
+	
+		// Minimisation Commands
+		CA_CGMINIMISE,
+		CA_CONVERGE,
+		CA_LINETOL,
+		CA_MCMINIMISE,
+		CA_SDMINIMISE,
+		CA_SIMPLEXMINIMISE,
+		
+		// Model Commands
+		CA_CREATEATOMS,
+		CA_FINALISEMODEL,
+		CA_GETMODEL,
+		CA_INFO,
+		CA_LISTMODELS,
+		CA_LOADMODEL,
+		CA_LOGINFO,
+		CA_MODELTEMPLATE,
+		CA_NEWMODEL,
+		CA_NEXTMODEL,
+		CA_PREVMODEL,
+		CA_SAVEMODEL,
+		CA_SETNAME,
+	
+		// Pattern Commands
+		CA_CLEARPATTERNS,
+		CA_CREATEPATTERNS,
+		CA_GETPATTERN,
+		CA_LISTPATTERNS,
+		CA_NEWPATTERN,
+	
+		// Preferences Commands
+		CA_ANGLELABEL,
+		CA_ATOMDETAIL,
+		CA_BONDDETAIL,
+		CA_COLOUR,
+		CA_COMMONELEMENTS,
+		CA_DENSITYUNITS,
+		CA_DISTANCELABEL,
+		CA_ECUT,
+		CA_ELEC,
+		CA_ELEMENTAMBIENT,
+		CA_ELEMENTDIFFUSE,
+		CA_ELEMENTRADIUS,
+		CA_ENERGYUNITS,
+		CA_GL,
+		CA_INTRA,
+		CA_KEY,
+		CA_LABELSIZE,
+		CA_LIGHT,
+		CA_LIGHTAMBIENT,
+		CA_LIGHTDIFFUSE,
+		CA_LIGHTPOSITION,
+		CA_LIGHTSPECULAR,
+		CA_MOUSE,
+		CA_RADIUS,
+		CA_REPLICATEFOLD,
+		CA_REPLICATETRIM,
+		CA_SCHEME,
+		CA_SHININESS,
+		CA_SHOWONSCREEN,
+		CA_SHOWONIMAGE,
+		CA_STYLE,
+		CA_USENICETEXT,
+		CA_VCUT,
+		CA_VDW,
+	
+		// Read / Write Commands
+		CA_ADDREADOPTION,
+		CA_FIND,
+		CA_GETLINE,
+		CA_READCHARS,
+		CA_READFLOAT,
+		CA_READINTEGER,
+		CA_READLINE,
+		CA_READNEXT,
+		CA_READVAR,
+		CA_REMOVEREADOPTION,
+		CA_REWIND,
+		CA_SKIPCHARS,
+		CA_SKIPLINE,
+		CA_WRITELINE,
+		CA_WRITEVAR,
+	
+		// Script Commands
+		CA_LISTSCRIPTS,
+		CA_LOADSCRIPT,
+		CA_RUNSCRIPT,
+	
+		// Select Commands
+		CA_DESELECT,
+		CA_INVERT,
+		CA_SELECT,
+		CA_SELECTALL,
+		CA_SELECTFFTYPE,
+		CA_SELECTNONE,
+		CA_SELECTOVERLAPS,
+		CA_SELECTPATTERN,
+		CA_SELECTTYPE,
+		
+		// Site Commands
+		CA_GETSITE,
+		CA_LISTSITES,
+		CA_NEWSITE,
+		CA_SITEAXES,
+	
+		// System commands
+		CA_DEBUG,
+		CA_GUI,
+		CA_HELP,
+		CA_SEED,
+		CA_QUIT,
+	
+		// Trajectory Commands
+		CA_FINALISEFRAME,
+		CA_FIRSTFRAME,
+		CA_LASTFRAME,
+		CA_LOADTRAJECTORY,
+		CA_NEXTFRAME,
+		CA_PREVFRAME,
+		CA_SEEKFRAME,
+	
+		// Transformation Commands
+		CA_CENTRE,
+		CA_TRANSLATE,
+		CA_TRANSLATEATOM,
+		CA_TRANSLATECELL,
+		CA_MIRROR,
+	
+		// Variables
+		CA_DECREASE,
+		CA_INCREASE,
+		CA_LET,
+		CA_LETCHAR,
+		CA_LETPTR,
+	
+		// View
+		CA_GETVIEW,
+		CA_ORTHOGRAPHIC,
+		CA_PERSPECTIVE,
+		CA_RESETVIEW,
+		CA_ROTATEVIEW,
+		CA_SETVIEW,
+		CA_SPEEDTEST,
+		CA_TRANSLATEVIEW,
+		CA_VIEWALONG,
+		CA_VIEWALONGCELL,
+		CA_ZOOMVIEW,
+		CA_ZROTATEVIEW,
+	
+		CA_NITEMS
+	};
+	// Return enumerated command id from string
+	Command::Function command(const char*);
+
+	/*
+	// Function declarations
+	*/
+	private:
+	// All command functions
+	int function_CA_ROOTNODE(CommandNode *&c, Bundle &obj);
+	// Analyse commands
+	int function_CA_FINALISE(CommandNode *&c, Bundle &obj);
+	int function_CA_FRAMEANALYSE(CommandNode *&c, Bundle &obj);
+	int function_CA_GEOMETRY(CommandNode *&c, Bundle &obj);	
+	int function_CA_MODELANALYSE(CommandNode *&c, Bundle &obj);
+	int function_CA_PDENS(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTJOBS(CommandNode *&c, Bundle &obj);
+	int function_CA_RDF(CommandNode *&c, Bundle &obj);
+	int function_CA_SAVEQUANTITIES(CommandNode *&c, Bundle &obj);
+	int function_CA_TRAJANALYSE(CommandNode *&c, Bundle &obj);
+	// Atom Commands
+	int function_CA_ATOMSTYLE(CommandNode *&c, Bundle &obj);
+	int function_CA_GETATOM(CommandNode *&c, Bundle &obj);
+	int function_CA_HIDE(CommandNode *&c, Bundle &obj);
+	int function_CA_SETCOORDS(CommandNode *&c, Bundle &obj);
+	int function_CA_SETCHARGE(CommandNode *&c, Bundle &obj);
+	int function_CA_SETELEMENT(CommandNode *&c, Bundle &obj);
+	int function_CA_SETFORCES(CommandNode *&c, Bundle &obj);
+	int function_CA_SETFX(CommandNode *&c, Bundle &obj);
+	int function_CA_SETFY(CommandNode *&c, Bundle &obj);
+	int function_CA_SETFZ(CommandNode *&c, Bundle &obj);
+	int function_CA_SETID(CommandNode *&c, Bundle &obj);
+	int function_CA_SETRX(CommandNode *&c, Bundle &obj);
+	int function_CA_SETRY(CommandNode *&c, Bundle &obj);
+	int function_CA_SETRZ(CommandNode *&c, Bundle &obj);
+	int function_CA_SETVELOCITIES(CommandNode *&c, Bundle &obj);
+	int function_CA_SETVX(CommandNode *&c, Bundle &obj);
+	int function_CA_SETVY(CommandNode *&c, Bundle &obj);
+	int function_CA_SETVZ(CommandNode *&c, Bundle &obj);
+	int function_CA_SHOW(CommandNode *&c, Bundle &obj);
+	int function_CA_SHOWALL(CommandNode *&c, Bundle &obj);
+	// Bond commands
+	int function_CA_AUGMENT(CommandNode *&c, Bundle &obj);
+	int function_CA_BONDTOLERANCE(CommandNode *&c, Bundle &obj);
+	int function_CA_CLEARBONDS(CommandNode *&c, Bundle &obj);
+	int function_CA_GETBOND(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWBOND(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWBONDID(CommandNode *&c, Bundle &obj);
+	int function_CA_REBONDPATTERNS(CommandNode *&c, Bundle &obj);
+	int function_CA_REBONDSELECTION(CommandNode *&c, Bundle &obj);
+	int function_CA_REBOND(CommandNode *&c, Bundle &obj);
+	// Build commands
+	int function_CA_ADDHYDROGEN(CommandNode *&c, Bundle &obj);
+	int function_CA_BOHR(CommandNode *&c, Bundle &obj);
+	int function_CA_CHAIN(CommandNode *&c, Bundle &obj);
+	int function_CA_ENDCHAIN(CommandNode *&c, Bundle &obj);
+	int function_CA_LOCATE(CommandNode *&c, Bundle &obj);
+	int function_CA_MOVE(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWATOM(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWATOMFRAC(CommandNode *&c, Bundle &obj);
+	int function_CA_RESETPEN(CommandNode *&c, Bundle &obj);
+	int function_CA_ROTX(CommandNode *&c, Bundle &obj);
+	int function_CA_ROTY(CommandNode *&c, Bundle &obj);
+	int function_CA_ROTZ(CommandNode *&c, Bundle &obj);
+	int function_CA_SHIFTDOWN(CommandNode *&c, Bundle &obj);
+	int function_CA_SHIFTUP(CommandNode *&c, Bundle &obj);
+	int function_CA_TOEND(CommandNode *&c, Bundle &obj);
+	int function_CA_TOSTART(CommandNode *&c, Bundle &obj);
+	int function_CA_TRANSMUTE(CommandNode *&c, Bundle &obj);
+	// Cell commands
+	int function_CA_ADJUSTCELL(CommandNode *&c, Bundle &obj);
+	int function_CA_FOLD(CommandNode *&c, Bundle &obj);
+	int function_CA_FOLDMOLECULES(CommandNode *&c, Bundle &obj);
+	int function_CA_FRACTOREAL(CommandNode *&c, Bundle &obj);
+	int function_CA_PACK(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTCELL(CommandNode *&c, Bundle &obj);
+	int function_CA_REPLICATE(CommandNode *&c, Bundle &obj);
+	int function_CA_SCALE(CommandNode *&c, Bundle &obj);
+	int function_CA_CELL(CommandNode *&c, Bundle &obj);
+	int function_CA_CELLAXES(CommandNode *&c, Bundle &obj);
+	int function_CA_NOCELL(CommandNode *&c, Bundle &obj);
+	int function_CA_SETCELL(CommandNode *&c, Bundle &obj);
+	int function_CA_SPACEGROUP(CommandNode *&c, Bundle &obj);
+	// Charge commands
+	int function_CA_CHARGEFF(CommandNode *&c, Bundle &obj);
+	int function_CA_CHARGEFROMMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_CHARGEPATOM(CommandNode *&c, Bundle &obj);
+	int function_CA_CHARGE(CommandNode *&c, Bundle &obj);
+	int function_CA_CHARGETYPE(CommandNode *&c, Bundle &obj);
+	int function_CA_CLEARCHARGES(CommandNode *&c, Bundle &obj);
+	// Colourscale commands
+	int function_CA_ADDPOINT(CommandNode *&c, Bundle &obj);
+	int function_CA_CLEARPOINTS(CommandNode *&c, Bundle &obj);
+	int function_CA_LISTSCALES(CommandNode *&c, Bundle &obj);
+	int function_CA_REMOVEPOINT(CommandNode *&c, Bundle &obj);
+	int function_CA_SCALENAME(CommandNode *&c, Bundle &obj);
+	int function_CA_SCALEVISIBLE(CommandNode *&c, Bundle &obj);
+	int function_CA_SETPOINT(CommandNode *&c, Bundle &obj);
+	int function_CA_SETPOINTCOLOUR(CommandNode *&c, Bundle &obj);
+	int function_CA_SETPOINTVALUE(CommandNode *&c, Bundle &obj);
+	// Disordered build commands
+	int function_CA_DISORDER(CommandNode *&c, Bundle &obj);
+	int function_CA_LISTCOMPONENTS(CommandNode *&c, Bundle &obj);
+	int function_CA_NMOLS(CommandNode *&c, Bundle &obj);
+	int function_CA_REGION(CommandNode *&c, Bundle &obj);
+	int function_CA_REGIONCENTRE(CommandNode *&c, Bundle &obj);
+	int function_CA_REGIONCENTREF(CommandNode *&c, Bundle &obj);
+	int function_CA_REGIONF(CommandNode *&c, Bundle &obj);
+	int function_CA_REGIONGEOMETRY(CommandNode *&c, Bundle &obj);
+	int function_CA_REGIONGEOMETRYF(CommandNode *&c, Bundle &obj);
+	int function_CA_REGIONOVERLAPS(CommandNode *&c, Bundle &obj);
+	int function_CA_REGIONSHAPE(CommandNode *&c, Bundle &obj);
+	int function_CA_VDWSCALE(CommandNode *&c, Bundle &obj);
+	// Edit commands
+	int function_CA_COPY(CommandNode *&c, Bundle &obj);
+	int function_CA_CUT(CommandNode *&c, Bundle &obj);
+	int function_CA_DELETE(CommandNode *&c, Bundle &obj);
+	int function_CA_PASTE(CommandNode *&c, Bundle &obj);
+	int function_CA_REDO(CommandNode *&c, Bundle &obj);
+	int function_CA_UNDO(CommandNode *&c, Bundle &obj);
+	// Energy Commands
+	int function_CA_FRAMEENERGY(CommandNode *&c, Bundle &obj);
+	int function_CA_MODELENERGY(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTELEC(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTEWALD(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTINTER(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTINTRA(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTENERGY(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTSUMMARY(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTVDW(CommandNode *&c, Bundle &obj);
+	// Filter Commands
+	int function_CA_EXACT(CommandNode *&c, Bundle &obj);
+	int function_CA_EXTENSION(CommandNode *&c, Bundle &obj);
+	int function_CA_GLOB(CommandNode *&c, Bundle &obj);
+	int function_CA_ID(CommandNode *&c, Bundle &obj);
+	int function_CA_NAME(CommandNode *&c, Bundle &obj);
+	int function_CA_NICKNAME(CommandNode *&c, Bundle &obj);
+	int function_CA_ZMAP(CommandNode *&c, Bundle &obj);
+	// Flow control
+	int function_CA_BREAK(CommandNode *&c, Bundle &obj);
+	int function_CA_CONTINUE(CommandNode *&c, Bundle &obj);
+	int function_CA_ELSE(CommandNode *&c, Bundle &obj);
+	int function_CA_ELSEIF(CommandNode *&c, Bundle &obj);
+	int function_CA_END(CommandNode *&c, Bundle &obj);
+	int function_CA_FOR(CommandNode *&c, Bundle &obj);
+	int function_CA_GOTO(CommandNode *&c, Bundle &obj);
+	int function_CA_GOTONONIF(CommandNode *&c, Bundle &obj);
+	int function_CA_IF(CommandNode *&c, Bundle &obj);
+	int function_CA_TERMINATE(CommandNode *&c, Bundle &obj);
+	// Force Commands
+	int function_CA_FRAMEFORCES(CommandNode *&c, Bundle &obj);
+	int function_CA_MODELFORCES(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTFORCES(CommandNode *&c, Bundle &obj);
+	// Forcefield Commands
+	int function_CA_ANGLEDEF(CommandNode *&c, Bundle &obj);
+	int function_CA_BONDDEF(CommandNode *&c, Bundle &obj);
+	int function_CA_CLEARMAP(CommandNode *&c, Bundle &obj);
+	int function_CA_CREATEEXPRESSION(CommandNode *&c, Bundle &obj);
+	int function_CA_DEFAULTFF(CommandNode *&c, Bundle &obj);
+	int function_CA_EQUIVALENT(CommandNode *&c, Bundle &obj);
+	int function_CA_FINALISEFF(CommandNode *&c, Bundle &obj);
+	int function_CA_FFMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_FFPATTERN(CommandNode *&c, Bundle &obj);
+	int function_CA_FFPATTERNID(CommandNode *&c, Bundle &obj);
+	int function_CA_GENCONVERT(CommandNode *&c, Bundle &obj);
+	int function_CA_GENERATOR(CommandNode *&c, Bundle &obj);
+	int function_CA_GETFF(CommandNode *&c, Bundle &obj);
+	int function_CA_LOADFF(CommandNode *&c, Bundle &obj);
+	int function_CA_MAP(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWFF(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTSETUP(CommandNode *&c, Bundle &obj);
+	int function_CA_RULES(CommandNode *&c, Bundle &obj);
+	int function_CA_SAVEEXPRESSION(CommandNode *&c, Bundle &obj);
+	int function_CA_TORSIONDEF(CommandNode *&c, Bundle &obj);
+	int function_CA_TYPEDEF(CommandNode *&c, Bundle &obj);
+	int function_CA_TYPEMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_TYPETEST(CommandNode *&c, Bundle &obj);
+	int function_CA_UNITS(CommandNode *&c, Bundle &obj);
+	int function_CA_VDWDEF(CommandNode *&c, Bundle &obj);
+	// Glyph commands
+	int function_CA_AUTOELLIPSOIDS(CommandNode *&c, Bundle &obj);
+	int function_CA_AUTOPOLYHEDRA(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHATOMF(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHATOMR(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHATOMV(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHATOMSF(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHATOMSR(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHATOMSV(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHCOLOUR(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHDATA(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHSOLID(CommandNode *&c, Bundle &obj);
+	int function_CA_GLYPHTEXT(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWGLYPH(CommandNode *&c, Bundle &obj);
+	// Grid Commands
+	int function_CA_ADDGRIDPOINT(CommandNode *&c, Bundle &obj);
+	int function_CA_ADDNEXTGRIDPOINT(CommandNode *&c, Bundle &obj);
+	int function_CA_FINALISEGRID(CommandNode *&c, Bundle &obj);
+	int function_CA_GETGRID(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDAXES(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDCOLOUR(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDCOLOURNEGATIVE(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDCOLOURSCALE(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDCUBIC(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDCUTOFF(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDORTHO(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDLOOPORDER(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDORIGIN(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDSIZE(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDSTYLE(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDSYMMETRIC(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDTRANSPARENCY(CommandNode *&c, Bundle &obj);
+	int function_CA_GRIDUSEZ(CommandNode *&c, Bundle &obj);
+	int function_CA_LOADGRID(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWGRID(CommandNode *&c, Bundle &obj);
+	// Image Commands
+	int function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj);
+	int function_CA_SAVEVECTOR(CommandNode *&c, Bundle &obj);
+	// Labeling commands
+	int function_CA_CLEARLABELS(CommandNode *&c, Bundle &obj);
+	int function_CA_LABEL(CommandNode *&c, Bundle &obj);
+	int function_CA_REMOVELABEL(CommandNode *&c, Bundle &obj);
+	// MC Commands
+	int function_CA_MCACCEPT(CommandNode *&c, Bundle &obj);
+	int function_CA_MCALLOW(CommandNode *&c, Bundle &obj);
+	int function_CA_MCMAXSTEP(CommandNode *&c, Bundle &obj);
+	int function_CA_MCNTRIALS(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINTMC(CommandNode *&c, Bundle &obj);
+	// Measurements
+	int function_CA_CLEARMEASUREMENTS(CommandNode *&c, Bundle &obj);
+	int function_CA_LISTMEASUREMENTS(CommandNode *&c, Bundle &obj);
+	int function_CA_MEASURE(CommandNode *&c, Bundle &obj);
+	// Messaging
+	int function_CA_ERROR(CommandNode *&c, Bundle &obj);
+	int function_CA_PRINT(CommandNode *&c, Bundle &obj);
+	int function_CA_VERBOSE(CommandNode *&c, Bundle &obj);
+	int function_CA_WARN(CommandNode *&c, Bundle &obj);
+	// Minimisation Commands
+	int function_CA_CGMINIMISE(CommandNode *&c, Bundle &obj);
+	int function_CA_CONVERGE(CommandNode *&c, Bundle &obj);
+	int function_CA_LINETOL(CommandNode *&c, Bundle &obj);
+	int function_CA_MCMINIMISE(CommandNode *&c, Bundle &obj);
+	int function_CA_SDMINIMISE(CommandNode *&c, Bundle &obj);
+	int function_CA_SIMPLEXMINIMISE(CommandNode *&c, Bundle &obj);
+	// Model Commands
+	int function_CA_CREATEATOMS(CommandNode *&c, Bundle &obj);
+	int function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_GETMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_INFO(CommandNode *&c, Bundle &obj);
+	int function_CA_LISTMODELS(CommandNode *&c, Bundle &obj);
+	int function_CA_LOADMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_LOGINFO(CommandNode *&c, Bundle &obj);
+	int function_CA_MODELTEMPLATE(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_NEXTMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_PREVMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_SAVEMODEL(CommandNode *&c, Bundle &obj);
+	int function_CA_SETNAME(CommandNode *&c, Bundle &obj);
+	// Pattern Commands
+	int function_CA_CLEARPATTERNS(CommandNode *&c, Bundle &obj);
+	int function_CA_CREATEPATTERNS(CommandNode *&c, Bundle &obj);
+	int function_CA_GETPATTERN(CommandNode *&c, Bundle &obj);
+	int function_CA_LISTPATTERNS(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWPATTERN(CommandNode *&c, Bundle &obj);
+	// Preferences Commands
+	int function_CA_ANGLELABEL(CommandNode *&c, Bundle &obj);
+	int function_CA_ATOMDETAIL(CommandNode *&c, Bundle &obj);
+	int function_CA_BONDDETAIL(CommandNode *&c, Bundle &obj);
+	int function_CA_COLOUR(CommandNode *&c, Bundle &obj);
+	int function_CA_COMMONELEMENTS(CommandNode *&c, Bundle &obj);
+	int function_CA_DENSITYUNITS(CommandNode *&c, Bundle &obj);
+	int function_CA_DISTANCELABEL(CommandNode *&c, Bundle &obj);
+	int function_CA_ECUT(CommandNode *&c, Bundle &obj);
+	int function_CA_ELEC(CommandNode *&c, Bundle &obj);
+	int function_CA_ELEMENTAMBIENT(CommandNode *&c, Bundle &obj);
+	int function_CA_ELEMENTDIFFUSE(CommandNode *&c, Bundle &obj);
+	int function_CA_ELEMENTRADIUS(CommandNode *&c, Bundle &obj);
+	int function_CA_ENERGYUNITS(CommandNode *&c, Bundle &obj);
+	int function_CA_INTRA(CommandNode *&c, Bundle &obj);
+	int function_CA_GL(CommandNode *&c, Bundle &obj);
+	int function_CA_KEY(CommandNode *&c, Bundle &obj);
+	int function_CA_MOUSE(CommandNode *&c, Bundle &obj);
+	int function_CA_LABELSIZE(CommandNode *&c, Bundle &obj);
+	int function_CA_RADIUS(CommandNode *&c, Bundle &obj);
+	int function_CA_REPLICATEFOLD(CommandNode *&c, Bundle &obj);
+	int function_CA_REPLICATETRIM(CommandNode *&c, Bundle &obj);
+	int function_CA_SCHEME(CommandNode *&c, Bundle &obj);
+	int function_CA_SHININESS(CommandNode *&c, Bundle &obj);
+	int function_CA_SHOWONSCREEN(CommandNode *&c, Bundle &obj);
+	int function_CA_SHOWONIMAGE(CommandNode *&c, Bundle &obj);
+	int function_CA_STYLE(CommandNode *&c, Bundle &obj);
+	int function_CA_USENICETEXT(CommandNode *&c, Bundle &obj);
+	int function_CA_VCUT(CommandNode *&c, Bundle &obj);
+	int function_CA_VDW(CommandNode *&c, Bundle &obj);
+	// Read / Write Commands
+	int function_CA_ADDREADOPTION(CommandNode *&c, Bundle &obj);
+	int function_CA_FIND(CommandNode *&c, Bundle &obj);
+	int function_CA_GETLINE(CommandNode *&c, Bundle &obj);
+	int function_CA_READCHARS(CommandNode *&c, Bundle &obj);
+	int function_CA_READFLOAT(CommandNode *&c, Bundle &obj);
+	int function_CA_READINTEGER(CommandNode *&c, Bundle &obj);
+	int function_CA_READLINE(CommandNode *&c, Bundle &obj);
+	int function_CA_READNEXT(CommandNode *&c, Bundle &obj);
+	int function_CA_READVAR(CommandNode *&c, Bundle &obj);
+	int function_CA_REMOVEREADOPTION(CommandNode *&c, Bundle &obj);
+	int function_CA_REWIND(CommandNode *&c, Bundle &obj);
+	int function_CA_SKIPCHARS(CommandNode *&c, Bundle &obj);
+	int function_CA_SKIPLINE(CommandNode *&c, Bundle &obj);
+	int function_CA_WRITELINE(CommandNode *&c, Bundle &obj);
+	int function_CA_WRITEVAR(CommandNode *&c, Bundle &obj);
+	// Script Commands
+	int function_CA_LISTSCRIPTS(CommandNode *&c, Bundle &obj);
+	int function_CA_LOADSCRIPT(CommandNode *&c, Bundle &obj);
+	int function_CA_RUNSCRIPT(CommandNode *&c, Bundle &obj);
+	// Select Commands
+	int function_CA_DESELECT(CommandNode *&c, Bundle &obj);
+	int function_CA_INVERT(CommandNode *&c, Bundle &obj);
+	int function_CA_SELECT(CommandNode *&c, Bundle &obj);
+	int function_CA_SELECTALL(CommandNode *&c, Bundle &obj);
+	int function_CA_SELECTFFTYPE(CommandNode *&c, Bundle &obj);
+	int function_CA_SELECTNONE(CommandNode *&c, Bundle &obj);
+	int function_CA_SELECTOVERLAPS(CommandNode *&c, Bundle &obj);
+	int function_CA_SELECTPATTERN(CommandNode *&c, Bundle &obj);
+	int function_CA_SELECTTYPE(CommandNode *&c, Bundle &obj);
+	// Site Commands
+	int function_CA_GETSITE(CommandNode *&c, Bundle &obj);
+	int function_CA_LISTSITES(CommandNode *&c, Bundle &obj);
+	int function_CA_NEWSITE(CommandNode *&c, Bundle &obj);
+	int function_CA_SITEAXES(CommandNode *&c, Bundle &obj);
+	// System Commands
+	int function_CA_DEBUG(CommandNode *&c, Bundle &obj);
+	int function_CA_GUI(CommandNode *&c, Bundle &obj);
+	int function_CA_SEED(CommandNode *&c, Bundle &obj);
+	int function_CA_HELP(CommandNode *&c, Bundle &obj);
+	int function_CA_QUIT(CommandNode *&c, Bundle &obj);
+	// Trajectory Commands
+	int function_CA_FINALISEFRAME(CommandNode *&c, Bundle &obj);
+	int function_CA_FIRSTFRAME(CommandNode *&c, Bundle &obj);
+	int function_CA_LASTFRAME(CommandNode *&c, Bundle &obj);
+	int function_CA_LOADTRAJECTORY(CommandNode *&c, Bundle &obj);
+	int function_CA_NEXTFRAME(CommandNode *&c, Bundle &obj);
+	int function_CA_PREVFRAME(CommandNode *&c, Bundle &obj);
+	int function_CA_SEEKFRAME(CommandNode *&c, Bundle &obj);
+	// Transform Commands
+	int function_CA_CENTRE(CommandNode *&c, Bundle &obj);
+	int function_CA_TRANSLATE(CommandNode *&c, Bundle &obj);
+	int function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj);
+	int function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj);
+	int function_CA_MIRROR(CommandNode *&c, Bundle &obj);
+	// Variables
+	int function_CA_DECREASE(CommandNode *&c, Bundle &obj);
+	int function_CA_INCREASE(CommandNode *&c, Bundle &obj);
+	int function_CA_LET(CommandNode *&c, Bundle &obj);
+	int function_CA_LETCHAR(CommandNode *&c, Bundle &obj);
+	int function_CA_LETPTR(CommandNode *&c, Bundle &obj);
+	// View
+	int function_CA_GETVIEW(CommandNode *&c, Bundle &obj);
+	int function_CA_LIGHT(CommandNode *&c, Bundle &obj);
+	int function_CA_LIGHTAMBIENT(CommandNode *&c, Bundle &obj);
+	int function_CA_LIGHTDIFFUSE(CommandNode *&c, Bundle &obj);
+	int function_CA_LIGHTPOSITION(CommandNode *&c, Bundle &obj);
+	int function_CA_LIGHTSPECULAR(CommandNode *&c, Bundle &obj);
+	int function_CA_ORTHOGRAPHIC(CommandNode *&c, Bundle &obj);
+	int function_CA_PERSPECTIVE(CommandNode *&c, Bundle &obj);
+	int function_CA_RESETVIEW(CommandNode *&c, Bundle &obj);
+	int function_CA_ROTATEVIEW(CommandNode *&c, Bundle &obj);
+	int function_CA_SETVIEW(CommandNode *&c, Bundle &obj);
+	int function_CA_SPEEDTEST(CommandNode *&c, Bundle &obj);
+	int function_CA_TRANSLATEVIEW(CommandNode *&c, Bundle &obj);
+	int function_CA_VIEWALONG(CommandNode *&c, Bundle &obj);
+	int function_CA_VIEWALONGCELL(CommandNode *&c, Bundle &obj);
+	int function_CA_ZOOMVIEW(CommandNode *&c, Bundle &obj);
+	int function_CA_ZROTATEVIEW(CommandNode *&c, Bundle &obj);
+
+	/*
+	// Function descriptions / syntax etc.
+	*/
+	private:
+	// Function data
+	static CommandData CA_data[Command::CA_NITEMS];
+
+	public:
+	// Set function pointer
+	static void setPointer(Command::Function cf, CommandFunction ptr);
+	
+};
 
 #endif

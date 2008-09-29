@@ -25,23 +25,23 @@
 // Clear all measurements in current model
 int CommandData::function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->clearMeasurements();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // List all measurements in current model
 int CommandData::function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->listMeasurements();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Make a measurement within the current model
 int CommandData::function_CA_MEASURE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (c->hasArg(3))
 	{
 		obj.rs->beginUndoState("Measure torsion");
@@ -58,5 +58,5 @@ int CommandData::function_CA_MEASURE(Command *&c, Bundle &obj)
 		obj.rs->measureDistance(c->argi(0), c->argi(1));
 	}
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }

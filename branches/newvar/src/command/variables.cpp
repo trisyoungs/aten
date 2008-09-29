@@ -36,7 +36,7 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 	c->arg(0)->step(-1);
 	// Set subvariables if necessary
 // 	c->parent()->setSubvariables( c->arg(0) ); TGAY
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Increase variable
@@ -45,7 +45,7 @@ int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 	c->arg(0)->step(1);
 	// Set subvariables if necessary
 // 	c->parent()->setSubvariables( c->arg(0) ); TGAY
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set non-pointer or non-character variable to value, variable, or expression
@@ -61,20 +61,20 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 			if (type2 > VTypes::RealData)
 			{
 				msg.print( "Cannot set integer variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
-				return CR_FAIL;
+				return Command::Fail;
 			}
 			break;
 		case (VTypes::RealData):
 			if (type2 > VTypes::RealData)
 			{
 				msg.print( "Cannot set real variable '%s' from pointer variable '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
-				return CR_FAIL;
+				return Command::Fail;
 			}
 			break;
 		// All other types are pointers - the second argument must also then be a pointer
 		default:
 			printf("CA_LET doesn't know how to handle variable assignments of type '%s'\n", VTypes::dataType(c->argt(0)));
-			return CR_FAIL;
+			return Command::Fail;
 			break;
 	}
 	// Perform assignment operation requested
@@ -97,7 +97,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 			c->arg(0)->set( type1 == VTypes::IntegerData ? c->arg(0)->asInteger() * c->arg(2)->asInteger() : c->arg(0)->asDouble() * c->arg(2)->asDouble() );
 			break;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Assign string/variable to character variable only
@@ -118,7 +118,7 @@ int CommandData::function_CA_LETCHAR(Command *&c, Bundle &obj)
 			printf("Operator given to CA_LETCHAR (%i) that we don't know how to handle.\n", c->argi(1));
 			break;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Assign pointer variable to another pointer variable
@@ -127,7 +127,7 @@ int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 	if (c->argt(0) != c->argt(2))
 	{
 		msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	else
 	{
@@ -150,7 +150,7 @@ int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
 // 				break;
 		}
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 /*

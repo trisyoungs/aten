@@ -56,21 +56,21 @@ namespace AssignOps
 }
 
 // Command node
-class Command
+class CommandNode
 {
 	public:
 	// Constructor / Destructor
-	Command();
-	~Command();
+	CommandNode();
+	~CommandNode();
 	// List pointers
-	Command *prev, *next;
+	CommandNode *prev, *next;
 
 	/*
-	// Command
+	// Command Data
 	*/
 	private:
 	// Command that this node performs
-	CommandAction action_;
+	Command::Command action_;
 	// Pointer to action function
 	CommandFunction function_;
 	// Parent list
@@ -82,11 +82,11 @@ class Command
 	// Get parent CommandList
 	CommandList *parent();
 	// Set command
-	void setCommand(CommandAction ca);
+	void setCommand(Command::Command ca);
 	// Get command
-	CommandAction command();
+	Command::Command command();
 	// Execute command
-	int execute(Command *&c);
+	int execute(CommandNode *&c);
 
 	/*
 	// Format
@@ -129,21 +129,21 @@ class Command
 	*/
 	private:
 	// Lists for branched commands (if any)
-	List<Command> *branch_;
+	List<CommandNode> *branch_;
 	// Pointer for use by flow control nodes
-	Command *ptr_;
+	CommandNode *ptr_;
 
 	public:
 	// Create branch for the node
-	List<Command> *createBranch();
+	List<CommandNode> *createBranch();
 	// Returns branch list structure
-	List<Command> *branch();
+	List<CommandNode> *branch();
 	// Returns first item in branch 
-	Command *branchCommands();
+	CommandNode *branchCommands();
 	// Set command pointer variable (used in flow control)
-	void setPointer(Command *f);
+	void setPointer(CommandNode *f);
 	// Return pointer variable
-	Command *pointer();
+	CommandNode *pointer();
 
 	/*
 	// If Test Data
@@ -168,14 +168,14 @@ class Command
 	VariableList *variableList_;
 	// Add variable argument to reference list, given the name
 	bool addArgument(int argid, Parser::ArgumentForm af = Parser::UnknownForm);
-	// Add constant to reference list
-	void addConstant(const char *s, bool forcechar = FALSE);
-	// Add integer constant to reference list
-	void addConstant(int i);
 
 	public:
 	// Set arguments from parser arguments
 	bool setArguments(const char *cmdname, const char *specifiers, VariableList *sourcevars);
+	// Add constant to reference list
+	void addConstant(const char *s, bool forcechar = FALSE);
+	// Add integer constant to reference list
+	void addConstant(int i);
 	// Return number of arguments given to command
 	int nArgs();
 	// Return variable argument
@@ -196,18 +196,9 @@ class Command
 	Vec3<float> arg3f(int);
 	// Return arguments as Vec3<int>
 	Vec3<int> arg3i(int);
-	// Return argument as Atom pointer
-// 	Atom *arga(int argno);
 	// Return argument as pointer
 	void *argp(int argno, VTypes::DataType );
 	// Return argument as model pointer
-// 	Model *argm(int argno);
-	// Return argument as grid pointer
-// 	Grid *argg(int argno);
-	// Return argument as PatternBound pointer
-// 	PatternBound *argpb(int argno);
-	// Return argument as ForcefieldAtom pointer
-// 	ForcefieldAtom *argffa(int argno);
 	// Returns whether argument 'n' was provided
 	bool hasArg(int argno);
 	// Return variable type of argument

@@ -27,36 +27,36 @@
 int CommandData::function_CA_MCACCEPT(Command *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
+	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
 	mc.setAcceptanceEnergy(mt, c->argd(1));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Sets allowances for moves ('mc allow <move> <on|off>')
 int CommandData::function_CA_MCALLOW(Command *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
+	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
 	mc.setMoveAllowed(mt, c->argb(1));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
 int CommandData::function_CA_MCMAXSTEP(Command *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
+	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
 	mc.setMaxStep(mt, c->argd(1));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Sets ntrials for moves ('mc ntrials <move> <ntrials>')
 int CommandData::function_CA_MCNTRIALS(Command *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
-	if (mt == MonteCarlo::nMoveTypes) return CR_FAIL;
+	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
 	mc.setNTrials(mt, c->argi(1));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Prints the current MC params ('printmc')
@@ -70,5 +70,5 @@ int CommandData::function_CA_PRINTMC(Command *&c, Bundle &obj)
 		mt = (MonteCarlo::MoveType) n;
 		msg.print("%11s   %3s   %4i   %8.3f   %8.2e\n", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }

@@ -27,7 +27,7 @@
 // Root node (no action)
 int CommandData::function_CA_ROOTNODE(Command *&c, Bundle &obj)
 {
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Break out of current loop
@@ -37,7 +37,7 @@ int CommandData::function_CA_BREAK(Command *&c, Bundle &obj)
 	c = c->pointer();
 	c->setLoopActive(FALSE);
 	c = c->next;
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 // Cycle current loop
@@ -45,14 +45,14 @@ int CommandData::function_CA_CONTINUE(Command *&c, Bundle &obj)
 {
 	// Set next command to be the root loop node
 	c = c->pointer();
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 // Else statement
 int CommandData::function_CA_ELSE(Command *&c, Bundle &obj)
 {
 	c = c->branchCommands();
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 // Elseif statement
@@ -60,13 +60,13 @@ int CommandData::function_CA_ELSEIF(Command *&c, Bundle &obj)
 {
 	if (c->ifEvaluate()) c = c->branchCommands();
 	else c = c->next;
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 int CommandData::function_CA_END(Command *&c, Bundle &obj)
 {
 	// This should never be called....
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Loop over atoms
@@ -129,7 +129,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", VTypes::dataType(c->argt(0)));
-				return CR_FAIL;
+				return Command::Fail;
 		}
 		if (status == TRUE) c = c->branchCommands();
 		else
@@ -168,7 +168,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 			//		2 args - loop over all atoms in arg 2 (pattern)
 			//		3 args - loop over atoms in molecule arg 3 in pattern arg 2
 			case (VTypes::AtomData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				// If no second variable is given, loop over all atoms
 				if (c->hasArg(1))
 				{
@@ -179,13 +179,13 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 					else
 					{
 						msg.print( "Atom loop argument 2 must be of Pattern or Integer type.\n");
-						return CR_FAIL;
+						return Command::Fail;
 					}
 					// Must have a valid pattern pointer here
 					if (p == NULL)
 					{
 						msg.print( "Atom loop was not given a valid pattern.\n");
-						return CR_FAIL;
+						return Command::Fail;
 					}
 					// Check on third argument - if provided, must be an int
 					if (c->hasArg(2))
@@ -197,7 +197,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 							if ((i < 1) || (i > p->nMolecules()))
 							{
 								msg.print( "Atom loop pattern molecule is out of range.\n");
-								return CR_FAIL;
+								return Command::Fail;
 							}
 							int m = p->startAtom();
 							m += (i-1) * p->nAtoms();
@@ -206,7 +206,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 						else
 						{
 							msg.print( "Atom loop argument 3 must be of Integer type.\n.");
-							return CR_FAIL;
+							return Command::Fail;
 						}
 					}
 					else c->arg(0)->set(p->firstAtom(), VTypes::AtomData);
@@ -218,12 +218,12 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Pattern loop	 1 arg  - loop over patterns in model
 			case (VTypes::PatternData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				if (c->argt(0) == VTypes::PatternData) c->arg(0)->set(obj.rs->patterns(), VTypes::PatternData);
 				else
 				{
 					msg.print( "Pattern loop variable must be of Pattern type.\n");
-					return CR_FAIL;
+					return Command::Fail;
 				}
 				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				// Set pattern variables from the pattern pointer
@@ -231,12 +231,12 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over forcefield bond terms of pattern
 			case (VTypes::BondData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				// Attempt loop over pattern ff bonds
 				if (c->argt(1) != VTypes::PatternData)
 				{
 					msg.print( "Bond loop must be given a variable of Pattern type.\n");
-					return CR_FAIL;
+					return Command::Fail;
 				}
 // 				c->arg(0)->set(c->argp(1)->bonds());
 // 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
@@ -244,11 +244,11 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over forcefield angle terms of pattern
 			case (VTypes::AngleData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				if (c->argt(1) != VTypes::PatternData)
 				{
 					msg.print( "Angle loop must be given a variable of Pattern type.\n");
-					return CR_FAIL;
+					return Command::Fail;
 				}
 // 				c->arg(0)->set(c->argp(1)->angles());
 // 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
@@ -256,11 +256,11 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over forcefield torsion terms of pattern
 			case (VTypes::TorsionData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				if (c->argt(1) != VTypes::PatternData)
 				{
 					msg.print( "Torsion loop must be given a variable of Pattern type.\n");
-					return CR_FAIL;
+					return Command::Fail;
 				}
 // 				c->arg(0)->set(c->argp(1)->torsions());
 // 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
@@ -268,13 +268,13 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			// Loop over unique ForcefieldAtoms in model
 			case (VTypes::AtomtypeData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				if (c->hasArg(1))
 				{
 					if (c->argt(1) != VTypes::AtomtypeData)
 					{
 						msg.print( "Second argument to atomtype loop must be a variable of Atomtype type.\n");
-						return CR_FAIL;
+						return Command::Fail;
 					}
 					// Start atomtype loop at type given instead of first
 // 					c->arg(0)->set((ForcefieldAtom*) c->arg(1)->asPointer()); TGAY
@@ -285,7 +285,7 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 				break;
 			default:
 				printf("Kick Developer - Loops over '%s' are missing.\n", VTypes::dataType(c->argt(0)));
-				return CR_FAIL;
+				return Command::Fail;
 		}
 		// Check loop's starting status
 		if (status)
@@ -303,14 +303,14 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 			c = c->next;
 		}
 	}
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 // Jump to specified node
 int CommandData::function_CA_GOTO(Command *&c, Bundle &obj)
 {
 	c = c->pointer();
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 // Jump to next node in current list that is *not* an ELSE(IF)
@@ -328,7 +328,7 @@ int CommandData::function_CA_GOTONONIF(Command *&c, Bundle &obj)
 		c = c->next;
 		ca = c->command();
 	}
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 // If statement
@@ -336,11 +336,11 @@ int CommandData::function_CA_IF(Command *&c, Bundle &obj)
 {
 	if (c->ifEvaluate()) c = c->branchCommands();
 	else c = c->next;
-	return CR_SUCCESSNOMOVE;
+	return Command::SuccessNoMove;
 }
 
 // Internal TERMINATE command for flow control
 int CommandData::function_CA_TERMINATE(Command *&c, Bundle &obj)
 {
-	return CR_EXIT;
+	return Command::Exit;
 }
