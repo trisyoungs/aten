@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 
 // Auto-add ellipsoids to current atom selection
-int CommandData::function_CA_AUTOELLIPSOIDS(Command *&c, Bundle &obj)
+int Command::function_CA_AUTOELLIPSOIDS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->addEllipsoidGlyphs();
@@ -33,7 +33,7 @@ int CommandData::function_CA_AUTOELLIPSOIDS(Command *&c, Bundle &obj)
 }
 
 // Auto-add polyhedra to current atom selection
-int CommandData::function_CA_AUTOPOLYHEDRA(Command *&c, Bundle &obj)
+int Command::function_CA_AUTOPOLYHEDRA(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	bool centresonly = TRUE, linkatoms = TRUE;
@@ -56,7 +56,7 @@ int CommandData::function_CA_AUTOPOLYHEDRA(Command *&c, Bundle &obj)
 }
 
 // Associate atom with current glyph
-int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHATOMF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
@@ -80,7 +80,7 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 }
 
 // Associate atom with current glyph
-int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHATOMR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
@@ -104,7 +104,7 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 }
 
 // Associate atom with current glyph
-int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHATOMV(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
@@ -125,7 +125,7 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 }
 
 // Associate atoms with current glyph
-int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHATOMSF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -142,7 +142,7 @@ int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 }
 
 // Associate atoms with current glyph
-int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHATOMSR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -159,7 +159,7 @@ int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 }
 
 // Associate atoms with current glyph
-int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHATOMSV(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -176,7 +176,7 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 }
 
 // Store colour data in current glyph
-int CommandData::function_CA_GLYPHCOLOUR(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHCOLOUR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
@@ -186,7 +186,7 @@ int CommandData::function_CA_GLYPHCOLOUR(Command *&c, Bundle &obj)
 }
 
 // Store vector data in current glyph
-int CommandData::function_CA_GLYPHDATA(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHDATA(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
@@ -196,7 +196,7 @@ int CommandData::function_CA_GLYPHDATA(Command *&c, Bundle &obj)
 }
 
 // Set 'solid' property of current glyph
-int CommandData::function_CA_GLYPHSOLID(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHSOLID(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	obj.gl->setSolid(c->argb(0));
@@ -204,7 +204,7 @@ int CommandData::function_CA_GLYPHSOLID(Command *&c, Bundle &obj)
 }
 
 // Set text property of current glyph
-int CommandData::function_CA_GLYPHTEXT(Command *&c, Bundle &obj)
+int Command::function_CA_GLYPHTEXT(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	obj.gl->setText(c->argc(0));
@@ -212,7 +212,7 @@ int CommandData::function_CA_GLYPHTEXT(Command *&c, Bundle &obj)
 }
 
 // Add glyph to current model
-int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
+int Command::function_CA_NEWGLYPH(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Get glyph style

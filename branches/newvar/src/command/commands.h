@@ -27,9 +27,10 @@
 // Forward declarations
 class CommandNode;
 class CommandData;
+class Command;
 
 // Function pointer typedef and call #define
-typedef int (CommandData::*CommandFunction)(CommandNode *&c, Bundle &obj);
+typedef int (Command::*CommandFunction)(CommandNode *&c, Bundle &obj);
 #define CALL_COMMAND(object,ptrToMember) ((object).*(ptrToMember)) 
 
 class CommandData
@@ -48,9 +49,6 @@ class CommandData
 	const char *syntax;
 	// Return whether command accepts any arguments
 	bool hasArguments();
-
-	public:
-	CommandFunction function;
 };
 
 // Command actions
@@ -845,13 +843,20 @@ class Command {
 	// Function descriptions / syntax etc.
 	*/
 	private:
-	// Function data
-	static CommandData CA_data[Command::CA_NITEMS];
+	// Function pointers
+	static CommandFunction pointers_[CA_NITEMS];
 
 	public:
-	// Set function pointer
-	static void setPointer(Command::Function cf, CommandFunction ptr);
-	
+	// Function data
+	static CommandData data[CA_NITEMS];
+	// Initialise function pointers
+	void initPointers();
+	// Execute specified command
+	int call(Command::Function cf, CommandNode *&c);
+	int callFromPointer(Command::Function cf, CommandNode *c);
 };
+
+// External declaration
+extern Command commands;
 
 #endif

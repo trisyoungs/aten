@@ -60,13 +60,13 @@ class CommandList
 	// Basic command types of stacked branches
 	List<CommandNode> branchCommandStack_;
 	// Add specified branch to stack
-	void pushBranch(List<CommandNode>*, Command::Command, CommandNode*);
+	void pushBranch(List<CommandNode>*, Command::Function, CommandNode*);
 	// Pop topmost branch from stack
 	void popBranch();
 	// Add command to topmost branch
-	CommandNode* addTopBranchCommand(Command::Command, CommandNode*);
+	CommandNode* addTopBranchCommand(Command::Function, CommandNode*);
 	// Return basenode of topmost branch of specified type in current stack (if any)
-	CommandNode *topmostBranch(Command::Command);
+	CommandNode *topmostBranch(Command::Function);
 
 	public:
 	// Set name of CommandList
@@ -78,11 +78,11 @@ class CommandList
 	// Return size of branch stack
 	int nBranches();
 	// Return type of topmost branch on stack
-	Command::Command topBranchType();
+	Command::Function topBranchType();
 	// Return basenode pointer of topmost branch on stack
 	CommandNode* topBranchBaseNode();
 	// Add action to lst node
-	bool addCommand(Command::Command);
+	bool addCommand(Command::Function);
 	// Clear and reinitialise command list
 	void clear();
 	// Read semicolon-separated commands from string

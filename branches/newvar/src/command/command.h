@@ -70,9 +70,7 @@ class CommandNode
 	*/
 	private:
 	// Command that this node performs
-	Command::Command action_;
-	// Pointer to action function
-	CommandFunction function_;
+	Command::Function function_;
 	// Parent list
 	CommandList *parent_;
 	
@@ -81,10 +79,10 @@ class CommandNode
 	void setParent(CommandList *cl);
 	// Get parent CommandList
 	CommandList *parent();
-	// Set command
-	void setCommand(Command::Command ca);
-	// Get command
-	Command::Command command();
+	// Set command function
+	void setFunction(Command::Function ca);
+	// Get command function
+	Command::Function function();
 	// Execute command
 	int execute(CommandNode *&c);
 

@@ -23,7 +23,7 @@
 #include "model/model.h"
 
 // Calculate forces at trajectory configuration ('frameforces')
-int CommandData::function_CA_FRAMEFORCES(Command *&c, Bundle &obj)
+int Command::function_CA_FRAMEFORCES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->createExpression()) obj.m->calculateForces(obj.rs);
@@ -32,7 +32,7 @@ int CommandData::function_CA_FRAMEFORCES(Command *&c, Bundle &obj)
 }
 
 // Calculate atomic forces of model ('modelforces')
-int CommandData::function_CA_MODELFORCES(Command *&c, Bundle &obj)
+int Command::function_CA_MODELFORCES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->createExpression()) obj.m->calculateForces(obj.m);
@@ -41,7 +41,7 @@ int CommandData::function_CA_MODELFORCES(Command *&c, Bundle &obj)
 }
 
 // Print forces of model ('printforces')
-int CommandData::function_CA_PRINTFORCES(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTFORCES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->printForces();

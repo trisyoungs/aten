@@ -24,7 +24,7 @@
 #include "base/pattern.h"
 
 // Assign charges from forcefield atom types ('chargeff')
-int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGEFF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Assign forcefield charges");
@@ -34,7 +34,7 @@ int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
 }
 
 // Copy atomic charges from model to model's current trajectory frame
-int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGEFROMMODEL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs == obj.m) 
@@ -47,7 +47,7 @@ int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
 }
 
 // Assign charge to a pattern atom, propagated over the model ('chargepatom <id> <q>')
-int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGEPATOM(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Charge single pattern atom");
@@ -57,7 +57,7 @@ int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
 }
 
 // Assign charge to selected atoms in model ('charge <q>')
-int CommandData::function_CA_CHARGE(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Charge selected atoms");
@@ -67,14 +67,14 @@ int CommandData::function_CA_CHARGE(Command *&c, Bundle &obj)
 }
 
 // Assign charges to a specified forcefield type ('chargetype <atomtype> <q>')
-int CommandData::function_CA_CHARGETYPE(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGETYPE(CommandNode *&c, Bundle &obj)
 {
 	printf("Not implemented yet!\n");
 	return Command::Fail;
 }
 
 // Clears charge in current model ('clearcharges')
-int CommandData::function_CA_CLEARCHARGES(Command *&c, Bundle &obj)
+int Command::function_CA_CLEARCHARGES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Remove charges");

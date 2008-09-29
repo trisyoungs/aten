@@ -29,7 +29,7 @@
 #include "base/sysfunc.h"
 
 // Create 'n' new atoms at once in model
-int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
+int Command::function_CA_CREATEATOMS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Vec3<double> v;
@@ -38,7 +38,7 @@ int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
 }
 
 // Finalise current model
-int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// If this command is being run from a filter, set the output filter in the model.
@@ -68,7 +68,7 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 }
 
 // Select working model ('getmodel <name> [variable]')
-int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_GETMODEL(CommandNode *&c, Bundle &obj)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
 	Model *m = (c->argt(0) == VTypes::IntegerData ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
@@ -95,7 +95,7 @@ int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
 }
 
 // Print all information for model ('info')
-int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
+int Command::function_CA_INFO(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->renderSource()->print();
@@ -103,7 +103,7 @@ int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
 }
 
 // Print loaded models ('listmodels')
-int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
+int Command::function_CA_LISTMODELS(CommandNode *&c, Bundle &obj)
 {
 	if (aten.nModels() != 0) msg.print("Name            NAtoms  Forcefield\n");
 	for (Model *m = aten.models(); m != NULL; m = m->next)
@@ -112,7 +112,7 @@ int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
 }
 
 // Load model ('loadmodel <filename> [name]')
-int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_LOADMODEL(CommandNode *&c, Bundle &obj)
 {
 	Filter *f = aten.probeFile(c->argc(0), Filter::ModelImport);
 	if (f != NULL)
@@ -130,7 +130,7 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 }
 
 // Print log information for model ('loginfo')
-int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
+int Command::function_CA_LOGINFO(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->renderSource()->printLogs();
@@ -138,7 +138,7 @@ int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
 }
 
 // Use parent model as atom template
-int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
+int Command::function_CA_MODELTEMPLATE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m == obj.rs)
@@ -158,7 +158,7 @@ int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 }
 
 // Create new model ('newmodel <name>')
-int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_NEWMODEL(CommandNode *&c, Bundle &obj)
 {
 	obj.m = aten.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
@@ -177,7 +177,7 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 }
 
 // Skip to next loaded model ('nextmodel')
-int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_NEXTMODEL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->next == NULL) msg.print("Already at last loaded model.\n");
@@ -191,7 +191,7 @@ int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
 }
 
 // Skip to previous loaded model ('prevmodel')
-int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_PREVMODEL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->prev == NULL) msg.print("Already at first loaded model.\n");
@@ -205,7 +205,7 @@ int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
 }
 
 // Save current model ('savemodel <format> <filename>')
-int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_SAVEMODEL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Find filter with a nickname matching that given in argc(0)
@@ -222,7 +222,7 @@ int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
 }
 
 // Set name of current model ('setname <name>')
-int CommandData::function_CA_SETNAME(Command *&c, Bundle &obj)
+int Command::function_CA_SETNAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->setName(c->argc(0));

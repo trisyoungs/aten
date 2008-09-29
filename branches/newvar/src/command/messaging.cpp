@@ -23,7 +23,7 @@
 #include "command/format.h"
 
 // Write line to msg output and stop
-int CommandData::function_CA_ERROR(Command *&c, Bundle &obj)
+int Command::function_CA_ERROR(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
@@ -32,7 +32,7 @@ int CommandData::function_CA_ERROR(Command *&c, Bundle &obj)
 }
 
 // Print formatted string
-int CommandData::function_CA_PRINT(Command *&c, Bundle &obj)
+int Command::function_CA_PRINT(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
@@ -41,7 +41,7 @@ int CommandData::function_CA_PRINT(Command *&c, Bundle &obj)
 }
 
 // Print formatted string (in verbose output only)
-int CommandData::function_CA_VERBOSE(Command *&c, Bundle &obj)
+int Command::function_CA_VERBOSE(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'verbose' command.\n");
@@ -50,7 +50,7 @@ int CommandData::function_CA_VERBOSE(Command *&c, Bundle &obj)
 }
 
 // Write line to msg output
-int CommandData::function_CA_WARN(Command *&c, Bundle &obj)
+int Command::function_CA_WARN(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");

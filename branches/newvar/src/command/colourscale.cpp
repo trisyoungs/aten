@@ -23,7 +23,7 @@
 #include "classes/prefs.h"
 
 // Add point to colourscale
-int CommandData::function_CA_ADDPOINT(Command *&c, Bundle &obj)
+int Command::function_CA_ADDPOINT(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -37,7 +37,7 @@ int CommandData::function_CA_ADDPOINT(Command *&c, Bundle &obj)
 }
 
 // Clear points in colourscale
-int CommandData::function_CA_CLEARPOINTS(Command *&c, Bundle &obj)
+int Command::function_CA_CLEARPOINTS(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -51,7 +51,7 @@ int CommandData::function_CA_CLEARPOINTS(Command *&c, Bundle &obj)
 }
 
 // List current colourscale data ('listscales')
-int CommandData::function_CA_LISTSCALES(Command *&c, Bundle &obj)
+int Command::function_CA_LISTSCALES(CommandNode *&c, Bundle &obj)
 {
 	GLfloat col[4];
 	msg.print("Current colourscale setup:\n");
@@ -69,7 +69,7 @@ int CommandData::function_CA_LISTSCALES(Command *&c, Bundle &obj)
 }
 
 // Remove specific point in colourscale
-int CommandData::function_CA_REMOVEPOINT(Command *&c, Bundle &obj)
+int Command::function_CA_REMOVEPOINT(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -83,7 +83,7 @@ int CommandData::function_CA_REMOVEPOINT(Command *&c, Bundle &obj)
 }
 
 // Print/set name of colourscale ('scalename <id> [name]')
-int CommandData::function_CA_SCALENAME(Command *&c, Bundle &obj)
+int Command::function_CA_SCALENAME(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -98,7 +98,7 @@ int CommandData::function_CA_SCALENAME(Command *&c, Bundle &obj)
 }
 
 // Set visibility of colourscale ('scalevisible <id> true|false')
-int CommandData::function_CA_SCALEVISIBLE(Command *&c, Bundle &obj)
+int Command::function_CA_SCALEVISIBLE(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -112,7 +112,7 @@ int CommandData::function_CA_SCALEVISIBLE(Command *&c, Bundle &obj)
 }
 
 // Set existing point in colourscale
-int CommandData::function_CA_SETPOINT(Command *&c, Bundle &obj)
+int Command::function_CA_SETPOINT(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -126,7 +126,7 @@ int CommandData::function_CA_SETPOINT(Command *&c, Bundle &obj)
 }
 
 // Set existing point colour in colourscale
-int CommandData::function_CA_SETPOINTCOLOUR(Command *&c, Bundle &obj)
+int Command::function_CA_SETPOINTCOLOUR(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;
@@ -140,7 +140,7 @@ int CommandData::function_CA_SETPOINTCOLOUR(Command *&c, Bundle &obj)
 }
 
 // Set existing point value in colourscale
-int CommandData::function_CA_SETPOINTVALUE(Command *&c, Bundle &obj)
+int Command::function_CA_SETPOINTVALUE(CommandNode *&c, Bundle &obj)
 {
 	// Check range of colourscale id
 	int id = c->argi(0) - 1;

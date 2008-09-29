@@ -25,7 +25,7 @@
 #include "methods/mc.h"
 
 // Performs MC insertion ('disorder <ncycles>')
-int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
+int Command::function_CA_DISORDER(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
@@ -35,7 +35,7 @@ int CommandData::function_CA_DISORDER(Command *&c, Bundle &obj)
 }
 
 // Print current component list ('listcomponents')
-int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
+int Command::function_CA_LISTCOMPONENTS(CommandNode *&c, Bundle &obj)
 {
 	msg.print("Current component specification:\n");
 	Vec3<double> v1, v2;
@@ -62,7 +62,7 @@ int CommandData::function_CA_LISTCOMPONENTS(Command *&c, Bundle &obj)
 }
 
 // Set region definition ('region <shape> <cx cy cz> <x y z> yes|no')
-int CommandData::function_CA_REGION(Command *&c, Bundle &obj)
+int Command::function_CA_REGION(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	ComponentRegion::RegionShape rs = ComponentRegion::regionShape(c->argc(0));
@@ -75,7 +75,7 @@ int CommandData::function_CA_REGION(Command *&c, Bundle &obj)
 }
 
 // Set region centre ('regioncentre <x y z>')
-int CommandData::function_CA_REGIONCENTRE(Command *&c, Bundle &obj)
+int Command::function_CA_REGIONCENTRE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->area.setCentre(c->arg3d(0));
@@ -83,7 +83,7 @@ int CommandData::function_CA_REGIONCENTRE(Command *&c, Bundle &obj)
 }
 
 // Set region centre in fractional coordinates ('regioncentref <x y z>')
-int CommandData::function_CA_REGIONCENTREF(Command *&c, Bundle &obj)
+int Command::function_CA_REGIONCENTREF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->area.setCentreFrac(c->arg3d(0));
@@ -91,7 +91,7 @@ int CommandData::function_CA_REGIONCENTREF(Command *&c, Bundle &obj)
 }
 
 // Set region definition in fractional coordinates ('regionf <shape> <cx cy cz> <x y z> yes|no')
-int CommandData::function_CA_REGIONF(Command *&c, Bundle &obj)
+int Command::function_CA_REGIONF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	ComponentRegion::RegionShape rs = ComponentRegion::regionShape(c->argc(0));
@@ -104,7 +104,7 @@ int CommandData::function_CA_REGIONF(Command *&c, Bundle &obj)
 }
 
 // Set geometry of region in fractional coordinates ('regiongeometryf <x y z> [l]')
-int CommandData::function_CA_REGIONGEOMETRY(Command *&c, Bundle &obj)
+int Command::function_CA_REGIONGEOMETRY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->area.setSize(c->arg3d(0));
@@ -113,7 +113,7 @@ int CommandData::function_CA_REGIONGEOMETRY(Command *&c, Bundle &obj)
 }
 
 // Set geometry of region ('regiongeometryf <x y z> [l]')
-int CommandData::function_CA_REGIONGEOMETRYF(Command *&c, Bundle &obj)
+int Command::function_CA_REGIONGEOMETRYF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->area.setSizeFrac(c->arg3d(0));
@@ -122,7 +122,7 @@ int CommandData::function_CA_REGIONGEOMETRYF(Command *&c, Bundle &obj)
 }
 
 // Set overlap flag for the current model ('regionoverlaps true|false')
-int CommandData::function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj)
+int Command::function_CA_REGIONOVERLAPS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->area.setAllowOverlap(c->argb(0));
@@ -130,7 +130,7 @@ int CommandData::function_CA_REGIONOVERLAPS(Command *&c, Bundle &obj)
 }
 
 // Set shape for region ('regionshape <shape>')
-int CommandData::function_CA_REGIONSHAPE(Command *&c, Bundle &obj)
+int Command::function_CA_REGIONSHAPE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	ComponentRegion::RegionShape rs = ComponentRegion::regionShape(c->argc(0));
@@ -139,7 +139,7 @@ int CommandData::function_CA_REGIONSHAPE(Command *&c, Bundle &obj)
 }
 
 // Set number of requested molecules ('nmols <n>')
-int CommandData::function_CA_NMOLS(Command *&c, Bundle &obj)
+int Command::function_CA_NMOLS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->setNRequested(c->argi(0));
@@ -147,7 +147,7 @@ int CommandData::function_CA_NMOLS(Command *&c, Bundle &obj)
 }
 
 // Set vdw radius scaling for method ('vdwscale <scale>')
-int CommandData::function_CA_VDWSCALE(Command *&c, Bundle &obj)
+int Command::function_CA_VDWSCALE(CommandNode *&c, Bundle &obj)
 {
 	mc.setVdwScale(c->argd(0));
 	return Command::Success;

@@ -33,7 +33,7 @@ CommandList::CommandList()
 	inputFile_ = NULL;
 	outputFile_ = NULL;
 	readOptions_ = 0;
-	pushBranch(&commands_, CA_ROOTNODE, NULL);
+	pushBranch(&commands_, Command::CA_ROOTNODE, NULL);
 
 	// Public variables
 	next = NULL;
@@ -46,7 +46,7 @@ void CommandList::clear()
 	commands_.clear();
 	branchStack_.clear();
 	branchCommandStack_.clear();
-	pushBranch(&commands_, CA_ROOTNODE, NULL);
+	pushBranch(&commands_, Command::CA_ROOTNODE, NULL);
 }
 
 // Set name of CommandList
@@ -93,11 +93,11 @@ void CommandList::setHeaderVars(bool readingheader)
 }
 
 // Push branch on to stack
-void CommandList::pushBranch(List<Command> *branch, CommandAction ca, CommandNode *basenode)
+void CommandList::pushBranch(List<CommandNode> *branch, Command::Function cf, CommandNode *basenode)
 {
 	branchStack_.add(branch);
 	CommandNode *cn = branchCommandStack_.add();
-	cn->setCommand(ca);
+	cn->setFunction(cf);
 	cn->setPointer(basenode);
 	cn->setParent(this);
 }
@@ -115,18 +115,18 @@ void CommandList::popBranch()
 }
 
 // Return basic command type of topmost branch
-CommandAction CommandList::topBranchType()
+Command::Function CommandList::topBranchType()
 {
 	if (branchCommandStack_.nItems() == 0)
 	{
 		printf("CommandList::topBranchType <<<< No branches in branch list! >>>>\n");
-		return CA_NITEMS;
+		return Command::CA_NITEMS;
 	}
-	else return branchCommandStack_.last()->command();
+	else return branchCommandStack_.last()->function();
 }
 
 // Return base node of topmost branch
-Command* CommandList::topBranchBaseNode()
+CommandNode* CommandList::topBranchBaseNode()
 {
 	if (branchCommandStack_.nItems() == 0)
 	{
@@ -137,7 +137,7 @@ Command* CommandList::topBranchBaseNode()
 }
 
 // Add command to topmost branch
-Command* CommandList::addTopBranchCommand(CommandAction ca, CommandNode *nodeptr)
+CommandNode* CommandList::addTopBranchCommand(Command::Function cf, CommandNode *nodeptr)
 {
 	if (branchStack_.nItems() == 0)
 	{
@@ -145,48 +145,48 @@ Command* CommandList::addTopBranchCommand(CommandAction ca, CommandNode *nodeptr
 		return NULL;
 	}
 	CommandNode *cn = branchStack_.last()->item->add();
-	cn->setCommand(ca);
+	cn->setFunction(cf);
 	cn->setPointer(nodeptr);
 	cn->setParent(this);
 	return cn;
 }
 
 // Return basenode of topmost branch of specified type in current stack (if any)
-CommandNode *CommandList::topmostBranch(CommandAction ca)
+CommandNode *CommandList::topmostBranch(Command::Function cf)
 {
 	CommandNode *result;
 	for (result = branchCommandStack_.last(); result != NULL; result = result->prev)
-		if (result->command() == ca) break;
+		if (result->function() == cf) break;
 	return result->pointer();
 }
 
 // Add basic command
-bool CommandList::addCommand(CommandAction ca)
+bool CommandList::addCommand(Command::Function cf)
 {
 	msg.enter("CommandList::addCommand");
 	CommandNode *c, *topc;
-	CommandAction branchca;
+	Command::Function branchcf;
 	Parser::ArgumentForm form;
 	VTypes::DataType vt;
 	int n;
 	Variable *v;
 	bool result = TRUE, varresult = TRUE;
-	switch (ca)
+	switch (cf)
 	{
 		/*
 		// Variable Declaration
 		// All arguments to commands are names of variables to create
 		*/
-		case (CA_CHAR):
-		case (CA_INT):
-		case (CA_FLOAT):
-		case (CA_ATOM):
-		case (CA_PATTERN):
-		case (CA_MODEL):
-		case (CA_BOND):
-		case (CA_ANGLE):
-		case (CA_TORSION):
-		case (CA_ATOMTYPE):
+		case (Command::CA_CHAR):
+		case (Command::CA_INT):
+		case (Command::CA_FLOAT):
+		case (Command::CA_ATOM):
+		case (Command::CA_PATTERN):
+		case (Command::CA_MODEL):
+		case (Command::CA_BOND):
+		case (Command::CA_ANGLE):
+		case (Command::CA_TORSION):
+		case (Command::CA_ATOMTYPE):
 			for (n=1; n<parser.nArgs(); n++)
 			{
 				// First, check that the argument is a plain variable
@@ -201,75 +201,75 @@ bool CommandList::addCommand(CommandAction ca)
 				v = variables_.get(parser.argc(n));
 				if (v != NULL)
 				{
-					msg.print("Error: Variable '%s': redeclared as type '%s' (from '%s').\n", parser.argc(n), VTypes::dataType((VTypes::DataType) ca),  VTypes::dataType(v->type()));
+					msg.print("Error: Variable '%s': redeclared as type '%s' (from '%s').\n", parser.argc(n), VTypes::dataType((VTypes::DataType) cf),  VTypes::dataType(v->type()));
 					result = FALSE;
 				}
 				else
 				{
-					vt = (VTypes::DataType) ca;
+					vt = (VTypes::DataType) cf;
 					v = variables_.addVariable(parser.argc(n), vt);
 				}
 			}
 			break;
 		// 'If' statement (if 'x condition y')
-		case (CA_IF):
-			c = addTopBranchCommand(CA_IF, NULL);
-			pushBranch(c->createBranch(), CA_IF, c);
-			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
+		case (Command::CA_IF):
+			c = addTopBranchCommand(cf, NULL);
+			pushBranch(c->createBranch(), cf, c);
+			varresult = c->setArguments(commands.data[cf].keyword, commands.data[cf].arguments, &variables_);
 			if (!c->setIfTest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else If' statement (acts as CA_END to previous 'if' or 'elseif' branch.
-		case (CA_ELSEIF):
+		case (Command::CA_ELSEIF):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
 			branchca = topBranchType();
-			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
+			if ((branchca != Command::CA_IF) && (branchca != Command::CA_ELSEIF))
 			{
 				msg.print("Error: 'elseif' used without previous if/elseif.\n");
 				result = FALSE;
 				break;
 			}
 			// Add GOTONONIF command to topmost branch to end the if sequence
-			c = addTopBranchCommand(CA_GOTONONIF, topBranchBaseNode());
+			c = addTopBranchCommand(Command::CA_GOTONONIF, topBranchBaseNode());
 			// Pop topmost (previous IF/ELSEIF) branch
 			popBranch();
 			// Add new command node to new topmost branch and get variables
-			c = addTopBranchCommand(CA_ELSEIF, NULL);
+			c = addTopBranchCommand(Command::CA_ELSEIF, NULL);
 			//printf("New node is %li, command = %s\n",c,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
-			pushBranch(c->createBranch(), CA_ELSEIF, c);
-			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
+			pushBranch(c->createBranch(), Command::CA_ELSEIF, c);
+			varresult = c->setArguments(commands.data[cf].keyword, commands.data[cf].arguments, &variables_);
 			if (!c->setIfTest(parser.argc(2))) result = FALSE;
 			break;
 		// 'Else' statement (acts as CA_END to previous 'if' or 'elseif' branch.
-		case (CA_ELSE):
+		case (Command::CA_ELSE):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
 			branchca = topBranchType();
-			if ((branchca != CA_IF) && (branchca != CA_ELSEIF))
+			if ((branchca != Command::CA_IF) && (branchca != Command::CA_ELSEIF))
 			{
 				msg.print("Error: 'else' used without previous if/elseif.\n");
 				result = FALSE;
 				break;
 			}
 			// Add GOTONONIF command to current topbranch to terminate that branch
-			c = addTopBranchCommand(CA_GOTONONIF, topBranchBaseNode());
+			c = addTopBranchCommand(Command::CA_GOTONONIF, topBranchBaseNode());
 			// Pop previous branch from stack and add new command to new topmost branch
 			popBranch();
 			// Add new node to new top branch
-			c = addTopBranchCommand(CA_ELSE, NULL);
+			c = addTopBranchCommand(Command::CA_ELSE, NULL);
 			//printf("New node is %li, command = %s\n",c,CA_keywords[cmd]);
 			// Add new branch to this node for new if test to run
-			pushBranch(c->createBranch(), CA_ELSE, c);
+			pushBranch(c->createBranch(), Command::CA_ELSE, c);
 			break;
 		// Loop for n iterations (or until file ends) or over items
-		case (CA_FOR):
-			c = addTopBranchCommand(CA_FOR, NULL);
-			pushBranch(c->createBranch(), ca, c);
-			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
+		case (Command::CA_FOR):
+			c = addTopBranchCommand(Command::CA_FOR, NULL);
+			pushBranch(c->createBranch(), cf, c);
+			varresult = c->setArguments(commands.data[cf].keyword, commands.data[cf].arguments, &variables_);
 			// Create subvariables if necessary
 // 			if (varresult) varresult = createSubvariables(c->arg(0)); TGAY
 			break;
 		// End the topmost branch in the stack
-		case (CA_END):
+		case (Command::CA_END):
 			if (branchStack_.nItems() == 0)
 			{
 				msg.print("Error: 'end' does not end a block.\n");
@@ -277,24 +277,24 @@ bool CommandList::addCommand(CommandAction ca)
 				break;
 			}
 			// Check command stack to choose list ending pointer
-			branchca = topBranchType();
+			branchcf = topBranchType();
 			switch (branchca)
 			{
 				// For repeats, jump back to node at start of loop (the branch owner)
-				case (CA_FOR):
-					addTopBranchCommand(CA_GOTO, topBranchBaseNode());
+				case (Command::CA_FOR):
+					addTopBranchCommand(Command::CA_GOTO, topBranchBaseNode());
 					break;
 				// For IFs, jump to node containing IF/ELSEIF/ELSE branch (the branch owner)
-				case (CA_IF):
-				case (CA_ELSEIF):
-				case (CA_ELSE):
-					addTopBranchCommand(CA_GOTONONIF, topBranchBaseNode());
+				case (Command::CA_IF):
+				case (Command::CA_ELSEIF):
+				case (Command::CA_ELSE):
+					addTopBranchCommand(Command::CA_GOTONONIF, topBranchBaseNode());
 					break;
-				case (CA_ROOTNODE):
-					addTopBranchCommand(CA_TERMINATE, NULL);
+				case (Command::CA_ROOTNODE):
+					addTopBranchCommand(Command::CA_TERMINATE, NULL);
 					break;
 				default:
-					printf("CommandList::addCommand <<<< No END action defined for command '%s' >>>>\n", CA_data[branchca].keyword);
+					printf("CommandList::addCommand <<<< No END action defined for command '%s' >>>>\n", commands.data[branchcf].keyword);
 					result = FALSE;
 					break;
 			}
@@ -332,14 +332,14 @@ bool CommandList::addCommand(CommandAction ca)
 			break;
 		// All other commands do not alter the flow of the CommandList...
 		default:
-			c = addTopBranchCommand(ca, NULL);
-			varresult = c->setArguments(CA_data[ca].keyword, CA_data[ca].arguments, &variables_);
+			c = addTopBranchCommand(cf, NULL);
+			varresult = c->setArguments(CA_data[cf].keyword, CA_data[cf].arguments, &variables_);
 			break;
 	}
 	// Check variable assignment result
 	if (!varresult)
 	{
-		//msg.print("Error: Command '%s' was not given the correct variables.\n", CA_data[ca].keyword);
+		//msg.print("Error: Command '%s' was not given the correct variables.\n", CA_data[cf].keyword);
 		result = FALSE;
 	}
 	msg.exit("CommandList::addCommand");
@@ -371,7 +371,7 @@ bool CommandList::cacheLine(const char *s)
 bool CommandList::cacheCommand()
 {
 	msg.enter("CommandList::cacheCommand");
-	CommandAction ca;
+	Command::Function cf;
 	bool result = TRUE, addcmd = FALSE;
 	/*
 	Assume that the main parser object contains the data we require.

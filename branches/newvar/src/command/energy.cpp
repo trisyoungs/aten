@@ -23,7 +23,7 @@
 #include "model/model.h"
 
 // Calculate energy of current trajectory frame ('frameenergy')
-int CommandData::function_CA_FRAMEENERGY(Command *&c, Bundle &obj)
+int Command::function_CA_FRAMEENERGY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	double energy;
@@ -33,7 +33,7 @@ int CommandData::function_CA_FRAMEENERGY(Command *&c, Bundle &obj)
 }
 
 // Calculate energy of current model contents ('modelenergy')
-int CommandData::function_CA_MODELENERGY(Command *&c, Bundle &obj)
+int Command::function_CA_MODELENERGY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	double energy;
@@ -43,7 +43,7 @@ int CommandData::function_CA_MODELENERGY(Command *&c, Bundle &obj)
 }
 
 // Print out electrostatic decomposition matrix ('printelec')
-int CommandData::function_CA_PRINTELEC(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTELEC(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->energy.printElecMatrix(obj.rs);
@@ -51,7 +51,7 @@ int CommandData::function_CA_PRINTELEC(Command *&c, Bundle &obj)
 }
 
 // Print long energy decomposition of model ('printenergy')
-int CommandData::function_CA_PRINTENERGY(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTENERGY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->energy.print();
@@ -59,7 +59,7 @@ int CommandData::function_CA_PRINTENERGY(Command *&c, Bundle &obj)
 }
 
 // Print out Ewald energy decomposition of model ('printewald')
-int CommandData::function_CA_PRINTEWALD(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTEWALD(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->energy.printEwald();
@@ -67,7 +67,7 @@ int CommandData::function_CA_PRINTEWALD(Command *&c, Bundle &obj)
 }
 
 // Print out interpattern decomposition matrix ('printinter')
-int CommandData::function_CA_PRINTINTER(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTINTER(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->energy.printInterMatrix(obj.rs);
@@ -75,7 +75,7 @@ int CommandData::function_CA_PRINTINTER(Command *&c, Bundle &obj)
 }
 
 // Print out intramolecular decomposition matrix ('printintra')
-int CommandData::function_CA_PRINTINTRA(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTINTRA(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->energy.printIntraMatrix(obj.rs);
@@ -83,7 +83,7 @@ int CommandData::function_CA_PRINTINTRA(Command *&c, Bundle &obj)
 }
 
 // Print short energy decomposition of model ('printsummary')
-int CommandData::function_CA_PRINTSUMMARY(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTSUMMARY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->energy.printSummary();
@@ -91,7 +91,7 @@ int CommandData::function_CA_PRINTSUMMARY(Command *&c, Bundle &obj)
 }
 
 // Print out VDW decomposition matrix ('printvdw')
-int CommandData::function_CA_PRINTVDW(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTVDW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->energy.printVdwMatrix(obj.rs);

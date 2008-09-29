@@ -24,7 +24,7 @@
 #include "base/pattern.h"
 
 // Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
-int CommandData::function_CA_NEWPATTERN(Command *&c, Bundle &obj)
+int Command::function_CA_NEWPATTERN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->addPattern(c->argi(1), c->argi(2), c->argc(0));
@@ -33,7 +33,7 @@ int CommandData::function_CA_NEWPATTERN(Command *&c, Bundle &obj)
 }
 
 // Clear current pattern definition ('clearpatterns')
-int CommandData::function_CA_CLEARPATTERNS(Command *&c, Bundle &obj)
+int Command::function_CA_CLEARPATTERNS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->clearPatterns();
@@ -41,7 +41,7 @@ int CommandData::function_CA_CLEARPATTERNS(Command *&c, Bundle &obj)
 }
 
 // Autocreate pattern definition ('createpatterns')
-int CommandData::function_CA_CREATEPATTERNS(Command *&c, Bundle &obj)
+int Command::function_CA_CREATEPATTERNS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->autocreatePatterns();
@@ -49,7 +49,7 @@ int CommandData::function_CA_CREATEPATTERNS(Command *&c, Bundle &obj)
 }
 
 // Select working pattern from model ('getpattern <name>')
-int CommandData::function_CA_GETPATTERN(Command *&c, Bundle &obj)
+int Command::function_CA_GETPATTERN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Pattern *p = (c->argt(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)) : obj.m->findPattern(c->argc(0)));
@@ -64,7 +64,7 @@ int CommandData::function_CA_GETPATTERN(Command *&c, Bundle &obj)
 }
 
 // Print pattern definition for current model ('listpatterns')
-int CommandData::function_CA_LISTPATTERNS(Command *&c, Bundle &obj)
+int Command::function_CA_LISTPATTERNS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->printPatterns();

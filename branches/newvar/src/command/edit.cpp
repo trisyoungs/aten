@@ -25,7 +25,7 @@
 #include "model/clipboard.h"
 
 // Copy current selection ('copy')
-int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
+int Command::function_CA_COPY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	aten.userClipboard->copySelection(obj.rs);
@@ -33,7 +33,7 @@ int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
 }
 
 // Cut current selection ('cut')
-int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
+int Command::function_CA_CUT(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
@@ -45,7 +45,7 @@ int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
 }
 
 // Delete current selection ('delete')
-int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
+int Command::function_CA_DELETE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
@@ -57,7 +57,7 @@ int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
 }
 
 // Paste copied selection ('paste')
-int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
+int Command::function_CA_PASTE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
@@ -74,7 +74,7 @@ int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
 }
 
 // Redo most recent change
-int CommandData::function_CA_REDO(Command *&c, Bundle &obj)
+int Command::function_CA_REDO(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	aten.currentModel()->redo();
@@ -82,7 +82,7 @@ int CommandData::function_CA_REDO(Command *&c, Bundle &obj)
 }
 
 // Undo most recent change
-int CommandData::function_CA_UNDO(Command *&c, Bundle &obj)
+int Command::function_CA_UNDO(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	aten.currentModel()->undo();

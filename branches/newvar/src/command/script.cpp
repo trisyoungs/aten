@@ -23,7 +23,7 @@
 #include "main/aten.h"
 
 // List available scripts
-int CommandData::function_CA_LISTSCRIPTS(Command *&c, Bundle &obj)
+int Command::function_CA_LISTSCRIPTS(CommandNode *&c, Bundle &obj)
 {
 	if (aten.scripts.nItems() == 0) msg.print("No scripts loaded.\n");
 	else msg.print("Currently loaded scripts:\n");
@@ -33,7 +33,7 @@ int CommandData::function_CA_LISTSCRIPTS(Command *&c, Bundle &obj)
 }
 
 // Load script from disk
-int CommandData::function_CA_LOADSCRIPT(Command *&c, Bundle &obj)
+int Command::function_CA_LOADSCRIPT(CommandNode *&c, Bundle &obj)
 {
 	CommandList *cl = aten.scripts.add();
 	if (!cl->load(c->argc(0)))
@@ -47,7 +47,7 @@ int CommandData::function_CA_LOADSCRIPT(Command *&c, Bundle &obj)
 }
 
 // Run specified script
-int CommandData::function_CA_RUNSCRIPT(Command *&c, Bundle &obj)
+int Command::function_CA_RUNSCRIPT(CommandNode *&c, Bundle &obj)
 {
 	// Find the script...
 	CommandList *cl;

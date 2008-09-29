@@ -88,7 +88,7 @@ bool PrefsAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	{
 		case (PrefsAccessors::EnergyUnit):
 			c.addConstant(srcvar->asCharacter(), TRUE);
-			if (CALL_COMMAND(CA_data[Command::CA_ENERGYUNITS],function_)(c, aten.current) != Command::Success) result = FALSE;
+			if (commands.callFromPointer(Command::CA_ENERGYUNITS, &c) != Command::Success) result = FALSE;
 			break;
 		default:
 			printf("PrefsAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

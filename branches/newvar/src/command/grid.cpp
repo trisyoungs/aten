@@ -27,7 +27,7 @@
 #include "base/sysfunc.h"
 
 // Add grid point data at specified indices
-int CommandData::function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj)
+int Command::function_CA_ADDGRIDPOINT(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	Vec3<int> veci = c->arg3i(0);
@@ -36,7 +36,7 @@ int CommandData::function_CA_ADDGRIDPOINT(Command *&c, Bundle &obj)
 }
 
 // Add next gridpoint in sequence
-int CommandData::function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj)
+int Command::function_CA_ADDNEXTGRIDPOINT(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setNextData(c->argd(0));
@@ -44,7 +44,7 @@ int CommandData::function_CA_ADDNEXTGRIDPOINT(Command *&c, Bundle &obj)
 }
 
 // Finalise current surface
-int CommandData::function_CA_FINALISEGRID(Command *&c, Bundle &obj)
+int Command::function_CA_FINALISEGRID(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	if (prefs.coordsInBohr()) obj.g->bohrToAngstrom();
@@ -52,7 +52,7 @@ int CommandData::function_CA_FINALISEGRID(Command *&c, Bundle &obj)
 }
 
 // Set grid axes (nine doubles)
-int CommandData::function_CA_GRIDAXES(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDAXES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	Mat3<double> mat;
@@ -64,7 +64,7 @@ int CommandData::function_CA_GRIDAXES(Command *&c, Bundle &obj)
 }
 
 // Set (positive) colour for grid
-int CommandData::function_CA_GRIDCOLOUR(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDCOLOUR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setPositiveColour(c->argd(0), c->argd(1), c->argd(2));
@@ -73,7 +73,7 @@ int CommandData::function_CA_GRIDCOLOUR(Command *&c, Bundle &obj)
 }
 
 // Set negative colour for grid
-int CommandData::function_CA_GRIDCOLOURNEGATIVE(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDCOLOURNEGATIVE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setNegativeColour(c->argd(0), c->argd(1), c->argd(2));
@@ -82,7 +82,7 @@ int CommandData::function_CA_GRIDCOLOURNEGATIVE(Command *&c, Bundle &obj)
 }
 
 // Set colour scale for grid
-int CommandData::function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDCOLOURSCALE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	int cs = c->argi(0);
@@ -96,7 +96,7 @@ int CommandData::function_CA_GRIDCOLOURSCALE(Command *&c, Bundle &obj)
 }
 
 // Set cubic grid (one double)
-int CommandData::function_CA_GRIDCUBIC(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDCUBIC(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setAxes(c->argd(0));
@@ -104,7 +104,7 @@ int CommandData::function_CA_GRIDCUBIC(Command *&c, Bundle &obj)
 }
 
 // Set grid cutoff 
-int CommandData::function_CA_GRIDCUTOFF(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDCUTOFF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setCutoff(c->argd(0));
@@ -112,7 +112,7 @@ int CommandData::function_CA_GRIDCUTOFF(Command *&c, Bundle &obj)
 }
 
 // Set loop order to use in CA_ADDNEXTPOINT
-int CommandData::function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDLOOPORDER(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	if (strlen(c->argc(0)) != 3)
@@ -151,7 +151,7 @@ int CommandData::function_CA_GRIDLOOPORDER(Command *&c, Bundle &obj)
 }
 
 // Set origin (lower-left-hand corner of grid)
-int CommandData::function_CA_GRIDORIGIN(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDORIGIN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setOrigin(c->arg3d(0));
@@ -159,7 +159,7 @@ int CommandData::function_CA_GRIDORIGIN(Command *&c, Bundle &obj)
 }
 
 // Set orthorhombic grid (three doubles)
-int CommandData::function_CA_GRIDORTHO(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDORTHO(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setAxes(c->arg3d(0));
@@ -167,7 +167,7 @@ int CommandData::function_CA_GRIDORTHO(Command *&c, Bundle &obj)
 }
 
 // Set extent of grid (number of points in each direction)
-int CommandData::function_CA_GRIDSIZE(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDSIZE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setNPoints(c->arg3i(0));
@@ -175,7 +175,7 @@ int CommandData::function_CA_GRIDSIZE(Command *&c, Bundle &obj)
 }
 
 // Set drawing style of grid
-int CommandData::function_CA_GRIDSTYLE(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDSTYLE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	Grid::SurfaceStyle ss = Grid::surfaceStyle(c->argc(0));
@@ -185,7 +185,7 @@ int CommandData::function_CA_GRIDSTYLE(Command *&c, Bundle &obj)
 }
 
 // Set whether the grid has symmetric isovalues
-int CommandData::function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDSYMMETRIC(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setSymmetric(c->argb(0));
@@ -193,7 +193,7 @@ int CommandData::function_CA_GRIDSYMMETRIC(Command *&c, Bundle &obj)
 }
 
 // Set transparency of grid
-int CommandData::function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDTRANSPARENCY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setTransparency(c->argf(0));
@@ -201,7 +201,7 @@ int CommandData::function_CA_GRIDTRANSPARENCY(Command *&c, Bundle &obj)
 }
 
 // Set whether 2D grid uses data value as height component
-int CommandData::function_CA_GRIDUSEZ(Command *&c, Bundle &obj)
+int Command::function_CA_GRIDUSEZ(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return Command::Fail;
 	obj.g->setUseDataForZ(c->argb(0));
@@ -209,7 +209,7 @@ int CommandData::function_CA_GRIDUSEZ(Command *&c, Bundle &obj)
 }
 
 // Load grid ('loadgrid <filename>')
-int CommandData::function_CA_LOADGRID(Command *&c, Bundle &obj)
+int Command::function_CA_LOADGRID(CommandNode *&c, Bundle &obj)
 {
 	Filter *f = aten.probeFile(c->argc(0), Filter::GridImport);
 	if (f != NULL)
@@ -220,7 +220,7 @@ int CommandData::function_CA_LOADGRID(Command *&c, Bundle &obj)
 }
 
 // Create new grid in the current model
-int CommandData::function_CA_NEWGRID(Command *&c, Bundle &obj)
+int Command::function_CA_NEWGRID(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.g = aten.currentModel()->addGrid();

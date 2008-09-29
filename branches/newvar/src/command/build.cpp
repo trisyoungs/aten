@@ -27,7 +27,7 @@
 #include "base/elements.h"
 
 // Add hydrogens to model ('addhydrogen')
-int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
+int Command::function_CA_ADDHYDROGEN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Optional argument specifies an atom, either by id or pointer
@@ -54,13 +54,13 @@ int CommandData::function_CA_ADDHYDROGEN(Command *&c, Bundle &obj)
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
-int CommandData::function_CA_BOHR(Command *&c, Bundle &obj)
+int Command::function_CA_BOHR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 }
 
 // Draw atom with bond to last atom ('chain <el> [bt]' or 'chain <el> <x> <y> <z> [bt]')
-int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
+int Command::function_CA_CHAIN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
@@ -103,7 +103,7 @@ int CommandData::function_CA_CHAIN(Command *&c, Bundle &obj)
 }
 
 // Terminate chain ('endchain')
-int CommandData::function_CA_ENDCHAIN(Command *&c, Bundle &obj)
+int Command::function_CA_ENDCHAIN(CommandNode *&c, Bundle &obj)
 {
 	// TODO end chain with atom id (optional argument)
 	obj.i = NULL;
@@ -111,21 +111,21 @@ int CommandData::function_CA_ENDCHAIN(Command *&c, Bundle &obj)
 }
 
 // Set pen coordinates ('locate <dx dy dz>')
-int CommandData::function_CA_LOCATE(Command *&c, Bundle &obj)
+int Command::function_CA_LOCATE(CommandNode *&c, Bundle &obj)
 {
 	obj.rs->setPenPosition(c->arg3d(0));
 	return Command::Success;
 }
 
 // Move pen along pen axes ('move <dx dy dz>')
-int CommandData::function_CA_MOVE(Command *&c, Bundle &obj)
+int Command::function_CA_MOVE(CommandNode *&c, Bundle &obj)
 {
 	obj.rs->movePenPosition(c->arg3d(0));
 	return Command::Success;
 }
 
 // Draw unbound atom ('newatom <el> [x y z]')
-int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
+int Command::function_CA_NEWATOM(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Determine element (based on type of variable provided)
@@ -181,7 +181,7 @@ int CommandData::function_CA_NEWATOM(Command *&c, Bundle &obj)
 }
 
 // Draw unbound atom ('newatom <el> [fracx fracy fracz]')
-int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
+int Command::function_CA_NEWATOMFRAC(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Determine element (based on type of variable provided)
@@ -224,7 +224,7 @@ int CommandData::function_CA_NEWATOMFRAC(Command *&c, Bundle &obj)
 }
 
 // Reset pen orientation
-int CommandData::function_CA_RESETPEN(Command *&c, Bundle &obj)
+int Command::function_CA_RESETPEN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->resetPenOrientation();
@@ -232,7 +232,7 @@ int CommandData::function_CA_RESETPEN(Command *&c, Bundle &obj)
 }
 
 // Rotate pen orientation about x axis ('rotx <theta>')
-int CommandData::function_CA_ROTX(Command *&c, Bundle &obj)
+int Command::function_CA_ROTX(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->rotatePenAxis(0, c->argd(0));
@@ -240,7 +240,7 @@ int CommandData::function_CA_ROTX(Command *&c, Bundle &obj)
 }
 
 // Rotate pen orientation about y axis ('roty <theta>')
-int CommandData::function_CA_ROTY(Command *&c, Bundle &obj)
+int Command::function_CA_ROTY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->rotatePenAxis(1, c->argd(0));
@@ -248,7 +248,7 @@ int CommandData::function_CA_ROTY(Command *&c, Bundle &obj)
 }
 
 // Rotate pen orientation about z axis ('rotz <theta>')
-int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
+int Command::function_CA_ROTZ(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->rotatePenAxis(2, c->argd(0));
@@ -256,7 +256,7 @@ int CommandData::function_CA_ROTZ(Command *&c, Bundle &obj)
 }
 
 // Shift the current selection down ('shiftdown [n]')
-int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
+int Command::function_CA_SHIFTDOWN(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Shift selection down");
@@ -266,7 +266,7 @@ int CommandData::function_CA_SHIFTDOWN(Command *&c, Bundle &obj)
 }
 
 // Shift the current selection up ('shiftup [n]')
-int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
+int Command::function_CA_SHIFTUP(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Shift selection up");
@@ -276,7 +276,7 @@ int CommandData::function_CA_SHIFTUP(Command *&c, Bundle &obj)
 }
 
 // Move current selection to end of list ('toend')
-int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
+int Command::function_CA_TOEND(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Move selection to end");
@@ -286,7 +286,7 @@ int CommandData::function_CA_TOEND(Command *&c, Bundle &obj)
 }
 
 // Move current selection to start of list ('tostart')
-int CommandData::function_CA_TOSTART(Command *&c, Bundle &obj)
+int Command::function_CA_TOSTART(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Move selection to start");
@@ -296,7 +296,7 @@ int CommandData::function_CA_TOSTART(Command *&c, Bundle &obj)
 }
 
 // Transmute the current selection ('transmute <el>')
-int CommandData::function_CA_TRANSMUTE(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSMUTE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	int el = elements.find(c->argc(0));
