@@ -24,7 +24,7 @@
 #include "gui/gui.h"
 
 // Toggle debug modes
-int CommandData::function_CA_DEBUG(Command *&c, Bundle &obj)
+int Command::function_CA_DEBUG(CommandNode *&c, Bundle &obj)
 {
 	Messenger::OutputType ot = Messenger::outputType(c->argc(0));
 	if (ot != Messenger::nOutputTypes)
@@ -37,7 +37,7 @@ int CommandData::function_CA_DEBUG(Command *&c, Bundle &obj)
 }
 
 // Start GUI
-int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
+int Command::function_CA_GUI(CommandNode *&c, Bundle &obj)
 {
 	// If we're in interactive mode, just set program mode and let main.cpp handle it.
 	if (aten.programMode() == Aten::InteractiveMode) aten.setProgramMode(Aten::GuiMode);
@@ -53,7 +53,7 @@ int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 }
 
 // Help function
-int CommandData::function_CA_HELP(Command *&c, Bundle &obj)
+int Command::function_CA_HELP(CommandNode *&c, Bundle &obj)
 {
 	CommandAction ca = CA_from_text(c->argc(0));
 	if (ca == CA_NITEMS) msg.print("help: Unrecognised command '%s'.\n",c->argc(0));
@@ -63,14 +63,14 @@ int CommandData::function_CA_HELP(Command *&c, Bundle &obj)
 }
 
 // Set random seed
-int CommandData::function_CA_SEED(Command *&c, Bundle &obj)
+int Command::function_CA_SEED(CommandNode *&c, Bundle &obj)
 {
 	srand( (unsigned) c->argi(0) );
 	return Command::Success;
 }
 
 // Quit main program
-int CommandData::function_CA_QUIT(Command *&c, Bundle &obj)
+int Command::function_CA_QUIT(CommandNode *&c, Bundle &obj)
 {
 	// Set program mode here, in case we are running in PM_COMMAND
 	aten.setProgramMode(Aten::NoMode);

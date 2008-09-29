@@ -25,7 +25,7 @@
 #include "gui/gui.h"
 
 // Finalise current trajectory frame
-int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
+int Command::function_CA_FINALISEFRAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs == obj.m)
@@ -51,7 +51,7 @@ int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 }
 
 // Skip to first frame ('firstframe')
-int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
+int Command::function_CA_FIRSTFRAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -66,7 +66,7 @@ int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 }
 
 // Skip to last frame ('lastframe')
-int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
+int Command::function_CA_LASTFRAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -81,7 +81,7 @@ int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
-int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
+int Command::function_CA_LOADTRAJECTORY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Filter *f = aten.probeFile(c->argc(0), Filter::TrajectoryImport);
@@ -90,7 +90,7 @@ int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 }
 
 // Go to next frame ('nextframe')
-int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
+int Command::function_CA_NEXTFRAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -105,7 +105,7 @@ int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 }
 
 // Go to previous frame ('prevframe')
-int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
+int Command::function_CA_PREVFRAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
@@ -120,7 +120,7 @@ int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 }
 
 // Seek to specified frame ('seekframe <n>')
-int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
+int Command::function_CA_SEEKFRAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)

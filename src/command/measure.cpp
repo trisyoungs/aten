@@ -23,7 +23,7 @@
 #include "model/model.h"
 
 // Clear all measurements in current model
-int CommandData::function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj)
+int Command::function_CA_CLEARMEASUREMENTS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->clearMeasurements();
@@ -31,7 +31,7 @@ int CommandData::function_CA_CLEARMEASUREMENTS(Command *&c, Bundle &obj)
 }
 
 // List all measurements in current model
-int CommandData::function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj)
+int Command::function_CA_LISTMEASUREMENTS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->listMeasurements();
@@ -39,7 +39,7 @@ int CommandData::function_CA_LISTMEASUREMENTS(Command *&c, Bundle &obj)
 }
 
 // Make a measurement within the current model
-int CommandData::function_CA_MEASURE(Command *&c, Bundle &obj)
+int Command::function_CA_MEASURE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (c->hasArg(3))

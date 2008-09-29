@@ -31,7 +31,7 @@
 #include "classes/forcefieldbound.h"
 
 // Decrease variable by 1
-int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
+int Command::function_CA_DECREASE(CommandNode *&c, Bundle &obj)
 {
 	c->arg(0)->step(-1);
 	// Set subvariables if necessary
@@ -40,7 +40,7 @@ int CommandData::function_CA_DECREASE(Command *&c, Bundle &obj)
 }
 
 // Increase variable
-int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
+int Command::function_CA_INCREASE(CommandNode *&c, Bundle &obj)
 {
 	c->arg(0)->step(1);
 	// Set subvariables if necessary
@@ -49,7 +49,7 @@ int CommandData::function_CA_INCREASE(Command *&c, Bundle &obj)
 }
 
 // Set non-pointer or non-character variable to value, variable, or expression
-int CommandData::function_CA_LET(Command *&c, Bundle &obj)
+int Command::function_CA_LET(CommandNode *&c, Bundle &obj)
 {
 	// Our action depends on the type of the variable being assigned to
 	VTypes::DataType type1 = c->argt(0);
@@ -101,7 +101,7 @@ int CommandData::function_CA_LET(Command *&c, Bundle &obj)
 }
 
 // Assign string/variable to character variable only
-int CommandData::function_CA_LETCHAR(Command *&c, Bundle &obj)
+int Command::function_CA_LETCHAR(CommandNode *&c, Bundle &obj)
 {
 	// Our action depends on the operator provided which we cast from the second argument
 	switch (c->argi(1))
@@ -122,7 +122,7 @@ int CommandData::function_CA_LETCHAR(Command *&c, Bundle &obj)
 }
 
 // Assign pointer variable to another pointer variable
-int CommandData::function_CA_LETPTR(Command *&c, Bundle &obj)
+int Command::function_CA_LETPTR(CommandNode *&c, Bundle &obj)
 {
 	if (c->argt(0) != c->argt(2))
 	{

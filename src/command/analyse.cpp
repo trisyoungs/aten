@@ -27,7 +27,7 @@
 #include "model/model.h"
 
 // Finalise calculated quantites ('finalise')
-int CommandData::function_CA_FINALISE(Command *&c, Bundle &obj)
+int Command::function_CA_FINALISE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
@@ -35,7 +35,7 @@ int CommandData::function_CA_FINALISE(Command *&c, Bundle &obj)
 }
 
 // Accumulate data for current frame ('frameanalyse')
-int CommandData::function_CA_FRAMEANALYSE(Command *&c, Bundle &obj)
+int Command::function_CA_FRAMEANALYSE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Grab trajectory config for analysis
@@ -45,7 +45,7 @@ int CommandData::function_CA_FRAMEANALYSE(Command *&c, Bundle &obj)
 }
 
 // Calculate geometry ('geometry <name> <min> <binwidth> <nbins> <filename> <site1> <site2> [site3 [site4]]')
-int CommandData::function_CA_GEOMETRY(Command *&c, Bundle &obj)
+int Command::function_CA_GEOMETRY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Geometry *newgeom = new Geometry;
@@ -63,7 +63,7 @@ int CommandData::function_CA_GEOMETRY(Command *&c, Bundle &obj)
 }
 
 // Accumulate data for current model ('modelanalyse')
-int CommandData::function_CA_MODELANALYSE(Command *&c, Bundle &obj)
+int Command::function_CA_MODELANALYSE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
@@ -71,7 +71,7 @@ int CommandData::function_CA_MODELANALYSE(Command *&c, Bundle &obj)
 }
 
 // Request calculation of a 3Ddens ('analyse pdens <name> <grid> <nsteps> <filename> <site1> <site2>')
-int CommandData::function_CA_PDENS(Command *&c, Bundle &obj)
+int Command::function_CA_PDENS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Pdens *newpdens = new Pdens;
@@ -87,13 +87,13 @@ int CommandData::function_CA_PDENS(Command *&c, Bundle &obj)
 }
 
 // Print current job list ('printjobs')
-int CommandData::function_CA_PRINTJOBS(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTJOBS(CommandNode *&c, Bundle &obj)
 {
 	return Command::Fail;
 }
 
 // Request calculation of an RDF ('rdf <name> <rmin> <binwidth> <nbins> <filename> <site1> <site2>')
-int CommandData::function_CA_RDF(Command *&c, Bundle &obj)
+int Command::function_CA_RDF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Rdf *newrdf = new Rdf;
@@ -109,7 +109,7 @@ int CommandData::function_CA_RDF(Command *&c, Bundle &obj)
 }
 
 // Save calculated quantities to filenames provided ('savequantities')
-int CommandData::function_CA_SAVEQUANTITIES(Command *&c, Bundle &obj)
+int Command::function_CA_SAVEQUANTITIES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
@@ -117,7 +117,7 @@ int CommandData::function_CA_SAVEQUANTITIES(Command *&c, Bundle &obj)
 }
 
 // Calculate quantities over entire trajectory
-int CommandData::function_CA_TRAJANALYSE(Command *&c, Bundle &obj)
+int Command::function_CA_TRAJANALYSE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;

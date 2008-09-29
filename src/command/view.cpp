@@ -26,7 +26,7 @@
 #include <time.h>
 
 // Get current view
-int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
+int Command::function_CA_GETVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Mat4<double> rmat = obj.rs->rotationMatrix();
@@ -37,7 +37,7 @@ int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
 }
 
 // Set orthographic view
-int CommandData::function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj)
+int Command::function_CA_ORTHOGRAPHIC(CommandNode *&c, Bundle &obj)
 {
 	prefs.setPerspective(FALSE);
 	gui.mainView.postRedisplay();
@@ -45,7 +45,7 @@ int CommandData::function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj)
 }
 
 // Set perspective view
-int CommandData::function_CA_PERSPECTIVE(Command *&c, Bundle &obj)
+int Command::function_CA_PERSPECTIVE(CommandNode *&c, Bundle &obj)
 {
 	prefs.setPerspective(TRUE);
 	if (c->hasArg(0)) prefs.setPerspectiveFov(c->argd(0));
@@ -54,7 +54,7 @@ int CommandData::function_CA_PERSPECTIVE(Command *&c, Bundle &obj)
 }
 
 // Reset view
-int CommandData::function_CA_RESETVIEW(Command *&c, Bundle &obj)
+int Command::function_CA_RESETVIEW(CommandNode *&c, Bundle &obj)
 {
 	obj.rs->resetView();
 	gui.mainView.postRedisplay();
@@ -62,7 +62,7 @@ int CommandData::function_CA_RESETVIEW(Command *&c, Bundle &obj)
 }
 
 // Rotate view
-int CommandData::function_CA_ROTATEVIEW(Command *&c, Bundle &obj)
+int Command::function_CA_ROTATEVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->rotate(c->argd(0), c->argd(1));
@@ -71,7 +71,7 @@ int CommandData::function_CA_ROTATEVIEW(Command *&c, Bundle &obj)
 }
 
 // Set current view
-int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
+int Command::function_CA_SETVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Mat4<double> rmat;
@@ -91,7 +91,7 @@ int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
 }
 
 // Render speed test
-int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
+int Command::function_CA_SPEEDTEST(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (!gui.exists())
@@ -114,7 +114,7 @@ int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 }
 
 // Translate view
-int CommandData::function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSLATEVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->adjustCamera(c->arg3d(0),0.0);
@@ -123,7 +123,7 @@ int CommandData::function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj)
 }
 
 // View along specified axis
-int CommandData::function_CA_VIEWALONG(Command *&c, Bundle &obj)
+int Command::function_CA_VIEWALONG(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Set model rotation matrix to be along the specified axis
@@ -133,7 +133,7 @@ int CommandData::function_CA_VIEWALONG(Command *&c, Bundle &obj)
 }
 
 // View along specified cell axis
-int CommandData::function_CA_VIEWALONGCELL(Command *&c, Bundle &obj)
+int Command::function_CA_VIEWALONGCELL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Set model rotation matrix to be along the specified axis
@@ -143,7 +143,7 @@ int CommandData::function_CA_VIEWALONGCELL(Command *&c, Bundle &obj)
 }
 
 // Zoom view
-int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
+int Command::function_CA_ZOOMVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->adjustCamera(0.0,0.0,c->argd(0),0.0);
@@ -153,7 +153,7 @@ int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
 }
 
 // ZRotate view
-int CommandData::function_CA_ZROTATEVIEW(Command *&c, Bundle &obj)
+int Command::function_CA_ZROTATEVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->zRotate(c->argd(0) / DEGRAD);

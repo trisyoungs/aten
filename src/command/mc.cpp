@@ -24,7 +24,7 @@
 #include "base/messenger.h"
 
 // Sets acceptance energy for moves ('mc accept <move> <energy>')
-int CommandData::function_CA_MCACCEPT(Command *&c, Bundle &obj)
+int Command::function_CA_MCACCEPT(CommandNode *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
@@ -33,7 +33,7 @@ int CommandData::function_CA_MCACCEPT(Command *&c, Bundle &obj)
 }
 
 // Sets allowances for moves ('mc allow <move> <on|off>')
-int CommandData::function_CA_MCALLOW(Command *&c, Bundle &obj)
+int Command::function_CA_MCALLOW(CommandNode *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
@@ -42,7 +42,7 @@ int CommandData::function_CA_MCALLOW(Command *&c, Bundle &obj)
 }
 
 // Sets maximum stepsizes for moves ('mc maxstep <move> <stepsize>')
-int CommandData::function_CA_MCMAXSTEP(Command *&c, Bundle &obj)
+int Command::function_CA_MCMAXSTEP(CommandNode *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
@@ -51,7 +51,7 @@ int CommandData::function_CA_MCMAXSTEP(Command *&c, Bundle &obj)
 }
 
 // Sets ntrials for moves ('mc ntrials <move> <ntrials>')
-int CommandData::function_CA_MCNTRIALS(Command *&c, Bundle &obj)
+int Command::function_CA_MCNTRIALS(CommandNode *&c, Bundle &obj)
 {
 	MonteCarlo::MoveType mt = MonteCarlo::moveType(c->argc(0));
 	if (mt == MonteCarlo::nMoveTypes) return Command::Fail;
@@ -60,7 +60,7 @@ int CommandData::function_CA_MCNTRIALS(Command *&c, Bundle &obj)
 }
 
 // Prints the current MC params ('printmc')
-int CommandData::function_CA_PRINTMC(Command *&c, Bundle &obj)
+int Command::function_CA_PRINTMC(CommandNode *&c, Bundle &obj)
 {
 	msg.print("Current Monte Carlo Parameters are:\n");
 	msg.print("Move        Allowed  NTrials  MaxStep   EAccept :\n");

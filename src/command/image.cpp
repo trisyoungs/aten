@@ -27,7 +27,7 @@
 #include "classes/prefs.h"
 
 // Save current view as bitmap image
-int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
+int Command::function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Flag any surfaces to be rerendered for use in this context
@@ -62,7 +62,7 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 }
 
 // Save current view a vector graphic
-int CommandData::function_CA_SAVEVECTOR(Command *&c, Bundle &obj)
+int Command::function_CA_SAVEVECTOR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	vector_format vf = VIF_from_text(c->argc(0));

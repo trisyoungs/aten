@@ -24,7 +24,7 @@
 #include "classes/prefs.h"
 
 // Augment bonds in current model ('augment')
-int CommandData::function_CA_AUGMENT(Command *&c, Bundle &obj)
+int Command::function_CA_AUGMENT(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Augment Bonds");
@@ -34,14 +34,14 @@ int CommandData::function_CA_AUGMENT(Command *&c, Bundle &obj)
 }
 
 // Change bond tolerance ('bondtol <d>')
-int CommandData::function_CA_BONDTOLERANCE(Command *&c, Bundle &obj)
+int Command::function_CA_BONDTOLERANCE(CommandNode *&c, Bundle &obj)
 {
 	prefs.setBondTolerance(c->argd(0));
 	return Command::Success;
 }
 
 // Clear bonds in current model ('clearbonds')
-int CommandData::function_CA_CLEARBONDS(Command *&c, Bundle &obj)
+int Command::function_CA_CLEARBONDS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Clear Bonding");
@@ -51,7 +51,7 @@ int CommandData::function_CA_CLEARBONDS(Command *&c, Bundle &obj)
 }
 
 // Retrieve bond info ('getbond <id> [var]')
-int CommandData::function_CA_GETBOND(Command *&c, Bundle &obj)
+int Command::function_CA_GETBOND(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Bond *b = obj.rs->bond(c->argi(0)-1);
@@ -62,7 +62,7 @@ int CommandData::function_CA_GETBOND(Command *&c, Bundle &obj)
 }
 
 // Add bond between atoms ('newbond <atom1> <atom2> [bondtype]')
-int CommandData::function_CA_NEWBOND(Command *&c, Bundle &obj)
+int Command::function_CA_NEWBOND(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Third (optional) argument gives bond type
@@ -84,7 +84,7 @@ int CommandData::function_CA_NEWBOND(Command *&c, Bundle &obj)
 }
 
 // Add bond between atoms with specified ids ('newbondid <id1> <id2> [bondtype]')
-int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
+int Command::function_CA_NEWBONDID(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Third (optional) argument gives bond type
@@ -109,7 +109,7 @@ int CommandData::function_CA_NEWBONDID(Command *&c, Bundle &obj)
 }
 
 // Calculate bonds in current model ('rebond')
-int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
+int Command::function_CA_REBOND(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// If we're reading from a file (via a filter) check for prefs override
@@ -129,7 +129,7 @@ int CommandData::function_CA_REBOND(Command *&c, Bundle &obj)
 }
 
 // Calculate bonds restricted to pattern molecules ('rebondpatterns')
-int CommandData::function_CA_REBONDPATTERNS(Command *&c, Bundle &obj)
+int Command::function_CA_REBONDPATTERNS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Calculate Bonding (Patterns)");
@@ -139,7 +139,7 @@ int CommandData::function_CA_REBONDPATTERNS(Command *&c, Bundle &obj)
 }
 
 // Calculate bonds restricted to current selection ('rebondselection')
-int CommandData::function_CA_REBONDSELECTION(Command *&c, Bundle &obj)
+int Command::function_CA_REBONDSELECTION(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Calculate Bonding (Selection)");

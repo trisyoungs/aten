@@ -25,13 +25,13 @@
 #include "base/pattern.h"
 
 // Root node (no action)
-int CommandData::function_CA_ROOTNODE(Command *&c, Bundle &obj)
+int Command::function_CA_ROOTNODE(CommandNode *&c, Bundle &obj)
 {
 	return Command::Success;
 }
 
 // Break out of current loop
-int CommandData::function_CA_BREAK(Command *&c, Bundle &obj)
+int Command::function_CA_BREAK(CommandNode *&c, Bundle &obj)
 {
 	// Set next command to be the node after the root FOR command
 	c = c->pointer();
@@ -41,7 +41,7 @@ int CommandData::function_CA_BREAK(Command *&c, Bundle &obj)
 }
 
 // Cycle current loop
-int CommandData::function_CA_CONTINUE(Command *&c, Bundle &obj)
+int Command::function_CA_CONTINUE(CommandNode *&c, Bundle &obj)
 {
 	// Set next command to be the root loop node
 	c = c->pointer();
@@ -49,28 +49,28 @@ int CommandData::function_CA_CONTINUE(Command *&c, Bundle &obj)
 }
 
 // Else statement
-int CommandData::function_CA_ELSE(Command *&c, Bundle &obj)
+int Command::function_CA_ELSE(CommandNode *&c, Bundle &obj)
 {
 	c = c->branchCommands();
 	return Command::SuccessNoMove;
 }
 
 // Elseif statement
-int CommandData::function_CA_ELSEIF(Command *&c, Bundle &obj)
+int Command::function_CA_ELSEIF(CommandNode *&c, Bundle &obj)
 {
 	if (c->ifEvaluate()) c = c->branchCommands();
 	else c = c->next;
 	return Command::SuccessNoMove;
 }
 
-int CommandData::function_CA_END(Command *&c, Bundle &obj)
+int Command::function_CA_END(CommandNode *&c, Bundle &obj)
 {
 	// This should never be called....
 	return Command::Success;
 }
 
 // Loop over atoms
-int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
+int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 {
 	// Grab variable list from command's parent list
 	bool status = TRUE;
@@ -307,14 +307,14 @@ int CommandData::function_CA_FOR(Command *&c, Bundle &obj)
 }
 
 // Jump to specified node
-int CommandData::function_CA_GOTO(Command *&c, Bundle &obj)
+int Command::function_CA_GOTO(CommandNode *&c, Bundle &obj)
 {
 	c = c->pointer();
 	return Command::SuccessNoMove;
 }
 
 // Jump to next node in current list that is *not* an ELSE(IF)
-int CommandData::function_CA_GOTONONIF(Command *&c, Bundle &obj)
+int Command::function_CA_GOTONONIF(CommandNode *&c, Bundle &obj)
 {
 	//printf("Searching for next non-if node...\n");
 	c = c->pointer();
@@ -332,7 +332,7 @@ int CommandData::function_CA_GOTONONIF(Command *&c, Bundle &obj)
 }
 
 // If statement
-int CommandData::function_CA_IF(Command *&c, Bundle &obj)
+int Command::function_CA_IF(CommandNode *&c, Bundle &obj)
 {
 	if (c->ifEvaluate()) c = c->branchCommands();
 	else c = c->next;
@@ -340,7 +340,7 @@ int CommandData::function_CA_IF(Command *&c, Bundle &obj)
 }
 
 // Internal TERMINATE command for flow control
-int CommandData::function_CA_TERMINATE(Command *&c, Bundle &obj)
+int Command::function_CA_TERMINATE(CommandNode *&c, Bundle &obj)
 {
 	return Command::Exit;
 }

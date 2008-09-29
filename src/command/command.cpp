@@ -45,12 +45,11 @@ const char *AssignOps::assignOp(AssignOps::AssignOp ao)
 }
 
 // Constructor
-CommandNode::Command()
+CommandNode::CommandNode()
 {
 	// Private variables
-	action_ = CA_ROOTNODE;
+	function_ = Command::CA_ROOTNODE;
 	parent_ = NULL;
-	function_ = NULL;
 	ptr_ = NULL;
 	branch_ = NULL;
 	format_ = NULL;
@@ -63,7 +62,7 @@ CommandNode::Command()
 }
 
 // Destructor
-CommandNode::~Command()
+CommandNode::~CommandNode()
 {
 	if (branch_ != NULL) delete branch_;
 	if (format_ != NULL) delete format_;
@@ -85,10 +84,16 @@ CommandList *CommandNode::parent()
 	return parent_;
 }
 
-// Get command
-CommandAction CommandNode::command()
+// Set command and function
+void CommandNode::setFunction(Command::Function cf)
 {
-	return action_;
+	function_ = cf;
+}
+
+// Get command function
+Command::Function CommandNode::function()
+{
+	return function_;
 }
 
 // Returns the formatter
@@ -135,25 +140,25 @@ void CommandNode::increaseIterations()
 }
 
 // Returns branch list structure
-List<Command> *CommandNode::branch()
+List<CommandNode> *CommandNode::branch()
 {
 	return branch_;
 }
 
 // Returns first item in branch 
-Command *CommandNode::branchCommands()
+CommandNode *CommandNode::branchCommands()
 {
 	return (branch_ != NULL ? branch_->first() : NULL);
 }
 
 // Set FormatNode pointer variable
-void CommandNode::setPointer(Command *f)
+void CommandNode::setPointer(CommandNode *f)
 {
 	ptr_ = f;
 }
 
 // Return FormatNode pointer variable
-Command *CommandNode::pointer()
+CommandNode *CommandNode::pointer()
 {
 	return ptr_;
 }
@@ -219,13 +224,6 @@ VTypes::DataType CommandNode::argt(int argno)
 	return (ri == NULL ? VTypes::NoData : ri->item->type());
 }
 
-// Set command and function
-void CommandNode::setCommand(CommandAction ca)
-{
-	action_ = ca;
-	function_ = CA_data[ca].function;
-}
-
 // Print data variables
 void CommandNode::printArgs()
 {
@@ -276,14 +274,13 @@ Vec3<int> CommandNode::arg3i(int i)
 }
 
 // Create branch
-List<Command> *CommandNode::createBranch()
+List<CommandNode> *CommandNode::createBranch()
 {
 	msg.enter("CommandNode::createBranch");
 	if (branch_ != NULL) printf("CommandNode::createBranch <<<< Already has a branch >>>>\n");
 	branch_ = new List<CommandNode>;
 	msg.exit("CommandNode::createBranch");
-	return branch_;	// Get return value as double
-	double asDouble();
+	return branch_;
 }
 
 // Create branch
@@ -734,10 +731,9 @@ int CommandNode::nArgs()
 }
 
 // Execute command
-int CommandNode::execute(Command *&c)
+int CommandNode::execute(CommandNode *&c)
 {
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
-	return CALL_COMMAND(CA_data[action_],function_)(c, aten.current);
+	return commands.call(function_, c);
 }
-

@@ -24,7 +24,7 @@
 #include "classes/prefs.h"
 
 // Centre selection at given coordinates
-int CommandData::function_CA_CENTRE(Command *&c, Bundle &obj)
+int Command::function_CA_CENTRE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (c->parent()->inputFile() == NULL)
@@ -41,7 +41,7 @@ int CommandData::function_CA_CENTRE(Command *&c, Bundle &obj)
 }
 
 // Translate current selection in local coordinates ('translate dx dy dz')
-int CommandData::function_CA_TRANSLATE(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSLATE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
@@ -54,7 +54,7 @@ int CommandData::function_CA_TRANSLATE(Command *&c, Bundle &obj)
 }
 
 // Translate activeatom ('translateatom <dx dy dz>')
-int CommandData::function_CA_TRANSLATEATOM(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
 	char s[128];
@@ -67,7 +67,7 @@ int CommandData::function_CA_TRANSLATEATOM(Command *&c, Bundle &obj)
 }
 
 // Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
-int CommandData::function_CA_TRANSLATECELL(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Vec3<double> tvec;
@@ -81,7 +81,7 @@ int CommandData::function_CA_TRANSLATECELL(Command *&c, Bundle &obj)
 }
 
 // Mirror selection along specified axis
-int CommandData::function_CA_MIRROR(Command *&c, Bundle &obj)
+int Command::function_CA_MIRROR(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];

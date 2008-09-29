@@ -27,7 +27,7 @@
 #include <cstring>
 
 // Add file read option
-int CommandData::function_CA_ADDREADOPTION(Command *&c, Bundle &obj)
+int Command::function_CA_ADDREADOPTION(CommandNode *&c, Bundle &obj)
 {
 	// Get parse option from variable
 	Parser::ParseOption po = Parser::parseOption(c->argc(0));
@@ -36,7 +36,7 @@ int CommandData::function_CA_ADDREADOPTION(Command *&c, Bundle &obj)
 }
 
 // Search for line containing specified string
-int CommandData::function_CA_FIND(Command *&c, Bundle &obj)
+int Command::function_CA_FIND(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -64,7 +64,7 @@ int CommandData::function_CA_FIND(Command *&c, Bundle &obj)
 }
 
 // Read while line from file and put in supplied variable
-int CommandData::function_CA_GETLINE(Command *&c, Bundle &obj)
+int Command::function_CA_GETLINE(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -78,7 +78,7 @@ int CommandData::function_CA_GETLINE(Command *&c, Bundle &obj)
 }
 
 // Read N characters from unformatted file
-int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
+int Command::function_CA_READCHARS(CommandNode *&c, Bundle &obj)
 {
 	static char readc[512];
 	ifstream *inputfile = c->parent()->inputFile();
@@ -94,7 +94,7 @@ int CommandData::function_CA_READCHARS(Command *&c, Bundle &obj)
 }
 
 // Read double from unformatted file
-int CommandData::function_CA_READFLOAT(Command *&c, Bundle &obj)
+int Command::function_CA_READFLOAT(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -110,7 +110,7 @@ int CommandData::function_CA_READFLOAT(Command *&c, Bundle &obj)
 }
 
 // Read integer from unformatted file
-int CommandData::function_CA_READINTEGER(Command *&c, Bundle &obj)
+int Command::function_CA_READINTEGER(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -126,7 +126,7 @@ int CommandData::function_CA_READINTEGER(Command *&c, Bundle &obj)
 }
 
 // Read line and parse with format
-int CommandData::function_CA_READLINE(Command *&c, Bundle &obj)
+int Command::function_CA_READLINE(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -139,7 +139,7 @@ int CommandData::function_CA_READLINE(Command *&c, Bundle &obj)
 }
 
 // Get next whitespace-delimited argument from file
-int CommandData::function_CA_READNEXT(Command *&c, Bundle &obj)
+int Command::function_CA_READNEXT(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -152,7 +152,7 @@ int CommandData::function_CA_READNEXT(Command *&c, Bundle &obj)
 }
 
 // Parse given variable with format
-int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
+int Command::function_CA_READVAR(CommandNode *&c, Bundle &obj)
 {
 	// If the format node in the command is empty create a new (temporary) one
 	if (c->format() == NULL)
@@ -167,7 +167,7 @@ int CommandData::function_CA_READVAR(Command *&c, Bundle &obj)
 }
 
 // Remove file read option
-int CommandData::function_CA_REMOVEREADOPTION(Command *&c, Bundle &obj)
+int Command::function_CA_REMOVEREADOPTION(CommandNode *&c, Bundle &obj)
 {
 	// Get parse option from variable
 	Parser::ParseOption po = Parser::parseOption(c->argc(0));
@@ -176,7 +176,7 @@ int CommandData::function_CA_REMOVEREADOPTION(Command *&c, Bundle &obj)
 }
 
 // Go to start of current file
-int CommandData::function_CA_REWIND(Command *&c, Bundle &obj)
+int Command::function_CA_REWIND(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -189,7 +189,7 @@ int CommandData::function_CA_REWIND(Command *&c, Bundle &obj)
 }
 
 // Discard N characters from unformatted file
-int CommandData::function_CA_SKIPCHARS(Command *&c, Bundle &obj)
+int Command::function_CA_SKIPCHARS(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -202,7 +202,7 @@ int CommandData::function_CA_SKIPCHARS(Command *&c, Bundle &obj)
 }
 
 // Skip line(s) of file
-int CommandData::function_CA_SKIPLINE(Command *&c, Bundle &obj)
+int Command::function_CA_SKIPLINE(CommandNode *&c, Bundle &obj)
 {
 	ifstream *inputfile = c->parent()->inputFile();
 	if (inputfile == NULL)
@@ -216,7 +216,7 @@ int CommandData::function_CA_SKIPLINE(Command *&c, Bundle &obj)
 }
 
 // Write line with format
-int CommandData::function_CA_WRITELINE(Command *&c, Bundle &obj)
+int Command::function_CA_WRITELINE(CommandNode *&c, Bundle &obj)
 {
 	ofstream *outputfile = c->parent()->outputFile();
 	if (outputfile == NULL)
@@ -230,7 +230,7 @@ int CommandData::function_CA_WRITELINE(Command *&c, Bundle &obj)
 }
 
 // Write line to variable
-int CommandData::function_CA_WRITEVAR(Command *&c, Bundle &obj)
+int Command::function_CA_WRITEVAR(CommandNode *&c, Bundle &obj)
 {
 	// If the format node in the command is empty create a new (temporary) one
 	if (c->format() == NULL)

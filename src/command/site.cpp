@@ -25,7 +25,7 @@
 #include "model/model.h"
 
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
-int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
+int Command::function_CA_NEWSITE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// First, check that the pattern name provided refers to a pattern of the current model
@@ -50,7 +50,7 @@ int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 }
 
 // Print site definitions for model ('listsites')
-int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
+int Command::function_CA_LISTSITES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Site *s = obj.m->sites.first();
@@ -70,7 +70,7 @@ int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
-int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
+int Command::function_CA_GETSITE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Site *s;
@@ -81,7 +81,7 @@ int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 }
 
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
-int CommandData::function_CA_SITEAXES(Command *&c, Bundle &obj)
+int Command::function_CA_SITEAXES(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::SitePointer)) return Command::Fail;
 	int n;
