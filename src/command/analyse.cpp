@@ -29,25 +29,25 @@
 // Finalise calculated quantites ('finalise')
 int CommandData::function_CA_FINALISE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Accumulate data for current frame ('frameanalyse')
 int CommandData::function_CA_FRAMEANALYSE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Grab trajectory config for analysis
 	Model *frame = obj.m->currentFrame();
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Calculate geometry ('geometry <name> <min> <binwidth> <nbins> <filename> <site1> <site2> [site3 [site4]]')
 int CommandData::function_CA_GEOMETRY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Geometry *newgeom = new Geometry;
 	obj.m->pendingQuantities.own(newgeom);
 	// Set quantity name and destination filename
@@ -59,21 +59,21 @@ int CommandData::function_CA_GEOMETRY(Command *&c, Bundle &obj)
 	if (c->hasArg(7)) newgeom->setSite(1,obj.m->findSite(c->argc(7)));
 	if (c->hasArg(8)) newgeom->setSite(1,obj.m->findSite(c->argc(8)));
 	newgeom->setRange(c->argd(1), c->argd(2), c->argi(3));
-	return (newgeom->initialise() ? CR_SUCCESS : CR_FAIL);
+	return (newgeom->initialise() ? Command::Success : Command::Fail);
 }
 
 // Accumulate data for current model ('modelanalyse')
 int CommandData::function_CA_MODELANALYSE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Request calculation of a 3Ddens ('analyse pdens <name> <grid> <nsteps> <filename> <site1> <site2>')
 int CommandData::function_CA_PDENS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Pdens *newpdens = new Pdens;
 	obj.m->pendingQuantities.own(newpdens);
 	// Set pdens name and destination filename
@@ -83,19 +83,19 @@ int CommandData::function_CA_PDENS(Command *&c, Bundle &obj)
 	newpdens->setSite(0,obj.m->findSite(c->argc(4)));
 	newpdens->setSite(1,obj.m->findSite(c->argc(5)));
 	newpdens->setRange(c->argd(1), c->argi(2));
-	return (newpdens->initialise() ? CR_SUCCESS : CR_FAIL);
+	return (newpdens->initialise() ? Command::Success : Command::Fail);
 }
 
 // Print current job list ('printjobs')
 int CommandData::function_CA_PRINTJOBS(Command *&c, Bundle &obj)
 {
-	return CR_FAIL;
+	return Command::Fail;
 }
 
 // Request calculation of an RDF ('rdf <name> <rmin> <binwidth> <nbins> <filename> <site1> <site2>')
 int CommandData::function_CA_RDF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Rdf *newrdf = new Rdf;
 	obj.m->pendingQuantities.own(newrdf);
 	// Set RDF name and destination filename
@@ -105,21 +105,21 @@ int CommandData::function_CA_RDF(Command *&c, Bundle &obj)
 	newrdf->setSite(0,obj.m->findSite(c->argc(5)));
 	newrdf->setSite(1,obj.m->findSite(c->argc(6)));
 	newrdf->setRange(c->argd(1), c->argd(2), c->argi(3));
-	return (newrdf->initialise() ? CR_SUCCESS : CR_FAIL);
+	return (newrdf->initialise() ? Command::Success : Command::Fail);
 }
 
 // Save calculated quantities to filenames provided ('savequantities')
 int CommandData::function_CA_SAVEQUANTITIES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Calculate quantities over entire trajectory
 int CommandData::function_CA_TRAJANALYSE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;
 	bool calculate;
 	Model *frame;
@@ -129,7 +129,7 @@ int CommandData::function_CA_TRAJANALYSE(Command *&c, Bundle &obj)
 	if (totalframes == 0)
 	{
 		msg.print("No trajectory associated to model.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// Get start frame, frame skip, and frames to do (if supplied)
 	startframe = c->argi(0);
@@ -157,5 +157,5 @@ int CommandData::function_CA_TRAJANALYSE(Command *&c, Bundle &obj)
 		if (n != totalframes) obj.m->seekNextFrame();
 	}
 	msg.print("Finished calculating properties - used %i frames from trajectory.\n", framesdone);
-	return CR_SUCCESS;
+	return Command::Success;
 }

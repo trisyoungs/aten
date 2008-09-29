@@ -28,12 +28,12 @@
 // Get current view
 int CommandData::function_CA_GETVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Mat4<double> rmat = obj.rs->rotationMatrix();
 	Vec3<double> camr = obj.rs->camera();
 	double camrot = obj.rs->cameraRotation();
 	msg.print( "View [R c z] = %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", rmat.rows[0].x, rmat.rows[0].y, rmat.rows[0].z, rmat.rows[1].x, rmat.rows[1].y, rmat.rows[1].z, rmat.rows[2].x, rmat.rows[2].y, rmat.rows[2].z, camr.x, camr.y, camr.z, camrot * DEGRAD);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set orthographic view
@@ -41,7 +41,7 @@ int CommandData::function_CA_ORTHOGRAPHIC(Command *&c, Bundle &obj)
 {
 	prefs.setPerspective(FALSE);
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set perspective view
@@ -50,7 +50,7 @@ int CommandData::function_CA_PERSPECTIVE(Command *&c, Bundle &obj)
 	prefs.setPerspective(TRUE);
 	if (c->hasArg(0)) prefs.setPerspectiveFov(c->argd(0));
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Reset view
@@ -58,22 +58,22 @@ int CommandData::function_CA_RESETVIEW(Command *&c, Bundle &obj)
 {
 	obj.rs->resetView();
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Rotate view
 int CommandData::function_CA_ROTATEVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->rotate(c->argd(0), c->argd(1));
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set current view
 int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Mat4<double> rmat;
 	Vec3<double> camr;
 	// Get rotation matrix
@@ -87,17 +87,17 @@ int CommandData::function_CA_SETVIEW(Command *&c, Bundle &obj)
 	obj.rs->resetCamera(camr);
 	// Get camera z-rotation (if present)
 	obj.rs->setCameraRotation(c->hasArg(12) ? c->argd(12) / DEGRAD : 0.0);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Render speed test
 int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (!gui.exists())
 	{
 		msg.print("Can't perform rendering speedtest without the GUI.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	clock_t tstart = clock();
 	// Loop over n renders (or 100 of no variable given)
@@ -110,53 +110,53 @@ int CommandData::function_CA_SPEEDTEST(Command *&c, Bundle &obj)
 	clock_t tfinish = clock();
 	double nsec = double(tfinish-tstart) / CLOCKS_PER_SEC;
 	msg.print("SPEEDTEST : Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, nsec, nrenders/nsec);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Translate view
 int CommandData::function_CA_TRANSLATEVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->adjustCamera(c->arg3d(0),0.0);
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // View along specified axis
 int CommandData::function_CA_VIEWALONG(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs->viewAlong(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // View along specified cell axis
 int CommandData::function_CA_VIEWALONGCELL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Zoom view
 int CommandData::function_CA_ZOOMVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->adjustCamera(0.0,0.0,c->argd(0),0.0);
 	obj.rs->adjustOrthoSize(-c->argd(0));
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // ZRotate view
 int CommandData::function_CA_ZROTATEVIEW(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->zRotate(c->argd(0) / DEGRAD);
 	gui.mainView.postRedisplay();
-	return CR_SUCCESS;
+	return Command::Success;
 }

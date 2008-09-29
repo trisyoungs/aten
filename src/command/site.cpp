@@ -27,10 +27,10 @@
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
 int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// First, check that the pattern name provided refers to a pattern of the current model
 	Pattern *p = obj.m->findPattern(c->argc(1));
-	if (p == NULL) return CR_FAIL;
+	if (p == NULL) return Command::Fail;
 	obj.s = obj.m->sites.add();
 	obj.s->setName(c->argc(0));
 	obj.s->setPattern(p);
@@ -46,13 +46,13 @@ int CommandData::function_CA_NEWSITE(Command *&c, Bundle &obj)
 		}
 	}
 	msg.print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.nItems(), (obj.s->atoms.nItems() == 0 ? " (will use centre of geometry)\n" : "\n"));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Print site definitions for model ('listsites')
 int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Site *s = obj.m->sites.first();
 	if (s == NULL) msg.print("No sites defined for model '%s'.\n",obj.m->name());
 	else
@@ -66,24 +66,24 @@ int CommandData::function_CA_LISTSITES(Command *&c, Bundle &obj)
 			msg.print("\n");
 		}
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
 int CommandData::function_CA_GETSITE(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Site *s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
 	if (s == NULL) msg.print("No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
 	else obj.s = s;
-	return CR_FAIL;
+	return Command::Fail;
 }
 
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
 int CommandData::function_CA_SITEAXES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::SitePointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::SitePointer)) return Command::Fail;
 	int n;
 	ListItem<int> *li;
 	// Parse atom list for x-axis
@@ -102,5 +102,5 @@ int CommandData::function_CA_SITEAXES(Command *&c, Bundle &obj)
 		// Store n-1 since internally we work in 0-n range
 		li->data = parser.argi(n) - 1;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }

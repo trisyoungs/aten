@@ -27,15 +27,15 @@
 // Auto-add ellipsoids to current atom selection
 int CommandData::function_CA_AUTOELLIPSOIDS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.m->addEllipsoidGlyphs();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Auto-add polyhedra to current atom selection
 int CommandData::function_CA_AUTOPOLYHEDRA(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	bool centresonly = TRUE, linkatoms = TRUE;
 	Dnchar keywd, value;
 	double rcut = 4.0;
@@ -52,19 +52,19 @@ int CommandData::function_CA_AUTOPOLYHEDRA(Command *&c, Bundle &obj)
 	}
 	// Add the polyhedra
 	obj.m->addPolyhedraGlyphs(centresonly, linkatoms, rcut);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Associate atom with current glyph
 int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
 	Atom *target = obj.i;
@@ -76,19 +76,19 @@ int CommandData::function_CA_GLYPHATOMF(Command *&c, Bundle &obj)
 	// Finally, check pointer currently in target and store it
 	obj.gl->setAtom(d, obj.rs->atomIndex(target), GlyphData::ForceData);
 	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Associate atom with current glyph
 int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
 	Atom *target = obj.i;
@@ -100,19 +100,19 @@ int CommandData::function_CA_GLYPHATOMR(Command *&c, Bundle &obj)
 	// Finally, check pointer currently in target and store it
 	obj.gl->setAtom(d, obj.rs->atomIndex(target), GlyphData::PositionData);
 	if (target == NULL) msg.print("Warning - NULL atom stored in glyph data %i.\n",d);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Associate atom with current glyph
 int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		msg.print("Data index given to 'setglyphatom' (%i) is out of range.\n", d);
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// If second argument was given, it refers to either an atom by pointer or by id
 	Atom *target = obj.i;
@@ -121,13 +121,13 @@ int CommandData::function_CA_GLYPHATOMV(Command *&c, Bundle &obj)
 		if (c->argt(1) == VTypes::AtomData) obj.gl->setAtom(d, obj.rs->atomIndex((Atom*) c->argp(1, VTypes::AtomData)), GlyphData::VelocityData);
 		else obj.gl->setAtom(d, c->argi(1)-1, GlyphData::VelocityData); 
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Associate atoms with current glyph
 int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// If second argument was given, it refers to either an atom by pointer or by id
 	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
 	{
@@ -138,13 +138,13 @@ int CommandData::function_CA_GLYPHATOMSF(Command *&c, Bundle &obj)
 		}
 		else break;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Associate atoms with current glyph
 int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// If second argument was given, it refers to either an atom by pointer or by id
 	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
 	{
@@ -155,13 +155,13 @@ int CommandData::function_CA_GLYPHATOMSR(Command *&c, Bundle &obj)
 		}
 		else break;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Associate atoms with current glyph
 int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// If second argument was given, it refers to either an atom by pointer or by id
 	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
 	{
@@ -172,55 +172,55 @@ int CommandData::function_CA_GLYPHATOMSV(Command *&c, Bundle &obj)
 		}
 		else break;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Store colour data in current glyph
 int CommandData::function_CA_GLYPHCOLOUR(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	obj.gl->setColour(d, c->argf(1), c->argf(2), c->argf(3), c->hasArg(4) ? c->argf(4) : 1.0f);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Store vector data in current glyph
 int CommandData::function_CA_GLYPHDATA(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	obj.gl->setVector(d, c->argd(1), c->hasArg(2) ? c->argd(2) : 0.0, c->hasArg(3) ? c->argd(3) : 0.0);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set 'solid' property of current glyph
 int CommandData::function_CA_GLYPHSOLID(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	obj.gl->setSolid(c->argb(0));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set text property of current glyph
 int CommandData::function_CA_GLYPHTEXT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return Command::Fail;
 	obj.gl->setText(c->argc(0));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Add glyph to current model
 int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Get glyph style
 	Glyph::GlyphType gt = Glyph::glyphType(c->argc(0));
 	if (gt == Glyph::nGlyphTypes)
 	{
 		msg.print("Unrecognised glyph style '%s'.\n", c->argc(0));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	obj.gl = obj.rs->addGlyph(gt);
 	// Parse extra options
@@ -236,5 +236,5 @@ int CommandData::function_CA_NEWGLYPH(Command *&c, Bundle &obj)
 		else if (keywd == "linewidth") obj.gl->setLineWidth((GLfloat) atof(value.get()));
 		else msg.print("Unknown option '%s' given to 'newglyph'.\n", keywd.get());
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }

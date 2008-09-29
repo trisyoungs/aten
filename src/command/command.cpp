@@ -45,7 +45,7 @@ const char *AssignOps::assignOp(AssignOps::AssignOp ao)
 }
 
 // Constructor
-Command::Command()
+CommandNode::Command()
 {
 	// Private variables
 	action_ = CA_ROOTNODE;
@@ -63,7 +63,7 @@ Command::Command()
 }
 
 // Destructor
-Command::~Command()
+CommandNode::~Command()
 {
 	if (branch_ != NULL) delete branch_;
 	if (format_ != NULL) delete format_;
@@ -74,162 +74,162 @@ Command::~Command()
 */
 
 // Set parent CommandList
-void Command::setParent(CommandList *cl)
+void CommandNode::setParent(CommandList *cl)
 {
 	parent_ = cl;
 }
 
 // Get parent CommandList
-CommandList *Command::parent()
+CommandList *CommandNode::parent()
 {
 	return parent_;
 }
 
 // Get command
-CommandAction Command::command()
+CommandAction CommandNode::command()
 {
 	return action_;
 }
 
 // Returns the formatter
-Format *Command::format()
+Format *CommandNode::format()
 {
 	return format_;
 }
 
 // Delete the associated format
-void Command::deleteFormat()
+void CommandNode::deleteFormat()
 {
 	if (format_ != NULL) delete format_;
 	format_ = NULL;
 }
 
 // Set status of loop
-void Command::setLoopActive(bool b)
+void CommandNode::setLoopActive(bool b)
 {
 	loopActive_ = b;
 }
 
 // Get status of loop
-bool Command::isLoopActive()
+bool CommandNode::isLoopActive()
 {
 	return loopActive_;
 }
 
 // Set iteration count
-void Command::setLoopIterations(int n)
+void CommandNode::setLoopIterations(int n)
 {
 	loopIterations_ = n;
 }
 
 // Get iteration count
-int Command::loopIterations()
+int CommandNode::loopIterations()
 {
 	return loopIterations_;
 }
 
 // Increase interation count
-void Command::increaseIterations()
+void CommandNode::increaseIterations()
 {
 	loopIterations_ ++;
 }
 
 // Returns branch list structure
-List<Command> *Command::branch()
+List<Command> *CommandNode::branch()
 {
 	return branch_;
 }
 
 // Returns first item in branch 
-Command *Command::branchCommands()
+Command *CommandNode::branchCommands()
 {
 	return (branch_ != NULL ? branch_->first() : NULL);
 }
 
 // Set FormatNode pointer variable
-void Command::setPointer(Command *f)
+void CommandNode::setPointer(Command *f)
 {
 	ptr_ = f;
 }
 
 // Return FormatNode pointer variable
-Command *Command::pointer()
+Command *CommandNode::pointer()
 {
 	return ptr_;
 }
 
 // Return variable argument
-Variable *Command::arg(int argno)
+Variable *CommandNode::arg(int argno)
 {
 	Refitem<Variable,int> *ri = args_[argno];
 	return ri->item;
 }
 
 // Return argument as character
-const char *Command::argc(int argno)
+const char *CommandNode::argc(int argno)
 {
 	Refitem<Variable,int> *ri = args_[argno];
 	return (ri == NULL ?  "NULL" : ri->item->asCharacter());
 }
 
 // Return argument as integer
-int Command::argi(int argno)
+int CommandNode::argi(int argno)
 {
 	Refitem<Variable,int> *ri = args_[argno];
 	return (ri == NULL ?  0 : ri->item->asInteger());
 }
 
 // Return argument as double
-double Command::argd(int argno)
+double CommandNode::argd(int argno)
 {
 	Refitem<Variable,int> *ri = args_[argno];
 	return (ri == NULL ? 0.0 : ri->item->asDouble());
 }
 
 // Return argument as float
-float Command::argf(int argno)
+float CommandNode::argf(int argno)
 {
 	return (float) argd(argno);
 }
 
 // Return argument as bool
-bool Command::argb(int argno)
+bool CommandNode::argb(int argno)
 {
 	Refitem<Variable,int> *ri = args_[argno];
 	return (ri == NULL ? -1 : ri->item->asBool());
 }
 
 // Return argument as pointer
-void *Command::argp(int argno, VTypes::DataType dt)
+void *CommandNode::argp(int argno, VTypes::DataType dt)
 {
 	Refitem<Variable,int> *ri = args_[argno];
 	return (ri == NULL ? NULL : ri->item->asPointer(dt));
 }
 
 // Returns whether argument 'n' was provided
-bool Command::hasArg(int argno)
+bool CommandNode::hasArg(int argno)
 {
 	return ((argno+1) > args_.nItems() ? FALSE : TRUE);
 }
 
 // Return variable type of argument
-VTypes::DataType Command::argt(int argno)
+VTypes::DataType CommandNode::argt(int argno)
 {
 	Refitem<Variable,int> *ri = args_[argno];
 	return (ri == NULL ? VTypes::NoData : ri->item->type());
 }
 
 // Set command and function
-void Command::setCommand(CommandAction ca)
+void CommandNode::setCommand(CommandAction ca)
 {
 	action_ = ca;
 	function_ = CA_data[ca].function;
 }
 
 // Print data variables
-void Command::printArgs()
+void CommandNode::printArgs()
 {
-	msg.enter("Command::printArgs");
+	msg.enter("CommandNode::printArgs");
 	int i = 0;
 	for (Refitem<Variable,int> *ri = args_.first(); ri != NULL; ri = ri->next)
 	{
@@ -239,72 +239,72 @@ void Command::printArgs()
  		else printf("%li\n", ri->item->asPointer(ri->item->type()));
 		i++;
 	}
-	msg.exit("Command::printArgs");
+	msg.exit("CommandNode::printArgs");
 }
 
 // Return arguments as Vec3<double>
-Vec3<double> Command::arg3d(int i)
+Vec3<double> CommandNode::arg3d(int i)
 {
-	msg.enter("Command::arg3d");
+	msg.enter("CommandNode::arg3d");
         static Vec3<double> result;
-        if (i > (args_.nItems()-3)) printf("Command::arg3d - Starting point too close to end of argument list.\n");
+        if (i > (args_.nItems()-3)) printf("CommandNode::arg3d - Starting point too close to end of argument list.\n");
         result.set(args_[i]->item->asDouble(), args_[i+1]->item->asDouble(), args_[i+2]->item->asDouble());
-	msg.exit("Command::arg3d");
+	msg.exit("CommandNode::arg3d");
         return result;
 }
 
 // Return arguments as Vec3<float>
-Vec3<float> Command::arg3f(int i)
+Vec3<float> CommandNode::arg3f(int i)
 {
-	msg.enter("Command::arg3f");
+	msg.enter("CommandNode::arg3f");
         static Vec3<float> result;
-        if (i > (args_.nItems()-3)) printf("Command::arg3f - Starting point too close to end of argument list.\n");
+        if (i > (args_.nItems()-3)) printf("CommandNode::arg3f - Starting point too close to end of argument list.\n");
         result.set(args_[i]->item->asFloat(), args_[i+1]->item->asFloat(), args_[i+2]->item->asFloat());
-	msg.exit("Command::arg3f");
+	msg.exit("CommandNode::arg3f");
         return result;
 }
 
 // Return arguments as Vec3<int>
-Vec3<int> Command::arg3i(int i)
+Vec3<int> CommandNode::arg3i(int i)
 {
-	msg.enter("Command::arg3i");
+	msg.enter("CommandNode::arg3i");
 	static Vec3<int> result;
-	if (i > (args_.nItems()-3)) printf("Command::arg3i - Starting point too close to end of argument list.\n");
+	if (i > (args_.nItems()-3)) printf("CommandNode::arg3i - Starting point too close to end of argument list.\n");
         result.set(args_[i]->item->asInteger(), args_[i+1]->item->asInteger(), args_[i+2]->item->asInteger());
-	msg.exit("Command::arg3i");
+	msg.exit("CommandNode::arg3i");
 	return result;
 }
 
 // Create branch
-List<Command> *Command::createBranch()
+List<Command> *CommandNode::createBranch()
 {
-	msg.enter("Command::createBranch");
-	if (branch_ != NULL) printf("Command::createBranch <<<< Already has a branch >>>>\n");
-	branch_ = new List<Command>;
-	msg.exit("Command::createBranch");
+	msg.enter("CommandNode::createBranch");
+	if (branch_ != NULL) printf("CommandNode::createBranch <<<< Already has a branch >>>>\n");
+	branch_ = new List<CommandNode>;
+	msg.exit("CommandNode::createBranch");
 	return branch_;	// Get return value as double
 	double asDouble();
 }
 
 // Create branch
-bool Command::createFormat(const char *s, bool delimited)
+bool CommandNode::createFormat(const char *s, bool delimited)
 {
-	msg.enter("Command::createFormat");
+	msg.enter("CommandNode::createFormat");
 	bool result = FALSE;
-	if (format_ != NULL) printf("Command::createFormat <<<< Already has a format >>>>\n");
+	if (format_ != NULL) printf("CommandNode::createFormat <<<< Already has a format >>>>\n");
 	else
 	{
 		format_ = new Format;
 		result = format_->create(s, *variableList_, delimited);
 	}
-	msg.exit("Command::createFormat");
+	msg.exit("CommandNode::createFormat");
 	return result;
 }
 
 // Set if condition test
-bool Command::setIfTest(const char *s)
+bool CommandNode::setIfTest(const char *s)
 {
-	msg.enter("Command::setIfTest");
+	msg.enter("CommandNode::setIfTest");
 	bool result = TRUE;
 	int n, m;
 	m = 0;
@@ -327,14 +327,14 @@ bool Command::setIfTest(const char *s)
 		}
 	if (m > IfTests::NotEqualTo) result = FALSE;
 	else ifTest_ = (IfTests::IfTest) m;
-	msg.exit("Command::setIfTest");
+	msg.exit("CommandNode::setIfTest");
 	return result;
 }
 
 // Evaluate condition
-bool Command::ifEvaluate()
+bool CommandNode::ifEvaluate()
 {
-	msg.enter("Command::ifEvaluate");
+	msg.enter("CommandNode::ifEvaluate");
 	bool result;
 	static Variable *v1, *v2;
 	static char string1[512], string2[512];
@@ -434,7 +434,7 @@ bool Command::ifEvaluate()
 		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
 	}
 	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
-	msg.exit("Command::ifEvaluate");
+	msg.exit("CommandNode::ifEvaluate");
 	return result;
 }
 
@@ -443,9 +443,9 @@ bool Command::ifEvaluate()
 */
 
 // Add variable/constant/expression/path to reference list, given the name
-bool Command::addArgument(int argid, Parser::ArgumentForm form)
+bool CommandNode::addArgument(int argid, Parser::ArgumentForm form)
 {
-	msg.enter("Command::addArgument");
+	msg.enter("CommandNode::addArgument");
 	Variable *v;
 	bool result = TRUE;
 	// If argument form wasn't provided, attempt to work it out.
@@ -471,32 +471,32 @@ bool Command::addArgument(int argid, Parser::ArgumentForm form)
 			args_.add(v);
 			break;
 	}
-	msg.exit("Command::addArgument");
+	msg.exit("CommandNode::addArgument");
 	return result;
 }
 
 // Add constant to reference list
-void Command::addConstant(const char *s, bool forcechar)
+void CommandNode::addConstant(const char *s, bool forcechar)
 {
-	msg.enter("Command::addConstant");
+	msg.enter("CommandNode::addConstant");
 	Variable *v = variableList_->addConstant(s, forcechar);
 	args_.add(v);
-	msg.exit("Command::addConstant");
+	msg.exit("CommandNode::addConstant");
 }
 
 // Add constant to reference list
-void Command::addConstant(int i)
+void CommandNode::addConstant(int i)
 {
-	msg.enter("Command::addConstant[int]");
+	msg.enter("CommandNode::addConstant[int]");
 	Variable *v = variableList_->addConstant(i);
 	args_.add(v);
-	msg.exit("Command::addConstant[int]");
+	msg.exit("CommandNode::addConstant[int]");
 }
 
 // Add variables to command
-bool Command::setArguments(const char *cmdname, const char *specifiers, VariableList *sourcevars)
+bool CommandNode::setArguments(const char *cmdname, const char *specifiers, VariableList *sourcevars)
 {
-	msg.enter("Command::setArguments");
+	msg.enter("CommandNode::setArguments");
 	bool required = TRUE, repeat = FALSE, failed = FALSE;
 	int n, m, argcount, last = -1;
 	Variable *var;
@@ -720,21 +720,21 @@ bool Command::setArguments(const char *cmdname, const char *specifiers, Variable
 	if ((argcount < (parser.nArgs() - 1)) && (!failed))
 	{
 		msg.print("Error: Unexpected argument '%s' given to command '%s'.\n", parser.argc(++argcount), cmdname);
-		msg.exit("Command::setArguments");
+		msg.exit("CommandNode::setArguments");
 		return FALSE;
 	}
-	msg.exit("Command::setArguments");
+	msg.exit("CommandNode::setArguments");
 	return (failed ? FALSE : TRUE);
 }
 
 // Return number of arguments given to command
-int Command::nArgs()
+int CommandNode::nArgs()
 {
 	return args_.nItems();
 }
 
 // Execute command
-int Command::execute(Command *&c)
+int CommandNode::execute(Command *&c)
 {
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());

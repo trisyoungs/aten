@@ -30,7 +30,7 @@
 #include "base/parser.h"
 
 // Forward declarations
-class Command;
+class CommandNode;
 class Format;
 class Filter;
 class Model;
@@ -54,19 +54,19 @@ class CommandList
 	// Name associated with command list
 	Dnchar name_;
 	// List of commands
-	List<Command> commands_;
+	List<CommandNode> commands_;
 	// List of pointers to stacked branches
-	Reflist<List<Command>,int> branchStack_;
+	Reflist<List<CommandNode>,int> branchStack_;
 	// Basic command types of stacked branches
-	List<Command> branchCommandStack_;
+	List<CommandNode> branchCommandStack_;
 	// Add specified branch to stack
-	void pushBranch(List<Command>*, CommandAction, Command*);
+	void pushBranch(List<CommandNode>*, Command::Command, CommandNode*);
 	// Pop topmost branch from stack
 	void popBranch();
 	// Add command to topmost branch
-	Command* addTopBranchCommand(CommandAction, Command*);
+	CommandNode* addTopBranchCommand(Command::Command, CommandNode*);
 	// Return basenode of topmost branch of specified type in current stack (if any)
-	Command *topmostBranch(CommandAction);
+	CommandNode *topmostBranch(Command::Command);
 
 	public:
 	// Set name of CommandList
@@ -78,11 +78,11 @@ class CommandList
 	// Return size of branch stack
 	int nBranches();
 	// Return type of topmost branch on stack
-	CommandAction topBranchType();
+	Command::Command topBranchType();
 	// Return basenode pointer of topmost branch on stack
-	Command* topBranchBaseNode();
+	CommandNode* topBranchBaseNode();
 	// Add action to lst node
-	bool addCommand(CommandAction);
+	bool addCommand(Command::Command);
 	// Clear and reinitialise command list
 	void clear();
 	// Read semicolon-separated commands from string

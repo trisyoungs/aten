@@ -27,11 +27,11 @@
 // Finalise current trajectory frame
 int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs == obj.m)
 	{
 		msg.print( "Current model does not appear to be a trajectory frame.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.rs->bohrToAngstrom();
@@ -47,89 +47,89 @@ int CommandData::function_CA_FINALISEFRAME(Command *&c, Bundle &obj)
 	obj.rs->setFilename("frame");
 	obj.rs->enableUndoRedo();
 	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Skip to first frame ('firstframe')
 int CommandData::function_CA_FIRSTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	obj.m->seekFirstFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
 // 	c->parent()->setModelVariables("",obj.m); TGAY
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Skip to last frame ('lastframe')
 int CommandData::function_CA_LASTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	obj.m->seekLastFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
 // 	c->parent()->setModelVariables("",obj.m); TGAY
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
 int CommandData::function_CA_LOADTRAJECTORY(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Filter *f = aten.probeFile(c->argc(0), Filter::TrajectoryImport);
-	if (f == NULL) return CR_FAIL;
-	return (obj.m->initialiseTrajectory(c->argc(0),f) ? CR_SUCCESS : CR_FAIL);
+	if (f == NULL) return Command::Fail;
+	return (obj.m->initialiseTrajectory(c->argc(0),f) ? Command::Success : Command::Fail);
 }
 
 // Go to next frame ('nextframe')
 int CommandData::function_CA_NEXTFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	obj.m->seekNextFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
 // 	c->parent()->setModelVariables("",obj.m); TGAY
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Go to previous frame ('prevframe')
 int CommandData::function_CA_PREVFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	obj.m->seekPreviousFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
 // 	c->parent()->setModelVariables("",obj.m); TGAY
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Seek to specified frame ('seekframe <n>')
 int CommandData::function_CA_SEEKFRAME(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		msg.print("No trajectory associated to model '%s'.\n",obj.m->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	obj.m->seekFrame(c->argi(0));
 	gui.modelChanged(FALSE, FALSE, FALSE);
 // 	c->parent()->setModelVariables("",obj.m); TGAY
-	return CR_SUCCESS;
+	return Command::Success;
 }

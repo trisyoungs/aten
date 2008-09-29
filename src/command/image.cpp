@@ -29,7 +29,7 @@
 // Save current view as bitmap image
 int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Flag any surfaces to be rerendered for use in this context
 	obj.rs->rerenderGrids();
 	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
@@ -56,22 +56,22 @@ int CommandData::function_CA_SAVEBITMAP(Command *&c, Bundle &obj)
 	else
 	{
 		msg.print("Unrecognised bitmap format.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Save current view a vector graphic
 int CommandData::function_CA_SAVEVECTOR(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	vector_format vf = VIF_from_text(c->argc(0));
 	if (vf == VIF_NITEMS)
 	{
 		msg.print("Unrecognised vector format '%s'.\n",c->argc(0));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
 	gui.mainView.saveVector(obj.rs, vf, c->argc(1));
-	return CR_SUCCESS;
+	return Command::Success;
 }

@@ -33,11 +33,11 @@
 // Add a new angle definition to the current forcefield
 int CommandData::function_CA_ANGLEDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	int n;
 	// Get functional form of bond potential
 	AngleFunctions::AngleFunction anglestyle = AngleFunctions::angleFunction(c->argc(0));
-	if (anglestyle == AngleFunctions::nAngleFunctions) return CR_FAIL;
+	if (anglestyle == AngleFunctions::nAngleFunctions) return Command::Fail;
 	// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 	// If not, then check to see that it references an atomname in the atomtypes list
 	for (n=1; n<4; n++)
@@ -50,17 +50,17 @@ int CommandData::function_CA_ANGLEDEF(Command *&c, Bundle &obj)
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->params().data[n-4] = c->argd(n);
 	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Add a new bond definition to the current forcefield
 int CommandData::function_CA_BONDDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	int n;
 	// Get functional form of bond potential
 	BondFunctions::BondFunction bondstyle = BondFunctions::bondFunction(c->argc(0));
-	if (bondstyle == BondFunctions::nBondFunctions) return CR_FAIL;
+	if (bondstyle == BondFunctions::nBondFunctions) return Command::Fail;
 	// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 	// If not, then check to see that it references an atomname in the atomtypes list
 	for (n=1; n<3; n++)
@@ -73,23 +73,23 @@ int CommandData::function_CA_BONDDEF(Command *&c, Bundle &obj)
 	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
 	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-3] = c->argd(n);
 	msg.print(Messenger::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]); 
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Clear manual type mapping list ('clearmap')
 int CommandData::function_CA_CLEARMAP(Command *&c, Bundle &obj)
 {
 	aten.typeMap.clear();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Create energy expression for current model ('createexpression'}
 int CommandData::function_CA_CREATEEXPRESSION(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-	if (!obj.m->autocreatePatterns()) return CR_FAIL;
-	if (!obj.m->createExpression()) return CR_FAIL;
-	return CR_SUCCESS;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (!obj.m->autocreatePatterns()) return Command::Fail;
+	if (!obj.m->createExpression()) return Command::Fail;
+	return Command::Success;
 }
 
 // Set default forcefield ('defaultff <ff>')
@@ -97,51 +97,51 @@ int CommandData::function_CA_DEFAULTFF(Command *&c, Bundle &obj)
 {
 	// If an argument was supplied, select forcefield by name. Otherwise use current
 	aten.setDefaultForcefield(aten.findForcefield(c->argc(0)));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set equivalent 
 int CommandData::function_CA_EQUIVALENT(Command *&c, Bundle &obj)
 {
-	return CR_FAIL;
+	return Command::Fail;
 }
 
 // Associate current ff to current model ('ffmodel [name]')
 int CommandData::function_CA_FFMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// If an argument was supplied, select forcefield by name. Otherwise use current
 	if (c->hasArg(0)) obj.m->setForcefield(aten.findForcefield(c->argc(0)));
 	else obj.m->setForcefield(obj.ff);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set current forcefield for named pattern ('ffpattern')
 int CommandData::function_CA_FFPATTERN(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return Command::Fail;
 	obj.p->setForcefield(obj.ff);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set current forcefield for pattern id given ('ffpatternid <id>')
 int CommandData::function_CA_FFPATTERNID(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return Command::Fail;
 	int nodeid = c->argi(0) - 1;
 	if ((nodeid < 0) || (nodeid > obj.m->nPatterns()))
 	{
 		msg.print("Pattern ID %i is out of range for model (which has %i patterns).\n", nodeid, obj.m->nPatterns());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	else obj.m->pattern(nodeid)->setForcefield(obj.ff);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Finalise current forcefield
 int CommandData::function_CA_FINALISEFF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	// Print some information about the terms read in from the forcefield
 	msg.print("Read in %i type descriptions\n", obj.ff->nTypes() - 1);
 	msg.print("Read in %i bond definitions\n", obj.ff->nBonds());
@@ -149,15 +149,15 @@ int CommandData::function_CA_FINALISEFF(Command *&c, Bundle &obj)
 	msg.print("Read in %i torsion definitions\n", obj.ff->nTorsions());
 	// Convert energetic units in the forcefield to the internal units of the program
 	obj.ff->convertParameters();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set energetic parameters to convert in generator data
 int CommandData::function_CA_GENCONVERT(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	for (int n=0; n<c->nArgs(); n++) obj.ff->setEnergyGenerator(c->argi(n));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set generator data for atom type
@@ -169,12 +169,12 @@ int CommandData::function_CA_GENERATOR(Command *&c, Bundle &obj)
 	if (ffa == NULL)
 	{
 		msg.print("Unrecognised forcefield typeId %i in generator list.\n",c->argi(0));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// Create generator array on atom
 	ffa->initialiseGenerator();
 	for (n=1; n<c->nArgs(); n++) ffa->setGenerator(n-1, c->argd(n));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select current forcefield ('getff <name>')
@@ -182,8 +182,8 @@ int CommandData::function_CA_GETFF(Command *&c, Bundle &obj)
 {
 	Forcefield *ff = (c->argt(0) == VTypes::IntegerData ? aten.forcefield(c->argi(0)) : aten.findForcefield(c->argc(0)));
 	if (ff != NULL)	aten.setCurrentForcefield(ff);
-	else return CR_FAIL;
-	return CR_SUCCESS;
+	else return Command::Fail;
+	return Command::Success;
 }
 
 // Load forcefield ('loadff <filename> [nickname]')
@@ -193,14 +193,14 @@ int CommandData::function_CA_LOADFF(Command *&c, Bundle &obj)
 	if (ff == NULL)
 	{
 		msg.print("Can't find forcefield file '%s' in any location.\n", c->argc(0));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	else
 	{
 		if (c->hasArg(1)) ff->setName(c->argc(1));
 		msg.print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Add manual type mappings ('map <name=element,...>')
@@ -220,7 +220,7 @@ int CommandData::function_CA_MAP(Command *&c, Bundle &obj)
 			nm->set(beforeChar(parser.argc(n),'='), el);
 		}
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Create new, empty forcefield ('newff <name>')
@@ -238,43 +238,43 @@ int CommandData::function_CA_PRINTSETUP(Command *&c, Bundle &obj)
 	msg.print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
 	msg.print("      Electrostatics : %s (%s)\n", (prefs.calculateElec() ? "On" : "Off"), Electrostatics::elecMethod(prefs.electrostaticsMethod()));
 	msg.print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set rules to use in parameter generation
 int CommandData::function_CA_RULES(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	Rules::ForcefieldRules rules = Rules::forcefieldRules(c->argc(0));
-	if (rules == Rules::nForcefieldRules) return CR_FAIL;
+	if (rules == Rules::nForcefieldRules) return Command::Fail;
 	msg.print("\t: Rule-set to use is '%s'\n", rules);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Save expression ('saveexpression <format> <file>')
 int CommandData::function_CA_SAVEEXPRESSION(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Find filter with a nickname matching that given in argc(0)
 	Filter *f = aten.findFilter(Filter::ExpressionExport, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
 		msg.print("script : No expression export filter was found that matches the extension '%s'.\nNot saved.\n",c->argc(0));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	f->execute(c->argc(1));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Add a new torsion definition to the current forcefield
 int CommandData::function_CA_TORSIONDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	int n;
 	// Get functional form of bond potential
 	TorsionFunctions::TorsionFunction torsionstyle = TorsionFunctions::torsionFunction(c->argc(0));
-	if (torsionstyle == TorsionFunctions::nTorsionFunctions) return CR_FAIL;
+	if (torsionstyle == TorsionFunctions::nTorsionFunctions) return Command::Fail;
 	// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 	// If not, then check to see that it references an atomname in the atomtypes list
 	for (n=1; n<4; n++)
@@ -287,20 +287,20 @@ int CommandData::function_CA_TORSIONDEF(Command *&c, Bundle &obj)
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-5] = c->argd(n);
 	msg.print(Messenger::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Add a new type definition to the current forcefield
 int CommandData::function_CA_TYPEDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	// Search for this ID to make sure it hasn't already been used
 	int newffid = c->argi(0);
 	ForcefieldAtom *idsearch = obj.ff->findType(newffid);
 	if (idsearch != NULL)
 	{
 		msg.print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	ForcefieldAtom *ffa = obj.ff->addType();
 	ffa->setTypeId(newffid);
@@ -309,26 +309,26 @@ int CommandData::function_CA_TYPEDEF(Command *&c, Bundle &obj)
 	ffa->atomtype()->setCharacterElement(elements.find(c->argc(2), ElementMap::AlphaZmap));
 	ffa->setAtomtype(c->argc(3), obj.ff, ffa);
 	if (c->hasArg(4)) ffa->setDescription(c->argc(4));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Perform typing on current model
 int CommandData::function_CA_TYPEMODEL(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return CR_FAIL;
-	return (obj.m->typeAll() ? CR_SUCCESS : CR_FAIL);
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	return (obj.m->typeAll() ? Command::Success : Command::Fail);
 }
 
 // Test specified type ID of current forcefield
 int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::ForcefieldPointer)) return Command::Fail;
 	// Find the specified type...
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
 		msg.print("Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	else
 	{
@@ -344,39 +344,39 @@ int CommandData::function_CA_TYPETEST(Command *&c, Bundle &obj)
 			if (score != 0) msg.print("Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
 			else msg.print("Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
 		}
-		else return CR_FAIL;
+		else return Command::Fail;
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set units used in the forcefield
 int CommandData::function_CA_UNITS(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	Prefs::EnergyUnit newunit = Prefs::energyUnit(c->argc(0));
-	if (newunit == Prefs::nEnergyUnits) return CR_FAIL;
+	if (newunit == Prefs::nEnergyUnits) return Command::Fail;
 	obj.ff->setEnergyUnit(newunit);
 	msg.print("Forcefield energy unit set to %s\n", Prefs::energyUnit(newunit));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Add a new VDW definition to the current forcefield
 int CommandData::function_CA_VDWDEF(Command *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	// Get functional form of vdw
 	VdwFunctions::VdwFunction vdwstyle = VdwFunctions::vdwFunction(c->argc(0));
-	if (vdwstyle == VdwFunctions::nVdwFunctions) return CR_FAIL;
+	if (vdwstyle == VdwFunctions::nVdwFunctions) return Command::Fail;
 	// Find typeId referenced by command
 	ForcefieldAtom *ffa = obj.ff->findType(c->argi(1));
 	if (ffa == NULL)
 	{
 		msg.print("TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	ffa->setCharge(parser.argd(2));
 	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->params().data[i-3] = c->argd(i);
 	ffa->setVdwForm(vdwstyle);
 	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->charge());
-	return CR_SUCCESS;
+	return Command::Success;
 }

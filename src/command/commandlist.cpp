@@ -93,10 +93,10 @@ void CommandList::setHeaderVars(bool readingheader)
 }
 
 // Push branch on to stack
-void CommandList::pushBranch(List<Command> *branch, CommandAction ca, Command *basenode)
+void CommandList::pushBranch(List<Command> *branch, CommandAction ca, CommandNode *basenode)
 {
 	branchStack_.add(branch);
-	Command *cn = branchCommandStack_.add();
+	CommandNode *cn = branchCommandStack_.add();
 	cn->setCommand(ca);
 	cn->setPointer(basenode);
 	cn->setParent(this);
@@ -137,14 +137,14 @@ Command* CommandList::topBranchBaseNode()
 }
 
 // Add command to topmost branch
-Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
+Command* CommandList::addTopBranchCommand(CommandAction ca, CommandNode *nodeptr)
 {
 	if (branchStack_.nItems() == 0)
 	{
 		printf("CommandList::addTopBranchCommand <<<< No branches in branch list! >>>>\n");
 		return NULL;
 	}
-	Command *cn = branchStack_.last()->item->add();
+	CommandNode *cn = branchStack_.last()->item->add();
 	cn->setCommand(ca);
 	cn->setPointer(nodeptr);
 	cn->setParent(this);
@@ -152,9 +152,9 @@ Command* CommandList::addTopBranchCommand(CommandAction ca, Command *nodeptr)
 }
 
 // Return basenode of topmost branch of specified type in current stack (if any)
-Command *CommandList::topmostBranch(CommandAction ca)
+CommandNode *CommandList::topmostBranch(CommandAction ca)
 {
-	Command *result;
+	CommandNode *result;
 	for (result = branchCommandStack_.last(); result != NULL; result = result->prev)
 		if (result->command() == ca) break;
 	return result->pointer();
@@ -164,7 +164,7 @@ Command *CommandList::topmostBranch(CommandAction ca)
 bool CommandList::addCommand(CommandAction ca)
 {
 	msg.enter("CommandList::addCommand");
-	Command *c, *topc;
+	CommandNode *c, *topc;
 	CommandAction branchca;
 	Parser::ArgumentForm form;
 	VTypes::DataType vt;
@@ -563,10 +563,10 @@ bool CommandList::execute(ifstream *sourcefile)
 		if ((inputFile_ != NULL) && (inputFile_ != sourcefile)) printf("Warning - supplied ifstream overrides file in CommandList.\n");
 		inputFile_ = sourcefile;
 	}
-	static bool result;
+	bool result;
 	result = TRUE;
 	// Get first command in list and execute
-	Command *c = commands_.first();
+	CommandNode *c = commands_.first();
 	while (c != NULL)
 	{
 		// Run command and get return value
@@ -574,30 +574,30 @@ bool CommandList::execute(ifstream *sourcefile)
 		switch (c->execute(c))
 		{
 			// Command succeeded - get following command
-			case (CR_SUCCESS):
+			case (Command::Success):
 				c = c->next;
 				break;
 			// Command succeeded - new command already set
-			case (CR_SUCCESSNOMOVE):
+			case (Command::SuccessNoMove):
 				break;
 			// Command failed - show message and quit
-			case (CR_FAIL):
-				printf("Command list failed at '%s'.\n", CA_data[c->command()].keyword);
+			case (Command::Fail):
+				msg.print("Command list failed at '%s'.\n", CA_data[c->command()].keyword);
 				c = NULL;
 				result = FALSE;
 				break;
 			// Command failed - show message and continue to next command
-			case (CR_FAILCONTINUE):
-				printf("Continuing past failed command '%s'...\n", CA_data[c->command()].keyword);
+			case (Command::FailContinue):
+				msg.print("Continuing past failed command '%s'...\n", CA_data[c->command()].keyword);
 				c = c->next;
 				break;
 			// Exit with error
-			case (CR_EXITWITHERROR):
+			case (Command::ExitWithError):
 				c = NULL;
 				result = FALSE;
 				break;
 			// Exit - we're done
-			case (CR_EXIT):
+			case (Command::Exit):
 				c = NULL;
 				break;
 		}
