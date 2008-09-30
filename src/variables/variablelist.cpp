@@ -79,6 +79,7 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 		case (VTypes::TorsionData):
 		case (VTypes::AtomtypeData):
 		case (VTypes::CellData):
+		case (VTypes::PrefsData):
 			result = new PointerVariable(dt);
 			break;
 		default:

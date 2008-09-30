@@ -322,11 +322,11 @@ int Command::function_CA_GOTONONIF(CommandNode *&c, Bundle &obj)
 	c = c->next;
 	// If we find an BC_IF node we stop and continue on from there.
 	//printf("Skipped back to node %li (%s)\n",fn,text_from_FC(fn->command()));
-	CommandAction ca = c->command();
-	while ((ca == CA_ELSEIF) || (ca == CA_ELSE))
+	Command::Function cf = c->function();
+	while ((cf == CA_ELSEIF) || (cf == CA_ELSE))
 	{
 		c = c->next;
-		ca = c->command();
+		cf = c->function();
 	}
 	return Command::SuccessNoMove;
 }

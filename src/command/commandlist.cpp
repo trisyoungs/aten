@@ -221,8 +221,8 @@ bool CommandList::addCommand(Command::Function cf)
 		// 'Else If' statement (acts as CA_END to previous 'if' or 'elseif' branch.
 		case (Command::CA_ELSEIF):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
-			branchca = topBranchType();
-			if ((branchca != Command::CA_IF) && (branchca != Command::CA_ELSEIF))
+			branchcf = topBranchType();
+			if ((branchcf != Command::CA_IF) && (branchcf != Command::CA_ELSEIF))
 			{
 				msg.print("Error: 'elseif' used without previous if/elseif.\n");
 				result = FALSE;
@@ -243,8 +243,8 @@ bool CommandList::addCommand(Command::Function cf)
 		// 'Else' statement (acts as CA_END to previous 'if' or 'elseif' branch.
 		case (Command::CA_ELSE):
 			// If the previous branch was an 'if' or 'elseif', set the *ptr of that node to this node
-			branchca = topBranchType();
-			if ((branchca != Command::CA_IF) && (branchca != Command::CA_ELSEIF))
+			branchcf = topBranchType();
+			if ((branchcf != Command::CA_IF) && (branchcf != Command::CA_ELSEIF))
 			{
 				msg.print("Error: 'else' used without previous if/elseif.\n");
 				result = FALSE;
@@ -278,7 +278,7 @@ bool CommandList::addCommand(Command::Function cf)
 			}
 			// Check command stack to choose list ending pointer
 			branchcf = topBranchType();
-			switch (branchca)
+			switch (branchcf)
 			{
 				// For repeats, jump back to node at start of loop (the branch owner)
 				case (Command::CA_FOR):
@@ -302,38 +302,38 @@ bool CommandList::addCommand(Command::Function cf)
 			popBranch();
 			break;
 		// Break out from current loop
-		case (CA_BREAK):
+		case (Command::CA_BREAK):
 			// Find the topmost FOR branch
-			topc = topmostBranch(CA_FOR);
+			topc = topmostBranch(Command::CA_FOR);
 			if (topc == NULL)
 			{
 				msg.print("Error: no loop for 'break' to terminate.\n");
 				result = FALSE;
 				break;
 			}
-			c = addTopBranchCommand(CA_BREAK, topc);
+			c = addTopBranchCommand(Command::CA_BREAK, topc);
 			break;
 		// Cycle current loop
-		case (CA_CONTINUE):
+		case (Command::CA_CONTINUE):
 			// Find the topmost FOR branch
-			topc = topmostBranch(CA_FOR);
+			topc = topmostBranch(Command::CA_FOR);
 			if (topc == NULL)
 			{
 				msg.print("Error: no loop for 'cycle' to iterate.\n");
 				result = FALSE;
 				break;
 			}
-			c = addTopBranchCommand(CA_CONTINUE, topc);
+			c = addTopBranchCommand(Command::CA_CONTINUE, topc);
 			break;
 		// Unrecognised command
-		case (CA_NITEMS):
+		case (Command::CA_NITEMS):
 			printf("Internal error: Unrecognised command in CommandList::addCommand()\n");
 			result = FALSE;
 			break;
 		// All other commands do not alter the flow of the CommandList...
 		default:
 			c = addTopBranchCommand(cf, NULL);
-			varresult = c->setArguments(CA_data[cf].keyword, CA_data[cf].arguments, &variables_);
+			varresult = c->setArguments(commands.data[cf].keyword, commands.data[cf].arguments, &variables_);
 			break;
 	}
 	// Check variable assignment result
@@ -392,14 +392,14 @@ bool CommandList::cacheCommand()
 			switch (v->type())
 			{
 				case (VTypes::CharacterData):
-					addcmd = addCommand(CA_LETCHAR);
+					addcmd = addCommand(Command::CA_LETCHAR);
 					break;
 				case (VTypes::IntegerData):
 				case (VTypes::RealData):
-					addcmd = addCommand(CA_LET);
+					addcmd = addCommand(Command::CA_LET);
 					break;
 				default:
-					addcmd = addCommand(CA_LETPTR);
+					addcmd = addCommand(Command::CA_LETPTR);
 					break;
 			}
 			if (!addcmd)
@@ -411,14 +411,14 @@ bool CommandList::cacheCommand()
 	}
 	else
 	{
-		ca = CA_from_text(parser.argc(0));
-		if (ca != CA_NITEMS)
+		cf = commands.command(parser.argc(0));
+		if (cf != Command::CA_NITEMS)
 		{
 			// If addCommand() returns FALSE then we encountered an error
-			if (!addCommand(ca))
+			if (!addCommand(cf))
 			{
 				//msg.print("Error parsing command '%s'.\n", parser.argc(0));
-				msg.print("Command usage is: %s %s\n", CA_data[ca].keyword, CA_data[ca].argText);
+				msg.print("Command usage is: %s %s\n", commands.data[cf].keyword, commands.data[cf].argText);
 				result = FALSE;
 			}
 		}
@@ -570,7 +570,7 @@ bool CommandList::execute(ifstream *sourcefile)
 	while (c != NULL)
 	{
 		// Run command and get return value
-		msg.print(Messenger::Commands, "Commandlist executing command '%s'...\n",CA_data[c->command()].keyword);
+		msg.print(Messenger::Commands, "Commandlist executing command '%s'...\n",commands.data[c->function()].keyword);
 		switch (c->execute(c))
 		{
 			// Command succeeded - get following command
@@ -582,13 +582,13 @@ bool CommandList::execute(ifstream *sourcefile)
 				break;
 			// Command failed - show message and quit
 			case (Command::Fail):
-				msg.print("Command list failed at '%s'.\n", CA_data[c->command()].keyword);
+				msg.print("Command list failed at '%s'.\n", commands.data[c->function()].keyword);
 				c = NULL;
 				result = FALSE;
 				break;
 			// Command failed - show message and continue to next command
 			case (Command::FailContinue):
-				msg.print("Continuing past failed command '%s'...\n", CA_data[c->command()].keyword);
+				msg.print("Continuing past failed command '%s'...\n", commands.data[c->function()].keyword);
 				c = c->next;
 				break;
 			// Exit with error

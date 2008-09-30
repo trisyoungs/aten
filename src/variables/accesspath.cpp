@@ -24,6 +24,7 @@
 #include "variables/atomaccess.h"
 #include "variables/cellaccess.h"
 #include "variables/modelaccess.h"
+#include "variables/prefsaccess.h"
 #include "variables/returnvalue.h"
 #include "variables/variablelist.h"
 #include "base/messenger.h"
@@ -179,6 +180,10 @@ bool AccessPath::setPath(const char *path)
 			case (VTypes::AtomData):
 				success = step->setTarget(bit.get(), parent_, atomAccessors.accessors());
 				if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
+				break;
+			case (VTypes::PrefsData):
+				success = step->setTarget(bit.get(), parent_, prefsAccessors.accessors());
+				if (success) step->setVariableId(prefsAccessors.accessorId(step->target()));
 				break;
 			default:
 				printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));

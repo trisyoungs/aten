@@ -28,8 +28,8 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "665"
-#define ATENDATE "Mon 29 Sep - 23:16"
+#define ATENREVISION "666"
+#define ATENDATE "Tue 30 Sep - 15:23"
 #define ATENURL "http://aten.googlecode.com/svn/branches/newvar"
 
 // Forward Declarations
@@ -205,8 +205,6 @@ class Aten
 	// Program Modes
 	*/
 	private:
-	// Initialise command function pointers
-	void initCommands();
 	// Current mode of program operation
 	ProgramMode programMode_;
 

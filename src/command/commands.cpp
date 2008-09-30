@@ -21,16 +21,14 @@
 
 #include "command/commandlist.h"
 #include "command/commands.h"
+#include "main/aten.h"
 #include "base/bundle.h"
 
-// Postfix increment operator for CommandAction enum
-CommandAction &operator++(CommandAction &ca, int)
-{
-	return ca = (ca == CA_NITEMS ? CA_NITEMS : CommandAction(ca + 1));
-}
+// Singleton
+Command commands;
 
 // Command action
-CommandData CA_data[CA_NITEMS] = {
+CommandData Command::data[Command::CA_NITEMS] = {
 	// Variables
 	{ "character",		"",		"<variables>",
 				"Create character (string) variables with the names provided" },
@@ -772,15 +770,22 @@ CommandData CA_data[CA_NITEMS] = {
 				"Rotate the model in the plane of the screen" }
 };
 
-CommandAction CA_from_text(const char* s)
+Command::Function Command::command(const char *s)
 {
-	CommandAction result;
-	for (result = CA_CHAR; result < CA_NITEMS; result++) if (strcmp(CA_data[result].keyword,s) == 0) break;
-	return result;
+	int result;
+	for (result = CA_CHAR; result < CA_NITEMS; result++) if (strcmp(data[result].keyword,s) == 0) break;
+	return (Command::Function) result;
 }
 
 // Return whether command accepts any arguments
 bool CommandData::hasArguments()
 {
 	return (!(arguments[0] == '\0'));
+}
+
+// Execute command
+int Command::call(Command::Function cf, CommandNode *&c)
+{
+// 	return CALL_COMMAND(commands,pointers_[cf])(c, aten.current);
+	return (this->pointers_[cf])(c, aten.current);
 }
