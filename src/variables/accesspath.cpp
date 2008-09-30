@@ -24,6 +24,7 @@
 #include "variables/atomaccess.h"
 #include "variables/cellaccess.h"
 #include "variables/modelaccess.h"
+#include "variables/patternaccess.h"
 #include "variables/prefsaccess.h"
 #include "variables/returnvalue.h"
 #include "variables/variablelist.h"
@@ -88,6 +89,12 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 					break;
 				case (VTypes::AtomData):
 					accesslist = &atomAccessors;
+					break;
+				case (VTypes::PatternData):
+					accesslist = &patternAccessors;
+					break;
+				case (VTypes::PrefsData):
+					accesslist = &prefsAccessors;
 					break;
 				default:
 					printf("Subvariable setting within pointers of type '%s' is not implemented.\n", VTypes::dataType(lastType));
@@ -180,6 +187,10 @@ bool AccessPath::setPath(const char *path)
 			case (VTypes::AtomData):
 				success = step->setTarget(bit.get(), parent_, atomAccessors.accessors());
 				if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
+				break;
+			case (VTypes::PatternData):
+				success = step->setTarget(bit.get(), parent_, patternAccessors.accessors());
+				if (success) step->setVariableId(patternAccessors.accessorId(step->target()));
 				break;
 			case (VTypes::PrefsData):
 				success = step->setTarget(bit.get(), parent_, prefsAccessors.accessors());

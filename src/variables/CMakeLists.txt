@@ -10,6 +10,7 @@ expressionnode.h
 ffatom.h
 integer.h
 modelaccess.h
+patternaccess.h
 pointer.h
 pointerlist.h
 prefsaccess.h
@@ -29,6 +30,7 @@ expressionnode.cpp
 ffatom.cpp
 integer.cpp
 modelaccess.cpp
+patternaccess.cpp
 pointer.cpp
 prefsaccess.cpp
 real.cpp
