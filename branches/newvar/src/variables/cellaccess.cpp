@@ -79,15 +79,15 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			index = step->arrayIndex();
 			if (index < 1)
 			{
-				printf("Array index '%i' given to member '%s' in ModelAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("ModelAccessors::retrieve");
+				printf("Array index '%i' given to member '%s' in CellAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
+				msg.exit("CellAccessors::retrieve");
 				return FALSE;
 			}
 		}
 		else
 		{
-			printf("Array index given to member '%s' in ModelAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("ModelAccessors::retrieve");
+			printf("Array index given to member '%s' in CellAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
+			msg.exit("CellAccessors::retrieve");
 			return FALSE;
 		}
 	}
@@ -95,8 +95,8 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	{
 		if (accessorPointers[vid]->isArray())
 		{
-			printf("Array index missing for member '%s' in ModelAccessors::retrieve.\n", accessorPointers[vid]->name());
-			msg.exit("ModelAccessors::retrieve");
+			printf("Array index missing for member '%s' in CellAccessors::retrieve.\n", accessorPointers[vid]->name());
+			msg.exit("CellAccessors::retrieve");
 			return FALSE;
 		}
 	}
@@ -129,6 +129,9 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (CellAccessors::CentreZ):
 			rv.set(c->centre().get(vid - CellAccessors::CentreX));
 			break;
+		case (CellAccessors::Matrix):
+			rv.set(c->axes().getElement(index-1));
+			break;
 		case (CellAccessors::Type):
 			rv.set(Cell::cellType(c->type()));
 			break;
@@ -157,17 +160,73 @@ bool CellAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		printf("Unknown enumeration %i given to CellAccessors::set.\n", vid);
 		msg.exit("CellAccessors::set");
 		return FALSE;
-	} 
-	// For all values other than Type (which is read-only) cast vid into a CellParameter
-	if (vid == CellAccessors::Type)
+	}
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (step->hasArrayIndex())
 	{
-		msg.print("Member '%s' in Cell is read-only.\n", accessorPointers[vid]->name());
-		result = FALSE;
+		if (accessorPointers[vid]->isArray())
+		{
+			// Get index and do simple lower-limit check
+			index = step->arrayIndex();
+			if (index < 1)
+			{
+				printf("Array index '%i' given to member '%s' in CellAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
+				msg.exit("CellAccessors::retrieve");
+				return FALSE;
+			}
+		}
+		else
+		{
+			printf("Array index given to member '%s' in CellAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
+			msg.exit("CellAccessors::retrieve");
+			return FALSE;
+		}
 	}
 	else
 	{
-		Cell::CellParameter cp = (Cell::CellParameter) vid;
-		c->setParameter(cp, srcvar->asDouble());
+		if (accessorPointers[vid]->isArray())
+		{
+			printf("Array index missing for member '%s' in CellAccessors::retrieve.\n", accessorPointers[vid]->name());
+			msg.exit("CellAccessors::retrieve");
+			return FALSE;
+		}
+	}
+	// Set value based on enumerated id
+	switch (vid)
+	{
+		case (CellAccessors::A):
+		case (CellAccessors::B):
+		case (CellAccessors::C):
+		case (CellAccessors::Alpha):
+		case (CellAccessors::Beta):
+		case (CellAccessors::Gamma):
+		case (CellAccessors::AX):
+		case (CellAccessors::AY):
+		case (CellAccessors::AZ):
+		case (CellAccessors::BX):
+		case (CellAccessors::BY):
+		case (CellAccessors::BZ):
+		case (CellAccessors::CX):
+		case (CellAccessors::CY):
+		case (CellAccessors::CZ):
+			// Cast vid into a CellParameter
+			c->setParameter((Cell::CellParameter) vid, srcvar->asDouble());
+			break;
+		case (CellAccessors::Matrix):
+			c->axes().set(index-1, srcvar->asDouble());
+			break;
+		case (CellAccessors::Type):
+		case (CellAccessors::CentreX):
+		case (CellAccessors::CentreY):
+		case (CellAccessors::CentreZ):
+			msg.print("Member '%s' in Model is read-only.\n", accessorPointers[vid]->name());
+			result = FALSE;
+			break;
+		default:
+			printf("CellAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
+			result = FALSE;
+			break;
 	}
 	msg.exit("CellAccessors::set");
 	return result;
