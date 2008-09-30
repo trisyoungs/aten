@@ -22,16 +22,16 @@ exportfield
 
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$model.name"
-	if $energyunit = kj
+	if $prefs.energyunit = kj
 		writeline "units  kj"
-	elseif $energyunit = kcal
+	elseif $prefs.energyunit = kcal
 		writeline "units  kcal"
-	elseif $energyunit = ev
+	elseif $prefs.energyunit = ev
 		writeline "units  ev"
 	else
 		error "Current energy unit is not compatible with DL_POLY FIELD output"
 	end
-	writeline "molecules  $npatterns"
+	writeline "molecules  $model.npatterns"
 
 	# Loop over patterns (molecule types)
 	for $p

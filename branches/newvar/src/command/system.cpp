@@ -55,10 +55,10 @@ int Command::function_CA_GUI(CommandNode *&c, Bundle &obj)
 // Help function
 int Command::function_CA_HELP(CommandNode *&c, Bundle &obj)
 {
-	CommandAction ca = CA_from_text(c->argc(0));
-	if (ca == CA_NITEMS) msg.print("help: Unrecognised command '%s'.\n",c->argc(0));
-	else if (CA_data[ca].hasArguments()) msg.print("help:  %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].syntax);
-	else msg.print("help:  %s %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].argText, CA_data[ca].syntax);
+	Command::Function cf = commands.command(c->argc(0));
+	if (cf == CA_NITEMS) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
+	else if (commands.data[cf].hasArguments()) msg.print("help:  %s  --  %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
+	else msg.print("help:  %s %s  --  %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
 	return Command::Success;
 }
 

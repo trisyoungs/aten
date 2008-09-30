@@ -43,9 +43,6 @@ Aten::Aten()
 	// Default program mode
 	programMode_ = Aten::GuiMode;
 
-	// Store pointers to command functions
-	initCommands();
-
 	// Misc 
 	sketchElement_ = 6;
 	homeDir_ = "/tmp";

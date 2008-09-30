@@ -72,7 +72,6 @@ bool PrefsAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("PrefsAccessors::set");
 	bool result = TRUE;
-	CommandNode c;
 	// We don't need to cast the classptr since we use the global singleton
 // 	printf("Enumerated ID supplied to PrefsAccessors is %i.\n", vid);
 	// Check range of supplied vid
@@ -82,19 +81,21 @@ bool PrefsAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		printf("Unknown enumeration %i given to PrefsAccessors::set.\n", vid);
 		msg.exit("PrefsAccessors::set");
 		return FALSE;
-	} 
+	}
+	CommandNode *c = new CommandNode;
 	// Set value based on enumerated id
 	switch (vid)
 	{
 		case (PrefsAccessors::EnergyUnit):
-			c.addConstant(srcvar->asCharacter(), TRUE);
-			if (commands.callFromPointer(Command::CA_ENERGYUNITS, &c) != Command::Success) result = FALSE;
+			c->addConstant(srcvar->asCharacter(), TRUE);
+			if (commands.call(Command::CA_ENERGYUNITS, c) != Command::Success) result = FALSE;
 			break;
 		default:
 			printf("PrefsAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 	}
+	delete c;
 	msg.exit("PrefsAccessors::set");
 	return result;
 }
