@@ -1,6 +1,6 @@
 /*
-	*** Pattern Accessors
-	*** src/variables/patternaccess.h
+	*** PatternBound Accessors
+	*** src/variables/patternboundaccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,23 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PATTERNACCESS_H
-#define ATEN_PATTERNACCESS_H
+#ifndef ATEN_PATTERNBOUNDACCESS_H
+#define ATEN_PATTERNBOUNDACCESS_H
 
 #include "variables/vaccess.h"
 
-// Pattern Accessor
-class PatternAccessors : public VAccess
+// ForcefieldBound Accessor
+class PatternBoundAccessors : public VAccess
 {
 	public:
 	// Constructor
-	PatternAccessors();
+	PatternBoundAccessors();
 	// Accessor list
-	enum Accessors { Angles, Atoms, Bonds, FirstAtom, FirstAtomId, FField, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
+	enum Accessors { Data, Form, TypeNames, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up
-	Variable *accessorPointers[PatternAccessors::nAccessors];
+	Variable *accessorPointers[PatternBoundAccessors::nAccessors];
 
 	public:
 	// Retrieve specified data
@@ -44,6 +44,6 @@ class PatternAccessors : public VAccess
 	bool set(void *classptr, AccessStep *step, Variable *sourcevar);
 };
 
-extern PatternAccessors patternAccessors;
+extern PatternBoundAccessors patternboundAccessors;
 
 #endif

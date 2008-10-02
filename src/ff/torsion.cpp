@@ -32,7 +32,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 	int n,i,j,k,l,aoff,m1;
 	static double k0, k1, k2, k3, k4, eq, phi, energy, period, s;
 	PatternBound *pb;
-	static ForcefieldParams params;
+	ForcefieldBound *ffb;
 	Vec3<double> vecij, veckj;
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
@@ -46,7 +46,7 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 			k = pb->atomId(2) + aoff;
 			l = pb->atomId(3) + aoff;
 			phi = srcmodel->torsion(i,j,k,l);
-			params = pb->data()->params();
+			ffb = pb->data();
 			// Calculate energy
 			switch (pb->data()->torsionStyle())
 			{
@@ -55,51 +55,51 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 					break;
 				case (TorsionFunctions::Cosine): 
 					// U(phi) = forcek * (1 + s*cos(period*phi - eq))
-					k1 = params.data[TorsionFunctions::CosineK];
-					eq = params.data[TorsionFunctions::CosineEq] / DEGRAD;
-					period = params.data[TorsionFunctions::CosineN];
-					s = params.data[TorsionFunctions::CosineS];
+					k1 = ffb->parameter(TorsionFunctions::CosineK);
+					eq = ffb->parameter(TorsionFunctions::CosineEq) / DEGRAD;
+					period = ffb->parameter(TorsionFunctions::CosineN);
+					s = ffb->parameter(TorsionFunctions::CosineS);
 					energy += k1 * (1.0 + s * cos(period*phi - eq));
 					break;
 				case (TorsionFunctions::Cos3):
 					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) )
-					k1 = params.data[TorsionFunctions::Cos3K1];
-					k2 = params.data[TorsionFunctions::Cos3K2];
-					k3 = params.data[TorsionFunctions::Cos3K3];
+					k1 = ffb->parameter(TorsionFunctions::Cos3K1);
+					k2 = ffb->parameter(TorsionFunctions::Cos3K2);
+					k3 = ffb->parameter(TorsionFunctions::Cos3K3);
 					energy += 0.5 * (k1 * (1.0 + cos(phi)) + k2 * (1.0 - cos(2.0*phi)) + k3 * (1.0 + cos(3.0*phi)));
 					break;
 				case (TorsionFunctions::Cos4):
 					// U(phi) = 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) + k4*(1-cos(4*phi)) )
-					k1 = params.data[TorsionFunctions::Cos4K1];
-					k2 = params.data[TorsionFunctions::Cos4K2];
-					k3 = params.data[TorsionFunctions::Cos4K3];
-					k4 = params.data[TorsionFunctions::Cos4K4];
+					k1 = ffb->parameter(TorsionFunctions::Cos4K1);
+					k2 = ffb->parameter(TorsionFunctions::Cos4K2);
+					k3 = ffb->parameter(TorsionFunctions::Cos4K3);
+					k4 = ffb->parameter(TorsionFunctions::Cos4K4);
 					energy += 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) + k4*(1.0-cos(4.0*phi)) );
 					break;
 				case (TorsionFunctions::Cos3C):
 					// U(phi) = k0 + 0.5 * ( k1*(1+cos(phi)) + k2*(1-cos(2*phi)) + k3*(1+cos(3*phi)) )
-					k0 = params.data[TorsionFunctions::Cos3CK0];
-					k1 = params.data[TorsionFunctions::Cos3CK1];
-					k2 = params.data[TorsionFunctions::Cos3CK2];
-					k3 = params.data[TorsionFunctions::Cos3CK3];
+					k0 = ffb->parameter(TorsionFunctions::Cos3CK0);
+					k1 = ffb->parameter(TorsionFunctions::Cos3CK1);
+					k2 = ffb->parameter(TorsionFunctions::Cos3CK2);
+					k3 = ffb->parameter(TorsionFunctions::Cos3CK3);
 					energy += k0 + 0.5 * (k1*(1.0+cos(phi)) + k2*(1.0-cos(2.0*phi)) + k3*(1.0+cos(3.0*phi)) );
 					break;
 				case (TorsionFunctions::CosCos):
 					// U(phi) = 0.5 * k * (1 - cos(n*eq) * cos(n*theta))
-					k1 = params.data[TorsionFunctions::CosCosK];
-					period = params.data[TorsionFunctions::CosCosN];
-					eq = params.data[TorsionFunctions::CosCosEq] / DEGRAD;
+					k1 = ffb->parameter(TorsionFunctions::CosCosK);
+					period = ffb->parameter(TorsionFunctions::CosCosN);
+					eq = ffb->parameter(TorsionFunctions::CosCosEq) / DEGRAD;
 					energy += 0.5 * k1 * (1.0 - cos(period*eq)*cos(period*phi));
 					break;
 				case (TorsionFunctions::Dreiding):
 					// U(phi) = 0.5 * k * (1 - cos(n*(theta-eq))
-					k1 = params.data[TorsionFunctions::DreidingK];
-					period = params.data[TorsionFunctions::DreidingN];
-					eq = params.data[TorsionFunctions::DreidingEq] / DEGRAD;
+					k1 = ffb->parameter(TorsionFunctions::DreidingK);
+					period = ffb->parameter(TorsionFunctions::DreidingN);
+					eq = ffb->parameter(TorsionFunctions::DreidingEq) / DEGRAD;
 					energy += 0.5 * k1 * (1.0 - cos(n*(phi - eq)));
 					break;
 				default:
-					msg.print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
+					msg.print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].name);
 					break;
 			}
 			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->atomId(0),pb->atomId(1),pb->atomId(2),pb->atomId(3), phi,energy);
@@ -108,7 +108,6 @@ void Pattern::torsionEnergy(Model *srcmodel, Energy *estore, int molecule)
 	}
 	// Increment energy for pattern
 	estore->add(Energy::TorsionEnergy,energy,id_);
-	//estore->torsion[id] += energy;
 	msg.exit("Pattern::torsionEnergy");
 }
 
@@ -150,7 +149,7 @@ void Pattern::torsionForces(Model *srcmodel)
 	static Mat3<double> dxpj_dij, dxpj_dkj, dxpk_dkj, dxpk_dlk;
 	static double cosphi, phi, dp, forcek, period, eq, mag_ij, mag_kj, mag_lk, mag_xpj, mag_xpk, du_dphi, dphi_dcosphi;
 	static Vec3<double> fi, fj, fk, fl;
-	static ForcefieldParams params;
+	ForcefieldBound *ffb;
 	static double k0, k1, k2, k3, k4, s;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
@@ -167,7 +166,7 @@ void Pattern::torsionForces(Model *srcmodel)
 			j = pb->atomId(1) + aoff;
 			k = pb->atomId(2) + aoff;
 			l = pb->atomId(3) + aoff;
-			params = pb->data()->params();
+			ffb = pb->data();
 			// Calculate vectors between atoms
 			rij = cell->mimd(modelatoms[i]->r(), modelatoms[j]->r());
 			rkj = cell->mimd(modelatoms[k]->r(), modelatoms[j]->r());
@@ -224,50 +223,50 @@ void Pattern::torsionForces(Model *srcmodel)
 					break;
 				case (TorsionFunctions::Cosine): 
 					// dU/dphi = forcek * period * s * -sin(period*phi - eq)
-					forcek = params.data[TorsionFunctions::CosineK];
-					eq = params.data[TorsionFunctions::CosineEq] / DEGRAD;
-					period = params.data[TorsionFunctions::CosineN];
-					s = params.data[TorsionFunctions::CosineS];
+					forcek = ffb->parameter(TorsionFunctions::CosineK);
+					eq = ffb->parameter(TorsionFunctions::CosineEq) / DEGRAD;
+					period = ffb->parameter(TorsionFunctions::CosineN);
+					s = ffb->parameter(TorsionFunctions::CosineS);
 					du_dphi = dphi_dcosphi * period * forcek * s * -sin(period*phi - eq);
 					break;
 				case (TorsionFunctions::Cos3):
 					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
-					k1 = params.data[TorsionFunctions::Cos3K1];
-					k2 = params.data[TorsionFunctions::Cos3K2];
-					k3 = params.data[TorsionFunctions::Cos3K3];
+					k1 = ffb->parameter(TorsionFunctions::Cos3K1);
+					k2 = ffb->parameter(TorsionFunctions::Cos3K2);
+					k3 = ffb->parameter(TorsionFunctions::Cos3K3);
 					du_dphi = dphi_dcosphi * 0.5 * ( -k1*sin(phi) + 2.0*k2*sin(2.0*phi) - 3.0*k3*sin(3.0*phi));
 					break;
 				case (TorsionFunctions::Cos3C):
 					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) )
-					k1 = params.data[TorsionFunctions::Cos3CK1];
-					k2 = params.data[TorsionFunctions::Cos3CK2];
-					k3 = params.data[TorsionFunctions::Cos3CK3];
+					k1 = ffb->parameter(TorsionFunctions::Cos3CK1);
+					k2 = ffb->parameter(TorsionFunctions::Cos3CK2);
+					k3 = ffb->parameter(TorsionFunctions::Cos3CK3);
 					du_dphi = dphi_dcosphi * 0.5 * ( -k1*sin(phi) + 2.0*k2*sin(2.0*phi) - 3.0*k3*sin(3.0*phi));
 					break;
 				case (TorsionFunctions::Cos4):
 					// dU/dphi = 0.5 * ( -k1*sin(phi) + 2 * k2*sin(2*phi) - 3 * k3*(sin(3*phi)) + 4 * k4*(sin(4*phi)))
-					k1 = -params.data[TorsionFunctions::Cos4K1];
-					k2 = 2.0 * params.data[TorsionFunctions::Cos4K2];
-					k3 = -3.0 * params.data[TorsionFunctions::Cos4K3];
-					k4 = 4.0 * params.data[TorsionFunctions::Cos4K4];
+					k1 = -ffb->parameter(TorsionFunctions::Cos4K1);
+					k2 = 2.0 * ffb->parameter(TorsionFunctions::Cos4K2);
+					k3 = -3.0 * ffb->parameter(TorsionFunctions::Cos4K3);
+					k4 = 4.0 * ffb->parameter(TorsionFunctions::Cos4K4);
 					du_dphi = dphi_dcosphi * 0.5 * ( k1*sin(phi) + k2*sin(2.0*phi) + k3*sin(3.0*phi) + k4*sin(4.0*phi));
 					break;
 				case (TorsionFunctions::CosCos):
 					// dU/dphi = 0.5 * k * n * cos(n*eq) * sin(n*phi)
-					k1 = params.data[TorsionFunctions::CosCosK];
-					period = params.data[TorsionFunctions::CosCosN];
-					eq = params.data[TorsionFunctions::CosCosEq] / DEGRAD;
+					k1 = ffb->parameter(TorsionFunctions::CosCosK);
+					period = ffb->parameter(TorsionFunctions::CosCosN);
+					eq = ffb->parameter(TorsionFunctions::CosCosEq) / DEGRAD;
 					du_dphi = dphi_dcosphi * 0.5 * k1 * period * cos(period*eq)*sin(period*phi);
 					break;
 				case (TorsionFunctions::Dreiding):
 					// dU/dphi = 0.5 * k * (1 - cos(n*(theta-eq))
-					k1 = params.data[TorsionFunctions::DreidingK];
-					period = params.data[TorsionFunctions::DreidingN];
-					eq = params.data[TorsionFunctions::DreidingEq] / DEGRAD;
+					k1 = ffb->parameter(TorsionFunctions::DreidingK);
+					period = ffb->parameter(TorsionFunctions::DreidingN);
+					eq = ffb->parameter(TorsionFunctions::DreidingEq) / DEGRAD;
 					du_dphi = dphi_dcosphi * 0.5 * k1 * sin(n*(phi - eq));
 					break;
 				default:
-					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[pb->data()->torsionStyle()].name);
+					printf("No equation coded for torsion force of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].name);
 					break;
 			}
 

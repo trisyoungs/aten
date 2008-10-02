@@ -636,8 +636,8 @@ bool CommandNode::setArguments(const char *cmdname, const char *specifiers, Vari
 			// Pointer-style variable (that also need to create subvariables)
 			case ('A'):
 			case ('a'):
-			case ('B'):
-			case ('b'):
+// 			case ('B'): TGAYBOND
+// 			case ('b'):
 			case ('P'):
 			case ('p'):
 			case ('M'):
@@ -648,10 +648,10 @@ bool CommandNode::setArguments(const char *cmdname, const char *specifiers, Vari
 					case ('a'):
 						vt = VTypes::AtomData;
 						break;
-					case ('B'):
-					case ('b'):
-						vt = VTypes::BondData;
-						break;
+// 					case ('B'):   TGAYBOND
+// 					case ('b'):
+// 						vt = VTypes::BondData;
+// 						break;
 					case ('P'):
 					case ('p'):
 						vt = VTypes::PatternData;

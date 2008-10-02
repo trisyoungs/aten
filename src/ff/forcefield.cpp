@@ -434,7 +434,6 @@ void Forcefield::convertParameters()
 {
 	// Convert units of all the energetic parameters within the forcefield from the forcefield's current units to the program's internal units (specified in prefs)
 	msg.enter("Forcefield::convertParameters");
-	ForcefieldParams *p;
 	ForcefieldBound *ffb;
 	ForcefieldAtom *ffa;
 	int n;
@@ -442,10 +441,9 @@ void Forcefield::convertParameters()
 	// Note: First loop (for VDW) is from 1,n+1 instead of 0,n since we skip the dummy atom type which is n=0, present for all ffs.
 	for (ffa = types_.first(); ffa != NULL; ffa = ffa->next)
 	{
-		p = &ffa->params();
 		if (ffa->vdwForm() != VdwFunctions::None)
 		{
-			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::VdwFunctions[ffa->vdwForm()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
+			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::VdwFunctions[ffa->vdwForm()].isEnergyParameter[n]) ffa->setParameter(n,prefs.convertEnergy(ffa->parameter(n), energyUnit_));
 		}
 		// Only convert those parameters for which the 'energyGenerators_[]' flag is TRUE
 		if (ffa->generator() != NULL)
@@ -458,22 +456,19 @@ void Forcefield::convertParameters()
 	for (ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->bondStyle() == BondFunctions::None) continue;
-		p = &ffb->params();
-		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::BondFunctions[ffb->bondStyle()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
+		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::BondFunctions[ffb->bondStyle()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 	// Angles
 	for (ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->angleStyle() == AngleFunctions::None) continue;
-		p = &ffb->params();
-		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::AngleFunctions[ffb->angleStyle()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
+		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::AngleFunctions[ffb->angleStyle()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 	// Torsions
 	for (ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->torsionStyle() == TorsionFunctions::None) continue;
-		p = &ffb->params();
-		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].isEnergyParameter[n]) p->data[n] = prefs.convertEnergy(p->data[n], energyUnit_);
+		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::TorsionFunctions[ffb->torsionStyle()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 	// Set new energy unit of the forcefield to the programs internal unit
 	energyUnit_ = prefs.energyUnit();

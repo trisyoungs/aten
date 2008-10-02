@@ -27,6 +27,7 @@
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include <stdlib.h>
+#include <string.h>
 
 // Constructor
 AccessStep::AccessStep()

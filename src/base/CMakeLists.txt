@@ -8,7 +8,6 @@ colourscalepoint.h
 constants.h
 dnchar.h
 elements.h
-forcefieldparams.h
 forms.h
 generator.h
 glyph.h
@@ -30,7 +29,6 @@ cell.cpp
 colourscalepoint.cpp
 dnchar.cpp
 elements.cpp
-forcefieldparams.cpp
 forms.cpp
 generator.cpp
 glyph.cpp

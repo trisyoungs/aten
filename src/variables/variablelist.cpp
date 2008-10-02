@@ -28,6 +28,8 @@
 #include "variables/pointer.h"
 #include "variables/pointerlist.h"
 #include "variables/bundle.h"
+#include "classes/forcefieldbound.h"
+#include "classes/forcefieldatom.h"
 #include "main/aten.h"
 #include <string.h>
 #include <stdarg.h>
@@ -74,10 +76,9 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 		case (VTypes::PatternData):
 		case (VTypes::ModelData):
 		case (VTypes::GridData):
-		case (VTypes::BondData):
-		case (VTypes::AngleData):
-		case (VTypes::TorsionData):
-		case (VTypes::AtomtypeData):
+		case (VTypes::ForcefieldBoundData):
+		case (VTypes::ForcefieldAtomData):
+		case (VTypes::ForcefieldData):
 		case (VTypes::CellData):
 		case (VTypes::PrefsData):
 			result = new PointerVariable(dt);
@@ -211,19 +212,10 @@ Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt, v
 		case (VTypes::GridData):
 			newvar = new PointerListVariable<Grid>(vt, (List<Grid>*) ptr);
 			break;
-		case (VTypes::BondData):
-// 			newvar = new PointerListVariable<Bond>;
-			printf("Aaaaargh\n");  // TGAY
+		case (VTypes::ForcefieldBoundData):
+			newvar = new PointerListVariable<ForcefieldBound>(vt, (List<ForcefieldBound>*) ptr);
 			break;
-		case (VTypes::AngleData):
-// 			newvar = new PointerListVariable<>;
-			printf("Aaaaargh\n");  // TGAY
-			break;
-		case (VTypes::TorsionData):
-// 			newvar = new PointerListVariable<>;
-			printf("Aaaaargh\n");  // TGAY
-			break;
-		case (VTypes::AtomtypeData):
+		case (VTypes::ForcefieldAtomData):
 			newvar = new PointerListVariable<ForcefieldAtom>(vt, (List<ForcefieldAtom>*) ptr);
 			break;
 		default:

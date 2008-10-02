@@ -549,10 +549,10 @@ void Pattern::updateScaleMatrices()
 	// Interactions at tneds of torsion atoms are scaled by the factors stored in the torsion term
 	for (pb = torsions_.first(); pb != NULL; pb = pb->next)
 	{
-		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->params().data[TF_VSCALE];
-		vdwScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->params().data[TF_VSCALE];
-		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->params().data[TF_ESCALE];
-		elecScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->params().data[TF_ESCALE];
+		vdwScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->parameter(TF_VSCALE);
+		vdwScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->parameter(TF_VSCALE);
+		elecScaleMatrix_[ pb->atomId(0) ] [ pb->atomId(3) ] = pb->data()->parameter(TF_ESCALE);
+		elecScaleMatrix_[ pb->atomId(3) ] [ pb->atomId(0) ] = pb->data()->parameter(TF_ESCALE);
 	}
 	// Atoms at end of angles are excluded from vdw/elec interactions.
 	// Note that these elements are zeroed in the matrices, but the connectivity matrix is used to determined whether they are calculated.

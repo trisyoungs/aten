@@ -24,7 +24,6 @@
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
 #include "base/pattern.h"
-#include "base/forcefieldparams.h"
 
 // Initialise expression for pattern
 void Pattern::initExpression(bool vdwOnly)
@@ -92,7 +91,6 @@ bool Pattern::fillExpression()
 	Atom *ai, *aj, *ak, *al;
 	Refitem<Bond,int> *bref;
 	ForcefieldBound *ffb;
-	ForcefieldParams params;
 	PatternAtom *pa;
 	PatternBound *pb;
 	Forcefield *xff;
@@ -132,7 +130,6 @@ bool Pattern::fillExpression()
 		// If the forcefield is rule-based, generate the required parameters first
 		if (xff->rules() != Rules::None) xff->generateVdw(ai);
 		// Point to the data
-		//pa->data = pa->type->get_params()->data();
 		ai = ai->next;
 	}
 	// Generate intramolecular terms (if not disabled)
@@ -193,8 +190,7 @@ bool Pattern::fillExpression()
 					}
 					else
 					{
-						params = bonds_[count]->data()->params();
-						msg.print(Messenger::Verbose,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+						msg.print(Messenger::Verbose,"Bond %s-%s data : %f %f %f %f\n",ti->equivalent(), tj->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 					// Update the bonding array counters
 					bonding[ii].add()->data = jj;
@@ -260,8 +256,7 @@ bool Pattern::fillExpression()
 					}
 					else
 					{
-						params = angles_[count]->data()->params();
-						msg.print(Messenger::Verbose,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+						msg.print(Messenger::Verbose,"Angle %s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 					count ++;
 				}
@@ -330,8 +325,7 @@ bool Pattern::fillExpression()
 					}
 					else
 					{
-						params = torsions_[count]->data()->params();
-						msg.print(Messenger::Verbose,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), params.data[0], params.data[1], params.data[2], params.data[3]);
+						msg.print(Messenger::Verbose,"Torsion %s-%s-%s-%s data : %f %f %f %f\n", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 					count ++;
 				}

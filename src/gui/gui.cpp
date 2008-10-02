@@ -512,9 +512,10 @@ void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
 // Update the text progress dialog
 void GuiQt::textProgressUpdate(int currentstep)
 {
-	static char *twister = "-\\|/";
-	static char *c = twister;
-	static int n, ndots;
+// 	static char *twister = "-\\|/";
+	static char twister[5] = { '-', '\\', '|', '/' };
+// 	static char *c = twister;
+	static int n, ndots, c;
 	static double dpercent;
 	static int percent;
 	// Don't print anything if we're in quiet mode
@@ -525,10 +526,10 @@ void GuiQt::textProgressUpdate(int currentstep)
 	ndots = int(dpercent * 30.0);
 	dpercent *= 100.0;
 	// Always print the header and twister character
-	printf("\rProgress [%c]",*c);
+	printf("\rProgress [%c]", twister[c]);
 	// Increase the twister character
 	c ++;
-	if (*c == '\0') c = twister;
+	c = c%5;
 	// New dots or percentage to output?
 	if (percent != textProgressPercent_)
 	{

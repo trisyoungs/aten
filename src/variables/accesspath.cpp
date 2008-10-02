@@ -23,6 +23,8 @@
 #include "variables/accessstep.h"
 #include "variables/atomaccess.h"
 #include "variables/cellaccess.h"
+#include "variables/ffatomaccess.h"
+#include "variables/ffboundaccess.h"
 #include "variables/modelaccess.h"
 #include "variables/patternaccess.h"
 #include "variables/prefsaccess.h"
@@ -30,6 +32,7 @@
 #include "variables/variablelist.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
+#include <string.h>
 
 // Constructor
 AccessPath::AccessPath()
@@ -95,6 +98,12 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 					break;
 				case (VTypes::PrefsData):
 					accesslist = &prefsAccessors;
+					break;
+				case (VTypes::ForcefieldAtomData):
+					accesslist = &ffatomAccessors;
+					break;
+				case (VTypes::ForcefieldBoundData):
+					accesslist = &ffboundAccessors;
 					break;
 				default:
 					printf("Subvariable setting within pointers of type '%s' is not implemented.\n", VTypes::dataType(lastType));
@@ -195,6 +204,14 @@ bool AccessPath::setPath(const char *path)
 			case (VTypes::PrefsData):
 				success = step->setTarget(bit.get(), parent_, prefsAccessors.accessors());
 				if (success) step->setVariableId(prefsAccessors.accessorId(step->target()));
+				break;
+			case (VTypes::ForcefieldAtomData):
+				success = step->setTarget(bit.get(), parent_, ffatomAccessors.accessors());
+				if (success) step->setVariableId(ffatomAccessors.accessorId(step->target()));
+				break;
+			case (VTypes::ForcefieldBoundData):
+				success = step->setTarget(bit.get(), parent_, ffboundAccessors.accessors());
+				if (success) step->setVariableId(ffboundAccessors.accessorId(step->target()));
 				break;
 			default:
 				printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));

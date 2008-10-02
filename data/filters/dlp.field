@@ -14,10 +14,8 @@ exportfield
 	double epsilon, sigma
 	pattern p
 	atom i
-	bond b
-	angle a
-	torsion t
-	atomtype at1, at2
+	bound ffb
+	ffatom at1, at2
 	integer nvdw, n
 
 	# First, write header consisting of title, energy units, and number of molecule types
@@ -35,7 +33,7 @@ exportfield
 
 	# Loop over patterns (molecule types)
 	for $p
-		# Write pattern name and number of moleculse
+		# Write pattern name and number of molecules
 		writeline "$p.name"
 		writeline "nummols  $p.nmols"
 		# Write atoms - just loop over those in the first molecule of the pattern
@@ -45,44 +43,50 @@ exportfield
 		end
 		# Bonds in pattern
 		writeline "bonds  $p.nbonds"
-		for $b $p
+		for $n,1,$p.nbonds
+			# Grab ffbound pointer
+			$ffb = $p.bonds[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $b.form = harmonic
-				writeline "harm     $b.id_i%5 $b.id_j%5 $b.param_a%10.4 $b.param_b%10.4"
-			elseif $b.form = morse
-				writeline "morse    $b.id_i%5 $b.id_j%5 $b.param_c%10.4 $b.param_b%10.4 $b.param_a%10.4"
+			if $ffb.form = harmonic
+				writeline "harm     $ffb.id[1]%5 $ffb.id[2]%5 $ffb.param[1]%10.4 $ffb.param[2]%10.4"
+			elseif $ffb.form = morse
+				writeline "morse    $ffb.id[1]%5 $ffb.id[2]%5 $ffb.param[3]%10.4 $ffb.param[2]%10.4 $ffb.param[1]%10.4"
 			else
-			print $b.form
+			print $ffb.form
 				warn "Functional form of bond term ($b.form) not accounted for in export filter."
-				writeline "X$b.form    $b.id_i%5 $b.id_j%5 $b.param_a%10.4 $b.param_b%10.4 $b.param_c%10.4 $b.param_d%10.4 $b.param_e%10.4 $b.param_f%10.4"
+				writeline "X$ffb.form $ffb.id[1]%5 $ffb.id[2]%5 $ffb.param[1]%10.4 $ffb.param[2]%10.4 $ffb.param[3]%10.4 $ffb.param[4]%10.4" 
 			end
 		end
 		# Angles in pattern
 		writeline "angles  $p.nangles"
-		for $a $p
+		for $n,1,$p.nangles
+			# Grab ffbound pointer
+			$ffb = $p.angles[$n]
 			# Convert functional form to be recognised by DL_POLY
 			if $a.form = harmonic
-				writeline "harm     $a.id_i%5 $a.id_j%5 $a.id_k%5 $a.param_a%10.4 $a.param_b%10.4"
+				writeline "harm     $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[2]%10.4"
 			elseif $a.form = cos
-				writeline "cos      $a.id_i%5 $a.id_j%5 $a.id_k%5 $a.param_a%10.4 $a.param_c%10.4 $a.param_b%10.4"
+				writeline "cos      $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[3]%10.4 $a.param[2]%10.4"
 			elseif $a.form = harmcos
-				writeline "hcos     $a.id_i%5 $a.id_j%5 $a.id_k%5 $a.param_a%10.4 $a.param_b%10.4"
+				writeline "hcos     $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[2]%10.4"
 			else
 				warn "Functional form of angle term ($a.form) not accounted for in export filter."
-				writeline "X$a.form     $a.id_i%5 $a.id_j%5 $a.id_k%5 $a.param_a%10.4 $a.param_b%10.4 $a.param_c%10.4 $a.param_d%10.4 $a.param_e%10.4 $a.param_f%10.4"
+				writeline "X$a.form     $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[2]%10.4 $a.param[3]%10.4 $a.param[4]%10.4 $a.param[5]%10.4 $a.param_f%10.4"
 			end
 		end
 		# Torsions in pattern
 		writeline "dihedrals  $p.ntorsions"
-		for $t $p
+		for $n,1,$p.ntorsions
+			# Grab ffbound pointer
+			$ffb = $p.torsions[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $t.form = cos
-				writeline "cos    $t.id_i%5 $t.id_j%5 $t.id_k%5 $t.id_l%5 $t.param_a%10.4 $t.param_b%10.4 $t.param_c%10.4 $t.escale%10.4 $t.vscale%10.4"
-			elseif $t.form = cos3
-				writeline "cos3   $t.id_i%5 $t.id_j%5 $t.id_k%5 $t.id_l%5 $t.param_a%10.4 $t.param_b%10.4 $t.param_c%10.4 $t.escale%10.4 $t.vscale%10.4"
+			if $ffb.form = cos
+				writeline "cos    $ffb.id[1]%5 $t.id[2]%5 $t.id[3]%5 $t.id[4]%5 $t.param[1]%10.4 $t.param[2]%10.4 $t.param[3]%10.4 $t.escale%10.4 $t.vscale%10.4"
+			elseif $ffb.form = cos3
+				writeline "cos3   $ffb.id[1]%5 $t.id[2]%5 $t.id[3]%5 $t.id[4]%5 $t.param[1]%10.4 $t.param[2]%10.4 $t.param[3]%10.4 $t.escale%10.4 $t.vscale%10.4"
 			else
-				warn "Functional form of torsion term ($t.form) not accounted for in export filter."
-				writeline "X$t.form   $t.id_i%5 $t.id_j%5 $t.id_k%5 $t.id_l%5 $t.param_a%10.4 $t.param_b%10.4 $t.param_c%10.4 $t.param_d%10.4 $t.escale%10.4 $t.vscale%10.4"
+				warn "Functional form of torsion term ($ffb.form) not accounted for in export filter."
+				writeline "X$ffb.form   $t.id[1]%5 $t.id[2]%5 $t.id[3]%5 $t.id[4]%5 $t.param[1]%10.4 $t.param[2]%10.4 $t.param[3]%10.4 $t.param[4]%10.4 $t.escale%10.4 $t.vscale%10.4"
 			end
 		end
 		# Terminating line
@@ -102,11 +106,11 @@ exportfield
 			# Check functional forms of each atomtype
 			if $at1.form <> $at2.form
 				warn "Functional forms of atomtypes '$at1.equiv' and '$at2.equiv' differ - raw data written to output..." 
-				writeline "$at1.name%-8  $at2.name%-8   $at1.param_a%12.6  $at1.param_b%12.6  $at1.param_c%12.6 $at1.param_d%12.6 $at1.param_e%12.6 $at1.param_f%12.6"
+				writeline "$at1.name%-8  $at2.name%-8   $at1.param[1]%12.6  $at1.param[2]%12.6  $at1.param[3]%12.6 $at1.param[4]%12.6 $at1.param[5]%12.6 $at1.param[6]%12.6"
 			elseif $at1.form = lj
 				# LJ: use Lorentz-Berthelot combination rules
-				$sigma = "($at1.param_b + $at2.param_b) * 0.5"
-				$epsilon = "($at1.param_a * $at2.param_a) ^ 0.5"
+				$sigma = "($at1.param[2] + $at2.param[2]) * 0.5"
+				$epsilon = "($at1.param[1] * $at2.param[1]) ^ 0.5"
 				writeline "$at1.name%-8  $at2.name%-8  lj  $epsilon%12.6  $sigma%12.6"
 			elseif $at1.form = buck
 				error "Buckingham potential not included in FIELD file export yet."

@@ -7,10 +7,12 @@ cellaccess.h
 character.h
 expression.h
 expressionnode.h
-ffatom.h
+ffatomaccess.h
+ffboundaccess.h
 integer.h
 modelaccess.h
 patternaccess.h
+patternboundaccess.h
 pointer.h
 pointerlist.h
 prefsaccess.h
@@ -27,10 +29,12 @@ cellaccess.cpp
 character.cpp
 expression.cpp
 expressionnode.cpp
-ffatom.cpp
+ffatomaccess.cpp
+ffboundaccess.cpp
 integer.cpp
 modelaccess.cpp
 patternaccess.cpp
+patterboundnaccess.cpp
 pointer.cpp
 prefsaccess.cpp
 real.cpp
