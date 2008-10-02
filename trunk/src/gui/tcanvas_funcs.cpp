@@ -61,17 +61,18 @@ void TCanvas::paintEvent(QPaintEvent *event)
 {
 	if (canvas_ != NULL)
 	{
-		// Draw OpenGL objects
+		// Initialise QPainter
+		QPainter painter(this);
+
+		// Draw OpenGL objects (with OpenGL)
 		canvas_->renderScene(aten.currentModel()->renderSource());
-		// Draw on text objects
-		QPainter painter;
+
+		// Draw on text objects (with QPainter)
 		//font.setPointSize(prefs.labelSize());
 		//painter.setFont(font);
 		//painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
-		painter.begin(this);
 		painter.setRenderHint(QPainter::Antialiasing);
 		canvas_->renderText(painter);
-		painter.end();
 	}
 	else printf("NO CANVAS SET PAINT\n");
 	swapBuffers();
