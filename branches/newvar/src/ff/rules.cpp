@@ -47,18 +47,18 @@ void Forcefield::generateVdw(Atom *i)
 			epsilon = ffi->generator(3);
 			sigma = ffi->generator(2);
 			ffi->setVdwForm(VdwFunctions::Lj);
-			ffi->params().data[VdwFunctions::LjEpsilon] = epsilon * 0.25;
-			ffi->params().data[VdwFunctions::LjSigma] = sigma;
-			ffi->params().data[VdwFunctions::LjN] = 2.0;
+			ffi->setParameter(VdwFunctions::LjEpsilon, epsilon * 0.25);
+			ffi->setParameter(VdwFunctions::LjSigma, sigma);
+			ffi->setParameter(VdwFunctions::LjN, 2.0);
 			msg.print(Messenger::Verbose,"UFF LJ    : sigma, epsilon, n = %8.4f %8.4f 2.0\n", sigma, epsilon);
 			break;
 		case (Rules::DreidingLJ):
 			r0 = ffi->generator(2);
 			d0 = ffi->generator(3);
 			ffi->setVdwForm(VdwFunctions::LjAB);
-			ffi->params().data[VdwFunctions::LjA] = d0 * pow(r0,12.0);
-			ffi->params().data[VdwFunctions::LjB] = 2.0 * d0 * pow(r0,6.0);
-			msg.print(Messenger::Verbose,"Dreiding LJ (ljab) : A, B, %8.4f %8.4f\n", ffi->params().data[VdwFunctions::LjA], ffi->params().data[VdwFunctions::LjB]);
+			ffi->setParameter(VdwFunctions::LjA, d0 * pow(r0,12.0));
+			ffi->setParameter(VdwFunctions::LjB, 2.0 * d0 * pow(r0,6.0));
+			msg.print(Messenger::Verbose,"Dreiding LJ (ljab) : A, B, %8.4f %8.4f\n", ffi->parameter(VdwFunctions::LjA), ffi->parameter(VdwFunctions::LjB));
 			break;
 		case (Rules::DreidingX6):
 			break;
@@ -101,9 +101,9 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			k = prefs.convertEnergy(664.12, Prefs::KiloCalories) * ( (Zi * Zj) / (sumr + sumr + sumr) );
 			// Create new bond definition in the forcefield space and set its parameters
 			newbond->setBondStyle(BondFunctions::Harmonic);
-			newbond->params().data[BondFunctions::HarmonicEq] = sumr + rBO - rEN;
-			newbond->params().data[BondFunctions::HarmonicK] = k;
-			msg.print(Messenger::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
+			newbond->setParameter(BondFunctions::HarmonicEq, sumr + rBO - rEN);
+			newbond->setParameter(BondFunctions::HarmonicK, k);
+			msg.print(Messenger::Verbose,"UFF Bond  : eq, k = %8.4f %8.4f\n", newbond->parameter(BondFunctions::HarmonicEq), k);
 			break;
 		case (Rules::DreidingLJ):
 		case (Rules::DreidingX6):
@@ -113,9 +113,9 @@ ForcefieldBound *Forcefield::generateBond(Atom *i, Atom *j)
 			rj = ffj->generator(0);
 			k = prefs.convertEnergy(700.0, Prefs::KiloCalories) * i->bondOrder(j);
 			newbond->setBondStyle(BondFunctions::Harmonic);
-			newbond->params().data[BondFunctions::HarmonicEq] = ri + rj - 0.01;
-			newbond->params().data[BondFunctions::HarmonicK] = k;
-			msg.print(Messenger::Verbose,"Dreiding Bond (harm) : eq, k = %8.4f %8.4f\n", newbond->params().data[BondFunctions::HarmonicEq], newbond->params().data[BondFunctions::HarmonicK]);
+			newbond->setParameter(BondFunctions::HarmonicEq, ri + rj - 0.01);
+			newbond->setParameter(BondFunctions::HarmonicK, k);
+			msg.print(Messenger::Verbose,"Dreiding Bond (harm) : eq, k = %8.4f %8.4f\n", newbond->parameter(BondFunctions::HarmonicEq), k);
 			break;
 	}
 	msg.exit("Forcefield::generateBond");
@@ -183,23 +183,25 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			{
 				// Use Cos2 form for general nonlinear case
 				newangle->setAngleStyle(AngleFunctions::Cos2);
-				newangle->params().data[AngleFunctions::Cos2C2] = 1.0 / (4.0 * sin(eq)*sin(eq));
-				newangle->params().data[AngleFunctions::Cos2C1] = -4.0 * newangle->params().data[AngleFunctions::Cos2C2] * cos(eq);
-				newangle->params().data[AngleFunctions::Cos2C0] = newangle->params().data[AngleFunctions::Cos2C2];
-				newangle->params().data[AngleFunctions::Cos2C0] *= 2.0 * cos(eq) * cos(eq) + 1.0;
-				newangle->params().data[AngleFunctions::Cos2K] = forcek;
-				msg.print(Messenger::Verbose,"UFF Angle (cos2) : %s-%s-%s - forcek = %8.4f, C0 = %8.5f, C1 = %8.4f, C2 = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->params().data[AngleFunctions::Cos2C0], newangle->params().data[AngleFunctions::Cos2C1], newangle->params().data[AngleFunctions::Cos2C0]);
+				c2 = 1.0 / (4.0 * sin(eq)*sin(eq));
+				newangle->setParameter(AngleFunctions::Cos2C2, c2);
+				c1 = -4.0 * c2 * cos(eq);
+				newangle->setParameter(AngleFunctions::Cos2C1, c1);
+				c0 = c2 * 2.0 * cos(eq) * cos(eq) + 1.0;
+				newangle->setParameter(AngleFunctions::Cos2C0, c0);
+				newangle->setParameter(AngleFunctions::Cos2K, forcek);
+				msg.print(Messenger::Verbose,"UFF Angle (cos2) : %s-%s-%s - forcek = %8.4f, C0 = %8.5f, C1 = %8.4f, C2 = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), forcek, c0, c1, c2);
 			}
 			else
 			{
 				// We always use the Cosine form, with 'eq' set to zero and 's' set to +1 for linear and tetrahedral90 cases or -1 otherwise
 				newangle->setAngleStyle(AngleFunctions::Cosine);
-				newangle->params().data[AngleFunctions::CosineN] = n;
-				newangle->params().data[AngleFunctions::CosineK] = forcek / (n*n);
-				newangle->params().data[AngleFunctions::CosineEq] = 0.0;
-				if (n == 1) newangle->params().data[AngleFunctions::CosineS] = 1.0;
-				else newangle->params().data[AngleFunctions::CosineS] = -1.0;
-				msg.print(Messenger::Verbose,"UFF Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = 0.0, s = %f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->params().data[AngleFunctions::CosineS], n);
+				newangle->setParameter(AngleFunctions::CosineN, n);
+				newangle->setParameter(AngleFunctions::CosineK, forcek / (n*n));
+				newangle->setParameter(AngleFunctions::CosineEq, 0.0);
+				if (n == 1) newangle->setParameter(AngleFunctions::CosineS, 1.0);
+				else newangle->setParameter(AngleFunctions::CosineS, -1.0);
+				msg.print(Messenger::Verbose,"UFF Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = 0.0, s = %f, n = %i\n", ffi->name(), ffj->name(), ffk->name(), forcek, newangle->parameter(AngleFunctions::CosineS), n);
 			}
 			break;
 		case (Rules::DreidingLJ):
@@ -212,17 +214,17 @@ ForcefieldBound *Forcefield::generateAngle(Atom *i, Atom *j, Atom *k)
 			if (eq > 179.0)
 			{
 				newangle->setAngleStyle(AngleFunctions::Cosine);
-				newangle->params().data[AngleFunctions::CosineK] = forcek;
-				newangle->params().data[AngleFunctions::CosineEq] = 0.0;
-				newangle->params().data[AngleFunctions::CosineN] = 1.0;
+				newangle->setParameter(AngleFunctions::CosineK, forcek);
+				newangle->setParameter(AngleFunctions::CosineEq, 0.0);
+				newangle->setParameter(AngleFunctions::CosineN, 1.0);
 				msg.print(Messenger::Verbose,"Dreiding Angle (cosine) : %s-%s-%s - forcek = %8.4f, eq = %8.4f, n = 1\n", ffi->name(), ffj->name(), ffk->name(), forcek, eq);
 			}
 			else
 			{
 				newangle->setAngleStyle(AngleFunctions::HarmonicCosine);
-				newangle->params().data[AngleFunctions::HarmonicCosineK] = forcek / (sin(eq) * sin(eq));
-				newangle->params().data[AngleFunctions::HarmonicCosineEq] = eq;
-				msg.print(Messenger::Verbose,"Dreiding Angle (harmcos) : %s-%s-%s - forcek = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), newangle->params().data[AngleFunctions::HarmonicCosineK], eq);
+				newangle->setParameter(AngleFunctions::HarmonicCosineK, forcek / (sin(eq) * sin(eq)));
+				newangle->setParameter(AngleFunctions::HarmonicCosineEq, eq);
+				msg.print(Messenger::Verbose,"Dreiding Angle (harmcos) : %s-%s-%s - forcek = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), newangle->parameter(AngleFunctions::HarmonicCosineK), eq);
 			}
 			break;
 	}
@@ -320,9 +322,9 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 				eq = 0.0;
 			}
 			// Set parameters
-			newtorsion->params().data[TorsionFunctions::CosCosK] = forcek;
-			newtorsion->params().data[TorsionFunctions::CosCosN] = n;
-			newtorsion->params().data[TorsionFunctions::CosCosEq] = eq;
+			newtorsion->setParameter(TorsionFunctions::CosCosK, forcek);
+			newtorsion->setParameter(TorsionFunctions::CosCosN, n);
+			newtorsion->setParameter(TorsionFunctions::CosCosEq, eq);
 			msg.print(Messenger::Verbose,"UFF Torsion (coscos) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
 			break;
 		case (Rules::DreidingLJ):
@@ -406,11 +408,11 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 				eq = 0.0;
 			}
 			// Set parameters
-			newtorsion->params().data[TorsionFunctions::DreidingK] = forcek;
-			newtorsion->params().data[TorsionFunctions::DreidingN] = n;
-			newtorsion->params().data[TorsionFunctions::DreidingEq] = eq;
-			newtorsion->params().data[TorsionFunctions::DreidingEScale] = 1.0;
-			newtorsion->params().data[TorsionFunctions::DreidingVScale] = 1.0;
+			newtorsion->setParameter(TorsionFunctions::DreidingK, forcek);
+			newtorsion->setParameter(TorsionFunctions::DreidingN, n);
+			newtorsion->setParameter(TorsionFunctions::DreidingEq, eq);
+			newtorsion->setParameter(TorsionFunctions::DreidingEScale, 1.0);
+			newtorsion->setParameter(TorsionFunctions::DreidingVScale, 1.0);
 			msg.print(Messenger::Verbose,"Dreiding Torsion (dreiding) : %s-%s-%s-%s - forcek = %8.4f, n = %8.4f, eq = %8.4f\n", ffi->name(), ffj->name(), ffk->name(), ffl->name(), forcek, n, eq);
 			break;
 	}

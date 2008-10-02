@@ -30,7 +30,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 	int i, j, m1, aoff;
 	//static Vec3<double> mim_i;
 	static double forcek, eq, rij, energy, d, expo;
-	static ForcefieldParams params;
+	static ForcefieldBound *ffb;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
@@ -43,7 +43,7 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 		{
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
-			params = pb->data()->params();
+			ffb = pb->data();
 			rij = cell->distance(modelatoms[i]->r(), modelatoms[j]->r());
 			switch (pb->data()->bondStyle())
 			{
@@ -52,32 +52,32 @@ void Pattern::bondEnergy(Model *srcmodel, Energy *estore, int molecule)
 					break;
 				case (BondFunctions::Constraint):
 					// U = 0.5 * forcek * (r - eq)**2
-					forcek = fabs(params.data[BondFunctions::ConstraintK]);
-					eq = params.data[BondFunctions::ConstraintEq];
+					forcek = fabs(ffb->parameter(BondFunctions::ConstraintK));
+					eq = ffb->parameter(BondFunctions::ConstraintEq);
 					rij -= eq;
 					energy += 0.5 * forcek * rij * rij;
 					break;
 				case (BondFunctions::Harmonic):
 					// U = 0.5 * forcek * (r - eq)**2
-					forcek = fabs(params.data[BondFunctions::HarmonicK]);
-					eq = params.data[BondFunctions::HarmonicEq];
+					forcek = fabs(ffb->parameter(BondFunctions::HarmonicK));
+					eq = ffb->parameter(BondFunctions::HarmonicEq);
 					rij -= eq;
 					energy += 0.5 * forcek * rij * rij;
 					break;
 				case (BondFunctions::Morse):
 					// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
-					d = params.data[BondFunctions::MorseD];
-					forcek = fabs(params.data[BondFunctions::MorseK]);
-					eq = params.data[BondFunctions::MorseEq];
+					d = ffb->parameter(BondFunctions::MorseD);
+					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
+					eq = ffb->parameter(BondFunctions::MorseEq);
 					rij -= eq;
 					expo = 1.0 - exp( -forcek * rij );
 					energy += d * ( expo*expo - 1.0);
 					break;
 				case (BondFunctions::Morse2):
 					// U = E0 * ( (exp( -k(rij - r0) ) - 1)**2)
-					d = params.data[BondFunctions::MorseD];
-					forcek = fabs(params.data[BondFunctions::MorseK]);
-					eq = params.data[BondFunctions::MorseEq];
+					d = ffb->parameter(BondFunctions::MorseD);
+					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
+					eq = ffb->parameter(BondFunctions::MorseEq);
 					rij -= eq;
 					expo = exp( -forcek * rij ) - 1.0;
 					energy += d * expo * expo;
@@ -101,7 +101,7 @@ void Pattern::bondForces(Model *srcmodel)
 	int i, j, m1, aoff;
 	static Vec3<double> mim_i, fi;
 	static double forcek, eq, rij, d, expo, du_dr;
-	static ForcefieldParams params;
+	static ForcefieldBound *ffb;;
 	PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
@@ -116,7 +116,7 @@ void Pattern::bondForces(Model *srcmodel)
 			mim_i = cell->mimd(modelatoms[j]->r(), modelatoms[i]->r());
 			rij = mim_i.magnitude();
 			// Select energy function
-			params = pb->data()->params();
+			ffb = pb->data();
 			switch (pb->data()->bondStyle())
 			{
 				case (BondFunctions::None):
@@ -125,29 +125,29 @@ void Pattern::bondForces(Model *srcmodel)
 					break;
 				case (BondFunctions::Constraint):
 					// dU/dr = forcek * (r - eq)
-					forcek = params.data[BondFunctions::ConstraintK];
-					eq = params.data[BondFunctions::ConstraintEq];
+					forcek = ffb->parameter(BondFunctions::ConstraintK);
+					eq = ffb->parameter(BondFunctions::ConstraintEq);
 					du_dr = forcek * (rij - eq);
 					break;
 				case (BondFunctions::Harmonic):
 					// dU/dr = forcek * (r - eq)
-					forcek = params.data[BondFunctions::HarmonicK];
-					eq = params.data[BondFunctions::HarmonicEq];
+					forcek = ffb->parameter(BondFunctions::HarmonicK);
+					eq = ffb->parameter(BondFunctions::HarmonicEq);
 					du_dr = forcek * (rij - eq);
 					break;
 				case (BondFunctions::Morse):
 					// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
-					d = params.data[BondFunctions::MorseD];
-					forcek = fabs(params.data[BondFunctions::MorseK]);
-					eq = params.data[BondFunctions::MorseEq];
+					d = ffb->parameter(BondFunctions::MorseD);
+					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
+					eq = ffb->parameter(BondFunctions::MorseEq);
 					expo = exp( -forcek * (rij - eq) );
 					du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 					break;
 				case (BondFunctions::Morse2):
 					// dU/dR = -2 * E0 * k * exp( -k*(rij - e0) ) * ( exp -k*(rij - e0) - 1)
-					d = params.data[BondFunctions::MorseD];
-					forcek = fabs(params.data[BondFunctions::MorseK]);
-					eq = params.data[BondFunctions::MorseEq];
+					d = ffb->parameter(BondFunctions::MorseD);
+					forcek = fabs(ffb->parameter(BondFunctions::MorseK));
+					eq = ffb->parameter(BondFunctions::MorseEq);
 					expo = exp( -forcek * (rij - eq) );
 					du_dr = -2.0 * d * forcek * expo * (expo - 1.0);
 					break;

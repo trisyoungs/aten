@@ -22,6 +22,7 @@
 #include "command/format.h"
 #include "base/messenger.h"
 #include "base/parser.h"
+#include <string.h>
 
 // Returns first node in format
 FormatNode* Format::nodes()

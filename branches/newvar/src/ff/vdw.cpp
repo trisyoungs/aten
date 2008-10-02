@@ -26,7 +26,7 @@
 #include "base/forms.h"
 
 // Calculate energy for specified interaction
-double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams paramsi, ForcefieldParams paramsj, double scale, int i, int j)
+double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double *paramsi, double *paramsj, double scale, int i, int j)
 {
 	static double U, epsilon, sigma, sigmar2, sigmar6, r6, ar12, br6, pwr, a, b, c, d, forcek, eq, expo;
 	switch (type)
@@ -37,16 +37,16 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams pa
 			break;
 		case (VdwFunctions::InversePower):
 			// U = epsilon * (r / rij) ** n
-			epsilon = sqrt( paramsi.data[VdwFunctions::InversePowerEpsilon] * paramsj.data[VdwFunctions::InversePowerEpsilon] );
-			sigma = ( paramsi.data[VdwFunctions::InversePowerR] + paramsj.data[VdwFunctions::InversePowerR] ) * 0.5 * scale;
-			pwr = ( paramsi.data[VdwFunctions::InversePowerN] + paramsj.data[VdwFunctions::InversePowerN] ) * 0.5;
+			epsilon = sqrt( paramsi[VdwFunctions::InversePowerEpsilon] * paramsj[VdwFunctions::InversePowerEpsilon] );
+			sigma = ( paramsi[VdwFunctions::InversePowerR] + paramsj[VdwFunctions::InversePowerR] ) * 0.5 * scale;
+			pwr = ( paramsi[VdwFunctions::InversePowerN] + paramsj[VdwFunctions::InversePowerN] ) * 0.5;
 			U = epsilon * pow(sigma / rij, pwr);
 			break;
 		case (VdwFunctions::Lj):
 			// U = 4 * epsilon * [ (s/rij)**12 - n *(s/rij)**6 ]
-			epsilon = sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
-			sigma = ( paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma] ) * 0.5 * scale;
-			a = ( paramsi.data[VdwFunctions::LjN] + paramsj.data[VdwFunctions::LjN] ) * 0.5;
+			epsilon = sqrt( paramsi[VdwFunctions::LjEpsilon] * paramsj[VdwFunctions::LjEpsilon] );
+			sigma = ( paramsi[VdwFunctions::LjSigma] + paramsj[VdwFunctions::LjSigma] ) * 0.5 * scale;
+			a = ( paramsi[VdwFunctions::LjN] + paramsj[VdwFunctions::LjN] ) * 0.5;
 			sigmar2 = sigma / rij;
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -54,8 +54,8 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams pa
 			break;
 		case (VdwFunctions::LjAB):
 			// U = A/r**12 - B/r**6
-			a = sqrt( paramsi.data[VdwFunctions::LjA] * paramsj.data[VdwFunctions::LjA] );
-			b = sqrt( paramsi.data[VdwFunctions::LjB] * paramsj.data[VdwFunctions::LjB] );
+			a = sqrt( paramsi[VdwFunctions::LjA] * paramsj[VdwFunctions::LjA] );
+			b = sqrt( paramsi[VdwFunctions::LjB] * paramsj[VdwFunctions::LjB] );
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			ar12 = a / (r6 * r6);
@@ -64,18 +64,18 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams pa
 			break;
 		case (VdwFunctions::Buckingham):
 			// U = A * exp(-rij/B) - C/(rij**6)
-			a = sqrt( paramsi.data[VdwFunctions::BuckinghamA] * paramsj.data[VdwFunctions::BuckinghamA] );
-			b = sqrt( paramsi.data[VdwFunctions::BuckinghamB] * paramsj.data[VdwFunctions::BuckinghamB] );
-			c = sqrt( paramsi.data[VdwFunctions::BuckinghamC] * paramsj.data[VdwFunctions::BuckinghamC] );
+			a = sqrt( paramsi[VdwFunctions::BuckinghamA] * paramsj[VdwFunctions::BuckinghamA] );
+			b = sqrt( paramsi[VdwFunctions::BuckinghamB] * paramsj[VdwFunctions::BuckinghamB] );
+			c = sqrt( paramsi[VdwFunctions::BuckinghamC] * paramsj[VdwFunctions::BuckinghamC] );
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			U = a * exp(-rij/b) - c/r6;
 			break;
 		case (VdwFunctions::Morse):
 			// U = E0 * ( (1 - exp( -k(rij - r0) ) )**2 - 1)
-			d = sqrt( paramsi.data[VdwFunctions::MorseD] * paramsj.data[VdwFunctions::MorseD]);
-			forcek = sqrt( paramsi.data[VdwFunctions::MorseK] * paramsj.data[VdwFunctions::MorseK] );
-			eq = 0.5 * (paramsi.data[VdwFunctions::MorseEq] + paramsj.data[VdwFunctions::MorseEq]) * scale;
+			d = sqrt( paramsi[VdwFunctions::MorseD] * paramsj[VdwFunctions::MorseD]);
+			forcek = sqrt( paramsi[VdwFunctions::MorseK] * paramsj[VdwFunctions::MorseK] );
+			eq = 0.5 * (paramsi[VdwFunctions::MorseEq] + paramsj[VdwFunctions::MorseEq]) * scale;
 			rij -= eq;
 			expo = 1.0 - exp( -forcek * rij );
 			U = d * ( expo*expo - 1.0);
@@ -85,7 +85,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, ForcefieldParams pa
 }
 
 // Calculate forces for specified interaction (return force on atom i)
-Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, ForcefieldParams paramsi, ForcefieldParams paramsj, double scale, int i, int j)
+Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, double rij, double *paramsi, double *paramsj, double scale, int i, int j)
 {
 	static double du_dr, epsilon, sigma, sigmar2, sigmar6, r2, r6, ar12, br6, a, b, c, d, pwr, forcek, expo, eq;
 	static Vec3<double> fi;
@@ -97,16 +97,16 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::InversePower):
 			// dU/dr = -n * epsilon * (sigma / r)**(n-1) * (sigma/ r**2)
-			epsilon = sqrt( paramsi.data[VdwFunctions::InversePowerEpsilon] * paramsj.data[VdwFunctions::InversePowerEpsilon] );
-			sigma = ( paramsi.data[VdwFunctions::InversePowerR] + paramsj.data[VdwFunctions::InversePowerR] ) * 0.5 * scale;
-			pwr = ( paramsi.data[VdwFunctions::InversePowerN] + paramsj.data[VdwFunctions::InversePowerN] ) * 0.5;
+			epsilon = sqrt( paramsi[VdwFunctions::InversePowerEpsilon] * paramsj[VdwFunctions::InversePowerEpsilon] );
+			sigma = ( paramsi[VdwFunctions::InversePowerR] + paramsj[VdwFunctions::InversePowerR] ) * 0.5 * scale;
+			pwr = ( paramsi[VdwFunctions::InversePowerN] + paramsj[VdwFunctions::InversePowerN] ) * 0.5;
 			du_dr = -pwr * epsilon * pow(sigma / rij, (pwr - 1.0)) * (sigma / (rij*rij));
 			break;
 		case (VdwFunctions::Lj):
 			// dU/dr = 48 * epsilon * ( sigma/r**13 - 0.5 * sigma/r**7)
-			epsilon = sqrt( paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon] );
-			sigma = ( paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma] ) * 0.5 * scale;
-			a = ( paramsi.data[VdwFunctions::LjN] + paramsj.data[VdwFunctions::LjN] ) * 0.5;
+			epsilon = sqrt( paramsi[VdwFunctions::LjEpsilon] * paramsj[VdwFunctions::LjEpsilon] );
+			sigma = ( paramsi[VdwFunctions::LjSigma] + paramsj[VdwFunctions::LjSigma] ) * 0.5 * scale;
+			a = ( paramsi[VdwFunctions::LjN] + paramsj[VdwFunctions::LjN] ) * 0.5;
 			sigmar2 = (sigma / rij);
 			sigmar2 *= sigmar2;
 			sigmar6 = sigmar2 * sigmar2 * sigmar2;
@@ -114,8 +114,8 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::LjAB):
 			// dU/dr = 6*(B/r**7) - 12*(A/r**13)
-			a = sqrt( paramsi.data[VdwFunctions::LjA] * paramsj.data[VdwFunctions::LjA] );
-			b = sqrt( paramsi.data[VdwFunctions::LjB] * paramsj.data[VdwFunctions::LjB] );
+			a = sqrt( paramsi[VdwFunctions::LjA] * paramsj[VdwFunctions::LjA] );
+			b = sqrt( paramsi[VdwFunctions::LjB] * paramsj[VdwFunctions::LjB] );
 			r6 = rij * rij * rij;
 			r6 *= r6;
 			ar12 = a / (r6 * r6);
@@ -124,18 +124,18 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			break;
 		case (VdwFunctions::Buckingham):
 			// dU/dr = A * exp(-rij/B) / B + 6.0 * C/(rij**7)
-			a = sqrt( paramsi.data[VdwFunctions::BuckinghamA] * paramsj.data[VdwFunctions::BuckinghamA] );
-			b = sqrt( paramsi.data[VdwFunctions::BuckinghamB] * paramsj.data[VdwFunctions::BuckinghamB] );
-			c = sqrt( paramsi.data[VdwFunctions::BuckinghamC] * paramsj.data[VdwFunctions::BuckinghamC] );
+			a = sqrt( paramsi[VdwFunctions::BuckinghamA] * paramsj[VdwFunctions::BuckinghamA] );
+			b = sqrt( paramsi[VdwFunctions::BuckinghamB] * paramsj[VdwFunctions::BuckinghamB] );
+			c = sqrt( paramsi[VdwFunctions::BuckinghamC] * paramsj[VdwFunctions::BuckinghamC] );
 			r2 = rij * rij;
 			r6 = r2 * r2 * r2;
 			du_dr = a * b * exp(-rij/b) / b + 6.0 * c/(r6 * rij);
 			break;
 		case (VdwFunctions::Morse):
 			// dU/dr = 2.0 * k * E0 * (1 - exp( -k(rij - r0) ) ) * exp( -k*(rij - r0) )
-			d = sqrt( paramsi.data[VdwFunctions::MorseD] * paramsj.data[VdwFunctions::MorseD] );
-			forcek = sqrt(paramsi.data[VdwFunctions::MorseK] * paramsj.data[VdwFunctions::MorseK] );
-			eq = 0.5 * (paramsi.data[VdwFunctions::MorseEq] + paramsj.data[VdwFunctions::MorseEq] ) * scale;
+			d = sqrt( paramsi[VdwFunctions::MorseD] * paramsj[VdwFunctions::MorseD] );
+			forcek = sqrt(paramsi[VdwFunctions::MorseK] * paramsj[VdwFunctions::MorseK] );
+			eq = 0.5 * (paramsi[VdwFunctions::MorseEq] + paramsj[VdwFunctions::MorseEq] ) * scale;
 			expo = exp( -forcek * (rij - eq) );
 			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
@@ -189,7 +189,7 @@ void Pattern::vdwIntraPatternEnergy(Model *srcmodel, Energy *estore, int lonemol
 						continue;
 					}
 					// Calculate the enrgy contribution
-					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->params(), atoms_[j]->data()->params(), vrs, i, j);
+					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->parameters(), atoms_[j]->data()->parameters(), vrs, i, j);
 					con == 0 ? energy_inter += U : energy_intra += (con == 3 ? U * vdwScaleMatrix_[i][j] : U);
 				}
 			}
@@ -280,7 +280,7 @@ void Pattern::vdwInterPatternEnergy(Model *srcmodel, Pattern *otherPattern, Ener
 						continue;
 					}
 					// Calculate the enrgy contribution
-					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->params(), otherPattern->atoms_[j]->data()->params(), vrs, i, j);
+					U = VdwEnergy(atoms_[i]->data()->vdwForm(), rij, atoms_[i]->data()->parameters(), otherPattern->atoms_[j]->data()->parameters(), vrs, i, j);
 					energy_inter += U;;
 				}
 			}
@@ -337,7 +337,7 @@ void Pattern::vdwIntraPatternForces(Model *srcmodel)
 						continue;
 					}
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->params(), paj->data()->params(), vrs, i, j);
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->parameters(), paj->data()->parameters(), vrs, i, j);
 					if (con == 3) tempf *= vdwScaleMatrix_[i][j];
 					f_i -= tempf;
 					modelatoms[j+aoff]->f() += tempf;
@@ -396,7 +396,7 @@ void Pattern::vdwInterPatternForces(Model *srcmodel, Pattern *otherPattern)
 						continue;
 					}
 					// Calculate force contribution
-					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->params(), paj->data()->params(), vrs, i, j);
+					tempf = VdwForces(atoms_[i]->data()->vdwForm(), mim_i, rij, pai->data()->parameters(), paj->data()->parameters(), vrs, i, j);
 					f_i -= tempf;
 					modelatoms[j+aoff2]->f() += tempf;
 				}
@@ -428,7 +428,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 	static Pattern *p1, *p2;
 	static double energy, rho, cutoff, du_dr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
 	PatternAtom *pai, *paj;
-	static ForcefieldParams paramsi, paramsj;
+	double *paramsi, *paramsj;
 	cutoff = prefs.vdwCutoff();
 	vrs = prefs.vdwScale();
 	// The way the patterns are stored does not give direct access to the number of different
@@ -445,7 +445,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 			for (pai = p1->atoms_.first(); pai != NULL; pai = pai->next)
 			{
 				i++;
-				paramsi = pai->data()->params();
+				paramsi = pai->data()->parameters();
 				j = -1;
 				for (paj = p2->atoms_.first(); paj != NULL; paj = paj->next)
 				{
@@ -456,7 +456,7 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 						msg.print( "Conflicting vdW types for atoms %i (%s) and %i (%s).\n", i, VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name, j, VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].name);
 						continue;
 					}
-					paramsj = paj->data()->params();
+					paramsj = paj->data()->parameters();
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
@@ -465,8 +465,8 @@ void Pattern::vdwCorrectEnergy(Cell *cell, Energy *estore)
 							break;
 						case (VdwFunctions::Lj):
 							// U = 4/3 * eps * sigma**3 * ( 1/3 * (s/r)**9 - (s/r)**3
-							epsilon = sqrt(paramsi.data[VdwFunctions::LjEpsilon] * paramsj.data[VdwFunctions::LjEpsilon]);
-							sigma = 0.5 * (paramsi.data[VdwFunctions::LjSigma] + paramsj.data[VdwFunctions::LjSigma]) * vrs;
+							epsilon = sqrt(paramsi[VdwFunctions::LjEpsilon] * paramsj[VdwFunctions::LjEpsilon]);
+							sigma = 0.5 * (paramsi[VdwFunctions::LjSigma] + paramsj[VdwFunctions::LjSigma]) * vrs;
 							sigmar9 = sigma / cutoff;
 							sigmar3 = sigmar9 * sigmar9 * sigmar9;
 							sigmar9 = sigmar3 * sigmar3 * sigmar3;

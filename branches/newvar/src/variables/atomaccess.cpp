@@ -42,7 +42,7 @@ AtomAccessors::AtomAccessors()
  	accessorPointers[AtomAccessors::RY] = addAccessor("ry",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::RZ] = addAccessor("rz",		VTypes::RealData,	FALSE);
  	accessorPointers[AtomAccessors::Symbol] = addAccessor("symbol",		VTypes::CharacterData,	TRUE);
-  	accessorPointers[AtomAccessors::Type] = addAccessor("type",		VTypes::AtomtypeData,	FALSE);
+  	accessorPointers[AtomAccessors::Type] = addAccessor("type",		VTypes::ForcefieldAtomData,	FALSE);
 };
 
 // Retrieve specified data

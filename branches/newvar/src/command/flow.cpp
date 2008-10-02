@@ -119,12 +119,7 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 			case (VTypes::PatternData):
 				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				break;
-			case (VTypes::BondData):
-			case (VTypes::AngleData):
-			case (VTypes::TorsionData):
-				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
-				break;
-			case (VTypes::AtomtypeData):
+			case (VTypes::ForcefieldAtomData):
 				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				break;
 			default:
@@ -213,8 +208,6 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 				}
 				else c->arg(0)->set(obj.rs->atoms(), VTypes::AtomData);
 				if (c->argp(0, VTypes::AtomData) == NULL) status = FALSE;
-				// Set secondary variables from atom loop variable
-// 				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0)); TGAY
 				break;
 			// Pattern loop	 1 arg  - loop over patterns in model
 			case (VTypes::PatternData):
@@ -226,11 +219,9 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 					return Command::Fail;
 				}
 				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
-				// Set pattern variables from the pattern pointer
-// 				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0)); TGAY
 				break;
-			// Loop over forcefield bond terms of pattern
-			case (VTypes::BondData):
+			// Loop over bonds in model/pattern   TGAYBOND
+/*			case (VTypes::BondData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				// Attempt loop over pattern ff bonds
 				if (c->argt(1) != VTypes::PatternData)
@@ -238,50 +229,23 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 					msg.print( "Bond loop must be given a variable of Pattern type.\n");
 					return Command::Fail;
 				}
-// 				c->arg(0)->set(c->argp(1)->bonds());
-// 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
 				if (c->argp(0, VTypes::BondData) == NULL) status = FALSE;
-				break;
-			// Loop over forcefield angle terms of pattern
-			case (VTypes::AngleData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-				if (c->argt(1) != VTypes::PatternData)
-				{
-					msg.print( "Angle loop must be given a variable of Pattern type.\n");
-					return Command::Fail;
-				}
-// 				c->arg(0)->set(c->argp(1)->angles());
-// 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
-				if (c->argp(0, VTypes::AngleData) == NULL) status = FALSE;
-				break;
-			// Loop over forcefield torsion terms of pattern
-			case (VTypes::TorsionData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-				if (c->argt(1) != VTypes::PatternData)
-				{
-					msg.print( "Torsion loop must be given a variable of Pattern type.\n");
-					return Command::Fail;
-				}
-// 				c->arg(0)->set(c->argp(1)->torsions());
-// 				c->parent()->setPatternBoundVariables(c->arg(0)->name(), (PatternBound*) c->arg(0)->asPointer());
-				if (c->argp(0, VTypes::TorsionData) == NULL) status = FALSE;
-				break;
+				break;*/
 			// Loop over unique ForcefieldAtoms in model
-			case (VTypes::AtomtypeData):
+			case (VTypes::ForcefieldAtomData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 				if (c->hasArg(1))
 				{
-					if (c->argt(1) != VTypes::AtomtypeData)
+					if (c->argt(1) != VTypes::ForcefieldAtomData)
 					{
 						msg.print( "Second argument to atomtype loop must be a variable of Atomtype type.\n");
 						return Command::Fail;
 					}
 					// Start atomtype loop at type given instead of first
-// 					c->arg(0)->set((ForcefieldAtom*) c->arg(1)->asPointer()); TGAY
+					c->arg(0)->set(c->arg(1)->asPointer(VTypes::ForcefieldAtomData), VTypes::ForcefieldAtomData);
 				}
-// 				else c->arg(0)->set(obj.rs->uniqueTypes());
-// 				c->parent()->setAtomtypeVariables(c->arg(0)->name(), (ForcefieldAtom*) c->arg(0)->asPointer()); TGAY
-				if (c->argp(0, VTypes::AtomtypeData) == NULL) status = FALSE;
+				else c->arg(0)->set(obj.rs->uniqueTypes(), VTypes::ForcefieldAtomData);
+				if (c->argp(0, VTypes::ForcefieldAtomData) == NULL) status = FALSE;
 				break;
 			default:
 				printf("Kick Developer - Loops over '%s' are missing.\n", VTypes::dataType(c->argt(0)));

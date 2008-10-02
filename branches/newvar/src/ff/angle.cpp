@@ -30,7 +30,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 	static int i,j,k,aoff,m1;
 	static double forcek, n, s, eq, r, theta, dp, energy, c0, c1, c2;
 	static double coseq, delta;
-	static ForcefieldParams params;
+	static ForcefieldBound *ffb;
 	static PatternBound *pb;
 	static Vec3<double> vecij, veckj;
 	energy = 0.0;
@@ -45,7 +45,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 			k = pb->atomId(2) + aoff;
 			theta = srcmodel->angle(i,j,k);
 			// Grab pointer to function data
-			params = pb->data()->params();
+			ffb = pb->data();
 			// Calculate energy contribution
 			switch (pb->data()->angleStyle())
 			{
@@ -54,32 +54,32 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					break;
 				case (AngleFunctions::Harmonic): 
 					// U(theta) = 0.5 * forcek * (theta - eq)**2
-					forcek = params.data[AngleFunctions::HarmonicK];
-					eq = params.data[AngleFunctions::HarmonicEq] / DEGRAD;
+					forcek = ffb->parameter(AngleFunctions::HarmonicK);
+					eq = ffb->parameter(AngleFunctions::HarmonicEq) / DEGRAD;
 					theta -= eq;
 					energy += 0.5 * forcek * theta * theta;
 					break;
 				case (AngleFunctions::Cosine):
 					// U(theta) = forcek * (1 + s * cos(n*theta - eq))
-					forcek = params.data[AngleFunctions::CosineK];
-					eq = params.data[AngleFunctions::CosineEq] / DEGRAD;
-					n = params.data[AngleFunctions::CosineN];
-					s = params.data[AngleFunctions::CosineS];
+					forcek = ffb->parameter(AngleFunctions::CosineK);
+					eq = ffb->parameter(AngleFunctions::CosineEq) / DEGRAD;
+					n = ffb->parameter(AngleFunctions::CosineN);
+					s = ffb->parameter(AngleFunctions::CosineS);
 					energy += forcek * (1.0 + s * cos(n * theta - eq));
 					break;
 				case (AngleFunctions::Cos2):
 					// U(theta) = forcek * (C0 + C1 * cos(theta) + C2 * cos(2*theta))
-					forcek = params.data[AngleFunctions::Cos2K];
-					eq = params.data[AngleFunctions::Cos2Eq] / DEGRAD;
-					c0 = params.data[AngleFunctions::Cos2C0];
-					c1 = params.data[AngleFunctions::Cos2C1];
-					c2 = params.data[AngleFunctions::Cos2C2];
+					forcek = ffb->parameter(AngleFunctions::Cos2K);
+					eq = ffb->parameter(AngleFunctions::Cos2Eq) / DEGRAD;
+					c0 = ffb->parameter(AngleFunctions::Cos2C0);
+					c1 = ffb->parameter(AngleFunctions::Cos2C1);
+					c2 = ffb->parameter(AngleFunctions::Cos2C2);
 					energy += forcek * (c0 + c1 * cos(theta) + c2 * cos(2.0 * theta));
 					break;
 				case (AngleFunctions::HarmonicCosine):
 					// U(theta) = 0.5 * forcek * (cos(theta) - cos(eq)))**2
-					forcek = params.data[AngleFunctions::HarmonicCosineK];
-					coseq = cos(params.data[AngleFunctions::HarmonicCosineEq] / DEGRAD);
+					forcek = ffb->parameter(AngleFunctions::HarmonicCosineK);
+					coseq = cos(ffb->parameter(AngleFunctions::HarmonicCosineEq) / DEGRAD);
 					delta = cos(theta) - coseq;
 					energy += 0.5 * forcek * delta * delta;
 					break;
@@ -104,7 +104,7 @@ void Pattern::angleForces(Model *srcmodel)
 	static Vec3<double> vec_ij, vec_kj, fi, fk;
 	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx;
 	static double du_dtheta, dtheta_dcostheta;
-	static ForcefieldParams params;
+	static ForcefieldBound *ffb;
 	static PatternBound *pb;
 	Atom **modelatoms = srcmodel->atomArray();
 	Cell *cell = srcmodel->cell();
@@ -126,7 +126,7 @@ void Pattern::angleForces(Model *srcmodel)
 			dp = vec_ij.dp(vec_kj);
 			theta = acos(dp);
 			dtheta_dcostheta = -1.0 / sin(theta);
-			params = pb->data()->params();
+			ffb = pb->data();
 			// Generate forces
 			switch (pb->data()->angleStyle())
 			{
@@ -136,30 +136,30 @@ void Pattern::angleForces(Model *srcmodel)
 					break;
 				case (AngleFunctions::Harmonic): 
 					// dU/d(theta) = forcek * (theta - eq)
-					forcek = params.data[AngleFunctions::HarmonicK];
-					eq = params.data[AngleFunctions::HarmonicEq] / DEGRAD;
+					forcek = ffb->parameter(AngleFunctions::HarmonicK);
+					eq = ffb->parameter(AngleFunctions::HarmonicEq) / DEGRAD;
 					du_dtheta = forcek * (theta - eq);
 					break;
 				case (AngleFunctions::Cosine):
 					// dU/d(theta) = -forcek * n * s * sin(n*theta - eq)
-					forcek = params.data[AngleFunctions::CosineK];
-					eq = params.data[AngleFunctions::CosineEq] / DEGRAD;
-					n = params.data[AngleFunctions::CosineN];
-					s = params.data[AngleFunctions::CosineS];
+					forcek = ffb->parameter(AngleFunctions::CosineK);
+					eq = ffb->parameter(AngleFunctions::CosineEq) / DEGRAD;
+					n = ffb->parameter(AngleFunctions::CosineN);
+					s = ffb->parameter(AngleFunctions::CosineS);
 					du_dtheta = -forcek * n * s * sin(n * theta - eq);
 					break;
 				case (AngleFunctions::Cos2):
 					// dU/d(theta) = -forcek * (c1 * sin(theta) + 2 * c2 * sin(2*theta))
-					forcek = params.data[AngleFunctions::Cos2K];
-					eq = params.data[AngleFunctions::Cos2Eq] / DEGRAD;
-					c1 = params.data[AngleFunctions::Cos2C1];
-					c2 = params.data[AngleFunctions::Cos2C2];
+					forcek = ffb->parameter(AngleFunctions::Cos2K);
+					eq = ffb->parameter(AngleFunctions::Cos2Eq) / DEGRAD;
+					c1 = ffb->parameter(AngleFunctions::Cos2C1);
+					c2 = ffb->parameter(AngleFunctions::Cos2C2);
 					du_dtheta = -forcek * (c1 * sin(theta) + 2.0 * c2 * sin(2.0 * theta));
 					break;
 				case (AngleFunctions::HarmonicCosine):
 					// dU/d(theta) = forcek * (cos(theta) - cos(eq))) * -sin(theta)
-					forcek = params.data[AngleFunctions::HarmonicCosineK];
-					cosx = cos(params.data[AngleFunctions::HarmonicCosineEq] / DEGRAD);
+					forcek = ffb->parameter(AngleFunctions::HarmonicCosineK);
+					cosx = cos(ffb->parameter(AngleFunctions::HarmonicCosineEq) / DEGRAD);
 					du_dtheta = -forcek * (cos(theta) - cosx) * sin(theta);
 					break;
 				default:

@@ -24,6 +24,7 @@
 #include "base/mathfunc.h"
 #include "base/constants.h"
 #include "base/messenger.h"
+#include <string.h>
 
 // Singleton
 Parser parser;

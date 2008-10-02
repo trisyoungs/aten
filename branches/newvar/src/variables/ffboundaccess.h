@@ -1,6 +1,6 @@
 /*
-	*** Forcefield term parameters
-	*** src/base/forcefieldparams.h
+	*** ForcefieldBound Accessors
+	*** src/variables/ffboundaccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,20 +19,31 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FORCEFIELDPARAMS_H
-#define ATEN_FORCEFIELDPARAMS_H
+#ifndef ATEN_FFBOUNDACCESS_H
+#define ATEN_FFBOUNDACCESS_H
 
-#include "base/constants.h"
+#include "variables/vaccess.h"
 
-// Forcefield parameters
-class ForcefieldParams
+// ForcefieldBound Accessor
+class FFBoundAccessors : public VAccess
 {
 	public:
-	// Storage for parameters used in functions
-	double data[MAXFFPARAMDATA];
 	// Constructor
-	ForcefieldParams();
+	FFBoundAccessors();
+	// Accessor list
+	enum Accessors { Data, Form, TypeNames, nAccessors };
+
+	private:
+	// Array of acessor pointers for look-up
+	Variable *accessorPointers[FFBoundAccessors::nAccessors];
+
+	public:
+	// Retrieve specified data
+	bool retrieve(void *classptr, AccessStep *step, ReturnValue &rv);
+	// Set specified data
+	bool set(void *classptr, AccessStep *step, Variable *sourcevar);
 };
 
-#endif
+extern FFBoundAccessors ffboundAccessors;
 
+#endif

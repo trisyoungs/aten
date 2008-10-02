@@ -20,9 +20,9 @@
 */
 
 #include "base/spacegroup.h"
-//#include "base/generator.h"
 #include "base/sysfunc.h"
 #include "base/cell.h"
+#include <string.h>
 
 // Singleton declaration
 SpacegroupMap spacegroups;

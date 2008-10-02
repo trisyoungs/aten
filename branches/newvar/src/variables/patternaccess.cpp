@@ -18,6 +18,7 @@
 	You should have received a copy of the GNU General Public License
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
+#include "ff/forcefield.h"
 
 #include "variables/patternaccess.h"
 #include "variables/accessstep.h"
@@ -30,10 +31,21 @@ PatternAccessors patternAccessors;
 // Constructor
 PatternAccessors::PatternAccessors()
 {
- 	accessorPointers[PatternAccessors::Name] = addAccessor("name",		VTypes::CharacterData, FALSE);
- 	accessorPointers[PatternAccessors::Name] = addAccessor("natoms",	VTypes::IntegerData, TRUE);
- 	accessorPointers[PatternAccessors::Name] = addAccessor("nmolatoms",	VTypes::IntegerData, TRUE);
- 	accessorPointers[PatternAccessors::Name] = addAccessor("nmols",		VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::Angles] = addListAccessor("angles",	VTypes::ForcefieldBoundData);
+	accessorPointers[PatternAccessors::Angles] = addListAccessor("atoms",	VTypes::ForcefieldAtomData);
+	accessorPointers[PatternAccessors::Bonds] = addListAccessor("bonds",	VTypes::ForcefieldBoundData);
+	accessorPointers[PatternAccessors::FirstAtom] = addAccessor("firstatom",	VTypes::AtomData, TRUE);
+	accessorPointers[PatternAccessors::FirstAtomId] = addAccessor("firstatomid",	VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::FField] = addAccessor("forcefield",	VTypes::ForcefieldData, FALSE);
+	accessorPointers[PatternAccessors::LastAtom] = addAccessor("lastatom",	VTypes::AtomData, TRUE);
+	accessorPointers[PatternAccessors::LastAtomId] = addAccessor("lastatomid",	VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::Name] = addAccessor("name",		VTypes::CharacterData, FALSE);
+	accessorPointers[PatternAccessors::NAngles] = addAccessor("nangles",	VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::NAtoms] = addAccessor("natoms",	VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::NBonds] = addAccessor("nbonds",	VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::NMolAtoms] = addAccessor("nmolatoms",	VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::NMolAtoms] = addAccessor("nmols",		VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::NTorsions] = addAccessor("ntorsions",	VTypes::IntegerData, TRUE);
 };
 
 // Retrieve specified data
@@ -87,17 +99,41 @@ bool PatternAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
+		case (PatternAccessors::FirstAtom):
+			rv.set(p->firstAtom(), VTypes::AtomData);
+			break;
+		case (PatternAccessors::FirstAtomId):
+			rv.set(p->startAtom());
+			break;
+		case (PatternAccessors::FField):
+			rv.set(p->forcefield(), VTypes::ForcefieldData);
+			break;
+		case (PatternAccessors::LastAtom):
+			rv.set(p->lastAtom(), VTypes::AtomData);
+			break;
+		case (PatternAccessors::LastAtomId):
+			rv.set(p->endAtom());
+			break;
 		case (PatternAccessors::Name):
 			rv.set(p->name());
 			break;
+		case (PatternAccessors::NAngles):
+			rv.set(p->nAngles());
+			break;
 		case (PatternAccessors::NAtoms):
 			rv.set(p->totalAtoms());
+			break;
+		case (PatternAccessors::NBonds):
+			rv.set(p->nBonds());
 			break;
 		case (PatternAccessors::NMolAtoms):
 			rv.set(p->nAtoms());
 			break;
 		case (PatternAccessors::NMols):
 			rv.set(p->nMolecules());
+			break;
+		case (PatternAccessors::NTorsions):
+			rv.set(p->nTorsions());
 			break;
 		default:
 			printf("PatternAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
@@ -162,9 +198,19 @@ bool PatternAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (PatternAccessors::Name):
 			p->setName(srcvar->asCharacter());
 			break;
+		case (PatternAccessors::FField):
+ 			p->setForcefield( (Forcefield*) srcvar->asPointer(VTypes::ForcefieldData));
+			break;
+		case (PatternAccessors::FirstAtom):
+		case (PatternAccessors::FirstAtomId):
+		case (PatternAccessors::LastAtom):
+		case (PatternAccessors::LastAtomId):
+		case (PatternAccessors::NAngles):
 		case (PatternAccessors::NAtoms):
+		case (PatternAccessors::NBonds):
 		case (PatternAccessors::NMolAtoms):
 		case (PatternAccessors::NMols):
+		case (PatternAccessors::NTorsions):
 			msg.print("Member '%s' in Pattern is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;

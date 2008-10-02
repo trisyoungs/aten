@@ -23,7 +23,6 @@
 #define ATEN_FORCEFIELDATOM_H
 
 #include "classes/atomtype.h"
-#include "base/forcefieldparams.h"
 #include "base/dnchar.h"
 #include "base/forms.h"
 
@@ -61,7 +60,7 @@ class ForcefieldAtom
 	// Atomtype description
 	Atomtype atomtype_;
 	// Parameter data
-	ForcefieldParams params_;
+	double params_[MAXFFPARAMDATA];
 	// Generator data (if present in a rule-based Forcefield)
 	double *generator_;
 	// Atomic charge
@@ -108,8 +107,12 @@ class ForcefieldAtom
 	void setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
 	// Returns the original atomtype string
 	const char *atomtypeString();
-	// Returns ForcefieldParams structure
-	ForcefieldParams &params();
+	// Set the parameter data specified
+	void setParameter(int i, double d);
+	// Return parameter data specified
+	double parameter(int i);
+	// Returns parameter array pointer
+	double *parameters();
 	// Set generator data
 	void setGenerator(int i, double d);
 	// Initialise generator array

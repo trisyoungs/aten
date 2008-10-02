@@ -89,7 +89,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	}
 	QTableWidgetItem *item;
 	int count, n;
-	ForcefieldParams ffp;
+	double *params;
 	QStringList slist;
 	TComboBox *combo;
 
@@ -127,7 +127,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	for (n=0; n<VdwFunctions::nVdwFunctions; n++) slist << VdwFunctions::VdwFunctions[n].keyword;
 	for (ForcefieldAtom *ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
-		ffp = ffa->params();
+		params = ffa->parameters();
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFEditorAtomsTable->setItem(count, AtomColumn::Id, item);
 		item = new QTableWidgetItem(ffa->name());
@@ -143,7 +143,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(VdwFunctionChanged(int)));
 		for (int n=0; n<6; n++)
 		{
-			item = new QTableWidgetItem(ftoa(ffp.data[n]));
+			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorAtomsTable->setItem(count, AtomColumn::Data1+n, item);
 		}
 		count ++;
@@ -159,7 +159,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->bonds(); ffb != NULL; ffb = ffb->next)
 	{
-		ffp = ffb->params();
+		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
 		ui.FFEditorBondsTable->setItem(count, BondColumn::Type1, item);
 		item = new QTableWidgetItem(ffb->typeName(1));
@@ -173,7 +173,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
 		for (int n=0; n<6; n++)
 		{
-			item = new QTableWidgetItem(ftoa(ffp.data[n]));
+			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorBondsTable->setItem(count, BondColumn::Data1+n, item);
 		}
 		count ++;
@@ -189,7 +189,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	for (n=0; n<AngleFunctions::nAngleFunctions; n++) slist << AngleFunctions::AngleFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
 	{
-		ffp = ffb->params();
+		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
 		ui.FFEditorAnglesTable->setItem(count, AngleColumn::Type1, item);
 		item = new QTableWidgetItem(ffb->typeName(1));
@@ -205,7 +205,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(AngleFunctionChanged(int)));
 		for (int n=0; n<6; n++)
 		{
-			item = new QTableWidgetItem(ftoa(ffp.data[n]));
+			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorAnglesTable->setItem(count, AngleColumn::Data1+n, item);
 		}
 		count ++;
@@ -221,7 +221,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
 	for (ForcefieldBound *ffb = ff->torsions(); ffb != NULL; ffb = ffb->next)
 	{
-		ffp = ffb->params();
+		params = ffb->parameters();
 		item = new QTableWidgetItem(ffb->typeName(0));
 		ui.FFEditorTorsionsTable->setItem(count, TorsionColumn::Type1, item);
 		item = new QTableWidgetItem(ffb->typeName(1));
@@ -239,7 +239,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(TorsionFunctionChanged(int)));
 		for (int n=0; n<6; n++)
 		{
-			item = new QTableWidgetItem(ftoa(ffp.data[n]));
+			item = new QTableWidgetItem(ftoa(params[n]));
 			ui.FFEditorTorsionsTable->setItem(count, TorsionColumn::Data1+n, item);
 		}
 		count ++;
@@ -346,7 +346,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 		case (AtomColumn::Data5):
 		case (AtomColumn::Data6):
 			n = column - AtomColumn::Data1;
-			ffa->params().data[n] = atof(qPrintable(w->text()));
+			ffa->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
 	updating_ = FALSE;
@@ -403,7 +403,7 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w
 		case (BondColumn::Data5):
 		case (BondColumn::Data6):
 			n = column - BondColumn::Data1;
-			ffb->params().data[n] = atof(qPrintable(w->text()));
+			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
 	updating_ = FALSE;
@@ -461,7 +461,7 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *
 		case (AngleColumn::Data5):
 		case (AngleColumn::Data6):
 			n = column - AngleColumn::Data1;
-			ffb->params().data[n] = atof(qPrintable(w->text()));
+			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
 	updating_ = FALSE;
@@ -520,7 +520,7 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 		case (TorsionColumn::Data5):
 		case (TorsionColumn::Data6):
 			n = column - TorsionColumn::Data1;
-			ffb->params().data[n] = atof(qPrintable(w->text()));
+			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
 	updating_ = FALSE;

@@ -182,11 +182,12 @@ bool CommandList::addCommand(Command::Function cf)
 		case (Command::CA_FLOAT):
 		case (Command::CA_ATOM):
 		case (Command::CA_PATTERN):
+		case (Command::CA_PATTERNBOUND):
 		case (Command::CA_MODEL):
-		case (Command::CA_BOND):
-		case (Command::CA_ANGLE):
-		case (Command::CA_TORSION):
-		case (Command::CA_ATOMTYPE):
+		case (Command::CA_FFATOM):
+		case (Command::CA_FFBOUND):
+		case (Command::CA_CELL):
+		case (Command::CA_FORCEFIELDVAR):
 			for (n=1; n<parser.nArgs(); n++)
 			{
 				// First, check that the argument is a plain variable

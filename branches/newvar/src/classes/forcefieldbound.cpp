@@ -21,7 +21,6 @@
 
 #include "classes/forcefieldbound.h"
 #include "base/constants.h"
-// #include "base/forms.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -47,6 +46,25 @@ ForcefieldBound::BoundType ForcefieldBound::type()
 {
 	return type_;
 }
+// Return the form text for the bound interaction
+const char *ForcefieldBound::formText()
+{
+	switch (type_)
+	{
+		case (ForcefieldBound::BondInteraction):
+			return BondFunctions::BondFunctions[bondStyle()].keyword;
+			break;
+		case (ForcefieldBound::AngleInteraction):
+			return AngleFunctions::AngleFunctions[angleStyle()].keyword;
+			break;
+		case (ForcefieldBound::TorsionInteraction):
+			return TorsionFunctions::TorsionFunctions[torsionStyle()].keyword;
+			break;
+		default:
+			return "No Bound type defined.";
+			break;
+	}
+}
 
 // Return the functional form (cast as a bond style)
 BondFunctions::BondFunction ForcefieldBound::bondStyle()
@@ -71,7 +89,7 @@ void ForcefieldBound::setBondStyle(BondFunctions::BondFunction bf)
 {
 	functionalForm_ = bf;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_.data[i] = BondFunctions::BondFunctions[bf].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = BondFunctions::BondFunctions[bf].defaultValues[i];
 }
 
 // Set the angle functional form
@@ -79,7 +97,7 @@ void ForcefieldBound::setAngleStyle(AngleFunctions::AngleFunction af)
 {
 	functionalForm_ = af;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_.data[i] = AngleFunctions::AngleFunctions[af].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = AngleFunctions::AngleFunctions[af].defaultValues[i];
 }
 
 // Set the torsion functional form
@@ -87,13 +105,28 @@ void ForcefieldBound::setTorsionStyle(TorsionFunctions::TorsionFunction tf)
 {
 	functionalForm_ = tf;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_.data[i] = TorsionFunctions::TorsionFunctions[tf].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = TorsionFunctions::TorsionFunctions[tf].defaultValues[i];
 }
 
-// Return the data[] array in *params
-ForcefieldParams &ForcefieldBound::params()
+// Set the parameter data specified
+void ForcefieldBound::setParameter(int i, double d)
 {
-	return params_; 
+	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldAtom::setParameter (%i) is out of bounds.\n", i);
+	else params_[i] = d;
+}
+
+// Return parameter data specified
+double ForcefieldBound::parameter(int i)
+{
+	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldAtom::parameter (%i) is out of bounds.\n", i);
+	else return params_[i];
+	return 0.0;
+}
+
+// Returns parameter array pointer
+double *ForcefieldBound::parameters()
+{
+	return params_;
 }
 
 // Return the atom type 'n'

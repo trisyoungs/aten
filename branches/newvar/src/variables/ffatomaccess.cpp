@@ -1,6 +1,6 @@
 /*
 	*** ForcefieldAtom Access
-	*** src/variables/ffatomacess.cpp
+	*** src/variables/ffatomaccess.cpp
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -34,6 +34,7 @@ FFAtomAccessors::FFAtomAccessors()
 	accessorPointers[FFAtomAccessors::Atomtype] = addAccessor("atomtype",		VTypes::CharacterData, FALSE);
 	accessorPointers[FFAtomAccessors::Charge] = addAccessor("charge",		VTypes::RealData, FALSE);
 	accessorPointers[FFAtomAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE);
+	accessorPointers[FFAtomAccessors::Data]->setListArray();
 	accessorPointers[FFAtomAccessors::Description] = addAccessor("description",		VTypes::CharacterData, FALSE);
 	accessorPointers[FFAtomAccessors::Equivalent] = addAccessor("equivalent",		VTypes::CharacterData, FALSE);
 	accessorPointers[FFAtomAccessors::Id] = addAccessor("id",		VTypes::IntegerData, FALSE);
@@ -100,8 +101,8 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	msg.enter("FFAtomAccessors::set");
 	bool result = TRUE;
 	// Cast pointer into ForcefieldAtom*
-	ForcefieldAtom *i = (ForcefieldAtom*) classptr;
-	if (i == NULL) printf("Warning - NULL ForcefieldAtom pointer passed to FFAtomAccessors::set.\n");
+	ForcefieldAtom *ffa = (ForcefieldAtom*) classptr;
+	if (ffa == NULL) printf("Warning - NULL ForcefieldAtom pointer passed to FFAtomAccessors::set.\n");
 // 	printf("Enumerated ID supplied to FFAtomAccessors is %i.\n", vid);
 	// Check range of supplied vid
 	int vid = step->variableId();
@@ -115,7 +116,7 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	switch (vid)
 	{
 		case (FFAtomAccessors::Charge):
-			i->setCharge(srcvar->asDouble());
+			ffa->setCharge(srcvar->asDouble());
 			break;
 		case (FFAtomAccessors::ParentFF):
 			msg.print("Member '%s' in ForcefieldAtom is read-only.\n", accessorPointers[vid]->name());

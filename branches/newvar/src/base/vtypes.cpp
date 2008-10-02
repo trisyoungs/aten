@@ -24,7 +24,7 @@
 #include <string.h>
 
 // Variable Types
-const char *DataTypeKeywords[VTypes::nDataTypes] = { "character", "integer", "real", "atom*", "pattern*", "model*", "grid*", "bond*", "angle*", "torsion*", "atomtype*", "cell*", "forcefield*", "prefs*", "none" };
+const char *DataTypeKeywords[VTypes::nDataTypes] = { "character", "integer", "real", "atom*", "pattern*", "patternbound*", "model*", "grid*", "ffatom*", "bound*", "cell*", "forcefield*", "prefs*", "none" };
 const char *VTypes::dataType(VTypes::DataType dt)
 {
 	return DataTypeKeywords[dt];

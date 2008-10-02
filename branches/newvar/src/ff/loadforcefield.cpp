@@ -318,8 +318,8 @@ bool Forcefield::readVdw(ifstream &fffile)
 			}
 			ffa->setCharge(parser.argd(2));
 			ffa->setVdwForm(vdwstyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) ffa->params().data[n] = parser.argd(n+3);
-			msg.print(Messenger::Verbose,"VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->charge(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->params().data[3], ffa->params().data[4], ffa->params().data[5]);
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) ffa->setParameter(n, parser.argd(n+3));
+			msg.print(Messenger::Verbose,"VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->charge(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->parameter(3), ffa->parameter(4), ffa->parameter(5));
 			count ++;
 		}
 	} while (!done);
@@ -371,8 +371,8 @@ bool Forcefield::readBonds(ifstream &fffile)
 			newffbond->setTypeName(0,parser.argc(0));
 			newffbond->setTypeName(1,parser.argc(1));
 			newffbond->setBondStyle(bondstyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+2)) newffbond->params().data[n] = parser.argd(n+2);
-			msg.print(Messenger::Verbose,"BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->params().data[0], newffbond->params().data[1], newffbond->params().data[2], newffbond->params().data[3], newffbond->params().data[4], newffbond->params().data[5]); 
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+2)) newffbond->setParameter(n, parser.argd(n+2));
+			msg.print(Messenger::Verbose,"BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
 			count ++;
 		}
 	} while (!done);
@@ -425,8 +425,8 @@ bool Forcefield::readAngles(ifstream &fffile)
 			newffangle->setTypeName(1, parser.argc(1));
 			newffangle->setTypeName(2, parser.argc(2));
 			newffangle->setAngleStyle(anglestyle);
-			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) newffangle->params().data[n] = parser.argd(n+3);
-			msg.print(Messenger::Verbose,"ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->params().data[0], newffangle->params().data[1], newffangle->params().data[2], newffangle->params().data[3], newffangle->params().data[4], newffangle->params().data[5]); 
+			for (n=0; n<MAXFFPARAMDATA; n++) if (!parser.isBlank(n+3)) newffangle->setParameter(n,parser.argd(n+3));
+			msg.print(Messenger::Verbose,"ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
 			count ++;
 		}
 	} while (!done);
@@ -480,10 +480,10 @@ bool Forcefield::readTorsions(ifstream &fffile)
 			newfftorsion->setTypeName(2,parser.argc(2));
 			newfftorsion->setTypeName(3,parser.argc(3));
 			newfftorsion->setTorsionStyle(torsionstyle);
-			for (n=0; n<MAXFFPARAMDATA-2; n++) if (!parser.isBlank(n+4)) newfftorsion->params().data[n] = parser.argd(n+4);
-			newfftorsion->params().data[TF_ESCALE] = escale14;
-			newfftorsion->params().data[TF_VSCALE] = vscale14;
-			msg.print(Messenger::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->params().data[0], newfftorsion->params().data[1], newfftorsion->params().data[2], newfftorsion->params().data[3], newfftorsion->params().data[4], newfftorsion->params().data[5]);
+			newfftorsion->setParameter(TF_ESCALE, escale14);
+			newfftorsion->setParameter(TF_VSCALE, vscale14);
+			for (n=0; n<MAXFFPARAMDATA-2; n++) if (!parser.isBlank(n+4)) newfftorsion->setParameter(n, parser.argd(n+4));
+			msg.print(Messenger::Verbose,"TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
 			count ++;
 		}
 	} while (!done);
