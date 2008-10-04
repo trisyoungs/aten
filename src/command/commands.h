@@ -72,7 +72,7 @@ class Command {
 		CA_FFATOM,
 		CA_FFBOUND,
 		CA_CELLVAR,
-		CA_FORCEFIELDVAR,
+		CA_FORCEFIELD,
 		CA_PREFSVAR,
 	
 		// Root node

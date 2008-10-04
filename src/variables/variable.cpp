@@ -97,7 +97,7 @@ void Variable::setListArray()
 }
 
 // Return whether the array is a listarray
-bool Variable::listArray()
+bool Variable::isListArray()
 {
 	return listArray_;
 }
@@ -107,6 +107,12 @@ bool Variable::isArray()
 {
 	if (listArray_ || (arraySize_ > 0)) return TRUE;
 	else return FALSE;
+}
+
+// Return size of array
+int Variable::arraySize()
+{
+	return arraySize_;
 }
 
 /*

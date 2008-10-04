@@ -186,8 +186,8 @@ bool CommandList::addCommand(Command::Function cf)
 		case (Command::CA_MODEL):
 		case (Command::CA_FFATOM):
 		case (Command::CA_FFBOUND):
-		case (Command::CA_CELL):
-		case (Command::CA_FORCEFIELDVAR):
+		case (Command::CA_CELLVAR):
+		case (Command::CA_FORCEFIELD):
 			for (n=1; n<parser.nArgs(); n++)
 			{
 				// First, check that the argument is a plain variable

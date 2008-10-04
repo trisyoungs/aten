@@ -71,6 +71,8 @@ template <class T> class PointerListVariable : public Variable
 	bool increase(int, Variable *index = NULL);
 	// Integer decrease
 	bool decrease(int, Variable *index = NULL);
+	// Return size of array
+	int arraySize();
 
 	/*
 	// Variable list pointer
@@ -85,6 +87,7 @@ template <class T> PointerListVariable<T>::PointerListVariable(VTypes::DataType 
 	dataType_ = ptrtype;
 	listData_ = list;
 	readOnly_ = TRUE;
+	listArray_ = TRUE;
 }
 
 /*
@@ -202,6 +205,12 @@ template <class T> bool PointerListVariable<T>::decrease(int i, Variable *index)
 {
 	printf("More work needed here...\n");
 	return FALSE;
+}
+
+// Return size of array
+template <class T> int PointerListVariable<T>::arraySize()
+{
+	return listData_->nItems();
 }
 
 #endif

@@ -27,14 +27,16 @@
 #include "base/elements.h"
 #include "base/messenger.h"
 
-PatternBoundAccessors pboundAccessors;
+PatternBoundAccessors patternboundAccessors;
 
 // Constructor
 PatternBoundAccessors::PatternBoundAccessors()
 {
-	accessorPointers[PatternBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE);
-	accessorPointers[PatternBoundAccessors::Data]->setListArray();
+	printf("lksdjflkjdlkj\n");
+	accessorPointers[PatternBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE, MAXFFPARAMDATA);
+	printf("lksdjflkjdlkj\n");
 	accessorPointers[PatternBoundAccessors::Form] = addAccessor("form",		VTypes::CharacterData, FALSE);
+	printf("lksdjflkjdlkj\n");
 	accessorPointers[PatternBoundAccessors::TypeNames] = addListAccessor("typenames",	VTypes::CharacterData);
 };
 
@@ -51,40 +53,16 @@ bool PatternBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnVal
 	int vid = step->variableId();
 	if ((vid < 0) || (vid > PatternBoundAccessors::nAccessors))
 	{
-		printf("Unknown enumeration %i given to PatternBoundAccessors::set.\n", vid);
-		msg.exit("PatternBoundAccessors::set");
+		printf("Unknown enumeration %i given to PatternBoundAccessors::retrieve.\n", vid);
+		msg.exit("PatternBoundAccessors::retrieve");
 		return FALSE;
 	} 
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in PatternBoundAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("PatternBoundAccessors::retrieve");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in PatternBoundAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("PatternBoundAccessors::retrieve");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in PatternBoundAccessors::retrieve.\n", accessorPointers[vid]->name());
-			msg.exit("PatternBoundAccessors::retrieve");
-			return FALSE;
-		}
+		msg.exit("PatternBoundAccessors::retrieve");
+		return FALSE;
 	}
 	// Retrieve value based on enumerated id
 	switch (vid)
@@ -133,34 +111,10 @@ bool PatternBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcv
 	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in PatternBoundAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("PatternBoundAccessors::set");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in PatternBoundAccessors::set, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("PatternBoundAccessors::set");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in PatternBoundAccessors::set.\n", accessorPointers[vid]->name());
-			msg.exit("PatternBoundAccessors::set");
-			return FALSE;
-		}
+		msg.exit("PatternBoundAccessors::set");
+		return FALSE;
 	}
 	// Set value based on enumerated id
 	switch (vid)

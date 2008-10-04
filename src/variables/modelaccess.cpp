@@ -63,34 +63,10 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in ModelAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("ModelAccessors::retrieve");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in ModelAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("ModelAccessors::retrieve");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in ModelAccessors::retrieve.\n", accessorPointers[vid]->name());
-			msg.exit("ModelAccessors::retrieve");
-			return FALSE;
-		}
+		msg.exit("ModelAccessors::retrieve");
+		return FALSE;
 	}
 	// Retrieve value based on enumerated id
 	switch (vid)
@@ -169,6 +145,13 @@ bool ModelAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("ModelAccessors::set");
 		return FALSE;
 	} 
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (!checkIndex(index, step, accessorPointers[vid]))
+	{
+		msg.exit("ModelAccessors::set");
+		return FALSE;
+	}
 	// Set value based on enumerated id
 	switch (vid)
 	{

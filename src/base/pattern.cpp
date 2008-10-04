@@ -228,6 +228,24 @@ PatternBound *Pattern::torsions()
 	return torsions_.first();
 }
 
+// Return selected bond of the pattern
+PatternBound *Pattern::bond(int i)
+{
+	return bonds_[i];
+}
+
+// Return selected angle of the pattern
+PatternBound *Pattern::angle(int i)
+{
+	return angles_[i];
+}
+
+// Return selected torsion of the pattern
+PatternBound *Pattern::torsion(int i)
+{
+	return torsions_[i];
+}
+
 // Sets the starting atom of the model
 void Pattern::setStartAtom(int n)
 {

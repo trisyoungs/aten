@@ -50,11 +50,11 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create ffatom* variables with the names provided" },
 	{ "ffbound",		"",		"<variables>",
 				"Create ffbound* variables with the names provided" },
-	{ "_cell_",		"",		"<variables>",
+	{ "_cellvar_",		"",		"<variables>",
 				"Create cell* variables with the names provided" },
-	{ "_forcefield_",	"",		"<variables>",
+	{ "forcefield",		"",		"<variables>",
 				"Create forcefield* variables with the names provided" },
-	{ "_prefs_",		"",		"<variables>",
+	{ "_prefsvar_",		"",		"<variables>",
 				"Create prefs* variables with the names provided" },
 	
 	// Root node

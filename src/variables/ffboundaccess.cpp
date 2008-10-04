@@ -51,39 +51,15 @@ bool FFBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 	if ((vid < 0) || (vid > FFBoundAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to FFBoundAccessors::set.\n", vid);
-		msg.exit("FFBoundAccessors::set");
+		msg.exit("FFBoundAccessors::retrieve");
 		return FALSE;
 	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in FFBoundAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("FFBoundAccessors::retrieve");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in FFBoundAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("FFBoundAccessors::retrieve");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in FFBoundAccessors::retrieve.\n", accessorPointers[vid]->name());
-			msg.exit("FFBoundAccessors::retrieve");
-			return FALSE;
-		}
+		msg.exit("FFBoundAccessors::retrieve");
+		return FALSE;
 	}
 	// Retrieve value based on enumerated id
 	switch (vid)
@@ -122,34 +98,10 @@ bool FFBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	} 
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in FFBoundAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("FFBoundAccessors::set");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in FFBoundAccessors::set, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("FFBoundAccessors::set");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in FFBoundAccessors::set.\n", accessorPointers[vid]->name());
-			msg.exit("FFBoundAccessors::set");
-			return FALSE;
-		}
+		msg.exit("FFBoundAccessors::set");
+		return FALSE;
 	}
 	// Set value based on enumerated id
 	switch (vid)

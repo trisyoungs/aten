@@ -58,7 +58,14 @@ bool FFAtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv
 		printf("Unknown enumeration %i given to FFAtomAccessors::set.\n", vid);
 		msg.exit("FFAtomAccessors::set");
 		return FALSE;
-	} 
+	}
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (!checkIndex(index, step, accessorPointers[vid]))
+	{
+		msg.exit("FFAtomAccessors::set");
+		return FALSE;
+	}
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
@@ -111,7 +118,14 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		printf("Unknown enumeration %i given to FFAtomAccessors::set.\n", vid);
 		msg.exit("FFAtomAccessors::set");
 		return FALSE;
-	} 
+	}
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (!checkIndex(index, step, accessorPointers[vid]))
+	{
+		msg.exit("FFAtomAccessors::set");
+		return FALSE;
+	}
 	// Set value based on enumerated id
 	switch (vid)
 	{

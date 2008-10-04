@@ -31,9 +31,9 @@ PatternAccessors patternAccessors;
 // Constructor
 PatternAccessors::PatternAccessors()
 {
-	accessorPointers[PatternAccessors::Angles] = addListAccessor("angles",	VTypes::ForcefieldBoundData);
-	accessorPointers[PatternAccessors::Angles] = addListAccessor("atoms",	VTypes::ForcefieldAtomData);
-	accessorPointers[PatternAccessors::Bonds] = addListAccessor("bonds",	VTypes::ForcefieldBoundData);
+	accessorPointers[PatternAccessors::Angles] = addListAccessor("angles",	VTypes::PatternBoundData);
+	accessorPointers[PatternAccessors::Atoms] = addListAccessor("atoms",	VTypes::ForcefieldAtomData);
+	accessorPointers[PatternAccessors::Bonds] = addListAccessor("bonds",	VTypes::PatternBoundData);
 	accessorPointers[PatternAccessors::FirstAtom] = addAccessor("firstatom",	VTypes::AtomData, TRUE);
 	accessorPointers[PatternAccessors::FirstAtomId] = addAccessor("firstatomid",	VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::FField] = addAccessor("forcefield",	VTypes::ForcefieldData, FALSE);
@@ -46,6 +46,7 @@ PatternAccessors::PatternAccessors()
 	accessorPointers[PatternAccessors::NMolAtoms] = addAccessor("nmolatoms",	VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::NMolAtoms] = addAccessor("nmols",		VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::NTorsions] = addAccessor("ntorsions",	VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::Torsions] = addListAccessor("torsions",	VTypes::PatternBoundData);
 };
 
 // Retrieve specified data
@@ -62,43 +63,22 @@ bool PatternAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 	if ((vid < 0) || (vid > PatternAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to PatternAccessors::set.\n", vid);
-		msg.exit("PatternAccessors::set");
+		msg.exit("PatternAccessors::retrieve");
 		return FALSE;
 	} 
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in PatternAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("PatternAccessors::retrieve");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in PatternAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("PatternAccessors::retrieve");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in PatternAccessors::retrieve.\n", accessorPointers[vid]->name());
-			msg.exit("PatternAccessors::retrieve");
-			return FALSE;
-		}
+		msg.exit("PatternAccessors::retrieve");
+		return FALSE;
 	}
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
+		case (PatternAccessors::Angles):
+			rv.set(p->angle(index-1), VTypes::PatternBoundData);
+			break;
 		case (PatternAccessors::FirstAtom):
 			rv.set(p->firstAtom(), VTypes::AtomData);
 			break;
@@ -163,34 +143,10 @@ bool PatternAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	} 
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in PatternAccessors::set is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("PatternAccessors::set");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in PatternAccessors::set, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("PatternAccessors::set");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in PatternAccessors::set.\n", accessorPointers[vid]->name());
-			msg.exit("PatternAccessors::set");
-			return FALSE;
-		}
+		msg.exit("PatternAccessors::set");
+		return FALSE;
 	}
 	// Set value based on enumerated id
 	switch (vid)

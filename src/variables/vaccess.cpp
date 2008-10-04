@@ -20,6 +20,7 @@
 */
 
 #include "variables/vaccess.h"
+#include "variables/accessstep.h"
 #include "base/messenger.h"
 
 // Constructor
@@ -36,10 +37,10 @@ VariableList *VAccess::accessors()
 }
 
 // Add new accessor
-Variable *VAccess::addAccessor(const char *name, VTypes::DataType dt, bool readonly)
+Variable *VAccess::addAccessor(const char *name, VTypes::DataType dt, bool readonly, int arraysize)
 {
 	msg.enter("VAccess::addAccessor");
-	Variable *result = accessors_.addVariable(name, dt);
+	Variable *result = accessors_.addVariable(name, dt, arraysize);
 	if (readonly) result->setReadOnly();
 	msg.exit("VAccess::addAccessor");
 	return result;
@@ -60,4 +61,41 @@ Variable *VAccess::addListAccessor(const char *name, VTypes::DataType dt)
 int VAccess::accessorId(Variable *accessor)
 {
 	return accessors_.variableId(accessor);
+}
+
+// Check array index in supplied step against target member
+bool VAccess::checkIndex(int &index, AccessStep *indexsource, Variable *member)
+{
+	msg.enter("VAccess::checkIndex");
+	if (indexsource->hasArrayIndex())
+	{
+		if (member->isArray())
+		{
+			// Get index and do simple lower-limit check
+			index = indexsource->arrayIndex();
+			if ((index < 1) || (index > (member->isListArray() ? index : member->arraySize()) ))
+			{
+				msg.print("Array index '%i' given to member '%s' is out of bounds (current valid limits are 1 to %i).\n", index, member->name(), member->arraySize());
+				msg.exit("VAccess::checkIndex");
+				return FALSE;
+			}
+		}
+		else
+		{
+			msg.print("Array index given to member '%s', but this member is not an array.\n", member->name());
+			msg.exit("VAccess::checkIndex");
+			return FALSE;
+		}
+	}
+	else
+	{
+		if (member->isArray())
+		{
+			printf("Array index required for member '%s'.\n", member->name());
+			msg.exit("VAccess::checkIndex");
+			return FALSE;
+		}
+	}
+	msg.exit("VAccess::checkIndex");
+	return TRUE;
 }
