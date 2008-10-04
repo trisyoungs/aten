@@ -48,8 +48,8 @@ int Command::function_CA_ANGLEDEF(CommandNode *&c, Bundle &obj)
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addAngle(anglestyle);
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
-	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->params().data[n-4] = c->argd(n);
-	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
+	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->setParameter(n-4, c->argd(n));
+	msg.print(Messenger::Verbose,"Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
 	return Command::Success;
 }
 
@@ -71,8 +71,8 @@ int Command::function_CA_BONDDEF(CommandNode *&c, Bundle &obj)
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addBond(bondstyle);
 	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
-	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-3] = c->argd(n);
-	msg.print(Messenger::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]); 
+	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-3, c->argd(n));
+	msg.print(Messenger::Verbose,"Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5)); 
 	return Command::Success;
 }
 
@@ -285,8 +285,8 @@ int Command::function_CA_TORSIONDEF(CommandNode *&c, Bundle &obj)
 	// Create new ff_bond structure
 	ForcefieldBound *ffb = obj.ff->addTorsion(torsionstyle);
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
-	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->params().data[n-5] = c->argd(n);
-	msg.print(Messenger::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->params().data[0], ffb->params().data[1], ffb->params().data[2], ffb->params().data[3], ffb->params().data[4], ffb->params().data[5]);
+	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-5, c->argd(n));
+	msg.print(Messenger::Verbose,"TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
 	return Command::Success;
 }
 
@@ -375,8 +375,8 @@ int Command::function_CA_VDWDEF(CommandNode *&c, Bundle &obj)
 		return Command::Fail;
 	}
 	ffa->setCharge(parser.argd(2));
-	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->params().data[i-3] = c->argd(i);
+	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->setParameter(i-3, c->argd(i));
 	ffa->setVdwForm(vdwstyle);
-	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->params().data[0], ffa->params().data[1], ffa->params().data[2], ffa->charge());
+	msg.print(Messenger::Verbose,"VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
 	return Command::Success;
 }
