@@ -76,6 +76,7 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 		case (VTypes::PatternData):
 		case (VTypes::ModelData):
 		case (VTypes::GridData):
+		case (VTypes::PatternBoundData):
 		case (VTypes::ForcefieldBoundData):
 		case (VTypes::ForcefieldAtomData):
 		case (VTypes::ForcefieldData):
@@ -94,8 +95,11 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 		if (arraysize != -1)
 		{
 			if (arraysize > 0) result->setArraySize(arraysize);
-			msg.print("Invalid array size (%i) given for variable.\n", arraysize);
-			return NULL;
+			else
+			{
+				msg.print("Invalid array size (%i) given for variable.\n", arraysize);
+				return NULL;
+			}
 		}
 	}
 	return result;
@@ -104,17 +108,6 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 // Add named variable
 Variable *VariableList::addVariable(const char *name, VTypes::DataType dt, int arraysize)
 {
-	return addVariable(name,"",dt,arraysize);
-}
-Variable *VariableList::addVariable(const char *prefix, const char *suffix, VTypes::DataType dt, int arraysize)
-{
-	static char name[128];
-	strcpy(name,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(name,".");
-		strcat(name,suffix);
-	}
 	Variable *newvar = createVariable(dt, arraysize);
 	variables_.own(newvar);
 	newvar->setName(name);
@@ -239,50 +232,33 @@ Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt, v
 // Set existing variable (character)
 void VariableList::set(const char *name, const char *value)
 {
-	set(name,"",value);
-}
-void VariableList::set(const char *prefix, const char *suffix, const char *value)
-{
-	Variable *v = get(prefix, suffix);
-	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
-	v->set(value);
+	Variable *v = get(name);
+	if (v == NULL) printf("CRITICAL - Variable %s does not exist in the variable list.\n", name);
+	else v->set(value);
 }
 
 // Set existing variable (integer)
 void VariableList::set(const char *name, int value)
 {
-	set(name,"",value);
-}
-
-void VariableList::set(const char *prefix, const char *suffix, int value)
-{
-	Variable *v = get(prefix, suffix);
-	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
-	v->set(value);
+	Variable *v = get(name);
+	if (v == NULL) printf("CRITICAL - Variable %s does not exist in the variable list.\n", name);
+	else v->set(value);
 }
 
 // Set existing variable (real)
 void VariableList::set(const char *name, double value)
 {
-	set(name,"",value);
-}
-void VariableList::set(const char *prefix, const char *suffix, double value)
-{
-	Variable *v = get(prefix, suffix);
-	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
+	Variable *v = get(name);
+	if (v == NULL) printf("CRITICAL - Variable %s does not exist in the variable list.\n", name);
 	v->set(value);
 }
 
 // Set existing variable (pointer data)
 void VariableList::set(const char *name, void *ptr, VTypes::DataType dt)
 {
-	set(name,"",ptr, dt);
-}
-void VariableList::set(const char *prefix, const char *suffix, void *ptr, VTypes::DataType dt)
-{
-	Variable *v = get(prefix, suffix);
-	if (v == NULL) printf("CRITICAL - Variable %s[.%s] does not exist in the variable list.\n", prefix, suffix);
-	v->set(ptr, dt);
+	Variable *v = get(name);
+	if (v == NULL) printf("CRITICAL - Variable %s does not exist in the variable list.\n", name);
+	else v->set(ptr, dt);
 }
 
 /*
@@ -298,19 +274,6 @@ Variable *VariableList::dummy()
 // Retrieve named variable
 Variable *VariableList::get(const char *name)
 {
-	return get(name,"");
-}
-
-// Retrieve named variable (prefix.suffix)
-Variable *VariableList::get(const char *prefix, const char *suffix)
-{
-	static char name[256];
-	strcpy(name,prefix);
-	if (suffix[0] != '\0')
-	{
-		if (prefix[0] != '\0') strcat(name,".");
-		strcat(name, suffix);
-	}
 	for (Variable *v = variables_.first(); v != NULL; v = v->next) if (strcmp(name,v->name()) == 0) return v;
 	return NULL;
 }

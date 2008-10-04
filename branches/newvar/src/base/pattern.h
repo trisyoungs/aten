@@ -261,12 +261,18 @@ class Pattern
 	int nAngles();
 	// Return number of torsions in one molecule of the pattern
 	int nTorsions();
-	// Return first bonds of the pattern
+	// Return first bond of the pattern
 	PatternBound *bonds();
 	// Return first angle of the pattern
 	PatternBound *angles();
 	// Return first torsion of the pattern
 	PatternBound *torsions();
+	// Return selected bond of the pattern
+	PatternBound *bond(int i);
+	// Return selected angle of the pattern
+	PatternBound *angle(int i);
+	// Return selected torsion of the pattern
+	PatternBound *torsion(int i);
 
 	/*
 	// Energy / Force Calculation

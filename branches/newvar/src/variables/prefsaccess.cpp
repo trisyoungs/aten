@@ -49,9 +49,16 @@ bool PrefsAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	if ((vid < 0) || (vid > PrefsAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to PrefsAccessors::set.\n", vid);
-		msg.exit("PrefsAccessors::set");
+		msg.exit("PrefsAccessors::retrieve");
 		return FALSE;
 	} 
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (!checkIndex(index, step, accessorPointers[vid]))
+	{
+		msg.exit("PrefsAccessors::retrieve");
+		return FALSE;
+	}
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
@@ -79,6 +86,13 @@ bool PrefsAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	if ((vid < 0) || (vid > PrefsAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to PrefsAccessors::set.\n", vid);
+		msg.exit("PrefsAccessors::set");
+		return FALSE;
+	}
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (!checkIndex(index, step, accessorPointers[vid]))
+	{
 		msg.exit("PrefsAccessors::set");
 		return FALSE;
 	}

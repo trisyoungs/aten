@@ -78,7 +78,6 @@ class VariableList
 	void set(const char*, const char*, void *ptr, VTypes::DataType vt);
 	void set(const char *name, void *ptr, VTypes::DataType vt);
 	// Retrieve a named variable from the list
-	Variable *get(const char *prefix, const char *suffix);
 	Variable *get(const char *name);
 	// Return dummy variable
 	Variable *dummy();
@@ -91,7 +90,6 @@ class VariableList
 	// Add a variable access path to the list
 	Variable *addPath(const char *s);
 	// Add a named variable to the list
-	Variable *addVariable(const char *prefix, const char *suffix, VTypes::DataType vt, int arraysize = -1);
 	Variable *addVariable(const char *name, VTypes::DataType vt, int arraysize = -1);
 	Variable *addListVariable(const char *name, VTypes::DataType vt, void *ptr);
 	// Add pointer to data in Bundle variable

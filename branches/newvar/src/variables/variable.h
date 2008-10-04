@@ -74,9 +74,11 @@ class Variable
 	// Set listarray flag to true
 	void setListArray();
 	// Return whether the array is a listarray
-	bool listArray();
+	bool isListArray();
 	// Return whether the variable is an array of any sort
 	bool isArray();
+	// Return size of array
+	virtual int arraySize();
 
 	/*
 	// Set / get

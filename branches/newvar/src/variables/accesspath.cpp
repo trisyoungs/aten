@@ -27,6 +27,7 @@
 #include "variables/ffboundaccess.h"
 #include "variables/modelaccess.h"
 #include "variables/patternaccess.h"
+#include "variables/patternboundaccess.h"
 #include "variables/prefsaccess.h"
 #include "variables/returnvalue.h"
 #include "variables/variablelist.h"
@@ -95,6 +96,9 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 					break;
 				case (VTypes::PatternData):
 					accesslist = &patternAccessors;
+					break;
+				case (VTypes::PatternBoundData):
+					accesslist = &patternboundAccessors;
 					break;
 				case (VTypes::PrefsData):
 					accesslist = &prefsAccessors;
@@ -200,6 +204,10 @@ bool AccessPath::setPath(const char *path)
 			case (VTypes::PatternData):
 				success = step->setTarget(bit.get(), parent_, patternAccessors.accessors());
 				if (success) step->setVariableId(patternAccessors.accessorId(step->target()));
+				break;
+			case (VTypes::PatternBoundData):
+				success = step->setTarget(bit.get(), parent_, patternboundAccessors.accessors());
+				if (success) step->setVariableId(patternboundAccessors.accessorId(step->target()));
 				break;
 			case (VTypes::PrefsData):
 				success = step->setTarget(bit.get(), parent_, prefsAccessors.accessors());

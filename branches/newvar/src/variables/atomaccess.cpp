@@ -59,9 +59,16 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	if ((vid < 0) || (vid > AtomAccessors::nAccessors))
 	{
 		printf("Unknown enumeration %i given to AtomAccessors::set.\n", vid);
-		msg.exit("AtomAccessors::set");
+		msg.exit("AtomAccessors::retrieve");
 		return FALSE;
-	} 
+	}
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (!checkIndex(index, step, accessorPointers[vid]))
+	{
+		msg.exit("AtomAccessors::retrieve");
+		return FALSE;
+	}
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
@@ -115,7 +122,14 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		printf("Unknown enumeration %i given to AtomAccessors::set.\n", vid);
 		msg.exit("AtomAccessors::set");
 		return FALSE;
-	} 
+	}
+	// Get arrayindex (if there is one) and check that we needed it in the first place
+	int index;
+	if (!checkIndex(index, step, accessorPointers[vid]))
+	{
+		msg.exit("AtomAccessors::set");
+		return FALSE;
+	}
 	// Set value based on enumerated id
 	switch (vid)
 	{
