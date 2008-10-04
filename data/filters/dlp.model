@@ -1,5 +1,7 @@
 # DL_POLY Configuration Import / Export
-# Last modified: 05/08/08
+# Last modified: 04/10/2008
+#	04/10/2008 - Format delimiter reverted from '%' to '@'.
+#	05/08/2008 - Quoting adjusted to follow new rules.
 
 importmodel
 	name "DL_POLY Configuration"
@@ -73,13 +75,13 @@ exportmodel
 	elseif $model.cell.type = "parallelepiped"
 		$imcon = 3
 	end
-	writeline "         0$imcon%010"
+	writeline "         0$imcon@010"
 
 	# Cell (if present) 
 	if $imcon <> 0
-		writeline "$model.cell.ax%20.12$model.cell.ay%20.12$model.cell.az%20.12"
-		writeline "$model.cell.bx%20.12$model.cell.by%20.12$model.cell.bz%20.12"
-		writeline "$model.cell.cx%20.12$model.cell.cy%20.12$model.cell.cz%20.12"
+		writeline "$model.cell.ax@20.12$model.cell.ay@20.12$model.cell.az@20.12"
+		writeline "$model.cell.bx@20.12$model.cell.by@20.12$model.cell.bz@20.12"
+		writeline "$model.cell.cx@20.12$model.cell.cy@20.12$model.cell.cz@20.12"
 	end
 
 	# Atoms
@@ -89,7 +91,7 @@ exportmodel
 		$rx = $i.rx-$model.cell.centrex
 		$ry = $i.ry-$model.cell.centrey
 		$rz = $i.rz-$model.cell.centrez
-		writeline "${i.type%-8}${i.id%10}   $i.mass"
-		writeline "$rx%20.14$ry%20.14$rz%20.14"
+		writeline "${i.type@-8}${i.id@10}   $i.mass"
+		writeline "$rx@20.14$ry@20.14$rz@20.14"
 	end
 end

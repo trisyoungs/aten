@@ -31,13 +31,13 @@ FFAtomAccessors ffatomAccessors;
 // Constructor
 FFAtomAccessors::FFAtomAccessors()
 {
-	accessorPointers[FFAtomAccessors::Atomtype] = addAccessor("atomtype",		VTypes::CharacterData, FALSE);
+	accessorPointers[FFAtomAccessors::Atomtype] = addAccessor("atomtype",		VTypes::CharacterData, TRUE);
 	accessorPointers[FFAtomAccessors::Charge] = addAccessor("charge",		VTypes::RealData, FALSE);
-	accessorPointers[FFAtomAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE);
-	accessorPointers[FFAtomAccessors::Data]->setListArray();
+	accessorPointers[FFAtomAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE, MAXFFPARAMDATA);
 	accessorPointers[FFAtomAccessors::Description] = addAccessor("description",		VTypes::CharacterData, FALSE);
 	accessorPointers[FFAtomAccessors::Equivalent] = addAccessor("equivalent",		VTypes::CharacterData, FALSE);
-	accessorPointers[FFAtomAccessors::Id] = addAccessor("id",		VTypes::IntegerData, FALSE);
+	accessorPointers[FFAtomAccessors::Form] = addAccessor("form",		VTypes::CharacterData, FALSE);
+	accessorPointers[FFAtomAccessors::Id] = addAccessor("id",		VTypes::IntegerData, TRUE);
 	accessorPointers[FFAtomAccessors::Name] = addAccessor("name",		VTypes::CharacterData, FALSE);
  	accessorPointers[FFAtomAccessors::ParentFF] = addAccessor("ff",		VTypes::ForcefieldData, TRUE);
 };
@@ -76,13 +76,16 @@ bool FFAtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv
 			rv.set(ffa->charge());
 			break;
 		case (FFAtomAccessors::Data):
-// 			rv.set(ffa->charge());
+			rv.set(ffa->parameter(index-1));
 			break;
 		case (FFAtomAccessors::Description):
 			rv.set(ffa->description());
 			break;
 		case (FFAtomAccessors::Equivalent):
 			rv.set(ffa->equivalent());
+			break;
+		case (FFAtomAccessors::Form):
+			rv.set(VdwFunctions::VdwFunctions[ffa->vdwForm()].keyword);
 			break;
 		case (FFAtomAccessors::Id):
 			rv.set(ffa->typeId());
@@ -107,6 +110,7 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 {
 	msg.enter("FFAtomAccessors::set");
 	bool result = TRUE;
+	VdwFunctions::VdwFunction vf;
 	// Cast pointer into ForcefieldAtom*
 	ForcefieldAtom *ffa = (ForcefieldAtom*) classptr;
 	if (ffa == NULL) printf("Warning - NULL ForcefieldAtom pointer passed to FFAtomAccessors::set.\n");
@@ -132,6 +136,25 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (FFAtomAccessors::Charge):
 			ffa->setCharge(srcvar->asDouble());
 			break;
+		case (FFAtomAccessors::Data):
+			ffa->setParameter(index-1, srcvar->asDouble());
+			break;
+		case (FFAtomAccessors::Description):
+			ffa->setDescription(srcvar->asCharacter());
+			break;
+		case (FFAtomAccessors::Equivalent):
+			ffa->setEquivalent(srcvar->asCharacter());
+			break;
+		case (FFAtomAccessors::Form):
+			vf = VdwFunctions::vdwFunction(srcvar->asCharacter());
+			if (vf == VdwFunctions::None) result = FALSE;
+			else ffa->setVdwForm(vf);
+			break;
+		case (FFAtomAccessors::Name):
+			ffa->setName(srcvar->asCharacter());
+			break;
+		case (FFAtomAccessors::Atomtype):
+		case (FFAtomAccessors::Id):
 		case (FFAtomAccessors::ParentFF):
 			msg.print("Member '%s' in ForcefieldAtom is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;

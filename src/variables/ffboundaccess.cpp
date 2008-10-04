@@ -31,8 +31,7 @@ FFBoundAccessors ffboundAccessors;
 // Constructor
 FFBoundAccessors::FFBoundAccessors()
 {
-	accessorPointers[FFBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE);
-	accessorPointers[FFBoundAccessors::Data]->setListArray();
+	accessorPointers[FFBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE, MAXFFPARAMDATA);
 	accessorPointers[FFBoundAccessors::Form] = addAccessor("form",		VTypes::CharacterData, FALSE);
 	accessorPointers[FFBoundAccessors::TypeNames] = addListAccessor("typenames",	VTypes::CharacterData);
 };

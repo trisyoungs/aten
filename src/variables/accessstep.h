@@ -52,6 +52,10 @@ class AccessStep
 	public:
 	// Set target variable
 	bool setTarget(const char *var, VariableList *parentvars, VariableList *searchvars);
+	// Set target as integer constant variable
+	void setConstant(int i, VariableList *sourcevars);
+	// Set target as expression
+	bool setExpression(const char *s, VariableList *sourcevars);
 	// Return target variable's name
 	const char *targetName();
 	// Return target variable pointer

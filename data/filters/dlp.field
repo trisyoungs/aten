@@ -1,7 +1,8 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 05/08/08
+# Last modified: 04/10/2008
 # ChangeLog:
-#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+#	04/10/2008 - Format delimiter reverted from '%' to '@'.
+#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
 
 exportfield
 	name "DL_POLY Forcefield Specification"
@@ -14,7 +15,7 @@ exportfield
 	double epsilon, sigma
 	pattern p
 	atom i
-	bound ffb
+	bound b
 	ffatom at1, at2
 	integer nvdw, n
 
@@ -39,54 +40,54 @@ exportfield
 		# Write atoms - just loop over those in the first molecule of the pattern
 		writeline "atoms  $p.nmolatoms"
 		for $i $p 1
-			writeline "$i.type%-8   $i.mass%10.5  $i.charge%9.6   1   0   1"
+			writeline "$i.type@-8   $i.mass@10.5  $i.charge@9.6   1   0   1"
 		end
 		# Bonds in pattern
 		writeline "bonds  $p.nbonds"
 		for $n,1,$p.nbonds
-			# Grab ffbound pointer
-			$ffb = $p.bonds[$n]
+			# Grab bound pointer
+			$b = $p.bonds[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $ffb.form = harmonic
-				writeline "harm     $ffb.id[1]%5 $ffb.id[2]%5 $ffb.param[1]%10.4 $ffb.param[2]%10.4"
-			elseif $ffb.form = morse
-				writeline "morse    $ffb.id[1]%5 $ffb.id[2]%5 $ffb.param[3]%10.4 $ffb.param[2]%10.4 $ffb.param[1]%10.4"
+			if $b.form = harmonic
+				writeline "harm     $b.id[1]@5 $b.id[2]@5 $b.data[1]@10.4 $b.data[2]@10.4"
+			elseif $b.form = morse
+				writeline "morse    $b.id[1]@5 $b.id[2]@5 $b.data[3]@10.4 $b.data[2]@10.4 $b.data[1]@10.4"
 			else
-			print $ffb.form
+			print $b.form
 				warn "Functional form of bond term ($b.form) not accounted for in export filter."
-				writeline "X$ffb.form $ffb.id[1]%5 $ffb.id[2]%5 $ffb.param[1]%10.4 $ffb.param[2]%10.4 $ffb.param[3]%10.4 $ffb.param[4]%10.4" 
+				writeline "X$b.form $b.id[1]@5 $b.id[2]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.data[4]@10.4" 
 			end
 		end
 		# Angles in pattern
 		writeline "angles  $p.nangles"
 		for $n,1,$p.nangles
-			# Grab ffbound pointer
-			$ffb = $p.angles[$n]
+			# Grab bound pointer
+			$b = $p.angles[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $a.form = harmonic
-				writeline "harm     $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[2]%10.4"
-			elseif $a.form = cos
-				writeline "cos      $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[3]%10.4 $a.param[2]%10.4"
-			elseif $a.form = harmcos
-				writeline "hcos     $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[2]%10.4"
+			if $b.form = harmonic
+				writeline "harm     $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[2]@10.4"
+			elseif $b.form = cos
+				writeline "cos      $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[3]@10.4 $b.data[2]@10.4"
+			elseif $b.form = harmcos
+				writeline "hcos     $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[2]@10.4"
 			else
-				warn "Functional form of angle term ($a.form) not accounted for in export filter."
-				writeline "X$a.form     $a.id[1]%5 $a.id[2]%5 $a.id[3]%5 $a.param[1]%10.4 $a.param[2]%10.4 $a.param[3]%10.4 $a.param[4]%10.4 $a.param[5]%10.4 $a.param_f%10.4"
+				warn "Functional form of angle term ($b.form) not accounted for in export filter."
+				writeline "X$b.form     $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.data[4]@10.4 $b.data[5]@10.4 $b.data[6]@10.4"
 			end
 		end
 		# Torsions in pattern
 		writeline "dihedrals  $p.ntorsions"
 		for $n,1,$p.ntorsions
-			# Grab ffbound pointer
-			$ffb = $p.torsions[$n]
+			# Grab bound pointer
+			$b = $p.torsions[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $ffb.form = cos
-				writeline "cos    $ffb.id[1]%5 $t.id[2]%5 $t.id[3]%5 $t.id[4]%5 $t.param[1]%10.4 $t.param[2]%10.4 $t.param[3]%10.4 $t.escale%10.4 $t.vscale%10.4"
-			elseif $ffb.form = cos3
-				writeline "cos3   $ffb.id[1]%5 $t.id[2]%5 $t.id[3]%5 $t.id[4]%5 $t.param[1]%10.4 $t.param[2]%10.4 $t.param[3]%10.4 $t.escale%10.4 $t.vscale%10.4"
+			if $b.form = cos
+				writeline "cos    $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.id[4]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.escale@10.4 $b.vscale@10.4"
+			elseif $b.form = cos3
+				writeline "cos3   $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.id[4]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.escale@10.4 $b.vscale@10.4"
 			else
-				warn "Functional form of torsion term ($ffb.form) not accounted for in export filter."
-				writeline "X$ffb.form   $t.id[1]%5 $t.id[2]%5 $t.id[3]%5 $t.id[4]%5 $t.param[1]%10.4 $t.param[2]%10.4 $t.param[3]%10.4 $t.param[4]%10.4 $t.escale%10.4 $t.vscale%10.4"
+				warn "Functional form of torsion term ($b.form) not accounted for in export filter."
+				writeline "X$b.form   $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.id[4]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.data[4]@10.4 $b.escale@10.4 $b.vscale@10.4"
 			end
 		end
 		# Terminating line
@@ -105,13 +106,13 @@ exportfield
 		for $at2 $at1
 			# Check functional forms of each atomtype
 			if $at1.form <> $at2.form
-				warn "Functional forms of atomtypes '$at1.equiv' and '$at2.equiv' differ - raw data written to output..." 
-				writeline "$at1.name%-8  $at2.name%-8   $at1.param[1]%12.6  $at1.param[2]%12.6  $at1.param[3]%12.6 $at1.param[4]%12.6 $at1.param[5]%12.6 $at1.param[6]%12.6"
+				warn "Functional forms of atomtypes '$at1.equivalent' and '$at2.equivalent' differ - raw data written to output..." 
+				writeline "$at1.name@-8  $at2.name@-8   $at1.data[1]@12.6  $at1.data[2]@12.6  $at1.data[3]@12.6 $at1.data[4]@12.6 $at1.data[5]@12.6 $at1.data[6]@12.6"
 			elseif $at1.form = lj
 				# LJ: use Lorentz-Berthelot combination rules
-				$sigma = "($at1.param[2] + $at2.param[2]) * 0.5"
-				$epsilon = "($at1.param[1] * $at2.param[1]) ^ 0.5"
-				writeline "$at1.name%-8  $at2.name%-8  lj  $epsilon%12.6  $sigma%12.6"
+				$sigma = "($at1.data[2] + $at2.data[2]) * 0.5"
+				$epsilon = "($at1.data[1] * $at2.data[1]) ^ 0.5"
+				writeline "$at1.name@-8  $at2.name@-8  lj  $epsilon@12.6  $sigma@12.6"
 			elseif $at1.form = buck
 				error "Buckingham potential not included in FIELD file export yet."
 			else
