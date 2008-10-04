@@ -57,7 +57,7 @@ class AccessPath : public Variable
 
 	public:
 	// Set path from character constant
-	bool setPath(const char *path);
+	bool setPath(const char *path, bool isArrayIndex = FALSE);
 	// Set value of variable (char)
 	bool set(const char*, Variable *index = NULL);
 	// Set value of variable (int)

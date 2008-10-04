@@ -1,10 +1,11 @@
 # Mopac input file
-# Last modified: 05/08/08.
+# Last modified: 04/10/2008
 # Notes:
 #   Import filter does not account for the presence of '+' or '&' in the keyword section
 #   Cartesian coordinate format is assumed
 # ChangeLog:
-#	05/08/08 - Initial version.
+#	04/10/2008 - Format delimiter reverted from '%' to '@'.
+#	05/08/2008 - Initial version.
 
 importmodel
 	name "Mopac Control File"
@@ -80,16 +81,16 @@ exportmodel
 	writeline "Coordinates churned out by Aten."
 	for $i
 		if $i.fixed = 0
-			writeline "$i.symbol%3 $i.rx%12.6 1 $i.ry%12.6 1 $i.rz%12.6 1"
+			writeline "$i.symbol@3 $i.rx@12.6 1 $i.ry@12.6 1 $i.rz@12.6 1"
 		else
-			writeline "$i.symbol%3 $i.rx%12.6 0 $i.ry%12.6 0 $i.rz%12.6 0"
+			writeline "$i.symbol@3 $i.rx@12.6 0 $i.ry@12.6 0 $i.rz@12.6 0"
 		end if
 	end
 
 	# Write translation vector for cell
 	if $cell.type <> none
-		writeline "Tv  $cell.ax%12.6 0 $cell.ay%12.6 0 $cell.az%12.6 0"
-		writeline "Tv  $cell.bx%12.6 0 $cell.by%12.6 0 $cell.bz%12.6 0"
-		writeline "Tv  $cell.cx%12.6 0 $cell.cy%12.6 0 $cell.cz%12.6 0"
+		writeline "Tv  $cell.ax@12.6 0 $cell.ay@12.6 0 $cell.az@12.6 0"
+		writeline "Tv  $cell.bx@12.6 0 $cell.by@12.6 0 $cell.bz@12.6 0"
+		writeline "Tv  $cell.cx@12.6 0 $cell.cy@12.6 0 $cell.cz@12.6 0"
 	end
 end

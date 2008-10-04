@@ -115,6 +115,19 @@ bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableL
 	return result;
 }
 
+// Set target as integer constant variable
+void AccessStep::setConstant(int i, VariableList *sourcevars)
+{
+	target_ = sourcevars->addConstant(i);
+}
+
+// Set target as expression
+bool AccessStep::setExpression(const char *s, VariableList *sourcevars)
+{
+	target_ = sourcevars->addExpression(s);
+	return (target_ != NULL);
+}
+
 // Create arrayindex 'branch'
 bool AccessStep::setArrayIndex(const char *path, VariableList *parentvars)
 {
@@ -123,7 +136,7 @@ bool AccessStep::setArrayIndex(const char *path, VariableList *parentvars)
 	if (arrayIndex_ != NULL) msg.print("AccessStep already has an array index set.\n");
 	arrayIndex_ = new AccessPath;
 	arrayIndex_->setParent(parentvars);
-	bool result = arrayIndex_->setPath(path);
+	bool result = arrayIndex_->setPath(path, TRUE);
 	msg.exit("AccessStep::setArrayIndex");
 	return result;
 }

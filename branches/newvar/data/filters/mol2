@@ -1,10 +1,11 @@
 # Tripos (Sybyl) Mol2 filter
-# Last modified: 05/08/08
+# Last modified: 04/10/2008
 # Notes:
 #	Full spec is at: http://www.tripos.com/tripos_resources/fileroot/mol2_format_Dec07.pdf
 # ChangeLog:
-#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
-#	30/06/08 - Changed extension list to only match 'mol2'
+#	04/10/2008 - Format delimiter reverted from '%' to '@'.
+#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
+#	30/06/2008 - Changed extension list to only match 'mol2'
 
 importmodel
 	name "Tripos (Sybyl) Mol2"
@@ -22,7 +23,7 @@ importmodel
 	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
 	# Read a line and parse it into '@<TRIPOS>' and keyword parts
 	for $n
-		readline "$tripos%9 $keywd"
+		readline "$tripos@9 $keywd"
 		if $keywd = "MOLECULE"
 			# Molecule information
 			getline $title
@@ -79,7 +80,7 @@ exportmodel
 	# Write atoms section
 	writeline "@<TRIPOS>ATOM"
 	for $i
-		writeline "$i.id%6  $i.symbol%5  $i.rx%10.5  $i.ry%10.5  $i.rz%10.5"
+		writeline "$i.id@6  $i.symbol@5  $i.rx@10.5  $i.ry@10.5  $i.rz@10.5"
 	end
 
 	# Write bonds section
@@ -87,7 +88,7 @@ exportmodel
 		writeline "@<TRIPOS>BOND"
 		for $n,1,$nbonds
 			getbond $n $b
-			writeline "$n%5  $b.id_i%5  $b.id_j%5  $b.form"
+			writeline "$n@5  $b.id_i@5  $b.id_j@5  $b.form"
 		end
 	end
 

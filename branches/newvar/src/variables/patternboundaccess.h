@@ -31,7 +31,7 @@ class PatternBoundAccessors : public VAccess
 	// Constructor
 	PatternBoundAccessors();
 	// Accessor list
-	enum Accessors { Data, Form, TypeNames, nAccessors };
+	enum Accessors { Data, EScale, Form, Id, TypeNames, VScale, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up

@@ -1,8 +1,9 @@
 # Crystallographic Information File (cif)
-# Last modified: 21/09/08
+# Last modified: 04/10/2008
 # ChangeLog:
-#	21/09/08 - Adjusted to use new data access rules.
-#	05/08/08 - Quoting adjusted to follow new Parser rules in r550. Added 'rebond' command.
+#	04/10/2008 - Format delimiter reverted from '%' to '@'.
+#	21/09/2008 - Adjusted to use new data access rules.
+#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550. Added 'rebond' command.
 
 importmodel
 	name "Crystallographic Information File"
@@ -65,7 +66,7 @@ importmodel
 				# Get keyword from line
 				readvar $line "$keywd"
 				# Get first character and next 9 characters
-				readvar $keywd "$char%1 $data%9"
+				readvar $keywd "$char@1 $data@9"
 				# If first character is not '_' then we have entered the actual data defined by the loop.
 				# If this was an empty line, we're done with the loop
 				#print "Char=[${char}]"

@@ -71,21 +71,20 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 	// Format of formatters is 'F%n.m': F = format quantity/variable, n.m = length,precision
 	int pos1, pos2;
 	static char specifier[512], len[32], pre[32];
-	char *c;
 	// 'Reset' strings
 	specifier[0] = '\0';
 	len[0] = '\0';
 	pre[0] = '\0';
-	// Everything up to the '%' character is the quantity / variable
+	// Everything up to the '@' character is the quantity / variable
 	for (pos1 = 0; s[pos1] != '\0'; pos1++)
 	{
-		if (s[pos1] == '%') break;
+		if (s[pos1] == '@') break;
 		specifier[pos1] = s[pos1];
 	}
 	specifier[pos1] = '\0';
-	if (s[pos1] == '%')
+	if (s[pos1] == '@')
 	{
-		// Everything past the '%' character (and up to a '.') is the length...
+		// Everything past the '@' character (and up to a '.') is the length...
 		pos1 ++;
 		for (pos2 = pos1; s[pos2] != '\0'; pos2++)
 		{
@@ -104,10 +103,7 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 	// If we're given a variable, create a path to it
 	if (specifier[0] == '$')
 	{
-		c = specifier;
-		c ++;
-// 		variable_ = vlist.get(c);
-		variable_ = vlist.addPath(c);
+		variable_ = vlist.addPath(&specifier[0]);
 		if (variable_ == NULL)
 		{
 			msg.exit("FormatNode::set");

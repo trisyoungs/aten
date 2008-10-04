@@ -31,7 +31,7 @@ class FFAtomAccessors : public VAccess
 	// Constructor
 	FFAtomAccessors();
 	// Accessor list
-	enum Accessors { Atomtype, Charge, Data, Description, Equivalent, Id, Name, ParentFF, nAccessors };
+	enum Accessors { Atomtype, Charge, Data, Description, Equivalent, Form, Id, Name, ParentFF, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up

@@ -148,7 +148,7 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 }
 
 // Set (create) access path from text path
-bool AccessPath::setPath(const char *path)
+bool AccessPath::setPath(const char *path, bool isArrayIndex)
 {
 	msg.enter("AccessPath::setPath");
 	static char opath[512];
@@ -165,78 +165,114 @@ bool AccessPath::setPath(const char *path)
 		msg.exit("AccessPath::setPath");
 		return FALSE;
 	}
-	// Store original path
-	name_ = path;
-	// Take a copy of the original path to work on
-	strcpy(opath, path);
-	c = opath;
-	while (*c != '\0')
+	Parser::ArgumentForm af = parser.argumentForm(path);
+	if (af <= Parser::VariablePathForm)
 	{
-		// Get section of path existing before the next '.'
-		bit = beforeChar(c, '.');
-		// Check for an empty string bit - caused by '..'
-		if (bit.empty())
+		// Store original path
+		name_ = path;
+		// Take a copy of the original path to work on
+		strcpy(opath, path);
+		c = opath;
+		while (*c != '\0')
 		{
-			msg.print("Empty section found in variable path.\n");
-			msg.exit("AccessPath::setPath");
-			return FALSE;
+			// Get section of path existing before the next '.'
+			bit = beforeChar(c, '.');
+			// Check for an empty string bit - caused by '..'
+			if (bit.empty())
+			{
+				msg.print("Empty section found in variable path.\n");
+				msg.exit("AccessPath::setPath");
+				return FALSE;
+			}
+			// If this is the first added node then the variable must exist in the local VariableList.
+			step = path_.add();
+			// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
+			switch (lastType)
+			{
+				case (VTypes::NoData):
+					success = step->setTarget(bit.get(), parent_, parent_);
+					break;
+				case (VTypes::ModelData):
+					success = step->setTarget(bit.get(), parent_, modelAccessors.accessors());
+					if (success) step->setVariableId(modelAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::CellData):
+					success = step->setTarget(bit.get(), parent_, cellAccessors.accessors());
+					if (success) step->setVariableId(cellAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::AtomData):
+					success = step->setTarget(bit.get(), parent_, atomAccessors.accessors());
+					if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::PatternData):
+					success = step->setTarget(bit.get(), parent_, patternAccessors.accessors());
+					if (success) step->setVariableId(patternAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::PatternBoundData):
+					success = step->setTarget(bit.get(), parent_, patternboundAccessors.accessors());
+					if (success) step->setVariableId(patternboundAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::PrefsData):
+					success = step->setTarget(bit.get(), parent_, prefsAccessors.accessors());
+					if (success) step->setVariableId(prefsAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::ForcefieldAtomData):
+					success = step->setTarget(bit.get(), parent_, ffatomAccessors.accessors());
+					if (success) step->setVariableId(ffatomAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::ForcefieldBoundData):
+					success = step->setTarget(bit.get(), parent_, ffboundAccessors.accessors());
+					if (success) step->setVariableId(ffboundAccessors.accessorId(step->target()));
+					break;
+				default:
+					printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));
+					success = FALSE;
+					break;
+			}
+			if (!success)
+			{
+				msg.print("Unable to resolve path '%s'.\n", path);
+				break;
+			}
+			// Increase the char pointer
+			for (n=0; n<bit.length(); n++) c ++;
+			// If we're on a '.', skip on a further character
+			if (*c == '.') c++;
+			// Store lasttype
+			lastType = step->type();
 		}
-		// If this is the first added node then the variable must exist in the local VariableList.
-		step = path_.add();
-		// Otherwise, the DataType set in 'lastType' determines which structure's VariableList to use
-		switch (lastType)
+	}
+	else
+	{
+		// If this is an array index path, then it might be a constant value or an expression....
+		if (isArrayIndex)
 		{
-			case (VTypes::NoData):
-				success = step->setTarget(bit.get(), parent_, parent_);
-				break;
-			case (VTypes::ModelData):
-				success = step->setTarget(bit.get(), parent_, modelAccessors.accessors());
-				if (success) step->setVariableId(modelAccessors.accessorId(step->target()));
-				break;
-			case (VTypes::CellData):
-				success = step->setTarget(bit.get(), parent_, cellAccessors.accessors());
-				if (success) step->setVariableId(cellAccessors.accessorId(step->target()));
-				break;
-			case (VTypes::AtomData):
-				success = step->setTarget(bit.get(), parent_, atomAccessors.accessors());
-				if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
-				break;
-			case (VTypes::PatternData):
-				success = step->setTarget(bit.get(), parent_, patternAccessors.accessors());
-				if (success) step->setVariableId(patternAccessors.accessorId(step->target()));
-				break;
-			case (VTypes::PatternBoundData):
-				success = step->setTarget(bit.get(), parent_, patternboundAccessors.accessors());
-				if (success) step->setVariableId(patternboundAccessors.accessorId(step->target()));
-				break;
-			case (VTypes::PrefsData):
-				success = step->setTarget(bit.get(), parent_, prefsAccessors.accessors());
-				if (success) step->setVariableId(prefsAccessors.accessorId(step->target()));
-				break;
-			case (VTypes::ForcefieldAtomData):
-				success = step->setTarget(bit.get(), parent_, ffatomAccessors.accessors());
-				if (success) step->setVariableId(ffatomAccessors.accessorId(step->target()));
-				break;
-			case (VTypes::ForcefieldBoundData):
-				success = step->setTarget(bit.get(), parent_, ffboundAccessors.accessors());
-				if (success) step->setVariableId(ffboundAccessors.accessorId(step->target()));
-				break;
-			default:
-				printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));
-				success = FALSE;
-				break;
+			if (af == Parser::ConstantForm)
+			{
+				if (VTypes::determineType(path) != VTypes::IntegerData)
+				{
+					msg.print("This array index variable (%s) is not a pure integer.\n", path);
+					success = FALSE;
+				}
+				else
+				{
+					step = path_.add();
+					step->setConstant(atoi(path), parent_);
+					success = TRUE;
+				}
+			}
+			else if (af == Parser::ExpressionForm)
+			{
+				step = path_.add();
+				success = step->setExpression(path, parent_);
+			}
+			else success = FALSE;
 		}
-		if (!success)
+		else
 		{
-			msg.print("Unable to resolve path '%s'.\n", path);
-			break;
+			printf("Error - Trying to set a path from a non-path string (%s).\n",path);
+			success = FALSE;
 		}
-		// Increase the char pointer
-		for (n=0; n<bit.length(); n++) c ++;
-		// If we're on a '.', skip on a further character
-		if (*c == '.') c++;
-		// Store lasttype
-		lastType = step->type();
 	}
 	// Set the return type of the path as the type of the last step, and create a suitable return variable
 	if (success)

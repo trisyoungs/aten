@@ -32,12 +32,12 @@ PatternBoundAccessors patternboundAccessors;
 // Constructor
 PatternBoundAccessors::PatternBoundAccessors()
 {
-	printf("lksdjflkjdlkj\n");
-	accessorPointers[PatternBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE, MAXFFPARAMDATA);
-	printf("lksdjflkjdlkj\n");
-	accessorPointers[PatternBoundAccessors::Form] = addAccessor("form",		VTypes::CharacterData, FALSE);
-	printf("lksdjflkjdlkj\n");
+	accessorPointers[PatternBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, TRUE, MAXFFPARAMDATA);
+	accessorPointers[PatternBoundAccessors::Data] = addAccessor("escale",		VTypes::RealData, TRUE);
+	accessorPointers[PatternBoundAccessors::Form] = addAccessor("form",		VTypes::CharacterData, TRUE);
+	accessorPointers[PatternBoundAccessors::Id] = addAccessor("id",		VTypes::IntegerData, TRUE, MAXFFBOUNDTYPES);
 	accessorPointers[PatternBoundAccessors::TypeNames] = addListAccessor("typenames",	VTypes::CharacterData);
+	accessorPointers[PatternBoundAccessors::Data] = addAccessor("vscale",		VTypes::RealData, TRUE);
 };
 
 // Retrieve specified data
@@ -75,6 +75,22 @@ bool PatternBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnVal
 			}
 			else rv.set(pb->data()->parameter(index-1));
 			break;
+		case (PatternBoundAccessors::EScale):
+			if (pb->data() == NULL)
+			{
+				msg.print("NULL ForcefieldBound pointer found in PatternBound class.\n");
+				result = FALSE;
+			}
+			else
+			{
+				if (pb->data()->type() != ForcefieldBound::TorsionInteraction)
+				{
+					msg.print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
+					result = FALSE;
+				}
+				else rv.set(pb->data()->parameter(TF_ESCALE));
+			}
+			break;
 		case (PatternBoundAccessors::Form):
 			if (pb->data() == NULL)
 			{
@@ -82,6 +98,30 @@ bool PatternBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnVal
 				result = FALSE;
 			}
 			else rv.set(pb->data()->formText());
+			break;
+		case (PatternBoundAccessors::Id):
+			if (pb->data() == NULL)
+			{
+				msg.print("NULL ForcefieldBound pointer found in PatternBound class.\n");
+				result = FALSE;
+			}
+			else rv.set(pb->atomId(index-1));
+			break;
+		case (PatternBoundAccessors::VScale):
+			if (pb->data() == NULL)
+			{
+				msg.print("NULL ForcefieldBound pointer found in PatternBound class.\n");
+				result = FALSE;
+			}
+			else
+			{
+				if (pb->data()->type() != ForcefieldBound::TorsionInteraction)
+				{
+					msg.print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.\n");
+					result = FALSE;
+				}
+				else rv.set(pb->data()->parameter(TF_VSCALE));
+			}
 			break;
 		default:
 			printf("PatternBoundAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
@@ -120,6 +160,8 @@ bool PatternBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcv
 	switch (vid)
 	{
 		case (PatternBoundAccessors::Data):
+		case (PatternBoundAccessors::Form):
+		case (PatternBoundAccessors::Id):
 			msg.print("Member '%s' in PatternBound is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
