@@ -24,6 +24,9 @@
 #include "base/parser.h"
 #include <string.h>
 
+// Static variables
+char Format::createdString_[8096];
+
 // Returns first node in format
 FormatNode* Format::nodes()
 {
@@ -180,13 +183,14 @@ bool Format::create(const char *s, VariableList &vars, bool delimited)
 }
 
 // Create string
-const char *Format::createString()
+bool Format::createString()
 {
 	// Creates a formatted output string from the model supplied
 	msg.enter("Format::createString");
-	static char result[8096], bit[1024], fmt[16];
+	static char bit[1024], fmt[16];
 	static Variable *v;
-	result[0] = '\0';
+	bool result = TRUE;
+	createdString_[0] = '\0';
 	bit[0] = '\0';
 	fmt[0] = '\0';
 	// Step through each formatting node, adding on the specified data from the model/atom
@@ -221,13 +225,20 @@ const char *Format::createString()
 				break;
 			default:
 				msg.print("Variables of type '%s' cannot be used in a format string.\n", VTypes::dataType(v->type()));
+				result = FALSE;
 				break;
 		}
 		msg.print(Messenger::Parse,"Format:::createString - added [%s], format [%s]\n", bit, fmt);
-		strcat(result,bit);
+		strcat(createdString_,bit);
 	}
 	msg.exit("Format::createString");
 	return result;
+}
+
+// Return created string
+const char *Format::createdString()
+{
+	return createdString_;
 }
 
 /*

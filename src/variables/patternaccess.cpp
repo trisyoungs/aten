@@ -23,6 +23,7 @@
 #include "variables/patternaccess.h"
 #include "variables/accessstep.h"
 #include "variables/vaccess.h"
+#include "model/model.h"
 #include "base/pattern.h"
 #include "base/messenger.h"
 
@@ -32,7 +33,7 @@ PatternAccessors patternAccessors;
 PatternAccessors::PatternAccessors()
 {
 	accessorPointers[PatternAccessors::Angles] = addListAccessor("angles",	VTypes::PatternBoundData);
-	accessorPointers[PatternAccessors::Atoms] = addListAccessor("atoms",	VTypes::ForcefieldAtomData);
+	accessorPointers[PatternAccessors::Atoms] = addListAccessor("atoms",	VTypes::AtomData);
 	accessorPointers[PatternAccessors::Bonds] = addListAccessor("bonds",	VTypes::PatternBoundData);
 	accessorPointers[PatternAccessors::FirstAtom] = addAccessor("firstatom",	VTypes::AtomData, TRUE);
 	accessorPointers[PatternAccessors::FirstAtomId] = addAccessor("firstatomid",	VTypes::IntegerData, TRUE);
@@ -78,6 +79,12 @@ bool PatternAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 	{
 		case (PatternAccessors::Angles):
 			rv.set(p->angle(index-1), VTypes::PatternBoundData);
+			break;
+		case (PatternAccessors::Atoms):
+			rv.set(p->parent()->atom(index-1), VTypes::AtomData);
+			break;
+		case (PatternAccessors::Bonds):
+			rv.set(p->bond(index-1), VTypes::PatternBoundData);
 			break;
 		case (PatternAccessors::FirstAtom):
 			rv.set(p->firstAtom(), VTypes::AtomData);

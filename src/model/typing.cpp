@@ -25,6 +25,7 @@
 #include "ff/forcefield.h"
 #include "base/pattern.h"
 #include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
 
 // Return number of unique atom types in model
 int Model::nUniqueTypes()
@@ -38,16 +39,28 @@ ForcefieldAtom *Model::uniqueTypes()
 	return uniqueTypes_.first();
 }
 
+// Return the nth unique type interaction in the model
+ForcefieldAtom *Model::uniqueType(int i)
+{
+	return uniqueTypes_[i];
+}
+
 // Return number of unique bond interactions in the model
 int Model::nUniqueBondTerms()
 {
 	return uniqueBondTerms_.nItems();
 }
 
-// Return the list of unique bond interactions in the model
+// Return the first in the list of unique bond interactions in the model
 ForcefieldBound *Model::uniqueBondTerms()
 {
 	return uniqueBondTerms_.first();
+}
+
+// Return the nth unique bond interaction in the model
+ForcefieldBound *Model::uniqueBondTerm(int i)
+{
+	return uniqueBondTerms_[i];
 }
 
 // Return number of unique angle interactions in the model
@@ -56,10 +69,16 @@ int Model::nUniqueAngleTerms()
 	return uniqueAngleTerms_.nItems();
 }
 
-// Return the list of unique angle interactions in the model
+// Return the first in the list of unique angle interactions in the model
 ForcefieldBound *Model::uniqueAngleTerms()
 {
 	return uniqueAngleTerms_.first();
+}
+
+// Return the nth unique angle interaction in the model
+ForcefieldBound *Model::uniqueAngleTerm(int i)
+{
+	return uniqueAngleTerms_[i];
 }
 
 // Return number of unique torsion interactions in the model
@@ -68,10 +87,16 @@ int Model::nUniqueTorsionTerms()
 	return uniqueTorsionTerms_.nItems();
 }
 
-// Return the list of unique torsion interactions in the model
+// Return the first in the list of unique torsion interactions in the model
 ForcefieldBound *Model::uniqueTorsionTerms()
 {
 	return uniqueTorsionTerms_.first();
+}
+
+// Return the nth unique torsion interaction in the model
+ForcefieldBound *Model::uniqueTorsionTerm(int i)
+{
+	return uniqueTorsionTerms_[i];
 }
 
 /*

@@ -224,9 +224,13 @@ int Command::function_CA_WRITELINE(CommandNode *&c, Bundle &obj)
 		msg.print("No output file active.\n");
 		return Command::Fail;
 	}
-	*outputfile << c->format()->createString();
-	*outputfile << "\n";
-	return Command::Success;
+	if (c->format()->createString())
+	{
+		*outputfile << c->format()->createdString();
+		*outputfile << "\n";
+		return Command::Success;
+	}
+	return Command::Fail;
 }
 
 // Write line to variable
@@ -237,9 +241,22 @@ int Command::function_CA_WRITEVAR(CommandNode *&c, Bundle &obj)
 	{
 		// Create format from character variable arg(1)
 		if (!c->createFormat(c->argc(1), FALSE)) return Command::Fail;
-		c->arg(0)->set(c->format()->createString());
-		c->deleteFormat();
+		if (c->format()->createString())
+		{
+			c->arg(0)->set(c->format()->createdString());
+			c->deleteFormat();
+			return Command::Success;
+		}
+		else return Command::Fail;
 	}
-	else c->arg(0)->set(c->format()->createString());
+	else
+	{
+		if (c->format()->createString())
+		{
+			c->arg(0)->set(c->format()->createdString());
+			return Command::Success;
+		}
+		else return Command::Fail;
+	}
 	return Command::Success;
 }
