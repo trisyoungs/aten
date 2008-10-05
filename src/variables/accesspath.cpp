@@ -61,6 +61,7 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 	VAccess *accesslist;
 	rv.reset();
 	bool result = TRUE;
+	msg.print(Messenger::Commands, "Walking path '%s' which returns something of type '%s'...\n", name_.get(), VTypes::dataType(dataType_));
 	// DataType of the most recently 'got' value
 	VTypes::DataType lastType = VTypes::NoData;
 	// Go through nodes in the list one by one, calling the relevant static member functions in access-enabled objects

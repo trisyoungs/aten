@@ -36,6 +36,12 @@ PointerVariable::PointerVariable(VTypes::DataType ptrtype)
 	arraySize_ = -1;
 }
 
+// Destructor
+PointerVariable::~PointerVariable()
+{
+	if (ptrArrayData_ != NULL) delete[] ptrArrayData_;
+}
+
 /*
 // Set / Get
 */

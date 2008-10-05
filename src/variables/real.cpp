@@ -35,6 +35,12 @@ RealVariable::RealVariable()
 	arraySize_ = -1;
 }
 
+// Destructor
+RealVariable::~RealVariable()
+{
+	if (realArrayData_ != NULL) delete[] realArrayData_;
+}
+
 /*
 // Set / Get
 */

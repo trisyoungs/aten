@@ -73,13 +73,19 @@ Parser::ArgumentForm Parser::argumentForm(const char *s, bool implicitdollar)
 	// If there are operators or brackets it can only be an expression
 	if ((noperators > 0) || (nbrackets > 0)) return Parser::ExpressionForm;
 	else if ((hasneg) && (nvars > 0)) return Parser::ExpressionForm;
+	// Full stops are either decimal points, member delimiters in paths, or part of a filename...
 	char *c = strchr(s, '.');
 	if (c != '\0')
 	{
 		char *r = c++;
 		char *l = c--;
 		//printf("leftchar = '%c', rightchar = '%c'\n", *l, *r);
-		if ((!isdigit(*l)) && (!isdigit(*r))) return Parser::VariablePathForm;
+		if ((!isdigit(*l)) && (!isdigit(*r)))
+		{
+			// Neither character surrounding the '.' is a digit, so...
+			if (nvars > 0) return Parser::VariablePathForm;
+			else return Parser::ConstantForm;
+		}
 	}
 	if (nvars == 1) return Parser::VariableForm;
 	else return Parser::ConstantForm;

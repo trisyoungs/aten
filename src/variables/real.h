@@ -28,8 +28,9 @@
 class RealVariable : public Variable
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	RealVariable();
+	~RealVariable();
 
 	/*
 	// Set / Get

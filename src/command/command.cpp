@@ -452,7 +452,7 @@ bool CommandNode::addArgument(int argid, Parser::ArgumentForm form)
 	switch (af)
 	{
 		case (Parser::ConstantForm):
-			addConstant(parser.argc(argid), variableList_);
+			addConstant(parser.argc(argid));
 			break;
 		case (Parser::ExpressionForm):
 			// Attempt to construct expression
@@ -512,7 +512,7 @@ bool CommandNode::setArguments(const char *cmdname, const char *specifiers, Vari
 		// Move on to next argument.
 		argcount ++;
 
-// 		printf("Adding variable %c which should have value %s\n", specifiers[n], parser.argc(argcount));
+		//printf("Adding variable %c which should have value %s\n", specifiers[n], parser.argc(argcount));
 		// Is this a required argument?
 		if (argcount > (parser.nArgs() - 1))
 		{
@@ -608,7 +608,7 @@ bool CommandNode::setArguments(const char *cmdname, const char *specifiers, Vari
 				af = parser.argumentForm(argcount);
 				if (af > Parser::VariablePathForm)
 				{
-					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(parser.argc(argcount), TRUE); 
+					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(parser.argc(argcount), FALSE); 
 					else addConstant(parser.argc(argcount)); 
 				}
 				else if (!addArgument(argcount)) failed = TRUE;

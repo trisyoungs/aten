@@ -21,11 +21,11 @@ exportfield
 
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$model.name"
-	if $prefs.energyunit = kj
+	if $prefs.energyunit = "kj"
 		writeline "units  kj"
-	elseif $prefs.energyunit = kcal
+	elseif $prefs.energyunit = "kcal"
 		writeline "units  kcal"
-	elseif $prefs.energyunit = ev
+	elseif $prefs.energyunit = "ev"
 		writeline "units  ev"
 	else
 		error "Current energy unit is not compatible with DL_POLY FIELD output"
@@ -48,12 +48,11 @@ exportfield
 			# Grab bound pointer
 			$b = $p.bonds[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $b.form = harmonic
+			if $b.form = "harmonic"
 				writeline "harm     $b.id[1]@5 $b.id[2]@5 $b.data[1]@10.4 $b.data[2]@10.4"
-			elseif $b.form = morse
+			elseif $b.form = "morse"
 				writeline "morse    $b.id[1]@5 $b.id[2]@5 $b.data[3]@10.4 $b.data[2]@10.4 $b.data[1]@10.4"
 			else
-			print $b.form
 				warn "Functional form of bond term ($b.form) not accounted for in export filter."
 				writeline "X$b.form $b.id[1]@5 $b.id[2]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.data[4]@10.4" 
 			end
@@ -64,11 +63,11 @@ exportfield
 			# Grab bound pointer
 			$b = $p.angles[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $b.form = harmonic
+			if $b.form = "harmonic"
 				writeline "harm     $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[2]@10.4"
-			elseif $b.form = cos
+			elseif $b.form = "cos"
 				writeline "cos      $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[3]@10.4 $b.data[2]@10.4"
-			elseif $b.form = harmcos
+			elseif $b.form = "harmcos"
 				writeline "hcos     $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[2]@10.4"
 			else
 				warn "Functional form of angle term ($b.form) not accounted for in export filter."
@@ -81,9 +80,9 @@ exportfield
 			# Grab bound pointer
 			$b = $p.torsions[$n]
 			# Convert functional form to be recognised by DL_POLY
-			if $b.form = cos
+			if $b.form = "cos"
 				writeline "cos    $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.id[4]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.escale@10.4 $b.vscale@10.4"
-			elseif $b.form = cos3
+			elseif $b.form = "cos3"
 				writeline "cos3   $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.id[4]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.escale@10.4 $b.vscale@10.4"
 			else
 				warn "Functional form of torsion term ($b.form) not accounted for in export filter."

@@ -35,6 +35,7 @@ typedef int (*CommandFunction)(CommandNode *&c, Bundle &obj);
 
 class CommandData
 {
+	public:
 	/*
 	// Command description
 	*/
@@ -55,6 +56,9 @@ class CommandData
 class Command {
 
 	public:
+	// Constructor
+	Command();
+
 	// Command return values
 	enum ReturnValue { Success, SuccessNoMove, Fail, FailContinue, Exit, ExitWithError };
 	// Command list

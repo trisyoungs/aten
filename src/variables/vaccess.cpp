@@ -67,6 +67,18 @@ int VAccess::accessorId(Variable *accessor)
 bool VAccess::checkIndex(int &index, AccessStep *indexsource, Variable *member)
 {
 	msg.enter("VAccess::checkIndex");
+	if (indexsource == NULL)
+	{
+		printf("NULL index source given to VAccess::checkIndex.\n");
+		msg.exit("VAccess::checkIndex");
+		return FALSE;
+	}
+	if (member == NULL)
+	{
+		printf("NULL member pointer given to VAccess::checkIndex.\n");
+		msg.exit("VAccess::checkIndex");
+		return FALSE;
+	}
 	if (indexsource->hasArrayIndex())
 	{
 		if (member->isArray())

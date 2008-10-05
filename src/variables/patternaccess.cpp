@@ -44,7 +44,7 @@ PatternAccessors::PatternAccessors()
 	accessorPointers[PatternAccessors::NAtoms] = addAccessor("natoms",	VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::NBonds] = addAccessor("nbonds",	VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::NMolAtoms] = addAccessor("nmolatoms",	VTypes::IntegerData, TRUE);
-	accessorPointers[PatternAccessors::NMolAtoms] = addAccessor("nmols",		VTypes::IntegerData, TRUE);
+	accessorPointers[PatternAccessors::NMols] = addAccessor("nmols",		VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::NTorsions] = addAccessor("ntorsions",	VTypes::IntegerData, TRUE);
 	accessorPointers[PatternAccessors::Torsions] = addListAccessor("torsions",	VTypes::PatternBoundData);
 };

@@ -34,8 +34,9 @@ class VariableList;
 class AccessStep
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	AccessStep();
+	~AccessStep();
 	// List pointers
 	AccessStep *prev, *next;
 
