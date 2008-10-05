@@ -28,8 +28,9 @@
 class IntegerVariable : public Variable
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	IntegerVariable();
+	~IntegerVariable();
 
 	/*
 	// Set / Get

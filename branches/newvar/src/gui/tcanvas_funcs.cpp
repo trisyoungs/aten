@@ -59,11 +59,11 @@ void TCanvas::paintEvent(QPaintEvent *event)
 {
 	if (canvas_ != NULL)
 	{
-		// Initialise painter
-		QPainter painter(this);
-
 		// Draw OpenGL objects
 		canvas_->renderScene(aten.currentModel()->renderSource());
+
+		// Initialise painter
+		QPainter painter(this);
 		
 		// Draw on text objects
 		//font.setPointSize(prefs.labelSize());

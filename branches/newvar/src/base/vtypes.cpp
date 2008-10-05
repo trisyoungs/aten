@@ -22,6 +22,7 @@
 #include "base/vtypes.h"
 #include "base/constants.h"
 #include <string.h>
+#include <stdio.h>
 
 // Variable Types
 const char *DataTypeKeywords[VTypes::nDataTypes] = { "character", "integer", "real", "atom*", "pattern*", "patternbound*", "model*", "grid*", "ffatom*", "bound*", "cell*", "forcefield*", "prefs*", "none" };
@@ -49,7 +50,7 @@ VTypes::DataType VTypes::determineType(const char *s)
 		else nch ++;
 	}
 	// Based on the numbers we calculated, try to determine its type
-	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) | (nn == 0)) return VTypes::CharacterData;
+	if ((nch != 0) || (ndp > 1) || (npm > 2) || (ne > 1) || (nn == 0)) return VTypes::CharacterData;
 	else if (ndp == 1) return VTypes::RealData;
 	else return VTypes::IntegerData;
 }

@@ -770,11 +770,19 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Rotate the model in the plane of the screen" }
 };
 
+// Return enumerated command from string
 Command::Function Command::command(const char *s)
 {
 	int result;
 	for (result = CA_CHAR; result < CA_NITEMS; result++) if (strcmp(data[result].keyword,s) == 0) break;
 	return (Command::Function) result;
+}
+
+// Constructor
+Command::Command()
+{
+	// Create pointer list
+	initPointers();
 }
 
 // Return whether command accepts any arguments

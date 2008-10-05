@@ -35,6 +35,12 @@ CharacterVariable::CharacterVariable()
 	arraySize_ = -1;
 }
 
+// Destructor
+CharacterVariable::~CharacterVariable()
+{
+	if (charArrayData_ != NULL) delete[] charArrayData_;
+}
+
 /*
 // Set / Get
 */

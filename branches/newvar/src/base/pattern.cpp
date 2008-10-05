@@ -729,6 +729,7 @@ void Pattern::propagateAtomtypes()
 	Atom *i, *j;
 	int n, m;
 	j = firstAtom_;
+	for (n=0; n<nAtoms_; n++) j = j->next;
 	// Loop over other molecules and copy the data
 	for (n=1; n<nMolecules_; n++)
 	{

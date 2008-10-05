@@ -42,6 +42,12 @@ AccessStep::AccessStep()
 	next = NULL;
 }
 
+// Destructor
+AccessStep::~AccessStep()
+{
+	if (arrayIndex_ != NULL) delete arrayIndex_;
+}
+
 // Set target from variable name/array index
 bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableList *sourcevars)
 {

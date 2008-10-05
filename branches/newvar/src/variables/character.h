@@ -28,8 +28,9 @@
 class CharacterVariable : public Variable
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	CharacterVariable();
+	~CharacterVariable();
 
 	/*
 	// Set / Get

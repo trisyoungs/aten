@@ -28,8 +28,9 @@
 class PointerVariable : public Variable
 {
 	public:
-	// Constructor
+	// Constructor / Destructor
 	PointerVariable(VTypes::DataType type = VTypes::NoData);
+	~PointerVariable();
 
 	/*
 	// Set / Get

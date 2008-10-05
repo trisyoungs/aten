@@ -36,6 +36,12 @@ IntegerVariable::IntegerVariable()
 	arraySize_ = -1;
 }
 
+// Destructor
+IntegerVariable::~IntegerVariable()
+{
+	if (integerArrayData_ != NULL) delete[] integerArrayData_;
+}
+
 /*
 // Set / Get
 */
