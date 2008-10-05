@@ -61,11 +61,16 @@ void TCanvas::paintEvent(QPaintEvent *event)
 {
 	if (canvas_ != NULL)
 	{
-		// Initialise QPainter
-		QPainter painter(this);
+		// Note: An internet source suggests that the QPainter documentation is incomplete, and that
+		// all OpenGL calls should be made after the QPainter is constructed, and befor ethe QPainter
+		// is destroyed. However, this results in mangled graphics on the Linux (and other?) versions,
+		// so here it is done in the 'wrong' order.
 
 		// Draw OpenGL objects (with OpenGL)
 		canvas_->renderScene(aten.currentModel()->renderSource());
+
+		// Initialise QPainter
+		QPainter painter(this);
 
 		// Draw on text objects (with QPainter)
 		//font.setPointSize(prefs.labelSize());

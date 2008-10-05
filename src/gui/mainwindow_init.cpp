@@ -75,7 +75,7 @@ void AtenForm::finaliseUi()
 
 	// Hide some toolbars initially
 	ui.BondToolbar->setVisible(FALSE);
-	ui.DrawToolbar->setVisible(FALSE);
+	//ui.DrawToolbar->setVisible(FALSE);
 	ui.CommandToolbar->setVisible(FALSE);
 	ui.ForcefieldsToolbar->setVisible(FALSE);
 	ui.MeasureToolbar->setVisible(FALSE);
