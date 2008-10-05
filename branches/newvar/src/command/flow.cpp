@@ -80,7 +80,6 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 		// Do loop iteration.
 		// Increase count and iteration variables
 		c->arg(0)->step(1);
-// 		c->parent()->setSubvariables(c->arg(0)); TGAY
 		c->increaseIterations();
 		// Set new variables from loop variable and check for termination
 		switch (c->argt(0))
@@ -103,15 +102,15 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 				break;
 			case (VTypes::AtomData):
 				// If only one argument, check for NULL. If two, check for last atom in pattern.
-				// If three, check for last atom in molecule
+				// If three, check for last atom in molecule specified
 				if (c->hasArg(2))
 				{
-					n = ((Model*) c->argp(2, VTypes::ModelData))->nAtoms();
+					n = c->argi(2) * ((Pattern*) c->argp(1, VTypes::PatternData))->nAtoms();
 					if (c->loopIterations() > n) status = FALSE;
 				}
 				else if (c->hasArg(1))
 				{
-					n = ((Pattern*) c->argp(2, VTypes::PatternData))->totalAtoms();
+					n = ((Pattern*) c->argp(1, VTypes::PatternData))->totalAtoms();
 					if (c->loopIterations() > n) status = FALSE;
 				}
 				else if (c->argp(0, VTypes::AtomData) == NULL) status = FALSE;

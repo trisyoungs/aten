@@ -34,8 +34,6 @@
 int Command::function_CA_DECREASE(CommandNode *&c, Bundle &obj)
 {
 	c->arg(0)->step(-1);
-	// Set subvariables if necessary
-// 	c->parent()->setSubvariables( c->arg(0) ); TGAY
 	return Command::Success;
 }
 
@@ -43,8 +41,6 @@ int Command::function_CA_DECREASE(CommandNode *&c, Bundle &obj)
 int Command::function_CA_INCREASE(CommandNode *&c, Bundle &obj)
 {
 	c->arg(0)->step(1);
-	// Set subvariables if necessary
-// 	c->parent()->setSubvariables( c->arg(0) ); TGAY
 	return Command::Success;
 }
 
@@ -129,26 +125,6 @@ int Command::function_CA_LETPTR(CommandNode *&c, Bundle &obj)
 		msg.print( "Incompatible pointer types for variable assignment of contents of '%s' to '%s'.\n", c->arg(0)->name(), c->arg(2)->name());
 		return Command::Fail;
 	}
-	else
-	{
-// 		c->arg(0)->copyPointer(c->arg(2)); TGAY
-		// Set subvariables
-		switch (c->argt(0))
-		{
-			// TGAY 
-// 			case (VTypes::AtomData):
-// 				c->parent()->setAtomVariables(c->arg(0)->name(), c->arga(0));
-// 				break;
-// 			case (VTypes::PatternData):
-// 				c->parent()->setPatternVariables(c->arg(0)->name(), c->argp(0));
-// 				break;
-// 			case (VTypes::ModelData):
-// 				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
-// 				break;
-// 			case (VTypes::GridData):
-// 				c->parent()->setModelVariables(c->arg(0)->name(), c->argm(0));
-// 				break;
-		}
-	}
+	else c->arg(0)->set(c->arg(2)->asPointer(c->argt(0)), c->argt(0));
 	return Command::Success;
 }

@@ -97,6 +97,9 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (AtomAccessors::Symbol):
 			rv.set(elements.symbol(i));
 			break;
+		case (AtomAccessors::Type):
+			rv.set(i->type(), VTypes::ForcefieldAtomData);
+			break;
 		default:
 			printf("AtomAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
@@ -148,6 +151,9 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (AtomAccessors::RY):
 		case (AtomAccessors::RZ):
 			i->r().set(vid - AtomAccessors::RX, srcvar->asDouble());
+			break;
+		case (AtomAccessors::Type):
+			i->setType( (ForcefieldAtom*) srcvar->asPointer(VTypes::ForcefieldAtomData));
 			break;
 		case (AtomAccessors::Symbol):
 		case (AtomAccessors::Mass):

@@ -31,7 +31,7 @@
 class Format : public Parser
 {
 	/*
-	// Node List
+	// Node List and Creation
 	*/
 	private:
 	// Head of format node list
@@ -40,6 +40,8 @@ class Format : public Parser
 	bool createDelimited(const char *s, VariableList &vars);
 	// Create a format not using delimited formatting nodes
 	bool createExact(const char *s, VariableList &vars);
+	// Created string
+	static char createdString_[8096];
 
 	public:
 	// Returns first node
@@ -47,7 +49,9 @@ class Format : public Parser
 	// Create format nodes from a supplied formatting string
 	bool create(const char *s, VariableList &vars, bool delimited);
 	// Create a formatted string from the format data
-	const char *createString();
+	bool createString();
+	// Return created string
+	const char *createdString();
 
 	/*
 	// File parsing (using global parser object)

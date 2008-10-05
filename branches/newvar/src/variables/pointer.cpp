@@ -20,8 +20,10 @@
 */
 
 #include "variables/pointer.h"
+#include "base/atom.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
+#include "base/pattern.h"
 #include "base/messenger.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -145,6 +147,42 @@ void *PointerVariable::asPointer(VTypes::DataType type, Variable *index)
 // Step variable
 bool PointerVariable::step(int i, Variable *index)
 {
-	printf("More work needed here...\n");
+	// Check array index given
+	int n;
+	if (index == NULL)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
+			return FALSE;
+		}
+	}
+	// Now get the variable and step it.
+	int step;
+	Atom *atomptr;
+	Pattern *patternptr;
+	switch (dataType_)
+	{
+		case (VTypes::AtomData):
+			atomptr = (Atom*) (index == NULL ? ptrData_ : ptrArrayData_[n]);
+			for (step=0; ((step<i) && (atomptr != NULL)); step++)
+			{
+				
+			}
+	}
 	return FALSE;
 }

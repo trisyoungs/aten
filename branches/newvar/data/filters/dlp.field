@@ -17,7 +17,7 @@ exportfield
 	atom i
 	bound b
 	ffatom at1, at2
-	integer nvdw, n
+	integer nvdw, n, m
 
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$model.name"
@@ -40,7 +40,7 @@ exportfield
 		# Write atoms - just loop over those in the first molecule of the pattern
 		writeline "atoms  $p.nmolatoms"
 		for $i $p 1
-			writeline "$i.type@-8   $i.mass@10.5  $i.charge@9.6   1   0   1"
+			writeline "$i.type.name@-8   $i.mass@10.5  $i.charge@9.6   1   0   1"
 		end
 		# Bonds in pattern
 		writeline "bonds  $p.nbonds"
@@ -94,18 +94,18 @@ exportfield
 	end
 	# VDW Specification
 	# Get total number of pair terms to write
-	let $n = 1
 	let $nvdw = 0
-	for $at1
-		$nvdw = $nvdw+$n
-		inc $n
+	for $n,1,$model.natomtypes
+		$nvdw += $n
 	end 
 	writeline "nvdw  $nvdw"
-	for $at1
-		for $at2 $at1
+	for $n,1,$model.natomtypes
+		$at1 = $model.atomtypes[$n]
+		for $m,1,$n
+			$at2 = $model.atomtypes[$m]
 			# Check functional forms of each atomtype
 			if $at1.form <> $at2.form
-				warn "Functional forms of atomtypes '$at1.equivalent' and '$at2.equivalent' differ - raw data written to output..." 
+				warn "Functional forms of atomtypes '$at1.name' and '$at2.name' differ - raw data written to output..." 
 				writeline "$at1.name@-8  $at2.name@-8   $at1.data[1]@12.6  $at1.data[2]@12.6  $at1.data[3]@12.6 $at1.data[4]@12.6 $at1.data[5]@12.6 $at1.data[6]@12.6"
 			elseif $at1.form = lj
 				# LJ: use Lorentz-Berthelot combination rules

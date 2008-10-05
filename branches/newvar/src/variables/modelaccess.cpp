@@ -31,6 +31,7 @@ ModelAccessors modelAccessors;
 ModelAccessors::ModelAccessors()
 {
  	accessorPointers[ModelAccessors::Atoms] = addListAccessor("atoms",		VTypes::AtomData);
+ 	accessorPointers[ModelAccessors::Atomtypes] = addListAccessor("atomtypes",	VTypes::ForcefieldAtomData);
  	accessorPointers[ModelAccessors::Cell] = addAccessor("cell",			VTypes::CellData, TRUE);
  	accessorPointers[ModelAccessors::Frame] = addAccessor("frame",			VTypes::ModelData, TRUE);
 //  	accessorPointers[ModelAccessors::Frames] = addListAccessor("frames",		VTypes::ModelData);
@@ -79,6 +80,9 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			}
 			else rv.set(m->atom(index-1), VTypes::AtomData);
 			break;
+		case (ModelAccessors::Atomtypes):
+			rv.set(m->uniqueType(index-1), VTypes::ForcefieldAtomData);
+			break;
 		case (ModelAccessors::Cell):
 			rv.set(m->cell(), VTypes::CellData);
 			break;
@@ -102,6 +106,8 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(m->nAtoms());
 			break;
 		case (ModelAccessors::NAtomtypes):
+			rv.set(m->nUniqueTypes());
+			break;
 		case (ModelAccessors::NBondTerms):
 			rv.set(m->nUniqueBondTerms());
 			break;
