@@ -36,8 +36,6 @@ class PointerVariable : public Variable
 	// Set / Get
 	*/
 	public:
-	// Clears value of variable
-	//void reset();
 	// Set size of array (only for VTypes::ArrayType == NormalArray)
 	bool setArraySize(int size);
 	// Set value of variable (pointer)
@@ -48,6 +46,8 @@ class PointerVariable : public Variable
 	void *asPointer(VTypes::DataType type, Variable *index = NULL);
 	// Step variable
 	bool step(int delta, Variable *index = NULL);
+	// Clears value of variable
+	bool reset(Variable *index = NULL);
 
 	/*
 	// Variable Data

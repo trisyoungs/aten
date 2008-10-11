@@ -122,6 +122,10 @@ FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
 		{ "Force K", "Eq. Angle" },
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
+	{ "Harmonic", "bondconstraint",
+		{ "Force K", "Eq. Distance" },
+		{ "k", "eq" },
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },CXXXX
 };
 AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s)
 {

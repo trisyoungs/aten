@@ -33,11 +33,11 @@ PatternBoundAccessors patternboundAccessors;
 PatternBoundAccessors::PatternBoundAccessors()
 {
 	accessorPointers[PatternBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, TRUE, MAXFFPARAMDATA);
-	accessorPointers[PatternBoundAccessors::Data] = addAccessor("escale",		VTypes::RealData, TRUE);
+	accessorPointers[PatternBoundAccessors::EScale] = addAccessor("escale",		VTypes::RealData, TRUE);
 	accessorPointers[PatternBoundAccessors::Form] = addAccessor("form",		VTypes::CharacterData, TRUE);
 	accessorPointers[PatternBoundAccessors::Id] = addAccessor("id",		VTypes::IntegerData, TRUE, MAXFFBOUNDTYPES);
 	accessorPointers[PatternBoundAccessors::TypeNames] = addListAccessor("typenames",	VTypes::CharacterData);
-	accessorPointers[PatternBoundAccessors::Data] = addAccessor("vscale",		VTypes::RealData, TRUE);
+	accessorPointers[PatternBoundAccessors::VScale] = addAccessor("vscale",		VTypes::RealData, TRUE);
 };
 
 // Retrieve specified data
@@ -105,7 +105,7 @@ bool PatternBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnVal
 				msg.print("NULL ForcefieldBound pointer found in PatternBound class.\n");
 				result = FALSE;
 			}
-			else rv.set(pb->atomId(index-1));
+			else rv.set(pb->atomId(index-1)+1);
 			break;
 		case (PatternBoundAccessors::VScale):
 			if (pb->data() == NULL)

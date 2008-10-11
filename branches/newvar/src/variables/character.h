@@ -36,8 +36,6 @@ class CharacterVariable : public Variable
 	// Set / Get
 	*/
 	public:
-	// Clears value of variable
-	//void reset();
 	// Set name of variable
 	void setName(const char* s);
 	// Get name of variable
@@ -63,6 +61,8 @@ class CharacterVariable : public Variable
 	double asDouble(Variable *index = NULL);
 	// Get value of variable as a boolean
 	bool asBool(Variable *index = NULL);
+	// Clears value of variable
+	bool reset(Variable *index = NULL);
 
 	/*
 	// Variable Data

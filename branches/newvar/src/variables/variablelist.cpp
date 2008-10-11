@@ -289,6 +289,12 @@ void VariableList::print()
 		printf("VAR=[%s] (%li) VALUE=[%s]\n",v->name(),v,v->asCharacter());
 }
 
+// Reset all variable values
+void VariableList::resetVariables()
+{
+	for (Variable *v = variables_.first(); v != NULL; v = v->next) v->reset();
+}
+
 // Clear all variables, expressions etc. stored in class
 void VariableList::clear()
 {

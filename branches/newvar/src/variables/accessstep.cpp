@@ -100,15 +100,15 @@ bool AccessStep::setTarget(const char *text, VariableList *parentvars, VariableL
 		else
 		{
 			target_ = v;
+			part = afterChar(beforeChar(text, ']'), '[');
 			// At this point, we must check that the target variable actually is an array...
 			if (!target_->isArray())
 			{
-				msg.print("Array index given to '%s', which is not an array variable.\n", target_->name());
+				msg.print("Array index (%s) given to '%s', which is not an array variable.\n", part.get(), target_->name());
 				result = FALSE;
 			}
 			else
 			{
-				part = afterChar(beforeChar(text, ']'), '[');
 				if (!setArrayIndex(part.get(), parentvars))
 				{
 					msg.print("Failed to parse array index '%s' for '%s'.\n", part.get(), text);

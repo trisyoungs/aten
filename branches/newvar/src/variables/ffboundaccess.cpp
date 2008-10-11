@@ -64,7 +64,7 @@ bool FFBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 	switch (vid)
 	{
 		case (FFBoundAccessors::Data):
-			rv.set(ffb->parameter(index-1));
+			rv.set(ffb->parameter(index-1)+1);
 			break;
 		case (FFBoundAccessors::Form):
 			rv.set(ffb->formText());

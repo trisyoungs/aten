@@ -45,7 +45,11 @@ int Command::function_CA_VERBOSE(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'verbose' command.\n");
-	else msg.print(Messenger::Verbose,"%s\n",fmt->createString());
+	else
+	{
+		if (fmt->createString()) msg.print(Messenger::Verbose,"%s\n",fmt->createdString());
+		else return Command::Fail;
+	}
 	return Command::Success;
 }
 
@@ -54,6 +58,10 @@ int Command::function_CA_WARN(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
 	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
-	else msg.print("Warning: %s\n",fmt->createString());
+	else
+	{
+		if (fmt->createString()) msg.print("%s\n",fmt->createdString());
+		else return Command::Fail;
+	}
 	return Command::Success;
 }

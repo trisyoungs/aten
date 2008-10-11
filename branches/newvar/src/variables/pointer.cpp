@@ -20,6 +20,7 @@
 */
 
 #include "variables/pointer.h"
+#include "model/model.h"
 #include "base/atom.h"
 #include "base/sysfunc.h"
 #include "base/constants.h"
@@ -175,14 +176,59 @@ bool PointerVariable::step(int i, Variable *index)
 	int step;
 	Atom *atomptr;
 	Pattern *patternptr;
+	Model *modelptr;
 	switch (dataType_)
 	{
 		case (VTypes::AtomData):
-			atomptr = (Atom*) (index == NULL ? ptrData_ : ptrArrayData_[n]);
-			for (step=0; ((step<i) && (atomptr != NULL)); step++)
-			{
-				
-			}
+			atomptr = (Atom*) (index == NULL ? ptrData_ : ptrArrayData_[n-1]);
+			for (step=0; ((step<i) && (atomptr != NULL)); step++) atomptr = atomptr->next;
+			index == NULL ? ptrData_ = atomptr : ptrArrayData_[n-1] = atomptr;
+			break;
+		case (VTypes::PatternData):
+			patternptr = (Pattern*) (index == NULL ? ptrData_ : ptrArrayData_[n-1]);
+			for (step=0; ((step<i) && (patternptr != NULL)); step++) patternptr = patternptr->next;
+			index == NULL ? ptrData_ = patternptr : ptrArrayData_[n-1] = patternptr;
+			break;
+		case (VTypes::ModelData):
+			modelptr = (Model*) (index == NULL ? ptrData_ : ptrArrayData_[n-1]);
+			for (step=0; ((step<i) && (modelptr != NULL)); step++) modelptr = modelptr->next;
+			index == NULL ? ptrData_ = modelptr : ptrArrayData_[n-1] = modelptr;
+			break;
+		default:
+			printf("Don't know how to step a pointer variable of type '%s'.\n", VTypes::dataType(dataType_));
+			return FALSE;
+			break;
 	}
-	return FALSE;
+	return TRUE;
+}
+
+// Clears value of variable
+bool PointerVariable::reset(Variable *index)
+{
+	// Check array index given
+	if (index == NULL)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		ptrData_ = NULL;
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
+			return FALSE;
+		}
+		ptrArrayData_[n-1] = NULL;
+	}
+	return TRUE;
 }

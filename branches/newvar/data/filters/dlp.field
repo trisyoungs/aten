@@ -17,7 +17,7 @@ exportfield
 	atom i
 	bound b
 	ffatom at1, at2
-	integer nvdw, n, m
+	integer nvdw, n, m, nconstraints
 
 	# First, write header consisting of title, energy units, and number of molecule types
 	writeline "$model.name"
@@ -52,6 +52,9 @@ exportfield
 				writeline "harm     $b.id[1]@5 $b.id[2]@5 $b.data[1]@10.4 $b.data[2]@10.4"
 			elseif $b.form = "morse"
 				writeline "morse    $b.id[1]@5 $b.id[2]@5 $b.data[3]@10.4 $b.data[2]@10.4 $b.data[1]@10.4"
+			elseif $b.form = "constraint"
+				# DL_POLY constraint terms are written in their own section
+				$nconstraints += 1
 			else
 				warn "Functional form of bond term ($b.form) not accounted for in export filter."
 				writeline "X$b.form $b.id[1]@5 $b.id[2]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.data[4]@10.4" 
@@ -69,6 +72,8 @@ exportfield
 				writeline "cos      $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[3]@10.4 $b.data[2]@10.4"
 			elseif $b.form = "harmcos"
 				writeline "hcos     $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[2]@10.4"
+			elseif $b.form = "bondconstraint"
+				$nconstraints += 1
 			else
 				warn "Functional form of angle term ($b.form) not accounted for in export filter."
 				writeline "X$b.form     $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.data[4]@10.4 $b.data[5]@10.4 $b.data[6]@10.4"
@@ -89,6 +94,9 @@ exportfield
 				writeline "X$b.form   $b.id[1]@5 $b.id[2]@5 $b.id[3]@5 $b.id[4]@5 $b.data[1]@10.4 $b.data[2]@10.4 $b.data[3]@10.4 $b.data[4]@10.4 $b.escale@10.4 $b.vscale@10.4"
 			end
 		end
+		# Constraint terms
+		writeline "constraints  $nconstraints"
+		
 		# Terminating line
 		writeline "finish"
 	end
@@ -109,8 +117,8 @@ exportfield
 				writeline "$at1.name@-8  $at2.name@-8   $at1.data[1]@12.6  $at1.data[2]@12.6  $at1.data[3]@12.6 $at1.data[4]@12.6 $at1.data[5]@12.6 $at1.data[6]@12.6"
 			elseif $at1.form = lj
 				# LJ: use Lorentz-Berthelot combination rules
-				$sigma = "($at1.data[2] + $at2.data[2]) * 0.5"
-				$epsilon = "($at1.data[1] * $at2.data[1]) ^ 0.5"
+				$sigma = '($at1.data[2] + $at2.data[2]) * 0.5'
+				$epsilon = '($at1.data[1] * $at2.data[1]) ^ 0.5'
 				writeline "$at1.name@-8  $at2.name@-8  lj  $epsilon@12.6  $sigma@12.6"
 			elseif $at1.form = buck
 				error "Buckingham potential not included in FIELD file export yet."
