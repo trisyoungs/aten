@@ -192,3 +192,34 @@ bool RealVariable::step(int delta, Variable *index)
 	}
 	return TRUE;
 }
+
+// Clears value of variable
+bool RealVariable::reset(Variable *index)
+{
+	// Check array index given
+	if (index == NULL)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		realData_ = 0.0;
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
+			return FALSE;
+		}
+		realArrayData_[n-1] = 0.0;
+	}
+	return TRUE;
+}

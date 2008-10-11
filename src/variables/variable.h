@@ -108,6 +108,8 @@ class Variable
 	virtual void *asPointer(VTypes::DataType type, Variable *index = NULL);
 	// Step variable
 	virtual bool step(int delta, Variable *index = NULL);
+	// Reset variable contents
+	virtual bool reset(Variable *index = NULL);
 };
 
 #endif
