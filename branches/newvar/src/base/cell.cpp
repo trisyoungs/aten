@@ -317,6 +317,24 @@ int Cell::spacegroupSetting()
 	return spacegroupSetting_;
 }
 
+// Add manual generator
+void Cell::addGenerator(Generator *g)
+{
+	generators_.add(g);
+}
+
+// Return number of manual generators defined
+int Cell::nGenerators()
+{
+	return generators_.nItems();
+}
+
+// Return first manually-defined generator
+Refitem<Generator,int> *Cell::generators()
+{
+	return generators_.first();
+}
+
 // Update dependent quantities
 void Cell::update()
 {

@@ -16,17 +16,17 @@ importmodel
 	# and then use it to read in the data once the loop definitions are finished.
 
 	# Variables
-	character discard,format,e,data,keywd,line,char,looptype,sg
+	character discard,format,e,data,keywd,line,char,looptype,gen
 	integer n,m,cellspec
 	double rx,ry,rz
 	double a,b,c,alpha,beta,gamma
 
-	# Blank lines are significant, so don't skip them...
+	# Blank lines are significant, so don't skip them, and recognise quoting
 	removereadoption skipblanks
+	addreadoption usequotes
 
 	newmodel CifModel
 	$cellspec = 0
-	$sg = 0
 
 	# Main loop - read lines and check for important keywords
 	for $n
@@ -53,14 +53,14 @@ importmodel
 			$gamma = $data
 			inc $cellspec
 		elseif $keywd = "_symmetry_space_group_name_H-M"
-			$sg = $data
+			spacegroup $data
 		elseif $keywd = "loop_"
 			# Deal with loops here
-			# Clear any previous format we made and the looptype
+			# Clear any previous format and looptype
 			$format = ""
 			$looptype = "none"
 			# Loop over next lines to determine the data to expect
-			for $m,1,9999
+			for $m
 				# Read and store whole line (we may need it later)
 				getline $line
 				# Get keyword from line
@@ -71,15 +71,19 @@ importmodel
 				# If this was an empty line, we're done with the loop
 				#print "Char=[${char}]"
 				if $char = ""
-					# Just break out of loop (set $m by hand until 'break' is implemented)
-					$m = 10000
+					# Just break out of loop
+					break
 				elseif $char <> "_"
 					# Already have first line of data stored in $line.
 					#print "LINE BEFORE ATOM is $line"
 					readvar $line $format
 					# Our next action depends on the loop type
 					if $looptype = "atom"
+						# Create new atom
 						newatom $e $rx $ry $rz
+					elseif $looptype = "gen"
+						# Add generator definition manually
+						addgenerator $gen
 					end
 				elseif $data = "atom_site"
 					# Atom data loop
@@ -95,6 +99,14 @@ importmodel
 					else
 						writevar $format "$format \*"
 					end
+				elseif $data = "symmetry_"
+					# Symmetry generator definitions - only use if spacegroup not already specified
+					if $model.cell.sgid <> 0
+						print "Generator data ignored - spacegroup is already set."
+					elseif $keywd = "_symmetry_equiv_pos_as_xyz"
+						$looptype = "gen"
+						writevar $format "\$gen"
+					end
 				end
 			end
 		end
@@ -104,11 +116,10 @@ importmodel
 	if $cellspec = 6
 		cell $a $b $c $alpha $beta $gamma
 		fractoreal
-		# Apply spacegroup here and pack
-		spacegroup $sg
+		# Pack according to spacegroup
 		pack
 	else
-		print "Full cell specification not found in file."
+		print "Full cell specification was not found in file."
 		print "Atom coordinates are still fractional."
 	end
 

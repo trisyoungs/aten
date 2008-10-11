@@ -198,7 +198,7 @@ class Model
 	// Fold all atoms into the cell
 	void foldAllAtoms();
 	// Apply the given symmetry generator to the current atom selection in the model
-	void pack(int);
+	void pack(Generator *gen);
 	// Apply the symmetry operators listed in the model's spacegroup
 	void pack();
 	// Fold all molecules into the cell

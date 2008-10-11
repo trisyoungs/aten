@@ -65,7 +65,7 @@ bool FormatNode::zeroPadInteger()
 }
 
 // Set format node
-bool FormatNode::set(const char *s, VariableList &vlist)
+bool FormatNode::set(const char *s, VariableList &vlist, bool astext)
 {
 	msg.enter("FormatNode::set");
 	// Format of formatters is 'F%n.m': F = format quantity/variable, n.m = length,precision
@@ -101,7 +101,7 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 	}
 	msg.print(Messenger::Parse,"FormatNode::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
 	// If we're given a variable, create a path to it
-	if (specifier[0] == '$')
+	if ((specifier[0] == '$') && (!astext))
 	{
 		variable_ = vlist.addPath(&specifier[0]);
 		if (variable_ == NULL)
@@ -110,7 +110,7 @@ bool FormatNode::set(const char *s, VariableList &vlist)
 			return FALSE;
 		}
 	}
-	else if (specifier[0] == '*') variable_ = vlist.dummy();
+	else if ((specifier[0] == '*') && (!astext)) variable_ = vlist.dummy();
 	else variable_ = vlist.addConstant(specifier);
 	// Store the data
 	length_ = (len[0] == '\0' ? 0 : atoi(len));

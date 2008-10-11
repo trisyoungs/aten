@@ -73,9 +73,10 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	// Clear any existing node list
 	nodes_.clear();
 	n = 0;
+// 	printf("Creating format from string '%s'\n",s);
 	while (s[n] != '\0')
 	{
-		//printf("Current s[n] = '%c'\n",s[n]);
+// 		printf("Current s[n] = '%c'\n",s[n]);
 		// Special check for '\' - add next character whatever it is
 		if (s[n] == 92)
 		{
@@ -92,13 +93,13 @@ bool Format::createExact(const char *s, VariableList &vlist)
 			n++;
 			continue;
 		}
-		// This is the start of a variable format. Add 'text' node if not empty...
+		// This must be the start of a variable specifier. Add the 'text' node if not empty...
 		if (nchars != 0)
 		{
 			text[nchars] = '\0';
 			//printf("Found variable - adding previous text '%s'...\n",text);
 			fn = nodes_.add();
-			fn->set(text, vlist);
+			fn->set(text, vlist, TRUE);
 			nchars = 0;
 		}
 		// Clear the variable string and start adding characters
@@ -155,9 +156,9 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	if (nchars != 0)
 	{
 		text[nchars] = '\0';
-		//printf("Loop has ended - remaining text is '%s'.\n",text);
+// 		printf("Loop has ended - remaining text is '%s'.\n",text);
 		fn = nodes_.add();
-		fn->set(text, vlist);
+		fn->set(text, vlist, TRUE);
 	}
 	else if (vchars != 0)
 	{

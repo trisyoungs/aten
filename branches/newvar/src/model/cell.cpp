@@ -140,19 +140,19 @@ void Model::foldAllMolecules()
 }
 
 // Apply individual symmetry generator to current atom selection
-void Model::pack(int gen)
+void Model::pack(Generator *gen)
 {
-	msg.enter("Model::pack[gen,atom]");
+	msg.enter("Model::pack[generator]");
 	Clipboard clip;
 	Vec3<double> newr;
 	int oldnatoms;
 	if (gen == 0)
 	{
 		// Ignore this operator since it is the identity operator
-		msg.enter("Model::pack[gen,atom]");
+		msg.enter("Model::pack[generator]");
 		return;
 	}
-	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", generators.generator(gen).description, gen);
+	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", gen->name, gen);
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -164,12 +164,12 @@ void Model::pack(int gen)
 		newr = i->r();
 // 		newr.print();
 		// Apply the rotation and translation
-		newr *= generators.generator(gen).rotation;
-		newr +=  cell_.transpose() * generators.generator(gen).translation;
+		newr *= gen->rotation;
+		newr +=  cell_.transpose() * gen->translation;
 		i->r() = newr;
 		cell_.fold(i, this);
 	}
-	msg.exit("Model::pack[gen,atom]");
+	msg.exit("Model::pack[generator]");
 }
 
 // Apply model's spacegroup symmetry generators
@@ -177,17 +177,28 @@ void Model::pack()
 {
 	msg.enter("Model::pack");
 	int sg = cell_.spacegroup();
-	if (sg == 0) msg.print("No spacegroup defined in model - no packing will be performed.\n");
-	else
+	int ngen = cell_.nGenerators();
+	if ((sg == 0) && (ngen == 0))
+	{
+		msg.print("No spacegroup defined in model - no packing will be performed.\n");
+		msg.exit("Model::pack");
+		return;
+	}
+	// Select all atoms in model
+	selectAll();
+	if (sg != 0)
 	{
 		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(sg));
-		selectAll();
-		for (int n=0; n<spacegroups.nGenerators(sg); n++)
-			pack(spacegroups.generator(sg, n));
-		// Select overlapping atoms and delete
-		selectOverlaps(0.1);
-		selectionDelete();
+		for (int n=0; n<spacegroups.nGenerators(sg); n++) pack(&generators.generator(spacegroups.generator(sg, n)));
 	}
+	else
+	{
+		msg.print("Packing cell from manually-defined generator list...\n");
+		for (Refitem<Generator,int> *ri = cell_.generators(); ri != NULL; ri = ri->next) pack(ri->item);
+	}
+	// Select overlapping atoms and delete
+	selectOverlaps(0.1);
+	selectionDelete();
 	msg.exit("Model::pack");
 }
 
