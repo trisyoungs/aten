@@ -22,6 +22,7 @@
 #include "variables/accesspath.h"
 #include "variables/accessstep.h"
 #include "variables/atomaccess.h"
+#include "variables/bondaccess.h"
 #include "variables/cellaccess.h"
 #include "variables/ffatomaccess.h"
 #include "variables/ffboundaccess.h"
@@ -94,6 +95,9 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 					break;
 				case (VTypes::AtomData):
 					accesslist = &atomAccessors;
+					break;
+				case (VTypes::BondData):
+					accesslist = &bondAccessors;
 					break;
 				case (VTypes::PatternData):
 					accesslist = &patternAccessors;
@@ -204,6 +208,10 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 				case (VTypes::AtomData):
 					success = step->setTarget(bit.get(), parent_, atomAccessors.accessors());
 					if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::BondData):
+					success = step->setTarget(bit.get(), parent_, bondAccessors.accessors());
+					if (success) step->setVariableId(bondAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::PatternData):
 					success = step->setTarget(bit.get(), parent_, patternAccessors.accessors());

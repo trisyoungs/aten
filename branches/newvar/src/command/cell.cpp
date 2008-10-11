@@ -159,14 +159,14 @@ int Command::function_CA_SPACEGROUP(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	if (c->argt(0) == VTypes::IntegerData) obj.rs->setSpacegroup(c->argi(0));
+	if (c->argt(0) == VTypes::IntegerData) obj.rs->cell()->setSpacegroup(c->argi(0));
 	else
 	{
 		msg.print("Searching for spacegroup '%s'...",c->argc(0));
 		int sg = spacegroups.spacegroup(c->argc(0));
 		if (sg == 0) msg.print(" not found - no spacegroup set.\n");
 		else msg.print(" found, id = %i.\n",sg);
-		obj.rs->setSpacegroup(sg);
+		obj.rs->cell()->setSpacegroup(sg);
 	}
 	return Command::Success;
 }

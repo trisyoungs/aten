@@ -27,7 +27,7 @@ class VTypes
 {
 	public:
 	// Data Types
-	enum DataType { CharacterData, IntegerData, RealData, AtomData, PatternData, PatternBoundData, ModelData, GridData, ForcefieldAtomData, ForcefieldBoundData, CellData, ForcefieldData, PrefsData, NoData, nDataTypes };
+	enum DataType { CharacterData, IntegerData, RealData, AtomData, BondData, PatternData, PatternBoundData, ModelData, GridData, ForcefieldAtomData, ForcefieldBoundData, CellData, ForcefieldData, PrefsData, NoData, nDataTypes };
 	static const char *dataType(DataType);
 	static bool isPointer(DataType);
 	static VTypes::DataType determineType(const char *s);

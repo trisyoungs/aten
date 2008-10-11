@@ -123,12 +123,6 @@ int RealVariable::asInteger(Variable *index)
 // Get value of variable as double
 double RealVariable::asDouble(Variable *index)
 {
-	// Check read/write status
-	if (readOnly_)
-	{
-		msg.print("Variable '%s' is read-only.\n", name_.get());
-		return 0.0;
-	}
 	// Check array index given
 	if (index == NULL)
 	{

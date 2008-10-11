@@ -1,8 +1,9 @@
 # GAMESS-US Trajectory Filter, and Cartesian Input Model Filters (I/O)
-# Last modified: 04/10/2008
+# Last modified: 10/10/2008
 # Notes:
 #	Output model filter sets symmetry to C1.
 # ChangeLog:
+#	10/10/2008 - Adjusted to use new data access methods.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	05/08/2008 - Changed extension from 'out' to 'log'. Added reading of .inpi files. Nicknames now 'gamuslog' and 'gamusinp'
 
@@ -56,7 +57,7 @@ importmodel
 	zmap name
 
 	# Variables
-	character symm,tester,symbol
+	character symm,tester,symbol,title
 	integer n,z
 	double rx,ry,rz
 
@@ -67,7 +68,7 @@ importmodel
 	end
 
 	# Read in title card
-	readline $title
+	getline $title
 	newmodel $title
 
 	# Skip over symmetry specification
@@ -115,7 +116,7 @@ exportmodel
 
 	# Now for the DATA section
 	writeline " \$DATA"
-	writeline "$title"
+	writeline "$model.name"
 	writeline "C1"
 	for $i
 		writeline "$i.name@10  $i.z@4 $i.rx@12.6 $i.ry@12.6 $i.rz@12.6"

@@ -69,6 +69,7 @@ class Command {
 		CA_INT,
 		CA_FLOAT,
 		CA_ATOM,
+		CA_BOND,
 		CA_PATTERN,
 		CA_PATTERNBOUND,
 		CA_MODEL,

@@ -31,18 +31,22 @@ AtomAccessors atomAccessors;
 // Constructor
 AtomAccessors::AtomAccessors()
 {
- 	accessorPointers[AtomAccessors::Charge] = addAccessor("charge",		VTypes::RealData, FALSE);
- 	accessorPointers[AtomAccessors::Element] = addAccessor("element",		VTypes::IntegerData, TRUE);
- 	accessorPointers[AtomAccessors::FX] = addAccessor("fx",		VTypes::RealData,	FALSE);
- 	accessorPointers[AtomAccessors::FY] = addAccessor("fy",		VTypes::RealData,	FALSE);
- 	accessorPointers[AtomAccessors::FZ] = addAccessor("fz",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::FX] = addAccessor("fx",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::FY] = addAccessor("fy",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::FZ] = addAccessor("fz",		VTypes::RealData,	FALSE);
 	accessorPointers[AtomAccessors::Id] = addAccessor("id",		VTypes::IntegerData,	TRUE);
- 	accessorPointers[AtomAccessors::Mass] = addAccessor("mass",		VTypes::RealData,	TRUE);
- 	accessorPointers[AtomAccessors::RX] = addAccessor("rx",		VTypes::RealData,	FALSE);
- 	accessorPointers[AtomAccessors::RY] = addAccessor("ry",		VTypes::RealData,	FALSE);
- 	accessorPointers[AtomAccessors::RZ] = addAccessor("rz",		VTypes::RealData,	FALSE);
- 	accessorPointers[AtomAccessors::Symbol] = addAccessor("symbol",		VTypes::CharacterData,	TRUE);
-  	accessorPointers[AtomAccessors::Type] = addAccessor("type",		VTypes::ForcefieldAtomData,	FALSE);
+	accessorPointers[AtomAccessors::Mass] = addAccessor("mass",		VTypes::RealData,	TRUE);
+	accessorPointers[AtomAccessors::Name] = addAccessor("name",		VTypes::CharacterData,	TRUE);
+	accessorPointers[AtomAccessors::Q] = addAccessor("q",		VTypes::RealData, FALSE);
+	accessorPointers[AtomAccessors::RX] = addAccessor("rx",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::RY] = addAccessor("ry",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::RZ] = addAccessor("rz",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::Symbol] = addAccessor("symbol",		VTypes::CharacterData,	TRUE);
+	accessorPointers[AtomAccessors::Type] = addAccessor("type",		VTypes::ForcefieldAtomData,	FALSE);
+	accessorPointers[AtomAccessors::VX] = addAccessor("vx",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::VY] = addAccessor("vy",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::VZ] = addAccessor("vz",		VTypes::RealData,	FALSE);
+	accessorPointers[AtomAccessors::Z] = addAccessor("z",	VTypes::IntegerData, TRUE);
 };
 
 // Retrieve specified data
@@ -72,12 +76,6 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	// Retrieve value based on enumerated id
 	switch (vid)
 	{
-		case (AtomAccessors::Charge):
-			rv.set(i->charge());
-			break;
-		case (AtomAccessors::Element):
-			rv.set(i->element());
-			break;
 		case (AtomAccessors::FX):
 		case (AtomAccessors::FY):
 		case (AtomAccessors::FZ):
@@ -89,6 +87,12 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (AtomAccessors::Mass):
 			rv.set(elements.atomicMass(i));
 			break;
+		case (AtomAccessors::Name):
+			rv.set(elements.name(i));
+			break;
+		case (AtomAccessors::Q):
+			rv.set(i->charge());
+			break;
 		case (AtomAccessors::RX):
 		case (AtomAccessors::RY):
 		case (AtomAccessors::RZ):
@@ -99,6 +103,14 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			break;
 		case (AtomAccessors::Type):
 			rv.set(i->type(), VTypes::ForcefieldAtomData);
+			break;
+		case (AtomAccessors::VX):
+		case (AtomAccessors::VY):
+		case (AtomAccessors::VZ):
+			rv.set(i->v().get(vid - AtomAccessors::VX));
+			break;
+		case (AtomAccessors::Z):
+			rv.set(i->element());
 			break;
 		default:
 			printf("AtomAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
@@ -136,16 +148,13 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	// Set value based on enumerated id
 	switch (vid)
 	{
-		case (AtomAccessors::Charge):
-			i->setCharge(srcvar->asDouble());
-			break;
-		case (AtomAccessors::Element):
-			i->setElement(srcvar->asInteger());
-			break;
 		case (AtomAccessors::FX):
 		case (AtomAccessors::FY):
 		case (AtomAccessors::FZ):
 			i->f().set(vid - AtomAccessors::FX, srcvar->asDouble());
+			break;
+		case (AtomAccessors::Q):
+			i->setCharge(srcvar->asDouble());
 			break;
 		case (AtomAccessors::RX):
 		case (AtomAccessors::RY):
@@ -155,8 +164,17 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (AtomAccessors::Type):
 			i->setType( (ForcefieldAtom*) srcvar->asPointer(VTypes::ForcefieldAtomData));
 			break;
+		case (AtomAccessors::VX):
+		case (AtomAccessors::VY):
+		case (AtomAccessors::VZ):
+			i->v().set(vid - AtomAccessors::VX, srcvar->asDouble());
+			break;
+		case (AtomAccessors::Z):
+			i->setElement(srcvar->asInteger());
+			break;
 		case (AtomAccessors::Symbol):
 		case (AtomAccessors::Mass):
+		case (AtomAccessors::Name):
 		case (AtomAccessors::Id):
 			msg.print("Member '%s' in Atom is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;

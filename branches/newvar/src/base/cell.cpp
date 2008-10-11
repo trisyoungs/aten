@@ -57,6 +57,8 @@ Cell::Cell()
 	centre_.zero();
 	volume_ = 0.0;
 	reciprocalVolume_ = 0.0;
+	spacegroup_ = 0;
+	spacegroupSetting_ = 1;
 }
 
 // Assignment operator
@@ -288,6 +290,31 @@ double Cell::reciprocalVolume() const
 double Cell::density() const
 {
 	return density_;
+}
+
+// Sets the spacegroup
+void Cell::setSpacegroup(int i)
+{
+	if ((i < 0) || (i > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
+	else spacegroup_ = i;
+}
+
+// Sets the spacegroup setting
+void Cell::setSpacegroupSetting(int i)
+{
+	spacegroupSetting_ = i;
+}
+
+// Return the spacegroup
+int Cell::spacegroup()
+{
+	return spacegroup_;
+}
+
+// Return the spacegroup setting
+int Cell::spacegroupSetting()
+{
+	return spacegroupSetting_;
 }
 
 // Update dependent quantities

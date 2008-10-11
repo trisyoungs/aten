@@ -23,6 +23,7 @@
 #include "variables/accessstep.h"
 #include "variables/vaccess.h"
 #include "base/cell.h"
+#include "base/spacegroup.h"
 #include "base/messenger.h"
 
 CellAccessors cellAccessors;
@@ -30,26 +31,31 @@ CellAccessors cellAccessors;
 // Constructor
 CellAccessors::CellAccessors()
 {
- 	accessorPointers[CellAccessors::A] = addAccessor("a",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::B] = addAccessor("b",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::C] = addAccessor("c",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Alpha] = addAccessor("alpha",	VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Beta] = addAccessor("beta",	VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Gamma] = addAccessor("gamma",	VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::AX] = addAccessor("ax",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::AY] = addAccessor("ay",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::AZ] = addAccessor("az",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::BX] = addAccessor("bx",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::BY] = addAccessor("by",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::BZ] = addAccessor("bz",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::CX] = addAccessor("cx",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::CY] = addAccessor("cy",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::CZ] = addAccessor("cz",		VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::CX] = addAccessor("centrex",	VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::CY] = addAccessor("centrey",	VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::CZ] = addAccessor("centrez",	VTypes::RealData, FALSE);
- 	accessorPointers[CellAccessors::Matrix] = addListAccessor("matrix", VTypes::RealData);
- 	accessorPointers[CellAccessors::Type] = addAccessor("type",	VTypes::CharacterData, TRUE);
+	accessorPointers[CellAccessors::A] = addAccessor("a",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::B] = addAccessor("b",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::C] = addAccessor("c",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::Alpha] = addAccessor("alpha",	VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::Beta] = addAccessor("beta",	VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::Gamma] = addAccessor("gamma",	VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::AX] = addAccessor("ax",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::AY] = addAccessor("ay",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::AZ] = addAccessor("az",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::BX] = addAccessor("bx",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::BY] = addAccessor("by",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::BZ] = addAccessor("bz",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::CX] = addAccessor("cx",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::CY] = addAccessor("cy",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::CZ] = addAccessor("cz",		VTypes::RealData, FALSE);
+	accessorPointers[CellAccessors::CX] = addAccessor("centrex",	VTypes::RealData, TRUE);
+	accessorPointers[CellAccessors::CY] = addAccessor("centrey",	VTypes::RealData, TRUE);
+	accessorPointers[CellAccessors::CZ] = addAccessor("centrez",	VTypes::RealData, TRUE);
+	accessorPointers[CellAccessors::Density] = addAccessor("density", VTypes::RealData, TRUE);
+	accessorPointers[CellAccessors::Matrix] = addAccessor("matrix", VTypes::RealData, FALSE, 9);
+	accessorPointers[CellAccessors::SpacegroupId] = addAccessor("sgid",	VTypes::IntegerData, FALSE);
+	accessorPointers[CellAccessors::SpacegroupName] = addAccessor("sgname",	VTypes::CharacterData, FALSE);
+	accessorPointers[CellAccessors::SpacegroupSetting] = addAccessor("sgsetting",	VTypes::IntegerData, FALSE);
+	accessorPointers[CellAccessors::Type] = addAccessor("type",	VTypes::CharacterData, TRUE);
+	accessorPointers[CellAccessors::Volume] = addAccessor("volume", VTypes::RealData, TRUE);
 };
 
 // Retrieve specified data
@@ -71,34 +77,10 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 	} 
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in CellAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("CellAccessors::retrieve");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in CellAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("CellAccessors::retrieve");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in CellAccessors::retrieve.\n", accessorPointers[vid]->name());
-			msg.exit("CellAccessors::retrieve");
-			return FALSE;
-		}
+		msg.exit("CellAccessors::retrieve");
+		return FALSE;
 	}
 	// Retrieve value based on enumerated id
 	switch (vid)
@@ -129,11 +111,26 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (CellAccessors::CentreZ):
 			rv.set(c->centre().get(vid - CellAccessors::CentreX));
 			break;
+		case (CellAccessors::Density):
+			rv.set(c->density());
+			break;
 		case (CellAccessors::Matrix):
 			rv.set(c->axes().getElement(index-1));
 			break;
+		case (CellAccessors::SpacegroupId):
+			rv.set(c->spacegroup());
+			break;
+		case (CellAccessors::SpacegroupName):
+			rv.set(spacegroups.name(c->spacegroup()));
+			break;
+		case (CellAccessors::SpacegroupSetting):
+			rv.set(c->spacegroupSetting());
+			break;
 		case (CellAccessors::Type):
 			rv.set(Cell::cellType(c->type()));
+			break;
+		case (CellAccessors::Volume):
+			rv.set(c->volume());
 			break;
 		default:
 			printf("Unknown enumeration %i given to CellAccessors::retrieve.\n", vid);
@@ -163,34 +160,10 @@ bool CellAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
-	if (step->hasArrayIndex())
+	if (!checkIndex(index, step, accessorPointers[vid]))
 	{
-		if (accessorPointers[vid]->isArray())
-		{
-			// Get index and do simple lower-limit check
-			index = step->arrayIndex();
-			if (index < 1)
-			{
-				printf("Array index '%i' given to member '%s' in CellAccessors::retrieve is out of bounds.\n", index, accessorPointers[vid]->name());
-				msg.exit("CellAccessors::retrieve");
-				return FALSE;
-			}
-		}
-		else
-		{
-			printf("Array index given to member '%s' in CellAccessors::retrieve, but it is not an array.\n", accessorPointers[vid]->name());
-			msg.exit("CellAccessors::retrieve");
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (accessorPointers[vid]->isArray())
-		{
-			printf("Array index missing for member '%s' in CellAccessors::retrieve.\n", accessorPointers[vid]->name());
-			msg.exit("CellAccessors::retrieve");
-			return FALSE;
-		}
+		msg.exit("CellAccessors::set");
+		return FALSE;
 	}
 	// Set value based on enumerated id
 	switch (vid)

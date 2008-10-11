@@ -32,6 +32,7 @@ ModelAccessors::ModelAccessors()
 {
  	accessorPointers[ModelAccessors::Atoms] = addListAccessor("atoms",		VTypes::AtomData);
  	accessorPointers[ModelAccessors::Atomtypes] = addListAccessor("atomtypes",	VTypes::ForcefieldAtomData);
+ 	accessorPointers[ModelAccessors::Bonds] = addListAccessor("bonds",		VTypes::BondData);
  	accessorPointers[ModelAccessors::Cell] = addAccessor("cell",			VTypes::CellData, TRUE);
  	accessorPointers[ModelAccessors::Frame] = addAccessor("frame",			VTypes::ModelData, TRUE);
 //  	accessorPointers[ModelAccessors::Frames] = addListAccessor("frames",		VTypes::ModelData);
@@ -39,6 +40,7 @@ ModelAccessors::ModelAccessors()
  	accessorPointers[ModelAccessors::NAngleTerms] = addAccessor("nangleterms",	VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NAtoms] = addAccessor("natoms",		VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NAtomtypes] = addAccessor("natomtypes",	VTypes::IntegerData,	TRUE);
+ 	accessorPointers[ModelAccessors::NBonds] = addAccessor("nbonds",		VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NBondTerms] = addAccessor("nbondterms",	VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NPatterns] = addAccessor("npatterns",		VTypes::IntegerData,	TRUE);
  	accessorPointers[ModelAccessors::NTorsionTerms] = addAccessor("ntorsionterms",	VTypes::IntegerData,	TRUE);
@@ -83,6 +85,14 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 		case (ModelAccessors::Atomtypes):
 			rv.set(m->uniqueType(index-1), VTypes::ForcefieldAtomData);
 			break;
+		case (ModelAccessors::Bonds):
+			if (index > m->nBonds())
+			{
+				msg.print("Bond array index is out of bounds for model '%s'\n", m->name());
+				result = FALSE;
+			}
+			else rv.set(m->bond(index-1), VTypes::BondData);
+			break;
 		case (ModelAccessors::Cell):
 			rv.set(m->cell(), VTypes::CellData);
 			break;
@@ -107,6 +117,9 @@ bool ModelAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			break;
 		case (ModelAccessors::NAtomtypes):
 			rv.set(m->nUniqueTypes());
+			break;
+		case (ModelAccessors::NBonds):
+			rv.set(m->nBonds());
 			break;
 		case (ModelAccessors::NBondTerms):
 			rv.set(m->nUniqueBondTerms());
@@ -166,7 +179,15 @@ bool ModelAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (ModelAccessors::Atoms):
 		case (ModelAccessors::Cell):
+		case (ModelAccessors::Bonds):
+ 		case (ModelAccessors::NAngleTerms):
 		case (ModelAccessors::NAtoms):
+		case (ModelAccessors::NAtomtypes):
+		case (ModelAccessors::NBonds):
+		case (ModelAccessors::NBondTerms):
+		case (ModelAccessors::NPatterns):
+		case (ModelAccessors::NTorsionTerms):
+		case (ModelAccessors::Patterns):
 			msg.print("Member '%s' in Model is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;

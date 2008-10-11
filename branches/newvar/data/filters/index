@@ -1,16 +1,16 @@
 # Model formats
-#cds
-#cif
+cds
+cif
 dlp.model
-#dlp.hisf
-#dlp.hisu
+dlp.hisf
+dlp.hisu
 dlp.field
-#gamess
-#mol
-#mol2
+gamess
+mol
+mol2
 #mopac
 #pdb
-#xyz
+xyz
 #msi
 #akf
 #vfield

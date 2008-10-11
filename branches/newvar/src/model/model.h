@@ -37,7 +37,6 @@ class ForcefieldBound;
 class Constraint;
 class Pattern;
 class Filter;
-class Spacegroup;
 class Site;
 class UndoState;
 class Atomaddress;
@@ -184,10 +183,6 @@ class Model
 	// Unit Cell
 	*/
 	private:
-	// Spacegroup of the model (if any)
-	int spacegroup_;
-	// Setting for spacegroup (if any)
-	int spacegroupSetting_;
 	// Cell definition (also contains reciprocal cell definition)
 	Cell cell_;
 
@@ -202,14 +197,6 @@ class Model
 	void removeCell();
 	// Fold all atoms into the cell
 	void foldAllAtoms();
-	// Sets the spacegroup of the model
-	void setSpacegroup(int i);
-	// Sets the spacegroup setting
-	void setSpacegroupSetting(int i);
-	// Return the spacegroup of the model
-	int spacegroup();
-	// Return the spacegroup setting of the model
-	int spacegroupSetting();
 	// Apply the given symmetry generator to the current atom selection in the model
 	void pack(int);
 	// Apply the symmetry operators listed in the model's spacegroup
