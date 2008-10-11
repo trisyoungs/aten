@@ -49,7 +49,7 @@ class FormatNode
 
 	public:
 	// Set format node data
-	bool set(const char *s, VariableList &vars);
+	bool set(const char *s, VariableList &vars, bool astext = FALSE);
 	// Get format node variable
 	Variable *variable();
 	// Get field length

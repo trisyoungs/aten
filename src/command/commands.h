@@ -147,17 +147,18 @@ class Command {
 		CA_TRANSMUTE,
 	
 		// Cell commands
+		CA_ADDGENERATOR,
 		CA_ADJUSTCELL,
+		CA_CELL,
+		CA_CELLAXES,
 		CA_FOLD,
 		CA_FOLDMOLECULES,
 		CA_FRACTOREAL,
+		CA_NOCELL,
 		CA_PACK,
 		CA_PRINTCELL,
 		CA_REPLICATE,
 		CA_SCALE,
-		CA_CELL,
-		CA_CELLAXES,
-		CA_NOCELL,
 		CA_SETCELL,
 		CA_SPACEGROUP,
 	
@@ -541,17 +542,18 @@ class Command {
 	static int function_CA_TOSTART(CommandNode *&c, Bundle &obj);
 	static int function_CA_TRANSMUTE(CommandNode *&c, Bundle &obj);
 	// Cell commands
+	static int function_CA_ADDGENERATOR(CommandNode *&c, Bundle &obj);
 	static int function_CA_ADJUSTCELL(CommandNode *&c, Bundle &obj);
+	static int function_CA_CELL(CommandNode *&c, Bundle &obj);
+	static int function_CA_CELLAXES(CommandNode *&c, Bundle &obj);
 	static int function_CA_FOLD(CommandNode *&c, Bundle &obj);
 	static int function_CA_FOLDMOLECULES(CommandNode *&c, Bundle &obj);
 	static int function_CA_FRACTOREAL(CommandNode *&c, Bundle &obj);
+	static int function_CA_NOCELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_PACK(CommandNode *&c, Bundle &obj);
 	static int function_CA_PRINTCELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_REPLICATE(CommandNode *&c, Bundle &obj);
 	static int function_CA_SCALE(CommandNode *&c, Bundle &obj);
-	static int function_CA_CELL(CommandNode *&c, Bundle &obj);
-	static int function_CA_CELLAXES(CommandNode *&c, Bundle &obj);
-	static int function_CA_NOCELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_SETCELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_SPACEGROUP(CommandNode *&c, Bundle &obj);
 	// Charge commands

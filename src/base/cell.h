@@ -22,7 +22,9 @@
 #ifndef ATEN_CELL_H
 #define ATEN_CELL_H
 
+#include "base/generator.h"
 #include "templates/vector3.h"
+#include "templates/reflist.h"
 
 // Forward declarations
 class Atom;
@@ -68,42 +70,13 @@ class Cell
 	double volume_, reciprocalVolume_;
 	// Density of cell
 	double density_;
-	// Spacegroup (if any)
-	int spacegroup_;
-	// Setting for spacegroup (if any)
-	int spacegroupSetting_;
+
 
 	public:
 	// Print cell data
 	void print() const;
 	// Generate random position inside cell
 	Vec3<double> randomPos() const;
-	
-	/*
-	// Internal Methods
-	*/
-	private:
-	// Calculate cell lengths/angles from current matrix
-	void calculateVectors();
-	// Calculate cell matrix from current vectors
-	void calculateMatrix();
-	// Update quantities that depend on the cell lengths/angles after they've changed
-	void update();
-	// Determine the cell type from its lengths / angles
-	void determineType();
-	// Calculate density of cell
-	void calculateDensity();
-	// Calculate cell reciprocal
-	void calculateReciprocal();
-	// Calculate inverse of axes transpose
-	void calculateInverse();
-	// Calculate coordinates at centre of cell
-	void calculateCentre();
-
-	/*
-	// Set / Get
-	*/
-	public:
 	// Remove the cell definition (i.e. set 'type' to CT_NONE)
 	void reset();
 	// Set lengths and angles and calculates matrix
@@ -148,6 +121,20 @@ class Cell
 	double reciprocalVolume() const;
 	// Return the density of the cell
 	double density() const;
+
+
+	/*
+	// Spacegroup
+	*/
+	private:
+	// Spacegroup (if any)
+	int spacegroup_;
+	// Setting for spacegroup (if any)
+	int spacegroupSetting_;
+	// Manual list of generators, if no spacegroup is set
+	Reflist<Generator,int> generators_;
+
+	public:
 	// Sets the spacegroup of the model
 	void setSpacegroup(int i);
 	// Sets the spacegroup setting
@@ -156,6 +143,35 @@ class Cell
 	int spacegroup();
 	// Return the spacegroup setting of the model
 	int spacegroupSetting();
+	// Add manual generator
+	void addGenerator(Generator *gen);
+	// Return number of manual generators defined
+	int nGenerators();
+	// Return first in reflist of manually-defined generators
+	Refitem<Generator,int> *generators();
+
+
+	/*
+	// Internal Methods
+	*/
+	private:
+	// Calculate cell lengths/angles from current matrix
+	void calculateVectors();
+	// Calculate cell matrix from current vectors
+	void calculateMatrix();
+	// Update quantities that depend on the cell lengths/angles after they've changed
+	void update();
+	// Determine the cell type from its lengths / angles
+	void determineType();
+	// Calculate density of cell
+	void calculateDensity();
+	// Calculate cell reciprocal
+	void calculateReciprocal();
+	// Calculate inverse of axes transpose
+	void calculateInverse();
+	// Calculate coordinates at centre of cell
+	void calculateCentre();
+
 
 	/*
 	// Atom Positioning
@@ -165,6 +181,7 @@ class Cell
 	Vec3<double> realToFrac(const Vec3<double>&) const;
 	// Calculate and return the real coordinates of the specified fractional cell coordinates
 	Vec3<double> fracToReal(const Vec3<double>&) const;
+
 
 	/*
 	// Minimum image calculation

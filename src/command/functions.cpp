@@ -94,17 +94,18 @@ void Command::initPointers()
 	pointers_[CA_TRANSMUTE] = &Command::function_CA_TRANSMUTE;
 
 	// Cell commands
+	pointers_[CA_ADDGENERATOR] = &Command::function_CA_ADDGENERATOR;
 	pointers_[CA_ADJUSTCELL] = &Command::function_CA_ADJUSTCELL;
+	pointers_[CA_CELL] = &Command::function_CA_CELL;
+	pointers_[CA_CELLAXES] = &Command::function_CA_CELLAXES;
 	pointers_[CA_FOLD] = &Command::function_CA_FOLD;
 	pointers_[CA_FOLDMOLECULES] = &Command::function_CA_FOLDMOLECULES;
 	pointers_[CA_FRACTOREAL] = &Command::function_CA_FRACTOREAL;
+	pointers_[CA_NOCELL] = &Command::function_CA_NOCELL;
 	pointers_[CA_PACK] = &Command::function_CA_PACK;
 	pointers_[CA_PRINTCELL] = &Command::function_CA_PRINTCELL;
 	pointers_[CA_REPLICATE] = &Command::function_CA_REPLICATE;
 	pointers_[CA_SCALE] = &Command::function_CA_SCALE;
-	pointers_[CA_CELL] = &Command::function_CA_CELL;
-	pointers_[CA_CELLAXES] = &Command::function_CA_CELLAXES;
-	pointers_[CA_NOCELL] = &Command::function_CA_NOCELL;
 	pointers_[CA_SETCELL] = &Command::function_CA_SETCELL;
 	pointers_[CA_SPACEGROUP] = &Command::function_CA_SPACEGROUP;
 

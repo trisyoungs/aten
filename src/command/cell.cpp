@@ -23,7 +23,34 @@
 #include "model/model.h"
 #include "classes/prefs.h"
 #include "base/messenger.h"
+#include "base/generator.h"
 #include "base/spacegroup.h"
+
+// Add manual spacegroup generator
+int Command::function_CA_ADDGENERATOR(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	// Convert argument to generator
+	Generator *gen = generators.generator(c->argc(0));
+	if (gen != NULL)
+	{
+		obj.rs->cell()->addGenerator(gen);
+		return Command::Success;
+	}
+	else
+	{
+		msg.print("Generator '%s' not found in standard list. Creating new definition...\n", c->argc(0));
+		// Create a new generator...
+		gen = generators.addGenerator(c->argc(0));
+		if (gen != NULL) obj.rs->cell()->addGenerator(gen);
+		else
+		{
+			msg.print("Failed to create new generator definition.\n");
+			return Command::FailContinue;
+		}
+	}
+	return Command::Success;
+}
 
 // Adjust parameter of unit cell
 int Command::function_CA_ADJUSTCELL(CommandNode *&c, Bundle &obj)
