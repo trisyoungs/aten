@@ -73,6 +73,7 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 			result = new RealVariable;
 			break;
 		case (VTypes::AtomData):
+		case (VTypes::BondData):
 		case (VTypes::PatternData):
 		case (VTypes::ModelData):
 		case (VTypes::GridData):
@@ -195,6 +196,9 @@ Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt, v
 			break;
 		case (VTypes::AtomData):
 			newvar = new PointerListVariable<Atom>(vt, (List<Atom>*) ptr);
+			break;
+		case (VTypes::BondData):
+			newvar = new PointerListVariable<Bond>(vt, (List<Bond>*) ptr);
 			break;
 		case (VTypes::PatternData):
 			newvar = new PointerListVariable<Pattern>(vt, (List<Pattern>*) ptr);

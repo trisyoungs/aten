@@ -31,7 +31,7 @@ class CellAccessors : public VAccess
 	// Constructor
 	CellAccessors();
 	// Accessor list
-	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, CentreX, CentreY, CentreZ, Matrix, Type, nAccessors };
+	enum Accessors { A, B, C, Alpha, Beta, Gamma, AX, AY, AZ, BX, BY, BZ, CX, CY, CZ, CentreX, CentreY, CentreZ, Density, Matrix, SpacegroupId, SpacegroupName, SpacegroupSetting, Type, Volume, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up

@@ -42,8 +42,6 @@ Model::Model()
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
 	orthoSize_ = 5.0;
-	spacegroup_ = 0;
-	spacegroupSetting_ = 1;
 	mass_ = 0.0;
 	density_ = 0.0;
 	translateScale_ = 1.0;

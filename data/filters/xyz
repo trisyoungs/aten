@@ -1,6 +1,7 @@
 # XMol-style XYZ coordinates files
-# Last modified: 05/08/08
+# Last modified: 10/10/2008
 # ChangeLog:
+#	10/10/2008 - Adjusted to use new variable access style.
 
 importmodel
 	name "XMol XYZ Coordinates"
@@ -43,10 +44,10 @@ exportmodel
 	double rx,ry,rz
 	atom i
 
-	writeline "$natoms"
-	writeline "$title"
+	writeline "$model.natoms"
+	writeline "$model.name"
 	for $i
-		writeline "$i.symbol%3   $i.rx%12.6   $i.ry%12.6   $i.rz%12.6   $i.q%12.6"
+		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6   $i.q@12.6"
 	end
 end
 
@@ -57,7 +58,7 @@ importtrajectory
 	nickname xyz
 
 	# Variable declaration
-	integer n
+	integer n,natoms
 	character e,title
 	double rx,ry,rz
 
@@ -66,13 +67,14 @@ importtrajectory
 		readline "$natoms"
 		getline $title
 		setname $title
-		newglyph text $title
+		newglyph text
+		glyphtext $title
 		glyphdata 1 10 10 0
 		# Now the atoms
-		modeltemplate
+		#modeltemplate
 		for $n,1,$natoms
 			readline "$e $rx $ry $rz"
-			setcoords $rx $ry $rz $n
+			newatom $e $rx $ry $rz
 		end
 		rebond
 		selectall

@@ -40,7 +40,7 @@ exportfield
 		# Write atoms - just loop over those in the first molecule of the pattern
 		writeline "atoms  $p.nmolatoms"
 		for $i $p 1
-			writeline "$i.type.name@-8   $i.mass@10.5  $i.charge@9.6   1   0   1"
+			writeline "$i.type.name@-8   $i.mass@10.5  $i.q@9.6   1   0   1"
 		end
 		# Bonds in pattern
 		writeline "bonds  $p.nbonds"

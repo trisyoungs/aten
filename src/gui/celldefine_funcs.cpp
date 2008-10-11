@@ -86,7 +86,7 @@ void AtenCellDefine::refresh()
 	ui.CellAngleBSpin->setValue(angles.y);
 	ui.CellAngleCSpin->setValue(angles.z);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()),  m->spacegroup());
+	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()),  m->cell()->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 	refreshing_ = FALSE;
 }
@@ -192,10 +192,10 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
 	else
 	{
-		m->setSpacegroup(sg);
+		m->cell()->setSpacegroup(sg);
 		ui.CellSpacegroupEdit->setText("");
 		// Set spacegroup label
-		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()), m->spacegroup());
+		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), m->cell()->spacegroup());
 		ui.SpacegroupLabel->setText(s);
 	}
 }
@@ -204,9 +204,9 @@ void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
 	static char s[64];
 	Model *m = aten.currentModel();
-	m->setSpacegroup(0);
+	m->cell()->setSpacegroup(0);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()), m->spacegroup());
+	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), m->cell()->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 }
 

@@ -199,7 +199,7 @@ bool IntegerVariable::reset(Variable *index)
 			msg.print("No array index given to array '%s'.\n", name_.get());
 			return FALSE;
 		}
-		integerData_ = 0.0;
+		integerData_ = 0;
 	}
 	else
 	{
@@ -214,7 +214,7 @@ bool IntegerVariable::reset(Variable *index)
 			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
 			return FALSE;
 		}
-		integerArrayData_[n-1] = 0.0;
+		integerArrayData_[n-1] = 0;
 	}
 	return TRUE;
 }

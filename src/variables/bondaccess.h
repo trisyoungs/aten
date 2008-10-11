@@ -1,6 +1,6 @@
 /*
-	*** Model Accessors
-	*** src/variables/modelaccess.h
+	*** Bond Accessors
+	*** src/variables/bondaccess.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,23 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MODELACCESS_H
-#define ATEN_MODELACCESS_H
+#ifndef ATEN_BONDACCESS_H
+#define ATEN_BONDACCESS_H
 
 #include "variables/vaccess.h"
 
-// Model Accessor
-class ModelAccessors : public VAccess
+// Bond Accessor
+class BondAccessors : public VAccess
 {
 	public:
 	// Constructor
-	ModelAccessors();
+	BondAccessors();
 	// Accessor list
-	enum Accessors { Atoms, Atomtypes, Bonds, Cell, Frame, Name, NAngleTerms, NAtoms, NAtomtypes, NBonds, NBondTerms, NPatterns, NTorsionTerms, Patterns, nAccessors };
+	enum Accessors { I, J, Order, Type, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up
-	Variable *accessorPointers[ModelAccessors::nAccessors];
+	Variable *accessorPointers[BondAccessors::nAccessors];
 
 	public:
 	// Retrieve specified data
@@ -44,6 +44,6 @@ class ModelAccessors : public VAccess
 	bool set(void *classptr, AccessStep *step, Variable *sourcevar);
 };
 
-extern ModelAccessors modelAccessors;
+extern BondAccessors bondAccessors;
 
 #endif

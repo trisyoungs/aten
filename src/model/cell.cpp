@@ -35,31 +35,6 @@ Cell *Model::cell()
 	return &cell_;
 }
 
-// Sets the spacegroup of the model
-void Model::setSpacegroup(int i)
-{
-	if ((i < 0) || (i > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
-	else spacegroup_ = i;
-}
-
-// Sets the spacegroup setting
-void Model::setSpacegroupSetting(int i)
-{
-	spacegroupSetting_ = i;
-}
-
-// Return the spacegroup of the model
-int Model::spacegroup()
-{
-	return spacegroup_;
-}
-
-// Return the spacegroup setting of the model
-int Model::spacegroupSetting()
-{
-	return spacegroupSetting_;
-}
-
 // Set cell (vectors)
 void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
@@ -201,13 +176,14 @@ void Model::pack(int gen)
 void Model::pack()
 {
 	msg.enter("Model::pack");
-	if (spacegroup_ == 0) msg.print("No spacegroup defined in model - no packing will be performed.\n");
+	int sg = cell_.spacegroup();
+	if (sg == 0) msg.print("No spacegroup defined in model - no packing will be performed.\n");
 	else
 	{
-		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(spacegroup_));
+		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(sg));
 		selectAll();
-		for (int n=0; n<spacegroups.nGenerators(spacegroup_); n++)
-			pack(spacegroups.generator(spacegroup_, n));
+		for (int n=0; n<spacegroups.nGenerators(sg); n++)
+			pack(spacegroups.generator(sg, n));
 		// Select overlapping atoms and delete
 		selectOverlaps(0.1);
 		selectionDelete();

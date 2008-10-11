@@ -38,6 +38,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create double variables with the names provided" },
 	{ "atom",		"",		"<variables>",
 				"Create atom* variables with the names provided" },
+	{ "bond",		"",		"<variables>",
+				"Create bond* variables with the names provided" },
 	{ "pattern",		"",		"<variables>",
 				"Create pattern* variables with the names provided" },
 	{ "bound",		"",		"<variables>",

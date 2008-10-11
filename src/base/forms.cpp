@@ -121,11 +121,11 @@ FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
 	{ "Harmonic Cosine", "harmcos",
 		{ "Force K", "Eq. Angle" },
 		{ "k", "eq" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },
 	{ "Harmonic", "bondconstraint",
 		{ "Force K", "Eq. Distance" },
 		{ "k", "eq" },
-		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } },CXXXX
+		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
 AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char *s)
 {

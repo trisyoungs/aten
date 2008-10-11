@@ -203,7 +203,7 @@ bool Variable::step(int delta, Variable *index)
 }
 
 // Reset variable contents
-bool Variable::reset(Variable *index = NULL)
+bool Variable::reset(Variable *index)
 {
 	printf("A variable of type '%s' cannot be reset (%s).\n", VTypes::dataType(dataType_), name_.get());
 	return FALSE;

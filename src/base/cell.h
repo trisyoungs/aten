@@ -68,6 +68,10 @@ class Cell
 	double volume_, reciprocalVolume_;
 	// Density of cell
 	double density_;
+	// Spacegroup (if any)
+	int spacegroup_;
+	// Setting for spacegroup (if any)
+	int spacegroupSetting_;
 
 	public:
 	// Print cell data
@@ -144,6 +148,14 @@ class Cell
 	double reciprocalVolume() const;
 	// Return the density of the cell
 	double density() const;
+	// Sets the spacegroup of the model
+	void setSpacegroup(int i);
+	// Sets the spacegroup setting
+	void setSpacegroupSetting(int i);
+	// Return the spacegroup of the model
+	int spacegroup();
+	// Return the spacegroup setting of the model
+	int spacegroupSetting();
 
 	/*
 	// Atom Positioning
