@@ -521,6 +521,7 @@ bool CommandList::setInputFile(const char *sourcefile)
 	if (inputFile_ != NULL) printf("CommandList::setInFile <<<< Inputfile already set >>>>\n");
         inputFile_ = new ifstream(sourcefile,ios::in);
 	filename_ = sourcefile;
+	variables_.set("infile", sourcefile);
 	msg.exit("CommandList::setInFile");
 	return (!inputFile_->good() ? FALSE : TRUE);
 }
@@ -531,6 +532,7 @@ bool CommandList::setOutputFile(const char *destfile)
 	msg.enter("CommandList::setOutputFile");
 	outputFile_ = new ofstream(destfile,ios::out);
 	filename_ = destfile;
+	variables_.set("outfile", destfile);
 	msg.exit("CommandList::setOutputFile");
 	if (!outputFile_->good()) return FALSE;
 	else return TRUE;
@@ -552,6 +554,8 @@ void CommandList::closeFiles()
 	}
 	inputFile_ = NULL;
 	outputFile_ = NULL;
+	variables_.set("infile", "none");
+	variables_.set("outfile", "none");
 	msg.exit("CommandList::closeFiles");
 }
 

@@ -83,10 +83,24 @@ Atom::Atom()
 	screenRadius_ = 0.0;
 	style_ = StickStyle;
 	labels_ = 0;
+	parent_ = NULL;
+
 	// Public variables
 	next = NULL;
 	prev = NULL;
 	tempi = 0;
+}
+
+// Set parent model
+void Atom::setParent(Model *m)
+{
+	parent_ = m;
+}
+
+// Return parent model
+Model *Atom::parent()
+{
+	return parent_;
 }
 
 /*
@@ -190,7 +204,7 @@ void Atom::setPositionFixed(bool b)
 }
 
 // Return whether the atom's position is fixed
-bool Atom::hasFixedPosition()
+bool Atom::isPositionFixed()
 {
 	return fixedPosition_;
 }

@@ -1,6 +1,7 @@
 # Protein databank coordinates import. Residue data etc. is ignored.
-# Last modified: 04/10/2008
+# Last modified: 12/10/2008
 # ChangeLog:
+#	12/10/2008 - Adjusted to use new variable access methods (but kept old keyword style).
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
 
@@ -15,11 +16,12 @@ importmodel
 	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
 	integer n,id,i,bondi,bondj,bondk,bondl,found
 
+	# Element names in PDB files are commonly 'appended' by a numeric id, which we don't want...
 	zmap firstalpha
 
 	# Create default model
-	newmodel $title
-	let $found = 0
+	newmodel $infile
+	$found = 0
 	for $n
 		readline "$keyword@6 $line@100"
 		if $keyword = "HEADER"

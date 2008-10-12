@@ -1,6 +1,8 @@
 # Gaussian Cube Format
-# Last modified: 28/10/07
+# Last modified: 12/10/2008
 # ChangeLog:
+#	12/10/2008 - Adjusted to use new variable access rules.
+#	28/10/2007 - First version.
 
 importgrid
 	name "Gaussian CUBE"
@@ -10,7 +12,7 @@ importgrid
 	zmap numeric
 
 	# Variable declaration
-	character e
+	character e,title
 	integer natoms,nx,ny,nz,i,j,k
 	double ox,oy,oz,xx,xy,xz,yx,yy,yz,zx,zy,zz,rx,ry,rz,data
 
@@ -33,8 +35,7 @@ importgrid
 	newmodel $title
 	for $i,1,$natoms
 		readline "$e * $rx $ry $rz"
-		newatom $e
-		setcoords $rx $ry $rz
+		newatom $e $rx $ry $rz
 	end
 	finalisemodel
 	rebond

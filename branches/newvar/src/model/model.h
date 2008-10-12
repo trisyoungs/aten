@@ -193,6 +193,8 @@ class Model
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
 	// Set cell (axes)
 	void setCell(Mat3<double> axes);
+	// Set cell (parameter)
+	void setCell(Cell::CellParameter cp, double value);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell

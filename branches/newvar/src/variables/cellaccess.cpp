@@ -22,6 +22,7 @@
 #include "variables/cellaccess.h"
 #include "variables/accessstep.h"
 #include "variables/vaccess.h"
+#include "model/model.h"
 #include "base/cell.h"
 #include "base/spacegroup.h"
 #include "base/messenger.h"
@@ -165,6 +166,8 @@ bool CellAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("CellAccessors::set");
 		return FALSE;
 	}
+	Mat3<double> m;
+	Vec3<double> v;
 	// Set value based on enumerated id
 	switch (vid)
 	{
@@ -184,10 +187,11 @@ bool CellAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (CellAccessors::CY):
 		case (CellAccessors::CZ):
 			// Cast vid into a CellParameter
-			c->setParameter((Cell::CellParameter) vid, srcvar->asDouble());
+			c->parent()->setCell( (Cell::CellParameter) vid, srcvar->asDouble());
 			break;
 		case (CellAccessors::Matrix):
-			c->axes().set(index-1, srcvar->asDouble());
+			// Cast vid into a CellParameter
+			c->parent()->setCell( (Cell::CellParameter) ((index-1) + Cell::CellAX), srcvar->asDouble());
 			break;
 		case (CellAccessors::Type):
 		case (CellAccessors::CentreX):

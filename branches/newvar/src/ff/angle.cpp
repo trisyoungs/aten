@@ -28,7 +28,7 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 {
 	msg.enter("Pattern::angleEnergy");
 	static int i,j,k,aoff,m1;
-	static double forcek, n, s, eq, r, theta, dp, energy, c0, c1, c2;
+	static double forcek, n, s, eq, rij, theta, dp, energy, c0, c1, c2;
 	static double coseq, delta;
 	static ForcefieldBound *ffb;
 	static PatternBound *pb;
@@ -83,6 +83,12 @@ void Pattern::angleEnergy(Model *srcmodel, Energy *estore, int molecule)
 					delta = cos(theta) - coseq;
 					energy += 0.5 * forcek * delta * delta;
 					break;
+				case (AngleFunctions::BondConstraint):
+					// U = 0.5 * forcek * (r - eq)**2
+					forcek = fabs(ffb->parameter(AngleFunctions::BondConstraintK));
+					eq = ffb->parameter(AngleFunctions::BondConstraintEq);
+					rij = srcmodel->distance(i, j) - eq;
+					energy += 0.5 * forcek * rij * rij;
 				default:
 					msg.print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
@@ -101,8 +107,8 @@ void Pattern::angleForces(Model *srcmodel)
 {
 	msg.enter("Pattern::angleForcess");
 	static int i,j,k,aoff,m1;
-	static Vec3<double> vec_ij, vec_kj, fi, fk;
-	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx;
+	static Vec3<double> vec_ij, vec_kj, fi, fk, mim_ik;
+	static double forcek, eq, dp, theta, mag_ij, mag_kj, n, s, c0, c1, c2, cosx, sinx, rij;
 	static double du_dtheta, dtheta_dcostheta;
 	static ForcefieldBound *ffb;
 	static PatternBound *pb;
@@ -162,17 +168,36 @@ void Pattern::angleForces(Model *srcmodel)
 					cosx = cos(ffb->parameter(AngleFunctions::HarmonicCosineEq) / DEGRAD);
 					du_dtheta = -forcek * (cos(theta) - cosx) * sin(theta);
 					break;
+				case (AngleFunctions::BondConstraint):
+					// dU/dr = forcek * (r - eq)
+					forcek = ffb->parameter(AngleFunctions::BondConstraintK);
+					eq = ffb->parameter(AngleFunctions::BondConstraintEq);
+					mim_ik = cell->mimd(modelatoms[k]->r(), modelatoms[i]->r());
+					rij = mim_ik.magnitude();
+					du_dtheta = forcek * (rij - eq);
+
+					break;
 				default:
 					msg.print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleStyle()].name);
 					break;
 			}
-			// Complete chain rule
-			du_dtheta *= dtheta_dcostheta;
-			// Calculate atomic forces
-			fi = vec_kj - vec_ij * dp;
-			fi *= -du_dtheta / mag_ij;
-			fk = vec_ij - vec_kj * dp;
-			fk *= -du_dtheta / mag_kj;
+
+			// Exception for BondConstraint term...
+			if (pb->data()->angleStyle() == AngleFunctions::BondConstraint)
+			{
+				fk = (mim_ik / rij) * -du_dtheta;
+				fi = -fk;
+			}
+			else
+			{
+				// Complete chain rule
+				du_dtheta *= dtheta_dcostheta;
+				// Calculate atomic forces
+				fi = vec_kj - vec_ij * dp;
+				fi *= -du_dtheta / mag_ij;
+				fk = vec_ij - vec_kj * dp;
+				fk *= -du_dtheta / mag_kj;
+			}
 			// Add contributions into force arrays
 			modelatoms[i]->f() += fi;
 			modelatoms[j]->f() -= fi + fk;

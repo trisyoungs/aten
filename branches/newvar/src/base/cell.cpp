@@ -59,6 +59,7 @@ Cell::Cell()
 	reciprocalVolume_ = 0.0;
 	spacegroup_ = 0;
 	spacegroupSetting_ = 1;
+	parent_ = NULL;
 }
 
 // Assignment operator
@@ -75,6 +76,18 @@ void Cell::operator=(Cell &source)
 	volume_ = source.volume_;
 	reciprocalVolume_ = source.reciprocalVolume_;
 	density_ = source.density_;
+}
+
+// Set parent model
+void Cell::setParent(Model *m)
+{
+	parent_ = m;
+}
+
+// Return parent model
+Model *Cell::parent()
+{
+	return parent_;
 }
 
 /*

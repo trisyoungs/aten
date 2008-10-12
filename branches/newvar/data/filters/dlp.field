@@ -1,6 +1,7 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 04/10/2008
+# Last modified: 12/10/2008
 # ChangeLog:
+#	12/10/2008 - Fixed to use new variable access rules, and to write constraint terms.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
 
@@ -96,7 +97,20 @@ exportfield
 		end
 		# Constraint terms
 		writeline "constraints  $nconstraints"
-		
+		# ...proper bond constraints first
+		for $n,1,$p.nbonds
+			$b = $p.bonds[$n]
+			if $b.form = "constraint"
+				writeline "   $b.id[1]@5 $b.id[2]@5 $b.data[2]@10.6"
+			end
+		end
+		# ...and now angles that are of type 'bondconstraint'
+		for $n,1,$p.nangles
+			$b = $p.angles[$n]
+			if $b.form = "bondconstraint"
+				writeline "   $b.id[1]@5 $b.id[3]@5 $b.data[2]@10.6"
+			end
+		end
 		# Terminating line
 		writeline "finish"
 	end

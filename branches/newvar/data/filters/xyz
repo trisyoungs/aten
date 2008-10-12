@@ -26,8 +26,6 @@ importmodel
 		setcharge $q
 	end
 	rebond
-	selectall
-	centre 0 0 0
 	finalisemodel
 end
 
