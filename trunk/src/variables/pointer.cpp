@@ -112,6 +112,38 @@ bool PointerVariable::reset(void *ptr, VTypes::DataType type)
 	return TRUE;
 }
 
+// Get value of variable as integer
+int PointerVariable::asInteger(Variable *index)
+{
+	int result = 0;
+	// Check array index given
+	if (index == NULL)
+	{
+		if (arraySize_ != -1)
+		{
+			msg.print("No array index given to array '%s'.\n", name_.get());
+			return FALSE;
+		}
+		result = ptrData_ != NULL;
+	}
+	else
+	{
+		if (arraySize_ == -1)
+		{
+			msg.print("Array index given to variable '%s'.\n", name_.get());
+			return FALSE;
+		}
+		int n = index->asInteger();
+		if ((n > arraySize_) || (n < 1))
+		{
+			msg.print("Array index %i is out of bounds for array '%s'.\n", n, name_.get());
+			return FALSE;
+		}
+		else result = ptrArrayData_[n-1] != NULL;
+	}
+	return result;
+}
+
 // Get value of variable as pointer of specified type
 void *PointerVariable::asPointer(VTypes::DataType type, Variable *index)
 {

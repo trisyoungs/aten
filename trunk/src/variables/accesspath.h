@@ -52,8 +52,9 @@ class AccessPath : public Variable
 	List<AccessStep> path_;
 	// Walk path and get/set/step final target variable
 	bool walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, int step);
-	// Variable to contain return value
-	Variable *resultVariable_;
+	// Variable to contain character return value
+// 	Variable *resultVariable_;
+	Dnchar charResult_;
 
 	public:
 	// Set path from character constant

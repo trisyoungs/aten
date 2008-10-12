@@ -39,9 +39,6 @@
 // Constructor
 AccessPath::AccessPath()
 {
-	// Private variables
-	resultVariable_ = NULL;
-
 	// Public variables
 	prev = NULL;
 	next = NULL;
@@ -50,7 +47,6 @@ AccessPath::AccessPath()
 // Destructor
 AccessPath::~AccessPath()
 {
-	if (resultVariable_ != NULL) delete resultVariable_;
 }
 
 // Walk path to retrieve/set/step end variable
@@ -284,25 +280,25 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 		}
 	}
 	// Set the return type of the path as the type of the last step, and create a suitable return variable
-	if (success)
-	{
-		dataType_ = step->type();
-		switch (dataType_)
-		{
-			case (VTypes::IntegerData):
-				resultVariable_ = new IntegerVariable;
-				break;
-			case (VTypes::RealData):
-				resultVariable_ = new RealVariable;
-				break;
-			case (VTypes::CharacterData):
-				resultVariable_ = new CharacterVariable;
-				break;
-			default:
-				resultVariable_ = new PointerVariable(dataType_);
-				break;
-		}
-	}
+	if (success) dataType_ = step->type();
+// 	{
+// 		dataType_ = step->type();
+// 		switch (dataType_)
+// 		{
+// 			case (VTypes::IntegerData):
+// 				resultVariable_ = new IntegerVariable;
+// 				break;
+// 			case (VTypes::RealData):
+// 				resultVariable_ = new RealVariable;
+// 				break;
+// 			case (VTypes::CharacterData):
+// 				resultVariable_ = new CharacterVariable;
+// 				break;
+// 			default:
+// 				resultVariable_ = new PointerVariable(dataType_);
+// 				break;
+// 		}
+// 	}
 	msg.exit("AccessPath::setPath");
 	return success;
 }
@@ -313,8 +309,9 @@ int AccessPath::asInteger(Variable *index)
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
-		if (!resultVariable_->set(rv.value()->asInteger())) return 0;
-		return resultVariable_->asInteger();
+		return rv.value()->asInteger();
+/*		if (!resultVariable_->set(rv.value()->asInteger())) return 0;
+		return resultVariable_->asInteger();*/
 	}
 	else return 0;
 }
@@ -325,8 +322,9 @@ double AccessPath::asDouble(Variable *index)
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
-		if (!resultVariable_->set(rv.value()->asDouble())) return 0.0;
-		return resultVariable_->asDouble();
+		return rv.value()->asDouble();
+/*		if (!resultVariable_->set(rv.value()->asDouble())) return 0.0;
+		return resultVariable_->asDouble();*/
 	}
 	else return 0.0;
 }
@@ -337,8 +335,10 @@ const char *AccessPath::asCharacter(Variable *index)
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
-		if (!resultVariable_->set(rv.value()->asCharacter())) return "NULL";
-		return resultVariable_->asCharacter();
+		charResult_ = rv.value()->asCharacter();
+		return charResult_.get();
+/*		if (!resultVariable_->set(rv.value()->asCharacter())) return "NULL";
+		return resultVariable_->asCharacter();*/
 	}
 	else return "NULL";
 }
@@ -349,8 +349,9 @@ bool AccessPath::asBool(Variable *index)
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
-		if (!resultVariable_->set(rv.value()->asCharacter())) return FALSE;
-		return resultVariable_->asBool();
+		return rv.value()->asBool();
+/*		if (!resultVariable_->set(rv.value()->asCharacter())) return FALSE;
+		return resultVariable_->asBool();*/
 	}
 	else return FALSE;
 }
@@ -361,8 +362,9 @@ void *AccessPath::asPointer(VTypes::DataType dt, Variable *index)
 	ReturnValue rv;
 	if (walk(rv, NULL, VTypes::NoData, 0))
 	{
-		if (!resultVariable_->set(rv.value()->asPointer(dt), dt)) return NULL;
-		return resultVariable_->asPointer(dt);
+		return rv.value()->asPointer(dt);
+/*		if (!resultVariable_->set(rv.value()->asPointer(dt), dt)) return NULL;
+		return resultVariable_->asPointer(dt);*/
 	}
 	else return NULL;
 }

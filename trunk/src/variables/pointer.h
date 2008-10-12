@@ -42,6 +42,8 @@ class PointerVariable : public Variable
 	bool set(void *ptr, VTypes::DataType type, Variable *index = NULL);
 	// Reset (non-array) variable with type and pointer provided
 	bool reset(void *ptr, VTypes::DataType type);
+	// Get value of variable as integer
+	int asInteger(Variable *index);
 	// Get value of variable as pointer of specified type
 	void *asPointer(VTypes::DataType type, Variable *index = NULL);
 	// Step variable
