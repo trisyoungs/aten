@@ -19,9 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "base/elements.h"
-#include "classes/forcefield.h"
+#include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
@@ -41,6 +39,7 @@
 #include "gui/selectpattern.h"
 #include "gui/about.h"
 #include "model/model.h"
+#include "model/undostate.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
@@ -171,7 +170,7 @@ void AtenForm::executeCommand()
 {
 	// Clear old script commands and set current model variables
 	aten.tempScript.clear();
-	aten.tempScript.setModelVariables("",aten.current.m);
+// 	aten.tempScript.setModelVariables("",aten.current.m);/* TGAY*/
 	// Grab the current text of the line edit
 	if (aten.tempScript.cacheLine(qPrintable(commandEdit_->text()))) aten.tempScript.execute();
 	//parser.getArgsDelim(qPrintable(commandEdit_->text()), Parser::UseQuotes);
@@ -331,7 +330,7 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 		filename = loadScriptDialog->selectedFiles().first();
 		// Create script and model variables within it
 		CommandList *ca = aten.scripts.add();
-		ca->createModelVariables("");
+// 		ca->createModelVariables(""); TGAY
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
 		else aten.scripts.remove(ca);
 	}

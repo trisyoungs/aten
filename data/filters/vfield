@@ -1,5 +1,9 @@
 # Vector Field Data
-# Last modified: 11/04/08
+# Last modified: 12/10/2008
+# ChangeLog:
+# 	12/10/2008 - Adjusted to use new variable access rules
+#	11/04/2008 - First version.
+
 importmodel
 	name "2D/3D Vector Field"
 	nickname vfield
@@ -11,7 +15,7 @@ importmodel
 	integer n,i,j,k,nx,ny,nz
 	double x,y,z,vx,vy,vz
 
-	newmodel $title
+	newmodel $infile
 
 	# Read vector data
 	for $n

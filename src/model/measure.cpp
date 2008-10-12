@@ -20,8 +20,9 @@
 */
 
 #include "model/model.h"
-#include "classes/measurement.h"
-#include "classes/bond.h"
+#include "base/measurement.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
 
 // Return first measurement in the list
 Measurement *Model::measurements()
@@ -434,14 +435,37 @@ void Model::updateMeasurements()
 void Model::listMeasurements()
 {
 	msg.enter("Model::listMeasurements");
-	msg.print("Distances:");
-	for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
-		if (m->type() == Measurement::Distance) m->print();
-	msg.print("Angles:");
-	for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
-		if (m->type() == Measurement::Angle) m->print();
-	msg.print("Torsions:");
-	for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
-		if (m->type() == Measurement::Torsion) m->print();
+	Atom **matoms;
+	for (int mt = Measurement::Distance; mt < Measurement::nMeasurementTypes; mt++)
+	{
+		switch (mt)
+		{
+			case (Measurement::Distance):
+				msg.print("Distances:");
+				break;
+			case (Measurement::Angle):
+				msg.print("Angles:");
+				break;
+			case (Measurement::Torsion):
+				msg.print("Torsions:");
+				break;
+		}
+		for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
+		{
+			matoms = m->atoms();
+			switch (m->type())
+			{
+				case (Measurement::Distance):
+					msg.print("%4i %4i             %f", matoms[0]->id()+1, matoms[1]->id()+1, m->value());
+					break;
+				case (Measurement::Angle):
+					msg.print("%4i %4i %4i        %f", matoms[0]->id()+1, matoms[1]->id()+1, matoms[2]->id()+1, m->value());
+					break;
+				case (Measurement::Torsion):
+					msg.print("%4i %4i %4i %4i   %f", matoms[0]->id()+1, matoms[1]->id()+1, matoms[2]->id()+1, matoms[3]->id()+1, m->value());
+					break;
+			}
+		}
+	}
 	msg.exit("Model::listMeasurements");
 }

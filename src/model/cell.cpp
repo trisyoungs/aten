@@ -20,47 +20,19 @@
 */
 
 #include "model/model.h"
-#include "classes/pattern.h"
-#include "classes/clipboard.h"
-#include "templates/vector3.h"
-#include "templates/matrix3.h"
+#include "base/pattern.h"
+#include "model/clipboard.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
 #include "base/spacegroup.h"
 #include "base/generator.h"
-#include "base/aten.h"
-#include "base/constants.h"
-#include "parse/parser.h"
-#include <math.h>
-#include <iostream>
+#include "main/aten.h"
+#include "classes/prefs.h"
 
 // Return pointer to unit cell structure
 Cell *Model::cell()
 {
 	return &cell_;
-}
-
-// Sets the spacegroup of the model
-void Model::setSpacegroup(int i)
-{
-	if ((i < 0) || (i > 230)) msg.print( "Warning - %i is not a valid spacegroup number. Spacegroup not set.\n", i);
-	else spacegroup_ = i;
-}
-
-// Sets the spacegroup setting
-void Model::setSpacegroupSetting(int i)
-{
-	spacegroupSetting_ = i;
-}
-
-// Return the spacegroup of the model
-int Model::spacegroup()
-{
-	return spacegroup_;
-}
-
-// Return the spacegroup setting of the model
-int Model::spacegroupSetting()
-{
-	return spacegroupSetting_;
 }
 
 // Set cell (vectors)
@@ -103,6 +75,28 @@ void Model::setCell(Mat3<double> axes)
 		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::setCell[axes]");
+}
+
+// Set cell (parameter)
+void Model::setCell(Cell::CellParameter cp, double value)
+{
+	msg.enter("Model::setCell[parameter]");
+	static Vec3<double> oldlengths;
+	static Vec3<double> oldangles;
+	oldangles = cell_.angles();
+	oldlengths = cell_.lengths();
+	// Set new parameter value
+	cell_.setParameter(cp, value);
+	calculateDensity();
+	changeLog.add(Log::Structure);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		CellEvent *newchange = new CellEvent;
+		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles());
+		recordingState_->addEvent(newchange);
+	}
+	msg.exit("Model::setCell[parameter]");
 }
 
 // Remove cell
@@ -168,19 +162,19 @@ void Model::foldAllMolecules()
 }
 
 // Apply individual symmetry generator to current atom selection
-void Model::pack(int gen)
+void Model::pack(Generator *gen)
 {
-	msg.enter("Model::pack[gen,atom]");
+	msg.enter("Model::pack[generator]");
 	Clipboard clip;
 	Vec3<double> newr;
 	int oldnatoms;
 	if (gen == 0)
 	{
 		// Ignore this operator since it is the identity operator
-		msg.enter("Model::pack[gen,atom]");
+		msg.enter("Model::pack[generator]");
 		return;
 	}
-	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", spacegroups.generator(gen).description, gen);
+	msg.print(Messenger::Verbose,"...Applying generator '%s' (no. %i)\n", gen->name, gen);
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -192,29 +186,41 @@ void Model::pack(int gen)
 		newr = i->r();
 // 		newr.print();
 		// Apply the rotation and translation
-		newr *= spacegroups.generator(gen).rotation;
-		newr +=  cell_.transpose() * spacegroups.generator(gen).translation;
+		newr *= gen->rotation;
+		newr +=  cell_.transpose() * gen->translation;
 		i->r() = newr;
 		cell_.fold(i, this);
 	}
-	msg.exit("Model::pack[gen,atom]");
+	msg.exit("Model::pack[generator]");
 }
 
 // Apply model's spacegroup symmetry generators
 void Model::pack()
 {
 	msg.enter("Model::pack");
-	if (spacegroup_ == 0) msg.print("No spacegroup defined in model - no packing will be performed.\n");
+	int sg = cell_.spacegroup();
+	int ngen = cell_.nGenerators();
+	if ((sg == 0) && (ngen == 0))
+	{
+		msg.print("No spacegroup defined in model - no packing will be performed.\n");
+		msg.exit("Model::pack");
+		return;
+	}
+	// Select all atoms in model
+	selectAll();
+	if (sg != 0)
+	{
+		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(sg));
+		for (int n=0; n<spacegroups.nGenerators(sg); n++) pack(&generators.generator(spacegroups.generator(sg, n)));
+	}
 	else
 	{
-		msg.print("Packing cell according to spacegroup '%s'...\n", spacegroups.name(spacegroup_));
-		selectAll();
-		for (int n=0; n<spacegroups.nGenerators(spacegroup_); n++)
-			pack(spacegroups.generator(spacegroup_, n));
-		// Select overlapping atoms and delete
-		selectOverlaps(0.1);
-		selectionDelete();
+		msg.print("Packing cell from manually-defined generator list...\n");
+		for (Refitem<Generator,int> *ri = cell_.generators(); ri != NULL; ri = ri->next) pack(ri->item);
 	}
+	// Select overlapping atoms and delete
+	selectOverlaps(0.1);
+	selectionDelete();
 	msg.exit("Model::pack");
 }
 

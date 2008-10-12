@@ -29,56 +29,56 @@
 double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 
 // Minimise with conjugate gradient
-int CommandData::function_CA_CGMINIMISE(Command *&c, Bundle &obj)
+int Command::function_CA_CGMINIMISE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	cg.setTolerance(linetolerance);
 	cg.setNCycles(c->argi(0));
 	obj.rs->beginUndoState("Minimise (Conjugate Gradient)");
 	cg.minimise(obj.rs, econverge, fconverge);
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set convergence criteria
-int CommandData::function_CA_CONVERGE(Command *&c, Bundle &obj)
+int Command::function_CA_CONVERGE(CommandNode *&c, Bundle &obj)
 {
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Set line minimiser tolerance
-int CommandData::function_CA_LINETOL(Command *&c, Bundle &obj)
+int Command::function_CA_LINETOL(CommandNode *&c, Bundle &obj)
 {
 	linetolerance = c->argd(0);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
-int CommandData::function_CA_MCMINIMISE(Command *&c, Bundle &obj)
+int Command::function_CA_MCMINIMISE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	mc.setNCycles(c->argi(0));
 	obj.rs->beginUndoState("Minimise (Molecular Monte Carlo)");
 	mc.minimise(obj.rs, econverge, fconverge);
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
-int CommandData::function_CA_SDMINIMISE(Command *&c, Bundle &obj)
+int Command::function_CA_SDMINIMISE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	sd.setTolerance(linetolerance);
 	sd.setNCycles(c->argi(0));
 	obj.rs->beginUndoState("Minimise (Steepest Descent)");
 	sd.minimise(obj.rs, econverge, fconverge);
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
-int CommandData::function_CA_SIMPLEXMINIMISE(Command *&c, Bundle &obj)
+int Command::function_CA_SIMPLEXMINIMISE(CommandNode *&c, Bundle &obj)
 {
-	return CR_FAIL;
+	return Command::Fail;
 }

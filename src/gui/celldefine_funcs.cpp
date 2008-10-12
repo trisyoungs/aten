@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
@@ -86,7 +86,7 @@ void AtenCellDefine::refresh()
 	ui.CellAngleBSpin->setValue(angles.y);
 	ui.CellAngleCSpin->setValue(angles.z);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()),  m->spacegroup());
+	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()),  m->cell()->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 	refreshing_ = FALSE;
 }
@@ -168,7 +168,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 		m->endUndoState();
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
-	// Must also update the disordered builder stack page here, since a cell has been added/removed
+	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
 	gui.cellTransformWindow->refresh();
 	gui.disorderWindow->refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -192,10 +192,10 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
 	else
 	{
-		m->setSpacegroup(sg);
+		m->cell()->setSpacegroup(sg);
 		ui.CellSpacegroupEdit->setText("");
 		// Set spacegroup label
-		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()), m->spacegroup());
+		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), m->cell()->spacegroup());
 		ui.SpacegroupLabel->setText(s);
 	}
 }
@@ -204,9 +204,9 @@ void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
 	static char s[64];
 	Model *m = aten.currentModel();
-	m->setSpacegroup(0);
+	m->cell()->setSpacegroup(0);
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->spacegroup()), m->spacegroup());
+	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), m->cell()->spacegroup());
 	ui.SpacegroupLabel->setText(s);
 }
 

@@ -20,12 +20,11 @@
 */
 
 #include "model/model.h"
-#include "classes/atom.h"
-#include "classes/bond.h"
-#include "classes/pattern.h"
-#include "classes/undostate.h"
-#include "base/prefs.h"
-#include "base/elements.h"
+#include "model/undostate.h"
+#include "model/undoevent.h"
+#include "base/bond.h"
+#include "base/pattern.h"
+#include "classes/prefs.h"
 
 // Return first bond in the model
 Bond *Model::bonds()

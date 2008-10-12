@@ -20,8 +20,9 @@
 */
 
 #include "model/model.h"
-#include "base/aten.h"
-#include "base/elements.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
+#include "classes/prefs.h"
 
 // Flag that undo/redo should be enabled
 void Model::enableUndoRedo()

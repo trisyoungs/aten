@@ -1,7 +1,8 @@
 # XMol-style XYZ coordinates files
-# Last modified: 24/09/08
+# Last modified: 10/10/2008
 # ChangeLog:
-#	24/09/08 - Modified to correctly read trajectories containing different numbers/ordering of atoms
+#	10/10/2008 - Adjusted to use new variable access style.
+#	24/09/2008 - Modified to correctly read trajectories containing different numbers/ordering of atoms
 
 importmodel
 	name "XMol XYZ Coordinates"
@@ -12,7 +13,7 @@ importmodel
 
 	# Variable declaration
 	integer natoms,n
-	character e
+	character e,title
 	double rx,ry,rz,q
 
 	# Read data
@@ -26,8 +27,6 @@ importmodel
 		setcharge $q
 	end
 	rebond
-	selectall
-	centre 0 0 0
 	finalisemodel
 end
 
@@ -44,10 +43,10 @@ exportmodel
 	double rx,ry,rz
 	atom i
 
-	writeline "$natoms"
-	writeline "$title"
+	writeline "$model.natoms"
+	writeline "$model.name"
 	for $i
-		writeline "$i.symbol%3   $i.rx%12.6   $i.ry%12.6   $i.rz%12.6   $i.q%12.6"
+		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6   $i.q@12.6"
 	end
 end
 
@@ -58,7 +57,7 @@ importtrajectory
 	nickname xyz
 
 	# Variable declaration
-	integer n
+	integer n,natoms
 	character e,title
 	double rx,ry,rz
 
@@ -68,9 +67,8 @@ importtrajectory
 		getline $title
 		setname $title
 		newglyph text
-		#glyphtext $title
-		#glyphdata 1 10 10 0
-		# Now the atoms
+		glyphtext $title
+		glyphdata 1 10 10 0
 		for $n,1,$natoms
 			readline "$e $rx $ry $rz"
 			newatom $e $rx $ry $rz

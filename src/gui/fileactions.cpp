@@ -19,16 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "classes/grid.h"
+#include "main/aten.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
 #include "gui/forcefields.h"
 #include "gui/grids.h"
 #include "gui/tcanvas.uih"
-#include <QtGui/QFileDialog>
 #include "model/model.h"
+#include "base/sysfunc.h"
 
 // Add new model to workspace
 void AtenForm::on_actionFileNew_triggered(bool checked)

@@ -24,7 +24,7 @@
 
 #include "templates/vector3.h"
 #include "templates/list.h"
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 
 // Site types
 enum SiteType { ST_ATOMCOM, ST_ATOMCOG, ST_MOLCOM, ST_MOLCOG, ST_NITEMS };
@@ -78,10 +78,10 @@ class Site
 	public:
 	// Set type of site centre
 	void setType(SiteType st);
+	// Set centre of site
+	void setCentre(Vec3<double>);
 	// List of relative atom ids that define the site
 	List< ListItem<int> > atoms;
-	// Calculate centre from config and molecule ID supplied
-	Vec3<double> calculateCentre(Model*, int);
 
 	/*
 	// Site Axes
@@ -91,12 +91,12 @@ class Site
 	Mat3<double> axes_;
 
 	public:
+	// Set axes
+	void setAxes(Mat3<double>);
 	// List of atoms whose average defines the x axis (from site centre)
 	List< ListItem<int> > xAxisAtoms;
 	// List of atoms whose average defines the y axis (from site centre)
 	List< ListItem<int> > yAxisAtoms;
-	// Calculate local coordinate system from config and molecule ID supplied
-	Mat3<double> calculateAxes(Model*, int);
 };
 
 #endif

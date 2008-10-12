@@ -20,12 +20,12 @@
 */
 
 #include "base/elements.h"
-#include "base/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
-#include "classes/forcefield.h"
-#include "classes/pattern.h"
-#include "classes/bond.h"
-#include "classes/ring.h"
+#include "ff/forcefield.h"
+#include "base/pattern.h"
+#include "classes/forcefieldatom.h"
+#include "classes/forcefieldbound.h"
 
 // Return number of unique atom types in model
 int Model::nUniqueTypes()
@@ -39,16 +39,28 @@ ForcefieldAtom *Model::uniqueTypes()
 	return uniqueTypes_.first();
 }
 
+// Return the nth unique type interaction in the model
+ForcefieldAtom *Model::uniqueType(int i)
+{
+	return uniqueTypes_[i];
+}
+
 // Return number of unique bond interactions in the model
 int Model::nUniqueBondTerms()
 {
 	return uniqueBondTerms_.nItems();
 }
 
-// Return the list of unique bond interactions in the model
+// Return the first in the list of unique bond interactions in the model
 ForcefieldBound *Model::uniqueBondTerms()
 {
 	return uniqueBondTerms_.first();
+}
+
+// Return the nth unique bond interaction in the model
+ForcefieldBound *Model::uniqueBondTerm(int i)
+{
+	return uniqueBondTerms_[i];
 }
 
 // Return number of unique angle interactions in the model
@@ -57,10 +69,16 @@ int Model::nUniqueAngleTerms()
 	return uniqueAngleTerms_.nItems();
 }
 
-// Return the list of unique angle interactions in the model
+// Return the first in the list of unique angle interactions in the model
 ForcefieldBound *Model::uniqueAngleTerms()
 {
 	return uniqueAngleTerms_.first();
+}
+
+// Return the nth unique angle interaction in the model
+ForcefieldBound *Model::uniqueAngleTerm(int i)
+{
+	return uniqueAngleTerms_[i];
 }
 
 // Return number of unique torsion interactions in the model
@@ -69,10 +87,16 @@ int Model::nUniqueTorsionTerms()
 	return uniqueTorsionTerms_.nItems();
 }
 
-// Return the list of unique torsion interactions in the model
+// Return the first in the list of unique torsion interactions in the model
 ForcefieldBound *Model::uniqueTorsionTerms()
 {
 	return uniqueTorsionTerms_.first();
+}
+
+// Return the nth unique torsion interaction in the model
+ForcefieldBound *Model::uniqueTorsionTerm(int i)
+{
+	return uniqueTorsionTerms_[i];
 }
 
 /*
@@ -92,7 +116,7 @@ void printstuff(Pattern *p)
 	for (int n=0; n<p->nAtoms(); n++)
 	{
 		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n",n,elements.symbol(i),
-			i->id(),i->nBonds(),Atomtype::atomEnvironment(i->environment()));
+			i->id(),i->nBonds(),Atom::atomEnvironment(i->environment()));
 		i = i->next;
 	}
 }
@@ -174,7 +198,7 @@ void Pattern::clearHybrids()
 	Atom *i = firstAtom_;
 	for (int n=0; n<nAtoms_; n++)
 	{
-		i->setEnvironment(Atomtype::NoEnvironment);
+		i->setEnvironment(Atom::NoEnvironment);
 		i = i->next;
 	}
 	msg.exit("Pattern::clearHybrids");
@@ -189,7 +213,7 @@ void Pattern::assignHybrids()
 	for (int n=0; n<nAtoms_; n++)
 	{
 		// Set to no environment to begin with
-		i->setEnvironment(Atomtype::NoEnvironment);
+		i->setEnvironment(Atom::NoEnvironment);
 		// Work out the hybridisation based on the bond types connected to the atom.
 		// We can increase the hybridisation at any point, but never decrease it.
 		for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
@@ -197,13 +221,13 @@ void Pattern::assignHybrids()
 			switch (bref->item->type())
 			{
 				case (Bond::Single):
-					if (i->environment() < Atomtype::Sp3Environment) i->setEnvironment(Atomtype::Sp3Environment);
+					if (i->environment() < Atom::Sp3Environment) i->setEnvironment(Atom::Sp3Environment);
 					break;
 				case (Bond::Double):
-					if (i->environment() < Atomtype::Sp2Environment) i->setEnvironment(Atomtype::Sp2Environment);
+					if (i->environment() < Atom::Sp2Environment) i->setEnvironment(Atom::Sp2Environment);
 					break;
 				case (Bond::Triple):
-					if (i->environment() < Atomtype::SpEnvironment) i->setEnvironment(Atomtype::SpEnvironment);
+					if (i->environment() < Atom::SpEnvironment) i->setEnvironment(Atom::SpEnvironment);
 					break;
 			}
 		}

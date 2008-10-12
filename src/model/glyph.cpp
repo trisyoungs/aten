@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/glyph.h"
+#include "base/glyph.h"
 #include "model/model.h"
 
 // Create new glyph in this model
@@ -27,7 +27,7 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 {
 	changeLog.add(Log::Visual);
 	Glyph *newglyph = glyphs_.add();
-	newglyph->setParent(this);
+	//newglyph->setParent(this);
 	newglyph->setType(gt);
 	return newglyph;
 }
@@ -36,6 +36,44 @@ Glyph *Model::addGlyph(Glyph::GlyphType gt)
 Glyph *Model::glyphs()
 {
 	return glyphs_.first();
+}
+
+// Return vector data for glyph
+Vec3<double> Model::glyphVector(Glyph *g, int dataid)
+{
+	int id;
+	if ((dataid < 0) || (dataid >= g->nData())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", dataid+1, g->nData());
+	else
+	{
+		if (g->atomSetLast(dataid))
+		{
+			id = g->atomId(dataid);
+			if (id == -1)
+			{
+				msg.print( "Atom was apparently set last in glyph, but stored id is '-1'.\n");
+				return Vec3<double>();
+			}
+			// Check range of stored atom id
+			if (id >= atoms_.nItems())
+			{
+				msg.print( "Atom ID set in glyph (%i) is outside range for model.\n", id);
+				return Vec3<double>();
+			}
+			Atom *i = atoms_[id];
+			switch (g->atomData(dataid))
+			{
+				case (GlyphData::PositionData):
+					return i->r();
+				case (GlyphData::ForceData):
+					return i->f();
+				case (GlyphData::VelocityData):
+					return i->v();
+			}
+		}
+		// Default return value is vector data
+		return g->vector(dataid);
+	}
+	return Vec3<double>();
 }
 
 // Automatically add polyhedra to current atom selection 

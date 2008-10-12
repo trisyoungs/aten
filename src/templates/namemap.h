@@ -22,10 +22,7 @@
 #ifndef ATEN_NAMEMAP_H
 #define ATEN_NAMEMAP_H
 
-//#include "base/messenger.h"
-//#include <stdlib.h>
-//#include <stdio.h>
-#include "classes/dnchar.h"
+#include "base/dnchar.h"
 
 // Simple string/data pair class
 template <class T> class Namemap

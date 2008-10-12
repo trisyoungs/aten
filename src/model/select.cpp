@@ -19,10 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "main/aten.h"
 #include "model/model.h"
-#include "classes/pattern.h"
-#include "base/aten.h"
-#include "base/elements.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
+#include "classes/atomtype.h"
+#include "base/pattern.h"
 #include "gui/gui.h"
 
 // Select Atom

@@ -1,8 +1,9 @@
 # MDL Mol File
-# Last modified: 05/08/08
+# Last modified: 10/10/2008
 # ChangeLog:
-#	05/08/08 - Changed to use implicit $title variable
-#	30/06/08 - First version (thanks to D. Tackley)
+#	10/10/2008 - Adjusted to use new variable access methods.
+#	05/08/2008 - Changed to use implicit $title variable
+#	30/06/2008 - First version (thanks to D. Tackley)
 
 importmodel
 	name "MDL Mol File"
@@ -11,12 +12,12 @@ importmodel
 	glob *.mol
 	
 	# Variable declaration
-	character line,e
+	character line,e,title
 	integer n,natoms,nbonds,ii,jj,bondtype
 	double rx,ry,rz
 	
 	# Create default model
-	readline $title
+	getline $title
 	newmodel $title
 	
 	skipline 2

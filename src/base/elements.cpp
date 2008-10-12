@@ -20,12 +20,11 @@
 */
 
 #include "base/elements.h"
-#include "base/prefs.h"
-#include "base/aten.h"
-#include "base/messenger.h"
+#include "main/aten.h"
 #include "base/sysfunc.h"
-#include "parse/parser.h"
-#include "classes/forcefield.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "base/atom.h"
 
 // Singleton declaration
 ElementMap elements;
@@ -33,6 +32,13 @@ ElementMap elements;
 // Definitions
 #define LANTHANIDES 98
 #define ACTINIDES 99
+
+// ZMapping types
+const char *ZmapTypeKeywords[ElementMap::nZmapTypes] = { "alpha", "firstalpha", "name", "numeric", "ff", "auto" };
+ElementMap::ZmapType ElementMap::zmapType(const char *s)
+{
+	return (ElementMap::ZmapType) enumSearch("element mapping style", ElementMap::nZmapTypes, ZmapTypeKeywords, s);
+}
 
 /*
 // Default Element Data
@@ -579,7 +585,7 @@ int ElementMap::find(const char *query)
 	switch (prefs.zmapType())
 	{
 		// Automatic determination
-		case (Prefs::AutoZmap):
+		case (ElementMap::AutoZmap):
 			// First, try pure numeric conversion
 			result = numberToZ(query);
 			if (result != -1) break;
@@ -593,25 +599,25 @@ int ElementMap::find(const char *query)
 			result = ffToZ(query);
 			break;
 		// Name search
-		case (Prefs::NameZmap):
+		case (ElementMap::NameZmap):
 			result = nameToZ(query);
 			break;
 		// Search loaded forcefields for atom names
-		case (Prefs::ForcefieldZmap):
+		case (ElementMap::ForcefieldZmap):
 			result = ffToZ(query);
 			// Attempt an alpha conversion if the FF conversion failed
 			if (result == -1) result = alphaToZ(query);
 			break;
 		// Convert based on alpha-part of atom name only
-		case (Prefs::AlphaZmap):
+		case (ElementMap::AlphaZmap):
 			result = alphaToZ(query);
 			break;
 		// Convert based on first alpha-part of atom name only
-		case (Prefs::FirstAlphaZmap):
+		case (ElementMap::FirstAlphaZmap):
 			result = firstAlphaToZ(query);
 			break;
 		// Convert based on numeric part only
-		case (Prefs::NumericZmap):
+		case (ElementMap::NumericZmap):
 			result = numberToZ(query);
 			break;
 	}
@@ -620,10 +626,10 @@ int ElementMap::find(const char *query)
 }
 
 // Search for element named 'query' in the list of known elements, using the specified algorithm
-int ElementMap::find(const char *query, Prefs::ZmapType zmt)
+int ElementMap::find(const char *query, ElementMap::ZmapType zmt)
 {
 	// Store the old zmapping type, and temporarily set a new one
-	Prefs::ZmapType last = prefs.zmapType();
+	ElementMap::ZmapType last = prefs.zmapType();
 	prefs.setZmapType(zmt);
 	int result = find(query);
 	prefs.setZmapType(last);

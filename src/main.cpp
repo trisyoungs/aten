@@ -19,12 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "main/aten.h"
+#include "gui/gui.h"
+#include "base/messenger.h"
 #include <time.h>
 #include <ctime>
 #include <iostream>
-#include "base/messenger.h"
-#include "base/aten.h"
-#include "gui/gui.h"
 
 int main(int argc, char *argv[])
 {

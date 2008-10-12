@@ -22,31 +22,27 @@
 #ifndef ATEN_MODEL_H
 #define ATEN_MODEL_H
 
-#include "templates/vector3.h"
-#include "base/prefs.h"
-#include "classes/energystore.h"
-#include "classes/cell.h"
-#include "classes/log.h"
-#include "classes/measurement.h"
-#include "classes/glyph.h"
-#include "classes/undostate.h"
+#include "ff/energystore.h"
+#include "base/cell.h"
+#include "base/log.h"
+#include "base/measurement.h"
+#include "base/glyph.h"
+#include "base/bond.h"
+#include "base/atom.h"
 #include "methods/mc.h"
-//#include <QtOpenGL/QtOpenGL>
 
 // Forward Declarations
 class Forcefield;
 class ForcefieldBound;
-class Bond;
 class Constraint;
 class Pattern;
 class Filter;
-class Glyph;
-class Spacegroup;
 class Site;
 class UndoState;
 class Atomaddress;
 class Calculable;
 class Measurement;
+class Grid;
 
 // Model
 class Model
@@ -179,16 +175,14 @@ class Model
 	void printCoords() const;
 	// Return total bond order penalty of atoms in the first pattern molecule
 	int totalBondOrderPenalty() const;
+	// Return the number of bonds of specified type to the atom
+	int countBondsToAtom(Atom *i, Bond::BondType);
 
 
 	/*
 	// Unit Cell
 	*/
 	private:
-	// Spacegroup of the model (if any)
-	int spacegroup_;
-	// Setting for spacegroup (if any)
-	int spacegroupSetting_;
 	// Cell definition (also contains reciprocal cell definition)
 	Cell cell_;
 
@@ -199,20 +193,14 @@ class Model
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
 	// Set cell (axes)
 	void setCell(Mat3<double> axes);
+	// Set cell (parameter)
+	void setCell(Cell::CellParameter cp, double value);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell
 	void foldAllAtoms();
-	// Sets the spacegroup of the model
-	void setSpacegroup(int i);
-	// Sets the spacegroup setting
-	void setSpacegroupSetting(int i);
-	// Return the spacegroup of the model
-	int spacegroup();
-	// Return the spacegroup setting of the model
-	int spacegroupSetting();
 	// Apply the given symmetry generator to the current atom selection in the model
-	void pack(int);
+	void pack(Generator *gen);
 	// Apply the symmetry operators listed in the model's spacegroup
 	void pack();
 	// Fold all molecules into the cell
@@ -464,20 +452,28 @@ class Model
 	void createUniqueLists();
 	// Return number of unique atom types in model
 	int nUniqueTypes();
-	// Return the list of unique types in the model
+	// Return the first item in the list of unique types in the model
 	ForcefieldAtom *uniqueTypes();
+	// Return the unique type specified
+	ForcefieldAtom *uniqueType(int i);
 	// Return number of unique bond interactions in model
 	int nUniqueBondTerms();
-	// Return the list of unique bond interactions in the model
+	// Return the first item in the list of unique bond interactions in the model
 	ForcefieldBound *uniqueBondTerms();
+	// Return the unique bond term specified
+	ForcefieldBound *uniqueBondTerm(int i);
 	// Return number of unique angle interactions in model
 	int nUniqueAngleTerms();
-	// Return the list of unique angle interactions in the model
+	// Return the first item in the list of unique angle interactions in the model
 	ForcefieldBound *uniqueAngleTerms();
+	// Return the unique angle term specified
+	ForcefieldBound *uniqueAngleTerm(int i);
 	// Return number of unique torsion interactionss in model
 	int nUniqueTorsionTerms();
 	// Return the list of unique torsion interactions in the model
 	ForcefieldBound *uniqueTorsionTerms();
+	// Return the unique torsion term specified
+	ForcefieldBound *uniqueTorsionTerm(int i);
 	// Create total energy function shell for the model
 	bool createExpression(bool vdwOnly = FALSE);
 	// Return whether the expression is valid
@@ -789,6 +785,10 @@ class Model
 	List<Site> sites;
 	// Find site by name
 	Site *findSite(const char*);
+	// Calculate site centre from config and molecule ID supplied
+	Vec3<double> siteCentre(Site *s, int molid);
+	// Calculate local coordinate system for site / molecule ID supplied
+	Mat3<double> siteAxes(Site *s, int molid);
 
 	/*
 	// Calculated quantities
@@ -820,6 +820,8 @@ class Model
 	Glyph *addGlyph(Glyph::GlyphType gt);
 	// Return list of glyphs
 	Glyph *glyphs();
+	// Return vector for data point in Glyph
+	Vec3<double> glyphVector(Glyph *g, int dataid);
 	// Automatically add polyhedra glyphs to current atom selection
 	void addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut);
 	// Automatically add ellipsoids to current atom selection

@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
 #include "gui/canvas.h"
 #include "model/model.h"
 
@@ -165,21 +164,21 @@ void Canvas::renderScene(Model *source)
 		for (int i=-prefs.repeatCellsNeg(0); i<=prefs.repeatCellsPos(0); i++)
 		{
 			glPushMatrix();
-			glTranslated(i*cx.x,i*cx.y,i*cx.z);
-			for (int j=-prefs.repeatCellsNeg(1); j<=prefs.repeatCellsPos(1); j++)
-			{
+			  glTranslated(i*cx.x,i*cx.y,i*cx.z);
+			  for (int j=-prefs.repeatCellsNeg(1); j<=prefs.repeatCellsPos(1); j++)
+			  {
 				glPushMatrix();
 				glTranslated(j*cy.x,j*cy.y,j*cy.z);
 				for (int k=-prefs.repeatCellsNeg(2); k<=prefs.repeatCellsPos(2); k++)
 				{
 					if ((i == 0) && (j == 0) && (k == 0)) continue;
 					glPushMatrix();
-					glTranslated(k*cz.x,k*cz.y,k*cz.z);
-					glCallList(list_[GLOB_MODEL]);
+					  glTranslated(k*cz.x,k*cz.y,k*cz.z);
+					  glCallList(list_[GLOB_MODEL]);
 					glPopMatrix();
 				}
 				glPopMatrix();
-			}
+			  }
 			glPopMatrix();
 		}
 	}

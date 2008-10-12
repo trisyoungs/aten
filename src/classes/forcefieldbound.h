@@ -22,11 +22,8 @@
 #ifndef ATEN_FORCEFIELDBOUND_H
 #define ATEN_FORCEFIELDBOUND_H
 
-#include "classes/forcefieldparams.h"
-#include "classes/dnchar.h"
-#include "energy/forms.h"
-
-#define MAXFFBOUNDTYPES 4
+#include "base/dnchar.h"
+#include "base/forms.h"
 
 // Forcefield bound interaction type
 class ForcefieldBound
@@ -47,13 +44,15 @@ class ForcefieldBound
 	// Forcefield types involved in this term
 	Dnchar typeNames_[MAXFFBOUNDTYPES];
 	// Interaction parameter data
-	ForcefieldParams params_;
+	double params_[MAXFFPARAMDATA];
 
 	public:
 	// Set the type of bound interaction
 	void setType(BoundType fc);
 	// Return the type of bound interaction
 	BoundType type();
+	// Return functional form text
+	const char *formText();
 	// Return the functional form (cast as a bond style)
 	BondFunctions::BondFunction bondStyle();
 	// Return the functional form (cast as a angle style)
@@ -66,8 +65,12 @@ class ForcefieldBound
 	void setAngleStyle(AngleFunctions::AngleFunction af);
 	// Set the torsion functional form
 	void setTorsionStyle(TorsionFunctions::TorsionFunction tf);
-	// Return the data[] array in *params
-	ForcefieldParams &params();
+	// Set the parameter data specified
+	void setParameter(int i, double d);
+	// Return parameter data specified
+	double parameter(int i);
+	// Return pointer to parameter array
+	double *parameters();
 	// Return the atom type 'n'
 	const char *typeName(int n);
 	// Set the atom type 'n'

@@ -20,12 +20,11 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "base/aten.h"
+#include "main/aten.h"
 #include "gui/gui.h"
 
 // Toggle debug modes
-int CommandData::function_CA_DEBUG(Command *&c, Bundle &obj)
+int Command::function_CA_DEBUG(CommandNode *&c, Bundle &obj)
 {
 	Messenger::OutputType ot = Messenger::outputType(c->argc(0));
 	if (ot != Messenger::nOutputTypes)
@@ -33,12 +32,12 @@ int CommandData::function_CA_DEBUG(Command *&c, Bundle &obj)
 		// Check to see if level is already active
 		msg.isOutputActive(ot) ? msg.removeOutputType(ot) : msg.addOutputType(ot);
 	}
-	else return CR_FAIL;
-	return CR_SUCCESS;
+	else return Command::Fail;
+	return Command::Success;
 }
 
 // Start GUI
-int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
+int Command::function_CA_GUI(CommandNode *&c, Bundle &obj)
 {
 	// If we're in interactive mode, just set program mode and let main.cpp handle it.
 	if (aten.programMode() == Aten::InteractiveMode) aten.setProgramMode(Aten::GuiMode);
@@ -50,32 +49,32 @@ int CommandData::function_CA_GUI(Command *&c, Bundle &obj)
 		if (aten.nModels() == 0) Model *m = aten.addModel();
 		gui.run();
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Help function
-int CommandData::function_CA_HELP(Command *&c, Bundle &obj)
+int Command::function_CA_HELP(CommandNode *&c, Bundle &obj)
 {
-	CommandAction ca = CA_from_text(c->argc(0));
-	if (ca == CA_NITEMS) msg.print("help: Unrecognised command '%s'.\n",c->argc(0));
-	else if (CA_data[ca].hasArguments()) msg.print("help:  %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].syntax);
-	else msg.print("help:  %s %s  --  %s\n", CA_data[ca].keyword, CA_data[ca].argText, CA_data[ca].syntax);
-	return CR_SUCCESS;
+	Command::Function cf = commands.command(c->argc(0));
+	if (cf == CA_NITEMS) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
+	else if (commands.data[cf].hasArguments()) msg.print("help:  %s  --  %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
+	else msg.print("help:  %s %s  --  %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
+	return Command::Success;
 }
 
 // Set random seed
-int CommandData::function_CA_SEED(Command *&c, Bundle &obj)
+int Command::function_CA_SEED(CommandNode *&c, Bundle &obj)
 {
 	srand( (unsigned) c->argi(0) );
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Quit main program
-int CommandData::function_CA_QUIT(Command *&c, Bundle &obj)
+int Command::function_CA_QUIT(CommandNode *&c, Bundle &obj)
 {
 	// Set program mode here, in case we are running in PM_COMMAND
 	aten.setProgramMode(Aten::NoMode);
 	// If the GUI is active, close it...
 	if (gui.exists()) gui.saveBeforeClose();
-	return CR_EXIT;
+	return Command::Exit;
 }

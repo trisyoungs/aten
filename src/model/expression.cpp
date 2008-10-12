@@ -18,11 +18,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/pattern.h"
+#include "base/pattern.h"
 #include "model/model.h"
-#include "classes/forcefield.h"
-#include "base/prefs.h"
-#include "base/elements.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
 
 // Return the forcefield used by the model
 Forcefield *Model::forcefield()
@@ -179,20 +178,21 @@ void Model::createUniqueLists()
 
 	// First, create a list of unique type references
 	Reflist<ForcefieldAtom,int> uniqueRef;
-	Refitem<ForcefieldAtom,int> *ri, *rj;
+	Refitem<ForcefieldAtom,int> *ri;
 	ForcefieldAtom *ffa;
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) uniqueRef.addUnique(i->type());
 	// Now, populate the uniquetypes list with copies of these atom types
 	for (ri = uniqueRef.first(); ri != NULL; ri = ri->next)
 	{
-		// We only add types to the list that have a unique type name
-		for (rj = uniqueRef.first(); rj != ri; rj = rj->next) if (strcmp(ri->item->name(),rj->item->name()) == 0) break;
-		if (rj != ri) continue;
+		// We only add types to the list that have a unique type name.
+		// So, check through uniqueTypes_ list.
+		for (ffa = uniqueTypes_.first(); ffa != NULL; ffa = ffa->next)
+			if (strcmp(ri->item->name(),ffa->name()) == 0) break;
+		if (ffa != NULL) continue;
 		ffa = uniqueTypes_.add();
 		ffa->copy(ri->item);
 	}
-
-	// TODO Bond, angle, torsion lists...
+	// TODO Unique bond, angle, torsion lists...
 
 	msg.exit("Model::createUniqueLists");
 }

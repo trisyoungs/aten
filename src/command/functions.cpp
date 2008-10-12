@@ -20,389 +20,399 @@
 */
 
 #include "command/commands.h"
-#include "base/aten.h"
 
 // Initialise Command Pointers
-void Aten::initCommands()
+void Command::initPointers()
 {
 	/*
 	// Store pointers to all command functions
 	*/
 
-	CA_data[CA_ROOTNODE].function = &CommandData::function_CA_ROOTNODE;
+	pointers_[CA_ROOTNODE] = &function_CA_ROOTNODE;
 
 	// Analyse commands
-	CA_data[CA_FINALISE].function = &CommandData::function_CA_FINALISE;
-	CA_data[CA_FRAMEANALYSE].function = &CommandData::function_CA_FRAMEANALYSE;
-	CA_data[CA_GEOMETRY].function = &CommandData::function_CA_GEOMETRY;
-	CA_data[CA_MODELANALYSE].function = &CommandData::function_CA_MODELANALYSE;
-	CA_data[CA_PDENS].function = &CommandData::function_CA_PDENS;
-	CA_data[CA_PRINTJOBS].function = &CommandData::function_CA_PRINTJOBS;
-	CA_data[CA_RDF].function = &CommandData::function_CA_RDF;
-	CA_data[CA_SAVEQUANTITIES].function = &CommandData::function_CA_SAVEQUANTITIES;
-	CA_data[CA_TRAJANALYSE].function = &CommandData::function_CA_TRAJANALYSE;
+	pointers_[CA_FINALISE] = &Command::function_CA_FINALISE;
+	pointers_[CA_FRAMEANALYSE] = &Command::function_CA_FRAMEANALYSE;
+	pointers_[CA_GEOMETRY] = &Command::function_CA_GEOMETRY;
+	pointers_[CA_MODELANALYSE] = &Command::function_CA_MODELANALYSE;
+	pointers_[CA_PDENS] = &Command::function_CA_PDENS;
+	pointers_[CA_PRINTJOBS] = &Command::function_CA_PRINTJOBS;
+	pointers_[CA_RDF] = &Command::function_CA_RDF;
+	pointers_[CA_SAVEQUANTITIES] = &Command::function_CA_SAVEQUANTITIES;
+	pointers_[CA_TRAJANALYSE] = &Command::function_CA_TRAJANALYSE;
 
 	// Atom commands
-	CA_data[CA_ATOMSTYLE].function = &CommandData::function_CA_ATOMSTYLE;
-	CA_data[CA_GETATOM].function = &CommandData::function_CA_GETATOM;
-	CA_data[CA_HIDE].function = &CommandData::function_CA_HIDE;
-	CA_data[CA_SETCOORDS].function = &CommandData::function_CA_SETCOORDS;
-	CA_data[CA_SETCHARGE].function = &CommandData::function_CA_SETCHARGE;
-	CA_data[CA_SETELEMENT].function = &CommandData::function_CA_SETELEMENT;
-	CA_data[CA_SETFORCES].function = &CommandData::function_CA_SETFORCES;
-	CA_data[CA_SETFX].function = &CommandData::function_CA_SETFX;
-	CA_data[CA_SETFY].function = &CommandData::function_CA_SETFY;
-	CA_data[CA_SETFZ].function = &CommandData::function_CA_SETFZ;
-	CA_data[CA_SETID].function = &CommandData::function_CA_SETID;
-	CA_data[CA_SETRX].function = &CommandData::function_CA_SETRX;
-	CA_data[CA_SETRY].function = &CommandData::function_CA_SETRY;
-	CA_data[CA_SETRZ].function = &CommandData::function_CA_SETRZ;
-	CA_data[CA_SETVELOCITIES].function = &CommandData::function_CA_SETVELOCITIES;
-	CA_data[CA_SETVX].function = &CommandData::function_CA_SETVX;
-	CA_data[CA_SETVY].function = &CommandData::function_CA_SETVY;
-	CA_data[CA_SETVZ].function = &CommandData::function_CA_SETVZ;
-	CA_data[CA_SHOW].function = &CommandData::function_CA_SHOW;
-	CA_data[CA_SHOWALL].function = &CommandData::function_CA_SHOWALL;
+	pointers_[CA_ATOMSTYLE] = &Command::function_CA_ATOMSTYLE;
+	pointers_[CA_GETATOM] = &Command::function_CA_GETATOM;
+	pointers_[CA_HIDE] = &Command::function_CA_HIDE;
+	pointers_[CA_SETCOORDS] = &Command::function_CA_SETCOORDS;
+	pointers_[CA_SETCHARGE] = &Command::function_CA_SETCHARGE;
+	pointers_[CA_SETELEMENT] = &Command::function_CA_SETELEMENT;
+	pointers_[CA_SETFORCES] = &Command::function_CA_SETFORCES;
+	pointers_[CA_SETFX] = &Command::function_CA_SETFX;
+	pointers_[CA_SETFY] = &Command::function_CA_SETFY;
+	pointers_[CA_SETFZ] = &Command::function_CA_SETFZ;
+	pointers_[CA_SETID] = &Command::function_CA_SETID;
+	pointers_[CA_SETRX] = &Command::function_CA_SETRX;
+	pointers_[CA_SETRY] = &Command::function_CA_SETRY;
+	pointers_[CA_SETRZ] = &Command::function_CA_SETRZ;
+	pointers_[CA_SETVELOCITIES] = &Command::function_CA_SETVELOCITIES;
+	pointers_[CA_SETVX] = &Command::function_CA_SETVX;
+	pointers_[CA_SETVY] = &Command::function_CA_SETVY;
+	pointers_[CA_SETVZ] = &Command::function_CA_SETVZ;
+	pointers_[CA_SHOW] = &Command::function_CA_SHOW;
+	pointers_[CA_SHOWALL] = &Command::function_CA_SHOWALL;
 
 	// Bond commands
-	CA_data[CA_AUGMENT].function = &CommandData::function_CA_AUGMENT;
-	CA_data[CA_BONDTOLERANCE].function = &CommandData::function_CA_BONDTOLERANCE;
-	CA_data[CA_GETBOND].function = &CommandData::function_CA_GETBOND;
-	CA_data[CA_NEWBOND].function = &CommandData::function_CA_NEWBOND;
-	CA_data[CA_NEWBONDID].function = &CommandData::function_CA_NEWBONDID;
-	CA_data[CA_REBONDPATTERNS].function = &CommandData::function_CA_REBONDPATTERNS;
-	CA_data[CA_REBONDSELECTION].function = &CommandData::function_CA_REBONDSELECTION;
-	CA_data[CA_CLEARBONDS].function = &CommandData::function_CA_CLEARBONDS;
-	CA_data[CA_REBOND].function = &CommandData::function_CA_REBOND;
+	pointers_[CA_AUGMENT] = &Command::function_CA_AUGMENT;
+	pointers_[CA_BONDTOLERANCE] = &Command::function_CA_BONDTOLERANCE;
+	pointers_[CA_GETBOND] = &Command::function_CA_GETBOND;
+	pointers_[CA_NEWBOND] = &Command::function_CA_NEWBOND;
+	pointers_[CA_NEWBONDID] = &Command::function_CA_NEWBONDID;
+	pointers_[CA_REBONDPATTERNS] = &Command::function_CA_REBONDPATTERNS;
+	pointers_[CA_REBONDSELECTION] = &Command::function_CA_REBONDSELECTION;
+	pointers_[CA_CLEARBONDS] = &Command::function_CA_CLEARBONDS;
+	pointers_[CA_REBOND] = &Command::function_CA_REBOND;
 
 	// Build commands
-	CA_data[CA_ADDHYDROGEN].function = &CommandData::function_CA_ADDHYDROGEN;
-	CA_data[CA_BOHR].function = &CommandData::function_CA_BOHR;
-	CA_data[CA_CHAIN].function = &CommandData::function_CA_CHAIN;
-	CA_data[CA_ENDCHAIN].function = &CommandData::function_CA_ENDCHAIN;
-	CA_data[CA_LOCATE].function = &CommandData::function_CA_LOCATE;
-	CA_data[CA_MOVE].function = &CommandData::function_CA_MOVE;
-	CA_data[CA_NEWATOM].function = &CommandData::function_CA_NEWATOM;
-	CA_data[CA_NEWATOMFRAC].function = &CommandData::function_CA_NEWATOMFRAC;
-	CA_data[CA_RESETPEN].function = &CommandData::function_CA_RESETPEN;
-	CA_data[CA_ROTX].function = &CommandData::function_CA_ROTX;
-	CA_data[CA_ROTY].function = &CommandData::function_CA_ROTY;
-	CA_data[CA_ROTZ].function = &CommandData::function_CA_ROTZ;
-	CA_data[CA_SHIFTDOWN].function = &CommandData::function_CA_SHIFTDOWN;
-	CA_data[CA_SHIFTUP].function = &CommandData::function_CA_SHIFTUP;
-	CA_data[CA_TOEND].function = &CommandData::function_CA_TOEND;
-	CA_data[CA_TOSTART].function = &CommandData::function_CA_TOSTART;
-	CA_data[CA_TRANSMUTE].function = &CommandData::function_CA_TRANSMUTE;
+	pointers_[CA_ADDHYDROGEN] = &Command::function_CA_ADDHYDROGEN;
+	pointers_[CA_BOHR] = &Command::function_CA_BOHR;
+	pointers_[CA_CHAIN] = &Command::function_CA_CHAIN;
+	pointers_[CA_ENDCHAIN] = &Command::function_CA_ENDCHAIN;
+	pointers_[CA_LOCATE] = &Command::function_CA_LOCATE;
+	pointers_[CA_MOVE] = &Command::function_CA_MOVE;
+	pointers_[CA_NEWATOM] = &Command::function_CA_NEWATOM;
+	pointers_[CA_NEWATOMFRAC] = &Command::function_CA_NEWATOMFRAC;
+	pointers_[CA_RESETPEN] = &Command::function_CA_RESETPEN;
+	pointers_[CA_ROTX] = &Command::function_CA_ROTX;
+	pointers_[CA_ROTY] = &Command::function_CA_ROTY;
+	pointers_[CA_ROTZ] = &Command::function_CA_ROTZ;
+	pointers_[CA_SHIFTDOWN] = &Command::function_CA_SHIFTDOWN;
+	pointers_[CA_SHIFTUP] = &Command::function_CA_SHIFTUP;
+	pointers_[CA_TOEND] = &Command::function_CA_TOEND;
+	pointers_[CA_TOSTART] = &Command::function_CA_TOSTART;
+	pointers_[CA_TRANSMUTE] = &Command::function_CA_TRANSMUTE;
 
 	// Cell commands
-	CA_data[CA_ADJUSTCELL].function = &CommandData::function_CA_ADJUSTCELL;
-	CA_data[CA_FOLD].function = &CommandData::function_CA_FOLD;
-	CA_data[CA_FOLDMOLECULES].function = &CommandData::function_CA_FOLDMOLECULES;
-	CA_data[CA_FRACTOREAL].function = &CommandData::function_CA_FRACTOREAL;
-	CA_data[CA_PACK].function = &CommandData::function_CA_PACK;
-	CA_data[CA_PRINTCELL].function = &CommandData::function_CA_PRINTCELL;
-	CA_data[CA_REPLICATE].function = &CommandData::function_CA_REPLICATE;
-	CA_data[CA_SCALE].function = &CommandData::function_CA_SCALE;
-	CA_data[CA_CELL].function = &CommandData::function_CA_CELL;
-	CA_data[CA_CELLAXES].function = &CommandData::function_CA_CELLAXES;
-	CA_data[CA_NOCELL].function = &CommandData::function_CA_NOCELL;
-	CA_data[CA_SETCELL].function = &CommandData::function_CA_SETCELL;
-	CA_data[CA_SPACEGROUP].function = &CommandData::function_CA_SPACEGROUP;
+	pointers_[CA_ADDGENERATOR] = &Command::function_CA_ADDGENERATOR;
+	pointers_[CA_ADJUSTCELL] = &Command::function_CA_ADJUSTCELL;
+	pointers_[CA_CELL] = &Command::function_CA_CELL;
+	pointers_[CA_CELLAXES] = &Command::function_CA_CELLAXES;
+	pointers_[CA_FOLD] = &Command::function_CA_FOLD;
+	pointers_[CA_FOLDMOLECULES] = &Command::function_CA_FOLDMOLECULES;
+	pointers_[CA_FRACTOREAL] = &Command::function_CA_FRACTOREAL;
+	pointers_[CA_NOCELL] = &Command::function_CA_NOCELL;
+	pointers_[CA_PACK] = &Command::function_CA_PACK;
+	pointers_[CA_PRINTCELL] = &Command::function_CA_PRINTCELL;
+	pointers_[CA_REPLICATE] = &Command::function_CA_REPLICATE;
+	pointers_[CA_SCALE] = &Command::function_CA_SCALE;
+	pointers_[CA_SETCELL] = &Command::function_CA_SETCELL;
+	pointers_[CA_SPACEGROUP] = &Command::function_CA_SPACEGROUP;
 
 	// Charge commands
-	CA_data[CA_CHARGEFF].function = &CommandData::function_CA_CHARGEFF;
-	CA_data[CA_CHARGEFROMMODEL].function = &CommandData::function_CA_CHARGEFROMMODEL;
-	CA_data[CA_CHARGEPATOM].function = &CommandData::function_CA_CHARGEPATOM;
-	CA_data[CA_CHARGE].function = &CommandData::function_CA_CHARGE;
-	CA_data[CA_CHARGETYPE].function = &CommandData::function_CA_CHARGETYPE;
-	CA_data[CA_CLEARCHARGES].function = &CommandData::function_CA_CLEARCHARGES;
+	pointers_[CA_CHARGEFF] = &Command::function_CA_CHARGEFF;
+	pointers_[CA_CHARGEFROMMODEL] = &Command::function_CA_CHARGEFROMMODEL;
+	pointers_[CA_CHARGEPATOM] = &Command::function_CA_CHARGEPATOM;
+	pointers_[CA_CHARGE] = &Command::function_CA_CHARGE;
+	pointers_[CA_CHARGETYPE] = &Command::function_CA_CHARGETYPE;
+	pointers_[CA_CLEARCHARGES] = &Command::function_CA_CLEARCHARGES;
 
 	// Colourscale commands
-	CA_data[CA_ADDPOINT].function = &CommandData::function_CA_ADDPOINT;
-	CA_data[CA_CLEARPOINTS].function = &CommandData::function_CA_CLEARPOINTS;
-	CA_data[CA_LISTSCALES].function = &CommandData::function_CA_LISTSCALES;
-	CA_data[CA_REMOVEPOINT].function = &CommandData::function_CA_REMOVEPOINT;
-	CA_data[CA_SCALENAME].function = &CommandData::function_CA_SCALENAME;
-	CA_data[CA_SCALEVISIBLE].function = &CommandData::function_CA_SCALEVISIBLE;
-	CA_data[CA_SETPOINT].function = &CommandData::function_CA_SETPOINT;
-	CA_data[CA_SETPOINTCOLOUR].function = &CommandData::function_CA_SETPOINTCOLOUR;
-	CA_data[CA_SETPOINTVALUE].function = &CommandData::function_CA_SETPOINTVALUE;
+	pointers_[CA_ADDPOINT] = &Command::function_CA_ADDPOINT;
+	pointers_[CA_CLEARPOINTS] = &Command::function_CA_CLEARPOINTS;
+	pointers_[CA_LISTSCALES] = &Command::function_CA_LISTSCALES;
+	pointers_[CA_REMOVEPOINT] = &Command::function_CA_REMOVEPOINT;
+	pointers_[CA_SCALENAME] = &Command::function_CA_SCALENAME;
+	pointers_[CA_SCALEVISIBLE] = &Command::function_CA_SCALEVISIBLE;
+	pointers_[CA_SETPOINT] = &Command::function_CA_SETPOINT;
+	pointers_[CA_SETPOINTCOLOUR] = &Command::function_CA_SETPOINTCOLOUR;
+	pointers_[CA_SETPOINTVALUE] = &Command::function_CA_SETPOINTVALUE;
 
 	// Disordered build commands
-	CA_data[CA_DISORDER].function = &CommandData::function_CA_DISORDER;
-	CA_data[CA_LISTCOMPONENTS].function = &CommandData::function_CA_LISTCOMPONENTS;
-	CA_data[CA_NMOLS].function = &CommandData::function_CA_NMOLS;
-	CA_data[CA_REGION].function = &CommandData::function_CA_REGION;
-	CA_data[CA_REGIONCENTRE].function = &CommandData::function_CA_REGIONCENTRE;
-	CA_data[CA_REGIONCENTREF].function = &CommandData::function_CA_REGIONCENTREF;
-	CA_data[CA_REGIONF].function = &CommandData::function_CA_REGIONF;
-	CA_data[CA_REGIONGEOMETRY].function = &CommandData::function_CA_REGIONGEOMETRY;
-	CA_data[CA_REGIONGEOMETRYF].function = &CommandData::function_CA_REGIONGEOMETRYF;
-	CA_data[CA_REGIONOVERLAPS].function = &CommandData::function_CA_REGIONOVERLAPS;
-	CA_data[CA_REGIONSHAPE].function = &CommandData::function_CA_REGIONSHAPE;
-	CA_data[CA_VDWSCALE].function = &CommandData::function_CA_VDWSCALE;
+	pointers_[CA_DISORDER] = &Command::function_CA_DISORDER;
+	pointers_[CA_LISTCOMPONENTS] = &Command::function_CA_LISTCOMPONENTS;
+	pointers_[CA_NMOLS] = &Command::function_CA_NMOLS;
+	pointers_[CA_REGION] = &Command::function_CA_REGION;
+	pointers_[CA_REGIONCENTRE] = &Command::function_CA_REGIONCENTRE;
+	pointers_[CA_REGIONCENTREF] = &Command::function_CA_REGIONCENTREF;
+	pointers_[CA_REGIONF] = &Command::function_CA_REGIONF;
+	pointers_[CA_REGIONGEOMETRY] = &Command::function_CA_REGIONGEOMETRY;
+	pointers_[CA_REGIONGEOMETRYF] = &Command::function_CA_REGIONGEOMETRYF;
+	pointers_[CA_REGIONOVERLAPS] = &Command::function_CA_REGIONOVERLAPS;
+	pointers_[CA_REGIONSHAPE] = &Command::function_CA_REGIONSHAPE;
+	pointers_[CA_VDWSCALE] = &Command::function_CA_VDWSCALE;
 
 	// Edit Commands
-	CA_data[CA_DELETE].function = &CommandData::function_CA_DELETE;
-	CA_data[CA_COPY].function = &CommandData::function_CA_COPY;
-	CA_data[CA_CUT].function = &CommandData::function_CA_CUT;
-	CA_data[CA_PASTE].function = &CommandData::function_CA_PASTE;
-	CA_data[CA_REDO].function = &CommandData::function_CA_REDO;
-	CA_data[CA_UNDO].function = &CommandData::function_CA_UNDO;
+	pointers_[CA_DELETE] = &Command::function_CA_DELETE;
+	pointers_[CA_COPY] = &Command::function_CA_COPY;
+	pointers_[CA_CUT] = &Command::function_CA_CUT;
+	pointers_[CA_PASTE] = &Command::function_CA_PASTE;
+	pointers_[CA_REDO] = &Command::function_CA_REDO;
+	pointers_[CA_UNDO] = &Command::function_CA_UNDO;
 
 	// Energy Commands
-	CA_data[CA_FRAMEENERGY].function = &CommandData::function_CA_FRAMEENERGY;
-	CA_data[CA_MODELENERGY].function = &CommandData::function_CA_MODELENERGY;
-	CA_data[CA_PRINTELEC].function = &CommandData::function_CA_PRINTELEC;
-	CA_data[CA_PRINTEWALD].function = &CommandData::function_CA_PRINTEWALD;
-	CA_data[CA_PRINTINTER].function = &CommandData::function_CA_PRINTINTER;
-	CA_data[CA_PRINTINTRA].function = &CommandData::function_CA_PRINTINTRA;
-	CA_data[CA_PRINTENERGY].function = &CommandData::function_CA_PRINTENERGY;
-	CA_data[CA_PRINTSUMMARY].function = &CommandData::function_CA_PRINTSUMMARY;
-	CA_data[CA_PRINTVDW].function = &CommandData::function_CA_PRINTVDW;
-
-	// Expression Commands
-	CA_data[CA_CREATEEXPRESSION].function = &CommandData::function_CA_CREATEEXPRESSION;
-	CA_data[CA_PRINTSETUP].function = &CommandData::function_CA_PRINTSETUP;
-	CA_data[CA_SAVEEXPRESSION].function = &CommandData::function_CA_SAVEEXPRESSION;
+	pointers_[CA_FRAMEENERGY] = &Command::function_CA_FRAMEENERGY;
+	pointers_[CA_MODELENERGY] = &Command::function_CA_MODELENERGY;
+	pointers_[CA_PRINTELEC] = &Command::function_CA_PRINTELEC;
+	pointers_[CA_PRINTEWALD] = &Command::function_CA_PRINTEWALD;
+	pointers_[CA_PRINTINTER] = &Command::function_CA_PRINTINTER;
+	pointers_[CA_PRINTINTRA] = &Command::function_CA_PRINTINTRA;
+	pointers_[CA_PRINTENERGY] = &Command::function_CA_PRINTENERGY;
+	pointers_[CA_PRINTSUMMARY] = &Command::function_CA_PRINTSUMMARY;
+	pointers_[CA_PRINTVDW] = &Command::function_CA_PRINTVDW;
 
 	// Flow control
-	CA_data[CA_BREAK].function = &CommandData::function_CA_BREAK;
-	CA_data[CA_CONTINUE].function = &CommandData::function_CA_CONTINUE;
-	CA_data[CA_ELSE].function = &CommandData::function_CA_ELSE;
-	CA_data[CA_ELSEIF].function = &CommandData::function_CA_ELSEIF;
-	CA_data[CA_END].function = &CommandData::function_CA_END;
-	CA_data[CA_FOR].function = &CommandData::function_CA_FOR;
-	CA_data[CA_GOTO].function = &CommandData::function_CA_GOTO;
-	CA_data[CA_GOTONONIF].function = &CommandData::function_CA_GOTONONIF;
-	CA_data[CA_IF].function = &CommandData::function_CA_IF;
-	CA_data[CA_TERMINATE].function = &CommandData::function_CA_TERMINATE;
+	pointers_[CA_BREAK] = &Command::function_CA_BREAK;
+	pointers_[CA_CONTINUE] = &Command::function_CA_CONTINUE;
+	pointers_[CA_ELSE] = &Command::function_CA_ELSE;
+	pointers_[CA_ELSEIF] = &Command::function_CA_ELSEIF;
+	pointers_[CA_END] = &Command::function_CA_END;
+	pointers_[CA_FOR] = &Command::function_CA_FOR;
+	pointers_[CA_GOTO] = &Command::function_CA_GOTO;
+	pointers_[CA_GOTONONIF] = &Command::function_CA_GOTONONIF;
+	pointers_[CA_IF] = &Command::function_CA_IF;
+	pointers_[CA_TERMINATE] = &Command::function_CA_TERMINATE;
 
 	// Force Commands
-	CA_data[CA_FRAMEFORCES].function = &CommandData::function_CA_FRAMEFORCES;
-	CA_data[CA_MODELFORCES].function = &CommandData::function_CA_MODELFORCES;
-	CA_data[CA_PRINTFORCES].function = &CommandData::function_CA_PRINTFORCES;
+	pointers_[CA_FRAMEFORCES] = &Command::function_CA_FRAMEFORCES;
+	pointers_[CA_MODELFORCES] = &Command::function_CA_MODELFORCES;
+	pointers_[CA_PRINTFORCES] = &Command::function_CA_PRINTFORCES;
 
 	// Forcefield Commands
-	CA_data[CA_CLEARMAP].function = &CommandData::function_CA_CLEARMAP;
-	CA_data[CA_DEFAULTFF].function = &CommandData::function_CA_DEFAULTFF;
-	CA_data[CA_FFMODEL].function = &CommandData::function_CA_FFMODEL;
-	CA_data[CA_FFPATTERN].function = &CommandData::function_CA_FFPATTERN;
-	CA_data[CA_FFPATTERNID].function = &CommandData::function_CA_FFPATTERNID;
-	CA_data[CA_GETFF].function = &CommandData::function_CA_GETFF;
-	CA_data[CA_LOADFF].function = &CommandData::function_CA_LOADFF;
-	CA_data[CA_MAP].function = &CommandData::function_CA_MAP;
-	CA_data[CA_TYPEMODEL].function = &CommandData::function_CA_TYPEMODEL;
-	CA_data[CA_TYPETEST].function = &CommandData::function_CA_TYPETEST;
+        pointers_[CA_ANGLEDEF] = &Command::function_CA_ANGLEDEF;
+        pointers_[CA_BONDDEF] = &Command::function_CA_BONDDEF;
+	pointers_[CA_CLEARMAP] = &Command::function_CA_CLEARMAP;
+	pointers_[CA_CREATEEXPRESSION] = &Command::function_CA_CREATEEXPRESSION;
+	pointers_[CA_DEFAULTFF] = &Command::function_CA_DEFAULTFF;
+        pointers_[CA_EQUIVALENT] = &Command::function_CA_EQUIVALENT;
+	pointers_[CA_FFMODEL] = &Command::function_CA_FFMODEL;
+	pointers_[CA_FFPATTERN] = &Command::function_CA_FFPATTERN;
+	pointers_[CA_FFPATTERNID] = &Command::function_CA_FFPATTERNID;
+        pointers_[CA_FINALISEFF] = &Command::function_CA_FINALISEFF;
+        pointers_[CA_GENCONVERT] = &Command::function_CA_GENCONVERT;
+        pointers_[CA_GENERATOR] = &Command::function_CA_GENERATOR;
+	pointers_[CA_GETFF] = &Command::function_CA_GETFF;
+	pointers_[CA_LOADFF] = &Command::function_CA_LOADFF;
+	pointers_[CA_MAP] = &Command::function_CA_MAP;
+        pointers_[CA_NEWFF] = &Command::function_CA_NEWFF;
+	pointers_[CA_PRINTSETUP] = &Command::function_CA_PRINTSETUP;
+        pointers_[CA_RULES] = &Command::function_CA_RULES;
+	pointers_[CA_SAVEEXPRESSION] = &Command::function_CA_SAVEEXPRESSION;
+        pointers_[CA_TORSIONDEF] = &Command::function_CA_TORSIONDEF;
+        pointers_[CA_TYPEDEF] = &Command::function_CA_TYPEDEF;
+	pointers_[CA_TYPEMODEL] = &Command::function_CA_TYPEMODEL;
+	pointers_[CA_TYPETEST] = &Command::function_CA_TYPETEST;
+        pointers_[CA_UNITS] = &Command::function_CA_UNITS;
+        pointers_[CA_VDWDEF] = &Command::function_CA_VDWDEF;
 
 	// Glyph commands
-	CA_data[CA_AUTOELLIPSOIDS].function = &CommandData::function_CA_AUTOELLIPSOIDS;
-	CA_data[CA_AUTOPOLYHEDRA].function = &CommandData::function_CA_AUTOPOLYHEDRA;
-	CA_data[CA_GLYPHATOMF].function = &CommandData::function_CA_GLYPHATOMF;
-	CA_data[CA_GLYPHATOMR].function = &CommandData::function_CA_GLYPHATOMR;
-	CA_data[CA_GLYPHATOMV].function = &CommandData::function_CA_GLYPHATOMV;
-	CA_data[CA_GLYPHATOMSF].function = &CommandData::function_CA_GLYPHATOMSF;
-	CA_data[CA_GLYPHATOMSR].function = &CommandData::function_CA_GLYPHATOMSR;
-	CA_data[CA_GLYPHATOMSV].function = &CommandData::function_CA_GLYPHATOMSV;
-	CA_data[CA_GLYPHCOLOUR].function = &CommandData::function_CA_GLYPHCOLOUR;
-	CA_data[CA_GLYPHDATA].function = &CommandData::function_CA_GLYPHDATA;
-	CA_data[CA_GLYPHSOLID].function = &CommandData::function_CA_GLYPHSOLID;
-	CA_data[CA_GLYPHTEXT].function = &CommandData::function_CA_GLYPHTEXT;
-	CA_data[CA_NEWGLYPH].function = &CommandData::function_CA_NEWGLYPH;
+	pointers_[CA_AUTOELLIPSOIDS] = &Command::function_CA_AUTOELLIPSOIDS;
+	pointers_[CA_AUTOPOLYHEDRA] = &Command::function_CA_AUTOPOLYHEDRA;
+	pointers_[CA_GLYPHATOMF] = &Command::function_CA_GLYPHATOMF;
+	pointers_[CA_GLYPHATOMR] = &Command::function_CA_GLYPHATOMR;
+	pointers_[CA_GLYPHATOMV] = &Command::function_CA_GLYPHATOMV;
+	pointers_[CA_GLYPHATOMSF] = &Command::function_CA_GLYPHATOMSF;
+	pointers_[CA_GLYPHATOMSR] = &Command::function_CA_GLYPHATOMSR;
+	pointers_[CA_GLYPHATOMSV] = &Command::function_CA_GLYPHATOMSV;
+	pointers_[CA_GLYPHCOLOUR] = &Command::function_CA_GLYPHCOLOUR;
+	pointers_[CA_GLYPHDATA] = &Command::function_CA_GLYPHDATA;
+	pointers_[CA_GLYPHSOLID] = &Command::function_CA_GLYPHSOLID;
+	pointers_[CA_GLYPHTEXT] = &Command::function_CA_GLYPHTEXT;
+	pointers_[CA_NEWGLYPH] = &Command::function_CA_NEWGLYPH;
 
 	// Grid Commands
-	CA_data[CA_ADDGRIDPOINT].function = &CommandData::function_CA_ADDGRIDPOINT;
-	CA_data[CA_ADDNEXTGRIDPOINT].function = &CommandData::function_CA_ADDNEXTGRIDPOINT;
-	CA_data[CA_FINALISEGRID].function = &CommandData::function_CA_FINALISEGRID;
-	CA_data[CA_GRIDAXES].function = &CommandData::function_CA_GRIDAXES;
-	CA_data[CA_GRIDCOLOUR].function = &CommandData::function_CA_GRIDCOLOUR;
-	CA_data[CA_GRIDCOLOURSCALE].function = &CommandData::function_CA_GRIDCOLOURSCALE;
-	CA_data[CA_GRIDCUBIC].function = &CommandData::function_CA_GRIDCUBIC;
-	CA_data[CA_GRIDCUTOFF].function = &CommandData::function_CA_GRIDCUTOFF;
-	CA_data[CA_GRIDLOOPORDER].function = &CommandData::function_CA_GRIDLOOPORDER;
-	CA_data[CA_GRIDORIGIN].function = &CommandData::function_CA_GRIDORIGIN;
-	CA_data[CA_GRIDORTHO].function = &CommandData::function_CA_GRIDORTHO;
-	CA_data[CA_GRIDSIZE].function = &CommandData::function_CA_GRIDSIZE;
-	CA_data[CA_GRIDSTYLE].function = &CommandData::function_CA_GRIDSTYLE;
-	CA_data[CA_GRIDSYMMETRIC].function = &CommandData::function_CA_GRIDSYMMETRIC;
-	CA_data[CA_GRIDTRANSPARENCY].function = &CommandData::function_CA_GRIDTRANSPARENCY;
-	CA_data[CA_GRIDUSEZ].function = &CommandData::function_CA_GRIDUSEZ;
-	CA_data[CA_LOADGRID].function = &CommandData::function_CA_LOADGRID;
-	CA_data[CA_NEWGRID].function = &CommandData::function_CA_NEWGRID;
+	pointers_[CA_ADDGRIDPOINT] = &Command::function_CA_ADDGRIDPOINT;
+	pointers_[CA_ADDNEXTGRIDPOINT] = &Command::function_CA_ADDNEXTGRIDPOINT;
+	pointers_[CA_FINALISEGRID] = &Command::function_CA_FINALISEGRID;
+	pointers_[CA_GRIDAXES] = &Command::function_CA_GRIDAXES;
+	pointers_[CA_GRIDCOLOUR] = &Command::function_CA_GRIDCOLOUR;
+	pointers_[CA_GRIDCOLOURSCALE] = &Command::function_CA_GRIDCOLOURSCALE;
+	pointers_[CA_GRIDCUBIC] = &Command::function_CA_GRIDCUBIC;
+	pointers_[CA_GRIDCUTOFF] = &Command::function_CA_GRIDCUTOFF;
+	pointers_[CA_GRIDLOOPORDER] = &Command::function_CA_GRIDLOOPORDER;
+	pointers_[CA_GRIDORIGIN] = &Command::function_CA_GRIDORIGIN;
+	pointers_[CA_GRIDORTHO] = &Command::function_CA_GRIDORTHO;
+	pointers_[CA_GRIDSIZE] = &Command::function_CA_GRIDSIZE;
+	pointers_[CA_GRIDSTYLE] = &Command::function_CA_GRIDSTYLE;
+	pointers_[CA_GRIDSYMMETRIC] = &Command::function_CA_GRIDSYMMETRIC;
+	pointers_[CA_GRIDTRANSPARENCY] = &Command::function_CA_GRIDTRANSPARENCY;
+	pointers_[CA_GRIDUSEZ] = &Command::function_CA_GRIDUSEZ;
+	pointers_[CA_LOADGRID] = &Command::function_CA_LOADGRID;
+	pointers_[CA_NEWGRID] = &Command::function_CA_NEWGRID;
 
 	// Image Commands
-	CA_data[CA_SAVEBITMAP].function = &CommandData::function_CA_SAVEBITMAP;
-	CA_data[CA_SAVEVECTOR].function = &CommandData::function_CA_SAVEVECTOR;
+	pointers_[CA_SAVEBITMAP] = &Command::function_CA_SAVEBITMAP;
+	pointers_[CA_SAVEVECTOR] = &Command::function_CA_SAVEVECTOR;
 
 	// Labeling Commands
-	CA_data[CA_CLEARLABELS].function = &CommandData::function_CA_CLEARLABELS;
-	CA_data[CA_LABEL].function = &CommandData::function_CA_LABEL;
-	CA_data[CA_REMOVELABEL].function = &CommandData::function_CA_REMOVELABEL;
+	pointers_[CA_CLEARLABELS] = &Command::function_CA_CLEARLABELS;
+	pointers_[CA_LABEL] = &Command::function_CA_LABEL;
+	pointers_[CA_REMOVELABEL] = &Command::function_CA_REMOVELABEL;
 
 	// MC Commands
-	CA_data[CA_MCACCEPT].function = &CommandData::function_CA_MCACCEPT;
-	CA_data[CA_MCALLOW].function = &CommandData::function_CA_MCALLOW;
-	CA_data[CA_MCMAXSTEP].function = &CommandData::function_CA_MCMAXSTEP;
-	CA_data[CA_MCNTRIALS].function = &CommandData::function_CA_MCNTRIALS;
-	CA_data[CA_PRINTMC].function = &CommandData::function_CA_PRINTMC;
+	pointers_[CA_MCACCEPT] = &Command::function_CA_MCACCEPT;
+	pointers_[CA_MCALLOW] = &Command::function_CA_MCALLOW;
+	pointers_[CA_MCMAXSTEP] = &Command::function_CA_MCMAXSTEP;
+	pointers_[CA_MCNTRIALS] = &Command::function_CA_MCNTRIALS;
+	pointers_[CA_PRINTMC] = &Command::function_CA_PRINTMC;
 
 	// Measurement Commands
-	CA_data[CA_CLEARMEASUREMENTS].function = &CommandData::function_CA_CLEARMEASUREMENTS;
-	CA_data[CA_LISTMEASUREMENTS].function = &CommandData::function_CA_LISTMEASUREMENTS;
-	CA_data[CA_MEASURE].function = &CommandData::function_CA_MEASURE;
+	pointers_[CA_CLEARMEASUREMENTS] = &Command::function_CA_CLEARMEASUREMENTS;
+	pointers_[CA_LISTMEASUREMENTS] = &Command::function_CA_LISTMEASUREMENTS;
+	pointers_[CA_MEASURE] = &Command::function_CA_MEASURE;
 
 	// Messaging Commands
-	CA_data[CA_ERROR].function = &CommandData::function_CA_ERROR;
-	CA_data[CA_PRINT].function = &CommandData::function_CA_PRINT;
-	CA_data[CA_VERBOSE].function = &CommandData::function_CA_VERBOSE;
-	CA_data[CA_WARN].function = &CommandData::function_CA_WARN;
+	pointers_[CA_ERROR] = &Command::function_CA_ERROR;
+	pointers_[CA_PRINT] = &Command::function_CA_PRINT;
+	pointers_[CA_VERBOSE] = &Command::function_CA_VERBOSE;
+	pointers_[CA_WARN] = &Command::function_CA_WARN;
 
 	// Minimisation Commands
-	CA_data[CA_CGMINIMISE].function = &CommandData::function_CA_CGMINIMISE;
-	CA_data[CA_CONVERGE].function = &CommandData::function_CA_CONVERGE;
-	CA_data[CA_LINETOL].function = &CommandData::function_CA_LINETOL;
-	CA_data[CA_MCMINIMISE].function = &CommandData::function_CA_MCMINIMISE;
-	CA_data[CA_SDMINIMISE].function = &CommandData::function_CA_SDMINIMISE;
-	CA_data[CA_SIMPLEXMINIMISE].function = &CommandData::function_CA_SIMPLEXMINIMISE;
+	pointers_[CA_CGMINIMISE] = &Command::function_CA_CGMINIMISE;
+	pointers_[CA_CONVERGE] = &Command::function_CA_CONVERGE;
+	pointers_[CA_LINETOL] = &Command::function_CA_LINETOL;
+	pointers_[CA_MCMINIMISE] = &Command::function_CA_MCMINIMISE;
+	pointers_[CA_SDMINIMISE] = &Command::function_CA_SDMINIMISE;
+	pointers_[CA_SIMPLEXMINIMISE] = &Command::function_CA_SIMPLEXMINIMISE;
 	
 	// Model Commands
-	CA_data[CA_CREATEATOMS].function = &CommandData::function_CA_CREATEATOMS;
-	CA_data[CA_FINALISEMODEL].function = &CommandData::function_CA_FINALISEMODEL;
-	CA_data[CA_GETMODEL].function = &CommandData::function_CA_GETMODEL;
-	CA_data[CA_LISTMODELS].function = &CommandData::function_CA_LISTMODELS;
-	CA_data[CA_LOADMODEL].function = &CommandData::function_CA_LOADMODEL;
-	CA_data[CA_LOGINFO].function = &CommandData::function_CA_LOGINFO;
-	CA_data[CA_MODELTEMPLATE].function = &CommandData::function_CA_MODELTEMPLATE;
-	CA_data[CA_NEWMODEL].function = &CommandData::function_CA_NEWMODEL;
-	CA_data[CA_NEXTMODEL].function = &CommandData::function_CA_NEXTMODEL;
-	CA_data[CA_PREVMODEL].function = &CommandData::function_CA_PREVMODEL;
-	CA_data[CA_INFO].function = &CommandData::function_CA_INFO;
-	CA_data[CA_SAVEMODEL].function = &CommandData::function_CA_SAVEMODEL;
-	CA_data[CA_SETNAME].function = &CommandData::function_CA_SETNAME;
+	pointers_[CA_CREATEATOMS] = &Command::function_CA_CREATEATOMS;
+	pointers_[CA_FINALISEMODEL] = &Command::function_CA_FINALISEMODEL;
+	pointers_[CA_GETMODEL] = &Command::function_CA_GETMODEL;
+	pointers_[CA_LISTMODELS] = &Command::function_CA_LISTMODELS;
+	pointers_[CA_LOADMODEL] = &Command::function_CA_LOADMODEL;
+	pointers_[CA_LOGINFO] = &Command::function_CA_LOGINFO;
+	pointers_[CA_MODELTEMPLATE] = &Command::function_CA_MODELTEMPLATE;
+	pointers_[CA_NEWMODEL] = &Command::function_CA_NEWMODEL;
+	pointers_[CA_NEXTMODEL] = &Command::function_CA_NEXTMODEL;
+	pointers_[CA_PREVMODEL] = &Command::function_CA_PREVMODEL;
+	pointers_[CA_INFO] = &Command::function_CA_INFO;
+	pointers_[CA_SAVEMODEL] = &Command::function_CA_SAVEMODEL;
+	pointers_[CA_SETNAME] = &Command::function_CA_SETNAME;
 
 	// Pattern Commands
-	CA_data[CA_CLEARPATTERNS].function = &CommandData::function_CA_CLEARPATTERNS;
-	CA_data[CA_CREATEPATTERNS].function = &CommandData::function_CA_CREATEPATTERNS;
-	CA_data[CA_GETPATTERN].function = &CommandData::function_CA_GETPATTERN;
-	CA_data[CA_LISTPATTERNS].function = &CommandData::function_CA_LISTPATTERNS;
-	CA_data[CA_NEWPATTERN].function = &CommandData::function_CA_NEWPATTERN;
+	pointers_[CA_CLEARPATTERNS] = &Command::function_CA_CLEARPATTERNS;
+	pointers_[CA_CREATEPATTERNS] = &Command::function_CA_CREATEPATTERNS;
+	pointers_[CA_GETPATTERN] = &Command::function_CA_GETPATTERN;
+	pointers_[CA_LISTPATTERNS] = &Command::function_CA_LISTPATTERNS;
+	pointers_[CA_NEWPATTERN] = &Command::function_CA_NEWPATTERN;
 
 	// Preferences Commands
-	CA_data[CA_ANGLELABEL].function = &CommandData::function_CA_ANGLELABEL;
-	CA_data[CA_ATOMDETAIL].function = &CommandData::function_CA_ATOMDETAIL;
-	CA_data[CA_BONDDETAIL].function = &CommandData::function_CA_BONDDETAIL;
-	CA_data[CA_COLOUR].function = &CommandData::function_CA_COLOUR;
-	CA_data[CA_COMMONELEMENTS].function = &CommandData::function_CA_COMMONELEMENTS;
-	CA_data[CA_DENSITYUNITS].function = &CommandData::function_CA_DENSITYUNITS;
-	CA_data[CA_DISTANCELABEL].function = &CommandData::function_CA_DISTANCELABEL;
-	CA_data[CA_ECUT].function = &CommandData::function_CA_ECUT;
-	CA_data[CA_ELEC].function = &CommandData::function_CA_ELEC;
-	CA_data[CA_ELEMENTAMBIENT].function = &CommandData::function_CA_ELEMENTAMBIENT;
-	CA_data[CA_ELEMENTDIFFUSE].function = &CommandData::function_CA_ELEMENTDIFFUSE;
-	CA_data[CA_ELEMENTRADIUS].function = &CommandData::function_CA_ELEMENTRADIUS;
-	CA_data[CA_ENERGYUNITS].function = &CommandData::function_CA_ENERGYUNITS;
-	CA_data[CA_GL].function = &CommandData::function_CA_GL;
-	CA_data[CA_INTRA].function = &CommandData::function_CA_INTRA;
-	CA_data[CA_KEY].function = &CommandData::function_CA_KEY;
-	CA_data[CA_LABELSIZE].function = &CommandData::function_CA_LABELSIZE;
-	CA_data[CA_LIGHT].function = &CommandData::function_CA_LIGHT;
-	CA_data[CA_LIGHTAMBIENT].function = &CommandData::function_CA_LIGHTAMBIENT;
-	CA_data[CA_LIGHTDIFFUSE].function = &CommandData::function_CA_LIGHTDIFFUSE;
-	CA_data[CA_LIGHTPOSITION].function = &CommandData::function_CA_LIGHTPOSITION;
-	CA_data[CA_LIGHTSPECULAR].function = &CommandData::function_CA_LIGHTSPECULAR;
-	CA_data[CA_MOUSE].function = &CommandData::function_CA_MOUSE;
-	CA_data[CA_RADIUS].function = &CommandData::function_CA_RADIUS;
-	CA_data[CA_REPLICATEFOLD].function = &CommandData::function_CA_REPLICATEFOLD;
-	CA_data[CA_REPLICATETRIM].function = &CommandData::function_CA_REPLICATETRIM;
-	CA_data[CA_SCHEME].function = &CommandData::function_CA_SCHEME;
-	CA_data[CA_SHININESS].function = &CommandData::function_CA_SHININESS;
-	CA_data[CA_SHOWONSCREEN].function = &CommandData::function_CA_SHOWONSCREEN;
-	CA_data[CA_SHOWONIMAGE].function = &CommandData::function_CA_SHOWONIMAGE;
-	CA_data[CA_STYLE].function = &CommandData::function_CA_STYLE;
-	CA_data[CA_USENICETEXT].function = &CommandData::function_CA_USENICETEXT;
-	CA_data[CA_VCUT].function = &CommandData::function_CA_VCUT;
-	CA_data[CA_VDW].function = &CommandData::function_CA_VDW;
+	pointers_[CA_ANGLELABEL] = &Command::function_CA_ANGLELABEL;
+	pointers_[CA_ATOMDETAIL] = &Command::function_CA_ATOMDETAIL;
+	pointers_[CA_BONDDETAIL] = &Command::function_CA_BONDDETAIL;
+	pointers_[CA_COLOUR] = &Command::function_CA_COLOUR;
+	pointers_[CA_COMMONELEMENTS] = &Command::function_CA_COMMONELEMENTS;
+	pointers_[CA_DENSITYUNITS] = &Command::function_CA_DENSITYUNITS;
+	pointers_[CA_DISTANCELABEL] = &Command::function_CA_DISTANCELABEL;
+	pointers_[CA_ECUT] = &Command::function_CA_ECUT;
+	pointers_[CA_ELEC] = &Command::function_CA_ELEC;
+	pointers_[CA_ELEMENTAMBIENT] = &Command::function_CA_ELEMENTAMBIENT;
+	pointers_[CA_ELEMENTDIFFUSE] = &Command::function_CA_ELEMENTDIFFUSE;
+	pointers_[CA_ELEMENTRADIUS] = &Command::function_CA_ELEMENTRADIUS;
+	pointers_[CA_ENERGYUNITS] = &Command::function_CA_ENERGYUNITS;
+	pointers_[CA_GL] = &Command::function_CA_GL;
+	pointers_[CA_INTRA] = &Command::function_CA_INTRA;
+	pointers_[CA_KEY] = &Command::function_CA_KEY;
+	pointers_[CA_LABELSIZE] = &Command::function_CA_LABELSIZE;
+	pointers_[CA_LIGHT] = &Command::function_CA_LIGHT;
+	pointers_[CA_LIGHTAMBIENT] = &Command::function_CA_LIGHTAMBIENT;
+	pointers_[CA_LIGHTDIFFUSE] = &Command::function_CA_LIGHTDIFFUSE;
+	pointers_[CA_LIGHTPOSITION] = &Command::function_CA_LIGHTPOSITION;
+	pointers_[CA_LIGHTSPECULAR] = &Command::function_CA_LIGHTSPECULAR;
+	pointers_[CA_MOUSE] = &Command::function_CA_MOUSE;
+	pointers_[CA_RADIUS] = &Command::function_CA_RADIUS;
+	pointers_[CA_REPLICATEFOLD] = &Command::function_CA_REPLICATEFOLD;
+	pointers_[CA_REPLICATETRIM] = &Command::function_CA_REPLICATETRIM;
+	pointers_[CA_SCHEME] = &Command::function_CA_SCHEME;
+	pointers_[CA_SHININESS] = &Command::function_CA_SHININESS;
+	pointers_[CA_SHOWONSCREEN] = &Command::function_CA_SHOWONSCREEN;
+	pointers_[CA_SHOWONIMAGE] = &Command::function_CA_SHOWONIMAGE;
+	pointers_[CA_STYLE] = &Command::function_CA_STYLE;
+	pointers_[CA_USENICETEXT] = &Command::function_CA_USENICETEXT;
+	pointers_[CA_VCUT] = &Command::function_CA_VCUT;
+	pointers_[CA_VDW] = &Command::function_CA_VDW;
 
 	// Read / Write Commands
-	CA_data[CA_ADDREADOPTION].function = &CommandData::function_CA_ADDREADOPTION;
-	CA_data[CA_FIND].function = &CommandData::function_CA_FIND;
-	CA_data[CA_GETLINE].function = &CommandData::function_CA_GETLINE;
-	CA_data[CA_READCHARS].function = &CommandData::function_CA_READCHARS;
-	CA_data[CA_READFLOAT].function = &CommandData::function_CA_READFLOAT;
-	CA_data[CA_READINTEGER].function = &CommandData::function_CA_READINTEGER;
-	CA_data[CA_READLINE].function = &CommandData::function_CA_READLINE;
-	CA_data[CA_READNEXT].function = &CommandData::function_CA_READNEXT;
-	CA_data[CA_READVAR].function = &CommandData::function_CA_READVAR;
-	CA_data[CA_REMOVEREADOPTION].function = &CommandData::function_CA_REMOVEREADOPTION;
-	CA_data[CA_REWIND].function = &CommandData::function_CA_REWIND;
-	CA_data[CA_SKIPCHARS].function = &CommandData::function_CA_SKIPCHARS;
-	CA_data[CA_SKIPLINE].function = &CommandData::function_CA_SKIPLINE;
-	CA_data[CA_WRITELINE].function = &CommandData::function_CA_WRITELINE;
-	CA_data[CA_WRITEVAR].function = &CommandData::function_CA_WRITEVAR;
+	pointers_[CA_ADDREADOPTION] = &Command::function_CA_ADDREADOPTION;
+	pointers_[CA_FIND] = &Command::function_CA_FIND;
+	pointers_[CA_GETLINE] = &Command::function_CA_GETLINE;
+	pointers_[CA_READCHARS] = &Command::function_CA_READCHARS;
+	pointers_[CA_READFLOAT] = &Command::function_CA_READFLOAT;
+	pointers_[CA_READINTEGER] = &Command::function_CA_READINTEGER;
+	pointers_[CA_READLINE] = &Command::function_CA_READLINE;
+	pointers_[CA_READNEXT] = &Command::function_CA_READNEXT;
+	pointers_[CA_READVAR] = &Command::function_CA_READVAR;
+	pointers_[CA_REMOVEREADOPTION] = &Command::function_CA_REMOVEREADOPTION;
+	pointers_[CA_REWIND] = &Command::function_CA_REWIND;
+	pointers_[CA_SKIPCHARS] = &Command::function_CA_SKIPCHARS;
+	pointers_[CA_SKIPLINE] = &Command::function_CA_SKIPLINE;
+	pointers_[CA_WRITELINE] = &Command::function_CA_WRITELINE;
+	pointers_[CA_WRITEVAR] = &Command::function_CA_WRITEVAR;
 
 	// Script Commands
-	CA_data[CA_LISTSCRIPTS].function = &CommandData::function_CA_LISTSCRIPTS;
-	CA_data[CA_LOADSCRIPT].function = &CommandData::function_CA_LOADSCRIPT;
-	CA_data[CA_RUNSCRIPT].function = &CommandData::function_CA_RUNSCRIPT;
+	pointers_[CA_LISTSCRIPTS] = &Command::function_CA_LISTSCRIPTS;
+	pointers_[CA_LOADSCRIPT] = &Command::function_CA_LOADSCRIPT;
+	pointers_[CA_RUNSCRIPT] = &Command::function_CA_RUNSCRIPT;
 
 	// Select Commands
-	CA_data[CA_DESELECT].function = &CommandData::function_CA_DESELECT;
-	CA_data[CA_INVERT].function = &CommandData::function_CA_INVERT;
-	CA_data[CA_SELECT].function = &CommandData::function_CA_SELECT;
-	CA_data[CA_SELECTALL].function = &CommandData::function_CA_SELECTALL;
-	CA_data[CA_SELECTFFTYPE].function = &CommandData::function_CA_SELECTFFTYPE;
-	CA_data[CA_SELECTNONE].function = &CommandData::function_CA_SELECTNONE;
-	CA_data[CA_SELECTOVERLAPS].function = &CommandData::function_CA_SELECTOVERLAPS;
-	CA_data[CA_SELECTPATTERN].function = &CommandData::function_CA_SELECTPATTERN;
-	CA_data[CA_SELECTTYPE].function = &CommandData::function_CA_SELECTTYPE;
+	pointers_[CA_DESELECT] = &Command::function_CA_DESELECT;
+	pointers_[CA_INVERT] = &Command::function_CA_INVERT;
+	pointers_[CA_SELECT] = &Command::function_CA_SELECT;
+	pointers_[CA_SELECTALL] = &Command::function_CA_SELECTALL;
+	pointers_[CA_SELECTFFTYPE] = &Command::function_CA_SELECTFFTYPE;
+	pointers_[CA_SELECTNONE] = &Command::function_CA_SELECTNONE;
+	pointers_[CA_SELECTOVERLAPS] = &Command::function_CA_SELECTOVERLAPS;
+	pointers_[CA_SELECTPATTERN] = &Command::function_CA_SELECTPATTERN;
+	pointers_[CA_SELECTTYPE] = &Command::function_CA_SELECTTYPE;
 	
 	// Site Commands
-	CA_data[CA_GETSITE].function = &CommandData::function_CA_GETSITE;
-	CA_data[CA_LISTSITES].function = &CommandData::function_CA_LISTSITES;
-	CA_data[CA_NEWSITE].function = &CommandData::function_CA_NEWSITE;
-	CA_data[CA_SITEAXES].function = &CommandData::function_CA_SITEAXES;
+	pointers_[CA_GETSITE] = &Command::function_CA_GETSITE;
+	pointers_[CA_LISTSITES] = &Command::function_CA_LISTSITES;
+	pointers_[CA_NEWSITE] = &Command::function_CA_NEWSITE;
+	pointers_[CA_SITEAXES] = &Command::function_CA_SITEAXES;
 
 	// System Commands
-	CA_data[CA_DEBUG].function = &CommandData::function_CA_DEBUG;
-	CA_data[CA_GUI].function = &CommandData::function_CA_GUI;
-	CA_data[CA_HELP].function = &CommandData::function_CA_HELP;
-	CA_data[CA_SEED].function = &CommandData::function_CA_SEED;
-	CA_data[CA_QUIT].function = &CommandData::function_CA_QUIT;
+	pointers_[CA_DEBUG] = &Command::function_CA_DEBUG;
+	pointers_[CA_GUI] = &Command::function_CA_GUI;
+	pointers_[CA_HELP] = &Command::function_CA_HELP;
+	pointers_[CA_SEED] = &Command::function_CA_SEED;
+	pointers_[CA_QUIT] = &Command::function_CA_QUIT;
 	
 	// Trajectory Commands
-	CA_data[CA_FINALISEFRAME].function = &CommandData::function_CA_FINALISEFRAME;
-	CA_data[CA_FIRSTFRAME].function = &CommandData::function_CA_FIRSTFRAME;
-	CA_data[CA_LASTFRAME].function = &CommandData::function_CA_LASTFRAME;
-	CA_data[CA_LOADTRAJECTORY].function = &CommandData::function_CA_LOADTRAJECTORY;
-	CA_data[CA_NEXTFRAME].function = &CommandData::function_CA_NEXTFRAME;
-	CA_data[CA_PREVFRAME].function = &CommandData::function_CA_PREVFRAME;
-	CA_data[CA_SEEKFRAME].function = &CommandData::function_CA_SEEKFRAME;
+	pointers_[CA_FINALISEFRAME] = &Command::function_CA_FINALISEFRAME;
+	pointers_[CA_FIRSTFRAME] = &Command::function_CA_FIRSTFRAME;
+	pointers_[CA_LASTFRAME] = &Command::function_CA_LASTFRAME;
+	pointers_[CA_LOADTRAJECTORY] = &Command::function_CA_LOADTRAJECTORY;
+	pointers_[CA_NEXTFRAME] = &Command::function_CA_NEXTFRAME;
+	pointers_[CA_PREVFRAME] = &Command::function_CA_PREVFRAME;
+	pointers_[CA_SEEKFRAME] = &Command::function_CA_SEEKFRAME;
 
 	// Transform Commands
-	CA_data[CA_CENTRE].function = &CommandData::function_CA_CENTRE;
-	CA_data[CA_TRANSLATE].function = &CommandData::function_CA_TRANSLATE;
-	CA_data[CA_TRANSLATEATOM].function = &CommandData::function_CA_TRANSLATEATOM;
-	CA_data[CA_TRANSLATECELL].function = &CommandData::function_CA_TRANSLATECELL;
-	CA_data[CA_MIRROR].function = &CommandData::function_CA_MIRROR;
+	pointers_[CA_CENTRE] = &Command::function_CA_CENTRE;
+	pointers_[CA_TRANSLATE] = &Command::function_CA_TRANSLATE;
+	pointers_[CA_TRANSLATEATOM] = &Command::function_CA_TRANSLATEATOM;
+	pointers_[CA_TRANSLATECELL] = &Command::function_CA_TRANSLATECELL;
+	pointers_[CA_MIRROR] = &Command::function_CA_MIRROR;
 
 	// Variable Commands
-	CA_data[CA_DECREASE].function = &CommandData::function_CA_DECREASE;
-	CA_data[CA_INCREASE].function = &CommandData::function_CA_INCREASE;
-	CA_data[CA_LET].function = &CommandData::function_CA_LET;
-	CA_data[CA_LETCHAR].function = &CommandData::function_CA_LETCHAR;
-	CA_data[CA_LETPTR].function = &CommandData::function_CA_LETPTR;
+	pointers_[CA_DECREASE] = &Command::function_CA_DECREASE;
+	pointers_[CA_INCREASE] = &Command::function_CA_INCREASE;
+	pointers_[CA_LET] = &Command::function_CA_LET;
+	pointers_[CA_LETCHAR] = &Command::function_CA_LETCHAR;
+	pointers_[CA_LETPTR] = &Command::function_CA_LETPTR;
 
 	// View Commands
-	CA_data[CA_GETVIEW].function = &CommandData::function_CA_GETVIEW;
-	CA_data[CA_ORTHOGRAPHIC].function = &CommandData::function_CA_ORTHOGRAPHIC;
-	CA_data[CA_PERSPECTIVE].function = &CommandData::function_CA_PERSPECTIVE;
-	CA_data[CA_RESETVIEW].function = &CommandData::function_CA_RESETVIEW;
-	CA_data[CA_ROTATEVIEW].function = &CommandData::function_CA_ROTATEVIEW;
-	CA_data[CA_SETVIEW].function = &CommandData::function_CA_SETVIEW;
-	CA_data[CA_SPEEDTEST].function = &CommandData::function_CA_SPEEDTEST;
-	CA_data[CA_TRANSLATEVIEW].function = &CommandData::function_CA_TRANSLATEVIEW;
-	CA_data[CA_VIEWALONG].function = &CommandData::function_CA_VIEWALONG;
-	CA_data[CA_VIEWALONGCELL].function = &CommandData::function_CA_VIEWALONGCELL;
-	CA_data[CA_ZOOMVIEW].function = &CommandData::function_CA_ZOOMVIEW;
-	CA_data[CA_ZROTATEVIEW].function = &CommandData::function_CA_ZROTATEVIEW;
+	pointers_[CA_GETVIEW] = &Command::function_CA_GETVIEW;
+	pointers_[CA_ORTHOGRAPHIC] = &Command::function_CA_ORTHOGRAPHIC;
+	pointers_[CA_PERSPECTIVE] = &Command::function_CA_PERSPECTIVE;
+	pointers_[CA_RESETVIEW] = &Command::function_CA_RESETVIEW;
+	pointers_[CA_ROTATEVIEW] = &Command::function_CA_ROTATEVIEW;
+	pointers_[CA_SETVIEW] = &Command::function_CA_SETVIEW;
+	pointers_[CA_SPEEDTEST] = &Command::function_CA_SPEEDTEST;
+	pointers_[CA_TRANSLATEVIEW] = &Command::function_CA_TRANSLATEVIEW;
+	pointers_[CA_VIEWALONG] = &Command::function_CA_VIEWALONG;
+	pointers_[CA_VIEWALONGCELL] = &Command::function_CA_VIEWALONGCELL;
+	pointers_[CA_ZOOMVIEW] = &Command::function_CA_ZOOMVIEW;
+	pointers_[CA_ZROTATEVIEW] = &Command::function_CA_ZROTATEVIEW;
 }

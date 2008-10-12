@@ -136,11 +136,12 @@ src/Makefile
 src/base/Makefile
 src/classes/Makefile
 src/command/Makefile
-src/energy/Makefile
+src/variables/Makefile
+src/ff/Makefile
 src/gui/Makefile
+src/main/Makefile
 src/methods/Makefile
 src/model/Makefile
-src/parse/Makefile
 src/render/Makefile
 src/templates/Makefile
 )

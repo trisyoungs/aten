@@ -19,14 +19,14 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "classes/pattern.h"
-#include "classes/clipboard.h"
-#include "model/model.h"
+#include "main/aten.h"
 #include "methods/mc.h"
-#include "base/aten.h"
+#include "model/model.h"
+#include "model/clipboard.h"
 #include "gui/gui.h"
-#include "gui/mainwindow.h"
 #include "gui/disorder.h"
+#include "base/pattern.h"
+#include "base/sysfunc.h"
 
 // Static Singleton
 MonteCarlo mc;

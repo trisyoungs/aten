@@ -1,6 +1,6 @@
 /*
 	*** Command list
-	*** src/command/CommandList.h
+	*** src/command/commandlist.h
 	Copyright T. Youngs 2007,2008
 
 	This file is part of Aten.
@@ -19,191 +19,22 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_COMMAND_H
-#define ATEN_COMMAND_H
+#ifndef ATEN_COMMANDLIST_H
+#define ATEN_COMMANDLIST_H
 
-#include "templates/list.h"
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "command/commands.h"
-#include "parse/variablelist.h"
-#include "parse/parser.h"
-#include "base/constants.h"
-
-// If Conditions
-namespace IfTests
-{
-	enum IfTest { EqualTo=1, LessThan=2, LessThanEqualTo=3, GreaterThan=4, GreaterThanEqualTo=5, NotEqualTo=6 };
-	const char *ifTest(IfTest);
-}
-
-// Variable Assignment Operators
-namespace AssignOps
-{
-	enum AssignOp { Equals, PlusEquals, MinusEquals, DivideEquals, MultiplyEquals, nAssignOps };
-	AssignOp assignOp(const char *s);
-	const char *assignOp(AssignOp);
-}
+#include "command/command.h"
+#include "variables/variablelist.h"
+#include "base/parser.h"
 
 // Forward declarations
-class CommandList;
+class CommandNode;
 class Format;
 class Filter;
 class Model;
 class ForcefieldAtom;
-
-// Command node
-class Command
-{
-	public:
-	// Constructor / Destructor
-	Command();
-	~Command();
-	// List pointers
-	Command *prev, *next;
-
-	/*
-	// Command
-	*/
-	private:
-	// Command that this node performs
-	CommandAction action_;
-	// Pointer to action function
-	CommandFunction function_;
-	// Parent list
-	CommandList *parent_;
-
-	public:
-	// Set parent CommandList
-	void setParent(CommandList *cl);
-	// Get parent CommandList
-	CommandList *parent();
-	// Set command
-	void setCommand(CommandAction ca);
-	// Get command
-	CommandAction command();
-	// Execute command
-	int execute(Command *&c);
-
-	/*
-	// Format
-	*/
-	private:
-	// Associated format (if any)
-	Format *format_;
-
-	public:
-	// Create format structure
-	bool createFormat(const char *s, VariableList &vlist, bool delimited);
-	// Returns the formatter
-	Format *format();
-	// Delete the associated format
-	void deleteFormat();
-
-	/*
-	// Loop Data
-	*/
-	private:
-	// Whether the loop is currently executing
-	bool loopActive_;
-	// Number of iterations performed by loop
-	int loopIterations_;
-
-	public:
-	// Set status of loop
-	void setLoopActive(bool b);
-	// Get status of loop
-	bool isLoopActive();
-	// Set iteration count
-	void setLoopIterations(int n);
-	// Get iteration count
-	int loopIterations();
-	// Increase interation count
-	void increaseIterations();
-
-	/*
-	// Command Branch
-	*/
-	private:
-	// Lists for branched commands (if any)
-	List<Command> *branch_;
-	// Pointer for use by flow control nodes
-	Command *ptr_;
-
-	public:
-	// Create branch for the node
-	List<Command> *createBranch();
-	// Returns branch list structure
-	List<Command> *branch();
-	// Returns first item in branch 
-	Command *branchCommands();
-	// Set command pointer variable (used in flow control)
-	void setPointer(Command *f);
-	// Return pointer variable
-	Command *pointer();
-
-	/*
-	// If Test Data
-	*/
-	private:
-	// If condition structure
-	IfTests::IfTest ifTest_;
-
-	public:
-	// Set if test type
-	bool setIfTest(const char*);
-	// Evaluate the if expression
-	bool ifEvaluate();
-
-	/*
-	// Data Variables
-	*/
-	private:
-	// Data variables
-	Reflist<Variable,int> args_;
-
-	public:
-	// Set variables from parser arguments
-	bool addVariables(const char*, const char*, VariableList&);
-	// Return number of arguments given to command
-	int nArgs();
-	// Return variable argument
-	Variable *arg(int argno);
-	// Return argument as character
-	const char *argc(int argno);
-	// Return argument as integer
-	int argi(int argno);
-	// Return argument as double
-	double argd(int argno);
-	// Return argument as float
-	float argf(int argno);
-	// Return argument as bool
-	bool argb(int argno);
-	// Return arguments as Vec3<double>
-	Vec3<double> arg3d(int);
-	// Return arguments as Vec3<float>
-	Vec3<float> arg3f(int);
-	// Return arguments as Vec3<int>
-	Vec3<int> arg3i(int);
-	// Return argument as Atom pointer
-	Atom *arga(int argno);
-	// Return argument as pattern pointer
-	Pattern *argp(int argno);
-	// Return argument as model pointer
-	Model *argm(int argno);
-	// Return argument as grid pointer
-	Grid *argg(int argno);
-	// Return argument as PatternBound pointer
-	PatternBound *argpb(int argno);
-	// Return argument as ForcefieldAtom pointer
-	ForcefieldAtom *argffa(int argno);
-	// Returns whether argument 'n' was provided
-	bool hasArg(int argno);
-	// Return variable type of argument
-	Variable::VariableType argt(int argno);
-	// Print data variables
-	void printArgs();
-};
 
 // Command List Structure
 class CommandList
@@ -223,19 +54,19 @@ class CommandList
 	// Name associated with command list
 	Dnchar name_;
 	// List of commands
-	List<Command> commands_;
+	List<CommandNode> commands_;
 	// List of pointers to stacked branches
-	Reflist<List<Command>,int> branchStack_;
+	Reflist<List<CommandNode>,int> branchStack_;
 	// Basic command types of stacked branches
-	List<Command> branchCommandStack_;
+	List<CommandNode> branchCommandStack_;
 	// Add specified branch to stack
-	void pushBranch(List<Command>*, CommandAction, Command*);
+	void pushBranch(List<CommandNode>*, Command::Function, CommandNode*);
 	// Pop topmost branch from stack
 	void popBranch();
 	// Add command to topmost branch
-	Command* addTopBranchCommand(CommandAction, Command*);
+	CommandNode* addTopBranchCommand(Command::Function, CommandNode*);
 	// Return basenode of topmost branch of specified type in current stack (if any)
-	Command *topmostBranch(CommandAction);
+	CommandNode *topmostBranch(Command::Function);
 
 	public:
 	// Set name of CommandList
@@ -247,11 +78,11 @@ class CommandList
 	// Return size of branch stack
 	int nBranches();
 	// Return type of topmost branch on stack
-	CommandAction topBranchType();
+	Command::Function topBranchType();
 	// Return basenode pointer of topmost branch on stack
-	Command* topBranchBaseNode();
+	CommandNode* topBranchBaseNode();
 	// Add action to lst node
-	bool addCommand(CommandAction);
+	bool addCommand(Command::Function);
 	// Clear and reinitialise command list
 	void clear();
 	// Read semicolon-separated commands from string
@@ -281,40 +112,13 @@ class CommandList
 	/*
 	// Variables
 	*/
-	public:
+	private:
 	// Associative variable list
-	VariableList variables;
-	// Create model variables with specified prefix
-	bool createModelVariables(const char *s);
-	// Set model variables with specified prefix
-	void setModelVariables(const char *s, Model *m);
-	// Create atom variables
-	bool createAtomVariables(const char *s);
-	// Set atom variables
-	void setAtomVariables(const char*, Atom*);
-	void setAtomVariables(const char*, int);
-	// Create pattern variables
-	bool createPatternVariables(const char *s);
-	// Set pattern variables
-	void setPatternVariables(const char*, Pattern*);
-	// Create grid variables
-	bool createGridVariables(const char *s);
-	// Set grid variables
-	void setGridVariables(const char*, Grid*);
-	// Create pattern bound term variables
-	bool createPatternBoundVariables(const char*);
-	// Set pattern bound term variables
-	void setPatternBoundVariables(const char*, PatternBound*);
-	// Set pattern bound term variables (from simple Bond)
-	void setPatternBoundVariables(const char*, Bond*);
-	// Create atomtype atomtype variables
-	bool createAtomtypeVariables(const char*);
-	// Set atomtype variables
-	void setAtomtypeVariables(const char*, ForcefieldAtom*);
-	// Create subvariables for the specified variable (if necessary)
-	bool createSubvariables(Variable *v);
-	// Set subvariables for the specified variable (if necessary)
-	void setSubvariables(Variable *v);
+	VariableList variables_;
+
+	public:
+	// Set header/frame variables in variable list
+	void setHeaderVars(bool readingheader);
 
 	/*
 	// Files

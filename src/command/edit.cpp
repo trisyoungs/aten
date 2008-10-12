@@ -20,47 +20,46 @@
 */
 
 #include "command/commandlist.h"
-#include "base/elements.h"
-#include "base/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
-#include "classes/clipboard.h"
+#include "model/clipboard.h"
 
 // Copy current selection ('copy')
-int CommandData::function_CA_COPY(Command *&c, Bundle &obj)
+int Command::function_CA_COPY(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	aten.userClipboard->copySelection(obj.rs);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Cut current selection ('cut')
-int CommandData::function_CA_CUT(Command *&c, Bundle &obj)
+int Command::function_CA_CUT(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
 	sprintf(s,"Cut %i atom%s\n",obj.rs->nSelected(),(obj.rs->nSelected() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
 	aten.userClipboard->cutSelection(obj.rs);
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Delete current selection ('delete')
-int CommandData::function_CA_DELETE(Command *&c, Bundle &obj)
+int Command::function_CA_DELETE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
 	sprintf(s,"Delete %i atom%s\n", obj.rs->nSelected(), (obj.rs->nSelected() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
 	obj.rs->selectionDelete();
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Paste copied selection ('paste')
-int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
+int Command::function_CA_PASTE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
 	sprintf(s,"Paste %i atom%s\n", aten.userClipboard->nAtoms(), (aten.userClipboard->nAtoms() == 1 ? "" : "s"));
 	obj.rs->beginUndoState(s);
@@ -71,21 +70,21 @@ int CommandData::function_CA_PASTE(Command *&c, Bundle &obj)
 		aten.userClipboard->pasteToModel(obj.rs, shift);
 	}
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Redo most recent change
-int CommandData::function_CA_REDO(Command *&c, Bundle &obj)
+int Command::function_CA_REDO(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	aten.currentModel()->redo();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Undo most recent change
-int CommandData::function_CA_UNDO(Command *&c, Bundle &obj)
+int Command::function_CA_UNDO(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	aten.currentModel()->undo();
-	return CR_SUCCESS;
+	return Command::Success;
 }

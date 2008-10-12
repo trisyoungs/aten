@@ -19,12 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
+#include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
-#include "base/spacegroup.h"
 
 // Constructor
 AtenCellTransform::AtenCellTransform(QWidget *parent)

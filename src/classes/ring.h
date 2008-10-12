@@ -22,7 +22,8 @@
 #ifndef ATEN_RING_H
 #define ATEN_RING_H
 
-#include "classes/atom.h"
+#include "base/atom.h"
+#include "base/bond.h"
 
 // Ring
 class Ring

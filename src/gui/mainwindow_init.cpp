@@ -19,13 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parse/filter.h"
-#include "base/aten.h"
+#include "main/aten.h"
+#include "command/filter.h"
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/tcanvas.uih"
-#include <QtGui/QFileDialog>
-#include <QtGui/QDoubleSpinBox>
 
 // Finalise GUI
 void AtenForm::finaliseUi()
