@@ -90,7 +90,8 @@ void AtenForm::on_actionFileSaveAs_triggered(bool checked)
 		m->setFilter(saveModelFilter);
 		m->setFilename(saveModelFilename.get());
 		saveModelFilter->execute(saveModelFilename.get());
-		//refreshModelTabs();
+		m->changeLog.updateSavePoint();
+		gui.modelChanged(FALSE,FALSE,FALSE);
 	}
 }
 
