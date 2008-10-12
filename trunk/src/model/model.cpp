@@ -20,14 +20,17 @@
 */
 
 #include "model/model.h"
-#include "base/aten.h"
-#include "base/elements.h"
-#include "classes/pattern.h"
-#include "classes/clipboard.h"
+#include "model/undostate.h"
+#include "model/undoevent.h"
+#include "model/clipboard.h"
+#include "methods/calculable.h"
+#include "classes/prefs.h"
 #include "classes/site.h"
 #include "classes/grid.h"
-#include "classes/glyph.h"
-#include "methods/calculable.h"
+#include "classes/forcefieldbound.h"
+#include "classes/forcefieldatom.h"
+#include "base/elements.h"
+#include "base/pattern.h"
 
 // Constructors
 Model::Model()
@@ -39,8 +42,6 @@ Model::Model()
 	projectionPoint_ = -1;
 	cameraRotation_ = 0.0;
 	orthoSize_ = 5.0;
-	spacegroup_ = 0;
-	spacegroupSetting_ = 1;
 	mass_ = 0.0;
 	density_ = 0.0;
 	translateScale_ = 1.0;
@@ -392,7 +393,7 @@ void Model::copyAtomData(Model *srcmodel, int dat)
 		if ((dat&Atom::VelocityData) || (dat == Atom::AllData)) i->v() = j->v();
 		if ((dat&Atom::ElementData) || (dat == Atom::AllData)) i->setElement(j->element());
 		if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) i->setCharge(j->charge());
-		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->hasFixedPosition());
+		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->isPositionFixed());
 		j = j->next;
 	}
 	//msg.print(Messenger::Verbose,"Copied data for %i atoms from model '%s' to model '%s'.\n", count);
@@ -431,7 +432,7 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 				if ((dat&Atom::VelocityData) || (dat == Atom::AllData)) ii[n]->v() = jj[n]->v();
 				if ((dat&Atom::ElementData) || (dat == Atom::AllData)) ii[n]->setElement(jj[n]->element());
 				if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) ii[n]->setCharge(jj[n]->charge());
-				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->hasFixedPosition());
+				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->isPositionFixed());
 			}
 			msg.print(Messenger::Verbose,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
 		}

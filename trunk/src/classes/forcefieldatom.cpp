@@ -20,8 +20,6 @@
 */
 
 #include "classes/forcefieldatom.h"
-#include "base/prefs.h"
-#include "base/messenger.h"
 
 // Constructor
 ForcefieldAtom::ForcefieldAtom()
@@ -62,7 +60,7 @@ void ForcefieldAtom::setVdwForm(VdwFunctions::VdwFunction vf)
 {
 	vdwForm_ = vf;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_.data[i] = VdwFunctions::VdwFunctions[vf].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = VdwFunctions::VdwFunctions[vf].defaultValues[i];
 }
 
 // Returns the funcional VDW form
@@ -150,8 +148,23 @@ Atomtype *ForcefieldAtom::atomtype()
 	return &atomtype_;
 }
 
-// Returns ForcefieldParams structure
-ForcefieldParams &ForcefieldAtom::params()
+// Set the parameter data specified
+void ForcefieldAtom::setParameter(int i, double d)
+{
+	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldAtom::setParameter (%i) is out of bounds.\n", i);
+	else params_[i] = d;
+}
+
+// Return parameter data specified
+double ForcefieldAtom::parameter(int i)
+{
+	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldAtom::parameter (%i) is out of bounds.\n", i);
+	else return params_[i];
+	return 0.0;
+}
+
+// Returns parameter array pointer
+double *ForcefieldAtom::parameters()
 {
 	return params_;
 }
@@ -194,7 +207,7 @@ void ForcefieldAtom::copy(ForcefieldAtom *source)
 	name_ = source->name_;
 	equivalent_ = source->equivalent_;
 	description_ = source->description_;
-	params_ = source->params_;
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = source->params_[i];
 	//*generator_;
 	charge_ = source->charge_;
 }

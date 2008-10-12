@@ -22,9 +22,6 @@
 #ifndef ATEN_SYSFUNC_H
 #define ATEN_SYSFUNC_H
 
-// Forward declarations
-class VariableList;
-
 // Number/string conversion
 const char *itoa(int);
 const char *ftoa(double);
@@ -38,6 +35,7 @@ const char *lowerCase(const char*);
 const char *beforeChar(const char*, char);
 const char *afterChar(const char*, char);
 const char *stripTrailing(const char*);
+const char *stripChars(const char *s, const char *charstostrip);
 int countChars(const char *string, const char *searchchars, int offset = 0);
 
 // Enum search

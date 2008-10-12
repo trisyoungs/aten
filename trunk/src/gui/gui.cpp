@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
+#include "main/aten.h"
 #include "gui/canvas.h"
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
@@ -42,6 +42,7 @@
 #include "gui/transform.h"
 #include "gui/position.h"
 #include "model/model.h"
+#include "base/sysfunc.h"
 #include <QtGui/QMessageBox>
 #include <QtCore/QTextStream>
 #include <QtGui/QProgressBar>
@@ -512,9 +513,10 @@ void GuiQt::textProgressCreate(const char *jobtitle, int stepstodo)
 // Update the text progress dialog
 void GuiQt::textProgressUpdate(int currentstep)
 {
-	static char *twister = "-\\|/";
-	static char *c = twister;
-	static int n, ndots;
+// 	static char *twister = "-\\|/";
+	static char twister[5] = { '-', '\\', '|', '/' };
+// 	static char *c = twister;
+	static int n, ndots, c;
 	static double dpercent;
 	static int percent;
 	// Don't print anything if we're in quiet mode
@@ -525,10 +527,10 @@ void GuiQt::textProgressUpdate(int currentstep)
 	ndots = int(dpercent * 30.0);
 	dpercent *= 100.0;
 	// Always print the header and twister character
-	printf("\rProgress [%c]",*c);
+	printf("\rProgress [%c]", twister[c]);
 	// Increase the twister character
 	c ++;
-	if (*c == '\0') c = twister;
+	c = c%5;
 	// New dots or percentage to output?
 	if (percent != textProgressPercent_)
 	{
@@ -584,4 +586,26 @@ void GuiQt::stopTrajectoryPlayback()
 	trajectoryPlaying_ = FALSE;
 	gui.updateTrajControls();
 	modelChanged();
+}
+
+/*
+// GUI Messenger
+*/
+
+// Standard message
+void GuiQt::print(const char *fmt ...)
+{
+        // Print to the text view in the main window if it has been initialised.
+        // If program is in quiet mode, don't print anything to stdout
+        // Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
+        va_list arguments;
+        static char msgs[8096];
+        msgs[0] = '\0';
+        // Parse the argument list (...) and internally write the output string into msgs[]
+        va_start(arguments,fmt);
+        vsprintf(msgs,fmt,arguments);
+        // We always print standard messages to stdout *or* the GUI (if it has been initialised)
+        if (doesExist_) gui.printMessage(msgs);
+        else if (!msg.isQuiet()) printf("%s",msgs);
+        va_end(arguments);
 }

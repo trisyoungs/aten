@@ -20,66 +20,65 @@
 */
 
 #include "command/commandlist.h"
-#include "base/messenger.h"
-#include "classes/pattern.h"
 #include "model/model.h"
+#include "base/pattern.h"
 
 // Assign charges from forcefield atom types ('chargeff')
-int CommandData::function_CA_CHARGEFF(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGEFF(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Assign forcefield charges");
 	bool result = obj.rs->assignForcefieldCharges();
 	obj.rs->endUndoState();
-	return (result ? CR_SUCCESS : CR_FAIL);
+	return (result ? Command::Success : Command::Fail);
 }
 
 // Copy atomic charges from model to model's current trajectory frame
-int CommandData::function_CA_CHARGEFROMMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGEFROMMODEL(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs == obj.m) 
 	{
 		msg.print("Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	else obj.rs->copyAtomData(obj.m, Atom::ChargeData);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Assign charge to a pattern atom, propagated over the model ('chargepatom <id> <q>')
-int CommandData::function_CA_CHARGEPATOM(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGEPATOM(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Charge single pattern atom");
 	obj.rs->chargePatternAtom(obj.p,c->argi(0),c->argd(1));
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Assign charge to selected atoms in model ('charge <q>')
-int CommandData::function_CA_CHARGE(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Charge selected atoms");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->chargeAtom(i, c->argd(0));
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Assign charges to a specified forcefield type ('chargetype <atomtype> <q>')
-int CommandData::function_CA_CHARGETYPE(Command *&c, Bundle &obj)
+int Command::function_CA_CHARGETYPE(CommandNode *&c, Bundle &obj)
 {
 	printf("Not implemented yet!\n");
-	return CR_FAIL;
+	return Command::Fail;
 }
 
 // Clears charge in current model ('clearcharges')
-int CommandData::function_CA_CLEARCHARGES(Command *&c, Bundle &obj)
+int Command::function_CA_CLEARCHARGES(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Remove charges");
 	obj.rs->clearCharges();
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }

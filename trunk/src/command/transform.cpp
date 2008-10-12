@@ -21,13 +21,12 @@
 
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/aten.h"
-#include "classes/atom.h"
+#include "classes/prefs.h"
 
 // Centre selection at given coordinates
-int CommandData::function_CA_CENTRE(Command *&c, Bundle &obj)
+int Command::function_CA_CENTRE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (c->parent()->inputFile() == NULL)
 	{
 		char s[128];
@@ -38,57 +37,57 @@ int CommandData::function_CA_CENTRE(Command *&c, Bundle &obj)
 		obj.rs->endUndoState();
 	}
 	else if (prefs.centreOnLoad() != Prefs::SwitchOff) obj.rs->centre(c->arg3d(0));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Translate current selection in local coordinates ('translate dx dy dz')
-int CommandData::function_CA_TRANSLATE(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSLATE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
 	Vec3<double> tvec = c->arg3d(0);
 	sprintf(s,"Translate Cartesian (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
 	obj.rs->beginUndoState(s);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Translate activeatom ('translateatom <dx dy dz>')
-int CommandData::function_CA_TRANSLATEATOM(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSLATEATOM(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_ATOM)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::AtomPointer)) return Command::Fail;
 	char s[128];
 	Vec3<double> tvec = c->arg3d(0);
 	sprintf(s,"Translate Cartesian (atom %i, %f %f %f)\n", obj.i->id()+1, tvec.x, tvec.y, tvec.z);
 	obj.rs->beginUndoState(s);
 	obj.rs->translateAtom(obj.i, tvec);
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
-int CommandData::function_CA_TRANSLATECELL(Command *&c, Bundle &obj)
+int Command::function_CA_TRANSLATECELL(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Vec3<double> tvec;
-	tvec = aten.currentModel()->cell()->axes() * c->arg3d(0);
+	tvec = obj.rs->cell()->axes() * c->arg3d(0);
 	char s[128];
 	sprintf(s,"Translate Cell (%i atom(s), %f %f %f)\n", obj.rs->nSelected(), tvec.x, tvec.y, tvec.z);
 	obj.rs->beginUndoState(s);
 	obj.rs->translateSelectionLocal(tvec);
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Mirror selection along specified axis
-int CommandData::function_CA_MIRROR(Command *&c, Bundle &obj)
+int Command::function_CA_MIRROR(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
 	sprintf(s,"Mirror %i atoms along %c\n", obj.rs->nSelected(), 88+c->argi(0));
 	obj.rs->beginUndoState(s);
 	obj.rs->mirrorSelectionLocal(c->argi(0));
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }

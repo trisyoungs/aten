@@ -21,18 +21,14 @@
 
 #include "command/commandlist.h"
 #include "command/commands.h"
-#include "classes/bundle.h"
-#include "base/sysfunc.h"
-#include <string.h>
+#include "main/aten.h"
+#include "base/bundle.h"
 
-// Postfix increment operator for CommandAction enum
-CommandAction &operator++(CommandAction &ca, int)
-{
-	return ca = (ca == CA_NITEMS ? CA_NITEMS : CommandAction(ca + 1));
-}
+// Singleton
+Command commands;
 
 // Command action
-CommandData CA_data[CA_NITEMS] = {
+CommandData Command::data[Command::CA_NITEMS] = {
 	// Variables
 	{ "character",		"",		"<variables>",
 				"Create character (string) variables with the names provided" },
@@ -42,20 +38,26 @@ CommandData CA_data[CA_NITEMS] = {
 				"Create double variables with the names provided" },
 	{ "atom",		"",		"<variables>",
 				"Create atom* variables with the names provided" },
+	{ "bond",		"",		"<variables>",
+				"Create bond* variables with the names provided" },
 	{ "pattern",		"",		"<variables>",
 				"Create pattern* variables with the names provided" },
+	{ "bound",		"",		"<variables>",
+				"Create patternbound* variables with the names provided" },
 	{ "model",		"",		"<variables>",
 				"Create model* variables with the names provided" },
 	{ "grid",		"",		"<variables>",
 				"Create grid* variables with the names provided" },
-	{ "bond",		"",		"<variables>",
-				"Create bond* variables with the names provided" },
-	{ "angle",		"",		"<variables>",
-				"Create angle* variables with the names provided" },
-	{ "torsion",		"",		"<variables>",
-				"Create torsion* variables with the names provided" },
-	{ "atomtype",		"",		"<variables>",
-				"Create atomtype* variables with the names provided" },
+	{ "ffatom",		"",		"<variables>",
+				"Create ffatom* variables with the names provided" },
+	{ "ffbound",		"",		"<variables>",
+				"Create ffbound* variables with the names provided" },
+	{ "_cellvar_",		"",		"<variables>",
+				"Create cell* variables with the names provided" },
+	{ "forcefield",		"",		"<variables>",
+				"Create forcefield* variables with the names provided" },
+	{ "_prefsvar_",		"",		"<variables>",
+				"Create prefs* variables with the names provided" },
 	
 	// Root node
 	{ "_ROOTNODE_",		"",		"",
@@ -180,14 +182,22 @@ CommandData CA_data[CA_NITEMS] = {
 				"Transmute selection to element given" },
 	
 	// Cell commands
+	{ "addgenerator",	"N",		"<generator>",
+				"Manually add a spacegroup generator definition to the current model's cell" },
 	{ "adjustcell",		"NE",		"<quantity> <change>",
 				"Adjust a single value of the current cell specification (e.g. <quantity> = a, beta, cz, etc.)" },
+	{ "cell",		"EEEEEE",	"<a> <b> <c> <alpha> <beta> <gamma>",
+				"Set or create a unit cell for the current model from lengths/angles provided" },
+	{ "cellaxes",		"EEEEEEEEE",	"<ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>",
+				"Set or create a unit cell for the current model from the cell axes provided" },
 	{ "fold",		"",		"",
 				"Fold atoms into model's unit cell" },
 	{ "foldmolecules",	"",		"",
 				"Fold molecules (defined by patterns) so that they are unbroken across cell boundaries" },
 	{ "fractoreal",		"",		"",
 				"Convert (assumed) fractional model coordinates to real coordinates" },
+	{ "nocell",		"", 		"",
+				"Remove any cell definition from the current model" },
 	{ "pack",		"",		"",
 				"Pack the unit cell with symmetry operators list in associated spacegroup" },
 	{ "printcell",		"",		"",
@@ -196,12 +206,6 @@ CommandData CA_data[CA_NITEMS] = {
 				"Replicate the cell along the directions given" },
 	{ "scale",		"EEE",		"<x> <y> <z>",
 				"Scale the unit cell of the current model" },
-	{ "cell",		"EEEEEE",	"<a> <b> <c> <alpha> <beta> <gamma>",
-				"Set or create a unit cell for the current model from lengths/angles provided" },
-	{ "cellaxes",		"EEEEEEEEE",	"<ax> <ay> <az> <bx> <by> <bz> <cx> <cy> <cz>",
-				"Set or create a unit cell for the current model from the cell axes provided" },
-	{ "nocell",		"", 		"",
-				"Remove any cell definition from the current model" },
 	{ "setcell",		"NE",		"<quantity> <value>",
 				"Set a single value of the current cell specification (e.g. <quantity> = a, beta, cz, etc.)" },
 	{ "spacegroup",		"N",		"<spgrp>",
@@ -300,14 +304,6 @@ CommandData CA_data[CA_NITEMS] = {
 				"Print a one-line summary of the last calculated energy" },
 	{ "printvdw",		"",		"",
 				"Print the EDW pattern matrix of the last calculated energy" },
-	
-	// Expression commands
-	{ "createexpression",	"",		"",
-				"Create and fill a forcefield expression for the current model" },
-	{ "printsetup",		"",		"",
-				"Print the current energy/force calculation setup" },
-	{ "saveexpression",	"NN",		"<format> <filename>",
-				"Save the expression for the current model" },
 
 	// Flow control
 	{ "break",		"",		"",
@@ -346,6 +342,8 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add a bond definition to the current forcefield." },
 	{ "clearmap",		"",		"",
 				"Clear manual type mapping list." },
+	{ "createexpression",	"",		"",
+				"Create and fill a forcefield expression for the current model" },
 	{ "defaultff",		"N",		"<ff>",
 				"Make named forcefield the default for occasions where no other is specified." },
 	{ "equivalents",	"NN",		"<name> <'names...'>",
@@ -370,8 +368,12 @@ CommandData CA_data[CA_NITEMS] = {
 				"Add typename mappings" },
 	{ "newff",		"N",		"<name>",
 				"Create a new, empty forcefield." },
+	{ "printsetup",		"",		"",
+				"Print the current energy/force calculation setup" },
 	{ "rules",		"N",		"<rules set>",
 				"Set rules set to use for parameter generation" },
+	{ "saveexpression",	"NN",		"<format> <filename>",
+				"Save the expression for the current model" },
 	{ "torsiondef",		"NNNNNEeeeee", "<form> <name1> <name2> <name3> <name4> <data1> [data2 ... data6]",
 				"Add a torsion definition to the current forcefield." },
 	{ "typedef",		"ENNNn", "<typeid> <name> <element> <type> [description]",
@@ -742,7 +744,7 @@ CommandData CA_data[CA_NITEMS] = {
 				"Set the specified variable" },
 	{ "letchar",		"V~N",		"<variable> =|+= <variable|value>",
 				"Set the specified character variable" },
-	{ "letptr",		"U=U",		"<variable> = <variable>",
+	{ "letptr",		"V=V",		"<variable> = <variable>",
 				"Set the specified pointer variable" },
 	
 	// View
@@ -772,15 +774,30 @@ CommandData CA_data[CA_NITEMS] = {
 				"Rotate the model in the plane of the screen" }
 };
 
-CommandAction CA_from_text(const char* s)
+// Return enumerated command from string
+Command::Function Command::command(const char *s)
 {
-	CommandAction result;
-	for (result = CA_CHAR; result < CA_NITEMS; result++) if (strcmp(CA_data[result].keyword,s) == 0) break;
-	return result;
+	int result;
+	for (result = CA_CHAR; result < CA_NITEMS; result++) if (strcmp(data[result].keyword,s) == 0) break;
+	return (Command::Function) result;
+}
+
+// Constructor
+Command::Command()
+{
+	// Create pointer list
+	initPointers();
 }
 
 // Return whether command accepts any arguments
 bool CommandData::hasArguments()
 {
 	return (!(arguments[0] == '\0'));
+}
+
+// Execute command
+int Command::call(Command::Function cf, CommandNode *&c)
+{
+// 	return CALL_COMMAND(commands,pointers_[cf])(c, aten.current);
+	return (this->pointers_[cf])(c, aten.current);
 }

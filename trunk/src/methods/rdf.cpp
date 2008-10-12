@@ -20,9 +20,9 @@
 */
 
 #include "methods/rdf.h"
-#include "classes/site.h"
-#include "classes/pattern.h"
 #include "model/model.h"
+#include "classes/site.h"
+#include "base/pattern.h"
 
 // Constructor
 Rdf::Rdf()
@@ -120,11 +120,11 @@ void Rdf::accumulate(Model *sourcemodel)
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
 		// Get first centre
-		centre1 = sites_[0]->calculateCentre(sourcemodel,m1);
+		centre1 = sourcemodel->siteCentre(sites_[0],m1);
 		// Loop over molecules for site2
 		for (m2 = 0; m2 < sites_[1]->pattern()->nMolecules(); m2++)
 		{
-			centre2 = sites_[1]->calculateCentre(sourcemodel,m2);
+			centre2 = sourcemodel->siteCentre(sites_[1],m2);
 			// Calculate minimum image distance and bin
 			mimd = cell->mimd(centre2,centre1);
 			// Add distance to data_ array

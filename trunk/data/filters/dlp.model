@@ -1,5 +1,7 @@
 # DL_POLY Configuration Import / Export
-# Last modified: 05/08/08
+# Last modified: 04/10/2008
+#	04/10/2008 - Format delimiter reverted from '%' to '@'.
+#	05/08/2008 - Quoting adjusted to follow new rules.
 
 importmodel
 	name "DL_POLY Configuration"
@@ -11,7 +13,7 @@ importmodel
 	zmap ff
 
 	# Variable Declaration
-	character e
+	character e, title
 	integer n,keytrj,imcon
 	double ax,ay,az,bx,by,bz,cx,cy,cz
 	double rx,ry,rz,vx,vy,vz,fx,fy,fz
@@ -57,37 +59,39 @@ exportmodel
 	id 1
 
 	# Variable Declaration
-	integer imcon,id
+	integer imcon,id,n
 	double rx, ry, rz
 	atom i
 
 	# Title section
-	writeline "$title"
+	writeline "$model.name"
 	# Convert celltype string to DL_POLY-style integer
-	if $cell.type = none
-		let $imcon = 0
-	elseif $cell.type = cubic
-		let $imcon = 1
-	elseif $cell.type = orthorhombic
-		let $imcon = 2
-	elseif $cell.type = parallelepiped
-		let $imcon = 3
+	if $model.cell.type = "none"
+		$imcon = 0
+	elseif $model.cell.type = "cubic"
+		$imcon = 1
+	elseif $model.cell.type = "orthorhombic"
+		$imcon = 2
+	elseif $model.cell.type = "parallelepiped"
+		$imcon = 3
 	end
-	writeline "         0$imcon%10"
+	writeline "         0$imcon@010"
 
 	# Cell (if present) 
 	if $imcon <> 0
-		writeline "$cell.ax%20.12$cell.ay%20.12$cell.az%20.12"
-		writeline "$cell.bx%20.12$cell.by%20.12$cell.bz%20.12"
-		writeline "$cell.cx%20.12$cell.cy%20.12$cell.cz%20.12"
+		writeline "$model.cell.ax@20.12$model.cell.ay@20.12$model.cell.az@20.12"
+		writeline "$model.cell.bx@20.12$model.cell.by@20.12$model.cell.bz@20.12"
+		writeline "$model.cell.cx@20.12$model.cell.cy@20.12$model.cell.cz@20.12"
 	end
 
 	# Atoms
-	for $i
-		$rx = $i.rx-$cell.centrex
-		$ry = $i.ry-$cell.centrey
-		$rz = $i.rz-$cell.centrez
-		writeline "$i.fftype%-8$i.id%10   $i.mass"
-		writeline "$rx%20.14$ry%20.14$rz%20.14"
+	for $n,1,$model.natoms
+		# Get variable pointer to make manipulation a little less cluttered
+		$i = $model.atoms[$i]
+		$rx = $i.rx-$model.cell.centrex
+		$ry = $i.ry-$model.cell.centrey
+		$rz = $i.rz-$model.cell.centrez
+		writeline "${i.type@-8}${i.id@10}   $i.mass"
+		writeline "$rx@20.14$ry@20.14$rz@20.14"
 	end
 end

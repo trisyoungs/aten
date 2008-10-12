@@ -19,9 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "base/elements.h"
-#include "classes/pattern.h"
+#include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/forcefields.h"
 #include "gui/ffeditor.h"
@@ -29,7 +27,10 @@
 #include "gui/tlistwidgetitem.h"
 #include "gui/gui.h"
 #include "model/model.h"
-#include <QtGui/QTableWidgetItem>
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "base/pattern.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenForcefields::AtenForcefields(QWidget *parent)

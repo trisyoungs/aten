@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
+#include "main/aten.h"
 #include "methods/mc.h"
 #include "methods/sd.h"
 #include "methods/cg.h"

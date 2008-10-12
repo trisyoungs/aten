@@ -19,8 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/aten.h"
-#include "base/prefs.h"
 #include "gui/gui.h"
 #include "gui/canvas.h"
 #include "gui/tcanvas.uih"

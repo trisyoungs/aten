@@ -1,10 +1,12 @@
 # Tripos (Sybyl) Mol2 filter
-# Last modified: 05/08/08
+# Last modified: 10/10/2008
 # Notes:
 #	Full spec is at: http://www.tripos.com/tripos_resources/fileroot/mol2_format_Dec07.pdf
 # ChangeLog:
-#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
-#	30/06/08 - Changed extension list to only match 'mol2'
+#	10/10/2008 - Adjusted to use new variable access.
+#	04/10/2008 - Format delimiter reverted from '%' to '@'.
+#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
+#	30/06/2008 - Changed extension list to only match 'mol2'
 
 importmodel
 	name "Tripos (Sybyl) Mol2"
@@ -15,14 +17,14 @@ importmodel
 
 	# Variable declaration
 	integer n,natoms,nbonds,id,ii,jj,spgrp,setting
-	character tripos,keywd,e,bondtype
+	character tripos,keywd,e,bondtype,title
 	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
 
 	# Read in lines, looking for the sections we're interested in.
 	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
 	# Read a line and parse it into '@<TRIPOS>' and keyword parts
 	for $n
-		readline "$tripos%9 $keywd"
+		readline "$tripos@9 $keywd"
 		if $keywd = "MOLECULE"
 			# Molecule information
 			getline $title
@@ -55,45 +57,45 @@ importmodel
 	finalisemodel
 end
 
-#exportmodel
-#	name "Tripos (Sybyl) Mol2"
-#	nickname mol2
-#	extension mol2
-#	glob *.mol2
-#	id 6
-#
-#	# Variables
-#	atom i
-#	bond b
-#	integer n
-#
-#	# Write title section
-#	writeline "@<TRIPOS>MOLECULE"
-#	writeline $title
-#	writeline "$natoms  $nbonds"
-#	writeline "SMALL"
-#	writeline "NO_CHARGES"
-#	writeline "Coordinates churned out by Aten"
-#	writeline ""
-#	
-#	# Write atoms section
-#	writeline "@<TRIPOS>ATOM"
-#	for $i
-#		writeline "$i.id%6  $i.symbol%5  $i.rx%10.5  $i.ry%10.5  $i.rz%10.5"
-#	end
-#
-#	# Write bonds section
-#	if $nbonds > 0
-#		writeline "@<TRIPOS>BOND"
-#		for $n,1,$nbonds
-#			getbond $n $b
-#			writeline "$n%5  $b.id_i%5  $b.id_j%5  $b.form"
-#		end
-#	end
-#
-#	# Write cell section (if the model has one)
-#	if $cell.type <> none
-#		writeline "@<TRIPOS>CRYSIN"
-#		writeline "$cell.a $cell.b $cell.c $cell.alpha $cell.beta $cell.gamma $cell.spgrp.id $cell.spgrp.setting"
-#	end
-#end
+exportmodel
+	name "Tripos (Sybyl) Mol2"
+	nickname mol2
+	extension mol2
+	glob *.mol2
+	id 6
+
+	# Variables
+	atom i
+	bond b
+	integer n
+
+	# Write title section
+	writeline "@<TRIPOS>MOLECULE"
+	writeline $model.name
+	writeline "$model.natoms  $model.nbonds"
+	writeline "SMALL"
+	writeline "NO_CHARGES"
+	writeline "Coordinates churned out by Aten"
+	writeline ""
+	
+	# Write atoms section
+	writeline "@<TRIPOS>ATOM"
+	for $i
+		writeline "$i.id@6  $i.symbol@5  $i.rx@10.5  $i.ry@10.5  $i.rz@10.5"
+	end
+
+	# Write bonds section
+	if $model.nbonds > 0
+		writeline "@<TRIPOS>BOND"
+		for $n,1,$model.nbonds
+			$b = $model.bonds[$n]
+			writeline "$n@5  $b.i.id@5  $b.j.id@5  $b.type"
+		end
+	end
+
+	# Write cell section (if the model has one)
+	if $model.cell.type <> none
+		writeline "@<TRIPOS>CRYSIN"
+		writeline "$model.cell.a $model.cell.b $model.cell.c $model.cell.alpha $model.cell.beta $model.cell.gamma $model.cell.sgid $model.cell.sgsetting"
+	end
+end

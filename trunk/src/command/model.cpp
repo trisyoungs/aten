@@ -20,25 +20,27 @@
 */
 
 #include "command/commands.h"
-#include "base/aten.h"
-#include "base/messenger.h"
-#include "classes/forcefield.h"
-#include "parse/filter.h"
+#include "command/commandlist.h"
+#include "main/aten.h"
+#include "ff/forcefield.h"
+#include "command/filter.h"
 #include "model/model.h"
+#include "classes/prefs.h"
+#include "base/sysfunc.h"
 
 // Create 'n' new atoms at once in model
-int CommandData::function_CA_CREATEATOMS(Command *&c, Bundle &obj)
+int Command::function_CA_CREATEATOMS(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Vec3<double> v;
 	for (int n = 0; n < c->argi(0); n++) obj.i = obj.rs->addAtom(0, v);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Finalise current model
-int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_FINALISEMODEL(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// If this command is being run from a filter, set the output filter in the model.
 	Filter *f = c->parent()->filter();
 	if (f != NULL)
@@ -62,55 +64,55 @@ int CommandData::function_CA_FINALISEMODEL(Command *&c, Bundle &obj)
 	obj.m->enableUndoRedo();
 	obj.m->changeLog.reset();
 	obj.m->changeLog.updateSavePoint();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select working model ('getmodel <name> [variable]')
-int CommandData::function_CA_GETMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_GETMODEL(CommandNode *&c, Bundle &obj)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model *m = (c->argt(0) == Variable::IntegerVariable ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
+	Model *m = (c->argt(0) == VTypes::IntegerData ? aten.model(c->argi(0)) : aten.findModel(c->argc(0)));
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
 		//gui.select_model(m);
-		c->parent()->setModelVariables("",obj.m);
+// 		c->parent()->setModelVariables("",obj.m); TGAY
 		obj.p = NULL;
 		obj.i = m->atoms();
-		// If a model variables was supplied, set the subvariables
-		if (c->hasArg(1))
-		{
-			c->arg(1)->set(m);
-			c->parent()->setModelVariables(c->arg(1)->name(), m);
-		}
-		return CR_SUCCESS;
+// 		// If a model variables was supplied, set the subvariables
+// 		if (c->hasArg(1))
+// 		{
+// 			c->arg(1)->set(m, VTypes::ModelData);
+// // 			c->parent()->setModelVariables(c->arg(1)->name(), m); TGAY
+// 		}
+		return Command::Success;
 	}
 	else
 	{
 		msg.print("No model named '%s' is available, or integer id %i is out of range.\n", c->argc(0),c->argi(0));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 }
 
 // Print all information for model ('info')
-int CommandData::function_CA_INFO(Command *&c, Bundle &obj)
+int Command::function_CA_INFO(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->renderSource()->print();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Print loaded models ('listmodels')
-int CommandData::function_CA_LISTMODELS(Command *&c, Bundle &obj)
+int Command::function_CA_LISTMODELS(CommandNode *&c, Bundle &obj)
 {
 	if (aten.nModels() != 0) msg.print("Name            NAtoms  Forcefield\n");
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 		msg.print("%-15s %5i  %-15s\n", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Load model ('loadmodel <filename> [name]')
-int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_LOADMODEL(CommandNode *&c, Bundle &obj)
 {
 	Filter *f = aten.probeFile(c->argc(0), Filter::ModelImport);
 	if (f != NULL)
@@ -120,29 +122,29 @@ int CommandData::function_CA_LOADMODEL(Command *&c, Bundle &obj)
 			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
-			c->parent()->setModelVariables("",m);
-			return CR_SUCCESS;
+// 			c->parent()->setModelVariables("",m); TGAY
+			return Command::Success;
 		}
-		else return CR_FAIL;
-	} else return CR_FAIL;
+		else return Command::Fail;
+	} else return Command::Fail;
 }
 
 // Print log information for model ('loginfo')
-int CommandData::function_CA_LOGINFO(Command *&c, Bundle &obj)
+int Command::function_CA_LOGINFO(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->renderSource()->printLogs();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Use parent model as atom template
-int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
+int Command::function_CA_MODELTEMPLATE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m == obj.rs)
 	{
 		printf("Cannot perform model templating in the parent model.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	// Create the atoms template
 	Vec3<double> v;
@@ -152,11 +154,11 @@ int CommandData::function_CA_MODELTEMPLATE(Command *&c, Bundle &obj)
 		j = obj.rs->addAtom(obj.i->element(), v);
 		j->copyStyle(obj.i);
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Create new model ('newmodel <name>')
-int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_NEWMODEL(CommandNode *&c, Bundle &obj)
 {
 	obj.m = aten.addModel();
 	obj.m->setName(stripTrailing(c->argc(0)));
@@ -171,61 +173,61 @@ int CommandData::function_CA_NEWMODEL(Command *&c, Bundle &obj)
 	}
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (c->parent()->inputFile() == NULL) obj.m->enableUndoRedo();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Skip to next loaded model ('nextmodel')
-int CommandData::function_CA_NEXTMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_NEXTMODEL(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->next == NULL) msg.print("Already at last loaded model.\n");
 	else
 	{
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
-		c->parent()->setModelVariables("",obj.m);
+// 		c->parent()->setModelVariables("",obj.m); TGAY
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Skip to previous loaded model ('prevmodel')
-int CommandData::function_CA_PREVMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_PREVMODEL(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.m->prev == NULL) msg.print("Already at first loaded model.\n");
 	else
 	{
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
-		c->parent()->setModelVariables("",obj.m);
+// 		c->parent()->setModelVariables("",obj.m); TGAY
 	}
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Save current model ('savemodel <format> <filename>')
-int CommandData::function_CA_SAVEMODEL(Command *&c, Bundle &obj)
+int Command::function_CA_SAVEMODEL(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Find filter with a nickname matching that given in argc(0)
 	Filter *f = aten.findFilter(Filter::ModelExport, c->argc(0));
 	// Check that a suitable format was found
 	if (f == NULL)
 	{
 		msg.print("No model export filter was found that matches the nickname '%s'.\nNot saved.\n", c->argc(0));
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	obj.rs->setFilter(f);
 	obj.rs->setFilename(c->argc(1));
-	return (f->execute(c->argc(1)) ? CR_SUCCESS : CR_FAIL);
+	return (f->execute(c->argc(1)) ? Command::Success : Command::Fail);
 }
 
 // Set name of current model ('setname <name>')
-int CommandData::function_CA_SETNAME(Command *&c, Bundle &obj)
+int Command::function_CA_SETNAME(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->setName(c->argc(0));
-	c->parent()->setModelVariables("",obj.m);  // ROLE
+// 	c->parent()->setModelVariables("",obj.m);  // ROLE    TGAY
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
-	return CR_SUCCESS;
+	return Command::Success;
 }
 

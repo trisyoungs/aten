@@ -20,40 +20,60 @@
 */
 
 #include "command/commandlist.h"
-#include "parse/format.h"
+#include "command/format.h"
 
 // Write line to msg output and stop
-int CommandData::function_CA_ERROR(Command *&c, Bundle &obj)
+int Command::function_CA_ERROR(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
-	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
-	else msg.print("%s\n",fmt->createString());
-	return CR_EXITWITHERROR;
+	if (fmt == NULL)
+	{
+		msg.print("Warning - No format defined in 'error' command.\n");
+		return Command::Fail;
+	}
+	else if (fmt->createString()) msg.print("%s\n",fmt->createdString());
+	else return Command::Fail;
+	return Command::ExitWithError;
 }
 
 // Print formatted string
-int CommandData::function_CA_PRINT(Command *&c, Bundle &obj)
+int Command::function_CA_PRINT(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
-	if (fmt == NULL) printf("Warning - No format defined in 'print' command.\n");
-	else msg.print("%s\n",fmt->createString());
-	return CR_SUCCESS;
+	if (fmt == NULL)
+	{
+		printf("Warning - No format defined in 'print' command.\n");
+		return Command::Fail;
+	}
+	else if (fmt->createString()) msg.print("%s\n",fmt->createdString());
+	else return Command::Fail;
+	return Command::Success;
 }
 
 // Print formatted string (in verbose output only)
-int CommandData::function_CA_VERBOSE(Command *&c, Bundle &obj)
+int Command::function_CA_VERBOSE(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
-	if (fmt == NULL) printf("Warning - No format defined in 'verbose' command.\n");
-	else msg.print(Messenger::Verbose,"%s\n",fmt->createString());
-	return CR_SUCCESS;
+	if (fmt == NULL)
+	{
+		printf("Warning - No format defined in 'verbose' command.\n");
+		return Command::Fail;
+	}
+	else if (fmt->createString()) msg.print(Messenger::Verbose,"%s\n", fmt->createdString());
+	else return Command::Fail;
+	return Command::Success;
 }
 
 // Write line to msg output
-int CommandData::function_CA_WARN(Command *&c, Bundle &obj)
+int Command::function_CA_WARN(CommandNode *&c, Bundle &obj)
 {
 	Format *fmt = c->format();
-	if (fmt == NULL) printf("Warning - No format defined in 'error' command.\n");
-	else msg.print("Warning: %s\n",fmt->createString());
-	return CR_SUCCESS;
+	if (fmt == NULL)
+	{
+		printf("Warning - No format defined in 'error' command.\n");
+		return Command::Fail;
+	}
+	else if (fmt->createString()) msg.print("Warning: %s\n",fmt->createdString());
+	else return Command::Fail;
+	return Command::Success;
 }

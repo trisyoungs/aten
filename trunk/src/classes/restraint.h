@@ -22,14 +22,14 @@
 #ifndef ATEN_RESTRAINT_H
 #define ATEN_RESTRAINT_H
 
-#include "classes/atom.h"
+#include "base/atom.h"
 #include "templates/list.h"
 
 // Distance restraint
 class restraint_ij
 {
 	public:
-	// Atoms in distance measurement
+	// Atoms in distance restraint
 	Atom *i,*j;
 	// Distance
 	double rij;

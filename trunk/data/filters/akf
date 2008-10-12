@@ -1,5 +1,8 @@
 # Aten 'Custom' file format example using keywords, and includes glyphs
-# Last modified: 07/03/2008
+# Last modified: 12/10/2008
+#	12/10/2008 - Adjusted to use new variable access methods, and changed format specifiers.
+#	04/10/2008 - Quoting changes.
+#	07/03/2008 - First release.
 
 importmodel
 	name "Aten Keyword Format"
@@ -13,42 +16,41 @@ importmodel
 	character e,keywd,line
 	double rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
 
-	newmodel $title
+	newmodel $infile
 
 	# Read line
 	for $n
-		readline "$keywd $line%200"
-		if $keywd = atom
+		readline "$keywd $line@200"
+		if $keywd = "atom"
 			readvar $line "$e $rx $ry $rz"
-			newatom $e
-			setcoords $rx $ry $rz
-		elseif $keywd = cell
+			newatom $e $rx $ry $rz
+		elseif $keywd = "cell"
 			readvar $line "$rx $ry $rz $ax $ay $az"
 			cell $rx $ry $rz $ax $ay $az
-		elseif $keywd = cellmat
+		elseif $keywd = "cellmat"
 			readvar $line "$ax $ay $az $bx $by $bz $cx $cy $cz"
 			cellaxes $ax $ay $az $bx $by $bz $cx $cy $cz
-		elseif $keywd = arrow
+		elseif $keywd = "arrow"
 			readvar $line "$i $j"
 			newglyph arrow
 			glyphatomr 1 $i
 			glyphatomr 2 $j
-		elseif $keywd = vector
+		elseif $keywd = "vector"
 			readvar $line "$i $j"
 			newglyph arrow
 			glyphatomr 1 $i
 			glyphatomr 2 $j
-		elseif $keywd = sphere
+		elseif $keywd = "sphere"
 			readvar $line "$i $rx $ry $rz"
 			newglyph sphere
 			glyphatomr 1 $i
 			glyphdata 2 $rx $ry $rz
-		elseif $keywd = cube
+		elseif $keywd = "cube"
 			readvar $line "$i $rx $ry $rz"
 			newglyph cube
 			glyphatomr 1 $i
 			glyphdata 2 $rx $ry $rz
-		elseif $keywd = tet
+		elseif $keywd = "tet"
 			readvar $line "$i $j $k"
 			newglyph tetrahedron
 			glyphatomr 1 $i
@@ -59,8 +61,6 @@ importmodel
 		end if
 	end
 	rebond
-	selectall
-	centre 0 0 0
 	finalisemodel
 end
 #exportmodel
@@ -79,31 +79,6 @@ end
 #	writeline "$natoms"
 #	writeline "$title"
 #	for $i
-#		writeline "$i.symbol%3   $i.rx%12.6   $i.ry%12.6   $i.rz%12.6"
-#	end
-#end
-#importtrajectory
-#	name "XMol XYZ Coordinates"
-#	extension "xyz"
-#	glob *xyz
-#	nickname xyz
-#
-#	# Variable declaration
-#	integer n
-#	character e,title
-#	double rx,ry,rz
-#
-#	# No header in XYZ trajectories, so only check for frames
-#	if $header <> true
-#		readline "$natoms"
-#		readline "$title"
-#		# Now the atoms
-#		modeltemplate
-#		for $n,1,$natoms
-#			readline "$e $rx $ry $rz"
-#			setcoords $rx $ry $rz $n
-#		end
-#		rebond
-#		centre 0 0 0
+#		writeline "$i.symbol@3   $i.rx@12.6   $i.ry@12.6   $i.rz@12.6"
 #	end
 #end

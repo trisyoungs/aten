@@ -20,9 +20,8 @@
 */
 
 #include "gui/selectelement.h"
-#include "gui/gui.h"
-#include "base/elements.h"
-#include "parse/parser.h"
+#include "base/parser.h"
+#include "base/sysfunc.h"
 
 // Constructor
 AtenSelectElement::AtenSelectElement(QWidget *parent) : QDialog(parent)

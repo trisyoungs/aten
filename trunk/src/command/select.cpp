@@ -19,13 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "variables/accesspath.h"
 #include "command/commandlist.h"
 #include "model/model.h"
-#include "base/elements.h"
+#include "ff/forcefield.h"
+#include "classes/forcefieldatom.h"
+#include "base/pattern.h"
 #include "base/sysfunc.h"
-#include "base/messenger.h"
-#include "classes/forcefield.h"
-#include "classes/pattern.h"
 
 void selectAtoms(Model *m, Variable *slxn, bool deselect)
 {
@@ -33,9 +33,9 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 	int i, j, n, plus;
 	bool range;
 	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
-	if (slxn->type() == Variable::AtomVariable)
+	if (slxn->type() == VTypes::AtomData)
 	{
-		Atom *ii = (Atom*) slxn->asPointer();
+		Atom *ii = (Atom*) slxn->asPointer(VTypes::AtomData);
 		sprintf(s,"%select (%i)", deselect ? "Des" : "S", ii->id()+1);
 		m->beginUndoState(s);
 		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
@@ -76,7 +76,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 		m->beginUndoState(s);
 		if (!range)
 		{
-			if (Variable::determineType(from) == Variable::IntegerVariable)
+			if (VTypes::determineType(from) == VTypes::IntegerData)
 			{
 				i = atoi(from);
 				// Integer atom ID selection
@@ -100,7 +100,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 		else
 		{
 			// Range of id's or elements
-			if (Variable::determineType(from) == Variable::IntegerVariable)
+			if (VTypes::determineType(from) == VTypes::IntegerData)
 			{
 				i = atoi(from);
 				j = atoi(to);
@@ -128,41 +128,41 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 }
 
 // Deselect atom, range of atoms, or elements ('select <n>')
-int CommandData::function_CA_DESELECT(Command *&c, Bundle &obj)
+int Command::function_CA_DESELECT(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), TRUE);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select all ('selectall')
-int CommandData::function_CA_SELECTALL(Command *&c, Bundle &obj)
+int Command::function_CA_SELECTALL(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Select all atoms");
 	obj.rs->selectAll();
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select atom, range of atoms, or elements ('select <n>')
-int CommandData::function_CA_SELECT(Command *&c, Bundle &obj)
+int Command::function_CA_SELECT(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
 	for (int i=0; i<c->nArgs(); i++) selectAtoms(obj.rs, c->arg(i), FALSE);
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select by forcefield type ('selecffttype <fftype>')
-int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
+int Command::function_CA_SELECTFFTYPE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Forcefield *ff = obj.rs->forcefield();
 	if (ff == NULL)
 	{
 		msg.print("No forcefield associated to model.\n");
-		return CR_FAIL;
+		return Command::Fail;
 	}
 	ForcefieldAtom *ffa;
 	char s[128];
@@ -177,49 +177,49 @@ int CommandData::function_CA_SELECTFFTYPE(Command *&c, Bundle &obj)
 		}
 	}
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Invert selection
-int CommandData::function_CA_INVERT(Command *&c, Bundle &obj)
+int Command::function_CA_INVERT(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Invert selection");
 	obj.rs->selectionInvert();
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select no atoms ('selectnone')
-int CommandData::function_CA_SELECTNONE(Command *&c, Bundle &obj)
+int Command::function_CA_SELECTNONE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Deselect all atoms");
 	obj.rs->selectNone();
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Detect and select overlapping atoms
-int CommandData::function_CA_SELECTOVERLAPS(Command *&c, Bundle &obj)
+int Command::function_CA_SELECTOVERLAPS(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	char s[128];
 	sprintf(s,"Select overlapping atoms (within %f)", c->argd(0));
 	obj.rs->beginUndoState(s);
 	obj.rs->selectOverlaps(c->argd(0));
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select all atoms in current (or named/id'd) pattern ('selectpattern [name|id]')
-int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
+int Command::function_CA_SELECTPATTERN(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Pattern *p = NULL;
 	if (c->hasArg(0))
 	{
-		if (c->argt(0) == Variable::IntegerVariable) p = obj.rs->pattern(c->argi(0)-1);
+		if (c->argt(0) == VTypes::IntegerData) p = obj.rs->pattern(c->argi(0)-1);
 		else p = obj.rs->findPattern(c->argc(0));
 	}
 	else p = obj.p;
@@ -238,18 +238,18 @@ int CommandData::function_CA_SELECTPATTERN(Command *&c, Bundle &obj)
 		obj.rs->endUndoState();
 	}
 	obj.rs->endUndoState();
-	return CR_SUCCESS;
+	return Command::Success;
 }
 
 // Select by supplied atom type description ('selecttype <el> <typedesc>')
-int CommandData::function_CA_SELECTTYPE(Command *&c, Bundle &obj)
+int Command::function_CA_SELECTTYPE(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(BP_MODEL)) return CR_FAIL;
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs->autocreatePatterns())
 	{
 		obj.rs->selectType(elements.find(c->argc(0)), c->argc(1));
-		return CR_SUCCESS;
+		return Command::Success;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");
-	return CR_FAIL;
+	return Command::Fail;
 }

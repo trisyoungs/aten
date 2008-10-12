@@ -20,10 +20,9 @@
 */
 
 #include "base/constants.h"
+#include "base/dnchar.h"
 #include <fstream>
 #include <iostream>
-#include "base/messenger.h"
-#include <math.h>
 #include <string.h>
 
 using namespace std;
@@ -69,13 +68,13 @@ const char *afterChar(const char *s, char delim)
 {
 	static char result[128];
 	static int i, count;
-	static bool foundcomma;
-	foundcomma = FALSE;
+	static bool founddelim;
+	founddelim = FALSE;
 	count = 0;
 	for (i = 0; s[i] != '\0'; i++)
 	{
-		if (s[i] == delim) foundcomma = TRUE;
-		else if (foundcomma)
+		if (s[i] == delim) founddelim = TRUE;
+		else if (founddelim)
 		{
 			result[count] = s[i];
 			count ++;
@@ -142,11 +141,38 @@ const char *stripTrailing(const char *s)
 {
 	int len, n;
 	static char result[512];
-	len = strlen(s);
 	// Go backwards through string and find first non-whitespace character
-	for (n=len-1; n>=0; n--) if (s[n] != ' ') break;
+	for (n=strlen(s)-1; n>=0; n--) if (s[n] != ' ') break;
 	strncpy(result,s,n+1);
 	result[n+1] = '\0';
+	return result;
+}
+
+// Strip all of the supplied characters from the source string
+const char *stripChars(const char *s, const char *charstostrip)
+{
+	static char result[512];
+	int count = 0, n,m;
+	bool found;
+	char const *c1, *c2;
+	for (c1 = &s[0]; *c1 != '\0'; c1++)
+	{
+		found = FALSE;
+		for (c2 = &charstostrip[0]; *c2 != '\0'; c2++)
+		{
+			if (*c1 == *c2)
+			{
+				found = TRUE;
+				break;
+			}
+		}
+		if (!found)
+		{
+			result[count] = *c1;
+			count++;
+		}
+	}
+	result[count] = '\0';
 	return result;
 }
 

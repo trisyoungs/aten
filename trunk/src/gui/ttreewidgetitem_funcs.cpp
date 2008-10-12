@@ -20,7 +20,9 @@
 */
 
 #include "base/elements.h"
-#include "classes/forcefield.h"
+#include "base/sysfunc.h"
+#include "classes/forcefieldatom.h"
+#include "base/atom.h"
 #include "gui/ttreewidgetitem.h"
 
 // Constructor

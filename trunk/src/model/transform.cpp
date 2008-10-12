@@ -20,9 +20,8 @@
 */
 
 #include "model/model.h"
-#include "classes/atom.h"
-#include "base/aten.h"
-#include "base/prefs.h"
+#include "model/undoevent.h"
+#include "model/undostate.h"
 
 // Variables
 Vec3<double> cog, localcog;

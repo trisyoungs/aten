@@ -63,15 +63,13 @@ ${SRCS}/main.cpp
 link_directories (${LIBRARY_OUTPUT_PATH})
 IF(WIN32 OR APPLE)
 target_link_libraries(${target_name} 
-gui base command render methods model
-sg parse classes energy fourier math
+main command variables gui render methods model ff fourier base classes math sg
 ${QT_QTOPENGL_LIBRARY} ${OPENGL_LIBRARIES} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ${READLINE_LIBRARY}
 )
 ELSE(WIN32 OR APPLE)
 target_link_libraries(${target_name} 
-gui base command render methods model 
-sg parse classes energy fourier math
+main command variables gui render methods model ff fourier base classes math sg
 ${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
 ${READLINE_LIBRARY}
 )
