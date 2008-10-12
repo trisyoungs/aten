@@ -1,4 +1,5 @@
 # Model formats
+akf
 cds
 cif
 dlp.model
@@ -8,14 +9,13 @@ dlp.field
 gamess
 mol
 mol2
-#mopac
-#pdb
+mopac
+msi
+pdb
 xyz
-#msi
-#akf
-#vfield
+vfield
 
 # Grid formats
-#pdens
-#cube
-#surface
+cube
+pdens
+surface

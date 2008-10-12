@@ -31,7 +31,7 @@ class AtomAccessors : public VAccess
 	// Constructor
 	AtomAccessors();
 	// Accessor list
-	enum Accessors { FX, FY, FZ, Id, Mass, Name, Q, RX, RY, RZ, Symbol, Type, VX, VY, VZ, Z, nAccessors };
+	enum Accessors { Fixed, FX, FY, FZ, Hidden, Id, Mass, Name, Q, RX, RY, RZ, Selected, Symbol, Type, VX, VY, VZ, Z, nAccessors };
 
 	private:
 	// Array of acessor pointers for look-up

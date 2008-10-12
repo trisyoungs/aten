@@ -41,6 +41,10 @@ VariableList::VariableList()
 	Variable *v;
 	v = addVariable("header", VTypes::CharacterData);
 	v->set("false");
+	v = addVariable("infile", VTypes::CharacterData);
+	v->set("none");
+	v = addVariable("outfile", VTypes::CharacterData);
+	v->set("none");
 	v = addBundlePointer("model", VTypes::ModelData);
 	v->set(&aten.current, VTypes::ModelData);
 	v = addListVariable("models", VTypes::ModelData, aten.modelList());

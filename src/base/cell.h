@@ -50,6 +50,8 @@ class Cell
 	// Cell Definition
 	*/
 	private:
+	// Parent model
+	Model *parent_;
 	// Cell type
 	CellType type_;
 	// Vectors of the principal cell axes (rows[0] = A, rows[1] = B, rows[2] = C)
@@ -73,6 +75,10 @@ class Cell
 
 
 	public:
+	// Set parent model
+	void setParent(Model *m);
+	// Return parent model
+	Model *parent();
 	// Print cell data
 	void print() const;
 	// Generate random position inside cell

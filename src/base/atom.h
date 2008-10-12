@@ -61,9 +61,10 @@ class Atom
 	static AtomGeometry atomGeometry(const char*);
 	static const char *atomGeometry(AtomGeometry);
 
-	/*
-	// Misc Functions
-	*/
+	private:
+	// Parent model
+	Model *parent_;
+
 	public:
 	// Add bound neighbours to reflist specified
 	void addBoundToReflist(Reflist<Atom,int>*);
@@ -77,6 +78,10 @@ class Atom
 	void print();
 	// One-line atom summary
 	void printSummary();
+	// Set parent model
+	void setParent(Model *m);
+	// Return parent model
+	Model *parent();
 
 	/*
 	// Coordinates
@@ -155,7 +160,7 @@ class Atom
 	// Set whether the atom's position is fixed
 	void setPositionFixed(bool b);
 	// Return whether the atom's position is fixed
-	bool hasFixedPosition();
+	bool isPositionFixed();
 
 	/*
 	// Bonds / Bonding

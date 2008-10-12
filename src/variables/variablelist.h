@@ -66,16 +66,12 @@ class VariableList
 	// Return list position (id) of Variable in list
 	int variableId(Variable *v);
 	// Set existing (or create new) variable (character string)
-	void set(const char*, const char*, const char*);
 	void set(const char *name, const char *value);
 	// Set existing variable (integer)
-	void set(const char*, const char*, int);
 	void set(const char *name, int value);
 	// Set existing variable (double)
-	void set(const char*, const char*, double);
 	void set(const char *name, double value);
 	// Set existing variable (pointer)
-	void set(const char*, const char*, void *ptr, VTypes::DataType vt);
 	void set(const char *name, void *ptr, VTypes::DataType vt);
 	// Retrieve a named variable from the list
 	Variable *get(const char *name);
@@ -91,6 +87,7 @@ class VariableList
 	Variable *addPath(const char *s);
 	// Add a named variable to the list
 	Variable *addVariable(const char *name, VTypes::DataType vt, int arraysize = -1);
+	// Add a names list-type variable to the list
 	Variable *addListVariable(const char *name, VTypes::DataType vt, void *ptr);
 	// Add pointer to data in Bundle variable
 	Variable *addBundlePointer(const char *name, VTypes::DataType vt);

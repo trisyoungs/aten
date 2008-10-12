@@ -77,6 +77,28 @@ void Model::setCell(Mat3<double> axes)
 	msg.exit("Model::setCell[axes]");
 }
 
+// Set cell (parameter)
+void Model::setCell(Cell::CellParameter cp, double value)
+{
+	msg.enter("Model::setCell[parameter]");
+	static Vec3<double> oldlengths;
+	static Vec3<double> oldangles;
+	oldangles = cell_.angles();
+	oldlengths = cell_.lengths();
+	// Set new parameter value
+	cell_.setParameter(cp, value);
+	calculateDensity();
+	changeLog.add(Log::Structure);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		CellEvent *newchange = new CellEvent;
+		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles());
+		recordingState_->addEvent(newchange);
+	}
+	msg.exit("Model::setCell[parameter]");
+}
+
 // Remove cell
 void Model::removeCell()
 {

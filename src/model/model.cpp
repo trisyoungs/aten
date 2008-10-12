@@ -393,7 +393,7 @@ void Model::copyAtomData(Model *srcmodel, int dat)
 		if ((dat&Atom::VelocityData) || (dat == Atom::AllData)) i->v() = j->v();
 		if ((dat&Atom::ElementData) || (dat == Atom::AllData)) i->setElement(j->element());
 		if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) i->setCharge(j->charge());
-		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->hasFixedPosition());
+		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->isPositionFixed());
 		j = j->next;
 	}
 	//msg.print(Messenger::Verbose,"Copied data for %i atoms from model '%s' to model '%s'.\n", count);
@@ -432,7 +432,7 @@ void Model::copyAtomData(Model *srcmodel, int dat, int startatom, int ncopy)
 				if ((dat&Atom::VelocityData) || (dat == Atom::AllData)) ii[n]->v() = jj[n]->v();
 				if ((dat&Atom::ElementData) || (dat == Atom::AllData)) ii[n]->setElement(jj[n]->element());
 				if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) ii[n]->setCharge(jj[n]->charge());
-				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->hasFixedPosition());
+				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->isPositionFixed());
 			}
 			msg.print(Messenger::Verbose,"Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
 		}

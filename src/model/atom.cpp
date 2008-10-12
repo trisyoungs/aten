@@ -42,6 +42,7 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos)
 {
 	msg.enter("Model::addAtom");
 	Atom *newatom = atoms_.add();
+	newatom->setParent(this);
 	newatom->setElement(newel);
 	newatom->setId(atoms_.nItems() - 1);
 	newatom->r() = pos;
@@ -71,6 +72,7 @@ Atom *Model::addCopy(Atom *source)
 	msg.enter("Model::addCopy");
 	Atom *newatom = atoms_.add();
 	newatom->copy(source);
+	newatom->setParent(this);
 	newatom->setId(atoms_.nItems() - 1);
 	changeLog.add(Log::Structure);
 	mass_ += elements.atomicMass(newatom->element());
@@ -278,7 +280,7 @@ void Model::zeroForces()
 void Model::zeroForcesFixed()
 {
 	msg.enter("Model::zeroForcesFixed");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->hasFixedPosition()) i->f().zero();
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isPositionFixed()) i->f().zero();
 	msg.exit("Model::zeroForcesFixed");
 }
 

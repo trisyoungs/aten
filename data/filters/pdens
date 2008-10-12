@@ -1,7 +1,8 @@
 # Simple-style volumetric data definition
-# Last modified: 05/08/08
+# Last modified: 12/10/2008
 # ChangeLog:
-#	05/08/08 - Quoting adjusted to follow new Parser rules in r550.
+#	12/10/2008 - Adjusted to use new variable access rules.
+#	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
 
 importgrid
 	name "Probability Densities from pdens"
@@ -15,7 +16,7 @@ importgrid
 	double spacing,ox,oy,oz,data
 
 	# Create new grid
-	newgrid $title
+	newgrid $infile
 
 	# First line contains number of gridpoints in each direction x,y,z
 	readline "$nx $ny $nz"
