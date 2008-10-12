@@ -76,7 +76,6 @@ int Command::function_CA_SETVIEW(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Mat4<double> rmat;
 	Vec3<double> camr;
-	printf("Old view matrix is:\n");
 	obj.rs->rotationMatrix().print();
 	// Get camera position
 	camr = c->arg3d(9);
@@ -158,7 +157,7 @@ int Command::function_CA_ZOOMVIEW(CommandNode *&c, Bundle &obj)
 int Command::function_CA_ZROTATEVIEW(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	obj.rs->zRotate(c->argd(0) / DEGRAD);
+	obj.rs->zRotate(-c->argd(0));
 	gui.mainView.postRedisplay();
 	return Command::Success;
 }

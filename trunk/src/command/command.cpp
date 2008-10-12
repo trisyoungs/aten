@@ -341,8 +341,11 @@ bool CommandNode::ifEvaluate()
 	v1 = args_[0]->item;
 	v2 = args_[2]->item;
 	// Determine how to do the comparison
+	// Consider pointers as integers...
 	vt1 = v1->type();
+	if (vt1 > VTypes::RealData) vt1 = VTypes::IntegerData;
 	vt2 = v2->type();
+	if (vt2 > VTypes::RealData) vt2 = VTypes::IntegerData;
 	if (vt2 > vt1) vt1 = vt2;
 	if (vt1 == VTypes::CharacterData)
 	{
@@ -430,7 +433,6 @@ bool CommandNode::ifEvaluate()
 		}
 		msg.print(Messenger::Commands, "If Test: var1(%s)=[%f] (%s) var2(%s)=[%f] : %s\n", v1->name(), d1, IfTests::ifTest(ifTest_), v2->name(), d2, result ? "True" : "False");
 	}
-	//printf("IF TEST : [%s] [%i] [%s] = %s\n",value1,type,value2,(result ? "TRUE" : "FALSE"));
 	msg.exit("CommandNode::ifEvaluate");
 	return result;
 }

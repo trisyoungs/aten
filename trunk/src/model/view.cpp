@@ -60,7 +60,7 @@ void Model::setRotationMatrix(Mat4<double> &rmat)
 // Return the current rotation matrix
 Mat4<double> Model::rotationMatrix()
 {
-	return rotationMatrix_;
+	return (trajectoryParent_ == NULL ? rotationMatrix_ : trajectoryParent_->rotationMatrix_);
 }
 
 // Return the GL-compatible array from the ModelMAT structure
@@ -97,7 +97,7 @@ double Model::cameraRotation()
 // Spin the model about the z axis
 void Model::zRotate(double angle)
 {
-	adjustCamera(0.0, 0.0, 0.0, (angle / DEGRAD ) * 2.0);
+	adjustCamera(0.0, 0.0, 0.0, angle / DEGRAD);
 }
 
 // Adjust the position of the camera
@@ -152,7 +152,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	double sincam, coscam;
 	if (trajectoryParent_ == NULL)
 	{
-		camera_.add(dx, dy, dz);
+		camera_.add(dx, -dy, dz);
 		cameraRotation_ = cameraRotation_ + angle;
 		if (cameraRotation_ > 2.0*PI) cameraRotation_ -= 2.0*PI;
 		coscam = cos(cameraRotation_);
@@ -492,7 +492,7 @@ Vec3<double> Model::guideToModel(double sx, double sy)
 // Return the camera position vector
 Vec3<double> Model::camera()
 {
-	return camera_;
+	return (trajectoryParent_ == NULL ? camera_ : trajectoryParent_->camera_);
 }
 
 // Set view to be along the specified cartesian axis

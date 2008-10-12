@@ -26,6 +26,7 @@
 #include "base/cell.h"
 #include "base/spacegroup.h"
 #include "base/messenger.h"
+#include "base/sysfunc.h"
 
 CellAccessors cellAccessors;
 
@@ -47,9 +48,9 @@ CellAccessors::CellAccessors()
 	accessorPointers[CellAccessors::CX] = addAccessor("cx",		VTypes::RealData, FALSE);
 	accessorPointers[CellAccessors::CY] = addAccessor("cy",		VTypes::RealData, FALSE);
 	accessorPointers[CellAccessors::CZ] = addAccessor("cz",		VTypes::RealData, FALSE);
-	accessorPointers[CellAccessors::CX] = addAccessor("centrex",	VTypes::RealData, TRUE);
-	accessorPointers[CellAccessors::CY] = addAccessor("centrey",	VTypes::RealData, TRUE);
-	accessorPointers[CellAccessors::CZ] = addAccessor("centrez",	VTypes::RealData, TRUE);
+	accessorPointers[CellAccessors::CentreX] = addAccessor("centrex",	VTypes::RealData, TRUE);
+	accessorPointers[CellAccessors::CentreY] = addAccessor("centrey",	VTypes::RealData, TRUE);
+	accessorPointers[CellAccessors::CentreZ] = addAccessor("centrez",	VTypes::RealData, TRUE);
 	accessorPointers[CellAccessors::Density] = addAccessor("density", VTypes::RealData, TRUE);
 	accessorPointers[CellAccessors::Matrix] = addAccessor("matrix", VTypes::RealData, FALSE, 9);
 	accessorPointers[CellAccessors::SpacegroupId] = addAccessor("sgid",	VTypes::IntegerData, FALSE);
@@ -128,7 +129,7 @@ bool CellAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(c->spacegroupSetting());
 			break;
 		case (CellAccessors::Type):
-			rv.set(Cell::cellType(c->type()));
+			rv.set(lowerCase(Cell::cellType(c->type())));
 			break;
 		case (CellAccessors::Volume):
 			rv.set(c->volume());

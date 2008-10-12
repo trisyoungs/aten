@@ -1,5 +1,6 @@
 # DL_POLY Configuration Import / Export
-# Last modified: 04/10/2008
+# Last modified: 12/10/2008
+#	12/10/2008 - Modified to properly use variable paths.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	05/08/2008 - Quoting adjusted to follow new rules.
 
@@ -75,7 +76,7 @@ exportmodel
 	elseif $model.cell.type = "parallelepiped"
 		$imcon = 3
 	end
-	writeline "         0$imcon@010"
+	writeline "         0$imcon@10"
 
 	# Cell (if present) 
 	if $imcon <> 0
@@ -87,11 +88,15 @@ exportmodel
 	# Atoms
 	for $n,1,$model.natoms
 		# Get variable pointer to make manipulation a little less cluttered
-		$i = $model.atoms[$i]
+		$i = $model.atoms[$n]
 		$rx = $i.rx-$model.cell.centrex
 		$ry = $i.ry-$model.cell.centrey
 		$rz = $i.rz-$model.cell.centrez
-		writeline "${i.type@-8}${i.id@10}   $i.mass"
+		if $i.type = 0
+			writeline "${i.symbol@-8}${i.id@10}   $i.mass"
+		else
+			writeline "${i.type.name@-8}${i.id@10}   $i.mass"
+		end
 		writeline "$rx@20.14$ry@20.14$rz@20.14"
 	end
 end
