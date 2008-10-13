@@ -191,7 +191,8 @@ Prefs::Prefs()
 	guideTicks_ = 5;
 	guideExtent_ = 10;
 	guideShape_ = Prefs::SquareGuide;
-	
+	hydrogenDistance_ = 1.08;
+
 	// Input
 	mouseAction_[Prefs::LeftButton] = Prefs::InteractAction;
 	mouseAction_[Prefs::MiddleButton] = Prefs::TranslateAction;
@@ -772,6 +773,18 @@ void Prefs::setKeyAction(Prefs::ModifierKey mk, Prefs::KeyAction ka)
 Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk)
 {
 	return keyAction_[mk];
+}
+
+// Set hydrogen add distance
+void Prefs::setHydrogenDistance(double d)
+{
+	hydrogenDistance_ = d;
+}
+
+// Return hydrogen add distance
+double Prefs::hydrogenDistance()
+{
+	return hydrogenDistance_;
 }
 
 /*

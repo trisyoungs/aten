@@ -367,6 +367,7 @@ class Command {
 		CA_ELEMENTRADIUS,
 		CA_ENERGYUNITS,
 		CA_GL,
+		CA_HDISTANCE,
 		CA_INTRA,
 		CA_KEY,
 		CA_LABELSIZE,
@@ -750,6 +751,7 @@ class Command {
 	static int function_CA_ELEMENTDIFFUSE(CommandNode *&c, Bundle &obj);
 	static int function_CA_ELEMENTRADIUS(CommandNode *&c, Bundle &obj);
 	static int function_CA_ENERGYUNITS(CommandNode *&c, Bundle &obj);
+	static int function_CA_HDISTANCE(CommandNode *&c, Bundle &obj);
 	static int function_CA_INTRA(CommandNode *&c, Bundle &obj);
 	static int function_CA_GL(CommandNode *&c, Bundle &obj);
 	static int function_CA_KEY(CommandNode *&c, Bundle &obj);

@@ -584,6 +584,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set the unit of energy to use" },
 	{ "gl",			"NN",		"<option> <<on|off>>",
 				"Turn on/off various OpenGL options: fog, linealias, polyalias, backcull" },
+	{ "hdistance",		"E",		"<distance>",
+				"Set the H-X bond distance to use when adding hydrogen" },
 	{ "intra",		"N",		"<<on|off>>",
 				"Turn on/off energy and force calculation of intramolecular terms" },
 	{ "key",		"NN",		"ctrl|shift|alt <action>",

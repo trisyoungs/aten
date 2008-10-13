@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "gui/gui.h"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include "base/mathfunc.h"
@@ -87,7 +88,8 @@ void Messenger::print(const char *fmt ...)
 	// Parse the argument list (...) and internally write the output string into msgs[]
 	va_start(arguments,fmt);
 	vsprintf(msgs,fmt,arguments);
-	if (!quiet_) printf("%s",msgs);
+	if (gui.exists()) gui.printMessage(msgs);
+	else if (!quiet_) printf("%s",msgs);
 	va_end(arguments);
 }
 
@@ -104,8 +106,16 @@ void Messenger::print(Messenger::OutputType ot, const char *fmt ...)
 	va_start(arguments,fmt);
 	vsprintf(msgs,fmt,arguments);
 	// Print message to stdout, but only if specified output type is active
-	if (ot == Messenger::Error) printf("%s",msgs);
-	else if (isOutputActive(ot) && (!quiet_)) printf("%s",msgs);
+	if (ot == Messenger::Error)
+	{
+		if (gui.exists()) gui.printMessage(msgs);
+		printf("%s",msgs);
+	}
+	else if (isOutputActive(ot))
+	{
+		if (gui.exists()) gui.printMessage(msgs);
+		else if (!quiet_) printf("%s",msgs);
+	}
 	va_end(arguments);
 }
 

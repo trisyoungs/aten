@@ -312,6 +312,7 @@ void Command::initPointers()
 	pointers_[CA_ELEMENTRADIUS] = &Command::function_CA_ELEMENTRADIUS;
 	pointers_[CA_ENERGYUNITS] = &Command::function_CA_ENERGYUNITS;
 	pointers_[CA_GL] = &Command::function_CA_GL;
+	pointers_[CA_HDISTANCE] = &Command::function_CA_HDISTANCE;
 	pointers_[CA_INTRA] = &Command::function_CA_INTRA;
 	pointers_[CA_KEY] = &Command::function_CA_KEY;
 	pointers_[CA_LABELSIZE] = &Command::function_CA_LABELSIZE;
