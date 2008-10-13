@@ -74,11 +74,11 @@ Parser::ArgumentForm Parser::argumentForm(const char *s, bool implicitdollar)
 	if ((noperators > 0) || (nbrackets > 0)) return Parser::ExpressionForm;
 	else if ((hasneg) && (nvars > 0)) return Parser::ExpressionForm;
 	// Full stops are either decimal points, member delimiters in paths, or part of a filename...
-	char *c = strchr(s, '.');
+	const char *c = strchr(s, '.');
 	if (c != '\0')
 	{
-		char *r = c++;
-		char *l = c--;
+		const char *r = c + 1;
+		const char *l = c - 1;
 		//printf("leftchar = '%c', rightchar = '%c'\n", *l, *r);
 		if ((!isdigit(*l)) && (!isdigit(*r)))
 		{

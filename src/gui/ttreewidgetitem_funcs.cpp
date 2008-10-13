@@ -19,6 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Prevent Windows macro idiocy
+#define NOMINMAX
+
 #include "base/elements.h"
 #include "base/sysfunc.h"
 #include "classes/forcefieldatom.h"

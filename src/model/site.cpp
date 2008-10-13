@@ -121,4 +121,5 @@ Mat3<double> Model::siteAxes(Site *s, int mol)
 	//axes.print();
 	s->setAxes(axes);
 	msg.enter("Model::calculateAxes");
+	return axes;
 }
