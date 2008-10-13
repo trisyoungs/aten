@@ -56,7 +56,7 @@ void Canvas::renderModelGlyphs()
 			case (Glyph::SenseVectorGlyph):
 				vec[0] = g->vector(0);
 				vec[2] = g->vector(2);
-				if (g->atomId(1) != -1)
+				if (g->atom(1) != NULL)
 				{
 					vec[1] = g->vector(1) - vec[0];
 					vec[1].normalise();

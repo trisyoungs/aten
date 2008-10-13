@@ -29,7 +29,8 @@
 #include <QtOpenGL/QtOpenGL>
 
 // Forward declarations
-//class Model;
+class Model;
+class Atom;
 
 // Glyph data
 class GlyphData
@@ -46,8 +47,8 @@ class GlyphData
 	public:
 	// Position or direction vector
 	Vec3<double> vector;
-	// Integer atom id in the parent model from ehich to get r, f, or v
-	int atomId;
+	// Integer atom id in the parent model from which to get r, f, or v
+	Atom *atom;
 	// Type of vector data to take from atom (if defined)
 	GlyphDataType atomData;
 	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
@@ -78,7 +79,7 @@ class Glyph
 	// Text data
 	Dnchar text_;
 	// Parent model
-	//Model *parent_;
+	Model *parent_;
 	// Vector data for Glyph
 	List<GlyphData> data_;
 
@@ -89,9 +90,9 @@ class Glyph
 	void setVector(int i, Vec3<double> vec);
 	void setVector(int i, double x, double y, double z);
 	// Set atom data for glyph
-	void setAtom(int i, int atom, GlyphData::GlyphDataType av);
+	void setAtom(int i, Atom *atom, GlyphData::GlyphDataType av);
 	// Returns the atom id of the glyph
-	int atomId(int i);
+	Atom *atom(int i);
 	// Returns whether the atom of the data 'i' was set last
 	bool atomSetLast(int i);
 	// Return the atom data type for data 'i'
@@ -113,9 +114,9 @@ class Glyph
 	// Return text data
 	const char *text();
 	// Set parent model
-// 	void setParent(Model *parent);
+	void setParent(Model *parent);
 	// Return parent model
-// 	Model *parent();
+	Model *parent();
 
 	/*
 	// Style
