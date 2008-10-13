@@ -50,7 +50,7 @@ int Command::function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj)
 	bitmap_format bf = BIF_from_text(c->argc(0));
 	if (bf != BIF_NITEMS)
 	{
-		pixmap.save(c->argc(1), extension_from_BIF(bf), -1);
+		pixmap.save(c->argc(1), extension_from_BIF(bf), 80);
 		msg.print("Saved current view as '%s'\n",c->argc(1));
 	}
 	else

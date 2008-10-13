@@ -44,7 +44,7 @@ int Glyph::nGlyphData(Glyph::GlyphType gt)
 GlyphData::GlyphData()
 {
 	// Public variables
-	atomId = -1;
+	atom = NULL;
 	atomData = GlyphData::PositionData;
 	atomSetLast = FALSE;
 	set = FALSE;
@@ -87,25 +87,25 @@ void Glyph::setVector(int i, Vec3<double> vec)
 }
 
 // Set atom data for glyph
-void Glyph::setAtom(int i, int atom, GlyphData::GlyphDataType av)
+void Glyph::setAtom(int i, Atom *atom, GlyphData::GlyphDataType av)
 {
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to set atom id %i for glyph when it has only %i in total.\n", i+1, data_.nItems());
 	else
 	{
-		data_[i]->atomId = atom;
-		data_[i]->atomData =  av;
+		data_[i]->atom = atom;
+		data_[i]->atomData = av;
 		data_[i]->set = TRUE;
 		data_[i]->atomSetLast = TRUE;
-		if (atom == -1) msg.print("Warning - no atom id stored in data %i.\n",i);
+		if (atom == NULL) msg.print("Warning - NULL atom pointer stored in data %i.\n",i);
 	}
 }
 
 // Returns the atom id of the glyph
-int Glyph::atomId(int i)
+Atom *Glyph::atom(int i)
 {
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get atom id %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->atomId;
-	return -1;
+	else return data_[i]->atom;
+	return NULL;
 }
 
 // Returns whether the atom was set last for data 'i'
@@ -128,7 +128,11 @@ GlyphData::GlyphDataType Glyph::atomData(int i)
 Vec3<double> Glyph::vector(int i)
 {
 	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get vector %i from glyph when it has only %i in total.\n", i+1, data_.nItems());
-	else return data_[i]->vector;
+	else
+	{
+		if (data_[i]->atomSetLast) return data_[i]->atom->r();
+		else return data_[i]->vector;
+	}
 	return Vec3<double>();
 }
 
@@ -147,16 +151,16 @@ int Glyph::nData()
 }
 
 // Set parent model
-// void Glyph::setParent(Model *parent)
-// {
-// 	parent_ = parent;
-// }
+void Glyph::setParent(Model *parent)
+{
+	parent_ = parent;
+}
 
 // Return parent model
-// Model *Glyph::parent()
-// {
-// 	return parent_;
-// }
+Model *Glyph::parent()
+{
+	return parent_;
+}
 
 // Return style of Glyph
 Glyph::GlyphType Glyph::type()

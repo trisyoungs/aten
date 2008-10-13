@@ -544,6 +544,7 @@ void Canvas::modeMotion(double x, double y)
 			displayModel_->zRotate(delta.x/2.0);
 			break;
 		case (Canvas::TranslateAction):
+			delta.y = -delta.y;
 			displayModel_->adjustCamera(delta/15.0,0.0);
 			break;
 		case (Canvas::ZoomAction):
