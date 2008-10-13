@@ -228,6 +228,7 @@ int Command::function_CA_NEWFF(CommandNode *&c, Bundle &obj)
 {
 	obj.ff = aten.addForcefield();
 	obj.ff->setName(c->argc(0));
+	return Command::Success;
 }
 
 // Print expression setup ('printexpression')

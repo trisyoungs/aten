@@ -19,6 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+// Fix Windows macro idiocy
+#define NOMINMAX
+
 #include "base/elements.h"
 #include "base/bond.h"
 #include "base/atom.h"
