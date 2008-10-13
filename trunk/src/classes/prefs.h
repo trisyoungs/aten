@@ -248,6 +248,7 @@ class Prefs
 	// Return whether to use nice text rendering
 	bool useNiceText();
 
+
 	/*
 	// GL Options
 	*/
@@ -394,6 +395,8 @@ class Prefs
 	MouseAction mouseAction_[Prefs::nMouseButtons];
 	// User-definable key modifier actions
 	KeyAction keyAction_[Prefs::nModifierKeys];
+	// Hydrogen add distance
+	double hydrogenDistance_;
 
 	public:
 	// Sets the bonding tolerance
@@ -432,6 +435,10 @@ class Prefs
 	void setKeyAction(ModifierKey mk, KeyAction ka);
 	// Return the action associated with the specified keymod button
 	KeyAction keyAction(ModifierKey mk);
+	// Set hydrogen add distance
+	void setHydrogenDistance(double d);
+	// Return hydrogen add distance
+	double hydrogenDistance();
 
 
 	/*

@@ -193,6 +193,13 @@ int Command::function_CA_GL(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Set distance to use when adding hydrogens ('hdistance <d>')
+int Command::function_CA_HDISTANCE(CommandNode *&c, Bundle &obj)
+{
+	prefs.setHydrogenDistance(c->argd(0));
+	return Command::Success;
+}
+
 // Turn on/off calculation of intra ('intra on|off')
 int Command::function_CA_INTRA(CommandNode *&c, Bundle &obj)
 {

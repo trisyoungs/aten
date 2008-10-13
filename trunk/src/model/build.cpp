@@ -20,6 +20,7 @@
 */
 
 #include "model/model.h"
+#include "classes/prefs.h"
 #include "base/elements.h"
 
 /*
@@ -83,7 +84,7 @@ void Model::addHydrogens(Atom *target, int nhydrogen, Atom::HAddGeom geometry)
 	Atom *a1, *a2, *a3;
 	Atom *newh;
 	Vec3<double> mim_a1, mim_a2, mim_a3, perp, perp2, newhpos, tempv;
-	double bondlength = 1.08, theta;
+	double bondlength = prefs.hydrogenDistance(), theta;
 	int minel, onebelow, oneabove;
 	Refitem<Bond,int> *firstbond;
 	// Add new hydrogens based on the geometry type, and then work out from what bonds there are already...
