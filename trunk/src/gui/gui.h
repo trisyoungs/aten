@@ -122,7 +122,7 @@ class GuiQt
 	static const char *bitmapFormatFilter(BitmapFormat bf);
 	static const char *bitmapFormatExtension(BitmapFormat bf);
 	// Save image of current view
-	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 100);
+	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 85);
 
 	/*
 	// Misc

@@ -135,6 +135,14 @@ int Command::function_CA_DESELECT(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Expand current selection
+int Command::function_CA_EXPAND(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	obj.rs->selectionExpand();
+	return Command::Success;
+}
+
 // Select all ('selectall')
 int Command::function_CA_SELECTALL(CommandNode *&c, Bundle &obj)
 {

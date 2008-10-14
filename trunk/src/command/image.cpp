@@ -39,7 +39,7 @@ int Command::function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj)
 		return Command::Fail;
 	}
 
-	int width = 0, height = 0, quality = 100;
+	int width = 0, height = 0, quality = -1;
 	if (c->hasArg(3))
 	{
 		width = c->argi(2);

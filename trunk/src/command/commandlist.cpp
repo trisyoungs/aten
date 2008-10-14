@@ -89,7 +89,6 @@ Filter *CommandList::filter()
 void CommandList::setHeaderVars(bool readingheader)
 {
 	variables_.set("header",(readingheader ? "true" : "false"));
-	variables_.set("frame",(readingheader ? "false" : "true"));
 }
 
 // Push branch on to stack
