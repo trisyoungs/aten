@@ -670,6 +670,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 	// Selection commands
 	{ "deselect",		"Q*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
 				"Deselect specific atoms / ranges in the current model" },
+	{ "expand",		"",		"",
+				"Expands the current atom selection" },
 	{ "invert",		"",		"",
 				"Invert the current selection" },
 	{ "select",		"Q*",		"<id|el|id-id|el-el|+id|+el|id+|el+,...>",
