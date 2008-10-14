@@ -185,31 +185,18 @@ void AtenForm::on_actionFileSaveImage_triggered(bool checked)
 	}
 	else return;
 	// Get filename from user
-	int n;
+	GuiQt::BitmapFormat bf;
 	if (saveBitmapDialog->exec() == 1)
 	{
-		// Flag any surfaces to be rerendered for use in this context
-		aten.currentModel()->rerenderGrids();
-		// Create a QPixmap of the current scene
-		QPixmap pixmap = gui.mainWidget->renderPixmap(width,height,FALSE);
-		// Flag any surfaces to be rerendered so they are redisplayed in the original context
-		aten.currentModel()->rerenderGrids();
-		// Reconfigure canvas to widget size (necessary if image size was changed)
-		gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
-
 		// Get selected filename
 		QStringList filenames = saveBitmapDialog->selectedFiles();
 		QString filename = filenames.first();
 		// Get selected filter
 		QString filter = saveBitmapDialog->selectedFilter();
 		// Find the filter that was selected
-		for (n=0; n<BIF_NITEMS; n++)
-			if (strcmp(filter_from_BIF( (bitmap_format) n), qPrintable(filter)) == 0) break;
-		if (n != BIF_NITEMS)
-		{
-			pixmap.save(filename, extension_from_BIF( (bitmap_format) n), 80);
-			msg.print("Saved current view as '%s'\n", qPrintable(filename));
-		}
+		bf = GuiQt::bitmapFormatFromFilter(qPrintable(filter));
+		// Save the image
+		gui.saveImage(qPrintable(filename), bf, width, height, 100);
 	}
 }
 

@@ -82,8 +82,6 @@ class GuiQt
 	public:
 	// Add a message to the main window's message output box
 	void printMessage(const char*);
-	// Print normal message (passed through global Messenger)
-// 	void print(const char* ...);
 	// Save before close
 	bool saveBeforeClose();
 
@@ -113,6 +111,18 @@ class GuiQt
 	public:
 	// Initialise GUI file filters array
 	void initFilters();
+
+	/*
+	// Image Formats / Saving
+	*/
+	// Bitmap Formats
+	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
+	static BitmapFormat bitmapFormat(const char *s);
+	static BitmapFormat bitmapFormatFromFilter(const char *s);
+	static const char *bitmapFormatFilter(BitmapFormat bf);
+	static const char *bitmapFormatExtension(BitmapFormat bf);
+	// Save image of current view
+	bool saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality = 100);
 
 	/*
 	// Misc
