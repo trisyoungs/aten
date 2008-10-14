@@ -46,22 +46,6 @@
 
 #include "base/sysfunc.h"
 
-// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
-const char *BIF_filters[BIF_NITEMS] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
-const char *BIF_extensions[BIF_NITEMS] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
-bitmap_format BIF_from_text(const char *s)
-{
-	return (bitmap_format) enumSearch("bitmap format",BIF_NITEMS,BIF_extensions,s);
-}
-const char *filter_from_BIF(bitmap_format bif)
-{
-	return BIF_filters[bif];
-}
-const char *extension_from_BIF(bitmap_format bif)
-{
-	return BIF_extensions[bif];
-}
-
 // Constructor
 AtenForm::AtenForm(QMainWindow *parent) : QMainWindow(parent)
 {

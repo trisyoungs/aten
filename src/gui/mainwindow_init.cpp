@@ -243,7 +243,7 @@ void AtenForm::finaliseUi()
 	saveBitmapDialog->setDirectory(aten.workDir());
 	saveBitmapDialog->setFileMode(QFileDialog::AnyFile);
 	filters.clear();
-	for (n=0; n < BIF_NITEMS; n++) filters << filter_from_BIF( (bitmap_format) n);
+	for (n=0; n < GuiQt::nBitmapFormats; n++) filters << GuiQt::bitmapFormatFilter( (GuiQt::BitmapFormat) n);
 	saveBitmapDialog->setFilters(filters);
 
 	// Create save vector dialog

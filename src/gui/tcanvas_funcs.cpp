@@ -28,7 +28,7 @@
 bool DONTDRAW = FALSE;
 
 // Constructor
-TCanvas::TCanvas(QWidget *parent)
+TCanvas::TCanvas(QWidget *parent) : QGLWidget(parent)
 {
 	// Private variables
 	canvas_ = NULL;
@@ -57,6 +57,7 @@ void TCanvas::paintGL()
 
 void TCanvas::paintEvent(QPaintEvent *event)
 {
+	static QFont font;
 	if (canvas_ != NULL)
 	{
 		// Note: An internet source suggests that the QPainter documentation is incomplete, and that
@@ -71,9 +72,9 @@ void TCanvas::paintEvent(QPaintEvent *event)
 		QPainter painter(this);
 
 		// Draw on text objects (with QPainter)
-		//font.setPointSize(prefs.labelSize());
-		//painter.setFont(font);
-		//painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
+		font.setPointSize(prefs.labelSize());
+		painter.setFont(font);
+		painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
 		painter.setRenderHint(QPainter::Antialiasing);
 		canvas_->renderText(painter);
 	}

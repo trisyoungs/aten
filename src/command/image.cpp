@@ -30,35 +30,24 @@
 int Command::function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	// Flag any surfaces to be rerendered for use in this context
-	obj.rs->rerenderGrids();
-	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
-	int screenbits = prefs.screenObjects();
-	prefs.setScreenObjects(prefs.imageObjects());
-	QPixmap pixmap;
-	gui.mainView.postRedisplay();
-
-	if (c->hasArg(3)) pixmap = gui.mainWidget->renderPixmap(c->argi(2), c->argi(3), FALSE);
-	else pixmap = gui.mainWidget->renderPixmap(0, 0, FALSE);
-	prefs.setScreenObjects(screenbits);
-	// Flag any surfaces to be rerendered so they are redisplayed in the original context
-	obj.rs->rerenderGrids();
-	// Reconfigure canvas to widget size (necessary if image size was changed)
-	gui.mainView.configure(gui.mainWidget->width(), gui.mainWidget->height());
 
 	// Convert format to bitmap_format
-	bitmap_format bf = BIF_from_text(c->argc(0));
-	if (bf != BIF_NITEMS)
-	{
-		pixmap.save(c->argc(1), extension_from_BIF(bf), 80);
-		msg.print("Saved current view as '%s'\n",c->argc(1));
-	}
-	else
+	GuiQt::BitmapFormat bf = GuiQt::bitmapFormat(c->argc(0));
+	if (bf == GuiQt::nBitmapFormats)
 	{
 		msg.print("Unrecognised bitmap format.\n");
 		return Command::Fail;
 	}
-	return Command::Success;
+
+	int width = 0, height = 0, quality = 100;
+	if (c->hasArg(3))
+	{
+		width = c->argi(2);
+		height = c->argi(3);
+	}
+	if (c->hasArg(4)) quality = c->argi(4);
+
+	return (gui.saveImage(c->argc(1), bf, width, height, quality) ? Command::Success : Command::Fail);
 }
 
 // Save current view a vector graphic

@@ -30,12 +30,6 @@
 // Stack Pages (must be in order of pages in the stack)
 enum StackPage { SP_ATOMS, SP_EDIT, SP_TRANSFORM, SP_POSITION, SP_CELLDEFINE, SP_CELLMANIPULATE, SP_MINIMISER, SP_DISORDER, SP_FORCEFIELD, SP_GRID, SP_ANALYSE, SP_NITEMS };
 
-// Bitmap Formats
-enum bitmap_format { BIF_BMP, BIF_JPG, BIF_PNG, BIF_PPM, BIF_XBM, BIF_X11, BIF_NITEMS };
-bitmap_format BIF_from_text(const char *);
-const char *filter_from_BIF(bitmap_format);
-const char *extension_from_BIF(bitmap_format);
-
 #define MAXRECENTFILES 10
 
 // Forward Declarations

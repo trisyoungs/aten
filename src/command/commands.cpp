@@ -458,7 +458,7 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create new grid data" },
 
 	// Image commands
-	{ "savebitmap",		"NNnn",		"<format> <filename> [width] [height]",
+	{ "savebitmap",		"NNnnn",	"<format> <filename> [width] [height] [quality, 0-100]",
 				"Save the current model view as a bitmap image: formats available are bmp, jpg, png, ppm, xbm, and xpm" },
 	{ "savevector",		"NN",		"<format> <filename>",
 				"Save the current model view as a vector image: formats available are ps, eps, tex, pdf, svg, and pgf" },

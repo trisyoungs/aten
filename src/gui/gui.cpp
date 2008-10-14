@@ -50,6 +50,26 @@
 // External Declarations
 GuiQt gui;
 
+// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
+const char *bitmapFormatFilters[GuiQt::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
+const char *bitmapFormatExtensions[GuiQt::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
+GuiQt::BitmapFormat GuiQt::bitmapFormat(const char *s)
+{
+	return (GuiQt::BitmapFormat) enumSearch("bitmap format",GuiQt::nBitmapFormats,bitmapFormatExtensions,s);
+}
+GuiQt::BitmapFormat GuiQt::bitmapFormatFromFilter(const char *s)
+{
+	return (GuiQt::BitmapFormat) enumSearch("bitmap format",GuiQt::nBitmapFormats,bitmapFormatExtensions,s);
+}
+const char *GuiQt::bitmapFormatFilter(GuiQt::BitmapFormat bf)
+{
+	return bitmapFormatFilters[bf];
+}
+const char *GuiQt::bitmapFormatExtension(GuiQt::BitmapFormat bf)
+{
+	return bitmapFormatExtensions[bf];
+}
+
 // Constructor
 GuiQt::GuiQt()
 {
@@ -588,3 +608,41 @@ void GuiQt::stopTrajectoryPlayback()
 	modelChanged();
 }
 
+/*
+// Image Saving
+*/
+
+// Save image of current view
+bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int height, int quality)
+{
+	if (bf == GuiQt::nBitmapFormats)
+	{
+		msg.print("Invalid bitmap format given to Gui::saveImage().\n");
+		return FALSE;
+	}
+
+	// Flag any surfaces to be rerendered for use in this context
+	aten.current.rs->rerenderGrids();
+	// Create a QPixmap of the current scene setting and restoring the original view object bitvectors
+	int screenbits = prefs.screenObjects();
+	prefs.setScreenObjects(prefs.imageObjects());
+	QPixmap pixmap;
+	// Temporarily adjust label size...
+	int oldlabelsize = prefs.labelSize();
+	prefs.setLabelSize( (int) oldlabelsize*( (1.0*width / mainWidget->height()) ) );
+	mainView.postRedisplay();
+
+	pixmap = mainWidget->renderPixmap(width, height, FALSE);
+
+	prefs.setScreenObjects(screenbits);
+	// Flag any surfaces to be rerendered so they are redisplayed in the original context
+	aten.current.rs->rerenderGrids();
+	// Reconfigure canvas to widget size (necessary if image size was changed)
+	mainView.configure(mainWidget->width(), mainWidget->height());
+	// Restore label size
+	prefs.setLabelSize(oldlabelsize);
+
+	pixmap.save(filename, GuiQt::bitmapFormatExtension(bf), quality);
+	msg.print("Saved current view as '%s'\n", filename);
+	return TRUE;
+}
