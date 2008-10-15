@@ -59,7 +59,7 @@ GuiQt::BitmapFormat GuiQt::bitmapFormat(const char *s)
 }
 GuiQt::BitmapFormat GuiQt::bitmapFormatFromFilter(const char *s)
 {
-	return (GuiQt::BitmapFormat) enumSearch("bitmap format",GuiQt::nBitmapFormats,bitmapFormatExtensions,s);
+	return (GuiQt::BitmapFormat) enumSearch("bitmap format",GuiQt::nBitmapFormats,bitmapFormatFilters,s);
 }
 const char *GuiQt::bitmapFormatFilter(GuiQt::BitmapFormat bf)
 {
