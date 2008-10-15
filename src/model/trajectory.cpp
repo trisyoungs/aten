@@ -384,6 +384,7 @@ void Model::seekFrame(int frameno)
 		{
 			// Seek to last frame position stored
 			trajectoryFile_->seekg(trajectoryOffsets_[highestFrameOffset_]);
+			// Read in consecutive frames until we get to the desired point, storing pointers as we go.
 			for (int i = highestFrameOffset_; i < frameno; i++)
 			{
 				currentFrame_->clear();
