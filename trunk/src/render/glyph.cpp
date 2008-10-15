@@ -63,7 +63,6 @@ void Canvas::renderModelGlyphs()
 				}
 				else vec[1] = g->vector(1);
 				vec[1] *= vec[2].x;
-				vec[2].print();
 				glLineWidth(g->lineWidth());
 				glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, g->colour(0));
 				glArrow( vec[0], vec[1], g->vector(2).y < 0.0 ? TRUE : FALSE);
