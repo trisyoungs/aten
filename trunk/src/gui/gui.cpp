@@ -631,6 +631,9 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	int screenbits = prefs.screenObjects();
 	prefs.setScreenObjects(prefs.imageObjects());
 	QPixmap pixmap;
+	// Get current widget geometry if none was specified
+	if (width == 0) width = mainWidget->width();
+	if (height == 0) height = mainWidget->height();
 	// Temporarily adjust label size...
 	int oldlabelsize = prefs.labelSize();
 	prefs.setLabelSize( (int) oldlabelsize*( (1.0*width / mainWidget->height()) ) );
