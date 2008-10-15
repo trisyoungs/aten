@@ -272,6 +272,7 @@ class AtenForm : public QMainWindow
 	void trajectorySpin_valueChanged(int i);
 	public:
 	void updateTrajectoryToolbar();
+	void setTrajectoryToolbarActive(bool active);
 
 	/*
 	// View Actions

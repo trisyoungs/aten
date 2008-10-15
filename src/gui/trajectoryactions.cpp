@@ -94,3 +94,9 @@ void AtenForm::updateTrajectoryToolbar()
 	trajectorySpin_->setValue(aten.currentModel()->trajectoryPosition());
 	trajectoryToolbarRefreshing_ = FALSE;
 }
+
+void AtenForm::setTrajectoryToolbarActive(bool active)
+{
+	trajectorySlider_->setEnabled(active);
+	trajectorySpin_->setEnabled(active);
+}
