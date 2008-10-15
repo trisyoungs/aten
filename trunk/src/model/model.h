@@ -652,8 +652,10 @@ class Model
 	Filter *trajectoryFilter_;
 	// File structure
 	ifstream *trajectoryFile_;
-	// File offsets for first and last frames
-	streampos trajectoryFirstFrame_, trajectoryLastFrame_;
+	// File offsets for frames
+	streampos *trajectoryOffsets_;
+	// Number of highest frame file offset stored
+	int highestFrameOffset_;
 	// Size of one frame
 	long int frameSize_;
 	// Frame list

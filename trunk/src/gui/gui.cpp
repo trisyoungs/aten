@@ -241,7 +241,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update status bar
 	QString s;
 	Model *m = aten.currentModel();
-	// Trajectory information label
+	// Trajectory information label and toolbar
 	if (m->nTrajectoryFrames() != 0)
 	{
 		s = "(Frame ";
@@ -249,6 +249,8 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 		s += " of ";
 		s += itoa(m->nTrajectoryFrames());
 		s += ") ";
+		// Toolbar
+		mainWindow->updateTrajectoryToolbar();
 	}
 	m = m->renderSource();
 	// Model information
@@ -337,6 +339,7 @@ void GuiQt::updateTrajControls()
 			mainWindow->ui.actionFrameNext->setDisabled(TRUE);
 			mainWindow->ui.actionFrameLast->setDisabled(TRUE);
 			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
+			mainWindow->setTrajectoryToolbarActive(FALSE);
 		}
 		else
 		{
@@ -345,6 +348,7 @@ void GuiQt::updateTrajControls()
 			mainWindow->ui.actionFrameNext->setDisabled(FALSE);
 			mainWindow->ui.actionFrameLast->setDisabled(FALSE);
 			mainWindow->ui.actionPlayPause->setDisabled(FALSE);
+			mainWindow->setTrajectoryToolbarActive(TRUE);
 		}
 		mainWindow->ui.actionViewTrajectory->setDisabled(FALSE);
 		// Select the correct view action

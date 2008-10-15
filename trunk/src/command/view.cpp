@@ -76,7 +76,6 @@ int Command::function_CA_SETVIEW(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Mat4<double> rmat;
 	Vec3<double> camr;
-	obj.rs->rotationMatrix().print();
 	// Get camera position
 	camr = c->arg3d(9);
 	obj.rs->resetCamera(camr);

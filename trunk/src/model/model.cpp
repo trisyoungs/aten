@@ -57,8 +57,8 @@ Model::Model()
 	trajectoryParent_ = NULL;
 	trajectoryFilter_ = NULL;
 	trajectoryFile_ = NULL;
-	trajectoryFirstFrame_ = (streampos) 0;
-	trajectoryLastFrame_ = (streampos) 0;
+	trajectoryOffsets_ = NULL;
+	highestFrameOffset_ = 0;
 	frameSize_ = 0;
 	nCachedFrames_ = 0;
 	nTrajectoryFrames_ = 0;
