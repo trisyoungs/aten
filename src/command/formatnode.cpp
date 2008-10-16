@@ -110,7 +110,17 @@ bool FormatNode::set(const char *s, VariableList &vlist, bool astext)
 			return FALSE;
 		}
 	}
-	else if ((specifier[0] == '*') && (!astext)) variable_ = vlist.dummy();
+	else if ((specifier[0] == '*') && (!astext))
+	{
+		// Check that this was the only character in the variable name....
+		if (specifier[1] == '\0') variable_ = vlist.dummy();
+		else
+		{
+			msg.print("Mangled dummy variable specifier '%s' found in format string.\n", specifier);
+			msg.exit("FormatNode::set");
+			return FALSE;
+		}
+	}
 	else variable_ = vlist.addConstant(specifier);
 	// Store the data
 	length_ = (len[0] == '\0' ? 0 : atoi(len));
