@@ -46,6 +46,10 @@ BuildRequires: libqt4-gui libqt4-core libqt4-dev libreadline5-dev libgl1-mesa-de
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
 BuildRequires: Mesa-devel qt4 qt4-devel readline-devel
 %endif
+# For Mandriva Linux
+%if 0%{?mandriva_version} > 2006
+BuildRequires: qt4-devel mesa-common-devel readline-devel
+%endif
 
 # In-depth description.
 %description

@@ -62,6 +62,8 @@ class AtenForm : public QMainWindow
 	Ui::MainWindow ui;
 	// Finalise widgets (things that we couldn't do in Qt Designer)
 	void finaliseUi();
+	// Set filter combos on file dialogs
+	void setDialogFilters();
 	// Set controls to reflect program variables
 	void setControls();
 	protected:

@@ -1,0 +1,13 @@
+Source: Aten
+Section: sectionName
+Priority: optional
+Maintainer: Tris Youngs <tris@projectaten.org>
+Build-Depends: debhelper (>= 4.1.16), nameOfPackageNeededToBuildIt
+
+Package: aten
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Atomic configuration creator and editor
+ Then, here there is the long description of the package... 
+ also here the syntax is very painful (look at the documentation of Debian Policy
+ to avoid errors http://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Description)

@@ -34,5 +34,7 @@ void AtenForm::on_actionReloadFilters_triggered(bool checked)
 {
 	if (!aten.reloadFilters())
 	{
+		int returnvalue = QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
 	}
+	setDialogFilters();
 }

@@ -1,21 +1,21 @@
 # Model formats
-#akf
-#cds
-#cif
-#dlp.model
-#dlp.hisf
-#dlp.hisu
-#dlp.field
-#gamess
-#mol
-#mol2
-#mopac
-#msi
+akf
+cds
+cif
+dlp.model
+dlp.hisf
+dlp.hisu
+dlp.field
+gamess
+mol
+mol2
+mopac
+msi
 pdb
-#vfield
-#xyz
+vfield
+xyz
 
 # Grid formats
-#cube
-#pdens
-#surface
+cube
+pdens
+surface
