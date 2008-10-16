@@ -636,7 +636,8 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	if (height == 0) height = mainWidget->height();
 	// Temporarily adjust label size...
 	int oldlabelsize = prefs.labelSize();
-	prefs.setLabelSize( (int) oldlabelsize*( (1.0*width / mainWidget->height()) ) );
+	int newlabelsize = (int) oldlabelsize*( (1.0*height / mainWidget->height()) );
+	prefs.setLabelSize(newlabelsize);
 	mainView.postRedisplay();
 
 	pixmap = mainWidget->renderPixmap(width, height, FALSE);
