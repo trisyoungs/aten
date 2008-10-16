@@ -122,6 +122,9 @@ bool PatternAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 		case (PatternAccessors::NTorsions):
 			rv.set(p->nTorsions());
 			break;
+		case (PatternAccessors::Torsions):
+			rv.set(p->torsion(index-1), VTypes::PatternBoundData);
+			break;
 		default:
 			printf("PatternAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
@@ -174,6 +177,9 @@ bool PatternAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (PatternAccessors::NMolAtoms):
 		case (PatternAccessors::NMols):
 		case (PatternAccessors::NTorsions):
+		case (PatternAccessors::Angles):
+		case (PatternAccessors::Bonds):
+		case (PatternAccessors::Torsions):
 			msg.print("Member '%s' in Pattern is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;

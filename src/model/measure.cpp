@@ -452,6 +452,7 @@ void Model::listMeasurements()
 		}
 		for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
 		{
+			if (mt != m->type()) continue;
 			matoms = m->atoms();
 			switch (m->type())
 			{
