@@ -140,7 +140,7 @@ void AtenTransform::on_TransformApplyButton_clicked(bool on)
 	m->matrixTransformSelection(v, mat);
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void transformDefineSourceAButton_callback(Reflist<Atom,int> *picked)
@@ -225,7 +225,7 @@ void AtenTransform::on_TransformDefineOriginButton_clicked(bool on)
 // Matrix Transformation - Rotate Into
 */
 
-void AtenTransform::on_RotateIntoButton_clicked(bool on)
+void AtenTransform::on_TransformRotateIntoButton_clicked(bool on)
 {
 	gui.mainView.postRedisplay();
 }

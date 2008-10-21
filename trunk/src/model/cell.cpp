@@ -81,10 +81,8 @@ void Model::setCell(Mat3<double> axes)
 void Model::setCell(Cell::CellParameter cp, double value)
 {
 	msg.enter("Model::setCell[parameter]");
-	static Vec3<double> oldlengths;
-	static Vec3<double> oldangles;
-	oldangles = cell_.angles();
-	oldlengths = cell_.lengths();
+	Vec3<double> oldlengths = cell_.lengths();
+	Vec3<double> oldangles = cell_.angles();
 	// Set new parameter value
 	cell_.setParameter(cp, value);
 	calculateDensity();

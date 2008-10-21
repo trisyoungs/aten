@@ -1,5 +1,6 @@
 # DL_POLY Formatted Trajectory file filter.
-# Last modified: 04/10/2008
+# Last modified: 21/10/2008
+#	21/10/2008 - Coordinates of atoms were not set correctly - fixed.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	27/09/2008 - Adjusted to use new variable access style.
 # 	06/01/2007 - Initial version.
@@ -49,7 +50,7 @@ importtrajectory
 		modeltemplate
 		for $n,1,$frame.natoms
 			readline "$e $id $mass $q"
-			readline "$frame.atoms[$n].rx@12 $ry@12 $rz@12"
+			readline "$rx@12 $ry@12 $rz@12"
 			setcoords $rx $ry $rz $n
 			if $keytrj > 0
 				readline "$vx@12 $vy@12 $vz@12"

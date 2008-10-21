@@ -165,7 +165,7 @@ void Model::adjustCamera(double dx, double dy, double dz, double angle)
 	}
 	else
 	{
-		trajectoryParent_->camera_.add(dx, dy, dz);
+		trajectoryParent_->camera_.add(dx, -dy, dz);
 		trajectoryParent_->cameraRotation_ = trajectoryParent_->cameraRotation_ + angle;
 		if (trajectoryParent_->cameraRotation_ > 2.0*PI) trajectoryParent_->cameraRotation_ -= 2.0*PI;
 		coscam = cos(trajectoryParent_->cameraRotation_);

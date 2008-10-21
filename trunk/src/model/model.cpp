@@ -75,6 +75,7 @@ Model::Model()
 	moveAllowed_[MonteCarlo::Rotate] = TRUE;
 	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
 	undoRedoEnabled_ = FALSE;
+	cell_.setParent(this);
 
 	// Public variables
 	next = NULL;
