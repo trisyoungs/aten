@@ -55,6 +55,7 @@ CommandNode::CommandNode()
 	format_ = NULL;
 	loopActive_ = FALSE;
 	variableList_ = NULL;
+	ifTest_ = IfTests::EqualTo;
 
 	// Public variables
 	next = NULL;

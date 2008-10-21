@@ -56,41 +56,23 @@ void Model::invalidateExpression()
 // Assign charges from forcefield
 bool Model::assignForcefieldCharges()
 {
-	// Assign atom-type charges from the currently associated forcefield to the model
+	// Assign atom-type charges from the currently assigned atom types
 	// Perform forcefield typing if necessary
 	msg.enter("Model::assignForcefieldCharges");
-	Atom *i;
-	Forcefield *xff, *patff;
-	if (!createExpression())
+	int nfailed = 0;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		msg.print("Cannot assign atomic charges without a valid pattern setup.\n");
-		msg.exit("Model::assignForcefieldCharges");
-		return FALSE;
-	}
-	typeAll();
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
-	{
-		// Grab current model (global) forcefield
-		xff = forcefield_;	
-		patff = p->forcefield();
-		// Grab pattern forcefield in preference to model's
-		if (patff != NULL) xff = patff;
-		if (xff == NULL) msg.print("No forcefield is currently assigned to pattern %s. No charges assigned.\n",p->name());
-		else
+		if (i->type() == NULL)
 		{
-			i = p->firstAtom();
-			int ptotalatoms = p->totalAtoms();
-			int count = 0;
-			while (count < ptotalatoms)
-			{
-				chargeAtom(i, i->type()->charge());
-				i = i->next;
-				count ++;
-			}
+			nfailed ++;
+			msg.print("Could not assign charge to atom %i since it has no atomtype associated to it.\n", i->id()+1);
 		}
+		else i->setCharge( i->type()->charge() );
 	}
+	if (nfailed == 0) msg.print("Charges assigned successfully to all atoms.\n");
+	else msg.print("Failed to assign charges to %i atoms.\n", nfailed);
 	msg.exit("Model::assignForcefieldCharges");
-	return TRUE;
+	return (nfailed == 0);
 }
 
 // Set model's forcefield
@@ -165,6 +147,8 @@ bool Model::createExpression(bool vdwOnly)
 				break;
 		}
 	}
+	// Lastly, assign charges to atoms
+	if (!assignForcefieldCharges()) return FALSE;
 	expressionPoint_ = changeLog.log(Log::Structure);
 	msg.exit("Model::createExpression");
 	return TRUE;

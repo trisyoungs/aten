@@ -174,7 +174,7 @@ void AtenPosition::translateSelection(int axis, int dir)
 	}
 	m->endUndoState();
 	m->updateMeasurements();
-	gui.mainView.postRedisplay();
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 /*

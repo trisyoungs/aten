@@ -91,7 +91,7 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(i->isHidden());
 			break;
 		case (AtomAccessors::Id):
-			rv.set(i->id());
+			rv.set(i->id()+1);
 			break;
 		case (AtomAccessors::Mass):
 			rv.set(elements.atomicMass(i));

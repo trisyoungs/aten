@@ -76,12 +76,23 @@ void AtenForm::on_actionPlayPause_triggered(bool checked)
 void AtenForm::trajectorySlider_sliderMoved(int i)
 {
 	if (trajectoryToolbarRefreshing_) return;
-	
+	trajectoryToolbarRefreshing_ = TRUE;
+	aten.current.m->seekFrame(i);
+	// Set corresponding value in Spin control
+	trajectorySpin_->setValue(i);
+	trajectoryToolbarRefreshing_ = FALSE;
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::trajectorySpin_valueChanged(int i)
 {
 	if (trajectoryToolbarRefreshing_) return;
+	trajectoryToolbarRefreshing_ = TRUE;
+	aten.current.m->seekFrame(i);
+	// Set corresponding value in Spin control
+	trajectorySlider_->setValue(i);
+	trajectoryToolbarRefreshing_ = FALSE;
+	gui.mainView.postRedisplay();
 }
 
 void AtenForm::updateTrajectoryToolbar()
