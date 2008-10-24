@@ -52,11 +52,8 @@ void TCanvas::initializeGL()
 void TCanvas::paintGL()
 {
 	// Must be implemented, or calls to renderPixmap() will generate garbage images
-	paintEvent(NULL);
-}
+// 	paintEvent(NULL);
 
-void TCanvas::paintEvent(QPaintEvent *event)
-{
 	static QFont font;
 	if (canvas_ != NULL)
 	{
@@ -79,8 +76,13 @@ void TCanvas::paintEvent(QPaintEvent *event)
 		canvas_->renderText(painter);
 	}
 	else printf("NO CANVAS SET PAINT\n");
-	swapBuffers();
+// 	swapBuffers();
 }
+
+// void TCanvas::paintEvent(QPaintEvent *event)
+// {
+// 
+// }
 
 void TCanvas::resizeGL(int width, int height)
 {

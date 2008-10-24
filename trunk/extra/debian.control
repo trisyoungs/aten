@@ -1,8 +1,8 @@
-Source: Aten
-Section: sectionName
+Source: aten
+Section: unknown
 Priority: optional
 Maintainer: Tris Youngs <tris@projectaten.org>
-Build-Depends: debhelper (>= 4.1.16), nameOfPackageNeededToBuildIt
+Build-Depends: debhelper (>= 4.1.16)
 
 Package: aten
 Architecture: any
