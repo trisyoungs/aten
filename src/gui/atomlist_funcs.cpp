@@ -30,11 +30,13 @@
 // Atom list window
 */
 
+TTreeWidgetItem *lastItem = NULL;
+
 // Constructor
 AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
-
+	
 	// Private variables
 	listStructurePoint_ = -1;
 	listSelectionPoint_ = -1;
@@ -42,6 +44,9 @@ AtenAtomlist::AtenAtomlist(QWidget *parent, Qt::WindowFlags flags) : QDialog(par
 	refreshing_ = FALSE;
 	shouldRefresh_ = FALSE;
 	listPosition_ = -1;
+
+	setMouseTracking(TRUE);
+	QObject::connect(ui.AtomTree, SIGNAL(itemSelectionChanged()), this, SLOT(updateSelection()));
 }
 
 // Destructor
@@ -55,46 +60,93 @@ void AtenAtomlist::showWindow()
 	show();
 }
 
-void AtenAtomlist::on_AtomTree_itemPressed(QTreeWidgetItem *item, int column)
+// void AtenAtomlist::on_AtomTree_itemPressed(QTreeWidgetItem *item, int column)
+// {
+// 	if (refreshing_) return;
+// 	// Cast *item into a TTreeWidgetItem
+// 	TTreeWidgetItem *ti = (TTreeWidgetItem*) item;
+// 	Model *m = aten.currentModel();
+// 	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
+// 	if (ti->pattern() != NULL)
+// 	{
+// 		Atom *i = ti->pattern()->firstAtom();
+// 		for (int n=0; n<ti->pattern()->totalAtoms(); n++)
+// 		{
+// 			item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
+// 			i = i->next;
+// 		}
+// 	}
+// 	else if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
+// 	gui.modelChanged(FALSE,FALSE,FALSE);
+// }
+
+void AtenAtomlist::updateSelection()
 {
-	if (refreshing_) return;
-	// Cast *item into a TTreeWidgetItem
-	TTreeWidgetItem *ti = (TTreeWidgetItem*) item;
+	//printf("Selection has been updated.\n");
+	TTreeWidgetItem *ti;
 	Model *m = aten.currentModel();
-	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
-	if (ti->pattern() != NULL)
+	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
 	{
-		Atom *i = ti->pattern()->firstAtom();
-		for (int n=0; n<ti->pattern()->totalAtoms(); n++)
-		{
-			item->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
-			i = i->next;
-		}
+		ti = (TTreeWidgetItem*) item;
+		if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
 	}
-	else if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
-void AtenAtomlist::on_AtomTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev)
-{
-	if (current == NULL) return;
-	if (refreshing_) return;
-	// Cast *item into a TTreeWidgetItem
-	TTreeWidgetItem *ti = (TTreeWidgetItem*) current;
-	Model *m = aten.currentModel();
-	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
-	if (ti->pattern() != NULL)
-	{
-		Atom *i = ti->pattern()->firstAtom();
-		for (int n=0; n<ti->pattern()->totalAtoms(); n++)
-		{
-			current->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
-			i = i->next;
-		}
-	}
-	else if (ti->atom() != NULL) current->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
-	gui.modelChanged(FALSE,FALSE,FALSE);
-}
+// void AtenAtomlist::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
+// {
+// 	printf("XXX\n");
+// 	for (int i = 0; i < selected.size(); ++i) printf("Selected range height = %d\n", selected.at(i).height());
+// 	for (int i = 0; i < deselected.size(); ++i) printf("Deselected range height = %d\n", deselected.at(i).height());
+// 	printf("XXX\n");
+// }
+
+// void AtenAtomlist::on_AtomTree_itemEntered(QTreeWidgetItem *item, int column)
+// {
+// 	if (refreshing_) return;
+// 	// Cast *item into a TTreeWidgetItem
+// 	TTreeWidgetItem *ti = (TTreeWidgetItem*) item;
+// 	Model *m = aten.currentModel();
+// 	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
+// 	if (ti->atom() != NULL) !item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
+// 	gui.modelChanged(FALSE,FALSE,FALSE);
+// }
+
+// void AtenAtomlist::mouseMoveEvent(QMouseEvent *event)
+// {
+// 	if (refreshing_) return;
+// 	if (event->buttons() != Qt::NoButton)
+// 	{
+// 		TTreeWidgetItem *ti = (TTreeWidgetItem*) ui.AtomTree->itemAt(event->pos());
+// 		if (ti != NULL)
+// 		{
+// 			Model *m = aten.currentModel();
+// 			if (ti->atom() != NULL) ti->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
+// 			gui.modelChanged(FALSE,FALSE,FALSE);
+// 		}
+// 	}
+// }
+
+// void AtenAtomlist::on_AtomTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *prev)
+// {
+// 	if (current == NULL) return;
+// 	if (refreshing_) return;
+// 	// Cast *item into a TTreeWidgetItem
+// 	TTreeWidgetItem *ti = (TTreeWidgetItem*) current;
+// 	Model *m = aten.currentModel();
+// 	// If this was a pattern treeitem, (de)select the whole pattern, otherwise (de)select atom
+// 	if (ti->pattern() != NULL)
+// 	{
+// 		Atom *i = ti->pattern()->firstAtom();
+// 		for (int n=0; n<ti->pattern()->totalAtoms(); n++)
+// 		{
+// 			current->isSelected() ? m->selectAtom(i) : m->deselectAtom(i);
+// 			i = i->next;
+// 		}
+// 	}
+// 	else if (ti->atom() != NULL) current->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
+// 	gui.modelChanged(FALSE,FALSE,FALSE);
+// }
 
 void AtenAtomlist::refresh()
 {

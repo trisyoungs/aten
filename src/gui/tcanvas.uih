@@ -45,7 +45,7 @@ class TCanvas : public QGLWidget
 
 	protected:
 	void initializeGL();
-	void paintEvent(QPaintEvent *event);
+//	void paintEvent(QPaintEvent *event);
 	void paintGL();
 	void resizeGL(int, int);
 	void mousePressEvent(QMouseEvent*);

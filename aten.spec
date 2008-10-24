@@ -4,7 +4,7 @@
 # Name, brief description, and version 
 Summary: Aten - Atomic configuration builder and editor
 Name: %{shortname}
-Version: 0.99
+Version: 0.99.694
 Release: 1
 License: GPL
 %define fullname %{name}-%{version}
@@ -38,14 +38,12 @@ BuildRequires: gcc-c++
 %if 0%{?suse_version}
 BuildRequires: libqt4 libqt4-devel Mesa-devel readline-devel
 %endif
-# For Ubuntu, lowercase 'm' for Mesa.
-%if 0%{?ubuntu_version}
-BuildRequires: libqt4-gui libqt4-core libqt4-dev libreadline5-dev libgl1-mesa-dev
-%endif
+
 # For RedHat-based distros, libqt4 = qt4, and libqt4-devel = qt4-devel
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
 BuildRequires: Mesa-devel qt4 qt4-devel readline-devel
 %endif
+
 # For Mandriva Linux
 %if 0%{?mandriva_version} > 2006
 BuildRequires: qt4-devel mesa-common-devel readline-devel
@@ -60,16 +58,24 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 
 # For the build, RedHat distros seem to need the path to the Qt4 binaries set explicitly. SuSE is fine.
 %build
-./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr \
+
+# Configure
+
+%if 0%{?suse_version}
+./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr 
+%endif
+
+%if 0%{?mandriva_version} > 2006
+./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtdir=/usr/lib/qt4/bin
+%endif
+
 %if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
 %ifarch x86_64
---with-qtdir=/usr/lib64/qt4/bin
+./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtdir=/usr/lib64/qt4/bin
 %else
---with-qtdir=/usr/lib/qt4/bin
+./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtdir=/usr/lib/qt4/bin
 %endif
 %else
-
-%endif
 
 make
 

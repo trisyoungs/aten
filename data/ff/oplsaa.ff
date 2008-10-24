@@ -428,7 +428,7 @@ types
 415	C3		C	"-S(nbonds=1),-H(n=3)"			"C in CH3S- thiolate"
 416	HC		H	"-&415"					"H in CH3S- thiolate"
 417	SH		S	"-&415"					"S in CH3S- thiolate"
-418	C3		C	"-O(nbonds=1),=H(n=3)"			"C in CH3O- alkoxide"
+418	C3		C	"-O(nbonds=1),-H(n=3)"			"C in CH3O- alkoxide"
 419	HC		H	"-&418"					"H in CH3O- alkoxide"
 420	OH		O	"-&419"					"O in CH3O- alkoxide"
 # Organic anions: JACS, 111, 4190 (1989)

@@ -84,6 +84,7 @@ void AtenForm::on_actionModelShowAll_triggered(bool checked)
 	Model *m = aten.currentModel();
 	for (Atom *i = m->atoms(); i != NULL; i = i->next) m->setHidden(i, FALSE);
 	m->changeLog.add(Log::Visual);
+	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionModelRename_triggered(bool checked)

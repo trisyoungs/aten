@@ -1,10 +1,9 @@
 Format: 1.0
-Source: Aten
+Source: aten
 Version: 0.99
 Binary: aten
 Maintainer: Tristan Youngs <tris@projectaten.org>
 Architecture: any
-Build-Depends: debhelper (>= 4.1.16), libreadline, libqt
+Build-Depends: debhelper (>= 4.1.16), libqt4-gui, libqt4-core, libqt4-dev, libreadline5-dev, libgl1-mesa-dev
 Files: 
- d57283ebb8157ae919762c58419353c8 133282 aten-0.99.orig.tar.gz
- 2fecf324a32123b08cefc0f047bca5ee 63176 packageName_5.6-1.diff.tar.gz
+ 2e3ef3cca3384b514491286ff99a9fd3 1440887 aten-0.99.693.tar.gz
