@@ -180,22 +180,21 @@ void AtenPosition::translateSelection(int axis, int dir)
 /*
 // Vector Shift Functions
 */
-
-void AtenPosition::on_DefineVectorButton_clicked(bool checked)
+void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 {
-	// Set vector from defined atoms
-	Model *m = aten.currentModel();
-	if (m->nSelected() != 2)
-	{
-		msg.print("Exactly two atoms must be selected to define a vector.\n");
-		return;
-	}
-	Atom *i = m->firstSelected();
-	Vec3<double> v = i->nextSelected()->r() - i->r();
-	// Set widgets
-	ui.VectorShiftXSpin->setValue(v.x);
-	ui.VectorShiftYSpin->setValue(v.y);
-	ui.VectorShiftZSpin->setValue(v.z);
+	gui.positionWindow->ui.DefineVectorButton->setChecked(FALSE);
+	// If there are not two atoms in the list then the mode must have been canceled
+	if (picked->nItems() != 2) return;
+	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
+	gui.positionWindow->ui.VectorShiftXSpin->setValue(v.x);
+	gui.positionWindow->ui.VectorShiftYSpin->setValue(v.y);
+	gui.positionWindow->ui.VectorShiftZSpin->setValue(v.z);;
+}
+
+void AtenPosition::on_DefineVectorButton_clicked(bool on)
+{
+	// Enter manual picking mode
+	gui.mainView.beginManualPick(2,&shiftPickAxisButton_callback);
 }
 
 void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
@@ -204,6 +203,7 @@ void AtenPosition::on_VectorShiftPositiveButton_clicked(bool checked)
 	v.x = ui.VectorShiftXSpin->value();
 	v.y = ui.VectorShiftYSpin->value();
 	v.z = ui.VectorShiftZSpin->value();
+	v.normalise();
 	v *= ui.VectorDeltaSpin->value();
 	char s[128];
 	Model *m = aten.currentModel();
@@ -221,6 +221,7 @@ void AtenPosition::on_VectorShiftNegativeButton_clicked(bool checked)
 	v.x = ui.VectorShiftXSpin->value();
 	v.y = ui.VectorShiftYSpin->value();
 	v.z = ui.VectorShiftZSpin->value();
+	v.normalise();
 	v *= -ui.VectorDeltaSpin->value();
 	char s[128];
 	Model *m = aten.currentModel();

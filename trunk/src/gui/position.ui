@@ -845,8 +845,8 @@
             <widget class="QPushButton" name="DefineVectorButton" >
              <property name="minimumSize" >
               <size>
-               <width>0</width>
-               <height>0</height>
+               <width>24</width>
+               <height>24</height>
               </size>
              </property>
              <property name="maximumSize" >
@@ -856,7 +856,7 @@
               </size>
              </property>
              <property name="toolTip" >
-              <string>Define vector from two picked atoms</string>
+              <string>Define translation vector from two picked atoms</string>
              </property>
              <property name="text" >
               <string/>
@@ -869,6 +869,9 @@
                <width>20</width>
                <height>20</height>
               </size>
+             </property>
+             <property name="checkable" >
+              <bool>true</bool>
              </property>
             </widget>
            </item>
