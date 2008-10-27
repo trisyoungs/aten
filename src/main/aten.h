@@ -28,7 +28,7 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "698"
+#define ATENREVISION "702"
 #define ATENDATE "Mon 27 Oct - 16:26"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
