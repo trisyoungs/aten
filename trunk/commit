@@ -37,7 +37,7 @@ fi
 # Determine current svn version number and increase it by one.
 OLDREV=`svn info | grep Revision | sed "s/Revision: \([0-9]*\)/\1/g"`
 let NEWREV=OLDREV+1
-echo "Current version is revision $OLDREV - commited version will be revision $NEWREV..."
+echo "Current version is revision $OLDREV - committed version will be revision $NEWREV..."
 
 # Determine svn URL
 URL=`svn info | grep URL | sed -e "s/URL: \(.*\)/\1/g" -e "s/https/http/g"`
