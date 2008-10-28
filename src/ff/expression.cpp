@@ -20,6 +20,7 @@
 */
 
 #include "model/model.h"
+#include "main/aten.h"
 #include "ff/forcefield.h"
 #include "classes/forcefieldatom.h"
 #include "classes/forcefieldbound.h"
@@ -93,7 +94,7 @@ bool Pattern::fillExpression()
 	ForcefieldBound *ffb;
 	PatternAtom *pa;
 	PatternBound *pb;
-	Forcefield *xff;
+	Forcefield *ff;
 	// Counters for incomplete aspects of the expression
 	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;
 	incomplete_ = FALSE;
@@ -108,10 +109,17 @@ bool Pattern::fillExpression()
 	//for (ii=0; ii< nAtoms_; ii++) bonding[ii] = new int[7];
 	List< ListItem<int> > *bonding;
 	bonding = new List< ListItem<int> >[nAtoms_];
-	// If there is no specified pattern forcefield, use the parent model's instead
-	forcefield_ == NULL ? xff = parent_->forcefield() : xff = forcefield_;
+	// Get forcefield to use - we should be guaranteed to find one at this point, but check anyway...
+	ff = (forcefield_ == NULL ? parent_->forcefield() : forcefield_);
+	if (ff == NULL) ff = aten.defaultForcefield();
+	if (ff == NULL)
+	{	
+		msg.print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
+		msg.exit("Pattern::fillExpression");
+		return FALSE;
+	}
 	msg.print("Fleshing out expression for %i atoms in pattern '%s'...\n", totalAtoms_, name_.get());
-	msg.print("... Using forcefield '%s'...\n",xff->name());
+	msg.print("... Using forcefield '%s'...\n", ff->name());
 	// Construct the atom list.
 	// If any atom has not been assigned a type, we *still* include it in the list
 	ai = firstAtom_;
@@ -128,7 +136,7 @@ bool Pattern::fillExpression()
 			iatoms ++;
 		}
 		// If the forcefield is rule-based, generate the required parameters first
-		if (xff->rules() != Rules::None) xff->generateVdw(ai);
+		if (ff->rules() != Rules::None) ff->generateVdw(ai);
 		// Point to the data
 		ai = ai->next;
 	}
@@ -167,17 +175,17 @@ bool Pattern::fillExpression()
 					bonds_[count]->setAtomId(1,jj);
 					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
-					ffb = xff->findBond(ti,tj);
+					ffb = ff->findBond(ti,tj);
 					// If we found a match, point to it
 					if (ffb != NULL) bonds_[count]->setData(ffb);
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (xff->rules() == Rules::None) bonds_[count]->setData(NULL);
+						if (ff->rules() == Rules::None) bonds_[count]->setData(NULL);
 						else
 						{
 							// Generate the new parameters required
-							ffb = xff->generateBond(ai,aj);
+							ffb = ff->generateBond(ai,aj);
 							bonds_[count]->setData(ffb);
 						}
 					}
@@ -234,16 +242,16 @@ bool Pattern::fillExpression()
 					angles_[count]->setAtomId(2,bonding[jj][kk]->data);
 					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
-					ffb = xff->findAngle(ti,tj,tk);
+					ffb = ff->findAngle(ti,tj,tk);
 					if (ffb != NULL) angles_[count]->setData(ffb);
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (xff->rules() == Rules::None) angles_[count]->setData(NULL);
+						if (ff->rules() == Rules::None) angles_[count]->setData(NULL);
 						else
 						{
 							// Generate the new parameters required
-							ffb = xff->generateAngle(ai,aj,ak);
+							ffb = ff->generateAngle(ai,aj,ak);
 							angles_[count]->setData(ffb);
 						}
 					}
@@ -303,16 +311,16 @@ bool Pattern::fillExpression()
 	
 					// Search for the bond data. If its a rule-based FF and we don't find any matching data,
 					// generate it. If its a normal forcefield, flag the incomplete marker.
-					ffb = xff->findTorsion(ti,tj,tk,tl);
+					ffb = ff->findTorsion(ti,tj,tk,tl);
 					if (ffb != NULL) torsions_[count]->setData(ffb);
 					else
 					{
 						// If not a rule-based FF, nullify pointer
-						if (xff->rules() == Rules::None) torsions_[count]->setData(NULL);
+						if (ff->rules() == Rules::None) torsions_[count]->setData(NULL);
 						else
 						{
 							// Generate the new parameters required
-							ffb = xff->generateTorsion(ai,aj,ak,al);
+							ffb = ff->generateTorsion(ai,aj,ak,al);
 							torsions_[count]->setData(ffb);
 						}
 					}

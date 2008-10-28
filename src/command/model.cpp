@@ -167,7 +167,7 @@ int Command::function_CA_NEWMODEL(CommandNode *&c, Bundle &obj)
 	{
 		Forcefield *f = aten.addForcefield();
 		char s[512];
-		sprintf(s,"Names: %s",obj.m->name());
+		sprintf(s,"Names kept from Model %s",obj.m->name());
 		f->setName(s);
 		obj.m->setNamesForcefield(f);
 	}
