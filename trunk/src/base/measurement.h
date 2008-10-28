@@ -62,6 +62,8 @@ class Measurement
 	void setAtom(int n, Atom *i);
 	// Return atoms array
 	Atom **atoms();
+	// Print
+	void print();
 };
 
 #endif
