@@ -309,17 +309,17 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 			// Need a valid pattern and energy expression to export
 			if (!obj.rs->autocreatePatterns() || !obj.rs->createExpression())
 			{
-				msg.print("Filter::execute - Must have valid pattern and energy expression to export a field file\n.");
+				msg.print("Must have valid pattern and energy expression to export a field file.\n");
 				proceed = FALSE;
 			}
-			// Generate unique term lists
-			obj.rs->createUniqueLists();
 			// Open file...
 			if (!commands_.setOutputFile(filename))
 			{
 				msg.print("Error opening field file '%s'.\n", filename);
 				proceed = FALSE;
 			}
+			// Generate unique term lists
+			if (proceed) obj.rs->createUniqueLists();
 			break;
 		case (Filter::GridImport):
 			msg.print("Load Grid  : %s (%s)\n", filename, name_.get());

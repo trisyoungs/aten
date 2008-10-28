@@ -175,8 +175,6 @@ bool Model::typeAll()
 	// Assign forcefield types to atoms
 	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 	{
-		if (p->forcefield() == NULL) msg.print("Typing pattern %s (inheriting parent's forcefield)...", p->name());
-		else msg.print("Typing pattern %s (associated forcefield is '%s')...", p->name(), p->forcefield()->name());
 		if (!p->typeAtoms())
 		{
 			msg.exit("Model::typeAll");
@@ -252,15 +250,26 @@ bool Pattern::typeAtoms()
 	int a, newmatch, bestmatch, nfailed;
 	Atomtype *at;
 	Atom *i;
+	Forcefield *ff;
 	ForcefieldAtom *ffa;
 	bool result = TRUE;
 	// Select the forcefield we're typing with. First, if this pattern doesn't have a specific ff, take the model's ff
-	if (forcefield_ == NULL) forcefield_ = parent_->forcefield();
-	// If there is still no forcefield, set the defaultff
-	if (forcefield_ == NULL) forcefield_ = aten.defaultForcefield();
-	if (forcefield_ == NULL)
+	ff = forcefield_;
+	if (ff == NULL)
+	{
+		// No forcefield associated to pattern - grab parent Model's
+		ff = parent_->forcefield();
+		if (ff == NULL)
+		{
+			msg.print("Typing pattern %s (using default forcefield)...", name());
+			ff = aten.defaultForcefield();
+		}
+		else msg.print("Typing pattern %s (inheriting Model's forcefield '%s')...", name(), ff->name());
+	}
+	else msg.print("Typing pattern %s (using associated forcefield '%s')...", name(), ff->name());	
+	if (ff == NULL)
 	{	
-		msg.print("Can't type pattern '%s' - no FF associated to pattern or model, and no default set.\n",name_.get());
+		msg.print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.\n",name_.get());
 		msg.exit("Pattern::typeAtoms");
 		return FALSE;
 	}
@@ -286,7 +295,7 @@ bool Pattern::typeAtoms()
 			result = FALSE;
 		}
 		// Loop over forcefield atom types
-		for (ffa = forcefield_->types(); ffa != NULL; ffa = ffa->next)
+		for (ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 		{
 			// Grab next atomtype and reset tempi variables
 			at = ffa->atomtype();
