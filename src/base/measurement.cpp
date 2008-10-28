@@ -21,6 +21,7 @@
 
 #include "base/measurement.h"
 #include "base/cell.h"
+#include "base/atom.h"
 #include <stdlib.h>
 
 // Geometry types
@@ -89,6 +90,26 @@ void Measurement::calculate(Cell *cell)
 			break;
 		default:
 			printf("Measurement::calculate <<<< Unrecognised geometry type >>>>\n");
+			break;
+	}
+}
+
+// Print
+void Measurement::print()
+{
+	switch (type_)
+	{
+		case (Measurement::Distance):
+			msg.print("Distance (%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
+			break;
+		case (Measurement::Angle):
+			msg.print("Angle (%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
+			break;
+		case (Measurement::Torsion):
+			msg.print("Torsion (%i-%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
+			break;
+		default:
+			printf("Measurement::print <<<< Unrecognised geometry type >>>>\n");
 			break;
 	}
 }

@@ -211,6 +211,7 @@ void Model::addMeasurement(Measurement::MeasurementType gt, Atom *first, ...)
 	if (newm != NULL)
 	{
 		newm->calculate(&cell_);
+		newm->print();
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
@@ -438,34 +439,22 @@ void Model::listMeasurements()
 	Atom **matoms;
 	for (int mt = Measurement::Distance; mt < Measurement::nMeasurementTypes; mt++)
 	{
-		switch (mt)
-		{
-			case (Measurement::Distance):
-				msg.print("Distances:");
-				break;
-			case (Measurement::Angle):
-				msg.print("Angles:");
-				break;
-			case (Measurement::Torsion):
-				msg.print("Torsions:");
-				break;
-		}
+// 		switch (mt)
+// 		{
+// 			case (Measurement::Distance):
+// 				msg.print("Distances:");
+// 				break;
+// 			case (Measurement::Angle):
+// 				msg.print("Angles:");
+// 				break;
+// 			case (Measurement::Torsion):
+// 				msg.print("Torsions:");
+// 				break;
+// 		}
 		for (Measurement *m = measurements_.first(); m != NULL; m = m->next)
 		{
 			if (mt != m->type()) continue;
-			matoms = m->atoms();
-			switch (m->type())
-			{
-				case (Measurement::Distance):
-					msg.print("%4i %4i             %f", matoms[0]->id()+1, matoms[1]->id()+1, m->value());
-					break;
-				case (Measurement::Angle):
-					msg.print("%4i %4i %4i        %f", matoms[0]->id()+1, matoms[1]->id()+1, matoms[2]->id()+1, m->value());
-					break;
-				case (Measurement::Torsion):
-					msg.print("%4i %4i %4i %4i   %f", matoms[0]->id()+1, matoms[1]->id()+1, matoms[2]->id()+1, matoms[3]->id()+1, m->value());
-					break;
-			}
+			m->print();
 		}
 	}
 	msg.exit("Model::listMeasurements");

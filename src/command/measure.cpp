@@ -45,17 +45,17 @@ int Command::function_CA_MEASURE(CommandNode *&c, Bundle &obj)
 	if (c->hasArg(3))
 	{
 		obj.rs->beginUndoState("Measure torsion");
-		obj.rs->measureTorsion(c->argi(0), c->argi(1), c->argi(2), c->argi(3));
+		obj.rs->measureTorsion(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1, c->argi(3)-1);
 	}
 	else if (c->hasArg(2))
 	{
 		obj.rs->beginUndoState("Measure angle");
-		obj.rs->measureAngle(c->argi(0), c->argi(1), c->argi(2));
+		obj.rs->measureAngle(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1);
 	}
 	else
 	{
 		obj.rs->beginUndoState("Measure distance");
-		obj.rs->measureDistance(c->argi(0), c->argi(1));
+		obj.rs->measureDistance(c->argi(0)-1, c->argi(1)-1);
 	}
 	obj.rs->endUndoState();
 	return Command::Success;
