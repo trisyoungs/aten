@@ -84,7 +84,7 @@ class AtenForm : public QMainWindow
 
 
 	/*
-	// Atom Popup Actions
+	// Atom Context Menu Actions
 	*/
 	private:
 	void setAtomStyle(Atom::DrawStyle ds);
@@ -221,6 +221,9 @@ class AtenForm : public QMainWindow
 	*/
 	private slots:
 	void on_actionModelRename_triggered(bool checked);
+	void on_actionModelCreatePatterns_triggered(bool checked);
+	void on_actionModelRemovePatterns_triggered(bool checked);
+	void on_actionModelListPatterns_triggered(bool checked);
 	void on_actionModelFFType_triggered(bool checked);
 	void on_actionModelFFUntype_triggered(bool checked);
 	void on_actionModelFoldAtoms_triggered(bool checked);

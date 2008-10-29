@@ -41,7 +41,7 @@ class Forcefield
 	// List pointers
 	Forcefield *prev, *next;
         // Forcefield Commands
-	enum ForcefieldCommand { UnknownCommand, NameCommand, UnitsCommand, RulesCommand, TypesCommand, GeneratorCommand, ConvertCommand, EquivalentsCommand, VdwCommand, BondsCommand, AnglesCommand, TorsionsCommand, VScaleCommand, EScaleCommand, nForcefieldCommands };
+	enum ForcefieldCommand { UnknownCommand, NameCommand, UnitsCommand, RulesCommand, TypesCommand, GeneratorCommand, ConvertCommand, EquivalentsCommand, VdwCommand, InterCommand, BondsCommand, AnglesCommand, TorsionsCommand, VScaleCommand, EScaleCommand, nForcefieldCommands };
         static ForcefieldCommand forcefieldCommand(const char *s);
 
 	/*
@@ -189,8 +189,8 @@ class Forcefield
 	bool readGenerator(ifstream&);
 	// Reads in and applies equivalent atomtype names
 	bool readEquivalents(ifstream&);
-	// Reads in VDW parameters for atom types
-	bool readVdw(ifstream&);
+	// Reads in intermolecular parameters for atom types
+	bool readInter(ifstream&);
 	// Reads in bond data
 	bool readBonds(ifstream&);
 	// Reads in angle data

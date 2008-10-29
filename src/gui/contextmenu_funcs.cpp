@@ -37,9 +37,15 @@ void GuiQt::callAtomPopup(Atom *undermouse, int x, int y)
 	if ((viewTarget->nSelected() != 0) && (undermouse->isSelected())) target = NULL;
 	QPoint pos(x,y);
 	// If there are no atoms selected we must enable the menu first...
-	if (viewTarget->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(TRUE);
-	mainWindow->ui.AtomMenu->exec(pos);
-	if (viewTarget->nSelected() == 0) mainWindow->ui.AtomMenu->setEnabled(FALSE);
+	if (viewTarget->nSelected() == 0)
+	{
+		// Select atom under the mouse...
+		viewTarget->selectAtom(target);
+		mainWindow->ui.AtomContextMenu->setEnabled(TRUE);
+		mainWindow->ui.AtomContextMenu->exec(pos);
+		mainWindow->ui.AtomContextMenu->setEnabled(FALSE);
+	}
+	else mainWindow->ui.AtomContextMenu->exec(pos);
 }
 
 // Set atom style
@@ -145,7 +151,6 @@ void AtenForm::setAtomHidden(bool hidden)
 	Model *m = aten.currentModel()->renderSource();
 	if (target == NULL) m->selectionSetHidden(hidden);
 	else m->setHidden(target, hidden);
-	target = NULL;
 	gui.mainView.postRedisplay();
 }
 

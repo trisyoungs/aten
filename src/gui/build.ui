@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>165</width>
-    <height>114</height>
+    <width>211</width>
+    <height>144</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -151,7 +151,17 @@
            </property>
           </widget>
          </item>
-         <item row="0" column="2" >
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" >
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <property name="spacing" >
+          <number>6</number>
+         </property>
+         <item>
           <widget class="QCheckBox" name="AddAtomFractionalCheck" >
            <property name="sizePolicy" >
             <sizepolicy>
@@ -169,7 +179,20 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="2" >
+         <item>
+          <spacer>
+           <property name="orientation" >
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" >
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
           <widget class="QPushButton" name="AddAtomButton" >
            <property name="sizePolicy" >
             <sizepolicy>
@@ -206,8 +229,6 @@
   <tabstop>AtomXCoordSpin</tabstop>
   <tabstop>AtomYCoordSpin</tabstop>
   <tabstop>AtomZCoordSpin</tabstop>
-  <tabstop>AddAtomFractionalCheck</tabstop>
-  <tabstop>AddAtomButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

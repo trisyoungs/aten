@@ -116,8 +116,8 @@
         <widget class="QPushButton" name="ShiftUpButton" >
          <property name="maximumSize" >
           <size>
-           <width>24</width>
-           <height>24</height>
+           <width>30</width>
+           <height>30</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -131,8 +131,8 @@
          </property>
          <property name="iconSize" >
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
         </widget>
@@ -141,8 +141,8 @@
         <widget class="QPushButton" name="ShiftDownButton" >
          <property name="maximumSize" >
           <size>
-           <width>24</width>
-           <height>24</height>
+           <width>30</width>
+           <height>30</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -156,8 +156,8 @@
          </property>
          <property name="iconSize" >
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
         </widget>
@@ -182,8 +182,8 @@
         <widget class="QPushButton" name="MoveToStartButton" >
          <property name="maximumSize" >
           <size>
-           <width>24</width>
-           <height>24</height>
+           <width>30</width>
+           <height>30</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -197,8 +197,8 @@
          </property>
          <property name="iconSize" >
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
         </widget>
@@ -207,8 +207,8 @@
         <widget class="QPushButton" name="MoveToEndButton" >
          <property name="maximumSize" >
           <size>
-           <width>24</width>
-           <height>24</height>
+           <width>30</width>
+           <height>30</height>
           </size>
          </property>
          <property name="toolTip" >
@@ -222,8 +222,8 @@
          </property>
          <property name="iconSize" >
           <size>
-           <width>20</width>
-           <height>20</height>
+           <width>24</width>
+           <height>24</height>
           </size>
          </property>
         </widget>
