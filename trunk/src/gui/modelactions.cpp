@@ -34,6 +34,24 @@ void AtenForm::on_actionModelFFType_triggered(bool checked)
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
+void AtenForm::on_actionModelCreatePatterns_triggered(bool checked)
+{
+	aten.currentModel()->autocreatePatterns();
+	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+void AtenForm::on_actionModelRemovePatterns_triggered(bool checked)
+{
+	aten.currentModel()->clearPatterns();
+	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
+void AtenForm::on_actionModelListPatterns_triggered(bool checked)
+{
+	aten.currentModel()->printPatterns();
+	gui.modelChanged(TRUE,FALSE,FALSE);
+}
+
 void AtenForm::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten.currentModel()->removeTyping();

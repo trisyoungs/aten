@@ -480,10 +480,10 @@ void Model::printPatterns()
 	else
 	{
 		msg.print("Pattern info for model '%s':\n", name_.get());
-		msg.print("  ID  NMols  Starti  Endi    Name            Forcefield\n");
+		msg.print("  ID  NMols  StartId EndId   Name              Forcefield\n");
 		while (p != NULL)
 		{
-			msg.print("  %2i  %5i  %6i  %6i  %-16s  %s\n", p->id(), p->nMolecules(), p->startAtom(), p->endAtom(), p->name(), p->forcefield() ? p->forcefield()->name() : "< Inherited >");
+			msg.print("  %2i  %-5i  %-6i  %-6i  %-16s  %s\n", p->id(), p->nMolecules(), p->startAtom(), p->endAtom(), p->name(), p->forcefield() ? p->forcefield()->name() : "< Inherited >");
 			p = p->next;
 		}
 	}

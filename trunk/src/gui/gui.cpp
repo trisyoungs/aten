@@ -296,7 +296,7 @@ void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefiel
 	// Update forcefields in the forcefield window
 	if (updateForcefield) forcefieldsWindow->refresh();
 	// Enable the Atom menu if one or more atoms are selected
-	mainWindow->ui.AtomMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
+	mainWindow->ui.AtomContextMenu->setEnabled( m->renderSource()->nSelected() == 0 ? FALSE : TRUE);
 	// Update Undo Redo lists
 	mainWindow->updateUndoRedo();
 	// Update main window title
@@ -315,7 +315,7 @@ void GuiQt::updateWindowTitle()
 	if (!doesExist_) return;
 	Model *m = aten.currentModel();
 	static char title[512];
-	sprintf(title, "Aten (%s) - %s [%s]%s", ATENVERSION, m->name(), m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
+	sprintf(title, "Aten (%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
 	mainWindow->setWindowTitle(title);
 }
 
@@ -368,6 +368,7 @@ void GuiQt::printMessage(const char *s)
 	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
 	str[n] = '\0';
 	mainWindow->ui.TextDisplay->append(str);
+	mainWindow->ui.TextDisplay->verticalScrollBar()->setValue(mainWindow->ui.TextDisplay->verticalScrollBar()->maximum());
 }
 
 bool GuiQt::saveBeforeClose()
@@ -636,7 +637,7 @@ bool GuiQt::saveImage(const char *filename, BitmapFormat bf, int width, int heig
 	if (height == 0) height = mainWidget->height();
 	// Temporarily adjust label size...
 	int oldlabelsize = prefs.labelSize();
-	int newlabelsize = (int) oldlabelsize*( (1.0*height / mainWidget->height()) );
+	int newlabelsize = int (oldlabelsize*( (1.0*height / mainWidget->height()) ));
 	prefs.setLabelSize(newlabelsize);
 	mainView.postRedisplay();
 

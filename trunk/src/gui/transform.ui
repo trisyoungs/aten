@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>294</width>
-    <height>175</height>
+    <width>360</width>
+    <height>203</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -182,7 +182,17 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2" >
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>6</number>
+              </property>
+              <item>
                <widget class="QPushButton" name="RotateDefineOriginButton" >
                 <property name="sizePolicy" >
                  <sizepolicy>
@@ -194,14 +204,14 @@
                 </property>
                 <property name="minimumSize" >
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="maximumSize" >
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="toolTip" >
@@ -215,11 +225,24 @@
                 </property>
                 <property name="iconSize" >
                  <size>
-                  <width>20</width>
-                  <height>20</height>
+                  <width>24</width>
+                  <height>24</height>
                  </size>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation" >
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" >
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -365,7 +388,17 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2" >
+             </layout>
+            </item>
+            <item>
+             <layout class="QVBoxLayout" >
+              <property name="margin" >
+               <number>0</number>
+              </property>
+              <property name="spacing" >
+               <number>6</number>
+              </property>
+              <item>
                <widget class="QPushButton" name="RotateDefineAxisButton" >
                 <property name="sizePolicy" >
                  <sizepolicy>
@@ -377,14 +410,14 @@
                 </property>
                 <property name="minimumSize" >
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="maximumSize" >
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="toolTip" >
@@ -398,24 +431,24 @@
                 </property>
                 <property name="iconSize" >
                  <size>
-                  <width>20</width>
-                  <height>20</height>
+                  <width>24</width>
+                  <height>24</height>
                  </size>
                 </property>
                </widget>
               </item>
-              <item row="1" column="2" >
+              <item>
                <widget class="QPushButton" name="RotatePickAxisButton" >
                 <property name="minimumSize" >
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="maximumSize" >
                  <size>
-                  <width>24</width>
-                  <height>24</height>
+                  <width>30</width>
+                  <height>30</height>
                  </size>
                 </property>
                 <property name="toolTip" >
@@ -429,14 +462,27 @@
                 </property>
                 <property name="iconSize" >
                  <size>
-                  <width>20</width>
-                  <height>20</height>
+                  <width>24</width>
+                  <height>24</height>
                  </size>
                 </property>
                 <property name="checkable" >
                  <bool>true</bool>
                 </property>
                </widget>
+              </item>
+              <item>
+               <spacer>
+                <property name="orientation" >
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" >
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
              </layout>
             </item>
@@ -499,14 +545,14 @@
            </property>
            <property name="minimumSize" >
             <size>
-             <width>24</width>
-             <height>24</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>24</width>
-             <height>24</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -520,8 +566,8 @@
            </property>
            <property name="iconSize" >
             <size>
-             <width>20</width>
-             <height>20</height>
+             <width>24</width>
+             <height>24</height>
             </size>
            </property>
            <property name="checkable" >
@@ -541,14 +587,14 @@
            </property>
            <property name="minimumSize" >
             <size>
-             <width>24</width>
-             <height>24</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="maximumSize" >
             <size>
-             <width>24</width>
-             <height>24</height>
+             <width>30</width>
+             <height>30</height>
             </size>
            </property>
            <property name="toolTip" >
@@ -562,8 +608,8 @@
            </property>
            <property name="iconSize" >
             <size>
-             <width>20</width>
-             <height>20</height>
+             <width>24</width>
+             <height>24</height>
             </size>
            </property>
            <property name="checkable" >
@@ -589,7 +635,7 @@
        <item>
         <widget class="QTabWidget" name="tabWidget_2" >
          <property name="currentIndex" >
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="SourceTab" >
           <attribute name="title" >
@@ -669,7 +715,7 @@
                <property name="maximumSize" >
                 <size>
                  <width>16777215</width>
-                 <height>24</height>
+                 <height>30</height>
                 </size>
                </property>
                <property name="text" >
@@ -680,8 +726,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
               </widget>
@@ -709,6 +755,12 @@
              </item>
              <item row="2" column="4" >
               <widget class="QPushButton" name="TransformApplyButton" >
+               <property name="maximumSize" >
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
+               </property>
                <property name="font" >
                 <font>
                  <weight>75</weight>
@@ -732,6 +784,12 @@
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
                </property>
                <property name="toolTip" >
                 <string>Define origin to be the centre of the current cell</string>
@@ -766,8 +824,8 @@
               <widget class="QToolButton" name="TransformDefineSourceBButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -781,8 +839,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="checkable" >
@@ -818,8 +876,8 @@
               <widget class="QToolButton" name="TransformDefineOriginButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -833,8 +891,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
               </widget>
@@ -939,8 +997,8 @@
               <widget class="QToolButton" name="TransformDefineSourceCButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -954,8 +1012,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="checkable" >
@@ -1015,8 +1073,8 @@
               <widget class="QToolButton" name="TransformDefineSourceAButton" >
                <property name="maximumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="toolTip" >
@@ -1030,8 +1088,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="checkable" >
@@ -1127,6 +1185,12 @@
               <widget class="QPushButton" name="TransformRotateIntoButton" >
                <property name="enabled" >
                 <bool>false</bool>
+               </property>
+               <property name="maximumSize" >
+                <size>
+                 <width>16777215</width>
+                 <height>30</height>
+                </size>
                </property>
                <property name="font" >
                 <font>
@@ -1341,14 +1405,14 @@
               <widget class="QPushButton" name="TransformDefineTargetAButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="text" >
@@ -1359,8 +1423,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="checkable" >
@@ -1372,14 +1436,14 @@
               <widget class="QPushButton" name="TransformDefineTargetBButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="text" >
@@ -1390,8 +1454,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="checkable" >
@@ -1403,14 +1467,14 @@
               <widget class="QPushButton" name="TransformDefineTargetCButton" >
                <property name="minimumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="maximumSize" >
                 <size>
-                 <width>24</width>
-                 <height>24</height>
+                 <width>30</width>
+                 <height>30</height>
                 </size>
                </property>
                <property name="text" >
@@ -1421,8 +1485,8 @@
                </property>
                <property name="iconSize" >
                 <size>
-                 <width>20</width>
-                 <height>20</height>
+                 <width>24</width>
+                 <height>24</height>
                 </size>
                </property>
                <property name="checkable" >
@@ -1439,7 +1503,7 @@
              </property>
              <property name="sizeHint" >
               <size>
-               <width>20</width>
+               <width>24</width>
                <height>40</height>
               </size>
              </property>

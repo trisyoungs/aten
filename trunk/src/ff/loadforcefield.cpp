@@ -99,7 +99,9 @@ bool Forcefield::load(const char *filename)
 				okay = TRUE;
 				break;
 			case (Forcefield::VdwCommand):
-				okay = readVdw(fffile);
+				msg.print("The 'vdw' keyword is deprecated - use 'inter' instead.\n");
+			case (Forcefield::InterCommand):
+				okay = readInter(fffile);
 				break;
 			case (Forcefield::BondsCommand):
 				okay = readBonds(fffile);
@@ -134,6 +136,14 @@ bool Forcefield::load(const char *filename)
 		}
 	} while ( !fffile.eof() );
 	fffile.close();
+	// Check that some forcefield types were defined...
+	if (types_.nItems() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
+	// Check that all generator data was provided...
+	if (rules_ != Rules::None)
+	{
+		for (ForcefieldAtom *ffa = types_.first()->next; ffa != NULL; ffa = ffa->next)
+			if (ffa->generator() == NULL) msg.print("Warning - type '%s' has no generator data.\n", ffa->name());
+	}
 	// Last thing - convert energetic units in the forcefield to the internal units of the program
 	convertParameters();
 	msg.exit("Forcefield::load");
@@ -144,11 +154,11 @@ bool Forcefield::load(const char *filename)
 bool Forcefield::readTypes(ifstream &fffile)
 {
 	msg.enter("Forcefield::readTypes");
-	int success, newffid;
+	int success, newffid, nadded = 0;
 	bool done;
 	ForcefieldAtom *ffa, *idsearch;
 	done = FALSE;
-	// Format of lines is 'ffid typename element description'
+	// Format of lines is 'ffid typename element description [text]'
 	do
 	{
 		success = parser.getArgsDelim(&fffile,Parser::UseQuotes+Parser::SkipBlanks);
@@ -170,6 +180,7 @@ bool Forcefield::readTypes(ifstream &fffile)
 			return FALSE;
 		}
 		ffa = types_.add();
+		nadded ++;
 		ffa->setParent(this);
 		ffa->setTypeId(newffid);
 		ffa->setName(parser.argc(1));
@@ -178,13 +189,8 @@ bool Forcefield::readTypes(ifstream &fffile)
 		ffa->setAtomtype(parser.argc(3), this, ffa);
 		ffa->setDescription(parser.argc(4));
 	} while (!done);
-	if (types_.nItems() == 1)
-	{
-		msg.print("No atom types specified!\n");
-		msg.exit("Forcefield::readTypes");
-		return FALSE;
-	}
-	msg.print("\t: Read in %i type descriptions\n", types_.nItems() - 1);
+	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", parser.line());
+	else msg.print("\t: Read in %i type descriptions\n", nadded);
 	msg.exit("Forcefield::readTypes");
 	return TRUE;
 }
@@ -278,10 +284,10 @@ bool Forcefield::readEquivalents(ifstream &fffile)
 	return TRUE;
 }
 
-bool Forcefield::readVdw(ifstream &fffile)
+bool Forcefield::readInter(ifstream &fffile)
 {
 	// Format of lines is: 'ffid  fftype  charge  data1  data2  ... dataN'
-	msg.enter("Forcefield::readVdw");
+	msg.enter("Forcefield::readInter");
 	int success, count, n;
 	ForcefieldAtom *ffa;
 	// Get functional form of vdw
@@ -302,7 +308,7 @@ bool Forcefield::readVdw(ifstream &fffile)
 		{
 			if (success == 1) msg.print("File error reading VDW data for atom %i.\n",count+1);
 			if (success == -1) msg.print("End of file while reading VDW data for atom %i.\n",count+1);
-			msg.exit("Forcefield::readVdw");
+			msg.exit("Forcefield::readInter");
 			return FALSE;
 		}
 		if (strcmp(parser.argc(0),"end") == 0) done = TRUE;
@@ -313,7 +319,7 @@ bool Forcefield::readVdw(ifstream &fffile)
 			if (ffa == NULL)
 			{
 				msg.print("Unrecognised forcefield atom id in VDW list: '%s'\n", parser.argc(0));
-				msg.exit("Forcefield::readVdw");
+				msg.exit("Forcefield::readInter");
 				return FALSE;
 			}
 			ffa->setCharge(parser.argd(2));
@@ -324,7 +330,7 @@ bool Forcefield::readVdw(ifstream &fffile)
 		}
 	} while (!done);
 	msg.print("\t: Read in %i atomic VDW parameters\n",count);
-	msg.exit("Forcefield::readVdw");
+	msg.exit("Forcefield::readInter");
 	return TRUE;
 }
 

@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>261</width>
-    <height>171</height>
+    <width>315</width>
+    <height>210</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -23,28 +23,43 @@
     <number>4</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>2</number>
+    <widget class="QGroupBox" name="FilenameGroupx" >
+     <property name="title" >
+      <string>Filename</string>
      </property>
-     <property name="spacing" >
-      <number>4</number>
-     </property>
-     <item>
-      <widget class="QLineEdit" name="LoadModelEdit" >
-       <property name="text" >
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="LoadModelBrowseButton" >
-       <property name="text" >
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+     <layout class="QHBoxLayout" >
+      <property name="margin" >
+       <number>2</number>
+      </property>
+      <property name="spacing" >
+       <number>4</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>2</number>
+        </property>
+        <property name="spacing" >
+         <number>4</number>
+        </property>
+        <item>
+         <widget class="QLineEdit" name="LoadModelEdit" >
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="LoadModelBrowseButton" >
+          <property name="text" >
+           <string>Browse...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="LoadModelOptionGroup" >
@@ -64,7 +79,7 @@
          <number>0</number>
         </property>
         <property name="spacing" >
-         <number>6</number>
+         <number>2</number>
         </property>
         <item row="0" column="1" >
          <widget class="QComboBox" name="LoadModelRebondCombo" >
@@ -88,14 +103,20 @@
         <item row="0" column="2" >
          <widget class="QLabel" name="FoldLabel" >
           <property name="text" >
-           <string>Fold</string>
+           <string>Fold </string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
         <item row="0" column="0" >
          <widget class="QLabel" name="RebondLabel" >
           <property name="text" >
-           <string>Rebond</string>
+           <string>Rebond </string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -121,7 +142,10 @@
         <item row="1" column="2" >
          <widget class="QLabel" name="CentreLabel" >
           <property name="text" >
-           <string>Centre</string>
+           <string>Centre </string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -147,7 +171,10 @@
         <item row="1" column="0" >
          <widget class="QLabel" name="PackLabel" >
           <property name="text" >
-           <string>Pack</string>
+           <string>Pack </string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
           </property>
          </widget>
         </item>
@@ -187,7 +214,7 @@
      <property name="maximumSize" >
       <size>
        <width>16777215</width>
-       <height>24</height>
+       <height>30</height>
       </size>
      </property>
      <property name="orientation" >
