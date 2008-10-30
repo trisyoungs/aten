@@ -611,7 +611,7 @@ bool CommandNode::setArguments(const char *cmdname, const char *specifiers, Vari
 				af = parser.argumentForm(argcount);
 				if (af > Parser::VariablePathForm)
 				{
-					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(parser.argc(argcount), FALSE); 
+					if ((specifiers[n] == 'q') || (specifiers[n] == 'Q')) addConstant(parser.argc(argcount), TRUE); 
 					else addConstant(parser.argc(argcount)); 
 				}
 				else if (!addArgument(argcount)) failed = TRUE;
