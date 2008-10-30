@@ -53,14 +53,15 @@ int Command::function_CA_SAVEBITMAP(CommandNode *&c, Bundle &obj)
 // Save current view a vector graphic
 int Command::function_CA_SAVEVECTOR(CommandNode *&c, Bundle &obj)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	vector_format vf = VIF_from_text(c->argc(0));
-	if (vf == VIF_NITEMS)
-	{
-		msg.print("Unrecognised vector format '%s'.\n",c->argc(0));
-		return Command::Fail;
-	}
-	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
-	gui.mainView.saveVector(obj.rs, vf, c->argc(1));
-	return Command::Success;
+// 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+// 	vector_format vf = VIF_from_text(c->argc(0));
+// 	if (vf == VIF_NITEMS)
+// 	{
+// 		msg.print("Unrecognised vector format '%s'.\n",c->argc(0));
+// 		return Command::Fail;
+// 	}
+// 	// If gui exists, use the main canvas. Otherwise, use the offscreen canvas
+// 	gui.mainView.saveVector(obj.rs, vf, c->argc(1));
+	msg.print("Saving images in vector format is not yet available.\n");
+	return Command::Fail;
 }

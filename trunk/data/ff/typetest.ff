@@ -16,7 +16,7 @@ types
 end
 
 # Fill in some misc vdw types
-vdw lj
+inter lj
 1	P[unbound]	0.000	0.060	3.0
 2	P[onebond]	0.000	0.060	3.0
 3	P[linear]	0.000	0.060	3.0

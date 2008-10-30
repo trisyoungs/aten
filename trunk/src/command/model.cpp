@@ -199,7 +199,6 @@ int Command::function_CA_PREVMODEL(CommandNode *&c, Bundle &obj)
 	{
 		aten.setCurrentModel(obj.m->prev);
 		msg.print("Current model is now '%s'.\n",obj.m->name());
-// 		c->parent()->setModelVariables("",obj.m); TGAY
 	}
 	return Command::Success;
 }
@@ -226,7 +225,6 @@ int Command::function_CA_SETNAME(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->setName(c->argc(0));
-// 	c->parent()->setModelVariables("",obj.m);  // ROLE    TGAY
 	msg.print(Messenger::Verbose,"Renamed model to '%s'\n", obj.rs->name());
 	return Command::Success;
 }

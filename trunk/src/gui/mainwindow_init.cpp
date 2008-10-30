@@ -291,10 +291,10 @@ void AtenForm::setDialogFilters()
 	saveBitmapDialog->setFilters(filters);
 
 	// Save vector
-	saveVectorDialog->filters().clear();
-	filters.clear();
-	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
-	saveVectorDialog->setFilters(filters);
+// 	saveVectorDialog->filters().clear();
+// 	filters.clear();
+// 	for (n=0; n < VIF_NITEMS; n++) filters << filter_from_VIF( (vector_format) n);
+// 	saveVectorDialog->setFilters(filters);
 
 	// Expression Export
 	saveExpressionDialog->filters().clear();

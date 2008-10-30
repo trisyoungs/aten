@@ -124,7 +124,7 @@ void Atomtype::print()
 */
 
 // Set element list in Atomtype
-void Atomtype::setElements(const char *ellist, Forcefield *ff)
+bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 {
 	// Add elements from the comma-separated ellist string as possible matches for this Atomtype
 	msg.enter("Atomtype::setElements");
@@ -151,14 +151,16 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 			if (ff != NULL)
 			{
 				ffa = ff->findType(temp.asInteger());
-				if (ffa == NULL)
-				{
-					// TODO Does this need a warning? Will we be able to handle recursive typeid checks properly?
-					msg.print("Forcefield type ID/name %s has not yet been defined in the forcefield.\n",temp.get());
-				}
+				// TODO Does this need a warning? Will we be able to handle recursive typeid checks properly?
+				if (ffa == NULL) msg.print("Warning: Forcefield type ID/name %s has not yet been defined in the forcefield.\n",temp.get());
 				else allowedTypes_.add(ffa);
 			}
-			else printf("Atomtype::setElements <<<< Type ID/Name found in list, but no forcefield passed >>>>\n");
+			else
+			{
+				printf("Atomtype::setElements <<<< Type ID/Name found in list, but no forcefield passed >>>>\n");
+				msg.exit("Atomtype::setElements");
+				return FALSE;
+			}
 			msg.print(Messenger::Typing,"%s ",parser.argc(n));
 		}
 		else
@@ -167,9 +169,9 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 			el = elements.find(parser.argc(n),ElementMap::AlphaZmap);
 			if (el == 0)
 			{
-				nAllowedElements_ --;
-				msg.print("Warning : Unrecognised element in list of bound atoms: '%s'\n",parser.argc(n));
-				msg.print(Messenger::Typing,"?%s? ",parser.argc(n));
+				msg.print("Unrecognised element in list of bound atoms: '%s'\n",parser.argc(n));
+				msg.exit("Atomtype::setElements");
+				return FALSE;
 			}
 			else
 			{
@@ -181,6 +183,7 @@ void Atomtype::setElements(const char *ellist, Forcefield *ff)
 	}
 	msg.print(Messenger::Typing,"\n");
 	msg.exit("Atomtype::setElements");
+	return TRUE;
 }
 
 /*
@@ -204,17 +207,17 @@ void Ringtype::print()
 // Expand Functions
 */
 
-void Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
+bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 {
 	// Separate function (to prevent brain melting) to recursively create a ring definition.
 	// At least allows the restriction (and addition) of commands to the ring command.
 	msg.enter("Ringtype::expand");
 	Dnchar keywd, optlist, def;
-	static char c;
-	static int level = 0;
-	static bool found;
-	static RingtypeCommand rtc;
-	static Atomtype *newat;
+	char c;
+	int level = 0;
+	bool found, hasopts;
+	RingtypeCommand rtc;
+	Atomtype *newat;
 	level ++;
 	msg.print(Messenger::Typing,"expand[ring] : Received string [%s]\n",data);
 	// Grab the next command, trip the keyword and option list (if there is one).
@@ -225,6 +228,7 @@ void Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		msg.print(Messenger::Typing,"Command String : [%s]\n",def.get());
 		optlist = parser.parseAtomtypeString(def);
 		keywd = parser.trimAtomtypeKeyword(optlist);
+		hasopts = optlist.isEmpty() ? FALSE : TRUE;
 		msg.print(Messenger::Typing,"       Keyword : [%s]\n",keywd.get());
 		msg.print(Messenger::Typing,"       Options : [%s]\n",optlist.get());
 		found = FALSE;
@@ -232,11 +236,22 @@ void Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		c = keywd[0];
 		if ((c == '-') || (c == '='))
 		{
+			// Must have optlist...
+			if (keywd[1] == '\0')
+			{
+				msg.print("Bound specifiers ('-' or '=') must be given an element, type, or list.\n");
+				msg.exit("Ringtype::expand");
+				return FALSE;
+			}
 			// Remove leading character, add bound atom and set its element list
 			keywd.eraseStart(1);
 			newat = ringAtoms_.add();
 			newat->setElements(keywd.get(),ff);
-			newat->expand(optlist.get(),ff,parent);
+			if (!newat->expand(optlist.get(),ff,parent))
+			{
+				msg.exit("Ringtype::expand");
+				return FALSE;
+			}
 			//if (c == '=') boundBond_ = BT_DOUBLE;
 			found = TRUE;
 		}
@@ -250,10 +265,24 @@ void Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			{
 				// Size specifier
 				case (Ringtype::SizeCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Ring size must be provided in atomtype description (e.g. size=6).\n");
+						msg.exit("Ringtype::expand");
+						return FALSE;
+					}
 					nAtoms_ = atoi(optlist.get());
 					break;
 				// Repeat specifier
 				case (Ringtype::RepeatCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Repeat number must be provided in atomtype description (e.g. n=2).\n");
+						msg.exit("Ringtype::expand");
+						return FALSE;
+					}
 					nRepeat_ = atoi(optlist.get());
 					break;
 				// Presence of self specifier
@@ -263,17 +292,23 @@ void Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 				// Unrecognised
 				default:
 					if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding ring at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
-					else msg.print("Ringtype::expand - Unrecognised command (%s).\n", keywd.get());
+					else
+					{
+						msg.print("Ringtype::expand - Unrecognised command (%s).\n", keywd.get());
+						msg.exit("Ringtype::expand");
+						return FALSE;
+					}
 					break;
 			}
 		}
-	} while (!def.empty());
+	} while (!def.isEmpty());
 	level --;
 	msg.exit("Ringtype::expand");
+	return TRUE;
 }
 
 // Master creation routine, returning the head node of an Atomtype structure.
-void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
+bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 {
 	// Expands the structure with the commands contained in the supplied string.
 	// Format is : X(options,...) where X is the element symbol and 'options' is zero or more of:
@@ -281,25 +316,25 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 	//	unbound,sp,sp2,
 	//	sp3,aromatic	: Atom X has the specified hybridisation / is aromatic / is unbound.
 	//	ring()		: Atom X is involved in a cycle of some kind (see above)
-	// Options are comma-separated. Defaults are 'don't care' where applicable.
+	// Options are comma- or space-separated. Defaults are 'don't care' where applicable.
 	// The supplied string should contain a keyword followed by (optional) bracketed list of specs.
 	// Parent ring structure must be supplied when descending into a ring options structure.
 	// Parent pointer is used for error reporting
 	msg.enter("Atomtype::expand");
 	Dnchar keywd, optlist, def;
-	static Ringtype *newring;
-	static bool found;
-	static char c;
-	static int n, level = 0;
-	static Atom::AtomGeometry ag;
-	static AtomtypeCommand atc;
+	Ringtype *newring;
+	bool found, hasopts;
+	char c;
+	int n, level = 0;
+	Atom::AtomGeometry ag;
+	AtomtypeCommand atc;
 	level ++;
 	msg.print(Messenger::Typing,"Atomtype::expand - Received string [%s]\n",data);
 	if (data[0] == '\0')
 	{
 		level --;
 		msg.exit("Atomtype::expand");
-		return;
+		return TRUE;
 	}
 	// Grab the next command, strip the keyword and option list (if there is one).
 	def.set(data);
@@ -308,6 +343,7 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		msg.print(Messenger::Typing,"Command String : [%s]\n",def.get());
 		optlist = parser.parseAtomtypeString(def);
 		keywd = parser.trimAtomtypeKeyword(optlist);
+		hasopts = optlist.isEmpty() ? FALSE : TRUE;
 		msg.print(Messenger::Typing,"       Keyword : [%s]\n",keywd.get());
 		msg.print(Messenger::Typing,"       Options : [%s]\n",optlist.get());
 		// Check for 'bound to' specifiers first ('-' or '=')
@@ -317,12 +353,23 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 		c = keywd[0];
 		if ((c == '-') || (c == '='))
 		{
+			// Must have more data...
+			if (keywd[1] == '\0')
+			{
+				msg.print("Bound specifiers ('-' or '=') must be given an element, type, or list.\n");
+				msg.exit("Atomtype::expand");
+				return FALSE;
+			}
 			// Remove leading character, add bound atom and set its element list
 			keywd.eraseStart(1);
 			Atomtype *newat = boundList_.add();
 			newat->setElements(keywd.get(),ff);
 			if (c == '=') boundBond_ = Bond::Double;
-			newat->expand(optlist.get(),ff,parent);
+			if (!newat->expand(optlist.get(),ff,parent))
+			{
+				msg.exit("Atomtype::expand");
+				return FALSE;
+			}
 			found = TRUE;
 		}
 		// Check for keywords (if it wasn't a bound specifier)
@@ -349,7 +396,11 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 				// Ring specification (possible options)
 				case (Atomtype::RingCommand):
 					newring = ringList_.add();
-					newring->expand(optlist.get(),ff,parent);
+					if ((hasopts) && (!newring->expand(optlist.get(),ff,parent)))
+					{
+						msg.exit("Atomtype::expand");
+						return FALSE;
+					}	
 					break;
 				// Disallow rings
 				case (Atomtype::NoRingCommand):
@@ -357,22 +408,57 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 					break;
 				// Request exact bond number
 				case (Atomtype::NBondsCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Number of bonds must be provided in atomtype description (e.g. nbonds=2).\n");
+						msg.exit("Atomtype::expand");
+						return FALSE;
+					}
 					nBonds_ = atoi(optlist.get());
 					break;
 				// Request exact bond type (bond=BondType)
 				case (Atomtype::BondCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Bond type must be provided in atomtype description (e.g. bond=single).\n");
+						msg.exit("Atomtype::expand");
+						return FALSE;
+					}
 					boundBond_ = Bond::bondType(optlist.get());
 					break;
 				// Number of times to match (n=int)
 				case (Atomtype::RepeatCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Repeat number must be provided in atomtype description (e.g. n=5).\n");
+						msg.exit("Atomtype::expand");
+						return FALSE;
+					}
 					nRepeat_ = atoi(optlist.get());
 					break;
 				// Oxidation state of element (os=int)
 				case (Atomtype::OxidationStateCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Oxidation state must be provided in atomtype description (e.g. os=1).\n");
+						msg.exit("Atomtype::expand");
+						return FALSE;
+					}
 					os_ = atoi(optlist.get());
 					break;
 				// Request no attached hydrogens
 				case (Atomtype::NHydrogensCommand):
+					// Must have optlist...
+					if (!hasopts)
+					{
+						msg.print("Number of hydrogens must be provided in atomtype description (e.g. nh=3).\n");
+						msg.exit("Atomtype::expand");
+						return FALSE;
+					}
 					nHydrogen_ = atoi(optlist.get());
 					break;
 				default:
@@ -388,13 +474,19 @@ void Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			else
 			{
 				if (parent != NULL) msg.print("Unrecognised command '%s' found while expanding atom at depth %i [ffid/name %i/%s].\n", keywd.get(), level, parent->typeId(), parent->name());
-				else msg.print("Unrecognised command '%s' found while expanding atom.\n", keywd.get());
+				else
+				{
+					msg.print("Unrecognised command '%s' found while expanding atom.\n", keywd.get());
+					msg.exit("Atomtype::expand");
+					return FALSE;
+				}
 				break;
 			}
 		}
-	} while (!def.empty());
+	} while (!def.isEmpty());
 	level --;
 	msg.exit("Atomtype::expand");
+	return TRUE;
 }
 
 /*
@@ -466,6 +558,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			if (i->isElement(allowedElements_[n]))
 			{
 				found = TRUE;
+				typescore++;
 				break;
 			}
 		}
@@ -480,14 +573,11 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			if (n > 0)
 			{
 				found = TRUE;
+				typescore += n;
 				break;
 			}
 		}
-		if (found)
-		{
-			typescore++;
-			msg.print(Messenger::Typing,"[passed]\n");
-		}
+		if (found) msg.print(Messenger::Typing,"[passed]\n");
 		else
 		{
 			msg.print(Messenger::Typing,"[failed - is %i, but type needs %i]\n", i->element(), characterElement_);

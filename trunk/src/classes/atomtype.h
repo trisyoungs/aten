@@ -54,7 +54,7 @@ class Ringtype
 	// Optional specification of atoms in ring
 	List<Atomtype> ringAtoms_;
 	// Add data to the structure from the supplied string
-	void expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
+	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
 	// Number of times this match is required
 	int nRepeat_;
 	// Print the information contained in the structure
@@ -91,7 +91,7 @@ class Atomtype
 	// Return character element
 	int characterElement();
 	// Add data to the structure from the supplied string
-	void expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
+	bool expand(const char *commands, Forcefield *parentff, ForcefieldAtom *parent);
 	// See if this type matches any atoms in the list provided
 	int matchInList(Reflist<Atom,int>*, List<Ring>*, Model*, Atom*);
 	// See if this type matches the atom (+ ring data of pattern)
@@ -137,7 +137,7 @@ class Atomtype
 	
 	public:
 	// Expand the allowedElements_ array with the element string provided
-	void setElements(const char*, Forcefield*);
+	bool setElements(const char*, Forcefield*);
 };
 
 #endif

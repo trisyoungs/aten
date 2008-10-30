@@ -130,10 +130,10 @@ const char *ForcefieldAtom::description()
 }
 
 // Set atomtype string and generate new type description
-void ForcefieldAtom::setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *root)
+bool ForcefieldAtom::setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *root)
 {
 	atomtypeString_ = s;
-	atomtype_.expand(s, parent, root);
+	return atomtype_.expand(s, parent, root);
 }
 
 // Return original typestring

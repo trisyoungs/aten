@@ -25,7 +25,6 @@
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 #include "classes/prefs.h"
-#include "render/gl2ps_extra.h"
 
 // GL Objects
 enum GlObject { GLOB_STICKATOM, GLOB_TUBEATOM, GLOB_SPHEREATOM, GLOB_UNITATOM, GLOB_WIRETUBEATOM, GLOB_WIRESPHEREATOM, GLOB_WIREUNITATOM, GLOB_CYLINDER, GLOB_SELCYLINDER, GLOB_WIRECYLINDER, GLOB_SELWIRECYLINDER, GLOB_GLOBE, GLOB_GUIDE, GLOB_CIRCLE, GLOB_CELLAXES, GLOB_SELTUBEATOM, GLOB_SELSPHEREATOM, GLOB_SELUNITATOM, GLOB_WIREUNITCUBE, GLOB_UNITCUBE, GLOB_TUBEARROW, GLOB_MODEL, GLOB_NITEMS };
@@ -232,7 +231,7 @@ class Canvas
 	// Render text for the current scene
 	void renderText(QPainter&);
 	// Save scene as vector image
-	void saveVector(Model *source, vector_format vf, const char *filename);
+	//void saveVector(Model *source, vector_format vf, const char *filename);
 
 	/*
 	// Selection

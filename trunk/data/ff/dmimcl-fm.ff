@@ -11,7 +11,7 @@ HM	H	"-C(-H,-H,-N)"
 Cl	Cl	""
 C2	C	"bonds=3,-C,-N,-H"
 H2	H	"bonds=1,-C(-C,-N,ring(size=5,-N,-N,-C,-C))"
-vdw  lj
+inter  lj
 #Type	Charge		VDW1	VDW2	VDW3
 N	0.1334		0.1918	3.1755	0.0
 C1	-0.1805		0.0804	3.8423	0.0

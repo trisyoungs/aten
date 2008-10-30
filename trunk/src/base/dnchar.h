@@ -58,7 +58,7 @@ class Dnchar
 	// Returns the length of the current string
 	int length() const;
 	// Returns TRUE if current length is 1 or less.
-	bool empty() const;
+	bool isEmpty() const;
 	// Erase range of characters from the string
 	void erase(int, int);
 	// Erase 'n' characters from start of string

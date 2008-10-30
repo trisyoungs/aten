@@ -446,7 +446,7 @@ bool Aten::openFilters()
 	ifstream *listfile;
 
 	// If ATENDATA is set, take data from there
-	if (!aten.dataDir_.empty())
+	if (!aten.dataDir_.isEmpty())
 	{
 		msg.print(Messenger::Verbose, "$ATENDATA points to '%s'.\n", dataDir_.get());
 		sprintf(path,"%s%s", dataDir_.get(), "/filters/");

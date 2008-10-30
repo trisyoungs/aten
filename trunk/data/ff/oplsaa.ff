@@ -432,7 +432,7 @@ types
 419	HC		H	"-&418"					"H in CH3O- alkoxide"
 420	OH		O	"-&419"					"O in CH3O- alkoxide"
 # Organic anions: JACS, 111, 4190 (1989)
-421	CT		C	"-H,-H,-C(-N(nbonds=1),-C"		"C1 in CH2CN-"
+421	CT		C	"-H,-H,-C(-N(nbonds=1))"		"C1 in CH2CN-"
 422	HC		H	"-&421"					"H in CH2CN-"
 423	CZ		C	"-&421,-N(nbonds=1)"			"C2 in CH2CN-"
 424	NZ		N	"-&421"					"N in CH2CN-"
@@ -772,8 +772,8 @@ types
 751	NY		N	""	"N2  "    "     " (H2N-CZ)"
 752	CA		C	""	"CZ  "    "     ""
 # Nitriles
-753	NZ		N	"-C(bond=triple,-C"			"N: AA RCN"
-754	CZ		C	"-&7523"				"C: AA RCN"
+753	NZ		N	"-C(bond=triple,-C)"			"N: AA RCN"
+754	CZ		C	"-&753"					"C: AA RCN"
 755	CT		C	"nh=3,-&754"				"C(H3): AA CH3CN"
 756	CT		C	"nh=2,-&754"				"C(RH2): AA RCH2CN"
 757	CT		C	"nh=1,-&754"				"C(R2H): AA R2CHCN"
@@ -1007,7 +1007,7 @@ end
 #-- Types 1-18, 35, 53 give generic L-J parameters for QM/MM calculations. LJ params for H on heteroatom are set to zero by BOSS.
 #-- For types 1-53 entries with 2 decimal places need verification, e.g., Be, B.	
 #TYP	AT	CHARGE	SIGMA	EPSILON
-vdw lj
+inter lj
 1	H	0.000	0.030	2.460
 2	He	0.000	0.020	2.556
 3	Li	0.000	0.018	2.126
