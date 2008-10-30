@@ -104,7 +104,7 @@ class ForcefieldAtom
 	// Returns the atomtype description
 	Atomtype *atomtype();
 	// Set the atomtype string (and calculate new atomtype)
-	void setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
+	bool setAtomtype(const char *s, Forcefield *parent, ForcefieldAtom *ffa);
 	// Returns the original atomtype string
 	const char *atomtypeString();
 	// Set the parameter data specified

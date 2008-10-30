@@ -4,7 +4,7 @@ types
 1	HW	H	"nbonds=1"
 2	OW	O	"-H,-H"
 end
-vdw  lj
+inter  lj
 1	HW	0.4238	0.0	0.0	
 2	OW	-0.8476	0.650	3.166
 end

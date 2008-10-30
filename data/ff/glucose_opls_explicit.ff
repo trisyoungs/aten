@@ -17,7 +17,7 @@ types
 12	OHp5	O	"-H,-C(
 
 end
-vdw  lj
+inter  lj
 #FFID	Type	Charge	VDW1		VDW2	VDW3
 1	C1	-0.17	0.27614		3.5	0.0
 end

@@ -79,7 +79,7 @@ types
 905	HWn	H	"-C(ring(size=6,-C(n=5)))"			# Aromatic H in (methyl)napthalene
 906	HTn	H	"-C(nbonds=4,-C(ring(size=6,-C(n=5))))"		# Aliphatic H in methylnapthalene
 end
-vdw  lj
+inter  lj
 #FFID	Type	Charge	VDW1		VDW2	VDW3
 # Dialkylimidazolium
 1	C1	-0.17	0.27614		3.5

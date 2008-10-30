@@ -14,7 +14,7 @@ types
 6	HC1	H	"-C"						# Aliphatic hydrogen
 7	HO	H	"-O"						# Alcoholic hydrogen
 end
-vdw  lj
+inter  lj
 #FFID	Type	Charge	VDW1		VDW2	VDW3
 1	CO	0	0.066		3.5	0.0
 2	CT	0	0.066		3.5	0.0

@@ -23,7 +23,6 @@
 #include "gui/canvas.h"
 #include "gui/tcanvas.uih"
 #include "gui/mainwindow.h"
-#include "render/gl2ps.h"
 #include "model/model.h"
 
 // Constructor
@@ -54,6 +53,8 @@ Canvas::Canvas()
 		mouseButton_[i] = FALSE;
 		keyModifier_[i] = FALSE;
 	}
+	width_ = 0;
+	height_ = 0;
 	actionBeforePick_ = NULL;
 	pickAtomsCallback_ = NULL;
 	nAtomsToPick_ = -1;
@@ -557,27 +558,27 @@ void Canvas::setValid(bool b)
 /*
 // Save vector image
 */
-void Canvas::saveVector(Model *source, vector_format vf, const char *filename)
-{
-	// Open output file
-	FILE *vectorfile = fopen(filename, "w");
-	if (vectorfile == NULL)
-	{
-		msg.print("Couldn't open output file for vector export.\n");
-		return;
-	}
-	GLint result = GL2PS_OVERFLOW, bufsize = 0;
-	// Loop until the feedback buffer is large enough
-	while (result == GL2PS_OVERFLOW)
-	{
-		bufsize += 1024*1024;
-		result = gl2psBeginPage(source->name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_DRAW_BACKGROUND | GL2PS_OCCLUSION_CULL, GL_RGBA, 0, 0, 0, 0, 0, bufsize, vectorfile, filename);
-		//printf("Result = %i\n",result);
-		renderScene(source);
-		result = gl2psEndPage();
-		//printf("Result = %i\n",result);
-	}
-}
+// void Canvas::saveVector(Model *source, vector_format vf, const char *filename)
+// {
+// 	// Open output file
+// 	FILE *vectorfile = fopen(filename, "w");
+// 	if (vectorfile == NULL)
+// 	{
+// 		msg.print("Couldn't open output file for vector export.\n");
+// 		return;
+// 	}
+// 	GLint result = GL2PS_OVERFLOW, bufsize = 0;
+// 	// Loop until the feedback buffer is large enough
+// 	while (result == GL2PS_OVERFLOW)
+// 	{
+// 		bufsize += 1024*1024;
+// 		result = gl2psBeginPage(source->name(), "Aten", VMAT, vf, GL2PS_BSP_SORT, GL2PS_DRAW_BACKGROUND | GL2PS_OCCLUSION_CULL, GL_RGBA, 0, 0, 0, 0, 0, bufsize, vectorfile, filename);
+// 		//printf("Result = %i\n",result);
+// 		renderScene(source);
+// 		result = gl2psEndPage();
+// 		//printf("Result = %i\n",result);
+// 	}
+// }
 
 /*
 // Modes

@@ -274,7 +274,12 @@ void Model::selectType(int element, const char *typedesc)
 	msg.enter("Model::selectType");
 	Atomtype testat;
 	testat.setCharacterElement(element);
-	testat.expand(typedesc,NULL,NULL);
+	if (!testat.expand(typedesc,NULL,NULL))
+	{
+		msg.print("Failed to create type description.\n");
+		msg.exit("Model::selectType");
+		return;
+	}
 	int count = 0, matchscore, atomscore, n;
 	// Prepare for typing
 	describeAtoms();

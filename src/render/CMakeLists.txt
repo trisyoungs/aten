@@ -1,11 +1,7 @@
 add_library(render
-gl2ps.h 
-gl2ps_extra.h
 atoms.cpp 
 colourscale.cpp
 extra.cpp 
-gl2ps.cpp 
-gl2ps_extra.cpp 
 glyph.cpp 
 model.cpp 
 objects.cpp 

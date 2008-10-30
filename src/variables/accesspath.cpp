@@ -179,7 +179,7 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 			// Get section of path existing before the next '.'
 			bit = beforeChar(c, '.');
 			// Check for an empty string bit - caused by '..'
-			if (bit.empty())
+			if (bit.isEmpty())
 			{
 				msg.print("Empty section found in variable path.\n");
 				msg.exit("AccessPath::setPath");

@@ -130,6 +130,7 @@ bool Forcefield::load(const char *filename)
 		if (!okay)
 		{
 			//msg.print("EreadVdwor reading forcefield file. Aborted.\n");
+			msg.print("Error at line %i of file.\n", parser.lastLine());
 			msg.exit("Forcefield::load");
 			fffile.close();
 			return FALSE;
@@ -186,7 +187,11 @@ bool Forcefield::readTypes(ifstream &fffile)
 		ffa->setName(parser.argc(1));
 		ffa->setEquivalent(parser.argc(1));
 		ffa->atomtype()->setCharacterElement(elements.find(parser.argc(2),ElementMap::AlphaZmap));
-		ffa->setAtomtype(parser.argc(3), this, ffa);
+		if (!ffa->setAtomtype(parser.argc(3), this, ffa))
+		{
+			msg.exit("Forcefield::readTypes");
+			return FALSE;
+		}
 		ffa->setDescription(parser.argc(4));
 	} while (!done);
 	if (nadded == 0) msg.print("Warning - No atom types specified in this block (at line %i)!\n", parser.line());

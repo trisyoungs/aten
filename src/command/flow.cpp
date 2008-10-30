@@ -119,7 +119,7 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				break;
 			case (VTypes::ForcefieldAtomData):
-				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
+				if (c->argp(0, VTypes::ForcefieldAtomData) == NULL) status = FALSE;
 				break;
 			default:
 				printf("Don't know how to set iterate loop with variable of type '%s'.\n", VTypes::dataType(c->argt(0)));

@@ -106,7 +106,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	if ((f != NULL) && (f->type() != Filter::ModelExport)) f = NULL;
 	Dnchar filename;
 	filename = m->filename();
-	if (filename.empty() || (f == NULL))
+	if (filename.isEmpty() || (f == NULL))
 	{
 		if (runSaveModelDialog())
 		{

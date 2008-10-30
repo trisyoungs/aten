@@ -123,7 +123,7 @@ void Dnchar::createEmpty(Dnchar &s)
 }
 
 // Empty?
-bool Dnchar::empty() const
+bool Dnchar::isEmpty() const
 {
 	return (endPosition_ <= 0 ? TRUE : FALSE);
 }	
