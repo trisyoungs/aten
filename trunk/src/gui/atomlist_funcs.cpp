@@ -25,6 +25,7 @@
 #include "gui/atomlist.h"
 #include "model/model.h"
 #include "main/aten.h"
+#include "command/staticcommand.h"
 
 /*
 // Atom list window
@@ -185,11 +186,9 @@ void AtenAtomlist::pokeScrollBar()
 
 void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 {
-	Model *m = aten.currentModel();
-	m->beginUndoState("Shift Selection Up");
-	m->shiftSelectionUp();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_SHIFTUP, "i", 1);
 	peekScrollBar();
+	cmd.execute();
 	refresh();
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -197,11 +196,9 @@ void AtenAtomlist::on_ShiftUpButton_clicked(bool checked)
 
 void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 {
-	Model *m = aten.currentModel();
-	m->beginUndoState("Shift Selection Down");
-	m->shiftSelectionDown();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_SHIFTDOWN, "i", 1);
 	peekScrollBar();
+	cmd.execute();
 	refresh();
 	pokeScrollBar();
 	gui.modelChanged(FALSE,FALSE,FALSE);
@@ -209,16 +206,16 @@ void AtenAtomlist::on_ShiftDownButton_clicked(bool checked)
 
 void AtenAtomlist::on_MoveToStartButton_clicked(bool checked)
 {
-	aten.currentModel()->moveSelectionToStart();
-	aten.currentModel()->changeLog.add(Log::Structure);
+	static StaticCommandNode cmd(Command::CA_TOSTART, "");
+	cmd.execute();
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenAtomlist::on_MoveToEndButton_clicked(bool checked)
 {
-	aten.currentModel()->moveSelectionToEnd();
-	aten.currentModel()->changeLog.add(Log::Structure);
+	static StaticCommandNode cmd(Command::CA_TOEND, "");
+	cmd.execute();
 	refresh();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }

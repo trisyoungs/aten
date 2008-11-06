@@ -55,9 +55,8 @@ int Command::function_CA_GETPATTERN(CommandNode *&c, Bundle &obj)
 	Pattern *p = (c->argt(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)) : obj.m->findPattern(c->argc(0)));
 	if (p != NULL)
 	{
-// 		obj.p = p;  TGAY
-// 		c->arg(1)->set(p, VTypes::PatternData);
-// 		if (c->hasArg(1)) c->parent()->setPatternVariables(c->arg(1)->name(), p); TGAY
+ 		obj.p = p;
+ 		c->arg(1)->set(p, VTypes::PatternData);
 	}
 	else return Command::Fail;
 	return Command::Success;

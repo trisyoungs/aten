@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "methods/mc.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/disorder.h"
@@ -27,6 +26,7 @@
 #include "gui/ttablewidgetitem.h"
 #include "model/model.h"
 #include "base/sysfunc.h"
+#include "command/staticcommand.h"
 
 // Constructor
 AtenDisorder::AtenDisorder(QWidget *parent)
@@ -235,13 +235,16 @@ void AtenDisorder::on_ShowRegionsCheck_clicked(bool checked)
 
 void AtenDisorder::on_DisorderStartButton_clicked(bool checked)
 {
-	mc.setNCycles(ui.DisorderCyclesSpin->value());
-	mc.disorder(aten.currentModel());
+	static StaticCommandNode cmd(Command::CA_DISORDER, "i", 10);
+	cmd.pokeArguments("i", ui.DisorderCyclesSpin->value());
+	cmd.execute();
 }
 
 void AtenDisorder::on_VDWScaleSpin_valueChanged(double d)
 {
-	mc.setVdwScale(d);
+	static StaticCommandNode cmd(Command::CA_VDWSCALE, "d", 1.0);
+	cmd.pokeArguments("d", d);
+	cmd.execute();
 }
 
 void AtenDisorder::dialogFinished(int result)

@@ -24,7 +24,7 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "gui/celltransform.h"
-
+#include "command/staticcommand.h"
 // Constructor
 AtenCellTransform::AtenCellTransform(QWidget *parent)
 {
@@ -79,18 +79,11 @@ void AtenCellTransform::refresh()
 
 void AtenCellTransform::on_CellReplicateButton_clicked(bool checked)
 {
+	static StaticCommandNode cmd(Command::CA_REPLICATE, "dddddd", 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 	// Get values from spin boxes...
-	Vec3<double> neg, pos;
-	neg.x = ui.CellReplicateNegXSpin->value();
-	neg.y = ui.CellReplicateNegYSpin->value();
-	neg.z = ui.CellReplicateNegZSpin->value();
-	pos.x = ui.CellReplicatePosXSpin->value();
-	pos.y = ui.CellReplicatePosYSpin->value();
-	pos.z = ui.CellReplicatePosZSpin->value();
+	cmd.pokeArguments("dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
 	Model *m = aten.currentModel();
-	m->beginUndoState("Replicate Cell");
-	m->replicateCell(neg, pos);
-	m->endUndoState();
+	cmd.execute();
 	gui.modelChanged();
 }
 
@@ -110,14 +103,9 @@ void AtenCellTransform::on_CellReplicateTrimCheck_clicked(bool checked)
 
 void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 {
-	Vec3<double> scale;
-	scale.x = ui.CellScaleXSpin->value();
-	scale.y = ui.CellScaleYSpin->value();
-	scale.z = ui.CellScaleZSpin->value();
-	Model *m = aten.currentModel();
-	m->beginUndoState("Scale Cell");
-	m->scaleCell(scale);
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_SCALE, "ddd", 0.0, 0.0, 0.0);
+	cmd.pokeArguments("ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
+	cmd.execute();
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }
 

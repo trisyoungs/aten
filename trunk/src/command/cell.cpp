@@ -134,6 +134,7 @@ int Command::function_CA_SCALE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Scale cell");
 	obj.rs->scaleCell(c->arg3d(0));
+	obj.rs->endUndoState();
 	return Command::Success;
 }
 
@@ -141,6 +142,8 @@ int Command::function_CA_SCALE(CommandNode *&c, Bundle &obj)
 int Command::function_CA_CELL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (obj.rs->cell()->type() == Cell::NoCell) obj.rs->beginUndoState("Add Cell");
+	else obj.rs->beginUndoState("Edit Cell");
 	obj.rs->setCell(c->arg3d(0), c->arg3d(3));
 	obj.rs->endUndoState();
 	obj.rs->calculateDensity();

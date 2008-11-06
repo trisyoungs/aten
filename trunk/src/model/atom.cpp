@@ -378,3 +378,26 @@ int Model::countBondsToAtom(Atom *i, Bond::BondType type)
 	msg.exit("Model::countBondsToAtom");
 	return count;
 }
+
+// Set style of individual atom
+void Model::styleAtom(Atom *i, Atom::DrawStyle ds)
+{
+	// Sets all atoms currently selected to have the drawing style specified
+	Atom::DrawStyle oldstyle = i->style();
+	i->setStyle(ds);
+	changeLog.add(Log::Visual);
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		StyleEvent *newchange = new StyleEvent;
+		newchange->set(i->id(), oldstyle, ds);
+		recordingState_->addEvent(newchange);
+	}
+}
+
+// Set selection style
+void Model::styleSelection(Atom::DrawStyle ds)
+{
+	// Sets all atoms currently selected to have the drawing style specified
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) styleAtom(i, ds);
+}

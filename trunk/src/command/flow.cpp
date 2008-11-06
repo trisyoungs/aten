@@ -219,17 +219,6 @@ int Command::function_CA_FOR(CommandNode *&c, Bundle &obj)
 				}
 				if (c->argp(0, VTypes::PatternData) == NULL) status = FALSE;
 				break;
-			// Loop over bonds in model/pattern   TGAYBOND
-/*			case (VTypes::BondData):
-				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-				// Attempt loop over pattern ff bonds
-				if (c->argt(1) != VTypes::PatternData)
-				{
-					msg.print( "Bond loop must be given a variable of Pattern type.\n");
-					return Command::Fail;
-				}
-				if (c->argp(0, VTypes::BondData) == NULL) status = FALSE;
-				break;*/
 			// Loop over unique ForcefieldAtoms in model
 			case (VTypes::ForcefieldAtomData):
 				if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;

@@ -24,6 +24,7 @@
 #include "gui/selectelement.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "command/staticcommand.h"
 
 void AtenForm::on_actionDrawAtom_triggered(bool on)
 {
@@ -112,10 +113,8 @@ void AtenForm::on_actionAddHydrogenAtom_triggered(bool on)
 
 void AtenForm::on_actionAddHydrogen_triggered(bool on)
 {
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Hydrogen Satisfy Model");
-	m->hydrogenSatisfy();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_ADDHYDROGEN,"");
+	cmd.execute();
 	gui.modelChanged();
 }
 

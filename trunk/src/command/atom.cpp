@@ -28,8 +28,21 @@ int Command::function_CA_ATOMSTYLE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Atom::DrawStyle ds = Atom::drawStyle(c->argc(0));
-	if (ds != Atom::nDrawStyles) for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) i->setStyle(ds);
-	else return Command::Fail;
+	if (ds == Atom::nDrawStyles) return Command::Fail;
+	if (c->hasArg(1))
+	{
+		Atom *i = obj.rs->atom(c->argi(1));
+		if (i == NULL) return Command::Fail;
+		obj.rs->beginUndoState("Style individual atom");
+		obj.rs->styleAtom(i, ds);
+		obj.rs->endUndoState();
+	}
+	else
+	{
+		obj.rs->beginUndoState("Style atom selection");
+		obj.rs->styleSelection(ds);
+		obj.rs->endUndoState();
+	}
 	return Command::Success;
 }
 
@@ -41,7 +54,6 @@ int Command::function_CA_GETATOM(CommandNode *&c, Bundle &obj)
 	if (i == NULL) return Command::Fail;
 	// Set atom information
 	obj.i = i;
-// 	if (c->hasArg(1)) c->parent()->setAtomVariables(c->arg(1)->name(), i); TGAY
 	return Command::Success;
 }
 

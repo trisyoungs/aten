@@ -27,6 +27,7 @@
 #include "gui/celltransform.h"
 #include "gui/disorder.h"
 #include "base/spacegroup.h"
+#include "command/staticcommand.h"
 
 // Constructor
 AtenCellDefine::AtenCellDefine(QWidget *parent)
@@ -93,21 +94,15 @@ void AtenCellDefine::refresh()
 
 void AtenCellDefine::cellChanged()
 {
-	static char s[64];
+	static StaticCommandNode cmd(Command::CA_CELL, "dddddd", 1.0, 1.0, 1.0, 90.0, 90.0, 90.0);
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
-	// Construct length and angle vectors and set cell of model
-	static Vec3<double> lengths, angles;
-	lengths.set(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value());
-	angles.set(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
+	cmd.pokeArguments("dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	// Make changes
-	Model *m = aten.currentModel();
-	if (m->cell()->type() == Cell::NoCell) m->beginUndoState("Add Cell");
-	else m->beginUndoState("Edit Cell");
-	m->setCell(lengths, angles);
-	m->endUndoState();
-	m->calculateDensity();
-	sprintf(s," Volume : %10.3f &#8491;<sup>-3</sup>",m->cell()->volume());
+	cmd.execute();
+	Model *m = aten.currentModel()->renderSource();
+	char s[64];
+	sprintf(s," Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
 	ui.CellVolumeLabel->setText(s);
 	gui.modelChanged(FALSE,FALSE,FALSE);
 	refreshing_ = FALSE;
@@ -154,6 +149,7 @@ void AtenCellDefine::on_CellSpacegroupEdit_returnPressed()
 
 void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 {
+	static StaticCommandNode cmd(Command::CA_NOCELL, "");
 	// If the group is checked we store the current spin values in the current model.
 	if (checked)
 	{
@@ -162,10 +158,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 	}
 	else
 	{
-		Model *m = aten.currentModel();
-		m->beginUndoState("Remove Cell");
-		m->removeCell();
-		m->endUndoState();
+		cmd.execute();
 		ui.CellSpacegroupGroup->setEnabled(FALSE);
 	}
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
@@ -180,7 +173,7 @@ void AtenCellDefine::on_CellDefinitionGroup_clicked(bool checked)
 
 void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 {
-	Model *m = aten.currentModel();
+	static StaticCommandNode cmd(Command::CA_SPACEGROUP, "i", 0);
 	int sg;
 	static char s[64];
 	// Grab the current text of the line edit and determine spacegroup
@@ -192,30 +185,30 @@ void AtenCellDefine::on_CellSpacegroupSetButton_clicked(bool checked)
 	if (sg == 0) msg.print("Unrecognised spacegroup '%s'.\n", s);
 	else
 	{
-		m->cell()->setSpacegroup(sg);
+		cmd.pokeArguments("i", sg);
+		cmd.execute();
 		ui.CellSpacegroupEdit->setText("");
 		// Set spacegroup label
-		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), m->cell()->spacegroup());
+		Model *m = aten.currentModel()->renderSource();
+		sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), sg);
 		ui.SpacegroupLabel->setText(s);
 	}
 }
 
 void AtenCellDefine::on_CellSpacegroupRemoveButton_clicked(bool checked)
 {
-	static char s[64];
-	Model *m = aten.currentModel();
-	m->cell()->setSpacegroup(0);
+	static StaticCommandNode cmd(Command::CA_SPACEGROUP, "i", 0);
+	cmd.execute();
 	// Set spacegroup label
-	sprintf(s,"%s (%i)\n", spacegroups.displayName(m->cell()->spacegroup()), m->cell()->spacegroup());
+	char s[128];
+	sprintf(s,"%s (0)\n", spacegroups.displayName(0));
 	ui.SpacegroupLabel->setText(s);
 }
 
 void AtenCellDefine::on_CellSpacegroupPackButton_clicked(bool checked)
 {
-	Model *m = aten.currentModel();
-	m->beginUndoState("Pack Cell");
-	m->pack();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_PACK, "");
+	cmd.execute();
 	gui.modelChanged();
 }
 

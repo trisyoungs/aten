@@ -29,6 +29,8 @@ int Command::function_CA_COPY(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	aten.userClipboard->copySelection(obj.rs);
+	msg.print("%i atoms copied to clipboard.\n", aten.userClipboard->nAtoms());
+	msg.print(Messenger::Verbose, "Copied selection (%i atoms) from model %s\n", aten.userClipboard->nAtoms(), obj.rs->name());
 	return Command::Success;
 }
 

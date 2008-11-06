@@ -24,6 +24,7 @@
 #include "gui/build.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "command/staticcommand.h"
 
 // Constructor
 AtenBuild::AtenBuild(QWidget *parent)
@@ -45,20 +46,18 @@ void AtenBuild::showWindow()
 
 void AtenBuild::on_AddAtomButton_clicked(bool on)
 {
-	static char s[256];
-	Vec3<double> newpos;
-	newpos.set(ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
-	Model *m = aten.currentModel()->renderSource();
+	static StaticCommandNode cmd(Command::CA_NEWATOM, "iddd", 1, 0.0, 0.0, 0.0);
+	static StaticCommandNode cmdfrac(Command::CA_NEWATOMFRAC, "iddd", 1, 0.0, 0.0, 0.0);
 	if (ui.AddAtomFractionalCheck->isChecked())
 	{
-		sprintf(s,"Add Atom (%s at {%f, %f, %f}, frac)", elements.symbol(aten.sketchElement()), newpos.x, newpos.y, newpos.z);
-		if (m->cell()->type() == Cell::NoCell) msg.print("Warning: No unit cell present - atom added with supplied coordinates.\n");
-		else newpos = m->cell()->fracToReal(newpos);
+		cmdfrac.pokeArguments("iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		cmdfrac.execute();
 	}
-	else sprintf(s,"Add Atom (%s at {%f, %f, %f})", elements.symbol(aten.sketchElement()), newpos.x, newpos.y, newpos.z);
-	m->beginUndoState(s);
-	m->addAtom(aten.sketchElement(), newpos);
-	m->endUndoState();
+	else
+	{
+		cmd.pokeArguments("iddd", aten.sketchElement(), ui.AtomXCoordSpin->value(), ui.AtomYCoordSpin->value(), ui.AtomZCoordSpin->value());
+		cmd.execute();
+	}
 	gui.modelChanged();
 }
 

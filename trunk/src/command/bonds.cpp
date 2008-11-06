@@ -50,14 +50,13 @@ int Command::function_CA_CLEARBONDS(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
-// Retrieve bond info ('getbond <id> [var]')
-int Command::function_CA_GETBOND(CommandNode *&c, Bundle &obj)
+// Clear bonds in current model ('clearbonds')
+int Command::function_CA_CLEARSELECTEDBONDS(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	Bond *b = obj.rs->bond(c->argi(0)-1);
-	if (b == NULL) return Command::Fail;
-	// Set bond information
-// 	c->parent()->setPatternBoundVariables(c->arg(1)->name(), b); TGAY
+	obj.rs->beginUndoState("Clear Bonds in Selection");
+	obj.rs->selectionClearBonding();
+	obj.rs->endUndoState();
 	return Command::Success;
 }
 

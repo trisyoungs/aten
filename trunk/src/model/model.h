@@ -177,6 +177,10 @@ class Model
 	int totalBondOrderPenalty() const;
 	// Return the number of bonds of specified type to the atom
 	int countBondsToAtom(Atom *i, Bond::BondType);
+	// Set the drawing style of the specified atom
+	void styleAtom(Atom *i, Atom::DrawStyle);
+	// Set the drawing style of the current atom selection
+	void styleSelection(Atom::DrawStyle);
 
 
 	/*
@@ -375,17 +379,15 @@ class Model
 	/*
 	// Labelling
 	*/
-	private:
+	public:
 	// Add label to atom
 	void addLabel(Atom *i, Atom::AtomLabel al);
 	// Remove atom label
 	void removeLabel(Atom *i, Atom::AtomLabel al);
-	// Clear labelling from atom
-	void clearLabels(Atom *i);
-
-	public:
 	// Clear all atom labelling
 	void clearAllLabels();
+	// Clear labelling from specific atom
+	void clearLabels(Atom *i);
 	// Clear all atom labelling from the current selection
 	void selectionClearLabels();
 	// Clear specified atom labelling from the current selection
@@ -719,8 +721,6 @@ class Model
 	void setRenderFromSelf();
 	// Render from trajectory
 	void setRenderFromFrames();
-	// Set the drawing style of the current atom selection
-	void selectionSetStyle(Atom::DrawStyle);
 	// Return the current rendering source for the model
 	Model *renderSource();
 
@@ -759,21 +759,21 @@ class Model
 	// Delete all measurements involving supplied atom
 	void removeMeasurements(Atom*);
 	// Add measurement (list of atoms)
-	void addMeasurement(Measurement::MeasurementType, Atom*, ...);
+	Measurement *addMeasurement(Measurement::MeasurementType, Atom*, ...);
 	// Add measurements of specific type in current selection
 	void addMeasurementsInSelection(Measurement::MeasurementType);
 	// Measure distances between atoms
-	void measureDistance(Atom*, Atom*);
+	double measureDistance(Atom*, Atom*);
 	// Measure distances between atom ids
-	void measureDistance(int i, int j);
+	double measureDistance(int i, int j);
 	// Measure angles between atoms
-	void measureAngle(Atom*, Atom*, Atom*);
+	double measureAngle(Atom*, Atom*, Atom*);
 	// Measure angles between atom ids
-	void measureAngle(int i, int j, int k);
+	double measureAngle(int i, int j, int k);
 	// Measure torsions between atoms
-	void measureTorsion(Atom*, Atom*, Atom*, Atom*);
+	double measureTorsion(Atom*, Atom*, Atom*, Atom*);
 	// Measure torsions between atom ids
-	void measureTorsion(int i, int j, int k, int l);
+	double measureTorsion(int i, int j, int k, int l);
 	// Update stored measurements
 	void updateMeasurements();
 	// List stored measurements

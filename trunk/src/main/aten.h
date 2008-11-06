@@ -28,8 +28,8 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "707"
-#define ATENDATE "Thu 30 Oct - 18:39"
+#define ATENREVISION "708"
+#define ATENDATE "Thu 06 Nov - 13:03"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -46,7 +46,7 @@ class Aten
 	Aten();
 	~Aten();
 	// Program mode enum
-	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, BatchExportMode, NoMode };
+	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, BatchExportMode, BatchProcessMode, ProcessAndExportMode, NoMode };
 	// Remove all dynamic data
 	void clear();
 
@@ -269,12 +269,20 @@ class Aten
 	private:
 	// Model format in which to export models
 	Filter *exportFilter_;
+	// Cached commands to use in batch processing mode
+	List<CommandList> batchCommands_;
 
 	public:
 	// Set format to use in export
 	void setExportFilter(Filter *f);
 	// Export all currently loaded models in the referenced format
 	void exportModels();
+	// Add set of batch commands
+	CommandList *addBatchCommand();
+	// Run all stored commands on all loaded models
+	void processModels();
+	// Save all models under their original names
+	void saveModels();
 };
 
 extern Aten aten;

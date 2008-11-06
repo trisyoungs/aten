@@ -44,7 +44,7 @@ const char *AssignOps::assignOp(AssignOps::AssignOp ao)
 	return AssignOpKeywords[ao];
 }
 
-// Constructor
+// Constructors
 CommandNode::CommandNode()
 {
 	// Private variables
@@ -484,13 +484,34 @@ void CommandNode::addConstant(const char *s, bool forcechar)
 	msg.exit("CommandNode::addConstant");
 }
 
-// Add constant to reference list
+// Add integer constant to reference list
 void CommandNode::addConstant(int i)
 {
 	msg.enter("CommandNode::addConstant[int]");
 	Variable *v = variableList_->addConstant(i);
 	args_.add(v);
 	msg.exit("CommandNode::addConstant[int]");
+}
+
+// Add real constant to reference list
+void CommandNode::addConstant(double d)
+{
+	msg.enter("CommandNode::addConstant[double]");
+	Variable *v = variableList_->addConstant(d);
+	args_.add(v);
+	msg.exit("CommandNode::addConstant[double]");
+}
+
+// Set variable list manually
+void CommandNode::setVariableList(VariableList *varlist)
+{
+	variableList_ = varlist;
+}
+
+// Add single argument manually
+void CommandNode::addArgument(Variable *v)
+{
+	args_.add(v);
 }
 
 // Add variables to command
@@ -639,8 +660,6 @@ bool CommandNode::setArguments(const char *cmdname, const char *specifiers, Vari
 			// Pointer-style variable (that also need to create subvariables)
 			case ('A'):
 			case ('a'):
-// 			case ('B'): TGAYBOND
-// 			case ('b'):
 			case ('P'):
 			case ('p'):
 			case ('M'):
@@ -651,10 +670,6 @@ bool CommandNode::setArguments(const char *cmdname, const char *specifiers, Vari
 					case ('a'):
 						vt = VTypes::AtomData;
 						break;
-// 					case ('B'):   TGAYBOND
-// 					case ('b'):
-// 						vt = VTypes::BondData;
-// 						break;
 					case ('P'):
 					case ('p'):
 						vt = VTypes::PatternData;
@@ -734,9 +749,15 @@ int CommandNode::nArgs()
 }
 
 // Execute command
-int CommandNode::execute(CommandNode *&c)
+int CommandNode::execute(CommandNode *&c, bool noflow)
 {
 	// Make sure the current rendersource is up-to-date
 	aten.current.rs = (aten.current.m == NULL ? NULL : aten.current.m->renderSource());
+	// Check whether to disregard flow control nodes
+	if (noflow && (function_ >= Command::CA_BREAK) && (function_ <= Command::CA_TERMINATE))
+	{
+		msg.print("This command '%s' may change the flow of a CommandList, but flow control has been disallowed.\n", commands.data[c->function()].keyword);
+		return Command::Fail;
+	}
 	return commands.call(function_, c);
 }

@@ -23,55 +23,46 @@
 #include "gui/mainwindow.h"
 #include "gui/gui.h"
 #include "model/model.h"
+#include "command/staticcommand.h"
 
 void AtenForm::on_actionCalculateBonding_triggered(bool on)
 {
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Calculate Bonding");
-	m->clearBonding();
-	m->calculateBonding();
-	m->endUndoState();
-	gui.mainView.postRedisplay();
+	static StaticCommandNode cmd(Command::CA_REBOND, "");
+	cmd.execute();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBonding_triggered(bool on)
 {
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Clear Bonding");
-	m->clearBonding();
-	m->endUndoState();
-	gui.mainView.postRedisplay();
+	static StaticCommandNode cmd(Command::CA_CLEARBONDS, "");
+	cmd.execute();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionCalculateBondingSelection_triggered(bool on)
 {
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Calculate Bonding (Selection)");
-	m->selectionCalculateBonding();
-	m->endUndoState();
-	gui.mainView.postRedisplay();
+	static StaticCommandNode cmd(Command::CA_REBONDSELECTION, "");
+	cmd.execute();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionClearBondingSelection_triggered(bool on)
 {
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Clear Bonding (Selection)");
-	m->selectionClearBonding();
-	m->endUndoState();
-	gui.mainView.postRedisplay();
+	static StaticCommandNode cmd(Command::CA_CLEARSELECTEDBONDS, "");
+	cmd.execute();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionAugmentBonding_triggered(bool on)
 {
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Augment Bonding");
-	m->augmentBonding();
-	m->endUndoState();
-	gui.mainView.postRedisplay();
+	static StaticCommandNode cmd(Command::CA_AUGMENT, "");
+	cmd.execute();
+	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
 void AtenForm::bondTolerance_valueChanged(double value)
 {
-	prefs.setBondTolerance(value);
+	static StaticCommandNode cmd(Command::CA_BONDTOLERANCE, "d", 1.1);
+	cmd.pokeArguments("d", value);
+	cmd.execute();
 }
-

@@ -143,7 +143,7 @@ Variable *VariableList::addConstant(const char *s, bool forcecharacter)
 	return newvar;
 }
 
-// Add constant
+// Add integer constant
 Variable *VariableList::addConstant(int i)
 {
 	static char newname[24];
@@ -152,6 +152,18 @@ Variable *VariableList::addConstant(int i)
 	sprintf(newname,"constant%i", constants_.nItems());
 	newvar->setName(newname);
 	newvar->set(i);
+	return newvar;
+}
+
+// Add real constant
+Variable *VariableList::addConstant(double d)
+{
+	static char newname[24];
+	Variable *newvar = new RealVariable;
+	constants_.own(newvar);
+	sprintf(newname,"constant%i", constants_.nItems());
+	newvar->setName(newname);
+	newvar->set(d);
 	return newvar;
 }
 
@@ -230,6 +242,17 @@ Variable *VariableList::addListVariable(const char *name, VTypes::DataType vt, v
 		newvar->setName(name);
 		newvar->setListArray();
 	}
+	return newvar;
+}
+
+//.Add simple, internally-named, non-array variable of given type
+Variable *VariableList::addSimpleVariable(VTypes::DataType vt)
+{
+	static char newname[24];
+	Variable *newvar = createVariable(vt);
+	variables_.own(newvar);
+	sprintf(newname,"var%i", variables_.nItems());
+	newvar->setName(newname);
 	return newvar;
 }
 

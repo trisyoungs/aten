@@ -184,14 +184,6 @@ void Model::selectionSetFree()
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setPositionFixed(FALSE);
 }
 
-// Set selection style
-void Model::selectionSetStyle(Atom::DrawStyle ds)
-{
-	// Sets all atoms currently selected to have the drawing style specified
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) i->setStyle(ds);
-	changeLog.add(Log::Visual);
-}
-
 // Select bound and selected atoms from the current atom
 void Model::fragmentFromSelectionSelector(Atom *i, Reflist<Atom,int> &list)
 {

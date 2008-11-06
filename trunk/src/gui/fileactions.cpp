@@ -101,6 +101,7 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// Check the filter of the current model
 	// If there isn't one, or it can't export, raise the file dialog.
 	// Similarly, if no filename has been set, raise the file dialog.
+	printf("Savemodelfilename  %s\n",saveModelFilename.get());
 	Model *m = aten.currentModel();
 	Filter *f = m->filter();
 	if ((f != NULL) && (f->type() != Filter::ModelExport)) f = NULL;
@@ -113,11 +114,12 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 			m = aten.currentModel();
 			m->setFilter(saveModelFilter);
 			m->setFilename(saveModelFilename.get());
-			saveModelFilter->execute(saveModelFilename.get());
+			// Model Export filters take the filename from the model itself, so pass dummy filename
+			saveModelFilter->execute("DUMMY");
 			//refreshModelTabs();
 		}
 	}
-	else f->execute(saveModelFilename.get());
+	else f->execute("DUMMY");
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 

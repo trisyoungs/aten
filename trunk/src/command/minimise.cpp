@@ -34,9 +34,12 @@ int Command::function_CA_CGMINIMISE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	cg.setTolerance(linetolerance);
 	cg.setNCycles(c->argi(0));
-	obj.rs->beginUndoState("Minimise (Conjugate Gradient)");
+	// Store current positions of atoms so we can undo the minimisation
+	Reflist< Atom, Vec3<double> > oldpos;
+	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	cg.minimise(obj.rs, econverge, fconverge);
-	obj.rs->endUndoState();
+	// Finalise the 'transformation' (creates an undo state)
+	obj.rs->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)");
 	return Command::Success;
 }
 
@@ -60,9 +63,12 @@ int Command::function_CA_MCMINIMISE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	mc.setNCycles(c->argi(0));
-	obj.rs->beginUndoState("Minimise (Molecular Monte Carlo)");
+	// Store current positions of atoms so we can undo the minimisation
+	Reflist< Atom, Vec3<double> > oldpos;
+	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	mc.minimise(obj.rs, econverge, fconverge);
-	obj.rs->endUndoState();
+	// Finalise the 'transformation' (creates an undo state)
+	obj.rs->finalizeTransform(oldpos, "Minimise (Monte Carlo)");
 	return Command::Success;
 }
 
@@ -72,9 +78,12 @@ int Command::function_CA_SDMINIMISE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	sd.setTolerance(linetolerance);
 	sd.setNCycles(c->argi(0));
-	obj.rs->beginUndoState("Minimise (Steepest Descent)");
+	// Store current positions of atoms so we can undo the minimisation
+	Reflist< Atom, Vec3<double> > oldpos;
+	for (Atom *i = obj.rs->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	sd.minimise(obj.rs, econverge, fconverge);
-	obj.rs->endUndoState();
+	// Finalise the 'transformation' (creates an undo state)
+	obj.rs->finalizeTransform(oldpos, "Minimise (Steepest Descent)");
 	return Command::Success;
 }
 

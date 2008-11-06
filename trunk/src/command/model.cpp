@@ -75,16 +75,8 @@ int Command::function_CA_GETMODEL(CommandNode *&c, Bundle &obj)
 	if (m != NULL) 
 	{
 		aten.setCurrentModel(m);
-		//gui.select_model(m);
-// 		c->parent()->setModelVariables("",obj.m); TGAY
 		obj.p = NULL;
 		obj.i = m->atoms();
-// 		// If a model variables was supplied, set the subvariables
-// 		if (c->hasArg(1))
-// 		{
-// 			c->arg(1)->set(m, VTypes::ModelData);
-// // 			c->parent()->setModelVariables(c->arg(1)->name(), m); TGAY
-// 		}
 		return Command::Success;
 	}
 	else
@@ -122,7 +114,6 @@ int Command::function_CA_LOADMODEL(CommandNode *&c, Bundle &obj)
 			Model *m = aten.currentModel();
 			if (c->hasArg(1)) m->setName(c->argc(1));
 			obj.i = m->atoms();
-// 			c->parent()->setModelVariables("",m); TGAY
 			return Command::Success;
 		}
 		else return Command::Fail;
@@ -185,7 +176,6 @@ int Command::function_CA_NEXTMODEL(CommandNode *&c, Bundle &obj)
 	{
 		aten.setCurrentModel(obj.m->next);
 		msg.print("Current model is now '%s'.\n", obj.m->name());
-// 		c->parent()->setModelVariables("",obj.m); TGAY
 	}
 	return Command::Success;
 }
