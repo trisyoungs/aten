@@ -37,7 +37,7 @@ void Model::clearMeasurements()
 }
 
 // Add distance measurement
-void Model::measureDistance(Atom *i, Atom *j)
+double Model::measureDistance(Atom *i, Atom *j)
 {
 	// Measure distances between atoms
 	msg.enter("Model::measureDistance");
@@ -46,10 +46,11 @@ void Model::measureDistance(Atom *i, Atom *j)
 	if (newdist == NULL) addMeasurement(Measurement::Distance,i,j);
 	else removeMeasurement(newdist);
 	msg.exit("Model::measureDistance");
+	return (newdist == NULL ? 0.0 : newdist->value());
 }
 
 // Add angle measurement (atom ids)
-void Model::measureDistance(int i, int j)
+double Model::measureDistance(int i, int j)
 {
 	// Measure torsions between atom ids
 	msg.enter("Model::measureDistance");
@@ -58,10 +59,11 @@ void Model::measureDistance(int i, int j)
 	if (newdist == NULL) addMeasurement(Measurement::Distance, atom(i), atom(j));
 	else removeMeasurement(newdist);
 	msg.exit("Model::measureDistance");
+	return (newdist == NULL ? 0.0 : newdist->value());
 }
 
 // Add angle measurement
-void Model::measureAngle(Atom *i, Atom *j, Atom *k)
+double Model::measureAngle(Atom *i, Atom *j, Atom *k)
 {
 	// Measure angles between atoms
 	msg.enter("Model::measureAngle");
@@ -70,10 +72,11 @@ void Model::measureAngle(Atom *i, Atom *j, Atom *k)
 	if (newangle == NULL) addMeasurement(Measurement::Angle,i,j,k);
 	else removeMeasurement(newangle);
 	msg.exit("Model::measureAngle");
+	return (newangle == NULL ? 0.0 : newangle->value());
 }
 
 // Add angle measurement (atom ids)
-void Model::measureAngle(int i, int j, int k)
+double Model::measureAngle(int i, int j, int k)
 {
 	// Measure torsions between atom ids
 	msg.enter("Model::measureAngle");
@@ -82,6 +85,7 @@ void Model::measureAngle(int i, int j, int k)
 	if (newangle == NULL) addMeasurement(Measurement::Angle, atom(i), atom(j), atom(k));
 	else removeMeasurement(newangle);
 	msg.exit("Model::measureAngle");
+	return (newangle == NULL ? 0.0 : newangle->value());
 }
 
 // Add torsion measurement
