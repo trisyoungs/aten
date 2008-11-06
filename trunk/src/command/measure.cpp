@@ -28,7 +28,7 @@ int Command::function_CA_ANGLE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Measure angle");
 	double a = obj.rs->measureAngle(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1);
-	obj.rs.endUndoState();
+	obj.rs->endUndoState();
 	if (c->hasArg(3)) c->arg(3)->set(a);
 	return Command::Success;
 }
@@ -39,7 +39,7 @@ int Command::function_CA_ANGLES(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Measure bond angles in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Angle);
-	obj.rs.endUndoState();
+	obj.rs->endUndoState();
 	return Command::Success;
 }
 
@@ -59,7 +59,7 @@ int Command::function_CA_DISTANCE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Measure distance");
 	double d = obj.rs->measureDistance(c->argi(0)-1, c->argi(1)-1);
-	obj.rs.endUndoState();
+	obj.rs->endUndoState();
 	if (c->hasArg(2)) c->arg(2)->set(d);
 	return Command::Success;
 }
@@ -70,7 +70,7 @@ int Command::function_CA_DISTANCES(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Measure bond distances in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Distance);
-	obj.rs.endUndoState();
+	obj.rs->endUndoState();
 	return Command::Success;
 }
 
@@ -112,7 +112,7 @@ int Command::function_CA_TORSION(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Measure torsion");
 	double t = obj.rs->measureTorsion(c->argi(0)-1, c->argi(1)-1, c->argi(2)-1, c->argi(3)-1);
-	obj.rs.endUndoState();
+	obj.rs->endUndoState();
 	if (c->hasArg(4)) c->arg(4)->set(t);
 	return Command::Success;
 }
@@ -123,6 +123,6 @@ int Command::function_CA_TORSIONS(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	obj.rs->beginUndoState("Measure torsion angles in selection");
 	obj.rs->addMeasurementsInSelection(Measurement::Torsion);
-	obj.rs.endUndoState();
+	obj.rs->endUndoState();
 	return Command::Success;
 }
