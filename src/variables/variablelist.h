@@ -81,6 +81,8 @@ class VariableList
 	Variable *addConstant(const char *s, bool forcecharacter = FALSE);
 	// Add an integer constant to the list
 	Variable *addConstant(int i);
+	// Add a real constant to the list
+	Variable *addConstant(double d);
 	// Add an expression to the list
 	Variable *addExpression(const char *s);
 	// Add a variable access path to the list
@@ -91,6 +93,8 @@ class VariableList
 	Variable *addListVariable(const char *name, VTypes::DataType vt, void *ptr);
 	// Add pointer to data in Bundle variable
 	Variable *addBundlePointer(const char *name, VTypes::DataType vt);
+	//.Add simple, internally-named, non-array variable of given type
+	Variable *addSimpleVariable(VTypes::DataType vt);
 	// Reset all variable values
 	void resetVariables();
 	// Clear all variables, expressions etc. stored in class

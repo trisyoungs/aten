@@ -85,27 +85,29 @@ void Model::measureAngle(int i, int j, int k)
 }
 
 // Add torsion measurement
-void Model::measureTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
+double Model::measureTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 {
 	// Measure torsions between atoms
 	msg.enter("Model::measureTorsion");
 	Measurement *newtorsion = findMeasurement(Measurement::Torsion,i,j,k,l);
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
-	if (newtorsion == NULL) addMeasurement(Measurement::Torsion,i,j,k,l);
+	if (newtorsion == NULL) newtorsion = addMeasurement(Measurement::Torsion,i,j,k,l);
 	else removeMeasurement(newtorsion);
 	msg.exit("Model::measureTorsion");
+	return (newtorsion == NULL ? 0.0 : newtorsion->value());
 }
 
 // Add torsion measurement (atom ids)
-void Model::measureTorsion(int i, int j, int k, int l)
+double Model::measureTorsion(int i, int j, int k, int l)
 {
 	// Measure torsions between atom ids
 	msg.enter("Model::measureTorsion");
 	Measurement *newtorsion = findMeasurement(Measurement::Torsion, atom(i), atom(j), atom(k), atom(l));
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
-	if (newtorsion == NULL) addMeasurement(Measurement::Torsion, atom(i), atom(j), atom(k), atom(l));
+	if (newtorsion == NULL) newtorsion = addMeasurement(Measurement::Torsion, atom(i), atom(j), atom(k), atom(l));
 	else removeMeasurement(newtorsion);
 	msg.exit("Model::measureTorsion");
+	return (newtorsion == NULL ? 0.0 : newtorsion->value());
 }
 
 // Remove specific measurement
@@ -182,7 +184,7 @@ void Model::removeMeasurements(Atom *xatom)
 }
 
 // Add Measurement
-void Model::addMeasurement(Measurement::MeasurementType gt, Atom *first, ...)
+Measurement *Model::addMeasurement(Measurement::MeasurementType gt, Atom *first, ...)
 {
 	msg.enter("Model::addMeasurement");
 	Atom *i, **atoms;
@@ -233,6 +235,7 @@ void Model::addMeasurement(Measurement::MeasurementType gt, Atom *first, ...)
 		}
 	}
 	msg.exit("Model::addMeasurement");
+	return newm;
 }
 
 // Add measurements in selection

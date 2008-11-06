@@ -107,7 +107,6 @@ void GuiQt::run()
 	if (aten.nModels() == 0) Model *m = aten.addModel();
 
 	// Initialise Qt's icons resource
-
 	Q_INIT_RESOURCE(icons);
 
 	// Create GUI window, dialog windows, and sub windows
@@ -232,7 +231,6 @@ void GuiQt::removeModel(int id)
 	mainWindow->ui.ModelTabs->removeTab(id);
 	gui.modelChanged();
 }
-
 
 // Update GUI after model change (or different model selected)
 void GuiQt::modelChanged(bool updateAtoms, bool updateCell, bool updateForcefield)

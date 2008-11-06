@@ -261,6 +261,23 @@ class TranslateEvent : public UndoEvent
 	void print();
 };
 
+// Atom Style Change
+class StyleEvent : public UndoEvent
+{
+	private:
+	// Change data
+	int targetId_;
+	Atom::DrawStyle oldStyle_, newStyle_;
+
+	public:
+	// Set change data
+	void set(int id, Atom::DrawStyle oldstyle, Atom::DrawStyle newstyle);
+	// Undo stored change
+	void undo(Model *m);
+	// Print change information
+	void print();
+};
+
 // Atom Transmute Change
 class TransmuteEvent : public UndoEvent
 {

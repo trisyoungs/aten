@@ -69,7 +69,7 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtdir=/usr/lib/qt4/bin
 %endif
 
-%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version}
+%if 0%{?fedora_version} || 0%{?rhel_version} || 0%{?centos_version} || 0%{?mandrive_version}
 %ifarch x86_64
 ./configure --with-build-dir=$RPM_BUILD_ROOT --with-install-dir=/usr --prefix=$RPM_BUILD_ROOT/usr --with-qtdir=/usr/lib64/qt4/bin
 %else

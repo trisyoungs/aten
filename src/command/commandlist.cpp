@@ -267,7 +267,6 @@ bool CommandList::addCommand(Command::Function cf)
 			pushBranch(c->createBranch(), cf, c);
 			varresult = c->setArguments(commands.data[cf].keyword, commands.data[cf].arguments, &variables_);
 			// Create subvariables if necessary
-// 			if (varresult) varresult = createSubvariables(c->arg(0)); TGAY
 			break;
 		// End the topmost branch in the stack
 		case (Command::CA_END):

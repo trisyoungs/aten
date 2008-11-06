@@ -532,6 +532,47 @@ void TranslateEvent::print()
 }
 
 /*
+// Style Event
+*/
+
+// Set change 
+void StyleEvent::set(int id, Atom::DrawStyle oldstyle, Atom::DrawStyle newstyle)
+{
+	msg.enter("StyleEvent::set");
+	targetId_ = id;
+	oldStyle_ = oldstyle;
+	newStyle_ = newstyle;
+	msg.exit("StyleEvent::set");
+}
+
+// Undo stored change
+void StyleEvent::undo(Model *m)
+{
+	msg.enter("StyleEvent::undo");
+	Atom *i, **modelatoms = m->atomArray();
+	// Atom style change - newStyle_ to oldStyle_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
+	i = modelatoms[targetId_];
+	if (direction_ == UndoEvent::Undo)
+	{
+		msg.print(Messenger::Verbose,"Reversing atom style change - atom %i, old = %i, new = %i\n", targetId_, newStyle_, oldStyle_);
+		m->styleAtom(i, oldStyle_);
+	}
+	else
+	{
+		msg.print(Messenger::Verbose,"Replaying atom style change - atom %i, old = %i, new = %i\n", targetId_, oldStyle_, newStyle_);
+		m->styleAtom(i, newStyle_);
+	}
+	msg.exit("StyleEvent::undo");
+}
+
+// Print event info
+void StyleEvent::print()
+{
+	if (direction_ == UndoEvent::Undo) printf("       Atom style - atom %i, old = %i, new = %i\n", targetId_, newStyle_, oldStyle_);
+	else printf("       Atom style - atom %i, old = %i, new = %i\n", targetId_, oldStyle_, newStyle_);
+}
+
+/*
 // Transmute Event
 */
 

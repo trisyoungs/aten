@@ -81,7 +81,7 @@ class CommandList
 	Command::Function topBranchType();
 	// Return basenode pointer of topmost branch on stack
 	CommandNode* topBranchBaseNode();
-	// Add action to lst node
+	// Add command to list
 	bool addCommand(Command::Function);
 	// Clear and reinitialise command list
 	void clear();

@@ -40,6 +40,7 @@
 #include "gui/about.h"
 #include "model/model.h"
 #include "model/undostate.h"
+#include "command/staticcommand.h"
 #include <QtGui/QFileDialog>
 #include <QtGui/QKeyEvent>
 #include <QtGui/QProgressBar>
@@ -119,6 +120,7 @@ void AtenForm::on_ModelTabs_currentChanged(int n)
 void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 {
 	msg.enter("AtenForm::on_ModelTabs_doubleClicked");
+	static StaticCommandNode cmd(Command::CA_SETNAME, "c", "none");
 	// Different model tab has been selected, so set aten.currentmodel to reflect it.
 	Model *m = aten.model(tabid);
 	if (m == NULL) return;
@@ -126,9 +128,8 @@ void AtenForm::on_ModelTabs_doubleClicked(int tabid)
 	QString text = QInputDialog::getText(this, tr("Rename Model: ") + m->name(), tr("New name:"), QLineEdit::Normal, m->name(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		m->beginUndoState("Rename Model");
-		m->setName(qPrintable(text));
-		m->endUndoState();
+		cmd.pokeArguments("c", qPrintable(text));
+		cmd.execute();
 		ui.ModelTabs->setTabText(tabid, text);
 		gui.updateWindowTitle();
 		gui.disorderWindow->refresh();
@@ -309,7 +310,6 @@ void AtenForm::on_actionLoadScript_triggered(bool v)
 		filename = loadScriptDialog->selectedFiles().first();
 		// Create script and model variables within it
 		CommandList *ca = aten.scripts.add();
-// 		ca->createModelVariables(""); TGAY
 		if (ca->load(qPrintable(filename))) refreshScriptsMenu();
 		else aten.scripts.remove(ca);
 	}

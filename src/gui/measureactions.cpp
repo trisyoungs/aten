@@ -23,6 +23,7 @@
 #include "gui/gui.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
+#include "command/staticcommand.h"
 
 void AtenForm::on_actionMeasureDistance_triggered(bool on)
 {
@@ -41,15 +42,14 @@ void AtenForm::on_actionMeasureTorsion_triggered(bool on)
 
 void AtenForm::on_actionMeasureClearAll_triggered(bool on)
 {
-	aten.currentModel()->removeMeasurements(Measurement::Distance);
-	aten.currentModel()->removeMeasurements(Measurement::Angle);
-	aten.currentModel()->removeMeasurements(Measurement::Torsion);
+	static StaticCommandNode cmd(Command::CA_CLEARMEASUREMENTS, "");
+	cmd.execute();
 	gui.mainView.postRedisplay();
 }
 
 void AtenForm::on_actionMeasureDistanceSelection_triggered(bool on)
 {
-	aten.currentModel()->addMeasurementsInSelection(Measurement::Distance);
+	static StaticCommandNode cmd(Command::CA_DISTANCES, "");
 	gui.mainView.postRedisplay();
 }
 

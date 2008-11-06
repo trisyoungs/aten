@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "model/model.h"
 #include "model/clipboard.h"
+#include "command/staticcommand.h"
 
 /*
 // Editing Actions
@@ -31,101 +32,73 @@
 
 void AtenForm::on_actionEditUndo_triggered(bool checked)
 {
-	aten.currentModel()->undo();
+	static StaticCommandNode cmd(Command::CA_UNDO,"");
+	cmd.execute();
 	gui.mainView.postRedisplay();
 	gui.modelChanged();
 }
 
 void AtenForm::on_actionEditRedo_triggered(bool checked)
 {
-	aten.currentModel()->redo();
+	static StaticCommandNode cmd(Command::CA_REDO,"");
+	cmd.execute();
 	gui.mainView.postRedisplay();
 	gui.modelChanged();
 }
 
 void AtenForm::on_actionEditCut_triggered(bool checked)
 {
-	// Cut the selected atoms from the model, copying to the paste buffer
-	char s[128];
-	Model *m = aten.currentModel()->renderSource();
-	sprintf(s,"Cut %i atom%s\n",m->nSelected(),(m->nSelected() == 1 ? "" : "s"));
-	m->beginUndoState(s);
-	aten.userClipboard->cutSelection(m);
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_CUT,"");
+	cmd.execute();
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditCopy_triggered(bool checked)
 {
-	// Copy the selected atoms in the model into the paste buffer
-	aten.userClipboard->copySelection(aten.currentModel()->renderSource());
-	msg.print("%i atoms copied to clipboard.\n",aten.userClipboard->nAtoms());
-	msg.print(Messenger::Verbose, "Copied selection (%i atoms) from model %s\n",aten.userClipboard->nAtoms(), aten.currentModel()->name());
+	static StaticCommandNode cmd(Command::CA_COPY,"");
+	cmd.execute();
 }
 
 void AtenForm::on_actionEditPaste_triggered(bool checked)
 {
-	// Paste the buffered atoms into the model
-	char s[128];
-	Model *m = aten.currentModel()->renderSource();
-	sprintf(s,"Paste %i atom%s\n",aten.userClipboard->nAtoms(),(aten.userClipboard->nAtoms() == 1 ? "" : "s"));
-	m->beginUndoState(s);
-	aten.userClipboard->pasteToModel(m);
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_PASTE,"");
+	cmd.execute();
 	gui.mainView.postRedisplay();
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditDelete_triggered(bool checked)
 {
-	// Delete the selected atoms in the model
-	char s[128];
-	// Clear the main canvas' selection array to be on the safe side, since we might have deleted an atom in it
-	gui.mainView.clearPicked();
-	Model *m = aten.currentModel()->renderSource();
-	sprintf(s,"Delete %i atom%s\n",m->nSelected(),(m->nSelected() == 1 ? "" : "s"));
-	m->beginUndoState(s);
-	m->selectionDelete();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_DELETE,"");
+	cmd.execute();
 	gui.modelChanged(TRUE,FALSE,TRUE);
 }
 
 void AtenForm::on_actionEditSelectAll_triggered(bool checked)
 {
-	// Select all atoms in the current model
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Select All");
-	m->selectAll();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_SELECTALL,"");
+	cmd.execute();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectNone_triggered(bool checked)
 {
-	// Select all atoms in the current model
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Select None");
-	m->selectNone();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_SELECTNONE,"");
+	cmd.execute();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditInvert_triggered(bool checked)
 {
-	// Invert selection in the current model
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Invert Selection");
-	m->selectionInvert();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_INVERT,"");
+	cmd.execute();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 
 void AtenForm::on_actionEditSelectExpand_triggered(bool on)
 {
-	Model *m = aten.currentModel()->renderSource();
-	m->beginUndoState("Expand Selection");
-	m->selectionExpand();
-	m->endUndoState();
+	static StaticCommandNode cmd(Command::CA_EXPAND,"");
+	cmd.execute();
 	gui.modelChanged(TRUE,FALSE,FALSE);
 }
 

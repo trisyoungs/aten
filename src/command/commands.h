@@ -25,6 +25,7 @@
 #include "base/bundle.h"
 
 // Forward declarations
+class CommandList;
 class CommandNode;
 class CommandData;
 class Command;
@@ -56,8 +57,9 @@ class CommandData
 class Command {
 
 	public:
-	// Constructor
+	// Constructor / Destructor
 	Command();
+	~Command();
 
 	// Command return values
 	enum ReturnValue { Success, SuccessNoMove, Fail, FailContinue, Exit, ExitWithError };
@@ -120,12 +122,12 @@ class Command {
 		CA_AUGMENT,
 		CA_BONDTOLERANCE,
 		CA_CLEARBONDS,
-		CA_GETBOND,
+		CA_CLEARSELECTEDBONDS,
 		CA_NEWBOND,
 		CA_NEWBONDID,
+		CA_REBOND,
 		CA_REBONDPATTERNS,
 		CA_REBONDSELECTION,
-		CA_REBOND,
 	
 		// Build commands
 		CA_ADDHYDROGEN,
@@ -303,6 +305,7 @@ class Command {
 		CA_CLEARLABELS,
 		CA_LABEL,
 		CA_REMOVELABEL,
+		CA_REMOVELABELS,
 	
 		// MC Commands
 		CA_MCACCEPT,
@@ -312,9 +315,15 @@ class Command {
 		CA_PRINTMC,
 	
 		// Measurements
+		CA_ANGLE,
+		CA_ANGLES,
 		CA_CLEARMEASUREMENTS,
+		CA_DISTANCE,
+		CA_DISTANCES,
 		CA_LISTMEASUREMENTS,
 		CA_MEASURE,
+		CA_TORSION,
+		CA_TORSIONS,
 	
 		// Messaging
 		CA_ERROR,
@@ -519,6 +528,7 @@ class Command {
 	static int function_CA_AUGMENT(CommandNode *&c, Bundle &obj);
 	static int function_CA_BONDTOLERANCE(CommandNode *&c, Bundle &obj);
 	static int function_CA_CLEARBONDS(CommandNode *&c, Bundle &obj);
+	static int function_CA_CLEARSELECTEDBONDS(CommandNode *&c, Bundle &obj);
 	static int function_CA_GETBOND(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWBOND(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWBONDID(CommandNode *&c, Bundle &obj);
@@ -696,6 +706,7 @@ class Command {
 	static int function_CA_CLEARLABELS(CommandNode *&c, Bundle &obj);
 	static int function_CA_LABEL(CommandNode *&c, Bundle &obj);
 	static int function_CA_REMOVELABEL(CommandNode *&c, Bundle &obj);
+	static int function_CA_REMOVELABELS(CommandNode *&c, Bundle &obj);
 	// MC Commands
 	static int function_CA_MCACCEPT(CommandNode *&c, Bundle &obj);
 	static int function_CA_MCALLOW(CommandNode *&c, Bundle &obj);
@@ -703,9 +714,15 @@ class Command {
 	static int function_CA_MCNTRIALS(CommandNode *&c, Bundle &obj);
 	static int function_CA_PRINTMC(CommandNode *&c, Bundle &obj);
 	// Measurements
+	static int function_CA_ANGLE(CommandNode *&c, Bundle &obj);
+	static int function_CA_ANGLES(CommandNode *&c, Bundle &obj);
 	static int function_CA_CLEARMEASUREMENTS(CommandNode *&c, Bundle &obj);
+	static int function_CA_DISTANCE(CommandNode *&c, Bundle &obj);
+	static int function_CA_DISTANCES(CommandNode *&c, Bundle &obj);
 	static int function_CA_LISTMEASUREMENTS(CommandNode *&c, Bundle &obj);
 	static int function_CA_MEASURE(CommandNode *&c, Bundle &obj);
+	static int function_CA_TORSION(CommandNode *&c, Bundle &obj);
+	static int function_CA_TORSIONS(CommandNode *&c, Bundle &obj);
 	// Messaging
 	static int function_CA_ERROR(CommandNode *&c, Bundle &obj);
 	static int function_CA_PRINT(CommandNode *&c, Bundle &obj);
@@ -856,6 +873,10 @@ class Command {
 	private:
 	// Function pointers
 	CommandFunction pointers_[CA_NITEMS];
+	// Dummy CommandList for use with non-flow call() function
+	CommandList *dummyCommandList_;
+	// Dummy CommandNode (owned by dummyCommandList_)
+	CommandNode *dummyCommandNode_;
 
 	public:
 	// Function data
@@ -864,7 +885,8 @@ class Command {
 	void initPointers();
 	// Execute specified command
 	int call(Command::Function cf, CommandNode *&c);
-	int callFromPointer(Command::Function cf, CommandNode *c);
+	int call(Command::Function cf);
+	// 	int callFromPointer(Command::Function cf, CommandNode *c);
 };
 
 // External declaration

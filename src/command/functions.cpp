@@ -66,13 +66,13 @@ void Command::initPointers()
 	// Bond commands
 	pointers_[CA_AUGMENT] = &Command::function_CA_AUGMENT;
 	pointers_[CA_BONDTOLERANCE] = &Command::function_CA_BONDTOLERANCE;
-	pointers_[CA_GETBOND] = &Command::function_CA_GETBOND;
+	pointers_[CA_CLEARBONDS] = &Command::function_CA_CLEARBONDS;
+	pointers_[CA_CLEARSELECTEDBONDS] = &Command::function_CA_CLEARSELECTEDBONDS;
 	pointers_[CA_NEWBOND] = &Command::function_CA_NEWBOND;
 	pointers_[CA_NEWBONDID] = &Command::function_CA_NEWBONDID;
+	pointers_[CA_REBOND] = &Command::function_CA_REBOND;
 	pointers_[CA_REBONDPATTERNS] = &Command::function_CA_REBONDPATTERNS;
 	pointers_[CA_REBONDSELECTION] = &Command::function_CA_REBONDSELECTION;
-	pointers_[CA_CLEARBONDS] = &Command::function_CA_CLEARBONDS;
-	pointers_[CA_REBOND] = &Command::function_CA_REBOND;
 
 	// Build commands
 	pointers_[CA_ADDHYDROGEN] = &Command::function_CA_ADDHYDROGEN;
@@ -248,6 +248,7 @@ void Command::initPointers()
 	pointers_[CA_CLEARLABELS] = &Command::function_CA_CLEARLABELS;
 	pointers_[CA_LABEL] = &Command::function_CA_LABEL;
 	pointers_[CA_REMOVELABEL] = &Command::function_CA_REMOVELABEL;
+	pointers_[CA_REMOVELABELS] = &Command::function_CA_REMOVELABELS;
 
 	// MC Commands
 	pointers_[CA_MCACCEPT] = &Command::function_CA_MCACCEPT;
@@ -257,9 +258,15 @@ void Command::initPointers()
 	pointers_[CA_PRINTMC] = &Command::function_CA_PRINTMC;
 
 	// Measurement Commands
+	pointers_[CA_ANGLE] = &Command::function_CA_ANGLE;
+	pointers_[CA_ANGLES] = &Command::function_CA_ANGLES;
 	pointers_[CA_CLEARMEASUREMENTS] = &Command::function_CA_CLEARMEASUREMENTS;
+	pointers_[CA_DISTANCE] = &Command::function_CA_DISTANCE;
+	pointers_[CA_DISTANCES] = &Command::function_CA_DISTANCES;
 	pointers_[CA_LISTMEASUREMENTS] = &Command::function_CA_LISTMEASUREMENTS;
 	pointers_[CA_MEASURE] = &Command::function_CA_MEASURE;
+	pointers_[CA_TORSION] = &Command::function_CA_TORSION;
+	pointers_[CA_TORSIONS] = &Command::function_CA_TORSIONS;
 
 	// Messaging Commands
 	pointers_[CA_ERROR] = &Command::function_CA_ERROR;

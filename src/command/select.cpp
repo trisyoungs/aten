@@ -45,7 +45,6 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 	{
 		// Copy variable contents into local character array
 		strcpy(text, slxn->asCharacter());
-	printf("Selection string is '%s'\n",text);
 		// If arg contains a '-', select by range
 		if (strchr(text, '-') != NULL)
 		{

@@ -84,12 +84,12 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Analyse quantities for all frames in current trajectory" },
 	
 	// Atom commands
-	{ "atomstyle",		"N",		"<style>",
-				"Set the individual style of the current atom selection" },
+	{ "atomstyle",		"Ne",		"<style> [id]",
+				"Set the individual style of the current atom selection (or supplied atom)" },
 	{ "getatom",		"Ea",		"<id> [variable]",
 				"Retrieve information for atom id, placing in variable supplied" },
-	{ "hide",		"",		"",
-				"Hide the current selection of atoms" },
+	{ "hide",		"n",		"[id]",
+				"Hide the current selection of atoms (or supplied atom)" },
 	{ "setcharge",		"Ee",		"<q> [id]",
 				"Set the charge of the current (or specified) atom" },
 	{ "setcoords",		"EEEe",		"<x> <y> <z> [id]",
@@ -120,8 +120,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set the y velocity of the current (or specified) atom" },
 	{ "setvz",		"Ee",		"<vz> [id]",
 				"Set the z velocity of the current (or specified) atom" },
-	{ "show",		"",		"",
-				"Show the current selection of atoms" },
+	{ "show",		"n",		"[id]",
+				"Show the current selection of atoms (or supplied atom)" },
 	{ "showall",		"",		"",
 				"Show all atoms in the current model" },
 
@@ -132,19 +132,19 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set bonding tolerance for automatic calculation" },
 	{ "clearbonds",		"",		"",
 				"Delete all bonds in the current model" },
-	{ "getbond",		"EB",		"<id> <variable>",
-				"Retrieve information for bond 'id', placing in variable supplied" },
+	{ "clearselectedbonds",	"",		"",
+				"Delete all bonds in the current selection" },
 	{ "newbond",		"EEn",		"<atom1> <atom2> [bondtype]",
 				"Create a bond between specified atoms" },
 	{ "newbondid",		"EEn",		"<id1> <id2> [bondtype]",
 				"Create a bond between atoms with ids specified" },
+	{ "rebond",		"",		"",
+				"Calculate bonding in the current model" },
 	{ "rebondpatterns",	"",		"",
 				"Calculate bonds between atoms, restricted to atoms in pattern molecules" },
 	{ "rebondselection",	"",		"",
 				"Calculate bonds between atoms in the current selection" },
-	{ "rebond",		"",		"",
-				"Calculate bonding in the current model" },
-	
+
 	// Build commands
 	{ "addhydrogen",	"e",		"[atom|id]",
 				"Hydrogen satisfy all (or specified) atom in model" },
@@ -466,10 +466,12 @@ CommandData Command::data[Command::CA_NITEMS] = {
 	// Labeling commands
 	{ "clearlabels",	"",		"",
 				"Remove all atom labels in the current model" },
-	{ "label",		"N",		"<label>",
-				"Add labels to the current atom selection" },
-	{ "removelabel",	"N",		"<label>",
-				"Remove labels from the current atom selection" },
+	{ "label",		"Nn",		"<label> [id]",
+				"Add labels to the current atom selection (or specified atom)" },
+	{ "removelabel",	"Nn",		"<label> [id]",
+				"Remove labels from the current atom selection (or specified atom)" },
+	{ "removelabels",	"n",	"[id]",
+				"Remove all labels from the current atom selection (or specified atom)" },
 
 	// MC commands
 	{ "mcaccept",		"NE",		"<movetype> <energy>",
@@ -484,12 +486,24 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Print current Monte Carlo parameters" },
 	
 	// Measurements
+	{ "angle",		"EEEv",		"<id1> <id2> <id3> [result]",
+				"Measure angle between atoms specified (and put in variable if supplied)" },
+	{ "angles",		"",		"",
+				"Measure bond angles between atoms in current selection" },
 	{ "clearmeasurements",	"",		"",
 				"Clear all measurements in the current model" },
+	{ "distance",		"EEv",		"<id1> <id2> [result]",
+				"Measure distance between atoms specified (and put in variable if supplied)" },
+	{ "distances",		"",		"",
+				"Measure bond distances between atoms in current selection" },
 	{ "listmeasurements",	"",		"",
 				"List all measurements in the current model" },
 	{ "measure",		"EEee",		"<id1> <id2> [id3] [id4]",
 				"Make a measurement between the specified atoms" },
+	{ "torsion",		"EEEEv",	"<id1> <id2> <id3> <id4> [result]",
+				"Measure torsion angle between atoms specified (and put in variable if supplied)" },
+	{ "torsions",		"",		"",
+				"Measure torsion angles between atoms in current selection" },
 
 	// Messaging
 	{ "error",		"G",		"<message>",
@@ -791,6 +805,17 @@ Command::Command()
 {
 	// Create pointer list
 	initPointers();
+	// Create dummyCommandList complete with a single dummy command
+	dummyCommandList_ = new CommandList;
+	dummyCommandNode_ = new CommandNode;
+	dummyCommandNode_->setParent(dummyCommandList_);
+}
+
+// Constructor
+Command::~Command()
+{
+	delete dummyCommandNode_;
+	delete dummyCommandList_;
 }
 
 // Return whether command accepts any arguments
@@ -804,4 +829,10 @@ int Command::call(Command::Function cf, CommandNode *&c)
 {
 // 	return CALL_COMMAND(commands,pointers_[cf])(c, aten.current);
 	return (this->pointers_[cf])(c, aten.current);
+}
+
+// Execute command, without using reference pointer
+int Command::call(Command::Function cf)
+{
+	return (this->pointers_[cf])(dummyCommandNode_, aten.current);
 }

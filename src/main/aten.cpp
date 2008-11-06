@@ -52,10 +52,6 @@ Aten::Aten()
 	userClipboard = new Clipboard;
 	gridClipboard_ = NULL;
 
-	// CommandLists
-// 	tempScript.createModelVariables(""); TGAY
-// 	interactiveScript.createModelVariables("");  TGAY
-
 	// Single-shot mode variables
 	exportFilter_ = NULL;
 }

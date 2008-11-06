@@ -61,10 +61,24 @@ int main(int argc, char *argv[])
 	// Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure
 	if (aten.parseCli(argc,argv) == -1) return -1;
 
-	// Enter the current single-shot mode
-	if (aten.programMode() == Aten::GuiMode) gui.run();
-	else if (aten.programMode() == Aten::BatchExportMode) aten.exportModels();
-
+	// Enter the correct program mode
+	switch (aten.programMode())
+	{
+		case (Aten::GuiMode):
+			gui.run();
+			break;
+		case (Aten::BatchExportMode):
+			aten.exportModels();
+			break;
+		case (Aten::BatchProcessMode):
+			aten.processModels();
+			aten.saveModels();
+			break;
+		case (Aten::ProcessAndExportMode):
+			aten.processModels();
+			aten.exportModels();
+			break;
+	}
 	// Done.
 	return 0;
 }

@@ -61,7 +61,6 @@ int Command::function_CA_FIRSTFRAME(CommandNode *&c, Bundle &obj)
 	}
 	obj.m->seekFirstFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-// 	c->parent()->setModelVariables("",obj.m); TGAY
 	return Command::Success;
 }
 
@@ -76,7 +75,6 @@ int Command::function_CA_LASTFRAME(CommandNode *&c, Bundle &obj)
 	}
 	obj.m->seekLastFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-// 	c->parent()->setModelVariables("",obj.m); TGAY
 	return Command::Success;
 }
 
@@ -100,7 +98,6 @@ int Command::function_CA_NEXTFRAME(CommandNode *&c, Bundle &obj)
 	}
 	obj.m->seekNextFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-// 	c->parent()->setModelVariables("",obj.m); TGAY
 	return Command::Success;
 }
 
@@ -115,7 +112,6 @@ int Command::function_CA_PREVFRAME(CommandNode *&c, Bundle &obj)
 	}
 	obj.m->seekPreviousFrame();
 	gui.modelChanged(FALSE, FALSE, FALSE);
-// 	c->parent()->setModelVariables("",obj.m); TGAY
 	return Command::Success;
 }
 
@@ -130,6 +126,5 @@ int Command::function_CA_SEEKFRAME(CommandNode *&c, Bundle &obj)
 	}
 	obj.m->seekFrame(c->argi(0));
 	gui.modelChanged(FALSE, FALSE, FALSE);
-// 	c->parent()->setModelVariables("",obj.m); TGAY
 	return Command::Success;
 }

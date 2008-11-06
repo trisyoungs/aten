@@ -66,3 +66,52 @@ void Aten::exportModels()
 	}
 	msg.exit("Aten::exportModels");
 }
+
+/*
+// Batch Process
+*/
+
+// Add set of batch commands
+CommandList *Aten::addBatchCommand()
+{
+	return batchCommands_.add();
+}
+
+// Run all stored commands on all loaded models
+void Aten::processModels()
+{
+	for (Model *m = models_.first(); m != NULL; m = m->next)
+	{
+		for (CommandList *cl = batchCommands_.first(); cl != NULL; cl = cl->next)
+		{
+			// Set the current model
+			aten.setCurrentModel(m);
+			// Run the command list
+			if (!cl->execute()) return;
+		}
+	}
+}
+
+// Save all models under their original names
+void Aten::saveModels()
+{
+	for (Model *m = models_.first(); m != NULL; m = m->next)
+	{
+		setCurrentModel(m);
+		// Check model's filter - it will be the import filter, so try to get the partner
+		Filter *f = m->filter();
+		if (f == NULL)
+		{
+			msg.print("No export filter available for model '%s'. Not saved.\n", m->name());
+			continue;
+		}
+		if (f->type() != Filter::ModelExport)
+		{
+			msg.print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), f->nickname());
+			continue;
+		}
+		Dnchar filename;
+		filename = m->filename();
+		if (!filename.isEmpty()) f->execute("DUMMY");
+	}
+}

@@ -5,6 +5,7 @@ commands.h
 filter.h
 format.h
 formatnode.h
+staticcommand.h
 analyse.cpp 
 atom.cpp 
 bonds.cpp 
@@ -40,6 +41,7 @@ readwrite.cpp
 script.cpp 
 select.cpp 
 site.cpp 
+staticcommand.cpp
 system.cpp 
 trajectory.cpp 
 transform.cpp 

@@ -27,6 +27,7 @@
 #include "gui/gui.h"
 #include "gui/minimiser.h"
 #include "model/model.h"
+#include "command/staticcommand.h"
 
 // Minimisation algorithms
 enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
@@ -61,38 +62,39 @@ void AtenMinimiser::on_MinimiseButton_clicked(bool checked)
 
 void AtenMinimiser::doMinimisation()
 {
-	double econverge, fconverge;
-	int maxcycles;
-	// Get the convergence values from the window controls
-	econverge = pow(10.0,ui.EnergyConvergeSpin->value());
-	fconverge = pow(10.0,ui.ForceConvergeSpin->value());
-	maxcycles = ui.MinimiseCyclesSpin->value();
-	// Store current positions of atoms so we can undo the minimisation
-	Reflist< Atom, Vec3<double> > oldpos;
-	for (Atom *i = aten.currentModel()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
+	static StaticCommandNode cmdmin(Command::CA_SDMINIMISE, "i", 10);
+	static StaticCommandNode cmdconv(Command::CA_CONVERGE, "dd", 0.001, 0.001);
+	static StaticCommandNode cmdlinetol(Command::CA_LINETOL, "d", 0.001);
+
+	// Set convergence criteria and get maxcycles data
+	cmdconv.pokeArguments("dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
+	cmdconv.execute();
+	int maxcycles = ui.MinimiseCyclesSpin->value();
+	
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
 	{
 		case (MM_STEEPEST):
-			sd.setNCycles(maxcycles);
-			sd.setTolerance(pow(10.0,ui.SDLineToleranceSpin->value()));
-			sd.minimise(aten.currentModel(),econverge,fconverge);
+			cmdlinetol.pokeArguments("d", pow(10.0,ui.SDLineToleranceSpin->value()));
+			cmdlinetol.execute();
+			cmdmin.setFunction(Command::CA_SDMINIMISE);
+			cmdmin.pokeArguments("i", maxcycles);
+			cmdmin.execute();
 			break;
 		case (MM_CONJUGATE):
-			cg.setNCycles(maxcycles);
-			cg.setTolerance(pow(10.0,ui.CGLineToleranceSpin->value()));
-			cg.minimise(aten.currentModel(),econverge,fconverge);
+			cmdmin.setFunction(Command::CA_CGMINIMISE);
+			cmdmin.pokeArguments("i", maxcycles);
+			cmdmin.execute();
 			break;
 		case (MM_MONTECARLO):
-			mc.setNCycles(maxcycles);
-			mc.minimise(aten.currentModel(),econverge,fconverge);
+			cmdmin.setFunction(Command::CA_MCMINIMISE);
+			cmdmin.pokeArguments("i", maxcycles);
+			cmdmin.execute();
 			break;
 		case (MM_SIMPLEX):
 			msg.print("Simplex minimiser not yet written!\n");
 			break;
 	}
-	// Finalise the 'transformation' and create an undo state
-	aten.currentModel()->finalizeTransform(oldpos, "Minimise");
 	// Update the view
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }

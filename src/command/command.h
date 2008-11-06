@@ -84,7 +84,7 @@ class CommandNode
 	// Get command function
 	Command::Function function();
 	// Execute command
-	int execute(CommandNode *&c);
+	int execute(CommandNode *&nextnodeptr, bool noflow = FALSE);
 
 	/*
 	// Format
@@ -160,20 +160,28 @@ class CommandNode
 	// Arguments
 	*/
 	private:
-	// Argument list
-	Reflist<Variable,int> args_;
-	// Variable list from which the command arguments were set
-	VariableList *variableList_;
 	// Add variable argument to reference list, given the name
 	bool addArgument(int argid, Parser::ArgumentForm af = Parser::UnknownForm);
+	// Variable list from which the command arguments were set
+	VariableList *variableList_;
+	// Argument list
+	Reflist<Variable,int> args_;
 
 	public:
+	// Set variable list manually
+	void setVariableList(VariableList *varlist);
+	// Add single argument manually
+	void addArgument(Variable *v);
 	// Set arguments from parser arguments
 	bool setArguments(const char *cmdname, const char *specifiers, VariableList *sourcevars);
+	// Set arguments from simple datatypes
+	void setSimpleArguments(const char *args, ...);
 	// Add constant to reference list
 	void addConstant(const char *s, bool forcechar = FALSE);
 	// Add integer constant to reference list
 	void addConstant(int i);
+	// Add real constant to reference list
+	void addConstant(double d);
 	// Return number of arguments given to command
 	int nArgs();
 	// Return variable argument
@@ -196,7 +204,6 @@ class CommandNode
 	Vec3<int> arg3i(int);
 	// Return argument as pointer
 	void *argp(int argno, VTypes::DataType );
-	// Return argument as model pointer
 	// Returns whether argument 'n' was provided
 	bool hasArg(int argno);
 	// Return variable type of argument

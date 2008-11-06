@@ -32,32 +32,69 @@ int Command::function_CA_CLEARLABELS(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
-// Add label to current selection
+// Add label to current selection or specified atom
 int Command::function_CA_LABEL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al != Atom::nLabelItems)
+	if (al == Atom::nLabelTypes) return Command::Fail;
+	if (c->hasArg(1))
 	{
-		obj.rs->beginUndoState("Add labels to selection");
+		Atom *i = obj.rs->atom(c->argi(1));
+		if (i == NULL) return Command::Fail;
+		obj.rs->beginUndoState("Label atom");
+		obj.rs->addLabel(i, al);
+		obj.rs->endUndoState();
+	}
+	else
+	{
+		obj.rs->beginUndoState("Label selection");
 		obj.rs->selectionAddLabels(al);
 		obj.rs->endUndoState();
 	}
-	else return Command::Fail;
 	return Command::Success;
 }
 
-// Remove label from current selection
+// Remove label from current selection or specified atom
 int Command::function_CA_REMOVELABEL(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0));
-	if (al != Atom::nLabelItems)
+	if (al == Atom::nLabelTypes) return Command::Fail;
+	if (c->hasArg(1))
+	{
+		Atom *i = obj.rs->atom(c->argi(1));
+		if (i == NULL) return Command::Fail;
+		obj.rs->beginUndoState("Remove label from atom");
+		obj.rs->removeLabel(i, al);
+		obj.rs->endUndoState();
+	}
+	else
 	{
 		obj.rs->beginUndoState("Remove labels from selection");
 		obj.rs->selectionRemoveLabels(al);
 		obj.rs->endUndoState();
 	}
-	else return Command::Fail;
+	return Command::Success;
+}
+
+// Remove all labels from current selection or specified atom
+int Command::function_CA_REMOVELABELS(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	if (c->hasArg(0))
+	{
+		Atom *i = obj.rs->atom(c->argi(0));
+		if (i == NULL) return Command::Fail;
+		obj.rs->beginUndoState("Remove all labels from atom");
+		obj.rs->clearLabels(i);
+		obj.rs->endUndoState();
+	}
+	else
+	{
+		obj.rs->beginUndoState("Remove all labels from selection");
+		obj.rs->selectionClearLabels();
+		obj.rs->endUndoState();
+	}
 	return Command::Success;
 }

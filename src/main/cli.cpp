@@ -31,6 +31,8 @@
 
 // Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
 Cli cliSwitches[] = {
+	{ Cli::BatchSwitch,		'\0',"batch",		0,
+		"",		"Run any commands supplied with -c or --command on all models and save" },
 	{ Cli::BohrSwitch,		'b',"bohr",		0,
 		"",		"Converts model/grid atomic positions from Bohr to Angstrom" },
 	{ Cli::BondSwitch,		'\0',"bond",		0,
@@ -231,7 +233,6 @@ int Aten::parseCli(int argc, char *argv[])
 	ElementMap::ZmapType zm;
 	Namemap<int> *nm;
 	CommandList cl, *script;
-// 	cl.createModelVariables(""); TGAY
 	Filter *f, *modelfilter = NULL;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -308,6 +309,11 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):
 					break;
+				// Enable batch processing mode
+				case (Cli::BatchSwitch):
+					if (aten.programMode() == Aten::BatchExportMode) aten.setProgramMode(Aten::ProcessAndExportMode);
+					else aten.setProgramMode(Aten::BatchProcessMode);
+					break;
 				// Convert coordinates from Bohr to Angstrom
 				case (Cli::BohrSwitch):
 					prefs.setCoordsInBohr(TRUE);
@@ -326,20 +332,28 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
-					cl.clear();
-// 					cl.setModelVariables("",aten.current.m);/* TGAY*/
-					if (cl.cacheLine(argv[++argn]))
+					if ((aten.programMode() == Aten::BatchProcessMode) || (aten.programMode() == Aten::ProcessAndExportMode))
 					{
-						if (!cl.execute()) return -1;
+						script = aten.addBatchCommand();
+						if (!script->cacheLine(argv[++argn])) return -1;
 					}
-					else return -1;
+					else
+					{
+						cl.clear();
+						if (cl.cacheLine(argv[++argn]))
+						{
+							if (!cl.execute()) return -1;
+						}
+						else return -1;
+					}
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
 					f = aten.findFilter(Filter::ModelExport, argv[++argn]);
 					if (f == NULL) return -1;
 					aten.setExportFilter(f);
-					aten.setProgramMode(Aten::BatchExportMode);
+					if (aten.programMode() == Aten::BatchProcessMode) aten.setProgramMode(Aten::ProcessAndExportMode);
+					else aten.setProgramMode(Aten::BatchExportMode);
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
@@ -426,11 +440,9 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = aten.scripts.add();
-// 					script->createModelVariables(""); TGAY
 					if (script->load(argv[++argn]))
 					{
 						aten.setProgramMode(Aten::CommandMode);
-// 						script->setModelVariables("",aten.current.m); TGAY
 						if (!script->execute()) aten.setProgramMode(Aten::NoMode);
 						// Need to check program mode after each script since it can be changed
 						if (aten.programMode() == Aten::CommandMode) aten.setProgramMode(Aten::GuiMode);
