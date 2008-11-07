@@ -46,7 +46,12 @@ Atom::AtomLabel Atom::atomLabel(const char *s)
 }
 const char *Atom::atomLabel(Atom::AtomLabel al)
 {
-	return AtomLabelKeywords[al];
+	if (al == Atom::IdLabel) return AtomLabelKeywords[0];
+	else if (al == Atom::ElementLabel) return AtomLabelKeywords[1];
+	else if (al == Atom::TypeLabel) return AtomLabelKeywords[2];
+	else if (al == Atom::EquivLabel) return AtomLabelKeywords[3];
+	else if (al == Atom::ChargeLabel) return AtomLabelKeywords[4];
+	return "Atom::nLabelTypes";
 }
 
 // Atom environment
