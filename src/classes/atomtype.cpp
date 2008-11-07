@@ -59,7 +59,7 @@ Atomtype::Atomtype()
 	nRepeat_ = 1;
 	acyclic_ = FALSE;
 	nHydrogen_ = -1;
-	characterElement_ = 0;
+	characterElement_ = -1;
 
 	// Public variables
 	prev = NULL;
@@ -120,7 +120,7 @@ void Atomtype::print()
 }
 
 /*
-// asInteger routines
+// Set routines
 */
 
 // Set element list in Atomtype
@@ -184,6 +184,12 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 	msg.print(Messenger::Typing,"\n");
 	msg.exit("Atomtype::setElements");
 	return TRUE;
+}
+
+// Set the bound bond type
+void Atomtype::setBoundBond(Bond::BondType bt)
+{
+	boundBond_ = bt;
 }
 
 /*
@@ -252,7 +258,7 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 				msg.exit("Ringtype::expand");
 				return FALSE;
 			}
-			//if (c == '=') boundBond_ = BT_DOUBLE;
+			if (c == '=') newat->setBoundBond(Bond::Double);
 			found = TRUE;
 		}
 		// Check for keywords (if it wasn't a bound specifier)
@@ -364,7 +370,7 @@ bool Atomtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 			keywd.eraseStart(1);
 			Atomtype *newat = boundList_.add();
 			newat->setElements(keywd.get(),ff);
-			if (c == '=') boundBond_ = Bond::Double;
+			if (c == '=') newat->setBoundBond(Bond::Double);
 			if (!newat->expand(optlist.get(),ff,parent))
 			{
 				msg.exit("Atomtype::expand");
@@ -498,16 +504,17 @@ int Atomtype::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model 
 	msg.enter("Atomtype::matchInList");
 	// Search the atomlist supplied for a match to this Atomtype.
 	// If we find one, remove the corresponding atom from the atomlist.
-	int score = 0, bondscore;
+	int score, bondscore;
 	Refitem<Atom,int> *boundi;
 	for (boundi = alist->first(); boundi != NULL; boundi = boundi->next)
 	{
 		// Extra check for bond type definition here
-		if (boundBond_ == Bond::Any) bondscore = 1;
-		else (boundBond_ == boundi->data ? bondscore = 1 : bondscore = 0);
+		if (boundBond_ == Bond::Any) bondscore = 0;
+		else if (boundBond_ == boundi->data) bondscore = 1;
+		else continue;
 		// Now do proper atom type check (if we passed the bond check)
-		if (bondscore != 0) score = matchAtom(boundi->item, ringdata, parent, topatom);
-		if ((bondscore + score) > 1) break;
+		score = matchAtom(boundi->item, ringdata, parent, topatom);
+		if (score > -1) break;
 	}
 	// If boundi is NULL then we finished the loop without finding a match to this Atomtype.
 	if (boundi != NULL)
@@ -516,19 +523,16 @@ int Atomtype::matchInList(Reflist<Atom,int> *alist, List<Ring> *ringdata, Model 
 		msg.exit("Atomtype::matchInList");
 		return bondscore+score;
 	}
-	else
-	{
-		msg.exit("Atomtype::matchInList");
-		return 0;
-	}
+	msg.exit("Atomtype::matchInList");
+	return -1;
 }
 
 int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topatom)
 {
 	// Given the supplied atom pointer and ring data pointer (passed from pattern)
 	// see how well the description matches the actual atom, returning as an int. Cycle data is 
-	// available in (pattern->)rings. Exit and return 0 as soon as a test fails.
-	msg.enter("Atomtype::match_atom");
+	// available in (pattern->)rings. Exit and return -1 as soon as a test fails.
+	msg.enter("Atomtype::matchAtom");
 	static int level = 0;
 	int typescore, atomscore, ringscore, n;
 	bool found;
@@ -541,8 +545,17 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	Reflist<Ring,int> ringchecklist;
 	Refitem<Atom,int> *ri;
 	Refitem<ForcefieldAtom,int> *rd;
-	// Set the scoring to one (which will be the case if there are no specifications to match)
-	typescore = 1;
+	// If a character element is specified, check that our target atom is the correct element. Otherwise, initialise typescore to zero
+	if (characterElement_ != -1)
+	{
+		if (i->element() != characterElement_)
+		{
+			msg.exit("Atomtype::matchAtom");
+			return -1;
+		}
+		else typescore = 1;
+	}
+	else typescore = 0;
 	level ++;
 	msg.print(Messenger::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements.symbol(i), i->nBonds(), Atom::atomEnvironment(i->environment()));
 	// Element check
@@ -570,7 +583,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			if (i->element() != ffa->atomtype()->characterElement()) continue;
 			// Does this atom match the type descriptions asked for?
 			n = rd->item->atomtype()->matchAtom(i,ringdata,parent,topatom);
-			if (n > 0)
+			if (n > -1)
 			{
 				found = TRUE;
 				typescore += n;
@@ -583,7 +596,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			msg.print(Messenger::Typing,"[failed - is %i, but type needs %i]\n", i->element(), characterElement_);
 			level --;
 			msg.exit("Atomtype::matchAtom");
-			return 0;
+			return -1;
 		}
 	}
 	// Atom environment check
@@ -601,7 +614,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			msg.print(Messenger::Typing,"[failed - is '%s', but type needs %s]\n", Atom::atomEnvironment(i->environment()), Atom::atomEnvironment(environment_));
 			level --;
 			msg.exit("Atomtype::matchAtom");
-			return 0;
+			return -1;
 		}
 	}
 	// Oxidation state check
@@ -619,7 +632,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			msg.print(Messenger::Typing,"[failed - is '%i', but type needs '%i']\n", i->os(), os_);
 			level --;
 			msg.exit("Atomtype::matchAtom");
-			return 0;
+			return -1;
 		}
 	}
 	// Number of bound atoms check
@@ -637,7 +650,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			msg.print(Messenger::Typing,"[failed - is '%i', but type needs '%i']\n",i->nBonds(),nBonds_);
 			level --;
 			msg.exit("Atomtype::matchAtom");
-			return 0;
+			return -1;
 		}
 	}
 	// Local atom geometry check
@@ -655,7 +668,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			msg.print(Messenger::Typing,"[failed - is '%s', but type needs '%s']\n", Atom::atomGeometry(i->geometry(parent)), Atom::atomGeometry(geometry_));
 			level --;
 			msg.exit("Atomtype::matchAtom");
-			return 0;
+			return -1;
 		}
 	}
 	// Construct bound atom list for subsequent checks...
@@ -678,7 +691,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 			msg.print(Messenger::Typing,"[failed - is '%i', but type needs '%i']\n", n, nHydrogen_);
 			level --;
 			msg.exit("Atomtype::matchAtom");
-			return 0;
+			return -1;
 		}
 	}
 	// List of bound atoms check
@@ -689,20 +702,20 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 		{
 			for (n=0; n<bat->nRepeat_; n++)
 			{
-				msg.print(Messenger::Typing,"(%li %2i) ... Bound atom %li (%i/%i):\n",this,level,bat,n+1,bat->nRepeat_);
+				msg.print(Messenger::Typing,"(%li %2i) ... Bound atom %li (n=%i/%i): ",this,level,bat,n+1,bat->nRepeat_);
 				// Check the atomlist for a match to the bound Atomtype
 				atomscore = bat->matchInList(&atomchecklist,ringdata,parent,topatom);
-				if (atomscore != 0)
+				if (atomscore != -1)
 				{
-					msg.print(Messenger::Typing,"(%li %2i) ... Bound atom %li (%i/%i) [passed]\n",this,level,bat,n+1,bat->nRepeat_);
+					msg.print(Messenger::Typing,"[passed]\n");
 					typescore += atomscore;
 				}
 				else
 				{
-					msg.print(Messenger::Typing,"(%li %2i) ... Bound atom %li (%i/%i) [failed]\n",this,level,bat,n+1,bat->nRepeat_);
+					msg.print(Messenger::Typing,"[failed]\n");
 					level --;
 					msg.exit("Atomtype::matchAtom");
-					return 0;
+					return -1;
 				}
 			}
 		}
@@ -727,11 +740,8 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 					// Initialise score
 					ringscore = 0;
 					// Check for presence of top atom 
-					if (atr->selfAbsent_)
-					{
-						if (refring->item->containsAtom(topatom)) continue;
-						else ringscore ++;
-					}
+					if ((atr->selfAbsent_) && (refring->item->containsAtom(topatom))) continue;
+					else ringscore ++;
 					// Size check
 					msg.print(Messenger::Typing,"(%li %2i) ... ... Size  ",this,level);
 					if (atr->nAtoms_ == -1)
@@ -761,7 +771,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 						{
 							msg.print(Messenger::Typing,"(%li %2i) ... ... ... Atom (%li) (%i/%i)  ",this,level,bat,n+1,bat->nRepeat_);
 							atomscore = bat->matchInList(&atomchecklist, ringdata, parent, topatom);
-							if (atomscore != 0)
+							if (atomscore > -1)
 							{
 								msg.print(Messenger::Typing,"[passed]\n");
 								ringscore += atomscore;
@@ -793,7 +803,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 					msg.print(Messenger::Typing,"(%li %2i) ... Ring (%li)  [failed]\n",this,level,atr);
 					level --;
 					msg.exit("Atomtype::matchAtom");
-					return 0;
+					return -1;
 				}
 			} //End of loop over repeats
 		}

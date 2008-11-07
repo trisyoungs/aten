@@ -387,6 +387,7 @@ void Command::initPointers()
 	pointers_[CA_HELP] = &Command::function_CA_HELP;
 	pointers_[CA_SEED] = &Command::function_CA_SEED;
 	pointers_[CA_QUIT] = &Command::function_CA_QUIT;
+	pointers_[CA_VERSION] = &Command::function_CA_VERSION;
 	
 	// Trajectory Commands
 	pointers_[CA_FINALISEFRAME] = &Command::function_CA_FINALISEFRAME;

@@ -312,7 +312,7 @@ bool Pattern::typeAtoms()
 				i->setType(ffa);
 			}
 		}
-		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFType for atom is : %i\n",i->type());
+		msg.print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)\n", i->type(), i->type()->name());
 		if (i->type() == NULL)
 		{
 			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->id()+1,i->nBonds());

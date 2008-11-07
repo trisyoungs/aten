@@ -444,7 +444,8 @@ class Command {
 		CA_HELP,
 		CA_SEED,
 		CA_QUIT,
-	
+		CA_VERSION,
+
 		// Trajectory Commands
 		CA_FINALISEFRAME,
 		CA_FIRSTFRAME,
@@ -828,6 +829,7 @@ class Command {
 	static int function_CA_SEED(CommandNode *&c, Bundle &obj);
 	static int function_CA_HELP(CommandNode *&c, Bundle &obj);
 	static int function_CA_QUIT(CommandNode *&c, Bundle &obj);
+	static int function_CA_VERSION(CommandNode *&c, Bundle &obj);
 	// Trajectory Commands
 	static int function_CA_FINALISEFRAME(CommandNode *&c, Bundle &obj);
 	static int function_CA_FIRSTFRAME(CommandNode *&c, Bundle &obj);

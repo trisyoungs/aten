@@ -57,8 +57,8 @@ int Command::function_CA_HELP(CommandNode *&c, Bundle &obj)
 {
 	Command::Function cf = commands.command(c->argc(0));
 	if (cf == CA_NITEMS) msg.print("help: Unrecognised command '%s'.\n", c->argc(0));
-	else if (commands.data[cf].hasArguments()) msg.print("help:  %s  --  %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
-	else msg.print("help:  %s %s  --  %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
+	else if (commands.data[cf].hasArguments()) msg.print("help:  %s %s\n       %s\n", commands.data[cf].keyword, commands.data[cf].argText, commands.data[cf].syntax);
+	else msg.print("help:  %s\n       %s\n", commands.data[cf].keyword, commands.data[cf].syntax);
 	return Command::Success;
 }
 
@@ -76,5 +76,12 @@ int Command::function_CA_QUIT(CommandNode *&c, Bundle &obj)
 	aten.setProgramMode(Aten::NoMode);
 	// If the GUI is active, close it...
 	if (gui.exists()) gui.saveBeforeClose();
+	return Command::Exit;
+}
+
+// Print version information
+int Command::function_CA_VERSION(CommandNode *&c, Bundle &obj)
+{
+	printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
 	return Command::Exit;
 }

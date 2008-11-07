@@ -53,6 +53,7 @@ StaticCommandNode::StaticCommandNode(Command::Function func, const char *args, .
 				v = staticVariableList_.addSimpleVariable(VTypes::RealData);
 				v->set(va_arg(vars, double));
 				break;
+			case ('c'):
 			case ('s'):
 				v = staticVariableList_.addSimpleVariable(VTypes::CharacterData);
 				v->set(va_arg(vars, const char*));
@@ -93,6 +94,7 @@ void StaticCommandNode::pokeArguments(const char *args, ...)
 				if (cmd_.argt(count) != VTypes::RealData) msg.print("Type mismatch when poking arguments in StaticCommandNode - wanted 'real' but found '%s'.\n", VTypes::dataType(cmd_.argt(count)));
 				cmd_.arg(count)->set(va_arg(vars, double));
 				break;
+			case ('c'):
 			case ('s'):
 				if (cmd_.argt(count) != VTypes::CharacterData) msg.print("Type mismatch when poking arguments in StaticCommandNode - wanted 'character' but found '%s'.\n", VTypes::dataType(cmd_.argt(count)));
 				cmd_.arg(count)->set(va_arg(vars, const char*));
