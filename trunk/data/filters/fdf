@@ -1,0 +1,111 @@
+# Siesta Flexible Data Format (fdf)
+# Last modified: 07/11/2008
+# ChangeLog:
+#	07/11/2008 - First version.
+
+importmodel
+	name "Siesta FDF"
+	nickname fdf
+	extension fdf
+	glob *.fdf
+	id 3
+
+	# Variable declaration
+	integer natoms,n
+	character e,title
+	double rx,ry,rz,q
+
+	# Read data
+	readline "$natoms"
+	getline $title
+	newmodel $title
+	for $n,1,$natoms
+		readline "$e $rx $ry $rz $q"
+		newatom $e
+		setcoords $rx $ry $rz
+		setcharge $q
+	end
+	rebond
+	finalisemodel
+end
+
+exportmodel
+	name "Siesta FDF"
+	nickname fdf
+	extension fdf
+	glob *.fdf
+	id 3
+
+	# Variable declaration
+	integer n, el[130], nspecies
+	character e
+	double rx,ry,rz
+	atom i
+
+	# Determine elements used in model
+	$nelements = 0
+	for $i
+		if $el[$i.element] = 0
+			$nspecies ++
+			$el[$i.element] = $nspecies
+		end if
+	end
+	
+	# Write title information
+	writeline "SystemName  $model.name"
+	writeline "SystemLabel $model.name"
+	writeline "NumberOfAtoms $model.natoms"
+	writeline "NumberOfSpecies  $nspecies"
+	writeline ""
+
+	# Write chemical species data
+	writeline "%block ChemicalSpeciesLabel"
+	# 1  7    N-PBE 
+	for $n,1,120
+		if $elements[$n] <> 0
+			writeline "$n"
+		end if
+	end
+	writeline "%endblock ChemicalSpeciesLabel"
+
+end
+
+PAO.EnergyShift      25 meV
+MeshCutoff          400 Ry
+DM.MixingWeight      0.4
+NetCharge            1.0
+ 
+PAO.BasisSize       DZP
+XC.functional       GGA
+XC.authors          PBE
+DM.NumberPulay      4
+DM.Tolerance        1.d-6
+SolutionMethod      diagon
+MaxSCFIterations    100
+ParallelOverK       true
+MD.TypeOfRun        Verlet
+MD.InitialTemperature  0.0  K
+MD.InitialTimeStep    1
+MD.FinalTimeStep    1
+WriteCoorXmol       true
+WriteForces         true
+ 
+AtomicCoordinatesFormat  Ang
+%block AtomicCoordinatesAndAtomicSpecies
+  0.47761281 -0.09694723  0.97059666   1
+  0.26889638 -0.71018876 -0.13407112   2
+ -0.40575219  0.08854128 -1.01475834   1
+ -0.60935483  1.32975432 -0.39431309   2
+ -0.08279941  1.20342348  0.81155104   2
+ -0.87700992 -0.23013567 -2.38310223   2
+  1.07823396 -0.62734510  2.15522175   2
+  0.53868637 -1.73796330 -0.32718472   3
+ -1.10506457  2.19503805 -0.80898878   3
+ -0.01339150  1.80953828  1.70273418   3
+ -1.18727961  0.44856116 -3.17758529   3
+ -1.84046463 -0.63902755 -2.07869715   3
+ -0.16242136 -0.85006062 -2.92454129   3
+  1.57533654  0.22499059  2.61837711   3
+  0.45033650 -1.06555563  2.93098997   3
+  1.89443547 -1.34262330  2.05377131   3
+%endblock AtomicCoordinatesAndAtomicSpecies

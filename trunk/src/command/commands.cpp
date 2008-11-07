@@ -724,6 +724,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set the random seed" },
 	{ "quit",		"",		"",
 				"Exit the program" },
+	{ "version",		"",		"",
+				"Print program version information" },
 
 	// Trajectory commands
 	{ "finaliseframe",	"",		"",

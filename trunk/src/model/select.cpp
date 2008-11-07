@@ -280,7 +280,7 @@ void Model::selectType(int element, const char *typedesc)
 		msg.exit("Model::selectType");
 		return;
 	}
-	int count = 0, matchscore, atomscore, n;
+	int count = 0, matchscore = 0, atomscore, n;
 	// Prepare for typing
 	describeAtoms();
 	// Loop over patterns and select atoms
@@ -291,16 +291,13 @@ void Model::selectType(int element, const char *typedesc)
 		{
 			p->resetTempI(0);
 			i->tempi = 1;
-			if (i->element() == testat.characterElement())
+			atomscore = testat.matchAtom(i,p->ringList(),this,i);
+			if (atomscore > 0)
 			{
-				atomscore = testat.matchAtom(i,p->ringList(),this,i);
-				if (atomscore != 0)
-				{
-					// Select this atom in all pattern molecules
-					p->selectAtom(n);
-					count += p->nMolecules();
-					matchscore = atomscore;
-				}
+				// Select this atom in all pattern molecules
+				p->selectAtom(n);
+				count += p->nMolecules();
+				matchscore = atomscore;
 			}
 			i = i->next;
 		}

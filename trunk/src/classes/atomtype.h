@@ -138,6 +138,8 @@ class Atomtype
 	public:
 	// Expand the allowedElements_ array with the element string provided
 	bool setElements(const char*, Forcefield*);
+	// Set the bound bond type
+	void setBoundBond(Bond::BondType bt);
 };
 
 #endif
