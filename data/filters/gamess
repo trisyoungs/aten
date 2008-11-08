@@ -17,7 +17,7 @@ importmodel
 	# Variable declaration
 	integer result,nmodels,natoms,n
 	character line,e
-	double rx,ry,rz
+	real rx,ry,rz
 
 	# Determine number of atoms - search for line containing 'TOTAL NUMBER OF ATOMS'
 	find "TOTAL NUMBER OF ATOMS" $result $line
@@ -59,7 +59,7 @@ importmodel
 	# Variables
 	character symm,tester,symbol,title
 	integer n,z
-	double rx,ry,rz
+	real rx,ry,rz
 
 	# Search for $DATA section
 	find "DATA" $n

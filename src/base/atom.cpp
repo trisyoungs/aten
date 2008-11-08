@@ -421,7 +421,8 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 			b1 = bonds()->item;
 			b2 = bonds()->next->item;
 			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
-			result = (angle > 170.0 ? Atom::LinearGeometry : Atom::TetrahedralGeometry);
+			if (angle> 170.0) result = Atom::LinearGeometry;
+			else if ((angle > 100.0) && (angle < 115.0)) Atom::TetrahedralGeometry;
 			break;
 		case (3):
 			bref1 = bonds();
@@ -436,7 +437,9 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 			b1 = bref1->next->item;
 			angle = parent->angle(b1->partner(this),this,b2->partner(this)) * DEGRAD;
 			if (angle > largest) largest = angle;
-			result = (largest > 170.0 ? Atom::TShapeGeometry : (largest > 115.0 ? Atom::TrigPlanarGeometry : Atom::TetrahedralGeometry));
+			if (largest > 170.0) result = Atom::TShapeGeometry;
+			else if ((largest > 115.0) && (largest < 125.0)) result = Atom::TrigPlanarGeometry;
+			else if ((largest < 115.0) && (largest > 100.0)) result = Atom::TetrahedralGeometry;
 			break;
 		case (4):
 			// Two possibilities - tetrahedral or square planar. Tetrahedral will have an
@@ -454,7 +457,9 @@ Atom::AtomGeometry Atom::geometry(Model *parent)
 				}
 				bref1 = bref1->next;
 			}
-			result = ((angle/6.0) > 115.0 ? Atom::SquarePlanarGeometry : Atom::TetrahedralGeometry);
+			angle /= 6.0;
+			if ((angle > 100.0) && (angle < 115.0)) result = Atom::TetrahedralGeometry;
+			else if ((angle >= 115.0) && (angle < 125.0)) Atom::SquarePlanarGeometry;
 			break;
 	}
 	msg.exit("Atom::geometry");

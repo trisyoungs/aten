@@ -18,8 +18,8 @@ importmodel
 	# Variables
 	character discard,format,e,data,keywd,line,char,looptype,gen
 	integer n,m,cellspec
-	double rx,ry,rz
-	double a,b,c,alpha,beta,gamma
+	real rx,ry,rz
+	real a,b,c,alpha,beta,gamma
 
 	# Blank lines are significant, so don't skip them, and recognise quoting
 	removereadoption skipblanks

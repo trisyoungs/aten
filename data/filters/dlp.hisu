@@ -13,8 +13,8 @@ importtrajectory
 	# Variable declaration
 	character title,name
 	integer recsize,n,nskip,newcelltype,newnatoms
-	double dnatoms,mass,q,dnstep,dkeytrj,dimcon,tstep
-	double ax,bx,cx,ay,by,cy,az,bz,cz,rx,ry,rz,fx,fy,fz,vx,vy,vz
+	real dnatoms,mass,q,dnstep,dkeytrj,dimcon,tstep
+	real ax,bx,cx,ay,by,cy,az,bz,cz,rx,ry,rz,fx,fy,fz,vx,vy,vz
 	model frame
 
 	# DL_POLY unformatted history files may contain a header.

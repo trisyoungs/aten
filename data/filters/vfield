@@ -13,7 +13,7 @@ importmodel
 
 	# Variable declaration
 	integer n,i,j,k,nx,ny,nz
-	double x,y,z,vx,vy,vz
+	real x,y,z,vx,vy,vz
 
 	newmodel $infile
 

@@ -12,7 +12,7 @@ importgrid
 
 	# Variable declarations
 	integer n,nx,ny,nz,npoints
-	double ox,oy,oz,data,xx,xy,xz,yx,yy,yz
+	real ox,oy,oz,data,xx,xy,xz,yx,yy,yz
 	character order
 
 	# Create new grid

@@ -1,7 +1,7 @@
 # Simple script to calculate the dipole moment of the current model and add it as a vector glyph.
 # This only works for neutral, non-periodic systems.
 
-double dx,dy,dz,cogx,cogy,cogz,mag
+real dx,dy,dz,cogx,cogy,cogz,mag
 atom i
 
 # Check that we have enough atoms to do the calculation

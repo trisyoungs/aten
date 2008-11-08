@@ -14,7 +14,7 @@ importgrid
 	# Variable declaration
 	character e,title
 	integer natoms,nx,ny,nz,i,j,k
-	double ox,oy,oz,xx,xy,xz,yx,yy,yz,zx,zy,zz,rx,ry,rz,data
+	real ox,oy,oz,xx,xy,xz,yx,yy,yz,zx,zy,zz,rx,ry,rz,data
 
 	# Since we must create the model first, and then set all grid date afterwards,
 	# store all grid-related values for later until we've finalised the model.

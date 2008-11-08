@@ -12,7 +12,7 @@ importmodel
 	# Variable declarations
 	integer n,cellvar,id,bondi,bondj
 	character block,newblock,type,line,ident,data,a,b,c,e
-	double rx,ry,rz,fx,fy,fz,cax,cay,caz,cbx,cby,cbz,ccx,ccy,ccz,q
+	real rx,ry,rz,fx,fy,fz,cax,cay,caz,cbx,cby,cbz,ccx,ccy,ccz,q
 
 	# Request that parentheses are removed as we read lines
 	addreadoption stripbrackets

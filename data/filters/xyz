@@ -14,7 +14,7 @@ importmodel
 	# Variable declaration
 	integer natoms,n
 	character e,title
-	double rx,ry,rz,q
+	real rx,ry,rz,q
 
 	# Read data
 	readline "$natoms"
@@ -40,7 +40,7 @@ exportmodel
 	# Variable declaration
 	integer n
 	character e
-	double rx,ry,rz
+	real rx,ry,rz
 	atom i
 
 	writeline "$model.natoms"
@@ -59,7 +59,7 @@ importtrajectory
 	# Variable declaration
 	integer n,natoms
 	character e,title
-	double rx,ry,rz
+	real rx,ry,rz
 
 	# No header in XYZ trajectories, so only check for frames
 	if $header <> true
