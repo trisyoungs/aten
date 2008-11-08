@@ -13,7 +13,7 @@ importgrid
 	# Variable declarations
 	character order
 	integer n,nx,ny,nz,npoints
-	double spacing,ox,oy,oz,data
+	real spacing,ox,oy,oz,data
 
 	# Create new grid
 	newgrid $infile

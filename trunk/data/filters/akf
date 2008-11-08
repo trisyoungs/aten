@@ -14,7 +14,7 @@ importmodel
 	# Variable declaration
 	integer natoms,n,i,j,k
 	character e,keywd,line
-	double rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
+	real rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
 
 	newmodel $infile
 
@@ -73,7 +73,7 @@ end
 #	# Variable declaration
 #	integer n
 #	character e
-#	double rx,ry,rz
+#	real rx,ry,rz
 #	atom i
 #
 #	writeline "$natoms"

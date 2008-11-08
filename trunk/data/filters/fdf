@@ -13,7 +13,7 @@ importmodel
 	# Variable declaration
 	integer natoms,n
 	character e,title
-	double rx,ry,rz,q
+	real rx,ry,rz,q
 
 	# Read data
 	readline "$natoms"
@@ -39,7 +39,7 @@ exportmodel
 	# Variable declaration
 	integer n, el[130], nspecies
 	character e
-	double rx,ry,rz
+	real rx,ry,rz
 	atom i
 
 	# Determine elements used in model

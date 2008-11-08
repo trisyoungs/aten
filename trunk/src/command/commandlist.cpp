@@ -178,7 +178,7 @@ bool CommandList::addCommand(Command::Function cf)
 		*/
 		case (Command::CA_CHAR):
 		case (Command::CA_INT):
-		case (Command::CA_FLOAT):
+		case (Command::CA_REAL):
 		case (Command::CA_ATOM):
 		case (Command::CA_BOND):
 		case (Command::CA_PATTERN):

@@ -69,7 +69,7 @@ class Command {
 		// Variable declaration
 		CA_CHAR,
 		CA_INT,
-		CA_FLOAT,
+		CA_REAL,
 		CA_ATOM,
 		CA_BOND,
 		CA_PATTERN,
@@ -530,12 +530,11 @@ class Command {
 	static int function_CA_BONDTOLERANCE(CommandNode *&c, Bundle &obj);
 	static int function_CA_CLEARBONDS(CommandNode *&c, Bundle &obj);
 	static int function_CA_CLEARSELECTEDBONDS(CommandNode *&c, Bundle &obj);
-	static int function_CA_GETBOND(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWBOND(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWBONDID(CommandNode *&c, Bundle &obj);
+	static int function_CA_REBOND(CommandNode *&c, Bundle &obj);
 	static int function_CA_REBONDPATTERNS(CommandNode *&c, Bundle &obj);
 	static int function_CA_REBONDSELECTION(CommandNode *&c, Bundle &obj);
-	static int function_CA_REBOND(CommandNode *&c, Bundle &obj);
 	// Build commands
 	static int function_CA_ADDHYDROGEN(CommandNode *&c, Bundle &obj);
 	static int function_CA_BOHR(CommandNode *&c, Bundle &obj);

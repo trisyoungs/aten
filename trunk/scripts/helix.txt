@@ -2,7 +2,7 @@
 
 # Variables
 integer n, nunits, nperloop
-double rcc, deltaz
+real rcc, deltaz
 
 # Setup
 # Number of ethylene fragments per loop (circumference)

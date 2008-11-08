@@ -13,7 +13,7 @@ exportfield
 	exact "FIELD"
 
 	# Variable declaration
-	double epsilon, sigma
+	real epsilon, sigma
 	pattern p
 	atom i
 	bound b

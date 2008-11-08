@@ -14,7 +14,7 @@ importmodel
 
 	# Variable declarations
 	character keyword,line,e,name
-	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma
+	real rx,ry,rz,ca,cb,cc,alpha,beta,gamma
 	integer n,id,i,bondi,bondj,bondk,bondl,found
 
 	# Element names in PDB files are commonly 'appended' by a numeric id, which we don't want...

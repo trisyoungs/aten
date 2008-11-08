@@ -16,8 +16,8 @@ importmodel
 	# Variable Declaration
 	character e, title
 	integer n,keytrj,imcon
-	double ax,ay,az,bx,by,bz,cx,cy,cz
-	double rx,ry,rz,vx,vy,vz,fx,fy,fz
+	real ax,ay,az,bx,by,bz,cx,cy,cz
+	real rx,ry,rz,vx,vy,vz,fx,fy,fz
 
 	# Title section
 	getline $title
@@ -61,7 +61,7 @@ exportmodel
 
 	# Variable Declaration
 	integer imcon,id,n
-	double rx, ry, rz
+	real rx, ry, rz
 	atom i
 
 	# Title section

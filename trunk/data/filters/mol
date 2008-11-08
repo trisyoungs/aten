@@ -14,7 +14,7 @@ importmodel
 	# Variable declaration
 	character line,e,title
 	integer n,natoms,nbonds,ii,jj,bondtype
-	double rx,ry,rz
+	real rx,ry,rz
 	
 	# Create default model
 	getline $title

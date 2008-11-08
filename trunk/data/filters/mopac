@@ -18,7 +18,7 @@ importmodel
 	# Variable declaration
 	integer natoms,n,cellcount,fx,fy,fz
 	character e,line,title
-	double rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
+	real rx,ry,rz,ax,ay,az,bx,by,bz,cx,cy,cz
 
 	# Initialise variables
 	$cellcount = 0
@@ -72,7 +72,7 @@ exportmodel
 	# Variable declaration
 	integer n
 	character e
-	double rx,ry,rz
+	real rx,ry,rz
 	atom i
 
 	writeline "PM6 BFGS"

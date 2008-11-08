@@ -15,8 +15,8 @@ importmodel
 	character spgrp,discard,ea,eb,ec,e,title
 	integer nf,nr,nd,ne,nsymm,natm,nsatm,ncon,cell,atfor,pa,pb,pc,pal,pbe,pga
 	integer n,spgrpn,nlines,nextra,mod,natoms,ii,jj,total
-	double xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz
-	double a,b,c,al,be,ga,cella,cellb,cellc,alpha,beta,gamma
+	real xa,ya,za,xb,yb,zb,xc,yc,zc,rx,ry,rz
+	real a,b,c,al,be,ga,cella,cellb,cellc,alpha,beta,gamma
 
 	zmap firstalpha
 

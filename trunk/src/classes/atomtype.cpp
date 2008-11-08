@@ -258,7 +258,7 @@ bool Ringtype::expand(const char *data, Forcefield *ff, ForcefieldAtom *parent)
 				msg.exit("Ringtype::expand");
 				return FALSE;
 			}
-			if (c == '=') newat->setBoundBond(Bond::Double);
+			if (c == '=') msg.print("Note: bound specified '=' means the same as '-' in a ring definition.\n");
 			found = TRUE;
 		}
 		// Check for keywords (if it wasn't a bound specifier)

@@ -15,8 +15,8 @@ importtrajectory
 	# Variable declaration
 	character title,e
 	integer nstep,keytrj,imcon,trajnatoms,n,id
-	double tstep,ax,bx,cx,ay,by,cy,az,bz,cz,mass,q
-	double rx,ry,rz,fx,fy,fz,vx,vy,vz
+	real tstep,ax,bx,cx,ay,by,cy,az,bz,cz,mass,q
+	real rx,ry,rz,fx,fy,fz,vx,vy,vz
 	model frame
 
 	# DL_POLY formatted history files may contain a header.

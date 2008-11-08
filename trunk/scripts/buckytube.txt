@@ -2,7 +2,7 @@
 
 # Variables
 integer nbenz, nstacks, stack, benz
-double rcc, deltaz
+real rcc, deltaz
 
 # Setup
 # The number of benzene laying on the same stack circumference is nbenz
