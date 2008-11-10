@@ -9,7 +9,7 @@ importmodel
 	nickname akf
 	extension akf
 	glob *.akf
-	id 2
+	id 1
 
 	# Variable declaration
 	integer natoms,n,i,j,k
@@ -68,7 +68,7 @@ end
 #	extension xyz
 #	glob *.xyz
 #	nickname xyz
-#	id 2
+#	id 1
 #
 #	# Variable declaration
 #	integer n

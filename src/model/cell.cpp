@@ -166,9 +166,9 @@ void Model::pack(Generator *gen)
 	Clipboard clip;
 	Vec3<double> newr;
 	int oldnatoms;
-	if (gen == 0)
+	// Ignore the identity operator, and leave if there are no atoms selected
+	if ((gen == 0) || (nSelected_ == 0))
 	{
-		// Ignore this operator since it is the identity operator
 		msg.enter("Model::pack[generator]");
 		return;
 	}
@@ -182,7 +182,6 @@ void Model::pack(Generator *gen)
 	{
 		// Get the position of the newly-pasted atom
 		newr = i->r();
-// 		newr.print();
 		// Apply the rotation and translation
 		newr *= gen->rotation;
 		newr +=  cell_.transpose() * gen->translation;

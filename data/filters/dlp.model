@@ -1,5 +1,6 @@
 # DL_POLY Configuration Import / Export
-# Last modified: 12/10/2008
+# Last modified: 10/11/2008
+#	10/11/2008 - Added id.
 #	12/10/2008 - Modified to properly use variable paths.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	05/08/2008 - Quoting adjusted to follow new rules.
@@ -10,7 +11,7 @@ importmodel
 	glob *CON*
 	exact CONFIG,REVCON,config,revcon
 	nickname dlpoly
-	id 1
+	id 2
 	zmap ff
 
 	# Variable Declaration
@@ -57,7 +58,7 @@ exportmodel
 	extension CONFIG
 	glob *CON*
 	nickname dlpoly
-	id 1
+	id 2
 
 	# Variable Declaration
 	integer imcon,id,n

@@ -8,7 +8,7 @@ importmodel
 	nickname fdf
 	extension fdf
 	glob *.fdf
-	id 3
+	id 9
 
 	# Variable declaration
 	integer natoms,n
@@ -34,7 +34,7 @@ exportmodel
 	nickname fdf
 	extension fdf
 	glob *.fdf
-	id 3
+	id 9
 
 	# Variable declaration
 	integer n, el[130], nspecies

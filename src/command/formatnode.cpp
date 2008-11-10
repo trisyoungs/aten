@@ -75,6 +75,13 @@ bool FormatNode::set(const char *s, VariableList &vlist, bool astext)
 	specifier[0] = '\0';
 	len[0] = '\0';
 	pre[0] = '\0';
+	// If we are adding as test, just add the string as a constant value
+	if (astext)
+	{
+		variable_ = vlist.addConstant(s);
+		msg.exit("FormatNote::set");
+		return TRUE;
+	}
 	// Everything up to the '@' character is the quantity / variable
 	for (pos1 = 0; s[pos1] != '\0'; pos1++)
 	{
@@ -101,7 +108,7 @@ bool FormatNode::set(const char *s, VariableList &vlist, bool astext)
 	}
 	msg.print(Messenger::Parse,"FormatNode::set : Parsed specifier[%s] length[%s] precision[%s]\n", specifier, len, pre);
 	// If we're given a variable, create a path to it
-	if ((specifier[0] == '$') && (!astext))
+	if (specifier[0] == '$')
 	{
 		variable_ = vlist.addPath(&specifier[0]);
 		if (variable_ == NULL)
@@ -110,7 +117,7 @@ bool FormatNode::set(const char *s, VariableList &vlist, bool astext)
 			return FALSE;
 		}
 	}
-	else if ((specifier[0] == '*') && (!astext))
+	else if (specifier[0] == '*')
 	{
 		// Check that this was the only character in the variable name....
 		if (specifier[1] == '\0') variable_ = vlist.dummy();
