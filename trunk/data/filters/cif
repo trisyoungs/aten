@@ -1,6 +1,7 @@
 # Crystallographic Information File (cif)
-# Last modified: 04/10/2008
+# Last modified: 10/11/2008
 # ChangeLog:
+#	10/11/2008 - Added id.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	21/09/2008 - Adjusted to use new data access rules.
 #	05/08/2008 - Quoting adjusted to follow new Parser rules in r550. Added 'rebond' command.
@@ -10,6 +11,7 @@ importmodel
 	nickname cif
 	extension cif
 	glob *.cif
+	id 8
 
 	# CIF files are dictionary-based, so we can recognise keywords as we find them.
 	# Loops are a little more complicated. For these we will build up a custom format string

@@ -73,7 +73,7 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	// Clear any existing node list
 	nodes_.clear();
 	n = 0;
-// 	printf("Creating format from string '%s'\n",s);
+//  	printf("Creating format from string '%s'\n",s);
 	while (s[n] != '\0')
 	{
 // 		printf("Current s[n] = '%c'\n",s[n]);
@@ -156,7 +156,7 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	if (nchars != 0)
 	{
 		text[nchars] = '\0';
-// 		printf("Loop has ended - remaining text is '%s'.\n",text);
+//  		printf("Loop has ended - remaining text is '%s'.\n",text);
 		fn = nodes_.add();
 		fn->set(text, vlist, TRUE);
 	}
@@ -165,7 +165,6 @@ bool Format::createExact(const char *s, VariableList &vlist)
 		varstr[vchars] = '\0';
 		//printf("Loop has ended - remaining variable is '%s'.\n",varstr);
 		fn = nodes_.add();
-		fn->set(varstr, vlist);
 		if (!fn->set(varstr, vlist))
 		{
 			msg.print("Failed to add format node '%s'.\n", varstr);

@@ -1,6 +1,7 @@
 # Forcefield output suitable for DL_POLY (FIELD files).
-# Last modified: 12/10/2008
+# Last modified: 10/11/2008
 # ChangeLog:
+#	10/11/2008 - Added id.
 #	12/10/2008 - Fixed to use new variable access rules, and to write constraint terms.
 #	04/10/2008 - Format delimiter reverted from '%' to '@'.
 #	05/08/2008 - Quoting adjusted to follow new Parser rules in r550.
@@ -11,6 +12,7 @@ exportfield
 	extension FIELD
 	glob *FIELD*
 	exact "FIELD"
+	id 1
 
 	# Variable declaration
 	real epsilon, sigma

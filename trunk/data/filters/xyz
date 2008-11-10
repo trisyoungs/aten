@@ -9,7 +9,7 @@ importmodel
 	nickname xyz
 	extension xyz
 	glob *.xyz
-	id 2
+	id 3
 
 	# Variable declaration
 	integer natoms,n
@@ -35,7 +35,7 @@ exportmodel
 	extension xyz
 	glob *.xyz
 	nickname xyz
-	id 2
+	id 3
 
 	# Variable declaration
 	integer n

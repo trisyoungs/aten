@@ -1,6 +1,7 @@
 # Gaussian Cube Format
-# Last modified: 12/10/2008
+# Last modified: 10/11/2008
 # ChangeLog:
+#	10/11/2008 - Added id.
 #	12/10/2008 - Adjusted to use new variable access rules.
 #	28/10/2007 - First version.
 
@@ -10,6 +11,7 @@ importgrid
 	extension cube
 	glob *.cube
 	zmap numeric
+	id 1
 
 	# Variable declaration
 	character e,title
