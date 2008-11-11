@@ -24,6 +24,7 @@
 
 #include "command/commandlist.h"
 #include "base/elements.h"
+#include "templates/namemap.h"
 #include <fstream>
 
 // Forward Declarations
@@ -47,7 +48,7 @@ class Filter
 	static FilterType filterType(const char *s);
 	
 	// Filter commands
-	enum FilterCommmand { NameCommand, NicknameCommand, ExtensionCommand, GlobCommand, ExactCommand, ZMapCommand, IdCommand, nFilterCommands };
+	enum FilterCommmand { ExactCommand, ExtensionCommand, GlobCommand, IdCommand, NameCommand, NicknameCommand, WithinCommand, ZMapCommand, nFilterCommands };
 	static FilterCommmand filterCommand(const char *s);
 	static const char *filterCommand(FilterCommmand fc);
 
@@ -70,6 +71,8 @@ class Filter
 	Dnchar nickname_;
 	// File extension(s)
 	List<Dnchar> extensions_;
+	// List of 'within' specifications
+	List< Namemap<int> > idStrings_;
 	// File filter glob (for gui)
 	Dnchar glob_;
 	// Partner filter
@@ -94,8 +97,12 @@ class Filter
 	const char *nickname();
 	// Return the first file extension
 	Dnchar *extensions();
-	// Return the aliases list
+	// Return the first alias
 	Dnchar *exactNames();
+	// Return the number of identifying strings defined
+	int nIdStrings();
+	// Return the first identifying text string
+	Namemap<int> *idStrings();
 	// Return whether filter has an extension
 	bool hasExtension();
 	// Set the partner filter

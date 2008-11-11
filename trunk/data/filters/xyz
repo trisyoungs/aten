@@ -1,6 +1,7 @@
 # XMol-style XYZ coordinates files
-# Last modified: 10/10/2008
+# Last modified: 10/11/2008
 # ChangeLog:
+#	10/11/2008 - Multiple models now recognised on import. Removed centreing of trajectory frames.
 #	10/10/2008 - Adjusted to use new variable access style.
 #	24/09/2008 - Modified to correctly read trajectories containing different numbers/ordering of atoms
 
@@ -12,22 +13,25 @@ importmodel
 	id 3
 
 	# Variable declaration
-	integer natoms,n
+	integer natoms,n,m
 	character e,title
 	real rx,ry,rz,q
 
-	# Read data
-	readline "$natoms"
-	getline $title
-	newmodel $title
-	for $n,1,$natoms
-		readline "$e $rx $ry $rz $q"
-		newatom $e
-		setcoords $rx $ry $rz
-		setcharge $q
+	# Loop over model(s) in file
+	for $m
+		# Read data
+		readline "$natoms"
+		getline $title
+		newmodel $title
+		for $n,1,$natoms
+			readline "$e $rx $ry $rz $q"
+			newatom $e
+			setcoords $rx $ry $rz
+			setcharge $q
+		end
+		rebond
+		finalisemodel
 	end
-	rebond
-	finalisemodel
 end
 
 exportmodel
@@ -74,8 +78,6 @@ importtrajectory
 			newatom $e $rx $ry $rz
 		end
 		rebond
-		selectall
-		centre 0 0 0
 		finaliseframe
 	end
 end

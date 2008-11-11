@@ -56,11 +56,11 @@ class Parser
 	char line_[MAXLINELENGTH];
 	// Length of line_
 	int lineLength_;
-	// Current reading position in line_
+	// Current reading position in line
 	int linePos_;
 	// Integer line number of last read line
 	int lastLine_;
-	// Source file (set by readLine);
+	// Source file (set by readLine)
 	ifstream *sourceFile_;
 	// Parsed arguments
 	Dnchar arguments_[MAXARGS];
@@ -72,15 +72,15 @@ class Parser
 	int nArgs_;
 	// Option bitmask (set by get_args() calls)
 	int optionMask_;
-	// Gets next delimited arg from internal line_
+	// Gets next delimited arg from internal line
 	bool getNextArg(int);
-	// Gets next n chars from internal line_
+	// Gets next n chars from internal line
 	bool getNextN(int);
-	// Gets all delimited args from internal line_
+	// Gets all delimited args from internal line
 	void getAllArgsDelim();
 
 	public:
-	// Return pointer to start of current line_
+	// Return pointer to start of current line
 	const char *line();
 	// Return integer line number of last read line
 	int lastLine();
