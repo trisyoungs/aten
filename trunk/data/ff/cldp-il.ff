@@ -24,7 +24,7 @@ types
 21	NAH	N	"nbonds=3,ring(size=5,-N,-C(n=3)),-C(n=2),-H"	# Nitrogen with hydrogen attached
 22	CRH	C	"nbonds=3,-N(-C,-C),-N(-H),ring(size=5)"	# Carbon adjacent to two nitrogens
 23	CWH	C	"nbonds=3,-N(-C,-H),-C,ring(size=5)"		# Carbon adjavent to N with H attached
-24	HNA	H	"-N(-C(n=2),ring(size=5)"			# Nitrogen with hydrogen attached
+24	HNA	H	"-N(-C(n=2),ring(size=5))"			# Nitrogen with hydrogen attached
 # Alkylpyridinium - Perkin 2, p2365 (1999)
 31	NAP	N	"nbonds=3,ring(size=6,-C(n=5))"			
 32	CA1	C	"nbonds=3,ring(size=6),-N,-C,-H"		# Carbon in ring, adjacent to ring nitrogen (ortho)
@@ -55,7 +55,7 @@ types
 140	Br	Br	"unbound"					# Bromide ion
 # Triflate
 150	CTF	C	"nbonds=4,-F(n=3),-S(nbonds=3,-O(n=2))"		# Fluoroalkane carbon attached to sulphate
-151	FTF	F	"-C(-F"
+151	FTF	F	"-C(-F)"
 152	STF	S	""
 153	OTF	O	""
 # Bistrifylamide
