@@ -45,7 +45,8 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 		return NULL;
 	}
 	probefile.close();
-	int n;
+	Parser localp;
+	int n, m;
 	const char *dotpos;
 	Dnchar nameonly;
 	Filter *f, *result = NULL;
@@ -55,6 +56,36 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 	// Go through list of filters and do checks...
 	for (f = filters_[probetype].first(); f != NULL; f = f->next)
 	{
+		// Try to match text within files
+		if (f->nIdStrings() != 0)
+		{
+			bool done = FALSE;
+			probefile.open(filename,ios::in);
+			for (Namemap<int> *ids = f->idStrings(); ids != NULL; ids = ids->next)
+			{
+				// Make sure file is completely rewound
+				probefile.seekg(0, ios::beg);
+				for (n = 0; n<ids->data(); n++)
+				{
+					m = localp.readLine(&probefile);
+					if (m != 0)
+					{
+						msg.print("File error encountered while searching for identifying string.\n");
+						done = TRUE;
+						break;
+					}
+					if (strstr(localp.line(), ids->name()) != NULL)
+					{
+						result = f;
+						done = TRUE;
+						break;
+					}
+				}
+				if (done) break;
+			}
+			probefile.close();
+		}
+		if (result != NULL) break;
 		// Try to match file extension
 		if (dotpos != NULL)
 		{
@@ -76,6 +107,7 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 				break;
 			}
 		}
+
 	}
 	// Strings in file
 	//ifstream modelfile(filename,ios::in);

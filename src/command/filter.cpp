@@ -38,7 +38,7 @@ Filter::FilterType Filter::filterType(const char *s)
 }
 
 // Filter commands
-const char* FilterCommandKeywords[Filter::nFilterCommands] =  { "name", "nickname", "extension", "glob", "exact", "zmap", "id" };
+const char* FilterCommandKeywords[Filter::nFilterCommands] =  { "exact", "extension", "glob", "id", "name", "nickname", "within", "zmap" };
 Filter::FilterCommmand Filter::filterCommand(const char* s)
 {
 	return (Filter::FilterCommmand) enumSearch("", Filter::nFilterCommands, FilterCommandKeywords, s);
@@ -85,16 +85,28 @@ const char *Filter::nickname()
 	return nickname_.get();
 }
 
-// Return the file extension
+// Return the first file extension
 Dnchar *Filter::extensions()
 {
 	return extensions_.first();
 }
 
-// Return the aliases list
+// Return the first alias
 Dnchar *Filter::exactNames()
 {
 	return exactNames_.first();
+}
+
+// Return the number of identifying strings defined
+int Filter::nIdStrings()
+{
+	return idStrings_.nItems();
+}
+
+// Return the first identifying text string
+Namemap<int> *Filter::idStrings()
+{
+	return idStrings_.first();
 }
 
 // Return whether filter has an extension
@@ -140,6 +152,7 @@ bool Filter::load(ifstream &filterFile)
 	FilterCommmand fc;
 	char longname[256];
 	ElementMap::ZmapType zm;
+	Namemap<int> *nm;
 	int success, itemsleft, n;
 	Dnchar *d;
 	// First, we must add a command to the flowstack so we know when to return (or raise an error)
@@ -159,6 +172,23 @@ bool Filter::load(ifstream &filterFile)
 		if (commands_.nBranches() == 0) break;
 		// Check for filter specification commands
 		fc = Filter::filterCommand(parser.argc(0));
+		if (fc == Filter::nFilterCommands)
+		{
+			if (commands_.cacheCommand()) continue;
+			else
+			{
+				msg.print("Error occurred at line %i.\n", parser.lastLine());
+				msg.exit("Filter::load");
+				return FALSE;
+			}
+		}
+		// Check for presence of at least one argument
+		if (parser.nArgs() < 2)
+		{
+			msg.print("Not enough arguments given to filter command '%s' (line %i).\n", parser.argc(0), parser.lastLine());
+			msg.exit("Filter::load");
+			return FALSE;
+		}
 		// Some commands do not require nodes in the list, but set properties in the filter itself
 		switch (fc)
 		{
@@ -203,15 +233,17 @@ bool Filter::load(ifstream &filterFile)
 					hasZmapping_ = TRUE;
 				}
 				break;
-			// A normal command
-			default:
-				if (commands_.cacheCommand()) continue;
-				else
+			// Define a 'within' specification
+			case (Filter::WithinCommand):
+				if (parser.nArgs() != 3)
 				{
-					msg.print("Error occurred at line %i.\n", parser.lastLine());
+					msg.print("Exactly two arguments must be given to filter command 'within' (line %i).\n", parser.lastLine());
 					msg.exit("Filter::load");
 					return FALSE;
 				}
+				nm = idStrings_.add();
+				nm->setData(parser.argi(1));
+				nm->setName(parser.argc(2));
 				break;
 		}
 	}
