@@ -105,9 +105,13 @@ importmodel
 					# Symmetry generator definitions - only use if spacegroup not already specified
 					if $model.cell.sgid <> 0
 						print "Generator data ignored - spacegroup is already set."
-					elseif $keywd = "_symmetry_equiv_pos_as_xyz"
+					else
 						$looptype = "gen"
-						writevar $format "\$gen"
+						if $keywd = "_symmetry_equiv_pos_as_xyz"
+							writevar $format "$format \$gen"
+						elseif $keywd = "_symmetry_equiv_pos_site_id"
+							writevar $format "$format \*"
+						end
 					end
 				end
 			end
