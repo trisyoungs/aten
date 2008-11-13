@@ -98,6 +98,8 @@ class Parser
 	const char *getArgDelim(ifstream*);
 	// Shift all arguments up one position (leaving arg[0] blank)
 	void shiftArgsUp();
+	// Close file and nullify pointer
+	void close();
 
 	/*
 	// Argument Access

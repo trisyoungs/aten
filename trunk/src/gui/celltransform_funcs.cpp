@@ -105,6 +105,7 @@ void AtenCellTransform::on_CellScaleButton_clicked(bool checked)
 {
 	static StaticCommandNode cmd(Command::CA_SCALE, "ddd", 0.0, 0.0, 0.0);
 	cmd.pokeArguments("ddd", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value());
+	cmd.setFunction(ui.CellScaleUseCogsCheck->isChecked() ? Command::CA_SCALEMOLECULES : Command::CA_SCALE);
 	cmd.execute();
 	gui.modelChanged(FALSE,TRUE,FALSE);
 }

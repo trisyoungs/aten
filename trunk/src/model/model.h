@@ -212,7 +212,7 @@ class Model
 	// Replicate cell to create supercell
 	void replicateCell(const Vec3<double>&, const Vec3<double>&);
 	// Scale cell and contents
-	void scaleCell(const Vec3<double>&);
+	bool scaleCell(const Vec3<double> &scale, bool usecogs);
 
 	/*
 	// Bonds
@@ -537,7 +537,7 @@ class Model
 	// Find pattern by name
 	Pattern *findPattern(const char*);
 	// Autocreate patterns for the model
-	bool autocreatePatterns();
+	bool autocreatePatterns(bool acceptDefault = TRUE);
 	// Validate current pattern definition
 	bool validatePatterns();
 	// Clear the current pattern definition

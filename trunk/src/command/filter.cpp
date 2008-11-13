@@ -339,7 +339,7 @@ bool Filter::execute(const char *filename, ifstream *trajfile, bool trajheader)
 		case (Filter::ExpressionExport):
 			msg.print("Save Field : %s (%s)\n", filename, name_.get());
 			// Need a valid pattern and energy expression to export
-			if (!obj.rs->autocreatePatterns() || !obj.rs->createExpression())
+			if (!obj.rs->autocreatePatterns(FALSE) || !obj.rs->createExpression())
 			{
 				msg.print("Must have valid pattern and energy expression to export a field file.\n");
 				proceed = FALSE;

@@ -32,7 +32,8 @@
 // Add new model to workspace
 void AtenForm::on_actionFileNew_triggered(bool checked)
 {
-	aten.addModel();
+	Model *m = aten.addModel();
+	m->enableUndoRedo();
 }
 
 // Open existing file
@@ -101,7 +102,6 @@ void AtenForm::on_actionFileSave_triggered(bool checked)
 	// Check the filter of the current model
 	// If there isn't one, or it can't export, raise the file dialog.
 	// Similarly, if no filename has been set, raise the file dialog.
-	printf("Savemodelfilename  %s\n",saveModelFilename.get());
 	Model *m = aten.currentModel();
 	Filter *f = m->filter();
 	if ((f != NULL) && (f->type() != Filter::ModelExport)) f = NULL;

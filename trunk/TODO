@@ -1,17 +1,14 @@
 Issues with the current version:
-	- Save image provokes GLXBadExtension error when incorrect/no 3D graphics driver installed.
 	- Spherical regions in disordered builder have poor randomness.
 	- OpenGL transparency issues (polygon artefacts - need ordering?)
-	- Automatic bond augmenting needs rewrite (currently disabled)
 	- GL backface culling option (gl backcull on) renders incorrectly.
 
 General To-Do list:
-	- Ewald sum (fourier calculation, reciprocal cell) for non-orthogonal cells
 	- Molecular dynamics
 	- Calculate average molecule geometry (analyse)
 	- Add CG (needs testing) / simplex / other minimisers
 	- View Miller planes
-	- Better EPS export
+	- EPS export
 
 Forcefield To-Do list:
 	- UFF - oxidation state, torsions
@@ -21,12 +18,10 @@ Forcefield To-Do list:
 
 Filters To-Do list:
 	- EPSR Ato import / export?
-	- 'within' function?
 
 General Qt To-Do list:
 	- Forcefield edit window
 	- Better editability in the atomlist stack page
-	- Remember positions / visibility of toolbars (QSettings)
 
 Optimisation To-Do list:
 	- Hemispherical Ewald summmation

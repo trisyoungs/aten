@@ -106,6 +106,7 @@ void Command::initPointers()
 	pointers_[CA_PRINTCELL] = &Command::function_CA_PRINTCELL;
 	pointers_[CA_REPLICATE] = &Command::function_CA_REPLICATE;
 	pointers_[CA_SCALE] = &Command::function_CA_SCALE;
+	pointers_[CA_SCALEMOLECULES] = &Command::function_CA_SCALEMOLECULES;
 	pointers_[CA_SETCELL] = &Command::function_CA_SETCELL;
 	pointers_[CA_SPACEGROUP] = &Command::function_CA_SPACEGROUP;
 

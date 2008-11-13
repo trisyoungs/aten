@@ -123,7 +123,7 @@ class CellEvent : public UndoEvent
 
 	public:
 	// Set change data
-	void set(Vec3<double> oldangles, Vec3<double> oldlengths, Vec3<double> newangles, Vec3<double> newlengths, bool ohs = TRUE, bool nhs = TRUE);
+	void set(Vec3<double> oldangles, Vec3<double> oldlengths, Vec3<double> newangles, Vec3<double> newlengths, bool ohs, bool nhs);
 	// Undo stored change
 	void undo(Model *m);
 	// Print change information
