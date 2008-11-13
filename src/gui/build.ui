@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Build</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >:/stackicons/icons/stack_edit.svg</iconset>
+  </property>
   <layout class="QHBoxLayout" >
    <property name="margin" >
     <number>2</number>
@@ -230,6 +233,8 @@
   <tabstop>AtomYCoordSpin</tabstop>
   <tabstop>AtomZCoordSpin</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="icons.qrc" />
+ </resources>
  <connections/>
 </ui>

@@ -509,6 +509,18 @@ int Parser::skipLines(ifstream *xfile, int nlines)
 	return 0;
 }
 
+// Close file and nullify pointer
+void Parser::close()
+{
+	if (sourceFile_ != NULL)
+	{
+		sourceFile_->close();
+		sourceFile_ = NULL;
+		lastLine_ = 0;
+	}
+	else printf("Parser tried to close file, but sourceFile_ is NULL.\n");
+}
+
 // Shift all arguments up one position (leaving arg[0] blank)
 void Parser::shiftArgsUp()
 {

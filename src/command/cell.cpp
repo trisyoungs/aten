@@ -128,14 +128,24 @@ int Command::function_CA_REPLICATE(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
-// Scale cell and molecule COGs ('scale <x y z>')
+// Scale cell and atom positions ('scale <x y z>')
 int Command::function_CA_SCALE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	obj.rs->beginUndoState("Scale cell");
-	obj.rs->scaleCell(c->arg3d(0));
+	obj.rs->beginUndoState("Scale cell and atoms");
+	obj.rs->scaleCell(c->arg3d(0), FALSE);
 	obj.rs->endUndoState();
 	return Command::Success;
+}
+
+// Scale cell and molecule COGs ('scalemolecules <x y z>')
+int Command::function_CA_SCALEMOLECULES(CommandNode *&c, Bundle &obj)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
+	obj.rs->beginUndoState("Scale cell and molecule centres");
+	bool result = obj.rs->scaleCell(c->arg3d(0), TRUE);
+	obj.rs->endUndoState();
+	return (result ? Command::Success : Command::Fail);
 }
 
 // Set/create unit cell ('cell <a b c> <alpha beta gamma>')

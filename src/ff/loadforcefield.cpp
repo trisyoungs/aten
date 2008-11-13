@@ -56,7 +56,7 @@ bool Forcefield::load(const char *filename)
 		if (success == 1)
 		{
 			msg.print("Error reading FF directive.\n");
-			fffile.close();
+			parser.close();
 			msg.exit("Forcefield::load");
 			return FALSE;
 		}
@@ -132,11 +132,11 @@ bool Forcefield::load(const char *filename)
 			//msg.print("EreadVdwor reading forcefield file. Aborted.\n");
 			msg.print("Error at line %i of file.\n", parser.lastLine());
 			msg.exit("Forcefield::load");
-			fffile.close();
+			parser.close();
 			return FALSE;
 		}
 	} while ( !fffile.eof() );
-	fffile.close();
+	parser.close();
 	// Check that some forcefield types were defined...
 	if (types_.nItems() <= 1) msg.print("Warning - no types are defined in this forcefield.\n");
 	// Check that all generator data was provided...

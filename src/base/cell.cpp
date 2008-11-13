@@ -357,6 +357,7 @@ void Cell::update()
 	determineType();
 	// Calculate the cell volume
 	volume_ = axes_.determinant();
+	// Calculate centre, inverse, and reciprocal
 	calculateCentre();
 	calculateInverse();
 	calculateReciprocal();

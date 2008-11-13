@@ -610,7 +610,7 @@ bool Aten::reloadFilters()
 		msg.print("Expression (%i/%i) ", filters_[Filter::ExpressionImport].nItems(), filters_[Filter::ExpressionExport].nItems());
 		msg.print("Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
 	}
-	file->close();
+	parser.close();
 	delete file;
 	msg.exit("Aten::reloadFilters");
 	return TRUE;
@@ -679,7 +679,7 @@ bool Aten::loadFilter(const char *filename)
 			break;
 		}
 	}
-	filterfile.close();
+	parser.close();
 	//variables.print();
 	msg.exit("Aten::loadFilter");
 	return (!error);

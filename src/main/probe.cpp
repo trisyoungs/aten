@@ -109,10 +109,6 @@ Filter *Aten::probeFile(const char *filename, Filter::FilterType probetype)
 		}
 
 	}
-	// Strings in file
-	//ifstream modelfile(filename,ios::in);
-	//if (parser.find_phrase(&modelfile,"GAMESS VERSION",10)) result = MF_GAMESSUS;
-	//modelfile.close();
 	if (result == NULL) msg.print("Couldn't determine format of file '%s'.\n",filename);
 	else msg.print(Messenger::Verbose,"Aten::probeFile - Selected filter '%s'\n",result->name());
 	msg.exit("Aten::probeFile");

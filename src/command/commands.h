@@ -161,6 +161,7 @@ class Command {
 		CA_PRINTCELL,
 		CA_REPLICATE,
 		CA_SCALE,
+		CA_SCALEMOLECULES,
 		CA_SETCELL,
 		CA_SPACEGROUP,
 	
@@ -566,6 +567,7 @@ class Command {
 	static int function_CA_PRINTCELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_REPLICATE(CommandNode *&c, Bundle &obj);
 	static int function_CA_SCALE(CommandNode *&c, Bundle &obj);
+	static int function_CA_SCALEMOLECULES(CommandNode *&c, Bundle &obj);
 	static int function_CA_SETCELL(CommandNode *&c, Bundle &obj);
 	static int function_CA_SPACEGROUP(CommandNode *&c, Bundle &obj);
 	// Charge commands

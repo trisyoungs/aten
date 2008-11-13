@@ -12,6 +12,9 @@
   <property name="windowTitle" >
    <string>Disordered Builder</string>
   </property>
+  <property name="windowIcon" >
+   <iconset resource="icons.qrc" >:/stackicons/icons/stack_disorder.svg</iconset>
+  </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >
     <number>2</number>
@@ -443,6 +446,8 @@
   <tabstop>DisorderCyclesSpin</tabstop>
   <tabstop>VDWScaleSpin</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="icons.qrc" />
+ </resources>
  <connections/>
 </ui>

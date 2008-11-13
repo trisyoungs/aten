@@ -180,12 +180,12 @@ void Model::clearPatterns()
 }
 
 // Autocreate patterns
-bool Model::autocreatePatterns()
+bool Model::autocreatePatterns(bool acceptDefault)
 {
 	// Determine the pattern (molecule) layout of the model
 	msg.enter("Model::autocreatePatterns");
 	int n, atomid, nsel2, nmols, idi, idj, idoff;
-	bool same;
+	bool same, defaultpattern = FALSE;
 	static Dnchar emp;
 	Clipboard patclip;
 	emp.createEmpty(1024);
@@ -230,7 +230,7 @@ bool Model::autocreatePatterns()
 		}
 		if (nsel2 != nSelected_)
 		{
-			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms_.\nPattern for model will be 1*N.\n");
+			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\nPattern for model will be 1*N.\n");
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
 			patterns_.clear();
 			nmols = 0;
@@ -238,6 +238,7 @@ bool Model::autocreatePatterns()
 			selectionEmpirical(emp);
 			msg.print("Added default pattern: %s\n",emp.get());
 			p = addPattern(1,atoms_.nItems(),emp.get());
+			defaultpattern = TRUE;
 			break;
 		}
 		// If this is the first pass (molecule), copy the selection. If not, compare it
@@ -327,10 +328,11 @@ bool Model::autocreatePatterns()
 	selectNone();
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
-	patternsPoint_ = changeLog.log(Log::Structure);
+	// Don't store new point if a defaultpattern was created and acceptdefault == FALSE
+	if ((!defaultpattern) || (defaultpattern && acceptDefault)) patternsPoint_ = changeLog.log(Log::Structure);
 
 	msg.exit("Model::autocreatePatterns");
-	return TRUE;
+	return (!defaultpattern ? TRUE : acceptDefault);
 }
 
 // Get empirical formula of selection

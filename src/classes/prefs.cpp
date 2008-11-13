@@ -304,6 +304,7 @@ void Prefs::load(const char *filename)
 		// Add script command
 		if (!prefcmds.cacheCommand()) break;
 	}
+	parser.close();
 	// Check the flowstack - it should contain just the BC_ROOTNODE branch
 	if (prefcmds.nBranches() != 1)
 	{

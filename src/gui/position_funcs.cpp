@@ -188,7 +188,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
 	gui.positionWindow->ui.VectorShiftXSpin->setValue(v.x);
 	gui.positionWindow->ui.VectorShiftYSpin->setValue(v.y);
-	gui.positionWindow->ui.VectorShiftZSpin->setValue(v.z);;
+	gui.positionWindow->ui.VectorShiftZSpin->setValue(v.z);
 }
 
 void AtenPosition::on_DefineVectorButton_clicked(bool on)

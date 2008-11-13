@@ -180,7 +180,7 @@ void BondTypeEvent::print()
 */
 
 // Set change 
-void CellEvent::set(Vec3<double> oldangles, Vec3<double> oldlengths, Vec3<double> newangles, Vec3<double> newlengths, bool ohs, bool nhs)
+void CellEvent::set(Vec3<double> oldlengths, Vec3<double> oldangles, Vec3<double> newlengths, Vec3<double> newangles, bool ohs, bool nhs)
 {
 	msg.enter("CellEvent::set");
 	oldAngles_ = oldangles;
@@ -201,13 +201,13 @@ void CellEvent::undo(Model *m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		msg.print(Messenger::Verbose,"Reversing cell change\n");
-		if (oldHasCell_) m->removeCell();
+		if (!oldHasCell_) m->removeCell();
 		else m->setCell(oldLengths_, oldAngles_);
 	}
 	else
 	{
 		msg.print(Messenger::Verbose,"Replaying cell change\n");
-		if (newHasCell_) m->removeCell();
+		if (!newHasCell_) m->removeCell();
 		else m->setCell(newLengths_, newAngles_);
 	}
 	msg.exit("CellEvent::undo");

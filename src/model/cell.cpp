@@ -41,6 +41,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	msg.enter("Model::setCell[vectors]");
 	Vec3<double> oldlengths = cell_.lengths();
 	Vec3<double> oldangles = cell_.angles();
+	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(lengths, angles);
 	calculateDensity();
@@ -49,7 +50,7 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldlengths, oldangles, lengths, angles);
+		newchange->set(oldlengths, oldangles, lengths, angles, oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::setCell[vectors]");
@@ -59,10 +60,9 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 void Model::setCell(Mat3<double> axes)
 {
 	msg.enter("Model::setCell[axes]");
-	static Vec3<double> oldlengths;
-	static Vec3<double> oldangles;
-	oldangles = cell_.angles();
-	oldlengths = cell_.lengths();
+	Vec3<double> oldlengths = cell_.lengths();;
+	Vec3<double> oldangles = cell_.angles();
+	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new axes 
 	cell_.set(axes);
 	calculateDensity();
@@ -71,7 +71,7 @@ void Model::setCell(Mat3<double> axes)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles());
+		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::setCell[axes]");
@@ -83,6 +83,7 @@ void Model::setCell(Cell::CellParameter cp, double value)
 	msg.enter("Model::setCell[parameter]");
 	Vec3<double> oldlengths = cell_.lengths();
 	Vec3<double> oldangles = cell_.angles();
+	bool oldhs = (cell_.type() == Cell::NoCell ? FALSE : TRUE);
 	// Set new parameter value
 	cell_.setParameter(cp, value);
 	calculateDensity();
@@ -91,7 +92,7 @@ void Model::setCell(Cell::CellParameter cp, double value)
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
-		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles());
+		newchange->set(oldlengths, oldangles, cell_.lengths(), cell_.angles(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
 	msg.exit("Model::setCell[parameter]");
@@ -131,7 +132,7 @@ void Model::foldAllMolecules()
 	Atom *i, *first;
 	Pattern *p;
 	// Molecular fold - fold first atom, others in molecule are MIM'd to this point
-	if (!autocreatePatterns())
+	if (!autocreatePatterns(FALSE))
 	{
 		msg.print("Molecular fold cannot be performed without a valid pattern definition.\n");
 		msg.exit("Model::foldAllMolecules");
@@ -221,8 +222,8 @@ void Model::pack()
 	msg.exit("Model::pack");
 }
 
-// Scale cell and contents (molecule COGs)
-void Model::scaleCell(const Vec3<double> &scale)
+// Scale cell and contents
+bool Model::scaleCell(const Vec3<double> &scale, bool usecog)
 {
 	msg.enter("Model::scaleCell");
 	Vec3<double> oldcog, newcog, newpos;
@@ -232,17 +233,17 @@ void Model::scaleCell(const Vec3<double> &scale)
 	double olde, newe;
 	int n,m;
 	Atom *i;
-	// First, make sure we have a cell and a valid pattern
+	// First, make sure we have a cell and a valid pattern (if using cog
 	if (cell_.type() == Cell::NoCell)
 	{
 		msg.print("No cell to scale.\n");
 		msg.exit("Model::scaleCell");
-		return;
+		return FALSE;
 	}
-	if (!autocreatePatterns())
+	if (usecog && (!autocreatePatterns(!usecog)))
 	{
 		msg.exit("Model::scaleCell");
-		return;
+		return FALSE;
 	}
 	calcenergy = createExpression();
 	// Copy original cell axes, expand and save for later
@@ -254,22 +255,34 @@ void Model::scaleCell(const Vec3<double> &scale)
 	if (calcenergy) olde = totalEnergy(this);
 	// Cycle over patterns, get COG, convert to old fractional coordinates, then
 	// use new cell to get new local coordinates.
-	for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
+	if (usecog)
 	{
-		i = p->firstAtom();
-		for (n=0; n<p->nMolecules(); n++)
+		for (Pattern *p = patterns_.first(); p != NULL; p = p->next)
 		{
-			// Get fractional coordinate COG of this molecule
-			oldcog = p->calculateCog(this,n);
-			// Get new COG using new cell
-			newcog = newcell.fracToReal(cell_.realToFrac(oldcog));
-			// Set new atom positions
-			for (m=0; m<p->nAtoms(); m++)
+			i = p->firstAtom();
+			for (n=0; n<p->nMolecules(); n++)
 			{
-				newpos = cell_.mim(i,oldcog) - oldcog + newcog;
-				positionAtom(i,newpos);
-				i = i->next;
+				// Get fractional coordinate COG of this molecule
+				oldcog = p->calculateCog(this,n);
+				// Get new COG using new cell
+				newcog = newcell.fracToReal(cell_.realToFrac(oldcog));
+				// Set new atom positions
+				for (m=0; m<p->nAtoms(); m++)
+				{
+					newpos = cell_.mim(i,oldcog) - oldcog + newcog;
+					positionAtom(i,newpos);
+					i = i->next;
+				}
 			}
+		}
+	}
+	else
+	{
+		// Reposition individual atoms
+		for (i = atoms_.first(); i != NULL; i = i->next)
+		{
+			newpos = newcell.fracToReal(cell_.realToFrac(i->r()));
+			positionAtom(i,newpos);
 		}
 	}
 	// Calculate new energy before leaving...
@@ -282,6 +295,7 @@ void Model::scaleCell(const Vec3<double> &scale)
 	setCell(newaxes);
 	changeLog.add(Log::Coordinates);
 	msg.exit("Model::scaleCell");
+	return TRUE;
 }
 
 // Replicate Cell
