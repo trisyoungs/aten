@@ -28,6 +28,7 @@
 #include "gui/tcanvas.uih"
 #include "model/model.h"
 #include "base/sysfunc.h"
+#include "command/staticcommand.h"
 
 // Add new model to workspace
 void AtenForm::on_actionFileNew_triggered(bool checked)
@@ -49,10 +50,10 @@ void AtenForm::on_actionFileOpen_triggered(bool checked)
 		{
 			f->execute(gui.loadModelDialog->selectedFilename());
 			addRecent(gui.loadModelDialog->selectedFilename());
+			refreshModelTabs();
+			aten.currentModel()->changeLog.add(Log::Visual);
+			gui.modelChanged();
 		}
-		refreshModelTabs();
-		aten.currentModel()->changeLog.add(Log::Visual);
-		gui.modelChanged();
 	}
 }
 
@@ -235,6 +236,7 @@ void AtenForm::on_actionFileAddTrajectory_triggered(bool checked)
 // Save expression
 void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 {
+	static StaticCommandNode cmd(Command::CA_SAVEEXPRESSION, "cc", "none", "none");
 	Filter *f;
 	if (saveExpressionDialog->exec() == 1)
 	{
@@ -246,7 +248,11 @@ void AtenForm::on_actionFileSaveExpression_triggered(bool checked)
 		for (f = aten.filters(Filter::ExpressionExport); f != NULL; f = f->next)
 			if (strcmp(f->description(),qPrintable(filter)) == 0) break;
 		if (f == NULL) printf("AtenForm::actionFileSaveExpression dialog <<<< Didn't recognise selected file filter '%s' >>>>\n", qPrintable(filter));
-		else f->execute(qPrintable(filename));
+		else
+		{
+			cmd.pokeArguments("cc", f->nickname(), qPrintable(filename));
+			cmd.execute();
+		}
 	}
 }
 

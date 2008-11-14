@@ -304,7 +304,7 @@ bool Pattern::typeAtoms()
 			// See how well this ff description matches the environment of our atom 'i'
 			msg.print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
 			newmatch = at->matchAtom(i,&rings_,parent_,i);
-			msg.print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i\n",ffa->typeId(),newmatch);
+			msg.print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i\n", ffa->typeId(), newmatch);
 			if (newmatch > bestmatch)
 			{
 				// Better match found...
@@ -312,13 +312,13 @@ bool Pattern::typeAtoms()
 				i->setType(ffa);
 			}
 		}
-		msg.print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)\n", i->type(), i->type()->name());
 		if (i->type() == NULL)
 		{
 			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->id()+1,i->nBonds());
 			nfailed ++;
 			result = FALSE;
 		}
+		else msg.print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)\n", i->type(), i->type()->name());
 		i = i->next;
 	}
 	// Print warning if we failed...
