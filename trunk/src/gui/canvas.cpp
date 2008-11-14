@@ -128,14 +128,14 @@ void Canvas::realize()
 // Invalidate
 void Canvas::postRedisplay()
 {
-	if (valid_) contextWidget_->update();
+	if (valid_) contextWidget_->updateGL();
 }
 
 // Widget Expose
 void Canvas::expose()
 {
 	if (!valid_) return;
-	contextWidget_->update();
+	contextWidget_->updateGL();
 }
 
 // Widget configure
