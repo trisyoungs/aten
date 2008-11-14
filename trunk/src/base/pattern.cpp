@@ -655,7 +655,7 @@ bool Pattern::validate()
 			}
 			if (!ok)
 			{
-				msg.print("Pattern::validate : Failed element composition test at molecule %i.\n",m+1);
+				msg.print("Pattern failed element composition test at molecule %i.\n",m+1);
 				result = FALSE;
 				break;
 			}
@@ -674,9 +674,9 @@ bool Pattern::validate()
 Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 {
 	// Calculate the centre of geometry for this molecule
-	msg.enter("Pattern::calculate_cog");
+	msg.enter("Pattern::calculateCog");
 	int offset = startAtom_ + mol*nAtoms_;
-	msg.print(Messenger::Verbose,"Pattern::calculate_cog : Calculating for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
+	msg.print(Messenger::Verbose,"Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
 	Cell *cell = srcmodel->cell();
 	cog.zero();
@@ -688,7 +688,7 @@ Vec3<double> Pattern::calculateCog(Model *srcmodel, int mol)
 		cog += mim_i;
 	}
 	cog /= nAtoms_;
-	msg.exit("Pattern::calculate_cog");
+	msg.exit("Pattern::calculateCog");
 	return cog;
 }
 
