@@ -58,11 +58,13 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Create forcefield& variables with the names provided" },
 	{ "_prefsvar_",		"",		"<variables>",
 				"Create prefs& variables with the names provided" },
-	
+	{ "_elementsvar_",	"",		"<variables>",
+				"Create elements& variables with the names provided" },
+
 	// Root node
 	{ "_ROOTNODE_",		"",		"",
 				"" },
-	
+
 	// Analysis commands
 	{ "finalise",		"",		"",
 				"Finalise all calculated quantities" },

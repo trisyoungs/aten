@@ -152,10 +152,10 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 bool AccessPath::setPath(const char *path, bool isArrayIndex)
 {
 	msg.enter("AccessPath::setPath");
-	static char opath[512];
-	Dnchar bit;
+	static char opath[512], bit[256];
+	bool done;
 	AccessStep *step;
-	int n;
+	int n, nsqbrackets;
 	char *c;
 	VTypes::DataType lastType = VTypes::NoData;
 	bool success;
@@ -177,9 +177,28 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 		while (*c != '\0')
 		{
 			// Get section of path existing before the next '.'
-			bit = beforeChar(c, '.');
+// 			bit = beforeChar(c, '.');
+			done = FALSE;
+			n = 0;
+			nsqbrackets = 0;
+			while (!done)
+			{
+				// Do bracket increments
+				if (*c == '[') nsqbrackets ++;
+				else if (*c == ']') nsqbrackets --;
+				// Check for end of path step
+				if ((*c == '.') && (nsqbrackets == 0)) done = TRUE;
+				else
+				{
+					bit[n] = *c;
+					n ++;
+				}
+				c++;
+				if (*c == '\0') done = TRUE;
+			}
+			bit[n] = '\0';
 			// Check for an empty string bit - caused by '..'
-			if (bit.isEmpty())
+			if (bit[0] == '\0')
 			{
 				msg.print("Empty section found in variable path.\n");
 				msg.exit("AccessPath::setPath");
@@ -191,42 +210,42 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 			switch (lastType)
 			{
 				case (VTypes::NoData):
-					success = step->setTarget(bit.get(), parent_, parent_);
+					success = step->setTarget(bit, parent_, parent_);
 					break;
 				case (VTypes::ModelData):
-					success = step->setTarget(bit.get(), parent_, modelAccessors.accessors());
+					success = step->setTarget(bit, parent_, modelAccessors.accessors());
 					if (success) step->setVariableId(modelAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::CellData):
-					success = step->setTarget(bit.get(), parent_, cellAccessors.accessors());
+					success = step->setTarget(bit, parent_, cellAccessors.accessors());
 					if (success) step->setVariableId(cellAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::AtomData):
-					success = step->setTarget(bit.get(), parent_, atomAccessors.accessors());
+					success = step->setTarget(bit, parent_, atomAccessors.accessors());
 					if (success) step->setVariableId(atomAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::BondData):
-					success = step->setTarget(bit.get(), parent_, bondAccessors.accessors());
+					success = step->setTarget(bit, parent_, bondAccessors.accessors());
 					if (success) step->setVariableId(bondAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::PatternData):
-					success = step->setTarget(bit.get(), parent_, patternAccessors.accessors());
+					success = step->setTarget(bit, parent_, patternAccessors.accessors());
 					if (success) step->setVariableId(patternAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::PatternBoundData):
-					success = step->setTarget(bit.get(), parent_, patternboundAccessors.accessors());
+					success = step->setTarget(bit, parent_, patternboundAccessors.accessors());
 					if (success) step->setVariableId(patternboundAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::PrefsData):
-					success = step->setTarget(bit.get(), parent_, prefsAccessors.accessors());
+					success = step->setTarget(bit, parent_, prefsAccessors.accessors());
 					if (success) step->setVariableId(prefsAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::ForcefieldAtomData):
-					success = step->setTarget(bit.get(), parent_, ffatomAccessors.accessors());
+					success = step->setTarget(bit, parent_, ffatomAccessors.accessors());
 					if (success) step->setVariableId(ffatomAccessors.accessorId(step->target()));
 					break;
 				case (VTypes::ForcefieldBoundData):
-					success = step->setTarget(bit.get(), parent_, ffboundAccessors.accessors());
+					success = step->setTarget(bit, parent_, ffboundAccessors.accessors());
 					if (success) step->setVariableId(ffboundAccessors.accessorId(step->target()));
 					break;
 				default:
@@ -240,9 +259,9 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 				break;
 			}
 			// Increase the char pointer
-			for (n=0; n<bit.length(); n++) c ++;
+// 			for (n=0; n<bit.length(); n++) c ++;
 			// If we're on a '.', skip on a further character
-			if (*c == '.') c++;
+// 			if (*c == '.') c++;
 			// Store lasttype
 			lastType = step->type();
 		}

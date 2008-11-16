@@ -81,6 +81,7 @@ class Command {
 		CA_CELLVAR,
 		CA_FORCEFIELD,
 		CA_PREFSVAR,
+		CA_ELEMENTSVAR,
 	
 		// Root node
 		CA_ROOTNODE,
