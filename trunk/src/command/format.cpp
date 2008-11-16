@@ -67,37 +67,39 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	msg.enter("Format::createExact");
 	// Go through supplied string, converting variables as we go
 	static char text[512], varstr[512];
-	int nchars = 0, vchars = 0, n;
+	int nchars = 0, vchars = 0, nsqbrackets = 0;
 	bool done;
+	const char *c;
 	FormatNode *fn;
 	// Clear any existing node list
 	nodes_.clear();
-	n = 0;
-//  	printf("Creating format from string '%s'\n",s);
-	while (s[n] != '\0')
+	c = &s[0];
+	msg.print(Messenger::Parse, "Creating format from string '%s'\n",s);
+	while (*c != '\0')
 	{
-// 		printf("Current s[n] = '%c'\n",s[n]);
+// 		printf("Current char = '%c'\n",*c);
 		// Special check for '\' - add next character whatever it is
-		if (s[n] == 92)
+		if (*c == 92)
 		{
-			text[nchars] = s[n+1];
+			c += 1;
+			text[nchars] = *c;
 			nchars ++;
-			n += 2;
+			c += 1;
 			continue;
 		}
 		// If the character is not '$', just add it to 'text' and continue
-		if (s[n] != '$')
+		if (*c != '$')
 		{
-			text[nchars] = s[n];
+			text[nchars] = *c;
 			nchars ++;
-			n++;
+			c += 1;
 			continue;
 		}
 		// This must be the start of a variable specifier. Add the 'text' node if not empty...
 		if (nchars != 0)
 		{
 			text[nchars] = '\0';
-			//printf("Found variable - adding previous text '%s'...\n",text);
+			msg.print(Messenger::Parse, "Found variable - adding previous text '%s'...\n",text);
 			fn = nodes_.add();
 			fn->set(text, vlist, TRUE);
 			nchars = 0;
@@ -106,42 +108,59 @@ bool Format::createExact(const char *s, VariableList &vlist)
 		// Add characters to 'varstr' until we find the end of the format
 		vchars = 1;
 		varstr[0] = '$';
-		n++;
+		c += 1;
 		done = FALSE;
-		while (s[n] != '\0')
+		while (*c != '\0')
 		{
-			switch (s[n])
+			switch (*c)
 			{
 				case ('{'):
-					n++;
+					c += 1;
 					break;
 				case ('}'):
-					n++;
-				case ('\0'):
-				case ('$'):
+					c += 1;
 					done = TRUE;
+					break;
+				case ('\0'):
+					done = TRUE;
+					break;
+				case ('$'):
+					if (nsqbrackets == 0) done = TRUE;
+					else
+					{
+						varstr[vchars++] = *c;
+						c += 1;
+					}
 					break;
 				case (','):
 				case ('('):
 				case (')'):
 				case (' '):
-// 				case ('['):
-// 				case (']'):
 				case (34):	// Double quotes
 				case (39):	// Single quote
 					done = TRUE;
 					break;
+				case ('['):
+					nsqbrackets ++;
+					varstr[vchars++] = *c;
+					c += 1;
+					break; 
+				case (']'):
+					nsqbrackets --;
+					varstr[vchars++] = *c;
+					c += 1;
+					break; 
 				default:
-					varstr[vchars] = s[n];
+					varstr[vchars] = *c;
 					vchars ++;
-					n++;
+					c += 1;
 					break;
 			}
 			if (done) break;
 		}
 		// Now have variable (and format) in 'var'
 		varstr[vchars] = '\0';
-		//printf("...the variable after which is '%s'.\n",varstr);
+		msg.print(Messenger::Parse, "...the variable after which is '%s'.\n",varstr);
 		fn = nodes_.add();
 		if (!fn->set(varstr, vlist))
 		{
@@ -156,14 +175,14 @@ bool Format::createExact(const char *s, VariableList &vlist)
 	if (nchars != 0)
 	{
 		text[nchars] = '\0';
-//  		printf("Loop has ended - remaining text is '%s'.\n",text);
+		msg.print(Messenger::Parse, "Loop has ended - remaining text is '%s'.\n",text);
 		fn = nodes_.add();
 		fn->set(text, vlist, TRUE);
 	}
 	else if (vchars != 0)
 	{
 		varstr[vchars] = '\0';
-		//printf("Loop has ended - remaining variable is '%s'.\n",varstr);
+		msg.print(Messenger::Parse, "Loop has ended - remaining variable is '%s'.\n",varstr);
 		fn = nodes_.add();
 		if (!fn->set(varstr, vlist))
 		{

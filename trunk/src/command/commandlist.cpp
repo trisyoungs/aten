@@ -192,7 +192,7 @@ bool CommandList::addCommand(Command::Function cf)
 			{
 				// First, check that the argument is a plain variable
 				form = parser.argumentForm(n, TRUE);
-				if (form != Parser::VariableForm)
+				if (form > Parser::VariablePathForm)
 				{
 					msg.print("Invalid variable name '%s' found in declaration.\n", parser.argc(n));
 					result = FALSE;
@@ -208,7 +208,20 @@ bool CommandList::addCommand(Command::Function cf)
 				else
 				{
 					vt = (VTypes::DataType) cf;
-					v = variables_.addVariable(parser.argc(n), vt);
+					// Does the variable have an array dimension specified?
+					Dnchar arraypart;
+					arraypart = afterChar(beforeChar(parser.argc(n), ']'), '[');
+					if (!arraypart.isEmpty())
+					{
+						int arraysize = atoi(arraypart.get());
+						if (arraysize < 1)
+						{
+							msg.print("Invalid array size given in declaration: %s\n", parser.argc(n));
+							result = FALSE;
+						}
+						else v = variables_.addVariable(beforeChar(parser.argc(n), '['), vt, arraysize);
+					}
+					else v = variables_.addVariable(parser.argc(n), vt);
 				}
 			}
 			break;

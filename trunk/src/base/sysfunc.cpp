@@ -50,7 +50,7 @@ const char *lowerCase(const char *s)
 // Get characters before designated character
 const char *beforeChar(const char *s, char delim)
 {
-	static char result[128];
+	static char result[256];
 	static int i, count;
 	count = 0;
 	for (i = 0; s[i] != '\0'; i++)
@@ -66,7 +66,7 @@ const char *beforeChar(const char *s, char delim)
 // Get characters after designated character
 const char *afterChar(const char *s, char delim)
 {
-	static char result[128];
+	static char result[256];
 	static int i, count;
 	static bool founddelim;
 	founddelim = FALSE;

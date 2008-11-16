@@ -64,15 +64,17 @@ Parser::ArgumentForm Parser::argumentForm(int argno, bool implicitdollar)
 Parser::ArgumentForm Parser::argumentForm(const char *s, bool implicitdollar)
 {
 	// At least one full stop surrounded by a letter on the right and a letter or a square bracket on the left indicates a variable path
-	int noperators, n, nvars, nbrackets;
+	int noperators, n, nvars, nbrackets, nsqbrackets;
 	noperators = countChars(s, "-+*/^%", 1);
 	nbrackets = countChars(s, "()");
+	nsqbrackets = countChars(s, "[]");
 	nvars = countChars(s, "$");
 	if (implicitdollar) nvars ++;
 	bool hasneg = s[0] == '-';
-	// If there are operators or brackets it can only be an expression
+	// If there are operators or round brackets it can only be an expression
 	if ((noperators > 0) || (nbrackets > 0)) return Parser::ExpressionForm;
 	else if ((hasneg) && (nvars > 0)) return Parser::ExpressionForm;
+	else if (nsqbrackets > 0) return Parser::VariablePathForm;
 	// Full stops are either decimal points, member delimiters in paths, or part of a filename...
 	const char *c = strchr(s, '.');
 	if (c != '\0')

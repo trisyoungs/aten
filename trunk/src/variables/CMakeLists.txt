@@ -6,6 +6,7 @@ bondaccess.h
 bundle.h
 cellaccess.h
 character.h
+elementsaccess.h
 expression.h
 expressionnode.h
 ffatomaccess.h
@@ -29,6 +30,7 @@ bondaccess.cpp
 bundle.cpp
 cellaccess.cpp
 character.cpp
+elementsaccess.cpp
 expression.cpp
 expressionnode.cpp
 ffatomaccess.cpp

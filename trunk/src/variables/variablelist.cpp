@@ -49,6 +49,7 @@ VariableList::VariableList()
 	v->set(&aten.current, VTypes::ModelData);
 	v = addListVariable("models", VTypes::ModelData, aten.modelList());
 	v = addVariable("prefs", VTypes::PrefsData);
+	v = addVariable("elements", VTypes::ElementsData);
 }
 
 // Return list position (id) of Variable in list
@@ -87,6 +88,7 @@ Variable *VariableList::createVariable(VTypes::DataType dt, int arraysize)
 		case (VTypes::ForcefieldData):
 		case (VTypes::CellData):
 		case (VTypes::PrefsData):
+		case (VTypes::ElementsData):
 			result = new PointerVariable(dt);
 			break;
 		default:
