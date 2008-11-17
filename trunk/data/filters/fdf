@@ -1,33 +1,34 @@
 # Siesta Flexible Data Format (fdf)
-# Last modified: 07/11/2008
+# Last modified: 17/11/2008
 # ChangeLog:
+#	17/11/2008 - Fully working export filter.
 #	07/11/2008 - First version.
 
-importmodel
-	name "Siesta FDF"
-	nickname fdf
-	extension fdf
-	glob *.fdf
-	id 9
-
-	# Variable declaration
-	integer natoms,n
-	character e,title
-	real rx,ry,rz,q
-
-	# Read data
-	readline "$natoms"
-	getline $title
-	newmodel $title
-	for $n,1,$natoms
-		readline "$e $rx $ry $rz $q"
-		newatom $e
-		setcoords $rx $ry $rz
-		setcharge $q
-	end
-	rebond
-	finalisemodel
-end
+#importmodel
+#	name "Siesta FDF"
+#	nickname fdf
+#	extension fdf
+#	glob *.fdf
+#	id 9
+#
+#	# Variable declaration
+#	integer natoms,n
+#	character e,title
+#	real rx,ry,rz,q
+#
+#	# Read data
+#	readline "$natoms"
+#	getline $title
+#	newmodel $title
+#	for $n,1,$natoms
+#		readline "$e $rx $ry $rz $q"
+#		newatom $e
+#		setcoords $rx $ry $rz
+#		setcharge $q
+#	end
+#	rebond
+#	finalisemodel
+#end
 
 exportmodel
 	name "Siesta FDF"
@@ -43,12 +44,11 @@ exportmodel
 	atom i
 
 	# Determine number of species (elements) used in model
-	$nspecies = 0
+	for $n,1,130
+		$el[1] = 0
+	end
 	for $i
-		if $el[$i.z] = 0
-			$nspecies += 1
-			$el[$i.z] = $nspecies
-		end if
+		$el[$i.z] = 1
 	end
 	
 	# Write title information
@@ -58,54 +58,49 @@ exportmodel
 	writeline "NumberOfSpecies  $nspecies"
 	writeline ""
 
-	# Write chemical species data
+	# Write 'standard' keyword data
+	writeline "PAO.EnergyShift      25 meV"
+	writeline "MeshCutoff          400 Ry"
+	writeline "DM.MixingWeight      0.4"
+	writeline "NetCharge            1.0"
+	writeline ""
+	writeline "PAO.BasisSize       DZP"
+	writeline "XC.functional       GGA"
+	writeline "XC.authors          PBE"
+	writeline "DM.NumberPulay      4"
+	writeline "DM.Tolerance        1.d-6"
+	writeline "SolutionMethod      diagon"
+	writeline "MaxSCFIterations    100"
+	writeline "ParallelOverK       true"
+	writeline "MD.TypeOfRun        Verlet"
+	writeline "MD.InitialTemperature  0.0  K"
+	writeline "MD.InitialTimeStep    1"
+	writeline "MD.FinalTimeStep    1"
+	writeline "WriteCoorXmol       true"
+	writeline "WriteForces         true"
+	writeline ""
+
+	# Write chemical species data, and label species in ascending order
 	writeline "%block ChemicalSpeciesLabel"
 	# 1  7    N-PBE 
+	$nspecies = 0
 	for $n,1,120
 		if $el[$n] <> 0
-			writeline "$n"
+			$nspecies += 1
+			$el[$n] = $nspecies
+			writeline "$nspecies  $n  ${elements.symbol[$n]}-PBE"
 		end
 	end
 	writeline "%endblock ChemicalSpeciesLabel"
+	writeline ""
+
+	# Write atomic coordinates
+	writeline "AtomicCoordinatesFormat  Ang"
+	writeline "%block AtomicCoordinatesAndAtomicSpecies"
+	for $i
+		writeline "$i.rx@14.8  $i.ry@14.8  $i.rz@14.8  $el[$i.z]"
+	end
+	writeline "%endblock AtomicCoordinatesAndAtomicSpecies"
+	writeline ""
 
 end
-
-#PAO.EnergyShift      25 meV
-#MeshCutoff          400 Ry
-#DM.MixingWeight      0.4
-#NetCharge            1.0
-# 
-#PAO.BasisSize       DZP
-#XC.functional       GGA
-#XC.authors          PBE
-#DM.NumberPulay      4
-#DM.Tolerance        1.d-6
-#SolutionMethod      diagon
-#MaxSCFIterations    100
-#ParallelOverK       true
-#MD.TypeOfRun        Verlet
-#MD.InitialTemperature  0.0  K
-#MD.InitialTimeStep    1
-#MD.FinalTimeStep    1
-#WriteCoorXmol       true
-#WriteForces         true
-# 
-#AtomicCoordinatesFormat  Ang
-#%block AtomicCoordinatesAndAtomicSpecies
-#  0.47761281 -0.09694723  0.97059666   1
-#  0.26889638 -0.71018876 -0.13407112   2
-# -0.40575219  0.08854128 -1.01475834   1
-# -0.60935483  1.32975432 -0.39431309   2
-# -0.08279941  1.20342348  0.81155104   2
-# -0.87700992 -0.23013567 -2.38310223   2
-#  1.07823396 -0.62734510  2.15522175   2
-#  0.53868637 -1.73796330 -0.32718472   3
-# -1.10506457  2.19503805 -0.80898878   3
-# -0.01339150  1.80953828  1.70273418   3
-# -1.18727961  0.44856116 -3.17758529   3
-# -1.84046463 -0.63902755 -2.07869715   3
-# -0.16242136 -0.85006062 -2.92454129   3
-#  1.57533654  0.22499059  2.61837711   3
-#  0.45033650 -1.06555563  2.93098997   3
-#  1.89443547 -1.34262330  2.05377131   3
-#%endblock AtomicCoordinatesAndAtomicSpecies
