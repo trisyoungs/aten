@@ -24,6 +24,7 @@
 #include "variables/atomaccess.h"
 #include "variables/bondaccess.h"
 #include "variables/cellaccess.h"
+#include "variables/elementsaccess.h"
 #include "variables/ffatomaccess.h"
 #include "variables/ffboundaccess.h"
 #include "variables/modelaccess.h"
@@ -110,8 +111,11 @@ bool AccessPath::walk(ReturnValue &rv, Variable *srcvar, VTypes::DataType dt, in
 				case (VTypes::ForcefieldBoundData):
 					accesslist = &ffboundAccessors;
 					break;
+				case (VTypes::ElementsData):
+					accesslist = &elementsAccessors;
+					break;
 				default:
-					printf("Subvariable setting within pointers of type '%s' is not implemented.\n", VTypes::dataType(lastType));
+					printf("Subvariable access within reference variables of type '%s' is not implemented.\n", VTypes::dataType(lastType));
 					accesslist = NULL;
 					break;
 			}
@@ -247,6 +251,10 @@ bool AccessPath::setPath(const char *path, bool isArrayIndex)
 				case (VTypes::ForcefieldBoundData):
 					success = step->setTarget(bit, parent_, ffboundAccessors.accessors());
 					if (success) step->setVariableId(ffboundAccessors.accessorId(step->target()));
+					break;
+				case (VTypes::ElementsData):
+					success = step->setTarget(bit, parent_, elementsAccessors.accessors());
+					if (success) step->setVariableId(elementsAccessors.accessorId(step->target()));
 					break;
 				default:
 					printf("This variable type (%s) has not been implemented in AccessPath::setPath.\n", VTypes::dataType(lastType));
