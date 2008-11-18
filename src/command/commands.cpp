@@ -43,7 +43,7 @@ CommandData Command::data[Command::CA_NITEMS] = {
 	{ "pattern",		"",		"<variables>",
 				"Create pattern& variables with the names provided" },
 	{ "bound",		"",		"<variables>",
-				"Create patternbound& variables with the names provided" },
+				"Create bound& variables with the names provided" },
 	{ "model",		"",		"<variables>",
 				"Create model& variables with the names provided" },
 	{ "grid",		"",		"<variables>",

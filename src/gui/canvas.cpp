@@ -67,13 +67,13 @@ void Canvas::setName(const char *s)
 }
 
 // Return the current height of the drawing area
-int Canvas::height()
+GLsizei Canvas::height()
 {
 	return height_;
 }
 
 // Return the current width of the drawing area
-int Canvas::width()
+GLsizei Canvas::width()
 {
 	return width_;
 }
@@ -142,8 +142,8 @@ void Canvas::expose()
 void Canvas::configure(int w, int h)
 {
 	// Store the new width and height of the widget and re-do projection
-	width_ = w;
-	height_ = h;
+	width_ = (GLsizei) w;
+	height_ = (GLsizei) h;
 	doProjection();
 	// Flag that render source needs to be reprojected
 	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
@@ -191,7 +191,7 @@ void Canvas::initGl()
 		// Clear colour
 		GLfloat *clrcol = prefs.colour(Prefs::BackgroundColour);
 		glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
-		glClearDepth(1.0);
+		//glClearDepth(1.0);
 		// Perspective hint
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
 		// Enable depth buffer
@@ -503,12 +503,12 @@ void Canvas::doProjection()
 	// (Re)Create the projection and viewport matrix from the current geometry of the rendering widget / pixmap
 	if (!valid_) return;
 	msg.enter("Canvas::doProjection");
-	double pmat[16], bottom, top;
+	GLdouble pmat[16], bottom, top;
 	// Check source
 	if (beginGl())
 	{
 		// Set the viewport size to the whole area and grab the matrix
-		glViewport(0,0, width_, height_);
+		glViewport( (GLint) 0, (GLint) 0, (GLsizei) width_, (GLsizei) height_);
 		glGetIntegerv(GL_VIEWPORT,VMAT);
 		// Calculate and store a projection matrix
 		glMatrixMode(GL_PROJECTION);
@@ -519,7 +519,7 @@ void Canvas::doProjection()
 			// Use reversed top and bottom values so we get y-axis (0,1,0) pointing up
 			bottom = tan(prefs.perspectiveFov() / DEGRAD) * prefs.clipNear();
 			top = -bottom;
-			glFrustum(aspect_*top,aspect_*bottom,top,bottom,prefs.clipNear(),prefs.clipFar());
+			glFrustum(aspect_*top, aspect_*bottom, top, bottom, prefs.clipNear(), prefs.clipFar());
 		}
 		else
 		{
@@ -533,7 +533,7 @@ void Canvas::doProjection()
 		// Rotation globe projection matrix (square)
 		glLoadIdentity();
 		glFrustum(-1.0, 1.0, -1.0, 1.0, 0.0, 10.0);
-		glGetDoublev(GL_PROJECTION_MATRIX,pmat); // Store the resulting projection and
+		glGetDoublev(GL_PROJECTION_MATRIX,pmat);
 		GlobePMAT.setFromColumnMajor(pmat);
 		glMatrixMode(GL_MODELVIEW);
 		endGl();

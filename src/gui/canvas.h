@@ -77,9 +77,9 @@ class Canvas
 	// Internal name of the canvas for error reporting
 	const char *name_;
 	// Width, height, and aspect ratio of the canvas
-	int width_, height_;
+	GLsizei width_, height_;
 	// Aspect ratio of canvas
-	double aspect_;
+	GLdouble aspect_;
 	// Point at which the stored atom display list was valid (sum of Change::StructureLog and Change::CoordinateLog points)
 	int renderPoint_;
 	// Flag to indicate whether we may draw to the canvas
@@ -186,7 +186,7 @@ class Canvas
 	// Reset the projection matrix based on the current canvas geometry
 	void doProjection();
 	// Projection matrices for scene and rotation globe
-	Mat4<double> PMAT, GlobePMAT;
+	Mat4<GLdouble> PMAT, GlobePMAT;
 	// Viewport matrix for canvas
 	GLint VMAT[4];
 	// Return the current display model
