@@ -309,9 +309,9 @@ void AtenForcefields::on_ManualTypeTestButton_clicked(bool checked)
 				if (i->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(i, p->ringList(), m, i);
-					msg.print("Atom %i (%s) matched type with score %i.\n", i->id()+1, elements.symbol(i), matchscore);
+					msg.print("Atom %i (%s) matched type with score %i.\n", i->id()+1, elements().symbol(i), matchscore);
 				}
-				else msg.print("Atom %i (%s) is the wrong element for this type.\n", i->id()+1, elements.symbol(i));
+				else msg.print("Atom %i (%s) is the wrong element for this type.\n", i->id()+1, elements().symbol(i));
 			}
 		}
 	}
@@ -321,7 +321,7 @@ void AtenForcefields::on_ManualTypeTestButton_clicked(bool checked)
 void AtenForcefields::on_ManualTypeEdit_returnPressed()
 {
 	// Get the contents of the line edit and check that it is an element symbol
-	int el = elements.find(qPrintable(ui.ManualTypeEdit->text()));
+	int el = elements().find(qPrintable(ui.ManualTypeEdit->text()));
 	if (el == -1)
 	{
 		msg.print("Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));

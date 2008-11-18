@@ -260,8 +260,8 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			//   d) atom j or k is a group 16 element
 			hyb1 = (int) (ffj->generator(7) + 0.1);
 			hyb2 = (int) (ffk->generator(7) + 0.1);
-			group1 = elements.group(j);
-			group2 = elements.group(k);
+			group1 = elements().group(j);
+			group2 = elements().group(k);
 			newtorsion->setTorsionStyle(TorsionFunctions::CosCos);
 			if ((hyb1 == 3) && (hyb2 == 3))
 			{
@@ -337,8 +337,8 @@ ForcefieldBound *Forcefield::generateTorsion(Atom *i, Atom *j, Atom *k, Atom *l)
 			//   d) atom j or k is a group 16 element
 			hyb1 = int (ffj->generator(6) + 0.1);
 			hyb2 = int (ffk->generator(6) + 0.1);
-			group1 = elements.group(j);
-			group2 = elements.group(k);
+			group1 = elements().group(j);
+			group2 = elements().group(k);
 			newtorsion->setTorsionStyle(TorsionFunctions::Dreiding);
 			if ((hyb1 == 3) && (hyb2 == 3))
 			{

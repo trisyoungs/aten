@@ -341,9 +341,9 @@ void Model::selectionEmpirical(Dnchar &target)
 	msg.enter("Model::selectionEmpirical");
 	int n, *elcount;
 	target.clear();
-	elcount = new int[elements.nElements()];
+	elcount = new int[elements().nElements()];
 	// Reset element counters
-	for (n=0; n<elements.nElements(); n++) elcount[n] = 0;
+	for (n=0; n<elements().nElements(); n++) elcount[n] = 0;
 	Atom *i = atoms_.first();
 	while (i != NULL)
 	{
@@ -351,10 +351,10 @@ void Model::selectionEmpirical(Dnchar &target)
 		i = i->next;
 	}
 	// Construct element string
-	for (n=elements.nElements()-1; n>0; n--)
+	for (n=elements().nElements()-1; n>0; n--)
 		if (elcount[n] != 0) 
 		{
-			target.cat(elements.symbol(n));
+			target.cat(elements().symbol(n));
 			if (elcount[n] > 1) target.cat(itoa(elcount[n]));
 		}
 	delete elcount;
@@ -381,7 +381,7 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 		if (newel == lastel) count ++;
 		else
 		{
-			target.cat(elements.symbol(i));
+			target.cat(elements().symbol(i));
 			target.cat(itoa(count));
 			lastel = newel;
 			count = 0;
@@ -390,7 +390,7 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 	// Check for last element chunk
 	if (count != 0)
 	{
-		target.cat(elements.symbol(lastel));
+		target.cat(elements().symbol(lastel));
 		target.cat(itoa(count));
 	}
 	msg.exit("Model::selectionAtomFingerprint");

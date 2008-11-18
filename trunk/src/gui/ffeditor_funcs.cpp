@@ -105,7 +105,7 @@ void AtenForcefieldEditor::populate(Forcefield *ff)
 	{
 		item = new QTableWidgetItem(itoa(ffa->typeId()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Id, item);
-		item = new QTableWidgetItem(elements.symbol(ffa->atomtype()->characterElement()));
+		item = new QTableWidgetItem(elements().symbol(ffa->atomtype()->characterElement()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Element, item);
 		item = new QTableWidgetItem(ffa->name());
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Name, item);

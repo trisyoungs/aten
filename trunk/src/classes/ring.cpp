@@ -131,7 +131,7 @@ void Ring::removeAtom(Refitem<Atom,int> *ri)
 int Ring::totalBondOrderPenalty()
 {
 	int result = 0;
-	for (Refitem<Atom,int> *ri = atoms_.first(); ri != NULL; ri = ri->next) result += elements.bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
+	for (Refitem<Atom,int> *ri = atoms_.first(); ri != NULL; ri = ri->next) result += elements().bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
 	return result;
 }
 
@@ -225,7 +225,7 @@ void Ring::print()
 	Refitem<Atom,int> *ra = atoms_.first();
 	while (ra != NULL)
 	{
-		msg.print(Messenger::Verbose,"%s(%i),",elements.symbol(ra->item),ra->data);
+		msg.print(Messenger::Verbose,"%s(%i),", elements().symbol(ra->item),ra->data);
 		//printf("%s(%i),",elements.el[ra->i->el].symbol.c_str(),ra->i->tempi);
 		ra = ra->next;
 	}

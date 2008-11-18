@@ -132,11 +132,11 @@ int Command::function_CA_ELEC(CommandNode *&c, Bundle &obj)
 // Set element's ambient colour
 int Command::function_CA_ELEMENTAMBIENT(CommandNode *&c, Bundle &obj)
 {
-	int el = elements.find(c->argc(0));
+	int el = elements().find(c->argc(0));
 	if (el == 0) return Command::Fail;
-	elements.setAmbientColour(el,0,c->argi(1));
-	elements.setAmbientColour(el,1,c->argi(2));
-	elements.setAmbientColour(el,2,c->argi(3));
+	elements().setAmbientColour(el,0,c->argi(1));
+	elements().setAmbientColour(el,1,c->argi(2));
+	elements().setAmbientColour(el,2,c->argi(3));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return Command::Success;
@@ -145,11 +145,11 @@ int Command::function_CA_ELEMENTAMBIENT(CommandNode *&c, Bundle &obj)
 // Set element's diffuse colour
 int Command::function_CA_ELEMENTDIFFUSE(CommandNode *&c, Bundle &obj)
 {
-	int el = elements.find(c->argc(0));
+	int el = elements().find(c->argc(0));
 	if (el == 0) return Command::Fail;
-	elements.setDiffuseColour(el,0,c->argi(1));
-	elements.setDiffuseColour(el,1,c->argi(2));
-	elements.setDiffuseColour(el,2,c->argi(3));
+	elements().setDiffuseColour(el,0,c->argi(1));
+	elements().setDiffuseColour(el,1,c->argi(2));
+	elements().setDiffuseColour(el,2,c->argi(3));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return Command::Success;
@@ -158,9 +158,9 @@ int Command::function_CA_ELEMENTDIFFUSE(CommandNode *&c, Bundle &obj)
 // Set element's radius
 int Command::function_CA_ELEMENTRADIUS(CommandNode *&c, Bundle &obj)
 {
-	int el = elements.find(c->argc(0));
+	int el = elements().find(c->argc(0));
 	if (el == 0) return Command::Fail;
-	elements.setAtomicRadius(el, c->argd(1));
+	elements().setAtomicRadius(el, c->argd(1));
 	if (obj.rs != NULL) obj.rs->changeLog.add(Log::Visual);
 	gui.mainView.postRedisplay();
 	return Command::Success;

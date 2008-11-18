@@ -46,7 +46,7 @@ Atom *Model::addAtom(short int newel, Vec3<double> pos)
 	newatom->setElement(newel);
 	newatom->setId(atoms_.nItems() - 1);
 	newatom->r() = pos;
-	mass_ += elements.atomicMass(newel);
+	mass_ += elements().atomicMass(newel);
 	calculateDensity();
 	changeLog.add(Log::Structure);
 	// Add the change to the undo state (if there is one)
@@ -75,7 +75,7 @@ Atom *Model::addCopy(Atom *source)
 	newatom->setParent(this);
 	newatom->setId(atoms_.nItems() - 1);
 	changeLog.add(Log::Structure);
-	mass_ += elements.atomicMass(newatom->element());
+	mass_ += elements().atomicMass(newatom->element());
 	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
@@ -97,7 +97,7 @@ Atom *Model::addCopy(Atom *afterthis, Atom *source)
 	newatom->copy(source);
 	renumberAtoms(afterthis);
 	changeLog.add(Log::Structure);
-	mass_ += elements.atomicMass(newatom->element());
+	mass_ += elements().atomicMass(newatom->element());
 	calculateDensity();
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
@@ -115,7 +115,7 @@ void Model::removeAtom(Atom *xatom)
 {
 	msg.enter("Model::removeAtom");
 	// Delete a specific atom (passed as xatom)
-	mass_ -= elements.atomicMass(xatom->element());
+	mass_ -= elements().atomicMass(xatom->element());
 	if (mass_ < 0.0) mass_ = 0.0;
 	calculateDensity();
 	// Renumber the ids of all atoms in the list after this one
@@ -170,9 +170,9 @@ void Model::transmuteAtom(Atom *i, short int el)
 		short int oldel = i->element();
 		if (oldel != el)
 		{
-			mass_ -= elements.atomicMass(i);
+			mass_ -= elements().atomicMass(i);
 			i->setElement(el);
-			mass_ += elements.atomicMass(i);
+			mass_ += elements().atomicMass(i);
 			calculateDensity();
 			changeLog.add(Log::Structure);
 			// Add the change to the undo state (if there is one)
@@ -364,7 +364,7 @@ void Model::chargeAtom(Atom *target, double q)
 int Model::totalBondOrderPenalty() const
 {
 	int result = 0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) result += elements.bondOrderPenalty(i, i->totalBondOrder()/2);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) result += elements().bondOrderPenalty(i, i->totalBondOrder()/2);
 	return result;
 }
 

@@ -103,7 +103,7 @@ void Atomtype::print()
 	printlevel ++;
 	printf("(%3i) Element :", printlevel);
 	if (nAllowedElements_ == 0) printf(" Any");
-	else for (int n=0; n<nAllowedElements_; n++) printf(" %s",elements.name(allowedElements_[n]));
+	else for (int n=0; n<nAllowedElements_; n++) printf(" %s",elements().name(allowedElements_[n]));
 	printf("\n");
 	printf("(%3i)  Repeat : %i\n", printlevel, nRepeat_);
 	if (boundList_.nItems() != 0)
@@ -166,7 +166,7 @@ bool Atomtype::setElements(const char *ellist, Forcefield *ff)
 		else
 		{
 			// WATCH Since Atomtype::el became Atomtype::characterElement_, this does not get set. Should it have been set before? WATCH
-			el = elements.find(parser.argc(n),ElementMap::AlphaZmap);
+			el = elements().find(parser.argc(n),ElementMap::AlphaZmap);
 			if (el == 0)
 			{
 				msg.print("Unrecognised element in list of bound atoms: '%s'\n",parser.argc(n));
@@ -557,7 +557,7 @@ int Atomtype::matchAtom(Atom* i, List<Ring> *ringdata, Model *parent, Atom *topa
 	}
 	else typescore = 0;
 	level ++;
-	msg.print(Messenger::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements.symbol(i), i->nBonds(), Atom::atomEnvironment(i->environment()));
+	msg.print(Messenger::Typing,"(%li %2i) Looking to match atom %s: nbonds=%i, env=%s\n", this, level, elements().symbol(i), i->nBonds(), Atom::atomEnvironment(i->environment()));
 	// Element check
 	msg.print(Messenger::Typing,"(%li %2i) ... Element  ",this,level);
 	if (nAllowedElements_ == 0) msg.print(Messenger::Typing,"[defaulted]\n");

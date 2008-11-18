@@ -282,7 +282,7 @@ void Atom::copyStyle(Atom *source)
 void Atom::print()
 {
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print("Atom ID %i (%s):\n", id_+1, elements.name(this));
+	msg.print("Atom ID %i (%s):\n", id_+1, elements().name(this));
 	msg.print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
 	msg.print(" Model Coord : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
 	msg.print(" World Coord : %8.4f %8.4f %8.4f\n",rWorld_.x,rWorld_.y,rWorld_.z);
@@ -302,7 +302,7 @@ void Atom::printSummary()
 	// Print format : " Id     El   FFType         X             Y             Z              Q        S"
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
 	char s[128];
-	sprintf(s," %-5i  %-3s  %-8s %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements.symbol(this), type_ != NULL ? type_->name() : "None", r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
+	sprintf(s," %-5i  %-3s  %-8s %13.6e %13.6e %13.6e  %13.6e  %c\n", id_+1, elements().symbol(this), type_ != NULL ? type_->name() : "None", r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ');
 	msg.print( s);
 }
 

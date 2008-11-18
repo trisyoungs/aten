@@ -54,8 +54,8 @@ void Canvas::renderModelAtoms()
 		  switch (scheme)
 		  {
 			case (Prefs::ElementScheme):
-				elements.copyAmbientColour(i->element(), ambient);
-				elements.copyDiffuseColour(i->element(), diffuse);
+				elements().copyAmbientColour(i->element(), ambient);
+				elements().copyDiffuseColour(i->element(), diffuse);
 				break;
 			case (Prefs::ChargeScheme):
 				prefs.colourScale[0].colour(i->charge(), ambient);
@@ -86,7 +86,7 @@ void Canvas::renderModelAtoms()
 		  else style_i = renderstyle;
 		  // Get atom radius
 		  radius = prefs.atomStyleRadius(style_i);
-		  if (style_i == Atom::ScaledStyle) radius *= elements.atomicRadius(i);
+		  if (style_i == Atom::ScaledStyle) radius *= elements().atomicRadius(i);
 		  /*
 		  // Draw the atom.
 		  // If the atom's style is Atom::StickStyle, then we only draw if it is unbound.
@@ -208,8 +208,8 @@ void Canvas::renderModelAtoms()
 		switch (scheme)
 		{
 			case (Prefs::ElementScheme):
-				elements.copyAmbientColour(i->element(), ambient);
-				elements.copyDiffuseColour(i->element(), diffuse);
+				elements().copyAmbientColour(i->element(), ambient);
+				elements().copyDiffuseColour(i->element(), diffuse);
 				break;
 			case (Prefs::ChargeScheme):
 				prefs.colourScale[0].colour(i->charge(), ambient);

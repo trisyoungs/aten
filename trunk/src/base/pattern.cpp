@@ -622,9 +622,9 @@ bool Pattern::validate()
 	}
 	else testAtomLimit_ = TRUE;
 	// 2) Elemental composition of individual molecules within pattern
-	elcomp1 = new int[elements.nElements()+1];
-	elcomp2 = new int[elements.nElements()+1];
-	for (m=0; m<elements.nElements()+1; m++) elcomp1[m] = 0;
+	elcomp1 = new int[elements().nElements()+1];
+	elcomp2 = new int[elements().nElements()+1];
+	for (m=0; m<elements().nElements()+1; m++) elcomp1[m] = 0;
 	if (nMolecules_ == 1) testElement_ = TRUE;
 	else
 	{
@@ -644,13 +644,13 @@ bool Pattern::validate()
 			else
 			{
 				// Calculate the test atomic composition...
-				for (a=0; a<elements.nElements()+1; a++) elcomp2[a] = 0;
+				for (a=0; a<elements().nElements()+1; a++) elcomp2[a] = 0;
 				for (a=0; a<nAtoms_; a++)
 				{
 					elcomp2[i->element()] ++; i = i->next;
 				}
 				// ... and test against reference
-				for (a=0; a<elements.nElements()+1; a++)
+				for (a=0; a<elements().nElements()+1; a++)
 					if (elcomp1[a] != elcomp2[a]) ok = FALSE;
 			}
 			if (!ok)
@@ -710,8 +710,8 @@ Vec3<double> Pattern::calculateCom(Model *srcmodel, int mol)
 	{
 		// Do minimum image w.r.t. first atom in molecule
 		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
-		com += mim_i * elements.atomicMass(modelatoms[a1]->element());
-		massnorm += elements.atomicMass(modelatoms[a1]->element());
+		com += mim_i * elements().atomicMass(modelatoms[a1]->element());
+		massnorm += elements().atomicMass(modelatoms[a1]->element());
 	}
 	com /= massnorm;
 	msg.exit("Pattern::calculateCom");
@@ -1042,7 +1042,7 @@ void Pattern::ringSearch(Atom *i, Ring *currentpath, int &ringpotential)
 			if (done) break;
 		}
 		// Return the list to its original state
-		msg.print(Messenger::Verbose," --- Removing atom %s[%li] from current path...\n",elements.symbol(i),i);
+		msg.print(Messenger::Verbose," --- Removing atom %s[%li] from current path...\n",elements().symbol(i),i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
 	else
@@ -1063,7 +1063,7 @@ void Pattern::augmentOLD()
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
 	/*
 	Assume the structure is chemically 'correct' - i.e. each element is bound to a likely
-	number of other elements.
+	number of other elements().
 	If hydrogens are missing then the results will be unpredictable.
 	Based on methods suggested in:
 	'Automatic atom type and bond type perception in molecular mechanical calculations'
@@ -1170,7 +1170,7 @@ int Pattern::totalBondOrderPenalty()
 	int result = 0;
 	for (int n=0; n<nAtoms_; n++)
 	{
-		result += elements.bondOrderPenalty(i, i->totalBondOrder()/2);
+		result += elements().bondOrderPenalty(i, i->totalBondOrder()/2);
 		i = i->next;
 	}
 	return result;
@@ -1190,7 +1190,7 @@ void Pattern::augment()
 	msg.print("Augmenting bonds in pattern %s...\n",name_.get());
 	/*
 	Assume the structure is chemically 'correct' - i.e. each element is bound to a likely
-	number of other elements.
+	number of other elements().
 	If hydrogens are missing then the results will be unpredictable.
 	Based on methods suggested in:
 	'Automatic atom type and bond type perception in molecular mechanical calculations'

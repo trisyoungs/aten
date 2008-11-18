@@ -373,7 +373,7 @@ void Model::selectOverlaps(double tolerance)
 			deltar = cell_.distance(i, j);
 			if (deltar < tolerance)
 			{
-				msg.print("Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements.symbol(j), deltar, i->id()+1, elements.symbol(i));
+				msg.print("Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, elements().symbol(j), deltar, i->id()+1, elements().symbol(i));
 				selectAtom(j);
 			}
 		}

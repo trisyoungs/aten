@@ -53,7 +53,7 @@ void Canvas::renderModelLabels()
 		}
 		if (labels&Atom::ElementLabel)
 		{
-			strcat(text,elements.symbol(i));
+			strcat(text, elements().symbol(i));
 			strcat(text," ");
 		}
 		if (labels&Atom::TypeLabel)

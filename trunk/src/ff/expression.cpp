@@ -131,7 +131,7 @@ bool Pattern::fillExpression()
 		pa->setData(ai->type());
 		if (ai->type() == 0)
 		{
-			msg.print("... No FF definition for atom %i (%s).\n", count+1, elements.symbol(ai));
+			msg.print("... No FF definition for atom %i (%s).\n", count+1, elements().symbol(ai));
 			incomplete_ = TRUE;
 			iatoms ++;
 		}

@@ -69,7 +69,7 @@ int Command::function_CA_CHAIN(CommandNode *&c, Bundle &obj)
 	if (c->hasArg(3))
 	{
 		Vec3<double> pos = c->arg3d(1);
-		i = obj.rs->addAtom(elements.find(c->argc(0),ElementMap::AlphaZmap), pos);
+		i = obj.rs->addAtom(elements().find(c->argc(0),ElementMap::AlphaZmap), pos);
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -84,7 +84,7 @@ int Command::function_CA_CHAIN(CommandNode *&c, Bundle &obj)
 	}
 	else
 	{
-		i = obj.rs->addAtomAtPen(elements.find(c->argc(0),ElementMap::AlphaZmap));
+		i = obj.rs->addAtomAtPen(elements().find(c->argc(0),ElementMap::AlphaZmap));
 		if (obj.i != NULL)
 		{
 			Bond::BondType bt;
@@ -146,7 +146,7 @@ int Command::function_CA_NEWATOM(CommandNode *&c, Bundle &obj)
 			// Attempt conversion of the string first from the users type list
 			for (nm = aten.typeMap.first(); nm != NULL; nm = nm->next)
 				if (strcmp(nm->name(),c->argc(0)) == 0) break;
-			if (nm == NULL) el = elements.find(c->argc(0));
+			if (nm == NULL) el = elements().find(c->argc(0));
 			else el = nm->data();
 			break;
 		case (VTypes::AtomData):
@@ -196,7 +196,7 @@ int Command::function_CA_NEWATOMFRAC(CommandNode *&c, Bundle &obj)
 			el = (int) floor(c->argd(0) + 0.15);
 			break;
 		case (VTypes::CharacterData):
-			el = elements.find(c->argc(0));
+			el = elements().find(c->argc(0));
 			break;
 		case (VTypes::AtomData):
 			i = (Atom*) c->argp(0, VTypes::AtomData);
@@ -299,7 +299,7 @@ int Command::function_CA_TOSTART(CommandNode *&c, Bundle &obj)
 int Command::function_CA_TRANSMUTE(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
-	int el = elements.find(c->argc(0));
+	int el = elements().find(c->argc(0));
 	obj.rs->beginUndoState("Transmute selection");
 	for (Atom *i = obj.rs->firstSelected(); i != NULL; i = i->nextSelected()) obj.rs->transmuteAtom(i,el);
 	obj.rs->endUndoState();

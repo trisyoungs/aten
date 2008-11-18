@@ -86,7 +86,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 			}
 			else
 			{
-				i = elements.find(from);
+				i = elements().find(from);
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) in select.\n", from);
@@ -94,7 +94,7 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 				}
 				if (plus == 0) m->selectElement(i);
 				else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
-				else if (plus == 1) for (n=i; n <= elements.nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
+				else if (plus == 1) for (n=i; n <= elements().nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
 			}
 		}
 		else
@@ -108,13 +108,13 @@ void selectAtoms(Model *m, Variable *slxn, bool deselect)
 			}
 			else
 			{
-				i = elements.find(from);
+				i = elements().find(from);
 				if (i == 0)
 				{
 					msg.print("Unrecognised element (%s) on left-hand side of range.\n", from);
 					return;
 				}
-				j = elements.find(to);
+				j = elements().find(to);
 				if (j == 0)
 				{
 					msg.print("Unrecognised element (%s) on right-hand side of range.\n", to);
@@ -255,7 +255,7 @@ int Command::function_CA_SELECTTYPE(CommandNode *&c, Bundle &obj)
 	if (obj.notifyNull(Bundle::ModelPointer)) return Command::Fail;
 	if (obj.rs->autocreatePatterns())
 	{
-		obj.rs->selectType(elements.find(c->argc(0)), c->argc(1));
+		obj.rs->selectType(elements().find(c->argc(0)), c->argc(1));
 		return Command::Success;
 	}
 	else msg.print("Can't test atomtype description without a valid pattern definition!\n");

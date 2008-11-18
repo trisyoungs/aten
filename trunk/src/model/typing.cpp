@@ -118,7 +118,7 @@ void printstuff(Pattern *p)
 	Atom *i = p->firstAtom();
 	for (int n=0; n<p->nAtoms(); n++)
 	{
-		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n",n,elements.symbol(i),
+		msg.print(Messenger::Verbose,"Atom %i, %s[%i], nbonds=%i, type=%s\n", n, elements().symbol(i),
 			i->id(),i->nBonds(),Atom::atomEnvironment(i->environment()));
 		i = i->next;
 	}
@@ -284,7 +284,7 @@ bool Pattern::typeAtoms()
 			i = i->next;
 			continue;
 		}
-		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n",a,elements.symbol(i->element()));
+		msg.print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n", a, elements().symbol(i->element()));
 		bestmatch = 0;
 		parent_->setAtomtype(i, NULL, FALSE);
 		// Check for element 'XX' first
@@ -314,7 +314,7 @@ bool Pattern::typeAtoms()
 		}
 		if (i->type() == NULL)
 		{
-			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n",elements.name(i),i->id()+1,i->nBonds());
+			msg.print("Failed to type atom - %s, id = %i, nbonds = %i.\n", elements().name(i), i->id()+1, i->nBonds());
 			nfailed ++;
 			result = FALSE;
 		}
@@ -322,7 +322,7 @@ bool Pattern::typeAtoms()
 		i = i->next;
 	}
 	// Print warning if we failed...
-	if (nfailed != 0) msg.print("Failed to type %i atoms in pattern '%s'.\n",nfailed,name_.get());
+	if (nfailed != 0) msg.print("Failed to type %i atoms in pattern '%s'.\n", nfailed, name_.get());
 	msg.exit("Pattern::typeAtoms");
 	return result;
 }

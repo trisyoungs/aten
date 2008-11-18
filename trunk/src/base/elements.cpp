@@ -29,8 +29,12 @@
 #include "classes/forcefieldatom.h"
 #include "base/atom.h"
 
-// Singleton declaration
-ElementMap elements;
+// Class return function
+ElementMap &elements()
+{
+	static ElementMap elementMap_;
+	return elementMap_;
+}
 
 // Definitions
 #define LANTHANIDES 98

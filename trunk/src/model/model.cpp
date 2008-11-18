@@ -168,7 +168,7 @@ void Model::calculateMass()
 	// Calculate the mass of the atoms in the model.
 	msg.enter("Model::calculateMass");
 	mass_ = 0.0;
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) mass_ += elements.atomicMass(i);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) mass_ += elements().atomicMass(i);
 	msg.exit("Model::calculateMass");
 }
 
@@ -251,8 +251,8 @@ void Model::printCoords() const
 	msg.enter("Model::printCoords");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), elements.symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
-	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),elements.symbol(i),r.x,r.y,r.z,
+		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), elements().symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
+	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),elements().symbol(i),r.x,r.y,r.z,
 	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
 	}
 	msg.exit("Model::printCoords");
@@ -356,7 +356,7 @@ void Model::printForces()
 {
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
 	{
-		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), elements.symbol(i), i->f().x, i->f().y, i->f().z);
+		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), elements().symbol(i), i->f().x, i->f().y, i->f().z);
 	}
 }
 
