@@ -123,6 +123,13 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("FFAtomAccessors::set");
 		return FALSE;
 	}
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'prefs' type is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("PrefsAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -152,12 +159,6 @@ bool FFAtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (FFAtomAccessors::Name):
 			ffa->setName(srcvar->asCharacter());
-			break;
-		case (FFAtomAccessors::Atomtype):
-		case (FFAtomAccessors::Id):
-		case (FFAtomAccessors::ParentFF):
-			msg.print("Member '%s' in ForcefieldAtom is read-only.\n", accessorPointers[vid]->name());
-			result = FALSE;
 			break;
 		default:
 			printf("FFAtomAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

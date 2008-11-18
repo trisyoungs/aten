@@ -150,6 +150,13 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("AtomAccessors::set");
 		return FALSE;
 	}
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'atom' type is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("AtomAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -195,13 +202,6 @@ bool AtomAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (AtomAccessors::Z):
 			i->parent()->transmuteAtom(i, srcvar->asInteger());
-			break;
-		case (AtomAccessors::Symbol):
-		case (AtomAccessors::Mass):
-		case (AtomAccessors::Name):
-		case (AtomAccessors::Id):
-			msg.print("Member '%s' in Atom is read-only.\n", accessorPointers[vid]->name());
-			result = FALSE;
 			break;
 		default:
 			printf("AtomAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

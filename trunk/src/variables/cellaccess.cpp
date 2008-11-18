@@ -160,6 +160,13 @@ bool CellAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("CellAccessors::set");
 		return FALSE;
 	}
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'cell' type is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("CellAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -193,13 +200,6 @@ bool CellAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		case (CellAccessors::Matrix):
 			// Cast vid into a CellParameter
 			c->parent()->setCell( (Cell::CellParameter) ((index-1) + Cell::CellAX), srcvar->asDouble());
-			break;
-		case (CellAccessors::Type):
-		case (CellAccessors::CentreX):
-		case (CellAccessors::CentreY):
-		case (CellAccessors::CentreZ):
-			msg.print("Member '%s' in Model is read-only.\n", accessorPointers[vid]->name());
-			result = FALSE;
 			break;
 		default:
 			printf("CellAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

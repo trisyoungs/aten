@@ -33,7 +33,7 @@ FFBoundAccessors::FFBoundAccessors()
 {
 	accessorPointers[FFBoundAccessors::Data] = addAccessor("data",		VTypes::RealData, FALSE, MAXFFPARAMDATA);
 	accessorPointers[FFBoundAccessors::Form] = addAccessor("form",		VTypes::CharacterData, FALSE);
-	accessorPointers[FFBoundAccessors::TypeNames] = addListAccessor("typenames",	VTypes::CharacterData);
+	accessorPointers[FFBoundAccessors::TypeNames] = addAccessor("typenames",VTypes::CharacterData, FALSE, MAXFFBOUNDTYPES);
 };
 
 // Retrieve specified data
@@ -69,6 +69,9 @@ bool FFBoundAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &r
 		case (FFBoundAccessors::Form):
 			rv.set(ffb->formText());
 			break;
+		case (FFBoundAccessors::TypeNames):
+			rv.set(ffb->typeName(index-1));
+			break;
 		default:
 			printf("FFBoundAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;
@@ -94,7 +97,14 @@ bool FFBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		printf("Unknown enumeration %i given to FFBoundAccessors::set.\n", vid);
 		msg.exit("FFBoundAccessors::set");
 		return FALSE;
-	} 
+	}
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'ffbound' type is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("FFBoundAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -105,11 +115,7 @@ bool FFBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	// Set value based on enumerated id
 	switch (vid)
 	{
-//		case (FFBoundAccessors::Data):
-//			ffb->setCharge(srcvar->asDouble());
-//			break;
 		case (FFBoundAccessors::Data):
-			msg.print("Member '%s' in ForcefieldBound is read-only.\n", accessorPointers[vid]->name());
 			result = FALSE;
 			break;
 		default:
