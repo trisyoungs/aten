@@ -26,8 +26,8 @@
 void Canvas::renderScene(Model *source)
 {
 	msg.enter("Canvas::renderScene");
-	static double rotmat[16], cammat[16];
-	static double camrot;
+	static GLdouble rotmat[16], cammat[16];
+	static GLdouble camrot;
 
 	// If the canvas is stil restricted, don't draw anything
 	if (noDraw_)
@@ -89,7 +89,7 @@ void Canvas::renderScene(Model *source)
 	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
 
 	// Reset projection matrix and set perspective view
-	double top, bottom;
+	GLdouble top, bottom;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if (prefs.hasPerspective())
@@ -155,8 +155,8 @@ void Canvas::renderScene(Model *source)
 	// Draw replicated cells (using display list)
 	if (prefs.isVisibleOnScreen(Prefs::ViewCellRepeat))
 	{
-		static Mat3<double> cellmat;
-		static Vec3<double> cx, cy, cz;
+		static Mat3<GLdouble> cellmat;
+		static Vec3<GLdouble> cx, cy, cz;
 		cellmat = displayModel_->cell()->axes();
 		cx = cellmat.rows[0];
 		cy = cellmat.rows[1];
@@ -206,7 +206,7 @@ void Canvas::renderScene(Model *source)
 
 	glDisable(GL_COLOR_MATERIAL);
 
-	glFlush();
+	//glFlush();
 	endGl();
 	msg.exit("Canvas::renderScene");
 }

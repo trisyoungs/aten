@@ -150,9 +150,9 @@ class Prefs
 	// Size scaling for atom selection transparency
 	GLdouble selectionScale_;
 	// Detail of atom quadric (slices/stacks)
-	int atomDetail_;
+	GLint atomDetail_;
 	// Detail of bond quadric (slices/stacks)
-	int bondDetail_;
+	GLint bondDetail_;
 	// Whether to use a perspective (TRUE) or orthographic (FALSE) projection
 	bool perspective_;
 	// Viewing angle for perspective projection
@@ -176,11 +176,11 @@ class Prefs
 	// Sets the detail for atom quadrics
 	void setAtomDetail(int n);
 	// Return the current detail of atom quadrics
-	int atomDetail();
+	GLint atomDetail();
 	// Sets the detail for bond quadrics
 	void setBondDetail(int n);
 	// Return the current detail of bond quadrics
-	int bondDetail();
+	GLint bondDetail();
 	// Sets the scale of selected atoms
 	void setSelectionScale(double f);
 	// Return the scale of selected atoms
