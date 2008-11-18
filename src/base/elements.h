@@ -144,6 +144,6 @@ class ElementMap
 	GLfloat *diffuseColour(Atom *i);
 };
 
-extern ElementMap elements;
+extern ElementMap &elements();
 
 #endif

@@ -417,7 +417,7 @@ double Prefs::screenRadius(Atom *i)
 	// Simple routine that returns the screen 'radius' of the supplied atom, which depends on its drawing style
 	Atom::DrawStyle dstyle;
 	renderStyle_ == Atom::IndividualStyle ? dstyle = i->style() : dstyle = renderStyle_;
-	return (dstyle == Atom::ScaledStyle) ? (elements.atomicRadius(i) * atomStyleRadius_[Atom::ScaledStyle]) : atomStyleRadius_[dstyle];
+	return (dstyle == Atom::ScaledStyle) ? (elements().atomicRadius(i) * atomStyleRadius_[Atom::ScaledStyle]) : atomStyleRadius_[dstyle];
 }
 
 /*

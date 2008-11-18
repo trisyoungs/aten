@@ -199,7 +199,7 @@ void Canvas::renderRegions()
 	glEnable(GL_LIGHTING);
 	for (Model *m = aten.models(); m != NULL; m = m->next)
 	{
-		elements.copyAmbientColour(i, colour);
+		elements().copyAmbientColour(i, colour);
 		colour[3] = 0.4f;
 		glMaterialfv(GL_FRONT,GL_AMBIENT_AND_DIFFUSE, colour);
 		glPushMatrix();

@@ -94,10 +94,10 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(i->id()+1);
 			break;
 		case (AtomAccessors::Mass):
-			rv.set(elements.atomicMass(i));
+			rv.set(elements().atomicMass(i));
 			break;
 		case (AtomAccessors::Name):
-			rv.set(elements.name(i));
+			rv.set(elements().name(i));
 			break;
 		case (AtomAccessors::Q):
 			rv.set(i->charge());
@@ -111,7 +111,7 @@ bool AtomAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &rv)
 			rv.set(i->isSelected());
 			break;
 		case (AtomAccessors::Symbol):
-			rv.set(elements.symbol(i));
+			rv.set(elements().symbol(i));
 			break;
 		case (AtomAccessors::Type):
 			rv.set(i->type(), VTypes::ForcefieldAtomData);

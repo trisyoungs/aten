@@ -187,13 +187,13 @@ void Model::calculateBonding()
 		// Check for excluded elements
 		el = i->element();
 		if (el == 0) continue;
-		radius_i = elements.atomicRadius(el);
+		radius_i = elements().atomicRadius(el);
 		for (j = i->next; j != NULL; j = j->next)
 		{
 			el = j->element();
 			if (el == 0) continue;
 			dist = cell_.distance(i,j);
-			radsum = radius_i + elements.atomicRadius(el);
+			radsum = radius_i + elements().atomicRadius(el);
 			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 		}
 	}
@@ -228,7 +228,7 @@ void Model::patternCalculateBonding()
 					i = i->next;
 					continue;
 				}
-				radius_i = elements.atomicRadius(el);
+				radius_i = elements().atomicRadius(el);
 				// Start loop over second atom in molecule
 				j = i->next;
 				for (jj = ii+1; jj < p->nAtoms(); jj ++)
@@ -241,7 +241,7 @@ void Model::patternCalculateBonding()
 					}
 					dist = cell_.distance(i,j);
 				//printf("i %i j %i dist %8.3f\n",i->id(),j->id(),dist);
-					radsum = radius_i + elements.atomicRadius(el);
+					radsum = radius_i + elements().atomicRadius(el);
 					if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 					j = j->next;
 				}
@@ -272,7 +272,7 @@ void Model::selectionCalculateBonding()
 				if (j->isSelected())
 				{
 					dist = cell_.distance(i,j);
-		                        radsum = (elements.atomicRadius(i) + elements.atomicRadius(j));
+		                        radsum = (elements().atomicRadius(i) + elements().atomicRadius(j));
 					if (dist < radsum*tolerance)
 							if (i->findBond(j) == NULL) bondAtoms(i,j,Bond::Single);
 				}

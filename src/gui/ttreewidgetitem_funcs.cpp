@@ -90,7 +90,7 @@ void TTreeWidgetItem::setAtomColumns()
 	else
 	{
 		setText(TW_A_ID, itoa(atom_->id()+1));
-		setText(TW_A_ELEMENT, elements.symbol(atom_));
+		setText(TW_A_ELEMENT, elements().symbol(atom_));
 		r = atom_->r();
 		setText(TW_A_RX, ftoa(r.x));
 		setText(TW_A_RY, ftoa(r.y));

@@ -31,10 +31,10 @@ ElementsAccessors elementsAccessors;
 // Constructor
 ElementsAccessors::ElementsAccessors()
 {
-	accessorPointers[ElementsAccessors::Mass] = addAccessor("mass", VTypes::RealData, TRUE, elements.nElements());
-	accessorPointers[ElementsAccessors::Name] = addAccessor("name", VTypes::CharacterData, TRUE, elements.nElements());
+	accessorPointers[ElementsAccessors::Mass] = addAccessor("mass", VTypes::RealData, TRUE, elements().nElements());
+	accessorPointers[ElementsAccessors::Name] = addAccessor("name", VTypes::CharacterData, TRUE, elements().nElements());
 	accessorPointers[ElementsAccessors::NElements] = addAccessor("nelements", VTypes::IntegerData, TRUE);
-	accessorPointers[ElementsAccessors::Symbol] = addAccessor("symbol", VTypes::CharacterData, TRUE, elements.nElements());
+	accessorPointers[ElementsAccessors::Symbol] = addAccessor("symbol", VTypes::CharacterData, TRUE, elements().nElements());
 };
 
 // Retrieve specified data
@@ -63,16 +63,16 @@ bool ElementsAccessors::retrieve(void *classptr, AccessStep *step, ReturnValue &
 	switch (vid)
 	{
 		case (ElementsAccessors::Mass):
-			rv.set(elements.atomicMass(index));
+			rv.set(elements().atomicMass(index));
 			break;
 		case (ElementsAccessors::Name):
-			rv.set(elements.name(index));
+			rv.set(elements().name(index));
 			break;
 		case (ElementsAccessors::NElements):
-			rv.set(elements.nElements());
+			rv.set(elements().nElements());
 			break;
 		case (ElementsAccessors::Symbol):
-			rv.set(elements.symbol(index));
+			rv.set(elements().symbol(index));
 			break;
 		default:
 			printf("ElementsAccessors::retrieve doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

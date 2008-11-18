@@ -408,7 +408,7 @@ int Aten::parseCli(int argc, char *argv[])
 					parser.getArgsDelim(argv[++argn], Parser::Defaults);
 					for (n=0; n<parser.nArgs(); n++)
 					{
-						el = elements.find(afterChar(parser.argc(n), '='));
+						el = elements().find(afterChar(parser.argc(n), '='));
 						if (el == 0) printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
 						else
 						{

@@ -93,7 +93,7 @@ void AtenForm::on_actionSelectCustomElement_triggered(bool on)
 	if (newel != -1)
 	{
 		// Set text of custom element button
-		ui.actionElementCustom->setText( elements.symbol(newel) );
+		ui.actionElementCustom->setText( elements().symbol(newel) );
 		customElement_ = newel;
 		// Activate custom element button
 		ui.actionElementCustom->setChecked(TRUE);
