@@ -18,8 +18,8 @@
 	You should have received a copy of the GNU General Public License
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include "ff/forcefield.h"
 
+#include "ff/forcefield.h"
 #include "variables/patternaccess.h"
 #include "variables/accessstep.h"
 #include "variables/vaccess.h"
@@ -151,6 +151,13 @@ bool PatternAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("PatternAccessors::set");
 		return FALSE;
 	} 
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'pattern' type is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("PatternAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -166,22 +173,6 @@ bool PatternAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 			break;
 		case (PatternAccessors::FField):
  			p->setForcefield( (Forcefield*) srcvar->asPointer(VTypes::ForcefieldData));
-			break;
-		case (PatternAccessors::FirstAtom):
-		case (PatternAccessors::FirstAtomId):
-		case (PatternAccessors::LastAtom):
-		case (PatternAccessors::LastAtomId):
-		case (PatternAccessors::NAngles):
-		case (PatternAccessors::NAtoms):
-		case (PatternAccessors::NBonds):
-		case (PatternAccessors::NMolAtoms):
-		case (PatternAccessors::NMols):
-		case (PatternAccessors::NTorsions):
-		case (PatternAccessors::Angles):
-		case (PatternAccessors::Bonds):
-		case (PatternAccessors::Torsions):
-			msg.print("Member '%s' in Pattern is read-only.\n", accessorPointers[vid]->name());
-			result = FALSE;
 			break;
 		default:
 			printf("PatternAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());

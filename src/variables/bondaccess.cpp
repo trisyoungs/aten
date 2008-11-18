@@ -101,6 +101,13 @@ bool BondAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("BondAccessors::set");
 		return FALSE;
 	}
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'bond' type is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("BondAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -111,13 +118,6 @@ bool BondAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	// Set value based on enumerated id
 	switch (vid)
 	{
-		case (BondAccessors::I):
-		case (BondAccessors::J):
-		case (BondAccessors::Order):
-		case (BondAccessors::Type):
-			msg.print("Member '%s' in Bond is read-only.\n", accessorPointers[vid]->name());
-			result = FALSE;
-			break;
 		default:
 			printf("BondAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;

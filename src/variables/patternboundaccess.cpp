@@ -149,6 +149,13 @@ bool PatternBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcv
 		msg.exit("PatternBoundAccessors::set");
 		return FALSE;
 	}
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'bound' is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("PatternBoundAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -159,12 +166,6 @@ bool PatternBoundAccessors::set(void *classptr, AccessStep *step, Variable *srcv
 	// Set value based on enumerated id
 	switch (vid)
 	{
-		case (PatternBoundAccessors::Data):
-		case (PatternBoundAccessors::Form):
-		case (PatternBoundAccessors::Id):
-			msg.print("Member '%s' in PatternBound is read-only.\n", accessorPointers[vid]->name());
-			result = FALSE;
-			break;
 		default:
 			printf("PatternBoundAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
 			result = FALSE;

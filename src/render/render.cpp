@@ -54,7 +54,7 @@ void Canvas::renderScene(Model *source)
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
 		// Set up a 2D canvas
-		glOrtho(0.0,width_*1.0,0.0,height_*1.0,-1,1);
+		glOrtho(0.0,width_*1.0,0.0,height_*1.0,-1.0,1.0);
 		// Draw on our default message
 		glMatrixMode(GL_MODELVIEW);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -83,7 +83,7 @@ void Canvas::renderScene(Model *source)
 
 	// Setup pen colour
 	glDisable(GL_COLOR_MATERIAL);
-	glColor3fv(prefs.colour(Prefs::ForegroundColour));
+	glColor4fv(prefs.colour(Prefs::ForegroundColour));
 
 	// Draw on the rotation globe
 	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
@@ -148,7 +148,7 @@ void Canvas::renderScene(Model *source)
 	  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces();
 	  // Render MC regions
 	  if ((displayModel_->cell()->type() != Cell::NoCell) && prefs.isVisibleOnScreen(Prefs::ViewRegions)) renderRegions();
-	  glColor3fv(prefs.colour(Prefs::ForegroundColour));
+	  glColor4fv(prefs.colour(Prefs::ForegroundColour));
 	  renderExtra3d();
 	glPopMatrix();
 

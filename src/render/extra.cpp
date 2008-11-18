@@ -117,7 +117,7 @@ void Canvas::renderExtra2d()
 	// First set up a 2D drawing area.
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0,width_*1.0,0.0,height_*1.0,-1,1);
+	glOrtho(0.0,width_*1.0,0.0,height_*1.0,-1.0,1.0);
 	// Now draw
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

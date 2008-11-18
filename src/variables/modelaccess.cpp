@@ -164,6 +164,13 @@ bool ModelAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 		msg.exit("ModelAccessors::set");
 		return FALSE;
 	} 
+	// Check read-only status
+	if (accessorPointers[vid]->readOnly())
+	{
+		msg.print("Member '%s' of 'model' type is read-only.\n", accessorPointers[vid]->name());
+		msg.exit("ModelAccessors::set");
+		return FALSE;
+	}
 	// Get arrayindex (if there is one) and check that we needed it in the first place
 	int index;
 	if (!checkIndex(index, step, accessorPointers[vid]))
@@ -176,20 +183,6 @@ bool ModelAccessors::set(void *classptr, AccessStep *step, Variable *srcvar)
 	{
 		case (ModelAccessors::Name):
 			m->setName(srcvar->asCharacter());
-			break;
-		case (ModelAccessors::Atoms):
-		case (ModelAccessors::Cell):
-		case (ModelAccessors::Bonds):
- 		case (ModelAccessors::NAngleTerms):
-		case (ModelAccessors::NAtoms):
-		case (ModelAccessors::NAtomtypes):
-		case (ModelAccessors::NBonds):
-		case (ModelAccessors::NBondTerms):
-		case (ModelAccessors::NPatterns):
-		case (ModelAccessors::NTorsionTerms):
-		case (ModelAccessors::Patterns):
-			msg.print("Member '%s' in Model is read-only.\n", accessorPointers[vid]->name());
-			result = FALSE;
 			break;
 		default:
 			printf("ModelAccessors::set doesn't know how to use member '%s'.\n", accessorPointers[vid]->name());
