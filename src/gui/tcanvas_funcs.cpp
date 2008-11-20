@@ -59,7 +59,6 @@ void TCanvas::probeFeatures()
 		printf(" QGLFormat: Stencil buffer is %s.\n", fmt.stencil() ? "enabled" : "disabled");
 		printf(" QGLWidget: Autoswap buffers is %s.\n", autoBufferSwap() ? "enabled" : "disabled");
 	}
-	setAutoBufferSwap(FALSE);
 }
 
 void TCanvas::initializeGL()
