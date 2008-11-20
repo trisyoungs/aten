@@ -91,6 +91,7 @@ void GuiQt::initialise(int &argc, char **argv)
 	app = new QApplication(argc, argv);
 	// Create the QGLWidget
 	mainWidget = new TCanvas(NULL);
+	mainWidget->probeFeatures();
 	mainWidget->setGeometry(0,0,800,600);
 	// Set the main gui widgetcanvas to be associated to the GUIs TCanvas (and vice versa)
 	mainView.setWidget(mainWidget);

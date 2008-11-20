@@ -273,6 +273,7 @@ Prefs::Prefs()
 	distanceLabel_ = "A";
 	labelSize_ = 10;
 	commonElements_ = "H,C,N,O,Cl";
+	manualSwapBuffers_ = FALSE;
 }
 
 // Load user preferences file
@@ -1231,6 +1232,18 @@ void Prefs::setUseNiceText(bool b)
 bool Prefs::useNiceText()
 {
 	return useNiceText_;
+}
+
+// Set manual swapbuffers
+void Prefs::setManualSwapBuffers(bool on)
+{
+	manualSwapBuffers_ = on;
+}
+
+// Return whether manual buffer swapping is enabled
+bool Prefs::manualSwapBuffers()
+{
+	return manualSwapBuffers_;
 }
 
 // Set list of common elements in SelectElement dialog

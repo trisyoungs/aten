@@ -45,6 +45,7 @@ void Canvas::renderScene(Model *source)
 
 	// Check the supplied model against the previous one rendered to see if we must outdate the display list
 	if ((source != displayModel_) || (source == NULL)) renderPoint_ = -1;
+	msg.print(Messenger::GL, "Begin rendering pass : source model pointer = %li, renderpoint = %d\n", source, renderPoint_);
 
 	// Store the source model pointer and grab the trajectoryparent pointer (if there is one)
 	displayModel_ = source;
@@ -68,9 +69,12 @@ void Canvas::renderScene(Model *source)
 	{
 		if (source->trajectoryParent()->trajectoryPosition() != displayFrame_) renderPoint_ = -1;
 		displayFrame_ = source->trajectoryParent()->trajectoryPosition();
+		msg.print(Messenger::GL, " --> Source model is a trajectory frame - pointer = %li\n", displayFrame_);
 	}
 
 	// Set clear colour
+	checkGlError();
+	msg.print(Messenger::GL, " --> Clearing context, background, and setting pen colour\n");
 	GLfloat *clrcol = prefs.colour(Prefs::BackgroundColour);
 	glClearColor(clrcol[0],clrcol[1],clrcol[2],clrcol[3]);
 	// Clear colour and depth buffers
@@ -89,6 +93,8 @@ void Canvas::renderScene(Model *source)
 	if (prefs.isVisibleOnScreen(Prefs::ViewGlobe)) renderRotationGlobe(rotmat, camrot);
 
 	// Reset projection matrix and set perspective view
+	checkGlError();
+	msg.print(Messenger::GL, " --> Setting projection matrix\n");
 	GLdouble top, bottom;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -106,6 +112,8 @@ void Canvas::renderScene(Model *source)
 	}
 
 	// Reset GLs modelview matrix and apply camera matrix from model
+	checkGlError();
+	msg.print(Messenger::GL, " --> Setting modelview matrix\n");
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glMultMatrixd(cammat);
@@ -125,6 +133,8 @@ void Canvas::renderScene(Model *source)
 	prefs.renderStyle() == Atom::StickStyle ? glDisable(GL_LIGHTING) : glEnable(GL_LIGHTING);
 	// Draw the main model parts
 	// If renderPoint_ matches the model's Change::TotalLog then just re-render the stored display list. If not, create the display list.
+	checkGlError();
+	msg.print(Messenger::GL, " --> Drawing model\n");
 	glPushMatrix();
 	  if (renderPoint_ == displayModel_->changeLog.log(Log::Total)) glCallList(list_[GLOB_MODEL]);
 	  else
@@ -133,10 +143,16 @@ void Canvas::renderScene(Model *source)
 		//glDeleteLists(list_[GLOB_MODEL],1);
 		glNewList(list_[GLOB_MODEL],GL_COMPILE_AND_EXECUTE);
 		  // Draw the model cell (this also translates our drawing position to the -half cell point.
+		  checkGlError();
+		  msg.print(Messenger::GL, " --> ...rendering model cell\n");
 		  renderModelCell();
 		  // Draw the model's atoms, bonds, and selection
+		  checkGlError();
+		  msg.print(Messenger::GL, " --> ...rendering model atoms\n");
 		  if (prefs.isVisibleOnScreen(Prefs::ViewAtoms)) renderModelAtoms();
 		  // Render glyphs associated with the model
+		  checkGlError();
+		  msg.print(Messenger::GL, " --> ...rendering model glyphs\n");
 		  renderModelGlyphs();
 		  // Render force arrows
 		  if (prefs.isVisibleOnScreen(Prefs::ViewForceArrows)) renderModelForceArrows();
@@ -145,9 +161,15 @@ void Canvas::renderScene(Model *source)
 		msg.print(Messenger::Verbose," Done. (New point = %i)\n",renderPoint_);
 	  }
 	  // Render surfaces
+	  checkGlError();
+	  msg.print(Messenger::GL, " --> ...rendering model surfaces\n");
 	  if (prefs.isVisibleOnScreen(Prefs::ViewSurfaces)) renderSurfaces();
 	  // Render MC regions
+	  checkGlError();
+	  msg.print(Messenger::GL, " --> ...rendering regions\n");
 	  if ((displayModel_->cell()->type() != Cell::NoCell) && prefs.isVisibleOnScreen(Prefs::ViewRegions)) renderRegions();
+	  checkGlError();
+	  msg.print(Messenger::GL, " --> ...rendering extra 3d\n");
 	  glColor4fv(prefs.colour(Prefs::ForegroundColour));
 	  renderExtra3d();
 	glPopMatrix();
@@ -155,6 +177,8 @@ void Canvas::renderScene(Model *source)
 	// Draw replicated cells (using display list)
 	if (prefs.isVisibleOnScreen(Prefs::ViewCellRepeat))
 	{
+		checkGlError();
+		msg.print(Messenger::GL, " --> ...rendering cell repeat units\n");
 		static Mat3<GLdouble> cellmat;
 		static Vec3<GLdouble> cx, cy, cz;
 		cellmat = displayModel_->cell()->axes();
@@ -184,6 +208,8 @@ void Canvas::renderScene(Model *source)
 	}
 
 	// Render measurements / labels, also in 3D
+	checkGlError();
+	msg.print(Messenger::GL, " --> Setting up context for extra view items\n");
 	glClear(GL_DEPTH_BUFFER_BIT);
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
@@ -194,20 +220,32 @@ void Canvas::renderScene(Model *source)
 	displayModel_->projectAll();
 
 	// Render text glyphs associated with the model
+	checkGlError();
+	msg.print(Messenger::GL, " --> Rendering text glyphs\n");
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	renderModelTextGlyphs();
+	checkGlError();
+	msg.print(Messenger::GL, " --> Rendering model labels\n");
 	if (prefs.isVisibleOnScreen(Prefs::ViewLabels)) renderModelLabels();
+	checkGlError();
+	msg.print(Messenger::GL, " --> Rendering model measurements\n");
 	if (prefs.isVisibleOnScreen(Prefs::ViewMeasurements)) renderModelMeasurements();
 
+	checkGlError();
+	msg.print(Messenger::GL, " --> Rendering extra 2D\n");
 	renderExtra2d();
 
 	// Render colourscales
+	checkGlError();
+	msg.print(Messenger::GL, " --> Rendering colourscales\n");
 	renderColourscales();
 
 	glDisable(GL_COLOR_MATERIAL);
+	checkGlError();
 
 	//glFlush();
 	endGl();
+
 	msg.exit("Canvas::renderScene");
 }
 

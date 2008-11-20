@@ -229,6 +229,8 @@ class Prefs
 	int labelSize_;
 	// Use QGlWidget::renderText (FALSE) or QPainter::drawText (TRUE) for labels etc.
 	bool useNiceText_;
+	// Flag to manually perform swapBuffers
+	bool manualSwapBuffers_;
 
 	public:
 	// Set the postfix distance label
@@ -247,6 +249,10 @@ class Prefs
 	void setUseNiceText(bool b);
 	// Return whether to use nice text rendering
 	bool useNiceText();
+	// Set manual swapbuffers
+	void setManualSwapBuffers(bool on);
+	// Return whether manual buffer swapping is enabled
+	bool manualSwapBuffers();
 
 
 	/*

@@ -42,19 +42,9 @@ Cli cliSwitches[] = {
 	{ Cli::CentreSwitch,		'\0',"centre",		0,
 		"",		"Force centering of atomic coordinates at zero" },
 	{ Cli::CommandSwitch,		'c',"command",		1,
-		"<commands>", "Execute supplied commands before main program execution" },
-	{ Cli::DebugAllSwitch,		'\0',"debugall",	0,
-		"",		"Print out all debug information" },
-	{ Cli::DebugCommandsSwitch,	'\0',"debugcommands",	0,
-		"",		"Print out verbose information from file filter routines" },
-	{ Cli::DebugExpressionsSwitch,	'\0',"debugexpressions",0,
-		"",		"Print out verbose information from expression routines" },
-	{ Cli::DebugParseSwitch,	'\0',"debugparse",	0,
-		"",		"Print out verbose information from file parsing routines" },
-	{ Cli::DebugSwitch,		'd',"debug",		0,
-		"",		"Print major subroutine call information" },
-	{ Cli::DebugTypingSwitch,	'\0',"debugtyping",	0,
-		"",		"Print out verbose information from atom typing routines" },
+		"<commands>",	"Execute supplied commands before main program execution" },
+	{ Cli::DebugSwitch,		'd',"debug",		2,
+		"[output]",	"Print out call debug information, or specific information if output type is supplied" },
 	{ Cli::ExportSwitch,		'e',"export",		1,
 		"<nickname>",	"Export all loaded models in the nicknamed format" },
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
@@ -106,6 +96,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 {
 	int argn, opt;
 	bool isShort, match, nextArgIsSwitch, hasNextArg;
+	Messenger::OutputType ot;
 	char *arg;
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -163,7 +154,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 						return FALSE;
 					}
 					break;
-				// Optional argument (never used?)
+				// Optional argument
 				case (2):
 					break;
 			}
@@ -171,33 +162,16 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			// We recognise only a specific selection of switches here, mostly to do with debugging / versioning etc.
 			switch (opt)
 			{
-				// Turn on debug messages for all calls
-				case (Cli::DebugAllSwitch):
-					msg.addOutputType(Messenger::Calls);
-					msg.addOutputType(Messenger::Expressions);
-					msg.addOutputType(Messenger::Verbose);
-					msg.addOutputType(Messenger::Parse);
-					msg.addOutputType(Messenger::Typing);
-					break;
-				// Turn on debug messages for atom typing
-				case (Cli::DebugCommandsSwitch):
-					msg.addOutputType(Messenger::Commands);
-					break;
-				// Turn on debug messages for expression
-				case (Cli::DebugExpressionsSwitch):
-					msg.addOutputType(Messenger::Expressions);
-					break;
-				// Turn on debug messages for atom typing
-				case (Cli::DebugParseSwitch):
-					msg.addOutputType(Messenger::Parse);
-					break;
-				// Turn on call debugging
+				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
-					msg.addOutputType(Messenger::Calls);
-					break;
-				// Turn on debug messages for atom typing
-				case (Cli::DebugTypingSwitch):
-					msg.addOutputType(Messenger::Typing);
+					if ((!hasNextArg) || nextArgIsSwitch) msg.addOutputType(Messenger::Calls);
+					else
+					{
+						ot = Messenger::outputType(argv[++argn]);
+						if (ot != Messenger::nOutputTypes) msg.addOutputType(ot);
+						else return FALSE;
+						argv[argn][0] = '\0';
+					}
 					break;
 				// Display help
 				case (Cli::HelpSwitch):
@@ -290,7 +264,7 @@ int Aten::parseCli(int argc, char *argv[])
 						return -1;
 					}
 					break;
-				// Optional argument (never used?)
+				// Optional argument
 				case (2):
 					break;
 			}
@@ -298,12 +272,7 @@ int Aten::parseCli(int argc, char *argv[])
 			switch (opt)
 			{
 				// All of the following switches were dealt with in parseCliEarly()
-				case (Cli::DebugAllSwitch):
-				case (Cli::DebugCommandsSwitch):
-				case (Cli::DebugExpressionsSwitch):
-				case (Cli::DebugParseSwitch):
 				case (Cli::DebugSwitch):
-				case (Cli::DebugTypingSwitch):
 				case (Cli::HelpSwitch):
 				case (Cli::QuietSwitch):
 				case (Cli::VerboseSwitch):

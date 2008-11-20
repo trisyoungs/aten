@@ -638,6 +638,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set (or lists) the visibility of view objects on saved images" },
 	{ "style",		"n",		"[style]",
 				"Set (or show) the current model drawing style" },
+	{ "swapbuffers",	"n",		"[on|off]",
+				"Set (or show) the current model drawing style" },
 	{ "usenicetext",	"N",		"<<on|off>>",
 				"Use QPainter (on) or QGlWidget (off) to render label text" },
 	{ "vcut",		"E",		"<cutoff>",

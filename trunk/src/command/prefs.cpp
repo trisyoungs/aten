@@ -423,6 +423,14 @@ int Command::function_CA_STYLE(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
+// Set whether to perform manual buffer swapping ('swapbuffers [on|off]')
+int Command::function_CA_SWAPBUFFERS(CommandNode *&c, Bundle &obj)
+{
+	if (c->hasArg(0)) prefs.setManualSwapBuffers(c->argb(0));
+	else msg.print("Manual swapping of buffers is %s.\n", prefs.manualSwapBuffers() ? "on" : "off");
+	return Command::Success;
+}
+
 // Set whether to use nice text rendering ('usenicetext on|off')
 int Command::function_CA_USENICETEXT(CommandNode *&c, Bundle &obj)
 {

@@ -42,6 +42,8 @@ class TCanvas : public QGLWidget
 	public:
 	// Set the widgetcanvas for the display
 	void setCanvas(Canvas *wc);
+	// Probe widget/context/format features
+	void probeFeatures();
 
 	protected:
 	void initializeGL();

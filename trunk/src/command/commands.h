@@ -396,6 +396,7 @@ class Command {
 		CA_SHOWONSCREEN,
 		CA_SHOWONIMAGE,
 		CA_STYLE,
+		CA_SWAPBUFFERS,
 		CA_USENICETEXT,
 		CA_VCUT,
 		CA_VDW,
@@ -786,6 +787,7 @@ class Command {
 	static int function_CA_SHOWONSCREEN(CommandNode *&c, Bundle &obj);
 	static int function_CA_SHOWONIMAGE(CommandNode *&c, Bundle &obj);
 	static int function_CA_STYLE(CommandNode *&c, Bundle &obj);
+	static int function_CA_SWAPBUFFERS(CommandNode *&c, Bundle &obj);
 	static int function_CA_USENICETEXT(CommandNode *&c, Bundle &obj);
 	static int function_CA_VCUT(CommandNode *&c, Bundle &obj);
 	static int function_CA_VDW(CommandNode *&c, Bundle &obj);
