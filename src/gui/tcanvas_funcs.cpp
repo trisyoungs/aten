@@ -42,6 +42,26 @@ void TCanvas::setCanvas(Canvas *wc)
 	canvas_ = wc;
 }
 
+// Probe features
+void TCanvas::probeFeatures()
+{
+	if (msg.isOutputActive(Messenger::GL))
+	{
+		QGLFormat fmt = context()->format();
+		// Probe this format!
+		printf(" QGLFormat: Alpha buffer is %s.\n", fmt.alpha() ? "enabled" : "disabled");
+		printf(" QGLFormat: Accumulation buffer is %s.\n", fmt.accum() ? "enabled" : "disabled");
+		printf(" QGLFormat: Depth buffer is %s.\n", fmt.depth() ? "enabled" : "disabled");
+		printf(" QGLFormat: Double-buffering is %s.\n", fmt.doubleBuffer() ? "enabled" : "disabled");
+		printf(" QGLFormat: Direct rendering is %s.\n", fmt.directRendering() ? "enabled" : "disabled");
+		printf(" QGLFormat: RGBA colour mode is %s.\n", fmt.rgba() ? "enabled" : "disabled");
+		printf(" QGLFormat: Multisample buffer is %s.\n", fmt.sampleBuffers() ? "enabled" : "disabled");
+		printf(" QGLFormat: Stencil buffer is %s.\n", fmt.stencil() ? "enabled" : "disabled");
+		printf(" QGLWidget: Autoswap buffers is %s.\n", autoBufferSwap() ? "enabled" : "disabled");
+	}
+	setAutoBufferSwap(FALSE);
+}
+
 void TCanvas::initializeGL()
 {
 	// Call the realize method of the associated canvas_.
@@ -63,14 +83,14 @@ void TCanvas::paintGL()
 		canvas_->renderScene(aten.currentModel()->renderSource());
 
 		// Initialise QPainter
-		QPainter painter(this);
+		//QPainter painter(this);
 
 		// Draw on text objects (with QPainter)
-		font.setPointSize(prefs.labelSize());
-		painter.setFont(font);
-		painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
-		painter.setRenderHint(QPainter::Antialiasing);
-		canvas_->renderText(painter);
+		//font.setPointSize(prefs.labelSize());
+		//painter.setFont(font);
+		//painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
+		//painter.setRenderHint(QPainter::Antialiasing);
+		//canvas_->renderText(painter);
 	}
 	else printf("NO CANVAS SET PAINT\n");
 }

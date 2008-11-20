@@ -104,6 +104,24 @@ void Canvas::endGl()
 	drawing_ = FALSE;
 }
 
+void Canvas::checkGlError()
+{
+	// Do GL error check
+	if (msg.isOutputActive(Messenger::GL)) switch (glGetError())
+	{
+		case (GL_INVALID_ENUM): msg.print(Messenger::GL, "GLenum argument out of range\n"); break;
+		case (GL_INVALID_VALUE): msg.print(Messenger::GL, "Numeric argument out of range\n"); break;
+		case (GL_INVALID_OPERATION): msg.print(Messenger::GL, "Operation illegal in current state\n"); break;
+		case (GL_STACK_OVERFLOW): msg.print(Messenger::GL, "Command would cause a stack overflow\n"); break;
+		case (GL_STACK_UNDERFLOW): msg.print(Messenger::GL, "Command would cause a stack underflow\n"); break;
+		case (GL_OUT_OF_MEMORY): msg.print(Messenger::GL, "Not enough memory left to execute command\n"); break;
+		case (GL_NO_ERROR): msg.print(Messenger::GL, "No GL error\n"); break;
+		default:
+			msg.print(Messenger::GL, "Unknown GL error?\n");
+			break;
+	}
+}
+
 /*
 // Widget Canvas
 */
@@ -128,7 +146,9 @@ void Canvas::realize()
 // Invalidate
 void Canvas::postRedisplay()
 {
-	if (valid_) contextWidget_->updateGL();
+	if (!valid_) return;
+	contextWidget_->updateGL();
+	if (prefs.manualSwapBuffers()) contextWidget_->swapBuffers();
 }
 
 // Widget Expose
@@ -136,6 +156,7 @@ void Canvas::expose()
 {
 	if (!valid_) return;
 	contextWidget_->updateGL();
+	if (prefs.manualSwapBuffers()) contextWidget_->swapBuffers();
 }
 
 // Widget configure
@@ -147,6 +168,7 @@ void Canvas::configure(int w, int h)
 	doProjection();
 	// Flag that render source needs to be reprojected
 	if (displayModel_ != NULL) displayModel_->changeLog.add(Log::Visual);
+	if (prefs.manualSwapBuffers()) contextWidget_->swapBuffers();
 }
 
 // Enable drawing
@@ -182,10 +204,9 @@ void Canvas::initGl()
 		if (list_[0] == 0)
 		{
 			list_[GLOB_STICKATOM] = glGenLists(GLOB_NITEMS);
+			msg.print(Messenger::GL, "Beginning of GL display list is %d\n", list_[GLOB_STICKATOM]);
 			for (int n=1; n<GLOB_NITEMS; n++) list_[n] = list_[GLOB_STICKATOM]+n;
 		}
-
-		// Fill display lists
 		createLists();
 
 		// Clear colour

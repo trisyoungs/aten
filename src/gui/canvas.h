@@ -180,9 +180,11 @@ class Canvas
 	// Configure OpenGL
 	void initGl();
 	// Begin construct for any OpenGL commands
-	virtual bool beginGl();
+	bool beginGl();
 	// Finish OpenGL commands
-	virtual void endGl();
+	void endGl();
+	// Check for GL error
+	void checkGlError();
 	// Reset the projection matrix based on the current canvas geometry
 	void doProjection();
 	// Projection matrices for scene and rotation globe

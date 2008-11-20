@@ -338,6 +338,7 @@ void Command::initPointers()
 	pointers_[CA_SHOWONSCREEN] = &Command::function_CA_SHOWONSCREEN;
 	pointers_[CA_SHOWONIMAGE] = &Command::function_CA_SHOWONIMAGE;
 	pointers_[CA_STYLE] = &Command::function_CA_STYLE;
+	pointers_[CA_SWAPBUFFERS] = &Command::function_CA_SWAPBUFFERS;
 	pointers_[CA_USENICETEXT] = &Command::function_CA_USENICETEXT;
 	pointers_[CA_VCUT] = &Command::function_CA_VCUT;
 	pointers_[CA_VDW] = &Command::function_CA_VDW;

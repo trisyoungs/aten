@@ -31,10 +31,14 @@
 Messenger msg;
 
 // Message output types
-const char *OutputTypeKeywords[] = { "calls", "typing", "parse", "verbose", "commands", "_ERROR_" };
+const char *OutputTypeKeywords[] = { "calls", "typing", "parse", "verbose", "commands", "expressions", "_ERROR_", "gl", "all" };
 Messenger::OutputType Messenger::outputType(const char *s)
 {
-	return (Messenger::OutputType) power(2,enumSearch("output type",Messenger::nOutputTypes,OutputTypeKeywords,s));
+	return (Messenger::OutputType) enumSearch("output type",Messenger::nOutputTypes,OutputTypeKeywords,s);
+}
+const char *Messenger::outputType(Messenger::OutputType ot)
+{
+	return OutputTypeKeywords[ot];
 }
 
 // Constructor
@@ -49,19 +53,33 @@ Messenger::Messenger()
 // Add a debug level to the debug output bitvector
 void Messenger::addOutputType(Messenger::OutputType dm)
 {
-	if (!(outputTypes_&dm)) outputTypes_ += dm;
+	// Convert output type into bit if necessary
+	if (dm == Messenger::All) outputTypes_ = 1023;
+	else
+	{
+		int bit = power(2,dm);
+		printf("ADDBIT = %i\n", bit);
+		if (!(outputTypes_&bit)) outputTypes_ += bit;
+	}
 }
 
 // Remove a debug level from the debug output bitvector
 void Messenger::removeOutputType(Messenger::OutputType dm)
 {
-	if (outputTypes_&dm) outputTypes_ -= dm;
+	// Convert output type into bit if necessary
+	if (dm == Messenger::All) outputTypes_ = 0;
+	else
+	{
+		int bit = power(2,dm);
+		if (outputTypes_&bit) outputTypes_ -= bit;
+	}
 }
 
 // Returns whether the specified debug level is set
 bool Messenger::isOutputActive(Messenger::OutputType dm)
 {
-	return ((outputTypes_&dm) ? TRUE : FALSE);
+	int bit = power(2,dm);
+	return ((outputTypes_&bit) ? TRUE : FALSE);
 }
 
 // Set status of quiet mode
@@ -122,7 +140,7 @@ void Messenger::print(Messenger::OutputType ot, const char *fmt ...)
 // Function enter
 void Messenger::enter(const char *callname)
 {
-	if (!(outputTypes_&Messenger::Calls)) return;
+	if (!isOutputActive(Messenger::Calls)) return;
 	// Debug Messaging - Enter Function
 	printf("%2i ",callLevel_);
 	for (int n=0; n<callLevel_; n++) printf("--");
@@ -133,7 +151,7 @@ void Messenger::enter(const char *callname)
 // Function leave
 void Messenger::exit(const char *callname)
 {
-	if (!(outputTypes_&Messenger::Calls)) return;
+	if (!isOutputActive(Messenger::Calls)) return;
 	// Debug Messaging - Leave Function
 	callLevel_ --;
 	printf("%2i ", callLevel_);
