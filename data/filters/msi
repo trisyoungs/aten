@@ -1,6 +1,7 @@
 # MSI Datafile version 3.8
-# Last modified: 05/08/08
+# Last modified: 21/11/08
 # ChangeLog:
+#	21/11/08 - Adjustment - some text arguments were not double-quoted.
 #	05/08/08 - Quoting adjusted to follow new Parser rules.
 
 importmodel
@@ -20,7 +21,7 @@ importmodel
 	# Read in each line as six arguments.
 	# If the first is not 'A' then it is the start of some data block.
 	# We will use a variable $block to store the current block we're in (N=none, M=model, A=atom, B=bond)
-	$block = N
+	$block = "N"
 	$cellvar = 0
 	for $n
 		# Read in whole lines and work with them instead of always using readline
@@ -33,15 +34,15 @@ importmodel
 	#		readline $c
 	#	end
 		# Check for block specifiers
-		if $ident <> A
-			if $type = Model
+		if $ident <> "A"
+			if $type = "Model"
 				$newblock = "M"
-			elseif $type = Atom
+			elseif $type = "Atom"
 				$newblock = "A"
 				newatom 0
 				# We must also set the atom id here (since bonds refer to item number, not Id)
 				setid $ident
-			elseif $type = Bond
+			elseif $type = "Bond"
 				$newblock = "B"
 			else
 				#print "Didn't recognise MSI block $type "

@@ -48,28 +48,26 @@ Dnchar::~Dnchar()
 // Copy constructor
 Dnchar::Dnchar(const Dnchar &source)
 {
-	set(source.data_);
+	if (source.data_ == NULL) clear();
+	else set(source.data_);
 }
 
 // Print
 void Dnchar::print() const
 {
-	printf("DnChar len = %2i, end = %2i : '%s'\n",size_,endPosition_,data_);
+	printf("DnChar len = %i, end = %i : '%s'\n",size_,endPosition_,data_);
 }
 
 // Clear
 void Dnchar::clear()
 {
 	if (data_ == NULL) return;
-	//if (data_ != NULL) delete[] data_;
-	//data_ = NULL;
-	//size_ = 1;
 	endPosition_ = 0;
 	data_[0] = '\0';
 }
 
 // Set
-void Dnchar::set(const char *s)
+/* void Dnchar::set(const char *s)
 {
 	// Check if array has already been initialised
 	if (data_ != NULL) delete[] data_;
@@ -89,7 +87,20 @@ void Dnchar::set(const char *s)
 		data_ = new char[size_];
 		strcpy(data_,s);
 	}
+} */
 
+void Dnchar::set(const char *s)
+{
+	// If new size is less than or equal to old size, don't reallocate
+	int newsize = strlen(s) + 1;
+	if (newsize > size_)
+	{
+		if (data_ != NULL) delete[] data_;
+		data_ = new char[newsize];
+	}
+	size_ = newsize;
+	endPosition_ = size_-1;
+	strcpy(data_,s);
 }
 
 // Get
@@ -152,7 +163,7 @@ void Dnchar::eraseStart(int n)
 	//printf("erasestart - n = %i, endPosition_ = %i\n",n,endPosition_);
 	if ((n - 1) > endPosition_)
 	{
-		printf("new (old) n = (%i) %i\n",n,endPosition_);
+// 		printf("new (old) n = (%i) %i\n",n,endPosition_);
 		n = endPosition_; 
 	}
 	if (n > 0) erase(0,n-1);
@@ -174,7 +185,8 @@ void Dnchar::operator=(const char *s)
 // Assignment operator (const Dnchar&)
 void Dnchar::operator=(const Dnchar &source)
 {
-	set(source.data_);
+	if (source.data_ == NULL) clear();
+	else set(source.data_);
 }
 
 // Equality Operator (const char*)
