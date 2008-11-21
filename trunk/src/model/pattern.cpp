@@ -231,13 +231,16 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		if (nsel2 != nSelected_)
 		{
 			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\nPattern for model will be 1*N.\n");
+			msg.print("Offending molecule has been selected.\n");
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
 			patterns_.clear();
 			nmols = 0;
-			selectAll();
-			selectionEmpirical(emp);
-			msg.print("Added default pattern: %s\n",emp.get());
-			p = addPattern(1,atoms_.nItems(),emp.get());
+// 			selectAll();
+// 			selectionEmpirical(emp);
+// 			msg.print("Added default pattern: %s\n", emp.get());
+// 			p = addPattern(1, atoms_.nItems(), emp.get());
+			msg.print("Added default pattern.\n");
+			p = addPattern(1, atoms_.nItems(), "default");
 			defaultpattern = TRUE;
 			break;
 		}
@@ -324,8 +327,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		p = addPattern(nmols,patclip.nAtoms(),emp.get());
 	}
 
-	// Deselect all atoms
-	selectNone();
+	// Deselect all atoms (unless the default pattern was forced)
+	if (!defaultpattern) selectNone();
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
 	// Don't store new point if a defaultpattern was created and acceptdefault == FALSE

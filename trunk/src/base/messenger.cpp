@@ -54,13 +54,8 @@ Messenger::Messenger()
 void Messenger::addOutputType(Messenger::OutputType dm)
 {
 	// Convert output type into bit if necessary
-	if (dm == Messenger::All) outputTypes_ = 1023;
-	else
-	{
-		int bit = power(2,dm);
-		printf("ADDBIT = %i\n", bit);
-		if (!(outputTypes_&bit)) outputTypes_ += bit;
-	}
+	if (dm == Messenger::All) outputTypes_ = (1 << nOutputTypes) - 1;
+	else if (!(outputTypes_&(1 << dm))) outputTypes_ += (1 << dm);
 }
 
 // Remove a debug level from the debug output bitvector
@@ -68,18 +63,13 @@ void Messenger::removeOutputType(Messenger::OutputType dm)
 {
 	// Convert output type into bit if necessary
 	if (dm == Messenger::All) outputTypes_ = 0;
-	else
-	{
-		int bit = power(2,dm);
-		if (outputTypes_&bit) outputTypes_ -= bit;
-	}
+	else if (outputTypes_&(1 << dm)) outputTypes_ -= (1 << dm);
 }
 
 // Returns whether the specified debug level is set
 bool Messenger::isOutputActive(Messenger::OutputType dm)
 {
-	int bit = power(2,dm);
-	return ((outputTypes_&bit) ? TRUE : FALSE);
+	return ((outputTypes_&(1 << dm)) ? TRUE : FALSE);
 }
 
 // Set status of quiet mode
