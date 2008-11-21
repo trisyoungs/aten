@@ -570,8 +570,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Select the named pattern (or pattern id) and make it current" },
 	{ "listpatterns",	"",		"",
 				"Print the pattern definition for the current model" },
-	{ "newpattern",		"NEE",		"<name> <nmols> <natoms>",	
-				"Add a pattern definition to the current model" },
+	{ "newpattern",		"NEE",		"<name> <nmolecules> <atoms per molecule>",	
+				"Add a pattern definition 'node' to the current model" },
 
 	// Preferences commands
 	{ "anglelabel",		"N",		"<text>",
@@ -629,7 +629,7 @@ CommandData Command::data[Command::CA_NITEMS] = {
 	{ "replicatetrim",	"N",		"<on|off>",
 				"Set whether to trim atoms after cell replicate" },
 	{ "scheme",		"n",		"[colour scheme]",
-				"SHow (or set) the atomic colouring scheme to use" },
+				"Show (or set) the atomic colouring scheme to use" },
 	{ "shininess",		"E",		"<n>",
 				"Set the shininess of atoms" },
 	{ "showonscreen",	"nn",		"[object] yes|no",

@@ -82,14 +82,14 @@ void TCanvas::paintGL()
 		canvas_->renderScene(aten.currentModel()->renderSource());
 
 		// Initialise QPainter
-		//QPainter painter(this);
+		QPainter painter(this);
 
 		// Draw on text objects (with QPainter)
-		//font.setPointSize(prefs.labelSize());
-		//painter.setFont(font);
-		//painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
-		//painter.setRenderHint(QPainter::Antialiasing);
-		//canvas_->renderText(painter);
+		font.setPointSize(prefs.labelSize());
+		painter.setFont(font);
+		painter.setBrush( QBrush(QColor(0,0,0), Qt::SolidPattern) );
+		painter.setRenderHint(QPainter::Antialiasing);
+		canvas_->renderText(painter);
 	}
 	else printf("NO CANVAS SET PAINT\n");
 }
