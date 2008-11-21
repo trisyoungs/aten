@@ -215,23 +215,23 @@ bool Model::autocreatePatterns(bool acceptDefault)
 	i = atoms_.first();
 	while (atomid != atoms_.nItems())
 	{
-		selectNone();
+		selectNone(TRUE);
 		// Select molecule starting at atom 'i' and calculate fingerprint
-		selectTree(i);
+		selectTree(i, TRUE);
 		// We insist that the molecule consists of consecutively ordered atoms, otherwise we can't proceed, so count the number of selected
 		// atoms in those that we now skip (if != nselected then we must force a 1*N pattern)
 		nsel2 = 0;
-		atomid += nSelected_;
+		atomid += nMarked_;
 		//selectionGetEmpirical(emp);
-		for (n=0; n<nSelected_; n++)
+		for (n=0; n<nMarked_; n++)
 		{
-			if (i->isSelected()) nsel2 ++;
+			if (i->isSelected(TRUE)) nsel2 ++;
 			i = i->next;
 		}
-		if (nsel2 != nSelected_)
+		if (nsel2 != nMarked_)
 		{
 			msg.print("Warning - model cannot be divided into molecules because of non-ordered atoms.\nPattern for model will be 1*N.\n");
-			msg.print("Offending molecule has been selected.\n");
+// 			msg.print("Offending molecule has been selected.\n");
 			// Remove any patterns added so far and set values so we create a generic 1*N pattern instead
 			patterns_.clear();
 			nmols = 0;
@@ -247,8 +247,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 		// If this is the first pass (molecule), copy the selection. If not, compare it
 		if (nmols == 0)
 		{
-			patclip.copySelection(this);
-			selectionEmpirical(emp);
+			patclip.copyMarked(this);
+			selectionEmpirical(emp, TRUE);
 			nmols = 1;
 		}
 		else
@@ -256,14 +256,14 @@ bool Model::autocreatePatterns(bool acceptDefault)
 			// Compare clipboard contents with current selection
 			same = TRUE;
 			// Check number of atoms first....
-			if (nSelected_ != patclip.nAtoms()) same = FALSE;
+			if (nMarked_ != patclip.nAtoms()) same = FALSE;
 			else
 			{
 				/*
 				// Atoms
 				*/
 				clipi = patclip.atoms();
-				for (isel = firstSelected(); isel != NULL; isel = isel->nextSelected())
+				for (isel = firstMarked(); isel != NULL; isel = isel->nextMarked())
 				{
 					// Element check
 					if (clipi->element() != isel->element())
@@ -289,8 +289,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 					clipi = clipi->next;
 				}
 				// Bonding between atoms_...
-				idoff = firstSelected()->id();
-				if (same) for (isel = firstSelected(); isel != NULL; isel = isel->nextSelected())
+				idoff = firstMarked()->id();
+				if (same) for (isel = firstMarked(); isel != NULL; isel = isel->nextMarked())
 				{
 					// Convert IDs so they start at zero (i.e. subtract ID of current atom 'i')
 					idi = isel->id() - idoff;
@@ -314,8 +314,8 @@ bool Model::autocreatePatterns(bool acceptDefault)
 				// Not the same as the last stored pattern, so store old data and start a new one
 				msg.print("New pattern found: %s\n",emp.get());
 				p = addPattern(nmols,patclip.nAtoms(),emp.get());
-				patclip.copySelection(this);
-				selectionEmpirical(emp);
+				patclip.copyMarked(this);
+				selectionEmpirical(emp, TRUE);
 				nmols = 1;
 			}
 		}
@@ -323,12 +323,12 @@ bool Model::autocreatePatterns(bool acceptDefault)
 	// Store last pattern data 
 	if (nmols != 0)
 	{
-		msg.print("New pattern found: %s\n",emp.get());
-		p = addPattern(nmols,patclip.nAtoms(),emp.get());
+		msg.print("New pattern found: %s\n", emp.get());
+		p = addPattern(nmols,patclip.nAtoms(), emp.get());
 	}
 
 	// Deselect all atoms (unless the default pattern was forced)
-	if (!defaultpattern) selectNone();
+// 	selectNone(TRUE);
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
 	// Don't store new point if a defaultpattern was created and acceptdefault == FALSE
@@ -339,7 +339,7 @@ bool Model::autocreatePatterns(bool acceptDefault)
 }
 
 // Get empirical formula of selection
-void Model::selectionEmpirical(Dnchar &target)
+void Model::selectionEmpirical(Dnchar &target, bool markonly)
 {
 	msg.enter("Model::selectionEmpirical");
 	int n, *elcount;
@@ -350,7 +350,7 @@ void Model::selectionEmpirical(Dnchar &target)
 	Atom *i = atoms_.first();
 	while (i != NULL)
 	{
-		if (i->isSelected()) elcount[i->element()] ++;
+		if (i->isSelected(markonly)) elcount[i->element()] ++;
 		i = i->next;
 	}
 	// Construct element string

@@ -28,67 +28,89 @@
 #include "gui/gui.h"
 
 // Select Atom
-void Model::selectAtom(Atom *i)
+void Model::selectAtom(Atom *i, bool markonly)
 {
-	if (!i->isSelected())
+	if (markonly)
 	{
-		i->setSelected(TRUE);
-		nSelected_ ++;
-		changeLog.add(Log::Selection);
-		// Add the change to the undo state (if there is one)
-		if (recordingState_ != NULL)
+		if (!i->isSelected(TRUE))
 		{
-			SelectEvent *newchange = new SelectEvent;
-			newchange->set(TRUE, i->id());
-			recordingState_->addEvent(newchange);
+			i->setSelected(TRUE, TRUE);
+			nMarked_ ++;
+		}
+	}
+	else
+	{
+		if (!i->isSelected())
+		{
+			i->setSelected(TRUE);
+			nSelected_ ++;
+			changeLog.add(Log::Selection);
+			// Add the change to the undo state (if there is one)
+			if (recordingState_ != NULL)
+			{
+				SelectEvent *newchange = new SelectEvent;
+				newchange->set(TRUE, i->id());
+				recordingState_->addEvent(newchange);
+			}
 		}
 	}
 }
 
 // Select Atom by ID
-void Model::selectAtom(int id)
+void Model::selectAtom(int id, bool markonly)
 {
 	Atom *i = atom(id);
-	if (i != NULL) selectAtom(i);
+	if (i != NULL) selectAtom(i, markonly);
 }
 
 // Deselect Atom
-void Model::deselectAtom(Atom *i)
+void Model::deselectAtom(Atom *i, bool markonly)
 {
-	if (i->isSelected())
+	if (markonly)
 	{
-		i->setSelected(FALSE);
-		nSelected_ --;
-		changeLog.add(Log::Selection);
-		// Add the change to the undo state (if there is one)
-		if (recordingState_ != NULL)
+		if (i->isSelected(TRUE))
 		{
-			SelectEvent *newchange = new SelectEvent;
-			newchange->set(FALSE, i->id());
-			recordingState_->addEvent(newchange);
+			i->setSelected(FALSE, TRUE);
+			nMarked_ --;
+		}
+	}
+	else
+	{
+		if (i->isSelected())
+		{
+			i->setSelected(FALSE);
+			nSelected_ --;
+			changeLog.add(Log::Selection);
+			// Add the change to the undo state (if there is one)
+			if (recordingState_ != NULL)
+			{
+				SelectEvent *newchange = new SelectEvent;
+				newchange->set(FALSE, i->id());
+				recordingState_->addEvent(newchange);
+			}
 		}
 	}
 }
 
 // Deselect Atom by ID
-void Model::deselectAtom(int id)
+void Model::deselectAtom(int id, bool markonly)
 {
 	Atom *i = atom(id);
-	if (i != NULL) deselectAtom(i);
+	if (i != NULL) deselectAtom(i, markonly);
 }
 
 // Toggle Selection State
-void Model::selectionToggle(Atom *i)
+void Model::selectionToggle(Atom *i, bool markonly)
 {
-	i->isSelected() ? deselectAtom(i) : selectAtom(i);
+	i->isSelected(markonly) ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 }
 
 // Invert Current Selection
-void Model::selectionInvert()
+void Model::selectionInvert(bool markonly)
 {
 	msg.enter("Model::selectionInvert");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
-		i->isSelected() ? deselectAtom(i) : selectAtom(i);
+		i->isSelected(markonly) ? deselectAtom(i, markonly) : selectAtom(i, markonly);
 	msg.exit("Model::selectionInvert");
 }
 
@@ -116,33 +138,34 @@ void Model::selectionDelete()
 }
 
 // Expand Current Selection
-void Model::selectionExpand()
+void Model::selectionExpand(bool markonly)
 {
 	msg.enter("Model::selectionExpand");
 	Atom *i;
 	Refitem<Bond,int> *bref;
 	// Store the current selection state in i->tempi
-	for (i = atoms_.first(); i != NULL; i = i->next) i->tempi = i->isSelected();
+	for (i = atoms_.first(); i != NULL; i = i->next) i->tempi = i->isSelected(markonly);
 	// Now use the temporary state to find atoms where we select atomic neighbours
 	for (i = atoms_.first(); i != NULL; i = i->next)
-		if (i->tempi) for (bref = i->bonds(); bref != NULL; bref = bref->next) selectAtom(bref->item->partner(i));
+		if (i->tempi) for (bref = i->bonds(); bref != NULL; bref = bref->next) selectAtom(bref->item->partner(i), markonly);
 	msg.exit("Model::selectionExpand");
 }
 
 // Select All Atoms
-void Model::selectAll()
+void Model::selectAll(bool markonly)
 {
 	msg.enter("Model::selectAll");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected()) selectAtom(i);
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected(markonly)) selectAtom(i, markonly);
 	msg.exit("Model::selectAll");
 }
 
 // Deselect All Atoms
-void Model::selectNone()
+void Model::selectNone(bool markonly)
 {
 	msg.enter("Model::selectNone");
-	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) deselectAtom(i);
-	nSelected_ = 0;
+	for (Atom *i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected(markonly)) deselectAtom(i, markonly);
+	if (markonly) nMarked_ = 0;
+	else nSelected_ = 0;
 	msg.exit("Model::selectNone");
 }
 
@@ -217,7 +240,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2)
 }
 
 // Tree Select
-void Model::selectTree(Atom *i)
+void Model::selectTree(Atom *i, bool markonly)
 {
 	// The passed atom node is the starting point for the algorithm.
 	// From here, select all atoms that are bound - if they are already
@@ -229,10 +252,10 @@ void Model::selectTree(Atom *i)
 	while (bref != NULL)
 	{
 		Atom *j = bref->item->partner(i);
-		if (!j->isSelected())
+		if (!j->isSelected(markonly))
 		{
-			selectAtom(j);
-			this->selectTree(j);
+			selectAtom(j, markonly);
+			this->selectTree(j, markonly);
 		}
 		bref = bref->next;
 	}
@@ -240,30 +263,30 @@ void Model::selectTree(Atom *i)
 }
 
 // Select by Element
-void Model::selectElement(Atom *target)
+void Model::selectElement(Atom *target, bool markonly)
 {
 	// Select all atoms which are the same element as the atom i
-	selectElement(target->element());
+	selectElement(target->element(), markonly);
 }
 
 // Select by element (from element)
-void Model::selectElement(int el)
+void Model::selectElement(int el, bool markonly)
 {
 	// Select all atoms which are the same element as the atom with id 'target'
 
 	msg.enter("Model::selectElement");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
-		if (i->element() == el) selectAtom(i);
+		if (i->element() == el) selectAtom(i, markonly);
 	msg.exit("Model::selectElement");
 }
 
 // Deselect by Element
-void Model::deselectElement(int el)
+void Model::deselectElement(int el, bool markonly)
 {
 	// Select all atoms which are the same element as the atom i
 	msg.enter("Model::deselectElement");
 	for (Atom *i = atoms_.first(); i != NULL; i = i->next)
-		if (i->element() == el) deselectAtom(i);
+		if (i->element() == el) deselectAtom(i, markonly);
 	msg.exit("Model::deselectElement");
 }
 
@@ -355,6 +378,25 @@ Atom *Model::firstSelected()
 		i = i->next;
 	}
 	msg.exit("Model::firstSelected");
+	return result;
+}
+
+// Get first marked
+Atom *Model::firstMarked()
+{
+	msg.enter("Model::firstMarked");
+	Atom *result = NULL;
+	Atom *i = atoms_.first();
+	while (i != NULL)
+	{
+		if (i->isSelected(TRUE))
+		{
+			result = i;
+			break;
+		}
+		i = i->next;
+	}
+	msg.exit("Model::firstMarked");
 	return result;
 }
 
