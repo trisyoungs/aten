@@ -85,6 +85,7 @@ Atom::Atom()
 	fixedPosition_ = FALSE;
 	selected_ = FALSE;
 	hidden_ = FALSE;
+	marked_ = FALSE;
 	screenRadius_ = 0.0;
 	style_ = StickStyle;
 	labels_ = 0;
@@ -246,6 +247,14 @@ Atom *Atom::nextSelected()
 	return i;
 }
 
+// Get next marked
+Atom *Atom::nextMarked()
+{
+	Atom *i;
+	for (i = this->next; i != NULL; i = i->next) if (i->marked_) break;
+	return i;
+}
+
 // Reset data in structure
 void Atom::reset()
 {
@@ -353,7 +362,7 @@ int Atom::totalBondOrder()
 	// Returned result is 2*actual bond order (to account for aromatic bonds [BO = 1.5])
 	msg.enter("Atom::totalBondOrder");
 	double result = 0;
-	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next)
 		result += bref->item->order();
 	msg.exit("Atom::totalBondOrder");
 	return int(result * 2.0 + 0.1);
@@ -364,11 +373,15 @@ Bond *Atom::findBond(Atom *j)
 {
 	msg.enter("Atom::findBond");
 	Bond *result = NULL;
-	Refitem<Bond,int> *bref = bonds();
-	while (bref != NULL)
+	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next)
+// 	while (bref != NULL)
 	{
-		if (bref->item->partner(this) == j) result = bref->item;
-		bref = bref->next;
+		if (bref->item->partner(this) == j)
+		{
+			result = bref->item;
+			break;
+		}
+// 		bref = bref->next;
 	}
 	msg.exit("Atom::findBond");
 	return result;
@@ -497,19 +510,19 @@ Vec3<double> Atom::findBondPlane(Atom *j, Bond *b, const Vec3<double> &rij)
 }
 
 /*
-// Selection
+// Selection / Hidden / Marked
 */
 
 // Sets the selected flag of the atom
-void Atom::setSelected(bool b)
+void Atom::setSelected(bool b, bool markonly)
 {
-	selected_ = b;
+	markonly ? marked_ = b : selected_ = b;
 }
 
 // Returns the current selection state of the atom
-bool Atom::isSelected()
+bool Atom::isSelected(bool markonly)
 {
-	return selected_;
+	return (markonly ? marked_ : selected_);
 }
 
 // Sets the hidden flag of the atom

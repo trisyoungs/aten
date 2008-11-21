@@ -255,30 +255,34 @@ class Model
 	private:
 	// Number of selected atoms
 	int nSelected_;
+	// Number of marked atoms
+	int nMarked_;
 
 	public:
 	// Select the specified atom
-	void selectAtom(Atom*);
+	void selectAtom(Atom *i, bool markonly = FALSE);
 	// Select the specified atom ID
-	void selectAtom(int id);
+	void selectAtom(int id, bool markonly = FALSE);
 	// Deselect the specified atom
-	void deselectAtom(Atom*);
+	void deselectAtom(Atom *i, bool markonly = FALSE);
 	// Deselect the specified atom
-	void deselectAtom(int id);
+	void deselectAtom(int id, bool markonly = FALSE);
 	// Toggle the selection state of the atom
-	void selectionToggle(Atom*);
+	void selectionToggle(Atom *i, bool markonly = FALSE);
 	// Select all atoms
-	void selectAll();
+	void selectAll(bool markonly = FALSE);
 	// Select no atoms
-	void selectNone();
+	void selectNone(bool markonly = FALSE);
 	// Return the number of selected atoms
 	int nSelected();
+	// Return the number of marked atoms
+	int nMarked();
 	// Invert current atom selection
-	void selectionInvert();
+	void selectionInvert(bool markonly = FALSE);
 	// Delete current atom selection
 	void selectionDelete();
 	// Expand current atom selection by one bond
-	void selectionExpand();
+	void selectionExpand(bool markonly = FALSE);
 	// Return the atom at the clicked screen coordinates (if any)
 	Atom *atomOnScreen(double, double);
 	// TODO Make private
@@ -286,19 +290,21 @@ class Model
 	// Select all atoms within the rectangular boundary specified
 	void selectBox(double, double, double, double);
 	// Select all atoms connected by a path from the specified atom
-	void selectTree(Atom*);
+	void selectTree(Atom *i, bool markonly = FALSE);
 	// Select all atoms of the same element as the specified atom
-	void selectElement(Atom*);
+	void selectElement(Atom *i, bool markonly = FALSE);
 	// Select all atoms of the same element as the atom with the specified id
-	void selectElement(int);
+	void selectElement(int el, bool markonly = FALSE);
 	// DeSelect all atoms of the same element as the atom with the specified id
-	void deselectElement(int);
+	void deselectElement(int el, bool markonly = FALSE);
 	// Select all atoms which match the provided type
 	void selectType(int element, const char *typedesc);
 	// Select all atoms within cutoff of specified atom
-	void selectRadial(Atom*, double);
+	void selectRadial(Atom *i, double d);
 	// Return the first selected atom in the model (if any)
 	Atom *firstSelected();
+	// Return the first marked atom in the model (if any)
+	Atom *firstMarked();
 	// Detect and select overlapping atoms
 	void selectOverlaps(double tolerance);
 	// Get atoms of a bound fragment with the current selection
@@ -806,7 +812,7 @@ class Model
 	*/
 	public:
 	// Return the empirical formula of the selected atoms
-	void selectionEmpirical(Dnchar&);
+	void selectionEmpirical(Dnchar&, bool markonly);
 	// Get selection's centre of geometry
 	Vec3<double> selectionCog();
 

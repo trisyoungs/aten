@@ -183,7 +183,8 @@ void Clipboard::copySelection(Model *m)
 	if (m->nSelected() == 0)
 	{
 		msg.print("Nothing selected to copy.\n");
-		msg.exit("Clipboard::copyAll");
+		msg.exit("Clipboard::copySelection");
+		return;
 	}
 	// Clear the clipboard first and make sure atom ids are valid
 	clear();
@@ -192,6 +193,25 @@ void Clipboard::copySelection(Model *m)
 	// Copy bonds
 	copyBonds();
 	msg.exit("Clipboard::copySelection");
+}
+
+// Copy selection
+void Clipboard::copyMarked(Model *m)
+{
+	msg.enter("Clipboard::copyMarked");
+	if (m->nMarked() == 0)
+	{
+		msg.print("Nothing marked to copy.\n");
+		msg.exit("Clipboard::copyMarked");
+		return;
+	}
+	// Clear the clipboard first and make sure atom ids are valid
+	clear();
+	// Copy atoms
+	for (Atom *i = m->atoms(); i != NULL; i = i->next) if (i->isSelected(TRUE)) copyAtom(i);
+	// Copy bonds
+	copyBonds();
+	msg.exit("Clipboard::copyMarked");
 }
 
 // Copy model

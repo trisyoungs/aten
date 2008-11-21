@@ -29,6 +29,12 @@ int Model::nSelected()
 	return nSelected_;
 }
 
+// Return the number of marked atoms
+int Model::nMarked()
+{
+	return nMarked_;
+}
+
 // Move atoms 'up'
 void Model::shiftSelectionUp()
 {

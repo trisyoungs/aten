@@ -41,6 +41,8 @@ class Atom
 	Atom *prev, *next;
 	// Get next selected atom in list
 	Atom *nextSelected();
+	// Get next marked atom in list
+	Atom *nextMarked();
 	// Drawing style enum
 	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
 	static DrawStyle drawStyle(const char*);
@@ -199,12 +201,14 @@ class Atom
 	bool selected_;
 	// Hidden flag
 	bool hidden_;
+	// Private (marked) selection flag, for internal calculation purposes
+	bool marked_;
 
 	public:
-	// Sets the selected flag of the atom
-	void setSelected(bool b);
+	// Sets the selected (or marked) flag of the atom
+	void setSelected(bool b, bool markonly = FALSE);
 	// Returns the current selection state of the atom
-	bool isSelected();
+	bool isSelected(bool markonly = FALSE);
 	// Sets the hidden flag of the atom
 	void setHidden(bool b);
 	// Return whether the atom is hidden

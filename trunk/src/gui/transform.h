@@ -43,17 +43,51 @@ class AtenTransform : public QDialog
 	void on_RotateDefineAxisButton_clicked(bool on);
 	void on_RotateClockwiseButton_clicked(bool on);
 	void on_RotateAnticlockwiseButton_clicked(bool on);
-	void on_TransformRotateIntoButton_clicked(bool on);
-	void on_TransformDefineSourceAButton_clicked(bool on);
-	void on_TransformDefineSourceBButton_clicked(bool on);
-	void on_TransformDefineSourceCButton_clicked(bool on);
-	void on_TransformDefineFromPlaneButton_clicked(bool on);
+
+	void on_TransformDefineAButton_clicked(bool on);
+	void on_TransformDefineBButton_clicked(bool on);
+	void on_TransformDefineCButton_clicked(bool on);
+	void on_TransformNormaliseAButton_clicked(bool on);
+	void on_TransformNormaliseBButton_clicked(bool on);
+	void on_TransformNormaliseCButton_clicked(bool on);
+	void on_TransformOrthogonaliseAButton_clicked(bool on);
+	void on_TransformOrthogonaliseBButton_clicked(bool on);
+	void on_TransformOrthogonaliseCButton_clicked(bool on);
+	void on_TransformGenerateAButton_clicked(bool on);
+	void on_TransformGenerateBButton_clicked(bool on);
+	void on_TransformGenerateCButton_clicked(bool on);
 	void on_TransformApplyButton_clicked(bool on);
 	void on_TransformOriginCellCentreButton_clicked(bool on);
 	void on_TransformDefineOriginButton_clicked(bool on);
-	void on_TransformDefineTargetAButton_clicked(bool on);
-	void on_TransformDefineTargetBButton_clicked(bool on);
-	void on_TransformDefineTargetCButton_clicked(bool on);
+
+	void on_ConvertRotateIntoButton_clicked(bool on);
+	void on_ConvertSourceDefineAButton_clicked(bool on);
+	void on_ConvertSourceDefineBButton_clicked(bool on);
+	void on_ConvertSourceDefineCButton_clicked(bool on);
+	void on_ConvertSourceNormaliseAButton_clicked(bool on);
+	void on_ConvertSourceNormaliseBButton_clicked(bool on);
+	void on_ConvertSourceNormaliseCButton_clicked(bool on);
+	void on_ConvertSourceOrthogonaliseAButton_clicked(bool on);
+	void on_ConvertSourceOrthogonaliseBButton_clicked(bool on);
+	void on_ConvertSourceOrthogonaliseCButton_clicked(bool on);
+	void on_ConvertSourceGenerateAButton_clicked(bool on);
+	void on_ConvertSourceGenerateBButton_clicked(bool on);
+	void on_ConvertSourceGenerateCButton_clicked(bool on);
+	void on_ConvertOriginCellCentreButton_clicked(bool on);
+	void on_ConvertDefineOriginButton_clicked(bool on);
+	void on_ConvertTargetDefineAButton_clicked(bool on);
+	void on_ConvertTargetDefineBButton_clicked(bool on);
+	void on_ConvertTargetDefineCButton_clicked(bool on);
+	void on_ConvertTargetNormaliseAButton_clicked(bool on);
+	void on_ConvertTargetNormaliseBButton_clicked(bool on);
+	void on_ConvertTargetNormaliseCButton_clicked(bool on);
+	void on_ConvertTargetOrthogonaliseAButton_clicked(bool on);
+	void on_ConvertTargetOrthogonaliseBButton_clicked(bool on);
+	void on_ConvertTargetOrthogonaliseCButton_clicked(bool on);
+	void on_ConvertTargetGenerateAButton_clicked(bool on);
+	void on_ConvertTargetGenerateBButton_clicked(bool on);
+	void on_ConvertTargetGenerateCButton_clicked(bool on);
+
 	void dialogFinished(int result);
 
 	/*
