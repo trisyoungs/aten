@@ -249,6 +249,7 @@ class Command {
 		CA_GENCONVERT,
 		CA_GENERATOR,
 		CA_GETFF,
+		CA_INTERDEF,
 		CA_LOADFF,
 		CA_MAP,
 		CA_NEWFF,
@@ -260,7 +261,6 @@ class Command {
 		CA_TYPEMODEL,
 		CA_TYPETEST,
 		CA_UNITS,
-		CA_VDWDEF,
 	
 		// Glyph commands
 		CA_AUTOELLIPSOIDS,
@@ -656,6 +656,7 @@ class Command {
 	static int function_CA_GENCONVERT(CommandNode *&c, Bundle &obj);
 	static int function_CA_GENERATOR(CommandNode *&c, Bundle &obj);
 	static int function_CA_GETFF(CommandNode *&c, Bundle &obj);
+	static int function_CA_INTERDEF(CommandNode *&c, Bundle &obj);
 	static int function_CA_LOADFF(CommandNode *&c, Bundle &obj);
 	static int function_CA_MAP(CommandNode *&c, Bundle &obj);
 	static int function_CA_NEWFF(CommandNode *&c, Bundle &obj);
@@ -667,7 +668,6 @@ class Command {
 	static int function_CA_TYPEMODEL(CommandNode *&c, Bundle &obj);
 	static int function_CA_TYPETEST(CommandNode *&c, Bundle &obj);
 	static int function_CA_UNITS(CommandNode *&c, Bundle &obj);
-	static int function_CA_VDWDEF(CommandNode *&c, Bundle &obj);
 	// Glyph commands
 	static int function_CA_AUTOELLIPSOIDS(CommandNode *&c, Bundle &obj);
 	static int function_CA_AUTOPOLYHEDRA(CommandNode *&c, Bundle &obj);

@@ -366,6 +366,8 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Set generator data for specified atom type" },
 	{ "getff",		"N",		"<name>",
 				"Select named (loaded) forcefield and make it current" },
+	{ "interdef",		"NEEEeeeee", "<form> <typeid> <charge> <data1> [data2...data6]",
+				"Add a new interatomic definition to the current forcefield" },
 	{ "loadff",		"Nn",		"<filename> [name]",
 				"Load forcefield" },
 	{ "map",		"N",		"<name=element,...>",
@@ -388,8 +390,6 @@ CommandData Command::data[Command::CA_NITEMS] = {
 				"Test atomtype score on atom provided" },
 	{ "units",		"N",		"<energy unit>",
 				"Set energy unit of forcefield" },
-	{ "vdwdef",		"NEEEeeeee", "<form> <typeid> <charge> <data1> [data2...data6]",
-				"Add a new EDW definition to the current forcefield." },
 
 	// Glyph commands
 	{ "autoellipsoids",	"n*",		"[options]",

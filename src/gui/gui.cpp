@@ -199,6 +199,15 @@ void GuiQt::run()
 
 	gui.mainView.postRedisplay();
 
+	// Display message box warning if there was a filter load error
+	if (!aten.filterLoadSuccessful())
+	{
+		int ret = QMessageBox::warning(NULL, "Aten",
+		"Filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.",
+		QMessageBox::Cancel, QMessageBox::Cancel);
+	}
+
+	// Enter main message processing loop
 	int n = app->exec();
 
 	msg.exit("GuiQt::run");

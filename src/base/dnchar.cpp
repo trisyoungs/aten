@@ -92,7 +92,7 @@ void Dnchar::clear()
 void Dnchar::set(const char *s)
 {
 	// If new size is less than or equal to old size, don't reallocate
-	int newsize = strlen(s) + 1;
+	int newsize = (s == NULL ? 1 : strlen(s) + 1);
 	if (newsize > size_)
 	{
 		if (data_ != NULL) delete[] data_;
@@ -100,7 +100,8 @@ void Dnchar::set(const char *s)
 	}
 	size_ = newsize;
 	endPosition_ = size_-1;
-	strcpy(data_,s);
+	if (s == NULL) data_[0] = '\0';
+	else strcpy(data_,s);
 }
 
 // Get

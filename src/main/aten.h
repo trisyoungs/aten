@@ -28,8 +28,8 @@
 #include "templates/namemap.h"
 
 #define ATENVERSION "0.99"
-#define ATENREVISION "730"
-#define ATENDATE "Fri 21 Nov - 17:21"
+#define ATENREVISION "731"
+#define ATENDATE "Sat 22 Nov - 00:09"
 #define ATENURL "http://aten.googlecode.com/svn/trunk"
 
 // Forward Declarations
@@ -97,6 +97,8 @@ class Aten
 	// Import / Export
 	*/
 	private:
+	// Whether or not filters were loaded without error on startup
+	bool filterLoadSuccessful_;
 	// Parse filter index and load filters
 	bool parseFilterIndex(const char *path, ifstream *indexfile);
 	// Load filter(s) from specified file
@@ -108,7 +110,9 @@ class Aten
 
 	public:
 	// Load filters
-	bool openFilters();
+	void openFilters();
+	// Whether filters loaded succesfully on startup
+	bool filterLoadSuccessful();
 	// Reload filters
 	bool reloadFilters();
 	// Probe file for its format

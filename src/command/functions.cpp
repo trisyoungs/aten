@@ -181,30 +181,30 @@ void Command::initPointers()
 
 	// Forcefield Commands
         pointers_[CA_ANGLEDEF] = &Command::function_CA_ANGLEDEF;
-        pointers_[CA_BONDDEF] = &Command::function_CA_BONDDEF;
+	pointers_[CA_BONDDEF] = &Command::function_CA_BONDDEF;
 	pointers_[CA_CLEARMAP] = &Command::function_CA_CLEARMAP;
 	pointers_[CA_CREATEEXPRESSION] = &Command::function_CA_CREATEEXPRESSION;
 	pointers_[CA_DEFAULTFF] = &Command::function_CA_DEFAULTFF;
-        pointers_[CA_EQUIVALENT] = &Command::function_CA_EQUIVALENT;
+	pointers_[CA_EQUIVALENT] = &Command::function_CA_EQUIVALENT;
 	pointers_[CA_FFMODEL] = &Command::function_CA_FFMODEL;
 	pointers_[CA_FFPATTERN] = &Command::function_CA_FFPATTERN;
 	pointers_[CA_FFPATTERNID] = &Command::function_CA_FFPATTERNID;
-        pointers_[CA_FINALISEFF] = &Command::function_CA_FINALISEFF;
-        pointers_[CA_GENCONVERT] = &Command::function_CA_GENCONVERT;
-        pointers_[CA_GENERATOR] = &Command::function_CA_GENERATOR;
+	pointers_[CA_FINALISEFF] = &Command::function_CA_FINALISEFF;
+	pointers_[CA_GENCONVERT] = &Command::function_CA_GENCONVERT;
+	pointers_[CA_GENERATOR] = &Command::function_CA_GENERATOR;
 	pointers_[CA_GETFF] = &Command::function_CA_GETFF;
+	pointers_[CA_INTERDEF] = &Command::function_CA_INTERDEF;
 	pointers_[CA_LOADFF] = &Command::function_CA_LOADFF;
 	pointers_[CA_MAP] = &Command::function_CA_MAP;
-        pointers_[CA_NEWFF] = &Command::function_CA_NEWFF;
+	pointers_[CA_NEWFF] = &Command::function_CA_NEWFF;
 	pointers_[CA_PRINTSETUP] = &Command::function_CA_PRINTSETUP;
-        pointers_[CA_RULES] = &Command::function_CA_RULES;
+	pointers_[CA_RULES] = &Command::function_CA_RULES;
 	pointers_[CA_SAVEEXPRESSION] = &Command::function_CA_SAVEEXPRESSION;
-        pointers_[CA_TORSIONDEF] = &Command::function_CA_TORSIONDEF;
-        pointers_[CA_TYPEDEF] = &Command::function_CA_TYPEDEF;
+	pointers_[CA_TORSIONDEF] = &Command::function_CA_TORSIONDEF;
+	pointers_[CA_TYPEDEF] = &Command::function_CA_TYPEDEF;
 	pointers_[CA_TYPEMODEL] = &Command::function_CA_TYPEMODEL;
 	pointers_[CA_TYPETEST] = &Command::function_CA_TYPETEST;
-        pointers_[CA_UNITS] = &Command::function_CA_UNITS;
-        pointers_[CA_VDWDEF] = &Command::function_CA_VDWDEF;
+	pointers_[CA_UNITS] = &Command::function_CA_UNITS;
 
 	// Glyph commands
 	pointers_[CA_AUTOELLIPSOIDS] = &Command::function_CA_AUTOELLIPSOIDS;

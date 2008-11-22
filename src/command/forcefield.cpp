@@ -360,8 +360,8 @@ int Command::function_CA_UNITS(CommandNode *&c, Bundle &obj)
 	return Command::Success;
 }
 
-// Add a new VDW definition to the current forcefield
-int Command::function_CA_VDWDEF(CommandNode *&c, Bundle &obj)
+// Add a new intermolecular definition to the current forcefield
+int Command::function_CA_INTERDEF(CommandNode *&c, Bundle &obj)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return Command::Fail;
 	// Get functional form of vdw
