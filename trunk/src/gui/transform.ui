@@ -641,7 +641,7 @@
           <number>2</number>
          </property>
          <item row="0" column="4" >
-          <widget class="QToolButton" name="TransformNormaliseA" >
+          <widget class="QToolButton" name="TransformNormaliseAButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -929,7 +929,7 @@
           </widget>
          </item>
          <item row="0" column="5" >
-          <widget class="QToolButton" name="TransformOrthogonaliseA" >
+          <widget class="QToolButton" name="TransformOrthogonaliseAButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1000,7 +1000,7 @@
           </widget>
          </item>
          <item row="0" column="6" >
-          <widget class="QToolButton" name="TransformGenerateA" >
+          <widget class="QToolButton" name="TransformGenerateAButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1019,7 +1019,7 @@
           </widget>
          </item>
          <item row="1" column="4" >
-          <widget class="QToolButton" name="TransformNormaliseB" >
+          <widget class="QToolButton" name="TransformNormaliseBButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1038,7 +1038,7 @@
           </widget>
          </item>
          <item row="2" column="4" >
-          <widget class="QToolButton" name="TransformNormaliseC" >
+          <widget class="QToolButton" name="TransformNormaliseCButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1057,7 +1057,7 @@
           </widget>
          </item>
          <item row="1" column="5" >
-          <widget class="QToolButton" name="TransformOrthogonaliseB" >
+          <widget class="QToolButton" name="TransformOrthogonaliseBButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1076,7 +1076,7 @@
           </widget>
          </item>
          <item row="2" column="5" >
-          <widget class="QToolButton" name="TransformOrthogonaliseC" >
+          <widget class="QToolButton" name="TransformOrthogonaliseCButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1095,7 +1095,7 @@
           </widget>
          </item>
          <item row="1" column="6" >
-          <widget class="QToolButton" name="TransformGenerateB" >
+          <widget class="QToolButton" name="TransformGenerateBButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1114,7 +1114,7 @@
           </widget>
          </item>
          <item row="2" column="6" >
-          <widget class="QToolButton" name="TransformGenerateC" >
+          <widget class="QToolButton" name="TransformGenerateCButton" >
            <property name="minimumSize" >
             <size>
              <width>30</width>
@@ -1337,7 +1337,7 @@
               <number>2</number>
              </property>
              <item row="0" column="4" >
-              <widget class="QToolButton" name="ConvertSourceNormaliseA" >
+              <widget class="QToolButton" name="ConvertSourceNormaliseAButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1625,7 +1625,7 @@
               </widget>
              </item>
              <item row="0" column="5" >
-              <widget class="QToolButton" name="ConvertSourceOrthogonaliseA" >
+              <widget class="QToolButton" name="ConvertSourceOrthogonaliseAButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1696,7 +1696,7 @@
               </widget>
              </item>
              <item row="0" column="6" >
-              <widget class="QToolButton" name="ConvertSourceGenerateA" >
+              <widget class="QToolButton" name="ConvertSourceGenerateAButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1715,7 +1715,7 @@
               </widget>
              </item>
              <item row="1" column="4" >
-              <widget class="QToolButton" name="ConvertSourceNormaliseB" >
+              <widget class="QToolButton" name="ConvertSourceNormaliseBButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1734,7 +1734,7 @@
               </widget>
              </item>
              <item row="2" column="4" >
-              <widget class="QToolButton" name="ConvertSourceNormaliseC" >
+              <widget class="QToolButton" name="ConvertSourceNormaliseCButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1753,7 +1753,7 @@
               </widget>
              </item>
              <item row="1" column="5" >
-              <widget class="QToolButton" name="ConvertSourceOrthogonaliseB" >
+              <widget class="QToolButton" name="ConvertSourceOrthogonaliseBButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1772,7 +1772,7 @@
               </widget>
              </item>
              <item row="2" column="5" >
-              <widget class="QToolButton" name="ConvertSourceOrthogonaliseC" >
+              <widget class="QToolButton" name="ConvertSourceOrthogonaliseCButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1791,7 +1791,7 @@
               </widget>
              </item>
              <item row="1" column="6" >
-              <widget class="QToolButton" name="ConvertSourceGenerateB" >
+              <widget class="QToolButton" name="ConvertSourceGenerateBButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1810,7 +1810,7 @@
               </widget>
              </item>
              <item row="2" column="6" >
-              <widget class="QToolButton" name="ConvertSourceGenerateC" >
+              <widget class="QToolButton" name="ConvertSourceGenerateCButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -1852,7 +1852,7 @@
               <number>2</number>
              </property>
              <item row="0" column="4" >
-              <widget class="QToolButton" name="ConvertTargetNormaliseA" >
+              <widget class="QToolButton" name="ConvertTargetNormaliseAButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2140,7 +2140,7 @@
               </widget>
              </item>
              <item row="0" column="5" >
-              <widget class="QToolButton" name="ConvertTargetOrthogonaliseA" >
+              <widget class="QToolButton" name="ConvertTargetOrthogonaliseAButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2211,7 +2211,7 @@
               </widget>
              </item>
              <item row="0" column="6" >
-              <widget class="QToolButton" name="ConvertTargetGenerateA" >
+              <widget class="QToolButton" name="ConvertTargetGenerateAButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2230,7 +2230,7 @@
               </widget>
              </item>
              <item row="1" column="4" >
-              <widget class="QToolButton" name="ConvertTargetNormaliseB" >
+              <widget class="QToolButton" name="ConvertTargetNormaliseBButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2249,7 +2249,7 @@
               </widget>
              </item>
              <item row="2" column="4" >
-              <widget class="QToolButton" name="ConvertTargetNormaliseC" >
+              <widget class="QToolButton" name="ConvertTargetNormaliseCButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2268,7 +2268,7 @@
               </widget>
              </item>
              <item row="1" column="5" >
-              <widget class="QToolButton" name="ConvertTargetOrthogonaliseB" >
+              <widget class="QToolButton" name="ConvertTargetOrthogonaliseBButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2287,7 +2287,7 @@
               </widget>
              </item>
              <item row="2" column="5" >
-              <widget class="QToolButton" name="ConvertTargetOrthogonaliseC" >
+              <widget class="QToolButton" name="ConvertTargetOrthogonaliseCButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2306,7 +2306,7 @@
               </widget>
              </item>
              <item row="1" column="6" >
-              <widget class="QToolButton" name="ConvertTargetGenerateB" >
+              <widget class="QToolButton" name="ConvertTargetGenerateBButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>
@@ -2325,7 +2325,7 @@
               </widget>
              </item>
              <item row="2" column="6" >
-              <widget class="QToolButton" name="ConvertTargetGenerateC" >
+              <widget class="QToolButton" name="ConvertTargetGenerateCButton" >
                <property name="minimumSize" >
                 <size>
                  <width>30</width>

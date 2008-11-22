@@ -50,8 +50,8 @@ int main(int argc, char *argv[])
 	// Initialise QApplication
 	gui.initialise(argc, argv);
 
-	// Read in file filters
-	if (!aten.openFilters()) return 1;
+	// Read in file filters (if unsuccessful, a messagebox will be raised in the GUI)
+	aten.openFilters();
 
 	// Load in user preferences
 	char filename[256];

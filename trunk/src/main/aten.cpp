@@ -47,6 +47,7 @@ Aten::Aten()
 	sketchElement_ = 6;
 	homeDir_ = "/tmp";
 	defaultForcefield_ = NULL;
+	filterLoadSuccessful_ = TRUE;
 
 	// Clipboards
 	userClipboard = new Clipboard;
@@ -434,7 +435,7 @@ const char *Aten::dataDir()
 */
 
 // Load filters
-bool Aten::openFilters()
+void Aten::openFilters()
 {
 	msg.enter("Aten::openFilters");
 	char filename[512], path[512];
@@ -538,6 +539,7 @@ bool Aten::openFilters()
 			msg.print(Messenger::Error, "No filter index found in any of these locations.\n");
 			msg.print(Messenger::Error, "Set $ATENDATA to point to the (installed) location of the 'data' directory, or to the directory that contains Aten's 'filters' directory.\n");
 			msg.print(Messenger::Error, "e.g. (in bash) 'export ATENDATA=/usr/share/aten/' on most systems.\n");
+			filterLoadSuccessful_ = FALSE;
 		}
 	}
 
@@ -567,8 +569,6 @@ bool Aten::openFilters()
 		msg.print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[Filter::GridImport].nItems(), filters_[Filter::GridExport].nItems());
 	}
 	msg.exit("Aten::openFilters");
-	if (failed || (!found)) return FALSE;
-	else return TRUE;
 }
 
 // Reload filters
@@ -614,6 +614,12 @@ bool Aten::reloadFilters()
 	delete file;
 	msg.exit("Aten::reloadFilters");
 	return TRUE;
+}
+
+// Return status of filter load on startup
+bool Aten::filterLoadSuccessful()
+{
+	return filterLoadSuccessful_;
 }
 
 // Parse filter index file
