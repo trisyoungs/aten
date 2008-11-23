@@ -6,7 +6,7 @@
     <x>0</x>
     <y>0</y>
     <width>379</width>
-    <height>240</height>
+    <height>200</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -654,8 +654,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Normalise vector</string>
+           </property>
            <property name="text" >
-            <string>N</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -942,8 +954,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Orthogonalise vector w.r.t. Y-axis</string>
+           </property>
            <property name="text" >
-            <string>O</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1013,8 +1037,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Generate axis from cross product of other axes</string>
+           </property>
            <property name="text" >
-            <string>G</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1032,8 +1068,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Normalise vector</string>
+           </property>
            <property name="text" >
-            <string>N</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1051,8 +1099,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Normalise vector</string>
+           </property>
            <property name="text" >
-            <string>N</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1070,8 +1130,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Orthogonalise vector w.r.t. X-axis</string>
+           </property>
            <property name="text" >
-            <string>O</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1089,8 +1161,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Orthogonalise vector w.r.t. X-axis</string>
+           </property>
            <property name="text" >
-            <string>O</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1108,8 +1192,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Generate axis from cross product of other axes</string>
+           </property>
            <property name="text" >
-            <string>G</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1127,8 +1223,20 @@
              <height>30</height>
             </size>
            </property>
+           <property name="toolTip" >
+            <string>Generate axis from cross product of other axes</string>
+           </property>
            <property name="text" >
-            <string>G</string>
+            <string/>
+           </property>
+           <property name="icon" >
+            <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+           </property>
+           <property name="iconSize" >
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -1189,11 +1297,20 @@
                <height>30</height>
               </size>
              </property>
+             <property name="toolTip" >
+              <string>Define origin from cell centre</string>
+             </property>
              <property name="text" >
               <string>...</string>
              </property>
              <property name="icon" >
               <iconset resource="icons.qrc" >:/stackicons/icons/stack_celldefine.svg</iconset>
+             </property>
+             <property name="iconSize" >
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -1350,8 +1467,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Normalise vector</string>
+               </property>
                <property name="text" >
-                <string>N</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1638,8 +1767,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Orthogonalise vector w.r.t. Y-axis</string>
+               </property>
                <property name="text" >
-                <string>O</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1709,8 +1850,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Generate axis from cross product of other axes</string>
+               </property>
                <property name="text" >
-                <string>G</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1728,8 +1881,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Normalise vector</string>
+               </property>
                <property name="text" >
-                <string>N</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1747,8 +1912,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Normalise vector</string>
+               </property>
                <property name="text" >
-                <string>N</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1766,8 +1943,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Orthogonalise vector w.r.t. X-axis</string>
+               </property>
                <property name="text" >
-                <string>O</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1785,8 +1974,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Orthogonalise vector w.r.t. X-axis</string>
+               </property>
                <property name="text" >
-                <string>O</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1804,8 +2005,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Generate axis from cross product of other axes</string>
+               </property>
                <property name="text" >
-                <string>G</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1823,8 +2036,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Generate axis from cross product of other axes</string>
+               </property>
                <property name="text" >
-                <string>G</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -1865,8 +2090,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Normalise vector</string>
+               </property>
                <property name="text" >
-                <string>N</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2153,8 +2390,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Orthogonalise vector w.r.t. Y-axis</string>
+               </property>
                <property name="text" >
-                <string>O</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2224,8 +2473,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Generate axis from cross product of other axes</string>
+               </property>
                <property name="text" >
-                <string>G</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2243,8 +2504,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Normalise vector</string>
+               </property>
                <property name="text" >
-                <string>N</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2262,8 +2535,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Normalise vector</string>
+               </property>
                <property name="text" >
-                <string>N</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_normalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2281,8 +2566,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Orthogonalise vector w.r.t. X-axis</string>
+               </property>
                <property name="text" >
-                <string>O</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2300,8 +2597,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Orthogonalise vector w.r.t. X-axis</string>
+               </property>
                <property name="text" >
-                <string>O</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_orthogonalise.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2319,8 +2628,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Generate axis from cross product of other axes</string>
+               </property>
                <property name="text" >
-                <string>G</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2338,8 +2659,20 @@
                  <height>30</height>
                 </size>
                </property>
+               <property name="toolTip" >
+                <string>Generate axis from cross product of other axes</string>
+               </property>
                <property name="text" >
-                <string>G</string>
+                <string/>
+               </property>
+               <property name="icon" >
+                <iconset resource="icons.qrc" >:/transform/icons/transform_generatexp.svg</iconset>
+               </property>
+               <property name="iconSize" >
+                <size>
+                 <width>24</width>
+                 <height>24</height>
+                </size>
                </property>
               </widget>
              </item>
@@ -2420,6 +2753,12 @@
              </property>
              <property name="icon" >
               <iconset resource="icons.qrc" >:/stackicons/icons/stack_celldefine.svg</iconset>
+             </property>
+             <property name="iconSize" >
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>

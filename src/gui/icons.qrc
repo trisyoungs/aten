@@ -124,6 +124,9 @@
         <file>icons/transform_flipx.svg</file>
         <file>icons/transform_flipy.svg</file>
         <file>icons/transform_flipz.svg</file>
+        <file>icons/transform_generatexp.svg</file>
+        <file>icons/transform_normalise.svg</file>
+        <file>icons/transform_orthogonalise.svg</file>
     </qresource>
     <qresource prefix="/view" >
         <file>icons/view_zoomin.svg</file>

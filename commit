@@ -5,12 +5,13 @@
 COMMITFILE="none"
 COMMITMSG="none"
 COMMITTYPE="none"
-TEST="FALSE"
+TEST="false"
+UPDATE="false"
 
 # Parse CLI arguments / options
 USAGE1="commit [-F <filename>] [-m <text>] [-t]"
 
-while getopts "F:m:t" options; do
+while getopts "F:m:tu" options; do
   case $options in
     F ) COMMITFILE=$OPTARG
 	COMMITTYPE="file"
@@ -20,6 +21,8 @@ while getopts "F:m:t" options; do
         echo "Using supplied text for commit message.";;
     t ) TEST="true"
 	echo "Test only - no file changes will be made.";;
+    u ) UPDATE="true"
+	echo "Local source will be updated before commit.";;
     \? ) echo -e $USAGE1
          exit 1;;
     * ) echo -e $USAGE1
@@ -32,6 +35,12 @@ if [ "$COMMITTYPE" = "none" ] && [ "$TEST" = "false" ]
 then
   echo "No commit message/file was given."
   exit 0
+fi
+
+# Update if requested
+if [ "$UPDATE" = "true" ]
+then
+  svn update
 fi
 
 # Determine current svn version number and increase it by one.
@@ -78,7 +87,7 @@ then
 fi
 if [ "$COMMITTYPE" = "msg" ]
 then
-  svn commit -m $COMMITMSG
+  svn commit -m "$COMMITMSG"
 fi
 
 exit 0
