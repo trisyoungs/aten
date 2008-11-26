@@ -247,7 +247,7 @@ void Model::selectTree(Atom *i, bool markonly)
 	// selected then ignore them. If they are not already selected, then
 	// recursively call the routine on that atom.
 	msg.enter("Model::selectTree");
-	selectAtom(i);
+	selectAtom(i, markonly);
 	Refitem<Bond,int> *bref = i->bonds();
 	while (bref != NULL)
 	{

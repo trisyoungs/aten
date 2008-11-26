@@ -360,7 +360,7 @@ void Model::selectionEmpirical(Dnchar &target, bool markonly)
 			target.cat(elements().symbol(n));
 			if (elcount[n] > 1) target.cat(itoa(elcount[n]));
 		}
-	delete elcount;
+	delete[] elcount;
 	msg.exit("Model::selectionEmpirical");
 }
 
