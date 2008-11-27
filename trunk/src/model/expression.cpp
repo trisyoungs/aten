@@ -83,7 +83,8 @@ void Model::setForcefield(Forcefield *newff)
 	{
 		invalidateExpression();
 		forcefield_ = newff;
-		msg.print("Forcefield '%s' now associated with model '%s'.\n",forcefield_->name(),name_.get());
+		if (forcefield_ == NULL) msg.print("Model '%s' has had its associated forcefield removed.\n", name_.get());
+		else msg.print("Forcefield '%s' now associated with model '%s'.\n", forcefield_->name(), name_.get());
 	}
 }
 
