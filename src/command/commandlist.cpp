@@ -376,6 +376,14 @@ bool CommandList::cacheLine(const char *s)
 			return FALSE;
 		}
 	}
+	// Check the flowstack - it should be empty...
+	int itemsleft = branchStack_.nItems();
+	if (itemsleft != 1)
+	{
+		msg.print(Messenger::Error, "Error - %i block%s not been terminated in command / script.\n", itemsleft-1, ((itemsleft-1) == 1 ? " has" : "s have"));
+		msg.exit("CommandList::cacheLine");
+		return FALSE;
+	}
 	msg.exit("CommandList::cacheLine");
 	return TRUE;
 }
@@ -517,7 +525,7 @@ bool CommandList::load(const char *filename)
 	int itemsleft = branchStack_.nItems();
 	if (itemsleft != 1)
 	{
-		printf("CommandList::load <<<< %i block%s not been terminated >>>>\n", itemsleft, (itemsleft == 1 ? " has" : "s have"));
+		msg.print(Messenger::Error, "Error - %i block%s not been terminated in command / script.\n", itemsleft-1, ((itemsleft-1) == 1 ? " has" : "s have"));
 		msg.exit("CommandList::load");
 		return FALSE;
 	}
