@@ -85,12 +85,14 @@ void AtenAtomlist::updateSelection()
 {
 	//printf("Selection has been updated.\n");
 	TTreeWidgetItem *ti;
+	gui.mainView.disableDrawing();
 	Model *m = aten.currentModel();
 	foreach( QTreeWidgetItem *item, ui.AtomTree->selectedItems() )
 	{
 		ti = (TTreeWidgetItem*) item;
 		if (ti->atom() != NULL) item->isSelected() ? m->selectAtom(ti->atom()) : m->deselectAtom(ti->atom());
 	}
+	gui.mainView.enableDrawing();
 	gui.modelChanged(FALSE,FALSE,FALSE);
 }
 
@@ -170,7 +172,9 @@ void AtenAtomlist::refresh()
 	}
 	listLastModel_ = m;
 	// Start the refresh (note, this does not run in a thread yet!)
+	gui.mainView.disableDrawing();
 	refreshThread.run();
+	gui.mainView.enableDrawing();
 	msg.exit("AtenAtomlist::refresh");
 }
 

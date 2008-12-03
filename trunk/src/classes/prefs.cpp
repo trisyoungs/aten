@@ -19,9 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-//#include "classes/forcefield.h"
-//#include "parse/parser.h"
-//#include "base/aten.h"
 #include "command/commandlist.h"
 #include "classes/prefs.h"
 #include "base/sysfunc.h"
