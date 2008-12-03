@@ -208,9 +208,9 @@ void Model::addEllipsoidGlyphs()
 				extents.x = mag;
 			}
 		}
-		g = addGlyph(Glyph::ArrowGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1, centroid+axes.x());
+// 		g = addGlyph(Glyph::ArrowGlyph);
+// 		g->setVector(0, centroid);
+// 		g->setVector(1, centroid+axes.x());
 		axes.x().normalise();
 
 		/*
@@ -238,9 +238,9 @@ void Model::addEllipsoidGlyphs()
 		}
 		// Must orthogonalise y-axis w.r.t. x
 		axes.y().orthogonalise(axes.x());
-		g = addGlyph(Glyph::ArrowGlyph);
-		g->setVector(0, centroid);
-		g->setVector(1, centroid+axes.y());
+// 		g = addGlyph(Glyph::ArrowGlyph);
+// 		g->setVector(0, centroid);
+// 		g->setVector(1, centroid+axes.y());
 		axes.y().normalise();
 
 		/*

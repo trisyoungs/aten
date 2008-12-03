@@ -341,10 +341,10 @@ void Model::projectAll()
 {
 	// Transform the model coordinates of all atoms into world GL and 2D screen coordinates
 	msg.enter("Model::projectAll");
-	if (projectionPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera)))
+	if (projectionPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual)))
 	{
 		if (gui.mainView.isValid()) for (Atom *i = atoms_.first(); i != NULL; i = i->next) projectAtom(i);
-		projectionPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera);
+		projectionPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Camera) + changeLog.log(Log::Visual);
 	}
 	msg.exit("Model::projectAll");
 }
@@ -386,7 +386,6 @@ void Model::projectAtom(Atom *i)
 	screenr = gui.mainView.PMAT * worldr;
 	screenr.x /= screenr.w;
 	i->setScreenRadius(fabs( (vmat[0] + vmat[2]*(screenr.x+1)*0.5) - srx));
-
 }
 
 // Project given model coordinates into screen coordinates

@@ -245,7 +245,6 @@ int Command::function_CA_SELECTPATTERN(CommandNode *&c, Bundle &obj)
 		}
 		obj.rs->endUndoState();
 	}
-	obj.rs->endUndoState();
 	return Command::Success;
 }
 
