@@ -30,7 +30,7 @@
 #include "command/staticcommand.h"
 
 // Constructor
-AtenCellDefine::AtenCellDefine(QWidget *parent)
+AtenCellDefine::AtenCellDefine(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 

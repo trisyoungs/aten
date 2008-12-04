@@ -26,7 +26,7 @@
 #include "model/model.h"
 
 // Constructor
-AtenPosition::AtenPosition(QWidget *parent)
+AtenPosition::AtenPosition(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 }

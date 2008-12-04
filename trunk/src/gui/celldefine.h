@@ -63,7 +63,7 @@ class AtenCellDefine : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenCellDefine(QWidget *parent = 0);
+	AtenCellDefine(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenCellDefine();
 	// Main form declaration
 	Ui::CellDefineDialog ui;

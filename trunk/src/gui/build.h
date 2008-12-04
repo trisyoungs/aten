@@ -49,7 +49,7 @@ class AtenBuild : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenBuild(QWidget *parent = 0);
+	AtenBuild(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenBuild();
 	// Main form declaration
 	Ui::BuildDialog ui;

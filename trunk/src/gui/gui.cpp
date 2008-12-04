@@ -121,16 +121,16 @@ void GuiQt::run()
 	aboutDialog = new AtenAbout(mainWindow);
 	// ...tool windows
 	atomlistWindow = new AtenAtomlist(mainWindow, Qt::Window|Qt::Tool);
-	buildWindow = new AtenBuild(mainWindow);
-	cellDefineWindow = new AtenCellDefine(mainWindow);
-	cellTransformWindow = new AtenCellTransform(mainWindow);
-	disorderWindow = new AtenDisorder(mainWindow);
-	forcefieldsWindow = new AtenForcefields(mainWindow);
-	glyphsWindow = new AtenGlyphs(mainWindow);
-	gridsWindow = new AtenGrids(mainWindow);
-	minimiserWindow = new AtenMinimiser(mainWindow);
-	positionWindow = new AtenPosition(mainWindow);
-	transformWindow = new AtenTransform(mainWindow);
+	buildWindow = new AtenBuild(mainWindow, Qt::Window|Qt::Tool);
+	cellDefineWindow = new AtenCellDefine(mainWindow, Qt::Window|Qt::Tool);
+	cellTransformWindow = new AtenCellTransform(mainWindow, Qt::Window|Qt::Tool);
+	disorderWindow = new AtenDisorder(mainWindow, Qt::Window|Qt::Tool);
+	forcefieldsWindow = new AtenForcefields(mainWindow, Qt::Window|Qt::Tool);
+	glyphsWindow = new AtenGlyphs(mainWindow, Qt::Window|Qt::Tool);
+	gridsWindow = new AtenGrids(mainWindow, Qt::Window|Qt::Tool);
+	minimiserWindow = new AtenMinimiser(mainWindow, Qt::Window|Qt::Tool);
+	positionWindow = new AtenPosition(mainWindow, Qt::Window|Qt::Tool);
+	transformWindow = new AtenTransform(mainWindow, Qt::Window|Qt::Tool);
 
 	// Connect Finished signal of tool windows to finished slots in structure
 	QObject::connect(atomlistWindow, SIGNAL(finished(int)), atomlistWindow, SLOT(dialogFinished(int)));

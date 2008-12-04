@@ -100,7 +100,7 @@ class AtenTransform : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenTransform(QWidget *parent = 0);
+	AtenTransform(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenTransform();
 	// Main form declaration
 	Ui::TransformDialog ui;

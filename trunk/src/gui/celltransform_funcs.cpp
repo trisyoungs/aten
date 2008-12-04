@@ -26,7 +26,7 @@
 #include "gui/celltransform.h"
 #include "command/staticcommand.h"
 // Constructor
-AtenCellTransform::AtenCellTransform(QWidget *parent)
+AtenCellTransform::AtenCellTransform(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 

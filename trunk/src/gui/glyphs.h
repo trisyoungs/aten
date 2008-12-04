@@ -50,7 +50,7 @@ class AtenGlyphs : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenGlyphs(QWidget *parent = 0);
+	AtenGlyphs(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenGlyphs();
 	// Main form declaration
 	Ui::GlyphsDialog ui;

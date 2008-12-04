@@ -33,7 +33,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-AtenForcefields::AtenForcefields(QWidget *parent)
+AtenForcefields::AtenForcefields(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 

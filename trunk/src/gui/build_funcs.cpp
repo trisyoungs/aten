@@ -27,7 +27,7 @@
 #include "command/staticcommand.h"
 
 // Constructor
-AtenBuild::AtenBuild(QWidget *parent)
+AtenBuild::AtenBuild(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 }

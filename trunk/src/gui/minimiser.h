@@ -52,7 +52,7 @@ class AtenMinimiser : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenMinimiser(QWidget *parent = 0);
+	AtenMinimiser(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenMinimiser();
 	// Main form declaration
 	Ui::MinimiserDialog ui;

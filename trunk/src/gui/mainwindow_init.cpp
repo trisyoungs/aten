@@ -229,7 +229,7 @@ void AtenForm::finaliseUi()
 
 	// Create save expression dialog
 	saveExpressionDialog = new QFileDialog(this);
-	saveExpressionDialog->setWindowTitle("Save Vector");
+	saveExpressionDialog->setWindowTitle("Save Expression");
 	saveExpressionDialog->setAcceptMode(QFileDialog::AcceptSave);
 	saveExpressionDialog->setDirectory(aten.workDir());
 	saveExpressionDialog->setFileMode(QFileDialog::AnyFile);

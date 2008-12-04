@@ -25,7 +25,7 @@
 #include "model/model.h"
 
 // Constructor
-AtenGlyphs::AtenGlyphs(QWidget *parent)
+AtenGlyphs::AtenGlyphs(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 

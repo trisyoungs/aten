@@ -26,7 +26,7 @@
 #include "model/model.h"
 
 // Constructor
-AtenTransform::AtenTransform(QWidget *parent)
+AtenTransform::AtenTransform(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 }

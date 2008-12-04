@@ -55,7 +55,7 @@ class AtenCellTransform : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenCellTransform(QWidget *parent = 0);
+	AtenCellTransform(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenCellTransform();
 	// Main form declaration
 	Ui::CellTransformDialog ui;
