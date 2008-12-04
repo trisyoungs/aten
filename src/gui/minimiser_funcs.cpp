@@ -33,7 +33,7 @@
 enum MinimiserMethod { MM_STEEPEST, MM_CONJUGATE, MM_MONTECARLO, MM_SIMPLEX, MM_NITEMS };
 
 // Constructor
-AtenMinimiser::AtenMinimiser(QWidget *parent)
+AtenMinimiser::AtenMinimiser(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 }

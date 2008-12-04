@@ -73,7 +73,7 @@ class AtenDisorder : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenDisorder(QWidget *parent = 0);
+	AtenDisorder(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenDisorder();
 	// Main form declaration
 	Ui::DisorderDialog ui;

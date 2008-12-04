@@ -29,7 +29,7 @@
 #include "base/sysfunc.h"
 
 // Constructor
-AtenGrids::AtenGrids(QWidget *parent)
+AtenGrids::AtenGrids(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 

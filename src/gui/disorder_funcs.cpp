@@ -29,7 +29,7 @@
 #include "command/staticcommand.h"
 
 // Constructor
-AtenDisorder::AtenDisorder(QWidget *parent)
+AtenDisorder::AtenDisorder(QWidget *parent, Qt::WindowFlags flags) : QDialog(parent,flags)
 {
 	ui.setupUi(this);
 

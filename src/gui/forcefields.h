@@ -75,7 +75,7 @@ class AtenForcefields : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenForcefields(QWidget *parent = 0);
+	AtenForcefields(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenForcefields();
 	// Main form declaration
 	Ui::ForcefieldsDialog ui;

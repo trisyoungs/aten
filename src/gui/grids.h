@@ -88,7 +88,7 @@ class AtenGrids : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenGrids(QWidget *parent = 0);
+	AtenGrids(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenGrids();
 	// Main form declaration
 	Ui::GridsDialog ui;

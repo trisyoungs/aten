@@ -65,7 +65,7 @@ class AtenPosition : public QDialog
 	*/
 	public:
 	// Constructor / Destructor
-	AtenPosition(QWidget *parent = 0);
+	AtenPosition(QWidget *parent = 0, Qt::WindowFlags flags = 0);
 	~AtenPosition();
 	// Main form declaration
 	Ui::PositionDialog ui;
