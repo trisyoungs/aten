@@ -77,6 +77,8 @@ Aten provides a clean graphical user interface allowing the intuitive editing an
 %endif
 %else
 
+%endif
+
 make
 
 %install
